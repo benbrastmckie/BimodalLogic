@@ -11,10 +11,8 @@ task_counts:
   total: 235
 technical_debt:
   sorry_count: 1
-  sorry_count_note: "Audited 2026-05-15: 1 root sorry on bx_completeness critical path: succ_cofinal (ChronicleToCountermodel.lean:1885) blocks limitDomSubtype_isSuccArchimedean → succ_embed_surjective → discrete countermodel → bx_completeness. Dense case sorry-free (dd_countermodel_chronicle_dense). Mixed case sorry-free (dd_countermodel_chronicle_mixed_sorry via False.elim, task 142). Tasks 143-148 closed NormalForm/KType/table_correctness sorries. Reynolds pipeline bypass (task 155) in progress. ~17 dead-code sorries in BXCanonical pipeline (bypassed by Chronicle). ~6 non-critical TruthLemma sorries. Soundness, SoundnessLemmas, and Decidability are sorry-free. Zero axioms in Separation module (tasks 157, 171)."
   publication_path_sorries: 1
   axiom_count: 0
-  axiom_count_note: "Zero custom axioms. Prior-UZ/SZ and discrete_box_necessity are standard axiom constructors with sorry-free soundness proofs. Separation module has zero axioms (tasks 157, 171 eliminated all 9)."
   build_errors: 0
   status: excellent
 ---
@@ -39,9 +37,8 @@ technical_debt:
 
 ### Completeness
 
-273 [BLOCKED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
-  Blocker: orbit membership (succ-reachability) is second-order, not expressible in temporal language; 6 approaches exhausted
-268 [PARTIAL] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
+273 [RESEARCHED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
+268 [RESEARCHED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
@@ -84,11 +81,13 @@ technical_debt:
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-284 [RESEARCHED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
-285 [RESEARCHED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
-286 [NOT STARTED] — Parallelize batch formula labeling for 6-7× throughput improvement
-  └─ 289 [NOT STARTED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
-287 [NOT STARTED] — Add formula normalization pass before tableau expansion
+284 [IMPLEMENTING] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
+285 [PLANNED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
+289 [RESEARCHED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
+  - **Report**: [specs/289_branch_result_memoization_caching/reports/01_memoization-research.md]
+287 [PLANNED] — Add formula normalization pass before tableau expansion
+  - **Report**: [specs/287_formula_normalization_before_tableau/reports/01_normalization-research.md]
+  - **Plan**: [specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md]
   └─ 288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter
       └─ 290 [NOT STARTED] — Improve fuel allocation heuristic for imbalanced branches
 
@@ -325,9 +324,27 @@ technical_debt:
 
 ---
 
+### 273. Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype
+- **Effort**: high (400-700 lines)
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: completeness
+- **Dependencies**: none
+- **Research**:
+  - [273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/02_deep-analysis.md]
+  - [273_chronicle_gap_contradiction_proof/reports/03_stavi-sorry-analysis.md]
+  - [273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md]
+- **Plan**: [273_chronicle_gap_contradiction_proof/plans/01_gap-contradiction-plan.md]
+
+**Description**: Prove chronicle_gap_contradiction directly from the omega-chain construction of LimitDomSubtype. The lemma states: for all a b in LimitDomSubtype, if a < b then it is not the case that succ^[n] a < b for all n. This is the sole remaining sorry in the discrete completeness proof chain (ChronicleToCountermodel.lean:473). NOTE: Research (reports 03-04) revealed that chronicle_gap_contradiction is BYPASSED by countermodel_discrete_reynolds_v2 and is NOT on the critical path for completeness_discrete. The actual blocker is the GHR93 bridge lemma in StaviCompleteness.lean (3 sorry sites at lines 2353, 2435, 2805). This task should be reconceived to target the Stavi sorry or retained for mathematical completeness of the BX canonical model approach.
+
+---
+
 ### 268. Reynolds pipeline bridge: archive divergent BX code and wire Theorem 14/15 to close IsSuccArchimedean
 - **Effort**: medium (310-620 lines new code + 200-400 lines boneyard moves)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
@@ -335,6 +352,8 @@ technical_debt:
 - **Research**:
   - [268_reynolds_pipeline_bridge/reports/01_bridge-research.md]
   - [268_reynolds_pipeline_bridge/reports/04_team-research.md]
+  - [268_reynolds_pipeline_bridge/reports/05_completion-analysis.md]
+  - [268_reynolds_pipeline_bridge/reports/06_reynolds-literature-review.md]
 - **Plan**: [268_reynolds_pipeline_bridge/plans/01_implementation-plan.md]
 
 **Description**: Archive divergent BX code to Boneyard/ and wire Reynolds sorry-free Theorem 14/15 to close IsSuccArchimedean for completeness_discrete. Phase 1: archive dead code (ReynoldsModelSurgery.lean full, ChronicleToCountermodel.lean BX pipeline extract, Transfer.lean deprecated countermodel_discrete). Phase 2: build PriorModelData bridge from chronicle limit domain. Phase 3: wire one_class to IsSuccArchimedean via contrapositive of gap_of_not_succ_archimedean. Phase 4: close succ_embed_surjective with sorry-free limitDomSubtype_isSuccArchimedean. Phase 5: verify lake build with completeness_discrete sorry-free.
@@ -940,13 +959,14 @@ After each phase, regenerate c5 and measure timeout count, decision time distrib
 
 
 ### 285. Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
-- **Effort**: medium (6-10 hours)
-- **Status**: [RESEARCHED]
+- **Effort**: medium (3 hours)
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
 - **Dependencies**: Tasks 274, 275, 276, 278
 - **Research**: [specs/285_complete_derived_operator_enumeration/reports/01_gap_analysis.md]
+- **Plan**: [specs/285_complete_derived_operator_enumeration/plans/01_derived-operator-plan.md]
 
 **Description**: The formula enumerator currently generates 14 operators as first-class targets (imp, bot, box, untl, snce, F, P, G, H, R, WU, T, WS, M, ST) but omits 7 semantically significant derived operators defined in `Formula.lean`:
 
@@ -1000,11 +1020,12 @@ These operators are never generated in their "native" derived form, which means 
 
 ### 287. Add formula normalization pass before tableau expansion in DecisionProcedure.lean
 - **Effort**: medium (6-10 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: None (uses existing Normalization.lean; task 288 depends on this)
+- **Report**: [specs/287_formula_normalization_before_tableau/reports/01_normalization-research.md]
 
 **Description**: The tableau in `DecisionProcedure.decide` operates on formulas in their raw enumerated form, which may contain derived operators (`and`, `or`, `diamond`, `always`, `sometimes`, `next`, `prev`, `weak_future`, `weak_past`). The `Normalization.lean` module already has definitional unfold lemmas (`and_unfold`, `or_unfold`, `diamond_unfold`, `all_future_unfold`, etc., lines 213–229) and an `EnrichedFormula` IR, but `decide` does **not** normalize before calling `buildTableau`.
 

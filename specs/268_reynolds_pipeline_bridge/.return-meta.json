@@ -1,8 +1,11 @@
 {
-  "status": "partial",
-  "metadata": {
-    "cycles_used": 5,
-    "final_state": "partial",
-    "session_id": "sess_1748984539_a3b2c1"
-  }
+  "status": "researched",
+  "artifacts": [
+    {
+      "path": "specs/268_reynolds_pipeline_bridge/reports/05_completion-analysis.md",
+      "type": "report",
+      "summary": "Verified task 268 Phases 1-4 complete; sorry enters only through StaviCompleteness.lean GHR93 bridge lemma (3 sites)"
+    }
+  ],
+  "requires_user_review": false
 }
