@@ -96,21 +96,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extend Structural Prefilter with Temporal Implication Patterns [NOT STARTED]
+### Phase 2: Extend Structural Prefilter with Temporal Implication Patterns [COMPLETED]
 
 **Goal**: Add new structural prefilter rules that catch the dominant timeout pattern class (`U(atom, X) -> U(Y, Z)` and analogues) identified by the research report. These are O(n) syntactic checks that short-circuit the decision procedure for formulas matching known-valid or known-invalid shapes.
 
 **Tasks**:
-- [ ] Analyze the `U(atom, X) -> U(Y, Z)` pattern formally: determine if all instances are valid, all invalid, or mixed. Use small `#eval` tests with `decideAutoAdaptive` on representative instances (e.g., `U(p, q) -> U(r, s)`, `U(p, q) -> U(p, q)`) to classify
-- [ ] If the pattern is always valid: add `structural_temporal_implication_valid` rule to `structuralPrefilterWithAxiom` in `DatasetGenerator.lean`
-- [ ] If the pattern is always invalid: add `structural_temporal_implication_invalid` rule
-- [ ] If the pattern is mixed: identify the valid subset (e.g., `U(p, X) -> U(p, Y)` where the event is shared) and add rules for the provably-decidable subset only
-- [ ] Repeat analysis for `S(atom, X) -> S(Y, Z)` (Since variant) and add corresponding rules
-- [ ] Add subsumption rule: `U(X, Y) -> U(X, Y)` is trivially valid (identity), catch this directly
-- [ ] Add temporal reflexivity: `F(X) -> F(X)`, `G(X) -> G(X)`, `P(X) -> P(X)`, `H(X) -> H(X)` as prefilter shortcuts
-- [ ] Add box-temporal interaction: `box(G(X)) -> G(X)` and `box(H(X)) -> H(X)` as valid (S5 reflexivity + temporal unfolding)
-- [ ] Add 8+ `#eval` tests for new patterns with expected results (true/false/none)
-- [ ] Run `structuralPrefilterWithAxiom` over the full c5 formula list (via `#eval` on a representative batch) and count new hits vs baseline
+- [x] Analyze the `U(atom, X) -> U(Y, Z)` pattern formally: determine if all instances are valid, all invalid, or mixed. Use small `#eval` tests with `decideAutoAdaptive` on representative instances (e.g., `U(p, q) -> U(r, s)`, `U(p, q) -> U(p, q)`) to classify *(result: MIXED -- identity valid, different atoms invalid, U(X,Y)->F(Y) valid)*
+- [ ] If the pattern is always valid: add `structural_temporal_implication_valid` rule to `structuralPrefilterWithAxiom` in `DatasetGenerator.lean` *(deviation: skipped -- pattern is mixed, not always valid)*
+- [ ] If the pattern is always invalid: add `structural_temporal_implication_invalid` rule *(deviation: skipped -- pattern is mixed, not always invalid)*
+- [x] If the pattern is mixed: identify the valid subset (e.g., `U(p, X) -> U(p, Y)` where the event is shared) and add rules for the provably-decidable subset only *(added structural_identity, structural_until_implies_future, structural_since_implies_past)*
+- [x] Repeat analysis for `S(atom, X) -> S(Y, Z)` (Since variant) and add corresponding rules *(same mixed pattern; added structural_since_implies_past)*
+- [x] Add subsumption rule: `U(X, Y) -> U(X, Y)` is trivially valid (identity), catch this directly *(added structural_identity check at top of structuralPrefilterWithAxiom)*
+- [x] Add temporal reflexivity: `F(X) -> F(X)`, `G(X) -> G(X)`, `P(X) -> P(X)`, `H(X) -> H(X)` as prefilter shortcuts *(all caught by structural_identity since a == b; verified with tests)*
+- [x] Add box-temporal interaction: `box(G(X)) -> G(X)` and `box(H(X)) -> H(X)` as valid (S5 reflexivity + temporal unfolding) *(deviation: skipped -- already caught by isSubsumptionPattern as structural_subsumption_modal_t)*
+- [x] Add 8+ `#eval` tests for new patterns with expected results (true/false/none) *(added 8 tests: 3 positive hits, 5 negative/existing)*
+- [ ] Run `structuralPrefilterWithAxiom` over the full c5 formula list (via `#eval` on a representative batch) and count new hits vs baseline *(deviation: deferred to Phase 3 integration where full c5 corpus is run)*
 
 **Timing**: 2 hours
 

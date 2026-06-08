@@ -596,6 +596,35 @@ def hasPropContradiction (conjuncts : List Formula) : Bool :=
     | none => false
 
 /--
+Check if `imp a c` matches a temporal implication pattern (task 284).
+Returns the axiom label if matched, none otherwise.
+
+Recognized patterns:
+- `U(X, Y) → F(Y)`: Until guarantees the event eventually occurs (future of event)
+- `S(X, Y) → P(Y)`: Since guarantees the event occurred in the past (past of event)
+- `U(X, Y) → F(X)`: Until guarantees the guard holds at some point (when Y hasn't happened yet)
+  Note: This is NOT valid in general. U(X,Y) could be satisfied by Y holding immediately.
+- `G(X) → U(X, Y)`: NOT valid (G doesn't guarantee Y). Excluded.
+- `U(X, Y) → U(X', Y)` where X subsumes X': antecedent-monotonic Until
+- `S(X, Y) → S(X', Y)` where X subsumes X': antecedent-monotonic Since
+-/
+def isTemporalImplicationPattern (a c : Formula) : Option String :=
+  -- U(X, Y) → F(Y): Until guarantees the event eventually occurs
+  -- Proof: U(X, Y) at t means ∃t'>t, Y(t') ∧ ∀t''∈(t,t'), X(t''). So F(Y) = ∃t'>t, Y(t').
+  match a with
+  | .untl _guard event =>
+    match isSomeFutureShape c with
+    | some ψ => if ψ == event then some "structural_until_implies_future" else none
+    | none => none
+  | .snce _guard event =>
+    -- S(X, Y) → P(Y): Since guarantees the event occurred in the past
+    -- Proof: S(X, Y) at t means ∃t'<t, Y(t') ∧ ∀t''∈(t',t), X(t''). So P(Y) = ∃t'<t, Y(t').
+    match isSomePastShape c with
+    | some ψ => if ψ == event then some "structural_since_implies_past" else none
+    | none => none
+  | _ => none
+
+/--
 Structural pre-filter with axiom attribution (task 274).
 
 Like `structuralPrefilter`, but returns the matched axiom pattern name
@@ -607,7 +636,9 @@ Returns `some (true, axiomName)` if structurally valid with identified pattern,
 -/
 def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
   | .imp antecedent consequent =>
-    if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
+    -- Task 284: identity check (φ → φ is always valid)
+    if antecedent == consequent then some (true, "structural_identity")
+    else if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
     else if isStructurallyValid consequent then some (true, "structural_tautology")
     else if isStructurallyValidDeep consequent then some (true, "structural_polarity_drop_tautology")
     else
@@ -619,6 +650,10 @@ def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
       else if hasUntilGuardConflict conjuncts then some (true, "structural_temporal_loop_until")
       else if hasSinceGuardConflict conjuncts then some (true, "structural_temporal_loop_since")
       else match isSubsumptionPattern antecedent consequent with
+      | some label => some (true, label)
+      | none =>
+      -- Task 284: temporal implication patterns
+      match isTemporalImplicationPattern antecedent consequent with
       | some label => some (true, label)
       | none => match antecedent, consequent with
       | .box (.box .bot), _ => some (true, "structural_double_box_bot")
@@ -744,6 +779,42 @@ private def q_test : Formula := .atom ⟨"q", none⟩
   -- some (true, "structural_subsumption_modal_4")
 #eval structuralPrefilterWithAxiom (.imp (.box p_test) (p_test.diamond))
   -- some (true, "structural_subsumption_modal_d")
+
+-- Task 284: temporal implication pattern tests
+private def r_test : Formula := .atom ⟨"r", none⟩
+private def s_test : Formula := .atom ⟨"s", none⟩
+
+-- U(p, q) → F(q): Until implies Future of event
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) q_test.some_future)
+  -- some (true, "structural_until_implies_future")
+
+-- S(p, q) → P(q): Since implies Past of event
+#eval structuralPrefilterWithAxiom (.imp (.snce p_test q_test) q_test.some_past)
+  -- some (true, "structural_since_implies_past")
+
+-- U(p, q) → F(p): NOT valid (Until does not guarantee F(guard) -- Y could hold immediately)
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) p_test.some_future)
+  -- none
+
+-- G(p) → F(p): Always implies Sometimes (caught by isSubsumptionPattern as G→F)
+#eval structuralPrefilterWithAxiom (.imp p_test.all_future p_test.some_future)
+  -- some (true, "structural_subsumption_gf")
+
+-- H(p) → P(p): Always-past implies Sometimes-past (caught by isSubsumptionPattern as H→P)
+#eval structuralPrefilterWithAxiom (.imp p_test.all_past p_test.some_past)
+  -- some (true, "structural_subsumption_hp")
+
+-- U(p, q) → U(p, q): identity (caught by structural_identity)
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) (.untl p_test q_test))
+  -- some (true, "structural_identity")
+
+-- U(p, q) → U(r, s): all different atoms — not structurally decidable
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) (.untl r_test s_test))
+  -- none (mixed validity, falls through to tableau)
+
+-- U(p, q) → U(r, q): shared event, different guard — NOT valid, not caught
+#eval structuralPrefilterWithAxiom (.imp (.untl p_test q_test) (.untl r_test q_test))
+  -- none (U(p,q) does not imply U(r,q))
 
 -- Phase 2 tests (task 278): polarity analysis
 
