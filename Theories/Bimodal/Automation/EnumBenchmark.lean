@@ -58,7 +58,7 @@ def benchmarkExactComplexity (complexity : Nat) (atoms : List Atom)
 
 /-- Run axiom seeding benchmark with temporal seeds and ex_falso analysis. -/
 def benchmarkValidFraction (atoms : List Atom) (maxComplexity : Nat)
-    (parallelThreads : Nat := 0) : IO Unit := do
+    (parallelThreads : Nat := 0) (cacheSize : Nat := 10000) : IO Unit := do
   IO.println s!"--- Valid Fraction Benchmark (complexity {maxComplexity}) ---"
   -- Test 1: Axiom seeds only with increased count (temporal + theorem seeds)
   IO.println "  [Test 1: Axiom seeds only (2000 seeds, temporal + theorem)]"
@@ -68,7 +68,7 @@ def benchmarkValidFraction (atoms : List Atom) (maxComplexity : Nat)
   let midStart := validFormulas.length / 3
   let sampleValid := (validFormulas.drop midStart).take 200
   IO.println s!"  Labeling {sampleValid.length} axiom-seeded formulas (from middle)..."
-  let labeledValid ← labelBatch sampleValid (parallelThreads := parallelThreads)
+  let labeledValid ← labelBatch sampleValid (parallelThreads := parallelThreads) (cacheMaxSize := cacheSize)
   let statsValid := computeBatchStats labeledValid
   IO.println (statsValid.display)
   -- Ex_falso dominance check
@@ -108,7 +108,7 @@ def benchmarkValidFraction (atoms : List Atom) (maxComplexity : Nat)
   let midStart2 := formulas.length / 3
   let sample := (formulas.drop midStart2).take 300
   IO.println s!"  Labeling {sample.length} formulas from combined pool (from middle)..."
-  let labeled ← labelBatch sample (parallelThreads := parallelThreads)
+  let labeled ← labelBatch sample (parallelThreads := parallelThreads) (cacheMaxSize := cacheSize)
   let stats := computeBatchStats labeled
   IO.println (stats.display)
   let validPct := if stats.totalCount > 0
@@ -120,7 +120,8 @@ def benchmarkValidFraction (atoms : List Atom) (maxComplexity : Nat)
     IO.println s!"  Valid fraction: {validPct}% (below 15% target; improved from 1.6% baseline)"
 
 /-- Full pipeline benchmark at complexity 7 with streaming write. -/
-def benchmarkFullPipeline (atoms : List Atom) (parallelThreads : Nat := 0) : IO Unit := do
+def benchmarkFullPipeline (atoms : List Atom) (parallelThreads : Nat := 0)
+    (cacheSize : Nat := 10000) : IO Unit := do
   IO.println s!"--- Full Pipeline Benchmark (complexity 7) ---"
   let params : EnumParams := {
     maxComplexity := 7
@@ -139,7 +140,7 @@ def benchmarkFullPipeline (atoms : List Atom) (parallelThreads : Nat := 0) : IO 
   -- Phase 2: Labeling (sample for speed)
   let sample := formulas.take 1000
   let labelStartMs ← IO.monoMsNow
-  let labeled ← labelBatch sample (parallelThreads := parallelThreads)
+  let labeled ← labelBatch sample (parallelThreads := parallelThreads) (cacheMaxSize := cacheSize)
   let labelEndMs ← IO.monoMsNow
   IO.println s!"  Labeling: {sample.length} formulas in {labelEndMs - labelStartMs} ms"
   let stats := computeBatchStats labeled
@@ -175,21 +176,31 @@ def benchmarkFullPipeline (atoms : List Atom) (parallelThreads : Nat := 0) : IO 
   IO.println "  - Ex_falso still dominates valid set (~90%); needs parallel labeling or filtering"
   IO.println "  - Recommended next: parallel labeling via IO.asTask, decision time filtering"
 
-/-- Parse CLI arguments for the benchmark, extracting `--parallel N`. -/
-def parseBenchmarkArgs (args : List String) : Nat :=
-  go args 0
+/-- CLI arguments for the benchmark. -/
+structure BenchmarkArgs where
+  parallelThreads : Nat := 0
+  cacheSize : Nat := 10000
+  deriving Repr, Inhabited
+
+/-- Parse CLI arguments for the benchmark, extracting `--parallel N` and `--cache-size N`. -/
+def parseBenchmarkArgs (args : List String) : BenchmarkArgs :=
+  go args {}
 where
-  go : List String → Nat → Nat
-  | "--parallel" :: n :: rest, _ => go rest n.toNat!
+  go : List String → BenchmarkArgs → BenchmarkArgs
+  | "--parallel" :: n :: rest, acc => go rest { acc with parallelThreads := n.toNat! }
+  | "--cache-size" :: n :: rest, acc => go rest { acc with cacheSize := n.toNat! }
   | _ :: rest, acc => go rest acc
   | [], acc => acc
 
 def main (args : List String) : IO Unit := do
-  let parallelThreads := parseBenchmarkArgs args
+  let benchArgs := parseBenchmarkArgs args
+  let parallelThreads := benchArgs.parallelThreads
+  let cacheSize := benchArgs.cacheSize
   let atoms := [Atom.mk_base "p", Atom.mk_base "q", Atom.mk_base "r"]
-  IO.println "=== Enumerator Benchmark (Tasks 210, 213) ==="
+  IO.println "=== Enumerator Benchmark (Tasks 210, 213, 289) ==="
   if parallelThreads > 0 then
     IO.println s!"Parallel threads: {parallelThreads}"
+  IO.println s!"Cache size: {cacheSize} entries"
   IO.println ""
   -- Phase 1: Exact-complexity enumeration timing
   benchmarkExactComplexity 5 atoms 2 2
@@ -199,11 +210,11 @@ def main (args : List String) : IO Unit := do
   benchmarkExactComplexity 7 atoms 2 2
   IO.println ""
   -- Phase 2: Valid fraction with temporal axiom seeding
-  benchmarkValidFraction atoms 5 (parallelThreads := parallelThreads)
+  benchmarkValidFraction atoms 5 (parallelThreads := parallelThreads) (cacheSize := cacheSize)
   IO.println ""
-  benchmarkValidFraction atoms 7 (parallelThreads := parallelThreads)
+  benchmarkValidFraction atoms 7 (parallelThreads := parallelThreads) (cacheSize := cacheSize)
   IO.println ""
   -- Phase 3: Full pipeline benchmark
-  benchmarkFullPipeline atoms (parallelThreads := parallelThreads)
+  benchmarkFullPipeline atoms (parallelThreads := parallelThreads) (cacheSize := cacheSize)
   IO.println ""
   IO.println "=== Benchmark Complete ==="
