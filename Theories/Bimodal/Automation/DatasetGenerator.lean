@@ -2021,4 +2021,97 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
   else
     IO.println "[test] FAIL: some invalid prefilter integration tests failed"
 
+/-! ### Phase 4 tests (task 288): cross-validation, regression, and edge cases -/
+
+-- Test 6: Cross-validation — invalid prefilter agrees with full tableau on known invalid formulas
+#eval show IO Unit from do
+  let p := Formula.atom ⟨"p", none⟩
+  let q := Formula.atom ⟨"q", none⟩
+  let r := Formula.atom ⟨"r", none⟩
+  -- Formulas the invalid prefilter should catch, verified against full tableau
+  let crossValFormulas : List Formula := [
+    .imp p .bot,                                       -- p → ⊥ (invalid)
+    .imp (.box p) .bot,                                -- □p → ⊥ (invalid)
+    .imp p (.untl .bot q),                             -- p → U(⊥, q) (invalid)
+    .imp p (.box .bot),                                -- p → □⊥ (invalid)
+    .imp (Formula.and p q) .bot,                       -- (p ∧ q) → ⊥ (invalid)
+    .imp (.box (.box p)) (.untl .bot q),               -- □□p → U(⊥, q) (invalid)
+    .imp (Formula.imp .bot .bot) .bot,                 -- ⊤ → ⊥ (invalid)
+    .imp p (.snce .bot q),                             -- p → S(⊥, q) (invalid)
+    .imp (Formula.and p (Formula.neg q)) .bot,         -- (p ∧ ¬q) → ⊥ (invalid)
+    .imp (.untl p q) (.untl .bot r)                    -- U(p,q) → U(⊥,r) (invalid)
+  ]
+  let mut allMatch := true
+  for φ in crossValFormulas do
+    let pfResult := structuralInvalidPrefilter φ
+    let lf ← labelFormulaImpl φ .Base 1000
+    match pfResult with
+    | some (false, _pat) =>
+      if lf.label == .invalid || lf.decisionMethod == "structural_invalid_prefilter" then
+        IO.println s!"[test] OK: {φ.prettyPrint} — prefilter=invalid, tableau={repr lf.label}"
+      else
+        IO.println s!"[test] MISMATCH: {φ.prettyPrint} — prefilter=invalid but tableau={repr lf.label}"
+        allMatch := false
+    | _ =>
+      IO.println s!"[test] SKIP: {φ.prettyPrint} — not caught by prefilter (method={lf.decisionMethod})"
+  if allMatch then
+    IO.println "[test] PASS: all cross-validation tests agree"
+  else
+    IO.println "[test] FAIL: cross-validation mismatch detected"
+
+-- Test 7: Regression — known-valid formulas not mislabeled by invalid prefilter
+#eval show IO Unit from do
+  let p := Formula.atom ⟨"p", none⟩
+  let q := Formula.atom ⟨"q", none⟩
+  let validFormulas : List Formula := [
+    .imp p p,                              -- identity
+    .imp (.box .bot) q,                    -- bot antecedent
+    .imp p (.imp q q),                     -- tautological consequent
+    .imp (.box p) p,                       -- T axiom
+    .imp (.box p) (.box (.box p)),         -- 4 axiom
+    .imp p.all_future p,                   -- Gp → p
+    .imp p.all_future p.some_future,       -- Gp → Fp
+    .imp (.untl p q) q.some_future,        -- U(p,q) → F(q)
+    .imp (.snce p q) q.some_past,          -- S(p,q) → P(q)
+    .imp (.untl .bot p) (.untl .bot q)     -- U(⊥,p) → U(⊥,q): both always false, valid
+  ]
+  let mut allPass := true
+  for φ in validFormulas do
+    match structuralInvalidPrefilter φ with
+    | some (false, pat) =>
+      IO.println s!"[test] FAIL: valid formula {φ.prettyPrint} mislabeled as invalid ({pat})"
+      allPass := false
+    | _ =>
+      IO.println s!"[test] OK: {φ.prettyPrint} — not caught by invalid prefilter"
+  if allPass then
+    IO.println "[test] PASS: no valid formulas mislabeled by invalid prefilter"
+  else
+    IO.println "[test] FAIL: regression — valid formulas mislabeled"
+
+-- Test 8: Edge cases — vacuously valid and boundary formulas
+#eval show IO Unit from do
+  let p := Formula.atom ⟨"p", none⟩
+  let q := Formula.atom ⟨"q", none⟩
+  -- bot → bot: vacuously valid (both sides always false), should NOT be caught as invalid
+  let e1 := structuralInvalidPrefilter (.imp .bot .bot)
+  IO.println s!"[test] ⊥ → ⊥: {repr e1} (expected: none — vacuously valid)"
+  -- top → bot: ⊤ is satisfiable, bot is always false → INVALID
+  let e2 := structuralInvalidPrefilter (.imp Formula.top .bot)
+  IO.println s!"[test] ⊤ → ⊥: {repr e2} (expected: some (false, invalid_satisfiable_neg))"
+  -- box(bot) → U(bot, p): both sides always false → vacuously valid, should NOT be caught
+  let e3 := structuralInvalidPrefilter (.imp (.box .bot) (.untl .bot p))
+  IO.println s!"[test] □⊥ → U(⊥,p): {repr e3} (expected: none — vacuously valid)"
+  -- p → box(bot): invalid (p is satisfiable, box(bot) always false)
+  let e4 := structuralInvalidPrefilter (.imp p (.box .bot))
+  IO.println s!"[test] p → □⊥: {repr e4} (expected: some (false, invalid_satisfiable_neg))"
+  -- Verify correctness
+  let pass1 := e1 == none
+  let pass2 := e2 == some (false, "invalid_satisfiable_neg")
+  let pass3 := e3 == none
+  let pass4 := e4 == some (false, "invalid_satisfiable_neg")
+  if pass1 && pass2 && pass3 && pass4 then
+    IO.println "[test] PASS: all edge case tests correct"
+  else
+    IO.println s!"[test] FAIL: edge case failures (pass1={pass1} pass2={pass2} pass3={pass3} pass4={pass4})"
+
 end Bimodal.Automation

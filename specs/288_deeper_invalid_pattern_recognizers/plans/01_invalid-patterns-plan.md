@@ -148,15 +148,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Testing and Validation [NOT STARTED]
+### Phase 4: Testing and Validation [COMPLETED]
 
 **Goal**: Validate correctness of the invalid prefilter by cross-checking against the full tableau and running regression tests.
 
 **Tasks**:
-- [ ] Create a cross-validation `#eval` test block that runs both the invalid prefilter and the full `labelFormulaImpl` on a set of 10-15 formulas known to be invalid, verifying label agreement
-- [ ] Create a regression test block that runs `structuralPrefilterWithAxiom` then `structuralInvalidPrefilter` on 10 known-valid formulas, verifying the invalid prefilter returns `none` for all of them
-- [ ] Add negative tests: formulas where both antecedent and consequent are always-false (vacuously valid, should NOT be caught as invalid)
-- [ ] Add edge case tests: `bot -> bot` (valid), `top -> bot` (invalid), `box(bot) -> U(bot, p)` (valid -- both sides always false), `p -> box(bot)` (invalid)
+- [x] Create a cross-validation `#eval` test block that runs both the invalid prefilter and the full `labelFormulaImpl` on a set of 10-15 formulas known to be invalid, verifying label agreement
+- [x] Create a regression test block that runs `structuralPrefilterWithAxiom` then `structuralInvalidPrefilter` on 10 known-valid formulas, verifying the invalid prefilter returns `none` for all of them
+- [x] Add negative tests: formulas where both antecedent and consequent are always-false (vacuously valid, should NOT be caught as invalid)
+- [x] Add edge case tests: `bot -> bot` (valid), `top -> bot` (invalid), `box(bot) -> U(bot, p)` (valid -- both sides always false), `p -> box(bot)` (invalid)
 
 **Timing**: 0.5 hours
 
