@@ -84,7 +84,7 @@ technical_debt:
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-284 [PLANNED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
+284 [RESEARCHED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
 
 ### Uncategorized
 
@@ -917,7 +917,7 @@ technical_debt:
 
 ### 284. Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
 - **Effort**: medium (6-10 hours)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
