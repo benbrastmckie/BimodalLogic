@@ -289,14 +289,17 @@ theorem single_U_formula_sep_with_U_type_no_oracle (phi A B : Formula)
           have hB''_sf : is_S_free B'' = true := replace_box_preserves_S_free B hB_sf
           have hA''_uf : is_U_free A'' = true := replace_box_preserves_U_free A hA_uf
           have hB''_uf : is_U_free B'' = true := replace_box_preserves_U_free B hB_uf
-          -- Apply snce_single_U_depth_one_sep_with_U_type
-          -- NOTE: Pre-existing proof gap — snce_single_U_depth_one_sep_with_U_type
-          -- returns is_separable_with_U_type _ A'' B'' (box-normalized types), but the
-          -- goal requires is_separable_with_U_type _ A B. A bridge lemma
-          -- (replace_box_preserves_single_U_type_inv or similar) is needed.
-          -- This code never compiled in the original file (HierarchyDefs was missing
-          -- the FormulaOps import).
-          sorry
+          -- Apply snce_single_U_depth_one_sep_with_U_type on box-normalized args
+          have h_sep_AB'' : is_separable_with_U_type (C''.snce F'') A'' B'' :=
+            snce_single_U_depth_one_sep_with_U_type C'' F'' A'' B''
+              hA''_sf hB''_sf hA''_uf hB''_uf hsingle_C'' hsingle_F'' hdC'' hdF''
+              (has_no_allpast_allfuture_true C'') (has_no_allpast_allfuture_true F'')
+          -- Transfer from C''.snce F'' to C.snce F via hequiv
+          have h_sep_CF_AB'' : is_separable_with_U_type (C.snce F) A'' B'' :=
+            is_separable_with_U_type_of_equiv hequiv h_sep_AB''
+          -- Bridge from A'' B'' to A B
+          exact is_separable_with_U_type_replace_args h_sep_CF_AB''
+            (replace_box_equiv A) (replace_box_equiv B) hA_sf hB_sf
         · -- Depth >= 2: IH on C, F → is_separable_with_U_type
           push_neg at hn_le1
           have hC_sep_ut : is_separable_with_U_type C A B := ih_C hle_C h_single_ψ.1
@@ -320,8 +323,17 @@ theorem single_U_formula_sep_with_U_type_no_oracle (phi A B : Formula)
           have hB''_sf : is_S_free B'' = true := replace_box_preserves_S_free B hB_sf
           have hA''_uf : is_U_free A'' = true := replace_box_preserves_U_free A hA_uf
           have hB''_uf : is_U_free B'' = true := replace_box_preserves_U_free B hB_uf
-          -- Same pre-existing proof gap as depth 1 case above
-          sorry
+          -- Apply snce_single_U_depth_one_sep_with_U_type on box-normalized args
+          have h_sep_AB'' : is_separable_with_U_type (C''.snce F'') A'' B'' :=
+            snce_single_U_depth_one_sep_with_U_type C'' F'' A'' B''
+              hA''_sf hB''_sf hA''_uf hB''_uf hsingle_C'' hsingle_F'' hdC'' hdF''
+              (has_no_allpast_allfuture_true C'') (has_no_allpast_allfuture_true F'')
+          -- Transfer from C''.snce F'' to C.snce F via hequiv
+          have h_sep_CF_AB'' : is_separable_with_U_type (C.snce F) A'' B'' :=
+            is_separable_with_U_type_of_equiv hequiv h_sep_AB''
+          -- Bridge from A'' B'' to A B
+          exact is_separable_with_U_type_replace_args h_sep_CF_AB''
+            (replace_box_equiv A) (replace_box_equiv B) hA_sf hB_sf
   exact this (snce_depth_of_U phi) phi (Nat.le_refl _) h_single
 
 /-- Oracle-free corollary: is_separable for single-U-type formulas. -/

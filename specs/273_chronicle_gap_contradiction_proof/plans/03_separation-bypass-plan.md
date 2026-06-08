@@ -120,7 +120,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Monadic FO to Temporal Formula Translation [NOT STARTED]
+### Phase 2: Monadic FO to Temporal Formula Translation [IN PROGRESS]
 
 **Goal**: Build the translation from `MonadicFormula sig 1` (monadic first-order formulas with one free variable) to `Formula` (temporal formulas using U, S). This is the "table" translation from GHR94/Reynolds that converts first-order quantification over a linear order into temporal operators.
 

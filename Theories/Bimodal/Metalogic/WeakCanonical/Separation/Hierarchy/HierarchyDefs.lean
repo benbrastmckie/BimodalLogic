@@ -912,4 +912,140 @@ theorem neg_separable_with_U_type {a A B : Formula}
   · intro hn hp; exact hn ((hequiva M t).mpr hp)
   · intro hn hp; exact hn ((hequiva M t).mp hp)
 
+/-! ### U-Type Argument Replacement Bridge
+
+When a separated witness has `has_single_U_type ψ A' B'` but we need
+`has_single_U_type _ A B`, this bridge replaces U-arguments while preserving
+separation and semantic equivalence. Used when box-normalized types A', B'
+(`replace_box_with_top A/B`) need to be converted back to the original A, B. -/
+
+/-- Replace U-type arguments in a formula: every `.untl _ _` node gets new arguments
+    `A_new B_new`. Only meaningful when `has_single_U_type ψ A_old B_old`. -/
+def replace_untl_args (ψ A_new B_new : Formula) : Formula :=
+  match ψ with
+  | .atom a => .atom a
+  | .bot => .bot
+  | .imp p q => .imp (replace_untl_args p A_new B_new) (replace_untl_args q A_new B_new)
+  | .box p => .box (replace_untl_args p A_new B_new)
+  | .untl _ _ => .untl A_new B_new
+  | .snce p q => .snce (replace_untl_args p A_new B_new) (replace_untl_args q A_new B_new)
+
+/-- `replace_untl_args` produces `has_single_U_type _ A_new B_new`. -/
+theorem replace_untl_args_has_single_U_type (ψ A_new B_new : Formula) :
+    has_single_U_type (replace_untl_args ψ A_new B_new) A_new B_new := by
+  induction ψ with
+  | atom _ => exact trivial
+  | bot => exact trivial
+  | imp _ _ ih1 ih2 => exact ⟨ih1, ih2⟩
+  | box _ ih => exact ih
+  | untl _ _ => exact ⟨rfl, rfl⟩
+  | snce _ _ ih1 ih2 => exact ⟨ih1, ih2⟩
+
+/-- For U-free formulas, `replace_untl_args` is the identity. -/
+theorem replace_untl_args_u_free_eq (ψ A_new B_new : Formula)
+    (h : is_U_free ψ = true) : replace_untl_args ψ A_new B_new = ψ := by
+  induction ψ with
+  | atom _ => rfl
+  | bot => rfl
+  | imp _ _ ih1 ih2 =>
+    simp [is_U_free] at h
+    simp [replace_untl_args, ih1 h.1, ih2 h.2]
+  | box _ ih =>
+    simp [is_U_free] at h
+    simp [replace_untl_args, ih h]
+  | untl _ _ => simp [is_U_free] at h
+  | snce _ _ ih1 ih2 =>
+    simp [is_U_free] at h
+    simp [replace_untl_args, ih1 h.1, ih2 h.2]
+
+/-- `replace_untl_args` preserves `is_S_free` for `.untl` sub-arguments when the
+    new arguments are S-free. -/
+private theorem replace_untl_args_preserves_S_free (ψ A_new B_new : Formula)
+    (h : is_S_free ψ = true) (hA : is_S_free A_new = true) (hB : is_S_free B_new = true) :
+    is_S_free (replace_untl_args ψ A_new B_new) = true := by
+  induction ψ with
+  | atom _ => simp [replace_untl_args, is_S_free]
+  | bot => rfl
+  | imp _ _ ih1 ih2 =>
+    simp [is_S_free] at h; simp [replace_untl_args, is_S_free, ih1 h.1, ih2 h.2]
+  | box _ ih =>
+    simp [is_S_free] at h; simp [replace_untl_args, is_S_free, ih h]
+  | untl _ _ =>
+    simp [replace_untl_args, is_S_free, hA, hB]
+  | snce _ _ => simp [is_S_free] at h
+
+/-- `replace_untl_args` preserves `is_syntactically_separated`. -/
+theorem replace_untl_args_preserves_separated (ψ A_new B_new : Formula)
+    (h_sep : is_syntactically_separated ψ = true)
+    (hA_sf : is_S_free A_new = true) (hB_sf : is_S_free B_new = true) :
+    is_syntactically_separated (replace_untl_args ψ A_new B_new) = true := by
+  induction ψ with
+  | atom _ => simp [replace_untl_args, is_syntactically_separated]
+  | bot => rfl
+  | imp _ _ ih1 ih2 =>
+    simp [is_syntactically_separated] at h_sep
+    simp [replace_untl_args, is_syntactically_separated, ih1 h_sep.1, ih2 h_sep.2]
+  | box _ => simp [replace_untl_args, is_syntactically_separated]
+  | untl _ _ =>
+    simp [replace_untl_args, is_syntactically_separated, hA_sf, hB_sf]
+  | snce p q ih1 ih2 =>
+    simp [is_syntactically_separated] at h_sep
+    -- snce case: args must be U-free, replace_untl_args on U-free formulas is identity
+    simp only [replace_untl_args, is_syntactically_separated]
+    rw [replace_untl_args_u_free_eq p A_new B_new h_sep.1,
+        replace_untl_args_u_free_eq q A_new B_new h_sep.2]
+    simp [h_sep.1, h_sep.2]
+
+/-- `replace_untl_args` preserves `int_equiv` when `has_single_U_type ψ A_old B_old`
+    and `int_equiv A_old A_new` and `int_equiv B_old B_new`. -/
+theorem replace_untl_args_equiv (ψ A_old B_old A_new B_new : Formula)
+    (h_single : has_single_U_type ψ A_old B_old)
+    (hA_equiv : int_equiv A_old A_new) (hB_equiv : int_equiv B_old B_new) :
+    int_equiv ψ (replace_untl_args ψ A_new B_new) := by
+  induction ψ with
+  | atom _ => intro M t; rfl
+  | bot => intro M t; rfl
+  | imp p q ih1 ih2 =>
+    obtain ⟨h1, h2⟩ := h_single
+    intro M t; simp only [replace_untl_args, int_truth]
+    exact Iff.imp (ih1 h1 M t) (ih2 h2 M t)
+  | box _ ih =>
+    intro M t; simp only [replace_untl_args, int_truth]
+  | untl p q =>
+    obtain ⟨hp, hq⟩ := h_single
+    subst hp; subst hq
+    intro M t; simp only [replace_untl_args, int_truth]
+    constructor
+    · rintro ⟨s, hts, h1, h2⟩
+      exact ⟨s, hts, (hA_equiv M s).mp h1,
+        fun r hr1 hr2 => (hB_equiv M r).mp (h2 r hr1 hr2)⟩
+    · rintro ⟨s, hts, h1, h2⟩
+      exact ⟨s, hts, (hA_equiv M s).mpr h1,
+        fun r hr1 hr2 => (hB_equiv M r).mpr (h2 r hr1 hr2)⟩
+  | snce p q ih1 ih2 =>
+    obtain ⟨h1, h2⟩ := h_single
+    intro M t; simp only [replace_untl_args, int_truth]
+    constructor
+    · rintro ⟨s, hst, h1', h2'⟩
+      exact ⟨s, hst, (ih1 h1 M s).mp h1',
+        fun r hr1 hr2 => (ih2 h2 M r).mp (h2' r hr1 hr2)⟩
+    · rintro ⟨s, hst, h1', h2'⟩
+      exact ⟨s, hst, (ih1 h1 M s).mpr h1',
+        fun r hr1 hr2 => (ih2 h2 M r).mpr (h2' r hr1 hr2)⟩
+
+/-- Bridge lemma: convert `is_separable_with_U_type φ A' B'` to
+    `is_separable_with_U_type φ A B` given `int_equiv A A'`, `int_equiv B B'`,
+    and S-freeness of A, B. -/
+theorem is_separable_with_U_type_replace_args {φ A A' B B' : Formula}
+    (h : is_separable_with_U_type φ A' B')
+    (hA_equiv : int_equiv A A') (hB_equiv : int_equiv B B')
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true) :
+    is_separable_with_U_type φ A B := by
+  obtain ⟨ψ, h_sep, h_equiv, h_single⟩ := h
+  exact ⟨replace_untl_args ψ A B,
+    replace_untl_args_preserves_separated ψ A B h_sep hA_sf hB_sf,
+    int_equiv_trans h_equiv (replace_untl_args_equiv ψ A' B' A B h_single
+      (int_equiv_symm hA_equiv) (int_equiv_symm hB_equiv)),
+    replace_untl_args_has_single_U_type ψ A B⟩
+
 end Bimodal.Metalogic.WeakCanonical.Separation

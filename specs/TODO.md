@@ -100,7 +100,9 @@ technical_debt:
   - **Report**: [specs/288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md]
   - **Plan**: [specs/288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md]
   - **Summary**: [specs/288_deeper_invalid_pattern_recognizers/summaries/01_invalid-patterns-summary.md]
-  └─ 290 [COMPLETED] — Improve tableau fuel allocation heuristic for imbalanced branches
+  └─ 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
+  - **Report**: [specs/290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md]
+  - **Plan**: [specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
 295 [NOT STARTED] — Diagnostic audit and stress-test of dataset generation pipeline
 
 ### Uncategorized
@@ -1120,15 +1122,36 @@ These are almost certainly **invalid** (countermodel exists) but the tableau exh
 
 ### 290. Improve tableau fuel allocation heuristic for imbalanced branches
 - **Effort**: small (4-6 hours)
-- **Status**: [COMPLETED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: medium
 - **Topic**: dataset-enhancement
-- **Dependencies**: Task 288
-- **Completion**: Replaced uniform fuel/2 allocation with difficulty-weighted proportional allocation. Added estimateBranchDifficulty (temporal 3x, modal 2x, size 1/4x) and allocateFuelProportionally. Updated expandBranchWithFuel, traced variant, and all soundness proofs. Zero sorries, zero new axioms.
-- **Artifacts**:
-  - [specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
-  - [specs/290_improve_tableau_fuel_allocation/summaries/01_fuel-allocation-summary.md]
+- **Dependencies**: Task 288 (invalid-pattern prefilter's branch analysis tools — `estimateBranchDifficulty` — can be reused for fuel allocation)
+- **Report**: [specs/290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md]
+- **Plan**: [specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
+
+**Description**: In `expandBranchWithFuel` (Saturation.lean:181), when a branching rule fires, fuel is divided equally among sub-branches: `fuel / branches.length`. For imbalanced branches (one branch closes trivially, another is deep), this wastes fuel on the easy branch and starves the hard one. The result: the hard branch times out even though total fuel would have been sufficient if allocated adaptively.
+
+**Implementation**:
+1. Add an `estimateBranchDifficulty : Branch → Nat` heuristic:
+   - Count unexpanded temporal formulas (U/S/F/P/G/H) — more temporal = harder.
+   - Count modal formulas (□/◇) — modal adds world creation cost.
+   - Count branch depth — deeper branches are closer to saturation.
+   - Weighted sum: `difficulty = 3 * temporalCount + 2 * modalCount + branchDepth`.
+2. In `expandBranchWithFuel`, when a split occurs, allocate fuel proportionally to difficulty:
+   - Compute total difficulty = sum of difficulties across all sub-branches.
+   - Assign each branch `fuel_i = fuel * difficulty_i / totalDifficulty`.
+   - Ensure minimum fuel of 1 per branch (avoid zero-fuel branches).
+3. **Conservative fallback**: if any branch has `difficulty = 0` (e.g., propositional-only), give it a small fixed allocation (e.g., `fuel / (branches.length * 2)`) and redistribute the rest.
+4. Prove termination still holds: the total fuel across all branches ≤ original fuel, and each recursive call gets strictly less fuel than parent (except the fuel=0 base case).
+5. Benchmark: run c6 labeling before/after heuristic change. Measure:
+   - Timeout rate change
+   - Distribution of "closed vs timeout" for formulas that previously timed out
+   - Any regressions (formulas that closed before but now timeout due to over-allocation to one branch)
+
+**Expected impact**: Modest (2-5% timeout reduction). Best for formulas with clear easy/hard branch splits (e.g., `impPos` where one side is a tautology and the other is complex).
+
+**Risk**: Heuristic inaccuracy. If `estimateBranchDifficulty` mis-predicts, fuel allocation becomes worse than equal division. Mitigation: keep equal division as fallback when heuristic confidence is low (e.g., all branches have similar difficulty).
 
 ---
 

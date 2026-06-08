@@ -261,6 +261,159 @@ theorem case8_sep_with_U_type_Z_gen (a q A B : Formula)
     have hna_uf : is_U_free (Formula.neg a) = true := by simp [Formula.neg, is_U_free, ha]
     exact case5_sep_with_U_type_Z_gen (Formula.neg q) (Formula.neg a) A B hnq_uf hna_uf hA hB hA' hB'
 
+set_option maxHeartbeats 3200000 in
+/-- S(ev, q∨U(A,B)) is separable_with_U_type A B when ev is U-free.
+    Follows the case3 decomposition from case5, but simplified for U-free events:
+    - D1: S(ev, q) — U-free → u_free_separable_with_type
+    - D2: S(alpha, Q_Z) ∧ (A ∨ B∧U) — uses snce_combined_U_sep_with_U_type
+    - D3: S(A ∧ (q∨U) ∧ S(alpha, Q_Z), q) — uses snce_combined_{U,notU}_sep_with_U_type -/
+private theorem snce_Ufree_event_qU_guard_sep_with_U_type (ev q A B : Formula)
+    (hev_uf : is_U_free ev = true) (hq : is_U_free q = true)
+    (hA : is_U_free A = true) (hB : is_U_free B = true)
+    (hA' : is_S_free A = true) (hB' : is_S_free B = true) :
+    is_separable_with_U_type (.snce ev (Formula.or q (.untl A B))) A B := by
+  -- Apply case3 decomposition
+  apply is_separable_with_U_type_of_equiv (case3_equiv_Z_general ev q A B)
+  simp only [case3_rhs]
+  apply or_separable_with_U_type
+  · apply or_separable_with_U_type
+    · -- D1: S(ev, q) — entirely U-free
+      have hev_snce_sep : is_syntactically_separated (.snce ev q) = true := by
+        simp [is_syntactically_separated, hev_uf, hq]
+      exact ⟨.snce ev q, hev_snce_sep, int_equiv_refl _,
+        ⟨u_free_has_single_U_type hev_uf, u_free_has_single_U_type hq⟩⟩
+    · -- D2: S(alpha, Q_Z) ∧ (A ∨ B∧U)
+      apply and_separable_with_U_type
+      · -- S(alpha(ev, q), Q_Z(A,B,¬q))
+        have h_nqSev_uf : is_U_free (Formula.and (Formula.neg q) (.snce ev q)) = true := by
+          simp [Formula.and, Formula.neg, is_U_free, hq, hev_uf]
+        apply is_separable_with_U_type_of_equiv (since_distrib_or_left _ _ (Q_Z A B (Formula.neg q)))
+        apply or_separable_with_U_type
+        · -- S(ev, Q_Z) — both U-free
+          have hQ_uf : is_U_free (Q_Z A B (Formula.neg q)) = true :=
+            Q_Z_neg_q_U_free A B q hA hB hq
+          exact ⟨.snce ev (Q_Z A B (Formula.neg q)),
+            by simp [is_syntactically_separated, hev_uf, hQ_uf], int_equiv_refl _,
+            ⟨u_free_has_single_U_type hev_uf, u_free_has_single_U_type hQ_uf⟩⟩
+        · -- S((¬q ∧ S(ev,q)) ∧ (q ∨ U), Q_Z) — event split on U
+          apply is_separable_with_U_type_of_equiv
+            (since_event_split _ (.untl A B) (Q_Z A B (Formula.neg q)))
+          apply or_separable_with_U_type
+          · apply is_separable_with_U_type_of_equiv (snce_event_congr_with_U _ _ _ A B
+              (fun M t hU => ⟨fun h => (int_truth_and_iff.mp h).1,
+                fun h => int_truth_and_iff.mpr ⟨h, int_truth_or_iff.mpr (Or.inr hU)⟩⟩))
+            exact snce_combined_U_sep_with_U_type (Formula.and (Formula.neg q) (.snce ev q))
+              (Q_Z A B (Formula.neg q)) A B hA hB hA' hB' (Q_Z_neg_q_U_free A B q hA hB hq)
+              (u_free_untl_under_bool _ A B h_nqSev_uf)
+          · apply is_separable_with_U_type_of_equiv (by
+              intro M t; constructor
+              · rintro ⟨s, _, h_event, _⟩
+                have ⟨h_left, h_notU⟩ := int_truth_and_iff.mp h_event
+                have ⟨h_nqS, h_qU⟩ := int_truth_and_iff.mp h_left
+                have h_nq := (int_truth_and_iff.mp h_nqS).1
+                rcases int_truth_or_iff.mp h_qU with hq' | hU
+                · exact h_nq hq'
+                · exact h_notU hU
+              · intro h; exact h.elim : int_equiv _ .bot)
+            exact ⟨.bot, by simp [is_syntactically_separated], int_equiv_refl _, trivial⟩
+      · -- A ∨ B∧U
+        apply or_separable_with_U_type
+        · exact u_free_separable_with_type hA
+        · exact and_separable_with_U_type
+            (u_free_separable_with_type hB)
+            (untl_s_free_separable_with_type hA' hB')
+  · -- D3: S(A ∧ (q ∨ U) ∧ S(alpha, Q_Z), q) where alpha = case3_alpha ev q A B
+    -- Build local d21 analog for U-free event case:
+    -- S(alpha, Q_Z) ↔ S(ev, Q_Z) ∨ case1_psi(¬q∧S(ev,q), Q_Z, A, B)
+    have h_nqSev_uf_D3 : is_U_free (Formula.and (Formula.neg q) (.snce ev q)) = true := by
+      simp [Formula.and, Formula.neg, is_U_free, hq, hev_uf]
+    have hQ_uf_D3 : is_U_free (Q_Z A B (Formula.neg q)) = true :=
+      Q_Z_neg_q_U_free A B q hA hB hq
+    let d21_local := Formula.or (.snce ev (Q_Z A B (Formula.neg q)))
+      (case1_psi (Formula.and (Formula.neg q) (.snce ev q)) (Q_Z A B (Formula.neg q)) A B)
+    -- Show d21_local has untl_under_bool_only
+    have h_d21_bool : untl_under_bool_only d21_local A B := by
+      have h_or_bool : ∀ p q, untl_under_bool_only p A B → untl_under_bool_only q A B →
+          untl_under_bool_only (Formula.or p q) A B := by
+        intro p q hp hq; exact ⟨⟨hp, trivial⟩, hq⟩
+      apply h_or_bool
+      · exact ⟨hev_uf, hQ_uf_D3⟩
+      · exact case1_psi_bool_only _ _ A B h_nqSev_uf_D3 hQ_uf_D3 hA hB
+    -- Show d21_local equiv to S(alpha, Q_Z) (same proof as DedekindZ/Cases.lean)
+    have h_d21_equiv : int_equiv (.snce (case3_alpha ev q A B) (Q_Z A B (Formula.neg q))) d21_local := by
+      have h_step1 := since_distrib_or_left ev
+        (Formula.and (Formula.and (Formula.neg q) (.snce ev q)) (Formula.or q (.untl A B)))
+        (Q_Z A B (Formula.neg q))
+      have h_step2 := since_event_split
+        (Formula.and (Formula.and (Formula.neg q) (.snce ev q)) (Formula.or q (.untl A B)))
+        (.untl A B) (Q_Z A B (Formula.neg q))
+      have h_congr_U := snce_event_congr_with_U
+        (Formula.and (Formula.and (Formula.neg q) (.snce ev q)) (Formula.or q (.untl A B)))
+        (Formula.and (Formula.neg q) (.snce ev q))
+        (Q_Z A B (Formula.neg q)) A B
+        (fun M t hU => ⟨fun h => (int_truth_and_iff.mp h).1,
+          fun h => int_truth_and_iff.mpr ⟨h, int_truth_or_iff.mpr (Or.inr hU)⟩⟩)
+      have h_psi := (case1_psi_properties (Formula.and (Formula.neg q) (.snce ev q))
+        (Q_Z A B (Formula.neg q)) A B h_nqSev_uf_D3 hQ_uf_D3 hA hB hA' hB').1
+      intro M t; constructor
+      · intro h
+        have h12 := (h_step1 M t).mp h
+        rcases int_truth_or_iff.mp h12 with h1 | h2
+        · exact int_truth_or_iff.mpr (Or.inl h1)
+        · have h_split := (h_step2 M t).mp h2
+          rcases int_truth_or_iff.mp h_split with hU_br | hnotU_br
+          · exact int_truth_or_iff.mpr (Or.inr ((h_psi M t).mp ((h_congr_U M t).mp hU_br)))
+          · exfalso
+            obtain ⟨s, _, h_event, _⟩ := hnotU_br
+            have ⟨h_left, h_notU⟩ := int_truth_and_iff.mp h_event
+            have ⟨h_nqS, h_qU⟩ := int_truth_and_iff.mp h_left
+            rcases int_truth_or_iff.mp h_qU with hq' | hU
+            · exact (int_truth_and_iff.mp h_nqS).1 hq'
+            · exact h_notU hU
+      · intro h
+        rcases int_truth_or_iff.mp h with h1 | h2
+        · exact (h_step1 M t).mpr (int_truth_or_iff.mpr (Or.inl h1))
+        · have h_combined := (h_congr_U M t).mpr ((h_psi M t).mpr h2)
+          have h_unsplit := (h_step2 M t).mpr (int_truth_or_iff.mpr (Or.inl h_combined))
+          exact (h_step1 M t).mpr (int_truth_or_iff.mpr (Or.inr h_unsplit))
+    -- Substitute d21_local into the event of D3
+    have h_event_congr : int_equiv
+      (Formula.and (Formula.and A (Formula.or q (.untl A B)))
+        (.snce (case3_alpha ev q A B) (Q_Z A B (Formula.neg q))))
+      (Formula.and (Formula.and A (Formula.or q (.untl A B))) d21_local) := by
+      intro M t; constructor
+      · intro h; have ⟨hAqU, hS⟩ := int_truth_and_iff.mp h
+        exact int_truth_and_iff.mpr ⟨hAqU, (h_d21_equiv M t).mp hS⟩
+      · intro h; have ⟨hAqU, hd⟩ := int_truth_and_iff.mp h
+        exact int_truth_and_iff.mpr ⟨hAqU, (h_d21_equiv M t).mpr hd⟩
+    apply is_separable_with_U_type_of_equiv (snce_event_congr_hier h_event_congr)
+    apply is_separable_with_U_type_of_equiv (since_event_split _ (.untl A B) q)
+    apply or_separable_with_U_type
+    · have h_event_bool : untl_under_bool_only
+          (Formula.and (Formula.and A (Formula.or q (.untl A B))) d21_local) A B := by
+        show untl_under_bool_only (.imp (.imp (Formula.and A (Formula.or q (.untl A B)))
+          (.imp d21_local .bot)) .bot) A B
+        refine ⟨⟨?_, h_d21_bool, trivial⟩, trivial⟩
+        show untl_under_bool_only (.imp (.imp A (.imp (Formula.or q (.untl A B)) .bot)) .bot) A B
+        refine ⟨⟨u_free_untl_under_bool A A B hA, ?_, trivial⟩, trivial⟩
+        show untl_under_bool_only (.imp (.imp q .bot) (.untl A B)) A B
+        exact ⟨⟨u_free_untl_under_bool q A B hq, trivial⟩, Or.inl ⟨rfl, rfl⟩⟩
+      exact snce_combined_U_sep_with_U_type
+        (Formula.and (Formula.and A (Formula.or q (.untl A B))) d21_local)
+        q A B hA hB hA' hB' hq h_event_bool
+    · have h_event_bool : untl_under_bool_only
+          (Formula.and (Formula.and A (Formula.or q (.untl A B))) d21_local) A B := by
+        show untl_under_bool_only (.imp (.imp (Formula.and A (Formula.or q (.untl A B)))
+          (.imp d21_local .bot)) .bot) A B
+        refine ⟨⟨?_, h_d21_bool, trivial⟩, trivial⟩
+        show untl_under_bool_only (.imp (.imp A (.imp (Formula.or q (.untl A B)) .bot)) .bot) A B
+        refine ⟨⟨u_free_untl_under_bool A A B hA, ?_, trivial⟩, trivial⟩
+        show untl_under_bool_only (.imp (.imp q .bot) (.untl A B)) A B
+        exact ⟨⟨u_free_untl_under_bool q A B hq, trivial⟩, Or.inl ⟨rfl, rfl⟩⟩
+      exact snce_combined_notU_sep_with_U_type
+        (Formula.and (Formula.and A (Formula.or q (.untl A B))) d21_local)
+        q A B hA hB hA' hB' hq h_event_bool
+
 /-- Case 6 with U-type: S(a∧¬U, q∨U) is separable_with_U_type A B. -/
 theorem case6_sep_with_U_type_Z_gen (a q A B : Formula)
     (ha : is_U_free a = true) (hq : is_U_free q = true)
@@ -345,11 +498,10 @@ theorem case6_sep_with_U_type_Z_gen (a q A B : Formula)
         (.snce a (Formula.and q (Formula.neg A)))) = true := by
       simp [Formula.and, Formula.neg, is_U_free, ha, hq, hA, hB]
     apply or_separable_with_U_type
-    · -- U-free event ∧ q with q∨U guard: case3 decomposition + case5
-      -- NOTE: This sub-proof was never compiled in the original HierarchyCompletion.lean
-      -- (HierarchyDefs was missing FormulaOps import, blocking the entire chain).
-      -- The case3 decomposition sub-goals need careful matching. Placeholder until fixed.
-      sorry
+    · -- U-free event with q∨U guard: use snce_Ufree_event_qU_guard_sep_with_U_type
+      have hev_uf : is_U_free (((B.neg.and A.neg).and (a.snce (q.and A.neg))).and q) = true := by
+        simp [Formula.and, Formula.neg, is_U_free, ha, hq, hA, hB]
+      exact snce_Ufree_event_qU_guard_sep_with_U_type _ q A B hev_uf hq hA hB hA' hB'
     · -- STUFF ∧ U(A,B) branch
       exact case5_sep_with_U_type_Z_gen _ q A B hSTUFF_uf hq hA hB hA' hB'
 
