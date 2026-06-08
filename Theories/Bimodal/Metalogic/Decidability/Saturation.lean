@@ -131,6 +131,90 @@ private def fulfillEventualities (b : Branch) (tracker : EventualityTracker)
     if fulfilled then acc.fulfill e.formula e.label else acc
   ) tracker
 
+/-!
+## Branch Difficulty Estimation (Task 290)
+
+Heuristic for proportional fuel allocation at tableau branch splits.
+Branches with more temporal operators (which cause exponential branching)
+receive more fuel than purely propositional branches.
+-/
+
+/--
+Count temporal operators (Until/Since) in a formula.
+These are the primary source of branching complexity in the tableau.
+-/
+private def temporalCount : Formula → Nat
+  | .atom _ => 0
+  | .bot => 0
+  | .imp φ ψ => temporalCount φ + temporalCount ψ
+  | .box φ => temporalCount φ
+  | .untl φ ψ => 1 + temporalCount φ + temporalCount ψ
+  | .snce φ ψ => 1 + temporalCount φ + temporalCount ψ
+
+/--
+Count modal operators (Box) in a formula.
+Box propagates formulas to all accessible worlds.
+-/
+private def modalCount : Formula → Nat
+  | .atom _ => 0
+  | .bot => 0
+  | .imp φ ψ => modalCount φ + modalCount ψ
+  | .box φ => 1 + modalCount φ
+  | .untl φ ψ => modalCount φ + modalCount ψ
+  | .snce φ ψ => modalCount φ + modalCount ψ
+
+/--
+Estimate the difficulty of expanding a branch.
+
+Uses a weighted sum of three metrics:
+- **Temporal operator count** (weight 3): Until/Since cause branching + fresh time points
+- **Modal operator count** (weight 2): Box propagates to all worlds
+- **Branch size** (weight 1/4): Minor per-step cost factor
+
+The minimum return value is 1 to avoid division-by-zero in proportional allocation.
+-/
+def estimateBranchDifficulty (b : Branch) : Nat :=
+  let tempCount := b.foldl (fun acc sf => acc + temporalCount sf.formula) 0
+  let modCount := b.foldl (fun acc sf => acc + modalCount sf.formula) 0
+  let sizeWeight := b.length / 4
+  1 + 3 * tempCount + 2 * modCount + sizeWeight
+
+/--
+Allocate fuel proportionally to branch difficulty.
+
+Given total `fuel` and a list of branches, computes per-branch fuel allocations
+weighted by `estimateBranchDifficulty`. Each allocation is:
+- At least 1 (when fuel > 0) to ensure progress
+- At most `fuel - 1` to preserve termination (strict decrease for `decreasing_by`)
+- When `fuel = 0`, all allocations are 0
+
+The sum of allocations may be less than `fuel` (remainder is lost), which is
+acceptable since the original uniform allocation also loses remainder from division.
+-/
+def allocateFuelProportionally (fuel : Nat) (branches : List Branch) : List Nat :=
+  match fuel with
+  | 0 => branches.map fun _ => 0
+  | fuel + 1 =>
+    let difficulties := branches.map estimateBranchDifficulty
+    let totalDifficulty := difficulties.foldl (· + ·) 0
+    difficulties.map fun d =>
+      -- Proportional share: (totalFuel * difficulty) / totalDifficulty
+      -- Capped at `fuel` (= totalFuel - 1) to ensure strict decrease for termination
+      -- At least 1 when fuel ≥ 1 (i.e., totalFuel ≥ 2)
+      min (max 1 (fuel.succ * d / max 1 totalDifficulty)) fuel
+
+/--
+Every element of `allocateFuelProportionally (fuel+1) branches` is at most `fuel`.
+This is the key lemma for the termination proof of `expandBranchWithFuel`.
+-/
+theorem allocateFuelProportionally_le (fuel : Nat) (branches : List Branch)
+    (n : Nat) (h : n ∈ allocateFuelProportionally (fuel + 1) branches) :
+    n ≤ fuel := by
+  simp only [allocateFuelProportionally] at h
+  rw [List.mem_map] at h
+  obtain ⟨d, _, rfl⟩ := h
+  exact Nat.min_le_right _ _
+
 /--
 Expand a single branch until closed or saturated.
 Uses fuel to ensure termination (refinement of well-founded approach).
@@ -1369,5 +1453,75 @@ private def an_q : Formula := .atom (Atom.mk_base "q")
   | none => return "INFO AN8: ¬U(p,q) timeout (fuel=500)"
 
 end ActiveUntlNegTests
+
+/-!
+## Fuel Allocation Heuristic Tests (Task 290)
+-/
+section FuelAllocationTests
+
+open Bimodal.Syntax in
+private def fa_p := Formula.atom ⟨"p", none⟩
+open Bimodal.Syntax in
+private def fa_q := Formula.atom ⟨"q", none⟩
+
+-- Test FA1: balanced branches (identical formulas) get approximately equal fuel
+#eval do
+  let b1 : Branch := [SignedFormula.pos fa_p]
+  let b2 : Branch := [SignedFormula.pos fa_q]
+  let allocs := allocateFuelProportionally 100 [b1, b2]
+  -- Both branches have identical difficulty (1 atom each)
+  -- so allocations should be equal
+  let balanced := match allocs with
+    | [a1, a2] => a1 == a2
+    | _ => false
+  if balanced then return "PASS FA1: balanced branches get equal fuel"
+  else return s!"FAIL FA1: balanced branches got unequal fuel: {allocs}"
+
+-- Test FA2: temporal branch gets more fuel than propositional branch
+#eval do
+  let b_prop : Branch := [SignedFormula.pos fa_p]
+  let b_temp : Branch := [SignedFormula.pos (Formula.untl fa_p fa_q)]
+  let allocs := allocateFuelProportionally 100 [b_prop, b_temp]
+  let correct := match allocs with
+    | [a_prop, a_temp] => decide (a_temp > a_prop)
+    | _ => false
+  if correct then return "PASS FA2: temporal branch gets more fuel than propositional"
+  else return s!"FAIL FA2: fuel allocation incorrect: {allocs}"
+
+-- Test FA3: all allocations are <= fuel-1 and >= 1 when fuel > 1
+#eval do
+  let b1 : Branch := [SignedFormula.pos fa_p]
+  let b2 : Branch := [SignedFormula.pos (Formula.untl fa_p fa_q)]
+  let b3 : Branch := [SignedFormula.pos (Formula.box fa_p)]
+  let fuel := 200
+  let allocs := allocateFuelProportionally fuel [b1, b2, b3]
+  let allValid := allocs.all (fun a => a >= 1 && a <= fuel - 1)
+  if allValid then return s!"PASS FA3: all allocations in bounds [1, {fuel-1}]: {allocs}"
+  else return s!"FAIL FA3: allocations out of bounds: {allocs}"
+
+-- Test FA4: fuel = 0 gives all zeros
+#eval do
+  let b1 : Branch := [SignedFormula.pos fa_p]
+  let b2 : Branch := [SignedFormula.pos fa_q]
+  let allocs := allocateFuelProportionally 0 [b1, b2]
+  let allZero := allocs.all (· == 0)
+  if allZero then return "PASS FA4: fuel=0 gives all zeros"
+  else return s!"FAIL FA4: expected all zeros, got: {allocs}"
+
+-- Test FA5: estimateBranchDifficulty gives correct difficulty ordering
+#eval do
+  let b_prop : Branch := [SignedFormula.pos fa_p]
+  let b_modal : Branch := [SignedFormula.pos (Formula.box fa_p)]
+  let b_temp : Branch := [SignedFormula.pos (Formula.untl fa_p fa_q)]
+  let d_prop := estimateBranchDifficulty b_prop
+  let d_modal := estimateBranchDifficulty b_modal
+  let d_temp := estimateBranchDifficulty b_temp
+  -- temporal > modal > propositional
+  if d_temp > d_modal && d_modal > d_prop then
+    return s!"PASS FA5: difficulty ordering correct: prop={d_prop} < modal={d_modal} < temp={d_temp}"
+  else
+    return s!"FAIL FA5: difficulty ordering wrong: prop={d_prop}, modal={d_modal}, temp={d_temp}"
+
+end FuelAllocationTests
 
 end Bimodal.Metalogic.Decidability
