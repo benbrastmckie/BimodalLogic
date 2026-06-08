@@ -90,45 +90,10 @@ PatternKey.toJson, GoalCategory.toJson, SimpleCountermodel.toJson) with serializ
 for the new types introduced in DatasetGenerator.
 -/
 
-/--
-Serialize a `ProofTrace` to a JSON object string.
+-- ProofTrace.toJson and DifficultyMetrics.toJson are defined in DatasetGenerator.lean
+-- and available via dot-notation (imported above). No standalone duplicates needed.
 
-Example:
-```json
-{"height": 2, "axioms_used": ["modal_t", "prop_k"], "rules_applied": ["modus_ponens"]}
-```
--/
-def proofTraceToJson (pt : ProofTrace) : String :=
-  let axiomsArr := listToJsonArray (pt.axioms_used.map fun s =>
-    "\"" ++ escapeJsonString s ++ "\"")
-  let rulesArr := listToJsonArray (pt.rules_applied.map fun s =>
-    "\"" ++ escapeJsonString s ++ "\"")
-  "{\"height\": " ++ toString pt.height
-  ++ ", \"axioms_used\": " ++ axiomsArr
-  ++ ", \"rules_applied\": " ++ rulesArr
-  ++ "}"
-
-/--
-Serialize a `DifficultyMetrics` to a JSON object string.
--/
-def difficultyMetricsToJson (dm : DifficultyMetrics) : String :=
-  "{\"complexity\": " ++ toString dm.complexity
-  ++ ", \"modalDepth\": " ++ toString dm.modalDepth
-  ++ ", \"temporalDepth\": " ++ toString dm.temporalDepth
-  ++ ", \"impCount\": " ++ toString dm.impCount
-  ++ ", \"atomCount\": " ++ toString dm.atomCount
-  ++ ", \"decisionTimeMs\": " ++ toString dm.decisionTimeMs
-  ++ ", \"difficultyTier\": \"" ++ escapeJsonString dm.difficultyTier ++ "\""
-  ++ "}"
-
-/--
-Serialize a `FormulaLabel` to a JSON string value.
--/
-def formulaLabelToJson (fl : FormulaLabel) : String :=
-  match fl with
-  | .valid => "\"valid\""
-  | .invalid => "\"invalid\""
-  | .timeout => "\"timeout\""
+-- FormulaLabel.toJson is defined in DatasetGenerator.lean and available via dot-notation.
 
 /-!
 ## Augmentation Info
@@ -257,7 +222,7 @@ Serialize a `DatasetRecord` to a JSON object string (one line).
 def datasetRecordToJson (r : DatasetRecord) : String :=
   let traceStr := match r.proof_trace with
     | none => "null"
-    | some pt => proofTraceToJson pt
+    | some pt => pt.toJson
   let cmStr := match r.countermodel with
     | none => "null"
     | some cm => cm.toJson
@@ -285,7 +250,7 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"formula_str\": \"" ++ escapeJsonString r.formula_str ++ "\""
   ++ ", \"formula_ast\": " ++ r.formula_ast
   ++ ", \"frame_class\": \"" ++ escapeJsonString r.frame_class ++ "\""
-  ++ ", \"label\": " ++ formulaLabelToJson r.label
+  ++ ", \"label\": " ++ r.label.toJson
   ++ ", \"decision_method\": \"" ++ escapeJsonString r.decision_method ++ "\""
   ++ ", \"proof_reconstruction_method\": " ++ reconStr
   ++ ", \"proof_trace\": " ++ traceStr
@@ -295,7 +260,7 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"enriched_countermodel\": " ++ ecmStr
   ++ ", \"semantic_countermodel\": " ++ scmStr
   ++ ", \"pattern_key\": " ++ r.pattern_key.toJson
-  ++ ", \"metrics\": " ++ difficultyMetricsToJson r.metrics
+  ++ ", \"metrics\": " ++ r.metrics.toJson
   ++ ", \"augmentation\": " ++ augStr
   ++ ", \"formula_sexpr\": \"" ++ escapeJsonString r.formula_sexpr ++ "\""
   ++ ", \"formula_tokens\": " ++ r.formula_tokens

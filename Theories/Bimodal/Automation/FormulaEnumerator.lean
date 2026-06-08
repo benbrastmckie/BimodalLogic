@@ -24,7 +24,7 @@ and both IO-based random and deterministic seed-based sampling at higher complex
 ### Legacy API (Task 203)
 - `SamplingMode`: Enum for enumeration strategy selection
 - `EnumParams`: Configuration structure for formula generation
-- `enumerateExhaustive`: Generate all formulas up to given complexity bounds
+- `enumerateWithProgress`: IO-based exhaustive enumeration with progress/checkpoint
 - `sampleRandom`: IO-based random formula generation
 - `enrichWithDuals`: Apply `swap_temporal` for free 2x augmentation
 - `DiversityReport`: Distribution statistics across GoalCategory and depth buckets
@@ -405,128 +405,111 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
       | some a => (rng', Formula.atom a)
       | none => (rng', Formula.bot)
   else
-    -- Count available constructor types
-    -- 0 = base (atom/bot), 1 = imp, 2 = box (if modal ok),
-    -- 3 = untl/snce (if temporal ok),
-    -- 4 = F/P (if temporal ok and sizeBudget > 4),
-    -- 5 = G/H (if temporal ok and sizeBudget > 8)
+    -- Count available constructor types using flat dispatch.
+    -- Categories (with arithmetic offset):
+    --   0 = atom/bot, 1 = imp
+    --   modal (if modalBudget > 0): box, diamond
+    --   temporal primitive (if temporalBudget > 0): untl/snce
+    --   derived unary temporal (if hasDerived): F/P, G/H, always/sometimes, next/prev, weak_future/weak_past
+    --   derived binary temporal (if hasDerived): R/WU/T/WS/SR/ST
     let hasModal := modalBudget > 0
     let hasTemporal := temporalBudget > 0
-     let hasDerivedFP := hasTemporal && sizeBudget > 1
-     let hasDerivedGH := hasTemporal && sizeBudget > 1
-     let hasDerivedTemporalBinary := hasTemporal && sizeBudget > 1
-     let numChoices := 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0)
-                         + (if hasDerivedFP then 1 else 0) + (if hasDerivedGH then 1 else 0)
-                         + (if hasDerivedTemporalBinary then 1 else 0)
-     let (rng1, choice) := rng.randBound numChoices
-     if choice == 0 then
-       -- Base: atom or bot
-       let numBase := atoms.length + 1
-       let (rng2, idx) := rng1.randBound numBase
-       if idx == 0 then (rng2, Formula.bot)
-       else match atoms[idx - 1]? with
-         | some a => (rng2, Formula.atom a)
-         | none => (rng2, Formula.bot)
-     else if choice == 1 then
-       -- Binary: implication
-       let childBudget := sizeBudget - 1
-       if childBudget < 2 then
-         -- Not enough for two children, fall back to base
-         let (rng2, idx) := rng1.randBound (atoms.length + 1)
-         if idx == 0 then (rng2, Formula.bot)
-         else match atoms[idx - 1]? with
-           | some a => (rng2, Formula.atom a)
-           | none => (rng2, Formula.bot)
-       else
-         let maxSplit := childBudget - 1
-         let (rng2, splitIdx) := rng1.randBound maxSplit
-         let leftSize := splitIdx + 1
-         let rightSize := childBudget - leftSize
-         let (rng3, left) := sampleOne atoms modalBudget temporalBudget leftSize rng2 fuel'
-         let (rng4, right) := sampleOne atoms modalBudget temporalBudget rightSize rng3 fuel'
-         (rng4, Formula.imp left right)
-     else if choice == 2 && hasModal then
-       -- Unary: box
-       let (rng2, child) := sampleOne atoms (modalBudget - 1) temporalBudget (sizeBudget - 1) rng1 fuel'
-       (rng2, Formula.box child)
-     else if choice == 2 + (if hasModal then 1 else 0) && hasTemporal then
-       -- Temporal binary: untl or snce
-       let childBudget := sizeBudget - 1
-       if childBudget < 2 then
-         let (rng2, idx) := rng1.randBound (atoms.length + 1)
-         if idx == 0 then (rng2, Formula.bot)
-         else match atoms[idx - 1]? with
-           | some a => (rng2, Formula.atom a)
-           | none => (rng2, Formula.bot)
-       else
-         let maxSplit := childBudget - 1
-         let (rng2, splitIdx) := rng1.randBound maxSplit
-         let leftSize := splitIdx + 1
-         let rightSize := childBudget - leftSize
-         let (rng3, left) := sampleOne atoms modalBudget (temporalBudget - 1) leftSize rng2 fuel'
-         let (rng4, right) := sampleOne atoms modalBudget (temporalBudget - 1) rightSize rng3 fuel'
-         -- Decide untl vs snce
-         let (rng5, untlOrSnce) := rng4.randBound 2
-         if untlOrSnce == 0 then (rng5, Formula.untl left right)
-         else (rng5, Formula.snce left right)
-     else if hasDerivedFP && choice == 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0) then
-       -- Derived unary temporal: F (some_future) or P (some_past)
-       -- Overhead: 1 complexity (task 274)
-       let childSize := sizeBudget - 1
-       let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
-       let (rng3, fpChoice) := rng2.randBound 2
-       if fpChoice == 0 then (rng3, child.some_future)
-       else (rng3, child.some_past)
-     else if hasDerivedGH && choice == 2 + (if hasModal then 1 else 0) + (if hasTemporal then 1 else 0) + (if hasDerivedFP then 1 else 0) then
-       -- Derived unary temporal: G (all_future) or H (all_past)
-       -- Overhead: 1 complexity (task 274)
-       let childSize := sizeBudget - 1
-       let (rng2, child) := sampleOne atoms modalBudget (temporalBudget - 1) childSize rng1 fuel'
-       let (rng3, ghChoice) := rng2.randBound 2
-       if ghChoice == 0 then (rng3, child.all_future)
-       else (rng3, child.all_past)
-     else if hasDerivedTemporalBinary then
-       -- Derived binary temporal: R, WU, T, WS
-       let childBudget := sizeBudget - 1
-       if childBudget < 2 then
-         let (rng2, idx) := rng1.randBound (atoms.length + 1)
-         if idx == 0 then (rng2, Formula.bot)
-         else match atoms[idx - 1]? with
-           | some a => (rng2, Formula.atom a)
-           | none => (rng2, Formula.bot)
-       else
-         let maxSplit := childBudget - 1
-         let (rng2, splitIdx) := rng1.randBound maxSplit
-         let leftSize := splitIdx + 1
-         let rightSize := childBudget - leftSize
-         let (rng3, left) := sampleOne atoms modalBudget (temporalBudget - 1) leftSize rng2 fuel'
-         let (rng4, right) := sampleOne atoms modalBudget (temporalBudget - 1) rightSize rng3 fuel'
-          -- Decide R, WU, T, WS, M, or ST
-          let (rng5, rtwsChoice) := rng4.randBound 6
-          match rtwsChoice with
-          | 0 => (rng5, Formula.release left right)
-          | 1 => (rng5, Formula.weak_until left right)
-          | 2 => (rng5, Formula.trigger left right)
-          | 3 => (rng5, Formula.weak_since left right)
-          | 4 => (rng5, Formula.strong_release left right)
-          | _ => (rng5, Formula.strong_trigger left right)
-     else
-       -- Fallback: imp
-       let childBudget := sizeBudget - 1
-       if childBudget < 2 then
-         let (rng2, idx) := rng1.randBound (atoms.length + 1)
-         if idx == 0 then (rng2, Formula.bot)
-         else match atoms[idx - 1]? with
-           | some a => (rng2, Formula.atom a)
-           | none => (rng2, Formula.bot)
-       else
-         let maxSplit := childBudget - 1
-         let (rng2, splitIdx) := rng1.randBound maxSplit
-         let leftSize := splitIdx + 1
-         let rightSize := childBudget - leftSize
-         let (rng3, left) := sampleOne atoms modalBudget temporalBudget leftSize rng2 fuel'
-         let (rng4, right) := sampleOne atoms modalBudget temporalBudget rightSize rng3 fuel'
-         (rng4, Formula.imp left right)
+    let hasDerived := hasTemporal && sizeBudget > 1
+    let modalSlots := if hasModal then 2 else 0     -- box + diamond
+    let tempSlots := if hasTemporal then 1 else 0   -- untl/snce
+    let derivedUnarySlots := if hasDerived then 5 else 0  -- F/P, G/H, always/sometimes, next/prev, weak_future/weak_past
+    let derivedBinarySlots := if hasDerived then 1 else 0  -- binary derived temporal
+    let numChoices := 2 + modalSlots + tempSlots + derivedUnarySlots + derivedBinarySlots
+    let (rng1, choice) := rng.randBound numChoices
+    -- Compute offsets arithmetically (no mutable state)
+    let offModal := 2  -- box starts at 2 if modal available
+    let offDiamond := offModal + 1  -- diamond right after box
+    let offTempPrim := 2 + modalSlots  -- untl/snce after modal slots
+    let offDerivedFP := offTempPrim + tempSlots  -- F/P after temporal primitive
+    let offDerivedGH := offDerivedFP + 1
+    let offAlwaysSometimes := offDerivedGH + 1
+    let offNextPrev := offAlwaysSometimes + 1
+    let offWeakFP := offNextPrev + 1
+    let offBinaryDerived := offWeakFP + 1
+    -- Helper: generate a random base (atom or bot) from current rng state
+    let mkBase (r : LCGState) : LCGState × Formula :=
+      let (r', idx) := r.randBound (atoms.length + 1)
+      if idx == 0 then (r', Formula.bot)
+      else match atoms[idx - 1]? with
+        | some a => (r', Formula.atom a)
+        | none => (r', Formula.bot)
+    -- Helper: generate a binary formula splitting sizeBudget
+    let mkBinary (r : LCGState) (mB tB : Nat) (mk : Formula → Formula → Formula) : LCGState × Formula :=
+      let childBudget := sizeBudget - 1
+      if childBudget < 2 then mkBase r
+      else
+        let maxSplit := childBudget - 1
+        let (r2, splitIdx) := r.randBound maxSplit
+        let leftSize := splitIdx + 1
+        let rightSize := childBudget - leftSize
+        let (r3, left) := sampleOne atoms mB tB leftSize r2 fuel'
+        let (r4, right) := sampleOne atoms mB tB rightSize r3 fuel'
+        (r4, mk left right)
+    -- Helper: generate a unary formula using budget-1
+    let mkUnary (r : LCGState) (mB tB : Nat) (mk : Formula → Formula) : LCGState × Formula :=
+      let (r2, child) := sampleOne atoms mB tB (sizeBudget - 1) r fuel'
+      (r2, mk child)
+    -- Dispatch by choice index
+    if choice == 0 then
+      -- atom/bot
+      mkBase rng1
+    else if choice == 1 then
+      -- implication
+      mkBinary rng1 modalBudget temporalBudget Formula.imp
+    else if hasModal && choice == offModal then
+      -- box
+      mkUnary rng1 (modalBudget - 1) temporalBudget Formula.box
+    else if hasModal && choice == offDiamond then
+      -- diamond (task 285)
+      mkUnary rng1 (modalBudget - 1) temporalBudget Formula.diamond
+    else if hasTemporal && choice == offTempPrim then
+      -- untl or snce
+      let (rng2, sub) := rng1.randBound 2
+      if sub == 0 then mkBinary rng2 modalBudget (temporalBudget - 1) Formula.untl
+      else mkBinary rng2 modalBudget (temporalBudget - 1) Formula.snce
+    else if hasDerived && choice == offDerivedFP then
+      -- F/P (some_future/some_past)
+      let (rng2, sub) := rng1.randBound 2
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.some_future
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.some_past
+    else if hasDerived && choice == offDerivedGH then
+      -- G/H (all_future/all_past)
+      let (rng2, sub) := rng1.randBound 2
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.all_future
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.all_past
+    else if hasDerived && choice == offAlwaysSometimes then
+      -- always/sometimes (task 285)
+      let (rng2, sub) := rng1.randBound 2
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.always
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.sometimes
+    else if hasDerived && choice == offNextPrev then
+      -- next/prev (task 285)
+      let (rng2, sub) := rng1.randBound 2
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.next
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.prev
+    else if hasDerived && choice == offWeakFP then
+      -- weak_future/weak_past (task 285)
+      let (rng2, sub) := rng1.randBound 2
+      if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_future
+      else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_past
+    else if hasDerived && choice == offBinaryDerived then
+      -- derived binary temporal: R, WU, T, WS, SR, ST (task 285)
+      let (rng2, sub) := rng1.randBound 6
+      match sub with
+      | 0 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.release
+      | 1 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weak_until
+      | 2 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.trigger
+      | 3 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weak_since
+      | 4 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strong_release
+      | _ => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strong_trigger
+    else
+      -- Fallback: implication
+      mkBinary rng1 modalBudget temporalBudget Formula.imp
 
 /-- Helper: generate `remaining` candidate formulas using LCG-based random choices. -/
 private def sampleLoop (atoms : List Atom) (maxModal maxTemporal maxSize fuel : Nat)
@@ -819,27 +802,8 @@ def enumerateAtBudget (atoms : List Atom) (budget : Nat) (maxModal : Nat) (maxTe
     ({}, #[])
   result.toList
 
-/--
-Enumerate all formulas exhaustively within the parameter bounds.
-
-Generates formulas at each complexity level from 1 to `maxComplexity` using
-memoized exact-complexity enumeration, filters by rejection criteria, and
-caps at `maxFormulas`.
-
-Each exact complexity level produces a disjoint set of formulas by construction,
-so cross-level deduplication is unnecessary. The memoization cache is shared
-across all complexity levels for maximum reuse.
--/
-def enumerateExhaustive (params : EnumParams) : List Formula :=
-  let (_, allFormulas) := (List.range params.maxComplexity).foldl
-    (fun (acc : EnumCache × Array Formula) i =>
-      let (cache, formulas) := acc
-      let (exact, cache') := enumExactBudget params.atoms (i + 1) params.maxModalDepth
-                                              params.maxTemporalDepth cache
-      (cache', formulas ++ exact))
-    ({}, #[])
-  let filtered := allFormulas.toList.filter passesFilter
-  if params.maxFormulas == 0 then filtered else filtered.take params.maxFormulas
+-- Note: The pure `enumerateExhaustive` function was removed (task 295) as dead code.
+-- It was superseded by `enumerateWithProgress` (IO version with checkpoint support).
 
 /--
 Generate a single random formula within given bounds using IO.rand.
@@ -856,144 +820,126 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
     | some a => return .atom a
     | none => return .bot
   else
-    -- Choose constructor type: 0=atom/bot, 1=imp, 2=box, 3=untl, 4=snce,
-    -- 5=F/P (if temporal ok and budget > 4), 6=G/H (if temporal ok and budget > 8)
-    let hasDerivedFP := maxTemporal > 0 && budget > 1
-    let hasDerivedGH := maxTemporal > 0 && budget > 1
-    let hasDerivedTemporalBinary := maxTemporal > 0 && budget > 1
-    let maxChoice := (if maxModal > 0 && maxTemporal > 0 then 4
-                     else if maxModal > 0 then 2
-                     else if maxTemporal > 0 then 4
-                     else 1)
-                     + (if hasDerivedFP then 1 else 0)
-                     + (if hasDerivedGH then 1 else 0)
-                     + (if hasDerivedTemporalBinary then 1 else 0)
-    let choice ← IO.rand 0 maxChoice
-    match choice with
-    | 0 =>
-      -- Base: atom or bot
+    -- Build a list of available constructor types, then pick uniformly.
+    -- Primitive constructors:
+    --   0=atom/bot, 1=imp, 2=box (modal), 3=diamond (modal),
+    --   4=untl (temporal), 5=snce (temporal)
+    -- Derived unary temporal (task 285, overhead 1 each):
+    --   6=F/P, 7=G/H, 8=always/sometimes, 9=next/prev, 10=weak_future/weak_past
+    -- Derived binary temporal (task 285, overhead 1 each):
+    --   11=release/weak_until/trigger/weak_since/strong_release/strong_trigger
+    let hasModal := maxModal > 0
+    let hasTemporal := maxTemporal > 0 && budget > 1
+    let numChoices := 2  -- atom/bot + imp always available
+                     + (if hasModal then 2 else 0)  -- box + diamond
+                     + (if maxTemporal > 0 then 2 else 0)  -- untl + snce
+                     + (if hasTemporal then 5 else 0)  -- F/P, G/H, always/sometimes, next/prev, weak_future/weak_past
+                     + (if hasTemporal then 1 else 0)  -- binary derived temporal
+    let choice ← IO.rand 0 (numChoices - 1)
+    -- Map choice to constructor. We use a running offset to dispatch.
+    let mut offset := 0
+    -- 0: atom/bot
+    if choice == offset then
       let idx ← IO.rand 0 atoms.length
       match atoms[idx]? with
       | some a => return .atom a
       | none => return .bot
-    | 1 =>
-      -- Binary: implication
+    offset := offset + 1
+    -- 1: implication
+    if choice == offset then
       let split ← IO.rand 1 (budget - 1)
       let left ← sampleOneRandom atoms split maxModal maxTemporal
       let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
       return .imp left right
-    | 2 =>
-      -- Unary: box (if allowed)
-      if maxModal > 0 then
+    offset := offset + 1
+    -- 2: box (if modal)
+    if hasModal then
+      if choice == offset then
         let child ← sampleOneRandom atoms (budget - 1) (maxModal - 1) maxTemporal
         return .box child
-      else
-        -- Fallback to implication
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal maxTemporal
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
-        return .imp left right
-    | 3 =>
-      -- Binary temporal: until
-      if maxTemporal > 0 then
+      offset := offset + 1
+    -- 3: diamond (if modal)
+    if hasModal then
+      if choice == offset then
+        let child ← sampleOneRandom atoms (budget - 1) (maxModal - 1) maxTemporal
+        return child.diamond
+      offset := offset + 1
+    -- 4: until (if temporal)
+    if maxTemporal > 0 then
+      if choice == offset then
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
         return .untl left right
-      else
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal maxTemporal
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
-        return .imp left right
-    | 4 =>
-      -- Binary temporal: since
-      if maxTemporal > 0 then
+      offset := offset + 1
+    -- 5: since (if temporal)
+    if maxTemporal > 0 then
+      if choice == offset then
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
         return .snce left right
-      else
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal maxTemporal
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
-        return .imp left right
-    | 5 =>
-      -- Derived temporal: F (some_future) or P (some_past), overhead 1 (task 274)
-      if hasDerivedFP then
-        let childSize := budget - 1
-        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
-        let fpChoice ← IO.rand 0 1
-        if fpChoice == 0 then return child.some_future
+      offset := offset + 1
+    -- 6: F (some_future) or P (some_past)
+    if hasTemporal then
+      if choice == offset then
+        let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
+        let sub ← IO.rand 0 1
+        if sub == 0 then return child.some_future
         else return child.some_past
-      else if hasDerivedGH then
-        let childSize := budget - 1
-        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
-        let ghChoice ← IO.rand 0 1
-        if ghChoice == 0 then return child.all_future
+      offset := offset + 1
+    -- 7: G (all_future) or H (all_past)
+    if hasTemporal then
+      if choice == offset then
+        let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
+        let sub ← IO.rand 0 1
+        if sub == 0 then return child.all_future
         else return child.all_past
-      else if hasDerivedTemporalBinary then
+      offset := offset + 1
+    -- 8: always or sometimes (task 285)
+    if hasTemporal then
+      if choice == offset then
+        let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
+        let sub ← IO.rand 0 1
+        if sub == 0 then return .always child
+        else return .sometimes child
+      offset := offset + 1
+    -- 9: next or prev (task 285)
+    if hasTemporal then
+      if choice == offset then
+        let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
+        let sub ← IO.rand 0 1
+        if sub == 0 then return .next child
+        else return .prev child
+      offset := offset + 1
+    -- 10: weak_future or weak_past (task 285)
+    if hasTemporal then
+      if choice == offset then
+        let child ← sampleOneRandom atoms (max 1 (budget - 1)) maxModal (maxTemporal - 1)
+        let sub ← IO.rand 0 1
+        if sub == 0 then return .weak_future child
+        else return .weak_past child
+      offset := offset + 1
+    -- 11: derived binary temporal: R, WU, T, WS, SR, ST (task 285)
+    if hasTemporal then
+      if choice == offset then
         let split ← IO.rand 1 (budget - 1)
         let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
         let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let rtwsChoice ← IO.rand 0 5
-        match rtwsChoice with
+        let sub ← IO.rand 0 5
+        match sub with
         | 0 => return .release left right
         | 1 => return .weak_until left right
         | 2 => return .trigger left right
         | 3 => return .weak_since left right
         | 4 => return .strong_release left right
         | _ => return .strong_trigger left right
-      else
-        -- Fallback to implication
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal maxTemporal
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
-        return .imp left right
-    | 6 =>
-      if hasDerivedGH then
-        let childSize := budget - 1
-        let child ← sampleOneRandom atoms (max 1 childSize) maxModal (maxTemporal - 1)
-        let ghChoice ← IO.rand 0 1
-        if ghChoice == 0 then return child.all_future
-        else return child.all_past
-      else if hasDerivedTemporalBinary then
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let rtwsChoice ← IO.rand 0 5
-        match rtwsChoice with
-        | 0 => return .release left right
-        | 1 => return .weak_until left right
-        | 2 => return .trigger left right
-        | 3 => return .weak_since left right
-        | 4 => return .strong_release left right
-        | _ => return .strong_trigger left right
-      else
-        -- Fallback to implication
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal maxTemporal
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
-        return .imp left right
-    | _ =>
-      -- Derived binary temporal: R, WU, T, WS, M, ST
-      if hasDerivedTemporalBinary then
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let rtwsChoice ← IO.rand 0 5
-        match rtwsChoice with
-        | 0 => return .release left right
-        | 1 => return .weak_until left right
-        | 2 => return .trigger left right
-        | 3 => return .weak_since left right
-        | 4 => return .strong_release left right
-        | _ => return .strong_trigger left right
-      else
-        -- Fallback to implication
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal maxTemporal
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
-        return .imp left right
+      -- offset := offset + 1  -- not needed: last branch
+    -- Fallback to implication (should not normally reach here)
+    let split ← IO.rand 1 (budget - 1)
+    let left ← sampleOneRandom atoms split maxModal maxTemporal
+    let right ← sampleOneRandom atoms (budget - 1 - split) maxModal maxTemporal
+    return .imp left right
 
 /--
 Generate a batch of random formulas, filtering for quality and deduplicating.
@@ -1705,13 +1651,29 @@ Uses `Formula` hash as the key since `Formula` derives `Hashable`.
 -/
 private def hashDedup (formulas : List Formula) : List Formula :=
   let (_, result) := formulas.foldl
-    (fun (acc : Std.HashMap UInt64 Unit × Array Formula) φ =>
+    (fun (acc : Std.HashSet Formula × Array Formula) φ =>
       let (seen, deduped) := acc
-      let h := hash φ
-      if seen.contains h then (seen, deduped)
-      else (seen.insert h (), deduped.push φ))
+      if seen.contains φ then (seen, deduped)
+      else (seen.insert φ, deduped.push φ))
     ({}, #[])
   result.toList
+
+/-- Deterministically sample `count` elements from an array using LCG.
+    Shared helper for both pure and IO stratified enumeration. -/
+private def deterministicSampleFormulas (xs : Array Formula) (count : Nat) (rng : LCGState)
+    : Array Formula :=
+  let n := xs.size
+  if n ≤ count then xs
+  else
+    let (selected, _) := (List.range count).foldl
+      (fun (acc : Array Formula × LCGState) _ =>
+        let (picked, r) := acc
+        let (r', idx) := r.randBound n
+        match xs[idx]? with
+        | some φ => (picked.push φ, r')
+        | none => (picked, r'))
+      (#[], rng)
+    selected
 
 /--
 Stratified enumeration: for each complexity level, enumerate exhaustively or sample
@@ -1736,28 +1698,12 @@ private def enumerateStratified (params : EnumParams) : List Formula :=
           else
             -- Deterministic sampling using LCG with level as seed
             let rng := LCGState.init (level * 12345 + 42)
-            deterministicSample filtered quota rng
+            deterministicSampleFormulas filtered quota rng
         | none => filtered  -- no quota entry = exhaustive
       (cache', formulas ++ levelFormulas))
     ({}, #[])
   let result := allFormulas.toList
   if params.maxFormulas == 0 then result else result.take params.maxFormulas
-where
-  /-- Deterministically sample `count` elements from an array using LCG. -/
-  deterministicSample (xs : Array Formula) (count : Nat) (rng : LCGState) : Array Formula :=
-    let n := xs.size
-    if n ≤ count then xs
-    else
-      -- Fisher-Yates partial shuffle: select `count` random elements
-      let (selected, _) := (List.range count).foldl
-        (fun (acc : Array Formula × LCGState) _ =>
-          let (picked, r) := acc
-          let (r', idx) := r.randBound n
-          match xs[idx]? with
-          | some φ => (picked.push φ, r')
-          | none => (picked, r'))
-        (#[], rng)
-      selected
 
 /-!
 ## Checkpoint and Incremental Output (Task 283 Phase 2)
@@ -1911,23 +1857,6 @@ private def enumerateWithProgress (params : EnumParams) : IO (List Formula) := d
       break
   let result := allFormulas.toList
   if params.maxFormulas == 0 then return result else return result.take params.maxFormulas
-
-/-- Deterministically sample `count` elements from an array using LCG.
-    Extracted as a top-level helper for reuse by both pure and IO stratified enumeration. -/
-private def deterministicSampleFormulas (xs : Array Formula) (count : Nat) (rng : LCGState)
-    : Array Formula :=
-  let n := xs.size
-  if n ≤ count then xs
-  else
-    let (selected, _) := (List.range count).foldl
-      (fun (acc : Array Formula × LCGState) _ =>
-        let (picked, r) := acc
-        let (r', idx) := r.randBound n
-        match xs[idx]? with
-        | some φ => (picked.push φ, r')
-        | none => (picked, r'))
-      (#[], rng)
-    selected
 
 /--
 IO wrapper for stratified enumeration with per-complexity-level progress.
