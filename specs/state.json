@@ -2348,15 +2348,15 @@
     {
       "project_number": 286,
       "project_name": "parallelize_batch_formula_labeling",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-08T03:09:30Z",
-      "last_updated": "2026-06-08T03:22:54Z",
+      "last_updated": "2026-06-08T05:00:15Z",
       "description": "Parallelize batch formula labeling in DatasetGenerator.lean. Replace sequential for loop in labelBatch with a worker-pool or chunk-based parallel approach. Preserve deterministic output ordering. Add --parallel N CLI flag. Handle Task exceptions gracefully. Expected 6-7x throughput improvement on multi-core machines.",
-      "next_artifact_number": 2,
+      "next_artifact_number": 3,
       "artifacts": [
         {
           "path": "specs/286_parallelize_batch_formula_labeling/reports/01_parallel-batch-labeling.md",
@@ -2367,9 +2367,14 @@
           "path": "specs/286_parallelize_batch_formula_labeling/plans/01_parallel-batch-labeling.md",
           "type": "plan",
           "summary": "Implementation plan for parallelizing batch formula labeling: chunk-based parallelism, exception handling, CLI flag integration, testing"
+        },
+        {
+          "path": "specs/286_parallelize_batch_formula_labeling/summaries/01_execution-summary.md",
+          "type": "summary",
+          "summary": "Execution summary for task 286: chunk-based IO.asTask parallelism in labelBatch, 5.17x at 8 threads, 7.87x at 16 threads. All 6 phases completed."
         }
       ],
-      "session_id": "sess_1780888771_97a702",
+      "session_id": "sess_1780891806_c864f5",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 5,
@@ -2427,7 +2432,10 @@
             "API-design"
           ]
         }
-      ]
+      ],
+      "started": "2026-06-08T04:10:22Z",
+      "completed": "2026-06-08T05:00:15Z",
+      "completion_summary": "Implemented 5-phase parallel labeling: chunk-based IO.asTask parallelism in labelBatch with deterministic ordering and exception handling. Updated downstream callers (DatasetExporter, FormulaMutator, EnumBenchmark, DatasetValidator) with --parallel N CLI flags. Build passes (1687 jobs, zero errors, zero new sorries). Benchmark: 5.17x at 8 threads, 7.87x at 16 threads."
     },
     {
       "project_number": 287,

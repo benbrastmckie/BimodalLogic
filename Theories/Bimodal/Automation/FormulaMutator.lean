@@ -1046,6 +1046,8 @@ structure ContrastiveConfig where
   maxTemporalDepth : Nat := 2
   /-- Maximum number of formulas to process. -/
   maxFormulas : Nat := 1000
+  /-- Number of parallel threads for labeling (0 = sequential). -/
+  parallelThreads : Nat := 0
   /-- Output JSONL file path. -/
   outputPath : String := "data/contrastive_pairs.jsonl"
   deriving Repr, Inhabited
@@ -1065,6 +1067,8 @@ where
     go rest { cfg with maxTemporalDepth := n.toNat! }
   | "--max-formulas" :: n :: rest, cfg =>
     go rest { cfg with maxFormulas := n.toNat! }
+  | "--parallel" :: n :: rest, cfg =>
+    go rest { cfg with parallelThreads := n.toNat! }
   | "--output" :: p :: rest, cfg =>
     go rest { cfg with outputPath := p }
   | _ :: rest, cfg => go rest cfg
@@ -1084,6 +1088,7 @@ def main (args : List String) : IO Unit := do
   let cfg := parseContrastiveArgs args
   IO.println "=== Contrastive Pair Generator ==="
   IO.println s!"Config: maxComplexity={cfg.maxComplexity}, maxModalDepth={cfg.maxModalDepth}, maxTemporalDepth={cfg.maxTemporalDepth}, maxFormulas={cfg.maxFormulas}"
+  IO.println s!"Parallel threads: {cfg.parallelThreads}"
   IO.println s!"Output: {cfg.outputPath}"
 
   -- Step 1: Enumerate formulas
@@ -1100,7 +1105,7 @@ def main (args : List String) : IO Unit := do
 
   -- Step 2: Label formulas
   IO.println "\n[Step 2] Labeling formulas with decision procedure..."
-  let labeled ← labelBatch formulas
+  let labeled ← labelBatch formulas (parallelThreads := cfg.parallelThreads)
   let validCount := labeled.filter (·.label == .valid) |>.length
   let invalidCount := labeled.filter (·.label == .invalid) |>.length
   let timeoutCount := labeled.filter (·.label == .timeout) |>.length

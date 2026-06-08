@@ -1,7 +1,7 @@
 # Implementation Plan: Parallelize Batch Formula Labeling
 
 - **Task**: 286 - parallelize_batch_formula_labeling
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/286_parallelize_batch_formula_labeling/reports/01_parallel-batch-labeling.md
@@ -71,7 +71,7 @@ This is an automation/infrastructure task (DatasetGenerator/Automation modules) 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Core `labelBatch` Parallelization [NOT STARTED]
+### Phase 1: Core `labelBatch` Parallelization [COMPLETED]
 
 **Goal**: Modify `DatasetGenerator.lean` to support chunk-based parallel labeling inside `labelBatch` with backward-compatible signature.
 
@@ -102,7 +102,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: `DatasetExporter.lean` Parameter Plumbing [NOT STARTED]
+### Phase 2: `DatasetExporter.lean` Parameter Plumbing [COMPLETED]
 
 **Goal**: Pass `parallelThreads` through the end-to-end pipeline functions in `DatasetExporter.lean`.
 
@@ -125,7 +125,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: `FormulaMutator.lean` CLI Flag [NOT STARTED]
+### Phase 3: `FormulaMutator.lean` CLI Flag [COMPLETED]
 
 **Goal**: Add `--parallel N` CLI argument parsing to the contrastive pair generator.
 
@@ -148,7 +148,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Optional CLI Flags for Benchmark and Validator [NOT STARTED]
+### Phase 4: Optional CLI Flags for Benchmark and Validator [COMPLETED]
 
 **Goal**: Add minimal `--parallel N` argument parsing to `EnumBenchmark.lean` and `DatasetValidator.lean`.
 
@@ -171,7 +171,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Build Verification and Correctness Testing [NOT STARTED]
+### Phase 5: Build Verification and Correctness Testing [COMPLETED]
 
 **Goal**: Ensure all modified files compile and that parallel execution preserves deterministic ordering.
 
@@ -196,7 +196,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Benchmark Throughput Validation [NOT STARTED]
+### Phase 6: Benchmark Throughput Validation [COMPLETED]
 
 **Goal**: Measure actual speedup and validate the 6-7x improvement target on multi-core hardware.
 

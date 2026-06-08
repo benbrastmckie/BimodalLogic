@@ -238,7 +238,8 @@ build metadata, export JSON, write to file, and print summary.
 6. Writes to the output file
 7. Prints summary to stdout
 -/
-noncomputable def generateAndExportDataset (config : EnumConfig) (outputPath : String) : IO Unit := do
+noncomputable def generateAndExportDataset (config : EnumConfig) (outputPath : String)
+    (parallelThreads : Nat := 0) : IO Unit := do
   -- Step 1: Enumerate
   IO.println "Enumerating formulas..."
   let formulas := enumerateUpToDepth config
@@ -246,7 +247,7 @@ noncomputable def generateAndExportDataset (config : EnumConfig) (outputPath : S
 
   -- Step 2: Label
   IO.println s!"Labeling {formulas.length} formulas..."
-  let labeled ← labelBatch formulas
+  let labeled ← labelBatch formulas (parallelThreads := parallelThreads)
 
   -- Step 3: Compute stats
   let stats := computeBatchStats labeled
@@ -289,7 +290,7 @@ Generate, split into train/eval sets, and export both datasets.
 4. Prints summary statistics for both splits
 -/
 noncomputable def generateSplitDatasets (config : EnumConfig) (trainPath evalPath : String)
-    (trainRatio : Float := 0.8) : IO Unit := do
+    (trainRatio : Float := 0.8) (parallelThreads : Nat := 0) : IO Unit := do
   -- Step 1: Enumerate
   IO.println "Enumerating formulas..."
   let formulas := enumerateUpToDepth config
@@ -297,7 +298,7 @@ noncomputable def generateSplitDatasets (config : EnumConfig) (trainPath evalPat
 
   -- Step 2: Label
   IO.println s!"Labeling {formulas.length} formulas..."
-  let labeled ← labelBatch formulas
+  let labeled ← labelBatch formulas (parallelThreads := parallelThreads)
 
   -- Step 3: Split
   let (train, eval) := splitDataset labeled trainRatio

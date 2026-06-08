@@ -972,12 +972,14 @@ These operators are never generated in their "native" derived form, which means 
 
 ### 286. Parallelize batch formula labeling in DatasetGenerator.lean
 - **Effort**: small (4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: None (self-contained; task 289 builds on this)
 - **Research needed**: Yes — investigate Lean 4 Task API patterns for CPU-bound parallelism.
+- **Plan**: [specs/286_parallelize_batch_formula_labeling/plans/01_parallel-batch-labeling.md]
+- **Summary**: [specs/286_parallelize_batch_formula_labeling/summaries/01_execution-summary.md]
 
 **Description**: The current `labelBatch` (DatasetGenerator.lean:1070) processes formulas sequentially. Each `labelFormulaImpl` call already spawns `decideAutoAdaptive` on a dedicated `Task` thread for timeout enforcement, but the batch itself runs formulas one-at-a-time. With ~40K formulas at c6 and 25% hitting the 1000ms wall-clock timeout, sequential execution leaves most CPU cores idle.
 
@@ -991,6 +993,8 @@ These operators are never generated in their "native" derived form, which means 
 **Expected impact**: On an 8-core machine, c6 labeling time drops from ~600s to ~80-120s (6-7× throughput improvement). Timeout rate stays the same (structural), but wall-clock batch time is dominated by valid/invalid formulas which parallelize well.
 
 **Risk**: Memory pressure from concurrent tableau expansion. Mitigation: limit chunk size and add `--parallel` flag so users can tune.
+
+**Completion**: Implemented 6-phase parallel labeling: chunk-based `IO.asTask` parallelism in `labelBatch` with deterministic ordering and exception handling. Updated downstream callers (DatasetExporter, FormulaMutator, EnumBenchmark, DatasetValidator) with `--parallel N` CLI flags. Build passes (1687 jobs, zero errors, zero new sorries). Benchmark: 5.17x at 8 threads, 7.87x at 16 threads.
 
 ---
 

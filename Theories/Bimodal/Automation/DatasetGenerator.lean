@@ -1068,17 +1068,66 @@ Prints progress every 100 formulas processed.
 Returns the list of all labeled results.
 -/
 def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
-    : IO (List LabeledFormula) := do
+    (parallelThreads : Nat := 0) : IO (List LabeledFormula) := do
   let total := formulas.length
-  let mut results : List LabeledFormula := []
-  let mut count : Nat := 0
-  for φ in formulas do
-    let labeled ← labelFormula φ .Base wallclockTimeoutMs
-    results := labeled :: results
-    count := count + 1
-    if count % 100 == 0 then
-      IO.println s!"  Progress: {count}/{total} formulas labeled"
-  return results.reverse
+  if parallelThreads == 0 then
+    -- Sequential path (backward compatible)
+    let mut results : List LabeledFormula := []
+    let mut count : Nat := 0
+    for φ in formulas do
+      let labeled ← labelFormula φ .Base wallclockTimeoutMs
+      results := labeled :: results
+      count := count + 1
+      if count % 100 == 0 then
+        IO.println s!"  Progress: {count}/{total} formulas labeled"
+    return results.reverse
+  else
+    -- Parallel path: chunk-based IO.asTask
+    let arr := formulas.toArray
+    let chunkSize := max 1 ((arr.size + parallelThreads - 1) / parallelThreads)
+    let numChunks := (arr.size + chunkSize - 1) / chunkSize
+    -- Helper: timeout placeholder for a formula
+    let mkTimeout (φ : Formula) : LabeledFormula := {
+      formula := φ
+      label := .timeout
+      proofTrace := none
+      countermodel := none
+      metrics := computeMetrics φ 0
+      patternKey := PatternKey.fromFormula φ
+      ruleProfile := none
+      decisionMethod := "chunk_exception_timeout"
+      countermodelConsistent := none
+      enrichedCountermodel := none
+      semanticCountermodelSummary := none
+      proofReconstructionMethod := none
+    }
+    -- Spawn one IO.asTask per chunk
+    let mut tasks : List (Task (Except IO.Error (List LabeledFormula))) := []
+    for i in [:numChunks] do
+      let startIdx := i * chunkSize
+      let endIdx := min ((i + 1) * chunkSize) arr.size
+      let chunk := arr.extract startIdx endIdx
+      let task ← IO.asTask (prio := .dedicated) do
+        let mut chunkResults : List LabeledFormula := []
+        for φ in chunk do
+          let labeled ← try
+            labelFormula φ .Base wallclockTimeoutMs
+          catch _e =>
+            pure (mkTimeout φ)
+          chunkResults := labeled :: chunkResults
+        return chunkResults.reverse
+      tasks := task :: tasks
+    -- Wait for all tasks and concatenate in chunk order
+    let tasksArr := tasks.reverse.toArray
+    let mut allResults : List LabeledFormula := []
+    let mut completedCount : Nat := 0
+    for i in [:numChunks] do
+      let chunkResult ← IO.ofExcept (← IO.wait tasksArr[i]!)
+      allResults := allResults ++ chunkResult
+      completedCount := completedCount + chunkResult.length
+      if completedCount % 100 == 0 || i == numChunks - 1 then
+        IO.println s!"  Progress: {completedCount}/{total} formulas labeled (chunk {i + 1}/{numChunks})"
+    return allResults
 
 /--
 Batch statistics: count labeled formulas by category.

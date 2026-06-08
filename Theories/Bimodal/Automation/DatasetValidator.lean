@@ -523,7 +523,7 @@ Run the feasibility gate on a given enumeration configuration.
 4. Evaluates the feasibility gate
 -/
 def runFeasibilityGate (config : EnumConfig) (configName : String := "default")
-    : IO FeasibilityResult := do
+    (parallelThreads : Nat := 0) : IO FeasibilityResult := do
   IO.println s!"=== Feasibility Gate ({configName}) ==="
   IO.println ""
 
@@ -534,7 +534,7 @@ def runFeasibilityGate (config : EnumConfig) (configName : String := "default")
 
   -- Step 2: Label
   IO.println s!"Labeling {formulas.length} formulas..."
-  let labeled ← labelBatch formulas
+  let labeled ← labelBatch formulas (parallelThreads := parallelThreads)
 
   -- Step 3: Compute diversity
   let report := computeDiversityReport labeled
@@ -552,7 +552,7 @@ Run full validation: conformance tests + feasibility gate on small config.
 
 Prints all results and returns whether everything passed.
 -/
-def runFullValidation : IO Unit := do
+def runFullValidation (parallelThreads : Nat := 0) : IO Unit := do
   IO.println "============================================"
   IO.println "  Dataset Validation Suite"
   IO.println "============================================"
@@ -564,7 +564,7 @@ def runFullValidation : IO Unit := do
 
   -- Part 2: Feasibility gate on small config
   IO.println "--------------------------------------------"
-  let smallResult ← runFeasibilityGate smallConfig "small (2,2,8,3-atoms)"
+  let smallResult ← runFeasibilityGate smallConfig "small (2,2,8,3-atoms)" parallelThreads
   IO.println ""
 
   -- Summary
@@ -585,5 +585,12 @@ end Bimodal.Automation.DatasetValidator
 Entry point for the dataset validator executable.
 Runs full validation (conformance tests + feasibility gate).
 -/
-def main : IO Unit :=
-  Bimodal.Automation.DatasetValidator.runFullValidation
+def main (args : List String) : IO Unit := do
+  let parallelThreads :=
+    let rec go (args : List String) : Nat :=
+      match args with
+      | "--parallel" :: n :: _ => n.toNat!
+      | _ :: rest => go rest
+      | [] => 0
+    go args
+  Bimodal.Automation.DatasetValidator.runFullValidation parallelThreads
