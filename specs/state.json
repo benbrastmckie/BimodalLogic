@@ -2348,13 +2348,13 @@
     {
       "project_number": 286,
       "project_name": "parallelize_batch_formula_labeling",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "dataset-enhancement",
       "dependencies": [],
       "created": "2026-06-08T03:09:30Z",
-      "last_updated": "2026-06-08T03:18:42Z",
+      "last_updated": "2026-06-08T03:22:54Z",
       "description": "Parallelize batch formula labeling in DatasetGenerator.lean. Replace sequential for loop in labelBatch with a worker-pool or chunk-based parallel approach. Preserve deterministic output ordering. Add --parallel N CLI flag. Handle Task exceptions gracefully. Expected 6-7x throughput improvement on multi-core machines.",
       "next_artifact_number": 2,
       "artifacts": [
@@ -2362,9 +2362,72 @@
           "path": "specs/286_parallelize_batch_formula_labeling/reports/01_parallel-batch-labeling.md",
           "type": "research",
           "summary": "Research on parallelizing batch formula labeling in Lean 4: existing patterns, concurrency primitives, deterministic ordering, exception handling, CLI flag integration"
+        },
+        {
+          "path": "specs/286_parallelize_batch_formula_labeling/plans/01_parallel-batch-labeling.md",
+          "type": "plan",
+          "summary": "Implementation plan for parallelizing batch formula labeling: chunk-based parallelism, exception handling, CLI flag integration, testing"
         }
       ],
-      "session_id": "sess_1754583600_e98ce7"
+      "session_id": "sess_1780888771_97a702",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3,
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_parallel-batch-labeling.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-07"
+          }
+        ]
+      },
+      "memory_candidates": [
+        {
+          "content": "Chunk-based IO.asTask parallelism in Lean 4 is the preferred pattern for batch CPU-bound work when deterministic output ordering is required. Split input into N chunks, spawn one IO.asTask per chunk (prio := .dedicated), wait for all, and concatenate in chunk order. This is simpler and more efficient than per-item tasks or worker pools with index tracking, and aligns with existing patterns in FormulaEnumerator.lean.",
+          "category": "PATTERN",
+          "source_artifact": "specs/286_parallelize_batch_formula_labeling/plans/01_parallel-batch-labeling.md",
+          "confidence": 0.9,
+          "suggested_keywords": [
+            "lean4",
+            "parallelism",
+            "IO.asTask",
+            "chunk-based",
+            "deterministic-ordering",
+            "DatasetGenerator"
+          ]
+        },
+        {
+          "content": "When adding parallel parameters to library functions in Lean 4, use default parameter values (e.g., parallelThreads : Nat := 0) to maintain backward compatibility with all existing callers. This avoids breaking changes across downstream executables and library modules without requiring a refactoring pass.",
+          "category": "PATTERN",
+          "source_artifact": "specs/286_parallelize_batch_formula_labeling/plans/01_parallel-batch-labeling.md",
+          "confidence": 0.85,
+          "suggested_keywords": [
+            "lean4",
+            "backward-compatibility",
+            "default-parameters",
+            "API-design"
+          ]
+        }
+      ]
     },
     {
       "project_number": 287,

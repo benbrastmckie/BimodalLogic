@@ -972,7 +972,7 @@ These operators are never generated in their "native" derived form, which means 
 
 ### 286. Parallelize batch formula labeling in DatasetGenerator.lean
 - **Effort**: small (4-6 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
