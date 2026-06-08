@@ -1,8 +1,8 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 24,
-    "last_sync": "2026-04-10T22:00:00Z"
+    "total_tasks": 29,
+    "last_sync": "2026-06-08T03:09:30Z"
   },
   "active_projects": [
     {
@@ -2344,9 +2344,92 @@
         }
       ],
       "completion_summary": null
+    },
+    {
+      "project_number": 286,
+      "project_name": "parallelize_batch_formula_labeling",
+      "status": "researched",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T03:18:42Z",
+      "description": "Parallelize batch formula labeling in DatasetGenerator.lean. Replace sequential for loop in labelBatch with a worker-pool or chunk-based parallel approach. Preserve deterministic output ordering. Add --parallel N CLI flag. Handle Task exceptions gracefully. Expected 6-7x throughput improvement on multi-core machines.",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/286_parallelize_batch_formula_labeling/reports/01_parallel-batch-labeling.md",
+          "type": "research",
+          "summary": "Research on parallelizing batch formula labeling in Lean 4: existing patterns, concurrency primitives, deterministic ordering, exception handling, CLI flag integration"
+        }
+      ],
+      "session_id": "sess_1754583600_e98ce7"
+    },
+    {
+      "project_number": 287,
+      "project_name": "formula_normalization_before_tableau",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T03:09:30Z",
+      "description": "Add formula normalization pass before tableau expansion in DecisionProcedure.lean. Recursively unfold all derived operators (and, or, diamond, always, sometimes, next, prev, weak_future, weak_past) to the 6 primitives (atom, bot, imp, box, untl, snce). Wire normalizeFormula into decide. Ensure returned DerivationTree proves the original formula. Benchmark on c5/c6.",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 288,
+      "project_name": "deeper_invalid_pattern_recognizers",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        287
+      ],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T03:09:30Z",
+      "description": "Add deeper invalid-pattern recognizers to structuralPrefilter. Detect structurally invalid formulas (e.g., U(box(bot), X)) that timeout the tableau but have obvious countermodels. Add isTemporalContradiction, isObviousSatisfiable, hasUnfulfillableEventuality. Wire into labelFormulaImpl before valid-prefilter. Each pattern must have formal soundness proof. Target: reduce c6 timeout rate by 3-8%.",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 289,
+      "project_name": "branch_result_memoization_caching",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        286
+      ],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T03:09:30Z",
+      "description": "Add branch-result memoization/caching to expandBranchWithFuel. Cache decide results keyed by (Formula, FrameClass, searchDepth, tableauFuel) in an IO.Ref-based LRU cache at the decide level. Size bound to 10K entries. Benchmark hit rate and total labeling time. Best combined with parallelization (task 286).",
+      "next_artifact_number": 1,
+      "artifacts": []
+    },
+    {
+      "project_number": 290,
+      "project_name": "improve_tableau_fuel_allocation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        288
+      ],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T03:09:30Z",
+      "description": "Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.",
+      "next_artifact_number": 1,
+      "artifacts": []
     }
   ],
-  "next_project_number": 284,
+  "next_project_number": 291,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -2355,13 +2438,13 @@
     }
   ],
   "task_counts": {
-    "active": 56,
-    "not_started": 43,
+    "active": 61,
+    "not_started": 48,
     "implementing": 3,
     "researched": 6,
     "partial": 1,
     "planned": 1,
-    "total": 54,
+    "total": 59,
     "abandoned": 0
   },
   "repository_health": {

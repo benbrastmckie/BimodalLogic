@@ -1,5 +1,5 @@
 ---
-next_project_number: 284
+next_project_number: 291
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -86,6 +86,11 @@ technical_debt:
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 284 [RESEARCHED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
 285 [RESEARCHED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
+286 [NOT STARTED] — Parallelize batch formula labeling for 6-7× throughput improvement
+  └─ 289 [NOT STARTED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
+287 [NOT STARTED] — Add formula normalization pass before tableau expansion
+  └─ 288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter
+      └─ 290 [NOT STARTED] — Improve fuel allocation heuristic for imbalanced branches
 
 ### Uncategorized
 
@@ -962,3 +967,157 @@ These operators are never generated in their "native" derived form, which means 
 - Use `--max-formulas` or stratified mode for c6+ to prevent the formula count explosion observed in task 285's predecessor tasks.
 
 **Risk**: Adding all 7 operators at once would increase c6 formula count from ~161K to potentially 400K+, making exhaustive generation impractical. Mitigation: phased rollout with pattern-aware complexity and explicit formula caps.
+
+---
+
+### 286. Parallelize batch formula labeling in DatasetGenerator.lean
+- **Effort**: small (4-6 hours)
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: None (self-contained; task 289 builds on this)
+- **Research needed**: Yes — investigate Lean 4 Task API patterns for CPU-bound parallelism.
+
+**Description**: The current `labelBatch` (DatasetGenerator.lean:1070) processes formulas sequentially. Each `labelFormulaImpl` call already spawns `decideAutoAdaptive` on a dedicated `Task` thread for timeout enforcement, but the batch itself runs formulas one-at-a-time. With ~40K formulas at c6 and 25% hitting the 1000ms wall-clock timeout, sequential execution leaves most CPU cores idle.
+
+**Implementation**:
+1. Replace sequential `for` loop in `labelBatch` with a worker-pool or chunk-based parallel approach. Process formulas in chunks of `N` (e.g., chunk size = `max 1 (numCores * 4)`), spawn `labelFormula` for each formula in the chunk concurrently, collect results, and append to output.
+2. Preserve deterministic output ordering: either (a) assign monotonic indices before spawning and sort results after collection, or (b) use an `IO.Ref`-based ordered accumulator.
+3. Add `--parallel N` CLI flag to `dataset_generator` (default `N = 0` meaning auto-detect via `Task.getAvailableCores` or a fallback).
+4. Ensure progress reporting still works: maintain an atomic counter for "formulas completed so far" and print every 1000 formulas.
+5. Handle `Task` exceptions gracefully: if a formula triggers an unexpected error (e.g., OOM), catch it and label as `.timeout` so the batch continues.
+
+**Expected impact**: On an 8-core machine, c6 labeling time drops from ~600s to ~80-120s (6-7× throughput improvement). Timeout rate stays the same (structural), but wall-clock batch time is dominated by valid/invalid formulas which parallelize well.
+
+**Risk**: Memory pressure from concurrent tableau expansion. Mitigation: limit chunk size and add `--parallel` flag so users can tune.
+
+---
+
+### 287. Add formula normalization pass before tableau expansion in DecisionProcedure.lean
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: None (uses existing Normalization.lean; task 288 depends on this)
+
+**Description**: The tableau in `DecisionProcedure.decide` operates on formulas in their raw enumerated form, which may contain derived operators (`and`, `or`, `diamond`, `always`, `sometimes`, `next`, `prev`, `weak_future`, `weak_past`). The `Normalization.lean` module already has definitional unfold lemmas (`and_unfold`, `or_unfold`, `diamond_unfold`, `all_future_unfold`, etc., lines 213–229) and an `EnrichedFormula` IR, but `decide` does **not** normalize before calling `buildTableau`.
+
+Normalizing to the 6 primitives (`atom`, `bot`, `imp`, `box`, `untl`, `snce`) would:
+1. Shrink the AST depth (e.g., `A ∧ B` becomes `(A → (B → ⊥)) → ⊥` — 1 extra `imp`/`bot` but removes the pattern-matching overhead of `asAnd?`).
+2. Reduce rule-match branching: the tableau currently tries `asAnd?`, `asOr?`, `asDiamond?`, `asAllFuture?` on every formula. Primitive-only formulas skip all derived-pattern matchers.
+3. Improve structural prefilter coverage: prefilter already operates on primitive shapes; normalization makes more formulas match.
+
+**Implementation**:
+1. Add `normalizeFormula : Formula → Formula` in `Normalization.lean` (or `Automation/` helper) that recursively unfolds all derived operators using the existing unfold lemmas. Prove it terminates (follows from complexity decrease).
+2. Add `normalizeSignedFormula : SignedFormula → SignedFormula` that applies `normalizeFormula` to the inner `Formula`.
+3. Wire into `decide` (DecisionProcedure.lean:121): call `normalizeFormula` on `φ` before the fast-path checks and tableau expansion. The proof search fast-paths (`tryAxiomProof`, `buildCompositionalProof`, `bounded_search_with_proof`) should also receive the normalized formula.
+4. **Critical**: Ensure the returned `DerivationTree` is a proof of the *original* `φ`, not the normalized one. Two approaches:
+   - (A) Normalize only for the tableau path, then extract proof from tableau → this already produces a proof of the original `φ` (proof extraction works on tableau trace).
+   - (B) Normalize for all paths, then post-compose with a `DerivationTree` of `normalize(φ) → φ` (requires proving each unfold is a theorem, which they already are via `neg_unfold`, `and_unfold`, etc.).
+   Prefer (A) for minimal proof-term impact.
+5. Benchmark: run c5/c6 labeling before/after normalization and measure:
+   - Average decision time per formula
+   - Timeout rate change
+   - Structural prefilter hit rate change
+   - Build time impact (does normalization add compile-time cost?)
+
+**Expected impact**: Modest but consistent improvement. Formulas with multiple derived operators (e.g., `◇(p ∧ △q)`) see the biggest gains. Timeout rate may drop 2-5% due to simpler tableau shapes.
+
+**Risk**: Normalization can increase formula size (e.g., `A ∧ B` → double-negation-style expansion). If the size increase dominates the rule-match savings, performance could regress. Benchmark first on a 1K-formula sample.
+
+---
+
+### 288. Add deeper invalid-pattern recognizers to structuralPrefilter
+- **Effort**: medium (6-10 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 287 (normalization simplifies formulas to primitive shapes, making invalid-pattern detection easier)
+
+**Description**: The c6 run showed 25% timeout rate. The slow formulas (warn-logged at >1000ms) share structural patterns:
+- `((S(□⊥, U(□⊥, (⊥ → ⊥))) → ⊥) → ...)` — nested temporal with modal unsatisfiable guard
+- `(S(□p, (⊥ → ⊥)) → U(q, (⊥ → ⊥)))` — Since-to-Until implication with box in guard
+- `(U(((□p → q) → ⊥), (p → ⊥)) → ⊥)` — deeply nested implications with modal subformulas
+
+These are almost certainly **invalid** (countermodel exists) but the tableau exhausts fuel before finding it. The current `structuralPrefilter` only recognizes *valid* patterns. Adding *invalid* pattern recognizers would short-circuit the tableau entirely.
+
+**Implementation**:
+1. Add `invalidPrefilter : Formula → Option Bool` (returns `some false` if structurally invalid, `none` if undetermined). Build on existing helpers:
+   - `isUnsatBotTemporal` already detects unsatisfiable antecedents. Extend it to detect *satisfiable* consequents that force validity → already done. For invalidity, detect *satisfiable* antecedent + *unsatisfiable* consequent.
+   - Add `isTemporalContradiction : Formula → Bool`: checks for formulas of the form `U(□⊥, X)` ("until false with any guard") — this is unsatisfiable because `□⊥` is false at all worlds, so the event can never be witnessed. Similarly for `S(□⊥, X)`.
+   - Add `isObviousSatisfiable : Formula → Bool`: a formula that is clearly not valid because it admits a simple 1-world 1-time model. E.g., `□p → q` where `p ≠ q` is satisfiable (set `p=true`, `q=false` in the reflexive world).
+   - Add `hasUnfulfillableEventuality : Formula → Bool`: `U(φ, ψ)` where `φ` is a literal/atom that contradicts a box formula in the branch context. Requires branch context, so this may belong in the tableau closure detector (`Closure.lean`) rather than the prefilter.
+2. Add `Formula.isStructurallyInvalid` that composes the above checks with O(n) traversal.
+3. Wire into `labelFormulaImpl` (line 807): *before* the valid-prefilter, check invalid-prefilter. If `some false`, return `.invalid` immediately with `decisionMethod = "structural_invalid_prefilter"`.
+4. **Soundness requirement**: Every invalid-pattern recognizer must be formally justified. For each pattern added, write a small proof in `DatasetGenerator.lean` or a new `PrefilterSoundness.lean` module showing the pattern is indeed invalid in the base frame class. Start with 3-5 high-confidence patterns.
+5. Benchmark: run c6 labeling, compare timeout rate and prefilter coverage before/after. Target: reduce timeout rate by 3-8% by catching structurally invalid formulas.
+
+**Expected impact**: The biggest win for timeout reduction without changing the tableau engine. Invalid formulas that currently stall would resolve in O(n) structural inspection.
+
+**Risk**: False negatives (labeling a formula invalid when it's actually valid) would corrupt the dataset. Mitigation: only add patterns with formal soundness proofs; gate behind a `--strict-prefilter` flag if uncertain.
+
+---
+
+### 289. Add branch-result memoization/caching to expandBranchWithFuel
+- **Effort**: large (12-16 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 286 (parallel batch infrastructure provides the shared-memory context where a global LRU cache is most effective)
+
+**Description**: Many timeout formulas contain repeated subformulas across branches. For example, `((S(□⊥, U(□⊥, (⊥ → ⊥))) → ⊥) → ...)` re-evaluates `S(□⊥, U(□⊥, (⊥ → ⊥)))` and its negation in multiple branches. The tableau currently recomputes `expandBranchWithFuel` from scratch for every branch, even when the remaining subproblem is identical to one already explored.
+
+**Implementation**:
+1. Add a memoization cache keyed by a canonical representation of the "remaining subproblem": `(BranchState, FrameClass, RemainingFuel)` where `BranchState` is a hash of the unexpanded signed formulas + time ordering + applied set.
+2. Use `Lean.HashMap` or an `IO.Ref` (if tableau is in IO; currently it's pure). The tableau is pure (`StateM` for traces), so the cache must be pure too. Options:
+   - (A) Thread a `HashMap` through `expandBranchWithFuel` as an extra `StateT` layer (like the existing `TraceM` layer). This is invasive but clean.
+   - (B) Use `Std.HashMap` with a mutable `Ref` inside `IO` — requires lifting the tableau into `IO`, which breaks pure proofs.
+   - (C) **Preferred**: Use a bounded-size LRU cache in `IO` at the `decide` level, keyed by `(Formula, FrameClass)`. Since `decide` is called from `labelFormulaImpl` inside `IO`, cache `decide` results directly. This is simpler and catches repeated formulas across the batch.
+3. If going with (C): Add `decideCache : IO.Ref (Std.HashMap (Formula × FrameClass) DecisionResult)` in `DecisionProcedure.lean` or `DatasetGenerator.lean`. Before calling `decide`, check the cache. On hit, return cached result; on miss, run `decide` and insert.
+4. Cache invalidation: formulas with different `searchDepth`/`tableauFuel` need separate keys. Use `(Formula, FrameClass, searchDepth, tableauFuel)` as key.
+5. Size bound: limit cache to e.g. 10K entries (LRU eviction) to prevent unbounded memory growth during c8+ runs.
+6. Benchmark: run c6 with and without cache. Measure hit rate, memory footprint, and total labeling time.
+
+**Expected impact**: Highly formula-dependent. For batches with many syntactic duplicates (common in exhaustive enumeration), hit rate can be 10-30%, reducing total time proportionally. For diverse formula sets, marginal. Best combined with parallelization (task 286).
+
+**Risk**: Cache correctness — if `decide` is nondeterministic (it shouldn't be, but fuel-based cutoff makes it sensitive to execution order), caching could produce inconsistent results. Ensure `decide` is fully deterministic.
+
+---
+
+### 290. Improve tableau fuel allocation heuristic for imbalanced branches
+- **Effort**: small (4-6 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 288 (invalid-pattern prefilter's branch analysis tools — `estimateBranchDifficulty` — can be reused for fuel allocation)
+
+**Description**: In `expandBranchWithFuel` (Saturation.lean:181), when a branching rule fires, fuel is divided equally among sub-branches: `fuel / branches.length`. For imbalanced branches (one branch closes trivially, another is deep), this wastes fuel on the easy branch and starves the hard one. The result: the hard branch times out even though total fuel would have been sufficient if allocated adaptively.
+
+**Implementation**:
+1. Add an `estimateBranchDifficulty : Branch → Nat` heuristic:
+   - Count unexpanded temporal formulas (U/S/F/P/G/H) — more temporal = harder.
+   - Count modal formulas (□/◇) — modal adds world creation cost.
+   - Count branch depth — deeper branches are closer to saturation.
+   - Weighted sum: `difficulty = 3 * temporalCount + 2 * modalCount + branchDepth`.
+2. In `expandBranchWithFuel`, when a split occurs, allocate fuel proportionally to difficulty:
+   - Compute total difficulty = sum of difficulties across all sub-branches.
+   - Assign each branch `fuel_i = fuel * difficulty_i / totalDifficulty`.
+   - Ensure minimum fuel of 1 per branch (avoid zero-fuel branches).
+3. **Conservative fallback**: if any branch has `difficulty = 0` (e.g., propositional-only), give it a small fixed allocation (e.g., `fuel / (branches.length * 2)`) and redistribute the rest.
+4. Prove termination still holds: the total fuel across all branches ≤ original fuel, and each recursive call gets strictly less fuel than parent (except the fuel=0 base case).
+5. Benchmark: run c6 labeling before/after heuristic change. Measure:
+   - Timeout rate change
+   - Distribution of "closed vs timeout" for formulas that previously timed out
+   - Any regressions (formulas that closed before but now timeout due to over-allocation to one branch)
+
+**Expected impact**: Modest (2-5% timeout reduction). Best for formulas with clear easy/hard branch splits (e.g., `impPos` where one side is a tautology and the other is complex).
+
+**Risk**: Heuristic inaccuracy. If `estimateBranchDifficulty` mis-predicts, fuel allocation becomes worse than equal division. Mitigation: keep equal division as fallback when heuristic confidence is low (e.g., all branches have similar difficulty).
+
+---
+
