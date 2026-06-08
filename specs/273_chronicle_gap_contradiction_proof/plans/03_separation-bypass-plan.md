@@ -120,7 +120,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Monadic FO to Temporal Formula Translation [IN PROGRESS]
+### Phase 2: Monadic FO to Temporal Formula Translation [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: The Kamp translation requires expressing "∃y with specific 2-variable NF at (y,x)" as a temporal formula. This reduces to the same bridge lemma (`nf_2var_from_interval_data`) that the existing sorry encodes. All approaches to proving `US_expressively_complete_over_prior` without the sorry ultimately require this bridge lemma or an equivalent (the n-variable Fraisse game argument).
+- **What was tried**:
+  1. Direct Kamp translation by induction on MonadicFormula structure — blocked at `.ex` case which needs 2-variable to 1-variable reduction via separation, which in turn needs the bridge lemma
+  2. Classical NF characterization approach using `doets_lemma_1_1` + separation theorem — blocked because temporal distinguishability of NFs at depth k+1 requires expressing 2-var NF existence as a temporal formula
+  3. Fixing the sorry in `nf_2var_from_interval_data` directly — blocked because the 4-variable existential transfer at line 2353 requires zone matching with interval splitting (choosing u' to split interval types consistently), which is the content of the Fraisse/EF game composition argument (GHR93 Proposition 7)
+  4. Z-specific bridge lemma — blocked because even on Z, interval type SET matching does not guarantee interval SPLITTING (types may be interleaved differently in the two Z-intervals)
+- **Why it's stuck**: The fundamental issue is the "interval splitting" problem: given two intervals with the same set of NF types, a point u splitting one interval into sub-intervals with types T₁ and T₂, finding a matching point u' that splits the other interval identically. On general linear orders, this requires the Fraisse game strategy. On Z, it requires ordered interval type sequences (not just sets). The existing `interval_nf_types` infrastructure uses Finsets (sets), not sequences.
+- **What is needed**: One of:
+  (A) Prove `nf_2var_from_interval_data` via a generalized n-variable NF transfer by strong induction on depth k, with refined zone matching that includes interval splitting. Estimated 400-600 lines.
+  (B) Strengthen `interval_nf_types` to track ordered sequences (not just sets) for Z-structures, then prove the Z-specific bridge lemma and transfer via the semantic bridge. Estimated 300-500 lines.
+  (C) Prove a completely new version of Kamp's theorem using the separation theorem directly (without NFs), following GHR94 Chapter 10.3. Estimated 1000+ lines.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Build the translation from `MonadicFormula sig 1` (monadic first-order formulas with one free variable) to `Formula` (temporal formulas using U, S). This is the "table" translation from GHR94/Reynolds that converts first-order quantification over a linear order into temporal operators.
 
@@ -148,7 +162,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Kamp's Theorem for Prior Structures [NOT STARTED]
+### Phase 3: Kamp's Theorem for Prior Structures [BLOCKED]
 
 **Goal**: Prove Kamp's theorem for Prior structures: every `MonadicFormula sig 1` has a {U,S}-temporal equivalent on structures satisfying semantic Prior-UZ and Prior-SZ. This combines the monadic-to-temporal translation (Phase 2) with the semantic bridge (Phase 1).
 
