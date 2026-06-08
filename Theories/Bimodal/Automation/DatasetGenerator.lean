@@ -556,6 +556,38 @@ def isStructurallyValid : Formula → Bool
   | .box inner => isStructurallyValid inner
   | _ => false
 
+/-- Deep structural validity check that also recurses into implication antecedents.
+    Catches nested patterns like `p → (U(⊥, q) → r)` where the inner antecedent is unsat. -/
+def isStructurallyValidDeep : Formula → Bool
+  | .imp a b => a == b || isUnsatBotTemporal a || isStructurallyValidDeep b
+  | .box inner => isStructurallyValidDeep inner
+  | _ => false
+
+/- ## Phase 2 helpers (task 278): polarity analysis -/
+
+/-- Collect all subformula occurrences with their polarity sign.
+    `pos` = positive occurrence, `neg` = negative occurrence.
+    Polarity flips at the left-hand side of implication and through derived negation. -/
+def collectPolarities (φ : Formula) (sign : Sign := .pos) : List (Formula × Sign) :=
+  (φ, sign) :: match φ with
+  | .imp a b => collectPolarities a sign.flip ++ collectPolarities b sign
+  | .box a => collectPolarities a sign
+  | .untl a b => collectPolarities a sign ++ collectPolarities b sign
+  | .snce a b => collectPolarities a sign ++ collectPolarities b sign
+  | _ => []
+
+/-- Check if a given formula appears only with positive polarity. -/
+def appearsOnlyPositively (polarities : List (Formula × Sign)) (χ : Formula) : Bool :=
+  polarities.all fun (φ, s) => if φ == χ then s == .pos else true
+
+/-- Check if a given formula appears only with negative polarity. -/
+def appearsOnlyNegatively (polarities : List (Formula × Sign)) (χ : Formula) : Bool :=
+  polarities.all fun (φ, s) => if φ == χ then s == .neg else true
+
+/-- Check if `bot` is among the top-level conjuncts. -/
+def hasBotConjunct (conjuncts : List Formula) : Bool :=
+  conjuncts.any fun c => c == .bot
+
 /--
 Structural pre-filter with axiom attribution (task 274).
 
@@ -570,10 +602,12 @@ def structuralPrefilterWithAxiom : Formula → Option (Bool × String)
   | .imp antecedent consequent =>
     if isUnsatBotTemporal antecedent then some (true, "structural_bot_temporal")
     else if isStructurallyValid consequent then some (true, "structural_tautology")
+    else if isStructurallyValidDeep consequent then some (true, "structural_polarity_drop_tautology")
     else
       -- Phase 1 quick wins (task 278): conjunct-level patterns
       let conjuncts := collectTopLevelConjuncts antecedent
-      if hasS5ReflexiveConflict conjuncts then some (true, "structural_s5_reflexive_conflict")
+      if hasBotConjunct conjuncts then some (true, "structural_polarity_bot_neg")
+      else if hasS5ReflexiveConflict conjuncts then some (true, "structural_s5_reflexive_conflict")
       else if hasUntilGuardConflict conjuncts then some (true, "structural_temporal_loop_until")
       else if hasSinceGuardConflict conjuncts then some (true, "structural_temporal_loop_since")
       else match isSubsumptionPattern antecedent consequent with
@@ -702,6 +736,30 @@ private def q_test : Formula := .atom ⟨"q", none⟩
   -- some (true, "structural_subsumption_modal_4")
 #eval structuralPrefilterWithAxiom (.imp (.box p_test) (p_test.diamond))
   -- some (true, "structural_subsumption_modal_d")
+
+-- Phase 2 tests (task 278): polarity analysis
+
+-- collectPolarities
+#eval collectPolarities (Formula.imp p_test q_test) .pos
+  -- [(p→q, pos), (p, neg), (q, pos)]
+#eval collectPolarities (Formula.neg p_test) .pos
+  -- [(¬p, pos), (p, neg)]
+
+-- appearsOnlyPositively / appearsOnlyNegatively
+#eval appearsOnlyPositively (collectPolarities (Formula.imp p_test q_test) .pos) p_test
+  -- false (p appears negatively)
+#eval appearsOnlyNegatively (collectPolarities (Formula.imp p_test q_test) .pos) p_test
+  -- true
+
+-- isStructurallyValidDeep: nested unsat antecedent
+#eval isStructurallyValidDeep (Formula.imp (Formula.untl Formula.bot q_test) p_test)
+  -- true (unsat → anything is valid)
+#eval structuralPrefilterWithAxiom (.imp p_test (Formula.imp (Formula.untl Formula.bot q_test) p_test))
+  -- some (true, "structural_polarity_drop_tautology")
+
+-- hasBotConjunct
+#eval structuralPrefilterWithAxiom (.imp (Formula.and p_test Formula.bot) q_test)
+  -- some (true, "structural_polarity_bot_neg")
 
 -- Extended tautology detection (φ → ⊤ and φ → □⊤)
 #eval isStructurallyValid (.imp p_test Formula.top)                     -- true
