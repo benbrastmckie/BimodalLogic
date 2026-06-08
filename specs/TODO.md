@@ -96,7 +96,10 @@ technical_debt:
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter. De
+288 [COMPLETED] — Add deeper invalid-pattern recognizers to structuralPrefilter. De
+  - **Report**: [specs/288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md]
+  - **Plan**: [specs/288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md]
+  - **Summary**: [specs/288_deeper_invalid_pattern_recognizers/summaries/01_invalid-patterns-summary.md]
   └─ 290 [NOT STARTED] — Improve tableau fuel allocation heuristic for imbalanced branches
 295 [NOT STARTED] — Diagnostic audit and stress-test of dataset generation pipeline
 
@@ -1061,6 +1064,8 @@ Normalizing to the 6 primitives (`atom`, `bot`, `imp`, `box`, `untl`, `snce`) wo
 - **Priority**: high
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 287 (normalization simplifies formulas to primitive shapes, making invalid-pattern detection easier)
+- **Report**: [specs/288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md]
+- **Plan**: [specs/288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md]
 
 **Description**: The c6 run showed 25% timeout rate. The slow formulas (warn-logged at >1000ms) share structural patterns:
 - `((S(□⊥, U(□⊥, (⊥ → ⊥))) → ⊥) → ...)` — nested temporal with modal unsatisfiable guard
