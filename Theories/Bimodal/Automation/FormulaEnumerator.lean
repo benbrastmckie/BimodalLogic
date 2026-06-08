@@ -2113,6 +2113,31 @@ def generateBimodalSlice (atoms : List Atom) (maxModal maxTemporal : Nat)
 
 -- #eval (generateBimodalSlice defaultAtoms 2 2 [1, 2, 3, 4, 5]).1.length
 
+/-! ### Formula count validation (task 285)
+
+Verify that the new derived operators are generated and that formula count
+increases at c4 and c5 relative to the pre-task-285 baseline. -/
+
+-- Formula count at c4 with 3 atoms, modal 2, temporal 2
+-- Pre-task-285 baseline: 960 (from task 274/275/276 era)
+-- With 7 new operators, expect modest increase (~2-3x)
+#eval (enumExactHelper defaultAtoms 2 2 4 {}).1.size
+
+-- Formula count at c5 with 3 atoms, modal 2, temporal 2
+#eval (enumExactHelper defaultAtoms 2 2 5 {}).1.size
+
+-- Bimodal slice at c5: should include formulas with new operators
+#eval (generateBimodalSlice defaultAtoms 2 2 [5]).1.length
+
+-- Verify diamond(p) appears in c2 enumeration
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.diamond (.atom (Atom.mk_base "p")))
+
+-- Verify next(p) appears in c2 enumeration
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.next (.atom (Atom.mk_base "p")))
+
+-- Verify prev(p) appears in c2 enumeration
+#eval (enumExactHelper defaultAtoms 2 2 2 {}).1.toList.any (· == Formula.prev (.atom (Atom.mk_base "p")))
+
 /-!
 ## Two-Phase Parallel Enumeration and Pipeline Overlap (Task 283 Phase 5)
 
@@ -2240,6 +2265,15 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
         if structurallyTrivial f then acc else acc.push f
       ) #[]
     else #[]
+    -- Diamond (derived modal unary, sequential, fast) (task 285)
+    let diamonds := if modalBudget > 0 && level > 1 then
+      let childSize := level - 1
+      let (children, _) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize immutableCache
+      children.foldl (fun (acc : Array Formula) child =>
+        let f := Formula.diamond child
+        if structurallyTrivial f then acc else acc.push f
+      ) #[]
+    else #[]
     -- Derived temporal unary operators (sequential, fast)
     let derivedTemporal := if temporalBudget > 0 && level > 1 then
       let childSize := level - 1
@@ -2248,8 +2282,14 @@ private def enumerateLevelParallel (atoms : List Atom) (modalBudget temporalBudg
         ++ children.map Formula.some_past
         ++ children.map Formula.all_future
         ++ children.map Formula.all_past
+        ++ children.map Formula.always       -- task 285
+        ++ children.map Formula.sometimes    -- task 285
+        ++ children.map Formula.next         -- task 285
+        ++ children.map Formula.prev         -- task 285
+        ++ children.map Formula.weak_future  -- task 285
+        ++ children.map Formula.weak_past    -- task 285
     else #[]
-    let result := boxes ++ derivedTemporal ++ binaryFormulas
+    let result := boxes ++ diamonds ++ derivedTemporal ++ binaryFormulas
     -- Store in cache for subsequent use
     let finalCache := immutableCache.insert key result
     return (result, finalCache)

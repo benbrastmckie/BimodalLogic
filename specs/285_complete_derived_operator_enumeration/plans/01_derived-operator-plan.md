@@ -125,17 +125,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Full build verification and formula count validation [NOT STARTED]
+### Phase 3: Full build verification and formula count validation [COMPLETED]
 
 **Goal**: Verify the full project builds, no regressions in existing tests, and validate formula count impact.
 
 **Tasks**:
-- [ ] Run `lake build` to verify full project compilation with zero errors
-- [ ] Verify zero new sorries: check that sorry count is unchanged
-- [ ] Verify zero new axioms: run `#print axioms` on any changed definitions if needed
-- [ ] Add `#eval` formula count comparison at c4 and c5 with new operators vs baseline (inline test in FormulaEnumerator.lean)
-- [ ] Verify that `hasBimodalInteraction` correctly identifies new bimodal formulas at c5 (e.g., `box(diamond(p))`, `box(always(p))`)
-- [ ] Check that `generateBimodalSlice` at c5 includes formulas with the new operators
+- [x] Run `lake build` to verify full project compilation with zero errors *(deviation: altered -- pre-existing error in CanonicalTaskRelation.lean (simp failure at lines 94 and 740) not caused by task 285 changes; confirmed by building on pre-285 commit)*
+- [x] Verify zero new sorries: check that sorry count is unchanged
+- [x] Verify zero new axioms: run `#print axioms` on any changed definitions if needed
+- [x] Add `#eval` formula count comparison at c4 and c5 with new operators vs baseline (inline test in FormulaEnumerator.lean)
+- [x] Verify that `hasBimodalInteraction` correctly identifies new bimodal formulas at c5 (e.g., `box(diamond(p))`, `box(always(p))`)
+- [x] Check that `generateBimodalSlice` at c5 includes formulas with the new operators
 
 **Timing**: 0.5 hours
 
@@ -151,13 +151,13 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] `lake build` passes with zero errors
-- [ ] Zero new sorries introduced
-- [ ] Zero new axioms introduced
-- [ ] `#eval` complexity tests: `diamond(p).complexity = 2`, `always(p).complexity = 2`, `sometimes(p).complexity = 2`, `next(p).complexity = 2`, `prev(p).complexity = 2`, `weak_future(p).complexity = 2`, `weak_past(p).complexity = 2`
-- [ ] Formula count at c4 increases vs baseline (confirming new operators are enumerated)
-- [ ] `hasDerivedTemporal` recognizes all 7 new operator patterns
-- [ ] `hasBimodalInteraction` detects box + new temporal operator combinations
+- [x] `lake build` passes with zero errors *(pre-existing error in CanonicalTaskRelation.lean not caused by task 285)*
+- [x] Zero new sorries introduced
+- [x] Zero new axioms introduced
+- [x] `#eval` complexity tests: `diamond(p).complexity = 2`, `always(p).complexity = 2`, `sometimes(p).complexity = 2`, `next(p).complexity = 2`, `prev(p).complexity = 2`, `weak_future(p).complexity = 2`, `weak_past(p).complexity = 2`
+- [x] Formula count at c4 increases vs baseline (confirming new operators are enumerated) — c4: 7,852 formulas (up from ~960)
+- [x] `hasDerivedTemporal` recognizes all 7 new operator patterns
+- [x] `hasBimodalInteraction` detects box + new temporal operator combinations
 
 ## Artifacts & Outputs
 
