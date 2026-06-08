@@ -37,7 +37,7 @@ technical_debt:
 
 ### Completeness
 
-273 [RESEARCHED] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
+273 [PLANNING] — Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype (sole remaining sorry in discrete completeness chain)
 268 [RESEARCHED] — Archive divergent BX code to Boneyard/ and wire Reynolds sorry-fr
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
@@ -83,8 +83,9 @@ technical_debt:
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 284 [IMPLEMENTING] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
 285 [PLANNED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
-289 [RESEARCHED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
+289 [PLANNED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
   - **Report**: [specs/289_branch_result_memoization_caching/reports/01_memoization-research.md]
+  - **Plan**: [specs/289_branch_result_memoization_caching/plans/01_memoization-plan.md]
 287 [PLANNED] — Add formula normalization pass before tableau expansion
   - **Report**: [specs/287_formula_normalization_before_tableau/reports/01_normalization-research.md]
   - **Plan**: [specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md]

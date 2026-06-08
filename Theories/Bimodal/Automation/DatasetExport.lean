@@ -52,6 +52,9 @@ lake exe dataset_generator -- [OPTIONS]
   --mode MODE             Sampling: exhaustive|random|hybrid (default: exhaustive)
   --include-duals         Include temporal dual augmentation
   --wallclock-timeout N   Per-formula wall-clock timeout in ms (default: 1000)
+  --generation-mode MODE  Labeling: exhaustive|proofFirst|hybrid (default: exhaustive)
+  --pool-depth N          Forward proof pool depth (default: 2)
+  --pool-seeds N          Forward proof pool seed count (default: 10000)
 ```
 
 ## Downstream Usage (Python)
@@ -214,6 +217,8 @@ structure DatasetRecord where
   interestingness_score : Option Nat := none
   /-- Interestingness tier classification. -/
   interestingness_tier : Option String := none
+  /-- Generation mode used to produce this label (task 284). -/
+  generation_mode : String := "exhaustive"
   deriving Repr
 
 instance : Inhabited DatasetRecord :=
@@ -243,7 +248,8 @@ instance : Inhabited DatasetRecord :=
      semantic_countermodel := none
      proof_reconstruction_method := none
      interestingness_score := none
-     interestingness_tier := none }⟩
+     interestingness_tier := none
+     generation_mode := "exhaustive" }⟩
 
 /--
 Serialize a `DatasetRecord` to a JSON object string (one line).
@@ -305,13 +311,14 @@ def datasetRecordToJson (r : DatasetRecord) : String :=
   ++ ", \"interestingness_tier\": " ++ (match r.interestingness_tier with
     | none => "null"
     | some t => "\"" ++ escapeJsonString t ++ "\"")
+  ++ ", \"generation_mode\": \"" ++ escapeJsonString r.generation_mode ++ "\""
   ++ "}"
 
 /--
 Convert a `LabeledFormula` to a `DatasetRecord` with the given ID and split.
 -/
 def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
-    (fcName : String := "Base") : DatasetRecord :=
+    (fcName : String := "Base") (genMode : String := "exhaustive") : DatasetRecord :=
   let idStr := "bmlogic-" ++ String.ofList (padNat idx 5)
   { id := idStr
     split := splitName
@@ -339,7 +346,8 @@ def labeledToRecord (idx : Nat) (splitName : String) (lf : LabeledFormula)
     semantic_countermodel := lf.semanticCountermodelSummary
     proof_reconstruction_method := lf.proofReconstructionMethod
     interestingness_score := lf.interestingnessScore
-    interestingness_tier := lf.interestingnessTier }
+    interestingness_tier := lf.interestingnessTier
+    generation_mode := genMode }
 where
   /-- Zero-pad a natural number to at least `width` digits. -/
   padNat (n : Nat) (width : Nat) : List Char :=
@@ -412,6 +420,8 @@ structure DatasetMetadata where
   decisionMethodDist : List (String × Nat) := []
   /-- Frame class used for decision (task 261 v3). -/
   frameClassName : String := "Base"
+  /-- Generation mode used: "exhaustive", "proofFirst", or "hybrid" (task 284). -/
+  generationMode : String := "exhaustive"
   deriving Repr, Inhabited
 
 /--
@@ -466,6 +476,7 @@ def datasetMetadataToJson (m : DatasetMetadata) : String :=
   ++ "  \"sampling_mode\": \"" ++ m.samplingMode ++ "\",\n"
   ++ "  \"decision_method_distribution\": " ++ methodDistStr ++ ",\n"
   ++ "  \"frame_class\": \"" ++ escapeJsonString m.frameClassName ++ "\",\n"
+  ++ "  \"generation_mode\": \"" ++ escapeJsonString m.generationMode ++ "\",\n"
   ++ "  \"representations\": [\n"
   ++ "    {\"field\": \"formula_str\", \"format\": \"human-readable\", \"description\": \"Pretty-printed unicode notation\"},\n"
   ++ "    {\"field\": \"formula_ast\", \"format\": \"json-ast\", \"description\": \"Recursive JSON AST with tag discriminator\"},\n"
@@ -536,6 +547,17 @@ structure CLIArgs where
       pre-labeling interestingness, exclude known timeout patterns, and
       select N formulas biased toward high interestingness. -/
   stratifiedSample : Nat := 0
+  /-- Generation mode for labeling: "exhaustive" (default), "proofFirst", or "hybrid".
+      Task 284: when "hybrid" or "proofFirst", a proof pool is generated at startup
+      and used for O(1) pool lookup before falling through to the tableau. -/
+  generationMode : String := "exhaustive"
+  /-- Depth for forward proof pool generation (only used when generationMode is
+      "proofFirst" or "hybrid"). Controls the number of inference rule application
+      rounds in the fixpoint closure. Default: 2. -/
+  poolDepth : Nat := 2
+  /-- Number of axiom seeds for forward proof pool generation (only used when
+      generationMode is "proofFirst" or "hybrid"). Default: 10000. -/
+  poolSeeds : Nat := 10000
   deriving Repr, Inhabited
 
 /--
@@ -622,6 +644,12 @@ where
     go rest { acc with parallelThreads := n.toNat! }
   | "--stratified-sample" :: n :: rest, acc =>
     go rest { acc with stratifiedSample := n.toNat! }
+  | "--generation-mode" :: m :: rest, acc =>
+    go rest { acc with generationMode := m }
+  | "--pool-depth" :: n :: rest, acc =>
+    go rest { acc with poolDepth := n.toNat! }
+  | "--pool-seeds" :: n :: rest, acc =>
+    go rest { acc with poolSeeds := n.toNat! }
   | _ :: rest, acc => go rest acc
 
 end Bimodal.Automation.DatasetExport
@@ -948,6 +976,7 @@ def main (args : List String) : IO Unit := do
   IO.println s!"Include duals: {cliArgs.includeDuals}"
   IO.println s!"Frame class: {cliArgs.frameClass}"
   IO.println s!"Wall-clock timeout: {cliArgs.wallclockTimeoutMs}ms"
+  IO.println s!"Generation mode: {cliArgs.generationMode}"
   if cliArgs.resumeFrom > 0 then
     IO.println s!"Resume from: formula {cliArgs.resumeFrom}"
   IO.println ""
@@ -955,6 +984,35 @@ def main (args : List String) : IO Unit := do
   -- Task 261 v3: parse frame class
   let fc := parseFrameClass cliArgs.frameClass
   let fcName := frameClassName fc
+
+  -- Task 284: parse generation mode and generate proof pool if needed
+  let genMode : GenerationMode := match cliArgs.generationMode.toLower with
+    | "prooffirst" => .proofFirst
+    | "hybrid" => .hybrid
+    | _ => .exhaustive
+  let genModeStr := match genMode with
+    | .exhaustive => "exhaustive"
+    | .proofFirst => "proofFirst"
+    | .hybrid => "hybrid"
+  let pool : Option (ProofPool .Base) ← match genMode with
+    | .exhaustive => pure none
+    | _ => do
+      IO.println s!"Generating proof pool (depth={cliArgs.poolDepth}, seeds={cliArgs.poolSeeds})..."
+      let poolStartMs ← IO.monoMsNow
+      let cfg : ForwardConfig := {
+        seedCount := cliArgs.poolSeeds
+        maxDepth := cliArgs.poolDepth
+        maxPoolSize := cliArgs.poolSeeds * 2
+        atoms := [⟨"p", none⟩, ⟨"q", none⟩, ⟨"r", none⟩]
+        frameClass := .Base
+      }
+      let entries ← forwardGenerate cfg
+      let mut p : ProofPool .Base := { ProofPool.empty with cap := cfg.maxPoolSize }
+      for σ in entries do
+        p := p.add σ.fst σ.snd
+      let poolEndMs ← IO.monoMsNow
+      IO.println s!"Proof pool generated: {p.size} theorems in {poolEndMs - poolStartMs}ms"
+      pure (some p)
 
   -- Step 1: Determine checkpoint file path
   let checkpointPath : System.FilePath :=
@@ -1082,7 +1140,7 @@ def main (args : List String) : IO Unit := do
         let idx := batchStart + i
         match formulaArr[idx]? with
         | some φ =>
-          let task ← IO.asTask (labelFormula φ fc cliArgs.wallclockTimeoutMs) .dedicated
+          let task ← IO.asTask (labelFormula φ fc cliArgs.wallclockTimeoutMs genMode pool) .dedicated
           tasks := tasks.push task
         | none => pure ()
       -- Wait for all tasks and collect results
@@ -1098,7 +1156,7 @@ def main (args : List String) : IO Unit := do
           if labeled.metrics.decisionTimeMs > 1000 then
             IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
           let splitName := assignSplit labeled.formula.prettyPrint
-          let record := labeledToRecord (count + 1) splitName labeled fcName
+          let record := labeledToRecord (count + 1) splitName labeled fcName genModeStr
           writeRecordJSONL handle record
           handle.flush
           -- Update accumulators
@@ -1132,13 +1190,13 @@ def main (args : List String) : IO Unit := do
   else
     -- Sequential labeling (original path)
     for φ in formulasToLabel do
-      let labeled ← labelFormula φ fc cliArgs.wallclockTimeoutMs
+      let labeled ← labelFormula φ fc cliArgs.wallclockTimeoutMs genMode pool
       -- Task 261 v3: slow-formula warning for post-run analysis
       if labeled.metrics.decisionTimeMs > 1000 then
         IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
       -- Write JSONL line immediately (no accumulation)
       let splitName := assignSplit labeled.formula.prettyPrint
-      let record := labeledToRecord (count + 1) splitName labeled fcName
+      let record := labeledToRecord (count + 1) splitName labeled fcName genModeStr
       writeRecordJSONL handle record
       -- Task 261 v3: flush after each record to prevent data loss on crash/kill
       handle.flush
@@ -1221,6 +1279,7 @@ def main (args : List String) : IO Unit := do
     samplingMode := modeStr
     decisionMethodDist := methodCounts
     frameClassName := fcName
+    generationMode := genModeStr
   }
   writeMetadata outputPath metadata
   IO.println s!"  Wrote {labeledThisRun} records to {cliArgs.output}{if cliArgs.resumeFrom > 0 then s!" (appended, total: {count})" else ""}"

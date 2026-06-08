@@ -1068,14 +1068,17 @@ Prints progress every 100 formulas processed.
 Returns the list of all labeled results.
 -/
 def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
-    (parallelThreads : Nat := 0) : IO (List LabeledFormula) := do
+    (parallelThreads : Nat := 0)
+    (mode : GenerationMode := .exhaustive)
+    (proofFirstPool : Option (ProofPool .Base) := none)
+    : IO (List LabeledFormula) := do
   let total := formulas.length
   if parallelThreads == 0 then
     -- Sequential path (backward compatible)
     let mut results : List LabeledFormula := []
     let mut count : Nat := 0
     for φ in formulas do
-      let labeled ← labelFormula φ .Base wallclockTimeoutMs
+      let labeled ← labelFormula φ .Base wallclockTimeoutMs mode proofFirstPool
       results := labeled :: results
       count := count + 1
       if count % 100 == 0 then
@@ -1111,7 +1114,7 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
         let mut chunkResults : List LabeledFormula := []
         for φ in chunk do
           let labeled ← try
-            labelFormula φ .Base wallclockTimeoutMs
+            labelFormula φ .Base wallclockTimeoutMs mode proofFirstPool
           catch _e =>
             pure (mkTimeout φ)
           chunkResults := labeled :: chunkResults
@@ -1292,5 +1295,62 @@ def LabeledFormula.toJson (lf : LabeledFormula) : String :=
     | none => "null"
     | some t => "\"" ++ escapeJsonString t ++ "\"")
   ++ "}"
+
+/-! ### Phase 1 smoke tests (task 284): proof-pool hybrid mode -/
+
+-- Test 1: Pool generation produces a non-empty pool
+#eval show IO Unit from do
+  let cfg : ForwardConfig := {
+    seedCount := 100
+    maxDepth := 1
+    maxPoolSize := 200
+    atoms := [⟨"p", none⟩, ⟨"q", none⟩]
+    frameClass := .Base
+  }
+  let entries ← forwardGenerate cfg
+  IO.println s!"[test] Pool generation: {entries.length} entries (expected > 0)"
+  if entries.length > 0 then
+    IO.println "[test] PASS: pool is non-empty"
+  else
+    IO.println "[test] FAIL: pool is empty"
+
+-- Test 2: labelFormula with hybrid mode hits a known valid formula (p → p)
+#eval show IO Unit from do
+  -- Build a small pool containing p → p
+  let cfg : ForwardConfig := {
+    seedCount := 100
+    maxDepth := 1
+    maxPoolSize := 200
+    atoms := [⟨"p", none⟩, ⟨"q", none⟩]
+    frameClass := .Base
+  }
+  let entries ← forwardGenerate cfg
+  let mut pool : ProofPool .Base := { ProofPool.empty with cap := 200 }
+  for σ in entries do
+    pool := pool.add σ.fst σ.snd
+  let pImpP := Formula.imp (Formula.atom ⟨"p", none⟩) (Formula.atom ⟨"p", none⟩)
+  let containsPImpP := pool.contains pImpP
+  IO.println s!"[test] Pool contains (p → p): {containsPImpP}"
+  let lf ← labelFormula pImpP .Base 1000 .hybrid (some pool)
+  IO.println s!"[test] Hybrid label for (p → p): {repr lf.label}, method: {lf.decisionMethod}"
+  if lf.label == .valid then
+    IO.println "[test] PASS: hybrid mode correctly labels (p → p) as valid"
+  else
+    IO.println "[test] FAIL: hybrid mode did not label (p → p) as valid"
+
+-- Test 3: Fallthrough to tableau for a formula not in the pool
+#eval show IO Unit from do
+  -- Build an empty pool
+  let pool : ProofPool .Base := { ProofPool.empty with cap := 10 }
+  -- U(p, q) → U(r, s) is not in an empty pool; should fall through to tableau
+  let φ := Formula.imp
+    (Formula.untl (Formula.atom ⟨"p", none⟩) (Formula.atom ⟨"q", none⟩))
+    (Formula.untl (Formula.atom ⟨"r", none⟩) (Formula.atom ⟨"s", none⟩))
+  let lf ← labelFormula φ .Base 1000 .hybrid (some pool)
+  IO.println s!"[test] Hybrid fallthrough: label={repr lf.label}, method={lf.decisionMethod}"
+  if lf.decisionMethod != "proof_first" then
+    IO.println "[test] PASS: hybrid mode fell through to tableau (not proof_first)"
+  else
+    IO.println "[test] FAIL: hybrid mode did not fall through"
 
 end Bimodal.Automation
