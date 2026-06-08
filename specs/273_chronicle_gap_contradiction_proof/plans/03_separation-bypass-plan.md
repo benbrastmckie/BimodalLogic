@@ -132,22 +132,37 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prior Transfer Lemma [NOT STARTED]
+### Phase 2: Prior Transfer Lemma [BLOCKED]
 
 **Goal**: Prove that the formula A produced by `separation_implies_expressiveness` (correct for all Z-carrier `IntStructureFromSig` structures) is also correct for arbitrary `OrderedMonadicStructure sig` satisfying Prior-UZ/SZ. This is the core missing piece.
 
+**BLOCKER** (Phase 2):
+- **What failed**: The transfer from Z-structure correctness to arbitrary Prior structures is not achievable via the separation theorem alone. All three approaches (2a, 2b, 2c) were analyzed in depth and found to have the same fundamental gap.
+- **What was tried**:
+  1. **Approach 2a (direct IntStructureFromSig construction)**: Given M : OrderedMonadicStructure, construct M_Z : IntStructureFromSig matching M. FAILS because eval quantifies over M.carrier (arbitrary) vs Int (Z-carrier), and the quantifier domains differ when M is not Z-isomorphic.
+  2. **Approach 2b (characteristic formula + reinterpretation)**: Show temporal_truth of A depends only on local data and order. PARTIALLY CORRECT: temporal_truth IS carrier-agnostic for box-free formulas, but eval quantifies over M.carrier. The atom elimination step (quantElimFormula) is proved only for IntStructureFromSig. Reproving for arbitrary carriers would duplicate ~1000 lines.
+  3. **Approach 2c (fixed-t embedding via succ/pred)**: Embed Z-neighborhood of t into IntStructureFromSig using succ/pred chains. FAILS because if M is not IsSuccArchimedean, the chain does not cover M.carrier, and eval quantifiers see elements outside the chain.
+  4. **IsSuccArchimedean derivation**: Attempted to show Prior-UZ + SuccOrder + NoMaxOrder + h_surj implies IsSuccArchimedean. INCONCLUSIVE: Prior-UZ prevents certain definable gaps but does not prevent non-archimedean gaps in general. The predicate signature is finite, so only finitely many "types" exist, but temporal formulas can still be consistent with non-archimedean carriers.
+  5. **eval_order_iso approach**: Would work IF M.carrier ≃o Z, but this requires IsSuccArchimedean which cannot be derived from the hypotheses.
+- **Why it's stuck**: Reynolds 1994 Theorem 5 (the mathematical result being formalized) explicitly uses GHR93 Theorem 9.3.1 ({U,S,U',S'} expressive completeness for ALL linear structures) as a prerequisite. The sorry in stavi_expressive_completeness IS the formalization of GHR93 9.3.1 for all structures. The separation theorem (GHR94 Ch 10.2, already formalized sorry-free) proves a DIFFERENT result: {U,S} completeness over Z only. These are mathematically distinct theorems. The gap between "completeness over Z" and "completeness over all Prior structures" is exactly what the GHR93 EF game proof provides, and there is no known shortcut that avoids it.
+- **What is needed**: One of:
+  (a) Fill the sorry sites at StaviCompleteness.lean:2353,2435 (4-variable existential transfer in EF games), which would make stavi_expressive_completeness sorry-free and resolve the entire chain.
+  (b) Prove that the specific structures used by consumers of US_expressively_complete_over_prior are Z-isomorphic, and add iso : M.carrier ≃o Z to the type signature. This changes 7 call sites in GoodStructuresModelSurgery.lean.
+  (c) Prove that Prior-UZ + SuccOrder + PredOrder + NoMaxOrder + NoMinOrder + h_surj implies IsSuccArchimedean, which would allow constructing the iso inside the proof.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Tasks**:
-- [ ] Study the type signatures carefully:
+- [x] Study the type signatures carefully: *(completed)* *(deviation: altered -- all three approaches analyzed, none viable)*
   - `separation_implies_expressiveness` returns: `exists A atomMap_fwd, forall (M : IntStructureFromSig sig) (t : Int), eval (int_to_ordered sig M) (fun _ => t) psi <-> Separation.int_truth (to_int_struct M atomMap_fwd) t A`
   - `US_expressively_complete_over_prior` needs: `{ A : Formula // forall (M : OrderedMonadicStructure sig) (h_UZ) (h_SZ) (t : M.carrier), eval M (fun _ => t) psi <-> temporal_truth M atomMap t A }`
   - Key difference: `atomMap_fwd : sig.preds -> Atom` (forward) vs `atomMap : Formula -> sig.preds` (backward)
-- [ ] Build the atomMap bridge: given `atomMap : Formula -> sig.preds` with `h_surj : forall p, exists a, atomMap (.atom a) = p`, construct `atomMap_fwd : sig.preds -> Atom` via Classical.choice on `h_surj`. Prove round-trip properties.
-- [ ] Prove the core transfer theorem. Two approaches to evaluate:
+- [ ] Build the atomMap bridge: given `atomMap : Formula -> sig.preds` with `h_surj : forall p, exists a, atomMap (.atom a) = p`, construct `atomMap_fwd : sig.preds -> Atom` via Classical.choice on `h_surj`. Prove round-trip properties. *(deviation: skipped -- blocked by core transfer theorem)*
+- [ ] Prove the core transfer theorem. Two approaches to evaluate: *(deviation: blocked -- all approaches analyzed, none viable without EF games or Z-isomorphism)*
   - **Approach 2a (direct IntStructureFromSig construction)**: Given any `OrderedMonadicStructure sig M` and `atomMap`, construct an `IntStructureFromSig sig` called `M_Z` such that `eval (int_to_ordered sig M_Z) (fun _ => t) psi <-> eval M (fun _ => t) psi` for all `psi` and `t` (by making `M_Z.interp p t` depend on the actual `M` truth). Then the `separation_implies_expressiveness` result for `M_Z` gives `eval M (fun _ => t) psi <-> int_truth (to_int_struct M_Z atomMap_fwd) t A`, and `int_truth_eq_temporal_truth_Z` gives the temporal_truth form. The challenge is: `int_to_ordered sig M_Z` has carrier `Int` while `M` may not have carrier `Int`, so `eval` may differ structurally.
   - **Approach 2b (characteristic formula + reinterpretation)**: The formula A produced by `expressiveness_inner` only depends on `psi`'s structure and the separation theorem. Show that A is box-free and that `temporal_truth M atomMap t A` depends only on the local truth of atoms and the order structure of M. Since atoms are interpreted the same way (via atomMap) and the temporal operators (U, S) only depend on the order, A's truth is determined by the same data in M as in any Z-structure with matching predicates.
   - **Approach 2c (the eval transfer for fixed t)**: For a fixed point `t : M.carrier`, construct an `IntStructureFromSig` whose predicates at integer `n` match the predicates of the `n`-th successor/predecessor of `t` in `M` (using Prior-UZ/SZ to guarantee that each point has a unique successor/predecessor). This embeds a "Z-like neighborhood" of `t` into a Z-structure. This may require `SuccOrder`/`PredOrder` and `IsSuccArchimedean` instances which are guaranteed by Prior-UZ/SZ on discrete structures.
-- [ ] Implement the chosen approach in `SemanticBridge.lean` (extend existing file) or a new file `Theories/Bimodal/Metalogic/WeakCanonical/Separation/PriorTransfer.lean`
-- [ ] Prove `US_expressively_complete_over_prior_via_separation`: the theorem with the SAME type signature as the current `US_expressively_complete_over_prior`, but using `separation_implies_expressiveness` instead of `stavi_expressive_completeness`
+- [ ] Implement the chosen approach in `SemanticBridge.lean` (extend existing file) or a new file `Theories/Bimodal/Metalogic/WeakCanonical/Separation/PriorTransfer.lean` *(deviation: blocked -- no viable approach found)*
+- [ ] Prove `US_expressively_complete_over_prior_via_separation`: the theorem with the SAME type signature as the current `US_expressively_complete_over_prior`, but using `separation_implies_expressiveness` instead of `stavi_expressive_completeness` *(deviation: blocked -- Prior transfer requires GHR93 EF game result which is the same sorry being bypassed)*
 
 **Timing**: 2.5 hours
 
