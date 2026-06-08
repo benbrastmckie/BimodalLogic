@@ -106,22 +106,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Integrate proportional allocation into expandBranchWithFuel [NOT STARTED]
+### Phase 2: Integrate proportional allocation into expandBranchWithFuel [COMPLETED]
 
 **Goal**: Replace uniform `fuel / (max 1 branches.length)` with difficulty-weighted allocation in the main expansion function. Update termination proof.
 
 **Tasks**:
-- [ ] In `expandBranchWithFuel`, replace the split case (lines ~174-194):
-  - Replace `let branchFuel := fuel / (max 1 branches.length)` with `let fuelAllocs := allocateFuelProportionally fuel branches`
-  - Change `tryBranch` to accept a `(branchFuel : Nat)` parameter instead of capturing the single `branchFuel`
-  - Replace `branches.foldl tryBranch init` with a zip-fold over `branches.zip fuelAllocs` that passes the per-branch fuel to `expandBranchWithFuel`
-  - Alternatively (simpler for termination): keep `foldl` but index into `fuelAllocs` using a counter, or use `List.zipWith` to pair branches with their fuels
-- [ ] Update `termination_by fuel` and `decreasing_by` block:
-  - The key obligation is `allocatedFuel_i < fuel + 1` for each sub-branch
-  - Since `allocateFuelProportionally` caps each value at `min(..., fuel - 1)`, the bound is `allocatedFuel <= fuel - 1 < fuel + 1`
-  - Proof: `Nat.lt_succ_of_le (Nat.min_le_right _ _)` or similar
-  - If Lean's termination checker needs help, extract the fuel list before the match and prove the bound on list elements
-- [ ] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles with zero errors
+- [x] In `expandBranchWithFuel`, replace the split case:
+  - Replaced `let branchFuel := fuel / (max 1 branches.length)` with `let fuelAllocs := allocateFuelProportionally (fuel + 1) branches`
+  - Changed `tryBranch` to accept `(pair : Branch × Nat)` from zipped list
+  - Replaced `branches.foldl tryBranch init` with `(branches.zip fuelAllocs).foldl tryBranch init`
+  - Used `min pair.2 fuel` in recursive call to make termination structurally visible
+- [x] Update `termination_by fuel` and `decreasing_by` block:
+  - `decreasing_by all_goals simp_wf` suffices since `min pair.2 fuel ≤ fuel` is visible to `simp_wf`
+- [x] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles with zero errors
 
 **Timing**: 1.5 hours
 

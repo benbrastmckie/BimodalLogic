@@ -259,23 +259,23 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- For a split, we check if ALL branches close
               -- If any branch stays open, we return that open branch
-              -- Task 261 v3: divide fuel among sub-branches to bound total work
-              -- to O(fuel) instead of O(2^fuel). Each sub-branch receives
-              -- fuel/(max 1 n) where n is the number of sub-branches.
-              let branchFuel := fuel / (max 1 branches.length)
-              let tryBranch := fun acc newBranch =>
+              -- Task 290: proportional fuel allocation based on branch difficulty.
+              -- Each sub-branch receives fuel proportional to its estimated difficulty.
+              -- All allocations are capped at `fuel` (= original - 1) for termination.
+              let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
+              let tryBranch := fun acc (pair : Branch × Nat) =>
                 match acc with
                 | some (.inr openBr) => some (.inr openBr)  -- Already found open
                 | _ =>
-                    match expandBranchWithFuel newBranch branchFuel newOrd fc tracker applied' with
+                    -- Cap at `fuel` to ensure termination (pair.2 is already ≤ fuel
+                    -- from allocateFuelProportionally, but `min` makes it visible)
+                    match expandBranchWithFuel pair.1 (min pair.2 fuel) newOrd fc tracker applied' with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
-              branches.foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))  -- Dummy initial closed
+              (branches.zip fuelAllocs).foldl tryBranch (some (.inl ⟨b, .botPos Label.initial⟩))
   termination_by fuel
-decreasing_by
-  all_goals simp_wf
-  exact Nat.lt_succ_of_le (Nat.div_le_self fuel (max 1 branches.length))
+decreasing_by all_goals simp_wf
 
 /-!
 ## Trace-Instrumented Expansion (Task 277)
@@ -1033,21 +1033,23 @@ Once the loop is fixed, the termination theorem would follow from:
 /--
 Helper: the tryBranch step function in expandBranchWithFuel preserves the
 invariant that any `.inr` result has `findClosure = none`.
+Task 290: updated for proportional fuel allocation (pair : Branch × Nat).
 -/
 private theorem tryBranch_inr
-    (fuel : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
+    (fuelBound : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
     (tracker : EventualityTracker) (applied' : AppliedSet)
     (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)))
-    (newBranch : Branch) (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
-    (ih : ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
+    (pair : Branch × Nat) (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
+    (ih : ∀ (fuel' : Nat), fuel' ≤ fuelBound →
+          ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
             (ap' : AppliedSet) (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
-            expandBranchWithFuel b' fuel t' fc' trk' ap' = some (.inr (ob', o', a')) →
+            expandBranchWithFuel b' fuel' t' fc' trk' ap' = some (.inr (ob', o', a')) →
             findClosure ob' fc' = none)
     (h_acc : ∀ ob' ord' ap', acc = some (.inr (ob', ord', ap')) → findClosure ob' fc = none)
     (h_result : (match acc with
       | some (.inr openBr) => some (.inr openBr)
       | _ =>
-          match expandBranchWithFuel newBranch fuel newOrd fc tracker applied' with
+          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' with
           | none => none
           | some (.inl _) => acc
           | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
@@ -1059,7 +1061,8 @@ private theorem tryBranch_inr
     · exact absurd h_result (by simp)
     · exact absurd h_result (by simp)
     · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
-      rename_i openBr h_exp; exact ih newBranch newOrd fc tracker applied' ob ord ap h_exp
+      rename_i openBr h_exp
+      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' ob ord ap h_exp
   | some val =>
     cases val with
     | inr p =>
@@ -1071,44 +1074,48 @@ private theorem tryBranch_inr
       · exact absurd h_result (by simp)
       · exact absurd h_result (by simp)
       · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
-        rename_i openBr h_exp; exact ih newBranch newOrd fc tracker applied' ob ord ap h_exp
+        rename_i openBr h_exp
+        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' ob ord ap h_exp
 
 /--
 Helper: `List.foldl` with the tryBranch step preserves the findClosure invariant.
+Task 290: updated for proportional fuel allocation (pairs : List (Branch × Nat)).
 -/
 private theorem foldl_preserves_findClosure
-    (fuel : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
+    (fuelBound : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
     (tracker : EventualityTracker) (applied' : AppliedSet)
-    (ih : ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
+    (ih : ∀ (fuel' : Nat), fuel' ≤ fuelBound →
+          ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
             (ap' : AppliedSet) (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
-            expandBranchWithFuel b' fuel t' fc' trk' ap' = some (.inr (ob', o', a')) →
+            expandBranchWithFuel b' fuel' t' fc' trk' ap' = some (.inr (ob', o', a')) →
             findClosure ob' fc' = none)
-    (branches : List Branch)
+    (pairs : List (Branch × Nat))
     (init : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)))
     (h_init : ∀ ob ord ap, init = some (.inr (ob, ord, ap)) → findClosure ob fc = none)
     (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
-    (h_result : branches.foldl (fun acc newBranch =>
+    (h_result : pairs.foldl (fun acc (pair : Branch × Nat) =>
       match acc with
       | some (.inr openBr) => some (.inr openBr)
       | _ =>
-          match expandBranchWithFuel newBranch fuel newOrd fc tracker applied' with
+          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' with
           | none => none
           | some (.inl _) => acc
           | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
     findClosure ob fc = none := by
-  induction branches generalizing init with
+  induction pairs generalizing init with
   | nil => exact h_init ob ord ap h_result
   | cons hd tl ih_tl =>
     simp only [List.foldl] at h_result
     exact ih_tl _
-      (fun ob' ord' ap' h => tryBranch_inr fuel newOrd fc tracker applied' init hd ob' ord' ap' ih h_init h)
+      (fun ob' ord' ap' h => tryBranch_inr fuelBound newOrd fc tracker applied' init hd ob' ord' ap' ih h_init h)
       h_result
 
 set_option maxHeartbeats 3200000 in
 /--
 General soundness: if `expandBranchWithFuel` returns an open branch,
 that branch has no closure reason.
-Uses strong induction to handle the fuel-divided split case (task 261 v3).
+Uses strong induction to handle the fuel-divided split case.
+Task 290: updated for proportional fuel allocation.
 -/
 private theorem expandBranchWithFuel_sound
     (fuel : Nat) :
@@ -1140,10 +1147,10 @@ private theorem expandBranchWithFuel_sound
             exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ ob ord ap h
           | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
             simp [hexp] at h
-            have hbf : k / (max 1 branches.length) < k + 1 :=
-              Nat.lt_succ_of_le (Nat.div_le_self k _)
-            exact foldl_preserves_findClosure (k / (max 1 branches.length)) newOrd fc _ _
-              (ih _ hbf) branches
+            -- Task 290: use foldl_preserves_findClosure for zipped pairs
+            exact foldl_preserves_findClosure k newOrd fc _ _
+              (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
+              (branches.zip (allocateFuelProportionally (k + 1) branches))
               (some (.inl ⟨b, .botPos Label.initial⟩))
               (fun _ _ _ h' => by simp at h')
               ob ord ap h
