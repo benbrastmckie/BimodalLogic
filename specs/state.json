@@ -2383,10 +2383,11 @@
       "project_number": 284,
       "project_name": "timeout_reduction_c5_hybrid_prefilter",
       "description": "Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter",
-      "status": "implementing",
+      "status": "completed",
       "created": "2026-06-08T02:17:44Z",
-      "last_updated": "2026-06-08T17:00:00Z",
+      "last_updated": "2026-06-08T18:00:00Z",
       "started": "2026-06-08T17:00:00Z",
+      "completed": "2026-06-08T18:00:00Z",
       "session_id": "sess_1780938205_d0e80f_284",
       "task_type": "lean4",
       "priority": "high",
@@ -2403,6 +2404,11 @@
           "path": "specs/284_timeout_reduction_c5_hybrid_prefilter/plans/01_hybrid-prefilter-plan.md",
           "type": "plan",
           "summary": "4-phase plan: wire proof-pool hybrid mode into export pipeline, extend structural prefilter with temporal implication patterns, integrate and regenerate c5 dataset, documentation cleanup"
+        },
+        {
+          "path": "specs/284_timeout_reduction_c5_hybrid_prefilter/summaries/01_hybrid-prefilter-summary.md",
+          "type": "summary",
+          "summary": "All 4 phases completed: hybrid pool CLI wiring, structural prefilter extension (identity + Until->Future + Since->Past), integration testing (zero regressions), documentation. Build passes (737 jobs), 0 sorries, 0 new axioms."
         }
       ],
       "planned": "2026-06-08T16:00:00Z",
@@ -2432,7 +2438,7 @@
           }
         ]
       },
-      "completion_summary": null
+      "completion_summary": "Wired proof-pool hybrid labeling mode into DatasetExport CLI (--generation-mode, --pool-depth, --pool-seeds flags), extended structural prefilter with identity check and temporal implication patterns (U(X,Y)->F(Y), S(X,Y)->P(Y)). Mini-batch integration test: 8/8 labels match between exhaustive and hybrid, 6 prefilter hits, zero regressions. Build passes (737 jobs), 0 sorries, 0 new axioms."
     },
     {
       "project_number": 285,

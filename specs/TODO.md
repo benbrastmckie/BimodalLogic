@@ -81,7 +81,8 @@ technical_debt:
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
-284 [IMPLEMENTING] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
+284 [COMPLETED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
+  - **Summary**: [specs/284_timeout_reduction_c5_hybrid_prefilter/summaries/01_hybrid-prefilter-summary.md]
 285 [COMPLETED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
 289 [PLANNED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
   - **Report**: [specs/289_branch_result_memoization_caching/reports/01_memoization-research.md]
