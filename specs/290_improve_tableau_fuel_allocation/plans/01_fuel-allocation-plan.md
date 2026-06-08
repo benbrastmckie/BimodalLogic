@@ -133,16 +133,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Mirror changes in expandBranchWithFuel_tracedImpl [NOT STARTED]
+### Phase 3: Mirror changes in expandBranchWithFuel_tracedImpl [COMPLETED]
 
 **Goal**: Apply the same proportional allocation to the trace-instrumented variant.
 
 **Tasks**:
-- [ ] In `expandBranchWithFuel_tracedImpl` (lines ~315-328), replace the split case:
-  - Replace `let branchFuel := fuel / (max 1 branches.length)` with `let fuelAllocs := allocateFuelProportionally fuel branches`
-  - Update the `for` loop to use per-branch fuel from `fuelAllocs` (zip branches with allocations)
-- [ ] Update `decreasing_by` block (line ~330-332) with the same proof as Phase 2
-- [ ] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles
+- [x] In `expandBranchWithFuel_tracedImpl`, replace the split case:
+  - Replaced `let branchFuel := fuel / (max 1 branches.length)` with `let fuelAllocs := allocateFuelProportionally (fuel + 1) branches`
+  - Updated the `for` loop to iterate over `branches.zip fuelAllocs` pairs with `min pair.2 fuel`
+- [x] Update `decreasing_by` block: `all_goals simp_wf` suffices (same as Phase 2)
+- [x] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles
 
 **Timing**: 0.5 hours
 

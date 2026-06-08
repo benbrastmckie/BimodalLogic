@@ -398,22 +398,21 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
                   expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied'
               | .split branches =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  let branchFuel := fuel / (max 1 branches.length)
+                  -- Task 290: proportional fuel allocation (mirrors expandBranchWithFuel)
+                  let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
                   let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
                     some (.inl ⟨b, .botPos Label.initial⟩)
-                  for newBranch in branches do
+                  for pair in branches.zip fuelAllocs do
                     match acc with
                     | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
                     | _ =>
-                        match ← expandBranchWithFuel_tracedImpl newBranch branchFuel newOrd fc tracker applied' with
+                        match ← expandBranchWithFuel_tracedImpl pair.1 (min pair.2 fuel) newOrd fc tracker applied' with
                         | none => acc := none
                         | some (.inl _) => pure ()  -- closed; continue
                         | some (.inr openBr) => acc := some (.inr openBr)
                   return acc
 termination_by fuel
-decreasing_by
-  all_goals simp_wf
-  exact Nat.lt_succ_of_le (Nat.div_le_self fuel (max 1 branches.length))
+decreasing_by all_goals simp_wf
 
 /--
 Public API: run trace-instrumented expansion and return both the result
