@@ -2677,7 +2677,7 @@
     {
       "project_number": 289,
       "project_name": "branch_result_memoization_caching",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "dataset-enhancement",
@@ -2690,6 +2690,9 @@
       "session_id": "sess_1780938205_d0e80f_289",
       "researched": "2026-06-08T12:00:00Z",
       "planned": "2026-06-08T17:00:00Z",
+      "started": "2026-06-08T18:00:00Z",
+      "completed": "2026-06-08T19:00:00Z",
+      "completion_summary": "Implemented Mutex-protected bounded HashMap cache for formula labeling. Added DecideCacheKey/DecideCache structures, labelFormulaWithCache wrapper, threaded cache through labelBatch and DatasetExport, added --cache-size CLI flag to benchmark. Zero sorries, zero new axioms, build passes.",
       "next_artifact_number": 2,
       "artifacts": [
         {
@@ -2701,6 +2704,11 @@
           "type": "plan",
           "path": "specs/289_branch_result_memoization_caching/plans/01_memoization-plan.md",
           "summary": "4-phase implementation plan for Mutex-protected bounded HashMap cache at labelBatch level"
+        },
+        {
+          "type": "summary",
+          "path": "specs/289_branch_result_memoization_caching/summaries/01_memoization-summary.md",
+          "summary": "Implementation summary: DecideCache with Mutex, labelFormulaWithCache, threaded through labelBatch and DatasetExport"
         }
       ],
       "plan_metadata": {

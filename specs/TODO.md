@@ -84,9 +84,8 @@ technical_debt:
 284 [COMPLETED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
   - **Summary**: [specs/284_timeout_reduction_c5_hybrid_prefilter/summaries/01_hybrid-prefilter-summary.md]
 285 [COMPLETED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
-289 [PLANNED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
-  - **Report**: [specs/289_branch_result_memoization_caching/reports/01_memoization-research.md]
-  - **Plan**: [specs/289_branch_result_memoization_caching/plans/01_memoization-plan.md]
+289 [COMPLETED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
+  - **Summary**: [specs/289_branch_result_memoization_caching/summaries/01_memoization-summary.md]
 287 [COMPLETED] — Add formula normalization pass before tableau expansion
   - **Report**: [specs/287_formula_normalization_before_tableau/reports/01_normalization-research.md]
   - **Plan**: [specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md]
