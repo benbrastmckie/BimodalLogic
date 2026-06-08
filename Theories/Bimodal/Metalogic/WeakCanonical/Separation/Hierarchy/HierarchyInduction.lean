@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy.HierarchyDefs
+import Bimodal.Metalogic.WeakCanonical.Separation.Hierarchy.HierarchyCaseSep
 
 /-!
 # Substitution-Based Induction Engine for the Separation Hierarchy (Steps 1-5b)

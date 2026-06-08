@@ -42,23 +42,8 @@ private theorem all_future_congr {φ ψ : Formula} (h : int_equiv φ ψ) :
   · intro hall s hts; exact (h M s).mp (hall s hts)
   · intro hall s hts; exact (h M s).mpr (hall s hts)
 
-private theorem untl_congr {φ₁ ψ₁ φ₂ ψ₂ : Formula}
-    (h1 : int_equiv φ₁ φ₂) (h2 : int_equiv ψ₁ ψ₂) :
-    int_equiv (.untl φ₁ ψ₁) (.untl φ₂ ψ₂) := by
-  intro M t; constructor
-  · rintro ⟨s, hts, hφ, hψ⟩
-    exact ⟨s, hts, (h1 M s).mp hφ, fun r hr1 hr2 => (h2 M r).mp (hψ r hr1 hr2)⟩
-  · rintro ⟨s, hts, hφ, hψ⟩
-    exact ⟨s, hts, (h1 M s).mpr hφ, fun r hr1 hr2 => (h2 M r).mpr (hψ r hr1 hr2)⟩
-
-private theorem snce_congr {φ₁ ψ₁ φ₂ ψ₂ : Formula}
-    (h1 : int_equiv φ₁ φ₂) (h2 : int_equiv ψ₁ ψ₂) :
-    int_equiv (.snce φ₁ ψ₁) (.snce φ₂ ψ₂) := by
-  intro M t; constructor
-  · rintro ⟨s, hst, hφ, hψ⟩
-    exact ⟨s, hst, (h1 M s).mp hφ, fun r hr1 hr2 => (h2 M r).mp (hψ r hr1 hr2)⟩
-  · rintro ⟨s, hst, hφ, hψ⟩
-    exact ⟨s, hst, (h1 M s).mpr hφ, fun r hr1 hr2 => (h2 M r).mpr (hψ r hr1 hr2)⟩
+-- untl_congr and snce_congr are now available from HierarchyInduction
+-- (via HierarchyCompletion import chain)
 
 -- is_separable_of_equiv is now public in Eliminations.lean
 

@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Separation.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.TemporalClosure
 import Bimodal.Metalogic.WeakCanonical.Separation.DedekindZ.Cases
+import Bimodal.Metalogic.WeakCanonical.Separation.FormulaOps
 
 /-!
 # Separation Hierarchy Definitions: U/S-Type Predicates, Abstraction, and Junction-Depth Monotonicity
@@ -804,5 +805,111 @@ theorem abstract_snce_inside_untl_jd_lt (a b A B : Formula) (p : Atom)
   · have := abstract_snce_untl_jdU_lt_both a b A B p hlt_a hlt_b
     simp only [abstract_snce, junction_depth_U] at this; exact this
 
+
+/-! ### GHR94-Faithful Strengthening: Separation preserving single U-type
+
+GHR94 Lemma 10.2.5 states: "D is equivalent to a syntactically separated wff
+in which U only appears as the formula U(A,B)." This is STRONGER than our
+`is_separable`, which only guarantees existence of a separated equivalent
+without constraining its U-type structure.
+
+By proving this stronger claim, we eliminate the oracle from 10.2.5 entirely:
+at snce_depth_of_U >= 2, the IH gives separated forms C', F' that PRESERVE
+has_single_U_type. Box-normalizing and applying 10.2.4 directly works because
+the `.snce C'' F''` retains the single U-type structure. -/
+
+/-- Stronger separability: separated equivalent with preserved single U-type.
+    This is the property guaranteed by GHR94 Lemma 10.2.5. -/
+def is_separable_with_U_type (φ A B : Formula) : Prop :=
+  ∃ ψ : Formula, is_syntactically_separated ψ = true ∧ int_equiv φ ψ ∧ has_single_U_type ψ A B
+
+/-- is_separable_with_U_type implies is_separable. -/
+theorem separable_with_type_imp_separable {φ A B : Formula}
+    (h : is_separable_with_U_type φ A B) : is_separable φ := by
+  obtain ⟨ψ, hsep, hequiv, _⟩ := h
+  exact ⟨ψ, hsep, hequiv⟩
+
+/-- Equivalence transfer for is_separable_with_U_type. -/
+theorem is_separable_with_U_type_of_equiv {φ χ A B : Formula}
+    (hequiv : int_equiv φ χ) (h : is_separable_with_U_type χ A B) :
+    is_separable_with_U_type φ A B := by
+  obtain ⟨ψ, hsep, hequiv2, hsingle⟩ := h
+  exact ⟨ψ, hsep, int_equiv_trans hequiv hequiv2, hsingle⟩
+
+/-- imp preserves is_separable_with_U_type. -/
+theorem imp_separable_with_type {a b A B : Formula}
+    (ha : is_separable_with_U_type a A B) (hb : is_separable_with_U_type b A B) :
+    is_separable_with_U_type (.imp a b) A B := by
+  obtain ⟨ψa, hsepa, hequiva, hsinglea⟩ := ha
+  obtain ⟨ψb, hsepb, hequivb, hsingleb⟩ := hb
+  exact ⟨.imp ψa ψb, by simp [is_syntactically_separated, hsepa, hsepb],
+         fun M t => ⟨fun h hp => (hequivb M t).mp (h ((hequiva M t).mpr hp)),
+                     fun h hp => (hequivb M t).mpr (h ((hequiva M t).mp hp))⟩,
+         ⟨hsinglea, hsingleb⟩⟩
+
+/-- U-free formulas are separable_with_U_type (vacuously). -/
+theorem u_free_separable_with_type {φ A B : Formula} (h : is_U_free φ = true) :
+    is_separable_with_U_type φ A B := by
+  have hsep := separated_imp_separable φ (restricted_u_free_separated φ (has_no_allpast_allfuture_true φ) h)
+  obtain ⟨ψ, hsep_ψ, hequiv⟩ := hsep
+  -- The separated witness of a U-free formula is itself (identity equivalence works)
+  exact ⟨φ, by {
+    -- φ is U-free, so we need is_syntactically_separated φ
+    -- Actually, φ might not be syntactically separated (could have .snce with non-U-free args)
+    -- But wait, φ IS U-free, so every .snce in φ has U-free children (since all subformulas are U-free)
+    -- And φ has no .untl (U-free), so .untl condition is vacuous
+    -- So φ IS syntactically separated... only if has_no_allpast_allfuture
+    -- Actually restricted_u_free_separated handles this
+    exact restricted_u_free_separated φ (has_no_allpast_allfuture_true φ) h
+  }, int_equiv_refl φ, u_free_has_single_U_type h⟩
+
+/-- .untl A B with S-free args is separable_with_U_type. -/
+theorem untl_s_free_separable_with_type {A B : Formula}
+    (hA_sf : is_S_free A = true) (hB_sf : is_S_free B = true) :
+    is_separable_with_U_type (.untl A B) A B := by
+  exact ⟨.untl A B, by simp [is_syntactically_separated, hA_sf, hB_sf],
+         int_equiv_refl _, has_single_U_type_untl A B⟩
+
+/-! ### Combinators for is_separable_with_U_type -/
+
+/-- or preserves is_separable_with_U_type. -/
+theorem or_separable_with_U_type {a b A B : Formula}
+    (ha : is_separable_with_U_type a A B) (hb : is_separable_with_U_type b A B) :
+    is_separable_with_U_type (Formula.or a b) A B := by
+  obtain ⟨ψa, hsepa, hequiva, hsinglea⟩ := ha
+  obtain ⟨ψb, hsepb, hequivb, hsingleb⟩ := hb
+  refine ⟨Formula.or ψa ψb, ?_, ?_, ?_⟩
+  · simp [Formula.or, Formula.neg, is_syntactically_separated, hsepa, hsepb]
+  · intro M t; constructor
+    · intro h; rcases int_truth_or_iff.mp h with hp | hq
+      · exact int_truth_or_iff.mpr (Or.inl ((hequiva M t).mp hp))
+      · exact int_truth_or_iff.mpr (Or.inr ((hequivb M t).mp hq))
+    · intro h; rcases int_truth_or_iff.mp h with hp | hq
+      · exact int_truth_or_iff.mpr (Or.inl ((hequiva M t).mpr hp))
+      · exact int_truth_or_iff.mpr (Or.inr ((hequivb M t).mpr hq))
+  · exact has_single_U_type_or hsinglea hsingleb
+
+/-- and preserves is_separable_with_U_type. -/
+theorem and_separable_with_U_type {a b A B : Formula}
+    (ha : is_separable_with_U_type a A B) (hb : is_separable_with_U_type b A B) :
+    is_separable_with_U_type (Formula.and a b) A B := by
+  obtain ⟨ψa, hsepa, hequiva, hsinglea⟩ := ha
+  obtain ⟨ψb, hsepb, hequivb, hsingleb⟩ := hb
+  refine ⟨Formula.and ψa ψb, and_separated hsepa hsepb, ?_, has_single_U_type_and hsinglea hsingleb⟩
+  intro M t; constructor
+  · intro h; rw [int_truth_and_iff] at h ⊢
+    exact ⟨(hequiva M t).mp h.1, (hequivb M t).mp h.2⟩
+  · intro h; rw [int_truth_and_iff] at h ⊢
+    exact ⟨(hequiva M t).mpr h.1, (hequivb M t).mpr h.2⟩
+
+/-- neg preserves is_separable_with_U_type. -/
+theorem neg_separable_with_U_type {a A B : Formula}
+    (ha : is_separable_with_U_type a A B) :
+    is_separable_with_U_type (Formula.neg a) A B := by
+  obtain ⟨ψa, hsepa, hequiva, hsinglea⟩ := ha
+  refine ⟨Formula.neg ψa, neg_separated hsepa, ?_, has_single_U_type_neg hsinglea⟩
+  intro M t; constructor
+  · intro hn hp; exact hn ((hequiva M t).mpr hp)
+  · intro hn hp; exact hn ((hequiva M t).mp hp)
 
 end Bimodal.Metalogic.WeakCanonical.Separation
