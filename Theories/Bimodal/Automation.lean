@@ -12,6 +12,7 @@ import Bimodal.Automation.DatasetExporter
 import Bimodal.Automation.ProofStepExtractor
 import Bimodal.Automation.Normalization
 import Bimodal.Automation.InterestingnessMetrics
+import Bimodal.Automation.PrefilterSoundness
 -- DatasetExport, DatasetValidator, and ProofStepExport define `main` (lean_exe targets)
 -- and must not be imported through the umbrella; use them only via `lake exe` commands.
 
