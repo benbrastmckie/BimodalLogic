@@ -2044,14 +2044,25 @@ private def hasBox : Formula → Bool
   | .snce a b => hasBox a || hasBox b
 
 /-- Check if a formula contains at least one derived temporal operator pattern
-    (G, H, F, or P recognized by their primitive expansion). -/
+    (G, H, F, P, always, sometimes, next, prev, weak_future, weak_past, diamond,
+     R, T, WU, WS recognized by their primitive expansion). -/
 private def hasDerivedTemporal : Formula → Bool
   | .atom _ => false
   | .bot => false
   | .box a => hasDerivedTemporal a
+  -- always(φ) = H(φ) ∧ φ ∧ G(φ) (task 285)
+  | .imp (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) (.imp (.imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot => true
+  -- sometimes(φ) = ¬always(¬φ) (task 285)
+  | .imp (.imp (.imp (.imp (.snce (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) (.imp (.imp (.imp (.imp _ .bot) (.imp (.imp (.untl (.imp (.imp _ .bot) .bot) (.imp .bot .bot)) .bot) .bot)) .bot) .bot)) .bot) .bot => true
+  -- weak_future(φ) = φ ∧ G(φ) (task 285)
+  | .imp (.imp _ (.imp (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
+  -- weak_past(φ) = φ ∧ H(φ) (task 285)
+  | .imp (.imp _ (.imp (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) .bot)) .bot => true
   -- Weak Until / Weak Since patterns
   | .imp (.imp (.untl _ _) .bot) (.imp (.untl (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WU pattern
   | .imp (.imp (.snce _ _) .bot) (.imp (.snce (.imp _ .bot) (.imp .bot .bot)) .bot) => true  -- WS pattern
+  -- diamond(φ) = ¬□¬φ (task 285)
+  | .imp (.box (.imp _ .bot)) .bot => true
   -- Check for G/H patterns: ¬F(¬φ) or ¬P(¬φ)
   | .imp inner .bot =>
     match inner with
@@ -2061,9 +2072,12 @@ private def hasDerivedTemporal : Formula → Bool
     | .snce (.imp _ .bot) (.imp _ .bot) => true  -- T pattern
     | _ => hasDerivedTemporal inner
   | .imp a b => hasDerivedTemporal a || hasDerivedTemporal b
-  -- Check for F/P patterns: untl/snce(φ, ⊤)
+  -- Check for next/F patterns: untl(φ, ⊥) is next, untl(φ, ⊤) is F
+  | .untl _ .bot => true   -- next pattern (task 285)
   | .untl _ (.imp .bot .bot) => true   -- F pattern
   | .untl a b => hasDerivedTemporal a || hasDerivedTemporal b
+  -- Check for prev/P patterns: snce(φ, ⊥) is prev, snce(φ, ⊤) is P
+  | .snce _ .bot => true   -- prev pattern (task 285)
   | .snce _ (.imp .bot .bot) => true   -- P pattern
   | .snce a b => hasDerivedTemporal a || hasDerivedTemporal b
 

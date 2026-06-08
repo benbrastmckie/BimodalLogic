@@ -94,21 +94,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Extend hasDerivedTemporal and InterestingnessMetrics [NOT STARTED]
+### Phase 2: Extend hasDerivedTemporal and InterestingnessMetrics [COMPLETED]
 
 **Goal**: Ensure the dataset pipeline recognizes formulas containing the new derived operators for bimodal interaction filtering and interestingness scoring.
 
 **Tasks**:
-- [ ] Add diamond recognition in `hasDerivedTemporal` (FormulaEnumerator.lean ~line 1997): match `imp (box (imp _ bot)) bot` as diamond pattern returning `true`
-- [ ] Add always recognition in `hasDerivedTemporal`: match the always structural pattern (H(phi) and phi and G(phi) expanded form) returning `true`
-- [ ] Add sometimes recognition: match the sometimes structural pattern (neg(always(neg phi))) returning `true`
-- [ ] Add next recognition: match `untl _ .bot` as next pattern returning `true` (before the F pattern `untl _ (.imp .bot .bot)`)
-- [ ] Add prev recognition: match `snce _ .bot` as prev pattern returning `true` (before the P pattern)
-- [ ] Add weak_future recognition: match the weak_future structural pattern returning `true`
-- [ ] Add weak_past recognition: match the weak_past structural pattern returning `true`
-- [ ] Add `hasDiamond` field already exists in InterestingnessMetrics.lean (confirmed at line 68). Verify diamond recognition works correctly for the new enumerated forms.
-- [ ] Add `hasAlways`, `hasSometimes`, `hasNext`, `hasPrev`, `hasWeakFuture`, `hasWeakPast` detection to the `FormulaProfile` structure in InterestingnessMetrics.lean if desired for scoring granularity (optional -- at minimum ensure `hasDerivedTemporal` covers them)
-- [ ] Run `lake build Bimodal.Automation.FormulaEnumerator` and `lake build Bimodal.Automation.InterestingnessMetrics` to verify compilation
+- [x] Add diamond recognition in `hasDerivedTemporal` (FormulaEnumerator.lean ~line 1997): match `imp (box (imp _ bot)) bot` as diamond pattern returning `true`
+- [x] Add always recognition in `hasDerivedTemporal`: match the always structural pattern (H(phi) and phi and G(phi) expanded form) returning `true`
+- [x] Add sometimes recognition: match the sometimes structural pattern (neg(always(neg phi))) returning `true`
+- [x] Add next recognition: match `untl _ .bot` as next pattern returning `true` (before the F pattern `untl _ (.imp .bot .bot)`)
+- [x] Add prev recognition: match `snce _ .bot` as prev pattern returning `true` (before the P pattern)
+- [x] Add weak_future recognition: match the weak_future structural pattern returning `true`
+- [x] Add weak_past recognition: match the weak_past structural pattern returning `true`
+- [x] Add `hasDiamond` field already exists in InterestingnessMetrics.lean (confirmed at line 68). Verify diamond recognition works correctly for the new enumerated forms.
+- [x] Add `hasAlways`, `hasSometimes`, `hasNext`, `hasPrev`, `hasWeakFuture`, `hasWeakPast` detection to the `FormulaProfile` structure in InterestingnessMetrics.lean if desired for scoring granularity (optional -- at minimum ensure `hasDerivedTemporal` covers them) *(deviation: skipped optional profile expansion -- hasDerivedTemporal already covers all 7 operators, and extractOperatorProfile's recursive traversal correctly detects operator components within composite expansions)*
+- [x] Run `lake build Bimodal.Automation.FormulaEnumerator` and `lake build Bimodal.Automation.InterestingnessMetrics` to verify compilation
 
 **Timing**: 1 hour
 
