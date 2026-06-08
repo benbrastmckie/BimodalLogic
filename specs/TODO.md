@@ -1,5 +1,5 @@
 ---
-next_project_number: 291
+next_project_number: 295
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -91,6 +91,13 @@ technical_debt:
   - **Plan**: [specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md]
   └─ 288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter
       └─ 290 [NOT STARTED] — Improve fuel allocation heuristic for imbalanced branches
+
+### cslib Integration (Tasks 291-294)
+
+291 [NOT STARTED] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib (critical prerequisite for all porting)
+  └─ 292 [NOT STARTED] — Add copyright headers (Apache 2.0) to all source files under Theories/Bimodal/
+  └─ 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across sorry-free modules
+  └─ 294 [NOT STARTED] — Eliminate sorry in Theorems/ModalS5.lean and Theorems/Perpetuity/Principles.lean
 
 ### Uncategorized
 
@@ -1144,6 +1151,54 @@ These are almost certainly **invalid** (countermodel exists) but the tableau exh
 **Expected impact**: Modest (2-5% timeout reduction). Best for formulas with clear easy/hard branch splits (e.g., `impPos` where one side is a tautology and the other is complex).
 
 **Risk**: Heuristic inaccuracy. If `estimateBranchDifficulty` mis-predicts, fuel allocation becomes worse than equal division. Mitigation: keep equal division as fallback when heuristic confidence is low (e.g., all branches have similar difficulty).
+
+---
+
+### 291. Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: critical
+- **Topic**: toolchain
+- **Dependencies**: none
+
+**Description**: Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to the same pin as cslib. This is a prerequisite for all porting tasks: cslib uses Lean 4.31 and tasks 292-294 cannot proceed until BimodalLogic builds cleanly on 4.31. Steps: (1) Update lean-toolchain to v4.31.0-rc1 (or current cslib pin). (2) Run lake update to fetch compatible Mathlib. (3) Fix any API breakage caused by Lean/Mathlib version bump (expect ~50-200 lines of fixes across formula, tactic, and instance changes). (4) Run lake build to confirm zero errors. (5) Run existing tests to confirm no regressions. This task unlocks tasks 292, 293, 294 and all cslib porting tasks (2-13).
+
+---
+
+### 292. Add copyright headers (Apache 2.0) to all source files under Theories/Bimodal/
+- **Effort**: small (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: publication-quality
+- **Dependencies**: Task 291
+
+**Description**: Add Apache 2.0 copyright headers to all source files under Theories/Bimodal/ (approximately 160 .lean files). cslib requires headers on all contributed files following the format: "-- Copyright (c) 2024 The Bimodal Logic Contributors. All rights reserved. -- Released under Apache 2.0 license as described in the file LICENSE. -- Authors: [author names]". Use a script to batch-add headers to files that lack them. Verify no duplicates are introduced. Run lake build to confirm no import errors.
+
+---
+
+### 293. Audit and fix Mathlib linter compliance across sorry-free modules
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: publication-quality
+- **Dependencies**: Task 291
+
+**Description**: Audit and fix Mathlib linter compliance across all sorry-free modules scheduled for porting to cslib (Syntax, Semantics, ProofSystem, Theorems, FrameConditions, Soundness, MCS/Deduction, Completeness, Decidability, Separation, ConservativeExtension). Run the Mathlib linter (set_option linter.all true or use #check_lint). Fix: (1) Naming convention violations -- Mathlib uses descriptive snake_case names not opaque abbreviations (e.g., bfmcs, drm). (2) Missing docstrings on public declarations. (3) Universe polymorphism issues. (4) Line length violations (100 char limit). (5) Unused variable warnings. This task produces files ready for direct porting to cslib without linter failures.
+
+---
+
+### 294. Eliminate sorry in Theorems/ModalS5.lean and Theorems/Perpetuity/Principles.lean
+- **Effort**: small (2-4 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Priority**: high
+- **Topic**: sorry-elimination
+- **Dependencies**: Task 291
+
+**Description**: Eliminate all sorry instances in Theorems/ModalS5.lean and Theorems/Perpetuity/Principles.lean. These files are needed for PR 4 (Derived Theorems) in cslib but contain 1-3 sorry each. Analysis suggests these are small enough to resolve: ModalS5.lean sorries likely require direct axiom application or simple combinatorial arguments; Perpetuity/Principles.lean sorries relate to fixpoint principles for G/H operators that should follow from the core axiom system. Complete both files to be fully sorry-free. Run lake build to verify zero errors and zero sorries.
 
 ---
 
