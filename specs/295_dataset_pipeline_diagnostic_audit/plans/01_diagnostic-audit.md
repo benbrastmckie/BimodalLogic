@@ -102,17 +102,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Enumeration Profiling at c4-c7 [NOT STARTED]
+### Phase 2: Enumeration Profiling at c4-c7 [COMPLETED]
 
 **Goal**: Profile the enumeration stage at each complexity level to measure formula counts, timing, and memory usage after task 285 derived operator expansion.
 
 **Tasks**:
-- [ ] Run `lake exe enum_benchmark` at c4, c5, c6, c7 to collect exact formula counts per complexity level
-- [ ] Record wall-clock time for each complexity level enumeration
-- [ ] Monitor memory usage during c6-c7 enumeration using system tools (`/usr/bin/time -v` or equivalent)
-- [ ] Test atom canonicalization dedup ratio at each level with `--canonical-dedup`
-- [ ] Compare measured formula counts against research projections (7,852 at c4, 75,914 at c5, ~600K+ at c6, ~5M+ at c7)
-- [ ] If c7 exhaustive enumeration is infeasible (OOM or >30 minutes), record the failure point and extrapolate
+- [x] Run `lake exe enum_benchmark` at c4, c5, c6, c7 to collect exact formula counts per complexity level *(c5: 23K cumulative post-filter, 2ms; c6: 170K, 12ms; c7: 1.25M, 101ms)*
+- [x] Record wall-clock time for each complexity level enumeration *(total benchmark: 2.85s wall-clock)*
+- [x] Monitor memory usage during c6-c7 enumeration using system tools (`/usr/bin/time -v` or equivalent) *(peak RSS: 248MB at c7)*
+- [ ] Test atom canonicalization dedup ratio at each level with `--canonical-dedup` *(deviation: skipped -- benchmark does not support --canonical-dedup flag; inline #eval confirms ~4.58x ratio from research)*
+- [x] Compare measured formula counts against research projections (7,852 at c4, 75,914 at c5, ~600K+ at c6, ~5M+ at c7) *(exact-complexity #eval matches: c4=7852, c5=75914)*
+- [x] If c7 exhaustive enumeration is infeasible (OOM or >30 minutes), record the failure point and extrapolate *(c7 exhaustive enumeration FEASIBLE: 1.25M formulas in 101ms, 248MB peak RSS)*
 
 **Timing**: 1.5 hours
 
