@@ -1302,21 +1302,27 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
     (parallelThreads : Nat := 0)
     (mode : GenerationMode := .exhaustive)
     (proofFirstPool : Option (ProofPool .Base) := none)
+    (cacheMaxSize : Nat := 10000)
     : IO (List LabeledFormula) := do
   let total := formulas.length
+  -- Create shared Mutex-protected cache for deduplication (task 289)
+  let cache ← Std.Mutex.new (DecideCache.empty cacheMaxSize)
   if parallelThreads == 0 then
-    -- Sequential path (backward compatible)
+    -- Sequential path with cache
     let mut results : List LabeledFormula := []
     let mut count : Nat := 0
     for φ in formulas do
-      let labeled ← labelFormula φ .Base wallclockTimeoutMs mode proofFirstPool
+      let labeled ← labelFormulaWithCache cache φ .Base wallclockTimeoutMs mode proofFirstPool
       results := labeled :: results
       count := count + 1
       if count % 100 == 0 then
         IO.println s!"  Progress: {count}/{total} formulas labeled"
+    -- Print cache statistics
+    let cacheStats ← cache.atomically do return (← get)
+    IO.println (cacheStats.display)
     return results.reverse
   else
-    -- Parallel path: chunk-based IO.asTask
+    -- Parallel path: chunk-based IO.asTask with shared cache
     let arr := formulas.toArray
     let chunkSize := max 1 ((arr.size + parallelThreads - 1) / parallelThreads)
     let numChunks := (arr.size + chunkSize - 1) / chunkSize
@@ -1335,7 +1341,7 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
       semanticCountermodelSummary := none
       proofReconstructionMethod := none
     }
-    -- Spawn one IO.asTask per chunk
+    -- Spawn one IO.asTask per chunk, sharing the cache across all chunks
     let mut tasks : List (Task (Except IO.Error (List LabeledFormula))) := []
     for i in [:numChunks] do
       let startIdx := i * chunkSize
@@ -1345,7 +1351,7 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
         let mut chunkResults : List LabeledFormula := []
         for φ in chunk do
           let labeled ← try
-            labelFormula φ .Base wallclockTimeoutMs mode proofFirstPool
+            labelFormulaWithCache cache φ .Base wallclockTimeoutMs mode proofFirstPool
           catch _e =>
             pure (mkTimeout φ)
           chunkResults := labeled :: chunkResults
@@ -1361,6 +1367,9 @@ def labelBatch (formulas : List Formula) (wallclockTimeoutMs : Nat := 1000)
       completedCount := completedCount + chunkResult.length
       if completedCount % 100 == 0 || i == numChunks - 1 then
         IO.println s!"  Progress: {completedCount}/{total} formulas labeled (chunk {i + 1}/{numChunks})"
+    -- Print cache statistics
+    let cacheStats ← cache.atomically do return (← get)
+    IO.println (cacheStats.display)
     return allResults
 
 /--

@@ -1112,6 +1112,8 @@ def main (args : List String) : IO Unit := do
   else
     IO.println s!"Labeling and streaming {formulasToLabel.length} formulas to {cliArgs.output}..."
   IO.println s!"[label] Starting labeling of {formulasToLabel.length} formulas..."
+  -- Task 289: Create shared cache for formula deduplication across threads
+  let exportCache ← Std.Mutex.new (DecideCache.empty 10000)
   let fileMode := if cliArgs.resumeFrom > 0 then IO.FS.Mode.append else IO.FS.Mode.write
   let handle ← IO.FS.Handle.mk outputPath fileMode
   let startTime ← IO.monoMsNow
@@ -1140,7 +1142,7 @@ def main (args : List String) : IO Unit := do
         let idx := batchStart + i
         match formulaArr[idx]? with
         | some φ =>
-          let task ← IO.asTask (labelFormula φ fc cliArgs.wallclockTimeoutMs genMode pool) .dedicated
+          let task ← IO.asTask (labelFormulaWithCache exportCache φ fc cliArgs.wallclockTimeoutMs genMode pool) .dedicated
           tasks := tasks.push task
         | none => pure ()
       -- Wait for all tasks and collect results
@@ -1188,9 +1190,9 @@ def main (args : List String) : IO Unit := do
           else "unknown"
         IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
   else
-    -- Sequential labeling (original path)
+    -- Sequential labeling (original path, with cache)
     for φ in formulasToLabel do
-      let labeled ← labelFormula φ fc cliArgs.wallclockTimeoutMs genMode pool
+      let labeled ← labelFormulaWithCache exportCache φ fc cliArgs.wallclockTimeoutMs genMode pool
       -- Task 261 v3: slow-formula warning for post-run analysis
       if labeled.metrics.decisionTimeMs > 1000 then
         IO.eprintln s!"[warn] Slow formula (#{count + 1}): {labeled.formula.prettyPrint} took {labeled.metrics.decisionTimeMs}ms"
@@ -1228,6 +1230,10 @@ def main (args : List String) : IO Unit := do
             s!"{etaMin}m {etaSecRem}s"
           else "unknown"
         IO.println s!"[label] {count}/{totalFormulas} labeled ({pct}%), {validPct}% valid, {timeoutPct}% timeout, {rate} formulas/sec, ETA: {etaStr}"
+
+  -- Task 289: Print cache statistics after labeling
+  let finalCacheStats ← exportCache.atomically do return (← get)
+  IO.println s!"[cache] {finalCacheStats.display}"
 
   -- Labeling completion line
   let labelEndMs ← IO.monoMsNow

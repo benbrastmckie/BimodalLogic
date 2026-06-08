@@ -124,19 +124,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Thread Cache Through labelBatch and DatasetExport [NOT STARTED]
+### Phase 3: Thread Cache Through labelBatch and DatasetExport [COMPLETED]
 
 **Goal**: Integrate the cache into both the sequential and parallel paths of `labelBatch`, and thread it through the `DatasetExport` parallel labeling path. Add cache statistics reporting.
 
 **Tasks**:
-- [ ] Modify `labelBatch` to create a `Std.Mutex DecideCache` at the start via `Std.Mutex.new (DecideCache.empty 10000)`
-- [ ] In sequential path: replace `labelFormula phi .Base wallclockTimeoutMs` with `labelFormulaWithCache cache phi .Base wallclockTimeoutMs`
-- [ ] In parallel path: pass the shared `cache` to each chunk's IO.asTask, replacing `labelFormula` with `labelFormulaWithCache`
-- [ ] After batch completion: use `cache.atomically` to read final statistics, print cache hit/miss/rate summary
-- [ ] Modify `labelBatch` signature to accept optional `cacheMaxSize : Nat := 10000` parameter
-- [ ] In `DatasetExport.lean`: for the parallel labeling path (line ~1051), create a shared cache and pass it to each spawned `labelFormula` call, replacing with `labelFormulaWithCache`
-- [ ] Add `labelFormula` overload or modify `labelFormula` to accept an optional `cache` parameter for the DatasetExport integration path
-- [ ] Print cache statistics at end of export run
+- [x] Modify `labelBatch` to create a `Std.Mutex DecideCache` at the start via `Std.Mutex.new (DecideCache.empty 10000)`
+- [x] In sequential path: replace `labelFormula` with `labelFormulaWithCache`
+- [x] In parallel path: pass the shared `cache` to each chunk's IO.asTask, replacing `labelFormula` with `labelFormulaWithCache`
+- [x] After batch completion: use `cache.atomically` to read final statistics, print cache hit/miss/rate summary
+- [x] Modify `labelBatch` signature to accept optional `cacheMaxSize : Nat := 10000` parameter
+- [x] In `DatasetExport.lean`: create shared cache and replace both parallel and sequential `labelFormula` calls with `labelFormulaWithCache`
+- [ ] Add `labelFormula` overload or modify `labelFormula` to accept an optional `cache` parameter *(deviation: skipped -- labelFormulaWithCache is called directly, no overload needed)*
+- [x] Print cache statistics at end of export run
 
 **Timing**: 1.5 hours
 
