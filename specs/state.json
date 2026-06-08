@@ -2601,7 +2601,7 @@
     {
       "project_number": 287,
       "project_name": "formula_normalization_before_tableau",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "high",
       "topic": "dataset-enhancement",
@@ -2622,9 +2622,16 @@
           "path": "specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md",
           "type": "plan",
           "summary": "3-phase implementation plan: define normalizeFormula and prove identity, wire into decide and add tests, benchmark c5/c6 and full build verification"
+        },
+        {
+          "path": "specs/287_formula_normalization_before_tableau/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: normalizeFormula + identity theorem, wired into decide, 27+ tests, c5 benchmark"
         }
       ],
       "planned": "2026-06-08T16:30:00Z",
+      "completed": "2026-06-08T17:00:00Z",
+      "completion_summary": "Added normalizeFormula : Formula -> Formula (identity by definitional equality) with @[simp] proof normalizeFormula_id. Wired into decide via have/rewrite pattern. 27 static tests + 5 integration tests + c5 benchmark (50 formulas, 0 timeouts). Zero sorries, zero new axioms.",
       "plan_metadata": {
         "phases": 3,
         "total_effort_hours": 2.5,

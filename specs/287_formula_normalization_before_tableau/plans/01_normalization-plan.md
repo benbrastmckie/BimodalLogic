@@ -124,20 +124,20 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Benchmark c5/c6 and full build verification [NOT STARTED]
+### Phase 3: Benchmark c5/c6 and full build verification [COMPLETED]
 
 **Goal**: Confirm no performance regression via c5/c6 benchmarking and verify full project build.
 
 **Tasks**:
-- [ ] Run `lake build` for full project verification (zero errors expected)
-- [ ] Run `lean_verify` on `normalizeFormula` and `normalizeFormula_id` to confirm no axioms
-- [ ] Add `#eval` benchmark in the test file or `EnumBenchmark.lean`:
+- [x] Run `lake build` for full project verification (zero errors expected) *(deviation: altered -- pre-existing failure in CanonicalTaskRelation.lean (heartbeat timeout) is unrelated to this task; all task-modified modules build cleanly)*
+- [x] Run `lean_verify` on `normalizeFormula` and `normalizeFormula_id` to confirm no axioms
+- [x] Add `#eval` benchmark in the test file or `EnumBenchmark.lean`:
   - Generate c5 formulas and time `decide` on a representative sample (e.g., 100 formulas)
   - Compare with baseline (the normalization pass should add negligible overhead since it is the identity)
   - Print timing results
-- [ ] Document benchmark results in a brief comment in the test file
-- [ ] Verify `#print axioms normalizeFormula` shows no axioms
-- [ ] Verify `#print axioms normalizeFormula_id` shows no axioms
+- [x] Document benchmark results in a brief comment in the test file
+- [x] Verify `#print axioms normalizeFormula` shows no axioms
+- [x] Verify `#print axioms normalizeFormula_id` shows no axioms
 
 **Timing**: 1 hour
 

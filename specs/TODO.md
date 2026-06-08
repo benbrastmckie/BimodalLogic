@@ -87,9 +87,10 @@ technical_debt:
 289 [PLANNED] — Add memoization/caching to tableau branch expansion (benefits from parallel batch infra)
   - **Report**: [specs/289_branch_result_memoization_caching/reports/01_memoization-research.md]
   - **Plan**: [specs/289_branch_result_memoization_caching/plans/01_memoization-plan.md]
-287 [PLANNED] — Add formula normalization pass before tableau expansion
+287 [COMPLETED] — Add formula normalization pass before tableau expansion
   - **Report**: [specs/287_formula_normalization_before_tableau/reports/01_normalization-research.md]
   - **Plan**: [specs/287_formula_normalization_before_tableau/plans/01_normalization-plan.md]
+  - **Summary**: [specs/287_formula_normalization_before_tableau/summaries/01_implementation-summary.md]
   └─ 288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter
       └─ 290 [NOT STARTED] — Improve fuel allocation heuristic for imbalanced branches
 
@@ -1013,7 +1014,7 @@ After each phase, regenerate c5 and measure timeout count, decision time distrib
 
 ### 287. Add formula normalization pass before tableau expansion in DecisionProcedure.lean
 - **Effort**: medium (6-10 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: dataset-enhancement
