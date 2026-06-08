@@ -28,7 +28,7 @@ technical_debt:
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,288,291,295 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,288,291 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 155,192,196,231,290,292,293,294 | 161,187,191,194,230,268,288,291 | completeness, dataset-enhancement, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
@@ -98,6 +98,7 @@ technical_debt:
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 288 [NOT STARTED] — Add deeper invalid-pattern recognizers to structuralPrefilter. De
   └─ 290 [NOT STARTED] — Improve tableau fuel allocation heuristic for imbalanced branches
+295 [NOT STARTED] — Diagnostic audit and stress-test of dataset generation pipeline
 
 ### Uncategorized
 
@@ -122,7 +123,6 @@ technical_debt:
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [NOT STARTED] — exhaustive_enumeration_by_default
-295 [NOT STARTED] — Diagnostic audit and stress-test of the dataset generation pipeli
 
 ## Tasks
 
