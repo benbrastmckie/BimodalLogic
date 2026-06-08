@@ -2319,6 +2319,31 @@
       ],
       "artifacts": [],
       "completion_summary": null
+    },
+    {
+      "project_number": 285,
+      "project_name": "complete_derived_operator_enumeration",
+      "description": "Complete derived operator enumeration for dataset generation: add diamond, always, sometimes, next, prev, weak_future, weak_past to the formula enumerator",
+      "status": "researched",
+      "created": "2026-06-08T02:47:09Z",
+      "last_updated": "2026-06-08T02:47:09Z",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        274,
+        275,
+        276,
+        278
+      ],
+      "artifacts": [
+        {
+          "path": "specs/285_complete_derived_operator_enumeration/reports/01_gap_analysis.md",
+          "type": "report",
+          "summary": "Gap analysis of missing derived operators in the formula enumerator"
+        }
+      ],
+      "completion_summary": null
     }
   ],
   "next_project_number": 284,
@@ -2330,7 +2355,7 @@
     }
   ],
   "task_counts": {
-    "active": 55,
+    "active": 56,
     "not_started": 43,
     "implementing": 3,
     "researched": 6,

@@ -85,6 +85,7 @@ technical_debt:
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 284 [RESEARCHED] — Reduce c5 timeouts via hybrid proof-pool labeling and extended structural prefilter
+285 [RESEARCHED] — Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
 
 ### Uncategorized
 
@@ -932,5 +933,32 @@ technical_debt:
 
 After each phase, regenerate c5 and measure timeout count, decision time distribution, and prefilter coverage. Target: reduce c5 timeout rate from 19% to <10% while maintaining zero false positives.
 
-## Recommended Order
 
+### 285. Complete derived operator enumeration (diamond, always, sometimes, next, prev, weak_future, weak_past)
+- **Effort**: medium (6-10 hours)
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Priority**: medium
+- **Topic**: dataset-enhancement
+- **Dependencies**: Tasks 274, 275, 276, 278
+- **Research**: [specs/285_complete_derived_operator_enumeration/reports/01_gap_analysis.md]
+
+**Description**: The formula enumerator currently generates 14 operators as first-class targets (imp, bot, box, untl, snce, F, P, G, H, R, WU, T, WS, M, ST) but omits 7 semantically significant derived operators defined in `Formula.lean`:
+
+- **Modal**: `diamond` (◇φ = ¬□¬φ) — dual of box; fundamental in S5
+- **Temporal universal**: `always` (△φ = Hφ ∧ φ ∧ Gφ) — primary universal temporal quantifier from JPL paper
+- **Temporal existential**: `sometimes` (▽φ = ¬△¬φ) — dual of always; primary existential quantifier
+- **Discrete-time**: `next` (○φ = U(φ, ⊥)), `prev` (●φ = S(φ, ⊥))
+- **Reflexive variants**: `weak_future` (G'φ = φ ∧ Gφ), `weak_past` (H'φ = φ ∧ Hφ)
+
+These operators are never generated in their "native" derived form, which means the dataset lacks explicit coverage of formulas like △p, ◇q, or ○r. The JPL paper's axiomatization uses △ extensively, and S5 completeness requires ◇ interaction.
+
+**Implementation plan**:
+- **Phase 1** (high priority): Add `diamond`, `always`, `sometimes` to `enumExactHelper` with pattern-aware complexity = 1. These have the highest semantic value and increase branching factor from 5 → 8 unary choices (1.6×).
+- **Phase 2** (medium priority): Add `next`, `prev` as unary operators with pattern-aware complexity = 1. Discrete-time operators with constrained semantics.
+- **Phase 3** (low priority): Add `weak_future`, `weak_past`. Reflexive variants of G/H; lower semantic novelty.
+- Update `InterestingnessMetrics.lean` to recognize the new operators in interaction detection.
+- Verify c4 formula counts before/after to measure branching impact.
+- Use `--max-formulas` or stratified mode for c6+ to prevent the formula count explosion observed in task 285's predecessor tasks.
+
+**Risk**: Adding all 7 operators at once would increase c6 formula count from ~161K to potentially 400K+, making exhaustive generation impractical. Mitigation: phased rollout with pattern-aware complexity and explicit formula caps.

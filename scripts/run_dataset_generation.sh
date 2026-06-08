@@ -58,6 +58,7 @@ cd "$PROJECT_ROOT"
 DRY_RUN=false
 # Resume mode: "auto" (prompt), "always" (--resume), "never" (--no-resume)
 RESUME_MODE="auto"
+SKIP_DEDUP=false
 # Track partial output files for cleanup on interruption
 PARTIAL_FILES=()
 
@@ -320,6 +321,7 @@ run_c4() {
         --output "$output_file" \
         --mode exhaustive \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -353,6 +355,7 @@ run_c5() {
         --output "$output_file" \
         --mode exhaustive \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -384,6 +387,7 @@ run_c6() {
         --output "$output_file" \
         --mode exhaustive \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -417,6 +421,7 @@ run_c7() {
         --output "$output_file" \
         --mode exhaustive \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -450,6 +455,7 @@ run_c8() {
         --output "$output_file" \
         --mode exhaustive \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -486,6 +492,7 @@ run_c9() {
         --mode stratified \
         --stratified-quotas "8:30000,9:70000" \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -525,6 +532,7 @@ run_c11() {
         --mode stratified \
         --stratified-quotas "10:100000,11:300000" \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -559,6 +567,7 @@ run_c12() {
         --mode stratified \
         --stratified-quotas "9:50000,10:100000,11:300000,12:500000" \
         --include-duals \
+        $EXTRA_FLAGS \
         $RESUME_FLAGS
     if [ "$DRY_RUN" = false ]; then
         echo ""
@@ -590,11 +599,21 @@ while [ $# -gt 0 ]; do
             RESUME_MODE="never"
             shift
             ;;
+        --skip-dedup)
+            SKIP_DEDUP=true
+            shift
+            ;;
         *)
             break
             ;;
     esac
 done
+
+# Build extra generator flags
+EXTRA_FLAGS=""
+if [ "$SKIP_DEDUP" = true ]; then
+    EXTRA_FLAGS="$EXTRA_FLAGS --skip-dedup"
+fi
 
 # Initialize RESUME_FLAGS for dry-run or no-partial cases
 RESUME_FLAGS=""
@@ -650,12 +669,13 @@ case "${1:-help}" in
         run_c12
         ;;
     help|--help|-h)
-        echo "Usage: $0 [--dry-run] [--resume|--no-resume] {smoke|c4|c5|c6|c7|c8|c9|c11|c12|all}"
+        echo "Usage: $0 [--dry-run] [--resume|--no-resume] [--skip-dedup] {smoke|c4|c5|c6|c7|c8|c9|c11|c12|all}"
         echo ""
         echo "Options:"
         echo "  --dry-run    Print commands without executing"
         echo "  --resume     Always resume from partial output (no prompt)"
         echo "  --no-resume  Always start fresh, removing partial output (no prompt)"
+        echo "  --skip-dedup Skip atom-permutation canonicalization (faster for large datasets)"
         echo ""
         echo "Commands:"
         echo "  smoke   Quick 20-formula validation run"
