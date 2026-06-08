@@ -177,6 +177,21 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           ) #[]
           (boxed, c)
         else (#[], cache)
+        -- Diamond (◇): derived modal operator, gated by modalBudget > 0 (task 285)
+        -- diamond(child) = ¬□¬child, overhead = 1 (pattern-aware complexity)
+        let (diamonds, cache1d) := if modalBudget > 0 then
+          let dOverhead := 1
+          let (dFormulas, cd) := if sizeBudget > dOverhead then
+            let childSize := sizeBudget - dOverhead
+            let (children, c) := enumExactHelper atoms (modalBudget - 1) temporalBudget childSize cache1
+            let filtered := children.foldl (fun (acc : Array Formula) child =>
+              let f := Formula.diamond child
+              if structurallyTrivial f then acc else acc.push f
+            ) #[]
+            (filtered, c)
+          else (#[], cache1)
+          (dFormulas, cd)
+        else (#[], cache1)
         -- Derived unary temporal operators: F, P, G, H
         -- These are defined in terms of untl/snce but enumerated as first-class targets.
         -- Overhead: F/P/G/H all cost 1 complexity (pattern-aware complexity, task 274)
@@ -186,9 +201,9 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
           let fOverhead := 1
           let (fFormulas, c1) := if sizeBudget > fOverhead then
             let childSize := sizeBudget - fOverhead
-            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize cache1d
             (children.map Formula.some_future, c)
-          else (#[], cache1)
+          else (#[], cache1d)
           -- P(child): some_past child, overhead = 1, child complexity = sizeBudget - 1
           let pOverhead := 1
           let (pFormulas, c2) := if sizeBudget > pOverhead then
@@ -210,8 +225,44 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
             let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c3
             (children.map Formula.all_past, c)
           else (#[], c3)
-          (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas, c4)
-        else (#[], cache1)
+          -- always(child): always child = H(child) ∧ child ∧ G(child), overhead = 1 (task 285)
+          let (alwaysFormulas, c5) := if sizeBudget > 1 then
+            let childSize := sizeBudget - 1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c4
+            (children.map Formula.always, c)
+          else (#[], c4)
+          -- sometimes(child): sometimes child = ¬always(¬child), overhead = 1 (task 285)
+          let (sometimesFormulas, c6) := if sizeBudget > 1 then
+            let childSize := sizeBudget - 1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c5
+            (children.map Formula.sometimes, c)
+          else (#[], c5)
+          -- next(child): next child = U(child, ⊥), overhead = 1 (task 285)
+          let (nextFormulas, c7) := if sizeBudget > 1 then
+            let childSize := sizeBudget - 1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c6
+            (children.map Formula.next, c)
+          else (#[], c6)
+          -- prev(child): prev child = S(child, ⊥), overhead = 1 (task 285)
+          let (prevFormulas, c8) := if sizeBudget > 1 then
+            let childSize := sizeBudget - 1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c7
+            (children.map Formula.prev, c)
+          else (#[], c7)
+          -- weak_future(child): weak_future child = child ∧ G(child), overhead = 1 (task 285)
+          let (weakFutureFormulas, c9) := if sizeBudget > 1 then
+            let childSize := sizeBudget - 1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c8
+            (children.map Formula.weak_future, c)
+          else (#[], c8)
+          -- weak_past(child): weak_past child = child ∧ H(child), overhead = 1 (task 285)
+          let (weakPastFormulas, c10) := if sizeBudget > 1 then
+            let childSize := sizeBudget - 1
+            let (children, c) := enumExactHelper atoms modalBudget (temporalBudget - 1) childSize c9
+            (children.map Formula.weak_past, c)
+          else (#[], c9)
+          (fFormulas ++ pFormulas ++ gFormulas ++ hFormulas ++ alwaysFormulas ++ sometimesFormulas ++ nextFormulas ++ prevFormulas ++ weakFutureFormulas ++ weakPastFormulas, c10)
+        else (#[], cache1d)
         -- Binary constructors: distribute childBudget between left and right
         -- Each child gets exact complexity >= 1, left + right = childBudget
         let (binaryFormulas, cache2) := ((List.range childBudget).foldl
@@ -263,7 +314,7 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
               else (#[], c2)
               (accArr ++ imps ++ temporalBinaries, c3)
           ) (#[], cache1a))
-        (boxes ++ derivedTemporal ++ binaryFormulas, cache2)
+        (boxes ++ diamonds ++ derivedTemporal ++ binaryFormulas, cache2)
     -- Store result in cache before returning
     let cache'' := cache'.insert key result
     (result, cache'')

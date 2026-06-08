@@ -170,10 +170,24 @@ This enables bimodal G/H formulas to appear at c5-c7 instead of c11+.
 def complexity : Formula → Nat
   | atom _ => 1
   | bot => 1
+  -- always(φ) = H(φ) ∧ φ ∧ G(φ) → 1 + φ.complexity (task 285)
+  -- Expansion: imp (imp (imp (snce (imp φ bot) (imp bot bot)) bot) (imp (imp (imp φ₂ (imp (imp (untl (imp φ₃ bot) (imp bot bot)) bot) bot)) bot) bot)) bot
+  | imp (imp (imp (snce (imp _φ1 bot) (imp bot bot)) bot) (imp (imp (imp _φ2 (imp (imp (untl (imp _φ3 bot) (imp bot bot)) bot) bot)) bot) bot)) bot => 1 + _φ1.complexity
+  -- sometimes(φ) = ¬always(¬φ) → 1 + φ.complexity (task 285)
+  -- Expansion: imp (always(neg φ)) bot
+  | imp (imp (imp (imp (snce (imp (imp _φ1 bot) bot) (imp bot bot)) bot) (imp (imp (imp (imp _φ2 bot) (imp (imp (untl (imp (imp _φ3 bot) bot) (imp bot bot)) bot) bot)) bot) bot)) bot) bot => 1 + _φ1.complexity
+  -- weak_future(φ) = φ ∧ G(φ) → 1 + φ.complexity (task 285)
+  -- Expansion: imp (imp φ (imp (imp (untl (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
+  | imp (imp _φ1 (imp (imp (untl (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
+  -- weak_past(φ) = φ ∧ H(φ) → 1 + φ.complexity (task 285)
+  -- Expansion: imp (imp φ (imp (imp (snce (imp φ₂ bot) (imp bot bot)) bot) bot)) bot
+  | imp (imp _φ1 (imp (imp (snce (imp _φ2 bot) (imp bot bot)) bot) bot)) bot => 1 + _φ1.complexity
   -- WU(φ, ψ) = weak_until φ ψ = (untl φ ψ).or ψ.all_future → 1 + φ.complexity + ψ.complexity
   | imp (imp (untl φ ψ) bot) (imp (untl (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
   -- WS(φ, ψ) = weak_since φ ψ = (snce φ ψ).or ψ.all_past → 1 + φ.complexity + ψ.complexity
   | imp (imp (snce φ ψ) bot) (imp (snce (imp ψ2 bot) (imp bot bot)) bot) => 1 + φ.complexity + ψ.complexity
+  -- diamond(φ) = ¬□¬φ = imp (box (imp φ bot)) bot → 1 + φ.complexity (task 285)
+  | imp (box (imp φ bot)) bot => 1 + φ.complexity
   -- G(φ) = imp (untl (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
   | imp (untl (imp φ bot) (imp bot bot)) bot => 1 + φ.complexity
   -- H(φ) = imp (snce (imp φ bot) (imp bot bot)) bot → 1 + φ.complexity
@@ -184,11 +198,15 @@ def complexity : Formula → Nat
   | imp (snce (imp φ bot) (imp ψ bot)) bot => 1 + φ.complexity + ψ.complexity
   | imp φ ψ => 1 + φ.complexity + ψ.complexity
   | box φ => 1 + φ.complexity
+  -- next(φ) = untl φ bot → 1 + φ.complexity (task 285)
+  | untl φ .bot => 1 + φ.complexity
   -- F(φ) = untl φ (imp bot bot) → 1 + φ.complexity
   | untl φ (imp bot bot) => 1 + φ.complexity
   -- M(φ, ψ) = strong_release φ ψ = untl (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
   | untl (imp (imp ψ (imp φ bot)) bot) ψ2 => 2 + φ.complexity + ψ.complexity
   | untl φ ψ => 1 + φ.complexity + ψ.complexity
+  -- prev(φ) = snce φ bot → 1 + φ.complexity (task 285)
+  | snce φ .bot => 1 + φ.complexity
   -- P(φ) = snce φ (imp bot bot) → 1 + φ.complexity
   | snce φ (imp bot bot) => 1 + φ.complexity
   -- ST(φ, ψ) = strong_trigger φ ψ = snce (and ψ φ) ψ → 2 + φ.complexity + ψ.complexity
@@ -513,6 +531,31 @@ prefix:80 "△" => Formula.always
     Unicode: U+25BD WHITE DOWN-POINTING TRIANGLE
 -/
 prefix:80 "▽" => Formula.sometimes
+
+/-! ### Complexity verification (task 285) -/
+
+private def p_cmplx3 : Formula := .atom (Atom.mk_base "p")
+
+-- diamond(atom) should be 2 (was 6)
+#eval p_cmplx3.diamond.complexity  -- 2
+
+-- always(atom) should be 2 (was 15)
+#eval p_cmplx3.always.complexity  -- 2
+
+-- sometimes(atom) should be 2 (was 23)
+#eval p_cmplx3.sometimes.complexity  -- 2
+
+-- next(atom) should be 2 (was 3)
+#eval p_cmplx3.next.complexity  -- 2
+
+-- prev(atom) should be 2 (was 3)
+#eval p_cmplx3.prev.complexity  -- 2
+
+-- weak_future(atom) should be 2 (was 8)
+#eval p_cmplx3.weak_future.complexity  -- 2
+
+-- weak_past(atom) should be 2 (was 8)
+#eval p_cmplx3.weak_past.complexity  -- 2
 
 /--
 Swap temporal operators (past ↔ future) in a formula.
