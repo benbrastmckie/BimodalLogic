@@ -157,23 +157,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Update soundness proof for per-branch fuel [NOT STARTED]
+### Phase 4: Update soundness proof for per-branch fuel [COMPLETED]
 
 **Goal**: Adjust `foldl_preserves_findClosure` and `expandBranchWithFuel_sound` to handle per-branch fuel values instead of a single uniform fuel.
 
 **Tasks**:
-- [ ] Update `foldl_preserves_findClosure` (lines ~995-1021):
-  - The helper currently takes a single `fuel : Nat` and assumes all recursive calls use that fuel
-  - Generalize to accept a `fuels : List Nat` parameter (or a function `Fin branches.length -> Nat`)
-  - The `ih` hypothesis must now quantify over all fuel values that appear in `fuels` (each `<= fuel`)
-  - Alternative: parameterize by an upper bound `fuelBound` such that all `fuels[i] <= fuelBound`, then use `ih fuelBound (lt_succ ...)` which still applies by strong induction
-  - Simplest approach: use `max` of all allocated fuels as the single fuel parameter, since the helper only needs `ih` at values `<= fuel` and all allocations are `<= fuel - 1 < fuel + 1`
-- [ ] Update `expandBranchWithFuel_sound` (lines ~1029-1065):
-  - In the split case (line ~1057-1065), adjust the `hbf` bound computation
-  - Replace `k / (max 1 branches.length)` references with the allocated fuel values
-  - The strong induction hypothesis `ih _ hbf` still applies because each allocated fuel is `< k + 1`
-- [ ] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles with `maxHeartbeats` adjustment if needed
-- [ ] Run `lean_verify Bimodal.Metalogic.Decidability.Saturation.expandBranchWithFuel_sound` to confirm no sorry or axiom leaks
+- [x] Update `foldl_preserves_findClosure`: *(deviation: altered -- completed during Phase 2 since soundness proof had to be updated together with the code change)*
+  - Generalized to accept `fuelBound : Nat` and `pairs : List (Branch × Nat)` instead of single fuel + branch list
+  - `ih` quantifies over all fuel values `≤ fuelBound` (upper-bound approach from plan alternative)
+- [x] Update `expandBranchWithFuel_sound`: *(deviation: altered -- completed during Phase 2)*
+  - Split case passes `(fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))` for bounded ih
+  - Uses `branches.zip (allocateFuelProportionally (k + 1) branches)` as the paired list
+- [x] Verify `lake build Bimodal.Metalogic.Decidability.Saturation` compiles (zero errors)
+- [x] Run `lean_verify`: `expandBranchWithFuel_sound` and `blocking_sound` show no sorryAx (only propext, Classical.choice, Quot.sound)
 
 **Timing**: 2 hours
 
