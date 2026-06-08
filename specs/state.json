@@ -2252,14 +2252,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation (syntactic elimination of Stavi connectives U'/S' on Prior structures). This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free without fixing the EF game composition. The separation method is purely combinatorial: rewrite U'(A,B) and S'(A,B) as bot on Prior structures, reducing {U,S,U',S'} to {U,S}.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-08T17:31:35Z",
+      "last_updated": "2026-06-08T18:50:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -2710,7 +2710,21 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_invalid-patterns-research.md",
@@ -2821,7 +2835,21 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_fuel-allocation-research.md",
