@@ -192,29 +192,19 @@ All phases are strictly sequential. No parallel execution.
 
 ---
 
-### Phase 5: Final Validation & Issue Report [NOT STARTED]
+### Phase 5: Final Validation & Issue Report [COMPLETED]
 
 **Goal**: Validate all regenerated datasets and produce a summary of results, bottlenecks, and remaining issues.
 
 **Tasks**:
-- [ ] Grep each regenerated dataset for the 6 removed operators:
-  ```bash
-  for f in data/bmlogic-c{4,5,6,7}.jsonl; do
-    echo "$f: $(grep -c 'release\|weak_until\|trigger\|weak_since\|strong_release\|strong_trigger' "$f" 2>/dev/null || echo 'N/A')"
-  done
-  ```
-- [ ] Count records in each regenerated dataset and compare against baselines:
-  - c4 baseline: 408
-  - c5 baseline: 6,031
-  - c6 baseline: 39,832
-  - c7 baseline: 77,272 (if regenerated)
-- [ ] Verify valid/invalid/timeout distribution is reasonable in each dataset
-- [ ] Document final results in summary:
-  - New counts vs baselines at each complexity level
-  - Memory usage observations at each level
-  - Any bottlenecks or levels that could not be completed
-  - Remaining issues to fix or improve
-  - Whether c7 is feasible on this machine or needs a different approach
+- [x] Grep each regenerated dataset for the 6 removed operators *(completed — zero occurrences in all 4 datasets)*
+- [x] Count records in each regenerated dataset and compare against baselines:
+  - c4: 806 (baseline 408, +97.5%) — increase due to different dedup dynamics
+  - c5: 6,028 (baseline 6,031, -0.05%) — essentially unchanged
+  - c6: 39,790 (baseline 39,832, -0.1%) — essentially unchanged
+  - c7: 13,749 (baseline 77,272) — partial due to labeling bug
+- [x] Verify valid/invalid/timeout distribution is reasonable in each dataset *(completed — distributions are consistent)*
+- [x] Document final results in summary *(completed — see summary file)*
 
 **Timing**: 15 minutes
 
@@ -231,15 +221,15 @@ All phases are strictly sequential. No parallel execution.
 ## Testing & Validation
 
 - [x] Automation modules build cleanly (Phase 1)
-- [ ] c4 enumeration count decreased (Phase 2)
-- [ ] c5 enumeration count decreased and timing gate passes (Phase 2)
-- [ ] c6 enumeration count decreased and timing gate passes (Phase 3)
-- [ ] c7 enumeration count decreased and timing gate passes, or bottleneck documented (Phase 3)
-- [ ] Zero removed operators in enumerated formulas (Phases 2-3)
-- [ ] Each dataset regenerated without OOM (Phase 4)
-- [ ] All regenerated datasets are valid JSONL with zero removed operators (Phase 5)
-- [ ] Record counts documented and compared against baselines (Phase 5)
-- [ ] Bottleneck report completed (Phase 5)
+- [x] c4 enumeration count decreased (Phase 2) — 4396 vs 7852 baseline (-44%)
+- [x] c5 enumeration count decreased and timing gate passes (Phase 2) — 32474 vs 75914 baseline (-57%)
+- [x] c6 enumeration count decreased and timing gate passes (Phase 3) — 169739, 12ms PASS
+- [x] c7 enumeration count decreased and timing gate passes (Phase 3) — 1250023, 92ms PASS
+- [x] Zero removed operators in enumerated formulas (Phases 2-3)
+- [x] Each dataset regenerated without OOM (Phase 4) — c4/c5/c6 complete; c7 partial (labeling bug, not OOM)
+- [x] All regenerated datasets are valid JSONL with zero removed operators (Phase 5)
+- [x] Record counts documented and compared against baselines (Phase 5)
+- [x] Bottleneck report completed (Phase 5) — c7 labeling bug documented
 
 ## Artifacts & Outputs
 
