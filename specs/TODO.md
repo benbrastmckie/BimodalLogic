@@ -46,7 +46,7 @@ technical_debt:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [RESEARCHED] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
+273 [BLOCKED] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
 
 ### Formula Refactor
 

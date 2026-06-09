@@ -1,7 +1,7 @@
 # Implementation Plan: Discrete Backward Direction via Game Pipeline (v11)
 
 - **Task**: 273 - Eliminate sorryAx from `completeness_discrete` via discrete backward direction proof
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 6 hours
 - **Dependencies**: None (Phases 0-3 from v10 completed; game pipeline sorry-free)
 - **Research Inputs**:
@@ -76,7 +76,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 1: Formula Extraction and Reference Model [NOT STARTED]
+### Phase 1: Formula Extraction and Reference Model [BLOCKED]
 
 **Goal**: Extract the structural data (witness x, ordering, interval guard, NF types) from the formula truth hypothesis `h_sf`, and construct a reference model M_ref realizing `sub_nf`.
 
@@ -105,7 +105,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 2: Bridge Hypothesis Assembly and Heredity [NOT STARTED]
+### Phase 2: Bridge Hypothesis Assembly and Heredity [NOT STARTED] *(blocked by Phase 4 architectural issue)*
 
 **Goal**: Assemble the bridge hypotheses (1-var NF agreement, ordering, interval type equality, above-max/below-min types) between the concrete model N and the reference model M_ref, and prove the discrete interval type heredity lemma needed by `discrete_bridge_hyps_to_univ_decomp`.
 
@@ -135,7 +135,7 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 3: Close the Sorry via Game Pipeline [NOT STARTED]
+### Phase 3: Close the Sorry via Game Pipeline [NOT STARTED] *(blocked by Phase 4 architectural issue)*
 
 **Goal**: Complete the backward direction proof at line 338 by composing: formula extraction (Phase 1) -> bridge hypotheses (Phase 2) -> decomposition agreement -> game wins -> NF equality via `nf_fraisse_compression`.
 
@@ -177,7 +177,23 @@ Phases within the same wave can execute in parallel. This plan is fully sequenti
 
 ---
 
-### Phase 4: Wire Discrete Chain and Full Verification [NOT STARTED]
+### Phase 4: Wire Discrete Chain and Full Verification [BLOCKED]
+
+**BLOCKER** (Phase 4):
+- **What failed**: The plan proposes replacing `stavi_expressive_completeness` with `discrete_stavi_expressive_completeness` in `US_expressively_complete_over_prior` (PriorExpressiveness.lean:384). However, `US_expressively_complete_over_prior` is universally quantified over ALL Prior M (with `semantic_prior_UZ` and `semantic_prior_SZ`), including non-discrete models. The discrete version only provides correctness for models with `SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder`, `IsSuccArchimedean`.
+- **What was tried**: Traced the sorry chain from `completeness_discrete` through `countermodel_discrete_reynolds_v2` -> `no_gaps_discrete_model_surgery` -> `gap_contradicts_prior` -> `gap_prior_UZ_contradiction` -> `US_expressively_complete_over_prior`. Found that `gap_prior_UZ_contradiction` (GoodStructuresModelSurgery.lean:1169) uses `US_expressively_complete_over_prior` at line 1266 for a sub-structure N (class(a) suborder of M). This sub-structure N has `semantic_prior_UZ/SZ` but does NOT have `IsSuccArchimedean` -- it's an arbitrary convex suborder of a discrete model. Adding `IsSuccArchimedean` to `US_expressively_complete_over_prior` would break this usage because the whole purpose of `gap_prior_UZ_contradiction` is proving there are no gaps (which is equivalent to proving IsSuccArchimedean).
+- **Why it's stuck**: The plan's Phase 4 architecture is unsound. `discrete_stavi_expressive_completeness` cannot replace `stavi_expressive_completeness` in `US_expressively_complete_over_prior` because the latter is used downstream for non-discrete models. The task description's "GHR94 Chapter 10 integer-time separation" approach has the same fundamental issue.
+- **What is needed**: One of the following alternative approaches:
+  (A) Prove the general `nf_2var_existential_transfer` (StaviCompleteness.lean:2353,2435) which would make the general `stavi_expressive_completeness` sorry-free. This is the hardest approach (~500+ lines, requires 4-var sub-interval matching).
+  (B) Find a way to prove `gap_prior_UZ_contradiction` that does NOT use `US_expressively_complete_over_prior` for non-discrete sub-models. This would require restructuring the Reynolds model surgery argument.
+  (C) Prove that convex suborders of discrete models with Prior-UZ/SZ are themselves discrete (IsSuccArchimedean). This is a non-trivial mathematical claim that may or may not be true.
+  (D) Abandon the discrete bypass strategy entirely and instead close the general sorry chain via the EF game approach (Cases III/IV in CaseAnalysis.lean, ~8 sorry sites).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**BLOCKER** (Phase 1, secondary):
+- **What failed**: The plan's Phase 3 step 8 assumes `nf_fraisse_compression` can be applied to get NF equality from game wins. However, `nf_fraisse_compression` requires existential transfer, and Bridge B (NFGameBridge.lean:1198) -- converting game wins to existential NF transfer -- is explicitly documented as BLOCKED in the codebase.
+- **Why it's stuck**: The game pipeline (discrete_nf_to_decomposition_agreement -> ghr93_decomposition_implies_game -> discrete_ghr93_proposition7) produces `ghr93_duplicator_wins` but NOT the `h_transfer` argument needed by `nf_fraisse_compression`. Converting game wins to existential transfer is non-trivial and blocked per NFGameBridge.lean:1198-1210.
+- **What is needed**: Either prove Bridge B (game wins -> existential NF transfer), or prove `discrete_nf_2var_existential_transfer` directly by strong induction on j with zone_match_witness at each level (report 08's "Alternative" approach, ~300-500 lines).
 
 **Goal**: Replace `stavi_expressive_completeness` with `discrete_stavi_expressive_completeness` in `US_expressively_complete_over_prior`, then verify `completeness_discrete` is sorry-free end-to-end.
 
