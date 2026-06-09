@@ -127,14 +127,16 @@ technical_debt:
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [NOT STARTED] — exhaustive_enumeration_by_default
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
-295 [IMPLEMENTING] — Diagnostic audit and stress-test of the dataset generation pipeli
+295 [COMPLETED] — Diagnostic audit and stress-test of the dataset generation pipeli
 
 ## Tasks
 
 ### 295. Diagnostic audit and stress-test of dataset generation pipeline
 - **Effort**: medium (4-8 hours)
-- **Status**: [PLANNED]
+- **Effort**: medium (4-8 hours)
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
+- **Summary**: [specs/295_dataset_pipeline_diagnostic_audit/summaries/01_diagnostic-audit-summary.md]
 
 **Description**: Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7). Review and exercise all recent enhancements: formula enumerator (derived operators from task 285), structural prefilter + hybrid labeling (task 284), formula normalization pass (task 287), and memoization cache (task 289). Run enumeration at c4, c5, c6, c7 to profile timing, memory, and timeout rates. Validate correctness of new prefilter patterns, cache hit rates, hybrid vs exhaustive label agreement, and normalization round-trips. Identify remaining bottlenecks, regressions, dead code, and opportunities for further optimization. Produce a diagnostic report with quantitative results and a prioritized list of actionable improvements.
 
@@ -346,7 +348,7 @@ technical_debt:
 ---
 
 ### 273. Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype
-- **Effort**: 10 hours
+- **Effort**: 6 hours
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
@@ -358,9 +360,9 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/03_stavi-sorry-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md]
   - [273_chronicle_gap_contradiction_proof/reports/03_team-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md]
+- **Plan**: [273_chronicle_gap_contradiction_proof/plans/06_discrete-game-bypass-plan.md]
 
-**Description**: Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation. The separation method is purely combinatorial: U'(A,B) and S'(A,B) simplify to bot on Prior structures, reducing {U,S,U',S'} to {U,S}. This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free. NOTE: The original target (chronicle_gap_contradiction) is bypassed by countermodel_discrete_reynolds_v2 and is not on the critical path.
+**Description**: Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving a discrete-specific `discrete_stavi_expressive_completeness` that uses the fully-proved game pipeline (Bridge A + composition) instead of filling `nf_2var_existential_transfer` directly. For discrete orders, the game provides multi-point matching that avoids the sub-interval type splitting problem. Wire into `US_expressively_complete_over_prior` in PriorExpressiveness.lean. This makes `completeness_discrete` sorry-free (Chain A eliminated). Plan v6 (FINAL): discrete-only game bypass, ~200-400 new lines across NFGameBridge.lean and StaviCompleteness.lean.
 
 ---
 

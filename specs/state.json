@@ -8,11 +8,11 @@
     {
       "project_number": 295,
       "project_name": "dataset_pipeline_diagnostic_audit",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Diagnostic audit of the dataset generation pipeline. Escalate complexity from c4 upward to find the labeling bottleneck (with timeouts to avoid stalls). Validate recent enhancements (prefilter, cache, normalization). Audit which derived operators are natural and useful vs noise. Produce a diagnostic report with what works, what doesn't, bottleneck location, operator curation recommendations, and prioritized improvements.",
       "created": "2026-06-08T18:20:01Z",
-      "last_updated": "2026-06-09T01:45:34Z",
+      "last_updated": "2026-06-09T02:30:00Z",
       "topic": "dataset-enhancement",
       "session_id": "sess_1780969263_fd38d0",
       "artifacts": [
@@ -20,6 +20,11 @@
           "path": "specs/295_dataset_pipeline_diagnostic_audit/plans/01_diagnostic-audit.md",
           "type": "plan",
           "summary": "Revised plan (v2) refocusing on bottleneck discovery, operator curation, and diagnostic reporting with timeouts"
+        },
+        {
+          "path": "specs/295_dataset_pipeline_diagnostic_audit/summaries/01_diagnostic-audit-summary.md",
+          "type": "summary",
+          "summary": "Diagnostic audit report with bottleneck analysis, operator curation, and prioritized improvements"
         }
       ],
       "plan_metadata": {
@@ -50,7 +55,8 @@
             "integrated_date": "2026-06-08"
           }
         ]
-      }
+      },
+      "completion_summary": "Diagnostic audit complete: pipeline correctness validated (all 60+ tests pass, zero hybrid/exhaustive disagreements), bottleneck at c7 labeling (c6 feasible at 15min), 8/13 derived operators have zero pipeline presence due to canonicalization dedup. Report with operator curation recommendations and prioritized improvements."
     },
     {
       "project_number": 291,
@@ -2333,7 +2339,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T01:10:00Z",
+      "last_updated": "2026-06-09T03:00:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -2374,17 +2380,22 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/05_strengthened-zone-match-plan.md",
           "type": "plan",
           "summary": "Implementation plan v5: strengthened zone match with interval splitting -- replaces blocked v4 Phase 2 with zone_match_witness_with_splitting approach (5 phases, 8 hours)"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/06_discrete-game-bypass-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v6 (FINAL): discrete game bypass using Bridge A + game pipeline. Avoids sub-interval type splitting entirely. Discrete-only approach for completeness_discrete. (5 phases, 6 hours)"
         }
       ],
       "next_artifact_number": 5,
       "researched": "2026-06-08T22:52:15Z",
-      "planned": "2026-06-09T00:00:00Z",
+      "planned": "2026-06-09T03:00:00Z",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 8,
+        "total_effort_hours": 6,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 3,
+        "plan_version": 6,
         "dependency_waves": [
           [
             2
@@ -2415,6 +2426,16 @@
           {
             "path": "handoffs/phase-2-handoff-20260609T010703Z.md",
             "integrated_in_plan_version": 3,
+            "integrated_date": "2026-06-09"
+          },
+          {
+            "path": ".bridge-research.md",
+            "integrated_in_plan_version": 6,
+            "integrated_date": "2026-06-09"
+          },
+          {
+            "path": "handoffs/phase-2-handoff-20260609T014644Z.md",
+            "integrated_in_plan_version": 6,
             "integrated_date": "2026-06-09"
           }
         ]
