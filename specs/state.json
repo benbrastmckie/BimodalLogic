@@ -1232,7 +1232,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T17:34:42Z",
+      "last_updated": "2026-06-09T18:00:51Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1283,10 +1283,20 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/05_team-research.md",
           "type": "report",
           "summary": "Team research: last blocker analysis (4 teammates). Key finding: DiscreteStaviCompleteness sorry not on critical path; true blocker is StaviCompleteness.lean:2805 (general case)"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md",
+          "type": "report",
+          "summary": "Sorry chain verification: nf_exist_sf_guarded_backward is the ONLY sorry on completeness_discrete critical path; chronicle_gap_contradiction comment is outdated"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md",
+          "type": "report",
+          "summary": "Game pipeline research: discrete pipeline sorry-free, general ghr93_forward_to_backward NOT sorry-free; recommends discrete_nf_2var_existential_transfer via strong induction"
         }
       ],
-      "next_artifact_number": 6,
-      "researched": "2026-06-09T17:34:42Z",
+      "next_artifact_number": 8,
+      "researched": "2026-06-09T18:00:51Z",
       "planned": "2026-06-08T23:30:00Z",
       "plan_metadata": {
         "phases": 5,
@@ -1366,7 +1376,7 @@
           }
         ]
       },
-      "session_id": "sess_1781025906_c3b3a1"
+      "session_id": "sess_1781027063_6aa01a"
     },
     {
       "project_number": 290,
