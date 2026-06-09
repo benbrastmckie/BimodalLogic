@@ -1,27 +1,28 @@
 {
   "status": "blocked",
-  "summary": "Phase 1 blocked by fundamental circularity in plan v15 proof approach; nf_fraisse_compression + existential_transfer_from_nf create irreducible loop requiring interval-splitting zone match infrastructure (~200-300 new lines) per GHR93 Proposition 7",
+  "summary": "Plan v16 blocked: interval_splitting_zone_match is unprovable with 1-var interval types because sub-interval type sets are not determined by the full interval type set. The 4-var existential transfer at the sorry sites requires placing points in specific gaps among existing matched points, but the bridge hypotheses (which use interval_nf_types, i.e., 1-var type sets) are insufficient to guarantee that the correct types exist in each sub-interval. Three resolution approaches documented: (1) strengthen hypotheses to use interval_2var_nf_types, (2) depth-decreasing game invariant, (3) hybrid approach.",
   "phases_completed": 0,
   "phases_total": 4,
   "blockers": [
-    "Plan v15 nvar_nf_agreement_from_pointwise has circular proof: nf_fraisse_compression at depth d'+1 needs existential transfer at d', which needs NF agreement at d'+1 (the thing being proved). 5 alternative approaches tried, all fail. Resolution requires new interval-splitting zone match lemma (~200-300 lines) that finds u' in M' preserving sub-interval NF types at depth k-1, enabling depth-recursive application. This is the content of GHR93 Proposition 7's game strategy proof. The code's own comments (StaviCompleteness.lean:2258-2261) describe this exact need and estimate ~300-500 lines of infrastructure."
+    "interval_splitting_zone_match is FALSE for 1-var interval types (counterexample: rearranging types within interval preserves interval_nf_types but breaks sub-interval types)",
+    "The sorry at line 2405 (4-var existential transfer) requires sub-interval type matching to place the witness in the correct gap",
+    "Bridge hypotheses of nf_2var_existential_transfer use interval_nf_types (1-var) but the proof needs interval_2var_nf_types (2-var) or equivalent depth-decreasing data"
   ],
   "continuation_context": {
     "last_completed_phase": 0,
     "next_phase": 1,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v15-20260609.md"
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v16-20260609T225727Z.md"
   },
   "artifacts": [
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v15-20260609.md",
-      "type": "handoff",
-      "summary": "Detailed circularity analysis with 5 failed approaches and resolution path"
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/16_interval-zone-match-plan.md",
+      "type": "plan",
+      "summary": "Plan v16 with Phase 1 BLOCKED and detailed blocker + 3 resolution approaches"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/15_existential-transfer-plan.md",
-      "type": "plan",
-      "summary": "Plan v15 with Phase 1 marked [BLOCKED] and blocker documentation"
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v16-20260609T225727Z.md",
+      "type": "handoff",
+      "summary": "Detailed analysis of the sub-interval type matching failure"
     }
-  ],
-  "next_action_hint": "revise"
+  ]
 }
