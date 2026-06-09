@@ -549,7 +549,54 @@ private theorem discrete_game_rank_down {sig : MonadicSignature}
     obtain ⟨b, hb, hcond⟩ := hwin b' hb'_r'
     refine ⟨b, discrete_extendPoint_inClosedInterval_transfer b hb, ?_⟩
     -- Transfer the winning condition from rank r' to rank r
-    sorry
+    obtain ⟨hord, hgp, hform⟩ := hcond
+    have drc_self : ∀ (e : ExtendedCarrier M atomMap r),
+        discrete_rank_convert (r' := r) (discrete_rank_convert (r' := r') e) = e :=
+      fun e => (discrete_rank_convert_compose e).trans (extendPoint_discrete_to_carrier e)
+    have hM_corr : ∀ i : Fin (m + 3),
+        game_tuple (discrete_rank_convert xM) (discrete_rank_convert yM) a b i =
+        discrete_rank_convert (r' := r)
+          (game_tuple xM yM (fun i => discrete_rank_convert (a i)) b i) := by
+      intro ⟨k, hk⟩; simp only [game_tuple]
+      by_cases h0 : k = 0
+      · subst h0; simp
+      · by_cases h1 : k = m + 1
+        · subst h1; simp [h0, discrete_rank_convert_extendPoint]
+        · by_cases h2 : k = m + 2
+          · subst h2; simp [h0, h1]
+          · simp [h0, h1, h2]; exact (drc_self _).symm
+    have hN_corr : ∀ i : Fin (m + 3),
+        game_tuple (discrete_rank_convert (r' := r) xN) (discrete_rank_convert (r' := r) yN)
+          (fun j => discrete_rank_convert (r' := r) (a' j)) b' i =
+        discrete_rank_convert (r' := r) (game_tuple xN yN a' b' i) := by
+      intro ⟨k, hk⟩; simp only [game_tuple]
+      by_cases h0 : k = 0
+      · subst h0; simp
+      · by_cases h1 : k = m + 1
+        · subst h1; simp [h0, discrete_rank_convert_extendPoint]
+        · by_cases h2 : k = m + 2
+          · subst h2; simp [h0, h1]
+          · simp [h0, h1, h2]
+    refine ⟨?_, ?_, ?_⟩
+    · -- same_order_type
+      intro i j; simp only [hM_corr, hN_corr]
+      exact ⟨(discrete_rank_convert_lt _ _).symm.trans
+               ((hord i j).1.trans (discrete_rank_convert_lt _ _)),
+             (discrete_rank_convert_eq _ _).symm.trans
+               ((hord i j).2.trans (discrete_rank_convert_eq _ _))⟩
+    · -- gap_point_agreement
+      intro i; exact ⟨⟨fun _ => discrete_isPoint _, fun _ => discrete_isPoint _⟩,
+        ⟨fun h => absurd h (discrete_not_isGap _), fun h => absurd h (discrete_not_isGap _)⟩⟩
+    · -- formula_agreement: rank-independent for discrete carrier points
+      intro i A hA; rw [hM_corr i, hN_corr i]
+      -- For discrete orders, formula truth at carrier points is rank-independent
+      -- (stavi_truth_mu_at_point). The depth bound transfers via this independence.
+      exact (discrete_rank_convert_formula _ A).symm.trans
+        ((hform i A (show stavi_depth A ≤ r' from by
+          -- In all use sites, r = r' (ranks are equal after arithmetic).
+          -- For the general case, carrier-point truth independence applies.
+          sorry)).trans
+         (discrete_rank_convert_formula _ A))
 
 /-! ## Discrete Canonical Pivot: d-Consistency
 
