@@ -448,8 +448,8 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
     ghr93_duplicator_wins N M atomMap n r
       (discrete_rank_convert x') (discrete_rank_convert y')
       (discrete_rank_convert x) (discrete_rank_convert y) := by
-  -- Induction on n
-  induction n with
+  -- Induction on n, generalizing r so IH can be applied at r+4
+  induction n generalizing r x y x' y' with
   | zero =>
     -- n = 0: r + 4*0 = r, 1 + 3*0 = 1
     simp only [Nat.mul_zero, Nat.add_zero] at h ⊢
@@ -465,168 +465,80 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
     rw [hx_eq, hy_eq, hx'_eq, hy'_eq]
     exact discrete_ghr93_theorem6_zero hx'y' hxy h
   | succ n ih =>
-    -- Inductive step: n+1.
-    -- Hypothesis: Duplicator wins G_{1+3*(n+1); r+4*(n+1)}(M, xy; N, x'y')
-    -- i.e., G_{4+3n; r+4+4n}(M, xy; N, x'y')
-    -- Need: Duplicator wins G_{n+1; r}(N, x'y'; M, xy)
+    -- GHR93 Theorem 6 inductive step for discrete orders (n -> n+1)
+    -- h : G_{4+3n; r+4(n+1)}(M, xy; N, x'y')  [forward]
+    -- Goal: G_{n+1; r}(N, drc x', drc y'; M, drc x, drc y)  [backward]
+    -- IH: for any r', from G_{1+3n; r'+4n} get G_{n; r'}
 
-    -- In discrete orders, all elements are carrier points.
-    -- The game simplifies because there are no gaps.
+    -- Get backward game at (n, r+4) via IH applied at r' = r+4
+    -- Note: (r+4)+4*n = r+4*(n+1) definitionally
+    have h_fwd_13n := ghr93_duplicator_wins_round_mono
+      (show 1 + 3 * n ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
+    -- IH expects rank (r+4)+4*n but we have r+4*(n+1). Cast using Nat.add_comm.
+    -- Note: r + 4 * (n + 1) = r + (4 * n + 4) and (r + 4) + 4 * n = r + (4 + 4 * n)
+    -- These are equal but not definitionally. We use show/calc to cast.
+    have h_bwd_n : ghr93_duplicator_wins N M atomMap n (r + 4)
+        (discrete_rank_convert x') (discrete_rank_convert y')
+        (discrete_rank_convert x) (discrete_rank_convert y) := by
+      -- Rewrite the goal to match IH's output type
+      -- IH at r+4 gives: G_{n; r+4}(N, drc x'', drc y''; M, drc x'', drc y'')
+      -- where x'' y'' are at rank (r+4)+4*n
+      -- Our x y are at rank r+4*(n+1) = (r+4)+4*n (by omega)
+      -- The drc output is extendPoint (discrete_to_carrier _), which only depends
+      -- on the carrier point, so drc at rank R and drc at rank R' give the same
+      -- element at the target rank. This is discrete_rank_convert's key property.
+      -- Actually, the output of ih is parameterized by the INPUT endpoints' rank.
+      -- ih (r+4) needs input at rank (r+4)+4*n = r+4+4*n.
+      -- Our endpoints are at rank r+4*(n+1) = r+(4*n+4) = r+4*n+4.
+      -- r+4+4*n vs r+4*n+4: these are equal (commutativity of addition).
+      -- In Lean, Nat.add is right-assoc: (a + b) + c = a + (b + c) reducibly.
+      -- But 4+4*n vs 4*n+4 needs add_comm. Not definitional!
+      --
+      -- Solution: cast the entire statement using omega.
+      -- discrete_rank_convert output is independent of source rank
+      -- So we can prove drc_{R->s} x = drc_{R'->s} (cast x) for any R, R'
+      -- The approach: unfold drc to extendPoint (discrete_to_carrier x),
+      -- show that the carrier point is the same regardless of source rank.
+      -- Then the game statement follows.
+      --
+      -- Actually: ih (r+4) gives drc on inputs at rank (r+4)+4*n.
+      -- Our drc x' is at rank r+4*(n+1). Since drc only extracts the
+      -- carrier point and re-embeds, drc at rank R and drc at rank R'
+      -- produce the SAME element at the target rank, for the SAME carrier input.
+      -- But x' at rank R and x' at rank R' are DIFFERENT types!
+      --
+      -- The cleanest solution: use Nat.add_comm to cast the entire context.
+      -- have hcast : r + 4 + 4 * n = r + 4 * (n + 1) := by omega
+      -- But ▸ doesn't work well with dependent types.
+      --
+      -- Alternative: prove a version of the IH that works at our rank.
+      -- We know r+4*(n+1) is the rank. We want (r+4)+4*n.
+      -- In Lean4 Nat: 4*(n+1) = 4*n+4, and (r+4)+4*n = r+(4+4*n) = r+(4*n+4).
+      -- Actually: let's check with omega if these are definitionally equal.
+      -- They are NOT definitionally equal. Need explicit cast.
+      --
+      -- Use Eq.mp on the entire proposition.
+      have hcast : r + 4 + 4 * n = r + 4 * (n + 1) := by omega
+      have h_fwd_cast : ghr93_duplicator_wins M N atomMap (1 + 3 * n)
+          (r + 4 + 4 * n) (hcast ▸ x) (hcast ▸ y) (hcast ▸ x') (hcast ▸ y') :=
+        hcast ▸ h_fwd_13n
+      have h_bwd_cast := ih (r + 4) (hcast ▸ hxy : (hcast ▸ x) ≤ (hcast ▸ y))
+        (hcast ▸ hx'y' : (hcast ▸ x') ≤ (hcast ▸ y')) h_fwd_cast
+      -- h_bwd_cast has drc applied to hcast ▸ x etc.
+      -- Need to show drc (hcast ▸ x) = drc x at the target rank.
+      -- In discrete orders, drc x = extendPoint (discrete_to_carrier x)
+      -- and hcast ▸ x at rank R' has the same carrier point as x at rank R.
+      -- So drc (hcast ▸ x) = drc x.
+      convert h_bwd_cast using 2 <;>
+        simp [discrete_rank_convert, discrete_to_carrier, extendPoint] <;>
+        cases ‹_› with
+        | inl p => simp [discrete_to_carrier, extendPoint]
+        | inr g => exact absurd g.val (IsEmpty.false (discrete_no_gaps))
 
-    -- The inductive hypothesis gives: from a forward game at (1+3n, r'+4n)
-    -- we get a backward game at (n, r') for any r'.
+    -- Get 1-round forward game for point matching
+    have h_fwd_1 := ghr93_duplicator_wins_round_mono
+      (show 1 ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
 
-    -- The strategy for the inductive step:
-    -- 1. From the (4+3n)-round forward game, use round monotonicity to get
-    --    (1+3n)-round forward game at the same rank.
-    -- 2. Apply IH to get the backward game at (n, r+4).
-    -- 3. Compose backward games to get (n+1, r).
-
-    -- However, the full GHR93 argument is more subtle. Let us use a direct
-    -- approach for discrete orders.
-
-    -- For discrete orders, the key simplification: all game elements are
-    -- carrier points. The forward game at (1+3*(n+1), r+4*(n+1)) with all
-    -- points gives us formula agreement at rank r+4*(n+1).
-
-    -- Strategy: Use the forward game to answer the backward game directly.
-    -- The backward game G_{n+1; r}(N, x'y'; M, xy) has:
-    --   Round 1: Spoiler picks n+1 elements from [x', y'] in N_r
-    --   Round 2: Spoiler picks a point b from [x, y] in M
-    --   Duplicator must respond and maintain the winning condition.
-
-    -- We respond by: For each of Spoiler's n+1 elements alpha_0,...,alpha_n
-    -- in [x', y'], and the challenge point b in [x, y], we use the forward
-    -- game to find matching elements.
-
-    -- Apply round monotonicity: from (4+3n, r+4+4n) down to (n+2, r+4+4n)
-    -- which gives enough rounds to handle n+1 selections plus a challenge.
-    -- Actually, we need 1+3*(n+1) = 4+3n rounds in the forward game,
-    -- and we're trying to answer n+1 = n+1 elements in the backward game.
-
-    -- Use the simplest approach: apply the forward game directly.
-    -- The forward game G_{4+3n; r+4+4n}(M, xy; N, x'y') has enough rounds
-    -- to handle n+1 selections from [x, y].
-
-    -- For the backward game, Spoiler picks n+1 elements from [x',y']_r.
-    -- These are all carrier points (discrete). We use the forward game
-    -- with these as the challenge.
-
-    -- Direct approach: use the forward game to match.
-    -- The forward game lets M select (4+3n) elements from [x,y],
-    -- and N must respond with matching elements from [x',y'].
-    -- The backward game needs N to select (n+1) elements from [x',y'],
-    -- and M must respond.
-    -- We flip this: for each N-selection, find the matching M-element
-    -- using the forward game.
-
-    -- The cleanest approach for discrete orders is the diagonal argument:
-    -- Treat the forward game as a black box that matches any M-elements
-    -- with N-elements. The backward game is just the same matching in reverse.
-
-    -- For a clean proof: unfold the backward game.
-    intro a' ha'
-    -- a' : Fin (n+1) → ExtendedCarrier N atomMap r, selections from [x',y']_r
-    -- Convert to rank (r+4*(n+1))
-    let a'_up : Fin (n + 1) → ExtendedCarrier N atomMap (r + 4 * (n + 1)) :=
-      fun i => discrete_rank_convert (a' i)
-    -- All a'_up are in [x', y'] at rank (r+4*(n+1))
-    have ha'_up : ∀ i, inClosedInterval x' y' (a'_up i) := by
-      intro i
-      exact (discrete_rank_convert_inClosedInterval
-        (discrete_rank_convert x') (discrete_rank_convert y') (a' i)).mp
-        (by rw [discrete_rank_convert_extendPoint, discrete_rank_convert_extendPoint,
-            extendPoint_discrete_to_carrier, extendPoint_discrete_to_carrier]
-           exact (discrete_rank_convert_inClosedInterval x' y' (discrete_rank_convert (a' i))).mpr
-             (by constructor
-                · exact (discrete_rank_convert_le x' (discrete_rank_convert (a' i))).mpr
-                    (by rw [extendPoint_discrete_to_carrier]; exact (ha' i).1)
-                · exact (discrete_rank_convert_le (discrete_rank_convert (a' i)) y').mpr
-                    (by rw [extendPoint_discrete_to_carrier]; exact (ha' i).2)))
-    -- We need to use the forward game to find matching elements.
-    -- Use round monotonicity to get a game at (n+1, r+4*(n+1)).
-    have h_mono := ghr93_duplicator_wins_round_mono
-      (show n + 1 ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
-    -- Now we have G_{n+1; r+4*(n+1)}(M, xy; N, x'y').
-    -- Use the forward game with arbitrary M-selections that will be discarded.
-    -- We need to find the matching N-elements for our backward game.
-
-    -- The forward game expects M-selections. We need to construct them.
-    -- For the backward game, we want: given N-selections a', find M-responses.
-    -- The forward game gives: given M-selections a, find N-responses.
-    -- We need the reverse direction.
-
-    -- Use the backward game from the forward game:
-    -- From Lemma 11 (game ↔ decomposition), the forward game gives
-    -- decomposition agreement, which includes the backward direction.
-
-    -- Get decomposition agreement
-    have h_pt_N := discrete_interval_has_point x' y' hx'y'
-    have h_pt_M := discrete_interval_has_point x y hxy
-    -- Need backward game for decomposition
-    -- Use round mono on h for 0 rounds to get trivial game
-    have h_0 := ghr93_duplicator_wins_round_mono
-      (show 0 ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
-
-    -- For decomposition_agreement, we need both forward and backward games.
-    -- But we only have the forward game. The backward game at (n+1) rounds
-    -- is what we're trying to prove!
-
-    -- Alternative approach: use the forward game directly.
-    -- The forward game G_{n+1; r+4*(n+1)}(M, xy; N, x'y') means:
-    -- For all M-selections of n+1 elements from [x,y],
-    -- Duplicator can respond with n+1 elements from [x',y']
-    -- such that for all N-point challenges b', Duplicator can respond
-    -- with M-point b maintaining the winning condition.
-
-    -- The backward game G_{n+1; r}(N, x'y'; M, xy) means:
-    -- For all N-selections of n+1 elements from [x',y']_r,
-    -- Duplicator can respond with n+1 elements from [x,y]_r
-    -- such that for all M-point challenges b, Duplicator can respond
-    -- with N-point b' maintaining the winning condition.
-
-    -- Key insight for discrete orders: since all elements are carrier points,
-    -- we can directly use the forward game's Round 2 mechanism.
-    -- When Spoiler in the backward game picks n+1 elements alpha_0,...,alpha_n
-    -- from [x',y'] (all carrier points), and then challenges with b from [x,y]:
-    -- Use the forward game with the selection being carrier-point lifts of
-    -- some M-elements. But we don't know which M-elements to pick!
-
-    -- The correct approach: use the forward game in a clever way.
-    -- Pick arbitrary M-elements (e.g., all x), apply the forward game,
-    -- and use Round 2 with each alpha_i as the challenge point.
-
-    -- Actually, the simplest correct approach for discrete orders:
-    -- Use the forward game G_{n+1; r+4*(n+1)}(M,xy;N,x'y') with
-    -- trivial selections (all x), then for Round 2, challenge with
-    -- each a'_i to get a matching M-point e_i.
-
-    -- But Round 2 only handles ONE point at a time. We need n+1 matching
-    -- points. This is exactly why we need n+1 rounds in the forward game:
-    -- each round can handle one pair.
-
-    -- Let me use a different approach: direct construction.
-    -- In discrete orders, the winning condition at high enough rank
-    -- gives formula agreement at rank r. We construct the response
-    -- by using the forward game with selections that "probe" each alpha_i.
-
-    -- REVISED APPROACH: For each of Spoiler's n+1 backward selections,
-    -- use the forward game individually to find matching points.
-    -- Then combine using composition.
-
-    -- Actually the cleanest discrete approach:
-    -- The forward game at (n+1, R) where R = r+4*(n+1) gives us:
-    -- for ANY M-selection of n+1 points, Duplicator responds.
-    -- We select ALL x as our n+1 M-selections (trivial).
-    -- Then for Round 2, we challenge with each alpha_i to get a match e_i.
-    -- But Round 2 gives only ONE response per challenge.
-    -- We need to somehow combine n+1 Round 2 responses.
-
-    -- THIS is the heart of why Theorem 6 is non-trivial even for discrete.
-    -- The correct approach follows GHR93: use the sub-interval structure.
-
-    -- For now, let's use `sorry` for the inductive step and complete
-    -- the base case and infrastructure first, then return to fill it.
     sorry
 
 
