@@ -4,7 +4,20 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
+  "next_project_number": 301,
   "active_projects": [
+    {
+      "project_number": 300,
+      "project_name": "abort_aware_tableau_cancellation",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.",
+      "dependencies": [298],
+      "created": "2026-06-09T18:00:00Z",
+      "last_updated": "2026-06-09T18:00:00Z",
+      "topic": "dataset-enhancement",
+      "artifacts": []
+    },
     {
       "project_number": 298,
       "project_name": "fix_c7_labeling_bug_and_regenerate_dataset",
@@ -1225,14 +1238,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T21:07:31Z",
+      "last_updated": "2026-06-09T21:36:12Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1285,14 +1298,9 @@
           "summary": "Game pipeline research: discrete pipeline sorry-free, general ghr93_forward_to_backward NOT sorry-free; recommends discrete_nf_2var_existential_transfer via strong induction"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/11_discrete-backward-plan.md",
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/15_existential-transfer-plan.md",
           "type": "plan",
-          "summary": "Implementation plan v11 with 4 phases to close the sole sorry blocking completeness_discrete via discrete game pipeline"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/12_generalized-transfer-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v12: generalized existential transfer via GHR93 Proposition 7, strong induction on depth universally quantified over arity"
+          "summary": "Plan v15: depth induction via existing existential_transfer_from_nf, 4 phases, ~150-200 lines"
         }
       ],
       "next_artifact_number": 8,
@@ -1331,7 +1339,7 @@
           }
         ]
       },
-      "session_id": "sess_1781038703_f34152"
+      "session_id": "sess_1781040676_e6f6c4"
     },
     {
       "project_number": 290,

@@ -180,7 +180,7 @@ technical_debt:
 
 ### 273. Generalized existential transfer (GHR93 Proposition 7 in NF terms)
 - **Effort**: 10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
@@ -199,6 +199,7 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/09_concrete-implementation-roadmap.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/12_generalized-transfer-plan.md]
+  - [273_chronicle_gap_contradiction_proof/plans/15_existential-transfer-plan.md]
 
 **Description**: Close the sorry in `nf_2var_existential_transfer` (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Phase 1: generalize `zone_match_witness` to n-var and define `matching_data` predicate. Phase 2: prove the transfer theorem by strong induction on j. Phase 3: close `nf_exist_sf_guarded_backward` (line 2805). Phase 4: verify full chain. Makes `stavi_expressive_completeness` → `US_expressively_complete_over_prior` → `gap_prior_UZ_contradiction` sorry-free. No `IsSuccArchimedean` needed — works for ALL linear orders. ~400-700 new lines in StaviCompleteness.lean.
 
