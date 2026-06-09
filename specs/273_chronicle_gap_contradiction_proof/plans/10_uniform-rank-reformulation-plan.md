@@ -210,7 +210,7 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 3: GHR93 Proposition 7 for Discrete Orders [NOT STARTED]
+### Phase 3: GHR93 Proposition 7 for Discrete Orders [BLOCKED]
 
 **Goal**: Prove Proposition 7 -- from sub-interval game wins at strength (f(n), g(n)), derive standard EF game wins at n rounds. This requires threading `h_r1_univ` through the Proposition 7 induction since each call to Theorem 6 needs it.
 
@@ -240,6 +240,13 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
   - `lake build Bimodal.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer`
   - `lean_verify discrete_ghr93_proposition7` -- no sorryAx
 
+**BLOCKER** (Phase 3):
+- **What failed**: The existential transfer at depth j >= 1 for 3+ variable extensions (`nf_2var_existential_transfer` lines 2353, 2435) cannot be proved without establishing interval type agreement at the (n+1)-point configuration level. Zone matching from the game at (0, k/2) gives point-level NF agreement but not sub-interval type agreement.
+- **What was tried**: (1) Direct induction on j with zone matching -- fails because interval types between newly matched pairs are not guaranteed to agree. (2) Using game at (0, k/2) for multi-point matching -- the n=0 game gives independent matchings that are not jointly consistent. (3) Attempting to bypass the bridge lemma entirely -- the formula `nf_exist_sf_guarded` does not encode the quantifier part of sub_nf, so the backward direction requires the bridge lemma to determine the quantifier part from structural data.
+- **Why it's stuck**: Proposition 7 implements the game iteration that resolves sub-interval splitting: at each round, Duplicator's pivot choice ensures interval types are consistently partitioned. This requires ~200-350 lines of complex induction with `ghr93_strategy_compose`, `ghr93_game_implies_decomposition`, `ghr93_decomposition_implies_game`, and `discrete_ghr93_theorem6` with `h_r1_univ` threading. The proof is mathematically well-understood (GHR93 pp.115-116) but requires substantial implementation effort.
+- **What is needed**: Implement GHR93 Proposition 7 induction: from sub-interval game wins at (f(n), g(n)), derive multi-round game wins. This converts the game at (0, k/2) to formula agreement at depth k, which via `nf_fraisse_compression` gives NF equality at depth k. Estimated 200-350 lines in DiscreteGameTransfer.lean.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Timing**: 2.5 hours
 
 **Depends on**: Phase 2
@@ -248,7 +255,7 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 4: Bridge Game Wins to Leaf Sorry and Self-Contained Discrete Chain [NOT STARTED]
+### Phase 4: Bridge Game Wins to Leaf Sorry and Self-Contained Discrete Chain [BLOCKED]
 
 **Goal**: Wire game wins from Proposition 7 into the ACTUAL leaf sorry (`nf_exist_sf_guarded_backward` at line 2805) via a discrete-only chain, build self-contained `discrete_nf_characterizable_by_stavi` that does NOT call the sorry'd general version, and provide `h_r1_univ` from the completeness framework.
 
@@ -330,6 +337,13 @@ NF hypotheses (1-var NF + interval types at depth k)
   - `lean_verify discrete_stavi_expressive_completeness` -- no sorryAx
   - `lean_verify discrete_nf_characterizable_by_stavi` -- no sorryAx
 
+**BLOCKER** (Phase 4):
+- **What failed**: Phase 4 depends on Phase 3 (Proposition 7) which is BLOCKED. The self-contained `discrete_nf_characterizable_by_stavi` requires a sorry-free `discrete_nf_exist_sf_guarded_backward`, which in turn requires the bridge lemma for discrete orders (`discrete_nf_2var_from_interval_data`), which requires the game pipeline including Proposition 7.
+- **What was tried**: Deep analysis of the sorry chain (8+ approaches considered). The fundamental blocker is that `nf_exist_sf_guarded` does not encode the quantifier part of sub_nf in its formula. The backward direction (formula truth -> existence of witness with correct NF) requires proving that the structural data (1-var NF types, ordering, interval types) uniquely determines the 2-var NF. For discrete orders, this IS true (the bridge lemma), but proving it requires the game pipeline (Proposition 7).
+- **Why it's stuck**: Blocked by Phase 3. Cannot make `discrete_nf_characterizable_by_stavi` self-contained without the bridge lemma for discrete orders.
+- **What is needed**: Complete Phase 3 first, then use the game pipeline to prove `discrete_nf_exist_sf_guarded_backward` -> `discrete_nf_2var_existence_characterizable` -> self-contained `discrete_nf_characterizable_by_stavi` -> sorry-free `discrete_stavi_expressive_completeness` -> sorry-free `US_expressively_complete_over_prior`.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Timing**: 2.5 hours
 
 **Depends on**: Phase 3
@@ -340,9 +354,9 @@ NF hypotheses (1-var NF + interval types at depth k)
 
 ---
 
-### Phase 5: Full Build Verification and Axiom Audit [NOT STARTED]
+### Phase 5: Full Build Verification and Axiom Audit [BLOCKED]
 
-**Goal**: Full project build, verify `completeness_discrete` sorry state, confirm the sorry chain is eliminated end-to-end.
+**Goal**: Full project build, verify `completeness_discrete` sorry state, confirm the sorry chain is eliminated end-to-end. Blocked by Phases 3-4.
 
 **Tasks**:
 - [ ] Run `lake build` for the full project
