@@ -128,7 +128,7 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 2: GHR93 Theorem 6 Inductive Step for Discrete Orders [BLOCKED]
+### Phase 2: GHR93 Theorem 6 Inductive Step for Discrete Orders [IN PROGRESS]
 
 **Goal**: Complete the sorry at DiscreteGameTransfer.lean:630 — the inductive step of Theorem 6 for discrete orders. While this file is currently isolated, Phase 4 will import it into StaviCompleteness.lean.
 
