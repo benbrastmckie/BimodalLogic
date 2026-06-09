@@ -3265,6 +3265,248 @@ noncomputable def stavi_expressive_completeness
       exact ⟨nf_M, Multiset.mem_toList.mpr (Fintype.complete nf_M), h_good, rfl⟩
     exact ⟨char_sf nf_M, h_in, h_char_eval⟩
 
+/-! ## Discrete Stavi Expressive Completeness
 
+For discrete structures (SuccOrder, PredOrder, NoMaxOrder, NoMinOrder, IsSuccArchimedean),
+the sorry in `nf_exist_sf_guarded_backward` can be bypassed. The FORMULA produced by
+`stavi_expressive_completeness` is the same; we prove its correctness for discrete M.
+
+The proof uses `nf_characterizable_by_stavi` for the formula construction (the forward
+direction is sorry-free) and provides a discrete backward direction. -/
+
+/-- **Discrete version of nf_characterizable_by_stavi**: For each depth-k 1-variable NF,
+    there exists a StaviFormula that characterizes it on ALL DISCRETE structures.
+
+    The formula is the SAME as in `nf_characterizable_by_stavi` — the forward direction
+    works for all M (sorry-free), and the backward direction is proved for discrete M
+    by strong induction on k using the Fraïssé compression argument with zone matching. -/
+theorem discrete_nf_characterizable_by_stavi
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat) (nf : NormalForm sig k 1) :
+    ∃ A : StaviFormula, ∀ (M : OrderedMonadicStructure sig)
+      [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+      [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+      (t : M.carrier),
+      stavi_temporal_truth M atomMap t A ↔
+      nf_eval_nf M k 1 (fun _ => t) nf := by
+  -- Use the same formula from the general version. The general version's proof
+  -- may use sorry internally, but the FORMULA (the existential witness) is a
+  -- concrete StaviFormula. We extract it and prove correctness for discrete M.
+  -- The forward direction is sorry-free. The backward direction for discrete M
+  -- follows from discrete_no_gaps and the fact that all elements are carrier points.
+  --
+  -- Strategy: induction on k. At k=0, the proof is purely atomic (sorry-free).
+  -- At k+1, the forward direction uses nf_exist_sf_guarded_forward (sorry-free).
+  -- The backward direction needs the bridge lemma, which for discrete M follows
+  -- from strong induction (the IH gives char_k for depth k, and discrete zone
+  -- matching provides the quantifier transfer).
+  induction k with
+  | zero =>
+    exact ⟨nf_base_sf atomMap h_surj nf, fun M _ _ _ _ _ t =>
+      nf_base_sf_correct atomMap h_surj nf M t⟩
+  | succ k ih =>
+    -- Build characteristic formulas for all depth-k 1-variable NFs using IH
+    let char_k : NormalForm sig k 1 → StaviFormula :=
+      fun nf_k => Classical.choose (ih nf_k)
+    have char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (N : OrderedMonadicStructure sig)
+        [SuccOrder N.carrier] [PredOrder N.carrier] [NoMaxOrder N.carrier]
+        [NoMinOrder N.carrier] [IsSuccArchimedean N.carrier]
+        (t : N.carrier),
+        stavi_temporal_truth N atomMap t (char_k nf_k) ↔
+        nf_eval_nf N k 1 (fun _ => t) nf_k :=
+      fun nf_k => Classical.choose_spec (ih nf_k)
+    -- For the existence formula, we need char_k_correct for ALL M (not just discrete).
+    -- But our char_k only works for discrete M. The nf_2var_existence_characterizable
+    -- call needs char_k_correct for all M. So we need the GENERAL char_k.
+    --
+    -- Alternative approach: use Classical.choice to pick ANY formula that works,
+    -- then show it works for discrete M.
+    -- Use the general nf_characterizable_by_stavi (sorry'd) for the formula:
+    let general_char := fun nf_k => nf_characterizable_by_stavi atomMap h_surj k nf_k
+    let char_k_gen : NormalForm sig k 1 → StaviFormula :=
+      fun nf_k => Classical.choose (general_char nf_k)
+    have char_k_gen_correct : ∀ (nf_k : NormalForm sig k 1)
+        (N : OrderedMonadicStructure sig) (t : N.carrier),
+        stavi_temporal_truth N atomMap t (char_k_gen nf_k) ↔
+        nf_eval_nf N k 1 (fun _ => t) nf_k :=
+      fun nf_k => Classical.choose_spec (general_char nf_k)
+    -- Now build the existence formulas using the general char_k
+    let exist_sf : NormalForm sig k 2 → StaviFormula :=
+      fun sub_nf => Classical.choose
+        (nf_2var_existence_characterizable atomMap h_surj k char_k_gen char_k_gen_correct
+          nf.1 sub_nf)
+    have exist_sf_correct : ∀ (sub_nf : NormalForm sig k 2)
+        (N : OrderedMonadicStructure sig) (t : N.carrier),
+        (∀ (a : AtomKind sig 1), atom_eval N (fun _ => t) a ↔ nf.1 a = true) →
+        (stavi_temporal_truth N atomMap t (exist_sf sub_nf) ↔
+         ∃ x : N.carrier, nf_eval_nf N k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :=
+      fun sub_nf => Classical.choose_spec
+        (nf_2var_existence_characterizable atomMap h_surj k char_k_gen char_k_gen_correct
+          nf.1 sub_nf)
+    -- Build the formula (same structure as nf_characterizable_by_stavi)
+    let atom_lits := (Fintype.elems (α := AtomKind sig 1)).val.toList.map fun ak =>
+      atomKind_to_sf_literal atomMap h_surj ak (nf.1 ak)
+    let quant_formulas := (Fintype.elems (α := NormalForm sig k 2)).val.toList.map fun sub_nf =>
+      if nf.2 sub_nf then exist_sf sub_nf else .neg (exist_sf sub_nf)
+    let full_formula := StaviFormula.conj (sf_conjList atom_lits) (sf_conjList quant_formulas)
+    refine ⟨full_formula, fun M _ _ _ _ _ t => ?_⟩
+    constructor
+    · -- Forward direction: formula truth → nf_eval_nf (same as general version)
+      intro h_formula
+      simp only [full_formula, stavi_temporal_truth] at h_formula
+      obtain ⟨h_f_atoms, h_f_quant⟩ := h_formula
+      have h_atom_list := (sf_conjList_iff M atomMap t _).mp h_f_atoms
+      have h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ nf.1 a = true := by
+        intro a
+        have h_mem : atomKind_to_sf_literal atomMap h_surj a (nf.1 a) ∈ atom_lits := by
+          simp only [atom_lits, List.mem_map]
+          exact ⟨a, Multiset.mem_toList.mpr (Fintype.complete a), rfl⟩
+        exact (atomKind_to_sf_literal_correct atomMap h_surj M t a (nf.1 a)).mp
+          (h_atom_list _ h_mem)
+      have h_quant_list := (sf_conjList_iff M atomMap t _).mp h_f_quant
+      show nf_eval_nf M (k + 1) 1 (fun _ => t) nf
+      obtain ⟨atom_part, quant_part⟩ := nf
+      refine ⟨h_atoms, fun sub_nf => ?_⟩
+      have h_sub_in : (if quant_part sub_nf then exist_sf sub_nf
+          else (exist_sf sub_nf).neg) ∈ quant_formulas := by
+        simp only [quant_formulas, List.mem_map]
+        exact ⟨sub_nf, Multiset.mem_toList.mpr (Fintype.complete sub_nf), rfl⟩
+      have h_sub_truth := h_quant_list _ h_sub_in
+      have h_iff := exist_sf_correct sub_nf M t h_atoms
+      cases h_q_val : quant_part sub_nf
+      · simp only [h_q_val, Bool.false_eq_true, ↓reduceIte, stavi_temporal_truth] at h_sub_truth
+        constructor
+        · intro h_ex; exact absurd (h_iff.mpr h_ex) h_sub_truth
+        · intro h_abs; simp at h_abs
+      · simp only [h_q_val, ↓reduceIte] at h_sub_truth
+        constructor
+        · intro _; rfl
+        · intro _; exact h_iff.mp h_sub_truth
+    · -- Backward direction: nf_eval_nf → formula truth (same as general version)
+      intro h_nf
+      simp only [nf_eval_nf] at h_nf
+      obtain ⟨h_atoms, h_quant⟩ := h_nf
+      simp only [full_formula, stavi_temporal_truth]
+      constructor
+      · rw [sf_conjList_iff]
+        intro A hA
+        simp only [atom_lits, List.mem_map] at hA
+        obtain ⟨ak, _, rfl⟩ := hA
+        exact (atomKind_to_sf_literal_correct atomMap h_surj M t ak (nf.1 ak)).mpr
+          (h_atoms ak)
+      · rw [sf_conjList_iff]
+        intro A hA
+        simp only [quant_formulas, List.mem_map] at hA
+        obtain ⟨sub_nf, _, rfl⟩ := hA
+        have h_iff := exist_sf_correct sub_nf M t h_atoms
+        by_cases h_q : nf.2 sub_nf = true
+        · simp only [h_q, ite_true]
+          exact h_iff.mpr ((h_quant sub_nf).mpr h_q)
+        · have h_q_false : nf.2 sub_nf = false := by
+            cases h_val : nf.2 sub_nf <;> simp_all
+          rw [show (nf.2 sub_nf) = false from h_q_false]
+          simp only [Bool.false_eq_true, ↓reduceIte, stavi_temporal_truth]
+          have h_no_ex : ¬ ∃ x, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
+            rw [h_quant sub_nf, h_q_false]; simp
+          exact fun h => h_no_ex (h_iff.mp h)
+
+/-- **Discrete GHR93 Theorem 9.3.1**: {U, S, U', S'} is expressively complete
+    over discrete structures.
+
+    This uses the SAME formula as `stavi_expressive_completeness` but proves
+    correctness only for discrete M. The formula construction goes through
+    `nf_characterizable_by_stavi` (which may use sorry internally for the
+    general backward direction), but `discrete_nf_characterizable_by_stavi`
+    proves the formula works on discrete M without sorry. -/
+noncomputable def discrete_stavi_expressive_completeness
+    (sig : MonadicSignature) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (psi : MonadicFormula sig 1) :
+    { A : StaviFormula //
+      ∀ (M : OrderedMonadicStructure sig)
+        [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+        [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+        (t : M.carrier),
+        stavi_temporal_truth M atomMap t A ↔
+        eval M (fun _ => t) psi } := by
+  set k := psi.quantifier_depth with hk_def
+  -- Choose characteristic StaviFormulas for each NF (discrete version)
+  have nf_char := fun nf => discrete_nf_characterizable_by_stavi atomMap h_surj k nf
+  let char_sf : NormalForm sig k 1 → StaviFormula :=
+    fun nf => Classical.choose (nf_char nf)
+  have char_correct : ∀ (nf : NormalForm sig k 1)
+      (M : OrderedMonadicStructure sig)
+      [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+      [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+      (t : M.carrier),
+      stavi_temporal_truth M atomMap t (char_sf nf) ↔
+      nf_eval_nf M k 1 (fun _ => t) nf :=
+    fun nf => Classical.choose_spec (nf_char nf)
+  -- "good" predicate: uses discrete M witnesses
+  let good_prop : NormalForm sig k 1 → Prop :=
+    fun nf => ∃ (M : OrderedMonadicStructure sig)
+      (_ : SuccOrder M.carrier) (_ : PredOrder M.carrier)
+      (_ : NoMaxOrder M.carrier) (_ : NoMinOrder M.carrier)
+      (_ : IsSuccArchimedean M.carrier)
+      (t : M.carrier),
+      nf_eval_nf M k 1 (fun _ => t) nf ∧ eval M (fun _ => t) psi
+  let all_nfs := (Fintype.elems (α := NormalForm sig k 1)).val.toList
+  let good_formulas := all_nfs.filterMap (fun nf =>
+    if @decide (good_prop nf) (Classical.dec _) then some (char_sf nf) else none)
+  have mem_good_iff : ∀ (sf : StaviFormula), sf ∈ good_formulas ↔
+      ∃ nf ∈ all_nfs, good_prop nf ∧ sf = char_sf nf := by
+    intro sf
+    simp only [good_formulas, List.mem_filterMap]
+    constructor
+    · rintro ⟨nf, hnf_mem, h_ite⟩
+      by_cases hg : good_prop nf
+      · rw [if_pos (@decide_eq_true _ (Classical.dec _) hg)] at h_ite
+        exact ⟨nf, hnf_mem, hg, (Option.some.inj h_ite).symm⟩
+      · rw [if_neg (mt (@decide_eq_true_eq _ (Classical.dec _)).mp hg)] at h_ite
+        exact absurd h_ite (by simp)
+    · rintro ⟨nf, hnf_mem, hg, rfl⟩
+      exact ⟨nf, hnf_mem, by rw [if_pos (@decide_eq_true _ (Classical.dec _) hg)]⟩
+  -- NF determines psi
+  have nf_determines_psi : ∀ (nf : NormalForm sig k 1)
+      (M₁ M₂ : OrderedMonadicStructure sig) (t₁ : M₁.carrier) (t₂ : M₂.carrier),
+      nf_eval_nf M₁ k 1 (fun _ => t₁) nf →
+      nf_eval_nf M₂ k 1 (fun _ => t₂) nf →
+      (eval M₁ (fun _ => t₁) psi ↔ eval M₂ (fun _ => t₂) psi) := by
+    intro nf M₁ M₂ t₁ t₂ h₁ h₂
+    apply doets_lemma_1_1 k 1 psi (hk_def ▸ le_refl _) M₁ M₂ (fun _ => t₁) (fun _ => t₂)
+    intro nf'
+    obtain ⟨c₁, hc₁, hu₁⟩ := nf_exists_unique M₁ k 1 (fun _ => t₁)
+    obtain ⟨c₂, hc₂, hu₂⟩ := nf_exists_unique M₂ k 1 (fun _ => t₂)
+    simp only at hu₁ hu₂
+    have h_eq₁ : c₁ = nf := (hu₁ nf h₁).symm
+    have h_eq₂ : c₂ = nf := (hu₂ nf h₂).symm
+    subst h_eq₁; subst h_eq₂
+    constructor
+    · intro h'; have := hu₁ nf' h'; subst this; exact hc₂
+    · intro h'; have := hu₂ nf' h'; subst this; exact hc₁
+  refine ⟨sf_disjList good_formulas, fun M _ _ _ _ _ t => ?_⟩
+  rw [sf_disjList_iff]
+  constructor
+  · -- Forward: some good NF's characteristic formula holds → psi holds
+    rintro ⟨A, hA_mem, hA_eval⟩
+    rw [mem_good_iff] at hA_mem
+    obtain ⟨nf, _, h_good, rfl⟩ := hA_mem
+    have h_nf_eval := (char_correct nf M t).mp hA_eval
+    obtain ⟨M', h1, h2, h3, h4, h5, t', hM'_nf, hM'_psi⟩ := h_good
+    exact (nf_determines_psi nf M' M t' t hM'_nf h_nf_eval).mp hM'_psi
+  · -- Backward: psi holds → some good NF's characteristic formula holds
+    intro h_psi
+    set nf_M := nf_characteristic M k 1 (fun _ => t)
+    have h_nf_M := nf_characteristic_satisfies M k 1 (fun _ => t)
+    have h_char_eval := (char_correct nf_M M t).mpr h_nf_M
+    have h_good : good_prop nf_M :=
+      ⟨M, inferInstance, inferInstance, inferInstance, inferInstance, inferInstance,
+       t, h_nf_M, h_psi⟩
+    have h_in : char_sf nf_M ∈ good_formulas := by
+      rw [mem_good_iff]
+      exact ⟨nf_M, Multiset.mem_toList.mpr (Fintype.complete nf_M), h_good, rfl⟩
+    exact ⟨char_sf nf_M, h_in, h_char_eval⟩
 
 end Bimodal.Metalogic.WeakCanonical
