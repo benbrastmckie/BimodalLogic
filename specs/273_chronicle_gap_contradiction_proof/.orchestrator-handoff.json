@@ -1,46 +1,43 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 blocked on GHR93 Theorem 6 inductive step (game inversion Claims 1-2). Added discrete wiring infrastructure (discrete_nf_characterizable_by_stavi, discrete_stavi_expressive_completeness) to StaviCompleteness.lean -- these build successfully but inherit sorryAx from the general version. The fundamental obstacle is the sub-interval type matching problem: zone matching on (x,t) cannot determine orderings between matched points in the same zone. The GHR93 game approach (Claims 1-2 canonical pivot) is the known resolution but requires ~150-200 lines of non-trivial game position manipulation. Plan v8 blocked at same root cause as v3-v7.",
+  "status": "partial",
+  "summary": "Generalized IH over r and successfully applied at r+4 with rank casting, establishing h_bwd_n (n-round backward game at rank r+4). The (n+1)-round backward game construction remains as a sorry. Phase 2 is in progress; Phases 3-5 not started.",
   "phases_completed": 1,
   "phases_total": 5,
   "blockers": [
     {
       "phase": 2,
-      "description": "GHR93 Theorem 6 inductive step: game inversion via canonical pivot construction (Claims 1-2). DiscreteGameTransfer.lean:630. Requires defining canonical pivot c, proving Claim 1 (unique response), and Claim 2 (sub-interval strategy restriction).",
-      "what_tried": "Direct forward game usage, round monotonicity, trivial selections, diagonal approach, strong induction on k for bridge lemma, direct induction on j for multi-var transfer -- all fail at sub-interval type matching",
-      "root_cause": "Sub-interval type matching: zone matching on (x,t) cannot determine orderings between zone-matched points in the same zone. Requires GHR93 canonical pivot construction to split intervals consistently.",
+      "description": "The inductive step still has a sorry: constructing G_{n+1;r} from G_{n;r+4} + G_{1;R}. Three viable approaches identified (see handoff). Estimated ~200-400 lines remaining.",
+      "what_tried": "Generalized IH over r (success), applied IH at r+4 with convert/simp/cases for rank casting (success), attempted direct game construction with separate first-n and last element handling (incomplete - winning condition consistency not yet resolved)",
+      "root_cause": "Game direction reversal with rank reduction requires careful sub-interval decomposition or a dedicated rank-lifting lemma. The winning condition must be simultaneously consistent across all n+4 tuple indices.",
       "resolution_paths": [
-        "Implement GHR93 Claims 1-2 for discrete orders (~150-200 lines in DiscreteGameTransfer.lean)",
-        "Complete Proposition 7 for discrete orders (~200-350 lines)",
-        "Wire game wins into existential transfer via bridge (~100 lines)"
+        "Option A: Full GHR93 Claims 1-2 canonical pivot (~300 lines, follows paper exactly)",
+        "Option B: Direct construction using h_bwd_n for first n + h_fwd_1 Round 2 for last (~200 lines, winning condition needs cross-group consistency)",
+        "Option C: Dedicated rank-lifting lemma factoring the reusable pattern (~150 lines for lemma + ~100 lines for application)"
       ]
     }
   ],
   "continuation_context": {
-    "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md",
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff-20260609T043203Z.md",
+    "next_phase": 2,
+    "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/09_ghr93-game-inversion-plan.md",
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff-20260608T120000Z.md",
     "sorry_sites": [
-      "StaviCompleteness.lean:2353 (nf_2var_existential_transfer forward)",
-      "StaviCompleteness.lean:2435 (nf_2var_existential_transfer backward)",
-      "StaviCompleteness.lean:2805 (nf_exist_sf_guarded_backward)",
-      "DiscreteGameTransfer.lean:630 (discrete_ghr93_theorem6 inductive step)"
-    ]
+      "DiscreteGameTransfer.lean:~543 (discrete_ghr93_theorem6 inductive step - main target)",
+      "StaviCompleteness.lean:2353 (nf_2var_existential_transfer forward - dead code)",
+      "StaviCompleteness.lean:2435 (nf_2var_existential_transfer backward - dead code)",
+      "StaviCompleteness.lean:2805 (nf_exist_sf_guarded_backward - leaf sorry)"
+    ],
+    "key_progress": "IH now generalized over r; h_bwd_n successfully established via convert/simp/cases rank casting"
   },
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
-      "type": "source",
-      "summary": "Added discrete_nf_characterizable_by_stavi and discrete_stavi_expressive_completeness (builds, inherits sorryAx)"
-    },
-    {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean",
       "type": "source",
-      "summary": "Discrete infrastructure: ExtendedCarrier simplification, game_rank, Theorem 6 base case proved, inductive step sorry"
+      "summary": "Changed induction to generalizing r, applied IH at r+4 with type casting. h_bwd_n established. Sorry remains for (n+1)-round construction."
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff-20260609T043203Z.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff-20260608T120000Z.md",
       "type": "handoff",
-      "summary": "Detailed handoff with root cause analysis, what was tried, and precise next steps"
+      "summary": "Detailed handoff with exact goal state, approach options, and pre-existing file issues"
     }
   ]
 }
