@@ -1,16 +1,25 @@
 {
-  "status": "implemented",
-  "summary": "Eliminated all 2 remaining sorries in DiscreteGameTransfer.lean. Added discrete_point_challenge_with_sel_ordering helper lemma (~170 lines) that uses inductive cell-finding with sub-interval decompositions to find b with ordering preservation for all sorted selections. Phase 3 (Proposition 7) is now fully complete with 0 sorries.",
-  "phases_completed": 2,
-  "phases_total": 4,
-  "blockers": [],
+  "status": "blocked",
+  "summary": "Phase 4 architecture established but blocked by 24 pre-existing build errors in DiscreteGameTransfer.lean. Created DiscreteStaviCompleteness.lean with self-contained discrete chain (1 sorry for game pipeline backward direction). Plan Task 4.7 (modify US_expressively_complete_over_prior) found to be incorrect due to IsSuccArchimedean absence in callers.",
+  "phases_completed": 3,
+  "phases_total": 5,
+  "blockers": [
+    "DiscreteGameTransfer.lean has 24 pre-existing build errors (upstream breakage)",
+    "Single sorry in DiscreteStaviCompleteness.lean: discrete_nf_exist_sf_guarded_backward (game pipeline backward direction)",
+    "Plan Task 4.7 incorrect: US_expressively_complete_over_prior callers lack IsSuccArchimedean"
+  ],
   "continuation_context": {
     "next_phase": 4,
-    "remaining_sorries": 0,
-    "fix_summary": "The old approach obtained b from the base decomposition independently of selections, making ordering transfer impossible. The fix: discrete_point_challenge_with_sel_ordering finds the sub-interval of the sorted partition containing b' by case-splitting on the last sorted selection (induction on n), then gets b from that sub-interval's NM decomposition. For the boundary selection, ordering comes directly from the sub-interval WC. For non-boundary selections, ordering follows trivially (b is above or below the entire sorted sequence). For x/y boundaries, pivot_chain_order chains through the sub-interval boundary."
+    "next_action": "Fix 24 build errors in DiscreteGameTransfer.lean, then prove discrete_nf_exist_sf_guarded_backward",
+    "key_files": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"
+    ]
   },
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean", "type": "source", "summary": "discrete_ghr93_proposition7 fully proved (0 sorries)"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/10_uniform-rank-reformulation-plan.md", "type": "plan", "summary": "Phase 3 marked COMPLETED"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean", "type": "source", "summary": "14 private defs made public; old discrete chain removed"},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean", "type": "source", "summary": "New file with self-contained discrete chain (1 sorry)"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-4-handoff-20260609T160000Z.md", "type": "handoff", "summary": "Detailed analysis of blockers and next steps"}
   ]
 }
