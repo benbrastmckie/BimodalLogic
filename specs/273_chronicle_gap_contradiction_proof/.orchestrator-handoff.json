@@ -1,24 +1,16 @@
 {
-  "status": "partial",
-  "summary": "Restructured Proposition 7 with sorted matching helper (discrete_sorted_matching). 3 sorries remain: 2 in pairwise ordering (init-last cases), 1 in main theorem. Architecture is correct, remaining work is filling chain arguments.",
-  "phases_completed": 1,
+  "status": "implemented",
+  "summary": "Eliminated all 2 remaining sorries in DiscreteGameTransfer.lean. Added discrete_point_challenge_with_sel_ordering helper lemma (~170 lines) that uses inductive cell-finding with sub-interval decompositions to find b with ordering preservation for all sorted selections. Phase 3 (Proposition 7) is now fully complete with 0 sorries.",
+  "phases_completed": 2,
   "phases_total": 4,
-  "blockers": [
-    "2 sorries in discrete_sorted_matching pairwise ordering (init-last cases): need chain argument through c_init(m-1)/c'_init(m-1) using IH + sub-interval WC. Mathematically correct but Lean formalization complex.",
-    "1 sorry in discrete_ghr93_proposition7: needs helper + Tuple.sort + unsort + point challenge routing."
-  ],
+  "blockers": [],
   "continuation_context": {
-    "next_phase": 3,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260609T220000Z.md",
-    "key_insight": "Sorted matching helper uses induction on n with Fin.lastCases. Pairwise ordering uses chain argument: c(ki) = c_last iff c(ki) = c(m-1) AND c(m-1) = c_last, transferred via IH + sub-interval WC. Use by_cases on i = Fin.last m to avoid Fin.lastCases hypothesis issues.",
-    "sorry_landscape": {
-      "DiscreteGameTransfer.lean:1011": "i=last, j!=last pairwise ordering",
-      "DiscreteGameTransfer.lean:1014": "i!=last, j=last pairwise ordering (symmetric)",
-      "DiscreteGameTransfer.lean:1040": "main theorem discrete_ghr93_proposition7"
-    }
+    "next_phase": 4,
+    "remaining_sorries": 0,
+    "fix_summary": "The old approach obtained b from the base decomposition independently of selections, making ordering transfer impossible. The fix: discrete_point_challenge_with_sel_ordering finds the sub-interval of the sorted partition containing b' by case-splitting on the last sorted selection (induction on n), then gets b from that sub-interval's NM decomposition. For the boundary selection, ordering comes directly from the sub-interval WC. For non-boundary selections, ordering follows trivially (b is above or below the entire sorted sequence). For x/y boundaries, pivot_chain_order chains through the sub-interval boundary."
   },
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean", "type": "source", "summary": "Sorted matching helper + Proposition 7 skeleton"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260609T220000Z.md", "type": "handoff", "summary": "Detailed instructions for filling 3 remaining sorries"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean", "type": "source", "summary": "discrete_ghr93_proposition7 fully proved (0 sorries)"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/10_uniform-rank-reformulation-plan.md", "type": "plan", "summary": "Phase 3 marked COMPLETED"}
   ]
 }

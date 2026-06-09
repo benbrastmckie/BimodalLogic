@@ -1232,7 +1232,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T05:45:00Z",
+      "last_updated": "2026-06-09T08:40:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1421,9 +1421,25 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 299,
+      "project_name": "refactor_discrete_game_transfer",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Refactor DiscreteGameTransfer.lean to eliminate the wrapper pattern once the completeness chain is sorry-free. Inline discrete_ghr93_theorem6 by having StaviCompleteness.lean call ghr93_forward_to_backward directly with discrete typeclass instances. Convert discrete_rank_embed_eq_drc to a @[simp] lemma. Remove discrete_ghr93_theorem6_rank_varying if callers can use the general version. Clean up any dead code from the old fixed-pivot architecture that was deleted in task 273.",
+      "priority": "low",
+      "topic": "completeness",
+      "dependencies": [
+        273
+      ],
+      "created": "2026-06-09T12:40:00Z",
+      "last_updated": "2026-06-09T12:40:00Z",
+      "artifacts": [],
+      "next_artifact_number": 1
     }
   ],
-  "next_project_number": 299,
+  "next_project_number": 300,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

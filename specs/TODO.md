@@ -1,5 +1,5 @@
 ---
-next_project_number: 299
+next_project_number: 300
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -132,6 +132,12 @@ technical_debt:
 298 [RESEARCHED] — Fix c7 labeling bug and regenerate dataset
 
 ## Tasks
+
+### 299. Refactor discrete game transfer to remove wrappers
+- **Effort**: low (1-2 hours)
+- **Status**: [NOT STARTED]
+- **Dependencies**: 273
+- **Description**: Once task 273 makes the completeness chain sorry-free, inline `discrete_ghr93_theorem6` by having callers use `ghr93_forward_to_backward` directly with discrete typeclass instances. Convert `discrete_rank_embed_eq_drc` to a `@[simp]` lemma. Remove `discrete_ghr93_theorem6_rank_varying` if the general version suffices. Clean up dead code from the old fixed-pivot architecture.
 
 ### 298. Fix c7 labeling bug and regenerate dataset
 - **Effort**: medium (4-8 hours)
