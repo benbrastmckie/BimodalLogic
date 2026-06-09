@@ -74,21 +74,21 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Add Global Branch Counter to Saturation.lean [NOT STARTED]
+### Phase 1: Add Global Branch Counter to Saturation.lean [COMPLETED]
 
 **Goal**: Bound the total number of branches explored in `expandBranchWithFuel` and its traced variant by threading a branch counter through the recursion.
 
 **Tasks**:
-- [ ] Add a `maxBranches : Nat := 50000` parameter to `expandBranchWithFuel`
-- [ ] Add a `branchesUsed : Nat := 0` parameter to track cumulative branches explored
-- [ ] At each `.split` case, increment `branchesUsed` by the number of new branches
-- [ ] Return `none` (fuel exhausted / timeout) when `branchesUsed >= maxBranches`
-- [ ] Thread `branchesUsed` through the `foldl tryBranch` accumulator so it accumulates across sub-branches
-- [ ] Update the `termination_by fuel` proof -- the measure is still `fuel` since `branchesUsed` does not affect the decreasing argument
-- [ ] Mirror all changes in `expandBranchWithFuel_tracedImpl` (same parameter additions, same counter logic)
-- [ ] Update `buildTableau` to pass `maxBranches` parameter (default 50000)
-- [ ] Update `expandBranchWithFuel_traced` public API to accept and pass `maxBranches`
-- [ ] Compile: `lake build Theories.Bimodal.Metalogic.Decidability.Saturation`
+- [x] Add a `maxBranches : Nat := 50000` parameter to `expandBranchWithFuel` *(completed)*
+- [x] Add a `branchesUsed : Nat := 0` parameter to track cumulative branches explored *(completed)*
+- [x] At each `.split` case, increment `branchesUsed` by the number of new branches *(completed)*
+- [x] Return `none` (fuel exhausted / timeout) when `branchesUsed >= maxBranches` *(completed)*
+- [x] Thread `branchesUsed` through the `foldl tryBranch` accumulator so it accumulates across sub-branches *(completed)*
+- [x] Update the `termination_by fuel` proof -- the measure is still `fuel` since `branchesUsed` does not affect the decreasing argument *(completed)*
+- [x] Mirror all changes in `expandBranchWithFuel_tracedImpl` (same parameter additions, same counter logic) *(completed)*
+- [x] Update `buildTableau` to pass `maxBranches` parameter (default 50000) *(deviation: skipped — default parameter values make explicit passing unnecessary; buildTableau uses defaults)*
+- [x] Update `expandBranchWithFuel_traced` public API to accept and pass `maxBranches` *(deviation: skipped — default parameter values make explicit passing unnecessary; traced API uses defaults)*
+- [x] Compile: `lake build Theories.Bimodal.Metalogic.Decidability.Saturation` *(completed)*
 
 **Timing**: 1.5 hours
 

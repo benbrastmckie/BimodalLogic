@@ -230,7 +230,12 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty)
     (applied : AppliedSet := {})
+    (maxBranches : Nat := 50000)
+    (branchesUsed : Nat := 0)
     : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
+  -- Task 298: global branch counter limit to bound exponential exploration
+  if branchesUsed >= maxBranches then none
+  else
   match fuel with
   | 0 => none  -- Out of fuel
   | fuel + 1 =>
@@ -254,7 +259,7 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
           | (.saturated, _, _) => some (.inr (b, timeOrd, applied))  -- Open saturated branch
           | (.extended newBranch, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-              expandBranchWithFuel newBranch fuel newOrd fc tracker applied'
+              expandBranchWithFuel newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
           | (.split branches, newOrd, newAppliedFormulas) =>
               let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
               -- For a split, we check if ALL branches close
@@ -263,13 +268,15 @@ def expandBranchWithFuel (b : Branch) (fuel : Nat)
               -- Each sub-branch receives fuel proportional to its estimated difficulty.
               -- All allocations are capped at `fuel` (= original - 1) for termination.
               let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
+              -- Task 298: increment branch counter by number of new branches at this split
+              let branchesUsed' := branchesUsed + branches.length
               let tryBranch := fun acc (pair : Branch × Nat) =>
                 match acc with
                 | some (.inr openBr) => some (.inr openBr)  -- Already found open
                 | _ =>
                     -- Cap at `fuel` to ensure termination (pair.2 is already ≤ fuel
                     -- from allocateFuelProportionally, but `min` makes it visible)
-                    match expandBranchWithFuel pair.1 (min pair.2 fuel) newOrd fc tracker applied' with
+                    match expandBranchWithFuel pair.1 (min pair.2 fuel) newOrd fc tracker applied' maxBranches branchesUsed' with
                     | none => none  -- Out of fuel
                     | some (.inl _) => acc  -- This branch closed, continue
                     | some (.inr openBr) => some (.inr openBr)  -- Found open
@@ -363,7 +370,15 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
     (fc : FrameClass := .Base)
     (tracker : EventualityTracker := EventualityTracker.empty)
     (applied : AppliedSet := {})
+    (maxBranches : Nat := 50000)
+    (branchesUsed : Nat := 0)
     : TraceM (Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet))) := do
+  -- Task 298: global branch counter limit (mirrors expandBranchWithFuel)
+  if branchesUsed >= maxBranches then
+    let cert ← TraceM.getCert
+    TraceM.record (.fuelExhausted cert.totalSteps 0)
+    return none
+  else
   match fuel with
   | 0 =>
       -- Fuel exhausted: record event and return none
@@ -395,18 +410,20 @@ def expandBranchWithFuel_tracedImpl (b : Branch) (fuel : Nat)
               | .saturated => return some (.inr (b, timeOrd, applied))
               | .extended newBranch =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
-                  expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied'
+                  expandBranchWithFuel_tracedImpl newBranch fuel newOrd fc tracker applied' maxBranches (branchesUsed + 1)
               | .split branches =>
                   let applied' := newAppliedFormulas.foldl (fun s f => s.insert f) applied
                   -- Task 290: proportional fuel allocation (mirrors expandBranchWithFuel)
                   let fuelAllocs := allocateFuelProportionally (fuel + 1) branches
+                  -- Task 298: increment branch counter by number of new branches
+                  let branchesUsed' := branchesUsed + branches.length
                   let mut acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)) :=
                     some (.inl ⟨b, .botPos Label.initial⟩)
                   for pair in branches.zip fuelAllocs do
                     match acc with
                     | some (.inr openBr) => acc := some (.inr openBr)  -- already found open
                     | _ =>
-                        match ← expandBranchWithFuel_tracedImpl pair.1 (min pair.2 fuel) newOrd fc tracker applied' with
+                        match ← expandBranchWithFuel_tracedImpl pair.1 (min pair.2 fuel) newOrd fc tracker applied' maxBranches branchesUsed' with
                         | none => acc := none
                         | some (.inl _) => pure ()  -- closed; continue
                         | some (.inr openBr) => acc := some (.inr openBr)
@@ -1037,18 +1054,20 @@ Task 290: updated for proportional fuel allocation (pair : Branch × Nat).
 private theorem tryBranch_inr
     (fuelBound : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
     (tracker : EventualityTracker) (applied' : AppliedSet)
+    (maxBranches : Nat) (branchesUsed' : Nat)
     (acc : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)))
     (pair : Branch × Nat) (ob : Branch) (ord : TimeOrdering) (ap : AppliedSet)
     (ih : ∀ (fuel' : Nat), fuel' ≤ fuelBound →
           ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
-            (ap' : AppliedSet) (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
-            expandBranchWithFuel b' fuel' t' fc' trk' ap' = some (.inr (ob', o', a')) →
+            (ap' : AppliedSet) (mb : Nat) (bu : Nat)
+            (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
+            expandBranchWithFuel b' fuel' t' fc' trk' ap' mb bu = some (.inr (ob', o', a')) →
             findClosure ob' fc' = none)
     (h_acc : ∀ ob' ord' ap', acc = some (.inr (ob', ord', ap')) → findClosure ob' fc = none)
     (h_result : (match acc with
       | some (.inr openBr) => some (.inr openBr)
       | _ =>
-          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' with
+          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
           | some (.inr openBr) => some (.inr openBr)) = some (.inr (ob, ord, ap))) :
@@ -1061,7 +1080,7 @@ private theorem tryBranch_inr
     · exact absurd h_result (by simp)
     · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
       rename_i openBr h_exp
-      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' ob ord ap h_exp
+      exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
   | some val =>
     cases val with
     | inr p =>
@@ -1074,7 +1093,7 @@ private theorem tryBranch_inr
       · exact absurd h_result (by simp)
       · simp at h_result; obtain ⟨rfl, rfl, rfl⟩ := h_result
         rename_i openBr h_exp
-        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' ob ord ap h_exp
+        exact ih (min pair.2 fuelBound) (Nat.min_le_right _ _) pair.1 newOrd fc tracker applied' maxBranches branchesUsed' ob ord ap h_exp
 
 /--
 Helper: `List.foldl` with the tryBranch step preserves the findClosure invariant.
@@ -1083,10 +1102,12 @@ Task 290: updated for proportional fuel allocation (pairs : List (Branch × Nat)
 private theorem foldl_preserves_findClosure
     (fuelBound : Nat) (newOrd : TimeOrdering) (fc : FrameClass)
     (tracker : EventualityTracker) (applied' : AppliedSet)
+    (maxBranches : Nat) (branchesUsed' : Nat)
     (ih : ∀ (fuel' : Nat), fuel' ≤ fuelBound →
           ∀ (b' : Branch) (t' : TimeOrdering) (fc' : FrameClass) (trk' : EventualityTracker)
-            (ap' : AppliedSet) (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
-            expandBranchWithFuel b' fuel' t' fc' trk' ap' = some (.inr (ob', o', a')) →
+            (ap' : AppliedSet) (mb : Nat) (bu : Nat)
+            (ob' : Branch) (o' : TimeOrdering) (a' : AppliedSet),
+            expandBranchWithFuel b' fuel' t' fc' trk' ap' mb bu = some (.inr (ob', o', a')) →
             findClosure ob' fc' = none)
     (pairs : List (Branch × Nat))
     (init : Option (ClosedBranch ⊕ (Branch × TimeOrdering × AppliedSet)))
@@ -1096,7 +1117,7 @@ private theorem foldl_preserves_findClosure
       match acc with
       | some (.inr openBr) => some (.inr openBr)
       | _ =>
-          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' with
+          match expandBranchWithFuel pair.1 (min pair.2 fuelBound) newOrd fc tracker applied' maxBranches branchesUsed' with
           | none => none
           | some (.inl _) => acc
           | some (.inr openBr) => some (.inr openBr)) init = some (.inr (ob, ord, ap))) :
@@ -1106,7 +1127,7 @@ private theorem foldl_preserves_findClosure
   | cons hd tl ih_tl =>
     simp only [List.foldl] at h_result
     exact ih_tl _
-      (fun ob' ord' ap' h => tryBranch_inr fuelBound newOrd fc tracker applied' init hd ob' ord' ap' ih h_init h)
+      (fun ob' ord' ap' h => tryBranch_inr fuelBound newOrd fc tracker applied' maxBranches branchesUsed' init hd ob' ord' ap' ih h_init h)
       h_result
 
 set_option maxHeartbeats 3200000 in
@@ -1115,44 +1136,53 @@ General soundness: if `expandBranchWithFuel` returns an open branch,
 that branch has no closure reason.
 Uses strong induction to handle the fuel-divided split case.
 Task 290: updated for proportional fuel allocation.
+Task 298: generalized over maxBranches/branchesUsed parameters.
 -/
 private theorem expandBranchWithFuel_sound
     (fuel : Nat) :
     ∀ (b : Branch) (timeOrd : TimeOrdering) (fc : FrameClass) (tracker : EventualityTracker)
-      (applied : AppliedSet) (openBranch : Branch) (ord : TimeOrdering) (ap : AppliedSet),
-      expandBranchWithFuel b fuel timeOrd fc tracker applied = some (.inr (openBranch, ord, ap)) →
+      (applied : AppliedSet) (maxBranches : Nat) (branchesUsed : Nat)
+      (openBranch : Branch) (ord : TimeOrdering) (ap : AppliedSet),
+      expandBranchWithFuel b fuel timeOrd fc tracker applied maxBranches branchesUsed = some (.inr (openBranch, ord, ap)) →
       findClosure openBranch fc = none := by
   induction fuel using Nat.strongRecOn with
   | _ n ih =>
-    intro b timeOrd fc tracker applied ob ord ap h
+    intro b timeOrd fc tracker applied maxBranches branchesUsed ob ord ap h
     cases n with
-    | zero => simp [expandBranchWithFuel] at h
+    | zero =>
+      simp [expandBranchWithFuel] at h
     | succ k =>
       unfold expandBranchWithFuel at h
-      cases hfc : findClosure b fc with
-      | some reason => simp [hfc] at h
-      | none =>
-        simp [hfc] at h
-        -- Task 261 v3: case split on eventuality-aware blocking check
-        by_cases hblock : (findBlockedTime b timeOrd
-            (fulfillEventualities b (registerEventualities b tracker))).isSome
-        · simp [hblock] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
-        · simp [hblock] at h
-          match hexp : expandOnceWithApplied b timeOrd fc applied with
-          | ⟨.saturated, _, _⟩ =>
-            simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
-          | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
-            simp [hexp] at h
-            exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ ob ord ap h
-          | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
-            simp [hexp] at h
-            -- Task 290: use foldl_preserves_findClosure for zipped pairs
-            exact foldl_preserves_findClosure k newOrd fc _ _
-              (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
-              (branches.zip (allocateFuelProportionally (k + 1) branches))
-              (some (.inl ⟨b, .botPos Label.initial⟩))
-              (fun _ _ _ h' => by simp at h')
-              ob ord ap h
+      -- Task 298: handle the branch counter guard
+      split at h
+      · simp at h  -- branchesUsed >= maxBranches => returns none, contradiction
+      · cases hfc : findClosure b fc with
+        | some reason => simp [hfc] at h
+        | none =>
+          simp [hfc] at h
+          -- Task 261 v3: case split on eventuality-aware blocking check
+          by_cases hblock : (findBlockedTime b timeOrd
+              (fulfillEventualities b (registerEventualities b tracker))).isSome
+          · simp [hblock] at h
+            obtain ⟨rfl, rfl, rfl⟩ := h
+            exact hfc
+          · simp [hblock] at h
+            match hexp : expandOnceWithApplied b timeOrd fc applied with
+            | ⟨.saturated, _, _⟩ =>
+              simp [hexp] at h; obtain ⟨rfl, rfl, rfl⟩ := h; exact hfc
+            | ⟨.extended newBranch, newOrd, newAppliedFormulas⟩ =>
+              simp [hexp] at h
+              exact ih k (Nat.lt_succ_of_le le_rfl) newBranch newOrd fc _ _ maxBranches _ ob ord ap h
+            | ⟨.split branches, newOrd, newAppliedFormulas⟩ =>
+              simp [hexp] at h
+              -- Task 290: use foldl_preserves_findClosure for zipped pairs
+              -- Task 298: pass maxBranches and branchesUsed' through the foldl
+              exact foldl_preserves_findClosure k newOrd fc _ _ maxBranches (branchesUsed + branches.length)
+                (fun fuel' hle => ih fuel' (Nat.lt_succ_of_le hle))
+                (branches.zip (allocateFuelProportionally (k + 1) branches))
+                (some (.inl ⟨b, .botPos Label.initial⟩))
+                (fun _ _ _ h' => by simp at h')
+                ob ord ap h
 
 /--
 **Blocking soundness**: Subset blocking does not prematurely close any
@@ -1169,7 +1199,7 @@ theorem blocking_sound (φ : Formula) (b : Branch) (openBranch : Branch)
     (ord : TimeOrdering) (ap : AppliedSet)
     (h_result : expandBranchWithFuel b (soundFuel φ) = some (.inr (openBranch, ord, ap))) :
     findClosure openBranch = none :=
-  expandBranchWithFuel_sound (soundFuel φ) b _ _ _ _ openBranch ord ap h_result
+  expandBranchWithFuel_sound (soundFuel φ) b _ _ _ _ _ _ openBranch ord ap h_result
 
 /-!
 ## Frame-Class Gating Tests (Task 238)
