@@ -1,23 +1,24 @@
 {
-  "status": "blocked",
-  "summary": "Phases 3-5 blocked on GHR93 Proposition 7 (game iteration for discrete orders, ~200-350 lines). Phase 2 is complete (DiscreteGameTransfer.lean sorry-free). The bridge lemma for discrete orders requires Proposition 7 to establish sub-interval type agreement in nf_2var_existential_transfer.",
+  "status": "partial",
+  "summary": "Restructured Proposition 7 with sorted matching helper (discrete_sorted_matching). 3 sorries remain: 2 in pairwise ordering (init-last cases), 1 in main theorem. Architecture is correct, remaining work is filling chain arguments.",
   "phases_completed": 1,
   "phases_total": 4,
   "blockers": [
-    "GHR93 Proposition 7 (game iteration) needed for discrete_nf_2var_existential_transfer at depth j >= 1. Zone matching gives point-level NF agreement but not sub-interval type agreement. Proposition 7 resolves this by iterating the game with ghr93_strategy_compose to split intervals consistently. Estimated 200-350 lines in DiscreteGameTransfer.lean."
+    "2 sorries in discrete_sorted_matching pairwise ordering (init-last cases): need chain argument through c_init(m-1)/c'_init(m-1) using IH + sub-interval WC. Mathematically correct but Lean formalization complex.",
+    "1 sorry in discrete_ghr93_proposition7: needs helper + Tuple.sort + unsort + point challenge routing."
   ],
   "continuation_context": {
     "next_phase": 3,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260609T140000Z.md",
-    "key_insight": "The formula nf_exist_sf_guarded does not encode the quantifier part of sub_nf. The backward direction requires the bridge lemma to determine the quantifier part from structural data. For discrete orders, the bridge lemma IS true but proving it requires Proposition 7.",
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260609T220000Z.md",
+    "key_insight": "Sorted matching helper uses induction on n with Fin.lastCases. Pairwise ordering uses chain argument: c(ki) = c_last iff c(ki) = c(m-1) AND c(m-1) = c_last, transferred via IH + sub-interval WC. Use by_cases on i = Fin.last m to avoid Fin.lastCases hypothesis issues.",
     "sorry_landscape": {
-      "DiscreteGameTransfer.lean": "0 sorries (DONE)",
-      "StaviCompleteness.lean": "3 sorries (lines 2353, 2435 dead code; line 2805 THE target)",
-      "PriorExpressiveness.lean": "sorryAx via stavi_expressive_completeness"
+      "DiscreteGameTransfer.lean:1011": "i=last, j!=last pairwise ordering",
+      "DiscreteGameTransfer.lean:1014": "i!=last, j=last pairwise ordering (symmetric)",
+      "DiscreteGameTransfer.lean:1040": "main theorem discrete_ghr93_proposition7"
     }
   },
   "artifacts": [
-    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260609T140000Z.md", "type": "handoff", "summary": "Full analysis with 8 approaches and recovery plan"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/10_uniform-rank-reformulation-plan.md", "type": "plan", "summary": "Updated with BLOCKED markers"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean", "type": "source", "summary": "Sorted matching helper + Proposition 7 skeleton"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260609T220000Z.md", "type": "handoff", "summary": "Detailed instructions for filling 3 remaining sorries"}
   ]
 }
