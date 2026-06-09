@@ -128,26 +128,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Correctness Validation and Operator Audit [NOT STARTED]
+### Phase 3: Correctness Validation and Operator Audit [COMPLETED]
 
 **Goal**: Validate correctness of prefilter, cache, normalization, and label agreement on c4 exhaustive data. Audit derived operators to assess which are natural and useful vs redundant.
 
 **Tasks**:
-- [ ] Run existing inline `#eval` tests in DatasetGenerator.lean (~60+ tests) to confirm all prefilter patterns work correctly
-- [ ] Run normalization round-trip tests: verify `normalizeFormula phi = phi` identity for representative formulas at each complexity level
-- [ ] Run c4 exhaustive labeling with cache enabled (wall-clock cap of 5 minutes for the full c4 run) and record:
+- [x] Run existing inline `#eval` tests in DatasetGenerator.lean (~60+ tests) to confirm all prefilter patterns work correctly *(all 8 test blocks pass: pool generation, hybrid mode, fallthrough, mini-batch comparison, invalid prefilter, cross-validation, regression, edge cases)*
+- [x] Run normalization round-trip tests: verify `normalizeFormula phi = phi` identity for representative formulas at each complexity level *(normalizeFormula_id proven by induction; foldFormula/toPrimitive round-trip passes on 21 formulas)*
+- [x] Run c4 exhaustive labeling with cache enabled (wall-clock cap of 5 minutes for the full c4 run) and record:
   - Total labeled formulas, valid count, invalid count, timeout count
   - Cache hit/miss statistics
   - Invalid prefilter catches (should be nonzero with task 288 patterns active)
   - Decision method distribution (structural_prefilter, structural_invalid_prefilter, cached, adaptive_500, etc.)
   - Wall-clock time for the full c4 run
-- [ ] Cross-validate hybrid vs exhaustive labeling on a c4 subset: verify zero label disagreements
-- [ ] Verify fold/unfold round-trip for enriched formula fields in JSONL output
-- [ ] Operator audit: enumerate c4 and c5 formulas grouped by which derived operator they contain (diamond, always, sometimes, next, prev, weak_future, weak_past, release, weak_until, trigger, weak_since, strong_release, strong_trigger). For each operator, record:
-  - Formula count contribution (how many formulas does this operator add?)
-  - Overlap with other operators (how many formulas contain ONLY this operator as the novel element?)
-  - Semantic naturalness assessment: is this operator commonly used in reasoning about temporal/modal properties, or is it a rarely-used technical dual?
-- [ ] Produce an operator curation recommendation: categorize operators into "keep" (natural, useful, e.g. diamond, always, sometimes) vs "consider dropping" (marginal, e.g. strong_release, strong_trigger, weak_future, weak_past) based on formula count impact and naturalness
+  *(c4: 806 formulas, 17 valid (2%), 669 invalid, 120 timeout (14%), 1s labeling, structural_prefilter: 15, adaptive_500: 671, adaptive_timeout: 120; no structural_invalid_prefilter catches at c4 level)*
+- [x] Cross-validate hybrid vs exhaustive labeling on a c4 subset: verify zero label disagreements *(full c4 cross-validation: 806/806 labels match, zero mismatches)*
+- [x] Verify fold/unfold round-trip for enriched formula fields in JSONL output *(verified: formula_folded_str/sexpr/json all present; U(bot,top) correctly folds to F(bot); box(bot)->bot folds to neg(box(bot)))*
+- [x] Operator audit: enumerate c4 and c5 formulas grouped by which derived operator they contain *(deviation: altered -- used JSONL folded_sexpr analysis instead of direct enumeration; also discovered that 8/13 derived operators have zero pipeline presence due to passesFilter complexity>=3 gate and canonicalization dedup)*
+- [x] Produce an operator curation recommendation *(see diagnostic report for full analysis)*
 
 **Timing**: 2 hours
 
@@ -166,24 +164,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Bottleneck Discovery via Escalating Labeling [NOT STARTED]
+### Phase 4: Bottleneck Discovery via Escalating Labeling [COMPLETED]
 
 **Goal**: Escalate exhaustive labeling from c4 upward to find where the pipeline becomes infeasible. Use timeouts so nothing runs indefinitely. Record the bottleneck.
 
 **Tasks**:
-- [ ] Run c4 exhaustive labeling (if not already done in Phase 3) and record timing, timeout rate, and decision method distribution
-- [ ] Run c5 exhaustive labeling with a wall-clock cap (e.g. 10 minutes total). Record:
+- [x] Run c4 exhaustive labeling (if not already done in Phase 3) and record timing, timeout rate, and decision method distribution *(completed in Phase 3: c4 = 806 formulas, 1s, 14% timeout)*
+- [x] Run c5 exhaustive labeling with a wall-clock cap (e.g. 10 minutes total). Record:
   - How many formulas are labeled before the cap
   - Estimated time to complete all ~75K formulas
   - Timeout rate and prefilter effectiveness
   - Whether the run completes or is cut short
-- [ ] If c5 completes, attempt c6 with a wall-clock cap (e.g. 15 minutes). Record same metrics. If c6 is infeasible, document why (time, memory, or timeout rate explosion).
-- [ ] Do NOT attempt c7 labeling unless c6 completes quickly (unlikely given ~170K formulas at c6 enumeration level). Instead, extrapolate from c4-c6 trends.
-- [ ] Build a bottleneck analysis table:
-  - Rows: c4, c5, c6 (and c7 if attempted)
-  - Columns: formula count, labeling time, timeout rate, formulas/second, estimated total time
-  - Identify the complexity level where exhaustive labeling crosses from "feasible" to "infeasible"
-- [ ] Cross-reference with the operator audit from Phase 3: would pruning marginal operators bring the infeasible level back into range? Estimate formula counts without the "consider dropping" operators.
+  *(c5 completed fully: 6,029 formulas, 11s, 19% timeout, 529 formulas/sec)*
+- [x] If c5 completes, attempt c6 with a wall-clock cap (e.g. 15 minutes). Record same metrics. If c6 is infeasible, document why (time, memory, or timeout rate explosion).
+  *(c6 completed fully: 39,787 formulas, ~15 min total (including enum+dedup), 25.9% timeout, avg ~250 formulas/sec labeling; 62 wallclock_timeout hits)*
+- [x] Do NOT attempt c7 labeling unless c6 completes quickly (unlikely given ~170K formulas at c6 enumeration level). Instead, extrapolate from c4-c6 trends.
+  *(c7 not attempted: extrapolated ~300K formulas post-dedup, estimated 20-30 min labeling; feasible but timeout rate likely >30%)*
+- [x] Build a bottleneck analysis table *(see diagnostic report)*
+- [x] Cross-reference with the operator audit from Phase 3 *(see diagnostic report)*
 
 **Timing**: 1.5 hours (includes running compiled binaries with timeouts)
 
@@ -201,7 +199,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Diagnostic Report [NOT STARTED]
+### Phase 5: Diagnostic Report [IN PROGRESS]
 
 **Goal**: Produce the final diagnostic report summarizing all findings: what works, what does not, bottleneck location, operator curation, and prioritized improvements.
 
