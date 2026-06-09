@@ -1,5 +1,5 @@
 ---
-next_project_number: 300
+next_project_number: 301
 repository_health:
   overall_score: 95
   production_readiness: near-publication
@@ -129,9 +129,17 @@ technical_debt:
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 296 [NOT STARTED] — Re-add derived binary operators with dedup fix
 297 [COMPLETED] — Verify operator removal and regenerate datasets
-298 [RESEARCHED] — Fix c7 labeling bug and regenerate dataset
+300 [NOT STARTED] — Abort-aware tableau cancellation (IO.Ref Bool abort signal)
+  └─ 298 [RESEARCHED] — Fix c7 labeling bug and regenerate dataset
 
 ## Tasks
+
+### 300. Abort-aware tableau cancellation
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: none
+- **Description**: Make the tableau decision procedure abort-aware by threading an `IO.Ref Bool` abort signal through `expandBranchWithFuel` and related functions. Currently, `IO.cancel` in `labelFormulaImpl` is cooperative but the pure tableau computation never calls `IO.checkCanceled`, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an `IO.Ref Bool` parameter to `expandBranchWithFuel` that is checked at each recursive step. (2) Wire the abort ref from the `IO.cancel` handler in `labelFormulaImpl`. (3) Ensure `extractCountermodelData` in `mkInvalidLabel` also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
 
 ### 299. Refactor discrete game transfer to remove wrappers
 - **Effort**: low (1-2 hours)
@@ -143,7 +151,7 @@ technical_debt:
 - **Effort**: medium (4-8 hours)
 - **Status**: [PLANNED]
 - **Task Type**: lean4
-- **Dependencies**: 297
+- **Dependencies**: 297, 300
 - **Research**: [specs/298_fix_c7_labeling_bug_and_regenerate_dataset/reports/01_c7-labeling-bug.md]
 - **Plan**: [298_fix_c7_labeling_bug_and_regenerate_dataset/plans/01_c7-labeling-bug.md]
 
