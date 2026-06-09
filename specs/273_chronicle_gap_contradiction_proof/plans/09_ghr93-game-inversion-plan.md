@@ -128,9 +128,19 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 2: GHR93 Theorem 6 Inductive Step for Discrete Orders [IN PROGRESS]
+### Phase 2: GHR93 Theorem 6 Inductive Step for Discrete Orders [BLOCKED]
 
 **Goal**: Complete the sorry at DiscreteGameTransfer.lean:630 — the inductive step of Theorem 6 for discrete orders. While this file is currently isolated, Phase 4 will import it into StaviCompleteness.lean.
+
+**BLOCKER** (Phase 2):
+- **What failed**: The inductive step of `discrete_ghr93_theorem6` requires implementing the canonical pivot construction (GHR93 Claims 1-2) and the case analysis (Cases I-II). The sorry is in `discrete_backward_step` (line ~504).
+- **What was tried**:
+  - (Cycle 1) Changed induction to generalize over r. Applied IH at r+4 with rank casting. Established h_bwd_n (n-round backward game on full interval at rank r+4). Goal state: h_bwd_n + h_fwd_1 → (n+1)-round backward game.
+  - (Cycle 2) Explored direct construction (Option B: h_bwd_n + h_fwd_1), discovered that order consistency across groups requires the canonical pivot. Explored using restrict_left/right for sub-interval extraction, confirmed this path requires h_d_consistent which requires Claim 1. Factored the inductive step into `discrete_backward_step` helper lemma.
+  - (Cycle 2) Attempted to bypass canonical pivot for discrete orders — the forward game goes M→N while the backward game goes N→M, and no direct inversion mechanism exists without the pivot.
+- **Why it's stuck**: The canonical pivot construction (GHR93 Claims 1-2, pp.116-118) is a 300-400 line formalization involving: (a) defining temporal formulas A = X_{(α_{n-1},α_n)} and C = X_{α_n} ∧ ¬U(¬A, ⊤) as StaviFormula objects with depth bounds, (b) proving c = inf{t : C holds on (t,y)} is well-defined in discrete orders, (c) Claim 1: showing response to c is unique (d-bar) via formula C transfer + Round 2 challenge contradiction, (d) Claim 2: extracting sub-interval forward games using ghr93_strategy_restrict_left/right with h_d_consistent, (e) Case I: composing backward sub-interval strategies when alpha_0 < d, (f) Case II: U(B,A) transfer when all alpha_i > d.
+- **What is needed**: Implement the canonical pivot construction and Claims 1-2 for discrete orders inside `discrete_backward_step`. The key pieces are: formula A/C/B definition (40-60 lines), Claim 1 uniqueness proof (50-80 lines), Claim 2 sub-interval extraction (60-100 lines), Case I composition (80-120 lines), Case II U(B,A) transfer (100-150 lines). Total: ~330-510 lines. The existing infrastructure (ghr93_strategy_restrict_left/right, sf_K_plus/minus, stavi_temporal_truth_mu) provides the foundation.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **GHR93 Reference**: Theorem 6, pp.114-119. Claims 1-2 at p.116 (lines 1392-1421 in OCR). Cases I-II at pp.117-118 (lines 1435-1504).
 
@@ -183,7 +193,7 @@ Given: forward game G_{4+3n; r+4(n+1)}(M, xy; N, x'y'). Spoiler in the backward 
   - **Critical insight**: e_n found via Until semantics, NOT via forward game Round 2. This guarantees e_n > e_{n-1}.
   - **Estimated size**: 100-150 lines
 
-- [ ] **Task 2.6**: Assemble `discrete_ghr93_theorem6` inductive step
+- [x] **Task 2.6**: Assemble `discrete_ghr93_theorem6` inductive step *(deviation: altered — factored into `discrete_backward_step` helper with sorry; main theorem delegates to helper. IH generalization and rank casting completed. Helper sorry at line ~504 blocks completion.)*
   - **File**: `DiscreteGameTransfer.lean`
   - **Content**: Replace the sorry at line 630 with case split on (α_0 < d-bar) → Case I, else → Case II. Combine Tasks 2.1-2.5.
   - **Verification**: `lean_verify discrete_ghr93_theorem6` shows no sorryAx. `lake build Bimodal.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer` succeeds.

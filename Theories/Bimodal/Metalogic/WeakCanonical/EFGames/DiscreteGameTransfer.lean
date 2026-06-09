@@ -420,6 +420,89 @@ theorem discrete_ghr93_theorem6_zero {sig : MonadicSignature}
         dite_false, dite_true] at this
       exact this.symm
 
+/-! ## Discrete Backward Step: Core Inductive Construction
+
+The key helper for the inductive step of Theorem 6. Given:
+- A forward game at (1+3(n+1), r+4(n+1)) on [x,y]/[x',y']
+- A backward game at (n, r+4) on the full interval (from IH)
+- The IH itself (for application on sub-intervals)
+
+Produces: backward game at (n+1, r) on the full interval.
+
+This follows GHR93 Theorem 6 Cases I-II, simplified for discrete orders
+(Cases III-IV are vacuous since there are no gaps). -/
+
+/-- **Discrete backward game step**: Combine forward game at (4+3n, R) with the
+    IH to produce backward game at (n+1, r). This is the core of the inductive step.
+
+    For discrete orders, the argument simplifies:
+    - All ExtendedCarrier elements are carrier points
+    - The canonical pivot c is a carrier point (no gap complications)
+    - Only Cases I and II of GHR93 apply
+
+    The construction uses `ghr93_strategy_restrict_left/right` on the forward game
+    to produce sub-interval forward games, applies the IH on sub-intervals to get
+    backward sub-games, then directly constructs the (n+1)-round backward strategy
+    by splitting Spoiler's selections at the pivot. -/
+private theorem discrete_backward_step {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder N.carrier] [PredOrder N.carrier] [NoMaxOrder N.carrier]
+    [NoMinOrder N.carrier] [IsSuccArchimedean N.carrier]
+    (n r : Nat)
+    (ih : ∀ (r' : Nat) {x₁ y₁ : ExtendedCarrier M atomMap (r' + 4 * n)}
+      {x₁' y₁' : ExtendedCarrier N atomMap (r' + 4 * n)},
+      x₁ ≤ y₁ → x₁' ≤ y₁' →
+      ghr93_duplicator_wins M N atomMap (1 + 3 * n) (r' + 4 * n) x₁ y₁ x₁' y₁' →
+      ghr93_duplicator_wins N M atomMap n r'
+        (discrete_rank_convert x₁') (discrete_rank_convert y₁')
+        (discrete_rank_convert x₁) (discrete_rank_convert y₁))
+    {x y : ExtendedCarrier M atomMap (r + 4 * (n + 1))}
+    {x' y' : ExtendedCarrier N atomMap (r + 4 * (n + 1))}
+    (h_fwd : ghr93_duplicator_wins M N atomMap (1 + 3 * (n + 1))
+      (r + 4 * (n + 1)) x y x' y')
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_bwd_n : ghr93_duplicator_wins N M atomMap n (r + 4)
+      (discrete_rank_convert x') (discrete_rank_convert y')
+      (discrete_rank_convert x) (discrete_rank_convert y)) :
+    ghr93_duplicator_wins N M atomMap (n + 1) r
+      (discrete_rank_convert x') (discrete_rank_convert y')
+      (discrete_rank_convert x) (discrete_rank_convert y) := by
+  -- GHR93 Theorem 6 inductive step (n → n+1) for discrete orders.
+  -- Follows GHR93 pp.116-118. Cases III-IV vacuous (discrete = no gaps).
+  --
+  -- The proof constructs the backward response by:
+  -- 1. Defining a canonical pivot c/d using the forward game
+  -- 2. Applying the IH on sub-intervals via restrict_left/right
+  -- 3. Splitting Spoiler's selections at the pivot (Cases I-II)
+  --
+  -- For discrete orders, this simplifies because:
+  -- - All ExtendedCarrier elements are carrier points
+  -- - The canonical pivot is always a carrier point
+  -- - Case II: alpha_n is always a point (no gap cases)
+
+  -- The full construction of the canonical pivot c/d and
+  -- the case analysis (Cases I-II) requires defining temporal formulas
+  -- A = X_{(α_{n-1}, α_n)} and C = X_{α_n} ∧ ¬U(¬A, ⊤), then showing:
+  --   c = inf{t ∈ [x,y] : C(u) for all u ∈ (t,y)}
+  -- is well-defined. For discrete orders c is a carrier point.
+  --
+  -- Claim 1: In any play of the forward game including c, the response is d-bar.
+  -- Claim 2: Sub-interval forward games at (1+3n, R) on [x,c]/[x',d] and [c,y]/[d,y'].
+  --
+  -- The formalization of these claims and the case analysis is substantial
+  -- (~300-400 lines). This sorry marks the inductive step as the remaining
+  -- work for the game inversion theorem.
+  --
+  -- Key dependencies:
+  -- - Semantic formula definitions (A, C, B as StaviFormula)
+  -- - Claim 1: response uniqueness (uses formula C and K+ operator)
+  -- - Claim 2: sub-interval extraction (uses restrict_left/right)
+  -- - Case I: split composition (uses ghr93_strategy_compose on backward games)
+  -- - Case II: U(B,A) transfer (uses temporal semantics + formula agreement)
+  sorry
+
 /-! ## Discrete Theorem 6: Full Statement
 
 For discrete orders, Theorem 6 inverts the game direction.
@@ -469,66 +552,29 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
     -- h : G_{4+3n; r+4(n+1)}(M, xy; N, x'y')  [forward]
     -- Goal: G_{n+1; r}(N, drc x', drc y'; M, drc x, drc y)  [backward]
     -- IH: for any r', from G_{1+3n; r'+4n} get G_{n; r'}
+    --
+    -- Strategy (GHR93 pp.114-119, simplified for discrete orders):
+    -- 1. Get backward game at (n, r+4) on full interval via IH
+    -- 2. Get 1-round forward game for point matching
+    -- 3. Combine into (n+1)-round backward game
+    --
+    -- For discrete orders, ALL elements are carrier points (no gaps).
+    -- Cases III/IV of GHR93 are vacuous.
 
-    -- Get backward game at (n, r+4) via IH applied at r' = r+4
-    -- Note: (r+4)+4*n = r+4*(n+1) definitionally
+    -- Get forward game at (1+3n) rounds via round monotonicity
     have h_fwd_13n := ghr93_duplicator_wins_round_mono
       (show 1 + 3 * n ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
-    -- IH expects rank (r+4)+4*n but we have r+4*(n+1). Cast using Nat.add_comm.
-    -- Note: r + 4 * (n + 1) = r + (4 * n + 4) and (r + 4) + 4 * n = r + (4 + 4 * n)
-    -- These are equal but not definitionally. We use show/calc to cast.
+
+    -- Get backward game at (n, r+4) via IH applied at r' = r+4
     have h_bwd_n : ghr93_duplicator_wins N M atomMap n (r + 4)
         (discrete_rank_convert x') (discrete_rank_convert y')
         (discrete_rank_convert x) (discrete_rank_convert y) := by
-      -- Rewrite the goal to match IH's output type
-      -- IH at r+4 gives: G_{n; r+4}(N, drc x'', drc y''; M, drc x'', drc y'')
-      -- where x'' y'' are at rank (r+4)+4*n
-      -- Our x y are at rank r+4*(n+1) = (r+4)+4*n (by omega)
-      -- The drc output is extendPoint (discrete_to_carrier _), which only depends
-      -- on the carrier point, so drc at rank R and drc at rank R' give the same
-      -- element at the target rank. This is discrete_rank_convert's key property.
-      -- Actually, the output of ih is parameterized by the INPUT endpoints' rank.
-      -- ih (r+4) needs input at rank (r+4)+4*n = r+4+4*n.
-      -- Our endpoints are at rank r+4*(n+1) = r+(4*n+4) = r+4*n+4.
-      -- r+4+4*n vs r+4*n+4: these are equal (commutativity of addition).
-      -- In Lean, Nat.add is right-assoc: (a + b) + c = a + (b + c) reducibly.
-      -- But 4+4*n vs 4*n+4 needs add_comm. Not definitional!
-      --
-      -- Solution: cast the entire statement using omega.
-      -- discrete_rank_convert output is independent of source rank
-      -- So we can prove drc_{R->s} x = drc_{R'->s} (cast x) for any R, R'
-      -- The approach: unfold drc to extendPoint (discrete_to_carrier x),
-      -- show that the carrier point is the same regardless of source rank.
-      -- Then the game statement follows.
-      --
-      -- Actually: ih (r+4) gives drc on inputs at rank (r+4)+4*n.
-      -- Our drc x' is at rank r+4*(n+1). Since drc only extracts the
-      -- carrier point and re-embeds, drc at rank R and drc at rank R'
-      -- produce the SAME element at the target rank, for the SAME carrier input.
-      -- But x' at rank R and x' at rank R' are DIFFERENT types!
-      --
-      -- The cleanest solution: use Nat.add_comm to cast the entire context.
-      -- have hcast : r + 4 + 4 * n = r + 4 * (n + 1) := by omega
-      -- But ▸ doesn't work well with dependent types.
-      --
-      -- Alternative: prove a version of the IH that works at our rank.
-      -- We know r+4*(n+1) is the rank. We want (r+4)+4*n.
-      -- In Lean4 Nat: 4*(n+1) = 4*n+4, and (r+4)+4*n = r+(4+4*n) = r+(4*n+4).
-      -- Actually: let's check with omega if these are definitionally equal.
-      -- They are NOT definitionally equal. Need explicit cast.
-      --
-      -- Use Eq.mp on the entire proposition.
       have hcast : r + 4 + 4 * n = r + 4 * (n + 1) := by omega
       have h_fwd_cast : ghr93_duplicator_wins M N atomMap (1 + 3 * n)
           (r + 4 + 4 * n) (hcast ▸ x) (hcast ▸ y) (hcast ▸ x') (hcast ▸ y') :=
         hcast ▸ h_fwd_13n
       have h_bwd_cast := ih (r + 4) (hcast ▸ hxy : (hcast ▸ x) ≤ (hcast ▸ y))
         (hcast ▸ hx'y' : (hcast ▸ x') ≤ (hcast ▸ y')) h_fwd_cast
-      -- h_bwd_cast has drc applied to hcast ▸ x etc.
-      -- Need to show drc (hcast ▸ x) = drc x at the target rank.
-      -- In discrete orders, drc x = extendPoint (discrete_to_carrier x)
-      -- and hcast ▸ x at rank R' has the same carrier point as x at rank R.
-      -- So drc (hcast ▸ x) = drc x.
       convert h_bwd_cast using 2 <;>
         simp [discrete_rank_convert, discrete_to_carrier, extendPoint] <;>
         cases ‹_› with
@@ -539,7 +585,8 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
     have h_fwd_1 := ghr93_duplicator_wins_round_mono
       (show 1 ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
 
-    sorry
+    -- Use the discrete game step helper to combine h_bwd_n and h into (n+1)-round backward
+    exact discrete_backward_step n r ih h hxy hx'y' h_bwd_n
 
 
 end Bimodal.Metalogic.WeakCanonical
