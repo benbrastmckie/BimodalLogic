@@ -137,7 +137,7 @@ Reports integrated:
 
 ---
 
-### Phase 1: Generalized Zone Match and Matching Data [NOT STARTED]
+### Phase 1: Generalized Zone Match and Matching Data [BLOCKED]
 
 **Goal**: Generalize `zone_match_witness` from 2-var to n-var, and define
 `matching_data` predicate for n-var configurations.
@@ -152,6 +152,20 @@ env_M and env_M' "match at depth k" when:
 Given matching data, `zone_match_witness_general` finds for any new point u in M
 a corresponding u' in M' with matching 1-var NF and correct orderings relative
 to all points in the tuple.
+
+**BLOCKER** (Phase 1):
+- **What failed**: The zone matching extension property (Task 1.3) requires proving that when a zone-matched point w/w' is added to an n-point configuration, the interval NF types for the new sub-intervals (env_M(i), w)/(env_M'(i), w') match between M and M'. This is the "interval splitting" property from GHR93.
+- **What was tried**:
+  1. Direct approach using `zone_match_witness` relative to original (x,t) pair -- gives orderings relative to x',t' but NOT relative to other zone-matched points in the extended config.
+  2. Strong induction on depth j with universal quantification over arity n -- the zone matching hypothesis for extended configs requires orderings relative to ALL env points including newly added ones. A proof skeleton was tested (compiles with sorries at the zone matching extension points).
+  3. Derivation of sub-interval types from containing interval's types via `interval_nf_types_depth_decrease` -- only gives depth decrease for the SAME interval, not for sub-intervals.
+  4. Using depth-k 1-var NF agreement to derive sub-interval structure -- the 1-var NF of a point encodes its neighbors' structure but NOT the sub-interval types relative to specific reference points (the sub-interval constraint requires positional information not in the 1-var NF).
+- **Why it's stuck**: The fundamental obstacle is that zone matching relative to a 2-point reference (x,t) does NOT determine orderings between independently zone-matched points in the same zone. Following GHR93 Proposition 12.8.18, the correct proof uses decomposition formula matching (Lemma 12.8.14) to convert containing-interval game strategies into sub-interval game strategies. In NF terms, this requires either: (a) using `interval_2var_nf_types` (2-var interval types) instead of `interval_nf_types` (1-var) to encode the spatial arrangement within intervals, or (b) proving that the existing 1-var interval types at depth k, combined with the NF recursion structure, DO determine the 2-var NF -- but this proof itself requires the existential transfer at lower depth, creating a circular dependency that must be broken by a simultaneous induction.
+- **What is needed**: The implementation requires one of these approaches:
+  (A) **Strengthen matching_data to use `interval_2var_nf_types`**: Define zone matching that finds w' with the same 2-var NF (w,b)/(w',b') relative to the adjacent endpoint b. This automatically provides interval splitting because the 2-var NF encodes the quantifier structure. The extension lemma then derives new sub-interval data from the 2-var NF quant part. Estimated ~400-600 lines.
+  (B) **Simultaneous induction on depth k**: Prove `nf_2var_from_interval_data` by induction on k (the depth parameter), where at step k+1, the IH at depth k provides 2-var NF equality at depth k, from which existential transfer at depth k-1 is extracted. This avoids needing zone matching at the full depth k but requires restructuring the proof chain. Estimated ~300-500 lines.
+  (C) **Game-theoretic formulation**: Define EF game positions and strategies explicitly, following GHR93 Section 8. Prove Proposition 7 (game composition) and Theorem 6 (forward-backward conversion) in the game framework, then bridge to NFs. Most faithful to the literature but largest implementation. Estimated ~800-1200 lines.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Tasks**:
 - [ ] **Task 1.1**: Define `matching_data k n M env_M M' env_M'` predicate

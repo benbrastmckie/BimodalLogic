@@ -1,29 +1,25 @@
 {
   "status": "blocked",
-  "summary": "Plan v11 has two architectural blockers: (1) Phase 4 wiring is unsound because US_expressively_complete_over_prior is used for non-discrete sub-models in gap_prior_UZ_contradiction, so discrete_stavi_expressive_completeness cannot replace stavi_expressive_completeness; (2) Phase 3 game pipeline has a gap at Bridge B (game wins do not yield existential NF transfer). Root sorry is nf_2var_existential_transfer at StaviCompleteness.lean:2353,2435. Plan needs revision to target the general sorry rather than the discrete bypass.",
+  "summary": "Phase 1 blocked: zone matching extension requires interval splitting (GHR93). The proof structure is correct (strong induction on depth j, universal over arity n), but the zone matching for extended configurations requires orderings between independently zone-matched points, which cannot be derived from 1-var interval types alone. Three resolution approaches identified: (A) use 2-var interval types, (B) simultaneous induction on depth k, (C) game-theoretic formulation.",
   "phases_completed": 0,
   "phases_total": 4,
   "blockers": [
-    {
-      "phase": 4,
-      "description": "US_expressively_complete_over_prior is used for non-discrete sub-models (class suborders) in gap_prior_UZ_contradiction (GoodStructuresModelSurgery.lean:1266). Cannot add IsSuccArchimedean constraint. The discrete bypass strategy is architecturally unsound.",
-      "severity": "fatal"
-    },
-    {
-      "phase": 3,
-      "description": "Bridge B (NFGameBridge.lean:1198) is blocked: game wins do not convert to existential NF transfer. nf_fraisse_compression cannot be applied after game pipeline.",
-      "severity": "high"
-    }
+    "Zone matching extension: orderings between independently zone-matched points in the same interval zone are not determined by 1-var interval types. Requires 2-var interval types (interval_2var_nf_types) or a restructured proof."
   ],
   "continuation_context": {
-    "next_phase": null,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-0-handoff-20260609.md"
+    "next_phase": 1,
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-20260609.md"
   },
   "artifacts": [
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-0-handoff-20260609.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/12_generalized-transfer-plan.md",
+      "type": "plan",
+      "summary": "Plan v12 with Phase 1 marked BLOCKED and detailed blocker documentation"
+    },
+    {
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-20260609.md",
       "type": "handoff",
-      "summary": "Detailed analysis of two architectural blockers in plan v11, sorry chain trace, and four alternative approaches"
+      "summary": "Detailed analysis of zone matching extension problem with three resolution approaches"
     }
   ],
   "next_action_hint": "revise"
