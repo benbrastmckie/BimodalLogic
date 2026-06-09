@@ -128,8 +128,17 @@ technical_debt:
 282 [NOT STARTED] — exhaustive_enumeration_by_default
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 295 [COMPLETED] — Diagnostic audit and stress-test of the dataset generation pipeli
+296 [NOT STARTED] — Re-add derived binary operators with dedup fix
 
 ## Tasks
+
+### 296. Re-add derived binary operators with dedup fix
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: 295
+
+**Description**: Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.
 
 ### 295. Diagnostic audit and stress-test of dataset generation pipeline
 - **Effort**: medium (4-8 hours)

@@ -6,6 +6,20 @@
   },
   "active_projects": [
     {
+      "project_number": 296,
+      "project_name": "re_add_derived_binary_operators_with_dedup_fix",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
+      "created": "2026-06-09T02:40:00Z",
+      "last_updated": "2026-06-09T02:40:00Z",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        295
+      ],
+      "artifacts": []
+    },
+    {
       "project_number": 295,
       "project_name": "dataset_pipeline_diagnostic_audit",
       "status": "completed",
@@ -2974,7 +2988,7 @@
       }
     }
   ],
-  "next_project_number": 296,
+  "next_project_number": 297,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

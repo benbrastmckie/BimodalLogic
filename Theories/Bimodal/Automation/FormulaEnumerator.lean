@@ -292,25 +292,7 @@ def enumExactHelper (atoms : List Atom) (modalBudget temporalBudget sizeBudget :
                 let snces := tLefts.foldl (fun (acc : Array Formula) l =>
                   tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.snce l r)) acc
                 ) (Array.mkEmpty (tLefts.size * tRights.size))
-                let releases := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.release l r)) acc
-                ) (Array.mkEmpty (tLefts.size * tRights.size))
-                let weakUntils := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_until l r)) acc
-                ) (Array.mkEmpty (tLefts.size * tRights.size))
-                let triggers := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.trigger l r)) acc
-                ) (Array.mkEmpty (tLefts.size * tRights.size))
-                let weakSinces := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.weak_since l r)) acc
-                ) (Array.mkEmpty (tLefts.size * tRights.size))
-                let strongReleases := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_release l r)) acc
-                ) (Array.mkEmpty (tLefts.size * tRights.size))
-                let strongTriggers := tLefts.foldl (fun (acc : Array Formula) l =>
-                  tRights.foldl (fun (acc' : Array Formula) r => acc'.push (Formula.strong_trigger l r)) acc
-                ) (Array.mkEmpty (tLefts.size * tRights.size))
-                (untls ++ snces ++ releases ++ weakUntils ++ triggers ++ weakSinces ++ strongReleases ++ strongTriggers, c2b)
+                (untls ++ snces, c2b)
               else (#[], c2)
               (accArr ++ imps ++ temporalBinaries, c3)
           ) (#[], cache1a))
@@ -411,15 +393,13 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     --   modal (if modalBudget > 0): box, diamond
     --   temporal primitive (if temporalBudget > 0): untl/snce
     --   derived unary temporal (if hasDerived): F/P, G/H, always/sometimes, next/prev, weak_future/weak_past
-    --   derived binary temporal (if hasDerived): R/WU/T/WS/SR/ST
     let hasModal := modalBudget > 0
     let hasTemporal := temporalBudget > 0
     let hasDerived := hasTemporal && sizeBudget > 1
     let modalSlots := if hasModal then 2 else 0     -- box + diamond
     let tempSlots := if hasTemporal then 1 else 0   -- untl/snce
     let derivedUnarySlots := if hasDerived then 5 else 0  -- F/P, G/H, always/sometimes, next/prev, weak_future/weak_past
-    let derivedBinarySlots := if hasDerived then 1 else 0  -- binary derived temporal
-    let numChoices := 2 + modalSlots + tempSlots + derivedUnarySlots + derivedBinarySlots
+    let numChoices := 2 + modalSlots + tempSlots + derivedUnarySlots
     let (rng1, choice) := rng.randBound numChoices
     -- Compute offsets arithmetically (no mutable state)
     let offModal := 2  -- box starts at 2 if modal available
@@ -430,7 +410,6 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
     let offAlwaysSometimes := offDerivedGH + 1
     let offNextPrev := offAlwaysSometimes + 1
     let offWeakFP := offNextPrev + 1
-    let offBinaryDerived := offWeakFP + 1
     -- Helper: generate a random base (atom or bot) from current rng state
     let mkBase (r : LCGState) : LCGState × Formula :=
       let (r', idx) := r.randBound (atoms.length + 1)
@@ -497,16 +476,6 @@ def sampleOne (atoms : List Atom) (modalBudget temporalBudget sizeBudget : Nat)
       let (rng2, sub) := rng1.randBound 2
       if sub == 0 then mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_future
       else mkUnary rng2 modalBudget (temporalBudget - 1) Formula.weak_past
-    else if hasDerived && choice == offBinaryDerived then
-      -- derived binary temporal: R, WU, T, WS, SR, ST (task 285)
-      let (rng2, sub) := rng1.randBound 6
-      match sub with
-      | 0 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.release
-      | 1 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weak_until
-      | 2 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.trigger
-      | 3 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.weak_since
-      | 4 => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strong_release
-      | _ => mkBinary rng2 modalBudget (temporalBudget - 1) Formula.strong_trigger
     else
       -- Fallback: implication
       mkBinary rng1 modalBudget temporalBudget Formula.imp
@@ -826,15 +795,12 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
     --   4=untl (temporal), 5=snce (temporal)
     -- Derived unary temporal (task 285, overhead 1 each):
     --   6=F/P, 7=G/H, 8=always/sometimes, 9=next/prev, 10=weak_future/weak_past
-    -- Derived binary temporal (task 285, overhead 1 each):
-    --   11=release/weak_until/trigger/weak_since/strong_release/strong_trigger
     let hasModal := maxModal > 0
     let hasTemporal := maxTemporal > 0 && budget > 1
     let numChoices := 2  -- atom/bot + imp always available
                      + (if hasModal then 2 else 0)  -- box + diamond
                      + (if maxTemporal > 0 then 2 else 0)  -- untl + snce
                      + (if hasTemporal then 5 else 0)  -- F/P, G/H, always/sometimes, next/prev, weak_future/weak_past
-                     + (if hasTemporal then 1 else 0)  -- binary derived temporal
     let choice ← IO.rand 0 (numChoices - 1)
     -- Map choice to constructor. We use a running offset to dispatch.
     let mut offset := 0
@@ -920,21 +886,6 @@ partial def sampleOneRandom (atoms : List Atom) (budget : Nat) (maxModal : Nat)
         if sub == 0 then return .weak_future child
         else return .weak_past child
       offset := offset + 1
-    -- 11: derived binary temporal: R, WU, T, WS, SR, ST (task 285)
-    if hasTemporal then
-      if choice == offset then
-        let split ← IO.rand 1 (budget - 1)
-        let left ← sampleOneRandom atoms split maxModal (maxTemporal - 1)
-        let right ← sampleOneRandom atoms (budget - 1 - split) maxModal (maxTemporal - 1)
-        let sub ← IO.rand 0 5
-        match sub with
-        | 0 => return .release left right
-        | 1 => return .weak_until left right
-        | 2 => return .trigger left right
-        | 3 => return .weak_since left right
-        | 4 => return .strong_release left right
-        | _ => return .strong_trigger left right
-      -- offset := offset + 1  -- not needed: last branch
     -- Fallback to implication (should not normally reach here)
     let split ← IO.rand 1 (budget - 1)
     let left ← sampleOneRandom atoms split maxModal maxTemporal
@@ -1058,9 +1009,9 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
     | some a => return .atom a
     | none => return .bot
   else
-    -- 10 branches: atom(0), imp(1), box(2), all_future(3), all_past(4),
-    -- some_future(5), some_past(6), untl(7), snce(8), derived_binary(9)
-    let choice ← IO.rand 0 9
+    -- 9 branches: atom(0), imp(1), box(2), all_future(3), all_past(4),
+    -- some_future(5), some_past(6), untl(7), snce(8)
+    let choice ← IO.rand 0 8
     match choice with
     | 0 =>
       let idx ← IO.rand 0 atoms.length
@@ -1105,24 +1056,6 @@ partial def randomSubFormula (atoms : List Atom) (maxSize : Nat) : IO Formula :=
         let left ← randomSubFormula atoms (max 1 leftSize)
         let right ← randomSubFormula atoms (max 1 rightSize)
         return .untl left right
-    | 9 =>
-      -- Derived binary temporal: R, WU, T, WS, M, ST
-      if maxSize < 3 then
-        let child ← randomSubFormula atoms (maxSize - 1)
-        return .box child
-      else
-        let leftSize ← IO.rand 1 (maxSize - 1)
-        let rightSize := maxSize - 1 - leftSize
-        let left ← randomSubFormula atoms (max 1 leftSize)
-        let right ← randomSubFormula atoms (max 1 rightSize)
-        let rtwsChoice ← IO.rand 0 5
-        match rtwsChoice with
-        | 0 => return .release left right
-        | 1 => return .weak_until left right
-        | 2 => return .trigger left right
-        | 3 => return .weak_since left right
-        | 4 => return .strong_release left right
-        | _ => return .strong_trigger left right
     | _ =>
       -- snce: binary temporal
       if maxSize < 3 then
