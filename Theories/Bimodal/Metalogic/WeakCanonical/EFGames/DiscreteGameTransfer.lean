@@ -847,6 +847,177 @@ private theorem wc_rank_type_at_point {sig : MonadicSignature}
   · rintro ⟨hd, hA⟩; exact ⟨hd, (h1 A hd).mp hA⟩
   · rintro ⟨hd, hA⟩; exact ⟨hd, (h1 A hd).mpr hA⟩
 
+/-- Build a monotone matching for sorted selections by induction on n.
+
+    Given a monotone (sorted) selection `c : Fin n → ExtendedCarrier M` in `[x,y]`,
+    produces a monotone `c' : Fin n → ExtendedCarrier N` in `[x',y']` with:
+    - rank_type agreement at each position
+    - monotonicity
+    - consecutive ordering preservation (from same_order_type at sub-interval game_tuples)
+
+    The construction matches elements sequentially: `c'(0)` is matched on
+    `[x,y]/[x',y']`, and `c'(k+1)` is matched on `[c(k), y]/[c'(k), y']`
+    using `h_univ`. This ensures monotonicity of `c'`. -/
+private theorem discrete_sorted_matching {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder N.carrier] [PredOrder N.carrier] [NoMaxOrder N.carrier]
+    [NoMinOrder N.carrier] [IsSuccArchimedean N.carrier]
+    (n r : Nat)
+    {x y : ExtendedCarrier M atomMap r}
+    {x' y' : ExtendedCarrier N atomMap r}
+    (hxy : x ≤ y) (hx'y' : x' ≤ y')
+    (h_type_x : rank_type M atomMap r x = rank_type N atomMap r x')
+    (h_type_y : rank_type M atomMap r y = rank_type N atomMap r y')
+    (h_univ : discrete_universal_decomp M N atomMap r x y x' y')
+    (h_decomp : decomposition_agreement M N atomMap 0 r x y x' y')
+    (c : Fin n → ExtendedCarrier M atomMap r)
+    (hc_mono : Monotone c)
+    (hc_in : ∀ i, inClosedInterval x y (c i)) :
+    ∃ (c' : Fin n → ExtendedCarrier N atomMap r),
+      (∀ i, inClosedInterval x' y' (c' i)) ∧
+      Monotone c' ∧
+      (∀ i, rank_type M atomMap r (c i) = rank_type N atomMap r (c' i)) ∧
+      -- Pairwise ordering: strict order and equality preserved between all pairs
+      (∀ i j, (c i < c j ↔ c' i < c' j) ∧ (c i = c j ↔ c' i = c' j)) := by
+  induction n with
+  | zero =>
+    exact ⟨Fin.elim0, fun i => Fin.elim0 i, fun i => Fin.elim0 i,
+      fun i => Fin.elim0 i, fun i => Fin.elim0 i⟩
+  | succ m ih =>
+    -- c : Fin (m+1) → ExtendedCarrier M, monotone, all in [x,y]
+    let c_init := c ∘ Fin.castSucc
+    have hci_mono : Monotone c_init := fun _ _ h => hc_mono (by exact_mod_cast h)
+    have hci_in : ∀ i, inClosedInterval x y (c_init i) := fun i => hc_in (Fin.castSucc i)
+    -- IH: get monotone matching for first m elements
+    obtain ⟨c'_init, hc'i_in, hc'i_mono, hc'i_type, hc'i_consec⟩ :=
+      ih c_init hci_mono hci_in
+    -- Match the last element c(last m) using sub-interval decomposition
+    let c_last := c (Fin.last m)
+    -- Determine the lower bound for the sub-interval
+    -- If m > 0: lo_M = c(castSucc ⟨m-1,...⟩), lo_N = c'_init(⟨m-1,...⟩)
+    -- If m = 0: lo_M = x, lo_N = x'
+    have h_last_match : ∃ (q : N.carrier),
+        inClosedInterval x' y' (extendPoint q) ∧
+        (if hm : 0 < m then c'_init ⟨m - 1, by omega⟩ ≤ extendPoint q
+         else x' ≤ extendPoint q) ∧
+        ghr93_winning_condition 0
+          (game_tuple
+            (if hm : 0 < m then c (Fin.castSucc ⟨m - 1, by omega⟩) else x) y
+            Fin.elim0 (discrete_to_carrier c_last))
+          (game_tuple
+            (if hm : 0 < m then c'_init ⟨m - 1, by omega⟩ else x') y'
+            Fin.elim0 q) := by
+      by_cases hm : 0 < m
+      · -- m > 0: use h_univ on sub-interval [c(m-1), y] / [c'_init(m-1), y']
+        let prev_M := c (Fin.castSucc ⟨m - 1, by omega⟩)
+        let prev_N := c'_init ⟨m - 1, by omega⟩
+        have h_prev_in_M : inClosedInterval x y prev_M := hc_in _
+        have h_prev_in_N : inClosedInterval x' y' prev_N := hc'i_in _
+        have h_prev_type : rank_type M atomMap r prev_M = rank_type N atomMap r prev_N :=
+          hc'i_type ⟨m - 1, by omega⟩
+        have h_sub_decomp := (h_univ prev_M y prev_N y'
+          h_prev_in_M ⟨hxy, le_refl y⟩ h_prev_in_M.2
+          h_prev_in_N ⟨hx'y', le_refl y'⟩ h_prev_in_N.2
+          h_prev_type h_type_y).1
+        have h_c_last_in : inClosedInterval prev_M y
+            (extendPoint (discrete_to_carrier c_last)) := by
+          rw [extendPoint_discrete_to_carrier]
+          constructor
+          · exact hc_mono (show Fin.castSucc ⟨m - 1, _⟩ ≤ Fin.last m from by
+              simp [Fin.le_def])
+          · exact (hc_in _).2
+        obtain ⟨q, hq_in, hq_wc⟩ := decomp_point_challenge_MN h_sub_decomp _ h_c_last_in
+        refine ⟨q, ⟨le_trans h_prev_in_N.1 hq_in.1, hq_in.2⟩, ?_, ?_⟩
+        · simp only [dif_pos hm]; exact hq_in.1
+        · simp only [dif_pos hm]; exact hq_wc
+      · -- m = 0: use h_decomp on [x, y] / [x', y']
+        have h_c_last_in : inClosedInterval x y
+            (extendPoint (discrete_to_carrier c_last)) := by
+          rw [extendPoint_discrete_to_carrier]; exact hc_in _
+        obtain ⟨q, hq_in, hq_wc⟩ := decomp_point_challenge_MN h_decomp _ h_c_last_in
+        refine ⟨q, hq_in, ?_, ?_⟩
+        · simp only [show ¬(0 < m) from by omega, dite_false]; exact hq_in.1
+        · simp only [show ¬(0 < m) from by omega, dite_false]; exact hq_wc
+    obtain ⟨q_last, hq_in, hq_lo, hq_wc⟩ := h_last_match
+    -- Define c' by extending c'_init with extendPoint q_last
+    let c'_last : ExtendedCarrier N atomMap r := extendPoint q_last
+    let c' : Fin (m + 1) → ExtendedCarrier N atomMap r :=
+      Fin.lastCases c'_last c'_init
+    refine ⟨c', ?_, ?_, ?_, ?_⟩
+    · -- c'(i) ∈ [x', y']
+      intro i; refine Fin.lastCases ?_ (fun j => ?_) i
+      · dsimp only [c']; simp only [Fin.lastCases_last]; exact hq_in
+      · dsimp only [c']; simp only [Fin.lastCases_castSucc]; exact hc'i_in j
+    · -- c' is monotone: for any p ≤ q in Fin(m+1), c'(p) ≤ c'(q)
+      -- Strategy: dispatch on whether each index is last or castSucc,
+      -- using the IH monotonicity for init indices and hq_lo for the last.
+      intro p q hpq
+      -- We need c'(p) ≤ c'(q). Since c' = Fin.lastCases c'_last c'_init,
+      -- we case-split. But we avoid Fin.lastCases dispatch on hypotheses.
+      -- Instead, use the fact that c' is monotone iff c'_init is monotone
+      -- and all c'_init values ≤ c'_last.
+      -- Simpler proof: c'(p) ≤ c'(q) by cases on whether p, q are init or last.
+      by_cases hp : p = Fin.last m
+      · -- p = last m
+        by_cases hq : q = Fin.last m
+        · subst hp; subst hq; exact le_refl _
+        · -- p = last, q ≠ last: impossible since last ≤ q ≤ last requires q = last
+          -- Actually p ≤ q with p = last m means q = last m (since last is max)
+          subst hp
+          exfalso; exact hq (Fin.le_last q |>.antisymm hpq)
+      · -- p ≠ last m: p = castSucc (some ki)
+        obtain ⟨ki, rfl⟩ := Fin.exists_castSucc_eq.mpr hp
+        by_cases hq : q = Fin.last m
+        · -- p = castSucc ki, q = last: c'_init(ki) ≤ c'_last
+          subst hq
+          dsimp only [c']; simp only [Fin.lastCases_castSucc, Fin.lastCases_last]
+          by_cases hm : 0 < m
+          · calc c'_init ki
+                ≤ c'_init ⟨m - 1, by omega⟩ := hc'i_mono (by
+                    simp only [Fin.le_def]; omega)
+              _ ≤ extendPoint q_last := by simp only [dif_pos hm] at hq_lo; exact hq_lo
+          · exfalso; exact absurd ki.isLt (by omega)
+        · -- both castSucc
+          obtain ⟨kj, rfl⟩ := Fin.exists_castSucc_eq.mpr hq
+          dsimp only [c']; simp only [Fin.lastCases_castSucc]
+          exact hc'i_mono (by exact_mod_cast hpq)
+    · -- rank_type agreement
+      intro i; refine Fin.lastCases ?_ (fun j => ?_) i
+      · dsimp only [c']; simp only [Fin.lastCases_last]
+        have := wc_rank_type_at_point hq_wc
+        rw [extendPoint_discrete_to_carrier] at this
+        exact this
+      · dsimp only [c']; simp only [Fin.lastCases_castSucc]
+        exact hc'i_type j
+    · -- Pairwise ordering preservation: c(i) < c(j) ↔ c'(i) < c'(j), c(i) = c(j) ↔ c'(i) = c'(j)
+      -- Strategy: case-split i,j into init (castSucc) vs last.
+      -- - Both init: from IH (hc'i_consec).
+      -- - Init vs last: chain argument through c_init(m-1)/c'_init(m-1) using IH + sub-interval WC.
+      -- - Both last: trivial.
+      -- The sub-interval WC (hq_wc) at positions 0,1 gives:
+      --   lo < c_last ↔ lo' < c'_last, lo = c_last ↔ lo' = c'_last
+      --   where lo = c_init(m-1) (or x), lo' = c'_init(m-1) (or x').
+      intro i j
+      by_cases hi : i = Fin.last m <;> by_cases hj : j = Fin.last m
+      · -- both last
+        rw [hi, hj]
+        exact ⟨⟨fun h => absurd h (lt_irrefl _), fun h => absurd h (lt_irrefl _)⟩,
+               ⟨fun _ => rfl, fun _ => rfl⟩⟩
+      · -- i = last, j ≠ last: c_last vs c_init(kj)
+        -- c_init(kj) ≤ c_last (monotone), so c_last < c_init(kj) is impossible
+        -- c_last = c_init(kj) ↔ chain through intermediates to c'_last = c'_init(kj)
+        sorry
+      · -- i ≠ last, j = last: c_init(ki) vs c_last
+        -- Similar chain argument
+        sorry
+      · -- Both castSucc: from IH
+        obtain ⟨ki, rfl⟩ := Fin.exists_castSucc_eq.mpr hi
+        obtain ⟨kj, rfl⟩ := Fin.exists_castSucc_eq.mpr hj
+        dsimp only [c']; simp only [Fin.lastCases_castSucc]
+        exact hc'i_consec ki kj
+
 /-- **GHR93 Proposition 7 for discrete orders**: Universal sub-interval
     decomposition agreement at n=0 implies game wins at arbitrary round count n.
 
@@ -866,126 +1037,6 @@ theorem discrete_ghr93_proposition7 {sig : MonadicSignature}
     (h_type_x : rank_type M atomMap r x = rank_type N atomMap r x')
     (h_type_y : rank_type M atomMap r y = rank_type N atomMap r y') :
     ghr93_duplicator_wins M N atomMap n r x y x' y' := by
-  -- Carrier point existence (discrete orders)
-  have h_pt : ∃ p, inClosedInterval x' y' (extendPoint p) :=
-    discrete_interval_has_point x' y' hx'y'
-  have h_pt_M : ∃ p, inClosedInterval x y (extendPoint p) :=
-    discrete_interval_has_point x y hxy
-  -- Get decomp(0, r) on the full interval
-  have h_decomp := (h_univ x y x' y'
-    ⟨le_refl x, hxy⟩ ⟨hxy, le_refl y⟩ hxy
-    ⟨le_refl x', hx'y'⟩ ⟨hx'y', le_refl y'⟩ hx'y'
-    h_type_x h_type_y).1
-  -- Apply ghr93_decomposition_implies_game after building decomp(n, r).
-  apply ghr93_decomposition_implies_game h_pt h_pt_M
-  -- Need: decomposition_agreement M N atomMap n r x y x' y'
-  refine ⟨h_type_x, h_type_y, ?_, ?_⟩
-  · -- Forward direction: match n selections from M to N with ordering consistency.
-    -- We use the universal decomp to build a monotone matching function.
-    --
-    -- The backward decomp's point challenge on the FULL interval gives:
-    -- for any carrier point p in [x,y] ∩ M, ∃ q in [x',y'] ∩ N with winning condition.
-    -- Use Classical.choice to get a function match_fn : M.carrier → N.carrier.
-    --
-    -- For ORDERING CONSISTENCY between matched pairs, we use sub-interval matching:
-    -- Given p₁ ≤ p₂, match p₂ in [extendPoint p₁, y]/[extendPoint (match p₁), y']
-    -- instead of the full interval. This ensures match(p₁) ≤ match(p₂).
-    --
-    -- The sequential matching is formalized by constructing a' as follows:
-    -- For each Spoiler selection a(i) = extendPoint(p_i), we set
-    -- a'(i) = extendPoint(match_fn(p_i)) where match_fn uses the sub-interval
-    -- decomp to maintain ordering.
-    --
-    -- Key property: match_fn is ORDER-PRESERVING (monotone) because each
-    -- point is matched within a sub-interval that respects the previous matches.
-
-    intro a ha
-
-    -- Step 1: Extract backward decomp point challenge on full interval
-    have h_bwd_pc : ∀ (b : M.carrier), inClosedInterval x y (extendPoint b) →
-        ∃ (b' : N.carrier), inClosedInterval x' y' (extendPoint b') ∧
-          ghr93_winning_condition 0
-            (game_tuple x y Fin.elim0 b) (game_tuple x' y' Fin.elim0 b') :=
-      decomp_point_challenge_MN h_decomp
-
-    -- Step 2: Build a canonical matching function via Classical.choice
-    -- This matches each carrier point independently (not yet order-consistent).
-    -- The dummy value uses h_pt which gives a concrete N.carrier element.
-    obtain ⟨dummy_q, _⟩ := h_pt
-    -- For each carrier point p in [x,y], get its match via Classical.choose.
-    -- Since all a(i) are in [x,y] (from ha), we only need the in-range case.
-    -- We define match_fn using Classical.choice to avoid decidability issues.
-    have h_match_exists : ∀ i, ∃ (q : N.carrier),
-        inClosedInterval x' y' (extendPoint q) ∧
-        ghr93_winning_condition 0
-          (game_tuple x y Fin.elim0 (discrete_to_carrier (a i)))
-          (game_tuple x' y' Fin.elim0 q) := by
-      intro i
-      have h_in : inClosedInterval x y (extendPoint (discrete_to_carrier (a i))) := by
-        rw [extendPoint_discrete_to_carrier]; exact ha i
-      exact h_bwd_pc _ h_in
-    let match_fn : Fin n → N.carrier := fun i => Classical.choose (h_match_exists i)
-
-    -- For each i, get the properties of match_fn(i)
-    have match_fn_spec : ∀ (i : Fin n),
-        inClosedInterval x' y' (extendPoint (match_fn i)) ∧
-        ghr93_winning_condition 0
-          (game_tuple x y Fin.elim0 (discrete_to_carrier (a i)))
-          (game_tuple x' y' Fin.elim0 (match_fn i)) :=
-      fun i => Classical.choose_spec (h_match_exists i)
-
-    -- Step 3: Define the response function a'
-    let a' : Fin n → ExtendedCarrier N atomMap r := fun i => extendPoint (match_fn i)
-
-    -- a'(i) is in [x', y']
-    have ha'_in : ∀ i, inClosedInterval x' y' (a' i) := by
-      intro i; exact (match_fn_spec i).1
-
-    -- The matching preserves rank_type
-    have ha'_type : ∀ i, rank_type M atomMap r (a i) = rank_type N atomMap r (a' i) := by
-      intro i
-      have h_wc := (match_fn_spec i).2
-      have h_rt := wc_rank_type_at_point h_wc
-      show rank_type M atomMap r (a i) = rank_type N atomMap r (extendPoint (match_fn i))
-      rw [show a i = extendPoint (discrete_to_carrier (a i)) from (extendPoint_discrete_to_carrier (a i)).symm]
-      exact h_rt
-
-    -- gap/point agreement: trivial for discrete (all points)
-    have ha'_gp : ∀ i, (IsPoint (a i) ↔ IsPoint (a' i)) ∧
-        (IsGap (a i) ↔ IsGap (a' i)) := by
-      intro i; exact ⟨⟨fun _ => discrete_isPoint _, fun _ => discrete_isPoint _⟩,
-        ⟨fun h => absurd h (discrete_not_isGap _), fun h => absurd h (discrete_not_isGap _)⟩⟩
-
-    -- Order preservation: THIS is the key difficulty.
-    -- Independent matchings don't guarantee order preservation.
-    -- For the sorry-free proof, we would need to show that match_fn is
-    -- ORDER-PRESERVING, which requires sub-interval matching from h_univ.
-    --
-    -- However, the independent matchings DO preserve ordering relative to
-    -- the boundaries x/y/x'/y'. For ordering between two matched pairs
-    -- a(i) and a(j), we use the following argument:
-    --
-    -- From the winning condition at a(i): x < a(i) iff x' < a'(i),
-    --   a(i) < y iff a'(i) < y', etc.
-    -- From the winning condition at a(j): similar.
-    --
-    -- But a(i) < a(j) iff a'(i) < a'(j) DOES NOT follow from independent
-    -- boundary ordering alone. We need the sub-interval argument.
-    --
-    -- For the full sorry-free proof, replace match_fn with a SUB-INTERVAL-AWARE
-    -- matching that processes elements in sorted order, matching each in
-    -- the sub-interval above the previous match. This is the core of
-    -- GHR93 Proposition 7 and requires ~100-150 lines of sorted matching
-    -- construction.
-    --
-    -- For now, we use sorry for the ordering and point challenge, and
-    -- implement the full construction in a follow-up.
-    refine ⟨a', ha'_in, ha'_type, ha'_gp, ?_, ?_⟩
-    · -- Order preservation between matched pairs
-      sorry
-    · -- Point challenge
-      sorry
-  · -- Backward direction: symmetric
-    sorry
+  sorry
 
 end Bimodal.Metalogic.WeakCanonical
