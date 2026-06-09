@@ -421,11 +421,55 @@ theorem discrete_ghr93_theorem6_zero {sig : MonadicSignature}
   --   0 -> x (or x'), 1 -> extendPoint b (or q), 2 -> y (or y')
   -- The winning condition has three components: same_order_type, gap_point_agreement,
   -- and formula_agreement. We prove each from the forward game data.
-  -- Pre-existing errors: the same_order_type and formula_agreement proofs need
-  -- careful game_tuple simplification with extendPoint/Sum.inl conversion.
-  -- Marking sorry to get compilation; the proof structure is correct but needs
-  -- mechanical fixes for Lean 4 / Mathlib API changes.
-  sorry
+  -- Forward game (n=1, Fin 4): M-side 0→x, 1→extendPoint b, 2→b_fwd, 3→y
+  --                              N-side 0→x', 1→a'_fwd(0)=extendPoint q, 2→p, 3→y'
+  -- Backward game (n=0, Fin 3): N-side 0→x', 1→extendPoint q, 2→y'
+  --                               M-side 0→x, 1→extendPoint b, 2→y
+  have hq_eq : a'_fwd ⟨0, by omega⟩ = extendPoint q := hq
+  -- Extract forward game orderings at indices 0,1,3 (both directions)
+  have h01_fwd := hord_fwd ⟨0, by omega⟩ ⟨1, by omega⟩
+  have h03_fwd := hord_fwd ⟨0, by omega⟩ ⟨3, by omega⟩
+  have h13_fwd := hord_fwd ⟨1, by omega⟩ ⟨3, by omega⟩
+  have h10_fwd := hord_fwd ⟨1, by omega⟩ ⟨0, by omega⟩
+  have h30_fwd := hord_fwd ⟨3, by omega⟩ ⟨0, by omega⟩
+  have h31_fwd := hord_fwd ⟨3, by omega⟩ ⟨1, by omega⟩
+  simp only [game_tuple_zero_eq, game_tuple_y_eq, game_tuple] at h01_fwd h03_fwd h13_fwd h10_fwd h30_fwd h31_fwd
+  simp only [hq_eq] at h01_fwd h13_fwd h10_fwd h31_fwd
+  -- Extract gap/point agreement at indices 0, 1, 3
+  have hgp_0 := hgp_fwd ⟨0, by omega⟩
+  have hgp_1 := hgp_fwd ⟨1, by omega⟩
+  have hgp_3 := hgp_fwd ⟨3, by omega⟩
+  simp only [game_tuple_zero_eq, game_tuple_y_eq, game_tuple] at hgp_0 hgp_1 hgp_3
+  simp only [hq_eq] at hgp_1
+  -- Extract formula agreement at index 1 (the b/q index)
+  have hfa_1 : ∀ A, stavi_depth A ≤ r →
+      (stavi_temporal_truth_mu M atomMap r (extendPoint b) A ↔
+       stavi_temporal_truth_mu N atomMap r (extendPoint q) A) := by
+    intro A hA; have := hform_fwd ⟨1, by omega⟩ A hA
+    simp only [game_tuple_zero_eq, game_tuple_y_eq, game_tuple] at this
+    simp only [hq_eq] at this; exact this
+  refine ⟨?_, ?_, ?_⟩
+  · -- same_order_type 0: case-split on all Fin 3 × Fin 3 pairs
+    intro i j; fin_cases i <;> fin_cases j <;> simp [game_tuple] <;>
+      first | exact ⟨Iff.rfl, Iff.rfl⟩
+            | exact ⟨h01_fwd.1.symm, h01_fwd.2.symm⟩
+            | exact ⟨h03_fwd.1.symm, h03_fwd.2.symm⟩
+            | exact ⟨h13_fwd.1.symm, h13_fwd.2.symm⟩
+            | exact ⟨h10_fwd.1.symm, h10_fwd.2.symm⟩
+            | exact ⟨h30_fwd.1.symm, h30_fwd.2.symm⟩
+            | exact ⟨h31_fwd.1.symm, h31_fwd.2.symm⟩
+  · -- gap_point_agreement 0: case-split on Fin 3
+    intro i; fin_cases i <;> simp [game_tuple] <;>
+      first | exact ⟨hgp_0.1.symm, hgp_0.2.symm⟩
+            | exact ⟨hgp_1.1.symm, hgp_1.2.symm⟩
+            | exact ⟨hgp_3.1.symm, hgp_3.2.symm⟩
+  · -- formula_agreement 0: case-split on Fin 3
+    intro i A hA; fin_cases i <;> simp [game_tuple]
+    · have := hform_fwd ⟨0, by omega⟩ A hA
+      simp only [game_tuple_zero_eq] at this; exact this.symm
+    · exact (hfa_1 A hA).symm
+    · have := hform_fwd ⟨3, by omega⟩ A hA
+      simp only [game_tuple_y_eq] at this; exact this.symm
 
 /-! ## Discrete Backward Game Rank Conversion
 
@@ -1102,7 +1146,7 @@ private theorem discrete_point_challenge_with_sel_ordering {sig : MonadicSignatu
       (∀ k : Fin n,
         (extendPoint b < c k ↔ extendPoint b' < c' k) ∧
         (extendPoint b = c k ↔ extendPoint b' = c' k)) := by
-  induction n with
+  induction n generalizing x y x' y' with
   | zero =>
     -- No selections: get b from base decomposition on [x,y]/[x',y']
     have h_base := (h_univ x y x' y'
@@ -1159,77 +1203,54 @@ private theorem discrete_point_challenge_with_sel_ordering {sig : MonadicSignatu
           ha'b' hta htb
       have hb'_in_sub : inClosedInterval x' (c' last_idx) (extendPoint b') :=
         ⟨hb'.1, hb'_le_clast⟩
-      -- Use the IH restricted to the sub-interval [x, c(last)] / [x', c'(last)].
-      -- The IH expects full interval [x,y]/[x',y'], but we can use it with widened data
-      -- and then narrow the results.
-      -- Actually, the cleanest approach: call ih on full interval, then derive
-      -- ordering of b with c(last) via pivot_chain_order from ordering with c_init elements.
-      --
-      -- The IH gives: b in [x,y], orderings with x, y, and c_init elements.
-      -- We need: ordering with c(last).
-      -- Strategy: Since hord_b_init gives b vs c_init(k) for all k, and the last
-      -- c_init element c_init(m-1) ≤ c(last), we can pivot through c_init(m-1) if m > 0.
-      -- For m = 0, b' ≤ c'(last) = c'(0) and we can use hord_xb + h_univ.
-      have hci_in_full : ∀ i, inClosedInterval x y (c_init i) :=
-        fun i => ⟨(hci_in i).1, le_trans (hci_in i).2 hc_last_in_M.2⟩
-      have hc'i_in_full : ∀ i, inClosedInterval x' y' (c'_init i) :=
-        fun i => ⟨(hc'i_in i).1, le_trans (hc'i_in i).2 hc'_last_in_N.2⟩
-      obtain ⟨b, hb_in, hb_type, hord_xb, hord_by_full, hord_b_init⟩ :=
-        ih c_init c'_init hci_mono hc'i_mono hci_in_full hc'i_in_full hci_type hci_ord
-      -- Derive ordering of b with c(last) / b' with c'(last)
-      -- using h_univ on [extendPoint b, y] / [extendPoint b', y'] ∩ [c(last), y] / [c'(last), y']
-      -- Strategy: get orderings of (extendPoint b) and c(last) relative to each other
-      -- via the sub-interval decomp on suitable intervals.
-      have hord_b_clast : (extendPoint b < c last_idx ↔ extendPoint b' < c' last_idx) ∧
-          (extendPoint b = c last_idx ↔ extendPoint b' = c' last_idx) := by
-        -- Get MN decomp on [x, y] / [x', y'], challenge with c(last)
-        have h_full_MN := (h_univ x y x' y'
-          ⟨le_refl x, hxy⟩ ⟨hxy, le_refl y⟩ hxy
-          ⟨le_refl x', hx'y'⟩ ⟨hx'y', le_refl y'⟩ hx'y'
-          h_type_x h_type_y).1
-        -- Challenge with b in [x, y]
-        have hb_ext_in : inClosedInterval x y (extendPoint (discrete_to_carrier (c last_idx))) := by
-          rw [extendPoint_discrete_to_carrier]; exact hc_last_in_M
-        obtain ⟨clast_match, hclast_match_in, hclast_match_wc⟩ :=
-          decomp_point_challenge_MN h_full_MN (discrete_to_carrier (c last_idx)) hb_ext_in
-        -- clast_match is a point in [x', y'] that matches c(last)
-        have hclast_sot := hclast_match_wc.1
-        -- Extract ordering: x' < clast_match ↔ x < c(last) and clast_match < y' ↔ c(last) < y
-        have h01 := hclast_sot ⟨0, by omega⟩ ⟨1, by omega⟩
-        rw [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_zero_eq, game_tuple_b_eq,
-            extendPoint_discrete_to_carrier] at h01
-        -- h01 : (x < c last_idx ↔ x' < extendPoint clast_match)
-        -- We know rank_type c(last) = rank_type c'(last) (from hc_type)
-        -- and rank_type c(last) = rank_type clast_match (from wc)
-        -- So rank_type clast_match = rank_type c'(last)
-        have hrt_clast_match := wc_rank_type_at_point hclast_match_wc
-        rw [extendPoint_discrete_to_carrier] at hrt_clast_match
-        -- hrt_clast_match : rank_type c(last) = rank_type (extendPoint clast_match)
-        -- hc_type last_idx : rank_type c(last) = rank_type c'(last)
-        -- We need: b < c(last) ↔ b' < c'(last)
-        -- From the IH, we know b' ordering with x', y', and c_init elements.
-        -- From the decomp, we know clast_match ordering with x, y.
-        -- The key: (x' < clast_match ↔ x < c(last)) and (x < b ↔ x' < b')
-        -- So we can compare b with c(last) by comparing b' with clast_match.
-        -- But we need to show clast_match = c'(last) (or derive ordering differently).
-        -- Use the universal decomp approach: since both c'(last) and clast_match
-        -- have the same rank_type, and the decomp-based ordering with x'/y' matches
-        -- c(last)'s ordering with x/y, they must be equal if the order is strict enough.
-        -- This is getting circular. Let me use a direct approach.
-        -- Direct: from hord_xb and h01, derive b vs c(last).
-        -- b < c(last) → x' < extendPoint clast_match (from h01 + x ≤ b < c(last))
-        --             → need: b' < c'(last)
-        -- This requires relating clast_match to c'(last).
-        -- Since this is getting very complex, use sorry for now and fix later.
-        sorry
-      have hord_by := hord_by_full
+      -- Call IH on sub-interval [x, c(last)] / [x', c'(last)] with c_init as selections.
+      -- This gives b in [x, c(last)] with orderings relative to x, c(last), and c_init.
+      obtain ⟨b, hb_in_sub, hb_type, hord_xb, hord_b_clast, hord_b_init⟩ :=
+        ih h_sub_xy h_sub_x'y' h_univ_sub h_type_x (hc_type last_idx)
+          c_init c'_init hci_mono hc'i_mono hci_in hc'i_in hci_type hci_ord hb'_in_sub
+      -- b ∈ [x, c(last)] ⊆ [x, y]
+      have hb_in : inClosedInterval x y (extendPoint b) :=
+        ⟨hb_in_sub.1, le_trans hb_in_sub.2 hc_last_in_M.2⟩
+      -- Derive ordering with y via pivot_chain_order through c(last)
+      have hord_x_clast : (x < c last_idx ↔ x' < c' last_idx) ∧
+          (x = c last_idx ↔ x' = c' last_idx) := by
+        have h_sub_xc := (h_univ x (c last_idx) x' (c' last_idx)
+          ⟨le_refl x, hxy⟩ hc_last_in_M hc_last_in_M.1
+          ⟨le_refl x', hx'y'⟩ hc'_last_in_N hc'_last_in_N.1
+          h_type_x (hc_type last_idx)).2
+        have hx'_in : inClosedInterval x' (c' last_idx)
+            (extendPoint (discrete_to_carrier x')) := by
+          rw [extendPoint_discrete_to_carrier]; exact ⟨le_refl x', hc'_last_in_N.1⟩
+        obtain ⟨_, _, hp_wc⟩ := decomp_point_challenge_MN h_sub_xc
+          (discrete_to_carrier x') hx'_in
+        have h02 := hp_wc.1 ⟨0, by omega⟩ ⟨2, by omega⟩
+        rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq] at h02
+        exact ⟨h02.1.symm, h02.2.symm⟩
+      have hord_clast_y : (c last_idx < y ↔ c' last_idx < y') ∧
+          (c last_idx = y ↔ c' last_idx = y') := by
+        have h_sub_cy := (h_univ (c last_idx) y (c' last_idx) y'
+          hc_last_in_M ⟨hxy, le_refl y⟩ hc_last_in_M.2
+          hc'_last_in_N ⟨hx'y', le_refl y'⟩ hc'_last_in_N.2
+          (hc_type last_idx) h_type_y).2
+        have hy'_in : inClosedInterval (c' last_idx) y'
+            (extendPoint (discrete_to_carrier y')) := by
+          rw [extendPoint_discrete_to_carrier]; exact ⟨hc'_last_in_N.2, le_refl y'⟩
+        obtain ⟨_, _, hp_wc⟩ := decomp_point_challenge_MN h_sub_cy
+          (discrete_to_carrier y') hy'_in
+        have h02 := hp_wc.1 ⟨0, by omega⟩ ⟨2, by omega⟩
+        rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq] at h02
+        exact ⟨h02.1.symm, h02.2.symm⟩
+      have hord_by : (extendPoint b < y ↔ extendPoint b' < y') ∧
+          (extendPoint b = y ↔ extendPoint b' = y') :=
+        pivot_chain_order hb_in_sub.2 hc_last_in_M.2 hb'_le_clast hc'_last_in_N.2
+          hord_b_clast.1 hord_b_clast.2 hord_clast_y.1 hord_clast_y.2
       -- Build ordering for all selections (Fin (m+1))
       have hord_b_sel : ∀ k : Fin (m + 1),
           (extendPoint b < c k ↔ extendPoint b' < c' k) ∧
           (extendPoint b = c k ↔ extendPoint b' = c' k) := by
         intro k
         by_cases hk : k = Fin.last m
-        · -- k = last: from hord_b_clast
+        · -- k = last: from hord_b_clast (the sub-interval IH y-boundary)
           rw [hk]; exact hord_b_clast
         · -- k ≠ last: k = castSucc(ki) for some ki
           obtain ⟨ki, rfl⟩ := Fin.exists_castSucc_eq.mpr hk
