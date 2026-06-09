@@ -135,16 +135,25 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 2: GHR93 Theorem 6 Inductive Step for Discrete Orders [IN PROGRESS]
+### Phase 2: GHR93 Theorem 6 Inductive Step for Discrete Orders [BLOCKED]
 
 **Goal**: Eliminate all 5 sorries in DiscreteGameTransfer.lean to complete the inductive step of Theorem 6 for discrete orders.
 
-**Implementation History** (Cycles 1-5):
+**Implementation History** (Cycles 1-7):
 - **Cycle 1**: Changed induction to generalize over r. Applied IH at r+4 with rank casting. Established h_bwd_n (n-round backward game on full interval at rank r+4).
 - **Cycle 2**: Explored direct construction (h_bwd_n + h_fwd_1); discovered cross-term order consistency requires the canonical pivot. Factored inductive step into `discrete_backward_step` helper.
 - **Cycle 3**: Explored Options A (canonical pivot), B (direct h_bwd_n + h_fwd_1), C (rank lifting). Confirmed only Option A (canonical pivot) is mathematically correct.
 - **Cycle 4**: Added discrete rank-transfer helpers (discrete_rank_convert_compose, discrete_inClosedInterval_rank_transfer, etc.). Attempted direct approach with h_bwd_n for n elements + forward game for (n+1)-th. Successfully constructed response array, Round 2 response, gap_point_agreement. FAILED on same_order_type: cross-term order consistency between independent strategies cannot be established. This conclusively proved the canonical pivot is mathematically necessary.
 - **Cycle 5**: Decomposed the inductive step into well-typed helper lemmas. Created `discrete_game_rank_down` (rank conversion for discrete games, 1 sorry at depth bound), `discrete_restrict_forward_left` / `discrete_restrict_forward_right` (Claims 1-2, 1 sorry each for d-consistency), `discrete_pivot_and_restrict` (full pivot construction, 1 sorry), and `discrete_backward_extend` (Cases I-II, 1 sorry). Main theorem `discrete_backward_step` now delegates to these helpers (sorry-free assembly). File grew from ~710 to 950 lines. Eliminated 2 sorries (discrete_backward_step and discrete_ghr93_theorem6 are now sorry-free in their own logic, delegating to the helper lemmas).
+- **Cycle 6**: (no code changes, analysis only)
+- **Cycle 7**: Deep analysis of sorry-free infrastructure. Proved `discrete_rank_embed_eq_drc` (rank_embed = discrete_rank_convert for discrete orders) and `discrete_game_rank_down_compose`. Verified that obtain_split_point_props, ghr93_case_I, ghr93_case_II, d_consistency_left/right are ALL sorry-free. **Identified fundamental blocker**: the current file architecture (fixed pivot + independent case analysis) is mathematically incorrect because the pivot must depend on Spoiler's selections. Also identified rank structure mismatch: the discrete Theorem 6 uses rank r+4n for forward and rank r for backward, but the general infrastructure assumes a fixed delta with rank-UP conversion which is invalid even for discrete orders.
+
+**BLOCKER** (Phase 2):
+- **What failed**: All 4 sorry sites in the inductive step helpers (d-consistency x2, pivot construction, case analysis) remain unfilled due to architectural mismatch.
+- **What was tried**: (1) Proving d-consistency directly from the forward game -- fails because response to c need not equal d. (2) Using sorry-free obtain_split_point_props -- fails because h_fwd_r1 and h_r1_univ require rank-UP conversion. (3) Restructuring to single-rank version -- fails because h_r1_univ must be provided externally.
+- **Why it's stuck**: The discrete Theorem 6 uses a rank-varying structure (forward at r+4n, backward at r) that is incompatible with the general infrastructure which assumes a fixed delta. Rank-UP conversion (r -> r+2) is invalid even for discrete orders because the game only tests formulas up to depth r.
+- **What is needed**: Either (a) reformulate discrete_ghr93_theorem6 to take h_r1_univ as an explicit parameter (provided by Phase 4's completeness framework), using the sorry-free ghr93_forward_to_backward directly; or (b) implement a discrete-specific pivot construction that avoids rank-UP entirely.
+- **Prohibited workarounds**: Do NOT use sorry, def X := True, or any vacuous placeholder.
 
 ### Sorry Inventory (5 remaining)
 
@@ -160,13 +169,13 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 **Tasks** (mapped to remaining sorries):
 
-- [ ] **Task 2.1**: Fill sorry S1 in `discrete_game_rank_down` (line 598)
+- [x] **Task 2.1**: Fill sorry S1 in `discrete_game_rank_down` (line 598) *(deviation: altered -- S1 was already eliminated in cycle 5; the sorry was in the depth bound which was resolved by adding h_rle parameter)*
   - **File**: `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean`
   - **What to write**: The sorry is inside a `show stavi_depth A <= r'` obligation within the formula_agreement transfer. In all current use sites, ranks are equal after arithmetic (r = r'). For the general case, carrier-point truth independence (`stavi_truth_mu_at_point`) means formula agreement holds regardless of depth bound. Either add a depth-bound hypothesis to `discrete_game_rank_down` or restructure the formula agreement proof to use `discrete_rank_convert_formula` directly instead of going through `hform` with a depth constraint.
   - **Estimated size**: 5-15 lines
   - **Depends on**: nothing
 
-- [ ] **Task 2.2**: Fill sorry S4 in `discrete_pivot_and_restrict` (line 775)
+- [ ] **Task 2.2**: Fill sorry S4 in `discrete_pivot_and_restrict` (line 775) *(deviation: blocked -- requires architectural restructuring; current fixed-pivot design is mathematically incorrect; pivot must depend on Spoiler's selections)*
   - **File**: `DiscreteGameTransfer.lean`
   - **What to write**: This is the core canonical pivot construction. Must:
     1. Define the pivot semantically: given the forward game h_fwd at (4+3n, R) where R = r+4*(n+1), choose pivot c in M and d in N via the forward game's response at 0 rounds (or via the GHR93 formula C = X_{alpha_n} AND NOT-U(NOT-A, TOP) construction)
@@ -179,20 +188,20 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
   - **GHR93 Reference**: Claims 1-2, pp.116-117
   - **Estimated size**: 200-300 lines
 
-- [ ] **Task 2.3**: Fill sorry S2 in `discrete_restrict_forward_left` (line 654)
+- [ ] **Task 2.3**: Fill sorry S2 in `discrete_restrict_forward_left` (line 654) *(deviation: blocked -- d-consistency requires full GHR93 Claim 1 argument or obtain_split_point_props; see BLOCKER above)*
   - **File**: `DiscreteGameTransfer.lean`
   - **What to write**: Prove d-consistency for the left sub-interval. For any selection of (1+3n) elements from [x, c] padded with c at the end, apply h_fwd (the forward game at (4+3n) rounds) with the padded selection (repeat c for the extra rounds). The winning condition's formula agreement at rank R ensures the response to c must be d. Specifically: c and d agree on all rank-R formulas (from `hcd_type`), so in the forward game play where Spoiler includes c, the response must agree with c on rank-R formulas, which forces it to be d by the formula agreement hypothesis.
   - **GHR93 Reference**: Claim 1, p.116
   - **Existing infrastructure**: `ghr93_duplicator_wins_round_mono` (CustomGame.lean:441), `hcd_type` hypothesis already in scope
   - **Estimated size**: 40-80 lines
 
-- [ ] **Task 2.4**: Fill sorry S3 in `discrete_restrict_forward_right` (line 680)
+- [ ] **Task 2.4**: Fill sorry S3 in `discrete_restrict_forward_right` (line 680) *(deviation: blocked -- symmetric to Task 2.3)*
   - **File**: `DiscreteGameTransfer.lean`
   - **What to write**: Symmetric to Task 2.3 for the right sub-interval [c, y] / [d, y']. The proof structure mirrors `discrete_restrict_forward_left` with left/right swapped.
   - **GHR93 Reference**: Claim 1, p.116
   - **Estimated size**: 40-80 lines
 
-- [ ] **Task 2.5**: Fill sorry S5 in `discrete_backward_extend` (line 822)
+- [ ] **Task 2.5**: Fill sorry S5 in `discrete_backward_extend` (line 822) *(deviation: blocked -- requires fixed pivot to depend on Spoiler's selections; current architecture fundamentally incompatible)*
   - **File**: `DiscreteGameTransfer.lean`
   - **What to write**: Implement the Cases I-II argument:
     1. Receive Spoiler's n+1 selections alpha_0 < ... < alpha_n from [X', Y'] in N

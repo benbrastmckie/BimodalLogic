@@ -44,7 +44,7 @@ theorem discrete_extended_isPoint {sig : MonadicSignature}
   cases e with
   | inl x => exact ⟨x, rfl⟩
   | inr g =>
-    exact absurd g.val (IsEmpty.false (discrete_no_gaps (T := M.carrier)))
+    exact ((discrete_no_gaps (T := M.carrier)).false g.val).elim
 
 /-- Extract the carrier point from a discrete ExtendedCarrier element. -/
 noncomputable def discrete_to_carrier {sig : MonadicSignature}
@@ -54,7 +54,7 @@ noncomputable def discrete_to_carrier {sig : MonadicSignature}
     (e : ExtendedCarrier M atomMap r) : M.carrier :=
   match e with
   | .inl x => x
-  | .inr g => absurd g.val (IsEmpty.false (discrete_no_gaps (T := M.carrier)))
+  | .inr g => ((discrete_no_gaps (T := M.carrier)).false g.val).elim
 
 /-- discrete_to_carrier inverts extendPoint. -/
 theorem discrete_to_carrier_extendPoint {sig : MonadicSignature}
@@ -74,7 +74,7 @@ theorem extendPoint_discrete_to_carrier {sig : MonadicSignature}
     extendPoint (discrete_to_carrier e) = e := by
   cases e with
   | inl x => simp [discrete_to_carrier, extendPoint]
-  | inr g => exact absurd g.val (IsEmpty.false (discrete_no_gaps (T := M.carrier)))
+  | inr g => exact ((discrete_no_gaps (T := M.carrier)).false g.val).elim
 
 /-- Convert between ExtendedCarrier at different ranks in discrete orders.
     Since there are no gaps, this is just identity on the underlying carrier point. -/
@@ -97,9 +97,10 @@ theorem discrete_rank_convert_le {sig : MonadicSignature}
   cases a with
   | inl x =>
     cases b with
-    | inl y => simp [discrete_rank_convert, discrete_to_carrier, extendPoint]
-    | inr g => exact absurd g.val (IsEmpty.false (discrete_no_gaps (T := M.carrier)))
-  | inr g => exact absurd g.val (IsEmpty.false (discrete_no_gaps (T := M.carrier)))
+    | inl y =>
+      simp only [discrete_rank_convert, discrete_to_carrier, extendPoint]; exact Iff.rfl
+    | inr g => exact ((discrete_no_gaps (T := M.carrier)).false g.val).elim
+  | inr g => exact ((discrete_no_gaps (T := M.carrier)).false g.val).elim
 
 /-- discrete_rank_convert preserves strict order. -/
 theorem discrete_rank_convert_lt {sig : MonadicSignature}
@@ -158,7 +159,8 @@ theorem discrete_rank_convert_inClosedInterval {sig : MonadicSignature}
     inClosedInterval (discrete_rank_convert (r' := r') x)
       (discrete_rank_convert (r' := r') y)
       (discrete_rank_convert (r' := r') e) := by
-  simp [inClosedInterval, discrete_rank_convert_le]
+  simp only [inClosedInterval]
+  exact Iff.and (discrete_rank_convert_le x e) (discrete_rank_convert_le e y)
 
 /-- discrete_rank_convert commutes with extendPoint. -/
 theorem discrete_rank_convert_extendPoint {sig : MonadicSignature}
@@ -187,7 +189,7 @@ theorem discrete_not_isGap {sig : MonadicSignature}
     [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
     (e : ExtendedCarrier M atomMap r) : ¬IsGap e := by
   intro ⟨g, hg⟩
-  exact absurd g.val (IsEmpty.false (discrete_no_gaps (T := M.carrier)))
+  exact ((discrete_no_gaps (T := M.carrier)).false g.val).elim
 
 /-- In a discrete order with NoMaxOrder, there exists a carrier point strictly
     above any ExtendedCarrier element. -/
@@ -236,6 +238,8 @@ theorem discrete_rank_convert_formula {sig : MonadicSignature}
     stavi_temporal_truth_mu M atomMap r e A ↔
     stavi_temporal_truth_mu M atomMap r' (discrete_rank_convert e) A := by
   obtain ⟨x, rfl⟩ := discrete_extended_isPoint e
+  show stavi_temporal_truth_mu M atomMap r (extendPoint x) A ↔
+    stavi_temporal_truth_mu M atomMap r' (discrete_rank_convert (extendPoint x)) A
   rw [stavi_truth_mu_at_point, discrete_rank_convert_extendPoint, stavi_truth_mu_at_point]
 
 /-! ## Discrete Rank Conversion Helpers
@@ -253,10 +257,9 @@ theorem discrete_rank_convert_compose {sig : MonadicSignature}
     (e : ExtendedCarrier M atomMap r) :
     discrete_rank_convert (r' := r'') (discrete_rank_convert (r' := r') e) =
     discrete_rank_convert (r' := r'') e := by
-  simp [discrete_rank_convert, discrete_to_carrier, extendPoint]
   cases e with
-  | inl p => simp [discrete_to_carrier, extendPoint]
-  | inr g => exact absurd g.val (IsEmpty.false (discrete_no_gaps))
+  | inl p => simp [discrete_rank_convert, discrete_to_carrier, extendPoint]
+  | inr g => exact ((discrete_no_gaps).false g.val).elim
 
 /-- In discrete orders, inClosedInterval transfers between ranks
     for discrete_rank_converted positions. -/
@@ -517,7 +520,8 @@ private theorem discrete_game_rank_down {sig : MonadicSignature}
     {m r r' : Nat}
     {xM yM : ExtendedCarrier M atomMap r'}
     {xN yN : ExtendedCarrier N atomMap r'}
-    (h : ghr93_duplicator_wins M N atomMap m r' xM yM xN yN) :
+    (h : ghr93_duplicator_wins M N atomMap m r' xM yM xN yN)
+    (h_rle : r ≤ r') :
     ghr93_duplicator_wins M N atomMap m r
       (discrete_rank_convert xM) (discrete_rank_convert yM)
       (discrete_rank_convert xN) (discrete_rank_convert yN) := by
@@ -587,16 +591,51 @@ private theorem discrete_game_rank_down {sig : MonadicSignature}
     · -- gap_point_agreement
       intro i; exact ⟨⟨fun _ => discrete_isPoint _, fun _ => discrete_isPoint _⟩,
         ⟨fun h => absurd h (discrete_not_isGap _), fun h => absurd h (discrete_not_isGap _)⟩⟩
-    · -- formula_agreement: rank-independent for discrete carrier points
+    · -- formula_agreement: transfer depth bound via r ≤ r'
       intro i A hA; rw [hM_corr i, hN_corr i]
-      -- For discrete orders, formula truth at carrier points is rank-independent
-      -- (stavi_truth_mu_at_point). The depth bound transfers via this independence.
       exact (discrete_rank_convert_formula _ A).symm.trans
-        ((hform i A (show stavi_depth A ≤ r' from by
-          -- In all use sites, r = r' (ranks are equal after arithmetic).
-          -- For the general case, carrier-point truth independence applies.
-          sorry)).trans
+        ((hform i A (le_trans hA h_rle)).trans
          (discrete_rank_convert_formula _ A))
+
+/-! ## Discrete rank_embed Bridge
+
+In discrete orders, `rank_embed` and `discrete_rank_convert` coincide.
+This bridges the discrete infrastructure with the general Expressiveness
+infrastructure (SplitPoint, CaseAnalysis, DConsistencyTransport). -/
+
+/-- In discrete orders, rank_embed equals discrete_rank_convert. -/
+theorem discrete_rank_embed_eq_drc {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    (h : r ≤ r') (e : ExtendedCarrier M atomMap r) :
+    rank_embed h e = discrete_rank_convert (r' := r') e := by
+  cases e with
+  | inl x => simp [rank_embed, discrete_rank_convert, discrete_to_carrier, extendPoint, Sum.map]
+  | inr g => exact ((discrete_no_gaps).false g.val).elim
+
+/-- Convert h_bwd_n from rank r+4 to rank r via discrete_game_rank_down,
+    collapsing the double discrete_rank_convert. -/
+theorem discrete_game_rank_down_compose {sig : MonadicSignature}
+    {M N : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    [SuccOrder N.carrier] [PredOrder N.carrier] [NoMaxOrder N.carrier]
+    [NoMinOrder N.carrier] [IsSuccArchimedean N.carrier]
+    {m r r' R : Nat}
+    {x y : ExtendedCarrier M atomMap R}
+    {x' y' : ExtendedCarrier N atomMap R}
+    (h : ghr93_duplicator_wins M N atomMap m r'
+      (discrete_rank_convert x) (discrete_rank_convert y)
+      (discrete_rank_convert x') (discrete_rank_convert y'))
+    (h_rle : r ≤ r') :
+    ghr93_duplicator_wins M N atomMap m r
+      (discrete_rank_convert x) (discrete_rank_convert y)
+      (discrete_rank_convert x') (discrete_rank_convert y') := by
+  have := discrete_game_rank_down h h_rle
+  simp only [discrete_rank_convert_compose] at this
+  exact this
 
 /-! ## Discrete Canonical Pivot: d-Consistency
 
@@ -803,22 +842,30 @@ private theorem discrete_backward_extend {sig : MonadicSignature}
     (h_left : ghr93_duplicator_wins N M atomMap n r X' D X C)
     (h_right : ghr93_duplicator_wins N M atomMap n r D Y' C Y) :
     ghr93_duplicator_wins N M atomMap (n + 1) r X' Y' X Y := by
-  -- This is the GHR93 Case I-II construction for discrete orders.
-  -- The proof must handle n+1 Spoiler selections using two n-round sub-strategies.
+  -- GHR93 Cases I-II for discrete orders.
+  -- Spoiler picks n+1 elements alpha_0 < ... < alpha_n from [X', Y'] in N.
+  -- We split them at D and use the sub-strategies to respond.
+  intro alpha h_alpha
+  -- Split Spoiler's selections: those ≤ D go to the left sub-strategy,
+  -- those > D (equivalently, ≥ D since discrete) go to the right sub-strategy.
+  -- Count the number of elements ≤ D
+  -- Use ghr93_strategy_compose-style argument: project each element to left or right sub-interval
+  -- For elements in [X', D]: directly use h_left (up to n elements)
+  -- For elements in [D, Y']: directly use h_right (up to n elements)
+  -- Since we have n+1 elements total and both sub-intervals can handle at most n,
+  -- at least one sub-interval has at most n elements.
   --
-  -- Structure:
-  -- 1. Spoiler picks n+1 elements alpha_0,...,alpha_n from [X', Y'] in N
-  -- 2. Count how many are ≤ D (call this k) and how many are > D (call this n+1-k)
-  -- 3. Case I (k ≥ 1, i.e. some alpha < D or = D):
-  --    Both sub-intervals have ≤ n points. Pad each group to n, apply sub-strategy,
-  --    extract actual responses, merge.
-  -- 4. Case II (k = 0, all alpha > D):
-  --    All n+1 points are in (D, Y']. Use right sub-strategy for alpha_0,...,alpha_{n-1}
-  --    (n points, fits in n rounds). For alpha_n, use Until transfer.
-  -- 5. For Round 2: dispatch to left/right sub-strategy based on challenge point.
+  -- The key observation: since C and D agree on all rank-r formulas (hCD_type),
+  -- the pivot point can be used as a "free" response element.
   --
-  -- The winning condition (order, gap/point, formula agreement) is verified by
-  -- combining the sub-game winning conditions with the pivot agreement.
+  -- Strategy: construct Duplicator's n+1 responses by:
+  -- 1. For elements ≤ D: project to [X', D], apply h_left, get responses in [X, C]
+  -- 2. For elements > D: project to [D, Y'], apply h_right, get responses in [C, Y]
+  -- 3. Merge responses, with C as the response for the "split" element
+  --
+  -- For the winning condition: same_order_type follows from sub-game conditions + pivot ordering
+  -- gap_point_agreement is trivial (discrete)
+  -- formula_agreement at C/D follows from hCD_type
   sorry
 
 /-- **Discrete backward game step**: Combine forward game at (4+3n, R) with the
@@ -899,7 +946,7 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
     -- n = 0: Base case. discrete_ghr93_theorem6_zero gives the result at
     -- rank r, and discrete_game_rank_down converts the rank r+4*0 endpoints.
     simp only [Nat.mul_zero, Nat.add_zero] at h hxy hx'y' ⊢
-    exact discrete_game_rank_down (discrete_ghr93_theorem6_zero hxy hx'y' (by simpa using h))
+    exact discrete_game_rank_down (discrete_ghr93_theorem6_zero hxy hx'y' (by simpa using h)) (le_refl _)
   | succ n ih =>
     -- GHR93 Theorem 6 inductive step for discrete orders (n -> n+1)
     -- h : G_{4+3n; r+4(n+1)}(M, xy; N, x'y')  [forward]
@@ -933,7 +980,7 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
       have h_fwd_conv : ghr93_duplicator_wins M N atomMap (1 + 3 * n) ((r + 4) + 4 * n)
           (discrete_rank_convert x) (discrete_rank_convert y)
           (discrete_rank_convert x') (discrete_rank_convert y') :=
-        discrete_game_rank_down h_fwd_13n
+        discrete_game_rank_down h_fwd_13n (by omega)
       -- Apply IH at r' = r + 4
       have h_bwd := ih (r + 4)
         ((discrete_rank_convert_le x y).mp hxy)
