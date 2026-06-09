@@ -29,7 +29,7 @@ mathematically false under irreflexive semantics and cannot be proved.
 - **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142)
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
 
-**Critical path**: Task 155 (EF-game infrastructure, IN PROGRESS) → Task 202 (Reynolds k-equivalence bypass) → sorry-free `completeness_discrete`.
+**Critical path**: Task 273 (generalized existential transfer, GHR93 Proposition 7 → sorry-free `stavi_expressive_completeness`) → Task 202 (Reynolds k-equivalence bypass) → sorry-free `completeness_discrete`. Two independent sorry chains must both be closed: the Stavi chain (task 273) and the succ_cofinal chain (task 202).
 
 **Key architectural finding** (task 155, 7 research agents + 4 succ_cofinal agents, 2026-05-28/29):
 
@@ -53,6 +53,23 @@ succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective
 Note: `cantor_bfmcs_discrete_restricted_buc` is sorry-free (uses `succ_embed_squeeze_strict`).
 
 **WARNING — anti-pattern**: A "direct `IsSuccArchimedean` proof" (bypassing `chronicle_gap_contradiction`) is **not how it goes in the literature and must be avoided**. Reynolds 1994 (Sections 8–9, Theorem 15) never proves `IsSuccArchimedean` for the limit domain at all. His approach is: `one_class` (all points in one contemporaneous equivalence class) → very good → good → ≡k integer structure via lexicographic sums (Lemma 16). The `one_class` theorem is already proved sorry-free in `NoGapsDiscreteProof.lean`. The formalization's `IsSuccArchimedean` dependency is an artifact of building a succ-embed into ℤ and proving surjectivity — a construction the literature avoids entirely. Any plan proposing to "directly prove `IsSuccArchimedean`" is solving a problem that should not exist.
+
+**WARNING — anti-pattern (task 273)**: A "discrete bypass" strategy — replacing `stavi_expressive_completeness` (general) with `discrete_stavi_expressive_completeness` (requires `IsSuccArchimedean`) inside `US_expressively_complete_over_prior` — **is architecturally unsound and must not be attempted**. The reason: `US_expressively_complete_over_prior` is used by `gap_prior_UZ_contradiction` (`GoodStructuresModelSurgery.lean:1266`) on a model M that has `SuccOrder + PredOrder + NoMaxOrder + NoMinOrder + semantic_prior_UZ/SZ` but does **NOT** have `IsSuccArchimedean`. The whole purpose of that theorem is to derive a contradiction that PROVES the model is `IsSuccArchimedean`. Using a discrete-only expressive completeness theorem to prove discreteness is circular.
+
+**The literature's approach (GHR93 Section 8, Reynolds 1994)**: Stavi expressive completeness ({U,S,U',S'} for all linear time) is proved via EF games (Theorem 6 + Proposition 7) with **no discreteness assumption**. Prior-UZ/SZ then eliminates U'/S' (always false on Prior structures — proved sorry-free in PriorExpressiveness.lean). The model surgery argument uses {U,S} expressive completeness to show all equivalence classes agree, deriving the contradiction that establishes IsSuccArchimedean. This chain requires the GENERAL `stavi_expressive_completeness`, not a discrete-only version.
+
+**Stavi sorry chain** (second independent sorry chain blocking `completeness_discrete`, verified 2026-06-09):
+```
+nf_2var_existential_transfer (StaviCompleteness.lean:2353, 2435)
+  → nf_2var_from_interval_data
+  → nf_exist_sf_guarded_backward (StaviCompleteness.lean:2805)
+  → nf_2var_exist_sf_classical → nf_characterizable_by_stavi
+  → stavi_expressive_completeness (GHR93 Theorem 9.3.1)
+  → US_expressively_complete_over_prior (PriorExpressiveness.lean:384)
+  → gap_prior_UZ_contradiction (GoodStructuresModelSurgery.lean:1169)
+  → no_gaps_discrete_model_surgery → completeness_discrete
+```
+Root sorry: `nf_2var_existential_transfer` at the `j'+1` case, which needs 4-variable existential transfer to prove 3-variable NF agreement. The fix (task 273, plan v12): prove a **generalized existential transfer** by strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 transliterated to NF types. At each inductive step, `zone_match_witness` provides the matching point, and the IH at lower depth (with higher arity) provides the transfer. Terminates because depth strictly decreases. No IsSuccArchimedean needed.
 
 **Sorry summary (critical path to sorry-free `completeness`)**:
 
@@ -1370,21 +1387,36 @@ characterization.
 
 ## Recommended Priority Order
 
-### Critical Path: Reynolds K-Equivalence Bypass
+### Critical Path: Two Independent Sorry Chains
 
-1. **Task 155** (IN PROGRESS): Complete Phase 6 (Cases III/IV gap handling — 7 targeted sorries in CaseAnalysis.lean) and Phase 7 (Transfer.lean rewiring — blocked pending task 202).
+Two independent sorry chains block `completeness_discrete`. Both must be closed.
+
+**Chain A — Stavi Expressive Completeness** (task 273):
+
+1. **Task 273** (PLANNED, plan v12): Generalized existential transfer. Prove
+   `nf_2var_existential_transfer` (StaviCompleteness.lean:2353, 2435) by
+   generalizing `zone_match_witness` to n-var and proving transfer by strong
+   induction on depth j, universally quantified over arity n. This is GHR93
+   Proposition 7 in NF terms. Makes `stavi_expressive_completeness` →
+   `US_expressively_complete_over_prior` → `gap_prior_UZ_contradiction`
+   sorry-free. No IsSuccArchimedean needed. ~400-700 new lines.
+
+**Chain B — Reynolds K-Equivalence Bypass** (tasks 155, 202):
+
+2. **Task 155** (IN PROGRESS): Complete Phase 6 (Cases III/IV gap handling — 7 targeted sorries in CaseAnalysis.lean) and Phase 7 (Transfer.lean rewiring — blocked pending task 202).
    - Phase 5 (GHR93 Case II): sorry-free, axiom-clean ✓
    - Phase 6 (Cases III/IV): 7 decomposed sorries, mechanical but verbose
    - Phase 7 (Transfer.lean): infrastructure built (ghr93_forward_to_backward_discrete), rewiring blocked by succ_cofinal
    - Phase 8 (verification): pending
 
-2. **Task 202** (CRITICAL, NEXT): Reynolds k-equivalence bypass. Build:
+3. **Task 202** (CRITICAL): Reynolds k-equivalence bypass. Build:
    - Backward-game-to-k-equiv bridge (~200-300 lines)
    - Reynolds Theorem 14 gap elimination via US expressive completeness (~300-500 lines)
    - Rewire countermodel_discrete to bypass succ_cofinal entirely
-   This is the ONLY viable path to sorry-free completeness_discrete.
+   Requires task 273 (Chain A) to be complete first, since Reynolds Theorem 14
+   uses `US_expressively_complete_over_prior`.
 
-3. **Task 95**: `#print axioms` audit on completeness theorem. After task 202.
+4. **Task 95**: `#print axioms` audit on completeness theorem. After tasks 273 + 202.
 
 ### Sorry Cleanup: Zero Sorries for Publication
 
@@ -1434,4 +1466,4 @@ characterization.
 
 ---
 
-*Last updated: 2026-05-29 (task 155 Phase 5 complete, succ_cofinal team research: 4 agents confirmed unprovable by current approach. Reynolds k-equivalence bypass (task 202) identified as only viable path. ROADMAP critical path revised from "close succ_cofinal" to "bypass via Reynolds Theorem 6 + Theorem 14 + k-equivalence transfer." EF-game infrastructure (ghr93_forward_to_backward_discrete) proved sorry-free.)*
+*Last updated: 2026-06-09 (task 273 plan v12: identified second independent sorry chain via Stavi expressive completeness. Root sorry is `nf_2var_existential_transfer` (arity escalation at j'+1 case). Fix: generalized existential transfer by strong induction on depth, universally quantified over arity — GHR93 Proposition 7 in NF terms. Key anti-pattern documented: discrete bypass via IsSuccArchimedean is circular because `gap_prior_UZ_contradiction` uses `US_expressively_complete_over_prior` on a model NOT yet known to be discrete. Two independent sorry chains (Stavi chain A + succ_cofinal chain B) must both be closed for sorry-free `completeness_discrete`.)*

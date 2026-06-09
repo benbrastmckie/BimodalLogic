@@ -46,7 +46,7 @@ technical_debt:
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [BLOCKED] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
+273 [PLANNED] — Generalized existential transfer (GHR93 Proposition 7 in NF terms): close nf_2var_existential_transfer sorry by strong induction on depth, universally quantified over arity. Makes stavi_expressive_completeness → US_expressively_complete_over_prior sorry-free. No IsSuccArchimedean needed.
 
 ### Formula Refactor
 
@@ -178,8 +178,8 @@ technical_debt:
 **Description**: The dataset generator defaults to `maxFormulas=5000` (in DatasetExport.lean:501 and FormulaEnumerator.lean:601), silently truncating exhaustive enumeration at higher complexity levels. Change the default behavior so that exhaustive mode keeps ALL enumerated formulas unless an explicit `--max-formulas N` flag is passed. (1) Change default `maxFormulas` in DatasetExport.lean and FormulaEnumerator.lean to 0 or a sentinel value meaning "no limit". (2) Update `FormulaEnumerator.lean:692` to skip the `.take` when maxFormulas is 0/unlimited. (3) Update `run_dataset_generation.sh` to remove `--max-formulas` from exhaustive tiers (c4-c8) since the default will now be unlimited. Keep `--max-formulas` only for stratified tiers (c9+) where it controls the sampling budget. (4) Add a `--max-formulas` flag description to the help text clarifying it's optional and only caps output for exhaustive mode. (5) Regenerate c4-c8 datasets to verify truly exhaustive output.
 
 
-### 273. Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype
-- **Effort**: 8 hours
+### 273. Generalized existential transfer (GHR93 Proposition 7 in NF terms)
+- **Effort**: 10 hours
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
@@ -197,10 +197,11 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md]
   - [273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md]
 - **Plan**:
-  - [273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md]
-  - [273_chronicle_gap_contradiction_proof/plans/11_discrete-backward-plan.md]
+  - [273_chronicle_gap_contradiction_proof/plans/12_generalized-transfer-plan.md]
 
-**Description**: Prove `discrete_stavi_expressive_completeness` by following GHR93 exactly via the decomposition-formula path. Three new components: (1) `discrete_ghr93_theorem6` -- Theorem 6 for discrete orders (forward game -> backward game, induction on n, Cases I-II only); (2) `discrete_ghr93_proposition7` -- Proposition 7 for discrete orders (sub-interval games -> full EF game, induction on n); (3) game-win-to-existential-transfer bridge wired into sorry chain. Plan v8 replaces v7 which diverged from GHR93. ~700-1300 new lines across DiscreteGameTransfer.lean and StaviCompleteness.lean.
+**Description**: Close the sorry in `nf_2var_existential_transfer` (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Phase 1: generalize `zone_match_witness` to n-var and define `matching_data` predicate. Phase 2: prove the transfer theorem by strong induction on j. Phase 3: close `nf_exist_sf_guarded_backward` (line 2805). Phase 4: verify full chain. Makes `stavi_expressive_completeness` → `US_expressively_complete_over_prior` → `gap_prior_UZ_contradiction` sorry-free. No `IsSuccArchimedean` needed — works for ALL linear orders. ~400-700 new lines in StaviCompleteness.lean.
+
+**Anti-pattern (documented in ROADMAP.md)**: Plans v8-v11 attempted a "discrete bypass" using `discrete_stavi_expressive_completeness` (requires `IsSuccArchimedean`). This is circular: `US_expressively_complete_over_prior` is used by `gap_prior_UZ_contradiction` on a model not yet known to be discrete. The model surgery argument uses expressive completeness to PROVE discreteness. Any future plan proposing to restrict expressive completeness to discrete models must check that all callers actually have `IsSuccArchimedean` — `gap_prior_UZ_contradiction` does not.
 
 ---
 
