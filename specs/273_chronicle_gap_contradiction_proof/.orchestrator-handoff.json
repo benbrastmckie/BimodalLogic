@@ -1,25 +1,28 @@
 {
   "status": "blocked",
-  "summary": "Plan v13 Phase 1 BLOCKED. The approach of replacing interval_nf_types with interval_2var_nf_types in hypotheses is necessary but insufficient. The core sorry at lines 2353/2435 requires 4-var existential transfer for a 3-point config, which requires 5-var transfer at lower depth, which requires 6-var transfer, etc. This arity-growth recursion terminates at depth 0 (where atoms suffice), but requires an arity-parametric induction theorem following GHR93 Proposition 7 exactly. Plan v13 doesn't account for this arity parameterization. A plan v14 is needed that defines a matched-configuration predicate parametric in arity n and data depth K, proves zone matching preserves matching at arity n+1 and depth K-1, and proves the transfer by Nat.strongRecOn on j universally over n. Estimated ~260-400 new lines. Added atom_agree_from_pointwise helper theorem.",
+  "summary": "Phase 1 blocked: the arity escalation problem at sorry sites (lines 2405, 2487) requires a 'NF projection' lemma (proving depth-D n-var NF determines depth-D (n-1)-var NF of sub-tuples) plus full 2-var interval type machinery (~400 lines). Five alternative approaches analyzed and rejected. The 2-var approach from GHR93 Lemma 11 is confirmed correct but requires significant infrastructure not yet in the codebase. No source code changes made.",
   "phases_completed": 0,
   "phases_total": 4,
   "blockers": [
-    "The 4-var transfer at depth j' for the 3-point config (u,x,t)/(u',x',t') requires proving matching at ALL arities 3, 4, ..., 3+j' simultaneously by induction on depth. Plan v13 only handles arity 2 (2-var NFs) and arity 3 (the outer theorem), but the quant step at arity 3 needs arity 4, which needs arity 5, etc. GHR93 Proposition 7 solves this with arity-free induction on game rounds, but the Lean formalization requires explicit parameterization."
+    "NF projection lemma: proving depth-D n-var NF determines depth-D (n-1)-var NF for sub-tuples",
+    "interval_2var_nf_types sub-interval derivation from 2-var NF match (GHR93 Lemma 11 in NF terms)",
+    "zone_match_witness_2var: zone matching using 2-var interval types",
+    "multi_arity_transfer: arity-parametric theorem by Nat.strongRecOn on depth j"
   ],
   "continuation_context": {
     "next_phase": 1,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v13-20260609.md"
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v14-20260609.md"
   },
   "artifacts": [
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/13_generalized-transfer-plan.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/14_generalized-transfer-plan.md",
       "type": "plan",
-      "summary": "Plan v13 with Phase 1 marked BLOCKED"
+      "summary": "Plan v14 with Phase 1 marked [BLOCKED] and detailed blocker analysis"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v13-20260609.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v14-20260609.md",
       "type": "handoff",
-      "summary": "Detailed analysis of arity-growth blocker with correct implementation path"
+      "summary": "Detailed analysis of arity escalation problem and implementation roadmap"
     }
   ],
   "next_action_hint": "revise"
