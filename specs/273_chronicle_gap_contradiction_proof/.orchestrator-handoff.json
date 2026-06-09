@@ -1,16 +1,20 @@
 {
-  "status": "partial",
-  "summary": "Fixed all 8 build errors in DiscreteStaviCompleteness.lean (sf_disjList/sf_conjList naming collision resolved via local pub_sf_disjList_iff and pub_sf_conjList_iff lemmas). 1 sorry remains (backward direction of exist_sf_correct at line 338).",
-  "phases_completed": 1,
-  "phases_total": 2,
+  "status": "blocked",
+  "summary": "Sorry at line 338 of DiscreteStaviCompleteness.lean is architecturally unprovable with the current formula construction nf_exist_sf_guarded; the formula encodes only the 1-var NF type and ordering of the witness x but not the quantifier part of the 2-var NF sub_nf, making the backward direction (formula truth implies existence with correct 2-var NF) unprovable for k >= 1",
+  "phases_completed": 0,
+  "phases_total": 5,
   "blockers": [
-    "The backward direction (formula truth -> existence) at line 338 requires nf_fraisse_compression with existential transfer. The obstacle is nf_2var_existential_transfer (StaviCompleteness.lean:2353) which is sorry'd for the j>=1 case (4-var sub-interval matching). For discrete models this should follow from the game pipeline but requires connecting game iteration to 2-var NF."
+    {
+      "description": "The backward direction of exist_sf_correct at line 338 requires showing that if the temporal formula nf_exist_sf_guarded is true at t, then there exists x such that nf_eval_nf N k 2 (Fin.cons x (fun _ => t)) sub_nf. For k = 0 this is provable (depth-0 NFs are purely atomic, and the formula encodes atoms + ordering exactly). For k >= 1, the formula only checks x's 1-var depth-k NF type (via char_k) and ordering, but does NOT check the quantifier part of the 2-var NF. Multiple distinct sub_nfs (with the same 1-var type and ordering but different quantifier parts) map to the SAME temporal formula. When the formula is true, the witness x may realize a different sub_nf than the target. The game pipeline (discrete_nf_to_decomposition_agreement + discrete_ghr93_proposition7 + nf_fraisse_compression) cannot bridge this gap because nf_fraisse_compression requires (n+1)-var existential transfer at all depths j < k, which requires n-var NF agreement at depth j+1 up to k, creating a circularity at the maximum depth.",
+      "required_fix": "Option A: Modify nf_exist_sf_guarded to also encode the quantifier part of sub_nf using nested temporal quantifiers (Until/Since). For each chi in the quantifier part, add sub-formulas checking existence/non-existence of appropriate extensions. This changes the formula depth but preserves correctness. Option B: Restructure discrete_nf_characterizable_by_stavi to avoid the standalone exist_sf_correct lemma entirely. Instead of proving the iff per-sub_nf, prove the full nf_eval_nf backward direction using the contrapositive from the false sub-formulas (which IS provable: nf.2 sub_nf = false AND forward direction of exist_sf implies c.2 sub_nf = false, giving c.2 subset of nf.2; then use a structural argument to show equality). Option C: Build a discrete-specific 2-var existential transfer that bypasses nf_fraisse_compression by directly proving, for discrete models, that matching 1-var NFs + ordering + interval types determine the 2-var NF at all depths simultaneously (requiring a simultaneous induction on depth and variable count, or the full EF game formalization).",
+      "severity": "architectural"
+    }
   ],
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean",
       "type": "source",
-      "summary": "Fixed 8 build errors by adding pub_sf_disjList_iff and pub_sf_conjList_iff local lemmas for public sf_disjList/sf_conjList. File compiles cleanly with only 1 sorry remaining at line 338."
+      "summary": "File containing the sorry at line 338, unchanged"
     }
   ]
 }
