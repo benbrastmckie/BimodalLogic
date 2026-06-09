@@ -1008,10 +1008,125 @@ private theorem discrete_sorted_matching {sig : MonadicSignature}
       · -- i = last, j ≠ last: c_last vs c_init(kj)
         -- c_init(kj) ≤ c_last (monotone), so c_last < c_init(kj) is impossible
         -- c_last = c_init(kj) ↔ chain through intermediates to c'_last = c'_init(kj)
-        sorry
+        obtain ⟨kj, rfl⟩ := Fin.exists_castSucc_eq.mpr hj
+        subst hi
+        have h_le_M : c (Fin.castSucc kj) ≤ c (Fin.last m) :=
+          hc_mono (le_of_lt (Fin.castSucc_lt_last kj))
+        have h_le_N : c'_init kj ≤ extendPoint q_last := by
+          by_cases hm : 0 < m
+          · calc c'_init kj
+                ≤ c'_init ⟨m - 1, by omega⟩ := hc'i_mono (by simp only [Fin.le_def]; omega)
+              _ ≤ extendPoint q_last := by simp only [dif_pos hm] at hq_lo; exact hq_lo
+          · exfalso; exact absurd kj.isLt (by omega)
+        have hm : 0 < m := Nat.pos_of_ne_zero (by intro h; exact absurd kj.isLt (by omega))
+        -- Extract same_order_type from WC
+        have h_wc_sot : same_order_type 0
+            (game_tuple (c (Fin.castSucc ⟨m - 1, by omega⟩)) y Fin.elim0
+              (discrete_to_carrier c_last))
+            (game_tuple (c'_init ⟨m - 1, by omega⟩) y' Fin.elim0 q_last) := by
+          have := hq_wc; simp only [dif_pos hm] at this; exact this.1
+        -- Equality iff between lo and c_last / lo' and c'_last
+        have h_lo_eq_clast_iff : c_init ⟨m - 1, by omega⟩ = c_last ↔
+            c'_init ⟨m - 1, by omega⟩ = extendPoint q_last := by
+          have h01 := h_wc_sot ⟨0, by omega⟩ ⟨1, by omega⟩
+          rw [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_zero_eq, game_tuple_b_eq] at h01
+          rw [extendPoint_discrete_to_carrier] at h01
+          exact h01.2
+        -- IH ordering between kj and m-1
+        have h_ij_eq_iff := (hc'i_consec kj ⟨m - 1, by omega⟩).2
+        -- Monotonicity bounds
+        have h_kj_m1_M : c_init kj ≤ c_init ⟨m - 1, by omega⟩ :=
+          hci_mono (by simp only [Fin.le_def]; omega)
+        have h_m1_last_M : c_init ⟨m - 1, by omega⟩ ≤ c_last :=
+          hc_mono (show Fin.castSucc ⟨m - 1, _⟩ ≤ Fin.last m by simp [Fin.le_def])
+        have h_kj_m1_N : c'_init kj ≤ c'_init ⟨m - 1, by omega⟩ :=
+          hc'i_mono (by simp only [Fin.le_def]; omega)
+        have h_m1_last_N : c'_init ⟨m - 1, by omega⟩ ≤ extendPoint q_last := by
+          simp only [dif_pos hm] at hq_lo; exact hq_lo
+        dsimp only [c']
+        simp only [Fin.lastCases_last, Fin.lastCases_castSucc]
+        constructor
+        · -- c_last < c_init(kj) is impossible (both sides), so < iff is trivial
+          exact ⟨fun h_lt => absurd h_lt (not_lt.mpr h_le_M),
+                 fun h_lt => absurd h_lt (not_lt.mpr h_le_N)⟩
+        · -- Equality: chain through c_init(m-1) using WC + IH
+          constructor
+          · intro h_eq
+            have h1 : c_init ⟨m - 1, by omega⟩ = c_last :=
+              le_antisymm h_m1_last_M (le_trans (le_of_eq h_eq) h_kj_m1_M)
+            have h2 : c_init kj = c_init ⟨m - 1, by omega⟩ :=
+              le_antisymm h_kj_m1_M (le_trans (le_of_eq h1) (le_of_eq h_eq))
+            have h3 : c'_init ⟨m - 1, by omega⟩ = extendPoint q_last :=
+              h_lo_eq_clast_iff.mp h1
+            have h4 : c'_init kj = c'_init ⟨m - 1, by omega⟩ := h_ij_eq_iff.mp h2
+            exact (h4.trans h3).symm
+          · intro h_eq'
+            have h1' : c'_init ⟨m - 1, by omega⟩ = extendPoint q_last :=
+              le_antisymm h_m1_last_N (le_trans (le_of_eq h_eq') h_kj_m1_N)
+            have h2' : c'_init kj = c'_init ⟨m - 1, by omega⟩ :=
+              le_antisymm h_kj_m1_N (le_trans (le_of_eq h1') (le_of_eq h_eq'))
+            have h3' : c_init ⟨m - 1, by omega⟩ = c_last := h_lo_eq_clast_iff.mpr h1'
+            have h4' : c_init kj = c_init ⟨m - 1, by omega⟩ := h_ij_eq_iff.mpr h2'
+            exact (h4'.trans h3').symm
       · -- i ≠ last, j = last: c_init(ki) vs c_last
-        -- Similar chain argument
-        sorry
+        -- Chain argument symmetric to i=last, j≠last case
+        obtain ⟨ki, rfl⟩ := Fin.exists_castSucc_eq.mpr hi
+        subst hj
+        have h_le_M : c (Fin.castSucc ki) ≤ c (Fin.last m) :=
+          hc_mono (le_of_lt (Fin.castSucc_lt_last ki))
+        have h_le_N : c'_init ki ≤ extendPoint q_last := by
+          by_cases hm : 0 < m
+          · calc c'_init ki
+                ≤ c'_init ⟨m - 1, by omega⟩ := hc'i_mono (by simp only [Fin.le_def]; omega)
+              _ ≤ extendPoint q_last := by simp only [dif_pos hm] at hq_lo; exact hq_lo
+          · exfalso; exact absurd ki.isLt (by omega)
+        have hm : 0 < m := Nat.pos_of_ne_zero (by intro h; exact absurd ki.isLt (by omega))
+        have h_wc_sot : same_order_type 0
+            (game_tuple (c (Fin.castSucc ⟨m - 1, by omega⟩)) y Fin.elim0
+              (discrete_to_carrier c_last))
+            (game_tuple (c'_init ⟨m - 1, by omega⟩) y' Fin.elim0 q_last) := by
+          have := hq_wc; simp only [dif_pos hm] at this; exact this.1
+        have h_lo_eq_clast_iff : c_init ⟨m - 1, by omega⟩ = c_last ↔
+            c'_init ⟨m - 1, by omega⟩ = extendPoint q_last := by
+          have h01 := h_wc_sot ⟨0, by omega⟩ ⟨1, by omega⟩
+          rw [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_zero_eq, game_tuple_b_eq] at h01
+          rw [extendPoint_discrete_to_carrier] at h01
+          exact h01.2
+        have h_ij_eq_iff := (hc'i_consec ki ⟨m - 1, by omega⟩).2
+        have h_kj_m1_M : c_init ki ≤ c_init ⟨m - 1, by omega⟩ :=
+          hci_mono (by simp only [Fin.le_def]; omega)
+        have h_m1_last_M : c_init ⟨m - 1, by omega⟩ ≤ c_last :=
+          hc_mono (show Fin.castSucc ⟨m - 1, _⟩ ≤ Fin.last m by simp [Fin.le_def])
+        have h_kj_m1_N : c'_init ki ≤ c'_init ⟨m - 1, by omega⟩ :=
+          hc'i_mono (by simp only [Fin.le_def]; omega)
+        have h_m1_last_N : c'_init ⟨m - 1, by omega⟩ ≤ extendPoint q_last := by
+          simp only [dif_pos hm] at hq_lo; exact hq_lo
+        -- Main equality iff: c_init ki = c_last ↔ c'_init ki = extendPoint q_last
+        have h_main_eq : c_init ki = c_last ↔ c'_init ki = extendPoint q_last := by
+          constructor
+          · intro h_eq
+            have h1 : c_init ⟨m - 1, by omega⟩ = c_last :=
+              le_antisymm h_m1_last_M (le_trans (le_of_eq h_eq.symm) h_kj_m1_M)
+            have h2 : c_init ki = c_init ⟨m - 1, by omega⟩ :=
+              le_antisymm h_kj_m1_M (le_trans (le_of_eq h1) (le_of_eq h_eq.symm))
+            exact (h_ij_eq_iff.mp h2).trans (h_lo_eq_clast_iff.mp h1)
+          · intro h_eq'
+            have h1' : c'_init ⟨m - 1, by omega⟩ = extendPoint q_last :=
+              le_antisymm h_m1_last_N (le_trans (le_of_eq h_eq'.symm) h_kj_m1_N)
+            have h2' : c'_init ki = c'_init ⟨m - 1, by omega⟩ :=
+              le_antisymm h_kj_m1_N (le_trans (le_of_eq h1') (le_of_eq h_eq'.symm))
+            exact (h_ij_eq_iff.mpr h2').trans (h_lo_eq_clast_iff.mpr h1')
+        dsimp only [c']
+        simp only [Fin.lastCases_last, Fin.lastCases_castSucc]
+        constructor
+        · -- < iff: since c_init ki ≤ c_last and c'_init ki ≤ c'_last,
+          -- strict < is equivalent to ¬=, which transfers via h_main_eq
+          constructor
+          · intro h_lt
+            exact lt_of_le_of_ne h_le_N (fun h => absurd (h_main_eq.mpr h) (ne_of_lt h_lt))
+          · intro h_lt
+            exact lt_of_le_of_ne h_le_M (fun h => absurd (h_main_eq.mp h) (ne_of_lt h_lt))
+        · exact h_main_eq
       · -- Both castSucc: from IH
         obtain ⟨ki, rfl⟩ := Fin.exists_castSucc_eq.mpr hi
         obtain ⟨kj, rfl⟩ := Fin.exists_castSucc_eq.mpr hj
@@ -1037,6 +1152,217 @@ theorem discrete_ghr93_proposition7 {sig : MonadicSignature}
     (h_type_x : rank_type M atomMap r x = rank_type N atomMap r x')
     (h_type_y : rank_type M atomMap r y = rank_type N atomMap r y') :
     ghr93_duplicator_wins M N atomMap n r x y x' y' := by
-  sorry
+  -- Get the base-level decomposition for the full interval
+  have h_base : decomposition_agreement M N atomMap 0 r x y x' y' :=
+    (h_univ x y x' y'
+      ⟨le_refl x, hxy⟩ ⟨hxy, le_refl y⟩ hxy
+      ⟨le_refl x', hx'y'⟩ ⟨hx'y', le_refl y'⟩ hx'y'
+      h_type_x h_type_y).1
+  intro a ha
+  -- Sort the selection and apply sorted matching
+  let σ := Tuple.sort a
+  have h_sorted_mono : Monotone (a ∘ σ) := Tuple.monotone_sort a
+  have h_sorted_in : ∀ i, inClosedInterval x y ((a ∘ σ) i) := fun i => ha (σ i)
+  obtain ⟨c'_sorted, hc'_in, hc'_mono, hc'_type, hc'_ord⟩ :=
+    discrete_sorted_matching n r hxy hx'y' h_type_x h_type_y h_univ h_base
+      (a ∘ σ) h_sorted_mono h_sorted_in
+  -- Unsort: define a' = c'_sorted ∘ σ⁻¹
+  let a' := c'_sorted ∘ σ.symm
+  have ha'_in : ∀ i, inClosedInterval x' y' (a' i) := fun i => hc'_in (σ.symm i)
+  -- Pairwise ordering transfers through unsort
+  have ha'_ord : ∀ i j : Fin n,
+      (a i < a j ↔ a' i < a' j) ∧ (a i = a j ↔ a' i = a' j) := by
+    intro i j; dsimp only [a']
+    have h := hc'_ord (σ.symm i) (σ.symm j)
+    simp only [Function.comp, Equiv.Perm.apply_symm_apply] at h ⊢
+    exact h
+  -- Rank_type agreement for a/a'
+  have ha'_type : ∀ i : Fin n,
+      rank_type M atomMap r (a i) = rank_type N atomMap r (a' i) := by
+    intro i; dsimp only [a']
+    have h := hc'_type (σ.symm i)
+    simp only [Function.comp, Equiv.Perm.apply_symm_apply] at h
+    exact h
+  refine ⟨a', ha'_in, ?_⟩
+  -- Point challenge: for each b', find matching b with full WC at game level n.
+  -- Strategy: use universal decomposition to derive ordering between b and each a_k.
+  -- For each k, use h_univ on [extendPoint b, a k] or [a k, extendPoint b] to get ordering.
+  intro b' hb'
+  -- Get matching point b from base decomposition
+  obtain ⟨b, hb_in, hb_wc⟩ := decomp_point_challenge_NM h_base b' hb'
+  refine ⟨b, hb_in, ?_⟩
+  -- Extract ordering from the base WC at rank 0
+  have hb_sot := hb_wc.1
+  have hord_xb : (x < extendPoint b ↔ x' < extendPoint b') ∧
+      (x = extendPoint b ↔ x' = extendPoint b') := by
+    have h01 := hb_sot ⟨0, by omega⟩ ⟨1, by omega⟩
+    rw [game_tuple_zero_eq, game_tuple_b_eq, game_tuple_zero_eq, game_tuple_b_eq] at h01
+    exact h01
+  have hord_by : (extendPoint b < y ↔ extendPoint b' < y') ∧
+      (extendPoint b = y ↔ extendPoint b' = y') := by
+    have h12 := hb_sot ⟨1, by omega⟩ ⟨2, by omega⟩
+    rw [game_tuple_b_eq, game_tuple_y_eq, game_tuple_b_eq, game_tuple_y_eq] at h12
+    exact h12
+  have hord_xy : (x < y ↔ x' < y') ∧ (x = y ↔ x' = y') := by
+    have h02 := hb_sot ⟨0, by omega⟩ ⟨2, by omega⟩
+    rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq] at h02
+    exact h02
+  -- Ordering between boundaries (x/y) and selections (a_k/a'_k):
+  -- Use the universal decomposition on sub-intervals to derive these.
+  have hord_x_sel : ∀ k : Fin n,
+      (x < a k ↔ x' < a' k) ∧ (x = a k ↔ x' = a' k) := by
+    intro k
+    have hak_in := ha k; have ha'k_in := ha'_in k
+    have h_sub := (h_univ x (a k) x' (a' k)
+      ⟨le_refl x, hxy⟩ ⟨hak_in.1, hak_in.2⟩ hak_in.1
+      ⟨le_refl x', hx'y'⟩ ⟨ha'k_in.1, ha'k_in.2⟩ ha'k_in.1
+      h_type_x (ha'_type k)).2
+    have hx'_in_sub : inClosedInterval x' (a' k)
+        (extendPoint (discrete_to_carrier x')) := by
+      rw [extendPoint_discrete_to_carrier]; exact ⟨le_refl x', ha'k_in.1⟩
+    obtain ⟨_, _, hp_wc⟩ := decomp_point_challenge_MN h_sub
+      (discrete_to_carrier x') hx'_in_sub
+    have h02 := hp_wc.1 ⟨0, by omega⟩ ⟨2, by omega⟩
+    rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq,
+        extendPoint_discrete_to_carrier] at h02
+    -- h02 : (x' < a'_k ↔ x < a_k) ∧ (x' = a'_k ↔ x = a_k)
+    exact ⟨h02.1.symm, h02.2.symm⟩
+  have hord_y_sel : ∀ k : Fin n,
+      (y < a k ↔ y' < a' k) ∧ (y = a k ↔ y' = a' k) := by
+    intro k
+    have hak_in := ha k; have ha'k_in := ha'_in k
+    have h_sub := (h_univ (a k) y (a' k) y'
+      ⟨hak_in.1, hak_in.2⟩ ⟨hxy, le_refl y⟩ hak_in.2
+      ⟨ha'k_in.1, ha'k_in.2⟩ ⟨hx'y', le_refl y'⟩ ha'k_in.2
+      (ha'_type k) h_type_y).2
+    have hy'_in_sub : inClosedInterval (a' k) y'
+        (extendPoint (discrete_to_carrier y')) := by
+      rw [extendPoint_discrete_to_carrier]; exact ⟨ha'k_in.2, le_refl y'⟩
+    obtain ⟨_, _, hp_wc⟩ := decomp_point_challenge_MN h_sub
+      (discrete_to_carrier y') hy'_in_sub
+    have h02 := hp_wc.1 ⟨0, by omega⟩ ⟨2, by omega⟩
+    rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq,
+        extendPoint_discrete_to_carrier] at h02
+    -- h02 : (a'_k < y' ↔ a_k < y) ∧ (a'_k = y' ↔ a_k = y)
+    -- We need (y < a_k ↔ y' < a'_k) ∧ (y = a_k ↔ y' = a'_k)
+    have h_swap : (a k < y ↔ a' k < y') ∧ (a k = y ↔ a' k = y') :=
+      ⟨h02.1.symm, h02.2.symm⟩
+    exact order_reverse h_swap
+  -- Ordering between point (b/b') and selections (a_k/a'_k):
+  -- Use universal decomposition on sub-intervals [extendPoint b, a k] or [a k, extendPoint b]
+  have hb_type : rank_type M atomMap r (extendPoint b) =
+      rank_type N atomMap r (extendPoint b') := wc_rank_type_at_point hb_wc
+  have hord_b_sel : ∀ k : Fin n,
+      (extendPoint b < a k ↔ extendPoint b' < a' k) ∧
+      (extendPoint b = a k ↔ extendPoint b' = a' k) := by
+    intro k
+    have hak_in := ha k; have ha'k_in := ha'_in k
+    rcases le_or_gt (extendPoint b) (a k) with hba | hab
+    · -- b ≤ a_k: use decomp on [extendPoint b, a k] / [extendPoint b', a' k]
+      -- First derive extendPoint b' ≤ a' k using pivot through x
+      have hb'_le_a'k : extendPoint b' ≤ a' k := by
+        -- x ≤ b ≤ a_k and ordering x↔x', xb↔x'b' transfer
+        -- pivot_chain_order: x ≤ b ≤ a_k gives x < a_k ↔ x' < a'_k
+        -- We already have this from hord_x_sel. Now:
+        -- b ≤ a_k means ¬(a_k < b). We need ¬(a'_k < b').
+        -- From: a_k < y ↔ a'_k < y' (derivable from hord_y_sel or containment)
+        -- and b < y ↔ b' < y' (from hord_by)
+        -- This is still not enough. Use the sub-interval decomp directly.
+        -- Forward decomp on [x, a_k] / [x', a'_k], challenge with b:
+        have h_sub_fwd := (h_univ x (a k) x' (a' k)
+          ⟨le_refl x, hxy⟩ ⟨hak_in.1, hak_in.2⟩ hak_in.1
+          ⟨le_refl x', hx'y'⟩ ⟨ha'k_in.1, ha'k_in.2⟩ ha'k_in.1
+          h_type_x (ha'_type k)).1
+        have hb_in_sub : inClosedInterval x (a k) (extendPoint b) := ⟨hb_in.1, hba⟩
+        obtain ⟨b'', hb''_in, _⟩ := decomp_point_challenge_MN h_sub_fwd b hb_in_sub
+        -- b'' ∈ [x', a'_k], so extendPoint b'' ≤ a'_k
+        -- But b'' is a DIFFERENT point than b'. We just need that SOME point
+        -- in [x', a'_k] exists, which proves the interval is non-degenerate.
+        -- Actually we need b' ≤ a'_k specifically.
+        -- Try: use the sub-interval decomp on [extendPoint b, a_k]/[extendPoint b', ?]
+        -- where ? satisfies the right rank_type.
+        -- Key: we can use h_univ on [extendPoint b, a_k] with boundaries b/a_k
+        -- mapping to b'/a'_k, IF b' ≤ a'_k.
+        -- ALTERNATIVE: prove by contradiction. Suppose a'_k < b'.
+        -- Then from hord_x_sel: x < a_k ↔ x' < a'_k.
+        -- If a'_k < b' and x' ≤ a'_k < b', then x' < b'.
+        -- From hord_xb: x' < b' → x < b. So x < b ≤ a_k.
+        -- Hence x < a_k, so x' < a'_k (by hord_x_sel).
+        -- Now a'_k < b' and x' < a'_k. Also a_k ≥ b ≥ x.
+        -- From hord_y_sel: y < a_k ↔ y' < a'_k. Since a_k ≤ y, ¬(y < a_k),
+        -- so ¬(y' < a'_k), i.e., a'_k ≤ y'.
+        -- Now we have x' < a'_k < b' ≤ y'.
+        -- Use the backward decomp on [a'_k, y'] / [a_k, y] to challenge with b'.
+        -- b' ∈ [a'_k, y'] gives matching p ∈ [a_k, y].
+        -- The WC at rank 0 on [a_k, y]/[a'_k, y'] at positions (0,1):
+        -- a_k < p ↔ a'_k < b'. Since a'_k < b', we get a_k < p.
+        -- But p ∈ [a_k, y], so a_k ≤ p. And a_k < p means p > a_k.
+        -- Also from WC at (0,2): a_k < y ↔ a'_k < y'.
+        -- Now: use forward decomp on [x, a_k] / [x', a'_k] to challenge with b.
+        -- b ∈ [x, a_k]. Matching b'' ∈ [x', a'_k]. WC at (1,2): b < a_k ↔ b'' < a'_k.
+        -- And WC at (0,1): x < b ↔ x' < b''. And we know rank_type(b) = rank_type(b'').
+        -- Similarly from the base WC: rank_type(b) = rank_type(b'). So rank_type(b'') = rank_type(b').
+        -- But b'' ∈ [x', a'_k] and b' ∈ [a'_k, y'] with a'_k < b'. So b'' < b'? Not necessarily.
+        -- This approach is getting too complex. Let me just sorry this for now.
+        sorry
+      -- Now use decomp on [extendPoint b, a_k] / [extendPoint b', a'_k]
+      have h_sub := (h_univ (extendPoint b) (a k) (extendPoint b') (a' k)
+        ⟨hb_in.1, hb_in.2⟩ ⟨hak_in.1, hak_in.2⟩ hba
+        ⟨hb'.1, hb'.2⟩ ⟨ha'k_in.1, ha'k_in.2⟩ hb'_le_a'k
+        hb_type (ha'_type k)).2
+      have hb'_in_sub : inClosedInterval (extendPoint b') (a' k)
+          (extendPoint (discrete_to_carrier (extendPoint b'))) := by
+        rw [extendPoint_discrete_to_carrier]; exact ⟨le_refl _, hb'_le_a'k⟩
+      obtain ⟨_, _, hp_wc⟩ := decomp_point_challenge_MN h_sub
+        (discrete_to_carrier (extendPoint b')) hb'_in_sub
+      have h02 := hp_wc.1 ⟨0, by omega⟩ ⟨2, by omega⟩
+      rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq,
+          extendPoint_discrete_to_carrier] at h02
+      -- h02 : (b' < a'_k ↔ b < a_k) ∧ (b' = a'_k ↔ b = a_k) (N/M sides swapped)
+      exact ⟨h02.1.symm, h02.2.symm⟩
+    · -- a_k < b: symmetric, use decomp on [a_k, extendPoint b] / [a'_k, extendPoint b']
+      have ha'k_le_b' : a' k ≤ extendPoint b' := by sorry
+      have h_sub := (h_univ (a k) (extendPoint b) (a' k) (extendPoint b')
+        ⟨hak_in.1, hak_in.2⟩ ⟨hb_in.1, hb_in.2⟩ (le_of_lt hab)
+        ⟨ha'k_in.1, ha'k_in.2⟩ ⟨hb'.1, hb'.2⟩ ha'k_le_b'
+        (ha'_type k) hb_type).2
+      have hb'_in_sub : inClosedInterval (a' k) (extendPoint b')
+          (extendPoint (discrete_to_carrier (extendPoint b'))) := by
+        rw [extendPoint_discrete_to_carrier]; exact ⟨ha'k_le_b', le_refl _⟩
+      obtain ⟨_, _, hp_wc⟩ := decomp_point_challenge_MN h_sub
+        (discrete_to_carrier (extendPoint b')) hb'_in_sub
+      have h02 := hp_wc.1 ⟨0, by omega⟩ ⟨2, by omega⟩
+      rw [game_tuple_zero_eq, game_tuple_y_eq, game_tuple_zero_eq, game_tuple_y_eq,
+          extendPoint_discrete_to_carrier] at h02
+      -- h02 : (a'_k < b' ↔ a_k < b) ∧ (a'_k = b' ↔ a_k = b) (N/M sides swapped)
+      exact order_reverse ⟨h02.1.symm, h02.2.symm⟩
+  -- Build the winning condition
+  refine ⟨?_, ?_, ?_⟩
+  · -- same_order_type
+    exact same_order_type_of_cases hord_xb hord_xy hord_by
+      hord_x_sel hord_b_sel hord_y_sel ha'_ord
+  · -- gap_point_agreement: trivial in discrete orders (everything is a point)
+    intro i
+    exact ⟨⟨fun _ => discrete_extended_isPoint _, fun _ => discrete_extended_isPoint _⟩,
+      ⟨fun h => by obtain ⟨g, _⟩ := h; exact ((discrete_no_gaps (T := M.carrier)).false g).elim,
+       fun h => by obtain ⟨g, _⟩ := h; exact ((discrete_no_gaps (T := N.carrier)).false g).elim⟩⟩
+  · -- formula_agreement: from rank_type agreement
+    have hb_form := hb_wc.2.2
+    exact formula_agreement_of_cases
+      (fun A hA => by
+        have h := h_type_x; simp only [rank_type, Set.ext_iff] at h
+        have h_A := h A; simp only [Set.mem_setOf_eq] at h_A
+        exact ⟨fun hxA => (h_A.mp ⟨hA, hxA⟩).2, fun hx'A => (h_A.mpr ⟨hA, hx'A⟩).2⟩)
+      (fun A hA => by
+        have h01 := hb_form ⟨1, by omega⟩ A hA
+        rw [game_tuple_b_eq, game_tuple_b_eq] at h01; exact h01)
+      (fun A hA => by
+        have h := h_type_y; simp only [rank_type, Set.ext_iff] at h
+        have h_A := h A; simp only [Set.mem_setOf_eq] at h_A
+        exact ⟨fun hyA => (h_A.mp ⟨hA, hyA⟩).2, fun hy'A => (h_A.mpr ⟨hA, hy'A⟩).2⟩)
+      (fun k A hA => by
+        have h := ha'_type k; simp only [rank_type, Set.ext_iff] at h
+        have h_A := h A; simp only [Set.mem_setOf_eq] at h_A
+        exact ⟨fun hakA => (h_A.mp ⟨hA, hakA⟩).2, fun ha'kA => (h_A.mpr ⟨hA, ha'kA⟩).2⟩)
 
 end Bimodal.Metalogic.WeakCanonical
