@@ -2185,6 +2185,58 @@ theorem zone_match_witness {sig : MonadicSignature}
     · -- x < u and t < u: u > max(x,t), contradicts h_above
       exact absurd (max_lt hux_gt hut_gt) (not_lt.mpr h_above)
 
+/-! ### GHR93 Proposition 7: Multi-arity NF Transfer
+
+The transfer argument requires proving existential transfer at ALL arities
+simultaneously, because the quantifier component at arity n requires transfer
+at arity n+1 and one lower depth. The recursion terminates because depth
+strictly decreases and reaches 0, where only atoms matter.
+
+**GHR93 Proposition 7 / GHR94 Proposition 12.8.18**: Given matched m-tuples
+with interval game strategies, Duplicator wins the n-round EF game. In NF
+terms: given atom agreement and existential transfer at all depths < j, the
+depth-j NF agrees. The transfer at depth j requires zone matching + IH at
+depth j-1 for the extended configuration.
+
+The proof proceeds by strong induction on j (game depth), universally
+quantified over n (arity). At depth 0, atoms at any arity suffice. At
+depth j+1, zone matching produces a matched point, and the IH at depth j
+for the extended (n+1)-point configuration gives the quant agreement.
+
+**Key structural insight**: The zone matching of each new point uses
+depth-k 1-var NF data (from the hypothesis), and the matched point has
+the same depth-k 1-var NF. Atom agreement at any arity follows from
+pairwise 1-var NF agreement + ordering agreement. So the matching data
+does NOT need to be passed through the induction — only the existence of
+the zone-matched point matters. -/
+
+/-- Helper: atom agreement at arity n follows from pairwise 1-var NF agreement
+    and ordering agreement. The 1-var NF encodes predicates, and ordering agreement
+    encodes the order atoms. -/
+theorem atom_agree_from_pointwise {sig : MonadicSignature}
+    {M M' : OrderedMonadicStructure sig}
+    {n : Nat} (env_M : Fin n → M.carrier) (env_M' : Fin n → M'.carrier)
+    (h_nf : ∀ i : Fin n, ∀ k : Nat,
+        ∀ nf : NormalForm sig k 1,
+          nf_eval_nf M k 1 (fun _ => env_M i) nf ↔
+          nf_eval_nf M' k 1 (fun _ => env_M' i) nf)
+    (h_order : ∀ i j : Fin n, env_M i < env_M j ↔ env_M' i < env_M' j) :
+    ∀ a : AtomKind sig n, atom_eval M env_M a ↔ atom_eval M' env_M' a := by
+  intro a
+  cases a with
+  | pred p i =>
+    simp only [atom_eval]
+    -- From NF agreement at depth 1 for point i, extract predicate agreement
+    have h := h_nf i 1
+    have hM := nf_characteristic_satisfies M 1 1 (fun _ => env_M i)
+    have hM' := nf_characteristic_satisfies M' 1 1 (fun _ => env_M' i)
+    exact atom_agreement_from_nf M (fun _ => env_M i) M' (fun _ => env_M' i)
+      (nf_agreement_from_shared_nf M (fun _ => env_M i) M' (fun _ => env_M' i)
+        (nf_characteristic M 1 1 (fun _ => env_M i)) hM ((h _).mp hM)) (.pred p 0)
+  | order i j _ =>
+    simp only [atom_eval]
+    exact h_order i j
+
 /-- **GHR93 Existential Transfer**: The bridge lemma hypotheses (1-var NF agreement,
     ordering, interval/above/below type agreement at depth k) imply existential
     transfer at every depth j < k for 3-variable extensions.

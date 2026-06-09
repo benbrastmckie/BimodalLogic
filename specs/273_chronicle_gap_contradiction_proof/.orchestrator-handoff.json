@@ -1,25 +1,25 @@
 {
   "status": "blocked",
-  "summary": "Phase 1 blocked: zone matching extension requires interval splitting (GHR93). The proof structure is correct (strong induction on depth j, universal over arity n), but the zone matching for extended configurations requires orderings between independently zone-matched points, which cannot be derived from 1-var interval types alone. Three resolution approaches identified: (A) use 2-var interval types, (B) simultaneous induction on depth k, (C) game-theoretic formulation.",
+  "summary": "Plan v13 Phase 1 BLOCKED. The approach of replacing interval_nf_types with interval_2var_nf_types in hypotheses is necessary but insufficient. The core sorry at lines 2353/2435 requires 4-var existential transfer for a 3-point config, which requires 5-var transfer at lower depth, which requires 6-var transfer, etc. This arity-growth recursion terminates at depth 0 (where atoms suffice), but requires an arity-parametric induction theorem following GHR93 Proposition 7 exactly. Plan v13 doesn't account for this arity parameterization. A plan v14 is needed that defines a matched-configuration predicate parametric in arity n and data depth K, proves zone matching preserves matching at arity n+1 and depth K-1, and proves the transfer by Nat.strongRecOn on j universally over n. Estimated ~260-400 new lines. Added atom_agree_from_pointwise helper theorem.",
   "phases_completed": 0,
   "phases_total": 4,
   "blockers": [
-    "Zone matching extension: orderings between independently zone-matched points in the same interval zone are not determined by 1-var interval types. Requires 2-var interval types (interval_2var_nf_types) or a restructured proof."
+    "The 4-var transfer at depth j' for the 3-point config (u,x,t)/(u',x',t') requires proving matching at ALL arities 3, 4, ..., 3+j' simultaneously by induction on depth. Plan v13 only handles arity 2 (2-var NFs) and arity 3 (the outer theorem), but the quant step at arity 3 needs arity 4, which needs arity 5, etc. GHR93 Proposition 7 solves this with arity-free induction on game rounds, but the Lean formalization requires explicit parameterization."
   ],
   "continuation_context": {
     "next_phase": 1,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-20260609.md"
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v13-20260609.md"
   },
   "artifacts": [
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/12_generalized-transfer-plan.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/13_generalized-transfer-plan.md",
       "type": "plan",
-      "summary": "Plan v12 with Phase 1 marked BLOCKED and detailed blocker documentation"
+      "summary": "Plan v13 with Phase 1 marked BLOCKED"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-20260609.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v13-20260609.md",
       "type": "handoff",
-      "summary": "Detailed analysis of zone matching extension problem with three resolution approaches"
+      "summary": "Detailed analysis of arity-growth blocker with correct implementation path"
     }
   ],
   "next_action_hint": "revise"
