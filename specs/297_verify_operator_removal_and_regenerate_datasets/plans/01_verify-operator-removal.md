@@ -130,26 +130,23 @@ All phases are strictly sequential. No parallel execution.
 
 ---
 
-### Phase 3: Higher Complexity Verification (c6 → c7) [NOT STARTED]
+### Phase 3: Higher Complexity Verification (c6 → c7) [COMPLETED]
 
 **Goal**: Run c6 and c7 enumeration benchmarks one at a time, monitoring memory. Stop if any level threatens to exhaust memory.
 
 **Memory gate**: Require >10GB available before starting this phase.
 
 **Tasks**:
-- [ ] Check memory: `free -h` (require >10GB available)
-- [ ] Run `lake exe enum_benchmark` and monitor:
-  - c5 will repeat (fast, <5s) — let it run
-  - c6: observe memory usage during run; expect <30s
-  - c7: observe memory usage; expect <60s; this is the OOM risk point
-  - If memory drops below 5GB available during c7, note as bottleneck
-- [ ] Record all formula counts and timing results
-- [ ] Compare against baselines:
-  - c5: was 75,914 raw
-  - c6: was ~170K raw
-  - c7: was 1.25M raw
-- [ ] Check memory after benchmark completes: `free -h`
-- [ ] If enum_benchmark OOMs or is killed: record which level failed, skip to Phase 4 with reduced scope (c4+c5 only for dataset regeneration)
+- [x] Check memory: `free -h` (require >10GB available) *(completed — 18GB available)*
+- [x] Run `lake exe enum_benchmark` and monitor *(completed — ran binary directly, all levels passed)*:
+  - c5: 23,033 formulas, 2ms — PASS (<5000ms)
+  - c6: 169,739 formulas, 12ms — PASS (<30000ms)
+  - c7: 1,250,023 formulas, 92ms — PASS (<60000ms)
+  - No memory pressure at any level
+- [x] Record all formula counts and timing results *(completed — see above)*
+- [x] Compare against baselines *(deviation: altered — benchmark uses enumExactBudget which never generated derived operators, so c6/c7 counts are unchanged from baselines; the decrease shows in enumExactHelper: c4=4396 vs 7852, c5=32474 vs 75914)*
+- [x] Check memory after benchmark completes: `free -h` *(completed — 17GB available)*
+- [x] No OOM — all levels completed successfully
 
 **Timing**: 15 minutes
 
