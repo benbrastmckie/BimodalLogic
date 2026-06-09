@@ -1,38 +1,19 @@
 {
-  "status": "partial",
-  "started_at": "2026-06-08T21:00:00Z",
-  "requires_user_review": false,
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 5,
-    "vacuous_count": 0,
-    "axiom_count": 3,
-    "build_passed": false,
-    "build_output": "Pre-existing errors at lines 47-440 (discrete_no_gaps instance synthesis). 5 sorry sites remain (down from 7): 1 trivial arithmetic in discrete_game_rank_down, 2 d-consistency (Claim 1), 2 core mathematical (pivot + case analysis)."
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean",
-      "type": "source",
-      "summary": "Eliminated 2 sorries (base case + IH rank cast). Partially proved discrete_game_rank_down winning condition. 5 sorries remain."
-    },
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff-20260609T000000Z.md",
-      "type": "handoff",
-      "summary": "Cycle 6 (FINAL) handoff: sorry inventory, accomplishments, next actions."
+      "type": "plan",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/09_ghr93-game-inversion-plan.md",
+      "summary": "Revised plan v9 with accurate sorry inventory, updated Phase 2 tasks mapped to 5 remaining sorries, and corrected line numbers"
     }
   ],
-  "partial_progress": {
-    "stage": "phase_2_in_progress",
-    "details": "Cycle 6 (FINAL): Eliminated 2 of 7 sorries. discrete_game_rank_down mostly proved (same_order_type + gap_point_agreement done, formula_agreement has 1 trivial sorry). 5 sorries remain.",
-    "phases_completed": 1,
-    "phases_total": 5
-  },
+  "next_steps": "Run /implement 273 to execute the revised plan (resumes at Phase 2)",
   "metadata": {
-    "session_id": "sess_1780981712_238b02",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "compliance_check": "skipped"
+    "session_id": "sess_1780988871_00810e",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "phase_count": 5,
+    "estimated_hours": 10,
+    "reports_integrated": ["reports/06_decomposition-path-research.md"]
   }
 }
