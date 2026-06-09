@@ -210,7 +210,7 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 3: GHR93 Proposition 7 for Discrete Orders [BLOCKED]
+### Phase 3: GHR93 Proposition 7 for Discrete Orders [IN PROGRESS]
 
 **Goal**: Prove Proposition 7 -- from sub-interval game wins at strength (f(n), g(n)), derive standard EF game wins at n rounds. This requires threading `h_r1_univ` through the Proposition 7 induction since each call to Theorem 6 needs it.
 
@@ -224,21 +224,20 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 **Tasks**:
 
-- [ ] **Task 3.1**: Define `standard_ef_duplicator_wins` or adapt existing
+- [x] **Task 3.1**: Define `standard_ef_duplicator_wins` or adapt existing *(deviation: altered -- used `discrete_universal_decomp` predicate and `decomp_point_challenge_MN/NM` + `wc_rank_type_at_point` helpers instead; game pipeline works through `ghr93_decomposition_implies_game`)*
   - **File**: `DiscreteGameTransfer.lean`
-  - **Content**: The standard EF game for n rounds on matched tuples. Check if `ef_duplicator_wins` (Defs.lean:67) suffices or needs adapting.
-  - **Estimated size**: 10-30 lines
+  - **Implemented**: `discrete_universal_decomp` (sub-interval oracle), `decomp_point_challenge_MN`, `decomp_point_challenge_NM`, `wc_rank_type_at_point`
+  - **Lines**: ~80
 
-- [ ] **Task 3.2**: Prove Proposition 7 induction step for discrete orders
+- [ ] **Task 3.2**: Prove Proposition 7 induction step for discrete orders *(in progress -- framework done, 3 sorries remain in ordering + point challenge + backward direction)*
   - **File**: `DiscreteGameTransfer.lean`
-  - **Content**: Full induction on n. Each step calls `discrete_ghr93_theorem6` with `h_r1_univ` passed through. Uses `ghr93_game_implies_decomposition`, `ghr93_decomposition_implies_game`, and `ghr93_strategy_compose` (all sorry-free).
-  - **GHR93 Reference**: pp.115-116, lines 1293-1340.
-  - **Signature must include**: `h_r1_univ` parameter matching the format in Phase 2.
-  - **Estimated size**: 200-350 lines
+  - **Done**: `discrete_ghr93_proposition7` theorem statement + framework: independent matching via Classical.choose, rank_type preservation, gap/point agreement
+  - **Remaining sorries**: (1) ordering consistency a(i) < a(j) iff a'(i) < a'(j) -- requires sub-interval-aware sorted matching; (2) point challenge -- requires routing through sub-intervals; (3) backward direction -- symmetric to forward
+  - **Estimated remaining**: 100-200 lines of sorted matching construction
 
 - [ ] **Task 3.3**: Build verification
-  - `lake build Bimodal.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer`
-  - `lean_verify discrete_ghr93_proposition7` -- no sorryAx
+  - `lake build Bimodal.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer` -- builds with 3 sorries (pre-existing errors at lines 295/339/444 are upstream)
+  - `lean_verify discrete_ghr93_proposition7` -- has sorryAx (3 sorries remain)
 
 **BLOCKER** (Phase 3):
 - **What failed**: The existential transfer at depth j >= 1 for 3+ variable extensions (`nf_2var_existential_transfer` lines 2353, 2435) cannot be proved without establishing interval type agreement at the (n+1)-point configuration level. Zone matching from the game at (0, k/2) gives point-level NF agreement but not sub-interval type agreement.
