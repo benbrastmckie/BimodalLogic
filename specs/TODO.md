@@ -129,15 +129,16 @@ technical_debt:
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 296 [NOT STARTED] — Re-add derived binary operators with dedup fix
 297 [COMPLETED] — Verify operator removal and regenerate datasets
-298 [NOT STARTED] — Fix c7 labeling bug and regenerate dataset
+298 [RESEARCHED] — Fix c7 labeling bug and regenerate dataset
 
 ## Tasks
 
 ### 298. Fix c7 labeling bug and regenerate dataset
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: 297
+- **Research**: [specs/298_fix_c7_labeling_bug_and_regenerate_dataset/reports/01_c7-labeling-bug.md]
 
 **Description**: Fix c7 labeling bug at formula ~13750 that causes unbounded memory growth in the decision procedure's timeout handling, then regenerate the full c7 dataset. During task 297 dataset regeneration, all 3 attempts to generate c7 stalled at exactly record 13,749 with RSS growing ~40MB/6s. The labeling function enters an apparent infinite loop or unbounded search for formula #13,750 in the sorted enumeration order. The timeout mechanism either does not fire or cannot interrupt the stuck state. Steps: (1) Identify the specific formula at position ~13,750 in the c7 enumeration. (2) Reproduce the hang in isolation with that formula. (3) Diagnose whether the decision procedure's timeout is failing to fire or the procedure is in an uninterruptible state. (4) Fix the timeout handling so it reliably terminates. (5) Regenerate the full c7 dataset (target: 77,272 records).
 
