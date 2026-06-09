@@ -1225,14 +1225,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation (syntactic elimination of Stavi connectives U'/S' on Prior structures). This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free without fixing the EF game composition. The separation method is purely combinatorial: rewrite U'(A,B) and S'(A,B) as bot on Prior structures, reducing {U,S,U',S'} to {U,S}.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T08:40:00Z",
+      "last_updated": "2026-06-09T17:34:42Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1278,10 +1278,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/09_ghr93-game-inversion-plan.md",
           "type": "plan",
           "summary": "Implementation plan v9: GHR93 game inversion for discrete orders. Targets the correct leaf sorry (line 2805), follows GHR93 exactly (Theorem 6 Claims 1-2, Proposition 7), builds self-contained discrete chain."
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/05_team-research.md",
+          "type": "report",
+          "summary": "Team research: last blocker analysis (4 teammates). Key finding: DiscreteStaviCompleteness sorry not on critical path; true blocker is StaviCompleteness.lean:2805 (general case)"
         }
       ],
-      "next_artifact_number": 5,
-      "researched": "2026-06-08T22:52:15Z",
+      "next_artifact_number": 6,
+      "researched": "2026-06-09T17:34:42Z",
       "planned": "2026-06-08T23:30:00Z",
       "plan_metadata": {
         "phases": 5,
@@ -1361,7 +1366,7 @@
           }
         ]
       },
-      "session_id": "sess_1780972642_4e9b1d"
+      "session_id": "sess_1781025906_c3b3a1"
     },
     {
       "project_number": 290,
