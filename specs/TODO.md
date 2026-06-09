@@ -180,7 +180,7 @@ technical_debt:
 
 ### 273. Generalized existential transfer (GHR93 Proposition 7 in NF terms)
 - **Effort**: 10 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
@@ -196,6 +196,7 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/05_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md]
   - [273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/09_concrete-implementation-roadmap.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/12_generalized-transfer-plan.md]
 

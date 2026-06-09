@@ -1225,14 +1225,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "blocked",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T18:30:00Z",
+      "last_updated": "2026-06-09T21:07:31Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1296,7 +1296,7 @@
         }
       ],
       "next_artifact_number": 8,
-      "researched": "2026-06-09T18:00:51Z",
+      "researched": "2026-06-09T21:07:31Z",
       "planned": "2026-06-09T18:09:27Z",
       "plan_metadata": {
         "phases": 4,
@@ -1331,7 +1331,7 @@
           }
         ]
       },
-      "session_id": "sess_1781028711_17425a"
+      "session_id": "sess_1781038703_f34152"
     },
     {
       "project_number": 290,
