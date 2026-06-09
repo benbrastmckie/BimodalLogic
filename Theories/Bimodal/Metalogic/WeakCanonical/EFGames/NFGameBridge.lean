@@ -216,7 +216,7 @@ theorem discrete_mu_trivial {sig : MonadicSignature}
   exact mu_holds_point x
 
 /-- In a discrete order, every element of ExtendedCarrier is IsPoint. -/
-theorem discrete_extended_isPoint {sig : MonadicSignature}
+theorem discrete_extended_isPoint_of_no_gaps {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds} {r : Nat}
     (h_no_gaps : IsEmpty (Gap M.carrier))
     (e : ExtendedCarrier M atomMap r) :
@@ -1230,8 +1230,11 @@ theorem game_win_to_formula_agree {sig : MonadicSignature}
       (game_tuple (extendPoint x) (extendPoint t) a b)
       (game_tuple (extendPoint x') (extendPoint t') a' b')) :
     ∀ (A : StaviFormula), stavi_depth A ≤ r →
-      stavi_temporal_truth_mu M atomMap r (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b) A ↔
-      stavi_temporal_truth_mu M' atomMap r (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b') A :=
-  h_win.right.right (Fin.mk (0+1) (by omega))
+      (stavi_temporal_truth_mu M atomMap r (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b) A ↔
+       stavi_temporal_truth_mu M' atomMap r (extendPoint (sig := sig) (atomMap := atomMap) (r := r) b') A) := by
+  intro A hA
+  have h := h_win.right.right ⟨1, by omega⟩ A hA
+  simp only [game_tuple_b_eq] at h
+  exact h
 
 end Bimodal.Metalogic.WeakCanonical

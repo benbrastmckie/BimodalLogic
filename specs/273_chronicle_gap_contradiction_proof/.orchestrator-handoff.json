@@ -1,25 +1,25 @@
 {
-  "status": "blocked",
-  "summary": "Phase 4 architecture established but blocked by 24 pre-existing build errors in DiscreteGameTransfer.lean. Created DiscreteStaviCompleteness.lean with self-contained discrete chain (1 sorry for game pipeline backward direction). Plan Task 4.7 (modify US_expressively_complete_over_prior) found to be incorrect due to IsSuccArchimedean absence in callers.",
-  "phases_completed": 3,
+  "status": "partial",
+  "summary": "Fixed majority of DiscreteGameTransfer.lean build errors (24->0 build errors, 2 new sorries). NFGameBridge collision and API changes fixed. DiscreteStaviCompleteness.lean has 8 build errors from upstream API changes (sf_disjList_iff rewrite, application type mismatches).",
+  "phases_completed": 0,
   "phases_total": 5,
   "blockers": [
-    "DiscreteGameTransfer.lean has 24 pre-existing build errors (upstream breakage)",
-    "Single sorry in DiscreteStaviCompleteness.lean: discrete_nf_exist_sf_guarded_backward (game pipeline backward direction)",
-    "Plan Task 4.7 incorrect: US_expressively_complete_over_prior callers lack IsSuccArchimedean"
+    "DiscreteGameTransfer.lean: 2 sorry introduced (base case WC proof, sub-interval ordering derivation)",
+    "DiscreteStaviCompleteness.lean: 8 build errors from Lean/Mathlib API changes (sf_disjList_iff, nf_order_0_1, stavi_temporal_truth pattern changes)",
+    "DiscreteStaviCompleteness.lean: 1 sorry for exist_sf_correct backward direction not yet addressed"
   ],
   "continuation_context": {
     "next_phase": 4,
-    "next_action": "Fix 24 build errors in DiscreteGameTransfer.lean, then prove discrete_nf_exist_sf_guarded_backward",
+    "next_action": "Fix 8 remaining build errors in DiscreteStaviCompleteness.lean, close 2 sorries in DiscreteGameTransfer.lean, then prove exist_sf_correct backward direction",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean"
     ]
   },
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean", "type": "source", "summary": "14 private defs made public; old discrete chain removed"},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean", "type": "source", "summary": "New file with self-contained discrete chain (1 sorry)"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-4-handoff-20260609T160000Z.md", "type": "handoff", "summary": "Detailed analysis of blockers and next steps"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean", "type": "source", "summary": "Fixed: import for fin_cases, game_rank_step omega proof, Fin.elim0 type inference, discrete_inClosedInterval_point_rank_transfer implicit arg, Equiv.Perm rename, game_tuple simp, le_trans arg order, IH call signature, stale rewrites. 0 build errors, 2 sorries."},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean", "type": "source", "summary": "Fixed: game_win_to_formula_agree proof, renamed discrete_extended_isPoint to avoid namespace collision."},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean", "type": "source", "summary": "Unchanged. 8 build errors from upstream API changes, 1 sorry for game pipeline backward direction."}
   ]
 }
