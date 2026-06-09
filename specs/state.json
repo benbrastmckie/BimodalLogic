@@ -8,11 +8,11 @@
     {
       "project_number": 297,
       "project_name": "verify_operator_removal_and_regenerate_datasets",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Verify that the removal of 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) from the formula enumerator is correct and complete. (1) Confirm lake build passes with zero errors. (2) Run enumeration at c4-c7 and verify the 6 operators no longer appear in enumerated formulas. (3) Verify formula counts are reduced as expected (~40-60% reduction in raw enumeration). (4) Run exhaustive labeling at c4 and c5 to confirm correctness (zero label disagreements, prefilter and cache still working). (5) Regenerate datasets at c4, c5, and c6 (with appropriate timeouts). (6) Verify the regenerated JSONL files contain no formulas with the removed operators. (7) Compare new dataset sizes against pre-removal baselines from the task 295 diagnostic report.",
       "created": "2026-06-09T02:45:00Z",
-      "last_updated": "2026-06-09T03:05:00Z",
+      "last_updated": "2026-06-09T04:15:00Z",
       "topic": "dataset-enhancement",
       "artifacts": [
         {
@@ -25,7 +25,8 @@
           "type": "plan",
           "summary": "5-phase plan for operator removal verification and dataset regeneration"
         }
-      ]
+      ],
+      "completion_summary": "Verified 6 derived binary operators removed from enumerator. Regenerated c4 (806 records), c5 (6028), c6 (39790) datasets — all clean. c7 partial (13749/77272) due to labeling bug at formula ~13750. Enumeration counts decreased 44-57% confirming removal."
     },
     {
       "project_number": 296,
@@ -1198,14 +1199,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation (syntactic elimination of Stavi connectives U'/S' on Prior structures). This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free without fixing the EF game composition. The separation method is purely combinatorial: rewrite U'(A,B) and S'(A,B) as bot on Prior structures, reducing {U,S,U',S'} to {U,S}.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-08T22:30:00Z",
+      "last_updated": "2026-06-09T05:45:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1238,20 +1239,30 @@
           "summary": "GHR93 Proposition 7 analysis: simplified discrete path via iterated game transfer, 300-450 lines estimated"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/07_iterated-game-transfer-plan.md",
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/06_decomposition-path-research.md",
+          "type": "report",
+          "summary": "GHR93 decomposition-formula path research: complete pipeline, codebase inventory, new lemma specifications, risk analysis"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md",
           "type": "plan",
-          "summary": "Implementation plan v7: iterated game transfer -- sub-interval restriction + depth-induction existential transfer. Discrete-only approach, ~400-600 new lines across NFGameBridge.lean and StaviCompleteness.lean."
+          "summary": "Implementation plan v8: GHR93 Theorem 6 + Proposition 7 via decomposition formulas for discrete orders. Follows GHR93 exactly, ~700-1300 new lines across DiscreteGameTransfer.lean and StaviCompleteness.lean."
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/09_ghr93-game-inversion-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v9: GHR93 game inversion for discrete orders. Targets the correct leaf sorry (line 2805), follows GHR93 exactly (Theorem 6 Claims 1-2, Proposition 7), builds self-contained discrete chain."
         }
       ],
       "next_artifact_number": 5,
       "researched": "2026-06-08T22:52:15Z",
-      "planned": "2026-06-08T22:30:00Z",
+      "planned": "2026-06-08T23:30:00Z",
       "plan_metadata": {
-        "phases": 4,
-        "total_effort_hours": 6,
+        "phases": 5,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 7,
+        "plan_version": 9,
         "dependency_waves": [
           [
             2
@@ -1261,6 +1272,9 @@
           ],
           [
             4
+          ],
+          [
+            5
           ]
         ],
         "reports_integrated": [
@@ -1298,6 +1312,26 @@
             "path": "reports/05_proposition7-research.md",
             "integrated_in_plan_version": 7,
             "integrated_date": "2026-06-08"
+          },
+          {
+            "path": "reports/06_decomposition-path-research.md",
+            "integrated_in_plan_version": 8,
+            "integrated_date": "2026-06-08"
+          },
+          {
+            "path": ".literature-alignment.md",
+            "integrated_in_plan_version": 8,
+            "integrated_date": "2026-06-08"
+          },
+          {
+            "path": ".sorry-goal-audit.md",
+            "integrated_in_plan_version": 8,
+            "integrated_date": "2026-06-08"
+          },
+          {
+            "path": "plans/09_ghr93-game-inversion-plan.md",
+            "integrated_in_plan_version": 9,
+            "integrated_date": "2026-06-09"
           }
         ]
       },

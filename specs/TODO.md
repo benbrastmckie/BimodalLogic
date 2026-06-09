@@ -128,14 +128,17 @@ technical_debt:
 282 [NOT STARTED] — exhaustive_enumeration_by_default
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 296 [NOT STARTED] — Re-add derived binary operators with dedup fix
-297 [PLANNED] — Verify operator removal and regenerate datasets
+297 [COMPLETED] — Verify operator removal and regenerate datasets
 
 ## Tasks
 
 ### 297. Verify operator removal and regenerate datasets
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
+- **Research**: [specs/297_verify_operator_removal_and_regenerate_datasets/reports/01_verify-operator-removal.md]
+- **Plan**: [specs/297_verify_operator_removal_and_regenerate_datasets/plans/01_verify-operator-removal.md]
+- **Summary**: [specs/297_verify_operator_removal_and_regenerate_datasets/summaries/01_verify-operator-removal-summary.md]
 
 **Description**: Verify that the removal of 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) from the formula enumerator is correct and complete. (1) Confirm lake build passes with zero errors. (2) Run enumeration at c4-c7 and verify the 6 operators no longer appear in enumerated formulas. (3) Verify formula counts are reduced as expected (~40-60% reduction in raw enumeration). (4) Run exhaustive labeling at c4 and c5 to confirm correctness (zero label disagreements, prefilter and cache still working). (5) Regenerate datasets at c4, c5, and c6 (with appropriate timeouts). (6) Verify the regenerated JSONL files contain no formulas with the removed operators. (7) Compare new dataset sizes against pre-removal baselines from the task 295 diagnostic report.
 
@@ -159,7 +162,7 @@ technical_debt:
 
 
 ### 273. Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype
-- **Effort**: 6 hours
+- **Effort**: 8 hours
 - **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
@@ -172,9 +175,10 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md]
   - [273_chronicle_gap_contradiction_proof/reports/03_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/05_proposition7-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/07_iterated-game-transfer-plan.md]
+  - [273_chronicle_gap_contradiction_proof/reports/06_decomposition-path-research.md]
+- **Plan**: [273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md]
 
-**Description**: Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving a discrete-specific `discrete_stavi_expressive_completeness` using iterated game transfer. Two new theorems: (1) `discrete_game_subinterval_restrict` derives sub-interval G_{0;r} games from a full-interval game + matched split point; (2) `discrete_iterated_game_transfer` proves existential NF transfer by depth-induction using the game oracle for witness matching. Wire into `US_expressively_complete_over_prior` in PriorExpressiveness.lean. This makes `completeness_discrete` sorry-free (Chain A eliminated). Plan v7: iterated game transfer, ~400-600 new lines across NFGameBridge.lean and StaviCompleteness.lean.
+**Description**: Prove `discrete_stavi_expressive_completeness` by following GHR93 exactly via the decomposition-formula path. Three new components: (1) `discrete_ghr93_theorem6` -- Theorem 6 for discrete orders (forward game -> backward game, induction on n, Cases I-II only); (2) `discrete_ghr93_proposition7` -- Proposition 7 for discrete orders (sub-interval games -> full EF game, induction on n); (3) game-win-to-existential-transfer bridge wired into sorry chain. Plan v8 replaces v7 which diverged from GHR93. ~700-1300 new lines across DiscreteGameTransfer.lean and StaviCompleteness.lean.
 
 ---
 
