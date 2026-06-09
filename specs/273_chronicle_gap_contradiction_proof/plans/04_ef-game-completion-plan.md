@@ -104,7 +104,7 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 2: General Existential Transfer Theorem [NOT STARTED]
+### Phase 2: General Existential Transfer Theorem [BLOCKED]
 
 **Goal**: Prove a general existential transfer theorem that handles the inductive step of the EF game composition. This is the core mathematical contribution: when two n-point configurations match (same 1-var NFs, orderings, interval types), existential quantification over an (n+1)-th variable transfers at any depth j < k.
 
@@ -116,13 +116,28 @@ The proof is by strong induction on depth j:
 The key insight: each inductive step increases variable count by 1 but decreases depth by 1. Since depth starts at j < k and decreases, the recursion terminates at depth 0 after at most j steps, using at most n+j variables.
 
 **Tasks**:
-- [ ] Study `nf_fraisse_compression` to confirm it's parametric in variable count n, or generalize it
-- [ ] Study `zone_match_witness` to understand what matching conditions it provides and whether the output is sufficient for constructing matching conditions for the extended (n+1)-point configuration
-- [ ] Prove helper: given n-point matching conditions + zone-matched u/u', derive the (n+1)-point matching conditions (sub-interval types for the extended configuration)
-- [ ] Prove `nf_general_existential_transfer`: the general existential transfer theorem by induction on depth j, parameterized by variable count n. This is the formal version of GHR93's game invariant maintenance
-- [ ] Verify the theorem compiles and has the right type to plug into the sorry sites
+- [x] Study `nf_fraisse_compression` to confirm it's parametric in variable count n, or generalize it *(completed: nf_fraisse_compression IS parametric in n and k, confirmed at line 2006)*
+- [x] Study `zone_match_witness` to understand what matching conditions it provides and whether the output is sufficient for constructing matching conditions for the extended (n+1)-point configuration *(deviation: altered — analysis showed zone_match_witness is INSUFFICIENT: it provides orderings relative to the outermost pair only, not relative to inner matched points; sub-interval type splitting is not guaranteed)*
+- [ ] Prove helper: given n-point matching conditions + zone-matched u/u', derive the (n+1)-point matching conditions (sub-interval types for the extended configuration) *(deviation: blocked — requires interval-splitting zone match which is not always possible for arbitrary linear orders; see BLOCKER)*
+- [ ] Prove `nf_general_existential_transfer`: the general existential transfer theorem by induction on depth j, parameterized by variable count n. This is the formal version of GHR93's game invariant maintenance *(deviation: blocked — depends on interval-splitting helper)*
+- [ ] Verify the theorem compiles and has the right type to plug into the sorry sites *(deviation: blocked — depends on general transfer theorem)*
 
-**Timing**: 4 hours
+**BLOCKER** (Phase 2):
+- **What failed**: The sorry at `StaviCompleteness.lean:2353,2435` asks for 4-variable existential transfer at depth `j'` given 3-point matching for `(u,x,t)/(u',x',t')`. The existing `zone_match_witness` (line 2044) finds `u'` with the same depth-k 1-var NF and correct orderings relative to `x'` and `t'`, but does NOT guarantee: (a) correct orderings relative to ALL inner points when zone-matching subsequent variables, or (b) consistent interval-type splitting for sub-intervals `(x,u)/(x',u')` and `(u,t)/(u',t')`.
+- **What was tried**:
+  1. **Direct zone matching + strong induction on j**: Zone-match the new 4th variable `w` to `w'` relative to `(x,t)/(x',t')`. This gives `w'` in the correct broad zone (below-min, above-max, or in-interval relative to `(x',t')`), but when `w` and `u` are BOTH in the interval `(x,t)`, the ordering of `w'` relative to `u'` is NOT guaranteed by zone matching relative to `(x,t)`. Specifically: if `x < w < u < t` in M, zone matching gives `w'` in `(x', t')` but `w'` could be in `(u', t')` instead of `(x', u')`.
+  2. **Using the outer theorem's IH at lower depth**: Strong induction on `j` gives existential transfer at depths `< j` for 3-var extensions. The IH at depth `j'` gives `u''` with the same depth-`j'` 3-var NF as `(u,x,t)`. But this `u''` might differ from the zone-matched `u'`, and the depth-`j'` 3-var NF does not encode depth-`j'` quantifier data (only depth-`(j'-1)` quantifier data). So the 4-var transfer at depth `j'` does not follow from 3-var NF matching at depth `j'`.
+  3. **Using `nf_fraisse_compression` for the 3-point config**: Applying `nf_fraisse_compression` at depth `j'+1` for 3 vars needs existential transfer at ALL depths `< j'+1` for 4-var extensions — which is exactly the sorry goal. Circular.
+  4. **Deriving sub-interval types from endpoint NFs**: The depth-k 1-var NF of `u` encodes which depth-(k-1) 2-var NFs `(v,u)` are realized, but this includes ALL `v < u` (not just those in `(x,u)`). The NF of `x` similarly includes ALL `v > x`. The intersection cannot cleanly determine `interval_nf_types M (k-1) x u`.
+  5. **Counterexample analysis**: Constructed a concrete counterexample showing interval-splitting is NOT always possible: M with `x < a(A) < u(B) < c(C) < t` and M' with `x' < b'(B) < c'(C) < a'(A) < t'`. Both have `interval_nf_types = {A,B,C}`, but no choice of `u'(B)` in `(x', t')` gives `interval_nf_types(x', u') = {A}`.
+- **Why it's stuck**: The mathematical gap is between "same interval type SET" and "same interval type ARRANGEMENT". The GHR93 game argument (Proposition 7) handles this through a multi-round game strategy with decomposition formulas, where Duplicator places MULTIPLE points to preserve sub-interval structure. The current NF framework's single-step zone matching cannot achieve this. The counterexample confirms the gap is genuine for arbitrary linear orders at depth k.
+- **What is needed**: One of the following approaches (ordered by estimated feasibility):
+  1. **(Preferred) Game-based interval splitting**: Prove that when the outer game has enough rounds (depth k), the Duplicator CAN choose `u'` to split interval types correctly by using the 2-var depth-k NF equality implicitly. This corresponds to GHR93 Proposition 7's strategy where witnesses for ALL decomposition formulas are placed simultaneously. Estimated ~300-500 lines of new infrastructure defining game positions, strategies, and invariant maintenance.
+  2. **Direct induction on (k - j) with decreasing interval data**: Use the fact that at each recursive step, the depth decreases by 1, and derive sub-interval types at depth `k-1` from the matched points' depth-k data. The key lemma: the depth-k 2-var NF of `(x, t)` (once proved equal) implies enough about depth-(k-1) sub-interval structure. But this creates a circular dependency (the 2-var NF equality depends on the sorry).
+  3. **Bypass the bridge lemma entirely**: Find an alternative proof of `stavi_expressive_completeness` that does not go through `nf_2var_from_interval_data`. This would require a fundamentally different proof architecture.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+**Timing**: 4 hours (original), blocked after ~3 hours of analysis
 
 **Depends on**: Phases 0, 1 (completed)
 
