@@ -70,19 +70,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Build Verification [NOT STARTED]
+### Phase 1: Build Verification [COMPLETED]
 
 **Goal**: Confirm all automation modules build cleanly after operator removal.
 
 **Tasks**:
-- [ ] Run targeted build for automation modules:
+- [x] Run targeted build for automation modules:
   ```bash
   lake build Bimodal.Automation.FormulaEnumerator Bimodal.Automation.DatasetGenerator \
              Bimodal.Automation.DatasetExport Bimodal.Automation.EnumBenchmark
   ```
-- [ ] Verify build succeeds (expect ~738 jobs, zero errors)
-- [ ] Note any warnings (only the pre-existing `String.trimLeft` deprecation expected)
-- [ ] Build the benchmark and dataset generator executables:
+- [x] Verify build succeeds (expect ~738 jobs, zero errors) *(completed — 738 jobs, zero errors)*
+- [x] Note any warnings (only the pre-existing `String.trimLeft` deprecation expected) *(completed — String.trimLeft deprecation + unused variable warnings, all pre-existing)*
+- [x] Build the benchmark and dataset generator executables:
   ```bash
   lake build enum_benchmark dataset_generator
   ```
