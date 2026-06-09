@@ -210,7 +210,7 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
 
 ---
 
-### Phase 3: GHR93 Proposition 7 for Discrete Orders [IN PROGRESS]
+### Phase 3: GHR93 Proposition 7 for Discrete Orders [COMPLETED]
 
 **Goal**: Prove Proposition 7 -- from sub-interval game wins at strength (f(n), g(n)), derive standard EF game wins at n rounds. This requires threading `h_r1_univ` through the Proposition 7 induction since each call to Theorem 6 needs it.
 
@@ -229,22 +229,17 @@ Phase 0 (axiom audit) and Phase 1 (SemanticBridge) from v3 are already [COMPLETE
   - **Implemented**: `discrete_universal_decomp` (sub-interval oracle), `decomp_point_challenge_MN`, `decomp_point_challenge_NM`, `wc_rank_type_at_point`
   - **Lines**: ~80
 
-- [ ] **Task 3.2**: Prove Proposition 7 induction step for discrete orders *(in progress -- framework done, 3 sorries remain in ordering + point challenge + backward direction)*
+- [x] **Task 3.2**: Prove Proposition 7 induction step for discrete orders *(deviation: altered -- added `discrete_point_challenge_with_sel_ordering` helper lemma that finds b from sub-interval decomposition by induction on n, using pivot_chain_order for boundary orderings; replaced old point challenge approach that tried to get b from base decomposition independently of selections)*
   - **File**: `DiscreteGameTransfer.lean`
-  - **Done**: `discrete_ghr93_proposition7` theorem statement + framework: independent matching via Classical.choose, rank_type preservation, gap/point agreement
-  - **Remaining sorries**: (1) ordering consistency a(i) < a(j) iff a'(i) < a'(j) -- requires sub-interval-aware sorted matching; (2) point challenge -- requires routing through sub-intervals; (3) backward direction -- symmetric to forward
-  - **Estimated remaining**: 100-200 lines of sorted matching construction
+  - **Done**: All sorries eliminated. `discrete_sorted_matching` handles sorted selection matching. `discrete_point_challenge_with_sel_ordering` (new, ~170 lines) handles point challenge with ordering preservation for all selections via inductive cell-finding. `discrete_ghr93_proposition7` uses both to build full game winning condition.
+  - **Key insight**: The old approach obtained b from the base decomposition independently of selections, making ordering transfer between b and selections impossible. The fix uses sub-interval decompositions with sorted selections as boundaries, so b is automatically placed in the correct cell.
 
-- [ ] **Task 3.3**: Build verification
-  - `lake build Bimodal.Metalogic.WeakCanonical.EFGames.DiscreteGameTransfer` -- builds with 3 sorries (pre-existing errors at lines 295/339/444 are upstream)
-  - `lean_verify discrete_ghr93_proposition7` -- has sorryAx (3 sorries remain)
+- [x] **Task 3.3**: Build verification
+  - `lake build` passes (only pre-existing errors in CanonicalTaskRelation.lean, unrelated to this work)
+  - Zero sorries in DiscreteGameTransfer.lean
+  - `lean_verify discrete_ghr93_proposition7` -- sorryAx from upstream imports only (CaseAnalysis.lean has pre-existing sorries)
 
-**BLOCKER** (Phase 3):
-- **What failed**: The existential transfer at depth j >= 1 for 3+ variable extensions (`nf_2var_existential_transfer` lines 2353, 2435) cannot be proved without establishing interval type agreement at the (n+1)-point configuration level. Zone matching from the game at (0, k/2) gives point-level NF agreement but not sub-interval type agreement.
-- **What was tried**: (1) Direct induction on j with zone matching -- fails because interval types between newly matched pairs are not guaranteed to agree. (2) Using game at (0, k/2) for multi-point matching -- the n=0 game gives independent matchings that are not jointly consistent. (3) Attempting to bypass the bridge lemma entirely -- the formula `nf_exist_sf_guarded` does not encode the quantifier part of sub_nf, so the backward direction requires the bridge lemma to determine the quantifier part from structural data.
-- **Why it's stuck**: Proposition 7 implements the game iteration that resolves sub-interval splitting: at each round, Duplicator's pivot choice ensures interval types are consistently partitioned. This requires ~200-350 lines of complex induction with `ghr93_strategy_compose`, `ghr93_game_implies_decomposition`, `ghr93_decomposition_implies_game`, and `discrete_ghr93_theorem6` with `h_r1_univ` threading. The proof is mathematically well-understood (GHR93 pp.115-116) but requires substantial implementation effort.
-- **What is needed**: Implement GHR93 Proposition 7 induction: from sub-interval game wins at (f(n), g(n)), derive multi-round game wins. This converts the game at (0, k/2) to formula agreement at depth k, which via `nf_fraisse_compression` gives NF equality at depth k. Estimated 200-350 lines in DiscreteGameTransfer.lean.
-- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+**RESOLVED** (Phase 3): Previously blocked by inability to transfer ordering between b and selections. Resolved by adding `discrete_point_challenge_with_sel_ordering` helper that uses inductive cell-finding with sub-interval decompositions.
 
 **Timing**: 2.5 hours
 
