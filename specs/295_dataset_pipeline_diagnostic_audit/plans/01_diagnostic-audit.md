@@ -1,18 +1,19 @@
-# Implementation Plan: Task #295
+# Implementation Plan: Task #295 (v2)
 
-- **Task**: 295 - Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7)
-- **Status**: [NOT STARTED]
-- **Effort**: 8 hours
+- **Task**: 295 - Diagnostic audit of the dataset generation pipeline
+- **Status**: [IN PROGRESS]
+- **Effort**: 6 hours
 - **Dependencies**: None (tasks 284, 285, 287, 289 all completed)
 - **Research Inputs**: specs/295_dataset_pipeline_diagnostic_audit/reports/01_diagnostic-audit.md
 - **Artifacts**: plans/01_diagnostic-audit.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: false
+- **Plan Version**: 2
 
 ## Overview
 
-This plan exercises the full dataset generation pipeline at complexity levels c4-c7 after four recent enhancements (tasks 284, 285, 287, 289), collects profiling data (timing, memory, formula counts, cache statistics), validates correctness of prefilter patterns, cache behavior, and normalization round-trips, applies targeted code quality fixes identified by research, and produces a final diagnostic report with quantitative results. The existing c4-c7 datasets in `data/` are stale (generated before the enhancements) and must be regenerated to assess the combined impact.
+This plan audits the dataset generation pipeline after four recent enhancements (tasks 284, 285, 287, 289). The focus is diagnostic: escalate complexity from c4 upward to find the labeling bottleneck (using timeouts to avoid stalls), validate correctness of prefilter, cache, and normalization, audit which derived operators are natural and useful vs redundant noise, and produce a diagnostic report with what works, what does not work, bottleneck location, operator curation recommendations, and prioritized improvements. The goal is exhaustive generation (all formulas per complexity class), not random sampling. Phase 1 code quality fixes and Phase 2 enumeration profiling are already complete.
 
 ### Research Integration
 
@@ -22,11 +23,11 @@ The research report (01_diagnostic-audit.md) provides:
 - 10 prioritized improvements ranked by effort/impact
 - Verification that all 4 enhancements compile with zero sorries
 - Stale dataset baseline metrics for comparison
-- Key finding: `sampleOneRandom` not updated with derived operators, `hashDedup` has collision risk, duplicate serialization code exists
+- Key finding: labeling is the bottleneck, not enumeration (c7 enumerates 1.25M formulas in 101ms)
 
 ### Prior Plan Reference
 
-No prior plan.
+Revision of v1 plan. Phases 1-2 preserved from v1 (completed). Phases 3-5 revised to shift focus toward bottleneck discovery, operator curation, and diagnostic reporting rather than brute-force regeneration through c7.
 
 ### Roadmap Alignment
 
@@ -35,29 +36,27 @@ No specific ROADMAP.md items are directly advanced by this diagnostic task. This
 ## Goals & Non-Goals
 
 **Goals**:
-- Regenerate c4-c5 datasets with current code and collect timing/profiling data
-- Profile c6-c7 enumeration to establish memory and time feasibility ceilings
-- Validate correctness: prefilter patterns, cache hit rates, label agreement, normalization round-trips
-- Fix hashDedup collision risk, consolidate duplicate serialization, update random sampling for derived operators
-- Remove dead code (pure `enumerateExhaustive`)
-- Produce a diagnostic report with quantitative before/after comparison
+- Validate correctness of recent enhancements (prefilter patterns, cache behavior, normalization round-trips)
+- Audit derived operators: which are natural and useful for reasoning vs redundant noise from combinatorial explosion
+- Escalate exhaustive labeling from c4 upward to find the bottleneck (where labeling becomes infeasible)
+- Measure timing, cache hit rates, and prefilter effectiveness at each complexity level
+- Produce a diagnostic report with what works, what does not, bottleneck location, operator curation recommendations, and prioritized improvements
 
 **Non-Goals**:
-- Implementing memory-bounded enumeration at c7+ (separate task, P10 from research)
+- Forcing exhaustive labeling through c7 regardless of feasibility
+- Implementing memory-bounded enumeration (separate future task)
 - Changing the cache eviction policy (enhancement, not diagnostic)
-- Full c6-c7 dataset regeneration (may be infeasible due to formula explosion; profiling only)
 - Modifying tableau fuel strategy or timeout parameters
-- Box-descent extension for invalid prefilter (enhancement for future task)
+- Random sampling or hybrid modes (this audit targets exhaustive generation)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| c6-c7 enumeration OOM | H | H | Run enumeration-only benchmarks first; use `--max-formulas` cap for labeling; profile with system memory tools |
-| `lake build` failure after code changes | H | L | Run `lake build` after each code change phase; revert if broken |
-| hashDedup replacement changes dataset contents | M | L | Run before/after comparison on c4 to verify dedup correctness |
-| Random sampling changes affect hybrid mode | M | L | Test sampleOneRandom independently before integration |
-| Compiled binary execution takes too long | M | M | Set wall-clock timeouts; profile c4-c5 first (fast), then extrapolate c6-c7 |
+| c5+ labeling takes too long | M | H | Use wall-clock timeouts (e.g. 5-10 min cap per complexity level); record where it stalls and move on |
+| Operator curation analysis is subjective | M | M | Ground in quantitative data: formula count contribution per operator, timeout rate per operator family |
+| `lake build` failure after changes | H | L | Run `lake build` after each code change; revert if broken |
+| Existing stale datasets confuse comparison | L | L | Clearly label all new runs as post-enhancement; compare against stale baselines from research report |
 
 ## Implementation Phases
 
@@ -129,89 +128,95 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Pipeline Correctness Validation [NOT STARTED]
+### Phase 3: Correctness Validation and Operator Audit [NOT STARTED]
 
-**Goal**: Validate correctness of prefilter patterns, cache behavior, hybrid/exhaustive label agreement, and normalization round-trips using `#eval` tests and small-batch generation.
+**Goal**: Validate correctness of prefilter, cache, normalization, and label agreement on c4 exhaustive data. Audit derived operators to assess which are natural and useful vs redundant.
 
 **Tasks**:
 - [ ] Run existing inline `#eval` tests in DatasetGenerator.lean (~60+ tests) to confirm all prefilter patterns work correctly
 - [ ] Run normalization round-trip tests: verify `normalizeFormula phi = phi` identity for representative formulas at each complexity level
-- [ ] Run c4 full pipeline with cache enabled (using `lake exe dataset_generator -- --max-complexity 4 --cache-size 10000`) and verify:
-  - Cache hit/miss statistics are collected
-  - Invalid prefilter catches are nonzero (task 288 patterns active)
-  - Decision method distribution includes `structural_prefilter`, `structural_invalid_prefilter`, `cached`, `adaptive_500`
-- [ ] Cross-validate hybrid vs exhaustive labeling on a small c4 sample: run the same formulas with `--generation-mode hybrid` and `--generation-mode exhaustive`, verify zero label disagreements
-- [ ] Test updated `sampleOneRandom` by generating random samples and verifying derived operators appear
-- [ ] Verify fold/unfold round-trip for enriched formula fields in JSONL output: `toPrimitive(foldFormulaFull(phi)) == phi` for all formula types
+- [ ] Run c4 exhaustive labeling with cache enabled (wall-clock cap of 5 minutes for the full c4 run) and record:
+  - Total labeled formulas, valid count, invalid count, timeout count
+  - Cache hit/miss statistics
+  - Invalid prefilter catches (should be nonzero with task 288 patterns active)
+  - Decision method distribution (structural_prefilter, structural_invalid_prefilter, cached, adaptive_500, etc.)
+  - Wall-clock time for the full c4 run
+- [ ] Cross-validate hybrid vs exhaustive labeling on a c4 subset: verify zero label disagreements
+- [ ] Verify fold/unfold round-trip for enriched formula fields in JSONL output
+- [ ] Operator audit: enumerate c4 and c5 formulas grouped by which derived operator they contain (diamond, always, sometimes, next, prev, weak_future, weak_past, release, weak_until, trigger, weak_since, strong_release, strong_trigger). For each operator, record:
+  - Formula count contribution (how many formulas does this operator add?)
+  - Overlap with other operators (how many formulas contain ONLY this operator as the novel element?)
+  - Semantic naturalness assessment: is this operator commonly used in reasoning about temporal/modal properties, or is it a rarely-used technical dual?
+- [ ] Produce an operator curation recommendation: categorize operators into "keep" (natural, useful, e.g. diamond, always, sometimes) vs "consider dropping" (marginal, e.g. strong_release, strong_trigger, weak_future, weak_past) based on formula count impact and naturalness
 
-**Timing**: 1.5 hours
+**Timing**: 2 hours
 
 **Depends on**: 1
 
 **Files to modify**:
-- No source files modified (validation only; may add temporary `#eval` tests that are removed after validation)
+- No source files modified (validation and analysis only; may add temporary `#eval` tests that are removed after)
 
 **Verification**:
 - All existing `#eval` tests pass
 - Cache statistics show nonzero hit/miss counts at c4
-- Invalid prefilter catches > 0 in c4 dataset
+- Invalid prefilter catches > 0 in c4 data
 - Zero label disagreements between hybrid and exhaustive modes
-- `sampleOneRandom` produces formulas containing derived operators
 - Normalization round-trip identity holds for all tested formulas
+- Operator audit table produced with per-operator formula counts
 
 ---
 
-### Phase 4: Dataset Regeneration with Profiling [NOT STARTED]
+### Phase 4: Bottleneck Discovery via Escalating Labeling [NOT STARTED]
 
-**Goal**: Regenerate c4 and c5 datasets with current code, collecting full profiling data. Attempt c6 with formula cap. Produce comparative metrics against stale baselines.
+**Goal**: Escalate exhaustive labeling from c4 upward to find where the pipeline becomes infeasible. Use timeouts so nothing runs indefinitely. Record the bottleneck.
 
 **Tasks**:
-- [ ] Regenerate c4 dataset: `lake exe dataset_generator -- --max-complexity 4 --wallclock-timeout 1000 --generation-mode exhaustive --output data/bmlogic-c4.jsonl`
-- [ ] Regenerate c5 dataset: `lake exe dataset_generator -- --max-complexity 5 --wallclock-timeout 1000 --generation-mode exhaustive --output data/bmlogic-c5.jsonl`
-- [ ] Attempt c6 with formula cap: `lake exe dataset_generator -- --max-complexity 6 --wallclock-timeout 1000 --generation-mode exhaustive --max-formulas 50000 --output data/bmlogic-c6.jsonl` (cap to prevent OOM; record actual enumerated count)
-- [ ] For each regenerated dataset, collect and record:
-  - Total records, valid count, invalid count, timeout count
-  - Timeout rate (% of total)
-  - Decision method distribution (structural_prefilter, structural_invalid_prefilter, cached, fast_path_axiom, adaptive_500, adaptive_timeout, wallclock_timeout)
-  - Cache hit rate
-  - Per-pattern prefilter hit counts (if available in output)
-  - Wall-clock generation time
-- [ ] Build before/after comparison table against stale baselines from research report (Section 3)
-- [ ] Compute: timeout rate reduction, valid fraction change, new formula count, cache effectiveness
+- [ ] Run c4 exhaustive labeling (if not already done in Phase 3) and record timing, timeout rate, and decision method distribution
+- [ ] Run c5 exhaustive labeling with a wall-clock cap (e.g. 10 minutes total). Record:
+  - How many formulas are labeled before the cap
+  - Estimated time to complete all ~75K formulas
+  - Timeout rate and prefilter effectiveness
+  - Whether the run completes or is cut short
+- [ ] If c5 completes, attempt c6 with a wall-clock cap (e.g. 15 minutes). Record same metrics. If c6 is infeasible, document why (time, memory, or timeout rate explosion).
+- [ ] Do NOT attempt c7 labeling unless c6 completes quickly (unlikely given ~170K formulas at c6 enumeration level). Instead, extrapolate from c4-c6 trends.
+- [ ] Build a bottleneck analysis table:
+  - Rows: c4, c5, c6 (and c7 if attempted)
+  - Columns: formula count, labeling time, timeout rate, formulas/second, estimated total time
+  - Identify the complexity level where exhaustive labeling crosses from "feasible" to "infeasible"
+- [ ] Cross-reference with the operator audit from Phase 3: would pruning marginal operators bring the infeasible level back into range? Estimate formula counts without the "consider dropping" operators.
 
-**Timing**: 2 hours (includes waiting for compiled binary execution)
+**Timing**: 1.5 hours (includes running compiled binaries with timeouts)
 
 **Depends on**: 2, 3
 
 **Files to modify**:
-- `data/bmlogic-c4.jsonl` - Regenerated dataset
-- `data/bmlogic-c5.jsonl` - Regenerated dataset
-- `data/bmlogic-c6.jsonl` - Regenerated dataset (capped)
+- No source files modified (profiling and analysis only)
+- May regenerate dataset files in `data/` if labeling completes at a given level
 
 **Verification**:
-- c4 dataset has more records than stale baseline (408 records)
-- c5 dataset has more records than stale baseline (6,031 records)
-- Timeout rate at c4 is lower than stale baseline (12.7%)
-- Invalid prefilter entries appear in regenerated datasets (0 in stale)
-- Cache entries appear in regenerated datasets (0 in stale)
-- All JSONL records are well-formed (parseable JSON, no null required fields)
+- Bottleneck complexity level identified with quantitative justification
+- Timing data recorded for each attempted complexity level
+- Extrapolation from trends documented
+- Operator pruning impact estimated
 
 ---
 
-### Phase 5: Diagnostic Report and Summary [NOT STARTED]
+### Phase 5: Diagnostic Report [NOT STARTED]
 
-**Goal**: Produce the final diagnostic report summarizing all quantitative findings, code quality improvements, and a prioritized list of remaining actionable improvements.
+**Goal**: Produce the final diagnostic report summarizing all findings: what works, what does not, bottleneck location, operator curation, and prioritized improvements.
 
 **Tasks**:
 - [ ] Create diagnostic summary at `specs/295_dataset_pipeline_diagnostic_audit/summaries/01_diagnostic-audit-summary.md` containing:
   - Executive summary of pipeline health post-enhancements
-  - Enumeration profiling results table (c4-c7 formula counts, timing, memory)
-  - Dataset comparison table (stale vs regenerated: records, valid%, timeout%, cache hits)
-  - Decision method distribution shift analysis
-  - Code quality fixes applied (hashDedup, serialization consolidation, random sampling, dead code)
+  - What works well (prefilter, cache, normalization, enumeration speed)
+  - What does not work or needs improvement (labeling speed at scale, operator explosion)
+  - Bottleneck analysis: at which complexity level does exhaustive labeling become infeasible, and why
+  - Operator curation recommendations: which derived operators to keep (natural, useful), which to consider dropping (marginal), and the estimated formula count reduction from pruning
   - Correctness validation results (prefilter, cache, hybrid/exhaustive agreement, normalization)
-  - Updated prioritized improvements list (remaining items from research P6-P10 plus any new findings)
-  - Feasibility assessment for c6-c7 full exhaustive generation
+  - Enumeration profiling results table (c4-c7 formula counts, timing, memory from Phase 2)
+  - Labeling profiling results (c4-c6 timing, timeout rates, cache effectiveness from Phase 4)
+  - Comparison against stale dataset baselines from research report
+  - Prioritized improvements list with effort/impact ratings (updated from research P1-P10 with new findings)
 - [ ] Run `lake build` one final time to confirm clean state
 - [ ] Verify all modified files compile without issues
 
@@ -226,33 +231,32 @@ Phases within the same wave can execute in parallel.
 - Diagnostic report contains all required sections
 - All quantitative data is sourced from actual profiling runs (no fabricated numbers)
 - `lake build` passes
+- Operator curation section provides clear keep/drop recommendations with quantitative backing
 - Prioritized improvement list updated with effort/impact ratings
 
 ## Testing & Validation
 
-- [ ] `lake build` passes after Phase 1 code changes
+- [ ] `lake build` passes after Phase 1 code changes (verified in Phase 1)
 - [ ] All existing `#eval` tests in DatasetGenerator.lean pass
-- [ ] `sampleOneRandom` produces derived operators (diamond, always, sometimes, etc.)
-- [ ] `hashDedup` replacement preserves formula count (no false collisions on c4)
-- [ ] Cache statistics are nonzero in regenerated datasets
-- [ ] Invalid prefilter catches are nonzero in regenerated datasets
+- [ ] `sampleOneRandom` produces derived operators (diamond, always, sometimes, etc.) (verified in Phase 1)
+- [ ] `hashDedup` replacement preserves formula count (no false collisions on c4) (verified in Phase 1)
+- [ ] Cache statistics are nonzero in c4 labeling run
+- [ ] Invalid prefilter catches are nonzero in c4 labeling run
 - [ ] Zero label disagreements between hybrid and exhaustive modes at c4
 - [ ] Normalization round-trip identity holds
-- [ ] Regenerated c4 record count > 408 (stale baseline)
-- [ ] Regenerated c5 record count > 6,031 (stale baseline)
+- [ ] Bottleneck complexity level identified with timing data
+- [ ] Operator curation table produced with per-operator formula counts and recommendations
 
 ## Artifacts & Outputs
 
 - `specs/295_dataset_pipeline_diagnostic_audit/plans/01_diagnostic-audit.md` (this file)
 - `specs/295_dataset_pipeline_diagnostic_audit/summaries/01_diagnostic-audit-summary.md` (diagnostic report)
-- `data/bmlogic-c4.jsonl` (regenerated)
-- `data/bmlogic-c5.jsonl` (regenerated)
-- `data/bmlogic-c6.jsonl` (regenerated, capped)
-- Modified source files: FormulaEnumerator.lean, DatasetGenerator.lean, DatasetExport.lean
+- Modified source files from Phase 1: FormulaEnumerator.lean, DatasetGenerator.lean, DatasetExport.lean
+- Regenerated dataset files in `data/` only if labeling completes at a given complexity level
 
 ## Rollback/Contingency
 
 - All code changes in Phase 1 are localized to three files in `Theories/Bimodal/Automation/`. If any change breaks the build, revert individual changes using `git checkout -- <file>` and proceed with the remaining fixes.
-- If c6-c7 enumeration proves completely infeasible (OOM within seconds), skip those levels and document the ceiling in the diagnostic report. The audit still provides value from c4-c5 profiling and code quality fixes.
+- If c5 labeling exceeds the wall-clock cap, record partial results and extrapolate. The audit still provides value from c4 data and the operator audit.
+- If operator audit reveals that all derived operators are useful, document that finding and focus the report on labeling speed improvements instead.
 - Stale datasets in `data/` can be preserved by backing up before regeneration: `cp data/bmlogic-c{4,5,6}.jsonl data/backup/`.
-- If `hashDedup` replacement changes dedup behavior, compare c4 formula counts before/after to validate correctness before proceeding to larger datasets.

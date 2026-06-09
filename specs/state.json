@@ -10,9 +10,47 @@
       "project_name": "dataset_pipeline_diagnostic_audit",
       "status": "planned",
       "task_type": "lean4",
-      "description": "Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7). Review and exercise all recent enhancements: formula enumerator (derived operators from task 285), structural prefilter + hybrid labeling (task 284), formula normalization pass (task 287), and memoization cache (task 289). Run enumeration at c4, c5, c6, c7 to profile timing, memory, and timeout rates. Validate correctness of new prefilter patterns, cache hit rates, hybrid vs exhaustive label agreement, and normalization round-trips. Identify remaining bottlenecks, regressions, dead code, and opportunities for further optimization. Produce a diagnostic report with quantitative results and a prioritized list of actionable improvements",
+      "description": "Diagnostic audit of the dataset generation pipeline. Escalate complexity from c4 upward to find the labeling bottleneck (with timeouts to avoid stalls). Validate recent enhancements (prefilter, cache, normalization). Audit which derived operators are natural and useful vs noise. Produce a diagnostic report with what works, what doesn't, bottleneck location, operator curation recommendations, and prioritized improvements.",
       "created": "2026-06-08T18:20:01Z",
-      "last_updated": "2026-06-08T22:58:00Z"
+      "last_updated": "2026-06-09T01:45:34Z",
+      "topic": "dataset-enhancement",
+      "session_id": "sess_1780969263_fd38d0",
+      "artifacts": [
+        {
+          "path": "specs/295_dataset_pipeline_diagnostic_audit/plans/01_diagnostic-audit.md",
+          "type": "plan",
+          "summary": "Revised plan (v2) refocusing on bottleneck discovery, operator curation, and diagnostic reporting with timeouts"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 2,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_diagnostic-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-08"
+          }
+        ]
+      }
     },
     {
       "project_number": 291,
@@ -98,7 +136,8 @@
           "summary": "All 5 phases completed: Array conversion, checkpoint/resume, inline canonicalization, structural pruning, two-phase parallel enumeration with pipeline overlap. Build passes (1685 jobs, zero errors). 8 runtime verification items deferred pending compiled binary execution."
         }
       ],
-      "completion_summary": "Implemented 5-phase enumeration optimization: Array-based accumulation (4-8x speedup), incremental JSONL checkpoint/resume, inline atom-canonicalization dedup (~4.58x reduction), structural pruning (identity implication, ex falso, S5 box idempotence), and two-phase parallel cross-products with pipeline overlap. Full lake build passes (1685 jobs, zero errors). Runtime regression tests deferred."
+      "completion_summary": "Implemented 5-phase enumeration optimization: Array-based accumulation (4-8x speedup), incremental JSONL checkpoint/resume, inline atom-canonicalization dedup (~4.58x reduction), structural pruning (identity implication, ex falso, S5 box idempotence), and two-phase parallel cross-products with pipeline overlap. Full lake build passes (1685 jobs, zero errors). Runtime regression tests deferred.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 282,
@@ -109,7 +148,8 @@
         274
       ],
       "created": "2026-06-04T07:30:00Z",
-      "last_updated": "2026-06-04T07:30:00Z"
+      "last_updated": "2026-06-04T07:30:00Z",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 281,
@@ -199,7 +239,8 @@
       },
       "started": "2026-06-05T02:17:00Z",
       "completed": "2026-06-05T02:31:53Z",
-      "completion_summary": "Surfaced R/WU/T/WS operators in automation layer: complexity pattern-matching (4 cases), hasDerivedTemporal detection (4 patterns), enumerator sampling integration (4 functions), stale overhead fixes (4→1, 8→1), property tests (4 cases). C5 bimodal formulas increased from 2,616 to 6,072 (~2.3x). Build passes (1685 jobs)."
+      "completion_summary": "Surfaced R/WU/T/WS operators in automation layer: complexity pattern-matching (4 cases), hasDerivedTemporal detection (4 patterns), enumerator sampling integration (4 functions), stale overhead fixes (4→1, 8→1), property tests (4 cases). C5 bimodal formulas increased from 2,616 to 6,072 (~2.3x). Build passes (1685 jobs).",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 276,
@@ -261,7 +302,8 @@
         ]
       },
       "completion_summary": "Added Strong Release (M) and Strong Trigger (ST) derived operators across 7 files: Formula.lean (defs, complexity, swap_temporal), FormulaEnumerator.lean (6 binary temporal options), Normalization.lean (unfold lemmas, tactic macros, EnrichedFormula), Truth.lean (simp characterization), Axioms.lean (interaction theorems), Tests (syntax, complexity, property tests). Build passes (1685 jobs).",
-      "completed": "2026-06-05T16:04:11Z"
+      "completed": "2026-06-05T16:04:11Z",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 277,
@@ -292,7 +334,8 @@
           "summary": "Implementation summary: 8/8 phases complete, lake build passes (1686 jobs), 28/28 tests pass, 0 sorries, 0 new axioms, all 4 existing proofs preserved."
         }
       ],
-      "completion_summary": "Instrumented Tableau.lean with rule-firing trace certificates. Added TraceCertificate.lean (5 inductive types, StateM monad), TraceExport.lean (string-based JSON), trace_exporter CLI executable, decideWithTrace API. All 4 existing termination/soundness proofs in Saturation.lean preserved via parallel _tracedImpl functions. Lake build passes (1686 jobs); 28/28 tests pass; 0 sorries; 0 new axioms."
+      "completion_summary": "Instrumented Tableau.lean with rule-firing trace certificates. Added TraceCertificate.lean (5 inductive types, StateM monad), TraceExport.lean (string-based JSON), trace_exporter CLI executable, decideWithTrace API. All 4 existing termination/soundness proofs in Saturation.lean preserved via parallel _tracedImpl functions. Lake build passes (1686 jobs); 28/28 tests pass; 0 sorries; 0 new axioms.",
+      "topic": "tableau-training"
     },
     {
       "project_number": 278,
@@ -321,7 +364,8 @@
       "planned": "2026-06-05T17:19:54Z",
       "started": "2026-06-08T01:44:06Z",
       "completed": "2026-06-08T01:56:23Z",
-      "completion_summary": "Implemented polarity analysis, conjunct helpers, S5 reflexive shortcutting, temporal loop detection, subsumption rules, and lightweight propositional contradiction in DatasetGenerator.lean. c7 benchmark: 44/2000 prefilter hits (2.2%), catching ~71% of valid formulas. Phase 5 (2-SAT) skipped as gap was not propositional. Build passes, no sorries, no new axioms."
+      "completion_summary": "Implemented polarity analysis, conjunct helpers, S5 reflexive shortcutting, temporal loop detection, subsumption rules, and lightweight propositional contradiction in DatasetGenerator.lean. c7 benchmark: 44/2000 prefilter hits (2.2%), catching ~71% of valid formulas. Phase 5 (2-SAT) skipped as gap was not propositional. Build passes, no sorries, no new axioms.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 279,
@@ -353,7 +397,8 @@
         }
       ],
       "started": "2026-06-08T01:12:04Z",
-      "completed": "2026-06-08T01:36:01Z"
+      "completed": "2026-06-08T01:36:01Z",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 280,
@@ -384,7 +429,8 @@
           "summary": "Implementation summary: All 5 phases completed. Single-occurrence mutation engine, ~15 mutation rules, pipeline integration with labelFormula, enriched JSON export, and 30+ unit tests. Lake build passes (1686 jobs)."
         }
       ],
-      "completion_summary": "Extended FormulaMutator.lean with single-occurrence mutation engine, ~15 new mutation rules (□↔◇, U↔R, F↔G, W↔M, T↔ST, implication flip, conjunct removal), pipeline integration with labelFormula, enriched JSON export with occurrence metadata, and 30+ unit tests. Lake build passes (1686 jobs). Zero sorries, zero new axioms."
+      "completion_summary": "Extended FormulaMutator.lean with single-occurrence mutation engine, ~15 new mutation rules (□↔◇, U↔R, F↔G, W↔M, T↔ST, implication flip, conjunct removal), pipeline integration with labelFormula, enriched JSON export with occurrence metadata, and 30+ unit tests. Lake build passes (1686 jobs). Zero sorries, zero new axioms.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 270,
@@ -396,7 +442,8 @@
       ],
       "created": "2026-06-03T16:31:16Z",
       "last_updated": "2026-06-03T17:09:28Z",
-      "completion_summary": "Extended structural pre-filter with recursive isUnsatBotTemporal (catches U(box(bot),X) etc.) and new isStructurallyValid function (catches p->p, X->box(q->q) etc.). All changes in DatasetGenerator.lean, lake build passes, 16 #eval tests pass."
+      "completion_summary": "Extended structural pre-filter with recursive isUnsatBotTemporal (catches U(box(bot),X) etc.) and new isStructurallyValid function (catches p->p, X->box(q->q) etc.). All changes in DatasetGenerator.lean, lake build passes, 16 #eval tests pass.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 271,
@@ -408,7 +455,8 @@
       ],
       "created": "2026-06-03T16:31:16Z",
       "last_updated": "2026-06-03T18:31:52Z",
-      "completion_summary": "Made untlNeg and snceNeg rules active in Tableau.lean: create fresh time points when no future/past times exist, with Reynolds co-decomposition and full auto-propagation. Conservative design preserves all existing proofs. Zero regressions, 8 new tests pass, lake build succeeds (1682 jobs)."
+      "completion_summary": "Made untlNeg and snceNeg rules active in Tableau.lean: create fresh time points when no future/past times exist, with Reynolds co-decomposition and full auto-propagation. Conservative design preserves all existing proofs. Zero regressions, 8 new tests pass, lake build succeeds (1682 jobs).",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 272,
@@ -420,7 +468,8 @@
       ],
       "created": "2026-06-03T16:31:16Z",
       "last_updated": "2026-06-03T21:35:00Z",
-      "completion_summary": "Added 4 derived temporal operators (release, weak_until, trigger, weak_since), proved 8 conjunction elimination lemmas, extended FormulaEnumerator with G/H/F/P as first-class targets and 22 axiom schemata, added hasBimodalInteraction filter for bimodal dataset generation. Full lake build passes (1684 jobs, zero errors)."
+      "completion_summary": "Added 4 derived temporal operators (release, weak_until, trigger, weak_since), proved 8 conjunction elimination lemmas, extended FormulaEnumerator with G/H/F/P as first-class targets and 22 axiom schemata, added hasBimodalInteraction filter for bimodal dataset generation. Full lake build passes (1684 jobs, zero errors).",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 269,
@@ -450,7 +499,8 @@
           "summary": "4 edits to DatasetExport.lean, c5 regenerated with interestingness scores"
         }
       ],
-      "completion_summary": "Added interestingness_score and interestingness_tier fields to DatasetRecord, wired through labeledToRecord and datasetRecordToJson. Regenerated c5 dataset: 395 records with scores (range 0-366, tiers: 216 trivial, 170 routine, 5 basic, 4 moderate)."
+      "completion_summary": "Added interestingness_score and interestingness_tier fields to DatasetRecord, wired through labeledToRecord and datasetRecordToJson. Regenerated c5 dataset: 395 records with scores (range 0-366, tiers: 216 trivial, 170 routine, 5 basic, 4 moderate).",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 268,
@@ -595,7 +645,8 @@
           "summary": "Pipeline optimization: 21.7x c7 speedup, Dense/Discrete datasets, 4.5x dedup, 4.5x parallel throughput"
         }
       ],
-      "completion_summary": "Implemented 6-phase dataset pipeline optimization: wall-clock timeout 5s->1s, Dense/Discrete c7 datasets (49,856 records each), atom-permutation canonicalization (4.5x dedup), parallel labeling (4.5x throughput at 8 threads), interestingness-stratified sampling, full build verified. Combined c7 speedup: 21.7x."
+      "completion_summary": "Implemented 6-phase dataset pipeline optimization: wall-clock timeout 5s->1s, Dense/Discrete c7 datasets (49,856 records each), atom-permutation canonicalization (4.5x dedup), parallel labeling (4.5x throughput at 8 threads), interestingness-stratified sampling, full build verified. Combined c7 speedup: 21.7x.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 266,
@@ -625,7 +676,8 @@
           "summary": "Scaling curve c5-c9 with wall-clock timeout and bottleneck identification"
         }
       ],
-      "completion_summary": "Added per-formula wall-clock timeout to dataset generator, regenerated complete c8 exhaustive dataset (252,900 records), and produced c5-c9 scaling curve identifying combinatorial formula count as the next bottleneck beyond c8."
+      "completion_summary": "Added per-formula wall-clock timeout to dataset generator, regenerated complete c8 exhaustive dataset (252,900 records), and produced c5-c9 scaling curve identifying combinatorial formula count as the next bottleneck beyond c8.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 263,
@@ -634,7 +686,8 @@
       "task_type": "lean4",
       "created": "2026-06-02T16:54:25Z",
       "last_updated": "2026-06-02T17:15:00Z",
-      "completion_summary": "Created Lean #eval smoke test (25 formulas, 6 sections) and Python JSONL validator (8 checks) confirming c5 dataset generation works correctly: 1,512 records, no null metrics, 2.6% timeout rate, box(bot)->box(r) resolves as valid"
+      "completion_summary": "Created Lean #eval smoke test (25 formulas, 6 sections) and Python JSONL validator (8 checks) confirming c5 dataset generation works correctly: 1,512 records, no null metrics, 2.6% timeout rate, box(bot)->box(r) resolves as valid",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 257,
@@ -690,7 +743,8 @@
           ]
         }
       ],
-      "resume_phase": 1
+      "resume_phase": 1,
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 250,
@@ -744,7 +798,8 @@
             "integrated_date": "2026-06-02"
           }
         ]
-      }
+      },
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 249,
@@ -792,7 +847,8 @@
           }
         ]
       },
-      "completion_summary": "Added 20 new temporal derived theorems to TemporalDerived.lean (8 computable, 12 noncomputable) and 24 ProofStepExport registry entries. All sorry-free, full build passes."
+      "completion_summary": "Added 20 new temporal derived theorems to TemporalDerived.lean (8 computable, 12 noncomputable) and 24 ProofStepExport registry entries. All sorry-free, full build passes.",
+      "topic": "tableau-training"
     },
     {
       "project_number": 248,
@@ -839,7 +895,8 @@
             "integrated_date": "2026-06-02"
           }
         ]
-      }
+      },
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 180,
@@ -847,7 +904,8 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-20T22:25:13Z",
-      "last_updated": "2026-05-20T22:25:13Z"
+      "last_updated": "2026-05-20T22:25:13Z",
+      "topic": "publication-quality"
     },
     {
       "project_number": 179,
@@ -870,7 +928,8 @@
           "type": "research",
           "summary": "Mathlib submission compatibility analysis"
         }
-      ]
+      ],
+      "topic": "automation"
     },
     {
       "project_number": 169,
@@ -878,7 +937,8 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
-      "last_updated": "2026-05-19T16:14:16Z"
+      "last_updated": "2026-05-19T16:14:16Z",
+      "topic": "completeness"
     },
     {
       "project_number": 170,
@@ -886,7 +946,8 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
-      "last_updated": "2026-05-19T16:14:16Z"
+      "last_updated": "2026-05-19T16:14:16Z",
+      "topic": "completeness"
     },
     {
       "project_number": 165,
@@ -895,7 +956,8 @@
       "task_type": "lean4",
       "description": "Establish the semantic finite model property for TM bimodal logic. The existing FMP in Decidability/FMP/ is purely proof-theoretic: it shows closure MCS structures are finite and that provability is decidable via MCS enumeration, but it does not construct finite semantic models (task frames with world histories). A standard semantic FMP requires: (1) Starting from a canonical model where phi fails, quotient worlds by agreement on the subformula closure. (2) Prove the filtration lemma for all formula constructors including Until/Since (known to be problematic for naive filtration). (3) Prove the quotient model is a valid task frame. (4) Bound the model size by 2^|cl(phi)|. The result should be stated as: if phi is satisfiable in a task model, then phi is satisfiable in a finite task model of bounded size.",
       "created": "2026-05-18T18:06:02Z",
-      "last_updated": "2026-05-18T18:06:02Z"
+      "last_updated": "2026-05-18T18:06:02Z",
+      "topic": "completeness"
     },
     {
       "project_number": 162,
@@ -904,7 +966,8 @@
       "task_type": "meta",
       "description": "Add a .claude/rules/ rule enforcing strict plan compliance for lean-implementation-agent and other formal implementation agents. The rule should: (1) Prohibit agents from \"assessing what's truly minimal\" or inventing alternative approaches when a plan exists. (2) Require agents to follow the plan's exact task sequence step-by-step, in order. (3) Explicitly ban common divergence patterns: skipping intermediate theorems, inlining proofs instead of following the plan's decomposition, routing through different helper lemmas than specified, and \"cleaner approach\" rationalizations. (4) Be auto-applied via glob pattern to Theories/ and any formal proof files. (5) Reference the repeated failures in task 157 (8 plan versions, agents diverging every time) as motivation. The rule should be concise but firm -- agents must treat the plan as a contract, not a suggestion.",
       "created": "2026-05-17T20:54:21Z",
-      "last_updated": "2026-05-17T20:54:21Z"
+      "last_updated": "2026-05-17T20:54:21Z",
+      "topic": "agent-system"
     },
     {
       "project_number": 161,
@@ -913,7 +976,8 @@
       "task_type": "lean4",
       "description": "Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.",
       "created": "2026-05-17T20:14:40Z",
-      "last_updated": "2026-05-17T20:14:40Z"
+      "last_updated": "2026-05-17T20:14:40Z",
+      "topic": "formula-refactor"
     },
     {
       "project_number": 131,
@@ -1432,7 +1496,8 @@
       ],
       "dependencies": [
         185
-      ]
+      ],
+      "topic": "automation"
     },
     {
       "project_number": 187,
@@ -1447,7 +1512,8 @@
           "type": "report",
           "summary": "Seed research: theorem inventory and @[tm_lemma] attribute design"
         }
-      ]
+      ],
+      "topic": "automation"
     },
     {
       "project_number": 188,
@@ -1462,7 +1528,8 @@
           "type": "report",
           "summary": "Seed research: weakening usage patterns and context subsumption design"
         }
-      ]
+      ],
+      "topic": "automation"
     },
     {
       "project_number": 189,
@@ -1478,7 +1545,8 @@
           "summary": "Seed research: deduction/undischarge tactic design for natural-deduction style"
         }
       ],
-      "dependencies": []
+      "dependencies": [],
+      "topic": "automation"
     },
     {
       "project_number": 191,
@@ -1494,7 +1562,8 @@
           "summary": "Seed research: truth-table vs tableaux approaches for verified decision procedure"
         }
       ],
-      "dependencies": []
+      "dependencies": [],
+      "topic": "automation"
     },
     {
       "project_number": 192,
@@ -1516,7 +1585,8 @@
         190,
         191,
         194
-      ]
+      ],
+      "topic": "automation"
     },
     {
       "project_number": 193,
@@ -1536,7 +1606,8 @@
         189,
         192,
         196
-      ]
+      ],
+      "topic": "automation"
     },
     {
       "project_number": 194,
@@ -1551,7 +1622,8 @@
           "type": "report",
           "summary": "Seed research: 56 migration sites across 16 files in Metalogic/"
         }
-      ]
+      ],
+      "topic": "formula-refactor"
     },
     {
       "project_number": 196,
@@ -2221,7 +2293,8 @@
       ],
       "created": "2026-06-02T17:20:00Z",
       "last_updated": "2026-06-02T18:25:00Z",
-      "completion_summary": "Identified c=6 as timeout bottleneck: per-formula timeout detection cost (400+ sec) makes exhaustive generation impractical (~20h estimated), not the timeout rate (3-7%). Bimodal distribution holds perfectly at all levels -- zero formulas resolve at tier 2 or 3, making the 3-tier adaptive fuel strategy provably wasteful. Generated c6 (5,931 records), c7 (41), c8 (102) datasets. Primary recommendation: simplify to single-tier fuel strategy with structural pre-filter for known timeout patterns."
+      "completion_summary": "Identified c=6 as timeout bottleneck: per-formula timeout detection cost (400+ sec) makes exhaustive generation impractical (~20h estimated), not the timeout rate (3-7%). Bimodal distribution holds perfectly at all levels -- zero formulas resolve at tier 2 or 3, making the 3-tier adaptive fuel strategy provably wasteful. Generated c6 (5,931 records), c7 (41), c8 (102) datasets. Primary recommendation: simplify to single-tier fuel strategy with structural pre-filter for known timeout patterns.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 265,
@@ -2247,7 +2320,8 @@
           "summary": "Implementation summary: single-tier fuel + structural pre-filter, c6 regenerated in 5.7s"
         }
       ],
-      "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions."
+      "completion_summary": "Simplified decideAutoAdaptive from 3-tier to single-tier fuel=500 and added structural pre-filter that catches 151 timeout patterns as provably valid, reducing C6 dataset generation from ~18 hours to 5.7 seconds with zero label regressions.",
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 273,
@@ -2259,7 +2333,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-08T23:06:05Z",
+      "last_updated": "2026-06-09T01:10:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -2290,20 +2364,29 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/03_separation-bypass-plan.md",
           "type": "plan",
           "summary": "Implementation plan v3: separation-based bypass using existing sorry-free separation_implies_expressiveness + semantic Prior transfer lemma (5 phases, 6 hours)"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/04_ef-game-completion-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v4: EF game completion -- Phase 2 BLOCKED on interval-splitting zone match problem"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/05_strengthened-zone-match-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v5: strengthened zone match with interval splitting -- replaces blocked v4 Phase 2 with zone_match_witness_with_splitting approach (5 phases, 8 hours)"
         }
       ],
-      "next_artifact_number": 4,
+      "next_artifact_number": 5,
       "researched": "2026-06-08T22:52:15Z",
-      "planned": "2026-06-08T17:31:35Z",
+      "planned": "2026-06-09T00:00:00Z",
       "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 10,
+        "phases": 5,
+        "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 2,
+        "plan_version": 3,
         "dependency_waves": [
           [
-            1,
             2
           ],
           [
@@ -2311,12 +2394,6 @@
           ],
           [
             4
-          ],
-          [
-            5
-          ],
-          [
-            6
           ]
         ],
         "reports_integrated": [
@@ -2329,10 +2406,20 @@
             "path": "reports/04_ghr93-literature-review.md",
             "integrated_in_plan_version": 2,
             "integrated_date": "2026-06-08"
+          },
+          {
+            "path": ".blocker-research.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-06-09"
+          },
+          {
+            "path": "handoffs/phase-2-handoff-20260609T010703Z.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-06-09"
           }
         ]
       },
-      "session_id": "sess_1780959514_f1df17"
+      "session_id": "sess_1780965783_52cb04"
     },
     {
       "project_number": 274,
@@ -2391,7 +2478,8 @@
             "integrated_date": "2026-06-03"
           }
         ]
-      }
+      },
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 284,
@@ -2904,6 +2992,12 @@
     "algebraic-representation",
     "bilateral",
     "agent-system",
-    "tableau-training"
+    "tableau-training",
+    "toolchain",
+    "publication-quality",
+    "sorry-elimination",
+    "automation",
+    "code-quality",
+    "dataset-enhancement"
   ]
 }

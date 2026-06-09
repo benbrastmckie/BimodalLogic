@@ -23,34 +23,45 @@ technical_debt:
 
 ## Task Order
 
-*Updated 2026-06-08. Generated from state.json dependency graph.*
+*Updated 2026-06-09. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,291,295 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,192,196,231,292,293,294 | 161,187,191,194,230,268,291 | completeness, dataset-enhancement, sorry-elimination, ... |
-| 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor |
+| 2 | 155,192,196,231,292,293,294 | 161,187,191,194,230,268,291 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor, automation |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
+165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
+169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
+170 [NOT STARTED] — complete_dense_extension_completeness
 268 [RESEARCHED] — Strategy B: Refactor discrete completeness to use Reynolds k-equi
-  └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness discrete by fixing 3 root
-    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness discrete and b
+  └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
+    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [PLANNING] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
+273 [PLANNED] — Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by 
 
 ### Formula Refactor
 
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
   └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
+161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
+  └─ 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
+    └─ 193 [NOT STARTED] — codebase_tactic_refactor
+      └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa (see above)
+      └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f (see above)
 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
+194 [NOT STARTED] — migrate_nonempty_to_derivable
+  └─ 192 [NOT STARTED] — master_tactic_dispatch
+    └─ 193 [NOT STARTED] — (automation: codebase_tactic_refactor) (see above)
 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
   └─ 254 [NOT STARTED] — (completeness: Final metadata and documentation update ) (see above)
 
@@ -63,6 +74,10 @@ technical_debt:
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
 
+### Agent System
+
+162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
+
 ### Toolchain
 
 291 [NOT STARTED] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
@@ -72,6 +87,7 @@ technical_debt:
 
 ### Publication Quality
 
+180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
 
@@ -81,53 +97,43 @@ technical_debt:
 
 ### Automation
 
-199 [PARTIAL] — Create a bespoke grid order tac tactic (in Theories/Bimodal/Autom
+179 [RESEARCHED] — research_lean4_tactics_infrastructure
+186 [NOT STARTED] — unify_search_systems
+187 [NOT STARTED] — backward_chaining_lemma_db
+  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+188 [NOT STARTED] — weakening_aware_search
+189 [NOT STARTED] — deduction_theorem_tactic
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
+191 [NOT STARTED] — propositional_decision_procedure
+  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
+192 [NOT STARTED] — master_tactic_dispatch
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
+193 [NOT STARTED] — codebase_tactic_refactor
+  └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
+  └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
-  └─ 193 [NOT STARTED] — codebase tactic refactor
-    └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
-    └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 
 ### Code Quality
 
-200 [NOT STARTED] — Rewrite ghr93 case II in CaseAnalysis.lean for code elegance and 
+200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
 
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+257 [IMPLEMENTING] — large_data_storage_huggingface
+282 [NOT STARTED] — exhaustive_enumeration_by_default
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
-
-### Uncategorized
-
-161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-  └─ 196 [RESEARCHED] — (automation: Systematic survey of the entire Theories) (see above)
-162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
-165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-169 [NOT STARTED] — complete frame extension setup and soundness
-170 [NOT STARTED] — complete dense extension completeness
-179 [RESEARCHED] — research lean4 tactics infrastructure
-180 [NOT STARTED] — copyright headers universe polymorphism line limits
-186 [NOT STARTED] — unify search systems
-187 [NOT STARTED] — backward chaining lemma db
-  └─ 192 [NOT STARTED] — master tactic dispatch
-    └─ 193 [NOT STARTED] — codebase tactic refactor (see above)
-188 [NOT STARTED] — weakening aware search
-189 [NOT STARTED] — deduction theorem tactic
-  └─ 193 [NOT STARTED] — codebase tactic refactor (see above)
-191 [NOT STARTED] — propositional decision procedure
-  └─ 192 [NOT STARTED] — master tactic dispatch (see above)
-194 [NOT STARTED] — migrate nonempty to derivable
-  └─ 192 [NOT STARTED] — master tactic dispatch (see above)
-257 [IMPLEMENTING] — large data storage huggingface
-282 [NOT STARTED] — exhaustive enumeration by default
-295 [PLANNED] — Diagnostic audit and stress-test of the dataset generation pipeli
+295 [IMPLEMENTING] — Diagnostic audit and stress-test of the dataset generation pipeli
 
 ## Tasks
 
 ### 295. Diagnostic audit and stress-test of dataset generation pipeline
 - **Effort**: medium (4-8 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 
 **Description**: Diagnostic audit and stress-test of the dataset generation pipeline (c4-c7). Review and exercise all recent enhancements: formula enumerator (derived operators from task 285), structural prefilter + hybrid labeling (task 284), formula normalization pass (task 287), and memoization cache (task 289). Run enumeration at c4, c5, c6, c7 to profile timing, memory, and timeout rates. Validate correctness of new prefilter patterns, cache hit rates, hybrid vs exhaustive label agreement, and normalization round-trips. Identify remaining bottlenecks, regressions, dead code, and opportunities for further optimization. Produce a diagnostic report with quantitative results and a prioritized list of actionable improvements.
