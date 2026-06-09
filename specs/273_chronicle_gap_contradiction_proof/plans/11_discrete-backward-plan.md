@@ -7,7 +7,7 @@
 - **Research Inputs**:
   - specs/273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md
   - specs/273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md
-- **Artifacts**: plans/07_discrete-backward-plan.md (this file)
+- **Artifacts**: plans/11_discrete-backward-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true

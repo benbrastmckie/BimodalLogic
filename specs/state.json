@@ -1285,7 +1285,7 @@
           "summary": "Game pipeline research: discrete pipeline sorry-free, general ghr93_forward_to_backward NOT sorry-free; recommends discrete_nf_2var_existential_transfer via strong induction"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/07_discrete-backward-plan.md",
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/11_discrete-backward-plan.md",
           "type": "plan",
           "summary": "Implementation plan v11 with 4 phases to close the sole sorry blocking completeness_discrete via discrete game pipeline"
         }
