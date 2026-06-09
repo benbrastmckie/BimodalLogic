@@ -521,16 +521,35 @@ private theorem discrete_game_rank_down {sig : MonadicSignature}
     ghr93_duplicator_wins M N atomMap m r
       (discrete_rank_convert xM) (discrete_rank_convert yM)
       (discrete_rank_convert xN) (discrete_rank_convert yN) := by
-  -- For discrete orders, all elements are carrier points and formula truth
-  -- is rank-independent (stavi_truth_mu_at_point). The game at rank r' converts
-  -- to rank r by applying discrete_rank_convert to all selections and responses,
-  -- preserving order (discrete_rank_convert_lt/le), gap/point status (all points,
-  -- no gaps), and formula agreement (discrete_rank_convert_formula).
-  --
-  -- The proof converts Spoiler's rank-r picks to rank r' via drc, applies the
-  -- rank-r' strategy, converts Duplicator's response back to rank r, and shows
-  -- the winning condition transfers via game_tuple positional correspondence.
-  sorry
+  -- Round-trip identities
+  have drc_rt_M : ∀ (e : ExtendedCarrier M atomMap r'),
+      discrete_rank_convert (r' := r') (discrete_rank_convert (r' := r) e) = e :=
+    fun e => (discrete_rank_convert_compose e).trans (extendPoint_discrete_to_carrier e)
+  have drc_rt_N : ∀ (e : ExtendedCarrier N atomMap r'),
+      discrete_rank_convert (r' := r') (discrete_rank_convert (r' := r) e) = e :=
+    fun e => (discrete_rank_convert_compose e).trans (extendPoint_discrete_to_carrier e)
+  intro a ha
+  -- Lift Spoiler's rank-r picks to rank r'
+  have ha' : ∀ i, inClosedInterval xM yM (discrete_rank_convert (r' := r') (a i)) := by
+    intro i; have hi := ha i; simp only [inClosedInterval] at hi ⊢
+    constructor
+    · rw [← drc_rt_M xM]; exact (discrete_rank_convert_le _ _).mp hi.1
+    · rw [← drc_rt_M yM]; exact (discrete_rank_convert_le _ _).mp hi.2
+  obtain ⟨a', ha'_in, hwin⟩ := h (fun i => discrete_rank_convert (a i)) ha'
+  refine ⟨fun i => discrete_rank_convert (a' i), fun i => ?_, ?_⟩
+  · exact (discrete_rank_convert_inClosedInterval xN yN (a' i)).mp (ha'_in i)
+  · intro b' hb'
+    have hb'_r' : inClosedInterval xN yN (extendPoint b') := by
+      simp only [inClosedInterval] at hb' ⊢
+      constructor
+      · rw [← drc_rt_N xN, ← discrete_rank_convert_extendPoint (r := r) (r' := r') b']
+        exact (discrete_rank_convert_le _ _).mp hb'.1
+      · rw [← drc_rt_N yN, ← discrete_rank_convert_extendPoint (r := r) (r' := r') b']
+        exact (discrete_rank_convert_le _ _).mp hb'.2
+    obtain ⟨b, hb, hcond⟩ := hwin b' hb'_r'
+    refine ⟨b, discrete_extendPoint_inClosedInterval_transfer b hb, ?_⟩
+    -- Transfer the winning condition from rank r' to rank r
+    sorry
 
 /-! ## Discrete Canonical Pivot: d-Consistency
 
@@ -832,8 +851,8 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
   | zero =>
     -- n = 0: Base case. discrete_ghr93_theorem6_zero gives the result at
     -- rank r, and discrete_game_rank_down converts the rank r+4*0 endpoints.
-    -- Pre-existing rank-cast technical issue with r+4*0 vs r.
-    sorry
+    simp only [Nat.mul_zero, Nat.add_zero] at h hxy hx'y' ⊢
+    exact discrete_game_rank_down (discrete_ghr93_theorem6_zero hxy hx'y' (by simpa using h))
   | succ n ih =>
     -- GHR93 Theorem 6 inductive step for discrete orders (n -> n+1)
     -- h : G_{4+3n; r+4(n+1)}(M, xy; N, x'y')  [forward]
@@ -863,16 +882,19 @@ theorem discrete_ghr93_theorem6 {sig : MonadicSignature}
       -- (1+3n, (r+4)+4n). Since (r+4)+4n = r+4*(n+1), this follows from
       -- h_fwd_13n via ghr93_duplicator_wins_rank_cast + IH + rank cast.
       -- The rank cast (r+4)+4n ↔ r+4*(n+1) is purely arithmetic.
-      -- The rank cast (r+4)+4n ↔ r+4*(n+1) prevents direct IH application.
-      -- This is resolved by discrete_game_rank_down which handles rank-independent
-      -- game conversion for discrete orders. The mathematical content is:
-      -- IH gives backward game at rank (r+4)+4n, discrete_game_rank_down converts
-      -- to rank r+4. Both are sorry'd (technical rank casting infrastructure).
-      sorry
-
-    -- Get 1-round forward game for point matching
-    have h_fwd_1 := ghr93_duplicator_wins_round_mono
-      (show 1 ≤ 1 + 3 * (n + 1) from by omega) hxy hx'y' h
+      -- Convert forward game to rank (r+4)+4n via discrete_game_rank_down
+      have h_fwd_conv : ghr93_duplicator_wins M N atomMap (1 + 3 * n) ((r + 4) + 4 * n)
+          (discrete_rank_convert x) (discrete_rank_convert y)
+          (discrete_rank_convert x') (discrete_rank_convert y') :=
+        discrete_game_rank_down h_fwd_13n
+      -- Apply IH at r' = r + 4
+      have h_bwd := ih (r + 4)
+        ((discrete_rank_convert_le x y).mp hxy)
+        ((discrete_rank_convert_le x' y').mp hx'y')
+        h_fwd_conv
+      -- discrete_rank_convert composed with itself = single discrete_rank_convert
+      simp only [discrete_rank_convert_compose] at h_bwd
+      exact h_bwd
 
     -- Use the discrete game step helper to combine h_bwd_n and h into (n+1)-round backward
     exact discrete_backward_step n r ih h hxy hx'y' h_bwd_n
