@@ -196,11 +196,12 @@ Returns `(result, fuelTierUsed)` where fuelTierUsed is:
 - `"adaptive_timeout"` if fuel exhausted
 -/
 def decideAutoAdaptive (φ : Formula) (fc : FrameClass := .Base)
+    (fuel : Nat := 500)
     : DecisionResult φ × String :=
   let depth := 5 + φ.complexity / 2
-  match decide φ depth 500 fc with
+  match decide φ depth fuel fc with
   | .timeout => (.timeout, "adaptive_timeout")
-  | result => (result, "adaptive_500")
+  | result => (result, s!"adaptive_{fuel}")
 
 /-!
 ## Batch Decision

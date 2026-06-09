@@ -104,18 +104,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Fix Timeout Mechanism in DatasetGenerator.lean [NOT STARTED]
+### Phase 2: Fix Timeout Mechanism in DatasetGenerator.lean [COMPLETED]
 
 **Goal**: Replace the unkillable `Task.spawn` with `IO.asTask` + `IO.cancel`, and add adaptive fuel reduction for high-complexity formulas.
 
 **Tasks**:
-- [ ] In `labelFormulaImpl` (line ~1350), replace `Task.spawn (fun _ => decideAutoAdaptive phi fc) .dedicated` with an `IO.asTask` wrapper that evaluates the pure function inside IO
-- [ ] After the timeout fires (line ~1366), add `IO.cancel task` before returning the timeout result
-- [ ] Add adaptive fuel reduction: create a helper `adaptiveFuel (complexity : Nat) : Nat` that returns `min 500 (150 + complexity * 30)` -- yielding 360 for c7, 500 for c12+
-- [ ] Update `decideAutoAdaptive` or add an alternative `decideAutoAdaptiveWithFuel` that accepts a fuel parameter, or wrap the call in `labelFormulaImpl` to override fuel
-- [ ] Verify the no-timeout path (line ~1385) still works correctly with `IO.wait task`
-- [ ] Verify the synchronous fallback path (line ~1439, `wallclockTimeoutMs == 0`) is unaffected
-- [ ] Compile: `lake build Theories.Bimodal.Automation.DatasetGenerator`
+- [x] In `labelFormulaImpl` (line ~1350), replace `Task.spawn (fun _ => decideAutoAdaptive phi fc) .dedicated` with an `IO.asTask` wrapper that evaluates the pure function inside IO *(completed)*
+- [x] After the timeout fires (line ~1366), add `IO.cancel task` before returning the timeout result *(completed)*
+- [x] Add adaptive fuel reduction: create a helper `adaptiveFuel (complexity : Nat) : Nat` that returns `min 500 (150 + complexity * 30)` -- yielding 360 for c7, 500 for c12+ *(completed — inline computation, not a separate helper)*
+- [x] Update `decideAutoAdaptive` or add an alternative `decideAutoAdaptiveWithFuel` that accepts a fuel parameter, or wrap the call in `labelFormulaImpl` to override fuel *(completed — added optional `fuel : Nat := 500` parameter to `decideAutoAdaptive`)*
+- [x] Verify the no-timeout path (line ~1385) still works correctly with `IO.wait task` *(completed — uses `IO.ofExcept (← IO.wait task)` to unwrap the Except)*
+- [x] Verify the synchronous fallback path (line ~1439, `wallclockTimeoutMs == 0`) is unaffected *(completed — synchronous path unchanged, uses default fuel=500)*
+- [x] Compile: `lake build Theories.Bimodal.Automation.DatasetGenerator` *(completed)*
 
 **Timing**: 1.5 hours
 

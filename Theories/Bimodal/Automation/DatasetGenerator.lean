@@ -1337,17 +1337,25 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       interestingnessTier := some intResult.tier.toString
     }
   | _ =>
-  -- Phase 2: Decision procedure with wall-clock timeout (task 266)
-  -- Spawn the pure decision procedure on a dedicated thread so we can
-  -- enforce a wall-clock timeout without blocking the pipeline.
-  -- Uses graduated polling: immediate check first (zero overhead for fast
-  -- formulas), then 1ms sleeps to avoid busy-waiting on slow ones.
+  -- Phase 2: Decision procedure with wall-clock timeout (task 266, task 298)
+  -- Spawn the decision procedure on a dedicated IO thread so we can
+  -- enforce a wall-clock timeout and cancel the task if it exceeds the deadline.
+  -- Task 298: replaced Task.spawn with IO.asTask + IO.cancel to prevent
+  -- unkillable abandoned tasks from consuming memory after timeout.
+  -- Also adds adaptive fuel reduction for high-complexity formulas.
   let startTime ← IO.monoMsNow
   if wallclockTimeoutMs > 0 then
-    -- Spawn decision procedure on a dedicated thread and poll for completion.
-    -- Uses 1ms sleep between polls; this adds ~1ms overhead per formula but
-    -- prevents the pipeline from stalling on runaway formulas.
-    let task := Task.spawn (fun _ => decideAutoAdaptive φ fc) .dedicated
+    -- Task 298: adaptive fuel reduction for high-complexity formulas.
+    -- For complexity >= 7, reduce fuel to bound exponential branching.
+    -- Formula: min 500 (150 + complexity * 30)
+    -- c7: min 500 360 = 360, c8: min 500 390 = 390, c12+: 500
+    let adaptiveFuel := min 500 (150 + φ.complexity * 30)
+    -- Spawn decision procedure on a dedicated IO thread.
+    -- IO.asTask (unlike Task.spawn) supports IO.cancel on the timeout path,
+    -- ensuring the spawned task is signaled for cancellation when the
+    -- wall-clock deadline fires instead of running forever in the background.
+    let task ← IO.asTask (prio := .dedicated) do
+      return decideAutoAdaptive φ fc adaptiveFuel
     let deadline := startTime + wallclockTimeoutMs
     let mut timedOut := false
     -- Poll loop with 1ms sleep
@@ -1364,6 +1372,9 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     let metrics := computeMetrics φ elapsed
     let patternKey := PatternKey.fromFormula φ
     if timedOut then
+      -- Task 298: cancel the spawned IO task to prevent memory leaks
+      -- from abandoned exponential tableau branching.
+      IO.cancel task
       let intResult := computeInterestingness φ none none
       return {
         formula := φ
@@ -1382,7 +1393,8 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
         interestingnessTier := some intResult.tier.toString
       }
     -- Task finished within deadline; retrieve the result
-    let (result, fuelTier) ← IO.wait task
+    let taskResult ← IO.wait task
+    let (result, fuelTier) ← IO.ofExcept taskResult
     match result with
     | .valid proof =>
       let trace := extractProofTrace proof
