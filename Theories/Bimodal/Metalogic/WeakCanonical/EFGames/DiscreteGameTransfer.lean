@@ -238,6 +238,80 @@ theorem discrete_rank_convert_formula {sig : MonadicSignature}
   obtain ⟨x, rfl⟩ := discrete_extended_isPoint e
   rw [stavi_truth_mu_at_point, discrete_rank_convert_extendPoint, stavi_truth_mu_at_point]
 
+/-! ## Discrete Rank Conversion Helpers
+
+For discrete orders, discrete_rank_convert is an order isomorphism between
+ExtendedCarrier at different ranks. These helpers streamline conversions. -/
+
+/-- discrete_rank_convert composed with itself gives the same result as
+    a single discrete_rank_convert to the final rank. -/
+theorem discrete_rank_convert_compose {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' r'' : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    (e : ExtendedCarrier M atomMap r) :
+    discrete_rank_convert (r' := r'') (discrete_rank_convert (r' := r') e) =
+    discrete_rank_convert (r' := r'') e := by
+  simp [discrete_rank_convert, discrete_to_carrier, extendPoint]
+  cases e with
+  | inl p => simp [discrete_to_carrier, extendPoint]
+  | inr g => exact absurd g.val (IsEmpty.false (discrete_no_gaps))
+
+/-- In discrete orders, inClosedInterval transfers between ranks
+    for discrete_rank_converted positions. -/
+theorem discrete_inClosedInterval_rank_transfer {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' R : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    {x y : ExtendedCarrier M atomMap R}
+    (e : ExtendedCarrier M atomMap r)
+    (h : inClosedInterval (discrete_rank_convert (r' := r) x)
+      (discrete_rank_convert (r' := r) y) e) :
+    inClosedInterval (discrete_rank_convert (r' := r') x)
+      (discrete_rank_convert (r' := r') y) (discrete_rank_convert (r' := r') e) := by
+  simp only [inClosedInterval] at h ⊢
+  constructor
+  · exact (discrete_rank_convert_le _ _).mp h.1
+  · exact (discrete_rank_convert_le _ _).mp h.2
+
+/-- In discrete orders, inClosedInterval for an extendPoint transfers between ranks. -/
+theorem discrete_inClosedInterval_point_rank_transfer {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r r' R : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    {x y : ExtendedCarrier M atomMap R}
+    (p : M.carrier)
+    (h : inClosedInterval (discrete_rank_convert (r' := r) x)
+      (discrete_rank_convert (r' := r) y) (extendPoint p)) :
+    inClosedInterval (discrete_rank_convert (r' := r') x)
+      (discrete_rank_convert (r' := r') y) (extendPoint p) := by
+  have := discrete_inClosedInterval_rank_transfer
+    (extendPoint (sig := sig) (atomMap := atomMap) (r := r) p) h
+  simp [discrete_rank_convert, discrete_to_carrier, extendPoint] at this
+  exact this
+
+/-- In discrete orders, inClosedInterval for extendPoint at rank R transfers to rank r
+    for discrete_rank_converted boundaries. -/
+theorem discrete_extendPoint_inClosedInterval_transfer {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {r R : Nat}
+    [SuccOrder M.carrier] [PredOrder M.carrier] [NoMaxOrder M.carrier]
+    [NoMinOrder M.carrier] [IsSuccArchimedean M.carrier]
+    {x y : ExtendedCarrier M atomMap R}
+    (p : M.carrier)
+    (h : inClosedInterval x y (extendPoint p)) :
+    inClosedInterval (discrete_rank_convert (r' := r) x)
+      (discrete_rank_convert (r' := r) y) (extendPoint p) := by
+  simp only [inClosedInterval] at h ⊢
+  obtain ⟨x_pt, hx_pt⟩ := discrete_extended_isPoint x
+  obtain ⟨y_pt, hy_pt⟩ := discrete_extended_isPoint y
+  rw [hx_pt, hy_pt] at h ⊢
+  simp only [discrete_rank_convert, discrete_to_carrier, extendPoint] at h ⊢
+  exact h
+
 /-! ## Game Rank Function
 
 The rank function g from GHR93 Definition 8.9. For our purposes,
@@ -501,6 +575,25 @@ private theorem discrete_backward_step {sig : MonadicSignature}
   -- - Claim 2: sub-interval extraction (uses restrict_left/right)
   -- - Case I: split composition (uses ghr93_strategy_compose on backward games)
   -- - Case II: U(B,A) transfer (uses temporal semantics + formula agreement)
+  -- GHR93 Theorem 6 inductive step for discrete orders (n → n+1).
+  -- R = r + 4*(n+1)
+  -- h_fwd : G_{4+3n; R}(M, xy; N, x'y')
+  -- h_bwd_n : G_{n; r+4}(N, drc x', drc y'; M, drc x, drc y)
+  -- Goal: G_{n+1; r}(N, drc x', drc y'; M, drc x, drc y)
+  --
+  -- The canonical pivot construction (GHR93 pp.116-118) is required for
+  -- cross-term order consistency. The direct approach (h_bwd_n for n elements
+  -- + forward game for the (n+1)-th) fails because the two game strategies
+  -- are independent and cannot guarantee order relationships across them.
+  --
+  -- The canonical pivot approach:
+  -- (1) Define pivot d (in N) / c (in M) using the forward game
+  -- (2) Extract sub-interval forward games via restrict_left/right + Claim 1
+  -- (3) Apply IH on sub-intervals to get backward sub-games at (n, r+4)
+  -- (4) Case I: split Spoiler's selections at d, handle each sub-interval
+  -- (5) Case II: all selections on one side, use temporal formula transfer
+  --
+  -- For discrete orders, Cases III-IV are vacuous (no gaps).
   sorry
 
 /-! ## Discrete Theorem 6: Full Statement
