@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 297,
+      "project_name": "verify_operator_removal_and_regenerate_datasets",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Verify that the removal of 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) from the formula enumerator is correct and complete. (1) Confirm lake build passes with zero errors. (2) Run enumeration at c4-c7 and verify the 6 operators no longer appear in enumerated formulas. (3) Verify formula counts are reduced as expected (~40-60% reduction in raw enumeration). (4) Run exhaustive labeling at c4 and c5 to confirm correctness (zero label disagreements, prefilter and cache still working). (5) Regenerate datasets at c4, c5, and c6 (with appropriate timeouts). (6) Verify the regenerated JSONL files contain no formulas with the removed operators. (7) Compare new dataset sizes against pre-removal baselines from the task 295 diagnostic report.",
+      "created": "2026-06-09T02:45:00Z",
+      "last_updated": "2026-06-09T02:45:00Z",
+      "topic": "dataset-enhancement",
+      "artifacts": []
+    },
+    {
       "project_number": 296,
       "project_name": "re_add_derived_binary_operators_with_dedup_fix",
       "status": "not_started",
@@ -2988,7 +2999,7 @@
       }
     }
   ],
-  "next_project_number": 297,
+  "next_project_number": 298,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -129,8 +129,16 @@ technical_debt:
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 295 [COMPLETED] — Diagnostic audit and stress-test of the dataset generation pipeli
 296 [NOT STARTED] — Re-add derived binary operators with dedup fix
+297 [NOT STARTED] — Verify operator removal and regenerate datasets
 
 ## Tasks
+
+### 297. Verify operator removal and regenerate datasets
+- **Effort**: medium (4-8 hours)
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+
+**Description**: Verify that the removal of 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) from the formula enumerator is correct and complete. (1) Confirm lake build passes with zero errors. (2) Run enumeration at c4-c7 and verify the 6 operators no longer appear in enumerated formulas. (3) Verify formula counts are reduced as expected (~40-60% reduction in raw enumeration). (4) Run exhaustive labeling at c4 and c5 to confirm correctness (zero label disagreements, prefilter and cache still working). (5) Regenerate datasets at c4, c5, and c6 (with appropriate timeouts). (6) Verify the regenerated JSONL files contain no formulas with the removed operators. (7) Compare new dataset sizes against pre-removal baselines from the task 295 diagnostic report.
 
 ### 296. Re-add derived binary operators with dedup fix
 - **Effort**: medium (4-8 hours)
