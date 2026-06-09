@@ -79,13 +79,31 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: New Lemma -- nvar_nf_agreement_from_pointwise [NOT STARTED]
+### Phase 1: New Lemma -- nvar_nf_agreement_from_pointwise [BLOCKED]
 
 **Goal**: Create a new lemma that derives n-var NF agreement at any depth d <= k from pointwise 1-var NF agreement at depth k and ordering agreement. This is the key missing piece that resolves the arity escalation problem.
 
+**BLOCKER** (Phase 1):
+- **What failed**: The plan's `nvar_nf_agreement_from_pointwise` lemma has a fundamental circularity in its proposed proof. Specifically: `nf_fraisse_compression` at depth d'+1 requires existential transfer at depth d', which via `existential_transfer_from_nf` requires NF agreement at depth d'+1 — the very thing being proved. The plan's simple `induction d` (or even `Nat.strongRecOn d`) cannot break this circularity because the IH covers depths m < d'+1, but the transfer at depth d' = d needs NF agreement at d'+1.
+- **What was tried**:
+  1. Simple induction on d as proposed by the plan — circular at the quantifier step.
+  2. Strong induction on d via `Nat.strongRecOn` — same circularity: transfer at j=d' needs NF agreement at d'+1.
+  3. Using `nf_agreement_monotone` to bootstrap from 1-var to n-var — requires depth-k n-var NF agreement as input, which is what we're trying to prove.
+  4. Chain approach: depth-k 1-var → depth-(k-1) 2-var → depth-(k-2) 3-var → depth-(k-3) 4-var — loses too many depth levels (loses 3 for 4-var), insufficient when j'+1 is close to k.
+  5. Verified `existential_transfer_from_nf` (NFGameBridge.lean:719) signature and proof: it reduces (n+1)-var existential transfer at depth d to n-var NF agreement at depth d+1, which is equivalent to the sorry goal itself. No shortcut.
+  6. Checked all available lemmas: `nf_char_depth_le`, `nf_agreement_from_nf_char_eq`, `atom_agree_from_pointwise_nf`, `nvar_nf_eq_depth_zero_from_pointwise`, `interval_nf_types_depth_decrease`. None break the circularity.
+- **Why it's stuck**: The sorry sites at lines 2405 and 2487 require 4-var existential transfer at depth j' for the 3-point context (u,x,t)/(u',x',t'). This requires depth-(j'+1) 3-var NF agreement, which in turn requires the same 4-var existential transfer. The circularity is inherent in the NF induction structure: proving NF agreement at depth d+1 requires existential transfer at depth d, which requires NF agreement at depth d+1. The resolution — as described in the code's own comments (StaviCompleteness.lean:2258-2261) — is an "interval-splitting" zone match strategy where Duplicator chooses the matching point to SPLIT the interval types consistently, maintaining a game invariant at the cost of decreasing depth by 1. This is a full Fraisse back-and-forth game strategy, not a simple application of existing lemmas.
+- **What is needed**: A ~200-300 line proof of an "interval-splitting zone match" lemma that, given a point u in M in the interval (x,t), finds u' in M' in the interval (x',t') such that:
+  (a) same depth-k 1-var NF as u,
+  (b) same orderings relative to x',t' as u has relative to x,t,
+  (c) `interval_nf_types M (k-1) x u = interval_nf_types M' (k-1) x' u'` (sub-interval preservation),
+  (d) `interval_nf_types M (k-1) u t = interval_nf_types M' (k-1) u' t'` (sub-interval preservation).
+  Properties (c) and (d) enable recursive application at depth k-1, breaking the circularity by decreasing depth. This is the content of GHR93 Proposition 7's game strategy proof. The code's comment at line 2263 estimates "~300-500 lines of infrastructure" for this.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 **Tasks**:
-- [ ] Run `lean_hover_info` on `existential_transfer_from_nf`, `nf_fraisse_compression`, `nvar_nf_eq_depth_zero_from_pointwise`, `atom_agree_from_pointwise_nf`, and `nf_agreement_from_shared_nf` to verify their exact signatures
-- [ ] Insert the following lemma BEFORE `nf_2var_existential_transfer` (around line 2265 in StaviCompleteness.lean):
+- [x] Run `lean_hover_info` on `existential_transfer_from_nf`, `nf_fraisse_compression`, `nvar_nf_eq_depth_zero_from_pointwise`, `atom_agree_from_pointwise_nf`, and `nf_agreement_from_shared_nf` to verify their exact signatures *(completed — all signatures verified; also discovered existential_transfer_from_nf is in NFGameBridge.lean which was NOT imported by StaviCompleteness.lean)*
+- [ ] Insert the following lemma BEFORE `nf_2var_existential_transfer` (around line 2265 in StaviCompleteness.lean): *(deviation: blocked — the proposed proof has a fundamental circularity; see BLOCKER above)*
 
 ```lean
 theorem nvar_nf_agreement_from_pointwise {sig : MonadicSignature}

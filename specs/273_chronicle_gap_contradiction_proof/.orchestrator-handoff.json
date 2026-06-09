@@ -1,28 +1,26 @@
 {
   "status": "blocked",
-  "summary": "Phase 1 blocked: the arity escalation problem at sorry sites (lines 2405, 2487) requires a 'NF projection' lemma (proving depth-D n-var NF determines depth-D (n-1)-var NF of sub-tuples) plus full 2-var interval type machinery (~400 lines). Five alternative approaches analyzed and rejected. The 2-var approach from GHR93 Lemma 11 is confirmed correct but requires significant infrastructure not yet in the codebase. No source code changes made.",
+  "summary": "Phase 1 blocked by fundamental circularity in plan v15 proof approach; nf_fraisse_compression + existential_transfer_from_nf create irreducible loop requiring interval-splitting zone match infrastructure (~200-300 new lines) per GHR93 Proposition 7",
   "phases_completed": 0,
   "phases_total": 4,
   "blockers": [
-    "NF projection lemma: proving depth-D n-var NF determines depth-D (n-1)-var NF for sub-tuples",
-    "interval_2var_nf_types sub-interval derivation from 2-var NF match (GHR93 Lemma 11 in NF terms)",
-    "zone_match_witness_2var: zone matching using 2-var interval types",
-    "multi_arity_transfer: arity-parametric theorem by Nat.strongRecOn on depth j"
+    "Plan v15 nvar_nf_agreement_from_pointwise has circular proof: nf_fraisse_compression at depth d'+1 needs existential transfer at d', which needs NF agreement at d'+1 (the thing being proved). 5 alternative approaches tried, all fail. Resolution requires new interval-splitting zone match lemma (~200-300 lines) that finds u' in M' preserving sub-interval NF types at depth k-1, enabling depth-recursive application. This is the content of GHR93 Proposition 7's game strategy proof. The code's own comments (StaviCompleteness.lean:2258-2261) describe this exact need and estimate ~300-500 lines of infrastructure."
   ],
   "continuation_context": {
+    "last_completed_phase": 0,
     "next_phase": 1,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v14-20260609.md"
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v15-20260609.md"
   },
   "artifacts": [
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/14_generalized-transfer-plan.md",
-      "type": "plan",
-      "summary": "Plan v14 with Phase 1 marked [BLOCKED] and detailed blocker analysis"
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v15-20260609.md",
+      "type": "handoff",
+      "summary": "Detailed circularity analysis with 5 failed approaches and resolution path"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v14-20260609.md",
-      "type": "handoff",
-      "summary": "Detailed analysis of arity escalation problem and implementation roadmap"
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/15_existential-transfer-plan.md",
+      "type": "plan",
+      "summary": "Plan v15 with Phase 1 marked [BLOCKED] and blocker documentation"
     }
   ],
   "next_action_hint": "revise"
