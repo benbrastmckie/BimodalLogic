@@ -1225,14 +1225,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Bypass the GHR93 bridge lemma sorry in StaviCompleteness.lean by proving US_expressively_complete_over_prior directly via GHR94 Chapter 10 integer-time separation (syntactic elimination of Stavi connectives U'/S' on Prior structures). This avoids the 3 sorry sites in nf_2var_existential_transfer entirely, making completeness_discrete sorry-free without fixing the EF game composition. The separation method is purely combinatorial: rewrite U'(A,B) and S'(A,B) as bot on Prior structures, reducing {U,S,U',S'} to {U,S}.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-09T18:00:51Z",
+      "last_updated": "2026-06-09T18:09:08Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1270,16 +1270,6 @@
           "summary": "GHR93 decomposition-formula path research: complete pipeline, codebase inventory, new lemma specifications, risk analysis"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v8: GHR93 Theorem 6 + Proposition 7 via decomposition formulas for discrete orders. Follows GHR93 exactly, ~700-1300 new lines across DiscreteGameTransfer.lean and StaviCompleteness.lean."
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/09_ghr93-game-inversion-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v9: GHR93 game inversion for discrete orders. Targets the correct leaf sorry (line 2805), follows GHR93 exactly (Theorem 6 Claims 1-2, Proposition 7), builds self-contained discrete chain."
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/05_team-research.md",
           "type": "report",
           "summary": "Team research: last blocker analysis (4 teammates). Key finding: DiscreteStaviCompleteness sorry not on critical path; true blocker is StaviCompleteness.lean:2805 (general case)"
@@ -1293,18 +1283,26 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md",
           "type": "report",
           "summary": "Game pipeline research: discrete pipeline sorry-free, general ghr93_forward_to_backward NOT sorry-free; recommends discrete_nf_2var_existential_transfer via strong induction"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/07_discrete-backward-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan v11 with 4 phases to close the sole sorry blocking completeness_discrete via discrete game pipeline"
         }
       ],
       "next_artifact_number": 8,
       "researched": "2026-06-09T18:00:51Z",
-      "planned": "2026-06-08T23:30:00Z",
+      "planned": "2026-06-09T18:09:27Z",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 10,
+        "phases": 4,
+        "total_effort_hours": 6,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 9,
+        "plan_version": 11,
         "dependency_waves": [
+          [
+            1
+          ],
           [
             2
           ],
@@ -1313,70 +1311,22 @@
           ],
           [
             4
-          ],
-          [
-            5
           ]
         ],
         "reports_integrated": [
           {
-            "path": "reports/03_stavi-sorry-analysis.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-06-08"
-          },
-          {
-            "path": "reports/04_ghr93-literature-review.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-06-08"
-          },
-          {
-            "path": ".blocker-research.md",
-            "integrated_in_plan_version": 3,
+            "path": "reports/07_sorry-chain-verification.md",
+            "integrated_in_plan_version": 11,
             "integrated_date": "2026-06-09"
           },
           {
-            "path": "handoffs/phase-2-handoff-20260609T010703Z.md",
-            "integrated_in_plan_version": 3,
-            "integrated_date": "2026-06-09"
-          },
-          {
-            "path": ".bridge-research.md",
-            "integrated_in_plan_version": 6,
-            "integrated_date": "2026-06-09"
-          },
-          {
-            "path": "handoffs/phase-2-handoff-20260609T014644Z.md",
-            "integrated_in_plan_version": 6,
-            "integrated_date": "2026-06-09"
-          },
-          {
-            "path": "reports/05_proposition7-research.md",
-            "integrated_in_plan_version": 7,
-            "integrated_date": "2026-06-08"
-          },
-          {
-            "path": "reports/06_decomposition-path-research.md",
-            "integrated_in_plan_version": 8,
-            "integrated_date": "2026-06-08"
-          },
-          {
-            "path": ".literature-alignment.md",
-            "integrated_in_plan_version": 8,
-            "integrated_date": "2026-06-08"
-          },
-          {
-            "path": ".sorry-goal-audit.md",
-            "integrated_in_plan_version": 8,
-            "integrated_date": "2026-06-08"
-          },
-          {
-            "path": "plans/09_ghr93-game-inversion-plan.md",
-            "integrated_in_plan_version": 9,
+            "path": "reports/08_game-pipeline-research.md",
+            "integrated_in_plan_version": 11,
             "integrated_date": "2026-06-09"
           }
         ]
       },
-      "session_id": "sess_1781027063_6aa01a"
+      "session_id": "sess_1781028163_2c2ae4"
     },
     {
       "project_number": 290,

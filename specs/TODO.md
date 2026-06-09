@@ -180,7 +180,7 @@ technical_debt:
 
 ### 273. Prove chronicle_gap_contradiction from omega-chain construction of LimitDomSubtype
 - **Effort**: 8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Priority**: high
 - **Topic**: completeness
@@ -196,7 +196,9 @@ technical_debt:
   - [273_chronicle_gap_contradiction_proof/reports/05_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md]
   - [273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md]
+- **Plan**:
+  - [273_chronicle_gap_contradiction_proof/plans/08_ghr93-decomposition-plan.md]
+  - [273_chronicle_gap_contradiction_proof/plans/07_discrete-backward-plan.md]
 
 **Description**: Prove `discrete_stavi_expressive_completeness` by following GHR93 exactly via the decomposition-formula path. Three new components: (1) `discrete_ghr93_theorem6` -- Theorem 6 for discrete orders (forward game -> backward game, induction on n, Cases I-II only); (2) `discrete_ghr93_proposition7` -- Proposition 7 for discrete orders (sub-interval games -> full EF game, induction on n); (3) game-win-to-existential-transfer bridge wired into sorry chain. Plan v8 replaces v7 which diverged from GHR93. ~700-1300 new lines across DiscreteGameTransfer.lean and StaviCompleteness.lean.
 
