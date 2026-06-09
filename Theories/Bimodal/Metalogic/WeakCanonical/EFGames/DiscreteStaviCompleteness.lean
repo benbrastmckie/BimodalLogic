@@ -31,6 +31,76 @@ namespace Bimodal.Metalogic.WeakCanonical
 
 open Bimodal.Syntax
 
+/-! ## Local iff lemmas for public sf_disjList/sf_conjList
+
+StaviCompleteness.lean defines private `sf_disjList`/`sf_conjList` with corresponding
+`sf_disjList_iff`/`sf_conjList_iff` theorems. CharacteristicFormula.lean defines public
+versions with the same definitions. Since the private `_iff` theorems don't apply to the
+public definitions (different declaration IDs), we prove local versions here. -/
+
+private theorem pub_sf_disjList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (l : List StaviFormula) :
+    stavi_temporal_truth M atomMap t (sf_disjList l) ↔
+    (∃ A ∈ l, stavi_temporal_truth M atomMap t A) := by
+  induction l with
+  | nil =>
+    simp only [sf_disjList, stavi_temporal_truth, temporal_truth]
+    constructor
+    · exact False.elim
+    · rintro ⟨A, ⟨⟩, _⟩
+  | cons a as ih =>
+    cases as with
+    | nil =>
+      simp only [sf_disjList, List.mem_cons, List.not_mem_nil, or_false]
+      exact ⟨fun h => ⟨a, rfl, h⟩, fun ⟨_, rfl, h⟩ => h⟩
+    | cons b bs =>
+      simp only [sf_disjList, sf_disj, stavi_temporal_truth]
+      constructor
+      · intro h
+        by_contra h_none
+        push_neg at h_none
+        apply h
+        constructor
+        · intro ha; exact h_none a (List.Mem.head _) ha
+        · intro hrest
+          have := ih.mp hrest
+          obtain ⟨A, hA, hA_eval⟩ := this
+          exact h_none A (List.Mem.tail a hA) hA_eval
+      · rintro ⟨A, hA, hA_eval⟩
+        intro h_neg
+        obtain ⟨h_neg_a, h_neg_rest⟩ := h_neg
+        cases hA with
+        | head => exact h_neg_a hA_eval
+        | tail _ hA => exact h_neg_rest (ih.mpr ⟨A, hA, hA_eval⟩)
+
+private theorem pub_sf_conjList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (l : List StaviFormula) :
+    stavi_temporal_truth M atomMap t (sf_conjList l) ↔
+    (∀ A ∈ l, stavi_temporal_truth M atomMap t A) := by
+  induction l with
+  | nil =>
+    simp only [sf_conjList, stavi_temporal_truth, temporal_truth]
+    constructor
+    · intro _ A hA; simp at hA
+    · intro _; simp
+  | cons a as ih =>
+    cases as with
+    | nil =>
+      simp only [sf_conjList, List.mem_cons, List.not_mem_nil, or_false]
+      exact ⟨fun h A hA => hA ▸ h, fun h => h a rfl⟩
+    | cons b bs =>
+      simp only [sf_conjList, stavi_temporal_truth]
+      constructor
+      · rintro ⟨ha, hrest⟩
+        intro A hA
+        cases hA with
+        | head => exact ha
+        | tail _ hA => exact ih.mp hrest A hA
+      · intro h
+        exact ⟨h a (List.Mem.head _), ih.mpr (fun A hA => h A (List.Mem.tail a hA))⟩
+
 /-! ## Discrete-specific forward direction helpers
 
 The forward direction of `nf_exist_sf_guarded` (existence → formula truth) only
@@ -147,7 +217,7 @@ private theorem discrete_nf_exist_sf_guarded_forward_at_M
       (fun nf_x' => if (∀ x ∈ Fintype.elems, nf_x'.atom_assgn (AtomKind.pred x 0) =
         sub_nf.atom_assgn (AtomKind.pred x 0)) then some (char_k nf_x') else none)
       Fintype.elems.val.toList)) := by
-    rw [sf_disjList_iff]
+    rw [pub_sf_disjList_iff]
     exact ⟨char_k nf_x, h_in_list', h_char_at_x⟩
   match h_b1 : sub_nf.atom_assgn (AtomKind.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
         h_b2 : sub_nf.atom_assgn (AtomKind.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
@@ -244,7 +314,27 @@ theorem discrete_nf_characterizable_by_stavi
       constructor
       · -- Backward: formula truth → existence (game pipeline)
         intro h_sf
-        -- TODO: use discrete_nf_exist_sf_guarded_backward when proved
+        -- The backward direction requires showing that for discrete N:
+        -- stavi_temporal_truth N atomMap t (nf_exist_sf_guarded ... sub_nf) implies
+        -- ∃ x, nf_eval_nf N k 2 (Fin.cons x (fun _ => t)) sub_nf.
+        --
+        -- From h_sf, we can extract a witness x with:
+        -- (a) correct 1-var depth-k NF type (atom-compatible with sub_nf)
+        -- (b) correct ordering relative to t
+        -- (c) interval guard data (all intermediate points have some NF type)
+        --
+        -- For k = 0: only atoms + ordering matter, which the formula directly encodes.
+        -- For k ≥ 1: need quantifier transfer at depth k-1.
+        --
+        -- The proof requires nf_fraisse_compression with existential transfer,
+        -- which for discrete models follows from:
+        -- discrete_nf_to_decomposition_agreement → ghr93_decomposition_implies_game
+        -- → discrete_ghr93_proposition7 → game wins → NF agreement.
+        --
+        -- The obstacle is nf_2var_existential_transfer (StaviCompleteness.lean:2353)
+        -- which is sorry'd for the j ≥ 1 case (4-var sub-interval matching).
+        -- For discrete models, this should follow from the game pipeline but
+        -- requires connecting the game iteration to the specific 2-var NF.
         sorry
       · -- Forward: existence → formula truth (sorry-free)
         intro h_ex
@@ -262,7 +352,7 @@ theorem discrete_nf_characterizable_by_stavi
       intro h_formula
       simp only [full_formula, stavi_temporal_truth] at h_formula
       obtain ⟨h_f_atoms, h_f_quant⟩ := h_formula
-      have h_atom_list := (sf_conjList_iff M atomMap t _).mp h_f_atoms
+      have h_atom_list := (pub_sf_conjList_iff M atomMap t _).mp h_f_atoms
       have h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ nf.1 a = true := by
         intro a
         have h_mem : atomKind_to_sf_literal atomMap h_surj a (nf.1 a) ∈ atom_lits := by
@@ -270,7 +360,7 @@ theorem discrete_nf_characterizable_by_stavi
           exact ⟨a, Multiset.mem_toList.mpr (Fintype.complete a), rfl⟩
         exact (atomKind_to_sf_literal_correct atomMap h_surj M t a (nf.1 a)).mp
           (h_atom_list _ h_mem)
-      have h_quant_list := (sf_conjList_iff M atomMap t _).mp h_f_quant
+      have h_quant_list := (pub_sf_conjList_iff M atomMap t _).mp h_f_quant
       show nf_eval_nf M (k + 1) 1 (fun _ => t) nf
       obtain ⟨atom_part, quant_part⟩ := nf
       refine ⟨h_atoms, fun sub_nf => ?_⟩
@@ -295,13 +385,13 @@ theorem discrete_nf_characterizable_by_stavi
       obtain ⟨h_atoms, h_quant⟩ := h_nf
       simp only [full_formula, stavi_temporal_truth]
       constructor
-      · rw [sf_conjList_iff]
+      · rw [pub_sf_conjList_iff]
         intro A hA
         simp only [atom_lits, List.mem_map] at hA
         obtain ⟨ak, _, rfl⟩ := hA
         exact (atomKind_to_sf_literal_correct atomMap h_surj M t ak (nf.1 ak)).mpr
           (h_atoms ak)
-      · rw [sf_conjList_iff]
+      · rw [pub_sf_conjList_iff]
         intro A hA
         simp only [quant_formulas, List.mem_map] at hA
         obtain ⟨sub_nf, _, rfl⟩ := hA
@@ -383,7 +473,7 @@ noncomputable def discrete_stavi_expressive_completeness
     · intro h'; have := hu₁ nf' h'; subst this; exact hc₂
     · intro h'; have := hu₂ nf' h'; subst this; exact hc₁
   refine ⟨sf_disjList good_formulas, fun M _ _ _ _ _ t => ?_⟩
-  rw [sf_disjList_iff]
+  rw [pub_sf_disjList_iff]
   constructor
   · rintro ⟨A, hA_mem, hA_eval⟩
     rw [mem_good_iff] at hA_mem

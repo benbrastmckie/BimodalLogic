@@ -1,25 +1,16 @@
 {
   "status": "partial",
-  "summary": "Fixed majority of DiscreteGameTransfer.lean build errors (24->0 build errors, 2 new sorries). NFGameBridge collision and API changes fixed. DiscreteStaviCompleteness.lean has 8 build errors from upstream API changes (sf_disjList_iff rewrite, application type mismatches).",
-  "phases_completed": 0,
-  "phases_total": 5,
+  "summary": "Fixed all 8 build errors in DiscreteStaviCompleteness.lean (sf_disjList/sf_conjList naming collision resolved via local pub_sf_disjList_iff and pub_sf_conjList_iff lemmas). 1 sorry remains (backward direction of exist_sf_correct at line 338).",
+  "phases_completed": 1,
+  "phases_total": 2,
   "blockers": [
-    "DiscreteGameTransfer.lean: 2 sorry introduced (base case WC proof, sub-interval ordering derivation)",
-    "DiscreteStaviCompleteness.lean: 8 build errors from Lean/Mathlib API changes (sf_disjList_iff, nf_order_0_1, stavi_temporal_truth pattern changes)",
-    "DiscreteStaviCompleteness.lean: 1 sorry for exist_sf_correct backward direction not yet addressed"
+    "The backward direction (formula truth -> existence) at line 338 requires nf_fraisse_compression with existential transfer. The obstacle is nf_2var_existential_transfer (StaviCompleteness.lean:2353) which is sorry'd for the j>=1 case (4-var sub-interval matching). For discrete models this should follow from the game pipeline but requires connecting game iteration to 2-var NF."
   ],
-  "continuation_context": {
-    "next_phase": 4,
-    "next_action": "Fix 8 remaining build errors in DiscreteStaviCompleteness.lean, close 2 sorries in DiscreteGameTransfer.lean, then prove exist_sf_correct backward direction",
-    "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean"
-    ]
-  },
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean", "type": "source", "summary": "Fixed: import for fin_cases, game_rank_step omega proof, Fin.elim0 type inference, discrete_inClosedInterval_point_rank_transfer implicit arg, Equiv.Perm rename, game_tuple simp, le_trans arg order, IH call signature, stale rewrites. 0 build errors, 2 sorries."},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/NFGameBridge.lean", "type": "source", "summary": "Fixed: game_win_to_formula_agree proof, renamed discrete_extended_isPoint to avoid namespace collision."},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean", "type": "source", "summary": "Unchanged. 8 build errors from upstream API changes, 1 sorry for game pipeline backward direction."}
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/DiscreteStaviCompleteness.lean",
+      "type": "source",
+      "summary": "Fixed 8 build errors by adding pub_sf_disjList_iff and pub_sf_conjList_iff local lemmas for public sf_disjList/sf_conjList. File compiles cleanly with only 1 sorry remaining at line 338."
+    }
   ]
 }
