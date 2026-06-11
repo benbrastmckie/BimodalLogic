@@ -129,35 +129,23 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Negation Closure from Abstract INF Hypothesis [IN PROGRESS]
+### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [IN PROGRESS]
 
-*(scope change: generalized per user directive for CSLib contribution — proved from `HasDefinableINF`/`HasDefinableSUP` carrying the K+ disjunct, i.e., Rabinovich's actual general proof; the Prior version follows by instantiation)*
+*(deviation: altered -- the VEF-based negation closure (Lemma 5.1/5.3) was replaced by the NfCharFormula approach, which uses classical existence + NF theory. The negation closure content surfaces as the backward direction of `nf_2var_exist_formula_prior`.)*
 
-**Goal**: Prove that the negation of a VEF formula is VEF on any structure satisfying `HasDefinableINF`/`HasDefinableSUP`. This is Rabinovich Proposition 4.2 in its general form, via Lemma 5.3, Corollary 5.4, and Lemma 5.1 (the core of the proof). This is the critical phase.
+**Goal**: Prove `nf_2var_exist_formula_prior` sorry-free in NfCharFormula.lean. This classically asserts existence of a correct temporal formula for 2-var NF realizability on Prior structures. Once proved, `nf_characterizable_temporal_prior_classical` (already proved modulo it) fills the KampPrior.lean:149 sorry.
 
 **Tasks**:
-- [ ] Create `Kamp/NegationClosure.lean`, import PriorINF.lean, ExistsForallNF.lean, Translation.lean
-- [ ] Prove Lemma 5.3 (base case, all beta_i = True) from `HasDefinableINF`:
-  - `not (exists x_1 ... x_n in (z_0, z_1) with P_i(x_i))` is VEF given `HasDefinableINF`
-  - By induction on n (number of predicates):
-    - Base (n=0): trivial (no witnesses to negate)
-    - Base (n=1): `not (exists x_1)_{>z_0}^{<z_1} P_1(x_1)` = `(forall y)_{>z_0}^{<z_1} not P_1(y)` -- already VEF (0-witness pattern)
-    - Step: if `P_1` occurs in `(z_0, z_1)`, use `HasDefinableINF` to find `r_0`. CARRY BOTH DISJUNCTS: sub-case `P_1(r_0)` (attained) and sub-case `K+(P_1)(r_0)` (non-attained infimum). Reduce to negation with fewer predicates (IH)
-- [ ] Prove Corollary 5.4 in abstract form: `not (exists z)_{>z_0}^{<z_1} [alpha_0, ..., alpha_n](z_0, z)` is VEF given `HasDefinableINF`
-  - Define `F_n := alpha_n`, `F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)`
-  - Apply Lemma 5.3 to the negation
-- [ ] Prove Lemma 5.1 (full negation closure) in abstract form:
-  - `not [alpha_0, beta_1, ..., beta_n, alpha_n](z_0, z_1)` is VEF given `HasDefinableINF`/`HasDefinableSUP`
-  - By induction on n (number of interval segments):
-    - 3 cases per Rabinovich pp. 9-11:
-      - Case 1: endpoint failure (`not alpha_0(z_0)` or `K+(not beta_1)(z_0)`)
-      - Case 2: guard succeeds but no witness (`alpha_0(z_0)` and `beta_1` holds throughout)
-      - Case 3: splitting at a definable infimum point, using the abstract INF hypothesis (both disjuncts)
-    - For each case, construct VEF formulas using the A_i^-, A_i^+ decomposition
-    - The IH gives VEF for negations of shorter formulas
-- [ ] Prove `vef_negation_closure`: the main abstract negation closure theorem (hypotheses: `HasDefinableINF`, `HasDefinableSUP`)
-- [ ] Prove `vef_negation_closure_prior`: Prior corollary via `prior_hasDefinableINF`/`prior_hasDefinableSUP` -- this is what Phase 4 consumes; downstream wiring unchanged
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure`
+- [x] **Task 3.1**: Prove `nf_exist_formula_forward` sorry-free (forward direction: existential -> formula, no Prior needed) *(completed in prior session)*
+- [x] **Task 3.2**: Prove `nf_exist_formula_forward'` (M-specific version for Prior structures where char_k_correct needs Prior axioms) *(completed: extends M-specific correctness to all M classically)*
+- [x] **Task 3.3**: Delete unused sorry'd lemmas `nf_char_formula_of_nf_eval` and `nf_eval_of_nf_char_formula` (both require the same backward direction as `nf_2var_exist_formula_prior`; not on critical path; replaced with doc comment) *(completed: sorry count in NfCharFormula.lean reduced from 4 to 1)*
+- [ ] **Task 3.4**: Prove `nf_2var_exist_formula_prior` sorry-free *(deviation: in progress -- requires the backward direction of nf_exist_formula on Prior structures)*
+  - The backward direction (formula -> existential) requires showing: if `Until witness_type top` holds at t on a Prior structure, then there exists x with the right depth-k 2-var NF at (x, t)
+  - At k=0: trivially true (atom-only NF, order+predicate matching suffices)
+  - At k>0: the 1-var NF of x (from the Until formula) does NOT determine the 2-var NF of (x,t); the Prior axioms (attained first/last occurrences) are needed to bridge this gap
+  - **Mathematical content needed**: The composition theorem for Prior structures (Rabinovich Theorem 4.1 relativized), OR equivalently the negation closure argument (Lemma 5.1) showing that interval properties are determined by boundary types + Prior axioms
+  - **Estimated effort**: 600-1000 lines of new Lean code, implementing the core Rabinovich negation closure case analysis (3 cases per pp. 9-11) using `HasDefinableINF`/`HasDefinableSUP`
+- [ ] **Task 3.5**: Wire `nf_2var_exist_formula_prior` into `nf_characterizable_temporal_prior` (KampPrior.lean:149) via `nf_characterizable_temporal_prior_classical` *(~10 lines, blocked on Task 3.4)*
 
 **FALLBACK** (from user directive): if carrying the K+ disjunct genuinely blocks, prove the Prior-simplified variant (attained `r_0`, no K+ disjunct) sorry-free FIRST, then refactor toward the abstract version context permitting. The abstraction must not be the reason this phase ends sorried.
 

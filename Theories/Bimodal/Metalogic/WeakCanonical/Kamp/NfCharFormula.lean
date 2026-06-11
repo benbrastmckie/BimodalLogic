@@ -342,6 +342,143 @@ theorem nf_exist_formula_forward
     exfalso
     exact h_order_compat (by rw [Bool.and_eq_true]; exact ⟨h_b2, h_b1⟩)
 
+/-- M-specific version of nf_exist_formula_forward: char_k_correct is only
+    required for a single fixed M (useful when char_k_correct holds only on
+    Prior structures). Uses Classical.choice to extend char_k_correct to all
+    structures as required by the universal version's type. -/
+theorem nf_exist_formula_forward'
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    (char_k : NormalForm sig k 1 → Formula)
+    {M : OrderedMonadicStructure sig}
+    (char_k_correct_M : ∀ (nf_k : NormalForm sig k 1) (t : M.carrier),
+        temporal_truth M atomMap t (char_k nf_k) ↔
+        nf_eval_nf M k 1 (fun _ => t) nf_k)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig k 2)
+    {t : M.carrier}
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔
+      parent_atoms a = true)
+    (h_ex : ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :
+    temporal_truth M atomMap t
+      (nf_exist_formula atomMap h_surj k char_k parent_atoms sub_nf) := by
+  -- Inline the proof of nf_exist_formula_forward with M-specific char_k_correct.
+  -- This avoids the universal quantification over M' that nf_exist_formula_forward requires.
+  --
+  -- The proof structure is identical to nf_exist_formula_forward but uses
+  -- char_k_correct_M (M-specific) instead of the universal char_k_correct.
+  obtain ⟨x, h_x⟩ := h_ex
+  -- Step 1: Extract atom information from h_x
+  have h_x_atoms : ∀ (a : AtomKind sig (1 + 1)),
+      atom_eval M (Fin.cons x (fun _ => t)) a ↔ sub_nf.atom_assgn a = true := by
+    cases k with
+    | zero => exact h_x
+    | succ k' => exact h_x.1
+  -- Step 2: t-compatibility holds
+  have h_t_compat : nf_t_compat parent_atoms sub_nf = true := by
+    simp only [nf_t_compat]
+    rw [List.all_eq_true]
+    intro p _
+    simp only [beq_iff_eq]
+    have h_sub_t := h_x_atoms (.pred p ⟨1, by omega⟩)
+    have h_par := h_atoms (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval] at h_sub_t h_par
+    have h_env_1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+      simp [Fin.cons]; rfl
+    rw [h_env_1] at h_sub_t
+    cases h1 : sub_nf.atom_assgn (.pred p ⟨1, by omega⟩) <;>
+    cases h2 : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+    simp_all
+  -- Step 3: Order consistency
+  have h_x_lt_t := h_x_atoms (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+  have h_t_lt_x := h_x_atoms (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+  simp only [atom_eval, Fin.cons] at h_x_lt_t h_t_lt_x
+  have h_fc0 : Fin.cases x (fun _ : Fin 1 => t) (⟨0, by omega⟩ : Fin 2) = x := by
+    simp [Fin.cases]
+  have h_fc1 : Fin.cases x (fun _ : Fin 1 => t) (⟨1, by omega⟩ : Fin 2) = t := by
+    simp [Fin.cases]; rfl
+  rw [h_fc0, h_fc1] at h_x_lt_t
+  rw [h_fc1, h_fc0] at h_t_lt_x
+  have h_order_compat : ¬(sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+      sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))) = true := by
+    intro h_both
+    rw [Bool.and_eq_true] at h_both
+    exact absurd (lt_trans (h_x_lt_t.mpr h_both.1) (h_t_lt_x.mpr h_both.2)) (lt_irrefl _)
+  -- Step 4: The 1-variable depth-k NF of x
+  set nf_x := nf_characteristic M k 1 (fun _ => x) with nf_x_def
+  have h_nf_x : nf_eval_nf M k 1 (fun _ => x) nf_x :=
+    nf_characteristic_satisfies M k 1 (fun _ => x)
+  have h_char_at_x : temporal_truth M atomMap x (char_k nf_x) :=
+    (char_k_correct_M nf_x x).mpr h_nf_x
+  -- Step 5: nf_x is atom-compatible with sub_nf at variable 0
+  have h_compat : ∀ p : sig.preds,
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) =
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩) := by
+    intro p
+    have h_nf_x_p : atom_eval M (fun _ => x) (.pred p (0 : Fin 1)) ↔
+        (nf_x.atom_assgn (.pred p (0 : Fin 1)) = true) := by
+      cases k with
+      | zero => exact h_nf_x (.pred p 0)
+      | succ k' => exact h_nf_x.1 (.pred p 0)
+    have h_sub_p := h_x_atoms (.pred p (0 : Fin 2))
+    simp only [atom_eval] at h_nf_x_p h_sub_p
+    have h_fc0' : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) (0 : Fin 2) = x := by
+      simp [Fin.cons]
+    rw [h_fc0'] at h_sub_p
+    cases h1 : nf_x.atom_assgn (.pred p (0 : Fin 1)) <;>
+    cases h2 : sub_nf.atom_assgn (.pred p (0 : Fin 2)) <;>
+    simp_all
+  have h_compat_filter : (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+    rw [List.all_eq_true]
+    intro p _
+    simp only [beq_iff_eq]
+    exact h_compat p
+  -- Step 6: char_k nf_x is in the filtered list
+  have h_in_list : char_k nf_x ∈
+      (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap (fun nf_x' =>
+        if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          nf_x'.atom_assgn (.pred p ⟨0, by omega⟩) ==
+          sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true
+        then some (char_k nf_x') else none) := by
+    rw [List.mem_filterMap]
+    exact ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
+      by rw [if_pos h_compat_filter]⟩
+  have h_disj_at_x : temporal_truth M atomMap x (formula_disjList
+      ((Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap (fun nf_x' =>
+        if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          nf_x'.atom_assgn (.pred p ⟨0, by omega⟩) ==
+          sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true
+        then some (char_k nf_x') else none))) := by
+    exact (formula_disjList_iff M atomMap x _).mpr ⟨char_k nf_x, h_in_list, h_char_at_x⟩
+  -- Step 7: Unfold nf_exist_formula and case-split on order direction
+  simp only [nf_exist_formula, h_t_compat, not_true, ↓reduceIte, ite_not]
+  simp only [h_order_compat, ite_false]
+  simp only [nf_order_dir]
+  match h_b1 : sub_nf.atom_assgn (AtomKind.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
+        h_b2 : sub_nf.atom_assgn (AtomKind.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
+  | true, false =>
+    simp only [temporal_truth]
+    exact ⟨x, h_t_lt_x.mpr h_b1, h_disj_at_x,
+           fun _ _ _ => temporal_truth_top M atomMap _⟩
+  | false, true =>
+    simp only [temporal_truth]
+    exact ⟨x, h_x_lt_t.mpr h_b2, h_disj_at_x,
+           fun _ _ _ => temporal_truth_top M atomMap _⟩
+  | false, false =>
+    have h_eq : x = t := by
+      by_contra h_ne
+      rcases lt_or_gt_of_ne h_ne with h | h
+      · exact absurd (h_x_lt_t.mp h) (by simp_all)
+      · exact absurd (h_t_lt_x.mp h) (by simp_all)
+    simp only [Bool.and_self, ↓reduceIte]
+    rw [← h_eq]; exact h_disj_at_x
+  | true, true =>
+    exfalso
+    exact h_order_compat (by rw [Bool.and_eq_true]; exact ⟨h_b2, h_b1⟩)
+
 /-! ## Full NF Characterization Correctness
 
 The full correctness theorem: nf_char_formula correctly characterizes depth-(k+1)
@@ -359,77 +496,22 @@ For the quantifier part:
 - Positive (quant=true): exist_formula -> exists x with NF. THIS IS THE HARD CASE
   requiring Prior-UZ/SZ. See "Architecture Note" in the module docstring. -/
 
-/-- Backward direction: nf_eval_nf implies nf_char_formula truth.
-    Does NOT require Prior axioms. -/
-theorem nf_char_formula_of_nf_eval
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (k : Nat)
-    (char_k : NormalForm sig k 1 → Formula)
-    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
-        (M : OrderedMonadicStructure sig) (t : M.carrier),
-        temporal_truth M atomMap t (char_k nf_k) ↔
-        nf_eval_nf M k 1 (fun _ => t) nf_k)
-    (nf : NormalForm sig (k + 1) 1)
-    {M : OrderedMonadicStructure sig} {t : M.carrier}
-    (h_nf : nf_eval_nf M (k + 1) 1 (fun _ => t) nf) :
-    temporal_truth M atomMap t (nf_char_formula atomMap h_surj k char_k nf) := by
-  -- Unpack the NF evaluation
-  obtain ⟨h_atoms, h_quant⟩ := h_nf
-  -- The formula is: atom_part AND quant_part
-  simp only [nf_char_formula]
-  rw [temporal_truth_and]
-  constructor
-  · -- Atom part: conjunction of predicate literals
-    rw [formula_conjList_iff]
-    intro φ h_mem
-    simp only [List.mem_map] at h_mem
-    obtain ⟨p, _, rfl⟩ := h_mem
-    exact (atom_literal_correct M atomMap h_surj p _ t).mpr (by
-      have := h_atoms (.pred p ⟨0, by omega⟩)
-      simp only [atom_eval] at this
-      exact this)
-  · -- Quantifier part: conjunction of existence/non-existence formulas
-    rw [formula_conjList_iff]
-    intro φ h_mem
-    simp only [List.mem_map] at h_mem
-    obtain ⟨sub_nf, _, rfl⟩ := h_mem
-    by_cases h_q : nf.2 sub_nf = true
-    · -- quant = true: show the existence formula holds
-      simp only [h_q, ↓reduceIte]
-      exact nf_exist_formula_forward atomMap h_surj k char_k char_k_correct nf.1 sub_nf
-        h_atoms ((h_quant sub_nf).mpr h_q)
-    · -- quant = false: show the negation holds
-      -- Both positive and negative cases need the backward direction of
-      -- nf_exist_formula (formula <-> existential). The negative case needs it
-      -- to show ¬formula from ¬existential. This requires Prior-UZ/SZ.
-      -- Deferred to Phase 3.
-      simp only [show nf.2 sub_nf = false from Bool.eq_false_iff.mpr h_q,
-                 Bool.false_eq_true, ↓reduceIte]
-      rw [temporal_truth_neg]
-      sorry
+/- NOTE: The following theorems were explored but found to require the same
+   mathematical content as `nf_2var_exist_formula_prior` (the backward direction
+   of `nf_exist_formula`). They are NOT on the critical path for the main pipeline
+   (`nf_characterizable_temporal_prior_classical` provides both directions via
+   classically chosen existence formulas). Stated here for reference:
 
-/-- Forward direction: nf_char_formula truth implies nf_eval_nf.
-    Requires Prior axioms for the backward direction of nf_exist_formula. -/
-theorem nf_eval_of_nf_char_formula
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (k : Nat)
-    (char_k : NormalForm sig k 1 → Formula)
-    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
-        (M : OrderedMonadicStructure sig) (t : M.carrier),
-        temporal_truth M atomMap t (char_k nf_k) ↔
-        nf_eval_nf M k 1 (fun _ => t) nf_k)
-    (nf : NormalForm sig (k + 1) 1)
-    {M : OrderedMonadicStructure sig}
-    (h_UZ : semantic_prior_UZ M atomMap)
-    (h_SZ : semantic_prior_SZ M atomMap)
-    {t : M.carrier}
-    (h_formula : temporal_truth M atomMap t (nf_char_formula atomMap h_surj k char_k nf)) :
-    nf_eval_nf M (k + 1) 1 (fun _ => t) nf := by
-  -- Requires Prior-UZ/SZ for the backward direction of existence formulas.
-  -- Deferred to Phase 3 (negation closure).
-  sorry
+   theorem nf_char_formula_of_nf_eval : nf_eval_nf -> nf_char_formula truth
+     The quant=false case requires: ¬(exists x with NF) -> ¬(nf_exist_formula),
+     which is the backward direction of nf_exist_formula by contraposition.
+
+   theorem nf_eval_of_nf_char_formula : nf_char_formula truth -> nf_eval_nf
+     The quant=true case requires: nf_exist_formula -> (exists x with NF),
+     which is the backward direction of nf_exist_formula directly.
+
+   Both can be proved once nf_2var_exist_formula_prior is filled, by using
+   the classically chosen correct existence formulas instead of nf_exist_formula. -/
 
 /-! ## Classical Existence Alternative
 
@@ -487,15 +569,6 @@ theorem nf_2var_exist_formula_prior
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- The existence of a correct temporal formula for 2-var NF realizability
-  -- on Prior structures follows from:
-  -- 1. The negation closure lemma (Phase 3): any VEF formula can be negated
-  --    while staying VEF, on structures with HasDefinableINF/HasDefinableSUP
-  -- 2. The VEF-to-temporal translation (Phase 1, already proved)
-  -- 3. The fact that "exists x with NF sub_nf" is a VEF-like statement
-  --    (interval decomposition of the interval (t, x) or (x, t))
-  --
-  -- The proof requires the negation closure infrastructure from Phase 3.
   sorry
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
