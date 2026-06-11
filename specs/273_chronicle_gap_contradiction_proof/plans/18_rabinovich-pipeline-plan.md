@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Negation Closure from Abstract INF Hypothesis [NOT STARTED]
+### Phase 3: Negation Closure from Abstract INF Hypothesis [IN PROGRESS]
 
 *(scope change: generalized per user directive for CSLib contribution — proved from `HasDefinableINF`/`HasDefinableSUP` carrying the K+ disjunct, i.e., Rabinovich's actual general proof; the Prior version follows by instantiation)*
 
