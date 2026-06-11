@@ -1,7 +1,7 @@
 # Implementation Plan: Kamp's Theorem via Rabinovich 2014 (v17)
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 40 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/08_team-research.md
@@ -83,17 +83,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 0: Literature Verification Gate [NOT STARTED]
+### Phase 0: Literature Verification Gate [COMPLETED]
 
 **Goal**: Confirm that every use of Dedekind completeness in Rabinovich 2014 Section 5 reduces to computing first/last occurrences of TL-definable sets, and that `semantic_prior_UZ` provides a suitable replacement.
 
 **Tasks**:
-- [ ] Read Rabinovich PDF pages 7-11 (Section 5) systematically, marking every invocation of chain completeness
-- [ ] Verify that Lemma 5.3's INF formula (equation 5.2) is the sole completeness use: `INF(z_0, r_0, z_1, P_1) := z_0 < r_0 < z_1 AND (forall y)_{>z_0}^{<r_0} not P_1(y) AND (P_1(r_0) OR K+(P_1)(r_0))`
-- [ ] Verify that `K+(P_1)(r_0)` (= "P_1 holds at the next occurrence from above") is TL-definable as `not(True Until (not P_1))(r_0)` -- this is the Box/Henceforth operator
-- [ ] Confirm that for Prior structures, `semantic_prior_UZ` with `psi = P_1` gives: if P_1 holds somewhere above z_0, then the first P_1 point r_0 exists, P_1(r_0) holds (not just K+), and not-P_1 holds on (z_0, r_0). This eliminates the K+ disjunct -- the Prior case is simpler.
-- [ ] Confirm that Corollary 5.4 and the full Lemma 5.1 proof use completeness only via Lemma 5.3 (transitively through the INF formula)
-- [ ] Document the verification result in the plan file as a status annotation on this phase
+- [x] Read Rabinovich PDF pages 7-11 (Section 5) systematically, marking every invocation of chain completeness
+- [x] Verify that Lemma 5.3's INF formula (equation 5.2) is the sole completeness use: `INF(z_0, r_0, z_1, P_1) := z_0 < r_0 < z_1 AND (forall y)_{>z_0}^{<r_0} not P_1(y) AND (P_1(r_0) OR K+(P_1)(r_0))`
+- [x] Verify that `K+(P_1)(r_0)` (= "P_1 holds at the next occurrence from above") is TL-definable as `not(True Until (not P_1))(r_0)` -- this is the Box/Henceforth operator
+- [x] Confirm that for Prior structures, `semantic_prior_UZ` with `psi = P_1` gives: if P_1 holds somewhere above z_0, then the first P_1 point r_0 exists, P_1(r_0) holds (not just K+), and not-P_1 holds on (z_0, r_0). This eliminates the K+ disjunct -- the Prior case is simpler.
+- [x] Confirm that Corollary 5.4 and the full Lemma 5.1 proof use completeness only via Lemma 5.3 (transitively through the INF formula)
+- [x] Document the verification result in the plan file as a status annotation on this phase
+
+**Gate result**: PASSED. All completeness uses in Section 5 reduce to INF formulas (first/last occurrences). Lemma 5.1 Case 3 uses INF^{neg beta_1} (eq 5.3), same structure. Prior-UZ gives attained first occurrences, eliminating the K+ disjunct entirely. The Prior case is strictly simpler than the Dedekind-complete case.
 
 **HARD GATE**: If any completeness use in Section 5 does NOT reduce to first/last occurrences of a TL-definable set, this plan is [BLOCKED]. Fall back to Path B (documented in research report 08).
 
