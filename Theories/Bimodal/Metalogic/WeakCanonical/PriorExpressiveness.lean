@@ -1,11 +1,13 @@
 import Bimodal.Metalogic.WeakCanonical.StaviConnectives
 import Bimodal.Metalogic.WeakCanonical.EFGames.StaviCompleteness
+import Bimodal.Metalogic.WeakCanonical.PriorDefs
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
 
 /-!
 # Prior Expressiveness: {U,S} Expressive Completeness over Prior Structures
 
-Reynolds 1994, Theorem 5 (pp.123-124): {U,S} is expressively complete for
-Prior structures, i.e., linear orders satisfying Prior-UZ and Prior-SZ.
+{U,S} is expressively complete for Prior structures, i.e., linear orders
+satisfying Prior-UZ and Prior-SZ.
 
 ## Key Results
 
@@ -15,30 +17,20 @@ Prior structures, i.e., linear orders satisfying Prior-UZ and Prior-SZ.
 - `US_expressively_complete_over_prior`: every monadic FO formula has a {U,S}-equivalent
   on any structure satisfying Prior-UZ and Prior-SZ
 
-## Mathematical Content
+## Proof Method
 
-The Stavi connectives U'(A,B) detect "gap" behavior in linear orders. The Prior-UZ
-axiom (F(ψ) → U(ψ, ¬ψ): every future occurrence of ψ has a first occurrence)
-excludes such gaps. Combined with the Stavi expressive completeness theorem
-(GHR93 Theorem 9.3.1: {U,S,U',S'} is expressively complete for all linear orders),
-this yields {U,S} expressiveness for Prior structures.
+`US_expressively_complete_over_prior` uses `kamp_prior_expressive_completeness`
+(Kamp/Rabinovich 2014 relativized to Prior structures), which bypasses the
+sorry-tainted `stavi_expressive_completeness` chain entirely.
 
-The proof that U'(A,B) is always false on Prior structures:
-1. Assume U'(A,B)(t) holds with witness s, body, fail, init conditions.
-2. From "fail": ∃u' ∈ (t,s) with ¬B(u'), so F(¬B) at t.
-3. Apply Prior-UZ with ψ = B.neg to get the first ¬B point s₀ after t,
-   with ¬¬B (hence B, classically) on all of (t,s₀).
-4. s₀ ∈ (t,s) since s₀ ≤ u' < s.
-5. Evaluate the body at s₀:
-   - Disjunct 1 (B cofinal above s₀): needs ∃v > s₀ with B on (t,v).
-     Since s₀ ∈ (t,v), this requires B(s₀), contradicting ¬B(s₀).
-   - Disjunct 2 (¬B before s₀): needs ∃v' ∈ (t,s₀) with ¬B(v').
-     But B holds on (t,s₀), so no such v' exists.
-6. Both disjuncts fail, contradicting the body condition. QED.
+The Stavi connective falsity results (`stavi_U_false_on_prior_UZ` etc.) and
+`flatten_stavi_correct_prior` remain proved and documented, but are no longer
+on the critical path for `US_expressively_complete_over_prior`.
 
 ## References
 
-- Reynolds 1994, Theorem 5, pp.123-124 (p.459-462 in transcription)
+- Rabinovich 2014, "A Proof of Kamp's Theorem"
+- Reynolds 1994, Theorem 5, pp.123-124
 - GHR93 (Gabbay, Hodkinson, Reynolds, 1994), Chapter 9, Theorem 9.3.1
 -/
 
@@ -48,31 +40,10 @@ open Bimodal.Syntax
 
 /-! ## Semantic Prior-UZ/SZ Hypotheses
 
-The semantic form of Prior-UZ: if ψ holds somewhere above t, then there is a
-FIRST occurrence of ψ above t, with ψ.neg holding everywhere between t and
-that first occurrence.
-
-These are the hypotheses passed to `no_gaps_discrete` and used throughout
-the Reynolds pipeline.
+The definitions `semantic_prior_UZ` and `semantic_prior_SZ` are in
+`PriorDefs.lean` (to break the import cycle with `KampPrior.lean`).
+Re-exported here via the import for backward compatibility.
 -/
-
-/-- Semantic Prior-UZ: every future occurrence of ψ has a first occurrence. -/
-abbrev semantic_prior_UZ {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
-    (atomMap : Formula → sig.preds) : Prop :=
-  ∀ (t : M.carrier) (ψ : Formula),
-    (∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ) →
-    ∃ s : M.carrier, t < s ∧ temporal_truth M atomMap s ψ ∧
-      ∀ r : M.carrier, t < r → r < s → temporal_truth M atomMap r ψ.neg
-
-/-- Semantic Prior-SZ: every past occurrence of ψ has a last occurrence. -/
-abbrev semantic_prior_SZ {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
-    (atomMap : Formula → sig.preds) : Prop :=
-  ∀ (t : M.carrier) (ψ : Formula),
-    (∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ) →
-    ∃ s : M.carrier, s < t ∧ temporal_truth M atomMap s ψ ∧
-      ∀ r : M.carrier, s < r → r < t → temporal_truth M atomMap r ψ.neg
 
 /-! ## Double Negation Bridge
 
@@ -357,16 +328,20 @@ every monadic FO formula has a {U,S}-equivalent on Prior structures.
 -/
 
 /--
-**Reynolds Theorem 5 (composition)**: {U,S} is expressively complete over
-Prior structures. Given any monadic FO formula ψ with one free variable,
-there exists a temporal formula A (using only U and S) such that A is
-semantically equivalent to ψ on any structure satisfying Prior-UZ and Prior-SZ.
+**{U,S} Expressive Completeness over Prior Structures**:
+Given any monadic FO formula ψ with one free variable, there exists a
+temporal formula A (using only U and S) such that A is semantically
+equivalent to ψ on any structure satisfying Prior-UZ and Prior-SZ.
 
-The proof composes:
-1. `stavi_expressive_completeness` (GHR93 9.3.1): ψ ↔ stavi_temporal_truth sf
-2. `flatten_stavi_correct_prior` (Theorem 5): stavi_temporal_truth sf ↔ temporal_truth (flatten_stavi sf)
+The proof uses Kamp/Rabinovich 2014's composition-based method,
+relativized from Dedekind completeness to `semantic_prior_UZ/SZ`.
+This bypasses the Stavi sorry chain (GHR93 Theorem 9.3.1) entirely:
+the sole consumer of `stavi_expressive_completeness` was this theorem,
+and it now uses `kamp_prior_expressive_completeness` instead.
 
-Reference: Reynolds 1994, Theorem 5, pp.123-124.
+References:
+- Rabinovich 2014, "A Proof of Kamp's Theorem", Sections 3-5
+- Reynolds 1994, Theorem 5, pp.123-124
 -/
 noncomputable def US_expressively_complete_over_prior
     {sig : MonadicSignature}
@@ -379,17 +354,8 @@ noncomputable def US_expressively_complete_over_prior
         (_h_prior_SZ : semantic_prior_SZ M atomMap)
         (t : M.carrier),
         eval M (fun _ => t) psi ↔
-        temporal_truth M atomMap t A } := by
-  -- Step 1: Get StaviFormula equivalent from GHR93 Theorem 9.3.1
-  obtain ⟨sf, h_sf⟩ := stavi_expressive_completeness sig atomMap h_surj psi
-  -- Step 2: Flatten to standard temporal formula
-  exact ⟨flatten_stavi sf, fun M h_UZ h_SZ t => by
-    constructor
-    · intro h_psi
-      exact (flatten_stavi_correct_prior M atomMap h_UZ h_SZ t sf).mp
-        ((h_sf M t).mpr h_psi)
-    · intro h_flat
-      exact (h_sf M t).mp
-        ((flatten_stavi_correct_prior M atomMap h_UZ h_SZ t sf).mpr h_flat)⟩
+        temporal_truth M atomMap t A } :=
+  -- Direct application of Kamp/Rabinovich 2014 (relativized to Prior structures)
+  Kamp.kamp_prior_expressive_completeness atomMap h_surj psi
 
 end Bimodal.Metalogic.WeakCanonical

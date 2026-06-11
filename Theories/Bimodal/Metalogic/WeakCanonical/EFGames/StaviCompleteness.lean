@@ -4,6 +4,22 @@ import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
 # Stavi Expressive Completeness
 
 Stavi expressive completeness: standard translation, NF characterization, and the main theorem.
+
+## Open Generalization: Stavi Expressive Completeness
+
+The three sorry sites at lines 2405, 2487, 2857 block `stavi_expressive_completeness`
+(GHR93 Theorem 9.3.1: {U,S,U',S'} is expressively complete for ALL linear orders).
+
+For the completeness chain, this general result is bypassed by
+`kamp_prior_expressive_completeness` (Kamp/Rabinovich 2014), which proves {U,S}
+expressive completeness directly for Prior structures. The general Stavi result
+remains a documented open formalization target.
+
+Known blockers:
+- Sorry site 3 (line 2857, `nf_exist_sf_guarded_backward`) is mathematically FALSE
+  as stated (independent verification by 2 research teammates, report 08).
+- Sorry sites 1-2 (lines 2405, 2487) require n-variable existential transfer which
+  has no tractable formalization path within the current NF framework.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical
