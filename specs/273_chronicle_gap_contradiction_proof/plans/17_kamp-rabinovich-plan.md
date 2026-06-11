@@ -5,7 +5,7 @@
 - **Effort**: 40 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/08_team-research.md
-- **Artifacts**: plans/08_kamp-rabinovich-plan.md (this file)
+- **Artifacts**: plans/17_kamp-rabinovich-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true

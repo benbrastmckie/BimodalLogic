@@ -1304,7 +1304,7 @@
           "summary": "Team research (4 teammates): sorry 3 is FALSE as stated (formula redesign required); plan v16 unsalvageable; Path A = Rabinovich 2014 relativized to Prior structures (primary), Path B = GHR-faithful adjacent-pair 2-var NF master lemma (fallback)"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/08_kamp-rabinovich-plan.md",
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/17_kamp-rabinovich-plan.md",
           "type": "plan",
           "summary": "Implementation plan v17: 7-phase Kamp/Rabinovich proof of US expressive completeness for Prior structures, bypassing the Stavi sorry chain"
         }
