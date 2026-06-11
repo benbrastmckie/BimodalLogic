@@ -289,6 +289,44 @@ noncomputable def nf_char_kp1_from_2var
           rw [temporal_truth_neg]; intro h_ef
           exact h_q ((h_quant sub_nf).mp (h_iff.mp h_ef)))⟩
 
+/-! ## Interval Type Decomposition for Prior Structures
+
+Given sub_nf : NormalForm sig (k+1) 2 and a fixed order direction (say t < x),
+the quantifier conditions of sub_nf.2 involve depth-k arity-3 NFs ssn at (y,x,t).
+Each ssn places y in one of five order regions:
+  (1) y > x > t: encoded in nf_x.2 (depth-(k+1) 1-var NF of x)
+  (2) y = x: determined by nf_x.1 (atoms at x)
+  (3) t < y < x: INTERVAL condition -- must be encoded using buildRight
+  (4) y = t: determined by parent_atoms
+  (5) y < t: encoded in the depth-(k+1) 1-var NF of t
+
+At depth 0, each ssn is an atom assignment (AtomKind sig 3 → Bool), and the
+"type" of y in the interval is its depth-0 1-var NF (predicates at y).
+
+At depth k > 0, the ssn includes quantifier conditions involving depth-(k-1)
+arity-4 NFs of (z,y,x,t). The interval type of y is richer than just the
+1-var NF, but on Prior structures the decomposition still works because
+each z also falls in a specific order region relative to y, x, t.
+
+For the formula construction, we extract the set of "interval types" that
+must appear or must not appear in (t,x), and encode these using buildRight
+with P1(k) characterization formulas as witness/guard conditions. -/
+
+/-! ## Interval NF Type Extraction
+
+Given sub_nf at depth k+1 arity 2 and an nf_x at depth k+1 arity 1
+(the candidate 1-var NF of the main witness x), extract the interval
+conditions: which depth-k arity-1 NFs must/must not appear in (t,x).
+
+NOTE: At depth k > 0, the interval conditions involve more than just
+the depth-k 1-var NF of y -- they also involve quantifier interactions
+between y, x, and t. However, on Prior structures, by P2(k) applied
+recursively, these interactions can be captured using temporal formulas
+at the boundary points. The full interval condition for each ssn
+decomposes into: (1) the depth-k 1-var NF of y (characterizable by
+P1(k)), and (2) the depth-k 2-var NF of (y,x) and (y,t) (characterizable
+by P2(k)) -- and these are encoded in the nested Until/Since chains. -/
+
 /-! ## Master Simultaneous Induction -/
 
 private abbrev P1 {sig : MonadicSignature} (atomMap : Formula → sig.preds) (k : Nat) : Prop :=
