@@ -95,24 +95,24 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Abstract INF Hypothesis, Prior Instantiation, and VEF Closure [NOT STARTED]
+### Phase 2: Abstract INF Hypothesis, Prior Instantiation, and VEF Closure [PARTIAL]
 
 *(scope change: generalized per user directive for CSLib contribution — the INF layer is now an abstract hypothesis with Prior structures as one instantiation, rather than hard-coding `semantic_prior_UZ/SZ`)*
 
 **Goal**: Define the abstract first/last-occurrence hypotheses `HasDefinableINF`/`HasDefinableSUP`, prove the Prior instantiation, and prove the missing VEF closure properties (`closed_conj`, `closed_ex`). These are the building blocks for negation closure.
 
 **Tasks**:
-- [ ] In `Kamp/PriorINF.lean` (create new), import PriorDefs.lean and ExistsForallNF.lean
-- [ ] Define `HasDefinableINF M atomMap`: for every TL-definable predicate `P` and points `z0 < z1`, if `P` occurs in `(z0, z1)` then there exists `r0` with `z0 < r0 < z1` (or `r0` at the boundary as appropriate), `not P(y)` for all `y` in `(z0, r0)`, and `P(r0) OR K+(P)(r0)` — where `K+` is the "holds arbitrarily soon after" operator, TL-definable per Rabinovich eq 5.2
-- [ ] Define `HasDefinableSUP M atomMap`: dual for last occurrences (Since direction)
-- [ ] Prove `prior_hasDefinableINF`: `semantic_prior_UZ → HasDefinableINF`. Docstring must note: Prior structures give ATTAINED first occurrences, so the `P(r0)` disjunct holds outright and the K+ disjunct is vacuous here
-- [ ] Prove `prior_hasDefinableSUP`: `semantic_prior_SZ → HasDefinableSUP` (dual)
-- [ ] Dedekind-complete instantiation: if achievable in < ~100 lines, prove `dedekind_hasDefinableINF` (completeness gives the infimum; the K+ disjunct covers non-attainment). If NOT cheap, state the intended lemma in a doc comment marked as the canonical-Kamp instantiation point for future CSLib work — do NOT sorry it
-- [ ] Prove `inf_point_is_vef`: the INF configuration (witness `r0`, interval type `not P` on `(z0, r0)`, point type `P OR K+(P)` at `r0`) is expressible as a VEF
-- [ ] In `Kamp/ExistsForallNF.lean`, prove `VEF.closed_conj` (Lemma 3.2.1): conjunction of two VEFs is VEF. The witnesses of the conjunction are the merged (interleaved) witness sequences from both VEFs. Uses `List.merge` on ordered witnesses
-- [ ] In `Kamp/ExistsForallNF.lean`, prove `VEF.closed_ex` (Lemma 3.4): existential quantification of a VEF is VEF. The existentially quantified variable becomes an additional witness point
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF`
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF`
+- [x] In `Kamp/PriorINF.lean` (create new), import PriorDefs.lean and ExistsForallNF.lean
+- [x] Define `HasDefinableINF M atomMap`: for every TL-definable predicate `P` and points `z0 < z1`, if `P` occurs in `(z0, z1)` then there exists `r0` with `z0 < r0 < z1` (or `r0` at the boundary as appropriate), `not P(y)` for all `y` in `(z0, r0)`, and `P(r0) OR K+(P)(r0)` — where `K+` is the "holds arbitrarily soon after" operator, TL-definable per Rabinovich eq 5.2
+- [x] Define `HasDefinableSUP M atomMap`: dual for last occurrences (Since direction)
+- [x] Prove `prior_hasDefinableINF`: `semantic_prior_UZ → HasDefinableINF`. Docstring must note: Prior structures give ATTAINED first occurrences, so the `P(r0)` disjunct holds outright and the K+ disjunct is vacuous here
+- [x] Prove `prior_hasDefinableSUP`: `semantic_prior_SZ → HasDefinableSUP` (dual)
+- [ ] Dedekind-complete instantiation: if achievable in < ~100 lines, prove `dedekind_hasDefinableINF` (completeness gives the infimum; the K+ disjunct covers non-attainment). If NOT cheap, state the intended lemma in a doc comment marked as the canonical-Kamp instantiation point for future CSLib work — do NOT sorry it *(deviation: deferred to task continuation -- requires ConditionallyCompleteLattice from Mathlib, not cheap)*
+- [ ] Prove `inf_point_is_vef`: the INF configuration (witness `r0`, interval type `not P` on `(z0, r0)`, point type `P OR K+(P)` at `r0`) is expressible as a VEF *(deviation: deferred to task continuation)*
+- [ ] In `Kamp/ExistsForallNF.lean`, prove `VEF.closed_conj` (Lemma 3.2.1): conjunction of two VEFs is VEF. The witnesses of the conjunction are the merged (interleaved) witness sequences from both VEFs. Uses `List.merge` on ordered witnesses *(deviation: deferred to task continuation)*
+- [ ] In `Kamp/ExistsForallNF.lean`, prove `VEF.closed_ex` (Lemma 3.4): existential quantification of a VEF is VEF. The existentially quantified variable becomes an additional witness point *(deviation: deferred to task continuation)*
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF`
+- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF` *(no changes to this file in Phase 2)*
 
 **Timing**: 5 hours (estimated 500-800 lines: 300-400 abstract INF + instantiations, 200-400 VEF closure)
 
