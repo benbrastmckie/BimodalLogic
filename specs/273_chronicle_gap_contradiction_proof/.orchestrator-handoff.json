@@ -1,28 +1,21 @@
 {
-  "status": "blocked",
-  "summary": "Plan v16 blocked: interval_splitting_zone_match is unprovable with 1-var interval types because sub-interval type sets are not determined by the full interval type set. The 4-var existential transfer at the sorry sites requires placing points in specific gaps among existing matched points, but the bridge hypotheses (which use interval_nf_types, i.e., 1-var type sets) are insufficient to guarantee that the correct types exist in each sub-interval. Three resolution approaches documented: (1) strengthen hypotheses to use interval_2var_nf_types, (2) depth-decreasing game invariant, (3) hybrid approach.",
-  "phases_completed": 0,
-  "phases_total": 4,
+  "status": "partial",
+  "summary": "Rewired US_expressively_complete_over_prior to use kamp_prior_expressive_completeness (Rabinovich 2014 relativized). Architecture is complete: main theorem fully proved modulo one sorry in nf_characterizable_temporal_prior at depth k>=1. Sorry chain moved from mathematically FALSE lemma (nf_exist_sf_guarded_backward) to mathematically SOUND but unformalized Rabinovich negation closure argument. All downstream consumers compile.",
+  "phases_completed": 3,
+  "phases_total": 7,
   "blockers": [
-    "interval_splitting_zone_match is FALSE for 1-var interval types (counterexample: rearranging types within interval preserves interval_nf_types but breaks sub-interval types)",
-    "The sorry at line 2405 (4-var existential transfer) requires sub-interval type matching to place the witness in the correct gap",
-    "Bridge hypotheses of nf_2var_existential_transfer use interval_nf_types (1-var) but the proof needs interval_2var_nf_types (2-var) or equivalent depth-decreasing data"
+    "nf_characterizable_temporal_prior k>=1 case requires Rabinovich negation closure (Prop 4.2 relativized to Prior structures), estimated 1000-2000 lines"
   ],
   "continuation_context": {
-    "last_completed_phase": 0,
-    "next_phase": 1,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v16-20260609T225727Z.md"
+    "last_completed_phase": 6,
+    "next_phase": null,
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-6-handoff-20260611.md"
   },
   "artifacts": [
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/16_interval-zone-match-plan.md",
-      "type": "plan",
-      "summary": "Plan v16 with Phase 1 BLOCKED and detailed blocker + 3 resolution approaches"
-    },
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-v16-20260609T225727Z.md",
-      "type": "handoff",
-      "summary": "Detailed analysis of the sub-interval type matching failure"
-    }
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean", "type": "summary", "summary": "Interval pattern types and VEF definitions"},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean", "type": "summary", "summary": "Main theorem kamp_prior_expressive_completeness with one sorry in nf_characterizable_temporal_prior k>=1"},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean", "type": "summary", "summary": "Extracted semantic_prior_UZ/SZ definitions to break import cycle"},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean", "type": "summary", "summary": "Rewired US_expressively_complete_over_prior proof body"},
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean", "type": "summary", "summary": "Added Stavi open generalization documentation"}
   ]
 }

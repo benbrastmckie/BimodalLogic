@@ -141,38 +141,31 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Translation to Temporal Logic (Proposition 3.5) [NOT STARTED]
+### Phase 2: Translation to Temporal Logic (Proposition 3.5) [PARTIAL]
 
 **Goal**: Prove that every V-exists-forall formula with one free variable is equivalent to a TL(Until, Since) formula. This is the core translation from interval decompositions to nested Until/Since.
 
+*(deviation: altered -- translation infrastructure consolidated into ExistsForallNF.lean and KampPrior.lean rather than a separate file. The proof architecture uses NF enumeration instead of explicit EF-to-TL translation. Translation helpers (`buildRight`, `buildLeft`, `translateEF1`) defined in ExistsForallNF.lean but not yet wired into the main proof.)*
+
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean`
-- [ ] Import `ExistsForallNF.lean` and the existing `Formula` type infrastructure
-- [ ] Define the translation function `ef_to_temporal`: given an exists-forall formula with the free variable at position k among n witness points:
-  - Right part: `A_k AND (B_{k+1} Until (A_{k+1} AND (B_{k+2} Until ... (A_n AND Box B_{n+1})...)))`
-  - Left part: `A_k AND (B_k Since (A_{k-1} AND (B_{k-1} Since ... (A_0 AND Henceforth-past B_0)...)))`
-  - Result: conjunction of right and left parts
-- [ ] Reuse `formula_conjList`, `formula_disjList` from `KampTranslation.lean`
-- [ ] Prove `ef_to_temporal_correct`: semantic correctness of the translation on any `OrderedMonadicStructure sig`
-  - Forward: if the exists-forall formula holds (with witnesses x_0 < ... < x_n), then the temporal formula holds (Until witnesses are exactly x_{k+1}, ..., x_n; Since witnesses are x_{k-1}, ..., x_0)
-  - Backward: if the temporal formula holds, extract the Until/Since witnesses and verify they satisfy the exists-forall constraints
-- [ ] For V-exists-forall formulas: the translation is the disjunction of translations of each disjunct. Prove correctness.
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.Translation`
+- [x] Define translation functions `buildRight`, `buildLeft`, `translateEF1` *(in ExistsForallNF.lean)*
+- [ ] Create separate Translation.lean *(deviation: skipped -- consolidated into ExistsForallNF.lean)*
+- [ ] Prove `ef_to_temporal_correct` *(deviation: deferred -- needed for filling nf_characterizable_temporal_prior k>=1)*
+- [x] Reuse `formula_conjList`, `formula_disjList` from `KampTranslation.lean`
 
 **Timing**: 2 hours (estimated 400-600 lines)
 
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean` -- create new
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean` -- translation helpers added
 
 **Verification**:
-- `lake build` succeeds
-- `lean_verify ef_to_temporal_correct` shows no sorryAx
+- `lake build` succeeds on ExistsForallNF.lean
 
 ---
 
-### Phase 3: Prior INF Formula and First-Occurrence Lemma [NOT STARTED]
+### Phase 3: Prior INF Formula and First-Occurrence Lemma [NOT STARTED] *(deviation: deferred -- needed for filling nf_characterizable_temporal_prior k>=1)*
 
 **Goal**: Prove that on Prior structures, the INF formula (Rabinovich 5.2) is V-exists-forall, replacing Dedekind completeness with `semantic_prior_UZ`. This is the single point where the Prior restriction matters.
 
@@ -202,7 +195,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Negation Closure on Prior Structures (Prop 4.2 Relativized) [NOT STARTED]
+### Phase 4: Negation Closure on Prior Structures (Prop 4.2 Relativized) [NOT STARTED] *(deviation: deferred -- needed for filling nf_characterizable_temporal_prior k>=1)*
 
 **Goal**: Prove that the negation of 2-variable exists-forall formulas is V-exists-forall over Prior structures. This is Rabinovich's Proposition 4.2 relativized from Dedekind completeness to `semantic_prior_UZ/SZ`.
 
@@ -242,51 +235,29 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: FO-to-Temporal Theorem for Prior Structures [NOT STARTED]
+### Phase 5: FO-to-Temporal Theorem for Prior Structures [PARTIAL]
+
+*(deviation: altered -- KampPrior.lean created in Phase 1 instead of Phase 5. The main theorem `kamp_prior_expressive_completeness` is defined and fully proved modulo `nf_characterizable_temporal_prior`. The proof uses NF enumeration (mirroring `stavi_expressive_completeness`) rather than the Rabinovich Prop 4.3 + 3.5 composition.)*
 
 **Goal**: Prove Proposition 4.3 relativized (every FO formula is V-exists-forall on Prior structures) and Theorem 4.4 relativized (every FO formula with one free variable has a TL(U,S) equivalent on Prior structures). Wire this into `US_expressively_complete_over_prior`.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean`
-- [ ] Import `NegationClosure.lean`, `Translation.lean`, and `PriorExpressiveness.lean`
-- [ ] Prove Proposition 4.3 relativized: every `MonadicFormula sig n` is equivalent to a V-exists-forall formula over Prior structures
-  - By structural induction on the formula:
-    - Atomic (P(x_i), x_i < x_j, x_i = x_j): immediate -- these are exists-forall
-    - Disjunction: V-exists-forall is closed under disjunction (Lemma 3.4)
-    - Negation: Reduce to 2-variable case by Lemma 3.2(2), then apply Prop 4.2 relativized (Phase 4)
-    - Existential: Lemma 3.4 closure under existential quantification
-- [ ] Prove Theorem 4.4 relativized: for every `MonadicFormula sig 1` (one free variable), there exists a `Formula` using only U and S that is equivalent on Prior structures
-  - By Prop 4.3, the formula is V-exists-forall
-  - By Prop 3.5 (Phase 2), the V-exists-forall formula translates to TL(U,S)
-- [ ] Define `kamp_prior_expressive_completeness` with the same type signature as `US_expressively_complete_over_prior`:
-  ```lean
-  noncomputable def kamp_prior_expressive_completeness
-      {sig : MonadicSignature}
-      (atomMap : Formula -> sig.preds)
-      (h_surj : forall p : sig.preds, exists a : Atom, atomMap (.atom a) = p)
-      (psi : MonadicFormula sig 1) :
-      { A : Formula //
-        forall (M : OrderedMonadicStructure sig)
-          (_h_prior_UZ : semantic_prior_UZ M atomMap)
-          (_h_prior_SZ : semantic_prior_SZ M atomMap)
-          (t : M.carrier),
-          eval M (fun _ => t) psi <->
-          temporal_truth M atomMap t A }
-  ```
-- [ ] Prove this theorem by composing Prop 4.3 + Prop 3.5
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior`
+- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` *(done in Phase 1)*
+- [x] Define `kamp_prior_expressive_completeness` with correct type signature *(done in Phase 1)*
+- [x] Prove main theorem modulo `nf_characterizable_temporal_prior` *(done in Phase 1)*
+- [ ] Prove `nf_characterizable_temporal_prior` at depth k>=1 *(blocked on Phases 3-4)*
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior`
 
 **Timing**: 1.5 hours (estimated 300-500 lines)
 
 **Depends on**: 4
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- create new
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- created (sorry in k>=1 case)
 
 **Verification**:
-- `lake build` succeeds
-- `lean_verify kamp_prior_expressive_completeness` shows no sorryAx
-- The type signature matches `US_expressively_complete_over_prior` exactly
+- `lake build` succeeds (with sorry warning)
+- `lean_verify kamp_prior_expressive_completeness` shows `sorryAx` (from nf_characterizable_temporal_prior)
 
 ---
 
@@ -328,23 +299,21 @@ Phases within the same wave can execute in parallel.
 
 ## Testing & Validation
 
-- [ ] Phase 0 gate: documented verification that Rabinovich Section 5 uses completeness only via the INF formula
-- [ ] Each phase: `lake build` on the new/modified module succeeds
-- [ ] Phase 5: `lean_verify kamp_prior_expressive_completeness` shows no sorryAx
-- [ ] Phase 6: `lake build` (full project) succeeds
-- [ ] Phase 6: `#print axioms US_expressively_complete_over_prior` shows no sorryAx
-- [ ] Phase 6: type signature of `US_expressively_complete_over_prior` unchanged (diff shows only proof body + import changes)
-- [ ] Phase 6: downstream consumers (`gap_prior_UZ_contradiction`, `no_gaps_discrete_model_surgery`, etc.) still compile and their sorry status is unchanged or improved
+- [x] Phase 0 gate: documented verification that Rabinovich Section 5 uses completeness only via the INF formula
+- [x] Each completed phase: `lake build` on the new/modified module succeeds
+- [ ] Phase 5: `lean_verify kamp_prior_expressive_completeness` shows no sorryAx *(currently shows sorryAx from nf_characterizable_temporal_prior)*
+- [x] Phase 6: `lake build` downstream consumers succeeds (GoodStructuresModelSurgery compiles)
+- [ ] Phase 6: `#print axioms US_expressively_complete_over_prior` shows no sorryAx *(deferred until nf_characterizable_temporal_prior k>=1 filled)*
+- [x] Phase 6: type signature of `US_expressively_complete_over_prior` unchanged (diff shows only proof body + import changes)
+- [x] Phase 6: downstream consumers (`gap_prior_UZ_contradiction`, `no_gaps_discrete_model_surgery`, etc.) still compile
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean` -- exists-forall normal form types and closure lemmas (~400-600 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean` -- translation to temporal logic (~400-600 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean` -- Prior first-occurrence lemma (~200-400 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean` -- negation closure on Prior structures (~600-1000 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- main theorem + wiring (~300-500 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean` -- modified proof body
-- `specs/ROADMAP.md` -- updated status
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean` -- interval pattern types, VEF definitions, translation helpers (~200 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- main theorem + NF temporal characterization (~250 lines, 1 sorry)
+- `Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean` -- extracted semantic_prior_UZ/SZ (~45 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean` -- modified proof body + docstring
+- `Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean` -- added open generalization documentation
 
 **Estimated total new Lean code**: 1900-3100 lines across 5 new files
 
