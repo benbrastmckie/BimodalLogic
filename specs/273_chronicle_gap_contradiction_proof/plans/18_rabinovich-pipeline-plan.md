@@ -1,7 +1,7 @@
 # Implementation Plan: Rabinovich Pipeline -- Fill nf_characterizable_temporal_prior k>=1 (v18)
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 24 hours
 - **Dependencies**: Plan v17 phases 0, 1, 6 (all COMPLETED)
 - **Research Inputs**:
@@ -32,6 +32,7 @@ v17 phases 2-5 were deferred by the Phase 1 architecture deviation. This plan (v
 
 **Goals**:
 - Prove `rabinovich_fo_to_temporal_prior` (Theorem 4.4 relativized to Prior structures)
+- *(scope change: generalized per user directive for CSLib contribution)* State the INF lemma and negation closure against abstract hypotheses `HasDefinableINF`/`HasDefinableSUP` (carrying Rabinovich's K+ disjunct), with Prior structures as an instantiation lemma — so the negation closure is the general library result, not a Prior-only variant
 - Fill the sorry in `nf_characterizable_temporal_prior` k>=1 case via the `nf_to_formula` bridge
 - Achieve sorry_count=0 for `US_expressively_complete_over_prior` and `kamp_prior_expressive_completeness`
 - Verify `#print axioms US_expressively_complete_over_prior` shows no sorryAx
@@ -39,7 +40,7 @@ v17 phases 2-5 were deferred by the Phase 1 architecture deviation. This plan (v
 
 **Non-Goals**:
 - Filling sorry sites in StaviCompleteness.lean (bypassed, documented as open generalization)
-- Proving Kamp's theorem for general Dedekind-complete orders (only Prior structures needed)
+- Completing the full Dedekind-complete Kamp pipeline (the abstract negation closure plus a documented `HasDefinableINF` instantiation point is the deliverable; the Dedekind instantiation lemma is included only if cheap, < ~100 lines, and never sorried) *(scope change: was "Proving Kamp's theorem for general Dedekind-complete orders")*
 - Modifying the type signature of `US_expressively_complete_over_prior`
 - Building EF game infrastructure (Rabinovich's proof avoids games)
 - Refactoring or cleaning up ExistsForallNF.lean scaffolding beyond what is needed
@@ -53,6 +54,7 @@ v17 phases 2-5 were deferred by the Phase 1 architecture deviation. This plan (v
 | VEF closure lemmas (`closed_conj`, `closed_ex`) are claimed in ExistsForallNF.lean header but missing from file body | M | L | These are witness-interleaving case analysis (conjunction = merge two witness sequences; existential = project out one variable). Budget 300-500 lines. |
 | Connecting `rabinovich_fo_to_temporal_prior` to the `nf_to_formula` bridge may have type-level friction | L | L | Both use `MonadicFormula sig n` as the intermediate type. The bridge is ~10 lines (report 09 gives exact code). |
 | Phase 3 (negation closure) may exceed single dispatch capacity | M | M | Plan allows Phase 3 to be split into two dispatches if needed: 3a (Lemma 5.3 + Cor 5.4) and 3b (full Lemma 5.1). |
+| Carrying the K+ disjunct through the abstract negation closure adds ~20-40% to Phase 3 effort *(scope change: generalized per user directive)* | M | M | Accepted and intended. Fallback: if the K+ disjunct genuinely blocks, prove the Prior-simplified variant sorry-free FIRST, then refactor toward the abstract version context permitting. The abstraction must never be the reason Phase 3 ends sorried. |
 
 ## Implementation Phases
 
@@ -68,7 +70,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Translation Correctness (Proposition 3.5) [NOT STARTED]
+### Phase 1: Translation Correctness (Proposition 3.5) [IN PROGRESS]
 
 **Goal**: Prove `translateEF1_correct` -- that the Until/Since chain translation of a 1-variable exists-forall formula is semantically correct. This is Rabinovich Proposition 3.5 relativized.
 
@@ -93,21 +95,26 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prior INF and VEF Closure [NOT STARTED]
+### Phase 2: Abstract INF Hypothesis, Prior Instantiation, and VEF Closure [NOT STARTED]
 
-**Goal**: Prove Prior INF lemmas (first/last occurrence from `semantic_prior_UZ/SZ`) and the missing VEF closure properties (`closed_conj`, `closed_ex`). These are the building blocks for negation closure.
+*(scope change: generalized per user directive for CSLib contribution — the INF layer is now an abstract hypothesis with Prior structures as one instantiation, rather than hard-coding `semantic_prior_UZ/SZ`)*
+
+**Goal**: Define the abstract first/last-occurrence hypotheses `HasDefinableINF`/`HasDefinableSUP`, prove the Prior instantiation, and prove the missing VEF closure properties (`closed_conj`, `closed_ex`). These are the building blocks for negation closure.
 
 **Tasks**:
 - [ ] In `Kamp/PriorINF.lean` (create new), import PriorDefs.lean and ExistsForallNF.lean
-- [ ] Prove `prior_first_occurrence`: on structures satisfying `semantic_prior_UZ`, if a temporal predicate `P` holds somewhere in `(z0, z1)`, there exists a first occurrence `r0` with `z0 < r0 < z1`, `P(r0)`, and `not P(y)` for all `y` in `(z0, r0)`. Uses `semantic_prior_UZ` directly (attained first occurrence, no K+ disjunct needed)
-- [ ] Prove `prior_last_occurrence`: dual for `semantic_prior_SZ` (last occurrence in `(z0, z1)`)
-- [ ] Prove `prior_inf_is_vef`: the Prior INF formula is expressible as a VEF (exists-forall form: `r0` is the single witness, `not P` is the interval type on `(z0, r0)`, `P` is the point type at `r0`)
+- [ ] Define `HasDefinableINF M atomMap`: for every TL-definable predicate `P` and points `z0 < z1`, if `P` occurs in `(z0, z1)` then there exists `r0` with `z0 < r0 < z1` (or `r0` at the boundary as appropriate), `not P(y)` for all `y` in `(z0, r0)`, and `P(r0) OR K+(P)(r0)` — where `K+` is the "holds arbitrarily soon after" operator, TL-definable per Rabinovich eq 5.2
+- [ ] Define `HasDefinableSUP M atomMap`: dual for last occurrences (Since direction)
+- [ ] Prove `prior_hasDefinableINF`: `semantic_prior_UZ → HasDefinableINF`. Docstring must note: Prior structures give ATTAINED first occurrences, so the `P(r0)` disjunct holds outright and the K+ disjunct is vacuous here
+- [ ] Prove `prior_hasDefinableSUP`: `semantic_prior_SZ → HasDefinableSUP` (dual)
+- [ ] Dedekind-complete instantiation: if achievable in < ~100 lines, prove `dedekind_hasDefinableINF` (completeness gives the infimum; the K+ disjunct covers non-attainment). If NOT cheap, state the intended lemma in a doc comment marked as the canonical-Kamp instantiation point for future CSLib work — do NOT sorry it
+- [ ] Prove `inf_point_is_vef`: the INF configuration (witness `r0`, interval type `not P` on `(z0, r0)`, point type `P OR K+(P)` at `r0`) is expressible as a VEF
 - [ ] In `Kamp/ExistsForallNF.lean`, prove `VEF.closed_conj` (Lemma 3.2.1): conjunction of two VEFs is VEF. The witnesses of the conjunction are the merged (interleaved) witness sequences from both VEFs. Uses `List.merge` on ordered witnesses
 - [ ] In `Kamp/ExistsForallNF.lean`, prove `VEF.closed_ex` (Lemma 3.4): existential quantification of a VEF is VEF. The existentially quantified variable becomes an additional witness point
 - [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF`
 - [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF`
 
-**Timing**: 4 hours (estimated 400-700 lines: 200-300 PriorINF + 200-400 VEF closure)
+**Timing**: 5 hours (estimated 500-800 lines: 300-400 abstract INF + instantiations, 200-400 VEF closure)
 
 **Depends on**: none
 
@@ -121,34 +128,39 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Negation Closure on Prior Structures [NOT STARTED]
+### Phase 3: Negation Closure from Abstract INF Hypothesis [NOT STARTED]
 
-**Goal**: Prove that the negation of a VEF formula is VEF on Prior structures. This is Rabinovich Proposition 4.2 relativized, via Lemma 5.3, Corollary 5.4, and Lemma 5.1 (the core of the proof). This is the critical phase.
+*(scope change: generalized per user directive for CSLib contribution — proved from `HasDefinableINF`/`HasDefinableSUP` carrying the K+ disjunct, i.e., Rabinovich's actual general proof; the Prior version follows by instantiation)*
+
+**Goal**: Prove that the negation of a VEF formula is VEF on any structure satisfying `HasDefinableINF`/`HasDefinableSUP`. This is Rabinovich Proposition 4.2 in its general form, via Lemma 5.3, Corollary 5.4, and Lemma 5.1 (the core of the proof). This is the critical phase.
 
 **Tasks**:
 - [ ] Create `Kamp/NegationClosure.lean`, import PriorINF.lean, ExistsForallNF.lean, Translation.lean
-- [ ] Prove Lemma 5.3 (base case, all beta_i = True) relativized to Prior structures:
-  - `not (exists x_1 ... x_n in (z_0, z_1) with P_i(x_i))` is VEF on Prior structures
+- [ ] Prove Lemma 5.3 (base case, all beta_i = True) from `HasDefinableINF`:
+  - `not (exists x_1 ... x_n in (z_0, z_1) with P_i(x_i))` is VEF given `HasDefinableINF`
   - By induction on n (number of predicates):
     - Base (n=0): trivial (no witnesses to negate)
     - Base (n=1): `not (exists x_1)_{>z_0}^{<z_1} P_1(x_1)` = `(forall y)_{>z_0}^{<z_1} not P_1(y)` -- already VEF (0-witness pattern)
-    - Step: if `P_1` occurs in `(z_0, z_1)`, use `prior_first_occurrence` to find `r_0`. Split into sub-cases; reduce to negation with fewer predicates (IH)
-- [ ] Prove Corollary 5.4 relativized: `not (exists z)_{>z_0}^{<z_1} [alpha_0, ..., alpha_n](z_0, z)` is VEF on Prior structures
+    - Step: if `P_1` occurs in `(z_0, z_1)`, use `HasDefinableINF` to find `r_0`. CARRY BOTH DISJUNCTS: sub-case `P_1(r_0)` (attained) and sub-case `K+(P_1)(r_0)` (non-attained infimum). Reduce to negation with fewer predicates (IH)
+- [ ] Prove Corollary 5.4 in abstract form: `not (exists z)_{>z_0}^{<z_1} [alpha_0, ..., alpha_n](z_0, z)` is VEF given `HasDefinableINF`
   - Define `F_n := alpha_n`, `F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)`
   - Apply Lemma 5.3 to the negation
-- [ ] Prove Lemma 5.1 (full negation closure) relativized:
-  - `not [alpha_0, beta_1, ..., beta_n, alpha_n](z_0, z_1)` is VEF on Prior structures
+- [ ] Prove Lemma 5.1 (full negation closure) in abstract form:
+  - `not [alpha_0, beta_1, ..., beta_n, alpha_n](z_0, z_1)` is VEF given `HasDefinableINF`/`HasDefinableSUP`
   - By induction on n (number of interval segments):
     - 3 cases per Rabinovich pp. 9-11:
       - Case 1: endpoint failure (`not alpha_0(z_0)` or `K+(not beta_1)(z_0)`)
       - Case 2: guard succeeds but no witness (`alpha_0(z_0)` and `beta_1` holds throughout)
-      - Case 3: splitting at a definable infimum point, using Prior INF
+      - Case 3: splitting at a definable infimum point, using the abstract INF hypothesis (both disjuncts)
     - For each case, construct VEF formulas using the A_i^-, A_i^+ decomposition
     - The IH gives VEF for negations of shorter formulas
-- [ ] Prove `vef_negation_closure_prior`: the main negation closure theorem wrapper
+- [ ] Prove `vef_negation_closure`: the main abstract negation closure theorem (hypotheses: `HasDefinableINF`, `HasDefinableSUP`)
+- [ ] Prove `vef_negation_closure_prior`: Prior corollary via `prior_hasDefinableINF`/`prior_hasDefinableSUP` -- this is what Phase 4 consumes; downstream wiring unchanged
 - [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure`
 
-**Timing**: 8 hours (estimated 600-1000 lines). May require splitting into two dispatches: 3a (Lemma 5.3 + Cor 5.4) and 3b (Lemma 5.1).
+**FALLBACK** (from user directive): if carrying the K+ disjunct genuinely blocks, prove the Prior-simplified variant (attained `r_0`, no K+ disjunct) sorry-free FIRST, then refactor toward the abstract version context permitting. The abstraction must not be the reason this phase ends sorried.
+
+**Timing**: 10 hours (estimated 750-1400 lines; +20-40% over the Prior-only variant for the K+ disjunct case analysis). May require splitting into two dispatches: 3a (Lemma 5.3 + Cor 5.4) and 3b (Lemma 5.1).
 
 **Depends on**: 1 (for translation infrastructure used in case constructions)
 
@@ -242,8 +254,9 @@ Phases within the same wave can execute in parallel.
 ## Testing & Validation
 
 - [ ] Phase 1: `lean_verify translateEF1_correct` -- no sorryAx
-- [ ] Phase 2: `lean_verify prior_first_occurrence` -- no sorryAx
+- [ ] Phase 2: `lean_verify prior_hasDefinableINF` -- no sorryAx *(scope change: was prior_first_occurrence; abstract hypothesis + Prior instantiation)*
 - [ ] Phase 2: `lean_verify VEF.closed_conj` -- no sorryAx
+- [ ] Phase 3: `lean_verify vef_negation_closure` (abstract, K+ disjunct carried) -- no sorryAx *(scope change: generalized per user directive)*
 - [ ] Phase 3: `lean_verify vef_negation_closure_prior` -- no sorryAx
 - [ ] Phase 4: `lean_verify rabinovich_fo_to_temporal_prior` -- no sorryAx
 - [ ] Phase 5: `lake build` -- full project, zero errors
@@ -258,7 +271,7 @@ Phases within the same wave can execute in parallel.
 - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean` -- Lemma 5.3, Cor 5.4, Lemma 5.1 relativized (~800 lines)
 - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- rabinovich_fo_to_temporal_prior + sorry fill (~400 lines added)
 
-**Estimated total new Lean code**: 1900-2800 lines across 3 new files + 2 modified files
+**Estimated total new Lean code**: 2100-3300 lines across 3 new files + 2 modified files *(scope change: +200-500 lines for the abstract INF hypothesis and K+ disjunct case analysis)*
 
 ## Rollback/Contingency
 
