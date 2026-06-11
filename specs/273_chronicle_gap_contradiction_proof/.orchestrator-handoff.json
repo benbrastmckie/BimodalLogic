@@ -1,13 +1,16 @@
 {
   "status": "partial",
-  "summary": "Deep analysis of k+1 backward direction revealed the root cause: the formula nf_exist_formula does not encode the quantifier part of sub_nf, and the composition theorem (2-var NF determined by 1-var NFs + order) is FALSE at all depths >= 1. The formula must be replaced with an interval-based formula using nested Until/Since chains (buildRight/buildLeft from Translation.lean) that explicitly encode both atoms and quantifiers of sub_nf. This requires generalizing P2 to all arities P2_n(k), with the dependency chain P2_2(k+1) <- P2_3(k) <- ... <- P2_{k+3}(0). Estimated ~750 lines of new code. No approaches explored (NF-transfer, classical good_nf, composition theorem) can circumvent the need for explicit interval formula construction.",
+  "summary": "Phase 3 remains blocked. Deep analysis confirmed: (1) composition theorem FALSE at all depths >= 1, (2) NF-transfer fails (depth k+2 vs k+1), (3) classical good_nf approach fails. New plan v19 created with interval-based formula approach. Documentation comments added to NegationClosure.lean. The formula nf_exist_formula must be replaced with an interval-based formula encoding the full sub_nf (atoms + quantifiers) via nested Until/Since chains using buildRight/buildLeft from Translation.lean. The v19 plan decomposes this into Phases 3-7 with ~750 lines estimated.",
   "phases_completed": 2,
-  "phases_total": 5,
+  "phases_total": 7,
   "blockers": [
-    "Task 3.4c: The formula nf_exist_formula is the wrong formula for P2(k+1). Must be replaced with an interval-based formula that encodes sub_nf.2 via nested Until/Since. Requires ~750 lines implementing P2_n(k) for all arities."
+    "Phase 3 (v19): Define P2_gen for arbitrary arity + interval formula construction + base cases (~200 lines)",
+    "Phase 4 (v19): Forward direction of interval formula (~150 lines)",
+    "Phase 5 (v19): Backward direction — the core Rabinovich negation closure content (~300 lines)"
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611f.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md",
   "artifacts": [
-    "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611f.md"
+    "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611f.md",
+    "specs/273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md"
   ]
 }
