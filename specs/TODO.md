@@ -29,7 +29,7 @@ next_project_number: 300
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [PLANNED] — Close the sorry in nf_2var_existential_transfer (StaviCompletenes
+273 [PARTIAL] — Close the sorry in nf_2var_existential_transfer (StaviCompletenes
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -233,7 +233,7 @@ next_project_number: 300
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -249,7 +249,10 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md]
   - [273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/08_team-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/17_kamp-rabinovich-plan.md]
+  - [273_chronicle_gap_contradiction_proof/reports/09_negation-closure-research.md]
+- **Plan**:
+  - [273_chronicle_gap_contradiction_proof/plans/17_kamp-rabinovich-plan.md]
+  - [273_chronicle_gap_contradiction_proof/plans/18_rabinovich-pipeline-plan.md]
 
 **Description**: Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.
 

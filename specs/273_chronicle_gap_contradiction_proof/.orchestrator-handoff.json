@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Rewired US_expressively_complete_over_prior to use kamp_prior_expressive_completeness (Rabinovich 2014 relativized). Architecture is complete: main theorem fully proved modulo one sorry in nf_characterizable_temporal_prior at depth k>=1. Sorry chain moved from mathematically FALSE lemma (nf_exist_sf_guarded_backward) to mathematically SOUND but unformalized Rabinovich negation closure argument. All downstream consumers compile.",
+  "summary": "Blocker research complete: the k>=1 sorry is the core Kamp difficulty relocated — arity-1 induction cannot express 2-var NF existence statements. Recommended path: prove Rabinovich Theorem 4.4 relativized (restore plan v17 phases 2-5 as 5 sub-phases, 1900-3000 lines), then fill the sorry in ~10 lines via the sorry-free nf_to_formula bridge. Needs plan revision v18 + one dispatch per phase; no rewiring of downstream consumers.",
   "phases_completed": 3,
   "phases_total": 7,
   "blockers": [
@@ -12,10 +12,35 @@
     "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-6-handoff-20260611.md"
   },
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean", "type": "summary", "summary": "Interval pattern types and VEF definitions"},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean", "type": "summary", "summary": "Main theorem kamp_prior_expressive_completeness with one sorry in nf_characterizable_temporal_prior k>=1"},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean", "type": "summary", "summary": "Extracted semantic_prior_UZ/SZ definitions to break import cycle"},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean", "type": "summary", "summary": "Rewired US_expressively_complete_over_prior proof body"},
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean", "type": "summary", "summary": "Added Stavi open generalization documentation"}
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean",
+      "type": "summary",
+      "summary": "Interval pattern types and VEF definitions"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "type": "summary",
+      "summary": "Main theorem kamp_prior_expressive_completeness with one sorry in nf_characterizable_temporal_prior k>=1"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean",
+      "type": "summary",
+      "summary": "Extracted semantic_prior_UZ/SZ definitions to break import cycle"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean",
+      "type": "summary",
+      "summary": "Rewired US_expressively_complete_over_prior proof body"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
+      "type": "summary",
+      "summary": "Added Stavi open generalization documentation"
+    },
+    {
+      "path": "specs/273_chronicle_gap_contradiction_proof/reports/09_negation-closure-research.md",
+      "type": "report",
+      "summary": "Root cause + phased decomposition for the Rabinovich negation closure sorry; recommends plan v18 with 5 phases and nf_to_formula bridge fill"
+    }
   ]
 }
