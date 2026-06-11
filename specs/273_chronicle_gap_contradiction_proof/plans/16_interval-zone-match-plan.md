@@ -1,7 +1,7 @@
 # Implementation Plan: Interval-Splitting Zone Match for Existential Transfer (v16)
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/09_concrete-implementation-roadmap.md
@@ -70,7 +70,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Interval-Splitting Zone Match Lemma [BLOCKED]
+### Phase 1: Interval-Splitting Zone Match Lemma [IN PROGRESS]
 
 **BLOCKER** (Phase 1):
 - **What failed**: `interval_splitting_zone_match` is FALSE for 1-var interval types (`interval_nf_types`). The plan assumed that given `interval_nf_types M k x t = interval_nf_types M' k x' t'` and a zone-matched point u/u' in the interval, one can find u' such that the sub-interval types `interval_nf_types M k x u = interval_nf_types M' k x' u'` also agree. This is NOT true in general.
