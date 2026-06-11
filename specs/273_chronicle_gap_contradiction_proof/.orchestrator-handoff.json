@@ -1,41 +1,41 @@
 {
   "status": "partial",
-  "summary": "Plan v18 Phase 1 (translation correctness) complete sorry-free. Phase 2 partial: abstract INF/SUP hypotheses + Prior instantiation done sorry-free; VEF closure properties deferred. Phases 3-5 not started. The single sorry in nf_characterizable_temporal_prior k>=1 (KampPrior.lean:149) remains. Also fixed bugs in buildRight/buildLeft definitions.",
-  "phases_completed": 1,
+  "summary": "Plan v18 Phases 1-2 complete. Phase 3 in progress: nf_exist_formula_forward proved sorry-free. Key remaining sorry is nf_2var_exist_formula_prior (classical existence of correct temporal formula for 2-var NF realizability on Prior structures). All other sorries in NfCharFormula.lean are subordinate. Once nf_2var_exist_formula_prior is proved, the pipeline is: nf_characterizable_temporal_prior_classical (already proved modulo it) -> fill KampPrior.lean sorry -> US_expressively_complete_over_prior becomes sorry-free.",
+  "phases_completed": 2,
   "phases_total": 5,
   "blockers": [
-    "VEF.closed_conj and VEF.closed_ex (Phase 2 remainder) need ~300-500 lines of witness-merging proofs",
-    "Negation closure (Phase 3) is the critical ~750-1400 line phase, depends on Phase 2 VEF closure",
-    "rabinovich_fo_to_temporal_prior (Phase 4) depends on Phases 2+3",
-    "Sorry fill (Phase 5) is ~10 lines once Phase 4 is done"
+    "nf_2var_exist_formula_prior (Phase 3 core): requires either (a) Rabinovich negation closure, (b) model-theoretic argument via NF-determined truth values, or (c) guarded formula approach from StaviCompleteness adapted to Prior structures",
+    "Approaches analyzed: StaviCompleteness uses nf_exist_sf_guarded but backward direction (site 3) is FALSE for general orders. Prior structures fix this via attained first/last occurrences. The guarded formula approach with interval_guard adapted to Prior should work.",
+    "nf_char_formula_of_nf_eval and nf_eval_of_nf_char_formula have sorries but are UNUSED for the main pipeline"
   ],
   "continuation_context": {
-    "last_completed_phase": 1,
-    "next_phase": 2,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611.md",
-    "remaining_work": "Complete VEF closure (Phase 2), negation closure (Phase 3), FO-to-temporal theorem (Phase 4), sorry fill (Phase 5)",
-    "estimated_remaining_lines": "1500-2500"
+    "last_completed_phase": 2,
+    "next_phase": 3,
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611b.md",
+    "remaining_work": "Prove nf_2var_exist_formula_prior (Phase 3), wire into KampPrior.lean (Phase 4-5)",
+    "estimated_remaining_lines": "500-1500",
+    "key_insight": "nf_exist_formula_forward (forward direction) is now sorry-free. The backward direction for Prior structures requires showing that the ⊤ guard (or a guarded formula) is sufficient when UZ/SZ provide attained first/last occurrences."
   },
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
       "type": "implementation",
-      "summary": "Translation correctness (Prop 3.5): buildRight_correct, buildLeft_correct, translateEF1_correct, ef1_to_temporal, translateVEF1_correct — all sorry-free"
+      "summary": "Translation correctness (Prop 3.5) — sorry-free"
     },
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
       "type": "implementation",
-      "summary": "Abstract INF/SUP hypotheses (HasDefinableINF, HasDefinableSUP), K+/K- operators, Prior instantiation — all sorry-free"
+      "summary": "Abstract INF/SUP + Prior instantiation — sorry-free"
     },
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "type": "implementation",
-      "summary": "Fixed buildRight/buildLeft definitions (argument order and formula structure bugs)"
+      "summary": "NF characteristic formula construction. nf_exist_formula_forward proved sorry-free. 3 remaining sorries all subordinate to nf_2var_exist_formula_prior."
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611b.md",
       "type": "handoff",
-      "summary": "Detailed continuation guide with architectural analysis"
+      "summary": "Detailed continuation guide with proof approach recommendations"
     }
   ]
 }
