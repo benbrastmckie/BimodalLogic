@@ -1,18 +1,17 @@
 {
   "status": "partial",
-  "summary": "Phase 3a partial: created NegationClosure.lean with master simultaneous induction architecture (P1(k) + P2(k) by induction on k). The architecture compiles with 3 localized sorries: (1) depth-0 atom/order case analysis (~30 lines), (2) depth-0 backward direction (~80 lines), (3) depth k+1 backward direction (Rabinovich composition/negation closure, ~400-600 lines). The forward direction at all depths is sorry-free. The key architectural contribution: nf_char_kp1_from_2var builds P1(k+1) from P1(k) + P2(k) without calling the sorry'd nf_2var_exist_formula_prior, breaking the circularity that blocked all 5 previous approaches.",
+  "summary": "Phase 3 partial: master simultaneous induction architecture established in NegationClosure.lean. P1(0)/P2(0) base cases fully proved (backward_depth0 sorry-free). P1(k+1) from P1(k)+P2(k) sorry-free. P2(k+1) forward sorry-free. Only remaining sorry: P2(k+1) backward direction (line 366, the Rabinovich composition/negation closure content). NfCharFormula.lean down to 1 sorry. Total sorry count across pipeline: 3 (all gating on the same k+1 backward).",
   "phases_completed": 2,
   "phases_total": 5,
   "blockers": [
-    "backward_depth0: depth-0 backward direction of nf_exist_formula. Pure case analysis (~80 lines). Unfold nf_exist_formula, case-split on order direction, extract witness from Until/Since, apply nf_2var_depth0_components. Blocked only by Fin case analysis details, not mathematical content.",
-    "k+1 backward in master_induction: the Rabinovich composition theorem / negation closure content. On Prior structures, the depth-(k+1) arity-2 NF of (x,t) is determined by the depth-(k+1) arity-1 NFs of x and t plus the order. For points y between t and x, existence is constrained by Prior-UZ/SZ: whether char_k(nf_y) occurs in (t,x) depends on the first/last occurrence position relative to x. Estimated 400-600 lines."
+    "k+1 backward direction in master_induction (NegationClosure.lean:366): requires showing that on Prior structures, the depth-(k+1) arity-2 NF of (x,t) is determined by depth-(k+1) arity-1 NFs of x and t. The existential property at arity 1 has qd = k+2, exceeding depth-(k+1) characterizations, so doets_lemma_1_1 cannot directly close it. Needs composition theorem for Prior structures (300-500 lines) with 3-region case analysis using Prior-UZ/SZ."
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611d.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611e.md",
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
       "type": "implementation",
-      "summary": "Translation correctness (Prop 3.5) -- sorry-free"
+      "summary": "Translation correctness -- sorry-free"
     },
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
@@ -22,17 +21,12 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "type": "implementation",
-      "summary": "NF characteristic formula. 1 sorry: nf_2var_exist_formula_prior."
+      "summary": "NF char formula. forward' sorry-free. 1 sorry: nf_2var_exist_formula_prior."
     },
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "type": "implementation",
-      "summary": "Master simultaneous induction (P1+P2). 3 sorries: depth-0 cases (2), k+1 backward (1). nf_char_kp1_from_2var and forward direction sorry-free."
-    },
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611d.md",
-      "type": "handoff",
-      "summary": "Architecture analysis, 6 circular approaches documented, exact proof strategy for remaining sorries"
+      "summary": "Master induction: P1(0)/P2(0) sorry-free, P1(k+1) sorry-free. 1 sorry: k+1 backward."
     }
   ]
 }

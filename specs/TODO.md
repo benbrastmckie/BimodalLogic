@@ -233,7 +233,7 @@ next_project_number: 300
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
