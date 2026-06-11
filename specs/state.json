@@ -1246,7 +1246,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-11T23:55:00Z",
+      "last_updated": "2026-06-11T00:00:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1317,17 +1317,27 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/18_rabinovich-pipeline-plan.md",
           "type": "plan",
           "summary": "Revised plan v18: 5-phase Rabinovich pipeline to fill nf_characterizable_temporal_prior k>=1 sorry, completing the Kamp theorem for Prior structures"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v19: interval-based P2_n(k) formula replacing unprovable nf_exist_formula backward direction, with arity generalization and literature alignment (Rabinovich 2014, Doets 1989)"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/20_nested-buildright-plan.md",
+          "type": "plan",
+          "summary": "Plan v20: nested buildRight formula replacing P2_n arity generalization, with k+1-level Until/Since nesting aligned to Rabinovich 2014 Prop 3.5 + Section 5"
         }
       ],
       "next_artifact_number": 10,
       "researched": "2026-06-11T15:40:46Z",
       "planned": "2026-06-11T18:10:00Z",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 24,
+        "phases": 7,
+        "total_effort_hours": 16,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 18,
+        "plan_version": 20,
         "dependency_waves": [
           [
             1,
@@ -1341,6 +1351,12 @@
           ],
           [
             5
+          ],
+          [
+            6
+          ],
+          [
+            7
           ]
         ],
         "reports_integrated": [
@@ -1352,6 +1368,16 @@
           {
             "path": "reports/09_negation-closure-research.md",
             "integrated_in_plan_version": 18,
+            "integrated_date": "2026-06-11"
+          },
+          {
+            "path": "handoffs/phase-3-handoff-20260611f.md",
+            "integrated_in_plan_version": 19,
+            "integrated_date": "2026-06-11"
+          },
+          {
+            "path": "handoffs/phase-3-handoff-20260611g.md",
+            "integrated_in_plan_version": 20,
             "integrated_date": "2026-06-11"
           }
         ]
