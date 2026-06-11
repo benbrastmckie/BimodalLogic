@@ -383,7 +383,31 @@ noncomputable def master_induction
     -- P1(k+1): built from P1(k) + P2(k), no sorry
     have p1_kp1 : P1 atomMap (k + 1) := fun nf =>
       nf_char_kp1_from_2var atomMap h_surj k char_k char_k_correct p2_k nf
-    -- P2(k+1): forward is universal; backward requires composition/negation closure
+    -- P2(k+1): The backward direction (formula → existential) is BLOCKED.
+    -- The current formula nf_exist_formula encodes atoms + 1-var NF of the
+    -- witness x but omits sub_nf.2 (the quantifier part of the 2-var NF).
+    -- Two points with the same depth-(k+1) 1-var NFs can have different
+    -- 2-var NFs, so the formula is insufficient for the backward direction.
+    --
+    -- The fix requires an interval-based formula that encodes sub_nf.2 using
+    -- nested buildRight/buildLeft chains with k+1 levels of nesting, where:
+    --   Level j places witnesses with char_{k+1-j} characterization formulas
+    --   Level 0 encodes the main witness x via Until/Since
+    --   Levels 1..k encode 3-var, 4-var, ..., (k+2)-var quantifier conditions
+    --   Level k+1 (bottom) is atoms only -- determined by predicates + positions
+    --
+    -- Three approaches were analyzed and found insufficient:
+    -- 1. NF-transfer (good_forall): fails because depth-(k+1) 1-var NF doesn't
+    --    determine depth-(k+1) 2-var existentials (arity gap)
+    -- 2. Classical existence (good_exists): forward works but backward requires
+    --    the same NF-transfer that fails
+    -- 3. P2_n arity generalization: temporal formulas are 1-variable objects,
+    --    so P2_n for n > 2 parent variables has type-level issues
+    --
+    -- The correct approach uses nested buildRight to recursively encode the
+    -- quantifier conditions, with the recursion terminating at depth 0 where
+    -- all n-var NFs are determined by predicates and positions.
+    -- See plan v19 phases 3-5 and handoff documentation.
     have p2_kp1 : P2 atomMap (k + 1) := by
       intro parent_atoms sub_nf
       let char_kp1 : NormalForm sig (k + 1) 1 → Formula :=
@@ -399,11 +423,9 @@ noncomputable def master_induction
       refine ⟨nf_exist_formula atomMap h_surj (k + 1) char_kp1 parent_atoms sub_nf,
         fun M h_UZ h_SZ t h_atoms => ?_⟩
       constructor
-      · -- Backward: the hard direction (Rabinovich negation closure content)
-        intro h_formula
+      · intro h_formula
         sorry
-      · -- Forward: universal, no Prior needed
-        exact nf_exist_formula_forward' atomMap h_surj (k + 1) char_kp1
+      · exact nf_exist_formula_forward' atomMap h_surj (k + 1) char_kp1
           (fun nf_1 s => char_kp1_correct nf_1 M h_UZ h_SZ s)
           parent_atoms sub_nf h_atoms
     ⟨p1_kp1, p2_kp1⟩
