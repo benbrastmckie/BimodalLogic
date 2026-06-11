@@ -131,7 +131,7 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [IN PROGRESS]
 
-*(deviation: altered -- the VEF-based negation closure (Lemma 5.1/5.3) was replaced by the NfCharFormula approach, which uses classical existence + NF theory. The negation closure content surfaces as the backward direction of `nf_2var_exist_formula_prior`.)*
+*(deviation: altered -- the VEF-based negation closure (Lemma 5.1/5.3) was replaced by a master simultaneous induction approach in NegationClosure.lean. Instead of constructing VEF representations, the proof directly provides temporal characterizations (P1) and 2-var existential formulas (P2) simultaneously by induction on k. The negation closure content surfaces as the backward direction of nf_exist_formula at depth k+1.)*
 
 **Goal**: Prove `nf_2var_exist_formula_prior` sorry-free in NfCharFormula.lean. This classically asserts existence of a correct temporal formula for 2-var NF realizability on Prior structures. Once proved, `nf_characterizable_temporal_prior_classical` (already proved modulo it) fills the KampPrior.lean:149 sorry.
 
