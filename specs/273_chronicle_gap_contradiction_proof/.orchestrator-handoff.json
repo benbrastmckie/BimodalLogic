@@ -1,16 +1,44 @@
 {
   "status": "partial",
-  "summary": "Phase 3 remains blocked. Deep analysis confirmed: (1) composition theorem FALSE at all depths >= 1, (2) NF-transfer fails (depth k+2 vs k+1), (3) classical good_nf approach fails. New plan v19 created with interval-based formula approach. Documentation comments added to NegationClosure.lean. The formula nf_exist_formula must be replaced with an interval-based formula encoding the full sub_nf (atoms + quantifiers) via nested Until/Since chains using buildRight/buildLeft from Translation.lean. The v19 plan decomposes this into Phases 3-7 with ~750 lines estimated.",
+  "summary": "Phase 3 still NOT STARTED after this session. Deep design analysis confirmed that the nested buildRight approach is correct but identified additional implementation obstacles: (1) P2_gen with all-same-point env (fun _ => t) cannot handle multi-variable parent environments needed for 3-var conditions at depth k > 0, (2) standalone sub-formulas for inner conditions cannot reference the outer Until witness x, (3) the formula must be a SINGLE nested structure with k+1 levels of buildRight, not decomposed into standalone sub-formulas. The handoff 20260611h documents the definitive design resolution. Import restructuring is also needed: remove KampPrior import from NegationClosure, add NegationClosure import to KampPrior.",
   "phases_completed": 2,
   "phases_total": 7,
   "blockers": [
-    "Phase 3 (v19): Define P2_gen for arbitrary arity + interval formula construction + base cases (~200 lines)",
-    "Phase 4 (v19): Forward direction of interval formula (~150 lines)",
-    "Phase 5 (v19): Backward direction — the core Rabinovich negation closure content (~300 lines)"
+    {
+      "phase": 3,
+      "description": "P2(k+1) backward requires replacing nf_exist_formula with a SINGLE nested buildRight formula (k+1 levels of nesting). The formula is defined recursively on k, with buildRight placing witnesses at each level. At depth 0 (base case), the existing nf_exist_formula/backward_depth0 suffices. At depth k+1, the event formula at each witness includes a RECURSIVE call for deeper quantifier conditions.",
+      "sorry_location": "NegationClosure.lean:427",
+      "estimated_fix": "~400 lines: recursive formula definition (~100), forward direction (~100), backward direction (~200)",
+      "key_obstacles": [
+        "Formula must be a single nested structure, not decomposed into standalone sub-formulas",
+        "Inner conditions involve x (the outer Until witness) which is not accessible from standalone formulas at t",
+        "P2_gen(k, n) with env=(fun _ => t) fails for n > 1 because order atoms between parents are all false",
+        "The recursion is on k (depth) with increasing arity at each level, terminating at depth 0 where NFs are atoms"
+      ],
+      "correct_approach": "Define nf_exist_formula_nested by recursion on k. Base: nf_exist_formula. Step: buildRight chain placing x and interval witnesses, with nested calls in event formulas. Disjunction over compatible (nf_x, witness_config) pairs. Finite by Fintype instances."
+    }
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611h.md",
   "artifacts": [
-    "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611f.md",
-    "specs/273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md"
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
+      "type": "implementation",
+      "summary": "buildRight/buildLeft correctness (Phase 1, sorry-free)"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
+      "type": "implementation",
+      "summary": "Prior first/last occurrence lemmas (Phase 2, sorry-free)"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "type": "implementation",
+      "summary": "Master induction with 1 sorry at P2(k+1) backward (line 427)"
+    },
+    {
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611h.md",
+      "type": "handoff",
+      "summary": "Definitive design resolution: why P2_gen fails, why standalone sub-formulas fail, correct nested buildRight approach"
+    }
   ]
 }
