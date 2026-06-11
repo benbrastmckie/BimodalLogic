@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [IN PROGRESS]
+### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [PARTIAL]
 
 *(deviation: altered -- the VEF-based negation closure (Lemma 5.1/5.3) was replaced by a master simultaneous induction approach in NegationClosure.lean. Instead of constructing VEF representations, the proof directly provides temporal characterizations (P1) and 2-var existential formulas (P2) simultaneously by induction on k. The negation closure content surfaces as the backward direction of nf_exist_formula at depth k+1.)*
 
