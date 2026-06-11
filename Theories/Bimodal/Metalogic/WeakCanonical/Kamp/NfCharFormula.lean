@@ -227,21 +227,120 @@ theorem nf_exist_formula_forward
     (h_ex : ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :
     temporal_truth M atomMap t
       (nf_exist_formula atomMap h_surj k char_k parent_atoms sub_nf) := by
-  -- Proof mirrors StaviCompleteness.nf_exist_sf_forward exactly,
-  -- using temporal_truth instead of stavi_temporal_truth.
-  -- The technical details involve Fin.cons simplification and case analysis
-  -- on the order direction. The argument is:
-  -- 1. Extract witness x and its atom assignment from h_ex
-  -- 2. Show t-compatibility (predicates at variable 1 match parent)
-  -- 3. Show order consistency (not both x<t and t<x)
-  -- 4. Find nf_x = nf_characteristic M k 1 (fun _ => x)
-  -- 5. Show char_k nf_x holds at x (via char_k_correct)
-  -- 6. Show nf_x atom-compatible with sub_nf at variable 0
-  -- 7. Case-split on nf_order_dir:
-  --    - true (t < x): provide x as Until witness with witness_type at x
-  --    - false (x < t): provide x as Since witness
-  --    - none (x = t): witness_type holds directly
-  sorry
+  obtain ⟨x, h_x⟩ := h_ex
+  -- Step 1: Extract atom information from h_x
+  have h_x_atoms : ∀ (a : AtomKind sig (1 + 1)),
+      atom_eval M (Fin.cons x (fun _ => t)) a ↔ sub_nf.atom_assgn a = true := by
+    cases k with
+    | zero => exact h_x
+    | succ k' => exact h_x.1
+  -- Step 2: t-compatibility holds
+  have h_t_compat : nf_t_compat parent_atoms sub_nf = true := by
+    simp only [nf_t_compat]
+    rw [List.all_eq_true]
+    intro p _
+    simp only [beq_iff_eq]
+    have h_sub_t := h_x_atoms (.pred p ⟨1, by omega⟩)
+    have h_par := h_atoms (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval] at h_sub_t h_par
+    have h_env_1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+      simp [Fin.cons]; rfl
+    rw [h_env_1] at h_sub_t
+    cases h1 : sub_nf.atom_assgn (.pred p ⟨1, by omega⟩) <;>
+    cases h2 : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+    simp_all
+  -- Step 3: Order consistency (not both x<t and t<x)
+  have h_x_lt_t := h_x_atoms (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+  have h_t_lt_x := h_x_atoms (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+  simp only [atom_eval, Fin.cons] at h_x_lt_t h_t_lt_x
+  have h_fc0 : Fin.cases x (fun _ : Fin 1 => t) (⟨0, by omega⟩ : Fin 2) = x := by
+    simp [Fin.cases]
+  have h_fc1 : Fin.cases x (fun _ : Fin 1 => t) (⟨1, by omega⟩ : Fin 2) = t := by
+    simp [Fin.cases]; rfl
+  rw [h_fc0, h_fc1] at h_x_lt_t
+  rw [h_fc1, h_fc0] at h_t_lt_x
+  have h_order_compat : ¬(sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+      sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))) = true := by
+    intro h_both
+    rw [Bool.and_eq_true] at h_both
+    exact absurd (lt_trans (h_x_lt_t.mpr h_both.1) (h_t_lt_x.mpr h_both.2)) (lt_irrefl _)
+  -- Step 4: The 1-variable depth-k NF of x
+  set nf_x := nf_characteristic M k 1 (fun _ => x) with nf_x_def
+  have h_nf_x : nf_eval_nf M k 1 (fun _ => x) nf_x :=
+    nf_characteristic_satisfies M k 1 (fun _ => x)
+  have h_char_at_x : temporal_truth M atomMap x (char_k nf_x) :=
+    (char_k_correct nf_x M x).mpr h_nf_x
+  -- Step 5: nf_x is atom-compatible with sub_nf at variable 0
+  have h_compat : ∀ p : sig.preds,
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) =
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩) := by
+    intro p
+    have h_nf_x_p : atom_eval M (fun _ => x) (.pred p (0 : Fin 1)) ↔
+        (nf_x.atom_assgn (.pred p (0 : Fin 1)) = true) := by
+      cases k with
+      | zero => exact h_nf_x (.pred p 0)
+      | succ k' => exact h_nf_x.1 (.pred p 0)
+    have h_sub_p := h_x_atoms (.pred p (0 : Fin 2))
+    simp only [atom_eval] at h_nf_x_p h_sub_p
+    have h_fc0' : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) (0 : Fin 2) = x := by
+      simp [Fin.cons]
+    rw [h_fc0'] at h_sub_p
+    cases h1 : nf_x.atom_assgn (.pred p (0 : Fin 1)) <;>
+    cases h2 : sub_nf.atom_assgn (.pred p (0 : Fin 2)) <;>
+    simp_all
+  have h_compat_filter : (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+    rw [List.all_eq_true]
+    intro p _
+    simp only [beq_iff_eq]
+    exact h_compat p
+  -- Step 6: char_k nf_x is in the filtered list (witness_type disjuncts)
+  have h_in_list : char_k nf_x ∈
+      (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap (fun nf_x' =>
+        if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          nf_x'.atom_assgn (.pred p ⟨0, by omega⟩) ==
+          sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true
+        then some (char_k nf_x') else none) := by
+    rw [List.mem_filterMap]
+    exact ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
+      by rw [if_pos h_compat_filter]⟩
+  -- The disjunction of compatible formulas holds at x
+  have h_disj_at_x : temporal_truth M atomMap x (formula_disjList
+      ((Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap (fun nf_x' =>
+        if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          nf_x'.atom_assgn (.pred p ⟨0, by omega⟩) ==
+          sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true
+        then some (char_k nf_x') else none))) := by
+    exact (formula_disjList_iff M atomMap x _).mpr ⟨char_k nf_x, h_in_list, h_char_at_x⟩
+  -- Step 7: Unfold nf_exist_formula and case-split on order direction
+  simp only [nf_exist_formula, h_t_compat, not_true, ↓reduceIte, ite_not]
+  simp only [h_order_compat, ite_false]
+  simp only [nf_order_dir]
+  match h_b1 : sub_nf.atom_assgn (AtomKind.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
+        h_b2 : sub_nf.atom_assgn (AtomKind.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
+  | true, false =>
+    -- t < x: use Until with witness x
+    simp only [temporal_truth]
+    exact ⟨x, h_t_lt_x.mpr h_b1, h_disj_at_x,
+           fun _ _ _ => temporal_truth_top M atomMap _⟩
+  | false, true =>
+    -- x < t: use Since with witness x
+    simp only [temporal_truth]
+    exact ⟨x, h_x_lt_t.mpr h_b2, h_disj_at_x,
+           fun _ _ _ => temporal_truth_top M atomMap _⟩
+  | false, false =>
+    -- x = t: witness_type holds directly
+    have h_eq : x = t := by
+      by_contra h_ne
+      rcases lt_or_gt_of_ne h_ne with h | h
+      · exact absurd (h_x_lt_t.mp h) (by simp_all)
+      · exact absurd (h_t_lt_x.mp h) (by simp_all)
+    simp only [Bool.and_self, ↓reduceIte]
+    rw [← h_eq]; exact h_disj_at_x
+  | true, true =>
+    exfalso
+    exact h_order_compat (by rw [Bool.and_eq_true]; exact ⟨h_b2, h_b1⟩)
 
 /-! ## Full NF Characterization Correctness
 
