@@ -129,11 +129,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [IN PROGRESS]
+### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [BLOCKED]
 
 *(deviation: altered -- the VEF-based negation closure (Lemma 5.1/5.3) was replaced by the NfCharFormula approach, which uses classical existence + NF theory. The negation closure content surfaces as the backward direction of `nf_2var_exist_formula_prior`.)*
 
 **Goal**: Prove `nf_2var_exist_formula_prior` sorry-free in NfCharFormula.lean. This classically asserts existence of a correct temporal formula for 2-var NF realizability on Prior structures. Once proved, `nf_characterizable_temporal_prior_classical` (already proved modulo it) fills the KampPrior.lean:149 sorry.
+
+**BLOCKER** (Phase 3):
+- **What failed**: `nf_2var_exist_formula_prior` backward direction -- the Until/Since formula does not imply the 2-var existential because the 1-var depth-k NF of witness x does NOT determine the 2-var depth-k NF of (x, t) at k > 0
+- **What was tried**: (1) nf_exist_formula with top guard -- backward fails; (2) classical choice via doets_lemma_1_1 -- circular at depth k+1; (3) NF uniqueness argument -- underdetermines positive conditions; (4) structural induction on MonadicFormula -- reduces to VEF closure at all arities; (5) inner k-induction -- arity escalation 2->3->... prevents closure
+- **Why it's stuck**: The mathematical content is exactly the Rabinovich negation closure (Lemma 5.1, pp. 9-11): showing that VEF is closed under negation using first/last occurrence properties. No shortcut avoids this 600-1000 line proof.
+- **What is needed**: Implement the Rabinovich negation closure for Prior structures (simplified: attained first/last occurrences, K+ disjunct vacuous). Specifically: VEF closure under conjunction + existential + negation, then derive nf_2var_exist_formula_prior from the composed VEF-to-temporal pipeline.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Tasks**:
 - [x] **Task 3.1**: Prove `nf_exist_formula_forward` sorry-free (forward direction: existential -> formula, no Prior needed) *(completed in prior session)*
