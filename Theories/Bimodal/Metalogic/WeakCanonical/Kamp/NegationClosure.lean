@@ -90,12 +90,111 @@ private theorem backward_depth0 {sig : MonadicSignature}
     (h_formula : temporal_truth M atomMap t
       (nf_exist_formula atomMap h_surj 0 char_0 parent_atoms sub_nf)) :
     ∃ x : M.carrier, nf_eval_nf M 0 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
-  -- At depth 0, extract the witness from Until/Since, use char_0_M to get its
-  -- arity-1 NF, and apply nf_2var_depth0_components to reconstruct the arity-2 NF.
-  -- Pure case analysis: t-compatibility, order consistency, order direction (U/S/=).
-  -- The key facts used: char_0_M gives atom matching at the witness, h_atoms gives
-  -- atom matching at t, and the order is determined by Until (t<x) or Since (x<t).
-  sorry
+  -- Use nf_exist_formula_forward' for the forward direction (existential -> formula)
+  -- and show the backward direction holds at depth 0 because the arity-2 NF is purely atomic.
+  --
+  -- Strategy: Instead of unfolding the formula, use the UNIQUENESS of NFs.
+  -- The formula truth means the forward direction holds for SOME x. But we need
+  -- to find x such that the full arity-2 NF matches. At depth 0, the arity-2 NF
+  -- is just atoms + order, all of which are captured by nf_exist_formula.
+  --
+  -- We use the fact that on ANY model, char_0 correctly characterizes depth-0 NFs,
+  -- so the witness x from the formula has the right atom assignment, and the
+  -- order (from Until/Since) is correct.
+  simp only [nf_exist_formula, NormalForm.atom_assgn] at h_formula
+  by_cases h_tc : nf_t_compat parent_atoms sub_nf = true
+  · simp only [h_tc, not_true_eq_false, ite_false] at h_formula
+    by_cases h_ob : (sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+        sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))) = true
+    · simp only [h_ob, ↓reduceIte, temporal_truth] at h_formula
+    · simp only [h_ob, ↓reduceIte, ite_false] at h_formula
+      simp only [nf_order_dir] at h_formula
+      -- Helper: extract witness NF from disjunction
+      have extract_nf : ∀ (x : M.carrier),
+          temporal_truth M atomMap x (formula_disjList
+            ((Fintype.elems (α := NormalForm sig 0 1)).val.toList.filterMap (fun nf_x =>
+              if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+                nf_x (.pred p ⟨0, by omega⟩) == sub_nf (.pred p ⟨0, by omega⟩)) = true
+              then some (char_0 nf_x) else none))) →
+          ∃ nf_x : NormalForm sig 0 1,
+            (∀ p : sig.preds, nf_x (.pred p ⟨0, by omega⟩) =
+              sub_nf (.pred p ⟨0, by omega⟩)) ∧
+            nf_eval_nf M 0 1 (fun _ => x) nf_x := by
+        intro x h_disj
+        rw [formula_disjList_iff] at h_disj
+        obtain ⟨A, h_mem, h_A⟩ := h_disj
+        rw [List.mem_filterMap] at h_mem
+        obtain ⟨nf_x, _, h_if⟩ := h_mem
+        split_ifs at h_if with h_compat
+        · cases h_if with | refl =>
+          refine ⟨nf_x, ?_, (char_0_M nf_x x).mp h_A⟩
+          intro p
+          have := (List.all_eq_true.mp h_compat) p
+            (Multiset.mem_toList.mpr (Fintype.complete p))
+          simp only [beq_iff_eq] at this
+          exact this
+      -- Helper: t-compat gives pred matching at t
+      have h_pred_t : ∀ p : sig.preds,
+          M.interp p t ↔ sub_nf (.pred p ⟨1, by omega⟩) = true := by
+        intro p
+        have h_par := h_atoms (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at h_par
+        have h_cp : sub_nf (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩) := by
+          have := (List.all_eq_true.mp (by rw [nf_t_compat] at h_tc; exact h_tc))
+            p (Multiset.mem_toList.mpr (Fintype.complete p))
+          simp only [beq_iff_eq] at this
+          exact this
+        rw [h_cp]; exact h_par
+      match h_b1 : sub_nf (AtomKind.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
+            h_b2 : sub_nf (AtomKind.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
+      | true, false =>
+        -- t < x: Until
+        simp only [NormalForm.atom_assgn, h_b1, h_b2, Bool.false_eq_true, ite_false] at h_formula
+        obtain ⟨x, h_lt, h_event, _⟩ := h_formula
+        obtain ⟨nf_x, h_x_compat, h_x_nf⟩ := extract_nf x h_event
+        have h_pred_x : ∀ p : sig.preds,
+            M.interp p x ↔ sub_nf (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_x_nf (.pred p ⟨0, by omega⟩)
+          simp only [atom_eval] at h; rw [h, h_x_compat p]
+        exact ⟨x, show nf_eval_nf M 0 2 _ _ from nf_2var_depth0_components M x t sub_nf
+          h_pred_x h_pred_t
+          ⟨fun hxt => absurd (lt_trans hxt h_lt) (lt_irrefl _),
+           fun h => absurd (h ▸ h_b2 : true = false) (by decide)⟩
+          ⟨fun _ => h_b1, fun _ => h_lt⟩⟩
+      | false, true =>
+        -- x < t: Since
+        simp only [NormalForm.atom_assgn, h_b1, h_b2, Bool.false_eq_true, ite_false] at h_formula
+        obtain ⟨x, h_lt, h_event, _⟩ := h_formula
+        obtain ⟨nf_x, h_x_compat, h_x_nf⟩ := extract_nf x h_event
+        have h_pred_x : ∀ p : sig.preds,
+            M.interp p x ↔ sub_nf (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_x_nf (.pred p ⟨0, by omega⟩)
+          simp only [atom_eval] at h; rw [h, h_x_compat p]
+        exact ⟨x, show nf_eval_nf M 0 2 _ _ from nf_2var_depth0_components M x t sub_nf
+          h_pred_x h_pred_t
+          ⟨fun _ => h_b2, fun _ => h_lt⟩
+          ⟨fun htx => absurd (lt_trans h_lt htx) (lt_irrefl _),
+           fun h => absurd (h ▸ h_b1 : true = false) (by decide)⟩⟩
+      | false, false =>
+        -- x = t: identity
+        simp only [NormalForm.atom_assgn, h_b1, h_b2, Bool.false_eq_true, ite_false,
+          beq_self_eq_true, Bool.and_self, ite_true] at h_formula
+        obtain ⟨nf_x, h_x_compat, h_x_nf⟩ := extract_nf t h_formula
+        have h_pred_x : ∀ p : sig.preds,
+            M.interp p t ↔ sub_nf (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_x_nf (.pred p ⟨0, by omega⟩)
+          simp only [atom_eval] at h; rw [h, h_x_compat p]
+        exact ⟨t, show nf_eval_nf M 0 2 _ _ from nf_2var_depth0_components M t t sub_nf
+          h_pred_x h_pred_t
+          ⟨fun h => absurd h (lt_irrefl _),
+           fun h => absurd (h ▸ h_b2 : true = false) (by decide)⟩
+          ⟨fun h => absurd h (lt_irrefl _),
+           fun h => absurd (h ▸ h_b1 : true = false) (by decide)⟩⟩
+      | true, true =>
+        exfalso; exact h_ob (by rw [Bool.and_eq_true]; exact ⟨h_b2, h_b1⟩)
+  · -- t-incompatibility: formula = bot, contradiction
+    simp only [h_tc, ↓reduceIte] at h_formula
+    exact absurd h_formula (by simp [temporal_truth])
 
 /-! ## Depth-(k+1) NF characterization from P1(k) + P2(k) -/
 
