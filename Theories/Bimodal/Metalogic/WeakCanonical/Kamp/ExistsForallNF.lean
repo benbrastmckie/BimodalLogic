@@ -212,26 +212,26 @@ This section provides the key translation function and its correctness proof.
     builds: alpha_k AND (beta_{k+1} Until (alpha_{k+1} AND (beta_{k+2} Until ... ))) -/
 def buildRight : List (TemporalPred × TemporalPred) → TemporalPred → Formula
   | [], rightmost_interval =>
-    -- No more points to the right: Box(beta_right)
-    -- Box F = not(True Until not F)
-    Formula.imp (Formula.untl Formula.top rightmost_interval.formula.neg) Formula.bot
-  | (alpha, beta_after) :: rest, rightmost_interval =>
-    -- alpha AND (beta_after Until (buildRight rest rightmost_interval))
-    Formula.and alpha.formula
-      (Formula.untl (buildRight rest rightmost_interval) beta_after.formula)
+    -- No more points to the right: G(beta_right) = not(F(not beta_right))
+    -- G F = not(not_F Until True) = (not_F Until True) -> bot
+    Formula.imp (Formula.untl rightmost_interval.formula.neg Formula.top) Formula.bot
+  | (alpha, beta_before) :: rest, rightmost_interval =>
+    -- beta_before Until (alpha AND buildRight rest rightmost_interval)
+    -- "beta_before holds until we find a witness where alpha holds and the rest continues"
+    Formula.untl (Formula.and alpha.formula (buildRight rest rightmost_interval)) beta_before.formula
 
 /-- Build the "left part" of the translation: from position k to the left end.
     Given witnesses at positions k, k-1, ..., 0 with interval types between them,
     builds: alpha_k AND (beta_k Since (alpha_{k-1} AND (beta_{k-1} Since ... ))) -/
 def buildLeft : List (TemporalPred × TemporalPred) → TemporalPred → Formula
   | [], leftmost_interval =>
-    -- No more points to the left: Henceforth-past(beta_left)
-    -- H F = not(True Since not F)
-    Formula.imp (Formula.snce Formula.top leftmost_interval.formula.neg) Formula.bot
-  | (alpha, beta_before) :: rest, leftmost_interval =>
-    -- alpha AND (beta_before Since (buildLeft rest leftmost_interval))
-    Formula.and alpha.formula
-      (Formula.snce (buildLeft rest leftmost_interval) beta_before.formula)
+    -- No more points to the left: H(beta_left) = not(P(not beta_left))
+    -- H F = not(not_F Since True) = (not_F Since True) -> bot
+    Formula.imp (Formula.snce leftmost_interval.formula.neg Formula.top) Formula.bot
+  | (alpha, beta_after) :: rest, leftmost_interval =>
+    -- beta_after Since (alpha AND buildLeft rest leftmost_interval)
+    -- "beta_after holds since we find a witness where alpha holds and the rest continues"
+    Formula.snce (Formula.and alpha.formula (buildLeft rest leftmost_interval)) beta_after.formula
 
 /-- Translate a 1-variable exists-forall formula to a temporal formula.
     The free variable is at position `k` among `n+1` witness points.

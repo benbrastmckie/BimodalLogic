@@ -70,17 +70,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Translation Correctness (Proposition 3.5) [IN PROGRESS]
+### Phase 1: Translation Correctness (Proposition 3.5) [COMPLETED]
 
 **Goal**: Prove `translateEF1_correct` -- that the Until/Since chain translation of a 1-variable exists-forall formula is semantically correct. This is Rabinovich Proposition 3.5 relativized.
 
 **Tasks**:
-- [ ] In `Kamp/Translation.lean` (create new), prove `buildRight_correct`: induction on the right pair list showing `buildRight pairs rightmost` holds at `t` iff there exist increasing witnesses to the right of `t` with the correct point/interval types
-- [ ] Prove `buildLeft_correct`: symmetric induction for `buildLeft` and witnesses to the left of `t`
-- [ ] Prove `translateEF1_correct`: given an interval pattern and position `k`, `translateEF1 n k alpha beta` holds at `witnesses k` iff the interval pattern holds with those witnesses. Combines `buildRight_correct` and `buildLeft_correct`
-- [ ] Prove `ef1_to_temporal`: for any single EF formula (interval pattern with the free variable among witnesses), there exists a temporal formula equivalent to it on any ordered structure. Uses `translateEF1` + `translateEF1_correct`
-- [ ] Prove `vef1_to_temporal`: for any VEF1 (disjunction of EF formulas with 1 free variable), there exists an equivalent temporal formula. Uses `translateVEF1` + `ef1_to_temporal`
-- [ ] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.Translation`
+- [x] In `Kamp/Translation.lean` (create new), prove `buildRight_correct`: induction on the right pair list showing `buildRight pairs rightmost` holds at `t` iff there exist increasing witnesses to the right of `t` with the correct point/interval types *(deviation: altered -- fixed buildRight/buildLeft definitions in ExistsForallNF.lean: base case had swapped untl/snce arguments (not G/H), step case restructured from "alpha AND (rest Until beta)" to "beta Until (alpha AND rest)" to correctly place alpha at the found witness rather than the evaluation point)*
+- [x] Prove `buildLeft_correct`: symmetric induction for `buildLeft` and witnesses to the left of `t`
+- [x] Prove `translateEF1_correct`: given an interval pattern and position `k`, `translateEF1 n k alpha beta` holds at `witnesses k` iff the interval pattern holds with those witnesses. Combines `buildRight_correct` and `buildLeft_correct`
+- [x] Prove `ef1_to_temporal`: for any single EF formula (interval pattern with the free variable among witnesses), there exists a temporal formula equivalent to it on any ordered structure. Uses `translateEF1` + `translateEF1_correct`
+- [x] Prove `vef1_to_temporal`: for any VEF1 (disjunction of EF formulas with 1 free variable), there exists an equivalent temporal formula. Uses `translateVEF1` + `translateVEF1_correct` *(deviation: altered -- proved `translateVEF1_correct` instead of `vef1_to_temporal`; provides the same semantic content)*
+- [x] Run `lake build Bimodal.Metalogic.WeakCanonical.Kamp.Translation`
 
 **Timing**: 4 hours (estimated 400-600 lines)
 
