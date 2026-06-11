@@ -60,23 +60,20 @@ private theorem nf_2var_depth0_components {sig : MonadicSignature}
     (h_order_01 : (x < t) ↔ sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
     (h_order_10 : (t < x) ↔ sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) :
     nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
-  -- At depth 0, nf_eval_nf = ∀ atom, atom_eval ↔ sub_nf atom = true
-  -- Each atom is either a pred or an order atom, both handled by hypotheses
-  -- Proof is purely case-analysis on the AtomKind argument
-  exact nf_2var_from_1var_depth0 M x t sub_nf h_pred_x h_pred_t h_order_01 h_order_10
-  where
-    nf_2var_from_1var_depth0
-        (M : OrderedMonadicStructure sig)
-        (x t : M.carrier)
-        (sub_nf : NormalForm sig 0 2)
-        (h_pred_x : ∀ p : sig.preds,
-          M.interp p x ↔ sub_nf (.pred p ⟨0, by omega⟩) = true)
-        (h_pred_t : ∀ p : sig.preds,
-          M.interp p t ↔ sub_nf (.pred p ⟨1, by omega⟩) = true)
-        (h_order_01 : (x < t) ↔ sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
-        (h_order_10 : (t < x) ↔ sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) :
-        nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
-      sorry
+  simp only [nf_eval_nf]
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    simp only [atom_eval, Fin.cons]
+    exact h_pred_x p
+  | .pred p ⟨1, _⟩ =>
+    show M.interp p ((Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → _) ⟨1, _⟩) ↔ _
+    simp only [Fin.cons, Fin.cases]
+    exact h_pred_t p
+  | .order ⟨0, _⟩ ⟨0, _⟩ h_ne => exact absurd rfl h_ne
+  | .order ⟨0, _⟩ ⟨1, _⟩ _ => simp only [atom_eval]; exact h_order_01
+  | .order ⟨1, _⟩ ⟨0, _⟩ _ => simp only [atom_eval]; exact h_order_10
+  | .order ⟨1, _⟩ ⟨1, _⟩ h_ne => exact absurd rfl h_ne
 
 /-- Backward direction of nf_exist_formula at depth 0. -/
 private theorem backward_depth0 {sig : MonadicSignature}
@@ -93,10 +90,11 @@ private theorem backward_depth0 {sig : MonadicSignature}
     (h_formula : temporal_truth M atomMap t
       (nf_exist_formula atomMap h_surj 0 char_0 parent_atoms sub_nf)) :
     ∃ x : M.carrier, nf_eval_nf M 0 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
-  -- Unfold nf_exist_formula, case-split on order direction (Until/Since/equality),
-  -- extract witness x from Until/Since, extract its arity-1 NF from the disjunction,
-  -- then apply nf_2var_depth0_components to reconstruct the arity-2 NF.
-  -- At depth 0, this is purely atom + order case analysis.
+  -- At depth 0, extract the witness from Until/Since, use char_0_M to get its
+  -- arity-1 NF, and apply nf_2var_depth0_components to reconstruct the arity-2 NF.
+  -- Pure case analysis: t-compatibility, order consistency, order direction (U/S/=).
+  -- The key facts used: char_0_M gives atom matching at the witness, h_atoms gives
+  -- atom matching at t, and the order is determined by Until (t<x) or Since (x<t).
   sorry
 
 /-! ## Depth-(k+1) NF characterization from P1(k) + P2(k) -/
