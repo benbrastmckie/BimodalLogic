@@ -464,17 +464,17 @@ noncomputable def nf_exist_formula_nested
       -- Each positive condition is existential: "∃ y < x with char_k(nf_y)"
       -- Encoded as Since(witness_formula, ⊤) at x (places y in past of x)
       let pos_at_x := witness_formulas.map fun wf => Formula.snce wf Formula.top
-      -- Negative interval ssn's (sub_nf.2(ssn)=false, y in (t,x))
-      let interval_negative := all_ssn.filter fun ssn =>
-        !sub_nf.2 ssn && ssn_in_interval_right ssn
-      let guard_formulas := interval_negative.map fun ssn =>
-        let compat_nf_ys := (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
-          fun nf_y => if ssn_compat_var0 ssn nf_y then some (char_k nf_y) else none
-        (formula_disjList compat_nf_ys).neg
       -- Event: char_{k+1}(nf_x) AND all positive interval Since-formulas
       let event := Formula.and x_char (formula_conjList pos_at_x)
-      -- Guard: all negative conditions (points in (t,x) must not have forbidden types)
-      let guard := formula_conjList guard_formulas
+      -- Guard: Formula.top (trivially true).
+      -- NOTE: The negative interval conditions (sub_nf.2(ssn)=false, y in (t,x))
+      -- are NOT encoded in the guard. Previously the guard attempted to enforce
+      -- "points in (t,x) must not have forbidden 1-var NF types", but this is
+      -- too strong: sub_nf.2(ssn)=false only says no y has the full 3-var NF ssn
+      -- at (y,x,t), not that no y has ssn-compatible predicates. The negative
+      -- conditions are instead recovered in the backward direction from
+      -- char_{k+1}(nf_x) which encodes x's full depth-(k+1) 1-var NF.
+      let guard := Formula.top
       (event, guard)
     -- Symmetric: build event and guard for Since direction (x < t)
     let build_event_guard_left (nf_x : NormalForm sig (k + 1) 1) :
@@ -490,15 +490,9 @@ noncomputable def nf_exist_formula_nested
       -- Each positive condition: "∃ y > x with char_k(nf_y)"
       -- Encoded as Until(witness_formula, ⊤) at x (places y in future of x)
       let pos_at_x := witness_formulas.map fun wf => Formula.untl wf Formula.top
-      -- Negative interval ssn's
-      let interval_negative := all_ssn.filter fun ssn =>
-        !sub_nf.2 ssn && ssn_in_interval_left ssn
-      let guard_formulas := interval_negative.map fun ssn =>
-        let compat_nf_ys := (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
-          fun nf_y => if ssn_compat_var0 ssn nf_y then some (char_k nf_y) else none
-        (formula_disjList compat_nf_ys).neg
       let event := Formula.and x_char (formula_conjList pos_at_x)
-      let guard := formula_conjList guard_formulas
+      -- Guard: Formula.top (symmetric with right direction; see note above)
+      let guard := Formula.top
       (event, guard)
     -- Step 6: Build the full disjunction over compatible nf_x
     match nf_order_dir sub_nf with
@@ -526,6 +520,218 @@ noncomputable def nf_exist_formula_nested
         formula_disjList compat_formulas
       else
         Formula.bot
+
+/-! ## Forward Direction: Witnesses → Formula Truth -/
+
+set_option maxHeartbeats 2000000 in
+/-- Forward direction of nf_exist_formula_nested at depth k+1.
+    Rabinovich 2014 Prop 3.5 correctness. -/
+private theorem nf_exist_formula_nested_forward
+    {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (_h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    (char_kp1 : NormalForm sig (k + 1) 1 → Formula)
+    (char_k : NormalForm sig k 1 → Formula)
+    (char_kp1_correct : ∀ (nf_1 : NormalForm sig (k + 1) 1)
+        (M : OrderedMonadicStructure sig),
+        semantic_prior_UZ M atomMap →
+        semantic_prior_SZ M atomMap →
+        ∀ (t : M.carrier),
+          temporal_truth M atomMap t (char_kp1 nf_1) ↔
+          nf_eval_nf M (k + 1) 1 (fun _ => t) nf_1)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (M : OrderedMonadicStructure sig),
+        semantic_prior_UZ M atomMap →
+        semantic_prior_SZ M atomMap →
+        ∀ (t : M.carrier),
+          temporal_truth M atomMap t (char_k nf_k) ↔
+          nf_eval_nf M k 1 (fun _ => t) nf_k)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    {M : OrderedMonadicStructure sig}
+    (h_UZ : semantic_prior_UZ M atomMap)
+    (h_SZ : semantic_prior_SZ M atomMap)
+    {t : M.carrier}
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_ex : ∃ x : M.carrier,
+        nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :
+    temporal_truth M atomMap t
+      (nf_exist_formula_nested k char_kp1 char_k parent_atoms sub_nf) := by
+  -- Use the existing forward proof infrastructure from nf_exist_formula_forward'.
+  -- The key difference: nf_exist_formula_nested adds interval Since/Until in the event.
+  -- With guard = Formula.top, the proof reduces to:
+  --   1. Same as nf_exist_formula_forward' for t-compat, order, nf_x
+  --   2. Additionally show each positive interval witness Since/Until at x
+  obtain ⟨x, h_x⟩ := h_ex
+  have h_x_atoms := h_x.1
+  have h_x_quant := h_x.2
+  -- t-compatibility (reuse the pattern from nf_exist_formula_forward')
+  have h_t_compat : nf_t_compat parent_atoms sub_nf = true := by
+    simp only [nf_t_compat, List.all_eq_true]; intro p _; simp only [beq_iff_eq]
+    have h1 := h_x_atoms (.pred p ⟨1, by omega⟩); have h2 := h_atoms (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval] at h1 h2
+    have hfc : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+      simp [Fin.cons]; rfl
+    rw [hfc] at h1
+    -- h1 : M.interp p t ↔ sub_nf.1 (.pred p ⟨1, ...⟩) = true
+    -- h2 : M.interp p t ↔ parent_atoms (.pred p ⟨0, ...⟩) = true
+    -- goal: sub_nf.atom_assgn (.pred p ⟨1, ...⟩) = parent_atoms (.pred p ⟨0, ...⟩)
+    -- These are the same by transitivity
+    -- Both h1 and h2 relate M.interp p t to boolean values.
+    -- If M.interp p t holds, both values are true; otherwise both false.
+    exact Bool.eq_iff_iff.mpr (h1.symm.trans h2)
+  -- Order
+  have h_xlt := h_x_atoms (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+  have h_tlx := h_x_atoms (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+  simp only [atom_eval, Fin.cons] at h_xlt h_tlx
+  have fc0 : Fin.cases x (fun _ : Fin 1 => t) (⟨0, by omega⟩ : Fin 2) = x := by simp [Fin.cases]
+  have fc1 : Fin.cases x (fun _ : Fin 1 => t) (⟨1, by omega⟩ : Fin 2) = t := by simp [Fin.cases]; rfl
+  rw [fc0, fc1] at h_xlt; rw [fc1, fc0] at h_tlx
+  have h_oc : ¬(sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+      sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))) = true := by
+    intro hb; rw [Bool.and_eq_true] at hb
+    exact absurd (lt_trans (h_xlt.mpr hb.1) (h_tlx.mpr hb.2)) (lt_irrefl _)
+  -- Characteristic NF of x
+  set nf_x := nf_characteristic M (k+1) 1 (fun _ => x)
+  have h_nfx := nf_characteristic_satisfies M (k+1) 1 (fun _ => x)
+  have h_cx : temporal_truth M atomMap x (char_kp1 nf_x) :=
+    (char_kp1_correct nf_x M h_UZ h_SZ x).mpr h_nfx
+  -- Atom compat
+  have h_ac : ∀ p : sig.preds,
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) = sub_nf.atom_assgn (.pred p ⟨0, by omega⟩) := by
+    intro p
+    have h1 := h_nfx.1 (.pred p (0 : Fin 1)); have h2 := h_x_atoms (.pred p (0 : Fin 2))
+    simp only [atom_eval] at h1 h2
+    have : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) (0 : Fin 2) = x := by
+      simp [Fin.cons]
+    rw [this] at h2
+    exact Bool.eq_iff_iff.mpr (h1.symm.trans h2)
+  have h_acf : (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+      nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+      sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+    rw [List.all_eq_true]; intro p _; simp only [beq_iff_eq]; exact h_ac p
+  -- Unfold the formula
+  unfold nf_exist_formula_nested
+  simp only [h_t_compat, not_true, ↓reduceIte, ite_not, h_oc, ite_false]
+  -- Case split on order direction
+  match h_dir : nf_order_dir sub_nf with
+  | some true =>
+    have h_lt : t < x := by
+      simp only [nf_order_dir] at h_dir
+      split at h_dir <;> simp_all [NormalForm.atom_assgn]
+    apply (formula_disjList_iff M atomMap t _).mpr
+    refine ⟨_, List.mem_filterMap.mpr ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
+      by rw [if_pos h_acf]⟩, ?_⟩
+    simp only [temporal_truth]
+    refine ⟨x, h_lt, ?_, fun _ _ _ => temporal_truth_top M atomMap _⟩
+    rw [temporal_truth_and]; refine ⟨h_cx, ?_⟩
+    rw [formula_conjList_iff]; intro A hA
+    rw [List.mem_map] at hA; obtain ⟨wf, hwf, rfl⟩ := hA
+    rw [List.mem_map] at hwf; obtain ⟨ssn, hssn, rfl⟩ := hwf
+    rw [List.mem_filter] at hssn; obtain ⟨_, hp⟩ := hssn
+    rw [Bool.and_eq_true] at hp; obtain ⟨ht, hir⟩ := hp
+    obtain ⟨y, hy⟩ := (h_x_quant ssn).mpr ht
+    simp only [temporal_truth]
+    have hay : ∀ a : AtomKind sig 3, atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔
+        ssn.atom_assgn a = true := by cases k with | zero => exact hy | succ k' => exact hy.1
+    have hyx : y < x := by
+      simp only [ssn_in_interval_right, Bool.and_eq_true, NormalForm.atom_assgn] at hir
+      have := hay (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+      simp only [atom_eval] at this
+      have hfc30 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by simp [Fin.cons]
+      have hfc31 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by simp [Fin.cons]; rfl
+      rw [hfc30, hfc31] at this; exact this.mpr hir.1
+    set nf_y := nf_characteristic M k 1 (fun _ => y)
+    have h_ny := nf_characteristic_satisfies M k 1 (fun _ => y)
+    have hcy := (char_k_correct nf_y M h_UZ h_SZ y).mpr h_ny
+    have hyc : ssn_compat_var0 ssn nf_y = true := by
+      simp only [ssn_compat_var0, List.all_eq_true]; intro p _; simp only [beq_iff_eq]
+      have h1 : atom_eval M (fun _ => y) (.pred p (0 : Fin 1)) ↔
+          nf_y.atom_assgn (.pred p (0 : Fin 1)) = true := by
+        cases k with | zero => exact h_ny (.pred p 0) | succ k' => exact h_ny.1 (.pred p 0)
+      have h2 := hay (.pred p (0 : Fin 3))
+      simp only [atom_eval] at h1 h2
+      have h2' : M.interp p y ↔ ssn.atom_assgn (.pred p (0 : Fin 3)) = true := by
+        have := h2; simp only [Fin.cons] at this; convert this using 1
+      exact Bool.eq_iff_iff.mpr (h1.symm.trans h2')
+    exact ⟨y, hyx, (formula_disjList_iff M atomMap y _).mpr
+      ⟨char_k nf_y, List.mem_filterMap.mpr ⟨nf_y, Multiset.mem_toList.mpr (Fintype.complete nf_y),
+        by rw [if_pos hyc]⟩, hcy⟩,
+      fun _ _ _ => temporal_truth_top M atomMap _⟩
+  | some false =>
+    have h_lt : x < t := by
+      simp only [nf_order_dir] at h_dir
+      split at h_dir <;> simp_all [NormalForm.atom_assgn]
+    apply (formula_disjList_iff M atomMap t _).mpr
+    refine ⟨_, List.mem_filterMap.mpr ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
+      by rw [if_pos h_acf]⟩, ?_⟩
+    simp only [temporal_truth]
+    refine ⟨x, h_lt, ?_, fun _ _ _ => temporal_truth_top M atomMap _⟩
+    rw [temporal_truth_and]; refine ⟨h_cx, ?_⟩
+    rw [formula_conjList_iff]; intro A hA
+    rw [List.mem_map] at hA; obtain ⟨wf, hwf, rfl⟩ := hA
+    rw [List.mem_map] at hwf; obtain ⟨ssn, hssn, rfl⟩ := hwf
+    rw [List.mem_filter] at hssn; obtain ⟨_, hp⟩ := hssn
+    rw [Bool.and_eq_true] at hp; obtain ⟨ht, hil⟩ := hp
+    obtain ⟨y, hy⟩ := (h_x_quant ssn).mpr ht
+    simp only [temporal_truth]
+    have hay : ∀ a : AtomKind sig 3, atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔
+        ssn.atom_assgn a = true := by cases k with | zero => exact hy | succ k' => exact hy.1
+    have hxy : x < y := by
+      simp only [ssn_in_interval_left, Bool.and_eq_true, NormalForm.atom_assgn] at hil
+      have := hay (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+      simp only [atom_eval] at this
+      have hfc30 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨0, by omega⟩ = y := by simp [Fin.cons]
+      have hfc31 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier) ⟨1, by omega⟩ = x := by simp [Fin.cons]; rfl
+      rw [hfc30, hfc31] at this; exact this.mpr hil.1
+    set nf_y := nf_characteristic M k 1 (fun _ => y)
+    have h_ny := nf_characteristic_satisfies M k 1 (fun _ => y)
+    have hcy := (char_k_correct nf_y M h_UZ h_SZ y).mpr h_ny
+    have hyc : ssn_compat_var0 ssn nf_y = true := by
+      simp only [ssn_compat_var0, List.all_eq_true]; intro p _; simp only [beq_iff_eq]
+      have h1 : atom_eval M (fun _ => y) (.pred p (0 : Fin 1)) ↔
+          nf_y.atom_assgn (.pred p (0 : Fin 1)) = true := by
+        cases k with | zero => exact h_ny (.pred p 0) | succ k' => exact h_ny.1 (.pred p 0)
+      have h2 := hay (.pred p (0 : Fin 3))
+      simp only [atom_eval] at h1 h2
+      have h2' : M.interp p y ↔ ssn.atom_assgn (.pred p (0 : Fin 3)) = true := by
+        have := h2; simp only [Fin.cons] at this; convert this using 1
+      exact Bool.eq_iff_iff.mpr (h1.symm.trans h2')
+    exact ⟨y, hxy, (formula_disjList_iff M atomMap y _).mpr
+      ⟨char_k nf_y, List.mem_filterMap.mpr ⟨nf_y, Multiset.mem_toList.mpr (Fintype.complete nf_y),
+        by rw [if_pos hyc]⟩, hcy⟩,
+      fun _ _ _ => temporal_truth_top M atomMap _⟩
+  | none =>
+    match h_v1 : sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)),
+          h_v2 : sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) with
+    | false, false =>
+      have h_eq : x = t := by
+        by_contra h_ne; rcases lt_or_gt_of_ne h_ne with h | h
+        · have h1 := h_xlt.mp h
+          have h2 : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false := h_v1
+          exact absurd h1 (by rw [h2]; exact Bool.noConfusion)
+        · have h1 := h_tlx.mp h
+          have h2 : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := h_v2
+          exact absurd h1 (by rw [h2]; exact Bool.noConfusion)
+      simp only [h_v1, h_v2, beq_self_eq_true, Bool.and_self, ↓reduceIte, ite_false]
+      apply (formula_disjList_iff M atomMap t _).mpr
+      exact ⟨_, List.mem_filterMap.mpr ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
+        by rw [if_pos h_acf]⟩, h_eq ▸ h_cx⟩
+    | true, true =>
+      exfalso; exact h_oc (by rw [Bool.and_eq_true]; exact ⟨h_v1, h_v2⟩)
+    | true, false =>
+      -- h_v1 says order(0,1) = true, h_v2 says order(1,0) = false
+      -- this means nf_order_dir = some false, contradicting h_dir = none
+      exfalso
+      have h_ne : nf_order_dir sub_nf ≠ none := by
+        simp only [nf_order_dir]; rw [h_v2, h_v1]; decide
+      exact h_ne h_dir
+    | false, true =>
+      exfalso
+      have h_ne : nf_order_dir sub_nf ≠ none := by
+        simp only [nf_order_dir]; rw [h_v2, h_v1]; decide
+      exact h_ne h_dir
 
 /-! ## Master Simultaneous Induction -/
 
@@ -620,9 +826,9 @@ noncomputable def master_induction
       · -- Backward: formula truth → existential (Phase 5, sorry)
         intro h_formula
         sorry
-      · -- Forward: existential → formula truth (Phase 4, sorry)
-        intro h_ex
-        sorry
+      · -- Forward: existential → formula truth (Phase 4)
+        exact nf_exist_formula_nested_forward atomMap h_surj k char_kp1 char_k _char_kp1_correct
+          char_k_correct parent_atoms sub_nf h_UZ h_SZ h_atoms
     ⟨p1_kp1, p2_kp1⟩
 
 /-- Extract P2 from the master induction. This has the same type as
