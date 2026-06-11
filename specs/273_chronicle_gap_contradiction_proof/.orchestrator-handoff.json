@@ -1,32 +1,13 @@
 {
   "status": "partial",
-  "summary": "Phase 3 partial: master simultaneous induction architecture established in NegationClosure.lean. P1(0)/P2(0) base cases fully proved (backward_depth0 sorry-free). P1(k+1) from P1(k)+P2(k) sorry-free. P2(k+1) forward sorry-free. Only remaining sorry: P2(k+1) backward direction (line 366, the Rabinovich composition/negation closure content). NfCharFormula.lean down to 1 sorry. Total sorry count across pipeline: 3 (all gating on the same k+1 backward).",
+  "summary": "Deep analysis of k+1 backward direction revealed the root cause: the formula nf_exist_formula does not encode the quantifier part of sub_nf, and the composition theorem (2-var NF determined by 1-var NFs + order) is FALSE at all depths >= 1. The formula must be replaced with an interval-based formula using nested Until/Since chains (buildRight/buildLeft from Translation.lean) that explicitly encode both atoms and quantifiers of sub_nf. This requires generalizing P2 to all arities P2_n(k), with the dependency chain P2_2(k+1) <- P2_3(k) <- ... <- P2_{k+3}(0). Estimated ~750 lines of new code. No approaches explored (NF-transfer, classical good_nf, composition theorem) can circumvent the need for explicit interval formula construction.",
   "phases_completed": 2,
   "phases_total": 5,
   "blockers": [
-    "k+1 backward direction in master_induction (NegationClosure.lean:366): requires showing that on Prior structures, the depth-(k+1) arity-2 NF of (x,t) is determined by depth-(k+1) arity-1 NFs of x and t. The existential property at arity 1 has qd = k+2, exceeding depth-(k+1) characterizations, so doets_lemma_1_1 cannot directly close it. Needs composition theorem for Prior structures (300-500 lines) with 3-region case analysis using Prior-UZ/SZ."
+    "Task 3.4c: The formula nf_exist_formula is the wrong formula for P2(k+1). Must be replaced with an interval-based formula that encodes sub_nf.2 via nested Until/Since. Requires ~750 lines implementing P2_n(k) for all arities."
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611e.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611f.md",
   "artifacts": [
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
-      "type": "implementation",
-      "summary": "Translation correctness -- sorry-free"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
-      "type": "implementation",
-      "summary": "Abstract INF/SUP + Prior instantiation -- sorry-free"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "type": "implementation",
-      "summary": "NF char formula. forward' sorry-free. 1 sorry: nf_2var_exist_formula_prior."
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "type": "implementation",
-      "summary": "Master induction: P1(0)/P2(0) sorry-free, P1(k+1) sorry-free. 1 sorry: k+1 backward."
-    }
+    "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611f.md"
   ]
 }
