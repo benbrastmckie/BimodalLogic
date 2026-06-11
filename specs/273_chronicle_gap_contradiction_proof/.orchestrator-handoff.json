@@ -1,46 +1,41 @@
 {
   "status": "partial",
-  "summary": "Blocker research complete: the k>=1 sorry is the core Kamp difficulty relocated — arity-1 induction cannot express 2-var NF existence statements. Recommended path: prove Rabinovich Theorem 4.4 relativized (restore plan v17 phases 2-5 as 5 sub-phases, 1900-3000 lines), then fill the sorry in ~10 lines via the sorry-free nf_to_formula bridge. Needs plan revision v18 + one dispatch per phase; no rewiring of downstream consumers.",
-  "phases_completed": 3,
-  "phases_total": 7,
+  "summary": "Plan v18 Phase 1 (translation correctness) complete sorry-free. Phase 2 partial: abstract INF/SUP hypotheses + Prior instantiation done sorry-free; VEF closure properties deferred. Phases 3-5 not started. The single sorry in nf_characterizable_temporal_prior k>=1 (KampPrior.lean:149) remains. Also fixed bugs in buildRight/buildLeft definitions.",
+  "phases_completed": 1,
+  "phases_total": 5,
   "blockers": [
-    "nf_characterizable_temporal_prior k>=1 case requires Rabinovich negation closure (Prop 4.2 relativized to Prior structures), estimated 1000-2000 lines"
+    "VEF.closed_conj and VEF.closed_ex (Phase 2 remainder) need ~300-500 lines of witness-merging proofs",
+    "Negation closure (Phase 3) is the critical ~750-1400 line phase, depends on Phase 2 VEF closure",
+    "rabinovich_fo_to_temporal_prior (Phase 4) depends on Phases 2+3",
+    "Sorry fill (Phase 5) is ~10 lines once Phase 4 is done"
   ],
   "continuation_context": {
-    "last_completed_phase": 6,
-    "next_phase": null,
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-6-handoff-20260611.md"
+    "last_completed_phase": 1,
+    "next_phase": 2,
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611.md",
+    "remaining_work": "Complete VEF closure (Phase 2), negation closure (Phase 3), FO-to-temporal theorem (Phase 4), sorry fill (Phase 5)",
+    "estimated_remaining_lines": "1500-2500"
   },
   "artifacts": [
     {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
+      "type": "implementation",
+      "summary": "Translation correctness (Prop 3.5): buildRight_correct, buildLeft_correct, translateEF1_correct, ef1_to_temporal, translateVEF1_correct — all sorry-free"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
+      "type": "implementation",
+      "summary": "Abstract INF/SUP hypotheses (HasDefinableINF, HasDefinableSUP), K+/K- operators, Prior instantiation — all sorry-free"
+    },
+    {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean",
-      "type": "summary",
-      "summary": "Interval pattern types and VEF definitions"
+      "type": "implementation",
+      "summary": "Fixed buildRight/buildLeft definitions (argument order and formula structure bugs)"
     },
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "type": "summary",
-      "summary": "Main theorem kamp_prior_expressive_completeness with one sorry in nf_characterizable_temporal_prior k>=1"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean",
-      "type": "summary",
-      "summary": "Extracted semantic_prior_UZ/SZ definitions to break import cycle"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/PriorExpressiveness.lean",
-      "type": "summary",
-      "summary": "Rewired US_expressively_complete_over_prior proof body"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/EFGames/StaviCompleteness.lean",
-      "type": "summary",
-      "summary": "Added Stavi open generalization documentation"
-    },
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/reports/09_negation-closure-research.md",
-      "type": "report",
-      "summary": "Root cause + phased decomposition for the Rabinovich negation closure sorry; recommends plan v18 with 5 phases and nf_to_formula bridge fill"
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/continuation-handoff-20260611.md",
+      "type": "handoff",
+      "summary": "Detailed continuation guide with architectural analysis"
     }
   ]
 }
