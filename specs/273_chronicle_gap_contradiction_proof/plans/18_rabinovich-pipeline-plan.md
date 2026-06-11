@@ -129,7 +129,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [BLOCKED]
+### Phase 3: NfCharFormula Pipeline -- 2-Var Existence Formula for Prior [IN PROGRESS]
 
 *(deviation: altered -- the VEF-based negation closure (Lemma 5.1/5.3) was replaced by the NfCharFormula approach, which uses classical existence + NF theory. The negation closure content surfaces as the backward direction of `nf_2var_exist_formula_prior`.)*
 
@@ -146,12 +146,16 @@ Phases within the same wave can execute in parallel.
 - [x] **Task 3.1**: Prove `nf_exist_formula_forward` sorry-free (forward direction: existential -> formula, no Prior needed) *(completed in prior session)*
 - [x] **Task 3.2**: Prove `nf_exist_formula_forward'` (M-specific version for Prior structures where char_k_correct needs Prior axioms) *(completed: extends M-specific correctness to all M classically)*
 - [x] **Task 3.3**: Delete unused sorry'd lemmas `nf_char_formula_of_nf_eval` and `nf_eval_of_nf_char_formula` (both require the same backward direction as `nf_2var_exist_formula_prior`; not on critical path; replaced with doc comment) *(completed: sorry count in NfCharFormula.lean reduced from 4 to 1)*
-- [ ] **Task 3.4**: Prove `nf_2var_exist_formula_prior` sorry-free *(deviation: in progress -- requires the backward direction of nf_exist_formula on Prior structures)*
-  - The backward direction (formula -> existential) requires showing: if `Until witness_type top` holds at t on a Prior structure, then there exists x with the right depth-k 2-var NF at (x, t)
-  - At k=0: trivially true (atom-only NF, order+predicate matching suffices)
-  - At k>0: the 1-var NF of x (from the Until formula) does NOT determine the 2-var NF of (x,t); the Prior axioms (attained first/last occurrences) are needed to bridge this gap
-  - **Mathematical content needed**: The composition theorem for Prior structures (Rabinovich Theorem 4.1 relativized), OR equivalently the negation closure argument (Lemma 5.1) showing that interval properties are determined by boundary types + Prior axioms
-  - **Estimated effort**: 600-1000 lines of new Lean code, implementing the core Rabinovich negation closure case analysis (3 cases per pp. 9-11) using `HasDefinableINF`/`HasDefinableSUP`
+- [ ] **Task 3.4**: Prove `nf_2var_exist_formula_prior` sorry-free *(deviation: altered -- restructured into master simultaneous induction in NegationClosure.lean)*
+  - **Task 3.4a** [IN PROGRESS]: Master simultaneous induction structure (P1(k) AND P2(k) by induction on k). Architecture compiles with 3 sorries: (1) depth-0 atom/order case analysis, (2) depth-0 backward direction, (3) depth k+1 backward direction. File: `Kamp/NegationClosure.lean` (~290 lines).
+    - P1(k): depth-k arity-1 NF characterizations (temporal formulas for each NF)
+    - P2(k): depth-k 2-var existentials have temporal equivalents
+    - `nf_char_kp1_from_2var`: builds P1(k+1) from P1(k) + P2(k), inlining `nf_characterizable_temporal_prior_classical` to avoid the sorry'd `nf_2var_exist_formula_prior`
+    - `master_induction`: the simultaneous induction; forward direction universal, backward sorry'd
+    - `nf_2var_exist_formula_prior_fill`: extracts P2(k) from master_induction
+  - **Task 3.4b** [NOT STARTED]: Fill depth-0 sorries (atom+order case analysis for `nf_2var_depth0_components` and `backward_depth0`). Estimated: 100-150 lines of case analysis.
+  - **Task 3.4c** [NOT STARTED]: Fill depth k+1 backward direction. This is the Rabinovich composition theorem / negation closure content. Requires showing that on Prior structures, the depth-(k+1) arity-2 NF of (x,t) is determined by the depth-(k+1) arity-1 NFs of x and t plus the order. Uses `HasDefinableINF`/`HasDefinableSUP` + Prior axioms for interval properties. Estimated: 400-600 lines.
+  - **Task 3.4d** [NOT STARTED]: Replace sorry in NfCharFormula.lean:572 with proof from NegationClosure.lean. ~10 lines.
 - [ ] **Task 3.5**: Wire `nf_2var_exist_formula_prior` into `nf_characterizable_temporal_prior` (KampPrior.lean:149) via `nf_characterizable_temporal_prior_classical` *(~10 lines, blocked on Task 3.4)*
 
 **FALLBACK** (from user directive): if carrying the K+ disjunct genuinely blocks, prove the Prior-simplified variant (attained `r_0`, no K+ disjunct) sorry-free FIRST, then refactor toward the abstract version context permitting. The abstraction must not be the reason this phase ends sorried.
