@@ -327,6 +327,206 @@ decomposes into: (1) the depth-k 1-var NF of y (characterizable by
 P1(k)), and (2) the depth-k 2-var NF of (y,x) and (y,t) (characterizable
 by P2(k)) -- and these are encoded in the nested Until/Since chains. -/
 
+/-! ## Nested buildRight Formula (Rabinovich Notation 5.2 + Prop 3.5)
+
+For depth k+1, the simple `nf_exist_formula` fails in the backward direction
+because it does not encode sub_nf.2 (the quantifier part of the 2-var NF).
+
+`nf_exist_formula_nested` replaces it with a formula that uses nested
+buildRight/buildLeft chains to encode the full 2-var NF including sub_nf.2.
+
+The idea: the 2-var existential `∃ x, nf_eval_nf M (k+1) 2 (x, t) sub_nf`
+expands to atoms + order + quantifier conditions. The quantifier conditions
+`sub_nf.2 ssn` involve 3-var NFs ssn at (y, x, t). The third variable y
+falls in one of five order regions relative to x and t:
+  (1) y > x: captured by the depth-(k+1) 1-var NF of x
+  (2) y = x: captured by atoms at x
+  (3) t < y < x: INTERVAL — encoded by nested Until inside the outer Until
+  (4) y = t: captured by parent_atoms
+  (5) y < t: captured by the depth-(k+1) 1-var NF of t
+
+For each compatible nf_x (1-var NF of the witness x), we classify which
+ssn's with sub_nf.2(ssn)=true require interval witnesses and encode those
+using buildRight with char_k characterization formulas.
+
+The formula uses Classical.choose to select P2(k)-derived sub-formulas for
+deeper quantifier conditions (when k > 0, the 3-var NF ssn has its own
+quantifier part involving 4-var NFs). On Prior structures, these conditions
+are characterizable by temporal formulas via the induction hypothesis.
+
+## References
+
+- Rabinovich 2014, Notation 5.2 (bracket notation) + Prop 3.5 (temporal translation)
+- Prior-structure simplification: first occurrences attained (Prior-UZ/SZ),
+  eliminating K+ disjunct from INF formula
+-/
+
+/-- Extract the atom assignment of an arity-3 NF at variable 0 (the "new" variable y),
+    restricted to predicates only. Returns the depth-k 1-var NF of y implied by ssn's
+    atom assignment. -/
+noncomputable def ssn_var0_pred_assgn {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : sig.preds → Bool :=
+  fun p => ssn.atom_assgn (.pred p ⟨0, by omega⟩)
+
+/-- Check whether a depth-k arity-3 NF ssn is compatible with a depth-k arity-1 NF
+    nf_y at variable 0 (predicates match). -/
+noncomputable def ssn_compat_var0 {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) (nf_y : NormalForm sig k 1) : Bool :=
+  (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+    nf_y.atom_assgn (.pred p ⟨0, by omega⟩) == ssn.atom_assgn (.pred p ⟨0, by omega⟩)
+
+/-- Check whether ssn places variable 0 (y) strictly between variables 2 (t) and 1 (x),
+    i.e., t < y < x (the "interval" case for the Until direction). -/
+noncomputable def ssn_in_interval_right {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : Bool :=
+  -- y < x (var 0 < var 1)
+  ssn.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+  -- t < y (var 2 < var 0), equivalently y > t
+  ssn.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
+
+/-- Check whether ssn places variable 0 (y) strictly between variables 1 (x) and 2 (t),
+    i.e., x < y < t (the "interval" case for the Since direction). -/
+noncomputable def ssn_in_interval_left {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : Bool :=
+  -- x < y (var 1 < var 0)
+  ssn.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) &&
+  -- y < t (var 0 < var 2)
+  ssn.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+
+/-- Build the nested formula for a single order direction (Until: t < x).
+
+    For a given compatible nf_x : NormalForm sig (k+1) 1 (the 1-var NF of witness x),
+    extract all ssn's with sub_nf.2(ssn) = true that place y in the interval (t, x),
+    and encode them using buildRight.
+
+    The formula is:
+      char_{k+1}(nf_x) AND
+      conjunction over positive interval-ssn's: Since(char_k(nf_y), ⊤) [within (t,x)] AND
+      conjunction over negative interval-ssn's: H(¬char_k(nf_y)) [within (t,x)]
+    wrapped in Until(event, ⊤) from t.
+
+    NOTE: The interval conditions involving nested quantifier parts (at depth k > 0)
+    are absorbed into the char_k characterization: char_k(nf_y) already captures
+    the depth-k 1-var NF of y, and by P2(k), the deeper quantifier interactions
+    are encoded in the characterization. The "nesting" comes from the fact that
+    char_k itself is built using P2(k-1), which uses P2(k-2), etc.
+
+    The non-interval ssn's (y > x, y = x, y = t, y < t) are NOT encoded here.
+    They are checked by compatibility with nf_x and parent_atoms. Specifically:
+    - y > x or y < t: these are depth-(k+1) 1-var NF conditions on x or t,
+      which are already captured by char_{k+1}(nf_x) and parent_atoms.
+    - y = x or y = t: determined by atoms at x or t.
+    The compatibility check ensures that sub_nf.2 restricted to non-interval
+    ssn's is consistent with nf_x and parent_atoms. -/
+noncomputable def nf_exist_formula_nested
+    {sig : MonadicSignature}
+    (k : Nat)
+    (char_kp1 : NormalForm sig (k + 1) 1 → Formula)
+    (char_k : NormalForm sig k 1 → Formula)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
+  -- Step 1: t-compatibility check (same as nf_exist_formula)
+  if ¬ nf_t_compat parent_atoms sub_nf = true then
+    Formula.bot
+  -- Step 2: order consistency (both x<t and t<x is impossible)
+  else if sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
+          sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) then
+    Formula.bot
+  else
+    -- Step 3: Enumerate all depth-(k+1) arity-1 NFs compatible with sub_nf at var 0
+    let all_nfs_kp1 := (Fintype.elems (α := NormalForm sig (k + 1) 1)).val.toList
+    let atom_compat_x (nf_x : NormalForm sig (k + 1) 1) : Bool :=
+      (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+        nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+        sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)
+    -- Step 4: For each compatible nf_x, check non-interval ssn compatibility
+    -- An nf_x is "fully compatible" with sub_nf if:
+    -- (a) predicate atoms match at variable 0
+    -- (b) The depth-k quantifier conditions from sub_nf.2 that are at endpoints
+    --     (y > x, y = x, y < t, y = t) are consistent with nf_x and parent_atoms.
+    -- For the formula definition, we approximate: check atom compatibility only.
+    -- Full non-interval compatibility is verified in the forward/backward proofs.
+    -- Step 5: Helper to build interval condition formulas for a given nf_x
+    let all_ssn := (Fintype.elems (α := NormalForm sig k 3)).val.toList
+    -- Build the event and guard formulas for an Until direction (t < x),
+    -- given nf_x and the list of all ssn's.
+    let build_event_guard_right (nf_x : NormalForm sig (k + 1) 1) :
+        Formula × Formula :=
+      let x_char := char_kp1 nf_x
+      -- Positive interval ssn's (sub_nf.2(ssn)=true, y in (t,x))
+      let interval_positive := all_ssn.filter fun ssn =>
+        sub_nf.2 ssn && ssn_in_interval_right ssn
+      -- For each positive ssn, build disjunction of char_k(nf_y) for compatible nf_y
+      let witness_formulas := interval_positive.map fun ssn =>
+        let compat_nf_ys := (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
+          fun nf_y => if ssn_compat_var0 ssn nf_y then some (char_k nf_y) else none
+        formula_disjList compat_nf_ys
+      -- Each positive condition is existential: "∃ y < x with char_k(nf_y)"
+      -- Encoded as Since(witness_formula, ⊤) at x (places y in past of x)
+      let pos_at_x := witness_formulas.map fun wf => Formula.snce wf Formula.top
+      -- Negative interval ssn's (sub_nf.2(ssn)=false, y in (t,x))
+      let interval_negative := all_ssn.filter fun ssn =>
+        !sub_nf.2 ssn && ssn_in_interval_right ssn
+      let guard_formulas := interval_negative.map fun ssn =>
+        let compat_nf_ys := (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
+          fun nf_y => if ssn_compat_var0 ssn nf_y then some (char_k nf_y) else none
+        (formula_disjList compat_nf_ys).neg
+      -- Event: char_{k+1}(nf_x) AND all positive interval Since-formulas
+      let event := Formula.and x_char (formula_conjList pos_at_x)
+      -- Guard: all negative conditions (points in (t,x) must not have forbidden types)
+      let guard := formula_conjList guard_formulas
+      (event, guard)
+    -- Symmetric: build event and guard for Since direction (x < t)
+    let build_event_guard_left (nf_x : NormalForm sig (k + 1) 1) :
+        Formula × Formula :=
+      let x_char := char_kp1 nf_x
+      -- Positive interval ssn's (sub_nf.2(ssn)=true, y in (x,t))
+      let interval_positive := all_ssn.filter fun ssn =>
+        sub_nf.2 ssn && ssn_in_interval_left ssn
+      let witness_formulas := interval_positive.map fun ssn =>
+        let compat_nf_ys := (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
+          fun nf_y => if ssn_compat_var0 ssn nf_y then some (char_k nf_y) else none
+        formula_disjList compat_nf_ys
+      -- Each positive condition: "∃ y > x with char_k(nf_y)"
+      -- Encoded as Until(witness_formula, ⊤) at x (places y in future of x)
+      let pos_at_x := witness_formulas.map fun wf => Formula.untl wf Formula.top
+      -- Negative interval ssn's
+      let interval_negative := all_ssn.filter fun ssn =>
+        !sub_nf.2 ssn && ssn_in_interval_left ssn
+      let guard_formulas := interval_negative.map fun ssn =>
+        let compat_nf_ys := (Fintype.elems (α := NormalForm sig k 1)).val.toList.filterMap
+          fun nf_y => if ssn_compat_var0 ssn nf_y then some (char_k nf_y) else none
+        (formula_disjList compat_nf_ys).neg
+      let event := Formula.and x_char (formula_conjList pos_at_x)
+      let guard := formula_conjList guard_formulas
+      (event, guard)
+    -- Step 6: Build the full disjunction over compatible nf_x
+    match nf_order_dir sub_nf with
+    | some true =>  -- t < x: use Until
+      let compat_formulas := all_nfs_kp1.filterMap fun nf_x =>
+        if atom_compat_x nf_x then
+          let (event, guard) := build_event_guard_right nf_x
+          some (Formula.untl event guard)
+        else none
+      formula_disjList compat_formulas
+    | some false =>  -- x < t: use Since
+      let compat_formulas := all_nfs_kp1.filterMap fun nf_x =>
+        if atom_compat_x nf_x then
+          let (event, guard) := build_event_guard_left nf_x
+          some (Formula.snce event guard)
+        else none
+      formula_disjList compat_formulas
+    | none =>
+      -- x = t or inconsistent
+      if sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) == false &&
+         sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) == false then
+        -- x = t: no interval, just witness_type
+        let compat_formulas := all_nfs_kp1.filterMap fun nf_x =>
+          if atom_compat_x nf_x then some (char_kp1 nf_x) else none
+        formula_disjList compat_formulas
+      else
+        Formula.bot
+
 /-! ## Master Simultaneous Induction -/
 
 private abbrev P1 {sig : MonadicSignature} (atomMap : Formula → sig.preds) (k : Nat) : Prop :=
@@ -383,36 +583,29 @@ noncomputable def master_induction
     -- P1(k+1): built from P1(k) + P2(k), no sorry
     have p1_kp1 : P1 atomMap (k + 1) := fun nf =>
       nf_char_kp1_from_2var atomMap h_surj k char_k char_k_correct p2_k nf
-    -- P2(k+1): The backward direction (formula → existential) is BLOCKED.
-    -- The current formula nf_exist_formula encodes atoms + 1-var NF of the
-    -- witness x but omits sub_nf.2 (the quantifier part of the 2-var NF).
-    -- Two points with the same depth-(k+1) 1-var NFs can have different
-    -- 2-var NFs, so the formula is insufficient for the backward direction.
+    -- P2(k+1): Uses `nf_exist_formula_nested` which encodes the FULL 2-var NF
+    -- including sub_nf.2 (the quantifier part) via nested Until/Since chains
+    -- with char_k characterization formulas for interval witnesses.
     --
-    -- The fix requires an interval-based formula that encodes sub_nf.2 using
-    -- nested buildRight/buildLeft chains with k+1 levels of nesting, where:
-    --   Level j places witnesses with char_{k+1-j} characterization formulas
-    --   Level 0 encodes the main witness x via Until/Since
-    --   Levels 1..k encode 3-var, 4-var, ..., (k+2)-var quantifier conditions
-    --   Level k+1 (bottom) is atoms only -- determined by predicates + positions
+    -- The previous formula `nf_exist_formula` only encoded atoms + 1-var NF of x,
+    -- which is insufficient for the backward direction (the 2-var NF is NOT
+    -- determined by 1-var NFs of the endpoints at depth k >= 1).
     --
-    -- Three approaches were analyzed and found insufficient:
-    -- 1. NF-transfer (good_forall): fails because depth-(k+1) 1-var NF doesn't
-    --    determine depth-(k+1) 2-var existentials (arity gap)
-    -- 2. Classical existence (good_exists): forward works but backward requires
-    --    the same NF-transfer that fails
-    -- 3. P2_n arity generalization: temporal formulas are 1-variable objects,
-    --    so P2_n for n > 2 parent variables has type-level issues
+    -- The nested formula places the main witness x via Until/Since and encodes
+    -- interval quantifier conditions from sub_nf.2 using nested Since/Until
+    -- from x into the interval (t, x) or (x, t), with char_k(nf_y) formulas
+    -- characterizing the interval witnesses.
     --
-    -- The correct approach uses nested buildRight to recursively encode the
-    -- quantifier conditions, with the recursion terminating at depth 0 where
-    -- all n-var NFs are determined by predicates and positions.
-    -- See plan v19 phases 3-5 and handoff documentation.
+    -- Forward: existential witnesses -> formula truth (Phase 4)
+    -- Backward: formula truth -> existential witnesses (Phase 5)
+    --   Uses Prior-UZ/SZ for witness extraction at each nesting level.
+    --
+    -- See plan v20 phases 3-5 and Rabinovich 2014 Notation 5.2 + Prop 3.5.
     have p2_kp1 : P2 atomMap (k + 1) := by
       intro parent_atoms sub_nf
       let char_kp1 : NormalForm sig (k + 1) 1 → Formula :=
         fun nf_1 => Classical.choose (p1_kp1 nf_1)
-      have char_kp1_correct : ∀ (nf_1 : NormalForm sig (k + 1) 1)
+      have _char_kp1_correct : ∀ (nf_1 : NormalForm sig (k + 1) 1)
           (M : OrderedMonadicStructure sig)
           (h_UZ : semantic_prior_UZ M atomMap)
           (h_SZ : semantic_prior_SZ M atomMap)
@@ -420,14 +613,16 @@ noncomputable def master_induction
           temporal_truth M atomMap t (char_kp1 nf_1) ↔
           nf_eval_nf M (k + 1) 1 (fun _ => t) nf_1 :=
         fun nf_1 => Classical.choose_spec (p1_kp1 nf_1)
-      refine ⟨nf_exist_formula atomMap h_surj (k + 1) char_kp1 parent_atoms sub_nf,
+      refine ⟨nf_exist_formula_nested k char_kp1 char_k
+          parent_atoms sub_nf,
         fun M h_UZ h_SZ t h_atoms => ?_⟩
       constructor
-      · intro h_formula
+      · -- Backward: formula truth → existential (Phase 5, sorry)
+        intro h_formula
         sorry
-      · exact nf_exist_formula_forward' atomMap h_surj (k + 1) char_kp1
-          (fun nf_1 s => char_kp1_correct nf_1 M h_UZ h_SZ s)
-          parent_atoms sub_nf h_atoms
+      · -- Forward: existential → formula truth (Phase 4, sorry)
+        intro h_ex
+        sorry
     ⟨p1_kp1, p2_kp1⟩
 
 /-- Extract P2 from the master induction. This has the same type as

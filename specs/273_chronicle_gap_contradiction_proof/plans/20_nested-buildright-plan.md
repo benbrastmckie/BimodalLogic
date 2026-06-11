@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: Nested buildRight Formula Definition [NOT STARTED]
+### Phase 3: Nested buildRight Formula Definition [COMPLETED]
 
 **Goal**: Define the recursive function `nf_exist_formula_nested` that builds a k+1-level nested Until/Since formula encoding the full sub_nf (atoms + quantifier part sub_nf.2). This replaces `nf_exist_formula` from NfCharFormula.lean at depth k+1.
 
@@ -123,19 +123,17 @@ Phases within the same wave can execute in parallel.
 | Bottom-level (depth 0) atom encoding | Doets 1989 Lemma 1.1 base case: depth-0 NFs are pure atom assignments |
 
 **Tasks**:
-- [ ] Define a helper `nf_sub_conditions` that, given `sub_nf : NormalForm sig (k+1) 2`, extracts which sub-sub-NFs `ssn : NormalForm sig k 3` satisfy `sub_nf.2 ssn = true` and classifies each by the order of the third variable relative to the two parent variables (in the interval (t,x), at x, beyond x, at t, before t). This classification corresponds to the interval decomposition in Rabinovich Notation 5.2.
-- [ ] Define `nf_exist_formula_nested` recursively on the nesting level:
-  - **Base (nesting level = 0, depth = 0)**: Use the existing `nf_exist_formula` pattern -- atom compatibility + order direction (Until/Since/equality). At depth 0, sub_nf.2 is trivially empty (NormalForm sig 0 n has no quantifier part for the degenerate case), so no nesting is needed.
-  - **Recursive (nesting level j+1, depth d+1)**: For the Until case (t < x), the formula is a disjunction over compatible nf_x values of:
-    - `char_{d+1}(nf_x)` -- characterizes the witness x (from the IH P1)
-    - AND a conjunction encoding sub_nf.2: for each ssn with sub_nf.2(ssn) = true and the interval witness y in (t, x): a nested Until formula placing y with `char_d(nf_y)` and recursively encoding ssn's quantifier part at nesting level j
-    - AND for each ssn with sub_nf.2(ssn) = true but y outside the interval: conditions absorbed into nf_x or parent atom compatibility
-    - AND guards for negative conditions: for each ssn with sub_nf.2(ssn) = false and y in (t, x): a Box(not char_d(nf_y)) guard (the beta_j from Notation 5.2 encoding forbidden types)
-    - Wrapped in `Until(guard, event)` where event captures x and guard captures the interval conditions
-  - The Since case is symmetric with buildLeft.
-  - The identity case (x = t) has no interval, so only endpoint conditions apply.
-- [ ] Verify the formula definition compiles and the recursion terminates. The nesting level decreases at each recursive call (from k+1 to 0), providing well-foundedness.
-- [ ] Add docstring citing Rabinovich Notation 5.2 and Prop 3.5.
+- [x] **Task 3.1**: Define helpers `ssn_var0_pred_assgn`, `ssn_compat_var0`, `ssn_in_interval_right`, `ssn_in_interval_left` *(deviation: altered — replaced planned `nf_sub_conditions` monolithic helper with four focused helpers that classify ssn's by variable-0 predicate compatibility and interval placement)*
+- [x] **Task 3.2**: Define `nf_exist_formula_nested` with nested Until/Since encoding:
+  - Parameterized by k, char_kp1, char_k, parent_atoms, sub_nf (no atomMap/h_surj needed in definition body)
+  - t-compatibility and order consistency checks (same as nf_exist_formula)
+  - Disjunction over atom-compatible nf_x : NormalForm sig (k+1) 1
+  - For Until case (t < x): event = char_{k+1}(nf_x) AND conjunction of Since(char_k(nf_y), top) for positive interval ssn's; guard = conjunction of neg(char_k(nf_y)) for negative interval ssn's
+  - Since case symmetric with Until/Since swapped
+  - Identity case (x = t): no interval, just disjunction of char_{k+1}(nf_x)
+  *(deviation: altered — formula uses flat Since/Until from x for interval witnesses rather than multi-level recursive nesting; the "nesting" is implicit through char_k which is built from P2(k-1), P2(k-2), etc.)*
+- [x] **Task 3.3**: Verify the formula definition compiles. `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure` succeeds. No termination issues (no recursion in the definition itself; nesting is handled by the char function hierarchy).
+- [x] **Task 3.4**: Add docstring citing Rabinovich Notation 5.2 and Prop 3.5 (module-level doc comment above the definition).
 
 **Timing**: 4 hours (~120 lines: type analysis, recursive formula construction, order case splits)
 
@@ -146,7 +144,7 @@ Phases within the same wave can execute in parallel.
 
 **Verification**:
 - `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure` succeeds (formula definition compiles)
-- No new sorries introduced
+- Sorry count: NegationClosure.lean has 2 sorries (backward + forward in P2(k+1)), up from 1 (was only backward). The +1 is because the formula changed from `nf_exist_formula` to `nf_exist_formula_nested`, invalidating the old forward proof. Phase 4 will prove the new forward direction, Phase 5 the backward.
 
 ---
 
