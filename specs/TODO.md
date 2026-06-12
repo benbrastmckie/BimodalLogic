@@ -257,6 +257,7 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/plans/18_rabinovich-pipeline-plan.md]
   - [273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md]
   - [273_chronicle_gap_contradiction_proof/plans/20_nested-buildright-plan.md]
+  - [273_chronicle_gap_contradiction_proof/plans/21_rabinovich-formula-level-plan.md]
 
 **Description**: Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.
 
