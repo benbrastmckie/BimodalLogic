@@ -62,12 +62,18 @@ The definitions below include:
 - `succ_cofinal` — cofinality from gap elimination
 - `limitDomSubtype_isSuccArchimedean` — IsSuccArchimedean from cofinality
 
-**Task 268 resolution**: `chronicle_gap_contradiction` is proved using
-`gap_contradicts_prior` from `GoodStructuresModelSurgery.lean` (sorry-free).
-The proof builds a singleton `OrderedMonadicStructure` on `LimitDomSubtype`,
-proves `semantic_prior_UZ/SZ` via the MCS bridge, and applies model surgery.
-The sorry chain `chronicle_gap_contradiction → succ_cofinal →
-limitDomSubtype_isSuccArchimedean → succ_embed_surjective` is now closed.
+**Task 273 status (plan v23)**: `chronicle_gap_contradiction` still has sorry.
+The proof strategy (build OrderedMonadicStructure on LimitDomSubtype, prove
+semantic_prior_UZ/SZ via MCS bridge, apply `gap_contradicts_prior`) is correct
+but blocked because `gap_contradicts_prior` transitively depends on
+`kamp_prior_expressive_completeness` (via US_expressively_complete_over_prior
+-> gap_formula_R -> reynolds_model_surgery_core), which has sorry at
+KampPrior.lean:149 (the Feferman-Vaught composition lemma blocker).
+The sorry chain `chronicle_gap_contradiction -> succ_cofinal ->
+limitDomSubtype_isSuccArchimedean -> succ_embed_surjective` remains open.
+See OLD PROOF block below for partial proof (h_temporal_truth_eff, h_prior_UZ,
+h_prior_SZ proved; blocked at contemp_equiv k=0 triviality issue -- needs k>=1
+but that requires higher quantifier depth formulas hitting the Kamp sorry).
 
 `succ_reaches_dom_N` remains dead (BX pipeline stage induction, unrelated to
 the Reynolds model surgery approach).
