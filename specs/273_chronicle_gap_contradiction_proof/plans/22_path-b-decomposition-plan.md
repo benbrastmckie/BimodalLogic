@@ -9,7 +9,7 @@
   - specs/273_chronicle_gap_contradiction_proof/reports/12_team-research.md (round 12, confirmed `p2_from_p1_succ` orphaned)
   - specs/273_chronicle_gap_contradiction_proof/reports/11_divergence-audit.md (postmortem constraints)
   - specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md (literature grounding)
-- **Artifacts**: plans/13_path-b-decomposition-plan.md (this file)
+- **Artifacts**: plans/22_path-b-decomposition-plan.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
 - **Lean Intent**: true

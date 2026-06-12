@@ -1328,12 +1328,12 @@
           "summary": "Team research (4 teammates): Path B confirmed required; nf_to_formula bridge exists; Lemma 3.2.2 + Prop 4.3 architecture designed (~475-630 lines)"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/13_path-b-decomposition-plan.md",
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/22_path-b-decomposition-plan.md",
           "type": "plan",
           "summary": "Plan v22: Path B architecture — Lemma 3.2.2 + Prop 4.3 structural induction, 8 phases (4 completed + 4 new)"
         }
       ],
-      "next_artifact_number": 14,
+      "next_artifact_number": 23,
       "researched": "2026-06-12T16:33:25Z",
       "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
