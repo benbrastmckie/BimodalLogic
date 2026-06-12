@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Closure Properties (Lemma 3.4) [PARTIAL]
+### Phase 2: Closure Properties (Lemma 3.4) [IN PROGRESS]
 
 **Goal**: Prove that V-EA formulas (disjunctions of vec-EA formulas) are closed under disjunction, conjunction, and existential quantification.
 
@@ -204,7 +204,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Negation Closure (Prop 4.2 via Section 5) [NOT STARTED]
+### Phase 4: Negation Closure (Prop 4.2 via Section 5) [IN PROGRESS]
 
 **Goal**: Prove that the negation of a vec-EA formula with at most 2 free variables is equivalent to a V-EA formula over Prior structures. This is the hard core of the proof, corresponding to Rabinovich Section 5.
 
@@ -212,14 +212,15 @@ Phases within the same wave can execute in parallel.
 
 **Sub-tasks** (each independently verifiable, sized for focused agent runs):
 
-**4a. Base case (Lemma 5.3, n=0)**:
-- [ ] Prove `neg_interval_base`: not(exists x in (z_0,z_1))(P(x)) is equivalent to (forall y in (z_0,z_1))(not P(y)), which is a V-EA formula
+**4a. Base case (Lemma 5.3, n=0)** [COMPLETED]:
+- [x] Prove `neg_interval_base`: not(exists x in (z_0,z_1))(P(x)) is equivalent to (forall y in (z_0,z_1))(not P(y)), which is a V-EA formula *(deviation: altered -- proved as three theorems: `neg_interval_base_iff` (logical equivalence), `neg_interval_base_bracket` (bracket formula form), `neg_interval_base_vbracket` (V-bracket closure). Also proved `neg_purePoints_one` for the generalized pure-points formulation with `Fin 1` predicates.)*
 - Timing: 0.5 hours (~30 lines)
 
-**4b. INF formula on Prior structures (Eq 5.2 / Lemma 5.3 setup)**:
-- [ ] Define `inf_formula_prior z0 z1 P`: locates r_0 = inf{z in (z_0, z_1) | P(z)} using semantic_prior_UZ
-- [ ] Prove `inf_formula_prior_correct`: r_0 is the first occurrence of P in (z_0, z_1), and P(r_0) holds (no K+ disjunct needed on Prior structures because first occurrences are attained)
-- [ ] Prove `inf_formula_prior_is_vec_ea`: the INF formula is V-EA
+**4b. INF formula on Prior structures (Eq 5.2 / Lemma 5.3 setup)** [COMPLETED]:
+- [x] Define `inf_formula_prior z0 z1 P`: locates r_0 = inf{z in (z_0, z_1) | P(z)} using semantic_prior_UZ *(deviation: altered -- implemented as `first_occurrence_prior` and `first_occurrence_prior_strict` theorems extracting the first occurrence directly from `semantic_prior_UZ`, rather than defining a formula object)*
+- [x] Prove `inf_formula_prior_correct`: r_0 is the first occurrence of P in (z_0, z_1), and P(r_0) holds (no K+ disjunct needed on Prior structures because first occurrences are attained) *(completed as `inf_bracket_formula_holds` and `inf_bracket_formula_prior`)*
+- [x] Prove `inf_formula_prior_is_vec_ea`: the INF formula is V-EA *(completed as `inf_formula_prior_is_vbracket`)*
+- [x] Prove `neg_purePoints_split`: interval splitting for the inductive step (bonus, provides the key reduction for Phase 4c)
 - Timing: 1.5 hours (~80 lines)
 
 **4c. Inductive step (Lemma 5.3, n -> n-1)**:
