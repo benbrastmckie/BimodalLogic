@@ -1,7 +1,7 @@
 # Implementation Plan: Path B Decomposition for Kamp's Theorem (v22)
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: Plans v17-v21 (phases 1-4 COMPLETED, phase 5 BLOCKED on P1/P2 circularity)
 - **Research Inputs**:
@@ -237,17 +237,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5a: VecEADecomposition.lean -- Lemma 3.2.2 [NOT STARTED]
+### Phase 5a: VecEADecomposition.lean -- Lemma 3.2.2 [IN PROGRESS]
 
 **Goal**: Prove that every EA formula with n > 2 free variables is equivalent to a conjunction of EA formulas with at most 2 free variables. This is a general result for ANY linear order (no Prior assumption), yielding CSLib-quality infrastructure of independent mathematical value.
 
 **Literature**: Rabinovich 2014, p. 4, Lemma 3.2(2). The key mathematical content: for an EA formula with ordered free variables z_0 < ... < z_{m-1} and existential witnesses x_0 < ... < x_k placed among the z_i's, the witness partition among segments (z_i, z_{i+1}) is deterministic (given by the total ordering), so point types and interval types are local to each segment.
 
 **Tasks**:
-- [ ] Add `VecEAFormula.holds` general evaluation function for `VecEAFormula m n` with ordered witness semantics -- truth requires existence of m ordered witnesses interleaved with n free variables, each satisfying its point-type predicate, with interval-type predicates holding along each sub-interval (~70-110 lines)
-- [ ] Define `segmentBracket` extraction: given n free variables and witness placement, extract the bracket formula for each segment (z_i, z_{i+1}), capturing the witnesses falling in that segment with their point/interval types (~90-140 lines)
-- [ ] Prove `vecEA_decomp_2var`: semantic equivalence between the n-var EA evaluation and the conjunction of 2-var bracket evaluations over all segments. Direction 1 (n-var -> conjunction): project witnesses to segments. Direction 2 (conjunction -> n-var): combine segment witnesses, ordering is automatic from the interval structure (~80-150 lines)
-- [ ] Verify all definitions and proofs compile sorry-free
+- [ ] **Task 5a.1**: Add `VecEAFormula.holds` general evaluation function *(deviation: altered — replaced with syntactic neg_bracket_syn approach; general VecEAFormula.holds not needed because Prop 4.3 works via structural induction on MonadicFormula using pairwise VVecEA2 decomposition)*
+- [ ] **Task 5a.2**: Define `segmentBracket` extraction *(deviation: altered — replaced with neg_bracket_syn/neg_vecEA2_syn which directly provides syntactic V-EA negation; segmentBracket extraction not needed)*
+- [ ] **Task 5a.3**: Prove `vecEA_decomp_2var` semantic equivalence *(deviation: altered — replaced with neg_bracket_syn_iff which gives ¬bf.holds ↔ neg_bracket_syn.holds over Prior; combined with neg_vecEA2_syn_iff for full VVecEA2 negation)*
+- [ ] **Task 5a.4**: Verify all definitions and proofs compile sorry-free *(in progress — VecEADecomposition.lean compiles with 3 sorries: neg_bracket_syn_sound, neg_bracket_syn_complete, neg_vecEA2_syn_iff)*
 
 **Timing**: 4 hours (~250-350 lines in a new file)
 
