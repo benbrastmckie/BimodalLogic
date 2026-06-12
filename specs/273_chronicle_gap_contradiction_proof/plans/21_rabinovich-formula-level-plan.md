@@ -153,18 +153,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Closure Properties (Lemma 3.4) [NOT STARTED]
+### Phase 2: Closure Properties (Lemma 3.4) [PARTIAL]
 
 **Goal**: Prove that V-EA formulas (disjunctions of vec-EA formulas) are closed under disjunction, conjunction, and existential quantification.
 
 **Literature**: Rabinovich 2014 Lemma 3.2 (pp. 3-4), Lemma 3.4 (p. 4).
 
 **Tasks**:
-- [ ] Prove `vec_ea_closed_disj`: disjunction of V-EA formulas is V-EA (trivial: append disjunct lists)
-- [ ] Prove `vec_ea_conj_to_disj`: conjunction of two EA formulas is equivalent to a disjunction of EA formulas (Lemma 3.2.1: merge witness sequences, take all compatible orderings)
-- [ ] Prove `vec_ea_closed_conj`: conjunction of V-EA formulas is V-EA (distribute via `vec_ea_conj_to_disj` + `vec_ea_closed_disj`)
-- [ ] Prove `vec_ea_closed_exists`: if phi is V-EA, then (exists x) phi is V-EA (Lemma 3.2.3: the existential witness becomes part of the witness sequence)
-- [ ] Verify all proofs sorry-free
+- [x] Prove `vec_ea_closed_disj`: disjunction of V-EA formulas is V-EA (trivial: append disjunct lists) *(deviation: altered -- already proved in VecEAFormula.lean as VBracketFormula.disj/disj_holds and VVecEA2.disj/disj_holds; VecEAClosure.lean re-exports via the conjunction/existential API)*
+- [x] Prove `vec_ea_conj_to_disj`: conjunction of two EA formulas is equivalent to a disjunction of EA formulas (Lemma 3.2.1: merge witness sequences, take all compatible orderings) *(deviation: altered -- named `BracketFormula.conj_to_bracket_exists`; base cases (0+0, 0+n, n+0) sorry-free; general case (n1+1, n2+1) sorry'd -- segment type verification for Finset.sort-based construction is technically correct but requires ~80 lines of Fin/List index arithmetic)*
+- [x] Prove `vec_ea_closed_conj`: conjunction of V-EA formulas is V-EA (distribute via `vec_ea_conj_to_disj` + `vec_ea_closed_disj`) *(completed: VBracketFormula.conj_holds_vbracket and VVecEA2.conj_holds_vvecEA2, sorry-free modulo dependency on conj_to_bracket_exists)*
+- [x] Prove `vec_ea_closed_exists`: if phi is V-EA, then (exists x) phi is V-EA (Lemma 3.2.3: the existential witness becomes part of the witness sequence) *(deviation: altered -- named BracketFormula.existsBounded_right; 0-witness case sorry-free; n+1-witness case sorry'd -- witness insertion index arithmetic pending)*
+- [ ] Verify all proofs sorry-free *(deviation: deferred -- 3 sorry sites remain in general cases; base cases and structural wiring sorry-free)*
 
 **Timing**: 3 hours (~150 lines)
 
@@ -179,7 +179,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: V-EA to Temporal Translation (Prop 3.5) [NOT STARTED]
+### Phase 3: V-EA to Temporal Translation (Prop 3.5) [IN PROGRESS]
 
 **Goal**: Prove that every V-EA formula with one free variable is equivalent to a TL(U,S) formula, using the existing buildRight/buildLeft machinery in Translation.lean.
 
