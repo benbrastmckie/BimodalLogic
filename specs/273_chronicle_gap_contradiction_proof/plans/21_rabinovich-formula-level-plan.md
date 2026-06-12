@@ -179,17 +179,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 3: V-EA to Temporal Translation (Prop 3.5) [IN PROGRESS]
+### Phase 3: V-EA to Temporal Translation (Prop 3.5) [COMPLETED]
 
 **Goal**: Prove that every V-EA formula with one free variable is equivalent to a TL(U,S) formula, using the existing buildRight/buildLeft machinery in Translation.lean.
 
 **Literature**: Rabinovich 2014 Prop 3.5 (p. 4).
 
 **Tasks**:
-- [ ] Define `vec_ea_to_temporal`: given a vec-EA formula with one free variable at position z_k in the witness sequence x_0 < ... < x_n, produce the temporal formula: A_k AND (B_{k+1} Until (A_{k+1} Until ... (A_n AND Box B_{n+1})...)) AND (B_k Since (A_{k-1} Since ... (A_0 AND HBox B_0)...))
-- [ ] Prove correctness: `vec_ea_to_temporal_correct` -- the temporal formula is semantically equivalent to the vec-EA formula on all models (no Prior assumption needed for this direction)
-- [ ] Wire to buildRight_correct / buildLeft_correct from Translation.lean for the right/left chain sub-proofs
-- [ ] Handle the V-EA case: `v_vec_ea_to_temporal` maps disjunctions to disjunctions of temporal formulas
+- [x] Define `vec_ea_to_temporal`: given a vec-EA formula with one free variable at position z_k in the witness sequence x_0 < ... < x_n, produce the temporal formula *(deviation: altered -- implemented as `bracketBuildRight` using recursive nested Until; only left-endpoint case implemented as this is what the Kamp theorem proof needs)*
+- [x] Prove correctness: `vec_ea_to_temporal_correct` -- the temporal formula is semantically equivalent to the vec-EA formula on all models *(deviation: altered -- named `bracketBuildRight_correct` and `VecEA2.translateLeft_correct`, factoring through `chainHolds` intermediate specification)*
+- [x] Wire to buildRight_correct / buildLeft_correct from Translation.lean for the right/left chain sub-proofs *(deviation: altered -- `buildRight_correct` used for n=0 base case only; recursive case uses direct Until semantics)*
+- [x] Handle the V-EA case: `v_vec_ea_to_temporal` maps disjunctions to disjunctions of temporal formulas *(completed as `VVecEA2.translateLeft_correct`)*
 
 **Timing**: 2 hours (~100 lines: mostly wiring to Translation.lean)
 
