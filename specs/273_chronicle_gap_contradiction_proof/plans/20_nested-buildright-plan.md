@@ -185,7 +185,17 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Backward Direction (Formula to Witnesses) [NOT STARTED]
+### Phase 5: Backward Direction (Formula to Witnesses) [BLOCKED]
+
+**BLOCKER** (Phase 5):
+- **What failed**: The formula `nf_exist_formula_nested` is provably incorrect for certain sub_nf values. Specifically, two distinct sub_nf's that agree on atom parts and positive-interval ssn patterns but differ on non-interval ssn quantifier conditions produce the SAME formula. This means the formula can be true (matching sub_nf_1) when the existential for a different sub_nf_2 is false, breaking the biconditional.
+- **What was tried**: (1) Direct backward proof by extracting x from Until, using char_{k+1}(nf_x) to get 1-var NF of x, then attempting to show sub_nf.2 = characteristic. Failed because the formula doesn't encode sub_nf.2 for non-interval ssn's. (2) doets_lemma_1_1 transfer argument: define formula as disjList of char_{k+1}(nf_t) for compatible nf_t. The backward transfer requires doets at depth k+2 (since the existential has quantifier depth k+2), but only P1(k+1) is available, giving doets at depth k+1. (3) Composition theorem approach: decompose 3-var NFs into 2-var projections. No formalized composition theorem exists, and the composition argument itself requires interval-type matching that isn't captured by the formula.
+- **Why it's stuck**: The formula `nf_exist_formula_nested` only encodes: (a) char_{k+1}(nf_x) at the witness x (giving 1-var NF of x), (b) char_k(nf_y) for interval witnesses (giving 1-var NFs of y's), (c) parent_atoms (depth-0 atoms of t). But the 2-var NF sub_nf at depth k+1 includes quantifier conditions sub_nf.2 involving depth-k 3-var NFs, which encode relationships among three points (y, x, t) jointly. These joint relationships are NOT determined by individual 1-var NFs + orders (confirmed by research handoff 20260611g). The formula's Since conditions only capture 1-var NFs of interval witnesses, losing the 3-var joint information. For non-interval ssn's (y > x, y = x, y < t, y = t), the formula encodes NO conditions at all.
+- **What is needed**: A fundamentally different formula design. Three viable approaches:
+  1. **Generalized arity induction**: Extend master_induction to prove P_n(k) for ALL arities n (not just n=1,2). Then P_3(k) gives temporal formulas for 3-var existentials, which can be used inside the formula for P_2(k+1). This is the cleanest approach but requires restructuring the entire induction.
+  2. **Composition theorem formalization**: Formalize that the 3-var NF of (y,x,t) is determined by the 2-var NFs of (y,x) and (y,t) when y is between x and t (Libkin Lemma 3.7 / Rabinovich Section 5). Then use P_2(k) to encode the 2-var conditions. Requires ~200 lines of composition infrastructure.
+  3. **doets depth trick**: Show that the existential at depth k+1 is equivalent to a formula of depth k+1 (not k+2) on Prior structures, using Prior-UZ/SZ to eliminate one quantifier alternation. Then doets_lemma_1_1 at depth k+1 suffices. This is Prior-specific and might be the shortest path.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Goal**: Prove the backward direction: if the nested formula evaluates to true, then there exists a witness x with the correct depth-(k+1) 2-var NF. This is the hard direction, corresponding to the proof of Rabinovich Prop 4.2 via Section 5 machinery, specialized to Prior structures.
 
@@ -201,7 +211,7 @@ Phases within the same wave can execute in parallel.
 | Depth-0 termination | At nesting level k (depth 0): the (k+2)-var NF is determined by predicates + positions (atoms only, no quantifier conditions) | Unchanged: Doets 1989 base case |
 
 **Tasks**:
-- [ ] Prove `nf_exist_formula_nested_backward`: given formula truth, extract witnesses and verify the full 2-var NF.
+- [ ] Prove `nf_exist_formula_nested_backward`: given formula truth, extract witnesses and verify the full 2-var NF. *(deviation: blocked — formula `nf_exist_formula_nested` is provably incorrect; does not encode sub_nf.2 for non-interval ssn's, making backward direction unprovable; see BLOCKER above)*
   - **Until case** (t < x, corresponding to z_0 < z_1 in Rabinovich):
     - From the outermost Until, extract the main witness x satisfying `char_kp1(nf_x)` (the event formula). By P1(k+1) correctness, x has the correct depth-(k+1) 1-var NF.
     - From the guard of the Until, x is the first occurrence of char_kp1(nf_x) after t (uses `semantic_prior_UZ` -- this is where Lemma 5.3's infimum construction is applied, simplified by Prior structure's attained first occurrences).
@@ -214,8 +224,8 @@ Phases within the same wave can execute in parallel.
     - Conclude: all components of nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf are satisfied.
   - **Since case** (x < t): Symmetric to Until using buildLeft and `semantic_prior_SZ`.
   - **Identity case** (x = t): No interval. Endpoint conditions only. Straightforward.
-- [ ] Key auxiliary lemma: `nested_chain_witness_extraction` -- given a satisfied nested Until chain of depth j, extract the j witnesses and verify their characterization formulas hold. This is a direct induction on j, using `buildRight_correct` at each level. Corresponds to Corollary 5.4's recursive unfolding.
-- [ ] Key auxiliary lemma: `nf_from_witnesses_and_positions` -- given witnesses at positions with known 1-var NFs and known relative order, determine the multi-variable NF. At depth 0 this is immediate (atoms only). At depth d+1, the quantifier part is determined by the deeper nesting levels. This is the formal content of the "recursive NF determination" argument from handoff 20260611g. Corresponds to Rabinovich's composition structure where inserting a point into an interval decomposes it (Lemma 5.1, A_i^- and A_i^+ splitting).
+- [ ] Key auxiliary lemma: `nested_chain_witness_extraction` *(deviation: blocked — depends on backward direction)* -- given a satisfied nested Until chain of depth j, extract the j witnesses and verify their characterization formulas hold. This is a direct induction on j, using `buildRight_correct` at each level. Corresponds to Corollary 5.4's recursive unfolding.
+- [ ] Key auxiliary lemma: `nf_from_witnesses_and_positions` *(deviation: blocked — depends on backward direction)* -- given witnesses at positions with known 1-var NFs and known relative order, determine the multi-variable NF. At depth 0 this is immediate (atoms only). At depth d+1, the quantifier part is determined by the deeper nesting levels. This is the formal content of the "recursive NF determination" argument from handoff 20260611g. Corresponds to Rabinovich's composition structure where inserting a point into an interval decomposes it (Lemma 5.1, A_i^- and A_i^+ splitting).
 
 **Timing**: 5 hours (~200 lines: ~80 Until case, ~80 Since case, ~20 identity case, ~20 auxiliary lemmas)
 

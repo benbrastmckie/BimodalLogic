@@ -1,9 +1,18 @@
 {
   "status": "partial",
-  "summary": "Phase 3 COMPLETED: defined nf_exist_formula_nested in NegationClosure.lean (~200 lines including helpers and docstrings). The formula encodes the full 2-var NF including sub_nf.2 quantifier conditions using nested Until/Since with char_k characterization formulas for interval witnesses. Wired into master_induction P2(k+1) case, replacing the old nf_exist_formula. Both forward and backward directions are sorry'd (Phases 4-5). Build passes. No new axioms.",
-  "phases_completed": 3,
+  "summary": "Phase 5 BLOCKED: formula nf_exist_formula_nested is provably incorrect. It does not encode sub_nf.2 (quantifier part) for non-interval ssn's, and uses only 1-var char_k for interval ssn's which is insufficient to determine the 3-var NF at depth k >= 1. Two sub_nf's with same atoms and interval ssn patterns but different non-interval ssn values produce the same formula, breaking the biconditional. Build passes with 1 sorry at NegationClosure.lean:828. Forward direction (Phase 4) remains sorry-free. A new plan revision is needed to redesign the formula.",
+  "phases_completed": 4,
   "phases_total": 7,
-  "blockers": [],
+  "sorry_locations": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:828"
+  ],
+  "blockers": [
+    {
+      "phase": 5,
+      "description": "Formula nf_exist_formula_nested is provably incorrect for the backward direction. Does not encode sub_nf.2 for non-interval ssn's. Three fix approaches identified: (A) generalized arity induction P_n(k), (B) composition theorem formalization, (C) doets depth trick for Prior structures. See plan Phase 5 BLOCKER and handoff phase-5-handoff-20260611.md.",
+      "goal_state": "case mp: h_formula : temporal_truth M atomMap t (nf_exist_formula_nested ...) |- exists x, nf_eval_nf M (k+1) (1+1) (Fin.cons x (fun _ => t)) sub_nf"
+    }
+  ],
   "continuation_context": null,
   "artifacts": [
     {
@@ -19,12 +28,12 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "type": "implementation",
-      "summary": "nf_exist_formula_nested definition + master_induction with 2 sorries at P2(k+1) forward/backward"
+      "summary": "nf_exist_formula_nested definition + forward proof sorry-free; 1 sorry at P2(k+1) backward (Phase 5 BLOCKED)"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260611i.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611.md",
       "type": "handoff",
-      "summary": "Phase 3 completion handoff: formula structure, sorry inventory, next action for Phase 4"
+      "summary": "Phase 5 blocker documentation: formula incorrectness analysis, three fix approaches"
     }
   ]
 }
