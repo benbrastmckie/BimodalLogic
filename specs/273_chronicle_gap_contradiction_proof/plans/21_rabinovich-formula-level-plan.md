@@ -231,7 +231,7 @@ Phases within the same wave can execute in parallel.
 - [x] Induction on n (number of existential witnesses), NOT on quantifier depth
 - Timing: 2 hours (~120 lines)
 
-**4d. Bounded existential negation (Corollary 5.4)**:
+**4d. Bounded existential negation (Corollary 5.4)** [NOT STARTED]:
 - [ ] Prove `neg_bounded_exists`: not(exists z in (z_0, z_1))[alpha_0, beta_1, ..., alpha_n](z_0, z) is V-EA
 - [ ] Define F_i chain: F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)
 - [ ] Reduce to Lemma 5.3 via the observation that the bracket formula holds iff there is an increasing sequence satisfying F_0
