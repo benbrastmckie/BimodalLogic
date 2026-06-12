@@ -1239,14 +1239,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T16:33:25Z",
+      "last_updated": "2026-06-12T16:48:53Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1304,29 +1304,9 @@
           "summary": "Team research (4 teammates): sorry 3 is FALSE as stated (formula redesign required); plan v16 unsalvageable; Path A = Rabinovich 2014 relativized to Prior structures (primary), Path B = GHR-faithful adjacent-pair 2-var NF master lemma (fallback)"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/17_kamp-rabinovich-plan.md",
-          "type": "plan",
-          "summary": "Implementation plan v17: 7-phase Kamp/Rabinovich proof of US expressive completeness for Prior structures, bypassing the Stavi sorry chain"
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/09_negation-closure-research.md",
           "type": "report",
           "summary": "Blocker research: k>=1 sorry needs Rabinovich Thm 4.4 relativized; restore v17 phases 2-5 as sub-phases, then 10-line fill via nf_to_formula bridge"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/18_rabinovich-pipeline-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v18: 5-phase Rabinovich pipeline to fill nf_characterizable_temporal_prior k>=1 sorry, completing the Kamp theorem for Prior structures"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/19_interval-formula-plan.md",
-          "type": "plan",
-          "summary": "Revised plan v19: interval-based P2_n(k) formula replacing unprovable nf_exist_formula backward direction, with arity generalization and literature alignment (Rabinovich 2014, Doets 1989)"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/20_nested-buildright-plan.md",
-          "type": "plan",
-          "summary": "Plan v20: nested buildRight formula replacing P2_n arity generalization, with k+1-level Until/Since nesting aligned to Rabinovich 2014 Prop 3.5 + Section 5"
         },
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md",
@@ -1338,11 +1318,6 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/11_divergence-audit.md"
         },
         {
-          "type": "plan",
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/21_rabinovich-formula-level-plan.md",
-          "summary": "Plan v21: Rabinovich formula-level pivot — 8 phases, vec-EA formulas, negation closure, bypasses NF composition"
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/12_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): p2_from_p1_succ is sorry-free orphan, Path B confirmed if forward-only P2(k) check fails, 480-630 lines estimated"
@@ -1351,61 +1326,58 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/13_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): Path B confirmed required; nf_to_formula bridge exists; Lemma 3.2.2 + Prop 4.3 architecture designed (~475-630 lines)"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/13_path-b-decomposition-plan.md",
+          "type": "plan",
+          "summary": "Plan v22: Path B architecture — Lemma 3.2.2 + Prop 4.3 structural induction, 8 phases (4 completed + 4 new)"
         }
       ],
       "next_artifact_number": 14,
       "researched": "2026-06-12T16:33:25Z",
-      "planned": "2026-06-11T18:10:00Z",
+      "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
         "phases": 8,
-        "total_effort_hours": 20,
+        "total_effort_hours": 16,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 21,
+        "plan_version": 22,
         "dependency_waves": [
           [
             1
           ],
           [
-            2,
+            2
+          ],
+          [
             3
           ],
           [
             4
           ],
           [
-            5
+            "5a"
+          ],
+          [
+            "5b"
+          ],
+          [
+            "5c"
           ],
           [
             6
-          ],
-          [
-            7
-          ],
-          [
-            8
           ]
         ],
         "reports_integrated": [
           {
-            "path": "reports/08_team-research.md",
-            "integrated_in_plan_version": 17,
-            "integrated_date": "2026-06-11"
+            "path": "reports/12_team-research.md",
+            "integrated_in_plan_version": 22,
+            "integrated_date": "2026-06-12"
           },
           {
-            "path": "reports/09_negation-closure-research.md",
-            "integrated_in_plan_version": 18,
-            "integrated_date": "2026-06-11"
-          },
-          {
-            "path": "handoffs/phase-3-handoff-20260611f.md",
-            "integrated_in_plan_version": 19,
-            "integrated_date": "2026-06-11"
-          },
-          {
-            "path": "handoffs/phase-3-handoff-20260611g.md",
-            "integrated_in_plan_version": 20,
-            "integrated_date": "2026-06-11"
+            "path": "reports/13_team-research.md",
+            "integrated_in_plan_version": 22,
+            "integrated_date": "2026-06-12"
           },
           {
             "path": "reports/11_divergence-audit.md",
@@ -1419,7 +1391,7 @@
           }
         ]
       },
-      "session_id": "sess_1781281463_30493c",
+      "session_id": "sess_1781282547_3da6a7",
       "started": "2026-06-10T21:39:12Z"
     },
     {
