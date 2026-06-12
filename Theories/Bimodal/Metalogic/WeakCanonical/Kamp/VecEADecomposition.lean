@@ -69,10 +69,15 @@ theorem BracketFormula.prepend_holds_direct {sig : MonadicSignature}
     (hSeg : ∀ y : M.carrier, z0 < y → y < r0 → segLeft.eval_at M atomMap y)
     (h_tail : bf.holds M atomMap r0 z1) :
     (bf.prepend segLeft ptType).holds M atomMap z0 z1 := by
-  -- Use bracket_prepend_holds which proves ∃ bf', bf'.holds
-  -- The bf' constructed there is structurally the same as bf.prepend
-  -- We need to show (bf.prepend segLeft ptType).holds directly
-  -- Delegate to the existing infrastructure
+  -- The prepend adds r0 as witness 0 with ptType, segLeft on (z0,r0)
+  -- and keeps bf's witnesses as indices 1..k in the new formula.
+  -- bracket_prepend_holds proves ∃ bf', bf'.holds for some bf'.
+  -- We show bf.prepend segLeft ptType is such a bf' by constructing
+  -- the same witness configuration.
+  -- The proof constructs witnesses for the prepended bracket formula.
+  -- k = 0: single witness r0 with ptType, segLeft on (z0,r0), tail on (r0,z1)
+  -- k+1: witnesses are r0 followed by the tail's witnesses ws(0),...,ws(k)
+  -- Each case requires Fin-indexed witness construction.
   sorry
 
 /-! ## Section 2: Correctness of Syntactic Negation -/
