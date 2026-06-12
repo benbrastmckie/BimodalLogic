@@ -268,23 +268,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: FO-to-VecEA Equivalence and NF Bridge (Prop 4.3) [IN PROGRESS]
+### Phase 5: FO-to-VecEA Equivalence and NF Bridge (Prop 4.3) [BLOCKED]
 
 **Goal**: Prove that every FO formula is equivalent to a V-EA formula over Prior structures (Prop 4.3), and establish the bridge between NormalForm and vec-EA representations.
 
 **Literature**: Rabinovich 2014 Prop 4.3 (p. 6), bridge is formalization-specific.
 
 **Tasks**:
-- [ ] Prove `fo_to_vec_ea_prior`: every FOMLO formula is equivalent to a V-EA formula over Prior structures, by structural induction:
+- [ ] Prove `fo_to_vec_ea_prior`: every FOMLO formula is equivalent to a V-EA formula over Prior structures, by structural induction *(deviation: skipped -- requires Lemma 3.2.2 for negation of 3+ free var formulas, not yet formalized)*
   - Atomic: immediate (EA formula with 0 witnesses)
   - Disjunction: by `vec_ea_closed_disj`
   - Negation: by `neg_2var_vec_ea` (Prop 4.2) for 2-var case; for general case, use Lemma 3.2.2 to reduce to at most 2 free variables
   - Existential: by `vec_ea_closed_exists`
-- [ ] Prove `nf_to_vec_ea`: a depth-k arity-n NormalForm evaluation predicate is equivalent to a V-EA formula. This bridges the NF-based infrastructure (master_induction's P1/P2) to the vec-EA framework:
-  - At depth 0: NF evaluation is a conjunction of atom tests = quantifier-free = EA with 0 witnesses
-  - At depth k+1: NF evaluation is atoms AND (for each sub_nf, exists/not-exists witness) = EA formula with sub_nf witnesses
-- [ ] Prove `nf_2var_to_vec_ea_prior`: the 2-variable NF existence statement (exists x, nf_eval_nf M k 2 (x,t) sub_nf) is equivalent to a V-EA formula with at most 2 free variables over Prior structures
-- [ ] Verify bridge compiles and is sorry-free
+- [ ] Prove `nf_to_vec_ea`: a depth-k arity-n NormalForm evaluation predicate is equivalent to a V-EA formula *(deviation: skipped -- requires fo_to_vec_ea_prior or composition lemma)*
+- [ ] Prove `nf_2var_to_vec_ea_prior`: the 2-variable NF existence statement *(deviation: skipped -- requires nf_to_vec_ea)*
+- [x] Prove `nf_exist_iff_char_quant`: semantic equivalence between NF existence and characteristic NF quantifier assignment (sorry-free)
+- [x] Prove `nf_exist_iff_nf1_disjunction`: NF existence equivalent to disjunction of depth-(k+1) 1-var NF evaluations (sorry-free)
+- [x] Prove `p2_from_p1_succ`: P2(k) from P1(k+1) via disjunction formula with trivial backward direction (sorry-free)
+- [x] Verify bridge compiles and is sorry-free *(completed: all 3 theorems verify with no sorryAx)*
+
+**BLOCKER** (Phase 5):
+- **What failed**: The full Prop 4.3 (fo_to_vec_ea_prior) and NF-to-VecEA bridge theorems require handling the negation of V-EA formulas with 3+ free variables, which arises during structural induction under quantifiers.
+- **What was tried**: Structural induction on MonadicFormula with negation handled by Prop 4.2 (for <=2 free vars). For 3+ free vars, Lemma 3.2.2 (decomposition into 2-var pieces) is needed but not formalized. Direct approaches via NF evaluation also hit the same barrier.
+- **Why it's stuck**: The fundamental circularity: P2(k) requires P1(k+1), and P1(k+1) requires P2(k). The bridge theorem `p2_from_p1_succ` proves P2(k) FROM P1(k+1) (both directions, no sorry), but obtaining P1(k+1) without P2(k) requires either: (a) the composition lemma `nf_3var_from_1var_nfs` (failed 5 times, witness merging problem), or (b) Rabinovich's Lemma 3.2.2 (EA formula decomposition into at most 2-var conjuncts, not yet formalized).
+- **What is needed**: One of: (1) Prove Lemma 3.2.2 and full Prop 4.3 (estimated 300-500 lines), (2) Prove the composition lemma via EF game argument (Doets 1.4/1.5 on ordered sums), or (3) Restructure the proof to avoid the P1/P2 mutual induction entirely.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+- **Achieved**: Three sorry-free bridge theorems that prove the mathematical relationship between NF existence and characteristic NFs. These enable Phase 6 IF the circularity is resolved.
 
 **Timing**: 3 hours (~150 lines)
 
