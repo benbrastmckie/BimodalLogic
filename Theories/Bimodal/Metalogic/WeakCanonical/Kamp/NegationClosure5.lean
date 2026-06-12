@@ -448,4 +448,229 @@ theorem neg_purePoints_split {sig : MonadicSignature} {n : Nat}
   intro h_holds
   exact h_neg (purePoints_prepend M atomMap P z0 z1 r0 hr0_above hr0_below hPr0 h_holds)
 
+/-! ## Phase 4c: Inductive Step of Lemma 5.3
+
+The inductive step of Lemma 5.3 proves that the negation of a pure-points
+bracket formula with n+1 predicates is V-bracket, given that it holds for n.
+
+On Prior structures, the proof proceeds by case analysis on whether P_1
+occurs in (z_0, z_1):
+- **Case 1** (P_1 absent): The negation is trivially a V-bracket formula
+  (`pureSeg (P_1).neg`, a BracketFormula 0).
+- **Case 2** (P_1 present): Use `first_occurrence_prior_strict` to find
+  r_0 = first occurrence of P_1 in (z_0, z_1). By `neg_purePoints_split`,
+  the remaining n predicates cannot all have witnesses in (r_0, z_1).
+  By the inductive hypothesis, this negation is V-bracket on (r_0, z_1).
+  Composing with the INF configuration gives a V-bracket on (z_0, z_1).
+
+### References
+- Rabinovich 2014, Lemma 5.3 inductive step (pp. 9-10)
+-/
+
+/-- Prepend a witness to a bracket formula: given a `BracketFormula k` on
+    (r0, z1), produce a `BracketFormula (k + 1)` on (z0, z1) by adding
+    r0 as the first witness with point type `ptType` and left segment type
+    `segLeft` (on the segment (z0, r0)). The segments and points from the
+    original formula fill (r0, z1). -/
+def BracketFormula.prepend (segLeft ptType : TemporalPred)
+    {k : Nat} (bf : BracketFormula k) : BracketFormula (k + 1) :=
+  { pointTypes := fun i =>
+      if h : i.val = 0 then ptType
+      else bf.pointTypes ⟨i.val - 1, by omega⟩
+    segmentTypes := fun i =>
+      if h : i.val = 0 then segLeft
+      else bf.segmentTypes ⟨i.val - 1, by omega⟩ }
+
+/-- Semantic bracket formula prepend: if `bf.holds M atomMap r0 z1` holds (the
+    tail interval), then a bracket formula on `(z0, z1)` holds with r0 as the
+    first witness, `segLeft` on `(z0, r0)`, and `ptType` at r0.
+
+    This constructs a **fresh** BracketFormula and its `holds` proof directly,
+    returning both the formula and its holding proof as a sigma type. -/
+theorem BracketFormula.bracket_prepend_holds {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula k) (segLeft ptType : TemporalPred)
+    (z0 z1 r0 : M.carrier)
+    (hr0_above : z0 < r0) (hr0_below : r0 < z1)
+    (hPt : ptType.eval_at M atomMap r0)
+    (hSeg : ∀ y : M.carrier, z0 < y → y < r0 → segLeft.eval_at M atomMap y)
+    (h_tail : bf.holds M atomMap r0 z1) :
+    ∃ (bf' : BracketFormula (k + 1)), bf'.holds M atomMap z0 z1 := by
+  -- Construct the combined bracket formula explicitly
+  -- and prove holds by providing witnesses
+  match k with
+  | 0 =>
+    -- h_tail : segment holds everywhere in (r0, z1)
+    simp only [holds, toIntervalPattern, IntervalPattern.holds] at h_tail
+    -- Produce BracketFormula 1 with witness at r0
+    refine ⟨⟨fun _ => ptType, fun i =>
+              if i.val = 0 then segLeft else bf.segmentTypes ⟨0, by omega⟩⟩, ?_⟩
+    simp only [holds, toIntervalPattern, IntervalPattern.holds]
+    refine ⟨fun _ => r0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro i j hij; exact absurd hij (by omega)
+    · intro _; exact ⟨hr0_above, hr0_below⟩
+    · intro ⟨i, hi⟩
+      have h0 : i = 0 := by omega
+      subst h0; exact hPt
+    · intro y hy0 hy1; simp; exact hSeg y hy0 hy1
+    · intro ⟨i, hi⟩; exact absurd hi (by omega)
+    · intro y hy0 hy1; simp; exact h_tail y hy0 hy1
+  | k' + 1 =>
+    simp only [holds, toIntervalPattern, IntervalPattern.holds] at h_tail
+    obtain ⟨w, hm, hbnd, hpt, hseg0, hseg_mid, hseg_last⟩ := h_tail
+    -- Produce BracketFormula (k'+2) with witnesses r0, w(0), ..., w(k')
+    -- Point types: ptType, bf.pointTypes(0), ..., bf.pointTypes(k')
+    -- Segment types: segLeft, bf.segmentTypes(0), ..., bf.segmentTypes(k'+1)
+    let pt' : Fin (k' + 2) → TemporalPred := fun ⟨i, _⟩ =>
+      if i = 0 then ptType else bf.pointTypes ⟨i - 1, by omega⟩
+    let seg' : Fin (k' + 3) → TemporalPred := fun ⟨i, _⟩ =>
+      if i = 0 then segLeft else bf.segmentTypes ⟨i - 1, by omega⟩
+    refine ⟨⟨pt', seg'⟩, ?_⟩
+    simp only [holds, toIntervalPattern, IntervalPattern.holds]
+    -- Witness function: w'(0) = r0, w'(i+1) = w(i)
+    let w' : Fin (k' + 2) → M.carrier := fun ⟨i, _⟩ =>
+      if i = 0 then r0 else w ⟨i - 1, by omega⟩
+    refine ⟨w', ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · -- Strictly increasing
+      intro ⟨i, hi⟩ ⟨j, hj⟩ hij
+      simp only [Fin.lt_def] at hij
+      show w' ⟨i, hi⟩ < w' ⟨j, hj⟩
+      simp only [w']
+      by_cases hi0 : i = 0
+      · subst hi0; simp only [ite_true, if_neg (show j ≠ 0 from by omega)]
+        exact lt_of_lt_of_le (hbnd ⟨0, by omega⟩).1
+          (by rcases Nat.eq_or_lt_of_le (show 1 ≤ j from by omega) with h | h
+              · subst h; simp
+              · exact le_of_lt (hm ⟨0, by omega⟩ ⟨j - 1, by omega⟩
+                  (by simp [Fin.lt_def]; omega)))
+      · simp only [if_neg hi0, if_neg (show j ≠ 0 from by omega)]
+        exact hm ⟨i - 1, by omega⟩ ⟨j - 1, by omega⟩ (by simp [Fin.lt_def]; omega)
+    · -- All in (z0, z1)
+      intro ⟨i, hi⟩
+      show z0 < w' ⟨i, hi⟩ ∧ w' ⟨i, hi⟩ < z1
+      simp only [w']
+      by_cases hi0 : i = 0
+      · subst hi0; simp [ite_true]; exact ⟨hr0_above, hr0_below⟩
+      · simp only [if_neg hi0]
+        refine ⟨lt_trans hr0_above (lt_of_lt_of_le (hbnd ⟨0, by omega⟩).1 ?_),
+               (hbnd ⟨i - 1, by omega⟩).2⟩
+        rcases Nat.eq_or_lt_of_le (show 1 ≤ i from by omega) with h | h
+        · subst h; simp
+        · exact le_of_lt (hm ⟨0, by omega⟩ ⟨i - 1, by omega⟩
+            (by simp [Fin.lt_def]; omega))
+    · -- Point types
+      intro ⟨i, hi⟩
+      show (pt' ⟨i, hi⟩).eval_at M atomMap (w' ⟨i, hi⟩)
+      simp only [pt', w']
+      by_cases hi0 : i = 0
+      · subst hi0; simp [ite_true]; exact hPt
+      · simp only [if_neg hi0]; exact hpt ⟨i - 1, by omega⟩
+    · -- Segment 0: segLeft on (z0, w'(0)=r0)
+      intro y hy0 hy1
+      show (seg' ⟨0, by omega⟩).eval_at M atomMap y
+      have : w' ⟨0, by omega⟩ = r0 := by simp [w']
+      rw [this] at hy1
+      simp [seg']; exact hSeg y hy0 hy1
+    · -- Middle segments
+      intro ⟨i, hi⟩ y hy_lo hy_hi
+      show (seg' ⟨i + 1, by omega⟩).eval_at M atomMap y
+      simp only [seg', show i + 1 ≠ 0 from by omega, ite_false]
+      by_cases hi0 : i = 0
+      · -- Segment between w'(0)=r0 and w'(1)=w(0)
+        subst hi0
+        have hlo : w' ⟨0, by omega⟩ = r0 := by simp [w']
+        have hhi : w' ⟨1, by omega⟩ = w ⟨0, by omega⟩ := by simp [w']
+        rw [hlo] at hy_lo; rw [hhi] at hy_hi
+        exact hseg0 y hy_lo hy_hi
+      · -- Segment between w'(i)=w(i-1) and w'(i+1)=w(i)
+        simp only [w', if_neg hi0, if_neg (show i + 1 ≠ 0 from by omega)] at hy_lo hy_hi
+        -- hy_lo : w ⟨i - 1, _⟩ < y, hy_hi : y < w ⟨i + 1 - 1, _⟩
+        -- Goal: eval_at (bf.segmentTypes ⟨i + 1 - 1, _⟩) y
+        -- hseg_mid expects: ⟨(i-1), _⟩ with ↑(i-1) + 1 = i - 1 + 1 = i
+        -- We have: i + 1 - 1. Since i ≠ 0, both equal i.
+        have heq : (⟨i - 1, by omega⟩ : Fin k').val + 1 = i :=
+          Nat.succ_pred_eq_of_pos (Nat.pos_of_ne_zero hi0)
+        have h1 : w ⟨(⟨i - 1, by omega⟩ : Fin k').val + 1, by omega⟩ =
+                  w ⟨i + 1 - 1, by omega⟩ := by
+          congr 1; ext; simp; omega
+        have h2 : bf.segmentTypes ⟨(⟨i - 1, by omega⟩ : Fin k').val + 1, by omega⟩ =
+                  bf.segmentTypes ⟨i + 1 - 1, by omega⟩ := by
+          congr 1; ext; simp; omega
+        rw [← h2]
+        exact hseg_mid ⟨i - 1, by omega⟩ y hy_lo (h1 ▸ hy_hi)
+    · -- Last segment
+      intro y hy_lo hy_hi
+      show (seg' ⟨k' + 2, by omega⟩).eval_at M atomMap y
+      simp only [seg', show k' + 2 ≠ 0 from by omega, ite_false]
+      simp only [w', if_neg (show k' + 1 ≠ 0 from by omega)] at hy_lo
+      have h1 : w ⟨k' + 1 - 1, by omega⟩ = w ⟨k', by omega⟩ := by congr 1
+      rw [h1] at hy_lo
+      have h2 : bf.segmentTypes ⟨k' + 2 - 1, by omega⟩ =
+                bf.segmentTypes ⟨k' + 1, by omega⟩ := by congr 1
+      rw [h2]
+      exact hseg_last y hy_lo hy_hi
+
+/-- **Lemma 5.3, Inductive Step**: The negation of a pure-points bracket
+    formula with `n` predicates is equivalent to a V-bracket formula over
+    Prior structures satisfying `semantic_prior_UZ`.
+
+    Proof by induction on `n`:
+    - **n = 0**: `purePoints Fin.elim0` always holds (vacuous), so the
+      negation is impossible.
+    - **n + 1**: Case split on whether `P ⟨0, ...⟩` occurs in `(z_0, z_1)`:
+      - **Absent**: `not (purePoints P)` holds trivially since any witness
+        sequence would need `P_1` to hold. The V-bracket is `pureSeg P_1.neg`.
+      - **Present**: Use `first_occurrence_prior_strict` to find `r_0`.
+        By `neg_purePoints_split`, the remaining `n` predicates cannot all
+        have witnesses in `(r_0, z_1)`. By IH, this negation is V-bracket
+        on `(r_0, z_1)`. Prepend the `r_0` witness with `not P_1` on
+        `(z_0, r_0)` to get a V-bracket on `(z_0, z_1)`. -/
+theorem neg_purePoints_vbracket {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_UZ : semantic_prior_UZ M atomMap) :
+    ∀ (n : Nat) (P : Fin n → TemporalPred) (z0 z1 : M.carrier),
+    z0 < z1 →
+    ¬(BracketFormula.purePoints P).holds M atomMap z0 z1 →
+    ∃ v : VBracketFormula, v.holds M atomMap z0 z1 := by
+  intro n
+  induction n with
+  | zero =>
+    intro P z0 z1 h_lt h_neg
+    exact absurd (BracketFormula.purePoints_zero_holds M atomMap z0 z1) h_neg
+  | succ n ih =>
+    intro P z0 z1 h_lt h_neg
+    -- Case split: does P ⟨0, ...⟩ occur in (z_0, z_1)?
+    by_cases h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
+        (P ⟨0, by omega⟩).eval_at M atomMap x
+    · -- Case 2: P_1 occurs in (z_0, z_1)
+      -- Find first occurrence r0
+      obtain ⟨r0, hr0_above, hr0_below, hPr0, h_neg_before⟩ :=
+        first_occurrence_prior_strict M atomMap h_UZ (P ⟨0, by omega⟩)
+          z0 z1 h_lt h_exists
+      -- The remaining n predicates cannot all have witnesses in (r0, z1)
+      have h_split := neg_purePoints_split M atomMap P z0 z1 r0
+        hr0_above hr0_below hPr0 h_neg
+      -- By IH, this negation is V-bracket on (r0, z1)
+      obtain ⟨v, hv⟩ := ih (fun i => P ⟨i.val + 1, by omega⟩)
+        r0 z1 hr0_below h_split
+      -- Each disjunct of v holds on (r0, z1). Prepend r0 to get (z0, z1).
+      obtain ⟨⟨k, bf⟩, h_mem, h_holds⟩ := hv
+      -- Construct the prepended bracket formula using bracket_prepend_holds
+      obtain ⟨bf', h_holds'⟩ := BracketFormula.bracket_prepend_holds M atomMap bf
+        (P ⟨0, by omega⟩).neg (P ⟨0, by omega⟩) z0 z1 r0
+        hr0_above hr0_below hPr0
+        (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
+          (P ⟨0, by omega⟩) y).mpr (h_neg_before y hy0 hy1))
+        h_holds
+      exact ⟨⟨[⟨k + 1, bf'⟩]⟩, ⟨k + 1, bf'⟩, List.mem_singleton.mpr rfl, h_holds'⟩
+    · -- Case 1: P_1 does not occur in (z_0, z_1)
+      -- The negation is trivially V-bracket: pureSeg (P 0).neg
+      push_neg at h_exists
+      exact ⟨⟨[⟨0, BracketFormula.pureSeg (P ⟨0, by omega⟩).neg⟩]⟩,
+             ⟨0, BracketFormula.pureSeg (P ⟨0, by omega⟩).neg⟩,
+             List.mem_singleton.mpr rfl,
+             (BracketFormula.pureSeg_holds M atomMap (P ⟨0, by omega⟩).neg z0 z1).mpr
+               (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
+                 (P ⟨0, by omega⟩) y).mpr (h_exists y hy0 hy1))⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

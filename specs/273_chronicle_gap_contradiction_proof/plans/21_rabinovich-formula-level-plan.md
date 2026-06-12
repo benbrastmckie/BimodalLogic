@@ -223,12 +223,12 @@ Phases within the same wave can execute in parallel.
 - [x] Prove `neg_purePoints_split`: interval splitting for the inductive step (bonus, provides the key reduction for Phase 4c)
 - Timing: 1.5 hours (~80 lines)
 
-**4c. Inductive step (Lemma 5.3, n -> n-1)**:
-- [ ] Prove `neg_interval_inductive`: given not(exists x_1, ..., x_n in (z_0, z_1))(P_1(x_1) AND ... AND P_n(x_n)), locate r_0 = inf{z | P_1(z)} via inf_formula_prior, case-split:
+**4c. Inductive step (Lemma 5.3, n -> n-1)** [COMPLETED]:
+- [x] Prove `neg_interval_inductive`: given not(exists x_1, ..., x_n in (z_0, z_1))(P_1(x_1) AND ... AND P_n(x_n)), locate r_0 = inf{z | P_1(z)} via inf_formula_prior, case-split: *(deviation: altered -- named `neg_purePoints_vbracket` with two cases: P_1 absent (pureSeg P_1.neg) and P_1 present (first_occurrence_prior_strict + neg_purePoints_split + IH). The r_0 = z_0 sub-case from the plan is not needed because `first_occurrence_prior_strict` gives r_0 strictly in (z_0, z_1). Also proved `BracketFormula.bracket_prepend_holds` as a helper for composing the INF configuration with the IH result.)*
   - Empty case: P_1 does not occur in (z_0, z_1) -- negation is vacuously true, V-EA
   - r_0 = z_0 case: reduce to n-1 witnesses in same interval
   - r_0 in (z_0, z_1) case: split into two sub-intervals, reduce to shorter problem
-- [ ] Induction on n (number of existential witnesses), NOT on quantifier depth
+- [x] Induction on n (number of existential witnesses), NOT on quantifier depth
 - Timing: 2 hours (~120 lines)
 
 **4d. Bounded existential negation (Corollary 5.4)**:
