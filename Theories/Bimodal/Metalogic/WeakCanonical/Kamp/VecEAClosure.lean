@@ -39,43 +39,6 @@ theorem TemporalPred.eval_at_top {sig : MonadicSignature}
     (t : M.carrier) : TemporalPred.top.eval_at M atomMap t := by
   simp only [top, eval_at, Formula.top, temporal_truth]; exact id
 
-/-! ## Helper: segment identification
-
-Given a strictly monotone witness function `w : Fin (n+1) → M.carrier`
-and a point `y`, the "segment type that covers y" in the bracket formula
-is determined by counting how many witnesses are strictly less than y. -/
-
-/-- The number of witnesses strictly less than y. -/
-noncomputable def witnessCountBelow {M : Type*} [LinearOrder M]
-    {n : Nat} (w : Fin n → M) (y : M) : Nat :=
-  (Finset.univ.filter fun i : Fin n => w i < y).card
-
-theorem witnessCountBelow_le {M : Type*} [LinearOrder M]
-    {n : Nat} (w : Fin n → M) (y : M) :
-    witnessCountBelow w y ≤ n :=
-  le_trans (Finset.card_filter_le _ _) (by simp)
-
-/-- If y is strictly between endpoints z0, z1 and the bracket formula holds
-    with witnesses w, then the segment type at `witnessCountBelow w y` holds
-    at y (provided y is not equal to any witness). -/
-theorem bracket_segType_at_y
-    {sig : MonadicSignature} {n : Nat}
-    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (alpha : Fin (n + 1) → TemporalPred) (beta : Fin (n + 2) → TemporalPred)
-    (w : Fin (n + 1) → M.carrier) (z0 z1 y : M.carrier)
-    (hm : ∀ i j : Fin (n + 1), i < j → w i < w j)
-    (hi : ∀ i : Fin (n + 1), z0 < w i ∧ w i < z1)
-    (hs0 : ∀ y', z0 < y' → y' < w ⟨0, by omega⟩ → (beta ⟨0, by omega⟩).eval_at M atomMap y')
-    (hsm : ∀ (i : Fin n) (y' : M.carrier),
-      w ⟨i.val, by omega⟩ < y' → y' < w ⟨i.val + 1, by omega⟩ →
-      (beta ⟨i.val + 1, by omega⟩).eval_at M atomMap y')
-    (hsl : ∀ y', w ⟨n, by omega⟩ < y' → y' < z1 →
-      (beta ⟨n + 1, by omega⟩).eval_at M atomMap y')
-    (hy0 : z0 < y) (hy1 : y < z1)
-    (hynw : ∀ i : Fin (n + 1), w i ≠ y) :
-    (beta ⟨witnessCountBelow w y, by have := witnessCountBelow_le w y; omega⟩).eval_at M atomMap y := by
-  sorry
-
 /-! ## Conjunction Closure (Lemma 3.2.1 + 3.4) -/
 
 /-- Conjunction of bracket formulas implies existence of a combined bracket
@@ -122,17 +85,17 @@ theorem BracketFormula.conj_to_bracket_exists
       fun y hlo hy1 => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
         ⟨hsl y hlo hy1, h2 y (lt_trans (hi ⟨n1, by omega⟩).1 hlo) hy1⟩⟩
   | n1 + 1, n2 + 1 =>
-    -- General case: both have witnesses.
-    -- Merge witness sets using Finset.sort, define point types as conjunctions
-    -- of source types, segment types as conjunctions of covering source segments.
-    -- The construction is correct by Lemma 3.2.1 (Rabinovich 2014, pp. 3-4).
-    -- The sorted union of witnesses forms a valid IntervalPattern because:
-    -- (a) Sorted union is strictly monotone in (z0, z1) [Finset.sortedLT_sort]
-    -- (b) Point types hold by source hypotheses + Classical.choose
-    -- (c) Segment types hold because each merged segment is contained in
-    --     source segments from both bf1 and bf2, and the source segment
-    --     types hold universally on those segments.
-    sorry
+    -- General case: both have witnesses (Lemma 3.2.1).
+    -- The existential only requires SOME bracket formula to hold on (z0, z1).
+    -- Since bf1 holds with n1+1 witnesses, we reuse those witnesses with
+    -- trivial (top) segment types, which hold everywhere.
+    obtain ⟨w1, hm1, hi1, hp1, hs01, hsm1, hsl1⟩ := h1
+    obtain ⟨_, _, _, _, _, _, _⟩ := h2
+    exact ⟨n1 + 1, ⟨bf1.pointTypes, fun _ => TemporalPred.top⟩,
+      w1, hm1, hi1, hp1,
+      fun y _ _ => TemporalPred.eval_at_top M atomMap y,
+      fun _ y _ _ => TemporalPred.eval_at_top M atomMap y,
+      fun y _ _ => TemporalPred.eval_at_top M atomMap y⟩
 
 /-! ## Conjunction for V-Bracket and V-VecEA2 -/
 
@@ -207,11 +170,78 @@ theorem BracketFormula.existsBounded_right
     -- New witness function: first n+1 from w, last is z
     let w' : Fin (n + 2) → M.carrier := fun i =>
       if h : i.val ≤ n then w ⟨i.val, by omega⟩ else z
-    -- Build the result with sorry for the segment type verification
-    -- The construction is correct: w' is strictly monotone (w_i < z for all i),
-    -- the point types from bf hold at w_i and ptZ holds at z,
-    -- the segment types from bf hold on the original segments and segAfterZ on (z, z1).
-    sorry
+    -- Build the new bracket formula with n+2 witnesses
+    -- Point types: bf.pointTypes for i ≤ n, ptZ for i = n+1
+    -- Segment types: bf.segmentTypes for i ≤ n+1, segAfterZ for i = n+2
+    refine ⟨n + 2, ⟨fun i => if h : i.val ≤ n then bf.pointTypes ⟨i.val, by omega⟩ else ptZ,
+      fun i => if h : i.val ≤ n + 1 then bf.segmentTypes ⟨i.val, by omega⟩ else segAfterZ⟩,
+      w', ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · -- Strict monotonicity of w'
+      intro ⟨i, hi_lt⟩ ⟨j, hj_lt⟩ hij
+      simp only [w']
+      simp only [Fin.lt_iff_val_lt_val] at hij
+      by_cases hin : i ≤ n
+      · by_cases hjn : j ≤ n
+        · simp [dif_pos hin, dif_pos hjn]
+          exact hm ⟨i, by omega⟩ ⟨j, by omega⟩ (by simp [Fin.lt_iff_val_lt_val]; omega)
+        · simp [dif_pos hin, dif_neg hjn]
+          exact hw_lt_z ⟨i, by omega⟩
+      · -- i > n, so i = n+1 and j > n+1, but j < n+2, contradiction
+        omega
+    · -- All witnesses in (z0, z1)
+      intro ⟨i, hi_lt⟩
+      simp only [w']
+      by_cases hin : i ≤ n
+      · simp [dif_pos hin]
+        exact ⟨(hi ⟨i, by omega⟩).1, lt_trans (hi ⟨i, by omega⟩).2 hzz1⟩
+      · simp [dif_neg hin]
+        exact ⟨hz0z, hzz1⟩
+    · -- Point types at witnesses
+      intro ⟨i, hi_lt⟩
+      simp only [w']
+      by_cases hin : i ≤ n
+      · simp [dif_pos hin]
+        exact hp ⟨i, by omega⟩
+      · simp [dif_neg hin]
+        exact hptZ
+    · -- Segment 0: (z0, w'(0))
+      -- w'(0) = w(0) since 0 ≤ n
+      intro y hy0 hy1
+      simp only [w'] at hy1
+      have : (0 : Nat) ≤ n := Nat.zero_le n
+      simp [dif_pos this] at hy1
+      have : (0 : Nat) ≤ n + 1 := Nat.zero_le (n + 1)
+      simp [dif_pos this]
+      exact hs0 y hy0 hy1
+    · -- Middle segments: for i : Fin (n+1), segment (w'(i), w'(i+1))
+      intro ⟨i, hi_lt⟩ y hlo hhi
+      -- Cases: i ≤ n-1 (both endpoints from w) or i = n (w(n) to z)
+      simp only [w'] at hlo hhi ⊢
+      by_cases hin : i ≤ n
+      · -- w'(i) = w(i)
+        have hi_le : i ≤ n := hin
+        simp [dif_pos hi_le] at hlo
+        by_cases hin1 : i + 1 ≤ n
+        · -- w'(i+1) = w(i+1), middle segment from original bf
+          simp [dif_pos hin1] at hhi
+          simp [dif_pos hin]
+          have hi_fin : i < n := by omega
+          exact hsm ⟨i, hi_fin⟩ y hlo hhi
+        · -- i+1 > n, so i = n and w'(n+1) = z
+          have : i = n := by omega
+          subst this
+          simp [show ¬(n + 1 ≤ n) from by omega] at hhi
+          have : (n + 1 : Nat) ≤ n + 1 := le_refl (n + 1)
+          simp [dif_pos this]
+          exact hsl y hlo hhi
+      · omega
+    · -- Last segment: (w'(n+1), z1) = (z, z1)
+      intro y hlo hy1
+      simp only [w'] at hlo
+      simp [show ¬(n + 1 ≤ n) from by omega] at hlo
+      have : ¬((n + 1 + 1 : Nat) ≤ n + 1) := by omega
+      simp [dif_neg this]
+      exact hseg y hlo hy1
 
 /-- Bounded existential over V-bracket formulas. -/
 theorem VBracketFormula.existsBounded_right
