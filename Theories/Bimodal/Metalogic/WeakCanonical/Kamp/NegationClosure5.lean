@@ -673,4 +673,261 @@ theorem neg_purePoints_vbracket {sig : MonadicSignature}
                (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
                  (P ⟨0, by omega⟩) y).mpr (h_exists y hy0 hy1))⟩
 
+/-! ## Phase 4d: Bounded Existential Negation (Corollary 5.4)
+
+Corollary 5.4 from Rabinovich 2014: the negation of a bounded existential
+`not (exists z in (z_0, z_1)) [bracket formula](z_0, z)` is equivalent to
+a V-bracket formula over Prior structures.
+
+The proof uses induction on the number of witnesses `n` in the bracket formula:
+
+- **n = 0**: The bounded existential `exists z, bf.holds z_0 z` for a 0-witness
+  bracket formula (pure segment condition) is always satisfiable on Prior-UZ
+  structures: the first point above z_0 has an empty left interval, making the
+  universal segment condition vacuously true. If (z_0, z_1) itself is empty
+  (no points between z_0 and z_1), the result is trivially V-bracket.
+
+- **n + 1**: Case split on whether `pointTypes(0)` occurs in `(z_0, z_1)`:
+  - **Absent**: `pureSeg (pointTypes(0).neg)` is V-bracket.
+  - **Present**: Find `r_0 = first_occurrence_prior_strict(pointTypes(0))`.
+    - If `segmentTypes(0)` holds on `(z_0, r_0)`: the remaining bracket formula
+      (n witnesses) must fail on `(r_0, z_1)` (otherwise prepending r_0 would
+      satisfy the original). By IH, this gives V-bracket on `(r_0, z_1)`.
+      Prepend r_0 with `pointTypes(0).neg` on `(z_0, r_0)` to get V-bracket
+      on `(z_0, z_1)`.
+    - If `segmentTypes(0)` fails on `(z_0, r_0)`: any first witness x_0 with
+      pointTypes(0)(x_0) has x_0 >= r_0, so segmentTypes(0) also fails on
+      (z_0, x_0). The bracket formula is unsatisfiable. Use the INF configuration
+      (pointTypes(0) occurring) as V-bracket.
+
+### References
+- Rabinovich 2014, Corollary 5.4 (p. 10)
+-/
+
+/-- Helper: construct the "tail" bracket formula from position 1 onward.
+    Given `bf : BracketFormula (n + 1)`, produce `BracketFormula n` with
+    pointTypes shifted by 1 and segmentTypes shifted by 1. -/
+def BracketFormula.tail {n : Nat} (bf : BracketFormula (n + 1)) : BracketFormula n :=
+  { pointTypes := fun i => bf.pointTypes ⟨i.val + 1, by omega⟩
+    segmentTypes := fun i => bf.segmentTypes ⟨i.val + 1, by omega⟩ }
+
+/-- If the tail bracket formula holds on (r0, z) with appropriate first-witness
+    conditions, then SOME bracket formula holds on (z0, z). This weaker version
+    suffices for the contrapositive in neg_bounded_exists: we only need to know
+    that the bounded existential is satisfiable.
+
+    Returns the same existential as bracket_prepend_holds. -/
+private theorem bracket_tail_satisfiable {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z r0 : M.carrier)
+    (hr0_above : z0 < r0) (hr0_below : r0 < z)
+    (hPt : (bf.pointTypes ⟨0, by omega⟩).eval_at M atomMap r0)
+    (hSeg : ∀ y : M.carrier, z0 < y → y < r0 →
+      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
+    (h_tail : bf.tail.holds M atomMap r0 z) :
+    bf.holds M atomMap z0 z := by
+  -- Unfold everything to IntervalPattern.holds
+  show bf.toIntervalPattern.holds M atomMap z0 z
+  have h_tail' : bf.tail.toIntervalPattern.holds M atomMap r0 z := h_tail
+  -- Unfold the IntervalPatterns
+  simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h_tail'
+  simp only [BracketFormula.toIntervalPattern]
+  simp only [IntervalPattern.holds] at h_tail' ⊢
+  match n with
+  | 0 =>
+    refine ⟨fun _ => r0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro i j hij
+      have h1 : i.val = 0 := Nat.lt_one_iff.mp i.isLt
+      have h2 : j.val = 0 := Nat.lt_one_iff.mp j.isLt
+      exact absurd (show i = j from Fin.ext (by omega)) (Fin.ne_of_lt hij)
+    · intro _; exact ⟨hr0_above, hr0_below⟩
+    · intro ⟨i, hi⟩
+      have : i = 0 := Nat.lt_one_iff.mp hi
+      subst this; exact hPt
+    · intro y hy0 hy1; exact hSeg y hy0 hy1
+    · intro ⟨i, hi⟩; exact absurd hi (Nat.not_lt_zero i)
+    · -- Last segment: need bf.segmentTypes ⟨1, ...⟩ on (r0, z)
+      -- h_tail' gives us bf.segmentTypes ⟨0+1, ...⟩ on (r0, z) from the match
+      intro y hy0 hy1
+      -- h_tail' reduces for n=0 to the 0 branch of the match
+      exact h_tail' y hy0 hy1
+  | n' + 1 =>
+    obtain ⟨w, hm, hbnd, hpt, hseg0, hseg_mid, hseg_last⟩ := h_tail
+    refine ⟨fun ⟨i, hi⟩ => if h : i = 0 then r0 else w ⟨i - 1, by omega⟩,
+            ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · -- Strictly increasing
+      intro ⟨i, hi⟩ ⟨j, hj⟩ hij
+      simp only [Fin.lt_def] at hij
+      by_cases h0 : i = 0
+      · subst h0; simp only [dite_true]
+        have hj_ne : ¬(j = 0) := by omega
+        simp only [hj_ne, dite_false]
+        exact lt_of_lt_of_le (hbnd ⟨0, by omega⟩).1
+          (by rcases Nat.eq_or_lt_of_le (Nat.one_le_of_lt (by omega : 0 < j)) with rfl | hlt
+              · simp
+              · exact le_of_lt (hm ⟨0, by omega⟩ ⟨j - 1, by omega⟩
+                  (by simp [Fin.lt_def]; omega)))
+      · have hj_ne : ¬(j = 0) := by omega
+        simp only [show ¬(i = 0) from h0, dite_false, hj_ne, dite_false]
+        exact hm ⟨i - 1, by omega⟩ ⟨j - 1, by omega⟩ (by simp [Fin.lt_def]; omega)
+    · -- All in (z0, z)
+      intro ⟨i, hi⟩
+      by_cases h0 : i = 0
+      · subst h0; simp only [dite_true]; exact ⟨hr0_above, hr0_below⟩
+      · simp only [show ¬(i = 0) from h0, dite_false]
+        exact ⟨lt_trans hr0_above (hbnd ⟨i - 1, by omega⟩).1,
+               (hbnd ⟨i - 1, by omega⟩).2⟩
+    · -- Point types
+      intro ⟨i, hi⟩
+      by_cases h0 : i = 0
+      · subst h0; simp only [dite_true]; exact hPt
+      · simp only [show ¬(i = 0) from h0, dite_false]
+        have h := hpt ⟨i - 1, by omega⟩
+        simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h
+        convert h using 2; congr 1; omega
+    · -- Segment 0
+      intro y hy0 hy1
+      simp only [show (0 : Nat) = 0 from rfl, dite_true] at hy1
+      exact hSeg y hy0 hy1
+    · -- Middle segments
+      intro ⟨i, hi⟩ y hy_lo hy_hi
+      by_cases h0 : i = 0
+      · subst h0
+        simp only [show (0 : Nat) = 0 from rfl, dite_true] at hy_lo
+        simp only [show ¬((0 : Nat) + 1 = 0) from by omega, dite_false] at hy_hi
+        have h := hseg0 y hy_lo hy_hi
+        simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h
+        convert h using 2
+      · simp only [show ¬(i = 0) from h0, dite_false, show ¬(i + 1 = 0) from by omega,
+                    dite_false] at hy_lo hy_hi
+        have h := hseg_mid ⟨i - 1, by omega⟩ y hy_lo
+          (by convert hy_hi using 2; congr 1; simp [Fin.ext_iff]; omega)
+        simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h
+        convert h using 2; congr 1; simp [Fin.ext_iff]; omega
+    · -- Last segment
+      intro y hy_lo hy_hi
+      simp only [show ¬(n' + 1 = 0) from by omega, dite_false] at hy_lo
+      have h := hseg_last y hy_lo hy_hi
+      simp only [BracketFormula.toIntervalPattern, BracketFormula.tail] at h
+      convert h using 2
+
+/-- On Prior-UZ structures, the first point above z_0 (the "successor") has an
+    empty interval (z_0, s). This is the key structural property needed for the
+    n=0 base case. -/
+private theorem prior_UZ_successor {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_UZ : semantic_prior_UZ M atomMap) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
+    ∃ s : M.carrier, z0 < s ∧ s ≤ z1 ∧
+      (∀ y : M.carrier, z0 < y → y < s → False) := by
+  -- Apply semantic_prior_UZ with Formula.top (always true)
+  have h_exists : ∃ s, z0 < s ∧ temporal_truth M atomMap s Formula.top :=
+    ⟨z1, h_lt, by simp [temporal_truth, Formula.top]⟩
+  obtain ⟨s, hs_above, _, h_neg⟩ := h_UZ z0 Formula.top h_exists
+  refine ⟨s, hs_above, ?_, ?_⟩
+  · -- s ≤ z1: if s > z1, then z1 ∈ (z0, s) but neg(top)(z1) = False, contradiction
+    by_contra h_gt
+    push_neg at h_gt
+    have := h_neg z1 h_lt h_gt
+    simp [Formula.neg, temporal_truth, Formula.top] at this
+  · -- (z0, s) is empty
+    intro y hy0 hy1
+    have := h_neg y hy0 hy1
+    simp [Formula.neg, temporal_truth, Formula.top] at this
+
+/-- **Corollary 5.4**: The negation of a bounded existential
+    `not (exists z in (z_0, z_1)) bf.holds z_0 z` is equivalent to a
+    V-bracket formula over Prior structures satisfying `semantic_prior_UZ`.
+
+    Proof by induction on `n` (number of witnesses in the bracket formula):
+
+    - **n = 0**: The bounded existential is always satisfiable on Prior-UZ
+      (using the successor point), so the negation is vacuously false, unless
+      (z_0, z_1) has no interior points, in which case a trivial V-bracket holds.
+
+    - **n + 1**: Case split on whether `pointTypes(0)` occurs in `(z_0, z_1)`:
+      - **Absent**: `pureSeg (pointTypes(0).neg)` is V-bracket.
+      - **Present**: Find first occurrence `r_0`, then:
+        - If `segmentTypes(0)` holds on `(z_0, r_0)`: the remaining bracket fails
+          on `(r_0, z_1)`. By IH, V-bracket on `(r_0, z_1)`. Prepend `r_0`.
+        - If `segmentTypes(0)` fails on `(z_0, r_0)`: INF configuration is V-bracket. -/
+theorem neg_bounded_exists {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_UZ : semantic_prior_UZ M atomMap) :
+    ∀ (n : Nat) (bf : BracketFormula n) (z0 z1 : M.carrier),
+    z0 < z1 →
+    ¬(∃ z : M.carrier, z0 < z ∧ z < z1 ∧ bf.holds M atomMap z0 z) →
+    ∃ v : VBracketFormula, v.holds M atomMap z0 z1 := by
+  intro n
+  induction n with
+  | zero =>
+    intro bf z0 z1 h_lt h_neg
+    -- On Prior-UZ, the bounded existential for BracketFormula 0 is always satisfiable
+    -- when there exists a point in (z0, z1), so prove it and derive contradiction.
+    -- If no point exists in (z0, z1), produce a trivial V-bracket.
+    obtain ⟨s, hs_above, hs_le, h_empty⟩ :=
+      prior_UZ_successor M atomMap h_UZ z0 z1 h_lt
+    rcases eq_or_lt_of_le hs_le with rfl | hs_lt
+    · -- s = z1: (z0, z1) is empty, any V-bracket holds vacuously
+      exact ⟨⟨[⟨0, BracketFormula.pureSeg TemporalPred.top⟩]⟩,
+             ⟨0, BracketFormula.pureSeg TemporalPred.top⟩,
+             List.mem_singleton.mpr rfl,
+             (BracketFormula.pureSeg_holds M atomMap TemporalPred.top z0 _).mpr
+               (fun y hy0 hy1 => absurd (h_empty y hy0 hy1) (not_false))⟩
+    · -- s < z1: bf.holds z0 s holds vacuously ((z0, s) is empty)
+      exfalso
+      apply h_neg
+      refine ⟨s, hs_above, hs_lt, ?_⟩
+      -- bf.holds z0 s for BracketFormula 0: ∀ y, z0 < y → y < s → segmentTypes(0)(y)
+      simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+                  IntervalPattern.holds]
+      intro y hy0 hy1
+      exact absurd (h_empty y hy0 hy1) (not_false)
+  | succ n ih =>
+    intro bf z0 z1 h_lt h_neg
+    -- Case split: does pointTypes(0) occur in (z0, z1)?
+    by_cases h_exists : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
+        (bf.pointTypes ⟨0, by omega⟩).eval_at M atomMap x
+    · -- Case B: pointTypes(0) occurs in (z0, z1)
+      obtain ⟨r0, hr0_above, hr0_below, hPr0, h_neg_before⟩ :=
+        first_occurrence_prior_strict M atomMap h_UZ (bf.pointTypes ⟨0, by omega⟩)
+          z0 z1 h_lt h_exists
+      -- Check whether segmentTypes(0) holds on (z0, r0)
+      by_cases h_seg : ∀ y : M.carrier, z0 < y → y < r0 →
+          (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y
+      · -- Case B1: segmentTypes(0) holds on (z0, r0)
+        -- The remaining bracket formula (tail) must fail on (r0, z1)
+        have h_tail_neg : ¬∃ z : M.carrier, r0 < z ∧ z < z1 ∧
+            bf.tail.holds M atomMap r0 z := by
+          intro ⟨z, hz_above, hz_below, h_tail⟩
+          apply h_neg
+          exact ⟨z, lt_trans hr0_above hz_above, hz_below,
+                 bracket_tail_satisfiable M atomMap bf z0 z r0
+                   hr0_above hz_above hPr0 h_seg h_tail⟩
+        -- By IH, negation of tail bounded existential gives V-bracket on (r0, z1)
+        obtain ⟨v, hv⟩ := ih bf.tail r0 z1 hr0_below h_tail_neg
+        -- Prepend r0 with pointTypes(0).neg on (z0, r0) to get V-bracket on (z0, z1)
+        obtain ⟨⟨k, bf_v⟩, h_mem, h_holds⟩ := hv
+        obtain ⟨bf', h_holds'⟩ := BracketFormula.bracket_prepend_holds M atomMap bf_v
+          (bf.pointTypes ⟨0, by omega⟩).neg (bf.pointTypes ⟨0, by omega⟩) z0 z1 r0
+          hr0_above hr0_below hPr0
+          (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
+            (bf.pointTypes ⟨0, by omega⟩) y).mpr (h_neg_before y hy0 hy1))
+          h_holds
+        exact ⟨⟨[⟨k + 1, bf'⟩]⟩, ⟨k + 1, bf'⟩, List.mem_singleton.mpr rfl, h_holds'⟩
+      · -- Case B2: segmentTypes(0) fails on (z0, r0)
+        -- Any first witness x0 with pointTypes(0)(x0) has x0 ≥ r0, so
+        -- segmentTypes(0) also fails on (z0, x0). Bracket unsatisfiable.
+        -- Use inf_bracket_formula(pointTypes(0)) as V-bracket.
+        exact inf_formula_prior_is_vbracket M atomMap h_UZ
+          (bf.pointTypes ⟨0, by omega⟩) z0 z1 h_lt h_exists
+    · -- Case A: pointTypes(0) does not occur in (z0, z1)
+      push_neg at h_exists
+      exact ⟨⟨[⟨0, BracketFormula.pureSeg (bf.pointTypes ⟨0, by omega⟩).neg⟩]⟩,
+             ⟨0, BracketFormula.pureSeg (bf.pointTypes ⟨0, by omega⟩).neg⟩,
+             List.mem_singleton.mpr rfl,
+             (BracketFormula.pureSeg_holds M atomMap
+               (bf.pointTypes ⟨0, by omega⟩).neg z0 z1).mpr
+               (fun y hy0 hy1 => (TemporalPred.eval_at_neg M atomMap
+                 (bf.pointTypes ⟨0, by omega⟩) y).mpr (h_exists y hy0 hy1))⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -231,10 +231,10 @@ Phases within the same wave can execute in parallel.
 - [x] Induction on n (number of existential witnesses), NOT on quantifier depth
 - Timing: 2 hours (~120 lines)
 
-**4d. Bounded existential negation (Corollary 5.4)** [NOT STARTED]:
-- [ ] Prove `neg_bounded_exists`: not(exists z in (z_0, z_1))[alpha_0, beta_1, ..., alpha_n](z_0, z) is V-EA
-- [ ] Define F_i chain: F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)
-- [ ] Reduce to Lemma 5.3 via the observation that the bracket formula holds iff there is an increasing sequence satisfying F_0
+**4d. Bounded existential negation (Corollary 5.4)** [COMPLETED]:
+- [x] Prove `neg_bounded_exists`: not(exists z in (z_0, z_1))[alpha_0, beta_1, ..., alpha_n](z_0, z) is V-EA *(deviation: altered -- proved by direct induction on n (number of witnesses) with case analysis, not via F_i chain. The F_i chain approach has a fundamental direction issue: the forward direction (bracket -> purePoints) gives the wrong contrapositive. The direct approach uses first_occurrence_prior_strict for case splitting and IH on bf.tail with n witnesses.)*
+- [x] Define F_i chain: F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i) *(deviation: skipped -- F_i chain not needed for the direct inductive proof)*
+- [x] Reduce to Lemma 5.3 via the observation that the bracket formula holds iff there is an increasing sequence satisfying F_0 *(deviation: altered -- reduction uses first_occurrence_prior + bracket_tail_satisfiable + IH instead of Lemma 5.3 pure-points approach)*
 - Timing: 1 hour (~60 lines)
 
 **4e. Main technical lemma (Lemma 5.1)**:
