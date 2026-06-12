@@ -1,18 +1,16 @@
 {
-  "status": "partial",
-  "summary": "Phase 5a partially implemented. Created VecEADecomposition.lean with syntactic V-EA negation infrastructure (neg_bracket_syn, neg_vecEA2_syn, nf_exist_as_monadic bridge). Architecture for resolving P1/P2 circularity via Rabinovich Prop 4.3 structural induction is established. Key definitions are sorry-free but correctness proofs (soundness + completeness of syntactic negation) have 5 sorries. Made bracket_tail_satisfiable public in NegationClosure5.lean. Completeness proof Case A (alpha absent) is filled; Cases B (beta fails) and C (tail fails) are sorry'd. The sorry-free nf_exist_as_monadic bridge confirms that NF existence problems reduce to MonadicFormula evaluation.",
+  "status": "blocked",
+  "summary": "Phase 5a partially completed: neg_bracket_syn completeness proved sorry-free, but soundness direction BLOCKED for Case C due to fundamental interval mismatch between syntactic counter-pattern witnesses and bf witnesses. Reduced VecEADecomposition.lean from 5 sorries to 2. Also fixed caseB construction (1-witness with alpha0.neg.conj beta0.neg) and proved prepend_holds_direct.",
   "phases_completed": 4,
   "phases_total": 8,
   "blockers": [
-    "Phase 5a: neg_bracket_syn completeness proof Cases B and C require Fin-level witness construction for BracketFormula.prepend_holds_direct and the 2-witness counter-pattern",
-    "Phase 5a: neg_vvecEA2_syn requires syntactic conjunction of VVecEA2's (distributive law over disjunctions)",
-    "Phase 5b: Prop 4.3 structural induction needs V-EA at arity >= 3 for the .ex case at arity 2",
-    "Phase 5c: Bridge wiring depends on Phases 5a and 5b completion"
+    "neg_bracket_syn_iff soundness: Case C counter-pattern bf_tail_neg.prepend(beta0,alpha0) can coexist with bf.holds because tail negation operates on interval (r, z1) while bf.tail operates on (w(0), z1) with potentially different first witnesses. Open-interval semantics prevent bracket constraints from forcing witness alignment."
   ],
-  "continuation_context": "Resume from VecEADecomposition.lean. Next immediate actions: (1) Fill BracketFormula.prepend_holds_direct by unfolding holds/IntervalPattern.holds and providing witnesses, (2) Fill Case B with 2-witness BracketFormula construction, (3) Fill Case C using prepend_holds_direct, (4) Build neg_vvecEA2_syn as conjunction of neg_vecEA2_syn disjuncts (distribute disjunctions via List.map cross-product), (5) Then create Prop43.lean with structural induction. The handoff at specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5a-handoff-20260612d.md has the full architecture analysis including why semantic closures are insufficient and syntactic closures are needed.",
+  "continuation_context": "Phase 5a BLOCKED on neg_bracket_syn_iff soundness. 4 resolution paths documented in plan v22 blocker note and handoff phase-5a-handoff-20260612e.md: (a) compactness/finiteness lift of semantic neg_2var_vec_ea, (b) semantic Prop 4.3 with model-dependent VVecEA2, (c) canonical witness lemma for bf.holds, (d) different syntactic construction avoiding prepend. Path (c) seems most direct. Requires research to determine feasibility before re-planning.",
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean", "type": "lean_source", "summary": "Syntactic V-EA negation infrastructure (5 sorries)"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5a-handoff-20260612d.md", "type": "handoff", "summary": "Architecture analysis and implementation strategy"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean", "type": "lean_source", "summary": "Syntactic negation: completeness sorry-free, soundness BLOCKED (2 sorries)"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5a-handoff-20260612e.md", "type": "handoff", "summary": "Blocker analysis with 4 resolution paths"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/22_path-b-decomposition-plan.md", "type": "plan", "summary": "Plan v22 with Phase 5a marked BLOCKED with blocker documentation"}
   ],
-  "next_action_hint": "continue_implement"
+  "next_action_hint": "revise_plan"
 }
