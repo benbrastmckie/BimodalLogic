@@ -824,7 +824,9 @@ private theorem nf_full_compat_right_of_eval
   -- Case analysis: for each branch, either trivial (rfl) or derive contradiction
   -- from the fact that any witness y forces all compat checks to pass.
   split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
-  -- Close all split_ifs branches
+  -- Pre-existing proof: close all split_ifs branches.
+  -- Some branches broken by Lean 4.27.0-rc1 simp_all changes (y=x/y=t pred
+  -- atom matching). See task 273 handoff for details.
   all_goals sorry
 
 /-- Symmetric version for Since direction. -/
@@ -857,7 +859,9 @@ private theorem nf_full_compat_left_of_eval
       obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
       obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
   split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
-  -- Close all split_ifs branches
+  -- Pre-existing proof: close all split_ifs branches.
+  -- Some branches broken by Lean 4.27.0-rc1 simp_all changes (y=x/y=t pred
+  -- atom matching). See task 273 handoff for details.
   all_goals sorry
 
 set_option maxHeartbeats 2000000 in
