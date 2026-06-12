@@ -204,7 +204,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Negation Closure (Prop 4.2 via Section 5) [IN PROGRESS]
+### Phase 4: Negation Closure (Prop 4.2 via Section 5) [COMPLETED]
 
 **Goal**: Prove that the negation of a vec-EA formula with at most 2 free variables is equivalent to a V-EA formula over Prior structures. This is the hard core of the proof, corresponding to Rabinovich Section 5.
 
@@ -247,10 +247,10 @@ Phases within the same wave can execute in parallel.
 - [x] Use Prior-UZ/SZ for locating violation points (attained first occurrences) *(completed: uses first_occurrence_prior_strict for pointTypes(0) and inf_formula_prior_is_vbracket for the INF case)*
 - Timing: 2 hours (~120 lines)
 
-**4f. Negation closure for 2-free-variable formulas (Prop 4.2)**:
-- [ ] Prove `neg_2var_vec_ea`: the negation of a vec-EA formula with at most 2 free variables is V-EA over Prior structures
-- [ ] Decompose psi(z_0, z_1) into: psi_0(z_0) AND psi_1(z_1) AND phi(z_0, z_1) where phi is an interval formula
-- [ ] Apply `neg_interval_formula` to phi, combine with psi_0/psi_1 negations using closure properties
+**4f. Negation closure for 2-free-variable formulas (Prop 4.2)** [COMPLETED]:
+- [x] Prove `neg_2var_vec_ea`: the negation of a vec-EA formula with at most 2 free variables is V-EA over Prior structures *(deviation: altered -- split into `neg_vecEA2` for single VecEA2 conjunct and `neg_2var_vec_ea` for full VVecEA2. Also added `neg_disjunct_list` helper for list induction and `VBracketFormula.toVVecEA2WithEndpoints` for lifting V-bracket results to VVecEA2 with endpoint predicates.)*
+- [x] Decompose psi(z_0, z_1) into: psi_0(z_0) AND psi_1(z_1) AND phi(z_0, z_1) where phi is an interval formula *(completed: three-case de Morgan decomposition in `neg_vecEA2`)*
+- [x] Apply `neg_interval_formula` to phi, combine with psi_0/psi_1 negations using closure properties *(completed: Case 3 applies `neg_interval_formula` + `toVVecEA2WithEndpoints`, Cases 1-2 use `eval_at_neg` with trivial bracket)*
 - Timing: 1 hour (~50 lines)
 
 **Total Phase 4 Timing**: 8 hours (~460 lines across sub-phases)
