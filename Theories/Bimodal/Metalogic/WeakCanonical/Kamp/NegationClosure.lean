@@ -711,6 +711,84 @@ noncomputable def nf_exist_formula_nested
 
 /-! ## Forward Direction: Witnesses → Formula Truth -/
 
+/-- If any witness y matches all atoms of ssn, then ssn's x-pred, t-pred,
+    and xt-order compat checks all pass (since these only reference vars 1,2). -/
+private lemma ssn_compat_of_witness
+    {sig : MonadicSignature} {k : Nat}
+    {M : OrderedMonadicStructure sig}
+    {x t y : M.carrier}
+    {nf_x : NormalForm sig (k + 1) 1}
+    {parent_atoms : AtomKind sig 1 → Bool}
+    {sub_nf : NormalForm sig (k + 1) 2}
+    {ssn : NormalForm sig k 3}
+    (h_all : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true)
+    (h_nfx : nf_eval_nf M (k + 1) 1 (fun _ => x) nf_x)
+    (h_eval : nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf)
+    (h_atoms_t : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) :
+    ssn_x_pred_compat ssn nf_x = true ∧
+    ssn_t_pred_compat ssn parent_atoms = true ∧
+    ssn_xt_order_compat ssn sub_nf = true ∧
+    (∀ p, ssn.atom_assgn (.pred p ⟨0, by omega⟩) = true ↔ M.interp p y) := by
+  -- Extract model facts from h_all
+  have hx : ∀ p, M.interp p x ↔ ssn.atom_assgn (.pred p ⟨1, by omega⟩) = true := by
+    intro p; have := h_all (.pred p ⟨1, by omega⟩)
+    rw [show atom_eval M (Fin.cons y (Fin.cons x (fun _ => t)))
+      (.pred p ⟨1, by omega⟩) = M.interp p x from rfl] at this; exact this
+  have ht : ∀ p, M.interp p t ↔ ssn.atom_assgn (.pred p ⟨2, by omega⟩) = true := by
+    intro p; have := h_all (.pred p ⟨2, by omega⟩)
+    rw [show atom_eval M (Fin.cons y (Fin.cons x (fun _ => t)))
+      (.pred p ⟨2, by omega⟩) = M.interp p t from rfl] at this; exact this
+  have hy : ∀ p, M.interp p y ↔ ssn.atom_assgn (.pred p ⟨0, by omega⟩) = true := by
+    intro p; have := h_all (.pred p ⟨0, by omega⟩)
+    rw [show atom_eval M (Fin.cons y (Fin.cons x (fun _ => t)))
+      (.pred p ⟨0, by omega⟩) = M.interp p y from rfl] at this; exact this
+  have x_pred_match : ∀ p, M.interp p x ↔ nf_x.atom_assgn (.pred p ⟨0, by omega⟩) = true := by
+    intro p; exact h_nfx.1 (.pred p ⟨0, by omega⟩)
+  have t_pred_match : ∀ p, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+    intro p; exact h_atoms_t (.pred p ⟨0, by omega⟩)
+  -- Order facts
+  have h_ord12 : (x < t) ↔ ssn.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true := by
+    have := h_all (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+    rw [show atom_eval M (Fin.cons y (Fin.cons x (fun _ => t)))
+      (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = (x < t) from rfl] at this; exact this
+  have h_ord21 : (t < x) ↔ ssn.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true := by
+    have := h_all (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
+    rw [show atom_eval M (Fin.cons y (Fin.cons x (fun _ => t)))
+      (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = (t < x) from rfl] at this; exact this
+  have he_eval := h_eval.1
+  have he12 : (x < t) ↔ sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true := by
+    have h := he_eval (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+    rw [show atom_eval M (Fin.cons x (fun _ => t))
+      (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = (x < t) from rfl,
+      show sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+        sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) from rfl] at h
+    exact h
+  have he21 : (t < x) ↔ sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true := by
+    have h := he_eval (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+    rw [show atom_eval M (Fin.cons x (fun _ => t))
+      (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = (t < x) from rfl,
+      show sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+        sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) from rfl] at h
+    exact h
+  refine ⟨?_, ?_, ?_, fun p => ⟨(hy p).mpr, (hy p).mp⟩⟩
+  · -- ssn_x_pred_compat
+    simp only [ssn_x_pred_compat, List.all_eq_true, Bool.beq_to_eq]; intro p _
+    cases hs : ssn.atom_assgn (.pred p ⟨1, by omega⟩) <;>
+      cases hn : nf_x.atom_assgn (.pred p ⟨0, by omega⟩) <;> simp_all [hx, x_pred_match]
+  · -- ssn_t_pred_compat
+    simp only [ssn_t_pred_compat, List.all_eq_true, Bool.beq_to_eq]; intro p _
+    cases hs : ssn.atom_assgn (.pred p ⟨2, by omega⟩) <;>
+      cases hn : parent_atoms (.pred p ⟨0, by omega⟩) <;> simp_all [ht, t_pred_match]
+  · -- ssn_xt_order_compat
+    simp only [ssn_xt_order_compat, Bool.and_eq_true, Bool.beq_to_eq]; constructor
+    · cases hs : ssn.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) <;>
+        cases hn : sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
+        simp_all [h_ord12, he12]
+    · cases hs : ssn.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
+        cases hn : sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;>
+        simp_all [h_ord21, he21]
+
 /-- The characteristic NF of x at depth k+1 passes nf_full_compat_right
     when x actually satisfies nf_eval_nf for sub_nf. This follows from the
     fact that atom-incompatible ssn's cannot be realized (no y satisfies
@@ -727,18 +805,13 @@ private theorem nf_full_compat_right_of_eval
     (h_atoms_t : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
     (h_lt : t < x) :
     nf_full_compat_right nf_x parent_atoms sub_nf = true := by
-  -- The full compatibility check passes because for each non-interval ssn:
-  -- if the ssn's atoms are incompatible with nf_x/parent_atoms, then no
-  -- witness y can satisfy those atoms, so sub_nf.2(ssn) = false.
   simp only [nf_full_compat_right, List.all_eq_true]; intro ssn _
   have h_quant := h_eval.2
-  -- Helper: if sub_nf.2(ssn) = true, we can extract a witness and its atom assignment
   have ssn_atoms_from_true : sub_nf.2 ssn = true →
       ∃ y, ∀ a : AtomKind sig 3,
         atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true := by
     intro hsub; obtain ⟨y, hy⟩ := (h_quant ssn).mpr hsub
     exact ⟨y, by cases k with | zero => exact hy | succ k' => exact hy.1⟩
-  -- Helper: contrapositive -- if no y has matching atoms, then sub_nf.2(ssn) = false
   have neg_from_no_witness : (∀ y, ∃ a : AtomKind sig 3,
       ¬(atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true)) →
       (!sub_nf.2 ssn) = true := by
@@ -748,17 +821,13 @@ private theorem nf_full_compat_right_of_eval
     | true =>
       obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
       obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
-  -- Helper: ssn's x-pred atoms must match nf_x's pred atoms (which match the actual model)
-  have x_pred_match : ∀ p, M.interp p x ↔ nf_x.atom_assgn (.pred p ⟨0, by omega⟩) = true := by
-    intro p; exact h_nfx.1 (.pred p ⟨0, by omega⟩)
-  have t_pred_match : ∀ p, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
-    intro p; exact h_atoms_t (.pred p ⟨0, by omega⟩)
-  -- Case analysis on ssn's order region. Leave as sorry for now -- each case
-  -- follows by showing the specific failing atom from Boolean incompatibility.
-  -- The proof structure is sound (neg_from_no_witness reduces each case to
-  -- exhibiting a single atom where evaluation disagrees with ssn).
+  -- Case analysis: for each branch, either trivial (rfl) or derive contradiction
+  -- from the fact that any witness y forces all compat checks to pass.
   split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
-  all_goals first | rfl | (apply neg_from_no_witness; intro y; sorry)
+  all_goals first | rfl | (apply neg_from_no_witness; intro y; by_contra h_all_neg;
+    push_neg at h_all_neg;
+    obtain ⟨hxp, htp, hxt, _⟩ := ssn_compat_of_witness h_all_neg h_nfx h_eval h_atoms_t;
+    simp_all)
 
 /-- Symmetric version for Since direction. -/
 private theorem nf_full_compat_left_of_eval
@@ -773,7 +842,27 @@ private theorem nf_full_compat_left_of_eval
     (h_atoms_t : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
     (h_lt : x < t) :
     nf_full_compat_left nf_x parent_atoms sub_nf = true := by
-  sorry
+  simp only [nf_full_compat_left, List.all_eq_true]; intro ssn _
+  have h_quant := h_eval.2
+  have ssn_atoms_from_true : sub_nf.2 ssn = true →
+      ∃ y, ∀ a : AtomKind sig 3,
+        atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true := by
+    intro hsub; obtain ⟨y, hy⟩ := (h_quant ssn).mpr hsub
+    exact ⟨y, by cases k with | zero => exact hy | succ k' => exact hy.1⟩
+  have neg_from_no_witness : (∀ y, ∃ a : AtomKind sig 3,
+      ¬(atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true)) →
+      (!sub_nf.2 ssn) = true := by
+    intro h_no
+    cases hsub : sub_nf.2 ssn with
+    | false => rfl
+    | true =>
+      obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
+      obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
+  split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
+  all_goals first | rfl | (apply neg_from_no_witness; intro y; by_contra h_all_neg;
+    push_neg at h_all_neg;
+    obtain ⟨hxp, htp, hxt, _⟩ := ssn_compat_of_witness h_all_neg h_nfx h_eval h_atoms_t;
+    simp_all)
 
 set_option maxHeartbeats 2000000 in
 /-- Forward direction of nf_exist_formula_nested at depth k+1.
