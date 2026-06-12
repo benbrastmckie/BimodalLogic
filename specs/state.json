@@ -1239,14 +1239,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "planned",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T16:48:53Z",
+      "last_updated": "2026-06-12T18:36:43Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1392,7 +1392,8 @@
         ]
       },
       "session_id": "sess_1781282547_3da6a7",
-      "started": "2026-06-10T21:39:12Z"
+      "started": "2026-06-10T21:39:12Z",
+      "blockers": "neg_bracket_syn_iff soundness (Case C): counter-pattern tail negation operates on interval (r, z1) while bf.tail operates on (w(0), z1); witnesses from independent existentials cannot be forced to coincide. 4 resolution paths in handoffs/phase-5a-handoff-20260612e.md; path (c) canonical witness lemma most direct."
     },
     {
       "project_number": 290,

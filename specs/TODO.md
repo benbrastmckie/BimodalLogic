@@ -29,7 +29,7 @@ next_project_number: 300
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [PLANNED] — Close the sorry in nf_2var_existential_transfer (StaviCompletenes
+273 [BLOCKED] — Close the sorry in nf_2var_existential_transfer (StaviCompletenes
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -233,7 +233,7 @@ next_project_number: 300
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
