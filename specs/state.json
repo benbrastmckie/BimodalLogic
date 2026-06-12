@@ -1239,14 +1239,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "blocked",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T18:36:43Z",
+      "last_updated": "2026-06-12T18:56:55Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1331,10 +1331,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/22_path-b-decomposition-plan.md",
           "type": "plan",
           "summary": "Plan v22: Path B architecture — Lemma 3.2.2 + Prop 4.3 structural induction, 8 phases (4 completed + 4 new)"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/23_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): VecEADecomposition sorries confirmed dead code; NF-specific Prop 4.3 bypass via sorry-free neg_2var_vec_ea (~150-200 lines); chronicle_gap_contradiction:531 still bare sorry, second blocker, unplanned"
         }
       ],
-      "next_artifact_number": 23,
-      "researched": "2026-06-12T16:33:25Z",
+      "next_artifact_number": 24,
+      "researched": "2026-06-12T18:56:55Z",
       "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
         "phases": 8,
@@ -1391,7 +1396,7 @@
           }
         ]
       },
-      "session_id": "sess_1781282547_3da6a7",
+      "session_id": "sess_1781289946_b99e1f",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "neg_bracket_syn_iff soundness (Case C): counter-pattern tail negation operates on interval (r, z1) while bf.tail operates on (w(0), z1); witnesses from independent existentials cannot be forced to coincide. 4 resolution paths in handoffs/phase-5a-handoff-20260612e.md; path (c) canonical witness lemma most direct."
     },
