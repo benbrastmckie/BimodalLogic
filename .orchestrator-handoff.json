@@ -7,13 +7,13 @@
     "4a": "COMPLETED",
     "4b": "COMPLETED",
     "4c": "COMPLETED",
-    "4d": "NOT STARTED",
-    "4e": "NOT STARTED",
+    "4d": "COMPLETED",
+    "4e": "COMPLETED",
     "4f": "NOT STARTED"
   },
   "phases_total": 8,
-  "summary": "Phase 4c (Lemma 5.3 inductive step) completed sorry-free. Key theorems: neg_purePoints_vbracket, BracketFormula.bracket_prepend_holds, BracketFormula.prepend. Phase 4d (Corollary 5.4) not started -- requires F_i chain definition and equivalence proof.",
-  "next_action": "Implement Phase 4d: Corollary 5.4 (bounded existential negation). Define F_i chain, prove bracket-to-purePoints equivalence, then apply neg_purePoints_vbracket.",
+  "summary": "Phases 4d (Corollary 5.4: neg_bounded_exists) and 4e (Lemma 5.1: neg_interval_formula) both completed sorry-free in NegationClosure5.lean (1027 lines, 0 sorries). Phase 4d uses direct induction with first_occurrence_prior + bracket_tail_satisfiable + IH. Phase 4e reuses the same structure with a simpler base case. Phase 4f (Prop 4.2: neg_2var_vec_ea) is the next target.",
+  "next_action": "Implement Phase 4f: Prop 4.2 (neg_2var_vec_ea). Decompose psi(z_0, z_1) into endpoint types + interval formula, apply neg_interval_formula, combine via closure properties.",
   "files_modified": [
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure5.lean"
   ],
