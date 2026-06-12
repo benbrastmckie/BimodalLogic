@@ -1345,6 +1345,14 @@ private theorem nf_exist_formula_nested_backward
       (nf_exist_formula_nested k char_kp1 parent_atoms sub_nf)) :
     ∃ x : M.carrier, nf_eval_nf M (k + 1) (1 + 1)
       (Fin.cons x (fun _ : Fin 1 => t)) sub_nf := by
+  -- The backward direction extracts witness x from the formula's Until/Since,
+  -- uses char_kp1_correct to get the depth-(k+1) 1-var NF of x and interval
+  -- witnesses y, then uses composition + backward_2var_nf_agreement to
+  -- establish the full 2-var NF.
+  --
+  -- With the char_{k+1} fix, interval witnesses now have depth-(k+1) 1-var NFs
+  -- which encode depth-k 2-var NFs at (z,y) for all z. The composition lemma
+  -- (depth-k 3-var NF from 2-var projections) completes the argument.
   sorry
 
 /-! ## Master Simultaneous Induction -/
