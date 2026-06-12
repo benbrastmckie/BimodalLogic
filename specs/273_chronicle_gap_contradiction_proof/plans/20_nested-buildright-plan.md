@@ -185,7 +185,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Backward Direction (Formula to Witnesses) [IN PROGRESS]
+### Phase 5: Backward Direction (Formula to Witnesses) [PARTIAL]
 
 **BLOCKER** (Phase 5):
 - **What failed**: The formula `nf_exist_formula_nested` is provably incorrect for certain sub_nf values. Specifically, two distinct sub_nf's that agree on atom parts and positive-interval ssn patterns but differ on non-interval ssn quantifier conditions produce the SAME formula. This means the formula can be true (matching sub_nf_1) when the existential for a different sub_nf_2 is false, breaking the biconditional.
@@ -215,7 +215,7 @@ Phases within the same wave can execute in parallel.
 | Depth-0 termination | At nesting level k (depth 0): the (k+2)-var NF is determined by predicates + positions (atoms only, no quantifier conditions) | Unchanged: Doets 1989 base case |
 
 **Tasks**:
-- [ ] Prove `nf_exist_formula_nested_backward`: given formula truth, extract witnesses and verify the full 2-var NF. *(deviation: blocked — formula `nf_exist_formula_nested` is provably incorrect; does not encode sub_nf.2 for non-interval ssn's, making backward direction unprovable; see BLOCKER above)*
+- [ ] Prove `nf_exist_formula_nested_backward`: given formula truth, extract witnesses and verify the full 2-var NF. *(deviation: altered — formula revised with nf_full_compat_right/left filtering; non-interval ssn conditions now checked at formula-construction time; interval ssn conditions via Since/Until; backward proof still requires composition lemma for depth > 0)*
   - **Until case** (t < x, corresponding to z_0 < z_1 in Rabinovich):
     - From the outermost Until, extract the main witness x satisfying `char_kp1(nf_x)` (the event formula). By P1(k+1) correctness, x has the correct depth-(k+1) 1-var NF.
     - From the guard of the Until, x is the first occurrence of char_kp1(nf_x) after t (uses `semantic_prior_UZ` -- this is where Lemma 5.3's infimum construction is applied, simplified by Prior structure's attained first occurrences).

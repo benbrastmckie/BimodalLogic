@@ -1,19 +1,23 @@
 {
   "status": "partial",
-  "summary": "Phase 5 BLOCKED: formula nf_exist_formula_nested is provably incorrect. Literature transcription (report 10) confirms the fix: composition-based formula revision using Feferman-Vaught composition theorem specialized to Prior structures. The revised formula adds (1) extended nf_x filtering for non-interval ssn's using 2-var NF projections, (2) P2(k) formulas for (y,t) interval projections alongside char_k(nf_y), (3) negative interval conditions in guard. No depth increase -- uses only P1(k+1), P1(k), P2(k). Estimated ~520 lines. Build passes with 1 sorry at NegationClosure.lean:828.",
+  "summary": "Phase 5 PARTIAL: Added full non-interval ssn compatibility filtering to nf_exist_formula_nested (nf_full_compat_right/left). The formula now filters nf_x values by checking that non-interval ssn conditions are atom-level consistent with nf_x and parent_atoms. Forward proof updated and compiles. Three sorry sites remain in NegationClosure.lean: (1) nf_full_compat_right_of_eval case analysis (~100 lines, routine atom extraction), (2) nf_full_compat_left_of_eval symmetric, (3) main backward direction (requires composition lemma for depth > 0). Downstream sorries at NfCharFormula.lean:572 and KampPrior.lean:149 depend on the main sorry. Build passes (only CanonicalTaskRelation fails, pre-existing).",
   "phases_completed": 4,
   "phases_total": 7,
   "sorry_locations": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:828"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:761 (nf_full_compat_right_of_eval, inline sorry in case analysis)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:776 (nf_full_compat_left_of_eval, full sorry)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1094 (P2(k+1) backward direction)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean:572 (downstream of 1094)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:149 (downstream of 1094)"
   ],
   "blockers": [
     {
       "phase": 5,
-      "description": "Formula nf_exist_formula_nested is provably incorrect. Fix identified via literature transcription (report 10): composition-based formula revision with extended nf_x filtering + P2(k) interval projections + composition lemma. See plan Phase 5 BLOCKER, handoff phase-5-handoff-20260611.md, and report 10_literature-transcription.md.",
-      "goal_state": "case mp: h_formula : temporal_truth M atomMap t (nf_exist_formula_nested ...) |- exists x, nf_eval_nf M (k+1) (1+1) (Fin.cons x (fun _ => t)) sub_nf"
+      "description": "Backward direction requires: (1) completing compat helper proofs (routine, ~200 lines), (2) composition lemma nf_3var_composition_prior for all arities by induction on depth (~200 lines), (3) backward proof using composition (~100 lines). Total estimated: ~500 lines. The composition lemma at depth 0 is trivial (atoms involve at most 2 variables); at depth k+1, the arity-3 composition needs arity-4 at depth k, bottoming at depth 0.",
+      "goal_state": "case mp: h_formula : temporal_truth M atomMap t (nf_exist_formula_nested k char_kp1 char_k parent_atoms sub_nf) |- exists x, nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf"
     }
   ],
-  "continuation_context": null,
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611b.md",
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
@@ -28,17 +32,17 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "type": "implementation",
-      "summary": "nf_exist_formula_nested definition + forward proof sorry-free; 1 sorry at P2(k+1) backward (Phase 5 BLOCKED)"
+      "summary": "nf_exist_formula_nested with full compat filtering + forward proof; 3 sorries (2 compat helpers + 1 backward)"
     },
     {
       "path": "specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md",
       "type": "research",
-      "summary": "Literature transcription: Rabinovich 2014 + Libkin 2004 composition, identifies correct formula design with depth bookkeeping"
+      "summary": "Literature transcription: Rabinovich 2014 + Doets 1989 composition, verified construction"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611b.md",
       "type": "handoff",
-      "summary": "Phase 5 blocker + research integration: composition-based formula fix with implementation steps"
+      "summary": "Phase 5 partial progress: full compat filtering added, sorry inventory and continuation plan"
     }
   ]
 }
