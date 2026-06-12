@@ -230,11 +230,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: NF-Specific Prop 4.3 + Bridge Wiring [NOT STARTED]
+### Phase 5: NF-Specific Prop 4.3 + Bridge Wiring [BLOCKED]
 
 **Goal**: Prove that every `nf_to_formula nf` (arity-1 MonadicFormula) has a VVecEA2 equivalent over Prior structures, by strong induction on NF depth k. Then wire the result into KampPrior.lean:149 and downstream NfCharFormula.lean:572 via `nf_to_formula_correct` + `translateLeft_correct`. This is the NF-specific bypass that avoids VecEADecomposition.lean and the general Lemma 3.2.2 entirely.
 
 **Literature**: Rabinovich 2014, Proposition 4.3 (p. 6), restricted to arity-1 input from `nf_to_formula`. The negation case at arity 2 is handled by Prop 4.2 (`neg_2var_vec_ea`, NegationClosureProp42.lean:153, sorry-free).
+
+**BLOCKER** (Phase 5):
+- **What failed**: The plan's key assumption (Check 0a) that "arity never exceeds 2 during structural induction on nf_to_formula output" is INCORRECT. For a depth-k arity-1 NF, `nf_to_formula` produces sub-formulas at arity up to k+2 (each existential quantifier raises arity by 1, and depth decreases by 1). At depth k arity 1, sub-NFs at depth j have arity 1+(k-j). For k >= 1, the maximum arity encountered is k+2, NOT 2.
+- **What was tried**:
+  1. NF-specific Prop 4.3 via structural induction on MonadicFormula -- fails because negation at arity >= 3 requires Lemma 3.2.2 (VecEA decomposition), which is quarantined.
+  2. Direct fill of nf_2var_exist_formula_prior (NfCharFormula.lean:572) -- requires expressing `exists x, nf_eval_nf M k 2 (x,t) sub_nf` as temporal formula given char_k at depth k. This is P2(k), which requires the Feferman-Vaught composition lemma for k >= 1.
+  3. Using p2_from_p1_succ (FoToVecEA.lean) -- gives P2(k) from P1(k+1), but P1(k+1) depends on P2(k). Circular for any induction scheme.
+  4. Restructuring via master_induction (NegationClosure.lean) -- P1(k) for k <= 1 is sorry-free, but P2(k >= 1) has sorry at nf_exist_formula_nested_backward:1371, blocked on the same composition lemma.
+- **Why stuck**: The root cause is the Feferman-Vaught composition lemma: determining a depth-k 3-variable NF at (y,x,t) from 2-variable NF projections. For depth 0, this is trivial (just atom decomposition). For depth >= 1, the quantifier conditions of the 3-var NF involve 4+ variable sub-NFs that cannot be recovered from 2-var projections alone. This blocks P2(k) for k >= 1, which blocks P1(k+2), which blocks the general kamp_prior_expressive_completeness.
+- **What is needed**: Either (a) a proof of the composition lemma for discrete linear orders with Prior axioms, or (b) a fundamentally different approach to P2(k) that avoids reconstructing 3-var NFs from 2-var projections. Approach (b) might involve: using EF-games at finite depth instead of NF decomposition, or exploiting Prior-specific structure (discrete, every interval has first/last occurrence) to directly construct temporal formulas for 2-var existentials.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Tasks**:
 - [ ] **Task 5.1**: Create `Kamp/Prop43.lean` (or `Kamp/Prop43NfSpecific.lean`) with the NF-specific statement:
@@ -287,7 +298,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Chronicle Gap Contradiction [NOT STARTED]
+### Phase 6: Chronicle Gap Contradiction [BLOCKED]
 
 **Goal**: Fill the `chronicle_gap_contradiction` sorry at ChronicleToCountermodel.lean:531 using the fully-proved `reynolds_model_surgery_core` from GoodStructuresModelSurgery.lean. This is the second independent sorry on the critical path to `completeness_discrete`, discovered by round 23 Teammate C.
 

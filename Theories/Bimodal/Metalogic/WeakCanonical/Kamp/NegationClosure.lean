@@ -1368,6 +1368,14 @@ private theorem nf_exist_formula_nested_backward
   --
   -- Blocked on: composition lemma (Feferman-Vaught for NormalForms).
   -- See handoff phase-5-handoff-20260611e.md for detailed analysis.
+  --
+  -- Plan v23 analysis (task 273): The NF-specific Prop 4.3 bypass does NOT
+  -- eliminate this sorry. For k >= 1, the backward direction requires
+  -- reconstructing depth-k 3-var NFs from 2-var projections (the composition
+  -- lemma). For k=0, the backward direction is trivially correct (atoms only).
+  -- P1(k) for k <= 1 is sorry-free via master_induction; the sorry only
+  -- affects P2(k >= 1), hence P1(k >= 2), hence the general
+  -- kamp_prior_expressive_completeness for psi with quantifier depth >= 2.
   sorry
 
 /-! ## Master Simultaneous Induction -/

@@ -3,6 +3,13 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 /-!
 # Feferman-Vaught Composition for Normal Forms
 
+**QUARANTINED (Task 273, Plan v23)**: This file contains the witness merging
+(Feferman-Vaught composition) problem with 2 sorries and 5 failed attempts.
+The NF-specific Prop 4.3 path eliminates the need for this composition at
+depth 0; the general composition at depth >= 1 remains open and is the root
+blocker for the full Kamp chain (see NegationClosure.lean:1371 blocker comment).
+File retained for reference.
+
 The depth-k n-var characteristic NF is determined by the depth-(k+1)
 1-var NFs plus pairwise order relations. Doets 1989 Lemma 1.4/1.5.
 
