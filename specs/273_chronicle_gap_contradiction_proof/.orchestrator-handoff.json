@@ -1,42 +1,38 @@
 {
   "status": "partial",
-  "summary": "Phase 5d: Found and fixed formula defect (interval ssn atom compat filter). Forward proofs rewritten and sorry-free. Backward proof requires composition lemma (Feferman-Vaught for NormalForms) to verify interval witness quantifier parts at depth k >= 1.",
+  "summary": "Phase 5d decisive cycle: (1) Fixed formula defect (interval ssn atom filter, counterexample). (2) Created NfComposition.lean with composition lemma: atoms proven sorry-free, quantifier step is sole sorry. (3) Backward proof at NegationClosure.lean:1371 remains sorry pending composition. The quantifier step requires witness transfer on linear orders (Doets 1.4): given z in context 1, find z' in context 2 with same 1-var NF and same order region. See phase-5-handoff-20260612-quant-step.md for analysis.",
   "phases_completed": 4,
   "phases_total": 7,
   "sorry_locations": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1364 (backward direction - needs composition lemma)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean:105 (quantifier step of composition)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1371 (backward proof body)",
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean:572 (downstream)",
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:149 (downstream)"
   ],
   "blockers": [
     {
       "phase": 5,
-      "description": "Backward proof needs the composition lemma: depth-k n-var NF is determined by all pairwise depth-k 2-var NFs. At depth 0, proven (nf_composition_depth0). At depth k >= 1, the quantifier part of ssn (ssn.2) must match the actual model structure. With char_kp1 for interval witnesses, nf_y.2 provides depth-k 2-var NFs at (z,y), but combining these into the depth-k 3-var NF at (y,x,t) requires the composition lemma by induction on k.",
-      "goal_state": "Need nf_eval_nf M k 3 (y,x,t) ssn where ssn : NormalForm sig k 3 with sub_nf.2 ssn = true and atoms matching via filter. At k=0 this is trivial (atoms only). At k >= 1, ssn.2 : NormalForm sig (k-1) 4 -> Bool must match the actual existentials at (z,y,x,t).",
-      "estimated_effort": "200-500 lines for NfComposition.lean"
+      "description": "Composition quantifier step: at depth k+1, given z with nf_eval_nf M (k+1) 4 (z,y1,x1,t1) sub4, find z' with nf_eval_nf M (k+1) 4 (z',y2,x2,t2) sub4. Requires simultaneous 2-var NF transfer using the (k+2)-level 1-var NF hypothesis. The IH gives 4-var NF agreement from matching 1-var NFs + orders, so the problem reduces to finding z' with same 1-var NF as z and same order region relative to y2,x2,t2. This is the Doets Lemma 1.4 transfer for linear orders.",
+      "goal_state": "∃ z', nf_eval_nf M (k+1) 4 (Fin.cons z' (Fin.cons y2 (Fin.cons x2 (fun _ => t2)))) sub4",
+      "estimated_effort": "100-200 lines for witness transfer argument"
     }
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611e.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260612-quant-step.md",
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
       "type": "implementation",
-      "summary": "buildRight/buildLeft correctness (Phase 1, sorry-free)"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorINF.lean",
-      "type": "implementation",
-      "summary": "Prior first/last occurrence lemmas (Phase 2, sorry-free)"
+      "summary": "Composition lemma: atoms proved, quantifier step sorry (5e4ffcad0)"
     },
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "type": "implementation",
-      "summary": "nf_exist_formula_nested + forward proof + backward infrastructure + filter fix; 1 sorry (backward)"
+      "summary": "Filter fix + backward proof body sorry"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611e.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260612-quant-step.md",
       "type": "handoff",
-      "summary": "Phase 5d: filter fix details, counterexample, composition blocker analysis"
+      "summary": "Quantifier step analysis: witness transfer difficulty, three resolution options"
     }
   ]
 }
