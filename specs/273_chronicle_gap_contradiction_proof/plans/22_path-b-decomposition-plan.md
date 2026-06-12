@@ -237,7 +237,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5a: VecEADecomposition.lean -- Lemma 3.2.2 [PARTIAL]
+### Phase 5a: VecEADecomposition.lean -- Lemma 3.2.2 [BLOCKED]
 
 **Goal**: Prove that every EA formula with n > 2 free variables is equivalent to a conjunction of EA formulas with at most 2 free variables. This is a general result for ANY linear order (no Prior assumption), yielding CSLib-quality infrastructure of independent mathematical value.
 
@@ -247,7 +247,14 @@ Phases within the same wave can execute in parallel.
 - [ ] **Task 5a.1**: Add `VecEAFormula.holds` general evaluation function *(deviation: altered — replaced with syntactic neg_bracket_syn approach; general VecEAFormula.holds not needed because Prop 4.3 works via structural induction on MonadicFormula using pairwise VVecEA2 decomposition)*
 - [ ] **Task 5a.2**: Define `segmentBracket` extraction *(deviation: altered — replaced with neg_bracket_syn/neg_vecEA2_syn which directly provides syntactic V-EA negation; segmentBracket extraction not needed)*
 - [ ] **Task 5a.3**: Prove `vecEA_decomp_2var` semantic equivalence *(deviation: altered — replaced with neg_bracket_syn_iff which gives ¬bf.holds ↔ neg_bracket_syn.holds over Prior; combined with neg_vecEA2_syn_iff for full VVecEA2 negation)*
-- [ ] **Task 5a.4**: Verify all definitions and proofs compile sorry-free *(in progress — VecEADecomposition.lean compiles with 3 sorries: neg_bracket_syn_sound, neg_bracket_syn_complete, neg_vecEA2_syn_iff)*
+- [ ] **Task 5a.4**: Verify all definitions and proofs compile sorry-free *(deviation: blocked — neg_bracket_syn_iff soundness direction blocked for Case C; see BLOCKER below)*
+
+**BLOCKER** (Phase 5a):
+- **What failed**: Soundness of `neg_bracket_syn` Case C (prepended tail-negation disjuncts). The counter-pattern `bf_tail_neg.prepend beta0 alpha0` can hold on (z0, z1) simultaneously with `bf.holds`, because the tail negation operates on interval (r, z1) where `r` is the prepend's first witness, while `bf.holds` has tail on (w(0), z1) with potentially different `w(0)`.
+- **What was tried**: (1) Two-witness caseB -- soundness fails when witnesses coincide. (2) One-witness caseB with `alpha0.neg.conj beta0.neg` -- fixes Case B soundness. (3) Adding `alpha0.neg` to Case C segment -- doesn't fix interval mismatch. (4) First-occurrence argument over Prior -- fails because `bf.tail.holds` on (w(0), z1) doesn't imply `bf.tail.holds` on (r, z1) when r < w(0) (wider first segment may violate tail's segmentTypes(0)). (5) Proving biconditional directly -- Case C soundness intrinsically requires relating witnesses from two different existentials.
+- **Why it's stuck**: `BracketFormula.holds` uses open-interval semantics. Two existential witness configurations (one from `bf.holds`, one from the counter-pattern) can coexist on overlapping-but-different intervals. No bracket constraint can force the first witnesses to coincide.
+- **What is needed**: One of: (a) a compactness/finiteness argument to lift the semantic `neg_2var_vec_ea` to a uniform (model-independent) version, (b) rewrite Prop 4.3 to use the semantic negation with model-dependent VVecEA2 (changes the statement), (c) a fundamentally different syntactic negation construction where Case C uses a bounded witness quantifier that forces alignment, or (d) prove that `bf.holds` on (z0, z1) implies `bf.tail.holds` on (r0, z1) for the first alpha0 occurrence r0 (would require showing bf has an equivalent "canonical" witness configuration).
+- **What IS sorry-free**: `neg_bracket_syn` definition, `prepend_holds_direct`, `neg_bracket_syn_complete` (completeness direction), `nf_exist_as_monadic` bridge lemma. Only the soundness direction of `neg_bracket_syn_iff` and the dependent `neg_vecEA2_syn_iff` have sorries (2 total).
 
 **Timing**: 4 hours (~250-350 lines in a new file)
 
