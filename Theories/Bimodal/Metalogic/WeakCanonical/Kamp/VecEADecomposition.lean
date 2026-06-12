@@ -6,6 +6,16 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 /-!
 # Syntactic VBracketFormula Negation and Prop 4.3 Support
 
+**QUARANTINED (Task 273, Plan v23)**: This file is dead code -- not imported by any
+file on the critical path to `completeness_discrete`. The two remaining sorries
+(`neg_bracket_syn_iff` soundness Case C, `neg_vecEA2_syn_iff`) are bypassed by
+the NF-specific Prop 4.3 approach (KampPrior.lean + NfCharFormula.lean +
+NegationClosure.lean master_induction). Do NOT attempt to prove them.
+
+The Case C blocker is a genuine mathematical impossibility under open-interval
+semantics: the prepended counter-pattern can hold simultaneously with bf.holds
+because the tail negation lives on a different interval than bf.tail.
+
 This file provides model-independent (syntactic) constructions needed for
 Prop 4.3 (FO -> V-EA structural induction). The key components:
 
@@ -15,10 +25,9 @@ Prop 4.3 (FO -> V-EA structural induction). The key components:
 
 ## Status
 
-**PARTIALLY IMPLEMENTED**: Completeness is proved. Soundness of Case C
-(prepended tail-negation disjuncts) is BLOCKED because the prepended counter-pattern
-can hold simultaneously with bf.holds -- the tail negation lives on a different
-interval than bf.tail. See the BLOCKER documentation at `neg_bracket_syn_iff`.
+**QUARANTINED**: Completeness is proved. Soundness of Case C
+(prepended tail-negation disjuncts) is BLOCKED -- genuine impossibility under
+open-interval semantics. Not on critical path; bypassed by plan v23.
 
 ## References
 
