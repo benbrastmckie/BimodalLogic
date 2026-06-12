@@ -29,7 +29,7 @@ next_project_number: 300
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
     └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [RESEARCHED] — Close the sorry in nf_2var_existential_transfer (StaviCompletenes
+273 [PLANNED] — Close the two remaining blockers for completeness_discrete: (1) K
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -233,7 +233,7 @@ next_project_number: 300
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -255,9 +255,9 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/reports/12_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/13_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/23_team-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/22_path-b-decomposition-plan.md]
+- **Plan**: [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
 
-**Description**: Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.
+**Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
 
 ---
 
