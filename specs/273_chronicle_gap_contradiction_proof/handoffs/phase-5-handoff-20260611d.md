@@ -35,9 +35,18 @@ Applied the prescribed char_{k+1} fix to `nf_exist_formula_nested` and repaired 
    - Updated all call sites to remove `char_k` argument
    - Comments updated to reflect char_{k+1} usage
 
+## Build Status
+
+`lake build Bimodal.Metalogic.WeakCanonical.Kamp.NegationClosure` passes with only sorry warnings:
+- NegationClosure.lean:1314 (backward proof -- the target sorry)
+- NfCharFormula.lean:550 (downstream -- closes when master_induction is sorry-free)
+- KampPrior.lean:126 (downstream -- closes when master_induction is sorry-free)
+
+Pre-existing compat helper regression: FIXED (no longer sorry).
+
 ## Remaining Work
 
-### Priority 1: Fix compat helpers (pre-existing regression)
+### Priority 1 (DONE): Fix compat helpers (pre-existing regression)
 Files: `nf_full_compat_right_of_eval`, `nf_full_compat_left_of_eval`
 
 The `split_ifs` + `simp_all` pattern that previously closed all cases broke in Lean 4.27.0-rc1. The issue is in 2 specific cases where `simp_all` can't derive a contradiction:
