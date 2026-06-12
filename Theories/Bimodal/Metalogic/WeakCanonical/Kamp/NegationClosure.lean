@@ -1361,6 +1361,13 @@ private theorem nf_exist_formula_nested_backward
   -- With the char_{k+1} fix, interval witnesses now have depth-(k+1) 1-var NFs
   -- which encode depth-k 2-var NFs at (z,y) for all z. The composition lemma
   -- (depth-k 3-var NF from 2-var projections) completes the argument.
+  --
+  -- The filter fix (nf_full_compat_right/left now checks interval ssn atom compat)
+  -- ensures that for unrealizable sub_nf, the formula is false (backward is vacuous).
+  -- For realizable sub_nf, the composition lemma bridges from 2-var to 3-var NFs.
+  --
+  -- Blocked on: composition lemma (Feferman-Vaught for NormalForms).
+  -- See handoff phase-5-handoff-20260611e.md for detailed analysis.
   sorry
 
 /-! ## Master Simultaneous Induction -/
