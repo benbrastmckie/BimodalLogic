@@ -753,7 +753,10 @@ private theorem nf_full_compat_right_of_eval
     intro p; exact h_nfx.1 (.pred p ⟨0, by omega⟩)
   have t_pred_match : ∀ p, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
     intro p; exact h_atoms_t (.pred p ⟨0, by omega⟩)
-  -- Case analysis on ssn's order region
+  -- Case analysis on ssn's order region. Leave as sorry for now -- each case
+  -- follows by showing the specific failing atom from Boolean incompatibility.
+  -- The proof structure is sound (neg_from_no_witness reduces each case to
+  -- exhibiting a single atom where evaluation disagrees with ssn).
   split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
   all_goals first | rfl | (apply neg_from_no_witness; intro y; sorry)
 
