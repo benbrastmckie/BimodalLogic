@@ -1239,14 +1239,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "partial",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T06:00:00Z",
+      "last_updated": "2026-06-12T16:21:31Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1341,10 +1341,15 @@
           "type": "plan",
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/21_rabinovich-formula-level-plan.md",
           "summary": "Plan v21: Rabinovich formula-level pivot — 8 phases, vec-EA formulas, negation closure, bypasses NF composition"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/12_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): p2_from_p1_succ is sorry-free orphan, Path B confirmed if forward-only P2(k) check fails, 480-630 lines estimated"
         }
       ],
-      "next_artifact_number": 11,
-      "researched": "2026-06-11T15:40:46Z",
+      "next_artifact_number": 13,
+      "researched": "2026-06-12T16:21:31Z",
       "planned": "2026-06-11T18:10:00Z",
       "plan_metadata": {
         "phases": 8,
@@ -1409,7 +1414,7 @@
           }
         ]
       },
-      "session_id": "sess_1781193902_83bc5c",
+      "session_id": "sess_1781280732_3c7cfe",
       "started": "2026-06-10T21:39:12Z"
     },
     {
