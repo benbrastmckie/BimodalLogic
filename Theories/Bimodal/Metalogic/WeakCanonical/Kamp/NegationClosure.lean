@@ -512,10 +512,15 @@ noncomputable def nf_full_compat_right {sig : MonadicSignature} {k : Nat}
     (nf_x : NormalForm sig (k + 1) 1)
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig (k + 1) 2) : Bool :=
-  -- Check all non-interval ssn's
+  -- Check all ssn's for atom compatibility
   (Fintype.elems (α := NormalForm sig k 3)).val.toList.all fun ssn =>
-    -- Skip interval ssn's (handled by the formula's Since conditions)
-    if ssn_in_interval_right ssn then true
+    -- Interval ssn's: check atom compat at x,t (var 1,2) -- required for backward direction
+    if ssn_in_interval_right ssn then
+      if ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms &&
+         ssn_xt_order_compat ssn sub_nf then
+        true  -- atom-compatible interval ssn; handled by the formula's Since conditions
+      else
+        !sub_nf.2 ssn  -- atom-incompatible interval ssn; must be negative
     -- Skip ssn's with inconsistent x,t order (must have t < x for right direction)
     else if !ssn_xt_order_compat ssn sub_nf then
       -- If ssn has wrong x,t order, sub_nf.2(ssn) must be false
@@ -565,7 +570,13 @@ noncomputable def nf_full_compat_left {sig : MonadicSignature} {k : Nat}
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig (k + 1) 2) : Bool :=
   (Fintype.elems (α := NormalForm sig k 3)).val.toList.all fun ssn =>
-    if ssn_in_interval_left ssn then true
+    -- Interval ssn's: check atom compat at x,t (var 1,2) -- required for backward direction
+    if ssn_in_interval_left ssn then
+      if ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms &&
+         ssn_xt_order_compat ssn sub_nf then
+        true  -- atom-compatible interval ssn; handled by the formula's Until conditions
+      else
+        !sub_nf.2 ssn  -- atom-incompatible interval ssn; must be negative
     else if !ssn_xt_order_compat ssn sub_nf then
       !sub_nf.2 ssn
     else if ssn_y_above_x ssn then
@@ -819,79 +830,81 @@ private theorem nf_full_compat_right_of_eval
     nf_full_compat_right nf_x parent_atoms sub_nf = true := by
   simp only [nf_full_compat_right, List.all_eq_true]; intro ssn _
   have h_quant := h_eval.2
+  -- Key helper: if sub_nf.2 ssn = true, there exists a witness y with all atoms matching
   have ssn_atoms_from_true : sub_nf.2 ssn = true →
       ∃ y, ∀ a : AtomKind sig 3,
         atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true := by
     intro hsub; obtain ⟨y, hy⟩ := (h_quant ssn).mpr hsub
     exact ⟨y, by cases k with | zero => exact hy | succ k' => exact hy.1⟩
+  -- If no y satisfies all atoms, sub_nf.2 ssn = false
   have neg_from_no_witness : (∀ y, ∃ a : AtomKind sig 3,
       ¬(atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true)) →
       (!sub_nf.2 ssn) = true := by
-    intro h_no
-    cases hsub : sub_nf.2 ssn with
+    intro h_no; cases hsub : sub_nf.2 ssn with
     | false => rfl
-    | true =>
-      obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
-      obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
-  -- The non-trivial branches require: any hypothetical witness y satisfying
-  -- all atom assignments for ssn would make all compat checks pass, contradicting
-  -- the negative hypothesis. We use neg_from_no_witness then derive False.
-  split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12
-  -- All goals where the branch returns `true`: close by rfl
-  all_goals (first | rfl | skip)
-  -- Remaining goals have `(!sub_nf.2 ssn) = true`
-  -- Strategy: apply neg_from_no_witness, get a witness y, use ssn_compat_of_witness
-  all_goals apply neg_from_no_witness
-  all_goals intro y
-  all_goals by_contra h_all_neg
-  all_goals push_neg at h_all_neg
-  all_goals obtain ⟨hxp, htp, hxt, hpreds⟩ := ssn_compat_of_witness h_all_neg h_nfx h_eval h_atoms_t
-  -- Cases with direct Bool contradictions (h2: order compat, h4/h8/h✝: pred compat)
-  · simp only [Bool.not_eq_true'] at h2; simp_all [NormalForm.atom_assgn]
-  · exact h4 (by rw [Bool.and_eq_true]; exact ⟨hxp, htp⟩)
-  -- y=x case: derive y=x from order, then show pred-0 match
-  · apply h6; rw [Bool.and_eq_true, Bool.and_eq_true]; refine ⟨⟨?_, htp⟩, hxp⟩
-    rw [List.all_eq_true]; intro p _; rw [beq_iff_eq]
-    have h_yx : y = x := by
-      by_contra h_ne
-      simp only [ssn_y_eq_x, Bool.and_eq_true, Bool.not_eq_true'] at h5
-      rcases lt_or_gt_of_ne h_ne with hlt | hlt
-      · have := (h_all_neg (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h5 h_v; simp_all
-      · have := (h_all_neg (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h5 h_v; simp_all
-    subst h_yx; exact Bool.eq_iff_iff.mpr ((hpreds p).trans (h_nfx.1 (.pred p 0)))
-  -- y=t case: derive y=t from order, then show pred-0 match
-  · apply h9; intro p _; rw [beq_iff_eq]
-    have h_yt : y = t := by
-      by_contra h_ne
-      simp only [ssn_y_eq_t, Bool.and_eq_true, Bool.not_eq_true'] at h7
-      rcases lt_or_gt_of_ne h_ne with hlt | hlt
-      · have := (h_all_neg (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h7 h_v; simp_all
-      · have := (h_all_neg (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h7 h_v; simp_all
-    subst h_yt
-    have h1 := (hpreds p).trans (h_atoms_t (.pred p ⟨0, by omega⟩))
-    simp only [atom_eval] at h1; exact Bool.eq_iff_iff.mpr h1
-  · exact h8 (by rw [Bool.and_eq_true]; exact ⟨htp, hxp⟩)
-  · exact h11 (by rw [Bool.and_eq_true]; exact ⟨hxp, htp⟩)
+    | true => obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
+              obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
+  -- Prove by case analysis on sub_nf.2 ssn
+  by_cases hsub : sub_nf.2 ssn = true
+  · -- sub_nf.2 ssn = true: all atom compat checks pass (via the witness)
+    obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
+    have ⟨hxp, htp, hxt, hpreds⟩ := ssn_compat_of_witness hay h_nfx h_eval h_atoms_t
+    have hns : (!sub_nf.2 ssn) = false := by rw [hsub]; rfl
+    -- Helper: derive y = x when ssn_y_eq_x, then pred-0 match with nf_x
+    have h_pred0_x : ssn_y_eq_x ssn = true →
+        (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          ssn.atom_assgn (.pred p ⟨0, by omega⟩) == nf_x.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+      intro hyeq; rw [List.all_eq_true]; intro p _; rw [beq_iff_eq]
+      have h_yx : y = x := by
+        by_contra h_ne
+        simp only [ssn_y_eq_x, Bool.and_eq_true, Bool.not_eq_true'] at hyeq
+        rcases lt_or_gt_of_ne h_ne with hlt | hlt
+        · have h_v := (hay (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyeq this; simp_all
+        · have h_v := (hay (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyeq this; simp_all
+      subst h_yx; exact Bool.eq_iff_iff.mpr ((hpreds p).trans (h_nfx.1 (.pred p 0)))
+    -- Helper: derive y = t when ssn_y_eq_t, then pred-0 match with parent_atoms
+    have h_pred0_t : ssn_y_eq_t ssn = true →
+        ∀ p ∈ (Fintype.elems (α := sig.preds)).val.toList,
+          (ssn.atom_assgn (.pred p ⟨0, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)) = true := by
+      intro hyet p _; rw [beq_iff_eq]
+      have h_yt : y = t := by
+        by_contra h_ne
+        simp only [ssn_y_eq_t, Bool.and_eq_true, Bool.not_eq_true'] at hyet
+        rcases lt_or_gt_of_ne h_ne with hlt | hlt
+        · have h_v := (hay (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyet this; simp_all
+        · have h_v := (hay (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyet this; simp_all
+      subst h_yt
+      have h1 := (hpreds p).trans (h_atoms_t (.pred p ⟨0, by omega⟩))
+      simp only [atom_eval] at h1; exact Bool.eq_iff_iff.mpr h1
+    -- Now simplify and close all branches
+    simp only [hns, ite_false]
+    split_ifs <;> first
+      | rfl
+      | (exfalso; simp_all [Bool.and_eq_true, List.all_eq_true, beq_iff_eq])
+  · -- sub_nf.2 ssn = false: !sub_nf.2 ssn = true, every branch is true
+    have hf : (!sub_nf.2 ssn) = true := by
+      cases h : sub_nf.2 ssn <;> simp_all
+    simp only [hf, ite_true, ite_self]
 
 /-- Symmetric version for Since direction. -/
 private theorem nf_full_compat_left_of_eval
@@ -913,68 +926,63 @@ private theorem nf_full_compat_left_of_eval
         atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true := by
     intro hsub; obtain ⟨y, hy⟩ := (h_quant ssn).mpr hsub
     exact ⟨y, by cases k with | zero => exact hy | succ k' => exact hy.1⟩
-  have neg_from_no_witness : (∀ y, ∃ a : AtomKind sig 3,
-      ¬(atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true)) →
-      (!sub_nf.2 ssn) = true := by
-    intro h_no
-    cases hsub : sub_nf.2 ssn with
-    | false => rfl
-    | true =>
-      obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
-      obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
-  split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
-  all_goals (first | rfl | skip)
-  all_goals apply neg_from_no_witness
-  all_goals intro y
-  all_goals by_contra h_all_neg
-  all_goals push_neg at h_all_neg
-  all_goals obtain ⟨hxp, htp, hxt, hpreds⟩ := ssn_compat_of_witness h_all_neg h_nfx h_eval h_atoms_t
-  · simp only [Bool.not_eq_true'] at h2; simp_all [NormalForm.atom_assgn]
-  · exact h4 (by rw [Bool.and_eq_true]; exact ⟨hxp, htp⟩)
-  · apply h6; rw [Bool.and_eq_true, Bool.and_eq_true]; refine ⟨⟨?_, htp⟩, hxp⟩
-    rw [List.all_eq_true]; intro p _; rw [beq_iff_eq]
-    have h_yx : y = x := by
-      by_contra h_ne
-      simp only [ssn_y_eq_x, Bool.and_eq_true, Bool.not_eq_true'] at h5
-      rcases lt_or_gt_of_ne h_ne with hlt | hlt
-      · have := (h_all_neg (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h5 h_v; simp_all
-      · have := (h_all_neg (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h5 h_v; simp_all
-    subst h_yx; exact Bool.eq_iff_iff.mpr ((hpreds p).trans (h_nfx.1 (.pred p 0)))
-  · apply h9; intro p _; rw [beq_iff_eq]
-    have h_yt : y = t := by
-      by_contra h_ne
-      simp only [ssn_y_eq_t, Bool.and_eq_true, Bool.not_eq_true'] at h7
-      rcases lt_or_gt_of_ne h_ne with hlt | hlt
-      · have := (h_all_neg (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h7 h_v; simp_all
-      · have := (h_all_neg (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
-        simp only [atom_eval] at this
-        have h_v := this (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ <
-          (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
-            simp [Fin.cons]; exact hlt)
-        simp only [NormalForm.atom_assgn] at h7 h_v; simp_all
-    subst h_yt
-    have h1 := (hpreds p).trans (h_atoms_t (.pred p ⟨0, by omega⟩))
-    simp only [atom_eval] at h1; exact Bool.eq_iff_iff.mpr h1
-  · exact h8 (by rw [Bool.and_eq_true]; exact ⟨htp, hxp⟩)
-  · -- Last neg branch: pred compat fails but both pass
-    have : (ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms) = true :=
-      by rw [Bool.and_eq_true]; exact ⟨hxp, htp⟩
-    simp_all [Bool.not_eq_true']
+  by_cases hsub : sub_nf.2 ssn = true
+  · obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
+    have ⟨hxp, htp, hxt, hpreds⟩ := ssn_compat_of_witness hay h_nfx h_eval h_atoms_t
+    have hns : (!sub_nf.2 ssn) = false := by rw [hsub]; rfl
+    -- Helper: y=x pred match
+    have h_pred0_x : ssn_y_eq_x ssn = true →
+        (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          ssn.atom_assgn (.pred p ⟨0, by omega⟩) == nf_x.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+      intro hyeq; rw [List.all_eq_true]; intro p _; rw [beq_iff_eq]
+      have h_yx : y = x := by
+        by_contra h_ne
+        simp only [ssn_y_eq_x, Bool.and_eq_true, Bool.not_eq_true'] at hyeq
+        rcases lt_or_gt_of_ne h_ne with hlt | hlt
+        · have h_v := (hay (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyeq this; simp_all
+        · have h_v := (hay (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyeq this; simp_all
+      subst h_yx; exact Bool.eq_iff_iff.mpr ((hpreds p).trans (h_nfx.1 (.pred p 0)))
+    -- Helper: y=t pred match
+    have h_pred0_t : ssn_y_eq_t ssn = true →
+        ∀ p ∈ (Fintype.elems (α := sig.preds)).val.toList,
+          (ssn.atom_assgn (.pred p ⟨0, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)) = true := by
+      intro hyet p _; rw [beq_iff_eq]
+      have h_yt : y = t := by
+        by_contra h_ne
+        simp only [ssn_y_eq_t, Bool.and_eq_true, Bool.not_eq_true'] at hyet
+        rcases lt_or_gt_of_ne h_ne with hlt | hlt
+        · have h_v := (hay (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyet this; simp_all
+        · have h_v := (hay (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyet this; simp_all
+      subst h_yt
+      have h1 := (hpreds p).trans (h_atoms_t (.pred p ⟨0, by omega⟩))
+      simp only [atom_eval] at h1; exact Bool.eq_iff_iff.mpr h1
+    simp only [hns, ite_false]
+    split_ifs <;> first
+      | rfl
+      | (exfalso; simp_all [Bool.and_eq_true, List.all_eq_true, beq_iff_eq])
+  · have hf : (!sub_nf.2 ssn) = true := by
+      cases h : sub_nf.2 ssn <;> simp_all
+    simp only [hf, ite_true, ite_self]
 
 set_option maxHeartbeats 2000000 in
 /-- Forward direction of nf_exist_formula_nested at depth k+1.
