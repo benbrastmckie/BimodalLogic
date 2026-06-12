@@ -126,18 +126,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: vec-EA Formula Type and Bracket Notation [NOT STARTED]
+### Phase 1: vec-EA Formula Type and Bracket Notation [COMPLETED]
 
 **Goal**: Define the vec-EA formula type (Rabinovich Def 3.1) and bracket notation (Notation 5.2) as Lean types, either extending ExistsForallNF.lean or in a new file VecEAFormula.lean.
 
 **Literature**: Rabinovich 2014 Def 3.1 (p. 3), Notation 5.2 (p. 8).
 
 **Tasks**:
-- [ ] Define `VecEAFormula sig n` representing an exists-forall formula with n existential witnesses and m free variables, encoding: witness ordering constraints, point-type predicates alpha_i at each witness x_i, interval-type predicates beta_j along each sub-interval (x_{j-1}, x_j)
-- [ ] Define bracket notation type `BracketFormula sig` representing [alpha_0, beta_1, alpha_1, ..., beta_n, alpha_n](z_0, z_1) -- an interval formula with n interior witnesses between endpoints z_0, z_1
-- [ ] Define semantic evaluation: `vec_ea_eval M env vf` -- truth of a vec-EA formula in a model M under environment env
-- [ ] Define `bracket_eval M z0 z1 bf` -- truth of a bracket formula in interval (z_0, z_1)
-- [ ] Verify definitions compile with no errors
+- [x] Define `VecEAFormula sig n` representing an exists-forall formula with n existential witnesses and m free variables, encoding: witness ordering constraints, point-type predicates alpha_i at each witness x_i, interval-type predicates beta_j along each sub-interval (x_{j-1}, x_j) *(deviation: altered -- parameterized as `VecEAFormula m n` with `FreeVarPositions m n` for ordering; also added `VecEA2 n` for the 2-free-variable decomposition needed by Prop 4.2)*
+- [x] Define bracket notation type `BracketFormula sig` representing [alpha_0, beta_1, alpha_1, ..., beta_n, alpha_n](z_0, z_1) -- an interval formula with n interior witnesses between endpoints z_0, z_1
+- [x] Define semantic evaluation: `vec_ea_eval M env vf` -- truth of a vec-EA formula in a model M under environment env *(deviation: altered -- evaluation via `VecEA2.holds`, `BracketFormula.holds`, `VBracketFormula.holds` rather than a single `vec_ea_eval`)*
+- [x] Define `bracket_eval M z0 z1 bf` -- truth of a bracket formula in interval (z_0, z_1) *(deviation: altered -- named `BracketFormula.holds` following existing dot-notation style)*
+- [x] Verify definitions compile with no errors
 
 **Timing**: 3 hours (~150 lines)
 
