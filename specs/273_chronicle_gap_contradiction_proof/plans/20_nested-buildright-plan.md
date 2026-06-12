@@ -187,6 +187,13 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 5: Backward Direction (Formula to Witnesses) [IN PROGRESS]
 
+**RESOLVED BLOCKERS**:
+- char_k -> char_{k+1} fix (commit 2fb5bd5b2): interval witnesses now encode 2-var NFs via depth-(k+1) 1-var NFs
+- Interval ssn filter fix (commit 68c80dd5f): nf_full_compat_right/left now check var-1/var-2 atom compat for interval ssn's
+- Pre-existing compat helper regression (commit 2fb5bd5b2): fixed simp_all failures in Lean 4.27.0-rc1
+
+**CURRENT BLOCKER**: Composition lemma (Feferman-Vaught for NormalForms, Doets 1989 Lemma 1.4/1.5). The backward proof reduces to showing the depth-k 3-var NF is determined by pairwise 2-var NFs. Estimated 200-400 lines in new NfComposition.lean. See `handoffs/phase-5-handoff-20260612-composition.md` for full specification, proof strategy, and step-by-step guide.
+
 **PREVIOUS BLOCKER (Phase 5, RESOLVED by char_{k+1} fix)**:
 - **What failed**: The formula used char_k (depth k) for interval witnesses. Two distinct sub_nf's could produce the same formula because char_k doesn't encode enough information about 2-var NFs.
 - **What was tried**: (1) Direct backward proof by extracting x from Until, using char_{k+1}(nf_x) to get 1-var NF of x, then attempting to show sub_nf.2 = characteristic. Failed because the formula doesn't encode sub_nf.2 for non-interval ssn's. (2) doets_lemma_1_1 transfer argument: define formula as disjList of char_{k+1}(nf_t) for compatible nf_t. The backward transfer requires doets at depth k+2 (since the existential has quantifier depth k+2), but only P1(k+1) is available, giving doets at depth k+1. (3) Composition theorem approach: decompose 3-var NFs into 2-var projections. No formalized composition theorem exists, and the composition argument itself requires interval-type matching that isn't captured by the formula.
