@@ -268,7 +268,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: FO-to-VecEA Equivalence and NF Bridge (Prop 4.3) [NOT STARTED]
+### Phase 5: FO-to-VecEA Equivalence and NF Bridge (Prop 4.3) [IN PROGRESS]
 
 **Goal**: Prove that every FO formula is equivalent to a V-EA formula over Prior structures (Prop 4.3), and establish the bridge between NormalForm and vec-EA representations.
 
