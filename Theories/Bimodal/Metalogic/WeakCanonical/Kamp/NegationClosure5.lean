@@ -717,7 +717,7 @@ def BracketFormula.tail {n : Nat} (bf : BracketFormula (n + 1)) : BracketFormula
     that the bounded existential is satisfiable.
 
     Returns the same existential as bracket_prepend_holds. -/
-private theorem bracket_tail_satisfiable {sig : MonadicSignature} {n : Nat}
+theorem bracket_tail_satisfiable {sig : MonadicSignature} {n : Nat}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (bf : BracketFormula (n + 1)) (z0 z r0 : M.carrier)
     (hr0_above : z0 < r0) (hr0_below : r0 < z)
