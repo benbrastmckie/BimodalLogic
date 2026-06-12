@@ -237,14 +237,14 @@ Phases within the same wave can execute in parallel.
 - [x] Reduce to Lemma 5.3 via the observation that the bracket formula holds iff there is an increasing sequence satisfying F_0 *(deviation: altered -- reduction uses first_occurrence_prior + bracket_tail_satisfiable + IH instead of Lemma 5.3 pure-points approach)*
 - Timing: 1 hour (~60 lines)
 
-**4e. Main technical lemma (Lemma 5.1)**:
-- [ ] Prove `neg_interval_formula`: negation of [alpha_0, beta_1, ..., alpha_n](z_0, z_1) is V-EA
-- [ ] Implement 3-case decomposition:
+**4e. Main technical lemma (Lemma 5.1)** [COMPLETED]:
+- [x] Prove `neg_interval_formula`: negation of [alpha_0, beta_1, ..., alpha_n](z_0, z_1) is V-EA *(deviation: altered -- proof uses same inductive structure as neg_bounded_exists with simplified base case, not the 3-case decomposition from Rabinovich. The case decomposition is implicit: Case A = pointTypes absent, Case B1 = first occurrence + IH on tail, Case B2 = INF configuration)*
+- [x] Implement 3-case decomposition: *(deviation: altered -- uses 2-level case split (pointTypes(0) absent/present, then segmentTypes(0) holds/fails) instead of Rabinovich's 3 cases. The endpoint failure case maps to our Case B2; guard success maps to Case A or B1 with BracketFormula 0 base; violation point maps to Case B1)*
   - Case 1: not alpha_0(z_0) or K+(not beta_1)(z_0) -- endpoint failure
   - Case 2: alpha_0(z_0) and beta_1 holds along (z_0, z_1) -- guard success, no witness
   - Case 3: alpha_0(z_0) and exists x such that not beta_1(x) -- violation point, split via A_i^- / A_i^+
-- [ ] Induction on n: A_i^-(z_0, z) and A_i^+(z, z_1) have fewer witnesses, apply IH
-- [ ] Use Prior-UZ/SZ for locating violation points (attained first occurrences)
+- [x] Induction on n: A_i^-(z_0, z) and A_i^+(z, z_1) have fewer witnesses, apply IH *(deviation: altered -- induction uses bf.tail (n witnesses) on (r_0, z_1) with bracket_tail_satisfiable, not the A_i^-/A_i^+ decomposition)*
+- [x] Use Prior-UZ/SZ for locating violation points (attained first occurrences) *(completed: uses first_occurrence_prior_strict for pointTypes(0) and inf_formula_prior_is_vbracket for the INF case)*
 - Timing: 2 hours (~120 lines)
 
 **4f. Negation closure for 2-free-variable formulas (Prop 4.2)**:
