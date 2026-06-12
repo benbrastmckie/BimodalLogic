@@ -413,3 +413,170 @@ h_formula : temporal_truth M atomMap t (nf_exist_formula_nested k char_kp1 char_
 ```
 
 Available hypotheses include P1(k), P2(k), char_k_correct, char_kp1_correct (_char_kp1_correct), Prior axioms h_UZ and h_SZ, and h_atoms (parent atom compatibility).
+
+## Adversarial Verification (second reader)
+
+**Reviewer**: logic-research-agent (adversarial pass)
+**Date**: 2026-06-11
+
+This section checks each load-bearing claim in the report against the primary literature, with special attention to rank/depth bookkeeping -- the exact failure mode of the three prior implementation attempts.
+
+### Verdict: SOUND with two corrections needed
+
+The overall approach (composition-based reduction of 3-var NFs to 2-var projections, with non-interval ssn conditions encoded as filtering) is mathematically correct and does correspond to what the published proofs support. However, two specific claims in the report are erroneous or misleading and must be corrected before implementation proceeds.
+
+---
+
+### Claim 1: "Equality of rank, not a rank increase" (line 216) -- citing Libkin Lemma 3.7
+
+**Verdict: MISLEADING attribution, CORRECT conclusion for the NormalForm setting.**
+
+The report cites Libkin Lemma 3.7 as support for the composition having no rank drop. But Libkin Lemma 3.7 actually states (ch3, p.62-66 of the extract):
+
+> If L_1^{<=a} equiv_k L_2^{<=b} and L_1^{>=a} equiv_k L_2^{>=b}, then (L_1, a) equiv_{k-1} (L_2, b).
+
+This is a rank **DROP** from k to k-1. The report's claim of "equality of rank" directly contradicts Libkin's statement.
+
+**However**, the report's conclusion is correct for the NormalForm setting, for a subtle reason the report fails to articulate: The Libkin rank drop occurs because *naming a point* in an EF game costs one round (the spoiler can challenge whether two points "correspond"). In the NormalForm framework, all variables are already named -- they are part of the environment `env : Fin n -> M.carrier`. Splitting at an already-named variable y does not cost a quantifier depth: the depth-k 3-var NF at named points (y, x, t) decomposes into depth-k 2-var NFs at named points (y, x) and (y, t) because:
+
+- At depth 0: atoms involve at most 2 variables, so they split cleanly. The (x, t) order relation is implied by transitivity when y is between t and x.
+- At depth k+1: the quantifier part introduces a NEW variable z. The depth-k NF of (z, y, x, t) decomposes (by the induction hypothesis at depth k, for all arities) into depth-k NFs of the projections.
+
+The correct citation for this no-rank-drop composition is **Doets 1989, Lemma 1.4**: ordered sum composition preserves n-equivalence without rank loss. Alternatively, the argument follows directly from the recursive structure of `NormalForm sig k n` in the Lean codebase: at each depth level, quantifier conditions reference depth-(k-1) NFs at arity n+1, and the induction on k handles increasing arity at each step.
+
+**Correction needed**: Replace the Libkin 3.7 attribution with the Doets 1.4/1.5 attribution and add an explicit explanation of why the Libkin rank-drop does not apply in the NormalForm setting (variables are already named, not being added as new constants).
+
+---
+
+### Claim 2: Composition lemma nf_3var_composition_prior (lines 359-369) -- same depth k
+
+**Verdict: CORRECT in principle, but the stated signature is INCOMPLETE.**
+
+The report states the composition as:
+```
+nf_eval_nf M k 3 (y, x, t) ssn <->
+  nf_eval_nf M k 2 (y, x) (proj_yx ssn) AND
+  nf_eval_nf M k 2 (y, t) (proj_yt ssn)
+```
+
+The depth-0 case works: 3-var atoms split into the (y,x) and (y,t) pairs, with the (x,t) atoms determined by transitivity (since t < y < x implies t < x).
+
+At depth k+1, the quantifier part of ssn involves `NormalForm sig k 4 -> Bool` (4-var NFs at (z, y, x, t)). The induction hypothesis would need composition at depth k for 4-var -> 3-var (splitting (z, y, x, t) at z's position). This works if the IH is stated for ALL arities at depth k.
+
+**The gap**: The report's lemma signature is stated only for arity 3 -> 2. The actual induction requires a FAMILY of composition lemmas for all arities n >= 3, proved simultaneously by induction on k. The correct statement would be:
+
+```
+theorem nf_composition_prior (k : Nat) :
+  forall (n : Nat) (h_n : n >= 3) (env : Fin n -> M.carrier)
+    (i j : Fin n) (h_between : env j < env i.split_point < env ...)
+    (ssn : NormalForm sig k n),
+    nf_eval_nf M k n env ssn <->
+    nf_eval_nf M k (n-1) (proj_left env ssn) AND
+    nf_eval_nf M k (n-1) (proj_right env ssn)
+```
+
+This is a universally-quantified-over-arity lemma proved by induction on k. The report should state this explicitly rather than giving only the arity-3 instance.
+
+**Practical impact**: For the implementation, only the arity-3 instance is directly needed (since sub_nf.2 references NormalForm sig k 3). But the proof of the arity-3 instance at depth k+1 requires the arity-4 instance at depth k, which requires arity-5 at depth k-1, etc. After k steps the recursion bottoms out at depth 0 where the composition is trivial for all arities. So the implementation needs either:
+(a) A single lemma quantified over both k and n, proved by strong induction on k, or
+(b) The arity-3 instance with an auxiliary lemma at all arities for the inductive step.
+
+**Correction needed**: Expand the composition lemma statement to be quantified over arity n, and note that the induction on k requires all arities simultaneously.
+
+---
+
+### Claim 3: P2(k) formulas for (y,t) projections in interval conditions (lines 249-260)
+
+**Verdict: OVERCOMPLICATED and partially incorrect.**
+
+The report proposes adding "P2(k)-formula-for-(y,t)-projection" as a conjunct in the interval witness formula:
+```
+Since(char_k(nf_y) AND P2(k)-formula-for-(y,t)-projection(nf_yt), top)
+```
+
+This is **not the right decomposition**. P2(k) gives formulas for EXISTENTIALS: "exists z with given 2-var NF at (z, t)." But what we need for the interval condition is the FULL depth-k 2-var NF of (y, t), not just a single existential.
+
+The depth-k 2-var NF of (y, t) at depth k+1 involves the quantifier assignment: for EACH depth-(k-1) 3-var NF tau, whether exists z with that 3-var NF at (z, y, t). Using P2(k) would require a separate formula for each tau, conjoined/negated according to the 2-var NF's quantifier assignment. This is feasible but verbose.
+
+**The simpler and correct approach** (implied by the composition lemma but not articulated in the report): Given the composition lemma, the depth-k 3-var NF of (y, x, t) is determined by the depth-k 2-var NFs of (y, x) and (y, t). On Prior structures, the depth-k 2-var NF of (y, t) is itself determined by:
+- The depth-k 1-var NF of y (= char_k(nf_y))
+- The depth-k 1-var NF of t (= fixed, determined by parent_atoms via P1)
+- The order relation between y and t
+- **Plus the joint quantifier conditions** from the 2-var NF of (y, t)
+
+The joint quantifier conditions are where the difficulty lies. Simply using char_k(nf_y) plus parent_atoms does NOT determine the 2-var NF of (y, t) at depth k >= 1, as the handoff document (phase-5-handoff-20260611.md, line 27) correctly observes.
+
+**However**, the correct formula does NOT need P2(k) as a sub-formula. Instead, the interval witness formula should directly characterize the COMPATIBLE 3-var NFs:
+
+For each positive interval ssn, the witness condition at y should be:
+```
+char_k(nf_y) where nf_y is the 1-var PROJECTION of ssn
+AND
+for each positive tau in ssn.2 with z between y and t:
+  P2(k-1)-based formula for the (z, y, t) existential
+AND
+for each positive tau in ssn.2 with z between y and x:
+  P2(k-1)-based formula for the (z, y, x) existential
+AND ... (recursively)
+```
+
+This is a RECURSIVE nesting: the interval condition at depth k involves depth-(k-1) interval conditions, which involve depth-(k-2), etc. This exactly matches the nested Until/Since chain structure from Rabinovich Prop 3.5.
+
+**In other words, the depth of temporal nesting in the formula mirrors the NF depth.** The formula for P2(k+1) has k+1 levels of Until/Since nesting, with each level encoding one depth of the NF quantifier part. This is what the existing plan v20 ("nested buildRight formula with k+1 levels") was attempting to capture, though it got the details wrong.
+
+**Correction needed**: Replace the "P2(k)-formula-for-(y,t)-projection" claim with a description of recursive nesting: each depth level of the NF corresponds to one level of Until/Since nesting in the formula. The witness condition at depth k involves not just char_k(nf_y) but also the recursive sub-conditions for all positive ssn's in ssn.2 that have witnesses in sub-intervals.
+
+---
+
+### Claim 4: Non-interval ssn conditions as filtering on nf_x (lines 232-243)
+
+**Verdict: CORRECT for the y > x case, INCOMPLETE for the y < t case.**
+
+The report correctly identifies that for ssn's with y > x:
+- The condition "exists y > x with given 3-var NF" decomposes into conditions on nf_x.2 (the quantifier part of x's depth-(k+1) 1-var NF)
+- Specifically, nf_x.2 records which depth-k 2-var NFs at (y, x) are realized, so the (y, x) projection of the ssn can be checked against nf_x.2
+
+**However**, the y > x ssn includes the (y, t) projection as well, which is NOT encoded in nf_x alone. By the composition lemma, the 3-var NF of (y, x, t) with y > x is determined by the 2-var NFs of (y, x) and (y, t). The (y, x) part is in nf_x.2. The (y, t) part involves conditions on y relative to t. Since y > x > t, the (y, t) conditions are also conditions at y relativized to the future of t. These conditions are encoded in the depth-(k+1) 1-var NF of y, which is itself constrained by being compatible with the (y, x) 2-var NF.
+
+On Prior structures, this joint compatibility IS decidable at the filtering stage (it's a finite check over finitely many NF values), so the filtering approach is correct in principle. But the filter must check BOTH the (y, x) projection against nf_x.2 AND the consistency of the (y, t) projection with the available depth-(k+1) 1-var NFs of t.
+
+For y < t: the dual argument applies, but now the condition involves the depth-(k+1) 1-var NF of t, which is NOT directly available as a hypothesis. The report claims (line 238) this is "a condition on parent_atoms," but parent_atoms is the depth-0 (atom-level) assignment at t, not the full depth-(k+1) 1-var NF of t. **The depth-(k+1) 1-var NF of t IS determined by the structure and the Prior axioms, but it is not a parameter of P2(k+1).** The formula cannot reference it as a filtering condition unless it is computed from parent_atoms and the structure.
+
+**This gap may be resolvable**: since nf_eval_nf M (k+1) 2 (x, t) sub_nf includes the full atom assignment at t (= parent_atoms at depth 0) AND the quantifier conditions at t (via sub_nf.2 entries with y = t or y < t), the filtering can check consistency of y < t ssn conditions against the sub_nf.2 entries that describe t's quantifier behavior. This is a finite check on the sub_nf object itself, not on the structure.
+
+**Correction needed**: Clarify that the y < t filtering condition checks against sub_nf.2 (which encodes t's quantifier behavior relative to x), not against "the depth-(k+1) 1-var NF of t" which is not directly available. The check is internal to the sub_nf structure.
+
+---
+
+### Claim 5: Rabinovich's construction is "not a 1-step operation" (lines 11-13, 87-91)
+
+**Verdict: CORRECT and important.**
+
+The report correctly identifies that Rabinovich's proof of Theorem 4.4 goes through Proposition 4.3 (structural induction reducing FOMLO to exists-forall formulas), which uses negation closure (Prop 4.2) at each step. The Lean P2(k+1) statement asks for a direct formula, not a multi-step reduction.
+
+However, the report then proposes a direct formula construction (Section 5) that bypasses the full Rabinovich machinery. This is legitimate: the Lean induction structure (P1(k) + P2(k) simultaneously) is a DIFFERENT induction from Rabinovich's structural induction on FOMLO formulas. The Lean induction directly constructs the formula for each (parent_atoms, sub_nf) pair, using the IH at depth k. This is closer to the GHR93 game-based approach (which also works by induction on game length/quantifier depth) than to Rabinovich's exists-forall approach.
+
+**No correction needed.**
+
+---
+
+### Summary of Required Corrections
+
+1. **Line 216**: Replace "Libkin Lemma 3.7" attribution with "Doets 1989 Lemma 1.4/1.5" and explain why the Libkin rank-drop does not apply (variables already named in NormalForm setting).
+
+2. **Lines 359-369**: Expand the composition lemma to be universally quantified over arity n, noting that the induction on k requires all arities simultaneously.
+
+3. **Lines 249-260**: Replace "P2(k)-formula-for-(y,t)-projection" with a description of RECURSIVE nesting: each depth level of the NF corresponds to one level of Until/Since nesting. The formula has k+1 nesting levels, not a single P2(k) call.
+
+4. **Line 238**: Clarify that y < t filtering checks against sub_nf.2 entries (which encode t's quantifier behavior), not against "the depth-(k+1) 1-var NF of t."
+
+### Assessment of Overall Viability
+
+The proposed approach IS mathematically viable. The composition lemma (depth-k n-var NF splits into depth-k (n-1)-var projections at a named interior point) is correct and follows from the recursive structure of NormalForm by induction on k for all arities. This gives a formula that encodes ALL of sub_nf.2:
+
+- Non-interval ssn conditions become filtering conditions on nf_x compatibility (checking projections against nf_x.2 and sub_nf.2)
+- Interval ssn conditions become recursively nested Until/Since chains, with each nesting level encoding one depth of the NF
+
+The depth bookkeeping is sound: P2(k+1) uses P1(k+1), P1(k), and P2(k), all available from the master_induction. No depth increase occurs in the NormalForm sense (the formula is at NF depth k+1, using IH at depth k). The temporal rank of the formula does increase (approximately exponentially in k), but this does not affect the NF depth induction.
+
+**The critical implementation risk** is the composition lemma, which must be proved for all arities simultaneously by induction on k. If the Lean proof of this lemma encounters difficulties (e.g., from the arity-increasing recursion at each depth level), the approach may require significant additional infrastructure. The report's estimate of ~100 lines for the composition lemma is likely too low given the all-arities requirement; ~200-300 lines is more realistic.

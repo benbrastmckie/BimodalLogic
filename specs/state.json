@@ -11,7 +11,7 @@
       "project_name": "abort_aware_tableau_cancellation",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.",
+      "description": "Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM \u2014 zombie tableau computations that survive cancellation.",
       "dependencies": [],
       "created": "2026-06-09T18:00:00Z",
       "last_updated": "2026-06-09T18:00:00Z",
@@ -66,14 +66,14 @@
           "summary": "5-phase plan for operator removal verification and dataset regeneration"
         }
       ],
-      "completion_summary": "Verified 6 derived binary operators removed from enumerator. Regenerated c4 (806 records), c5 (6028), c6 (39790) datasets — all clean. c7 partial (13749/77272) due to labeling bug at formula ~13750. Enumeration counts decreased 44-57% confirming removal."
+      "completion_summary": "Verified 6 derived binary operators removed from enumerator. Regenerated c4 (806 records), c5 (6028), c6 (39790) datasets \u2014 all clean. c7 partial (13749/77272) due to labeling bug at formula ~13750. Enumeration counts decreased 44-57% confirming removal."
     },
     {
       "project_number": 296,
       "project_name": "re_add_derived_binary_operators_with_dedup_fix",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
+      "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas \u2014 their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
       "created": "2026-06-09T02:40:00Z",
       "last_updated": "2026-06-09T02:40:00Z",
       "topic": "dataset-enhancement",
@@ -275,7 +275,7 @@
         {
           "path": "specs/257_large_data_storage_huggingface/reports/01_large-data-storage.md",
           "type": "research",
-          "summary": "HF Hub is the clear recommendation — the project already has a complete upload pipeline in data/hf-dataset/. Current LFS usage (~105 MB, 2 files) is well within GitHub free tier but will grow. Migration: execute existing upload.py, update .gitattributes to remove LFS tracking, update BimodalHarness to download from HF Hub with pinned revision. DVC not recommended for this use case."
+          "summary": "HF Hub is the clear recommendation \u2014 the project already has a complete upload pipeline in data/hf-dataset/. Current LFS usage (~105 MB, 2 files) is well within GitHub free tier but will grow. Migration: execute existing upload.py, update .gitattributes to remove LFS tracking, update BimodalHarness to download from HF Hub with pinned revision. DVC not recommended for this use case."
         },
         {
           "path": "specs/257_large_data_storage_huggingface/plans/01_implementation-plan.md",
@@ -285,7 +285,7 @@
         {
           "path": "specs/257_large_data_storage_huggingface/summaries/01_execution-summary.md",
           "type": "summary",
-          "summary": "Implementation summary for task 257 — phases 3, 4, and partial 2 completed"
+          "summary": "Implementation summary for task 257 \u2014 phases 3, 4, and partial 2 completed"
         }
       ],
       "memory_candidates": [
@@ -405,7 +405,7 @@
       "project_name": "refactor_module_organization",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
+      "description": "Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy \u2014 group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.",
       "created": "2026-05-13T17:05:29Z",
       "last_updated": "2026-05-13T17:05:29Z",
       "next_artifact_number": 1,
@@ -417,7 +417,7 @@
       "project_name": "jonsson_tarski_representation_bimodal_sus",
       "status": "not_started",
       "task_type": "formal",
-      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 — Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 — Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 — Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 — Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
+      "description": "Implement a Jonsson-Tarski representation theorem for TM logic: every STSA embeds into the complex algebra of a concrete frame. Phased approach: Phase 1 \u2014 Complex algebra Cm(F): define powerset STSA for TaskFrames with box/G/H/sigma operators derived from frame relations. Prove Cm(F) satisfies all STSA axioms. Phase 2 \u2014 Ultrafilter frame Uf(A): given abstract STSA A, construct frame whose worlds are ultrafilters with canonical relations R_G, R_H, R_Box (seed infrastructure from task 163 recovery of UltrafilterChain.lean). Prove Uf(A) satisfies TaskFrame axioms. Phase 3 \u2014 Embedding theorem: prove eta(a) = {U | a in U} is an injective STSA homomorphism A into Cm(Uf(A)). Phase 4 \u2014 Since/Until extension: extend STSA typeclass with binary untl/sinc operators and prove representation for the full operator signature. Start with basic {box, G, H} fragment (Phases 1-3) before tackling S/U (Phase 4). Prerequisites: resolve 6 algebraic sorries (temp_k_dist, temp_a, temp_l in TenseS5Algebra/InteriorOperators/LindenbaumQuotient); obtain 3 missing papers (Jonsson-Tarski 1951/52, BRV 2001 Ch.5, Goldblatt 1989). Task 992 research report (01_stsa-algebraic-analysis.md) maps ~80% of needed infrastructure. Architecture: restructure Algebraic/ into Core/ (shared STSA/Boolean/ultrafilter), Completeness/ (renamed existing), Representation/ (new J-T work).",
       "dependencies": [],
       "created": "2026-05-11T19:35:39Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -446,7 +446,7 @@
       "project_name": "time_addition_operator",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add time addition operator (+) to the bimodal logic TM. φ + ψ is true at (τ, x) iff ∃ y,z with x = y+z, φ true at (τ,y), ψ true at (τ,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/□. Completeness (ternary canonical model) and decidability are open research problems — defer to later phases.",
+      "description": "Add time addition operator (+) to the bimodal logic TM. \u03c6 + \u03c8 is true at (\u03c4, x) iff \u2203 y,z with x = y+z, \u03c6 true at (\u03c4,y), \u03c8 true at (\u03c4,z). This internalizes the AddCommGroup structure of D into the object language, extending expressive power from FO[<] to FO[<,+] (Presburger arithmetic). Related to arrow logic (Venema), relevant logic (Routley-Meyer ternary frames), and separation logic (BI). Phase 1: add tadd/tsub constructors to Formula, truth clause in semantics. Phase 2: basic axioms (associativity, commutativity, identity, inverse). Phase 3: soundness proofs. Phase 4: interaction with G/H/U/S/\u25a1. Completeness (ternary canonical model) and decidability are open research problems \u2014 defer to later phases.",
       "dependencies": [],
       "created": "2026-05-13T07:11:21Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -459,7 +459,7 @@
       "project_name": "open_set_operator_dense_continuous",
       "status": "not_started",
       "task_type": "lean4",
-      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete ℤ the interior is trivial (discrete topology), but on dense ℚ and continuous ℝ it captures neighborhood-stable truth: Int(φ) true at t iff φ holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(φ)→φ, Int(φ)→Int(Int(φ))). Phase 4: interaction with temporal operators and S5 □. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) — completeness may require non-standard techniques.",
+      "description": "Add topological open set (interior) operator for dense and continuous temporal frames. On discrete \u2124 the interior is trivial (discrete topology), but on dense \u211a and continuous \u211d it captures neighborhood-stable truth: Int(\u03c6) true at t iff \u03c6 holds in an open neighborhood of t. Related to Dynamic Topological Logic (Kremer-Mints 2005), McKinsey-Tarski topological semantics for S4, and Fernandez-Duque intuitionistic temporal logic. Phase 1: add TopologicalSpace instance to TaskFrame for dense/continuous cases. Phase 2: add interior constructor to Formula with truth clause. Phase 3: axioms (S4-like: Int(\u03c6)\u2192\u03c6, Int(\u03c6)\u2192Int(Int(\u03c6))). Phase 4: interaction with temporal operators and S5 \u25a1. Note: DTL is not finitely axiomatizable (Fernandez-Duque 2014) \u2014 completeness may require non-standard techniques.",
       "dependencies": [],
       "created": "2026-05-13T07:11:21Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -550,7 +550,7 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md",
           "type": "research",
-          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better — 1 sorry source vs 2). Prior revert was premature."
+          "summary": "Phase 10 blocker resolution: delegate to dd_countermodel_chronicle_discrete (strictly better \u2014 1 sorry source vs 2). Prior revert was premature."
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md",
@@ -645,7 +645,7 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/summaries/28_reynolds-bypass-summary.md",
           "type": "summary",
-          "summary": "Phase A1: Track A OrderIso bypass infeasible — succ_cofinal blocks all paths"
+          "summary": "Phase A1: Track A OrderIso bypass infeasible \u2014 succ_cofinal blocks all paths"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/reports/29_phase3-blocker-research.md",
@@ -770,12 +770,12 @@
         {
           "path": "specs/155_reynolds_pipeline_activation/plans/65_discrete-game-bypass.md",
           "type": "plan",
-          "summary": "Revised plan: discrete game bypass — 5 phases, 8h, eliminates completeness_discrete sorries"
+          "summary": "Revised plan: discrete game bypass \u2014 5 phases, 8h, eliminates completeness_discrete sorries"
         },
         {
           "path": "specs/155_reynolds_pipeline_activation/plans/67_half-rank-game-bypass.md",
           "type": "plan",
-          "summary": "Revised plan v68: half-rank game bypass (r=k/2) — 5 phases, 10h, fixes depth arithmetic blocker"
+          "summary": "Revised plan v68: half-rank game bypass (r=k/2) \u2014 5 phases, 10h, fixes depth arithmetic blocker"
         }
       ],
       "session_id": "sess_1780616185_b65bed",
@@ -1077,7 +1077,7 @@
       "task_type": "lean4",
       "priority": "high",
       "topic": "automation",
-      "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd ⟨k, proof_n+1⟩ < x ↔ resp_tau ⟨k, proof_n⟩ < y) ∧ (... = ... ↔ ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
+      "description": "Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Automation/) that automates the same_order_type grid dispatch in ghr93_case_II (Theories/Bimodal/Metalogic/WeakCanonical/Expressiveness/CaseAnalysis.lean). The problem: after same_order_type_grid expands to intro i j; simp only [game_tuple]; split_ifs, it generates ~25 ordering goals per case. Each goal has shape (a_bwd \u27e8k, proof_n+1\u27e9 < x \u2194 resp_tau \u27e8k, proof_n\u27e9 < y) \u2227 (... = ... \u2194 ...). The available ordering lemmas (tau_sel_y, tau_sel_sel, sel_pn_ord, pn_sel_ord, tau_d_sel, hord_cd_en_pn, pivot_chain_order, fwd_x_b, fwd_b_y) are stated with Fin n but the goals use Fin (n+1), causing exact to fail on metavar unification. The tactic must: (1) try each ordering lemma with automatic Fin bridging via convert ... using 3 <;> (congr 1; exact Fin.ext (by omega)), (2) handle the hab_eq rewrite for p_n cases (when not k < n, rewrite a_bwd to extendPoint p_n before applying sel_pn_ord/pn_sel_ord), (3) handle symmetry (y < sel goal uses tau_sel_y.symm), (4) fall back to sorry with trace if no lemma applies. After building the tactic, apply it to replace the two sorry fallbacks in ghr93_case_II: Case A sorry at line ~1631 and Case B sorry at line ~1940. These are the last fallthrough goals in the first | ... | sorry chains inside the same_order_type proof obligation. Verify zero build errors. Iterate on the tactic if the initial version does not close all goals.",
       "dependencies": [],
       "created": "2026-05-26T22:00:00Z",
       "last_updated": "2026-06-01T23:00:00Z",
@@ -1131,7 +1131,7 @@
       "task_type": "lean4",
       "priority": "low",
       "topic": "code-quality",
-      "description": "Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and GHR93 fidelity. The proof is already correct, sorry-free, and axiom-clean (733 lines). The goal is to replace the tau_left/tau_right sub-game structure with a single restricted tau following GHR93 exactly. This requires resolving the fundamental gap between GHR93's continuous order-type preservation and the Lean formalization's finite-position EF games: same_order_type applies to n+3 positions, so orderings at interior points (p_n, e_n) require those points to be game endpoints — which is exactly what tau_left/tau_right achieve. A solution would require either (a) enriching the EF game framework to support continuous order-type preservation, or (b) finding a way to make the restricted tau's endpoint orderings imply interior-point orderings. Extensive research (7 agents, 3 plan revisions) confirmed the blocker is structural. GHR93 infrastructure theorems (untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en) are proved and available in CharacteristicFormula.lean and CaseAnalysis.lean. See specs/155_reynolds_pipeline_activation/reports/47_*.md and handoffs/phase-5-blocker-finite-position-games-20260528.md for full analysis.",
+      "description": "Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and GHR93 fidelity. The proof is already correct, sorry-free, and axiom-clean (733 lines). The goal is to replace the tau_left/tau_right sub-game structure with a single restricted tau following GHR93 exactly. This requires resolving the fundamental gap between GHR93's continuous order-type preservation and the Lean formalization's finite-position EF games: same_order_type applies to n+3 positions, so orderings at interior points (p_n, e_n) require those points to be game endpoints \u2014 which is exactly what tau_left/tau_right achieve. A solution would require either (a) enriching the EF game framework to support continuous order-type preservation, or (b) finding a way to make the restricted tau's endpoint orderings imply interior-point orderings. Extensive research (7 agents, 3 plan revisions) confirmed the blocker is structural. GHR93 infrastructure theorems (untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en) are proved and available in CharacteristicFormula.lean and CaseAnalysis.lean. See specs/155_reynolds_pipeline_activation/reports/47_*.md and handoffs/phase-5-blocker-finite-position-games-20260528.md for full analysis.",
       "dependencies": [],
       "created": "2026-05-29T00:00:00Z",
       "last_updated": "2026-05-29T00:00:00Z",
@@ -1199,7 +1199,7 @@
       "project_name": "benchmark_refresh_splits_paraphrases_schema",
       "status": "not_started",
       "task_type": "general",
-      "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
+      "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count \u2014 splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth \u2014 three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
       "priority": "medium",
       "topic": "dataset-enhancement",
       "dependencies": [
@@ -1229,7 +1229,7 @@
       "task_type": "meta",
       "priority": "medium",
       "topic": "completeness",
-      "description": "Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note — comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md — annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean — update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.",
+      "description": "Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note \u2014 comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md \u2014 annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean \u2014 update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.",
       "dependencies": [
         95,
         176
@@ -1241,12 +1241,12 @@
       "project_name": "chronicle_gap_contradiction_proof",
       "status": "partial",
       "task_type": "lean4",
-      "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness → US_expressively_complete_over_prior → gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed — works for ALL linear orders.",
+      "description": "Close the sorry in nf_2var_existential_transfer (StaviCompleteness.lean:2353,2435) by proving generalized existential transfer: strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 in NF terms. Generalizes zone_match_witness to n-var, proves matching_data invariant under point extension, then composes via nf_fraisse_compression. Makes stavi_expressive_completeness \u2192 US_expressively_complete_over_prior \u2192 gap_prior_UZ_contradiction sorry-free, closing the Stavi sorry chain blocking completeness_discrete. No IsSuccArchimedean needed \u2014 works for ALL linear orders.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-11T00:00:00Z",
+      "last_updated": "2026-06-11T23:30:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1327,9 +1327,14 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/20_nested-buildright-plan.md",
           "type": "plan",
           "summary": "Plan v20: nested buildRight formula replacing P2_n arity generalization, with k+1-level Until/Since nesting aligned to Rabinovich 2014 Prop 3.5 + Section 5"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md",
+          "type": "report",
+          "summary": "Literature transcription: faithful analysis of Rabinovich 2014 + GHR93 + composition method for P2(k+1) backward direction; identifies root cause of all three failed formula attempts"
         }
       ],
-      "next_artifact_number": 10,
+      "next_artifact_number": 11,
       "researched": "2026-06-11T15:40:46Z",
       "planned": "2026-06-11T18:10:00Z",
       "plan_metadata": {

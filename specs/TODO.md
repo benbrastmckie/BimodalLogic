@@ -6,7 +6,7 @@ next_project_number: 300
 
 ## Task Order
 
-*Updated 2026-06-11. Generated from state.json dependency graph.*
+*Updated 2026-06-12. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -250,6 +250,7 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/08_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/09_negation-closure-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/17_kamp-rabinovich-plan.md]
   - [273_chronicle_gap_contradiction_proof/plans/18_rabinovich-pipeline-plan.md]
