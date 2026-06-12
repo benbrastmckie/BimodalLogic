@@ -730,15 +730,32 @@ private theorem nf_full_compat_right_of_eval
   -- The full compatibility check passes because for each non-interval ssn:
   -- if the ssn's atoms are incompatible with nf_x/parent_atoms, then no
   -- witness y can satisfy those atoms, so sub_nf.2(ssn) = false.
-  -- Proof: for each ssn, from h_eval.2 we get the equivalence
-  --   (exists y, nf_eval_nf M k 3 (y,x,t) ssn) <-> sub_nf.2 ssn = true
-  -- If ssn has incompatible atoms, the left side is false (no y satisfies
-  -- atom conditions that don't match the actual atoms at x and t).
   simp only [nf_full_compat_right, List.all_eq_true]; intro ssn _
   have h_quant := h_eval.2
+  -- Helper: if sub_nf.2(ssn) = true, we can extract a witness and its atom assignment
+  have ssn_atoms_from_true : sub_nf.2 ssn = true →
+      ∃ y, ∀ a : AtomKind sig 3,
+        atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true := by
+    intro hsub; obtain ⟨y, hy⟩ := (h_quant ssn).mpr hsub
+    exact ⟨y, by cases k with | zero => exact hy | succ k' => exact hy.1⟩
+  -- Helper: contrapositive -- if no y has matching atoms, then sub_nf.2(ssn) = false
+  have neg_from_no_witness : (∀ y, ∃ a : AtomKind sig 3,
+      ¬(atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true)) →
+      (!sub_nf.2 ssn) = true := by
+    intro h_no
+    cases hsub : sub_nf.2 ssn with
+    | false => rfl
+    | true =>
+      obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
+      obtain ⟨a, ha⟩ := h_no y; exact absurd (hay a) ha
+  -- Helper: ssn's x-pred atoms must match nf_x's pred atoms (which match the actual model)
+  have x_pred_match : ∀ p, M.interp p x ↔ nf_x.atom_assgn (.pred p ⟨0, by omega⟩) = true := by
+    intro p; exact h_nfx.1 (.pred p ⟨0, by omega⟩)
+  have t_pred_match : ∀ p, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+    intro p; exact h_atoms_t (.pred p ⟨0, by omega⟩)
   -- Case analysis on ssn's order region
-  split_ifs
-  all_goals first | rfl | sorry
+  split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
+  all_goals first | rfl | (apply neg_from_no_witness; intro y; sorry)
 
 /-- Symmetric version for Since direction. -/
 private theorem nf_full_compat_left_of_eval
