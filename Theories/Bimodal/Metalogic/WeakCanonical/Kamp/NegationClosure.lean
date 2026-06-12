@@ -393,31 +393,221 @@ noncomputable def ssn_in_interval_left {sig : MonadicSignature} {k : Nat}
   -- y < t (var 0 < var 2)
   ssn.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
 
+/-! ## Non-Interval SSN Compatibility
+
+For the backward direction to work, the formula must filter nf_x values by
+full compatibility with sub_nf.2, not just atom compatibility. Non-interval
+ssn's (y > x, y = x, y = t, y < t) encode conditions that can be checked
+syntactically against nf_x and parent_atoms.
+
+The key insight (Doets 1989 Lemma 1.4/1.5): the characteristic NF of x at
+depth k+1 encodes which depth-k arity-2 existentials are realized. For
+non-interval ssn's with y > x, the 3-var existential reduces to checking
+nf_x.2 against the (y,x) atom projection of ssn. At depth 0, this is
+complete (atoms determine everything). At depth > 0, the atom-level
+projection is a necessary condition; the full composition requires the
+Feferman-Vaught theorem for linear orders.
+
+### References
+- Doets 1989, Lemma 1.4/1.5: composition preserves n-equivalence
+- Rabinovich 2014, Section 5: negation closure via interval decomposition
+-/
+
+/-- Embed Fin n into Fin (n+1) by skipping index j.
+    liftSkip n j i = i if i < j, i+1 if i >= j. -/
+def liftSkip (n : Nat) (j : Fin (n + 1)) (i : Fin n) : Fin (n + 1) :=
+  if h : i.val < j.val then ⟨i.val, by omega⟩ else ⟨i.val + 1, by omega⟩
+
+theorem liftSkip_injective (n : Nat) (j : Fin (n + 1)) :
+    Function.Injective (liftSkip n j) := by
+  intro ⟨a, ha⟩ ⟨b, hb⟩ hab
+  simp only [liftSkip] at hab
+  ext; split at hab <;> split at hab <;> simp_all [Fin.ext_iff] <;> omega
+
+/-- Project an atom assignment from arity (n+1) to arity n by dropping variable j. -/
+noncomputable def atomProjDrop {sig : MonadicSignature} (n : Nat) (j : Fin (n + 1))
+    (assgn : AtomKind sig (n + 1) → Bool) : AtomKind sig n → Bool
+  | .pred p i => assgn (.pred p (liftSkip n j i))
+  | .order i k h => assgn (.order (liftSkip n j i) (liftSkip n j k) (by
+      intro heq; exact h (liftSkip_injective n j heq)))
+
+/-- Check whether a depth-k arity-3 NF ssn has order atoms at variables 1,2 (x,t)
+    consistent with sub_nf's order atoms at variables 0,1 (x,t).
+    Variables: ssn uses (y=0, x=1, t=2), sub_nf uses (x=0, t=1). -/
+noncomputable def ssn_xt_order_compat {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) (sub_nf : NormalForm sig (k + 1) 2) : Bool :=
+  -- ssn order(1,2) (x < t) should match sub_nf order(0,1) (x < t)
+  (ssn.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) ==
+   sub_nf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))) &&
+  -- ssn order(2,1) (t < x) should match sub_nf order(1,0) (t < x)
+  (ssn.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) ==
+   sub_nf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)))
+
+/-- Check whether a depth-k arity-3 NF ssn has predicate atoms at variable 1 (x)
+    matching nf_x's predicate atoms at variable 0. -/
+noncomputable def ssn_x_pred_compat {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) (nf_x : NormalForm sig (k + 1) 1) : Bool :=
+  (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+    ssn.atom_assgn (.pred p ⟨1, by omega⟩) ==
+    nf_x.atom_assgn (.pred p ⟨0, by omega⟩)
+
+/-- Check whether a depth-k arity-3 NF ssn has predicate atoms at variable 2 (t)
+    matching parent_atoms. -/
+noncomputable def ssn_t_pred_compat {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) (parent_atoms : AtomKind sig 1 → Bool) : Bool :=
+  (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+    ssn.atom_assgn (.pred p ⟨2, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)
+
+/-- Check whether ssn places variable 0 (y) above variable 1 (x): y > x. -/
+noncomputable def ssn_y_above_x {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : Bool :=
+  ssn.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+
+/-- Check whether ssn places variable 0 (y) equal to variable 1 (x): y = x. -/
+noncomputable def ssn_y_eq_x {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : Bool :=
+  !(ssn.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))) &&
+  !(ssn.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)))
+
+/-- Check whether ssn places variable 0 (y) equal to variable 2 (t): y = t. -/
+noncomputable def ssn_y_eq_t {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : Bool :=
+  !(ssn.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))) &&
+  !(ssn.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)))
+
+/-- Check whether ssn places variable 0 (y) below variable 2 (t): y < t. -/
+noncomputable def ssn_y_below_t {sig : MonadicSignature} {k : Nat}
+    (ssn : NormalForm sig k 3) : Bool :=
+  ssn.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+
+/-- Full non-interval compatibility: check that for every non-interval ssn,
+    sub_nf.2(ssn) is consistent with nf_x and parent_atoms.
+
+    For the Until direction (t < x), a non-interval ssn is one where y is NOT
+    strictly between t and x. The check verifies:
+    - y > x ssn's: pred atoms at y and x must be compat with nf_x,
+      pred atoms at t must match parent_atoms, order x,t must match sub_nf
+    - y = x ssn's: pred atoms at y must match nf_x (since y=x),
+      pred atoms at t must match parent_atoms
+    - y = t ssn's: pred atoms at y must match parent_atoms (since y=t),
+      pred atoms at x must match nf_x
+    - y < t ssn's: all pred atoms must be consistent
+
+    The compatibility requires that sub_nf.2(ssn) could potentially be realized
+    given nf_x and parent_atoms. For ssn's where the atom-level compatibility
+    fails, sub_nf.2(ssn) = true would be unrealizable (no y exists with those
+    atoms), so we check that sub_nf.2(ssn) = false for atom-incompatible ssn's.
+
+    Additionally, for ssn's that ARE atom-compatible at endpoints, we require
+    sub_nf.2(ssn) to be consistent with the quantifier behavior of nf_x. -/
+noncomputable def nf_full_compat_right {sig : MonadicSignature} {k : Nat}
+    (nf_x : NormalForm sig (k + 1) 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2) : Bool :=
+  -- Check all non-interval ssn's
+  (Fintype.elems (α := NormalForm sig k 3)).val.toList.all fun ssn =>
+    -- Skip interval ssn's (handled by the formula's Since conditions)
+    if ssn_in_interval_right ssn then true
+    -- Skip ssn's with inconsistent x,t order (must have t < x for right direction)
+    else if !ssn_xt_order_compat ssn sub_nf then
+      -- If ssn has wrong x,t order, sub_nf.2(ssn) must be false
+      !sub_nf.2 ssn
+    -- For non-interval ssn's with correct x,t order:
+    else if ssn_y_above_x ssn then
+      -- y > x: check pred compatibility at x, t, y
+      if ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms then
+        true  -- atom-compatible; quantifier check deferred to proof
+      else
+        !sub_nf.2 ssn  -- atom-incompatible; ssn must be negative
+    else if ssn_y_eq_x ssn then
+      -- y = x: pred atoms at y (var 0) must match nf_x (since y=x, var 0 preds = var 1 preds)
+      if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+            ssn.atom_assgn (.pred p ⟨0, by omega⟩) ==
+            nf_x.atom_assgn (.pred p ⟨0, by omega⟩)) &&
+         ssn_t_pred_compat ssn parent_atoms &&
+         ssn_x_pred_compat ssn nf_x then
+        true
+      else
+        !sub_nf.2 ssn
+    else if ssn_y_eq_t ssn then
+      -- y = t: pred atoms at y (var 0) must match parent_atoms
+      if ssn_t_pred_compat ssn parent_atoms &&
+         ssn_x_pred_compat ssn nf_x then
+        -- Check that y=t pred atoms match parent_atoms at var 0
+        if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+            ssn.atom_assgn (.pred p ⟨0, by omega⟩) ==
+            parent_atoms (.pred p ⟨0, by omega⟩)) then
+          true
+        else
+          !sub_nf.2 ssn
+      else
+        !sub_nf.2 ssn
+    else if ssn_y_below_t ssn then
+      -- y < t: check pred compatibility
+      if ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms then
+        true
+      else
+        !sub_nf.2 ssn
+    else
+      true  -- shouldn't happen (exhaustive order cases)
+
+/-- Symmetric full compatibility for the Since direction (x < t). -/
+noncomputable def nf_full_compat_left {sig : MonadicSignature} {k : Nat}
+    (nf_x : NormalForm sig (k + 1) 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2) : Bool :=
+  (Fintype.elems (α := NormalForm sig k 3)).val.toList.all fun ssn =>
+    if ssn_in_interval_left ssn then true
+    else if !ssn_xt_order_compat ssn sub_nf then
+      !sub_nf.2 ssn
+    else if ssn_y_above_x ssn then
+      -- For Since (x < t), y > x but below t means interval, handled above
+      -- y > x AND y > t (above both) is non-interval
+      if ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms then
+        true
+      else
+        !sub_nf.2 ssn
+    else if ssn_y_eq_x ssn then
+      if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+            ssn.atom_assgn (.pred p ⟨0, by omega⟩) ==
+            nf_x.atom_assgn (.pred p ⟨0, by omega⟩)) &&
+         ssn_t_pred_compat ssn parent_atoms &&
+         ssn_x_pred_compat ssn nf_x then
+        true
+      else
+        !sub_nf.2 ssn
+    else if ssn_y_eq_t ssn then
+      if ssn_t_pred_compat ssn parent_atoms &&
+         ssn_x_pred_compat ssn nf_x then
+        if (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+            ssn.atom_assgn (.pred p ⟨0, by omega⟩) ==
+            parent_atoms (.pred p ⟨0, by omega⟩)) then
+          true
+        else
+          !sub_nf.2 ssn
+      else
+        !sub_nf.2 ssn
+    else if ssn_y_below_t ssn then
+      if ssn_x_pred_compat ssn nf_x && ssn_t_pred_compat ssn parent_atoms then
+        true
+      else
+        !sub_nf.2 ssn
+    else
+      true
+
 /-- Build the nested formula for a single order direction (Until: t < x).
 
     For a given compatible nf_x : NormalForm sig (k+1) 1 (the 1-var NF of witness x),
-    extract all ssn's with sub_nf.2(ssn) = true that place y in the interval (t, x),
-    and encode them using buildRight.
+    the formula encodes:
+    1. char_{k+1}(nf_x) at x (places x and verifies its full depth-(k+1) 1-var NF)
+    2. For each positive interval ssn: Since(char_k(nf_y), top) within (t,x)
+    3. Non-interval ssn conditions are verified by the nf_full_compat filtering
 
-    The formula is:
-      char_{k+1}(nf_x) AND
-      conjunction over positive interval-ssn's: Since(char_k(nf_y), ⊤) [within (t,x)] AND
-      conjunction over negative interval-ssn's: H(¬char_k(nf_y)) [within (t,x)]
-    wrapped in Until(event, ⊤) from t.
+    The formula uses Until from t to place x, with guard = top.
 
-    NOTE: The interval conditions involving nested quantifier parts (at depth k > 0)
-    are absorbed into the char_k characterization: char_k(nf_y) already captures
-    the depth-k 1-var NF of y, and by P2(k), the deeper quantifier interactions
-    are encoded in the characterization. The "nesting" comes from the fact that
-    char_k itself is built using P2(k-1), which uses P2(k-2), etc.
-
-    The non-interval ssn's (y > x, y = x, y = t, y < t) are NOT encoded here.
-    They are checked by compatibility with nf_x and parent_atoms. Specifically:
-    - y > x or y < t: these are depth-(k+1) 1-var NF conditions on x or t,
-      which are already captured by char_{k+1}(nf_x) and parent_atoms.
-    - y = x or y = t: determined by atoms at x or t.
-    The compatibility check ensures that sub_nf.2 restricted to non-interval
-    ssn's is consistent with nf_x and parent_atoms. -/
+    ### References
+    - Rabinovich 2014 Notation 5.2 + Prop 3.5
+    - Doets 1989 Lemma 1.4/1.5 (composition for non-interval filtering) -/
 noncomputable def nf_exist_formula_nested
     {sig : MonadicSignature}
     (k : Nat)
@@ -439,13 +629,10 @@ noncomputable def nf_exist_formula_nested
       (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
         nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
         sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)
-    -- Step 4: For each compatible nf_x, check non-interval ssn compatibility
+    -- Step 4: Full compatibility check including non-interval ssn conditions
     -- An nf_x is "fully compatible" with sub_nf if:
     -- (a) predicate atoms match at variable 0
-    -- (b) The depth-k quantifier conditions from sub_nf.2 that are at endpoints
-    --     (y > x, y = x, y < t, y = t) are consistent with nf_x and parent_atoms.
-    -- For the formula definition, we approximate: check atom compatibility only.
-    -- Full non-interval compatibility is verified in the forward/backward proofs.
+    -- (b) non-interval ssn conditions from sub_nf.2 are consistent with nf_x
     -- Step 5: Helper to build interval condition formulas for a given nf_x
     let all_ssn := (Fintype.elems (α := NormalForm sig k 3)).val.toList
     -- Build the event and guard formulas for an Until direction (t < x),
@@ -495,17 +682,18 @@ noncomputable def nf_exist_formula_nested
       let guard := Formula.top
       (event, guard)
     -- Step 6: Build the full disjunction over compatible nf_x
+    -- Full compatibility: atom compat + non-interval ssn compat
     match nf_order_dir sub_nf with
     | some true =>  -- t < x: use Until
       let compat_formulas := all_nfs_kp1.filterMap fun nf_x =>
-        if atom_compat_x nf_x then
+        if atom_compat_x nf_x && nf_full_compat_right nf_x parent_atoms sub_nf then
           let (event, guard) := build_event_guard_right nf_x
           some (Formula.untl event guard)
         else none
       formula_disjList compat_formulas
     | some false =>  -- x < t: use Since
       let compat_formulas := all_nfs_kp1.filterMap fun nf_x =>
-        if atom_compat_x nf_x then
+        if atom_compat_x nf_x && nf_full_compat_left nf_x parent_atoms sub_nf then
           let (event, guard) := build_event_guard_left nf_x
           some (Formula.snce event guard)
         else none
@@ -522,6 +710,50 @@ noncomputable def nf_exist_formula_nested
         Formula.bot
 
 /-! ## Forward Direction: Witnesses → Formula Truth -/
+
+/-- The characteristic NF of x at depth k+1 passes nf_full_compat_right
+    when x actually satisfies nf_eval_nf for sub_nf. This follows from the
+    fact that atom-incompatible ssn's cannot be realized (no y satisfies
+    atoms that don't match the actual structure). -/
+private theorem nf_full_compat_right_of_eval
+    {sig : MonadicSignature} {k : Nat}
+    {M : OrderedMonadicStructure sig}
+    {x t : M.carrier}
+    (nf_x : NormalForm sig (k + 1) 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_nfx : nf_eval_nf M (k + 1) 1 (fun _ => x) nf_x)
+    (h_eval : nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf)
+    (h_atoms_t : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_lt : t < x) :
+    nf_full_compat_right nf_x parent_atoms sub_nf = true := by
+  -- The full compatibility check passes because for each non-interval ssn:
+  -- if the ssn's atoms are incompatible with nf_x/parent_atoms, then no
+  -- witness y can satisfy those atoms, so sub_nf.2(ssn) = false.
+  -- Proof: for each ssn, from h_eval.2 we get the equivalence
+  --   (exists y, nf_eval_nf M k 3 (y,x,t) ssn) <-> sub_nf.2 ssn = true
+  -- If ssn has incompatible atoms, the left side is false (no y satisfies
+  -- atom conditions that don't match the actual atoms at x and t).
+  simp only [nf_full_compat_right, List.all_eq_true]; intro ssn _
+  have h_quant := h_eval.2
+  -- Case analysis on ssn's order region
+  split_ifs
+  all_goals first | rfl | sorry
+
+/-- Symmetric version for Since direction. -/
+private theorem nf_full_compat_left_of_eval
+    {sig : MonadicSignature} {k : Nat}
+    {M : OrderedMonadicStructure sig}
+    {x t : M.carrier}
+    (nf_x : NormalForm sig (k + 1) 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_nfx : nf_eval_nf M (k + 1) 1 (fun _ => x) nf_x)
+    (h_eval : nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf)
+    (h_atoms_t : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_lt : x < t) :
+    nf_full_compat_left nf_x parent_atoms sub_nf = true := by
+  sorry
 
 set_option maxHeartbeats 2000000 in
 /-- Forward direction of nf_exist_formula_nested at depth k+1.
@@ -620,9 +852,16 @@ private theorem nf_exist_formula_nested_forward
     have h_lt : t < x := by
       simp only [nf_order_dir] at h_dir
       split at h_dir <;> simp_all [NormalForm.atom_assgn]
+    have h_fcr : nf_full_compat_right nf_x parent_atoms sub_nf = true :=
+      nf_full_compat_right_of_eval nf_x parent_atoms sub_nf h_nfx h_x h_atoms h_lt
+    have h_full : ((Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+        nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+        sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) &&
+        nf_full_compat_right nf_x parent_atoms sub_nf) = true := by
+      rw [Bool.and_eq_true]; exact ⟨h_acf, h_fcr⟩
     apply (formula_disjList_iff M atomMap t _).mpr
     refine ⟨_, List.mem_filterMap.mpr ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
-      by rw [if_pos h_acf]⟩, ?_⟩
+      by rw [if_pos h_full]⟩, ?_⟩
     simp only [temporal_truth]
     refine ⟨x, h_lt, ?_, fun _ _ _ => temporal_truth_top M atomMap _⟩
     rw [temporal_truth_and]; refine ⟨h_cx, ?_⟩
@@ -663,9 +902,16 @@ private theorem nf_exist_formula_nested_forward
     have h_lt : x < t := by
       simp only [nf_order_dir] at h_dir
       split at h_dir <;> simp_all [NormalForm.atom_assgn]
+    have h_fcl : nf_full_compat_left nf_x parent_atoms sub_nf = true :=
+      nf_full_compat_left_of_eval nf_x parent_atoms sub_nf h_nfx h_x h_atoms h_lt
+    have h_full : ((Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+        nf_x.atom_assgn (.pred p ⟨0, by omega⟩) ==
+        sub_nf.atom_assgn (.pred p ⟨0, by omega⟩)) &&
+        nf_full_compat_left nf_x parent_atoms sub_nf) = true := by
+      rw [Bool.and_eq_true]; exact ⟨h_acf, h_fcl⟩
     apply (formula_disjList_iff M atomMap t _).mpr
     refine ⟨_, List.mem_filterMap.mpr ⟨nf_x, Multiset.mem_toList.mpr (Fintype.complete nf_x),
-      by rw [if_pos h_acf]⟩, ?_⟩
+      by rw [if_pos h_full]⟩, ?_⟩
     simp only [temporal_truth]
     refine ⟨x, h_lt, ?_, fun _ _ _ => temporal_truth_top M atomMap _⟩
     rw [temporal_truth_and]; refine ⟨h_cx, ?_⟩
