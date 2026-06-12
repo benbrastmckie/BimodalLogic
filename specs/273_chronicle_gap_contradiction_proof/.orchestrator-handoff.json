@@ -1,23 +1,23 @@
 {
   "status": "partial",
-  "summary": "Phase 5 PARTIAL: Added full non-interval ssn compatibility filtering to nf_exist_formula_nested (nf_full_compat_right/left). The formula now filters nf_x values by checking that non-interval ssn conditions are atom-level consistent with nf_x and parent_atoms. Forward proof updated and compiles. Three sorry sites remain in NegationClosure.lean: (1) nf_full_compat_right_of_eval case analysis (~100 lines, routine atom extraction), (2) nf_full_compat_left_of_eval symmetric, (3) main backward direction (requires composition lemma for depth > 0). Downstream sorries at NfCharFormula.lean:572 and KampPrior.lean:149 depend on the main sorry. Build passes (only CanonicalTaskRelation fails, pre-existing).",
+  "summary": "Phase 5b: backward proof infrastructure built. backward_2var_nf_agreement, nf_exist_formula_nested_backward (sorry), nf_composition_depth0 added. Master induction wired to backward theorem. Formula insufficiency confirmed: char_k gives 1-var NF but 3-var NF needs 2-var composition. Fix: use char_{k+1} for interval witnesses. Pre-existing compat helper regression (Lean version change).",
   "phases_completed": 4,
   "phases_total": 7,
   "sorry_locations": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:761 (nf_full_compat_right_of_eval, inline sorry in case analysis)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:776 (nf_full_compat_left_of_eval, full sorry)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1094 (P2(k+1) backward direction)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean:572 (downstream of 1094)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:149 (downstream of 1094)"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1256 (backward direction - formula insufficient)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:830 (compat helper - Lean regression)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:865 (compat helper - Lean regression)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean:572 (downstream)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:149 (downstream)"
   ],
   "blockers": [
     {
       "phase": 5,
-      "description": "Backward direction requires: (1) completing compat helper proofs (routine, ~200 lines), (2) composition lemma nf_3var_composition_prior for all arities by induction on depth (~200 lines), (3) backward proof using composition (~100 lines). Total estimated: ~500 lines. The composition lemma at depth 0 is trivial (atoms involve at most 2 variables); at depth k+1, the arity-3 composition needs arity-4 at depth k, bottoming at depth 0.",
-      "goal_state": "case mp: h_formula : temporal_truth M atomMap t (nf_exist_formula_nested k char_kp1 char_k parent_atoms sub_nf) |- exists x, nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf"
+      "description": "Formula nf_exist_formula_nested uses char_k (depth-k 1-var NF) for interval witnesses, but the backward direction needs the depth-k 3-var NF at (y,x,t), which requires depth-k 2-var NFs of (y,x) and (y,t) via composition. char_k does NOT determine these 2-var NFs at depth >= 1. Recommended fix: change char_k to char_{k+1} in interval witness conditions (the depth-(k+1) 1-var NF of y records all depth-k 2-var NFs at (z,y)), then use composition lemma to bridge.",
+      "goal_state": "h_formula : temporal_truth M atomMap t (nf_exist_formula_nested k char_kp1 char_k parent_atoms sub_nf) |- exists x, nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf"
     }
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611b.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611c.md",
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
@@ -32,17 +32,17 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "type": "implementation",
-      "summary": "nf_exist_formula_nested with full compat filtering + forward proof; 3 sorries (2 compat helpers + 1 backward)"
+      "summary": "nf_exist_formula_nested + forward proof + backward infrastructure; 1 sorry (backward), 2 sorry (compat regression)"
     },
     {
       "path": "specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md",
       "type": "research",
-      "summary": "Literature transcription: Rabinovich 2014 + Doets 1989 composition, verified construction"
+      "summary": "Literature transcription: composition approach with adversarial verification"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611b.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611c.md",
       "type": "handoff",
-      "summary": "Phase 5 partial progress: full compat filtering added, sorry inventory and continuation plan"
+      "summary": "Phase 5b analysis: formula insufficiency, char_k vs char_{k+1}, recommended fix"
     }
   ]
 }
