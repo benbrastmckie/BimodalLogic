@@ -1,23 +1,22 @@
 {
   "status": "partial",
-  "summary": "Phase 5b: backward proof infrastructure built. backward_2var_nf_agreement, nf_exist_formula_nested_backward (sorry), nf_composition_depth0 added. Master induction wired to backward theorem. Formula insufficiency confirmed: char_k gives 1-var NF but 3-var NF needs 2-var composition. Fix: use char_{k+1} for interval witnesses. Pre-existing compat helper regression (Lean version change).",
+  "summary": "Phase 5d: Found and fixed formula defect (interval ssn atom compat filter). Forward proofs rewritten and sorry-free. Backward proof requires composition lemma (Feferman-Vaught for NormalForms) to verify interval witness quantifier parts at depth k >= 1.",
   "phases_completed": 4,
   "phases_total": 7,
   "sorry_locations": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1256 (backward direction - formula insufficient)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:830 (compat helper - Lean regression)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:865 (compat helper - Lean regression)",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1364 (backward direction - needs composition lemma)",
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean:572 (downstream)",
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:149 (downstream)"
   ],
   "blockers": [
     {
       "phase": 5,
-      "description": "Formula nf_exist_formula_nested uses char_k (depth-k 1-var NF) for interval witnesses, but the backward direction needs the depth-k 3-var NF at (y,x,t), which requires depth-k 2-var NFs of (y,x) and (y,t) via composition. char_k does NOT determine these 2-var NFs at depth >= 1. Recommended fix: change char_k to char_{k+1} in interval witness conditions (the depth-(k+1) 1-var NF of y records all depth-k 2-var NFs at (z,y)), then use composition lemma to bridge.",
-      "goal_state": "h_formula : temporal_truth M atomMap t (nf_exist_formula_nested k char_kp1 char_k parent_atoms sub_nf) |- exists x, nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf"
+      "description": "Backward proof needs the composition lemma: depth-k n-var NF is determined by all pairwise depth-k 2-var NFs. At depth 0, proven (nf_composition_depth0). At depth k >= 1, the quantifier part of ssn (ssn.2) must match the actual model structure. With char_kp1 for interval witnesses, nf_y.2 provides depth-k 2-var NFs at (z,y), but combining these into the depth-k 3-var NF at (y,x,t) requires the composition lemma by induction on k.",
+      "goal_state": "Need nf_eval_nf M k 3 (y,x,t) ssn where ssn : NormalForm sig k 3 with sub_nf.2 ssn = true and atoms matching via filter. At k=0 this is trivial (atoms only). At k >= 1, ssn.2 : NormalForm sig (k-1) 4 -> Bool must match the actual existentials at (z,y,x,t).",
+      "estimated_effort": "200-500 lines for NfComposition.lean"
     }
   ],
-  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611c.md",
+  "continuation_context": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611e.md",
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
@@ -32,17 +31,12 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "type": "implementation",
-      "summary": "nf_exist_formula_nested + forward proof + backward infrastructure; 1 sorry (backward), 2 sorry (compat regression)"
+      "summary": "nf_exist_formula_nested + forward proof + backward infrastructure + filter fix; 1 sorry (backward)"
     },
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md",
-      "type": "research",
-      "summary": "Literature transcription: composition approach with adversarial verification"
-    },
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611c.md",
+      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611e.md",
       "type": "handoff",
-      "summary": "Phase 5b analysis: formula insufficiency, char_k vs char_{k+1}, recommended fix"
+      "summary": "Phase 5d: filter fix details, counterexample, composition blocker analysis"
     }
   ]
 }
