@@ -83,3 +83,67 @@ Estimated: 100-150 lines. Most fragile.
 
 A new plan revision is needed. The formula `nf_exist_formula_nested` must be redesigned before
 the backward direction can be attempted. The forward proof will need corresponding updates.
+
+## Research Report Integration (Report 10)
+
+Literature transcription (report 10) confirms the composition-based approach as the correct fix.
+The key construction from Rabinovich 2014 Section 5, specialized to Prior structures:
+
+### The Correct Formula Design
+
+For P2(k+1) with sub_nf : NormalForm sig (k+1) 2 and t < x (Until case):
+
+```
+disjunction over nf_x : NormalForm sig (k+1) 1 [FULL-compat with sub_nf]:
+  Until(
+    char_{k+1}(nf_x)
+    AND [interval positive: Since(char_k(nf_y) AND P2(k)-formula(proj_yt), top)]
+  , [interval negative: guard conditions]
+  )
+```
+
+where FULL-compat checks:
+- Predicate atoms at var 0 match (existing atom_compat_x)
+- For y > x ssn's: nf_x.2(proj_yx(ssn)) matches sub_nf.2 ssn
+- For y = x ssn's: atom compatibility with nf_x
+- For y = t ssn's: atom compatibility with parent_atoms
+- For y < t ssn's: compatibility with depth-(k+1) 1-var NF of t (filtered by parent_atoms)
+
+### Composition Lemma Prerequisite
+
+```lean
+theorem nf_3var_composition_prior
+    (M : OrderedMonadicStructure sig)
+    (k : Nat) (y x t : M.carrier) (h_ty : t < y) (h_yx : y < x)
+    (ssn : NormalForm sig k 3) :
+    nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn <->
+    (nf_eval_nf M k 2 (Fin.cons y (fun _ => x)) (proj_yx ssn) AND
+     nf_eval_nf M k 2 (Fin.cons y (fun _ => t)) (proj_yt ssn))
+```
+
+Proof by induction on k. Base (k=0): atoms decompose to 2-var pairs.
+Step (k+1): 4-var quantifier conditions decompose by position of z.
+
+### Depth Bookkeeping
+
+No depth increase occurs. Construction uses only P1(k+1), P1(k), P2(k).
+The doets depth trick was correctly rejected (problem is arity, not depth).
+
+### Implementation Estimate
+
+~520 lines total:
+- Projection functions (ssn -> 2-var NF): ~50 lines
+- Extended compatibility check: ~30 lines
+- Revised interval formulas: ~40 lines
+- Composition lemma: ~100 lines
+- Backward proof: ~200 lines
+- Forward proof revision: ~100 lines
+
+### Immediate Next Action
+
+1. Define proj_yx and proj_yt projection functions for depth-0 NFs
+2. Prove nf_3var_composition_prior at depth 0
+3. Extend to depth k+1 by induction
+4. Revise nf_exist_formula_nested with extended filtering and P2(k) interval formulas
+5. Prove backward direction
+6. Repair forward direction

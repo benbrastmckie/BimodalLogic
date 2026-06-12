@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Phase 5 BLOCKED: formula nf_exist_formula_nested is provably incorrect. It does not encode sub_nf.2 (quantifier part) for non-interval ssn's, and uses only 1-var char_k for interval ssn's which is insufficient to determine the 3-var NF at depth k >= 1. Two sub_nf's with same atoms and interval ssn patterns but different non-interval ssn values produce the same formula, breaking the biconditional. Build passes with 1 sorry at NegationClosure.lean:828. Forward direction (Phase 4) remains sorry-free. A new plan revision is needed to redesign the formula.",
+  "summary": "Phase 5 BLOCKED: formula nf_exist_formula_nested is provably incorrect. Literature transcription (report 10) confirms the fix: composition-based formula revision using Feferman-Vaught composition theorem specialized to Prior structures. The revised formula adds (1) extended nf_x filtering for non-interval ssn's using 2-var NF projections, (2) P2(k) formulas for (y,t) interval projections alongside char_k(nf_y), (3) negative interval conditions in guard. No depth increase -- uses only P1(k+1), P1(k), P2(k). Estimated ~520 lines. Build passes with 1 sorry at NegationClosure.lean:828.",
   "phases_completed": 4,
   "phases_total": 7,
   "sorry_locations": [
@@ -9,7 +9,7 @@
   "blockers": [
     {
       "phase": 5,
-      "description": "Formula nf_exist_formula_nested is provably incorrect for the backward direction. Does not encode sub_nf.2 for non-interval ssn's. Three fix approaches identified: (A) generalized arity induction P_n(k), (B) composition theorem formalization, (C) doets depth trick for Prior structures. See plan Phase 5 BLOCKER and handoff phase-5-handoff-20260611.md.",
+      "description": "Formula nf_exist_formula_nested is provably incorrect. Fix identified via literature transcription (report 10): composition-based formula revision with extended nf_x filtering + P2(k) interval projections + composition lemma. See plan Phase 5 BLOCKER, handoff phase-5-handoff-20260611.md, and report 10_literature-transcription.md.",
       "goal_state": "case mp: h_formula : temporal_truth M atomMap t (nf_exist_formula_nested ...) |- exists x, nf_eval_nf M (k+1) (1+1) (Fin.cons x (fun _ => t)) sub_nf"
     }
   ],
@@ -31,9 +31,14 @@
       "summary": "nf_exist_formula_nested definition + forward proof sorry-free; 1 sorry at P2(k+1) backward (Phase 5 BLOCKED)"
     },
     {
+      "path": "specs/273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md",
+      "type": "research",
+      "summary": "Literature transcription: Rabinovich 2014 + Libkin 2004 composition, identifies correct formula design with depth bookkeeping"
+    },
+    {
       "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-handoff-20260611.md",
       "type": "handoff",
-      "summary": "Phase 5 blocker documentation: formula incorrectness analysis, three fix approaches"
+      "summary": "Phase 5 blocker + research integration: composition-based formula fix with implementation steps"
     }
   ]
 }
