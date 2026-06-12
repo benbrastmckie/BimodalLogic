@@ -1246,7 +1246,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T16:21:31Z",
+      "last_updated": "2026-06-12T16:33:25Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1346,10 +1346,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/12_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): p2_from_p1_succ is sorry-free orphan, Path B confirmed if forward-only P2(k) check fails, 480-630 lines estimated"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/13_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): Path B confirmed required; nf_to_formula bridge exists; Lemma 3.2.2 + Prop 4.3 architecture designed (~475-630 lines)"
         }
       ],
-      "next_artifact_number": 13,
-      "researched": "2026-06-12T16:21:31Z",
+      "next_artifact_number": 14,
+      "researched": "2026-06-12T16:33:25Z",
       "planned": "2026-06-11T18:10:00Z",
       "plan_metadata": {
         "phases": 8,
@@ -1414,7 +1419,7 @@
           }
         ]
       },
-      "session_id": "sess_1781280732_3c7cfe",
+      "session_id": "sess_1781281463_30493c",
       "started": "2026-06-10T21:39:12Z"
     },
     {

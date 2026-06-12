@@ -253,6 +253,7 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md]
   - [273_chronicle_gap_contradiction_proof/reports/11_divergence-audit.md]
   - [273_chronicle_gap_contradiction_proof/reports/12_team-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/13_team-research.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/17_kamp-rabinovich-plan.md]
   - [273_chronicle_gap_contradiction_proof/plans/18_rabinovich-pipeline-plan.md]
