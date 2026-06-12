@@ -237,7 +237,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5a: VecEADecomposition.lean -- Lemma 3.2.2 [IN PROGRESS]
+### Phase 5a: VecEADecomposition.lean -- Lemma 3.2.2 [PARTIAL]
 
 **Goal**: Prove that every EA formula with n > 2 free variables is equivalent to a conjunction of EA formulas with at most 2 free variables. This is a general result for ANY linear order (no Prior assumption), yielding CSLib-quality infrastructure of independent mathematical value.
 

@@ -1,41 +1,18 @@
 {
   "status": "partial",
-  "summary": "Plan v21 Phases 1-4b COMPLETED. Phase 1: VecEAFormula.lean (sorry-free). Phase 2: VecEAClosure.lean (parallel agent completed). Phase 3: VecEATranslation.lean (sorry-free). Phase 4a+4b: NegationClosure5.lean (Lemma 5.3 base + INF formula, sorry-free). Phases 4c-4f, 5-8 remain.",
+  "summary": "Phase 5a partially implemented. Created VecEADecomposition.lean with syntactic V-EA negation infrastructure (neg_bracket_syn, neg_vecEA2_syn, nf_exist_as_monadic bridge). Architecture for resolving P1/P2 circularity via Rabinovich Prop 4.3 structural induction is established. Key definitions are sorry-free but correctness proofs (soundness + completeness of syntactic negation) have 5 sorries. Made bracket_tail_satisfiable public in NegationClosure5.lean. Completeness proof Case A (alpha absent) is filled; Cases B (beta fails) and C (tail fails) are sorry'd. The sorry-free nf_exist_as_monadic bridge confirms that NF existence problems reduce to MonadicFormula evaluation.",
   "phases_completed": 4,
   "phases_total": 8,
-  "sorry_locations": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean:106,108 (quarantined, bypassed by v21)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean:1371 (P2(k+1) backward)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean:572 (downstream)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:149 (downstream)"
+  "blockers": [
+    "Phase 5a: neg_bracket_syn completeness proof Cases B and C require Fin-level witness construction for BracketFormula.prepend_holds_direct and the 2-witness counter-pattern",
+    "Phase 5a: neg_vvecEA2_syn requires syntactic conjunction of VVecEA2's (distributive law over disjunctions)",
+    "Phase 5b: Prop 4.3 structural induction needs V-EA at arity >= 3 for the .ex case at arity 2",
+    "Phase 5c: Bridge wiring depends on Phases 5a and 5b completion"
   ],
-  "blockers": [],
-  "continuation_context": "Phase 4c (Lemma 5.3 inductive step) is next. All prerequisites ready: first_occurrence_prior_strict + neg_purePoints_split provide the reduction mechanism. Three sub-cases: empty (P_1 absent), r0 in interval, and the sub-interval recursion.",
+  "continuation_context": "Resume from VecEADecomposition.lean. Next immediate actions: (1) Fill BracketFormula.prepend_holds_direct by unfolding holds/IntervalPattern.holds and providing witnesses, (2) Fill Case B with 2-witness BracketFormula construction, (3) Fill Case C using prepend_holds_direct, (4) Build neg_vvecEA2_syn as conjunction of neg_vecEA2_syn disjuncts (distribute disjunctions via List.map cross-product), (5) Then create Prop43.lean with structural induction. The handoff at specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5a-handoff-20260612d.md has the full architecture analysis including why semantic closures are insufficient and syntactic closures are needed.",
   "artifacts": [
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
-      "type": "implementation",
-      "summary": "Vec-EA formula type (Phase 1, 343 lines, sorry-free)"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAClosure.lean",
-      "type": "implementation",
-      "summary": "Closure properties (Phase 2, ~170 lines, sorry-free: all 4 sorries closed)"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEATranslation.lean",
-      "type": "implementation",
-      "summary": "V-EA to temporal translation (Phase 3, 297 lines, sorry-free)"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure5.lean",
-      "type": "implementation",
-      "summary": "Negation closure Section 5: base case + INF formula (Phase 4a+4b, 451 lines, sorry-free)"
-    },
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-4ab-handoff-20260612.md",
-      "type": "handoff",
-      "summary": "Phase 4a+4b completion handoff"
-    }
-  ]
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean", "type": "lean_source", "summary": "Syntactic V-EA negation infrastructure (5 sorries)"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5a-handoff-20260612d.md", "type": "handoff", "summary": "Architecture analysis and implementation strategy"}
+  ],
+  "next_action_hint": "continue_implement"
 }
