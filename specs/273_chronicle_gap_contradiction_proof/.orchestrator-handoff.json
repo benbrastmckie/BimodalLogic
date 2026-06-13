@@ -1,45 +1,64 @@
 {
   "status": "partial",
-  "summary": "Filled the sorry at KampPrior.lean:149 by importing NfCharFormula.lean and delegating to nf_characterizable_temporal_prior_classical via Classical.indefiniteDescription. The IH (Subtype form) is converted to Exists form, passed to nf_characterizable_temporal_prior_classical, and the result converted back. KampPrior.lean now has 0 code sorries. The dependency on sorryAx is inherited from nf_2var_exist_formula_prior (NfCharFormula.lean:572), which chains to nf_exist_formula_nested_backward (NegationClosure.lean:1379).",
-  "phases_completed": 3,
-  "phases_total": 6,
+  "summary": "Phase 3 partial: proved GHR94 Lemma 10.2.2 negation equivalences on Prior structures (SeparationBridge.lean, sorry-free). Deep analysis confirmed the root blocker (Feferman-Vaught composition lemma for NFs at depth >= 1) cannot be bypassed by the Z-bridge approach due to atomMap/carrier mismatch. Three viable alternatives identified for next dispatch.",
+  "phases_completed": 0,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 572,
       "statement": "theorem nf_2var_exist_formula_prior",
       "assumption": "Classical existence of temporal formula for 2-var sub-NF existential on Prior structures",
-      "why_deferred": "Backward direction of 2-var existence formula requires composition (Feferman-Vaught for NFs). Forward direction is proved.",
-      "next_dispatch": "Fill via master_induction's P2 which uses nf_exist_formula_nested_backward"
+      "why_deferred": "Backward direction requires Feferman-Vaught composition lemma (depth >= 1). Z-bridge approach analyzed and found insufficient due to atomMap mismatch and carrier type mismatch.",
+      "next_dispatch": "Research Option A: reimplement GHR94 Theorem 9.3.1 directly on Prior structures"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1379,
-      "statement": "nf_exist_formula_nested_backward (backward at depth k+1)",
-      "assumption": "Formula truth implies existential realization of depth-(k+1) 2-var NF",
-      "why_deferred": "Blocked on Feferman-Vaught composition lemma for NormalForms (nf_3var_from_1var_nfs at k >= 1)",
-      "next_dispatch": "Resolve composition lemma or find alternative proof strategy"
+      "statement": "nf_exist_formula_nested_backward",
+      "assumption": "Backward direction of nested existence formula on Prior structures",
+      "why_deferred": "Same root blocker as nf_2var_exist_formula_prior",
+      "next_dispatch": "Resolved automatically if nf_2var_exist_formula_prior is filled"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
       "line": 113,
-      "statement": "nf_3var_from_1var_nfs (witness merging, succ k case)",
-      "assumption": "Quarantined: 2 sorries in witness transfer direction",
-      "why_deferred": "Core mathematical blocker for the full chain",
-      "next_dispatch": "Resolve witness transfer or explore alternative approach"
+      "statement": "nf_3var_from_1var_nfs (witness transfer)",
+      "assumption": "Witness transfer in Feferman-Vaught composition",
+      "why_deferred": "Core mathematical blocker. 5 failed attempts.",
+      "next_dispatch": "NOT on critical path if Option A (Theorem 9.3.1 on Prior) succeeds"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 115,
+      "statement": "nf_3var_from_1var_nfs (core)",
+      "assumption": "Core composition in Feferman-Vaught",
+      "why_deferred": "Same as witness transfer above",
+      "next_dispatch": "NOT on critical path if Option A succeeds"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
       "line": 285,
-      "statement": "neg_bracket_syn_iff (soundness Case C)",
-      "assumption": "Quarantined dead code, not on critical path",
-      "why_deferred": "Not needed for main theorem chain",
-      "next_dispatch": "No action needed"
+      "statement": "neg_bracket_syn_iff",
+      "assumption": "Quarantined dead code",
+      "why_deferred": "Not on critical path",
+      "next_dispatch": "N/A"
     }
   ],
-  "blockers": [],
-  "continuation_context": "KampPrior.lean:149 sorry is FILLED. The remaining sorry chain is: kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior -> nf_characterizable_temporal_prior_classical -> nf_2var_exist_formula_prior (sorry) -> which should be filled by master_induction's P2 -> nf_exist_formula_nested_backward (sorry) -> blocked on composition lemma.",
+  "blockers": [
+    "nf_2var_exist_formula_prior (NfCharFormula.lean:572): Feferman-Vaught composition lemma blocks backward direction. Z-bridge approach insufficient. Need Theorem 9.3.1 on Prior structures or equivalent bypass."
+  ],
+  "continuation_context": {
+    "is_successor": false,
+    "resume_phase": 3,
+    "resume_task": "2.1",
+    "key_decision": "GHR94 Lemma 10.2.2 proved on Prior structures. Z-bridge approach analyzed and rejected. Next dispatch should research Option A.",
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260612-separation-bridge.md"
+  },
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260612-separation-bridge.md",
   "artifacts": [
-    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md", "type": "plan"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationBridge.lean", "type": "implementation"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md", "type": "plan"},
+    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260612-separation-bridge.md", "type": "handoff"}
   ]
 }

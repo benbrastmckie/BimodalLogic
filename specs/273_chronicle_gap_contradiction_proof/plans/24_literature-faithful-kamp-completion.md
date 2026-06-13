@@ -188,7 +188,7 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 3 REVISED: Expressive Completeness Bridge [NOT STARTED]
+### Phase 3 REVISED: Expressive Completeness Bridge [IN PROGRESS]
 
 **Goal**: Using the EXISTING sorry-free separation infrastructure, build the bridge from separation to {U,S} expressive completeness on Prior structures, and derive P1(k) for all k.
 
