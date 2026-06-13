@@ -1478,6 +1478,168 @@
       }
     },
     {
+      "project_number": 288,
+      "project_name": "deeper_invalid_pattern_recognizers",
+      "status": "completed",
+      "task_type": "lean4",
+      "priority": "high",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        287
+      ],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T21:00:00Z",
+      "description": "Add deeper invalid-pattern recognizers to structuralPrefilter. Detect structurally invalid formulas (e.g., U(box(bot), X)) that timeout the tableau but have obvious countermodels. Add isTemporalContradiction, isObviousSatisfiable, hasUnfulfillableEventuality. Wire into labelFormulaImpl before valid-prefilter. Each pattern must have formal soundness proof. Target: reduce c6 timeout rate by 3-8%.",
+      "next_artifact_number": 2,
+      "session_id": "sess_1780943005_25629c_288",
+      "researched": "2026-06-08T00:00:00Z",
+      "planned": "2026-06-08T20:00:00Z",
+      "started": "2026-06-08T19:00:00Z",
+      "completed": "2026-06-08T21:00:00Z",
+      "completion_summary": "Added 3 invalid-pattern recognizers (isTemporalContradiction, isObviousSatisfiable, hasUnfulfillableEventuality) with combined structuralInvalidPrefilter wired as Phase 1.5 in labelFormulaImpl. 4 sorry-free soundness proofs in PrefilterSoundness.lean. 60+ unit tests, cross-validation, regression, and edge case tests all pass. Build passes (1040 jobs).",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md",
+          "summary": "Research report: invalid-pattern recognizer design, coverage estimates, soundness proof strategy"
+        },
+        {
+          "type": "plan",
+          "path": "specs/288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md",
+          "summary": "5-phase implementation plan: recognizer functions, pipeline wiring, soundness proofs, testing, build verification"
+        },
+        {
+          "type": "summary",
+          "path": "specs/288_deeper_invalid_pattern_recognizers/summaries/01_invalid-patterns-summary.md",
+          "summary": "Implementation summary: 5/5 phases complete, 6 new functions, 4 soundness proofs, 60+ tests"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_invalid-patterns-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-08"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 289,
+      "project_name": "branch_result_memoization_caching",
+      "status": "completed",
+      "task_type": "lean4",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [
+        286
+      ],
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T17:00:00Z",
+      "description": "Add branch-result memoization/caching to expandBranchWithFuel. Cache decide results keyed by (Formula, FrameClass, searchDepth, tableauFuel) in an IO.Ref-based LRU cache at the decide level. Size bound to 10K entries. Benchmark hit rate and total labeling time. Best combined with parallelization (task 286).",
+      "session_id": "sess_1780938205_d0e80f_289",
+      "researched": "2026-06-08T12:00:00Z",
+      "planned": "2026-06-08T17:00:00Z",
+      "started": "2026-06-08T18:00:00Z",
+      "completed": "2026-06-08T19:00:00Z",
+      "completion_summary": "Implemented Mutex-protected bounded HashMap cache for formula labeling. Added DecideCacheKey/DecideCache structures, labelFormulaWithCache wrapper, threaded cache through labelBatch and DatasetExport, added --cache-size CLI flag to benchmark. Zero sorries, zero new axioms, build passes.",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/289_branch_result_memoization_caching/reports/01_memoization-research.md",
+          "summary": "Research report on memoization caching for decision procedure"
+        },
+        {
+          "type": "plan",
+          "path": "specs/289_branch_result_memoization_caching/plans/01_memoization-plan.md",
+          "summary": "4-phase implementation plan for Mutex-protected bounded HashMap cache at labelBatch level"
+        },
+        {
+          "type": "summary",
+          "path": "specs/289_branch_result_memoization_caching/summaries/01_memoization-summary.md",
+          "summary": "Implementation summary: DecideCache with Mutex, labelFormulaWithCache, threaded through labelBatch and DatasetExport"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_memoization-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-08"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 290,
+      "project_name": "improve_tableau_fuel_allocation",
+      "status": "planned",
+      "task_type": "lean4",
+      "description": "Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.",
+      "priority": "medium",
+      "topic": "dataset-enhancement",
+      "dependencies": [],
+      "session_id": "sess_1780943005_25629c_290",
+      "created": "2026-06-08T03:09:30Z",
+      "last_updated": "2026-06-08T23:30:00Z",
+      "researched": "2026-06-08T23:00:00Z",
+      "planned": "2026-06-08T23:30:00Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md",
+          "type": "research",
+          "summary": "Comprehensive research on fuel mechanics, proportional allocation design, termination proof impact, c6 timeout data, and implementation approach"
+        },
+        {
+          "path": "specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: define difficulty heuristic, integrate proportional allocation, mirror in traced variant, update soundness proof, benchmark on c6"
+        }
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 6,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "reports_integrated": [
+          {
+            "path": "reports/01_fuel-allocation-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-08"
+          }
+        ]
+      }
+    },
+    {
       "project_number": 299,
       "project_name": "refactor_discrete_game_transfer",
       "status": "not_started",
@@ -1485,9 +1647,7 @@
       "description": "Refactor DiscreteGameTransfer.lean to eliminate the wrapper pattern once the completeness chain is sorry-free. Inline discrete_ghr93_theorem6 by having StaviCompleteness.lean call ghr93_forward_to_backward directly with discrete typeclass instances. Convert discrete_rank_embed_eq_drc to a @[simp] lemma. Remove discrete_ghr93_theorem6_rank_varying if callers can use the general version. Clean up any dead code from the old fixed-pivot architecture that was deleted in task 273.",
       "priority": "low",
       "topic": "completeness",
-      "dependencies": [
-        273
-      ],
+      "dependencies": [273],
       "created": "2026-06-09T12:40:00Z",
       "last_updated": "2026-06-09T12:40:00Z",
       "artifacts": [],

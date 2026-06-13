@@ -11,7 +11,7 @@ next_project_number: 300
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,291,296,300 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,290,291,296,300 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 155,192,196,231,292,293,294,298,299 | 161,187,191,194,230,268,273,291,300 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor, automation |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
@@ -197,14 +197,58 @@ next_project_number: 300
 ---
 
 ### 290. Improve tableau fuel allocation
-- **Status**: [PLANNED]
+improve tableau fuel allocation
+- **Status**: [PLANNED
+PLANNED]
 - **Task Type**: lean4
+lean4
 - **Topic**: dataset-enhancement
+dataset-enhancement
 - **Dependencies**: Task 288
-- **Research**: [290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md]
-- **Plan**: [290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
 
 **Description**: Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
+Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
+
+---
+
+### 290. Improve tableau fuel allocation
+improve tableau fuel allocation
+- **Status**: [PLANNED
+PLANNED]
+- **Task Type**: lean4
+lean4
+- **Topic**: dataset-enhancement
+dataset-enhancement
+- **Dependencies**: Task 288
+
+**Description**: Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
+Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
+
+---
+
+### 289. Branch result memoization caching
+- **Status**: [COMPLETED]
+- **Task Type**: lean4
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 286
+- **Research**: [289_branch_result_memoization_caching/reports/01_memoization-research.md]
+- **Plan**: [289_branch_result_memoization_caching/plans/01_memoization-plan.md]
+- **Summary**: [289_branch_result_memoization_caching/summaries/01_memoization-summary.md]
+
+**Description**: Add branch-result memoization/caching to expandBranchWithFuel. Cache decide results keyed by (Formula, FrameClass, searchDepth, tableauFuel) in an IO.Ref-based LRU cache at the decide level. Size bound to 10K entries. Benchmark hit rate and total labeling time. Best combined with parallelization (task 286).
+
+---
+
+### 288. Deeper invalid pattern recognizers
+- **Status**: [COMPLETED]
+- **Task Type**: lean4
+- **Topic**: dataset-enhancement
+- **Dependencies**: Task 287
+- **Research**: [288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md]
+- **Plan**: [288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md]
+- **Summary**: [288_deeper_invalid_pattern_recognizers/summaries/01_invalid-patterns-summary.md]
+
+**Description**: Add deeper invalid-pattern recognizers to structuralPrefilter. Detect structurally invalid formulas (e.g., U(box(bot), X)) that timeout the tableau but have obvious countermodels. Add isTemporalContradiction, isObviousSatisfiable, hasUnfulfillableEventuality. Wire into labelFormulaImpl before valid-prefilter. Each pattern must have formal soundness proof. Target: reduce c6 timeout rate by 3-8%.
 
 ---
 
