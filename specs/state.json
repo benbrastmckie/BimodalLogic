@@ -1416,7 +1416,7 @@
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "Implementing Rabinovich Prop 4.2 (negation closure) from scratch following Section 5. Infrastructure complete. Plan v27 ready for implementation."
+      "blockers": "NfCharFormula k=0 case FILLED. k+1 case blocked: circular import prevents using NegationClosure solution directly. Root sorry: nf_exist_formula_nested_backward (NegationClosure.lean:1716). 7 orchestration runs, 35+ dispatches — agents analyze but cannot prove the k+1 backward direction. The mathematical path is clear (VecEA2 pipeline is sorry-free) but the NF→VecEA2 bridge at depth k+1 requires human proof construction."
     },
     {
       "project_number": 290,
@@ -1520,7 +1520,21 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_invalid-patterns-research.md",
@@ -1629,7 +1643,21 @@
         "complexity": "medium",
         "research_integrated": true,
         "plan_version": 1,
-        "dependency_waves": [[1], [2, 3], [4], [5]],
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
         "reports_integrated": [
           {
             "path": "reports/01_fuel-allocation-research.md",
@@ -1647,7 +1675,9 @@
       "description": "Refactor DiscreteGameTransfer.lean to eliminate the wrapper pattern once the completeness chain is sorry-free. Inline discrete_ghr93_theorem6 by having StaviCompleteness.lean call ghr93_forward_to_backward directly with discrete typeclass instances. Convert discrete_rank_embed_eq_drc to a @[simp] lemma. Remove discrete_ghr93_theorem6_rank_varying if callers can use the general version. Clean up any dead code from the old fixed-pivot architecture that was deleted in task 273.",
       "priority": "low",
       "topic": "completeness",
-      "dependencies": [273],
+      "dependencies": [
+        273
+      ],
       "created": "2026-06-09T12:40:00Z",
       "last_updated": "2026-06-09T12:40:00Z",
       "artifacts": [],
