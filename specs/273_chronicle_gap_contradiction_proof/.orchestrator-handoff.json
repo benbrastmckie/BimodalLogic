@@ -1,40 +1,45 @@
 {
   "status": "partial",
-  "summary": "Created RabinovichGeneralized.lean (385 lines) establishing CharPart/ExistPart mutual induction framework for the generalized P_n(k) theorem. Sorry-free: charPart_zero, charPart_succ, existPart_zero n=1, existPart_zero unsatisfiable case. Two sorries: existPart_zero n>=2 satisfiable (Fin bookkeeping), existPart_succ (negation closure).",
-  "phases_completed": 1,
+  "summary": "Phase 1 (existPart_zero n>=2): proof logically complete, committed as WIP. Inline approach using Classical.em on compatible satisfiability with atom-by-atom Fin case analysis. LSP accepts but lake build has timeouts in simp_all and simp [Fin.ext_iff] for consistency extraction. Phase 2 (existPart_succ factoring) not started.",
+  "phases_completed": 0,
   "phases_total": 2,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 268,
-      "statement": "existPart_zero at n >= 2, satisfiable case",
-      "assumption": "n-var depth-0 existential reduces to 2-var projection when satisfiable",
-      "why_deferred": "Requires Fin index bookkeeping to transfer C1-C4 consistency conditions and prove 2-var <-> n-var biconditional. Mathematical content identical to n=1.",
-      "next_dispatch": "Implement C1-C4 extraction from satisfying witness, then prove the bidirectional NF evaluation transfer between n-var and 2-var environments"
+      "line": 249,
+      "statement": "existPart_zero n>=2 satisfiable case (inline proof, WIP)",
+      "assumption": "n-var existential with constant base reduces to 2-var",
+      "why_deferred": "Proof logically complete (LSP-verified) but lake build fails with simp_all timeouts in the consistency extraction cases. Need to replace simp_all with explicit cases + absurd chains to avoid exponential simp blowup.",
+      "next_dispatch": "Fix 3 categories of build issues: (1) Replace simp_all with explicit cases on Bool values + absurd for base-base order extraction. (2) Replace simp [Fin.ext_iff] in nested cases with show + omega for Fin inequality proofs. (3) Add heartbeat limit increase or break into smaller lemmas with set_option maxHeartbeats."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 333,
-      "statement": "existPart_succ (depth k+1, all arities)",
-      "assumption": "ExistPart(k+1) from CharPart(k+1) + ExistPart(k)",
-      "why_deferred": "Base environment mismatch: ExistPart uses (fun _ => t) but quantifier conditions at depth k+1 need (Fin.cons x (fun _ => t)). Requires Rabinovich Section 5 negation closure to bridge.",
-      "next_dispatch": "Either generalize ExistPart to arbitrary base environments, or implement the Rabinovich negation closure argument to show temporal truth at t determines quantifier conditions for the (x,t) base"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
-      "line": 291,
-      "statement": "nf_2var_exist_formula_prior_neg at depth succ k'",
-      "assumption": "Backward direction of nf_exist_formula at depth k+1",
-      "why_deferred": "Resolved automatically once existPart_succ is proved (nf_2var_exist_formula_prior_filled extracts ExistPart(k) at n=1)",
-      "next_dispatch": "Fill existPart_succ"
+      "line": 395,
+      "statement": "existPart_succ (all n)",
+      "assumption": "Negation closure (Rabinovich Section 5) bridges base env mismatch",
+      "why_deferred": "Core mathematical blocker. Phase 2 factors into n=1 (sorry) and n>=2 (same reduction).",
+      "next_dispatch": "Factor existPart_succ: cases n=1 (sorry) vs n>=2 (same 2-var reduction as existPart_zero)."
     }
   ],
   "blockers": [
-    "existPart_succ: base environment mismatch (fun _ => t) vs (Fin.cons x (fun _ => t)). Resolution requires Rabinovich Section 5 negation closure argument OR generalized ExistPart statement."
+    "existPart_zero n>=2: lake build timeouts in simp_all/simp[Fin.ext_iff] during consistency extraction"
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "key_insight": "The CharPart/ExistPart mutual induction framework is correct and complete. CharPart propagates sorry-free through charPart_succ. The remaining mathematical work is in existPart_succ: showing that temporal truth at t on Prior structures determines the quantifier conditions of the (n+1)-var NF even when the base environment includes a witness x that differs from t. This is precisely Rabinovich's negation closure argument (Section 5, Lemma 5.1)."
+    "resume_from": "Phase 1 build fix",
+    "key_decisions": [
+      "Helper lemma approach ABANDONED: Fin proof terms in lemma signatures cause omega failures under lake build but pass LSP. Root cause: omega cannot prove ¬(Fin.val ⟨0,_⟩ = Fin.val ⟨1,_⟩) when Fin types have variable bounds.",
+      "Inline proof approach ADOPTED: all consistency extraction and forward/backward proofs done inline within existPart_zero tactic block.",
+      "simp [Fin.ext_iff] replaces the pattern (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)) for Fin inequality proofs -- confirmed to work via lean_run_code.",
+      "Classical.em on COMPATIBLE satisfiability (nf_eval AND parent_atoms) rather than plain satisfiability -- this is mathematically necessary because a globally satisfiable sub_nf may be incompatible with specific parent_atoms.",
+      "Forward direction (n-var → 2-var) is purely projection, no consistency needed.",
+      "Backward direction (2-var → n-var) needs consistency: C1 (base preds agree with parent_atoms), C2 (base-base orders false), C3/C4 (x-base and base-x orders agree)."
+    ],
+    "build_fix_hints": [
+      "The simp_all timeouts occur in cases blocks where 4 Bool values are enumerated. Replace simp_all with targeted: rfl for matching cases, absurd (h.mp/mpr arg) (by simp [hsub]) for contradictory cases.",
+      "The simp [Fin.ext_iff] works for Fin inequality with numeric literals but may timeout when nested inside cases. Pre-compute the inequality proof as a have before the cases block.",
+      "The base-base order case (.order ⟨i+1,_⟩ ⟨j+1,_⟩) needs careful handling: extract from h_eval₀ that t₀ < t₀ is False, then show sub_nf must be false, then show the atom_eval at the current M is also False."
+    ]
   }
 }
