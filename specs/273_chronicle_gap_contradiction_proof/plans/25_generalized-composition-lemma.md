@@ -142,7 +142,7 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 1: Generalized Composition Lemma [NOT STARTED]
+### Phase 1: Generalized Composition Lemma [IN PROGRESS]
 
 **Goal**: Prove the generalized composition theorem for arbitrary arity n with budget parameter b, using strong induction on b. This is the intra-structure analog of the `build_bicompat`/`CompData` pattern in NEquivalence.lean.
 
