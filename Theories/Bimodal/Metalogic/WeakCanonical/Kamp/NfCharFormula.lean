@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
 import Bimodal.Metalogic.WeakCanonical.Kamp.Translation
 import Bimodal.Metalogic.WeakCanonical.NormalForm
@@ -569,7 +570,17 @@ theorem nf_2var_exist_formula_prior
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  sorry
+  match k with
+  | 0 =>
+    -- Depth 0: use VecEA2-based decomposition (sorry-free)
+    obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
+    exact ⟨A, fun M _ _ t _ => hA M t⟩
+  | k + 1 =>
+    -- Depth k+1: requires composition theorem for non-interval zones.
+    -- The forward direction (nf_exist_formula_forward) is available.
+    -- The backward direction needs the Feferman-Vaught composition lemma
+    -- for linear orders (Doets 1989, Lemma 1.4/1.5).
+    sorry
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
     at depth k+1. This is the approach taken by StaviCompleteness for the
