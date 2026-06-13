@@ -882,6 +882,34 @@ noncomputable def nf_exist_formula_nested
       else
         Formula.bot
 
+/-- At k=0, if all 3-var atoms at (y, x, t) match ssn, then the 2-var
+    projection (dropping variable 2 = t) matches at (y, x). Used for
+    zone 1 (y > x) in nf_full_compat_right_v2_of_eval. -/
+private theorem atomProjDrop_eval_of_3var {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig}
+    {y x t_val : M.carrier}
+    {ssn : AtomKind sig 3 → Bool}
+    (hay : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons y (Fin.cons x (fun _ => t_val))) a ↔ ssn a = true) :
+    nf_eval_nf M 0 2 (Fin.cons y (fun _ => x)) (atomProjDrop 2 ⟨2, by omega⟩ ssn) := by
+  intro a
+  have h_lift : ∀ (i : Fin 2), (Fin.cons y (fun _ : Fin 1 => x) : Fin 2 → _) i =
+      (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t_val)) : Fin 3 → _) (liftSkip 2 ⟨2, by omega⟩ i) := by
+    intro ⟨i, hi⟩
+    simp only [liftSkip]
+    split
+    · next h => match i, hi with | 0, _ => simp [Fin.cons] | 1, _ => simp [Fin.cons]; rfl
+    · next h => omega
+  match a with
+  | .pred p i =>
+    simp only [atomProjDrop, atom_eval]
+    exact (h_lift i) ▸ (hay (.pred p (liftSkip 2 ⟨2, by omega⟩ i)))
+  | .order i j h_ne =>
+    simp only [atomProjDrop, atom_eval]
+    rw [h_lift i, h_lift j]
+    exact hay (.order (liftSkip 2 ⟨2, by omega⟩ i) (liftSkip 2 ⟨2, by omega⟩ j)
+      (fun h => h_ne (liftSkip_injective 2 ⟨2, by omega⟩ h)))
+
 /-! ## Forward Direction: Witnesses → Formula Truth -/
 
 /-- If any witness y matches all atoms of ssn, then ssn's x-pred, t-pred,
@@ -1133,6 +1161,146 @@ private theorem nf_full_compat_left_of_eval
   · have hf : (!sub_nf.2 ssn) = true := by
       cases h : sub_nf.2 ssn <;> simp_all
     simp only [hf, ite_true, ite_self]
+
+set_option maxHeartbeats 8000000 in
+/-- The characteristic NF of x at depth k+1 passes nf_full_compat_right_v2
+    when x actually satisfies nf_eval_nf for sub_nf. Like nf_full_compat_right_of_eval
+    but for the strengthened v2 filter with zone 1/2/4 quantifier checks.
+
+    At k=0: all zone checks are provable (atoms determine everything).
+    At k > 0: zone checks are conservative (true), so same as v1. -/
+private theorem nf_full_compat_right_v2_of_eval
+    {sig : MonadicSignature} {k : Nat}
+    {M : OrderedMonadicStructure sig}
+    {x t : M.carrier}
+    (nf_x : NormalForm sig (k + 1) 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_nfx : nf_eval_nf M (k + 1) 1 (fun _ => x) nf_x)
+    (h_eval : nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf)
+    (h_atoms_t : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_lt : t < x) :
+    nf_full_compat_right_v2 nf_x parent_atoms sub_nf = true := by
+  simp only [nf_full_compat_right_v2, List.all_eq_true]; intro ssn _
+  have h_quant := h_eval.2
+  -- Key helper: if sub_nf.2 ssn = true, there exists a witness y with all atoms matching
+  have ssn_atoms_from_true : sub_nf.2 ssn = true →
+      ∃ y, ∀ a : AtomKind sig 3,
+        atom_eval M (Fin.cons y (Fin.cons x (fun _ => t))) a ↔ ssn.atom_assgn a = true := by
+    intro hsub; obtain ⟨y, hy⟩ := (h_quant ssn).mpr hsub
+    exact ⟨y, by cases k with | zero => exact hy | succ k' => exact hy.1⟩
+  by_cases hsub : sub_nf.2 ssn = true
+  · -- sub_nf.2 ssn = true: prove each zone check passes
+    obtain ⟨y, hay⟩ := ssn_atoms_from_true hsub
+    have ⟨hxp, htp, hxt, hpreds⟩ := ssn_compat_of_witness hay h_nfx h_eval h_atoms_t
+    have hns : (!sub_nf.2 ssn) = false := by rw [hsub]; rfl
+    -- Helper: derive y = x when ssn_y_eq_x, then pred-0 match with nf_x
+    have h_pred0_x : ssn_y_eq_x ssn = true →
+        (Fintype.elems (α := sig.preds)).val.toList.all (fun p =>
+          ssn.atom_assgn (.pred p ⟨0, by omega⟩) == nf_x.atom_assgn (.pred p ⟨0, by omega⟩)) = true := by
+      intro hyeq; rw [List.all_eq_true]; intro p _; rw [beq_iff_eq]
+      have h_yx : y = x := by
+        by_contra h_ne
+        simp only [ssn_y_eq_x, Bool.and_eq_true, Bool.not_eq_true'] at hyeq
+        rcases lt_or_gt_of_ne h_ne with hlt | hlt
+        · have h_v := (hay (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyeq this; simp_all
+        · have h_v := (hay (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyeq this; simp_all
+      subst h_yx; exact Bool.eq_iff_iff.mpr ((hpreds p).trans (h_nfx.1 (.pred p 0)))
+    -- Helper: derive y = t when ssn_y_eq_t, then pred-0 match with parent_atoms
+    have h_pred0_t : ssn_y_eq_t ssn = true →
+        ∀ p ∈ (Fintype.elems (α := sig.preds)).val.toList,
+          (ssn.atom_assgn (.pred p ⟨0, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)) = true := by
+      intro hyet p _; rw [beq_iff_eq]
+      have h_yt : y = t := by
+        by_contra h_ne
+        simp only [ssn_y_eq_t, Bool.and_eq_true, Bool.not_eq_true'] at hyet
+        rcases lt_or_gt_of_ne h_ne with hlt | hlt
+        · have h_v := (hay (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyet this; simp_all
+        · have h_v := (hay (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+          simp only [atom_eval] at h_v
+          have := h_v (show (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨2, by omega⟩ <
+            (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ from by
+              simp [Fin.cons]; exact hlt)
+          simp only [NormalForm.atom_assgn] at hyet this; simp_all
+      subst h_yt
+      have h1 := (hpreds p).trans (h_atoms_t (.pred p ⟨0, by omega⟩))
+      simp only [atom_eval] at h1; exact Bool.eq_iff_iff.mpr h1
+    -- Helper: zone1 quantifier check passes in the positive case.
+    -- From witness y with y > x (zone 1), we can show nf_x.2(proj) = true.
+    have h_zone1_pos : ssn_y_above_x ssn = true →
+        ssn_x_pred_compat ssn nf_x = true → ssn_t_pred_compat ssn parent_atoms = true →
+        zone1_quant_check k nf_x ssn sub_nf = true := by
+      intro hya _ _
+      cases k with
+      | succ k' => simp [zone1_quant_check]
+      | zero =>
+        simp only [zone1_quant_check, beq_iff_eq]
+        -- At k=0: show nf_x.quant_assgn (proj) = sub_nf.quant_assgn ssn = true
+        rw [show sub_nf.quant_assgn ssn = sub_nf.2 ssn from rfl, hsub]
+        -- Need: nf_x.quant_assgn (atomProjDrop 2 ⟨2, ...⟩ ssn) = true
+        -- From witness y with y > x, (y, x) satisfies proj, so nf_x.2(proj) = true
+        rw [show nf_x.quant_assgn = nf_x.2 from rfl]
+        have h_yx : y > x := by
+          have := (hay (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr
+          simp only [atom_eval] at this
+          have hfc30 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨0, by omega⟩ = y := by simp [Fin.cons]
+          have hfc31 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → _) ⟨1, by omega⟩ = x := by simp [Fin.cons]; rfl
+          rw [hfc30, hfc31] at this
+          simp only [ssn_y_above_x, NormalForm.atom_assgn] at hya
+          exact this hya
+        -- y witnesses nf_x.2(proj) = true at k=0.
+        -- Use atomProjDrop_eval_of_3var to map 3-var atom match to 2-var.
+        have h_proj := atomProjDrop_eval_of_3var hay
+        have h_nfx2 := (h_nfx.2 (atomProjDrop 2 ⟨2, by omega⟩ ssn)).mp
+        show nf_x.2 (atomProjDrop 2 ⟨2, by omega⟩ ssn) = true
+        apply h_nfx2; exact ⟨y, h_proj⟩
+    -- Helper: zone24 quantifier check passes in the positive case.
+    have h_zone24_pos : zone24_quant_check k ssn sub_nf = true := by
+      cases k with
+      | succ k' => simp [zone24_quant_check]
+      | zero =>
+        simp only [zone24_quant_check]
+        exact hsub
+    -- Close all branches via split_ifs
+    simp only [hns, ite_false]
+    split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13 <;> first
+      | rfl
+      | exact h_zone24_pos
+      | (apply h_zone1_pos <;> simp_all [Bool.and_eq_true])
+      | (exfalso; simp_all [Bool.and_eq_true, List.all_eq_true, beq_iff_eq])
+  · -- sub_nf.2 ssn = false: prove each branch returns true
+    have hf : (!sub_nf.2 ssn) = true := by
+      cases h : sub_nf.2 ssn <;> simp_all
+    -- At k > 0: zone checks are all `true`, so same as v1
+    -- At k = 0: need to show zone checks handle false correctly
+    cases k with
+    | succ k' =>
+      -- k > 0: zone checks are true, same closing as v1
+      simp only [zone1_quant_check, zone24_quant_check, hf, ite_true, ite_self]
+    | zero =>
+      -- k = 0: zone checks need special handling
+      simp only [zone1_quant_check, zone24_quant_check]
+      -- zone1: (nf_x.quant_assgn proj == false) must be true
+      -- zone24: sub_nf.quant_assgn ssn = false, but atom compat branch is unreachable
+      -- The key: show that atom-compat branches for zones 2,4 are unreachable
+      -- because atom compat + y=x/y=t implies sub_nf.2 ssn = true (contradicting neg)
+      -- For zone 1: show nf_x.2(proj) = false
+      sorry  -- Zone-specific negative case proofs at k=0
 
 set_option maxHeartbeats 2000000 in
 /-- Forward direction of nf_exist_formula_nested at depth k+1.
