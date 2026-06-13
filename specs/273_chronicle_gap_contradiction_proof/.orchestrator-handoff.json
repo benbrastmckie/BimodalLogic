@@ -1,16 +1,45 @@
 {
-  "status": "blocked",
-  "summary": "Phase 5a partially completed: neg_bracket_syn completeness proved sorry-free, but soundness direction BLOCKED for Case C due to fundamental interval mismatch between syntactic counter-pattern witnesses and bf witnesses. Reduced VecEADecomposition.lean from 5 sorries to 2. Also fixed caseB construction (1-witness with alpha0.neg.conj beta0.neg) and proved prepend_holds_direct.",
-  "phases_completed": 4,
-  "phases_total": 8,
-  "blockers": [
-    "neg_bracket_syn_iff soundness: Case C counter-pattern bf_tail_neg.prepend(beta0,alpha0) can coexist with bf.holds because tail negation operates on interval (r, z1) while bf.tail operates on (w(0), z1) with potentially different first witnesses. Open-interval semantics prevent bracket constraints from forcing witness alignment."
+  "status": "partial",
+  "summary": "Filled the sorry at KampPrior.lean:149 by importing NfCharFormula.lean and delegating to nf_characterizable_temporal_prior_classical via Classical.indefiniteDescription. The IH (Subtype form) is converted to Exists form, passed to nf_characterizable_temporal_prior_classical, and the result converted back. KampPrior.lean now has 0 code sorries. The dependency on sorryAx is inherited from nf_2var_exist_formula_prior (NfCharFormula.lean:572), which chains to nf_exist_formula_nested_backward (NegationClosure.lean:1379).",
+  "phases_completed": 3,
+  "phases_total": 6,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 572,
+      "statement": "theorem nf_2var_exist_formula_prior",
+      "assumption": "Classical existence of temporal formula for 2-var sub-NF existential on Prior structures",
+      "why_deferred": "Backward direction of 2-var existence formula requires composition (Feferman-Vaught for NFs). Forward direction is proved.",
+      "next_dispatch": "Fill via master_induction's P2 which uses nf_exist_formula_nested_backward"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1379,
+      "statement": "nf_exist_formula_nested_backward (backward at depth k+1)",
+      "assumption": "Formula truth implies existential realization of depth-(k+1) 2-var NF",
+      "why_deferred": "Blocked on Feferman-Vaught composition lemma for NormalForms (nf_3var_from_1var_nfs at k >= 1)",
+      "next_dispatch": "Resolve composition lemma or find alternative proof strategy"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 113,
+      "statement": "nf_3var_from_1var_nfs (witness merging, succ k case)",
+      "assumption": "Quarantined: 2 sorries in witness transfer direction",
+      "why_deferred": "Core mathematical blocker for the full chain",
+      "next_dispatch": "Resolve witness transfer or explore alternative approach"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
+      "line": 285,
+      "statement": "neg_bracket_syn_iff (soundness Case C)",
+      "assumption": "Quarantined dead code, not on critical path",
+      "why_deferred": "Not needed for main theorem chain",
+      "next_dispatch": "No action needed"
+    }
   ],
-  "continuation_context": "Phase 5a BLOCKED on neg_bracket_syn_iff soundness. 4 resolution paths documented in plan v22 blocker note and handoff phase-5a-handoff-20260612e.md: (a) compactness/finiteness lift of semantic neg_2var_vec_ea, (b) semantic Prop 4.3 with model-dependent VVecEA2, (c) canonical witness lemma for bf.holds, (d) different syntactic construction avoiding prepend. Path (c) seems most direct. Requires research to determine feasibility before re-planning.",
+  "blockers": [],
+  "continuation_context": "KampPrior.lean:149 sorry is FILLED. The remaining sorry chain is: kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior -> nf_characterizable_temporal_prior_classical -> nf_2var_exist_formula_prior (sorry) -> which should be filled by master_induction's P2 -> nf_exist_formula_nested_backward (sorry) -> blocked on composition lemma.",
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean", "type": "lean_source", "summary": "Syntactic negation: completeness sorry-free, soundness BLOCKED (2 sorries)"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5a-handoff-20260612e.md", "type": "handoff", "summary": "Blocker analysis with 4 resolution paths"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/22_path-b-decomposition-plan.md", "type": "plan", "summary": "Plan v22 with Phase 5a marked BLOCKED with blocker documentation"}
-  ],
-  "next_action_hint": "revise_plan"
+    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md", "type": "plan"}
+  ]
 }

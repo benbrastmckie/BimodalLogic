@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -143,10 +144,19 @@ noncomputable def nf_characterizable_temporal_prior
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
   | succ k ih =>
     -- Depth k+1: atom assignment + quantifier assignment
-    -- By IH, every depth-k arity-1 NF has a temporal characterization
-    -- Need to construct temporal formulas for the 2-var existence statements
-    -- This is where Prior-UZ/SZ is essential (Rabinovich Prop 4.2 relativized)
-    sorry
+    -- Convert IH from Subtype to Exists form for nf_characterizable_temporal_prior_classical
+    have ih' : ∀ (nf' : NormalForm sig k 1), ∃ A : Formula,
+        ∀ (M : OrderedMonadicStructure sig)
+          (h_UZ : semantic_prior_UZ M atomMap)
+          (h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔ nf_eval_nf M k 1 (fun _ => t) nf' :=
+      fun nf' => ⟨(ih nf').val, (ih nf').property⟩
+    -- Use nf_characterizable_temporal_prior_classical (NfCharFormula.lean) which
+    -- constructs the characterizing formula via Classical.choose on 2-var existence
+    -- formulas (nf_2var_exist_formula_prior), converting back to Subtype
+    exact Classical.indefiniteDescription _
+      (nf_characterizable_temporal_prior_classical atomMap h_surj k ih' nf)
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,
     proved via Kamp/Rabinovich 2014 (relativized from Dedekind completeness

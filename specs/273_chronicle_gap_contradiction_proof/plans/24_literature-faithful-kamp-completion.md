@@ -148,111 +148,80 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 1: Separation Eliminations (GHR94 Lemmas 10.2.2-10.2.3) [NOT STARTED]
+### Phase 1: Separation Eliminations (GHR94 Lemmas 10.2.2-10.2.3) [COMPLETED]
 
-**Goal**: Implement the core elimination equivalences for {U,S} over discrete (integer) time. These are the 8 cases of pulling U out from under S, plus their duals (pulling S out from under U). Also implement the negation lemmas for Until/Since (Lemma 10.2.2).
+**Status**: ALREADY IMPLEMENTED in existing `Separation/` module (sorry-free).
 
-**Literature**: Gabbay-Hodkinson-Reynolds 1994, Chapter 10, Lemmas 10.2.1, 10.2.2, 10.2.3.
+**Existing Infrastructure**:
+- `Separation/Eliminations.lean` (~47K, 0 sorries): All 8 elimination cases on `int_truth`/`IntStructure`
+- `Separation/DualEliminations.lean` (0 sorries): Dual elimination cases
+- `Separation/NegationEquiv.lean` (0 sorries): Negation of Until/Since
+- `Separation/Defs.lean`: `IntStructure`, `int_truth`, `int_equiv`, `is_syntactically_separated`
+- `Separation/Distributivity.lean` (0 sorries): Distributivity helpers
 
-**Tasks**:
-- [ ] **Task 1.1**: Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationDiscrete.lean`. Define helper predicates: `is_syntactically_separated`, `junction_depth`, and the notion of an atom being "pure past" or "pure future" in the formula tree. Import existing Formula infrastructure.
-- [ ] **Task 1.2**: Prove Lemma 10.2.2 (negation of Until/Since over integer time):
-  - `neg_until : neg(U(A,B)) <-> G(neg(A)) \/ U(neg(A) /\ neg(B), neg(A))`
-  - `neg_since : neg(S(A,B)) <-> H(neg(A)) \/ S(neg(A) /\ neg(B), neg(A))`
-  These require the discrete property (no gaps between consecutive points). In the codebase, discrete = Prior-UZ + Prior-SZ with `SuccOrder` + `NoMaxOrder` + `NoMinOrder`.
-- [ ] **Task 1.3**: Prove the 8 elimination cases (Lemma 10.2.3). Each case converts `S(X, Y)` where X or Y contains `U(A,B)` into an equivalent formula where U(A,B) is no longer under S. The 8 cases are:
-  1. `S(a /\ U(A,B), q)` -- U witness in the guard, past witness from S
-  2. `S(a /\ neg(U(A,B)), q)` -- negated U in the guard
-  3. `S(a, q \/ U(A,B))` -- U witness in the event
-  4. `S(a, q \/ neg(U(A,B)))` -- negated U in the event
-  5. `S(a /\ U(A,B), q \/ U(A,B))` -- U in both positions
-  6. `S(a /\ neg(U(A,B)), q \/ U(A,B))` -- negated guard, positive event
-  7. `S(a /\ U(A,B), q \/ neg(U(A,B)))` -- positive guard, negated event
-  8. `S(a /\ neg(U(A,B)), q \/ neg(U(A,B)))` -- negated in both
-  Each proven by direct semantic argument over discrete time. The dual (U under S -> U above S) follows by symmetry.
-- [ ] **Task 1.4**: Validate Case 1 compiles and is correct. This is the gate check: if Case 1 works, the remaining 7 follow the same pattern. If Case 1 reveals fundamental type-level issues, STOP and report before proceeding.
-
-**Timing**: 5 hours (~400-500 lines)
-
-**Depends on**: none
-
-**Files to create**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationDiscrete.lean` (NEW)
-
-**Verification**:
-- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.SeparationDiscrete` succeeds
-- Case 1 is sorry-free with correct semantics verified by `lean_verify`
-- All 8 cases + duals sorry-free
-
-**Implementation Notes**:
-- The elimination equivalences are valid specifically over integer (discrete) time. In the codebase, the relevant structures satisfy `SuccOrder`, `PredOrder`, `NoMaxOrder`, `NoMinOrder`, and `semantic_prior_UZ`/`semantic_prior_SZ`. The proofs use: (a) every point has an immediate successor and predecessor, (b) U(T, bot) = "next" is definable, (c) Prior-UZ/SZ provide first-witness properties.
-- The paper's "atoms" are propositional variables. In our codebase, these correspond to `Formula.atom a`. The elimination lemmas work at the formula level, not the MonadicFormula level.
-- The formula `G(neg(A))` is defined as `neg(U(T, neg(neg(A))))` = `neg(U(T, A))`. Similarly `H(neg(A))` = `neg(S(T, A))`.
-- Cases 2, 3, 6, 8 reduce to other cases + Lemma 10.2.2. Cases 1, 4, 5, 7 are the core semantic arguments.
+**No new code needed.** Phase 1 of plan v24 duplicates existing sorry-free infrastructure.
 
 ---
 
-### Phase 2: Separation Theorem (GHR94 Lemmas 10.2.4-10.2.8) [NOT STARTED]
+### Phase 2: Separation Theorem (GHR94 Lemmas 10.2.4-10.2.8) [COMPLETED]
 
-**Goal**: Build up from the elimination cases to the full separation theorem: every formula in {U,S} is equivalent to a syntactically separated formula over discrete time.
+**Status**: ALREADY IMPLEMENTED in existing `Separation/` module (sorry-free).
 
-**Literature**: GHR94 Chapter 10, Lemmas 10.2.4-10.2.8, Theorem 10.2.9.
+**Existing Infrastructure**:
+- `Separation/SeparationThm.lean` (0 sorries): Full separation theorem (`separation_theorem_int`, `proper_separation_theorem_int`, `all_formulas_properly_separable`)
+- `Separation/Hierarchy/` (0 sorries): Junction depth induction hierarchy
+- `Separation/TemporalClosure.lean` (0 sorries): Temporal closure
+- `Separation/Duality.lean` (0 sorries): Duality
+- `Separation/FormulaOps.lean` (0 sorries): Formula substitution operations
+- `Separation/SemanticBridge.lean` (0 sorries): Bridge from `int_truth` to `temporal_truth` on `ZStructure`
+  - `int_truth_eq_temporal_truth_Z`: `int_truth ↔ temporal_truth` for box-free formulas on Z-carrier
+  - `int_equiv_implies_temporal_equiv_Z`: `int_equiv → temporal_truth` equivalence on Z
+  - `temporal_truth_order_iso`: Transfer through order isomorphisms
+- `Separation/KampTranslation.lean` (0 sorries): `nf_depth0_char_formula`, `formula_conjList`, `formula_disjList`
 
-**Tasks**:
-- [ ] **Task 2.1**: Prove Lemma 10.2.4 (single-connective separation): `S(C, F)` where C and F contain at most `U(A,B)` (not nested under S) can be separated. Uses the 8 cases from Phase 1.
-- [ ] **Task 2.2**: Prove Lemma 10.2.5 (single U(A,B) with arbitrary S-nesting): induction on the maximum depth of S above U(A,B). Uses Lemma 10.2.4.
-- [ ] **Task 2.3**: Prove Lemma 10.2.6 (multiple U(A_i, B_i)): induction on n (number of distinct U-subformulas). Uses atom replacement technique and Lemma 10.2.5.
-- [ ] **Task 2.4**: Prove Lemma 10.2.7 (nested U under S but no S under U): induction on the maximum depth of U-nesting under S. Reduces to Lemma 10.2.6 by flattening.
-- [ ] **Task 2.5**: Prove Lemma 10.2.8 (the full separation lemma): induction on junction depth (alternation depth of U/S nesting). Uses Lemma 10.2.7 and the dual argument for S under U.
-- [ ] **Task 2.6**: State Theorem 10.2.9 (Separation Theorem): every formula is equivalent to a separated formula over discrete time. Immediate corollary of Lemma 10.2.8.
+**No new code needed.** Phase 2 of plan v24 duplicates existing sorry-free infrastructure.
 
-**Timing**: 4 hours (~300-400 lines)
-
-**Depends on**: 1
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationDiscrete.lean` -- continuation
-
-**Verification**:
-- `lake build` succeeds for SeparationDiscrete.lean with 0 sorries
-- The separation theorem statement matches GHR94 Theorem 10.2.9
-
-**Implementation Notes**:
-- The junction depth induction (Lemma 10.2.8) requires well-founded recursion on a natural number (junction depth of the formula). Lean's built-in Nat well-foundedness suffices.
-- The atom replacement technique in Lemma 10.2.6 (replacing U(A_i, B_i) with fresh atoms q_i) must be formalized as a formula substitution. This requires a substitution function on `Formula` that replaces specific subformulas with atoms.
-- The "dual" arguments (S under U) are symmetric to U under S. Implement one direction and derive the other by a duality lemma if possible, or prove both directly.
+**Key available results for Phase 3**:
+- `separation_theorem_int (φ : Formula) : is_separable φ` — every formula separable over ℤ
+- `int_truth_eq_temporal_truth_Z` — bridges int_truth to temporal_truth on ZStructure
+- `temporal_truth_order_iso` — transfers temporal_truth through order isomorphisms
 
 ---
 
-### Phase 3: Expressive Completeness Bridge [NOT STARTED]
+### Phase 3 REVISED: Expressive Completeness Bridge [NOT STARTED]
 
-**Goal**: Derive {U,S} expressive completeness over Prior structures from the separation theorem, and produce P1(k) for all k as a consequence. This bridges the separation-based proof to the `kamp_prior_expressive_completeness` interface.
+**Goal**: Using the EXISTING sorry-free separation infrastructure, build the bridge from separation to {U,S} expressive completeness on Prior structures, and derive P1(k) for all k.
 
-**Literature**: GHR94 Theorem 10.2.10, Reynolds 1994 Theorem 5, and the connection to Doets' Lemma (Chapter 9 separation -> expressive completeness bridge).
+**Key Discovery**: The separation theorem (Phases 1-2) is already proved on `IntStructure`/`int_truth` (ℤ). The semantic bridge (`SemanticBridge.lean`) connects `int_truth` to `temporal_truth` on `ZStructure`. The remaining gap is: transferring from ZStructure (carrier = ℤ) to general `OrderedMonadicStructure` satisfying `semantic_prior_UZ`/`semantic_prior_SZ`.
 
 **Tasks**:
-- [ ] **Task 3.1**: Prove {U,S} expressive completeness over discrete linear orders. The argument: by the separation theorem, every temporal formula is a Boolean combination of pure future, pure past, and present formulas. By Chapter 9 (specifically Doets' Lemma / the NF bridge), this implies every monadic FO formula with one free variable has a temporal equivalent. This step may use the existing `doets_lemma_1_1` or `nf_to_formula` + `nf_to_formula_correct` infrastructure.
-- [ ] **Task 3.2**: Prove Reynolds Theorem 5 (US expressive completeness over Prior structures). The argument: (a) {U,S,U',S'} expressive completeness holds for all linear structures (this is `stavi_expressive_completeness` in the codebase, but we can also derive it from the separation approach for discrete time since Prior structures are discrete); (b) over Prior structures, U'(A,B) is always False (because Prior-UZ blocks definable gaps); (c) therefore {U,S} suffices.
-  - Alternative simpler argument: Since Prior structures with the standard axioms model discrete linear orders, and the separation theorem gives {U,S} expressive completeness for discrete time directly, we can bypass the Stavi connectives entirely.
-- [ ] **Task 3.3**: Derive `nf_characterizable_temporal_prior` for all k from expressive completeness. Given P1_all: "for all MonadicFormula sig 1 psi, there exists Formula A equivalent over Prior structures", we obtain P1(k) by applying P1_all to `nf_to_formula nf` for each `nf : NormalForm sig k 1`.
-- [ ] **Task 3.4**: Construct a `kamp_prior_expressive_completeness`-compatible term from the separation-derived expressive completeness.
+- [ ] **Task 2.1**: Prove Kamp expressive completeness on ZStructure: for every `MonadicFormula sig 1`, there exists a `Formula` equivalent under `temporal_truth` on `ZStructure`. Uses: `table_correctness` (Formula → MonadicFormula → eval), `doets_lemma_1_1` (MonadicFormula → NF decomposition), `nf_to_formula` + `nf_to_formula_correct` (NF → MonadicFormula), and the separation theorem via `int_equiv_implies_temporal_equiv_Z`.
+- [ ] **Task 2.2**: Transfer ZStructure result to Prior structures. Argument: temporal_truth of box-free formulas transfers through order isomorphisms (`temporal_truth_order_iso`). Prior structures satisfying `semantic_prior_UZ`/`semantic_prior_SZ` have carrier order structure compatible with ℤ.
+- [ ] **Task 2.3**: Derive `nf_characterizable_temporal_prior` for all k from expressive completeness.
+- [ ] **Task 2.4**: Construct a `kamp_prior_expressive_completeness`-compatible term from the separation-derived expressive completeness.
 
-**Timing**: 3 hours (~200-300 lines)
+**Timing**: 6 hours (~400-600 lines)
 
-**Depends on**: 2
+**Depends on**: none (uses existing Separation module)
 
 **Files to create/modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationDiscrete.lean` -- expressive completeness theorems
-- OR a new file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationBridge.lean` if SeparationDiscrete grows too large
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationBridge.lean` (NEW) -- bridge from Separation module to Prior expressive completeness
 
 **Verification**:
 - The derived `nf_characterizable_temporal_prior` for all k is sorry-free
 - The type signature matches KampPrior.lean:131-138
 
 **Implementation Notes**:
-- The key challenge in Task 3.1 is the bridge from "separation holds" to "expressive completeness." In GHR94, this uses Chapter 9's results on the connection between separation and expressive completeness. The codebase may have this bridge partially available via the Doets lemma infrastructure.
-- Task 3.2 alternative is simpler: since Prior structures satisfy the discrete axioms (SuccOrder, PredOrder, etc.), the separation theorem applies directly to them. We don't need U'/S' at all.
-- Task 3.3 uses `nf_to_formula_correct` (NormalForm.lean:719) which provides: `eval M env (nf_to_formula nf) <-> nf_eval_nf M k n env nf`. Combined with expressive completeness (every `MonadicFormula sig 1` has a temporal equivalent), this gives: for each `nf`, `nf_to_formula nf` has a temporal equivalent, which is semantically equivalent to `nf_eval_nf`.
+- **Existing infrastructure to use**:
+  - `Separation.separation_theorem_int` — every Formula is separable over ℤ
+  - `Separation.int_truth_eq_temporal_truth_Z` — int_truth ↔ temporal_truth on ZStructure (box-free)
+  - `Separation.int_equiv_implies_temporal_equiv_Z` — int_equiv → temporal_truth equiv on Z
+  - `Separation.temporal_truth_order_iso` — temporal_truth transfers through order isomorphisms
+  - `table_correctness` — `eval M (fun _ => t) (table sig atomMap φ) ↔ temporal_truth M atomMap t φ`
+  - `doets_lemma_1_1` — NF decomposition of MonadicFormulas
+  - `nf_to_formula` + `nf_to_formula_correct` — NF → MonadicFormula with correctness
+- **Key mathematical argument**: For any MonadicFormula ψ (arity 1), the formula `table sig atomMap ψ` is a temporal Formula with `eval M env ψ ↔ temporal_truth M atomMap t (table ψ)`. Since `table ψ` is separable over ℤ (by separation_theorem_int), and separation preserves int_equiv, the separated form is int_equiv to `table ψ`. Via the semantic bridge, this transfers to temporal_truth equivalence on Z-structures. The Prior structure transfer uses the fact that box-free temporal_truth depends only on the linear order + predicate interpretation.
+- **Alternative approach**: Instead of the full separation-to-completeness bridge, prove `nf_characterizable_temporal_prior` directly by induction on k, using the separation theorem to handle the negation closure step. This is closer to the original Rabinovich argument but replaces the Feferman-Vaught composition lemma with the separation theorem for handling the 2-variable existentials.
 
 ---
 
@@ -343,8 +312,8 @@ Phases are fully sequential. Each phase builds on the prior.
 - [x] Phase 3 (v21): Translation correctness sorry-free (DONE)
 - [x] Phase 4 (v22): All negation closure sub-phases sorry-free (DONE)
 - [x] Phase 0 (v23): Preconditions verified, VecEADecomposition quarantined (DONE)
-- [ ] Phase 1 (v24): All 8 elimination cases + duals sorry-free
-- [ ] Phase 2 (v24): Separation theorem sorry-free
+- [x] Phase 1 (v24): All 8 elimination cases + duals sorry-free (EXISTING: Separation/Eliminations.lean)
+- [x] Phase 2 (v24): Separation theorem sorry-free (EXISTING: Separation/SeparationThm.lean)
 - [ ] Phase 3 (v24): Expressive completeness bridge sorry-free, P1(k) derived
 - [ ] Phase 4 (v24): KampPrior.lean:149 sorry-free, downstream chain closed
 - [ ] Phase 5 (v24): chronicle_gap_contradiction sorry-free (or sorry only in Case B with justification)
