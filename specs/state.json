@@ -1393,7 +1393,7 @@
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "KampPrior.lean:149 sorry syntactically filled (delegates to NfCharFormula.lean) but sorryAx persists through nf_2var_exist_formula_prior -> nf_exist_formula_nested_backward -> Feferman-Vaught composition lemma. GHR94 separation bypass not yet attempted. Phase 3 partial."
+      "blockers": "generalized_composition zone matching (NfComposition.lean:258): Multi-point zone matching on linear orders. nf_drop_last and nf_1var_from_2var_agree now sorry-free. Single sorry remains. Theorem may need h_nf at depth k+n (Doets 1989 Lemma 1.5) instead of k+1."
     },
     {
       "project_number": 290,
