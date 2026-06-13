@@ -159,7 +159,9 @@ structural argument applies but requires more case analysis on
 order constraints (sorry for now). -/
 
 /-- ExistPart(0): the existential is characterizable at depth 0.
-    Sorry-free at n=1, sorry at n >= 2. -/
+    Sorry-free at n=1. At n >= 2, the satisfiable case is sorry
+    (Fin bookkeeping for the n-var to 2-var reduction).
+    The unsatisfiable case is sorry-free. -/
 theorem existPart_zero {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
@@ -249,15 +251,28 @@ theorem existPart_zero {sig : MonadicSignature}
       -- (4) all order(i, 0) for i >= 1 agree
       -- These are static properties of sub_nf (decidable on Bool functions).
       -- Rather than checking each one, we use a single classical argument.
-      by_cases h_sat : ∃ (M : OrderedMonadicStructure sig) (t : M.carrier) (x : M.carrier),
-          nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf
-      · -- sub_nf is satisfiable. Show the 2-var formula works.
+      rcases Classical.em (∃ (M : OrderedMonadicStructure sig) (t : M.carrier) (x : M.carrier),
+          nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf) with h_sat | h_sat
+      · -- sub_nf is satisfiable. The n-var existential reduces to the
+        -- 2-var projection after verifying consistency conditions
+        -- (C1-C4: predicates match, no base orders, x-vs-t orders agree).
+        -- These conditions are extractable from the witness in h_sat
+        -- since they are properties of sub_nf (a Bool function), not
+        -- of any particular structure.
+        --
+        -- The full proof requires extensive Fin index bookkeeping to
+        -- transfer between the n-var and 2-var NF evaluations.
+        -- The mathematical content is identical to the n=1 case:
+        -- the additional base variables all equal t, so they contribute
+        -- no new information beyond what parent_atoms already captures.
         sorry
       · -- sub_nf is unsatisfiable. ⊥ works.
-        push_neg at h_sat
         refine ⟨Formula.bot, fun M _ _ t _ => ?_⟩
         simp only [temporal_truth]
-        exact ⟨fun h => absurd h id, fun ⟨x, hx⟩ => h_sat M t x hx⟩
+        constructor
+        · intro h; exact absurd h id
+        · rintro ⟨x, hx⟩
+          exact absurd ⟨M, t, x, hx⟩ h_sat
 
 /-! ## ExistPart: Step Case
 
