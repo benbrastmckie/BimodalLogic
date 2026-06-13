@@ -1239,14 +1239,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T19:48:40Z",
+      "last_updated": "2026-06-12T23:45:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1336,17 +1336,27 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md",
           "type": "plan",
           "summary": "Plan v23: quarantine VecEADecomposition, NF-specific Prop 4.3 bypass, chronicle_gap fill"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md",
+          "type": "report",
+          "summary": "Blocker research: root blocker is nf_characterizable_temporal_prior succ k; all alternative paths converge on same Feferman-Vaught difficulty; GHR94 separation approach identified"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md",
+          "type": "plan",
+          "summary": "Plan v24: GHR94 Ch10.2 syntactic separation approach, bypasses composition lemma entirely"
         }
       ],
-      "next_artifact_number": 24,
+      "next_artifact_number": 25,
       "researched": "2026-06-12T18:56:55Z",
       "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 8,
+        "phases": 6,
+        "total_effort_hours": 16,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 23,
+        "plan_version": 24,
         "dependency_waves": [
           [
             0
@@ -1366,10 +1376,15 @@
             "path": "reports/23_team-research.md",
             "integrated_in_plan_version": 23,
             "integrated_date": "2026-06-12"
+          },
+          {
+            "path": "reports/24_blocker-research.md",
+            "integrated_in_plan_version": 24,
+            "integrated_date": "2026-06-12"
           }
         ]
       },
-      "session_id": "sess_1781293401_721c6c",
+      "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "neg_bracket_syn_iff soundness (Case C): counter-pattern tail negation operates on interval (r, z1) while bf.tail operates on (w(0), z1); witnesses from independent existentials cannot be forced to coincide. 4 resolution paths in handoffs/phase-5a-handoff-20260612e.md; path (c) canonical witness lemma most direct."
     },

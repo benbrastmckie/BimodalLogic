@@ -6,7 +6,7 @@ next_project_number: 300
 
 ## Task Order
 
-*Updated 2026-06-12. Generated from state.json dependency graph.*
+*Updated 2026-06-13. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -27,9 +27,7 @@ next_project_number: 300
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-    └─ 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
-      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli (see above)
-273 [PLANNED] — Close the two remaining blockers for completeness_discrete: (1) K
+273 [IMPLEMENTING] — Close the two remaining blockers for completeness_discrete: (1) K
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -38,16 +36,9 @@ next_project_number: 300
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
   └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-  └─ 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
-    └─ 193 [NOT STARTED] — codebase_tactic_refactor
-      └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa (see above)
-      └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f (see above)
 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
 194 [NOT STARTED] — migrate_nonempty_to_derivable
-  └─ 192 [NOT STARTED] — master_tactic_dispatch
-    └─ 193 [NOT STARTED] — (automation: codebase_tactic_refactor) (see above)
 176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
-  └─ 254 [NOT STARTED] — (completeness: Final metadata and documentation update ) (see above)
 
 ### Frame Extensions
 
@@ -65,9 +56,6 @@ next_project_number: 300
 ### Toolchain
 
 291 [NOT STARTED] — Upgrade Lean toolchain from v4.27 to v4.31 and update Mathlib to 
-  └─ 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
-  └─ 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
-  └─ 294 [NOT STARTED] — Eliminate all sorry instances in Theorems/ModalS5.lean and Theore
 
 ### Publication Quality
 
@@ -84,18 +72,14 @@ next_project_number: 300
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 186 [NOT STARTED] — unify_search_systems
 187 [NOT STARTED] — backward_chaining_lemma_db
-  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
+  └─ 192 [NOT STARTED] — master_tactic_dispatch
+    └─ 193 [NOT STARTED] — codebase_tactic_refactor
 188 [NOT STARTED] — weakening_aware_search
 189 [NOT STARTED] — deduction_theorem_tactic
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 191 [NOT STARTED] — propositional_decision_procedure
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
-192 [NOT STARTED] — master_tactic_dispatch
-  └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-193 [NOT STARTED] — codebase_tactic_refactor
-  └─ 177 [NOT STARTED] — (formula-refactor: Update all documentation to match final ) (see above)
-  └─ 178 [NOT STARTED] — (formula-refactor: Expand Examples/ with publication-qualit) (see above)
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 
@@ -233,7 +217,7 @@ next_project_number: 300
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -255,7 +239,10 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/reports/12_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/13_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/23_team-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
+  - [273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md]
+- **Plan**:
+  - [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
+  - [273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md]
 
 **Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
 
