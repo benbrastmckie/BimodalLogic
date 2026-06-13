@@ -179,15 +179,85 @@ theorem existPart_zero {sig : MonadicSignature}
       -- At depth 0, sub_nf : AtomKind sig (n''+3) -> Bool
       -- The existential ∃ x, nf_eval_nf M 0 (n''+3) (Fin.cons x (fun _ => t)) sub_nf
       -- means: ∃ x with right predicates and order relative to t.
-      -- Since all base variables map to t, constraints among base vars
-      -- (variables 1..n''+2) are vacuous if they require no strict orders.
-      -- The existence reduces to the same Until/Since pattern as n=1
-      -- after checking consistency of the multi-var order constraints.
+      -- Since all base variables map to t, the n-var existential
+      -- is equivalent to the 2-var existential (with a projection)
+      -- whenever the NF is consistent with all base vars being equal.
+      -- If inconsistent, no witness exists and formula is ⊥.
       --
-      -- The mathematical argument is the same as n=1. The proof requires
-      -- extensive case analysis on Fin indices to reduce the (n+1)-var
-      -- existential to the 2-var projection.
-      sorry
+      -- We use Classical.choice: either ∃ x works on SOME structure,
+      -- or it never does. In the first case, the n-var NF projects
+      -- to a consistent 2-var NF. In the second case, ⊥ works.
+      --
+      -- More precisely: the n-var existential with base (fun _ => t)
+      -- is a first-order condition. By classical logic, there exists
+      -- a formula (either the 2-var projection's formula or ⊥) that
+      -- characterizes it. We use this classical approach to avoid
+      -- the tedious Fin case analysis.
+      --
+      -- Note: at depth 0, no Prior-UZ/SZ is needed (purely atomic).
+      -- The formula works on ALL structures.
+      --
+      -- Approach: use nf_exist_formula at depth 0 for n=1 as the base,
+      -- then classically choose between it and ⊥ for the n-var case.
+      -- This is sound because the n-var existential with base (fun _ => t)
+      -- is determined by sub_nf (a finite function on finite types).
+      --
+      -- Classical existence: for any decidable property on structures,
+      -- there exists a formula (from {⊥, the 2-var formula}) that
+      -- captures the existential.
+      --
+      -- Actually, the cleanest approach: define a 2-var NF that projects
+      -- the (n+1)-var constraints down to 2 variables, then use
+      -- nf_2var_exist_formula_prior_neg. The projection may produce
+      -- an inconsistent NF (e.g., if some base vars require strict
+      -- order among themselves), which nf_exist_formula handles by
+      -- returning ⊥.
+      --
+      -- Define the projection:
+      --   var 0 (x) stays
+      --   var 1 = first base var (all base vars are t)
+      --   predicates: sub_nf(.pred p 0) for x, parent_atoms(.pred p 0) for t
+      --   order(0,1): sub_nf(.order 0 1)
+      --   order(1,0): sub_nf(.order 1 0)
+      let sub_nf_2 : NormalForm sig 0 2 := fun a => match a with
+        | .pred p ⟨0, _⟩ => sub_nf (.pred p ⟨0, by omega⟩)
+        | .pred p ⟨1, _⟩ => parent_atoms (.pred p ⟨0, by omega⟩)
+        | .pred _ ⟨_ + 2, h⟩ => absurd h (by omega)
+        | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
+            sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+              (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+        | .order ⟨1, _⟩ ⟨0, _⟩ _ =>
+            sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+              (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+        | .order ⟨0, _⟩ ⟨0, _⟩ h => absurd rfl h
+        | .order ⟨1, _⟩ ⟨1, _⟩ h => absurd rfl h
+        | .order ⟨0, _⟩ ⟨_ + 2, h⟩ _ => absurd h (by omega)
+        | .order ⟨1, _⟩ ⟨_ + 2, h⟩ _ => absurd h (by omega)
+        | .order ⟨_ + 2, h⟩ _ _ => absurd h (by omega)
+      -- Get the 2-var formula
+      obtain ⟨A_2, hA2⟩ := nf_2var_exist_formula_prior_neg atomMap h_surj 0
+        char_0 char_0_correct parent_atoms sub_nf_2
+      -- Now build the n-var formula using classical logic:
+      -- Either the n-var existential is always equivalent to the 2-var one
+      -- (when sub_nf is consistent), or it's always false.
+      -- In either case, we can pick the right formula classically.
+      --
+      -- The n-var and 2-var existentials agree when:
+      -- (1) predicates at base vars match parent_atoms
+      -- (2) no strict orders among base vars
+      -- (3) all order(0, i) for i >= 1 agree
+      -- (4) all order(i, 0) for i >= 1 agree
+      -- These are static properties of sub_nf (decidable on Bool functions).
+      -- Rather than checking each one, we use a single classical argument.
+      by_cases h_sat : ∃ (M : OrderedMonadicStructure sig) (t : M.carrier) (x : M.carrier),
+          nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf
+      · -- sub_nf is satisfiable. Show the 2-var formula works.
+        sorry
+      · -- sub_nf is unsatisfiable. ⊥ works.
+        push_neg at h_sat
+        refine ⟨Formula.bot, fun M _ _ t _ => ?_⟩
+        simp only [temporal_truth]
+        exact ⟨fun h => absurd h id, fun ⟨x, hx⟩ => h_sat M t x hx⟩
 
 /-! ## ExistPart: Step Case
 
