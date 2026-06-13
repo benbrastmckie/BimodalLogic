@@ -1708,7 +1708,11 @@ private theorem nf_exist_formula_nested_backward
   -- checks atom compatibility, not quantifier conditions for non-interval ssns.
   --
   -- Interval zones (zone 3): positive from Since/Until witnesses in formula.
-  -- Non-interval zones (1,2,4,5): require composition argument not yet available.
+  -- Non-interval zones (1,2,4,5): require composition argument.
+  --
+  -- At k=0: depth-0 3-var NFs are purely atomic; the composition reduces
+  -- to showing 3-var atom existentials are determined by endpoint 1-var NFs.
+  -- At k>=1: requires full Feferman-Vaught composition for linear orders.
   sorry
 
 /-! ## Master Simultaneous Induction -/

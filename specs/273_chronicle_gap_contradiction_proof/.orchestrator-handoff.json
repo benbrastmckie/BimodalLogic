@@ -1,35 +1,53 @@
 {
   "status": "partial",
-  "summary": "Micro-task 2: Extended NfToVecEA.lean (410 -> 634 lines) with Since-direction bracket/VecEA2 translation and proved nf_2var_exist_depth0_tl (sorry-free). Filled k=0 case of nf_2var_exist_formula_prior in NfCharFormula.lean. The k+1 case remains sorry (requires Feferman-Vaught composition for linear orders).",
-  "phases_completed": 1,
-  "phases_total": 2,
+  "summary": "Analyzed and documented the sorry at NfCharFormula.lean:597. Improved documentation explaining why nf_exist_formula is insufficient for backward direction. Identified root blocker at NegationClosure.lean:1716. Updated NegationClosure documentation with k=0 vs k>=1 analysis. Both modules build successfully.",
+  "phases_completed": 0,
+  "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 583,
+      "line": 597,
       "statement": "theorem nf_2var_exist_formula_prior (k+1 case)",
-      "assumption": "For depth k+1, there exists a temporal formula characterizing the 2-var existential",
-      "why_deferred": "Requires Feferman-Vaught composition theorem for linear orders (Doets 1989 Lemma 1.4/1.5) to handle non-interval zones in the 3-var existential decomposition",
-      "next_dispatch": "Prove composition lemma: for y outside [min(x,t), max(x,t)], the 3-var NF of (y,x,t) at depth k is determined by the depth-(k+1) 1-var NFs of x and t"
+      "assumption": "For depth k+1, there exists a temporal formula characterizing the 2-var existential on Prior structures",
+      "why_deferred": "Circular import: NfCharFormula cannot import NegationClosure which provides the solution via master_induction. The sorry is architectural (import ordering), not mathematical. The downstream files (NegationClosure, RabinovichGeneralized) provide the same result.",
+      "next_dispatch": "Fill nf_exist_formula_nested_backward at NegationClosure.lean:1716 (root blocker). At k=0, depth-0 3-var NFs are purely atomic; composition reduces to endpoint 1-var NFs."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1716,
+      "statement": "private theorem nf_exist_formula_nested_backward",
+      "assumption": "Nested existence formula truth implies 2-var NF existential (backward direction)",
+      "why_deferred": "Requires composition argument for non-interval zones. At k=0 purely atomic (provable). At k>=1 requires Feferman-Vaught composition.",
+      "next_dispatch": "Prove k=0 case: case-split on zones, use endpoint 1-var NFs + depth-0 atom evaluation to construct/refute 3-var witnesses"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1327,
+      "statement": "nf_full_compat_right_v2_of_eval (non-critical path, 3 goals)",
+      "assumption": "v2 compatibility filter passes when actual evaluation holds",
+      "why_deferred": "Not on critical path. Goal 1 needs composition. Goals 2,3 are contradiction proofs (y=x, y=t with sub_nf.2 ssn = false).",
+      "next_dispatch": "Low priority. Goals 2,3 closable via h_quant + hsub contradiction."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
       "line": 472,
-      "statement": "have (leaf): bracketBuildLeft_correct (n+1 forward case)",
+      "statement": "bracketBuildLeft_correct (n+1 forward case)",
       "assumption": "Since-direction bracket translation correctness at n >= 1",
-      "why_deferred": "Requires bracket_append_witness and bracket_extract_last_witness lemmas (symmetric to private lemmas in VecEATranslation.lean)",
-      "next_dispatch": "Implement Since-direction bracket witness manipulation (symmetric to bracket_prepend_witness/bracket_extract_first_witness)"
+      "why_deferred": "Requires bracket witness manipulation lemmas symmetric to VecEATranslation",
+      "next_dispatch": "Implement Since-direction bracket prepend/extract"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
       "line": 475,
-      "statement": "have (leaf): bracketBuildLeft_correct (n+1 backward case)",
+      "statement": "bracketBuildLeft_correct (n+1 backward case)",
       "assumption": "Same as above",
       "why_deferred": "Same as above",
       "next_dispatch": "Same as above"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "nf_exist_formula_nested_backward (NegationClosure.lean:1716): backward direction of nested existence formula requires composition argument for non-interval zones"
+  ],
   "continuation_path": null,
   "continuation_context": null
 }

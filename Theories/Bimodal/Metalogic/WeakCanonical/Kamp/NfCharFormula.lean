@@ -576,10 +576,24 @@ theorem nf_2var_exist_formula_prior
     obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
     exact ⟨A, fun M _ _ t _ => hA M t⟩
   | k + 1 =>
-    -- Depth k+1: requires composition theorem for non-interval zones.
-    -- The forward direction (nf_exist_formula_forward) is available.
-    -- The backward direction needs the Feferman-Vaught composition lemma
-    -- for linear orders (Doets 1989, Lemma 1.4/1.5).
+    -- Depth k+1: requires a formula encoding the FULL 2-var NF condition,
+    -- including quantifier conditions (sub_nf.2). The simpler nf_exist_formula
+    -- only encodes atom conditions and is insufficient for the backward direction.
+    --
+    -- The correct approach is the nested formula from NegationClosure.lean
+    -- (nf_exist_formula_nested), which encodes interval quantifier conditions
+    -- via nested Since/Until with depth-(k+1) characteristic formulas for
+    -- interval witnesses. However, NegationClosure.lean imports this file,
+    -- preventing a direct import here.
+    --
+    -- The sorry is filled by nf_2var_exist_formula_prior_fill (NegationClosure.lean:1816)
+    -- or nf_2var_exist_formula_prior_filled (RabinovichGeneralized.lean:500),
+    -- both of which use the master_induction. The sole remaining sorry in that
+    -- chain is nf_exist_formula_nested_backward (NegationClosure.lean:1712),
+    -- which requires a composition argument for non-interval zones.
+    --
+    -- Forward direction (∃ x with NF → formula truth) is available via
+    -- nf_exist_formula_forward'. Only the backward direction is blocked.
     sorry
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
