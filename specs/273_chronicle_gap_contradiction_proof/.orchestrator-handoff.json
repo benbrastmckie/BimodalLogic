@@ -1,50 +1,66 @@
 {
-  "status": "partial",
-  "summary": "Phase 3 task 3.1 completed: evaluated all three bridge options (A/B/C). All reduce to Rabinovich negation closure (Prop 4.2). Task 3.2 deferred -- no option is straightforwardly implementable. Improved n>=2 sorry documentation. Critical Kamp modules build clean.",
+  "status": "blocked",
+  "summary": "Plan v27 Phases 1-2 COMPLETED (existing infrastructure). Phase 3 BLOCKED on composition lemma at NegationClosure.lean:1712 (nf_exist_formula_nested_backward). Key finding: Prop 4.2 (neg_2var_vec_ea, neg_interval_formula) is ALREADY sorry-free. The sole remaining blocker is a Feferman-Vaught composition argument for non-interval zones in the backward direction of the nested formula. Created RabinovichProp42.lean documenting the sorry chain and wiring.",
   "phases_completed": 2,
-  "phases_total": 5,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1712,
       "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Non-interval zone quantifier conditions not encoded in formula",
-      "why_deferred": "Mathematically equivalent to Rabinovich Prop 4.2 negation closure. All three bridge options (A/B/C) reduce to this.",
-      "next_dispatch": "Research: implement Rabinovich Section 5 at NF/formula level, or find counting/classical bypass"
+      "assumption": "Given formula truth for nf_exist_formula_nested at depth k+1, produces ∃ x, nf_eval_nf M (k+1) 2 (x,t) sub_nf",
+      "why_deferred": "Requires composition lemma: non-interval 3-var existentials (y > x, y < t, y = x, y = t zones) must be recoverable from the formula data. The formula encodes interval zones via nested Since/Until but only checks atom compatibility for non-interval zones, causing potential false positives.",
+      "next_dispatch": "Three approaches: (A) Strengthen the formula filter to include quantifier checks, then prove forward direction passes the stronger filter. (B) Prove Feferman-Vaught composition lemma by induction on depth k. (C) Replace nf_exist_formula_nested with a VecEA2-based formula that encodes ALL conditions by construction, avoiding backward analysis entirely."
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 474,
-      "statement": "existPart_succ n>=2 at depth k+1",
-      "assumption": "Depends on n=1 via quantifier projection at mixed base",
-      "why_deferred": "n=1 case has same root blocker",
-      "next_dispatch": "Fill n=1 first"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1327,
+      "statement": "nf_full_compat_right_v2_of_eval (zone quantifier checks)",
+      "assumption": "v2 filter passes when NF evaluation holds",
+      "why_deferred": "Not on critical path (v2 filter not used by formula). Design flaw with inconsistent y-t order atoms.",
+      "next_dispatch": "Not needed unless approach (A) is taken for the main blocker"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
       "line": 291,
-      "statement": "nf_2var_exist_formula_prior_neg backward at k+1",
-      "assumption": "Same root cause",
-      "why_deferred": "Same base environment mismatch",
-      "next_dispatch": "Same resolution"
+      "statement": "nf_2var_exist_formula_prior_neg at k+1",
+      "assumption": "Backward direction at depth k+1",
+      "why_deferred": "Cascade from NegationClosure.lean:1712. Automatically resolved when master_induction becomes sorry-free.",
+      "next_dispatch": "Automatically resolved"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 474,
+      "statement": "existPart_succ at n>=2",
+      "assumption": "Depends on n=1 case",
+      "why_deferred": "Cascade from n=1 case. Automatically resolved when n=1 is filled.",
+      "next_dispatch": "Automatically resolved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 572,
       "statement": "nf_2var_exist_formula_prior",
+      "assumption": "2-var existential at depth k is temporally characterizable on Prior structures",
+      "why_deferred": "Can be filled by nf_2var_exist_formula_prior_fill from NegationClosure.lean once master_induction is sorry-free. Import wiring needed (NfCharFormula cannot import NegationClosure directly due to import direction).",
+      "next_dispatch": "Wire via RabinovichProp42.lean or a new intermediate file"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
+      "line": 359,
+      "statement": "backward direction at k+1",
       "assumption": "Same root cause",
-      "why_deferred": "Same base environment mismatch",
-      "next_dispatch": "Same resolution"
+      "why_deferred": "Cascade from NegationClosure.lean:1712",
+      "next_dispatch": "Automatically resolved"
     }
   ],
   "blockers": [
-    "Phase 3 BLOCKED: all three bridge options (A: generalize ExistPart, B: ExistsForallSpec, C: Rabinovich Section 5) reduce to the Rabinovich negation closure problem (Prop 4.2). Resolution requires implementing the full Rabinovich Section 5 proof (~600-1000 lines) or finding a novel mathematical bypass."
+    "NegationClosure.lean:1712 (nf_exist_formula_nested_backward): The SOLE irreducible sorry. All other sorries on the Kamp chain cascade from this one. Requires either a composition lemma (approach A/B) or a formula redesign (approach C)."
   ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260613-option-eval.md",
+  "continuation_path": null,
   "continuation_context": {
-    "is_successor": true,
-    "phase_resume": 3,
-    "task_3_2_status": "deferred",
-    "recommended_action": "plan_revision"
+    "is_successor": false,
+    "resume_phase": 3,
+    "key_finding": "Phases 1-2 (Prop 4.2 negation closure) are ALREADY sorry-free in existing code. The blocker is NOT Prop 4.2 itself but rather the WIRING from Prop 4.2 to NF existentials -- specifically, the backward direction of nf_exist_formula_nested which requires a composition argument for non-interval zones.",
+    "approach_recommendation": "Approach (C) -- VecEA2-based formula -- is most promising. Instead of analyzing nf_exist_formula_nested backwards, construct the existential formula from scratch using VecEA2 types (which already have sorry-free translation and negation closure). The construction would be: for each quantifier condition, build a VecEA2 encoding the existential/universal condition, then use conjunction closure (sorry-free) and existential closure (sorry-free) to assemble. The correctness is BY CONSTRUCTION, avoiding backward analysis. The main challenge is encoding depth-k 3-var NF evaluation as VecEA2.holds conditions with two free variables (x and t), which requires extending VecEA2.holds from interval semantics to full NF semantics."
   }
 }

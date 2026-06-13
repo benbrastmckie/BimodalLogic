@@ -1,57 +1,43 @@
 {
   "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "session_id": "sess_1781374494_d4f20d",
-  "task_number": 273,
-  "phases_assigned": [3],
-  "started_at": "2026-06-13T12:00:00Z",
-  "requires_user_review": true,
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md",
+      "summary": "Plan v27: Phases 1-2 COMPLETED (existing code), Phase 3 BLOCKED on composition lemma"
+    }
+  ],
+  "next_steps": "Fill composition lemma at NegationClosure.lean:1712 to unblock Phase 3",
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1712,
       "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Non-interval zone quantifier conditions not encoded in formula",
-      "why_deferred": "Mathematically equivalent to Rabinovich Prop 4.2 negation closure. All three bridge options (A/B/C) reduce to this. Requires either full Section 5 implementation (600-1000 lines) or novel bypass.",
-      "next_dispatch": "Research: implement Rabinovich Section 5 at NF/formula level, or find counting/classical bypass"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 474,
-      "statement": "existPart_succ n>=2 at depth k+1",
-      "assumption": "Depends on n=1 case via quantifier projection at mixed base",
-      "why_deferred": "n=1 case delegates to nf_2var_exist_formula_prior_neg which has sorry at k+1",
-      "next_dispatch": "Fill n=1 first, then n>=2 follows by constant-base-projection"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
-      "line": 291,
-      "statement": "nf_2var_exist_formula_prior_neg backward at k+1",
-      "assumption": "Same root cause as nf_exist_formula_nested_backward",
-      "why_deferred": "Same base environment mismatch",
-      "next_dispatch": "Same resolution as root sorry"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 572,
-      "statement": "nf_2var_exist_formula_prior",
-      "assumption": "Same root cause",
-      "why_deferred": "Same base environment mismatch",
-      "next_dispatch": "Same resolution as root sorry"
+      "assumption": "Backward direction needs composition argument for non-interval zones",
+      "why_deferred": "Requires Feferman-Vaught composition for linear orders at depth k",
+      "next_dispatch": "Prove composition by induction on k, or redesign formula using VecEA2 approach"
     }
   ],
   "verification": {
-    "sorry_count": 5,
+    "sorry_count": 8,
     "vacuous_count": 0,
-    "axiom_count": 2,
-    "build_passed": false,
-    "module_build_passed": true,
-    "module_build_note": "Critical Kamp modules build clean (994 jobs). Full build fails on pre-existing errors in CanonicalTaskRelation.lean and RabinovichWiring.lean (not from this dispatch)."
+    "axiom_count": 0,
+    "build_passed": true
   },
   "memory_candidates": [
-    "All three Phase 3 bridge options (A: generalize ExistPart, B: ExistsForallSpec encoding, C: Rabinovich Section 5) reduce to the Rabinovich negation closure problem (Prop 4.2). The base environment mismatch IS the negation closure content.",
-    "The n>=2 case at depth k+1 in existPart_succ CANNOT be filled independently of the n=1 case. The quantifier projection from (n+4)-var to 3-var at depth k requires the same base-environment bridge as the n=1 backward direction.",
-    "RabinovichWiring.lean has pre-existing build errors (Bool.beq_eq_true_iff unknown, pattern mismatches) that are not from task 273 dispatches."
-  ]
+    "Prop 4.2 negation closure (neg_2var_vec_ea, neg_interval_formula) is ALREADY sorry-free in NegationClosure5.lean and NegationClosureProp42.lean",
+    "The sole Kamp chain blocker is nf_exist_formula_nested_backward at NegationClosure.lean:1712 -- all other sorry sites cascade from this one",
+    "master_induction in NegationClosure.lean is a self-contained induction independent of kamp_mutual_induction in RabinovichGeneralized.lean",
+    "VecEA2/VVecEA2 infrastructure (translation, conjunction closure, existential closure) is fully sorry-free",
+    "NfCharFormula.lean cannot import NegationClosure.lean -- wiring must go through a file that imports both"
+  ],
+  "metadata": {
+    "session_id": "sess_1781374494_d4f20d",
+    "agent_type": "lean-implementation-hard-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+    "phase_count": 4,
+    "estimated_hours": 10,
+    "reports_integrated": ["25_formula-construction-research.md"]
+  }
 }
