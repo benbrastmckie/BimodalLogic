@@ -1393,7 +1393,7 @@
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "Rabinovich Prop 3.5 infrastructure built (RabinovichTranslation.lean, 302 lines, sorry-free). Wiring layer built (RabinovichWiring.lean, 365 lines). nf_2var_exist_via_rabinovich: forward proved ALL k, backward proved k=0, backward k+1 sorry — needs Rabinovich Prop 4.2 negation closure."
+      "blockers": "Rabinovich infrastructure complete (4 files, 1349 lines). Two sorries remain in RabinovichGeneralized.lean: existPart_zero n>=2 (depth-0 multi-point zone enumeration, Fin manipulation) and existPart_succ (depth k+1 step, base environment generalization). Both require careful Fin.cons/environment manipulation that automated agents struggle with."
     },
     {
       "project_number": 290,
