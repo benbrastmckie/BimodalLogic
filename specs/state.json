@@ -1346,29 +1346,31 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md",
           "type": "plan",
           "summary": "Plan v24: GHR94 Ch10.2 syntactic separation approach, bypasses composition lemma entirely"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/25_generalized-composition-lemma.md",
+          "type": "plan",
+          "summary": "Plan v25: generalized composition lemma with budget parameter, bypasses fixed-arity blocker"
         }
       ],
-      "next_artifact_number": 25,
+      "next_artifact_number": 26,
       "researched": "2026-06-12T18:56:55Z",
       "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
-        "phases": 6,
-        "total_effort_hours": 16,
+        "phases": 3,
+        "total_effort_hours": 6,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 24,
+        "plan_version": 25,
         "dependency_waves": [
           [
-            0
+            1
           ],
           [
-            5
+            2
           ],
           [
-            6
-          ],
-          [
-            7
+            3
           ]
         ],
         "reports_integrated": [
@@ -1380,6 +1382,11 @@
           {
             "path": "reports/24_blocker-research.md",
             "integrated_in_plan_version": 24,
+            "integrated_date": "2026-06-12"
+          },
+          {
+            "path": "reports/24_blocker-research.md",
+            "integrated_in_plan_version": 25,
             "integrated_date": "2026-06-12"
           }
         ]
