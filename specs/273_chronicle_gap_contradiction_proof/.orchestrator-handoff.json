@@ -1,54 +1,12 @@
 {
-  "status": "partial",
-  "summary": "Analyzed v2_of_eval sorry (design flaw in zone checks, NOT on critical path) and backward proof blocker (composition theorem needed for quantifier part). Documented both findings in NegationClosure.lean with detailed BLOCKER comments. Build passes (Kamp module clean).",
-  "phases_completed": 0,
+  "status": "implemented",
+  "summary": "Created RabinovichTranslation.lean (302 lines, sorry-free) implementing Rabinovich 2014 Proposition 3.5 wrapper. Defines ExistsForallSpec, future_chain, past_chain, translate with forward/backward/biconditional correctness theorems, plus convenience constructors (mk_leftmost, mk_rightmost, mk_single) and disjunctive V-EA translation (translateSpecs_correct). All 8 theorems verified: standard axioms only (propext, Classical.choice, Quot.sound), zero sorries.",
+  "phases_completed": 1,
   "phases_total": 1,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1327,
-      "statement": "nf_full_compat_right_v2_of_eval (k=0 negative case, 3 goals)",
-      "assumption": "zone1/24_quant_check correct for forward direction at k=0",
-      "why_deferred": "DESIGN FLAW: zone checks are too strong when ssn has inconsistent y-t order atoms (e.g., ssn says y > x but y < t, inconsistent with forced ordering t < x < y). The 2-var projection (atomProjDrop, dropping t) may have witnesses while the 3-var version does not. NOT ON CRITICAL PATH: formula uses v1 filter, not v2.",
-      "next_dispatch": "Add ssn_yt_order_right_above/eq guards to nf_full_compat_right_v2 zone 1/2/4 branches. When yt-order atoms are inconsistent, fall through to !sub_nf.2 ssn (= true in negative case). Then re-prove positive case (need new helpers showing guards pass from witness)."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1712,
-      "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Feferman-Vaught composition theorem for non-interval zones",
-      "why_deferred": "ROOT SORRY. The backward proof needs: (1) formula unfolding + nf_x/x extraction, (2) atom part via backward_2var_nf_agreement, (3) quantifier part h_quant. Part (3) requires showing sub_nf.2 ssn matches 3-var existential for ALL ssn. Interval zones (zone 3) need Since/Until witness extraction from formula. Non-interval zones (1,2,4,5) need composition: relating nf_x.2 (depth-k 2-var existentials about x) to 3-var existentials about (y,x,t).",
-      "next_dispatch": "Two approaches: (A) Prove composition theorem as separate lemma -- decompose 3-var existential into 2-var projections using interval structure of linear order. (B) Alternative: restructure the formula to directly encode all quantifier conditions, not just interval ones, then backward proof extracts all conditions from formula truth."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 572,
-      "statement": "nf_2var_exist_formula_prior",
-      "assumption": "backward proof completed",
-      "why_deferred": "Blocked on backward. Auto-fills via nf_2var_exist_formula_prior_fill once backward is proved.",
-      "next_dispatch": "Fill with nf_2var_exist_formula_prior_fill after backward proof"
-    }
-  ],
-  "blockers": [
-    "nf_exist_formula_nested_backward: quantifier part (sub_nf.2 ssn agreement) requires composition theorem relating 3-var existentials to 2-var NF components via interval decomposition of linear order"
-  ],
-  "key_discoveries": [
-    "v2_of_eval sorry (line 1327) is NOT on critical path. Formula uses v1 filter (nf_full_compat_right), not v2.",
-    "v2 filter has design flaw: zone checks assume y-t order consistency but ssn can have arbitrary atom assignments including inconsistent ones.",
-    "backward_2var_nf_agreement (line 1590) is the right helper for backward proof -- takes atom/order/quant conditions, produces nf_eval_nf.",
-    "The composition theorem is the sole mathematical blocker. Everything else (formula unfolding, nf_x extraction, atom matching) is engineering work."
-  ],
+  "sorry_inventory": [],
+  "blockers": [],
   "continuation_path": null,
-  "continuation_context": {
-    "is_successor": true,
-    "what_was_done": "Analyzed both sorry sites in depth. v2_of_eval sorry has a design flaw (zone checks too strong). backward sorry blocked on composition theorem. Documented both blockers in NegationClosure.lean with detailed comments.",
-    "what_remains": "Prove backward direction. Key sub-problems: (1) formula unfolding into order-direction cases, (2) nf_x extraction from filterMap disjunction, (3) composition theorem for quantifier part.",
-    "files_changed": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean"],
-    "key_decisions": [
-      "v2_of_eval sorry is NOT on critical path -- do not prioritize fixing it",
-      "backward proof should use backward_2var_nf_agreement helper",
-      "Composition theorem is the fundamental mathematical blocker"
-    ]
-  },
+  "continuation_context": null,
+  "new_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichTranslation.lean",
   "session_id": "sess_1781336159_28ab79"
 }
