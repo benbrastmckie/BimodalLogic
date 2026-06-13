@@ -463,7 +463,14 @@ theorem existPart_succ {sig : MonadicSignature}
       -- argument. Once the n=1 sorry above is filled (Phase 4), this reduces
       -- to the same Classical.em + bool_eq_of_iff_same pattern as depth 0.
       --
-      -- For now, this is sorry because it depends on the n=1 case.
+      -- n >= 2 at depth k+1: depends on the n=1 case (same root blocker).
+      -- The atom part reduces to 2-var via bool_eq_of_iff_same (as at depth 0).
+      -- The quantifier part requires a constant-base projection lemma at depth k
+      -- that maps (n''+4)-var existentials (y, x, t, ..., t) to 3-var (y, x, t).
+      -- This projection itself requires the base environment mismatch to be
+      -- resolved (same core obstacle as the n=1 backward direction).
+      -- Once the n=1 case is filled (Phase 4), this follows by the same
+      -- Classical.em + bool_eq_of_iff_same + constant-base-projection pattern.
       sorry
 
 /-! ## Combined Induction -/

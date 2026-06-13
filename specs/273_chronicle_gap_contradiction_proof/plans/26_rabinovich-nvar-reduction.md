@@ -185,9 +185,19 @@ Phases are fully sequential. Each phase builds on the prior.
 **Option C -- Use Rabinovich Section 5 negation closure directly**: On Prior structures, temporal truth at t determines the existential properties in intervals relative to t. Use Prior-UZ/SZ to show that knowing the temporal properties at t (via CharPart(k+1)) is sufficient to determine the quantifier conditions even though x differs from t. This is Rabinovich's stated approach. Estimate: 150-250 lines.
 
 **Tasks**:
-- [ ] **Task 3.1**: Evaluate all three options by examining: (a) what modifications to existing types/theorems each requires, (b) whether the mathematical argument is sound, (c) estimated complexity. (~30 minutes research, no code changes)
-- [ ] **Task 3.2**: Implement the chosen option. Create helper lemmas as needed. (~150-300 lines)
+- [x] **Task 3.1**: Evaluate all three options by examining: (a) what modifications to existing types/theorems each requires, (b) whether the mathematical argument is sound, (c) estimated complexity. (~30 minutes research, no code changes) *(deviation: altered -- ALL three options have the same fundamental obstacle: the base environment mismatch is recursive. Option A requires modifying the entire mutual induction. Option B hits nested quantifier depth (exists-forall with TREE structure, not linear). Option C requires the full Rabinovich Section 5 negation closure which IS the mathematical content we're trying to prove.)*
+- [ ] **Task 3.2**: Implement the chosen option. Create helper lemmas as needed. (~150-300 lines) *(deviation: deferred -- no option is straightforwardly implementable; requires deeper mathematical investigation or plan revision)*
 - [ ] **Task 3.3**: Verify the bridge compiles sorry-free with `lean_verify` on the helper lemmas.
+
+**Option Evaluation Results** (from dispatch sess_1781374494_d4f20d):
+
+**Option A REJECTED**: Generalizing ExistPart to arbitrary bases requires the SAME base-mismatch resolution at every depth level recursively. The inner quantifier conditions at depth k with base (x, t) become depth-(k-1) with base (y, x, t), etc. The recursion does NOT simplify -- it just shifts the problem down one depth level per arity increase.
+
+**Option B PARTIALLY VIABLE**: The exists-forall translation (Prop 3.5) handles LINEAR witness sequences. But our sentence has a TREE of witnesses: x has multiple children y_i (for each positive ssn), each y_i has its own children w_j (for inner quantifier conditions). Different zone orderings yield different ExistsForallSpecs (finitely many). The positive existential conditions CAN be encoded. The negative universals require negation closure (Prop 4.2), which IS the root mathematical problem.
+
+**Option C BLOCKED**: Rabinovich Section 5 uses the INF formula (infimum of a definable set) and interval decomposition. Implementing this requires proving that the NF-based existential can be expressed as a V-exists-forall formula (Prop 4.3), which requires negation closure (Prop 4.2). This is circular -- Prop 4.2 IS the content we need to prove.
+
+**ROOT OBSTACLE**: The base environment mismatch is mathematically equivalent to the Rabinovich negation closure problem (Prop 4.2). All three options reduce to it. The generalized_composition theorem that could bypass it is FALSE (documented counterexample in NfComposition.lean). Resolution requires either: (1) a novel mathematical insight that avoids the negation closure entirely, or (2) implementing the full Rabinovich Section 5 proof at the NF/formula level (~600-1000 lines).
 
 **Timing**: 2.5 hours (~200-400 lines)
 
@@ -281,7 +291,7 @@ The forward direction (exists x -> formula truth) follows the pattern of `nf_exi
 - [x] Phases 1-2 (v24): Separation module sorry-free (DONE)
 - [x] Rabinovich core: 4 files, 1349 lines sorry-free (DONE)
 - [ ] Phase 1 (v26): existPart_zero sorry-free for all n
-- [x] Phase 2 (v26): existPart_succ factored: n=1 sorry (blocker) + n>=2 sorry (depends on n=1)
+- [x] Phase 2 (v26): existPart_succ factored: n=1 sorry (blocker) + n>=2 sorry (depends on n=1 via quantifier projection at mixed base)
 - [ ] Phase 3 (v26): Base environment bridge compiles sorry-free
 - [ ] Phase 4 (v26): existPart_succ sorry-free for all n and k
 - [ ] Phase 5 (v26): NfCharFormula:572 filled, chronicle_gap_contradiction filled, `lake build` clean
