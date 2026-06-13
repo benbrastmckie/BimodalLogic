@@ -1353,29 +1353,46 @@ private theorem nf_exist_formula_nested_backward
       (nf_exist_formula_nested k char_kp1 parent_atoms sub_nf)) :
     ∃ x : M.carrier, nf_eval_nf M (k + 1) (1 + 1)
       (Fin.cons x (fun _ : Fin 1 => t)) sub_nf := by
-  -- The backward direction extracts witness x from the formula's Until/Since,
-  -- uses char_kp1_correct to get the depth-(k+1) 1-var NF of x and interval
-  -- witnesses y, then uses composition + backward_2var_nf_agreement to
-  -- establish the full 2-var NF.
+  -- ANALYSIS (task 273, dispatch 2026-06-12):
   --
-  -- With the char_{k+1} fix, interval witnesses now have depth-(k+1) 1-var NFs
-  -- which encode depth-k 2-var NFs at (z,y) for all z. The composition lemma
-  -- (depth-k 3-var NF from 2-var projections) completes the argument.
+  -- The backward direction CANNOT be proved with the current formula
+  -- `nf_exist_formula_nested`. The formula is too weak: it fires for
+  -- nf_x values that are atom-compatible with sub_nf but whose actual
+  -- depth-(k+1) 2-var NF at (x, t) differs from sub_nf in the quantifier
+  -- part (sub_nf.2).
   --
-  -- The filter fix (nf_full_compat_right/left now checks interval ssn atom compat)
-  -- ensures that for unrealizable sub_nf, the formula is false (backward is vacuous).
-  -- For realizable sub_nf, the composition lemma bridges from 2-var to 3-var NFs.
+  -- ROOT CAUSE: The filter `nf_full_compat_right` checks atom-level
+  -- compatibility but passes `true` for all atom-compatible non-interval
+  -- ssns regardless of sub_nf.2 ssn. It does NOT verify that sub_nf.2
+  -- matches the actual quantifier assignment at (x, t). Since the
+  -- generalized composition theorem is FALSE (counterexample in
+  -- NfComposition.lean), the 2-var NF cannot be recovered from 1-var NFs.
   --
-  -- Blocked on: composition lemma (Feferman-Vaught for NormalForms).
-  -- See handoff phase-5-handoff-20260611e.md for detailed analysis.
+  -- WHAT THE FORMULA ENCODES vs WHAT'S NEEDED:
+  -- The formula tests: (1) x has atom-compatible 1-var NF, (2) positive
+  -- interval ssn witnesses exist. It does NOT test: (3) negative interval
+  -- conditions (no y in interval with forbidden preds), (4) non-interval
+  -- quantifier conditions match sub_nf.2, (5) y < t zone conditions.
   --
-  -- Plan v23 analysis (task 273): The NF-specific Prop 4.3 bypass does NOT
-  -- eliminate this sorry. For k >= 1, the backward direction requires
-  -- reconstructing depth-k 3-var NFs from 2-var projections (the composition
-  -- lemma). For k=0, the backward direction is trivially correct (atoms only).
-  -- P1(k) for k <= 1 is sorry-free via master_induction; the sorry only
-  -- affects P2(k >= 1), hence P1(k >= 2), hence the general
-  -- kamp_prior_expressive_completeness for psi with quantifier depth >= 2.
+  -- FIX NEEDED: Modify the formula to encode ALL quantifier conditions:
+  -- (a) Guard: For negative interval ssns, the guard should prevent points
+  --     between t and x from having forbidden predicates. At k=0 this works
+  --     because the 3-var NF is purely atomic. At k >= 1, the guard can
+  --     only check 1-var NF type, which is insufficient.
+  -- (b) Event: For y > x negative ssns, add ~(T U char(nf_y)) at x.
+  --     For y > x positive ssns, verify via nf_x.2 projection.
+  -- (c) Pre-condition at t: For y < t ssns, use p2_k formulas to check
+  --     the depth-k existential at t.
+  -- (d) Filter: Strengthen for y = x and y = t (require sub_nf.2 ssn =
+  --     true for atom-compatible ssns, since the witness y = x or y = t
+  --     always exists). Strengthen for y > x using nf_x.2 projection.
+  --
+  -- ESTIMATED EFFORT: Formula modification + both direction proofs:
+  -- ~400-600 lines for k=0 (depth-0 ssns are atoms only).
+  -- ~600-1000 lines for general k (needs recursive encoding of depth-k
+  -- quantifier conditions, essentially the full Rabinovich Section 5).
+  --
+  -- See handoff backward-analysis-20260612.md for detailed zone analysis.
   sorry
 
 /-! ## Master Simultaneous Induction -/

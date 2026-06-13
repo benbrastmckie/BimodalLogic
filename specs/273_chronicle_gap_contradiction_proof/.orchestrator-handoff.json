@@ -1,28 +1,28 @@
 {
-  "status": "researched",
-  "summary": "Deep research into formula construction for nf_2var_exist_formula_prior. Found: (1) The sorry at NfCharFormula.lean:572 and NegationClosure.lean:1379 are causally linked via master_induction. (2) generalized_composition is FALSE (counterexample confirmed, theorem removed). (3) The backward direction has a fundamental circularity: h_quant requires knowing sub_nf = characteristic 2-var NF at (x,t), which is what we are trying to prove. (4) Three alternative strategies identified with estimated effort 400-800 lines.",
+  "status": "blocked",
+  "summary": "Deep analysis of nf_exist_formula_nested_backward confirms formula is mathematically insufficient. The formula fires for nf_x values whose actual 2-var NF at (x,t) differs from sub_nf in the quantifier part. The filter (nf_full_compat_right) passes true for all atom-compatible non-interval ssns regardless of sub_nf.2. Fixing requires modifying the formula to encode negative interval conditions (guard), non-interval quantifier checks (filter + event), and y < t zone conditions (pre-condition at t). Full zone analysis written to handoff.",
   "phases_completed": 0,
-  "phases_total": 3,
+  "phases_total": 1,
   "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1396,
+      "statement": "nf_exist_formula_nested_backward",
+      "assumption": "Formula truth implies existential with depth-(k+1) 2-var NF",
+      "why_deferred": "Formula nf_exist_formula_nested is too weak -- fires for nf_x values where actual 2-var NF at (x,t) differs from sub_nf. Must modify formula to encode all 5 zone conditions (y>x, y=x, interval, y=t, y<t) including negative quantifier checks.",
+      "next_dispatch": "Implement Phase A (filter strengthening for zones 1,2,4) + Phase B (guard for zone 3 negatives) + Phase C (zone 5 pre-conditions) per backward-analysis-20260612.md"
+    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 572,
       "statement": "theorem nf_2var_exist_formula_prior",
-      "assumption": "Classical existence of temporal formula for 2-var sub-NF existential on Prior structures",
-      "why_deferred": "Requires either (a) solving backward direction circularity in nf_exist_formula_nested_backward, (b) formula-level approach via Rabinovich Prop 3.5, or (c) direct existential closure proof for Prior structures.",
-      "next_dispatch": "Choose and implement one of the three strategies from the research report."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1379,
-      "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Backward direction of nested existence formula at depth k+1",
-      "why_deferred": "Blocked on Feferman-Vaught composition (FALSE) and backward direction circularity. Root sorry -- NfCharFormula.lean:572 closes when this is filled.",
-      "next_dispatch": "See nf_2var_exist_formula_prior strategy."
+      "assumption": "Dependent on NegationClosure.lean sorry via master_induction",
+      "why_deferred": "Closes automatically when NegationClosure sorry is filled",
+      "next_dispatch": "N/A -- dependent sorry"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
-      "line": 285,
+      "line": 313,
       "statement": "neg_bracket_syn_iff",
       "assumption": "Quarantined dead code",
       "why_deferred": "Not on critical path",
@@ -30,22 +30,19 @@
     }
   ],
   "blockers": [
-    "generalized_composition (matching 1-var NFs + orders implies matching n-var NFs) is FALSE. Removed from codebase.",
-    "backward direction of nf_exist_formula_nested has fundamental circularity: proving h_quant requires knowing the characteristic 2-var NF equals sub_nf, which IS what is being proved.",
-    "Three alternative strategies exist (direct intra-structure, formula-level Rabinovich, existential closure) but each requires 400-800 lines of new code."
+    "nf_exist_formula_nested is mathematically insufficient for the backward direction: it does not encode (1) negative interval conditions in the guard, (2) non-interval quantifier agreement in the filter/event, (3) y < t zone conditions. Formula modification required before backward proof can proceed.",
+    "At k >= 1, even with formula modifications for k=0, the guard approach is insufficient because the depth-k 3-var NF is not determined by 1-var NF types. Full Rabinovich Section 5 encoding or generalized mutual induction with P2(k,n) for all arities n would be needed."
   ],
-  "continuation_path": null,
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/backward-analysis-20260612.md",
   "continuation_context": {
     "is_successor": true,
-    "what_was_done": "Deep research into the sorry at NfCharFormula.lean:572 and NegationClosure.lean:1379. Analyzed: (1) base case (k=0) mechanism, (2) master_induction P1/P2 structure, (3) backward direction blocker, (4) three alternative strategies. Wrote research report to reports/25_formula-construction-research.md.",
-    "what_remains": "Choose and implement a strategy to fill nf_2var_exist_formula_prior. Key decision: whether to fix the backward proof via a new approach, or bypass it entirely with a formula-level argument.",
+    "what_was_done": "Exhaustive mathematical analysis of the backward direction. Identified 5 zones (y>x, y=x, interval, y=t, y<t) and analyzed what the formula encodes vs what is needed for each. Confirmed the formula is insufficient. Wrote detailed implementation plan with 5 phases (A-E). Updated sorry comment in NegationClosure.lean.",
+    "what_remains": "Implement formula modification (Phases A-D per handoff) to make backward direction provable at k=0. Phase E (k >= 1) requires further research.",
     "files_changed": [
-      "specs/273_chronicle_gap_contradiction_proof/reports/25_formula-construction-research.md"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "specs/273_chronicle_gap_contradiction_proof/handoffs/backward-analysis-20260612.md"
     ],
-    "key_finding": "The backward direction has a fundamental circularity: the negative direction of h_quant (exists y -> sub_nf.2 ssn = true) requires knowing sub_nf IS the characteristic 2-var NF, which is what we are trying to prove. This circularity must be broken by either a different formula construction, a formula-level approach, or a direct existential closure argument."
+    "key_finding": "The formula nf_exist_formula_nested fires for any nf_x that is atom-compatible with sub_nf, but the actual 2-var NF at (x,t) depends on the MODEL (which zones have which NF types), not just on nf_x. The filter nf_full_compat_right passes true for atom-compatible ssns in all zones, regardless of sub_nf.2. This is the root cause."
   },
-  "findings_count": 8,
-  "adversarial_verification_triggered": true,
-  "next_steps": "Run /plan 273 to create implementation plan",
   "session_id": "sess_1781325641_3569a1"
 }
