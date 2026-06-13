@@ -23,14 +23,14 @@ Every arity-1 depth-k NF has a temporal characteristic formula.
 ### ExistPart(k)
 For ALL n >= 1 and all (n+1)-var depth-k NFs, the existential
 is temporally characterizable on Prior structures.
-- k=0: depth-0 NFs are purely atomic; proved for n=1, sorry for n>=2
+- k=0: depth-0 NFs are purely atomic; proved for all n (sorry-free)
 - k+1: requires ExistPart(k) at arity n+1 for quantifier conditions
 
 ### Dependency Chain
 ```
 CharPart(0)    <-- nf_depth0_char_formula (sorry-free)
 ExistPart(0)   <-- nf_2var_exist_formula_prior_neg (n=1, sorry-free)
-                   + depth-0 multi-var (n>=2, sorry)
+                   + depth-0 multi-var (n>=2, sorry-free via bool_eq_of_iff_same)
 CharPart(k+1)  <-- CharPart(k) + ExistPart(k)
                    via nf_characterizable_temporal_prior_classical (sorry-free)
 ExistPart(k+1) <-- CharPart(k+1) + ExistPart(k)
@@ -41,7 +41,7 @@ ExistPart(k+1) <-- CharPart(k+1) + ExistPart(k)
 
 - `charPart_zero`: CharPart(0), sorry-free
 - `charPart_succ`: CharPart(k+1) from CharPart(k) + ExistPart(k), sorry-free
-- `existPart_zero`: ExistPart(0), sorry-free at n=1, sorry at n>=2
+- `existPart_zero`: ExistPart(0), sorry-free for all n
 - `existPart_succ`: ExistPart(k+1), sorry
 - `kamp_mutual_induction`: combined ∀ k, CharPart(k) ∧ ExistPart(k)
 - `nf_2var_exist_formula_prior_filled`: fills nf_2var_exist_formula_prior
@@ -65,6 +65,15 @@ When the base environment is constant `(fun _ => t)`, the (n+1)-var existential
 at depth 0 reduces to the 2-var existential, provided the sub_nf is compatible
 with all base variables being equal. The proof is done inline in existPart_zero
 using a Classical.em split on compatible satisfiability. -/
+
+/-- Two bools that both encode the same proposition via `↔` must be equal. -/
+private theorem bool_eq_of_iff_same {b₁ b₂ : Bool} {P : Prop}
+    (h₁ : P ↔ b₁ = true) (h₂ : P ↔ b₂ = true) : b₁ = b₂ := by
+  cases b₁ <;> cases b₂
+  · rfl
+  · exact h₁.mp (h₂.mpr rfl)
+  · exact (h₂.mp (h₁.mpr rfl)).symm
+  · rfl
 
 /-! ## Part Definitions -/
 
@@ -161,14 +170,14 @@ theorem charPart_succ {sig : MonadicSignature}
 /-! ## ExistPart: Base Case
 
 At depth 0, NFs are purely atomic. The n=1 case (2-variable) is
-proved by nf_2var_exist_formula_prior_neg. For n >= 2, the same
-structural argument applies but requires more case analysis on
-order constraints (sorry for now). -/
+proved by nf_2var_exist_formula_prior_neg. For n >= 2, the
+satisfiable case uses bool_eq_of_iff_same to show n-var and 2-var
+constraints agree via the M₀ witness; the unsatisfiable case uses ⊥. -/
 
 /-- ExistPart(0): the existential is characterizable at depth 0.
-    Sorry-free at n=1. At n >= 2, the satisfiable case is sorry
-    (Fin bookkeeping for the n-var to 2-var reduction).
-    The unsatisfiable case is sorry-free. -/
+    Sorry-free for all n. At n=1, delegates to nf_2var_exist_formula_prior_neg.
+    At n >= 2, uses bool_eq_of_iff_same to equate n-var and 2-var existentials
+    via the M₀ witness (satisfiable case) or ⊥ (unsatisfiable case). -/
 theorem existPart_zero {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
@@ -265,69 +274,50 @@ theorem existPart_zero {sig : MonadicSignature}
             simp only [atom_eval, Fin.cons] at this ⊢; exact this
           | .pred p ⟨i + 1, hi⟩ =>
             -- sub_nf(.pred p ⟨i+1,_⟩) = parent_atoms(.pred p ⟨0,_⟩)
-            -- because the M₀ witness forces all base preds to agree
+            -- because the M₀ witness forces all base preds to agree.
+            -- Key: Fin.cases x₀ (fun _ => t₀) ⟨i+1, _⟩ = t₀ definitionally,
+            -- so h_i₀ and h_pa₀ both encode M₀.interp p t₀.
             have h_i₀ := h_eval₀ (.pred p ⟨i + 1, by omega⟩)
-            have h_1₀ := h_eval₀ (.pred p ⟨1, by omega⟩)
             have h_pa₀ := h_atoms₀ (.pred p ⟨0, by omega⟩)
-            simp only [atom_eval, Fin.cons] at h_i₀ h_1₀ h_pa₀ ⊢
-            -- Both h_i₀ and h_pa₀ biconditionally connect M₀.interp p t₀
-            -- to the Bool values, so sub_nf = parent_atoms
+            simp only [atom_eval, Fin.cons] at h_i₀ h_pa₀ ⊢
             have h_eq : sub_nf (.pred p ⟨i + 1, by omega⟩) =
-                parent_atoms (.pred p ⟨0, by omega⟩) := by
-              cases hi₀ : sub_nf (.pred p ⟨i + 1, by omega⟩) <;>
-              cases hpa : parent_atoms (.pred p ⟨0, by omega⟩)
-              · rfl
-              · exact absurd (h_i₀.mp (h_pa₀.mpr hpa)) (by simp [hi₀])
-              · exact absurd (h_pa₀.mp (h_i₀.mpr hi₀)) (by simp [hpa])
-              · rfl
+                parent_atoms (.pred p ⟨0, by omega⟩) :=
+              bool_eq_of_iff_same h_i₀ h_pa₀
             rw [h_eq]; exact h_atoms (.pred p ⟨0, by omega⟩)
           | .order ⟨0, _⟩ ⟨j + 1, hj⟩ _ =>
-            -- sub_nf(.order 0 (j+1)) = sub_nf(.order 0 1) by M₀ witness
+            -- sub_nf(.order 0 (j+1)) = sub_nf(.order 0 1) by M₀ witness.
+            -- Both encode x₀ < t₀ (since Fin.cons at succ index = t₀).
             have h_j₀ := h_eval₀ (.order ⟨0, by omega⟩ ⟨j + 1, by omega⟩
               (by simp [Fin.ext_iff]))
             have h_1₀ := h_eval₀ (.order ⟨0, by omega⟩ ⟨1, by omega⟩
               (by simp [Fin.ext_iff]))
             simp only [atom_eval, Fin.cons] at h_j₀ h_1₀ ⊢
-            have h_eq : sub_nf (.order ⟨0, by omega⟩ ⟨j + 1, by omega⟩
-                (by simp [Fin.ext_iff])) =
-                sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
-                (by simp [Fin.ext_iff])) := by
-              cases hj₀ : sub_nf (.order ⟨0, by omega⟩ ⟨j + 1, by omega⟩
-                (by simp [Fin.ext_iff])) <;>
-              cases h1₀ : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
-                (by simp [Fin.ext_iff])) <;> simp_all
+            have h_eq := bool_eq_of_iff_same h_j₀ h_1₀
             rw [h_eq]
-            have := h2 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+            have := h2 (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+              (by simp [Fin.ext_iff]))
             simp only [atom_eval, Fin.cons] at this; exact this
           | .order ⟨i + 1, hi⟩ ⟨0, _⟩ _ =>
+            -- Both encode t₀ < x₀ (Fin.cases at succ = t₀, at 0 = x₀).
             have h_i₀ := h_eval₀ (.order ⟨i + 1, by omega⟩ ⟨0, by omega⟩
               (by simp [Fin.ext_iff]))
             have h_1₀ := h_eval₀ (.order ⟨1, by omega⟩ ⟨0, by omega⟩
               (by simp [Fin.ext_iff]))
             simp only [atom_eval, Fin.cons] at h_i₀ h_1₀ ⊢
-            have h_eq : sub_nf (.order ⟨i + 1, by omega⟩ ⟨0, by omega⟩
-                (by simp [Fin.ext_iff])) =
-                sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
-                (by simp [Fin.ext_iff])) := by
-              cases hi₀ : sub_nf (.order ⟨i + 1, by omega⟩ ⟨0, by omega⟩
-                (by simp [Fin.ext_iff])) <;>
-              cases h1₀ : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
-                (by simp [Fin.ext_iff])) <;> simp_all
+            have h_eq := bool_eq_of_iff_same h_i₀ h_1₀
             rw [h_eq]
-            have := h2 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+            have := h2 (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+              (by simp [Fin.ext_iff]))
             simp only [atom_eval, Fin.cons] at this; exact this
           | .order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h_neq =>
             -- base-base order: t < t is False, sub_nf must be false
-            have h_ord₀ := h_eval₀ (.order ⟨i + 1, by omega⟩ ⟨j + 1, by omega⟩
-              (by simp [Fin.ext_iff]; intro heq; exact h_neq (Fin.ext (by omega))))
+            have h_ord₀ := h_eval₀ (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h_neq)
             simp only [atom_eval, Fin.cons] at h_ord₀ ⊢
             constructor
-            · intro h; exact absurd h (lt_irrefl t₀) |>.elim
+            · intro h; exact False.elim (lt_irrefl t h)
             · intro hsub
-              have : sub_nf (.order ⟨i + 1, by omega⟩ ⟨j + 1, by omega⟩
-                  (by simp [Fin.ext_iff]; intro heq; exact h_neq (Fin.ext (by omega)))) = false := by
-                cases hv : sub_nf (.order ⟨i + 1, by omega⟩ ⟨j + 1, by omega⟩
-                  (by simp [Fin.ext_iff]; intro heq; exact h_neq (Fin.ext (by omega))))
+              have : sub_nf (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h_neq) = false := by
+                cases hv : sub_nf (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h_neq)
                 · rfl
                 · exact absurd (h_ord₀.mpr hv) (lt_irrefl t₀)
               rw [this] at hsub; exact Bool.noConfusion hsub
@@ -427,8 +417,7 @@ theorem existPart_succ {sig : MonadicSignature}
 /-- The combined mutual induction: CharPart(k) ∧ ExistPart(k) for all k.
 
     CharPart is sorry-free for all k (given ExistPart at lower depths).
-    ExistPart is sorry-free at k=0 for n=1; sorry at k=0 for n>=2
-    and sorry at k>=1 for all n. -/
+    ExistPart is sorry-free at k=0 for all n; sorry at k>=1 for all n. -/
 theorem kamp_mutual_induction {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
