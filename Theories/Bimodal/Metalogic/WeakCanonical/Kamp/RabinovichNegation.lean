@@ -45,7 +45,7 @@ private noncomputable def nf_x_proj {sig : MonadicSignature}
     satisfies the x-projection NF. -/
 private theorem extract_witness_nf {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (_h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (char_0 : NormalForm sig 0 1 → Formula)
     {M : OrderedMonadicStructure sig}
     (char_0_correct_M : ∀ (nf_0 : NormalForm sig 0 1) (t : M.carrier),
@@ -75,7 +75,7 @@ private theorem extract_witness_nf {sig : MonadicSignature}
       Multiset.mem_toList.mpr (Fintype.complete p)
     have h_eq := h_compat p h_p_mem
     simp only [beq_iff_eq] at h_eq
-    simp only [nf_x_proj, NormalForm.atom_assgn] at h_nf_x_p ⊢
+    simp only [nf_x_proj] at h_nf_x_p ⊢
     rw [h_eq] at h_nf_x_p
     exact h_nf_x_p
   | .order i j h_neq =>
@@ -168,7 +168,7 @@ theorem nf_exist_backward_depth0
     by_cases h_both : (sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) &&
         sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))) = true
     · simp only [h_both, ↓reduceIte, temporal_truth] at h_formula
-    · simp only [h_both, Bool.not_eq_true] at h_formula
+    · simp only [h_both] at h_formula
       -- Case split on order direction
       unfold nf_order_dir at h_formula
       simp only [atom_assgn_eq] at h_formula
