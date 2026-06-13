@@ -1386,7 +1386,7 @@
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "neg_bracket_syn_iff soundness (Case C): counter-pattern tail negation operates on interval (r, z1) while bf.tail operates on (w(0), z1); witnesses from independent existentials cannot be forced to coincide. 4 resolution paths in handoffs/phase-5a-handoff-20260612e.md; path (c) canonical witness lemma most direct."
+      "blockers": "KampPrior.lean:149 sorry syntactically filled (delegates to NfCharFormula.lean) but sorryAx persists through nf_2var_exist_formula_prior -> nf_exist_formula_nested_backward -> Feferman-Vaught composition lemma. GHR94 separation bypass not yet attempted. Phase 3 partial."
     },
     {
       "project_number": 290,
