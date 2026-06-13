@@ -1356,17 +1356,22 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/26_rabinovich-nvar-reduction.md",
           "type": "plan",
           "summary": "Plan v26: Rabinovich strategy with n-var to 2-var reduction, 5 phases"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md",
+          "type": "plan",
+          "summary": "Plan v27: Rabinovich Prop 4.2 single-agent implementation, 4 phases"
         }
       ],
       "next_artifact_number": 26,
       "researched": "2026-06-12T18:56:55Z",
       "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 8,
+        "phases": 4,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 26,
+        "plan_version": 27,
         "dependency_waves": [
           [
             1
@@ -1379,9 +1384,6 @@
           ],
           [
             4
-          ],
-          [
-            5
           ]
         ],
         "reports_integrated": [
@@ -1404,12 +1406,17 @@
             "path": "reports/25_formula-construction-research.md",
             "integrated_in_plan_version": 26,
             "integrated_date": "2026-06-13"
+          },
+          {
+            "path": "reports/25_formula-construction-research.md",
+            "integrated_in_plan_version": 27,
+            "integrated_date": "2026-06-13"
           }
         ]
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "All approaches converge on Rabinovich Prop 4.2 (negation closure for exists-forall formulas). This IS the hard part of Kamp's theorem. Infrastructure complete (1349+ lines Rabinovich, sorry-free at k=0, all n≥2 reduced to n=1). The k≥1 step requires a 600-1000 line implementation of Prop 4.2 from scratch — the interval splitting argument from Section 5."
+      "blockers": "Implementing Rabinovich Prop 4.2 (negation closure) from scratch following Section 5. Infrastructure complete. Plan v27 ready for implementation."
     },
     {
       "project_number": 290,

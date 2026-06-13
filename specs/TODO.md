@@ -244,6 +244,8 @@ next_project_number: 300
   - [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
   - [273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md]
   - [273_chronicle_gap_contradiction_proof/plans/25_generalized-composition-lemma.md]
+  - [273_chronicle_gap_contradiction_proof/plans/26_rabinovich-nvar-reduction.md]
+  - [273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md]
 
 **Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
 
