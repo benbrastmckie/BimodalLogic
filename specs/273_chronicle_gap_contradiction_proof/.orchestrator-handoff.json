@@ -1,40 +1,32 @@
 {
   "status": "partial",
-  "summary": "Phase 3 partial: proved GHR94 Lemma 10.2.2 negation equivalences on Prior structures (SeparationBridge.lean, sorry-free). Deep analysis confirmed the root blocker (Feferman-Vaught composition lemma for NFs at depth >= 1) cannot be bypassed by the Z-bridge approach due to atomMap/carrier mismatch. Three viable alternatives identified for next dispatch.",
+  "summary": "Filled 2 of 3 sorries in NfComposition.lean: nf_drop_last (succ k case) and nf_1var_from_2var_agree are now sorry-free. The remaining sorry in generalized_composition (succ k quantifier part) requires multi-point zone matching on linear orders. Downstream modules compile with the sorry-containing generalized_composition.",
   "phases_completed": 0,
-  "phases_total": 4,
+  "phases_total": 3,
   "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 258,
+      "statement": "theorem generalized_composition (succ k case, quantifier part)",
+      "assumption": "Given z witnessing sub_nf in env1 context, find z' witnessing it in env2 context",
+      "why_deferred": "Zone matching: finding z' with depth-(k+1) 1-var NF matching z AND same order relations to ALL env2 points simultaneously. Individual-point transfer works (via depth-(k+2) 1-var NFs) but unification into a single z' for ALL points is the open problem. The theorem may need h_nf at depth k+n instead of k+1.",
+      "next_dispatch": "Research: (1) Check if Doets Lemma 1.5 uses depth k+n for h_nf. (2) Try reformulating with stronger h_nf hypothesis. (3) Inner induction on n using nf_drop_last for the step."
+    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 572,
       "statement": "theorem nf_2var_exist_formula_prior",
       "assumption": "Classical existence of temporal formula for 2-var sub-NF existential on Prior structures",
-      "why_deferred": "Backward direction requires Feferman-Vaught composition lemma (depth >= 1). Z-bridge approach analyzed and found insufficient due to atomMap mismatch and carrier type mismatch.",
-      "next_dispatch": "Research Option A: reimplement GHR94 Theorem 9.3.1 directly on Prior structures"
+      "why_deferred": "Backward direction requires the composition lemma (generalized_composition).",
+      "next_dispatch": "Resolved automatically if generalized_composition is filled."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1379,
       "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Backward direction of nested existence formula on Prior structures",
-      "why_deferred": "Same root blocker as nf_2var_exist_formula_prior",
-      "next_dispatch": "Resolved automatically if nf_2var_exist_formula_prior is filled"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "line": 113,
-      "statement": "nf_3var_from_1var_nfs (witness transfer)",
-      "assumption": "Witness transfer in Feferman-Vaught composition",
-      "why_deferred": "Core mathematical blocker. 5 failed attempts.",
-      "next_dispatch": "NOT on critical path if Option A (Theorem 9.3.1 on Prior) succeeds"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "line": 115,
-      "statement": "nf_3var_from_1var_nfs (core)",
-      "assumption": "Core composition in Feferman-Vaught",
-      "why_deferred": "Same as witness transfer above",
-      "next_dispatch": "NOT on critical path if Option A succeeds"
+      "assumption": "Backward direction of nested existence formula",
+      "why_deferred": "Same root blocker as nf_2var_exist_formula_prior (composition lemma).",
+      "next_dispatch": "Resolved automatically if generalized_composition is filled."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
@@ -46,19 +38,21 @@
     }
   ],
   "blockers": [
-    "nf_2var_exist_formula_prior (NfCharFormula.lean:572): Feferman-Vaught composition lemma blocks backward direction. Z-bridge approach insufficient. Need Theorem 9.3.1 on Prior structures or equivalent bypass."
+    "generalized_composition zone matching (NfComposition.lean:258): Multi-point zone matching on linear orders. Need a single z' with right 1-var NF and right order to ALL env2 points. Per-point extraction via depth-(k+2) NFs gives z'_i per point i, but unifying them requires zone intersection reasoning or a reformulation with stronger depth hypothesis."
   ],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/plans/25_generalized-composition-lemma.md",
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 3,
-    "resume_task": "2.1",
-    "key_decision": "GHR94 Lemma 10.2.2 proved on Prior structures. Z-bridge approach analyzed and rejected. Next dispatch should research Option A.",
-    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260612-separation-bridge.md"
-  },
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260612-separation-bridge.md",
-  "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SeparationBridge.lean", "type": "implementation"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md", "type": "plan"},
-    {"path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260612-separation-bridge.md", "type": "handoff"}
-  ]
+    "current_phase": 1,
+    "resume_from": "Phase 1 zone matching in generalized_composition",
+    "completed_in_this_dispatch": [
+      "nf_drop_last succ k case (sorry-free, lean_verify confirmed: no sorryAx)",
+      "nf_1var_from_2var_agree (sorry-free, lean_verify confirmed: no sorryAx)"
+    ],
+    "key_decisions": [
+      "nf_drop_last proof strategy: extract quantifier transfer from h_agree, use IH to project from arity n+2 to n+1 via fin_cons_castSucc_comm",
+      "nf_1var_from_2var_agree proof: funext + Nat.lt_one_iff to show Fin.cons projected env = constant env",
+      "generalized_composition blocker analysis: theorem may need h_nf at depth k+n (Doets) not k+1"
+    ]
+  }
 }
