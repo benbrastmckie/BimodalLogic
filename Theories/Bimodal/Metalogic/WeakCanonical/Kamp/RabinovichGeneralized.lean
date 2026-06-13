@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichTranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichNegation
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
+import Bimodal.Metalogic.WeakCanonical.Kamp.SeparationBridge
 
 /-!
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
@@ -376,18 +378,22 @@ Option (b) is Rabinovich's approach. -/
 
 /-- ExistPart(k+1) from CharPart(k+1) + ExistPart(k).
     Factored into two cases:
-    - n=1 (arity 2): sorry -- the genuine mathematical blocker.
-      Requires Rabinovich Section 5 negation closure to prove the backward
-      direction of the 2-var existential at depth k+1.
+    - n=1 (arity 2): delegates to nf_2var_exist_formula_prior_neg.
+      Forward direction sorry-free; backward direction at k+1 is sorry
+      (requires enriched zone formula encoding or composition theorem).
     - n>=2 (arity >=3): sorry -- depends on n=1 case.
       Reduces to n=1 via 2-var projection (same constant-base argument as
       existPart_zero), but the quantifier part projection requires n=1
       at depth k+1 as a prerequisite. Once n=1 is filled, n>=2 follows
-      by the Classical.em + bool_eq_of_iff_same pattern. -/
+      by the Classical.em + bool_eq_of_iff_same pattern.
+
+    Note: ih_char (CharPart at depth k) is available for building depth-k
+    characteristic formulas if needed by the enriched formula approach. -/
 theorem existPart_succ {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat)
+    (ih_char : CharPart atomMap k)
     (ih_char_succ : CharPart atomMap (k + 1))
     (ih_exist : ExistPart atomMap h_surj k) :
     ExistPart atomMap h_surj (k + 1) := by
@@ -433,11 +439,12 @@ theorem existPart_succ {sig : MonadicSignature}
       --       (∃ y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn)
       --       ↔ sub_nf.2 ssn = true
       --
-      -- The backward direction (formula truth → ∃ x) at depth k+1 requires
-      -- the negation closure argument from Rabinovich Section 5.
-      -- This is the same blocker as nf_2var_exist_formula_prior_neg at k+1.
-      -- Filled in Phase 4.
-      sorry
+      -- Strategy: use nf_exist_formula with char_kp1 (depth k+1 characteristic
+      -- formulas). The forward direction is sorry-free (nf_exist_formula_forward').
+      -- The backward direction delegates to nf_2var_exist_formula_prior_neg
+      -- which handles backward at depth 0 (sorry-free) and at depth k+1 (sorry).
+      exact nf_2var_exist_formula_prior_neg atomMap h_surj (k + 1)
+        char_kp1 char_kp1_correct parent_atoms sub_nf
     | succ n'' =>
       -- n >= 2, arity >= 3: reduces to n=1 via 2-var projection.
       -- When all base variables equal t, the (n''+3)-var existential
@@ -476,7 +483,7 @@ theorem kamp_mutual_induction {sig : MonadicSignature}
     have ih_char := ih.1
     have ih_exist := ih.2
     have char_succ := charPart_succ atomMap h_surj k' ih_char ih_exist
-    have exist_succ := existPart_succ atomMap h_surj k' char_succ ih_exist
+    have exist_succ := existPart_succ atomMap h_surj k' ih_char char_succ ih_exist
     exact ⟨char_succ, exist_succ⟩
 
 /-! ## Filling the Original Sorry -/
