@@ -42,7 +42,7 @@ ExistPart(k+1) <-- CharPart(k+1) + ExistPart(k)
 - `charPart_zero`: CharPart(0), sorry-free
 - `charPart_succ`: CharPart(k+1) from CharPart(k) + ExistPart(k), sorry-free
 - `existPart_zero`: ExistPart(0), sorry-free for all n
-- `existPart_succ`: ExistPart(k+1), sorry
+- `existPart_succ`: ExistPart(k+1), sorry (factored: n=1 blocker + n>=2 depends on n=1)
 - `kamp_mutual_induction`: combined ∀ k, CharPart(k) ∧ ExistPart(k)
 - `nf_2var_exist_formula_prior_filled`: fills nf_2var_exist_formula_prior
 
@@ -375,7 +375,15 @@ Resolution requires either:
 Option (b) is Rabinovich's approach. -/
 
 /-- ExistPart(k+1) from CharPart(k+1) + ExistPart(k).
-    Sorry: requires negation closure (Rabinovich Section 5). -/
+    Factored into two cases:
+    - n=1 (arity 2): sorry -- the genuine mathematical blocker.
+      Requires Rabinovich Section 5 negation closure to prove the backward
+      direction of the 2-var existential at depth k+1.
+    - n>=2 (arity >=3): sorry -- depends on n=1 case.
+      Reduces to n=1 via 2-var projection (same constant-base argument as
+      existPart_zero), but the quantifier part projection requires n=1
+      at depth k+1 as a prerequisite. Once n=1 is filled, n>=2 follows
+      by the Classical.em + bool_eq_of_iff_same pattern. -/
 theorem existPart_succ {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -410,7 +418,46 @@ theorem existPart_succ {sig : MonadicSignature}
   -- On Prior structures, the temporal properties at t + the position of x
   -- relative to t determine the existential properties in the interval.
   -- This uses Prior-UZ/SZ to find first/last occurrences.
-  sorry
+  -- Case split on n to separate the genuine blocker (n=1) from reducible cases (n>=2).
+  cases n with
+  | zero => omega
+  | succ n' =>
+    cases n' with
+    | zero =>
+      -- n=1, arity=2: the genuine mathematical blocker.
+      -- At depth k+1 with 2 variables (x and t), the existential
+      --   ∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf
+      -- requires both:
+      --   (a) atom conditions on x and t (as at depth 0), AND
+      --   (b) quantifier conditions: for each ssn : NormalForm sig k 3,
+      --       (∃ y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn)
+      --       ↔ sub_nf.2 ssn = true
+      --
+      -- The backward direction (formula truth → ∃ x) at depth k+1 requires
+      -- the negation closure argument from Rabinovich Section 5.
+      -- This is the same blocker as nf_2var_exist_formula_prior_neg at k+1.
+      -- Filled in Phase 4.
+      sorry
+    | succ n'' =>
+      -- n >= 2, arity >= 3: reduces to n=1 via 2-var projection.
+      -- When all base variables equal t, the (n''+3)-var existential
+      -- projects to a 2-var existential, provided the NF is compatible
+      -- with all base vars being equal.
+      --
+      -- The atom part projects exactly as at depth 0 (via bool_eq_of_iff_same).
+      -- The quantifier part projects similarly: the (n''+4)-var depth-k
+      -- existentials ∃ y, nf_eval_nf M k (n''+4) env ssn with base (fun _ => t)
+      -- reduce to 3-var depth-k existentials when base vars beyond position 1
+      -- are all equal to t. This requires ExistPart(k+1) at n=1.
+      --
+      -- Strategy: first obtain ExistPart(k+1) at n=1 (the blocker from above),
+      -- then project the n-var NF to a 2-var NF and apply the n=1 result.
+      -- Both atom projection and quantifier projection use the constant-base
+      -- argument. Once the n=1 sorry above is filled (Phase 4), this reduces
+      -- to the same Classical.em + bool_eq_of_iff_same pattern as depth 0.
+      --
+      -- For now, this is sorry because it depends on the n=1 case.
+      sorry
 
 /-! ## Combined Induction -/
 
