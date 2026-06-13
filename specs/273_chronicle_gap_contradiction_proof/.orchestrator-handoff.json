@@ -1,63 +1,50 @@
 {
   "status": "partial",
-  "summary": "Added ih_char parameter to existPart_succ, delegated n=1 case to nf_2var_exist_formula_prior_neg. Exhaustive analysis identified root sorry at NegationClosure.lean:1712 (nf_exist_formula_nested_backward). Resolution requires recursive zone formula constructor encoding ALL zone conditions (not just interval zones) in nf_exist_formula_nested.",
+  "summary": "Phase 3 task 3.1 completed: evaluated all three bridge options (A/B/C). All reduce to Rabinovich negation closure (Prop 4.2). Task 3.2 deferred -- no option is straightforwardly implementable. Improved n>=2 sorry documentation. Critical Kamp modules build clean.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1712,
-      "statement": "nf_exist_formula_nested_backward (all k >= 1)",
-      "assumption": "Formula encodes interval zone conditions via nested Since/Until, but non-interval zone conditions (y > x, y = x, y = t, y < t) are only atom-filtered, not formula-encoded",
-      "why_deferred": "Non-interval zones require recursive zone formula construction: at each depth k, zone conditions involve depth-(k-1) existentials with mixed base. Terminates at depth 0 (purely atomic). Estimated 200-400 lines of new code.",
-      "next_dispatch": "Define recursive zone_exist_formula helper, modify nf_exist_formula_nested to use it, prove forward+backward for modified formula"
+      "statement": "nf_exist_formula_nested_backward",
+      "assumption": "Non-interval zone quantifier conditions not encoded in formula",
+      "why_deferred": "Mathematically equivalent to Rabinovich Prop 4.2 negation closure. All three bridge options (A/B/C) reduce to this.",
+      "next_dispatch": "Research: implement Rabinovich Section 5 at NF/formula level, or find counting/classical bypass"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 464,
-      "statement": "existPart_succ n>=2 (arity >=3), depth k+1",
-      "assumption": "Depends on n=1 case",
-      "why_deferred": "Structurally depends on n=1 which delegates to nf_2var_exist_formula_prior_neg",
-      "next_dispatch": "Fills automatically when root sorry at NegationClosure.lean:1712 is resolved"
+      "line": 474,
+      "statement": "existPart_succ n>=2 at depth k+1",
+      "assumption": "Depends on n=1 via quantifier projection at mixed base",
+      "why_deferred": "n=1 case has same root blocker",
+      "next_dispatch": "Fill n=1 first"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
       "line": 291,
       "statement": "nf_2var_exist_formula_prior_neg backward at k+1",
-      "assumption": "Same root cause as NegationClosure:1712",
-      "why_deferred": "Same root cause",
-      "next_dispatch": "Fills when root sorry is resolved"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
-      "line": 359,
-      "statement": "nf_2var_exist_via_rabinovich backward at k+1",
       "assumption": "Same root cause",
-      "why_deferred": "Same root cause",
-      "next_dispatch": "Fills when root sorry is resolved"
+      "why_deferred": "Same base environment mismatch",
+      "next_dispatch": "Same resolution"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 572,
       "statement": "nf_2var_exist_formula_prior",
       "assumption": "Same root cause",
-      "why_deferred": "Same root cause -- Phase 5 wires via nf_2var_exist_formula_prior_filled",
-      "next_dispatch": "Phase 5 wiring after root sorry resolved"
+      "why_deferred": "Same base environment mismatch",
+      "next_dispatch": "Same resolution"
     }
   ],
   "blockers": [
-    "ROOT SORRY: nf_exist_formula_nested_backward (NegationClosure.lean:1712). All other sorries trace to this one. Resolution requires modifying nf_exist_formula_nested to encode non-interval zone quantifier conditions as temporal formulas, with a recursive construction on depth k."
+    "Phase 3 BLOCKED: all three bridge options (A: generalize ExistPart, B: ExistsForallSpec, C: Rabinovich Section 5) reduce to the Rabinovich negation closure problem (Prop 4.2). Resolution requires implementing the full Rabinovich Section 5 proof (~600-1000 lines) or finding a novel mathematical bypass."
   ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260613-zone-analysis.md",
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260613-option-eval.md",
   "continuation_context": {
-    "is_successor": false,
-    "resume_from": "Phase 3 of plan v26 -- root sorry analysis complete, implementation of zone formula constructor needed",
-    "key_decisions": [
-      "Added ih_char : CharPart atomMap k to existPart_succ for future zone formula construction",
-      "Delegated n=1 case to nf_2var_exist_formula_prior_neg at depth k+1",
-      "Root sorry identified: nf_exist_formula_nested_backward at NegationClosure.lean:1712",
-      "Composition theorem (same 1-var types => same 2-var type) is FALSE on Z (NfComposition.lean counterexample) -- cannot use this approach",
-      "Resolution requires encoding ALL zone conditions in nf_exist_formula_nested, not just interval zones"
-    ]
+    "is_successor": true,
+    "phase_resume": 3,
+    "task_3_2_status": "deferred",
+    "recommended_action": "plan_revision"
   }
 }
