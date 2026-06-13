@@ -1,6 +1,6 @@
 {
-  "status": "partial",
-  "summary": "Proved the theorem generalized_composition is FALSE (counterexample: Z with env1=(0,2), env2=(0,1)). Removed it and replaced with sorry-free intra_structure_extend theorems. NfComposition.lean now has zero sorries. Phase 1 is BLOCKED because the theorem statement was wrong.",
+  "status": "researched",
+  "summary": "Deep research into formula construction for nf_2var_exist_formula_prior. Found: (1) The sorry at NfCharFormula.lean:572 and NegationClosure.lean:1379 are causally linked via master_induction. (2) generalized_composition is FALSE (counterexample confirmed, theorem removed). (3) The backward direction has a fundamental circularity: h_quant requires knowing sub_nf = characteristic 2-var NF at (x,t), which is what we are trying to prove. (4) Three alternative strategies identified with estimated effort 400-800 lines.",
   "phases_completed": 0,
   "phases_total": 3,
   "sorry_inventory": [
@@ -9,16 +9,16 @@
       "line": 572,
       "statement": "theorem nf_2var_exist_formula_prior",
       "assumption": "Classical existence of temporal formula for 2-var sub-NF existential on Prior structures",
-      "why_deferred": "Independent of generalized_composition. Requires constructing a characteristic formula for existential quantifier over 2-var NFs using Prior temporal operators.",
-      "next_dispatch": "Research the formula construction approach directly. This sorry does NOT depend on NfComposition.lean."
+      "why_deferred": "Requires either (a) solving backward direction circularity in nf_exist_formula_nested_backward, (b) formula-level approach via Rabinovich Prop 3.5, or (c) direct existential closure proof for Prior structures.",
+      "next_dispatch": "Choose and implement one of the three strategies from the research report."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1379,
       "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Backward direction of nested existence formula",
-      "why_deferred": "Depends on nf_2var_exist_formula_prior.",
-      "next_dispatch": "Resolved if nf_2var_exist_formula_prior is filled."
+      "assumption": "Backward direction of nested existence formula at depth k+1",
+      "why_deferred": "Blocked on Feferman-Vaught composition (FALSE) and backward direction circularity. Root sorry -- NfCharFormula.lean:572 closes when this is filled.",
+      "next_dispatch": "See nf_2var_exist_formula_prior strategy."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
@@ -30,17 +30,22 @@
     }
   ],
   "blockers": [
-    "generalized_composition (matching 1-var NFs + orders implies matching n-var NFs) is FALSE for n >= 2 on general linear orders. Counterexample: M = (Z, <), env1 = (0, 2), env2 = (0, 1), k = 1. Removed from NfComposition.lean.",
-    "nf_2var_exist_formula_prior (NfCharFormula.lean:572) is an independent sorry that does NOT depend on NfComposition.lean."
+    "generalized_composition (matching 1-var NFs + orders implies matching n-var NFs) is FALSE. Removed from codebase.",
+    "backward direction of nf_exist_formula_nested has fundamental circularity: proving h_quant requires knowing the characteristic 2-var NF equals sub_nf, which IS what is being proved.",
+    "Three alternative strategies exist (direct intra-structure, formula-level Rabinovich, existential closure) but each requires 400-800 lines of new code."
   ],
   "continuation_path": null,
   "continuation_context": {
-    "is_successor": false,
-    "what_was_done": "1. Analyzed generalized_composition (9+ proof approaches). 2. Found counterexample: M=Z, env1=(0,2), env2=(0,1), k=1. 3. Removed false theorem + corollary. 4. Proved sorry-free: intra_structure_extend, intra_structure_extend_bwd. 5. lean_verify: all theorems have no sorryAx. 6. lake build: zero errors.",
-    "what_remains": "Kamp chain needs a different approach bypassing generalized_composition.",
+    "is_successor": true,
+    "what_was_done": "Deep research into the sorry at NfCharFormula.lean:572 and NegationClosure.lean:1379. Analyzed: (1) base case (k=0) mechanism, (2) master_induction P1/P2 structure, (3) backward direction blocker, (4) three alternative strategies. Wrote research report to reports/25_formula-construction-research.md.",
+    "what_remains": "Choose and implement a strategy to fill nf_2var_exist_formula_prior. Key decision: whether to fix the backward proof via a new approach, or bypass it entirely with a formula-level argument.",
     "files_changed": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean"
+      "specs/273_chronicle_gap_contradiction_proof/reports/25_formula-construction-research.md"
     ],
-    "key_finding": "generalized_composition is FALSE. The zone structure between env points in a single linear order is not captured by individual 1-var NFs."
-  }
+    "key_finding": "The backward direction has a fundamental circularity: the negative direction of h_quant (exists y -> sub_nf.2 ssn = true) requires knowing sub_nf IS the characteristic 2-var NF, which is what we are trying to prove. This circularity must be broken by either a different formula construction, a formula-level approach, or a direct existential closure argument."
+  },
+  "findings_count": 8,
+  "adversarial_verification_triggered": true,
+  "next_steps": "Run /plan 273 to create implementation plan",
+  "session_id": "sess_1781325641_3569a1"
 }
