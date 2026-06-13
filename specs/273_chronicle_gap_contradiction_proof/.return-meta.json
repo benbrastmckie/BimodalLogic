@@ -7,22 +7,39 @@
   "started_at": "2026-06-13T00:00:00Z",
   "sorry_inventory": [
     {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 268,
+      "statement": "existPart_zero at n >= 2, satisfiable case",
+      "assumption": "The n-var depth-0 existential with base (fun _ => t) reduces to the 2-var projection when sub_nf is satisfiable",
+      "why_deferred": "Requires extensive Fin index bookkeeping to transfer between n-var and 2-var NF evaluations. Mathematical content is identical to n=1 case.",
+      "next_dispatch": "Implement the Fin index transfer proof: extract C1-C4 consistency from h_sat, then show 2-var <-> n-var biconditional"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 333,
+      "statement": "existPart_succ (depth k+1, all arities)",
+      "assumption": "ExistPart(k+1) holds given CharPart(k+1) and ExistPart(k)",
+      "why_deferred": "Requires Rabinovich negation closure argument (Section 5). The ExistPart statement uses base env (fun _ => t), but quantifier conditions at depth k+1 involve base (Fin.cons x (fun _ => t)). Bridging this gap requires either generalizing ExistPart to arbitrary base environments or using Prior-UZ/SZ to show temporal truth at t determines quantifier conditions.",
+      "next_dispatch": "Research and implement Rabinovich negation closure (Section 5) to handle the base environment mismatch"
+    },
+    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
       "line": 291,
       "statement": "nf_2var_exist_formula_prior_neg at depth succ k'",
       "assumption": "Backward direction of nf_exist_formula at depth k+1 holds on Prior structures",
-      "why_deferred": "Requires arity-climbing induction (full Rabinovich Prop 4.2)",
-      "next_dispatch": "Implement generalized nf_exist_characterizable for arbitrary arity"
+      "why_deferred": "This sorry would be filled by nf_2var_exist_formula_prior_filled once existPart_succ is proved",
+      "next_dispatch": "Fill existPart_succ first, then this sorry is resolved automatically"
     }
   ],
   "verification": {
-    "sorry_count": 1,
+    "sorry_count": 2,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "RabinovichNegation.lean depth-0 backward direction: nf_exist_formula backward is provable on ALL structures at depth 0 without Prior-UZ/SZ because depth-0 NFs have no quantifier conditions",
-    "The depth k+1 backward direction of nf_exist_formula requires encoding arity-3 existentials as temporal formulas -- this is the arity-climbing problem that needs strong induction on depth"
+    "RabinovichGeneralized.lean establishes the CharPart/ExistPart mutual induction framework: charPart_zero (sorry-free), charPart_succ (sorry-free given ExistPart), existPart_zero n=1 (sorry-free, delegates to nf_2var_exist_formula_prior_neg)",
+    "The ExistPart statement uses base env (fun _ => t) but the step case needs base (Fin.cons x (fun _ => t)). This mismatch is the core mathematical obstacle requiring Rabinovich Section 5 negation closure.",
+    "At depth 0 n>=2: if sub_nf is unsatisfiable with base (fun _ => t), formula is bot (sorry-free via Classical.em). If satisfiable, consistency conditions C1-C4 can be extracted from the witness, reducing to 2-var case."
   ]
 }

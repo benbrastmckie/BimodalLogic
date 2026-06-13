@@ -1,25 +1,40 @@
 {
   "status": "partial",
-  "summary": "Created RabinovichNegation.lean with sorry-free depth-0 backward direction and sorry at depth k+1. Provides nf_2var_exist_formula_prior_neg as drop-in for NfCharFormula.lean sorry.",
+  "summary": "Created RabinovichGeneralized.lean (385 lines) establishing CharPart/ExistPart mutual induction framework for the generalized P_n(k) theorem. Sorry-free: charPart_zero, charPart_succ, existPart_zero n=1, existPart_zero unsatisfiable case. Two sorries: existPart_zero n>=2 satisfiable (Fin bookkeeping), existPart_succ (negation closure).",
   "phases_completed": 1,
   "phases_total": 2,
   "sorry_inventory": [
     {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 268,
+      "statement": "existPart_zero at n >= 2, satisfiable case",
+      "assumption": "n-var depth-0 existential reduces to 2-var projection when satisfiable",
+      "why_deferred": "Requires Fin index bookkeeping to transfer C1-C4 consistency conditions and prove 2-var <-> n-var biconditional. Mathematical content identical to n=1.",
+      "next_dispatch": "Implement C1-C4 extraction from satisfying witness, then prove the bidirectional NF evaluation transfer between n-var and 2-var environments"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 333,
+      "statement": "existPart_succ (depth k+1, all arities)",
+      "assumption": "ExistPart(k+1) from CharPart(k+1) + ExistPart(k)",
+      "why_deferred": "Base environment mismatch: ExistPart uses (fun _ => t) but quantifier conditions at depth k+1 need (Fin.cons x (fun _ => t)). Requires Rabinovich Section 5 negation closure to bridge.",
+      "next_dispatch": "Either generalize ExistPart to arbitrary base environments, or implement the Rabinovich negation closure argument to show temporal truth at t determines quantifier conditions for the (x,t) base"
+    },
+    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
       "line": 291,
       "statement": "nf_2var_exist_formula_prior_neg at depth succ k'",
-      "assumption": "The backward direction of nf_exist_formula at depth k+1 holds on Prior structures",
-      "why_deferred": "Requires arity-climbing induction: depth-k arity-3 existentials need depth-(k-1) arity-4 existentials, etc. This is the full Rabinovich Proposition 4.2 negation closure argument.",
-      "next_dispatch": "Implement generalized nf_exist_characterizable for arbitrary arity by strong induction on depth k. At each depth, characterize arity-(n+1) existentials using arity-n characterizations at depth k-1."
+      "assumption": "Backward direction of nf_exist_formula at depth k+1",
+      "why_deferred": "Resolved automatically once existPart_succ is proved (nf_2var_exist_formula_prior_filled extracts ExistPart(k) at n=1)",
+      "next_dispatch": "Fill existPart_succ"
     }
   ],
   "blockers": [
-    "Backward direction of nf_exist_formula at depth k+1 requires encoding depth-k arity-3 existentials as temporal formulas. These involve conditions with 2 free variables (x and t) that cannot be directly encoded as 1-free-variable temporal formulas without the arity-climbing induction."
+    "existPart_succ: base environment mismatch (fun _ => t) vs (Fin.cons x (fun _ => t)). Resolution requires Rabinovich Section 5 negation closure argument OR generalized ExistPart statement."
   ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/negation-closure-handoff.md",
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 2,
-    "key_insight": "The depth k+1 case needs: for each ssn : NormalForm sig k' 3, encode '∃ y, nf_eval_nf M k' 3 (y,x,t) ssn' as a temporal formula at x. This requires recursively characterizing higher-arity existentials at lower depths."
+    "key_insight": "The CharPart/ExistPart mutual induction framework is correct and complete. CharPart propagates sorry-free through charPart_succ. The remaining mathematical work is in existPart_succ: showing that temporal truth at t on Prior structures determines the quantifier conditions of the (n+1)-var NF even when the base environment includes a witness x that differs from t. This is precisely Rabinovich's negation closure argument (Section 5, Lemma 5.1)."
   }
 }
