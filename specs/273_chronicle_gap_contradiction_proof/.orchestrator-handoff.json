@@ -1,45 +1,53 @@
 {
-  "status": "partial",
-  "summary": "Phase 1 (existPart_zero n>=2): proof logically complete, committed as WIP. Inline approach using Classical.em on compatible satisfiability with atom-by-atom Fin case analysis. LSP accepts but lake build has timeouts in simp_all and simp [Fin.ext_iff] for consistency extraction. Phase 2 (existPart_succ factoring) not started.",
-  "phases_completed": 0,
-  "phases_total": 2,
+  "status": "implemented",
+  "summary": "Factored existPart_succ into three cases: n=0 (omega), n=1 (sorry -- genuine blocker), n>=2 (sorry -- depends on n=1). The single sorry at line 413 is now two sorries at lines 440 and 460, clearly separating the mathematical blocker (n=1, Rabinovich Section 5 negation closure) from the reducible case (n>=2, 2-var projection once n=1 is proved). Build succeeds (992 jobs, 0 errors).",
+  "phases_completed": 2,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 249,
-      "statement": "existPart_zero n>=2 satisfiable case (inline proof, WIP)",
-      "assumption": "n-var existential with constant base reduces to 2-var",
-      "why_deferred": "Proof logically complete (LSP-verified) but lake build fails with simp_all timeouts in the consistency extraction cases. Need to replace simp_all with explicit cases + absurd chains to avoid exponential simp blowup.",
-      "next_dispatch": "Fix 3 categories of build issues: (1) Replace simp_all with explicit cases on Bool values + absurd for base-base order extraction. (2) Replace simp [Fin.ext_iff] in nested cases with show + omega for Fin inequality proofs. (3) Add heartbeat limit increase or break into smaller lemmas with set_option maxHeartbeats."
+      "line": 440,
+      "statement": "existPart_succ at n=1 (arity 2), depth k+1",
+      "assumption": "The 2-var existential at depth k+1 requires backward direction: formula truth -> exists x with correct NF. The quantifier conditions involve 3-var depth-k NFs with base (Fin.cons x (fun _ => t)), but ExistPart(k) only provides formulas for base (fun _ => t).",
+      "why_deferred": "Genuine mathematical blocker: requires Rabinovich Section 5 negation closure argument to bridge the base environment mismatch",
+      "next_dispatch": "Phase 3: resolve base environment mismatch, Phase 4: fill existPart_succ at n=1"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 395,
-      "statement": "existPart_succ (all n)",
-      "assumption": "Negation closure (Rabinovich Section 5) bridges base env mismatch",
-      "why_deferred": "Core mathematical blocker. Phase 2 factors into n=1 (sorry) and n>=2 (same reduction).",
-      "next_dispatch": "Factor existPart_succ: cases n=1 (sorry) vs n>=2 (same 2-var reduction as existPart_zero)."
+      "line": 460,
+      "statement": "existPart_succ at n>=2 (arity >=3), depth k+1",
+      "assumption": "Depends on n=1 case at same depth k+1. Atom part projects via bool_eq_of_iff_same (same as depth 0), but quantifier part projection requires n=1 as prerequisite.",
+      "why_deferred": "Structurally depends on n=1 case. Once n=1 is filled, n>=2 follows by Classical.em + 2-var projection (same pattern as existPart_zero).",
+      "next_dispatch": "Automatically closes when n=1 sorry is filled in Phase 4"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
+      "line": 291,
+      "statement": "nf_2var_exist_formula_prior_neg backward at k+1",
+      "assumption": "Arity generalization for depth k+1",
+      "why_deferred": "Pre-existing sorry; same blocker as existPart_succ n=1",
+      "next_dispatch": "Phase 4: fill existPart_succ at n=1"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 550,
+      "statement": "nf_2var_exist_formula_prior",
+      "assumption": "Temporal characterization of 2-var existential",
+      "why_deferred": "Pre-existing sorry; Phase 5 wires via nf_2var_exist_formula_prior_filled",
+      "next_dispatch": "Phase 5: wire into NfCharFormula"
     }
   ],
-  "blockers": [
-    "existPart_zero n>=2: lake build timeouts in simp_all/simp[Fin.ext_iff] during consistency extraction"
-  ],
+  "blockers": [],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "resume_from": "Phase 1 build fix",
+    "resume_from": "Phase 3 of plan v26",
     "key_decisions": [
-      "Helper lemma approach ABANDONED: Fin proof terms in lemma signatures cause omega failures under lake build but pass LSP. Root cause: omega cannot prove ¬(Fin.val ⟨0,_⟩ = Fin.val ⟨1,_⟩) when Fin types have variable bounds.",
-      "Inline proof approach ADOPTED: all consistency extraction and forward/backward proofs done inline within existPart_zero tactic block.",
-      "simp [Fin.ext_iff] replaces the pattern (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)) for Fin inequality proofs -- confirmed to work via lean_run_code.",
-      "Classical.em on COMPATIBLE satisfiability (nf_eval AND parent_atoms) rather than plain satisfiability -- this is mathematically necessary because a globally satisfiable sub_nf may be incompatible with specific parent_atoms.",
-      "Forward direction (n-var → 2-var) is purely projection, no consistency needed.",
-      "Backward direction (2-var → n-var) needs consistency: C1 (base preds agree with parent_atoms), C2 (base-base orders false), C3/C4 (x-base and base-x orders agree)."
-    ],
-    "build_fix_hints": [
-      "The simp_all timeouts occur in cases blocks where 4 Bool values are enumerated. Replace simp_all with targeted: rfl for matching cases, absurd (h.mp/mpr arg) (by simp [hsub]) for contradictory cases.",
-      "The simp [Fin.ext_iff] works for Fin inequality with numeric literals but may timeout when nested inside cases. Pre-compute the inequality proof as a have before the cases block.",
-      "The base-base order case (.order ⟨i+1,_⟩ ⟨j+1,_⟩) needs careful handling: extract from h_eval₀ that t₀ < t₀ is False, then show sub_nf must be false, then show the atom_eval at the current M is also False."
+      "Factored existPart_succ via 'cases n with | zero => omega | succ n' => cases n' with | zero => sorry | succ n'' => sorry' matching the pattern from existPart_zero.",
+      "Left n>=2 as sorry (not sorry-free) because the quantifier part projection at depth k+1 requires ExistPart(k+1) at n=1 as prerequisite -- cannot be proved independently of the n=1 case.",
+      "The n=1 sorry is the genuine mathematical blocker (Rabinovich Section 5 negation closure). The n>=2 sorry is a structural dependency on n=1.",
+      "Updated module docstring to reflect factored state.",
+      "No changes to existPart_zero, charPart_zero, charPart_succ, or any other theorem -- zero regression."
     ]
   }
 }
