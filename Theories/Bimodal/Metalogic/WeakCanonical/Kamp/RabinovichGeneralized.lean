@@ -59,6 +59,120 @@ open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_corre
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
+/-! ## Depth-0 n-var to 2-var reduction
+
+When the base environment is constant `(fun _ => t)`, the (n+1)-var existential
+at depth 0 reduces to the 2-var existential, provided the sub_nf is compatible
+with all base variables being equal. We prove this via a forward projection
+(n-var witness → 2-var witness) and a backward reconstruction
+(2-var witness → n-var witness, given consistency from a satisfiability witness). -/
+
+/-- Forward: any (n+1)-var depth-0 witness projects to a 2-var witness. -/
+private theorem depth0_nvar_forward_2var {sig : MonadicSignature}
+    {n'' : Nat} (sub_nf : NormalForm sig 0 (n'' + 3))
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf_2 : NormalForm sig 0 2)
+    (h_snf2_pred0 : ∀ p, sub_nf_2 (.pred p ⟨0, by omega⟩) = sub_nf (.pred p ⟨0, by omega⟩))
+    (h_snf2_pred1 : ∀ p, sub_nf_2 (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩))
+    (h_snf2_ord01 : sub_nf_2 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+        sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))))
+    (h_snf2_ord10 : sub_nf_2 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+        sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))))
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_nvar : nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf) :
+    nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf_2 := by
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    have h := h_nvar (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [h_snf2_pred0]; exact h
+  | .pred p ⟨1, _⟩ =>
+    have h := h_atoms (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [h_snf2_pred1]; exact h
+  | .pred _ ⟨n + 2, h⟩ => exact absurd h (by omega)
+  | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
+    have h := h_nvar (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+      (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [h_snf2_ord01]; exact h
+  | .order ⟨1, _⟩ ⟨0, _⟩ _ =>
+    have h := h_nvar (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+      (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [h_snf2_ord10]; exact h
+  | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
+  | .order ⟨1, _⟩ ⟨1, _⟩ h => exact absurd rfl h
+  | .order ⟨0, _⟩ ⟨_ + 2, h⟩ _ => exact absurd h (by omega)
+  | .order ⟨1, _⟩ ⟨_ + 2, h⟩ _ => exact absurd h (by omega)
+  | .order ⟨_ + 2, h⟩ _ _ => exact absurd h (by omega)
+
+/-- Backward: a 2-var depth-0 witness reconstructs to an (n+1)-var witness,
+    given consistency conditions extracted from a satisfiability witness. -/
+private theorem depth0_2var_backward_nvar {sig : MonadicSignature}
+    {n'' : Nat} (sub_nf : NormalForm sig 0 (n'' + 3))
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf_2 : NormalForm sig 0 2)
+    (h_snf2_pred0 : ∀ p, sub_nf_2 (.pred p ⟨0, by omega⟩) = sub_nf (.pred p ⟨0, by omega⟩))
+    (h_snf2_ord01 : sub_nf_2 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+        sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))))
+    (h_snf2_ord10 : sub_nf_2 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+        sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))))
+    -- Consistency conditions (from h_sat)
+    (hC1 : ∀ p i, sub_nf (.pred p ⟨i + 1, by omega⟩) =
+        sub_nf (.pred p ⟨1, by omega⟩))
+    (hC1' : ∀ p, sub_nf (.pred p ⟨1, by omega⟩) =
+        parent_atoms (.pred p ⟨0, by omega⟩))
+    (hC2 : ∀ (i j : Nat) (hi : i + 1 < n'' + 3) (hj : j + 1 < n'' + 3),
+        i ≠ j → sub_nf (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩
+          (by intro heq; exact ‹i ≠ j› (by omega))) = false)
+    (hC3 : ∀ (i : Nat) (hi : i + 1 < n'' + 3),
+        sub_nf (.order ⟨0, by omega⟩ ⟨i + 1, hi⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) =
+        sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))))
+    (hC4 : ∀ (i : Nat) (hi : i + 1 < n'' + 3),
+        sub_nf (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) =
+        sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+          (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))))
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_2var : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf_2) :
+    nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    have h := h_2var (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [← h_snf2_pred0]; exact h
+  | .pred p ⟨i + 1, hi⟩ =>
+    have h := h_atoms (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [hC1 p i, hC1' p]; exact h
+  | .order ⟨0, _⟩ ⟨j + 1, hj⟩ _ =>
+    have h := h_2var (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [hC3 j hj, ← h_snf2_ord01]; exact h
+  | .order ⟨i + 1, hi⟩ ⟨0, _⟩ _ =>
+    have h := h_2var (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h ⊢
+    rw [hC4 i hi, ← h_snf2_ord10]; exact h
+  | .order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h_neq =>
+    have hij : i ≠ j := by intro heq; exact h_neq (Fin.ext (by omega))
+    simp only [atom_eval, Fin.cons]
+    rw [hC2 i j hi hj hij]
+    constructor
+    · intro h; exact absurd h (lt_irrefl t)
+    · intro h; exact Bool.noConfusion h
+  | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
+
 /-! ## Part Definitions -/
 
 /-- CharPart(k): every arity-1 depth-k NF has a temporal characteristic formula
@@ -239,40 +353,128 @@ theorem existPart_zero {sig : MonadicSignature}
       -- Get the 2-var formula
       obtain ⟨A_2, hA2⟩ := nf_2var_exist_formula_prior_neg atomMap h_surj 0
         char_0 char_0_correct parent_atoms sub_nf_2
-      -- Now build the n-var formula using classical logic:
-      -- Either the n-var existential is always equivalent to the 2-var one
-      -- (when sub_nf is consistent), or it's always false.
-      -- In either case, we can pick the right formula classically.
-      --
-      -- The n-var and 2-var existentials agree when:
-      -- (1) predicates at base vars match parent_atoms
-      -- (2) no strict orders among base vars
-      -- (3) all order(0, i) for i >= 1 agree
-      -- (4) all order(i, 0) for i >= 1 agree
-      -- These are static properties of sub_nf (decidable on Bool functions).
-      -- Rather than checking each one, we use a single classical argument.
-      rcases Classical.em (∃ (M : OrderedMonadicStructure sig) (t : M.carrier) (x : M.carrier),
-          nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf) with h_sat | h_sat
-      · -- sub_nf is satisfiable. The n-var existential reduces to the
-        -- 2-var projection after verifying consistency conditions
-        -- (C1-C4: predicates match, no base orders, x-vs-t orders agree).
-        -- These conditions are extractable from the witness in h_sat
-        -- since they are properties of sub_nf (a Bool function), not
-        -- of any particular structure.
-        --
-        -- The full proof requires extensive Fin index bookkeeping to
-        -- transfer between the n-var and 2-var NF evaluations.
-        -- The mathematical content is identical to the n=1 case:
-        -- the additional base variables all equal t, so they contribute
-        -- no new information beyond what parent_atoms already captures.
-        sorry
-      · -- sub_nf is unsatisfiable. ⊥ works.
-        refine ⟨Formula.bot, fun M _ _ t _ => ?_⟩
+      -- Case split: is sub_nf compatible with parent_atoms?
+      -- If yes (some witness exists on a structure satisfying parent_atoms),
+      -- then sub_nf is consistent and the n-var existential ↔ 2-var existential.
+      -- If no, the n-var existential is always false and ⊥ works.
+      rcases Classical.em (∃ (M : OrderedMonadicStructure sig)
+          (t : M.carrier) (x : M.carrier),
+          nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf ∧
+          (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔
+            parent_atoms a = true)) with ⟨M₀, t₀, x₀, h_eval₀, h_atoms₀⟩ | h_no_compat
+      · -- sub_nf is satisfiable on a structure where parent_atoms holds.
+        -- Extract all consistency conditions from this combined witness.
+        -- C1: all base pred atoms agree with base var 1
+        have hC1 : ∀ p (i : Nat), sub_nf (.pred p ⟨i + 1, by omega⟩) =
+            sub_nf (.pred p ⟨1, by omega⟩) := by
+          intro p i
+          have h_i := h_eval₀ (.pred p ⟨i + 1, by omega⟩)
+          have h_1 := h_eval₀ (.pred p ⟨1, by omega⟩)
+          simp only [atom_eval, Fin.cons] at h_i h_1
+          have key_i : M₀.interp p t₀ → sub_nf (.pred p ⟨i + 1, by omega⟩) = true :=
+            fun h => h_i.mp h
+          have key_1 : M₀.interp p t₀ → sub_nf (.pred p ⟨1, by omega⟩) = true :=
+            fun h => h_1.mp h
+          have key_i' : sub_nf (.pred p ⟨i + 1, by omega⟩) = true → M₀.interp p t₀ :=
+            fun h => h_i.mpr h
+          have key_1' : sub_nf (.pred p ⟨1, by omega⟩) = true → M₀.interp p t₀ :=
+            fun h => h_1.mpr h
+          cases hsub_i : sub_nf (.pred p ⟨i + 1, by omega⟩) <;>
+          cases hsub_1 : sub_nf (.pred p ⟨1, by omega⟩)
+          · rfl
+          · exact absurd (key_1' hsub_1) (fun h => by simp [key_i h] at hsub_i)
+          · exact absurd (key_i' hsub_i) (fun h => by simp [key_1 h] at hsub_1)
+          · rfl
+        -- C1': base var 1 pred matches parent_atoms
+        have hC1' : ∀ p, sub_nf (.pred p ⟨1, by omega⟩) =
+            parent_atoms (.pred p ⟨0, by omega⟩) := by
+          intro p
+          have h_1 := h_eval₀ (.pred p ⟨1, by omega⟩)
+          have h_pa := h_atoms₀ (.pred p ⟨0, by omega⟩)
+          simp only [atom_eval, Fin.cons] at h_1 h_pa
+          -- Both iffs connect M₀.interp p t₀ to the respective Bool values
+          have fwd_1 : M₀.interp p t₀ → sub_nf (.pred p ⟨1, by omega⟩) = true :=
+            fun h => h_1.mp h
+          have bwd_1 : sub_nf (.pred p ⟨1, by omega⟩) = true → M₀.interp p t₀ :=
+            fun h => h_1.mpr h
+          have fwd_pa : M₀.interp p t₀ → parent_atoms (.pred p ⟨0, by omega⟩) = true :=
+            fun h => h_pa.mp h
+          have bwd_pa : parent_atoms (.pred p ⟨0, by omega⟩) = true → M₀.interp p t₀ :=
+            fun h => h_pa.mpr h
+          cases hsub : sub_nf (.pred p ⟨1, by omega⟩) <;>
+          cases hpa : parent_atoms (.pred p ⟨0, by omega⟩)
+          · rfl
+          · exact absurd (fwd_1 (bwd_pa hpa)) (by simp [hsub])
+          · exact absurd (fwd_pa (bwd_1 hsub)) (by simp [hpa])
+          · rfl
+        -- C2: base-base orders are false
+        have hC2 : ∀ (i j : Nat) (hi : i + 1 < n'' + 3) (hj : j + 1 < n'' + 3),
+            i ≠ j → sub_nf (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩
+              (by intro heq; exact ‹i ≠ j› (by omega))) = false := by
+          intro i j hi hj hij
+          have h_ord := h_eval₀ (.order ⟨i + 1, by omega⟩ ⟨j + 1, by omega⟩
+            (by intro heq; exact hij (by omega)))
+          simp only [atom_eval, Fin.cons] at h_ord
+          cases hsub : sub_nf (.order ⟨i + 1, by omega⟩ ⟨j + 1, by omega⟩
+            (by intro heq; exact hij (by omega)))
+          · rfl
+          · simp at h_ord; exact absurd hsub (by rw [h_ord]; exact Bool.noConfusion)
+        -- C3: x-base orders agree
+        have hC3 : ∀ (i : Nat) (hi : i + 1 < n'' + 3),
+            sub_nf (.order ⟨0, by omega⟩ ⟨i + 1, hi⟩
+              (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) =
+            sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+              (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) := by
+          intro i hi
+          have h_i := h_eval₀ (.order ⟨0, by omega⟩ ⟨i + 1, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+          have h_1 := h_eval₀ (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+          simp only [atom_eval, Fin.cons] at h_i h_1
+          cases hsub_i : sub_nf (.order ⟨0, by omega⟩ ⟨i + 1, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) <;>
+          cases hsub_1 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) <;>
+          simp_all
+        -- C4: base-x orders agree
+        have hC4 : ∀ (i : Nat) (hi : i + 1 < n'' + 3),
+            sub_nf (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩
+              (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) =
+            sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+              (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) := by
+          intro i hi
+          have h_i := h_eval₀ (.order ⟨i + 1, by omega⟩ ⟨0, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+          have h_1 := h_eval₀ (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega)))
+          simp only [atom_eval, Fin.cons] at h_i h_1
+          cases hsub_i : sub_nf (.order ⟨i + 1, by omega⟩ ⟨0, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) <;>
+          cases hsub_1 : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩
+            (by intro h; exact absurd (Fin.ext_iff.mp h) (by omega))) <;>
+          simp_all
+        -- Now use A_2 as the formula
+        refine ⟨A_2, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        rw [hA2 M h_UZ h_SZ t h_atoms]
+        constructor
+        · -- 2-var → n-var
+          rintro ⟨x, h2⟩
+          exact ⟨x, depth0_2var_backward_nvar sub_nf parent_atoms sub_nf_2
+            (fun p => rfl) (by rfl) (by rfl)
+            hC1 hC1' hC2 hC3 hC4 M x t h_atoms h2⟩
+        · -- n-var → 2-var
+          rintro ⟨x, hn⟩
+          exact ⟨x, depth0_nvar_forward_2var sub_nf parent_atoms sub_nf_2
+            (fun p => rfl) (fun p => rfl) (by rfl) (by rfl)
+            M x t h_atoms hn⟩
+      · -- No witness exists on any structure satisfying parent_atoms.
+        -- The n-var existential is always false given h_atoms, so ⊥ works.
+        refine ⟨Formula.bot, fun M _ _ t h_atoms => ?_⟩
         simp only [temporal_truth]
         constructor
         · intro h; exact absurd h id
         · rintro ⟨x, hx⟩
-          exact absurd ⟨M, t, x, hx⟩ h_sat
+          exact absurd ⟨M, t, x, hx, h_atoms⟩ h_no_compat
 
 /-! ## ExistPart: Step Case
 
