@@ -1246,7 +1246,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-12T23:45:00Z",
+      "last_updated": "2026-06-13T00:00:00Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1351,17 +1351,22 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/25_generalized-composition-lemma.md",
           "type": "plan",
           "summary": "Plan v25: generalized composition lemma with budget parameter, bypasses fixed-arity blocker"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/26_rabinovich-nvar-reduction.md",
+          "type": "plan",
+          "summary": "Plan v26: Rabinovich strategy with n-var to 2-var reduction, 5 phases"
         }
       ],
       "next_artifact_number": 26,
       "researched": "2026-06-12T18:56:55Z",
       "planned": "2026-06-12T16:48:53Z",
       "plan_metadata": {
-        "phases": 3,
-        "total_effort_hours": 6,
+        "phases": 5,
+        "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 25,
+        "plan_version": 26,
         "dependency_waves": [
           [
             1
@@ -1371,6 +1376,12 @@
           ],
           [
             3
+          ],
+          [
+            4
+          ],
+          [
+            5
           ]
         ],
         "reports_integrated": [
@@ -1388,6 +1399,11 @@
             "path": "reports/24_blocker-research.md",
             "integrated_in_plan_version": 25,
             "integrated_date": "2026-06-12"
+          },
+          {
+            "path": "reports/25_formula-construction-research.md",
+            "integrated_in_plan_version": 26,
+            "integrated_date": "2026-06-13"
           }
         ]
       },
