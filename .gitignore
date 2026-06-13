@@ -26,6 +26,7 @@ Thumbs.db
 
 # Literature PDFs (large binary files)
 literature/*.pdf
+specs/literature/*.pdf
 
 # Documentation build output
 doc/
