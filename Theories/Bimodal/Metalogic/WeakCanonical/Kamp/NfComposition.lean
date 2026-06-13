@@ -3,17 +3,37 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 /-!
 # Feferman-Vaught Composition for Normal Forms
 
-The depth-k n-var characteristic NF is determined by the depth-(k+1)
-1-var NFs plus pairwise order relations. Doets 1989 Lemma 1.4/1.5.
+Infrastructure for NF composition. Doets 1989 Lemma 1.4/1.5.
 
 ## Main Results
 
 - `nf_drop_last`: projection lemma -- depth-k (n+1)-var NF agreement implies
   depth-k n-var NF agreement for the first n components
 - `nf_1var_from_2var_agree`: 2-var NF agreement implies 1-var NF agreement
-- `generalized_composition`: same depth-(k+1) 1-var NFs + matching orders
-  implies same depth-k n-var NF
-- `nf_3var_from_1var_nfs`: specialization to arity 3
+- `intra_structure_extend`: given depth-(K+1) n-var NF agreement between
+  two environments in the same structure, for any z there exists z' with
+  depth-K (n+1)-var NF agreement (intra-structure analog of
+  NEquivalence.component_extend_fwd)
+
+## Note on generalized_composition
+
+The theorem `generalized_composition` as previously stated (same depth-(k+1)
+1-var NFs + matching orders implies same depth-k n-var NF) is FALSE for
+n >= 2 on general linear orders. Counterexample: M = (Z, <) with no
+predicates, env1 = (0, 2), env2 = (0, 1), k = 1. All integers have the
+same depth-k 1-var NF for all k (by translation symmetry) and 0 < 2 iff
+0 < 1, but the depth-1 2-var NFs differ: the zone "strictly between the
+two points" is nonempty for (0, 2) but empty for (0, 1).
+
+The correct intra-structure composition theorem requires either:
+(a) full n-var NF agreement at a higher depth (as in
+    NEquivalence.build_bicompat/CompData), or
+(b) additional zone structure hypotheses (e.g., that corresponding zones
+    have the same NF-types realized), or
+(c) an EF-game-based proof that works at the formula level
+    (doets_lemma_1_1) rather than the NF level.
+
+For the inter-structure case over ordered sums, see NEquivalence.lean.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -194,96 +214,54 @@ theorem nf_1var_from_2var_agree {sig : MonadicSignature}
   rw [h_eq_a, h_eq_b] at h_proj
   exact h_proj
 
-/-! ## Generalized Composition -/
+/-! ## Intra-Structure Witness Extension -/
 
-/-- The generalized Feferman-Vaught composition for arbitrary arity.
-    If two n-tuples in the same ordered monadic structure have:
-    1. Matching depth-(k+1) 1-var NFs for each component
-    2. Matching pairwise order relations
-    Then they have the same depth-k n-var NF.
+/-- **Intra-structure witness extension**: If two environments in the SAME
+    structure have the same depth-(K+1) n-var NF, then for any z there
+    exists z' with the same depth-K (n+1)-var NF.
 
-    Proved by induction on k with n universally quantified. -/
-theorem generalized_composition {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) :
-    ∀ (k n : Nat) (env1 env2 : Fin n → M.carrier)
-    (h_nf : ∀ i : Fin n, nf_characteristic M (k + 1) 1 (fun _ => env1 i) =
-                          nf_characteristic M (k + 1) 1 (fun _ => env2 i))
-    (h_ord : ∀ (i j : Fin n), i ≠ j →
-             (env1 i < env1 j ↔ env2 i < env2 j)),
-    nf_characteristic M k n env1 = nf_characteristic M k n env2 := by
-  intro k
-  induction k with
-  | zero =>
-    intro n env1 env2 h_nf h_ord
-    simp only [nf_characteristic]
-    funext a
-    cases a with
-    | pred p i =>
-      exact classical_decide_eq_of_iff (pred_agree_of_1var_nf_eq M 0 _ _ (h_nf i) p)
-    | order i j h_ne =>
-      exact classical_decide_eq_of_iff (h_ord i j h_ne)
-  | succ k ih =>
-    intro n env1 env2 h_nf h_ord
-    simp only [nf_characteristic]
-    apply Prod.ext
-    · -- Atom part
-      funext a
-      cases a with
-      | pred p i =>
-        exact classical_decide_eq_of_iff (pred_agree_of_1var_nf_eq M (k + 1) _ _ (h_nf i) p)
-      | order i j h_ne =>
-        exact classical_decide_eq_of_iff (h_ord i j h_ne)
-    · -- Quantifier part
-      funext sub_nf
-      apply classical_decide_eq_of_iff
-      -- By IH at depth k with arity n+1: suffices to find z' with
-      -- (a) nf_char M (k+1) 1 z' = nf_char M (k+1) 1 z (matching 1-var NFs)
-      -- (b) z' < env2[i] ↔ z < env1[i] for all i (matching orders)
-      -- Then ih (n+1) (Fin.cons z env1) (Fin.cons z' env2) ... gives the result.
-      --
-      -- For each env1[i], the depth-(k+2) 1-var NF encodes which depth-(k+1)
-      -- 2-var NF types are realized around env1[i]. Since env2[i] has the same
-      -- NF, the same types are realized around env2[i]. This gives z'_i per i
-      -- with the right NF and order to env2[i], but a single z' for ALL i
-      -- requires multi-point zone matching on the linear order.
-      --
-      -- BLOCKER: The multi-point zone matching argument requires showing that
-      -- on a linear order, the "zone" of z relative to ALL env1 points has a
-      -- corresponding zone in env2 containing a point with the right 1-var NF.
-      -- The individual-point transfer (from depth-(k+2) NFs) gives z'_i per
-      -- point i, but unifying them into a single z' requires reasoning about
-      -- the intersection of zones, which is not straightforward without a
-      -- density assumption or an inner induction on the number of reference
-      -- points with a more complex argument.
-      sorry
+    This is the intra-structure specialization of
+    NEquivalence.component_extend_fwd (setting ms j = ms' j = M).
 
-/-- Feferman-Vaught composition for arity 3.
-    Corollary of generalized_composition. -/
-theorem nf_3var_from_1var_nfs {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) :
-    ∀ (k : Nat)
-    (y1 x1 t1 y2 x2 t2 : M.carrier)
-    (h_y : nf_characteristic M (k + 1) 1 (fun _ => y1) =
-           nf_characteristic M (k + 1) 1 (fun _ => y2))
-    (h_x : nf_characteristic M (k + 1) 1 (fun _ => x1) =
-           nf_characteristic M (k + 1) 1 (fun _ => x2))
-    (h_t : nf_characteristic M (k + 1) 1 (fun _ => t1) =
-           nf_characteristic M (k + 1) 1 (fun _ => t2))
-    (h_ord : ∀ (i j : Fin 3) (h : i ≠ j),
-      ((Fin.cons y1 (Fin.cons x1 (fun _ => t1)) : Fin 3 → M.carrier) i <
-       (Fin.cons y1 (Fin.cons x1 (fun _ => t1)) : Fin 3 → M.carrier) j) ↔
-      ((Fin.cons y2 (Fin.cons x2 (fun _ => t2)) : Fin 3 → M.carrier) i <
-       (Fin.cons y2 (Fin.cons x2 (fun _ => t2)) : Fin 3 → M.carrier) j)),
-    nf_characteristic M k 3 (Fin.cons y1 (Fin.cons x1 (fun _ => t1))) =
-    nf_characteristic M k 3 (Fin.cons y2 (Fin.cons x2 (fun _ => t2))) := by
-  intro k y1 x1 t1 y2 x2 t2 h_y h_x h_t h_ord
-  apply generalized_composition M k 3
-  · intro ⟨i, hi⟩
-    match i, hi with
-    | 0, _ => simp [Fin.cons]; exact h_y
-    | 1, _ => simp [Fin.cons]; exact h_x
-    | 2, _ => simp [Fin.cons]; exact h_t
-  · intro i j h_ne
-    exact h_ord i j h_ne
+    Proof follows the same pattern: extract z' from the quantifier part
+    of the shared depth-(K+1) NF. -/
+theorem intra_structure_extend {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (K n : Nat)
+    (env1 env2 : Fin n → M.carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) n,
+      nf_eval_nf M (K + 1) n env1 nf ↔ nf_eval_nf M (K + 1) n env2 nf)
+    (z : M.carrier) :
+    ∃ z' : M.carrier, ∀ nf : NormalForm sig K (n + 1),
+      nf_eval_nf M K (n + 1) (Fin.cons z env1) nf ↔
+      nf_eval_nf M K (n + 1) (Fin.cons z' env2) nf := by
+  have hM := nf_characteristic_satisfies M (K + 1) n env1
+  have hN := nf_characteristic_satisfies M (K + 1) n env2
+  have heq := nf_eval_unique M (K + 1) n env2 _ _ ((h _).mp hM) hN
+  obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
+  set ch := nf_characteristic M K (n + 1) (Fin.cons z env1)
+  obtain ⟨z', hz'⟩ := ((hMq ch).trans (hNq ch).symm).mp
+    ⟨z, nf_characteristic_satisfies ..⟩
+  exact ⟨z', nf_agreement_from_shared_nf _ _ _ _ ch
+    (nf_characteristic_satisfies ..) hz'⟩
+
+/-- Symmetric version: given z' on the env2 side, find z on the env1 side. -/
+theorem intra_structure_extend_bwd {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (K n : Nat)
+    (env1 env2 : Fin n → M.carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) n,
+      nf_eval_nf M (K + 1) n env1 nf ↔ nf_eval_nf M (K + 1) n env2 nf)
+    (z' : M.carrier) :
+    ∃ z : M.carrier, ∀ nf : NormalForm sig K (n + 1),
+      nf_eval_nf M K (n + 1) (Fin.cons z env1) nf ↔
+      nf_eval_nf M K (n + 1) (Fin.cons z' env2) nf := by
+  have hM := nf_characteristic_satisfies M (K + 1) n env1
+  have hN := nf_characteristic_satisfies M (K + 1) n env2
+  have heq := nf_eval_unique M (K + 1) n env2 _ _ ((h _).mp hM) hN
+  obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
+  set ch := nf_characteristic M K (n + 1) (Fin.cons z' env2)
+  obtain ⟨z, hz⟩ := ((hMq ch).trans (hNq ch).symm).mpr
+    ⟨z', nf_characteristic_satisfies ..⟩
+  exact ⟨z, nf_agreement_from_shared_nf _ _ _ _ ch hz
+    (nf_characteristic_satisfies ..)⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
