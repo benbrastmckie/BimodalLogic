@@ -1,53 +1,63 @@
 {
-  "status": "implemented",
-  "summary": "Factored existPart_succ into three cases: n=0 (omega), n=1 (sorry -- genuine blocker), n>=2 (sorry -- depends on n=1). The single sorry at line 413 is now two sorries at lines 440 and 460, clearly separating the mathematical blocker (n=1, Rabinovich Section 5 negation closure) from the reducible case (n>=2, 2-var projection once n=1 is proved). Build succeeds (992 jobs, 0 errors).",
+  "status": "partial",
+  "summary": "Added ih_char parameter to existPart_succ, delegated n=1 case to nf_2var_exist_formula_prior_neg. Exhaustive analysis identified root sorry at NegationClosure.lean:1712 (nf_exist_formula_nested_backward). Resolution requires recursive zone formula constructor encoding ALL zone conditions (not just interval zones) in nf_exist_formula_nested.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 440,
-      "statement": "existPart_succ at n=1 (arity 2), depth k+1",
-      "assumption": "The 2-var existential at depth k+1 requires backward direction: formula truth -> exists x with correct NF. The quantifier conditions involve 3-var depth-k NFs with base (Fin.cons x (fun _ => t)), but ExistPart(k) only provides formulas for base (fun _ => t).",
-      "why_deferred": "Genuine mathematical blocker: requires Rabinovich Section 5 negation closure argument to bridge the base environment mismatch",
-      "next_dispatch": "Phase 3: resolve base environment mismatch, Phase 4: fill existPart_succ at n=1"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1712,
+      "statement": "nf_exist_formula_nested_backward (all k >= 1)",
+      "assumption": "Formula encodes interval zone conditions via nested Since/Until, but non-interval zone conditions (y > x, y = x, y = t, y < t) are only atom-filtered, not formula-encoded",
+      "why_deferred": "Non-interval zones require recursive zone formula construction: at each depth k, zone conditions involve depth-(k-1) existentials with mixed base. Terminates at depth 0 (purely atomic). Estimated 200-400 lines of new code.",
+      "next_dispatch": "Define recursive zone_exist_formula helper, modify nf_exist_formula_nested to use it, prove forward+backward for modified formula"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 460,
-      "statement": "existPart_succ at n>=2 (arity >=3), depth k+1",
-      "assumption": "Depends on n=1 case at same depth k+1. Atom part projects via bool_eq_of_iff_same (same as depth 0), but quantifier part projection requires n=1 as prerequisite.",
-      "why_deferred": "Structurally depends on n=1 case. Once n=1 is filled, n>=2 follows by Classical.em + 2-var projection (same pattern as existPart_zero).",
-      "next_dispatch": "Automatically closes when n=1 sorry is filled in Phase 4"
+      "line": 464,
+      "statement": "existPart_succ n>=2 (arity >=3), depth k+1",
+      "assumption": "Depends on n=1 case",
+      "why_deferred": "Structurally depends on n=1 which delegates to nf_2var_exist_formula_prior_neg",
+      "next_dispatch": "Fills automatically when root sorry at NegationClosure.lean:1712 is resolved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
       "line": 291,
       "statement": "nf_2var_exist_formula_prior_neg backward at k+1",
-      "assumption": "Arity generalization for depth k+1",
-      "why_deferred": "Pre-existing sorry; same blocker as existPart_succ n=1",
-      "next_dispatch": "Phase 4: fill existPart_succ at n=1"
+      "assumption": "Same root cause as NegationClosure:1712",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Fills when root sorry is resolved"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
+      "line": 359,
+      "statement": "nf_2var_exist_via_rabinovich backward at k+1",
+      "assumption": "Same root cause",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Fills when root sorry is resolved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 550,
+      "line": 572,
       "statement": "nf_2var_exist_formula_prior",
-      "assumption": "Temporal characterization of 2-var existential",
-      "why_deferred": "Pre-existing sorry; Phase 5 wires via nf_2var_exist_formula_prior_filled",
-      "next_dispatch": "Phase 5: wire into NfCharFormula"
+      "assumption": "Same root cause",
+      "why_deferred": "Same root cause -- Phase 5 wires via nf_2var_exist_formula_prior_filled",
+      "next_dispatch": "Phase 5 wiring after root sorry resolved"
     }
   ],
-  "blockers": [],
-  "continuation_path": null,
+  "blockers": [
+    "ROOT SORRY: nf_exist_formula_nested_backward (NegationClosure.lean:1712). All other sorries trace to this one. Resolution requires modifying nf_exist_formula_nested to encode non-interval zone quantifier conditions as temporal formulas, with a recursive construction on depth k."
+  ],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260613-zone-analysis.md",
   "continuation_context": {
     "is_successor": false,
-    "resume_from": "Phase 3 of plan v26",
+    "resume_from": "Phase 3 of plan v26 -- root sorry analysis complete, implementation of zone formula constructor needed",
     "key_decisions": [
-      "Factored existPart_succ via 'cases n with | zero => omega | succ n' => cases n' with | zero => sorry | succ n'' => sorry' matching the pattern from existPart_zero.",
-      "Left n>=2 as sorry (not sorry-free) because the quantifier part projection at depth k+1 requires ExistPart(k+1) at n=1 as prerequisite -- cannot be proved independently of the n=1 case.",
-      "The n=1 sorry is the genuine mathematical blocker (Rabinovich Section 5 negation closure). The n>=2 sorry is a structural dependency on n=1.",
-      "Updated module docstring to reflect factored state.",
-      "No changes to existPart_zero, charPart_zero, charPart_succ, or any other theorem -- zero regression."
+      "Added ih_char : CharPart atomMap k to existPart_succ for future zone formula construction",
+      "Delegated n=1 case to nf_2var_exist_formula_prior_neg at depth k+1",
+      "Root sorry identified: nf_exist_formula_nested_backward at NegationClosure.lean:1712",
+      "Composition theorem (same 1-var types => same 2-var type) is FALSE on Z (NfComposition.lean counterexample) -- cannot use this approach",
+      "Resolution requires encoding ALL zone conditions in nf_exist_formula_nested, not just interval zones"
     ]
   }
 }

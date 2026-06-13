@@ -172,7 +172,7 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 3: Resolve the base environment mismatch [NOT STARTED]
+### Phase 3: Resolve the base environment mismatch [IN PROGRESS]
 
 **Goal**: Research and implement the approach that bridges the base environment gap for `existPart_succ` at n=1. At depth k+1, the quantifier conditions involve `nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t)))` (base = `Fin.cons x (fun _ => t)`), but `ExistPart(k)` only provides formulas for base = `(fun _ => t)`.
 
