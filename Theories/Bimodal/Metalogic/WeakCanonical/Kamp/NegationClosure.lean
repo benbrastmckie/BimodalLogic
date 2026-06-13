@@ -1300,7 +1300,20 @@ private theorem nf_full_compat_right_v2_of_eval
       -- The key: show that atom-compat branches for zones 2,4 are unreachable
       -- because atom compat + y=x/y=t implies sub_nf.2 ssn = true (contradicting neg)
       -- For zone 1: show nf_x.2(proj) = false
-      sorry  -- Zone-specific negative case proofs at k=0
+      -- At k=0: zone checks have sub_nf.quant_assgn ssn branches.
+      -- sub_nf.2 ssn = false (from hsub). sub_nf.quant_assgn = sub_nf.2.
+      -- Zone 1 (y > x): need nf_x.quant_assgn(proj) = sub_nf.quant_assgn ssn = false
+      -- Zone 2 (y=x): atom-compat branch requires sub_nf.quant_assgn ssn = true (unreachable)
+      -- Zone 4 (y=t): same as zone 2
+      -- Strategy: simp to simplify, then close each remaining goal
+      simp only [hf]
+      -- After simp, the branches with !sub_nf.2 ssn are true.
+      -- The remaining branches are zone 1, zone 2 (compat), zone 4 (compat).
+      split_ifs with h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 h13
+      all_goals (first | rfl | simp_all [Bool.and_eq_true, beq_iff_eq])
+      -- Remaining goals should be zone 1, 2, 4 where simp_all can't close.
+      -- Zone 2 (y=x): derive contradiction from sub_nf.2 ssn = false + witness y=x
+      all_goals sorry
 
 set_option maxHeartbeats 2000000 in
 /-- Forward direction of nf_exist_formula_nested at depth k+1.
