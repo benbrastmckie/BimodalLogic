@@ -1,12 +1,36 @@
 {
-  "status": "implemented",
-  "summary": "Created RabinovichTranslation.lean (302 lines, sorry-free) implementing Rabinovich 2014 Proposition 3.5 wrapper. Defines ExistsForallSpec, future_chain, past_chain, translate with forward/backward/biconditional correctness theorems, plus convenience constructors (mk_leftmost, mk_rightmost, mk_single) and disjunctive V-EA translation (translateSpecs_correct). All 8 theorems verified: standard axioms only (propext, Classical.choice, Quot.sound), zero sorries.",
+  "status": "partial",
+  "summary": "Created RabinovichWiring.lean (365 lines) connecting Rabinovich translation to NF existentials. Depth-0 backward direction fully proved (no Prior needed). Depth k+1 sorry remains (needs negation closure).",
   "phases_completed": 1,
   "phases_total": 1,
-  "sorry_inventory": [],
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
+      "line": 359,
+      "statement": "theorem nf_2var_exist_via_rabinovich (backward direction, k+1 case)",
+      "assumption": "At depth k+1, temporal_truth of nf_exist_formula implies existence of x with right 2-var NF",
+      "why_deferred": "Requires negation closure (Rabinovich Lemma 5.1) + generalized composition (Prop 4.3) to determine interval types from boundary types. The 2-var NF at depth k+1 includes quantifier conditions about third-party variables interacting with both x and t, which cannot be recovered from 1-var NFs alone.",
+      "next_dispatch": "Implement negation closure backward direction connecting NegationClosure5.lean to NfCharFormula.lean, then fill this sorry"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 572,
+      "statement": "theorem nf_2var_exist_formula_prior",
+      "assumption": "Same as nf_2var_exist_via_rabinovich but as the original sorry site",
+      "why_deferred": "Pre-existing sorry. nf_2var_exist_via_rabinovich provides the same type signature as an alternative proof path. Once its k+1 sorry is filled, the original can be proved by forwarding.",
+      "next_dispatch": "Fill nf_2var_exist_via_rabinovich k+1 case, then use it to close nf_2var_exist_formula_prior"
+    }
+  ],
   "blockers": [],
   "continuation_path": null,
-  "continuation_context": null,
-  "new_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichTranslation.lean",
-  "session_id": "sess_1781336159_28ab79"
+  "continuation_context": {
+    "last_phase": "RabinovichWiring creation",
+    "next_action": "Fill the k+1 backward direction sorry in nf_2var_exist_via_rabinovich using negation closure",
+    "key_decisions": [
+      "Used nf_exist_formula as candidate formula (same formula as existing approach)",
+      "Forward direction uses nf_exist_formula_forward' (M-specific version)",
+      "Backward direction at depth 0 proved directly without Prior-UZ/SZ",
+      "depth0_backward_reconstruct handles 2-var NF reconstruction from 1-var NF + parent atoms + order"
+    ]
+  }
 }
