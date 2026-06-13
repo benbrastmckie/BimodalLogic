@@ -1393,7 +1393,7 @@
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "Formula nf_exist_formula_nested is mathematically insufficient for backward direction: does not encode quantifier conditions across 5 zones. At k>=1, even formula mods are insufficient because depth-k 3-var NFs are not determined by 1-var NF types (related to false generalized_composition). Fix requires Rabinovich Section 5 encoding or generalized mutual induction P2(k,n) for all arities. Estimated 600-1000+ lines."
+      "blockers": "Rabinovich Prop 3.5 infrastructure built (RabinovichTranslation.lean, 302 lines, sorry-free). Wiring layer built (RabinovichWiring.lean, 365 lines). nf_2var_exist_via_rabinovich: forward proved ALL k, backward proved k=0, backward k+1 sorry — needs Rabinovich Prop 4.2 negation closure."
     },
     {
       "project_number": 290,
