@@ -581,12 +581,23 @@ noncomputable def nf_full_compat_right {sig : MonadicSignature} {k : Nat}
     - Zone 5 (y < t): unchanged (needs formula-level pre-conditions).
 
     Forward-direction proof (`nf_full_compat_right_v2_of_eval`):
-    - At k=0: fully sorry-free (atoms determine everything)
-    - At k > 0: deferred (sorry) since the v2 checks are conservative (true)
+    - At k=0, NEGATIVE case: BLOCKED. The zone 1/2/4 quantifier checks
+      are too strong when ssn has inconsistent y-t order atoms. An ssn with
+      y > x (zone 1) but y < t (inconsistent with t < x < y) has no 3-var
+      witness (sub_nf.2 ssn = false), but the (y,x) 2-var projection may
+      still have witnesses (nf_x.2(proj) = true). The zone1_quant_check
+      asserts equality, which fails in this case.
+    - FIX NEEDED: Add ssn_yt_order_right_above/eq guards to zone 1/2/4
+      branches so inconsistent ssns fall through to !sub_nf.2 ssn (= true).
+      Same issue affects zones 2 and 4 symmetrically.
+    - At k > 0: conservative (true), same closing as v1. No issue.
+    - NOTE: nf_full_compat_right_v2 is NOT used by nf_exist_formula_nested.
+      The actual formula uses nf_full_compat_right (v1). The v2 filter was
+      designed for a potential future upgrade but has the above design flaw.
 
     Backward-direction proof:
-    - At k=0: the strengthened filter enables full recovery of sub_nf.2 for
-      zones 1, 2, 4 from nf_x and parent_atoms.
+    - At k=0: the strengthened filter (once fixed) would enable full recovery
+      of sub_nf.2 for zones 1, 2, 4 from nf_x and parent_atoms.
 -/
 
 /-- Zone 1 (y > x) quantifier check. At k=0, projects the depth-0 3-var
@@ -1296,16 +1307,16 @@ private theorem nf_full_compat_right_v2_of_eval
       -- k = 0: zone checks need special handling
       simp only [zone1_quant_check, zone24_quant_check]
       -- zone1: (nf_x.quant_assgn proj == false) must be true
-      -- zone24: sub_nf.quant_assgn ssn = false, but atom compat branch is unreachable
-      -- The key: show that atom-compat branches for zones 2,4 are unreachable
-      -- because atom compat + y=x/y=t implies sub_nf.2 ssn = true (contradicting neg)
-      -- For zone 1: show nf_x.2(proj) = false
-      -- At k=0: zone checks have sub_nf.quant_assgn ssn branches.
-      -- sub_nf.2 ssn = false (from hsub). sub_nf.quant_assgn = sub_nf.2.
-      -- Zone 1 (y > x): need nf_x.quant_assgn(proj) = sub_nf.quant_assgn ssn = false
-      -- Zone 2 (y=x): atom-compat branch requires sub_nf.quant_assgn ssn = true (unreachable)
-      -- Zone 4 (y=t): same as zone 2
-      -- Strategy: simp to simplify, then close each remaining goal
+      -- BLOCKER: zone1_quant_check design flaw (see docstring above).
+      -- Zone 1 (y > x): nf_x.2(proj) == sub_nf.2(ssn) fails when ssn has
+      --   inconsistent y-t order atoms (e.g., ssn says y < t but t < x < y).
+      --   Such ssns have no 3-var witness but may have 2-var projection witnesses.
+      -- Zone 2 (y=x): sub_nf.2(ssn) = true required but hsub says false.
+      --   Would be contradiction IF we could construct witness x, but ssn
+      --   may have inconsistent y-t order atoms preventing this.
+      -- Zone 4 (y=t): same issue as zone 2.
+      -- FIX: add ssn_yt_order guards to nf_full_compat_right_v2 definition.
+      -- NOTE: this theorem is NOT on the critical path (formula uses v1 filter).
       simp only [hf]
       -- After simp, the branches with !sub_nf.2 ssn are true.
       -- The remaining branches are zone 1, zone 2 (compat), zone 4 (compat).
@@ -1684,17 +1695,20 @@ private theorem nf_exist_formula_nested_backward
       (nf_exist_formula_nested k char_kp1 parent_atoms sub_nf)) :
     ∃ x : M.carrier, nf_eval_nf M (k + 1) (1 + 1)
       (Fin.cons x (fun _ : Fin 1 => t)) sub_nf := by
-  -- Backward direction: extract x from the formula and prove nf_eval_nf.
-  -- The proof proceeds by: (1) unfold formula, extract x from Until/Since,
-  -- (2) recover atoms from filter + char_kp1, (3) prove quantifier conditions
-  -- zone by zone using char_kp1(nf_x) information.
+  -- The backward proof uses backward_2var_nf_agreement which requires:
+  -- (a) nf_x with h_nfx, atom_compat, t_compat, order_match
+  -- (b) h_quant: for each ssn, (exists y, nf_eval 3 (y,x,t) ssn) <-> sub_nf.2 ssn
   --
-  -- Zone analysis for quantifier part sub_nf.2:
-  -- Zone 1 (y > x): sub_nf.2 derivable from nf_x.2 at k=0
-  -- Zone 2 (y = x): deterministic from atoms (any k)
-  -- Zone 3 (t < y < x): positive from Since; negative needs guard fix
-  -- Zone 4 (y = t): deterministic from atoms (any k)
-  -- Zone 5 (y < t): needs p2_k pre-conditions at t
+  -- The formula truth gives us (a) via the filterMap disjunction + char_kp1_correct.
+  -- The hard part is (b), which requires the composition theorem.
+  --
+  -- BLOCKER on (b): The quantifier part (sub_nf.2) requires a composition argument
+  -- for non-interval zones. This is the Feferman-Vaught composition theorem for
+  -- linear orders. The formula uses nf_full_compat_right (v1 filter) which only
+  -- checks atom compatibility, not quantifier conditions for non-interval ssns.
+  --
+  -- Interval zones (zone 3): positive from Since/Until witnesses in formula.
+  -- Non-interval zones (1,2,4,5): require composition argument not yet available.
   sorry
 
 /-! ## Master Simultaneous Induction -/
