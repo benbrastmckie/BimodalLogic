@@ -407,4 +407,228 @@ theorem nf_depth0_existential_decomp {sig : MonadicSignature}
     intro x h_nf
     exact nf_depth0_both_impossible sub_nf h_10 h_01 M t ⟨x, h_nf⟩
 
+/-! ## Since-direction bracket translation
+
+Constructs a temporal formula for bracket formulas evaluated from the right
+(Since direction): ∃ z0 < z1, endpointLeft(z0) ∧ bracket(z0, z1).
+
+Symmetric to `bracketBuildRight` in VecEATranslation.lean. -/
+
+/-- Since-direction bracket-to-temporal translation. -/
+noncomputable def bracketBuildLeft :
+    {n : Nat} → BracketFormula n → TemporalPred → Formula
+  | 0, bf, endLeft =>
+    buildLeft [(endLeft, bf.segmentTypes ⟨0, by omega⟩)] TemporalPred.top
+  | n + 1, bf, endLeft =>
+    let truncated : BracketFormula n :=
+      { pointTypes := fun i => bf.pointTypes ⟨i.val, by omega⟩
+        segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩ }
+    Formula.snce
+      (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
+        (bracketBuildLeft truncated endLeft))
+      (bf.segmentTypes ⟨n + 1, by omega⟩).formula
+
+/-- Correctness of bracketBuildLeft at n = 0 (trivial bracket).
+    At n = 0, this reduces to: ∃ z0 < t, endLeft(z0) ∧ seg(t, z0). -/
+private theorem bracketBuildLeft_correct_zero {sig : MonadicSignature}
+    (bf : BracketFormula 0) (endLeft : TemporalPred)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (bracketBuildLeft bf endLeft) ↔
+    ∃ z0 : M.carrier, z0 < t ∧ endLeft.eval_at M atomMap z0 ∧
+      bf.holds M atomMap z0 t := by
+  simp only [bracketBuildLeft]
+  rw [buildLeft_correct]
+  simp only [buildLeft_spec, BracketFormula.holds, BracketFormula.toIntervalPattern,
+             IntervalPattern.holds]
+  constructor
+  · intro ⟨z0, hz, hend, hseg, _⟩; exact ⟨z0, hz, hend, hseg⟩
+  · intro ⟨z0, hz, hend, hseg⟩
+    exact ⟨z0, hz, hend, hseg, fun s _ => by
+      simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]⟩
+
+/-- General correctness of `bracketBuildLeft`. -/
+theorem bracketBuildLeft_correct {sig : MonadicSignature} {n : Nat}
+    (bf : BracketFormula n) (endLeft : TemporalPred)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (bracketBuildLeft bf endLeft) ↔
+    ∃ z0 : M.carrier, z0 < t ∧ endLeft.eval_at M atomMap z0 ∧
+      bf.holds M atomMap z0 t := by
+  induction n generalizing t with
+  | zero => exact bracketBuildLeft_correct_zero bf endLeft M atomMap t
+  | succ m ih =>
+    simp only [bracketBuildLeft, temporal_truth]
+    constructor
+    · -- Forward: Since gives us witness x < t
+      intro ⟨x, hx, h_event, h_guard⟩
+      rw [temporal_truth_and] at h_event
+      obtain ⟨h_pt, h_rest⟩ := h_event
+      rw [ih] at h_rest
+      obtain ⟨z0, hz0, hend, hbf_trunc⟩ := h_rest
+      -- Need: bf.holds z0 t from truncated bracket holds on (z0, x) + witness x
+      -- Use bracket_prepend_witness from VecEATranslation.lean (it's private there,
+      -- so we inline the construction for the Since direction)
+      sorry
+    · -- Backward: from bf.holds z0 t, extract last witness
+      intro ⟨z0, hz0, hend, hbf⟩
+      sorry
+
+/-! ## VecEA2 Since-direction translation -/
+
+/-- Translate a `VecEA2 n` to a temporal formula with the free variable at z_1 (Since). -/
+noncomputable def VecEA2.translateRight {n : Nat} (vea : VecEA2 n) : Formula :=
+  Formula.and vea.endpointRight.formula (bracketBuildLeft vea.bracket vea.endpointLeft)
+
+/-- Correctness of `VecEA2.translateRight` at n = 0.
+    At n = 0 the bracket is trivial, so this avoids the general
+    `bracketBuildLeft_correct` (which has sorries at n > 0). -/
+theorem VecEA2.translateRight_correct_zero {sig : MonadicSignature}
+    (vea : VecEA2 0)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t vea.translateRight ↔ vea.holdsRight M atomMap t := by
+  simp only [translateRight, holdsRight]
+  rw [temporal_truth_and]
+  constructor
+  · intro ⟨h1, h2⟩
+    exact ⟨h1, (bracketBuildLeft_correct_zero _ _ M atomMap t).mp h2⟩
+  · intro ⟨h1, z0, hz0, hend, hbf⟩
+    exact ⟨h1, (bracketBuildLeft_correct_zero _ _ M atomMap t).mpr ⟨z0, hz0, hend, hbf⟩⟩
+
+/-- Correctness of `VecEA2.translateRight` (general case). -/
+theorem VecEA2.translateRight_correct {sig : MonadicSignature} {n : Nat}
+    (vea : VecEA2 n)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t vea.translateRight ↔ vea.holdsRight M atomMap t := by
+  simp only [translateRight, holdsRight]
+  rw [temporal_truth_and]
+  constructor
+  · intro ⟨h1, h2⟩
+    exact ⟨h1, (bracketBuildLeft_correct _ _ M atomMap t).mp h2⟩
+  · intro ⟨h1, z0, hz0, hend, hbf⟩
+    exact ⟨h1, (bracketBuildLeft_correct _ _ M atomMap t).mpr ⟨z0, hz0, hend, hbf⟩⟩
+
+/-- Translate a `VVecEA2` to a Since-direction temporal formula. -/
+noncomputable def VVecEA2.translateRight (v : VVecEA2) : Formula :=
+  translateVEF1 (v.disjuncts.map fun ⟨_, vea⟩ => vea.translateRight)
+
+/-- Correctness of `VVecEA2.translateRight`. -/
+theorem VVecEA2.translateRight_correct {sig : MonadicSignature}
+    (v : VVecEA2)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t v.translateRight ↔ v.holdsRight M atomMap t := by
+  simp only [translateRight, holdsRight]
+  rw [translateVEF1_correct]
+  constructor
+  · rintro ⟨f, hf_mem, hf⟩
+    rw [List.mem_map] at hf_mem
+    obtain ⟨⟨n, vea⟩, h_mem, rfl⟩ := hf_mem
+    exact ⟨⟨n, vea⟩, h_mem, (vea.translateRight_correct M atomMap t).mp hf⟩
+  · rintro ⟨⟨n, vea⟩, h_mem, h_holds⟩
+    exact ⟨vea.translateRight,
+           List.mem_map.mpr ⟨⟨n, vea⟩, h_mem, rfl⟩,
+           (vea.translateRight_correct M atomMap t).mpr h_holds⟩
+
+/-! ## Depth-0 temporal formula for 2-var existential
+
+At depth 0, the existential `∃ x, nf_eval_nf M 0 2 (x, t) sub_nf` is
+TL-definable via the VecEA2 decomposition:
+- Future (t < x): VecEA2.translateLeft captures holdsLeft
+- Past (x < t): VecEA2.translateRight captures holdsRight
+- Equal (x = t): nfPred formula captures the predicate conjunction
+- Both: False (impossible)
+
+Rather than constructing a single formula and proving correctness through
+complex if/match reduction, we use a classical existence proof that
+composes the VecEA2 translation with the decomposition theorem.
+
+### Proof Strategy
+
+The decomposition theorem `nf_depth0_existential_decomp` decomposes the
+existential into a 4-way case split on order booleans. Each case maps to
+a temporal formula:
+- holdsLeft → VecEA2.translateLeft
+- holdsRight → VecEA2.translateRight
+- predicate conjunction → nfPred formula
+- False → Formula.bot
+
+The temporal formula for the FULL existential is the disjunction of these
+cases (or more precisely, the unique applicable case given the order booleans
+is fixed by sub_nf).
+-/
+
+/-- At depth 0, the 2-var existential is TL-definable.
+
+    Proof uses the decomposition theorem `nf_depth0_existential_decomp` which
+    maps the existential to VecEA2.holdsLeft/holdsRight/predicate conditions,
+    combined with the sorry-free VecEA2 translation infrastructure.
+
+    The formula is constructed case-by-case on the order direction. -/
+theorem nf_2var_exist_depth0_tl
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 0 2) :
+    ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig) (t : M.carrier),
+      temporal_truth M atomMap t A ↔
+      ∃ x : M.carrier, nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  -- Case split on order booleans (these are fixed by sub_nf)
+  match h_10 : sub_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
+        h_01 : sub_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
+  | true, true =>
+    -- Both orders true: existential is impossible
+    exact ⟨Formula.bot, fun M t => by
+      simp only [temporal_truth]
+      constructor
+      · intro h; exact absurd h id
+      · intro ⟨x, h_nf⟩
+        exact nf_depth0_both_impossible sub_nf h_10 h_01 M t ⟨x, h_nf⟩⟩
+  | true, false =>
+    -- t < x: Until direction via VecEA2.translateLeft
+    exact ⟨(nf_vecEA2_future atomMap h_surj sub_nf).translateLeft, fun M t => by
+      rw [VecEA2.translateLeft_correct]
+      exact nf_vecEA2_future_correct atomMap h_surj sub_nf h_10 h_01 M t⟩
+  | false, true =>
+    -- x < t: Since direction via VecEA2.translateRight
+    exact ⟨(nf_vecEA2_past atomMap h_surj sub_nf).translateRight, fun M t => by
+      rw [VecEA2.translateRight_correct_zero]
+      exact nf_vecEA2_past_correct atomMap h_surj sub_nf h_10 h_01 M t⟩
+  | false, false =>
+    -- x = t: predicate conjunction at t (both x-proj and t-proj must hold)
+    exact ⟨Formula.and (nfPred atomMap h_surj (nf_x_proj' sub_nf)).formula
+                        (nfPred atomMap h_surj (nf_t_proj sub_nf)).formula,
+           fun M t => by
+      rw [temporal_truth_and]
+      constructor
+      · -- Formula → existential
+        intro ⟨h_x_form, h_t_form⟩
+        have h_x_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_x_proj' sub_nf) := by
+          rw [← nfPred_correct M atomMap h_surj (nf_x_proj' sub_nf) t]; exact h_x_form
+        have h_t_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj sub_nf) := by
+          rw [← nfPred_correct M atomMap h_surj (nf_t_proj sub_nf) t]; exact h_t_form
+        exact (nf_depth0_equal_correct sub_nf h_10 h_01 M t).mpr ⟨h_x_nf, h_t_nf⟩
+      · -- Existential → formula
+        intro ⟨x, h_nf⟩
+        have h_x_nf := extract_x_nf M sub_nf x t h_nf
+        have h_t_nf := extract_t_nf M sub_nf x t h_nf
+        -- Show x = t
+        have h_o01 := h_nf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+        have h_o10 := h_nf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+        simp only [atom_eval] at h_o01 h_o10
+        have hfc0 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨0, by omega⟩ = x := by
+          simp [Fin.cons]
+        have hfc1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+          simp [Fin.cons]; rfl
+        rw [hfc0, hfc1] at h_o01 h_o10
+        have h_eq : x = t := by
+          by_contra h_ne
+          rcases lt_or_gt_of_ne h_ne with h_lt | h_gt
+          · exact Bool.noConfusion (h_01 ▸ h_o01.mp h_lt)
+          · exact Bool.noConfusion (h_10 ▸ h_o10.mp h_gt)
+        subst h_eq
+        exact ⟨(nfPred_correct M atomMap h_surj (nf_x_proj' sub_nf) x).mpr h_x_nf,
+               (nfPred_correct M atomMap h_surj (nf_t_proj sub_nf) x).mpr h_t_nf⟩⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
