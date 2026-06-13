@@ -142,7 +142,14 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 1: Generalized Composition Lemma [IN PROGRESS]
+### Phase 1: Generalized Composition Lemma [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The zone matching step in the quantifier case of `generalized_composition`. Given z witnessing a depth-k (n+1)-var sub-NF in the env1 context, we need z' in the env2 context with (a) same depth-(k+1) 1-var NF as z and (b) same order relations to all env2 points as z has to env1 points.
+- **What was tried**: (1) Using z itself as z' (fails: z's order to env1[i] does not match z's order to env2[i] since env1[i] and env2[i] are different points). (2) Extracting z' from a single env point's depth-(k+2) 1-var NF (gives the right 2-var NF and order to ONE env point, but not all simultaneously). (3) Budget parameter approach (off-by-one in the constraint prevents simple induction). (4) Inner induction on n (gives depth-(k+1) (n-1)-var NF agreement but not the full n-var quantifier transfer). (5) Drop-last / projection lemma (proved structurally but doesn't resolve the multi-point zone matching).
+- **Why stuck**: The quantifier part of a depth-D NF encodes existentials at depth D-1. Each witness extraction loses one depth level. For multi-point zone matching, we need the witness to be in the right "zone" relative to ALL env points simultaneously. Getting this from individual env points' 1-var NFs requires 2-var NF agreement of pairs, which needs the composition theorem at lower arity -- creating a dependency that doesn't decrease in any simple induction measure. The theorem is true by EF game theory, but the NF framework doesn't directly support the multi-point zone matching argument.
+- **What is needed**: Either (a) a non-trivial zone matching proof that combines the depth-(k+2) 1-var NFs of adjacent env points to find a single z' in the right zone, or (b) a reformulation of the theorem using EF games or formula-level reasoning (doets_lemma_1_1) instead of NF-level reasoning. The projection lemma (nf_drop_last) is the key infrastructure, but connecting it to the multi-point witness is the remaining challenge.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Goal**: Prove the generalized composition theorem for arbitrary arity n with budget parameter b, using strong induction on b. This is the intra-structure analog of the `build_bicompat`/`CompData` pattern in NEquivalence.lean.
 
