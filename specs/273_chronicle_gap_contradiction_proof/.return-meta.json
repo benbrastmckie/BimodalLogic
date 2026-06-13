@@ -1,43 +1,56 @@
 {
   "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 273,
+  "session_id": "sess_1781389120_27fede",
+  "micro_task": 2,
+  "description": "Convert depth-(k+1) NF existential to VVecEA2",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md",
-      "summary": "Plan v27: Phases 1-2 COMPLETED (existing code), Phase 3 BLOCKED on composition lemma"
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
+      "summary": "Extended from 410 to 634 lines: bracketBuildLeft, VecEA2.translateRight, nf_2var_exist_depth0_tl (sorry-free)"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "summary": "Added import of NfToVecEA, filled k=0 case of nf_2var_exist_formula_prior via nf_2var_exist_depth0_tl"
     }
   ],
-  "next_steps": "Fill composition lemma at NegationClosure.lean:1712 to unblock Phase 3",
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1712,
-      "statement": "nf_exist_formula_nested_backward",
-      "assumption": "Backward direction needs composition argument for non-interval zones",
-      "why_deferred": "Requires Feferman-Vaught composition for linear orders at depth k",
-      "next_dispatch": "Prove composition by induction on k, or redesign formula using VecEA2 approach"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 583,
+      "statement": "nf_2var_exist_formula_prior at k+1",
+      "assumption": "2-var existential at depth k+1 is TL-definable on Prior structures",
+      "why_deferred": "Requires Feferman-Vaught composition for non-interval 3-var zones",
+      "next_dispatch": "Prove composition lemma or alternative approach for backward direction"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
+      "line": 472,
+      "statement": "bracketBuildLeft_correct n+1 (leaf sorry)",
+      "assumption": "Since-direction bracket manipulation at n >= 1",
+      "why_deferred": "Needs bracket_append_witness / bracket_extract_last_witness",
+      "next_dispatch": "Implement Since-direction bracket witness manipulation"
     }
   ],
   "verification": {
-    "sorry_count": 8,
+    "sorry_count": 3,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "Prop 4.2 negation closure (neg_2var_vec_ea, neg_interval_formula) is ALREADY sorry-free in NegationClosure5.lean and NegationClosureProp42.lean",
-    "The sole Kamp chain blocker is nf_exist_formula_nested_backward at NegationClosure.lean:1712 -- all other sorry sites cascade from this one",
-    "master_induction in NegationClosure.lean is a self-contained induction independent of kamp_mutual_induction in RabinovichGeneralized.lean",
-    "VecEA2/VVecEA2 infrastructure (translation, conjunction closure, existential closure) is fully sorry-free",
-    "NfCharFormula.lean cannot import NegationClosure.lean -- wiring must go through a file that imports both"
+    "nf_2var_exist_depth0_tl is sorry-free and proves depth-0 2-var existentials are TL-definable using VecEA2 decomposition by order direction",
+    "bracketBuildLeft provides Since-direction bracket-to-temporal translation, sorry-free at n=0 via bracketBuildLeft_correct_zero",
+    "VecEA2.translateRight_correct_zero is the sorry-free Since-direction VecEA2 translation at n=0, avoids general bracketBuildLeft_correct sorries",
+    "The k+1 case of nf_2var_exist_formula_prior requires Feferman-Vaught composition for non-interval zones -- the same blocker as nf_exist_formula_nested_backward"
   ],
   "metadata": {
-    "session_id": "sess_1781374494_d4f20d",
-    "agent_type": "lean-implementation-hard-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-    "phase_count": 4,
-    "estimated_hours": 10,
-    "reports_integrated": ["25_formula-construction-research.md"]
+    "session_id": "sess_1781389120_27fede",
+    "phase_count": 1,
+    "estimated_hours": 1
   }
 }
