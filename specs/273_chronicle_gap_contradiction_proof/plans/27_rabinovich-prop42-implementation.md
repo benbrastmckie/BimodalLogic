@@ -120,7 +120,9 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 1: Lemma 5.3 -- Negation of Point-Only Existentials [NOT STARTED]
+### Phase 1: Lemma 5.3 -- Negation of Point-Only Existentials [COMPLETED]
+
+*(deviation: altered -- Lemma 5.3 and Lemma 5.1 (neg_interval_formula) were already proved sorry-free in NegationClosure5.lean. No new code needed.)*
 
 **Goal**: In a new file `RabinovichProp42.lean`, prove that on Prior structures the negation of a point-only existential (all interval types are True) is equivalent to a disjunction of exists-forall formulas. This is Rabinovich Lemma 5.3.
 
@@ -168,7 +170,9 @@ Proof by induction on n:
 
 ---
 
-### Phase 2: Lemma 5.1 -- Full Negation Closure (Prop 4.2) [NOT STARTED]
+### Phase 2: Lemma 5.1 -- Full Negation Closure (Prop 4.2) [COMPLETED]
+
+*(deviation: altered -- Prop 4.2 (neg_2var_vec_ea) was already proved sorry-free in NegationClosureProp42.lean. No new code needed.)*
 
 **Goal**: Extend `RabinovichProp42.lean` with Lemma 5.1 -- the negation of an exists-forall formula with interval types is V-exists-forall. Combined with Lemma 5.3, this gives Proposition 4.2.
 
@@ -219,7 +223,14 @@ Induction on n (number of existentially chosen points). The decomposition at eac
 
 ---
 
-### Phase 3: Wire Prop 4.2 into ExistPart and Close Sorries [NOT STARTED]
+### Phase 3: Wire Prop 4.2 into ExistPart and Close Sorries [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: The backward direction of nf_exist_formula_nested (NegationClosure.lean:1712) requires a composition argument for non-interval zones. The formula nf_exist_formula_nested correctly encodes interval quantifier conditions (via nested Since/Until) but is too permissive for non-interval zones (y > x, y < t, y = x, y = t). The filter nf_full_compat_right only checks atom-level compatibility, not full quantifier conditions, causing potential false positives.
+- **What was tried**: (1) Classical existence argument -- fails because the formula must work for ALL Prior structures. (2) Using p2_k (depth-k 2-var IH) -- only handles constant base, not (x,t) base. (3) Direct zone composition at depth 0 -- works but doesn't extend to depth > 0 without a full composition theorem. (4) Using existing VecEA2/Prop4.2 infrastructure -- the infrastructure is sorry-free but the WIRING requires encoding NF evaluation as VecEA2, which itself needs the composition theorem.
+- **Why stuck**: The composition theorem (Feferman-Vaught for linear orders / Rabinovich implicit in Section 5) states: the depth-k n-var NF of (y, x, t) with y in a fixed zone relative to x and t is determined by depth-k 2-var NFs of the pairs (y,x), (y,t), (x,t). At depth 0 this is trivial (atoms). At depth k+1, it requires showing that depth-k (n+1)-var existentials decompose by zone, which is the same theorem at depth k with higher arity -- a genuine induction on k.
+- **What is needed**: A self-contained proof of the composition lemma for depth-k NFs on linear orders, stated as: for fixed zone z and fixed depth-(k+1) 1-var NFs nf_x, nf_t of the base points, `(∃ y in zone z, nf_eval_nf M k 3 (y, x, t) ssn) ↔ f(nf_x, nf_t, ssn, z)` where f is a computable function. This lemma would fill the sorry at NegationClosure.lean:1712.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Use Prop 4.2 to fill `existPart_succ` at n=1 (RabinovichGeneralized.lean:440), then cascade to fill n>=2 and wire into NfCharFormula.lean:572.
 
