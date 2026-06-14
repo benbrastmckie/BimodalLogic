@@ -636,11 +636,18 @@ theorem nf_2var_exist_formula_prior
     -- Depth 0: use VecEA2-based decomposition (sorry-free)
     obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
     exact ⟨A, fun M _ _ t _ => hA M t⟩
-  | k + 1 =>
-    -- Depth k+1: use the enriched bypass formula from KampBypass.lean.
+  | 1 =>
+    -- Depth 1 (inner depth 0): 3-var quantifier conditions are purely atomic.
+    -- Use existPart_succ_n1_bypass_k0 directly (bypasses the depth >= 2 sorry
+    -- in existPart_succ_n1_bypass). The k0 path uses KampForward zone
+    -- composition theorems which are sorry-free at depth 0.
+    exact existPart_succ_n1_bypass_k0 atomMap h_surj char_k char_k_correct
+      parent_atoms sub_nf
+  | k + 2 =>
+    -- Depth k+2 (k >= 0): use the enriched bypass formula from KampBypass.lean.
     -- The bypass encodes both atom AND quantifier conditions, avoiding the
     -- broken backward direction of nf_exist_formula.
-    exact existPart_succ_n1_bypass atomMap h_surj k char_k char_k_correct
+    exact existPart_succ_n1_bypass atomMap h_surj (k + 1) char_k char_k_correct
       parent_atoms sub_nf
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
