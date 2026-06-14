@@ -1,6 +1,6 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 blocked: The NF-to-VecEA2 bridge at depth k+1 requires the Prior composition property (Feferman-Vaught for Prior linear orders). This is the same fundamental blocker as NegationClosure.lean:1716 and RabinovichNegation.lean:291. Factored the sorry at NfCharFormula.lean:597 into a targeted lemma nf_exist_backward_prior (line 540) with the forward direction sorry-free. The VecEA2 approach does NOT avoid the composition property -- it restructures the formula but requires the same mathematical content for the backward direction.",
+  "status": "partial",
+  "summary": "Created VecEADecomp.lean (348 lines, sorry-free) with depth-0 bracket-zone decompositions for Rabinovich Lemma 3.2(2). Two VecEA2 constructions (nf_3var_bracket_tyx, nf_3var_bracket_xyt) convert 3-var existentials to VecEA2 formulas with y as bracket witness. Non-bracket zones (y outside interval) and depth k+1 extension remain for future dispatches.",
   "phases_completed": 1,
   "phases_total": 3,
   "sorry_inventory": [
@@ -8,57 +8,29 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 540,
       "statement": "private theorem nf_exist_backward_prior",
-      "assumption": "Given temporal formula truth at t (nf_exist_formula), produces witness x with nf_eval_nf M (k+1) 2 (x, t) sub_nf",
-      "why_deferred": "Requires Prior composition: 3-var NF of (y, x, t) must be recoverable from 1-var NFs of y, x, t plus order, on Prior structures. Same blocker as NegationClosure.lean:1716.",
-      "next_dispatch": "Prove Prior composition property (a standalone mathematical theorem about Prior structures)"
+      "assumption": "Backward direction at depth k+1 requires Prior composition",
+      "why_deferred": "Fundamental blocker: Feferman-Vaught composition for Prior structures",
+      "next_dispatch": "Prove Prior composition property"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1716,
-      "statement": "private theorem nf_exist_formula_nested_backward",
-      "assumption": "Backward direction of enriched nested formula",
-      "why_deferred": "Same blocker as nf_exist_backward_prior: requires Prior composition",
-      "next_dispatch": "Filling NfCharFormula.lean:540 would make this one redundant"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichNegation.lean",
-      "line": 291,
-      "statement": "nf_2var_exist_formula_prior_neg backward at k+1",
-      "assumption": "Backward direction at depth k+1",
-      "why_deferred": "Same blocker as nf_exist_backward_prior",
-      "next_dispatch": "Filling NfCharFormula.lean:540 would make this one redundant"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 446,
-      "statement": "existPart_succ n=1",
-      "assumption": "Delegates to nf_2var_exist_formula_prior_neg at k+1",
-      "why_deferred": "Depends on RabinovichNegation.lean:291",
-      "next_dispatch": "Resolve after Prior composition"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 474,
-      "statement": "existPart_succ n>=2",
-      "assumption": "Depends on n=1 case",
-      "why_deferred": "Depends on existPart_succ n=1",
-      "next_dispatch": "Resolve after n=1"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
+      "line": 359,
+      "statement": "nf_2var_exist_via_rabinovich (succ k' case)",
+      "assumption": "Same root blocker",
+      "why_deferred": "Depends on NfCharFormula:540",
+      "next_dispatch": "Fill after NfCharFormula:540"
     }
   ],
-  "blockers": [
-    "Prior composition property: On structures satisfying semantic_prior_UZ/SZ, the depth-k n-var NF of a tuple is determined by the depth-(k+1) 1-var NFs of the component points plus the linear order. This is FALSE on general linear orders (counterexample in NfComposition.lean) but should be TRUE on Prior structures. Proving this requires Feferman-Vaught composition restricted to Prior linear orders."
-  ],
+  "blockers": [],
   "continuation_path": "specs/273_chronicle_gap_contradiction_proof/plans/28_vecEA-path-b-implementation.md",
   "continuation_context": {
     "next_phase": 2,
     "completed_phases": [1],
-    "blocked_phases": [2],
     "key_results": [
-      "bracketBuildLeft_correct: sorry-free (Phase 1)",
-      "VecEA2.translateRight_correct: sorry-free (Phase 1)",
-      "nf_2var_exist_formula_prior forward direction: sorry-free (Phase 2 partial)",
-      "nf_exist_backward_prior: isolated sorry at NfCharFormula.lean:540 (Phase 2 blocker)"
-    ],
-    "blocker_analysis": "All 5 sorries in the Kamp chain trace to the same root blocker: Prior composition. The VecEA2 path and the nested formula path both require this property. No formula-level rearrangement can avoid the underlying mathematical content."
+      "VecEADecomp.lean: 348 lines, 0 sorries",
+      "nf_3var_bracket_tyx_correct: sorry-free",
+      "nf_3var_bracket_xyt_correct: sorry-free",
+      "Projection functions nf_y_proj, nf_x_proj3, nf_t_proj3: sorry-free"
+    ]
   }
 }
