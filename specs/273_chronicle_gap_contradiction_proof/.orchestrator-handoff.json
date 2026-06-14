@@ -1,98 +1,87 @@
 {
-  "status": "blocked",
-  "summary": "Broke circular import cycle (KampForward -> NfCharFormula -> KampBypass) by moving ssn_order_consistent to ZoneBridge.lean and replacing KampForward's NfCharFormula import with direct KampBypass import. NfCharFormula can now import KampForward. However, KampForward does NOT provide a general-depth theorem -- it only has depth-0 zone compositions. The sorry at NfCharFormula:643 (existPart_succ_n1_bypass, k>0) remains because the mathematical blocker (Feferman-Vaught composition for Prior structures) is unresolved.",
+  "status": "partial",
+  "summary": "Split nf_2var_exist_formula_prior match to separate depth 1 from depth >= 2. At k=1, calls existPart_succ_n1_bypass_k0 directly. Build passes.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 643,
-      "statement": "nf_2var_exist_formula_prior (k+1 case): calls existPart_succ_n1_bypass which has sorry at succ k'",
-      "assumption": "A sorry-free replacement for existPart_succ_n1_bypass at k>0",
-      "why_deferred": "KampForward.lean only provides depth-0 zone composition theorems. The sorry is at depth k+1 (general depth). The fundamental mathematical blocker is the Feferman-Vaught composition property for Prior structures.",
-      "next_dispatch": "Either prove the Prior composition property or find an alternative encoding"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 720,
+      "statement": "existPart_succ_n1_bypass_k0_eq (compatible equality case)",
+      "assumption": "enriched_bypass_eq formula ↔ ∃ x, nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf",
+      "why_deferred": "Requires proving quant_conjuncts correctness for each ssn zone (below_t, eq_t, above_t) using KampForward zone composition theorems. Each zone requires ~50 lines.",
+      "next_dispatch": "Fill the enriched_bypass_eq biconditional using nf_depth0_char_formula_correct + zone bridges"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 831,
+      "statement": "pre_conditions_at_t_until_holds",
+      "assumption": "temporal_truth M atomMap t (pre_conditions_at_t_until ...) holds given h_eval_quant",
+      "why_deferred": "Requires formula_conjList_iff + zone-specific temporal formula bridges for below_t and eq_t zones. Mechanical but ~100 lines.",
+      "next_dispatch": "Fill using formula_conjList_iff, then for each ssn in below_t/eq_t zone, bridge via nf_depth0_char_formula_correct"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 911,
+      "statement": "backward_holdsLeft_of_nf_eval endLeft",
+      "assumption": "endpointLeft holds at t for Until VecEA2",
+      "why_deferred": "Same as pre_conditions_at_t_until_holds but in different proof context",
+      "next_dispatch": "Fill alongside pre_conditions_at_t_until_holds"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 923,
+      "statement": "backward_holdsLeft_of_nf_eval endRight (quant part)",
+      "assumption": "right_conjuncts hold at x for eq_x and above_x zones",
+      "why_deferred": "Requires zone-specific bridges for eq_x and above_x zones. ~50 lines.",
+      "next_dispatch": "Fill using nf_depth0_char_formula_correct for eq_x + Until semantics for above_x"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 927,
+      "statement": "backward_holdsLeft_of_nf_eval bracket",
+      "assumption": "bracket.holds t x for positive between_tx ssns + negative segment guards",
+      "why_deferred": "Requires BracketFormula.holds decomposition + between-zone witness extraction. ~100 lines.",
+      "next_dispatch": "Fill using bracket witness construction from h_eval_quant + segment guard negation"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 985,
+      "statement": "forward_nf_eval_of_holdsLeft (nf_eval reconstruction)",
+      "assumption": "Given VecEA2 holdsLeft conditions, reconstruct nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf",
+      "why_deferred": "Requires reconstructing atom conditions + quantifier conditions from VecEA2 endpoint/bracket data. ~150 lines.",
+      "next_dispatch": "Fill using char_1_correct inverse + zone bridge theorems for quantifier reconstruction"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1097,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case of enriched bypass at depth 1",
+      "why_deferred": "Mirror of Until case. ~200 lines.",
+      "next_dispatch": "Fill by mirroring the Until case with reversed order direction"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1185,
+      "statement": "existPart_succ_n1_bypass (succ k' case)",
+      "assumption": "General depth >= 2 enriched bypass",
+      "why_deferred": "Requires arity-climbing induction (Phase 3 of plan v26). Not on depth-1 critical path.",
+      "next_dispatch": "Phase 3 of plan v26: generalize enriched bypass to all arities"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
-      "statement": "nf_exist_backward_prior (k+1 case)",
-      "assumption": "Prior composition determines 3-var quantifier profile",
-      "why_deferred": "Same fundamental blocker (Feferman-Vaught composition)",
-      "next_dispatch": "Same as above"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1199,
-      "statement": "existPart_succ_n1_bypass (succ k' case)",
-      "assumption": "depth-k' IH for 3-var conditions at general depth",
-      "why_deferred": "Same fundamental blocker",
-      "next_dispatch": "Same as above"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 802,
-      "statement": "existPart_succ_n1_bypass_k0_eq: equality case",
-      "assumption": "enriched_bypass_eq correctness",
-      "why_deferred": "Complex formula unfolding (depth 1, k=0)",
-      "next_dispatch": "Fill using zone bridge for x=t case"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 913,
-      "statement": "pre_conditions_at_t_until_holds",
-      "assumption": "Zone bridge below_t/eq_t",
-      "why_deferred": "Boolean extraction from ssn_zone_until",
-      "next_dispatch": "Fill using formula_conjList_iff + zone bridge lemmas"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 993,
-      "statement": "backward endLeft case",
-      "assumption": "Blocked on line 913",
-      "why_deferred": "Depends on pre_conditions_at_t_until_holds",
-      "next_dispatch": "Call helper once 913 filled"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1005,
-      "statement": "backward endRight case",
-      "assumption": "Zone bridge eq_x/above_x",
-      "why_deferred": "Same pattern as pre_conditions",
-      "next_dispatch": "Write right_conjuncts helper"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1009,
-      "statement": "backward bracket case",
-      "assumption": "BracketFormula.holds + zone_bridge",
-      "why_deferred": "Need BracketFormula.holds understanding",
-      "next_dispatch": "Unfold bracket, provide zone witnesses"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1067,
-      "statement": "forward direction",
-      "assumption": "Reverse of backward",
-      "why_deferred": "Complex reconstruction from temporal truth",
-      "next_dispatch": "Use char_1_correct inverse + zone bridge reverse"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1111,
-      "statement": "Since case (existPart_succ_n1_bypass_k0_since)",
-      "assumption": "Mirror of Until",
-      "why_deferred": "Needs symmetric helpers",
-      "next_dispatch": "Write Since-direction helpers"
+      "statement": "nf_exist_backward_prior",
+      "assumption": "Backward direction of nf_exist_formula on Prior structures",
+      "why_deferred": "Not on critical path -- bypassed by nf_characterizable_temporal_prior_classical",
+      "next_dispatch": "No action needed unless the classical approach is abandoned"
     }
   ],
-  "blockers": [
-    "KampForward.lean does NOT provide a replacement for the sorry at NfCharFormula:643. KampForward only has depth-0 zone composition theorems. The sorry is at depth k+1 (general depth). The fundamental mathematical blocker is the Feferman-Vaught composition property for Prior structures.",
-    "Import cycle is now BROKEN (ssn_order_consistent moved to ZoneBridge, KampForward no longer imports NfCharFormula, NfCharFormula now imports KampForward). But no theorem in KampForward has the signature needed to replace the sorry."
-  ],
-  "continuation_path": null,
+  "blockers": [],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/depth1-match-split-20260614.md",
   "continuation_context": {
     "is_successor": false,
-    "what_was_done": "Restructured imports to break the circular dependency chain KampForward -> NfCharFormula -> KampBypass. Moved ssn_order_consistent and ssn_order_consistent_of_eval from KampBypass.lean to ZoneBridge.lean. Replaced KampForward's NfCharFormula import with direct KampBypass import. Added KampForward import to NfCharFormula. All files build successfully.",
-    "what_remains": "The sorry at nf_2var_exist_formula_prior (k+1 case) cannot be filled with current infrastructure. KampForward needs to be extended to general depth, which requires resolving the Feferman-Vaught composition blocker."
+    "next_phase": "Fill KampBypass.lean sorries for existPart_succ_n1_bypass_k0 (eq, until, since cases)",
+    "key_insight": "At depth 1, the k=1 branch now calls existPart_succ_n1_bypass_k0 directly, isolating it from the depth >= 2 sorry. The 7 remaining sorries in existPart_succ_n1_bypass_k0 and its sub-theorems are the targets for the next dispatch."
   }
 }

@@ -1,8 +1,68 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "session_id": "sess_1781450184_9f12fa",
-  "started_at": "2026-06-14T00:00:00Z"
+  "started_at": "2026-06-14T00:00:00Z",
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 720,
+      "statement": "existPart_succ_n1_bypass_k0_eq (compatible equality case)",
+      "why_deferred": "Requires quant_conjuncts correctness proof"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 831,
+      "statement": "pre_conditions_at_t_until_holds",
+      "why_deferred": "Requires zone-specific temporal formula bridges"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 911,
+      "statement": "backward_holdsLeft_of_nf_eval endLeft",
+      "why_deferred": "Same as pre_conditions_at_t_until_holds"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 923,
+      "statement": "backward_holdsLeft_of_nf_eval endRight",
+      "why_deferred": "Zone bridges for eq_x and above_x"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 927,
+      "statement": "backward_holdsLeft_of_nf_eval bracket",
+      "why_deferred": "BracketFormula.holds decomposition"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 985,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "why_deferred": "NF eval reconstruction from VecEA2"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1097,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "why_deferred": "Mirror of Until case"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1185,
+      "statement": "existPart_succ_n1_bypass (succ k')",
+      "why_deferred": "Depth >= 2 arity-climbing induction"
+    }
+  ],
+  "verification": {
+    "sorry_count": 758,
+    "vacuous_count": 0,
+    "axiom_count": 2,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "nf_2var_exist_formula_prior at k=1 calls existPart_succ_n1_bypass_k0 directly, bypassing the succ k' sorry in existPart_succ_n1_bypass",
+    "existPart_succ_n1_bypass_k0 has 7 remaining sorries: eq case (line 720), pre_conditions (831), backward endLeft/endRight/bracket (911/923/927), forward (985), since (1097)"
+  ]
 }
