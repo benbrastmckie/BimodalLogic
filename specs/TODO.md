@@ -11,7 +11,7 @@ next_project_number: 301
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,290,291,296,300,300 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,290,291,296,300 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 155,192,196,231,292,293,294,298,299 | 161,187,191,194,230,268,273,291,300 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor, automation |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
@@ -108,7 +108,7 @@ next_project_number: 301
 
 ### 300. Refactor literature index json
 abort aware tableau cancellation
-- **Status**: [NOT_STARTED
+- **Status**: [COMPLETED
 NOT_STARTED]
 - **Task Type**: meta
 lean4
@@ -123,7 +123,7 @@ Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abor
 
 ### 300. Refactor literature index json
 abort aware tableau cancellation
-- **Status**: [NOT_STARTED
+- **Status**: [COMPLETED
 NOT_STARTED]
 - **Task Type**: meta
 lean4

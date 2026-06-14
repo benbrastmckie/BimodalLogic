@@ -9,12 +9,13 @@
     {
       "project_number": 300,
       "project_name": "refactor_literature_index_json",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "meta",
       "description": "Refactor specs/literature/ to use index.json files for --lit flag compatibility, keeping PDFs but ignoring them during literature retrieval, modeled after cslib specs/literature/ structure",
       "topic": "literature",
       "created": "2026-06-14T21:24:31Z",
-      "last_updated": "2026-06-14T21:24:31Z"
+      "last_updated": "2026-06-14T00:00:00Z",
+      "completion_summary": "Created specs/literature/index.json with 30 entries (one per .md file, no PDFs, no README.md) following cslib schema. Updated literature-retrieve.sh TOKEN_BUDGET from 4000 to 40000 to accommodate full OCR paper files. Enables keyword-based selective retrieval for --lit flag. All 30 paths verified. Retrieval tested with multiple queries."
     },
     {
       "project_number": 300,
