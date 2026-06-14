@@ -1436,7 +1436,7 @@
       },
       "session_id": "sess_1781301563_842c0e",
       "started": "2026-06-10T21:39:12Z",
-      "blockers": "VecEADecomp.lean complete (898 lines, sorry-free): full depth-0 3-var zone decomposition into VecEA2. NfToVecEA.lean complete (634+ lines, sorry-free): bracketBuildLeft + depth-0 2-var bridge. Remaining: wire depth-0 3-var VecEA2 into the sorry at NfCharFormula.lean:540 for the k=0 inner case, then generalize to k+1 via IH."
+      "blockers": "KampBypass.lean: 1145 lines. Zone-aware enriched formula v2 with VecEA2 brackets. Main theorem factored into eq/Until/Since cases. Until case decomposed into forward/backward helpers. 8 sorries remain (4 in Until zone-specific composition, 1 eq case, 1 Since case, 1 k>0, 1 pre-existing). Each remaining sorry is a small depth-0 composition fact connecting zone temporal formulas to 3-var NF existentials."
     },
     {
       "project_number": 290,
