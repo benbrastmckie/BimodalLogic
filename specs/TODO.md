@@ -1,5 +1,5 @@
 ---
-next_project_number: 300
+next_project_number: 301
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 300
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,290,291,296,300 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,290,291,296,300,300 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 155,192,196,231,292,293,294,298,299 | 161,187,191,194,230,268,273,291,300 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor, automation |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
@@ -27,7 +27,7 @@ next_project_number: 300
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-273 [PLANNED] — Close the two remaining blockers for completeness_discrete: (1) K
+273 [RESEARCHED] — Close the two remaining blockers for completeness_discrete: (1) K
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -96,6 +96,9 @@ next_project_number: 300
 282 [NOT STARTED] — exhaustive_enumeration_by_default
 290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
 296 [NOT STARTED] — Re-add the 6 derived binary temporal operators (release, weak_unt
+
+### Literature
+
 300 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
@@ -103,13 +106,33 @@ next_project_number: 300
 
 ## Tasks
 
-### 300. Abort aware tableau cancellation
-- **Status**: [NOT STARTED]
-- **Task Type**: lean4
-- **Topic**: dataset-enhancement
-- **Dependencies**: None
+### 300. Refactor literature index json
+abort aware tableau cancellation
+- **Status**: [NOT_STARTED
+NOT_STARTED]
+- **Task Type**: meta
+lean4
+- **Topic**: literature
+literature
+- **Dependencies**: 
 
-**Description**: Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
+**Description**: Refactor specs/literature/ to use index.json files for --lit flag compatibility, keeping PDFs but ignoring them during literature retrieval, modeled after cslib specs/literature/ structure
+Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
+
+---
+
+### 300. Refactor literature index json
+abort aware tableau cancellation
+- **Status**: [NOT_STARTED
+NOT_STARTED]
+- **Task Type**: meta
+lean4
+- **Topic**: literature
+literature
+- **Dependencies**: 
+
+**Description**: Refactor specs/literature/ to use index.json files for --lit flag compatibility, keeping PDFs but ignoring them during literature retrieval, modeled after cslib specs/literature/ structure
+Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
 
 ---
 
@@ -285,6 +308,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/reports/23_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/26_team-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
   - [273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md]
@@ -293,7 +317,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md]
   - [273_chronicle_gap_contradiction_proof/plans/28_vecEA-path-b-implementation.md]
   - [273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md]
-  - [273_chronicle_gap_contradiction_proof/plans/26_complete-kamp-proof.md]
+  - [273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md]
 
 **Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
 

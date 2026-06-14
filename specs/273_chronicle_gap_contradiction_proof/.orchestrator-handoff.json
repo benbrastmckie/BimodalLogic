@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Phase 2 (depth-0 wiring sorries) partially implemented. 4 target sorries remain in KampBypass.lean. Two forked agents produced verified helper theorems: seg_guard_holds (compiles, no sorry) for bracket negative guards, and bracket_holds_of_eval_quant (n=0 case proven, n+1 sorry). Eq case decomposed into forward/backward sub-sorries with formula_disjList_iff applied. All code documented in bracket_sorry_patch.md but needs re-application to KampBypass.lean.",
+  "summary": "Phase 2 in progress. 4 target sorries remain in KampBypass.lean. seg_guard_holds (sorry-free) and bracket_holds_of_eval_quant (sorry at IntervalPattern.holds) applied to file. Bracket sorry at L1440 now delegates to bracket_holds_of_eval_quant; remaining sorry is sorted-witness construction for IntervalPattern.holds at L1284. Eq compatible (L753), forward (L1503), since (L1615) untouched.",
   "phases_completed": 3,
   "phases_total": 7,
   "sorry_inventory": [
@@ -8,66 +8,47 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 753,
       "statement": "existPart_succ_n1_bypass_k0_eq (compatible subcase)",
-      "assumption": "enriched_bypass_eq correctly characterizes existential when x = t",
-      "why_deferred": "Decomposed into forward and backward sub-sorries. Forward: extract nf_x from disjunct, use char_1_correct, reconstruct nf_eval [t,t]. Backward: use witness_eq_t_of_no_order, nf_characteristic, nf_x_compat_of_nf_eval, then show each quant conjunct holds.",
-      "next_dispatch": "Apply eq agent findings: use refine not exact for elaboration, use rw [h_x_eq_t] not subst, use formula_disjList_iff + formula_conjList_iff for biconditional"
+      "status": "untouched"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1358,
-      "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "assumption": "BracketFormula.holds constructible from h_eval_quant for between_tx zone",
-      "why_deferred": "Agent wrote seg_guard_holds (compiles) and bracket_holds_of_eval_quant (n=0 complete, n+1 sorry). Code documented in bracket_sorry_patch.md. The n=0 HEq issue resolved via split + exact. The n+1 case needs sorted-witness construction.",
-      "next_dispatch": "Re-apply bracket_sorry_patch.md code to KampBypass.lean (insert after between_tx_temporal_iff), then work on n+1 sorted-witness construction"
+      "line": 1284,
+      "statement": "bracket_holds_of_eval_quant: IntervalPattern.holds sorted-witness construction",
+      "status": "decomposed from L1440 bracket case; seg_guard_holds applied; needs sorted-witness from h_eval_quant"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1416,
+      "line": 1503,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "nf_eval_nf reconstructible from VecEA2 holdsLeft components",
-      "why_deferred": "Atom part from char_1_correct + nf_x_compat_check. Quant part by zone decomposition: extract each ssn truth value from endLeft/endRight/bracket temporal components. Need to handle HEq between concrete vea and abstract pattern.",
-      "next_dispatch": "Write forward reconstruction: use h_eq to convert vea to enriched_vecEA2_until, then extract atoms from h_endRight (char_1_correct), quant from zone bridges"
+      "status": "untouched"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1528,
+      "line": 1615,
       "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "enriched_bypass_since correctly characterizes existential when x < t",
-      "why_deferred": "Mirror of Until case with Since-based formula (not VecEA2). Simpler formula structure: formula_disjList of Formula.and pre_at_t (Formula.snce pt_x guard).",
-      "next_dispatch": "Mirror Until proof with Since semantics. Need zone bridges for x < t direction."
+      "status": "untouched"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1616,
+      "line": 1703,
       "statement": "existPart_succ_n1_bypass depth>=2",
-      "assumption": "Out of scope for Phase 2",
-      "why_deferred": "Phase 3 work requiring arity-climbing induction",
-      "next_dispatch": "Phase 3: generalize existPart_succ_n1_bypass to arbitrary arity"
+      "status": "OUT OF SCOPE (Phase 3)"
     }
   ],
-  "blockers": [
-    "L753: eq case decomposed but forward/backward sub-sorries remain",
-    "L1358: bracket n=0 proven, n+1 sorted-witness construction needed",
-    "L1416: forward nf_eval reconstruction from VecEA2 not attempted",
-    "L1528: since case not attempted"
-  ],
+  "blockers": [],
   "continuation_context": {
-    "is_successor": false,
-    "resume_phase": 2,
-    "resume_task": "2.2",
-    "patch_file": "specs/273_chronicle_gap_contradiction_proof/bracket_sorry_patch.md",
-    "worktree_branch": "worktree-agent-a83818cfb35228c46",
-    "key_findings": [
-      "seg_guard_holds helper: COMPILED, proves segment guards for any y in (t,x) using between_tx_temporal_iff + h_eval_quant contradiction. Code in bracket_sorry_patch.md.",
-      "bracket_holds_of_eval_quant helper: n=0 case PROVEN via split + seg_guard_holds. n+1 case has sorry for sorted-witness construction. Code in bracket_sorry_patch.md.",
-      "Eq case: use refine not exact for fun M h_UZ h_SZ t h_atoms => elaboration. Use rw [h_x_eq_t] not subst (subst eliminates t, not x').",
-      "HEq transport after split on IntervalPattern.holds: for n=0 case, types match so eq_of_heq works. For n+1, need explicit transport.",
-      "All zone bridge lemmas (below_t, eq_t, eq_x, above_x, between_tx) are sorry-free",
-      "reconstruct_nf_eval_3var works for arbitrary x, t (no h_tx required)",
-      "extract_y_preds and reconstruct_nf_eval_3var are private in ZoneBridge - use simp [atom_eval, Fin.cons]",
-      "The Since formula does NOT use VecEA2 - simpler proof structure than Until"
-    ]
+    "is_successor": true,
+    "next_phase": "Fill remaining 4 KampBypass.lean sorries (bracket IntervalPattern.holds, eq compatible, forward, since)",
+    "key_insight": "Bracket sorry decomposed into IntervalPattern.holds sorted-witness problem. seg_guard_holds proves all segment guards. Need to understand IntervalPattern.holds definition and construct sorted witnesses from h_eval_quant existentials.",
+    "helpers_in_file": ["seg_guard_holds (L1204, sorry-free)", "bracket_holds_of_eval_quant (L1249, sorry at L1284)"],
+    "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md"
   },
-  "continuation_path": null,
-  "next_action_hint": "implement"
+  "next_action_hint": "research",
+  "artifacts": [
+    {
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md",
+      "type": "plan",
+      "summary": "Plan v30: complete Kamp proof, 5 phases. Phase 2 in progress with 4 target sorries remaining."
+    }
+  ]
 }

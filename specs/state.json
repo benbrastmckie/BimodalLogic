@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 300,
+  "next_project_number": 301,
   "active_projects": [
+    {
+      "project_number": 300,
+      "project_name": "refactor_literature_index_json",
+      "status": "not_started",
+      "task_type": "meta",
+      "description": "Refactor specs/literature/ to use index.json files for --lit flag compatibility, keeping PDFs but ignoring them during literature retrieval, modeled after cslib specs/literature/ structure",
+      "topic": "literature",
+      "created": "2026-06-14T21:24:31Z",
+      "last_updated": "2026-06-14T21:24:31Z"
+    },
     {
       "project_number": 300,
       "project_name": "abort_aware_tableau_cancellation",
@@ -15,7 +25,7 @@
       "dependencies": [],
       "created": "2026-06-09T18:00:00Z",
       "last_updated": "2026-06-09T18:00:00Z",
-      "topic": "dataset-enhancement",
+      "topic": "literature",
       "artifacts": []
     },
     {
@@ -1378,7 +1388,7 @@
           "summary": "Team research (4 teammates): order-consistency filter fix, VecEADecomp wiring strategy, depth boundary analysis, strategic direction"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/26_complete-kamp-proof.md",
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md",
           "type": "plan",
           "summary": "Plan v30: complete Kamp proof — 5 phases, no axiom fallback. ssn_order_consistent filter, depth-0 wiring, arity-climbing induction for depth ≥ 2, NfCharFormula wiring, completeness verification."
         },
@@ -1388,7 +1398,7 @@
           "summary": "Hard-mode research: exact goal states for all 7 KampBypass sorries mapped to resolution paths via KampForward/ZoneBridge. Fill order: 831→923→927→911→985→720→1097 (~765 lines)."
         }
       ],
-      "next_artifact_number": 27,
+      "next_artifact_number": 31,
       "researched": "2026-06-14T11:41:33Z",
       "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
@@ -1768,6 +1778,7 @@
     "sorry-elimination",
     "automation",
     "code-quality",
-    "dataset-enhancement"
+    "dataset-enhancement",
+    "literature"
   ]
 }
