@@ -1137,6 +1137,37 @@ private theorem pre_conditions_at_t_until_holds
       have h_exist := (eq_t_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_tx
         h_compat h_zone h_x_pred h_t_pred).mp h_char
       exact absurd ((h_eval_quant ssn).mp h_exist) h_pos
+/-! ## Between_tx bridge and bracket helpers -/
+
+set_option maxHeartbeats 800000 in
+/-- For between_tx zone with compatible ssn: temporal bridge to 3-var existential. -/
+private theorem between_tx_temporal_iff
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (x t : M.carrier) (h_tx : t < x)
+    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true)
+    (h_zone : ssn_zone_until ssn = YZone.between_tx)
+    (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
+    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true) :
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+    (∃ y, t < y ∧ y < x ∧ ∀ p, M.interp p y ↔ ssn (.pred p ⟨0, by omega⟩) = true) := by
+  have ⟨h_ty, h_yx, h_yt, h_xy⟩ := zone_between_tx_orders ssn h_zone
+  have h_tx_ord := ssn_xt_compat_tx_order ssn nf_x_1var parent_atoms h_compat
+  have h_x_ssn := ssn_xt_compat_x_preds ssn nf_x_1var parent_atoms true false h_compat
+  have h_t_ssn := ssn_xt_compat_t_preds ssn nf_x_1var parent_atoms true false h_compat
+  exact zone_bridge_between_tx M ssn x t h_tx h_ty h_yx h_yt h_xy h_tx_ord.1 h_tx_ord.2
+    (fun p => by constructor
+                 · intro h; rw [h_x_ssn p]; exact (h_x_pred p).mp h
+                 · intro h; exact (h_x_pred p).mpr (by rw [← h_x_ssn p]; exact h))
+    (fun p => by constructor
+                 · intro h; rw [h_t_ssn p]; exact (h_t_pred p).mp h
+                 · intro h; exact (h_t_pred p).mpr (by rw [← h_t_ssn p]; exact h))
+
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
 
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
