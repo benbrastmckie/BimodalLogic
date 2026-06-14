@@ -1,53 +1,58 @@
 {
-  "status": "researched",
-  "summary": "Research completed: VecEADecomp cannot directly fill the sorry at NfCharFormula.lean:540 because VecEADecomp handles depth-0 3-var existentials only, while the sorry is at depth k+1 (arbitrary k). The k=0 case is already sorry-free. The depth k+1 case requires a composition theorem for non-interval zones: knowing x's depth-(k+1) 1-var NF + t's predicates + Prior-UZ/SZ must determine the full 3-var quantifier profile. Three approaches identified: (A) arity-generalized induction P2_gen(k,n), (B) formula construction encoding all zone conditions, (C) classical existence proof. The NegationClosure.lean master_induction is the best existing attempt but hits the same wall at nf_exist_formula_nested_backward. Import feasibility confirmed: no circular dependencies prevent importing VecEADecomp into either NfCharFormula or NegationClosure.",
-  "phases_completed": 1,
-  "phases_total": 3,
+  "status": "partial",
+  "summary": "Phases 1 and 3 completed. Created KampBypass.lean with enriched bypass formula definition (enriched_bypass_formula_depth1 for k=0, sorry for k+1) and wired all sorry chains through the single bypass theorem existPart_succ_n1_bypass. NfCharFormula, RabinovichNegation, and RabinovichGeneralized all now delegate to KampBypass at depth k+1. Phase 2 (correctness proof for the enriched formula) is the remaining core work. nf_exist_backward_prior is now dead code.",
+  "phases_completed": 2,
+  "phases_total": 4,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 540,
-      "statement": "nf_exist_backward_prior",
-      "type": "exists x, nf_eval_nf M (k+1) (1+1) (Fin.cons x (fun _ => t)) sub_nf",
-      "hypotheses": "char_kp1_correct (depth k+1 characterization), h_formula (nf_exist_formula truth at t), h_UZ/h_SZ (Prior axioms), h_atoms (t predicate match)",
-      "why_stuck": "Backward direction requires composition: 1-var NF of x + predicates of t + Prior-UZ/SZ must determine the full 2-var NF at (x,t), including quantifier conditions about 3-var existentials. For non-interval zones (y outside [t,x]), the 3-var existential involves both x and t but the formula only provides 1-var NF information about x.",
-      "approaches_tried": [
-        "nf_exist_formula (NfCharFormula.lean) -- backward fails at non-interval zones",
-        "nf_exist_formula_nested (NegationClosure.lean) -- adds interval Since/Until but still fails at non-interval zones",
-        "zone1_quant_check via atomProjDrop (NegationClosure.lean) -- works at k=0 only, conservative (true) at k>=1",
-        "nf_full_compat_right_v2 (NegationClosure.lean) -- design flaw for inconsistent ssn_yt_order, not on critical path"
-      ]
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 269,
+      "statement": "existPart_succ_n1_bypass (k=0 correctness)",
+      "assumption": "The enriched_bypass_formula_depth1 correctly characterizes the depth-1 2-var existential on Prior structures",
+      "why_deferred": "Correctness proof requires zone-precise temporal encoding of depth-0 3-var existentials (6+ zones, y-x-t order precision). Forward direction straightforward but backward direction needs Prior-UZ/SZ for zone discrimination. Estimated 200-400 lines.",
+      "next_dispatch": "Prove forward and backward directions of enriched_bypass_formula_depth1. Forward: given exists x with nf_eval, show enriched formula holds. Backward: from enriched formula truth, extract x and verify nf_eval. Key difficulty: backward direction for zones where y-t order differs from y-x order."
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1716,
-      "statement": "nf_exist_formula_nested_backward",
-      "type": "Same goal as nf_exist_backward_prior but has extra p2_k hypothesis",
-      "why_stuck": "Same root cause: non-interval zone composition",
-      "note": "Has strictly more hypotheses (p2_k: P2 at depth k), so potentially easier to fill"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 273,
+      "statement": "existPart_succ_n1_bypass (k+1 case)",
+      "assumption": "The enriched formula approach works at all depths, not just depth 1",
+      "why_deferred": "Requires recursive enriched formula construction with higher-depth quantifier conditions. At depth k+2, quantifier conditions involve depth-(k+1) NFs which are not purely atomic.",
+      "next_dispatch": "Research whether the enriched formula approach generalizes to all depths, or whether a different technique is needed for k >= 1."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 465,
+      "statement": "existPart_succ (n >= 2 case)",
+      "assumption": "The n=1 case (existPart_succ_n1_bypass) is filled",
+      "why_deferred": "Depends on n=1 case. Once n=1 is sorry-free, n >= 2 follows by constant-base projection.",
+      "next_dispatch": "Fill after existPart_succ_n1_bypass is sorry-free."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 541,
+      "statement": "have (leaf): nf_exist_backward_prior (dead code)",
+      "assumption": "No longer on critical path -- private theorem, no callers",
+      "why_deferred": "Dead code since nf_2var_exist_formula_prior now delegates to bypass at k+1.",
+      "next_dispatch": "Optional cleanup: remove dead code."
     }
   ],
   "blockers": [
-    {
-      "description": "Composition theorem for non-interval 3-var zones at depth k+1",
-      "mathematical_content": "Given depth-(k+1) 1-var NF of x, predicates of t, and Prior-UZ/SZ, determine whether exists y with specific depth-k 3-var NF at (y,x,t) for y outside the interval [t,x]",
-      "options": [
-        "A: Generalize P2 to arbitrary arity (P2_gen(k,n) for all n) -- matches Rabinovich Section 5",
-        "B: Encode ALL zone conditions in the formula (not just interval) -- may hit formalizability issues",
-        "C: Classical existence proof using finite model property on Prior structures"
-      ]
-    }
+    "existPart_succ_n1_bypass k=0 correctness proof requires zone-precise temporal encoding of depth-0 3-var existentials with Prior-UZ/SZ for backward direction"
   ],
-  "report_path": "specs/273_chronicle_gap_contradiction_proof/reports/27_wiring-strategy-research.md",
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
   "continuation_context": {
-    "key_results": [
-      "VecEADecomp.lean: 898 lines, 0 sorries -- handles depth-0 3-var existentials only",
-      "NfCharFormula.lean sorry at line 540 is depth k+1, NOT depth 0",
-      "NegationClosure.lean has alternative path via master_induction but same blocker",
-      "backward_2var_nf_agreement (NegationClosure.lean:1590) is sorry-free GIVEN h_quant",
-      "intra_structure_extend (NfComposition.lean:228) provides NF-level composition but requires 2-var agreement as input",
-      "No import cycles: VecEADecomp can be imported by NfCharFormula or NegationClosure",
-      "The sorry at NfCharFormula.lean:540 is the SOLE root cause -- all other sorries in the pipeline trace back to it"
+    "is_successor": false,
+    "resume_phase": 2,
+    "resume_task": "2.1",
+    "key_decisions": [
+      "All sorry chains consolidated through existPart_succ_n1_bypass in KampBypass.lean",
+      "NfCharFormula.lean k+1 branch replaced with bypass call (line 642)",
+      "RabinovichNegation.lean k+1 branch replaced with bypass call (line 268)",
+      "RabinovichGeneralized.lean n=1 case replaced with bypass call (line 437)",
+      "nf_exist_backward_prior (NfCharFormula.lean:502) is now dead code",
+      "enriched_bypass_formula_depth1 defined with zone-aware formula construction",
+      "depth0_3var_exist_formula defined for encoding 3-var depth-0 existentials"
     ]
   }
 }

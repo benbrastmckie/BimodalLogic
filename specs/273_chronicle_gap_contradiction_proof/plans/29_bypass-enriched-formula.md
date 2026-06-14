@@ -182,7 +182,7 @@ The enriched formula for `exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf
 
 ---
 
-### Phase 2: Prove correctness of the enriched formula (both directions) [IN PROGRESS]
+### Phase 2: Prove correctness of the enriched formula (both directions) [PARTIAL]
 
 **Goal**: Prove the biconditional `temporal_truth M atomMap (env 0) A <-> exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf` for the enriched formula A from Phase 1. This is the core proof.
 
@@ -228,7 +228,7 @@ This is the KEY insight of the bypass: the enriched formula encodes ALL quantifi
 
 ---
 
-### Phase 3: Wire bypass into NfCharFormula + RabinovichGeneralized [NOT STARTED]
+### Phase 3: Wire bypass into NfCharFormula + RabinovichGeneralized [COMPLETED]
 
 **Goal**: Use `nf_nvar_exist_formula_bypass` from Phases 1-2 to fill the sorry at `nf_2var_exist_formula_prior` (NfCharFormula.lean:610, k+1 case), `nf_2var_exist_formula_prior_neg` (RabinovichNegation.lean:291), and `existPart_succ` (RabinovichGeneralized.lean:446, :474). Verify the sorry chain closure.
 

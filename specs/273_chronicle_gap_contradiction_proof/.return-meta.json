@@ -1,9 +1,34 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
   "session_id": "sess_1781421530_2b6c7c",
-  "started_at": "2026-06-14T00:00:00Z"
+  "started_at": "2026-06-14T00:00:00Z",
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 269,
+      "statement": "existPart_succ_n1_bypass (k=0 correctness)",
+      "why_deferred": "Correctness proof for enriched formula requires zone-precise temporal encoding of depth-0 3-var existentials"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 273,
+      "statement": "existPart_succ_n1_bypass (k+1 case)",
+      "why_deferred": "Recursive enriched formula at higher depths"
+    }
+  ],
+  "verification": {
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "Consolidating sorry chains through a single bypass theorem (existPart_succ_n1_bypass) reduced 3 separate sorry sites to 1 root cause in KampBypass.lean",
+    "nf_exist_backward_prior (NfCharFormula.lean:541) became dead code after wiring nf_2var_exist_formula_prior to use the bypass at k+1",
+    "The enriched formula approach for depth-0 3-var existentials requires zone-precise temporal encoding of y relative to both x and t, not just y relative to x"
+  ]
 }
