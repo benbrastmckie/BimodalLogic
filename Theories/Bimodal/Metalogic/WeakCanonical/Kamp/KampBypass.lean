@@ -781,6 +781,136 @@ private theorem existPart_succ_n1_bypass_k0_eq
         simp_all⟩⟩
   -/
 
+/-! ## Until Case: Forward and Backward Helper Lemmas -/
+
+/-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
+    Given a witness x > t with nf_eval_nf, construct holdsLeft by:
+    1. Finding the right disjunct (nf_x = nf_characteristic of x)
+    2. Showing endpointLeft (pre-conditions at t) holds
+    3. Providing x as the Until witness with endpointRight + bracket -/
+private theorem backward_holdsLeft_of_nf_eval
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (char_1 : NormalForm sig 1 1 → Formula)
+    (char_1_correct : ∀ (nf_1 : NormalForm sig 1 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_1 nf_1) ↔
+        nf_eval_nf M 1 1 (fun _ => t) nf_1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap)
+    (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier)
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) :
+    (∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) →
+    ∃ vea ∈ (List.filterMap
+        (fun nf_x => if nf_x_compat_check sub_nf nf_x = true then
+          some (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x
+            (fun a => match a with
+              | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
+              | .order i j h => absurd (Fin.ext (by omega) : i = j) h)
+            parent_atoms)
+        else none) Fintype.elems.val.toList),
+      VecEA2.holdsLeft M atomMap vea.snd t := by
+  intro ⟨x, h_eval⟩
+  -- Step 1: Get the characteristic NF of x and show compatibility
+  let nf_x := nf_characteristic M 1 1 (fun _ => x)
+  have h_nf_x : nf_eval_nf M 1 1 (fun _ => x) nf_x :=
+    nf_characteristic_satisfies M 1 1 (fun _ => x)
+  have h_compat : nf_x_compat_check sub_nf nf_x = true :=
+    nf_x_compat_of_nf_eval M sub_nf t x h_eval nf_x h_nf_x
+  -- Step 2: Build the VecEA2 for this nf_x
+  let nf_x_1var : NormalForm sig 0 1 := fun a => match a with
+    | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
+    | .order i j h => absurd (Fin.ext (by omega) : i = j) h
+  let vea := enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x nf_x_1var parent_atoms
+  -- Step 3: Show vea is in the disjunct list
+  have h_mem_elems : nf_x ∈ Fintype.elems.val := Fintype.complete nf_x
+  have h_vea_mem : vea ∈ List.filterMap
+      (fun nf_x' => if nf_x_compat_check sub_nf nf_x' = true then
+        some (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x'
+          (fun a => match a with
+            | .pred p _ => nf_x'.1 (.pred p ⟨0, by omega⟩)
+            | .order i j h => absurd (Fin.ext (by omega) : i = j) h)
+          parent_atoms)
+      else none) Fintype.elems.val.toList := by
+    rw [List.mem_filterMap]
+    refine ⟨nf_x, Multiset.mem_toList.mpr h_mem_elems, ?_⟩
+    simp only [h_compat, ite_true]
+    rfl
+  -- Step 4: Show holdsLeft for this VecEA2
+  refine ⟨vea, h_vea_mem, ?_⟩
+  -- holdsLeft = endpointLeft.eval_at t ∧ ∃ z1 > t, endpointRight.eval_at z1 ∧ bracket.holds t z1
+  simp only [VecEA2.holdsLeft, enriched_vecEA2_until]
+  -- We need t < x (from h_gt and h_eval)
+  have h_t_lt_x : t < x := (zone_from_nf_eval M sub_nf t x h_eval).1 h_gt
+  -- Decompose h_eval into atoms and quantifier parts
+  obtain ⟨h_eval_atoms, h_eval_quant⟩ := h_eval
+  -- Step 4a: endpointLeft (pre_conditions_at_t) holds at t
+  -- Step 4b: x as witness with endpointRight and bracket
+  refine ⟨?endLeft, x, h_t_lt_x, ?endRight, ?bracket⟩
+  case endLeft =>
+    -- pre_conditions_at_t_until holds at t
+    -- This is a conjunction over compatible ssns in below_t and eq_t zones
+    -- For each such ssn:
+    --   below_t + positive: S(char_y, ⊤) at t ↔ ∃ y < t with char_y(y)
+    --   below_t + negative: ¬S(char_y, ⊤) at t ↔ ¬∃ y < t with char_y(y)
+    --   eq_t + positive: char_y at t
+    --   eq_t + negative: ¬char_y at t
+    -- From h_eval_quant: (∃ y, nf_eval_nf M 0 3 (y,x,t) ssn) ↔ sub_nf.2 ssn
+    -- For compatible ssn in below_t zone: y < t, and
+    --   ∃ y < t with right predicates ↔ sub_nf.2 ssn = true
+    sorry
+  case endRight =>
+    -- char_1(nf_x) ∧ right_conjuncts holds at x
+    -- char_1(nf_x) ↔ nf_eval_nf M 1 1 (fun _ => x) nf_x (by char_1_correct)
+    -- right_conjuncts: for eq_x and above_x zones
+    sorry
+  case bracket =>
+    -- bracket.holds t x = interval pattern holds on (t, x)
+    -- Positive between_tx ssns need witnesses, negative need segment guards
+    sorry
+
+/-- Forward direction: holdsLeft for the enriched Until VVecEA2 → ∃ x, nf_eval.
+    Given holdsLeft (some disjunct is satisfied), extract x and reconstruct nf_eval. -/
+private theorem forward_nf_eval_of_holdsLeft
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (char_1 : NormalForm sig 1 1 → Formula)
+    (char_1_correct : ∀ (nf_1 : NormalForm sig 1 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_1 nf_1) ↔
+        nf_eval_nf M 1 1 (fun _ => t) nf_1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap)
+    (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier)
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) :
+    (∃ vea ∈ (List.filterMap
+        (fun nf_x => if nf_x_compat_check sub_nf nf_x = true then
+          some (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x
+            (fun a => match a with
+              | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
+              | .order i j h => absurd (Fin.ext (by omega) : i = j) h)
+            parent_atoms)
+        else none) Fintype.elems.val.toList),
+      VecEA2.holdsLeft M atomMap vea.snd t) →
+    ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
+  sorry
+
 /-! ## Until Case (t < x) -/
 
 /-- Until case of the enriched bypass: when sub_nf says t < x. -/
@@ -853,7 +983,17 @@ private theorem existPart_succ_n1_bypass_k0_until
     --
     -- This proof is deferred to a subsequent dispatch focused on the Until-case
     -- semantic equivalence between VecEA2.holdsLeft and nf_eval_nf.
-    sorry⟩
+    show temporal_truth M atomMap t (enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms) ↔ _
+    simp only [enriched_bypass_until]
+    rw [VVecEA2.translateLeft_correct]
+    simp only [VVecEA2.holdsLeft]
+    constructor
+    · -- Forward: holdsLeft → ∃ x, nf_eval
+      exact forward_nf_eval_of_holdsLeft atomMap h_surj char_1 char_1_correct
+        parent_atoms sub_nf h_gt h_lt M h_UZ h_SZ t h_atoms
+    · -- Backward: ∃ x, nf_eval → holdsLeft
+      exact backward_holdsLeft_of_nf_eval atomMap h_surj char_1 char_1_correct
+        parent_atoms sub_nf h_gt h_lt M h_UZ h_SZ t h_atoms⟩
 
 /-! ## Since Case (x < t) -/
 
