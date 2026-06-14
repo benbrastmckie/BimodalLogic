@@ -1,48 +1,72 @@
 {
   "status": "partial",
-  "summary": "Phase 1 completed: added ssn_order_consistent definition (12 boolean checks for antisymmetry, transitivity, equality consistency) and integrated into ssn_xt_compatible. Proved ssn_order_consistent_of_eval (sorry-free) ensuring the filter preserves all realizable SSN values. Build passes.",
+  "summary": "Phase 2 partial: closed 2 incompatible subcases of existPart_succ_n1_bypass_k0_eq sorry-free (predicate-mismatch cases return Formula.bot). 7 depth-0 wiring sorries remain on critical path plus 1 unused helper. Key technique discovered: unfold atom_eval + exact h for Fin.cons/Fin.cases proof-term normalization after subst.",
   "phases_completed": 1,
-  "phases_total": 5,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 777,
-      "statement": "theorem zone_3var_exist_iff_1var",
-      "assumption": "Zone decomposition for depth-0 3-var existential",
-      "why_deferred": "Phase 2 scope -- requires ~200 lines of zone-by-zone case analysis",
-      "next_dispatch": "Phase 2: fill zone_3var_exist_iff_1var and remaining depth-0 wiring sorries"
+      "line": 801,
+      "statement": "existPart_succ_n1_bypass_k0_eq (compatible case)",
+      "assumption": "enriched_bypass_eq formula correctly characterizes the equality case existential",
+      "why_deferred": "Requires proving enriched_bypass_eq disjunction <-> nf_eval_nf M 1 2 [t,t] sub_nf via zone decomposition for depth-0 3-var existentials at [y,t,t]",
+      "next_dispatch": "Prove forward/backward for enriched_bypass_eq"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 839,
-      "statement": "backward_holdsLeft_of_nf_eval sorry sites",
-      "assumption": "Pre-conditions and endpoint conditions for enriched bypass",
-      "why_deferred": "Phase 2 scope -- now unblocked by ssn_order_consistent filter",
-      "next_dispatch": "Phase 2: fill after zone helper"
+      "line": 879,
+      "statement": "zone_3var_exist_iff_1var (unused helper)",
+      "assumption": "3-var existential decomposes by zone",
+      "why_deferred": "Not on critical path (grep shows no callers). Private theorem.",
+      "next_dispatch": "Skip unless needed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 929,
+      "line": 960,
+      "statement": "backward_holdsLeft_of_nf_eval endLeft",
+      "assumption": "pre_conditions_at_t_until holds at t from nf_eval quantifier profile",
+      "why_deferred": "Requires connecting depth-0 3-var existentials to temporal formulas via nf_depth0_char_formula_correct",
+      "next_dispatch": "Extract y-witnesses from h_eval_quant per zone, show temporal formulas hold"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 972,
+      "statement": "backward_holdsLeft_of_nf_eval endRight",
+      "assumption": "eq_x and above_x zone conditions hold at x",
+      "why_deferred": "Mirror of endLeft at x",
+      "next_dispatch": "Extract y-witnesses, show temporal formulas at x"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 976,
+      "statement": "backward_holdsLeft_of_nf_eval bracket",
+      "assumption": "between_tx zone conditions hold via VecEA2 bracket",
+      "why_deferred": "Requires BracketFormula.holds interface",
+      "next_dispatch": "Show bracket.holds from h_eval_quant"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1034,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "Reconstruct nf_eval from VecEA2 holdsLeft conditions",
-      "why_deferred": "Phase 2 scope",
-      "next_dispatch": "Phase 2: implement after zone helper"
+      "assumption": "holdsLeft data reassembles into nf_eval_nf",
+      "why_deferred": "Inverse of backward: zone-by-zone extraction and nf_eval assembly",
+      "next_dispatch": "From endRight extract char_1(nf_x), from endLeft/bracket extract quantifier conditions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1010,
-      "statement": "theorem existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case mirror of Until",
-      "why_deferred": "Phase 2 scope -- blocked by Until case",
-      "next_dispatch": "Phase 2: mirror Until case"
+      "line": 1146,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case mirrors Until with reversed order",
+      "why_deferred": "Needs forward/backward proofs mirroring Until",
+      "next_dispatch": "Mirror Until proof with Since semantics"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1196,
-      "statement": "existPart_succ_n1_bypass k>0 case",
-      "assumption": "General k > 0 requires depth-k IH",
-      "why_deferred": "Phase 3 scope -- different mathematical content",
-      "next_dispatch": "Phase 3: arity-climbing induction"
+      "line": 1234,
+      "statement": "existPart_succ_n1_bypass k>0 (Phase 3)",
+      "assumption": "General depth requires IH for all arities",
+      "why_deferred": "Phase 3 scope",
+      "next_dispatch": "Phase 3"
     }
   ],
   "blockers": [],
@@ -51,14 +75,18 @@
     "is_successor": false,
     "session_id": "sess_1781438804_42f71b",
     "completed_objectives": [
-      "Defined ssn_order_consistent with 12 boolean checks",
-      "Integrated into ssn_xt_compatible (single-point modification)",
-      "Proved ssn_order_consistent_of_eval (sorry-free, no sorryAx)",
-      "Verified build passes with no regressions"
+      "Closed existPart_succ_n1_bypass_k0_eq predicate-incompatible subcases sorry-free",
+      "Added set_option maxHeartbeats 800000 for equality case theorem",
+      "Discovered unfold atom_eval technique for Fin.cons/Fin.cases proof-term normalization"
     ],
-    "next_objective": "Phase 2: close depth-0 wiring sorries",
+    "next_objective": "Fill backward_holdsLeft_of_nf_eval endLeft sorry (line 960) or consider classical shortcut for remaining sorries",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
+    ],
+    "key_techniques": [
+      "unfold atom_eval + exact h to handle Fin.cons at concrete indices after subst",
+      "witness_eq_t_of_no_order to derive x = t in equality case",
+      "set_option maxHeartbeats 800000 for complex case analysis proofs"
     ]
   }
 }
