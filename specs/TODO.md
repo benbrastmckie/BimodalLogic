@@ -27,7 +27,7 @@ next_project_number: 300
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-273 [IMPLEMENTING] — Close the two remaining blockers for completeness_discrete: (1) K
+273 [RESEARCHED] — Close the two remaining blockers for completeness_discrete: (1) K
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -261,7 +261,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -284,6 +284,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/reports/13_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/23_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/26_team-research.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
   - [273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md]

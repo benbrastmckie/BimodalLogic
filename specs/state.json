@@ -1239,14 +1239,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-13T00:00:00Z",
+      "last_updated": "2026-06-14T11:41:33Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1371,10 +1371,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
           "type": "plan",
           "summary": "Plan v29: Bypass-based enriched formula via P_n(k) generalization, 4 phases"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/26_team-research.md",
+          "type": "report",
+          "summary": "Team research (4 teammates): order-consistency filter fix, VecEADecomp wiring strategy, depth boundary analysis, strategic direction"
         }
       ],
-      "next_artifact_number": 26,
-      "researched": "2026-06-12T18:56:55Z",
+      "next_artifact_number": 27,
+      "researched": "2026-06-14T11:41:33Z",
       "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
         "phases": 4,
@@ -1434,7 +1439,7 @@
           }
         ]
       },
-      "session_id": "sess_1781301563_842c0e",
+      "session_id": "sess_1781436428_97e03a",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "KampBypass.lean: 1145 lines. Zone-aware enriched formula v2 with VecEA2 brackets. Main theorem factored into eq/Until/Since cases. Until case decomposed into forward/backward helpers. 8 sorries remain (4 in Until zone-specific composition, 1 eq case, 1 Since case, 1 k>0, 1 pre-existing). Each remaining sorry is a small depth-0 composition fact connecting zone temporal formulas to 3-var NF existentials."
     },
