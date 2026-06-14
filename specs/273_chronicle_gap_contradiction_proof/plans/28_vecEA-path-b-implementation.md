@@ -82,8 +82,8 @@ These remain binding:
 
 | File | Line | Statement | Status | This Plan |
 |------|------|-----------|--------|-----------|
-| NfToVecEA.lean | 472 | bracketBuildLeft_correct forward (Since, n>0) | SORRY | Phase 1 fills |
-| NfToVecEA.lean | 475 | bracketBuildLeft_correct backward (Since, n>0) | SORRY | Phase 1 fills |
+| NfToVecEA.lean | 472 | bracketBuildLeft_correct forward (Since, n>0) | FILLED | Phase 1 completed |
+| NfToVecEA.lean | 475 | bracketBuildLeft_correct backward (Since, n>0) | FILLED | Phase 1 completed |
 | NfCharFormula.lean | 597 | nf_2var_exist_formula_prior (k+1 case) | SORRY | Phase 3 fills via VecEA2 bridge |
 | RabinovichGeneralized.lean | 446 | existPart_succ n=1 | SORRY | Phase 3 resolves (may bypass) |
 | RabinovichGeneralized.lean | 474 | existPart_succ n>=2 | SORRY | Phase 3 resolves (depends on n=1) |
@@ -122,7 +122,7 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 1: Fix bracketBuildLeft_correct (Since direction, n>0) [NOT STARTED]
+### Phase 1: Fix bracketBuildLeft_correct (Since direction, n>0) [COMPLETED]
 
 **Goal**: Fill the 2 sorries at NfToVecEA.lean:472 and :475. These are the Since-direction analog of the sorry-free `bracketBuildRight_correct` in VecEATranslation.lean. The Until direction uses `bracket_prepend_witness` and `bracket_extract_first_witness`; the Since direction needs the symmetric operations for the left endpoint.
 
@@ -139,11 +139,11 @@ The `bracketBuildRight_correct` proof (VecEATranslation.lean:164-200) factors th
 The Since direction needs the mirror: extract/prepend the LAST witness instead of the first.
 
 **Tasks**:
-- [ ] **Task 1.1**: Read `bracketBuildRight_correct` proof structure in VecEATranslation.lean (lines 164-241). Identify the helper lemmas used (`bracket_prepend_witness`, `bracket_extract_first_witness`, `chainHolds_iff_holds`). Check if Since-direction analogs exist or need to be created. (~0 lines, read-only)
-- [ ] **Task 1.2**: If Since-direction bracket helpers do not exist, create `bracket_prepend_witness_left` and `bracket_extract_last_witness` in NfToVecEA.lean (or a new helper section). These mirror the Until helpers but operate on the left endpoint. (~40-60 lines)
-- [ ] **Task 1.3**: Fill the forward sorry at NfToVecEA.lean:472. From `bf.holds z0 t` at n+1, extract the last witness x, apply the Since semantics, and use IH on the truncated bracket. (~20-30 lines)
-- [ ] **Task 1.4**: Fill the backward sorry at NfToVecEA.lean:475. From a Since witness x < t with point type and IH giving truncated bracket on (z0, x), construct `bf.holds z0 t`. (~20-30 lines)
-- [ ] **Task 1.5**: Verify with `lean_verify bracketBuildLeft_correct` (no sorryAx) and `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA`.
+- [x] **Task 1.1**: Read `bracketBuildRight_correct` proof structure in VecEATranslation.lean (lines 164-241). Identified helper lemmas: `bracket_prepend_witness`, `bracket_extract_first_witness`, `chainHolds_iff_holds`. Since-direction analogs did not exist; created.
+- [x] **Task 1.2**: Created `bracket_append_witness` and `bracket_extract_last_witness` in NfToVecEA.lean (lines 431-560). These mirror the Until helpers but operate on the last witness instead of the first. (~130 lines total)
+- [x] **Task 1.3**: Filled the forward sorry. Uses `bracket_append_witness` to combine truncated bracket on (z0, x) with witness x to get full bracket on (z0, t). (~2 lines)
+- [x] **Task 1.4**: Filled the backward sorry. Uses `bracket_extract_last_witness` to extract last witness x from bf.holds z0 t, then applies IH on truncated bracket. (~5 lines)
+- [x] **Task 1.5**: Verified: `lean_verify bracketBuildLeft_correct` shows only standard axioms (propext, Classical.choice, Quot.sound), no sorryAx. `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA` succeeds. Also verified: `VecEA2.translateRight_correct` and `VVecEA2.translateRight_correct` both sorry-free.
 
 **Timing**: 1.5 hours (~100-150 lines)
 

@@ -428,6 +428,136 @@ noncomputable def bracketBuildLeft :
         (bracketBuildLeft truncated endLeft))
       (bf.segmentTypes ⟨n + 1, by omega⟩).formula
 
+/-! ## Helpers: append/extract last witness for Since direction -/
+
+/-- Append a witness x to truncated bracket witnesses to get full bracket holds.
+    Since-direction analog of `bracket_prepend_witness` in VecEATranslation.lean. -/
+private theorem bracket_append_witness {sig : MonadicSignature} {m : Nat}
+    (bf : BracketFormula (m + 1))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 t x : M.carrier) (hxz0 : z0 < x) (hxt : x < t)
+    (hpt : (bf.pointTypes ⟨m, by omega⟩).eval_at M atomMap x)
+    (hseg : ∀ r, x < r → r < t → (bf.segmentTypes ⟨m + 1, by omega⟩).eval_at M atomMap r)
+    (htrunc : BracketFormula.holds M atomMap
+      (BracketFormula.mk
+        (fun i => bf.pointTypes ⟨i.val, Nat.lt_succ_of_lt i.isLt⟩)
+        (fun i => bf.segmentTypes ⟨i.val, Nat.lt_succ_of_lt i.isLt⟩))
+      z0 x) :
+    bf.holds M atomMap z0 t := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+    at htrunc ⊢
+  match m with
+  | 0 =>
+    -- 0 truncated witnesses → 1 full witness (x)
+    exact ⟨fun _ => x, fun i j h => absurd h (by omega), fun i => ⟨hxz0, hxt⟩,
+           fun i => by
+             have : i = ⟨0, by omega⟩ := Fin.ext (by omega)
+             rw [this]; exact hpt,
+           htrunc, fun i => i.elim0, hseg⟩
+  | m' + 1 =>
+    -- (m'+1) truncated witnesses → (m'+2) full witnesses
+    -- w(i) = w'(i) for i ≤ m', w(m'+1) = x
+    obtain ⟨w', hinc', hbnd', hpt', hseg0', hsegmid', hsegn'⟩ := htrunc
+    refine ⟨fun ⟨i, hi⟩ => if h : i ≤ m' then w' ⟨i, by omega⟩ else x, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · -- Strictly increasing
+      intro ⟨i, hi⟩ ⟨j, hj⟩ hij
+      simp only; split <;> split
+      · exact hinc' ⟨i, by omega⟩ ⟨j, by omega⟩ (by simp [Fin.lt_def] at hij ⊢; omega)
+      · rename_i h1 h2
+        have : j = m' + 1 := by omega
+        subst this
+        calc w' ⟨i, by omega⟩ ≤ w' ⟨m', by omega⟩ := by
+               rcases eq_or_lt_of_le h1 with rfl | h
+               · exact le_refl _
+               · exact le_of_lt (hinc' ⟨i, by omega⟩ ⟨m', by omega⟩ (by simp [Fin.lt_def]; omega))
+             _ < x := (hbnd' ⟨m', by omega⟩).2
+      · exfalso; simp [Fin.lt_def] at hij; omega
+      · exfalso; simp [Fin.lt_def] at hij; omega
+    · -- All in (z0, t)
+      intro ⟨i, hi⟩; simp only; split
+      · rename_i h
+        constructor
+        · rcases eq_or_lt_of_le (Nat.zero_le i) with rfl | h'
+          · exact (hbnd' ⟨0, by omega⟩).1
+          · exact lt_trans (hbnd' ⟨0, by omega⟩).1
+              (hinc' ⟨0, by omega⟩ ⟨i, by omega⟩ (by simp [Fin.lt_def]; omega))
+        · exact lt_trans (hbnd' ⟨i, by omega⟩).2 hxt
+      · exact ⟨hxz0, hxt⟩
+    · -- Point types
+      intro ⟨i, hi⟩; simp only; split
+      · rename_i h; exact hpt' ⟨i, by omega⟩
+      · rename_i h
+        have hi_eq : i = m' + 1 := by omega
+        subst hi_eq; exact hpt
+    · -- Segment 0: (z0, w(0))
+      intro y hy1 hy2; simp only at hy2; split at hy2
+      · exact hseg0' y hy1 hy2
+      · exfalso; omega
+    · -- Middle segments: (w(i), w(i+1))
+      intro ⟨i, hi⟩ y hy1 hy2
+      simp only at hy1 hy2; split at hy1 <;> split at hy2
+      · exact hsegmid' ⟨i, by omega⟩ y hy1 hy2
+      · rename_i h1 h2
+        have hi_eq : i = m' := by omega
+        subst hi_eq
+        exact hsegn' y hy1 hy2
+      · exfalso; omega
+      · rename_i h1 h2; exact absurd hy2 (not_lt.mpr (le_of_lt hy1))
+    · -- Last segment: (w(m'+1), t)
+      intro y hy1 hy2; simp only at hy1; split at hy1
+      · exfalso; omega
+      · exact hseg y hy1 hy2
+
+/-- Extract the last witness from bracket formula holds.
+    Since-direction analog of `bracket_extract_first_witness` in VecEATranslation.lean. -/
+private theorem bracket_extract_last_witness {sig : MonadicSignature} {m : Nat}
+    (bf : BracketFormula (m + 1))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 t : M.carrier)
+    (hbf : bf.holds M atomMap z0 t) :
+    ∃ x : M.carrier, z0 < x ∧
+      (bf.pointTypes ⟨m, by omega⟩).eval_at M atomMap x ∧
+      (∀ r, x < r → r < t → (bf.segmentTypes ⟨m + 1, by omega⟩).eval_at M atomMap r) ∧
+      x < t ∧
+      BracketFormula.holds M atomMap
+        (BracketFormula.mk
+          (fun i => bf.pointTypes ⟨i.val, Nat.lt_succ_of_lt i.isLt⟩)
+          (fun i => bf.segmentTypes ⟨i.val, Nat.lt_succ_of_lt i.isLt⟩))
+        z0 x := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+    at hbf ⊢
+  match m with
+  | 0 =>
+    obtain ⟨w, _, hbnd, hpt, hseg0, _, hsegn⟩ := hbf
+    exact ⟨w ⟨0, by omega⟩, (hbnd ⟨0, by omega⟩).1, hpt ⟨0, by omega⟩,
+           hsegn, (hbnd ⟨0, by omega⟩).2, hseg0⟩
+  | m' + 1 =>
+    obtain ⟨w, hinc, hbnd, hpt, hseg0, hsegmid, hsegn⟩ := hbf
+    refine ⟨w ⟨m' + 1, by omega⟩, ?_, hpt ⟨m' + 1, by omega⟩, hsegn,
+           (hbnd ⟨m' + 1, by omega⟩).2, ?_⟩
+    · -- z0 < w(m'+1)
+      exact (hbnd ⟨m' + 1, by omega⟩).1
+    · -- Truncated bracket holds on (z0, w(m'+1))
+      refine ⟨fun i => w ⟨i.val, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · -- Strictly increasing
+        intro i j hij
+        exact hinc ⟨i.val, by omega⟩ ⟨j.val, by omega⟩ (by
+          simp only [Fin.lt_def] at hij ⊢; omega)
+      · -- Bounds: z0 < w(i) ∧ w(i) < w(m'+1)
+        intro i
+        exact ⟨(hbnd ⟨i.val, by omega⟩).1,
+               hinc ⟨i.val, by omega⟩ ⟨m' + 1, by omega⟩ (by
+                 simp only [Fin.lt_def]; omega)⟩
+      · -- Point types
+        exact fun i => hpt ⟨i.val, by omega⟩
+      · -- Segment 0
+        exact hseg0
+      · -- Middle segments
+        intro i y hy1 hy2; exact hsegmid ⟨i.val, by omega⟩ y hy1 hy2
+      · -- Last segment (x_{m'-1}, w(m'+1)) → segment m'+1 of truncated = segment m'+1 of bf
+        intro y hy1 hy2
+        exact hsegmid ⟨m', by omega⟩ y hy1 hy2
+
 /-- Correctness of bracketBuildLeft at n = 0 (trivial bracket).
     At n = 0, this reduces to: ∃ z0 < t, endLeft(z0) ∧ seg(t, z0). -/
 private theorem bracketBuildLeft_correct_zero {sig : MonadicSignature}
@@ -466,13 +596,15 @@ theorem bracketBuildLeft_correct {sig : MonadicSignature} {n : Nat}
       obtain ⟨h_pt, h_rest⟩ := h_event
       rw [ih] at h_rest
       obtain ⟨z0, hz0, hend, hbf_trunc⟩ := h_rest
-      -- Need: bf.holds z0 t from truncated bracket holds on (z0, x) + witness x
-      -- Use bracket_prepend_witness from VecEATranslation.lean (it's private there,
-      -- so we inline the construction for the Since direction)
-      sorry
+      exact ⟨z0, lt_trans hz0 hx, hend,
+             bracket_append_witness bf M atomMap z0 t x hz0 hx h_pt h_guard hbf_trunc⟩
     · -- Backward: from bf.holds z0 t, extract last witness
       intro ⟨z0, hz0, hend, hbf⟩
-      sorry
+      obtain ⟨x, hxz0, hpt, hseg, hxt, htrunc⟩ :=
+        bracket_extract_last_witness bf M atomMap z0 t hbf
+      refine ⟨x, hxt, ?_, hseg⟩
+      rw [temporal_truth_and]
+      exact ⟨hpt, (ih _ x).mpr ⟨z0, hxz0, hend, htrunc⟩⟩
 
 /-! ## VecEA2 Since-direction translation -/
 
