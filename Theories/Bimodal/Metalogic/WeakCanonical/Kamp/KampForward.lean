@@ -409,4 +409,267 @@ theorem ssn_zone_txy_forward {sig : MonadicSignature}
   · intro z _ _
     simp [temporal_truth, Formula.top]
 
+/-! ## Backward direction: nf_eval -> holdsLeft (the direction with sorries in KampBypass)
+
+The key theorem: given `∃ x > t, nf_eval_nf M 1 2 (x, t) sub_nf`,
+the enriched VVecEA2.holdsLeft holds at t.
+
+This is the direction where KampBypass has 3 sorries. Our approach
+composes the per-SSN forward theorems (all sorry-free). -/
+
+/-! ## Main composition theorem
+
+This is the main forward-pipeline theorem at k=0:
+given `∃ x > t, nf_eval_nf M 1 2 (x, t) sub_nf`, produce a temporal formula
+whose correctness is proved by composing VecEADecomp zone theorems. -/
+
+/-- At depth 0, for each compatible 3-var NF ssn, the temporal formula
+    for `∃ y, nf_eval_nf M 0 3 (y, x, t) ssn` is the VecEADecomp zone
+    theorem's VecEA2 translated to temporal logic.
+
+    Correctness proof: composition of zone theorem + translation theorem.
+    This is the core of the forward approach. -/
+theorem ssn_temporal_formula_correct_k0 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_consistent : ssn_order_consistent ssn = true)
+    (M : OrderedMonadicStructure sig) (t x : M.carrier) (h_tx : t < x) :
+    -- For the bracket zone t < y < x, compose nf_3var_bracket_tyx_correct
+    -- with VecEA2.translateLeft_correct
+    (ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true) →
+    (ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) →
+    (ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) →
+    (ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false) →
+    (ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false) →
+    (ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false) →
+    ((nf_3var_bracket_tyx atomMap h_surj ssn).holds M atomMap t x ↔
+     ∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) := by
+  intro h_ty h_yx h_tx_ssn h_yt h_xy h_xt
+  exact nf_3var_bracket_tyx_correct atomMap h_surj ssn h_ty h_yx h_tx_ssn h_yt h_xy h_xt M t x
+
+/-- Composition: the VecEADecomp zone theorems compose with VecEA2 translation
+    to give temporal formulas for 3-var depth-0 existentials.
+
+    For the bracket zone t < y < x:
+    temporal_truth M atomMap t (translateLeft) ↔ holdsLeft ↔ ∃ z1 > t, holds(t, z1)
+    ↔ ∃ z1 > t, ∃ y, nf_eval_nf ... ssn -/
+theorem bracket_tyx_temporal_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    temporal_truth M atomMap t (nf_3var_bracket_tyx atomMap h_surj ssn).translateLeft ↔
+    ∃ x : M.carrier, t < x ∧
+      ∃ y : M.carrier,
+        nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn := by
+  rw [VecEA2.translateLeft_correct]
+  simp only [VecEA2.holdsLeft]
+  constructor
+  · intro ⟨_, x, h_tx_lt, h_right, h_bracket⟩
+    refine ⟨x, h_tx_lt, ?_⟩
+    have h_holds : (nf_3var_bracket_tyx atomMap h_surj ssn).holds M atomMap t x :=
+      ⟨‹_›, h_right, h_bracket⟩
+    exact (nf_3var_bracket_tyx_correct atomMap h_surj ssn h_ty h_yx h_tx h_yt h_xy h_xt M t x).mp h_holds
+  · intro ⟨x, h_tx_lt, h_exist⟩
+    have h_holds := (nf_3var_bracket_tyx_correct atomMap h_surj ssn h_ty h_yx h_tx h_yt h_xy h_xt M t x).mpr h_exist
+    obtain ⟨h_left, h_right, h_bracket⟩ := h_holds
+    exact ⟨h_left, x, h_tx_lt, h_right, h_bracket⟩
+
+/-- Composition for the ytx zone: translateLeft ↔ ∃ x > t, ∃ y, nf_eval -/
+theorem zone_ytx_temporal_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    temporal_truth M atomMap t (nf_3var_zone_ytx atomMap h_surj ssn).translateLeft ↔
+    ∃ x : M.carrier, t < x ∧
+      ∃ y : M.carrier,
+        nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn := by
+  rw [VecEA2.translateLeft_correct]
+  simp only [VecEA2.holdsLeft]
+  constructor
+  · intro ⟨h_left, x, h_tx_lt, h_right, h_bracket⟩
+    refine ⟨x, h_tx_lt, ?_⟩
+    exact (nf_3var_zone_ytx_correct atomMap h_surj ssn h_yt h_tx h_yx h_ty h_xt h_xy M t x h_tx_lt).mp
+      ⟨h_left, h_right, h_bracket⟩
+  · intro ⟨x, h_tx_lt, h_exist⟩
+    obtain ⟨h_left, h_right, h_bracket⟩ :=
+      (nf_3var_zone_ytx_correct atomMap h_surj ssn h_yt h_tx h_yx h_ty h_xt h_xy M t x h_tx_lt).mpr h_exist
+    exact ⟨h_left, x, h_tx_lt, h_right, h_bracket⟩
+
+/-- Composition for the txy zone: translateLeft ↔ ∃ x > t, ∃ y, nf_eval -/
+theorem zone_txy_temporal_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    temporal_truth M atomMap t (nf_3var_zone_txy atomMap h_surj ssn).translateLeft ↔
+    ∃ x : M.carrier, t < x ∧
+      ∃ y : M.carrier,
+        nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn := by
+  rw [VecEA2.translateLeft_correct]
+  simp only [VecEA2.holdsLeft]
+  constructor
+  · intro ⟨h_left, x, h_tx_lt, h_right, h_bracket⟩
+    refine ⟨x, h_tx_lt, ?_⟩
+    exact (nf_3var_zone_txy_correct atomMap h_surj ssn h_ty h_tx h_xy h_yt h_xt h_yx M t x h_tx_lt).mp
+      ⟨h_left, h_right, h_bracket⟩
+  · intro ⟨x, h_tx_lt, h_exist⟩
+    obtain ⟨h_left, h_right, h_bracket⟩ :=
+      (nf_3var_zone_txy_correct atomMap h_surj ssn h_ty h_tx h_xy h_yt h_xt h_yx M t x h_tx_lt).mpr h_exist
+    exact ⟨h_left, x, h_tx_lt, h_right, h_bracket⟩
+
+/-- Composition for the bracket xyt zone (x < y < t):
+    translateLeft at x ↔ ∃ t' > x, ∃ y, nf_eval -/
+theorem bracket_xyt_temporal_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x : M.carrier) :
+    temporal_truth M atomMap x (nf_3var_bracket_xyt atomMap h_surj ssn).translateLeft ↔
+    ∃ t' : M.carrier, x < t' ∧
+      ∃ y : M.carrier,
+        nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t'))) ssn := by
+  rw [VecEA2.translateLeft_correct]
+  simp only [VecEA2.holdsLeft]
+  constructor
+  · intro ⟨h_left, t', h_xt_lt, h_right, h_bracket⟩
+    exact ⟨t', h_xt_lt,
+      (nf_3var_bracket_xyt_correct atomMap h_surj ssn h_xy h_yt h_xt h_yx h_ty h_tx M x t').mp
+        ⟨h_left, h_right, h_bracket⟩⟩
+  · intro ⟨t', h_xt_lt, h_exist⟩
+    obtain ⟨h_left, h_right, h_bracket⟩ :=
+      (nf_3var_bracket_xyt_correct atomMap h_surj ssn h_xy h_yt h_xt h_yx h_ty h_tx M x t').mpr h_exist
+    exact ⟨h_left, t', h_xt_lt, h_right, h_bracket⟩
+
+/-- Composition for the yxt zone (y < x < t):
+    translateLeft at x ↔ ∃ t' > x, ∃ y, nf_eval -/
+theorem zone_yxt_temporal_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x : M.carrier) :
+    temporal_truth M atomMap x (nf_3var_zone_yxt atomMap h_surj ssn).translateLeft ↔
+    ∃ t' : M.carrier, x < t' ∧
+      ∃ y : M.carrier,
+        nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t'))) ssn := by
+  rw [VecEA2.translateLeft_correct]
+  simp only [VecEA2.holdsLeft]
+  constructor
+  · intro ⟨h_left, t', h_xt_lt, h_right, h_bracket⟩
+    exact ⟨t', h_xt_lt,
+      (nf_3var_zone_yxt_correct atomMap h_surj ssn h_yx h_xt h_yt h_xy h_tx h_ty M x t' h_xt_lt).mp
+        ⟨h_left, h_right, h_bracket⟩⟩
+  · intro ⟨t', h_xt_lt, h_exist⟩
+    obtain ⟨h_left, h_right, h_bracket⟩ :=
+      (nf_3var_zone_yxt_correct atomMap h_surj ssn h_yx h_xt h_yt h_xy h_tx h_ty M x t' h_xt_lt).mpr h_exist
+    exact ⟨h_left, t', h_xt_lt, h_right, h_bracket⟩
+
+/-- Composition for the xty zone (x < t < y):
+    translateLeft at x ↔ ∃ t' > x, ∃ y, nf_eval -/
+theorem zone_xty_temporal_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x : M.carrier) :
+    temporal_truth M atomMap x (nf_3var_zone_xty atomMap h_surj ssn).translateLeft ↔
+    ∃ t' : M.carrier, x < t' ∧
+      ∃ y : M.carrier,
+        nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t'))) ssn := by
+  rw [VecEA2.translateLeft_correct]
+  simp only [VecEA2.holdsLeft]
+  constructor
+  · intro ⟨h_left, t', h_xt_lt, h_right, h_bracket⟩
+    exact ⟨t', h_xt_lt,
+      (nf_3var_zone_xty_correct atomMap h_surj ssn h_xt h_ty h_xy h_tx h_yt h_yx M x t' h_xt_lt).mp
+        ⟨h_left, h_right, h_bracket⟩⟩
+  · intro ⟨t', h_xt_lt, h_exist⟩
+    obtain ⟨h_left, h_right, h_bracket⟩ :=
+      (nf_3var_zone_xty_correct atomMap h_surj ssn h_xt h_ty h_xy h_tx h_yt h_yx M x t' h_xt_lt).mpr h_exist
+    exact ⟨h_left, t', h_xt_lt, h_right, h_bracket⟩
+
+/-! ## Equality zone composition theorems -/
+
+/-- For the y = t case: the 3-var existential collapses to direct NF eval at t.
+    No temporal quantifier needed. -/
+theorem eq_yt_nf_correct {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+    nf_eval_nf M 0 3 (Fin.cons t (Fin.cons x (fun _ => t))) ssn :=
+  nf_3var_eq_yt ssn h_yt h_ty M x t
+
+/-- For the y = x case: the 3-var existential collapses to direct NF eval at x.
+    No temporal quantifier needed. -/
+theorem eq_yx_nf_correct {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+    nf_eval_nf M 0 3 (Fin.cons x (Fin.cons x (fun _ => t))) ssn :=
+  nf_3var_eq_yx ssn h_yx h_xy M x t
+
+/-! ## Summary: Complete VecEADecomp → Temporal Pipeline
+
+The following sorry-free composition theorems are now available:
+
+| Zone | Theorem | Temporal formula |
+|------|---------|-----------------|
+| t < y < x | bracket_tyx_temporal_correct | translateLeft at t |
+| x < y < t | bracket_xyt_temporal_correct | translateLeft at x |
+| y < t < x | zone_ytx_temporal_correct | translateLeft at t |
+| t < x < y | zone_txy_temporal_correct | translateLeft at t |
+| y < x < t | zone_yxt_temporal_correct | translateLeft at x |
+| x < t < y | zone_xty_temporal_correct | translateLeft at x |
+| y = t | eq_yt_nf_correct | no temporal quantifier |
+| y = x | eq_yx_nf_correct | no temporal quantifier |
+
+Each theorem provides a sorry-free biconditional between temporal_truth
+and the 3-var depth-0 existential. The correctness proofs are trivial
+compositions of VecEADecomp zone theorems + VecEA2.translateLeft_correct.
+
+These are the building blocks for the full enriched bypass formula:
+for each ssn in the outer Until/Since formula, the appropriate zone
+composition theorem provides the temporal formula and its correctness. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
