@@ -637,6 +637,206 @@ noncomputable def enriched_bypass_formula_zone {sig : MonadicSignature}
   | false, true => enriched_bypass_since atomMap h_surj char_1 sub_nf parent_atoms
   | false, false => enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms
 
+/-! ## Equality Case (x = t) -/
+
+/-- Equality case of the enriched bypass: when sub_nf says x = t,
+    the existential reduces to nf_eval_nf M 1 2 [t, t] sub_nf. -/
+private theorem existPart_succ_n1_bypass_k0_eq
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (char_1 : NormalForm sig 1 1 → Formula)
+    (char_1_correct : ∀ (nf_1 : NormalForm sig 1 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_1 nf_1) ↔
+        nf_eval_nf M 1 1 (fun _ => t) nf_1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
+        (temporal_truth M atomMap t A ↔
+         ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
+  -- When x = t: the existential reduces to nf_eval_nf M 1 2 [t,t] sub_nf.
+  -- Uses depth-0 zone decomposition for 3-var quantifier conditions + char_1 + NF uniqueness.
+  -- Deferred to a subsequent dispatch.
+  sorry
+  /-
+  by_cases h_pred_compat : ∀ p : sig.preds,
+      sub_nf.1 (.pred p ⟨0, by omega⟩) = sub_nf.1 (.pred p ⟨1, by omega⟩)
+  · -- Predicates compatible: build a depth-1 1-var NF for x
+    -- The 1-var NF for x = t is: atoms from sub_nf.1 at var 0,
+    -- quantifier from sub_nf.2 projected to [y,t,t]
+    -- Build nf_x_eq: the depth-1 1-var NF such that nf_eval_nf M 1 1 [t] nf_x_eq
+    -- iff the atom part of nf_eval_nf M 1 2 [t,t] sub_nf holds at t.
+    --
+    -- Actually, nf_eval_nf M 1 2 [t,t] sub_nf = (atom part) ∧ (quant part)
+    -- The atom part constrains preds at t and the x=t order (both false).
+    -- Given parent_atoms determines t's preds, the atom part is either always
+    -- true or always false (depends on sub_nf.1 vs parent_atoms).
+    --
+    -- Check: do var-1 preds match parent_atoms?
+    by_cases h_t_compat : ∀ p : sig.preds,
+        sub_nf.1 (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩)
+    · -- Both compatible: the existential becomes ∃ x = t, quant_part
+      -- i.e., quant_part at [t,t]
+      -- For the quantifier part: ∀ ssn, (∃ y, nf_eval_nf M 0 3 [y,t,t] ssn) ↔ sub_nf.2 ssn
+      -- Each condition (∃ y, nf_eval_nf M 0 3 [y,t,t] ssn) has a temporal formula
+      -- via the zone decomposition. The characteristic at x=t makes the quantifier
+      -- part equivalent to a finite conjunction/disjunction at t.
+      --
+      -- Use char_1 for the whole depth-1 1-var NF.
+      -- The key: if nf_eval_nf M 1 2 [t,t] sub_nf holds, then x=t satisfies
+      -- nf_eval_nf M 1 1 [t] nf_x for a unique nf_x determined by sub_nf.
+      -- And char_1(nf_x) is equivalent to nf_eval_nf M 1 1 [t] nf_x.
+      -- The quantifier conditions at [y,t,t] are the same as at [y,t] for 1-var.
+      --
+      -- Actually, the simplest correct approach: build the formula as
+      -- char_1(nf_x) where nf_x is the unique depth-1 1-var NF compatible with sub_nf
+      -- then the biconditional follows from NF uniqueness.
+      -- But we also need the quantifier conditions to be captured by char_1.
+      -- char_1(nf_x) captures nf_eval_nf M 1 1 [t] nf_x which is:
+      --   atoms at t ∧ ∀ ssn_1, (∃ y, nf_eval_nf M 0 2 [y,t] ssn_1) ↔ nf_x.2 ssn_1
+      -- This is NOT the same as the quantifier part of nf_eval_nf M 1 2 [t,t] sub_nf
+      -- which involves 3-var NFs [y,t,t].
+      --
+      -- We need to build a temporal formula for the depth-0 3-var quantifier
+      -- conditions. Use a classical existence argument: for each ssn,
+      -- classically obtain a temporal formula for ∃ y, nf_eval_nf M 0 3 [y,t,t] ssn.
+      -- This is possible because depth-0 3-var existentials have temporal formulas
+      -- via the zone decomposition (VecEADecomp.lean).
+      -- Use Classical.choice to construct the temporal formula for the quantifier part.
+      -- The formula for the full existential is:
+      -- ∨ over compatible nf_x: char_1(nf_x) ∧ quantifier_profile
+      -- where quantifier_profile = ∧ over ssn: (B_ssn if sub_nf.2 ssn, ¬B_ssn otherwise)
+      --
+      -- SIMPLIFIED APPROACH: observe that nf_eval_nf M 1 2 [t,t] sub_nf with compatible
+      -- predicates is a fixed proposition about t. We can express it as a conjunction
+      -- of char_1(nf_x) (which captures the 1-var depth-1 type of t) and the quantifier
+      -- conditions. The quantifier conditions are additional constraints that go beyond
+      -- what char_1 captures (they involve 3-var NFs).
+      -- However, since the quantifier conditions at [y,t,t] depend only on t,
+      -- each one is TL-definable by the depth-0 zone decomposition.
+      -- Rather than building the projection machinery, we use a classical argument.
+      --
+      -- Step 1: Classically build the 1-var NF for t that satisfies the atom+quant part
+      -- Step 2: Build formula as disjunction over compatible nf_x of char_1(nf_x) ∧ quant
+      -- Step 3: Use NF uniqueness for correctness
+      sorry
+    · -- var-1 preds don't match parent_atoms: existential is impossible
+      -- (since any witness x = t must have t's preds matching parent_atoms)
+      exact ⟨Formula.bot, fun M _ _ t h_atoms => by
+        simp only [temporal_truth]
+        exact ⟨fun h => absurd h id, fun ⟨x, h_eval⟩ => by
+          -- From nf_eval: x = t (since neither order holds)
+          obtain ⟨h_atom, _⟩ := h_eval
+          have h_o_gt := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+          have h_o_lt := h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+          simp only [atom_eval, Fin.cons] at h_o_gt h_o_lt
+          have h_x_eq_t : x = t := by
+            by_contra h_ne
+            rcases lt_or_gt_of_ne h_ne with h_lt' | h_gt'
+            · exact Bool.noConfusion (h_lt ▸ h_o_lt.mp h_lt')
+            · exact Bool.noConfusion (h_gt ▸ h_o_gt.mp h_gt')
+          subst h_x_eq_t
+          -- Now check t-predicate compatibility
+          push_neg at h_t_compat
+          obtain ⟨p, hp⟩ := h_t_compat
+          have h_sub := h_atom (.pred p ⟨1, by omega⟩)
+          simp only [atom_eval, Fin.cons] at h_sub
+          have h_par := h_atoms (.pred p ⟨0, by omega⟩)
+          simp only [atom_eval] at h_par
+          -- sub_nf.1 (.pred p 1) should match parent_atoms (.pred p 0)
+          cases hsub : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+          cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+          simp_all⟩⟩
+  · -- var-0 and var-1 predicates don't agree: existential is impossible
+    exact ⟨Formula.bot, fun M _ _ t h_atoms => by
+      simp only [temporal_truth]
+      exact ⟨fun h => absurd h id, fun ⟨x, h_eval⟩ => by
+        obtain ⟨h_atom, _⟩ := h_eval
+        have h_o_gt := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+        have h_o_lt := h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+        simp only [atom_eval, Fin.cons] at h_o_gt h_o_lt
+        have h_x_eq_t : x = t := by
+          by_contra h_ne
+          rcases lt_or_gt_of_ne h_ne with h_lt' | h_gt'
+          · exact Bool.noConfusion (h_lt ▸ h_o_lt.mp h_lt')
+          · exact Bool.noConfusion (h_gt ▸ h_o_gt.mp h_gt')
+        subst h_x_eq_t
+        push_neg at h_pred_compat
+        obtain ⟨p, hp⟩ := h_pred_compat
+        have h0 := h_atom (.pred p ⟨0, by omega⟩)
+        have h1 := h_atom (.pred p ⟨1, by omega⟩)
+        simp only [atom_eval, Fin.cons] at h0 h1
+        cases h0v : sub_nf.1 (.pred p ⟨0, by omega⟩) <;>
+        cases h1v : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+        simp_all⟩⟩
+  -/
+
+/-! ## Until Case (t < x) -/
+
+/-- Until case of the enriched bypass: when sub_nf says t < x. -/
+private theorem existPart_succ_n1_bypass_k0_until
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (char_1 : NormalForm sig 1 1 → Formula)
+    (char_1_correct : ∀ (nf_1 : NormalForm sig 1 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_1 nf_1) ↔
+        nf_eval_nf M 1 1 (fun _ => t) nf_1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
+        (temporal_truth M atomMap t A ↔
+         ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
+  sorry
+
+/-! ## Since Case (x < t) -/
+
+/-- Since case of the enriched bypass: when sub_nf says x < t. -/
+private theorem existPart_succ_n1_bypass_k0_since
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (char_1 : NormalForm sig 1 1 → Formula)
+    (char_1_correct : ∀ (nf_1 : NormalForm sig 1 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_1 nf_1) ↔
+        nf_eval_nf M 1 1 (fun _ => t) nf_1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
+        (temporal_truth M atomMap t A ↔
+         ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
+  sorry
+
 /-! ## Main Bypass Theorem (Zone-Aware) -/
 
 /-- Zone-aware enriched bypass for depth 1 (k=0): the 2-var existential at depth 1
@@ -667,27 +867,32 @@ theorem existPart_succ_n1_bypass_k0
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- ANALYSIS: The zone-aware formula (enriched_bypass_formula_zone) correctly handles:
-  -- (a) y < t zone: Since at t finds y below t. Forward + backward OK.
-  -- (b) y = t zone: direct check at t. Forward + backward OK.
-  -- (c) y = x zone: direct check at x. Forward + backward OK.
-  -- (d) y > x zone: Until at x finds y above x. Forward + backward OK.
-  -- (e) t < y < x, NEGATIVE: interval guard has neg char_y at every r in (t,x).
-  --     Forward + backward OK (no point in interval satisfies char_y).
-  -- (f) t < y < x, POSITIVE: Since(char_y, top) at x gives y' < x with char_y(y').
-  --     Forward OK (y in (t,x) with char_y exists, so Since holds at x).
-  --     BACKWARD FAILS: y' from Since might be below t, not in (t,x).
-  --     The formula truth doesn't guarantee a witness BETWEEN t and x.
-  --
-  -- The positive between_tx case (f) requires "exists y in (t,x), char_y(y)"
-  -- which is a ternary relationship not expressible at a single evaluation point.
-  -- This is the same fundamental obstacle as nf_exist_backward_prior.
-  --
-  -- To resolve: either
-  -- (1) Use VecEA2 bracket infrastructure directly (bracket witnesses are between
-  --     the endpoints by construction), OR
-  -- (2) Prove a Prior-specific composition property that bridges the gap.
-  sorry
+  -- Case split on order booleans in sub_nf.1 to determine the x-t zone.
+  -- For each zone, construct the formula and prove it correct.
+  -- This follows the structure of nf_2var_exist_depth0_tl.
+  match h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
+        h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
+  | true, true =>
+    -- Both orders true: existential impossible
+    exact ⟨Formula.bot, fun M _ _ t h_atoms => by
+      simp only [temporal_truth]
+      exact ⟨fun h => absurd h id, fun ⟨x, h_eval⟩ =>
+        absurd (lt_trans
+          ((zone_from_nf_eval M sub_nf t x h_eval).1 h_gt)
+          ((zone_from_nf_eval M sub_nf t x h_eval).2.1 h_lt))
+          (lt_irrefl _)⟩⟩
+  | true, false =>
+    -- Until direction (t < x): enriched bypass via VecEA2
+    exact existPart_succ_n1_bypass_k0_until atomMap h_surj char_1 char_1_correct
+      parent_atoms sub_nf h_gt h_lt
+  | false, true =>
+    -- Since direction (x < t)
+    exact existPart_succ_n1_bypass_k0_since atomMap h_surj char_1 char_1_correct
+      parent_atoms sub_nf h_gt h_lt
+  | false, false =>
+    -- Equality direction (x = t)
+    exact existPart_succ_n1_bypass_k0_eq atomMap h_surj char_1 char_1_correct
+      parent_atoms sub_nf h_gt h_lt
 
 /-- General enriched bypass for ExistPart(k+1) at n=1.
     Delegates to existPart_succ_n1_bypass_k0 for k=0 and uses sorry for k>0. -/
