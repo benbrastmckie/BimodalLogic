@@ -131,7 +131,7 @@ Phases are fully sequential. Each phase builds on the prior.
 
 ---
 
-### Phase 1: Define generalized enriched formula P_n(k) [NOT STARTED]
+### Phase 1: Define generalized enriched formula P_n(k) [COMPLETED]
 
 **Goal**: Define the enriched temporal formula for (n+1)-var existentials at depth k, by induction on k with n as parameter. This is the core construction.
 
@@ -182,7 +182,7 @@ The enriched formula for `exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf
 
 ---
 
-### Phase 2: Prove correctness of the enriched formula (both directions) [NOT STARTED]
+### Phase 2: Prove correctness of the enriched formula (both directions) [IN PROGRESS]
 
 **Goal**: Prove the biconditional `temporal_truth M atomMap (env 0) A <-> exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf` for the enriched formula A from Phase 1. This is the core proof.
 

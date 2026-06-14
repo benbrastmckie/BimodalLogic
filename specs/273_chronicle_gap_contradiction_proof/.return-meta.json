@@ -1,38 +1,9 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
-  "session_id": "sess_1781410465_3cee28",
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 540,
-      "statement": "nf_exist_backward_prior",
-      "assumption": "Backward direction of nf_exist_formula for Prior structures at depth k+1",
-      "why_deferred": "Requires Prior composition property (Feferman-Vaught for Prior linear orders)",
-      "next_dispatch": "Build NF-to-VecEA2 bridge at depth k+1 using zone theorems"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
-      "line": 359,
-      "statement": "nf_2var_exist_via_rabinovich (succ k' case)",
-      "assumption": "Same root cause as nf_exist_backward_prior",
-      "why_deferred": "Requires negation closure + Rabinovich composition at depth k+1",
-      "next_dispatch": "Fill after NfCharFormula.lean:540 is resolved"
-    }
-  ],
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "scope": "Bimodal.Metalogic.WeakCanonical.Kamp.VecEADecomp"
-  },
-  "memory_candidates": [
-    "VecEADecomp.lean zone decomposition: Non-bracket zones (y outside [t,x]) use sinceWitnessPred/untilWitnessPred to fold the existential witness into VecEA2 endpoint predicates as Since/Until formulas. This gives n=0 VecEA2 formulas (no bracket witness needed).",
-    "3-var equality cases: When order booleans force y = t (both order(0,2) and order(2,0) false) or y = x (both order(0,1) and order(1,0) false), the existential reduces to direct NF evaluation at the fixed point. No VecEA2 needed.",
-    "reconstruct_nf_3var: General helper that rebuilds a 3-var depth-0 NF evaluation from three 1-var NF evaluations and six order iff conditions. Handles all 15 match cases (3 pred vars with 3 possible indices each, 6 order pairs, plus impossible higher indices).",
-    "Wiring gap: The 3-var depth-0 zone decomposition handles k=0 inner NFs but cannot directly fill the depth k+1 sorry (NfCharFormula:540) because the outer existential's quantifier profile requires the composition property at the formula level."
-  ]
+  "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
+  "session_id": "sess_1781421530_2b6c7c",
+  "started_at": "2026-06-14T00:00:00Z"
 }
