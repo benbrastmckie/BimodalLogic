@@ -2,43 +2,15 @@
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "session_id": "sess_1781465524_043b8b",
   "task_number": 273,
-  "session_id": "sess_1781454646_2625e1",
   "started_at": "2026-06-14T00:00:00Z",
-  "completed_at": "2026-06-14T00:00:00Z",
   "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 720,
-      "statement": "existPart_succ_n1_bypass_k0_eq",
-      "assumption": "Equality case biconditional",
-      "why_deferred": "Both directions require zone-based reconstruction at [y,t,t]",
-      "next_dispatch": "Use zone bridges with ssn_xt_compatible false/false"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1325,
-      "statement": "backward_holdsLeft_of_nf_eval bracket",
-      "assumption": "BracketFormula.holds for between_tx zone",
-      "why_deferred": "BLOCKED: permutation invariance lemma needed (holds_perm_of_const_beta)",
-      "next_dispatch": "Add permutation lemma to ExistsForallNF.lean, then use between_tx_temporal_iff"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1383,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "Reconstruct nf_eval from VecEA2 components",
-      "why_deferred": "Depends on bracket being filled for between_tx zone",
-      "next_dispatch": "After bracket: atom + quant parts via temporal bridge lemmas"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1495,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case mirror of Until",
-      "why_deferred": "Mirror of Until case, same permutation blocker",
-      "next_dispatch": "Mirror Until proof with reversed direction"
-    }
+    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 753, "statement": "existPart_succ_n1_bypass_k0_eq compatible subcase"},
+    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1358, "statement": "backward_holdsLeft_of_nf_eval bracket"},
+    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1416, "statement": "forward_nf_eval_of_holdsLeft"},
+    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1528, "statement": "existPart_succ_n1_bypass_k0_since"},
+    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1616, "statement": "existPart_succ_n1_bypass depth>=2 (out of scope)"}
   ],
   "verification": {
     "sorry_count": 5,
@@ -47,9 +19,8 @@
     "build_passed": true
   },
   "memory_candidates": [
-    "Zone extraction from ssn_zone_until requires split_ifs after simp on the definition, not manual destructuring of ssn_order_consistent",
-    "KampForward cannot be imported from KampBypass due to circular dependency (KampForward imports KampBypass); all zone bridges must use ZoneBridge.lean directly",
-    "The zone-temporal bridge lemma pattern (e.g., below_t_temporal_iff) composes zone_bridge_* with nf_depth0_char_formula_correct and handles both positive (forward) and negative (contrapositive) directions",
-    "IntervalPattern.holds requires model-ordered witnesses matching indexed point types. When segment types are constant, a permutation invariance lemma (holds_perm_of_const_beta) is needed to connect enumeration-ordered point types with model-ordered witnesses"
+    "KampBypass sorry filling requires zone bridge composition. The eq case (x=t) needs reconstruct_nf_eval_3var with all orders false (lt_irrefl). The bracket needs IntervalPattern witness sorting. The forward needs reverse extraction from temporal to NF. The since mirrors until with reversed roles.",
+    "Private helpers in ZoneBridge.lean (fin_cons_eval_*, extract_y_preds, reconstruct_nf_eval_3var) are NOT accessible from KampBypass.lean. Use simp only [atom_eval, Fin.cons] instead. The ssn_xt_compat helpers can be inlined.",
+    "For x'=t substitution in KampBypass proofs: use rw [h_x_eq_t] not subst, because subst on x'=t destroys the t binding in the proof context. Use congr_arg for env equality."
   ]
 }

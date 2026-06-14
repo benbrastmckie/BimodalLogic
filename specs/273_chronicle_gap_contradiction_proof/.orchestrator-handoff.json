@@ -1,21 +1,72 @@
 {
   "status": "partial",
-  "summary": "Dispatches 2-4 completed. 3/7 target sorries filled on main (pre_conditions_at_t_until_holds, endLeft, endRight). eq_case_orders helper cherry-picked. 4 target sorries remain: eq compatible case (L753), bracket (L1358), forward (L1416), since (L1528). Cycle 4 produced ~490 lines of eq-case helpers on worktree branch but with 25 compilation errors (not merged). Build passes on main.",
+  "summary": "Phase 2 (depth-0 wiring sorries) research complete but implementation incomplete. 4 target sorries remain in KampBypass.lean. Full analysis of all 4 sorry goal states completed. Key finding: all sorries are wiring proofs that compose existing infrastructure (zone bridges, nfPred_correct, reconstruct_nf_eval_3var). Stashed partial implementation attempt (git stash) has agent-written code for eq case backward direction. Worktree branch has ~490 lines of eq-case helpers with compilation errors.",
   "phases_completed": 3,
   "phases_total": 7,
   "sorry_inventory": [
-    {"file": "KampBypass.lean", "line": 753, "statement": "existPart_succ_n1_bypass_k0_eq compatible subcase"},
-    {"file": "KampBypass.lean", "line": 1358, "statement": "backward_holdsLeft bracket"},
-    {"file": "KampBypass.lean", "line": 1416, "statement": "forward_nf_eval_of_holdsLeft"},
-    {"file": "KampBypass.lean", "line": 1528, "statement": "existPart_succ_n1_bypass_k0_since"},
-    {"file": "KampBypass.lean", "line": 1616, "statement": "depth>=2 (OUT OF SCOPE)"},
-    {"file": "NfCharFormula.lean", "line": 542, "statement": "nf_exist_backward_prior (OUT OF SCOPE)"}
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 753,
+      "statement": "existPart_succ_n1_bypass_k0_eq (compatible subcase)",
+      "assumption": "enriched_bypass_eq correctly characterizes existential when x = t",
+      "why_deferred": "Needs eq_case_3var_iff bridge plus formula_disjList/conjList wiring. Key issue: need h_nfx_eq_pa (nf_x_1var preds = parent_atoms preds) which follows from h_pred_compat + h_t_compat + nf_x_compat_check. Also need subst/rewrite for x'=t without destroying t variable (use congr_arg or rw [h_x_eq_t] approach, not subst).",
+      "next_dispatch": "Write eq_case_3var_iff helper after ssn_xt_compat_t_preds (line 819+), then fill L753 sorry using it"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1358,
+      "statement": "backward_holdsLeft_of_nf_eval bracket case",
+      "assumption": "BracketFormula.holds constructible from h_eval_quant for between_tx zone",
+      "why_deferred": "Needs IntervalPattern.holds witness construction. After simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds, enriched_vecEA2_until] + split, get two cases: n=0 (segment guards only) and n>0 (witnesses needed). For n>0: extract witnesses from between_tx_temporal_iff, show distinctness from NF predicate uniqueness, sort to get strictly increasing sequence.",
+      "next_dispatch": "Write backward_bracket_holds helper that constructs IntervalPattern.holds from h_eval_quant"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1416,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "assumption": "nf_eval_nf reconstructible from VecEA2 holdsLeft components",
+      "why_deferred": "Needs reverse extraction: atom part from char_1_correct + nf_x_compat_check, quant part by iterating over ssn zones extracting truth values from endLeft/endRight/bracket temporal components. Each zone has its own extraction path via the existing zone-temporal-iff lemmas.",
+      "next_dispatch": "Write forward_reconstruct helper composing char_1_correct (atoms) with zone bridges (quant part)"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1528,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "enriched_bypass_since correctly characterizes existential when x < t",
+      "why_deferred": "Mirror of Until case but with Since-based formula (not VecEA2). Simpler structure: formula_disjList of Formula.and pre_at_t (Formula.snce pt_x guard). Needs backward_since and forward_since analogous to Until helpers but with reversed x/t roles.",
+      "next_dispatch": "Mirror the Until proof with Since semantics and swapped zone roles"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1616,
+      "statement": "existPart_succ_n1_bypass depth>=2",
+      "assumption": "Out of scope for Phase 2",
+      "why_deferred": "Phase 3 work requiring arity-climbing induction",
+      "next_dispatch": "Phase 3: generalize existPart_succ_n1_bypass to arbitrary arity"
+    }
   ],
-  "blockers": [],
+  "blockers": [
+    "L753: eq case needs eq_case_3var_iff bridge + formula wiring",
+    "L1358: bracket needs IntervalPattern.holds witness construction",
+    "L1416: forward needs nf_eval reconstruction from VecEA2",
+    "L1528: since needs mirror of Until proof"
+  ],
   "continuation_context": {
-    "is_successor": true,
-    "next_phase": "Fill remaining 4 KampBypass.lean sorries",
-    "key_insight": "Zone bridge infrastructure is complete. eq_case_orders helper available. Worktree branch worktree-agent-a83818cfb35228c46 has ~490 lines of eq-case helpers with 25 compilation errors that could be salvaged.",
-    "unmerged_worktree": "worktree-agent-a83818cfb35228c46 (80e1aa734)"
-  }
+    "is_successor": false,
+    "resume_phase": 2,
+    "resume_task": "2.2",
+    "git_stash": "has agent-written partial code for eq backward direction",
+    "worktree_branch": "worktree-agent-a83818cfb35228c46",
+    "key_findings": [
+      "All zone bridge lemmas (below_t, eq_t, eq_x, above_x, between_tx) are sorry-free and available",
+      "reconstruct_nf_eval_3var works for arbitrary x, t (no h_tx required) - useful for eq case",
+      "extract_y_preds and reconstruct_nf_eval_3var are private in ZoneBridge - inline with simp only [atom_eval, Fin.cons]",
+      "eq_case_orders gives xt=false, tx=false, yx=yt, xy=ty for false/false compatibility",
+      "BracketFormula.holds unfolds via simp to match on vea.fst (0 or succ n) - use split tactic",
+      "The Since formula does NOT use VecEA2 - simpler proof than Until",
+      "For x'=t substitution: use rw [h_x_eq_t] not subst (subst destroys the t binding)"
+    ]
+  },
+  "continuation_path": null,
+  "next_action_hint": "implement"
 }
