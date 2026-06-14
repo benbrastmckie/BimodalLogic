@@ -3,73 +3,73 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
-  "phase_number": 2,
   "session_id": "sess_1781438804_42f71b",
-  "started_at": "2026-06-14T02:00:00Z",
+  "started_at": "2026-06-14T00:00:00Z",
+  "completed_at": "2026-06-14T04:00:00Z",
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 801,
-      "statement": "existPart_succ_n1_bypass_k0_eq (compatible case)",
+      "line": 802,
+      "statement": "existPart_succ_n1_bypass_k0_eq equality case",
       "assumption": "enriched_bypass_eq correctness",
-      "why_deferred": "~200-line proof requires zone decomposition bridge for depth-0 3-var existentials",
-      "next_dispatch": "Extract enriched_bypass_eq_correct as standalone theorem"
+      "why_deferred": "Complex formula unfolding",
+      "next_dispatch": "Zone bridge for x=t case"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 879,
-      "statement": "zone_3var_exist_iff_1var (unused)",
-      "assumption": "3-var zone decomposition",
-      "why_deferred": "Not on critical path",
-      "next_dispatch": "Skip"
+      "line": 913,
+      "statement": "pre_conditions_at_t_until_holds",
+      "assumption": "Zone bridge below_t/eq_t + nf_depth0_char_formula_correct",
+      "why_deferred": "Boolean extraction from ssn_zone_until tedious",
+      "next_dispatch": "Fill using formula_conjList_iff + zone bridge lemmas"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 960,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft",
-      "assumption": "pre_conditions_at_t_until temporal formula holds",
-      "why_deferred": "Needs zone bridge for below_t and eq_t zones",
-      "next_dispatch": "Positive cases straightforward; negative cases need 3-var reconstruction"
+      "line": 993,
+      "statement": "backward endLeft",
+      "assumption": "Blocked on line 913",
+      "why_deferred": "Depends on pre_conditions_at_t_until_holds",
+      "next_dispatch": "Call helper once 913 filled"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 972,
-      "statement": "backward_holdsLeft_of_nf_eval endRight",
-      "assumption": "eq_x and above_x zone conditions at x",
-      "why_deferred": "Same zone bridge at x",
-      "next_dispatch": "Mirror of endLeft"
+      "line": 1005,
+      "statement": "backward endRight",
+      "assumption": "Zone bridge eq_x/above_x",
+      "why_deferred": "Same pattern as pre_conditions at different point",
+      "next_dispatch": "Write right_conjuncts helper"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 976,
-      "statement": "backward_holdsLeft_of_nf_eval bracket",
-      "assumption": "between_tx bracket conditions",
-      "why_deferred": "BracketFormula.holds + witness provision",
-      "next_dispatch": "Check BracketFormula.holds definition"
+      "line": 1009,
+      "statement": "backward bracket",
+      "assumption": "BracketFormula.holds + zone_bridge_between_tx",
+      "why_deferred": "Need BracketFormula.holds understanding",
+      "next_dispatch": "Unfold bracket, provide zone witnesses"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1034,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft -> nf_eval_nf reconstruction",
-      "why_deferred": "Inverse of backward: zone formula inversion + atom reconstruction",
-      "next_dispatch": "Atom conditions from h_compat, quant from zone inversion"
+      "line": 1067,
+      "statement": "forward direction",
+      "assumption": "Reverse of backward",
+      "why_deferred": "Complex reconstruction from temporal truth",
+      "next_dispatch": "Use char_1_correct inverse + zone bridge reverse"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1146,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case mirrors Until",
-      "why_deferred": "Blocked on Until completion",
-      "next_dispatch": "Mirror Until proofs"
+      "line": 1179,
+      "statement": "Since case",
+      "assumption": "Mirror of Until",
+      "why_deferred": "Needs symmetric helpers",
+      "next_dispatch": "Write Since-direction helpers"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1234,
-      "statement": "existPart_succ_n1_bypass k>0",
-      "assumption": "General depth",
-      "why_deferred": "Phase 3 scope",
-      "next_dispatch": "Phase 3"
+      "line": 1267,
+      "statement": "k>0 case",
+      "assumption": "Depth-k IH",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Separate task for depth induction"
     }
   ],
   "verification": {
@@ -78,11 +78,14 @@
     "axiom_count": 0,
     "build_passed": true
   },
+  "files_modified": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ZoneBridge.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
+  ],
   "memory_candidates": [
-    "In Lean 4, after subst h : x = t, the LATER variable is eliminated. If t was bound by a lambda before x was introduced by obtain, subst eliminates t (not x). Use variable naming carefully.",
-    "Fin.cons x (fun _ => t) at Fin index 1 does not reduce via simp [Fin.cons] after subst because the kernel re-expresses it as Fin.cases. Use unfold atom_eval + exact h instead of simp-based approaches.",
-    "set_option maxHeartbeats 800000 must come BEFORE the doc comment (/--.../), not between the doc comment and the declaration.",
-    "When constructing a formula locally with let bindings to prove filterMap membership, the let-bound formula may not unify with the expanded filterMap output. Instead, use refine with _ placeholder and prove membership via List.mem_filterMap.mpr with the original nf_x witness.",
-    "For Fin n exhaustiveness in match arms with .order constructors, use explicit absurd rfl h_ne cases (e.g., .order ⟨0,_⟩ ⟨0,_⟩ h_ne => exact absurd rfl h_ne) rather than interval_cases which is not available."
-  ]
+    "In Lean 4, Option.some_injective produces the equality in the form (inner = rhs) not (rhs = inner). Use .symm or have h := ... .symm before subst when φ is in the goal.",
+    "ssn_zone_until classification requires careful boolean case analysis to extract individual order atoms. A dedicated helper that returns all 6 order booleans given the zone + ssn_order_consistent would streamline zone bridge proofs.",
+    "When the outer split_ifs has already resolved a condition (e.g., sub_nf.2 ssn = true is in context as h✝), inner split_ifs at h_some will fail with 'no if-then-else conditions to split' because the if was already simplified."
+  ],
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/zone-bridge-wiring-20260614.md"
 }
