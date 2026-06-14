@@ -1366,17 +1366,22 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/plans/28_vecEA-path-b-implementation.md",
           "type": "plan",
           "summary": "Plan v28: VecEA Path B -- formula-level NF-to-EA bridge, 3 phases"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
+          "type": "plan",
+          "summary": "Plan v29: Bypass-based enriched formula via P_n(k) generalization, 4 phases"
         }
       ],
       "next_artifact_number": 26,
       "researched": "2026-06-12T18:56:55Z",
-      "planned": "2026-06-12T16:48:53Z",
+      "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
-        "phases": 3,
+        "phases": 4,
         "total_effort_hours": 6,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 28,
+        "plan_version": 29,
         "dependency_waves": [
           [
             1
@@ -1386,6 +1391,9 @@
           ],
           [
             3
+          ],
+          [
+            4
           ]
         ],
         "reports_integrated": [
@@ -1417,6 +1425,11 @@
           {
             "path": "reports/26_literature-proof-walkthrough.md",
             "integrated_in_plan_version": 28,
+            "integrated_date": "2026-06-13"
+          },
+          {
+            "path": "reports/27_wiring-strategy-research.md",
+            "integrated_in_plan_version": 29,
             "integrated_date": "2026-06-13"
           }
         ]
