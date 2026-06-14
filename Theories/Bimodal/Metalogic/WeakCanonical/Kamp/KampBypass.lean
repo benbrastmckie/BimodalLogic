@@ -610,9 +610,26 @@ theorem existPart_succ_n1_bypass_k0
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- Use the zone-aware enriched bypass formula
-  refine ⟨enriched_bypass_formula_zone atomMap h_surj char_1 sub_nf parent_atoms, ?_⟩
-  intro M h_UZ h_SZ t h_atoms
+  -- ANALYSIS: The zone-aware formula (enriched_bypass_formula_zone) correctly handles:
+  -- (a) y < t zone: Since at t finds y below t. Forward + backward OK.
+  -- (b) y = t zone: direct check at t. Forward + backward OK.
+  -- (c) y = x zone: direct check at x. Forward + backward OK.
+  -- (d) y > x zone: Until at x finds y above x. Forward + backward OK.
+  -- (e) t < y < x, NEGATIVE: interval guard has neg char_y at every r in (t,x).
+  --     Forward + backward OK (no point in interval satisfies char_y).
+  -- (f) t < y < x, POSITIVE: Since(char_y, top) at x gives y' < x with char_y(y').
+  --     Forward OK (y in (t,x) with char_y exists, so Since holds at x).
+  --     BACKWARD FAILS: y' from Since might be below t, not in (t,x).
+  --     The formula truth doesn't guarantee a witness BETWEEN t and x.
+  --
+  -- The positive between_tx case (f) requires "exists y in (t,x), char_y(y)"
+  -- which is a ternary relationship not expressible at a single evaluation point.
+  -- This is the same fundamental obstacle as nf_exist_backward_prior.
+  --
+  -- To resolve: either
+  -- (1) Use VecEA2 bracket infrastructure directly (bracket witnesses are between
+  --     the endpoints by construction), OR
+  -- (2) Prove a Prior-specific composition property that bridges the gap.
   sorry
 
 /-- General enriched bypass for ExistPart(k+1) at n=1.
