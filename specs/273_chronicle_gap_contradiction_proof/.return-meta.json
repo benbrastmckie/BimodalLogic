@@ -17,27 +17,27 @@
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1294,
+      "line": 1325,
       "statement": "backward_holdsLeft_of_nf_eval bracket",
       "assumption": "BracketFormula.holds for between_tx zone",
-      "why_deferred": "Requires ordered witness construction from existentials",
-      "next_dispatch": "Construct witnesses from zone_bridge_between_tx, sort, verify segment guards"
+      "why_deferred": "BLOCKED: permutation invariance lemma needed (holds_perm_of_const_beta)",
+      "next_dispatch": "Add permutation lemma to ExistsForallNF.lean, then use between_tx_temporal_iff"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1352,
+      "line": 1383,
       "statement": "forward_nf_eval_of_holdsLeft",
       "assumption": "Reconstruct nf_eval from VecEA2 components",
-      "why_deferred": "Full NF reconstruction from temporal components",
-      "next_dispatch": "Decompose into atom + quant parts, use temporal bridge lemmas"
+      "why_deferred": "Depends on bracket being filled for between_tx zone",
+      "next_dispatch": "After bracket: atom + quant parts via temporal bridge lemmas"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1464,
+      "line": 1495,
       "statement": "existPart_succ_n1_bypass_k0_since",
       "assumption": "Since case mirror of Until",
-      "why_deferred": "Structural mirror, ~200 lines",
-      "next_dispatch": "Mirror Until case with reversed direction"
+      "why_deferred": "Mirror of Until case, same permutation blocker",
+      "next_dispatch": "Mirror Until proof with reversed direction"
     }
   ],
   "verification": {
@@ -48,7 +48,8 @@
   },
   "memory_candidates": [
     "Zone extraction from ssn_zone_until requires split_ifs after simp on the definition, not manual destructuring of ssn_order_consistent",
-    "KampForward cannot be imported from KampBypass due to circular dependency; all zone bridges must use ZoneBridge.lean directly",
-    "The zone-temporal bridge lemma pattern (e.g., below_t_temporal_iff) composes zone_bridge_* with nf_depth0_char_formula_correct and handles both positive (forward) and negative (contrapositive) directions"
+    "KampForward cannot be imported from KampBypass due to circular dependency (KampForward imports KampBypass); all zone bridges must use ZoneBridge.lean directly",
+    "The zone-temporal bridge lemma pattern (e.g., below_t_temporal_iff) composes zone_bridge_* with nf_depth0_char_formula_correct and handles both positive (forward) and negative (contrapositive) directions",
+    "IntervalPattern.holds requires model-ordered witnesses matching indexed point types. When segment types are constant, a permutation invariance lemma (holds_perm_of_const_beta) is needed to connect enumeration-ordered point types with model-ordered witnesses"
   ]
 }

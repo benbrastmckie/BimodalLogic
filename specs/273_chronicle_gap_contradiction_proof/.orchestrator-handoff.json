@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Filled 3 of 7 target KampBypass sorries: pre_conditions_at_t_until_holds (was line 831), backward endLeft (was line 911), backward endRight (was line 923). Added zone extraction helpers and 4 zone-temporal bridge lemmas. 4 target sorries remain plus 2 out-of-scope sorries.",
+  "summary": "Filled 3 of 7 target KampBypass sorries (pre_conditions_at_t_until_holds, backward endLeft, backward endRight). Added all 5 zone-temporal bridge lemmas (below_t, eq_t, eq_x, above_x, between_tx). Identified permutation invariance blocker for bracket proof: IntervalPattern.holds requires model-ordered witnesses matching indexed point types, but enumeration order is independent of model order.",
   "phases_completed": 1,
   "phases_total": 3,
   "sorry_inventory": [
@@ -8,70 +8,69 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 720,
       "statement": "existPart_succ_n1_bypass_k0_eq (equality case biconditional)",
-      "assumption": "enriched_bypass_eq ↔ ∃ x, nf_eval_nf M 1 2 [x,t] sub_nf when x=t",
-      "why_deferred": "Both directions require zone-based 3-var existential reconstruction at [y,t,t]. Forward direction needs full nf_eval reconstruction from temporal formulas. Backward direction partially implemented but reverted due to filterMap definitional matching issues.",
-      "next_dispatch": "Write equality case proof using the zone bridges. Key: when x=t, ssn_xt_compatible uses false/false, zones are y<t (Since), y=t (direct), y>t (Until). Can reuse reconstruct_nf_eval_3var from ZoneBridge."
+      "assumption": "enriched_bypass_eq <-> exists x, nf_eval_nf M 1 2 [x,t] sub_nf when x=t",
+      "why_deferred": "Both directions require zone-based 3-var existential reconstruction at [y,t,t]",
+      "next_dispatch": "Write equality case proof. Key: x=t, ssn_xt_compatible false/false, zones y<t/y=t/y>t. Use reconstruct_nf_eval_3var from ZoneBridge for backward reconstruction."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1294,
+      "line": 1325,
       "statement": "backward_holdsLeft_of_nf_eval (bracket case)",
       "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
-      "why_deferred": "Requires constructing ordered witnesses from individual existentials for each positive between_tx ssn. IntervalPattern.holds needs Fin n → M.carrier with strict ordering, all in (t,x). Also needs segment guards for negative ssns.",
-      "next_dispatch": "Construct witnesses from zone_bridge_between_tx existentials. For ordering: use zone_between_tx_orders to get t < y < x for each witness. All witnesses are between t and x. Use Classical.choice or Finset sorting to order them. Show segment guards hold by contrapositive with zone_bridge_between_tx."
+      "why_deferred": "BLOCKED by permutation invariance: IntervalPattern.holds requires model-ordered witnesses matching indexed point types. Enumeration order in pos_between differs from model order. All segment types are constant (same seg_guard), so the bracket IS semantically invariant under permutation, but no such lemma exists.",
+      "next_dispatch": "Add IntervalPattern.holds_perm_of_const_beta lemma to VecEAFormula.lean or ExistsForallNF.lean: when all segment types equal, holds with permuted point types implies holds with original types. Then use between_tx_temporal_iff to get witnesses, sort them, apply permutation lemma."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1352,
+      "line": 1383,
       "statement": "forward_nf_eval_of_holdsLeft (reconstruct nf_eval from VecEA2 components)",
       "assumption": "nf_eval_nf M 1 (1+1) (Fin.cons x (fun _ => t)) sub_nf",
-      "why_deferred": "Requires reconstructing full NF evaluation from endLeft, endRight, and bracket components. Atom part via char_1_correct + nf_x_compat_check. Quant part via zone-temporal bridges for each zone.",
-      "next_dispatch": "Decompose into atom part + quant part. Atom: from h_endRight extract char_1(nf_x) via h_eq identity, combine with h_compat and h_atoms. Quant: for each ssn, case split on zone and use the 4 temporal bridge lemmas (below_t_temporal_iff etc.) to convert temporal conditions back to existentials."
+      "why_deferred": "Depends on bracket being filled for between_tx zone direction. Also needs atom + quant reconstruction from VecEA2.",
+      "next_dispatch": "After bracket is done: decompose into atom part (char_1_correct + nf_x_compat_check) + quant part (for each ssn, case split on zone, use all 5 temporal bridge lemmas)."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1464,
+      "line": 1495,
       "statement": "existPart_succ_n1_bypass_k0_since (Since case, mirror of Until)",
-      "assumption": "∃ A, ∀ M h_UZ h_SZ t, ... → (temporal_truth ... A ↔ ∃ x, nf_eval ...)",
-      "why_deferred": "Structural mirror of the Until case. Uses enriched_bypass_since which is a formula_disjList of Since(pt_x, guard) terms, NOT VVecEA2. Needs zone bridges with swapped x/t roles.",
-      "next_dispatch": "Mirror the Until case proof structure. enriched_bypass_since uses formula_disjList directly. Need reversed zone bridges (zone_yxt, zone_xty, bracket_xyt from KampForward -- but KampForward imports KampBypass, so cannot import). Must use ZoneBridge lemmas directly with swapped parameters."
+      "assumption": "exists A, forall M h_UZ h_SZ t, ... -> (temporal_truth ... A <-> exists x, nf_eval ...)",
+      "why_deferred": "Mirror of Until case, same bracket permutation blocker applies",
+      "next_dispatch": "Mirror Until proof. enriched_bypass_since uses formula_disjList directly. Need reversed zone bridges with x < t."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1552,
+      "line": 1583,
       "statement": "existPart_succ_n1_bypass (depth >= 2 case)",
-      "assumption": "General k > 0 case for enriched bypass",
-      "why_deferred": "Out of scope for this task",
+      "assumption": "Out of scope",
+      "why_deferred": "Not on critical path",
       "next_dispatch": "Separate task"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
       "statement": "nf_exist_backward_prior",
-      "assumption": "Backward direction bypassed by classical approach",
-      "why_deferred": "Out of scope -- bypassed by nf_characterizable_temporal_prior_classical",
+      "assumption": "Bypassed by classical approach",
+      "why_deferred": "Out of scope",
       "next_dispatch": "No action needed"
     }
   ],
   "blockers": [
-    "bracket sorry (line 1294): requires IntervalPattern witness construction with strict ordering from individual existentials",
-    "forward sorry (line 1352): requires full nf_eval reconstruction from temporal VecEA2 components",
-    "equality sorry (line 720): requires zone bridges at [y,t,t] (x=t case) for both directions",
-    "since sorry (line 1464): structural mirror of Until case, ~200 lines"
+    "STRUCTURAL BLOCKER: IntervalPattern.holds_perm_of_const_beta lemma needed in VecEAFormula.lean or ExistsForallNF.lean. When all segment types (beta) are equal, permuting point types and witnesses preserves holds. This unblocks bracket, forward, and since sorries.",
+    "equality sorry (line 720): independent of permutation blocker, can proceed",
+    "since sorry: mirrors until case, blocked by same permutation issue"
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
     "resume_phase": 2,
-    "completed_work": "3 of 7 target sorries filled. Zone extraction helpers and 4 zone-temporal bridge lemmas added.",
+    "completed_work": "3 of 7 target sorries filled. All 5 zone-temporal bridge lemmas added. Permutation invariance blocker identified.",
     "infrastructure_added": [
-      "zone_below_t_yt, zone_below_t_ty, zone_eq_t_orders, zone_eq_x_orders, zone_above_x_orders, zone_between_tx_orders (zone order extraction from ssn_zone_until)",
-      "below_t_temporal_iff: Since(char_y, top) at t ↔ ∃ y, nf_eval for below_t zone",
-      "eq_t_temporal_iff: char_y at t ↔ ∃ y, nf_eval for eq_t zone",
-      "eq_x_temporal_iff: char_y at x ↔ ∃ y, nf_eval for eq_x zone",
-      "above_x_temporal_iff: Until(char_y, top) at x ↔ ∃ y, nf_eval for above_x zone"
+      "zone_below_t_yt, zone_below_t_ty, zone_eq_t_orders, zone_eq_x_orders, zone_above_x_orders, zone_between_tx_orders",
+      "below_t_temporal_iff, eq_t_temporal_iff, eq_x_temporal_iff, above_x_temporal_iff, between_tx_temporal_iff"
     ],
-    "key_insight": "The KampForward per-SSN theorems cannot be imported due to circular dependency (KampForward imports KampBypass). All zone bridges must go through ZoneBridge.lean which is already imported. The zone-temporal bridge lemmas (below_t_temporal_iff etc.) compose ZoneBridge theorems with nf_depth0_char_formula_correct and handle both positive and negative directions.",
-    "fill_order_recommendation": "bracket(1294) -> forward(1352) -> equality(720) -> since(1464). Bracket and forward are most impactful since they complete the Until direction. Equality is self-contained. Since mirrors Until."
+    "key_blockers": [
+      "IntervalPattern.holds_perm_of_const_beta: when all beta (segment types) are equal, IntervalPattern.holds is invariant under permutation of witnesses and alpha (point types). This is mathematically obvious but needs to be proved as a lemma. The proof constructs a re-indexing from enumeration order to model order.",
+      "Circular import prevents using KampForward from KampBypass"
+    ],
+    "fill_order_recommendation": "1. Add holds_perm_of_const_beta to ExistsForallNF.lean (unblocks bracket). 2. Fill bracket using between_tx_temporal_iff + permutation lemma. 3. Fill forward using all 5 bridge lemmas. 4. Fill equality (independent). 5. Mirror for since."
   }
 }
