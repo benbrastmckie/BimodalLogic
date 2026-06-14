@@ -869,9 +869,16 @@ private theorem backward_holdsLeft_of_nf_eval
     sorry
   case endRight =>
     -- char_1(nf_x) ∧ right_conjuncts holds at x
-    -- char_1(nf_x) ↔ nf_eval_nf M 1 1 (fun _ => x) nf_x (by char_1_correct)
-    -- right_conjuncts: for eq_x and above_x zones
-    sorry
+    simp only [TemporalPred.eval_at]
+    show temporal_truth M atomMap x (Formula.and (char_1 nf_x) (formula_conjList _))
+    rw [temporal_truth_and]
+    constructor
+    · -- char_1(nf_x) holds at x by char_1_correct + h_nf_x
+      exact (char_1_correct nf_x M h_UZ h_SZ x).mpr h_nf_x
+    · -- right_conjuncts: eq_x and above_x zone conditions
+      -- Each conjunct corresponds to a compatible ssn in eq_x or above_x zone
+      -- and encodes (∃ y, nf_eval M 0 3 (y,x,t) ssn) ↔ sub_nf.2 ssn
+      sorry
   case bracket =>
     -- bracket.holds t x = interval pattern holds on (t, x)
     -- Positive between_tx ssns need witnesses, negative need segment guards
