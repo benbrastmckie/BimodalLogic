@@ -115,15 +115,20 @@ Phases are fully sequential. Each phase depends on the prior.
 
 **Tasks**:
 - [ ] **Task 2.1**: Fill `zone_3var_exist_iff_1var` (L879, ~200 lines). *(deviation: skipped -- grep shows no callers; not on critical path)*
-- [ ] **Task 2.2**: Fill `backward_holdsLeft_of_nf_eval` bracket (L976). Handle positive `between_tx` ssn conditions via BracketFormula.holds.
-- [ ] **Task 2.3**: Fill `backward_holdsLeft_of_nf_eval` endLeft (L960). Handle `below_t` and `eq_t` zone conditions at t via nf_depth0_char_formula_correct.
-- [ ] **Task 2.4**: Fill `backward_holdsLeft_of_nf_eval` endRight (L972). Handle `eq_x` and `above_x` zone conditions at x.
-- [ ] **Task 2.5**: Fill `forward_nf_eval_of_holdsLeft` (L1034). Forward direction: holdsLeft → nf_eval.
-- [x] **Task 2.6**: Fill `existPart_succ_n1_bypass_k0_eq` (L801). *(deviation: altered -- only compatible subcase remains as sorry; 2 incompatible subcases proved sorry-free with Formula.bot)*
-- [ ] **Task 2.7**: Fill `existPart_succ_n1_bypass_k0_since` (L1146). Since case: mirror of Until.
+- [ ] **Task 2.2**: Fill `backward_holdsLeft_of_nf_eval` bracket (now L1358). Handle positive `between_tx` ssn conditions via BracketFormula.holds.
+- [x] **Task 2.3**: Fill `backward_holdsLeft_of_nf_eval` endLeft (was L960, now filled). *(completed: zone conditions at t for below_t/eq_t zones proved via pre_conditions_at_t_until_holds + nf_depth0_char_formula_correct)*
+- [x] **Task 2.4**: Fill `backward_holdsLeft_of_nf_eval` endRight (was L972, now filled). *(completed: zone conditions at x for eq_x/above_x zones proved via zone-temporal bridge lemmas)*
+- [ ] **Task 2.5**: Fill `forward_nf_eval_of_holdsLeft` (now L1416). Forward direction: holdsLeft → nf_eval.
+- [x] **Task 2.6**: Fill `existPart_succ_n1_bypass_k0_eq` (now L753). *(deviation: altered -- only compatible subcase remains as sorry; 2 incompatible subcases proved sorry-free with Formula.bot. eq_case_orders helper added.)*
+- [ ] **Task 2.7**: Fill `existPart_succ_n1_bypass_k0_since` (now L1528). Since case: mirror of Until.
 - [ ] **Task 2.8**: Verify `existPart_succ_n1_bypass_k0` compiles without sorry.
 
-**Key technique discovered**: `unfold atom_eval + exact h` for Fin.cons/Fin.cases proof-term normalization after `subst`. This avoids the proof-term mismatch issue where `simp [Fin.cons]` and `rw` fail because `Fin.cons x (fun _ => t)` at index 1 gets re-expressed as `Fin.cases x (fun _ => t) ⟨1, _⟩` by the kernel after `subst`.
+**Key techniques discovered**:
+- `unfold atom_eval + exact h` for Fin.cons/Fin.cases proof-term normalization after `subst`. This avoids the proof-term mismatch issue where `simp [Fin.cons]` and `rw` fail because `Fin.cons x (fun _ => t)` at index 1 gets re-expressed as `Fin.cases x (fun _ => t) ⟨1, _⟩` by the kernel after `subst`.
+- Zone extraction helpers (6 added) + zone-temporal bridge lemmas (5 added: below_t, eq_t, eq_x, above_x, between_tx) composing ZoneBridge theorems with nf_depth0_char_formula_correct.
+- `eq_case_orders` helper extracts xt=false, tx=false, yx=yt, xy=ty from ssn_order_consistent equality consistency clause.
+
+**Progress** (as of 2026-06-14): 3 of 7 target sorries filled. Infrastructure added: 6 zone extraction helpers, 5 zone-temporal bridge lemmas, eq_case_orders helper, between_tx_temporal_iff bridge. Build passes with 5 sorries (4 target + 1 out-of-scope depth≥2). Remaining: eq compatible case (L753), bracket (L1358), forward (L1416), since (L1528).
 
 **Timing**: 2.5 hours (~1000 lines of zone-by-zone case analysis)
 
