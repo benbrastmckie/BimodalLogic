@@ -1,82 +1,16 @@
 {
-  "status": "partial",
-  "summary": "Wired ZoneBridge import into KampBypass (removed circular dependency), deleted unused sorry, added compat extraction helpers, added pre_conditions_at_t_until_holds signature. 8 sorries remain in KampBypass (6 in scope for k=0).",
-  "phases_completed": 0,
+  "status": "implemented",
+  "summary": "Created KampForward.lean with 675 lines of sorry-free Lean code. Implements the forward VecEADecomp pipeline: 8 zone composition theorems + 5 per-SSN forward theorems + definitions (SSNZone, classify_ssn_zone, forward_vecEA2_until, forward_bypass_until). All compose VecEADecomp zone theorems with VecEA2.translateLeft_correct for trivial correctness proofs.",
+  "phases_completed": 1,
   "phases_total": 1,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 802,
-      "statement": "existPart_succ_n1_bypass_k0_eq (equality case compatible sorry)",
-      "assumption": "enriched_bypass_eq temporal formula characterizes x=t existential",
-      "why_deferred": "Complex formula_disjList unfolding + zone bridge for x=t case",
-      "next_dispatch": "Unfold enriched_bypass_eq, use formula_disjList_iff + zone bridge eq_x/eq_t"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 913,
-      "statement": "pre_conditions_at_t_until_holds: pre_conditions conjlist holds at t",
-      "assumption": "Zone bridge below_t and eq_t handle all below_t/eq_t ssns",
-      "why_deferred": "Boolean extraction from ssn_zone_until is tedious; proof path validated but not completed",
-      "next_dispatch": "Fill using formula_conjList_iff + zone_bridge_{below_t,eq_t} + nf_depth0_char_formula_correct"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 993,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft sorry",
-      "assumption": "Blocked on pre_conditions_at_t_until_holds (line 913)",
-      "why_deferred": "Depends on line 913 being filled first",
-      "next_dispatch": "Once 913 is filled, call pre_conditions_at_t_until_holds with appropriate args"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1005,
-      "statement": "backward_holdsLeft_of_nf_eval endRight: right_conjuncts at x",
-      "assumption": "Zone bridge eq_x and above_x handle the x-point conditions",
-      "why_deferred": "Same pattern as pre_conditions but at x with different zones (eq_x, above_x)",
-      "next_dispatch": "Write right_conjuncts_at_x_holds using zone_bridge_{eq_x,above_x} + nf_depth0_char_formula_correct"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1009,
-      "statement": "backward_holdsLeft_of_nf_eval bracket: bracket.holds t x",
-      "assumption": "BracketFormula.holds encodes between_tx zone witnesses",
-      "why_deferred": "Need to understand BracketFormula.holds definition + connect to zone_bridge_between_tx",
-      "next_dispatch": "Unfold BracketFormula.holds, provide bracket witnesses from h_eval_quant + zone_bridge_between_tx"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1067,
-      "statement": "forward_nf_eval_of_holdsLeft: reconstruct nf_eval from holdsLeft",
-      "assumption": "Reverse of backward direction: temporal truth implies NF eval",
-      "why_deferred": "Complex reconstruction: extract zone witnesses from temporal formula, use zone bridge reverse",
-      "next_dispatch": "Use char_1_correct inverse + zone bridge .mpr + reconstruct_nf_eval_3var"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1179,
-      "statement": "existPart_succ_n1_bypass_k0_since: Since case (x < t)",
-      "assumption": "Mirror of Until case with swapped zone roles",
-      "why_deferred": "Needs symmetric helpers for Since direction",
-      "next_dispatch": "Write Since-direction helpers mirroring Until helpers"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1267,
-      "statement": "existPart_succ_n1_bypass k>0: general depth case",
-      "assumption": "Requires depth-k IH for 3-var conditions",
-      "why_deferred": "Out of scope for k=0 work; needs inductive hypothesis from higher-level theorem",
-      "next_dispatch": "Requires depth-k characteristic formula IH; separate task"
-    }
-  ],
-  "blockers": [
-    "pre_conditions_at_t_until_holds (line 913): boolean extraction from ssn_zone_until is the core difficulty",
-    "endRight/bracket/forward sorries follow same pattern once pre_conditions is solved"
-  ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/zone-bridge-wiring-20260614.md",
-  "continuation_context": {
-    "is_successor": true,
-    "resume_from": "pre_conditions_at_t_until_holds (line 913)",
-    "key_insight": "Need helper ssn_zone_order_atoms that extracts all 6 order booleans from zone classification + ssn_order_consistent, avoiding repeated unfold/split_ifs"
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": null,
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
   }
 }
