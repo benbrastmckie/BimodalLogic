@@ -916,7 +916,31 @@ private theorem forward_nf_eval_of_holdsLeft
         else none) Fintype.elems.val.toList),
       VecEA2.holdsLeft M atomMap vea.snd t) →
     ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf := by
-  sorry
+  intro ⟨⟨n, vea⟩, h_mem, h_holds⟩
+  -- Extract nf_x from the filterMap membership
+  rw [List.mem_filterMap] at h_mem
+  obtain ⟨nf_x, _, h_some⟩ := h_mem
+  -- nf_x_compat_check must be true for h_some to produce some
+  split_ifs at h_some with h_compat
+  · -- Compatible case: h_some : some (...) = some ⟨n, vea⟩
+    have h_eq := Option.some_injective _ h_some
+    -- h_eq : enriched_vecEA2_until ... = ⟨n, vea⟩
+    -- Rewrite h_holds using h_eq
+    rw [show (⟨n, vea⟩ : Σ n, VecEA2 n).snd = vea from rfl] at h_holds
+    -- Extract the VecEA2 structure
+    let nf_x_1var : NormalForm sig 0 1 := fun a => match a with
+      | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
+      | .order i j h => absurd (Fin.ext (by omega) : i = j) h
+    -- The enriched_vecEA2_until gives a specific VecEA2
+    let vea' := enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x nf_x_1var parent_atoms
+    -- h_eq tells us ⟨n, vea⟩ = vea' (definitionally via the lambda)
+    -- From holdsLeft for vea, we get endpointLeft at t, and x > t with endpointRight and bracket
+    simp only [VecEA2.holdsLeft] at h_holds
+    obtain ⟨h_endLeft, x, h_t_lt_x, h_endRight, h_bracket⟩ := h_holds
+    -- We have x > t with the VecEA2 conditions
+    -- Need to reconstruct nf_eval_nf M 1 2 (x, t) sub_nf
+    refine ⟨x, ?_⟩
+    sorry
 
 /-! ## Until Case (t < x) -/
 
