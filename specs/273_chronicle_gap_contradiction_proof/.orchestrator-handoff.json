@@ -1,79 +1,87 @@
 {
   "status": "partial",
-  "summary": "Decomposed existPart_succ_n1_bypass_k0_until (Until case) into modular helper lemmas with focused sub-goals. The main theorem now cleanly delegates to forward_nf_eval_of_holdsLeft and backward_holdsLeft_of_nf_eval. Backward direction further decomposed into endLeft, endRight (char_1 component proved), and bracket sub-goals. Forward direction extracts nf_x, x, and VecEA2 components from holdsLeft.",
+  "summary": "Added witness_eq_t_of_no_order helper (sorry-free) and zone_3var_exist_iff_1var stub. Discovered formula soundness issue: pre_conditions_at_t_until includes negated temporal formulas for order-inconsistent ssn values, making the backward direction unprovable. The formula construction needs a consistency filter before the proofs can proceed.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 869,
+      "line": 690,
+      "statement": "theorem existPart_succ_n1_bypass_k0_eq",
+      "assumption": "Equality case (x = t) of enriched bypass",
+      "why_deferred": "Requires quantifier profile correctness proof; blocked by zone helper",
+      "next_dispatch": "Implement after zone_3var_exist_iff_1var is complete"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 842,
+      "statement": "theorem zone_3var_exist_iff_1var",
+      "assumption": "Zone decomposition for depth-0 3-var existential",
+      "why_deferred": "Requires ~200 lines of zone-by-zone case analysis",
+      "next_dispatch": "Write one zone at a time starting with below_t"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 923,
       "statement": "backward_holdsLeft_of_nf_eval endLeft case",
-      "assumption": "pre_conditions_at_t_until holds at t given nf_eval_nf and h_atoms",
-      "why_deferred": "Requires iterating over compatible ssns in below_t and eq_t zones, showing each temporal formula (Since/direct) at t matches the 3-var depth-0 existential from h_eval_quant",
-      "next_dispatch": "Prove endLeft by rewriting with formula_conjList_iff and showing each conjunct from zone decomposition"
+      "assumption": "pre_conditions_at_t_until holds at t given nf_eval",
+      "why_deferred": "BLOCKED: formula unsound for order-inconsistent ssn in below_t zone",
+      "next_dispatch": "Fix pre_conditions_at_t_until to filter inconsistent ssn"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 881,
-      "statement": "backward_holdsLeft_of_nf_eval endRight conjList case",
-      "assumption": "formula_conjList of right_conjuncts (eq_x, above_x zones) holds at x",
-      "why_deferred": "Requires proving each zone condition at x from h_eval_quant. For eq_x: nf_depth0_char_formula_correct. For above_x: temporal_truth of Until(char_y, top)",
-      "next_dispatch": "Use formula_conjList_iff, then for each ssn prove the zone condition"
+      "line": 935,
+      "statement": "backward_holdsLeft_of_nf_eval endRight case",
+      "assumption": "enriched_point_type_x holds at x given nf_eval",
+      "why_deferred": "BLOCKED: same formula issue for eq_x and above_x zones",
+      "next_dispatch": "Fix enriched_point_type_x_until for order consistency"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 885,
+      "line": 939,
       "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
-      "why_deferred": "Most complex sub-goal. Requires witness construction for positive between_tx ssns and segment guard from negative between_tx ssns",
-      "next_dispatch": "Prove bracket by constructing IntervalPattern witnesses from h_eval_quant"
+      "assumption": "bracket formula holds between t and x",
+      "why_deferred": "BLOCKED: same formula issue for between_tx zone",
+      "next_dispatch": "Fix bracket construction for order consistency"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 943,
-      "statement": "forward_nf_eval_of_holdsLeft nf_eval reconstruction",
-      "assumption": "nf_eval_nf M 1 (1+1) (Fin.cons x (fun _ => t)) sub_nf from VecEA2 components",
-      "why_deferred": "Composition argument: reconstruct 2-var depth-1 NF evaluation from VecEA2 components",
-      "next_dispatch": "Split into atoms + quant. For atoms use h_compat. For quant case-split on zone"
+      "line": 997,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "assumption": "Reconstruct nf_eval from VecEA2 holdsLeft conditions",
+      "why_deferred": "Requires zone helper for quantifier reconstruction",
+      "next_dispatch": "Implement after zone_3var_exist_iff_1var and formula fix"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 670,
-      "statement": "existPart_succ_n1_bypass_k0_eq",
-      "assumption": "equality case (x = t) of enriched bypass",
-      "why_deferred": "Pre-existing sorry, not in scope for this dispatch",
-      "next_dispatch": "Prove equality case using char_1 + depth-0 zone decomposition"
+      "line": 1109,
+      "statement": "theorem existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case mirror of Until",
+      "why_deferred": "Blocked by Until case sorries",
+      "next_dispatch": "Mirror Until case after it is proved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1055,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "since case (x < t) of enriched bypass",
-      "why_deferred": "Pre-existing sorry, not in scope",
-      "next_dispatch": "Mirror the Until case proof with swapped directions"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1143,
-      "statement": "existPart_succ_n1_bypass (succ k')",
-      "assumption": "general depth k+1 > 1 bypass",
-      "why_deferred": "Pre-existing sorry, requires Feferman-Vaught composition",
-      "next_dispatch": "After k=0 case complete, generalize to k>0"
+      "line": 1197,
+      "statement": "existPart_succ_n1_bypass k>0 case",
+      "assumption": "General k > 0 requires depth-k IH",
+      "why_deferred": "Different mathematical content (skip per task instructions)",
+      "next_dispatch": "Separate task for higher depth"
     }
   ],
   "blockers": [
-    "The Until case backward and forward directions require the depth-0 composition argument: zone-specific temporal formulas at t and x correctly capture the 3-var depth-0 existentials from nf_eval_nf."
+    "Formula soundness issue: pre_conditions_at_t_until includes negated formulas for order-inconsistent ssn values. These ssn are classified as below_t by ssn_zone_until but have y_lt_x = false, making the 3-var NF unsatisfiable. The negated temporal formula may not hold despite sub_nf.2 ssn = false. Fix: add order consistency filter to ssn_xt_compatible or to zone formula builders."
   ],
-  "continuation_path": null,
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/bypass-k0-sorries-20260614.md",
   "continuation_context": {
     "is_successor": false,
+    "session_id": "sess_1781432881_c1ecbe",
     "completed_objectives": [
-      "Decomposed Until case into forward/backward helper lemmas",
-      "Proved char_1 component of endRight (backward direction)",
-      "Decomposed forward direction: extract nf_x, x, endLeft/endRight/bracket from holdsLeft",
-      "Established VVecEA2.translateLeft_correct reduction in main theorem"
+      "Added witness_eq_t_of_no_order helper (sorry-free)",
+      "Added zone_3var_exist_iff_1var helper stub",
+      "Identified formula soundness issue in pre_conditions_at_t_until"
     ],
-    "next_objective": "Fill endLeft, endRight conjList, bracket, and forward sub-sorries",
+    "next_objective": "Fix formula construction to filter order-inconsistent ssn, then fill sorries",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
     ]

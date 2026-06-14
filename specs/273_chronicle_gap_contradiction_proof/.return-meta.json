@@ -4,62 +4,68 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
-  "session_id": "sess_1781421530_2b6c7c",
+  "session_id": "sess_1781432881_c1ecbe",
   "started_at": "2026-06-14T00:00:00Z",
-  "requires_user_review": false,
+  "requires_user_review": true,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 670,
+      "line": 690,
       "statement": "existPart_succ_n1_bypass_k0_eq (equality case x=t)",
-      "why_deferred": "Pre-existing sorry, not in scope for this dispatch"
+      "why_deferred": "Requires quantifier profile correctness; blocked by zone helper"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 869,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft (pre_conditions_at_t)",
-      "why_deferred": "Zone iteration for below_t and eq_t temporal formulas"
+      "line": 842,
+      "statement": "zone_3var_exist_iff_1var (zone decomposition helper)",
+      "why_deferred": "Requires ~200 lines of zone-by-zone case analysis"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 881,
-      "statement": "backward_holdsLeft_of_nf_eval endRight conjList (eq_x, above_x zones)",
-      "why_deferred": "Zone conditions at x from nf_eval_quant"
+      "line": 923,
+      "statement": "backward_holdsLeft_of_nf_eval endLeft",
+      "why_deferred": "BLOCKED: formula unsound for order-inconsistent ssn values"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 885,
-      "statement": "backward_holdsLeft_of_nf_eval bracket (between_tx zone)",
-      "why_deferred": "Witness construction for positive between_tx ssns + segment guards"
+      "line": 935,
+      "statement": "backward_holdsLeft_of_nf_eval endRight conjList",
+      "why_deferred": "BLOCKED: same formula soundness issue"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 943,
+      "line": 939,
+      "statement": "backward_holdsLeft_of_nf_eval bracket",
+      "why_deferred": "BLOCKED: same formula soundness issue"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 997,
       "statement": "forward_nf_eval_of_holdsLeft nf_eval reconstruction",
-      "why_deferred": "Composition argument: VecEA2 components to nf_eval_nf"
+      "why_deferred": "Requires zone helper and formula fix"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1055,
+      "line": 1109,
       "statement": "existPart_succ_n1_bypass_k0_since (Since case x<t)",
-      "why_deferred": "Pre-existing sorry, mirror of Until case"
+      "why_deferred": "Blocked by Until case sorries"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1143,
+      "line": 1197,
       "statement": "existPart_succ_n1_bypass (k>0 case)",
-      "why_deferred": "Pre-existing sorry, requires depth-k IH"
+      "why_deferred": "Different mathematical content (skip per task instructions)"
     }
   ],
   "verification": {
-    "sorry_count": 7,
+    "sorry_count": 8,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "The Until case biconditional (existPart_succ_n1_bypass_k0_until) was decomposed into forward_nf_eval_of_holdsLeft and backward_holdsLeft_of_nf_eval helper lemmas. The backward direction was further decomposed into endLeft, endRight, and bracket sub-goals. The char_1 component of endRight was proved using char_1_correct + nf_characteristic_satisfies.",
-    "To connect VVecEA2.translateLeft to holdsLeft: use VVecEA2.translateLeft_correct after unfolding enriched_bypass_until with simp only [enriched_bypass_until]. Then simp only [VVecEA2.holdsLeft] to expose the disjunctive existential.",
-    "For the filterMap membership proof: use List.mem_filterMap, provide nf_x witness with Multiset.mem_toList.mpr for Fintype.elems membership, then simp only [h_compat, ite_true] followed by rfl to close the equality."
+    "FORMULA SOUNDNESS BUG: pre_conditions_at_t_until in KampBypass.lean includes negated temporal formulas for ssn values where ssn_xt_compatible passes but y-related order booleans are inconsistent with the zone. For below_t zone with t < x, an ssn with y_lt_x = false is order-inconsistent (y < t < x implies y < x) but passes ssn_xt_compatible and gets classified as below_t. The 3-var NF is unsatisfiable, but the negated Since formula may not hold. FIX: add y-order consistency check to ssn_xt_compatible or filter in zone formula builders.",
+    "witness_eq_t_of_no_order (sorry-free): When both order booleans in sub_nf are false (.order 1 0 = false, .order 0 1 = false), any witness x satisfying nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf must equal t. Proof: by_contra h_ne, then lt_or_gt gives x < t or t < x, contradicting the false order booleans via atom_eval.",
+    "zone_3var_exist_iff_1var connects the 3-var depth-0 existential to zone-specific 1-var conditions. For each compatible ssn in ssn_zone_until, the 3-var existential decomposes into a 1-var predicate condition plus order constraints. The helper needs reconstruct_nf_3var for the backward direction and extract_y_nf for the forward direction."
   ]
 }
