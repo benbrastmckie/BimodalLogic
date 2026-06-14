@@ -3,6 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
 import Bimodal.Metalogic.WeakCanonical.Kamp.Translation
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampForward
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 

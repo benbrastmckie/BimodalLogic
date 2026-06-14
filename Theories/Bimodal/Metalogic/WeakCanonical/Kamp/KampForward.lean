@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEADecomp
 import Bimodal.Metalogic.WeakCanonical.Kamp.ZoneBridge
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 
 /-!
 # Forward VecEADecomp Pipeline for Kamp Bypass

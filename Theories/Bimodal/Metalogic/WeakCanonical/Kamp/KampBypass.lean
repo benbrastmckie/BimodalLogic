@@ -64,92 +64,10 @@ noncomputable def nf_t_compat_check {sig : MonadicSignature}
   (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
     sub_nf (.pred p ⟨1, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)
 
-/-! ## Order Consistency Filter
-
-A depth-0 3-var NF `ssn : NormalForm sig 0 3` assigns boolean values to all
-6 order atoms on variables y(0), x(1), t(2). Not all 64 boolean assignments
-are realizable on a strict linear order — only 13 are (3! orderings × 2 + 1
-for the 6 strict-order bits plus the equality cases). The `ssn_order_consistent`
-filter rejects the 3 unrealizable assignments that `ssn_xt_compatible` lets
-through (e.g., y < x ∧ x < t ∧ t < y, violating transitivity). -/
-
-/-- Check whether a depth-0 3-var NF's order assignment is realizable on a
-    strict linear order. Checks antisymmetry (3), transitivity (6), and
-    equality consistency (3) = 12 boolean conditions. -/
-noncomputable def ssn_order_consistent {sig : MonadicSignature}
-    (ssn : NormalForm sig 0 3) : Bool :=
-  -- Extract all 6 order atoms: variables are y=0, x=1, t=2
-  let yx := ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))  -- y < x
-  let xy := ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))  -- x < y
-  let yt := ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))  -- y < t
-  let ty := ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))  -- t < y
-  let xt := ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))  -- x < t
-  let tx := ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))  -- t < x
-  -- Antisymmetry: ¬(i < j ∧ j < i) for each pair
-  !(yx && xy) && !(yt && ty) && !(xt && tx) &&
-  -- Transitivity: a < b ∧ b < c → a < c for each triple
-  (!(yx && xt) || yt) && (!(yt && tx) || yx) &&
-  (!(xy && yt) || xt) && (!(xt && ty) || xy) &&
-  (!(ty && yx) || tx) && (!(tx && xy) || ty) &&
-  -- Equality consistency: if ¬(i<j) ∧ ¬(j<i) then i and j have same
-  -- relation to the third variable
-  (yx || xy || (yt == xt && ty == tx)) &&
-  (yt || ty || (yx == tx && xy == xt)) &&
-  (xt || tx || (yx == yt && xy == ty))
-
-set_option maxHeartbeats 800000 in
-/-- If `nf_eval_nf M 0 3 env ssn` holds, then `ssn_order_consistent ssn = true`.
-    This ensures the filter does not exclude any realizable ssn. -/
-theorem ssn_order_consistent_of_eval {sig : MonadicSignature}
-    {M : OrderedMonadicStructure sig}
-    {y x t : M.carrier}
-    (ssn : NormalForm sig 0 3)
-    (h_eval : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
-    ssn_order_consistent ssn = true := by
-  unfold ssn_order_consistent nf_eval_nf at *
-  -- h_eval: ∀ a, atom_eval M env a ↔ ssn a = true
-  -- Extract semantic meaning of each order atom
-  have hyx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true ↔ y < x :=
-    (h_eval (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).symm.trans (by unfold atom_eval; rfl)
-  have hxy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true ↔ x < y :=
-    (h_eval (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).symm.trans (by unfold atom_eval; rfl)
-  have hyt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ↔ y < t :=
-    (h_eval (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).symm.trans (by unfold atom_eval; rfl)
-  have hty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true ↔ t < y :=
-    (h_eval (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).symm.trans (by unfold atom_eval; rfl)
-  have hxt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ↔ x < t :=
-    (h_eval (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).symm.trans (by unfold atom_eval; rfl)
-  have htx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true ↔ t < x :=
-    (h_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).symm.trans (by unfold atom_eval; rfl)
-  -- Case-split on all 6 boolean values and discharge using linear order
-  revert hyx hxy hyt hty hxt htx
-  cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
-  cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;>
-  cases ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) <;>
-  cases ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) <;>
-  cases ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) <;>
-  cases ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
-  all_goals (intro h1 h2 h3 h4 h5 h6; simp_all [lt_irrefl, lt_asymm, not_lt])
-  -- Remaining goals: derive False from unrealizable orderings.
-  -- Use rcases on trichotomy for each pair -- at most 3 case splits per remaining goal.
-  all_goals (exfalso; first
-    | exact lt_irrefl _ (lt_trans ‹_ < _› (lt_trans ‹_ < _› ‹_ < _›))
-    | exact lt_irrefl _ (lt_trans (lt_trans ‹_ < _› ‹_ < _›) ‹_ < _›)
-    | (rcases lt_trichotomy y x with h | h | h <;>
-       rcases lt_trichotomy y t with h' | h' | h' <;>
-       rcases lt_trichotomy x t with h'' | h'' | h'' <;>
-       simp_all [lt_irrefl, lt_asymm] <;>
-       first
-         | exact absurd ‹_ < _› (not_lt.mpr ‹_ ≤ _›)
-         | exact absurd (lt_of_le_of_lt ‹_ ≤ _› ‹_ < _›) (lt_irrefl _)
-         | exact absurd (lt_of_lt_of_le ‹_ < _› ‹_ ≤ _›) (lt_irrefl _)
-         | (-- Fallback: try all ≤/< contradiction pairs
-            have aux : ∀ {a b : M.carrier}, a ≤ b → b < a → False :=
-              fun hab hba => absurd hba (not_lt.mpr hab)
-            first
-              | exact aux ‹_› ‹_›
-              | (have := lt_trans ‹_ < _› ‹_ < _›; exact aux ‹_› ‹_›)))
-  )
+-- ssn_order_consistent and ssn_order_consistent_of_eval have been moved to
+-- ZoneBridge.lean to break the circular import chain:
+-- KampForward -> NfCharFormula -> KampBypass.
+-- They are now available via `import ZoneBridge`.
 
 /-! ## Depth-0 3-var Existential Formula
 
