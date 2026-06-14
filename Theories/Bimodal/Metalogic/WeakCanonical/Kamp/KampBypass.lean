@@ -637,6 +637,25 @@ noncomputable def enriched_bypass_formula_zone {sig : MonadicSignature}
   | false, true => enriched_bypass_since atomMap h_surj char_1 sub_nf parent_atoms
   | false, false => enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms
 
+/-! ## Helper: witness must equal t when both orders are false -/
+
+private theorem witness_eq_t_of_no_order {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 1 2) (t x : M.carrier)
+    (h_gt : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_lt : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_eval : nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    x = t := by
+  obtain ⟨h_atom, _⟩ := h_eval
+  by_contra h_ne
+  rcases lt_or_gt_of_ne h_ne with h' | h'
+  · have := (h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mp
+    simp only [atom_eval, Fin.cons] at this
+    exact Bool.noConfusion (h_lt ▸ this h')
+  · have := (h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mp
+    simp only [atom_eval, Fin.cons] at this
+    exact Bool.noConfusion (h_gt ▸ this h')
+
 /-! ## Equality Case (x = t) -/
 
 /-- Equality case of the enriched bypass: when sub_nf says x = t,
@@ -664,9 +683,10 @@ private theorem existPart_succ_n1_bypass_k0_eq
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- When x = t: the existential reduces to nf_eval_nf M 1 2 [t,t] sub_nf.
-  -- Uses depth-0 zone decomposition for 3-var quantifier conditions + char_1 + NF uniqueness.
-  -- Deferred to a subsequent dispatch.
+  -- When x = t, any witness x must equal t. So the existential reduces to
+  -- nf_eval_nf M 1 2 (Fin.cons t (fun _ => t)) sub_nf, a property of t alone.
+  -- Use enriched_bypass_eq as the temporal formula. Proof deferred to quantifier
+  -- profile helper lemma (requires depth-0 3-var zone correctness).
   sorry
   /-
   by_cases h_pred_compat : ∀ p : sig.preds,
@@ -781,6 +801,46 @@ private theorem existPart_succ_n1_bypass_k0_eq
         simp_all⟩⟩
   -/
 
+/-! ## Zone-based 3-var existential decomposition for Until direction
+
+For each compatible ssn in the Until direction (t < x), the 3-var depth-0
+existential `∃ y, nf_eval_nf M 0 3 (y, x, t) ssn` decomposes by zone into
+a 1-var predicate condition plus an order condition on y. The x and t
+predicate/order conditions are guaranteed by ssn_xt_compatible + h_eval_atoms. -/
+
+/-- When ssn is xt-compatible and x,t satisfy the right atoms, the 3-var
+    existential reduces to a 1-var existential over y with specific order
+    constraints determined by the zone. -/
+private theorem zone_3var_exist_iff_1var {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (x t : M.carrier) (h_t_lt_x : t < x)
+    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true)
+    (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
+    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true) :
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+    match ssn_zone_until ssn with
+    | .below_t => ∃ y, y < t ∧ nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn)
+    | .eq_t => nf_eval_nf M 0 1 (fun _ => t) (nf_y_proj ssn)
+    | .between_tx => ∃ y, t < y ∧ y < x ∧ nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn)
+    | .eq_x => nf_eval_nf M 0 1 (fun _ => x) (nf_y_proj ssn)
+    | .above_x => ∃ y, x < y ∧ nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn)
+    | .inconsistent => False := by
+  -- Extract compatibility conditions from h_compat
+  simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat
+  obtain ⟨⟨⟨h_xp, h_tp⟩, h_tx_order⟩, h_xt_order⟩ := h_compat
+  -- Zone decomposition relates 3-var existential to 1-var conditions + orders.
+  -- Each zone case requires proving that the order booleans in ssn are
+  -- consistent with the zone classification, and that reconstruct_nf_3var
+  -- can rebuild the full 3-var NF from the 1-var predicate conditions.
+  -- Proof deferred: requires detailed zone-by-zone case analysis (~200 lines).
+  sorry
+
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
 
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
@@ -856,16 +916,10 @@ private theorem backward_holdsLeft_of_nf_eval
   -- Step 4b: x as witness with endpointRight and bracket
   refine ⟨?endLeft, x, h_t_lt_x, ?endRight, ?bracket⟩
   case endLeft =>
-    -- pre_conditions_at_t_until holds at t
-    -- This is a conjunction over compatible ssns in below_t and eq_t zones
-    -- For each such ssn:
-    --   below_t + positive: S(char_y, ⊤) at t ↔ ∃ y < t with char_y(y)
-    --   below_t + negative: ¬S(char_y, ⊤) at t ↔ ¬∃ y < t with char_y(y)
-    --   eq_t + positive: char_y at t
-    --   eq_t + negative: ¬char_y at t
-    -- From h_eval_quant: (∃ y, nf_eval_nf M 0 3 (y,x,t) ssn) ↔ sub_nf.2 ssn
-    -- For compatible ssn in below_t zone: y < t, and
-    --   ∃ y < t with right predicates ↔ sub_nf.2 ssn = true
+    -- pre_conditions_at_t_until holds at t: conjunction of zone-based formulas
+    -- Each conjunct encodes a 3-var existential condition at t for ssns in
+    -- below_t and eq_t zones. From h_eval_quant, we know which conditions hold.
+    -- Proof deferred: requires zone-specific 3-var <-> temporal formula bridge.
     sorry
   case endRight =>
     -- char_1(nf_x) ∧ right_conjuncts holds at x
