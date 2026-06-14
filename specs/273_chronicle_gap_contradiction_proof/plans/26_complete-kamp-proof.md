@@ -86,15 +86,15 @@ Phases are fully sequential. Each phase depends on the prior.
 
 ---
 
-### Phase 1: Fix ssn_order_consistent filter [NOT STARTED]
+### Phase 1: Fix ssn_order_consistent filter [COMPLETED]
 
 **Goal**: Add `ssn_order_consistent` to `ssn_xt_compatible` in KampBypass.lean, filtering out unrealizable 3-variable order assignments. This eliminates the root cause of the formula unsoundness identified by Teammate A.
 
 **Tasks**:
-- [ ] **Task 1.1**: Define `ssn_order_consistent` in KampBypass.lean. The function takes a depth-0 3-var NF `ssn : NormalForm sig 0 3` and returns `Bool`. It checks 12 conditions: (a) 3 antisymmetry checks: for each pair (i,j), if `ssn(.order i j) = true` then `ssn(.order j i) = false`; (b) 6 transitivity implications: for each triple (i,j,k), if `ssn(.order i j) = true` and `ssn(.order j k) = true` then `ssn(.order i k) = true`; (c) 3 equality consistency checks: for each pair (i,j), if `ssn(.order i j) = false` and `ssn(.order j i) = false` then predicates at i and j must be consistent (same predicate values). (~40-60 lines)
-- [ ] **Task 1.2**: Add `&& ssn_order_consistent ssn` to `ssn_xt_compatible`. This is a single call site modification that protects all 13 downstream call sites uniformly. (~5 lines changed)
-- [ ] **Task 1.3**: Prove `ssn_order_consistent_correct`: if `ssn_order_consistent ssn = false` then there is no strict linear order on 3 elements realizing ssn. This establishes that the filter removes only unrealizable orderings. (~60-80 lines)
-- [ ] **Task 1.4**: Verify that existing sorry-free code still compiles (`lake build` on KampBypass module). The filter only removes unrealizable SSN values, so no existing proofs should break.
+- [x] **Task 1.1**: Define `ssn_order_consistent` in KampBypass.lean. The function takes a depth-0 3-var NF `ssn : NormalForm sig 0 3` and returns `Bool`. It checks 12 conditions: (a) 3 antisymmetry checks: for each pair (i,j), if `ssn(.order i j) = true` then `ssn(.order j i) = false`; (b) 6 transitivity implications: for each triple (i,j,k), if `ssn(.order i j) = true` and `ssn(.order j k) = true` then `ssn(.order i k) = true`; (c) 3 equality consistency checks: for each pair (i,j), if `ssn(.order i j) = false` and `ssn(.order j i) = false` then predicates at i and j must be consistent (same predicate values). (~40-60 lines)
+- [x] **Task 1.2**: Add `&& ssn_order_consistent ssn` to `ssn_xt_compatible`. This is a single call site modification that protects all 13 downstream call sites uniformly. (~5 lines changed)
+- [x] **Task 1.3**: Prove `ssn_order_consistent_correct`: if `ssn_order_consistent ssn = false` then there is no strict linear order on 3 elements realizing ssn. This establishes that the filter removes only unrealizable orderings. (~60-80 lines) *(deviation: altered -- proved `ssn_order_consistent_of_eval` (forward direction: model evaluation implies consistency) instead of the reverse direction. The forward direction is the one needed for soundness of the enriched formula.)*
+- [x] **Task 1.4**: Verify that existing sorry-free code still compiles (`lake build` on KampBypass module). The filter only removes unrealizable SSN values, so no existing proofs should break.
 
 **Timing**: 1 hour (~100-150 lines)
 

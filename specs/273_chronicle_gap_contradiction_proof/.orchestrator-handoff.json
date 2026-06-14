@@ -1,87 +1,62 @@
 {
   "status": "partial",
-  "summary": "Added witness_eq_t_of_no_order helper (sorry-free) and zone_3var_exist_iff_1var stub. Discovered formula soundness issue: pre_conditions_at_t_until includes negated temporal formulas for order-inconsistent ssn values, making the backward direction unprovable. The formula construction needs a consistency filter before the proofs can proceed.",
-  "phases_completed": 0,
-  "phases_total": 1,
+  "summary": "Phase 1 completed: added ssn_order_consistent definition (12 boolean checks for antisymmetry, transitivity, equality consistency) and integrated into ssn_xt_compatible. Proved ssn_order_consistent_of_eval (sorry-free) ensuring the filter preserves all realizable SSN values. Build passes.",
+  "phases_completed": 1,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 690,
-      "statement": "theorem existPart_succ_n1_bypass_k0_eq",
-      "assumption": "Equality case (x = t) of enriched bypass",
-      "why_deferred": "Requires quantifier profile correctness proof; blocked by zone helper",
-      "next_dispatch": "Implement after zone_3var_exist_iff_1var is complete"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 842,
+      "line": 777,
       "statement": "theorem zone_3var_exist_iff_1var",
       "assumption": "Zone decomposition for depth-0 3-var existential",
-      "why_deferred": "Requires ~200 lines of zone-by-zone case analysis",
-      "next_dispatch": "Write one zone at a time starting with below_t"
+      "why_deferred": "Phase 2 scope -- requires ~200 lines of zone-by-zone case analysis",
+      "next_dispatch": "Phase 2: fill zone_3var_exist_iff_1var and remaining depth-0 wiring sorries"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 923,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft case",
-      "assumption": "pre_conditions_at_t_until holds at t given nf_eval",
-      "why_deferred": "BLOCKED: formula unsound for order-inconsistent ssn in below_t zone",
-      "next_dispatch": "Fix pre_conditions_at_t_until to filter inconsistent ssn"
+      "line": 839,
+      "statement": "backward_holdsLeft_of_nf_eval sorry sites",
+      "assumption": "Pre-conditions and endpoint conditions for enriched bypass",
+      "why_deferred": "Phase 2 scope -- now unblocked by ssn_order_consistent filter",
+      "next_dispatch": "Phase 2: fill after zone helper"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 935,
-      "statement": "backward_holdsLeft_of_nf_eval endRight case",
-      "assumption": "enriched_point_type_x holds at x given nf_eval",
-      "why_deferred": "BLOCKED: same formula issue for eq_x and above_x zones",
-      "next_dispatch": "Fix enriched_point_type_x_until for order consistency"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 939,
-      "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "assumption": "bracket formula holds between t and x",
-      "why_deferred": "BLOCKED: same formula issue for between_tx zone",
-      "next_dispatch": "Fix bracket construction for order consistency"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 997,
+      "line": 929,
       "statement": "forward_nf_eval_of_holdsLeft",
       "assumption": "Reconstruct nf_eval from VecEA2 holdsLeft conditions",
-      "why_deferred": "Requires zone helper for quantifier reconstruction",
-      "next_dispatch": "Implement after zone_3var_exist_iff_1var and formula fix"
+      "why_deferred": "Phase 2 scope",
+      "next_dispatch": "Phase 2: implement after zone helper"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1109,
+      "line": 1010,
       "statement": "theorem existPart_succ_n1_bypass_k0_since",
       "assumption": "Since case mirror of Until",
-      "why_deferred": "Blocked by Until case sorries",
-      "next_dispatch": "Mirror Until case after it is proved"
+      "why_deferred": "Phase 2 scope -- blocked by Until case",
+      "next_dispatch": "Phase 2: mirror Until case"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1197,
+      "line": 1196,
       "statement": "existPart_succ_n1_bypass k>0 case",
       "assumption": "General k > 0 requires depth-k IH",
-      "why_deferred": "Different mathematical content (skip per task instructions)",
-      "next_dispatch": "Separate task for higher depth"
+      "why_deferred": "Phase 3 scope -- different mathematical content",
+      "next_dispatch": "Phase 3: arity-climbing induction"
     }
   ],
-  "blockers": [
-    "Formula soundness issue: pre_conditions_at_t_until includes negated formulas for order-inconsistent ssn values. These ssn are classified as below_t by ssn_zone_until but have y_lt_x = false, making the 3-var NF unsatisfiable. The negated temporal formula may not hold despite sub_nf.2 ssn = false. Fix: add order consistency filter to ssn_xt_compatible or to zone formula builders."
-  ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/bypass-k0-sorries-20260614.md",
+  "blockers": [],
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "session_id": "sess_1781432881_c1ecbe",
+    "session_id": "sess_1781438804_42f71b",
     "completed_objectives": [
-      "Added witness_eq_t_of_no_order helper (sorry-free)",
-      "Added zone_3var_exist_iff_1var helper stub",
-      "Identified formula soundness issue in pre_conditions_at_t_until"
+      "Defined ssn_order_consistent with 12 boolean checks",
+      "Integrated into ssn_xt_compatible (single-point modification)",
+      "Proved ssn_order_consistent_of_eval (sorry-free, no sorryAx)",
+      "Verified build passes with no regressions"
     ],
-    "next_objective": "Fix formula construction to filter order-inconsistent ssn, then fill sorries",
+    "next_objective": "Phase 2: close depth-0 wiring sorries",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
     ]
