@@ -1250,14 +1250,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-14T23:11:35Z",
+      "last_updated": "2026-06-14T23:26:47Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1344,54 +1344,14 @@
           "summary": "Team research (4 teammates): VecEADecomposition sorries confirmed dead code; NF-specific Prop 4.3 bypass via sorry-free neg_2var_vec_ea (~150-200 lines); chronicle_gap_contradiction:531 still bare sorry, second blocker, unplanned"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md",
-          "type": "plan",
-          "summary": "Plan v23: quarantine VecEADecomposition, NF-specific Prop 4.3 bypass, chronicle_gap fill"
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md",
           "type": "report",
           "summary": "Blocker research: root blocker is nf_characterizable_temporal_prior succ k; all alternative paths converge on same Feferman-Vaught difficulty; GHR94 separation approach identified"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md",
-          "type": "plan",
-          "summary": "Plan v24: GHR94 Ch10.2 syntactic separation approach, bypasses composition lemma entirely"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/25_generalized-composition-lemma.md",
-          "type": "plan",
-          "summary": "Plan v25: generalized composition lemma with budget parameter, bypasses fixed-arity blocker"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/26_rabinovich-nvar-reduction.md",
-          "type": "plan",
-          "summary": "Plan v26: Rabinovich strategy with n-var to 2-var reduction, 5 phases"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md",
-          "type": "plan",
-          "summary": "Plan v27: Rabinovich Prop 4.2 single-agent implementation, 4 phases"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/28_vecEA-path-b-implementation.md",
-          "type": "plan",
-          "summary": "Plan v28: VecEA Path B -- formula-level NF-to-EA bridge, 3 phases"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
-          "type": "plan",
-          "summary": "Plan v29: Bypass-based enriched formula via P_n(k) generalization, 4 phases"
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/26_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): order-consistency filter fix, VecEADecomp wiring strategy, depth boundary analysis, strategic direction"
-        },
-        {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md",
-          "type": "plan",
-          "summary": "Plan v30: complete Kamp proof — 5 phases, no axiom fallback. ssn_order_consistent filter, depth-0 wiring, arity-climbing induction for depth ≥ 2, NfCharFormula wiring, completeness verification."
         },
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md",
@@ -1402,6 +1362,11 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md",
           "type": "report",
           "summary": "Detailed goal-state analysis of 5 KampBypass.lean sorries with lean_goal output, infrastructure inventory, feasibility ratings, and recommended fill order"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/32_depth0-sorries-completion.md",
+          "type": "plan",
+          "summary": "Implementation plan v32 with 5 phases to close all 5 KampBypass.lean sorries and wire through NfCharFormula/RabinovichGeneralized for sorry-free Kamp chain"
         }
       ],
       "next_artifact_number": 32,
@@ -1409,10 +1374,10 @@
       "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 10,
+        "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 30,
+        "plan_version": 32,
         "dependency_waves": [
           [
             1
@@ -1425,52 +1390,20 @@
           ],
           [
             4
+          ],
+          [
+            5
           ]
         ],
         "reports_integrated": [
           {
-            "path": "reports/23_team-research.md",
-            "integrated_in_plan_version": 23,
-            "integrated_date": "2026-06-12"
-          },
-          {
-            "path": "reports/24_blocker-research.md",
-            "integrated_in_plan_version": 24,
-            "integrated_date": "2026-06-12"
-          },
-          {
-            "path": "reports/24_blocker-research.md",
-            "integrated_in_plan_version": 25,
-            "integrated_date": "2026-06-12"
-          },
-          {
-            "path": "reports/25_formula-construction-research.md",
-            "integrated_in_plan_version": 26,
-            "integrated_date": "2026-06-13"
-          },
-          {
-            "path": "reports/25_formula-construction-research.md",
-            "integrated_in_plan_version": 27,
-            "integrated_date": "2026-06-13"
-          },
-          {
-            "path": "reports/26_literature-proof-walkthrough.md",
-            "integrated_in_plan_version": 28,
-            "integrated_date": "2026-06-13"
-          },
-          {
-            "path": "reports/27_wiring-strategy-research.md",
-            "integrated_in_plan_version": 29,
-            "integrated_date": "2026-06-13"
-          },
-          {
-            "path": "reports/26_team-research.md",
-            "integrated_in_plan_version": 30,
+            "path": "reports/31_kamp-bypass-sorry-goals.md",
+            "integrated_in_plan_version": 32,
             "integrated_date": "2026-06-14"
           }
         ]
       },
-      "session_id": "sess_1718380800_a7c3e2",
+      "session_id": "sess_1718381400_b4d7f1",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "KampBypass.lean: 1145 lines. Zone-aware enriched formula v2 with VecEA2 brackets. Main theorem factored into eq/Until/Since cases. Until case decomposed into forward/backward helpers. 8 sorries remain (4 in Until zone-specific composition, 1 eq case, 1 Since case, 1 k>0, 1 pre-existing). Each remaining sorry is a small depth-0 composition fact connecting zone temporal formulas to 3-var NF existentials."
     },

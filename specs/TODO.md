@@ -27,7 +27,7 @@ next_project_number: 301
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-273 [RESEARCHED] — Close the two remaining blockers for completeness_discrete: (1) K
+273 [PLANNED] — Close the two remaining blockers for completeness_discrete: (1) K
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -284,7 +284,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -310,15 +310,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/reports/26_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md]
-- **Plan**:
-  - [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
-  - [273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md]
-  - [273_chronicle_gap_contradiction_proof/plans/25_generalized-composition-lemma.md]
-  - [273_chronicle_gap_contradiction_proof/plans/26_rabinovich-nvar-reduction.md]
-  - [273_chronicle_gap_contradiction_proof/plans/27_rabinovich-prop42-implementation.md]
-  - [273_chronicle_gap_contradiction_proof/plans/28_vecEA-path-b-implementation.md]
-  - [273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md]
-  - [273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md]
+- **Plan**: [273_chronicle_gap_contradiction_proof/plans/32_depth0-sorries-completion.md]
 
 **Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
 
