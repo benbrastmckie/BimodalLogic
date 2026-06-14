@@ -871,4 +871,28 @@ theorem nf_3var_exist_depth0_characterization {sig : MonadicSignature}
         · intro h; exact absurd h id
       · exact Iff.rfl
 
+/-! ## Zone summary
+
+The 3-var depth-0 existential `∃ y, nf_eval_nf M 0 3 (y,x,t) ssn` has
+the following sorry-free characterizations by zone:
+
+| Zone | Theorem | VecEA2 orientation |
+|------|---------|-------------------|
+| y < t < x | nf_3var_zone_ytx_correct | holds(t, x) with h_lt |
+| t < y < x | nf_3var_bracket_tyx_correct | holds(t, x) |
+| t < x < y | nf_3var_zone_txy_correct | holds(t, x) with h_lt |
+| x < y < t | nf_3var_bracket_xyt_correct | holds(x, t) |
+| x < t < y | nf_3var_zone_xty_correct | holds(x, t) with h_lt |
+| y < x < t | nf_3var_zone_yxt_correct | holds(x, t) with h_lt |
+| y = t | nf_3var_eq_yt | direct NF eval at t |
+| y = x | nf_3var_eq_yx | direct NF eval at x |
+| inconsistent | nf_3var_order_contradiction | False |
+| consistent | nf_3var_exist_depth0_characterization | tautology |
+
+For wiring into the Kamp induction, the zone is determined by the fixed
+order booleans in ssn. Each zone-specific theorem provides an iff between
+the existential and a VecEA2.holds (or direct NF eval for equality cases).
+The VecEA2 can then be translated to a temporal formula via the sorry-free
+translateLeft / translateRight infrastructure. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
