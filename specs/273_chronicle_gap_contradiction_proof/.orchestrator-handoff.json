@@ -1,24 +1,24 @@
 {
   "status": "partial",
-  "summary": "Created VecEADecomp.lean (348 lines, sorry-free) with depth-0 bracket-zone decompositions for Rabinovich Lemma 3.2(2). Two VecEA2 constructions (nf_3var_bracket_tyx, nf_3var_bracket_xyt) convert 3-var existentials to VecEA2 formulas with y as bracket witness. Non-bracket zones (y outside interval) and depth k+1 extension remain for future dispatches.",
+  "summary": "Extended VecEADecomp.lean from 348 to 898 lines (all sorry-free). Added full 3-var depth-0 zone decomposition: 4 new non-bracket zones (ytx, txy, yxt, xty) using sinceWitnessPred/untilWitnessPred to fold existential witness into VecEA2 endpoint predicates; 2 equality reductions (y=t, y=x); general reconstruction helper (reconstruct_nf_3var); inconsistency lemma (nf_3var_order_contradiction); master characterization theorem. All 6 strict ordering zones + 2 equality cases now have sorry-free VecEA2 representations.",
   "phases_completed": 1,
   "phases_total": 3,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 540,
-      "statement": "private theorem nf_exist_backward_prior",
-      "assumption": "Backward direction at depth k+1 requires Prior composition",
-      "why_deferred": "Fundamental blocker: Feferman-Vaught composition for Prior structures",
-      "next_dispatch": "Prove Prior composition property"
+      "statement": "nf_exist_backward_prior",
+      "assumption": "Backward direction of nf_exist_formula for Prior structures at depth k+1",
+      "why_deferred": "Requires Prior composition property (Feferman-Vaught for Prior linear orders). The 3-var depth-0 decomposition in VecEADecomp.lean handles the k=0 inner NFs, but wiring into the depth k+1 sorry requires expressing the quantifier profile of the outer NF, which needs composition.",
+      "next_dispatch": "Build the NF-to-VecEA2 bridge at depth k+1 using the zone theorems (plan v28 phase 2)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichWiring.lean",
       "line": 359,
       "statement": "nf_2var_exist_via_rabinovich (succ k' case)",
-      "assumption": "Same root blocker",
-      "why_deferred": "Depends on NfCharFormula:540",
-      "next_dispatch": "Fill after NfCharFormula:540"
+      "assumption": "Same root cause as nf_exist_backward_prior",
+      "why_deferred": "Requires negation closure + Rabinovich composition at depth k+1",
+      "next_dispatch": "Fill after NfCharFormula.lean:540 is resolved"
     }
   ],
   "blockers": [],
@@ -27,10 +27,18 @@
     "next_phase": 2,
     "completed_phases": [1],
     "key_results": [
-      "VecEADecomp.lean: 348 lines, 0 sorries",
-      "nf_3var_bracket_tyx_correct: sorry-free",
-      "nf_3var_bracket_xyt_correct: sorry-free",
-      "Projection functions nf_y_proj, nf_x_proj3, nf_t_proj3: sorry-free"
+      "VecEADecomp.lean: 898 lines, 0 sorries (was 348 lines)",
+      "nf_3var_zone_ytx_correct: y < t < x zone (sorry-free, n=0 VecEA2)",
+      "nf_3var_zone_txy_correct: t < x < y zone (sorry-free, n=0 VecEA2)",
+      "nf_3var_zone_yxt_correct: y < x < t zone (sorry-free, n=0 VecEA2)",
+      "nf_3var_zone_xty_correct: x < t < y zone (sorry-free, n=0 VecEA2)",
+      "nf_3var_eq_yt: y = t equality case (sorry-free)",
+      "nf_3var_eq_yx: y = x equality case (sorry-free)",
+      "sinceWitnessPred_correct: Since-witness TemporalPred (sorry-free)",
+      "untilWitnessPred_correct: Until-witness TemporalPred (sorry-free)",
+      "reconstruct_nf_3var: general 3-var NF reconstruction (sorry-free)",
+      "nf_3var_order_contradiction: inconsistency lemma (sorry-free)",
+      "nf_3var_exist_depth0_characterization: master decomposition (sorry-free)"
     ]
   }
 }
