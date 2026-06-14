@@ -807,7 +807,53 @@ private theorem existPart_succ_n1_bypass_k0_until
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  sorry
+  -- Strategy: use the enriched_bypass_until VVecEA2 construction.
+  -- The formula is vvec.translateLeft. By VVecEA2.translateLeft_correct,
+  -- temporal_truth ↔ holdsLeft. We then show holdsLeft ↔ ∃ x > t, nf_eval.
+  --
+  -- However, proving the semantic equivalence between holdsLeft and the
+  -- existential directly is very complex (400+ lines). Instead, we use a
+  -- classical existence argument that constructs the formula from components.
+  --
+  -- For each ssn : NormalForm sig 0 3, the depth-0 3-var existential
+  -- ∃ y, nf_eval_nf M 0 3 [y,x,t] ssn has a temporal formula equivalent
+  -- to a VecEA2 condition on (t, x) (zone theorems from VecEADecomp.lean).
+  -- For the full Until existential:
+  --   ∃ x > t, (atom conditions at x,t) ∧ (∀ ssn, quant condition)
+  -- we combine char_1(nf_x) at x with these zone-based formulas.
+  --
+  -- The formula is: disjunction over compatible nf_x of
+  --   Until(char_1(nf_x) ∧ positive_quant_profile(nf_x), guard)
+  -- where guard handles negative between_tx conditions.
+  -- positive_quant_profile handles y=x, y>x, and positive t<y<x via Since.
+  -- Pre-conditions at t handle y<t (Since) and y=t (direct).
+  --
+  -- Use the VVecEA2 translateLeft for the formula construction.
+  let vvec := enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms
+  -- The formula is vvec (which is already a Formula via .translateLeft in enriched_bypass_until)
+  -- enriched_bypass_until returns vvec.translateLeft where vvec is a VVecEA2
+  -- Actually, enriched_bypass_until returns a Formula directly (it's the result of vvec.translateLeft)
+  exact ⟨vvec, fun M h_UZ h_SZ t h_atoms => by
+    -- vvec = enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms
+    -- This is defined as translateLeft of a VVecEA2.
+    -- By VVecEA2.translateLeft_correct: temporal_truth ↔ holdsLeft.
+    -- holdsLeft = ∃ (n, vea) ∈ disjuncts, vea.holdsLeft M atomMap t
+    -- vea.holdsLeft = endpointLeft.eval_at t ∧ ∃ x > t, endpointRight.eval_at x ∧ bracket.holds t x
+    --
+    -- Key correspondence:
+    -- Forward (holdsLeft → ∃ x, nf_eval):
+    --   From holdsLeft, get x > t with endpointRight (char_1(nf_x) ∧ conditions) and bracket.
+    --   Reconstruct nf_eval from the characteristic + zone conditions.
+    --
+    -- Backward (∃ x, nf_eval → holdsLeft):
+    --   Given x > t with nf_eval, determine nf_x = nf_characteristic M 1 1 [x].
+    --   Show nf_x is compatible (nf_x_compat_check), find the right disjunct.
+    --   Show endpointLeft (pre-conditions at t) and endpointRight (enriched at x).
+    --   For bracket: positive between_tx ssns have witnesses between t and x by nf_eval.
+    --
+    -- This proof is deferred to a subsequent dispatch focused on the Until-case
+    -- semantic equivalence between VecEA2.holdsLeft and nf_eval_nf.
+    sorry⟩
 
 /-! ## Since Case (x < t) -/
 
