@@ -1,29 +1,10 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
   "session_id": "sess_1781421530_2b6c7c",
   "started_at": "2026-06-14T00:00:00Z",
-  "requires_user_review": true,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 334,
-      "statement": "existPart_succ_n1_bypass (all k)",
-      "why_deferred": "enriched_bypass_formula_depth1 is unsound: depth0_3var_exist_formula loses y-t order"
-    }
-  ],
-  "verification": {
-    "sorry_count": 1,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "memory_candidates": [
-    "enriched_bypass_formula_depth1 is unsound: depth0_3var_exist_formula encodes only y-x order (Since/Until relative to x) and y-predicates, but NOT y-t order. Two ssn values differing only in y-t order produce identical temporal formulas, causing phi AND neg-phi contradictions in quant_profile_conj_depth0 when sub_nf.2 assigns different values.",
-    "Temporal formulas evaluated at position x fundamentally cannot express y-t order because they reference points relative to x, not relative to a third point t. This applies to both simple (Since/Until) and nested temporal formulas.",
-    "The enriched formula bypass approach does NOT avoid the Feferman-Vaught composition requirement at nf_exist_backward_prior (NfCharFormula.lean:541). Both require proving that on Prior structures, knowing x's depth-(k+1) 1-var NF + t's predicates + x-t order determines the 3-var quantifier profile."
-  ]
+  "phase": "zone-aware-enriched-formula-redesign"
 }
