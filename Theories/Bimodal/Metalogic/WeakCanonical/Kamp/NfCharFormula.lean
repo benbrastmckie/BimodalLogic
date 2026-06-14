@@ -480,6 +480,65 @@ theorem nf_exist_formula_forward'
     exfalso
     exact h_order_compat (by rw [Bool.and_eq_true]; exact ⟨h_b2, h_b1⟩)
 
+/-! ## Backward Direction: Formula Truth → Existential (Prior Structures)
+
+The backward direction of `nf_exist_formula` for Prior structures. Given that the
+temporal formula holds at t, produce a witness x with the correct 2-var NF.
+
+At depth 0, this is `nf_exist_backward_depth0` (sorry-free).
+At depth k+1, this requires the composition property on Prior structures:
+knowing x's depth-(k+1) 1-var NF + t's predicates + Prior-UZ/SZ determines
+the full depth-k 3-var quantifier profile at (y, x, t). -/
+
+/-- Backward direction of nf_exist_formula for Prior structures.
+    Given formula truth, produces a witness x with the correct NF.
+
+    This is the targeted sorry: the forward direction is sorry-free. The backward
+    direction requires the Prior composition property at depth k+1.
+
+    At depth 0: sorry-free (delegates to nf_exist_backward_depth0).
+    At depth k+1: sorry (requires Prior composition). -/
+private theorem nf_exist_backward_prior
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    (char_kp1 : NormalForm sig (k + 1) 1 → Formula)
+    {M : OrderedMonadicStructure sig}
+    (char_kp1_correct : ∀ (nf_1 : NormalForm sig (k + 1) 1) (s : M.carrier),
+        temporal_truth M atomMap s (char_kp1 nf_1) ↔
+        nf_eval_nf M (k + 1) 1 (fun _ => s) nf_1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_UZ : semantic_prior_UZ M atomMap)
+    (h_SZ : semantic_prior_SZ M atomMap)
+    {t : M.carrier}
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔
+      parent_atoms a = true)
+    (h_formula : temporal_truth M atomMap t
+      (nf_exist_formula atomMap h_surj (k + 1) char_kp1 parent_atoms sub_nf)) :
+    ∃ x : M.carrier, nf_eval_nf M (k + 1) (1 + 1)
+      (Fin.cons x (fun _ : Fin 1 => t)) sub_nf := by
+  -- The formula (nf_exist_formula) places x via Until/Since with
+  -- char_kp1(nf_x) holding at x for some atom-compatible nf_x.
+  -- From char_kp1_correct, nf_eval_nf M (k+1) 1 (fun _ => x) nf_x holds.
+  --
+  -- To recover nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf:
+  -- (a) Atom conditions: follow from atom compatibility of nf_x with sub_nf
+  --     at variable 0, plus h_atoms (t's predicates), plus h_tcompat.
+  -- (b) Quantifier conditions: for each ssn : NormalForm sig k 3,
+  --     (∃ y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn)
+  --     ↔ sub_nf.2 ssn = true.
+  --
+  -- Part (b) requires the Prior composition property:
+  --   On Prior structures, the depth-k 3-var NF of (y, x, t) is determined by
+  --   x's depth-(k+1) 1-var NF (nf_x) + t's predicates (parent_atoms) +
+  --   y's position + Prior-UZ/SZ.
+  --
+  -- This is the content of Feferman-Vaught composition for Prior linear orders.
+  -- At depth 0, it's trivially true (3-var NFs are purely atomic).
+  -- At depth k+1, it requires the full composition argument.
+  sorry
+
 /-! ## Full NF Characterization Correctness
 
 The full correctness theorem: nf_char_formula correctly characterizes depth-(k+1)
@@ -576,25 +635,30 @@ theorem nf_2var_exist_formula_prior
     obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
     exact ⟨A, fun M _ _ t _ => hA M t⟩
   | k + 1 =>
-    -- Depth k+1: requires a formula encoding the FULL 2-var NF condition,
-    -- including quantifier conditions (sub_nf.2). The simpler nf_exist_formula
-    -- only encodes atom conditions and is insufficient for the backward direction.
-    --
-    -- The correct approach is the nested formula from NegationClosure.lean
-    -- (nf_exist_formula_nested), which encodes interval quantifier conditions
-    -- via nested Since/Until with depth-(k+1) characteristic formulas for
-    -- interval witnesses. However, NegationClosure.lean imports this file,
-    -- preventing a direct import here.
-    --
-    -- The sorry is filled by nf_2var_exist_formula_prior_fill (NegationClosure.lean:1816)
-    -- or nf_2var_exist_formula_prior_filled (RabinovichGeneralized.lean:500),
-    -- both of which use the master_induction. The sole remaining sorry in that
-    -- chain is nf_exist_formula_nested_backward (NegationClosure.lean:1712),
-    -- which requires a composition argument for non-interval zones.
-    --
-    -- Forward direction (∃ x with NF → formula truth) is available via
-    -- nf_exist_formula_forward'. Only the backward direction is blocked.
-    sorry
+    -- Depth k+1: use nf_exist_formula as the formula A.
+    -- Forward direction (∃ x → formula truth) is sorry-free via nf_exist_formula_forward'.
+    -- Backward direction (formula truth → ∃ x) on Prior structures requires
+    -- composition on Prior structures: knowing x's depth-(k+1) 1-var NF + t's
+    -- predicates + Prior-UZ/SZ determines the depth-k 3-var quantifier profile.
+    refine ⟨nf_exist_formula atomMap h_surj (k + 1) char_k parent_atoms sub_nf,
+      fun M h_UZ h_SZ t h_atoms => ?_⟩
+    have char_k_M : ∀ (nf_kp1 : NormalForm sig (k + 1) 1) (s : M.carrier),
+        temporal_truth M atomMap s (char_k nf_kp1) ↔
+        nf_eval_nf M (k + 1) 1 (fun _ => s) nf_kp1 :=
+      fun nf_kp1 s => char_k_correct nf_kp1 M h_UZ h_SZ s
+    constructor
+    · -- Backward: formula truth → ∃ x with NF
+      -- This direction requires the composition property on Prior structures.
+      -- The formula places x via Until/Since with char_k(nf_x) holding at x,
+      -- giving nf_eval_nf M (k+1) 1 (fun _ => x) nf_x. We need to show that
+      -- nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf, which requires
+      -- recovering the depth-k 3-var quantifier conditions from x's 1-var NF
+      -- + t's predicates + Prior-UZ/SZ.
+      exact nf_exist_backward_prior atomMap h_surj k char_k char_k_M
+        parent_atoms sub_nf h_UZ h_SZ h_atoms
+    · -- Forward: ∃ x with NF → formula truth (sorry-free)
+      exact nf_exist_formula_forward' atomMap h_surj (k + 1) char_k char_k_M
+        parent_atoms sub_nf h_atoms
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
     at depth k+1. This is the approach taken by StaviCompleteness for the

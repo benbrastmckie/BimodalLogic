@@ -159,7 +159,7 @@ The Since direction needs the mirror: extract/prepend the LAST witness instead o
 
 ---
 
-### Phase 2: Build NF-to-EA bridge at depth k+1 [NOT STARTED]
+### Phase 2: Build NF-to-EA bridge at depth k+1 [IN PROGRESS]
 
 **Goal**: Convert `exists x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` into a VVecEA2 formula whose `holdsLeft`/`holdsRight` is equivalent to the NF existential on Prior structures. This is the core new code.
 
