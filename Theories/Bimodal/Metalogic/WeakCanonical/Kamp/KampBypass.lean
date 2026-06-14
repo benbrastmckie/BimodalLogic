@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEADecomp
+import Bimodal.Metalogic.WeakCanonical.Kamp.ZoneBridge
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 
@@ -841,43 +842,75 @@ private theorem existPart_succ_n1_bypass_k0_eq
       cases h1v : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
       simp_all
 
-/-! ## Zone-based 3-var existential decomposition for Until direction
+/-! ## Zone-to-Temporal Bridge Helpers
 
-For each compatible ssn in the Until direction (t < x), the 3-var depth-0
-existential `∃ y, nf_eval_nf M 0 3 (y, x, t) ssn` decomposes by zone into
-a 1-var predicate condition plus an order condition on y. The x and t
-predicate/order conditions are guaranteed by ssn_xt_compatible + h_eval_atoms. -/
+These helpers extract x and t predicates from ssn_xt_compatible and connect
+zone bridge lemmas from ZoneBridge.lean to the temporal formula encoding. -/
 
-/-- When ssn is xt-compatible and x,t satisfy the right atoms, the 3-var
-    existential reduces to a 1-var existential over y with specific order
-    constraints determined by the zone. -/
-private theorem zone_3var_exist_iff_1var {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
-    (atomMap : Formula → sig.preds)
+/-- Extract x-predicate conditions from ssn_xt_compatible. -/
+private theorem ssn_xt_compat_x_preds {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3) (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool) (x_gt_t x_lt_t : Bool)
+    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms x_gt_t x_lt_t = true) :
+    ∀ p : sig.preds, ssn (.pred p ⟨1, by omega⟩) = nf_x_1var (.pred p ⟨0, by omega⟩) := by
+  simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat
+  intro p
+  exact h_compat.1.1.1.1 p (Multiset.mem_toList.mpr (Fintype.complete p))
+
+/-- Extract t-predicate conditions from ssn_xt_compatible. -/
+private theorem ssn_xt_compat_t_preds {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3) (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool) (x_gt_t x_lt_t : Bool)
+    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms x_gt_t x_lt_t = true) :
+    ∀ p : sig.preds, ssn (.pred p ⟨2, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩) := by
+  simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat
+  intro p
+  exact h_compat.1.1.1.2 p (Multiset.mem_toList.mpr (Fintype.complete p))
+
+/-- Extract t < x order condition from ssn_xt_compatible (Until direction). -/
+private theorem ssn_xt_compat_tx_order {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3) (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true) :
+    ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true ∧
+    ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false := by
+  simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat
+  exact ⟨h_compat.1.1.2, h_compat.1.2⟩
+
+/-- The pre_conditions_at_t_until formula holds at t when h_eval_quant
+    guarantees the correct truth values for all zone-based ssn conditions.
+
+    For each compatible ssn in below_t or eq_t zone:
+    - below_t, positive: ∃ y < t with matching preds → Since(char_y, top) at t
+    - below_t, negative: ¬∃ y < t with matching preds → ¬Since(char_y, top) at t
+    - eq_t, positive: t matches y-preds → char_y at t
+    - eq_t, negative: t doesn't match y-preds → ¬char_y at t
+
+    Proof strategy: unfold pre_conditions_at_t_until, apply formula_conjList_iff,
+    then for each ssn in below_t or eq_t zone, use zone_bridge_below_t/eq_t
+    from ZoneBridge.lean + nf_depth0_char_formula_correct + h_eval_quant.
+
+    Key helpers needed:
+    - ssn_xt_compat_x_preds, ssn_xt_compat_t_preds for predicate extraction
+    - ssn_xt_compat_tx_order for order extraction
+    - extract_y_preds, reconstruct_nf_eval_3var from ZoneBridge.lean
+    - nf_depth0_char_formula_correct for temporal formula ↔ predicate matching -/
+private theorem pre_conditions_at_t_until_holds
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (ssn : NormalForm sig 0 3)
+    (sub_nf : NormalForm sig 1 2)
     (nf_x_1var : NormalForm sig 0 1)
     (parent_atoms : AtomKind sig 1 → Bool)
-    (sub_nf : NormalForm sig 1 2)
-    (x t : M.carrier) (h_t_lt_x : t < x)
-    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true)
+    (x t : M.carrier) (h_tx : t < x)
     (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
-    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true) :
-    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
-    match ssn_zone_until ssn with
-    | .below_t => ∃ y, y < t ∧ nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn)
-    | .eq_t => nf_eval_nf M 0 1 (fun _ => t) (nf_y_proj ssn)
-    | .between_tx => ∃ y, t < y ∧ y < x ∧ nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn)
-    | .eq_x => nf_eval_nf M 0 1 (fun _ => x) (nf_y_proj ssn)
-    | .above_x => ∃ y, x < y ∧ nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn)
-    | .inconsistent => False := by
-  -- Extract compatibility conditions from h_compat
-  simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat
-  obtain ⟨⟨⟨h_xp, h_tp⟩, h_tx_order⟩, h_xt_order⟩ := h_compat
-  -- zone_3var_exist_iff_1var is not on the critical path (unused).
-  -- Keeping sorry as placeholder for future use if needed.
+    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true)
+    (h_eval_quant : ∀ (ssn : NormalForm sig 0 3),
+      (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+      sub_nf.2 ssn = true) :
+    temporal_truth M atomMap t
+      (pre_conditions_at_t_until atomMap h_surj sub_nf nf_x_1var parent_atoms) := by
   sorry
-
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
 
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.

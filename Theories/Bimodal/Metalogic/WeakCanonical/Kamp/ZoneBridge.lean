@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEADecomp
-import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 
 /-!
 # Zone Bridge Lemmas
