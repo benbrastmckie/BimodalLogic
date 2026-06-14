@@ -1,6 +1,6 @@
 {
-  "status": "partial",
-  "summary": "Analyzed and documented the sorry at NfCharFormula.lean:597. Improved documentation explaining why nf_exist_formula is insufficient for backward direction. Identified root blocker at NegationClosure.lean:1716. Updated NegationClosure documentation with k=0 vs k>=1 analysis. Both modules build successfully.",
+  "status": "researched",
+  "summary": "Literature proof walkthrough completed. GHR94 Thm 9.3.1 uses auxiliary predicates + separation property (not formalized). Rabinovich Prop 4.3 uses EA closure under exists (trivial) + negation closure Prop 4.2 (sorry-free). The codebase NF-level approach hits a provably false composition lemma. Recommended path: fix VecEA Since-direction translation (bracketBuildLeft_correct) + build NF-to-EA bridge, composing with sorry-free neg_2var_vec_ea.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
@@ -9,24 +9,16 @@
       "line": 597,
       "statement": "theorem nf_2var_exist_formula_prior (k+1 case)",
       "assumption": "For depth k+1, there exists a temporal formula characterizing the 2-var existential on Prior structures",
-      "why_deferred": "Circular import: NfCharFormula cannot import NegationClosure which provides the solution via master_induction. The sorry is architectural (import ordering), not mathematical. The downstream files (NegationClosure, RabinovichGeneralized) provide the same result.",
-      "next_dispatch": "Fill nf_exist_formula_nested_backward at NegationClosure.lean:1716 (root blocker). At k=0, depth-0 3-var NFs are purely atomic; composition reduces to endpoint 1-var NFs."
+      "why_deferred": "Circular import: NfCharFormula cannot import NegationClosure. Root blocker is nf_exist_formula_nested_backward.",
+      "next_dispatch": "Fill via Path B (VecEA approach) or fix nf_exist_formula_nested_backward"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1716,
       "statement": "private theorem nf_exist_formula_nested_backward",
       "assumption": "Nested existence formula truth implies 2-var NF existential (backward direction)",
-      "why_deferred": "Requires composition argument for non-interval zones. At k=0 purely atomic (provable). At k>=1 requires Feferman-Vaught composition.",
-      "next_dispatch": "Prove k=0 case: case-split on zones, use endpoint 1-var NFs + depth-0 atom evaluation to construct/refute 3-var witnesses"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
-      "line": 1327,
-      "statement": "nf_full_compat_right_v2_of_eval (non-critical path, 3 goals)",
-      "assumption": "v2 compatibility filter passes when actual evaluation holds",
-      "why_deferred": "Not on critical path. Goal 1 needs composition. Goals 2,3 are contradiction proofs (y=x, y=t with sub_nf.2 ssn = false).",
-      "next_dispatch": "Low priority. Goals 2,3 closable via h_quant + hsub contradiction."
+      "why_deferred": "The formula guard is Formula.top and does NOT encode negative quantifier conditions. generalized_composition is provably FALSE. Enriching the guard does not help at depth > 0.",
+      "next_dispatch": "Consider Path B instead: VecEA translation fix + NF-to-EA bridge"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
@@ -34,7 +26,7 @@
       "statement": "bracketBuildLeft_correct (n+1 forward case)",
       "assumption": "Since-direction bracket translation correctness at n >= 1",
       "why_deferred": "Requires bracket witness manipulation lemmas symmetric to VecEATranslation",
-      "next_dispatch": "Implement Since-direction bracket prepend/extract"
+      "next_dispatch": "Implement Since-direction bracket prepend/extract (Path B prerequisite)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
@@ -43,11 +35,22 @@
       "assumption": "Same as above",
       "why_deferred": "Same as above",
       "next_dispatch": "Same as above"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
+      "line": 285,
+      "statement": "neg_bracket_syn_iff soundness Case C",
+      "assumption": "Syntactic bracket negation is sound (reverse direction)",
+      "why_deferred": "QUARANTINED: genuine mathematical impossibility under open-interval semantics. Not on critical path.",
+      "next_dispatch": "Do NOT attempt. Bypassed by NF-specific approach."
     }
   ],
   "blockers": [
-    "nf_exist_formula_nested_backward (NegationClosure.lean:1716): backward direction of nested existence formula requires composition argument for non-interval zones"
+    "generalized_composition is provably FALSE (counterexample: Z, (0,2) vs (0,1), k=1)",
+    "nf_exist_formula_nested guard=top means backward direction unprovable without composition",
+    "bracketBuildLeft_correct has 2 sorries blocking Since-direction VecEA translation"
   ],
-  "continuation_path": null,
-  "continuation_context": null
+  "recommended_approach": "Path B: Fix bracketBuildLeft_correct, build NF-to-EA bridge at depth k+1, compose with sorry-free neg_2var_vec_ea and VecEA2 translation. Estimated 500-800 lines.",
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/reports/26_literature-proof-walkthrough.md",
+  "continuation_context": "See Q5 section for detailed path analysis and risk assessment"
 }
