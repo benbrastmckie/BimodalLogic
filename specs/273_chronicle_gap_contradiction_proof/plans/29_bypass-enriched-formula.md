@@ -182,7 +182,7 @@ The enriched formula for `exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf
 
 ---
 
-### Phase 2: Prove correctness of the enriched formula (both directions) [PARTIAL]
+### Phase 2: Prove correctness of the enriched formula (both directions) [BLOCKED]
 
 **Goal**: Prove the biconditional `temporal_truth M atomMap (env 0) A <-> exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf` for the enriched formula A from Phase 1. This is the core proof.
 
@@ -208,6 +208,13 @@ Given formula truth at env(0):
 6. Combining atoms + quantifiers: `nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf` holds.
 
 This is the KEY insight of the bypass: the enriched formula encodes ALL quantifier conditions as explicit conjuncts, so extracting them in the backward direction is conjunction elimination. No composition theorem is needed because the quantifier profile is directly encoded, not inferred from 1-var NF data.
+
+**BLOCKER** (Phase 2):
+- **What failed**: `depth0_3var_exist_formula` loses y-t order information. Two ssn values differing only in y-t order produce the SAME temporal formula. When `sub_nf.2 ssn_a = true` and `sub_nf.2 ssn_b = false` for such a pair, `quant_profile_conj_depth0` contains both phi and neg-phi, making the enriched formula False at x even when sub_nf IS the characteristic of (x,t).
+- **What was tried**: (1) Using y-x zone decomposition only (loses y-t info). (2) Nested temporal formulas like `Since(parent_char AND Since(char_y, top), top)` to encode y < t from x (finds SOME z with parent_char, not necessarily t). (3) Using Prior-UZ/SZ to find FIRST/LAST occurrence of parent_char (multiple points may share the same characteristic, so z may not equal t).
+- **Why stuck**: From position x, temporal formulas reference points relative to x, not relative to t. The y-t order is a ternary relationship that cannot be expressed as a temporal property at a single point. This is equivalent to the Feferman-Vaught composition property for Prior structures, which is the SAME blocker as `nf_exist_backward_prior` (NfCharFormula.lean:541). The enriched formula bypass does NOT avoid this composition requirement.
+- **What is needed**: Either (a) prove the Prior composition property: on Prior structures, knowing x's depth-(k+1) 1-var NF + t's predicates + x-t order determines the 3-var quantifier profile at (y,x,t); or (b) find a fundamentally different encoding of the quantifier profile that avoids referencing t from x (perhaps using the Rabinovich "P_n(k) generalization" at a deeper level that avoids per-ssn encoding).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Tasks**:
 - [ ] **Task 2.1**: Prove the forward direction of the k+1 case. Given x with `nf_eval_nf`, show the enriched formula holds at env(0). Factor through helper lemmas for the atom part (zone placement + char_k truth) and the quantifier part (IH application for each ssn). (~80-120 lines)

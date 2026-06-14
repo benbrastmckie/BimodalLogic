@@ -224,21 +224,113 @@ noncomputable def enriched_bypass_formula_depth1 {sig : MonadicSignature}
   | false, true => Formula.snce enriched_disj Formula.top  -- x < t: Since
   | false, false => enriched_disj  -- x = t: evaluate at t
 
+/-! ## Helper lemmas for the correctness proof -/
+
+/-- The t_compat check passes whenever t actually satisfies the parent_atoms
+    and there exists x satisfying sub_nf (because sub_nf.1 records t's predicates
+    at variable 1, and these must match parent_atoms when t satisfies them). -/
+private theorem t_compat_holds
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (t x : M.carrier)
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_eval : nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    ((Fintype.elems (α := sig.preds)).val.toList.all fun p =>
+      sub_nf.1 (.pred p ⟨1, by omega⟩) == parent_atoms (.pred p ⟨0, by omega⟩)) = true := by
+  rw [List.all_eq_true]
+  intro p _
+  rw [beq_iff_eq]
+  obtain ⟨h_atom, _⟩ := h_eval
+  have h1 := h_atom (.pred p ⟨1, by omega⟩)
+  simp only [atom_eval, Fin.cons] at h1
+  have h2 := h_atoms (.pred p ⟨0, by omega⟩)
+  simp only [atom_eval] at h2
+  -- Simplify: Fin.cons x (fun _ => t) at index 1 = t
+  have h_env1 : (Fin.cons x (fun _ : Fin 1 => t) : Fin 2 → M.carrier) ⟨1, by omega⟩ = t := by
+    simp [Fin.cons]; rfl
+  rw [show Fin.cases x (fun _ : Fin 1 => t) ⟨1, by omega⟩ = t from by simp [Fin.cases]; rfl] at h1
+  cases hsub : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+  cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;> simp_all
+
+/-- When nf_eval_nf holds with sub_nf recording t < x (x_gt_t = true) and x < t false,
+    the witness x must satisfy t < x. -/
+private theorem zone_from_nf_eval
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 1 2)
+    (t x : M.carrier)
+    (h_eval : nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    (sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true → t < x) ∧
+    (sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true → x < t) ∧
+    (sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true →
+     sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true → False) := by
+  obtain ⟨h_atom, _⟩ := h_eval
+  refine ⟨fun h => ?_, fun h => ?_, fun h1 h2 => ?_⟩
+  · have := (h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h
+    simp only [atom_eval, Fin.cons] at this
+    exact this
+  · have := (h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h
+    simp only [atom_eval, Fin.cons] at this
+    exact this
+  · have ht_lt_x := (h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h1
+    have hx_lt_t := (h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h2
+    simp only [atom_eval, Fin.cons] at ht_lt_x hx_lt_t
+    exact absurd (lt_trans ht_lt_x hx_lt_t) (lt_irrefl t)
+
+/-- The nf_x_compat_check passes for the characteristic NF of x. -/
+private theorem nf_x_compat_of_nf_eval
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 1 2)
+    (t x : M.carrier)
+    (h_eval : nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf)
+    (nf_x : NormalForm sig 1 1)
+    (h_nf_x : nf_eval_nf M 1 1 (fun _ => x) nf_x) :
+    nf_x_compat_check sub_nf nf_x = true := by
+  simp only [nf_x_compat_check]
+  rw [List.all_eq_true]
+  intro p _
+  rw [beq_iff_eq]
+  obtain ⟨h_atom_sub, _⟩ := h_eval
+  obtain ⟨h_atom_x, _⟩ := h_nf_x
+  have h_sub := h_atom_sub (.pred p ⟨0, by omega⟩)
+  have h_x := h_atom_x (.pred p ⟨0, by omega⟩)
+  simp only [atom_eval, Fin.cons] at h_sub h_x
+  cases h1 : nf_x.1 (.pred p ⟨0, by omega⟩) <;>
+  cases h2 : sub_nf.1 (.pred p ⟨0, by omega⟩) <;> simp_all
+
 /-! ## Main Bypass Theorem -/
 
 /-- Enriched bypass for ExistPart(k+1) at n=1: there exists a temporal formula
     characterizing the 2-variable existential at depth k+1 on Prior structures.
 
     This is the key theorem that fills the sorry at `existPart_succ` for n=1.
-    The enriched formula encodes both atom conditions and quantifier conditions
-    at the witness point x, making the backward direction provable by conjunction
-    elimination.
 
-    The proof proceeds by cases on k:
-    - k=0 (ExistPart(1)): uses the enriched bypass formula at depth 1, with
-      depth-0 3-var conditions encoded via zone decomposition
-    - k+1: sorry (requires recursive enriched formula with higher-depth
-      quantifier conditions) -/
+    **BLOCKER**: `depth0_3var_exist_formula` loses y-t order information.
+
+    The formula encodes `∃ y, nf_eval_nf M 0 3 (y,x,t) ssn` as a temporal formula
+    at x using ONLY y-x order (Since/Until relative to x) and y-predicates. It does
+    NOT encode y-t order (y < t vs t < y vs y = t).
+
+    Two ssn values differing only in y-t order produce the SAME temporal formula. If
+    `sub_nf.2 ssn_a = true` and `sub_nf.2 ssn_b = false` for such a pair, the
+    `quant_profile_conj_depth0` contains both φ and ¬φ, making the enriched formula
+    unsound (evaluates to False at x even when sub_nf IS the characteristic of (x,t)).
+
+    Encoding y-t order from position x is impossible with standard temporal operators:
+    temporal formulas at x reference points relative to x, not relative to t. Nested
+    formulas like `Since(parent_char ∧ Since(char_y, top), top)` find SOME z with
+    parent_char (not necessarily t), so the backward direction remains unprovable.
+
+    The fundamental issue: the backward direction requires a Feferman-Vaught composition
+    property for Prior structures. This is the SAME blocker as `nf_exist_backward_prior`
+    (NfCharFormula.lean:541). The enriched formula bypass does NOT avoid this.
+
+    To resolve: either prove the Prior composition property (generalized Prop 4.2 from
+    Rabinovich 2014 for 3-var decomposition), or find an alternative encoding that
+    captures y-t order from position x using Prior-UZ/SZ properties. -/
 theorem existPart_succ_n1_bypass
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -261,15 +353,8 @@ theorem existPart_succ_n1_bypass
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M (k + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  cases k with
-  | zero =>
-    -- Depth 1 (k=0): use the enriched bypass formula
-    refine ⟨enriched_bypass_formula_depth1 atomMap h_surj char_kp1 sub_nf parent_atoms,
-      fun M h_UZ h_SZ t h_atoms => ?_⟩
-    sorry -- Phase 2: prove correctness of enriched_bypass_formula_depth1
-  | succ k' =>
-    -- Depth k'+2 (k=k'+1): sorry -- requires recursive enriched formula
-    -- with higher-arity quantifier conditions at depth k'+1
-    sorry
+  -- BLOCKED: enriched_bypass_formula_depth1 is unsound due to y-t order loss.
+  -- See BLOCKER documentation above.
+  sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
