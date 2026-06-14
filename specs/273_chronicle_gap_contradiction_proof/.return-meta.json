@@ -12,48 +12,56 @@
       "line": 801,
       "statement": "existPart_succ_n1_bypass_k0_eq (compatible case)",
       "assumption": "enriched_bypass_eq correctness",
-      "why_deferred": "Requires zone decomposition proof for depth-0 3-var existentials",
-      "next_dispatch": "Phase 2 continuation"
+      "why_deferred": "~200-line proof requires zone decomposition bridge for depth-0 3-var existentials",
+      "next_dispatch": "Extract enriched_bypass_eq_correct as standalone theorem"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 879,
+      "statement": "zone_3var_exist_iff_1var (unused)",
+      "assumption": "3-var zone decomposition",
+      "why_deferred": "Not on critical path",
+      "next_dispatch": "Skip"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 960,
       "statement": "backward_holdsLeft_of_nf_eval endLeft",
       "assumption": "pre_conditions_at_t_until temporal formula holds",
-      "why_deferred": "Depth-0 3-var existential to temporal formula bridge",
-      "next_dispatch": "Phase 2 continuation"
+      "why_deferred": "Needs zone bridge for below_t and eq_t zones",
+      "next_dispatch": "Positive cases straightforward; negative cases need 3-var reconstruction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 972,
       "statement": "backward_holdsLeft_of_nf_eval endRight",
       "assumption": "eq_x and above_x zone conditions at x",
-      "why_deferred": "Mirror of endLeft at x",
-      "next_dispatch": "Phase 2 continuation"
+      "why_deferred": "Same zone bridge at x",
+      "next_dispatch": "Mirror of endLeft"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 976,
       "statement": "backward_holdsLeft_of_nf_eval bracket",
       "assumption": "between_tx bracket conditions",
-      "why_deferred": "BracketFormula.holds interface",
-      "next_dispatch": "Phase 2 continuation"
+      "why_deferred": "BracketFormula.holds + witness provision",
+      "next_dispatch": "Check BracketFormula.holds definition"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1034,
       "statement": "forward_nf_eval_of_holdsLeft",
       "assumption": "holdsLeft -> nf_eval_nf reconstruction",
-      "why_deferred": "Inverse of backward direction",
-      "next_dispatch": "Phase 2 continuation"
+      "why_deferred": "Inverse of backward: zone formula inversion + atom reconstruction",
+      "next_dispatch": "Atom conditions from h_compat, quant from zone inversion"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1146,
       "statement": "existPart_succ_n1_bypass_k0_since",
       "assumption": "Since case mirrors Until",
-      "why_deferred": "Needs forward/backward proofs",
-      "next_dispatch": "Phase 2 continuation"
+      "why_deferred": "Blocked on Until completion",
+      "next_dispatch": "Mirror Until proofs"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
@@ -73,6 +81,8 @@
   "memory_candidates": [
     "In Lean 4, after subst h : x = t, the LATER variable is eliminated. If t was bound by a lambda before x was introduced by obtain, subst eliminates t (not x). Use variable naming carefully.",
     "Fin.cons x (fun _ => t) at Fin index 1 does not reduce via simp [Fin.cons] after subst because the kernel re-expresses it as Fin.cases. Use unfold atom_eval + exact h instead of simp-based approaches.",
-    "set_option maxHeartbeats 800000 must come BEFORE the doc comment (/--.../), not between the doc comment and the declaration. The doc comment binds to the next declaration."
+    "set_option maxHeartbeats 800000 must come BEFORE the doc comment (/--.../), not between the doc comment and the declaration.",
+    "When constructing a formula locally with let bindings to prove filterMap membership, the let-bound formula may not unify with the expanded filterMap output. Instead, use refine with _ placeholder and prove membership via List.mem_filterMap.mpr with the original nf_x witness.",
+    "For Fin n exhaustiveness in match arms with .order constructors, use explicit absurd rfl h_ne cases (e.g., .order ⟨0,_⟩ ⟨0,_⟩ h_ne => exact absurd rfl h_ne) rather than interval_cases which is not available."
   ]
 }

@@ -1,92 +1,106 @@
 {
   "status": "partial",
-  "summary": "Phase 2 partial: closed 2 incompatible subcases of existPart_succ_n1_bypass_k0_eq sorry-free (predicate-mismatch cases return Formula.bot). 7 depth-0 wiring sorries remain on critical path plus 1 unused helper. Key technique discovered: unfold atom_eval + exact h for Fin.cons/Fin.cases proof-term normalization after subst.",
+  "summary": "Phase 2 continuation: deep analysis of all 8 KampBypass.lean sorries completed, structural proof strategies validated via lean_multi_attempt, but no sorry was filled due to the fundamental complexity of the zone decomposition bridge. All 6 non-trivial sorries share the same bottleneck: connecting depth-0 3-var NF evaluation with temporal formulas (Since/Until/direct).",
   "phases_completed": 1,
   "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 801,
-      "statement": "existPart_succ_n1_bypass_k0_eq (compatible case)",
-      "assumption": "enriched_bypass_eq formula correctly characterizes the equality case existential",
-      "why_deferred": "Requires proving enriched_bypass_eq disjunction <-> nf_eval_nf M 1 2 [t,t] sub_nf via zone decomposition for depth-0 3-var existentials at [y,t,t]",
-      "next_dispatch": "Prove forward/backward for enriched_bypass_eq"
+      "statement": "existPart_succ_n1_bypass_k0_eq compatible case: enriched_bypass_eq correctness",
+      "assumption": "temporal_truth M atomMap t (enriched_bypass_eq ...) <-> exists x, nf_eval_nf M 1 2 (x,t) sub_nf when x=t",
+      "why_deferred": "~200-line proof. Forward atom conditions proven in test (pred via h_pred_compat+h_t_compat, order via lt_irrefl). Backward witness selection (nf_characteristic) and compat proven. Blocker: quantifier reconstruction and temporal conjunct truth both need zone bridge. Also: filterMap membership for locally-constructed formula has let-binding mismatch issues.",
+      "next_dispatch": "Write enriched_bypass_eq_correct as standalone theorem. Key structure: rw existential to x=t via witness_eq_t_of_no_order, simp only [enriched_bypass_eq], rw [formula_disjList_iff]. Forward: extract nf_x from filterMap, split_ifs with h_compat, get char_1 truth, decompose atoms (proven), then quantifier bridge. Backward: pick nf_x=nf_characteristic, show compat (proven), filterMap membership, char_1 truth (proven), conjList via zone bridge."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 879,
       "statement": "zone_3var_exist_iff_1var (unused helper)",
       "assumption": "3-var existential decomposes by zone",
-      "why_deferred": "Not on critical path (grep shows no callers). Private theorem.",
-      "next_dispatch": "Skip unless needed"
+      "why_deferred": "Not on critical path (marked unused in source)",
+      "next_dispatch": "Skip"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 960,
       "statement": "backward_holdsLeft_of_nf_eval endLeft",
-      "assumption": "pre_conditions_at_t_until holds at t from nf_eval quantifier profile",
-      "why_deferred": "Requires connecting depth-0 3-var existentials to temporal formulas via nf_depth0_char_formula_correct",
-      "next_dispatch": "Extract y-witnesses from h_eval_quant per zone, show temporal formulas hold"
+      "assumption": "TemporalPred.eval_at M atomMap vea.snd.endpointLeft t (= temporal_truth of pre_conditions_at_t_until at t)",
+      "why_deferred": "pre_conditions_at_t_until is formula_conjList for below_t (Since) and eq_t (direct) zones. Positive direction (Since(char_y, top) truth from h_eval_quant witness) was validated in multi_attempt. Negative direction (reconstruction) is the bottleneck.",
+      "next_dispatch": "rw [formula_conjList_iff], intro psi h_mem, extract ssn from filterMap, case-split on ssn_zone_until ssn and sub_nf.2 ssn. For positive Since: h_eval_quant gives y, extract y<t from atom_eval, nf_depth0_char_formula_correct gives char_y truth at y, temporal_truth_top for bracket. For negative Since: h_eval_quant gives no-exist, then intro y with temporal truth, reconstruct 3-var eval (hard part)."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 972,
-      "statement": "backward_holdsLeft_of_nf_eval endRight",
-      "assumption": "eq_x and above_x zone conditions hold at x",
-      "why_deferred": "Mirror of endLeft at x",
-      "next_dispatch": "Extract y-witnesses, show temporal formulas at x"
+      "statement": "backward_holdsLeft_of_nf_eval endRight conjuncts",
+      "assumption": "temporal_truth of formula_conjList for eq_x and above_x zones at x",
+      "why_deferred": "Same zone bridge as endLeft but at x instead of t",
+      "next_dispatch": "Mirror of endLeft at x"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 976,
       "statement": "backward_holdsLeft_of_nf_eval bracket",
-      "assumption": "between_tx zone conditions hold via VecEA2 bracket",
-      "why_deferred": "Requires BracketFormula.holds interface",
-      "next_dispatch": "Show bracket.holds from h_eval_quant"
+      "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
+      "why_deferred": "Need BracketFormula.holds definition and witness provision from h_eval_quant",
+      "next_dispatch": "Check BracketFormula.holds in VecEAFormula.lean. Provide ordered y-witnesses between t and x for positive between_tx ssns from h_eval_quant."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1034,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft data reassembles into nf_eval_nf",
-      "why_deferred": "Inverse of backward: zone-by-zone extraction and nf_eval assembly",
-      "next_dispatch": "From endRight extract char_1(nf_x), from endLeft/bracket extract quantifier conditions"
+      "statement": "forward_nf_eval_of_holdsLeft: holdsLeft -> nf_eval_nf reconstruction",
+      "assumption": "Given endLeft at t, x>t, endRight at x, bracket between t and x, reconstruct nf_eval_nf M 1 2 (x,t) sub_nf",
+      "why_deferred": "Inverse of backward. Needs: atom conditions from nf_x_compat + h_atoms, quantifier conditions by inverting zone temporal formulas back to 3-var existentials.",
+      "next_dispatch": "Atom conditions: constructor, intro a, match on pred/order. For pred: use h_compat decomposition + h_atoms. For order: use h_t_lt_x for (1,0), lt_asymm for (0,1). Quant: for each ssn, determine zone from ssn_zone_until, extract temporal truth from endLeft/endRight/bracket, invert to 3-var eval."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1146,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case mirrors Until with reversed order",
-      "why_deferred": "Needs forward/backward proofs mirroring Until",
-      "next_dispatch": "Mirror Until proof with Since semantics"
+      "statement": "existPart_succ_n1_bypass_k0_since (Since mirrors Until)",
+      "assumption": "Since case follows same structure as Until with reversed order",
+      "why_deferred": "Blocked on Until case completion",
+      "next_dispatch": "Mirror Until proofs"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1234,
       "statement": "existPart_succ_n1_bypass k>0 (Phase 3)",
-      "assumption": "General depth requires IH for all arities",
+      "assumption": "General depth",
       "why_deferred": "Phase 3 scope",
       "next_dispatch": "Phase 3"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "All 6 non-trivial sorries need a common 'zone bridge' infrastructure: given nf_eval_nf M 0 3 (y,x,t) ssn and ssn_zone_until classification, produce or consume temporal_truth of the zone formula. The positive direction (nf_eval -> temporal) is straightforward (~10 lines per zone). The negative direction (temporal -> nf_eval reconstruction) is the bottleneck: requires building all atom_eval entries for a 3-var Fin.cons environment from component conditions, which involves ssn_xt_compatible decomposition, ssn_order_consistent equality propagation, and detailed Fin.cons index reduction."
+  ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
     "session_id": "sess_1781438804_42f71b",
     "completed_objectives": [
-      "Closed existPart_succ_n1_bypass_k0_eq predicate-incompatible subcases sorry-free",
-      "Added set_option maxHeartbeats 800000 for equality case theorem",
-      "Discovered unfold atom_eval technique for Fin.cons/Fin.cases proof-term normalization"
+      "Deep goal analysis of all 8 sorries via lean_goal",
+      "Validated backward Since/Until positive case proof structure via multi_attempt",
+      "Validated forward atom conditions (pred + order) for equality case via multi_attempt",
+      "Identified common blocker: zone bridge for 3-var NF <-> temporal formula"
     ],
-    "next_objective": "Fill backward_holdsLeft_of_nf_eval endLeft sorry (line 960) or consider classical shortcut for remaining sorries",
+    "next_objective": "Write a standalone helper theorem eq_case_ssn_zone_bridge (or similar) that handles both directions for a single ssn in the equality case. Then use it to fill line 801. Alternatively, focus on the positive-only cases first (Since/Until zones where sub_nf.2 ssn = true) which don't need 3-var reconstruction.",
     "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Separation/KampTranslation.lean"
     ],
     "key_techniques": [
-      "unfold atom_eval + exact h to handle Fin.cons at concrete indices after subst",
-      "witness_eq_t_of_no_order to derive x = t in equality case",
-      "set_option maxHeartbeats 800000 for complex case analysis proofs"
+      "unfold atom_eval + exact h for Fin.cons at concrete indices",
+      "witness_eq_t_of_no_order for x=t derivation",
+      "nf_depth0_char_formula_correct for temporal <-> predicate match",
+      "formula_disjList_iff / formula_conjList_iff for structural decomposition",
+      "nf_x_compat_of_nf_eval for filterMap membership",
+      "nf_characteristic_satisfies for backward witness selection"
+    ],
+    "anti_patterns": [
+      "Do NOT construct formula locally with let bindings and then try to prove filterMap membership -- the let-bound formula does not unify with the filterMap output. Instead, use refine with _ and prove membership via List.mem_filterMap.mpr.",
+      "Do NOT use interval_cases (not available). Use explicit .order ⟨0,_⟩ ⟨0,_⟩ h_ne => absurd rfl h_ne for Fin exhaustiveness.",
+      "set_option maxHeartbeats must come BEFORE the doc comment."
     ]
   }
 }
