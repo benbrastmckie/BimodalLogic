@@ -1257,7 +1257,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-14T16:19:57Z",
+      "last_updated": "2026-06-14T23:11:35Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1397,10 +1397,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md",
           "type": "report",
           "summary": "Hard-mode research: exact goal states for all 7 KampBypass sorries mapped to resolution paths via KampForward/ZoneBridge. Fill order: 831→923→927→911→985→720→1097 (~765 lines)."
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md",
+          "type": "report",
+          "summary": "Detailed goal-state analysis of 5 KampBypass.lean sorries with lean_goal output, infrastructure inventory, feasibility ratings, and recommended fill order"
         }
       ],
-      "next_artifact_number": 31,
-      "researched": "2026-06-14T11:41:33Z",
+      "next_artifact_number": 32,
+      "researched": "2026-06-14T23:11:35Z",
       "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
         "phases": 5,
@@ -1465,7 +1470,7 @@
           }
         ]
       },
-      "session_id": "sess_1781453638_2632a8",
+      "session_id": "sess_1718380800_a7c3e2",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "KampBypass.lean: 1145 lines. Zone-aware enriched formula v2 with VecEA2 brackets. Main theorem factored into eq/Until/Since cases. Until case decomposed into forward/backward helpers. 8 sorries remain (4 in Until zone-specific composition, 1 eq case, 1 Since case, 1 k>0, 1 pre-existing). Each remaining sorry is a small depth-0 composition fact connecting zone temporal formulas to 3-var NF existentials."
     },

@@ -309,6 +309,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/26_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md]
+  - [273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md]
 - **Plan**:
   - [273_chronicle_gap_contradiction_proof/plans/23_nf-specific-prop43-bypass.md]
   - [273_chronicle_gap_contradiction_proof/plans/24_literature-faithful-kamp-completion.md]

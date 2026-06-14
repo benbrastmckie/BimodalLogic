@@ -1,26 +1,17 @@
 {
-  "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "session_id": "sess_1781465524_043b8b",
-  "task_number": 273,
-  "started_at": "2026-06-14T00:00:00Z",
-  "sorry_inventory": [
-    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 753, "statement": "existPart_succ_n1_bypass_k0_eq compatible subcase"},
-    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1358, "statement": "backward_holdsLeft_of_nf_eval bracket"},
-    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1416, "statement": "forward_nf_eval_of_holdsLeft"},
-    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1528, "statement": "existPart_succ_n1_bypass_k0_since"},
-    {"file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean", "line": 1616, "statement": "existPart_succ_n1_bypass depth>=2 (out of scope)"}
+  "status": "researched",
+  "artifacts": [
+    {
+      "path": "specs/273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md",
+      "type": "report",
+      "summary": "Detailed goal-state analysis of 5 KampBypass.lean sorries with lean_goal output, infrastructure inventory, feasibility ratings, and recommended fill order"
+    }
   ],
-  "verification": {
-    "sorry_count": 5,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "memory_candidates": [
-    "KampBypass sorry filling requires zone bridge composition. The eq case (x=t) needs reconstruct_nf_eval_3var with all orders false (lt_irrefl). The bracket needs IntervalPattern witness sorting. The forward needs reverse extraction from temporal to NF. The since mirrors until with reversed roles.",
-    "Private helpers in ZoneBridge.lean (fin_cons_eval_*, extract_y_preds, reconstruct_nf_eval_3var) are NOT accessible from KampBypass.lean. Use simp only [atom_eval, Fin.cons] instead. The ssn_xt_compat helpers can be inlined.",
-    "For x'=t substitution in KampBypass proofs: use rw [h_x_eq_t] not subst, because subst on x'=t destroys the t binding in the proof context. Use congr_arg for env equality."
-  ]
+  "metadata": {
+    "session_id": "sess_1718380800_a7c3e2",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "task_number": 273
+  }
 }
