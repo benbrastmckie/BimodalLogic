@@ -1,56 +1,51 @@
 {
-  "status": "researched",
-  "summary": "Literature proof walkthrough completed. GHR94 Thm 9.3.1 uses auxiliary predicates + separation property (not formalized). Rabinovich Prop 4.3 uses EA closure under exists (trivial) + negation closure Prop 4.2 (sorry-free). The codebase NF-level approach hits a provably false composition lemma. Recommended path: fix VecEA Since-direction translation (bracketBuildLeft_correct) + build NF-to-EA bridge, composing with sorry-free neg_2var_vec_ea.",
-  "phases_completed": 0,
-  "phases_total": 1,
+  "status": "partial",
+  "summary": "Phase 1 complete: filled both sorries in bracketBuildLeft_correct (Since direction, n>0). Created bracket_append_witness and bracket_extract_last_witness helper lemmas (~130 lines). All downstream theorems (VecEA2.translateRight_correct, VVecEA2.translateRight_correct) now sorry-free. Phases 2-3 remain.",
+  "phases_completed": 1,
+  "phases_total": 3,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 597,
       "statement": "theorem nf_2var_exist_formula_prior (k+1 case)",
-      "assumption": "For depth k+1, there exists a temporal formula characterizing the 2-var existential on Prior structures",
-      "why_deferred": "Circular import: NfCharFormula cannot import NegationClosure. Root blocker is nf_exist_formula_nested_backward.",
-      "next_dispatch": "Fill via Path B (VecEA approach) or fix nf_exist_formula_nested_backward"
+      "assumption": "NF existential at depth k+1 can be converted to VVecEA2",
+      "why_deferred": "Requires Phase 2 (NF-to-EA bridge) and Phase 3 (wiring)",
+      "next_dispatch": "Phase 2: build NF-to-EA bridge at depth k+1"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 446,
+      "statement": "existPart_succ n=1",
+      "assumption": "Existential part at succ case",
+      "why_deferred": "Depends on Phase 3 wiring",
+      "next_dispatch": "Phase 3: wire VVecEA2 through translateLeft"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
+      "line": 474,
+      "statement": "existPart_succ n>=2",
+      "assumption": "Depends on n=1 case",
+      "why_deferred": "Depends on existPart_succ n=1",
+      "next_dispatch": "Phase 3: resolve after n=1"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
       "line": 1716,
       "statement": "private theorem nf_exist_formula_nested_backward",
-      "assumption": "Nested existence formula truth implies 2-var NF existential (backward direction)",
-      "why_deferred": "The formula guard is Formula.top and does NOT encode negative quantifier conditions. generalized_composition is provably FALSE. Enriching the guard does not help at depth > 0.",
-      "next_dispatch": "Consider Path B instead: VecEA translation fix + NF-to-EA bridge"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
-      "line": 472,
-      "statement": "bracketBuildLeft_correct (n+1 forward case)",
-      "assumption": "Since-direction bracket translation correctness at n >= 1",
-      "why_deferred": "Requires bracket witness manipulation lemmas symmetric to VecEATranslation",
-      "next_dispatch": "Implement Since-direction bracket prepend/extract (Path B prerequisite)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
-      "line": 475,
-      "statement": "bracketBuildLeft_correct (n+1 backward case)",
-      "assumption": "Same as above",
-      "why_deferred": "Same as above",
-      "next_dispatch": "Same as above"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomposition.lean",
-      "line": 285,
-      "statement": "neg_bracket_syn_iff soundness Case C",
-      "assumption": "Syntactic bracket negation is sound (reverse direction)",
-      "why_deferred": "QUARANTINED: genuine mathematical impossibility under open-interval semantics. Not on critical path.",
-      "next_dispatch": "Do NOT attempt. Bypassed by NF-specific approach."
+      "assumption": "Bypassed by VecEA2 path",
+      "why_deferred": "BYPASSED: not on critical path if NfCharFormula filled directly via VecEA2",
+      "next_dispatch": "Not needed"
     }
   ],
-  "blockers": [
-    "generalized_composition is provably FALSE (counterexample: Z, (0,2) vs (0,1), k=1)",
-    "nf_exist_formula_nested guard=top means backward direction unprovable without composition",
-    "bracketBuildLeft_correct has 2 sorries blocking Since-direction VecEA translation"
-  ],
-  "recommended_approach": "Path B: Fix bracketBuildLeft_correct, build NF-to-EA bridge at depth k+1, compose with sorry-free neg_2var_vec_ea and VecEA2 translation. Estimated 500-800 lines.",
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/reports/26_literature-proof-walkthrough.md",
-  "continuation_context": "See Q5 section for detailed path analysis and risk assessment"
+  "blockers": [],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/plans/28_vecEA-path-b-implementation.md",
+  "continuation_context": {
+    "next_phase": 2,
+    "completed_phases": [1],
+    "key_results": [
+      "bracketBuildLeft_correct: sorry-free",
+      "VecEA2.translateRight_correct: sorry-free",
+      "VVecEA2.translateRight_correct: sorry-free"
+    ]
+  }
 }
