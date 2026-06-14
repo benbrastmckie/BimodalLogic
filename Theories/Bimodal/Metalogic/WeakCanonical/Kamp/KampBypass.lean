@@ -1201,6 +1201,88 @@ private theorem between_tx_temporal_iff
                  · intro h; rw [h_t_ssn p]; exact (h_t_pred p).mp h
                  · intro h; exact (h_t_pred p).mpr (by rw [← h_t_ssn p]; exact h))
 
+/-! ## Bracket construction helpers -/
+
+private theorem seg_guard_holds
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (M : OrderedMonadicStructure sig)
+    (x t : M.carrier) (h_tx : t < x)
+    (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
+    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true)
+    (h_eval_quant : ∀ ssn : NormalForm sig 0 3,
+      (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+      sub_nf.2 ssn = true)
+    (y : M.carrier) (h_ty : t < y) (h_yx : y < x) :
+    TemporalPred.eval_at M atomMap
+      ⟨formula_conjList
+        (List.map (fun ssn => (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)
+          ((Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter (fun ssn =>
+            ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
+            (ssn_zone_until ssn == .between_tx) &&
+            !sub_nf.2 ssn)))⟩ y := by
+  simp only [TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro φ h_mem
+  rw [List.mem_map] at h_mem
+  obtain ⟨ssn, h_ssn_mem, h_eq⟩ := h_mem
+  subst h_eq
+  rw [List.mem_filter] at h_ssn_mem
+  obtain ⟨h_ssn_elem, h_cond⟩ := h_ssn_mem
+  simp only [Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true'] at h_cond
+  obtain ⟨⟨h_compat, h_zone⟩, h_neg⟩ := h_cond
+  simp only [Formula.neg, temporal_truth]
+  intro h_char
+  have h_y_preds := (nf_depth0_char_formula_correct M atomMap h_surj (nf_y_proj ssn) y).mp h_char
+  have h_exist : ∃ y', nf_eval_nf M 0 3 (Fin.cons y' (Fin.cons x (fun _ => t))) ssn :=
+    (between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_tx
+      h_compat h_zone h_x_pred h_t_pred).mpr ⟨y, h_ty, h_yx, h_y_preds⟩
+  have h_pos := (h_eval_quant ssn).mp h_exist
+  rw [h_neg] at h_pos
+  exact absurd h_pos (by decide)
+
+set_option maxHeartbeats 1600000 in
+private theorem bracket_holds_of_eval_quant
+    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (sub_nf : NormalForm sig 1 2)
+    (M : OrderedMonadicStructure sig)
+    (x t : M.carrier) (h_tx : t < x)
+    (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
+    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true)
+    (h_eval_quant : ∀ ssn : NormalForm sig 0 3,
+      (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
+      sub_nf.2 ssn = true) :
+    let pos_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
+      ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
+      (ssn_zone_until ssn == .between_tx) &&
+      sub_nf.2 ssn
+    let neg_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
+      ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
+      (ssn_zone_until ssn == .between_tx) &&
+      !sub_nf.2 ssn
+    let seg_guard : TemporalPred :=
+      ⟨formula_conjList (neg_between.map fun ssn =>
+        (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)⟩
+    let n := pos_between.length
+    let bracket : BracketFormula n :=
+      { pointTypes := fun i =>
+          nfPred atomMap h_surj (nf_y_proj (pos_between[i.val]'(by omega)))
+        segmentTypes := fun _ => seg_guard }
+    bracket.holds M atomMap t x := by
+  intro pos_between neg_between seg_guard n bracket
+  have h_seg : ∀ y : M.carrier, t < y → y < x →
+      seg_guard.eval_at M atomMap y :=
+    fun y h_ty h_yx => seg_guard_holds atomMap h_surj nf_x_1var parent_atoms sub_nf M x t h_tx
+      h_x_pred h_t_pred h_eval_quant y h_ty h_yx
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
+  sorry
+
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
 
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
@@ -1355,7 +1437,12 @@ private theorem backward_holdsLeft_of_nf_eval
   case bracket =>
     -- bracket.holds t x = interval pattern holds on (t, x)
     -- Positive between_tx ssns need witnesses, negative need segment guards
-    sorry
+    exact bracket_holds_of_eval_quant atomMap h_surj nf_x_1var parent_atoms sub_nf M x t h_t_lt_x
+      (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x; have := h_atom (.pred p ⟨0, by omega⟩)
+                   simp only [atom_eval] at this; exact this)
+      (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                   simp only [atom_eval] at this; exact this)
+      h_eval_quant
 
 /-- Forward direction: holdsLeft for the enriched Until VVecEA2 → ∃ x, nf_eval.
     Given holdsLeft (some disjunct is satisfied), extract x and reconstruct nf_eval. -/
