@@ -1,56 +1,44 @@
 {
-  "status": "blocked",
-  "summary": "Phase 2 BLOCKED. The enriched_bypass_formula_depth1 is fundamentally unsound: depth0_3var_exist_formula loses y-t order information. Two ssn values differing only in y-t order (e.g., y<t vs t<y with same y-predicates and y-x order) produce the SAME temporal formula. When sub_nf.2 assigns different boolean values to such a pair, the quant_profile_conj_depth0 contains both phi and neg-phi, making the enriched formula False even at a valid witness x. This is not a proof difficulty -- it is a defect in the formula definition. Temporal formulas at position x fundamentally cannot express y-t order because they reference points relative to x, not relative to t. This is equivalent to the Feferman-Vaught composition blocker at nf_exist_backward_prior (NfCharFormula.lean:541). The enriched formula bypass does NOT avoid this composition requirement.",
-  "phases_completed": 1,
-  "phases_total": 4,
+  "status": "partial",
+  "summary": "Zone-aware enriched formula v2 defined with VecEA2 brackets for between_tx zone. Fixes the v1 unsoundness (y-t order loss). Formula definitions compile, correctness proofs pending (~200-400 lines).",
+  "phases_completed": 0,
+  "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 334,
-      "statement": "existPart_succ_n1_bypass (all k)",
-      "assumption": "A correct temporal formula A exists characterizing the 2-var depth-(k+1) existential on Prior structures",
-      "why_deferred": "enriched_bypass_formula_depth1 is unsound due to y-t order loss. depth0_3var_exist_formula cannot encode y-t order from position x. Nested temporal formulas (Since(parent_char AND Since(char_y, top), top)) find SOME z with parent_char, not necessarily t. Prior-UZ/SZ gives first/last occurrence but multiple points may share the t-characteristic.",
-      "next_dispatch": "Either prove Prior composition property (knowing x's depth-(k+1) 1-var NF + t's predicates + x-t order determines 3-var quantifier profile), or redesign the formula to avoid per-ssn encoding of 3-var existentials."
+      "line": 690,
+      "statement": "theorem existPart_succ_n1_bypass_k0",
+      "assumption": "enriched_bypass_formula_zone with VecEA2 brackets correctly characterizes depth-1 2-var existential",
+      "why_deferred": "Proof body needs ~200-400 lines: forward direction (zone-by-zone verification using VecEADecomp zone theorems) and backward direction (VecEA2 bracket extraction + NF reconstruction). The formula architecture is sound (VecEA2 brackets guarantee witnesses between t and x), but the proof is substantial.",
+      "next_dispatch": "Prove existPart_succ_n1_bypass_k0: (1) refine with enriched_bypass_formula_zone, (2) case split on x-t order, (3) for Until case: use VVecEA2.translateLeft_correct, then prove forward via zone-specific VecEADecomp lemmas, backward via bracket witness extraction + char_1_correct"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 721,
+      "statement": "theorem existPart_succ_n1_bypass (succ k')",
+      "assumption": "General k > 0 case requires depth-k IH",
+      "why_deferred": "Needs ih_exist : ExistPart atomMap h_surj k parameter from existPart_succ call site",
+      "next_dispatch": "Add ih_exist parameter; update RabinovichGeneralized.lean call site; generalize VecEA2 bracket approach to depth k"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
       "line": 465,
       "statement": "existPart_succ (n >= 2 case)",
-      "assumption": "The n=1 case (existPart_succ_n1_bypass) is filled",
+      "assumption": "The n=1 case is filled",
       "why_deferred": "Depends on n=1 case.",
       "next_dispatch": "Fill after existPart_succ_n1_bypass is sorry-free."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 541,
-      "statement": "have (leaf): nf_exist_backward_prior (dead code)",
-      "assumption": "No longer on critical path",
-      "why_deferred": "Dead code since nf_2var_exist_formula_prior delegates to bypass at k+1.",
-      "next_dispatch": "Optional cleanup."
     }
   ],
-  "blockers": [
-    "enriched_bypass_formula_depth1 is unsound: depth0_3var_exist_formula loses y-t order (two ssn values with same y-x zone and y-predicates but different y-t order produce same formula, creating phi AND neg-phi contradiction in quant_profile_conj_depth0)",
-    "Temporal formulas at position x cannot express y-t order because they reference points relative to x, not relative to t",
-    "This is equivalent to the Feferman-Vaught composition blocker at nf_exist_backward_prior (NfCharFormula.lean:541) -- the enriched formula bypass does NOT avoid this"
-  ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
+  "blockers": [],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/zone-formula-v2-handoff-20260614.md",
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 2,
-    "resume_task": "2.1",
-    "key_decisions": [
-      "depth0_3var_exist_formula proven unsound for backward direction: loses y-t order information",
-      "Nested temporal formulas (Since(parent_char AND Since(char_y, top), top)) do not fix the issue: z with parent_char may not be t",
-      "Prior-UZ/SZ cannot help: multiple points may share the t-characteristic, so first/last occurrence does not uniquely identify t",
-      "The fundamental issue is that temporal formulas evaluated at x cannot express ternary relationships involving t",
-      "Helper lemmas t_compat_holds, zone_from_nf_eval, nf_x_compat_of_nf_eval are correct and useful for any future approach",
-      "All sorry chains still consolidated through existPart_succ_n1_bypass in KampBypass.lean"
-    ],
-    "research_needed": [
-      "How does Rabinovich 2014 Section 5 handle the 3-var quantifier profile in the P_n(k) construction? The paper likely uses a different encoding or a composition lemma.",
-      "Does the prior composition property follow from a generalization of Prop 4.2 (neg_2var_vec_ea) to 3 variables?",
-      "Can the formula be redesigned to encode the FULL 2-var depth-1 NF as a single temporal condition (rather than per-ssn encoding), avoiding the y-t order issue?"
-    ]
+    "key_insight": "VecEA2 bracket witnesses are between t and x by construction, fixing backward direction. The old approach (Since(char_y,top) at x for positive between_tx) found y anywhere below x, not necessarily above t.",
+    "formula_architecture": "enriched_bypass_formula_zone -> enriched_bypass_until -> VVecEA2(enriched_vecEA2_until per nf_x).translateLeft",
+    "key_definitions": {
+      "enriched_vecEA2_until": "Builds VecEA2 with endpointLeft (pre-conditions at t), endpointRight (char_1(nf_x) + eq_x/above_x), bracket (positive between_tx witnesses + negative segment guards)",
+      "ssn_zone_until": "Classifies each ssn into one of 6 zones based on y-t and y-x order atoms",
+      "enriched_bypass_formula_zone": "Full formula: t_compat check, then Until/Since/Eq dispatch"
+    }
   }
 }

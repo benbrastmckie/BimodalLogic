@@ -1,10 +1,36 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
   "session_id": "sess_1781421530_2b6c7c",
   "started_at": "2026-06-14T00:00:00Z",
-  "phase": "zone-aware-enriched-formula-redesign"
+  "requires_user_review": false,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 690,
+      "statement": "existPart_succ_n1_bypass_k0 (k=0 case, formula defined, proof pending)",
+      "why_deferred": "Proof body needs ~200-400 lines of tactic work for forward + backward directions"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 721,
+      "statement": "existPart_succ_n1_bypass (k>0 case)",
+      "why_deferred": "Requires ih_exist parameter for depth-k 3-var conditions"
+    }
+  ],
+  "verification": {
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "VecEA2 bracket witnesses are guaranteed to be between endpoints by construction. For encoding 'exists y between t and x', use BracketFormula with pointTypes for y's predicates and segmentTypes for interval guards. This avoids the backward-direction failure of Since(char_y, top) at x which finds y anywhere below x.",
+    "The zone-aware enriched formula distributes y-conditions across the Until structure: endpointLeft handles y < t and y = t zones at t; endpointRight handles y = x and y > x zones at x; bracket handles t < y < x zone with guaranteed witnesses between endpoints.",
+    "For negative between_tx conditions (sub_nf.2 ssn = false): if ssn is in zone between_tx and xt-compatible, then no y in (t,x) has the predicates of nf_y_proj ssn (because the order atoms match in (t,x) but the overall NF is unsatisfied, so predicates must fail). This justifies neg char_y in the segment guard.",
+    "ssn_zone_until classifies depth-0 3-var NFs into zones based on y-t and y-x order atoms. The zone determines where the ssn's temporal encoding goes in the enriched formula structure."
+  ]
 }
