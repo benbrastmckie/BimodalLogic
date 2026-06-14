@@ -1,69 +1,54 @@
 {
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
-  "session_id": "sess_1781453638_2632a8",
-  "artifact_path": "specs/273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md",
+  "session_id": "sess_1781454646_2625e1",
   "started_at": "2026-06-14T00:00:00Z",
   "completed_at": "2026-06-14T00:00:00Z",
-  "findings_count": 7,
-  "adversarial_verification_triggered": false,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 720,
-      "statement": "existPart_succ_n1_bypass_k0_eq (compatible equality case)",
-      "resolution": "ADAPTER: enriched_bypass_eq_correct (~120 lines)",
-      "dependencies": ["eq_yt_nf_correct", "eq_yx_nf_correct", "char_1_correct", "nf_depth0_char_formula_correct"]
+      "statement": "existPart_succ_n1_bypass_k0_eq",
+      "assumption": "Equality case biconditional",
+      "why_deferred": "Both directions require zone-based reconstruction at [y,t,t]",
+      "next_dispatch": "Use zone bridges with ssn_xt_compatible false/false"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 831,
-      "statement": "pre_conditions_at_t_until_holds",
-      "resolution": "ADAPTER: pre_conditions_holds (~100 lines)",
-      "dependencies": ["ssn_zone_ytx_forward", "ssn_eq_yt_forward", "zone_bridge_below_t", "zone_bridge_eq_t", "formula_conjList_iff"]
+      "line": 1294,
+      "statement": "backward_holdsLeft_of_nf_eval bracket",
+      "assumption": "BracketFormula.holds for between_tx zone",
+      "why_deferred": "Requires ordered witness construction from existentials",
+      "next_dispatch": "Construct witnesses from zone_bridge_between_tx, sort, verify segment guards"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 911,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft",
-      "resolution": "DIRECT APPLY: pre_conditions_at_t_until_holds once line 831 filled (~15 lines)",
-      "dependencies": ["sorry at line 831"]
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 923,
-      "statement": "backward_holdsLeft_of_nf_eval endRight (eq_x, above_x zones)",
-      "resolution": "ADAPTER: right_conjuncts_holds (~80 lines)",
-      "dependencies": ["ssn_eq_yx_forward", "ssn_zone_txy_forward", "zone_bridge_eq_x", "zone_bridge_above_x"]
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 927,
-      "statement": "backward_holdsLeft_of_nf_eval bracket (between_tx zone)",
-      "resolution": "ADAPTER: bracket_holds_of_nf_eval (~100 lines)",
-      "dependencies": ["ssn_bracket_tyx_forward", "zone_bridge_between_tx", "BracketFormula.holds"]
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 985,
+      "line": 1352,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "resolution": "ADAPTER: reconstruct_nf_eval_from_vecEA2 (~150 lines)",
-      "dependencies": ["zone_bridge_*", "nf_characteristic_satisfies", "reconstruct_nf_eval_3var"]
+      "assumption": "Reconstruct nf_eval from VecEA2 components",
+      "why_deferred": "Full NF reconstruction from temporal components",
+      "next_dispatch": "Decompose into atom + quant parts, use temporal bridge lemmas"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1097,
+      "line": 1464,
       "statement": "existPart_succ_n1_bypass_k0_since",
-      "resolution": "MIRROR: mirror of Until case (~200 lines)",
-      "dependencies": ["bracket_xyt_temporal_correct", "zone_yxt_temporal_correct", "zone_xty_temporal_correct"]
+      "assumption": "Since case mirror of Until",
+      "why_deferred": "Structural mirror, ~200 lines",
+      "next_dispatch": "Mirror Until case with reversed direction"
     }
   ],
-  "next_steps": "Run /plan 273 to create implementation plan",
+  "verification": {
+    "sorry_count": 5,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
   "memory_candidates": [
-    "KampForward per-SSN theorems (ssn_zone_*_forward, ssn_eq_*_forward, ssn_bracket_tyx_forward) are the building blocks for filling KampBypass sorries",
-    "formula_conjList_iff + filterMap is the structural pattern for zone-based conjunction sorries (831, 911, 923)",
-    "KampBypass Since case (line 1097) does NOT use VVecEA2 -- uses formula_disjList of Since(pt_x, guard) directly, meaning simpler but more manual proof than the Until case"
+    "Zone extraction from ssn_zone_until requires split_ifs after simp on the definition, not manual destructuring of ssn_order_consistent",
+    "KampForward cannot be imported from KampBypass due to circular dependency; all zone bridges must use ZoneBridge.lean directly",
+    "The zone-temporal bridge lemma pattern (e.g., below_t_temporal_iff) composes zone_bridge_* with nf_depth0_char_formula_correct and handles both positive (forward) and negative (contrapositive) directions"
   ]
 }

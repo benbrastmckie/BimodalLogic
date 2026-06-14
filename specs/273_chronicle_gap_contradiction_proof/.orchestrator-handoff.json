@@ -1,87 +1,77 @@
 {
   "status": "partial",
-  "summary": "Split nf_2var_exist_formula_prior match to separate depth 1 from depth >= 2. At k=1, calls existPart_succ_n1_bypass_k0 directly. Build passes.",
-  "phases_completed": 0,
-  "phases_total": 1,
+  "summary": "Filled 3 of 7 target KampBypass sorries: pre_conditions_at_t_until_holds (was line 831), backward endLeft (was line 911), backward endRight (was line 923). Added zone extraction helpers and 4 zone-temporal bridge lemmas. 4 target sorries remain plus 2 out-of-scope sorries.",
+  "phases_completed": 1,
+  "phases_total": 3,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 720,
-      "statement": "existPart_succ_n1_bypass_k0_eq (compatible equality case)",
-      "assumption": "enriched_bypass_eq formula ↔ ∃ x, nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf",
-      "why_deferred": "Requires proving quant_conjuncts correctness for each ssn zone (below_t, eq_t, above_t) using KampForward zone composition theorems. Each zone requires ~50 lines.",
-      "next_dispatch": "Fill the enriched_bypass_eq biconditional using nf_depth0_char_formula_correct + zone bridges"
+      "statement": "existPart_succ_n1_bypass_k0_eq (equality case biconditional)",
+      "assumption": "enriched_bypass_eq ↔ ∃ x, nf_eval_nf M 1 2 [x,t] sub_nf when x=t",
+      "why_deferred": "Both directions require zone-based 3-var existential reconstruction at [y,t,t]. Forward direction needs full nf_eval reconstruction from temporal formulas. Backward direction partially implemented but reverted due to filterMap definitional matching issues.",
+      "next_dispatch": "Write equality case proof using the zone bridges. Key: when x=t, ssn_xt_compatible uses false/false, zones are y<t (Since), y=t (direct), y>t (Until). Can reuse reconstruct_nf_eval_3var from ZoneBridge."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 831,
-      "statement": "pre_conditions_at_t_until_holds",
-      "assumption": "temporal_truth M atomMap t (pre_conditions_at_t_until ...) holds given h_eval_quant",
-      "why_deferred": "Requires formula_conjList_iff + zone-specific temporal formula bridges for below_t and eq_t zones. Mechanical but ~100 lines.",
-      "next_dispatch": "Fill using formula_conjList_iff, then for each ssn in below_t/eq_t zone, bridge via nf_depth0_char_formula_correct"
+      "line": 1294,
+      "statement": "backward_holdsLeft_of_nf_eval (bracket case)",
+      "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
+      "why_deferred": "Requires constructing ordered witnesses from individual existentials for each positive between_tx ssn. IntervalPattern.holds needs Fin n → M.carrier with strict ordering, all in (t,x). Also needs segment guards for negative ssns.",
+      "next_dispatch": "Construct witnesses from zone_bridge_between_tx existentials. For ordering: use zone_between_tx_orders to get t < y < x for each witness. All witnesses are between t and x. Use Classical.choice or Finset sorting to order them. Show segment guards hold by contrapositive with zone_bridge_between_tx."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 911,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft",
-      "assumption": "endpointLeft holds at t for Until VecEA2",
-      "why_deferred": "Same as pre_conditions_at_t_until_holds but in different proof context",
-      "next_dispatch": "Fill alongside pre_conditions_at_t_until_holds"
+      "line": 1352,
+      "statement": "forward_nf_eval_of_holdsLeft (reconstruct nf_eval from VecEA2 components)",
+      "assumption": "nf_eval_nf M 1 (1+1) (Fin.cons x (fun _ => t)) sub_nf",
+      "why_deferred": "Requires reconstructing full NF evaluation from endLeft, endRight, and bracket components. Atom part via char_1_correct + nf_x_compat_check. Quant part via zone-temporal bridges for each zone.",
+      "next_dispatch": "Decompose into atom part + quant part. Atom: from h_endRight extract char_1(nf_x) via h_eq identity, combine with h_compat and h_atoms. Quant: for each ssn, case split on zone and use the 4 temporal bridge lemmas (below_t_temporal_iff etc.) to convert temporal conditions back to existentials."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 923,
-      "statement": "backward_holdsLeft_of_nf_eval endRight (quant part)",
-      "assumption": "right_conjuncts hold at x for eq_x and above_x zones",
-      "why_deferred": "Requires zone-specific bridges for eq_x and above_x zones. ~50 lines.",
-      "next_dispatch": "Fill using nf_depth0_char_formula_correct for eq_x + Until semantics for above_x"
+      "line": 1464,
+      "statement": "existPart_succ_n1_bypass_k0_since (Since case, mirror of Until)",
+      "assumption": "∃ A, ∀ M h_UZ h_SZ t, ... → (temporal_truth ... A ↔ ∃ x, nf_eval ...)",
+      "why_deferred": "Structural mirror of the Until case. Uses enriched_bypass_since which is a formula_disjList of Since(pt_x, guard) terms, NOT VVecEA2. Needs zone bridges with swapped x/t roles.",
+      "next_dispatch": "Mirror the Until case proof structure. enriched_bypass_since uses formula_disjList directly. Need reversed zone bridges (zone_yxt, zone_xty, bracket_xyt from KampForward -- but KampForward imports KampBypass, so cannot import). Must use ZoneBridge lemmas directly with swapped parameters."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 927,
-      "statement": "backward_holdsLeft_of_nf_eval bracket",
-      "assumption": "bracket.holds t x for positive between_tx ssns + negative segment guards",
-      "why_deferred": "Requires BracketFormula.holds decomposition + between-zone witness extraction. ~100 lines.",
-      "next_dispatch": "Fill using bracket witness construction from h_eval_quant + segment guard negation"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 985,
-      "statement": "forward_nf_eval_of_holdsLeft (nf_eval reconstruction)",
-      "assumption": "Given VecEA2 holdsLeft conditions, reconstruct nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf",
-      "why_deferred": "Requires reconstructing atom conditions + quantifier conditions from VecEA2 endpoint/bracket data. ~150 lines.",
-      "next_dispatch": "Fill using char_1_correct inverse + zone bridge theorems for quantifier reconstruction"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1097,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case of enriched bypass at depth 1",
-      "why_deferred": "Mirror of Until case. ~200 lines.",
-      "next_dispatch": "Fill by mirroring the Until case with reversed order direction"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1185,
-      "statement": "existPart_succ_n1_bypass (succ k' case)",
-      "assumption": "General depth >= 2 enriched bypass",
-      "why_deferred": "Requires arity-climbing induction (Phase 3 of plan v26). Not on depth-1 critical path.",
-      "next_dispatch": "Phase 3 of plan v26: generalize enriched bypass to all arities"
+      "line": 1552,
+      "statement": "existPart_succ_n1_bypass (depth >= 2 case)",
+      "assumption": "General k > 0 case for enriched bypass",
+      "why_deferred": "Out of scope for this task",
+      "next_dispatch": "Separate task"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
       "statement": "nf_exist_backward_prior",
-      "assumption": "Backward direction of nf_exist_formula on Prior structures",
-      "why_deferred": "Not on critical path -- bypassed by nf_characterizable_temporal_prior_classical",
-      "next_dispatch": "No action needed unless the classical approach is abandoned"
+      "assumption": "Backward direction bypassed by classical approach",
+      "why_deferred": "Out of scope -- bypassed by nf_characterizable_temporal_prior_classical",
+      "next_dispatch": "No action needed"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/depth1-match-split-20260614.md",
+  "blockers": [
+    "bracket sorry (line 1294): requires IntervalPattern witness construction with strict ordering from individual existentials",
+    "forward sorry (line 1352): requires full nf_eval reconstruction from temporal VecEA2 components",
+    "equality sorry (line 720): requires zone bridges at [y,t,t] (x=t case) for both directions",
+    "since sorry (line 1464): structural mirror of Until case, ~200 lines"
+  ],
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "next_phase": "Fill KampBypass.lean sorries for existPart_succ_n1_bypass_k0 (eq, until, since cases)",
-    "key_insight": "At depth 1, the k=1 branch now calls existPart_succ_n1_bypass_k0 directly, isolating it from the depth >= 2 sorry. The 7 remaining sorries in existPart_succ_n1_bypass_k0 and its sub-theorems are the targets for the next dispatch."
+    "resume_phase": 2,
+    "completed_work": "3 of 7 target sorries filled. Zone extraction helpers and 4 zone-temporal bridge lemmas added.",
+    "infrastructure_added": [
+      "zone_below_t_yt, zone_below_t_ty, zone_eq_t_orders, zone_eq_x_orders, zone_above_x_orders, zone_between_tx_orders (zone order extraction from ssn_zone_until)",
+      "below_t_temporal_iff: Since(char_y, top) at t ↔ ∃ y, nf_eval for below_t zone",
+      "eq_t_temporal_iff: char_y at t ↔ ∃ y, nf_eval for eq_t zone",
+      "eq_x_temporal_iff: char_y at x ↔ ∃ y, nf_eval for eq_x zone",
+      "above_x_temporal_iff: Until(char_y, top) at x ↔ ∃ y, nf_eval for above_x zone"
+    ],
+    "key_insight": "The KampForward per-SSN theorems cannot be imported due to circular dependency (KampForward imports KampBypass). All zone bridges must go through ZoneBridge.lean which is already imported. The zone-temporal bridge lemmas (below_t_temporal_iff etc.) compose ZoneBridge theorems with nf_depth0_char_formula_correct and handle both positive and negative directions.",
+    "fill_order_recommendation": "bracket(1294) -> forward(1352) -> equality(720) -> since(1464). Bracket and forward are most impactful since they complete the Until direction. Equality is self-contained. Since mirrors Until."
   }
 }
