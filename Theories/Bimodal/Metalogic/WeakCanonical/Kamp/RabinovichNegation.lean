@@ -257,41 +257,17 @@ theorem nf_2var_exist_formula_prior_neg
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  refine ⟨nf_exist_formula atomMap h_surj k char_k parent_atoms sub_nf,
-    fun M h_UZ h_SZ t h_atoms => ?_⟩
-  have char_k_M : ∀ (nf_k : NormalForm sig k 1) (t' : M.carrier),
-      temporal_truth M atomMap t' (char_k nf_k) ↔
-      nf_eval_nf M k 1 (fun _ => t') nf_k :=
-    fun nf_k t' => char_k_correct nf_k M h_UZ h_SZ t'
-  constructor
-  · -- Backward: formula truth → ∃ x with right NF
-    intro h_formula
-    cases k with
-    | zero =>
-      exact nf_exist_backward_depth0 atomMap h_surj char_k char_k_M
-        parent_atoms sub_nf h_atoms h_formula
-    | succ k' =>
-      /- At depth k'+1, the backward direction requires showing that the
-         witness x found by Until/Since satisfies ALL quantifier conditions
-         of the 2-var NF, including the arity-3 existentials.
-
-         For each ssn : NormalForm sig k' 3,
-           (∃ y, nf_eval_nf M k' 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn)
-           ↔ (sub_nf.2 ssn = true)
-
-         The positive conditions need ∃ y with the right 3-var NF at depth k'.
-         The negative conditions need ¬∃ y with the right 3-var NF at depth k'.
-
-         Both require characterizing depth-k' arity-3 existentials, which
-         involves depth-(k'-1) arity-4 existentials, etc. This arity-climbing
-         induction terminates because depth strictly decreases.
-
-         This is the content of Rabinovich Proposition 4.2 (negation closure)
-         and Section 5 (the interval splitting core). -/
-      sorry
-  · -- Forward: ∃ x with right NF → formula truth
-    intro h_ex
-    exact nf_exist_formula_forward' atomMap h_surj k char_k char_k_M
-      parent_atoms sub_nf h_atoms h_ex
+  -- Delegate to the enriched bypass at all depths.
+  -- At depth 0: the bypass delegates to nf_2var_exist_depth0_tl (sorry-free).
+  -- At depth k+1: the bypass uses the enriched formula approach.
+  cases k with
+  | zero =>
+    -- Depth 0: use VecEA2-based decomposition (sorry-free)
+    obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
+    exact ⟨A, fun M _ _ t _ => hA M t⟩
+  | succ k' =>
+    -- Depth k'+1: use the enriched bypass formula
+    exact existPart_succ_n1_bypass atomMap h_surj k' char_k char_k_correct
+      parent_atoms sub_nf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

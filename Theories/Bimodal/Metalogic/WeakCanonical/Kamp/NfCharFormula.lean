@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
 import Bimodal.Metalogic.WeakCanonical.Kamp.Translation
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
@@ -635,30 +636,11 @@ theorem nf_2var_exist_formula_prior
     obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
     exact ⟨A, fun M _ _ t _ => hA M t⟩
   | k + 1 =>
-    -- Depth k+1: use nf_exist_formula as the formula A.
-    -- Forward direction (∃ x → formula truth) is sorry-free via nf_exist_formula_forward'.
-    -- Backward direction (formula truth → ∃ x) on Prior structures requires
-    -- composition on Prior structures: knowing x's depth-(k+1) 1-var NF + t's
-    -- predicates + Prior-UZ/SZ determines the depth-k 3-var quantifier profile.
-    refine ⟨nf_exist_formula atomMap h_surj (k + 1) char_k parent_atoms sub_nf,
-      fun M h_UZ h_SZ t h_atoms => ?_⟩
-    have char_k_M : ∀ (nf_kp1 : NormalForm sig (k + 1) 1) (s : M.carrier),
-        temporal_truth M atomMap s (char_k nf_kp1) ↔
-        nf_eval_nf M (k + 1) 1 (fun _ => s) nf_kp1 :=
-      fun nf_kp1 s => char_k_correct nf_kp1 M h_UZ h_SZ s
-    constructor
-    · -- Backward: formula truth → ∃ x with NF
-      -- This direction requires the composition property on Prior structures.
-      -- The formula places x via Until/Since with char_k(nf_x) holding at x,
-      -- giving nf_eval_nf M (k+1) 1 (fun _ => x) nf_x. We need to show that
-      -- nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf, which requires
-      -- recovering the depth-k 3-var quantifier conditions from x's 1-var NF
-      -- + t's predicates + Prior-UZ/SZ.
-      exact nf_exist_backward_prior atomMap h_surj k char_k char_k_M
-        parent_atoms sub_nf h_UZ h_SZ h_atoms
-    · -- Forward: ∃ x with NF → formula truth (sorry-free)
-      exact nf_exist_formula_forward' atomMap h_surj (k + 1) char_k char_k_M
-        parent_atoms sub_nf h_atoms
+    -- Depth k+1: use the enriched bypass formula from KampBypass.lean.
+    -- The bypass encodes both atom AND quantifier conditions, avoiding the
+    -- broken backward direction of nf_exist_formula.
+    exact existPart_succ_n1_bypass atomMap h_surj k char_k char_k_correct
+      parent_atoms sub_nf
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
     at depth k+1. This is the approach taken by StaviCompleteness for the

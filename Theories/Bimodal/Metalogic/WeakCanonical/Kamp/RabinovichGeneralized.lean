@@ -3,6 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichTranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichNegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 import Bimodal.Metalogic.WeakCanonical.Kamp.SeparationBridge
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 
 /-!
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
@@ -430,20 +431,10 @@ theorem existPart_succ {sig : MonadicSignature}
   | succ n' =>
     cases n' with
     | zero =>
-      -- n=1, arity=2: the genuine mathematical blocker.
-      -- At depth k+1 with 2 variables (x and t), the existential
-      --   ∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf
-      -- requires both:
-      --   (a) atom conditions on x and t (as at depth 0), AND
-      --   (b) quantifier conditions: for each ssn : NormalForm sig k 3,
-      --       (∃ y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn)
-      --       ↔ sub_nf.2 ssn = true
-      --
-      -- Strategy: use nf_exist_formula with char_kp1 (depth k+1 characteristic
-      -- formulas). The forward direction is sorry-free (nf_exist_formula_forward').
-      -- The backward direction delegates to nf_2var_exist_formula_prior_neg
-      -- which handles backward at depth 0 (sorry-free) and at depth k+1 (sorry).
-      exact nf_2var_exist_formula_prior_neg atomMap h_surj (k + 1)
+      -- n=1, arity=2: use the enriched bypass formula from KampBypass.lean.
+      -- The bypass encodes both atom AND quantifier conditions in the temporal
+      -- formula, avoiding the broken backward direction of nf_exist_formula.
+      exact existPart_succ_n1_bypass atomMap h_surj k
         char_kp1 char_kp1_correct parent_atoms sub_nf
     | succ n'' =>
       -- n >= 2, arity >= 3: reduces to n=1 via 2-var projection.
