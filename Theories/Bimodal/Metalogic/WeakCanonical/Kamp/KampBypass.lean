@@ -667,6 +667,39 @@ private theorem witness_eq_t_of_no_order {sig : MonadicSignature}
     simp only [atom_eval, Fin.cons] at this
     exact Bool.noConfusion (h_gt ▸ this h')
 
+/-! ## Eq-case order consistency
+
+When ssn_xt_compatible ... false false = true, the equality consistency
+clause gives yx = yt and xy = ty. -/
+
+set_option maxHeartbeats 1600000 in
+private theorem eq_case_orders {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3) (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (h_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms false false = true) :
+    ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false ∧
+    ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false ∧
+    ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+      ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) ∧
+    ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+      ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) := by
+  -- Extract xt and tx from compatibility
+  have h1 : ssn_xt_compatible ssn nf_x_1var parent_atoms false false = true := h_compat
+  simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h1
+  have h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false := h1.1.2
+  have h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false := h1.1.1.2
+  refine ⟨h_xt, h_tx, ?_, ?_⟩
+  all_goals {
+    have h_consist : ssn_order_consistent ssn = true := h1.2
+    simp only [ssn_order_consistent, Bool.and_eq_true, Bool.not_eq_true', Bool.or_eq_true,
+      Bool.not_eq_eq_eq_not, Bool.not_true, beq_iff_eq] at h_consist
+    have h_last := h_consist.2
+    rcases h_last with ⟨h | h⟩ | h_eq
+    · simp_all
+    · simp_all
+    · first | exact h_eq.1 | exact h_eq.2
+  }
+
 /-! ## Equality Case (x = t) -/
 
 set_option maxHeartbeats 800000 in
