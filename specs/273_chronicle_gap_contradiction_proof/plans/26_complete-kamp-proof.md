@@ -109,7 +109,7 @@ Phases are fully sequential. Each phase depends on the prior.
 
 ---
 
-### Phase 2: Close depth-0 wiring sorries [NOT STARTED]
+### Phase 2: Close depth-0 wiring sorries [IN PROGRESS]
 
 **Goal**: Fill the 8 depth-0 sorry sites in KampBypass.lean by connecting VecEADecomp zone theorems to `nf_eval_nf`. These are mechanical wiring proofs -- the mathematical content exists in VecEADecomp.lean (898 lines, sorry-free). After this phase, `existPart_succ_n1_bypass_k0` will be sorry-free.
 

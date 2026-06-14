@@ -750,6 +750,7 @@ private theorem witness_eq_t_of_no_order {sig : MonadicSignature}
 
 /-! ## Equality Case (x = t) -/
 
+set_option maxHeartbeats 800000 in
 /-- Equality case of the enriched bypass: when sub_nf says x = t,
     the existential reduces to nf_eval_nf M 1 2 [t, t] sub_nf. -/
 private theorem existPart_succ_n1_bypass_k0_eq
@@ -775,123 +776,70 @@ private theorem existPart_succ_n1_bypass_k0_eq
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- When x = t, any witness x must equal t. So the existential reduces to
-  -- nf_eval_nf M 1 2 (Fin.cons t (fun _ => t)) sub_nf, a property of t alone.
-  -- Use enriched_bypass_eq as the temporal formula. Proof deferred to quantifier
-  -- profile helper lemma (requires depth-0 3-var zone correctness).
-  sorry
-  /-
+  -- When x = t, any witness x must equal t (by witness_eq_t_of_no_order).
+  -- Check predicate compatibility: var-0 = var-1 (both are t's preds) and
+  -- var-1 matches parent_atoms.
   by_cases h_pred_compat : ∀ p : sig.preds,
       sub_nf.1 (.pred p ⟨0, by omega⟩) = sub_nf.1 (.pred p ⟨1, by omega⟩)
-  · -- Predicates compatible: build a depth-1 1-var NF for x
-    -- The 1-var NF for x = t is: atoms from sub_nf.1 at var 0,
-    -- quantifier from sub_nf.2 projected to [y,t,t]
-    -- Build nf_x_eq: the depth-1 1-var NF such that nf_eval_nf M 1 1 [t] nf_x_eq
-    -- iff the atom part of nf_eval_nf M 1 2 [t,t] sub_nf holds at t.
-    --
-    -- Actually, nf_eval_nf M 1 2 [t,t] sub_nf = (atom part) ∧ (quant part)
-    -- The atom part constrains preds at t and the x=t order (both false).
-    -- Given parent_atoms determines t's preds, the atom part is either always
-    -- true or always false (depends on sub_nf.1 vs parent_atoms).
-    --
-    -- Check: do var-1 preds match parent_atoms?
-    by_cases h_t_compat : ∀ p : sig.preds,
+  · by_cases h_t_compat : ∀ p : sig.preds,
         sub_nf.1 (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩)
-    · -- Both compatible: the existential becomes ∃ x = t, quant_part
-      -- i.e., quant_part at [t,t]
-      -- For the quantifier part: ∀ ssn, (∃ y, nf_eval_nf M 0 3 [y,t,t] ssn) ↔ sub_nf.2 ssn
-      -- Each condition (∃ y, nf_eval_nf M 0 3 [y,t,t] ssn) has a temporal formula
-      -- via the zone decomposition. The characteristic at x=t makes the quantifier
-      -- part equivalent to a finite conjunction/disjunction at t.
-      --
-      -- Use char_1 for the whole depth-1 1-var NF.
-      -- The key: if nf_eval_nf M 1 2 [t,t] sub_nf holds, then x=t satisfies
-      -- nf_eval_nf M 1 1 [t] nf_x for a unique nf_x determined by sub_nf.
-      -- And char_1(nf_x) is equivalent to nf_eval_nf M 1 1 [t] nf_x.
-      -- The quantifier conditions at [y,t,t] are the same as at [y,t] for 1-var.
-      --
-      -- Actually, the simplest correct approach: build the formula as
-      -- char_1(nf_x) where nf_x is the unique depth-1 1-var NF compatible with sub_nf
-      -- then the biconditional follows from NF uniqueness.
-      -- But we also need the quantifier conditions to be captured by char_1.
-      -- char_1(nf_x) captures nf_eval_nf M 1 1 [t] nf_x which is:
-      --   atoms at t ∧ ∀ ssn_1, (∃ y, nf_eval_nf M 0 2 [y,t] ssn_1) ↔ nf_x.2 ssn_1
-      -- This is NOT the same as the quantifier part of nf_eval_nf M 1 2 [t,t] sub_nf
-      -- which involves 3-var NFs [y,t,t].
-      --
-      -- We need to build a temporal formula for the depth-0 3-var quantifier
-      -- conditions. Use a classical existence argument: for each ssn,
-      -- classically obtain a temporal formula for ∃ y, nf_eval_nf M 0 3 [y,t,t] ssn.
-      -- This is possible because depth-0 3-var existentials have temporal formulas
-      -- via the zone decomposition (VecEADecomp.lean).
-      -- Use Classical.choice to construct the temporal formula for the quantifier part.
-      -- The formula for the full existential is:
-      -- ∨ over compatible nf_x: char_1(nf_x) ∧ quantifier_profile
-      -- where quantifier_profile = ∧ over ssn: (B_ssn if sub_nf.2 ssn, ¬B_ssn otherwise)
-      --
-      -- SIMPLIFIED APPROACH: observe that nf_eval_nf M 1 2 [t,t] sub_nf with compatible
-      -- predicates is a fixed proposition about t. We can express it as a conjunction
-      -- of char_1(nf_x) (which captures the 1-var depth-1 type of t) and the quantifier
-      -- conditions. The quantifier conditions are additional constraints that go beyond
-      -- what char_1 captures (they involve 3-var NFs).
-      -- However, since the quantifier conditions at [y,t,t] depend only on t,
-      -- each one is TL-definable by the depth-0 zone decomposition.
-      -- Rather than building the projection machinery, we use a classical argument.
-      --
-      -- Step 1: Classically build the 1-var NF for t that satisfies the atom+quant part
-      -- Step 2: Build formula as disjunction over compatible nf_x of char_1(nf_x) ∧ quant
-      -- Step 3: Use NF uniqueness for correctness
-      sorry
-    · -- var-1 preds don't match parent_atoms: existential is impossible
-      -- (since any witness x = t must have t's preds matching parent_atoms)
-      exact ⟨Formula.bot, fun M _ _ t h_atoms => by
-        simp only [temporal_truth]
-        exact ⟨fun h => absurd h id, fun ⟨x, h_eval⟩ => by
-          -- From nf_eval: x = t (since neither order holds)
-          obtain ⟨h_atom, _⟩ := h_eval
-          have h_o_gt := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-          have h_o_lt := h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
-          simp only [atom_eval, Fin.cons] at h_o_gt h_o_lt
-          have h_x_eq_t : x = t := by
-            by_contra h_ne
-            rcases lt_or_gt_of_ne h_ne with h_lt' | h_gt'
-            · exact Bool.noConfusion (h_lt ▸ h_o_lt.mp h_lt')
-            · exact Bool.noConfusion (h_gt ▸ h_o_gt.mp h_gt')
-          subst h_x_eq_t
-          -- Now check t-predicate compatibility
-          push_neg at h_t_compat
-          obtain ⟨p, hp⟩ := h_t_compat
-          have h_sub := h_atom (.pred p ⟨1, by omega⟩)
-          simp only [atom_eval, Fin.cons] at h_sub
-          have h_par := h_atoms (.pred p ⟨0, by omega⟩)
-          simp only [atom_eval] at h_par
-          -- sub_nf.1 (.pred p 1) should match parent_atoms (.pred p 0)
-          cases hsub : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
-          cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
-          simp_all⟩⟩
-  · -- var-0 and var-1 predicates don't agree: existential is impossible
-    exact ⟨Formula.bot, fun M _ _ t h_atoms => by
+    · -- Compatible: build a depth-1 1-var NF for x = t and use char_1
+      -- Build nf_x_eq: the unique depth-1 1-var NF such that
+      -- nf_eval_nf M 1 1 [t] nf_x_eq captures the quantifier conditions
+      -- at [t, t] (= at [x, t] with x = t).
+      -- The quantifier part at depth 1 involves ∀ ssn, (∃ y, nf_eval_nf M 0 3 [y,t,t] ssn) ↔ sub_nf.2 ssn.
+      -- Each (∃ y, nf_eval_nf M 0 3 [y,t,t] ssn) is a depth-0 3-var existential with vars 1,2 equal.
+      -- We use classical choice to obtain temporal formulas for each.
+      -- The formula: disjunction over compatible nf_x of char_1(nf_x) ∧ quant_profile.
+      -- Use enriched_bypass_eq as the formula.
+      exact ⟨enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms,
+        fun M h_UZ h_SZ t h_atoms => by
+        -- The enriched_bypass_eq formula is a disjunction over nf_x values.
+        -- For each nf_x, the conjunct is char_1(nf_x) ∧ quant_conjuncts.
+        -- The equivalence with ∃ x, nf_eval at [x, t] where x = t
+        -- follows from NF uniqueness + zone decomposition.
+        sorry⟩
+    · -- var-1 preds don't match parent_atoms: existential impossible
+      refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
       simp only [temporal_truth]
-      exact ⟨fun h => absurd h id, fun ⟨x, h_eval⟩ => by
+      constructor
+      · exact fun h => absurd h id
+      · intro ⟨x, h_eval⟩
+        have h_x_eq := witness_eq_t_of_no_order M sub_nf t₀ x h_gt h_lt h_eval
+        subst h_x_eq
+        push_neg at h_t_compat; obtain ⟨p, hp⟩ := h_t_compat
         obtain ⟨h_atom, _⟩ := h_eval
-        have h_o_gt := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-        have h_o_lt := h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
-        simp only [atom_eval, Fin.cons] at h_o_gt h_o_lt
-        have h_x_eq_t : x = t := by
-          by_contra h_ne
-          rcases lt_or_gt_of_ne h_ne with h_lt' | h_gt'
-          · exact Bool.noConfusion (h_lt ▸ h_o_lt.mp h_lt')
-          · exact Bool.noConfusion (h_gt ▸ h_o_gt.mp h_gt')
-        subst h_x_eq_t
-        push_neg at h_pred_compat
-        obtain ⟨p, hp⟩ := h_pred_compat
-        have h0 := h_atom (.pred p ⟨0, by omega⟩)
-        have h1 := h_atom (.pred p ⟨1, by omega⟩)
-        simp only [atom_eval, Fin.cons] at h0 h1
-        cases h0v : sub_nf.1 (.pred p ⟨0, by omega⟩) <;>
-        cases h1v : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
-        simp_all⟩⟩
-  -/
+        have h_sub := (h_atom (.pred p ⟨1, by omega⟩))
+        have h_par := (h_atoms (.pred p ⟨0, by omega⟩))
+        simp only [atom_eval] at h_par
+        -- After subst, derive M.interp p x ↔ sub_nf.1 (.pred p 1) from h_atom
+        have h_sub' : M.interp p x ↔ sub_nf.1 (.pred p ⟨1, by omega⟩) = true := by
+          have h := h_atom (.pred p ⟨1, by omega⟩); unfold atom_eval at h
+          exact h
+        cases hsub : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+        cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+        simp_all
+  · -- var-0 and var-1 predicates don't agree: existential impossible
+    refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
+    simp only [temporal_truth]
+    constructor
+    · exact fun h => absurd h id
+    · intro ⟨x, h_eval⟩
+      have h_x_eq := witness_eq_t_of_no_order M sub_nf t₀ x h_gt h_lt h_eval
+      subst h_x_eq
+      push_neg at h_pred_compat; obtain ⟨p, hp⟩ := h_pred_compat
+      obtain ⟨h_atom, _⟩ := h_eval
+      have h0 := (h_atom (.pred p ⟨0, by omega⟩))
+      have h1 := (h_atom (.pred p ⟨1, by omega⟩))
+      -- After subst, derive M.interp from h_atom with proper reduction
+      have h0' : M.interp p x ↔ sub_nf.1 (.pred p ⟨0, by omega⟩) = true := by
+        have h := h_atom (.pred p ⟨0, by omega⟩); unfold atom_eval at h; exact h
+      have h1' : M.interp p x ↔ sub_nf.1 (.pred p ⟨1, by omega⟩) = true := by
+        have h := h_atom (.pred p ⟨1, by omega⟩); unfold atom_eval at h
+        exact h
+      cases h0v : sub_nf.1 (.pred p ⟨0, by omega⟩) <;>
+      cases h1v : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+      simp_all
 
 /-! ## Zone-based 3-var existential decomposition for Until direction
 
@@ -926,11 +874,8 @@ private theorem zone_3var_exist_iff_1var {sig : MonadicSignature}
   -- Extract compatibility conditions from h_compat
   simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat
   obtain ⟨⟨⟨h_xp, h_tp⟩, h_tx_order⟩, h_xt_order⟩ := h_compat
-  -- Zone decomposition relates 3-var existential to 1-var conditions + orders.
-  -- Each zone case requires proving that the order booleans in ssn are
-  -- consistent with the zone classification, and that reconstruct_nf_3var
-  -- can rebuild the full 3-var NF from the 1-var predicate conditions.
-  -- Proof deferred: requires detailed zone-by-zone case analysis (~200 lines).
+  -- zone_3var_exist_iff_1var is not on the critical path (unused).
+  -- Keeping sorry as placeholder for future use if needed.
   sorry
 
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
