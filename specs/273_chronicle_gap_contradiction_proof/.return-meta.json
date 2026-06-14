@@ -10,19 +10,31 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 690,
-      "statement": "existPart_succ_n1_bypass_k0 (k=0 case, formula defined, proof pending)",
-      "why_deferred": "Proof body needs ~200-400 lines of tactic work for forward + backward directions"
+      "line": 670,
+      "statement": "existPart_succ_n1_bypass_k0_eq (equality case x=t)",
+      "why_deferred": "Complex 3-var->2-var projection for quantifier conditions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 721,
+      "line": 856,
+      "statement": "existPart_succ_n1_bypass_k0_until biconditional (temporal_truth iff nf_eval)",
+      "why_deferred": "200+ line proof connecting VecEA2.holdsLeft with nf_eval across 6 zones"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 884,
+      "statement": "existPart_succ_n1_bypass_k0_since (Since case x<t)",
+      "why_deferred": "Mirror of Until case"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 972,
       "statement": "existPart_succ_n1_bypass (k>0 case)",
-      "why_deferred": "Requires ih_exist parameter for depth-k 3-var conditions"
+      "why_deferred": "Pre-existing sorry, requires depth-k IH"
     }
   ],
   "verification": {
-    "sorry_count": 2,
+    "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
@@ -30,7 +42,7 @@
   "memory_candidates": [
     "VecEA2 bracket witnesses are guaranteed to be between endpoints by construction. For encoding 'exists y between t and x', use BracketFormula with pointTypes for y's predicates and segmentTypes for interval guards. This avoids the backward-direction failure of Since(char_y, top) at x which finds y anywhere below x.",
     "The zone-aware enriched formula distributes y-conditions across the Until structure: endpointLeft handles y < t and y = t zones at t; endpointRight handles y = x and y > x zones at x; bracket handles t < y < x zone with guaranteed witnesses between endpoints.",
-    "For negative between_tx conditions (sub_nf.2 ssn = false): if ssn is in zone between_tx and xt-compatible, then no y in (t,x) has the predicates of nf_y_proj ssn (because the order atoms match in (t,x) but the overall NF is unsatisfied, so predicates must fail). This justifies neg char_y in the segment guard.",
-    "ssn_zone_until classifies depth-0 3-var NFs into zones based on y-t and y-x order atoms. The zone determines where the ssn's temporal encoding goes in the enriched formula structure."
+    "existPart_succ_n1_bypass_k0 was decomposed into 4 cases by order booleans: (true,true) proved (contradiction), plus three helper theorems for Until, Since, and Equality. This decomposition follows nf_2var_exist_depth0_tl structure.",
+    "For the equality case (x=t), depth-0 3-var existentials with the last two vars equal can be projected to 2-var existentials via nf_2var_exist_depth0_tl, after checking var1-var2 order/predicate compatibility."
   ]
 }

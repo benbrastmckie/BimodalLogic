@@ -1,44 +1,52 @@
 {
   "status": "partial",
-  "summary": "Zone-aware enriched formula v2 defined with VecEA2 brackets for between_tx zone. Fixes the v1 unsoundness (y-t order loss). Formula definitions compile, correctness proofs pending (~200-400 lines).",
+  "summary": "Decomposed existPart_succ_n1_bypass_k0 into three zone-specific helper theorems. The both-orders case is proved. The Until case witnesses with enriched_bypass_until (VVecEA2.translateLeft). Equality, Until biconditional, and Since cases have sorry placeholders.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 690,
-      "statement": "theorem existPart_succ_n1_bypass_k0",
-      "assumption": "enriched_bypass_formula_zone with VecEA2 brackets correctly characterizes depth-1 2-var existential",
-      "why_deferred": "Proof body needs ~200-400 lines: forward direction (zone-by-zone verification using VecEADecomp zone theorems) and backward direction (VecEA2 bracket extraction + NF reconstruction). The formula architecture is sound (VecEA2 brackets guarantee witnesses between t and x), but the proof is substantial.",
-      "next_dispatch": "Prove existPart_succ_n1_bypass_k0: (1) refine with enriched_bypass_formula_zone, (2) case split on x-t order, (3) for Until case: use VVecEA2.translateLeft_correct, then prove forward via zone-specific VecEADecomp lemmas, backward via bracket witness extraction + char_1_correct"
+      "line": 670,
+      "statement": "theorem existPart_succ_n1_bypass_k0_eq",
+      "assumption": "Equality case (x=t) formula exists and is correct",
+      "why_deferred": "Complex 3-var to 2-var projection for quantifier conditions + char_1 combination. Each ssn needs zone decomposition with x=t constraint.",
+      "next_dispatch": "Build formula from char_1 + classically chosen ssn formulas via nf_2var_exist_depth0_tl projection"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 721,
-      "statement": "theorem existPart_succ_n1_bypass (succ k')",
-      "assumption": "General k > 0 case requires depth-k IH",
-      "why_deferred": "Needs ih_exist : ExistPart atomMap h_surj k parameter from existPart_succ call site",
-      "next_dispatch": "Add ih_exist parameter; update RabinovichGeneralized.lean call site; generalize VecEA2 bracket approach to depth k"
+      "line": 856,
+      "statement": "existPart_succ_n1_bypass_k0_until biconditional",
+      "assumption": "enriched_bypass_until formula is semantically correct (temporal_truth iff nf_eval existential)",
+      "why_deferred": "200+ line proof connecting VecEA2.holdsLeft with nf_eval_nf decomposition across 6 zones (y<t, y=t, t<y<x, y=x, y>x, inconsistent). Each zone needs zone-specific VecEADecomp theorems.",
+      "next_dispatch": "Prove backward direction first (nf_eval -> holdsLeft using zone witnesses), then forward direction"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
-      "line": 465,
-      "statement": "existPart_succ (n >= 2 case)",
-      "assumption": "The n=1 case is filled",
-      "why_deferred": "Depends on n=1 case.",
-      "next_dispatch": "Fill after existPart_succ_n1_bypass is sorry-free."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 884,
+      "statement": "theorem existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case (x<t) formula exists and is correct",
+      "why_deferred": "Mirror of Until case, defer until Until is done",
+      "next_dispatch": "Mirror the Until proof for Since direction with swapped endpoints"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 972,
+      "statement": "existPart_succ_n1_bypass (succ k')",
+      "assumption": "General k > 0 case requires depth-k IH",
+      "why_deferred": "Pre-existing sorry, separate task",
+      "next_dispatch": "After k=0 case complete, generalize to k>0"
     }
   ],
   "blockers": [],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/zone-formula-v2-handoff-20260614.md",
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/bypass-k0-decomp-20260614.md",
   "continuation_context": {
     "is_successor": false,
-    "key_insight": "VecEA2 bracket witnesses are between t and x by construction, fixing backward direction. The old approach (Since(char_y,top) at x for positive between_tx) found y anywhere below x, not necessarily above t.",
-    "formula_architecture": "enriched_bypass_formula_zone -> enriched_bypass_until -> VVecEA2(enriched_vecEA2_until per nf_x).translateLeft",
-    "key_definitions": {
-      "enriched_vecEA2_until": "Builds VecEA2 with endpointLeft (pre-conditions at t), endpointRight (char_1(nf_x) + eq_x/above_x), bracket (positive between_tx witnesses + negative segment guards)",
-      "ssn_zone_until": "Classifies each ssn into one of 6 zones based on y-t and y-x order atoms",
-      "enriched_bypass_formula_zone": "Full formula: t_compat check, then Until/Since/Eq dispatch"
-    }
+    "next_phase": "Until case biconditional proof (line 856)",
+    "key_files": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEATranslation.lean"
+    ]
   }
 }
