@@ -1,5 +1,5 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
@@ -8,8 +8,19 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 597,
-      "statement": "nf_2var_exist_formula_prior (k+1 case)"
+      "line": 540,
+      "statement": "nf_exist_backward_prior",
+      "assumption": "Backward direction of nf_exist_formula for Prior structures at depth k+1",
+      "why_deferred": "Requires Prior composition property (Feferman-Vaught for Prior linear orders)",
+      "next_dispatch": "Prove Prior composition property"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosure.lean",
+      "line": 1716,
+      "statement": "nf_exist_formula_nested_backward",
+      "assumption": "Same blocker as nf_exist_backward_prior",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Redundant once NfCharFormula.lean:540 is filled"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichGeneralized.lean",
@@ -22,5 +33,17 @@
       "statement": "existPart_succ n>=2"
     }
   ],
-  "started_at": "2026-06-13T00:00:00Z"
+  "verification": {
+    "sorry_count": 1,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "scope": "Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula"
+  },
+  "memory_candidates": [
+    "Prior composition property: On Prior structures, the depth-k n-var NF of (y, x, t) should be determined by the depth-(k+1) 1-var NFs of y, x, t plus the order. This is FALSE on general linear orders (NfComposition.lean counterexample) but expected TRUE on Prior structures.",
+    "All 5 remaining sorries in the Kamp chain (NfCharFormula:540, NegationClosure:1716, RabinovichNegation:291, RabinovichGeneralized:446+474) trace to the same root blocker: Prior composition. No formula-level rearrangement (VecEA2, nested formulas, enriched encoding) can avoid this mathematical content.",
+    "nf_2var_exist_formula_prior forward direction: uses nf_exist_formula_forward' which is sorry-free. Only the backward direction (formula truth -> existential) requires composition."
+  ],
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-v28-blocked-20260613.md"
 }

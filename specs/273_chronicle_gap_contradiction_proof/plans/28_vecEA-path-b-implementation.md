@@ -159,7 +159,7 @@ The Since direction needs the mirror: extract/prepend the LAST witness instead o
 
 ---
 
-### Phase 2: Build NF-to-EA bridge at depth k+1 [IN PROGRESS]
+### Phase 2: Build NF-to-EA bridge at depth k+1 [BLOCKED]
 
 **Goal**: Convert `exists x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` into a VVecEA2 formula whose `holdsLeft`/`holdsRight` is equivalent to the NF existential on Prior structures. This is the core new code.
 
@@ -185,8 +185,16 @@ The NF existential at depth k+1 decomposes into:
 - Forward: given x with nf_eval, the atom conditions give endpoint types (VecEA2 endpoints), the positive quantifier conditions give EA witnesses, the negative quantifier conditions are satisfied (sub_nf.2 ssn = false means no y exists). All together: VecEA2.holdsLeft holds.
 - Backward: given VecEA2.holdsLeft, the endpoint types give atom conditions at x, the positive quantifier witnesses give exists y claims, and crucially the negative quantifier conditions (from Prop 4.2 negation) give sub_nf.2 ssn = false. Reconstructing `nf_eval_nf M (k+1) 2 (x, t) sub_nf` requires both atoms AND quantifiers, which the VecEA2 formula explicitly encodes.
 
+**BLOCKER** (Phase 2):
+- **What failed**: The NF-to-VecEA2 bridge at depth k+1 requires expressing `∃ y, nf_eval_nf M k 3 (y, x, t) ssn` (a 3-var existential with 2 free variables) as a temporal formula. This in turn requires the composition property: the depth-k 3-var NF of (y, x, t) must be determined by the 1-var NFs of x, y, t plus the order. On general linear orders this is FALSE (counterexample in NfComposition.lean). On Prior structures it should be TRUE but proving this requires Feferman-Vaught composition for Prior linear orders.
+- **What was tried**: (1) Using `nf_exist_formula` directly -- forward direction works, backward needs composition. (2) VecEA2 enriched formula -- avoids NF-level composition but still needs expressing 3-var existentials as temporal formulas, which requires the same composition at the formula level. (3) Adding P2(k) as a hypothesis -- would work but `nf_2var_exist_formula_prior` only has `char_k` (P1(k)), and the caller `nf_characterizable_temporal_prior_classical` doesn't provide P2(k) separately.
+- **Why stuck**: The sorry at NfCharFormula.lean:540 (`nf_exist_backward_prior`) and the sorry at NegationClosure.lean:1716 (`nf_exist_formula_nested_backward`) are manifestations of the SAME fundamental blocker: recovering the full 3-var quantifier profile from formula truth. Both the VecEA2 path (this plan) and the nested formula path (NegationClosure.lean) require the composition property on Prior structures. No formula-level rearrangement can avoid this mathematical content.
+- **What is needed**: Prove the Prior composition property: on structures satisfying Prior-UZ/SZ, the depth-k n-var NF of a tuple is determined by the depth-(k+1) 1-var NFs of the component points plus the order. This is the Feferman-Vaught composition theorem restricted to Prior linear orders. It would fill both NfCharFormula.lean:540 and NegationClosure.lean:1716 simultaneously.
+- **What was accomplished**: (1) Factored the sorry at NfCharFormula.lean:597 into a targeted lemma `nf_exist_backward_prior` (line 540) with the forward direction sorry-free. (2) Documented the precise mathematical content needed.
+
 **Tasks**:
-- [ ] **Task 2.1**: Define `nf_quant_to_vecEA2`: for a single depth-k 3-var NF ssn with sub_nf.2 ssn = true, convert `exists y, nf_eval_nf M k 3 (y, x, t) ssn` into a VecEA2 formula. This uses the IH (the depth-k version of the bridge) plus Lemma 3.4(3) for the existential. At depth 0, delegate to existing NfToVecEA depth-0 code. (~60-80 lines)
+- [x] **Task 2.1** *(deviation: altered -- factored sorry instead of building VecEA2)*: Factored `nf_2var_exist_formula_prior` sorry into `nf_exist_backward_prior` with sorry-free forward direction via `nf_exist_formula_forward'`. (~40 lines)
+- [ ] **Task 2.1** (original): Define `nf_quant_to_vecEA2`: for a single depth-k 3-var NF ssn with sub_nf.2 ssn = true, convert `exists y, nf_eval_nf M k 3 (y, x, t) ssn` into a VecEA2 formula. This uses the IH (the depth-k version of the bridge) plus Lemma 3.4(3) for the existential. At depth 0, delegate to existing NfToVecEA depth-0 code. (~60-80 lines)
 - [ ] **Task 2.2**: For negative conditions (sub_nf.2 ssn = false), construct the negation VecEA2 using `neg_2var_vec_ea` (Prop 4.2, sorry-free). The input is the VecEA2 from Task 2.1; the output is a VVecEA2 (disjunction of VecEA2). (~40-60 lines)
 - [ ] **Task 2.3**: Combine all positive and negative quantifier conditions for a given zone into a single VVecEA2. Use VecEA closure (conjunction of VVecEA2 is VVecEA2). Combine with endpoint conditions. (~60-80 lines)
 - [ ] **Task 2.4**: Assemble the full NF-to-VecEA2 conversion at depth k+1: disjunction over zones and atom profiles. Each disjunct is a VVecEA2 from Task 2.3. The disjunction of VVecEA2 is VVecEA2 (trivial). (~40-60 lines)
