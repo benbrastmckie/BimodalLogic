@@ -1,52 +1,81 @@
 {
   "status": "partial",
-  "summary": "Decomposed existPart_succ_n1_bypass_k0 into three zone-specific helper theorems. The both-orders case is proved. The Until case witnesses with enriched_bypass_until (VVecEA2.translateLeft). Equality, Until biconditional, and Since cases have sorry placeholders.",
+  "summary": "Decomposed existPart_succ_n1_bypass_k0_until (Until case) into modular helper lemmas with focused sub-goals. The main theorem now cleanly delegates to forward_nf_eval_of_holdsLeft and backward_holdsLeft_of_nf_eval. Backward direction further decomposed into endLeft, endRight (char_1 component proved), and bracket sub-goals. Forward direction extracts nf_x, x, and VecEA2 components from holdsLeft.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 869,
+      "statement": "backward_holdsLeft_of_nf_eval endLeft case",
+      "assumption": "pre_conditions_at_t_until holds at t given nf_eval_nf and h_atoms",
+      "why_deferred": "Requires iterating over compatible ssns in below_t and eq_t zones, showing each temporal formula (Since/direct) at t matches the 3-var depth-0 existential from h_eval_quant",
+      "next_dispatch": "Prove endLeft by rewriting with formula_conjList_iff and showing each conjunct from zone decomposition"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 881,
+      "statement": "backward_holdsLeft_of_nf_eval endRight conjList case",
+      "assumption": "formula_conjList of right_conjuncts (eq_x, above_x zones) holds at x",
+      "why_deferred": "Requires proving each zone condition at x from h_eval_quant. For eq_x: nf_depth0_char_formula_correct. For above_x: temporal_truth of Until(char_y, top)",
+      "next_dispatch": "Use formula_conjList_iff, then for each ssn prove the zone condition"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 885,
+      "statement": "backward_holdsLeft_of_nf_eval bracket case",
+      "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
+      "why_deferred": "Most complex sub-goal. Requires witness construction for positive between_tx ssns and segment guard from negative between_tx ssns",
+      "next_dispatch": "Prove bracket by constructing IntervalPattern witnesses from h_eval_quant"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 943,
+      "statement": "forward_nf_eval_of_holdsLeft nf_eval reconstruction",
+      "assumption": "nf_eval_nf M 1 (1+1) (Fin.cons x (fun _ => t)) sub_nf from VecEA2 components",
+      "why_deferred": "Composition argument: reconstruct 2-var depth-1 NF evaluation from VecEA2 components",
+      "next_dispatch": "Split into atoms + quant. For atoms use h_compat. For quant case-split on zone"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 670,
-      "statement": "theorem existPart_succ_n1_bypass_k0_eq",
-      "assumption": "Equality case (x=t) formula exists and is correct",
-      "why_deferred": "Complex 3-var to 2-var projection for quantifier conditions + char_1 combination. Each ssn needs zone decomposition with x=t constraint.",
-      "next_dispatch": "Build formula from char_1 + classically chosen ssn formulas via nf_2var_exist_depth0_tl projection"
+      "statement": "existPart_succ_n1_bypass_k0_eq",
+      "assumption": "equality case (x = t) of enriched bypass",
+      "why_deferred": "Pre-existing sorry, not in scope for this dispatch",
+      "next_dispatch": "Prove equality case using char_1 + depth-0 zone decomposition"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 856,
-      "statement": "existPart_succ_n1_bypass_k0_until biconditional",
-      "assumption": "enriched_bypass_until formula is semantically correct (temporal_truth iff nf_eval existential)",
-      "why_deferred": "200+ line proof connecting VecEA2.holdsLeft with nf_eval_nf decomposition across 6 zones (y<t, y=t, t<y<x, y=x, y>x, inconsistent). Each zone needs zone-specific VecEADecomp theorems.",
-      "next_dispatch": "Prove backward direction first (nf_eval -> holdsLeft using zone witnesses), then forward direction"
+      "line": 1055,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "since case (x < t) of enriched bypass",
+      "why_deferred": "Pre-existing sorry, not in scope",
+      "next_dispatch": "Mirror the Until case proof with swapped directions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 884,
-      "statement": "theorem existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case (x<t) formula exists and is correct",
-      "why_deferred": "Mirror of Until case, defer until Until is done",
-      "next_dispatch": "Mirror the Until proof for Since direction with swapped endpoints"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 972,
+      "line": 1143,
       "statement": "existPart_succ_n1_bypass (succ k')",
-      "assumption": "General k > 0 case requires depth-k IH",
-      "why_deferred": "Pre-existing sorry, separate task",
+      "assumption": "general depth k+1 > 1 bypass",
+      "why_deferred": "Pre-existing sorry, requires Feferman-Vaught composition",
       "next_dispatch": "After k=0 case complete, generalize to k>0"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/bypass-k0-decomp-20260614.md",
+  "blockers": [
+    "The Until case backward and forward directions require the depth-0 composition argument: zone-specific temporal formulas at t and x correctly capture the 3-var depth-0 existentials from nf_eval_nf."
+  ],
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "next_phase": "Until case biconditional proof (line 856)",
+    "completed_objectives": [
+      "Decomposed Until case into forward/backward helper lemmas",
+      "Proved char_1 component of endRight (backward direction)",
+      "Decomposed forward direction: extract nf_x, x, endLeft/endRight/bracket from holdsLeft",
+      "Established VVecEA2.translateLeft_correct reduction in main theorem"
+    ],
+    "next_objective": "Fill endLeft, endRight conjList, bracket, and forward sub-sorries",
     "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEADecomp.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEATranslation.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
     ]
   }
 }

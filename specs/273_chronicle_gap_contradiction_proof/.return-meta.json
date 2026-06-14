@@ -12,37 +12,54 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 670,
       "statement": "existPart_succ_n1_bypass_k0_eq (equality case x=t)",
-      "why_deferred": "Complex 3-var->2-var projection for quantifier conditions"
+      "why_deferred": "Pre-existing sorry, not in scope for this dispatch"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 856,
-      "statement": "existPart_succ_n1_bypass_k0_until biconditional (temporal_truth iff nf_eval)",
-      "why_deferred": "200+ line proof connecting VecEA2.holdsLeft with nf_eval across 6 zones"
+      "line": 869,
+      "statement": "backward_holdsLeft_of_nf_eval endLeft (pre_conditions_at_t)",
+      "why_deferred": "Zone iteration for below_t and eq_t temporal formulas"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 884,
+      "line": 881,
+      "statement": "backward_holdsLeft_of_nf_eval endRight conjList (eq_x, above_x zones)",
+      "why_deferred": "Zone conditions at x from nf_eval_quant"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 885,
+      "statement": "backward_holdsLeft_of_nf_eval bracket (between_tx zone)",
+      "why_deferred": "Witness construction for positive between_tx ssns + segment guards"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 943,
+      "statement": "forward_nf_eval_of_holdsLeft nf_eval reconstruction",
+      "why_deferred": "Composition argument: VecEA2 components to nf_eval_nf"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1055,
       "statement": "existPart_succ_n1_bypass_k0_since (Since case x<t)",
-      "why_deferred": "Mirror of Until case"
+      "why_deferred": "Pre-existing sorry, mirror of Until case"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 972,
+      "line": 1143,
       "statement": "existPart_succ_n1_bypass (k>0 case)",
       "why_deferred": "Pre-existing sorry, requires depth-k IH"
     }
   ],
   "verification": {
-    "sorry_count": 4,
+    "sorry_count": 7,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "VecEA2 bracket witnesses are guaranteed to be between endpoints by construction. For encoding 'exists y between t and x', use BracketFormula with pointTypes for y's predicates and segmentTypes for interval guards. This avoids the backward-direction failure of Since(char_y, top) at x which finds y anywhere below x.",
-    "The zone-aware enriched formula distributes y-conditions across the Until structure: endpointLeft handles y < t and y = t zones at t; endpointRight handles y = x and y > x zones at x; bracket handles t < y < x zone with guaranteed witnesses between endpoints.",
-    "existPart_succ_n1_bypass_k0 was decomposed into 4 cases by order booleans: (true,true) proved (contradiction), plus three helper theorems for Until, Since, and Equality. This decomposition follows nf_2var_exist_depth0_tl structure.",
-    "For the equality case (x=t), depth-0 3-var existentials with the last two vars equal can be projected to 2-var existentials via nf_2var_exist_depth0_tl, after checking var1-var2 order/predicate compatibility."
+    "The Until case biconditional (existPart_succ_n1_bypass_k0_until) was decomposed into forward_nf_eval_of_holdsLeft and backward_holdsLeft_of_nf_eval helper lemmas. The backward direction was further decomposed into endLeft, endRight, and bracket sub-goals. The char_1 component of endRight was proved using char_1_correct + nf_characteristic_satisfies.",
+    "To connect VVecEA2.translateLeft to holdsLeft: use VVecEA2.translateLeft_correct after unfolding enriched_bypass_until with simp only [enriched_bypass_until]. Then simp only [VVecEA2.holdsLeft] to expose the disjunctive existential.",
+    "For the filterMap membership proof: use List.mem_filterMap, provide nf_x witness with Multiset.mem_toList.mpr for Fintype.elems membership, then simp only [h_compat, ite_true] followed by rfl to close the equality."
   ]
 }
