@@ -1,71 +1,29 @@
 {
-  "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 273,
-  "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/29_bypass-enriched-formula.md",
-  "session_id": "sess_1781432881_c1ecbe",
-  "started_at": "2026-06-14T00:00:00Z",
-  "requires_user_review": true,
-  "sorry_inventory": [
+  "status": "planned",
+  "artifacts": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 690,
-      "statement": "existPart_succ_n1_bypass_k0_eq (equality case x=t)",
-      "why_deferred": "Requires quantifier profile correctness; blocked by zone helper"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 842,
-      "statement": "zone_3var_exist_iff_1var (zone decomposition helper)",
-      "why_deferred": "Requires ~200 lines of zone-by-zone case analysis"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 923,
-      "statement": "backward_holdsLeft_of_nf_eval endLeft",
-      "why_deferred": "BLOCKED: formula unsound for order-inconsistent ssn values"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 935,
-      "statement": "backward_holdsLeft_of_nf_eval endRight conjList",
-      "why_deferred": "BLOCKED: same formula soundness issue"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 939,
-      "statement": "backward_holdsLeft_of_nf_eval bracket",
-      "why_deferred": "BLOCKED: same formula soundness issue"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 997,
-      "statement": "forward_nf_eval_of_holdsLeft nf_eval reconstruction",
-      "why_deferred": "Requires zone helper and formula fix"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1109,
-      "statement": "existPart_succ_n1_bypass_k0_since (Since case x<t)",
-      "why_deferred": "Blocked by Until case sorries"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1197,
-      "statement": "existPart_succ_n1_bypass (k>0 case)",
-      "why_deferred": "Different mathematical content (skip per task instructions)"
+      "type": "plan",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/26_complete-kamp-proof.md",
+      "summary": "5-phase implementation plan to close ALL Kamp theorem sorries at all depths with no axiom fallback"
     }
   ],
-  "verification": {
-    "sorry_count": 8,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
+  "next_steps": "Run /implement 273 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1781437785_9e19a9",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 10,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
   },
   "memory_candidates": [
-    "FORMULA SOUNDNESS BUG: pre_conditions_at_t_until in KampBypass.lean includes negated temporal formulas for ssn values where ssn_xt_compatible passes but y-related order booleans are inconsistent with the zone. For below_t zone with t < x, an ssn with y_lt_x = false is order-inconsistent (y < t < x implies y < x) but passes ssn_xt_compatible and gets classified as below_t. The 3-var NF is unsatisfiable, but the negated Since formula may not hold. FIX: add y-order consistency check to ssn_xt_compatible or filter in zone formula builders.",
-    "witness_eq_t_of_no_order (sorry-free): When both order booleans in sub_nf are false (.order 1 0 = false, .order 0 1 = false), any witness x satisfying nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf must equal t. Proof: by_contra h_ne, then lt_or_gt gives x < t or t < x, contradicting the false order booleans via atom_eval.",
-    "zone_3var_exist_iff_1var connects the 3-var depth-0 existential to zone-specific 1-var conditions. For each compatible ssn in ssn_zone_until, the 3-var existential decomposes into a 1-var predicate condition plus order constraints. The helper needs reconstruct_nf_3var for the backward direction and extract_y_nf for the forward direction."
+    {
+      "content": "For arity-climbing induction in Kamp theorem proofs (Rabinovich Section 5 P_n(k)): the key architectural insight is that depth-0 zone wiring and depth >= 2 arity-climbing are independent proof obligations. Depth-0 requires connecting VecEADecomp zone theorems to nf_eval_nf (~1000 lines mechanical). Depth >= 2 requires generalizing the bypass to arbitrary arity n so the IH at depth k (all arities) provides temporal formulas for the (n+1)-var quantifier conditions at depth k+1. The enriched formula encodes ALL quantifier conditions as explicit conjuncts, making backward extraction trivial (conjunction elimination) and avoiding the Feferman-Vaught composition problem. The ssn_order_consistent filter (12 boolean checks) is a prerequisite that must be applied BEFORE depth-0 wiring.",
+      "category": "PATTERN",
+      "source_artifact": "specs/273_chronicle_gap_contradiction_proof/plans/26_complete-kamp-proof.md",
+      "confidence": 0.85,
+      "suggested_keywords": ["kamp-theorem", "arity-climbing", "enriched-formula", "zone-wiring", "ssn-filter", "rabinovich"]
+    }
   ]
 }
