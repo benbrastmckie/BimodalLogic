@@ -420,27 +420,84 @@ noncomputable def enriched_point_type_x_until {sig : MonadicSignature}
       else none
   Formula.and (char_1 nf_x) (formula_conjList quant_conjuncts)
 
+/-- Build a VecEA2 for the Until direction (t < x) and a specific nf_x.
+
+    Uses the VecEA2 bracket infrastructure to correctly handle the positive
+    between_tx zone. Bracket witnesses are BETWEEN t and x by construction,
+    avoiding the backward-direction issue of Since(char_y, top) at x.
+
+    Structure:
+    - endpointLeft(t) = pre_conditions (y < t, y = t zones)
+    - endpointRight(x) = char_1(nf_x) ∧ conditions for y = x, y > x zones
+    - bracket(t, x) = positive between_tx witnesses + negative segment guards -/
+noncomputable def enriched_vecEA2_until {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (char_1 : NormalForm sig 1 1 → Formula)
+    (sub_nf : NormalForm sig 1 2)
+    (nf_x : NormalForm sig 1 1)
+    (nf_x_1var : NormalForm sig 0 1)
+    (parent_atoms : AtomKind sig 1 → Bool) : Σ n, VecEA2 n :=
+  -- Collect positive between_tx ssns (need bracket witnesses)
+  let pos_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
+    ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
+    (ssn_zone_until ssn == .between_tx) &&
+    sub_nf.2 ssn
+  -- Collect negative between_tx ssns (need segment guards)
+  let neg_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
+    ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
+    (ssn_zone_until ssn == .between_tx) &&
+    !sub_nf.2 ssn
+  -- Build the segment guard: conjunction of neg char_y for negative between_tx ssns
+  let seg_guard : TemporalPred :=
+    ⟨formula_conjList (neg_between.map fun ssn =>
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)⟩
+  -- Build the bracket formula
+  let n := pos_between.length
+  let bracket : BracketFormula n :=
+    { pointTypes := fun i =>
+        nfPred atomMap h_surj (nf_y_proj (pos_between[i.val]'(by omega)))
+      segmentTypes := fun _ => seg_guard }
+  -- Build the endpoint left (at t): pre-conditions for y < t and y = t
+  let endLeft : TemporalPred :=
+    ⟨pre_conditions_at_t_until atomMap h_surj sub_nf nf_x_1var parent_atoms⟩
+  -- Build the endpoint right (at x): char_1(nf_x) + conditions for y = x, y > x
+  let right_conjuncts :=
+    (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filterMap fun ssn =>
+      if ssn_xt_compatible ssn nf_x_1var parent_atoms true false then
+        let zone := ssn_zone_until ssn
+        let char_y := nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)
+        match zone with
+        | .eq_x =>
+          if sub_nf.2 ssn then some char_y
+          else some char_y.neg
+        | .above_x =>
+          if sub_nf.2 ssn then some (Formula.untl char_y Formula.top)
+          else some (Formula.untl char_y Formula.top).neg
+        | _ => none
+      else none
+  let endRight : TemporalPred :=
+    ⟨Formula.and (char_1 nf_x) (formula_conjList right_conjuncts)⟩
+  ⟨n, { endpointLeft := endLeft, endpointRight := endRight, bracket := bracket }⟩
+
 /-- Zone-aware enriched bypass formula for depth 1, Until direction (t < x).
-    For each compatible nf_x:
-      pre_conditions_at_t ∧ Until(enriched_point_type_x, interval_guard) -/
+    Uses VecEA2 brackets for between_tx zone to ensure witnesses are between t and x.
+    Disjunction over all compatible nf_x values. -/
 noncomputable def enriched_bypass_until {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (char_1 : NormalForm sig 1 1 → Formula)
     (sub_nf : NormalForm sig 1 2)
     (parent_atoms : AtomKind sig 1 → Bool) : Formula :=
-  formula_disjList
-    ((Fintype.elems (α := NormalForm sig 1 1)).val.toList.filterMap fun nf_x =>
-      if nf_x_compat_check sub_nf nf_x then
-        let nf_x_1var : NormalForm sig 0 1 := fun a => match a with
-          | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
-          | .order i j h => absurd (Fin.ext (by omega) : i = j) h
-        let pre := pre_conditions_at_t_until atomMap h_surj sub_nf nf_x_1var parent_atoms
-        let guard := interval_guard_until atomMap h_surj sub_nf nf_x_1var parent_atoms
-        let pt_x := enriched_point_type_x_until atomMap h_surj char_1 sub_nf nf_x
-          nf_x_1var parent_atoms
-        some (Formula.and pre (Formula.untl pt_x guard))
-      else none)
+  let vvec : VVecEA2 :=
+    { disjuncts := (Fintype.elems (α := NormalForm sig 1 1)).val.toList.filterMap fun nf_x =>
+        if nf_x_compat_check sub_nf nf_x then
+          let nf_x_1var : NormalForm sig 0 1 := fun a => match a with
+            | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
+            | .order i j h => absurd (Fin.ext (by omega) : i = j) h
+          some (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x nf_x_1var parent_atoms)
+        else none }
+  vvec.translateLeft
 
 /-- Zone-aware enriched bypass formula for depth 1, Since direction (x < t).
     Mirror of enriched_bypass_until. -/
