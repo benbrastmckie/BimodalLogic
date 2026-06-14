@@ -261,7 +261,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
