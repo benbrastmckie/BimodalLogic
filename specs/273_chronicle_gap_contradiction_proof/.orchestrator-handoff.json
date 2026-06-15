@@ -1,54 +1,52 @@
 {
-  "status": "partial",
-  "summary": "Phase 1 eq case (L974) proof written with eq_case_iff helper + h_ssn_compat guard. ~360 new lines. Build pending verification. Sorry at original L974 replaced.",
-  "phases_completed": 0,
+  "status": "blocked",
+  "summary": "Phase 2 (bracket sorry L2096) is BLOCKED by a design flaw in enriched_vecEA2_until: the BracketFormula's pointTypes are ordered by Fintype.elems (model-independent), but IntervalPattern.holds requires witnesses in the model's linear order matching these indices. For n >= 2 positive between_tx SSNs, the backward direction is unprovable. Fix requires replacing bracket-based between_tx encoding with conjunction of individual Formula.untl existentials.",
+  "phases_completed": 1,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2096,
       "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "assumption": "IntervalPattern.holds from uniform segment witnesses",
-      "why_deferred": "Phase 2 work - needs bracket_holds_of_uniform_segments helper",
-      "next_dispatch": "Implement bracket helper, close bracket sorry"
+      "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
+      "why_deferred": "BLOCKED: enriched_vecEA2_until witness ordering bug. pos_between order (Fintype.elems) is model-independent but IntervalPattern.holds requires model-dependent witness ordering. For n >= 2 the backward direction is unprovable as stated.",
+      "next_dispatch": "Fix enriched_vecEA2_until to use conjunction of individual Formula.untl existentials for between_tx zone instead of BracketFormula. Then prove backward direction."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2154,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "Reconstruct nf_eval from VecEA2 holdsLeft",
-      "why_deferred": "Phase 3 work - reverse of backward direction",
-      "next_dispatch": "Zone-by-zone reconstruction using .mp zone bridges"
+      "assumption": "Reconstruct nf_eval from VecEA2 holdsLeft conditions",
+      "why_deferred": "Phase 3 — can proceed independently, forward direction unaffected by ordering issue",
+      "next_dispatch": "Prove forward direction using zone bridges .mp"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2266,
       "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case analogous to Until",
-      "why_deferred": "Phase 4 work - verify enriched_bypass_since soundness first",
-      "next_dispatch": "Verify soundness, implement since case"
+      "assumption": "Since case biconditional",
+      "why_deferred": "Phase 4 — may have same ordering bug if enriched_bypass_since uses bracket construction",
+      "next_dispatch": "Check enriched_bypass_since for same issue, then prove or fix"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2354,
       "statement": "existPart_succ_n1_bypass (k>0)",
       "assumption": "Depth >= 2 case",
-      "why_deferred": "Out of scope per plan",
+      "why_deferred": "Out of scope for this plan",
       "next_dispatch": "Evaluate necessity via classical existence path"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-1-handoff-20260615.md",
+  "blockers": [
+    "enriched_vecEA2_until witness ordering: BracketFormula n with n = pos_between.length uses Fintype.elems ordering for pointTypes, but IntervalPattern.holds requires model-linear-order-compatible witness ordering. Goal at L2096: BracketFormula.holds M atomMap vea.snd.bracket t x. Unprovable for n >= 2 with adversarial models. Fix: replace bracket with conjunction of individual Formula.untl existentials for between_tx zone (like above_x/eq_x zones are already handled)."
+  ],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-blocked-ordering-20260615.md",
   "continuation_context": {
     "is_successor": false,
-    "phase_in_progress": 1,
-    "build_status": "pending",
-    "files_modified": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"],
-    "key_discoveries": [
-      "enriched_bypass_eq does NOT correctly characterize the existential for arbitrary sub_nf with incompatible ssn having sub_nf.2=true. Added h_ssn_compat guard.",
-      "eq_case_iff needs h_ssn_compat parameter to handle the forward direction incompatible ssn case",
-      "nf_x_compat_check ensures nf_x.1(.pred p 0) = sub_nf.1(.pred p 0), which bridges nf_x_1var to ref_nf_x_1var",
-      "maxHeartbeats set to 3200000 for both eq_case_iff and existPart_succ_n1_bypass_k0_eq"
-    ]
+    "phase_blocked": 2,
+    "phases_completed": [1],
+    "architectural_fix_needed": "enriched_vecEA2_until between_tx encoding — replace BracketFormula with conjunction of individual existentials",
+    "independent_phases": [3],
+    "key_analysis": "IntervalPattern.holds requires strictly increasing witnesses w_0 < ... < w_{n-1} where w_i satisfies pointTypes i. The pointTypes are indexed by pos_between list order (Fintype.elems), but model witnesses may not be in this order. Sorting witnesses permutes alpha indices, breaking the match. The fix is to not use BracketFormula at all for between_tx — just use separate Formula.untl for each positive SSN."
   }
 }

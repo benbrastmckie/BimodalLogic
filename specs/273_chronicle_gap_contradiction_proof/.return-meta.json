@@ -1,8 +1,57 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "session_id": "sess_1781509717_4de986",
-  "started_at": "2026-06-15T00:00:00Z"
+  "started_at": "2026-06-15T00:00:00Z",
+  "phases_completed": 1,
+  "phases_total": 5,
+  "requires_user_review": true,
+  "verification": {
+    "sorry_count": 4,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2096,
+      "statement": "backward_holdsLeft_of_nf_eval bracket case",
+      "assumption": "BracketFormula.holds M atomMap vea.snd.bracket t x",
+      "why_deferred": "BLOCKED: enriched_vecEA2_until witness ordering bug — pos_between order (Fintype.elems) vs model linear order",
+      "next_dispatch": "Fix enriched_vecEA2_until between_tx encoding"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2154,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "assumption": "Reconstruct nf_eval from VecEA2 holdsLeft",
+      "why_deferred": "Phase 3 — independent, can proceed",
+      "next_dispatch": "Zone bridges .mp direction"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2266,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case biconditional",
+      "why_deferred": "Phase 4 — may share ordering bug",
+      "next_dispatch": "Check enriched_bypass_since, then prove"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2354,
+      "statement": "existPart_succ_n1_bypass (k>0)",
+      "assumption": "Depth >= 2",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Evaluate necessity"
+    }
+  ],
+  "memory_candidates": [
+    "enriched_vecEA2_until has a witness ordering bug for n >= 2 positive between_tx SSNs: BracketFormula pointTypes are indexed by Fintype.elems order (model-independent), but IntervalPattern.holds requires witnesses in model-dependent increasing order. The fix is to replace bracket-based between_tx encoding with conjunction of individual Formula.untl existentials, mirroring above_x/eq_x zone handling.",
+    "IntervalPattern.holds is NOT permutation-invariant in alpha even with uniform segment types. Sorting witnesses permutes alpha indices.",
+    "chainHolds recursive construction requires finding each witness above the previous — not guaranteed when model witness ordering differs from pos_between ordering."
+  ],
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-blocked-ordering-20260615.md"
 }

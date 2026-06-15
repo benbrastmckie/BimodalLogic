@@ -93,13 +93,24 @@ Phases 2 and 3 can execute in parallel (bracket and forward are independent sorr
 
 ---
 
-### Phase 2: Bracket Helper + Bracket Sorry (L1579) [NOT STARTED]
+### Phase 2: Bracket Helper + Bracket Sorry (L1579) [BLOCKED]
 
-**Goal**: Close the bracket case sorry at KampBypass.lean:1579. First extract a `bracket_holds_of_uniform_segments` helper lemma that proves `BracketFormula.holds` when all segment types are uniform. Then apply it.
+**Goal**: Close the bracket case sorry at KampBypass.lean:2096. First extract a `bracket_holds_of_uniform_segments` helper lemma that proves `BracketFormula.holds` when all segment types are uniform. Then apply it.
+
+**BLOCKER** (Phase 2):
+- **What failed**: `enriched_vecEA2_until` constructs a `BracketFormula n` where `n = pos_between.length` and `pointTypes i = nfPred ... (nf_y_proj (pos_between[i]))`. The `IntervalPattern.holds` definition requires strictly increasing witnesses `w_0 < w_1 < ... < w_{n-1}` where `w_i` satisfies `pointTypes i`. For the backward direction, `h_eval_quant` provides witnesses for each positive between_tx SSN in `(t, x)`, but these witnesses may not be in the order prescribed by `pos_between` (which follows `Fintype.elems.val.toList.filter` ordering, unrelated to the model's linear order).
+- **What was tried**:
+  1. Direct proof via `split` on the `IntervalPattern.holds` match — produces HEq goals that are hard to work with, and the n+1 case has the ordering mismatch.
+  2. Permutation argument for uniform-segment patterns — reordering witnesses to be increasing also permutes the alpha indices, producing the wrong pointType at each position.
+  3. `chainHolds` approach — recursively finding witnesses in pos_between order requires that for each SSN, there exists a witness ABOVE all previously chosen witnesses, which is not guaranteed.
+  4. Analysis of whether n >= 2 can occur — confirmed: with `sig.preds >= 2`, pos_between can have 2+ elements with arbitrary model witness orderings.
+- **Why stuck**: The `enriched_vecEA2_until` definition has a design flaw: `pos_between` is ordered by `Fintype.elems` (implementation-dependent, model-independent), but `IntervalPattern.holds` requires witnesses in the model's linear order matching the `pos_between` index order. For n >= 2 with adversarial models (e.g., exactly n witness points in (t,x) in reverse pos_between order), the backward direction `∃ x, nf_eval → holdsLeft` is unprovable.
+- **What is needed**: Fix `enriched_vecEA2_until` to sort `pos_between` by model-dependent witness ordering. Since the definition is `noncomputable`, the model is not available at definition time — the fix requires either (a) a different VecEA2 encoding that does not depend on witness ordering (e.g., conjunction of individual existentials for the between_tx zone), or (b) a permutation-invariance lemma for `IntervalPattern.holds` with uniform segment types (which does not hold as stated). Option (a) is the correct architectural fix: replace the single bracket with a conjunction `Formula.untl (nfPred ssn_0) top ∧ Formula.untl (nfPred ssn_1) top ∧ ...` for the between_tx zone, similar to how above_x and eq_x zones are handled.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Tasks**:
-- [ ] Extract `bracket_holds_of_uniform_segments` helper (~60-80 lines). Inputs: witnesses from `h_eval_quant` for each positive between_tx SSN, `h_seg` segment guard for negative SSNs, uniform segment types. Uses `nf_y_proj` injectivity on `pos_between` to show witnesses are distinct, `Classical.choose` to obtain witness function, `Finset.sort` on model's `DecidableLinearOrder` to produce strictly increasing sequence. Output: `IntervalPattern.holds`.
-- [ ] Close bracket sorry: for n=0 positive between_tx SSNs, bracket holds trivially (no witnesses needed, only segment guard). For n >= 1, apply `bracket_holds_of_uniform_segments` with witnesses from `h_eval_quant`.
+- [ ] Extract `bracket_holds_of_uniform_segments` helper (~60-80 lines). *(deviation: blocked — enriched_vecEA2_until witness ordering bug, see BLOCKER above)*
+- [ ] Close bracket sorry: for n=0 positive between_tx SSNs, bracket holds trivially (no witnesses needed, only segment guard). For n >= 1, apply `bracket_holds_of_uniform_segments` with witnesses from `h_eval_quant`. *(deviation: blocked — n >= 1 case requires architectural fix)*
 - [ ] Verify `lake build` passes
 
 **Timing**: 1.5 hours (~100-150 lines)
