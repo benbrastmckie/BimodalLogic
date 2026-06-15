@@ -340,48 +340,4 @@ theorem VecEA2.fromBracket_holds {sig : MonadicSignature} {n : Nat}
   simp only [Formula.top, temporal_truth]
   tauto
 
-/-! ## Permutation Lemma for Uniform-Segment Brackets
-
-When all segment types in a bracket formula are the same (uniform) and the
-segment type holds everywhere in `(z₀, z₁)`, any collection of distinct
-witnesses satisfying the point types (in any order) can be rearranged to
-satisfy `BracketFormula.holds`.
-
-This is the key lemma that enables the BracketFormula encoding for
-the between_tx zone: witnesses from `nf_eval` are unordered, but the
-bracket requires strictly increasing witnesses matching point types
-in a specific order. When segments are uniform and hold everywhere,
-the witness ordering doesn't matter—only the matching between
-witnesses and point types matters.
--/
-
-/-- Permutation lemma for BracketFormula with uniform segment types.
-
-Given `n` distinct witness points in `(z₀, z₁)`, each satisfying
-its corresponding point type, with a uniform segment type holding
-everywhere in `(z₀, z₁)`, the bracket formula holds.
-
-The proof sorts the witnesses and maps point types accordingly.
-Since all segment types are the same and hold everywhere, the
-segment conditions are automatically satisfied for any sub-interval.
-
-**Note**: This requires a sorting argument on finite injective
-sequences. The proof will be completed in a subsequent dispatch.
-See specs/273 sorry_inventory for tracking. -/
-theorem BracketFormula.holds_of_unordered_distinct
-    {sig : MonadicSignature} {n : Nat}
-    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (seg : TemporalPred) (alphas : Fin n → TemporalPred)
-    (z0 z1 : M.carrier)
-    (h_seg : ∀ y, z0 < y → y < z1 → seg.eval_at M atomMap y)
-    (witnesses : Fin n → M.carrier)
-    (h_inj : Function.Injective witnesses)
-    (h_in : ∀ i, z0 < witnesses i ∧ witnesses i < z1)
-    (h_pt : ∀ i, (alphas i).eval_at M atomMap (witnesses i)) :
-    (BracketFormula.mk alphas (fun _ => seg)).holds M atomMap z0 z1 := by
-  -- Sort witnesses and construct strictly increasing sequence
-  -- matching the bracket's expected point type order.
-  -- All segment conditions follow from h_seg (uniform segments).
-  sorry
-
 end Bimodal.Metalogic.WeakCanonical.Kamp

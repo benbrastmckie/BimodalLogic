@@ -2359,7 +2359,92 @@ private theorem existPart_succ_n1_bypass_k0_since
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  sorry
+  -- Mirror of existPart_succ_n1_bypass_k0_until for the Since direction (x < t).
+  -- Syntactic compatibility checks for sub_nf.
+  let ref_nf_x_1var : NormalForm sig 0 1 := fun a => match a with
+    | .pred p _ => sub_nf.1 (.pred p ⟨0, by omega⟩)
+    | .order i j h => absurd (Fin.ext (by omega) : i = j) h
+  by_cases h_t_compat : ∀ p : sig.preds,
+      sub_nf.1 (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩)
+  · by_cases h_ssn_compat : ∀ ssn : NormalForm sig 0 3,
+        sub_nf.2 ssn = true →
+        ssn_xt_compatible ssn ref_nf_x_1var parent_atoms false true = true
+    · -- Both checks pass: use enriched_bypass_since
+      exact ⟨enriched_bypass_since atomMap h_surj char_1 sub_nf parent_atoms,
+        fun M h_UZ h_SZ t h_atoms => by
+        constructor
+        · -- Forward: formula → ∃ x, nf_eval
+          -- BLOCKED: same encoding flaw as Until forward direction.
+          -- The between_xt zone uses Formula.untl char_y Formula.top at x,
+          -- which gives y > x but not y < t.
+          sorry
+        · -- Backward: ∃ x, nf_eval → formula
+          sorry⟩
+    · -- ¬ssn_compat: some positive ssn is xt-incompatible → existential unsatisfiable
+      push_neg at h_ssn_compat
+      obtain ⟨ssn_bad, h_pos_bad, h_incompat_bad⟩ := h_ssn_compat
+      refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
+      simp only [temporal_truth]
+      constructor
+      · exact fun h => absurd h id
+      · intro ⟨x, h_eval⟩
+        obtain ⟨h_atom, h_quant⟩ := h_eval
+        have ⟨y, h_ssn_eval⟩ := (h_quant ssn_bad).mpr h_pos_bad
+        have h_x_pred : ∀ p : sig.preds,
+            M.interp p x ↔ ref_nf_x_1var (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_atom (.pred p ⟨0, by omega⟩); unfold atom_eval at h; exact h
+        have h_t_pred : ∀ p : sig.preds,
+            M.interp p t₀ ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_atoms (.pred p ⟨0, by omega⟩); simp only [atom_eval] at h; exact h
+        have h_x_lt_t : x < t₀ := by
+          have h := h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+          unfold atom_eval at h; exact h.mpr h_lt
+        have h_xt_compat : ssn_xt_compatible ssn_bad ref_nf_x_1var parent_atoms false true = true := by
+          simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true]
+          refine ⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+          · -- x-preds
+            intro p _
+            have h1 := h_ssn_eval (.pred p ⟨1, by omega⟩); unfold atom_eval at h1
+            cases hsub : (ref_nf_x_1var (.pred p ⟨0, by omega⟩) : Bool) <;>
+            cases hssn : ssn_bad (.pred p ⟨1, by omega⟩) <;>
+            first | rfl | (exfalso; simp_all)
+          · -- t-preds
+            intro p _
+            have h1 : M.interp p t₀ ↔ ssn_bad (.pred p ⟨2, by omega⟩) = true := by
+              have h := h_ssn_eval (.pred p ⟨2, by omega⟩); unfold atom_eval at h; exact h
+            have h2 := h_atoms (.pred p ⟨0, by omega⟩); simp only [atom_eval] at h2
+            cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+            cases hssn : ssn_bad (.pred p ⟨2, by omega⟩) <;>
+            first | rfl | (exfalso; simp_all)
+          · -- ¬(t < x) order: ssn_bad (.order ⟨2,_⟩ ⟨1,_⟩ _) = false
+            have h := h_ssn_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
+            unfold atom_eval at h
+            cases hssn : ssn_bad (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
+            · rfl
+            · exact absurd (h.mpr hssn) (not_lt_of_gt h_x_lt_t)
+          · -- x < t order: ssn_bad (.order ⟨1,_⟩ ⟨2,_⟩ _) = true
+            have h := h_ssn_eval (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+            unfold atom_eval at h; exact h.mp h_x_lt_t
+          · exact ssn_order_consistent_of_eval ssn_bad h_ssn_eval
+        exact absurd h_xt_compat h_incompat_bad
+  · -- ¬t_compat: existential impossible (atom at index 1 can't match)
+    refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
+    simp only [temporal_truth]
+    constructor
+    · exact fun h => absurd h id
+    · intro ⟨x, h_eval⟩
+      push_neg at h_t_compat; obtain ⟨p, hp⟩ := h_t_compat
+      obtain ⟨h_atom, _⟩ := h_eval
+      have h_sub : M.interp p t₀ ↔ sub_nf.1 (.pred p ⟨1, by omega⟩) = true := by
+        have h := h_atom (.pred p ⟨1, by omega⟩); unfold atom_eval at h; exact h
+      have h_par := (h_atoms (.pred p ⟨0, by omega⟩))
+      simp only [atom_eval] at h_par
+      cases hsub : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+      cases hpar : parent_atoms (.pred p ⟨0, by omega⟩)
+      · exact hp (by rw [hsub, hpar])
+      · exact absurd (h_sub.mp (h_par.mpr hpar)) (by rw [hsub]; exact Bool.false_ne_true)
+      · exact absurd (h_par.mp (h_sub.mpr hsub)) (by rw [hpar]; exact Bool.false_ne_true)
+      · exact hp (by rw [hsub, hpar])
 
 /-! ## Main Bypass Theorem (Zone-Aware) -/
 

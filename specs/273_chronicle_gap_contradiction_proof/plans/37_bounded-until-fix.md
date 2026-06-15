@@ -194,29 +194,70 @@ witnesses in `(t, x)`.
 
 ---
 
-### Phase 4: Fix enriched_bypass_since + Close Since Sorry [NOT STARTED]
+### Phase 4: Fix enriched_bypass_since + Close Since Sorry [BLOCKED]
+
+**UPDATE (dispatch sess_1781554668_c14eb9)**:
+The Since case has the SAME encoding flaw as the Until forward direction.
+The `enriched_bypass_since` definition (line 513) encodes positive between_xt
+SSNs as `Formula.untl char_y Formula.top` at x (line 586). This gives y > x
+but does NOT bound y < t. The forward direction cannot derive y < t from
+the formula.
+
+Additionally, the backward direction requires zone bridge lemmas for the
+Since direction (between_xt_temporal_iff, above_t_temporal_iff, below_x_temporal_iff)
+which do NOT exist. Only Until-direction bridges exist (between_tx, eq_x, above_x,
+below_t).
+
+**Progress made**: Structured the proof so that incompatible cases are proved.
+The since theorem now has the shape:
+- t-incompatible case: proved (Formula.bot, contradiction)
+- ssn-incompatible case: proved (Formula.bot, contradiction via ssn_xt_compatible)
+- Compatible case: 2 sorry's remain (forward and backward directions)
+
+Deleted incorrectly-stated `BracketFormula.holds_of_unordered_distinct` from
+VecEAFormula.lean (was sorry'd, statement was wrong per user analysis in
+dispatch context).
+
+**BLOCKER** (Phase 4):
+- **What failed**: Both forward and backward directions of the compatible case
+  are blocked. Forward has the same encoding flaw as Phase 3 (between_xt
+  positive SSNs encoded as unbounded Until at x). Backward requires zone
+  bridge lemmas that don't exist for the Since direction.
+- **What was tried**:
+  1. Structured the proof with by_cases on t_compat and ssn_compat (3 cases proved)
+  2. Analyzed enriched_bypass_since line by line -- confirmed same encoding flaw
+  3. Checked for Since-direction zone bridges -- none exist
+- **Why stuck**: (a) Same fundamental encoding issue as Phase 3: no temporal
+  operator at a single point can express "exists y in open interval (x, t)".
+  (b) Missing zone bridge infrastructure for the Since direction.
+- **What is needed**: (a) Fix the between_xt encoding in enriched_bypass_since,
+  (b) Create Since-direction zone bridges (or prove backward directly), (c)
+  Apply Approach A (nested Until) or Approach B (BracketFormula k) to both
+  Until and Since directions simultaneously.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Apply the same bounded-formula fix to the Since direction. Close the sorry at L2362 (`existPart_succ_n1_bypass_k0_since`).
 
-**Context update**: Phase 2 established the n=0 BracketFormula.trivial + Since-based endpointRight pattern for the Until direction. The Since direction at L2362 needs an analogous fix -- the current encoding may use unbounded formulas for positive between_xt SSNs. The Since case is described as "parallel to Until" in the handoff.
-
 **Tasks**:
-- [ ] **Inspect Since encoding**: Check current `enriched_bypass_since` structure and the Since sorry goal state at L2362
-- [ ] **Apply bounded fix**: Mirror the BracketFormula.trivial + bounded Since pattern from the Until direction
-- [ ] **Prove backward + forward directions** for the Since case
-- [ ] Close the sorry at L2362
+- [x] **Inspect Since encoding**: Confirmed same encoding flaw as Until direction *(deviation: altered -- confirmed blocked rather than fixable)*
+- [x] **Prove incompatible cases**: t-compat and ssn-compat Formula.bot cases proved
+- [x] **Delete incorrect permutation lemma**: Removed `BracketFormula.holds_of_unordered_distinct` from VecEAFormula.lean
+- [ ] **Fix encoding**: Requires changing `enriched_bypass_since` definition *(deviation: blocked -- same fundamental issue)*
+- [ ] **Prove backward + forward directions** for the Since case *(deviation: blocked)*
+- [ ] Close the sorry at L2362 *(deviation: blocked)*
 
-**Timing**: 2 hours estimated
+**Timing**: 2 hours estimated, actual: blocked after analysis + partial proof
 
-**Depends on**: 2
+**Depends on**: 2 (encoding fix needed for both Until and Since)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean` -- fix enriched_bypass_since, close sorry at L2362
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean` -- structured Since proof (incompatible cases proved)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean` -- deleted incorrect permutation lemma
 
 **Verification**:
-- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` compiles
-- grep shows 1 remaining sorry (k>0 at L2450)
-- `lean_verify existPart_succ_n1_bypass_k0` shows no sorryAx
+- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` compiles (GREEN)
+- grep shows 4 sorry sites: L2205 (forward until), L2380 (forward since), L2382 (backward since), L2535 (k>0)
+- VecEAFormula.lean is sorry-free
 
 ---
 
