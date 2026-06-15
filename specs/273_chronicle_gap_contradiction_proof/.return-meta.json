@@ -9,63 +9,65 @@
   "phases_completed": 0,
   "phases_total": 1,
   "verification": {
-    "sorry_count": 7,
+    "sorry_count": 6,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "build_passed": false
+    "build_passed": true
   },
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 878,
-      "statement": "existPart_succ_n1_bypass_k0_eq forward direction",
-      "assumption": "x=t collapse",
-      "why_deferred": "Out of scope (eq case)",
-      "next_dispatch": "Eq case agent"
+      "line": 757,
+      "statement": "forward direction of existPart_succ_n1_bypass_k0_eq",
+      "assumption": "temporal_truth of enriched_bypass_eq implies nf_eval_nf at [t,t]",
+      "why_deferred": "Requires eq_incompat_no_witness lemma (showing incompatible SSNs have sub_nf.2 ssn = false)",
+      "next_dispatch": "Prove eq_incompat_no_witness, then extract nf_eval from disjList truth"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1554,
+      "line": 764,
+      "statement": "backward direction of existPart_succ_n1_bypass_k0_eq",
+      "assumption": "nf_eval_nf at [x,t] with x=t implies temporal_truth of enriched_bypass_eq",
+      "why_deferred": "Requires eq_zone_bridge_below_t, eq_zone_bridge_above_t, eq_zone_bridge_eq_t helpers which were deleted from KampBypass.lean. Full backward proof was written but depends on these.",
+      "next_dispatch": "Restore eq_zone_bridge_* helpers (3 theorems), then apply the backward proof from the handoff"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1295,
       "statement": "bracket_holds_of_eval_quant",
-      "assumption": "bracket witness ordering",
-      "why_deferred": "Out of scope",
+      "assumption": "IntervalPattern.holds with witnesses",
+      "why_deferred": "Pre-existing sorry",
       "next_dispatch": "Phase 2"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1773,
+      "line": 1514,
       "statement": "forward_nf_eval_of_holdsLeft",
       "assumption": "VecEA2 forward direction",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 2"
+      "why_deferred": "Pre-existing sorry",
+      "next_dispatch": "Phase 3"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1964,
-      "statement": "Since case forward direction",
-      "assumption": "formula truth implies nf_eval",
-      "why_deferred": "Complex proof; context exhausted",
-      "next_dispatch": "Zone decomposition of formula conditions to nf_eval"
+      "line": 1626,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case enriched bypass",
+      "why_deferred": "Pre-existing sorry",
+      "next_dispatch": "Phase 1 (other half)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2171,
-      "statement": "Since backward pt_x and guard (2 sorries)",
-      "assumption": "zone conditions at x and between x,t",
-      "why_deferred": "Large proof needing split_ifs",
-      "next_dispatch": "Fill pt_x and guard zone-by-zone"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2259,
+      "line": 1714,
       "statement": "existPart_succ_n1_bypass depth >= 2",
       "assumption": "arity-climbing induction",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 4"
+      "why_deferred": "Pre-existing sorry",
+      "next_dispatch": "Phase 5"
     }
   ],
   "memory_candidates": [
-    "ssn_xt_compatible extraction bug: simp only [ssn_xt_compatible] at h_compat_ssn is DESTRUCTIVE. When extracting x_preds, t_preds, and orders separately, each call destroys h_compat_ssn for subsequent uses. Fix: use have h_c := h_compat_ssn to copy before destructive simp, or use helper lemmas (since_x_preds_iff, since_t_preds_iff, ssn_xt_compat_xt_order_since, ssn_xt_compat_oc) that extract non-destructively.",
-    "Fork agents should never git add or git checkout files being edited by the parent. The PostToolUse hook can revert uncommitted changes if an edit introduces errors."
+    "The exact ⟨A, fun M => by sorry⟩ pattern causes type metavariable propagation in Lean 4. Use refine ⟨A, ?_⟩ instead to force type resolution before the sorry, enabling independent elaboration of both Iff branches.",
+    "eq_zone_bridge_below_t, eq_zone_bridge_above_t, eq_zone_bridge_eq_t were private helpers for x=t zone bridges. They were deleted from KampBypass.lean but the backward proof of existPart_succ_n1_bypass_k0_eq depends on them.",
+    "After subst h_x_eq where h_x_eq : x = t, Lean replaces t with x everywhere. All subsequent tactic references must use x, not t.",
+    "For h_fm_mem membership proof: rw [List.mem_filterMap]; refine (nf_x, h_nf_x_mem, ?_); simp only [h_compat, ite_true]; rfl. The simp [h_compat] alone leaves an unsolved goal because nf_x_1var match is not defeq to inline function; need rfl after ite_true."
   ]
 }

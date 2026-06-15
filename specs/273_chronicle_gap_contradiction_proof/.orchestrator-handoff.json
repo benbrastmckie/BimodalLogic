@@ -1,72 +1,66 @@
 {
   "status": "partial",
-  "summary": "Fixed destructive ssn_xt_compatible rewrites in Since backward direction. Added 4 helper lemmas for non-destructive extraction. Fixed above_t negative and eq_t negative cases. Forward direction and pt_x/guard backward sorries remain.",
+  "summary": "Restructured existPart_succ_n1_bypass_k0_eq proof: changed exact-lambda to refine pattern, fixing type elaboration that caused cascading errors. Both forward and backward directions remain sorry but types now resolve correctly. Build passes with zero errors. Backward proof was written in full but requires eq_zone_bridge_* helpers that were deleted.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 878,
-      "statement": "existPart_succ_n1_bypass_k0_eq forward direction",
-      "assumption": "x=t collapse",
-      "why_deferred": "Out of scope (eq case)",
-      "next_dispatch": "Eq case agent"
+      "line": 757,
+      "statement": "forward direction of existPart_succ_n1_bypass_k0_eq",
+      "assumption": "temporal_truth of enriched_bypass_eq implies nf_eval_nf at [t,t]",
+      "why_deferred": "Requires eq_incompat_no_witness lemma",
+      "next_dispatch": "Prove eq_incompat_no_witness, then extract nf_eval from disjList truth"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1554,
+      "line": 764,
+      "statement": "backward direction of existPart_succ_n1_bypass_k0_eq",
+      "assumption": "nf_eval_nf at [x,t] with x=t implies temporal_truth of enriched_bypass_eq",
+      "why_deferred": "eq_zone_bridge_* helpers were deleted from KampBypass.lean",
+      "next_dispatch": "Restore eq_zone_bridge_{below_t,above_t,eq_t} helpers, then apply backward proof"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1295,
       "statement": "bracket_holds_of_eval_quant",
-      "assumption": "bracket witness ordering",
+      "assumption": "Pre-existing sorry",
       "why_deferred": "Out of scope",
       "next_dispatch": "Phase 2"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1773,
+      "line": 1514,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "VecEA2 forward direction",
+      "assumption": "Pre-existing sorry",
       "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 2"
+      "next_dispatch": "Phase 3"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1964,
-      "statement": "existPart_succ_n1_bypass_k0_since forward direction",
-      "assumption": "formula truth implies nf_eval",
-      "why_deferred": "Complex proof requiring zone decomposition; context exhausted",
-      "next_dispatch": "Reconstruct nf_eval from Since formula conditions using zone-by-zone decomposition"
+      "line": 1626,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "Pre-existing sorry",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 1 (other half)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2171,
-      "statement": "existPart_succ_n1_bypass_k0_since backward pt_x and guard (2 sorries)",
-      "assumption": "pt_x needs char_1(nf_x) at x + formula_conjList zone conditions. guard needs contradiction via reconstruct_nf_eval_3var.",
-      "why_deferred": "Large proof requiring split_ifs over pt_x_conjuncts and guard_f lambdas",
-      "next_dispatch": "Fill pt_x and guard using helpers and zone-by-zone case analysis"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2259,
+      "line": 1714,
       "statement": "existPart_succ_n1_bypass depth >= 2",
-      "assumption": "arity-climbing induction",
+      "assumption": "Pre-existing sorry",
       "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 4"
+      "next_dispatch": "Phase 5"
     }
   ],
   "blockers": [
-    "Forward direction Since case (L1964): need to reconstruct nf_eval from formula conditions",
-    "Backward pt_x and guard (L2171): need zone-by-zone case analysis"
+    "eq_zone_bridge_below_t, eq_zone_bridge_above_t, eq_zone_bridge_eq_t private helpers are missing from KampBypass.lean (deleted in prior revision). The backward proof needs these."
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "resume_from": "Since case backward pt_x/guard (L2171), then forward direction (L1964)",
-    "key_helpers_added": [
-      "since_x_preds_iff (L1120): non-destructive x-pred Iff extraction",
-      "since_t_preds_iff (L1141): non-destructive t-pred Iff extraction",
-      "ssn_xt_compat_xt_order_since (L1101): x<t and t<x order booleans for Since",
-      "ssn_xt_compat_oc (L1112): ssn_order_consistent extraction"
-    ],
-    "bugs_fixed": "Replaced destructive simp only [ssn_xt_compatible] at h_compat_ssn in above_t negative and eq_t negative backward direction"
+    "resume_phase": 1,
+    "key_discovery": "The exact <A, fun M => by sorry> pattern breaks type elaboration in Lean 4. Use refine <A, ?_> instead.",
+    "backward_proof_sketch": "After subst h_x_eq: simp [enriched_bypass_eq], rw [formula_disjList_iff], witness nf_characteristic, membership via rw [List.mem_filterMap] + refine + simp [h_compat, ite_true] + rfl, then zone-based case split using eq_zone_bridge_* helpers."
   }
 }
