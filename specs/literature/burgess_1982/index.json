@@ -1,0 +1,29 @@
+{
+  "paper": "Axioms for Tense Logic I: 'Since' and 'Until'",
+  "bib_key": "Burgess1982",
+  "authors": "John P. Burgess",
+  "year": 1982,
+  "journal": "Notre Dame Journal of Formal Logic",
+  "volume": 23,
+  "number": 4,
+  "pages": "367-374",
+  "note": "Completeness proof for since/until tense logic over linear orders using maximal consistent sets and chronicle construction.",
+  "chapters": [
+    {
+      "id": "sec01",
+      "file": "sec01_axioms-for-tense-logic.md",
+      "title": "§1 Preliminaries: Syntax, Semantics, and Axiom System J0",
+      "pages": "367-370",
+      "token_count": 3541,
+      "keywords": ["since operator", "until operator", "tense logic", "linear orders", "axiomatic system", "maximal consistent sets", "S and U connectives", "completeness"]
+    },
+    {
+      "id": "sec02",
+      "file": "sec02_28-lemma.md",
+      "title": "§2 Completeness Proof: Chronicle Construction and Counterexample Lemmas",
+      "pages": "370-374",
+      "token_count": 2020,
+      "keywords": ["chronicle construction", "counterexample lemma", "completeness proof", "dense linear orders", "discrete orders", "finite chronicles", "extension lemmas"]
+    }
+  ]
+}

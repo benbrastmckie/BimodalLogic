@@ -1,0 +1,34 @@
+{
+  "paper": "Completeness and Definability: Applications of the Ehrenfeucht Game in Second-Order and Intensional Logic",
+  "bib_key": "Doets1987",
+  "authors": "Hans Cornelis (Kees) Doets",
+  "year": 1987,
+  "publisher": "University of Amsterdam",
+  "note": "PhD thesis. Selective conversion covering chapters 7 (completeness for Z-time), 6 (game theory for intensional logics), 3 (monadic Pi11 theories), and 1 (Fraisse-Ehrenfeucht theory). Promotor: J.F.A.K. van Benthem.",
+  "chapters": [
+    {
+      "id": "sec01",
+      "file": "sec01_doets-1987-completeness-and-definability.md",
+      "title": "Chapter 7: Completeness for Z-time (Segerberg's Theorem)",
+      "pages": "89-93",
+      "token_count": 3878,
+      "keywords": ["Z-time", "integer time", "completeness", "Segerberg theorem", "tense logic", "G and H operators", "Ehrenfeucht game", "n-characteristics", "modified Lob axiom", "Henkin construction"]
+    },
+    {
+      "id": "sec02",
+      "file": "sec02_69-lemma.md",
+      "title": "Chapter 6: Game Theory for Intensional Logics, Normal Forms",
+      "pages": "82-88",
+      "token_count": 3874,
+      "keywords": ["Kripke models", "Ehrenfeucht game", "rank", "normal forms", "modal logic", "n-equivalence", "finite Kripke models", "exact-universal models"]
+    },
+    {
+      "id": "sec03",
+      "file": "sec03_15-logic.md",
+      "title": "Chapter 1/3: Fraisse-Ehrenfeucht Theory and Scott Sentences",
+      "pages": "1-57",
+      "token_count": 1114,
+      "keywords": ["Fraisse-Ehrenfeucht game", "Scott sentences", "alpha-characteristics", "quantifier rank", "infinitary logic", "L-infinity-omega", "linear orderings", "monadic Pi11 theories"]
+    }
+  ]
+}

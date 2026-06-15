@@ -1,0 +1,37 @@
+{
+  "paper": "Monadic Π¹₁ Theories of Π¹₁-Properties",
+  "bib_key": "Doets1989",
+  "authors": "Kees Doets",
+  "year": 1989,
+  "journal": "Notre Dame Journal of Formal Logic",
+  "volume": 30,
+  "number": 2,
+  "pages": "224-240",
+  "note": "Axiomatizations of monadic universal second-order theories of scattered orderings, well-orderings, complete orderings, the naturals, the reals, and well-founded trees. Proves conservation results using Ehrenfeucht-Fraisse game.",
+  "chapters": [
+    {
+      "id": "sec01",
+      "file": "sec01_part-1.md",
+      "title": "Part 1: Introduction and Scattered Orderings",
+      "pages": "224-229",
+      "token_count": 3977,
+      "keywords": ["monadic Pi11", "second-order axioms", "scattered orderings", "Ehrenfeucht-Fraisse game", "conservation", "first-order schemas", "definable induction", "omega-equivalents"]
+    },
+    {
+      "id": "sec02",
+      "file": "sec02_part-2.md",
+      "title": "Part 2: Well-Orderings and Complete Orderings",
+      "pages": "229-234",
+      "token_count": 3979,
+      "keywords": ["well-orderings", "complete orderings", "finite n-equivalents", "definable restricted induction", "order type omega", "n-equivalence", "linear orderings"]
+    },
+    {
+      "id": "sec03",
+      "file": "sec03_part-3.md",
+      "title": "Part 3: Well-Founded Trees and Substitution Lemmas",
+      "pages": "234-240",
+      "token_count": 3126,
+      "keywords": ["well-founded trees", "definable well-foundedness", "tree substitution", "Ehrenfeucht game", "cutting and pasting", "n-equivalence preservation", "partial isomorphisms"]
+    }
+  ]
+}

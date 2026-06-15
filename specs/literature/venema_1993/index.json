@@ -1,0 +1,83 @@
+{
+  "paper": "Derivation Rules as Anti-Axioms in Modal Logic",
+  "bib_key": "Venema1993AntiAxioms",
+  "authors": "Yde Venema",
+  "year": 1993,
+  "journal": "Journal of Symbolic Logic",
+  "page_range": "1003-1034",
+  "note": "9-section split from PDF. Covers negative definability, Sahlqvist tense formulas, D-operator, and the SD-theorem for completeness with non-xi derivation rules.",
+  "chapters": [
+    {
+      "id": "sec01",
+      "file": "sec01_derivation-rules-as-anti-axioms-in-modal.md",
+      "title": "§1.1 Introduction: Rules as Anti-Axioms",
+      "pages": "1003-1007",
+      "token_count": 1922,
+      "keywords": ["derivation rules", "anti-axioms", "irreflexivity rule", "negative definability", "completeness", "Gabbay IR rule"]
+    },
+    {
+      "id": "sec02",
+      "file": "sec02_12-preliminaries-similarity-types.md",
+      "title": "§1.2 Preliminaries: Similarity Types and Semantics",
+      "pages": "1007-1011",
+      "token_count": 2965,
+      "keywords": ["similarity types", "modal operators", "frames", "general frames", "polymodal logic", "semantics", "correspondence map"]
+    },
+    {
+      "id": "sec03",
+      "file": "sec03_2-negative-definability-and-rules-as-ant.md",
+      "title": "§2 Negative Definability and Rules as Anti-Axioms",
+      "pages": "1011-1014",
+      "token_count": 1826,
+      "keywords": ["negative definability", "non-xi frames", "second-order logic", "existential quantification", "frame classes", "anti-axioms"]
+    },
+    {
+      "id": "sec04",
+      "file": "sec04_3-sahlqvist-tense-formulas.md",
+      "title": "§3 Sahlqvist Tense Formulas",
+      "pages": "1014-1019",
+      "token_count": 3253,
+      "keywords": ["Sahlqvist formulas", "correspondence theory", "canonicity", "discrete general frames", "strongly positive", "untied formulas", "first-order correspondent"]
+    },
+    {
+      "id": "sec05",
+      "file": "sec05_4-the-d-operator.md",
+      "title": "§4 The D-Operator",
+      "pages": "1019-1021",
+      "token_count": 1208,
+      "keywords": ["difference operator", "D-operator", "inequality relation", "irreflexivity", "standard frames", "axioms D1 D2 D3", "de Rijke"]
+    },
+    {
+      "id": "sec06",
+      "file": "sec06_5-the-main-proof.md",
+      "title": "§5 The Main Proof (SD-Theorem: Monadic Operators)",
+      "pages": "1021-1025",
+      "token_count": 3704,
+      "keywords": ["SD-theorem", "completeness", "tense similarity type", "canonical frame", "D-standard", "witness insertion", "non-xi rule", "Sahlqvist"]
+    },
+    {
+      "id": "sec07",
+      "file": "sec07_6-uni-directional-complications.md",
+      "title": "§6 Uni-Directional Complications",
+      "pages": "1025-1027",
+      "token_count": 2117,
+      "keywords": ["uni-directional diamonds", "tense operators", "non-standard frames", "incompleteness", "D-operator complications"]
+    },
+    {
+      "id": "sec08",
+      "file": "sec08_7-the-sd-theorem.md",
+      "title": "§7 The SD-Theorem (Dyadic Operators and Versatile Types)",
+      "pages": "1027-1031",
+      "token_count": 3653,
+      "keywords": ["SD-theorem", "dyadic operators", "versatile similarity types", "triangle operators", "Sahlqvist triangle formulas", "non-xi rules", "completeness"]
+    },
+    {
+      "id": "sec09",
+      "file": "sec09_92-conservativity.md",
+      "title": "§9.2-9.3 Conservativity and Questions",
+      "pages": "1031-1034",
+      "token_count": 2204,
+      "keywords": ["conservativity", "interpolation property", "admissible rules", "non-xi rules", "cylindric modal logic", "finitely axiomatizable"]
+    }
+  ]
+}

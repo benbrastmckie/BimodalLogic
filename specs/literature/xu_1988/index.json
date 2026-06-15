@@ -1,0 +1,52 @@
+{
+  "paper": "On Some U,S-Tense Logics",
+  "bib_key": "Xu1988",
+  "authors": "Ming Xu",
+  "year": 1988,
+  "journal": "Journal of Philosophical Logic",
+  "volume": "17",
+  "page_range": "181-202",
+  "note": "5-section split from PDF. Extends Burgess completeness methods to non-linear (branching) time, and proves irreflexivity is not U,S-definable.",
+  "chapters": [
+    {
+      "id": "sec01",
+      "file": "sec01_on-some-us-tense-logics.md",
+      "title": "§1 Introduction",
+      "pages": "181-184",
+      "token_count": 1195,
+      "keywords": ["Until operator", "Since operator", "tense logic", "branching time", "non-linear time", "expressibility", "irreflexivity", "completeness", "Burgess methods"]
+    },
+    {
+      "id": "sec02",
+      "file": "sec02_2-minimal-us-tense-logic-tlusphi.md",
+      "title": "§2 Minimal U,S-Tense Logic TL_US(phi)",
+      "pages": "184-190",
+      "token_count": 2903,
+      "keywords": ["minimal tense logic", "TL_US", "maximal consistent sets", "deductively closed sets", "completeness", "canonical model", "Burgess lemmas", "R relation"]
+    },
+    {
+      "id": "sec03",
+      "file": "sec03_3-some-complete-extensions-of-tlusphi.md",
+      "title": "§3 Some Complete Extensions of TL_US(phi)",
+      "pages": "190-196",
+      "token_count": 2240,
+      "keywords": ["complete tense logics", "intransitive frames", "transitive frames", "left-connected frames", "branching time", "completeness proofs", "MCS construction"]
+    },
+    {
+      "id": "sec04",
+      "file": "sec04_4-some-incomplete-us-tense-logics.md",
+      "title": "§4 Some Incomplete U,S-Tense Logics",
+      "pages": "196-202",
+      "token_count": 4183,
+      "keywords": ["incomplete tense logics", "first-order definable", "irreflexivity", "asymmetry", "antisymmetry", "U,S undefinable", "non-elementary classes", "expressibility limitations"]
+    },
+    {
+      "id": "sec05",
+      "file": "sec05_references.md",
+      "title": "References",
+      "pages": "202",
+      "token_count": 247,
+      "keywords": ["references", "bibliography"]
+    }
+  ]
+}

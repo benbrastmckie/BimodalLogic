@@ -1,0 +1,29 @@
+{
+  "paper": "Axioms for Tense Logic II: Time Periods",
+  "bib_key": "Burgess1982b",
+  "authors": "John P. Burgess",
+  "year": 1982,
+  "journal": "Notre Dame Journal of Formal Logic",
+  "volume": 23,
+  "number": 4,
+  "pages": "375-383",
+  "note": "Axiomatization of period-based tense logic for the rationals and reals, relating instant-based and period-based structures via abutment and homogeneity.",
+  "chapters": [
+    {
+      "id": "sec01",
+      "file": "sec01_axioms-for-tense-logic-ii-time-periods.md",
+      "title": "§1-3 Structures, Valuations, and Period-Based Semantics",
+      "pages": "375-380",
+      "token_count": 3635,
+      "keywords": ["time periods", "period-based tense logic", "instant-based tense logic", "abutment relation", "dense linear orders", "homogeneity", "open intervals", "valuation"]
+    },
+    {
+      "id": "sec02",
+      "file": "sec02_41-the-axioms.md",
+      "title": "§4 Axioms, Soundness, and Completeness for Period-Based Logic",
+      "pages": "380-383",
+      "token_count": 2083,
+      "keywords": ["period-based axioms", "soundness", "completeness", "S system", "Roper system", "canonical model", "lexicographic order", "maximal consistent sets"]
+    }
+  ]
+}
