@@ -1,21 +1,71 @@
 {
-  "status": "planned",
-  "artifacts": [
+  "status": "partial",
+  "task_number": 273,
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "session_id": "sess_1781495585_aa2a0e",
+  "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/32_depth0-sorries-completion.md",
+  "started_at": "2026-06-14",
+  "phases_completed": 0,
+  "phases_total": 1,
+  "verification": {
+    "sorry_count": 7,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": false
+  },
+  "sorry_inventory": [
     {
-      "type": "plan",
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/32_depth0-sorries-completion.md",
-      "summary": "Implementation plan v32 with 5 phases to close all 5 KampBypass.lean sorries and wire through NfCharFormula/RabinovichGeneralized for sorry-free Kamp chain"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 878,
+      "statement": "existPart_succ_n1_bypass_k0_eq forward direction",
+      "assumption": "x=t collapse",
+      "why_deferred": "Out of scope (eq case)",
+      "next_dispatch": "Eq case agent"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1554,
+      "statement": "bracket_holds_of_eval_quant",
+      "assumption": "bracket witness ordering",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 2"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1773,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "assumption": "VecEA2 forward direction",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 2"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 1964,
+      "statement": "Since case forward direction",
+      "assumption": "formula truth implies nf_eval",
+      "why_deferred": "Complex proof; context exhausted",
+      "next_dispatch": "Zone decomposition of formula conditions to nf_eval"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2171,
+      "statement": "Since backward pt_x and guard (2 sorries)",
+      "assumption": "zone conditions at x and between x,t",
+      "why_deferred": "Large proof needing split_ifs",
+      "next_dispatch": "Fill pt_x and guard zone-by-zone"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2259,
+      "statement": "existPart_succ_n1_bypass depth >= 2",
+      "assumption": "arity-climbing induction",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 4"
     }
   ],
-  "next_steps": "Run /implement 273 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1718381400_b4d7f1",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 8,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
-  },
-  "memory_candidates": []
+  "memory_candidates": [
+    "ssn_xt_compatible extraction bug: simp only [ssn_xt_compatible] at h_compat_ssn is DESTRUCTIVE. When extracting x_preds, t_preds, and orders separately, each call destroys h_compat_ssn for subsequent uses. Fix: use have h_c := h_compat_ssn to copy before destructive simp, or use helper lemmas (since_x_preds_iff, since_t_preds_iff, ssn_xt_compat_xt_order_since, ssn_xt_compat_oc) that extract non-destructively.",
+    "Fork agents should never git add or git checkout files being edited by the parent. The PostToolUse hook can revert uncommitted changes if an edit introduces errors."
+  ]
 }

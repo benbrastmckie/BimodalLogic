@@ -1,54 +1,72 @@
 {
   "status": "partial",
-  "summary": "Phase 2 in progress. 4 target sorries remain in KampBypass.lean. seg_guard_holds (sorry-free) and bracket_holds_of_eval_quant (sorry at IntervalPattern.holds) applied to file. Bracket sorry at L1440 now delegates to bracket_holds_of_eval_quant; remaining sorry is sorted-witness construction for IntervalPattern.holds at L1284. Eq compatible (L753), forward (L1503), since (L1615) untouched.",
-  "phases_completed": 3,
-  "phases_total": 7,
+  "summary": "Fixed destructive ssn_xt_compatible rewrites in Since backward direction. Added 4 helper lemmas for non-destructive extraction. Fixed above_t negative and eq_t negative cases. Forward direction and pt_x/guard backward sorries remain.",
+  "phases_completed": 0,
+  "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 753,
-      "statement": "existPart_succ_n1_bypass_k0_eq (compatible subcase)",
-      "status": "untouched"
+      "line": 878,
+      "statement": "existPart_succ_n1_bypass_k0_eq forward direction",
+      "assumption": "x=t collapse",
+      "why_deferred": "Out of scope (eq case)",
+      "next_dispatch": "Eq case agent"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1284,
-      "statement": "bracket_holds_of_eval_quant: IntervalPattern.holds sorted-witness construction",
-      "status": "decomposed from L1440 bracket case; seg_guard_holds applied; needs sorted-witness from h_eval_quant"
+      "line": 1554,
+      "statement": "bracket_holds_of_eval_quant",
+      "assumption": "bracket witness ordering",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 2"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1503,
+      "line": 1773,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "status": "untouched"
+      "assumption": "VecEA2 forward direction",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 2"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1615,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "status": "untouched"
+      "line": 1964,
+      "statement": "existPart_succ_n1_bypass_k0_since forward direction",
+      "assumption": "formula truth implies nf_eval",
+      "why_deferred": "Complex proof requiring zone decomposition; context exhausted",
+      "next_dispatch": "Reconstruct nf_eval from Since formula conditions using zone-by-zone decomposition"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1703,
-      "statement": "existPart_succ_n1_bypass depth>=2",
-      "status": "OUT OF SCOPE (Phase 3)"
+      "line": 2171,
+      "statement": "existPart_succ_n1_bypass_k0_since backward pt_x and guard (2 sorries)",
+      "assumption": "pt_x needs char_1(nf_x) at x + formula_conjList zone conditions. guard needs contradiction via reconstruct_nf_eval_3var.",
+      "why_deferred": "Large proof requiring split_ifs over pt_x_conjuncts and guard_f lambdas",
+      "next_dispatch": "Fill pt_x and guard using helpers and zone-by-zone case analysis"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2259,
+      "statement": "existPart_succ_n1_bypass depth >= 2",
+      "assumption": "arity-climbing induction",
+      "why_deferred": "Out of scope",
+      "next_dispatch": "Phase 4"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "Forward direction Since case (L1964): need to reconstruct nf_eval from formula conditions",
+    "Backward pt_x and guard (L2171): need zone-by-zone case analysis"
+  ],
+  "continuation_path": null,
   "continuation_context": {
-    "is_successor": true,
-    "next_phase": "Fill remaining 4 KampBypass.lean sorries (bracket IntervalPattern.holds, eq compatible, forward, since)",
-    "key_insight": "Bracket sorry decomposed into IntervalPattern.holds sorted-witness problem. seg_guard_holds proves all segment guards. Need to understand IntervalPattern.holds definition and construct sorted witnesses from h_eval_quant existentials.",
-    "helpers_in_file": ["seg_guard_holds (L1204, sorry-free)", "bracket_holds_of_eval_quant (L1249, sorry at L1284)"],
-    "plan_path": "specs/273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md"
-  },
-  "next_action_hint": "research",
-  "artifacts": [
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/30_complete-kamp-proof.md",
-      "type": "plan",
-      "summary": "Plan v30: complete Kamp proof, 5 phases. Phase 2 in progress with 4 target sorries remaining."
-    }
-  ]
+    "is_successor": false,
+    "resume_from": "Since case backward pt_x/guard (L2171), then forward direction (L1964)",
+    "key_helpers_added": [
+      "since_x_preds_iff (L1120): non-destructive x-pred Iff extraction",
+      "since_t_preds_iff (L1141): non-destructive t-pred Iff extraction",
+      "ssn_xt_compat_xt_order_since (L1101): x<t and t<x order booleans for Since",
+      "ssn_xt_compat_oc (L1112): ssn_order_consistent extraction"
+    ],
+    "bugs_fixed": "Replaced destructive simp only [ssn_xt_compatible] at h_compat_ssn in above_t negative and eq_t negative backward direction"
+  }
 }
