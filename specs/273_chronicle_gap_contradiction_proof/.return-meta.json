@@ -1,39 +1,47 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 273,
   "session_id": "sess_1781554668_c14eb9",
-  "phase": 3,
-  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/.orchestrator-handoff.json",
+  "task_number": 273,
+  "started_at": "2026-06-15T00:00:00Z",
+  "requires_user_review": true,
   "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
+      "line": 371,
+      "statement": "BracketFormula.holds_of_unordered_distinct",
+      "why_deferred": "Proof requires sorting infrastructure for finite injective sequences"
+    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2205,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "why_deferred": "Between_tx encoding loses lower bound t < y"
+      "why_deferred": "Blocked by encoding flaw; requires BracketFormula k encoding change"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2362,
       "statement": "existPart_succ_n1_bypass_k0_since",
-      "why_deferred": "Phase 4 scope"
+      "why_deferred": "Phase 4 not started"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2450,
-      "statement": "existPart_succ_n1_bypass depth >= 2",
-      "why_deferred": "Phase 5 scope"
+      "statement": "existPart_succ_n1_bypass depth>=2",
+      "why_deferred": "Phase 5, out of scope"
     }
   ],
   "verification": {
-    "sorry_count": 3,
+    "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "Between_tx zone encoding: Formula.snce char_y Formula.top at x loses the lower bound t < y in the forward direction. The correct encoding must use bounded Until at t to guarantee witnesses are in (t, x).",
-    "HEq transport pattern for VecEA2: congrArg Sigma.fst h_eq to get n=0, then eq_of_heq (Sigma.mk.inj h_eq.symm).2 to get vea equality, then subst both."
-  ]
+    "Between_tx encoding: Formula.snce char_y Formula.top at x is unsound for forward direction -- loses t < y bound. BracketFormula with witnesses is the only correct approach for encoding exists y in open interval (t, x).",
+    "Permutation lemma for BracketFormula: BracketFormula.holds_of_unordered_distinct -- when segment types are uniform and hold everywhere, any set of distinct witnesses matching point types can be rearranged. Key infrastructure for the Kamp bypass proof.",
+    "Depth-0 char formulas (nf_depth0_char_formula) for different nf_y_proj values are mutually exclusive at any model point. This ensures witnesses for different between_tx SSNs are at distinct positions."
+  ],
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260615.md"
 }

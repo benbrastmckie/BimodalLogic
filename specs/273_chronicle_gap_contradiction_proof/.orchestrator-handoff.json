@@ -1,73 +1,53 @@
 {
-  "status": "blocked",
-  "summary": "Phase 3 forward direction (forward_nf_eval_of_holdsLeft at KampBypass.lean:2205) is unprovable with the current between_tx encoding. The Formula.snce char_y Formula.top at x loses the lower bound t < y. Requires Phase 2-level encoding fix.",
+  "status": "partial",
+  "summary": "Phase 3 forward sorry (L2205) BLOCKED by encoding flaw. Exhaustive analysis confirmed Since-based encoding is too weak. BracketFormula k approach identified as correct fix. Permutation lemma statement added to VecEAFormula.lean (sorry'd). Full implementation plan documented in handoff.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
+      "line": 371,
+      "statement": "theorem BracketFormula.holds_of_unordered_distinct",
+      "assumption": "Assumes n distinct witnesses in (z0, z1) with matching point types and uniform segment type holding everywhere can be rearranged to satisfy IntervalPattern.holds",
+      "why_deferred": "Proof requires sorting infrastructure for finite injective sequences on linearly ordered types. Statement is correct; proof is mechanical but involves Finset.sort/min' index manipulation.",
+      "next_dispatch": "Prove by induction on n: extract minimum witness via Finset.min', place as first bracket witness, recurse on remaining n-1 witnesses."
+    },
+    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2205,
-      "statement": "theorem forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft for enriched VecEA2 implies exists x, nf_eval_nf",
-      "why_deferred": "Between_tx positive SSN encoding uses Formula.snce char_y Formula.top at x which gives y < x but loses t < y. Design flaw in encoding, not a proof difficulty.",
-      "next_dispatch": "Fix enriched_vecEA2_until and enriched_point_type_x_until to use bounded Until encoding for between_tx. Then re-prove both backward and forward directions."
+      "statement": "private theorem forward_nf_eval_of_holdsLeft",
+      "assumption": "Forward direction: VecEA2.holdsLeft implies exists x, nf_eval_nf for the Until case",
+      "why_deferred": "The current Since-based encoding for positive between_tx SSNs loses the lower bound t < y. The encoding must change to BracketFormula k with bracket witnesses. This requires proving the permutation lemma first.",
+      "next_dispatch": "1) Prove permutation lemma, 2) Change enriched_vecEA2_until to use BracketFormula k, 3) Re-prove backward and prove forward"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2362,
-      "statement": "theorem existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case of the enriched bypass (x < t direction)",
-      "why_deferred": "Phase 4 scope",
-      "next_dispatch": "Phase 4: fix enriched_bypass_since and close Since sorry"
+      "statement": "existPart_succ_n1_bypass_k0_since sorry",
+      "assumption": "Since direction bypass at depth 0",
+      "why_deferred": "Phase 4 (not yet started). May have analogous encoding flaw for between_xt positive SSNs.",
+      "next_dispatch": "Inspect enriched_bypass_since structure and apply analogous fix if needed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2450,
-      "statement": "existPart_succ_n1_bypass depth >= 2",
-      "assumption": "k > 0 case requires separate inductive argument",
-      "why_deferred": "Phase 5 scope",
-      "next_dispatch": "Separate task for k > 0 depth argument"
+      "statement": "existPart_succ_n1_bypass depth >= 2 sorry",
+      "assumption": "Depth k > 0 bypass case",
+      "why_deferred": "Phase 5, out of scope. Requires separate depth-IH argument.",
+      "next_dispatch": "Separate task for k > 0 inductive argument"
     }
   ],
   "blockers": [
-    {
-      "phase": 3,
-      "theorem": "forward_nf_eval_of_holdsLeft",
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2205,
-      "description": "Forward direction unprovable with current between_tx encoding. Since at x gives y < x but not t < y. Requires encoding fix in enriched_vecEA2_until (line 484) and enriched_point_type_x_until (line 428).",
-      "proposed_fix": "Change between_tx from Formula.snce char_y Formula.top at x to Formula.untl (char_y.and (Formula.untl (char_1 nf_x) seg_guard_f)) seg_guard_f at t. Bounded Until guarantees y in (t, x) by construction.",
-      "impact": "Requires re-proving backward_holdsLeft_of_nf_eval (between_tx case) and forward_nf_eval_of_holdsLeft entirely. Estimated 200-300 lines of change."
-    }
+    "Forward direction (L2205) requires encoding change: BracketFormula 0 -> BracketFormula k with bracket witnesses for positive between_tx SSNs. The permutation lemma (VecEAFormula.lean:371) must be proved first."
   ],
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 3,
-    "encoding_fix_needed": true,
-    "encoding_fix_details": {
-      "files": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"],
-      "definitions_to_change": [
-        "enriched_vecEA2_until (line 444-490): change between_tx case at line 484",
-        "enriched_point_type_x_until (line 407-432): change between_tx case at line 428",
-        "pre_conditions_at_t_until (line 364-383): add between_tx bounded Until formulas"
-      ],
-      "proofs_to_update": [
-        "backward_holdsLeft_of_nf_eval (line 1932-2135): between_tx endpointRight case",
-        "forward_nf_eval_of_holdsLeft (line 2140-2205): entire proof"
-      ],
-      "approach": "Replace Formula.snce char_y Formula.top at x with Formula.untl (char_y.and (Formula.untl (char_1 nf_x) seg_guard_f)) seg_guard_f at t in endpointLeft. The bounded Until encodes seg_guard until (char_y AND (seg_guard until char_1(nf_x))) which guarantees the between_tx witness is in (t, x)."
-    },
-    "proven_techniques": {
-      "heq_transport": "n=0 extraction via congrArg Sigma.fst + eq_of_heq (Sigma.mk.inj h_eq.symm).2 + subst",
-      "atoms_case": "Proved via fin_cases on Fin 2, nf_x_compat_check for x-position, h_t_compat for t-position",
-      "non_between_tx_quant": "eq_x, above_x: via right_conj extraction + bridge lemmas. below_t, eq_t: via endpointLeft extraction + bridge lemmas"
-    }
+    "current_phase": 3,
+    "encoding_fix_required": true,
+    "permutation_lemma_added": true,
+    "permutation_lemma_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
+    "permutation_lemma_line": 371,
+    "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260615.md"
   },
-  "artifacts": [
-    {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/37_bounded-until-fix.md",
-      "type": "plan",
-      "summary": "Plan updated with Phase 3 BLOCKED status and detailed blocker documentation"
-    }
-  ]
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260615.md"
 }

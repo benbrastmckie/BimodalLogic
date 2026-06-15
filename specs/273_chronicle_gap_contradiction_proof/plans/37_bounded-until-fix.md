@@ -135,6 +135,28 @@ Phases 3 and 4 can execute in parallel (Until backward/forward proof and Since f
 
 ### Phase 3: Close Forward Sorry (Until Direction) [BLOCKED]
 
+**UPDATE (Phase 3 re-analysis, dispatch sess_1781554668_c14eb9)**:
+The forward direction is CONFIRMED unprovable with the current encoding.
+The Since encoding (`Formula.snce char_y Formula.top` at x) loses the lower
+bound `t < y` for positive between_tx SSNs. Exhaustive analysis of all
+alternative temporal encodings (Since with seg_guard, Since with char_y.neg,
+bounded Until at t, dual encoding, etc.) confirmed that no single-endpoint
+temporal formula can express "exists y strictly between t and x."
+
+**Correct fix**: Use `BracketFormula k` (k = number of positive between_tx SSNs)
+instead of `BracketFormula 0`. The bracket semantically guarantees witnesses
+in `(t, x)` by construction. This requires:
+1. A permutation lemma (`BracketFormula.holds_of_unordered_distinct` -- added to
+   `VecEAFormula.lean` as sorry'd statement) for the backward direction
+2. Changing `enriched_vecEA2_until` definition
+3. Re-proving backward (using permutation lemma) and forward (straightforward)
+
+The permutation lemma statement has been added to VecEAFormula.lean (sorry'd).
+Its proof requires sorting `Fin n -> M.carrier` for injective functions on
+linearly ordered types. The forward direction with BracketFormula k is
+straightforward since `IntervalPattern.holds` directly provides ordered
+witnesses in `(t, x)`.
+
 **Goal**: Prove the forward direction (temporal formula -> nf_eval) for the new bounded construction. The backward sorry (L2081) was already closed in Phase 2. Closes the remaining sorry at L2205.
 
 **BLOCKER** (Phase 3):
