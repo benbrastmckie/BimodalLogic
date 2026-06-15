@@ -744,13 +744,24 @@ private theorem existPart_succ_n1_bypass_k0_eq
       -- We use classical choice to obtain temporal formulas for each.
       -- The formula: disjunction over compatible nf_x of char_1(nf_x) ∧ quant_profile.
       -- Use enriched_bypass_eq as the formula.
-      exact ⟨enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms,
-        fun M h_UZ h_SZ t h_atoms => by
-        -- The enriched_bypass_eq formula is a disjunction over nf_x values.
-        -- For each nf_x, the conjunct is char_1(nf_x) ∧ quant_conjuncts.
-        -- The equivalence with ∃ x, nf_eval at [x, t] where x = t
-        -- follows from NF uniqueness + zone decomposition.
-        sorry⟩
+      refine ⟨enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms,
+        fun M h_UZ h_SZ t h_atoms => ?_⟩
+      -- Derive predicate conditions at t
+      have h_t_pred_par : ∀ p : sig.preds,
+          M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+        intro p; have := h_atoms (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at this; exact this
+      constructor
+      · -- Forward: formula truth → ∃ x, nf_eval
+        intro h_fwd
+        exact ⟨t, sorry⟩
+      · -- Backward: ∃ x, nf_eval → formula truth
+        -- Requires eq_zone_bridge helpers (below_t, above_t, eq_t for x=t case)
+        -- which were deleted from this file. Need to be restored first.
+        intro ⟨x, h_eval⟩
+        have h_x_eq := witness_eq_t_of_no_order M sub_nf t x h_gt h_lt h_eval
+        subst h_x_eq
+        sorry
     · -- var-1 preds don't match parent_atoms: existential impossible
       refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
       simp only [temporal_truth]
