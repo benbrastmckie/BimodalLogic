@@ -1,13 +1,50 @@
 {
   "status": "partial",
-  "task_number": 273,
-  "phases_completed": 4,
-  "phases_total": 8,
-  "summary": "Phase 4 (Negation Closure) fully COMPLETED with all sub-phases 4a-4f sorry-free. Phase 4f proved Prop 4.2: neg_vecEA2 and neg_2var_vec_ea (NegationClosureProp42.lean, 80 lines, 0 sorries). Phase 5 (FO-to-VecEA bridge) started with infrastructure file FoToVecEA.lean. Next: prove nf_exist_to_vvecEA2 bridge theorem (Phase 5), wire into master_induction to eliminate the sorry at NegationClosure.lean:1371 (Phase 6), close downstream sorries (Phase 7).",
-  "session_id": "sess_1781193902_83bc5c",
-  "artifacts_created": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationClosureProp42.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FoToVecEA.lean"
+  "summary": "Deleted incorrect permutation lemma from VecEAFormula.lean (now sorry-free). Structured the Since case proof (existPart_succ_n1_bypass_k0_since) with 3 proved cases and 2 remaining sorries. Confirmed the Since case has the same fundamental encoding flaw as the Until forward direction: positive between-zone SSNs encoded as unbounded temporal operators lose one interval bound.",
+  "phases_completed": 2,
+  "phases_total": 5,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2205,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "assumption": "The Since encoding at x provides y < x but the between_tx zone needs y > t",
+      "why_deferred": "Fundamental encoding flaw: Formula.snce char_y Formula.top at x loses y > t bound",
+      "next_dispatch": "Fix enriched_vecEA2_until to use nested Until encoding for positive between_tx SSNs"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2380,
+      "statement": "existPart_succ_n1_bypass_k0_since (forward direction)",
+      "assumption": "The Until encoding at x provides y > x but the between_xt zone needs y < t",
+      "why_deferred": "Same encoding flaw as L2205 but for Since direction",
+      "next_dispatch": "Fix enriched_bypass_since to use nested Since encoding for positive between_xt SSNs"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2382,
+      "statement": "existPart_succ_n1_bypass_k0_since (backward direction)",
+      "assumption": "Given nf_eval with x < t, need to show enriched_bypass_since formula holds at t",
+      "why_deferred": "Missing zone bridge lemmas for Since direction (between_xt_temporal_iff, above_t_temporal_iff, below_x_temporal_iff do not exist)",
+      "next_dispatch": "Either create Since-direction zone bridges or fix encoding first"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2535,
+      "statement": "existPart_succ_n1_bypass (k > 0)",
+      "assumption": "General k > 0 case requires depth-k' induction hypothesis",
+      "why_deferred": "Out of scope for this task",
+      "next_dispatch": "Separate task for depth >= 2 bypass"
+    }
   ],
-  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-5-start-handoff-20260612.md"
+  "blockers": [
+    "L2205 forward_nf_eval_of_holdsLeft: encoding flaw in enriched_vecEA2_until for positive between_tx SSNs",
+    "L2380/L2382 existPart_succ_n1_bypass_k0_since: same encoding flaw in enriched_bypass_since for positive between_xt SSNs"
+  ],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-4-since-structured-20260615.md",
+  "continuation_context": {
+    "is_successor": false,
+    "resume_phase": 3,
+    "note": "Phases 3 and 4 are both blocked by the same encoding flaw. The fix requires changing both enriched_vecEA2_until and enriched_bypass_since definitions."
+  }
 }

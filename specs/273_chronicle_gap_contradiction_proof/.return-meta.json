@@ -8,28 +8,28 @@
   "requires_user_review": true,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
-      "line": 371,
-      "statement": "BracketFormula.holds_of_unordered_distinct",
-      "why_deferred": "Proof requires sorting infrastructure for finite injective sequences"
-    },
-    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2205,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "why_deferred": "Blocked by encoding flaw; requires BracketFormula k encoding change"
+      "why_deferred": "Encoding flaw: Formula.snce char_y Formula.top at x loses y > t bound for between_tx SSNs"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2362,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "why_deferred": "Phase 4 not started"
+      "line": 2380,
+      "statement": "existPart_succ_n1_bypass_k0_since (forward)",
+      "why_deferred": "Same encoding flaw for Since direction: Formula.untl char_y Formula.top at x loses y < t bound"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2450,
+      "line": 2382,
+      "statement": "existPart_succ_n1_bypass_k0_since (backward)",
+      "why_deferred": "Missing zone bridge lemmas for Since direction"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2535,
       "statement": "existPart_succ_n1_bypass depth>=2",
-      "why_deferred": "Phase 5, out of scope"
+      "why_deferred": "Out of scope (requires depth IH)"
     }
   ],
   "verification": {
@@ -39,9 +39,9 @@
     "build_passed": true
   },
   "memory_candidates": [
-    "Between_tx encoding: Formula.snce char_y Formula.top at x is unsound for forward direction -- loses t < y bound. BracketFormula with witnesses is the only correct approach for encoding exists y in open interval (t, x).",
-    "Permutation lemma for BracketFormula: BracketFormula.holds_of_unordered_distinct -- when segment types are uniform and hold everywhere, any set of distinct witnesses matching point types can be rearranged. Key infrastructure for the Kamp bypass proof.",
-    "Depth-0 char formulas (nf_depth0_char_formula) for different nf_y_proj values are mutually exclusive at any model point. This ensures witnesses for different between_tx SSNs are at distinct positions."
+    "The encoding flaw in enriched_vecEA2_until and enriched_bypass_since is shared: positive between-zone SSNs are encoded as unbounded temporal operators (Since or Until) at a single endpoint, which provides one bound but loses the other. Both Until and Since directions are blocked by this same issue.",
+    "BracketFormula.holds_of_unordered_distinct was incorrectly stated: it assumed witnesses could be permuted freely, but BracketFormula requires strictly increasing witnesses matching point types in a specific order. For n >= 2, witnesses for different SSN types are at model-determined positions that cannot be reordered.",
+    "The Since case (existPart_succ_n1_bypass_k0_since) can be structured with by_cases on t_compat and ssn_compat, proving the incompatible cases as Formula.bot contradictions. The ssn_xt_compatible check with false/true (instead of true/false for Until) requires proving order atoms for x < t direction."
   ],
-  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-handoff-20260615.md"
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-4-since-structured-20260615.md"
 }
