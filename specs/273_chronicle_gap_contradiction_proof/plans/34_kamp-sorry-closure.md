@@ -126,21 +126,28 @@ Phases 2 and 3 can execute in parallel (bracket and forward are independent sorr
 
 ---
 
-### Phase 3: Forward Direction (L1637) [NOT STARTED]
+### Phase 3: Forward Direction (L1637) [BLOCKED]
 
-**Goal**: Close the `forward_nf_eval_of_holdsLeft` sorry at KampBypass.lean:1637. Reconstruct `nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf` from the VecEA2 holdsLeft conditions (h_endLeft, h_endRight, h_bracket, h_t_lt_x). This is the reverse of the backward direction (L1432-1576).
+**Goal**: Close the `forward_nf_eval_of_holdsLeft` sorry at KampBypass.lean:2154. Reconstruct `nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf` from the VecEA2 holdsLeft conditions (h_endLeft, h_endRight, h_bracket, h_t_lt_x). This is the reverse of the backward direction (L1949-2096).
+
+**BLOCKER** (Phase 3):
+- **What failed**: KampBypass.lean has pre-existing compilation errors starting at line 948 (eq case helper `eq_case_t_pred_1`) that cascade through lines 948-1491. The `forward_nf_eval_of_holdsLeft` sorry at L2154 cannot be verified by the compiler because these upstream errors prevent the module from building. Additionally, the forward direction atom proof at variable 1 (t's predicates) requires `sub_nf.1 (.pred p ⟨1, _⟩) = parent_atoms (.pred p ⟨0, _⟩)` (t_compat), which is not available as a hypothesis to `forward_nf_eval_of_holdsLeft` and cannot be derived from the VecEA2 holdsLeft conditions alone.
+- **What was tried**:
+  1. Direct proof via constructor to split atom + quant parts -- atom part at variable 0 (x) works via `h_nf_x` + `h_pred_compat`; atom part at variable 1 (t) requires t_compat which is missing.
+  2. Adding `h_t_compat` parameter to `forward_nf_eval_of_holdsLeft` and modifying the call site in `existPart_succ_n1_bypass_k0_until` to do `by_cases` on t_compat (returning `Formula.bot` when it fails, mirroring the eq case pattern at L1365-1470). This is the correct architectural fix but requires fixing the upstream errors first.
+  3. Attempting to derive t_compat from holdsLeft conditions -- not possible because the VecEA2 construction does not encode t-predicate compatibility directly.
+- **Why stuck**: Two independent blockers: (a) Pre-existing compilation errors in the eq case code (lines 948-1491) prevent building the module, so no proof at L2154 can be verified. These errors appear to be from a Lean/Mathlib API change affecting `Fintype.complete`, `ssn_xt_compatible` field access patterns, and `Iff.mpr` syntax. (b) The `forward_nf_eval_of_holdsLeft` theorem is missing the `h_t_compat` hypothesis needed for the atom part. The eq case (`existPart_succ_n1_bypass_k0_eq` at L1365) handles this correctly via `by_cases h_t_compat`, but the Until case (`existPart_succ_n1_bypass_k0_until` at L2460) does not.
+- **What is needed**:
+  1. Fix compilation errors in eq case (lines 948-1491) -- likely API changes in `ssn_xt_compatible` field destructuring and `Fintype.complete` usage.
+  2. Add `h_t_compat` parameter to `forward_nf_eval_of_holdsLeft` and add `by_cases` on t_compat in `existPart_succ_n1_bypass_k0_until` (returning Bot when it fails).
+  3. Then prove the forward direction zone-by-zone using the established zone bridge infrastructure.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Tasks**:
-- [ ] Prove the atom part of `nf_eval_nf`: predicate atoms at x from `h_endRight` -> `char_1_correct` -> `nf_eval` at x -> atom conditions. Predicate atoms at t from `h_atoms`. Order atoms from `h_t_lt_x`.
-- [ ] Prove the quantifier part zone-by-zone. For each ssn, case-split on `ssn_zone_until`:
-  - below_t: from `h_endLeft` -> `pre_conditions_at_t_until` -> `zone_bridge_below_t.mp`
-  - eq_t: from `h_endLeft` -> `zone_bridge_eq_t.mp`
-  - between_tx (positive): from `h_bracket` -> `IntervalPattern.holds` -> `zone_bridge_between_tx.mp`
-  - between_tx (negative): from `h_bracket` -> segment guards -> no witness in (t,x)
-  - eq_x: from `h_endRight` -> `zone_bridge_eq_x.mp`
-  - above_x: from `h_endRight` -> `zone_bridge_above_x.mp`
-- [ ] Wire atom part + quantifier part into the `nf_eval_nf` conclusion
-- [ ] Verify `lake build` passes
+- [ ] Prove the atom part of `nf_eval_nf` *(deviation: blocked -- pre-existing errors + missing t_compat, see BLOCKER above)*
+- [ ] Prove the quantifier part zone-by-zone *(deviation: blocked -- depends on atom part)*
+- [ ] Wire atom part + quantifier part into the `nf_eval_nf` conclusion *(deviation: blocked)*
+- [ ] Verify `lake build` passes *(deviation: blocked -- pre-existing errors)*
 
 **Timing**: 1.5 hours (~150-200 lines)
 
