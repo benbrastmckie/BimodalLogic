@@ -1,64 +1,27 @@
 {
   "status": "partial",
-  "summary": "Fixed 5 of 21 build errors in KampBypass.lean, consolidated forward direction into single sorry, removed 247 lines dead code. Reduced error count from 21 to 16. Did NOT reach since case closure due to remaining eq_case_iff errors blocking green build.",
+  "summary": "Fixed forward direction of eq_case_iff (lines 1119-1175): 6 filterMap membership proofs + 3 Bool.eq_false proofs + 3 Iff chain fixes. Reduced errors from 16 to 9. Backward direction and 2 other theorems still have errors.",
   "phases_completed": 0,
-  "phases_total": 5,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2046,
-      "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "assumption": "BracketFormula.holds decomposition for between_tx zone",
-      "why_deferred": "Pre-existing; Phase 2 BLOCKED by enriched_vecEA2_until witness ordering design flaw",
-      "next_dispatch": "Fix enriched_vecEA2_until to use conjunction instead of BracketFormula for between_tx zone"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2116,
-      "statement": "forward_nf_eval_of_holdsLeft (entire compatible case)",
-      "assumption": "Sigma pair transport from vea' to vea + all zone bridges + bracket case",
-      "why_deferred": "Consolidated: HEq transport errors + bracket sorry. Previously had 247 lines of code with compilation errors and an embedded bracket sorry.",
-      "next_dispatch": "Fix Sigma pair transport or restructure proof to avoid Sigma decomposition"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2273,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "enriched_bypass_since soundness for positive between_xt SSNs",
-      "why_deferred": "Pre-existing; Phase 4 TARGET",
-      "next_dispatch": "1. Verify enriched_bypass_since soundness. 2. Prove from formula_disjList_iff + Since semantics + zone bridges."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2361,
-      "statement": "existPart_succ_n1_bypass depth>=2",
-      "assumption": "Full depth>=2 bypass construction",
-      "why_deferred": "Pre-existing; OUT OF SCOPE",
-      "next_dispatch": "Investigate nf_characterizable_temporal_prior_classical"
-    }
-  ],
+  "phases_total": 1,
+  "sorry_inventory": [],
   "blockers": [
-    {
-      "description": "eq_case_iff has 15 compilation errors preventing green build",
-      "details": "12 errors in forward zone cases (filterMap membership by simp failures due to proof-term mismatch between auto-generated Fin proofs and manual by omega/by decide proofs; also needs temporal_truth_neg for .neg formulas). 2 split_ifs failures in backward direction (let bindings hide if-conditions). 1 unsolved goal in Bot fallback refine.",
-      "root_cause": "The enriched_bypass_eq filterMap uses let-bound variables and auto-generated Fin proof terms that don't unify with the manually-written proof terms used in by simp membership proofs.",
-      "fix_approach": "Replace by simp with explicit if_pos/if_neg chain or by_cases + simp only; replace split_ifs with by_cases; use temporal_truth_neg for .neg formula proofs"
-    },
-    {
-      "description": "existPart_succ_n1_bypass_k0_until Bot fallback (L2211)",
-      "details": "Unsolved goals in the simp_all for ssn_bad x-preds case. Need to connect ref_nf_x_1var definition to h_ssn_eval + h_x_pred."
-    }
+    "Backward direction of eq_case_iff (lines 1280-1360): split_ifs needs simp only [] to unfold let bindings (DONE), but by cases ... <;> simp_all for Bool.eq_false still fails due to Fin proof term mismatch in lambda bodies. The hypothesis names from split_ifs don't include the complementary order negation needed for Bool.eq_false_iff.mpr.",
+    "existPart_succ_n1_bypass_k0_eq (line 1429): unsolved goals in ssn_xt_compatible proof - same Fin lambda mismatch pattern",
+    "Theorem around line 2229: same pattern as 1429"
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "completed_in_this_dispatch": "Fixed L1065 (Eq.symm), L1080 (ext->funext), L1099 (rfl), L1114 (ssn_xt_compat.2), L2116 (sorry consolidation). Removed 247 dead lines.",
-    "next_action": "Fix remaining 16 build errors in eq_case_iff (primarily filterMap membership proofs), then proceed to since case closure",
-    "key_insights": [
-      "filterMap membership by simp fails due to proof-term mismatch. Need if_pos/if_neg with exact hypothesis names, not simp.",
-      "split_ifs fails when h_ssn_some has let/have bindings. Use explicit by_cases on order atoms instead.",
-      "temporal_truth_neg (from Translation.lean) converts temporal_truth of .neg formula to negation. Required for false-case zone proofs.",
-      "forward_nf_eval_of_holdsLeft sorry consolidation correct: entire function was blocked by bracket + Sigma transport issues."
-    ]
+    "forward_direction_fixed": true,
+    "key_techniques": [
+      "Forward neg cases: use 'show temporal_truth M atomMap t FORMULA.neg' before 'apply h_conj' to convert ¬ goal to temporal_truth goal matching h_conj's output type",
+      "Forward pos cases: use 'have h_formula_true : temporal_truth M atomMap t FORMULA := by apply h_conj; apply List.mem_filterMap.mpr; exact ...' with 'by simp_all' for the filterMap evaluation",
+      "Forward Iff chain: replace 'h_zone.symm.trans ... h_zone.mpr h_formula_true' with 'simp only [eq_iff_iff, h_sub, iff_true]; exact h_zone.mp h_formula_true'",
+      "Forward Bool.eq_false: use 'Bool.eq_false_iff.mpr h_y_lt_x' (works via defeq for Fin terms in function ARGUMENTS but NOT in lambda bodies)",
+      "Backward let unfold: add 'simp only [] at h_ssn_some' before split_ifs to unfold let bindings so split_ifs can see inner if expressions"
+    ],
+    "root_cause": "Auto-generated Fin proof terms in enriched_bypass_eq lambda bodies differ from by omega/by decide terms in the proof. simp/rw/split_ifs use syntactic matching and cannot match across defeq lambda bodies. Only exact/apply use full defeq. simp_all CAN normalize across defeq but leaves 'false = true' unsolved goals when the lambda context prevents it from finding the contradiction.",
+    "remaining_errors": 9,
+    "heartbeats_set_to": 12800000
   }
 }

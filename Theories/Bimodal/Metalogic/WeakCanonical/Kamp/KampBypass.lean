@@ -974,7 +974,7 @@ private theorem eq_case_t_pred_2
   simp only [atom_eval] at h_par
   simp only [h_t_pred]; exact h_par
 
-set_option maxHeartbeats 3200000 in
+set_option maxHeartbeats 12800000 in
 /-- Core biconditional for the eq case: enriched_bypass_eq ↔ ∃ x, nf_eval with x = t. -/
 private theorem eq_case_iff
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
@@ -1119,48 +1119,64 @@ private theorem eq_case_iff
             -- Extract the formula for this ssn from h_conj
             cases h_sub : sub_nf.2 ssn
             · -- sub_nf.2 ssn = false: formula is neg(Since), need ¬∃ y
-              simp only [eq_iff_iff]
-              constructor
-              · intro ⟨y, hy⟩; exact absurd (h_zone.mpr ⟨y, hy⟩) (h_conj _
-                  (List.mem_filterMap.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn),
-                    by simp [h_ssn_xt_compat, h_y_lt_x, h_sub]⟩))
+              simp only [eq_iff_iff]; constructor
+              · intro ⟨y, hy⟩
+                apply absurd (h_zone.mpr ⟨y, hy⟩)
+                show temporal_truth M atomMap t ((nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).snce Formula.top).neg
+                apply h_conj
+                apply List.mem_filterMap.mpr
+                exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by simp_all⟩
               · intro h; simp_all
             · -- sub_nf.2 ssn = true: formula is Since, need ∃ y
-              have h_formula_true := h_conj _
-                (List.mem_filterMap.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn),
-                  by simp [h_ssn_xt_compat, h_y_lt_x, h_sub]⟩)
-              exact h_zone.symm.trans (Iff.intro (fun h => h_formula_true) (fun _ => h_formula_true))
-                |>.symm.trans ⟨fun _ => rfl, fun _ => h_zone.mpr h_formula_true⟩
+              have h_formula_true : temporal_truth M atomMap t
+                  ((nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).snce Formula.top) := by
+                apply h_conj
+                apply List.mem_filterMap.mpr
+                exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by simp_all⟩
+              simp only [eq_iff_iff, h_sub, iff_true]
+              exact h_zone.mp h_formula_true
           · by_cases h_x_lt_y : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true
             · -- x < y zone: Until bridge
               have h_zone := eq_case_zone_above M atomMap h_surj ssn parent_atoms t
-                h_x_lt_y (by cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp_all)
+                h_x_lt_y (Bool.eq_false_iff.mpr h_y_lt_x)
                 h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2
               cases h_sub : sub_nf.2 ssn
               · simp only [eq_iff_iff]; constructor
-                · intro ⟨y, hy⟩; exact absurd (h_zone.mpr ⟨y, hy⟩) (h_conj _
-                    (List.mem_filterMap.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn),
-                      by simp [h_ssn_xt_compat, h_y_lt_x, h_x_lt_y, h_sub]⟩))
+                · intro ⟨y, hy⟩
+                  apply absurd (h_zone.mpr ⟨y, hy⟩)
+                  show temporal_truth M atomMap t ((nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).untl Formula.top).neg
+                  apply h_conj
+                  apply List.mem_filterMap.mpr
+                  exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by simp_all⟩
                 · intro h; simp_all
-              · have h_formula_true := h_conj _
-                  (List.mem_filterMap.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn),
-                    by simp [h_ssn_xt_compat, h_y_lt_x, h_x_lt_y, h_sub]⟩)
-                exact h_zone.symm.trans ⟨fun _ => rfl, fun _ => h_zone.mpr h_formula_true⟩
+              · have h_formula_true : temporal_truth M atomMap t
+                    ((nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).untl Formula.top) := by
+                  apply h_conj
+                  apply List.mem_filterMap.mpr
+                  exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by simp_all⟩
+                simp only [eq_iff_iff, h_sub, iff_true]
+                exact h_zone.mp h_formula_true
             · -- y = x zone: direct bridge
               have h_zone := eq_case_zone_eq M atomMap h_surj ssn parent_atoms t
-                (by cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp_all)
-                (by cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all)
+                (Bool.eq_false_iff.mpr h_y_lt_x)
+                (Bool.eq_false_iff.mpr h_x_lt_y)
                 h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2
               cases h_sub : sub_nf.2 ssn
               · simp only [eq_iff_iff]; constructor
-                · intro ⟨y, hy⟩; exact absurd (h_zone.mpr ⟨y, hy⟩) (h_conj _
-                    (List.mem_filterMap.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn),
-                      by simp [h_ssn_xt_compat, h_y_lt_x, h_x_lt_y, h_sub]⟩))
+                · intro ⟨y, hy⟩
+                  apply absurd (h_zone.mpr ⟨y, hy⟩)
+                  show temporal_truth M atomMap t (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg
+                  apply h_conj
+                  apply List.mem_filterMap.mpr
+                  exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by simp_all⟩
                 · intro h; simp_all
-              · have h_formula_true := h_conj _
-                  (List.mem_filterMap.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn),
-                    by simp [h_ssn_xt_compat, h_y_lt_x, h_x_lt_y, h_sub]⟩)
-                exact h_zone.symm.trans ⟨fun _ => rfl, fun _ => h_zone.mpr h_formula_true⟩
+              · have h_formula_true : temporal_truth M atomMap t
+                    (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) := by
+                  apply h_conj
+                  apply List.mem_filterMap.mpr
+                  exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by simp_all⟩
+                simp only [eq_iff_iff, h_sub, iff_true]
+                exact h_zone.mp h_formula_true
         · -- Incompatible ssn: both sides false
           constructor
           · -- ∃ y, nf_eval → sub_nf.2 ssn = true
@@ -1239,7 +1255,7 @@ private theorem eq_case_iff
         else none)),
       List.mem_filterMap.mpr ⟨nf_x,
         Multiset.mem_toList.mpr (Fintype.complete nf_x),
-        by simp [h_compat]⟩, ?_⟩
+        by simp_all⟩, ?_⟩
     -- Step 2: truth of (char_1 nf_x).and (formula_conjList quant_conjuncts)
     rw [temporal_truth_and]
     refine ⟨(char_1_correct nf_x M h_UZ h_SZ x).mpr h_nf_x, ?_⟩
@@ -1271,6 +1287,7 @@ private theorem eq_case_iff
             | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
             | .order i j h => absurd (Fin.ext (by omega) : i = j) h)
           x h_atoms h_ssn_compat_nfx
+      simp only [] at h_ssn_some
       split_ifs at h_ssn_some with h_y_lt_x h_x_lt_y
       · -- y < x: Since(char_y, top) is true because ∃ y, nf_eval
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
@@ -1315,7 +1332,8 @@ private theorem eq_case_iff
           x h_atoms h_ssn_compat_nfx
       have h_no_witness : ¬∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x fun _ => x)) ssn := by
         intro h_wit
-        exact absurd ((h_quant_eval ssn).mp h_wit) (by simp [h_sub_nf_true])
+        exact absurd ((h_quant_eval ssn).mp h_wit) (by simp_all)
+      simp only [] at h_ssn_some
       split_ifs at h_ssn_some with h_y_lt_x h_x_lt_y
       · -- y < x: neg(Since(char_y, top)) is true because ¬∃ y
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
