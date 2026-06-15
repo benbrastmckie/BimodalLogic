@@ -1,7 +1,7 @@
 # Implementation Plan: Bounded-Until Architectural Fix for KampBypass
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: None (Phase 1 already completed; all mathematical infrastructure sorry-free)
 - **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md, specs/273_chronicle_gap_contradiction_proof/reports/35_team-research.md
@@ -97,7 +97,7 @@ Phases 3 and 4 can execute in parallel (Until backward/forward proof and Since f
 
 ---
 
-### Phase 2: Replace enriched_vecEA2_until with Conjunction-of-Bounded-Untils [NOT STARTED]
+### Phase 2: Replace enriched_vecEA2_until with Conjunction-of-Bounded-Untils [IN PROGRESS]
 
 **Goal**: Rewrite the `enriched_vecEA2_until` definition (L444-492) to produce a conjunction of per-SSN bounded Until formulas instead of a `BracketFormula n`/`VecEA2`. Also update `enriched_bypass_until` (L497-511) to use the new construction. This is a definitional change -- no proof work yet.
 

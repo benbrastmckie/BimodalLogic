@@ -1,30 +1,8 @@
 {
-  "status": "planned",
-  "summary": "Created plan v37: Replace BracketFormula/IntervalPattern with per-SSN bounded Until formulas (Approach C from Report 36). 5 phases, 8 hours. Phase 1 (eq case) already COMPLETED. Phase 2 rewrites enriched_vecEA2_until architecture. Phases 3-4 close backward/forward Until sorries and Since sorry in parallel. Phase 5 verifies downstream chain.",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/37_bounded-until-fix.md",
-      "summary": "Implementation plan v37: bounded-Until architectural fix for KampBypass.lean, closing 3 depth-0 sorries via per-SSN conjunction approach"
-    }
-  ],
-  "plan_metadata": {
-    "phases": 5,
-    "total_effort_hours": 8,
-    "complexity": "complex",
-    "research_integrated": true,
-    "plan_version": 37,
-    "dependency_waves": [[1], [2], [3, 4], [5]],
-    "reports_integrated": [
-      "specs/273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md",
-      "specs/273_chronicle_gap_contradiction_proof/reports/35_team-research.md"
-    ]
-  },
-  "memory_candidates": [],
-  "next_steps": "Run /implement 273 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1781554255_7d81fd",
-    "agent_type": "planner-agent",
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  }
+  "status": "in_progress",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 273,
+  "session_id": "sess_1781554668_c14eb9",
+  "started_at": "2026-06-15T00:00:00Z"
 }

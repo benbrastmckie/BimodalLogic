@@ -449,11 +449,6 @@ noncomputable def enriched_vecEA2_until {sig : MonadicSignature}
     (nf_x : NormalForm sig 1 1)
     (nf_x_1var : NormalForm sig 0 1)
     (parent_atoms : AtomKind sig 1 → Bool) : Σ n, VecEA2 n :=
-  -- Collect positive between_tx ssns (need bracket witnesses)
-  let pos_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
-    ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
-    (ssn_zone_until ssn == .between_tx) &&
-    sub_nf.2 ssn
   -- Collect negative between_tx ssns (need segment guards)
   let neg_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
     ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
@@ -463,16 +458,14 @@ noncomputable def enriched_vecEA2_until {sig : MonadicSignature}
   let seg_guard : TemporalPred :=
     ⟨formula_conjList (neg_between.map fun ssn =>
       (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)⟩
-  -- Build the bracket formula
-  let n := pos_between.length
-  let bracket : BracketFormula n :=
-    { pointTypes := fun i =>
-        nfPred atomMap h_surj (nf_y_proj (pos_between[i.val]'(by omega)))
-      segmentTypes := fun _ => seg_guard }
+  -- Bracket: n=0 with seg_guard on (t, x). No bracket witnesses needed.
+  -- Positive between_tx conditions are moved to endpointRight as Since formulas.
+  let bracket : BracketFormula 0 := BracketFormula.trivial seg_guard
   -- Build the endpoint left (at t): pre-conditions for y < t and y = t
   let endLeft : TemporalPred :=
     ⟨pre_conditions_at_t_until atomMap h_surj sub_nf nf_x_1var parent_atoms⟩
   -- Build the endpoint right (at x): char_1(nf_x) + conditions for y = x, y > x
+  -- Also includes positive between_tx conditions as Since formulas (∃ y < x, char_y at y)
   let right_conjuncts :=
     (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filterMap fun ssn =>
       if ssn_xt_compatible ssn nf_x_1var parent_atoms true false then
@@ -485,11 +478,16 @@ noncomputable def enriched_vecEA2_until {sig : MonadicSignature}
         | .above_x =>
           if sub_nf.2 ssn then some (Formula.untl char_y Formula.top)
           else some (Formula.untl char_y Formula.top).neg
+        | .between_tx =>
+          -- Positive between_tx: Since formula at x gives ∃ y < x with char_y at y
+          -- Negative between_tx: already handled by seg_guard in bracket
+          if sub_nf.2 ssn then some (Formula.snce char_y Formula.top)
+          else none
         | _ => none
       else none
   let endRight : TemporalPred :=
     ⟨Formula.and (char_1 nf_x) (formula_conjList right_conjuncts)⟩
-  ⟨n, { endpointLeft := endLeft, endpointRight := endRight, bracket := bracket }⟩
+  ⟨0, { endpointLeft := endLeft, endpointRight := endRight, bracket := bracket }⟩
 
 /-- Zone-aware enriched bypass formula for depth 1, Until direction (t < x).
     Uses VecEA2 brackets for between_tx zone to ensure witnesses are between t and x.
@@ -2031,6 +2029,22 @@ private theorem backward_holdsLeft_of_nf_eval
         rcases h_zone : ssn_zone_until ssn with _ | _ | _ | _ | _ | _
         all_goals simp
         all_goals intro h_eq; subst h_eq
+        -- between_tx, positive: Since(char_y, top) at x
+        · -- Need: ∃ y' < x, char_y at y' ∧ ∀ r ∈ (y', x), top at r
+          have h_exists := (h_eval_quant ssn).mpr h_pos
+          rw [between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_t_lt_x
+            h_compat' h_zone
+            (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                         have := h_atom (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)
+            (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)] at h_exists
+          obtain ⟨y', h_t_lt_y', h_y'_lt_x, h_y'_preds⟩ := h_exists
+          simp only [Formula.snce, temporal_truth, Formula.top]
+          exact ⟨y', h_y'_lt_x,
+            (nf_depth0_char_formula_correct M atomMap h_surj (nf_y_proj ssn) y').mpr
+              (fun p => by have := h_y'_preds p; simp only [nf_y_proj]; exact this),
+            fun _ _ _ => id⟩
         -- eq_x, positive
         · exact (eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_t_lt_x
             h_compat' h_zone
@@ -2076,9 +2090,49 @@ private theorem backward_holdsLeft_of_nf_eval
                          simp only [atom_eval] at this; exact this)).mp h_until
           exact absurd ((h_eval_quant ssn).mp h_exist) h_pos
   case bracket =>
-    -- bracket.holds t x = interval pattern holds on (t, x)
-    -- Positive between_tx ssns need witnesses, negative need segment guards
-    sorry
+    -- With n=0 bracket (BracketFormula.trivial seg_guard), need:
+    -- ∀ y ∈ (t, x), seg_guard holds at y
+    -- i.e., for each negative between_tx SSN, its char_y is false at y
+    show (BracketFormula.trivial _).holds M atomMap t x
+    rw [BracketFormula.trivial_holds]
+    intro y h_t_lt_y h_y_lt_x
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro φ h_φ_mem
+    rw [List.mem_map] at h_φ_mem
+    obtain ⟨ssn, h_ssn_mem, h_φ_eq⟩ := h_φ_mem
+    subst h_φ_eq
+    rw [List.mem_filter] at h_ssn_mem
+    obtain ⟨_, h_filter⟩ := h_ssn_mem
+    simp only [Bool.and_eq_true, beq_iff_eq, Bool.not_eq_eq_eq_not, Bool.not_true] at h_filter
+    obtain ⟨⟨h_compat', h_zone⟩, h_neg⟩ := h_filter
+    -- ssn is a negative between_tx SSN: sub_nf.2 ssn = false
+    simp only [Formula.neg, temporal_truth]
+    intro h_char_y
+    -- Use between_tx_temporal_iff to bridge from temporal to 3-var existential
+    have h_bridge := (between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
+      h_t_lt_x h_compat' h_zone
+      (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                   have := h_atom (.pred p ⟨0, by omega⟩)
+                   simp only [atom_eval] at this; exact this)
+      (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                   simp only [atom_eval] at this; exact this)).mpr
+    -- h_eval_quant says: (∃ y, nf_eval_nf ...) ↔ sub_nf.2 ssn = true
+    -- sub_nf.2 ssn = false, so the existential is false
+    have h_no_witness : ¬ ∃ z, nf_eval_nf M 0 (1 + 1 + 1)
+        (Fin.cons z (Fin.cons x fun _ => t)) ssn := by
+      rw [h_eval_quant ssn]; simp [h_neg]
+    -- But we can construct the witness from the char formula holding at y
+    apply h_no_witness
+    apply h_bridge
+    -- Need: ∃ y', t < y' ∧ y' < x ∧ ∀ p, M.interp p y' ↔ ssn (.pred p ⟨0, ...⟩) = true
+    refine ⟨y, h_t_lt_y, h_y_lt_x, ?_⟩
+    -- Extract y predicate compatibility from nf_depth0_char_formula
+    rw [nf_depth0_char_formula_correct] at h_char_y
+    intro p
+    have := h_char_y p
+    simp only [nf_y_proj] at this
+    exact this
 
 set_option maxHeartbeats 1600000 in
 /-- Forward direction: holdsLeft for the enriched Until VVecEA2 → ∃ x, nf_eval.
