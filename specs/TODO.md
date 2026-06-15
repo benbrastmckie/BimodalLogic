@@ -6,7 +6,7 @@ next_project_number: 301
 
 ## Task Order
 
-*Updated 2026-06-14. Generated from state.json dependency graph.*
+*Updated 2026-06-15. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -27,7 +27,7 @@ next_project_number: 301
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-273 [PLANNED] — Close the two remaining blockers for completeness_discrete: (1) K
+273 [RESEARCHED] — Close the two remaining blockers for completeness_discrete: (1) K
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
@@ -284,7 +284,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -310,6 +310,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/reports/26_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md]
   - [273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md]
+  - [273_chronicle_gap_contradiction_proof/reports/33_team-research.md]
 - **Plan**: [273_chronicle_gap_contradiction_proof/plans/32_depth0-sorries-completion.md]
 
 **Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
