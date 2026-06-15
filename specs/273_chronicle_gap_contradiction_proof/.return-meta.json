@@ -1,11 +1,10 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
-  "phase_number": 3,
   "session_id": "sess_1781509717_4de986",
-  "started_at": "2026-06-15T00:00:00Z",
+  "started_at": "2026-06-15",
   "requires_user_review": true,
   "sorry_inventory": [
     {
@@ -13,45 +12,49 @@
       "line": 2096,
       "statement": "backward_holdsLeft_of_nf_eval bracket case",
       "assumption": "BracketFormula.holds from h_eval_quant witnesses",
-      "why_deferred": "BLOCKED: witness ordering bug",
+      "why_deferred": "BLOCKED: witness ordering bug in enriched_vecEA2_until",
       "next_dispatch": "Architectural fix to enriched_vecEA2_until"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2154,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft → nf_eval",
-      "why_deferred": "BLOCKED: pre-existing errors + missing h_t_compat",
-      "next_dispatch": "Fix eq case errors, add h_t_compat parameter"
+      "assumption": "holdsLeft -> nf_eval",
+      "why_deferred": "BLOCKED: 27 compilation errors in eq_case_iff prevent verification",
+      "next_dispatch": "Fix remaining eq case errors, then add h_t_compat parameter"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2266,
       "statement": "existPart_succ_n1_bypass_k0_since",
       "assumption": "Since case biconditional",
-      "why_deferred": "Phase 4 scope",
-      "next_dispatch": "After forward direction"
+      "why_deferred": "Phase 4 scope - depends on forward direction",
+      "next_dispatch": "After forward direction closes"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2354,
       "statement": "existPart_succ_n1_bypass depth>=2",
       "assumption": "Depth-k IH",
-      "why_deferred": "Out of scope",
+      "why_deferred": "Out of scope per plan",
       "next_dispatch": "Phase 5 evaluation"
     }
+  ],
+  "blockers": [
+    "27 compilation errors remain in eq_case_iff proof (L1067-1481) due to Lean/Mathlib API changes"
   ],
   "verification": {
     "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": false,
-    "build_note": "Pre-existing compilation errors at lines 948-1491 in eq case code"
+    "build_note": "27 errors remain in eq_case_iff proof after partial fix (was 39)"
   },
   "memory_candidates": [
-    "KampBypass.lean forward_nf_eval_of_holdsLeft requires h_t_compat (sub_nf.1(.pred p ⟨1,_⟩) = parent_atoms(.pred p ⟨0,_⟩)) as explicit parameter — not derivable from VecEA2 holdsLeft conditions",
-    "The eq case (existPart_succ_n1_bypass_k0_eq) demonstrates the correct by_cases pattern for handling t_compat in the KampBypass proof pipeline",
-    "Sigma extraction from enriched_vecEA2_until h_eq requires subst on fst + eq_of_heq on snd due to HEq in dependent pair"
+    "Mathlib API change: Fintype.complete returns p ∈ Fintype.elems (Multiset membership) but List.all_eq_true after simp gives ∀ x ∈ Fintype.elems.val.toList. Fix: Multiset.mem_toList.mpr (Fintype.complete p)",
+    "After cases h : ssn _ <;> simp_all, Iff hypotheses may be simplified to bare ≤ or consumed entirely. Use mt h_o.mp (Bool.eq_false_iff.mp h) pattern instead of h_o.mpr",
+    "For order consistency proof where v[1]=v[2]: derive v_eq via le_antisymm (not_lt.mp (mt h_o12.mp ...)) (not_lt.mp (mt h_o21.mp ...)), then rw [h_v_eq] at h_o02 h_o20, then Bool.eq_iff_iff.mpr (h_o01.symm.trans h_o02)",
+    "KampBypass.lean nf_characteristic expands to decide, so rw [<- h_x_pred] fails on Fin proof-term mismatch. Use simp only [h_x_pred] then simp only [nf_characteristic, atom_eval] to reduce"
   ],
-  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-blocked-20260615.md"
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/build-fix-progress-20260615.md"
 }
