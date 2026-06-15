@@ -945,14 +945,15 @@ private theorem eq_case_t_pred_1
   -- ssn_xt_compatible gives ssn (.pred p 1) = nf_x_1var (.pred p 0)
   have h1 : ssn_xt_compatible ssn nf_x_1var parent_atoms false false = true := h_compat
   simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h1
-  have h_x_pred := h1.1.1.1.1 p (Fintype.complete p)
+  have h_x_pred := h1.1.1.1.1 p (Multiset.mem_toList.mpr (Fintype.complete p))
   -- nf_x_1var (.pred p 0) = nf_characteristic(..).1 (.pred p 0)
   rw [h_nf_x_1var_def p] at h_x_pred
   -- From h_nf_x: atom_eval M [t] (.pred p 0) ↔ nf_char(..).1 (.pred p 0) = true
   obtain ⟨h_atom_x, _⟩ := h_nf_x
   have h_eval_p := h_atom_x (.pred p ⟨0, by omega⟩)
   simp only [atom_eval] at h_eval_p
-  rw [← h_x_pred]
+  simp only [h_x_pred]
+  simp only [nf_characteristic, atom_eval] at h_eval_p ⊢
   exact h_eval_p
 
 private theorem eq_case_t_pred_2
@@ -968,11 +969,10 @@ private theorem eq_case_t_pred_2
   intro p
   have h1 : ssn_xt_compatible ssn nf_x_1var parent_atoms false false = true := h_compat
   simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h1
-  have h_t_pred := h1.1.1.1.2 p (Fintype.complete p)
+  have h_t_pred := h1.1.1.1.2 p (Multiset.mem_toList.mpr (Fintype.complete p))
   have h_par := h_atoms (.pred p ⟨0, by omega⟩)
   simp only [atom_eval] at h_par
-  rw [← h_t_pred]
-  exact h_par
+  simp only [h_t_pred]; exact h_par
 
 set_option maxHeartbeats 3200000 in
 /-- Core biconditional for the eq case: enriched_bypass_eq ↔ ∃ x, nf_eval with x = t. -/
@@ -1242,7 +1242,7 @@ private theorem eq_case_iff
               match a with
               | .pred p _ =>
                 simp only [nf_x_compat_check, List.all_eq_true, beq_iff_eq] at h_compat_nfx
-                exact h_compat_nfx p (Fintype.complete p)
+                exact h_compat_nfx p (Multiset.mem_toList.mpr (Fintype.complete p))
               | .order i j h => exact absurd (Fin.ext (by omega) : i = j) h
             rw [h_eq]
             exact h_ref
@@ -1480,15 +1480,15 @@ private theorem existPart_succ_n1_bypass_k0_eq
             · intro ⟨h1, h2⟩; exact absurd (lt_trans (h_o02.mpr h1) (h_o20.mpr h2)) (lt_irrefl _)
             · intro ⟨h1, _⟩; exact absurd h12 (by simp_all)
             · right
+              -- Variables 1 and 2 both evaluate to x, so they are equal in the model.
+              -- From h12/h21 (order 1↔2 both false), derive v[1]=v[2], then transfer order atoms.
+              have h_not_lt_12 := mt h_o12.mp (Bool.eq_false_iff.mp h12)
+              have h_not_lt_21 := mt h_o21.mp (Bool.eq_false_iff.mp h21)
+              have h_v_eq := le_antisymm (not_lt.mp h_not_lt_12) (not_lt.mp h_not_lt_21)
+              rw [h_v_eq] at h_o02 h_o20
               constructor
-              · cases h1 : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
-                cases h2 : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) <;> simp_all
-                · exact absurd (h_o02.mpr h2) (not_lt_of_gt (h_o01.mpr h1))
-                · exact absurd (h_o01.mpr h1) (not_lt_of_gt (h_o02.mpr h2))
-              · cases h1 : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;>
-                cases h2 : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all
-                · exact absurd (h_o20.mpr h2) (not_lt_of_gt (h_o10.mpr h1))
-                · exact absurd (h_o10.mpr h1) (not_lt_of_gt (h_o20.mpr h2))
+              · exact Bool.eq_iff_iff.mpr (h_o01.symm.trans h_o02)
+              · exact Bool.eq_iff_iff.mpr (h_o10.symm.trans h_o20)
     · -- var-1 preds don't match parent_atoms: existential impossible
       refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
       simp only [temporal_truth]
