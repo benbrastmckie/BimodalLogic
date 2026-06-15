@@ -1,21 +1,30 @@
 {
-  "status": "researched",
-  "summary": "Literature analysis reveals the paper (Rabinovich 2014, Prop 3.5/Cor 5.4) constructs bracket witnesses IN ORDER via nested Until formulas, never facing the batch-ordering problem. The correct Lean encoding is per-SSN bounded Until formulas (conjunction approach), not a flat BracketFormula. Each positive between_tx SSN gets: seg_guard Until (char_y(ssn_i) AND (seg_guard Until char_1(nf_x))), which independently bounds each witness to (t,x). This eliminates all ordering issues and avoids the nf_y_proj injectivity gap.",
+  "status": "planned",
+  "summary": "Created plan v37: Replace BracketFormula/IntervalPattern with per-SSN bounded Until formulas (Approach C from Report 36). 5 phases, 8 hours. Phase 1 (eq case) already COMPLETED. Phase 2 rewrites enriched_vecEA2_until architecture. Phases 3-4 close backward/forward Until sorries and Since sorry in parallel. Phase 5 verifies downstream chain.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md",
-      "summary": "Literature analysis of bracket witness ordering in Rabinovich 2014, identifying per-SSN bounded Until as the correct Lean encoding to replace BracketFormula"
+      "type": "plan",
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/37_bounded-until-fix.md",
+      "summary": "Implementation plan v37: bounded-Until architectural fix for KampBypass.lean, closing 3 depth-0 sorries via per-SSN conjunction approach"
     }
   ],
-  "partial_progress": {
-    "stage": "research_written",
-    "details": "Report written with literature proof structure, correspondence table, and detailed fix plan"
+  "plan_metadata": {
+    "phases": 5,
+    "total_effort_hours": 8,
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 37,
+    "dependency_waves": [[1], [2], [3, 4], [5]],
+    "reports_integrated": [
+      "specs/273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md",
+      "specs/273_chronicle_gap_contradiction_proof/reports/35_team-research.md"
+    ]
   },
+  "memory_candidates": [],
+  "next_steps": "Run /implement 273 to execute the plan",
   "metadata": {
-    "session_id": "sess_1781553798_d7f90c",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "session_id": "sess_1781554255_7d81fd",
+    "agent_type": "planner-agent",
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
