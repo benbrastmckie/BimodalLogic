@@ -1,7 +1,7 @@
 # Implementation Plan: Close 4 Depth-0 KampBypass Sorries
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 6 hours
 - **Dependencies**: None (all mathematical infrastructure is sorry-free)
 - **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/33_team-research.md
@@ -126,28 +126,29 @@ Phases 2 and 3 can execute in parallel (bracket and forward are independent sorr
 
 ---
 
-### Phase 3: Forward Direction (L1637) [BLOCKED]
+### Phase 3: Forward Direction (L2151) [PARTIAL]
 
-**Goal**: Close the `forward_nf_eval_of_holdsLeft` sorry at KampBypass.lean:2154. Reconstruct `nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf` from the VecEA2 holdsLeft conditions (h_endLeft, h_endRight, h_bracket, h_t_lt_x). This is the reverse of the backward direction (L1949-2096).
+**Goal**: Close the `forward_nf_eval_of_holdsLeft` sorry at KampBypass.lean:2151.
 
-**BLOCKER** (Phase 3):
-- **What failed**: KampBypass.lean has pre-existing compilation errors starting at line 948 (eq case helper `eq_case_t_pred_1`) that cascade through lines 948-1491. The `forward_nf_eval_of_holdsLeft` sorry at L2154 cannot be verified by the compiler because these upstream errors prevent the module from building. Additionally, the forward direction atom proof at variable 1 (t's predicates) requires `sub_nf.1 (.pred p ⟨1, _⟩) = parent_atoms (.pred p ⟨0, _⟩)` (t_compat), which is not available as a hypothesis to `forward_nf_eval_of_holdsLeft` and cannot be derived from the VecEA2 holdsLeft conditions alone.
-- **What was tried**:
-  1. Direct proof via constructor to split atom + quant parts -- atom part at variable 0 (x) works via `h_nf_x` + `h_pred_compat`; atom part at variable 1 (t) requires t_compat which is missing.
-  2. Adding `h_t_compat` parameter to `forward_nf_eval_of_holdsLeft` and modifying the call site in `existPart_succ_n1_bypass_k0_until` to do `by_cases` on t_compat (returning `Formula.bot` when it fails, mirroring the eq case pattern at L1365-1470). This is the correct architectural fix but requires fixing the upstream errors first.
-  3. Attempting to derive t_compat from holdsLeft conditions -- not possible because the VecEA2 construction does not encode t-predicate compatibility directly.
-- **Why stuck**: Two independent blockers: (a) Pre-existing compilation errors in the eq case code (lines 948-1491) prevent building the module, so no proof at L2154 can be verified. These errors appear to be from a Lean/Mathlib API change affecting `Fintype.complete`, `ssn_xt_compatible` field access patterns, and `Iff.mpr` syntax. (b) The `forward_nf_eval_of_holdsLeft` theorem is missing the `h_t_compat` hypothesis needed for the atom part. The eq case (`existPart_succ_n1_bypass_k0_eq` at L1365) handles this correctly via `by_cases h_t_compat`, but the Until case (`existPart_succ_n1_bypass_k0_until` at L2460) does not.
-- **What is needed**:
-  1. Fix compilation errors in eq case (lines 948-1491) -- likely API changes in `ssn_xt_compatible` field destructuring and `Fintype.complete` usage.
-  2. Add `h_t_compat` parameter to `forward_nf_eval_of_holdsLeft` and add `by_cases` on t_compat in `existPart_succ_n1_bypass_k0_until` (returning Bot when it fails).
-  3. Then prove the forward direction zone-by-zone using the established zone bridge infrastructure.
-- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
+**Progress** (as of 2026-06-15):
+- Build errors fixed (was 21 → 9 → 0). Build is GREEN.
+- `h_t_compat` and `h_ssn_compat` parameters added to `forward_nf_eval_of_holdsLeft`
+- `by_cases` on both conditions added to `existPart_succ_n1_bypass_k0_until` call site (Bot fallback for failures)
+- Atom part: COMPLETE (pred atoms via h_compat/h_t_compat, order atoms via h_gt/h_lt/h_t_lt_x)
+- Quant part: 5 of 6 zones proved (below_t, eq_t, eq_x, above_x, inconsistent)
+- between_tx zone: BLOCKED by same BracketFormula design flaw as Phase 2 (bracket witness ordering)
+- Incompatible-ssn case: COMPLETE (both directions)
+- Neg-ssn-compat Bot case: COMPLETE
+
+**Remaining blocker**: The between_tx zone forward direction requires extracting existentials from `BracketFormula.holds`, which depends on the same ordering issue as Phase 2. This sorry is consolidated with the bracket sorry at L2151.
 
 **Tasks**:
-- [ ] Prove the atom part of `nf_eval_nf` *(deviation: blocked -- pre-existing errors + missing t_compat, see BLOCKER above)*
-- [ ] Prove the quantifier part zone-by-zone *(deviation: blocked -- depends on atom part)*
-- [ ] Wire atom part + quantifier part into the `nf_eval_nf` conclusion *(deviation: blocked)*
-- [ ] Verify `lake build` passes *(deviation: blocked -- pre-existing errors)*
+- [x] Add `h_t_compat` parameter to `forward_nf_eval_of_holdsLeft`
+- [x] Add `by_cases` on t_compat and ssn_compat in call site
+- [x] Prove atom part (all 3 sub-cases)
+- [x] Prove quant part for 5/6 zones
+- [ ] Prove between_tx zone *(blocked by BracketFormula design flaw — same as Phase 2)*
+- [x] Fix all build errors to green
 
 **Timing**: 1.5 hours (~150-200 lines)
 

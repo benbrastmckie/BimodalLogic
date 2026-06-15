@@ -1,49 +1,7 @@
 {
   "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 273,
-  "session_id": "sess_1781534586_ec41fa",
-  "started_at": "2026-06-15T14:00:00Z",
-  "completed_at": "2026-06-15T15:30:00Z",
-  "objective": "Fix 9 build errors in KampBypass.lean to achieve green build",
-  "verification": {
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "compile_errors": 0,
-    "notes": "All 9 errors fixed. Build passes with 993 jobs. 4 pre-existing sorries remain (all out of scope for this dispatch)."
-  },
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2081,
-      "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "why_deferred": "Pre-existing; Phase 2 BLOCKED"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2151,
-      "statement": "forward_nf_eval_of_holdsLeft (consolidated)",
-      "why_deferred": "Pre-existing; Phase 3 BLOCKED"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2308,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "why_deferred": "Pre-existing; Phase 4 NOT STARTED"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2396,
-      "statement": "existPart_succ_n1_bypass depth>=2",
-      "why_deferred": "Pre-existing; OUT OF SCOPE"
-    }
-  ],
-  "memory_candidates": [
-    "In KampBypass.lean, when proving Bool.eq_false goals for ssn order atoms, use ssn_order_consistent_of_eval to get order consistency, then revert + cases on the two relevant order booleans + simp_all. This extracts antisymmetry (if ssn(.order 0 1)=true then ssn(.order 1 0)=false) without needing to destructure the 13-conjunct ssn_order_consistent proposition manually.",
-    "For temporal_truth goals involving Formula.neg, use rw [temporal_truth_neg] (from StaviConnectives.lean) instead of simp only [temporal_truth]. The simp only [temporal_truth] cannot unfold through .neg because it wraps the formula in .impl and .bot.",
-    "When cases on Bool values produces goals with mismatched Fin proof terms (ssn_xt_compatible._proof_3 vs by omega), use first | rfl | exact hsub.symm | (exfalso; simp_all) instead of plain simp_all. The exact hsub.symm leverages the kernel's definitional equality to close matching cases where rfl and simp fail due to lambda body proof term differences."
-  ]
+  "metadata": {
+    "cycles_used": 5,
+    "final_state": "implementing"
+  }
 }
