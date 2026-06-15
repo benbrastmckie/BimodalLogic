@@ -1250,14 +1250,14 @@
     {
       "project_number": 273,
       "project_name": "chronicle_gap_contradiction_proof",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-15T07:41:12Z",
+      "last_updated": "2026-06-15T07:47:25Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1364,14 +1364,14 @@
           "summary": "Detailed goal-state analysis of 5 KampBypass.lean sorries with lean_goal output, infrastructure inventory, feasibility ratings, and recommended fill order"
         },
         {
-          "path": "specs/273_chronicle_gap_contradiction_proof/plans/32_depth0-sorries-completion.md",
-          "type": "plan",
-          "summary": "Implementation plan v32 with 5 phases to close all 5 KampBypass.lean sorries and wire through NfCharFormula/RabinovichGeneralized for sorry-free Kamp chain"
-        },
-        {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/33_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): architectural restructuring, literature alignment, root cause analysis, strategic direction. Key: bracket_holds_of_uniform_segments helper, enriched_bypass_since soundness check, file split recommendation"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/plans/34_kamp-sorry-closure.md",
+          "type": "plan",
+          "summary": "Implementation plan with 5 phases to close 4 depth-0 KampBypass sorries and verify downstream Kamp chain"
         }
       ],
       "next_artifact_number": 34,
@@ -1379,18 +1379,16 @@
       "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 8,
+        "total_effort_hours": 6,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 32,
+        "plan_version": 34,
         "dependency_waves": [
           [
             1
           ],
           [
-            2
-          ],
-          [
+            2,
             3
           ],
           [
@@ -1402,13 +1400,13 @@
         ],
         "reports_integrated": [
           {
-            "path": "reports/31_kamp-bypass-sorry-goals.md",
-            "integrated_in_plan_version": 32,
-            "integrated_date": "2026-06-14"
+            "path": "reports/33_team-research.md",
+            "integrated_in_plan_version": 34,
+            "integrated_date": "2026-06-15"
           }
         ]
       },
-      "session_id": "sess_1781508670_e7733f",
+      "session_id": "sess_1781509370_e8ef82",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "KampBypass.lean: 1145 lines. Zone-aware enriched formula v2 with VecEA2 brackets. Main theorem factored into eq/Until/Since cases. Until case decomposed into forward/backward helpers. 8 sorries remain (4 in Until zone-specific composition, 1 eq case, 1 Since case, 1 k>0, 1 pre-existing). Each remaining sorry is a small depth-0 composition fact connecting zone temporal formulas to 3-var NF existentials."
     },
