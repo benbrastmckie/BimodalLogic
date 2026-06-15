@@ -1,61 +1,67 @@
 {
   "status": "partial",
-  "summary": "Phase 1 partially complete. Three sorry-free eq-case zone bridge helpers added (eq_case_zone_below, eq_case_zone_above, eq_case_zone_eq). Eq case sorry consolidated to single site at L974 with infrastructure in place. Build passes cleanly with 5 sorry sites. Since case and other sorries untouched.",
+  "summary": "Eq case (L974) backward direction proof path fully validated: constructor splits into mp/mpr; simp only [enriched_bypass_eq] + rw [formula_disjList_iff] works; List.mem_filterMap + Fintype.complete gives membership; zone bridges apply per case. Forward direction needs same unfolding pattern. No sorry closed in this dispatch but precise proof recipe established for next dispatch.",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 974,
-      "statement": "existPart_succ_n1_bypass_k0_eq (combined forward+backward)",
-      "assumption": "enriched_bypass_eq ↔ ∃ x=t, nf_eval_nf. Zone bridge helpers in place.",
-      "why_deferred": "Backward direction needs to wire eq_case_zone_{below,above,eq} helpers with enriched_bypass_eq structure. Forward direction needs nf_eval reconstruction from formula truth.",
-      "next_dispatch": "Use eq_case_zone_* helpers to prove backward direction zone-by-zone. Pattern: simp [enriched_bypass_eq], rw [formula_disjList_iff], witness nf_characteristic, membership via List.mem_filterMap, then zone-based case split."
+      "statement": "existPart_succ_n1_bypass_k0_eq (combined forward+backward biconditional)",
+      "assumption": "enriched_bypass_eq ↔ ∃ x=t, nf_eval_nf. Zone bridge helpers already sorry-free.",
+      "why_deferred": "Proof is ~250 lines with 6 zone cases x 2 directions. Each case proven via eq_case_zone_{below,above,eq} + split_ifs pattern. Agent dispatched to worktree for parallel implementation.",
+      "next_dispatch": "EXACT RECIPE: (1) constructor splits into mp/mpr. (2) mpr direction: intro existential, subst h_x_eq, let nf_x = nf_characteristic, show enriched_bypass_eq, simp only [enriched_bypass_eq], rw [formula_disjList_iff], refine mem/truth, rw [temporal_truth_and], split char_1 + quant_conjuncts, iterate zone cases via split_ifs at h_some with h_compat' h_yx h_pos then call eq_case_zone_{below,above,eq}.mpr. (3) mp direction: intro formula, simp only [enriched_bypass_eq] at h_formula, rw [formula_disjList_iff] at h_formula, extract nf_x, refine t witness, constructor to split atoms/quants, then zone-by-zone. (4) ssn_xt_compat_x_preds and ssn_xt_compat_t_preds are PRIVATE -- extract manually from simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true]."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1579,
-      "statement": "bracket_holds_of_eval_quant IntervalPattern.holds",
+      "statement": "bracket IntervalPattern.holds (Until case, backward direction bracket sub-goal)",
       "assumption": "Construct IntervalPattern.holds with sorted witnesses for positive between_tx SSNs",
-      "why_deferred": "Phase 2 target",
-      "next_dispatch": "Phase 2: Classical.choice witnesses, sort by model order, verify IntervalPattern conditions"
+      "why_deferred": "Phase 2 target. Requires witness extraction + sorting argument.",
+      "next_dispatch": "Phase 2: Classical.choice witnesses per positive between_tx SSN, sort by model order, verify IntervalPattern conditions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1637,
-      "statement": "forward_nf_eval_of_holdsLeft (Until direction forward)",
+      "statement": "forward_nf_eval_of_holdsLeft (Until forward: holdsLeft → nf_eval)",
       "assumption": "Reconstruct nf_eval_nf from VecEA2 holdsLeft conditions",
-      "why_deferred": "Phase 3 target",
-      "next_dispatch": "Phase 3: zone-by-zone extraction from endpointLeft, endpointRight, bracket"
+      "why_deferred": "Phase 3 target. Same zone-bridge pattern as eq case but with t < x ordering.",
+      "next_dispatch": "Phase 3: zone-by-zone extraction from endpointLeft (below_t, eq_t), endpointRight (eq_x, above_x), bracket (between_tx)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1749,
-      "statement": "existPart_succ_n1_bypass_k0_since (x < t case)",
-      "assumption": "Since case of enriched bypass formula",
-      "why_deferred": "Phase 1 second target, deferred to focus on eq case infrastructure first",
-      "next_dispatch": "Use enriched_bypass_since as witness. Mirror Until case proof pattern with Since semantics."
+      "statement": "existPart_succ_n1_bypass_k0_since (x < t case, entire theorem)",
+      "assumption": "Since case uses formula_disjList via enriched_bypass_since, NOT VVecEA2",
+      "why_deferred": "Phase 1 second target. Structurally different from Until (no VVecEA2 translation).",
+      "next_dispatch": "Same recipe as eq case but with Since semantics: simp [enriched_bypass_since], rw [formula_disjList_iff], zone bridges with swapped t/x roles"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1837,
       "statement": "existPart_succ_n1_bypass depth >= 2 (k > 0)",
       "assumption": "General depth via arity-climbing induction",
-      "why_deferred": "Phase 4 target",
+      "why_deferred": "Phase 4 target (OUT OF SCOPE for plan v32 phase 1)",
       "next_dispatch": "Phase 4: implement depth k+1 enriched bypass using IH char_kp1_correct"
     }
   ],
-  "blockers": [],
-  "continuation_path": null,
+  "blockers": [
+    "L974 eq case: proof path validated but not yet closed. Approximately 250 lines of zone-by-zone case splitting needed. Each individual case is mechanical but the total volume is high."
+  ],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/eq-case-recipe-20260614.md",
   "continuation_context": {
     "is_successor": false,
     "phase_in_progress": 1,
     "key_discoveries": [
-      "refine pattern fixes type metavariable propagation (vs exact-lambda-by pattern)",
-      "Private declarations in Lean 4 cannot be forward-referenced in the same file",
-      "After subst h_x_eq (x=t), variable t is replaced by x everywhere in context",
-      "eq_case_orders gives y-x order = y-t order when ssn_xt_compatible ... false false = true",
-      "Three sorry-free zone bridge helpers added: eq_case_zone_below (L710), eq_case_zone_above (L782), eq_case_zone_eq (L854)"
+      "CRITICAL: simp only [enriched_bypass_eq] MUST precede rw [formula_disjList_iff] -- enriched_bypass_eq is definitionally but not syntactically formula_disjList",
+      "CRITICAL: constructor on the biconditional produces mp (forward: formula→exist) and mpr (backward: exist→formula) -- NOT the other way around",
+      "CRITICAL: ssn_xt_compat_x_preds and ssn_xt_compat_t_preds are PRIVATE to ZoneBridge.lean -- must extract pred conditions manually via simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true]",
+      "After subst h_x_eq (x=t), variable t is replaced by x everywhere in context (x survives, not t)",
+      "eq_case_orders gives h_xt=false, h_tx=false, h_yx_eq_yt, h_xy_eq_ty from ssn_xt_compatible ... false false",
+      "Three sorry-free zone bridge helpers: eq_case_zone_below (L710), eq_case_zone_above (L782), eq_case_zone_eq (L854)",
+      "split_ifs at h_some with h_compat' h_yx_bool h_pos correctly splits the nested if-then-else chain in the filterMap lambda for zone enumeration",
+      "The backward proof for each zone case follows: get eq_case_orders, prove h_t_pred_1 and h_t_pred_2 (M.interp p x ↔ ssn pred), then apply eq_case_zone_*.mpr composed with h_eval_quant",
+      "nf_eval_nf at depth 1 arity 2 unfolds as (∀ a, atom_eval ↔ sub_nf.1 a) ∧ (∀ ssn, (∃ y, nf_eval_nf 0 3 ...) ↔ sub_nf.2 ssn) -- use constructor after refine ⟨t, ?_⟩"
     ]
   }
 }
