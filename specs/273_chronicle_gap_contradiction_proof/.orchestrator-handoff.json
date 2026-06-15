@@ -1,66 +1,70 @@
 {
   "status": "partial",
-  "summary": "Restructured existPart_succ_n1_bypass_k0_eq proof: changed exact-lambda to refine pattern, fixing type elaboration that caused cascading errors. Both forward and backward directions remain sorry but types now resolve correctly. Build passes with zero errors. Backward proof was written in full but requires eq_zone_bridge_* helpers that were deleted.",
+  "summary": "Phase 1 in progress. Eq case (originally L753) decomposed into forward (L757) + backward (L764) sub-sorries. Build passes cleanly with 6 sorry sites. Since case and other sorries untouched. Key discovery: refine pattern fixes type metavariable issues; zone bridge helpers must be defined BEFORE the eq case theorem due to Lean 4 forward reference constraints.",
   "phases_completed": 0,
-  "phases_total": 1,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 757,
-      "statement": "forward direction of existPart_succ_n1_bypass_k0_eq",
-      "assumption": "temporal_truth of enriched_bypass_eq implies nf_eval_nf at [t,t]",
-      "why_deferred": "Requires eq_incompat_no_witness lemma",
-      "next_dispatch": "Prove eq_incompat_no_witness, then extract nf_eval from disjList truth"
+      "statement": "existPart_succ_n1_bypass_k0_eq forward direction (formula -> exists)",
+      "assumption": "temporal_truth of enriched_bypass_eq implies exists x=t with nf_eval_nf",
+      "why_deferred": "Forward direction requires extracting nf_eval from formula disjList truth. Lower priority than backward.",
+      "next_dispatch": "Fill after backward direction or in Phase 3 alongside forward_nf_eval_of_holdsLeft"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 764,
-      "statement": "backward direction of existPart_succ_n1_bypass_k0_eq",
-      "assumption": "nf_eval_nf at [x,t] with x=t implies temporal_truth of enriched_bypass_eq",
-      "why_deferred": "eq_zone_bridge_* helpers were deleted from KampBypass.lean",
-      "next_dispatch": "Restore eq_zone_bridge_{below_t,above_t,eq_t} helpers, then apply backward proof"
+      "statement": "existPart_succ_n1_bypass_k0_eq backward direction (exists -> formula)",
+      "assumption": "After subst h_x_eq, show enriched_bypass_eq holds. Needs zone bridges for x=t case.",
+      "why_deferred": "Requires eq-case zone bridge helpers added BEFORE line 703. Three agents failed due to forward reference issue.",
+      "next_dispatch": "Add eq_zone_bridge_{below_t,above_t,eq_t} before L703. Pattern: use eq_case_orders to map y-x to y-t order, then semantic_prior_UZ/SZ for Until/Since zones."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1295,
-      "statement": "bracket_holds_of_eval_quant",
-      "assumption": "Pre-existing sorry",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 2"
+      "statement": "bracket_holds_of_eval_quant IntervalPattern.holds",
+      "assumption": "Construct IntervalPattern.holds with sorted witnesses for positive between_tx SSNs",
+      "why_deferred": "Phase 2 target",
+      "next_dispatch": "Phase 2: Classical.choice witnesses, sort by model order, verify IntervalPattern conditions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1514,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "Pre-existing sorry",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 3"
+      "statement": "forward_nf_eval_of_holdsLeft (Until direction forward)",
+      "assumption": "Reconstruct nf_eval_nf from VecEA2 holdsLeft conditions",
+      "why_deferred": "Phase 3 target",
+      "next_dispatch": "Phase 3: zone-by-zone extraction from endpointLeft, endpointRight, bracket"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1626,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Pre-existing sorry",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 1 (other half)"
+      "statement": "existPart_succ_n1_bypass_k0_since (x < t case)",
+      "assumption": "Since case of enriched bypass formula",
+      "why_deferred": "Phase 1 second target, deferred to focus on eq case first",
+      "next_dispatch": "Use enriched_bypass_since as witness. Backward: nf_characteristic + zone bridges for Since. Forward: formula_disjList extraction + Since semantics."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 1714,
-      "statement": "existPart_succ_n1_bypass depth >= 2",
-      "assumption": "Pre-existing sorry",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 5"
+      "statement": "existPart_succ_n1_bypass depth >= 2 (k > 0)",
+      "assumption": "General depth via arity-climbing induction",
+      "why_deferred": "Phase 4 target, requires substantial new mathematical content",
+      "next_dispatch": "Phase 4: implement depth k+1 enriched bypass using IH char_kp1_correct"
     }
   ],
   "blockers": [
-    "eq_zone_bridge_below_t, eq_zone_bridge_above_t, eq_zone_bridge_eq_t private helpers are missing from KampBypass.lean (deleted in prior revision). The backward proof needs these."
+    "Eq case backward direction blocked on missing eq-case zone bridge helpers. Must be added before line 703 in KampBypass.lean. Worktree agent dispatched with correct instructions, awaiting result."
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 1,
-    "key_discovery": "The exact <A, fun M => by sorry> pattern breaks type elaboration in Lean 4. Use refine <A, ?_> instead.",
-    "backward_proof_sketch": "After subst h_x_eq: simp [enriched_bypass_eq], rw [formula_disjList_iff], witness nf_characteristic, membership via rw [List.mem_filterMap] + refine + simp [h_compat, ite_true] + rfl, then zone-based case split using eq_zone_bridge_* helpers."
+    "phase_in_progress": 1,
+    "key_discoveries": [
+      "refine pattern fixes type metavariable propagation (vs exact-lambda-by pattern)",
+      "Private declarations in Lean 4 cannot be forward-referenced within same file",
+      "After subst h_x_eq (x=t), variable t is replaced by x everywhere in context",
+      "eq_case_orders gives y-x order = y-t order when ssn_xt_compatible ... false false = true"
+    ]
   }
 }
