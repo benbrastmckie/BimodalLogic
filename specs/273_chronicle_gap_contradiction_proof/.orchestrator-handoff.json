@@ -1,75 +1,43 @@
 {
-  "status": "partial",
-  "summary": "Fixed all 32+ compilation errors in KampBypass.lean. Build now passes (993 jobs) with only sorry warnings. 3 new sorries introduced to replace broken proof blocks; 4 pre-existing sorries unchanged. Key fix: generalized eq_case_t_pred_1 to accept any nf_x (not just nf_characteristic). Main issue: simp_all was destroying Iff hypotheses, making .mpr inaccessible.",
-  "phases_completed": 0,
+  "status": "implemented",
+  "summary": "Closed all 3 target eq-case sorries in KampBypass.lean (L1059 forward quant-part, L1072 backward disjunct, L1131 incompatible ssn). Build GREEN. No simp_all on Iff hypotheses. Used zone bridges + formula_conjList_iff for forward quant, filterMap membership + zone bridges for backward, and witness_eq_t_of_no_order + ssn_xt_compatible reconstruction for incompatible case.",
+  "phases_completed": 1,
   "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1059,
-      "statement": "eq_case_iff forward quant-part",
-      "assumption": "Existential witness equivalence for each ssn",
-      "why_deferred": "Cascading simp_all/mpr errors and zone bridge mismatches",
-      "next_dispatch": "Re-prove using explicit case splits without simp_all"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1072,
-      "statement": "eq_case_iff backward: disjunct membership and truth",
-      "assumption": "Enriched_bypass_eq disjunct is in disjList and true",
-      "why_deferred": "split_ifs naming mismatch after eq_case_t_pred_1 change",
-      "next_dispatch": "Re-prove with correct split_ifs variable tracking"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1131,
-      "statement": "existPart_succ_n1_bypass_k0_eq incompatible ssn",
-      "assumption": "No witness x when ssn incompatible",
-      "why_deferred": "simp_all consuming Iff hypotheses",
-      "next_dispatch": "Re-prove with explicit cases for order hypotheses"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1736,
+      "line": 2047,
       "statement": "backward_holdsLeft_of_nf_eval bracket case (pre-existing)",
       "assumption": "BracketFormula.holds from witnesses",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Fix enriched_vecEA2_until"
+      "why_deferred": "Pre-existing; Phase 2 BLOCKED (enriched_vecEA2_until design flaw)",
+      "next_dispatch": "Fix enriched_vecEA2_until or replace with conjunction encoding"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1794,
+      "line": 2105,
       "statement": "forward_nf_eval_of_holdsLeft (pre-existing)",
-      "assumption": "holdsLeft -> nf_eval",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "After forward direction"
+      "assumption": "holdsLeft -> nf_eval requires h_t_compat parameter",
+      "why_deferred": "Pre-existing; Phase 3 BLOCKED (missing h_t_compat)",
+      "next_dispatch": "Add h_t_compat param to forward_nf_eval_of_holdsLeft"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1906,
+      "line": 2217,
       "statement": "existPart_succ_n1_bypass_k0_since (pre-existing)",
       "assumption": "Since case biconditional",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "After forward direction"
+      "why_deferred": "Pre-existing; Phase 4 NOT STARTED",
+      "next_dispatch": "Verify enriched_bypass_since soundness then prove"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1994,
+      "line": 2305,
       "statement": "existPart_succ_n1_bypass depth>=2 (pre-existing)",
       "assumption": "Depth-k IH",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Phase 5"
+      "why_deferred": "Pre-existing; may be unnecessary via classical existence path",
+      "next_dispatch": "Investigate nf_characterizable_temporal_prior_classical bypass"
     }
   ],
   "blockers": [],
   "continuation_path": null,
-  "continuation_context": {
-    "is_successor": false,
-    "key_changes": [
-      "eq_case_t_pred_1 signature changed: now takes explicit (nf_x : NormalForm sig 1 1) parameter before h_nf_x",
-      "All eq_case_t_pred_1 call sites updated with extra nf_x argument",
-      "3 proof blocks replaced with sorry: forward quant-part (L1059), backward disjunct (L1072), incompatible ssn (L1131)",
-      "File reduced from 2356 to 1996 lines by removing broken proof code"
-    ]
-  }
+  "continuation_context": null
 }
