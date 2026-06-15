@@ -1,28 +1,20 @@
 {
   "status": "partial",
-  "summary": "Phase 1 in progress. Eq case (originally L753) decomposed into forward (L757) + backward (L764) sub-sorries. Build passes cleanly with 6 sorry sites. Since case and other sorries untouched. Key discovery: refine pattern fixes type metavariable issues; zone bridge helpers must be defined BEFORE the eq case theorem due to Lean 4 forward reference constraints.",
+  "summary": "Phase 1 partially complete. Three sorry-free eq-case zone bridge helpers added (eq_case_zone_below, eq_case_zone_above, eq_case_zone_eq). Eq case sorry consolidated to single site at L974 with infrastructure in place. Build passes cleanly with 5 sorry sites. Since case and other sorries untouched.",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 757,
-      "statement": "existPart_succ_n1_bypass_k0_eq forward direction (formula -> exists)",
-      "assumption": "temporal_truth of enriched_bypass_eq implies exists x=t with nf_eval_nf",
-      "why_deferred": "Forward direction requires extracting nf_eval from formula disjList truth. Lower priority than backward.",
-      "next_dispatch": "Fill after backward direction or in Phase 3 alongside forward_nf_eval_of_holdsLeft"
+      "line": 974,
+      "statement": "existPart_succ_n1_bypass_k0_eq (combined forward+backward)",
+      "assumption": "enriched_bypass_eq ↔ ∃ x=t, nf_eval_nf. Zone bridge helpers in place.",
+      "why_deferred": "Backward direction needs to wire eq_case_zone_{below,above,eq} helpers with enriched_bypass_eq structure. Forward direction needs nf_eval reconstruction from formula truth.",
+      "next_dispatch": "Use eq_case_zone_* helpers to prove backward direction zone-by-zone. Pattern: simp [enriched_bypass_eq], rw [formula_disjList_iff], witness nf_characteristic, membership via List.mem_filterMap, then zone-based case split."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 764,
-      "statement": "existPart_succ_n1_bypass_k0_eq backward direction (exists -> formula)",
-      "assumption": "After subst h_x_eq, show enriched_bypass_eq holds. Needs zone bridges for x=t case.",
-      "why_deferred": "Requires eq-case zone bridge helpers added BEFORE line 703. Three agents failed due to forward reference issue.",
-      "next_dispatch": "Add eq_zone_bridge_{below_t,above_t,eq_t} before L703. Pattern: use eq_case_orders to map y-x to y-t order, then semantic_prior_UZ/SZ for Until/Since zones."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1295,
+      "line": 1579,
       "statement": "bracket_holds_of_eval_quant IntervalPattern.holds",
       "assumption": "Construct IntervalPattern.holds with sorted witnesses for positive between_tx SSNs",
       "why_deferred": "Phase 2 target",
@@ -30,7 +22,7 @@
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1514,
+      "line": 1637,
       "statement": "forward_nf_eval_of_holdsLeft (Until direction forward)",
       "assumption": "Reconstruct nf_eval_nf from VecEA2 holdsLeft conditions",
       "why_deferred": "Phase 3 target",
@@ -38,33 +30,32 @@
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1626,
+      "line": 1749,
       "statement": "existPart_succ_n1_bypass_k0_since (x < t case)",
       "assumption": "Since case of enriched bypass formula",
-      "why_deferred": "Phase 1 second target, deferred to focus on eq case first",
-      "next_dispatch": "Use enriched_bypass_since as witness. Backward: nf_characteristic + zone bridges for Since. Forward: formula_disjList extraction + Since semantics."
+      "why_deferred": "Phase 1 second target, deferred to focus on eq case infrastructure first",
+      "next_dispatch": "Use enriched_bypass_since as witness. Mirror Until case proof pattern with Since semantics."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 1714,
+      "line": 1837,
       "statement": "existPart_succ_n1_bypass depth >= 2 (k > 0)",
       "assumption": "General depth via arity-climbing induction",
-      "why_deferred": "Phase 4 target, requires substantial new mathematical content",
+      "why_deferred": "Phase 4 target",
       "next_dispatch": "Phase 4: implement depth k+1 enriched bypass using IH char_kp1_correct"
     }
   ],
-  "blockers": [
-    "Eq case backward direction blocked on missing eq-case zone bridge helpers. Must be added before line 703 in KampBypass.lean. Worktree agent dispatched with correct instructions, awaiting result."
-  ],
+  "blockers": [],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
     "phase_in_progress": 1,
     "key_discoveries": [
       "refine pattern fixes type metavariable propagation (vs exact-lambda-by pattern)",
-      "Private declarations in Lean 4 cannot be forward-referenced within same file",
+      "Private declarations in Lean 4 cannot be forward-referenced in the same file",
       "After subst h_x_eq (x=t), variable t is replaced by x everywhere in context",
-      "eq_case_orders gives y-x order = y-t order when ssn_xt_compatible ... false false = true"
+      "eq_case_orders gives y-x order = y-t order when ssn_xt_compatible ... false false = true",
+      "Three sorry-free zone bridge helpers added: eq_case_zone_below (L710), eq_case_zone_above (L782), eq_case_zone_eq (L854)"
     ]
   }
 }
