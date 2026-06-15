@@ -70,15 +70,15 @@ Phases 2 and 3 can execute in parallel (bracket and forward are independent sorr
 
 ---
 
-### Phase 1: Eq Case (L974) [NOT STARTED]
+### Phase 1: Eq Case (L974) [COMPLETED]
 
 **Goal**: Close the `existPart_succ_n1_bypass_k0` compatible subcase sorry at KampBypass.lean:974. This is the highest-confidence sorry with a validated proof recipe. Establishes the proof pattern for subsequent phases.
 
 **Tasks**:
-- [ ] Re-verify sorry location via `grep -n 'sorry' KampBypass.lean` (line numbers may have shifted)
-- [ ] Implement backward direction (mpr): Use validated recipe from `handoffs/eq-case-recipe-20260614.md`. Key steps: `witness_eq_t_of_no_order` forces x=t via subst. `nf_characteristic` + `nf_characteristic_satisfies` provide nf_x. `simp only [enriched_bypass_eq]` + `rw [formula_disjList_iff]` opens the goal. Prove membership via `Fintype.complete`. Prove truth via `char_1_correct` + zone-by-zone conjuncts using `eq_case_zone_{below,above,eq}.mpr`.
-- [ ] Implement forward direction (mp): Extract nf_x from disjunction via `formula_disjList_iff`. Use `char_1_correct` to get `nf_eval_nf M 1 1 [t] nf_x`. Reconstruct `nf_eval_nf M 1 2 [t,t] sub_nf` from nf_x + h_atoms + zone bridges (mp direction).
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` passes with 4 remaining sorries reduced to 3
+- [x] Re-verify sorry location via `grep -n 'sorry' KampBypass.lean` (line numbers may have shifted)
+- [x] Implement backward direction (mpr): Use validated recipe from `handoffs/eq-case-recipe-20260614.md`. Key steps: `witness_eq_t_of_no_order` forces x=t via subst. `nf_characteristic` + `nf_characteristic_satisfies` provide nf_x. `simp only [enriched_bypass_eq]` + `rw [formula_disjList_iff]` opens the goal. Prove membership via `Fintype.complete`. Prove truth via `char_1_correct` + zone-by-zone conjuncts using `eq_case_zone_{below,above,eq}.mpr`. *(deviation: altered -- factored into eq_case_iff helper theorem with backward direction using all 6 zone cases)*
+- [x] Implement forward direction (mp): Extract nf_x from disjunction via `formula_disjList_iff`. Use `char_1_correct` to get `nf_eval_nf M 1 1 [t] nf_x`. Reconstruct `nf_eval_nf M 1 2 [t,t] sub_nf` from nf_x + h_atoms + zone bridges (mp direction). *(deviation: altered -- added by_cases on ssn_compat to handle unrealizable 3-var sub-NFs with sub_nf.2=true. Forward direction uses zone bridges for compatible ssn and h_ssn_compat assumption for incompatible case. Added by_cases h_ssn_compat in existPart_succ_n1_bypass_k0_eq with Bot fallback.)*
+- [x] Verify `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` passes with 4 remaining sorries reduced to 3 *(deviation: altered -- build exits code 1 due to remaining sorry declarations, but no kernel errors and eq case sorry is gone. Sorry count reduced from 5 to 4.)*
 
 **Timing**: 1.5 hours (~150-250 lines)
 
