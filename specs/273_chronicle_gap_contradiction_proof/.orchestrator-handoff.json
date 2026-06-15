@@ -1,55 +1,59 @@
 {
   "status": "partial",
-  "summary": "Fixed all 9 build errors in KampBypass.lean. Build is now GREEN (0 errors, 993 jobs). All 4 pre-existing sorries (bracket L2081, forward L2151, since L2308, depth>=2 L2396) remain untouched as specified.",
+  "summary": "Phase 2 partial: closed bracket sorry in backward_holdsLeft_of_nf_eval by replacing BracketFormula n with BracketFormula.trivial (n=0) and moving positive between_tx conditions to endpointRight as Since formulas. 3 sorries remain (down from 4).",
   "phases_completed": 1,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2081,
-      "statement": "backward_holdsLeft_of_nf_eval bracket case",
-      "assumption": "IntervalPattern.holds requires strictly increasing witnesses",
-      "why_deferred": "Pre-existing; Phase 2 BLOCKED (enriched_vecEA2_until witness ordering bug)",
-      "next_dispatch": "Fix enriched_vecEA2_until to not depend on witness ordering"
+      "line": 2205,
+      "statement": "forward_nf_eval_of_holdsLeft",
+      "assumption": "holdsLeft (with Since-based endpointRight) implies nf_eval existence",
+      "why_deferred": "Forward direction: Since at x gives y < x but does not bound y > t. Need additional formula structure or proof technique to derive t < y from context.",
+      "next_dispatch": "Phase 3: close forward_nf_eval_of_holdsLeft. Key challenge: derive t < y from Since witness + surrounding context."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2151,
-      "statement": "forward_nf_eval_of_holdsLeft (consolidated)",
-      "assumption": "Needs t_compat hypothesis + bracket sorry resolved first",
-      "why_deferred": "Pre-existing; Phase 3 BLOCKED",
-      "next_dispatch": "Add h_t_compat parameter and fix upstream"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2308,
+      "line": 2362,
       "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case analogous to Until",
-      "why_deferred": "Pre-existing; Phase 4 NOT STARTED",
-      "next_dispatch": "Verify enriched_bypass_since soundness, then implement"
+      "assumption": "Since direction parallel to Until direction",
+      "why_deferred": "Phase 4 scope — needs bounded-formula fix mirrored from Until",
+      "next_dispatch": "Phase 4: apply bounded-Since fix, close since sorry"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2396,
-      "statement": "existPart_succ_n1_bypass depth>=2",
-      "assumption": "Depth >= 2 case may be unnecessary via classical path",
-      "why_deferred": "Pre-existing; OUT OF SCOPE for this plan",
-      "next_dispatch": "Evaluate if classical existence path bypasses this"
+      "line": 2450,
+      "statement": "existPart_succ_n1_bypass depth >= 2",
+      "assumption": "Depth >= 2 bypass requires separate IH argument",
+      "why_deferred": "Phase 5 / out of scope",
+      "next_dispatch": "Phase 5 or follow-on task"
     }
   ],
   "blockers": [],
-  "continuation_path": null,
   "continuation_context": {
-    "build_status": "GREEN",
-    "errors_fixed": 9,
-    "errors_remaining": 0,
-    "sorry_count": 4,
-    "all_sorries_preexisting": true,
-    "key_techniques": [
-      "Bool.eq_false proofs: Use ssn_order_consistent_of_eval + revert/cases for antisymmetry extraction from ssn_order_consistent; use Bool.eq_false_iff.mpr for direct negation",
-      "temporal_truth_neg: Use rw [temporal_truth_neg] instead of simp only [temporal_truth] when goal involves Formula.neg",
-      "Fin proof term mismatch: Use first | rfl | exact hsub.symm | (exfalso; simp_all) to handle cases where auto-generated proof terms differ from by omega/by decide",
-      "atom_eval unfolding: Use typed have with unfold atom_eval pattern for explicit reduction before boolean case analysis"
-    ]
-  }
+    "is_successor": false,
+    "phase_completed": "2 (partial — backward sorry closed, forward sorry remains)",
+    "key_decisions": [
+      "Replaced BracketFormula n with BracketFormula.trivial (n=0) in enriched_vecEA2_until",
+      "Positive between_tx SSN conditions moved to endpointRight as Formula.snce char_y Formula.top",
+      "Negative between_tx SSN conditions in n=0 bracket as universal seg_guard",
+      "Bracket proof: contradiction via between_tx_temporal_iff + h_eval_quant for negative SSNs",
+      "Between_tx positive endpointRight case: between_tx_temporal_iff + nf_depth0_char_formula_correct + Formula.snce witness construction",
+      "Forward direction (line 2205) blocked by y > t issue: Since at x gives y < x but not y > t"
+    ],
+    "build_status": "GREEN (KampBypass module, pre-existing CanonicalTaskRelation error unrelated)",
+    "sorry_count": 3,
+    "techniques": {
+      "seg_guard_universality": "For any y in (t,x), the NF of (y,x,t) is positive between_tx (by h_eval_quant contradiction). Hence seg_guard holds everywhere in (t,x).",
+      "between_tx_temporal_iff_reuse": "Bridges (∃y, nf_eval) ↔ (∃y, t<y ∧ y<x ∧ preds_match). Used in bracket and endpointRight proofs.",
+      "formula_top_semantics": "Formula.top = bot.imp bot, temporal_truth is False → False. Use id not trivial."
+    }
+  },
+  "artifacts": [
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "type": "implementation",
+      "summary": "Bracket sorry closed, enriched_vecEA2_until rewritten to n=0 bracket with Since-based between_tx"
+    }
+  ]
 }
