@@ -1291,23 +1291,30 @@ private theorem eq_case_iff
       split_ifs at h_ssn_some with h_y_lt_x h_x_lt_y
       · -- y < x: Since(char_y, top) is true because ∃ y, nf_eval
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
+        have h_xy_false : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := by
+          obtain ⟨w, hw⟩ := (h_quant_eval ssn).mpr h_sub_nf_true
+          have h_oc := ssn_order_consistent_of_eval ssn hw
+          simp only [ssn_order_consistent] at h_oc
+          revert h_oc; revert h_y_lt_x
+          cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
+          cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all
         exact (eq_case_zone_below M atomMap h_surj ssn parent_atoms x
-          h_y_lt_x
-          (by cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all)
+          h_y_lt_x h_xy_false
           h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2).mpr
           ((h_quant_eval ssn).mpr h_sub_nf_true)
       · -- x < y: Until(char_y, top) is true
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
+        have h_yx_false : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false :=
+          Bool.eq_false_iff.mpr h_y_lt_x
         exact (eq_case_zone_above M atomMap h_surj ssn parent_atoms x
-          h_x_lt_y
-          (by cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp_all)
+          h_x_lt_y h_yx_false
           h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2).mpr
           ((h_quant_eval ssn).mpr h_sub_nf_true)
       · -- y = x: char_y is true
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
         exact (eq_case_zone_eq M atomMap h_surj ssn parent_atoms x
-          (by cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp_all)
-          (by cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all)
+          (Bool.eq_false_iff.mpr h_y_lt_x)
+          (Bool.eq_false_iff.mpr h_x_lt_y)
           h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2).mpr
           ((h_quant_eval ssn).mpr h_sub_nf_true)
     -- Case: ssn_xt_compatible = true, sub_nf.2 ssn = false (neg formulas)
@@ -1337,27 +1344,35 @@ private theorem eq_case_iff
       split_ifs at h_ssn_some with h_y_lt_x h_x_lt_y
       · -- y < x: neg(Since(char_y, top)) is true because ¬∃ y
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
-        simp only [temporal_truth]
+        have h_xy_false : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := by
+          have h_oc := h_ssn_compat_nfx
+          simp only [ssn_xt_compatible, Bool.and_eq_true] at h_oc
+          have h_oc_cons := h_oc.2  -- ssn_order_consistent ssn = true
+          simp only [ssn_order_consistent] at h_oc_cons
+          revert h_oc_cons; revert h_y_lt_x
+          cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;>
+          cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all
+        rw [temporal_truth_neg]
         intro h_snce
         exact h_no_witness ((eq_case_zone_below M atomMap h_surj ssn parent_atoms x
-          h_y_lt_x
-          (by cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all)
+          h_y_lt_x h_xy_false
           h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2).mp h_snce)
       · -- x < y: neg(Until(char_y, top))
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
-        simp only [temporal_truth]
+        have h_yx_false : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false :=
+          Bool.eq_false_iff.mpr h_y_lt_x
+        rw [temporal_truth_neg]
         intro h_untl
         exact h_no_witness ((eq_case_zone_above M atomMap h_surj ssn parent_atoms x
-          h_x_lt_y
-          (by cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp_all)
+          h_x_lt_y h_yx_false
           h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2).mp h_untl)
       · -- y = x: neg(char_y)
         have h_eq_φ := Option.some_injective _ h_ssn_some; subst h_eq_φ
-        simp only [temporal_truth]
+        rw [temporal_truth_neg]
         intro h_eq_zone
         exact h_no_witness ((eq_case_zone_eq M atomMap h_surj ssn parent_atoms x
-          (by cases ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) <;> simp_all)
-          (by cases ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) <;> simp_all)
+          (Bool.eq_false_iff.mpr h_y_lt_x)
+          (Bool.eq_false_iff.mpr h_x_lt_y)
           h_xt h_tx h_yx_eq_yt h_xy_eq_ty h_t_pred_1 h_t_pred_2).mp h_eq_zone)
 
 /-! ## Equality Case (x = t) -/
@@ -1433,7 +1448,8 @@ private theorem existPart_succ_n1_bypass_k0_eq
             have h2 : M.interp p x ↔ sub_nf.1 (.pred p ⟨0, by omega⟩) = true := by
               have h := h_atom_2 (.pred p ⟨0, by omega⟩); unfold atom_eval at h; exact h
             cases hsub : sub_nf.1 (.pred p ⟨0, by omega⟩) <;>
-            cases hssn : ssn (.pred p ⟨1, by omega⟩) <;> simp_all
+            cases hssn : ssn (.pred p ⟨1, by omega⟩) <;>
+            first | rfl | exact hsub.symm | (exfalso; simp_all)
           · -- t-preds: ssn (.pred p 2) = parent_atoms (.pred p 0)
             intro p _
             have h1 : M.interp p x ↔ ssn (.pred p ⟨2, by omega⟩) = true := by
@@ -1441,7 +1457,8 @@ private theorem existPart_succ_n1_bypass_k0_eq
             have h2 : M.interp p x ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
               have h := h_atoms (.pred p ⟨0, by omega⟩); unfold atom_eval at h; exact h
             cases hssn : ssn (.pred p ⟨2, by omega⟩) <;>
-            cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;> simp_all
+            cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+            first | rfl | (exfalso; simp_all)
           · -- t > x order: ssn (.order ⟨2,_⟩ ⟨1,_⟩ _) = false (x < x is false)
             have h_ord : x < x ↔ ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true := by
               have h := h_ssn_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
@@ -2225,16 +2242,16 @@ private theorem existPart_succ_n1_bypass_k0_until
             -- ref_nf_x_1var (.pred p 0) = sub_nf.1 (.pred p 0) by definition
             cases hsub : (ref_nf_x_1var (.pred p ⟨0, by omega⟩) : Bool) <;>
             cases hssn : ssn_bad (.pred p ⟨1, by omega⟩) <;>
-            simp_all
+            first | rfl | (exfalso; simp_all)
           · -- t-preds: ssn_bad (.pred p 2) = parent_atoms (.pred p 0)
             intro p _
-            have h1 := h_ssn_eval (.pred p ⟨2, by omega⟩); unfold atom_eval at h1
-            -- h1 : M.interp p t₀ ↔ ssn_bad (.pred p 2) = true
+            have h1 : M.interp p t₀ ↔ ssn_bad (.pred p ⟨2, by omega⟩) = true := by
+              have h := h_ssn_eval (.pred p ⟨2, by omega⟩); unfold atom_eval at h; exact h
             have h2 := h_atoms (.pred p ⟨0, by omega⟩); simp only [atom_eval] at h2
             -- h2 : M.interp p t₀ ↔ parent_atoms (.pred p 0) = true
             cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
             cases hssn : ssn_bad (.pred p ⟨2, by omega⟩) <;>
-            simp_all [hpar, hssn]
+            first | rfl | (exfalso; simp_all)
           · -- t < x order: ssn_bad (.order ⟨2,_⟩ ⟨1,_⟩ _) = true
             have h := h_ssn_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
             unfold atom_eval at h; exact h.mp h_t_lt_x
