@@ -1,18 +1,19 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "session_id": "sess_1781534586_ec41fa",
   "started_at": "2026-06-15T00:00:00Z",
-  "completed_at": "2026-06-15T01:00:00Z",
+  "completed_at": "2026-06-15T02:00:00Z",
   "verification": {
     "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "build_passed": true,
-    "target_sorries_closed": 3,
-    "remaining_sorries_all_preexisting": true
+    "build_passed": false,
+    "compile_errors": 2,
+    "preexisting_errors": 18,
+    "notes": "Build has 2 new compile errors in forward_nf_eval_of_holdsLeft (sigma pair transfer, simp_all), plus 18 pre-existing errors from eq case code"
   },
   "sorry_inventory": [
     {
@@ -23,26 +24,26 @@
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2105,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "why_deferred": "Pre-existing; Phase 3 BLOCKED"
+      "line": 2273,
+      "statement": "forward_nf_eval_of_holdsLeft between_tx zone case",
+      "why_deferred": "NEW; blocked by same design flaw as L2047"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2217,
+      "line": 2520,
       "statement": "existPart_succ_n1_bypass_k0_since",
       "why_deferred": "Pre-existing; Phase 4 NOT STARTED"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2305,
+      "line": 2608,
       "statement": "existPart_succ_n1_bypass depth>=2",
       "why_deferred": "Pre-existing; may be unnecessary"
     }
   ],
   "memory_candidates": [
-    "When re-proving sorries in eq case of enriched bypass, use unfold atom_eval instead of simp only [atom_eval, Fin.cons] to avoid Fin.cases/Fin.induction reduction issues",
-    "ssn_xt_compatible with nf_x_1var vs ref_nf_x_1var: use nf_x_compat_check to show predicate equality between the two, then congr for function extensionality",
-    "For zone bridge dispatch in conjList proofs: split_ifs creates 2 outer cases (sub_nf.2 true/false) then 3 inner cases (y_lt_x, x_lt_y, eq) = 6 total; not 6 flat cases"
+    "When proving forward direction of enriched_bypass biconditional, the formula must handle 'bad' sub_nf values where sub_nf.2 ssn = true for incompatible ssn. Use by_cases on t_compat and ssn_compat with Formula.bot fallback.",
+    "ALL compatible nf_x (passing nf_x_compat_check) have the same nf_x_1var pred atoms. This means ssn_xt_compatible results are uniform across compatible nf_x. Use ref_nf_x_1var = sub_nf.1 (.pred p 0) as canonical reference.",
+    "For Sigma pair decomposition in VecEA2 proofs: use Sigma.ext_iff to get HEq for .2 field, then eq_of_heq to convert to Eq, then congrArg for field access (endpointRight, endpointLeft, bracket)."
   ]
 }

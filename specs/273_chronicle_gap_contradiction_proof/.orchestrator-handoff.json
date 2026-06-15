@@ -1,43 +1,56 @@
 {
-  "status": "implemented",
-  "summary": "Closed all 3 target eq-case sorries in KampBypass.lean (L1059 forward quant-part, L1072 backward disjunct, L1131 incompatible ssn). Build GREEN. No simp_all on Iff hypotheses. Used zone bridges + formula_conjList_iff for forward quant, filterMap membership + zone bridges for backward, and witness_eq_t_of_no_order + ssn_xt_compatible reconstruction for incompatible case.",
-  "phases_completed": 1,
-  "phases_total": 1,
+  "status": "partial",
+  "summary": "Forward direction proof structure written with 2 compile errors remaining. Original sorry at L2105 replaced by structured proof covering atom part (complete) and quant part (5/6 zones). The between_tx zone sorry is blocked by the same BracketFormula design flaw as the backward bracket case.",
+  "phases_completed": 0,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2047,
-      "statement": "backward_holdsLeft_of_nf_eval bracket case (pre-existing)",
-      "assumption": "BracketFormula.holds from witnesses",
-      "why_deferred": "Pre-existing; Phase 2 BLOCKED (enriched_vecEA2_until design flaw)",
-      "next_dispatch": "Fix enriched_vecEA2_until or replace with conjunction encoding"
+      "statement": "backward_holdsLeft_of_nf_eval bracket case",
+      "assumption": "BracketFormula.holds decomposition for positive between_tx witnesses",
+      "why_deferred": "Pre-existing; Phase 2 BLOCKED by enriched_vecEA2_until witness ordering bug",
+      "next_dispatch": "Fix enriched_vecEA2_until to sort pos_between by model-dependent witness ordering"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2105,
-      "statement": "forward_nf_eval_of_holdsLeft (pre-existing)",
-      "assumption": "holdsLeft -> nf_eval requires h_t_compat parameter",
-      "why_deferred": "Pre-existing; Phase 3 BLOCKED (missing h_t_compat)",
-      "next_dispatch": "Add h_t_compat param to forward_nf_eval_of_holdsLeft"
+      "line": 2273,
+      "statement": "forward_nf_eval_of_holdsLeft between_tx zone case",
+      "assumption": "BracketFormula.holds provides witnesses between t and x for each pos_between SSN",
+      "why_deferred": "NEW; blocked by same BracketFormula design flaw as L2047 backward bracket",
+      "next_dispatch": "Will resolve automatically when L2047 bracket fix lands"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2217,
-      "statement": "existPart_succ_n1_bypass_k0_since (pre-existing)",
-      "assumption": "Since case biconditional",
+      "line": 2520,
+      "statement": "existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since direction temporal encoding is sound",
       "why_deferred": "Pre-existing; Phase 4 NOT STARTED",
-      "next_dispatch": "Verify enriched_bypass_since soundness then prove"
+      "next_dispatch": "Verify enriched_bypass_since soundness, then implement Since direction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2305,
-      "statement": "existPart_succ_n1_bypass depth>=2 (pre-existing)",
-      "assumption": "Depth-k IH",
+      "line": 2608,
+      "statement": "existPart_succ_n1_bypass depth>=2",
+      "assumption": "Depth-k IH for 3-var conditions at k > 0",
       "why_deferred": "Pre-existing; may be unnecessary via classical existence path",
-      "next_dispatch": "Investigate nf_characterizable_temporal_prior_classical bypass"
+      "next_dispatch": "Evaluate if nf_characterizable_temporal_prior_classical bypasses this"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "forward_nf_eval_of_holdsLeft has 2 compile errors: (1) Sigma pair transfer from vea to enriched_vecEA2_until construction - need to rewrite h_endRight/h_endLeft through h_eq using Sigma.ext_iff decomposition, (2) simp_all failure in neg-ssn-compat branch x-preds case at L2458",
+    "between_tx zone case in forward direction (L2273) blocked by same BracketFormula design flaw as backward bracket (L2047)"
+  ],
   "continuation_path": null,
-  "continuation_context": null
+  "continuation_context": {
+    "is_successor": false,
+    "resume_phase": 3,
+    "key_decisions": [
+      "Added h_t_compat and h_ssn_compat parameters to forward_nf_eval_of_holdsLeft",
+      "Used ref_nf_x_1var = sub_nf.1 (.pred p 0) as canonical reference since ALL compatible nf_x have the same nf_x_1var pred atoms",
+      "Added nested by_cases for t_compat and ssn_compat at existPart_succ_n1_bypass_k0_until, returning Formula.bot when either fails",
+      "Forward quant part uses by_cases on ssn_xt_compatible: compatible ssn dispatched to zone bridges, incompatible ssn proved unrealizable from h_ssn_compat'",
+      "The Sigma pair transfer (h_eq relates enriched_vecEA2_until to n,vea) requires Sigma.ext_iff to get HEq for snd, then eq_of_heq + congrArg for field access"
+    ]
+  }
 }
