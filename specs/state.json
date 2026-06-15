@@ -1257,7 +1257,7 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-03T19:45:00Z",
-      "last_updated": "2026-06-15T19:58:28Z",
+      "last_updated": "2026-06-15T20:09:16Z",
       "artifacts": [
         {
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md",
@@ -1377,10 +1377,15 @@
           "path": "specs/273_chronicle_gap_contradiction_proof/reports/35_team-research.md",
           "type": "report",
           "summary": "Team research (4 teammates): BracketFormula ordering flaw analysis. Key: conjunction-of-existentials is unsound; permutation invariance fails; disjunction pointTypes recommended; Since case independent but has own soundness issue; k>0 blocks full chain"
+        },
+        {
+          "path": "specs/273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md",
+          "type": "report",
+          "summary": "Literature analysis: Rabinovich 2014 constructs witnesses IN ORDER via nested Until; correct Lean fix is per-SSN bounded Until formulas replacing BracketFormula"
         }
       ],
-      "next_artifact_number": 36,
-      "researched": "2026-06-15T19:58:28Z",
+      "next_artifact_number": 37,
+      "researched": "2026-06-15T20:09:16Z",
       "planned": "2026-06-13T00:00:00Z",
       "plan_metadata": {
         "phases": 5,
@@ -1411,7 +1416,7 @@
           }
         ]
       },
-      "session_id": "sess_1781552679_3a5c97",
+      "session_id": "sess_1781553798_d7f90c",
       "started": "2026-06-10T21:39:12Z",
       "blockers": "KampBypass.lean: 1145 lines. Zone-aware enriched formula v2 with VecEA2 brackets. Main theorem factored into eq/Until/Since cases. Until case decomposed into forward/backward helpers. 8 sorries remain (4 in Until zone-specific composition, 1 eq case, 1 Since case, 1 k>0, 1 pre-existing). Each remaining sorry is a small depth-0 composition fact connecting zone temporal formulas to 3-var NF existentials."
     },

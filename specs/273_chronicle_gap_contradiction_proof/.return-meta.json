@@ -1,7 +1,21 @@
 {
-  "status": "partial",
+  "status": "researched",
+  "summary": "Literature analysis reveals the paper (Rabinovich 2014, Prop 3.5/Cor 5.4) constructs bracket witnesses IN ORDER via nested Until formulas, never facing the batch-ordering problem. The correct Lean encoding is per-SSN bounded Until formulas (conjunction approach), not a flat BracketFormula. Each positive between_tx SSN gets: seg_guard Until (char_y(ssn_i) AND (seg_guard Until char_1(nf_x))), which independently bounds each witness to (t,x). This eliminates all ordering issues and avoids the nf_y_proj injectivity gap.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md",
+      "summary": "Literature analysis of bracket witness ordering in Rabinovich 2014, identifying per-SSN bounded Until as the correct Lean encoding to replace BracketFormula"
+    }
+  ],
+  "partial_progress": {
+    "stage": "research_written",
+    "details": "Report written with literature proof structure, correspondence table, and detailed fix plan"
+  },
   "metadata": {
-    "cycles_used": 5,
-    "final_state": "implementing"
+    "session_id": "sess_1781553798_d7f90c",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }

@@ -312,6 +312,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
   - [273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md]
   - [273_chronicle_gap_contradiction_proof/reports/33_team-research.md]
   - [273_chronicle_gap_contradiction_proof/reports/35_team-research.md]
+  - [273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md]
 - **Plan**: [273_chronicle_gap_contradiction_proof/plans/34_kamp-sorry-closure.md]
 
 **Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
