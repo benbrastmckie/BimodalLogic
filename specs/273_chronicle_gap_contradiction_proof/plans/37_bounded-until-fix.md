@@ -14,7 +14,11 @@
 
 Replace the broken `BracketFormula`/`IntervalPattern` machinery in `enriched_vecEA2_until` with a simplified construction that avoids the witness ordering problem, following the paper's approach (Rabinovich 2014, Proposition 3.5 / Corollary 5.4). The original architecture extracted independent witnesses from `h_eval_quant` and tried to place them into a flat `IntervalPattern.holds` requiring strictly increasing witnesses -- a design flaw that made the backward direction unprovable when `pos_between.length >= 2`.
 
-**Actual fix (Phase 2 completed)**: Rather than conjunction-of-bounded-Untils as originally proposed, the implementation replaced `BracketFormula n` with `BracketFormula.trivial seg_guard` (n=0, universal segment guard) and moved positive between_tx SSN conditions to endpointRight as `Formula.snce char_y Formula.top`. This eliminates the witness ordering problem entirely -- the n=0 bracket needs no witnesses, and each positive SSN is checked independently via Since formulas at the endpoint. The Since case (`enriched_bypass_since`) needs a parallel fix for positive between_xt SSNs. Definition of done: all 3 remaining depth-0 sorries in KampBypass.lean closed; `existPart_succ_n1_bypass_k0` sorry-free by `lean_verify`.
+**Phase 2 fix (backward sorry closed)**: The implementation replaced `BracketFormula n` with `BracketFormula.trivial seg_guard` (n=0, universal segment guard) and moved positive between_tx SSN conditions to endpointRight as `Formula.snce char_y Formula.top`. This closed the backward sorry successfully.
+
+**Encoding flaw discovered (Phases 3-4 BLOCKED)**: The n=0 + Since-at-endpoint approach has a fundamental limitation: `Formula.snce char_y Formula.top` at x gives `exists y < x` but loses the lower bound `t < y` needed for between_tx witnesses. No single-endpoint temporal formula can express "exists y strictly between t and x." The forward direction is unprovable with this encoding. Two correct approaches identified: (A) nested Until in endpointLeft (preferred -- avoids ordering), (B) BracketFormula k with k = number of positive between_tx SSNs (requires witness ordering lemma). Plan revision needed before Phases 3-4 can proceed.
+
+**Current state**: 4 sorries in KampBypass.lean (L2205 forward, L2380 since-forward, L2382 since-backward, L2535 k>0). Build GREEN. VecEAFormula.lean sorry-free.
 
 ### Research Integration
 
@@ -38,9 +42,9 @@ Plan v34 (5 phases, 6 hours) attempted direct sorry closure with the existing Br
 **Goals**:
 - ~~Replace `enriched_vecEA2_until` with conjunction-of-bounded-Untils~~ DONE (used BracketFormula.trivial + Since-based endpointRight instead)
 - ~~Close the backward sorry at L2081 via the new per-SSN Until proofs~~ DONE (Phase 2)
-- Close the forward sorry at L2205 via Since-witness unwinding (Phase 3, in progress)
-- Fix `enriched_bypass_since` to use properly bounded Since formulas (Phase 4)
-- Close the Since sorry at L2362 (Phase 4)
+- Close the forward sorry at L2205 (Phase 3, BLOCKED -- encoding flaw, needs architectural redesign)
+- Fix `enriched_bypass_since` encoding for positive between_xt SSNs (Phase 4, BLOCKED -- same encoding flaw)
+- Close the Since sorries at L2380/L2382 (Phase 4, BLOCKED)
 - Make `existPart_succ_n1_bypass_k0` sorry-free (verified via `lean_verify`)
 - Verify downstream chain status (`kamp_prior_expressive_completeness`, `US_expressively_complete_over_prior`)
 
@@ -129,7 +133,8 @@ Phases 3 and 4 can execute in parallel (Until backward/forward proof and Since f
 **Verification**:
 - `lean_verify backward_holdsLeft_of_nf_eval` -- no sorryAx
 - Build GREEN
-- Sorry count reduced from 4 to 3 (lines 2205, 2362, 2450)
+- Backward sorry closed successfully
+- NOTE: Forward direction later found to be BLOCKED by encoding flaw (see Phase 3). Sorry count returned to 4 after Since-direction restructuring (lines 2205, 2380, 2382, 2535)
 
 ---
 
@@ -294,17 +299,21 @@ dispatch context).
 ## Testing & Validation
 
 - [x] After Phase 1: grep confirmed 4 sorry sites; build GREEN after 9 error fixes
-- [x] After Phase 2: `backward_holdsLeft_of_nf_eval` sorry-free via `lean_verify`; sorry count 4 -> 3; build GREEN
-- [ ] After Phase 3: grep shows 2 remaining sorries (Since L2362 + k>0 L2450)
-- [ ] After Phase 4: grep shows 1 remaining sorry (k>0 at L2450)
+- [x] After Phase 2: `backward_holdsLeft_of_nf_eval` sorry-free via `lean_verify`; build GREEN
+- [x] Phase 3 analysis: encoding flaw confirmed -- forward direction unprovable with current Since-at-endpoint approach. 5 alternative encodings exhaustively tested and all fail.
+- [x] Phase 4 analysis: same encoding flaw confirmed for Since direction. Incompatible cases proved; VecEAFormula.lean cleaned (sorry-free).
+- [ ] Current state: 4 sorries at L2205, L2380, L2382, L2535. Build GREEN. BLOCKED on encoding redesign.
+- [ ] After encoding fix + Phase 3 retry: grep shows 2 remaining sorries (Since + k>0)
+- [ ] After Phase 4 retry: grep shows 1 remaining sorry (k>0)
 - [ ] After Phase 4: `lean_verify existPart_succ_n1_bypass_k0` shows no sorryAx
 - [ ] After Phase 5: `lean_verify` chain results documented; `lake build` full project succeeds
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean` -- 3 depth-0 sorries closed, `enriched_vecEA2_until` and `enriched_bypass_since` rewritten (~300-500 lines changed)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean` -- backward sorry closed, enriched_vecEA2_until rewritten (n=0 BracketFormula.trivial), Since case incompatible cases proved. 4 sorries remain (encoding flaw blocks forward directions).
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean` -- cleaned (incorrect permutation lemma deleted, now sorry-free)
 - `specs/273_chronicle_gap_contradiction_proof/plans/37_bounded-until-fix.md` -- this plan
-- Potentially `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- `chronicle_gap_contradiction` filled if unblocked
+- Potentially `Theories/Bimodal/Metalogic/BXCanonical/Chronicle/ChronicleToCountermodel.lean` -- `chronicle_gap_contradiction` filled if unblocked (pending encoding fix)
 
 ## Rollback/Contingency
 

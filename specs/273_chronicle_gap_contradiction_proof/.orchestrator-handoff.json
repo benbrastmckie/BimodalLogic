@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Phase 2 backward sorry CLOSED (n=0 BracketFormula rewrite). Phases 3-4 forward/Since sorries BLOCKED by encoding flaw: temporal Since/Until operators at a single endpoint cannot express bounded quantification between two endpoints. 4 sorries remain in KampBypass.lean (down from 4, but 1 closed + 2 new from restructuring). VecEAFormula.lean sorry-free.",
+  "summary": "Phase 2 backward sorry CLOSED (n=0 BracketFormula rewrite). Phases 3-4 forward/Since sorries BLOCKED by encoding flaw: temporal Since/Until operators at a single endpoint cannot express bounded quantification between two endpoints. 4 sorries remain in KampBypass.lean (1 closed + 2 new from Since restructuring). VecEAFormula.lean sorry-free.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
@@ -38,16 +38,85 @@
     }
   ],
   "blockers": [
-    "ENCODING FLAW: enriched_vecEA2_until (L484) and enriched_bypass_since (L586) use unbounded temporal operators for positive between-zone SSNs. Since at x gives y < x but not y > t. Until at x gives y > x but not y < t. The BracketFormula approach (which bounds witnesses to (t,x)) requires ordered witnesses for n >= 2, which is model-dependent. Requires architectural redesign -- recommend a fresh /plan cycle."
+    "ENCODING FLAW: enriched_vecEA2_until (L484) and enriched_bypass_since (L586) encode positive between-zone SSNs as unbounded temporal operators at a single endpoint. Since at x gives y < x but not y > t. Until at x gives y > x but not y < t. The BracketFormula approach (which bounds witnesses to (t,x)) requires ordered witnesses for n >= 2, which is model-dependent. Requires architectural redesign."
   ],
+  "encoding_flaw_analysis": {
+    "root_cause": "No single-endpoint temporal formula can express 'exists y strictly between t and x'. Formula.snce/Formula.untl evaluated at one point provide only one inequality bound on the witness.",
+    "current_encoding": {
+      "until_direction": "enriched_vecEA2_until (L484) uses BracketFormula.trivial (n=0) with positive between_tx SSNs encoded as Formula.snce char_y Formula.top in endpointRight. Backward direction works (bracket proves seg_guard on (t,x), endpointRight proves char_y at some y < x). Forward direction fails: Since witness y satisfies y < x but t < y is lost.",
+      "since_direction": "enriched_bypass_since (L586) uses Formula.untl char_y Formula.top at x for positive between_xt SSNs. Gives y > x but not y < t. Same fundamental problem mirrored."
+    },
+    "alternatives_tried_and_failed": [
+      {
+        "approach": "Direct proof via zone bridge lemmas",
+        "why_failed": "between_tx_temporal_iff requires exists y with t < y AND y < x AND predicates_match. Since witness gives y < x but not t < y."
+      },
+      {
+        "approach": "HEq transport through VecEA2",
+        "result": "Successfully transported through HEq to get concrete endpointLeft/endpointRight/bracket hypotheses. Proved atoms case and all non-between_tx quantifier cases. Between_tx forward case remains stuck.",
+        "why_failed": "The between_tx case is genuinely unprovable with this encoding, not a proof technique issue."
+      },
+      {
+        "approach": "Formula.snce char_y Formula.top).neg added to endpointLeft",
+        "why_failed": "Excludes y < t (via subinterval argument) but NOT y = t. The y = t case arises when the eq_t twin SSN has sub_nf.2 = true, and is not resolvable from temporal formulas alone."
+      },
+      {
+        "approach": "Formula.snce char_y seg_guard_f (Since with seg_guard instead of top)",
+        "why_failed": "Same issue -- excludes y < t but not y = t."
+      },
+      {
+        "approach": "char_y.neg added to endpointLeft",
+        "why_failed": "Breaks the backward direction when t has the same predicate profile as the between_tx witness."
+      }
+    ],
+    "candidate_redesign_approaches": [
+      {
+        "label": "A: Nested Until in endpointLeft",
+        "description": "Replace between_tx Since at x with a nested Until at t: Formula.untl (seg_guard_f) (char_y.and (Formula.untl seg_guard_f (char_1 nf_x))). This says 'seg_guard holds from t until y where char_y holds, then seg_guard holds from y until x where char_1(nf_x) holds.' Guarantees y in (t,x) by construction.",
+        "pros": "Avoids witness ordering entirely. Stays within n=0 bracket framework. Forward direction straightforward (Until witness is in (t,x) by definition).",
+        "cons": "x-sharing issue: each positive between_tx SSN produces an independent Until chain, and the innermost event (char_1 nf_x) references a specific x. If multiple SSNs produce different x values from unwinding, the construction breaks. Need to verify that the outer disjunction over nf_x values handles this correctly.",
+        "status": "Not attempted in code. Identified as preferred approach."
+      },
+      {
+        "label": "B: BracketFormula k (k = number of positive between_tx SSNs)",
+        "description": "Revert to using BracketFormula with k > 0, placing between_tx witnesses as bracket witnesses. IntervalPattern.holds guarantees all witnesses are strictly ordered in (t,x).",
+        "pros": "Both bounds guaranteed by bracket semantics. Forward direction is straightforward (IntervalPattern.holds directly provides ordered witnesses).",
+        "cons": "Backward direction requires a permutation lemma: given k unordered distinct witnesses in (t,x), show BracketFormula.holds for a sorted permutation. The lemma BracketFormula.holds_of_unordered_distinct was added then deleted (statement was incorrect). Requires sorting Fin n -> M.carrier for injective functions on linearly ordered types. Also reverts the Phase 2 architectural change.",
+        "status": "Partially attempted. Permutation lemma statement was added to VecEAFormula.lean then deleted as incorrect."
+      }
+    ]
+  },
+  "infrastructure_inventory": {
+    "zone_bridges_until_direction": {
+      "exist": ["between_tx_temporal_iff", "eq_x_temporal_iff", "above_x_temporal_iff", "below_t_temporal_iff", "eq_t_temporal_iff"],
+      "note": "All Until-direction zone bridges are sorry-free and available."
+    },
+    "zone_bridges_since_direction": {
+      "exist": [],
+      "needed": ["between_xt_temporal_iff", "above_t_temporal_iff", "below_x_temporal_iff", "eq_x_temporal_iff_since", "eq_t_temporal_iff_since"],
+      "note": "NO Since-direction zone bridges exist. The Since backward direction (L2382) needs these. If Approach A (nested temporal) is used, zone bridges may not be needed -- the proof structure would be different."
+    },
+    "backward_proof_technique": {
+      "what_worked": "Phase 2 backward proof uses: (1) BracketFormula.trivial with seg_guard proved via h_eval_quant contradiction for negative SSNs. (2) endpointRight proved via between_tx_temporal_iff + nf_depth0_char_formula_correct + Formula.snce witness construction. (3) Key lemma chain: between_tx_temporal_iff bridges (exists y, nf_eval) <-> (exists y, t<y AND y<x AND preds_match).",
+      "reusable_for_redesign": "The seg_guard universality argument and the zone bridge dispatch pattern are reusable regardless of which approach (A or B) is chosen. The endpointRight proof structure would change."
+    },
+    "since_case_partial_progress": {
+      "proved": "t-incompatible case (Formula.bot contradiction) and ssn-incompatible case (Formula.bot contradiction via ssn_xt_compatible). These are sorry-free.",
+      "remaining": "Compatible case forward (L2380) and backward (L2382) directions."
+    }
+  },
   "continuation_context": {
     "is_successor": false,
     "current_phase": "3-4 (blocked)",
     "encoding_flaw_confirmed_in": ["enriched_vecEA2_until", "enriched_bypass_since"],
-    "build_status": "GREEN (KampBypass module)",
+    "build_status": "GREEN (KampBypass module; pre-existing CanonicalTaskRelation error is unrelated)",
     "total_dispatches": 4,
     "backward_sorry_closed": true,
     "forward_sorry_blocked": true,
-    "recommended_next_step": "Fresh /plan or /research cycle to design correct encoding for bounded existentials in temporal logic framework"
+    "files_modified": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean"
+    ],
+    "recommended_next_step": "Research cycle to resolve the x-sharing question for Approach A (nested Until), then /revise 273 to update phases 3-4 with the correct encoding. If Approach A's x-sharing is sound, no Since-direction zone bridges are needed."
   }
 }
