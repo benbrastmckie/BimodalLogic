@@ -23,6 +23,9 @@
     "Lean 4: exact <A, fun M => by sorry> causes type metavariable propagation. Use refine <A, ?_> instead.",
     "Lean 4: private declarations cannot be forward-referenced within same file. Helpers must be defined above their use site.",
     "KampBypass.lean: After subst h_x_eq (x=t), variable t is replaced by x. All hypotheses mentioning t now mention x.",
-    "KampBypass.lean: eq_case_zone_{below,above,eq} are sorry-free zone bridge helpers for the x=t case, defined at L710-916."
+    "KampBypass.lean: eq_case_zone_{below,above,eq} are sorry-free zone bridge helpers for the x=t case, defined at L710-916.",
+    "KampBypass.lean: simp only [enriched_bypass_eq] MUST precede rw [formula_disjList_iff] because enriched_bypass_eq is definitionally but not syntactically formula_disjList.",
+    "KampBypass.lean: ssn_xt_compat_x_preds and ssn_xt_compat_t_preds are PRIVATE to ZoneBridge.lean. Extract pred conditions via: simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_compat'.",
+    "KampBypass.lean: constructor on Iff produces mp (forward) and mpr (backward) cases. The first bullet is mp, not mpr."
   ]
 }
