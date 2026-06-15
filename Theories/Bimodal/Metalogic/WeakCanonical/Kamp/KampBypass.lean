@@ -700,6 +700,226 @@ private theorem eq_case_orders {sig : MonadicSignature}
     · first | exact h_eq.1 | exact h_eq.2
   }
 
+/-! ## Eq-case zone bridges (x = t)
+
+When x = t, the 3-var existential ∃ y, nf_eval_nf M 0 3 [y,t,t] ssn
+has three zones: y < t (Since), y = t (direct), y > t (Until).
+Unlike the Until/Since zone bridges, these do NOT require t < x. -/
+
+/-- Eq-case zone bridge for y < t: Since(char_y, top) at t ↔ ∃ y, nf_eval with y < t. -/
+private theorem eq_case_zone_below
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (t : M.carrier)
+    -- ssn says y < x (= y < t since x=t)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    -- ssn says ¬(x < y)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    -- ssn says x = t orders
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    -- x-pred matches t-pred in ssn (from eq_case_orders)
+    (h_yx_eq_yt : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+                  ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)))
+    (h_xy_eq_ty : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+                  ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)))
+    -- t predicates match ssn at var 1 and var 2
+    (h_t_pred_1 : ∀ p, M.interp p t ↔ ssn (.pred p ⟨1, by omega⟩) = true)
+    (h_t_pred_2 : ∀ p, M.interp p t ↔ ssn (.pred p ⟨2, by omega⟩) = true) :
+    temporal_truth M atomMap t
+      (Formula.snce (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) Formula.top) ↔
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons t (fun _ => t))) ssn) := by
+  -- h_yx = true, so h_yt = true (from h_yx_eq_yt)
+  have h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true := by
+    rw [← h_yx_eq_yt]; exact h_yx
+  -- h_xy = false, so h_ty = false (from h_xy_eq_ty)
+  have h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := by
+    rw [← h_xy_eq_ty]; exact h_xy
+  constructor
+  · -- Forward: Since(char_y, top) at t → ∃ y, nf_eval
+    intro ⟨y, h_y_lt_t, h_char_y, _⟩
+    refine ⟨y, ?_⟩
+    rw [nf_depth0_char_formula_correct] at h_char_y
+    apply reconstruct_nf_eval_3var M ssn y t t
+    · exact h_char_y
+    · exact h_t_pred_1
+    · exact h_t_pred_2
+    · -- y < x (= t) ↔ true
+      exact ⟨fun _ => h_yx, fun _ => h_y_lt_t⟩
+    · -- y < t ↔ true
+      exact ⟨fun _ => h_yt, fun _ => h_y_lt_t⟩
+    · -- x (= t) < y ↔ false
+      constructor
+      · intro h; exact absurd (lt_trans h_y_lt_t h) (lt_irrefl _)
+      · intro h; simp_all
+    · -- x < t ↔ false (x = t)
+      constructor
+      · intro h; exact absurd h (lt_irrefl _)
+      · intro h; simp_all
+    · -- t < y ↔ false
+      constructor
+      · intro h; exact absurd (lt_trans h_y_lt_t h) (lt_irrefl _)
+      · intro h; simp_all
+    · -- t < x ↔ false (x = t)
+      constructor
+      · intro h; exact absurd h (lt_irrefl _)
+      · intro h; simp_all
+  · -- Backward: ∃ y, nf_eval → Since(char_y, top) at t
+    intro ⟨y, h_nf⟩
+    have h_y_lt_t : y < t := by
+      have h_ord := h_nf (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+      simp only [atom_eval, Fin.cons] at h_ord
+      exact h_ord.mpr h_yt
+    refine ⟨y, h_y_lt_t, ?_, fun z _ _ => by simp [temporal_truth, Formula.top]⟩
+    rw [nf_depth0_char_formula_correct]
+    exact extract_y_preds M ssn y t t h_nf
+
+/-- Eq-case zone bridge for y > t: Until(char_y, top) at t ↔ ∃ y, nf_eval with y > t. -/
+private theorem eq_case_zone_above
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (t : M.carrier)
+    -- ssn says x < y (= t < y since x=t)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    -- ssn says ¬(y < x)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    -- ssn says x = t orders
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    -- order consistency between vars 0,1 and vars 0,2 (from eq_case_orders)
+    (h_yx_eq_yt : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+                  ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)))
+    (h_xy_eq_ty : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+                  ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)))
+    -- t predicates match ssn at var 1 and var 2
+    (h_t_pred_1 : ∀ p, M.interp p t ↔ ssn (.pred p ⟨1, by omega⟩) = true)
+    (h_t_pred_2 : ∀ p, M.interp p t ↔ ssn (.pred p ⟨2, by omega⟩) = true) :
+    temporal_truth M atomMap t
+      (Formula.untl (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) Formula.top) ↔
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons t (fun _ => t))) ssn) := by
+  -- h_xy = true, so h_ty = true
+  have h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true := by
+    rw [← h_xy_eq_ty]; exact h_xy
+  -- h_yx = false, so h_yt = false
+  have h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false := by
+    rw [← h_yx_eq_yt]; exact h_yx
+  constructor
+  · -- Forward: Until(char_y, top) at t → ∃ y, nf_eval
+    intro ⟨y, h_t_lt_y, h_char_y, _⟩
+    refine ⟨y, ?_⟩
+    rw [nf_depth0_char_formula_correct] at h_char_y
+    apply reconstruct_nf_eval_3var M ssn y t t
+    · exact h_char_y
+    · exact h_t_pred_1
+    · exact h_t_pred_2
+    · -- y < x (= t) ↔ false
+      constructor
+      · intro h; exact absurd (lt_trans h h_t_lt_y) (lt_irrefl _)
+      · intro h; simp_all
+    · -- y < t ↔ false
+      constructor
+      · intro h; exact absurd (lt_trans h h_t_lt_y) (lt_irrefl _)
+      · intro h; simp_all
+    · -- x (= t) < y ↔ true
+      exact ⟨fun _ => h_xy, fun _ => h_t_lt_y⟩
+    · -- x < t ↔ false
+      constructor
+      · intro h; exact absurd h (lt_irrefl _)
+      · intro h; simp_all
+    · -- t < y ↔ true
+      exact ⟨fun _ => h_ty, fun _ => h_t_lt_y⟩
+    · -- t < x ↔ false
+      constructor
+      · intro h; exact absurd h (lt_irrefl _)
+      · intro h; simp_all
+  · -- Backward: ∃ y, nf_eval → Until(char_y, top) at t
+    intro ⟨y, h_nf⟩
+    have h_t_lt_y : t < y := by
+      have h_ord := h_nf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
+      simp only [atom_eval, Fin.cons] at h_ord
+      exact h_ord.mpr h_ty
+    refine ⟨y, h_t_lt_y, ?_, fun z _ _ => by simp [temporal_truth, Formula.top]⟩
+    rw [nf_depth0_char_formula_correct]
+    exact extract_y_preds M ssn y t t h_nf
+
+/-- Eq-case zone bridge for y = t: char_y at t ↔ ∃ y, nf_eval with y = t. -/
+private theorem eq_case_zone_eq
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (parent_atoms : AtomKind sig 1 → Bool)
+    (t : M.carrier)
+    -- ssn says y = x (both orders false)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    -- ssn says x = t orders
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = false)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    -- order consistency
+    (h_yx_eq_yt : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) =
+                  ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)))
+    (h_xy_eq_ty : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) =
+                  ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)))
+    -- t predicates match ssn at var 1 and var 2
+    (h_t_pred_1 : ∀ p, M.interp p t ↔ ssn (.pred p ⟨1, by omega⟩) = true)
+    (h_t_pred_2 : ∀ p, M.interp p t ↔ ssn (.pred p ⟨2, by omega⟩) = true) :
+    temporal_truth M atomMap t
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) ↔
+    (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons t (fun _ => t))) ssn) := by
+  -- y = t since ¬(y<x) ∧ ¬(x<y) and x=t
+  have h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false := by
+    rw [← h_yx_eq_yt]; exact h_yx
+  have h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := by
+    rw [← h_xy_eq_ty]; exact h_xy
+  constructor
+  · -- Forward: char_y at t → ∃ y, nf_eval (use y = t)
+    intro h_char
+    refine ⟨t, ?_⟩
+    rw [nf_depth0_char_formula_correct] at h_char
+    apply reconstruct_nf_eval_3var M ssn t t t
+    · exact h_char
+    · exact h_t_pred_1
+    · exact h_t_pred_2
+    · -- y < x (= t < t) ↔ h_yx = true: both sides false
+      exact ⟨fun h => absurd h (lt_irrefl _), fun h => by simp_all⟩
+    · -- y < t (= t < t) ↔ h_yt = true
+      exact ⟨fun h => absurd h (lt_irrefl _), fun h => by simp_all⟩
+    · -- x < y (= t < t) ↔ h_xy = true
+      exact ⟨fun h => absurd h (lt_irrefl _), fun h => by simp_all⟩
+    · -- x < t (= t < t) ↔ h_xt = true
+      exact ⟨fun h => absurd h (lt_irrefl _), fun h => by simp_all⟩
+    · -- t < y (= t < t) ↔ h_ty = true
+      exact ⟨fun h => absurd h (lt_irrefl _), fun h => by simp_all⟩
+    · -- t < x (= t < t) ↔ h_tx = true
+      exact ⟨fun h => absurd h (lt_irrefl _), fun h => by simp_all⟩
+  · -- Backward: ∃ y, nf_eval → char_y at t
+    intro ⟨y, h_nf⟩
+    -- y = t
+    have h_not_yt : ¬(y < t) := by
+      intro h
+      have h_ord := h_nf (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+      simp only [atom_eval, Fin.cons] at h_ord
+      exact absurd (h_ord.mp h) (by simp_all)
+    have h_not_ty : ¬(t < y) := by
+      intro h
+      have h_ord := h_nf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
+      simp only [atom_eval, Fin.cons] at h_ord
+      exact absurd (h_ord.mp h) (by simp_all)
+    have h_eq : y = t := le_antisymm (le_of_not_gt h_not_ty) (le_of_not_gt h_not_yt)
+    subst h_eq
+    rw [nf_depth0_char_formula_correct]
+    exact extract_y_preds M ssn y y y h_nf
+
 /-! ## Equality Case (x = t) -/
 
 set_option maxHeartbeats 800000 in
@@ -744,24 +964,14 @@ private theorem existPart_succ_n1_bypass_k0_eq
       -- We use classical choice to obtain temporal formulas for each.
       -- The formula: disjunction over compatible nf_x of char_1(nf_x) ∧ quant_profile.
       -- Use enriched_bypass_eq as the formula.
-      refine ⟨enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms,
-        fun M h_UZ h_SZ t h_atoms => ?_⟩
-      -- Derive predicate conditions at t
-      have h_t_pred_par : ∀ p : sig.preds,
-          M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
-        intro p; have := h_atoms (.pred p ⟨0, by omega⟩)
-        simp only [atom_eval] at this; exact this
-      constructor
-      · -- Forward: formula truth → ∃ x, nf_eval
-        intro h_fwd
-        exact ⟨t, sorry⟩
-      · -- Backward: ∃ x, nf_eval → formula truth
-        -- Requires eq_zone_bridge helpers (below_t, above_t, eq_t for x=t case)
-        -- which were deleted from this file. Need to be restored first.
-        intro ⟨x, h_eval⟩
-        have h_x_eq := witness_eq_t_of_no_order M sub_nf t x h_gt h_lt h_eval
-        subst h_x_eq
-        sorry
+      exact ⟨enriched_bypass_eq atomMap h_surj char_1 sub_nf parent_atoms,
+        fun M h_UZ h_SZ t h_atoms => by
+        -- The enriched_bypass_eq formula is a disjunction over compatible nf_x values.
+        -- For each nf_x, the conjunct is char_1(nf_x) ∧ quant_conjuncts.
+        -- The equivalence with ∃ x, nf_eval at [x, t] where x = t
+        -- follows from NF uniqueness + zone decomposition via eq_case_zone_{below,above,eq}.
+        -- Both directions use witness_eq_t_of_no_order, nf_characteristic, and the zone bridges.
+        sorry⟩
     · -- var-1 preds don't match parent_atoms: existential impossible
       refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
       simp only [temporal_truth]
@@ -1212,88 +1422,6 @@ private theorem between_tx_temporal_iff
                  · intro h; rw [h_t_ssn p]; exact (h_t_pred p).mp h
                  · intro h; exact (h_t_pred p).mpr (by rw [← h_t_ssn p]; exact h))
 
-/-! ## Bracket construction helpers -/
-
-private theorem seg_guard_holds
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (nf_x_1var : NormalForm sig 0 1)
-    (parent_atoms : AtomKind sig 1 → Bool)
-    (sub_nf : NormalForm sig 1 2)
-    (M : OrderedMonadicStructure sig)
-    (x t : M.carrier) (h_tx : t < x)
-    (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
-    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true)
-    (h_eval_quant : ∀ ssn : NormalForm sig 0 3,
-      (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
-      sub_nf.2 ssn = true)
-    (y : M.carrier) (h_ty : t < y) (h_yx : y < x) :
-    TemporalPred.eval_at M atomMap
-      ⟨formula_conjList
-        (List.map (fun ssn => (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)
-          ((Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter (fun ssn =>
-            ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
-            (ssn_zone_until ssn == .between_tx) &&
-            !sub_nf.2 ssn)))⟩ y := by
-  simp only [TemporalPred.eval_at]
-  rw [formula_conjList_iff]
-  intro φ h_mem
-  rw [List.mem_map] at h_mem
-  obtain ⟨ssn, h_ssn_mem, h_eq⟩ := h_mem
-  subst h_eq
-  rw [List.mem_filter] at h_ssn_mem
-  obtain ⟨h_ssn_elem, h_cond⟩ := h_ssn_mem
-  simp only [Bool.and_eq_true, beq_iff_eq, Bool.not_eq_true'] at h_cond
-  obtain ⟨⟨h_compat, h_zone⟩, h_neg⟩ := h_cond
-  simp only [Formula.neg, temporal_truth]
-  intro h_char
-  have h_y_preds := (nf_depth0_char_formula_correct M atomMap h_surj (nf_y_proj ssn) y).mp h_char
-  have h_exist : ∃ y', nf_eval_nf M 0 3 (Fin.cons y' (Fin.cons x (fun _ => t))) ssn :=
-    (between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_tx
-      h_compat h_zone h_x_pred h_t_pred).mpr ⟨y, h_ty, h_yx, h_y_preds⟩
-  have h_pos := (h_eval_quant ssn).mp h_exist
-  rw [h_neg] at h_pos
-  exact absurd h_pos (by decide)
-
-set_option maxHeartbeats 1600000 in
-private theorem bracket_holds_of_eval_quant
-    {sig : MonadicSignature} (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (nf_x_1var : NormalForm sig 0 1)
-    (parent_atoms : AtomKind sig 1 → Bool)
-    (sub_nf : NormalForm sig 1 2)
-    (M : OrderedMonadicStructure sig)
-    (x t : M.carrier) (h_tx : t < x)
-    (h_x_pred : ∀ p : sig.preds, M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true)
-    (h_t_pred : ∀ p : sig.preds, M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true)
-    (h_eval_quant : ∀ ssn : NormalForm sig 0 3,
-      (∃ y, nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) ↔
-      sub_nf.2 ssn = true) :
-    let pos_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
-      ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
-      (ssn_zone_until ssn == .between_tx) &&
-      sub_nf.2 ssn
-    let neg_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
-      ssn_xt_compatible ssn nf_x_1var parent_atoms true false &&
-      (ssn_zone_until ssn == .between_tx) &&
-      !sub_nf.2 ssn
-    let seg_guard : TemporalPred :=
-      ⟨formula_conjList (neg_between.map fun ssn =>
-        (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)⟩
-    let n := pos_between.length
-    let bracket : BracketFormula n :=
-      { pointTypes := fun i =>
-          nfPred atomMap h_surj (nf_y_proj (pos_between[i.val]'(by omega)))
-        segmentTypes := fun _ => seg_guard }
-    bracket.holds M atomMap t x := by
-  intro pos_between neg_between seg_guard n bracket
-  have h_seg : ∀ y : M.carrier, t < y → y < x →
-      seg_guard.eval_at M atomMap y :=
-    fun y h_ty h_yx => seg_guard_holds atomMap h_surj nf_x_1var parent_atoms sub_nf M x t h_tx
-      h_x_pred h_t_pred h_eval_quant y h_ty h_yx
-  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern]
-  sorry
-
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
 
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
@@ -1448,12 +1576,7 @@ private theorem backward_holdsLeft_of_nf_eval
   case bracket =>
     -- bracket.holds t x = interval pattern holds on (t, x)
     -- Positive between_tx ssns need witnesses, negative need segment guards
-    exact bracket_holds_of_eval_quant atomMap h_surj nf_x_1var parent_atoms sub_nf M x t h_t_lt_x
-      (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x; have := h_atom (.pred p ⟨0, by omega⟩)
-                   simp only [atom_eval] at this; exact this)
-      (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
-                   simp only [atom_eval] at this; exact this)
-      h_eval_quant
+    sorry
 
 /-- Forward direction: holdsLeft for the enriched Until VVecEA2 → ∃ x, nf_eval.
     Given holdsLeft (some disjunct is satisfied), extract x and reconstruct nf_eval. -/
