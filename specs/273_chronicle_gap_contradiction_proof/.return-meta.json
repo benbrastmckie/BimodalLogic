@@ -2,34 +2,33 @@
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "session_id": "sess_1781554668_c14eb9",
   "task_number": 273,
+  "session_id": "sess_1781554668_c14eb9",
   "started_at": "2026-06-15T00:00:00Z",
-  "requires_user_review": true,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2205,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "why_deferred": "Encoding flaw: Formula.snce char_y Formula.top at x loses y > t bound for between_tx SSNs"
+      "why_deferred": "Encoding flaw: Since loses y > t bound"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2380,
       "statement": "existPart_succ_n1_bypass_k0_since (forward)",
-      "why_deferred": "Same encoding flaw for Since direction: Formula.untl char_y Formula.top at x loses y < t bound"
+      "why_deferred": "Same encoding flaw, mirrored"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2382,
       "statement": "existPart_succ_n1_bypass_k0_since (backward)",
-      "why_deferred": "Missing zone bridge lemmas for Since direction"
+      "why_deferred": "Missing Since zone bridges"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2535,
-      "statement": "existPart_succ_n1_bypass depth>=2",
-      "why_deferred": "Out of scope (requires depth IH)"
+      "statement": "existPart_succ_n1_bypass depth >= 2",
+      "why_deferred": "Out of scope"
     }
   ],
   "verification": {
@@ -39,9 +38,9 @@
     "build_passed": true
   },
   "memory_candidates": [
-    "The encoding flaw in enriched_vecEA2_until and enriched_bypass_since is shared: positive between-zone SSNs are encoded as unbounded temporal operators (Since or Until) at a single endpoint, which provides one bound but loses the other. Both Until and Since directions are blocked by this same issue.",
-    "BracketFormula.holds_of_unordered_distinct was incorrectly stated: it assumed witnesses could be permuted freely, but BracketFormula requires strictly increasing witnesses matching point types in a specific order. For n >= 2, witnesses for different SSN types are at model-determined positions that cannot be reordered.",
-    "The Since case (existPart_succ_n1_bypass_k0_since) can be structured with by_cases on t_compat and ssn_compat, proving the incompatible cases as Formula.bot contradictions. The ssn_xt_compatible check with false/true (instead of true/false for Until) requires proving order atoms for x < t direction."
-  ],
-  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-4-since-structured-20260615.md"
+    "BracketFormula ordering flaw: IntervalPattern.holds requires strictly increasing witnesses indexed by alpha. For n >= 2, model-dependent witness positions cannot be matched to syntax-determined alpha ordering.",
+    "Temporal encoding limitation: Formula.snce at x gives exists y < x but not y > t. Formula.untl at t gives exists y > t but not y < x. Only BracketFormula.holds (taking both endpoints) correctly bounds witnesses to (t,x).",
+    "Formula.top = bot.imp bot. temporal_truth is (False -> False), not True. Use id not trivial.",
+    "seg_guard universality: for any y in (t,x), the SSN is positive between_tx (negative ruled out by h_eval_quant). Hence seg_guard holds everywhere in (t,x)."
+  ]
 }
