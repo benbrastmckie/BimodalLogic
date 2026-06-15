@@ -1,34 +1,29 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 273,
   "session_id": "sess_1781554668_c14eb9",
-  "started_at": "2026-06-15T00:00:00Z",
+  "phase": 3,
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/.orchestrator-handoff.json",
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2205,
       "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft implies nf_eval via Since-based endpointRight",
-      "why_deferred": "Since gives y < x but not y > t",
-      "next_dispatch": "Phase 3"
+      "why_deferred": "Between_tx encoding loses lower bound t < y"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2362,
       "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since case parallel to Until",
-      "why_deferred": "Phase 4 scope",
-      "next_dispatch": "Phase 4"
+      "why_deferred": "Phase 4 scope"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2450,
       "statement": "existPart_succ_n1_bypass depth >= 2",
-      "assumption": "Requires separate IH",
-      "why_deferred": "Out of scope",
-      "next_dispatch": "Phase 5 or follow-on"
+      "why_deferred": "Phase 5 scope"
     }
   ],
   "verification": {
@@ -38,8 +33,7 @@
     "build_passed": true
   },
   "memory_candidates": [
-    "BracketFormula ordering flaw: IntervalPattern.holds requires strictly increasing witnesses but independent existential witnesses cannot be ordered when n >= 2. Fix: use n=0 bracket (universal seg_guard) and move positive SSN conditions to endpointRight as Since formulas.",
-    "Formula.top = bot.imp bot in this codebase. temporal_truth of Formula.top is (False → False), not True. Use id instead of trivial for guard proofs.",
-    "seg_guard universality: for any y in (t,x), the SSN of (y,x,t) must be positive between_tx (negative SSNs ruled out by h_eval_quant). Hence seg_guard holds everywhere in (t,x)."
+    "Between_tx zone encoding: Formula.snce char_y Formula.top at x loses the lower bound t < y in the forward direction. The correct encoding must use bounded Until at t to guarantee witnesses are in (t, x).",
+    "HEq transport pattern for VecEA2: congrArg Sigma.fst h_eq to get n=0, then eq_of_heq (Sigma.mk.inj h_eq.symm).2 to get vea equality, then subst both."
   ]
 }

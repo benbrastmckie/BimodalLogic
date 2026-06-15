@@ -1,59 +1,73 @@
 {
-  "status": "partial",
-  "summary": "Phase 2 partial: closed bracket sorry in backward_holdsLeft_of_nf_eval by replacing BracketFormula n with BracketFormula.trivial (n=0) and moving positive between_tx conditions to endpointRight as Since formulas. 3 sorries remain (down from 4).",
-  "phases_completed": 1,
+  "status": "blocked",
+  "summary": "Phase 3 forward direction (forward_nf_eval_of_holdsLeft at KampBypass.lean:2205) is unprovable with the current between_tx encoding. The Formula.snce char_y Formula.top at x loses the lower bound t < y. Requires Phase 2-level encoding fix.",
+  "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2205,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft (with Since-based endpointRight) implies nf_eval existence",
-      "why_deferred": "Forward direction: Since at x gives y < x but does not bound y > t. Need additional formula structure or proof technique to derive t < y from context.",
-      "next_dispatch": "Phase 3: close forward_nf_eval_of_holdsLeft. Key challenge: derive t < y from Since witness + surrounding context."
+      "statement": "theorem forward_nf_eval_of_holdsLeft",
+      "assumption": "holdsLeft for enriched VecEA2 implies exists x, nf_eval_nf",
+      "why_deferred": "Between_tx positive SSN encoding uses Formula.snce char_y Formula.top at x which gives y < x but loses t < y. Design flaw in encoding, not a proof difficulty.",
+      "next_dispatch": "Fix enriched_vecEA2_until and enriched_point_type_x_until to use bounded Until encoding for between_tx. Then re-prove both backward and forward directions."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2362,
-      "statement": "existPart_succ_n1_bypass_k0_since",
-      "assumption": "Since direction parallel to Until direction",
-      "why_deferred": "Phase 4 scope — needs bounded-formula fix mirrored from Until",
-      "next_dispatch": "Phase 4: apply bounded-Since fix, close since sorry"
+      "statement": "theorem existPart_succ_n1_bypass_k0_since",
+      "assumption": "Since case of the enriched bypass (x < t direction)",
+      "why_deferred": "Phase 4 scope",
+      "next_dispatch": "Phase 4: fix enriched_bypass_since and close Since sorry"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2450,
       "statement": "existPart_succ_n1_bypass depth >= 2",
-      "assumption": "Depth >= 2 bypass requires separate IH argument",
-      "why_deferred": "Phase 5 / out of scope",
-      "next_dispatch": "Phase 5 or follow-on task"
+      "assumption": "k > 0 case requires separate inductive argument",
+      "why_deferred": "Phase 5 scope",
+      "next_dispatch": "Separate task for k > 0 depth argument"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "phase": 3,
+      "theorem": "forward_nf_eval_of_holdsLeft",
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2205,
+      "description": "Forward direction unprovable with current between_tx encoding. Since at x gives y < x but not t < y. Requires encoding fix in enriched_vecEA2_until (line 484) and enriched_point_type_x_until (line 428).",
+      "proposed_fix": "Change between_tx from Formula.snce char_y Formula.top at x to Formula.untl (char_y.and (Formula.untl (char_1 nf_x) seg_guard_f)) seg_guard_f at t. Bounded Until guarantees y in (t, x) by construction.",
+      "impact": "Requires re-proving backward_holdsLeft_of_nf_eval (between_tx case) and forward_nf_eval_of_holdsLeft entirely. Estimated 200-300 lines of change."
+    }
+  ],
   "continuation_context": {
     "is_successor": false,
-    "phase_completed": "2 (partial — backward sorry closed, forward sorry remains)",
-    "key_decisions": [
-      "Replaced BracketFormula n with BracketFormula.trivial (n=0) in enriched_vecEA2_until",
-      "Positive between_tx SSN conditions moved to endpointRight as Formula.snce char_y Formula.top",
-      "Negative between_tx SSN conditions in n=0 bracket as universal seg_guard",
-      "Bracket proof: contradiction via between_tx_temporal_iff + h_eval_quant for negative SSNs",
-      "Between_tx positive endpointRight case: between_tx_temporal_iff + nf_depth0_char_formula_correct + Formula.snce witness construction",
-      "Forward direction (line 2205) blocked by y > t issue: Since at x gives y < x but not y > t"
-    ],
-    "build_status": "GREEN (KampBypass module, pre-existing CanonicalTaskRelation error unrelated)",
-    "sorry_count": 3,
-    "techniques": {
-      "seg_guard_universality": "For any y in (t,x), the NF of (y,x,t) is positive between_tx (by h_eval_quant contradiction). Hence seg_guard holds everywhere in (t,x).",
-      "between_tx_temporal_iff_reuse": "Bridges (∃y, nf_eval) ↔ (∃y, t<y ∧ y<x ∧ preds_match). Used in bracket and endpointRight proofs.",
-      "formula_top_semantics": "Formula.top = bot.imp bot, temporal_truth is False → False. Use id not trivial."
+    "resume_phase": 3,
+    "encoding_fix_needed": true,
+    "encoding_fix_details": {
+      "files": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"],
+      "definitions_to_change": [
+        "enriched_vecEA2_until (line 444-490): change between_tx case at line 484",
+        "enriched_point_type_x_until (line 407-432): change between_tx case at line 428",
+        "pre_conditions_at_t_until (line 364-383): add between_tx bounded Until formulas"
+      ],
+      "proofs_to_update": [
+        "backward_holdsLeft_of_nf_eval (line 1932-2135): between_tx endpointRight case",
+        "forward_nf_eval_of_holdsLeft (line 2140-2205): entire proof"
+      ],
+      "approach": "Replace Formula.snce char_y Formula.top at x with Formula.untl (char_y.and (Formula.untl (char_1 nf_x) seg_guard_f)) seg_guard_f at t in endpointLeft. The bounded Until encodes seg_guard until (char_y AND (seg_guard until char_1(nf_x))) which guarantees the between_tx witness is in (t, x)."
+    },
+    "proven_techniques": {
+      "heq_transport": "n=0 extraction via congrArg Sigma.fst + eq_of_heq (Sigma.mk.inj h_eq.symm).2 + subst",
+      "atoms_case": "Proved via fin_cases on Fin 2, nf_x_compat_check for x-position, h_t_compat for t-position",
+      "non_between_tx_quant": "eq_x, above_x: via right_conj extraction + bridge lemmas. below_t, eq_t: via endpointLeft extraction + bridge lemmas"
     }
   },
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "type": "implementation",
-      "summary": "Bracket sorry closed, enriched_vecEA2_until rewritten to n=0 bracket with Since-based between_tx"
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/37_bounded-until-fix.md",
+      "type": "plan",
+      "summary": "Plan updated with Phase 3 BLOCKED status and detailed blocker documentation"
     }
   ]
 }
