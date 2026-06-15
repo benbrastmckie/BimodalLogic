@@ -1,46 +1,32 @@
 {
-  "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 273,
-  "session_id": "sess_1781554668_c14eb9",
-  "started_at": "2026-06-15T00:00:00Z",
-  "sorry_inventory": [
+  "status": "planned",
+  "summary": "Created implementation plan v39 for BracketFormula k encoding fix. 5 phases, 9 hours estimated. Integrates Report 38 team research (unanimous BracketFormula k > 0 consensus). Phases: (1) definition rewrite + 3 helper lemmas, (2) backward re-proof with sorting, (3) forward proof (straightforward with bracket witnesses), (4) Since direction fix, (5) chain verification.",
+  "artifacts": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2205,
-      "statement": "forward_nf_eval_of_holdsLeft",
-      "why_deferred": "Encoding flaw: Since loses y > t bound"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2380,
-      "statement": "existPart_succ_n1_bypass_k0_since (forward)",
-      "why_deferred": "Same encoding flaw, mirrored"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2382,
-      "statement": "existPart_succ_n1_bypass_k0_since (backward)",
-      "why_deferred": "Missing Since zone bridges"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2535,
-      "statement": "existPart_succ_n1_bypass depth >= 2",
-      "why_deferred": "Out of scope"
+      "path": "specs/273_chronicle_gap_contradiction_proof/plans/39_bracketformula-k-encoding.md",
+      "type": "plan",
+      "summary": "Implementation plan v39: BracketFormula k encoding fix for KampBypass Until/Since directions"
     }
   ],
-  "verification": {
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
+  "next_steps": "Run /implement 273 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1781567345_b3b221",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 9,
+    "dependency_waves": [[1], [2], [3, 4], [5]],
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 39,
+    "reports_integrated": [
+      {
+        "path": "reports/38_team-research.md",
+        "integrated_in_plan_version": 39,
+        "integrated_date": "2026-06-15"
+      }
+    ]
   },
-  "memory_candidates": [
-    "BracketFormula ordering flaw: IntervalPattern.holds requires strictly increasing witnesses indexed by alpha. For n >= 2, model-dependent witness positions cannot be matched to syntax-determined alpha ordering.",
-    "Temporal encoding limitation: Formula.snce at x gives exists y < x but not y > t. Formula.untl at t gives exists y > t but not y < x. Only BracketFormula.holds (taking both endpoints) correctly bounds witnesses to (t,x).",
-    "Formula.top = bot.imp bot. temporal_truth is (False -> False), not True. Use id not trivial.",
-    "seg_guard universality: for any y in (t,x), the SSN is positive between_tx (negative ruled out by h_eval_quant). Hence seg_guard holds everywhere in (t,x)."
-  ]
+  "memory_candidates": []
 }
