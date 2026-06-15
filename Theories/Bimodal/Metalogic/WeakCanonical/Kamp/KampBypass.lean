@@ -2046,6 +2046,7 @@ private theorem backward_holdsLeft_of_nf_eval
     -- Positive between_tx ssns need witnesses, negative need segment guards
     sorry
 
+set_option maxHeartbeats 1600000 in
 /-- Forward direction: holdsLeft for the enriched Until VVecEA2 → ∃ x, nf_eval.
     Given holdsLeft (some disjunct is satisfied), extract x and reconstruct nf_eval. -/
 private theorem forward_nf_eval_of_holdsLeft
@@ -2067,7 +2068,12 @@ private theorem forward_nf_eval_of_holdsLeft
     (h_UZ : semantic_prior_UZ M atomMap)
     (h_SZ : semantic_prior_SZ M atomMap)
     (t : M.carrier)
-    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) :
+    (h_atoms : ∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true)
+    (h_t_compat : ∀ p : sig.preds, sub_nf.1 (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩))
+    (h_ssn_compat : ∀ ssn : NormalForm sig 0 3, sub_nf.2 ssn = true →
+        ssn_xt_compatible ssn (fun a => match a with
+          | .pred p _ => sub_nf.1 (.pred p ⟨0, by omega⟩)
+          | .order i j h => absurd (Fin.ext (by omega) : i = j) h) parent_atoms true false = true) :
     (∃ vea ∈ (List.filterMap
         (fun nf_x => if nf_x_compat_check sub_nf nf_x = true then
           some (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x
@@ -2101,11 +2107,263 @@ private theorem forward_nf_eval_of_holdsLeft
     obtain ⟨h_endLeft, x, h_t_lt_x, h_endRight, h_bracket⟩ := h_holds
     -- We have x > t with the VecEA2 conditions
     -- Need to reconstruct nf_eval_nf M 1 2 (x, t) sub_nf
+    -- Step 1: Transfer vea to the enriched construction
+    -- h_eq : enriched_vecEA2_until ... = ⟨n, vea⟩
+    -- So vea'.2 = vea after appropriate transport through h_eq
+    have h_snd_heq : HEq vea'.2 vea := by rw [Sigma.ext_iff] at h_eq; exact h_eq.2
+    -- Transfer all hypotheses. Since vea'.2.endpointRight is the enriched construction's
+    -- endpointRight definitionally, we can unfold after transport.
+    have h_vea_eq : vea'.2.endpointRight = vea.endpointRight :=
+      congrArg VecEA2.endpointRight (eq_of_heq h_snd_heq)
+    have h_vea_eq_left : vea'.2.endpointLeft = vea.endpointLeft :=
+      congrArg VecEA2.endpointLeft (eq_of_heq h_snd_heq)
+    have h_vea_eq_bracket : HEq vea'.2.bracket vea.bracket := by
+      have := eq_of_heq h_snd_heq; subst this; rfl
+    rw [← h_vea_eq] at h_endRight
+    rw [← h_vea_eq_left] at h_endLeft
+    -- Now h_endRight is about vea'.2.endpointRight, which is definitionally
+    -- ⟨Formula.and (char_1 nf_x) (formula_conjList ...)⟩
+    simp only [enriched_vecEA2_until, TemporalPred.eval_at] at h_endRight
+    change temporal_truth M atomMap x (Formula.and (char_1 nf_x) (formula_conjList _)) at h_endRight'
+    -- Step 2: Extract char_1(nf_x) and right conjuncts from h_endRight'
+    have h_and : temporal_truth M atomMap x (char_1 nf_x) ∧
+        temporal_truth M atomMap x (formula_conjList _) := by
+      rwa [temporal_truth_and] at h_endRight'
+    have h_char_x := h_and.1
+    have h_right_conj := h_and.2
+    -- Step 3: Get nf_eval for nf_x at x
+    have h_nf_x_eval : nf_eval_nf M 1 1 (fun _ => x) nf_x :=
+      (char_1_correct nf_x M h_UZ h_SZ x).mp h_char_x
+    -- Step 4: Extract predicate conditions
+    have h_x_pred : ∀ p : sig.preds,
+        M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true := by
+      intro p; have ⟨h_atom, _⟩ := h_nf_x_eval
+      have h := h_atom (.pred p ⟨0, by omega⟩); unfold atom_eval at h; exact h
+    have h_t_pred : ∀ p : sig.preds,
+        M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+      intro p; have h := h_atoms (.pred p ⟨0, by omega⟩)
+      simp only [atom_eval] at h; exact h
+    -- Step 5: Transfer h_endLeft from vea to enriched construction via h_eq
+    have h_endLeft' : TemporalPred.eval_at M atomMap
+        (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x nf_x_1var parent_atoms).2.endpointLeft t := by
+      convert h_endLeft using 2
+      · exact congrArg Sigma.fst h_eq.symm
+      · exact (Sigma.mk.inj_iff.mp h_eq.symm).2 |> eq_of_heq |> congrArg VecEA2.endpointLeft
+    change temporal_truth M atomMap t
+      (pre_conditions_at_t_until atomMap h_surj sub_nf nf_x_1var parent_atoms) at h_endLeft'
+    -- h_endLeft' : pre_conditions_at_t_until holds at t
+    -- Step 6: Transfer h_bracket from vea to enriched construction via h_eq
+    have h_bracket' : BracketFormula.holds M atomMap
+        (enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x nf_x_1var parent_atoms).2.bracket t x := by
+      convert h_bracket using 2
+      · exact congrArg Sigma.fst h_eq.symm
+      · exact (Sigma.mk.inj_iff.mp h_eq.symm).2 |> eq_of_heq |> congrArg VecEA2.bracket
+    -- Step 7: Convert h_ssn_compat to use nf_x_1var instead of ref
+    -- Since h_compat : nf_x_compat_check sub_nf nf_x = true, we have
+    -- nf_x.1 (.pred p 0) = sub_nf.1 (.pred p 0) for all p.
+    -- So nf_x_1var (.pred p 0) = sub_nf.1 (.pred p 0) = ref_nf_x_1var (.pred p 0).
+    have h_nfx_ref : ∀ ssn : NormalForm sig 0 3,
+        ssn_xt_compatible ssn (fun a => match a with
+          | .pred p _ => sub_nf.1 (.pred p ⟨0, by omega⟩)
+          | .order i j h => absurd (Fin.ext (by omega) : i = j) h) parent_atoms true false =
+        ssn_xt_compatible ssn nf_x_1var parent_atoms true false := by
+      intro ssn; congr 1; ext a; match a with
+      | .pred p _ =>
+        simp only [nf_x_compat_check, List.all_eq_true, beq_iff_eq] at h_compat
+        exact (h_compat p (Multiset.mem_toList.mpr (Fintype.complete p))).symm
+      | .order i j h => rfl
+    have h_ssn_compat' : ∀ ssn : NormalForm sig 0 3, sub_nf.2 ssn = true →
+        ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true := by
+      intro ssn h_pos; rw [← h_nfx_ref]; exact h_ssn_compat ssn h_pos
+    -- Step 8: Build nf_eval_nf
     refine ⟨x, ?_⟩
-    sorry
+    constructor
+    · -- Atom part: ∀ a, atom_eval M (Fin.cons x (fun _ => t)) a ↔ sub_nf.1 a = true
+      intro a
+      match a with
+      | .pred p ⟨0, _⟩ =>
+        -- Variable 0 = x: use h_x_pred + h_compat
+        unfold atom_eval
+        have h_match : sub_nf.1 (.pred p ⟨0, by omega⟩) = nf_x_1var (.pred p ⟨0, by omega⟩) := by
+          simp only [nf_x_compat_check, List.all_eq_true, beq_iff_eq] at h_compat
+          exact (h_compat p (Multiset.mem_toList.mpr (Fintype.complete p))).symm
+        rw [h_match]; exact h_x_pred p
+      | .pred p ⟨1, _⟩ =>
+        -- Variable 1 = t: use h_t_pred + h_t_compat
+        unfold atom_eval
+        rw [h_t_compat p]; exact h_t_pred p
+      | .order ⟨0, _⟩ ⟨1, _⟩ _ =>
+        -- x < t: false (we have t < x)
+        unfold atom_eval
+        constructor
+        · intro h_x_lt_t; exact absurd (lt_trans h_t_lt_x h_x_lt_t) (lt_irrefl _)
+        · intro h; rw [h_lt] at h; exact absurd h (by decide)
+      | .order ⟨1, _⟩ ⟨0, _⟩ _ =>
+        -- t < x: true
+        unfold atom_eval
+        constructor
+        · intro _; exact h_gt
+        · intro _; exact h_t_lt_x
+    · -- Quant part: ∀ ssn, (∃ y, nf_eval M 0 3 (y,x,t) ssn) ↔ sub_nf.2 ssn = true
+      intro ssn
+      by_cases h_ssn_xt : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true
+      · -- Compatible ssn: use zone bridges
+        rcases h_zone : ssn_zone_until ssn with _ | _ | _ | _ | _ | _
+        · -- below_t: from h_endLeft' (pre_conditions_at_t_until)
+          -- below_t_temporal_iff gives: temporal_truth ↔ ∃ y, nf_eval
+          have h_bridge := below_t_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms
+            x t h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
+          constructor
+          · intro h_exist; by_contra h_neg
+            -- If sub_nf.2 ssn = false, then the pre_conditions_at_t_until should encode ¬temporal
+            -- But h_bridge.mpr h_exist gives temporal, and from h_endLeft' we have the conjuncts
+            -- This case: ∃ y exists → sub_nf.2 ssn = true. By contrapositive of zone bridge:
+            -- If ¬(sub_nf.2 ssn = true) then ¬∃ y. But ∃ y. Contradiction... no, this is the wrong direction.
+            -- Actually: we need (∃ y) → sub_nf.2 ssn = true.
+            -- Use the formula encoding: pre_conditions_at_t_until contains both positive and negative encodings.
+            -- If sub_nf.2 ssn = false, then the formula contains ¬temporal. But h_bridge.mpr h_exist gives temporal.
+            -- And h_endLeft' ensures the ¬temporal conjunct holds, contradiction.
+            push_neg at h_neg
+            have h_false := Bool.eq_false_iff.mpr h_neg
+            -- From h_endLeft' (conjList), extract the negative formula for this ssn
+            rw [pre_conditions_at_t_until, formula_conjList_iff] at h_endLeft'
+            have h_neg_form : (Formula.snce (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) Formula.top).neg ∈
+                List.filterMap _ Fintype.elems.val.toList := by
+              rw [List.mem_filterMap]
+              exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                simp only [h_ssn_xt, h_zone, h_false, ite_true, ite_false]⟩
+            have h_neg_holds := h_endLeft' _ h_neg_form
+            simp only [Formula.neg, temporal_truth] at h_neg_holds
+            exact h_neg_holds (h_bridge.mpr h_exist)
+          · intro h_pos; exact h_bridge.mp (by
+              rw [pre_conditions_at_t_until, formula_conjList_iff] at h_endLeft'
+              have h_pos_form : Formula.snce (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) Formula.top ∈
+                  List.filterMap _ Fintype.elems.val.toList := by
+                rw [List.mem_filterMap]
+                exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                  simp only [h_ssn_xt, h_zone, h_pos, ite_true]⟩
+              exact h_endLeft' _ h_pos_form)
+        · -- eq_t: from h_endLeft' (pre_conditions_at_t_until)
+          have h_bridge := eq_t_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms
+            x t h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
+          constructor
+          · intro h_exist; by_contra h_neg
+            push_neg at h_neg
+            have h_false := Bool.eq_false_iff.mpr h_neg
+            rw [pre_conditions_at_t_until, formula_conjList_iff] at h_endLeft'
+            have h_neg_form : (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg ∈
+                List.filterMap _ Fintype.elems.val.toList := by
+              rw [List.mem_filterMap]
+              exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                simp only [h_ssn_xt, h_zone, h_false, ite_true, ite_false]⟩
+            have h_neg_holds := h_endLeft' _ h_neg_form
+            simp only [Formula.neg, temporal_truth] at h_neg_holds
+            exact h_neg_holds (h_bridge.mpr h_exist)
+          · intro h_pos; exact h_bridge.mp (by
+              rw [pre_conditions_at_t_until, formula_conjList_iff] at h_endLeft'
+              have h_pos_form : nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn) ∈
+                  List.filterMap _ Fintype.elems.val.toList := by
+                rw [List.mem_filterMap]
+                exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                  simp only [h_ssn_xt, h_zone, h_pos, ite_true]⟩
+              exact h_endLeft' _ h_pos_form)
+        · -- between_tx: from h_bracket' (BracketFormula.holds)
+          have h_bridge := between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms
+            x t h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
+          sorry -- bracket case: requires BracketFormula decomposition (BLOCKED by L2047)
+        · -- eq_x: from h_right_conj (endpointRight conjuncts)
+          have h_bridge := eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms
+            x t h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
+          constructor
+          · intro h_exist; by_contra h_neg
+            push_neg at h_neg
+            have h_false := Bool.eq_false_iff.mpr h_neg
+            rw [formula_conjList_iff] at h_right_conj
+            have h_neg_form : (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg ∈
+                List.filterMap _ Fintype.elems.val.toList := by
+              rw [List.mem_filterMap]
+              exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                simp only [h_ssn_xt, h_zone, h_false, ite_true, ite_false]⟩
+            have h_neg_holds := h_right_conj _ h_neg_form
+            simp only [Formula.neg, temporal_truth] at h_neg_holds
+            exact h_neg_holds (h_bridge.mpr h_exist)
+          · intro h_pos; exact h_bridge.mp (by
+              rw [formula_conjList_iff] at h_right_conj
+              have h_pos_form : nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn) ∈
+                  List.filterMap _ Fintype.elems.val.toList := by
+                rw [List.mem_filterMap]
+                exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                  simp only [h_ssn_xt, h_zone, h_pos, ite_true]⟩
+              exact h_right_conj _ h_pos_form)
+        · -- above_x: from h_right_conj (endpointRight conjuncts)
+          have h_bridge := above_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms
+            x t h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
+          constructor
+          · intro h_exist; by_contra h_neg
+            push_neg at h_neg
+            have h_false := Bool.eq_false_iff.mpr h_neg
+            rw [formula_conjList_iff] at h_right_conj
+            have h_neg_form : (Formula.untl (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) Formula.top).neg ∈
+                List.filterMap _ Fintype.elems.val.toList := by
+              rw [List.mem_filterMap]
+              exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                simp only [h_ssn_xt, h_zone, h_false, ite_true, ite_false]⟩
+            have h_neg_holds := h_right_conj _ h_neg_form
+            simp only [Formula.neg, temporal_truth] at h_neg_holds
+            exact h_neg_holds (h_bridge.mpr h_exist)
+          · intro h_pos; exact h_bridge.mp (by
+              rw [formula_conjList_iff] at h_right_conj
+              have h_pos_form : Formula.untl (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)) Formula.top ∈
+                  List.filterMap _ Fintype.elems.val.toList := by
+                rw [List.mem_filterMap]
+                exact ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), by
+                  simp only [h_ssn_xt, h_zone, h_pos, ite_true]⟩
+              exact h_right_conj _ h_pos_form)
+        · -- inconsistent zone: unreachable for xt-compatible ssn
+          -- ssn_xt_compatible requires ssn_order_consistent, which prevents inconsistent zones
+          exfalso
+          simp only [ssn_xt_compatible, Bool.and_eq_true] at h_ssn_xt
+          have h_consist := h_ssn_xt.2  -- ssn_order_consistent ssn = true
+          simp only [ssn_zone_until] at h_zone
+          -- h_zone says the zone is inconsistent; h_consist says orders are consistent
+          -- These contradict. Extract the specific order conditions.
+          simp only [ssn_order_consistent, Bool.and_eq_true, Bool.not_eq_true', Bool.or_eq_true,
+            beq_iff_eq] at h_consist
+          split_ifs at h_zone with h1 h2 h3 h4 h5 h6 h7 h8 <;> simp_all
+      · -- Incompatible ssn: ∃ y is false and sub_nf.2 ssn = false
+        constructor
+        · -- ∃ y, nf_eval → sub_nf.2 ssn = true
+          intro ⟨y, h_ssn_eval⟩
+          exfalso
+          -- From h_ssn_eval, derive xt-compatibility (same as the ¬ssn_compat case)
+          have h_xt_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true := by
+            simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true]
+            refine ⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+            · intro p _
+              have h := h_ssn_eval (.pred p ⟨1, by omega⟩); unfold atom_eval at h
+              cases hsub : nf_x_1var (.pred p ⟨0, by omega⟩) <;>
+              cases hssn : ssn (.pred p ⟨1, by omega⟩) <;> simp_all
+            · intro p _
+              have h := h_ssn_eval (.pred p ⟨2, by omega⟩); unfold atom_eval at h
+              cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+              cases hssn : ssn (.pred p ⟨2, by omega⟩) <;> simp_all
+            · have h := h_ssn_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
+              unfold atom_eval at h; exact h.mp h_t_lt_x
+            · have h := h_ssn_eval (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+              unfold atom_eval at h
+              cases hssn : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+              · rfl
+              · exact absurd (h.mpr rfl) (not_lt_of_lt h_t_lt_x)
+            · exact ssn_order_consistent_of_eval ssn h_ssn_eval
+          exact absurd h_xt_compat h_ssn_xt
+        · -- sub_nf.2 ssn = true → ∃ y, nf_eval
+          intro h_pos
+          -- h_ssn_compat' says positive ssn are compatible, but h_ssn_xt says this one isn't
+          exact absurd (h_ssn_compat' ssn h_pos) h_ssn_xt
 
 /-! ## Until Case (t < x) -/
 
+set_option maxHeartbeats 1600000 in
 /-- Until case of the enriched bypass: when sub_nf says t < x. -/
 private theorem existPart_succ_n1_bypass_k0_until
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
@@ -2130,63 +2388,108 @@ private theorem existPart_succ_n1_bypass_k0_until
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M 1 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) := by
-  -- Strategy: use the enriched_bypass_until VVecEA2 construction.
-  -- The formula is vvec.translateLeft. By VVecEA2.translateLeft_correct,
-  -- temporal_truth ↔ holdsLeft. We then show holdsLeft ↔ ∃ x > t, nf_eval.
-  --
-  -- However, proving the semantic equivalence between holdsLeft and the
-  -- existential directly is very complex (400+ lines). Instead, we use a
-  -- classical existence argument that constructs the formula from components.
-  --
-  -- For each ssn : NormalForm sig 0 3, the depth-0 3-var existential
-  -- ∃ y, nf_eval_nf M 0 3 [y,x,t] ssn has a temporal formula equivalent
-  -- to a VecEA2 condition on (t, x) (zone theorems from VecEADecomp.lean).
-  -- For the full Until existential:
-  --   ∃ x > t, (atom conditions at x,t) ∧ (∀ ssn, quant condition)
-  -- we combine char_1(nf_x) at x with these zone-based formulas.
-  --
-  -- The formula is: disjunction over compatible nf_x of
-  --   Until(char_1(nf_x) ∧ positive_quant_profile(nf_x), guard)
-  -- where guard handles negative between_tx conditions.
-  -- positive_quant_profile handles y=x, y>x, and positive t<y<x via Since.
-  -- Pre-conditions at t handle y<t (Since) and y=t (direct).
-  --
-  -- Use the VVecEA2 translateLeft for the formula construction.
-  let vvec := enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms
-  -- The formula is vvec (which is already a Formula via .translateLeft in enriched_bypass_until)
-  -- enriched_bypass_until returns vvec.translateLeft where vvec is a VVecEA2
-  -- Actually, enriched_bypass_until returns a Formula directly (it's the result of vvec.translateLeft)
-  exact ⟨vvec, fun M h_UZ h_SZ t h_atoms => by
-    -- vvec = enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms
-    -- This is defined as translateLeft of a VVecEA2.
-    -- By VVecEA2.translateLeft_correct: temporal_truth ↔ holdsLeft.
-    -- holdsLeft = ∃ (n, vea) ∈ disjuncts, vea.holdsLeft M atomMap t
-    -- vea.holdsLeft = endpointLeft.eval_at t ∧ ∃ x > t, endpointRight.eval_at x ∧ bracket.holds t x
-    --
-    -- Key correspondence:
-    -- Forward (holdsLeft → ∃ x, nf_eval):
-    --   From holdsLeft, get x > t with endpointRight (char_1(nf_x) ∧ conditions) and bracket.
-    --   Reconstruct nf_eval from the characteristic + zone conditions.
-    --
-    -- Backward (∃ x, nf_eval → holdsLeft):
-    --   Given x > t with nf_eval, determine nf_x = nf_characteristic M 1 1 [x].
-    --   Show nf_x is compatible (nf_x_compat_check), find the right disjunct.
-    --   Show endpointLeft (pre-conditions at t) and endpointRight (enriched at x).
-    --   For bracket: positive between_tx ssns have witnesses between t and x by nf_eval.
-    --
-    -- This proof is deferred to a subsequent dispatch focused on the Until-case
-    -- semantic equivalence between VecEA2.holdsLeft and nf_eval_nf.
-    show temporal_truth M atomMap t (enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms) ↔ _
-    simp only [enriched_bypass_until]
-    rw [VVecEA2.translateLeft_correct]
-    simp only [VVecEA2.holdsLeft]
+  -- Syntactic compatibility checks for sub_nf.
+  -- 1. t-predicate compatibility: sub_nf.1 (.pred p 1) = parent_atoms (.pred p 0)
+  -- 2. ssn compatibility: all positive ssn match the canonical reference nf_x_1var
+  -- Use a canonical reference nf_x_1var built from sub_nf.1 (same for all compatible nf_x):
+  let ref_nf_x_1var : NormalForm sig 0 1 := fun a => match a with
+    | .pred p _ => sub_nf.1 (.pred p ⟨0, by omega⟩)
+    | .order i j h => absurd (Fin.ext (by omega) : i = j) h
+  by_cases h_t_compat : ∀ p : sig.preds,
+      sub_nf.1 (.pred p ⟨1, by omega⟩) = parent_atoms (.pred p ⟨0, by omega⟩)
+  · by_cases h_ssn_compat : ∀ ssn : NormalForm sig 0 3,
+        sub_nf.2 ssn = true →
+        ssn_xt_compatible ssn ref_nf_x_1var parent_atoms true false = true
+    · -- Both checks pass: use enriched_bypass_until with full biconditional
+      let vvec := enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms
+      exact ⟨vvec, fun M h_UZ h_SZ t h_atoms => by
+        show temporal_truth M atomMap t (enriched_bypass_until atomMap h_surj char_1 sub_nf parent_atoms) ↔ _
+        simp only [enriched_bypass_until]
+        rw [VVecEA2.translateLeft_correct]
+        simp only [VVecEA2.holdsLeft]
+        constructor
+        · -- Forward: holdsLeft → ∃ x, nf_eval
+          exact forward_nf_eval_of_holdsLeft atomMap h_surj char_1 char_1_correct
+            parent_atoms sub_nf h_gt h_lt M h_UZ h_SZ t h_atoms h_t_compat h_ssn_compat
+        · -- Backward: ∃ x, nf_eval → holdsLeft
+          exact backward_holdsLeft_of_nf_eval atomMap h_surj char_1 char_1_correct
+            parent_atoms sub_nf h_gt h_lt M h_UZ h_SZ t h_atoms⟩
+    · -- ¬ssn_compat: some positive ssn is xt-incompatible → existential unsatisfiable
+      push_neg at h_ssn_compat
+      obtain ⟨ssn_bad, h_pos_bad, h_incompat_bad⟩ := h_ssn_compat
+      refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
+      simp only [temporal_truth]
+      constructor
+      · exact fun h => absurd h id
+      · intro ⟨x, h_eval⟩
+        obtain ⟨h_atom, h_quant⟩ := h_eval
+        -- sub_nf.2 ssn_bad = true → ∃ y, nf_eval_nf M 0 3 (y,x,t₀) ssn_bad
+        have ⟨y, h_ssn_eval⟩ := (h_quant ssn_bad).mpr h_pos_bad
+        -- From h_ssn_eval + h_atom + h_atoms, derive ssn_xt_compatible
+        -- But h_incompat_bad says it's NOT compatible → contradiction
+        -- The key: ref_nf_x_1var (.pred p 0) = sub_nf.1 (.pred p 0)
+        -- And h_atom says atom_eval M (Fin.cons x (fun _ => t₀)) (.pred p 0) ↔ sub_nf.1 (.pred p 0) = true
+        -- So M.interp p x ↔ ref_nf_x_1var (.pred p 0) = true
+        -- Similarly for t's atoms. So ssn_bad must be xt-compatible with ref_nf_x_1var.
+        have h_x_pred : ∀ p : sig.preds,
+            M.interp p x ↔ ref_nf_x_1var (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_atom (.pred p ⟨0, by omega⟩); unfold atom_eval at h; exact h
+        have h_t_pred : ∀ p : sig.preds,
+            M.interp p t₀ ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+          intro p; have h := h_atoms (.pred p ⟨0, by omega⟩); simp only [atom_eval] at h; exact h
+        have h_t_lt_x : t₀ < x := by
+          have h := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+          unfold atom_eval at h; exact h.mpr h_gt
+        -- From h_ssn_eval, ssn_bad's atoms at indices 1,2 must match x and t₀
+        -- and its orders must be consistent. This forces ssn_xt_compatible = true.
+        -- Derive contradiction with h_incompat_bad.
+        have h_xt_compat : ssn_xt_compatible ssn_bad ref_nf_x_1var parent_atoms true false = true := by
+          simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true]
+          refine ⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+          · -- x-preds: ssn_bad (.pred p 1) = ref_nf_x_1var (.pred p 0) = sub_nf.1 (.pred p 0)
+            intro p _
+            have h1 := h_ssn_eval (.pred p ⟨1, by omega⟩); unfold atom_eval at h1
+            -- h1 : M.interp p x ↔ ssn_bad (.pred p 1) = true
+            -- h_x_pred p : M.interp p x ↔ ref_nf_x_1var (.pred p 0) = true
+            -- ref_nf_x_1var (.pred p 0) = sub_nf.1 (.pred p 0) by definition
+            cases hsub : (ref_nf_x_1var (.pred p ⟨0, by omega⟩) : Bool) <;>
+            cases hssn : ssn_bad (.pred p ⟨1, by omega⟩) <;>
+            simp_all
+          · -- t-preds: ssn_bad (.pred p 2) = parent_atoms (.pred p 0)
+            intro p _
+            have h1 := h_ssn_eval (.pred p ⟨2, by omega⟩); unfold atom_eval at h1
+            -- h1 : M.interp p t₀ ↔ ssn_bad (.pred p 2) = true
+            have h2 := h_atoms (.pred p ⟨0, by omega⟩); simp only [atom_eval] at h2
+            -- h2 : M.interp p t₀ ↔ parent_atoms (.pred p 0) = true
+            cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+            cases hssn : ssn_bad (.pred p ⟨2, by omega⟩) <;>
+            simp_all [hpar, hssn]
+          · -- t < x order: ssn_bad (.order ⟨2,_⟩ ⟨1,_⟩ _) = true
+            have h := h_ssn_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
+            unfold atom_eval at h; exact h.mp h_t_lt_x
+          · -- ¬(x < t) order: ssn_bad (.order ⟨1,_⟩ ⟨2,_⟩ _) = false
+            have h := h_ssn_eval (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+            unfold atom_eval at h
+            cases hssn : ssn_bad (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+            · rfl
+            · exact absurd (h.mpr hssn) (not_lt_of_gt h_t_lt_x)
+          · exact ssn_order_consistent_of_eval ssn_bad h_ssn_eval
+        exact absurd h_xt_compat h_incompat_bad
+  · -- ¬t_compat: existential impossible (atom at index 1 can't match)
+    refine ⟨Formula.bot, fun M _ _ t₀ h_atoms => ?_⟩
+    simp only [temporal_truth]
     constructor
-    · -- Forward: holdsLeft → ∃ x, nf_eval
-      exact forward_nf_eval_of_holdsLeft atomMap h_surj char_1 char_1_correct
-        parent_atoms sub_nf h_gt h_lt M h_UZ h_SZ t h_atoms
-    · -- Backward: ∃ x, nf_eval → holdsLeft
-      exact backward_holdsLeft_of_nf_eval atomMap h_surj char_1 char_1_correct
-        parent_atoms sub_nf h_gt h_lt M h_UZ h_SZ t h_atoms⟩
+    · exact fun h => absurd h id
+    · intro ⟨x, h_eval⟩
+      push_neg at h_t_compat; obtain ⟨p, hp⟩ := h_t_compat
+      obtain ⟨h_atom, _⟩ := h_eval
+      have h_sub : M.interp p t₀ ↔ sub_nf.1 (.pred p ⟨1, by omega⟩) = true := by
+        have h := h_atom (.pred p ⟨1, by omega⟩); unfold atom_eval at h; exact h
+      have h_par := (h_atoms (.pred p ⟨0, by omega⟩))
+      simp only [atom_eval] at h_par
+      cases hsub : sub_nf.1 (.pred p ⟨1, by omega⟩) <;>
+      cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+      simp_all
 
 /-! ## Since Case (x < t) -/
 
