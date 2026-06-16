@@ -1,16 +1,16 @@
 {
-  "status": "blocked",
-  "summary": "Phase 3 BLOCKED: encoding flaw in enriched_vecEA2_until definition. Shared pos_pt bracket makes forward direction unprovable for between_tx positive zone when k > 1. Definition change required before forward proof can proceed.",
+  "status": "partial",
+  "summary": "Phases 1-2 complete (BracketFormula k definition + backward proof). Phase 3 blocked by stale theorem signatures, NOT encoding flaw. Research (cycle 5) found: per-permutation encoding at L494 IS correct — enriched_vecEA2_until returns List (Σ n, VecEA2 n), one per permutation σ. Forward/backward proofs have signatures for single VecEA2, need update to match List/flatMap structure. Plan revision needed.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2385,
-      "statement": "theorem forward_nf_eval_of_holdsLeft",
+      "statement": "forward_nf_eval_of_holdsLeft",
       "assumption": "holdsLeft → ∃ x, nf_eval_nf",
-      "why_deferred": "ENCODING FLAW: shared pos_pt bracket with constant disjunction pointType doesn't enforce per-SSN witness coverage. Forward direction between_tx positive case requires pigeonhole on bracket witnesses, but pigeonhole fails when two witnesses can satisfy the same disjunct.",
-      "next_dispatch": "Fix enriched_vecEA2_until: add per-SSN Since(char_y(ssn_i), seg_guard) to endpointRight right_conjuncts for positive between_tx SSNs. This provides ∃ y < x with char_y(ssn_i) AND seg_guard between y and x. Then re-prove backward (Phase 2 — seg_guard_on_interval gives Since condition) and forward (Phase 3 — Since gives witness, bracket bounds give t < y)."
+      "why_deferred": "Theorem signature stale: written for single VecEA2 return, but enriched_vecEA2_until now returns List (Σ n, VecEA2 n) per permutation. Forward proof is straightforward once signature matches flatMap structure — each permutation's VecEA2 gives per-SSN witnesses directly.",
+      "next_dispatch": "Update theorem signature to match flatMap disjuncts. Proof: extract specific permutation's VecEA2, use per-position pointTypes to get per-SSN witnesses."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
@@ -37,17 +37,20 @@
       "next_dispatch": "Separate task"
     }
   ],
-  "blockers": [
-    "ENCODING FLAW at enriched_vecEA2_until (L445-502): Shared pos_pt constant pointType in BracketFormula makes forward_nf_eval_of_holdsLeft (L2385) unprovable for between_tx positive zone. Counterexample: model with all points in (t,x) having identical predicates — k bracket witnesses all match one SSN, other positive SSNs have no witness. Fix: add per-SSN Since(char_y(ssn_i), seg_guard) conjuncts to endpointRight (L486-499). This requires re-proving backward direction (Phase 2) but the proof follows from seg_guard_on_interval already established at L2168."
-  ],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-blocked-handoff.md",
+  "blockers": [],
   "continuation_context": {
     "is_successor": false,
     "current_phase": 3,
-    "encoding_fix_needed": true,
-    "fix_location": "enriched_vecEA2_until definition, L445-502",
-    "fix_description": "Add per-SSN Since(char_y(ssn_i), seg_guard) to right_conjuncts for each positive between_tx SSN. Keep bracket for structural spacing. Remove bracket if not needed after adding Since conditions.",
-    "backward_proof_impact": "backward_holdsLeft_of_nf_eval (L2008-2318) must be re-proved. The endRight case gains new conjuncts for positive between_tx SSNs. These follow from: (1) seg_guard_on_interval (L2168) giving seg_guard between witness y_i and x, and (2) nf_depth0_char_formula_correct giving char_y(ssn_i) at y_i.",
-    "atoms_proof_verified": "Atom part of forward proof (all 6 AtomKind variants) was verified working before blocking on quantifier between_tx case. Can be reused."
+    "encoding_is_correct": true,
+    "root_cause": "Stale theorem signatures — backward_holdsLeft_of_nf_eval (L2005) and forward_nf_eval_of_holdsLeft (L2319) have types for single VecEA2 return but enriched_vecEA2_until now returns List (Σ n, VecEA2 n) per permutation. Also backward proof body at L2196 applies .snd to List — type-incorrect.",
+    "fix_steps": [
+      "1. Update backward_holdsLeft_of_nf_eval: conclusion type to match flatMap structure (∃ vea ∈ flatMap disjuncts). Proof: get sorted witnesses, identify model-dependent permutation σ, show σ's VecEA2 is in disjuncts via List.mem_flatMap.",
+      "2. Update forward_nf_eval_of_holdsLeft: conclusion type mirrors backward. Proof: extract permutation σ's VecEA2 from disjunct membership, bracket witnesses w(i) satisfy pointTypes(i) = char_y(pos_between[σ(i)]), giving per-SSN witnesses directly.",
+      "3. New helper bracket_from_permuted_witnesses replacing bracket_from_distinct_witnesses — handles per-position pointTypes instead of constant.",
+      "4. Since direction (Phase 4): analogous per-permutation fix."
+    ],
+    "build_status": "GREEN",
+    "total_dispatches": 5,
+    "key_code_reference": "enriched_vecEA2_until L494: (Fintype.elems (α := Equiv.Perm (Fin k))).val.toList.map fun σ => ..."
   }
 }

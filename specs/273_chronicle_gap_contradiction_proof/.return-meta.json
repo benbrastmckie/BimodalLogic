@@ -1,54 +1,7 @@
 {
   "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 273,
-  "session_id": "sess_1781568072_5ba6d8",
-  "started_at": "2026-06-15T00:00:00Z",
-  "requires_user_review": true,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2385,
-      "statement": "theorem forward_nf_eval_of_holdsLeft",
-      "assumption": "holdsLeft for enriched VecEA2 → ∃ x, nf_eval_nf",
-      "why_deferred": "ENCODING FLAW: shared pos_pt bracket doesn't distinguish per-SSN witnesses in between_tx zone. Forward direction unprovable with current definition.",
-      "next_dispatch": "Fix enriched_vecEA2_until definition: add per-SSN Since(char_y, seg_guard) conjuncts to endpointRight, then re-prove both backward and forward directions"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2560,
-      "statement": "existPart_succ_n1_bypass_k0_since forward",
-      "assumption": "Since direction forward proof",
-      "why_deferred": "Phase 4 scope, depends on Phase 3 completion",
-      "next_dispatch": "Phase 4: Since direction fix"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2562,
-      "statement": "existPart_succ_n1_bypass_k0_since backward",
-      "assumption": "Since direction backward proof",
-      "why_deferred": "Phase 4 scope, depends on Phase 3 completion",
-      "next_dispatch": "Phase 4: Since direction fix"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2715,
-      "statement": "existPart_succ_n1_bypass k>0",
-      "assumption": "k>0 case of existPart bypass",
-      "why_deferred": "Non-goal for this plan (quarantined)",
-      "next_dispatch": "Separate depth induction task"
-    }
-  ],
-  "verification": {
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "memory_candidates": [
-    "BracketFormula with shared pos_pt (constant disjunction pointType) is strictly weaker than per-SSN pointTypes. IntervalPattern.holds with constant pointType only requires each witness to satisfy SOME disjunct, not a specific one. This breaks the forward direction when k > 1. Counter-example: model where all points in interval have identical predicates — k witnesses all match the same SSN. Fix: add explicit per-SSN existence conditions alongside bracket.",
-    "bracket_seg_holds_in_open_interval: useful helper for extracting segment type conditions from a bracket formula at a specific point. Proved via witness-avoidance chain argument (point in interval must be in some open segment between witnesses).",
-    "Lean 4 proof of nf_eval_nf atom part for enriched_vecEA2_until forward direction: match on AtomKind (pred p ⟨0,_⟩ uses h_compat + h_x_pred, pred p ⟨1,_⟩ uses h_t_compat + h_t_pred, order atoms use h_gt/h_lt/h_t_lt_x). This part is straightforward and doesn't depend on the bracket encoding."
-  ]
+  "metadata": {
+    "cycles_used": 5,
+    "final_state": "implementing"
+  }
 }
