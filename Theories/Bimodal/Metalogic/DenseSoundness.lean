@@ -24,7 +24,6 @@ by the `h.minFrameClass ≤ FrameClass.Dense` constraint.
 ## References
 
 - Research-013 Section 3.2: DN soundness for dense frames
-- Research-016: Irreflexive semantics feasibility
 -/
 
 namespace Bimodal.Metalogic.DenseSoundness

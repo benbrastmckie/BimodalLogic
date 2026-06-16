@@ -1246,39 +1246,12 @@ theorem countermodel_discrete_reynolds
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
-/-! ## DEPRECATED: BX Pipeline Dead Code (tasks 225, 268)
+/-! ## countermodel_discrete — DEPRECATED (sorry)
 
-The theorem `countermodel_discrete` below uses the **dead BX pipeline** path
-through `dd_countermodel_chronicle_discrete` which carries the `succ_cofinal`
-sorry (proven unprovable via the Z+Z counterexample to `no_gaps_faithful`).
-
-This theorem is retained ONLY for the general `completeness` theorem (not
-`completeness_discrete`). The discrete completeness theorem
-`completeness_discrete` uses `countermodel_discrete_reynolds` instead, which
-uses the parametric canonical model construction.
-
-**Do NOT attempt to fix the sorry in this theorem.** The correct path is
-`countermodel_discrete_reynolds` (task 155).
-
--- ARCHIVED: BX pipeline dead code, see task 268
--/
-
-/-! ## Main Theorem: countermodel_discrete -/
-
-/--
-Doets/Reynolds discrete countermodel construction.
-
-For any MCS A containing ¬φ and □(next_top) (discrete box-class),
-there exists a countermodel on Int where φ is false.
-
-Delegates to `dd_countermodel_chronicle_discrete` which uses the
-parametric canonical model construction directly.
-
-**DEPRECATED** (task 225): This uses the dead BX pipeline path.
-See `countermodel_discrete_reynolds` for the active path (task 155).
-
-**Sorry chain**: dd_countermodel_chronicle_discrete → succ_embed_surjective →
-limitDomSubtype_isSuccArchimedean → succ_cofinal (sorry).
+Uses the dead BX pipeline path. Retained only for the general `completeness`
+theorem. The discrete completeness theorem uses `countermodel_discrete_reynolds`
+(Reynolds pipeline) instead. Do not attempt to fix the sorry — the BX pipeline's
+`succ_cofinal` sorry is provably unfixable (Z+Z counterexample).
 -/
 theorem countermodel_discrete (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := FrameClass.Base) A)
     (φ : Formula) (h_neg_in : φ.neg ∈ A)

@@ -40,7 +40,7 @@ Note: temp_k_dist and temp_4 are now derived theorems (see TemporalDerived.lean,
 ### Key Properties
 
 - All BX axioms are sound on all linear temporal orders (no frame conditions needed)
-- The density axiom (GGφ → Gφ) is derivable from BX1 under reflexive G
+- The density axiom (GGφ → Gφ) is derivable from seriality (BX1 = serial_future)
 - Discrete axioms (X/Y-based) are separate extension points, not included here
 - BX5 + BX6 resolve Until-eventualities axiomatically (no forward_F needed)
 - BX7 ensures linearity of temporal witnesses

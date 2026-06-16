@@ -32,6 +32,7 @@ The Boneyard serves three roles:
 
 | Directory | Files | Lines | Archived From | Why Archived | Task |
 |-----------|------:|------:|---------------|--------------|------|
+| [BXCanonicalQuasimodel](#bxcanonicalquasimodel) | 1 | 164 | BXCanonical/Quasimodel/ | Enriched (Fisher-Ladner) closure — no live downstream consumers | 302 |
 | [BXPipelineDeadCode](#bxpipelinedeadcode) | 2 | 568 | WeakCanonical/IntegerModel/ | BX pipeline dead code: deprecated Reynolds model surgery (no_gaps_faithful false) and dead ReynoldsNoGaps definitions (zero references) | 268, 255 |
 | [BXPipelineGapAnalysis](#bxpipelinegapanalysis) | 2 | 286 | WeakCanonical/, Chronicle/ | BX pipeline gap analysis: no_gaps_faithful is provably false (Z+Z counterexample), succ_cofinal dead chain. Correct path: Reynolds pipeline via no_gaps_discrete. | 225 |
 | [BX1DependentCode](#bx1dependentcode) | 0 | -- | Quasimodel/Realization.lean | BX1-dependent helpers; BX1 removed under irreflexive semantics | 130 |
@@ -39,23 +40,27 @@ The Boneyard serves three roles:
 | [ChainCompleteness](#chaincompleteness) | 12 | 4,186 | BXCanonical/ | Earlier chain completeness iteration, superseded by SuccChain approach | 93 |
 | [ClosedGuardLegacy](#closedguardlegacy) | 0 | -- | Various | Closed guard semantics `[t,s]` replaced by open guard `(t,s)` | 109 |
 | [DeadCanonicalModel](#deadcanonicalmodel) | 0 | -- | BXCanonical/ | Dead enriched seed approach, structurally unfixable | 113 |
+| [DeadConvergenceProof](#deadconvergenceproof) | 2 | 458 | Root Boneyard/ | Dead convergence proof for succ_cofinal; relocated from root Boneyard/ | 202, 302 |
 | [DefectDirectedChain](#defectdirectedchain) | 1 | 1,556 | BXCanonical/ | Defect-directed root-scoped chain, abandoned after defect metric failed to decrease | 107 |
 | [DenseChronicle](#densechronicle) | 3 | 281 | Chronicle/ | Dense chronicle construction attempts, hit density gap | 105 |
 | [DiscreteXY](#discretexy) | 1 | 72 | Various | Discrete x_content/y_content approach, replaced by open guard semantics | 85 |
 | [FiltrationOrdering](#filtrationordering) | 1 | 167 | Filtration/SigmaOrdering.lean | Sigma-restricted ordering for filtration; BX1 removed under irreflexive semantics | 130 |
+| [KampNegationClosure](#kampnegationclosure) | 4 | 3,276 | WeakCanonical/Kamp/ | Negation closure chain (Rabinovich 2014 Sec 5) — no live downstream consumers | 302 |
 | [NonBurgessSeed](#nonburgessseed) | 0 | -- | PointInsertion.lean | Legacy g_content/h_content approach, hit density gap | 107 |
 | [OpenGuardInvalid](#openguardinvalid) | 0 | -- | TemporalDerived.lean | BX8/BX9 dependent + reflexivity-dependent theorems invalid under open guard (t,s) | 173 |
 | [QuasimodelOracle](#quasimodeloracle) | 3 | 1,467 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
+| [RabinovichPath](#rabinovichpath) | 4 | 1,286 | WeakCanonical/Kamp/ | Rabinovich generalized approach — no live downstream consumers | 302 |
 | [RoundRobinChain](#roundrobinchain) | 2 | 2,522 | BXCanonical/ | Round-robin chain: BX11 perpetual deferral makes depth-0 base case unprovable | 107 |
 | [ScheduleBasedBFMCS](#scheduledbasedbfmcs) | 1 | 222 | BXCanonical/RootScopedChain.lean | Schedule-based BFMCS chain; Lindenbaum step loses F-obligations, bypassed by Chronicle | 130 |
 | [StageInductionGapAnalysis](#stageinductiongapanalysis) | 0 | -- | ChronicleToCountermodel | Dead-end IsSuccArchimedean proof attempts; gap scenario is genuine | 123 |
+| [StaviDiscretePath](#stavidiscretepath) | 3 | 3,224 | WeakCanonical/EFGames/ | Discrete Stavi completeness — EF game pipeline with no live consumers | 302 |
 | [StrictSemanticsLegacy](#strictsemanticslegacy) | 9 | 14,330 | Metalogic/ | Completeness under strict semantics; architectural incompatibility with current open-guard semantics | 94 |
 | [TAxiomDependentCode](#taxiomdependentcode) | 0 | -- | Various | T-axiom dependent (`G(phi)->phi`); unsound under strict temporal semantics | 83 |
 | [UltrafilterDeadCode](#ultrafilterdeadcode) | 0 | -- | UltrafilterChain.lean | Dead approaches: F-preserving seed (proven FALSE), bidirectional, Z-chain, coherent Z-chain | 80 |
 | [UltrafilterFrame](#ultrafilterframe) | 2 | 1,553 | Algebraic/ | TenseS5Algebra (3 sorries for removed axioms) and UltrafilterFrame (2 sorries for temp_4); Jonsson-Tarski prerequisite | 21 |
 | [XuLemma321Legacy](#xulemma321legacy) | 0 | -- | RRelation.lean | Blocked proof-by-contradiction for Xu 3.2.1; BX9 unsound under open guard semantics | 115 |
 | VacuousKEquiv.lean (root) | 1 | 96 | Theorems/ | Vacuous K-equivalence proof, standalone | -- |
-| **Total** | **40** | **~27,306** | | | |
+| **Total** | **57** | **~37,052** | | | |
 
 ## Archival Reason Taxonomy
 
@@ -253,6 +258,8 @@ See subdirectory README for recovery options.
 | 225 | BXPipelineGapAnalysis (ChronicleNoGaps + HenkinDiscreteChain, dead BX pipeline) | 2026-05-30 |
 | 268 | BXPipelineDeadCode/ReynoldsModelSurgery.lean (deprecated no_gaps_faithful) | 2026-06-02 |
 | 255 | BXPipelineDeadCode/ReynoldsNoGapsDeprecated.lean (4 dead definitions from ReynoldsNoGaps.lean) | 2026-06-04 |
+| 301 | DeadChronicleGapElimination (GapElimination.lean from ChronicleToCountermodel) | 2026-06-15 |
+| 302 | KampNegationClosure (4 files), RabinovichPath (4), StaviDiscretePath (3), BXCanonicalQuasimodel (1), DeadConvergenceProof relocate, TransferDead.lean, inline dead blocks | 2026-06-16 |
 
 ## Git Retrieval
 

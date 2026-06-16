@@ -194,21 +194,21 @@ Phases are sequential because each modifies imports/aggregators that later phase
 
 ---
 
-### Phase 5: Comment cleanup and Boneyard hygiene [NOT STARTED]
+### Phase 5: Comment cleanup and Boneyard hygiene [COMPLETED]
 
 **Goal**: Fix all identified misleading/stale comments and add missing `#exit` guards.
 
 **Tasks**:
-- [ ] Fix `Bundle/SuccRelation.lean:596-634`: Correct section heading that says theorems are "derivable under reflexive Until semantics" — all 4 are sorry'd tombstone stubs. Update heading to reflect actual status.
-- [ ] Fix `ProofSystem/Axioms.lean:43`: Correct comment that says "density axiom derivable from BX1 under reflexive G" — BX1 is now `serial_future` (seriality), not reflexive G. Update to reflect current semantics.
-- [ ] Update `Transfer.lean:1261,1277` (line numbers will shift after Phase 4): Remove references to abandoned tasks 155 and 268 or replace with accurate status
-- [ ] Fix `Metalogic/Algebraic/InteriorOperators.lean:83`: Expand terse sorry comment (`temp_k_dist derivable from BX`) with explanation of what blocks the proof
-- [ ] Remove stale TODO in `typst/chapters/06-notes.typ:99` referencing completed task 83
-- [ ] Remove orphaned "Research-016" references in `DenseSoundness.lean:27` and `DiscreteSoundness.lean:26`
-- [ ] Add `#exit` guard to `Boneyard/BXPipelineDeadCode/ReynoldsModelSurgery.lean` (imports live modules without guard)
-- [ ] Remove redundant `NOTE: constructor removed` comments in SoundnessLemmas (10+ occurrences, accurate but adding noise)
-- [ ] Update Boneyard `README.md` with new subdirectories added in Phases 1-2
-- [ ] Run `lake build` to verify final clean build
+- [x] Fix `Bundle/SuccRelation.lean:596-634`: Correct section heading that says theorems are "derivable under reflexive Until semantics" — all 4 are sorry'd tombstone stubs. Update heading to reflect actual status.
+- [x] Fix `ProofSystem/Axioms.lean:43`: Correct comment that says "density axiom derivable from BX1 under reflexive G" — BX1 is now `serial_future` (seriality), not reflexive G. Update to reflect current semantics.
+- [x] Update `Transfer.lean:1261,1277` (line numbers will shift after Phase 4): Remove references to abandoned tasks 155 and 268 or replace with accurate status *(deviation: altered — consolidated the deprecated section header rather than editing individual task refs, since the references are historical context not misleading)*
+- [x] Fix `Metalogic/Algebraic/InteriorOperators.lean:83`: Expand terse sorry comment (`temp_k_dist derivable from BX`) with explanation of what blocks the proof
+- [x] Remove stale TODO in `typst/chapters/06-notes.typ:99` referencing completed task 83
+- [x] Remove orphaned "Research-016" references in `DenseSoundness.lean:27` and `DiscreteSoundness.lean:26`
+- [x] Add `#exit` guard to `Boneyard/BXPipelineDeadCode/ReynoldsModelSurgery.lean` (imports live modules without guard)
+- [x] Remove redundant `NOTE: constructor removed` comments in SoundnessLemmas (10+ occurrences, accurate but adding noise) *(deviation: skipped — comments already removed by a prior task)*
+- [x] Update Boneyard `README.md` with new subdirectories added in Phases 1-2
+- [x] Run `lake build` to verify final clean build
 
 **Timing**: 1 hour
 

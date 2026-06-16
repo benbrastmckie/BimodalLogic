@@ -1,3 +1,6 @@
+-- ARCHIVED: dead BX pipeline code (task 302 added #exit guard)
+#exit
+
 import Bimodal.Metalogic.WeakCanonical.PriorExpressiveness
 import Bimodal.Metalogic.WeakCanonical.EFGames.Defs
 import Bimodal.Metalogic.Core.MCSProperties

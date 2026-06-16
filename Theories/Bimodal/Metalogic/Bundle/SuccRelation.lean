@@ -591,16 +591,11 @@ theorem until_persists_through_succ (u v : Set Formula)
   sorry
 
 /-!
-## Until/Since Introduction at the MCS Level
+## Until/Since Introduction at the MCS Level — TOMBSTONED
 
-Under the BX axiom system with reflexive Until/Since semantics, the `until_intro` and
-`since_intro` rules are derivable at the MCS level. These replace the removed X/Y-based
-axioms from the non-reflexive system.
-
-Key insight: Under reflexive Until, `X(α) = (⊥ U α)` is equivalent to `α` in any MCS
-(by BX8 and BX9). So `until_intro: X(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)` reduces to
-`(ψ ∨ (φ ∧ (φ U ψ))) → (φ U ψ)`, which follows from BX8 (ψ case) and conjunction
-elimination (φ ∧ (φ U ψ) case).
+These theorems are sorry'd stubs. The original proofs assumed reflexive Until/Since
+semantics, which is invalid under open guard (t,s) semantics (task 173).
+Archived proofs are in Boneyard/OpenGuardInvalid/.
 -/
 
 /--

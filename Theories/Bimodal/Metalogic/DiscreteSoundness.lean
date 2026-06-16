@@ -23,7 +23,6 @@ The density axiom GGφ → Gφ has `minFrameClass = .Dense` which is incomparabl
 ## References
 
 - Research-013 Section 3.3: DF soundness for discrete frames
-- Research-016: Irreflexive semantics feasibility
 -/
 
 namespace Bimodal.Metalogic.DiscreteSoundness
