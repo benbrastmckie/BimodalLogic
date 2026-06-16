@@ -2705,8 +2705,14 @@ private theorem forward_nf_eval_of_holdsLeft
               rw [h_zone]; show (if sub_nf.2 ssn then _ else _) = _
               rw [h_pos]; rfl
             exact h_bridge.mp (h_right_conj_all _ h_in)
-        · -- inconsistent zone
-          exact sorry
+        · -- inconsistent zone: ssn_xt_compatible = true includes ssn_order_consistent = true,
+          -- which is incompatible with ssn_zone_until = .inconsistent.
+          exfalso
+          simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at h_ssn_xt
+          simp only [ssn_zone_until] at h_zone
+          simp only [ssn_order_consistent, Bool.and_eq_true, Bool.not_eq_true', Bool.or_eq_true,
+            Bool.not_eq_eq_eq_not, Bool.not_true, beq_iff_eq] at h_ssn_xt
+          revert h_zone; split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all
       · -- NOT xt-compatible: both sides false via h_ssn_compat
         constructor
         · -- ∃ y → sub_nf.2 ssn = true
