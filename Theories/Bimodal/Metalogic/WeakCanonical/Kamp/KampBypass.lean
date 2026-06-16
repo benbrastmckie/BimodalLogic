@@ -24,6 +24,72 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff)
 
+/-! ## Cross-Structure NF Transfer -/
+
+/-- Given depth-(K+1) NF agreement between two structures at arity r,
+    and an element c' in N, find an element c in M such that all
+    depth-K arity-(r+1) NFs agree on the extended environments. -/
+private theorem nf_extend_fwd {sig : MonadicSignature}
+    {K r : Nat}
+    (M : OrderedMonadicStructure sig) (eM : Fin r → M.carrier)
+    (N : OrderedMonadicStructure sig) (eN : Fin r → N.carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) r,
+      nf_eval_nf M (K + 1) r eM nf ↔ nf_eval_nf N (K + 1) r eN nf)
+    (c' : N.carrier) :
+    ∃ c : M.carrier, ∀ nf : NormalForm sig K (r + 1),
+      nf_eval_nf M K (r + 1) (Fin.cons c eM) nf ↔
+      nf_eval_nf N K (r + 1) (Fin.cons c' eN) nf := by
+  have hM := nf_characteristic_satisfies M (K + 1) r eM
+  have hN := nf_characteristic_satisfies N (K + 1) r eN
+  have heq := nf_eval_unique N (K + 1) r eN _ _ ((h _).mp hM) hN
+  obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
+  set ch := nf_characteristic N K (r + 1) (Fin.cons c' eN)
+  obtain ⟨c, hc⟩ := ((hMq ch).trans (hNq ch).symm).mpr
+    ⟨c', nf_characteristic_satisfies ..⟩
+  exact ⟨c, nf_agreement_from_shared_nf _ _ _ _ ch hc
+    (nf_characteristic_satisfies ..)⟩
+
+/-- Symmetric version: find c' given c. -/
+private theorem nf_extend_bwd {sig : MonadicSignature}
+    {K r : Nat}
+    (M : OrderedMonadicStructure sig) (eM : Fin r → M.carrier)
+    (N : OrderedMonadicStructure sig) (eN : Fin r → N.carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) r,
+      nf_eval_nf M (K + 1) r eM nf ↔ nf_eval_nf N (K + 1) r eN nf)
+    (c : M.carrier) :
+    ∃ c' : N.carrier, ∀ nf : NormalForm sig K (r + 1),
+      nf_eval_nf M K (r + 1) (Fin.cons c eM) nf ↔
+      nf_eval_nf N K (r + 1) (Fin.cons c' eN) nf := by
+  have hM := nf_characteristic_satisfies M (K + 1) r eM
+  have hN := nf_characteristic_satisfies N (K + 1) r eN
+  have heq := nf_eval_unique N (K + 1) r eN _ _ ((h _).mp hM) hN
+  obtain ⟨_, hMq⟩ := hM; obtain ⟨_, hNq⟩ := heq ▸ hN
+  set ch := nf_characteristic M K (r + 1) (Fin.cons c eM)
+  obtain ⟨c', hc'⟩ := ((hMq ch).trans (hNq ch).symm).mp
+    ⟨c, nf_characteristic_satisfies ..⟩
+  exact ⟨c', nf_agreement_from_shared_nf _ _ _ _ ch
+    (nf_characteristic_satisfies ..) hc'⟩
+
+/-- From depth-(K+1) arity-1 NF agreement on constant environments,
+    transfer existential conditions: if ∃ y in N, then ∃ y in M
+    with the same depth-K arity-2 NF type. -/
+private theorem exist_transfer_const_env {sig : MonadicSignature}
+    {K : Nat}
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (N : OrderedMonadicStructure sig) (s : N.carrier)
+    (h_agree : ∀ nf : NormalForm sig (K + 1) 1,
+      nf_eval_nf M (K + 1) 1 (fun _ => t) nf ↔ nf_eval_nf N (K + 1) 1 (fun _ => s) nf)
+    (ssn : NormalForm sig K 2) :
+    (∃ y : M.carrier, nf_eval_nf M K 2 (Fin.cons y (fun _ => t)) ssn) ↔
+    (∃ y : N.carrier, nf_eval_nf N K 2 (Fin.cons y (fun _ => s)) ssn) := by
+  constructor
+  · rintro ⟨y, hy⟩
+    obtain ⟨y', hy'⟩ := nf_extend_bwd M (fun _ => t) N (fun _ => s) h_agree y
+    exact ⟨y', (hy' ssn).mp hy⟩
+  · rintro ⟨y', hy'⟩
+    obtain ⟨y, hy⟩ := nf_extend_fwd M (fun _ => t) N (fun _ => s) h_agree y'
+    exact ⟨y, (hy ssn).mpr hy'⟩
+
 /-! ## Main Bypass Theorem (Zone-Aware) -/
 
 /-- Zone-aware enriched bypass for depth 1 (k=0): the 2-var existential at depth 1
@@ -135,7 +201,15 @@ theorem existPart_succ_n1_bypass
         nf_eval_nf M (k' + 1 + 1) (1 + 1) (Fin.cons x (fun _ => t)) sub_nf ∧
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true))
         with ⟨M₀, h_UZ₀, h_SZ₀, t₀, x₀, h_eval₀, h_atoms₀⟩ | h_unsat
-    · -- Satisfiable case: zone dispatch with char_kp1 disjunction
+    · -- Satisfiable case: use M₀'s 2-var NF type to build formula
+      -- M₀ witness NF types
+      let nf_2₀ := nf_characteristic M₀ (k' + 1 + 1) 2 (Fin.cons x₀ (fun _ => t₀))
+      have h_nf_2₀ := nf_characteristic_satisfies M₀ (k' + 1 + 1) 2
+        (Fin.cons x₀ (fun _ => t₀))
+      -- Key fact: nf_2₀ = sub_nf (M₀ witnesses unique NF)
+      have h_nf_2₀_eq : nf_2₀ = sub_nf :=
+        nf_eval_unique M₀ (k' + 1 + 1) 2 (Fin.cons x₀ (fun _ => t₀)) nf_2₀ sub_nf
+          h_nf_2₀ h_eval₀
       -- Predicate compatibility check
       let compat_check : NormalForm sig (k' + 1 + 1) 1 → Bool := fun nf_x =>
         (Fintype.elems (α := sig.preds)).val.toList.all fun p =>
@@ -192,9 +266,6 @@ theorem existPart_succ_n1_bypass
         intro M t x ⟨h_atom, _⟩
         simp only [compat_check, List.all_eq_true, beq_iff_eq]
         intro p _
-        have h_sub_p := h_atom (.pred p ⟨0, by omega⟩)
-        have h_char_p := (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x)).1
-          (.pred p ⟨0, by omega⟩)
         have key := h_atom (.pred p ⟨0, by omega⟩)
         simp only [atom_eval, Fin.cons] at key
         change M.interp p x ↔ _ at key
@@ -205,6 +276,10 @@ theorem existPart_succ_n1_bypass
           exact @decide_eq_false _ (Classical.dec _) key
         · rw [h] at key; simp only [iff_true] at key
           exact @decide_eq_true _ (Classical.dec _) key
+      -- BLOCKER: backward direction requires 2-var NF reconstruction from 1-var NF.
+      -- 1-var NF agreement does NOT determine 2-var NF on constant environments.
+      -- Closing requires enriched formula encoding quantifier conditions via ih_exist,
+      -- or a Prior compositionality theorem (Rabinovich Lemma 5.1).
       -- Zone dispatch
       match h_gt_val : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
             h_lt_val : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
