@@ -1,18 +1,18 @@
 {
   "status": "partial",
-  "summary": "Eq zone backward direction: implemented enriched formula using ih_exist at n=2 to encode 3-var quantifier conditions. Extracted const_env_atom_agree helper lemma. Formula construction correct, proof structure complete. Remaining: compilation fixes for helper lemma (simp_all heartbeat, Bool.eq_true_iff name, Fin.cons order match). Until/Since zones remain blocked by Prior compositionality.",
+  "summary": "Closed Eq zone sorry (1 of 3 zone sorries resolved). Enriched formula uses ih_exist at n=2 to encode 3-var quantifier conditions into temporal formula for constant-parent-env case (x=t). KampBypass.lean builds cleanly. Full project build passes. Until/Since zones remain blocked by Prior compositionality (non-constant parent env [x,t]).",
   "phases_completed": 1,
   "phases_total": 4,
   "blockers": [
     {
       "phase": 2,
-      "description": "Until/Since backward directions require Prior compositionality. Eq zone formula + proof structure written but has compilation errors in const_env_atom_agree helper (heartbeat in simp_all, missing Bool lemma names, Fin match completeness).",
+      "description": "Until/Since backward directions require Prior compositionality theorem: on Prior structures, the 2-var NF type of [x,t] is determined by the 1-var NF types of x and t plus their temporal ordering. ih_exist only handles constant parent env (fun _ => t), but Until zone has env [y,x,t] where x != t.",
       "what_tried": [
-        "Enriched formula with ih_exist for Eq zone — mathematically correct, compilation in progress",
-        "Extracted const_env_atom_agree to separate heartbeat-sensitive proof from main theorem",
-        "Replaced simp_all with targeted case analysis to reduce heartbeats — partially successful"
+        "ih_exist at n=2 with constant parent — WORKS for Eq zone (x=t), FAILS for Until/Since (x!=t)",
+        "Direct nf_extend_fwd transfer — circular: needs arity-1 agreement to prove arity-1 agreement",
+        "exist_transfer_const_env — insufficient: only transfers between models with same arity-1 type on const envs"
       ],
-      "what_needed": "Fix const_env_atom_agree helper (3 errors), fix main theorem forward direction (similar issues). Then Until/Since require Prior compositionality (~200-400 lines)."
+      "what_needed": "Prior compositionality theorem (~200-400 lines): prove that on Prior structures, the depth-(k'+1+1) 2-var NF type of [x,t] with x>t (resp x<t) is determined by the 1-var types of x and t. This enables enriching the Until/Since formulas with quantifier conditions for the non-constant parent env."
     }
   ],
   "continuation_context": {
@@ -21,48 +21,45 @@
     "handoff_path": "specs/303_k_gt_0_depth_induction/plans/02_depth-induction-plan.md",
     "is_successor": true,
     "key_decisions": [
-      "Eq zone formula = compat_disj AND conjList(ih_exist formulas for each ssn : NF (k'+1) 3)",
-      "char_k from ih_char via Classical.choice",
-      "ih_exist at n=2 for constant-parent-env 3-var existentials",
-      "h_env_transfer bridges arities (1+1)+1 and 2+1 via Fin match extensionality",
-      "const_env_atom_agree extracted as separate helper to isolate heartbeat issues",
-      "Forward direction: compat_disj from fwd_disj, quant_conj from ih_exist_correct + nf_eval quant part",
-      "Backward direction: compat_disj gives pred atoms, ih_exist formulas give quant conditions, combined gives nf_eval_nf at [t,t]"
+      "Eq zone formula = compat_disj AND conjList(ih_exist_formula for each ssn : NF (k'+1) 3)",
+      "ih_exist at n=2 with parent_atoms gives formulas for const-env 3-var existentials",
+      "const_env_atom_agree extracted as helper lemma for atom proof isolation",
+      "h_env_transfer bridges nf_eval_nf arities (1+1)+1 and 2+1 via show + Fin match extensionality",
+      "Until/Since zones CANNOT use same approach — parent env [x,t] is non-constant"
     ],
     "key_findings": [
-      "Eq zone backward IS closable using ih_exist because x=t forces constant parent env [t,t]",
-      "Until/Since zones CANNOT be closed with ih_exist: parent env [x,t] non-constant",
-      "simp_all on NormalForm types causes heartbeat explosion — use targeted case analysis instead",
-      "Bool.eq_true_iff doesn't exist in current Lean/Mathlib — use Bool.true_eq / decide_eq_true_eq",
-      "Fin.cons order match must cover all Fin 2 cases: (0,1), (1,0), (0,0), (1,1)"
+      "Eq zone successfully closed: enriched formula with ih_exist handles all quantifier conditions because x=t forces constant parent env [t,t]",
+      "Prior compositionality is the SOLE remaining mathematical obstacle for Until/Since zones",
+      "Heartbeat issues resolved by extracting helper lemma and avoiding simp_all on NormalForm types",
+      "Full project build passes with the Eq zone changes"
     ]
   },
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 300,
-      "statement": "Until zone backward",
-      "assumption": "compat_disj only encodes 1-var predicate compatibility",
-      "why_deferred": "ih_exist requires constant parent env; Until zone has [y,x,t] where x > t",
-      "next_dispatch": "Prior compositionality theorem",
+      "line": 356,
+      "statement": "Until zone backward: temporal_truth M atomMap t (compat_disj.untl top) -> exists x, nf_eval_nf M (k'+1+1) 2 [x, t] sub_nf",
+      "assumption": "compat_disj gives x > t with compatible 1-var NF type. Need full 2-var NF eval on [x,t] (non-constant env).",
+      "why_deferred": "ih_exist requires constant parent env. Until zone has [y,x,t] where x > t. Requires Prior compositionality.",
+      "next_dispatch": "Prove Prior compositionality theorem for ordered pairs on Prior structures",
       "critical_path": true
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 312,
-      "statement": "Since zone backward",
-      "assumption": "Symmetric to Until",
-      "why_deferred": "Same as Until",
-      "next_dispatch": "Same approach",
+      "line": 368,
+      "statement": "Since zone backward: symmetric to Until (x < t)",
+      "assumption": "Same structure as Until, reversed ordering",
+      "why_deferred": "Same root cause — Prior compositionality needed",
+      "next_dispatch": "Same theorem covers both cases",
       "critical_path": true
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
       "line": 310,
       "statement": "existPart_succ n>=2",
-      "assumption": "Depends on n=1 at all depths",
-      "why_deferred": "Blocked by Phase 2",
-      "next_dispatch": "Phase 3",
+      "assumption": "Depends on n=1 at all depths being sorry-free",
+      "why_deferred": "Blocked by Phase 2 completion",
+      "next_dispatch": "Phase 3: close via Classical.em + bool_eq_of_iff_same",
       "critical_path": true
     },
     {
@@ -70,7 +67,7 @@
       "line": 542,
       "statement": "nf_exist_backward_prior (dead code)",
       "assumption": "Not on critical path",
-      "why_deferred": "Dead code",
+      "why_deferred": "Dead code, not called by live dispatch",
       "next_dispatch": "Not needed",
       "critical_path": false
     },
@@ -88,7 +85,7 @@
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "type": "code",
-      "summary": "Eq zone enriched formula with ih_exist quantifier encoding + const_env_atom_agree helper. Compilation fixes in progress."
+      "summary": "Eq zone sorry closed. const_env_atom_agree helper + enriched formula with ih_exist. 2 sorry sites remain (Until line 356, Since line 368). Builds cleanly."
     }
   ]
 }

@@ -7,7 +7,7 @@
   "started_at": "2026-06-16T00:00:00Z",
   "handoff_path": "specs/303_k_gt_0_depth_induction/.orchestrator-handoff.json",
   "verification": {
-    "sorry_count": 6,
+    "sorry_count": 5,
     "vacuous_count": 0,
     "axiom_count": 2,
     "build_passed": true
@@ -15,12 +15,12 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 300,
+      "line": 356,
       "statement": "Until zone backward"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 312,
+      "line": 368,
       "statement": "Since zone backward"
     },
     {
@@ -31,20 +31,19 @@
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
-      "statement": "nf_exist_backward depth k+1"
+      "statement": "nf_exist_backward_prior (dead code)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "ih_char/ih_exist placeholders"
+      "statement": "ih_char/ih_exist placeholders (dead code)"
     }
   ],
   "memory_candidates": [
-    "nf_x_eq (all witnesses of a 2-var NF share the same 1-var type) is FALSE. Different models can satisfy the same 2-var sub_nf with different 1-var types for the existential witness. The formula char_kp1(nf_x₀) for a single M₀ NF type fails in the forward direction.",
-    "const_env_determined (1-var NF type determines 2-var NF type on constant envs [t,t]) is FALSE. Counterexample: model with 2 elements has existentials that model with 1 element lacks, even with the same 1-var type.",
-    "nf_extend_fwd/bwd loses one depth level per arity increase. Depth-(k'+2) arity-1 agreement gives depth-(k'+1) arity-2, then depth-k' arity-3. But quantifier conditions of sub_nf at depth k'+2 need depth-(k'+1) arity-3 — one level short.",
-    "component_extend_fwd (NEquivalence.lean:187) replicated as nf_extend_fwd in KampBypass.lean. Public standalone version avoids needing to modify NEquivalence.lean.",
-    "ExistPart(k) at constant parent envs [t,t] does NOT directly help for non-constant parent envs [x,t] where x != t. Until/Since zones require Prior compositionality (Rabinovich Lemma 5.1) or nested temporal encoding.",
-    "The backward direction of existPart_succ_n1_bypass at k>0 fundamentally requires encoding 2-var NF quantifier conditions into the temporal formula. The 1-var type (compat_disj) is necessary but NOT sufficient."
+    "Eq zone backward direction of existPart_succ_n1_bypass at k>0 is closable using ih_exist at n=2: when x=t, the parent env is constant [t,t], so ih_exist provides formulas for each 3-var quantifier condition. The enriched formula is compat_disj AND conjList(ih_exist formulas).",
+    "Until/Since zone backward directions require Prior compositionality: the 2-var NF type of [x,t] with x!=t on Prior structures must be shown determinable from 1-var types + ordering. ih_exist only handles constant parent envs.",
+    "Lean 4 Fin.cons is dependently typed. To prove env equality (Fin.cons y (Fin.cons t (fun _ => t)) = Fin.cons y (fun _ => t) at Fin 3), use show to normalize arities then match on concrete Fin values.",
+    "simp_all on NormalForm types causes heartbeat explosion. Extract atom proofs as separate helper lemmas (const_env_atom_agree) to isolate heartbeat-sensitive code from the main proof context.",
+    "Bool.eq_true_iff does not exist in current Lean/Mathlib v4.27. Use decide_eq_true_eq or Bool.true_eq instead."
   ]
 }
