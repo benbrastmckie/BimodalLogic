@@ -16,17 +16,17 @@
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
-      "statement": "Until zone backward"
+      "statement": "Until zone backward — formula too weak, needs architectural change"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
-      "statement": "Since zone backward"
+      "statement": "Since zone backward — formula too weak, needs architectural change"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
       "line": 310,
-      "statement": "existPart_succ n>=2"
+      "statement": "existPart_succ n>=2 — blocked by above"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
@@ -40,10 +40,10 @@
     }
   ],
   "memory_candidates": [
-    "Eq zone backward direction of existPart_succ_n1_bypass at k>0 is closable using ih_exist at n=2: when x=t, the parent env is constant [t,t], so ih_exist provides formulas for each 3-var quantifier condition. The enriched formula is compat_disj AND conjList(ih_exist formulas).",
-    "Until/Since zone backward directions require Prior compositionality: the 2-var NF type of [x,t] with x!=t on Prior structures must be shown determinable from 1-var types + ordering. ih_exist only handles constant parent envs.",
-    "Lean 4 Fin.cons is dependently typed. To prove env equality (Fin.cons y (Fin.cons t (fun _ => t)) = Fin.cons y (fun _ => t) at Fin 3), use show to normalize arities then match on concrete Fin values.",
-    "simp_all on NormalForm types causes heartbeat explosion. Extract atom proofs as separate helper lemmas (const_env_atom_agree) to isolate heartbeat-sensitive code from the main proof context.",
-    "Bool.eq_true_iff does not exist in current Lean/Mathlib v4.27. Use decide_eq_true_eq or Bool.true_eq instead."
+    "NfComposition.lean lines 23-36 contains a formal counterexample proving that 1-var NF compositionality is FALSE for n>=2 on linear orders (even Prior structures): M=(Z,<), env1=(0,2), env2=(0,1), k=1 — between-zone nonemptiness differs despite same 1-var types and ordering",
+    "ExistPart as defined in KampMutualInduction.lean is architecturally limited: parent_atoms : AtomKind sig 1 -> Bool forces constant parent env (fun _ => t). Until/Since zones need non-constant parent env [x,t]. This is the root cause of the remaining sorries in KampBypass.lean.",
+    "nf_extend_fwd/nf_extend_bwd always lose one depth level: from depth-(K+1) arity-r agreement, they produce depth-K arity-(r+1) agreement. This makes recursive composition fail at the target depth for the KampBypass sorries.",
+    "Three approaches to fix: (A) Generalize ExistPart to Fin m parent env (~400-600 lines). (B) Port k=0 VecEA2 bracket formulas to depth k'+1 using ih_char (~800-1200 lines). (C) Reformulate mutual induction to avoid the backward direction (~300-500 lines, redesign).",
+    "EFGames/Composition.lean has GHR93 strategy composition but uses ExtendedCarrier/StaviFormula framework, incompatible with the NormalForm/nf_eval_nf framework in KampBypass."
   ]
 }

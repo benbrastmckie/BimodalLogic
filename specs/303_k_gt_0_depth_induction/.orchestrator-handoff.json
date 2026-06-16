@@ -1,18 +1,22 @@
 {
-  "status": "partial",
-  "summary": "Closed Eq zone sorry (1 of 3 zone sorries resolved). Enriched formula uses ih_exist at n=2 to encode 3-var quantifier conditions into temporal formula for constant-parent-env case (x=t). KampBypass.lean builds cleanly. Full project build passes. Until/Since zones remain blocked by Prior compositionality (non-constant parent env [x,t]).",
+  "status": "blocked",
+  "summary": "Cycle 2 deep analysis confirms Until/Since sorries CANNOT be closed with current formula. Formula.untl compat_disj Formula.top is provably too weak — NfComposition.lean counterexample shows 1-var NF compositionality is FALSE on linear orders. Requires architectural change: generalize ExistPart to non-constant parent environments.",
   "phases_completed": 1,
   "phases_total": 4,
   "blockers": [
     {
       "phase": 2,
-      "description": "Until/Since backward directions require Prior compositionality theorem: on Prior structures, the 2-var NF type of [x,t] is determined by the 1-var NF types of x and t plus their temporal ordering. ih_exist only handles constant parent env (fun _ => t), but Until zone has env [y,x,t] where x != t.",
-      "what_tried": [
-        "ih_exist at n=2 with constant parent — WORKS for Eq zone (x=t), FAILS for Until/Since (x!=t)",
-        "Direct nf_extend_fwd transfer — circular: needs arity-1 agreement to prove arity-1 agreement",
-        "exist_transfer_const_env — insufficient: only transfers between models with same arity-1 type on const envs"
+      "description": "Until/Since backward directions require a FORMULA CHANGE, not just a proof technique. The current formula (Formula.untl compat_disj Formula.top) encodes only predicate-level compatibility at the 1-var level. The backward direction needs full depth-(k'+1+1) arity-2 NF evaluation, which involves depth-(k'+1) arity-3 quantifier conditions for the non-constant parent env [x,t].",
+      "root_cause": "ExistPart as defined only handles constant parent env (fun _ => t). The 3-var existentials in the Until/Since zones have parent env [x,t] where x != t, which ExistPart cannot encode. NfComposition.lean contains a formal proof (with counterexample on Z) that 1-var NF compositionality is FALSE for general linear orders, including Prior structures.",
+      "what_was_tried": [
+        "ih_exist at n=2 with constant parent: WORKS for Eq zone, FAILS for Until/Since",
+        "nf_extend_fwd/bwd cross-structure transfer: loses one depth level (K+1 -> K), cannot reach target depth",
+        "intra_structure_extend: requires arity-n agreement at K+1 to produce arity-(n+1) at K, but establishing arity-n at K+1 IS the goal — circular",
+        "General compositionality theorem (same 1-var types + ordering => same n-var type): DISPROVED by NfComposition.lean counterexample (Z with (0,2) vs (0,1))",
+        "Prior structure UZ/SZ exploitation: these give no-gap properties but don't resolve the between-zone element availability issue",
+        "EF game composition (GHR93): exists in Composition.lean but uses ExtendedCarrier/StaviFormula framework, incompatible with NormalForm/nf_eval_nf"
       ],
-      "what_needed": "Prior compositionality theorem (~200-400 lines): prove that on Prior structures, the depth-(k'+1+1) 2-var NF type of [x,t] with x>t (resp x<t) is determined by the 1-var types of x and t. This enables enriching the Until/Since formulas with quantifier conditions for the non-constant parent env."
+      "what_is_needed": "One of three architectural changes (ordered by estimated difficulty):\n  (A) Generalize ExistPart to handle non-constant parent environments (parent env: Fin m -> M.carrier instead of fun _ => t). This would allow encoding Until/Since quantifier conditions directly. Estimated: ~400-600 lines new code.\n  (B) Port the k=0 VecEA2/bracket formula approach to depth k'+1 using ih_char instead of nf_depth0_char_formula. This would generalize the zone-by-zone encoding to higher depth. Estimated: ~800-1200 lines (mirrors the existing ~1000 lines per direction).\n  (C) Reformulate the mutual induction to avoid the Until/Since backward direction entirely, e.g., by proving ExistPart at all arities simultaneously using a different induction scheme. Estimated: ~300-500 lines but requires redesign."
     }
   ],
   "continuation_context": {
@@ -22,70 +26,78 @@
     "is_successor": true,
     "key_decisions": [
       "Eq zone formula = compat_disj AND conjList(ih_exist_formula for each ssn : NF (k'+1) 3)",
-      "ih_exist at n=2 with parent_atoms gives formulas for const-env 3-var existentials",
-      "const_env_atom_agree extracted as helper lemma for atom proof isolation",
-      "h_env_transfer bridges nf_eval_nf arities (1+1)+1 and 2+1 via show + Fin match extensionality",
-      "Until/Since zones CANNOT use same approach — parent env [x,t] is non-constant"
+      "Until/Since zones CANNOT use same approach — formula must be changed"
     ],
     "key_findings": [
-      "Eq zone successfully closed: enriched formula with ih_exist handles all quantifier conditions because x=t forces constant parent env [t,t]",
-      "Prior compositionality is the SOLE remaining mathematical obstacle for Until/Since zones",
-      "Heartbeat issues resolved by extracting helper lemma and avoiding simp_all on NormalForm types",
-      "Full project build passes with the Eq zone changes"
+      "NfComposition.lean line 23-36: formal counterexample proving 1-var NF compositionality FALSE for n>=2 on general linear orders (including Prior structures): M=(Z,<), env1=(0,2), env2=(0,1), k=1",
+      "The between-zone (t < y < x for Until) is the fundamental barrier — pairwise 1-var NF information does not determine whether elements of specific types exist in specific intervals",
+      "nf_extend_fwd/bwd always lose one depth level (K+1 arity r -> K arity r+1), making recursive composition impossible at the target depth",
+      "ExistPart signature is architecturally limited: parent_atoms : AtomKind sig 1 -> Bool enforces constant parent env, preventing encoding of [x,t] pair conditions",
+      "Approach (A) is likely the cleanest: define GeneralizedExistPart with parent env of arbitrary arity m, then Until/Since zones become the m=2 case with parent atoms encoding the full [x,t] pair"
+    ],
+    "files_analyzed": [
+      "KampBypass.lean (lines 200-523): main theorem with 2 sorries at lines 356, 368",
+      "KampBypassUntil.lean (979 lines): complete k=0 Until proof",
+      "KampBypassSince.lean (1308 lines): complete k=0 Since proof",
+      "KampMutualInduction.lean: architecture of CharPart/ExistPart mutual induction",
+      "NfComposition.lean (267 lines): intra_structure_extend + compositionality counterexample",
+      "NormalForm.lean: nf_eval_nf definition, nf_agreement_monotone, nf_extend machinery",
+      "PriorDefs.lean: semantic_prior_UZ/SZ definitions",
+      "EFGames/Composition.lean: GHR93 strategy composition (incompatible framework)"
     ]
   },
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
-      "statement": "Until zone backward: temporal_truth M atomMap t (compat_disj.untl top) -> exists x, nf_eval_nf M (k'+1+1) 2 [x, t] sub_nf",
-      "assumption": "compat_disj gives x > t with compatible 1-var NF type. Need full 2-var NF eval on [x,t] (non-constant env).",
-      "why_deferred": "ih_exist requires constant parent env. Until zone has [y,x,t] where x > t. Requires Prior compositionality.",
-      "next_dispatch": "Prove Prior compositionality theorem for ordered pairs on Prior structures",
-      "critical_path": true
+      "statement": "case mp: temporal_truth M atomMap t (compat_disj.untl Formula.top) → ∃ x, nf_eval_nf M (k' + 1 + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf",
+      "assumption": "Formula compat_disj.untl Formula.top suffices for backward direction. DISPROVED: formula is too weak.",
+      "why_deferred": "Formula must be changed. Current formula only checks 1-var predicate compatibility. The 2-var NF type at depth k'+1+1 requires depth-(k'+1) arity-3 quantifier conditions for non-constant env [x,t]. Counterexample proves 1-var compositionality false.",
+      "next_dispatch": "Implement approach (A): generalize ExistPart to non-constant parent env, then change formula to use generalized existentials"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
-      "statement": "Since zone backward: symmetric to Until (x < t)",
-      "assumption": "Same structure as Until, reversed ordering",
-      "why_deferred": "Same root cause — Prior compositionality needed",
-      "next_dispatch": "Same theorem covers both cases",
-      "critical_path": true
+      "statement": "case mp: temporal_truth M atomMap t (compat_disj.snce Formula.top) → ∃ x, nf_eval_nf M (k' + 1 + 1) (1 + 1) (Fin.cons x fun x => t) sub_nf",
+      "assumption": "Same as Until — formula too weak",
+      "why_deferred": "Same root cause as Until sorry",
+      "next_dispatch": "Same fix as Until"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
       "line": 310,
-      "statement": "existPart_succ n>=2",
-      "assumption": "Depends on n=1 at all depths being sorry-free",
-      "why_deferred": "Blocked by Phase 2 completion",
-      "next_dispatch": "Phase 3: close via Classical.em + bool_eq_of_iff_same",
-      "critical_path": true
+      "statement": "existPart_succ n>=2: ExistPart(k+1) for n'' + 1 + 1 (arity >= 3)",
+      "assumption": "Depends on existPart_succ_n1_bypass being sorry-free at all depths",
+      "why_deferred": "Blocked by KampBypass.lean sorries",
+      "next_dispatch": "Phase 3 after Until/Since resolved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
-      "statement": "nf_exist_backward_prior (dead code)",
-      "assumption": "Not on critical path",
-      "why_deferred": "Dead code, not called by live dispatch",
-      "next_dispatch": "Not needed",
-      "critical_path": false
+      "statement": "nf_exist_backward_prior (dead code path)",
+      "assumption": "Not on critical path for kamp_mutual_induction",
+      "why_deferred": "Dead code — kamp_mutual_induction uses KampBypass directly",
+      "next_dispatch": "Not needed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
       "statement": "ih_char/ih_exist placeholders (dead code)",
-      "assumption": "Not on critical path",
+      "assumption": "Dead code path",
       "why_deferred": "Dead code",
-      "next_dispatch": "Not needed",
-      "critical_path": false
+      "next_dispatch": "Not needed"
     }
   ],
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "type": "code",
-      "summary": "Eq zone sorry closed. const_env_atom_agree helper + enriched formula with ih_exist. 2 sorry sites remain (Until line 356, Since line 368). Builds cleanly."
+      "summary": "Eq zone sorry closed (cycle 1). 2 sorry sites remain at lines 356 and 368. Formula must be changed to close them."
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "type": "code",
+      "summary": "Contains counterexample at lines 23-36 proving compositionality is false. Also contains intra_structure_extend infrastructure."
     }
   ]
 }
