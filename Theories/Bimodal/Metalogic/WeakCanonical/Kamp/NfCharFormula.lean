@@ -648,7 +648,7 @@ theorem nf_2var_exist_formula_prior
     -- The bypass encodes both atom AND quantifier conditions, avoiding the
     -- broken backward direction of nf_exist_formula.
     exact existPart_succ_n1_bypass atomMap h_surj (k + 1) char_k char_k_correct
-      parent_atoms sub_nf
+      sorry parent_atoms sub_nf
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
     at depth k+1. This is the approach taken by StaviCompleteness for the

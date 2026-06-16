@@ -305,7 +305,7 @@ theorem existPart_succ {sig : MonadicSignature}
     cases n' with
     | zero =>
       exact existPart_succ_n1_bypass atomMap h_surj k
-        char_kp1 char_kp1_correct parent_atoms sub_nf
+        char_kp1 char_kp1_correct ih_exist parent_atoms sub_nf
     | succ n'' =>
       sorry
 

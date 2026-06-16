@@ -88,6 +88,25 @@ theorem existPart_succ_n1_bypass
         (t : M.carrier),
         temporal_truth M atomMap t (char_kp1 nf_1) ↔
         nf_eval_nf M (k + 1) 1 (fun _ => t) nf_1)
+    (ih_exist : ∀ (n : Nat) (_ : n ≥ 1)
+        (char_k : NormalForm sig k 1 → Formula)
+        (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+            (M : OrderedMonadicStructure sig)
+            (h_UZ : semantic_prior_UZ M atomMap)
+            (h_SZ : semantic_prior_SZ M atomMap)
+            (t : M.carrier),
+            temporal_truth M atomMap t (char_k nf_k) ↔
+            nf_eval_nf M k 1 (fun _ => t) nf_k)
+        (parent_atoms' : AtomKind sig 1 → Bool)
+        (sub_nf' : NormalForm sig k (n + 1)),
+        ∃ (A : Formula),
+          ∀ (M : OrderedMonadicStructure sig)
+            (h_UZ : semantic_prior_UZ M atomMap)
+            (h_SZ : semantic_prior_SZ M atomMap)
+            (t : M.carrier),
+            (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms' a = true) →
+            (temporal_truth M atomMap t A ↔
+             ∃ x : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) sub_nf'))
     (parent_atoms : AtomKind sig 1 → Bool)
     (sub_nf : NormalForm sig (k + 1) 2) :
     ∃ (A : Formula),
