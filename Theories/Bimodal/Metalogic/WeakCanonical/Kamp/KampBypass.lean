@@ -1999,6 +1999,7 @@ private theorem bracket_from_distinct_witnesses {sig : MonadicSignature}
       rw [← hj] at h_wk_y
       exact h_segType y (lt_trans (h_in_interval j).1 h_wk_y) h_y_hi
 
+set_option maxHeartbeats 1600000 in
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
     Given a witness x > t with nf_eval_nf, construct holdsLeft by:
     1. Finding the right disjunct (nf_x = nf_characteristic of x)
@@ -2226,14 +2227,77 @@ private theorem backward_holdsLeft_of_nf_eval
     -- Witnesses are injective: different nf_y_proj → different predicate profiles → different points
     have h_wit_injective : Function.Injective witness_fn := by
       intro i j h_eq
-      -- witness_fn i = witness_fn j → same point → same predicate profile → same nf_y_proj
-      -- → same SSN (within pos_between, zone and x/t context are fixed)
-      -- → same index (pos_between is a filter of Fintype.elems which has no duplicates)
-      -- nf_y_proj equality from shared witness:
-      -- witness_fn i = witness_fn j → same point → same predicate profile → same nf_y_proj
-      -- → same SSN → same index (pos_between has no duplicates).
-      -- This is a leaf sorry about NF injectivity within a fixed disjunct.
-      sorry
+      -- Equal witnesses → equal y-predicate profiles
+      have h_pred_eq' : ∀ p, nf_y_proj (pos_between.get i) (.pred p ⟨0, by omega⟩) =
+          nf_y_proj (pos_between.get j) (.pred p ⟨0, by omega⟩) := by
+        intro p
+        have hi := (h_wit_spec i).2.2 p
+        have hj := (h_wit_spec j).2.2 p
+        rw [h_eq] at hi
+        exact Bool.eq_iff_iff.mpr (hi.symm.trans hj)
+      -- Extract filter membership and decompose
+      have hi_mem := List.get_mem pos_between i
+      have hj_mem := List.get_mem pos_between j
+      rw [List.mem_filter] at hi_mem hj_mem
+      obtain ⟨_, hi_filt⟩ := hi_mem
+      obtain ⟨_, hj_filt⟩ := hj_mem
+      simp only [Bool.and_eq_true, beq_iff_eq] at hi_filt hj_filt
+      obtain ⟨⟨hi_compat, hi_zone⟩, _⟩ := hi_filt
+      obtain ⟨⟨hj_compat, hj_zone⟩, _⟩ := hj_filt
+      simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at hi_compat hj_compat
+      obtain ⟨⟨⟨⟨hi_x, hi_t⟩, hi_ord1⟩, hi_ord2⟩, hi_ocons⟩ := hi_compat
+      obtain ⟨⟨⟨⟨hj_x, hj_t⟩, hj_ord1⟩, hj_ord2⟩, hj_ocons⟩ := hj_compat
+      -- Extract y-related order facts from zone
+      have h_ylx_i : (pos_between.get i) (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true := by
+        simp only [ssn_zone_until] at hi_zone; revert hi_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_ylx_j : (pos_between.get j) (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true := by
+        simp only [ssn_zone_until] at hj_zone; revert hj_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_tly_i : (pos_between.get i) (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true := by
+        simp only [ssn_zone_until] at hi_zone; revert hi_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_tly_j : (pos_between.get j) (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true := by
+        simp only [ssn_zone_until] at hj_zone; revert hj_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_xly_i : (pos_between.get i) (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := by
+        simp only [ssn_zone_until] at hi_zone; revert hi_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_xly_j : (pos_between.get j) (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false := by
+        simp only [ssn_zone_until] at hj_zone; revert hj_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_ylt_i : (pos_between.get i) (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false := by
+        simp only [ssn_zone_until] at hi_zone; revert hi_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      have h_ylt_j : (pos_between.get j) (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false := by
+        simp only [ssn_zone_until] at hj_zone; revert hj_zone
+        split_ifs <;> (intro h; try exact absurd h (by decide)) <;> simp_all [Bool.and_eq_true]
+      -- SSNs agree on all atoms
+      have h_ssn_eq : pos_between.get i = pos_between.get j := by
+        funext a
+        cases a with
+        | pred p k =>
+          match k with
+          | ⟨0, _⟩ => simp only [nf_y_proj] at h_pred_eq'; exact h_pred_eq' p
+          | ⟨1, _⟩ => rw [hi_x p (Multiset.mem_toList.mpr (Fintype.complete p)), hj_x p (Multiset.mem_toList.mpr (Fintype.complete p))]
+          | ⟨2, _⟩ => rw [hi_t p (Multiset.mem_toList.mpr (Fintype.complete p)), hj_t p (Multiset.mem_toList.mpr (Fintype.complete p))]
+        | order k l h_ne =>
+          match k, l, h_ne with
+          | ⟨0, _⟩, ⟨1, _⟩, _ => rw [h_ylx_i, h_ylx_j]
+          | ⟨1, _⟩, ⟨0, _⟩, _ => rw [h_xly_i, h_xly_j]
+          | ⟨0, _⟩, ⟨2, _⟩, _ => rw [h_ylt_i, h_ylt_j]
+          | ⟨2, _⟩, ⟨0, _⟩, _ => rw [h_tly_i, h_tly_j]
+          | ⟨1, _⟩, ⟨2, _⟩, _ => rw [hi_ord2, hj_ord2]
+          | ⟨2, _⟩, ⟨1, _⟩, _ => rw [hi_ord1, hj_ord1]
+          | ⟨0, _⟩, ⟨0, _⟩, h => exact absurd rfl h
+          | ⟨1, _⟩, ⟨1, _⟩, h => exact absurd rfl h
+          | ⟨2, _⟩, ⟨2, _⟩, h => exact absurd rfl h
+      -- Nodup of pos_between → equal elements → equal indices
+      have h_nodup : pos_between.Nodup :=
+        List.Nodup.filter _
+          (Multiset.coe_nodup.mp (by rw [Multiset.coe_toList]; exact Finset.nodup _))
+      exact Fin.ext
+        ((h_nodup.getElem_inj_iff (hi := i.isLt) (hj := j.isLt)).mp h_ssn_eq)
     -- Each witness satisfies pos_pt (the disjunction of positive between_tx char_y)
     let pos_pt : TemporalPred :=
       ⟨formula_disjList (pos_between.map fun ssn =>

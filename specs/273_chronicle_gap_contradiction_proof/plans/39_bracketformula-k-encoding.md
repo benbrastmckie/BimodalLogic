@@ -109,7 +109,7 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 
 ---
 
-### Phase 2: Backward Direction Re-proof [NOT STARTED]
+### Phase 2: Backward Direction Re-proof [COMPLETED]
 
 **Goal**: Re-prove `backward_holdsLeft_of_nf_eval` (L1927) with the new BracketFormula k. The backward direction goes from `nf_eval` (semantic evaluation at witnesses) to `VecEA2.holdsLeft` (temporal formula holds). The key new sub-goal: given k unsorted witnesses from `nf_eval`, sort them into strictly increasing order for `IntervalPattern.holds`.
 
