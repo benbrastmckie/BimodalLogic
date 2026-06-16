@@ -2652,11 +2652,62 @@ private theorem forward_nf_eval_of_holdsLeft
         · -- between_tx: bracket handles this via per-SSN pointTypes
           have h_bridge := between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
             h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
-          -- The between_tx case requires extracting witnesses from the bracket.
-          -- This involves casting through h_n_eq (n = pos_between.length) and
-          -- relating the bracket's per-SSN pointTypes to specific SSN existentials.
-          -- Both directions (∃ y ↔ sub_nf.2 ssn) require this extraction.
-          exact sorry
+          -- Extract bracket from h_vea_eq via dependent type cast
+          subst h_n_eq
+          have h_vea_eq3 := eq_of_heq (Sigma.mk.inj h_vea_eq).2
+          have h_bracket_eq := congrArg VecEA2.bracket h_vea_eq3
+          rw [← h_bracket_eq] at h_bracket
+          -- h_bracket now has the explicit bracket structure with per-SSN pointTypes
+          -- Define neg_between and seg_guard for convenience
+          let neg_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn' =>
+            ssn_xt_compatible ssn' nf_x_1var parent_atoms true false &&
+            (ssn_zone_until ssn' == .between_tx) && !sub_nf.2 ssn'
+          let seg_guard : TemporalPred :=
+            ⟨formula_conjList (neg_between.map fun ssn' =>
+              (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn')).neg)⟩
+          constructor
+          · -- → direction: ∃ y → sub_nf.2 ssn = true
+            intro h_exist
+            by_contra h_neg
+            -- Get y via bridge
+            obtain ⟨y, h_ty, h_yx, h_y_pred⟩ := h_bridge.mp h_exist
+            -- ssn is in neg_between
+            have h_ssn_in_neg : ssn ∈ neg_between := by
+              rw [List.mem_filter]
+              exact ⟨h_ssn_in_elems ssn, by simp [h_ssn_xt, h_zone, h_neg]⟩
+            -- seg_guard includes ¬char_y(nf_y_proj ssn)
+            -- From h_bracket, seg_guard holds on every segment of (t, x).
+            -- y ∈ (t, x). We need: seg_guard holds at y.
+            -- The bracket is: BracketFormula.holds with per-SSN pointTypes and constant seg_guard.
+            -- Unfolding: there exist strictly increasing witnesses w_0 < ... < w_{k-1} in (t, x)
+            -- with per-SSN pointTypes, and seg_guard on each segment.
+            -- y is either a witness or in a segment.
+            -- If y is a witness w_i: w_i satisfies char_y(pos_between[σ(i)]), which is a POSITIVE ssn.
+            --   Since ssn is NEGATIVE, nf_y_proj ssn ≠ nf_y_proj pos_between[σ(i)].
+            --   But char_y is determined by nf_y_proj. If y satisfies both char_y(nf_y_proj ssn) AND
+            --   char_y(pos_between[σ(i)]), then nf_y_proj ssn = nf_y_proj pos_between[σ(i)] (by char_y injectivity).
+            --   But they differ (positive vs negative) → contradiction... actually they could have
+            --   the same y-proj but differ in other atoms. No, between_tx SSNs with same nf_y_proj
+            --   and same x/t compatibility are identical. So nf_y_proj ssn ≠ nf_y_proj pos_between[σ(i)]
+            --   means char_y(nf_y_proj ssn) can't hold at y if char_y(pos_between[σ(i)]) holds.
+            -- This argument is complex. Use sorry for mutual exclusivity.
+            sorry
+          · -- ← direction: sub_nf.2 ssn = true → ∃ y
+            intro h_pos
+            -- ssn ∈ pos_between
+            have h_ssn_in_pos : ssn ∈ pos_between := by
+              rw [List.mem_filter]
+              exact ⟨h_ssn_in_elems ssn, by simp [h_ssn_xt, h_zone, h_pos]⟩
+            -- Find j such that pos_between[j] = ssn
+            obtain ⟨j, hj⟩ := List.get_of_mem h_ssn_in_pos
+            -- σ⁻¹(j) is a bracket witness index
+            -- The witness at position σ⁻¹(j) satisfies char_y(pos_between[σ(σ⁻¹(j))]) = char_y(ssn)
+            -- From h_bracket, extract this witness
+            -- h_bracket : BracketFormula.holds M atomMap {...} t x
+            -- Unfolding IntervalPattern.holds, there exist witnesses w : Fin k → M.carrier
+            -- with w strictly increasing, in (t, x), w(i) satisfies pointTypes(i), seg_guard on segments.
+            -- We need w(σ⁻¹(j)) and show it satisfies char_y(ssn) via nf_y_proj.
+            sorry
         · -- eq_x: char_y at x ↔ ∃ y
           have h_bridge := eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
             h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
