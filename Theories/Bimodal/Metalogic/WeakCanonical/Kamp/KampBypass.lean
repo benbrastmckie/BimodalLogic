@@ -2649,7 +2649,13 @@ private theorem forward_nf_eval_of_holdsLeft
               rw [h_zone]; show (if sub_nf.2 ssn then _ else _) = _
               rw [h_pos]; rfl
             exact h_bridge.mp (h_endLeft_conj _ h_in)
-        · -- between_tx: bracket handles this
+        · -- between_tx: bracket handles this via per-SSN pointTypes
+          have h_bridge := between_tx_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
+            h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
+          -- The between_tx case requires extracting witnesses from the bracket.
+          -- This involves casting through h_n_eq (n = pos_between.length) and
+          -- relating the bracket's per-SSN pointTypes to specific SSN existentials.
+          -- Both directions (∃ y ↔ sub_nf.2 ssn) require this extraction.
           exact sorry
         · -- eq_x: char_y at x ↔ ∃ y
           have h_bridge := eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
