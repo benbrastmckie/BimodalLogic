@@ -101,7 +101,7 @@ This plan directly advances the critical path item in ROADMAP.md:
 
 ---
 
-### Phase 2: Close the k>0 n=1 Sorry in existPart_succ_n1_bypass [NOT STARTED]
+### Phase 2: Close the k>0 n=1 Sorry in existPart_succ_n1_bypass [PARTIAL]
 
 **Goal**: Fill the `sorry` at `KampBypass.lean:104` (the `succ k'` branch) by generalizing the k=0 zone dispatch pattern to use depth-(k'+1) characteristic formulas. This is the core mathematical work of the task.
 
