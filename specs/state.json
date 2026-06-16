@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 301,
+  "next_project_number": 305,
   "active_projects": [
     {
       "project_number": 300,
@@ -162,7 +162,7 @@
     {
       "project_number": 268,
       "project_name": "reynolds_pipeline_bridge",
-      "status": "researched",
+      "status": "abandoned",
       "task_type": "lean4",
       "description": "Strategy B: Refactor discrete completeness to use Reynolds k-equivalence bypass instead of IsSuccArchimedean. Build LimitDomSubtype as OrderedMonadicStructure, apply sorry-free one_class -> very_good -> good pipeline, extract k-equivalent Z-interval, transfer satisfiability, build countermodel on Z. Eliminates succ_embed_surjective sorry chain entirely.",
       "priority": "high",
@@ -271,7 +271,8 @@
           }
         ]
       },
-      "session_id": "sess_1780937706_c23b60"
+      "session_id": "sess_1780937706_c23b60",
+      "abandon_reason": "Proposed bypassing chronicle_gap_contradiction. Audit shows this sorry is dead code -- no bypass needed."
     },
     {
       "project_number": 257,
@@ -448,7 +449,7 @@
         93
       ],
       "dependencies": [
-        155
+        303
       ],
       "topic": "completeness"
     },
@@ -481,7 +482,7 @@
     {
       "project_number": 155,
       "project_name": "reynolds_pipeline_activation",
-      "status": "implementing",
+      "status": "abandoned",
       "task_type": "lean4",
       "priority": "high",
       "topic": "completeness",
@@ -844,7 +845,8 @@
             "integrated_date": "2026-06-04"
           }
         ]
-      }
+      },
+      "abandon_reason": "Mega-task with 67 plan versions. Scope fully carved into task 273 (completed) and new k>0 task."
     },
     {
       "project_number": 175,
@@ -871,7 +873,7 @@
     {
       "project_number": 176,
       "project_name": "relocate_chronicle_and_archive_dead_bxcanonical",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "lean4",
       "priority": "medium",
       "description": "Resolve architectural confusion where Chronicle/ lives under BXCanonical/ but is only consumed by WeakCanonical/. Move 6 Chronicle files (14331 lines) to Metalogic/Chronicle/ or WeakCanonical/Chronicle/. Archive entire non-Chronicle BXCanonical subtree (16 files, 4615 lines, 19 false sorries) to Boneyard/BXCanonical/. Verify OrderedSeedConsistency.lean dependency from WeakCanonical/ReflexiveCanonical.lean before archiving. Update aggregator imports. Subsumes part of task 130 scope.",
@@ -880,7 +882,8 @@
       ],
       "created": "2026-05-20T15:55:54Z",
       "last_updated": "2026-05-20T15:55:54Z",
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "abandon_reason": "Partially subsumed by task 301 Boneyard archival scope."
     },
     {
       "project_number": 177,
@@ -1138,7 +1141,7 @@
     {
       "project_number": 200,
       "project_name": "ghr93_case_ii_elegance_rewrite",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "lean4",
       "priority": "low",
       "topic": "code-quality",
@@ -1147,7 +1150,8 @@
       "created": "2026-05-29T00:00:00Z",
       "last_updated": "2026-05-29T00:00:00Z",
       "next_artifact_number": 1,
-      "artifacts": []
+      "artifacts": [],
+      "abandon_reason": "Cosmetic rewrite of working proof. Low priority, not on critical path."
     },
     {
       "project_number": 219,
@@ -1236,7 +1240,7 @@
     {
       "project_number": 254,
       "project_name": "update_stale_metadata_post_202",
-      "status": "not_started",
+      "status": "abandoned",
       "task_type": "meta",
       "priority": "medium",
       "topic": "completeness",
@@ -1245,7 +1249,8 @@
         95,
         176
       ],
-      "created": "2026-06-01T22:30:00Z"
+      "created": "2026-06-01T22:30:00Z",
+      "abandon_reason": "Metadata cleanup subsumed by task 301."
     },
     {
       "project_number": 273,
@@ -1684,12 +1689,109 @@
       "priority": "low",
       "topic": "completeness",
       "dependencies": [
-        273
+        303
       ],
       "created": "2026-06-09T12:40:00Z",
       "last_updated": "2026-06-09T12:40:00Z",
       "artifacts": [],
       "next_artifact_number": 1
+    },
+    {
+      "project_number": 301,
+      "project_name": "completeness_cleanup_and_roadmap",
+      "status": "planned",
+      "task_type": "lean4",
+      "description": "Repository cleanup and roadmap update following task 273 completion and chronicle_gap dead-code audit. Scope: (1) Archive dead code to Boneyard/ (BXCanonical path, dead chronicle functions, VecEADecomposition sorries, possibly Stavi path) with clear comments. (2) Factor oversized files (KampBypass.lean at 4488 lines). (3) Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. (4) Abandon obsolete tasks (155, 268, 200, 254, 176). (5) Revise task 95/299 dependencies. (6) Create new tasks: k>0 depth induction (sole completeness_discrete blocker) and import refactor. (7) Update ROADMAP.md to reflect current state: sole blocker is existPart_succ_n1_bypass k>0 in KampBypass.lean.",
+      "priority": "high",
+      "topic": "completeness",
+      "dependencies": [],
+      "created": "2026-06-16T15:50:00Z",
+      "last_updated": "2026-06-16T16:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/301_completeness_cleanup_and_roadmap/reports/01_completeness-status-audit.md",
+          "type": "report",
+          "summary": "Completeness status audit: sole blocker is k>0 existPart_succ_n1_bypass; chronicle_gap is dead code; task triage and cleanup plan"
+        },
+        {
+          "path": "specs/301_completeness_cleanup_and_roadmap/plans/02_cleanup-roadmap-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: phantom sorry elimination, dead code archival, KampBypass factoring, task triage, ROADMAP rewrite"
+        }
+      ],
+      "next_artifact_number": 3,
+      "researched": "2026-06-16T15:50:00Z",
+      "planned": "2026-06-16T16:00:00Z",
+      "session_id": "sess_1781625219_873ace",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_completeness-status-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-06-16"
+          }
+        ]
+      }
+    },
+    {
+      "project_number": 302,
+      "project_name": "boneyard_dead_code_archival",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.",
+      "priority": "medium",
+      "topic": "cleanup",
+      "dependencies": [
+        301
+      ],
+      "created": "2026-06-16T16:05:00Z",
+      "last_updated": "2026-06-16T16:05:00Z",
+      "artifacts": [],
+      "next_artifact_number": 1
+    },
+    {
+      "project_number": 303,
+      "project_name": "k_gt_0_depth_induction",
+      "status": "not_started",
+      "task_type": "lean4",
+      "priority": "critical",
+      "topic": "completeness",
+      "description": "Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.",
+      "dependencies": [],
+      "created": "2026-06-16T00:00:00Z",
+      "last_updated": "2026-06-16T00:00:00Z"
+    },
+    {
+      "project_number": 304,
+      "project_name": "import_refactor_mcs_mixed_case",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "completeness",
+      "description": "Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. Completed as part of task 301 phase 1.",
+      "dependencies": [],
+      "created": "2026-06-16T00:00:00Z",
+      "last_updated": "2026-06-16T00:00:00Z",
+      "completion_summary": "Moved mcs_mixed_case_absurd and dd_countermodel_chronicle_mixed_sorry to MCSMixedCase.lean. Completed as part of task 301 phase 1."
     }
   ],
   "artifacts": [

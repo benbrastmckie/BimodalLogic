@@ -1,5 +1,5 @@
 ---
-next_project_number: 301
+next_project_number: 305
 ---
 
 # TODO
@@ -11,10 +11,10 @@ next_project_number: 301
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,282,290,290,291,296,299,300 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,192,196,231,292,293,294,298 | 161,187,191,194,230,268,291,300 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor, automation |
-| 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,301,303 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 95,192,196,231,292,293,294,298,299,302 | 161,187,191,194,230,291,300,301,303 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 193 | 189,192,196 | automation |
+| 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -23,11 +23,10 @@ next_project_number: 301
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-268 [RESEARCHED] — Strategy B: Refactor discrete completeness to use Reynolds k-equi
-  └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
-    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-      └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
+301 [PLANNED] — Repository cleanup and roadmap update following task 273 completi
+303 [NOT STARTED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+  └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+  └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -37,7 +36,6 @@ next_project_number: 301
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
 194 [NOT STARTED] — migrate_nonempty_to_derivable
-176 [NOT STARTED] — Resolve architectural confusion where Chronicle/ lives under BXCa
 
 ### Frame Extensions
 
@@ -82,10 +80,6 @@ next_project_number: 301
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
 
-### Code Quality
-
-200 [NOT STARTED] — Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and 
-
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
@@ -101,9 +95,55 @@ next_project_number: 301
 300 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
+### Cleanup
+
+302 [NOT STARTED] — Comprehensive dead code archival to Boneyard/ with comment cleanu
+
 ### Uncategorized
 
 ## Tasks
+
+### 304. Import refactor mcs mixed case
+- **Status**: [COMPLETED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. Completed as part of task 301 phase 1.
+
+---
+
+### 303. K gt 0 depth induction
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.
+
+---
+
+### 302. Boneyard dead code archival
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: cleanup
+- **Dependencies**: Task 301
+
+**Description**: Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.
+
+---
+
+### 301. Completeness cleanup and roadmap
+- **Status**: [PLANNED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+- **Research**: [301_completeness_cleanup_and_roadmap/reports/01_completeness-status-audit.md]
+- **Plan**: [301_completeness_cleanup_and_roadmap/plans/02_cleanup-roadmap-plan.md]
+
+**Description**: Repository cleanup and roadmap update following task 273 completion and chronicle_gap dead-code audit. Scope: (1) Archive dead code to Boneyard/ (BXCanonical path, dead chronicle functions, VecEADecomposition sorries, possibly Stavi path) with clear comments. (2) Factor oversized files (KampBypass.lean at 4488 lines). (3) Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. (4) Abandon obsolete tasks (155, 268, 200, 254, 176). (5) Revise task 95/299 dependencies. (6) Create new tasks: k>0 depth induction (sole completeness_discrete blocker) and import refactor. (7) Update ROADMAP.md to reflect current state: sole blocker is existPart_succ_n1_bypass k>0 in KampBypass.lean.
+
+---
 
 ### 300. Refactor literature index json
 abort aware tableau cancellation
@@ -139,7 +179,7 @@ Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abor
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: Task 273
+- **Dependencies**: Task 303
 
 **Description**: Refactor DiscreteGameTransfer.lean to eliminate the wrapper pattern once the completeness chain is sorry-free. Inline discrete_ghr93_theorem6 by having StaviCompleteness.lean call ghr93_forward_to_backward directly with discrete typeclass instances. Convert discrete_rank_embed_eq_drc to a @[simp] lemma. Remove discrete_ghr93_theorem6_rank_varying if callers can use the general version. Clean up any dead code from the old fixed-pivot architecture that was deleted in task 273.
 
@@ -320,7 +360,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 268. Reynolds pipeline bridge
-- **Status**: [RESEARCHED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -351,7 +391,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 254. Update stale metadata post 202
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: completeness
 - **Dependencies**: Task 95, Task 176
@@ -392,7 +432,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 200. Ghr93 case ii elegance rewrite
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: code-quality
 - **Dependencies**: None
@@ -536,7 +576,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 176. Relocate chronicle and archive dead bxcanonical
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: Task 155
@@ -603,7 +643,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 155. Reynolds pipeline activation
-- **Status**: [IMPLEMENTING]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 268
@@ -718,6 +758,6 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 - **Status**: [NOT STARTED]
 - **Task Type**: general
 - **Topic**: completeness
-- **Dependencies**: Task 155
+- **Dependencies**: Task 303
 
 **Description**: Verification pass on sorry status for completeness_discrete and bx_completeness. Updated scope after task 202 completion and task 155 re-scope: (1) Verify dd_countermodel_chronicle_dense and dd_countermodel_chronicle_mixed_sorry show no sorryAx (confirmed sorry-free as of 2026-05-15). (2) Trace the discrete case sorryAx: The BX chronicle path (dd_countermodel_chronicle_discrete -> succ_embed_surjective -> limitDomSubtype_isSuccArchimedean -> succ_cofinal) is being bypassed. The correct fix is the WeakCanonical path: task 155 targets closing the no_gaps_discrete import cycle (GoodStructures.lean:855) by delegating to no_gaps_discrete_model_surgery (GoodStructuresModelSurgery.lean:2133), then rewiring completeness_discrete. Note: succ_cofinal remains the current root sorry on the BX chronicle path (ChronicleToCountermodel.lean), but this path is dead code -- the WeakCanonical route via no_gaps_discrete_model_surgery (already sorry-free) is the production path once the import cycle is resolved by task 155. (3) Classify all Metalogic/ sorry occurrences as critical-path vs dead-code vs non-critical-path. (4) Update stale axiom audit comments in Completeness.lean (lines 177-234 reference CE:3570 which is no longer the sorry source). (5) Verify soundness and decidability remain sorry-free. (6) Produce audit report. Dependencies on tasks 93 and 109 removed (both completed).
