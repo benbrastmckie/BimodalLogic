@@ -2456,20 +2456,8 @@ private theorem forward_nf_eval_of_holdsLeft
     obtain ⟨h_endLeft, x, h_t_lt_x, h_endRight, h_bracket⟩ := h_holds
     -- x is the witness for the existential
     refine ⟨x, ?_⟩
-    -- Reconstruct nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf
-    -- Split into atom part and quantifier part
-    constructor
-    · -- Atom part: ∀ a, atom_eval M (x, t) a ↔ sub_nf.1 a = true
-      -- From h_endRight: char_1(nf_x) holds at x → nf_eval_nf M 1 1 (fun _ => x) nf_x
-      -- From h_compat: nf_x_compat_check sub_nf nf_x → predicate atoms of nf_x match sub_nf
-      -- From h_atoms: atom_eval M (fun _ => t) a ↔ parent_atoms a = true
-      -- From h_t_compat: sub_nf.1 (.pred p 1) = parent_atoms (.pred p 0)
-      -- Extract h_endRight to get char_1(nf_x) at x
-      -- Extract char_1(nf_x) from the endpointRight
-      -- h_endRight : vea.endpointRight.eval_at M atomMap x
-      -- vea.endpointRight = ⟨Formula.and (char_1 nf_x) (formula_conjList right_conjuncts)⟩
-      -- by h_vea_eq
-      have h_vea_right : vea.endpointRight =
+    -- Extract char_1(nf_x) from endpointRight (shared by atom + quantifier parts)
+    have h_vea_right : vea.endpointRight =
           (⟨Formula.and (char_1 nf_x) (formula_conjList
             ((Fintype.elems (α := NormalForm sig 0 3)).val.toList.filterMap fun ssn =>
               if ssn_xt_compatible ssn nf_x_1var parent_atoms true false then
@@ -2484,15 +2472,16 @@ private theorem forward_nf_eval_of_holdsLeft
               else none))⟩ : TemporalPred) := by
         have := congrArg (fun s => s.snd.endpointRight) h_vea_eq
         simp at this; exact this.symm
-      simp only [TemporalPred.eval_at] at h_endRight
-      rw [h_vea_right] at h_endRight
-      simp only [TemporalPred.eval_at] at h_endRight
-      have h_endRight_temporal := h_endRight
-      rw [temporal_truth_and] at h_endRight_temporal
-      have h_nf_x_eval := (char_1_correct nf_x M h_UZ h_SZ x).mp h_endRight_temporal.1
-      -- nf_x_eval gives: nf_eval_nf M 1 1 (fun _ => x) nf_x
-      -- This means: ∀ a : AtomKind sig 1, atom_eval M (fun _ => x) a ↔ nf_x.1 a = true
-      obtain ⟨h_nf_x_atoms, _⟩ := h_nf_x_eval
+    simp only [TemporalPred.eval_at] at h_endRight
+    rw [h_vea_right] at h_endRight
+    simp only [TemporalPred.eval_at] at h_endRight
+    have h_endRight_temporal := h_endRight
+    rw [temporal_truth_and] at h_endRight_temporal
+    have h_nf_x_eval := (char_1_correct nf_x M h_UZ h_SZ x).mp h_endRight_temporal.1
+    obtain ⟨h_nf_x_atoms, _⟩ := h_nf_x_eval
+    -- Reconstruct nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf
+    constructor
+    · -- Atom part
       intro a
       cases a with
       | pred p k =>
@@ -2528,12 +2517,21 @@ private theorem forward_nf_eval_of_holdsLeft
           · intro _; exact h_gt
           · intro _; exact h_t_lt_x
     · -- Quantifier part: ∀ ssn, (∃ y, nf_eval_nf M 0 3 [y,x,t] ssn) ↔ sub_nf.2 ssn = true
-      -- We need: h_endLeft gives below_t/eq_t conditions
-      --          h_endRight (after extracting conjuncts) gives eq_x/above_x conditions
-      --          h_bracket gives between_tx conditions (per-SSN via bracket witnesses)
-      -- All via zone bridges + nf_depth0_char_formula_correct.
-      -- The h_ssn_compat and h_t_compat assumptions were needed for the old forward direction,
-      -- but the proof is still complex. Use sorry for now and close in next pass.
+      -- Helper: x-predicates and t-predicates from h_nf_x_atoms and h_atoms
+      have h_x_pred : ∀ p : sig.preds,
+          M.interp p x ↔ nf_x_1var (.pred p ⟨0, by omega⟩) = true := by
+        intro p; have h := h_nf_x_atoms (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at h; exact h
+      have h_t_pred : ∀ p : sig.preds,
+          M.interp p t ↔ parent_atoms (.pred p ⟨0, by omega⟩) = true := by
+        intro p; have h := h_atoms (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at h; exact h
+      -- Quantifier part: for each ssn, (∃ y, nf_eval_nf M 0 3 [y,x,t] ssn) ↔ sub_nf.2 ssn = true
+      -- The proof uses h_endLeft (below_t/eq_t zones), h_endRight_temporal (eq_x/above_x zones),
+      -- h_bracket (between_tx zone via per-SSN pointTypes), and zone bridge lemmas.
+      -- Each zone direction is proved using the temporal formula encoding + zone bridge.
+      -- Deferred: the full zone-by-zone proof requires extracting VecEA2 components from h_vea_eq
+      -- and matching them against the enriched_vecEA2_until construction.
       intro ssn; exact sorry
   · -- Incompatible case: empty list, contradiction
     simp at h_in_list
