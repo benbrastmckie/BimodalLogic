@@ -3610,7 +3610,293 @@ private theorem backward_holdsRight_of_nf_eval
             parent_atoms
         else []) Fintype.elems.val.toList),
       VecEA2.holdsRight M atomMap vea.snd t := by
-  sorry
+  intro ⟨x, h_eval⟩
+  -- Step 1: Get the characteristic NF of x and show compatibility
+  let nf_x := nf_characteristic M 1 1 (fun _ => x)
+  have h_nf_x : nf_eval_nf M 1 1 (fun _ => x) nf_x :=
+    nf_characteristic_satisfies M 1 1 (fun _ => x)
+  have h_compat : nf_x_compat_check sub_nf nf_x = true :=
+    nf_x_compat_of_nf_eval M sub_nf t x h_eval nf_x h_nf_x
+  -- Step 2: Setup
+  let nf_x_1var : NormalForm sig 0 1 := fun a => match a with
+    | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
+    | .order i j h => absurd (Fin.ext (by omega) : i = j) h
+  have h_x_lt_t : x < t := (zone_from_nf_eval M sub_nf t x h_eval).2.1 h_lt
+  obtain ⟨h_eval_atoms, h_eval_quant⟩ := h_eval
+  -- Define pos_between and neg_between matching enriched_vecEA2_since's let bindings
+  let neg_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
+    ssn_xt_compatible ssn nf_x_1var parent_atoms false true &&
+    (ssn_zone_since ssn == .between_tx) && !sub_nf.2 ssn
+  let pos_between := (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filter fun ssn =>
+    ssn_xt_compatible ssn nf_x_1var parent_atoms false true &&
+    (ssn_zone_since ssn == .between_tx) && sub_nf.2 ssn
+  let seg_guard : TemporalPred :=
+    ⟨formula_conjList (neg_between.map fun ssn =>
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)).neg)⟩
+  let k := pos_between.length
+  -- Step 3: Get witnesses for each pos_between SSN
+  have h_pos_witnesses : ∀ ssn ∈ pos_between, ∃ y, x < y ∧ y < t ∧
+      ∀ p, M.interp p y ↔ (nf_y_proj ssn) (.pred p ⟨0, by omega⟩) = true := by
+    intro ssn h_mem
+    rw [List.mem_filter] at h_mem
+    obtain ⟨_, h_filter⟩ := h_mem
+    simp only [Bool.and_eq_true, beq_iff_eq] at h_filter
+    obtain ⟨⟨h_compat', h_zone⟩, h_pos⟩ := h_filter
+    have h_exists := (h_eval_quant ssn).mpr h_pos
+    exact (since_between_xt_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
+      h_x_lt_t h_compat' h_zone
+      (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                   have := h_atom (.pred p ⟨0, by omega⟩)
+                   simp only [atom_eval] at this; exact this)
+      (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                   simp only [atom_eval] at this; exact this)).mp h_exists
+  let witness_fn : Fin k → M.carrier := fun i =>
+    (h_pos_witnesses (pos_between.get i) (List.get_mem pos_between i)).choose
+  have h_wit_spec : ∀ i, x < witness_fn i ∧ witness_fn i < t ∧
+      ∀ p, M.interp p (witness_fn i) ↔ (nf_y_proj (pos_between.get i)) (.pred p ⟨0, by omega⟩) = true := by
+    intro i
+    exact (h_pos_witnesses (pos_between.get i) (List.get_mem pos_between i)).choose_spec
+  -- Step 4: Prove witnesses are injective
+  have h_wit_injective : Function.Injective witness_fn := by
+    intro i j h_eq
+    have h_pred_eq' : ∀ p, nf_y_proj (pos_between.get i) (.pred p ⟨0, by omega⟩) =
+        nf_y_proj (pos_between.get j) (.pred p ⟨0, by omega⟩) := by
+      intro p
+      have hi := (h_wit_spec i).2.2 p
+      have hj := (h_wit_spec j).2.2 p
+      rw [h_eq] at hi
+      exact Bool.eq_iff_iff.mpr (hi.symm.trans hj)
+    have hi_mem := List.get_mem pos_between i
+    have hj_mem := List.get_mem pos_between j
+    rw [List.mem_filter] at hi_mem hj_mem
+    obtain ⟨_, hi_filt⟩ := hi_mem
+    obtain ⟨_, hj_filt⟩ := hj_mem
+    simp only [Bool.and_eq_true, beq_iff_eq] at hi_filt hj_filt
+    obtain ⟨⟨hi_compat, hi_zone⟩, _⟩ := hi_filt
+    obtain ⟨⟨hj_compat, hj_zone⟩, _⟩ := hj_filt
+    simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true] at hi_compat hj_compat
+    obtain ⟨⟨⟨⟨hi_x, hi_t⟩, hi_ord1⟩, hi_ord2⟩, hi_ocons⟩ := hi_compat
+    obtain ⟨⟨⟨⟨hj_x, hj_t⟩, hj_ord1⟩, hj_ord2⟩, hj_ocons⟩ := hj_compat
+    -- Extract order atoms from since_zone_between_tx_orders
+    have h_orders_i := since_zone_between_tx_orders (pos_between.get i) hi_zone
+    have h_orders_j := since_zone_between_tx_orders (pos_between.get j) hj_zone
+    have h_ssn_eq : pos_between.get i = pos_between.get j := by
+      funext a
+      cases a with
+      | pred p k =>
+        match k with
+        | ⟨0, _⟩ => simp only [nf_y_proj] at h_pred_eq'; exact h_pred_eq' p
+        | ⟨1, _⟩ => rw [hi_x p (Multiset.mem_toList.mpr (Fintype.complete p)), hj_x p (Multiset.mem_toList.mpr (Fintype.complete p))]
+        | ⟨2, _⟩ => rw [hi_t p (Multiset.mem_toList.mpr (Fintype.complete p)), hj_t p (Multiset.mem_toList.mpr (Fintype.complete p))]
+      | order k l h_ne =>
+        match k, l, h_ne with
+        | ⟨0, _⟩, ⟨1, _⟩, _ => rw [h_orders_i.2.2.1, h_orders_j.2.2.1]
+        | ⟨1, _⟩, ⟨0, _⟩, _ => rw [h_orders_i.1, h_orders_j.1]
+        | ⟨0, _⟩, ⟨2, _⟩, _ => rw [h_orders_i.2.1, h_orders_j.2.1]
+        | ⟨2, _⟩, ⟨0, _⟩, _ => rw [h_orders_i.2.2.2, h_orders_j.2.2.2]
+        | ⟨1, _⟩, ⟨2, _⟩, _ => rw [hi_ord2, hj_ord2]
+        | ⟨2, _⟩, ⟨1, _⟩, _ => rw [hi_ord1, hj_ord1]
+        | ⟨0, _⟩, ⟨0, _⟩, h => exact absurd rfl h
+        | ⟨1, _⟩, ⟨1, _⟩, h => exact absurd rfl h
+        | ⟨2, _⟩, ⟨2, _⟩, h => exact absurd rfl h
+    have h_nodup : pos_between.Nodup :=
+      List.Nodup.filter _
+        (Multiset.coe_nodup.mp (by rw [Multiset.coe_toList]; exact Finset.nodup _))
+    exact Fin.ext
+      ((h_nodup.getElem_inj_iff (hi := i.isLt) (hj := j.isLt)).mp h_ssn_eq)
+  -- Step 5: Sort witnesses and determine the permutation
+  let wit_set : Finset M.carrier := Finset.image witness_fn Finset.univ
+  have h_card : wit_set.card = k := by
+    rw [Finset.card_image_of_injective _ h_wit_injective]; simp
+  let sorted := wit_set.orderEmbOfFin h_card
+  have sorted_is_witness : ∀ i : Fin k, ∃ j : Fin k, witness_fn j = sorted i := by
+    intro i
+    have h_mem := Finset.orderEmbOfFin_mem wit_set h_card i
+    rw [Finset.mem_image] at h_mem
+    obtain ⟨j, _, hj⟩ := h_mem
+    exact ⟨j, hj⟩
+  let sort_to_orig : Fin k → Fin k := fun i => (sorted_is_witness i).choose
+  have h_sort_spec : ∀ i, witness_fn (sort_to_orig i) = sorted i := by
+    intro i; exact (sorted_is_witness i).choose_spec
+  have h_sort_inj : Function.Injective sort_to_orig := by
+    intro i j h_eq
+    have : sorted i = sorted j := by
+      rw [← h_sort_spec i, ← h_sort_spec j, h_eq]
+    exact sorted.injective this
+  have h_sort_surj : Function.Surjective sort_to_orig := by
+    exact Finite.surjective_of_injective h_sort_inj
+  let σ : Equiv.Perm (Fin k) := Equiv.ofBijective sort_to_orig ⟨h_sort_inj, h_sort_surj⟩
+  -- Step 6: Build the specific VecEA2 for permutation σ
+  -- For Since: endRight = pre_conditions_at_t_since, endLeft = char_1(nf_x) + left conjuncts
+  let endRight : TemporalPred :=
+    ⟨pre_conditions_at_t_since atomMap h_surj sub_nf nf_x_1var parent_atoms⟩
+  let left_conjuncts :=
+    (Fintype.elems (α := NormalForm sig 0 3)).val.toList.filterMap fun ssn =>
+      if ssn_xt_compatible ssn nf_x_1var parent_atoms false true then
+        let zone := ssn_zone_since ssn
+        let char_y := nf_depth0_char_formula atomMap h_surj (nf_y_proj ssn)
+        match zone with
+        | .eq_t =>
+          if sub_nf.2 ssn then some char_y
+          else some char_y.neg
+        | .below_t =>
+          if sub_nf.2 ssn then some (Formula.snce char_y Formula.top)
+          else some (Formula.snce char_y Formula.top).neg
+        | _ => none
+      else none
+  let endLeft : TemporalPred :=
+    ⟨Formula.and (char_1 nf_x) (formula_conjList left_conjuncts)⟩
+  let the_bracket : BracketFormula k :=
+    { pointTypes := fun i =>
+        ⟨nf_depth0_char_formula atomMap h_surj (nf_y_proj (pos_between.get (σ i)))⟩
+      segmentTypes := fun _ => seg_guard }
+  let the_vea : Σ n, VecEA2 n :=
+    ⟨k, VecEA2.mk endLeft endRight the_bracket⟩
+  -- Show the_vea is in the flatMap list
+  have h_mem_elems : nf_x ∈ Fintype.elems.val := Fintype.complete nf_x
+  have h_σ_mem : σ ∈ (Fintype.elems (α := Equiv.Perm (Fin k))).val := Fintype.complete σ
+  have h_vea_mem : the_vea ∈ List.flatMap
+      (fun nf_x' => if nf_x_compat_check sub_nf nf_x' = true then
+        enriched_vecEA2_since atomMap h_surj char_1 sub_nf nf_x'
+          (fun a => match a with
+            | .pred p _ => nf_x'.1 (.pred p ⟨0, by omega⟩)
+            | .order i j h => absurd (Fin.ext (by omega) : i = j) h)
+          parent_atoms
+      else []) Fintype.elems.val.toList := by
+    rw [List.mem_flatMap]
+    refine ⟨nf_x, Multiset.mem_toList.mpr h_mem_elems, ?_⟩
+    simp only [h_compat, ite_true]
+    simp only [enriched_vecEA2_since]
+    rw [List.mem_map]
+    exact ⟨σ, Multiset.mem_toList.mpr h_σ_mem, rfl⟩
+  -- Step 7: Show holdsRight for the_vea
+  refine ⟨the_vea, h_vea_mem, ?_⟩
+  simp only [VecEA2.holdsRight]
+  -- holdsRight = endpointRight at t ∧ ∃ x' < t, endpointLeft at x' ∧ bracket.holds(x', t)
+  refine ⟨?endRight, x, h_x_lt_t, ?endLeft, ?bracket⟩
+  case endRight =>
+    simp only [TemporalPred.eval_at]
+    exact pre_conditions_at_t_since_holds M atomMap h_surj sub_nf nf_x_1var parent_atoms x t
+      h_x_lt_t
+      (fun p => by
+        obtain ⟨h_atom, _⟩ := h_nf_x
+        have := h_atom (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at this
+        exact this)
+      (fun p => by
+        have := h_atoms (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at this
+        exact this)
+      h_eval_quant
+  case endLeft =>
+    simp only [TemporalPred.eval_at]
+    show temporal_truth M atomMap x (Formula.and (char_1 nf_x) (formula_conjList _))
+    rw [temporal_truth_and]
+    constructor
+    · exact (char_1_correct nf_x M h_UZ h_SZ x).mpr h_nf_x
+    · rw [formula_conjList_iff]
+      intro φ h_mem
+      rw [List.mem_filterMap] at h_mem
+      obtain ⟨ssn, h_ssn_mem, h_some⟩ := h_mem
+      split_ifs at h_some with h_compat' h_pos
+      · revert h_some
+        rcases h_zone : ssn_zone_since ssn with _ | _ | _ | _ | _ | _
+        all_goals simp
+        all_goals intro h_eq; subst h_eq
+        -- pos.below_t (y < x): Since(char_y, top) at x
+        · exact (since_below_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_x_lt_t
+            h_compat' h_zone
+            (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                         have := h_atom (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)
+            (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)).mpr
+            ((h_eval_quant ssn).mpr h_pos)
+        -- pos.eq_t (y = x): char_y at x
+        · exact (since_eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_x_lt_t
+            h_compat' h_zone
+            (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                         have := h_atom (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)
+            (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)).mpr
+            ((h_eval_quant ssn).mpr h_pos)
+      · revert h_some
+        rcases h_zone : ssn_zone_since ssn with _ | _ | _ | _ | _ | _
+        all_goals simp
+        all_goals intro h_eq; subst h_eq
+        -- neg.below_t
+        · simp only [Formula.neg, temporal_truth]
+          intro h_since
+          have h_exist := (since_below_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_x_lt_t
+            h_compat' h_zone
+            (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                         have := h_atom (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)
+            (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)).mp h_since
+          exact absurd ((h_eval_quant ssn).mp h_exist) h_pos
+        -- neg.eq_t
+        · simp only [Formula.neg, temporal_truth]
+          intro h_char
+          have h_exist := (since_eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t h_x_lt_t
+            h_compat' h_zone
+            (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                         have := h_atom (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)
+            (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                         simp only [atom_eval] at this; exact this)).mp h_char
+          exact absurd ((h_eval_quant ssn).mp h_exist) h_pos
+  case bracket =>
+    -- seg_guard holds everywhere in (x, t)
+    have seg_guard_on_interval : ∀ y : M.carrier, x < y → y < t →
+        seg_guard.eval_at M atomMap y := by
+      intro y h_xy h_yt
+      simp only [TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro φ h_φ_mem
+      rw [List.mem_map] at h_φ_mem
+      obtain ⟨ssn, h_ssn_mem, h_φ_eq⟩ := h_φ_mem
+      subst h_φ_eq
+      rw [List.mem_filter] at h_ssn_mem
+      obtain ⟨_, h_filter⟩ := h_ssn_mem
+      simp only [Bool.and_eq_true, beq_iff_eq, Bool.not_eq_eq_eq_not, Bool.not_true] at h_filter
+      obtain ⟨⟨h_compat', h_zone⟩, h_neg⟩ := h_filter
+      simp only [Formula.neg, temporal_truth]
+      intro h_char_y
+      have h_bridge := (since_between_xt_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
+        h_x_lt_t h_compat' h_zone
+        (fun p => by obtain ⟨h_atom, _⟩ := h_nf_x
+                     have := h_atom (.pred p ⟨0, by omega⟩)
+                     simp only [atom_eval] at this; exact this)
+        (fun p => by have := h_atoms (.pred p ⟨0, by omega⟩)
+                     simp only [atom_eval] at this; exact this)).mpr
+      have h_no_witness : ¬ ∃ z, nf_eval_nf M 0 (1 + 1 + 1)
+          (Fin.cons z (Fin.cons x fun _ => t)) ssn := by
+        rw [h_eval_quant ssn]; simp [h_neg]
+      apply h_no_witness; apply h_bridge
+      exact ⟨y, h_xy, h_yt, fun p => by
+        rw [nf_depth0_char_formula_correct] at h_char_y
+        have := h_char_y p; simp only [nf_y_proj] at this; exact this⟩
+    -- Sorted witnesses for the bracket
+    let sorted_fn : Fin k → M.carrier := fun i => sorted i
+    have h_sorted_eq_wit : ∀ i, sorted_fn i = witness_fn (σ i) := by
+      intro i; exact (h_sort_spec i).symm
+    have h_sorted_mono : StrictMono sorted_fn := by
+      intro i j h_ij; exact sorted.strictMono h_ij
+    have h_sorted_in_interval : ∀ i, x < sorted_fn i ∧ sorted_fn i < t := by
+      intro i
+      rw [h_sorted_eq_wit i]
+      exact ⟨(h_wit_spec (σ i)).1, (h_wit_spec (σ i)).2.1⟩
+    have h_sorted_ptType : ∀ i, (the_bracket.pointTypes i).eval_at M atomMap (sorted_fn i) := by
+      intro i
+      simp only [TemporalPred.eval_at]
+      rw [h_sorted_eq_wit i]
+      rw [nf_depth0_char_formula_correct]
+      exact fun p => (h_wit_spec (σ i)).2.2 p
+    exact bracket_from_sorted_witnesses M atomMap k x t h_x_lt_t
+      the_bracket.pointTypes seg_guard sorted_fn
+      h_sorted_mono h_sorted_in_interval h_sorted_ptType seg_guard_on_interval
 
 /-! ## Since Case (x < t) -/
 
