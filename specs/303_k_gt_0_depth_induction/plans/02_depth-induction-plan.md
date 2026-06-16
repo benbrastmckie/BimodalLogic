@@ -1,7 +1,7 @@
 # Implementation Plan: Task #303
 
 - **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 8 hours
 - **Dependencies**: None (k=0 infrastructure is sorry-free)
 - **Research Inputs**: reports/01_team-research.md
@@ -109,17 +109,27 @@ This plan directly advances the critical path item in ROADMAP.md:
 - [x] **Task 2.1**: Analyze the k=0 proof structure in `existPart_succ_n1_bypass_k0` (KampBypass.lean:35-74): it dispatches on x-t order (Until/Since/Eq zones) using depth-0 3-var zone decomposition
 - [x] **Task 2.2**: For k>0 (`succ k'`), implement the same zone dispatch: match on `sub_nf.1 (.order ...)` to determine x > t, x < t, or x = t *(deviation: altered — added Classical.em satisfiability split before zone dispatch; unsatisfiable case closed with Formula.bot)*
 - [x] **Task 2.3**: For each zone, construct the enriched temporal formula using `char_kp1` (the depth-(k'+1) characteristic formula function) instead of `nf_depth0_char_formula` *(deviation: altered — formula is `compat_disj` (disjunction of char_kp1(nf_x) for predicate-compatible nf_x) placed in Until/Since/at-t zone, without 3-var quantifier profile encoding)*
-- [x] **Task 2.4**: Implement the forward direction (exists x -> formula truth): given witness x, construct the temporal formula truth from `nf_eval_nf` using zone-specific Until/Since/Eq encoding *(sorry remains at compat_of_eval for Fin arithmetic; structurally complete)*
+- [x] **Task 2.4**: Implement the forward direction (exists x -> formula truth): given witness x, construct the temporal formula truth from `nf_eval_nf` using zone-specific Until/Since/Eq encoding *(compat_of_eval Fin arithmetic sorry CLOSED via Classical.dec + decide_eq_true/false; all 3 forward direction proofs sorry-free)*
 - [ ] **Task 2.5**: Implement the backward direction (formula truth -> exists x): extract witness x from Until/Since semantics, verify atom conditions via `char_kp1`, verify quantifier conditions using the recursive ExistPart(k') at higher arity *(deviation: deferred — 3 zone-specific sorries remain; blocked by Prior type determination, see BLOCKER below)*
 - [ ] **Task 2.6**: Handle the base environment mismatch: the quantifier conditions at depth k'+1 involve `∃ y, nf_eval_nf M (k'+1) 3 [y,x,t] ssn`. On Prior structures, temporal truth at t + zone position of x determines these existentials via Prior-UZ/SZ *(deviation: deferred — this IS the blocker; ExistPart only supports constant parent envs (fun _ => t), not [x,t])*
 - [x] **Task 2.7**: If the proof is large (>500 lines), factor into helper files `KampBypassUntil_kgt0.lean` and `KampBypassSince_kgt0.lean` mirroring the k=0 factoring pattern *(deviation: skipped — proof is 125 lines, well under threshold)*
 
 **BLOCKER** (Phase 2):
-- **What failed**: Backward direction of existPart_succ_n1_bypass at k>0 — all 3 zone cases (Until/Since/Eq) require proving `nf_eval_nf M (k'+1+1) 2 [x,t] sub_nf` from `temporal_truth M atomMap x (char_kp1 nf_x)` + zone ordering. The atom part is proved; the quantifier part (`∀ ssn, (∃ y, nf_eval_nf M (k'+1) 3 [y,x,t] ssn) ↔ sub_nf.2 ssn`) cannot be established.
-- **What was tried**: (1) ExistPart(k') at n=2 — environment mismatch: ExistPart evaluates at constant env `(fun _ => t)`, need `[x,t]`. (2) Model transfer via `nf_agreement_from_shared_nf` — circular: need 2-var type agreement to prove 2-var type agreement. (3) Direct zone encoding at higher depth — recursive, requires reformulated ExistPart with non-constant parent environments.
-- **Why stuck**: The `ExistPart` definition quantifies over `parent_atoms : AtomKind sig 1 → Bool` and evaluates in env `Fin.cons x (fun _ => t)`, but the 3-var existential has parent env `[x, t]` (arity 2), not `[t, t]`. No existing lemma bridges this gap on Prior structures.
-- **What is needed**: Either (A) a Prior compositionality theorem (Rabinovich Lemma 5.1: on Prior structures, the n-var depth-k type is determined by 1-var types + ordering), estimated 200-400 lines; or (B) reformulate ExistPart to accept arbitrary parent environments, which is a major structural change.
+- **What failed**: Backward direction of existPart_succ_n1_bypass at k>0 — all 3 zone cases (Until/Since/Eq) require proving `nf_eval_nf M (k'+1+1) 2 [x,t] sub_nf` from `temporal_truth M atomMap x (char_kp1 nf_x)` + zone ordering. The atom part is proved; the quantifier part (`∀ ssn, (∃ y, nf_eval_nf M (k'+1) 3 [y,x,t] ssn) ↔ sub_nf.2 ssn`) cannot be established because the formula `compat_disj` only encodes 1-var NF type (predicates + quantifier profile of x alone), not the 2-var NF type of [x,t].
+- **What was tried** (4 dispatch cycles):
+  1. Zone dispatch scaffold with compat_disj (forward proved, backward sorry'd) — cycle 1-2
+  2. Cross-structure transfer via `nf_agreement_from_shared_nf` — circular: need 2-var type agreement to prove 2-var type agreement — cycle 2
+  3. Blocker research: identified `component_extend_fwd` (NEquivalence.lean:187, private) and `intra_structure_extend` (NfComposition.lean:228) as key tools — cycle 3
+  4. Added ih_char + ih_exist parameters to `existPart_succ_n1_bypass` (DONE, builds) — cycle 3-4
+  5. Enriched formula approach (conjoin compat_disj with ExistPart(k) formulas for quantifier conditions) — FAILED due to heartbeat limits from `NormalForm sig (k'+1) 3` enumeration — cycle 4
+- **Why stuck**: Two independent obstacles:
+  - **Eq zone** (x=t): ih_exist enables ExistPart(k) at n=2 for constant parent env [t,t], but enriched formula construction exceeds heartbeats from NormalForm type enumeration. Workaround: increase `maxHeartbeats` or decompose the formula construction.
+  - **Until/Since zones** (x≠t): ExistPart(k) at n=2 gives formulas for `∃ y, nf_eval M k 3 [y,t,t] ssn` (constant parent), but we need `∃ y, nf_eval M k 3 [y,x,t] ssn` (non-constant parent [x,t]). This requires Prior compositionality (Rabinovich Lemma 5.1): on Prior structures, the 2-var type of [x,t] is determined by 1-var types + ordering.
+- **What is needed to close**:
+  (A) **Eq zone**: Retry enriched formula with `set_option maxHeartbeats 800000`, or decompose NormalForm enumeration into smaller steps using private helper lemmas.
+  (B) **Until/Since zones**: Prove Prior compositionality theorem, estimated 200-400 lines, using `intra_structure_extend` + `component_extend_fwd` (make public) + Prior-UZ/SZ. Alternatively: restructure the formula to encode 2-var NF conditions inside Until/Since context using nested temporal operators.
 - **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
+- **Current sorry count**: 3 sorries in KampBypass.lean (lines 223, 235, 247) + 1 in KampMutualInduction.lean (line 310) + 2 pre-existing in NfCharFormula.lean (lines 542, 651 — not on critical path)
 
 **Timing**: 3 hours
 
