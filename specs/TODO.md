@@ -96,7 +96,7 @@ next_project_number: 305
 
 ### Cleanup
 
-302 [NOT STARTED] — Comprehensive dead code archival to Boneyard/ with comment cleanu
+302 [RESEARCHED] — Comprehensive dead code archival to Boneyard/ with comment cleanu
 
 ### Uncategorized
 
@@ -123,10 +123,11 @@ next_project_number: 305
 ---
 
 ### 302. Boneyard dead code archival
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: cleanup
 - **Dependencies**: Task 301
+- **Research**: [302_boneyard_dead_code_archival/reports/01_team-research.md]
 
 **Description**: Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.
 
