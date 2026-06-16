@@ -1,7 +1,7 @@
 # Implementation Plan: Task #303
 
 - **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: None (k=0 infrastructure is sorry-free)
 - **Research Inputs**: reports/01_team-research.md
@@ -69,22 +69,22 @@ This plan directly advances the critical path item in ROADMAP.md:
 | 3 | 3 | 2 |
 | 4 | 4 | 3 |
 
-### Phase 1: Revive Mutual Induction Scaffold [NOT STARTED]
+### Phase 1: Revive Mutual Induction Scaffold [COMPLETED]
 
 **Goal**: Create `KampMutualInduction.lean` with the CharPart/ExistPart definitions, base cases, and sorry-free step cases from the boneyard, adapted to compile in the live codebase.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean`
-- [ ] Port `CharPart` and `ExistPart` type definitions from `RabinovichGeneralized.lean:88-127`
-- [ ] Port `bool_eq_of_iff_same` helper (lines 79-85)
-- [ ] Port `charPart_zero` (lines 132-152) -- delegates to `nf_depth0_char_formula`
-- [ ] Port `charPart_succ` (lines 156-177) -- delegates to `nf_characterizable_temporal_prior_classical`
-- [ ] Port `existPart_zero` (lines 190-364) -- sorry-free for all n, includes the n>=2 `Classical.em + bool_eq_of_iff_same` pattern
-- [ ] Port `existPart_succ` skeleton (lines 399-471) -- n=1 delegates to `existPart_succ_n1_bypass`, n>=2 uses `sorry` (same as boneyard)
-- [ ] Port `kamp_mutual_induction` (lines 479-491) -- combined Nat.rec
-- [ ] Port `nf_2var_exist_formula_prior_filled` (lines 497-520) -- connector that fills NfCharFormula dispatch
-- [ ] Add `KampMutualInduction` to the module imports in the Kamp aggregator
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampMutualInduction` compiles with exactly the same sorry sites as the boneyard (2 sorries: `existPart_succ` n=1 k>0 and n>=2 k>0)
+- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean`
+- [x] Port `CharPart` and `ExistPart` type definitions from `RabinovichGeneralized.lean:88-127`
+- [x] Port `bool_eq_of_iff_same` helper (lines 79-85)
+- [x] Port `charPart_zero` (lines 132-152) -- delegates to `nf_depth0_char_formula`
+- [x] Port `charPart_succ` (lines 156-177) -- delegates to `nf_characterizable_temporal_prior_classical`
+- [x] Port `existPart_zero` (lines 190-364) -- sorry-free for all n, includes the n>=2 `Classical.em + bool_eq_of_iff_same` pattern *(deviation: altered -- uses `nf_2var_exist_formula_prior` instead of boneyard's `nf_2var_exist_formula_prior_neg` for n=1 case)*
+- [x] Port `existPart_succ` skeleton (lines 399-471) -- n=1 delegates to `existPart_succ_n1_bypass`, n>=2 uses `sorry` (same as boneyard)
+- [x] Port `kamp_mutual_induction` (lines 479-491) -- combined Nat.rec
+- [x] Port `nf_2var_exist_formula_prior_filled` (lines 497-520) -- connector that fills NfCharFormula dispatch
+- [x] Add `KampMutualInduction` to the module imports in the Kamp aggregator *(deviation: skipped -- no Kamp aggregator exists; modules import each other directly)*
+- [x] Verify `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampMutualInduction` compiles with exactly the same sorry sites as the boneyard (2 sorries: `existPart_succ` n=1 k>0 and n>=2 k>0)
 
 **Timing**: 2 hours
 
