@@ -139,16 +139,16 @@ Phases are sequential because each modifies imports/aggregators that later phase
 
 ---
 
-### Phase 3: Extract in-file dead blocks from ChronicleToCountermodel [NOT STARTED]
+### Phase 3: Extract in-file dead blocks from ChronicleToCountermodel [COMPLETED]
 
 **Goal**: Remove the ~700-line dead sorry chain from `ChronicleToCountermodel.lean` and the smaller dead blocks, appending to existing Boneyard file.
 
 **Tasks**:
-- [ ] Read `BXCanonical/Chronicle/ChronicleToCountermodel.lean` and identify dead block boundaries: `succ_reaches_dom_N`, `chronicle_gap_contradiction`, `succ_cofinal`, `limitDomSubtype_isSuccArchimedean` (~lines 83-854 per research)
-- [ ] Identify the smaller dead block: `z1_formula`, `z1_derivation`, `z1_in_mcs` (~lines 399-412)
-- [ ] Append extracted declarations to `Boneyard/DeadChronicleGapElimination/` (file already exists from task 301) with provenance comments noting exact source lines
-- [ ] Remove the dead blocks from `ChronicleToCountermodel.lean`
-- [ ] Run `lake build` to verify remaining code still compiles
+- [ ] **Task 3.1**: Read `BXCanonical/Chronicle/ChronicleToCountermodel.lean` and identify dead block boundaries: `succ_reaches_dom_N`, `chronicle_gap_contradiction`, `succ_cofinal`, `limitDomSubtype_isSuccArchimedean` (~lines 83-854 per research) *(deviation: skipped — these are NOT dead; limitDomSubtype_isSuccArchimedean is used by succ_embed_surjective at line 1721, which is on the live call path)*
+- [x] **Task 3.2**: Identify the smaller dead block: `z1_formula`, `z1_derivation`, `z1_in_mcs` (~lines 399-412) *(completed)*
+- [x] **Task 3.3**: Append extracted declarations to `Boneyard/DeadChronicleGapElimination/` (file already exists from task 301) with provenance comments noting exact source lines *(completed — z1 block only)*
+- [x] **Task 3.4**: Remove the dead blocks from `ChronicleToCountermodel.lean` *(deviation: altered — only z1 block removed; large block retained since it is live)*
+- [x] **Task 3.5**: Run `lake build` to verify remaining code still compiles
 
 **Timing**: 1 hour
 

@@ -824,3 +824,29 @@ The collapse equivalence below (succ-reachability) is used in auxiliary proofs.
 `succ_embed_surjective` now uses the axiom directly; no `sorryAx` in this chain.
 -/
 
+-- ARCHIVED from ChronicleToCountermodel.lean lines 390-412 (task 302)
+-- Reason: z1 helpers — private, unused after gap elimination moved to model surgery
+
+/-! ## Z1 Derivation and Gap Elimination Helpers
+
+The Z1 schema `G(Gφ→φ) → (FGφ→Gφ)` is derivable from Prior-UZ + BX axioms.
+Once derived, `theorem_in_mcs` places Z1 in every MCS, enabling the Doets
+maximum principle argument for gap elimination in `succ_cofinal`.
+-/
+
+/-- Z1 formula: `G(Gφ→φ) → (FGφ→Gφ)`.
+The syntactic correspondent of the IsSuccArchimedean frame condition. -/
+private def z1_formula (φ : Formula) : Formula :=
+  (φ.all_future.imp φ).all_future.imp (φ.all_future.some_future.imp φ.all_future)
+
+/-- Z1 derivation: `⊢[fc] G(Gφ→φ) → (FGφ→Gφ)`.
+Requires `FrameClass.Discrete <= fc` since z1 has minFrameClass = .Discrete. -/
+private def z1_derivation (fc : FrameClass) (h_fc : FrameClass.Discrete <= fc) (φ : Formula) :
+    DerivationTree fc [] (z1_formula φ) :=
+  DerivationTree.axiom [] _ (Axiom.z1 φ) h_fc
+
+/-- Z1 is in every MCS: if S is maximal consistent (for fc >= Discrete), then `z1_formula φ ∈ S`. -/
+private theorem z1_in_mcs (fc : FrameClass) (h_fc : FrameClass.Discrete <= fc) (φ : Formula) {S : Set Formula}
+    (h_mcs : SetMaximalConsistent (fc := fc) S) :
+    z1_formula φ ∈ S :=
+  theorem_in_mcs h_mcs (z1_derivation fc h_fc φ)
