@@ -169,9 +169,16 @@ theorem existPart_succ_n1_bypass
         have h_sub_p := h_atom (.pred p ⟨0, by omega⟩)
         have h_char_p := (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x)).1
           (.pred p ⟨0, by omega⟩)
-        -- Both h_sub_p and h_char_p reduce to M.interp p x ↔ ... = true
-        -- after simp [atom_eval, Fin.cons]
-        sorry
+        have key := h_atom (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval, Fin.cons] at key
+        change M.interp p x ↔ _ at key
+        unfold nf_characteristic
+        simp only [atom_eval]
+        cases h : sub_nf.1 (AtomKind.pred p ⟨0, by omega⟩)
+        · rw [h] at key; simp only [Bool.false_eq_true, iff_false] at key
+          exact @decide_eq_false _ (Classical.dec _) key
+        · rw [h] at key; simp only [iff_true] at key
+          exact @decide_eq_true _ (Classical.dec _) key
       -- Zone dispatch
       match h_gt_val : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
             h_lt_val : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
