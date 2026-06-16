@@ -1699,14 +1699,14 @@
     {
       "project_number": 301,
       "project_name": "completeness_cleanup_and_roadmap",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Repository cleanup and roadmap update following task 273 completion and chronicle_gap dead-code audit. Scope: (1) Archive dead code to Boneyard/ (BXCanonical path, dead chronicle functions, VecEADecomposition sorries, possibly Stavi path) with clear comments. (2) Factor oversized files (KampBypass.lean at 4488 lines). (3) Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. (4) Abandon obsolete tasks (155, 268, 200, 254, 176). (5) Revise task 95/299 dependencies. (6) Create new tasks: k>0 depth induction (sole completeness_discrete blocker) and import refactor. (7) Update ROADMAP.md to reflect current state: sole blocker is existPart_succ_n1_bypass k>0 in KampBypass.lean.",
       "priority": "high",
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-16T15:50:00Z",
-      "last_updated": "2026-06-16T16:00:00Z",
+      "last_updated": "2026-06-16T17:25:00Z",
       "artifacts": [
         {
           "path": "specs/301_completeness_cleanup_and_roadmap/reports/01_completeness-status-audit.md",
@@ -1751,7 +1751,8 @@
             "integrated_date": "2026-06-16"
           }
         ]
-      }
+      },
+      "completion_summary": "Repository cleanup complete: moved mcs_mixed_case_absurd to MCSMixedCase.lean, archived VecEADecomposition to Boneyard, factored KampBypass.lean (4488 lines) into 4 files, abandoned 5 obsolete tasks (155, 268, 200, 254, 176), created task 303 (k>0 depth induction — sole completeness_discrete blocker), rewrote ROADMAP.md."
     },
     {
       "project_number": 302,

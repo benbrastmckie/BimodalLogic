@@ -11,8 +11,8 @@ next_project_number: 305
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,301,303 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 95,192,196,231,292,293,294,298,299,302 | 161,187,191,194,230,291,300,301,303 | completeness, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,302,303 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 95,192,196,231,292,293,294,298,299 | 161,187,191,194,230,291,300,303 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193 | 189,192,196 | automation |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
@@ -23,7 +23,6 @@ next_project_number: 305
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-301 [PLANNED] — Repository cleanup and roadmap update following task 273 completi
 303 [NOT STARTED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
@@ -134,7 +133,7 @@ next_project_number: 305
 ---
 
 ### 301. Completeness cleanup and roadmap
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
