@@ -1931,6 +1931,15 @@ private theorem between_tx_temporal_iff
                  · intro h; rw [h_t_ssn p]; exact (h_t_pred p).mp h
                  · intro h; exact (h_t_pred p).mpr (by rw [← h_t_ssn p]; exact h))
 
+private theorem between_tx_order_atoms {sig : MonadicSignature}
+    (ssn : NormalForm sig 0 3) (h : ssn_zone_until ssn = YZone.between_tx) :
+    ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true ∧
+    ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = false ∧
+    ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false ∧
+    ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true := by
+  simp only [ssn_zone_until] at h
+  revert h; split_ifs <;> simp_all [Bool.and_eq_true]
+
 /-! ## Until Case: Forward and Backward Helper Lemmas -/
 
 /-- Given k strictly increasing points in an open interval (lo, hi),
@@ -2747,8 +2756,67 @@ private theorem forward_nf_eval_of_holdsLeft
             --   the same y-proj but differ in other atoms. No, between_tx SSNs with same nf_y_proj
             --   and same x/t compatibility are identical. So nf_y_proj ssn ≠ nf_y_proj pos_between[σ(i)]
             --   means char_y(nf_y_proj ssn) can't hold at y if char_y(pos_between[σ(i)]) holds.
-            -- This argument is complex. Use sorry for mutual exclusivity.
-            sorry
+            rcases bracket_constant_seg_dichotomy M atomMap
+              pos_between.length t x _ seg_guard h_bracket y h_ty h_yx with
+              h_seg | ⟨i, h_pt⟩
+            · -- Case 1: seg_guard holds at y — contradicts h_y_pred
+              simp only [TemporalPred.eval_at] at h_seg
+              rw [formula_conjList_iff] at h_seg
+              have h_neg_char := h_seg _
+                (List.mem_map.mpr ⟨ssn, h_ssn_in_neg, rfl⟩)
+              simp only [Formula.neg, temporal_truth] at h_neg_char
+              apply h_neg_char
+              rw [nf_depth0_char_formula_correct]
+              intro p; simp only [nf_y_proj]; exact h_y_pred p
+            · -- Case 2: pointType i holds at y — ssn = pos_between.get (σ i)
+              simp only [TemporalPred.eval_at] at h_pt
+              rw [nf_depth0_char_formula_correct] at h_pt
+              -- Extract compat/zone/pos info for pos_between.get (σ i) from membership
+              have h_σi_mem : pos_between.get (σ i) ∈ pos_between := List.get_mem pos_between (σ i)
+              rw [List.mem_filter] at h_σi_mem
+              obtain ⟨_, h_σi_raw⟩ := h_σi_mem
+              simp only [Bool.and_eq_true, beq_iff_eq] at h_σi_raw
+              obtain ⟨⟨h_σi_compat_raw, h_σi_zone⟩, h_σi_pos⟩ := h_σi_raw
+              -- Destructure ssn_xt_compatible for both SSNs
+              have h1_compat := h_ssn_xt
+              simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq,
+                List.all_eq_true] at h1_compat h_σi_compat_raw
+              obtain ⟨⟨⟨⟨h1_x, h1_t⟩, h1_ord1⟩, h1_ord2⟩, _⟩ := h1_compat
+              obtain ⟨⟨⟨⟨h2_x, h2_t⟩, h2_ord1⟩, h2_ord2⟩, _⟩ := h_σi_compat_raw
+              -- Derive y-pred equality from h_y_pred and h_pt
+              have h_pred_eq : ∀ p, ssn (.pred p ⟨0, by omega⟩) =
+                  (pos_between.get (σ i)) (.pred p ⟨0, by omega⟩) := by
+                intro p
+                have h1 := h_y_pred p
+                have h2 := h_pt p
+                simp only [nf_y_proj] at h2
+                exact Bool.eq_iff_iff.mpr (h1.symm.trans h2)
+              obtain ⟨h1_ylx, h1_xly, h1_ylt, h1_tly⟩ := between_tx_order_atoms ssn h_zone
+              obtain ⟨h2_ylx, h2_xly, h2_ylt, h2_tly⟩ := between_tx_order_atoms _ h_σi_zone
+              have h_ssn_eq : ssn = pos_between.get (σ i) := by
+                funext a; cases a with
+                | pred p k =>
+                  match k with
+                  | ⟨0, _⟩ => exact h_pred_eq p
+                  | ⟨1, _⟩ =>
+                    exact (h1_x p (Multiset.mem_toList.mpr (Fintype.complete p))).trans
+                      (h2_x p (Multiset.mem_toList.mpr (Fintype.complete p))).symm
+                  | ⟨2, _⟩ =>
+                    exact (h1_t p (Multiset.mem_toList.mpr (Fintype.complete p))).trans
+                      (h2_t p (Multiset.mem_toList.mpr (Fintype.complete p))).symm
+                | order k l h_ne =>
+                  match k, l, h_ne with
+                  | ⟨0, _⟩, ⟨1, _⟩, _ => rw [h1_ylx, h2_ylx]
+                  | ⟨1, _⟩, ⟨0, _⟩, _ => rw [h1_xly, h2_xly]
+                  | ⟨0, _⟩, ⟨2, _⟩, _ => rw [h1_ylt, h2_ylt]
+                  | ⟨2, _⟩, ⟨0, _⟩, _ => rw [h1_tly, h2_tly]
+                  | ⟨1, _⟩, ⟨2, _⟩, _ => exact h1_ord2.trans h2_ord2.symm
+                  | ⟨2, _⟩, ⟨1, _⟩, _ => exact h1_ord1.trans h2_ord1.symm
+                  | ⟨0, _⟩, ⟨0, _⟩, h => exact absurd rfl h
+                  | ⟨1, _⟩, ⟨1, _⟩, h => exact absurd rfl h
+                  | ⟨2, _⟩, ⟨2, _⟩, h => exact absurd rfl h
+              rw [h_ssn_eq] at h_neg
+              exact absurd h_σi_pos h_neg
           · -- ← direction: sub_nf.2 ssn = true → ∃ y
             intro h_pos
             -- ssn ∈ pos_between
