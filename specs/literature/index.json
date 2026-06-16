@@ -24,7 +24,7 @@
       "authors": "Patrick Blackburn, Maarten de Rijke, Yde Venema",
       "year": 2002,
       "section": null,
-      "path": "Blackburn_deRijke_Venema_2002_Modal_Logic.md",
+      "path": "sources/blackburn_2002/Blackburn_deRijke_Venema_2002_Modal_Logic.md",
       "page_range": null,
       "token_count": 365868,
       "keywords": [
@@ -48,7 +48,7 @@
       "authors": "John P. Burgess",
       "year": 1982,
       "section": null,
-      "path": "Burgess_1982_Axioms_for_tense_logic_Since_and_Until.md",
+      "path": "sources/burgess_1982/Burgess_1982_Axioms_for_tense_logic_Since_and_Until.md",
       "page_range": "367-374",
       "token_count": 5437,
       "keywords": [
@@ -72,7 +72,7 @@
       "authors": "John P. Burgess",
       "year": 1982,
       "section": null,
-      "path": "Burgess_1982b_Axioms_for_tense_logic_II_Time_periods.md",
+      "path": "sources/burgess_1982b/Burgess_1982b_Axioms_for_tense_logic_II_Time_periods.md",
       "page_range": "375-383",
       "token_count": 5589,
       "keywords": [
@@ -96,7 +96,7 @@
       "authors": "John P. Burgess",
       "year": 1984,
       "section": null,
-      "path": "Burgess_1984_Basic_Tense_Logic.md",
+      "path": "sources/burgess_1984/Burgess_1984_Basic_Tense_Logic.md",
       "page_range": "89-133",
       "token_count": 22784,
       "keywords": [
@@ -120,7 +120,7 @@
       "authors": "Carlos Caleiro, Luca Viganò, Marco Volpe",
       "year": 2013,
       "section": null,
-      "path": "Caleiro_Vigano_Volpe_2013_Mosaic_Method_Tense_Modal.md",
+      "path": "sources/caleiro_2013/Caleiro_Vigano_Volpe_2013_Mosaic_Method_Tense_Modal.md",
       "page_range": "33-69",
       "token_count": 20846,
       "keywords": [
@@ -144,7 +144,7 @@
       "authors": "Maarten de Rijke, Yde Venema",
       "year": 1995,
       "section": null,
-      "path": "deRijke_Venema_1995_Sahlqvist_BAOs.md",
+      "path": "sources/derijke_1995/deRijke_Venema_1995_Sahlqvist_BAOs.md",
       "page_range": "61-78",
       "token_count": 9064,
       "keywords": [
@@ -166,7 +166,7 @@
       "authors": "Kees Doets",
       "year": 1987,
       "section": null,
-      "path": "Doets_1987_Completeness_and_Definability_thesis.md",
+      "path": "sources/doets_1987/Doets_1987_Completeness_and_Definability_thesis.md",
       "page_range": null,
       "token_count": 8667,
       "keywords": [
@@ -188,7 +188,7 @@
       "authors": "Kees Doets",
       "year": 1989,
       "section": null,
-      "path": "Doets_1989_Monadic_Pi11_Theories.md",
+      "path": "sources/doets_1989/Doets_1989_Monadic_Pi11_Theories.md",
       "page_range": "224-240",
       "token_count": 10830,
       "keywords": [
@@ -211,7 +211,7 @@
       "authors": "Dov Gabbay, Ian Hodkinson, Mark Reynolds",
       "year": 1993,
       "section": null,
-      "path": "Gabbay_Hodkinson_Reynolds_1993_Temporal_expressive_completeness_gaps.md",
+      "path": "sources/gabbay_1993/Gabbay_Hodkinson_Reynolds_1993_Temporal_expressive_completeness_gaps.md",
       "page_range": null,
       "token_count": 19591,
       "keywords": [
@@ -235,7 +235,7 @@
       "authors": "Dov Gabbay, Ian Hodkinson, Mark Reynolds",
       "year": 1994,
       "section": "Chapter 9: Separation and Temporal Logic",
-      "path": "Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch9.md",
+      "path": "sources/gabbay_1994/Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch9.md",
       "page_range": "499-561",
       "token_count": 8213,
       "keywords": [
@@ -259,7 +259,7 @@
       "authors": "Dov Gabbay, Ian Hodkinson, Mark Reynolds",
       "year": 1994,
       "section": "Chapter 10: Temporal Logic over the Integers",
-      "path": "Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch10.md",
+      "path": "sources/gabbay_1994/Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch10.md",
       "page_range": "562-640",
       "token_count": 10764,
       "keywords": [
@@ -283,7 +283,7 @@
       "authors": "Dov Gabbay, Ian Hodkinson, Mark Reynolds",
       "year": 1994,
       "section": "Chapter 12: Expressive Completeness",
-      "path": "Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch12.md",
+      "path": "sources/gabbay_1994/Gabbay_Hodkinson_Reynolds_1994_Temporal_Logic_Foundations_Vol1_ch12.md",
       "page_range": null,
       "token_count": 16670,
       "keywords": [
@@ -307,7 +307,7 @@
       "authors": "Robert Goldblatt, Ian Hodkinson, Yde Venema",
       "year": 2003,
       "section": null,
-      "path": "Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.md",
+      "path": "sources/goldblatt_2003/Goldblatt_Hodkinson_Venema_2003_BAOs_Modal_Logic.md",
       "page_range": "186-208",
       "token_count": 15170,
       "keywords": [
@@ -331,7 +331,7 @@
       "authors": "Ian Hodkinson, Mark Reynolds",
       "year": 2006,
       "section": "Chapter 11",
-      "path": "Hodkinson_Reynolds_2006_Temporal_Logic_Handbook_Ch11.md",
+      "path": "sources/hodkinson_2006/Hodkinson_Reynolds_2006_Temporal_Logic_Handbook_Ch11.md",
       "page_range": "655-720",
       "token_count": 2094,
       "keywords": [
@@ -354,7 +354,7 @@
       "authors": "Leonid Libkin",
       "year": 2004,
       "section": "Chapters 3 and 7",
-      "path": "Libkin_2004_Elements_Finite_Model_Theory_ch3_ch7.md",
+      "path": "sources/libkin_2004_ch3_ch7/Libkin_2004_Elements_Finite_Model_Theory_ch3_ch7.md",
       "page_range": null,
       "token_count": 3487,
       "keywords": [
@@ -378,7 +378,7 @@
       "authors": "Kristóf Obendrauf, Anne Baanen, Patrick Koopmann, Vera Stebletsova",
       "year": 2024,
       "section": null,
-      "path": "Obendrauf_2024_Lean_Formalization_Coalition_Logic.md",
+      "path": "sources/obendrauf_2024/Obendrauf_2024_Lean_Formalization_Coalition_Logic.md",
       "page_range": "28:1-28:18",
       "token_count": 13202,
       "keywords": [
@@ -402,7 +402,7 @@
       "authors": "Alexander Rabinovich",
       "year": 2014,
       "section": null,
-      "path": "Rabinovich_2014_Proof_of_Kamps_Theorem.md",
+      "path": "sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md",
       "page_range": "1-16",
       "token_count": 2721,
       "keywords": [
@@ -426,7 +426,7 @@
       "authors": "Mark Reynolds",
       "year": 1992,
       "section": null,
-      "path": "Reynolds_1992_Axiomatization_Until_Since_without_IRR.md",
+      "path": "sources/reynolds_1992/Reynolds_1992_Axiomatization_Until_Since_without_IRR.md",
       "page_range": "165-193",
       "token_count": 15636,
       "keywords": [
@@ -450,7 +450,7 @@
       "authors": "Mark Reynolds",
       "year": 1994,
       "section": null,
-      "path": "Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md",
+      "path": "sources/reynolds_1994/Reynolds_1994_Axiomatising_U_and_S_over_integer_time.md",
       "page_range": "679-703",
       "token_count": 10015,
       "keywords": [
@@ -474,7 +474,7 @@
       "authors": "Mark Reynolds",
       "year": 2001,
       "section": null,
-      "path": "Reynolds_2001_Axiomatization_Full_CTL_star.md",
+      "path": "sources/reynolds_2001/Reynolds_2001_Axiomatization_Full_CTL_star.md",
       "page_range": "1011-1057",
       "token_count": 32665,
       "keywords": [
@@ -497,7 +497,7 @@
       "authors": "Wolfgang Thomas",
       "year": 1997,
       "section": null,
-      "path": "Thomas_1997_EF_Games_Composition_Monadic.md",
+      "path": "sources/thomas_1997/Thomas_1997_EF_Games_Composition_Monadic.md",
       "page_range": "118-143",
       "token_count": 1093,
       "keywords": [
@@ -520,7 +520,7 @@
       "authors": "Richmond H. Thomason",
       "year": 1984,
       "section": null,
-      "path": "Thomason_1984_Combinations_of_Tense_and_Modality.md",
+      "path": "sources/thomason_1984/Thomason_1984_Combinations_of_Tense_and_Modality.md",
       "page_range": "135-165",
       "token_count": 16778,
       "keywords": [
@@ -544,7 +544,7 @@
       "authors": "Yde Venema",
       "year": 1991,
       "section": "Chapter 2",
-      "path": "Venema_1991_Many_Dimensional_Modal_Logics_ch2.md",
+      "path": "sources/venema_1991/Venema_1991_Many_Dimensional_Modal_Logics_ch2.md",
       "page_range": null,
       "token_count": 20006,
       "keywords": [
@@ -567,7 +567,7 @@
       "authors": "Yde Venema",
       "year": 1991,
       "section": "Appendices A and B",
-      "path": "Venema_1991_Many_Dimensional_Modal_Logics_app_A_B.md",
+      "path": "sources/venema_1991/Venema_1991_Many_Dimensional_Modal_Logics_app_A_B.md",
       "page_range": null,
       "token_count": 9404,
       "keywords": [
@@ -588,7 +588,7 @@
       "authors": "Yde Venema",
       "year": 1993,
       "section": null,
-      "path": "Venema_1993_Derivation_Rules_Anti_Axioms.md",
+      "path": "sources/venema_1993/Venema_1993_Derivation_Rules_Anti_Axioms.md",
       "page_range": "1003-1034",
       "token_count": 22333,
       "keywords": [
@@ -612,7 +612,7 @@
       "authors": "Yde Venema",
       "year": 1993,
       "section": null,
-      "path": "Venema_1993_Since_and_Until.md",
+      "path": "sources/venema_1993_since/Venema_1993_Since_and_Until.md",
       "page_range": null,
       "token_count": 3927,
       "keywords": [
@@ -636,7 +636,7 @@
       "authors": "Yde Venema",
       "year": 1997,
       "section": null,
-      "path": "Venema_1997_Atom_Structures_Sahlqvist.md",
+      "path": "sources/venema_1997/Venema_1997_Atom_Structures_Sahlqvist.md",
       "page_range": "185-199",
       "token_count": 8455,
       "keywords": [
@@ -658,7 +658,7 @@
       "authors": "Yde Venema",
       "year": 2001,
       "section": null,
-      "path": "Venema_2001_Temporal_Logic_Survey.md",
+      "path": "sources/venema_2001/Venema_2001_Temporal_Logic_Survey.md",
       "page_range": null,
       "token_count": 13607,
       "keywords": [
@@ -682,7 +682,7 @@
       "authors": "Dick de Jongh, Frank Veltman, Rineke Verbrugge",
       "year": 2004,
       "section": null,
-      "path": "Verbrugge_2004_Completeness_by_construction.md",
+      "path": "sources/verbrugge_2004/Verbrugge_2004_Completeness_by_construction.md",
       "page_range": null,
       "token_count": 10277,
       "keywords": [
@@ -705,7 +705,7 @@
       "authors": "Ming Xu",
       "year": 1988,
       "section": null,
-      "path": "Xu_1988_On_some_US_tense_logics.md",
+      "path": "sources/xu_1988/Xu_1988_On_some_US_tense_logics.md",
       "page_range": "181-202",
       "token_count": 10525,
       "keywords": [
