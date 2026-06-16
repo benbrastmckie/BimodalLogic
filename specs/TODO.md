@@ -6,13 +6,13 @@ next_project_number: 301
 
 ## Task Order
 
-*Updated 2026-06-15. Generated from state.json dependency graph.*
+*Updated 2026-06-16. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,273,282,290,290,291,296,300 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 155,192,196,231,292,293,294,298,299 | 161,187,191,194,230,268,273,291,300 | completeness, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,200,219,230,257,268,282,290,290,291,296,299,300 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 155,192,196,231,292,293,294,298 | 161,187,191,194,230,268,291,300 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 95,176,193 | 155,189,192,196 | completeness, formula-refactor, automation |
 | 4 | 177,178,254 | 95,131,176,193 | completeness, formula-refactor |
 
@@ -27,8 +27,7 @@ next_project_number: 301
   └─ 155 [IMPLEMENTING] — Eliminate all sorries from completeness_discrete by fixing 3 root
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
       └─ 254 [NOT STARTED] — Final metadata and documentation update after completeness pipeli
-273 [PLANNED] — Close the two remaining blockers for completeness_discrete: (1) K
-  └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
+299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -284,7 +283,7 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 ---
 
 ### 273. Chronicle gap contradiction proof
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
