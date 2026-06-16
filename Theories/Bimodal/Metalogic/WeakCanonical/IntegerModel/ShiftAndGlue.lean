@@ -873,38 +873,7 @@ theorem very_good_implies_good (sig : MonadicSignature) (k : Nat) (M : OrderedMo
   obtain ⟨Z_final, hZ_final⟩ := h_sum_good
   exact ⟨Z_final, h_decomp.trans hZ_final⟩
 
-/-! ## Chronicle is Good -/
-
--- NOTE: chronicle_is_good uses IsSuccArchimedean (via orderIsoIntOfLinearSuccPredArch)
--- which depends on succ_cofinal (sorry). It is NOT on the critical path for
--- completeness_discrete. The critical path goes through dd_countermodel_chronicle_discrete
--- (Path A), not through this function.
-/--
-The chronicle prior model is good at any finite depth.
--/
-theorem chronicle_is_good {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
-    (atomMap : sig.preds → Formula) (k : Nat) :
-    good sig k (chronicleAsMonadicStructure M sig atomMap) := by
-  haveI : Nonempty M.domain := M.domain_nonempty
-  let f : M.domain ≃o ℤ := orderIsoIntOfLinearSuccPredArch
-  let Z : ZIntervalStructure sig := {
-    lo := none
-    hi := none
-    interp := fun p z => (atomMap p) ∈ M.fmcs (f.symm z)
-  }
-  refine ⟨Z, ?_⟩
-  let val_iso : Z.intervalCarrier ≃o ℤ :=
-    Equiv.toOrderIso
-      { toFun := Subtype.val, invFun := fun z => ⟨z, trivial, trivial⟩,
-        left_inv := by intro ⟨_, _⟩; rfl, right_inv := by intro _; rfl }
-      (fun _ _ h => h) (fun _ _ h => h)
-  let g : (chronicleAsMonadicStructure M sig atomMap).carrier ≃o (Z.toOrdered sig).carrier :=
-    f.trans val_iso.symm
-  apply k_equiv_of_iso sig k _ _ g
-  intro p x
-  show (atomMap p) ∈ M.fmcs x ↔ (atomMap p) ∈ M.fmcs (f.symm (f x))
-  simp [OrderIso.symm_apply_apply]
-
+-- chronicle_is_good archived to Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
 
 /-! ## One-Class Implies Very Good -/
 
@@ -924,49 +893,7 @@ theorem one_class_implies_very_good (sig : MonadicSignature) (k : Nat)
   simp only [contemp_equiv, min_eq_left hab, max_eq_right hab] at h_ce
   exact good_of_very_good_subinterval sig k M a b hab h_ce a b (le_refl a) (le_refl b) hab
 
-/-! ## Chronicle is Good (Direct via One-Class, no IsSuccArchimedean) -/
-
--- NOTE: chronicle_is_good_direct avoids IsSuccArchimedean but is used ONLY by
--- countermodel_discrete_reynolds (Transfer.lean:1004), which has an unsolvable sorry.
--- It is NOT on the critical path for completeness_discrete.
--- The critical path uses dd_countermodel_chronicle_discrete (Path A).
-/--
-The chronicle prior model is good at any finite depth, proved via the
-Reynolds pipeline: `one_class` → `very_good` → `very_good_implies_good`.
-
-This does NOT use `IsSuccArchimedean` or `orderIsoIntOfLinearSuccPredArch`.
-Instead, it uses:
-- `one_class` (which requires `no_gaps_discrete`)
-- `one_class_implies_very_good` (sorry-free)
-- `very_good_implies_good` (which uses `exists_cofinal_sequence`, needs only
-  Countable + NoMaxOrder + NoMinOrder + Nonempty + PredOrder, NOT IsSuccArchimedean)
-
-The caller must provide proofs of semantic Prior-UZ and Prior-SZ for the
-chronicle monadic structure. These are discharged at the call site
-(Transfer.lean) using `chronicle_temporal_truth` and the chronicle's
-MCS-level Prior-UZ/SZ axioms.
--/
-theorem chronicle_is_good_direct {fc : FrameClass} (M : ChronicleAsPriorModel fc) (sig : MonadicSignature)
-    (atomMap_rev : sig.preds → Formula) (atomMap_fwd : Formula → sig.preds)
-    (k : Nat)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap_fwd (.atom a) = p)
-    (h_prior_UZ : semantic_prior_UZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd)
-    (h_prior_SZ : semantic_prior_SZ (chronicleAsMonadicStructure M sig atomMap_rev) atomMap_fwd) :
-    good sig k (chronicleAsMonadicStructure M sig atomMap_rev) := by
-  haveI : Nonempty M.domain := M.domain_nonempty
-  let M_struct := chronicleAsMonadicStructure M sig atomMap_rev
-  -- Step 1: Apply one_class via no_gaps_discrete_model_surgery (sorry-free)
-  -- Inlined from one_class to bypass import cycle (GoodStructures ↔ GoodStructuresModelSurgery)
-  have h_one_class : ∀ (a b : M_struct.carrier), contemp_equiv sig k M_struct a b := by
-    intro a b
-    by_contra h_diff
-    obtain ⟨c, hac, h_not_succ⟩ := no_gaps_discrete_model_surgery sig k M_struct atomMap_fwd
-      h_surj h_prior_UZ h_prior_SZ a b h_diff
-    exact h_not_succ ((contemp_equiv_is_equiv sig k M_struct).trans hac
-      (no_boundary_at_successor sig k M_struct c))
-  -- Step 2: one_class_implies_very_good
-  have h_very_good := one_class_implies_very_good sig k M_struct h_one_class
-  -- Step 3: very_good_implies_good (uses Countable, NoMaxOrder, NoMinOrder, Nonempty, PredOrder)
-  exact very_good_implies_good sig k M_struct M.domain_countable h_very_good
+-- chronicle_is_good_direct archived to
+-- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
 
 end Bimodal.Metalogic.WeakCanonical

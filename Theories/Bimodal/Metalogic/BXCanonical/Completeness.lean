@@ -212,42 +212,8 @@ private theorem countermodel_dense_enriched {fc : FrameClass} (A : Set Formula) 
     φ (self_mem_subformulaClosure φ)
     fam₀ ⟨A, h_mcs, h_box_dense, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
 
-/--
-Enriched discrete countermodel: constructs a countermodel with `Int` explicit
-throughout, so `SuccOrder`/`PredOrder` are available for `valid_discrete`.
-
-Uses `dd_countermodel_chronicle_discrete` from the Chronicle pipeline, which is
-already parameterized over fc. The D = Int specialization is obtained by matching
-on the existential that returns D = Int.
--/
-private theorem countermodel_discrete_enriched {fc : FrameClass} (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (h_fc : FrameClass.Discrete ≤ fc)
-    (φ : Formula) (h_neg_in : φ.neg ∈ A)
-    (h_box_discrete : Formula.box Chronicle.next_top ∈ A) :
-    ∃ (F : TaskFrame Int) (TM : TaskModel F)
-      (Omega : Set (WorldHistory F)) (_ : ShiftClosed Omega)
-      (τ : WorldHistory F) (_ : τ ∈ Omega) (t : Int),
-      ¬truth_at TM Omega τ t φ := by
-  let bfmcs := Chronicle.cantor_bfmcs_discrete fc A h_mcs h_box_discrete
-  let fam₀ := Chronicle.rooted_succ_discrete_fmcs fc A h_mcs h_box_discrete 0
-  refine ⟨Bimodal.Metalogic.Algebraic.ParametricCanonical.ParametricCanonicalTaskFrame Int,
-    Bimodal.Metalogic.Algebraic.ParametricTruthLemma.ParametricCanonicalTaskModel Int,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.ShiftClosedParametricCanonicalOmega bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.shiftClosedParametricCanonicalOmega_is_shift_closed bfmcs,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametric_to_history fam₀,
-    Bimodal.Metalogic.Algebraic.ParametricHistory.parametricCanonicalOmega_subset_shiftClosed bfmcs
-      ⟨fam₀, ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩, rfl⟩,
-    0, ?_⟩
-  have h_neg_fam : φ.neg ∈ fam₀.mcs 0 := by
-    rw [Chronicle.rooted_succ_discrete_fmcs_at_s]; exact h_neg_in
-  exact Bimodal.Metalogic.Algebraic.RestrictedParametricTruthLemma.fully_restricted_parametric_completeness_from_neg_membership
-    bfmcs φ
-    (Chronicle.cantor_bfmcs_discrete_restricted_tc fc A h_mcs h_fc h_box_discrete φ
-      (fun ψ hψ => Finset.mem_toList.mpr (deferralClosure_subset_extendedDeferralClosure φ hψ)))
-    (Chronicle.cantor_bfmcs_discrete_restricted_buc fc A h_mcs h_box_discrete φ)
-    (Chronicle.cantor_bfmcs_discrete_restricted_fuc fc A h_mcs h_fc h_box_discrete φ)
-    φ (self_mem_subformulaClosure φ)
-    fam₀ ⟨A, h_mcs, h_box_discrete, 0, fun _ => Iff.rfl, rfl⟩ 0 h_neg_fam
+-- countermodel_discrete_enriched archived to
+-- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
 
 /--
 Dense Completeness Theorem: If a formula is valid on all densely ordered models,

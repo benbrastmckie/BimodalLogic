@@ -153,67 +153,8 @@ attribute [instance] ChronicleAsPriorModel.domain_pred
 attribute [instance] ChronicleAsPriorModel.domain_succ_archimedean
 attribute [instance] ChronicleAsPriorModel.domain_nonempty
 
-/-! ## Extraction from the Chronicle -/
-
-/--
-Extract a `ChronicleAsPriorModel` from the Burgess chronicle.
-
-Given MCS A with `□(next_top) ∈ A` (box discreteness), the chronicle's
-`LimitDomSubtype` provides a countable discrete domain without endpoints.
-The `box_discrete_gives_discreteness` lemma ensures discreteness propagates
-to every domain point.
-
-The root point is `⟨0, zero_mem_limit_dom A h_mcs⟩` where `limit_f = A`.
--/
--- NOTE: extract_chronicle_as_prior is NOT on the critical path for
--- completeness_discrete. It is used ONLY by countermodel_discrete_reynolds
--- (Transfer.lean:1004), which has an unsolvable sorry (see warning there).
--- The critical path uses dd_countermodel_chronicle_discrete (Path A),
--- which does not call this function.
-noncomputable def extract_chronicle_as_prior {fc : FrameClass} (h_fc : FrameClass.Discrete ≤ fc)
-    (A : Set Formula) (h_mcs : SetMaximalConsistent (fc := fc) A)
-    (h_box_discrete : Formula.box next_top ∈ A) : ChronicleAsPriorModel fc :=
-  let h_discrete := box_discrete_gives_discreteness fc A h_mcs h_box_discrete
-  {
-    root := A
-    root_mcs := h_mcs
-    domain := LimitDomSubtype fc A h_mcs
-    domain_succ := limitDomSubtype_succOrder fc A h_mcs h_discrete
-    domain_pred := limitDomSubtype_predOrder fc A h_mcs h_discrete
-    -- NOTE: limitDomSubtype_isSuccArchimedean is defined in ChronicleToCountermodel.lean
-    -- (not ChronicleToCountermodelBasic) because it depends on gap elimination via
-    -- GoodStructuresModelSurgery. This function (extract_chronicle_as_prior) is dead
-    -- code -- see note above. The sorry here is inherited from the file split and does
-    -- not affect completeness_discrete.
-    domain_succ_archimedean := by
-      letI := limitDomSubtype_succOrder fc A h_mcs h_discrete
-      sorry
-    root_point := ⟨0, zero_mem_limit_dom fc A h_mcs⟩
-    fmcs := fun t => limit_f fc A h_mcs t.val
-    fmcs_is_mcs := fun t => limit_c0 fc A h_mcs t.val t.property
-    root_point_mcs := limit_f_zero fc A h_mcs
-    next_top_everywhere := fun t => h_discrete t.val t.property
-    prior_UZ_valid := fun t ψ =>
-      prior_UZ_in_limit_domain h_fc A h_mcs t.val t.property ψ
-    prior_SZ_valid := fun t ψ =>
-      prior_SZ_in_limit_domain h_fc A h_mcs t.val t.property ψ
-    until_coherent_fwd := fun t φ ψ h_until => by
-      obtain ⟨y, hy, hty, hφy, h_guard⟩ :=
-        limit_satisfies_c5_strong fc A h_mcs t.val t.property ψ φ h_until
-      exact ⟨⟨y, hy⟩, hty, hφy, fun r htr hrs => h_guard r.val r.property htr hrs⟩
-    since_coherent_fwd := fun t φ ψ h_since => by
-      obtain ⟨y, hy, hyt, hφy, h_guard⟩ :=
-        limit_satisfies_c5'_strong fc A h_mcs t.val t.property ψ φ h_since
-      exact ⟨⟨y, hy⟩, hyt, hφy, fun r hry hrt => h_guard r.val r.property hry hrt⟩
-    neg_until_coherent := fun t s hts φ ψ h_neg_until hφs => by
-      obtain ⟨z, hz, htz, hzs, h_neg_ψ⟩ :=
-        limit_satisfies_c4 fc A h_mcs t.val s.val t.property s.property hts ψ φ h_neg_until hφs
-      exact ⟨⟨z, hz⟩, htz, hzs, h_neg_ψ⟩
-    neg_since_coherent := fun t s hst φ ψ h_neg_since hφs => by
-      obtain ⟨z, hz, hsz, hzt, h_neg_ψ⟩ :=
-        limit_satisfies_c4' fc A h_mcs t.val s.val t.property s.property hst ψ φ h_neg_since hφs
-      exact ⟨⟨z, hz⟩, hsz, hzt, h_neg_ψ⟩
-  }
+-- extract_chronicle_as_prior archived to
+-- Boneyard/DeadChronicleGapElimination/TransferDead.lean (task 302)
 
 /-! ## Derived Properties -/
 

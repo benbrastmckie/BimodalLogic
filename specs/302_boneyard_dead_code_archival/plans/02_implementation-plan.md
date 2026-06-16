@@ -164,18 +164,18 @@ Phases are sequential because each modifies imports/aggregators that later phase
 
 ---
 
-### Phase 4: Extract in-file dead blocks from Transfer, ChronicleExtraction, ShiftAndGlue, Completeness [NOT STARTED]
+### Phase 4: Extract in-file dead blocks from Transfer, ChronicleExtraction, ShiftAndGlue, Completeness [COMPLETED]
 
 **Goal**: Remove remaining in-file dead blocks from 4 live files.
 
 **Tasks**:
-- [ ] Remove `countermodel_discrete` (~lines 1249-1298, sorry'd, deprecated) from `WeakCanonical/Transfer.lean`
-- [ ] Remove `countermodel_discrete_reynolds` v1 (~lines 1203-1248, superseded by v2) from `WeakCanonical/Transfer.lean`
-- [ ] Add extracted Transfer declarations to a new Boneyard file `Boneyard/DeadChronicleGapElimination/TransferDead.lean` with provenance
-- [ ] Remove `extract_chronicle_as_prior` (~lines 168-200, sorry'd) from `WeakCanonical/ChronicleExtraction.lean`
-- [ ] Remove `chronicle_is_good` and `chronicle_is_good_direct` (~lines 885-1000, dead path) from `WeakCanonical/IntegerModel/ShiftAndGlue.lean`
-- [ ] Remove `countermodel_discrete_enriched` (~lines 223-250, private, never called) from `BXCanonical/Completeness.lean`
-- [ ] Run `lake build` to verify clean build
+- [ ] **Task 4.1**: Remove `countermodel_discrete` (~lines 1249-1298, sorry'd, deprecated) from `WeakCanonical/Transfer.lean` *(deviation: skipped — countermodel_discrete is called by BXCanonical/Completeness.lean:166; not removable)*
+- [ ] **Task 4.2**: Remove `countermodel_discrete_reynolds` v1 (~lines 1203-1248, superseded by v2) from `WeakCanonical/Transfer.lean` *(deviation: skipped — there is no v1/v2 distinction; the sole countermodel_discrete_reynolds is live)*
+- [x] **Task 4.3**: Add extracted Transfer declarations to a new Boneyard file `Boneyard/DeadChronicleGapElimination/TransferDead.lean` with provenance *(completed — contains extract_chronicle_as_prior, chronicle_is_good, chronicle_is_good_direct, countermodel_discrete_enriched)*
+- [x] **Task 4.4**: Remove `extract_chronicle_as_prior` (~lines 168-200, sorry'd) from `WeakCanonical/ChronicleExtraction.lean` *(completed)*
+- [x] **Task 4.5**: Remove `chronicle_is_good` and `chronicle_is_good_direct` (~lines 885-1000, dead path) from `WeakCanonical/IntegerModel/ShiftAndGlue.lean` *(completed)*
+- [x] **Task 4.6**: Remove `countermodel_discrete_enriched` (~lines 223-250, private, never called) from `BXCanonical/Completeness.lean` *(completed)*
+- [x] **Task 4.7**: Run `lake build` to verify clean build
 
 **Timing**: 1.5 hours
 
