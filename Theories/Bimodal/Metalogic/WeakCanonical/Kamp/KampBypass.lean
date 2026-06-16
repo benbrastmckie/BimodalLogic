@@ -22,7 +22,8 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff)
+open Bimodal.Metalogic.WeakCanonical.Separation (formula_disjList formula_disjList_iff
+  formula_conjList formula_conjList_iff)
 
 /-! ## Cross-Structure NF Transfer -/
 
@@ -140,6 +141,50 @@ theorem existPart_succ_n1_bypass_k0
     exact existPart_succ_n1_bypass_k0_eq atomMap h_surj char_1 char_1_correct
       parent_atoms sub_nf h_gt h_lt
 
+private theorem const_env_atom_agree {sig : MonadicSignature}
+    {k' : Nat}
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (M₀ : OrderedMonadicStructure sig) (t₀ : M₀.carrier)
+    (sub_nf : NormalForm sig (k' + 1 + 1) 2)
+    (h_eval₀ : nf_eval_nf M₀ (k' + 1 + 1) (1 + 1) (Fin.cons t₀ (fun _ => t₀)) sub_nf)
+    (nf_x : NormalForm sig (k' + 1 + 1) 1)
+    (h_nf_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_x)
+    (h_nf_x_compat : ∀ p, nf_x.1 (.pred p ⟨0, by omega⟩) = sub_nf.1 (.pred p ⟨0, by omega⟩)) :
+    ∀ (a : AtomKind sig (1 + 1)),
+      atom_eval M (Fin.cons t (fun _ => t)) a ↔ sub_nf.1 a = true := by
+  obtain ⟨h_atom₀, _⟩ := h_eval₀
+  obtain ⟨h_nf_x_atom, _⟩ := h_nf_x_eval
+  intro a
+  match a with
+  | .pred p i =>
+    simp only [atom_eval, Fin.cons]
+    have h_pred_x := h_nf_x_atom (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval] at h_pred_x
+    have h_const : sub_nf.1 (.pred p i) = sub_nf.1 (.pred p ⟨0, by omega⟩) := by
+      have h0 := h_atom₀ (.pred p ⟨0, by omega⟩)
+      have hi := h_atom₀ (.pred p i)
+      simp only [atom_eval, Fin.cons] at h0 hi
+      have : Fin.cases t₀ (fun _ => t₀) i = t₀ := by
+        refine Fin.cases rfl (fun _ => rfl) i
+      rw [this] at hi
+      cases h_v : sub_nf.1 (.pred p i) <;> cases h_v0 : sub_nf.1 (.pred p ⟨0, by omega⟩) <;>
+        simp_all
+    rw [h_const, ← h_nf_x_compat p]; exact h_pred_x
+  | .order i j h_ne =>
+    have h_order₀ := h_atom₀ (.order i j h_ne)
+    simp only [atom_eval, Fin.cons] at h_order₀
+    have h_false : sub_nf.1 (.order i j h_ne) = false := by
+      by_contra h_eq; push_neg at h_eq
+      exact lt_irrefl _ (h_order₀.mpr (Bool.eq_true_iff.mp (by tauto)))
+    simp only [atom_eval, h_false, Fin.cons]
+    constructor
+    · intro h_lt
+      match i, j, h_ne with
+      | ⟨0, _⟩, ⟨1, _⟩, _ => exact absurd h_lt (lt_irrefl _)
+      | ⟨1, _⟩, ⟨0, _⟩, _ => exact absurd h_lt (lt_irrefl _)
+    · intro h; exact Bool.noConfusion h
+
+set_option maxHeartbeats 1600000 in
 /-- General enriched bypass for ExistPart(k+1) at n=1.
     Delegates to existPart_succ_n1_bypass_k0 for k=0 and uses sorry for k>0. -/
 theorem existPart_succ_n1_bypass
@@ -316,17 +361,141 @@ theorem existPart_succ_n1_bypass
               (compat_of_eval M t x h_eval),
             fun _ _ _ => id⟩
       | false, false =>
-        refine ⟨compat_disj, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        -- Eq zone: x = t, so env is constant [t, t].
+        -- Enriched formula: compat_disj ∧ conjunction encoding quantifier conditions
+        -- via ih_exist at depth k'+1, arity 3.
+        -- Build char_k from ih_char for use with ih_exist
+        let char_k : NormalForm sig (k' + 1) 1 → Formula := fun nf_k => (ih_char nf_k).choose
+        have char_k_correct : ∀ (nf_k : NormalForm sig (k' + 1) 1)
+            (M' : OrderedMonadicStructure sig)
+            (h_UZ' : semantic_prior_UZ M' atomMap)
+            (h_SZ' : semantic_prior_SZ M' atomMap)
+            (t' : M'.carrier),
+            temporal_truth M' atomMap t' (char_k nf_k) ↔
+            nf_eval_nf M' (k' + 1) 1 (fun _ => t') nf_k :=
+          fun nf_k => (ih_char nf_k).choose_spec
+        -- Build ih_exist formulas for each 3-var NF
+        let ih_exist_formula : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
+          (ih_exist 2 (by omega) char_k char_k_correct parent_atoms ssn).choose
+        have ih_exist_correct : ∀ (ssn : NormalForm sig (k' + 1) 3)
+            (M' : OrderedMonadicStructure sig)
+            (h_UZ' : semantic_prior_UZ M' atomMap)
+            (h_SZ' : semantic_prior_SZ M' atomMap)
+            (t' : M'.carrier),
+            (∀ (a : AtomKind sig 1), atom_eval M' (fun _ => t') a ↔ parent_atoms a = true) →
+            (temporal_truth M' atomMap t' (ih_exist_formula ssn) ↔
+             ∃ x, nf_eval_nf M' (k' + 1) (2 + 1) (Fin.cons x (fun _ => t')) ssn) :=
+          fun ssn => (ih_exist 2 (by omega) char_k char_k_correct parent_atoms ssn).choose_spec
+        -- Build the quantifier conjunction
+        let quant_conj := formula_conjList
+          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
+            if sub_nf.2 ssn then ih_exist_formula ssn
+            else (ih_exist_formula ssn).neg)
+        -- Eq zone formula: compat_disj ∧ quant_conj
+        let eq_formula := Formula.and compat_disj quant_conj
+        -- Key: M₀ witness with x₀ = t₀ in the eq zone
+        have h_x₀_eq := wit_eq M₀ t₀ x₀ h_gt_val h_lt_val h_eval₀
+        -- Env equality: on const envs, Fin.cons y [t, t] = Fin.cons y [t, t]
+        -- The nf_eval_nf goals use (1+1)+1 and 2+1 which are both 3
+        -- We prove transfer between the two env forms
+        have h_env_transfer : ∀ (M' : OrderedMonadicStructure sig) (t' : M'.carrier)
+            (y : M'.carrier) (ssn : NormalForm sig (k' + 1) 3),
+            nf_eval_nf M' (k' + 1) ((1+1)+1)
+              (Fin.cons y (Fin.cons t' (fun _ => t'))) ssn ↔
+            nf_eval_nf M' (k' + 1) (2+1) (Fin.cons y (fun _ => t')) ssn := by
+          intro M' t' y ssn
+          -- Both arities reduce to 3 and envs are extensionally equal
+          show nf_eval_nf M' (k' + 1) 3 (Fin.cons y (Fin.cons t' (fun _ => t'))) ssn ↔
+               nf_eval_nf M' (k' + 1) 3 (Fin.cons y (fun _ => t')) ssn
+          have h_eq : (Fin.cons y (Fin.cons t' (fun _ => t')) : Fin 3 → M'.carrier) =
+              Fin.cons y (fun _ => t') := by
+            funext i
+            match i with
+            | ⟨0, _⟩ => rfl
+            | ⟨1, _⟩ => rfl
+            | ⟨2, _⟩ => rfl
+          rw [h_eq]
+        refine ⟨eq_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        rw [temporal_truth_and]
         constructor
         · -- Backward: temporal → ∃ x
-          sorry
+          intro ⟨h_compat, h_quant⟩
+          -- Witness is x = t (forced by no-order condition)
+          refine ⟨t, ?_⟩
+          -- Need: nf_eval_nf M (k'+1+1) (1+1) (Fin.cons t (fun _ => t)) sub_nf
+          -- M₀ satisfies sub_nf at [t₀, t₀] (since x₀ = t₀)
+          have h_eval₀_const := h_x₀_eq ▸ h_eval₀
+          -- Extract from compat_disj: M has some compatible 1-var type at t
+          have h_compat_data : ∃ nf_x, compat_check nf_x = true ∧
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_x := by
+            rw [formula_disjList_iff] at h_compat
+            obtain ⟨φ, h_φ_mem, h_φ_true⟩ := h_compat
+            rw [List.mem_filterMap] at h_φ_mem
+            obtain ⟨nf_x, _, h_nf_x_some⟩ := h_φ_mem
+            split_ifs at h_nf_x_some with h_compat_nfx
+            exact ⟨nf_x, h_compat_nfx,
+              (char_kp1_correct nf_x M h_UZ h_SZ t).mp
+                (Option.some_injective _ h_nf_x_some ▸ h_φ_true)⟩
+          obtain ⟨nf_x, h_nf_x_compat, h_nf_x_eval⟩ := h_compat_data
+          -- Build nf_eval_nf via constructor
+          constructor
+          · -- Atom part via extracted helper
+            simp only [compat_check, List.all_eq_true, beq_iff_eq] at h_nf_x_compat
+            exact const_env_atom_agree M t M₀ t₀ sub_nf h_eval₀_const
+              nf_x h_nf_x_eval (fun p => h_nf_x_compat p
+                (Multiset.mem_toList.mpr (Fintype.complete p)))
+          · -- Quant part
+            intro ssn
+            rw [formula_conjList_iff] at h_quant
+            have h_ssn_mem : (if sub_nf.2 ssn then ih_exist_formula ssn
+                else (ih_exist_formula ssn).neg) ∈
+                (Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
+                  if sub_nf.2 ssn then ih_exist_formula ssn
+                  else (ih_exist_formula ssn).neg :=
+              List.mem_map.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), rfl⟩
+            have h_φ_true := h_quant _ h_ssn_mem
+            cases h_ssn_val : sub_nf.2 ssn with
+            | true =>
+              simp only [h_ssn_val, ite_true] at h_φ_true
+              have ⟨y, hy⟩ := (ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mp h_φ_true
+              exact ⟨y, (h_env_transfer M t y ssn).mpr hy⟩
+            | false =>
+              simp only [h_ssn_val, ite_false] at h_φ_true
+              have h_not := (temporal_truth_neg M atomMap t _).mp h_φ_true
+              constructor
+              · intro ⟨y, hy⟩
+                have hy' := (h_env_transfer M t y ssn).mp hy
+                exact absurd ((ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mpr ⟨y, hy'⟩) h_not
+              · intro h_eq; exact absurd h_eq (by simp)
         · -- Forward: ∃ x → temporal
           intro ⟨x, h_eval⟩
-          have h_x_eq := wit_eq M t x h_gt_val h_lt_val h_eval
-          rw [h_x_eq] at h_eval
-          exact fwd_disj M h_UZ h_SZ t
-            (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => t))
-            (compat_of_eval M t t h_eval)
+          have h_x_eq_t := wit_eq M t x h_gt_val h_lt_val h_eval
+          rw [h_x_eq_t] at h_eval
+          constructor
+          · -- compat_disj
+            exact fwd_disj M h_UZ h_SZ t
+              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => t))
+              (compat_of_eval M t t h_eval)
+          · -- quant_conj
+            rw [formula_conjList_iff]
+            intro φ h_φ_mem
+            rw [List.mem_map] at h_φ_mem
+            obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
+            obtain ⟨_, h_quant_eval⟩ := h_eval
+            cases h_ssn_val : sub_nf.2 ssn with
+            | true =>
+              simp only [h_ssn_val, ite_true] at h_ssn_eq; rw [← h_ssn_eq]
+              obtain ⟨y, hy⟩ := (h_quant_eval ssn).mpr h_ssn_val
+              have hy' := (h_env_transfer M t y ssn).mp hy
+              exact (ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mpr ⟨y, hy'⟩
+            | false =>
+              simp only [h_ssn_val, ite_false] at h_ssn_eq; rw [← h_ssn_eq]
+              rw [temporal_truth_neg]
+              intro h_contra
+              obtain ⟨y, hy⟩ := (ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mp h_contra
+              have hy' := (h_env_transfer M t y ssn).mpr hy
+              have := (h_quant_eval ssn).mp ⟨y, hy'⟩
+              simp only [h_ssn_val] at this
     · -- Unsatisfiable: use ⊥
       exact ⟨Formula.bot, fun M _ _ t h_atoms => by
         simp only [temporal_truth]
