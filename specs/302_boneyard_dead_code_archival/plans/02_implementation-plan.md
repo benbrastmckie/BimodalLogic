@@ -100,7 +100,7 @@ Phases are sequential because each modifies imports/aggregators that later phase
 
 ---
 
-### Phase 2: Archive dead EFGames files and EnrichedClosure [NOT STARTED]
+### Phase 2: Archive dead EFGames files and EnrichedClosure [COMPLETED]
 
 **Goal**: Move the 3 dead EFGames Stavi discrete files and the dead BXCanonical Quasimodel file, plus relocate root-level Boneyard.
 

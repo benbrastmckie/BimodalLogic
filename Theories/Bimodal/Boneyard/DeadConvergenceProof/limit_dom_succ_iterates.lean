@@ -1,3 +1,9 @@
+-- RELOCATED from root Boneyard/DeadConvergenceProof/limit_dom_succ_iterates.lean
+-- Reason: Consolidation — moved from root-level Boneyard/ to Theories/Bimodal/Boneyard/
+-- Relocated: 2026-06-16 (task 302)
+
+#exit
+
 /-!
 # ARCHIVED: limit_dom_points_are_succ_iterates
 

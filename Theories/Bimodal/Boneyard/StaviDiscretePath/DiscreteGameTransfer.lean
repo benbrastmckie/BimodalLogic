@@ -1,3 +1,9 @@
+-- ARCHIVED from Metalogic/WeakCanonical/EFGames/DiscreteGameTransfer.lean
+-- Reason: Dead code — discrete Stavi path with no live downstream consumers
+-- Archived: 2026-06-16 (task 302)
+
+#exit
+
 import Bimodal.Metalogic.WeakCanonical.EFGames.Decomposition
 import Bimodal.Metalogic.WeakCanonical.EFGames.Composition
 import Bimodal.Metalogic.WeakCanonical.Expressiveness.Theorem6

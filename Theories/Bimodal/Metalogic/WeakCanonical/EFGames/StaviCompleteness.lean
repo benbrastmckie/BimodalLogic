@@ -3335,9 +3335,6 @@ noncomputable def stavi_expressive_completeness
 
 /-! ## Discrete Stavi Expressive Completeness
 
-Discrete versions of `nf_characterizable_by_stavi` and `stavi_expressive_completeness`
-are in `DiscreteStaviCompleteness.lean`, which imports the game pipeline from
-`DiscreteGameTransfer.lean` and uses it to bypass the sorry in `nf_exist_sf_guarded_backward`
-for discrete structures. -/
+Discrete versions were archived to Boneyard/StaviDiscretePath/ (task 302). -/
 
 end Bimodal.Metalogic.WeakCanonical

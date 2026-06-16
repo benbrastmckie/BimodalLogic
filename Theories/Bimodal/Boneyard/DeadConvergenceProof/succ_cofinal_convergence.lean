@@ -1,3 +1,9 @@
+-- RELOCATED from root Boneyard/DeadConvergenceProof/succ_cofinal_convergence.lean
+-- Reason: Consolidation — moved from root-level Boneyard/ to Theories/Bimodal/Boneyard/
+-- Relocated: 2026-06-16 (task 302)
+
+#exit
+
 /-!
 # ARCHIVED: Dead Convergence Proof for succ_cofinal
 
