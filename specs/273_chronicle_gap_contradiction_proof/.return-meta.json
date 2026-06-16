@@ -7,37 +7,31 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2236,
-      "statement": "Function.Injective witness_fn (leaf in backward bracket proof)",
-      "why_deferred": "NF decomposition for nf_y_proj injectivity within pos_between"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2321,
+      "line": 2385,
       "statement": "forward_nf_eval_of_holdsLeft (forward Until direction)",
-      "why_deferred": "Phase 3 scope: Sigma transport + pigeonhole for positive SSNs"
+      "why_deferred": "Large proof: Sigma transport + Formula.and encoding (double-negated implication) + per-zone quantifier reconstruction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2496,
+      "line": 2560,
       "statement": "existPart_succ_n1_bypass_k0_since forward",
       "why_deferred": "Phase 4 scope: Since encoding flaw"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2498,
+      "line": 2562,
       "statement": "existPart_succ_n1_bypass_k0_since backward",
       "why_deferred": "Phase 4 scope"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2651,
+      "line": 2715,
       "statement": "existPart_succ_n1_bypass k>0",
       "why_deferred": "Non-goal (depth induction)"
     }
   ],
   "verification": {
-    "sorry_count": 5,
+    "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
@@ -45,6 +39,9 @@
   "memory_candidates": [
     "BracketFormula k with shared disjunction pointType avoids the witness-index permutation issue that arises with per-SSN pointTypes",
     "Finset.orderEmbOfFin provides strictly monotone enumeration of k elements in a linear order -- key for bracket witness construction",
-    "enriched_vecEA2_until encoding: positive between_tx SSNs as bracket witnesses (BracketFormula k), negative as seg_guard conjuncts"
-  ]
+    "enriched_vecEA2_until encoding: positive between_tx SSNs as bracket witnesses (BracketFormula k), negative as seg_guard conjuncts",
+    "SSNs in pos_between are fully determined by nf_y_proj (y-predicates): x-preds from compat, t-preds from compat, all order atoms from zone + compat",
+    "Formula.and in BimodalLogic encodes as (a.imp b.neg).neg — NOT a direct conjunction. Need care when decomposing temporal_truth of Formula.and"
+  ],
+  "handoff_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff.md"
 }

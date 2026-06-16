@@ -2378,10 +2378,10 @@ private theorem forward_nf_eval_of_holdsLeft
     -- h_endRight: temporal_truth of (char_1(nf_x) ∧ right_conjuncts) at x
     -- h_bracket: BracketFormula.holds with k witnesses in (t, x) satisfying pos_pt + seg_guard
     -- h_endLeft: pre_conditions_at_t_until holds at t
-    -- The forward proof is complex: need to reconstruct nf_eval from temporal components.
-    -- Use h_eq to identify vea with enriched_vecEA2_until's output.
-    -- Defer: this proof requires transporting h_endRight/h_bracket/h_endLeft through h_eq
-    -- and then decomposing into atom + quantifier conditions.
+    -- The forward proof requires reconstructing nf_eval from temporal components.
+    -- It needs: atom conditions (from h_endRight + h_compat + h_t_compat + h_atoms)
+    -- and quantifier conditions (from h_endLeft + h_bracket + h_endRight per zone).
+    -- This is a large proof deferred to the next dispatch.
     sorry
 /-! ## Until Case (t < x) -/
 

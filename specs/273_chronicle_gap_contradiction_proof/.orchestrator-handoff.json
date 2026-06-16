@@ -1,63 +1,54 @@
 {
   "status": "partial",
-  "summary": "Phase 1 of plan v39 completed: definition rewrite of enriched_vecEA2_until from BracketFormula 0 to BracketFormula k with shared pos_pt disjunction pointType. Sorry-free bracket_from_distinct_witnesses helper lemma proved using Finset.orderEmbOfFin. Backward bracket proof restructured; one leaf sorry remains for witness injectivity. Forward direction sorry unchanged but structurally unblocked by new encoding.",
-  "phases_completed": 1,
+  "summary": "Phase 2 (backward injectivity) completed. Phase 3 (forward direction) remains open — atom transport through h_eq identified as key challenge (Formula.and encodes as double-negated implication).",
+  "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2236,
-      "statement": "have (leaf): Function.Injective witness_fn",
-      "assumption": "witness_fn i = witness_fn j implies i = j",
-      "why_deferred": "Requires NF decomposition: within pos_between (fixed zone, x/t context), nf_y_proj injective on SSNs. Mechanically involved funext over AtomKind.",
-      "next_dispatch": "Prove by funext on AtomKind: pred cases use nf_y_proj equality + ssn_xt_compatible; order cases use zone_between_tx constraints."
+      "line": 2385,
+      "statement": "forward_nf_eval_of_holdsLeft: nf_eval_nf M 1 (1+1) (Fin.cons x (fun _ => t)) sub_nf",
+      "assumption": "Given VecEA2.holdsLeft with endpointLeft/endpointRight/bracket conditions, reconstruct atom + quantifier evaluation",
+      "why_deferred": "Large proof requiring: (1) transport through Sigma equality h_eq via 'cases h_eq.symm'; (2) Formula.and unfolds to double-negated implication in temporal_truth — need temporal_and_iff or similar; (3) quantifier reconstruction requires per-zone case analysis for all SSN types",
+      "next_dispatch": "Close forward_nf_eval_of_holdsLeft. Key approach: use 'cases h_eq.symm' to substitute vea/n, then extract char_1(nf_x) from h_endRight (beware Formula.and encoding), use char_1_correct + nf_x_compat_check for atoms, and handle quantifiers per zone."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2321,
-      "statement": "theorem forward_nf_eval_of_holdsLeft",
-      "assumption": "From VecEA2.holdsLeft (endpointRight at x, bracket on (t,x), endpointLeft at t), reconstruct nf_eval_nf",
-      "why_deferred": "Phase 3 scope. Requires Sigma transport + bracket witness extraction + pigeonhole for positive SSNs.",
-      "next_dispatch": "Phase 3: prove forward direction."
+      "line": 2560,
+      "statement": "existPart_succ_n1_bypass_k0_since forward: temporal_truth M atomMap t A",
+      "assumption": "Since direction forward proof",
+      "why_deferred": "Phase 4 target — Since encoding fix needed first",
+      "next_dispatch": "Phase 4: fix Since encoding"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2496,
-      "statement": "existPart_succ_n1_bypass_k0_since forward direction",
-      "assumption": "Since direction encoding flaw (Formula.untl char_y Formula.top loses upper bound)",
-      "why_deferred": "Phase 4 scope.",
-      "next_dispatch": "Phase 4: rewrite enriched_bypass_since with BracketFormula k approach."
+      "line": 2562,
+      "statement": "existPart_succ_n1_bypass_k0_since backward",
+      "assumption": "Since direction backward proof",
+      "why_deferred": "Phase 4 target",
+      "next_dispatch": "Phase 4: fix Since encoding"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2498,
-      "statement": "existPart_succ_n1_bypass_k0_since backward direction",
-      "assumption": "Same encoding flaw",
-      "why_deferred": "Phase 4 scope.",
-      "next_dispatch": "Phase 4."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 2651,
+      "line": 2715,
       "statement": "existPart_succ_n1_bypass k>0",
-      "assumption": "Requires depth induction",
-      "why_deferred": "Non-goal of plan v39.",
-      "next_dispatch": "Separate task."
+      "assumption": "Depth induction for k>0 case",
+      "why_deferred": "Non-goal for this plan — separate task",
+      "next_dispatch": "Separate task for k>0 depth induction"
     }
   ],
   "blockers": [],
-  "continuation_path": null,
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff.md",
   "continuation_context": {
-    "is_successor": false,
-    "plan_version": 39,
-    "last_phase_completed": 1,
-    "next_phase": 2,
-    "build_status": "green",
-    "key_decisions": [
-      "Used shared pos_pt DISJUNCTION for all bracket pointTypes instead of per-SSN pointTypes to avoid witness-index permutation issue",
-      "Added Mathlib.Data.Finset.Sort import for Finset.orderEmbOfFin",
-      "bracket_from_distinct_witnesses is sorry-free general helper: given k distinct points in (lo, hi), BracketFormula with constant ptType/segType holds",
-      "Pre-existing CanonicalTaskRelation.lean errors (simp failures at L94, L740) are unrelated to this task"
+    "is_successor": true,
+    "resume_phase": 3,
+    "key_findings": [
+      "Phase 2 complete: backward injectivity proved via funext on AtomKind + nodup filter list",
+      "set_option maxHeartbeats 1600000 added to backward_holdsLeft_of_nf_eval for zone analysis",
+      "Forward proof (Phase 3): 'cases h_eq.symm' successfully substitutes vea/n with concrete enriched_vecEA2_until definition",
+      "Formula.and in this codebase encodes as (a.imp b.neg).neg — not a direct conjunction. Need temporal_and_iff or manual double-negation elimination",
+      "Atom proof approach: char_1_correct + nf_x_compat_check for x-preds, h_t_compat + h_atoms for t-preds, h_t_lt_x for order atoms",
+      "Quantifier proof requires per-zone decomposition of h_endLeft (below_t, eq_t zones), h_endRight (eq_x, above_x zones), and h_bracket (between_tx zone)"
     ]
   }
 }

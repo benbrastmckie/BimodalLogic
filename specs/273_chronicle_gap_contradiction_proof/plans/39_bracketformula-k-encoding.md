@@ -84,15 +84,15 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 **Goal**: Change `enriched_vecEA2_until` from `BracketFormula 0` to `BracketFormula k` (k = number of positive between_tx SSNs). Prove three sorry-free helper lemmas needed by subsequent phases.
 
 **Tasks**:
-- [ ] Re-verify sorry inventory: `grep -n 'sorry' KampBypass.lean` to confirm locations at L2205, L2380, L2382, L2535
-- [ ] Rewrite `enriched_vecEA2_until` (L444-490): change `BracketFormula 0` to `BracketFormula pos_between.length` where `pos_between` is the list of positive between_tx SSNs
-- [ ] Set each bracket pointType `alpha_i` = `char_y(nf_y_proj ssn_i)` for the i-th positive between_tx SSN
-- [ ] Set each bracket segmentType to `seg_guard` (same conjunction of negated char_y formulas for negative between_tx SSNs)
-- [ ] Remove `Formula.snce char_y Formula.top` from endpointRight for positive between_tx SSNs (lines 481-485) -- these conditions are now handled by the bracket witnesses
-- [ ] Prove `nf_y_proj_injective_on_pos_between`: within a fixed disjunct (fixed nf_x, nf_x_1var, parent_atoms), `nf_y_proj` is injective on `pos_between` (~15-30 lines)
-- [ ] Prove `seg_guard_subinterval`: if `seg_guard` holds on `(t, x)` then it holds on any subinterval `(a, b)` with `t <= a < b <= x` (~10-15 lines)
-- [ ] Prove `witnesses_sorting`: given k distinct values in `(t, x)` (not necessarily ordered), there exists a strictly increasing reordering. Use Mathlib `Tuple.sort` or `Finset.orderEmbOfFin` (~30-50 lines)
-- [ ] Verify build GREEN after definition change and helper lemmas
+- [x] Re-verify sorry inventory: `grep -n 'sorry' KampBypass.lean` to confirm locations at L2205, L2380, L2382, L2535
+- [x] Rewrite `enriched_vecEA2_until` (L444-490): change `BracketFormula 0` to `BracketFormula pos_between.length` where `pos_between` is the list of positive between_tx SSNs
+- [x] Set each bracket pointType to shared `pos_pt` disjunction (design change: shared disjunction avoids witness-index permutation issue; replaces per-SSN `char_y(nf_y_proj ssn_i)`)
+- [x] Set each bracket segmentType to `seg_guard` (same conjunction of negated char_y formulas for negative between_tx SSNs)
+- [x] Remove `Formula.snce char_y Formula.top` from endpointRight for positive between_tx SSNs (lines 481-485) -- these conditions are now handled by the bracket witnesses
+- [ ] Prove `nf_y_proj_injective_on_pos_between`: within a fixed disjunct (fixed nf_x, nf_x_1var, parent_atoms), `nf_y_proj` is injective on `pos_between` (~15-30 lines) *(proved inline in Phase 2 backward proof at L2228-2300 instead of as standalone helper)*
+- [ ] Prove `seg_guard_subinterval`: if `seg_guard` holds on `(t, x)` then it holds on any subinterval `(a, b)` with `t <= a < b <= x` (~10-15 lines) *(proved inline in Phase 2 backward proof as `seg_guard_on_interval` at L2168 instead of as standalone helper)*
+- [x] Prove `witnesses_sorting`: replaced by sorry-free `bracket_from_distinct_witnesses` (L1943) using `Finset.orderEmbOfFin` — handles sorting, injectivity, and bracket construction in one helper
+- [x] Verify build GREEN after definition change and helper lemmas
 
 **Timing**: 2.5 hours
 
@@ -114,14 +114,14 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 **Goal**: Re-prove `backward_holdsLeft_of_nf_eval` (L1927) with the new BracketFormula k. The backward direction goes from `nf_eval` (semantic evaluation at witnesses) to `VecEA2.holdsLeft` (temporal formula holds). The key new sub-goal: given k unsorted witnesses from `nf_eval`, sort them into strictly increasing order for `IntervalPattern.holds`.
 
 **Tasks**:
-- [ ] Re-verify sorry/proof state at `backward_holdsLeft_of_nf_eval` after Phase 1 definition change
-- [ ] Update the bracket proof case (currently at L2093-2097, BracketFormula.trivial): replace `BracketFormula.trivial_holds` with a proof that constructs k sorted witnesses
-- [ ] Use `nf_y_proj_injective_on_pos_between` to establish that the k witnesses from `h_eval_quant` are distinct
-- [ ] Use `witnesses_sorting` to obtain a strictly increasing permutation of the witnesses
-- [ ] Verify that pointType conditions are preserved under permutation (each alpha_i = char_y(ssn_i) matches the i-th witness in the sorted order)
-- [ ] Use `seg_guard_subinterval` to show segment guards hold on each sub-segment between consecutive sorted witnesses
-- [ ] Verify `backward_holdsLeft_of_nf_eval` is sorry-free via `lean_verify`
-- [ ] Verify build GREEN
+- [x] Re-verify sorry/proof state at `backward_holdsLeft_of_nf_eval` after Phase 1 definition change
+- [x] Update the bracket proof case (currently at L2093-2097, BracketFormula.trivial): replace `BracketFormula.trivial_holds` with a proof that constructs k sorted witnesses — now at L2197-2317 using `bracket_from_distinct_witnesses`
+- [x] Establish that the k witnesses from `h_eval_quant` are distinct — proved inline via `h_wit_injective` (L2228-2300, funext on AtomKind + List.Nodup)
+- [x] Obtain a strictly increasing permutation of the witnesses — handled by `bracket_from_distinct_witnesses` internally via `Finset.orderEmbOfFin`
+- [x] Verify that pointType conditions are preserved under permutation — proved via `h_wit_pos_pt` (L2305-2312) showing each witness satisfies `pos_pt` disjunction
+- [x] Show segment guards hold on each sub-segment — proved via `seg_guard_on_interval` (L2168) showing seg_guard holds at all y in (t, x)
+- [x] Verify `backward_holdsLeft_of_nf_eval` is sorry-free — confirmed: 0 sorries between L2008-2318
+- [x] Verify build GREEN
 
 **Timing**: 2 hours
 
@@ -224,8 +224,8 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 
 ## Testing & Validation
 
-- [ ] After Phase 1: `enriched_vecEA2_until` returns `VecEA2 k` with k = pos_between.length; helper lemmas sorry-free; build GREEN
-- [ ] After Phase 2: `backward_holdsLeft_of_nf_eval` sorry-free via `lean_verify`; build GREEN
+- [x] After Phase 1: `enriched_vecEA2_until` returns `VecEA2 k` with k = pos_between.length; `bracket_from_distinct_witnesses` sorry-free; build GREEN
+- [x] After Phase 2: `backward_holdsLeft_of_nf_eval` sorry-free (0 sorries in L2008-2318); build GREEN
 - [ ] After Phase 3: `forward_nf_eval_of_holdsLeft` sorry-free; grep shows 3 remaining sorries (Since + k>0)
 - [ ] After Phase 4: `existPart_succ_n1_bypass_k0_since` sorry-free; grep shows 1 remaining sorry (k>0)
 - [ ] After Phase 5: `existPart_succ_n1_bypass_k0` sorry-free via `lean_verify`; full `lake build` succeeds; chain verification documented
