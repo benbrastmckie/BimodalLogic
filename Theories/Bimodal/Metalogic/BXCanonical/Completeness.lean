@@ -2,6 +2,7 @@
 -- construction. 3 sorry sites (restricted_tc/buc/fuc) bypassed by Chronicle
 -- approach. See Boneyard/ScheduleBasedBFMCS/README.md.
 import Bimodal.Metalogic.BXCanonical.Chronicle.ChronicleToCountermodel
+import Bimodal.Metalogic.BXCanonical.Chronicle.MCSMixedCase
 import Bimodal.Metalogic.WeakCanonical
 import Bimodal.Semantics.Validity
 import Mathlib.Data.Int.SuccPred
@@ -385,17 +386,19 @@ theorem completeness_discrete (φ : Formula) :
 --              Lean.trustCompiler, Quot.sound]
 ```
 
-`sorryAx` traces through: `succ_embed_surjective` → `limitDomSubtype_isSuccArchimedean`
-→ `succ_cofinal` → `chronicle_gap_contradiction` [sorry].
+`sorryAx` traces through the Reynolds pipeline:
+`countermodel_discrete_reynolds_v2` → `limitdom_is_good` → `no_gaps_discrete_model_surgery`
+→ `US_expressively_complete_over_prior` → `kamp_prior_expressive_completeness`
+→ `existPart_succ_n1_bypass` (k>0 sorry in KampBypass.lean).
 
-Task 155 resolved the import cycle (`no_gaps_discrete` extracted to
-`NoGapsDiscreteProof.lean`). Remaining sorry: prove `IsSuccArchimedean` for the
-discrete chronicle limit domain via stage induction on the omega-chain construction.
+The `chronicle_gap_contradiction` sorry (ChronicleToCountermodel.lean) is dead code —
+not on any live call path. `mcs_mixed_case_absurd` (sorry-free, moved to MCSMixedCase.lean)
+is the only Chronicle symbol used by `completeness_discrete`.
 
 ### Axiom Classification
 
 - `propext`, `Classical.choice`, `Quot.sound` — standard Lean 4 axioms (acceptable)
-- `sorryAx` — must be eliminated (sorry chain through `chronicle_gap_contradiction`)
+- `sorryAx` — sole blocker: k>0 case in `existPart_succ_n1_bypass` (KampBypass.lean)
 - `Lean.ofReduceBool`, `Lean.trustCompiler` — from `native_decide` in Syntax layer
   (acceptable, not sorry-related)
 -/
