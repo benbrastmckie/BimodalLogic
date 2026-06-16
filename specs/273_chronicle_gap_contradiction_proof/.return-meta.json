@@ -1,32 +1,50 @@
 {
-  "status": "planned",
-  "summary": "Created implementation plan v39 for BracketFormula k encoding fix. 5 phases, 9 hours estimated. Integrates Report 38 team research (unanimous BracketFormula k > 0 consensus). Phases: (1) definition rewrite + 3 helper lemmas, (2) backward re-proof with sorting, (3) forward proof (straightforward with bracket witnesses), (4) Since direction fix, (5) chain verification.",
-  "artifacts": [
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 273,
+  "session_id": "sess_1781568072_5ba6d8",
+  "sorry_inventory": [
     {
-      "path": "specs/273_chronicle_gap_contradiction_proof/plans/39_bracketformula-k-encoding.md",
-      "type": "plan",
-      "summary": "Implementation plan v39: BracketFormula k encoding fix for KampBypass Until/Since directions"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2236,
+      "statement": "Function.Injective witness_fn (leaf in backward bracket proof)",
+      "why_deferred": "NF decomposition for nf_y_proj injectivity within pos_between"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2321,
+      "statement": "forward_nf_eval_of_holdsLeft (forward Until direction)",
+      "why_deferred": "Phase 3 scope: Sigma transport + pigeonhole for positive SSNs"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2496,
+      "statement": "existPart_succ_n1_bypass_k0_since forward",
+      "why_deferred": "Phase 4 scope: Since encoding flaw"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2498,
+      "statement": "existPart_succ_n1_bypass_k0_since backward",
+      "why_deferred": "Phase 4 scope"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 2651,
+      "statement": "existPart_succ_n1_bypass k>0",
+      "why_deferred": "Non-goal (depth induction)"
     }
   ],
-  "next_steps": "Run /implement 273 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1781567345_b3b221",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 9,
-    "dependency_waves": [[1], [2], [3, 4], [5]],
-    "complexity": "complex",
-    "research_integrated": true,
-    "plan_version": 39,
-    "reports_integrated": [
-      {
-        "path": "reports/38_team-research.md",
-        "integrated_in_plan_version": 39,
-        "integrated_date": "2026-06-15"
-      }
-    ]
+  "verification": {
+    "sorry_count": 5,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
   },
-  "memory_candidates": []
+  "memory_candidates": [
+    "BracketFormula k with shared disjunction pointType avoids the witness-index permutation issue that arises with per-SSN pointTypes",
+    "Finset.orderEmbOfFin provides strictly monotone enumeration of k elements in a linear order -- key for bracket witness construction",
+    "enriched_vecEA2_until encoding: positive between_tx SSNs as bracket witnesses (BracketFormula k), negative as seg_guard conjuncts"
+  ]
 }

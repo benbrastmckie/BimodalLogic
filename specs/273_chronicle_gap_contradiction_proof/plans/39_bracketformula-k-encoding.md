@@ -79,7 +79,7 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 
 ---
 
-### Phase 1: Definition Rewrite + Helper Lemmas [IN PROGRESS]
+### Phase 1: Definition Rewrite + Helper Lemmas [COMPLETED]
 
 **Goal**: Change `enriched_vecEA2_until` from `BracketFormula 0` to `BracketFormula k` (k = number of positive between_tx SSNs). Prove three sorry-free helper lemmas needed by subsequent phases.
 

@@ -2305,21 +2305,19 @@ private theorem forward_nf_eval_of_holdsLeft
     let nf_x_1var : NormalForm sig 0 1 := fun a => match a with
       | .pred p _ => nf_x.1 (.pred p ⟨0, by omega⟩)
       | .order i j h => absurd (Fin.ext (by omega) : i = j) h
-    -- The enriched_vecEA2_until gives a specific VecEA2
-    let vea' := enriched_vecEA2_until atomMap h_surj char_1 sub_nf nf_x nf_x_1var parent_atoms
-    -- h_eq tells us ⟨n, vea⟩ = vea' (definitionally via the lambda)
-    -- From holdsLeft for vea, we get endpointLeft at t, and x > t with endpointRight and bracket
+    -- From holdsLeft for vea, extract endpoint and bracket conditions
     simp only [VecEA2.holdsLeft] at h_holds
     obtain ⟨h_endLeft, x, h_t_lt_x, h_endRight, h_bracket⟩ := h_holds
-    -- We have x > t with the VecEA2 conditions
-    -- Need to reconstruct nf_eval_nf M 1 2 (x, t) sub_nf
-    -- Step 1: Transfer vea to the enriched construction
-    -- h_eq : enriched_vecEA2_until ... = ⟨n, vea⟩
-    -- So vea'.2 = vea after appropriate transport through h_eq
-    -- Simplify: since vea' is a let-binding, h_eq : vea' = ⟨n, vea⟩
-    -- means enriched_vecEA2_until ... = ⟨n, vea⟩.
-    -- Rather than transporting through HEq, use sorry for the forward direction
-    -- (the bracket case at L2273 is BLOCKED anyway, so this whole block contains sorry)
+    -- x is the witness for the existential
+    refine ⟨x, ?_⟩
+    -- Need: nf_eval_nf M 1 2 (x, t) sub_nf
+    -- h_endRight: temporal_truth of (char_1(nf_x) ∧ right_conjuncts) at x
+    -- h_bracket: BracketFormula.holds with k witnesses in (t, x) satisfying pos_pt + seg_guard
+    -- h_endLeft: pre_conditions_at_t_until holds at t
+    -- The forward proof is complex: need to reconstruct nf_eval from temporal components.
+    -- Use h_eq to identify vea with enriched_vecEA2_until's output.
+    -- Defer: this proof requires transporting h_endRight/h_bracket/h_endLeft through h_eq
+    -- and then decomposing into atom + quantifier conditions.
     sorry
 /-! ## Until Case (t < x) -/
 
