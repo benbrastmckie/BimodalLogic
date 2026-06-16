@@ -1,3 +1,9 @@
+-- ARCHIVED from Metalogic/WeakCanonical/Kamp/NegationClosure.lean
+-- Reason: Dead code — negation closure chain with no live downstream consumers
+-- Archived: 2026-06-16 (task 302)
+
+#exit
+
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
