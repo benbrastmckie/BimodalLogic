@@ -1,34 +1,32 @@
 {
-  "status": "partial",
-  "summary": "Phase 4 Since direction complete — both forward and backward proofs closed. Only k>0 sorry remains (quarantined, separate task).",
-  "phases_completed": 4,
+  "status": "implemented",
+  "summary": "BracketFormula k encoding fix complete: all 5 phases done, k=0 bypass fully proved (Until+Since+Eq), only quarantined k>0 sorry remains at L4486.",
+  "phases_completed": 5,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 4486,
-      "statement": "existPart_succ_n1_bypass k>0 case",
-      "assumption": "Depth induction for k>0 bracket patterns",
-      "why_deferred": "Out of scope for Phase 4 (quarantined as separate task). Non-goal in plan.",
-      "next_dispatch": "Separate task for k>0 depth induction"
+      "statement": "existPart_succ_n1_bypass (succ k' case)",
+      "assumption": "Depth induction for k>0 bracket patterns with 3-variable NF conditions",
+      "why_deferred": "Out of scope for plan v39. Non-goal. Requires separate depth-k induction argument.",
+      "next_dispatch": "Separate task for k>0 depth induction in existPart_succ_n1_bypass"
     }
   ],
   "blockers": [],
-  "continuation_context": {
-    "is_successor": true,
-    "current_phase": 5,
-    "phase_status": "not_started",
-    "build_status": "GREEN",
-    "what_was_done_phase4": [
-      "Rewrote enriched_bypass_since to use VecEA2/translateRight with bracket infrastructure",
-      "Added ssn_zone_since, pre_conditions_at_t_since, enriched_vecEA2_since definitions",
-      "Added 5 Since temporal bridge lemmas (all sorry-free)",
-      "Added zone order extraction helpers for ssn_zone_since (all sorry-free)",
-      "Added pre_conditions_at_t_since_holds (sorry-free)",
-      "forward_nf_eval_of_holdsRight: complete (sorry-free, ~380 lines)",
-      "backward_holdsRight_of_nf_eval: complete (sorry-free, ~290 lines)",
-      "existPart_succ_n1_bypass_k0_since: uses VVecEA2.translateRight_correct, delegates to forward/backward lemmas"
-    ],
-    "phase_5_scope": "Chain verification — verify downstream theorems, document final sorry inventory"
+  "continuation_context": null,
+  "artifacts": [
+    {
+      "path": "specs/273_chronicle_gap_contradiction_proof/summaries/39_bracketformula-k-encoding-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for BracketFormula k encoding fix (plan v39, 5 phases)"
+    }
+  ],
+  "verification": {
+    "sorry_count": 1,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_note": "KampBypass module builds clean. Pre-existing CanonicalTaskRelation.lean heartbeat timeout is unrelated."
   }
 }
