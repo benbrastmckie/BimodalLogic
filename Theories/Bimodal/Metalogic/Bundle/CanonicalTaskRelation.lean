@@ -92,7 +92,7 @@ as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_future_complexity (phi : Formula) :
     Formula.complexity (Formula.some_future phi) = 1 + Formula.complexity phi := by
-  simp only [Formula.some_future, Formula.top, Formula.complexity]
+  rfl
 
 /-- Complexity of iter_F: each F-application adds 1 to complexity.
 
@@ -738,7 +738,7 @@ as a derived temporal operator with overhead 1 (matching box).
 -/
 lemma some_past_complexity (phi : Formula) :
     Formula.complexity (Formula.some_past phi) = 1 + Formula.complexity phi := by
-  simp only [Formula.some_past, Formula.top, Formula.complexity]
+  rfl
 
 /-- Complexity of iter_P: each P-application adds 1 to complexity.
 
@@ -953,7 +953,7 @@ theorem chain_propagates_PP_not
       rw [iter_P_some_past]
       -- Need: iter_P (n' + 2 + 1) phi ∉ v'
       -- Have: iter_P (n' + 1 + 2) phi ∉ v'
-      convert h_Pn2_not using 2 <;> omega
+      exact h_Pn2_not
 
     -- IH gives: PP(P(phi)) ∉ w'
     have h_PPP_not_w' : (Formula.some_past phi).some_past.some_past ∉ w' := ih (Formula.some_past phi) h_ih_input
