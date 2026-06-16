@@ -1,7 +1,7 @@
 # Implementation Plan: BracketFormula k Encoding Fix for KampBypass
 
 - **Task**: 273 - chronicle_gap_contradiction_proof
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: None (Phases 1-2 of v37 completed; backward sorry closed; VecEAFormula.lean sorry-free)
 - **Research Inputs**: specs/273_chronicle_gap_contradiction_proof/reports/38_team-research.md
@@ -79,7 +79,7 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 
 ---
 
-### Phase 1: Definition Rewrite + Helper Lemmas [NOT STARTED]
+### Phase 1: Definition Rewrite + Helper Lemmas [IN PROGRESS]
 
 **Goal**: Change `enriched_vecEA2_until` from `BracketFormula 0` to `BracketFormula k` (k = number of positive between_tx SSNs). Prove three sorry-free helper lemmas needed by subsequent phases.
 
