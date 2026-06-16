@@ -137,7 +137,14 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 
 ---
 
-### Phase 3: Forward Direction Proof (Until) [NOT STARTED]
+### Phase 3: Forward Direction Proof (Until) [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: `forward_nf_eval_of_holdsLeft` (L2385) unprovable with shared `pos_pt` encoding.
+- **What was tried**: Atom proof completed for all AtomKind variants. Quantifier proof completed for 5 of 6 zones (below_t, eq_t, eq_x, above_x, inconsistent) in both directions. Between_tx positive (mpr) direction blocked.
+- **Why stuck**: The bracket uses shared pos_pt (disjunction of all positive between_tx char_y) as CONSTANT pointType. IntervalPattern.holds only requires each witness to satisfy SOME disjunct, not a specific SSN. Counterexample: model where all points in (t,x) have identical predicates matching one SSN; bracket holds with k=2 but second SSN has no witness. Per-SSN pointTypes don't work because sorted position depends on model values.
+- **What is needed**: Change `enriched_vecEA2_until` definition to add per-SSN existence conjuncts in endpointRight. For each positive between_tx SSN ssn_i, add `Formula.snce (char_y(ssn_i)) seg_guard` to right_conjuncts. This Since condition provides a witness y < x with the right predicates AND seg_guard between y and x. Backward direction remains provable (each quantifier witness gives the Since condition via seg_guard_on_interval). Forward direction becomes straightforward (Since gives witness, bracket provides structural bounds).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Prove `forward_nf_eval_of_holdsLeft` (sorry at L2205). The forward direction goes from `VecEA2.holdsLeft` (temporal formula) to `nf_eval` (semantic evaluation). With BracketFormula k, `IntervalPattern.holds` directly provides k strictly ordered witnesses in `(t, x)`, each satisfying their pointType. This is the straightforward direction.
 

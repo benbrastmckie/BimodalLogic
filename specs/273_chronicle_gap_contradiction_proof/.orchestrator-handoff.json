@@ -1,54 +1,53 @@
 {
-  "status": "partial",
-  "summary": "Phase 2 (backward injectivity) completed. Phase 3 (forward direction) remains open — atom transport through h_eq identified as key challenge (Formula.and encodes as double-negated implication).",
+  "status": "blocked",
+  "summary": "Phase 3 BLOCKED: encoding flaw in enriched_vecEA2_until definition. Shared pos_pt bracket makes forward direction unprovable for between_tx positive zone when k > 1. Definition change required before forward proof can proceed.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2385,
-      "statement": "forward_nf_eval_of_holdsLeft: nf_eval_nf M 1 (1+1) (Fin.cons x (fun _ => t)) sub_nf",
-      "assumption": "Given VecEA2.holdsLeft with endpointLeft/endpointRight/bracket conditions, reconstruct atom + quantifier evaluation",
-      "why_deferred": "Large proof requiring: (1) transport through Sigma equality h_eq via 'cases h_eq.symm'; (2) Formula.and unfolds to double-negated implication in temporal_truth — need temporal_and_iff or similar; (3) quantifier reconstruction requires per-zone case analysis for all SSN types",
-      "next_dispatch": "Close forward_nf_eval_of_holdsLeft. Key approach: use 'cases h_eq.symm' to substitute vea/n, then extract char_1(nf_x) from h_endRight (beware Formula.and encoding), use char_1_correct + nf_x_compat_check for atoms, and handle quantifiers per zone."
+      "statement": "theorem forward_nf_eval_of_holdsLeft",
+      "assumption": "holdsLeft → ∃ x, nf_eval_nf",
+      "why_deferred": "ENCODING FLAW: shared pos_pt bracket with constant disjunction pointType doesn't enforce per-SSN witness coverage. Forward direction between_tx positive case requires pigeonhole on bracket witnesses, but pigeonhole fails when two witnesses can satisfy the same disjunct.",
+      "next_dispatch": "Fix enriched_vecEA2_until: add per-SSN Since(char_y(ssn_i), seg_guard) to endpointRight right_conjuncts for positive between_tx SSNs. This provides ∃ y < x with char_y(ssn_i) AND seg_guard between y and x. Then re-prove backward (Phase 2 — seg_guard_on_interval gives Since condition) and forward (Phase 3 — Since gives witness, bracket bounds give t < y)."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2560,
-      "statement": "existPart_succ_n1_bypass_k0_since forward: temporal_truth M atomMap t A",
-      "assumption": "Since direction forward proof",
-      "why_deferred": "Phase 4 target — Since encoding fix needed first",
-      "next_dispatch": "Phase 4: fix Since encoding"
+      "statement": "existPart_succ_n1_bypass_k0_since forward",
+      "assumption": "Since direction forward",
+      "why_deferred": "Phase 4 scope",
+      "next_dispatch": "Phase 4"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2562,
       "statement": "existPart_succ_n1_bypass_k0_since backward",
-      "assumption": "Since direction backward proof",
-      "why_deferred": "Phase 4 target",
-      "next_dispatch": "Phase 4: fix Since encoding"
+      "assumption": "Since direction backward",
+      "why_deferred": "Phase 4 scope",
+      "next_dispatch": "Phase 4"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 2715,
       "statement": "existPart_succ_n1_bypass k>0",
-      "assumption": "Depth induction for k>0 case",
-      "why_deferred": "Non-goal for this plan — separate task",
-      "next_dispatch": "Separate task for k>0 depth induction"
+      "assumption": "k>0 depth induction",
+      "why_deferred": "Non-goal (quarantined)",
+      "next_dispatch": "Separate task"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-2-handoff.md",
+  "blockers": [
+    "ENCODING FLAW at enriched_vecEA2_until (L445-502): Shared pos_pt constant pointType in BracketFormula makes forward_nf_eval_of_holdsLeft (L2385) unprovable for between_tx positive zone. Counterexample: model with all points in (t,x) having identical predicates — k bracket witnesses all match one SSN, other positive SSNs have no witness. Fix: add per-SSN Since(char_y(ssn_i), seg_guard) conjuncts to endpointRight (L486-499). This requires re-proving backward direction (Phase 2) but the proof follows from seg_guard_on_interval already established at L2168."
+  ],
+  "continuation_path": "specs/273_chronicle_gap_contradiction_proof/handoffs/phase-3-blocked-handoff.md",
   "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 3,
-    "key_findings": [
-      "Phase 2 complete: backward injectivity proved via funext on AtomKind + nodup filter list",
-      "set_option maxHeartbeats 1600000 added to backward_holdsLeft_of_nf_eval for zone analysis",
-      "Forward proof (Phase 3): 'cases h_eq.symm' successfully substitutes vea/n with concrete enriched_vecEA2_until definition",
-      "Formula.and in this codebase encodes as (a.imp b.neg).neg — not a direct conjunction. Need temporal_and_iff or manual double-negation elimination",
-      "Atom proof approach: char_1_correct + nf_x_compat_check for x-preds, h_t_compat + h_atoms for t-preds, h_t_lt_x for order atoms",
-      "Quantifier proof requires per-zone decomposition of h_endLeft (below_t, eq_t zones), h_endRight (eq_x, above_x zones), and h_bracket (between_tx zone)"
-    ]
+    "is_successor": false,
+    "current_phase": 3,
+    "encoding_fix_needed": true,
+    "fix_location": "enriched_vecEA2_until definition, L445-502",
+    "fix_description": "Add per-SSN Since(char_y(ssn_i), seg_guard) to right_conjuncts for each positive between_tx SSN. Keep bracket for structural spacing. Remove bracket if not needed after adding Since conditions.",
+    "backward_proof_impact": "backward_holdsLeft_of_nf_eval (L2008-2318) must be re-proved. The endRight case gains new conjuncts for positive between_tx SSNs. These follow from: (1) seg_guard_on_interval (L2168) giving seg_guard between witness y_i and x, and (2) nf_depth0_char_formula_correct giving char_y(ssn_i) at y_i.",
+    "atoms_proof_verified": "Atom part of forward proof (all 6 AtomKind variants) was verified working before blocking on quantifier between_tx case. Can be reused."
   }
 }
