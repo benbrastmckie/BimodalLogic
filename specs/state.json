@@ -1757,7 +1757,7 @@
     {
       "project_number": 302,
       "project_name": "boneyard_dead_code_archival",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.",
       "priority": "medium",
@@ -1766,17 +1766,28 @@
         301
       ],
       "created": "2026-06-16T16:05:00Z",
-      "last_updated": "2026-06-16T18:09:06Z",
+      "last_updated": "2026-06-16T18:55:30Z",
       "artifacts": [
         {
           "path": "specs/302_boneyard_dead_code_archival/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 4 teammates"
+        },
+        {
+          "path": "specs/302_boneyard_dead_code_archival/plans/02_implementation-plan.md",
+          "type": "plan",
+          "summary": "Implementation plan for dead code archival"
+        },
+        {
+          "path": "specs/302_boneyard_dead_code_archival/summaries/03_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary with plan deviations and metrics"
         }
       ],
-      "next_artifact_number": 2,
-      "session_id": "sess_1781632178_a1b0a3",
-      "researched": "2026-06-16T18:09:06Z"
+      "next_artifact_number": 4,
+      "session_id": "sess_1781633453_61dbf4",
+      "researched": "2026-06-16T18:09:06Z",
+      "completion_summary": "Archived 14 standalone dead files (~7,878 lines) to 5 Boneyard subdirectories, extracted ~181 lines of in-file dead blocks, relocated root Boneyard to Theories/Bimodal/Boneyard/, fixed 7 misleading comments, updated Boneyard README"
     },
     {
       "project_number": 303,

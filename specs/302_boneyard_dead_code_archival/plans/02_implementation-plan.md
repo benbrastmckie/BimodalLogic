@@ -1,7 +1,7 @@
 # Implementation Plan: Task #302
 
 - **Task**: 302 - Comprehensive dead code archival to Boneyard/ with comment cleanup
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None (task 303 is downstream but not a blocker)
 - **Research Inputs**: specs/302_boneyard_dead_code_archival/reports/01_team-research.md

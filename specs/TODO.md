@@ -11,7 +11,7 @@ next_project_number: 305
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,302,303 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,303 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 95,192,196,231,292,293,294,298,299 | 161,187,191,194,230,291,300,303 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193 | 189,192,196 | automation |
 | 4 | 177,178 | 131,193 | formula-refactor |
@@ -94,10 +94,6 @@ next_project_number: 305
 300 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
-### Cleanup
-
-302 [RESEARCHED] — Comprehensive dead code archival to Boneyard/ with comment cleanu
-
 ### Uncategorized
 
 ## Tasks
@@ -123,11 +119,12 @@ next_project_number: 305
 ---
 
 ### 302. Boneyard dead code archival
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: cleanup
 - **Dependencies**: Task 301
 - **Research**: [302_boneyard_dead_code_archival/reports/01_team-research.md]
+- **Plan**: [302_boneyard_dead_code_archival/plans/02_implementation-plan.md]
 
 **Description**: Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.
 
