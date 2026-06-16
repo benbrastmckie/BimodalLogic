@@ -158,30 +158,43 @@ private theorem const_env_atom_agree {sig : MonadicSignature}
   match a with
   | .pred p i =>
     simp only [atom_eval, Fin.cons]
+    have h_i_eq : Fin.cases t (fun _ => t) i = t := by refine Fin.cases rfl (fun _ => rfl) i
+    rw [h_i_eq]
     have h_pred_x := h_nf_x_atom (.pred p ⟨0, by omega⟩)
     simp only [atom_eval] at h_pred_x
     have h_const : sub_nf.1 (.pred p i) = sub_nf.1 (.pred p ⟨0, by omega⟩) := by
       have h0 := h_atom₀ (.pred p ⟨0, by omega⟩)
       have hi := h_atom₀ (.pred p i)
       simp only [atom_eval, Fin.cons] at h0 hi
-      have : Fin.cases t₀ (fun _ => t₀) i = t₀ := by
-        refine Fin.cases rfl (fun _ => rfl) i
+      have : Fin.cases t₀ (fun _ => t₀) i = t₀ := by refine Fin.cases rfl (fun _ => rfl) i
       rw [this] at hi
-      cases h_v : sub_nf.1 (.pred p i) <;> cases h_v0 : sub_nf.1 (.pred p ⟨0, by omega⟩) <;>
-        simp_all
+      have h0' : Fin.cases t₀ (fun _ => t₀) (⟨0, by omega⟩ : Fin (1 + 1)) = t₀ := rfl
+      rw [h0'] at h0
+      cases h_v : sub_nf.1 (.pred p i) <;> cases h_v0 : sub_nf.1 (.pred p ⟨0, by omega⟩)
+      · rfl
+      · rw [h_v] at hi; rw [h_v0] at h0; simp at hi; simp at h0; exact absurd h0 hi
+      · rw [h_v] at hi; rw [h_v0] at h0; simp at hi; simp at h0; exact absurd hi h0
+      · rfl
     rw [h_const, ← h_nf_x_compat p]; exact h_pred_x
   | .order i j h_ne =>
     have h_order₀ := h_atom₀ (.order i j h_ne)
     simp only [atom_eval, Fin.cons] at h_order₀
+    have h_i_eq : Fin.cases t₀ (fun _ => t₀) i = t₀ := by refine Fin.cases rfl (fun _ => rfl) i
+    have h_j_eq : Fin.cases t₀ (fun _ => t₀) j = t₀ := by refine Fin.cases rfl (fun _ => rfl) j
+    rw [h_i_eq, h_j_eq] at h_order₀
     have h_false : sub_nf.1 (.order i j h_ne) = false := by
-      by_contra h_eq; push_neg at h_eq
-      exact lt_irrefl _ (h_order₀.mpr (Bool.eq_true_iff.mp (by tauto)))
+      by_contra h_eq
+      push_neg at h_eq
+      have h_true : sub_nf.1 (.order i j h_ne) = true := by
+        cases sub_nf.1 (.order i j h_ne) <;> simp_all
+      exact lt_irrefl _ (h_order₀.mpr h_true)
     simp only [atom_eval, h_false, Fin.cons]
     constructor
     · intro h_lt
-      match i, j, h_ne with
-      | ⟨0, _⟩, ⟨1, _⟩, _ => exact absurd h_lt (lt_irrefl _)
-      | ⟨1, _⟩, ⟨0, _⟩, _ => exact absurd h_lt (lt_irrefl _)
+      have h_i_eq' : Fin.cases t (fun _ => t) i = t := by refine Fin.cases rfl (fun _ => rfl) i
+      have h_j_eq' : Fin.cases t (fun _ => t) j = t := by refine Fin.cases rfl (fun _ => rfl) j
+      rw [h_i_eq', h_j_eq'] at h_lt
+      exact absurd h_lt (lt_irrefl _)
     · intro h; exact Bool.noConfusion h
 
 set_option maxHeartbeats 1600000 in
@@ -458,15 +471,17 @@ theorem existPart_succ_n1_bypass
             | true =>
               simp only [h_ssn_val, ite_true] at h_φ_true
               have ⟨y, hy⟩ := (ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mp h_φ_true
-              exact ⟨y, (h_env_transfer M t y ssn).mpr hy⟩
+              exact Iff.intro (fun _ => rfl)
+                (fun _ => ⟨y, (h_env_transfer M t y ssn).mpr hy⟩)
             | false =>
-              simp only [h_ssn_val, ite_false] at h_φ_true
+              simp only [h_ssn_val, Bool.false_eq_true, ite_false] at h_φ_true
               have h_not := (temporal_truth_neg M atomMap t _).mp h_φ_true
-              constructor
-              · intro ⟨y, hy⟩
-                have hy' := (h_env_transfer M t y ssn).mp hy
-                exact absurd ((ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mpr ⟨y, hy'⟩) h_not
-              · intro h_eq; exact absurd h_eq (by simp)
+              exact Iff.intro
+                (fun ⟨y, hy⟩ => absurd
+                  ((ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mpr
+                    ⟨y, (h_env_transfer M t y ssn).mp hy⟩)
+                  h_not)
+                (fun h_eq => absurd h_eq (by simp))
         · -- Forward: ∃ x → temporal
           intro ⟨x, h_eval⟩
           have h_x_eq_t := wit_eq M t x h_gt_val h_lt_val h_eval
@@ -484,18 +499,20 @@ theorem existPart_succ_n1_bypass
             obtain ⟨_, h_quant_eval⟩ := h_eval
             cases h_ssn_val : sub_nf.2 ssn with
             | true =>
-              simp only [h_ssn_val, ite_true] at h_ssn_eq; rw [← h_ssn_eq]
+              subst h_ssn_eq
+              simp only [h_ssn_val, reduceIte]
               obtain ⟨y, hy⟩ := (h_quant_eval ssn).mpr h_ssn_val
               have hy' := (h_env_transfer M t y ssn).mp hy
               exact (ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mpr ⟨y, hy'⟩
             | false =>
-              simp only [h_ssn_val, ite_false] at h_ssn_eq; rw [← h_ssn_eq]
+              subst h_ssn_eq
+              simp only [h_ssn_val, Bool.false_eq_true, ite_false]
               rw [temporal_truth_neg]
               intro h_contra
               obtain ⟨y, hy⟩ := (ih_exist_correct ssn M h_UZ h_SZ t h_atoms).mp h_contra
               have hy' := (h_env_transfer M t y ssn).mpr hy
               have := (h_quant_eval ssn).mp ⟨y, hy'⟩
-              simp only [h_ssn_val] at this
+              exact absurd (h_ssn_val ▸ this) (by simp)
     · -- Unsatisfiable: use ⊥
       exact ⟨Formula.bot, fun M _ _ t h_atoms => by
         simp only [temporal_truth]
