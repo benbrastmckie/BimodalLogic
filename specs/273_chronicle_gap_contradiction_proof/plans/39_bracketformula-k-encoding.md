@@ -165,7 +165,7 @@ Phases 3 and 4 can execute in parallel (Until proof and Since fix are independen
 
 ---
 
-### Phase 4: Since Direction Fix [NOT STARTED]
+### Phase 4: Since Direction Fix [COMPLETED]
 
 **Goal**: Fix `enriched_bypass_since` (L513-592) and close the Since sorries at L2380 (forward) and L2382 (backward). The Since direction currently uses a flat `formula_disjList` with no VecEA2/bracket infrastructure. Two options: (a) introduce VecEA2/bracket into the Since path (mirror the Until approach), (b) construct a direct bounded Since encoding. Determine approach, implement, and close both sorries.
 

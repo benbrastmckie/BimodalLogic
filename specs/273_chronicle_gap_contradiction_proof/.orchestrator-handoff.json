@@ -1,46 +1,34 @@
 {
   "status": "partial",
-  "summary": "Phase 3 complete (all between_tx sorries closed). Both bracket helper lemmas (extract_witness, constant_seg_dichotomy) and between_tx_order_atoms helper added. Phase 4 (Since direction) not started — requires enriched_bypass_since definition rewrite.",
-  "phases_completed": 3,
+  "summary": "Phase 4 Since direction complete — both forward and backward proofs closed. Only k>0 sorry remains (quarantined, separate task).",
+  "phases_completed": 4,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 3109,
-      "statement": "existPart_succ_n1_bypass_k0_since forward",
-      "assumption": "enriched_bypass_since formula → ∃ x, nf_eval",
-      "why_deferred": "Phase 4 scope — enriched_bypass_since has same encoding flaw as Until had (Formula.untl char_y ⊤ at x gives y > x but not y < t). Requires definition rewrite to use BracketFormula k or nested bounded Since formulas.",
-      "next_dispatch": "Phase 4: rewrite enriched_bypass_since definition, then prove forward direction"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 3111,
-      "statement": "existPart_succ_n1_bypass_k0_since backward",
-      "assumption": "∃ x, nf_eval → enriched_bypass_since formula",
-      "why_deferred": "Phase 4 scope — same encoding flaw",
-      "next_dispatch": "Phase 4: rewrite enriched_bypass_since definition, then prove backward direction"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 3264,
-      "statement": "existPart_succ_n1_bypass k>0",
-      "assumption": "k>0 depth induction",
-      "why_deferred": "Non-goal (quarantined, separate task)",
-      "next_dispatch": "Separate task"
+      "line": 4486,
+      "statement": "existPart_succ_n1_bypass k>0 case",
+      "assumption": "Depth induction for k>0 bracket patterns",
+      "why_deferred": "Out of scope for Phase 4 (quarantined as separate task). Non-goal in plan.",
+      "next_dispatch": "Separate task for k>0 depth induction"
     }
   ],
   "blockers": [],
   "continuation_context": {
     "is_successor": true,
-    "current_phase": 4,
-    "encoding_is_correct": true,
-    "phase_3_progress": "100% — all between_tx sorries closed",
+    "current_phase": 5,
+    "phase_status": "not_started",
     "build_status": "GREEN",
-    "total_dispatches": 6,
-    "key_commits": [
-      "33b3a7ed4 between_tx positive (mpr) sorry closed + bracket helper lemmas",
-      "0e8817b8f between_tx negative (mp) sorry closed + between_tx_order_atoms helper"
+    "what_was_done_phase4": [
+      "Rewrote enriched_bypass_since to use VecEA2/translateRight with bracket infrastructure",
+      "Added ssn_zone_since, pre_conditions_at_t_since, enriched_vecEA2_since definitions",
+      "Added 5 Since temporal bridge lemmas (all sorry-free)",
+      "Added zone order extraction helpers for ssn_zone_since (all sorry-free)",
+      "Added pre_conditions_at_t_since_holds (sorry-free)",
+      "forward_nf_eval_of_holdsRight: complete (sorry-free, ~380 lines)",
+      "backward_holdsRight_of_nf_eval: complete (sorry-free, ~290 lines)",
+      "existPart_succ_n1_bypass_k0_since: uses VVecEA2.translateRight_correct, delegates to forward/backward lemmas"
     ],
-    "phase_4_notes": "enriched_bypass_since (L522-601) uses Formula.untl for between_xt positive SSNs. No VecEA2.translateRight exists — need either (a) build translateRight or (b) direct bounded Since encoding. VecEA2.holdsRight exists in NfToVecEA.lean but has no translation to temporal formulas."
+    "phase_5_scope": "Chain verification — verify downstream theorems, document final sorry inventory"
   }
 }
