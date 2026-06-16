@@ -23,7 +23,7 @@ next_project_number: 305
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-303 [NOT STARTED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+303 [RESEARCHED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
@@ -109,10 +109,11 @@ next_project_number: 305
 ---
 
 ### 303. K gt 0 depth induction
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [303_k_gt_0_depth_induction/reports/01_team-research.md]
 
 **Description**: Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.
 
@@ -125,6 +126,7 @@ next_project_number: 305
 - **Dependencies**: Task 301
 - **Research**: [302_boneyard_dead_code_archival/reports/01_team-research.md]
 - **Plan**: [302_boneyard_dead_code_archival/plans/02_implementation-plan.md]
+- **Summary**: [302_boneyard_dead_code_archival/summaries/03_implementation-summary.md]
 
 **Description**: Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.
 
