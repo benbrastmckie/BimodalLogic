@@ -2036,6 +2036,63 @@ private theorem bracket_from_distinct_witnesses {sig : MonadicSignature}
       rw [← hj] at h_wk_y
       exact h_segType y (lt_trans (h_in_interval j).1 h_wk_y) h_y_hi
 
+private theorem bracket_extract_witness {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (k : Nat) (lo hi : M.carrier)
+    (pointTypes : Fin k → TemporalPred) (segType : Fin (k + 1) → TemporalPred)
+    (h : (BracketFormula.mk pointTypes segType).holds M atomMap lo hi)
+    (i : Fin k) :
+    ∃ w, lo < w ∧ w < hi ∧ (pointTypes i).eval_at M atomMap w := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern] at h
+  match k, pointTypes, segType, h, i with
+  | k' + 1, pointTypes, segType, h, i =>
+    simp only [IntervalPattern.holds] at h
+    obtain ⟨witnesses, _, h_bounds, h_ptypes, _, _, _⟩ := h
+    exact ⟨witnesses i, (h_bounds i).1, (h_bounds i).2, h_ptypes i⟩
+
+private theorem bracket_constant_seg_dichotomy {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (k : Nat) (lo hi : M.carrier)
+    (pointTypes : Fin k → TemporalPred) (segType : TemporalPred)
+    (h : (BracketFormula.mk pointTypes (fun _ : Fin (k + 1) => segType)).holds
+      M atomMap lo hi)
+    (y : M.carrier) (h_lo_y : lo < y) (h_y_hi : y < hi) :
+    segType.eval_at M atomMap y ∨ ∃ i : Fin k, (pointTypes i).eval_at M atomMap y := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern] at h
+  match k, pointTypes, h with
+  | 0, _, h =>
+    simp only [IntervalPattern.holds] at h
+    exact Or.inl (h y h_lo_y h_y_hi)
+  | k' + 1, pointTypes, h =>
+    simp only [IntervalPattern.holds] at h
+    obtain ⟨witnesses, h_mono, h_bounds, h_ptypes, h_seg0, h_seg_mid, h_seg_last⟩ := h
+    by_cases h_y_lt_w0 : y < witnesses ⟨0, by omega⟩
+    · exact Or.inl (h_seg0 y h_lo_y h_y_lt_w0)
+    · push_neg at h_y_lt_w0
+      by_cases h_y_gt_wk : witnesses ⟨k', by omega⟩ < y
+      · exact Or.inl (h_seg_last y h_y_gt_wk h_y_hi)
+      · push_neg at h_y_gt_wk
+        suffices ∃ i : Fin (k' + 1),
+            y = witnesses i ∨
+            (∃ j : Fin k', witnesses ⟨j.val, by omega⟩ < y ∧
+              y < witnesses ⟨j.val + 1, by omega⟩) by
+          obtain ⟨i, h_case⟩ := this
+          rcases h_case with h_eq | ⟨j, h_wj_y, h_y_wj1⟩
+          · exact Or.inr ⟨i, h_eq ▸ h_ptypes i⟩
+          · exact Or.inl (h_seg_mid j y h_wj_y h_y_wj1)
+        by_contra h_none; push_neg at h_none
+        have h_le_all : ∀ i : Fin (k' + 1), witnesses i ≤ y := by
+          intro ⟨i, hi⟩
+          induction i with
+          | zero => exact h_y_lt_w0
+          | succ n ih =>
+            have h_prev := ih (by omega)
+            have h_ne := (h_none ⟨n, by omega⟩).1
+            have h_lt : witnesses ⟨n, by omega⟩ < y := lt_of_le_of_ne h_prev h_ne.symm
+            exact (h_none ⟨n + 1, hi⟩).2 ⟨n, by omega⟩ h_lt
+        exact absurd (le_antisymm h_y_gt_wk (h_le_all ⟨k', by omega⟩))
+          (h_none ⟨k', by omega⟩).1
+
 set_option maxHeartbeats 3200000 in
 /-- Backward direction: ∃ x, nf_eval → holdsLeft for the enriched Until VVecEA2.
     Given a witness x > t with nf_eval_nf, construct holdsLeft by:
@@ -2700,14 +2757,15 @@ private theorem forward_nf_eval_of_holdsLeft
               exact ⟨h_ssn_in_elems ssn, by simp [h_ssn_xt, h_zone, h_pos]⟩
             -- Find j such that pos_between[j] = ssn
             obtain ⟨j, hj⟩ := List.get_of_mem h_ssn_in_pos
-            -- σ⁻¹(j) is a bracket witness index
-            -- The witness at position σ⁻¹(j) satisfies char_y(pos_between[σ(σ⁻¹(j))]) = char_y(ssn)
-            -- From h_bracket, extract this witness
-            -- h_bracket : BracketFormula.holds M atomMap {...} t x
-            -- Unfolding IntervalPattern.holds, there exist witnesses w : Fin k → M.carrier
-            -- with w strictly increasing, in (t, x), w(i) satisfies pointTypes(i), seg_guard on segments.
-            -- We need w(σ⁻¹(j)) and show it satisfies char_y(ssn) via nf_y_proj.
-            sorry
+            obtain ⟨w, h_tw, h_wx, h_w_pt⟩ := bracket_extract_witness M atomMap
+              pos_between.length t x _ _ h_bracket (σ.symm j)
+            simp only [TemporalPred.eval_at] at h_w_pt
+            rw [nf_depth0_char_formula_correct] at h_w_pt
+            apply h_bridge.mpr
+            refine ⟨w, h_tw, h_wx, fun p => ?_⟩
+            have := h_w_pt p
+            simp only [nf_y_proj, Equiv.apply_symm_apply] at this
+            rw [← hj]; exact this
         · -- eq_x: char_y at x ↔ ∃ y
           have h_bridge := eq_x_temporal_iff M atomMap h_surj ssn nf_x_1var parent_atoms x t
             h_t_lt_x h_ssn_xt h_zone h_x_pred h_t_pred
