@@ -2711,12 +2711,31 @@ private theorem forward_nf_eval_of_holdsLeft
         constructor
         · -- ∃ y → sub_nf.2 ssn = true
           -- If ∃ y with nf_eval, ssn must be xt-compatible (semantic argument).
-          -- But h_ssn_xt says it's not. We derive from h_ssn_compat:
-          -- sub_nf.2 ssn = true → xt-compatible (with ref_nf_x_1var = nf_x_1var),
-          -- so sub_nf.2 ssn must be false. But then ∃ y is impossible.
-          -- Actually, ∃ y itself implies compatibility, independent of sub_nf.2.
-          -- Use ssn_order_consistent_of_eval + predicate matching.
-          sorry
+          intro h_exist; exfalso
+          obtain ⟨y, h_ssn_eval⟩ := h_exist
+          have h_xt_compat : ssn_xt_compatible ssn nf_x_1var parent_atoms true false = true := by
+            simp only [ssn_xt_compatible, Bool.and_eq_true, beq_iff_eq, List.all_eq_true]
+            refine ⟨⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩, ?_⟩
+            · intro p _
+              have h1 := h_ssn_eval (.pred p ⟨1, by omega⟩); unfold atom_eval at h1
+              cases hsub : (nf_x_1var (.pred p ⟨0, by omega⟩) : Bool) <;>
+              cases hssn : ssn (.pred p ⟨1, by omega⟩) <;>
+              first | rfl | (exfalso; simp_all)
+            · intro p _
+              have h1 : M.interp p t ↔ ssn (.pred p ⟨2, by omega⟩) = true := by
+                have h := h_ssn_eval (.pred p ⟨2, by omega⟩); unfold atom_eval at h; exact h
+              cases hpar : parent_atoms (.pred p ⟨0, by omega⟩) <;>
+              cases hssn : ssn (.pred p ⟨2, by omega⟩) <;>
+              first | rfl | (exfalso; simp_all [h_t_pred])
+            · have h := h_ssn_eval (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by simp [Fin.ext_iff]))
+              simp only [atom_eval, Fin.cons] at h; exact h.mp h_t_lt_x
+            · have h := h_ssn_eval (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by simp [Fin.ext_iff]))
+              simp only [atom_eval, Fin.cons] at h
+              cases hssn : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by simp [Fin.ext_iff]))
+              · rfl
+              · exact absurd (h.mpr hssn) (not_lt_of_gt h_t_lt_x)
+            · exact ssn_order_consistent_of_eval ssn h_ssn_eval
+          exact absurd h_xt_compat h_ssn_xt
         · intro h_pos
           exfalso
           have := h_ssn_compat ssn h_pos
