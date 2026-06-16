@@ -20,16 +20,18 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-05-29):
+**Current state** (2026-06-16, updated by task 301):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`countermodel_dense`): Internally sorry-free
-- **Discrete completeness**: `completeness_discrete` has sorryAx via single root sorry `succ_cofinal`. EF-game expressiveness infrastructure (ghr93_forward_to_backward_discrete) proved sorry-free by task 155. Reynolds k-equivalence bypass (task 202) is the critical path.
+- **Discrete completeness**: `completeness_discrete` has sorryAx via SOLE remaining sorry `existPart_succ_n1_bypass` k>0 case (KampBypass.lean). The k=0 case is fully sorry-free (~4400 lines, task 273). Task 303 targets the k>0 closure.
 - **Canonical truth lemma**: ReflexiveCanonical.lean sorry-free (task 141 resolved). 6 TruthLemma Until/Since sorries remain but are non-critical-path (parametric truth lemma handles via BFMCS coherence).
-- **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142)
+- **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142). `mcs_mixed_case_absurd` moved to MCSMixedCase.lean (task 301).
 - **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
+- **Task 273 accomplishment**: ~1400 lines of sorry-free proofs closing all k=0 KampBypass sorries across Until, Since, and Eq directions. BracketFormula k encoding fix.
+- **Dead code cleanup** (task 301): VecEADecomposition archived to Boneyard. KampBypass.lean factored from 4488 lines into 4 files. chronicle_gap_contradiction confirmed as dead code.
 
-**Critical path**: Task 273 (generalized existential transfer, GHR93 Proposition 7 → sorry-free `stavi_expressive_completeness`) → Task 202 (Reynolds k-equivalence bypass) → sorry-free `completeness_discrete`. Two independent sorry chains must both be closed: the Stavi chain (task 273) and the succ_cofinal chain (task 202).
+**Critical path**: Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) → sorry-free `completeness_discrete`. This is the SOLE remaining blocker. Only ONE sorry chain exists (through `existPart_succ_n1_bypass` k>0). The `chronicle_gap_contradiction` sorry is dead code — not on any live call path.
 
 **Key architectural finding** (task 155, 7 research agents + 4 succ_cofinal agents, 2026-05-28/29):
 
@@ -44,13 +46,21 @@ mathematically false under irreflexive semantics and cannot be proved.
 
 The current architecture tries to prove the chronicle IS Z (via `IsSuccArchimedean → succ_embed_surjective`), which is the wrong approach. Task 202 implements the Reynolds bypass: connect the chronicle's formula structure to k-equivalence using the EF-game expressiveness infrastructure built in task 155.
 
-**Sorry chain** (verified by lean_verify):
+**Sorry chain** (verified by lean_verify, task 301):
 ```
-succ_cofinal → limitDomSubtype_isSuccArchimedean → succ_embed_surjective
-  → cantor_bfmcs_discrete_restricted_tc + cantor_bfmcs_discrete_restricted_fuc
-  → countermodel_discrete_enriched → completeness_discrete
+completeness_discrete
+  → countermodel_discrete_reynolds_v2
+    → limitdom_is_good
+      → no_gaps_discrete_model_surgery
+        → US_expressively_complete_over_prior
+          → kamp_prior_expressive_completeness
+            → existPart_succ_n1_bypass (k>0 sorry at KampBypass.lean)
 ```
-Note: `cantor_bfmcs_discrete_restricted_buc` is sorry-free (uses `succ_embed_squeeze_strict`).
+Note: The old sorry chain through `chronicle_gap_contradiction → succ_cofinal →
+succ_embed_surjective` is DEAD CODE — not on any live call path to `completeness_discrete`.
+The `succ_cofinal` chain remains in ChronicleToCountermodel.lean but is only used by
+`cantor_bfmcs_discrete_restricted_tc/fuc` which are used by `countermodel_discrete_enriched`
+(not the live `completeness_discrete` path).
 
 **WARNING — anti-pattern**: A "direct `IsSuccArchimedean` proof" (bypassing `chronicle_gap_contradiction`) is **not how it goes in the literature and must be avoided**. Reynolds 1994 (Sections 8–9, Theorem 15) never proves `IsSuccArchimedean` for the limit domain at all. His approach is: `one_class` (all points in one contemporaneous equivalence class) → very good → good → ≡k integer structure via lexicographic sums (Lemma 16). The `one_class` theorem is already proved sorry-free in `NoGapsDiscreteProof.lean`. The formalization's `IsSuccArchimedean` dependency is an artifact of building a succ-embed into ℤ and proving surjectivity — a construction the literature avoids entirely. Any plan proposing to "directly prove `IsSuccArchimedean`" is solving a problem that should not exist.
 
@@ -1387,36 +1397,22 @@ characterization.
 
 ## Recommended Priority Order
 
-### Critical Path: Two Independent Sorry Chains
+### Critical Path: Single Sorry Chain
 
-Two independent sorry chains block `completeness_discrete`. Both must be closed.
+Only ONE sorry blocks `completeness_discrete` (as of task 301 cleanup):
 
-**Chain A — Stavi Expressive Completeness** (task 273):
+1. **Task 303** (NOT STARTED, CRITICAL): k>0 depth induction. Close
+   `existPart_succ_n1_bypass` k>0 case (KampBypass.lean) via Rabinovich
+   Section 5 Lemma 5.1 interval-splitting induction. The k=0 infrastructure
+   is complete and sorry-free (~4400 lines, task 273). Estimated: 200-400 lines.
 
-1. **Task 273** (PLANNED, plan v12): Generalized existential transfer. Prove
-   `nf_2var_existential_transfer` (StaviCompleteness.lean:2353, 2435) by
-   generalizing `zone_match_witness` to n-var and proving transfer by strong
-   induction on depth j, universally quantified over arity n. This is GHR93
-   Proposition 7 in NF terms. Makes `stavi_expressive_completeness` →
-   `US_expressively_complete_over_prior` → `gap_prior_UZ_contradiction`
-   sorry-free. No IsSuccArchimedean needed. ~400-700 new lines.
+2. **Task 95**: `#print axioms` audit on completeness theorem. After task 303.
 
-**Chain B — Reynolds K-Equivalence Bypass** (tasks 155, 202):
-
-2. **Task 155** (IN PROGRESS): Complete Phase 6 (Cases III/IV gap handling — 7 targeted sorries in CaseAnalysis.lean) and Phase 7 (Transfer.lean rewiring — blocked pending task 202).
-   - Phase 5 (GHR93 Case II): sorry-free, axiom-clean ✓
-   - Phase 6 (Cases III/IV): 7 decomposed sorries, mechanical but verbose
-   - Phase 7 (Transfer.lean): infrastructure built (ghr93_forward_to_backward_discrete), rewiring blocked by succ_cofinal
-   - Phase 8 (verification): pending
-
-3. **Task 202** (CRITICAL): Reynolds k-equivalence bypass. Build:
-   - Backward-game-to-k-equiv bridge (~200-300 lines)
-   - Reynolds Theorem 14 gap elimination via US expressive completeness (~300-500 lines)
-   - Rewire countermodel_discrete to bypass succ_cofinal entirely
-   Requires task 273 (Chain A) to be complete first, since Reynolds Theorem 14
-   uses `US_expressively_complete_over_prior`.
-
-4. **Task 95**: `#print axioms` audit on completeness theorem. After tasks 273 + 202.
+**Previously two chains — now one** (task 301 finding): Task 273 closed
+the Stavi chain (Chain A). The `chronicle_gap_contradiction` chain (Chain B)
+is dead code — `completeness_discrete` uses the Reynolds pipeline
+(`countermodel_discrete_reynolds_v2`) which bypasses it entirely. Tasks 155
+and 268 abandoned (task 301 phase 4).
 
 ### Sorry Cleanup: Zero Sorries for Publication
 
@@ -1466,4 +1462,4 @@ Two independent sorry chains block `completeness_discrete`. Both must be closed.
 
 ---
 
-*Last updated: 2026-06-09 (task 273 plan v12: identified second independent sorry chain via Stavi expressive completeness. Root sorry is `nf_2var_existential_transfer` (arity escalation at j'+1 case). Fix: generalized existential transfer by strong induction on depth, universally quantified over arity — GHR93 Proposition 7 in NF terms. Key anti-pattern documented: discrete bypass via IsSuccArchimedean is circular because `gap_prior_UZ_contradiction` uses `US_expressively_complete_over_prior` on a model NOT yet known to be discrete. Two independent sorry chains (Stavi chain A + succ_cofinal chain B) must both be closed for sorry-free `completeness_discrete`.)*
+*Last updated: 2026-06-16 (task 301: completeness cleanup and roadmap update. Key findings: (1) SOLE remaining sorry is existPart_succ_n1_bypass k>0 (task 303). (2) chronicle_gap_contradiction is dead code. (3) Task 273 completed ~1400 lines of sorry-free proofs. (4) Tasks 155, 268, 200, 254, 176 abandoned. (5) KampBypass.lean factored from 4488 to 4 files. (6) VecEADecomposition archived to Boneyard.)*
