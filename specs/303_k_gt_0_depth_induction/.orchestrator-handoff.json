@@ -1,0 +1,100 @@
+{
+  "status": "partial",
+  "summary": "Added cross-structure NF transfer lemmas (nf_extend_fwd/bwd, exist_transfer_const_env). Proved definitively that 1-var NF type does NOT determine 2-var NF type on constant environments, ruling out the simple backward proof approach. Backward direction still blocked on all 3 zones.",
+  "phases_completed": 1,
+  "phases_total": 4,
+  "blockers": [
+    {
+      "phase": 2,
+      "description": "Backward direction of existPart_succ_n1_bypass at k>0 requires encoding 2-var NF quantifier conditions into the temporal formula. Three candidate approaches: (A) Enriched formula conjoining ih_exist formulas for each ssn : NormalForm sig (k'+1) 3 — exponentially large type makes enumeration impractical. (B) Prior compositionality theorem from Rabinovich Lemma 5.1 (~200-400 lines). (C) Constant-parent arity projection lemma showing 3-var existentials on [y,t,t] reduce to 2-var existentials on [y,t] at all depths — would solve Eq zone but not Until/Since.",
+      "what_tried": [
+        "char_kp1 nf_x₀ as formula (single M₀ NF type) — forward direction fails because different witnesses can have different 1-var types",
+        "nf_x_eq (all witnesses share nf_x₀) — FALSE: different models can satisfy same 2-var sub_nf with different 1-var witness types",
+        "const_env_determined (1-var type determines 2-var on [t,t]) — FALSE: counterexample with models of different cardinality",
+        "nf_extend_fwd/bwd for cross-structure transfer — proved correctly but insufficient: gets depth-(k'+1) arity-2 from depth-(k'+2) arity-1, but need depth-(k'+1) arity-3 for quantifier conditions (one depth level short)",
+        "exist_transfer_const_env — proved correctly, transfers arity-2 existentials between models with same 1-var type"
+      ],
+      "what_needed": "Prior compositionality theorem (~200-400 lines) OR a formula construction that avoids NormalForm enumeration"
+    }
+  ],
+  "continuation_context": {
+    "completed_phases": [1],
+    "next_phase": 2,
+    "handoff_path": "specs/303_k_gt_0_depth_induction/plans/02_depth-induction-plan.md",
+    "is_successor": true,
+    "key_decisions": [
+      "nf_extend_fwd/bwd: standalone versions of component_extend_fwd/bwd from NEquivalence.lean — proved and compiling",
+      "exist_transfer_const_env: wraps nf_extend_fwd/bwd for constant-env existential transfer — proved and compiling",
+      "Restructured satisfiable case with M₀ witness NF type infrastructure (nf_2₀, h_nf_2₀_eq)"
+    ],
+    "key_findings": [
+      "nf_x_eq is FALSE: different models can satisfy same 2-var sub_nf with different 1-var types for the witness",
+      "const_env_determined is FALSE: 1-var type does NOT determine 2-var type on constant environments",
+      "Extension lemma loses one depth level per arity increase: depth-(k'+2) arity-1 → depth-(k'+1) arity-2 → depth-k' arity-3",
+      "The fundamental gap: compat_disj only encodes 1-var predicate compatibility, but backward direction needs 2-var quantifier conditions which involve 3-var existentials not captured by 1-var type"
+    ]
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 298,
+      "statement": "Until zone backward: temporal_truth M atomMap t (compat_disj.untl ⊤) → ∃ x, nf_eval_nf M (k'+1+1) 2 [x, t] sub_nf",
+      "assumption": "compat_disj encodes 1-var predicate compatibility only",
+      "why_deferred": "Formula does not encode 2-var quantifier conditions; enriched formula or Prior compositionality needed",
+      "next_dispatch": "Implement Prior compositionality or enriched formula with optimized NF enumeration",
+      "critical_path": true
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 310,
+      "statement": "Since zone backward: temporal_truth M atomMap t (compat_disj.snce ⊤) → ∃ x, nf_eval_nf M (k'+1+1) 2 [x, t] sub_nf",
+      "assumption": "Same as Until zone",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Same approach",
+      "critical_path": true
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 322,
+      "statement": "Eq zone backward: temporal_truth M atomMap t compat_disj → ∃ x, nf_eval_nf M (k'+1+1) 2 [x, t] sub_nf",
+      "assumption": "x = t in Eq zone, so env is [t, t] (constant parent)",
+      "why_deferred": "Even with constant parent, 3-var existentials [y,t,t] not determined by 1-var type of t",
+      "next_dispatch": "Best target for next attempt — may yield to constant-parent arity projection lemma",
+      "critical_path": true
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+      "line": 310,
+      "statement": "existPart_succ n>=2",
+      "assumption": "Depends on existPart_succ_n1_bypass being sorry-free",
+      "why_deferred": "Blocked by n=1 backward directions",
+      "next_dispatch": "Auto-resolves once n=1 is sorry-free",
+      "critical_path": true
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_exist_backward_prior (pre-existing)",
+      "assumption": "Dead code",
+      "why_deferred": "Not called by live dispatch",
+      "next_dispatch": "Not needed",
+      "critical_path": false
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "ih_char/ih_exist sorry placeholders (pre-existing)",
+      "assumption": "Dead code",
+      "why_deferred": "Path already sorry-based",
+      "next_dispatch": "Not needed",
+      "critical_path": false
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "type": "code",
+      "summary": "Added nf_extend_fwd/bwd, exist_transfer_const_env; restructured satisfiable case with M₀ witness infrastructure"
+    }
+  ]
+}

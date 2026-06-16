@@ -1,0 +1,55 @@
+{
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "session_id": "sess_1781688000_303orc",
+  "task_number": 303,
+  "started_at": "2026-06-16T00:00:00Z",
+  "handoff_path": "specs/303_k_gt_0_depth_induction/.orchestrator-handoff.json",
+  "verification": {
+    "sorry_count": 6,
+    "vacuous_count": 0,
+    "axiom_count": 2,
+    "build_passed": true
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 298,
+      "statement": "Until zone backward"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 310,
+      "statement": "Since zone backward"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 322,
+      "statement": "Eq zone backward"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+      "line": 310,
+      "statement": "existPart_succ n>=2"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_exist_backward depth k+1"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "ih_char/ih_exist placeholders"
+    }
+  ],
+  "memory_candidates": [
+    "nf_x_eq (all witnesses of a 2-var NF share the same 1-var type) is FALSE. Different models can satisfy the same 2-var sub_nf with different 1-var types for the existential witness. The formula char_kp1(nf_x₀) for a single M₀ NF type fails in the forward direction.",
+    "const_env_determined (1-var NF type determines 2-var NF type on constant envs [t,t]) is FALSE. Counterexample: model with 2 elements has existentials that model with 1 element lacks, even with the same 1-var type.",
+    "nf_extend_fwd/bwd loses one depth level per arity increase. Depth-(k'+2) arity-1 agreement gives depth-(k'+1) arity-2, then depth-k' arity-3. But quantifier conditions of sub_nf at depth k'+2 need depth-(k'+1) arity-3 — one level short.",
+    "component_extend_fwd (NEquivalence.lean:187) replicated as nf_extend_fwd in KampBypass.lean. Public standalone version avoids needing to modify NEquivalence.lean.",
+    "ExistPart(k) at constant parent envs [t,t] does NOT directly help for non-constant parent envs [x,t] where x != t. Until/Since zones require Prior compositionality (Rabinovich Lemma 5.1) or nested temporal encoding.",
+    "The backward direction of existPart_succ_n1_bypass at k>0 fundamentally requires encoding 2-var NF quantifier conditions into the temporal formula. The 1-var type (compat_disj) is necessary but NOT sufficient."
+  ]
+}
