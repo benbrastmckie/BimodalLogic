@@ -52,31 +52,28 @@ open Bimodal.Theorems.Perpetuity
 open Bimodal.Metalogic.BXCanonical
 open Classical
 
-/-! ## Gap Elimination and IsSuccArchimedean (tasks 155, 225, 268)
+/-! ## Gap Elimination and IsSuccArchimedean — DEAD CODE (task 301)
 
--- ARCHIVED: BX pipeline dead code annotations, see task 268
+The following declarations are dead code. They are NOT on any live call path to
+`completeness_discrete` (which uses the Reynolds pipeline via
+`countermodel_discrete_reynolds_v2`). They remain in this file because
+`succ_embed_surjective` is still called internally by `cantor_bfmcs_discrete_restricted_tc/fuc`,
+which are used by `countermodel_discrete_enriched` in Completeness.lean and Transfer.lean.
 
-The definitions below include:
-- `succ_reaches_dom_N` — dead BX pipeline stage induction (sorry at lines 236, 392)
-- `chronicle_gap_contradiction` — core gap elimination via Reynolds model surgery
-- `succ_cofinal` — cofinality from gap elimination
-- `limitDomSubtype_isSuccArchimedean` — IsSuccArchimedean from cofinality
+Dead declarations (sorry-laden):
+- `succ_reaches_dom_N` — dead BX pipeline stage induction
+- `chronicle_gap_contradiction` — dead gap elimination (sorry)
+- `succ_cofinal` — dead cofinality from gap elimination
+- `limitDomSubtype_isSuccArchimedean` — dead IsSuccArchimedean from cofinality
 
-**Task 273 status (plan v23)**: `chronicle_gap_contradiction` still has sorry.
-The proof strategy (build OrderedMonadicStructure on LimitDomSubtype, prove
-semantic_prior_UZ/SZ via MCS bridge, apply `gap_contradicts_prior`) is correct
-but blocked because `gap_contradicts_prior` transitively depends on
-`kamp_prior_expressive_completeness` (via US_expressively_complete_over_prior
--> gap_formula_R -> reynolds_model_surgery_core), which has sorry at
-KampPrior.lean:149 (the Feferman-Vaught composition lemma blocker).
-The sorry chain `chronicle_gap_contradiction -> succ_cofinal ->
-limitDomSubtype_isSuccArchimedean -> succ_embed_surjective` remains open.
-See OLD PROOF block below for partial proof (h_temporal_truth_eff, h_prior_UZ,
-h_prior_SZ proved; blocked at contemp_equiv k=0 triviality issue -- needs k>=1
-but that requires higher quantifier depth formulas hitting the Kamp sorry).
+The sorry chain: `chronicle_gap_contradiction` → `succ_cofinal` →
+`limitDomSubtype_isSuccArchimedean` → `succ_embed_surjective` →
+`cantor_bfmcs_discrete_restricted_tc/fuc`. This chain is dead because
+`completeness_discrete` no longer uses `cantor_bfmcs_discrete` — it uses
+the Reynolds pipeline instead.
 
-`succ_reaches_dom_N` remains dead (BX pipeline stage induction, unrelated to
-the Reynolds model surgery approach).
+`mcs_mixed_case_absurd` and `dd_countermodel_chronicle_mixed_sorry` moved to
+MCSMixedCase.lean (task 301 phase 1).
 -/
 
 /--

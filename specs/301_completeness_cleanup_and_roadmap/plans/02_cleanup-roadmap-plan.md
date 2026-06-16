@@ -97,19 +97,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Archive dead code to Boneyard/ [NOT STARTED]
+### Phase 2: Archive dead code to Boneyard/ [COMPLETED]
 
 **Goal**: Move dead code out of the active source tree into Boneyard/ with clear archival comments.
 
 **Tasks**:
-- [ ] Verify BXCanonical non-Chronicle subtree is fully dead (grep for imports from live code)
-- [ ] Move dead BXCanonical files to `Boneyard/BXCanonical/` (if not already done by task 268)
-- [ ] Identify dead chronicle functions (`chronicle_gap_contradiction`, `succ_cofinal`, `limitDomSubtype_isSuccArchimedean`, `succ_embed_surjective`) in ChronicleToCountermodel.lean
-- [ ] Move dead chronicle functions to `Boneyard/DeadChronicle/` or comment-mark them as dead code
-- [ ] Verify VecEADecomposition.lean sorries are quarantined (confirmed dead by task 273 research)
-- [ ] Check StaviCompleteness.lean / Stavi path usage before considering archival (may still be referenced)
-- [ ] Update aggregator imports (`Metalogic.lean`, `BXCanonical.lean`, etc.)
-- [ ] Run `lake build` to verify zero errors
+- [x] Verify BXCanonical non-Chronicle subtree is fully dead (grep for imports from live code) *(deviation: altered — BXCanonical non-Chronicle files (Frame, TruthLemma, CanonicalModel, etc.) are used by live code including Chronicle, WeakCanonical; NOT dead code)*
+- [ ] Move dead BXCanonical files to `Boneyard/BXCanonical/` (if not already done by task 268) *(deviation: skipped — BXCanonical files are live, not dead)*
+- [x] Identify dead chronicle functions (`chronicle_gap_contradiction`, `succ_cofinal`, `limitDomSubtype_isSuccArchimedean`, `succ_embed_surjective`) in ChronicleToCountermodel.lean
+- [x] Move dead chronicle functions to `Boneyard/DeadChronicle/` or comment-mark them as dead code *(deviation: altered — comment-marked rather than moved, because succ_embed_surjective is internally used by live cantor_bfmcs_discrete_restricted_tc/fuc)*
+- [x] Verify VecEADecomposition.lean sorries are quarantined (confirmed dead by task 273 research) *(completed: archived to Boneyard/VecEADecomposition/)*
+- [x] Check StaviCompleteness.lean / Stavi path usage before considering archival (may still be referenced) *(completed: Stavi files are imported by live code — not archived)*
+- [ ] Update aggregator imports (`Metalogic.lean`, `BXCanonical.lean`, etc.) *(deviation: skipped — no aggregator changes needed since dead code was comment-marked not moved)*
+- [x] Run `lake build` to verify zero errors *(pre-existing error in CanonicalTaskRelation.lean unrelated to changes; all modified modules build successfully)*
 
 **Timing**: 1.5 hours
 
