@@ -363,22 +363,11 @@ theorem existPart_succ {sig : MonadicSignature}
           -- Known: n-var agreement M↔M₀. Need: 2-var M satisfies sub_nf_2.
           -- Direct: from n-var eval h_eval_n + constenv_2var_determines
           apply (hA₂ M h_UZ h_SZ t h_atoms).mpr
-          -- Goal: ∃ x, nf_eval M (k+1) 2 [x, t] sub_nf_2
-          -- sub_nf_2 = nf_characteristic M₀ (k+1) 2 [x₀, t₀]
-          -- From h_agree_n and constenv_2var_determines applied with reversed roles
           refine ⟨x, ?_⟩
-          -- Need: nf_eval M (k+1) 2 [x, t] sub_nf_2
-          -- constenv_2var_determines M₀ M, given 2-var agreement M₀→M,
-          -- produces n-var agreement M₀→M.
-          -- We know n-var agreement. Need 2-var.
-          -- Since constenv_2var_determines is injective on constenvs:
-          -- same n-var NF → same 2-var NF.
-          -- From h_eval_n and h_eval₀, both satisfy sub_nf.
-          -- nf_eval_unique: char = sub_nf for both.
-          -- The 2-var char is determined by the n-var char.
-          -- Use constenv_nvar_to_2var (projection lemma for constenvs).
-          -- For now, leave as sorry -- this is a consequence of constenv_2var_determines.
-          sorry
+          -- Use constenv_nvar_to_2var to project from n-var to 2-var
+          exact (constenv_nvar_to_2var M M₀ (k + 1) (n'' + 1)
+            x t x₀ t₀ h_agree_n sub_nf_2).mpr
+            (nf_characteristic_satisfies M₀ (k + 1) 2 (Fin.cons x₀ (fun _ => t₀)))
       · -- Unsatisfiable: use ⊥
         exact ⟨Formula.bot, fun M _ _ t h_atoms => by
           simp only [temporal_truth]

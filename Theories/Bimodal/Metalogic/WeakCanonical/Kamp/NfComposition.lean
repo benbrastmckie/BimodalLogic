@@ -298,42 +298,26 @@ theorem constenv_2var_determines {sig : MonadicSignature}
   sorry
 
 /-- Reverse direction: on `Fin.cons x (fun _ => t)` constenvs,
-    if two structures have the same (n+1)-var NF (both satisfy the same nf),
-    their 2-var NF agreement follows.
+    (n+2)-var NF agreement implies 2-var NF agreement.
+    This is the downward projection: extra positions (all having value t)
+    are redundant.
 
-    This is the projection from high arity to arity 2 on constant-tail envs. -/
+    Note: requires n+2 (not n+1) since projecting from arity >= 2 to arity 2.
+    The n=0 case (1-var to 2-var) is UPWARD and NOT a projection.
+
+    Proof strategy: iterate nf_drop_last from (n+2)-var down to 2-var.
+    On constenvs, (env ∘ castSucc) = constenv at smaller arity. -/
 theorem constenv_nvar_to_2var {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (N : OrderedMonadicStructure sig)
     (k n : Nat)
     (x : M.carrier) (t : M.carrier) (x' : N.carrier) (t' : N.carrier)
-    (h_nvar : ∀ nf : NormalForm sig k (n + 1),
-      nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) nf ↔
-      nf_eval_nf N k (n + 1) (Fin.cons x' (fun _ => t')) nf) :
+    (h_nvar : ∀ nf : NormalForm sig k (n + 2),
+      nf_eval_nf M k (n + 2) (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf N k (n + 2) (Fin.cons x' (fun _ => t')) nf) :
     ∀ nf : NormalForm sig k 2,
       nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- The n-var agreement implies M and M₀ have the same (n+1)-var characteristic.
-  -- From this, constenv_2var_determines shows 2-var determines n-var,
-  -- so the same n-var char implies same 2-var char.
-  -- Proof: let ch_M = M's 2-var char, ch_N = N's 2-var char.
-  -- By constenv_2var_determines(M, N, ch_M): if M,N agree on 2-var then on n-var.
-  -- By constenv_2var_determines(M, M, ch_M): trivially M agrees with itself.
-  -- Result: M satisfies some n-var NF. N satisfies the same one (from h_nvar).
-  -- So N's 2-var char must equal M's 2-var char (by uniqueness + constenv_2var_determines).
-  intro nf'
-  have hM := nf_characteristic_satisfies M k 2 (Fin.cons x (fun _ => t))
-  have hN := nf_characteristic_satisfies N k 2 (Fin.cons x' (fun _ => t'))
-  -- M and N agree on all (n+1)-var NFs
-  -- M satisfies its 2-var char. By constenv_2var_determines(M, M), M satisfies
-  -- the corresponding n-var extension. N satisfies the same n-var extension
-  -- (from h_nvar). By constenv_2var_determines(N, N) with N's 2-var char:
-  -- N satisfies its own n-var extension. Since N satisfies both extensions and
-  -- NF is unique (nf_eval_unique), the extensions are equal.
-  -- Therefore M's 2-var char extension = N's 2-var char extension.
-  -- Since constenv_2var_determines is injective, M's 2-var char = N's 2-var char.
-  -- Actually: just use h_nvar at n=0 (arity 1) to get 1-var agreement,
-  -- then... no, h_nvar is at fixed n.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
