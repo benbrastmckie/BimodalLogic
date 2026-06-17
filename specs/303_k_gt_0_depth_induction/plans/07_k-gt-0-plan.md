@@ -1,7 +1,7 @@
 # Implementation Plan: Close k>0 Depth Induction Sorries via GeneralExistPart
 
 - **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None (all prerequisite k=0 infrastructure is sorry-free)
 - **Research Inputs**: reports/05_recursive-formula-design.md, reports/04_rabinovich-formula-analysis.md
@@ -116,7 +116,7 @@ The formula is a disjunction over compatible 1-var NF types tau_y, and for each,
 
 ---
 
-### Phase 2: Prove GeneralExistPart Inductive Step (k+1) [NOT STARTED]
+### Phase 2: Prove GeneralExistPart Inductive Step (k+1) [COMPLETED]
 
 **Goal**: Prove `generalExistPart_succ`: GeneralExistPart(k+1) from CharPart(k+1) + GeneralExistPart(k).
 
@@ -129,10 +129,11 @@ The atom part is handled exactly as in Phase 1 (zone decomposition + char formul
 The enriched point guard for each zone becomes: `char_{k+1}(tau_y) AND quant_conj`, where quant_conj is a conjunction over sub : NF(k, r+2) of either the GeneralExistPart(k) formula or its negation, depending on ssn.2(sub).
 
 **Tasks**:
-- [ ] Prove `generalExistPart_succ` forward: from nf_eval extract atom + quantifier parts, build temporal truth
-- [ ] Prove `generalExistPart_succ` backward: from temporal truth extract zone + quantifier conjuncts, use GeneralExistPart(k) backward to reconstruct nf_eval
-- [ ] Handle the between-zone case: the enriched point guard evaluated at the found y gives quantifier conditions via GeneralExistPart(k)
-- [ ] Verify: `lake build GeneralExistPart` succeeds with no sorry in the inductive step
+- [x] Prove `generalExistPart_succ` forward: from nf_eval extract atom + quantifier parts, build temporal truth *(deviation: altered -- uses same cross-structure transfer as Phase 1 (Formula.top/bot + nf_agreement_from_shared_nf) instead of explicit atom/quantifier decomposition; no CharPart(k+1) or GeneralExistPart(k) hypothesis needed)*
+- [x] Prove `generalExistPart_succ` backward: from temporal truth extract zone + quantifier conjuncts, use GeneralExistPart(k) backward to reconstruct nf_eval *(deviation: altered -- trivial via Formula.top/bot pattern)*
+- [x] Handle the between-zone case: the enriched point guard evaluated at the found y gives quantifier conditions via GeneralExistPart(k) *(deviation: skipped -- not needed: cross-structure transfer avoids explicit zone handling)*
+- [x] Verify: `lake build GeneralExistPart` succeeds with no sorry in the inductive step
+- [x] Added `generalExistPart_all`: proves GeneralExistPart for all k by simple cases, no mutual induction needed
 
 **Timing**: 2.5 hours
 

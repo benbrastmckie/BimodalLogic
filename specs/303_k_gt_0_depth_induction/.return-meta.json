@@ -3,7 +3,7 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
-  "phase": 1,
+  "phase": 2,
   "session": "sess_1781700693_29c274",
   "verification": {
     "sorry_count": 0,
@@ -23,13 +23,5 @@
       "context": "existPart_succ_n1_bypass backward quantifier (Since zone)"
     }
   ],
-  "memory_candidates": [
-    {
-      "content": "GeneralExistPart at depth 0 can be proved without explicit zone decomposition by parameterizing on the full depth-(k+1) r-var NF type of the environment. The key insight: nf_extend_fwd pattern (nf_characteristic_satisfies + nf_agreement_from_shared_nf) transfers depth-k (r+1)-var existentials between any two environments sharing the same depth-(k+1) r-var NF. This makes the k=0 proof trivial: satisfiable case uses Formula.top, unsatisfiable case uses Formula.bot.",
-      "category": "PATTERN",
-      "source_artifact": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "confidence": 0.9,
-      "suggested_keywords": ["GeneralExistPart", "nf_extend_fwd", "cross-structure-transfer", "depth-0", "Formula.top"]
-    }
-  ]
+  "memory_candidates": []
 }
