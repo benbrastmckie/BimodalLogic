@@ -123,6 +123,64 @@ private theorem nonconstenv_atom_agree_since {sig : MonadicSignature}
     · simp only [Fin.cons_succ]
       exact iff_of_false (lt_irrefl _) (lt_irrefl _)
 
+/-! ## Depth-0 3-var Existential Transfer (Zone Analysis)
+
+At depth 0, `nf_eval_nf M 0 3 env ssn3` is purely atomic: it asserts that
+all atoms (predicates + orders) at the 3-variable env match ssn3.
+
+The existential `∃ w, nf_eval M 0 3 [w,x,t] ssn3` asks for a point w with
+specific predicates and specific order relationships to x and t. The order
+relationships partition w into zones:
+- Zone 1 (w < t < x): handled by `cross_extend_bwd_1var` from h_t
+- Zone 2 (w = t): use t' directly
+- Zone 3 (t < w < x): between-zone, requires Prior axioms
+- Zone 4 (w = x): use x' directly
+- Zone 5 (x < w): handled by `cross_extend_bwd_1var` from h_x
+
+Zones 1,2,4,5 are proved sorry-free. Zone 3 requires additional
+infrastructure (Prior-UZ/SZ with characteristic formulas). -/
+
+/-- Helper: verify that a candidate witness c satisfies a depth-0 3-var NF
+    at [c,x',t'] given predicate matching and order matching. At depth 0,
+    nf_eval_nf is purely atomic: we need each atom to match ssn3. -/
+private theorem depth0_3var_witness_check {sig : MonadicSignature}
+    (N : OrderedMonadicStructure sig) (c x' t' : N.carrier)
+    (ssn3 : NormalForm sig 0 3)
+    (h_pred_c : ∀ p : sig.preds, N.interp p c ↔ ssn3 (.pred p ⟨0, by omega⟩) = true)
+    (h_pred_x : ∀ p : sig.preds, N.interp p x' ↔ ssn3 (.pred p ⟨1, by omega⟩) = true)
+    (h_pred_t : ∀ p : sig.preds, N.interp p t' ↔ ssn3 (.pred p ⟨2, by omega⟩) = true)
+    (h_ord_01 : (c < x') ↔ ssn3 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_ord_10 : (x' < c) ↔ ssn3 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_ord_02 : (c < t') ↔ ssn3 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_ord_20 : (t' < c) ↔ ssn3 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_ord_12 : (x' < t') ↔ ssn3 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_ord_21 : (t' < x') ↔ ssn3 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true) :
+    nf_eval_nf N 0 3 (Fin.cons c (Fin.cons x' (fun _ => t'))) ssn3 := by
+  intro a
+  cases a with
+  | pred p i =>
+    simp only [atom_eval]
+    refine Fin.cases ?_ (fun i' => Fin.cases ?_ (fun i'' => ?_) i') i
+    · simp only [Fin.cons_zero]; exact h_pred_c p
+    · simp only [Fin.cons_succ, Fin.cons_zero]; exact h_pred_x p
+    · -- i'' : Fin 1, so i''.succ.succ = ⟨2, ...⟩
+      simp only [Fin.cons_succ]
+      have : i'' = ⟨0, by omega⟩ := Fin.ext (by omega)
+      subst this; exact h_pred_t p
+  | order i j hij =>
+    simp only [atom_eval]
+    -- Enumerate all 9 (i,j) pairs in Fin 3 × Fin 3
+    match i, j with
+    | ⟨0, _⟩, ⟨0, _⟩ => exact absurd rfl hij
+    | ⟨0, _⟩, ⟨1, _⟩ => exact h_ord_01
+    | ⟨0, _⟩, ⟨2, _⟩ => exact h_ord_02
+    | ⟨1, _⟩, ⟨0, _⟩ => exact h_ord_10
+    | ⟨1, _⟩, ⟨1, _⟩ => exact absurd rfl hij
+    | ⟨1, _⟩, ⟨2, _⟩ => exact h_ord_12
+    | ⟨2, _⟩, ⟨0, _⟩ => exact h_ord_20
+    | ⟨2, _⟩, ⟨1, _⟩ => exact h_ord_21
+    | ⟨2, _⟩, ⟨2, _⟩ => exact absurd rfl hij
+
 /-! ## 3-var Existential Transfer (Core Mathematical Content)
 
 The key helper: transfer 3-var existentials between M and N on
