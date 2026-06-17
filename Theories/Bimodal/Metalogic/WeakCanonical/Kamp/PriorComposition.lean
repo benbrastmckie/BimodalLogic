@@ -95,7 +95,54 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
-  sorry
+  -- Strategy: show M,[x,t] satisfies the char NF of N,[x',t'], then use
+  -- nf_agreement_from_shared_nf to transfer all NFs.
+  intro nf
+  set target := nf_characteristic N (K + 2) 2 (Fin.cons x' (fun _ => t'))
+  have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 (Fin.cons x' (fun _ => t'))
+  suffices h_M_sat : nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) target by
+    exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
+  obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+  -- == Atom part ==
+  -- Predicates at x agree (from h_x), predicates at t agree (from h_t),
+  -- orders match (t < x iff t' < x').
+  have h_atom_agree : ∀ (a : AtomKind sig 2),
+      atom_eval M (Fin.cons x (fun _ => t)) a ↔
+      atom_eval N (Fin.cons x' (fun _ => t')) a := by
+    intro a; cases a with
+    | pred p i =>
+      simp only [atom_eval]
+      refine Fin.cases ?_ (fun j => ?_) i
+      · -- i = 0: predicate at x/x'
+        simp only [Fin.cons_zero]
+        exact pred_agree_cross M x N x' h_x p
+      · -- i > 0: predicate at t/t'
+        simp only [Fin.cons_succ]
+        exact pred_agree_cross M t N t' h_t p
+    | order i j hne =>
+      simp only [atom_eval]
+      refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+      · exact Iff.intro (fun h => absurd h (lt_irrefl _)) (fun h => absurd h (lt_irrefl _))
+      · -- 0 < succ j': x < t vs x' < t'
+        simp only [Fin.cons_zero, Fin.cons_succ]
+        exact Iff.intro
+          (fun h => absurd (lt_trans h_order_M h) (lt_irrefl _))
+          (fun h => absurd (lt_trans h_order_N h) (lt_irrefl _))
+      · -- succ i' < 0: t < x vs t' < x'
+        simp only [Fin.cons_zero, Fin.cons_succ]
+        exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+      · -- succ i' < succ j': t < t vs t' < t'
+        simp only [Fin.cons_succ]
+        exact Iff.intro (fun h => absurd h (lt_irrefl _)) (fun h => absurd h (lt_irrefl _))
+  constructor
+  · -- Atom assignment matches
+    intro a; exact (h_atom_agree a).trans (h_N_atoms a)
+  · -- Quantifier part: transfer 3-var existentials
+    intro sub_nf
+    rw [← h_N_quant sub_nf]
+    -- Need: (∃ y, nf_eval M (K+1) 3 [y,x,t] sub_nf) ↔
+    --       (∃ y', nf_eval N (K+1) 3 [y',x',t'] sub_nf)
+    sorry
 
 /-- Mirror for the Since zone (x < t). Same statement with reversed order. -/
 theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
