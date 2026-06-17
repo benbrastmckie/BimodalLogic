@@ -1,16 +1,36 @@
 {
-  "status": "planned",
-  "summary": "Plan v6: Delete false PriorComposition.lean theorems and enrich the Until/Since formula in KampBypass.lean to encode full 2-var NF (including between-zone quantifier conditions). 4 phases, 14 hours estimated. Key insight: the non-constant-env composition theorem is FALSE (Z counterexample), so the formula must encode the missing information directly.",
+  "status": "partial",
+  "summary": "Phase 1 completed: removed false PriorComposition.lean dependency from KampBypass.lean, proved atom part of Until/Since backward directions. 2 sorry remain in quantifier transfer (lines 617, 669). Phase 2 (enriched formula with between-zone encoding) not started -- estimated 5 hours, 500-1000 lines.",
   "artifacts": [
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "type": "code",
+      "summary": "Removed PriorComposition import, added nonconstenv_atom_agree helpers, proved atom part of Until/Since backward direction, sorry in quantifier part only"
+    },
     {
       "path": "specs/303_k_gt_0_depth_induction/plans/06_ef-game-composition-plan.md",
       "type": "plan",
-      "summary": "Implementation plan v6: enriched between-zone formula approach, 4 phases, 14 hours"
+      "summary": "Plan v6 with Phase 1 marked COMPLETED"
+    },
+    {
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T120000Z.md",
+      "type": "handoff",
+      "summary": "Phase 1 handoff documenting removal of false theorem dependency"
     }
   ],
-  "blockers": [],
-  "continuation_context": null,
-  "next_action_hint": "implement",
-  "phases_completed": 0,
+  "blockers": [
+    "Phase 2 requires enriching the Until/Since formula to encode quantifier conditions. The ih_exist IH operates at constant parent envs only. The non-constant-env transfer is FALSE. A recursive between-zone encoding by depth is needed."
+  ],
+  "continuation_context": {
+    "sorry_locations": {
+      "until_backward_quant": "KampBypass.lean:617",
+      "since_backward_quant": "KampBypass.lean:669"
+    },
+    "sorry_goal": "forall ssn, (exists y, nf_eval M (k'+1) 3 [y, x, t] ssn) <-> sub_nf.2 ssn = true",
+    "key_finding": "All zones (not just between-zone) require the enriched formula because the 3-var NF at non-constant env is NOT determined by 2-var projections.",
+    "recommended_approach": "Change the formula for Until/Since to carry quantifier information directly via recursive between-zone encoding by depth."
+  },
+  "next_action_hint": "implement Phase 2: design enriched formula encoding quantifier conditions",
+  "phases_completed": 1,
   "phases_total": 4
 }
