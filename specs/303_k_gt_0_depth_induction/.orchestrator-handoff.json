@@ -1,53 +1,58 @@
 {
   "status": "partial",
-  "summary": "Phase 4d blocked: deep analysis of exist_transfer_3var_nonconstenv reveals Fraisse-game-level difficulty. The 4 sorry require a simultaneous induction on (depth, arity) to break circular depth-boost, plus Prior UZ/SZ connection to temporal_truth for between-zone witnesses. Estimated 400-600 new lines. No code changes in this dispatch.",
+  "summary": "Phase 4d: added depth0_3var_witness_check (sorry-free helper, ~50 lines). Exhaustive analysis confirmed all 4 sorry share single root cause: exist_transfer_3var_nonconstenv lacks Prior hypotheses. Non-between zones proved conceptually (zones 1,2,4,5 via cross_extend_bwd_1var). Between-zone requires CharPart(K+1) + Prior-UZ. Architecture design complete; implementation requires threading CharPart through induction.",
   "phases_completed": 3,
   "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 231,
-      "statement": "exist_transfer_3var_nonconstenv forward direction",
-      "assumption": "Given y in M with depth-(K+1) 3-var NF at [y,x,t], find c in N with same at [c,x',t']. Proof has c from hex_x with depth-(K+1) 2-var at [y,x]/[c,x'] and c_K from hex_K with depth-K 3-var at [y,x,t]/[c_K,x',t']. Cannot prove c<t' iff y<t (between-zone order transfer).",
-      "why_deferred": "Requires Fraisse game argument: depth-boost from K 3-var to (K+1) 3-var needs depth-K 4-var existential transfer, which itself needs depth-(K+1) 3-var (circular). Breaking circularity requires simultaneous induction on depth with arity growth, terminating at depth-0 atomic case. The depth-0 between-zone needs Prior axioms via atomMap.",
-      "next_dispatch": "Implement generalized depth-boost by strong induction on K with inner recursion on arity (Fraisse game). Add Prior/atomMap params to exist_transfer_3var_nonconstenv. Connect predicates to temporal_truth for UZ/SZ between-zone witness construction."
+      "line": 289,
+      "statement": "theorem exist_transfer_3var_nonconstenv (forward direction)",
+      "assumption": "Witness c (from hex_x) satisfies sub_nf at [c,x',t']. Specifically c vs t' order unknown and depth-K 4-var transfer needed.",
+      "why_deferred": "exist_transfer_3var_nonconstenv stated without Prior hypotheses. Between-zone requires Prior-UZ/SZ + CharPart to find witness in (t',x'). Same problem as StaviCompleteness.lean:2421.",
+      "next_dispatch": "Add atomMap, h_surj, Prior axioms, CharPart(K+1) to signature. Zone decomposition: outer zones via cross_extend_bwd_1var, between-zone via CharPart + Prior-UZ."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 239,
-      "statement": "exist_transfer_3var_nonconstenv backward direction",
-      "assumption": "Symmetric to forward (N->M instead of M->N)",
-      "why_deferred": "Same Fraisse game argument as forward",
-      "next_dispatch": "Same dispatch as line 231"
+      "line": 297,
+      "statement": "theorem exist_transfer_3var_nonconstenv (backward direction)",
+      "assumption": "Symmetric to forward (N->M)",
+      "why_deferred": "Same as forward direction",
+      "next_dispatch": "Mirror of forward direction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 322,
-      "statement": "prior_nonconstenv_2var_agree_until K=0 base: depth-0 3-var existential",
-      "assumption": "Find w' in N with matching predicates and orders at [w',x',t'] given w in M at [w,x,t]",
-      "why_deferred": "Outside zones provable via cross_extend_bwd_1var + transitivity. Between-zone (t<w<x): cross_extend_bwd from h_x gives w'<x' but w' vs t' unknown; from h_t gives w''>t' but w'' vs x' unknown. Combining requires Prior UZ/SZ connected to predicate-level existentials via atomMap/temporal_truth.",
-      "next_dispatch": "Add Prior axioms to the proof context (they ARE available from outer theorem). Use char_kp1_correct to express predicate conditions as temporal formulas. Apply semantic_prior_UZ on N to find first occurrence of w-type formula above t', then bound by x'."
+      "line": 380,
+      "statement": "theorem prior_nonconstenv_2var_agree_until K=0 base: depth-0 3-var transfer",
+      "assumption": "Depth-0 3-var existential transfer between M and N for between-zone (t < w < x)",
+      "why_deferred": "Between-zone at depth 0: cross_extend gives partial witnesses (w_x<x' but vs t' unknown; w_t>t' but vs x' unknown). Case C (w_t>=x' AND w_x<=t') not contradictory from 1-var agreements alone. Needs CharPart(0) + Prior-UZ.",
+      "next_dispatch": "Thread CharPart to prior_nonconstenv_2var_agree_until. Use CharPart(0) formula for predicate pattern. Apply Prior-UZ to find first occurrence in (t',x')."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 399,
-      "statement": "prior_nonconstenv_2var_agree_since K=0 base: mirror",
-      "assumption": "Mirror of Until base case with x<t",
-      "why_deferred": "Same as line 322 symmetric",
-      "next_dispatch": "Same dispatch as line 322"
+      "line": 457,
+      "statement": "theorem prior_nonconstenv_2var_agree_since K=0 base: mirror",
+      "assumption": "Mirror of Until base case with x < t",
+      "why_deferred": "Same as Until case, symmetric",
+      "next_dispatch": "Mirror of Until case"
     }
   ],
   "blockers": [
-    "Fraisse game depth-boost: need simultaneous (depth, arity) induction. At depth K+1 arity n: need depth-K arity-(n+1) transfer from depth-K arity-n agreement. Recursion on K down to 0 (purely atomic). At depth 0: need Prior axioms for between-zone.",
-    "Between-zone order transfer: from c with depth-(K+1) 2-var at [y,x]/[c,x'] and c_K with depth-K 3-var at [y,x,t]/[c_K,x',t'], cannot derive c<t' iff y<t. Same 1-var type does NOT determine order relative to a third point. Need either c=c_K (not generally true) or an explicit construction using Prior properties."
+    "exist_transfer_3var_nonconstenv (lines 289, 297): needs Prior+CharPart parameters. Zone decomposition architecture designed but not yet implemented.",
+    "prior_nonconstenv_2var_agree_until/since K=0 base (lines 380, 457): needs CharPart(0) + Prior-UZ threaded through to close depth-0 between-zone."
   ],
-  "continuation_path": null,
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4d-zone-analysis-handoff.md",
   "continuation_context": {
     "is_successor": true,
-    "current_phase": "4d",
-    "analysis_complete": true,
-    "recommended_approach": "Option A (preferred): Add atomMap and Prior hypotheses to exist_transfer_3var_nonconstenv. Prove by induction on K. At K=0: use char_kp1_correct to express w's NF type as temporal formula, apply Prior-UZ to find first w-type point above t', bound by x' using h_x quantifier info. At K>0: use IH at K-1 for depth-boost. Option B: Factor into generalized Fraisse lemma proving n-var existential transfer for all n simultaneously.",
-    "key_insight": "The theorem is TRUE on Prior structures and FALSE on general linear orders. The counterexample in NfComposition.lean confirms the general case fails. The proof MUST use Prior axioms (not just NF infrastructure). The connection is through atomMap: predicates ↔ temporal_truth of atomic formulas ↔ Prior UZ/SZ constraints on point existence.",
-    "estimated_effort": "400-600 lines across 2-3 implementation sessions"
+    "resume_phase": "4d",
+    "resume_from": "Add Prior/CharPart parameters to exist_transfer_3var_nonconstenv",
+    "key_files": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
+    ],
+    "sorry_count": 4,
+    "new_infrastructure": ["depth0_3var_witness_check"],
+    "research_report": "specs/303_k_gt_0_depth_induction/reports/12_fraisse-game-analysis.md"
   }
 }

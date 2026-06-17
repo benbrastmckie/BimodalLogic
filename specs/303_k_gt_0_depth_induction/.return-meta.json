@@ -1,8 +1,68 @@
 {
-  "status": "in_progress",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "status": "partial",
   "task_number": 303,
-  "session_id": "sess_1781728029_fda5d7",
-  "started_at": "2026-06-17T18:00:00Z"
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "session_id": "sess_1781728602_b12f5c",
+  "phase": "4d",
+  "started_at": "2026-06-17T00:00:00Z",
+  "requires_user_review": true,
+  "verification": {
+    "sorry_count": 4,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 289,
+      "statement": "exist_transfer_3var_nonconstenv (forward)",
+      "assumption": "Between-zone: c vs t' order unknown",
+      "why_deferred": "Needs Prior+CharPart parameters",
+      "next_dispatch": "Add Prior/CharPart params, zone decomposition"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 297,
+      "statement": "exist_transfer_3var_nonconstenv (backward)",
+      "assumption": "Symmetric",
+      "why_deferred": "Same as forward",
+      "next_dispatch": "Mirror of forward"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 380,
+      "statement": "prior_nonconstenv_2var_agree_until K=0",
+      "assumption": "Depth-0 between-zone transfer",
+      "why_deferred": "Needs CharPart(0) + Prior-UZ",
+      "next_dispatch": "Thread CharPart to call site"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 457,
+      "statement": "prior_nonconstenv_2var_agree_since K=0",
+      "assumption": "Mirror of Until",
+      "why_deferred": "Same as Until",
+      "next_dispatch": "Mirror"
+    }
+  ],
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4d-zone-analysis-handoff.md",
+  "memory_candidates": [
+    {
+      "type": "pattern",
+      "content": "Non-constant-env NF composition on Prior structures requires zone decomposition: outer zones (w < t or w > x) use cross_extend_bwd_1var, equality zones use the endpoint directly, between-zone (t < w < x) requires Prior-UZ/SZ + CharPart temporal characteristic formulas. The theorem exist_transfer_3var_nonconstenv must take Prior hypotheses.",
+      "keywords": ["nf_composition", "prior_structure", "zone_decomposition", "between_zone", "cross_extend"]
+    },
+    {
+      "type": "discovery",
+      "content": "CharPart(K) in KampMutualInduction.lean is sorry-free for all K through a well-founded mutual induction: CharPart(K+1) depends on ExistPart(K), which uses prior_nonconstenv_2var_agree at lower depth. So CharPart(K+1) is available before proving the depth-K+2 composition lemma. No circularity.",
+      "keywords": ["CharPart", "mutual_induction", "well_founded", "sorry_free", "depth_ordering"]
+    },
+    {
+      "type": "pattern",
+      "content": "depth0_3var_witness_check: at depth 0, nf_eval_nf is purely atomic. Given predicate matching (3 components) and all 6 pairwise order matching, the witness check reduces to match-on-Fin case analysis. Use match i, j with pattern instead of nested Fin.cases for cleaner proofs on Fin 3.",
+      "keywords": ["depth0", "3var", "witness_check", "atom_eval", "Fin_match"]
+    }
+  ]
 }
