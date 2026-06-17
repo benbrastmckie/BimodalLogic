@@ -1,40 +1,42 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
   "session_id": "sess_1781710390_4591d5",
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 174,
-      "statement": "theorem generalExistPartOrdered_zero : GeneralExistPartOrdered atomMap 0",
-      "assumption": "IMPOSSIBLE: GeneralExistPartOrdered is FALSE",
-      "why_deferred": "Statement is provably false. Z counterexample: r=2, constant predicates, env=[0,2] vs env=[0,1] have same preconditions but different existential truth values. temporal_truth at e(0) is fixed, so no formula satisfies the biconditional for both.",
-      "next_dispatch": "Research dispatch needed for correct formulation"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 207,
-      "statement": "theorem generalExistPartOrdered_succ : GeneralExistPartOrdered atomMap (k + 1)",
-      "assumption": "IMPOSSIBLE: depends on false base case",
-      "why_deferred": "Blocked by false base case",
-      "next_dispatch": "After research resolves the formulation"
-    }
-  ],
+  "phase": 1,
+  "phases_completed": 1,
+  "phases_total": 4,
   "verification": {
     "sorry_count": 2,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
-  "memory_candidates": [
-    "GeneralExistPartOrdered atomMap 0 is FALSE (not just unprovable). Counterexample: Z (integers) with 1 constant predicate, r=2, env_nfs = constant (all Z-points have same depth-1 1-var NF), env_atoms = 'e(0)<e(1)', ssn = between-zone. env=[0,2] gives existential TRUE (y=1), env=[0,1] gives existential FALSE (no integer between 0 and 1). temporal_truth Z atomMap 0 A is fixed for any formula A, so the biconditional fails.",
-    "Root cause: a closed temporal formula evaluated at e(0) cannot characterize an existential that depends on the gap structure between env elements. On Z-homogeneous structures, all temporal formulas at any point have the same truth value, but between-zone existentials depend on the quantitative gap.",
-    "GeneralExistPartIndiv (without orders) is ALSO false, but for a different reason: temporal formula at e(0) can't detect order of other env elements. Both variants fail because the single evaluation point lacks information about the env configuration.",
-    "The k=0 case of KampBypass works WITHOUT GeneralExistPartOrdered (uses enriched_bypass_until/since infrastructure, ~2300 lines). Only the k>=1 case (existPart_succ_n1_bypass, succ k' branch) uses GeneralExistPartOrdered. This is the code that needs restructuring.",
-    "existPart_succ_n1_bypass is sorry-free assuming ih_general_exist. Since ih_general_exist = GeneralExistPartOrdered (which is false), the theorem is vacuously true from a false hypothesis. The KampBypass proof for k>=1 is currently unsound."
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 573,
+      "statement": "existPart_succ_n1_bypass (Until zone, k>0)",
+      "assumption": "Quantifier encoding for non-constant env with t < x",
+      "why_deferred": "Phase 2 target",
+      "next_dispatch": "Restructure with generalExistPart_from_classical"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 577,
+      "statement": "existPart_succ_n1_bypass (Since zone, k>0)",
+      "assumption": "Quantifier encoding for non-constant env with x < t",
+      "why_deferred": "Phase 2 target",
+      "next_dispatch": "Mirror of Until zone restructuring"
+    }
   ],
-  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/generalexistpartordered-false-blocker.md",
-  "requires_user_review": true
+  "memory_candidates": [
+    {
+      "content": "GeneralExistPartOrdered deleted from mutual induction in plan v9 Phase 1. kamp_mutual_induction is now 2-conjunct (CharPart + ExistPart). The ih_general_exist parameter was removed from existPart_succ_n1_bypass. The Until/Since k>0 zones need restructuring to use generalExistPart_from_classical (which has the full 2-var NF precondition and IS proved) or ih_exist directly.",
+      "category": "DECISION",
+      "confidence": 1.0,
+      "suggested_keywords": ["GeneralExistPartOrdered", "kamp_mutual_induction", "existPart_succ_n1_bypass", "ih_general_exist", "plan-v9-phase-1"]
+    }
+  ]
 }

@@ -1,42 +1,53 @@
 {
-  "status": "blocked",
-  "summary": "GeneralExistPartOrdered atomMap 0 is FALSE (proven by Z counterexample). The statement asks for a closed temporal formula at e(0) characterizing an existential that depends on gap structure between env elements -- impossible on Z with constant predicates where temporal truth at e(0) is fixed regardless of env. Phases 1 and 2 marked BLOCKED. KampBypass for k>=1 needs fundamental redesign.",
-  "phases_completed": 2,
-  "phases_total": 5,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 174,
-      "statement": "theorem generalExistPartOrdered_zero : GeneralExistPartOrdered atomMap 0",
-      "assumption": "IMPOSSIBLE: GeneralExistPartOrdered is FALSE",
-      "why_deferred": "Statement is provably false. Z counterexample: r=2, constant predicates, env=[0,2] gives true but env=[0,1] gives false for between-zone existential, with same preconditions and same temporal truth value at e(0)=0.",
-      "next_dispatch": "Research dispatch needed to find correct formulation. Options: gap induction (Rabinovich-style), enhanced enriched formula, eliminate quantifier gap, or direct 2-var NF construction."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 207,
-      "statement": "theorem generalExistPartOrdered_succ : GeneralExistPartOrdered atomMap (k + 1)",
-      "assumption": "IMPOSSIBLE: depends on false base case",
-      "why_deferred": "GeneralExistPartOrdered_zero is false, so the inductive step has no valid base case.",
-      "next_dispatch": "Blocked by base case. Will be resolved by new approach from research."
-    }
-  ],
-  "blockers": [
-    "GeneralExistPartOrdered atomMap 0 is FALSE (proven by Z counterexample with constant predicates). The entire GeneralExistPartOrdered approach is fundamentally flawed because a closed temporal formula at e(0) cannot characterize existentials that depend on the gap structure between env elements. Research needed for correct formulation.",
-    "KampBypass existPart_succ_n1_bypass for k>=1 depends on ih_general_exist (= GeneralExistPartOrdered), which is false. The proof is vacuously true from a false hypothesis. Restructuring needed."
-  ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/generalexistpartordered-false-blocker.md",
+  "status": "partial",
+  "summary": "Phase 1 completed: deleted GeneralExistPartOrdered abbrev and its two false sorry theorems, simplified kamp_mutual_induction to 2-conjunct (CharPart + ExistPart), removed ih_general_exist from existPart_succ_n1_bypass. Until/Since k>0 zones have sorry placeholders for Phase 2.",
+  "phases_completed": 1,
+  "phases_total": 4,
+  "blockers": [],
   "continuation_context": {
-    "is_successor": true,
-    "phase_in_progress": null,
-    "phases_completed_names": ["Phase 3 (plumbing)", "Phase 4 (close KampBypass sorries)"],
-    "key_finding": "GeneralExistPartOrdered is FALSE. The Z counterexample proves it: on Z with constant predicates, temporal_truth at e(0) is fixed regardless of env, but the between-zone existential depends on the gap between env elements.",
-    "next_step": "Research dispatch to evaluate alternative approaches: gap induction, enhanced enriched formula, eliminate quantifier gap, or direct 2-var NF construction. Then create plan v9."
+    "next_phase": 2,
+    "resume_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+    "resume_description": "Replace sorry at Until zone (line 573) and Since zone (line 577) with restructured quantifier encoding using generalExistPart_from_classical"
   },
+  "next_action_hint": "implement Phase 2",
   "artifacts": [
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-    "specs/303_k_gt_0_depth_induction/handoffs/generalexistpartordered-false-blocker.md"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean"
+  ],
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 573,
+      "statement": "existPart_succ_n1_bypass (Until zone, k>0, true/false case)",
+      "assumption": "Existential on non-constant env [x,t] with t < x can be characterized temporally without ih_general_exist",
+      "why_deferred": "Phase 2 target: requires restructured quantifier encoding via generalExistPart_from_classical or ih_exist",
+      "next_dispatch": "Implement Until zone using generalExistPart_from_classical (full 2-var NF precondition, already proved)"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 577,
+      "statement": "existPart_succ_n1_bypass (Since zone, k>0, false/true case)",
+      "assumption": "Existential on non-constant env [x,t] with x < t can be characterized temporally without ih_general_exist",
+      "why_deferred": "Phase 2 target: mirror of Until zone restructuring",
+      "next_dispatch": "Implement Since zone using generalExistPart_from_classical (mirror of Until zone approach)"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_exist_backward (depth k+1 backward direction)",
+      "assumption": "Prior composition at depth k+1 for backward direction",
+      "why_deferred": "Pre-existing sorry (not introduced by this dispatch)",
+      "next_dispatch": "Resolved once existPart_succ_n1_bypass is fully proved"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "nf_2var_exist_formula_prior (ih_char and ih_exist args)",
+      "assumption": "CharPart(k+1) and ExistPart(k) available from mutual induction",
+      "why_deferred": "Pre-existing sorry args (placeholders for mutual induction IH)",
+      "next_dispatch": "Resolved once kamp_mutual_induction is wired through"
+    }
   ]
 }
