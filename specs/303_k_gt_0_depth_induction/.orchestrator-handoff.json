@@ -1,36 +1,53 @@
 {
-  "status": "partial",
-  "summary": "Phase 1 completed: removed false PriorComposition.lean dependency from KampBypass.lean, proved atom part of Until/Since backward directions. 2 sorry remain in quantifier transfer (lines 617, 669). Phase 2 (enriched formula with between-zone encoding) not started -- estimated 5 hours, 500-1000 lines.",
+  "status": "blocked",
+  "summary": "Phase 1 complete. Phase 2 BLOCKED: the 2 sorry goals at KampBypass.lean:617/:669 require transferring depth-(k'+1) arity-3 existentials on non-constant environments [y,x,t]. Three approaches attempted and failed: (1) nf_extend_fwd chain -- depth drop prevents 3-var agreement; (2) pairwise 2-var composition -- infinite regress for quantifier conditions; (3) ih_exist at constant parent -- env mismatch. The fix requires a recursive formula construction (~500-1000 new lines) encoding non-constant-env existentials via depth-recursive Until/Since nesting per Rabinovich Prop 3.5.",
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "type": "code",
-      "summary": "Removed PriorComposition import, added nonconstenv_atom_agree helpers, proved atom part of Until/Since backward direction, sorry in quantifier part only"
+      "summary": "Phase 1: removed PriorComposition import, proved atom part of Until/Since backward. 2 sorry remain in quantifier transfer."
     },
     {
       "path": "specs/303_k_gt_0_depth_induction/plans/06_ef-game-composition-plan.md",
       "type": "plan",
-      "summary": "Plan v6 with Phase 1 marked COMPLETED"
+      "summary": "Plan v6 with Phase 1 COMPLETED, Phase 2 BLOCKED"
     },
     {
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T120000Z.md",
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-2-handoff-20260617T091416Z.md",
       "type": "handoff",
-      "summary": "Phase 1 handoff documenting removal of false theorem dependency"
+      "summary": "Phase 2 blocker analysis with full technical details and unblocking options"
     }
   ],
   "blockers": [
-    "Phase 2 requires enriching the Until/Since formula to encode quantifier conditions. The ih_exist IH operates at constant parent envs only. The non-constant-env transfer is FALSE. A recursive between-zone encoding by depth is needed."
+    "Non-constant env quantifier transfer: ExistPart handles only constant-parent envs [y,t,t]. The Until/Since zones need [y,x,t] with x /= t. Pairwise 2-var composition insufficient (witness z from one pair has uncontrolled relationship to third point). The formula must encode the full 2-var NF directly via a recursive construction by depth."
   ],
   "continuation_context": {
     "sorry_locations": {
       "until_backward_quant": "KampBypass.lean:617",
       "since_backward_quant": "KampBypass.lean:669"
     },
-    "sorry_goal": "forall ssn, (exists y, nf_eval M (k'+1) 3 [y, x, t] ssn) <-> sub_nf.2 ssn = true",
-    "key_finding": "All zones (not just between-zone) require the enriched formula because the 3-var NF at non-constant env is NOT determined by 2-var projections.",
-    "recommended_approach": "Change the formula for Until/Since to carry quantifier information directly via recursive between-zone encoding by depth."
+    "sorry_goal": "forall ssn : NF (k'+1) 3, (exists y, nf_eval M (k'+1) 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) <-> sub_nf.2 ssn = true",
+    "available_hypotheses": {
+      "h_x_agree": "depth-(k'+2) 1-var agreement at x/x₀",
+      "h_t_agree": "depth-(k'+2) 1-var agreement at t/t₀",
+      "h_eval₀_quant": "same goal statement holds in M₀ at [x₀,t₀]",
+      "h_tx": "t < x (Until zone)",
+      "h_order₀": "t₀ < x₀"
+    },
+    "key_findings": [
+      "nf_extend_fwd from depth-(K+2) 1-var gives depth-(K+1) 2-var. Depth drops prevent building full 3-var.",
+      "Pairwise 2-var composition fails: z from nf_extend at [y,x] has uncontrolled relationship to t.",
+      "ih_exist only handles Fin.cons y (fun _ => z) -- constant parent z. No combination covers [y,x,t].",
+      "The Eq zone proof works only because x=t makes the env constant.",
+      "A recursive formula construction by depth with increasing arity terminates because depth bottoms at 0."
+    ],
+    "unblocking_options": [
+      "Option A (Recommended): New research task to design recursive nonconstenv_exist_formula definition by induction on depth",
+      "Option B: Prior-specific composition theorem leveraging first/last occurrence properties",
+      "Option C: Refactor mutual induction to generalize ExistPart to non-constant parents"
+    ]
   },
-  "next_action_hint": "implement Phase 2: design enriched formula encoding quantifier conditions",
+  "next_action_hint": "Create research task to design the recursive non-constant-env formula construction, then revise plan v6 with the new approach",
   "phases_completed": 1,
   "phases_total": 4
 }
