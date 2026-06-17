@@ -1,8 +1,61 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
   "session_id": "sess_1781661075_5cab61",
-  "started_at": "2026-06-16T00:00:00Z"
+  "started_at": "2026-06-16T00:00:00Z",
+  "requires_user_review": false,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 356,
+      "statement": "existPart_succ_n1_bypass Until backward (k>0)",
+      "assumption": "Needs Prior composition or enriched formula",
+      "why_deferred": "Core depth-gap problem",
+      "next_dispatch": "Plan v5 Phases 1-3"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 368,
+      "statement": "existPart_succ_n1_bypass Since backward (k>0)",
+      "assumption": "Mirror of Until case",
+      "why_deferred": "Mirror of line 356",
+      "next_dispatch": "Mirror Until proof"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 298,
+      "statement": "constenv_2var_determines",
+      "assumption": "2-var -> n-var NF agreement on constenvs",
+      "why_deferred": "Complex Fin arithmetic proof",
+      "next_dispatch": "Prove by induction on k"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 337,
+      "statement": "constenv_nvar_to_2var",
+      "assumption": "n-var -> 2-var NF agreement on constenvs",
+      "why_deferred": "Reverse direction of constenv_2var_determines",
+      "next_dispatch": "Prove via nf_drop_last chain"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+      "line": 381,
+      "statement": "existPart_succ n>=2 mpr direction",
+      "assumption": "n-var eval -> 2-var eval on constenvs",
+      "why_deferred": "Depends on constenv_nvar_to_2var",
+      "next_dispatch": "Use constenv_nvar_to_2var"
+    }
+  ],
+  "verification": {
+    "sorry_count": 7,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "On constant-parent environments Fin.cons x (fun _ => t), n-var NF agreement is determined by 2-var NF agreement. This is the key lemma for the n>=2 case of ExistPart at all depths.",
+    "The quantifier extension step in constenv_2var_determines requires the IH at a generalized prefix width: after nf_extend_fwd, the extended env [y,x,t,...,t] has a 3-var non-constant prefix, not a 2-var prefix."
+  ]
 }

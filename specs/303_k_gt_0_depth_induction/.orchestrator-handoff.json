@@ -1,63 +1,83 @@
 {
-  "status": "blocked",
-  "summary": "Phase 1 blocked: Plan's ExistPart_r approach AND NfCompose composition are both provably FALSE on Prior structures (counterexample: NfComposition.lean:20-36). The constant-parent constraint in ih_exist is a fundamental information gap that cannot be fixed by NF-level composition. Zone-explicit temporal formula encoding (Rabinovich Section 5) is the correct mathematical path — decomposes quantifier conditions by y's position relative to x and t, encoding each zone as nested temporal formula.",
+  "status": "partial",
+  "summary": "Restructured n>=2 case of existPart_succ to reduce it to two helper lemmas (constenv_2var_determines and constenv_nvar_to_2var) in NfComposition.lean. The original sorry at KampMutualInduction.lean:310 is replaced by structured proof using these helpers. The core Until/Since backward sorries at KampBypass.lean:356,368 remain untouched. Full build passes.",
   "phases_completed": 0,
   "phases_total": 5,
+  "plan_path": "specs/303_k_gt_0_depth_induction/plans/05_prior-composition-plan.md",
+  "plan_version": 5,
+  "blockers": [
+    "constenv_2var_determines: proving that on Fin.cons x (fun _ => t) envs, depth-k 2-var NF agreement determines depth-k (n+1)-var NF agreement. Requires induction on k with careful Fin arithmetic for atom and quantifier transfer.",
+    "KampBypass.lean:356,368 (Until/Since backward k>0): the core sorry. Requires either enriched formula approach or Prior composition theorem per plan v5."
+  ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
       "statement": "existPart_succ_n1_bypass Until backward (k>0)",
-      "assumption": "temporal_truth M atomMap t (compat_disj.untl Formula.top) -> exists x, nf_eval_nf M [x, t] sub_nf",
-      "why_deferred": "Plan's ExistPart_r is provably FALSE (NfComposition.lean:20-36 counterexample). ih_exist constant-parent constraint prevents non-constant env [y, x, t]. nf_extend_fwd has unavoidable depth gap.",
-      "next_dispatch": "Research zone-explicit temporal formula encoding per Rabinovich Section 5"
+      "assumption": "temporal_truth M atomMap t (compat_disj.untl Formula.top) → ∃ x, nf_eval_nf M (k'+1+1) (1+1) (Fin.cons x (fun _ => t)) sub_nf",
+      "why_deferred": "Core depth-gap problem. Requires Prior composition theorem or enriched formula.",
+      "next_dispatch": "Implement prior_composition_rvar or enriched formula per plan v5 Phase 1-3"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
       "statement": "existPart_succ_n1_bypass Since backward (k>0)",
-      "assumption": "temporal_truth M atomMap t (compat_disj.snce Formula.top) -> exists x, nf_eval_nf M [x, t] sub_nf",
-      "why_deferred": "Mirror of Until case; same blocker",
-      "next_dispatch": "Mirror of Until zone proof once approach is found"
+      "assumption": "Mirror of Until case",
+      "why_deferred": "Mirror of line 356",
+      "next_dispatch": "Mirror proof of Until case"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-      "line": 310,
-      "statement": "existPart_succ n>=2 arity climbing",
-      "assumption": "Depends on n=1 case (existPart_succ_n1_bypass) being sorry-free",
-      "why_deferred": "Downstream of Until/Since backward sorries",
-      "next_dispatch": "Close after n=1 is sorry-free, using existPart_zero n>=2 pattern"
+      "line": 381,
+      "statement": "existPart_succ n>=2 mpr direction",
+      "assumption": "Given n-var eval of sub_nf at constenv, produce 2-var eval of sub_nf_2",
+      "why_deferred": "Requires constenv_nvar_to_2var helper",
+      "next_dispatch": "Prove constenv_nvar_to_2var in NfComposition.lean"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 298,
+      "statement": "constenv_2var_determines",
+      "assumption": "On Fin.cons x (fun _ => t) envs, 2-var NF agreement implies (n+1)-var NF agreement",
+      "why_deferred": "Requires induction on k with Fin arithmetic for atom agreement and quantifier extension. The quantifier step needs nf_extend_fwd + recursive application of the IH with shifted env forms.",
+      "next_dispatch": "Prove by induction on k. At depth 0, atom-by-atom using Fin case analysis. At depth k+1, atoms same + quantifier transfer via nf_extend_fwd and IH."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 337,
+      "statement": "constenv_nvar_to_2var",
+      "assumption": "Reverse of constenv_2var_determines: n-var agreement implies 2-var agreement on constenvs",
+      "why_deferred": "Follows from constenv_2var_determines being a bijection on constenvs, or directly from nf_drop_last chain",
+      "next_dispatch": "Prove using nf_drop_last iterated from n-var to 2-var chars, or as corollary of constenv_2var_determines"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_2var_exist_formula_prior (dead code)",
+      "assumption": "Dead code, not on critical path",
+      "why_deferred": "Dead code",
+      "next_dispatch": "Leave or remove"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "sorry sorry wiring in nf_characterizable_temporal_prior_classical",
+      "assumption": "Needs IH arguments from kamp_mutual_induction",
+      "why_deferred": "Depends on sorry-free kamp_mutual_induction",
+      "next_dispatch": "Wire after kamp_mutual_induction is sorry-free"
     }
   ],
-  "blockers": [
-    "PLAN INVALIDATED: ExistPart_r (generalized exist part with r parent NFs) is provably FALSE on Prior structures. Counterexample in NfComposition.lean:20-36: on (Z, <), pairs (0,2) and (0,1) have identical arity-1 NFs and matching orders but different arity-2 NFs. The zone interior structure (elements between the two points) differs, and this is NOT captured by individual NF types.",
-    "CONSTANT-PARENT GAP: ih_exist uses env (fun _ => t), which only expresses [y, t, t, ...]. The Until zone needs [y, x, t] with distinct x, t. No instantiation of ih_exist can produce non-constant environments.",
-    "DEPTH GAP: nf_extend_fwd loses one depth level per arity increase. To transfer depth-(k'+2) arity-2 NFs requires depth-(k'+2) arity-2 agreement as input — circular. The gap is systematic and unavoidable via nf_extend_fwd."
-  ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T022641Z.md",
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 1,
-    "requires_plan_revision": true,
-    "approach_invalidated": "ExistPart_r AND NfCompose — both provably false on Prior structures",
-    "recommended_approach": "Zone-explicit temporal formula encoding (Rabinovich Section 5): decompose quantifier conditions exists y, nf_eval [y, x, t] ssn by y's position relative to x and t (5 zones). Encode each zone as nested Until/Since with ih_exist at constant parent. E.g., Zone 'y > x': from x, Until(type_formula, top). Zone 't < y < x': from x, Since(type_formula, char_kp1(nf_t)).",
-    "alternative_approaches": [
-      "Ordered sum decomposition via NEquivalence CompData infrastructure",
-      "Direct induction on formula quantifier rank (formula-level Kamp's theorem)",
-      "Weaken goal via CharPart-only completeness path"
-    ],
-    "key_discovery": "NfCompose counterexample (NfComposition.lean:20-36) proves that arity-r NFs are NOT determined by individual arity-1 NFs + orders, even on Prior structures. The zone interior structure matters."
+    "approach": "Two parallel tracks: (1) constenv_2var_determines helper lemma for n>=2 case, (2) Prior composition theorem for Until/Since backward k>0",
+    "key_insight": "The n>=2 case reduces cleanly to two helper lemmas about constant-tail env NF agreement. The constenv_2var_determines lemma requires induction on k with the key challenge being the quantifier extension step: after nf_extend_fwd, the extended env [y,x,t,...,t] has a 3-var non-constant prefix, requiring the IH at a GENERALIZED prefix width (not just width 2). This suggests the general nf_pad_agree approach with induction on k and universally quantified prefix width."
   },
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T022641Z.md",
-      "type": "handoff",
-      "summary": "Detailed analysis: ExistPart_r/NfCompose provably false, candidate approaches for zone-explicit encoding"
-    },
-    {
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/cycle4-analysis-handoff.md",
-      "type": "handoff",
-      "summary": "Previous cycle: depth-gap analysis, 3 resolution paths including ExistPart_r (now invalidated)"
+      "path": "specs/303_k_gt_0_depth_induction/plans/05_prior-composition-plan.md",
+      "type": "plan",
+      "summary": "Plan v5: Prior composition theorem + enriched formula + n>=2 closure"
     }
   ]
 }
