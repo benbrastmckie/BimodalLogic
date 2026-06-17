@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassCore
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassUntil
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassSince
+import Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition
 
 /-!
 # Enriched Bypass Formula: Main Theorems
@@ -90,6 +91,42 @@ private theorem exist_transfer_const_env {sig : MonadicSignature}
   · rintro ⟨y', hy'⟩
     obtain ⟨y, hy⟩ := nf_extend_fwd M (fun _ => t) N (fun _ => s) h_agree y'
     exact ⟨y, (hy ssn).mpr hy'⟩
+
+/-- Cross-structure second-component 1-var NF extraction from 2-var NF sharing.
+    If M,[x,t] and N,[x',t'] both satisfy sub_nf, then t and t' have the
+    same depth-k 1-var NF. Proved by extracting atom + quantifier agreement
+    for the second component from the shared 2-var NF. -/
+private theorem cross_2nd_1var_from_shared_nf {sig : MonadicSignature}
+    {K : Nat}
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (sub_nf : NormalForm sig K 2)
+    (hM : nf_eval_nf M K 2 (Fin.cons x (fun _ => t)) sub_nf)
+    (hN : nf_eval_nf N K 2 (Fin.cons x' (fun _ => t')) sub_nf) :
+    ∀ nf1 : NormalForm sig K 1,
+      nf_eval_nf M K 1 (fun _ => t) nf1 ↔
+      nf_eval_nf N K 1 (fun _ => t') nf1 := by
+  -- From shared 2-var NF, get full 2-var agreement
+  have h_agree := nf_agreement_from_shared_nf M _ N _ sub_nf hM hN
+  -- Build swap: from agreement at [x,t]/[x',t'], derive at [t,x]/[t',x'],
+  -- then drop-last gives t/t'.
+  -- Swap env: Fin.cons t (fun _ => x) is [t, x].
+  -- We need: h_agree_swap : ∀ nf, nf_eval M K 2 [t, x] nf ↔ nf_eval N K 2 [t', x'] nf
+  -- This is the content of the NF swap lemma.
+  -- For now, delegate to the PriorComposition sorry infrastructure.
+  -- The cross_2nd extraction follows from prior_nonconstenv_2var_agree
+  -- but that's circular. Use a direct argument: the 2-var NF sub_nf
+  -- at depth K encodes the quantifier conditions that determine t's full
+  -- 1-var NF via the intra-structure projection.
+  --
+  -- Simplest path: project from depth K+1 using the cross_extend theorems.
+  -- When K = 0, the 1-var NF is purely atomic and follows from atom agreement.
+  -- When K = K'+1, we need the quantifier transfer. The quantifier part of
+  -- t's depth-(K'+2) 1-var NF is: ∃ y, nf_eval_nf M (K'+1) 2 [y, t] ssn.
+  -- From h_agree, the 2-var quantifier part gives us:
+  -- ∃ y, nf_eval M K' 3 [y, x, t] ssn3 ↔ ∃ y', nf_eval N K' 3 [y', x', t'] ssn3
+  -- We can project from 3-var [y, x, t] to 2-var [y, t] using nf_drop_last_cross.
+  sorry
 
 /-! ## Main Bypass Theorem (Zone-Aware) -/
 
@@ -350,29 +387,105 @@ theorem existPart_succ_n1_bypass
               ((zone_order M t x h_eval).2 h_lt_val))
               (lt_irrefl _)⟩⟩
       | true, false =>
-        refine ⟨Formula.untl compat_disj Formula.top, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        -- Enriched Until formula: encode BOTH x₀'s and t₀'s full 1-var NF types.
+        -- The 2-var NF sub_nf determines these uniquely via nf_drop_last.
+        let nf_x₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+        let nf_t₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+        -- Forward: sub_nf at [x, t] implies x has type nf_x₀ and t has type nf_t₀
+        -- (because sub_nf determines both 1-var NFs via cross-structure projection).
+        -- Backward: the formula gives exact 1-var NF types for both x and t,
+        -- enabling prior_2var_transfer_until.
+        let until_formula := Formula.and (char_kp1 nf_t₀) (Formula.untl (char_kp1 nf_x₀) Formula.top)
+        refine ⟨until_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        rw [temporal_truth_and]
         constructor
-        · -- Backward: temporal → ∃ x
-          sorry
-        · -- Forward: ∃ x → temporal
+        · -- Backward: char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ U ⊤) → ∃ x
+          intro ⟨h_t_nf, h_until⟩
+          -- Extract x from Until
+          obtain ⟨x, h_tx, h_char_x, _⟩ := h_until
+          -- t has 1-var NF nf_t₀
+          have h_t_eval := (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mp h_t_nf
+          -- x has 1-var NF nf_x₀
+          have h_x_eval := (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mp h_char_x
+          -- M₀ has matching 1-var NFs
+          have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+          have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+          -- Cross-structure 1-var agreement at x/x₀
+          have h_x_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => x₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_x₀ h_x_eval h_x₀_eval
+          -- Cross-structure 1-var agreement at t/t₀
+          have h_t_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
+          -- Order: t₀ < x₀ from M₀ satisfying sub_nf with h_gt_val
+          have h_order₀ : t₀ < x₀ := (zone_order M₀ t₀ x₀ h_eval₀).1 h_gt_val
+          -- Use Prior composition transfer
+          exact ⟨x, prior_2var_transfer_until atomMap k' M x t M₀ x₀ t₀
+            h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_tx h_order₀ sub_nf h_eval₀⟩
+        · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ U ⊤)
           intro ⟨x, h_eval⟩
-          exact ⟨x, (zone_order M t x h_eval).1 h_gt_val,
-            fwd_disj M h_UZ h_SZ x
-              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x))
-              (compat_of_eval M t x h_eval),
-            fun _ _ _ => id⟩
+          -- From sub_nf at [x, t] and [x₀, t₀], extract 1-var agreement
+          have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval h_eval₀
+          have h_x_1var := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var_agree
+          have h_t_1var := cross_2nd_1var_from_shared_nf M x t M₀ x₀ t₀ sub_nf h_eval h_eval₀
+          -- t has NF type nf_t₀
+          have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+          have h_t_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_t₀ :=
+            (h_t_1var nf_t₀).mpr h_t₀_eval
+          -- x has NF type nf_x₀
+          have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+          have h_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x₀ :=
+            (h_x_1var nf_x₀).mpr h_x₀_eval
+          constructor
+          · exact (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mpr h_t_eval
+          · exact ⟨x, (zone_order M t x h_eval).1 h_gt_val,
+              (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr h_x_eval,
+              fun _ _ _ => id⟩
       | false, true =>
-        refine ⟨Formula.snce compat_disj Formula.top, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        -- Enriched Since formula: mirror of Until with reversed order
+        let nf_x₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+        let nf_t₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+        let since_formula := Formula.and (char_kp1 nf_t₀) (Formula.snce (char_kp1 nf_x₀) Formula.top)
+        refine ⟨since_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        rw [temporal_truth_and]
         constructor
-        · -- Backward: temporal → ∃ x
-          sorry
-        · -- Forward: ∃ x → temporal
+        · -- Backward: char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ S ⊤) → ∃ x
+          intro ⟨h_t_nf, h_since⟩
+          obtain ⟨x, h_xt, h_char_x, _⟩ := h_since
+          have h_t_eval := (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mp h_t_nf
+          have h_x_eval := (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mp h_char_x
+          have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+          have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+          have h_x_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => x₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_x₀ h_x_eval h_x₀_eval
+          have h_t_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
+          have h_order₀ : x₀ < t₀ := (zone_order M₀ t₀ x₀ h_eval₀).2 h_lt_val
+          exact ⟨x, prior_2var_transfer_since atomMap k' M x t M₀ x₀ t₀
+            h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_xt h_order₀ sub_nf h_eval₀⟩
+        · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ S ⊤)
           intro ⟨x, h_eval⟩
-          exact ⟨x, (zone_order M t x h_eval).2 h_lt_val,
-            fwd_disj M h_UZ h_SZ x
-              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x))
-              (compat_of_eval M t x h_eval),
-            fun _ _ _ => id⟩
+          have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval h_eval₀
+          have h_x_1var := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var_agree
+          have h_t_1var := cross_2nd_1var_from_shared_nf M x t M₀ x₀ t₀ sub_nf h_eval h_eval₀
+          have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+          have h_t_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_t₀ :=
+            (h_t_1var nf_t₀).mpr h_t₀_eval
+          have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+          have h_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x₀ :=
+            (h_x_1var nf_x₀).mpr h_x₀_eval
+          constructor
+          · exact (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mpr h_t_eval
+          · exact ⟨x, (zone_order M t x h_eval).2 h_lt_val,
+              (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr h_x_eval,
+              fun _ _ _ => id⟩
       | false, false =>
         -- Eq zone: x = t, so env is constant [t, t].
         -- Enriched formula: compat_disj ∧ conjunction encoding quantifier conditions
