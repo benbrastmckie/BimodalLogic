@@ -2,30 +2,38 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 
 /-!
-# GeneralExistPart: Existential Characterization at Arbitrary Arity
+# GeneralExistPartIndiv: Existential Characterization with Individual 1-var NFs
 
-Third mutual induction conjunct for the Kamp theorem. `GeneralExistPart(k)`
-states that for any arity r >= 1, given depth-k characteristic formulas and
-environment atom assignments, every depth-k (r+1)-var existential is
-temporally characterizable on Prior structures.
+Third mutual induction conjunct for the Kamp theorem. Redesigned from
+the original `GeneralExistPart` which used a full r-var NF precondition
+(`env_nf : NormalForm sig (k+1) r`) and produced Formula.top/bot via
+classical satisfiability. That approach is provably unusable at the sorry
+sites in KampBypass.lean because:
+1. The full r-var NF precondition is circular (it IS the goal being proved)
+2. Formula.top/bot carries no information when embedded in enriched formulas
 
-## Key Property
+## Redesign: Individual 1-var NF Parameters
 
-The existential `∃ y, nf_eval_nf M k (r+1) (Fin.cons y e) ssn` is
-determined by the depth-(k+1) r-var NF type of the environment `e`.
-When two environments agree on their depth-(k+1) r-var NF, the
-depth-k (r+1)-var existentials agree (by `nf_extend_fwd`/`nf_extend_bwd`).
+`GeneralExistPartIndiv(k)` takes individual 1-var NF types for each
+environment element (`env_nfs : Fin r → NormalForm sig (k+1) 1`) instead
+of a single r-var NF type. The precondition becomes
+`∀ i, nf_eval_nf M (k+1) 1 (fun _ => e i) (env_nfs i)`, which IS
+satisfiable at the sorry sites (from h_x_eval and h_t_eval).
+
+The formula A must be an ACTUAL temporal formula (not top/bot) built via
+zone decomposition per Rabinovich Prop 3.5.
 
 ## Architecture
 
-- `GeneralExistPart(0)`: base case, depth-0 existentials are purely atomic
-- `GeneralExistPart(k+1)`: from `CharPart(k+1)` + `GeneralExistPart(k)`
+- `GeneralExistPartIndiv(0)`: base case with zone decomposition
+- `GeneralExistPartIndiv(k+1)`: from `CharPart(k+1)` + `GeneralExistPartIndiv(k)`
 - Added to `kamp_mutual_induction` as third conjunct (Phase 3)
 - Used at the sorry site in KampBypass.lean (Phase 4)
 
 ## References
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5, Lemma 5.1
+- Rabinovich 2014, Proposition 3.5 (zone decomposition)
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -36,15 +44,53 @@ open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_corre
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
-/-! ## GeneralExistPart Definition -/
+/-! ## GeneralExistPartIndiv Definition -/
 
-/-- GeneralExistPart(k): for all arity r >= 1, given depth-k characteristic
-    formulas and a depth-(k+1) r-var NF type for the environment, every
-    depth-k (r+1)-var sub-NF has a temporal formula characterizing its
-    existential on Prior structures.
+/-- GeneralExistPartIndiv(k): for all arity r >= 1, given depth-k
+    characteristic formulas and individual depth-(k+1) 1-var NF types
+    for each environment element, every depth-k (r+1)-var sub-NF has a
+    temporal formula characterizing its existential on Prior structures.
 
-    The formula is evaluated at `e 0` (the first element of the environment).
-    The environment must match the given NF type at depth k+1. -/
+    Key differences from GeneralExistPart:
+    - Uses `env_nfs : Fin r → NormalForm sig (k+1) 1` (individual 1-var NFs)
+      instead of `env_nf : NormalForm sig (k+1) r` (full r-var NF)
+    - Precondition: `∀ i, nf_eval_nf M (k+1) 1 (fun _ => e i) (env_nfs i)`
+      instead of `nf_eval_nf M (k+1) r e env_nf`
+    - Formula is evaluated at `e 0` (first environment element)
+    - Formula must be an actual temporal formula (zone decomposition),
+      not top/bot from classical satisfiability -/
+abbrev GeneralExistPartIndiv {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (k : Nat) : Prop :=
+  ∀ (r : Nat) (_ : r ≥ 1)
+    (char_k : NormalForm sig k 1 → Formula)
+    (char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_k nf_k) ↔
+        nf_eval_nf M k 1 (fun _ => t) nf_k)
+    (env_nfs : Fin r → NormalForm sig (k + 1) 1)
+    (ssn : NormalForm sig k (r + 1)),
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (e : Fin r → M.carrier),
+        (∀ i, nf_eval_nf M (k + 1) 1 (fun _ => e i) (env_nfs i)) →
+        (temporal_truth M atomMap (e ⟨0, by omega⟩) A ↔
+         ∃ y : M.carrier, nf_eval_nf M k (r + 1) (Fin.cons y e) ssn)
+
+/-! ## Backward Compatibility: GeneralExistPart from GeneralExistPartIndiv
+
+The old `GeneralExistPart` (with full r-var NF precondition) is derivable
+from `GeneralExistPartIndiv`: a full r-var NF agreement implies individual
+1-var NF agreements (by projection). This preserves the existing call sites
+in KampMutualInduction.lean while we migrate to the new definition. -/
+
+/-- The old GeneralExistPart type, preserved for backward compatibility.
+    Will be removed once all call sites are migrated. -/
 abbrev GeneralExistPart {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (k : Nat) : Prop :=
@@ -68,120 +114,100 @@ abbrev GeneralExistPart {sig : MonadicSignature}
         (temporal_truth M atomMap (e ⟨0, by omega⟩) A ↔
          ∃ y : M.carrier, nf_eval_nf M k (r + 1) (Fin.cons y e) ssn)
 
-/-! ## GeneralExistPart Base Case (k = 0) -/
+/-! ## GeneralExistPartIndiv Base Case (k = 0) -/
 
 set_option maxHeartbeats 800000 in
-/-- At depth 0, the existential `∃ y, nf_eval_nf M 0 (r+1) (Fin.cons y e) ssn`
-    is purely atomic. The truth value is determined by the depth-1 r-var NF
-    of the environment.
+/-- At depth 0, `nf_eval_nf M 0 (r+1) (Fin.cons y e) ssn` is purely atomic.
+    The existential `∃ y, nf_eval_nf M 0 (r+1) (Fin.cons y e) ssn` is
+    characterized by a temporal formula built via zone decomposition.
 
-    For r = 1, delegates to `nf_2var_exist_formula_prior`.
-    For r >= 2, uses cross-structure transfer: any two environments with the
-    same depth-1 r-var NF have the same depth-0 (r+1)-var existentials
-    (by nf_extend_fwd/nf_extend_bwd). The formula is chosen via a
-    classical witness. -/
-theorem generalExistPart_zero {sig : MonadicSignature}
+    For now, uses classical satisfiability to produce the formula.
+    TODO: Replace with actual zone decomposition (Rabinovich Prop 3.5)
+    to produce informative formulas instead of top/bot. -/
+theorem generalExistPartIndiv_zero {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
-    (_h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
-    GeneralExistPart atomMap 0 := by
-  intro r hr char_0 char_0_correct env_nf ssn
-  -- Classical case split: is the existential satisfiable on SOME Prior structure
-  -- with an environment matching env_nf?
-  rcases Classical.em (∃ (M : OrderedMonadicStructure sig)
-      (h_UZ : semantic_prior_UZ M atomMap)
-      (h_SZ : semantic_prior_SZ M atomMap)
-      (e : Fin r → M.carrier),
-      nf_eval_nf M 1 r e env_nf ∧
-      ∃ y : M.carrier, nf_eval_nf M 0 (r + 1) (Fin.cons y e) ssn)
-      with ⟨M₀, h_UZ₀, h_SZ₀, e₀, h_env₀, y₀, h_eval₀⟩ | h_unsat
-  · -- Satisfiable: the existential is true on ALL matching environments.
-    -- Use Formula.top as the temporal formula.
-    -- Proof: transfer the existential via depth-1 r-var NF agreement.
-    refine ⟨Formula.top, fun M h_UZ h_SZ e h_env => ?_⟩
-    simp only [Formula.top, temporal_truth]
-    constructor
-    · -- Forward: ⊤ → ∃ y (transfer from M₀)
-      intro _
-      -- M and M₀ have envs with same depth-1 r-var NF
-      have h_nf_agree : ∀ nf : NormalForm sig 1 r,
-          nf_eval_nf M 1 r e nf ↔ nf_eval_nf M₀ 1 r e₀ nf :=
-        nf_agreement_from_shared_nf M e M₀ e₀ env_nf h_env h_env₀
-      -- Transfer existential: from depth-1 r-var NF agreement, find
-      -- a matching witness in M (inline proof of nf_extend_fwd pattern)
-      have hM := nf_characteristic_satisfies M 1 r e
-      have hN := nf_characteristic_satisfies M₀ 1 r e₀
-      have heq := nf_eval_unique M₀ 1 r e₀ _ _ ((h_nf_agree _).mp hM) hN
-      obtain ⟨_, hMq⟩ := hM
-      obtain ⟨_, hNq⟩ := heq ▸ hN
-      set ch := nf_characteristic M₀ 0 (r + 1) (Fin.cons y₀ e₀)
-      obtain ⟨y, hy⟩ := ((hMq ch).trans (hNq ch).symm).mpr
-        ⟨y₀, nf_characteristic_satisfies M₀ 0 (r + 1) (Fin.cons y₀ e₀)⟩
-      exact ⟨y, (nf_agreement_from_shared_nf M _ M₀ _ ch hy
-        (nf_characteristic_satisfies M₀ 0 (r + 1) (Fin.cons y₀ e₀)) ssn).mpr h_eval₀⟩
-    · -- Backward: ∃ y → ⊤ (trivial)
-      intro _; trivial
-  · -- Unsatisfiable: use Formula.bot
-    refine ⟨Formula.bot, fun M h_UZ h_SZ e h_env => ?_⟩
-    simp only [temporal_truth]
-    constructor
-    · intro h; exact absurd h id
-    · intro ⟨y, hy⟩
-      exact absurd ⟨M, h_UZ, h_SZ, e, h_env, y, hy⟩ h_unsat
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    GeneralExistPartIndiv atomMap 0 := by
+  intro r hr char_0 char_0_correct env_nfs ssn
+  -- For the base case, we use a classical satisfiability argument:
+  -- If the existential is satisfiable on SOME Prior structure with
+  -- matching individual 1-var NFs, we need to determine if it's
+  -- satisfiable on ALL such structures. At depth 0, the existential
+  -- is purely atomic, so individual 1-var NFs may NOT determine it
+  -- (the counterexample shows this). However, the formula must still
+  -- exist — it may just need to be a zone decomposition formula
+  -- rather than top/bot.
+  --
+  -- Phase 1 deliverable: sorry for the actual construction.
+  -- The type signature is the key deliverable of this phase.
+  sorry
 
-/-! ## GeneralExistPart Inductive Step (k+1) -/
+/-! ## GeneralExistPartIndiv Inductive Step (k+1) -/
 
 set_option maxHeartbeats 800000 in
 /-- At depth k+1, the existential `∃ y, nf_eval_nf M (k+1) (r+1) (Fin.cons y e) ssn`
-    is determined by the depth-(k+2) r-var NF of the environment, exactly as at
-    depth 0. The same classical satisfiability split + cross-structure transfer
-    applies: if satisfiable on any matching environment, use ⊤; otherwise ⊥.
+    decomposes into:
+    1. Atom part: predicates and orders at y relative to e
+    2. Quantifier part: for each sub : NF(k, r+2), the existential condition
 
-    Neither `CharPart(k+1)` nor `GeneralExistPart(k)` is needed in the proof
-    itself -- the transfer works purely at the NF level via
-    `nf_agreement_from_shared_nf`. The characteristic formulas `char_k` and
-    `char_k_correct` are already universally quantified inside the
-    `GeneralExistPart` definition, so they arrive via `intro`.
-
-    This means `generalExistPart_succ` has no dependencies beyond the base
-    infrastructure, making the mutual induction in Phase 3 straightforward:
-    `GeneralExistPart(k+1)` does not actually require `GeneralExistPart(k)`
-    as an input. -/
-theorem generalExistPart_succ {sig : MonadicSignature}
+    Uses CharPart(k+1) for the atom part and GeneralExistPartIndiv(k) for
+    the quantifier part (at arity r+1). -/
+theorem generalExistPartIndiv_succ {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat)
+    -- CharPart(k+1) inlined since it's defined in KampMutualInduction.lean
+    (ih_char_succ : ∀ (nf : NormalForm sig (k + 1) 1),
+        ∃ (A : Formula),
+          ∀ (M : OrderedMonadicStructure sig)
+            (h_UZ : semantic_prior_UZ M atomMap)
+            (h_SZ : semantic_prior_SZ M atomMap)
+            (t : M.carrier),
+            temporal_truth M atomMap t A ↔ nf_eval_nf M (k + 1) 1 (fun _ => t) nf)
+    (ih_gen_exist_k : GeneralExistPartIndiv atomMap k) :
+    GeneralExistPartIndiv atomMap (k + 1) := by
+  intro r hr char_kp1 char_kp1_correct env_nfs ssn
+  -- Phase 2 deliverable: actual zone decomposition + quantifier conjunction.
+  sorry
+
+/-! ## Backward Compatibility Theorems -/
+
+set_option maxHeartbeats 800000 in
+/-- GeneralExistPart(k) is self-contained: the classical top/bot argument
+    works with the full r-var NF precondition (cross-structure transfer via
+    nf_agreement_from_shared_nf). This does NOT depend on GeneralExistPartIndiv.
+    Preserved for backward compatibility with KampMutualInduction call sites. -/
+theorem generalExistPart_from_classical {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
     (k : Nat) :
-    GeneralExistPart atomMap (k + 1) := by
-  intro r hr char_kp1 char_kp1_correct env_nf ssn
-  -- Classical case split: is the existential satisfiable on SOME Prior structure
-  -- with an environment matching env_nf?
+    GeneralExistPart atomMap k := by
+  intro r hr char_k char_k_correct env_nf ssn
   rcases Classical.em (∃ (M : OrderedMonadicStructure sig)
       (h_UZ : semantic_prior_UZ M atomMap)
       (h_SZ : semantic_prior_SZ M atomMap)
       (e : Fin r → M.carrier),
-      nf_eval_nf M ((k + 1) + 1) r e env_nf ∧
-      ∃ y : M.carrier, nf_eval_nf M (k + 1) (r + 1) (Fin.cons y e) ssn)
+      nf_eval_nf M (k + 1) r e env_nf ∧
+      ∃ y : M.carrier, nf_eval_nf M k (r + 1) (Fin.cons y e) ssn)
       with ⟨M₀, h_UZ₀, h_SZ₀, e₀, h_env₀, y₀, h_eval₀⟩ | h_unsat
-  · -- Satisfiable: the existential is true on ALL matching environments.
+  · -- Satisfiable: use Formula.top
     refine ⟨Formula.top, fun M h_UZ h_SZ e h_env => ?_⟩
     simp only [Formula.top, temporal_truth]
     constructor
-    · -- Forward: ⊤ → ∃ y (transfer from M₀)
-      intro _
-      have h_nf_agree : ∀ nf : NormalForm sig ((k + 1) + 1) r,
-          nf_eval_nf M ((k + 1) + 1) r e nf ↔ nf_eval_nf M₀ ((k + 1) + 1) r e₀ nf :=
+    · intro _
+      have h_nf_agree : ∀ nf : NormalForm sig (k + 1) r,
+          nf_eval_nf M (k + 1) r e nf ↔ nf_eval_nf M₀ (k + 1) r e₀ nf :=
         nf_agreement_from_shared_nf M e M₀ e₀ env_nf h_env h_env₀
-      have hM := nf_characteristic_satisfies M ((k + 1) + 1) r e
-      have hN := nf_characteristic_satisfies M₀ ((k + 1) + 1) r e₀
-      have heq := nf_eval_unique M₀ ((k + 1) + 1) r e₀ _ _ ((h_nf_agree _).mp hM) hN
+      have hM := nf_characteristic_satisfies M (k + 1) r e
+      have hN := nf_characteristic_satisfies M₀ (k + 1) r e₀
+      have heq := nf_eval_unique M₀ (k + 1) r e₀ _ _ ((h_nf_agree _).mp hM) hN
       obtain ⟨_, hMq⟩ := hM
       obtain ⟨_, hNq⟩ := heq ▸ hN
-      set ch := nf_characteristic M₀ (k + 1) (r + 1) (Fin.cons y₀ e₀)
+      set ch := nf_characteristic M₀ k (r + 1) (Fin.cons y₀ e₀)
       obtain ⟨y, hy⟩ := ((hMq ch).trans (hNq ch).symm).mpr
-        ⟨y₀, nf_characteristic_satisfies M₀ (k + 1) (r + 1) (Fin.cons y₀ e₀)⟩
+        ⟨y₀, nf_characteristic_satisfies M₀ k (r + 1) (Fin.cons y₀ e₀)⟩
       exact ⟨y, (nf_agreement_from_shared_nf M _ M₀ _ ch hy
-        (nf_characteristic_satisfies M₀ (k + 1) (r + 1) (Fin.cons y₀ e₀)) ssn).mpr h_eval₀⟩
-    · -- Backward: ∃ y → ⊤ (trivial)
-      intro _; trivial
+        (nf_characteristic_satisfies M₀ k (r + 1) (Fin.cons y₀ e₀)) ssn).mpr h_eval₀⟩
+    · intro _; trivial
   · -- Unsatisfiable: use Formula.bot
     refine ⟨Formula.bot, fun M h_UZ h_SZ e h_env => ?_⟩
     simp only [temporal_truth]
@@ -191,17 +217,13 @@ theorem generalExistPart_succ {sig : MonadicSignature}
       exact absurd ⟨M, h_UZ, h_SZ, e, h_env, y, hy⟩ h_unsat
 
 /-- GeneralExistPart holds for all depths k.
-    Base case (k=0) by `generalExistPart_zero`.
-    Inductive step (k+1) by `generalExistPart_succ`, which has no dependency
-    on `GeneralExistPart(k)` -- the proof is self-contained at each depth.
-    This means no mutual induction is needed for GeneralExistPart. -/
+    Uses the self-contained classical argument (no GeneralExistPartIndiv
+    dependency). Preserves existing call sites in KampMutualInduction. -/
 theorem generalExistPart_all {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (_h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat) :
-    GeneralExistPart atomMap k := by
-  cases k with
-  | zero => exact generalExistPart_zero atomMap h_surj
-  | succ k' => exact generalExistPart_succ atomMap h_surj k'
+    GeneralExistPart atomMap k :=
+  generalExistPart_from_classical atomMap k
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

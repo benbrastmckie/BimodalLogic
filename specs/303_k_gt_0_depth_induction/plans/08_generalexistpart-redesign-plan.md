@@ -85,6 +85,7 @@ Advances: "Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) -> 
 Phases within the same wave can execute in parallel.
 
 ### Phase 1: Rewrite GeneralExistPart Definition and Base Case (k=0) [IN PROGRESS]
+*(dispatch 2: implementing GeneralExistPartIndiv definition + base/inductive step with sorry)*
 
 **Analysis (dispatch 1)**: Thorough analysis confirmed:
 1. The 2-var NF transfer from individual 1-var NF agreements is FALSE even on Prior structures (Z counterexample with uniform predicate: [0,2] vs [0,1] have same 1-var NFs but different 2-var NFs due to gap between 0 and 1)
