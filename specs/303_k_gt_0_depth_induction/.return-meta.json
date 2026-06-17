@@ -1,15 +1,15 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
   "session_id": "sess_1781710390_4591d5",
-  "phase": "4c",
+  "phase": "4d",
   "phases_completed": 3,
   "phases_total": 4,
+  "requires_user_review": true,
   "verification": {
-    "sorry_count_kampbypass": 0,
-    "sorry_count_priorcomposition": 4,
+    "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
@@ -19,55 +19,50 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 231,
       "statement": "exist_transfer_3var_nonconstenv (fwd)",
-      "assumption": "Depth boost for 3-var existential transfer",
-      "why_deferred": "Requires Fraisse game argument",
-      "next_dispatch": "Phase 4d"
+      "assumption": "Depth boost for 3-var existential transfer requires Fraisse game",
+      "why_deferred": "Circular depth-boost: need depth-K 4-var from depth-K 3-var, but depth-K 4-var requires depth-(K+1) 3-var (the goal). Breaking requires simultaneous (depth, arity) induction + Prior axioms for between-zone.",
+      "next_dispatch": "Implement Fraisse game lemma with Prior axioms"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 239,
       "statement": "exist_transfer_3var_nonconstenv (bwd)",
-      "assumption": "Symmetric",
+      "assumption": "Symmetric to forward",
       "why_deferred": "Mirror",
-      "next_dispatch": "Phase 4d"
+      "next_dispatch": "Same as line 231"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 322,
       "statement": "prior_nonconstenv_2var_agree_until K=0 base",
-      "assumption": "Depth-0 zone-matching",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Phase 4d"
+      "assumption": "Between-zone depth-0 existential requires Prior UZ/SZ",
+      "why_deferred": "Outside zones provable but between-zone (t<w<x) needs single witness in (t',x') with matching preds. Two partial witnesses exist (w'<x' from h_x, w''>t' from h_t) but combining needs Prior axioms via temporal_truth connection.",
+      "next_dispatch": "Add Prior/atomMap to proof, use char formulas + UZ/SZ"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 399,
       "statement": "prior_nonconstenv_2var_agree_since K=0 base",
-      "assumption": "Mirror",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Phase 4d"
+      "assumption": "Mirror of Until base case",
+      "why_deferred": "Mirror",
+      "next_dispatch": "Same as line 322"
     }
   ],
   "handoff_path": "specs/303_k_gt_0_depth_induction/.orchestrator-handoff.json",
-  "files_modified": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean"
-  ],
-  "theorems_proved": [
-    "prior_second_1var_from_2var_until",
-    "prior_second_1var_from_2var_since"
-  ],
+  "files_modified": [],
+  "theorems_proved": [],
   "memory_candidates": [
     {
-      "content": "nf_skipIdx_cross provides general cross-structure projection from (n+1)-var to n-var NF agreement via skipIdx j. j=0 gives second-component (Fin.succ), j=n gives first-component (castSucc). Requires full k-depth induction with j incrementing at each quantifier step.",
+      "content": "exist_transfer_3var_nonconstenv in PriorComposition.lean requires Fraisse-game-level proof: (1) The depth-boost from K to K+1 at arity 3 needs depth-K arity-4 existential transfer, creating a circular dependency. Breaking requires simultaneous induction on (depth, arity). (2) The depth-0 between-zone case needs Prior axioms connected to NF infrastructure via atomMap/temporal_truth — cross_extend_bwd_1var gives partial witnesses (one side of interval) but combining them into a single between-zone witness requires Prior-UZ/SZ. (3) The theorem is TRUE on Prior structures and FALSE on general linear orders (confirmed by NfComposition.lean counterexample).",
       "category": "DISCOVERY",
       "confidence": 1.0,
-      "suggested_keywords": ["kamp", "nf_skipIdx_cross", "skipIdx", "projection", "cross-structure"]
+      "suggested_keywords": ["kamp", "exist_transfer_3var_nonconstenv", "fraisse_game", "depth_boost", "between_zone", "prior_axioms"]
     },
     {
-      "content": "The claim in PriorComposition.lean that second-component 1-var extraction from 2-var agreement requires Prior UZ/SZ properties is FALSE. It follows from pure NF projection (nf_skipIdx_cross at j=0) without any Prior structure assumptions. The proof is purely about NF semantics, independent of the specific algebraic properties of the model.",
-      "category": "CORRECTION",
+      "content": "For PriorComposition.lean sorry at lines 231/239: the proof structure finds c (depth-(K+1) 2-var at [y,x]/[c,x']) and c_K (depth-K 3-var at [y,x,t]/[c_K,x',t']) but cannot transfer the y<t order to c<t'. Same depth-(K+1) 1-var type does NOT determine order relative to a third point. The two witnesses have same 1-var type but potentially different positions relative to t'. Proof needs either: (A) add Prior axioms and use temporal formula characterization to find between-zone witnesses, or (B) restructure as Fraisse game with simultaneous (depth, arity) induction.",
+      "category": "DISCOVERY",
       "confidence": 1.0,
-      "suggested_keywords": ["kamp", "prior_second_1var_from_2var", "second-component", "nf_skipIdx_cross", "correction"]
+      "suggested_keywords": ["kamp", "order_transfer", "between_zone", "c_vs_t_prime", "depth_boost"]
     }
   ]
 }

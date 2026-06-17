@@ -238,7 +238,7 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 
 ---
 
-### Phase 4: Implement Enriched Bracket-Formula Encoding and Close Sorry [IN PROGRESS]
+### Phase 4: Implement Enriched Bracket-Formula Encoding and Close Sorry [BLOCKED]
 
 **Goal**: Replace the top/bot quant_conj encoding in the Until/Since zones with proper bracket-formula-based temporal formulas, then prove the backward direction using bracket semantics + NF transfer.
 
@@ -282,7 +282,7 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 - Phase 4a: Enrich backward direction with partial proof structure [COMPLETED - lateral]
 - Phase 4b: Prior composition transfer — eliminate KampBypass sorry [COMPLETED]
 - Phase 4c: Prove prior_second_1var_from_2var in PriorComposition.lean [COMPLETED — proved via nf_skipIdx_cross projection, ~100 lines]
-- Phase 4d: Prove exist_transfer_3var_nonconstenv in PriorComposition.lean (~200-400 lines, Fraisse game argument)
+- Phase 4d: Prove exist_transfer_3var_nonconstenv in PriorComposition.lean (~400-600 lines, Fraisse game argument) [BLOCKED — requires new infrastructure]
 
 **Tasks**:
 - [x] Restructure Until/Since formula encoding from top/bot to Prior composition transfer *(Phase 4b)*
@@ -290,10 +290,17 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 - [x] Prove forward direction (mpr) using cross_1var_from_2var + prior_second_1var_from_2var *(Phase 4b)*
 - [x] Verify: `lake build KampBypass` with 0 sorry *(Phase 4b — confirmed)*
 - [x] Prove prior_second_1var_from_2var_until/since in PriorComposition.lean *(Phase 4c — proved via nf_skipIdx_cross: general cross-structure projection along skipIdx j, then specialized to j=0 for second-component extraction. ~100 lines of helpers + 2 one-liner theorem proofs. lean_verify confirms no sorryAx.)*
-- [ ] Prove exist_transfer_3var_nonconstenv in PriorComposition.lean *(Phase 4d — remaining sorry)*
+- [ ] Prove exist_transfer_3var_nonconstenv in PriorComposition.lean *(Phase 4d — BLOCKED: Fraisse game argument needed, see blocker below)*
 - [ ] Verify: `lean_verify existPart_succ_n1_bypass` shows no sorryAx
 - [ ] Verify: `lean_verify kamp_mutual_induction` shows no sorryAx
 - [ ] Run full `lake build` for regression check
+
+**BLOCKER** (Phase 4d):
+- **What failed**: The `exist_transfer_3var_nonconstenv` theorem (lines 231, 239) and the K=0 base cases (lines 322, 399) in PriorComposition.lean cannot be proved with the current proof structure.
+- **What was tried**: (1) Using c from hex_x as witness — fails because c<t' ↔ y<t cannot be established from depth-(K+1) 2-var at [y,x]/[c,x']. (2) Using c_K from hex_K — gives depth-K 3-var (atoms correct) but quantifier boost to depth K+1 creates circular dependency (needs depth-K 4-var which needs depth-(K+1) 3-var). (3) For K=0 base case: outside zones provable via cross_extend_bwd_1var + transitivity; between-zone (t<w<x) gives two partial witnesses (w'<x' from h_x, w''>t' from h_t) that cannot be combined without Prior axioms.
+- **Why stuck**: Fundamental circularity in depth-boost argument. The circular structure: depth-(K+1) 3-var needs depth-K 4-var existential, which needs depth-(K+1) 3-var agreement (the goal). Breaking requires simultaneous induction on (depth, arity) = Fraisse game. The depth-0 terminus of this recursion (purely atomic between-zone) requires connecting NF predicates to temporal_truth via atomMap, then using Prior-UZ/SZ to find between-zone witnesses.
+- **What is needed**: (A) Add atomMap + Prior UZ/SZ hypotheses to exist_transfer_3var_nonconstenv. (B) Implement Fraisse game lemma: from depth-(K+2) 1-var + depth-(K+1) 2-var + Prior, prove depth-(K+1) n-var existential transfer by strong induction on K with inner arity recursion. At depth 0: use char_kp1_correct to express NF types as temporal formulas, apply Prior-UZ on N to find first w-type point above t', bound by x' using h_x quantifier info. Estimated: 400-600 new lines.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Sorry budget**: 0 (target: all sorry closed)
 
