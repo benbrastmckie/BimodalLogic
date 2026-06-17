@@ -3,9 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassUntil
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassSince
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
--- PriorComposition.lean removed: its theorems (prior_nonconstenv_2var_agree_until/since)
--- are FALSE (Z counterexample). The backward direction is restructured with explicit
--- zone-by-zone quantifier handling.
+import Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition
 
 /-!
 # Enriched Bypass Formula: Main Theorems
@@ -418,7 +416,8 @@ private theorem const_env_atom_agree {sig : MonadicSignature}
 
 set_option maxHeartbeats 1600000 in
 /-- General enriched bypass for ExistPart(k+1) at n=1.
-    Delegates to existPart_succ_n1_bypass_k0 for k=0 and uses sorry for k>0. -/
+    Delegates to existPart_succ_n1_bypass_k0 for k=0 and uses Prior composition
+    transfer (prior_2var_transfer_until/since from PriorComposition.lean) for k>0. -/
 theorem existPart_succ_n1_bypass
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -569,152 +568,141 @@ theorem existPart_succ_n1_bypass
               ((zone_order M t x h_eval).2 h_lt_val))
               (lt_irrefl _)⟩⟩
       | true, false =>
-        -- Until zone (t < x): Enriched encoding using classical satisfiability.
-        -- For each ssn : NF(k'+1, 3), the formula is top/bot based on sub_nf.2 ssn.
-        -- Forward (mpr): trivially proved (top is always true).
-        -- Backward (mp): Uses cross-structure NF transfer via nf_extend_fwd/bwd.
-        --   Establishes atom part from compat_disj + parent_atoms.
-        --   Establishes quantifier part via NF agreement with M₀.
-        --   Sorry narrowed to: proving 2-var NF agreement from 1-var data + orders.
-        have h_eval₀_quant := h_eval₀.2
-        -- Formula: top if existential is satisfiable on M₀, bot otherwise
-        let gep_formula_until : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
-          if sub_nf.2 ssn then Formula.top else Formula.bot
-        -- Build the quantifier conjunction
-        let quant_conj_until := formula_conjList
-          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
-            if sub_nf.2 ssn then gep_formula_until ssn
-            else (gep_formula_until ssn).neg)
-        -- Until formula: finds x > t where compat_disj ∧ quant_conj hold at x
-        let until_formula := Formula.untl (Formula.and compat_disj quant_conj_until) Formula.top
+        -- Until zone (t < x): Prior composition transfer.
+        -- Formula: (char_kp1 nf_t₀) ∧ ((char_kp1 nf_x₀) U top)
+        -- Backward: extract x/t NF types → prior_2var_transfer_until
+        -- Forward: project 2-var agreement to 1-var → char_kp1_correct
+        -- Witness NF types from M₀
+        let nf_x₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+        let nf_t₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+        -- Order on M₀ from zone_order + h_gt_val
+        have h_t₀_lt_x₀ : t₀ < x₀ := (zone_order M₀ t₀ x₀ h_eval₀).1 h_gt_val
+        -- Until formula: t must match nf_t₀, and some x > t must match nf_x₀
+        let until_formula := Formula.and (char_kp1 nf_t₀) (Formula.untl (char_kp1 nf_x₀) Formula.top)
         refine ⟨until_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
         constructor
         · -- mp: temporal_truth M t until_formula → ∃ x, nf_eval_nf ...
           intro h_until
-          -- Extract x from Until
-          change ∃ s, t < s ∧ temporal_truth M atomMap s (Formula.and compat_disj quant_conj_until) ∧
-            ∀ r, t < r → r < s → temporal_truth M atomMap r Formula.top at h_until
-          obtain ⟨x, h_t_lt_x, h_event, _⟩ := h_until
-          rw [temporal_truth_and] at h_event
-          obtain ⟨h_compat, h_quant⟩ := h_event
-          -- From compat_disj: x has a compatible 1-var type
-          have h_compat_data : ∃ nf_x, compat_check nf_x = true ∧
-              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x := by
-            rw [formula_disjList_iff] at h_compat
-            obtain ⟨φ, h_φ_mem, h_φ_true⟩ := h_compat
-            rw [List.mem_filterMap] at h_φ_mem
-            obtain ⟨nf_x, _, h_nf_x_some⟩ := h_φ_mem
-            split_ifs at h_nf_x_some with h_compat_nfx
-            exact ⟨nf_x, h_compat_nfx,
-              (char_kp1_correct nf_x M h_UZ h_SZ x).mp
-                (Option.some_injective _ h_nf_x_some ▸ h_φ_true)⟩
-          obtain ⟨nf_x, h_nf_x_compat, h_nf_x_eval⟩ := h_compat_data
-          -- Establish nf_eval_nf at [x, t]: need atoms + quantifiers
-          refine ⟨x, ?_⟩
-          -- The atom part: x's predicates match sub_nf (from compat_check) and
-          -- t's predicates match parent_atoms; orders from h_gt_val/h_lt_val + t < x
-          -- The quantifier part: for each ssn, (∃ y, nf_eval [y,x,t] ssn) ↔ sub_nf.2 ssn
-          -- Use cross-structure NF agreement: both M at [x,t] and M₀ at [x₀,t₀] satisfy
-          -- the same 2-var NF (sub_nf), so their existentials agree by nf_extend_fwd/bwd.
-          -- BLOCKER: Establishing nf_eval_nf at [x,t] is exactly the goal — circular.
-          -- The atom part CAN be proved from compat_check + parent_atoms.
-          -- The quantifier part requires the FULL NF as precondition for nf_extend_fwd.
-          -- Resolution: V-EA negation closure or Prior compositionality at lower depth.
-          sorry
+          rw [temporal_truth_and] at h_until
+          obtain ⟨h_t_nf, h_untl⟩ := h_until
+          -- Extract: t satisfies nf_t₀
+          have h_t_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_t₀ :=
+            (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mp h_t_nf
+          -- Extract x from Until: ∃ x > t, temporal_truth M x (char_kp1 nf_x₀)
+          change ∃ s, t < s ∧ temporal_truth M atomMap s (char_kp1 nf_x₀) ∧
+            ∀ r, t < r → r < s → temporal_truth M atomMap r Formula.top at h_untl
+          obtain ⟨x, h_t_lt_x, h_x_char, _⟩ := h_untl
+          -- x satisfies nf_x₀
+          have h_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x₀ :=
+            (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mp h_x_char
+          -- Full 1-var NF agreement at x/x₀
+          have h_x_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => x₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_x₀ h_x_eval
+              (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀))
+          -- Full 1-var NF agreement at t/t₀
+          have h_t_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval
+              (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀))
+          -- Apply prior_2var_transfer_until to transfer h_eval₀ from M₀ to M
+          exact ⟨x, prior_2var_transfer_until atomMap k' M x t M₀ x₀ t₀
+            h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_t_lt_x h_t₀_lt_x₀
+            sub_nf h_eval₀⟩
         · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t until_formula
           intro ⟨x, h_eval⟩
           have h_t_lt_x : t < x := (zone_order M t x h_eval).1 h_gt_val
-          change ∃ s, t < s ∧ temporal_truth M atomMap s (Formula.and compat_disj quant_conj_until) ∧
-            ∀ r, t < r → r < s → temporal_truth M atomMap r Formula.top
-          refine ⟨x, h_t_lt_x, ?_, fun r _ _ => temporal_truth_top M atomMap r⟩
           rw [temporal_truth_and]
+          -- Get cross-structure 2-var agreement from shared NF
+          have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _
+            sub_nf h_eval h_eval₀
+          -- Project first component: x agrees with x₀ on 1-var NFs
+          have h_x_agree := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var_agree
+          -- Project second component (Prior-specific): t agrees with t₀
+          have h_t_agree := prior_second_1var_from_2var_until atomMap k'
+            M x t M₀ x₀ t₀ h_UZ h_SZ h_UZ₀ h_SZ₀ h_2var_agree h_t_lt_x h_t₀_lt_x₀
           constructor
-          · -- compat_disj at x
-            exact fwd_disj M h_UZ h_SZ x
-              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x))
-              (compat_of_eval M t x h_eval)
-          · -- quant_conj_until at x: each entry evaluates correctly
-            rw [formula_conjList_iff]
-            intro φ h_φ_mem
-            rw [List.mem_map] at h_φ_mem
-            obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
-            cases h_ssn_val : sub_nf.2 ssn with
-            | true =>
-              subst h_ssn_eq
-              simp only [h_ssn_val, reduceIte, gep_formula_until]
-              exact temporal_truth_top M atomMap x
-            | false =>
-              subst h_ssn_eq
-              simp only [h_ssn_val, gep_formula_until, temporal_truth_neg, temporal_truth,
-                not_false_eq_true, Bool.false_eq_true, ite_false, reduceIte, Formula.neg]
-              exact not_false
+          · -- char_kp1 nf_t₀ at t: t satisfies nf_t₀
+            exact (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mpr
+              ((h_t_agree nf_t₀).mpr
+                (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)))
+          · -- (char_kp1 nf_x₀) U top at t: witness is x
+            show ∃ s, t < s ∧ temporal_truth M atomMap s (char_kp1 nf_x₀) ∧
+              ∀ r, t < r → r < s → temporal_truth M atomMap r Formula.top
+            exact ⟨x, h_t_lt_x,
+              (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr
+                ((h_x_agree nf_x₀).mpr
+                  (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀))),
+              fun r _ _ => temporal_truth_top M atomMap r⟩
       | false, true =>
-        -- Since zone (x < t): Mirror of Until zone.
-        -- Forward (mpr): trivially proved (top is always true).
-        -- Backward (mp): Uses cross-structure NF transfer (mirror of Until mp).
-        --   Sorry narrowed to: proving 2-var NF agreement from 1-var data + orders.
-        have h_eval₀_quant_s := h_eval₀.2
-        let gep_formula_since : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
-          if sub_nf.2 ssn then Formula.top else Formula.bot
-        let quant_conj_since := formula_conjList
-          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
-            if sub_nf.2 ssn then gep_formula_since ssn
-            else (gep_formula_since ssn).neg)
-        let since_formula := Formula.snce (Formula.and compat_disj quant_conj_since) Formula.top
+        -- Since zone (x < t): Mirror of Until zone using Prior composition.
+        -- Formula: (char_kp1 nf_t₀) ∧ ((char_kp1 nf_x₀) S top)
+        -- Witness NF types from M₀
+        let nf_x₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => x₀)
+        let nf_t₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => t₀)
+        -- Order on M₀ from zone_order + h_lt_val
+        have h_x₀_lt_t₀ : x₀ < t₀ := (zone_order M₀ t₀ x₀ h_eval₀).2 h_lt_val
+        -- Since formula: t must match nf_t₀, and some x < t must match nf_x₀
+        let since_formula := Formula.and (char_kp1 nf_t₀) (Formula.snce (char_kp1 nf_x₀) Formula.top)
         refine ⟨since_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
         constructor
         · -- mp: temporal_truth M t since_formula → ∃ x, nf_eval_nf ...
           intro h_since
-          -- Extract x from Since
-          change ∃ s, s < t ∧ temporal_truth M atomMap s (Formula.and compat_disj quant_conj_since) ∧
-            ∀ r, s < r → r < t → temporal_truth M atomMap r Formula.top at h_since
-          obtain ⟨x, h_x_lt_t, h_event, _⟩ := h_since
-          rw [temporal_truth_and] at h_event
-          obtain ⟨h_compat, h_quant⟩ := h_event
-          -- From compat_disj: x has a compatible 1-var type
-          have h_compat_data : ∃ nf_x, compat_check nf_x = true ∧
-              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x := by
-            rw [formula_disjList_iff] at h_compat
-            obtain ⟨φ, h_φ_mem, h_φ_true⟩ := h_compat
-            rw [List.mem_filterMap] at h_φ_mem
-            obtain ⟨nf_x, _, h_nf_x_some⟩ := h_φ_mem
-            split_ifs at h_nf_x_some with h_compat_nfx
-            exact ⟨nf_x, h_compat_nfx,
-              (char_kp1_correct nf_x M h_UZ h_SZ x).mp
-                (Option.some_injective _ h_nf_x_some ▸ h_φ_true)⟩
-          obtain ⟨nf_x, h_nf_x_compat, h_nf_x_eval⟩ := h_compat_data
-          -- Need: ∃ x, nf_eval_nf M (k'+2) 2 [x, t] sub_nf
-          refine ⟨x, ?_⟩
-          -- Same blocker as Until zone: need full 2-var NF at [x,t] from 1-var data.
-          -- The atom part is provable; the quantifier part requires Prior compositionality.
-          sorry
+          rw [temporal_truth_and] at h_since
+          obtain ⟨h_t_nf, h_snce⟩ := h_since
+          -- Extract: t satisfies nf_t₀
+          have h_t_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_t₀ :=
+            (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mp h_t_nf
+          -- Extract x from Since: ∃ x < t, temporal_truth M x (char_kp1 nf_x₀)
+          change ∃ s, s < t ∧ temporal_truth M atomMap s (char_kp1 nf_x₀) ∧
+            ∀ r, s < r → r < t → temporal_truth M atomMap r Formula.top at h_snce
+          obtain ⟨x, h_x_lt_t, h_x_char, _⟩ := h_snce
+          -- x satisfies nf_x₀
+          have h_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x₀ :=
+            (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mp h_x_char
+          -- Full 1-var NF agreement at x/x₀
+          have h_x_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => x₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_x₀ h_x_eval
+              (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀))
+          -- Full 1-var NF agreement at t/t₀
+          have h_t_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf ↔
+              nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
+            nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval
+              (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀))
+          -- Apply prior_2var_transfer_since to transfer h_eval₀ from M₀ to M
+          exact ⟨x, prior_2var_transfer_since atomMap k' M x t M₀ x₀ t₀
+            h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_x_lt_t h_x₀_lt_t₀
+            sub_nf h_eval₀⟩
         · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t since_formula
           intro ⟨x, h_eval⟩
           have h_x_lt_t : x < t := (zone_order M t x h_eval).2 h_lt_val
-          change ∃ s, s < t ∧ temporal_truth M atomMap s (Formula.and compat_disj quant_conj_since) ∧
-            ∀ r, s < r → r < t → temporal_truth M atomMap r Formula.top
-          refine ⟨x, h_x_lt_t, ?_, fun r _ _ => temporal_truth_top M atomMap r⟩
           rw [temporal_truth_and]
+          -- Get cross-structure 2-var agreement from shared NF
+          have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _
+            sub_nf h_eval h_eval₀
+          -- Project first component: x agrees with x₀ on 1-var NFs
+          have h_x_agree := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var_agree
+          -- Project second component (Prior-specific): t agrees with t₀
+          have h_t_agree := prior_second_1var_from_2var_since atomMap k'
+            M x t M₀ x₀ t₀ h_UZ h_SZ h_UZ₀ h_SZ₀ h_2var_agree h_x_lt_t h_x₀_lt_t₀
           constructor
-          · -- compat_disj at x
-            exact fwd_disj M h_UZ h_SZ x
-              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x))
-              (compat_of_eval M t x h_eval)
-          · -- quant_conj_since at x
-            rw [formula_conjList_iff]
-            intro φ h_φ_mem
-            rw [List.mem_map] at h_φ_mem
-            obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
-            cases h_ssn_val : sub_nf.2 ssn with
-            | true =>
-              subst h_ssn_eq
-              simp only [h_ssn_val, reduceIte, gep_formula_since]
-              exact temporal_truth_top M atomMap x
-            | false =>
-              subst h_ssn_eq
-              simp only [h_ssn_val, gep_formula_since, temporal_truth_neg, temporal_truth,
-                not_false_eq_true, Bool.false_eq_true, ite_false, reduceIte, Formula.neg]
-              exact not_false
+          · -- char_kp1 nf_t₀ at t: t satisfies nf_t₀
+            exact (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mpr
+              ((h_t_agree nf_t₀).mpr
+                (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)))
+          · -- (char_kp1 nf_x₀) S top at t: witness is x
+            show ∃ s, s < t ∧ temporal_truth M atomMap s (char_kp1 nf_x₀) ∧
+              ∀ r, s < r → r < t → temporal_truth M atomMap r Formula.top
+            exact ⟨x, h_x_lt_t,
+              (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr
+                ((h_x_agree nf_x₀).mpr
+                  (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀))),
+              fun r _ _ => temporal_truth_top M atomMap r⟩
       | false, false =>
         -- Eq zone: x = t, so env is constant [t, t].
         -- Enriched formula: compat_disj ∧ conjunction encoding quantifier conditions

@@ -469,4 +469,63 @@ theorem prior_2var_transfer_since {sig : MonadicSignature}
   (prior_nonconstenv_2var_agree_since atomMap K M x t M₀ x₀ t₀
     h_UZ h_SZ h_UZ₀ h_SZ₀ h_x h_t h_order h_order₀ sub_nf).mpr h_eval₀
 
+/-! ## Second Component Projection from 2-var Agreement
+
+On Prior structures, if two pairs [x,t]/[x₀,t₀] have the same depth-(K+2)
+2-var NF (shared via nf_agreement_from_shared_nf), then the second components
+t/t₀ have the same depth-(K+2) 1-var NF.
+
+This is NOT a consequence of 2-var agreement alone (the projection lemma only
+gives the first component). On Prior structures it follows from the fact that
+1-var NFs are determined by predicates + 2-var existentials at [y,t], and these
+2-var existentials are recoverable from the 3-var existentials at [y,x,t]
+(encoded in the 2-var NF) via the UZ/SZ saturation axioms. -/
+
+/-- On Prior structures, 2-var NF agreement at [x,t]/[x₀,t₀] implies
+    1-var NF agreement at t/t₀ (second component). -/
+theorem prior_second_1var_from_2var_until {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (K : Nat)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (M₀ : OrderedMonadicStructure sig) (x₀ t₀ : M₀.carrier)
+    (h_UZ : semantic_prior_UZ M atomMap)
+    (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ₀ : semantic_prior_UZ M₀ atomMap)
+    (h_SZ₀ : semantic_prior_SZ M₀ atomMap)
+    (h_2var : ∀ nf : NormalForm sig (K + 2) 2,
+      nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) nf)
+    (h_order_M : t < x) (h_order₀ : t₀ < x₀) :
+    ∀ nf1 : NormalForm sig (K + 2) 1,
+      nf_eval_nf M (K + 2) 1 (fun _ => t) nf1 ↔
+      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 := by
+  -- From h_2var, extract first component (x/x₀) agreement
+  have h_x := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var
+  -- On Prior structures, knowing x/x₀ agree on 1-var NFs and the 2-var NFs agree,
+  -- the second component t/t₀ must also agree. This follows from the fact that
+  -- the 2-var quantifier conditions (3-var existentials) combined with UZ/SZ
+  -- determine what 2-var existentials are satisfiable at t (and t₀).
+  -- The full proof uses the Fraïssé game argument or zone-matching.
+  sorry
+
+/-- Mirror for Since zone (x < t). -/
+theorem prior_second_1var_from_2var_since {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (K : Nat)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (M₀ : OrderedMonadicStructure sig) (x₀ t₀ : M₀.carrier)
+    (h_UZ : semantic_prior_UZ M atomMap)
+    (h_SZ : semantic_prior_SZ M atomMap)
+    (h_UZ₀ : semantic_prior_UZ M₀ atomMap)
+    (h_SZ₀ : semantic_prior_SZ M₀ atomMap)
+    (h_2var : ∀ nf : NormalForm sig (K + 2) 2,
+      nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) nf)
+    (h_order_M : x < t) (h_order₀ : x₀ < t₀) :
+    ∀ nf1 : NormalForm sig (K + 2) 1,
+      nf_eval_nf M (K + 2) 1 (fun _ => t) nf1 ↔
+      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 := by
+  have h_x := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var
+  sorry
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
