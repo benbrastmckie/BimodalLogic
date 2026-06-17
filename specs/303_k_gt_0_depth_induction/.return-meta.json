@@ -1,30 +1,21 @@
 {
-  "status": "researched",
-  "task_number": 303,
-  "task_name": "k_gt_0_depth_induction",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "session_id": "sess_1781728602_b12f5c",
-  "started_at": "2026-06-17T00:00:00Z",
-  "findings_count": 8,
-  "adversarial_verification_triggered": true,
-  "report_path": "specs/303_k_gt_0_depth_induction/reports/13_literature-grounded-proof-strategy.md",
-  "next_steps": "Run /plan 303 to create implementation plan",
-  "memory_candidates": [
+  "status": "planned",
+  "artifacts": [
     {
-      "type": "discovery",
-      "content": "The n-var NF transfer on non-constant environments at depth K+1 requires depth-K (n+1)-var transfer (from the quantifier part), creating a circular dependency. The only resolution is: (1) use CharPart(K+1) to express the target 1-var type as a temporal formula, (2) apply Prior-UZ/SZ to find a between-zone witness with that temporal formula, (3) use the arity climbing recursion (descending from depth K to depth 0) where at depth 0 the between-zone is purely atomic. The chain is well-founded because CharPart(K+1) depends on ExistPart(K) which uses prior_nonconstenv_2var_agree at depth < K+2.",
-      "keywords": ["between_zone", "charpart_threading", "arity_climbing", "well_founded_recursion", "prior_uz"]
-    },
-    {
-      "type": "pattern",
-      "content": "When dealing with Case C in between-zone transfer (both cross_extend witnesses land outside the target interval), the argument requires Prior-UZ AND Prior-SZ simultaneously, plus the depth-1 2-var quantifier conditions from both anchors. This is the genuine hard case that Prior structures were designed to handle -- the UZ/SZ axioms ensure 'first/last occurrence' semantics, but the argument for placing the witness INSIDE a specific interval requires careful combination of both directional axioms.",
-      "keywords": ["case_c", "prior_uz_sz", "between_zone_witness", "interval_constraint"]
-    },
-    {
-      "type": "discovery",
-      "content": "exist_transfer_3var_nonconstenv (PriorComposition.lean) is stated WITHOUT Prior hypotheses, but the between-zone proof REQUIRES Prior-UZ/SZ + CharPart. The architectural fix is to either (a) add these parameters to the theorem, or (b) eliminate it as a standalone theorem and inline the zone argument into prior_nonconstenv_2var_agree_until/since where Prior is available. Option (b) is cleaner because it avoids threading Prior through an unnecessary intermediate.",
-      "keywords": ["architectural_mismatch", "prior_hypotheses", "inline_proof", "refactoring"]
+      "path": "specs/303_k_gt_0_depth_induction/plans/14_literature-grounded-plan.md",
+      "type": "plan",
+      "summary": "Revised plan integrating report 13 findings: replaces blocked Phase 4d with 3 new phases (5-7) using literature-grounded zone transfer with Prior-UZ/SZ + CharPart threading to close all 4 sorry in PriorComposition.lean"
     }
-  ]
+  ],
+  "next_steps": "Run /implement 303 to execute the revised plan starting at Phase 5",
+  "metadata": {
+    "session_id": "sess_1781734653_9efe80",
+    "agent_type": "reviser-agent",
+    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+    "plan_version": 14,
+    "phase_count": 7,
+    "estimated_hours": 20,
+    "reports_integrated": ["13_literature-grounded-proof-strategy.md"],
+    "revision_type": "plan_revision"
+  }
 }

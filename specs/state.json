@@ -1792,17 +1792,17 @@
     {
       "project_number": 303,
       "project_name": "k_gt_0_depth_induction",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.",
       "dependencies": [],
       "created": "2026-06-16T00:00:00Z",
-      "last_updated": "2026-06-17T22:01:36Z",
-      "session_id": "sess_1781728602_b12f5c",
+      "last_updated": "2026-06-17T22:23:30Z",
+      "session_id": "sess_1781734653_9efe80",
       "researched": "2026-06-17T01:27:14Z",
-      "next_artifact_number": 10,
+      "next_artifact_number": 15,
       "artifacts": [
         {
           "path": "specs/303_k_gt_0_depth_induction/reports/01_team-research.md",
@@ -1840,11 +1840,6 @@
           "summary": "Literature-first research: Rabinovich Prop 3.5 construction extracted, zone decomposition mapped to Lean, H4 verified"
         },
         {
-          "path": "specs/303_k_gt_0_depth_induction/plans/08_generalexistpart-redesign-plan.md",
-          "type": "plan",
-          "summary": "Plan v8: Redesign GeneralExistPart with 1-var NF params and zone decomposition, 5 phases, 12h"
-        },
-        {
           "path": "specs/303_k_gt_0_depth_induction/reports/09_interval-splitting-mapping.md",
           "type": "research",
           "summary": "H4-verified research: GeneralExistPartOrdered FALSE at all depths, zone-decomposed BetweenZoneExistPart replacement recommended"
@@ -1853,6 +1848,11 @@
           "path": "specs/303_k_gt_0_depth_induction/reports/09_interval-splitting-mapping.md",
           "type": "research",
           "summary": "H4-verified: GeneralExistPartOrdered FALSE at all depths. Replacement: BetweenZoneExistPart with zone-decomposed formulation evaluated at x (Until witness). 200-400 lines estimated."
+        },
+        {
+          "path": "specs/303_k_gt_0_depth_induction/plans/14_literature-grounded-plan.md",
+          "type": "plan",
+          "summary": "Revised plan integrating report 13 findings: replaces blocked Phase 4d with 3 new phases (5-7) using literature-grounded zone transfer with Prior-UZ/SZ + CharPart threading"
         }
       ]
     },
