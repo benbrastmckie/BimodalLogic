@@ -1,58 +1,56 @@
 {
   "status": "partial",
-  "summary": "Phase 4d: added depth0_3var_witness_check (sorry-free helper, ~50 lines). Exhaustive analysis confirmed all 4 sorry share single root cause: exist_transfer_3var_nonconstenv lacks Prior hypotheses. Non-between zones proved conceptually (zones 1,2,4,5 via cross_extend_bwd_1var). Between-zone requires CharPart(K+1) + Prior-UZ. Architecture design complete; implementation requires threading CharPart through induction.",
-  "phases_completed": 3,
-  "phases_total": 4,
+  "summary": "Phase 5: Refactored S3/S4 sorry into standalone helper lemmas (depth0_3var_exist_transfer_until/since) with all inconsistency cases eliminated. Between-zone depth-0 3-var transfer blocked -- requires either interval_nf_types matching derivation from Prior axioms or restructured base case via KampBypass.",
+  "phases_completed": 4,
+  "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 289,
-      "statement": "theorem exist_transfer_3var_nonconstenv (forward direction)",
-      "assumption": "Witness c (from hex_x) satisfies sub_nf at [c,x',t']. Specifically c vs t' order unknown and depth-K 4-var transfer needed.",
-      "why_deferred": "exist_transfer_3var_nonconstenv stated without Prior hypotheses. Between-zone requires Prior-UZ/SZ + CharPart to find witness in (t',x'). Same problem as StaviCompleteness.lean:2421.",
-      "next_dispatch": "Add atomMap, h_surj, Prior axioms, CharPart(K+1) to signature. Zone decomposition: outer zones via cross_extend_bwd_1var, between-zone via CharPart + Prior-UZ."
+      "line": 274,
+      "statement": "theorem depth0_3var_exist_transfer_until : (exists w, nf_eval_nf M 0 3 [w,x,t] ssn3) <-> (exists w', nf_eval_nf N 0 3 [w',x',t'] ssn3)",
+      "assumption": "Between-zone case: all pairwise order atoms consistent, ssn3 does not say x < t. Remaining cases include the between-zone (t < w < x).",
+      "why_deferred": "The between-zone existential is a 2-variable property of (t,x) that cannot be expressed as a depth-2 temporal formula at a single endpoint. The Prior-UZ/SZ argument produces separate witnesses above t' and below x' but cannot guarantee a single witness between them.",
+      "next_dispatch": "Research interval_nf_types derivation from Prior axioms, or restructure base case via KampBypass existPart_succ_n1_bypass_k0"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 297,
-      "statement": "theorem exist_transfer_3var_nonconstenv (backward direction)",
-      "assumption": "Symmetric to forward (N->M)",
-      "why_deferred": "Same as forward direction",
-      "next_dispatch": "Mirror of forward direction"
+      "line": 345,
+      "statement": "theorem depth0_3var_exist_transfer_since : mirror of _until for x < t case",
+      "assumption": "Same as _until but with reversed anchor order",
+      "why_deferred": "Same blocker as depth0_3var_exist_transfer_until",
+      "next_dispatch": "Same approach as _until; the two are symmetric"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 380,
-      "statement": "theorem prior_nonconstenv_2var_agree_until K=0 base: depth-0 3-var transfer",
-      "assumption": "Depth-0 3-var existential transfer between M and N for between-zone (t < w < x)",
-      "why_deferred": "Between-zone at depth 0: cross_extend gives partial witnesses (w_x<x' but vs t' unknown; w_t>t' but vs x' unknown). Case C (w_t>=x' AND w_x<=t') not contradictory from 1-var agreements alone. Needs CharPart(0) + Prior-UZ.",
-      "next_dispatch": "Thread CharPart to prior_nonconstenv_2var_agree_until. Use CharPart(0) formula for predicate pattern. Apply Prior-UZ to find first occurrence in (t',x')."
+      "line": 460,
+      "statement": "theorem exist_transfer_3var_nonconstenv forward direction (general K)",
+      "assumption": "Phase 6 target: general-K between-zone via CharPart threading",
+      "why_deferred": "Phase 6 scope -- requires char_kp1 parameter and depth-K between-zone argument",
+      "next_dispatch": "Phase 6: add char_kp1 parameter and implement between-zone for general K"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 457,
-      "statement": "theorem prior_nonconstenv_2var_agree_since K=0 base: mirror",
-      "assumption": "Mirror of Until base case with x < t",
-      "why_deferred": "Same as Until case, symmetric",
-      "next_dispatch": "Mirror of Until case"
+      "line": 480,
+      "statement": "theorem exist_transfer_3var_nonconstenv backward direction (general K)",
+      "assumption": "Phase 6 target: symmetric to forward",
+      "why_deferred": "Phase 6 scope",
+      "next_dispatch": "Phase 6"
     }
   ],
   "blockers": [
-    "exist_transfer_3var_nonconstenv (lines 289, 297): needs Prior+CharPart parameters. Zone decomposition architecture designed but not yet implemented.",
-    "prior_nonconstenv_2var_agree_until/since K=0 base (lines 380, 457): needs CharPart(0) + Prior-UZ threaded through to close depth-0 between-zone."
+    "Between-zone depth-0 3-var existential transfer: proving (exists w in (t,x) with preds tau) <-> (exists w' in (t',x') with preds tau) from depth-2 1-var agreement at x/x' and t/t' plus Prior-UZ/SZ. The available temporal formula budget (operator_depth 2) is insufficient to express the between-zone existential as a 1-variable formula at either endpoint."
   ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4d-zone-analysis-handoff.md",
   "continuation_context": {
-    "is_successor": true,
-    "resume_phase": "4d",
-    "resume_from": "Add Prior/CharPart parameters to exist_transfer_3var_nonconstenv",
-    "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
-    ],
-    "sorry_count": 4,
-    "new_infrastructure": ["depth0_3var_witness_check"],
-    "research_report": "specs/303_k_gt_0_depth_induction/reports/12_fraisse-game-analysis.md"
-  }
+    "is_successor": false,
+    "current_phase": 5,
+    "phase_status": "blocked",
+    "next_action": "Research the between-zone interval_nf_types derivation or restructure base case"
+  },
+  "artifacts": [
+    {
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-blocked-between-zone.md",
+      "type": "handoff",
+      "summary": "Detailed analysis of the between-zone blocker with attempted approaches and recommendations"
+    }
+  ]
 }

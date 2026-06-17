@@ -163,7 +163,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Depth-0 Between-Zone Transfer (Closes S3/S4) [NOT STARTED]
+### Phase 5: Depth-0 Between-Zone Transfer (Closes S3/S4) [BLOCKED]
 
 **Goal**: Prove the depth-0 3-var existential transfer for the between-zone case in the base cases of `prior_nonconstenv_2var_agree_until` (line 413) and `prior_nonconstenv_2var_agree_since` (line 491). At depth 0, `nf_eval_nf` is purely atomic, so the between-zone reduces to finding a point with matching monadic predicates in the interval (t', x').
 

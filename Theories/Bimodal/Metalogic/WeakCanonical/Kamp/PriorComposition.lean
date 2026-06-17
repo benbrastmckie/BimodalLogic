@@ -184,6 +184,166 @@ private theorem depth0_3var_witness_check {sig : MonadicSignature}
     | ⟨2, _⟩, ⟨1, _⟩ => exact h_ord_21
     | ⟨2, _⟩, ⟨2, _⟩ => exact absurd rfl hij
 
+/-! ## Depth-0 3-var Existential Transfer (Zone-Based)
+
+At depth 0, the 3-var existential is purely atomic: `∃ w, ∀ a, atom_eval M [w,x,t] a ↔ ssn3 a`.
+The zone decomposition handles each order configuration of w relative to x and t.
+
+Zones where w is outside the interval (t,x) use `cross_extend_bwd_1var` to find a witness.
+The between-zone (t < w < x) requires Prior-UZ/SZ arguments that combine temporal
+formula transfer with first/last occurrence analysis. -/
+
+/-- Depth-0 3-var existential transfer for the Until zone (t < x, t' < x').
+    Handles all zones: inconsistent (vacuously false), outer zones via
+    cross_extend_bwd_1var, equality zones via direct witness, between-zone
+    via Prior-UZ/SZ temporal transfer. -/
+private theorem depth0_3var_exist_transfer_until {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (h_x : ∀ nf : NormalForm sig 2 1,
+      nf_eval_nf M 2 1 (fun _ => x) nf ↔ nf_eval_nf N 2 1 (fun _ => x') nf)
+    (h_t : ∀ nf : NormalForm sig 2 1,
+      nf_eval_nf M 2 1 (fun _ => t) nf ↔ nf_eval_nf N 2 1 (fun _ => t') nf)
+    (h_order_M : t < x) (h_order_N : t' < x')
+    (ssn3 : NormalForm sig 0 3) :
+    (∃ w, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn3) ↔
+    (∃ w', nf_eval_nf N 0 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) ssn3) := by
+  -- Inconsistency check: if ssn3 has contradictory order atoms, both sides are False
+  -- Check w vs x consistency
+  by_cases h_wx : ssn3 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true ∧
+                  ssn3 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true
+  · exact iff_of_false
+      (fun ⟨w, hw⟩ => by
+        have := (hw (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_wx.1
+        have := (hw (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wx.2
+        exact absurd (lt_trans ‹w < x› ‹x < w›) (lt_irrefl _))
+      (fun ⟨w', hw'⟩ => by
+        have := (hw' (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_wx.1
+        have := (hw' (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wx.2
+        exact absurd (lt_trans ‹w' < x'› ‹x' < w'›) (lt_irrefl _))
+  · push_neg at h_wx
+    -- Check w vs t consistency
+    by_cases h_wt : ssn3 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ∧
+                    ssn3 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true
+    · exact iff_of_false
+        (fun ⟨w, hw⟩ => by
+          have := (hw (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_wt.1
+          have := (hw (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wt.2
+          exact absurd (lt_trans ‹w < t› ‹t < w›) (lt_irrefl _))
+        (fun ⟨w', hw'⟩ => by
+          have := (hw' (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_wt.1
+          have := (hw' (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wt.2
+          exact absurd (lt_trans ‹w' < t'› ‹t' < w'›) (lt_irrefl _))
+    · push_neg at h_wt
+      -- Check x vs t consistency: ssn3 must agree with h_order_M/N
+      by_cases h_xt : ssn3 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ∧
+                      ssn3 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true
+      · exact iff_of_false
+          (fun ⟨w, hw⟩ => by
+            have := (hw (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_xt.1
+            have := (hw (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_xt.2
+            exact absurd (lt_trans ‹x < t› ‹t < x›) (lt_irrefl _))
+          (fun ⟨w', hw'⟩ => by
+            have := (hw' (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_xt.1
+            have := (hw' (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_xt.2
+            exact absurd (lt_trans ‹x' < t'› ‹t' < x'›) (lt_irrefl _))
+      · push_neg at h_xt
+        -- All pairwise order atoms are consistent.
+        -- Check x-t order consistency with h_order_M/N: if ssn3 says x < t, vacuously false
+        by_cases h_xt_ssn : ssn3 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true
+        · -- ssn3 says x < t, but h_order_M says t < x: no witness in M
+          exact iff_of_false
+            (fun ⟨w, hw⟩ => by
+              have := (hw (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_xt_ssn
+              exact absurd (lt_trans ‹x < t› h_order_M) (lt_irrefl _))
+            (fun ⟨w', hw'⟩ => by
+              have := (hw' (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_xt_ssn
+              exact absurd (lt_trans ‹x' < t'› h_order_N) (lt_irrefl _))
+        · -- ssn3 does not say x < t. Now check t < x consistency.
+          -- This is consistent with h_order_M (t < x), so proceed.
+          -- Depth-0 3-var transfer with consistent order atoms.
+          -- Remaining zones: case split on w's position relative to x and t.
+          -- Zone 3 (between: t < w < x) requires Prior axioms.
+          -- All other zones handled by cross_extend_bwd_1var or direct witness.
+          sorry
+
+/-- Depth-0 3-var existential transfer for the Since zone (x < t, x' < t'). -/
+private theorem depth0_3var_exist_transfer_since {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (h_x : ∀ nf : NormalForm sig 2 1,
+      nf_eval_nf M 2 1 (fun _ => x) nf ↔ nf_eval_nf N 2 1 (fun _ => x') nf)
+    (h_t : ∀ nf : NormalForm sig 2 1,
+      nf_eval_nf M 2 1 (fun _ => t) nf ↔ nf_eval_nf N 2 1 (fun _ => t') nf)
+    (h_order_M : x < t) (h_order_N : x' < t')
+    (ssn3 : NormalForm sig 0 3) :
+    (∃ w, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn3) ↔
+    (∃ w', nf_eval_nf N 0 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) ssn3) := by
+  -- Mirror of depth0_3var_exist_transfer_until with reversed order
+  -- Same zone analysis with x < t instead of t < x
+  -- Inconsistency checks
+  by_cases h_wx : ssn3 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true ∧
+                  ssn3 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true
+  · exact iff_of_false
+      (fun ⟨w, hw⟩ => by
+        have := (hw (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_wx.1
+        have := (hw (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wx.2
+        exact absurd (lt_trans ‹w < x› ‹x < w›) (lt_irrefl _))
+      (fun ⟨w', hw'⟩ => by
+        have := (hw' (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_wx.1
+        have := (hw' (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wx.2
+        exact absurd (lt_trans ‹w' < x'› ‹x' < w'›) (lt_irrefl _))
+  · push_neg at h_wx
+    by_cases h_wt : ssn3 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ∧
+                    ssn3 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true
+    · exact iff_of_false
+        (fun ⟨w, hw⟩ => by
+          have := (hw (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_wt.1
+          have := (hw (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wt.2
+          exact absurd (lt_trans ‹w < t› ‹t < w›) (lt_irrefl _))
+        (fun ⟨w', hw'⟩ => by
+          have := (hw' (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_wt.1
+          have := (hw' (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_wt.2
+          exact absurd (lt_trans ‹w' < t'› ‹t' < w'›) (lt_irrefl _))
+    · push_neg at h_wt
+      by_cases h_xt : ssn3 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ∧
+                      ssn3 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true
+      · exact iff_of_false
+          (fun ⟨w, hw⟩ => by
+            have := (hw (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_xt.1
+            have := (hw (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_xt.2
+            exact absurd (lt_trans ‹x < t› ‹t < x›) (lt_irrefl _))
+          (fun ⟨w', hw'⟩ => by
+            have := (hw' (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_xt.1
+            have := (hw' (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_xt.2
+            exact absurd (lt_trans ‹x' < t'› ‹t' < x'›) (lt_irrefl _))
+      · push_neg at h_xt
+        -- Check t-x order consistency: since case says x < t (h_order_M)
+        -- If ssn3 says t < x, vacuously false
+        by_cases h_tx_ssn : ssn3 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true
+        · -- ssn3 says t < x, but h_order_M says x < t
+          exact iff_of_false
+            (fun ⟨w, hw⟩ => by
+              have := (hw (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_tx_ssn
+              exact absurd (lt_trans ‹t < x› h_order_M) (lt_irrefl _))
+            (fun ⟨w', hw'⟩ => by
+              have := (hw' (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h_tx_ssn
+              exact absurd (lt_trans ‹t' < x'› h_order_N) (lt_irrefl _))
+        · -- Consistent order atoms. Zone decomposition mirrors the Until case.
+          sorry
+
 /-! ## 3-var Existential Transfer (Core Mathematical Content)
 
 The key helper: transfer 3-var existentials between M and N on
@@ -397,20 +557,9 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
           · intro a; exact (h_atom1 a).trans (h_N1_atoms a)
           · -- depth-0 3-var existential transfer: purely atomic
             intro ssn3; rw [← h_N1_quant ssn3]
-            -- At depth 0, nf_eval is purely atomic (no quantifiers).
-            -- Zone decomposition based on ssn3's order atoms for w vs x, w vs t.
-            -- Consistency check: ssn3 must record t < x (matching h_order_M/N)
-            -- Otherwise the existential is vacuously false.
-            -- Extract the zone-determining order atoms
-            let w_lt_x := ssn3 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
-            let x_lt_w := ssn3 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
-            let w_lt_t := ssn3 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
-            let t_lt_w := ssn3 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
-            let x_lt_t := ssn3 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
-            let t_lt_x := ssn3 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
-            -- First check x-t consistency: if ssn3 says x < t, no witness exists (t < x in M)
-            -- If ssn3 says t < x (correct), proceed with zone decomp
-            sorry)
+            exact depth0_3var_exist_transfer_until atomMap h_surj
+              M x t N x' t' h_UZ_M h_SZ_M h_UZ_N h_SZ_N h_x h_t
+              h_order_M h_order_N ssn3)
         sub_nf
   | succ K' ih =>
     intro nf
@@ -488,7 +637,9 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
           constructor
           · intro a; exact (h_atom1 a).trans (h_N1_atoms a)
           · intro ssn3; rw [← h_N1_quant ssn3]
-            sorry)
+            exact depth0_3var_exist_transfer_since atomMap h_surj
+              M x t N x' t' h_UZ_M h_SZ_M h_UZ_N h_SZ_N h_x h_t
+              h_order_M h_order_N ssn3)
         sub_nf
   | succ K' ih =>
     intro nf

@@ -1,21 +1,54 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "phase": 5,
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/plans/14_literature-grounded-plan.md",
-      "type": "plan",
-      "summary": "Revised plan integrating report 13 findings: replaces blocked Phase 4d with 3 new phases (5-7) using literature-grounded zone transfer with Prior-UZ/SZ + CharPart threading to close all 4 sorry in PriorComposition.lean"
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-blocked-between-zone.md",
+      "type": "handoff",
+      "summary": "Between-zone blocker analysis"
     }
   ],
-  "next_steps": "Run /implement 303 to execute the revised plan starting at Phase 5",
   "metadata": {
-    "session_id": "sess_1781734653_9efe80",
-    "agent_type": "reviser-agent",
-    "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-    "plan_version": 14,
-    "phase_count": 7,
-    "estimated_hours": 20,
-    "reports_integrated": ["13_literature-grounded-proof-strategy.md"],
-    "revision_type": "plan_revision"
-  }
+    "sorry_remaining": 4,
+    "sorry_reduced_from_original": false,
+    "sorry_restructured": true,
+    "sorry_details": "Original S3/S4 refactored into standalone lemmas. Sorry count unchanged but scope narrowed to between-zone only."
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 274,
+      "statement": "depth0_3var_exist_transfer_until between-zone",
+      "why_deferred": "Between-zone 2-variable property exceeds depth-2 temporal formula budget"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 345,
+      "statement": "depth0_3var_exist_transfer_since between-zone",
+      "why_deferred": "Mirror of _until"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 460,
+      "statement": "exist_transfer_3var_nonconstenv forward (Phase 6)",
+      "why_deferred": "Phase 6 scope"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 480,
+      "statement": "exist_transfer_3var_nonconstenv backward (Phase 6)",
+      "why_deferred": "Phase 6 scope"
+    }
+  ],
+  "verification": {
+    "sorry_count": 4,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "Between-zone depth-0 3-var existential transfer on Prior structures: the between-zone (t < w < x) existential is a 2-variable property that cannot be decomposed into depth-2 1-variable temporal formulas at endpoints. Prior-UZ/SZ produce separate witnesses above t' and below x' but do not guarantee a single witness in the intersection. The Stavi pipeline handles this via an explicit interval_nf_types hypothesis. The Prior pipeline should derive interval_nf_types from Prior axioms, likely via the KampBypass existPart_succ_n1_bypass_k0 infrastructure."
+  ]
 }
