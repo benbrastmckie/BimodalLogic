@@ -1,65 +1,30 @@
 {
-  "status": "partial",
+  "status": "researched",
   "task_number": 303,
   "task_name": "k_gt_0_depth_induction",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "agent_type": "lean-research-hard-agent",
+  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
   "session_id": "sess_1781728602_b12f5c",
-  "phase": "4d",
-  "dispatch": 2,
   "started_at": "2026-06-17T00:00:00Z",
-  "requires_user_review": true,
-  "verification": {
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 300,
-      "statement": "exist_transfer_3var_nonconstenv (forward)",
-      "assumption": "Fraisse game: depth-(K+1) 3-var needs depth-K 4-var (circular)",
-      "why_deferred": "Requires simultaneous (depth, arity) induction",
-      "next_dispatch": "Implement fraisse_transfer lemma"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 320,
-      "statement": "exist_transfer_3var_nonconstenv (backward)",
-      "assumption": "Symmetric",
-      "why_deferred": "Same as forward",
-      "next_dispatch": "Mirror"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 413,
-      "statement": "prior_nonconstenv_2var_agree_until K=0",
-      "assumption": "Depth-0 between-zone 3-var transfer",
-      "why_deferred": "Same root cause at depth 0",
-      "next_dispatch": "Base case of fraisse_transfer"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 491,
-      "statement": "prior_nonconstenv_2var_agree_since K=0",
-      "assumption": "Mirror",
-      "why_deferred": "Same",
-      "next_dispatch": "Mirror"
-    }
-  ],
-  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4d-dispatch2-handoff.md",
+  "findings_count": 8,
+  "adversarial_verification_triggered": true,
+  "report_path": "specs/303_k_gt_0_depth_induction/reports/13_literature-grounded-proof-strategy.md",
+  "next_steps": "Run /plan 303 to create implementation plan",
   "memory_candidates": [
     {
       "type": "discovery",
-      "content": "The n-var NF transfer at depth K+1 on non-constant environments requires depth-K (n+1)-var transfer, which requires depth-(K+1) n-var transfer (circular). The only resolution is simultaneous induction on (depth, arity), known as the Fraisse game argument. Cannot be solved by (a) depth-upgrade from K to K+1 using component-wise 1-var data, (b) zone decomposition alone (between-zone Case C is genuine), or (c) Prior-UZ/SZ alone (need temporal formula for the predicate pattern, which requires h_surj + nf_depth0_char_formula). The correct approach combines all three: Fraisse game + Prior-UZ/SZ + temporal formulas.",
-      "keywords": ["fraisse_game", "depth_arity_induction", "nf_transfer", "between_zone", "circular_dependency"]
+      "content": "The n-var NF transfer on non-constant environments at depth K+1 requires depth-K (n+1)-var transfer (from the quantifier part), creating a circular dependency. The only resolution is: (1) use CharPart(K+1) to express the target 1-var type as a temporal formula, (2) apply Prior-UZ/SZ to find a between-zone witness with that temporal formula, (3) use the arity climbing recursion (descending from depth K to depth 0) where at depth 0 the between-zone is purely atomic. The chain is well-founded because CharPart(K+1) depends on ExistPart(K) which uses prior_nonconstenv_2var_agree at depth < K+2.",
+      "keywords": ["between_zone", "charpart_threading", "arity_climbing", "well_founded_recursion", "prior_uz"]
     },
     {
       "type": "pattern",
-      "content": "To use Prior-UZ/SZ axioms for predicate matching in Kamp/PriorComposition.lean, thread h_surj (atomMap surjectivity) through the theorem chain. Then build temporal formulas via nf_depth0_char_formula from Separation.KampTranslation. The import is safe (no cycle).",
-      "keywords": ["h_surj", "prior_UZ", "temporal_formula", "nf_depth0_char_formula", "import_safety"]
+      "content": "When dealing with Case C in between-zone transfer (both cross_extend witnesses land outside the target interval), the argument requires Prior-UZ AND Prior-SZ simultaneously, plus the depth-1 2-var quantifier conditions from both anchors. This is the genuine hard case that Prior structures were designed to handle -- the UZ/SZ axioms ensure 'first/last occurrence' semantics, but the argument for placing the witness INSIDE a specific interval requires careful combination of both directional axioms.",
+      "keywords": ["case_c", "prior_uz_sz", "between_zone_witness", "interval_constraint"]
+    },
+    {
+      "type": "discovery",
+      "content": "exist_transfer_3var_nonconstenv (PriorComposition.lean) is stated WITHOUT Prior hypotheses, but the between-zone proof REQUIRES Prior-UZ/SZ + CharPart. The architectural fix is to either (a) add these parameters to the theorem, or (b) eliminate it as a standalone theorem and inline the zone argument into prior_nonconstenv_2var_agree_until/since where Prior is available. Option (b) is cleaner because it avoids threading Prior through an unnecessary intermediate.",
+      "keywords": ["architectural_mismatch", "prior_hypotheses", "inline_proof", "refactoring"]
     }
   ]
 }
