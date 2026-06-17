@@ -84,7 +84,14 @@ Advances: "Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) -> 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rewrite GeneralExistPart Definition and Base Case (k=0) [NOT STARTED]
+### Phase 1: Rewrite GeneralExistPart Definition and Base Case (k=0) [IN PROGRESS]
+
+**Analysis (dispatch 1)**: Thorough analysis confirmed:
+1. The 2-var NF transfer from individual 1-var NF agreements is FALSE even on Prior structures (Z counterexample with uniform predicate: [0,2] vs [0,1] have same 1-var NFs but different 2-var NFs due to gap between 0 and 1)
+2. The current GeneralExistPart produces Formula.top/Formula.bot via classical satisfiability, which carries NO information when embedded in an enriched formula
+3. A redesigned GeneralExistPartIndiv with individual 1-var NF parameters AND actual temporal formula construction (zone decomposition) is REQUIRED
+4. The quantifier conjunction from top/bot formulas is trivially true and cannot close the sorry
+5. The zone decomposition approach (Rabinovich Prop 3.5) is the ONLY viable path
 
 **Goal**: Replace the current GeneralExistPart.lean entirely. Define the new GeneralExistPart with individual 1-var NF parameters. Prove `generalExistPart_zero` using zone decomposition with actual temporal formulas.
 

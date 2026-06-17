@@ -1,29 +1,37 @@
 {
-  "status": "planned",
-  "artifacts": [
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 303,
+  "session_id": "sess_1781710390_4591d5",
+  "sorry_inventory": [
     {
-      "type": "plan",
-      "path": "specs/303_k_gt_0_depth_induction/plans/08_generalexistpart-redesign-plan.md",
-      "summary": "Plan v8: Redesign GeneralExistPart with 1-var NF parameters and zone decomposition to close 2 sorries in KampBypass.lean"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 636,
+      "statement": "existPart_succ_n1_bypass Until zone quantifier part",
+      "assumption": "1-var NF agreement insufficient for 2-var transfer",
+      "why_deferred": "Requires GeneralExistPartIndiv with actual temporal formulas via zone decomposition",
+      "next_dispatch": "Implement GeneralExistPartIndiv + enriched formula"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 688,
+      "statement": "existPart_succ_n1_bypass Since zone quantifier part",
+      "assumption": "Mirror of line 636",
+      "why_deferred": "Same as line 636",
+      "next_dispatch": "Closes with line 636"
     }
   ],
-  "next_steps": "Run /implement 303 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1781706105_3a515b",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 12,
-    "dependency_waves": [[1], [2], [3], [4], [5]]
+  "verification": {
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
   },
   "memory_candidates": [
-    {
-      "content": "When a formal proof requires existential transfer across structures, the precondition of the transfer lemma must be satisfiable from hypotheses already available at the use site. If the transfer lemma's precondition IS the goal being proved (circular), the fix is to weaken the precondition to something available -- typically decomposing a multi-variable agreement into individual single-variable agreements that can be obtained from characteristic NF matching. The formula construction must then compensate by performing actual zone decomposition rather than using trivial top/bot formulas.",
-      "category": "PATTERN",
-      "source_artifact": "specs/303_k_gt_0_depth_induction/plans/08_generalexistpart-redesign-plan.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["circularity", "precondition-weakening", "zone-decomposition", "existential-transfer", "normal-form", "lean4"]
-    }
-  ]
+    "1-var NF transfer between non-constant environments is FALSE even on Prior structures (Z counterexample with uniform predicate)",
+    "GeneralExistPart classical satisfiability (Formula.top/bot) produces formulas carrying no information for enrichment",
+    "Closing KampBypass.lean sorry requires GeneralExistPartIndiv with individual 1-var NF parameters and actual zone decomposition formulas"
+  ],
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-analysis-handoff.md"
 }
