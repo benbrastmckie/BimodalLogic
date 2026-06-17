@@ -298,7 +298,8 @@ theorem existPart_succ {sig : MonadicSignature}
     (k : Nat)
     (ih_char : CharPart atomMap k)
     (ih_char_succ : CharPart atomMap (k + 1))
-    (ih_exist : ExistPart atomMap h_surj k) :
+    (ih_exist : ExistPart atomMap h_surj k)
+    (ih_general_exist_ordered : GeneralExistPartOrdered atomMap k) :
     ExistPart atomMap h_surj (k + 1) := by
   intro n hn char_kp1 char_kp1_correct parent_atoms sub_nf
   cases n with
@@ -308,7 +309,7 @@ theorem existPart_succ {sig : MonadicSignature}
     | zero =>
       exact existPart_succ_n1_bypass atomMap h_surj k
         char_kp1 char_kp1_correct ih_char ih_exist
-        (generalExistPart_all atomMap h_surj k) parent_atoms sub_nf
+        ih_general_exist_ordered parent_atoms sub_nf
     | succ n'' =>
       -- n>=2 case: arity n''+3. Constant parent env means
       -- the n-var NF is determined by the 2-var NF.
@@ -322,7 +323,7 @@ theorem existPart_succ {sig : MonadicSignature}
         let sub_nf_2 := nf_characteristic M₀ (k + 1) 2 (Fin.cons x₀ (fun _ => t₀))
         obtain ⟨A₂, hA₂⟩ := existPart_succ_n1_bypass atomMap h_surj k
           char_kp1 char_kp1_correct ih_char ih_exist
-          (generalExistPart_all atomMap h_surj k) parent_atoms sub_nf_2
+          ih_general_exist_ordered parent_atoms sub_nf_2
         refine ⟨A₂, fun M h_UZ h_SZ t h_atoms => ?_⟩
         constructor
         · -- Forward: temporal → ∃ x, nf_eval_nf ... sub_nf
@@ -379,20 +380,31 @@ theorem existPart_succ {sig : MonadicSignature}
 
 /-! ## Combined Induction -/
 
-/-- The combined mutual induction: CharPart(k) ∧ ExistPart(k) for all k. -/
+/-- The combined mutual induction:
+    CharPart(k) ∧ ExistPart(k) ∧ GeneralExistPartOrdered(k) for all k.
+    The third conjunct provides temporal characterization of existentials
+    on non-constant environments with known 1-var NFs and pairwise orders. -/
 theorem kamp_mutual_induction {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat) :
-    CharPart atomMap k ∧ ExistPart atomMap h_surj k := by
+    CharPart atomMap k ∧ ExistPart atomMap h_surj k ∧
+    GeneralExistPartOrdered atomMap k := by
   induction k with
-  | zero => exact ⟨charPart_zero atomMap h_surj, existPart_zero atomMap h_surj⟩
+  | zero =>
+    exact ⟨charPart_zero atomMap h_surj,
+           existPart_zero atomMap h_surj,
+           generalExistPartOrdered_zero atomMap h_surj⟩
   | succ k' ih =>
     have ih_char := ih.1
-    have ih_exist := ih.2
+    have ih_exist := ih.2.1
+    have ih_gen_exist := ih.2.2
     have char_succ := charPart_succ atomMap h_surj k' ih_char ih_exist
-    have exist_succ := existPart_succ atomMap h_surj k' ih_char char_succ ih_exist
-    exact ⟨char_succ, exist_succ⟩
+    have exist_succ := existPart_succ atomMap h_surj k' ih_char char_succ
+      ih_exist ih_gen_exist
+    have gen_exist_succ := generalExistPartOrdered_succ atomMap h_surj k'
+      char_succ ih_gen_exist
+    exact ⟨char_succ, exist_succ, gen_exist_succ⟩
 
 /-! ## Filling the Original Sorry -/
 
@@ -420,7 +432,7 @@ theorem nf_2var_exist_formula_prior_filled
         (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
         (temporal_truth M atomMap t A ↔
          ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :=
-  (kamp_mutual_induction atomMap h_surj k).2 1 (by omega)
+  (kamp_mutual_induction atomMap h_surj k).2.1 1 (by omega)
     char_k char_k_correct parent_atoms sub_nf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -465,14 +465,16 @@ theorem existPart_succ_n1_bypass
             (t : M.carrier),
             temporal_truth M atomMap t (char_k' nf_k) ↔
             nf_eval_nf M k 1 (fun _ => t) nf_k)
-        (env_nf : NormalForm sig (k + 1) r)
+        (env_nfs : Fin r → NormalForm sig (k + 1) 1)
+        (env_atoms : AtomKind sig r → Bool)
         (ssn : NormalForm sig k (r + 1)),
         ∃ (A : Formula),
           ∀ (M : OrderedMonadicStructure sig)
             (h_UZ : semantic_prior_UZ M atomMap)
             (h_SZ : semantic_prior_SZ M atomMap)
             (e : Fin r → M.carrier),
-            nf_eval_nf M (k + 1) r e env_nf →
+            (∀ i, nf_eval_nf M (k + 1) 1 (fun _ => e i) (env_nfs i)) →
+            (∀ a : AtomKind sig r, atom_eval M e a ↔ env_atoms a = true) →
             (temporal_truth M atomMap (e ⟨0, by omega⟩) A ↔
              ∃ y : M.carrier, nf_eval_nf M k (r + 1) (Fin.cons y e) ssn))
     (parent_atoms : AtomKind sig 1 → Bool)
@@ -587,22 +589,73 @@ theorem existPart_succ_n1_bypass
               ((zone_order M t x h_eval).2 h_lt_val))
               (lt_irrefl _)⟩⟩
       | true, false =>
-        -- Enriched Until formula: encode BOTH x₀'s and t₀'s full 1-var NF types.
-        -- The 2-var NF sub_nf determines these uniquely via nf_drop_last.
+        -- Enriched Until formula with quantifier conjunction from ih_general_exist.
+        -- The formula encodes BOTH 1-var NF types AND quantifier conditions.
         let nf_x₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => x₀)
         let nf_t₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => t₀)
-        -- Forward: sub_nf at [x, t] implies x has type nf_x₀ and t has type nf_t₀
-        -- (because sub_nf determines both 1-var NFs via cross-structure projection).
-        -- Backward: the formula gives exact 1-var NF types for both x and t,
-        -- enabling prior_2var_transfer_until.
-        let until_formula := Formula.and (char_kp1 nf_t₀) (Formula.untl (char_kp1 nf_x₀) Formula.top)
+        -- Build char_k from ih_char for use with ih_general_exist
+        let char_k : NormalForm sig (k' + 1) 1 → Formula := fun nf_k => (ih_char nf_k).choose
+        have char_k_correct : ∀ (nf_k : NormalForm sig (k' + 1) 1)
+            (M' : OrderedMonadicStructure sig)
+            (h_UZ' : semantic_prior_UZ M' atomMap)
+            (h_SZ' : semantic_prior_SZ M' atomMap)
+            (t' : M'.carrier),
+            temporal_truth M' atomMap t' (char_k nf_k) ↔
+            nf_eval_nf M' (k' + 1) 1 (fun _ => t') nf_k :=
+          fun nf_k => (ih_char nf_k).choose_spec
+        -- Build env_nfs and env_atoms for ih_general_exist at r=2
+        -- env = [x, t] with x at index 0, t at index 1
+        let ge_env_nfs : Fin 2 → NormalForm sig (k' + 1 + 1) 1 :=
+          fun i => match i with
+          | ⟨0, _⟩ => nf_x₀
+          | ⟨1, _⟩ => nf_t₀
+          | ⟨n + 2, h⟩ => absurd h (by omega)
+        let ge_env_atoms : AtomKind sig 2 → Bool := sub_nf.1
+        -- Build ih_general_exist formulas for each 3-var NF
+        let ge_formula : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
+          (ih_general_exist 2 (by omega) char_k char_k_correct
+            ge_env_nfs ge_env_atoms ssn).choose
+        have ge_correct : ∀ (ssn : NormalForm sig (k' + 1) 3)
+            (M' : OrderedMonadicStructure sig)
+            (h_UZ' : semantic_prior_UZ M' atomMap)
+            (h_SZ' : semantic_prior_SZ M' atomMap)
+            (e : Fin 2 → M'.carrier),
+            (∀ i, nf_eval_nf M' (k' + 1 + 1) 1 (fun _ => e i) (ge_env_nfs i)) →
+            (∀ a : AtomKind sig 2, atom_eval M' e a ↔ ge_env_atoms a = true) →
+            (temporal_truth M' atomMap (e ⟨0, by omega⟩) (ge_formula ssn) ↔
+             ∃ y, nf_eval_nf M' (k' + 1) (2 + 1) (Fin.cons y e) ssn) :=
+          fun ssn => (ih_general_exist 2 (by omega) char_k char_k_correct
+            ge_env_nfs ge_env_atoms ssn).choose_spec
+        -- Build the quantifier conjunction
+        let quant_conj := formula_conjList
+          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
+            if sub_nf.2 ssn then ge_formula ssn
+            else (ge_formula ssn).neg)
+        -- Enriched Until formula: char(nf_t₀) AND ((char(nf_x₀) AND quant_conj) U ⊤)
+        let until_formula := Formula.and (char_kp1 nf_t₀)
+          (Formula.untl (Formula.and (char_kp1 nf_x₀) quant_conj) Formula.top)
+        -- Environment transfer: Fin.cons x (fun _ => t) as Fin 2 → M.carrier
+        -- matches the ih_general_exist env parameter
+        have h_env_ge : ∀ (M' : OrderedMonadicStructure sig) (x' t' : M'.carrier),
+            (Fin.cons x' (fun _ : Fin 1 => t') : Fin 2 → M'.carrier) =
+            (fun i : Fin 2 => match i with
+              | ⟨0, _⟩ => x'
+              | ⟨1, _⟩ => t'
+              | ⟨n + 2, h⟩ => absurd h (by omega)) := by
+          intro M' x' t'; funext ⟨i, hi⟩
+          match i, hi with
+          | 0, _ => rfl
+          | 1, _ => rfl
+          | n + 2, h => exact absurd h (by omega)
         refine ⟨until_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
         rw [temporal_truth_and]
         constructor
-        · -- Backward: char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ U ⊤) → ∃ x
+        · -- Backward: char_kp1 nf_t₀ ∧ ((char_kp1 nf_x₀ ∧ quant_conj) U ⊤) → ∃ x
           intro ⟨h_t_nf, h_until⟩
           -- Extract x from Until
-          obtain ⟨x, h_tx, h_char_x, _⟩ := h_until
+          obtain ⟨x, h_tx, h_char_and_quant, _⟩ := h_until
+          rw [temporal_truth_and] at h_char_and_quant
+          obtain ⟨h_char_x, h_quant⟩ := h_char_and_quant
           -- t has 1-var NF nf_t₀
           have h_t_eval := (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mp h_t_nf
           -- x has 1-var NF nf_x₀
@@ -610,60 +663,166 @@ theorem existPart_succ_n1_bypass
           -- M₀ has matching 1-var NFs
           have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
           have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
-          -- Cross-structure 1-var agreement at x/x₀
+          -- Cross-structure 1-var agreement
           have h_x_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
               nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf ↔
               nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => x₀) nf :=
             nf_agreement_from_shared_nf M _ M₀ _ nf_x₀ h_x_eval h_x₀_eval
-          -- Cross-structure 1-var agreement at t/t₀
           have h_t_agree : ∀ nf : NormalForm sig (k' + 1 + 1) 1,
               nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf ↔
               nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
-          -- Order: t₀ < x₀ from M₀ satisfying sub_nf with h_gt_val
           have h_order₀ : t₀ < x₀ := (zone_order M₀ t₀ x₀ h_eval₀).1 h_gt_val
-          -- Reconstruct full 2-var NF at [x, t] in M
-          -- Atom part: from 1-var NF agreement + order matching
-          -- Quantifier part: requires enriched formula encoding (Phase 2)
+          -- Atom agreement
           have h_atom_agree := nonconstenv_atom_agree_until M x t M₀ x₀ t₀
             h_x_agree h_t_agree h_tx h_order₀
           obtain ⟨h_eval₀_atoms, h_eval₀_quant⟩ := h_eval₀
           refine ⟨x, fun a => (h_atom_agree a).trans (h_eval₀_atoms a), ?_⟩
-          -- Quantifier part: ∀ ssn, (∃ y, nf_eval [y,x,t] ssn) ↔ sub_nf.2 ssn
-          -- This requires transferring 3-var existentials on non-constant envs.
-          -- The between-zone existentials (t < y < x) cannot be transferred from
-          -- 1-var agreement alone — the enriched formula must carry this information.
-          sorry
-        · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ U ⊤)
+          -- Quantifier part: use ih_general_exist formulas from quant_conj
+          intro ssn
+          -- ge_correct gives: if env has matching 1-var NFs and atoms,
+          -- then ge_formula ssn ↔ ∃ y, nf_eval_nf M (k'+1) 3 [y,x,t] ssn
+          -- Verify preconditions for ge_correct:
+          -- 1. Individual 1-var NF evals
+          have h_ge_nfs : ∀ i : Fin 2,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) i)
+                (ge_env_nfs i) := by
+            intro ⟨i, hi⟩; match i, hi with
+            | 0, _ => exact h_x_eval
+            | 1, _ => exact h_t_eval
+            | n + 2, h => exact absurd h (by omega)
+          -- 2. Atom evals match env_atoms = sub_nf.1
+          have h_ge_atoms : ∀ a : AtomKind sig 2,
+              atom_eval M (Fin.cons x (fun _ => t)) a ↔ ge_env_atoms a = true :=
+            fun a => (h_atom_agree a).trans (h_eval₀_atoms a)
+          -- Apply ge_correct
+          have h_ge_iff := ge_correct ssn M h_UZ h_SZ
+            (Fin.cons x (fun _ => t)) h_ge_nfs h_ge_atoms
+          -- h_ge_iff: temporal_truth M atomMap x (ge_formula ssn) ↔
+          --           ∃ y, nf_eval_nf M (k'+1) 3 [y,x,t] ssn
+          -- (e ⟨0, _⟩ = (Fin.cons x (fun _ => t)) ⟨0, _⟩ = x)
+          -- Extract the truth value from quant_conj
+          rw [formula_conjList_iff] at h_quant
+          have h_ssn_mem : (if sub_nf.2 ssn then ge_formula ssn
+              else (ge_formula ssn).neg) ∈
+              (Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn' =>
+                if sub_nf.2 ssn' then ge_formula ssn'
+                else (ge_formula ssn').neg :=
+            List.mem_map.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), rfl⟩
+          have h_φ_true := h_quant _ h_ssn_mem
+          cases h_ssn_val : sub_nf.2 ssn with
+          | true =>
+            simp only [h_ssn_val, ite_true] at h_φ_true
+            exact Iff.intro (fun _ => rfl) (fun _ => h_ge_iff.mp h_φ_true)
+          | false =>
+            simp only [h_ssn_val, Bool.false_eq_true, ite_false] at h_φ_true
+            have h_not := (temporal_truth_neg M atomMap x _).mp h_φ_true
+            exact Iff.intro
+              (fun ⟨y, hy⟩ => absurd (h_ge_iff.mpr ⟨y, hy⟩) h_not)
+              (fun h_eq => absurd h_eq (by simp))
+        · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ ((char_kp1 nf_x₀ ∧ quant_conj) U ⊤)
           intro ⟨x, h_eval⟩
-          -- From sub_nf at [x, t] and [x₀, t₀], extract 1-var agreement
           have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval h_eval₀
           have h_x_1var := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var_agree
           have h_t_1var := cross_2nd_1var_from_shared_nf M x t M₀ x₀ t₀ sub_nf h_eval h_eval₀
-          -- t has NF type nf_t₀
           have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
           have h_t_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => t) nf_t₀ :=
             (h_t_1var nf_t₀).mpr h_t₀_eval
-          -- x has NF type nf_x₀
           have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
           have h_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x₀ :=
             (h_x_1var nf_x₀).mpr h_x₀_eval
+          -- Verify ih_general_exist preconditions
+          have h_ge_nfs : ∀ i : Fin 2,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) i)
+                (ge_env_nfs i) := by
+            intro ⟨i, hi⟩; match i, hi with
+            | 0, _ => exact h_x_eval
+            | 1, _ => exact h_t_eval
+            | n + 2, h => exact absurd h (by omega)
+          have h_ge_atoms : ∀ a : AtomKind sig 2,
+              atom_eval M (Fin.cons x (fun _ => t)) a ↔ ge_env_atoms a = true :=
+            h_eval.1
           constructor
           · exact (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mpr h_t_eval
-          · exact ⟨x, (zone_order M t x h_eval).1 h_gt_val,
-              (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr h_x_eval,
-              fun _ _ _ => id⟩
+          · refine ⟨x, (zone_order M t x h_eval).1 h_gt_val, ?_, fun _ _ _ => id⟩
+            rw [temporal_truth_and]
+            constructor
+            · exact (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr h_x_eval
+            · -- quant_conj at x: need each conjunct to be true
+              rw [formula_conjList_iff]
+              intro φ h_φ_mem
+              rw [List.mem_map] at h_φ_mem
+              obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
+              obtain ⟨_, h_quant_eval⟩ := h_eval
+              have h_ge_iff := ge_correct ssn M h_UZ h_SZ
+                (Fin.cons x (fun _ => t)) h_ge_nfs h_ge_atoms
+              cases h_ssn_val : sub_nf.2 ssn with
+              | true =>
+                subst h_ssn_eq; simp only [h_ssn_val, reduceIte]
+                -- Need: temporal_truth M atomMap x (ge_formula ssn)
+                -- From h_ge_iff: temporal ↔ ∃ y, nf_eval [y,x,t] ssn
+                -- From h_quant_eval: (∃ y, nf_eval [y,x,t] ssn) ↔ sub_nf.2 ssn = true
+                have ⟨y, hy⟩ := (h_quant_eval ssn).mpr h_ssn_val
+                exact h_ge_iff.mpr ⟨y, hy⟩
+              | false =>
+                subst h_ssn_eq; simp only [h_ssn_val, Bool.false_eq_true, ite_false]
+                rw [temporal_truth_neg]
+                intro h_contra
+                obtain ⟨y, hy⟩ := h_ge_iff.mp h_contra
+                have := (h_quant_eval ssn).mp ⟨y, hy⟩
+                exact absurd (h_ssn_val ▸ this) (by simp)
       | false, true =>
-        -- Enriched Since formula: mirror of Until with reversed order
+        -- Enriched Since formula with quantifier conjunction (mirror of Until)
         let nf_x₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => x₀)
         let nf_t₀ := nf_characteristic M₀ (k' + 1 + 1) 1 (fun _ => t₀)
-        let since_formula := Formula.and (char_kp1 nf_t₀) (Formula.snce (char_kp1 nf_x₀) Formula.top)
+        -- Build char_k from ih_char
+        let char_k : NormalForm sig (k' + 1) 1 → Formula := fun nf_k => (ih_char nf_k).choose
+        have char_k_correct : ∀ (nf_k : NormalForm sig (k' + 1) 1)
+            (M' : OrderedMonadicStructure sig)
+            (h_UZ' : semantic_prior_UZ M' atomMap)
+            (h_SZ' : semantic_prior_SZ M' atomMap)
+            (t' : M'.carrier),
+            temporal_truth M' atomMap t' (char_k nf_k) ↔
+            nf_eval_nf M' (k' + 1) 1 (fun _ => t') nf_k :=
+          fun nf_k => (ih_char nf_k).choose_spec
+        -- Build env for ih_general_exist at r=2
+        let ge_env_nfs : Fin 2 → NormalForm sig (k' + 1 + 1) 1 :=
+          fun i => match i with
+          | ⟨0, _⟩ => nf_x₀
+          | ⟨1, _⟩ => nf_t₀
+          | ⟨n + 2, h⟩ => absurd h (by omega)
+        let ge_env_atoms : AtomKind sig 2 → Bool := sub_nf.1
+        -- Build ih_general_exist formulas
+        let ge_formula : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
+          (ih_general_exist 2 (by omega) char_k char_k_correct
+            ge_env_nfs ge_env_atoms ssn).choose
+        have ge_correct : ∀ (ssn : NormalForm sig (k' + 1) 3)
+            (M' : OrderedMonadicStructure sig)
+            (h_UZ' : semantic_prior_UZ M' atomMap)
+            (h_SZ' : semantic_prior_SZ M' atomMap)
+            (e : Fin 2 → M'.carrier),
+            (∀ i, nf_eval_nf M' (k' + 1 + 1) 1 (fun _ => e i) (ge_env_nfs i)) →
+            (∀ a : AtomKind sig 2, atom_eval M' e a ↔ ge_env_atoms a = true) →
+            (temporal_truth M' atomMap (e ⟨0, by omega⟩) (ge_formula ssn) ↔
+             ∃ y, nf_eval_nf M' (k' + 1) (2 + 1) (Fin.cons y e) ssn) :=
+          fun ssn => (ih_general_exist 2 (by omega) char_k char_k_correct
+            ge_env_nfs ge_env_atoms ssn).choose_spec
+        -- Build quantifier conjunction
+        let quant_conj := formula_conjList
+          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
+            if sub_nf.2 ssn then ge_formula ssn
+            else (ge_formula ssn).neg)
+        -- Enriched Since formula: char(nf_t₀) AND ((char(nf_x₀) AND quant_conj) S ⊤)
+        let since_formula := Formula.and (char_kp1 nf_t₀)
+          (Formula.snce (Formula.and (char_kp1 nf_x₀) quant_conj) Formula.top)
         refine ⟨since_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
         rw [temporal_truth_and]
         constructor
-        · -- Backward: char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ S ⊤) → ∃ x
+        · -- Backward: char_kp1 nf_t₀ ∧ ((char_kp1 nf_x₀ ∧ quant_conj) S ⊤) → ∃ x
           intro ⟨h_t_nf, h_since⟩
-          obtain ⟨x, h_xt, h_char_x, _⟩ := h_since
+          obtain ⟨x, h_xt, h_char_and_quant, _⟩ := h_since
+          rw [temporal_truth_and] at h_char_and_quant
+          obtain ⟨h_char_x, h_quant⟩ := h_char_and_quant
           have h_t_eval := (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mp h_t_nf
           have h_x_eval := (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mp h_char_x
           have h_t₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀)
@@ -677,16 +836,43 @@ theorem existPart_succ_n1_bypass
               nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
           have h_order₀ : x₀ < t₀ := (zone_order M₀ t₀ x₀ h_eval₀).2 h_lt_val
-          -- Reconstruct full 2-var NF at [x, t] in M (Since zone: x < t)
-          -- Atom part: from 1-var NF agreement + order matching
-          -- Quantifier part: requires enriched formula encoding (Phase 2)
           have h_atom_agree := nonconstenv_atom_agree_since M x t M₀ x₀ t₀
             h_x_agree h_t_agree h_xt h_order₀
           obtain ⟨h_eval₀_atoms, h_eval₀_quant⟩ := h_eval₀
           refine ⟨x, fun a => (h_atom_agree a).trans (h_eval₀_atoms a), ?_⟩
-          -- Quantifier part: same issue as Until zone — non-constant env transfer
-          sorry
-        · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ S ⊤)
+          -- Quantifier part via ih_general_exist
+          intro ssn
+          have h_ge_nfs : ∀ i : Fin 2,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) i)
+                (ge_env_nfs i) := by
+            intro ⟨i, hi⟩; match i, hi with
+            | 0, _ => exact h_x_eval
+            | 1, _ => exact h_t_eval
+            | n + 2, h => exact absurd h (by omega)
+          have h_ge_atoms : ∀ a : AtomKind sig 2,
+              atom_eval M (Fin.cons x (fun _ => t)) a ↔ ge_env_atoms a = true :=
+            fun a => (h_atom_agree a).trans (h_eval₀_atoms a)
+          have h_ge_iff := ge_correct ssn M h_UZ h_SZ
+            (Fin.cons x (fun _ => t)) h_ge_nfs h_ge_atoms
+          rw [formula_conjList_iff] at h_quant
+          have h_ssn_mem : (if sub_nf.2 ssn then ge_formula ssn
+              else (ge_formula ssn).neg) ∈
+              (Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn' =>
+                if sub_nf.2 ssn' then ge_formula ssn'
+                else (ge_formula ssn').neg :=
+            List.mem_map.mpr ⟨ssn, Multiset.mem_toList.mpr (Fintype.complete ssn), rfl⟩
+          have h_φ_true := h_quant _ h_ssn_mem
+          cases h_ssn_val : sub_nf.2 ssn with
+          | true =>
+            simp only [h_ssn_val, ite_true] at h_φ_true
+            exact Iff.intro (fun _ => rfl) (fun _ => h_ge_iff.mp h_φ_true)
+          | false =>
+            simp only [h_ssn_val, Bool.false_eq_true, ite_false] at h_φ_true
+            have h_not := (temporal_truth_neg M atomMap x _).mp h_φ_true
+            exact Iff.intro
+              (fun ⟨y, hy⟩ => absurd (h_ge_iff.mpr ⟨y, hy⟩) h_not)
+              (fun h_eq => absurd h_eq (by simp))
+        · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ ((char_kp1 nf_x₀ ∧ quant_conj) S ⊤)
           intro ⟨x, h_eval⟩
           have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval h_eval₀
           have h_x_1var := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var_agree
@@ -697,11 +883,41 @@ theorem existPart_succ_n1_bypass
           have h_x₀_eval := nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => x₀)
           have h_x_eval : nf_eval_nf M (k' + 1 + 1) 1 (fun _ => x) nf_x₀ :=
             (h_x_1var nf_x₀).mpr h_x₀_eval
+          have h_ge_nfs : ∀ i : Fin 2,
+              nf_eval_nf M (k' + 1 + 1) 1 (fun _ => (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) i)
+                (ge_env_nfs i) := by
+            intro ⟨i, hi⟩; match i, hi with
+            | 0, _ => exact h_x_eval
+            | 1, _ => exact h_t_eval
+            | n + 2, h => exact absurd h (by omega)
+          have h_ge_atoms : ∀ a : AtomKind sig 2,
+              atom_eval M (Fin.cons x (fun _ => t)) a ↔ ge_env_atoms a = true :=
+            h_eval.1
           constructor
           · exact (char_kp1_correct nf_t₀ M h_UZ h_SZ t).mpr h_t_eval
-          · exact ⟨x, (zone_order M t x h_eval).2 h_lt_val,
-              (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr h_x_eval,
-              fun _ _ _ => id⟩
+          · refine ⟨x, (zone_order M t x h_eval).2 h_lt_val, ?_, fun _ _ _ => id⟩
+            rw [temporal_truth_and]
+            constructor
+            · exact (char_kp1_correct nf_x₀ M h_UZ h_SZ x).mpr h_x_eval
+            · rw [formula_conjList_iff]
+              intro φ h_φ_mem
+              rw [List.mem_map] at h_φ_mem
+              obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
+              obtain ⟨_, h_quant_eval⟩ := h_eval
+              have h_ge_iff := ge_correct ssn M h_UZ h_SZ
+                (Fin.cons x (fun _ => t)) h_ge_nfs h_ge_atoms
+              cases h_ssn_val : sub_nf.2 ssn with
+              | true =>
+                subst h_ssn_eq; simp only [h_ssn_val, reduceIte]
+                have ⟨y, hy⟩ := (h_quant_eval ssn).mpr h_ssn_val
+                exact h_ge_iff.mpr ⟨y, hy⟩
+              | false =>
+                subst h_ssn_eq; simp only [h_ssn_val, Bool.false_eq_true, ite_false]
+                rw [temporal_truth_neg]
+                intro h_contra
+                obtain ⟨y, hy⟩ := h_ge_iff.mp h_contra
+                have := (h_quant_eval ssn).mp ⟨y, hy⟩
+                exact absurd (h_ssn_val ▸ this) (by simp)
       | false, false =>
         -- Eq zone: x = t, so env is constant [t, t].
         -- Enriched formula: compat_disj ∧ conjunction encoding quantifier conditions
