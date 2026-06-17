@@ -1,67 +1,99 @@
 {
-  "status": "partial",
-  "summary": "Restructured KampBypass.lean backward direction sorries. The two original sorries at lines 356/368 (Until/Since backward for k>0) are now replaced by calls to well-typed theorems in a new PriorComposition.lean. The enriched formula encodes both x's and t's full 1-var NF types (not just atom compatibility), enabling the cross-structure transfer. Full project builds with 0 errors.",
+  "status": "blocked",
+  "summary": "CRITICAL FINDING: prior_nonconstenv_2var_agree_until/since in PriorComposition.lean are FALSE. Counterexample: M=N=(Z,<,P_everywhere), envs [2,0] vs [1,0] -- same 1-var NFs, matching orders, Prior-UZ/SZ satisfied, but different 2-var NFs (between zone non-empty vs empty). The 4 sorries (lines 231, 239, 322, 399) cannot be closed. The KampBypass k>0 enriched formula (char_kp1(nf_t0) AND Until(char_kp1(nf_x0), top)) is insufficient -- it encodes only 1-var types but 2-var NFs require zone content encoding.",
   "phases_completed": 1,
-  "phases_total": 3,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 98,
-      "statement": "theorem prior_nonconstenv_2var_agree_until",
-      "assumption": "On Prior structures, depth-(K+2) 1-var NF agreement for x/x' and t/t', with matching orders t<x and t'<x', implies depth-(K+2) 2-var NF agreement at [x,t]/[x',t']",
-      "why_deferred": "Core mathematical content: requires Prior-specific zone decomposition argument using UZ/SZ axioms to transfer quantifier conditions across zones. Corresponds to Rabinovich 2014 Lemma 5.1.",
-      "next_dispatch": "Prove by induction on K. Base (K=0): purely atomic, follows from 1-var atom agreement + order. Step (K+1): zone decomposition for y's position relative to x and t, using cross_extend_fwd/bwd for zones above x and below t, Prior-UZ/SZ for the between zone."
+      "line": 231,
+      "statement": "exist_transfer_3var_nonconstenv (forward: M to N)",
+      "assumption": "FALSE THEOREM: assumes depth-(K+2) 1-var + depth-(K+1) 2-var at [x,t] suffice for depth-(K+1) 3-var transfer",
+      "why_deferred": "Theorem conclusion is FALSE. Counterexample: (Z,<,P_everywhere), envs [2,0] vs [1,0]",
+      "next_dispatch": "Delete false theorem. Restructure KampBypass k>0 to encode full 2-var NF."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 121,
-      "statement": "theorem prior_nonconstenv_2var_agree_since",
-      "assumption": "Mirror of Until with x<t order",
-      "why_deferred": "Mirror",
-      "next_dispatch": "Mirror of Until proof with UZ/SZ roles swapped"
+      "line": 239,
+      "statement": "exist_transfer_3var_nonconstenv (backward: N to M)",
+      "assumption": "FALSE THEOREM (symmetric to forward)",
+      "why_deferred": "Same as forward",
+      "next_dispatch": "Same as forward"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 129,
-      "statement": "private theorem cross_2nd_1var_from_shared_nf",
-      "assumption": "From depth-K 2-var agreement at [x,t]/[x',t'], extract 1-var agreement at t/t'",
-      "why_deferred": "Technical helper for forward direction of enriched formula. Needs variable swap or second-component projection from 2-var NF.",
-      "next_dispatch": "Prove by induction on K. K=0 case: extract atom conditions for index 1 from 2-var atom agreement. K+1 case: use quantifier transfer via the shared 2-var NF's quantifier conditions."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 322,
+      "statement": "prior_nonconstenv_2var_agree_until base case (depth-0 3-var transfer)",
+      "assumption": "FALSE: enclosing theorem prior_nonconstenv_2var_agree_until is false",
+      "why_deferred": "Enclosing theorem is false",
+      "next_dispatch": "Delete false theorem"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 399,
+      "statement": "prior_nonconstenv_2var_agree_since base case",
+      "assumption": "FALSE: mirror of Until, same counterexample",
+      "why_deferred": "Enclosing theorem is false",
+      "next_dispatch": "Delete false theorem"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
       "statement": "nf_exist_backward_prior (dead code)",
       "assumption": "Not on critical path",
-      "why_deferred": "Dead code per module comments",
+      "why_deferred": "Dead code",
       "next_dispatch": "Skip"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "sorry sorry (ih_char and ih_exist wiring)",
-      "assumption": "IH arguments need threading from outer induction",
-      "why_deferred": "Downstream of KampBypass sorries; will be wired after PriorComposition is closed",
-      "next_dispatch": "Wire from kamp_mutual_induction infrastructure"
+      "statement": "sorry sorry (IH wiring)",
+      "assumption": "nf_2var_exist_formula_prior_filled exists but not wired",
+      "why_deferred": "Phase 5 wiring -- blocked by false theorems upstream",
+      "next_dispatch": "Unblocked only after KampBypass k>0 is restructured"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/",
+  "blockers": [
+    {
+      "type": "false_theorem",
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "theorems": ["prior_nonconstenv_2var_agree_until", "prior_nonconstenv_2var_agree_since", "exist_transfer_3var_nonconstenv", "prior_2var_transfer_until", "prior_2var_transfer_since"],
+      "counterexample": "M=N=(Z,<,P_everywhere) with envs [2,0] vs [1,0]. Same depth-(K+2) 1-var NFs (translation symmetry + uniform predicates). Matching orders (0<2 and 0<1). Z satisfies Prior-UZ/SZ (upper sets well-ordered). But depth-(K+2) 2-var NFs differ at K=0: zone (0,2) has integer w=1 satisfying any 3-var atomic pattern requiring 0<w<2, while zone (0,1) has no integer satisfying 0<w<1.",
+      "root_cause": "1-var NF agreement + matching orders does NOT determine 2-var NFs on non-constant environments, even on Prior structures. The between-zone content (what NF types exist strictly between the two reference points) is not captured by individual 1-var NFs.",
+      "impact": "KampBypass.lean k>0 backward proofs (lines 532, 577) are unsound"
+    },
+    {
+      "type": "formula_insufficiency",
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "lines": [496, 553],
+      "description": "Until/Since zone formulas encode only 1-var NF types (char_kp1(nf_t0) AND char_kp1(nf_x0) U top). This is insufficient to recover 2-var NF agreement. The eq zone formula (lines 596-627) correctly encodes quantifier conditions via quant_conj using ih_exist on constant parents. The Until/Since zones need analogous quantifier encoding but ih_exist only supports constant parents.",
+      "resolution_options": [
+        "Option A: Extend Until/Since formula to include zone-specific quantifier conditions, encoding between-zone content. Requires adapting ih_exist to non-constant parents or reducing non-constant existentials to constant ones.",
+        "Option B: Generalize k=0 VecEA2 zone-bracket approach to k>0. Each zone bracket encodes its content using temporal formulas built from ih_exist.",
+        "Option C: Add a non-constant-parent ExistPart variant to the mutual induction."
+      ]
+    }
+  ],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-2-blocked-counterexample.md",
   "continuation_context": {
-    "is_successor": true,
-    "resume_at": "Prove prior_nonconstenv_2var_agree_until in PriorComposition.lean",
-    "key_decisions": [
-      "Enriched formula: Formula.and (char_kp1 nf_t₀) (Formula.untl (char_kp1 nf_x₀) Formula.top) — encodes both 1-var NFs exactly",
-      "Forward direction uses cross_1var_from_2var (first component) + cross_2nd_1var_from_shared_nf (second component) to show NF types match M₀",
-      "Backward direction uses prior_2var_transfer_until/since from PriorComposition.lean",
-      "The 2-var NF sub_nf determines both component 1-var NFs via projection (nf_drop_last_cross), so using M₀-specific NFs in the formula is correct for the forward direction"
+    "is_successor": false,
+    "phase_number": 2,
+    "key_finding": "Theorems in PriorComposition.lean are mathematically FALSE, not merely hard to prove. The entire plan v5 approach (Prior composition theorem + enriched 1-var formula) must be revised.",
+    "files_affected": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
     ],
-    "preserved_theorems": [
-      "existPart_succ_n1_bypass_k0 (k=0 case, sorry-free)",
-      "existPart_succ_n1_bypass eq zone (false, false case, sorry-free)",
-      "nf_exist_formula_forward (sorry-free)",
-      "nf_characterizable_temporal_prior_classical (sorry-free modulo nf_2var_exist_formula_prior)",
-      "All 7 KampComposition.lean theorems (sorry-free)"
+    "what_is_preserved": [
+      "KampComposition.lean (Phase 1): constenv_same_depth_2var, exist_transfer_nvar_constenv -- CORRECT and useful for eq zone",
+      "KampBypass.lean k>0 forward proofs (lines 534-552, 579-594) -- CORRECT",
+      "KampBypass.lean k>0 eq zone (lines 596-740) -- CORRECT (uses ih_exist on constant parents)",
+      "All k=0 infrastructure (KampBypassCore, KampBypassUntil, KampBypassSince) -- UNAFFECTED"
+    ],
+    "what_must_change": [
+      "PriorComposition.lean: delete or gut false theorems (prior_nonconstenv_2var_agree_until/since, exist_transfer_3var_nonconstenv, prior_2var_transfer_until/since)",
+      "KampBypass.lean k>0 Until/Since zones: restructure backward proofs to NOT use prior_2var_transfer",
+      "KampBypass.lean k>0 Until/Since formulas: enrich to encode zone content, not just 1-var types",
+      "Possibly: add non-constant-parent ExistPart to mutual induction"
     ]
   }
 }

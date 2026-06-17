@@ -123,13 +123,18 @@ Phases within the same wave can execute in parallel.
 ### Phase 2: Prior Composition Theorem -- Inductive Step [BLOCKED]
 
 **BLOCKER** (Phase 2):
-- **What failed**: The general same-depth composition theorem `prior_composition_rvar` (depth-(K+1) 1-var + orders => depth-(K+1) r-var) requires finding a SINGLE witness y' in N that has matching orders with ALL environment elements simultaneously. On non-constant envs, nf_extend_fwd from different base elements gives DIFFERENT witnesses (y'_t from t-agreement, y'_x from x-agreement) that may have different positions relative to other elements.
-- **What was tried**: (1) Induction on K with r universal -- blocked by order gap at quantifier step. (2) Using two nf_extend_fwd applications (from t and x separately) -- gives y'_t with matching y-t order and y'_x with matching y-x order, but no single y' with both. (3) Using nf_extend_fwd chain (1-var -> 2-var -> 3-var) -- wrong env ordering, and intermediate witnesses don't match target env.
-- **Why stuck**: The counterexample in NfComposition.lean:20-36 is fundamental: on (Z, <), pairs (0,2) and (0,1) have same 1-var NFs and matching orders but different 2-var NFs. The composition theorem on non-constant envs requires Prior-UZ/SZ to ensure zone witnesses exist, but using Prior-UZ/SZ at the NF level requires temporal formula infrastructure (CharPart), creating a circular dependency with ExistPart.
-- **What is needed**: The composition theorem as stated in the plan is the WRONG approach. The correct approach is to directly enrich the formula in Phase 3 to encode the full 2-var NF conditions (atoms + quantifier conditions) as temporal formulas, bypassing the composition theorem entirely. The eq zone pattern already does this successfully.
+- **What failed**: `prior_nonconstenv_2var_agree_until/since` (depth-(K+2) 1-var + orders + Prior-UZ/SZ => depth-(K+2) 2-var) is **FALSE**. The theorems in PriorComposition.lean cannot be proved because their statements are mathematically incorrect.
+- **Counterexample**: M = N = (Z, <, P_everywhere) where P is a single predicate true at every integer. sig has one pred. envM = [2, 0] (x=2, t=0), envN = [1, 0] (x'=1, t'=0). All integers have the same depth-(K+2) 1-var NF (translation symmetry + uniform preds). t=0 < x=2, t'=0 < x'=1. But depth-(K+2) 2-var NFs DIFFER at K=0: the 3-var existential "exists w with 0 < w < 2" is satisfiable (w=1) while "exists w with 0 < w < 1" is not (no integer in (0,1)). Z satisfies Prior-UZ/SZ because each upper set is well-ordered (isomorphic to N).
+- **Root cause**: 1-var NF agreement + matching orders does NOT determine 2-var NFs on non-constant environments, EVEN on Prior structures. The "between zone" content (what NF types exist strictly between the two reference points) is not captured by 1-var NFs.
+- **Impact on PriorComposition.lean**: All 4 sorries (lines 231, 239, 322, 399) are in theorems whose conclusions are FALSE. `exist_transfer_3var_nonconstenv` is also FALSE as stated.
+- **Impact on KampBypass.lean (k>0)**: The backward proof at lines 508-533 (Until) and 561-578 (Since) call `prior_2var_transfer_until/since` which invoke the false theorems. The enriched formula `char_kp1(nf_t0) AND (char_kp1(nf_x0) U top)` encodes only 1-var NF types and is INSUFFICIENT to recover 2-var NF agreement.
+- **What is needed**: The Until/Since zone formulas must encode the FULL 2-var NF type (including zone content), not just 1-var types. This requires:
+  (a) Encoding depth-K 3-var existential conditions in the temporal formula (as the eq zone already does with quant_conj)
+  (b) Supporting non-constant parent environments in ih_exist (currently ih_exist only handles constant parents `(fun _ => t)`)
+  (c) Restructuring ExistPart in the mutual induction to support non-constant parents, OR finding an alternative encoding that reduces non-constant-parent existentials to constant-parent ones
 - **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
-Phase 2 as originally conceived is UNNECESSARY. The Phase 1 infrastructure (constenv_same_depth_2var, exist_transfer_nvar_constenv) is sufficient for the eq zone case. For the Until/Since zones, the approach must be formula enrichment (Phase 3), not composition.
+Phase 2 is BLOCKED because the theorems are false, not merely hard to prove. The PriorComposition.lean approach must be abandoned.
 
 **Goal**: Prove `prior_composition_2var` for K+1 by induction on K, using Prior-UZ/SZ to provide witnesses.
 

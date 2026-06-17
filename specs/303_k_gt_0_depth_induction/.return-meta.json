@@ -1,34 +1,43 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "session_id": "sess_1781661075_5cab61",
   "task_number": 303,
-  "started_at": "2026-06-16T00:00:00Z",
+  "started_at": "2026-06-17T00:00:00Z",
+  "requires_user_review": true,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 98,
-      "statement": "theorem prior_nonconstenv_2var_agree_until",
-      "assumption": "Prior UZ/SZ + 1-var NF agreement + order -> 2-var NF agreement",
-      "why_deferred": "Core mathematical content: Rabinovich Lemma 5.1 formalization",
-      "next_dispatch": "Prove by induction on K with zone decomposition"
+      "line": 231,
+      "statement": "exist_transfer_3var_nonconstenv forward",
+      "assumption": "FALSE THEOREM: 1-var + 2-var agreement does not imply 3-var transfer on non-constant envs",
+      "why_deferred": "Theorem conclusion is mathematically false. Counterexample: (Z,<,P_everywhere), envs [2,0] vs [1,0]",
+      "next_dispatch": "Delete false theorem. Restructure KampBypass k>0 to encode full 2-var NF."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 121,
-      "statement": "theorem prior_nonconstenv_2var_agree_since",
-      "assumption": "Mirror of Until",
-      "why_deferred": "Mirror",
-      "next_dispatch": "Mirror"
+      "line": 239,
+      "statement": "exist_transfer_3var_nonconstenv backward",
+      "assumption": "FALSE THEOREM (symmetric)",
+      "why_deferred": "Same counterexample",
+      "next_dispatch": "Delete"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 129,
-      "statement": "private theorem cross_2nd_1var_from_shared_nf",
-      "assumption": "2-var NF sharing implies second-component 1-var agreement",
-      "why_deferred": "Technical helper for forward direction",
-      "next_dispatch": "Prove by induction on K or via variable swap"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 322,
+      "statement": "prior_nonconstenv_2var_agree_until base case",
+      "assumption": "FALSE: enclosing theorem is false",
+      "why_deferred": "Enclosing theorem false",
+      "next_dispatch": "Delete"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 399,
+      "statement": "prior_nonconstenv_2var_agree_since base case",
+      "assumption": "FALSE: mirror",
+      "why_deferred": "Enclosing theorem false",
+      "next_dispatch": "Delete"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
@@ -41,21 +50,28 @@
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "sorry sorry (ih_char and ih_exist wiring)",
-      "assumption": "IH arguments need threading from outer induction",
-      "why_deferred": "Downstream of KampBypass sorries",
-      "next_dispatch": "Wire from kamp_mutual_induction after PriorComposition is closed"
+      "statement": "sorry sorry (IH wiring)",
+      "assumption": "Blocked by false theorems upstream",
+      "why_deferred": "Upstream dependency",
+      "next_dispatch": "Unblocked only after KampBypass restructured"
     }
   ],
   "verification": {
-    "sorry_count_kamp": 5,
+    "sorry_count_kamp": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
+  "blockers": [
+    "prior_nonconstenv_2var_agree_until/since are FALSE theorems (counterexample in handoff)",
+    "KampBypass k>0 Until/Since backward proofs call false theorems",
+    "Until/Since zone formula encodes only 1-var types but needs full 2-var NF content"
+  ],
+  "closed_in_this_dispatch": [],
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-2-blocked-counterexample.md",
   "memory_candidates": [
-    "The 2-var NF sub_nf at [x,t] DETERMINES both component 1-var NFs via projection (nf_drop_last_cross / cross_1var_from_2var). So using M0-specific NF types nf_x0 and nf_t0 in the Until/Since formula is correct: any structure satisfying sub_nf at [x,t] necessarily has x's NF = nf_x0 and t's NF = nf_t0.",
-    "The enriched formula Formula.and (char_kp1 nf_t0) (Formula.untl (char_kp1 nf_x0) Formula.top) works because: (1) backward gives exact 1-var NF types enabling cross-structure transfer, (2) forward follows from NF projection.",
-    "cross_2nd_1var_from_shared_nf (second-component 1-var NF from 2-var sharing) has no existing infrastructure. nf_drop_last_cross only projects the first component. Options: variable swap lemma, direct induction on K, or derive from constenv_same_depth_2var."
+    "CRITICAL: prior_nonconstenv_2var_agree_until/since in PriorComposition.lean are FALSE. Counterexample: (Z,<,P_everywhere), envs [2,0] vs [1,0] -- same depth-(K+2) 1-var NFs (translation symmetry), matching orders (0<2, 0<1), Z satisfies Prior-UZ/SZ, but depth-(K+2) 2-var NFs differ (between-zone content). 1-var NF agreement + matching orders does NOT determine 2-var NFs on non-constant environments, even on Prior structures.",
+    "The eq zone case works because constant envs [t,t] have empty between-zones, so constenv_same_depth_2var is correct. Only non-constant envs require zone content encoding.",
+    "Resolution options: (A) Enrich Until/Since formula with quantifier conditions (requires non-constant-parent ih_exist), (B) Generalize k=0 VecEA2 zone-brackets to k>0, (C) Add ExistPart_nc variant to mutual induction."
   ]
 }
