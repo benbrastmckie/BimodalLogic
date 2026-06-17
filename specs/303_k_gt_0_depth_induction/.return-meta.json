@@ -1,35 +1,35 @@
 {
+  "status": "in_progress",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "session_id": "sess_1781699606_7f7ccd",
-  "artifact_path": "specs/303_k_gt_0_depth_induction/reports/05_recursive-formula-design.md",
-  "findings_count": 7,
-  "adversarial_verification_triggered": true,
-  "memory_candidates": [
+  "phase": 1,
+  "session": "sess_1781700693_29c274",
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "sorry_inventory": [
     {
-      "content": "ExistPart only handles constant-parent envs (Fin.cons x (fun _ => t)). Non-constant envs [y,x,t] with x != t require GeneralExistPart -- a third mutual induction conjunct alongside CharPart and ExistPart. The recursion is on depth k with arity r increasing: GeneralExistPart(k+1,r) requires GeneralExistPart(k,r+1). Terminates because k strictly decreases. Base case k=0 is purely atomic and encodable via zone decomposition + nested Until/Since (Rabinovich Prop 3.5).",
-      "keywords": ["ExistPart", "GeneralExistPart", "non-constant-env", "mutual-induction", "Kamp", "Rabinovich"],
-      "topic": "lean4-kamp-nonconstenv"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 617,
+      "context": "existPart_succ_n1_bypass backward quantifier (Until zone)"
     },
     {
-      "content": "Transfer theorem for non-constant envs (nonconstenv_exist_transfer) is FALSE: on Z, envs [0,2] and [0,1] have same 1-var NFs and order patterns but different 2-var NFs because interval (0,2) contains 1 while (0,1) is empty. This holds even on Prior structures. The formula enrichment approach (GeneralExistPart) is the only correct solution.",
-      "keywords": ["transfer-false", "counterexample", "non-constant-env", "Z-integers", "Prior"],
-      "topic": "lean4-kamp-nonconstenv"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 669,
+      "context": "existPart_succ_n1_bypass backward quantifier (Since zone)"
     }
   ],
-  "next_steps": "Run /plan 303 to create implementation plan for GeneralExistPart construction",
-  "prior_artifacts": [
+  "memory_candidates": [
     {
-      "type": "code",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "summary": "Phase 1 complete: atom part of Until/Since backward proved. 2 sorry remain at lines 617, 669."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-2-handoff-20260617T091416Z.md",
-      "summary": "Phase 2 blocker analysis documenting 5 failed approaches"
+      "content": "GeneralExistPart at depth 0 can be proved without explicit zone decomposition by parameterizing on the full depth-(k+1) r-var NF type of the environment. The key insight: nf_extend_fwd pattern (nf_characteristic_satisfies + nf_agreement_from_shared_nf) transfers depth-k (r+1)-var existentials between any two environments sharing the same depth-(k+1) r-var NF. This makes the k=0 proof trivial: satisfiable case uses Formula.top, unsatisfiable case uses Formula.bot.",
+      "category": "PATTERN",
+      "source_artifact": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
+      "confidence": 0.9,
+      "suggested_keywords": ["GeneralExistPart", "nf_extend_fwd", "cross-structure-transfer", "depth-0", "Formula.top"]
     }
   ]
 }
