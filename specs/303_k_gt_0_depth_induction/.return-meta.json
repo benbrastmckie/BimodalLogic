@@ -11,15 +11,15 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
       "statement": "existPart_succ_n1_bypass Until backward (k>0)",
-      "assumption": "Needs Prior composition or enriched formula",
-      "why_deferred": "Core depth-gap problem",
+      "assumption": "Core depth-gap problem",
+      "why_deferred": "Requires Prior composition or enriched formula",
       "next_dispatch": "Plan v5 Phases 1-3"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
       "statement": "existPart_succ_n1_bypass Since backward (k>0)",
-      "assumption": "Mirror of Until case",
+      "assumption": "Mirror of Until",
       "why_deferred": "Mirror of line 356",
       "next_dispatch": "Mirror Until proof"
     },
@@ -27,35 +27,28 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
       "line": 298,
       "statement": "constenv_2var_determines",
-      "assumption": "2-var -> n-var NF agreement on constenvs",
-      "why_deferred": "Complex Fin arithmetic proof",
-      "next_dispatch": "Prove by induction on k"
+      "assumption": "2-var -> n-var on constenvs",
+      "why_deferred": "Induction on k with generalized prefix",
+      "next_dispatch": "Prove by induction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "line": 337,
+      "line": 321,
       "statement": "constenv_nvar_to_2var",
-      "assumption": "n-var -> 2-var NF agreement on constenvs",
-      "why_deferred": "Reverse direction of constenv_2var_determines",
-      "next_dispatch": "Prove via nf_drop_last chain"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-      "line": 381,
-      "statement": "existPart_succ n>=2 mpr direction",
-      "assumption": "n-var eval -> 2-var eval on constenvs",
-      "why_deferred": "Depends on constenv_nvar_to_2var",
-      "next_dispatch": "Use constenv_nvar_to_2var"
+      "assumption": "(n+2)-var -> 2-var on constenvs",
+      "why_deferred": "Iterate nf_drop_last",
+      "next_dispatch": "Prove via nf_drop_last"
     }
   ],
   "verification": {
-    "sorry_count": 7,
+    "sorry_count": 6,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "On constant-parent environments Fin.cons x (fun _ => t), n-var NF agreement is determined by 2-var NF agreement. This is the key lemma for the n>=2 case of ExistPart at all depths.",
-    "The quantifier extension step in constenv_2var_determines requires the IH at a generalized prefix width: after nf_extend_fwd, the extended env [y,x,t,...,t] has a 3-var non-constant prefix, not a 2-var prefix."
+    "On constant-parent environments Fin.cons x (fun _ => t), n-var NF agreement is determined by 2-var NF agreement (constenv_2var_determines). The reverse (constenv_nvar_to_2var) requires input arity >= 2 (n+2), since 1-var to 2-var is upward composition, not projection.",
+    "The constenv castSucc projection identity: (Fin.cons x (fun _ => t)) compose Fin.castSucc = Fin.cons x (fun _ => t) at reduced arity. Proof: cases i; zero => rfl; succ => rfl.",
+    "For existPart_succ n>=2: use constenv_2var_determines for mp direction and constenv_nvar_to_2var for mpr direction, with M0 witness providing the 2-var NF sub_nf_2 = nf_characteristic M0 (k+1) 2 [x0, t0]."
   ]
 }

@@ -1,13 +1,14 @@
 {
   "status": "partial",
-  "summary": "Restructured n>=2 case of existPart_succ to reduce it to two helper lemmas (constenv_2var_determines and constenv_nvar_to_2var) in NfComposition.lean. The original sorry at KampMutualInduction.lean:310 is replaced by structured proof using these helpers. The core Until/Since backward sorries at KampBypass.lean:356,368 remain untouched. Full build passes.",
+  "summary": "Restructured n>=2 case of existPart_succ: original sorry at KampMutualInduction.lean:310 is completely replaced by structured proof using constenv_2var_determines (mp) and constenv_nvar_to_2var (mpr). These two helper lemmas in NfComposition.lean are the only new sorries. The core Until/Since backward sorries at KampBypass.lean:356,368 remain untouched. Full build passes with 6 sorry sites in Kamp/ directory (down from 7: removed n>=2 sorry, added 2 constenv helpers, removed 1 mpr sorry).",
   "phases_completed": 0,
   "phases_total": 5,
   "plan_path": "specs/303_k_gt_0_depth_induction/plans/05_prior-composition-plan.md",
   "plan_version": 5,
   "blockers": [
-    "constenv_2var_determines: proving that on Fin.cons x (fun _ => t) envs, depth-k 2-var NF agreement determines depth-k (n+1)-var NF agreement. Requires induction on k with careful Fin arithmetic for atom and quantifier transfer.",
-    "KampBypass.lean:356,368 (Until/Since backward k>0): the core sorry. Requires either enriched formula approach or Prior composition theorem per plan v5."
+    "constenv_2var_determines (NfComposition.lean:298): On Fin.cons x (fun _ => t) envs, depth-k 2-var NF agreement implies depth-k (n+1)-var NF agreement. Requires induction on k. The quantifier step after nf_extend_fwd produces an env [y,x,t,...,t] with a 3-var non-constant prefix — the IH needs to handle arbitrary prefix widths, suggesting a generalized padding approach.",
+    "constenv_nvar_to_2var (NfComposition.lean:321): Reverse: (n+2)-var NF agreement implies 2-var NF agreement on constenvs. Should follow from iterating nf_drop_last with the constenv projection identity (Fin.cons x (fun _ => t)) ∘ castSucc = Fin.cons x (fun _ => t) at smaller arity.",
+    "KampBypass.lean:356,368 (Until/Since backward k>0): Core sorry requiring Prior composition theorem or enriched formula per plan v5."
   ],
   "sorry_inventory": [
     {
@@ -27,28 +28,20 @@
       "next_dispatch": "Mirror proof of Until case"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-      "line": 381,
-      "statement": "existPart_succ n>=2 mpr direction",
-      "assumption": "Given n-var eval of sub_nf at constenv, produce 2-var eval of sub_nf_2",
-      "why_deferred": "Requires constenv_nvar_to_2var helper",
-      "next_dispatch": "Prove constenv_nvar_to_2var in NfComposition.lean"
-    },
-    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
       "line": 298,
       "statement": "constenv_2var_determines",
       "assumption": "On Fin.cons x (fun _ => t) envs, 2-var NF agreement implies (n+1)-var NF agreement",
-      "why_deferred": "Requires induction on k with Fin arithmetic for atom agreement and quantifier extension. The quantifier step needs nf_extend_fwd + recursive application of the IH with shifted env forms.",
-      "next_dispatch": "Prove by induction on k. At depth 0, atom-by-atom using Fin case analysis. At depth k+1, atoms same + quantifier transfer via nf_extend_fwd and IH."
+      "why_deferred": "Requires induction on k with Fin arithmetic",
+      "next_dispatch": "Prove by induction on k with generalized prefix width"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "line": 337,
+      "line": 321,
       "statement": "constenv_nvar_to_2var",
-      "assumption": "Reverse of constenv_2var_determines: n-var agreement implies 2-var agreement on constenvs",
-      "why_deferred": "Follows from constenv_2var_determines being a bijection on constenvs, or directly from nf_drop_last chain",
-      "next_dispatch": "Prove using nf_drop_last iterated from n-var to 2-var chars, or as corollary of constenv_2var_determines"
+      "assumption": "(n+2)-var NF agreement implies 2-var NF agreement on constenvs",
+      "why_deferred": "Requires iterating nf_drop_last with constenv projection identity",
+      "next_dispatch": "Prove via nf_drop_last iteration"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
@@ -70,8 +63,8 @@
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 1,
-    "approach": "Two parallel tracks: (1) constenv_2var_determines helper lemma for n>=2 case, (2) Prior composition theorem for Until/Since backward k>0",
-    "key_insight": "The n>=2 case reduces cleanly to two helper lemmas about constant-tail env NF agreement. The constenv_2var_determines lemma requires induction on k with the key challenge being the quantifier extension step: after nf_extend_fwd, the extended env [y,x,t,...,t] has a 3-var non-constant prefix, requiring the IH at a GENERALIZED prefix width (not just width 2). This suggests the general nf_pad_agree approach with induction on k and universally quantified prefix width."
+    "approach": "Two parallel tracks: (1) constenv helpers for n>=2 closure, (2) Prior composition for Until/Since k>0",
+    "key_insight": "The n>=2 case is fully structured. Only the two constenv helpers in NfComposition.lean need proofs. The constenv_nvar_to_2var should be simpler (downward projection via nf_drop_last). The constenv_2var_determines is the harder one (upward extension requiring generalized prefix width induction)."
   },
   "artifacts": [
     {
