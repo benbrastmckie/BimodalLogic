@@ -1792,15 +1792,15 @@
     {
       "project_number": 303,
       "project_name": "k_gt_0_depth_induction",
-      "status": "researched",
+      "status": "blocked",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
       "description": "Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.",
       "dependencies": [],
       "created": "2026-06-16T00:00:00Z",
-      "last_updated": "2026-06-17T12:42:28Z",
-      "session_id": "sess_1781699606_7f7ccd",
+      "last_updated": "2026-06-17T13:49:43Z",
+      "session_id": "sess_1781700693_29c274",
       "researched": "2026-06-17T01:27:14Z",
       "next_artifact_number": 6,
       "artifacts": [
@@ -1843,6 +1843,11 @@
           "path": "specs/303_k_gt_0_depth_induction/reports/05_recursive-formula-design.md",
           "type": "research",
           "summary": "Recursive GeneralExistPart design: third mutual induction conjunct for non-constant envs, 750-1250 lines estimated"
+        },
+        {
+          "path": "specs/303_k_gt_0_depth_induction/plans/07_k-gt-0-plan.md",
+          "type": "plan",
+          "summary": "Plan v7: GeneralExistPart as third mutual induction conjunct, 5 phases"
         }
       ]
     },
