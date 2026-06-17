@@ -1,8 +1,40 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
-  "phase_number": 3,
-  "session_id": "sess_1781700693_29c274"
+  "phase_number": 4,
+  "session_id": "sess_1781700693_29c274",
+  "phases_completed": 3,
+  "phases_total": 5,
+  "requires_user_review": true,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 636,
+      "statement": "existPart_succ_n1_bypass backward Until zone quantifier part",
+      "assumption": "ih_general_exist provides temporal formulas for 3-var existentials",
+      "why_deferred": "BLOCKED: ih_general_exist has circular precondition",
+      "next_dispatch": "Re-implement GeneralExistPart with individual 1-var NF parameters"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 688,
+      "statement": "existPart_succ_n1_bypass backward Since zone quantifier part",
+      "assumption": "Mirror of Until zone",
+      "why_deferred": "BLOCKED: same circular precondition",
+      "next_dispatch": "Mirror after GeneralExistPart re-implementation"
+    }
+  ],
+  "verification": {
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "GeneralExistPart implemented with Formula.top/bot + full r-var NF precondition is UNUSABLE at the sorry site because the precondition (nf_eval_nf M (k'+1+1) 2 env sub_nf) is exactly what the proof needs to establish. The Formula.top/bot shortcut proves existence but encodes NO information (trivially true/false temporal truth). The fix requires individual 1-var NF parameters (env_nfs : Fin r -> NF(k+1,1)) with actual temporal formula construction via zone decomposition.",
+    "Cross-structure 2-var NF agreement CANNOT be derived from individual 1-var NF agreements + matching order. Counterexample: Z with (0,2) vs (0,1) -- same 1-var NFs at all depths, same order (0<2 and 0<1), but different 2-var NFs (non-empty vs empty between zone). This is documented in NfComposition.lean and confirmed by the v6 plan failure.",
+    "For the Kamp theorem ExistPart sorry sites (Until/Since zones with non-constant env), the enriched formula must encode quantifier conditions using temporal formulas that can be evaluated at the Until/Since witness point (x). These formulas must be constructed from individual 1-var NF information (available at x via h_x_agree and at t via h_t_agree), NOT from full 2-var NF information (unavailable and circular)."
+  ]
 }

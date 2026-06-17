@@ -187,7 +187,24 @@ The base case uses `generalExistPart_zero` from Phase 1. The inductive step:
 
 ---
 
-### Phase 4: Enrich Formula and Close Sorries [NOT STARTED]
+### Phase 4: Enrich Formula and Close Sorries [BLOCKED]
+
+**BLOCKER** (Phase 4):
+- **What failed**: GeneralExistPart as implemented (GeneralExistPart.lean) uses `Formula.top` / `Formula.bot` via a classical satisfiability split. Its precondition requires `nf_eval_nf M (k+1) r e env_nf` (full r-var NF match). At the sorry site, this requires `nf_eval_nf M (k'+1+1) 2 (Fin.cons x (fun _ => t)) sub_nf`, which IS the full nf_eval_nf we are trying to prove (atoms + quantifiers). Using ih_general_exist is therefore CIRCULAR: proving its precondition IS the goal.
+- **What was tried**:
+  1. Direct application of ih_general_exist at r=2 with env_nf=sub_nf -- circular (precondition = goal)
+  2. Building depth-(k'+1+1) 2-var NF agreement from individual depth-(k'+1+1) 1-var agreements (h_x_agree, h_t_agree) + matching order -- FALSE in general (counterexample: Z with (0,2) vs (0,1) have same 1-var NFs at all depths but different 2-var NFs, confirmed in NfComposition.lean comment)
+  3. Using cross_extend_fwd_1var to build depth-(k'+1) 2-var from depth-(k'+1+1) 1-var -- gives depth-(k'+1) not depth-(k'+1+1), and the produced witness x' is not the actual x from the Until
+  4. Induction on depth to build 2-var agreement level by level -- each level requires 3-var existential transfer which requires 4-var, etc. (arity blowup)
+  5. Using Formula.top/bot formulas from ih_general_exist inside the enriched Until guard -- since A_ssn is Formula.top or Formula.bot, conjoining them adds NO information (trivially true in both cases)
+- **Why stuck**: The root cause is that GeneralExistPart was implemented with a shortcut (Formula.top/bot + full r-var NF precondition) that works for PROVING GeneralExistPart EXISTS but renders it UNUSABLE at the sorry site. The sorry site needs a version that: (a) uses individual 1-var NF matches (not full r-var NF) as precondition, and (b) produces actual temporal formulas that encode the existential structure (not just top/bot).
+- **What is needed**: Re-implement GeneralExistPart with the ORIGINAL design from research report 05 Section 2.2:
+  1. Change parameter `env_nf : NormalForm sig (k+1) r` to `env_nfs : Fin r -> NormalForm sig (k+1) 1` (individual 1-var NFs)
+  2. Change precondition from `nf_eval_nf M (k+1) r e env_nf` to `∀ i, nf_eval_nf M (k+1) 1 (fun _ => e i) (env_nfs i)` (individual 1-var NF matches)
+  3. Construct actual temporal formulas via zone decomposition (Rabinovich Prop 3.5 pattern) instead of Formula.top/bot
+  4. Prove correctness by induction on depth k with arity r universally quantified (depth decreases, arity increases -- well-founded)
+  This is essentially Phases 1-2 redone with the correct design. After this change, Phase 4 becomes straightforward: ih_general_exist's precondition becomes individual 1-var NF matches (h_x_agree, h_t_agree), which are already available at the sorry site.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Replace the sorry at KampBypass.lean:617 and :669 with proofs using GeneralExistPart.
 

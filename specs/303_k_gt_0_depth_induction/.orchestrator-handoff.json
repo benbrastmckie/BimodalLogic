@@ -1,43 +1,75 @@
 {
-  "status": "partial",
-  "summary": "Phase 2 complete: proved generalExistPart_succ and generalExistPart_all sorry-free. Key discovery: GeneralExistPart is NOT mutually recursive -- the same cross-structure transfer (Formula.top/bot + nf_agreement_from_shared_nf) works at all depths without needing CharPart(k+1) or GeneralExistPart(k). Phase 3 simplified: generalExistPart_all can be called directly.",
-  "blockers": [],
+  "status": "blocked",
+  "summary": "Phase 4 BLOCKED: GeneralExistPart as implemented uses Formula.top/bot with full r-var NF precondition, making it circular at the sorry site. The precondition (nf_eval_nf M (k'+1+1) 2 [x,t] sub_nf) IS what the proof needs to establish. Individual 1-var NF agreements (h_x_agree, h_t_agree) are provably insufficient to derive 2-var NF agreement (Z counterexample). The fix requires re-implementing GeneralExistPart with individual 1-var NF parameters and actual temporal formula construction (zone decomposition), as originally designed in report 05 Section 2.2.",
+  "blockers": [
+    {
+      "phase": 4,
+      "description": "GeneralExistPart circular precondition",
+      "goal_state": "∀ (sub_nf_1 : NormalForm sig (k' + 1) (1 + 1 + 1)),\n    (∃ x_1, nf_eval_nf M (k' + 1) (1 + 1 + 1) (Fin.cons x_1 (Fin.cons x fun x ↦ t)) sub_nf_1) ↔ sub_nf.2 sub_nf_1 = true",
+      "what_failed": "ih_general_exist requires nf_eval_nf M (k'+1+1) 2 (Fin.cons x (fun _ => t)) sub_nf as precondition, but proving this IS the goal (atoms + quantifiers, and the quantifier part is exactly what we need ih_general_exist for)",
+      "root_cause": "GeneralExistPart implementation uses Formula.top/bot shortcut with full r-var NF precondition instead of constructing actual temporal formulas with individual 1-var NF parameters",
+      "fix_required": "Re-implement GeneralExistPart with: (1) parameter env_nfs : Fin r -> NF(k+1,1) instead of env_nf : NF(k+1,r), (2) precondition ∀ i, nf_eval_nf M (k+1) 1 (fun _ => e i) (env_nfs i) instead of nf_eval_nf M (k+1) r e env_nf, (3) actual temporal formula construction via zone decomposition instead of classical Formula.top/bot split"
+    }
+  ],
   "continuation_context": {
-    "completed_phases": [1, 2],
-    "next_phase": 3,
-    "handoff_path": "specs/303_k_gt_0_depth_induction/plans/07_k-gt-0-plan.md"
+    "completed_phases": [1, 2, 3],
+    "next_phase": 4,
+    "handoff_path": "specs/303_k_gt_0_depth_induction/plans/07_k-gt-0-plan.md",
+    "is_successor": true,
+    "blocker_resolution": "Phases 1-2 must be re-done with corrected GeneralExistPart design before Phase 4 can proceed. Existing GeneralExistPart.lean (207 lines) should be replaced entirely. The cross-structure transfer approach (Formula.top/bot + nf_agreement_from_shared_nf) is valid for PROVING GeneralExistPart exists but NOT for using it at the sorry site."
   },
-  "next_action_hint": "implement",
-  "phases_completed": 2,
+  "next_action_hint": "plan",
+  "phases_completed": 3,
   "phases_total": 5,
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
       "type": "code",
-      "summary": "GeneralExistPart definition + generalExistPart_zero + generalExistPart_succ + generalExistPart_all (all sorry-free, 207 lines)"
+      "summary": "GeneralExistPart definition + proofs (sorry-free but UNUSABLE at sorry site due to circular precondition)"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "type": "code",
+      "summary": "ih_general_exist parameter threaded but sorry sites remain (636, 688)"
     },
     {
       "path": "specs/303_k_gt_0_depth_induction/plans/07_k-gt-0-plan.md",
       "type": "plan",
-      "summary": "Implementation plan v7 with Phases 1-2 marked COMPLETED"
+      "summary": "Phase 4 marked BLOCKED with detailed blocker documentation"
     }
   ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 617,
-      "statement": "existPart_succ_n1_bypass backward quantifier part (Until zone)",
-      "assumption": "Assumes 3-var existentials on non-constant env [y,x,t] can be transferred from cross-structure 1-var NF agreement",
-      "why_deferred": "Requires GeneralExistPart to be threaded into kamp_mutual_induction (Phase 3) and instantiated at the sorry site (Phase 4)",
-      "next_dispatch": "Phase 3: thread generalExistPart_all into existPart_succ_n1_bypass, then Phase 4: enrich formula and close sorry"
+      "line": 636,
+      "statement": "existPart_succ_n1_bypass backward Until zone quantifier part",
+      "assumption": "ih_general_exist provides temporal formulas for 3-var existentials",
+      "why_deferred": "BLOCKED: ih_general_exist has circular precondition (requires full 2-var NF match which IS the goal). GeneralExistPart needs re-implementation with individual 1-var NF parameters.",
+      "next_dispatch": "Re-implement GeneralExistPart with individual 1-var NF parameters, then use ih_general_exist with h_x_agree/h_t_agree as preconditions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 669,
-      "statement": "existPart_succ_n1_bypass backward quantifier part (Since zone)",
-      "assumption": "Mirror of Until zone sorry",
-      "why_deferred": "Same as line 617 but for Since direction",
-      "next_dispatch": "Phase 4: mirror of Until zone closure"
+      "line": 688,
+      "statement": "existPart_succ_n1_bypass backward Since zone quantifier part",
+      "assumption": "Mirror of Until zone",
+      "why_deferred": "BLOCKED: same circular precondition as Until sorry site",
+      "next_dispatch": "Mirror of Until sorry closure after GeneralExistPart re-implementation"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_exist_backward at depth k+1",
+      "assumption": "Dead code path, not on critical completeness chain",
+      "why_deferred": "Non-goal per plan; not imported by completeness chain",
+      "next_dispatch": "Not planned for resolution in task 303"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "nf_2var_exist_formula_prior call with sorry args",
+      "assumption": "Dead code path",
+      "why_deferred": "Non-goal per plan",
+      "next_dispatch": "Not planned for resolution in task 303"
     }
   ]
 }
