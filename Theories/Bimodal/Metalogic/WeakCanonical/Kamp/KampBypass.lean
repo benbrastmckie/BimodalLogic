@@ -568,13 +568,109 @@ theorem existPart_succ_n1_bypass
               ((zone_order M t x h_eval).2 h_lt_val))
               (lt_irrefl _)⟩⟩
       | true, false =>
-        -- Until zone (t < x): quantifier conditions require restructured
-        -- approach without ih_general_exist. Placeholder for Phase 2.
-        sorry
+        -- Until zone (t < x): Quantifier encoding via inlined classical satisfiability.
+        -- For each ssn : NF(k'+1, 3), use M₀'s witness status to determine top/bot.
+        -- mpr direction (∃ x → temporal): proved via NF agreement transfer.
+        -- mp direction (temporal → ∃ x): sorry (requires V-EA negation closure).
+        -- Build quant_conj using classical top/bot for each ssn
+        have h_eval₀_quant := h_eval₀.2
+        -- For each ssn, the formula is top if M₀ has a witness, bot otherwise
+        -- Use sub_nf.2 ssn directly (which equals the M₀ satisfiability by h_eval₀)
+        let gep_formula_until : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
+          if sub_nf.2 ssn then Formula.top else Formula.bot
+        -- Build the quantifier conjunction (truth evaluated at x)
+        let quant_conj_until := formula_conjList
+          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
+            if sub_nf.2 ssn then gep_formula_until ssn
+            else (gep_formula_until ssn).neg)
+        -- Until formula: finds x > t where compat_disj ∧ quant_conj hold at x
+        let until_formula := Formula.untl (Formula.and compat_disj quant_conj_until) Formula.top
+        refine ⟨until_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        constructor
+        · -- mp: temporal_truth M t until_formula → ∃ x, nf_eval_nf ...
+          -- BLOCKER: Extracting nf_eval_nf from the temporal formula requires
+          -- establishing the full 2-var NF at [x, t] (non-constant env).
+          -- The compat_disj identifies x's 1-var type, but reconstructing the full
+          -- 2-var NF requires knowing all quantifier conditions hold AT x with env [x,t].
+          -- The top/bot encoding is not invertible: top at x is always true regardless
+          -- of whether the actual existential holds at the SPECIFIC x extracted from Until.
+          -- Resolution requires V-EA negation closure (Rabinovich Lemma 5.1, Section 5)
+          -- which provides a formula whose truth at x correctly encodes each sub-existential
+          -- WITHOUT requiring the 2-var NF as precondition.
+          sorry
+        · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t until_formula
+          intro ⟨x, h_eval⟩
+          have h_t_lt_x : t < x := (zone_order M t x h_eval).1 h_gt_val
+          -- Goal: temporal_truth M atomMap t (Formula.untl (Formula.and compat_disj quant_conj_until) Formula.top)
+          -- = ∃ s > t, temporal_truth M s (compat_disj ∧ quant_conj_until) ∧ ∀ r (t<r<s), temporal_truth M r top
+          change ∃ s, t < s ∧ temporal_truth M atomMap s (Formula.and compat_disj quant_conj_until) ∧
+            ∀ r, t < r → r < s → temporal_truth M atomMap r Formula.top
+          refine ⟨x, h_t_lt_x, ?_, fun r _ _ => temporal_truth_top M atomMap r⟩
+          rw [temporal_truth_and]
+          constructor
+          · -- compat_disj at x
+            exact fwd_disj M h_UZ h_SZ x
+              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x))
+              (compat_of_eval M t x h_eval)
+          · -- quant_conj_until at x: each entry evaluates correctly
+            rw [formula_conjList_iff]
+            intro φ h_φ_mem
+            rw [List.mem_map] at h_φ_mem
+            obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
+            cases h_ssn_val : sub_nf.2 ssn with
+            | true =>
+              subst h_ssn_eq
+              simp only [h_ssn_val, reduceIte, gep_formula_until]
+              exact temporal_truth_top M atomMap x
+            | false =>
+              subst h_ssn_eq
+              simp only [h_ssn_val, gep_formula_until, temporal_truth_neg, temporal_truth,
+                not_false_eq_true, Bool.false_eq_true, ite_false, reduceIte, Formula.neg]
+              exact not_false
       | false, true =>
-        -- Since zone (x < t): quantifier conditions require restructured
-        -- approach without ih_general_exist. Placeholder for Phase 2.
-        sorry
+        -- Since zone (x < t): Mirror of Until zone.
+        -- mpr direction proved; mp direction requires V-EA negation closure.
+        have h_eval₀_quant_s := h_eval₀.2
+        let gep_formula_since : NormalForm sig (k' + 1) 3 → Formula := fun ssn =>
+          if sub_nf.2 ssn then Formula.top else Formula.bot
+        let quant_conj_since := formula_conjList
+          ((Fintype.elems (α := NormalForm sig (k' + 1) 3)).val.toList.map fun ssn =>
+            if sub_nf.2 ssn then gep_formula_since ssn
+            else (gep_formula_since ssn).neg)
+        let since_formula := Formula.snce (Formula.and compat_disj quant_conj_since) Formula.top
+        refine ⟨since_formula, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        constructor
+        · -- mp: temporal_truth M t since_formula → ∃ x, nf_eval_nf ...
+          -- BLOCKER: Same circularity as Until zone.
+          -- Resolution requires V-EA negation closure (Rabinovich Lemma 5.1, Section 5).
+          sorry
+        · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t since_formula
+          intro ⟨x, h_eval⟩
+          have h_x_lt_t : x < t := (zone_order M t x h_eval).2 h_lt_val
+          change ∃ s, s < t ∧ temporal_truth M atomMap s (Formula.and compat_disj quant_conj_since) ∧
+            ∀ r, s < r → r < t → temporal_truth M atomMap r Formula.top
+          refine ⟨x, h_x_lt_t, ?_, fun r _ _ => temporal_truth_top M atomMap r⟩
+          rw [temporal_truth_and]
+          constructor
+          · -- compat_disj at x
+            exact fwd_disj M h_UZ h_SZ x
+              (nf_characteristic_satisfies M (k' + 1 + 1) 1 (fun _ => x))
+              (compat_of_eval M t x h_eval)
+          · -- quant_conj_since at x
+            rw [formula_conjList_iff]
+            intro φ h_φ_mem
+            rw [List.mem_map] at h_φ_mem
+            obtain ⟨ssn, _, h_ssn_eq⟩ := h_φ_mem
+            cases h_ssn_val : sub_nf.2 ssn with
+            | true =>
+              subst h_ssn_eq
+              simp only [h_ssn_val, reduceIte, gep_formula_since]
+              exact temporal_truth_top M atomMap x
+            | false =>
+              subst h_ssn_eq
+              simp only [h_ssn_val, gep_formula_since, temporal_truth_neg, temporal_truth,
+                not_false_eq_true, Bool.false_eq_true, ite_false, reduceIte, Formula.neg]
+              exact not_false
       | false, false =>
         -- Eq zone: x = t, so env is constant [t, t].
         -- Enriched formula: compat_disj ∧ conjunction encoding quantifier conditions
