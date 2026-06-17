@@ -190,7 +190,7 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 
 ---
 
-### Phase 3: Research and Design V-EA Negation Closure [NOT STARTED]
+### Phase 3: Research and Design V-EA Negation Closure [COMPLETED]
 
 **Goal**: Research Rabinovich's V-EA negation closure (Lemma 5.1) and design the Lean formalization needed to close the between-zone sorry from Phase 2.
 
@@ -199,55 +199,96 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 2. Interval splitting: at the INF point, split the interval into two sub-intervals
 3. Sub-interval bracket formulas: each sub-interval has FEWER witnesses (induction terminates)
 
+**Research Findings (from report 11_vea-negation-closure-design.md)**:
+
+1. The sorry is structurally incompatible with the current 2-conjunct mutual induction (CharPart + ExistPart). ExistPart evaluates at ONE point with CONSTANT parent env; the between-zone case needs interval (t,x) characterization.
+
+2. The single-witness case (our scenario) simplifies dramatically vs full Lemma 5.1: the negation of "exists y in (t,x) with P(y)" is simply "forall y in (t,x), NOT P(y)" — a 0-witness bracket formula (interval type constraint).
+
+3. The POSITIVE direction can use enriched bracket formulas (BracketFormula with proper temporal point types from CharPart) translated via bracketBuildRight — infrastructure already exists.
+
+4. The NEGATIVE direction for single-witness is trivially the universal quantifier over the interval, expressible as NOT (P Until T) restricted to before x.
+
+5. The deep blocker: even with bracket semantics giving y, establishing the FULL nf_eval_nf at [y,x,t] requires sub-quantifier conditions at depth k' with non-constant 3-var env. This recurses to the same problem at lower depth, terminating only at depth 0 (where everything is purely atomic).
+
+6. **Effort estimate**: 500-800 lines of new code across 4-8 implementation sessions (16-32 hours agent time). This is significantly more than the plan's original 2-hour estimate for Phase 4.
+
 **Tasks**:
-- [ ] Study Rabinovich Lemma 5.1 in detail: identify exactly which steps need Lean formalization
-- [ ] Map the V-EA negation closure to the existing codebase: which infrastructure exists (VecEADecomp, ZoneBridge, KampForward) and what is missing
-- [ ] Design the Lean type signature for a negation-closure lemma that suffices for the between-zone case
-- [ ] Estimate effort for implementing the negation-closure lemma
-- [ ] Write a research report with the design and effort estimate
-- [ ] If the design shows the between-zone case is tractable (< 500 lines), proceed to Phase 4. Otherwise, document the blocker.
+- [x] Study Rabinovich Lemma 5.1 in detail: identify exactly which steps need Lean formalization
+- [x] Map the V-EA negation closure to the existing codebase: which infrastructure exists (VecEADecomp, ZoneBridge, KampForward) and what is missing
+- [x] Design the Lean type signature for a negation-closure lemma that suffices for the between-zone case
+- [x] Estimate effort for implementing the negation-closure lemma
+- [x] Write a research report with the design and effort estimate
+- [x] If the design shows the between-zone case is tractable (< 500 lines), proceed to Phase 4. Otherwise, document the blocker.
+
+**Result**: The between-zone case requires 500-800 lines (NOT < 500). The sorry is a genuine architectural limitation. Phase 4 should be re-scoped as a multi-session implementation with incremental progress, not a single 2-hour phase.
 
 **Sorry budget**: 0 (research only)
 
-**Timing**: 2 hours
+**Timing**: 2 hours (actual: ~2 hours)
 
 **Depends on**: 2
 
 **Files to modify**:
-- `specs/303_k_gt_0_depth_induction/reports/` -- research report on V-EA negation closure design
+- `specs/303_k_gt_0_depth_induction/reports/11_vea-negation-closure-design.md` -- research report on V-EA negation closure design
 
 **Verification**:
-- Research report written with clear design recommendation
-- Effort estimate for Phase 4
+- [x] Research report written with clear design recommendation
+- [x] Effort estimate for Phase 4 (500-800 lines, 4-8 sessions)
 
 ---
 
-### Phase 4: Implement Between-Zone Quantifier Encoding and Close Sorry [NOT STARTED]
+### Phase 4: Implement Enriched Bracket-Formula Encoding and Close Sorry [IN PROGRESS]
 
-**Goal**: Implement the V-EA negation closure mechanism from Phase 3's design to close the between-zone sorry from Phase 2. Verify the full completeness chain.
+**Goal**: Replace the top/bot quant_conj encoding in the Until/Since zones with proper bracket-formula-based temporal formulas, then prove the backward direction using bracket semantics + NF transfer.
+
+**Architecture** (from Phase 3 research report 11):
+- Replace `gep_formula_until` (top/bot) with bracket-formula temporal translations using CharPart(k'+2) for point types
+- For the positive case (sub_nf.2 ssn = true): build BracketFormula with point type from CharPart, translate via bracketBuildRight, extract bracket witness in backward direction
+- For the negative case (sub_nf.2 ssn = false): use negation of bracket formula (single-witness negation = universal on interval)
+- Resolve sub-quantifier conditions via depth induction (terminates at depth 0)
+
+**Phase 4a Status** (dispatch 2026-06-17):
+- [x] Added VecEATranslation import to KampBypass.lean (enables future bracket work)
+- [x] Enriched Until backward (mp) direction: extracts x from Until, obtains x's 1-var NF type from compat_disj, decomposes proof obligation to `nf_eval_nf M (k'+2) 2 [x,t] sub_nf`
+- [x] Enriched Since backward (mp) direction: mirror of Until enrichment
+- [x] Preserved forward (mpr) direction: sorry-free (still uses top/bot trivially)
+- [x] Documented precise blocking condition: establishing full 2-var NF at [x,t] from 1-var data + orders requires Prior compositionality at lower depth or bracket-formula interval characterization
+- [x] Full `lake build` passes, sorry count unchanged (2 in KampBypass.lean)
+- **Outcome**: Lateral progress (sorry not reduced but enriched with partial proof structure). The backward direction now has: x extracted, nf_x obtained, compat verified. Sorry is at the exact point of establishing quantifier conditions for the non-constant env [x,t].
+
+**Sub-Phases** (incremental):
+- Phase 4a: Enrich backward direction with partial proof structure [COMPLETED - lateral]
+- Phase 4b: Prove forward direction (exists x -> temporal) using bracket semantics (~100 lines)
+- Phase 4c: Prove backward direction positive case (temporal -> exists y from bracket) (~200 lines)
+- Phase 4d: Handle negative case and establish full nf_eval_nf at [x,t] (~200-300 lines)
 
 **Tasks**:
-- [ ] Implement the negation-closure lemma per Phase 3's design
-- [ ] Replace the sorry at the between-zone quantifier encoding sites in KampBypass.lean
+- [ ] Create BracketBypass.lean (or extend KampBypass.lean) with depth-(k'+1) bracket construction
+- [ ] For each ssn in the between-zone: build BracketFormula using char_kp1 for y's point type
+- [ ] Prove bracket semantics <-> sub-existential (generalizing k=0 VecEADecomp approach)
+- [ ] Replace sorry in Until backward direction using bracket witness extraction
+- [ ] Replace sorry in Since backward direction (mirror)
 - [ ] Verify: `lake build KampBypass` with 0 sorry
 - [ ] Verify: `lean_verify existPart_succ_n1_bypass` shows no sorryAx
 - [ ] Verify: `lean_verify kamp_mutual_induction` shows no sorryAx
-- [ ] Verify: `lean_verify completeness_discrete` shows no sorryAx from Kamp path
 - [ ] Run full `lake build` for regression check
 
 **Sorry budget**: 0 (target: all sorry closed)
 
-**Timing**: 2 hours (contingent on Phase 3 design showing tractability)
+**Timing**: 8-16 hours across 4-8 implementation sessions (revised from 2 hours based on Phase 3 findings)
 
 **Depends on**: 3
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean` -- close between-zone sorry
-- Possibly new file for negation-closure infrastructure
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean` -- replace top/bot with bracket formulas, close sorry
+- Possibly `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/BracketBypass.lean` (new) -- enriched bracket construction at depth k'+1
 
 **Verification**:
 - `lake build` succeeds with 0 sorry in Kamp pipeline
 - `lean_verify completeness_discrete` clean
+
+**Risk**: Phase 3 research (Finding 7 in adversarial verification) identifies that sub-quantifier conditions at depth k' still face the non-constant-env problem recursively. The recursion terminates at depth 0, but the intermediate steps may require 3-var NF composition that was proved FALSE in NfComposition.lean. If this blocks, the sorry count will decrease from 2 to a smaller number but not 0. Escalation: re-scope as a new task with longer timeline.
 
 ## Testing & Validation
 

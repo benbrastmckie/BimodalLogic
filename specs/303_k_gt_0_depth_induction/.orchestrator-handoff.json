@@ -1,56 +1,72 @@
 {
   "status": "partial",
-  "summary": "Phase 2 completed: Restructured k>0 Until/Since zones with top/bot encoding. Forward directions (mpr: existential->temporal) proved sorry-free. Backward directions (mp: temporal->existential) left as targeted sorry requiring V-EA negation closure (Rabinovich Lemma 5.1). Net sorry count unchanged at 2, but now at precise backward-direction locations.",
-  "phases_completed": 2,
+  "summary": "Phase 4a (dispatch 2026-06-17): Enriched backward direction proof structure in Until/Since k>0 zones. Added VecEATranslation import. Backward directions now extract x from Until/Since, obtain x's 1-var NF type via compat_disj, decompose to precise sub-goal. Forward directions preserved sorry-free. Sorry count unchanged (2). Blocking point precisely identified: establishing full nf_eval_nf at non-constant env [x,t] from 1-var NF data at x and t separately.",
+  "phases_completed": 3,
   "phases_total": 4,
-  "blockers": [],
+  "blockers": [
+    "KampBypass.lean:623 — Until k>0 backward: need nf_eval_nf M (k'+2) 2 [x,t] sub_nf from h_nf_x_eval (1-var at x) + h_atoms (1-var at t) + h_t_lt_x (order). Requires Prior compositionality or bracket-formula interval characterization.",
+    "KampBypass.lean:690 — Since k>0 backward: mirror of Until blocker."
+  ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 600,
+      "line": 623,
       "statement": "existPart_succ_n1_bypass (Until zone k>0, mp direction)",
-      "assumption": "temporal_truth M t until_formula implies exists x with nf_eval_nf at [x,t]",
-      "why_deferred": "Backward direction requires establishing full 2-var NF from temporal formula. The top/bot encoding is not invertible: top at x is always true regardless of whether the actual sub-existential holds. Circular: decoding requires the NF as precondition.",
-      "next_dispatch": "Implement V-EA negation closure (Rabinovich Lemma 5.1) to provide correct formula encoding without NF precondition"
+      "assumption": "Given x extracted from Until with compatible 1-var NF type (h_nf_x_eval), t with matching parent_atoms (h_atoms), and order t < x (h_t_lt_x): establish nf_eval_nf M (k'+2) 2 [x,t] sub_nf",
+      "why_deferred": "Establishing full 2-var NF from separate 1-var data is the fundamental non-constant-env gap. Requires either: (a) Prior compositionality theorem at lower depth, (b) bracket-formula interval characterization with depth induction, or (c) Rabinovich Lemma 5.1 negation closure. All approaches require 500+ lines of new infrastructure.",
+      "next_dispatch": "Phase 4b: Replace top/bot formula with bracket-formula translation (bracketBuildRight) that encodes interval information. This makes quant_conj carry real semantic content enabling backward extraction."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 646,
+      "line": 690,
       "statement": "existPart_succ_n1_bypass (Since zone k>0, mp direction)",
-      "assumption": "temporal_truth M t since_formula implies exists x with nf_eval_nf at [x,t]",
-      "why_deferred": "Mirror of Until zone. Same circularity.",
-      "next_dispatch": "Mirror of Until fix once V-EA negation closure available"
+      "assumption": "Mirror of Until: given x from Since with compatible NF, establish nf_eval_nf M (k'+2) 2 [x,t] sub_nf",
+      "why_deferred": "Same architectural gap as Until zone",
+      "next_dispatch": "Mirror of Until fix in Phase 4b"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
       "statement": "nf_exist_backward (depth k+1 backward direction)",
-      "assumption": "Prior composition at depth k+1 for backward direction",
-      "why_deferred": "Pre-existing sorry (not introduced by this dispatch)",
-      "next_dispatch": "Resolved once existPart_succ_n1_bypass is fully proved"
+      "assumption": "Pre-existing sorry (not introduced by task 303)",
+      "why_deferred": "Resolved once existPart_succ_n1_bypass is fully proved",
+      "next_dispatch": "Auto-resolves when KampBypass sorry are closed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "nf_2var_exist_formula_prior (ih_char and ih_exist args)",
-      "assumption": "CharPart(k+1) and ExistPart(k) available from mutual induction",
-      "why_deferred": "Pre-existing sorry args (placeholders for mutual induction IH)",
-      "next_dispatch": "Resolved once kamp_mutual_induction is wired through"
+      "statement": "nf_2var_exist_formula_prior (ih args)",
+      "assumption": "Pre-existing sorry args",
+      "why_deferred": "Auto-resolves when mutual induction is complete",
+      "next_dispatch": "Auto-resolves"
     }
   ],
   "continuation_context": {
-    "is_successor": false,
-    "current_phase": 2,
-    "next_phase": 3,
+    "is_successor": true,
+    "current_phase": "4a",
+    "next_phase": "4b",
+    "plan_path": "specs/303_k_gt_0_depth_induction/plans/09_betweenzone-existpart-plan.md",
+    "key_insight": "The backward direction sorry is at EXACTLY the point where we need to establish nf_eval_nf M (k'+2) 2 [x,t] sub_nf. We have: x's 1-var NF (from compat_disj), t's 1-var NF (from parent_atoms), order t<x. The gap is the quantifier conditions at [x,t]. Resolution path: replace top/bot formula with bracket-formula encoding that carries interval information about (t,x).",
+    "available_hypotheses_at_sorry": [
+      "h_nf_x_eval: nf_eval_nf M (k'+2) 1 (fun _ => x) nf_x",
+      "h_nf_x_compat: compat_check nf_x = true (x predicates match sub_nf)",
+      "h_atoms: atom_eval M (fun _ => t) a <-> parent_atoms a = true",
+      "h_t_lt_x: t < x (Until zone)",
+      "h_eval₀: nf_eval_nf M₀ (k'+2) 2 [x₀,t₀] sub_nf",
+      "h_UZ/h_SZ: semantic_prior_UZ/SZ M atomMap",
+      "h_quant: quant_conj holds at x (trivially true since formula is top/bot)"
+    ],
     "key_decisions": [
-      "Used inlined classical top/bot per sub_nf.2 ssn instead of generalExistPart_from_classical (circular import prevented direct use)",
-      "Formula structure: (compat_disj AND quant_conj) Until/Since Formula.top",
-      "NF agreement via nf_agreement_from_shared_nf transfers M0 witness status to any M satisfying sub_nf",
-      "Forward direction uses zone_order + compat_of_eval + fwd_disj for compat_disj, and sub_nf.2 truth values for quant_conj trivial evaluation"
+      "Keeping top/bot formula for now preserves sorry-free forward direction",
+      "Bracket-formula approach (Option D from report 11) is the correct resolution path",
+      "The ih_exist approach with constant-env x_atoms FAILS because it creates a gap in both directions",
+      "Cross-structure NF transfer (nf_extend_fwd) requires the 2-var NF precondition (circular)"
     ]
   },
-  "next_action_hint": "Phase 3 implements V-EA negation closure infrastructure needed for the backward directions",
+  "next_action_hint": "Phase 4b: Replace gep_formula_until (top/bot) with bracketBuildRight-based formula. Build BracketFormula 1 with char_kp1 point type for between-zone ssn. The formula, evaluated at t, encodes 'exists y in (t,x) with matching char'. Forward direction: show bracket holds from nf_eval witness. Backward direction: extract bracket witness y, then prove full 3-var NF at [y,x,t]. Alternatively, explore the Prior composition approach: use ih_exist at lower depth (k'+1) for the sub-quantifiers.",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+    "specs/303_k_gt_0_depth_induction/plans/09_betweenzone-existpart-plan.md",
+    "specs/303_k_gt_0_depth_induction/reports/11_vea-negation-closure-design.md"
   ]
 }
