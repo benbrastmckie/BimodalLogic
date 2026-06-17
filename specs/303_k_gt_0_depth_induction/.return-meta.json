@@ -1,77 +1,9 @@
 {
-  "status": "blocked",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "session_id": "sess_1781661075_5cab61",
-  "task_number": 303,
-  "started_at": "2026-06-17T00:00:00Z",
-  "requires_user_review": true,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 231,
-      "statement": "exist_transfer_3var_nonconstenv forward",
-      "assumption": "FALSE THEOREM: 1-var + 2-var agreement does not imply 3-var transfer on non-constant envs",
-      "why_deferred": "Theorem conclusion is mathematically false. Counterexample: (Z,<,P_everywhere), envs [2,0] vs [1,0]",
-      "next_dispatch": "Delete false theorem. Restructure KampBypass k>0 to encode full 2-var NF."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 239,
-      "statement": "exist_transfer_3var_nonconstenv backward",
-      "assumption": "FALSE THEOREM (symmetric)",
-      "why_deferred": "Same counterexample",
-      "next_dispatch": "Delete"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 322,
-      "statement": "prior_nonconstenv_2var_agree_until base case",
-      "assumption": "FALSE: enclosing theorem is false",
-      "why_deferred": "Enclosing theorem false",
-      "next_dispatch": "Delete"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 399,
-      "statement": "prior_nonconstenv_2var_agree_since base case",
-      "assumption": "FALSE: mirror",
-      "why_deferred": "Enclosing theorem false",
-      "next_dispatch": "Delete"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 542,
-      "statement": "nf_exist_backward_prior (dead code)",
-      "assumption": "Dead code",
-      "why_deferred": "Not on critical path",
-      "next_dispatch": "Skip"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 651,
-      "statement": "sorry sorry (IH wiring)",
-      "assumption": "Blocked by false theorems upstream",
-      "why_deferred": "Upstream dependency",
-      "next_dispatch": "Unblocked only after KampBypass restructured"
-    }
-  ],
-  "verification": {
-    "sorry_count_kamp": 4,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "blockers": [
-    "prior_nonconstenv_2var_agree_until/since are FALSE theorems (counterexample in handoff)",
-    "KampBypass k>0 Until/Since backward proofs call false theorems",
-    "Until/Since zone formula encodes only 1-var types but needs full 2-var NF content"
-  ],
-  "closed_in_this_dispatch": [],
-  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-2-blocked-counterexample.md",
-  "memory_candidates": [
-    "CRITICAL: prior_nonconstenv_2var_agree_until/since in PriorComposition.lean are FALSE. Counterexample: (Z,<,P_everywhere), envs [2,0] vs [1,0] -- same depth-(K+2) 1-var NFs (translation symmetry), matching orders (0<2, 0<1), Z satisfies Prior-UZ/SZ, but depth-(K+2) 2-var NFs differ (between-zone content). 1-var NF agreement + matching orders does NOT determine 2-var NFs on non-constant environments, even on Prior structures.",
-    "The eq zone case works because constant envs [t,t] have empty between-zones, so constenv_same_depth_2var is correct. Only non-constant envs require zone content encoding.",
-    "Resolution options: (A) Enrich Until/Since formula with quantifier conditions (requires non-constant-parent ih_exist), (B) Generalize k=0 VecEA2 zone-brackets to k>0, (C) Add ExistPart_nc variant to mutual induction."
-  ]
+  "status": "partial",
+  "metadata": {
+    "cycles_used": 5,
+    "final_state": "blocked",
+    "mode": "hard",
+    "invocation": 3
+  }
 }

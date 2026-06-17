@@ -100,23 +100,32 @@ private theorem exist_transfer_const_env {sig : MonadicSignature}
 private def skipIdx (j : Nat) {n : Nat} : Fin n → Fin (n + 1) := fun i =>
   if i.val < j then i.castSucc else i.succ
 
+/-- `skipIdx` commutes with `Fin.succ`: `skipIdx (j+1) (succ i) = succ (skipIdx j i)`. -/
+private theorem skipIdx_succ_comm {n : Nat} (j : Nat) (i : Fin n) :
+    skipIdx (j + 1) i.succ = (skipIdx j i).succ := by
+  ext; simp only [skipIdx, Fin.succ, Fin.castSucc, Fin.castAdd, Fin.val_mk]
+  split <;> split <;> rename_i h1 h2 <;> first | rfl | omega
+
+/-- `skipIdx j` is injective. -/
+private theorem skipIdx_injective {n : Nat} (j : Nat) (i₁ i₂ : Fin n)
+    (h : skipIdx j i₁ = skipIdx j i₂) : i₁ = i₂ := by
+  simp only [skipIdx, Fin.ext_iff] at h; ext
+  split at h <;> split at h <;> simp [Fin.castSucc, Fin.succ, Fin.castAdd] at h <;> omega
+
 /-- Key commutation: `Fin.cons y (env ∘ skipIdx j) = (Fin.cons y env) ∘ skipIdx (j + 1)`.
     This is what makes the induction on k work for the quantifier step of
     `nf_skipIdx_cross`. -/
 private theorem cons_comp_skipIdx {α : Type*} {n : Nat} (j : Nat)
     (y : α) (env : Fin (n + 1) → α) :
     Fin.cons y (env ∘ skipIdx j) = (Fin.cons y env) ∘ skipIdx (j + 1) := by
-  unfold Function.comp
-  funext ⟨i, hi⟩
-  match i with
-  | 0 => rfl
-  | i + 1 =>
-    show (env ∘ skipIdx j) ⟨i, by omega⟩ =
-         (Fin.cons y env : Fin (n + 2) → α) (skipIdx (j + 1) ⟨i + 1, hi⟩)
-    unfold skipIdx; simp only [Function.comp]
-    split
-    · rename_i h_lt; rw [if_pos (show i + 1 < j + 1 by omega)]; rfl
-    · rename_i h_nlt; rw [if_neg (show ¬(i + 1 < j + 1) by omega)]; rfl
+  funext ⟨i, hi⟩; cases i with
+  | zero => rfl
+  | succ i =>
+    change env (skipIdx j ⟨i, by omega⟩) =
+      (Fin.cons y env : Fin (n + 2) → α) (skipIdx (j + 1) ⟨i + 1, hi⟩)
+    have : (⟨i + 1, hi⟩ : Fin (n + 1)) = (⟨i, (by omega : i < n)⟩ : Fin n).succ := by
+      ext; simp [Fin.succ]
+    rw [this, skipIdx_succ_comm, Fin.cons_succ]
 
 /-- Cross-structure projection along `skipIdx j`: if two environments in different
     structures agree on all depth-k (n+1)-var NFs, then the projected environments
@@ -131,11 +140,9 @@ private theorem nf_skipIdx_cross {sig : MonadicSignature}
     (h : ∀ nf, nf_eval_nf M k (n + 1) envM nf ↔ nf_eval_nf N k (n + 1) envN nf),
     ∀ nf, nf_eval_nf M k n (envM ∘ skipIdx j) nf ↔
           nf_eval_nf N k n (envN ∘ skipIdx j) nf := by
-  intro k
-  induction k with
+  intro k; induction k with
   | zero =>
     intro n j envM envN h nf
-    -- At depth 0, nf_eval_nf is about atoms
     have h_atom := atom_agreement_from_nf M envM N envN h
     simp only [nf_eval_nf]
     constructor <;> intro hDir a
@@ -145,14 +152,7 @@ private theorem nf_skipIdx_cross {sig : MonadicSignature}
         exact (h_atom (.pred p (skipIdx j i))).symm.trans (hDir (.pred p i))
       | order i₁ i₂ hne =>
         simp only [atom_eval, Function.comp] at hDir ⊢
-        have hne' : skipIdx j i₁ ≠ skipIdx j i₂ := by
-          simp only [skipIdx]
-          split <;> split <;> intro heq <;> apply hne <;> ext
-          · simp [Fin.castSucc, Fin.ext_iff] at heq; exact heq
-          · simp [Fin.castSucc, Fin.succ, Fin.ext_iff] at heq; omega
-          · simp [Fin.castSucc, Fin.succ, Fin.ext_iff] at heq; omega
-          · simp [Fin.succ, Fin.ext_iff] at heq; exact heq
-        exact (h_atom (.order (skipIdx j i₁) (skipIdx j i₂) hne')).symm.trans
+        exact (h_atom (.order _ _ (fun heq => hne (skipIdx_injective j i₁ i₂ heq)))).symm.trans
           (hDir (.order i₁ i₂ hne))
     · cases a with
       | pred p i =>
@@ -160,94 +160,60 @@ private theorem nf_skipIdx_cross {sig : MonadicSignature}
         exact (h_atom (.pred p (skipIdx j i))).trans (hDir (.pred p i))
       | order i₁ i₂ hne =>
         simp only [atom_eval, Function.comp] at hDir ⊢
-        have hne' : skipIdx j i₁ ≠ skipIdx j i₂ := by
-          simp only [skipIdx]
-          split <;> split <;> intro heq <;> apply hne <;> ext
-          · simp [Fin.castSucc, Fin.ext_iff] at heq; exact heq
-          · simp [Fin.castSucc, Fin.succ, Fin.ext_iff] at heq; omega
-          · simp [Fin.castSucc, Fin.succ, Fin.ext_iff] at heq; omega
-          · simp [Fin.succ, Fin.ext_iff] at heq; exact heq
-        exact (h_atom (.order (skipIdx j i₁) (skipIdx j i₂) hne')).trans
+        exact (h_atom (.order _ _ (fun heq => hne (skipIdx_injective j i₁ i₂ heq)))).trans
           (hDir (.order i₁ i₂ hne))
   | succ k ih =>
     intro n j envM envN h nf
-    -- Extract matching characteristics
     have h_atom := atom_agreement_from_nf M envM N envN h
     obtain ⟨_, hMq⟩ := nf_characteristic_satisfies M (k + 1) (n + 1) envM
-    have h_char_eq : nf_characteristic M (k + 1) (n + 1) envM =
-        nf_characteristic N (k + 1) (n + 1) envN :=
-      nf_eval_unique N (k + 1) (n + 1) _ _ _
-        ((h _).mp (nf_characteristic_satisfies M (k + 1) (n + 1) _))
-        (nf_characteristic_satisfies N (k + 1) (n + 1) _)
+    have h_char_eq := nf_eval_unique N (k + 1) (n + 1) _ _ _
+      ((h _).mp (nf_characteristic_satisfies M (k + 1) (n + 1) _))
+      (nf_characteristic_satisfies N (k + 1) (n + 1) _)
     obtain ⟨_, hNq⟩ := h_char_eq ▸ nf_characteristic_satisfies N (k + 1) (n + 1) envN
-    -- Existential transfer at depth k, arity (n+2)
-    have hex_transfer : ∀ chi : NormalForm sig k (n + 2),
+    have hex : ∀ chi : NormalForm sig k (n + 2),
         (∃ z, nf_eval_nf M k (n + 2) (Fin.cons z envM) chi) ↔
         (∃ z, nf_eval_nf N k (n + 2) (Fin.cons z envN) chi) :=
       fun chi => (hMq chi).trans (hNq chi).symm
-    -- Show M,envM∘skipIdx j satisfies the char NF of N,envN∘skipIdx j
-    set target_nf := nf_characteristic N (k + 1) n (envN ∘ skipIdx j)
+    set tgt := nf_characteristic N (k + 1) n (envN ∘ skipIdx j)
     have h_N_sat := nf_characteristic_satisfies N (k + 1) n (envN ∘ skipIdx j)
-    suffices h_M_sat : nf_eval_nf M (k + 1) n (envM ∘ skipIdx j) target_nf by
-      exact nf_agreement_from_shared_nf M _ N _ target_nf h_M_sat h_N_sat nf
+    suffices nf_eval_nf M (k + 1) n (envM ∘ skipIdx j) tgt by
+      exact nf_agreement_from_shared_nf M _ N _ tgt this h_N_sat nf
     obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
-    constructor
+    refine ⟨fun a => ?_, fun sub_nf => ?_⟩
     · -- Atoms
-      intro a
       cases a with
       | pred p i =>
         simp only [atom_eval, Function.comp] at h_atom ⊢
         exact (h_atom (.pred p (skipIdx j i))).trans (h_N_atoms (.pred p i))
       | order i₁ i₂ hne =>
         simp only [atom_eval, Function.comp] at h_atom ⊢
-        have hne' : skipIdx j i₁ ≠ skipIdx j i₂ := by
-          simp only [skipIdx]
-          split <;> split <;> intro heq <;> apply hne <;> ext
-          · simp [Fin.castSucc, Fin.ext_iff] at heq; exact heq
-          · simp [Fin.castSucc, Fin.succ, Fin.ext_iff] at heq; omega
-          · simp [Fin.castSucc, Fin.succ, Fin.ext_iff] at heq; omega
-          · simp [Fin.succ, Fin.ext_iff] at heq; exact heq
-        exact (h_atom (.order (skipIdx j i₁) (skipIdx j i₂) hne')).trans
+        exact (h_atom (.order _ _ (fun heq => hne (skipIdx_injective j i₁ i₂ heq)))).trans
           (h_N_atoms (.order i₁ i₂ hne))
     · -- Quantifiers
-      intro sub_nf
-      rw [← h_N_quant sub_nf]
-      -- Transfer existentials using cons_comp_skipIdx and IH
-      constructor
-      · -- M → N: given z with eval on envM∘skipIdx j, find z' for N
-        rintro ⟨z, hz⟩
+      rw [← h_N_quant sub_nf]; constructor
+      · rintro ⟨z, hz⟩
         rw [cons_comp_skipIdx] at hz
-        set chi := nf_characteristic M k (n + 2) (Fin.cons z envM)
-        obtain ⟨z', hz'⟩ := (hex_transfer chi).mp ⟨z, nf_characteristic_satisfies ..⟩
-        have h_agree_ext := nf_agreement_from_shared_nf M _ N _ chi
-          (nf_characteristic_satisfies ..) hz'
-        have h_proj := ih (n + 1) (j + 1) (Fin.cons z envM) (Fin.cons z' envN)
-          h_agree_ext sub_nf
-        rw [← cons_comp_skipIdx, ← cons_comp_skipIdx] at h_proj
-        exact ⟨z', h_proj.mp (by rwa [← cons_comp_skipIdx] at hz)⟩
-      · -- N → M: given z' for N, find z for M
-        rintro ⟨z', hz'⟩
+        obtain ⟨z', hz'⟩ := (hex _).mp ⟨z, nf_characteristic_satisfies M k (n + 2) (Fin.cons z envM)⟩
+        have := ih (n + 1) (j + 1) (Fin.cons z envM) (Fin.cons z' envN)
+          (nf_agreement_from_shared_nf M _ N _ _ (nf_characteristic_satisfies ..) hz') sub_nf
+        rw [← cons_comp_skipIdx, ← cons_comp_skipIdx] at this
+        exact ⟨z', this.mp (by rwa [← cons_comp_skipIdx] at hz)⟩
+      · rintro ⟨z', hz'⟩
         rw [cons_comp_skipIdx] at hz'
-        set chi := nf_characteristic N k (n + 2) (Fin.cons z' envN)
-        obtain ⟨z, hz⟩ := (hex_transfer chi).mpr ⟨z', nf_characteristic_satisfies ..⟩
-        have h_agree_ext := nf_agreement_from_shared_nf M _ N _ chi hz
-          (nf_characteristic_satisfies ..)
-        have h_proj := ih (n + 1) (j + 1) (Fin.cons z envM) (Fin.cons z' envN)
-          h_agree_ext sub_nf
-        rw [← cons_comp_skipIdx, ← cons_comp_skipIdx] at h_proj
-        exact ⟨z, h_proj.mpr (by rwa [← cons_comp_skipIdx] at hz')⟩
+        obtain ⟨z, hz⟩ := (hex _).mpr ⟨z', nf_characteristic_satisfies N k (n + 2) (Fin.cons z' envN)⟩
+        have := ih (n + 1) (j + 1) (Fin.cons z envM) (Fin.cons z' envN)
+          (nf_agreement_from_shared_nf M _ N _ _ hz (nf_characteristic_satisfies ..)) sub_nf
+        rw [← cons_comp_skipIdx, ← cons_comp_skipIdx] at this
+        exact ⟨z, this.mpr (by rwa [← cons_comp_skipIdx] at hz')⟩
 
 /-- On `Fin.cons x (fun _ => t)` envs, composing with `skipIdx 0` gives `(fun _ => t)`.
     This is because `skipIdx 0` sends every `i` to `i.succ` (since `i.val ≥ 0` always),
     and `Fin.cons x f ∘ Fin.succ = f`. -/
 private theorem cons_comp_skipIdx_zero {α : Type*} {n : Nat} (x : α) (f : Fin n → α) :
     (Fin.cons x f) ∘ skipIdx 0 = f := by
-  funext ⟨i, hi⟩
-  simp only [Function.comp, skipIdx, Fin.cons, Fin.succ]
-  -- i.val < 0 is false, so we take the else branch (succ)
-  split
-  · omega
-  · rfl
+  ext ⟨i, hi⟩
+  simp only [Function.comp, skipIdx, show ¬(i < 0) from not_lt.mpr (Nat.zero_le i), ↓reduceIte]
+  rfl
 
 /-- Cross-structure second-component 1-var NF extraction from 2-var NF sharing.
     If M,[x,t] and N,[x',t'] both satisfy sub_nf, then t and t' have the
