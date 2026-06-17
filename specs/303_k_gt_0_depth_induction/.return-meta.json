@@ -4,8 +4,8 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
   "session_id": "sess_1781710390_4591d5",
-  "phase": 1,
-  "phases_completed": 1,
+  "phase": 2,
+  "phases_completed": 2,
   "phases_total": 4,
   "verification": {
     "sorry_count": 2,
@@ -16,27 +16,27 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 573,
-      "statement": "existPart_succ_n1_bypass (Until zone, k>0)",
-      "assumption": "Quantifier encoding for non-constant env with t < x",
-      "why_deferred": "Phase 2 target",
-      "next_dispatch": "Restructure with generalExistPart_from_classical"
+      "line": 600,
+      "statement": "existPart_succ_n1_bypass (Until zone k>0, mp direction)",
+      "assumption": "temporal_truth M t until_formula implies exists x with nf_eval_nf at [x,t]",
+      "why_deferred": "Backward direction circularity: top/bot not invertible without NF precondition. Requires V-EA negation closure (Rabinovich Lemma 5.1).",
+      "next_dispatch": "Implement V-EA negation closure"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 577,
-      "statement": "existPart_succ_n1_bypass (Since zone, k>0)",
-      "assumption": "Quantifier encoding for non-constant env with x < t",
-      "why_deferred": "Phase 2 target",
-      "next_dispatch": "Mirror of Until zone restructuring"
+      "line": 646,
+      "statement": "existPart_succ_n1_bypass (Since zone k>0, mp direction)",
+      "assumption": "temporal_truth M t since_formula implies exists x with nf_eval_nf at [x,t]",
+      "why_deferred": "Mirror of Until zone circularity.",
+      "next_dispatch": "Mirror of Until fix once V-EA negation closure available"
     }
   ],
   "memory_candidates": [
     {
-      "content": "GeneralExistPartOrdered deleted from mutual induction in plan v9 Phase 1. kamp_mutual_induction is now 2-conjunct (CharPart + ExistPart). The ih_general_exist parameter was removed from existPart_succ_n1_bypass. The Until/Since k>0 zones need restructuring to use generalExistPart_from_classical (which has the full 2-var NF precondition and IS proved) or ih_exist directly.",
+      "content": "In KampBypass.lean, generalExistPart_from_classical CANNOT be used directly from the Until/Since zone implementation because GeneralExistPart.lean imports KampBypass.lean (circular dependency). Instead, inlined the classical satisfiability logic using sub_nf.2 ssn directly to determine top/bot. The forward direction (mpr) proved using NF agreement transfer (nf_agreement_from_shared_nf). The backward direction (mp) remains sorry due to the fundamental circularity: decoding top/bot formulas back to existential truth requires the 2-var NF as precondition, which is exactly what we are trying to prove.",
       "category": "DECISION",
       "confidence": 1.0,
-      "suggested_keywords": ["GeneralExistPartOrdered", "kamp_mutual_induction", "existPart_succ_n1_bypass", "ih_general_exist", "plan-v9-phase-1"]
+      "suggested_keywords": ["generalExistPart_from_classical", "circular-import", "KampBypass", "Until-zone", "Since-zone", "backward-direction", "V-EA-negation-closure"]
     }
   ]
 }

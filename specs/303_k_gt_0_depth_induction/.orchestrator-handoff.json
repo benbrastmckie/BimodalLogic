@@ -1,37 +1,25 @@
 {
   "status": "partial",
-  "summary": "Phase 1 completed: deleted GeneralExistPartOrdered abbrev and its two false sorry theorems, simplified kamp_mutual_induction to 2-conjunct (CharPart + ExistPart), removed ih_general_exist from existPart_succ_n1_bypass. Until/Since k>0 zones have sorry placeholders for Phase 2.",
-  "phases_completed": 1,
+  "summary": "Phase 2 completed: Restructured k>0 Until/Since zones with top/bot encoding. Forward directions (mpr: existential->temporal) proved sorry-free. Backward directions (mp: temporal->existential) left as targeted sorry requiring V-EA negation closure (Rabinovich Lemma 5.1). Net sorry count unchanged at 2, but now at precise backward-direction locations.",
+  "phases_completed": 2,
   "phases_total": 4,
   "blockers": [],
-  "continuation_context": {
-    "next_phase": 2,
-    "resume_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-    "resume_description": "Replace sorry at Until zone (line 573) and Since zone (line 577) with restructured quantifier encoding using generalExistPart_from_classical"
-  },
-  "next_action_hint": "implement Phase 2",
-  "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean"
-  ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 573,
-      "statement": "existPart_succ_n1_bypass (Until zone, k>0, true/false case)",
-      "assumption": "Existential on non-constant env [x,t] with t < x can be characterized temporally without ih_general_exist",
-      "why_deferred": "Phase 2 target: requires restructured quantifier encoding via generalExistPart_from_classical or ih_exist",
-      "next_dispatch": "Implement Until zone using generalExistPart_from_classical (full 2-var NF precondition, already proved)"
+      "line": 600,
+      "statement": "existPart_succ_n1_bypass (Until zone k>0, mp direction)",
+      "assumption": "temporal_truth M t until_formula implies exists x with nf_eval_nf at [x,t]",
+      "why_deferred": "Backward direction requires establishing full 2-var NF from temporal formula. The top/bot encoding is not invertible: top at x is always true regardless of whether the actual sub-existential holds. Circular: decoding requires the NF as precondition.",
+      "next_dispatch": "Implement V-EA negation closure (Rabinovich Lemma 5.1) to provide correct formula encoding without NF precondition"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 577,
-      "statement": "existPart_succ_n1_bypass (Since zone, k>0, false/true case)",
-      "assumption": "Existential on non-constant env [x,t] with x < t can be characterized temporally without ih_general_exist",
-      "why_deferred": "Phase 2 target: mirror of Until zone restructuring",
-      "next_dispatch": "Implement Since zone using generalExistPart_from_classical (mirror of Until zone approach)"
+      "line": 646,
+      "statement": "existPart_succ_n1_bypass (Since zone k>0, mp direction)",
+      "assumption": "temporal_truth M t since_formula implies exists x with nf_eval_nf at [x,t]",
+      "why_deferred": "Mirror of Until zone. Same circularity.",
+      "next_dispatch": "Mirror of Until fix once V-EA negation closure available"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
@@ -49,5 +37,20 @@
       "why_deferred": "Pre-existing sorry args (placeholders for mutual induction IH)",
       "next_dispatch": "Resolved once kamp_mutual_induction is wired through"
     }
+  ],
+  "continuation_context": {
+    "is_successor": false,
+    "current_phase": 2,
+    "next_phase": 3,
+    "key_decisions": [
+      "Used inlined classical top/bot per sub_nf.2 ssn instead of generalExistPart_from_classical (circular import prevented direct use)",
+      "Formula structure: (compat_disj AND quant_conj) Until/Since Formula.top",
+      "NF agreement via nf_agreement_from_shared_nf transfers M0 witness status to any M satisfying sub_nf",
+      "Forward direction uses zone_order + compat_of_eval + fwd_disj for compat_disj, and sub_nf.2 truth values for quant_conj trivial evaluation"
+    ]
+  },
+  "next_action_hint": "Phase 3 implements V-EA negation closure infrastructure needed for the backward directions",
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
   ]
 }
