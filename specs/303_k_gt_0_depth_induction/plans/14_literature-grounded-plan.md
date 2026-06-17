@@ -1,7 +1,7 @@
 # Implementation Plan: Close PriorComposition Sorry via Literature-Grounded Zone Transfer
 
 - **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [IN PROGRESS] (Phases 1-3 complete, Phase 4a-4c complete, Phase 4d blocked -> revised into Phases 5-7)
+- **Status**: [IN PROGRESS] (Phases 1-4 complete, Phase 5 partial — between-zone blocked, Phases 6-7 not started)
 - **Effort**: 20 hours (6-8 dispatch sessions)
 - **Dependencies**: None (k=0 infrastructure is sorry-free, KampBypass.lean is sorry-free)
 - **Research Inputs**: reports/09_interval-splitting-mapping.md, reports/11_vea-negation-closure-design.md, reports/12_fraisse-game-analysis.md, reports/13_literature-grounded-proof-strategy.md
@@ -163,23 +163,32 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Depth-0 Between-Zone Transfer (Closes S3/S4) [BLOCKED]
+### Phase 5: Depth-0 Between-Zone Transfer (Closes S3/S4) [PARTIAL]
 
-**Goal**: Prove the depth-0 3-var existential transfer for the between-zone case in the base cases of `prior_nonconstenv_2var_agree_until` (line 413) and `prior_nonconstenv_2var_agree_since` (line 491). At depth 0, `nf_eval_nf` is purely atomic, so the between-zone reduces to finding a point with matching monadic predicates in the interval (t', x').
+**Goal**: Prove the depth-0 3-var existential transfer for the between-zone case in the base cases of `prior_nonconstenv_2var_agree_until` and `prior_nonconstenv_2var_agree_since`. At depth 0, `nf_eval_nf` is purely atomic, so the between-zone reduces to finding a point with matching monadic predicates in the interval (t', x').
 
-**Tasks**:
-- [ ] Refactor `exist_transfer_3var_nonconstenv` signature to accept `atomMap`, `h_surj`, Prior hypotheses (h_UZ_M, h_SZ_M, h_UZ_N, h_SZ_N), and order hypotheses (h_order_M, h_order_N). Update both call sites (base case at line 386 and inductive step at line 437) to pass these parameters from the enclosing `prior_nonconstenv_2var_agree_until/since` scope.
-- [ ] Implement zone decomposition for the forward direction (M -> N) of `exist_transfer_3var_nonconstenv` at depth 0 (K=0). Decompose by the order atoms in ssn3 that determine w's zone relative to x and t:
-  - Zone 1 (w < t): use `cross_extend_bwd_1var(h_t, w)` to find w' with depth-0 2-var at [w,t]/[w',t']. Since w < t, w' < t'. Since t' < x' (h_order_N), w' < x'. Build 3-var eval via `depth0_3var_witness_check`.
-  - Zone 2 (w = t): use w' = t'. Predicates match from h_t. Orders from h_order_N.
-  - Zone 3 (t < w < x): The between-zone. Build a temporal formula for w's predicate pattern using atomMap + h_surj. Use `cross_extend_bwd_1var(h_t, w)` to get w_t > t' with matching predicates. Use `cross_extend_bwd_1var(h_x, w)` to get w_x < x' with matching predicates. If w_t < x': use w_t as witness. If w_x > t': use w_x as witness. Case C (w_t >= x' AND w_x <= t'): use Prior-UZ at t' and/or Prior-SZ at x' to find a witness inside (t', x').
-  - Zone 4 (w = x): use w' = x'. Predicates match from h_x.
-  - Zone 5 (w > x): use `cross_extend_bwd_1var(h_x, w)` to find w'. Since w > x, w' > x'. Since x' > t' (h_order_N), w' > t'.
-  - Inconsistent zones (e.g., ssn3 says x < t but h_order_M says t < x): vacuously false.
-- [ ] Implement the backward direction (N -> M) as the symmetric mirror of the forward direction.
-- [ ] For the depth-0 base case (K=0 in `prior_nonconstenv_2var_agree_until`): the current sorry at line 413 is inside a `by` block that has already extracted zone-determining order atoms (w_lt_x, x_lt_w, w_lt_t, t_lt_w, x_lt_t, t_lt_x at lines 405-410). The fix: instead of `sorry`, dispatch on these Boolean values to determine zone, then apply the appropriate zone handler.
-- [ ] Mirror for `prior_nonconstenv_2var_agree_since` (line 491): same zone decomposition with reversed order convention (x < t instead of t < x).
-- [ ] Verify: `lake build PriorComposition` succeeds with sorry count reduced from 4 to 2 (S1/S2 at lines 300/320 remain).
+**Started**: 2026-06-17
+
+**Progress**:
+- [x] Created standalone helper lemmas `depth0_3var_exist_transfer_until` (line ~200) and `depth0_3var_exist_transfer_since` (line ~277) in PriorComposition.lean
+- [x] Proved all pairwise order inconsistency cases sorry-free (3 pairs x 2 lemmas = 6 checks)
+- [x] Proved anchor order consistency checks (ssn3 x-t order vs h_order) sorry-free
+- [x] Replaced original S3/S4 sorry (deeply nested in lambdas) with clean calls to new helper lemmas
+- [x] Build passes (988 jobs)
+- [ ] **BLOCKED**: Between-zone case (Zone 3: t < w < x) in both helper lemmas
+
+**Remaining sorry** (2 in this phase, at lines 274 and 345):
+- `depth0_3var_exist_transfer_until` between-zone: `(∃ w, t < w < x ∧ preds τ at w) ↔ (∃ w', t' < w' < x' ∧ preds τ at w')`
+- `depth0_3var_exist_transfer_since` between-zone: symmetric mirror
+
+**Blocker analysis**: The between-zone existential is a 2-variable property of (t,x) that cannot be expressed as a depth-2 temporal formula at a single endpoint. Prior-UZ/SZ produce separate witnesses (one above t', one below x') but do not guarantee a single witness in the intersection (t', x'). Possible resolutions:
+1. Derive `interval_nf_types` from Prior axioms (the Stavi pipeline has this explicitly)
+2. Use KampBypass `existPart_succ_n1_bypass_k0` infrastructure to bridge
+3. Restructure base case to avoid needing the between-zone transfer directly
+
+**Tasks remaining**:
+- [ ] Resolve between-zone blocker via one of the approaches above
+- [ ] Verify: `lake build PriorComposition` succeeds with sorry count reduced from 4 to 2 (S1/S2 only)
 
 **Key technical detail for Zone 3 (Case C)**: At depth 0, we have depth-2 1-var agreement at x/x' and t/t'. `cross_extend_bwd_1var(h_t, w)` uses the FULL depth-2 hypothesis to produce w_t with depth-1 2-var agreement at [w,t]/[w_t,t']. The depth-1 2-var includes quantifier conditions: for each depth-0 3-var chi, `(exists z, nf_eval M 0 3 [z,w,t] chi) <-> (exists z', nf_eval N 0 3 [z',w_t,t'] chi)`. Similarly for w_x from h_x. In Case C (w_t >= x', w_x <= t'), the point x in M satisfies x > w, x > t with specific predicates. The depth-1 2-var transfer from [w,t]/[w_t,t'] gives z' > w_t >= x' with x's predicates. The point t in M satisfies t < w, t < x. The transfer from [w,x]/[w_x,x'] gives z'' < w_x <= t' with t's predicates. These witnesses are OUTSIDE (t', x'), but their existence establishes that the predicate patterns ARE realized in N. The Prior-UZ/SZ argument then constrains the first/last occurrence to be INSIDE the interval. If this fails, the contradiction may come from the depth-1 2-var quantifier transfer encoding the between-zone census.
 
