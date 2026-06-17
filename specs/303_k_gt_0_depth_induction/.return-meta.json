@@ -1,16 +1,29 @@
 {
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "session_id": "sess_1781705483_67e1df",
-  "task_number": 303,
-  "findings_count": 7,
-  "adversarial_verification_triggered": true,
-  "report_path": "specs/303_k_gt_0_depth_induction/reports/07_literature-construction.md",
-  "next_steps": "Run /plan 303 to create implementation plan",
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/303_k_gt_0_depth_induction/plans/08_generalexistpart-redesign-plan.md",
+      "summary": "Plan v8: Redesign GeneralExistPart with 1-var NF parameters and zone decomposition to close 2 sorries in KampBypass.lean"
+    }
+  ],
+  "next_steps": "Run /implement 303 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1781706105_3a515b",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 12,
+    "dependency_waves": [[1], [2], [3], [4], [5]]
+  },
   "memory_candidates": [
-    "Rabinovich 2014 Proposition 3.5 maps exists-forall formulas with one free variable to TL(Until, Since) via nested Until/Since: A_k AND (B_{k+1} Until (A_{k+1} AND ... (A_n AND Box B_{n+1})...)). In the Lean formalization, this becomes zone decomposition over the environment elements in GeneralExistPart'. Each zone determines a sub-formula, and the big disjunction over zones constitutes the temporal characterization.",
-    "The circularity at KampBypass.lean:636,688 is broken by changing GeneralExistPart's precondition from full r-var NF (env_nf : NormalForm sig (k+1) r, which IS the goal) to individual 1-var NFs (env_nfs : Fin r -> NormalForm sig (k+1) 1, which we HAVE from the enriched formula). The zone decomposition formula must actually construct temporal formulas using char_k and Prior zone infrastructure, not use Formula.top/bot.",
-    "For the enriched Until formula at k>0: the quant_conj must be evaluated at the Until witness x (not at the reference point t). This uses ih_general_exist' at r=2 with env_nfs = [nf_x0, nf_t0]. The precondition for ih_general_exist' is h_x_eval and h_t_eval (1-var NF at x and t), which ARE available from the enriched Until formula's char_kp1 match."
+    {
+      "content": "When a formal proof requires existential transfer across structures, the precondition of the transfer lemma must be satisfiable from hypotheses already available at the use site. If the transfer lemma's precondition IS the goal being proved (circular), the fix is to weaken the precondition to something available -- typically decomposing a multi-variable agreement into individual single-variable agreements that can be obtained from characteristic NF matching. The formula construction must then compensate by performing actual zone decomposition rather than using trivial top/bot formulas.",
+      "category": "PATTERN",
+      "source_artifact": "specs/303_k_gt_0_depth_induction/plans/08_generalexistpart-redesign-plan.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["circularity", "precondition-weakening", "zone-decomposition", "existential-transfer", "normal-form", "lean4"]
+    }
   ]
 }

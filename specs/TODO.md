@@ -23,7 +23,7 @@ next_project_number: 305
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-303 [RESEARCHED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
@@ -109,7 +109,7 @@ next_project_number: 305
 ---
 
 ### 303. K gt 0 depth induction
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -119,6 +119,7 @@ next_project_number: 305
   - [303_k_gt_0_depth_induction/reports/04_rabinovich-formula-analysis.md]
   - [303_k_gt_0_depth_induction/reports/05_recursive-formula-design.md]
   - [303_k_gt_0_depth_induction/reports/06_generalexistpart-redesign.md]
+  - [303_k_gt_0_depth_induction/reports/07_literature-construction.md]
 - **Summary**: [303_k_gt_0_depth_induction/summaries/02_depth-induction-summary.md]
 - **Plan**:
   - [303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md]
