@@ -2,15 +2,15 @@
   "status": "researched",
   "agent_type": "lean-research-hard-agent",
   "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "session_id": "sess_1781704640_6cac16",
+  "session_id": "sess_1781705483_67e1df",
   "task_number": 303,
   "findings_count": 7,
   "adversarial_verification_triggered": true,
-  "report_path": "specs/303_k_gt_0_depth_induction/reports/06_generalexistpart-redesign.md",
+  "report_path": "specs/303_k_gt_0_depth_induction/reports/07_literature-construction.md",
   "next_steps": "Run /plan 303 to create implementation plan",
   "memory_candidates": [
-    "The current GeneralExistPart definition (env_nf : NormalForm sig (k+1) r, full r-var NF precondition) is PROVABLY UNUSABLE at the sorry sites because its precondition (nf_eval_nf M (k+1) r e env_nf) IS the goal being proved. The redesign MUST use individual 1-var NF parameters (env_nfs : Fin r -> NormalForm sig (k+1) 1) with precondition (forall i, nf_eval_nf M (k+1) 1 (fun _ => e i) (env_nfs i)), which IS satisfiable from h_x_agree/h_t_agree at the sorry sites.",
-    "GeneralExistPart with 1-var NF parameters CANNOT use Formula.top/bot (the classical satisfiability split). The formula must perform ACTUAL temporal construction via zone decomposition, because the precondition (individual 1-var NF agreement) does NOT determine the full r-var NF -- it only constrains each element individually. The zone decomposition must enumerate zones for y relative to the ordered set {e_0, ..., e_{r-1}} and construct nested Until/Since formulas per Rabinovich Prop 3.5.",
-    "The redesigned GeneralExistPart MUST be added as a third conjunct to the mutual induction (kamp_mutual_induction). Proving it outside the mutual induction creates circularity: ExistPart(k+1) needs GeneralExistPart(k), and GeneralExistPart(k+1) needs CharPart(k+1) + GeneralExistPart(k). Both at LOWER depth k, so no circularity within the mutual induction."
+    "Rabinovich 2014 Proposition 3.5 maps exists-forall formulas with one free variable to TL(Until, Since) via nested Until/Since: A_k AND (B_{k+1} Until (A_{k+1} AND ... (A_n AND Box B_{n+1})...)). In the Lean formalization, this becomes zone decomposition over the environment elements in GeneralExistPart'. Each zone determines a sub-formula, and the big disjunction over zones constitutes the temporal characterization.",
+    "The circularity at KampBypass.lean:636,688 is broken by changing GeneralExistPart's precondition from full r-var NF (env_nf : NormalForm sig (k+1) r, which IS the goal) to individual 1-var NFs (env_nfs : Fin r -> NormalForm sig (k+1) 1, which we HAVE from the enriched formula). The zone decomposition formula must actually construct temporal formulas using char_k and Prior zone infrastructure, not use Formula.top/bot.",
+    "For the enriched Until formula at k>0: the quant_conj must be evaluated at the Until witness x (not at the reference point t). This uses ih_general_exist' at r=2 with env_nfs = [nf_x0, nf_t0]. The precondition for ih_general_exist' is h_x_eval and h_t_eval (1-var NF at x and t), which ARE available from the enriched Until formula's char_kp1 match."
   ]
 }

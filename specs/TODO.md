@@ -118,6 +118,7 @@ next_project_number: 305
   - [303_k_gt_0_depth_induction/reports/02_depth-induction-resolution.md]
   - [303_k_gt_0_depth_induction/reports/04_rabinovich-formula-analysis.md]
   - [303_k_gt_0_depth_induction/reports/05_recursive-formula-design.md]
+  - [303_k_gt_0_depth_induction/reports/06_generalexistpart-redesign.md]
 - **Summary**: [303_k_gt_0_depth_induction/summaries/02_depth-induction-summary.md]
 - **Plan**:
   - [303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md]
