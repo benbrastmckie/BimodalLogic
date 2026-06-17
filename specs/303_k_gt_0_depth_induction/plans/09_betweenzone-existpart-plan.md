@@ -282,7 +282,7 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 - Phase 4a: Enrich backward direction with partial proof structure [COMPLETED - lateral]
 - Phase 4b: Prior composition transfer — eliminate KampBypass sorry [COMPLETED]
 - Phase 4c: Prove prior_second_1var_from_2var in PriorComposition.lean [COMPLETED — proved via nf_skipIdx_cross projection, ~100 lines]
-- Phase 4d: Prove exist_transfer_3var_nonconstenv in PriorComposition.lean (~400-600 lines, Fraisse game argument) [BLOCKED — requires new infrastructure]
+- Phase 4d: Prove exist_transfer_3var_nonconstenv in PriorComposition.lean (~400-600 lines, Fraisse game argument) [BLOCKED — requires Fraisse game simultaneous (depth, arity) induction. Dispatch 2: threaded h_surj, added hex_t extraction, imported nf_depth0_char_formula. Analysis confirmed all 4 sorry share single root cause.]
 
 **Tasks**:
 - [x] Restructure Until/Since formula encoding from top/bot to Prior composition transfer *(Phase 4b)*
