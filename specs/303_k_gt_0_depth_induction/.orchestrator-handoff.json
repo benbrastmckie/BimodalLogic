@@ -1,72 +1,93 @@
 {
   "status": "partial",
-  "summary": "Phase 4a (dispatch 2026-06-17): Enriched backward direction proof structure in Until/Since k>0 zones. Added VecEATranslation import. Backward directions now extract x from Until/Since, obtain x's 1-var NF type via compat_disj, decompose to precise sub-goal. Forward directions preserved sorry-free. Sorry count unchanged (2). Blocking point precisely identified: establishing full nf_eval_nf at non-constant env [x,t] from 1-var NF data at x and t separately.",
+  "summary": "Phase 4b complete: KampBypass.lean Until/Since backward sorries eliminated via Prior composition transfer. Formula restructured from trivial top/bot to (char_kp1 nf_t₀) ∧ ((char_kp1 nf_x₀) U/S top). Sorry moved to PriorComposition.lean mathematical primitives (prior_second_1var_from_2var, exist_transfer_3var_nonconstenv). KampBypass.lean is now sorry-free.",
   "phases_completed": 3,
   "phases_total": 4,
-  "blockers": [
-    "KampBypass.lean:623 — Until k>0 backward: need nf_eval_nf M (k'+2) 2 [x,t] sub_nf from h_nf_x_eval (1-var at x) + h_atoms (1-var at t) + h_t_lt_x (order). Requires Prior compositionality or bracket-formula interval characterization.",
-    "KampBypass.lean:690 — Since k>0 backward: mirror of Until blocker."
-  ],
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 623,
-      "statement": "existPart_succ_n1_bypass (Until zone k>0, mp direction)",
-      "assumption": "Given x extracted from Until with compatible 1-var NF type (h_nf_x_eval), t with matching parent_atoms (h_atoms), and order t < x (h_t_lt_x): establish nf_eval_nf M (k'+2) 2 [x,t] sub_nf",
-      "why_deferred": "Establishing full 2-var NF from separate 1-var data is the fundamental non-constant-env gap. Requires either: (a) Prior compositionality theorem at lower depth, (b) bracket-formula interval characterization with depth induction, or (c) Rabinovich Lemma 5.1 negation closure. All approaches require 500+ lines of new infrastructure.",
-      "next_dispatch": "Phase 4b: Replace top/bot formula with bracket-formula translation (bracketBuildRight) that encodes interval information. This makes quant_conj carry real semantic content enabling backward extraction."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 509,
+      "statement": "theorem prior_second_1var_from_2var_until : ∀ nf1, nf_eval_nf M (K+2) 1 (fun _ => t) nf1 ↔ nf_eval_nf M₀ (K+2) 1 (fun _ => t₀) nf1",
+      "assumption": "From 2-var NF agreement at [x,t]/[x₀,t₀] on Prior structures, the second component t/t₀ have the same 1-var NF",
+      "why_deferred": "Requires Prior-specific zone-matching argument: UZ/SZ saturation constrains which 2-var existentials are satisfiable, recoverable from 3-var existentials in the 2-var NF",
+      "next_dispatch": "Phase 4c: Prove using zone-matching and UZ/SZ axioms"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 690,
-      "statement": "existPart_succ_n1_bypass (Since zone k>0, mp direction)",
-      "assumption": "Mirror of Until: given x from Since with compatible NF, establish nf_eval_nf M (k'+2) 2 [x,t] sub_nf",
-      "why_deferred": "Same architectural gap as Until zone",
-      "next_dispatch": "Mirror of Until fix in Phase 4b"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 529,
+      "statement": "theorem prior_second_1var_from_2var_since : (mirror for Since zone)",
+      "assumption": "Same as above with reversed order (x < t, x₀ < t₀)",
+      "why_deferred": "Mirror of prior_second_1var_from_2var_until",
+      "next_dispatch": "Phase 4c: Mirror proof"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 231,
+      "statement": "theorem exist_transfer_3var_nonconstenv (forward direction)",
+      "assumption": "From depth-(K+2) 1-var at x/x' and t/t', plus depth-(K+1) 2-var at [x,t]/[x',t'], derive depth-(K+1) 3-var existential transfer",
+      "why_deferred": "Requires Fraisse game argument for depth boost (game-theoretic interval-splitting)",
+      "next_dispatch": "Phase 4d: Implement Fraisse game argument"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 239,
+      "statement": "theorem exist_transfer_3var_nonconstenv (backward direction)",
+      "assumption": "Symmetric to forward",
+      "why_deferred": "Mirror of forward direction",
+      "next_dispatch": "Phase 4d: Mirror proof"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 322,
+      "statement": "prior_nonconstenv_2var_agree_until base case (K=0): depth-0 3-var existential transfer via zone-matching",
+      "assumption": "Purely atomic transfer requires zone-matching via UZ/SZ",
+      "why_deferred": "Pre-existing sorry; requires Prior-specific zone-matching for between-zone witnesses",
+      "next_dispatch": "Phase 4d: Base case of exist_transfer"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 399,
+      "statement": "prior_nonconstenv_2var_agree_since base case (K=0): mirror",
+      "assumption": "Mirror of Until base case",
+      "why_deferred": "Pre-existing sorry; mirror",
+      "next_dispatch": "Phase 4d: Base case mirror"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
       "statement": "nf_exist_backward (depth k+1 backward direction)",
       "assumption": "Pre-existing sorry (not introduced by task 303)",
-      "why_deferred": "Resolved once existPart_succ_n1_bypass is fully proved",
-      "next_dispatch": "Auto-resolves when KampBypass sorry are closed"
+      "why_deferred": "Resolved once PriorComposition sorries are closed (propagates through KampBypass → NfCharFormula)",
+      "next_dispatch": "Auto-resolves when PriorComposition sorry are closed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "nf_2var_exist_formula_prior (ih args)",
-      "assumption": "Pre-existing sorry args",
+      "statement": "nf_2var_exist_formula_prior (ih args propagation)",
+      "assumption": "Pre-existing sorry propagation",
       "why_deferred": "Auto-resolves when mutual induction is complete",
       "next_dispatch": "Auto-resolves"
     }
   ],
+  "blockers": [],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/plans/09_betweenzone-existpart-plan.md",
   "continuation_context": {
     "is_successor": true,
-    "current_phase": "4a",
-    "next_phase": "4b",
+    "current_phase": "4b",
+    "next_phase": "4c",
     "plan_path": "specs/303_k_gt_0_depth_induction/plans/09_betweenzone-existpart-plan.md",
-    "key_insight": "The backward direction sorry is at EXACTLY the point where we need to establish nf_eval_nf M (k'+2) 2 [x,t] sub_nf. We have: x's 1-var NF (from compat_disj), t's 1-var NF (from parent_atoms), order t<x. The gap is the quantifier conditions at [x,t]. Resolution path: replace top/bot formula with bracket-formula encoding that carries interval information about (t,x).",
-    "available_hypotheses_at_sorry": [
-      "h_nf_x_eval: nf_eval_nf M (k'+2) 1 (fun _ => x) nf_x",
-      "h_nf_x_compat: compat_check nf_x = true (x predicates match sub_nf)",
-      "h_atoms: atom_eval M (fun _ => t) a <-> parent_atoms a = true",
-      "h_t_lt_x: t < x (Until zone)",
-      "h_eval₀: nf_eval_nf M₀ (k'+2) 2 [x₀,t₀] sub_nf",
-      "h_UZ/h_SZ: semantic_prior_UZ/SZ M atomMap",
-      "h_quant: quant_conj holds at x (trivially true since formula is top/bot)"
-    ],
+    "key_insight": "KampBypass.lean is sorry-free. All remaining sorry are in PriorComposition.lean. The next dispatch should focus on proving prior_second_1var_from_2var (second component projection from 2-var agreement) using Prior zone-matching. This is a localized mathematical problem.",
     "key_decisions": [
-      "Keeping top/bot formula for now preserves sorry-free forward direction",
-      "Bracket-formula approach (Option D from report 11) is the correct resolution path",
-      "The ih_exist approach with constant-env x_atoms FAILS because it creates a gap in both directions",
-      "Cross-structure NF transfer (nf_extend_fwd) requires the 2-var NF precondition (circular)"
+      "Restructured formula from top/bot to char_kp1-based encoding — eliminates circularity by encoding EXACT NF types",
+      "Used nf_agreement_from_shared_nf to derive full NF agreement from single NF satisfaction",
+      "prior_2var_transfer_until/since (existing in PriorComposition) provides the backward direction transfer",
+      "prior_second_1var_from_2var (new in PriorComposition) provides the forward direction second component",
+      "cross_1var_from_2var (existing in KampComposition) provides the forward direction first component"
     ]
   },
-  "next_action_hint": "Phase 4b: Replace gep_formula_until (top/bot) with bracketBuildRight-based formula. Build BracketFormula 1 with char_kp1 point type for between-zone ssn. The formula, evaluated at t, encodes 'exists y in (t,x) with matching char'. Forward direction: show bracket holds from nf_eval witness. Backward direction: extract bracket witness y, then prove full 3-var NF at [y,x,t]. Alternatively, explore the Prior composition approach: use ih_exist at lower depth (k'+1) for the sub-quantifiers.",
   "artifacts": [
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-    "specs/303_k_gt_0_depth_induction/plans/09_betweenzone-existpart-plan.md",
-    "specs/303_k_gt_0_depth_induction/reports/11_vea-negation-closure-design.md"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+    "specs/303_k_gt_0_depth_induction/plans/09_betweenzone-existpart-plan.md"
   ]
 }

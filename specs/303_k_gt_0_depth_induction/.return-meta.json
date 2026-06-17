@@ -4,46 +4,85 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
   "session_id": "sess_1781710390_4591d5",
-  "phase": "4a",
+  "phase": "4b",
   "phases_completed": 3,
   "phases_total": 4,
   "verification": {
-    "sorry_count": 2,
+    "sorry_count_kampbypass": 0,
+    "sorry_count_priorcomposition": 6,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 623,
-      "statement": "existPart_succ_n1_bypass (Until zone k>0, mp direction)",
-      "assumption": "nf_eval_nf M (k'+2) 2 [x,t] sub_nf from 1-var NF data + order",
-      "why_deferred": "Non-constant env gap. Requires bracket-formula encoding or Prior compositionality (500+ lines).",
-      "next_dispatch": "Phase 4b: bracket-formula interval encoding"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 509,
+      "statement": "prior_second_1var_from_2var_until",
+      "assumption": "2-var NF agreement + Prior structure → second component 1-var agreement",
+      "why_deferred": "Requires Prior zone-matching (UZ/SZ constrain which existentials are satisfiable)",
+      "next_dispatch": "Phase 4c: zone-matching proof"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 690,
-      "statement": "existPart_succ_n1_bypass (Since zone k>0, mp direction)",
-      "assumption": "Mirror of Until",
-      "why_deferred": "Same gap",
-      "next_dispatch": "Phase 4b mirror"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 529,
+      "statement": "prior_second_1var_from_2var_since",
+      "assumption": "Mirror",
+      "why_deferred": "Mirror",
+      "next_dispatch": "Phase 4c: mirror"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 231,
+      "statement": "exist_transfer_3var_nonconstenv (fwd)",
+      "assumption": "Depth boost for 3-var existential transfer",
+      "why_deferred": "Requires Fraisse game argument",
+      "next_dispatch": "Phase 4d"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 239,
+      "statement": "exist_transfer_3var_nonconstenv (bwd)",
+      "assumption": "Symmetric",
+      "why_deferred": "Mirror",
+      "next_dispatch": "Phase 4d"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 322,
+      "statement": "prior_nonconstenv_2var_agree_until K=0 base",
+      "assumption": "Depth-0 zone-matching",
+      "why_deferred": "Pre-existing",
+      "next_dispatch": "Phase 4d"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 399,
+      "statement": "prior_nonconstenv_2var_agree_since K=0 base",
+      "assumption": "Mirror",
+      "why_deferred": "Pre-existing",
+      "next_dispatch": "Phase 4d"
     }
   ],
   "handoff_path": "specs/303_k_gt_0_depth_induction/.orchestrator-handoff.json",
   "memory_candidates": [
     {
-      "content": "ih_exist (ExistPart at lower depth) only works with CONSTANT parent env. For non-constant env [x,t] in the Until/Since zones, ih_exist gives existentials at [y,x,x] not [y,x,t]. The transfer from [x,x] to [x,t] requires the full 2-var NF as precondition (circular). Top/bot encoding preserves sorry-free forward but carries no backward information.",
+      "content": "KampBypass.lean Until/Since backward direction closed by restructuring formula to encode exact 1-var NF types: (char_kp1 nf_t₀) ∧ ((char_kp1 nf_x₀) U top). Key insight: nf_agreement_from_shared_nf converts single NF satisfaction to full NF agreement. Combined with prior_2var_transfer_until (PriorComposition), this transfers h_eval₀ from M₀ to M. The formula must encode both x's and t's NF types to enable prior_2var_transfer.",
       "category": "DISCOVERY",
       "confidence": 1.0,
-      "suggested_keywords": ["kamp", "ih_exist", "constant-env", "non-constant-env", "Until-zone", "backward-direction"]
+      "suggested_keywords": ["kamp", "prior_2var_transfer", "char_kp1", "nf_agreement_from_shared_nf", "formula-restructuring"]
     },
     {
-      "content": "generalExistPart_from_classical produces top/bot formula correct GIVEN the full NF precondition. Using it in the backward direction is circular (need NF to use NF). The cross-structure transfer (nf_extend_fwd/bwd) also requires the full NF precondition at arity 2.",
+      "content": "cross_1var_from_2var (KampComposition) extracts the FIRST component's 1-var NF from 2-var agreement. For the SECOND component (t in [x,t]), there is no direct helper — nf_drop_last_cross also projects the first component (via castSucc). On Prior structures, the second component projection requires Prior-specific zone-matching (prior_second_1var_from_2var). On general linear orders, 2-var agreement does NOT determine the second component's 1-var NF.",
       "category": "DISCOVERY",
       "confidence": 1.0,
-      "suggested_keywords": ["kamp", "generalExistPart_from_classical", "circularity", "nf_extend_fwd"]
+      "suggested_keywords": ["kamp", "cross_1var_from_2var", "second-component", "projection", "prior-specific"]
+    },
+    {
+      "content": "PriorComposition.lean prior_nonconstenv_2var_agree_until IS true on Prior structures (comment in KampBypass saying 'FALSE' was incorrect — it's false on GENERAL linear orders but true on Prior). The file was removed from imports incorrectly. Re-adding it enables prior_2var_transfer_until which provides the one-directional transfer needed for KampBypass backward direction.",
+      "category": "CORRECTION",
+      "confidence": 1.0,
+      "suggested_keywords": ["kamp", "PriorComposition", "prior_nonconstenv_2var_agree", "Prior-structures", "import-correction"]
     }
   ]
 }
