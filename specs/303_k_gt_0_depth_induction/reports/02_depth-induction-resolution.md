@@ -22,7 +22,8 @@
 
 - **Upstream Dependencies**: NormalForm.lean (nf_extend_fwd/bwd, nf_characteristic_satisfies), PriorDefs.lean (semantic_prior_UZ/SZ)
 - **Downstream Dependents**: KampMutualInduction.lean -> KampPrior.lean -> PriorExpressiveness.lean -> Transfer.lean -> Completeness.lean (completeness_discrete)
-- **Alternative Paths**: Paths A, B, C (analyzed below), Path D (new recommendation)
+- **Alternative Paths**: Paths A, C (analyzed below), Path D (new recommendation)
+- **Literature Cross-References**: Rabinovich 2014 §5, GHR94 §12.8 (Def. 12.8.13, Thm. 12.8.15)
 
 ## Executive Summary
 
@@ -30,7 +31,7 @@
 - The root cause is confirmed across 5 cycles: the formula `Until(compat_disj, top)` encodes only x's 1-var NF type, but the backward direction requires reconstructing the full 2-var NF including quantifier conditions at depth k'+1 involving the non-constant env `[y, x, t]`.
 - The Eq zone proof (lines 376-515) is sorry-free and provides a complete template: it works because x=t makes the env constant `[y, t, t]`, allowing direct use of `ih_exist` with `parent_atoms`.
 - **NfCharFormula.lean:542 is dead code** -- it is NOT on the critical path for `completeness_discrete`. The live path goes through KampMutualInduction.lean.
-- **Recommended resolution: Path D** -- Enrich the Until/Since formulas at k>0 with quantifier conditions encoded via `ih_exist`, paralleling the k=0 VecEA2 bracket construction but using depth-(k'+1) ih_exist formulas instead of depth-0 atomic char formulas. Estimated: 300-500 lines.
+- **Recommended resolution: Path A** (ExistPart_r with parent NF types) -- Modify ExistPart to parameterize by parent NF types at depth k+1 instead of just atoms. This is the natural Lean analog of GHR94 §12.8's decomposition formulas and is well-grounded in the literature. Path B (Feferman-Vaught composition) has been removed from consideration: it addresses the same gap through a heavier abstraction (~2x lines) and would fail for the same structural reason if Path A fails. Estimated: 400-600 lines.
 - The n>=2 sorry in KampMutualInduction.lean:310 depends on n=1 and will resolve automatically once the n=1 case is closed.
 
 ## Context and Scope
@@ -100,7 +101,7 @@ The current formula for the Until zone at k>0 is simply `Until(compat_disj, top)
 
 **Path A (ExistPart_r)**: Replace ExistPart with a version parameterized by parent NF types. This would require modifying `KampMutualInduction.lean` to change the mutual induction structure, and all downstream callers. Estimated 500+ lines. **Risk**: Changes to mutual induction could break the sorry-free Eq zone proof and the k=0 infrastructure.
 
-**Path B (Feferman-Vaught Composition)**: Prove that structures agreeing on 1-var NFs agree on multi-var NF evaluations. Uses NEquivalence.lean infrastructure (BiCompat, CompData). Estimated 1000+ lines. **Risk**: Large effort, requires deep composition theory. The existing NEquivalence infrastructure works for ordered sums, not directly for the env-based NF setting.
+**Path B (Feferman-Vaught Composition)**: REMOVED FROM CONSIDERATION. This path would prove a general composition theorem (structures agreeing on 1-var NFs agree on multi-var NF evaluations). Analysis shows it is a strictly heavier version of Path A: GHR94 §12.8's decomposition formulas (Def. 12.8.13) parameterize by full NF types at each point, which is conceptually identical to ExistPart_r. If Path A fails (ExistPart_r cannot bridge the constant/non-constant parent gap), Path B fails for the same structural reason — both require the same type transfer. Estimated 1000+ lines for no additional theoretical coverage. The existing NEquivalence.lean infrastructure (BiCompat, CompData) targets ordered sums, not the env-based NF setting, requiring substantial adaptation.
 
 **Path C (Direct Formula Construction via Depth Recursion)**: Build enriched formulas by recursing on depth, decomposing 3-var existentials by zone. Estimated 800 lines. **Risk**: Requires re-engineering significant infrastructure.
 
@@ -175,7 +176,7 @@ However, on PRIOR structures (with semantic_prior_UZ/SZ), this issue might not a
 
 **This brings us back to Path B**. The composition theorem IS needed, but perhaps a restricted version suffices.
 
-### Finding 6: Restricted Composition Theorem (Path D')
+### Finding 6: Restricted Composition Theorem (Subsumed by Path A)
 
 Instead of a full Feferman-Vaught composition theorem, we need only:
 
@@ -198,7 +199,7 @@ For the inductive case: the quantifier conditions of ssn involve depth-k' 4-var 
 
 But this induction is NOT the same as the mutual induction already in KampMutualInduction.lean. It's a COMPOSITION induction. And it requires proving 4-var transfer from 3-var transfer, which requires 5-var transfer from 4-var, etc.
 
-This is actually the same tower that makes Path B expensive. However, the existing `nf_extend_fwd/bwd` already handles this tower generically (for any arity). The question is whether we can use `nf_extend_fwd/bwd` on the SAME structure (rather than between ordered sums).
+This is the same tower that a standalone Feferman-Vaught composition theorem (former Path B) would have required. However, Path A (ExistPart_r) handles this implicitly by carrying parent NF types through the mutual induction — the tower is absorbed into the induction structure rather than proved separately. The existing `nf_extend_fwd/bwd` already handles the arity-extension generically. The question is whether we can use `nf_extend_fwd/bwd` on the SAME structure (rather than between ordered sums).
 
 Re-examining `nf_extend_fwd` (KampBypass.lean:33-51):
 ```
@@ -347,8 +348,9 @@ This recursive structure is exactly what makes the problem hard. Each level of d
 ## Decisions
 
 - NfCharFormula.lean:542 is confirmed dead code and does NOT need to be closed.
-- Paths A, B, C, D have all been analyzed in detail.
+- Paths A, C, D have all been analyzed in detail. Path B (Feferman-Vaught composition) removed from consideration — it is a strictly heavier version of Path A that fails for the same reasons if Path A fails.
 - The fundamental blocker is proven to be the gap between constant-parent ExistPart and non-constant-parent 2-var NF reconstruction.
+- GHR94 §12.8 (Def. 12.8.13, Thm. 12.8.15) provides strong theoretical backing for Path A as the natural formalization strategy.
 
 ## Recommendations
 
@@ -357,6 +359,8 @@ This recursive structure is exactly what makes the problem hard. Each level of d
 Despite the analysis suggesting Path D, the most tractable solution is Path A: modify ExistPart to handle non-constant parent envs.
 
 **Rationale**: The current ExistPart constrains the parent env to `(fun _ => t)`, which is sufficient for the Eq zone but not for Until/Since. By parameterizing ExistPart with the NF types of ALL parent variables (not just atoms), the transfer becomes possible.
+
+**Literature Support**: GHR94 §12.8 (Def. 12.8.13) uses *decomposition formulas* parameterized by the full NF type `X_t` at each point and interval types `X_{(t,u)}` — not just atoms. Theorem 12.8.15 proves the "backward game" from the "forward game," which is structurally analogous to the Until backward direction in our formalization. Path A (ExistPart_r with parent NF types) is the natural Lean analog of GHR94's approach. Rabinovich 2014 §5 provides the complementary interval-splitting argument but operates at the formula level rather than the NF evaluation level, so it does not directly address the constant-parent limitation.
 
 **Concrete proposal**:
 
@@ -383,29 +387,7 @@ Despite the analysis suggesting Path D, the most tractable solution is Path A: m
 
 **Risk**: Medium. The Eq zone proof and k=0 infrastructure should remain essentially unchanged (they're special cases of the generalized ExistPart_r with r=1). The main risk is in the n>=2 case at existPart_succ (line 310), which needs to be adapted.
 
-### Recommendation 2: Path B (Composition Theorem) -- ALTERNATIVE
-
-If Path A proves difficult, fall back to Path B: prove a restricted composition theorem directly.
-
-**Target theorem**:
-```
-theorem prior_composition_transfer :
-  forall (M M0 : OrderedMonadicStructure sig) (k : Nat)
-    (t : M.carrier) (t0 : M0.carrier)
-    (x : M.carrier) (x0 : M0.carrier)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
-    (h_UZ0 : semantic_prior_UZ M0 atomMap) (h_SZ0 : semantic_prior_SZ M0 atomMap)
-    (h_t : nf_eval_nf M (k+1) 1 (fun _ => t) nf_t <-> nf_eval_nf M0 (k+1) 1 (fun _ => t0) nf_t)
-    (h_x : nf_eval_nf M (k+1) 1 (fun _ => x) nf_x <-> nf_eval_nf M0 (k+1) 1 (fun _ => x0) nf_x)
-    (h_order : t < x <-> t0 < x0)
-    (ssn : NormalForm sig k 3),
-    (exists y, nf_eval_nf M k 3 [y, x, t] ssn) <->
-    (exists y, nf_eval_nf M0 k 3 [y, x0, t0] ssn)
-```
-
-**Estimated effort**: 800-1200 lines.
-
-### Recommendation 3: Address n>=2 Sorry After n=1
+### Recommendation 2: Address n>=2 Sorry After n=1
 
 KampMutualInduction.lean:310 (`existPart_succ` for n>=2) uses `sorry` but the comment says "depends on n=1 case." The n>=2 case uses the `bool_eq_of_iff_same` technique from `existPart_zero` (line 62) to reduce multi-var NFs to the 2-var case via M0 witnesses. This should resolve with the same pattern as the depth-0 case, once the n=1 case is closed. Estimated: 100-150 lines of adaptation.
 
@@ -413,7 +395,7 @@ KampMutualInduction.lean:310 (`existPart_succ` for n>=2) uses `sorry` but the co
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
-| Path A requires deeper changes to mutual induction than estimated | Medium | High | Fall back to Path B if modification cascades |
+| Path A requires deeper changes to mutual induction than estimated | Medium | High | Diagnose specific failure point; adapt ExistPart_r signature rather than pivoting to a heavier approach |
 | n>=2 case has additional subtleties at k>0 | Low | Medium | The bool_eq_of_iff_same technique is general; worst case add another 100 lines |
 | Proof complexity causes heartbeat timeouts | Medium | Low | Use `set_option maxHeartbeats` and factor into helper lemmas |
 | ExistPart_r changes break existing sorry-free proofs | Low | High | ExistPart_r at r=1 is exactly ExistPart; k=0 and Eq zone proofs are special cases |
