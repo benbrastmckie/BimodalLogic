@@ -7,48 +7,33 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 143,
-      "statement": "theorem generalExistPartIndiv_zero : GeneralExistPartIndiv atomMap 0",
-      "assumption": "Existential at depth 0 with individual 1-var NF preconditions has a temporal characterization",
-      "why_deferred": "Requires zone decomposition construction (Rabinovich Prop 3.5)",
-      "next_dispatch": "Build zone decomposition formula per zone position"
+      "line": 174,
+      "statement": "theorem generalExistPartOrdered_zero : GeneralExistPartOrdered atomMap 0",
+      "assumption": "Depth-0 existential with individual 1-var NFs + atom preconditions has temporal characterization",
+      "why_deferred": "Requires zone decomposition at depth 0 with actual temporal formulas",
+      "next_dispatch": "Build zone decomposition formulas using ZoneBridge infrastructure"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 171,
-      "statement": "theorem generalExistPartIndiv_succ : GeneralExistPartIndiv atomMap (k + 1)",
-      "assumption": "Depends on generalExistPartIndiv_zero + CharPart(k+1)",
+      "line": 207,
+      "statement": "theorem generalExistPartOrdered_succ : GeneralExistPartOrdered atomMap (k + 1)",
+      "assumption": "Depth k+1 uses CharPart(k+1) + GeneralExistPartOrdered(k)",
       "why_deferred": "Sequential dependency on base case",
       "next_dispatch": "After base case is sorry-free"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 636,
-      "statement": "existPart_succ_n1_bypass Until zone quantifier part",
-      "assumption": "Needs GeneralExistPartIndiv at r=2",
-      "why_deferred": "Phase 4 target",
-      "next_dispatch": "After Phases 1-3"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 688,
-      "statement": "existPart_succ_n1_bypass Since zone quantifier part",
-      "assumption": "Mirror of line 636",
-      "why_deferred": "Phase 4 target",
-      "next_dispatch": "After Phases 1-3"
     }
   ],
   "verification": {
-    "sorry_count": 4,
+    "sorry_count": 2,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "GeneralExistPartIndiv uses env_nfs : Fin r -> NormalForm sig (k+1) 1 (individual 1-var NFs) with precondition forall i, nf_eval_nf M (k+1) 1 (fun _ => e i) (env_nfs i)",
-    "Classical top/bot satisfiability CANNOT work with individual 1-var NF preconditions because 1-var NFs don't determine r-var NFs (Z counterexample)",
-    "GeneralExistPart backward compatibility (generalExistPart_from_classical) is self-contained and sorry-free, using full r-var NF precondition + classical argument",
-    "CharPart is defined in KampMutualInduction.lean which imports GeneralExistPart.lean — must inline CharPart type in generalExistPartIndiv_succ signature to avoid circular imports"
+    "GeneralExistPartIndiv (individual 1-var NFs without pairwise orders) is FALSE because a temporal formula at e(0) cannot detect the order of e(1) relative to e(0), but the existential truth value depends on this order (Z counterexample: integers with uniform predicate, [0,2] vs [0,1] have same 1-var NFs but different between-zone existentials).",
+    "GeneralExistPartOrdered (with env_atoms : AtomKind sig r -> Bool as additional precondition) is the CORRECT formulation for the third mutual induction conjunct, providing pairwise order information to the formula.",
+    "The enriched Until formula is: char(nf_t0) AND ((char(nf_x0) AND quant_conj) U top), where quant_conj uses ih_general_exist at r=2 with env_nfs=[nf_x0,nf_t0] and env_atoms=sub_nf.1.",
+    "exist_transfer_const_env gives: depth-(K+1) 1-var agreement implies depth-K constant-env existential transfer. This means classical top/bot works for GeneralExistPartOrdered at r=1 (single env element, constant env).",
+    "For r>=2 at depth 0, the between-zone existential (exists y between e(i) and e(j)) is NOT determined by individual 1-var NFs + pairwise orders alone. Zone decomposition with actual temporal formulas is required."
   ],
-  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-dispatch2-handoff.md"
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4-until-since-closed.md"
 }

@@ -85,6 +85,7 @@ Advances: "Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) -> 
 Phases within the same wave can execute in parallel.
 
 ### Phase 1: Rewrite GeneralExistPart Definition and Base Case (k=0) [IN PROGRESS]
+*(deviation: altered -- defined GeneralExistPartOrdered instead of GeneralExistPartIndiv; added env_atoms parameter because GeneralExistPartIndiv is FALSE without orders)*
 *(dispatch 2: implementing GeneralExistPartIndiv definition + base/inductive step with sorry)*
 
 **Analysis (dispatch 1)**: Thorough analysis confirmed:
@@ -158,7 +159,8 @@ The atom part is handled like Phase 1 (zone decomposition + char formulas from C
 
 ---
 
-### Phase 3: Update Mutual Induction and ih_general_exist Plumbing [NOT STARTED]
+### Phase 3: Update Mutual Induction and ih_general_exist Plumbing [COMPLETED]
+*(completed ahead of schedule: plumbing changes done alongside Phase 4)*
 
 **Goal**: Update `kamp_mutual_induction` to include GeneralExistPart as a third conjunct. Update the ih_general_exist parameter signature in `existPart_succ_n1_bypass` and its call sites.
 
@@ -189,7 +191,8 @@ The atom part is handled like Phase 1 (zone decomposition + char formulas from C
 
 ---
 
-### Phase 4: Enrich Until/Since Formulas and Close Sorries [NOT STARTED]
+### Phase 4: Enrich Until/Since Formulas and Close Sorries [COMPLETED]
+*(completed: existPart_succ_n1_bypass is sorry-free, verified with lean_verify)*
 
 **Goal**: Replace the sorry at KampBypass.lean:636 and :688 with proofs using the redesigned GeneralExistPart.
 

@@ -1,56 +1,38 @@
 {
   "status": "partial",
-  "summary": "Defined GeneralExistPartIndiv with individual 1-var NF parameters (env_nfs : Fin r -> NormalForm sig (k+1) 1). Type signature compiles. Backward-compatible GeneralExistPart and generalExistPart_all are sorry-free. Zone decomposition proofs for generalExistPartIndiv_zero and generalExistPartIndiv_succ are sorry (require Rabinovich Prop 3.5 construction).",
-  "phases_completed": 0,
+  "summary": "Closed the 2 KampBypass.lean sorries (lines 636, 688) by enriching Until/Since formulas with quantifier conjunctions from GeneralExistPartOrdered (new third mutual induction conjunct with individual 1-var NFs + atom/order preconditions). existPart_succ_n1_bypass is now sorry-free (verified: no sorryAx). Remaining: 2 sorries in GeneralExistPart.lean for generalExistPartOrdered_zero (zone decomposition at depth 0) and generalExistPartOrdered_succ (inductive step).",
+  "phases_completed": 2,
   "phases_total": 5,
-  "blockers": [],
-  "continuation_context": {
-    "is_successor": true,
-    "phase_in_progress": 1,
-    "implementation_started": true,
-    "type_signature_done": true,
-    "base_case_sorry": true,
-    "inductive_step_sorry": true,
-    "backward_compat_sorry_free": true,
-    "next_step": "Implement zone decomposition for generalExistPartIndiv_zero (Rabinovich Prop 3.5): classify y's position relative to environment, build temporal formula per zone, prove iff"
-  },
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-dispatch2-handoff.md",
-  "next_action_hint": "Implement generalExistPartIndiv_zero proof via zone decomposition at depth 0. The formula A for each ssn must encode y's zone position relative to environment elements using nested Until/Since. Existing infrastructure: KampForward.lean (enriched_vecEA2_until/since), VecEADecomp.lean (zone classification), ZoneBridge.lean (zone <-> temporal bridge).",
-  "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean"
-  ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 143,
-      "statement": "theorem generalExistPartIndiv_zero : GeneralExistPartIndiv atomMap 0",
-      "assumption": "Existential at depth 0 with individual 1-var NF preconditions has a temporal characterization",
-      "why_deferred": "Requires zone decomposition construction (Rabinovich Prop 3.5) to build actual temporal formulas instead of top/bot. Classical satisfiability cannot work with individual 1-var NFs (counterexample: Z with [0,2] vs [0,1])",
-      "next_dispatch": "Build zone decomposition: classify y's position relative to env elements, construct nested Until/Since formula per zone, prove bidirectional"
+      "line": 174,
+      "statement": "theorem generalExistPartOrdered_zero : GeneralExistPartOrdered atomMap 0",
+      "assumption": "At depth 0, existential with individual 1-var NFs + atom preconditions has temporal characterization via zone decomposition",
+      "why_deferred": "Classical top/bot fails for between-zone existentials at r>=2 (Z counterexample). Requires actual zone decomposition formulas using nested Until/Since. Existing infrastructure: ZoneBridge.lean (depth-0 zone bridges), KampBypassUntil/Since.lean (depth-0 temporal formula construction).",
+      "next_dispatch": "Implement zone decomposition for depth 0. For r=1: use exist_transfer_const_env (classical top/bot works). For r>=2: build temporal formula per zone using char_0 formulas and Until/Since. The r=2 case has existing zone bridge infrastructure."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
-      "line": 171,
-      "statement": "theorem generalExistPartIndiv_succ : GeneralExistPartIndiv atomMap (k + 1)",
-      "assumption": "Existential at depth k+1 decomposes into atom part (CharPart(k+1)) + quantifier part (GeneralExistPartIndiv(k))",
-      "why_deferred": "Depends on generalExistPartIndiv_zero being proved first. Uses same zone decomposition pattern plus quantifier conjunction from ih_gen_exist_k",
-      "next_dispatch": "Implement after generalExistPartIndiv_zero is sorry-free"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 636,
-      "statement": "existPart_succ_n1_bypass Until zone quantifier part",
-      "assumption": "Individual 1-var NF agreement insufficient for 2-var transfer without enriched formula",
-      "why_deferred": "Requires GeneralExistPartIndiv at r=2 with enriched Until formula (Phase 4)",
-      "next_dispatch": "Close after Phases 1-3 complete"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 688,
-      "statement": "existPart_succ_n1_bypass Since zone quantifier part",
-      "assumption": "Mirror of line 636",
-      "why_deferred": "Same as line 636 (Since mirror)",
-      "next_dispatch": "Close after Phases 1-3 complete"
+      "line": 207,
+      "statement": "theorem generalExistPartOrdered_succ : GeneralExistPartOrdered atomMap (k + 1)",
+      "assumption": "Atom part handled like depth 0; quantifier part uses GeneralExistPartOrdered(k) at arity r+1",
+      "why_deferred": "Sequential dependency on generalExistPartOrdered_zero. Also requires zone decomposition + quantifier conjunction construction at depth k+1.",
+      "next_dispatch": "After generalExistPartOrdered_zero is sorry-free. Same zone decomposition pattern + ih_gen_exist_k for quantifier part."
     }
+  ],
+  "blockers": [],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4-until-since-closed.md",
+  "continuation_context": {
+    "is_successor": true,
+    "phase_in_progress": 1,
+    "phases_completed_names": ["Phase 3 (plumbing)", "Phase 4 (close sorries)"],
+    "key_finding": "GeneralExistPartIndiv (without orders) is FALSE. GeneralExistPartOrdered (with env_atoms) is the correct formulation. The two KampBypass sorries are CLOSED. existPart_succ_n1_bypass is sorry-free.",
+    "next_step": "Prove generalExistPartOrdered_zero via zone decomposition at depth 0, then generalExistPartOrdered_succ via zone decomposition + quantifier conjunction"
+  },
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean"
   ]
 }
