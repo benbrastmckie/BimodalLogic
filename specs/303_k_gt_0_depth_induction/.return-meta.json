@@ -1,5 +1,5 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
@@ -9,17 +9,17 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
       "line": 174,
       "statement": "theorem generalExistPartOrdered_zero : GeneralExistPartOrdered atomMap 0",
-      "assumption": "Depth-0 existential with individual 1-var NFs + atom preconditions has temporal characterization",
-      "why_deferred": "Requires zone decomposition at depth 0 with actual temporal formulas",
-      "next_dispatch": "Build zone decomposition formulas using ZoneBridge infrastructure"
+      "assumption": "IMPOSSIBLE: GeneralExistPartOrdered is FALSE",
+      "why_deferred": "Statement is provably false. Z counterexample: r=2, constant predicates, env=[0,2] vs env=[0,1] have same preconditions but different existential truth values. temporal_truth at e(0) is fixed, so no formula satisfies the biconditional for both.",
+      "next_dispatch": "Research dispatch needed for correct formulation"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
       "line": 207,
       "statement": "theorem generalExistPartOrdered_succ : GeneralExistPartOrdered atomMap (k + 1)",
-      "assumption": "Depth k+1 uses CharPart(k+1) + GeneralExistPartOrdered(k)",
-      "why_deferred": "Sequential dependency on base case",
-      "next_dispatch": "After base case is sorry-free"
+      "assumption": "IMPOSSIBLE: depends on false base case",
+      "why_deferred": "Blocked by false base case",
+      "next_dispatch": "After research resolves the formulation"
     }
   ],
   "verification": {
@@ -29,11 +29,12 @@
     "build_passed": true
   },
   "memory_candidates": [
-    "GeneralExistPartIndiv (individual 1-var NFs without pairwise orders) is FALSE because a temporal formula at e(0) cannot detect the order of e(1) relative to e(0), but the existential truth value depends on this order (Z counterexample: integers with uniform predicate, [0,2] vs [0,1] have same 1-var NFs but different between-zone existentials).",
-    "GeneralExistPartOrdered (with env_atoms : AtomKind sig r -> Bool as additional precondition) is the CORRECT formulation for the third mutual induction conjunct, providing pairwise order information to the formula.",
-    "The enriched Until formula is: char(nf_t0) AND ((char(nf_x0) AND quant_conj) U top), where quant_conj uses ih_general_exist at r=2 with env_nfs=[nf_x0,nf_t0] and env_atoms=sub_nf.1.",
-    "exist_transfer_const_env gives: depth-(K+1) 1-var agreement implies depth-K constant-env existential transfer. This means classical top/bot works for GeneralExistPartOrdered at r=1 (single env element, constant env).",
-    "For r>=2 at depth 0, the between-zone existential (exists y between e(i) and e(j)) is NOT determined by individual 1-var NFs + pairwise orders alone. Zone decomposition with actual temporal formulas is required."
+    "GeneralExistPartOrdered atomMap 0 is FALSE (not just unprovable). Counterexample: Z (integers) with 1 constant predicate, r=2, env_nfs = constant (all Z-points have same depth-1 1-var NF), env_atoms = 'e(0)<e(1)', ssn = between-zone. env=[0,2] gives existential TRUE (y=1), env=[0,1] gives existential FALSE (no integer between 0 and 1). temporal_truth Z atomMap 0 A is fixed for any formula A, so the biconditional fails.",
+    "Root cause: a closed temporal formula evaluated at e(0) cannot characterize an existential that depends on the gap structure between env elements. On Z-homogeneous structures, all temporal formulas at any point have the same truth value, but between-zone existentials depend on the quantitative gap.",
+    "GeneralExistPartIndiv (without orders) is ALSO false, but for a different reason: temporal formula at e(0) can't detect order of other env elements. Both variants fail because the single evaluation point lacks information about the env configuration.",
+    "The k=0 case of KampBypass works WITHOUT GeneralExistPartOrdered (uses enriched_bypass_until/since infrastructure, ~2300 lines). Only the k>=1 case (existPart_succ_n1_bypass, succ k' branch) uses GeneralExistPartOrdered. This is the code that needs restructuring.",
+    "existPart_succ_n1_bypass is sorry-free assuming ih_general_exist. Since ih_general_exist = GeneralExistPartOrdered (which is false), the theorem is vacuously true from a false hypothesis. The KampBypass proof for k>=1 is currently unsound."
   ],
-  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4-until-since-closed.md"
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/generalexistpartordered-false-blocker.md",
+  "requires_user_review": true
 }

@@ -84,9 +84,19 @@ Advances: "Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) -> 
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Rewrite GeneralExistPart Definition and Base Case (k=0) [IN PROGRESS]
+### Phase 1: Rewrite GeneralExistPart Definition and Base Case (k=0) [BLOCKED]
 *(deviation: altered -- defined GeneralExistPartOrdered instead of GeneralExistPartIndiv; added env_atoms parameter because GeneralExistPartIndiv is FALSE without orders)*
 *(dispatch 2: implementing GeneralExistPartIndiv definition + base/inductive step with sorry)*
+
+**BLOCKER** (Phase 1):
+- **What failed**: `GeneralExistPartOrdered atomMap 0` is FALSE (not just unprovable -- the statement is actually false)
+- **Counterexample**: Z (integers) with 1 predicate, constant true. r=2, env_nfs = constant (all points have same depth-1 1-var NF), env_atoms = "e(0) < e(1)". ssn = "e(0) < y < e(1) with pred true at y". Then env=[0,2] satisfies preconditions and existential is TRUE (y=1). env=[0,1] satisfies SAME preconditions and existential is FALSE (no integer between 0 and 1). But temporal_truth Z atomMap 0 A is a FIXED value (formula evaluated at e(0)=0 on Z, independent of env). So no formula A can satisfy the biconditional for both envs.
+- **What was tried**: Classical top/bot (the current code), zone decomposition with char_0 formulas, reduction to generalExistPart_from_classical, disjunction over compatible full NFs, strengthening preconditions with pairwise 2-var NFs
+- **Root cause**: The statement asks for a CLOSED temporal formula evaluated at e(0) that characterizes an existential depending on ALL env elements. On Z with constant predicates, the formula at e(0)=0 has a fixed truth value independent of the other env elements' positions. But the existential depends on the gap structure between env elements, which varies.
+- **Why env_atoms doesn't help**: env_atoms specifies the QUALITATIVE order (e(0) < e(1) or not) but not the QUANTITATIVE gap. On Z, the gap between e(0) and e(1) affects between-zone existentials but is undetectable by any temporal formula evaluated at e(0).
+- **Impact**: GeneralExistPartOrdered cannot be proved at any depth (the base case is false). The inductive step depends on the base case. The entire approach of using GeneralExistPartOrdered as a third mutual induction conjunct is flawed.
+- **What is needed**: A fundamentally different approach to close the quantifier gap in KampBypass for k >= 1. Options: (1) Gap induction using Prior-UZ/SZ "no gaps" property to split bounded zones recursively. (2) Enhanced enriched formula that carries the full 2-var NF directly (requires expressing 2-var properties temporally using Until/Since nesting). (3) Composition-based transfer: build the full 2-var NF from 1-var NFs + atoms using depth-dependent reasoning. (4) Re-examine whether KampBypass actually needs the quantifier part separately, or if the full ExistPart proof can be restructured to avoid it.
+- **Prohibited**: Do NOT attempt to prove GeneralExistPartOrdered (it is FALSE). Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Analysis (dispatch 1)**: Thorough analysis confirmed:
 1. The 2-var NF transfer from individual 1-var NF agreements is FALSE even on Prior structures (Z counterexample with uniform predicate: [0,2] vs [0,1] have same 1-var NFs but different 2-var NFs due to gap between 0 and 1)
@@ -128,7 +138,8 @@ The formula is a disjunction over compatible zones and 1-var NF types for y, bui
 
 ---
 
-### Phase 2: Prove GeneralExistPart Inductive Step (k+1) [NOT STARTED]
+### Phase 2: Prove GeneralExistPart Inductive Step (k+1) [BLOCKED]
+*(blocked by Phase 1 -- GeneralExistPartOrdered is FALSE, so the inductive step has no valid base case)*
 
 **Goal**: Prove `generalExistPart_succ`: GeneralExistPart(k+1) from CharPart(k+1) + GeneralExistPart(k).
 

@@ -1,6 +1,6 @@
 {
-  "status": "partial",
-  "summary": "Closed the 2 KampBypass.lean sorries (lines 636, 688) by enriching Until/Since formulas with quantifier conjunctions from GeneralExistPartOrdered (new third mutual induction conjunct with individual 1-var NFs + atom/order preconditions). existPart_succ_n1_bypass is now sorry-free (verified: no sorryAx). Remaining: 2 sorries in GeneralExistPart.lean for generalExistPartOrdered_zero (zone decomposition at depth 0) and generalExistPartOrdered_succ (inductive step).",
+  "status": "blocked",
+  "summary": "GeneralExistPartOrdered atomMap 0 is FALSE (proven by Z counterexample). The statement asks for a closed temporal formula at e(0) characterizing an existential that depends on gap structure between env elements -- impossible on Z with constant predicates where temporal truth at e(0) is fixed regardless of env. Phases 1 and 2 marked BLOCKED. KampBypass for k>=1 needs fundamental redesign.",
   "phases_completed": 2,
   "phases_total": 5,
   "sorry_inventory": [
@@ -8,31 +8,35 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
       "line": 174,
       "statement": "theorem generalExistPartOrdered_zero : GeneralExistPartOrdered atomMap 0",
-      "assumption": "At depth 0, existential with individual 1-var NFs + atom preconditions has temporal characterization via zone decomposition",
-      "why_deferred": "Classical top/bot fails for between-zone existentials at r>=2 (Z counterexample). Requires actual zone decomposition formulas using nested Until/Since. Existing infrastructure: ZoneBridge.lean (depth-0 zone bridges), KampBypassUntil/Since.lean (depth-0 temporal formula construction).",
-      "next_dispatch": "Implement zone decomposition for depth 0. For r=1: use exist_transfer_const_env (classical top/bot works). For r>=2: build temporal formula per zone using char_0 formulas and Until/Since. The r=2 case has existing zone bridge infrastructure."
+      "assumption": "IMPOSSIBLE: GeneralExistPartOrdered is FALSE",
+      "why_deferred": "Statement is provably false. Z counterexample: r=2, constant predicates, env=[0,2] gives true but env=[0,1] gives false for between-zone existential, with same preconditions and same temporal truth value at e(0)=0.",
+      "next_dispatch": "Research dispatch needed to find correct formulation. Options: gap induction (Rabinovich-style), enhanced enriched formula, eliminate quantifier gap, or direct 2-var NF construction."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
       "line": 207,
       "statement": "theorem generalExistPartOrdered_succ : GeneralExistPartOrdered atomMap (k + 1)",
-      "assumption": "Atom part handled like depth 0; quantifier part uses GeneralExistPartOrdered(k) at arity r+1",
-      "why_deferred": "Sequential dependency on generalExistPartOrdered_zero. Also requires zone decomposition + quantifier conjunction construction at depth k+1.",
-      "next_dispatch": "After generalExistPartOrdered_zero is sorry-free. Same zone decomposition pattern + ih_gen_exist_k for quantifier part."
+      "assumption": "IMPOSSIBLE: depends on false base case",
+      "why_deferred": "GeneralExistPartOrdered_zero is false, so the inductive step has no valid base case.",
+      "next_dispatch": "Blocked by base case. Will be resolved by new approach from research."
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4-until-since-closed.md",
+  "blockers": [
+    "GeneralExistPartOrdered atomMap 0 is FALSE (proven by Z counterexample with constant predicates). The entire GeneralExistPartOrdered approach is fundamentally flawed because a closed temporal formula at e(0) cannot characterize existentials that depend on the gap structure between env elements. Research needed for correct formulation.",
+    "KampBypass existPart_succ_n1_bypass for k>=1 depends on ih_general_exist (= GeneralExistPartOrdered), which is false. The proof is vacuously true from a false hypothesis. Restructuring needed."
+  ],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/generalexistpartordered-false-blocker.md",
   "continuation_context": {
     "is_successor": true,
-    "phase_in_progress": 1,
-    "phases_completed_names": ["Phase 3 (plumbing)", "Phase 4 (close sorries)"],
-    "key_finding": "GeneralExistPartIndiv (without orders) is FALSE. GeneralExistPartOrdered (with env_atoms) is the correct formulation. The two KampBypass sorries are CLOSED. existPart_succ_n1_bypass is sorry-free.",
-    "next_step": "Prove generalExistPartOrdered_zero via zone decomposition at depth 0, then generalExistPartOrdered_succ via zone decomposition + quantifier conjunction"
+    "phase_in_progress": null,
+    "phases_completed_names": ["Phase 3 (plumbing)", "Phase 4 (close KampBypass sorries)"],
+    "key_finding": "GeneralExistPartOrdered is FALSE. The Z counterexample proves it: on Z with constant predicates, temporal_truth at e(0) is fixed regardless of env, but the between-zone existential depends on the gap between env elements.",
+    "next_step": "Research dispatch to evaluate alternative approaches: gap induction, enhanced enriched formula, eliminate quantifier gap, or direct 2-var NF construction. Then create plan v9."
   },
   "artifacts": [
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+    "specs/303_k_gt_0_depth_induction/handoffs/generalexistpartordered-false-blocker.md"
   ]
 }
