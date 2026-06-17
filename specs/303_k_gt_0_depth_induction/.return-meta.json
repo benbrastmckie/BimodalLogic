@@ -1,36 +1,20 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
   "session_id": "sess_1781710390_4591d5",
-  "phase": "4b",
+  "phase": "4c",
   "phases_completed": 3,
   "phases_total": 4,
   "verification": {
     "sorry_count_kampbypass": 0,
-    "sorry_count_priorcomposition": 6,
+    "sorry_count_priorcomposition": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 509,
-      "statement": "prior_second_1var_from_2var_until",
-      "assumption": "2-var NF agreement + Prior structure → second component 1-var agreement",
-      "why_deferred": "Requires Prior zone-matching (UZ/SZ constrain which existentials are satisfiable)",
-      "next_dispatch": "Phase 4c: zone-matching proof"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 529,
-      "statement": "prior_second_1var_from_2var_since",
-      "assumption": "Mirror",
-      "why_deferred": "Mirror",
-      "next_dispatch": "Phase 4c: mirror"
-    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 231,
@@ -65,24 +49,25 @@
     }
   ],
   "handoff_path": "specs/303_k_gt_0_depth_induction/.orchestrator-handoff.json",
+  "files_modified": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean"
+  ],
+  "theorems_proved": [
+    "prior_second_1var_from_2var_until",
+    "prior_second_1var_from_2var_since"
+  ],
   "memory_candidates": [
     {
-      "content": "KampBypass.lean Until/Since backward direction closed by restructuring formula to encode exact 1-var NF types: (char_kp1 nf_t₀) ∧ ((char_kp1 nf_x₀) U top). Key insight: nf_agreement_from_shared_nf converts single NF satisfaction to full NF agreement. Combined with prior_2var_transfer_until (PriorComposition), this transfers h_eval₀ from M₀ to M. The formula must encode both x's and t's NF types to enable prior_2var_transfer.",
+      "content": "nf_skipIdx_cross provides general cross-structure projection from (n+1)-var to n-var NF agreement via skipIdx j. j=0 gives second-component (Fin.succ), j=n gives first-component (castSucc). Requires full k-depth induction with j incrementing at each quantifier step.",
       "category": "DISCOVERY",
       "confidence": 1.0,
-      "suggested_keywords": ["kamp", "prior_2var_transfer", "char_kp1", "nf_agreement_from_shared_nf", "formula-restructuring"]
+      "suggested_keywords": ["kamp", "nf_skipIdx_cross", "skipIdx", "projection", "cross-structure"]
     },
     {
-      "content": "cross_1var_from_2var (KampComposition) extracts the FIRST component's 1-var NF from 2-var agreement. For the SECOND component (t in [x,t]), there is no direct helper — nf_drop_last_cross also projects the first component (via castSucc). On Prior structures, the second component projection requires Prior-specific zone-matching (prior_second_1var_from_2var). On general linear orders, 2-var agreement does NOT determine the second component's 1-var NF.",
-      "category": "DISCOVERY",
-      "confidence": 1.0,
-      "suggested_keywords": ["kamp", "cross_1var_from_2var", "second-component", "projection", "prior-specific"]
-    },
-    {
-      "content": "PriorComposition.lean prior_nonconstenv_2var_agree_until IS true on Prior structures (comment in KampBypass saying 'FALSE' was incorrect — it's false on GENERAL linear orders but true on Prior). The file was removed from imports incorrectly. Re-adding it enables prior_2var_transfer_until which provides the one-directional transfer needed for KampBypass backward direction.",
+      "content": "The claim in PriorComposition.lean that second-component 1-var extraction from 2-var agreement requires Prior UZ/SZ properties is FALSE. It follows from pure NF projection (nf_skipIdx_cross at j=0) without any Prior structure assumptions. The proof is purely about NF semantics, independent of the specific algebraic properties of the model.",
       "category": "CORRECTION",
       "confidence": 1.0,
-      "suggested_keywords": ["kamp", "PriorComposition", "prior_nonconstenv_2var_agree", "Prior-structures", "import-correction"]
+      "suggested_keywords": ["kamp", "prior_second_1var_from_2var", "second-component", "nf_skipIdx_cross", "correction"]
     }
   ]
 }

@@ -268,10 +268,20 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 - [x] Full `lake build` passes. KampBypass.lean: 0 sorry. PriorComposition.lean: 6 sorry (4 pre-existing + 2 new).
 - **Outcome**: KampBypass.lean is sorry-free. The sorry is properly decomposed into PriorComposition.lean which contains focused Prior-specific mathematical primitives (exist_transfer_3var_nonconstenv, prior_second_1var_from_2var).
 
+**Phase 4c Status** (dispatch 2026-06-17):
+- [x] Added private `skipIdx` infrastructure to PriorComposition.lean: `skipIdx` definition, `skipIdx_injective`, `skipIdx_succ_comm`, `cons_comp_skipIdx` commutation, `cons_comp_skipIdx_zero`
+- [x] Proved `nf_skipIdx_cross`: general cross-structure projection from (n+1)-var NF agreement to n-var NF agreement along any `skipIdx j`, by induction on depth k
+- [x] Proved `cross_2nd_1var_from_2var`: extracts second-component 1-var NF agreement from 2-var NF agreement via `nf_skipIdx_cross` at j=0
+- [x] Proved `prior_second_1var_from_2var_until` and `prior_second_1var_from_2var_since` as one-liner applications of `cross_2nd_1var_from_2var`
+- [x] `lean_verify` confirms: only standard axioms (propext, Classical.choice, Quot.sound), no sorryAx
+- [x] Full `lake build` passes (including KampBypass downstream). PriorComposition.lean: 4 sorry (reduced from 6; the 2 new sorry from Phase 4b are now resolved)
+- **Key insight**: The comment claiming this "is NOT a consequence of 2-var agreement alone" was incorrect. The proof uses ONLY 2-var NF agreement (no Prior UZ/SZ properties needed). The h_UZ, h_SZ, h_order parameters are retained in the public signatures for API compatibility.
+- **Outcome**: PriorComposition.lean sorry count reduced from 6 to 4. Phase 4c complete.
+
 **Sub-Phases** (incremental):
 - Phase 4a: Enrich backward direction with partial proof structure [COMPLETED - lateral]
 - Phase 4b: Prior composition transfer — eliminate KampBypass sorry [COMPLETED]
-- Phase 4c: Prove prior_second_1var_from_2var in PriorComposition.lean (~100-200 lines, Prior zone-matching)
+- Phase 4c: Prove prior_second_1var_from_2var in PriorComposition.lean [COMPLETED — proved via nf_skipIdx_cross projection, ~100 lines]
 - Phase 4d: Prove exist_transfer_3var_nonconstenv in PriorComposition.lean (~200-400 lines, Fraisse game argument)
 
 **Tasks**:
@@ -279,7 +289,7 @@ Given this deep analysis, the correct implementation requires following Rabinovi
 - [x] Prove backward direction (mp) using prior_2var_transfer_until/since *(Phase 4b)*
 - [x] Prove forward direction (mpr) using cross_1var_from_2var + prior_second_1var_from_2var *(Phase 4b)*
 - [x] Verify: `lake build KampBypass` with 0 sorry *(Phase 4b — confirmed)*
-- [ ] Prove prior_second_1var_from_2var_until/since in PriorComposition.lean *(Phase 4c — remaining sorry)*
+- [x] Prove prior_second_1var_from_2var_until/since in PriorComposition.lean *(Phase 4c — proved via nf_skipIdx_cross: general cross-structure projection along skipIdx j, then specialized to j=0 for second-component extraction. ~100 lines of helpers + 2 one-liner theorem proofs. lean_verify confirms no sorryAx.)*
 - [ ] Prove exist_transfer_3var_nonconstenv in PriorComposition.lean *(Phase 4d — remaining sorry)*
 - [ ] Verify: `lean_verify existPart_succ_n1_bypass` shows no sorryAx
 - [ ] Verify: `lean_verify kamp_mutual_induction` shows no sorryAx

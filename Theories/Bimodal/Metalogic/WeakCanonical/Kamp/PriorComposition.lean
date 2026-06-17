@@ -471,15 +471,144 @@ theorem prior_2var_transfer_since {sig : MonadicSignature}
 
 /-! ## Second Component Projection from 2-var Agreement
 
-On Prior structures, if two pairs [x,t]/[x₀,t₀] have the same depth-(K+2)
-2-var NF (shared via nf_agreement_from_shared_nf), then the second components
-t/t₀ have the same depth-(K+2) 1-var NF.
+Cross-structure projection that extracts second-component (n-var) NF agreement
+from (n+1)-var NF agreement. Uses `skipIdx j` to generalize both `Fin.castSucc`
+(j=n, drops last) and `Fin.succ` (j=0, drops first).
 
-This is NOT a consequence of 2-var agreement alone (the projection lemma only
-gives the first component). On Prior structures it follows from the fact that
-1-var NFs are determined by predicates + 2-var existentials at [y,t], and these
-2-var existentials are recoverable from the 3-var existentials at [y,x,t]
-(encoded in the 2-var NF) via the UZ/SZ saturation axioms. -/
+The key application: from 2-var agreement at `[x,t]/[x₀,t₀]`, extract 1-var
+agreement at `t/t₀` (second component) via `skipIdx 0 = Fin.succ`. -/
+
+/-- Skip index j: sends i < j to i (via castSucc) and i ≥ j to i+1 (via succ).
+    j=0 gives Fin.succ; j=n gives Fin.castSucc. -/
+private def skipIdx (j : Nat) {n : Nat} : Fin n → Fin (n + 1) := fun i =>
+  if i.val < j then i.castSucc else i.succ
+
+private theorem skipIdx_injective {n : Nat} (j : Nat) (i₁ i₂ : Fin n)
+    (h : skipIdx j i₁ = skipIdx j i₂) : i₁ = i₂ := by
+  simp only [skipIdx, Fin.ext_iff] at h; ext
+  split at h <;> split at h <;> simp [Fin.castSucc, Fin.succ, Fin.castAdd] at h <;> omega
+
+private theorem skipIdx_succ_comm {n : Nat} (j : Nat) (i : Fin n) :
+    skipIdx (j + 1) i.succ = (skipIdx j i).succ := by
+  ext; simp only [skipIdx, Fin.succ, Fin.castSucc, Fin.castAdd, Fin.val_mk]
+  split <;> split <;> rename_i h1 h2 <;> first | rfl | omega
+
+/-- Key commutation: `Fin.cons y (env ∘ skipIdx j) = (Fin.cons y env) ∘ skipIdx (j + 1)`. -/
+private theorem cons_comp_skipIdx {α : Type*} {n : Nat} (j : Nat)
+    (y : α) (env : Fin (n + 1) → α) :
+    Fin.cons y (env ∘ skipIdx j) = (Fin.cons y env) ∘ skipIdx (j + 1) := by
+  funext ⟨i, hi⟩; cases i with
+  | zero => rfl
+  | succ i =>
+    change env (skipIdx j ⟨i, by omega⟩) =
+      (Fin.cons y env : Fin (n + 2) → α) (skipIdx (j + 1) ⟨i + 1, hi⟩)
+    have : (⟨i + 1, hi⟩ : Fin (n + 1)) = (⟨i, (by omega : i < n)⟩ : Fin n).succ := by
+      ext; simp [Fin.succ]
+    rw [this, skipIdx_succ_comm, Fin.cons_succ]
+
+/-- On `Fin.cons x f` envs, composing with `skipIdx 0` gives `f`.
+    `skipIdx 0` sends every `i` to `i.succ`, and `Fin.cons x f ∘ Fin.succ = f`. -/
+private theorem cons_comp_skipIdx_zero {α : Type*} {n : Nat} (x : α) (f : Fin n → α) :
+    (Fin.cons x f) ∘ skipIdx 0 = f := by
+  ext ⟨i, hi⟩
+  simp only [Function.comp, skipIdx, show ¬(i < 0) from not_lt.mpr (Nat.zero_le i), ↓reduceIte]
+  rfl
+
+/-- Cross-structure projection along `skipIdx j`: if two environments in different
+    structures agree on all depth-k (n+1)-var NFs, then the projected environments
+    (via `skipIdx j`) agree on all depth-k n-var NFs. -/
+private theorem nf_skipIdx_cross {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig) :
+    ∀ (k n : Nat) (j : Nat)
+    (envM : Fin (n + 1) → M.carrier) (envN : Fin (n + 1) → N.carrier)
+    (h : ∀ nf, nf_eval_nf M k (n + 1) envM nf ↔ nf_eval_nf N k (n + 1) envN nf),
+    ∀ nf, nf_eval_nf M k n (envM ∘ skipIdx j) nf ↔
+          nf_eval_nf N k n (envN ∘ skipIdx j) nf := by
+  intro k; induction k with
+  | zero =>
+    intro n j envM envN h nf
+    have h_atom := atom_agreement_from_nf M envM N envN h
+    simp only [nf_eval_nf]
+    constructor <;> intro hDir a
+    · cases a with
+      | pred p i =>
+        simp only [atom_eval, Function.comp] at hDir ⊢
+        exact (h_atom (.pred p (skipIdx j i))).symm.trans (hDir (.pred p i))
+      | order i₁ i₂ hne =>
+        simp only [atom_eval, Function.comp] at hDir ⊢
+        exact (h_atom (.order _ _ (fun heq => hne (skipIdx_injective j i₁ i₂ heq)))).symm.trans
+          (hDir (.order i₁ i₂ hne))
+    · cases a with
+      | pred p i =>
+        simp only [atom_eval, Function.comp] at hDir ⊢
+        exact (h_atom (.pred p (skipIdx j i))).trans (hDir (.pred p i))
+      | order i₁ i₂ hne =>
+        simp only [atom_eval, Function.comp] at hDir ⊢
+        exact (h_atom (.order _ _ (fun heq => hne (skipIdx_injective j i₁ i₂ heq)))).trans
+          (hDir (.order i₁ i₂ hne))
+  | succ k ih =>
+    intro n j envM envN h nf
+    obtain ⟨_, hMq⟩ := nf_characteristic_satisfies M (k + 1) (n + 1) envM
+    have h_char_eq := nf_eval_unique N (k + 1) (n + 1) _ _ _
+      ((h _).mp (nf_characteristic_satisfies M (k + 1) (n + 1) _))
+      (nf_characteristic_satisfies N (k + 1) (n + 1) _)
+    obtain ⟨_, hNq⟩ := h_char_eq ▸ nf_characteristic_satisfies N (k + 1) (n + 1) envN
+    have hex : ∀ chi : NormalForm sig k (n + 2),
+        (∃ z, nf_eval_nf M k (n + 2) (Fin.cons z envM) chi) ↔
+        (∃ z, nf_eval_nf N k (n + 2) (Fin.cons z envN) chi) :=
+      fun chi => (hMq chi).trans (hNq chi).symm
+    set tgt := nf_characteristic N (k + 1) n (envN ∘ skipIdx j)
+    have h_N_sat := nf_characteristic_satisfies N (k + 1) n (envN ∘ skipIdx j)
+    suffices nf_eval_nf M (k + 1) n (envM ∘ skipIdx j) tgt by
+      exact nf_agreement_from_shared_nf M _ N _ tgt this h_N_sat nf
+    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+    refine ⟨fun a => ?_, fun sub_nf => ?_⟩
+    · -- Atoms
+      have h_atom := atom_agreement_from_nf M envM N envN h
+      cases a with
+      | pred p i =>
+        simp only [atom_eval, Function.comp] at h_atom ⊢
+        exact (h_atom (.pred p (skipIdx j i))).trans (h_N_atoms (.pred p i))
+      | order i₁ i₂ hne =>
+        simp only [atom_eval, Function.comp] at h_atom ⊢
+        exact (h_atom (.order _ _ (fun heq => hne (skipIdx_injective j i₁ i₂ heq)))).trans
+          (h_N_atoms (.order i₁ i₂ hne))
+    · -- Quantifiers
+      rw [← h_N_quant sub_nf]; constructor
+      · rintro ⟨z, hz⟩
+        rw [cons_comp_skipIdx] at hz
+        obtain ⟨z', hz'⟩ := (hex _).mp ⟨z, nf_characteristic_satisfies M k (n + 2) (Fin.cons z envM)⟩
+        have := ih (n + 1) (j + 1) (Fin.cons z envM) (Fin.cons z' envN)
+          (nf_agreement_from_shared_nf M _ N _ _ (nf_characteristic_satisfies ..) hz') sub_nf
+        rw [← cons_comp_skipIdx, ← cons_comp_skipIdx] at this
+        exact ⟨z', this.mp (by rwa [← cons_comp_skipIdx] at hz)⟩
+      · rintro ⟨z', hz'⟩
+        rw [cons_comp_skipIdx] at hz'
+        obtain ⟨z, hz⟩ := (hex _).mpr ⟨z', nf_characteristic_satisfies N k (n + 2) (Fin.cons z' envN)⟩
+        have := ih (n + 1) (j + 1) (Fin.cons z envM) (Fin.cons z' envN)
+          (nf_agreement_from_shared_nf M _ N _ _ hz (nf_characteristic_satisfies ..)) sub_nf
+        rw [← cons_comp_skipIdx, ← cons_comp_skipIdx] at this
+        exact ⟨z, this.mpr (by rwa [← cons_comp_skipIdx] at hz')⟩
+
+/-- Second-component 1-var NF extraction from 2-var NF agreement.
+    From cross-structure 2-var agreement at `[x,t]/[x₀,t₀]`,
+    the second components `t` and `t₀` have the same 1-var NF.
+    Proved via `nf_skipIdx_cross` at `j=0`. -/
+private theorem cross_2nd_1var_from_2var {sig : MonadicSignature}
+    {K : Nat}
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h : ∀ nf : NormalForm sig K 2,
+      nf_eval_nf M K 2 (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf N K 2 (Fin.cons x' (fun _ => t')) nf) :
+    ∀ nf1 : NormalForm sig K 1,
+      nf_eval_nf M K 1 (fun _ => t) nf1 ↔
+      nf_eval_nf N K 1 (fun _ => t') nf1 := by
+  intro nf1
+  have h_proj := nf_skipIdx_cross M N K 1 0
+    (Fin.cons x (fun _ => t)) (Fin.cons x' (fun _ => t')) h nf1
+  rwa [cons_comp_skipIdx_zero, cons_comp_skipIdx_zero] at h_proj
 
 /-- On Prior structures, 2-var NF agreement at [x,t]/[x₀,t₀] implies
     1-var NF agreement at t/t₀ (second component). -/
@@ -498,15 +627,8 @@ theorem prior_second_1var_from_2var_until {sig : MonadicSignature}
     (h_order_M : t < x) (h_order₀ : t₀ < x₀) :
     ∀ nf1 : NormalForm sig (K + 2) 1,
       nf_eval_nf M (K + 2) 1 (fun _ => t) nf1 ↔
-      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 := by
-  -- From h_2var, extract first component (x/x₀) agreement
-  have h_x := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var
-  -- On Prior structures, knowing x/x₀ agree on 1-var NFs and the 2-var NFs agree,
-  -- the second component t/t₀ must also agree. This follows from the fact that
-  -- the 2-var quantifier conditions (3-var existentials) combined with UZ/SZ
-  -- determine what 2-var existentials are satisfiable at t (and t₀).
-  -- The full proof uses the Fraïssé game argument or zone-matching.
-  sorry
+      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 :=
+  cross_2nd_1var_from_2var M x t M₀ x₀ t₀ h_2var
 
 /-- Mirror for Since zone (x < t). -/
 theorem prior_second_1var_from_2var_since {sig : MonadicSignature}
@@ -524,8 +646,7 @@ theorem prior_second_1var_from_2var_since {sig : MonadicSignature}
     (h_order_M : x < t) (h_order₀ : x₀ < t₀) :
     ∀ nf1 : NormalForm sig (K + 2) 1,
       nf_eval_nf M (K + 2) 1 (fun _ => t) nf1 ↔
-      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 := by
-  have h_x := cross_1var_from_2var M x t M₀ x₀ t₀ h_2var
-  sorry
+      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf1 :=
+  cross_2nd_1var_from_2var M x t M₀ x₀ t₀ h_2var
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
