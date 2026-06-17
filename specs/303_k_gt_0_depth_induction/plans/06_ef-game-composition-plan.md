@@ -161,9 +161,19 @@ For Zone 4 (equality): use the existing equality-zone handling from KampBypassCo
 
 ---
 
-### Phase 2: Between-Zone Temporal Encoding [NOT STARTED]
+### Phase 2: Between-Zone Temporal Encoding [BLOCKED]
 
 **Goal**: Encode between-zone existentials as temporal formulas and close the between-zone sorry from Phase 1.
+
+**BLOCKER** (Phase 2):
+- **What failed**: The sorry goals at KampBypass.lean:617 and :669 require proving quantifier transfer for depth-(k'+1) arity-3 NF existentials on non-constant environments `[y, x, t]` / `[y₀, x₀, t₀]`. Three strategies were attempted:
+  1. **Direct cross-structure transfer via nf_extend_fwd/bwd**: Depth drop (from K+2 1-var to K+1 2-var per extension) prevents building full 3-var agreement from pairwise 2-var agreements. The z witness from `nf_extend_fwd` at [y,x] has uncontrolled relationship to t.
+  2. **Pairwise 2-var composition into 3-var**: Proved atoms work. Quantifier transfer fails because adding witness z via one pair agreement doesn't pin z's relationship to the third point, creating infinite regress.
+  3. **ih_exist at constant parent**: ih_exist encodes `∃ y, nf_eval [y, t, t]` (constant parent t), not `∃ y, nf_eval [y, x, t]` (non-constant). No combination of ih_exist calls at different parents covers the non-constant env case.
+- **What was tried**: (a) nf_extend_fwd/bwd composition chains with depth tracking; (b) pairwise 2-var agreement composition theorem (analyzed but hits infinite regress for quantifier conditions); (c) formula enrichment by embedding ih_exist conjuncts inside Until guard (fails because ih_exist only handles constant parents); (d) nf_skipIdx_cross for reverse projection (goes wrong direction: higher→lower arity only).
+- **Why it's stuck**: The fundamental gap is encoding non-constant-env existentials as temporal formulas. ExistPart operates only on constant-parent envs `Fin.cons x (fun _ => t)`. The Until/Since zones require `Fin.cons y (Fin.cons x (fun _ => t))` where x and t are distinct. This is a structural limitation of the mutual induction: it handles the n=1 case by building a formula, but the backward direction needs a composition theorem that is FALSE in general (confirmed Z counterexample). The correct fix requires a recursive formula construction (following Rabinovich Prop 3.5) that encodes non-constant-env existentials by depth-recursive Until/Since nesting with increasing arity at each level -- estimated 500-1000 lines of new code.
+- **What is needed**: A new recursive definition `nonconstenv_exist_formula` that, given ExistPart(k) and CharPart(k+1), produces a temporal formula characterizing `∃ y, nf_eval (k+1) 3 [y, x, t] ssn` where x is determined by an outer Until/Since. The recursion terminates because depth decreases while arity increases, with depth-0 handled by the existing sorry-free k=0 infrastructure. Alternatively, a generalized composition theorem for Prior structures that avoids the counterexample by leveraging Prior-UZ/SZ structure (first/last occurrence properties).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
 
 **Mathematical Content**:
 
