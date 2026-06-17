@@ -23,7 +23,7 @@ next_project_number: 305
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+303 [PARTIAL] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
@@ -109,7 +109,7 @@ next_project_number: 305
 ---
 
 ### 303. K gt 0 depth induction
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -117,7 +117,9 @@ next_project_number: 305
   - [303_k_gt_0_depth_induction/reports/01_team-research.md]
   - [303_k_gt_0_depth_induction/reports/02_depth-induction-resolution.md]
 - **Summary**: [303_k_gt_0_depth_induction/summaries/02_depth-induction-summary.md]
-- **Plan**: [303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md]
+- **Plan**:
+  - [303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md]
+  - [303_k_gt_0_depth_induction/plans/05_prior-composition-plan.md]
 
 **Description**: Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.
 
