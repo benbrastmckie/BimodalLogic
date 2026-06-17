@@ -120,7 +120,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Prior Composition Theorem -- Inductive Step [NOT STARTED]
+### Phase 2: Prior Composition Theorem -- Inductive Step [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: The general same-depth composition theorem `prior_composition_rvar` (depth-(K+1) 1-var + orders => depth-(K+1) r-var) requires finding a SINGLE witness y' in N that has matching orders with ALL environment elements simultaneously. On non-constant envs, nf_extend_fwd from different base elements gives DIFFERENT witnesses (y'_t from t-agreement, y'_x from x-agreement) that may have different positions relative to other elements.
+- **What was tried**: (1) Induction on K with r universal -- blocked by order gap at quantifier step. (2) Using two nf_extend_fwd applications (from t and x separately) -- gives y'_t with matching y-t order and y'_x with matching y-x order, but no single y' with both. (3) Using nf_extend_fwd chain (1-var -> 2-var -> 3-var) -- wrong env ordering, and intermediate witnesses don't match target env.
+- **Why stuck**: The counterexample in NfComposition.lean:20-36 is fundamental: on (Z, <), pairs (0,2) and (0,1) have same 1-var NFs and matching orders but different 2-var NFs. The composition theorem on non-constant envs requires Prior-UZ/SZ to ensure zone witnesses exist, but using Prior-UZ/SZ at the NF level requires temporal formula infrastructure (CharPart), creating a circular dependency with ExistPart.
+- **What is needed**: The composition theorem as stated in the plan is the WRONG approach. The correct approach is to directly enrich the formula in Phase 3 to encode the full 2-var NF conditions (atoms + quantifier conditions) as temporal formulas, bypassing the composition theorem entirely. The eq zone pattern already does this successfully.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
+
+Phase 2 as originally conceived is UNNECESSARY. The Phase 1 infrastructure (constenv_same_depth_2var, exist_transfer_nvar_constenv) is sufficient for the eq zone case. For the Until/Since zones, the approach must be formula enrichment (Phase 3), not composition.
 
 **Goal**: Prove `prior_composition_2var` for K+1 by induction on K, using Prior-UZ/SZ to provide witnesses.
 

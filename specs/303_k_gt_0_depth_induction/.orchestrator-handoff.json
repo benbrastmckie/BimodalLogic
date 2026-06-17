@@ -1,66 +1,70 @@
 {
   "status": "partial",
-  "summary": "Resolved constenv_2var_determines sorry in NfComposition.lean via new dup_last_cross lemma (reverse of nf_drop_last_cross for constant-tail envs). Introduced env_extend as non-dependent alternative to Fin.snoc. Build has 4 remaining type errors in dup_last_cross quantifier case (ih m should be ih (m+1) for extended envs). All sorry tokens removed from NfComposition.lean. KampBypass sorries unchanged (need Prior Composition Theorem).",
-  "phases_completed": 0,
+  "summary": "Phase 1 completed: KampComposition.lean with sorry-free infrastructure (7 theorems verified with lean_verify). Phase 2 blocked: general same-depth composition on non-constant envs is not provable without Prior-UZ/SZ temporal formula access, creating circular dependency with ExistPart. The Until/Since backward sorries require direct formula enrichment, not a composition theorem. Plan v5 Phase 2 should be SKIPPED.",
+  "phases_completed": 1,
   "phases_total": 5,
   "plan_path": "specs/303_k_gt_0_depth_induction/plans/05_prior-composition-plan.md",
   "plan_version": 5,
   "blockers": [
-    "NfComposition.lean build: 4 type errors in dup_last_cross succ k quantifier case. Fix: change 'ih m' to 'ih (m+1)' at lines ~397 and ~408 because Fin.cons z envM has type Fin (m+2) not Fin (m+1).",
-    "KampBypass.lean:356,368 (Until/Since backward k>0): Core sorry requiring Prior composition theorem per plan v5."
+    "Phase 2 BLOCKED: General same-depth composition on non-constant envs has order-gap problem (counterexample NfComposition.lean:20-36). nf_extend_fwd from different base elements gives different witnesses with incompatible order relations.",
+    "Phase 3 requires reformulation: Until/Since backward sorries need formula enrichment encoding 3-var existential conditions as temporal formulas. ih_exist only handles constant-parent envs but Until zone has [x,t] non-constant parent. Need either: (a) new ih_exist variant for 2-element parents, (b) reduction to constant-parent via constenv infrastructure, or (c) VecEA2 bracket generalization to k>0."
   ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
       "statement": "existPart_succ_n1_bypass backward Until k>0",
-      "assumption": "Temporal truth implies exists x with nf_eval, needs 2-var NF reconstruction from 1-var",
-      "why_deferred": "Requires Prior Composition Theorem (Phase 1-3 of plan v5)",
-      "next_dispatch": "Prove prior_composition_rvar theorem, then use it to close backward direction"
+      "assumption": "temporal_truth M atomMap t (compat_disj.untl Formula.top) implies exists x, nf_eval_nf M (k'+2) 2 [x, t] sub_nf",
+      "why_deferred": "Requires enriched formula encoding full 2-var NF conditions. Current formula only encodes 1-var NF type of x. Need to also encode quantifier conditions of sub_nf for non-constant env [x,t].",
+      "next_dispatch": "Enrich Until formula to encode quantifier conditions. The ih_exist constant-parent constraint is the key obstacle. Research whether ih_exist can be generalized or whether quantifier conditions can be reduced to constant-parent form."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
       "statement": "existPart_succ_n1_bypass backward Since k>0",
-      "assumption": "Mirror of Until backward sorry",
-      "why_deferred": "Same as Until backward - needs Prior Composition",
-      "next_dispatch": "Mirror Until proof after composition theorem proved"
+      "assumption": "Mirror of Until backward",
+      "why_deferred": "Same as line 356 but for Since direction",
+      "next_dispatch": "Mirror of Until fix"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
-      "statement": "nf_exist_backward at depth k+1",
-      "assumption": "Prior composition for quantifier transfer",
-      "why_deferred": "Dead code - not on critical path to completeness",
-      "next_dispatch": "Skip or prove after main path is complete"
+      "statement": "nf_exist_backward depth k+1 (dead code)",
+      "assumption": "Dead code",
+      "why_deferred": "Not on critical path",
+      "next_dispatch": "Skip"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "nf_2var_exist_formula_prior at depth k+2: sorry sorry parent_atoms sub_nf",
-      "assumption": "Two IH arguments (ih_char, ih_exist) need to come from kamp_mutual_induction",
-      "why_deferred": "Wiring issue - the IH arguments exist but aren't threaded through yet",
-      "next_dispatch": "Wire IH arguments from kamp_mutual_induction (Phase 5)"
+      "statement": "sorry sorry wiring",
+      "assumption": "IH arguments need threading",
+      "why_deferred": "Phase 5 wiring",
+      "next_dispatch": "Wire IH from kamp_mutual_induction"
     }
   ],
   "continuation_context": {
     "is_successor": true,
-    "resume_from": "constenv_2var_determines -- all sorry removed, build needs 1 fix (ih m -> ih (m+1)). After build passes, proceed to Phase 1 (Prior Composition Theorem).",
+    "resume_phase": 3,
+    "skip_phase_2": true,
+    "key_insight": "The general composition theorem is the WRONG approach for closing the sorry. The correct approach is formula enrichment. The eq zone already works with ih_exist on constant envs. Until/Since zones need the same approach but with non-constant parent env [x,t]. The fundamental question is: can the 3-var existential conditions (exists y, nf_eval M (k'+1) 3 [y,x,t] ssn) be encoded as temporal formulas at t, given that ih_exist only handles constant parent (fun _ => t)?",
     "key_decisions": [
-      "Replaced Fin.snoc with non-dependent env_extend to avoid dependent type issues in atom proofs",
-      "Proved env_extend_atom_agree as reusable helper for atom agreement on extended envs",
-      "Proved dup_last_cross by induction on k: k=0 uses env_extend_atom_agree, k+1 uses env_extend_atom_agree for atoms and IH for quantifier lift",
-      "Iterated dup_last_cross via constenv_2var_determines_aux (induction on n)",
-      "Moved constenv_2var_determines after nf_drop_last_cross to resolve forward references",
-      "Used constenv_extend_eq to rewrite env_extend of constenvs back to constenv form"
-    ],
-    "build_fix_needed": "In dup_last_cross succ k case, change 'ih m (Fin.cons z envM)' to 'ih (m+1) (Fin.cons z envM)' at both M->N and N->M branches. The extended env Fin.cons z envM has type Fin (m+2) -> M.carrier, so ih needs parameter m+1 (expecting Fin ((m+1)+1) -> M.carrier = Fin (m+2) -> M.carrier)."
+      "Phase 1: Proved constenv_same_depth_2var without induction on K (same proof structure at every depth)",
+      "Phase 1: exist_transfer_nvar_constenv generalizes exist_transfer_const_env to arbitrary arity on constant envs",
+      "Phase 2 BLOCKED: Order-gap counterexample is fundamental. The IH at (K, arity 3) requires matching orders at all pairs, but nf_extend_fwd from different base elements gives incompatible witnesses",
+      "Key finding: The composition approach (1-var => 2-var on non-constant envs) is mathematically correct on Prior structures but requires Prior-UZ/SZ at the NF level, which creates a circular dependency with ExistPart"
+    ]
   },
   "artifacts": [
     {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean",
+      "type": "lean_source",
+      "summary": "Sorry-free composition infrastructure: 7 theorems (pred_agree_cross, cross_1var_from_2var, cross_extend_fwd/bwd_1var, exist_transfer_nvar_constenv, constenv_same_depth_2var, constenv_same_depth_nvar)"
+    },
+    {
       "path": "specs/303_k_gt_0_depth_induction/plans/05_prior-composition-plan.md",
       "type": "plan",
-      "summary": "Plan v5: Prior composition theorem + enriched formula + n>=2 closure"
+      "summary": "Plan v5: Phase 1 [COMPLETED], Phase 2 [BLOCKED], Phases 3-5 [NOT STARTED]"
     }
   ]
 }

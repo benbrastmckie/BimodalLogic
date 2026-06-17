@@ -1,5 +1,5 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "session_id": "sess_1781661075_5cab61",
@@ -10,16 +10,16 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
       "statement": "existPart_succ_n1_bypass backward Until k>0",
-      "assumption": "Needs Prior Composition Theorem",
-      "why_deferred": "Phase 1-3 of plan v5",
-      "next_dispatch": "Prove prior_composition_rvar"
+      "assumption": "Needs enriched formula encoding full 2-var NF conditions",
+      "why_deferred": "Phase 3 of plan v5 -- requires formula enrichment for non-constant env",
+      "next_dispatch": "Enrich Until formula or find reduction to constant-parent ih_exist"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
       "statement": "existPart_succ_n1_bypass backward Since k>0",
       "assumption": "Mirror of Until backward",
-      "why_deferred": "Phase 1-3 of plan v5",
+      "why_deferred": "Phase 3 of plan v5",
       "next_dispatch": "Mirror Until proof"
     },
     {
@@ -44,11 +44,11 @@
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
-    "build_note": "NfComposition.lean: 0 sorry, builds clean. KampMutualInduction.lean: builds clean."
+    "build_note": "KampComposition.lean: 0 sorry, all 7 theorems verified with lean_verify (no sorryAx)"
   },
   "memory_candidates": [
-    "Fin.snoc in Lean 4 is dependently typed (alpha : Fin (n+1) -> Sort). For non-dependent use with atom_eval, define a custom env_extend: fun i => if h : i.val < m+1 then env (i.val, h) else t.",
-    "dup_last_cross (reverse of nf_drop_last_cross on constant-tail envs): proved by induction on k. Key insight: Fin.cons z (env_extend envM t) = env_extend (Fin.cons z envM) t, so ih at (m+1) not m. Arity m+2+1 = (m+1)+2 is definitionally equal (rfl).",
-    "constenv_2var_determines: proved by induction on n (iterating dup_last_cross), not by induction on k. The n=0 case uses nf_drop_last_cross. The n+1 case uses dup_last_cross with constenv_extend_eq."
+    "The general same-depth composition theorem (depth-(K+1) 1-var + orders => depth-(K+1) r-var on non-constant envs) is NOT provable by induction on K alone. The quantifier transfer at the inductive step requires a SINGLE witness y' matching orders with ALL r environment elements simultaneously. nf_extend_fwd from different base elements gives different witnesses with incompatible positions. This is the same phenomenon as the counterexample in NfComposition.lean:20-36.",
+    "constenv_same_depth_2var is provable WITHOUT induction on K. The proof is uniform: atoms from pred_agree_cross + irrefl order, quantifiers from exist_transfer_nvar_constenv (which uses cross_extend_fwd/bwd + constenv_2var_determines). Key: Fin.cons y (Fin.cons t (fun _ => t)) = Fin.cons y (fun _ => t) on Fin 3, reducing 3-var existentials to constant-parent form.",
+    "Fin.cases t (fun _ => t) i = t for all i : Fin (n+1). Proved by Fin.cases rfl (fun _ => rfl) i. Essential for atom_eval rewriting on constant envs where Fin.cons introduces Fin.cases."
   ]
 }
