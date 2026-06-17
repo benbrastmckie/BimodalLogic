@@ -1,49 +1,53 @@
 {
-  "status": "partial",
-  "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "session_id": "sess_1781690000_orch03",
-  "task_number": 303,
-  "started_at": "2026-06-16T00:00:00Z",
-  "handoff_path": "specs/303_k_gt_0_depth_induction/.orchestrator-handoff.json",
+  "status": "blocked",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/303_k_gt_0_depth_induction/plans/03_revised-depth-plan.md",
+      "summary": "Phase 2 marked [BLOCKED]: compositionality approach invalidated"
+    },
+    {
+      "type": "handoff",
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/cycle3-analysis-handoff.md",
+      "summary": "Analysis of 5 approaches, all blocked. 3 alternatives proposed."
+    }
+  ],
+  "next_steps": "Run /revise 303 to create plan v4 based on Option A (strengthen ExistPart) or Option B (VecEA2 generalization)",
+  "requires_user_review": true,
+  "metadata": {
+    "session_id": "sess_1781690000_orch03",
+    "agent_type": "lean-implementation-hard-agent",
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+    "phase_count": 6,
+    "estimated_hours": 10,
+    "reports_integrated": [".blocker-research.md"]
+  },
   "verification": {
     "sorry_count": 5,
     "vacuous_count": 0,
-    "axiom_count": 2,
+    "axiom_count": 0,
     "build_passed": true
   },
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
-      "statement": "Until zone backward — formula too weak, needs architectural change"
+      "statement": "existPart_succ_n1_bypass Until backward",
+      "assumption": "compat_disj determines 2-var NF",
+      "why_deferred": "ih_exist constant-parent limitation; compositionality false on Prior structures",
+      "next_dispatch": "Plan revision needed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
-      "statement": "Since zone backward — formula too weak, needs architectural change"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-      "line": 310,
-      "statement": "existPart_succ n>=2 — blocked by above"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 542,
-      "statement": "nf_exist_backward_prior (dead code)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 651,
-      "statement": "ih_char/ih_exist placeholders (dead code)"
+      "statement": "existPart_succ_n1_bypass Since backward",
+      "assumption": "Same as Until",
+      "why_deferred": "Symmetric to Until",
+      "next_dispatch": "Plan revision needed"
     }
   ],
   "memory_candidates": [
-    "NfComposition.lean lines 23-36 contains a formal counterexample proving that 1-var NF compositionality is FALSE for n>=2 on linear orders (even Prior structures): M=(Z,<), env1=(0,2), env2=(0,1), k=1 — between-zone nonemptiness differs despite same 1-var types and ordering",
-    "ExistPart as defined in KampMutualInduction.lean is architecturally limited: parent_atoms : AtomKind sig 1 -> Bool forces constant parent env (fun _ => t). Until/Since zones need non-constant parent env [x,t]. This is the root cause of the remaining sorries in KampBypass.lean.",
-    "nf_extend_fwd/nf_extend_bwd always lose one depth level: from depth-(K+1) arity-r agreement, they produce depth-K arity-(r+1) agreement. This makes recursive composition fail at the target depth for the KampBypass sorries.",
-    "Three approaches to fix: (A) Generalize ExistPart to Fin m parent env (~400-600 lines). (B) Port k=0 VecEA2 bracket formulas to depth k'+1 using ih_char (~800-1200 lines). (C) Reformulate mutual induction to avoid the backward direction (~300-500 lines, redesign).",
-    "EFGames/Composition.lean has GHR93 strategy composition but uses ExtendedCarrier/StaviFormula framework, incompatible with the NormalForm/nf_eval_nf framework in KampBypass."
+    "Compositionality (1-var NF types + ordering determine 2-var NF type) is FALSE on Prior structures. Counterexample: M=(Z,<) with no predicates, env1=(0,2), env2=(0,1), k=1. Z with no predicates is a Prior structure (UZ/SZ trivially satisfied because all formulas are tautologies or contradictions).",
+    "ExistPart's signature with parent_atoms : AtomKind sig 1 -> Bool enforces constant parent env (fun _ => t). Until/Since zone quantifier conditions require non-constant parent [x,t]. Three architectural alternatives: (A) strengthen ExistPart to condition on parent NF, (B) generalize VecEA2 brackets to k>0, (C) Rabinovich negation closure."
   ]
 }
