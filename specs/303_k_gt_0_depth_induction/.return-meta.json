@@ -1,41 +1,49 @@
 {
-  "status": "planned",
-  "artifacts": [
+  "status": "blocked",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "session_id": "sess_1781661075_5cab61",
+  "task_number": 303,
+  "started_at": "2026-06-16T00:00:00Z",
+  "completed_at": "2026-06-17T02:30:00Z",
+  "requires_user_review": true,
+  "sorry_inventory": [
     {
-      "type": "plan",
-      "path": "specs/303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md",
-      "summary": "Implementation plan for ExistPart_r generalization to close k>0 depth induction sorries blocking completeness_discrete"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 356,
+      "statement": "existPart_succ_n1_bypass Until backward (k>0)",
+      "assumption": "Plan's ExistPart_r approach provably false",
+      "why_deferred": "NfCompose counterexample (NfComposition.lean:20-36)",
+      "next_dispatch": "Research zone-explicit temporal encoding"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "line": 368,
+      "statement": "existPart_succ_n1_bypass Since backward (k>0)",
+      "assumption": "Mirror of Until",
+      "why_deferred": "Same blocker",
+      "next_dispatch": "Mirror Until proof"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+      "line": 310,
+      "statement": "existPart_succ n>=2",
+      "assumption": "Depends on n=1",
+      "why_deferred": "Downstream",
+      "next_dispatch": "Close after n=1 sorry-free"
     }
   ],
-  "next_steps": "Run /implement 303 to execute the plan",
-  "metadata": {
-    "session_id": "sess_1781661075_5cab61",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
-  },
-  "plan_metadata": {
-    "phases": 5,
-    "total_effort_hours": 8,
-    "complexity": "complex",
-    "research_integrated": true,
-    "plan_version": 4,
-    "dependency_waves": [[1], [2], [3], [4], [5]],
-    "reports_integrated": [
-      {
-        "path": "reports/02_depth-induction-resolution.md",
-        "integrated_in_plan_version": 4,
-        "integrated_date": "2026-06-16"
-      }
-    ]
+  "verification": {
+    "sorry_count": 3,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
   },
   "memory_candidates": [
-    {
-      "content": "When a formal proof's ExistPart/composition theorem uses constant-parent environments (fun _ => t) but the proof obligation involves non-constant environments [x, t], the solution is to parameterize ExistPart by parent NF types (ExistPart_r with r parent NFs). This is the Lean analog of GHR94 Section 12.8's decomposition formulas. The key insight: 1-var NF agreement at points x and t separately does NOT determine the 2-var NF at [x, t] -- a genuine information gap that no amount of transfer lemma chaining can bridge within the constant-parent constraint. The fix is architectural (change the definition), not tactical (work within the existing definition).",
-      "category": "INSIGHT",
-      "source_artifact": "specs/303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md",
-      "confidence": 0.9,
-      "suggested_keywords": ["ExistPart", "constant-parent", "NF-agreement", "composition", "GHR94", "mutual-induction"]
-    }
-  ]
+    "NfCompose (same arity-1 NFs + matching orders implies same arity-r NFs) is FALSE on Prior structures. Counterexample: NfComposition.lean:20-36. (Z, <) pairs (0,2) vs (0,1) have identical 1-var NFs and matching orders but different 2-var NFs due to zone interior differences.",
+    "ExistPart_r (parameterized by r parent NF types) is also FALSE for the same reason: two environments with the same parent NF types can have different quantifier conditions if the zone interior structures differ.",
+    "The constant-parent constraint in ih_exist (fun _ => t) is a fundamental information gap. It cannot express non-constant environments [y, x, t] where x != t. The zone structure between x and t is NOT determined by individual NF types.",
+    "The correct approach for Until/Since backward at k>0 requires zone-explicit temporal formula encoding: decompose exists y, nf_eval [y, x, t] by y's position relative to x and t (5 zones: y>x, t<y<x, y<t, y=x, y=t), and encode each zone using nested temporal connectives with ih_exist at constant parent."
+  ],
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T022641Z.md"
 }

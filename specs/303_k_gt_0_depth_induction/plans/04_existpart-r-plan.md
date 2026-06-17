@@ -71,7 +71,14 @@ Prior plan (plans/03_revised-depth-plan.md) attempted a cross-structure NF trans
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Define ExistPart_r and Adapt Mutual Induction [NOT STARTED]
+### Phase 1: Define ExistPart_r and Adapt Mutual Induction [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: ExistPart_r and NfCompose are both FALSE on Prior structures. Counterexample in NfComposition.lean:20-36: on (Z, <), pairs (0,2) and (0,1) have identical arity-1 NFs and matching orders, but different arity-2 NFs due to differing zone structure (element between 0 and 2 exists; none between 0 and 1).
+- **What was tried**: (1) ExistPart_r with r parent NFs — formula cannot distinguish pairs with same NF types but different zone structure. (2) NfCompose(k) composition theorem — provably false counterexample documented in codebase. (3) nf_extend_fwd chain — depth gap: loses one depth level per arity increase, cannot reach target depth.
+- **Why stuck**: The constant-parent constraint in ih_exist (`fun _ => t`) cannot express `[y, x, t]` with distinct x, t. The 2-var NF at [x, t] depends on zone interior structure, not just individual NF types.
+- **What is needed**: Zone-explicit temporal formula encoding (Rabinovich Section 5 approach) — decompose quantifier conditions by y's position relative to x and t, encode each zone as a nested temporal formula.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Replace the ExistPart definition with ExistPart_r parameterized by parent NF types, and adapt the mutual induction scaffold so the project builds (with existing sorries remaining).
 

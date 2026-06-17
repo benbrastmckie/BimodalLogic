@@ -1,63 +1,63 @@
 {
   "status": "blocked",
-  "summary": "Cycle 4: exhaustive analysis of NF transfer chain confirms depth gap is unavoidable with current ExistPart architecture. nf_extend_fwd loses one depth level per application; this creates a systematic one-level shortfall when transferring depth-(k'+1+1) 2-var evaluations. The constant-parent limitation of ExistPart (env = fun _ => t) prevents encoding non-constant parent 3-var existentials [y, x, t] for x != t. Three resolution paths identified; Path A (strengthen ExistPart with parent NF types) is recommended.",
-  "phases_completed": 1,
-  "phases_total": 6,
-  "blockers": [
-    "ARCHITECTURAL: ExistPart's constant-parent env (fun _ => t) cannot express 3-var existentials ∃ y, nf_eval_nf M (k'+1) 3 [y, x, t] ssn for x != t. The NF transfer (nf_extend_fwd) from depth-(k'+2) 1-var agreement gives depth-(k'+1) 2-var agreement, but sub_nf.2 records depth-(k'+1) 3-var satisfiability. From depth-(k'+1) 2-var agreement, nf_extend gives depth-k' 3-var agreement — one level short. This depth gap propagates at every subsequent level.",
-    "Until backward (KampBypass.lean:356): Formula is provably too weak. compat_disj.untl top only encodes x's 1-var NF type, not the 2-var quantifier conditions at [x, t].",
-    "Since backward (KampBypass.lean:368): Symmetric to Until."
-  ],
-  "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 2,
-    "requires_plan_revision": true,
-    "recommended_approach": "Path A: Redefine ExistPart to carry parent NF types (not just parent_atoms). ExistPart_r(k) parameterized by r parent NFs at depth k+1. The mutual induction step at depth k+1 uses ExistPart_r(k) with r=2 parents [nf_x, nf_t] to express 3-var existentials with non-constant env. Estimated scope: ~500 lines.",
-    "alternative_approaches": [
-      "Path B: Feferman-Vaught composition theorem — prove interval-type determines multi-var NF using NEquivalence.lean infrastructure (~1000+ lines)",
-      "Path C: Direct depth-recursive formula construction mirroring k=0 VecEA2 brackets with char_kp1 (~800 lines)"
-    ],
-    "depth_gap_explanation": "nf_extend_fwd : depth-(K+1) r-var agreement → depth-K (r+1)-var agreement. To transfer sub_nf at depth k'+2 arity 2, need depth-(k'+3) arity-1 agreement — have depth-(k'+2). To transfer quantifier conditions at depth k'+1 arity 3, need depth-(k'+2) arity-2 agreement — have depth-(k'+1). Each step is one short. The gap propagates through k'+1 levels of recursion.",
-    "key_invariant": "At recursion level j (j=0,...,k'+1): have depth-(k'+1-j) (j+2)-var agreement, need depth-(k'+2-j) (j+2)-var evaluation. Agreement is always one level below evaluation depth.",
-    "why_eq_zone_works": "When x = t: env [y, x, t] = [y, t, t] = Fin.cons y (fun _ => t). This IS a constant-parent env, so ih_exist applies directly.",
-    "files_unchanged": "No code changes in this cycle — analysis only."
-  },
+  "summary": "Phase 1 blocked: Plan's ExistPart_r approach AND NfCompose composition are both provably FALSE on Prior structures (counterexample: NfComposition.lean:20-36). The constant-parent constraint in ih_exist is a fundamental information gap that cannot be fixed by NF-level composition. Zone-explicit temporal formula encoding (Rabinovich Section 5) is the correct mathematical path — decomposes quantifier conditions by y's position relative to x and t, encoding each zone as nested temporal formula.",
+  "phases_completed": 0,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
-      "statement": "existPart_succ_n1_bypass Until backward (k = succ k', until zone)",
-      "assumption": "Formula compat_disj.untl top encodes enough information for backward direction",
-      "why_deferred": "DISPROVED: formula encodes only x's 1-var NF type. Backward direction needs full 2-var NF including quantifier conditions at non-constant parent [x, t]. ExistPart's constant-parent architecture cannot express these.",
-      "next_dispatch": "Revise plan: implement Path A (ExistPart with parent NF types)"
+      "statement": "existPart_succ_n1_bypass Until backward (k>0)",
+      "assumption": "temporal_truth M atomMap t (compat_disj.untl Formula.top) -> exists x, nf_eval_nf M [x, t] sub_nf",
+      "why_deferred": "Plan's ExistPart_r is provably FALSE (NfComposition.lean:20-36 counterexample). ih_exist constant-parent constraint prevents non-constant env [y, x, t]. nf_extend_fwd has unavoidable depth gap.",
+      "next_dispatch": "Research zone-explicit temporal formula encoding per Rabinovich Section 5"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 368,
-      "statement": "existPart_succ_n1_bypass Since backward (k = succ k', since zone)",
-      "assumption": "Same as Until",
-      "why_deferred": "Symmetric to Until",
-      "next_dispatch": "Resolved when Until is resolved"
+      "statement": "existPart_succ_n1_bypass Since backward (k>0)",
+      "assumption": "temporal_truth M atomMap t (compat_disj.snce Formula.top) -> exists x, nf_eval_nf M [x, t] sub_nf",
+      "why_deferred": "Mirror of Until case; same blocker",
+      "next_dispatch": "Mirror of Until zone proof once approach is found"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
       "line": 310,
-      "statement": "existPart_succ n >= 2",
-      "assumption": "n=1 case sorry-free",
-      "why_deferred": "Depends on KampBypass sorries being closed",
-      "next_dispatch": "Auto-resolved when n=1 case is sorry-free"
+      "statement": "existPart_succ n>=2 arity climbing",
+      "assumption": "Depends on n=1 case (existPart_succ_n1_bypass) being sorry-free",
+      "why_deferred": "Downstream of Until/Since backward sorries",
+      "next_dispatch": "Close after n=1 is sorry-free, using existPart_zero n>=2 pattern"
     }
   ],
+  "blockers": [
+    "PLAN INVALIDATED: ExistPart_r (generalized exist part with r parent NFs) is provably FALSE on Prior structures. Counterexample in NfComposition.lean:20-36: on (Z, <), pairs (0,2) and (0,1) have identical arity-1 NFs and matching orders but different arity-2 NFs. The zone interior structure (elements between the two points) differs, and this is NOT captured by individual NF types.",
+    "CONSTANT-PARENT GAP: ih_exist uses env (fun _ => t), which only expresses [y, t, t, ...]. The Until zone needs [y, x, t] with distinct x, t. No instantiation of ih_exist can produce non-constant environments.",
+    "DEPTH GAP: nf_extend_fwd loses one depth level per arity increase. To transfer depth-(k'+2) arity-2 NFs requires depth-(k'+2) arity-2 agreement as input — circular. The gap is systematic and unavoidable via nf_extend_fwd."
+  ],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T022641Z.md",
+  "continuation_context": {
+    "is_successor": true,
+    "resume_phase": 1,
+    "requires_plan_revision": true,
+    "approach_invalidated": "ExistPart_r AND NfCompose — both provably false on Prior structures",
+    "recommended_approach": "Zone-explicit temporal formula encoding (Rabinovich Section 5): decompose quantifier conditions exists y, nf_eval [y, x, t] ssn by y's position relative to x and t (5 zones). Encode each zone as nested Until/Since with ih_exist at constant parent. E.g., Zone 'y > x': from x, Until(type_formula, top). Zone 't < y < x': from x, Since(type_formula, char_kp1(nf_t)).",
+    "alternative_approaches": [
+      "Ordered sum decomposition via NEquivalence CompData infrastructure",
+      "Direct induction on formula quantifier rank (formula-level Kamp's theorem)",
+      "Weaken goal via CharPart-only completeness path"
+    ],
+    "key_discovery": "NfCompose counterexample (NfComposition.lean:20-36) proves that arity-r NFs are NOT determined by individual arity-1 NFs + orders, even on Prior structures. The zone interior structure matters."
+  },
   "artifacts": [
+    {
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-handoff-20260617T022641Z.md",
+      "type": "handoff",
+      "summary": "Detailed analysis: ExistPart_r/NfCompose provably false, candidate approaches for zone-explicit encoding"
+    },
     {
       "path": "specs/303_k_gt_0_depth_induction/handoffs/cycle4-analysis-handoff.md",
       "type": "handoff",
-      "summary": "Depth-gap analysis, NF transfer chain investigation, 3 resolution paths"
-    },
-    {
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/cycle3-analysis-handoff.md",
-      "type": "handoff",
-      "summary": "Previous cycle: 5 approaches analyzed, compositionality counterexample"
+      "summary": "Previous cycle: depth-gap analysis, 3 resolution paths including ExistPart_r (now invalidated)"
     }
   ]
 }
