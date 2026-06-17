@@ -1,25 +1,25 @@
 {
   "status": "partial",
-  "summary": "Phase 1 complete: defined GeneralExistPart abbrev and proved generalExistPart_zero sorry-free. Key design choice: parameterized on depth-(k+1) r-var NF type (env_nf) instead of individual 1-var NF types, enabling proof via cross-structure transfer without explicit zone decomposition.",
+  "summary": "Phase 2 complete: proved generalExistPart_succ and generalExistPart_all sorry-free. Key discovery: GeneralExistPart is NOT mutually recursive -- the same cross-structure transfer (Formula.top/bot + nf_agreement_from_shared_nf) works at all depths without needing CharPart(k+1) or GeneralExistPart(k). Phase 3 simplified: generalExistPart_all can be called directly.",
   "blockers": [],
   "continuation_context": {
-    "completed_phases": [1],
-    "next_phase": 2,
+    "completed_phases": [1, 2],
+    "next_phase": 3,
     "handoff_path": "specs/303_k_gt_0_depth_induction/plans/07_k-gt-0-plan.md"
   },
   "next_action_hint": "implement",
-  "phases_completed": 1,
+  "phases_completed": 2,
   "phases_total": 5,
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
       "type": "code",
-      "summary": "GeneralExistPart definition + generalExistPart_zero proof (sorry-free)"
+      "summary": "GeneralExistPart definition + generalExistPart_zero + generalExistPart_succ + generalExistPart_all (all sorry-free, 207 lines)"
     },
     {
       "path": "specs/303_k_gt_0_depth_induction/plans/07_k-gt-0-plan.md",
       "type": "plan",
-      "summary": "Implementation plan v7 with Phase 1 marked COMPLETED"
+      "summary": "Implementation plan v7 with Phases 1-2 marked COMPLETED"
     }
   ],
   "sorry_inventory": [
@@ -28,8 +28,8 @@
       "line": 617,
       "statement": "existPart_succ_n1_bypass backward quantifier part (Until zone)",
       "assumption": "Assumes 3-var existentials on non-constant env [y,x,t] can be transferred from cross-structure 1-var NF agreement",
-      "why_deferred": "Requires GeneralExistPart(k'+1) at r=2 to encode quantifier conditions in enriched Until formula (Phases 2-4)",
-      "next_dispatch": "Phase 2: prove generalExistPart_succ, then Phase 3: thread through mutual induction, then Phase 4: enrich formula and close sorry"
+      "why_deferred": "Requires GeneralExistPart to be threaded into kamp_mutual_induction (Phase 3) and instantiated at the sorry site (Phase 4)",
+      "next_dispatch": "Phase 3: thread generalExistPart_all into existPart_succ_n1_bypass, then Phase 4: enrich formula and close sorry"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
