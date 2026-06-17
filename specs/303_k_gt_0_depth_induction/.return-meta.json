@@ -7,25 +7,33 @@
   "started_at": "2026-06-16T00:00:00Z",
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 356,
-      "statement": "existPart_succ_n1_bypass backward Until k>0",
-      "assumption": "Needs enriched formula encoding full 2-var NF conditions",
-      "why_deferred": "Phase 3 of plan v5 -- requires formula enrichment for non-constant env",
-      "next_dispatch": "Enrich Until formula or find reduction to constant-parent ih_exist"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 98,
+      "statement": "theorem prior_nonconstenv_2var_agree_until",
+      "assumption": "Prior UZ/SZ + 1-var NF agreement + order -> 2-var NF agreement",
+      "why_deferred": "Core mathematical content: Rabinovich Lemma 5.1 formalization",
+      "next_dispatch": "Prove by induction on K with zone decomposition"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 121,
+      "statement": "theorem prior_nonconstenv_2var_agree_since",
+      "assumption": "Mirror of Until",
+      "why_deferred": "Mirror",
+      "next_dispatch": "Mirror"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "line": 368,
-      "statement": "existPart_succ_n1_bypass backward Since k>0",
-      "assumption": "Mirror of Until backward",
-      "why_deferred": "Phase 3 of plan v5",
-      "next_dispatch": "Mirror Until proof"
+      "line": 129,
+      "statement": "private theorem cross_2nd_1var_from_shared_nf",
+      "assumption": "2-var NF sharing implies second-component 1-var agreement",
+      "why_deferred": "Technical helper for forward direction",
+      "next_dispatch": "Prove by induction on K or via variable swap"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 542,
-      "statement": "nf_exist_backward depth k+1 (dead code)",
+      "statement": "nf_exist_backward_prior (dead code)",
       "assumption": "Dead code",
       "why_deferred": "Not on critical path",
       "next_dispatch": "Skip"
@@ -33,22 +41,21 @@
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 651,
-      "statement": "sorry sorry wiring",
-      "assumption": "IH arguments need threading",
-      "why_deferred": "Phase 5 wiring",
-      "next_dispatch": "Wire IH from kamp_mutual_induction"
+      "statement": "sorry sorry (ih_char and ih_exist wiring)",
+      "assumption": "IH arguments need threading from outer induction",
+      "why_deferred": "Downstream of KampBypass sorries",
+      "next_dispatch": "Wire from kamp_mutual_induction after PriorComposition is closed"
     }
   ],
   "verification": {
-    "sorry_count": 4,
+    "sorry_count_kamp": 5,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "build_passed": true,
-    "build_note": "KampComposition.lean: 0 sorry, all 7 theorems verified with lean_verify (no sorryAx)"
+    "build_passed": true
   },
   "memory_candidates": [
-    "The general same-depth composition theorem (depth-(K+1) 1-var + orders => depth-(K+1) r-var on non-constant envs) is NOT provable by induction on K alone. The quantifier transfer at the inductive step requires a SINGLE witness y' matching orders with ALL r environment elements simultaneously. nf_extend_fwd from different base elements gives different witnesses with incompatible positions. This is the same phenomenon as the counterexample in NfComposition.lean:20-36.",
-    "constenv_same_depth_2var is provable WITHOUT induction on K. The proof is uniform: atoms from pred_agree_cross + irrefl order, quantifiers from exist_transfer_nvar_constenv (which uses cross_extend_fwd/bwd + constenv_2var_determines). Key: Fin.cons y (Fin.cons t (fun _ => t)) = Fin.cons y (fun _ => t) on Fin 3, reducing 3-var existentials to constant-parent form.",
-    "Fin.cases t (fun _ => t) i = t for all i : Fin (n+1). Proved by Fin.cases rfl (fun _ => rfl) i. Essential for atom_eval rewriting on constant envs where Fin.cons introduces Fin.cases."
+    "The 2-var NF sub_nf at [x,t] DETERMINES both component 1-var NFs via projection (nf_drop_last_cross / cross_1var_from_2var). So using M0-specific NF types nf_x0 and nf_t0 in the Until/Since formula is correct: any structure satisfying sub_nf at [x,t] necessarily has x's NF = nf_x0 and t's NF = nf_t0.",
+    "The enriched formula Formula.and (char_kp1 nf_t0) (Formula.untl (char_kp1 nf_x0) Formula.top) works because: (1) backward gives exact 1-var NF types enabling cross-structure transfer, (2) forward follows from NF projection.",
+    "cross_2nd_1var_from_shared_nf (second-component 1-var NF from 2-var sharing) has no existing infrastructure. nf_drop_last_cross only projects the first component. Options: variable swap lemma, direct induction on K, or derive from constenv_same_depth_2var."
   ]
 }
