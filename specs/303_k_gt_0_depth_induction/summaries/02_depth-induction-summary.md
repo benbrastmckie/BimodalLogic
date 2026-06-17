@@ -1,83 +1,46 @@
 # Implementation Summary: Task #303 — k>0 Depth Induction
 
-- **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [PARTIAL]
-- **Session**: sess_1781640849_675d5b
-- **Cycles**: 5/5 (MAX_CYCLES reached)
+## Outcome: PARTIAL (1 of 3 zone sorries closed)
 
-## What Was Accomplished
+### What Was Accomplished
 
-### Phase 1: Mutual Induction Scaffold [COMPLETED]
+**Eq zone sorry CLOSED** (KampBypass.lean):
+- Enriched formula with `ih_exist` at n=2 for constant parent env [t,t]
+- `const_env_atom_agree` helper lemma extracted
+- `h_env_transfer` bridges nf_eval_nf arities
+- Full project build passes cleanly
 
-Created `KampMutualInduction.lean` (358 lines) with the complete mutual induction scaffold from the boneyard:
-- `CharPart` / `ExistPart` type definitions
-- `charPart_zero` (sorry-free), `charPart_succ` (sorry-free)
-- `existPart_zero` (sorry-free for all n)
-- `existPart_succ` (sorry at n>=2 k>0)
-- `kamp_mutual_induction` (combined Nat.rec)
-- `nf_2var_exist_formula_prior_filled` (connector to NfCharFormula)
+**Infrastructure added**:
+- `nf_extend_fwd`/`nf_extend_bwd`: cross-structure NF transfer lemmas
+- `exist_transfer_const_env`: constant-env existential transfer
+- M₀ witness NF type infrastructure (nf_2₀, h_nf_2₀_eq)
 
-### Phase 2: k>0 Zone Dispatch [PARTIAL]
+**Negative results (important)**:
+- NfComposition.lean: formal counterexample proving 1-var NF compositionality FALSE on Prior structures (M=(Z,<), env1=(0,2), env2=(0,1), k=1)
+- 5 approaches to Until/Since backward systematically evaluated and ruled out
 
-Built the zone dispatch scaffold for the `succ k'` branch of `existPart_succ_n1_bypass`:
-- Classical.em satisfiability split (unsatisfiable case closed with `Formula.bot`)
-- Predicate compatibility check (`compat_check`)
-- 4-way zone dispatch on x-t ordering
-- Forward direction (exists x -> temporal truth): all 3 zones sorry-free
-- `compat_of_eval` Fin arithmetic: closed
-- Added `ih_char` and `ih_exist` parameters to `existPart_succ_n1_bypass`
-- Updated call site in `existPart_succ` (KampMutualInduction.lean:308)
+### What Remains Blocked
 
-**Still sorry**: Backward direction for all 3 zones (Until/Since/Eq), lines 223, 235, 247.
+**Until backward** (KampBypass.lean:356) and **Since backward** (KampBypass.lean:368):
+- Root cause: ExistPart's constant-parent env `(fun _ => t)` cannot express 3-var existentials `∃ y, nf_eval_nf M k' 3 [y, x, t] ssn` for x ≠ t
+- The NF transfer (nf_extend_fwd) loses one depth level per arity increase, creating a systematic shortfall
+- Literature (GHR94 §9.3, Rabinovich §5) confirms zone-by-zone VecEA decomposition as the standard technique
 
-## What Was NOT Accomplished
+### Recommended Resolution Paths
 
-### Phase 2 Backward Direction (BLOCKED)
+| Path | Description | Estimated Scope |
+|------|-------------|----------------|
+| A | Strengthen ExistPart with parent NF types at depth k+1 | ~500 lines |
+| B | Feferman-Vaught composition via NEquivalence infrastructure | ~1000+ lines |
+| C | Depth-recursive VecEA brackets (generalize k=0 KampBypassUntil) | ~800 lines |
 
-The backward direction requires proving that the 3-var existential conditions `∃ y, nf_eval_nf M k 3 [y,x,t] ssn ↔ sub_nf.2 ssn` hold in M given only the temporal formula truth. The formula `compat_disj` encodes only x's 1-var NF type, but the 2-var type of [x,t] depends on both 1-var types plus ordering (Prior compositionality).
+### Sorry Inventory (Critical Path)
 
-### Phases 3-4 (NOT STARTED)
+| File | Line | Statement | Status |
+|------|------|-----------|--------|
+| KampBypass.lean | 356 | Until backward | BLOCKED |
+| KampBypass.lean | 368 | Since backward | BLOCKED |
+| KampMutualInduction.lean | 310 | existPart_succ n≥2 | Depends on above |
 
-Blocked by Phase 2 completion.
-
-## Sorry Inventory
-
-| File | Line | Description | Critical Path |
-|------|------|-------------|---------------|
-| KampBypass.lean | 223 | Until zone backward | Yes |
-| KampBypass.lean | 235 | Since zone backward | Yes |
-| KampBypass.lean | 247 | Eq zone backward | Yes |
-| KampMutualInduction.lean | 310 | existPart_succ n>=2 | Yes (depends on n=1) |
-| NfCharFormula.lean | 542 | nf_exist_backward_prior | No (pre-existing) |
-| NfCharFormula.lean | 651 | ih_char/ih_exist placeholders | No (pre-existing path) |
-
-## Files Modified
-
-| File | Change | Lines |
-|------|--------|-------|
-| `KampMutualInduction.lean` | NEW: mutual induction scaffold | 358 |
-| `KampBypass.lean` | Zone dispatch + ih_char/ih_exist params | +170 |
-| `NfCharFormula.lean` | Updated call site (sorry placeholders) | ~2 |
-
-## Root Cause Analysis
-
-The backward direction at k>0 is fundamentally harder than k=0 because:
-1. At k=0, NFs are purely atomic, so zone dispatch + predicate matching suffices
-2. At k>0, NFs have quantifier conditions involving higher-arity existentials
-3. ExistPart's constant parent env `(fun _ => t)` doesn't cover the non-constant env `[x,t]` needed for Until/Since zones
-4. Prior compositionality (Rabinovich Lemma 5.1) is the mathematical theorem needed but not yet formalized
-
-## Recommended Next Steps
-
-1. **Eq zone** (easiest, ~50-100 lines): Retry enriched formula with higher heartbeats or decomposed NormalForm enumeration. The ih_exist parameter is already in place.
-2. **Until/Since zones** (~200-400 lines): Prove Prior compositionality using `intra_structure_extend` + `component_extend_fwd` (make public) + Prior-UZ/SZ.
-3. **Alternative approach**: Restructure the formula A to encode the FULL 2-var NF type inside Until/Since context, not just the 1-var type of x.
-
-## Commits
-
-| Hash | Message |
-|------|---------|
-| `9aa124eb1` | task 303 phase 1: revive mutual induction scaffold |
-| `dc4d48124` | task 303 phase 2: k>0 zone dispatch scaffold |
-| `6fd95b5eb` | task 303 phase 2: close compat_of_eval sorry |
-| `d47463c57` | task 303 phase 2: add ih_char + ih_exist parameters |
+### Cycles Used
+4 of 5 (1 produced code, 3 produced analysis confirming architectural limitation)
