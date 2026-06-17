@@ -148,7 +148,7 @@ The enriched point guard for each zone becomes: `char_{k+1}(tau_y) AND quant_con
 
 ---
 
-### Phase 3: Modify Mutual Induction to Include GeneralExistPart [NOT STARTED]
+### Phase 3: Modify Mutual Induction to Include GeneralExistPart [COMPLETED]
 
 **Goal**: Add GeneralExistPart as a third conjunct to `kamp_mutual_induction` and thread it through `existPart_succ`.
 
@@ -163,14 +163,15 @@ The base case uses `generalExistPart_zero` from Phase 1. The inductive step:
 - GeneralExistPart(k+1) from CharPart(k+1) + GeneralExistPart(k) -- from Phase 2
 
 **Tasks**:
-- [ ] Import GeneralExistPart.lean in KampMutualInduction.lean
-- [ ] Modify `kamp_mutual_induction` return type to `CharPart(k) AND ExistPart(k) AND GeneralExistPart(k)`
-- [ ] Modify the base case to include `generalExistPart_zero`
-- [ ] Modify the inductive step to include `generalExistPart_succ` using `ih.2.2` (the IH for GeneralExistPart(k))
-- [ ] Thread GeneralExistPart(k) through `existPart_succ` -> `existPart_succ_n1_bypass` via a new parameter
-- [ ] Add `ih_general_exist` parameter to `existPart_succ_n1_bypass` signature in KampBypass.lean
-- [ ] Update `existPart_succ` in KampMutualInduction.lean to pass GeneralExistPart(k) to the bypass
-- [ ] Verify: `lake build KampMutualInduction` succeeds (sorry still present in bypass, but plumbing works)
+- [x] Import GeneralExistPart.lean in KampMutualInduction.lean
+- [ ] Modify `kamp_mutual_induction` return type to `CharPart(k) AND ExistPart(k) AND GeneralExistPart(k)` *(deviation: skipped -- GeneralExistPart is NOT mutually recursive (Phase 2 discovery), so no modification to kamp_mutual_induction needed; generalExistPart_all is called directly)*
+- [ ] Modify the base case to include `generalExistPart_zero` *(deviation: skipped -- same reason as above)*
+- [ ] Modify the inductive step to include `generalExistPart_succ` using `ih.2.2` (the IH for GeneralExistPart(k)) *(deviation: skipped -- same reason as above)*
+- [x] Thread GeneralExistPart(k) through `existPart_succ` -> `existPart_succ_n1_bypass` via a new parameter *(deviation: altered -- passed generalExistPart_all directly instead of threading through mutual induction)*
+- [x] Add `ih_general_exist` parameter to `existPart_succ_n1_bypass` signature in KampBypass.lean *(deviation: altered -- expanded GeneralExistPart abbrev inline to avoid circular import)*
+- [x] Update `existPart_succ` in KampMutualInduction.lean to pass GeneralExistPart(k) to the bypass
+- [x] Verify: `lake build KampMutualInduction` succeeds (sorry still present in bypass, but plumbing works)
+- [x] Update NfCharFormula.lean call site with additional sorry argument for ih_general_exist (dead code path)
 
 **Timing**: 1.5 hours
 

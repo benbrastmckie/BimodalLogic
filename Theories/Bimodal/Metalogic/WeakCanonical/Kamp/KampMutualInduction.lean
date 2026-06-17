@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
+import Bimodal.Metalogic.WeakCanonical.Kamp.GeneralExistPart
 
 /-!
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
@@ -306,7 +307,8 @@ theorem existPart_succ {sig : MonadicSignature}
     cases n' with
     | zero =>
       exact existPart_succ_n1_bypass atomMap h_surj k
-        char_kp1 char_kp1_correct ih_char ih_exist parent_atoms sub_nf
+        char_kp1 char_kp1_correct ih_char ih_exist
+        (generalExistPart_all atomMap h_surj k) parent_atoms sub_nf
     | succ n'' =>
       -- n>=2 case: arity n''+3. Constant parent env means
       -- the n-var NF is determined by the 2-var NF.
@@ -319,7 +321,8 @@ theorem existPart_succ {sig : MonadicSignature}
       · -- Satisfiable: use M₀ to reduce to 2-var via constenv_2var_determines
         let sub_nf_2 := nf_characteristic M₀ (k + 1) 2 (Fin.cons x₀ (fun _ => t₀))
         obtain ⟨A₂, hA₂⟩ := existPart_succ_n1_bypass atomMap h_surj k
-          char_kp1 char_kp1_correct ih_char ih_exist parent_atoms sub_nf_2
+          char_kp1 char_kp1_correct ih_char ih_exist
+          (generalExistPart_all atomMap h_surj k) parent_atoms sub_nf_2
         refine ⟨A₂, fun M h_UZ h_SZ t h_atoms => ?_⟩
         constructor
         · -- Forward: temporal → ∃ x, nf_eval_nf ... sub_nf
