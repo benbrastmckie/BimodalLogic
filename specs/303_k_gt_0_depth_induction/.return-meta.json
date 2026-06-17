@@ -1,44 +1,29 @@
 {
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "session_id": "sess_1781684058_bab646",
-  "task_number": 303,
-  "started_at": "2026-06-17T00:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/reports/04_rabinovich-formula-analysis.md",
-      "type": "research",
-      "summary": "Rabinovich formula analysis: maps Prop 3.5 to Lean code, identifies that all 4 sorries reduce to non-constant-env zone-matching, adversarial verification revealed K=0 base is NOT simpler than it appears, recommends EF-game/back-and-forth approach using Prior-UZ/SZ at semantic level"
+      "type": "plan",
+      "path": "specs/303_k_gt_0_depth_induction/plans/06_ef-game-composition-plan.md",
+      "summary": "Plan v6: Enrich the Until/Since formula in KampBypass.lean to encode full 2-var NF (including between-zone content) and delete false PriorComposition.lean theorems. 4 phases, 14 hours estimated."
     }
   ],
+  "next_steps": "Run /implement 303 to execute the plan",
   "metadata": {
-    "adversarial_verification_triggered": true,
-    "findings_count": 7,
-    "reference_grounding_tier": "tier_1_literature",
-    "sorries_analyzed": 4,
-    "approach_recommended": "a_with_ef_game_supplement",
-    "revision_triggered_by_h4": true,
-    "cycles_used": 5,
-    "mode": "hard",
-    "invocation": 4
+    "session_id": "sess_1781685314_8a2790",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 14,
+    "dependency_waves": [[1], [2], [3], [4]]
   },
-  "next_steps": "Run /plan 303 to create implementation plan for the EF-game composition theorem on Prior structures",
   "memory_candidates": [
     {
-      "content": "Rabinovich 2014 Prop 3.5 translates exists-forall formulas to nested Until/Since with between-zone beta_j as the guard. The NF-based Lean formalization uses Top as the Until guard, losing between-zone information. This is the root cause of the Prior composition sorries in PriorComposition.lean.",
-      "keywords": ["rabinovich", "exists-forall", "until-guard", "between-zone", "prior-composition"],
-      "topics": ["kamp-theorem", "normal-forms", "temporal-logic"]
-    },
-    {
-      "content": "On non-constant environments [x,t]/[x',t'], cross_extend_bwd_1var from h_x gives w'_x < x' with matching predicates, and from h_t gives w'_t > t' with matching predicates, but these are DIFFERENT witnesses. Unifying them into a single w' in (t', x') is the fundamental gap. Prior-UZ/SZ must be used at the semantic level (not via temporal truth) to avoid circularity with the completeness theorem being proved.",
-      "keywords": ["non-constant-env", "zone-matching", "cross-extend", "prior-UZ", "witness-unification"],
-      "topics": ["composition-theorem", "normal-forms", "prior-structures"]
-    },
-    {
-      "content": "At K=0 in PriorComposition.lean (lines 322, 399), the sorry is INSIDE the construction of h_xt, not inside exist_transfer_3var_nonconstenv. This means hex_K is NOT available at K=0. The base case requires a direct depth-0 3-var transfer proof without any IH hypothesis, using only depth-1 1-var agreement plus Prior-UZ/SZ.",
-      "keywords": ["K0-base-case", "depth0-transfer", "h_xt-construction", "hex_K-unavailable"],
-      "topics": ["prior-composition", "kamp-bypass", "sorry-analysis"]
+      "content": "The non-constant-env composition theorem (depth-(K+2) 1-var agreement + matching orders + Prior-UZ/SZ => depth-(K+2) 2-var agreement) is FALSE on Prior structures. Counterexample: M=N=(Z,<,P_everywhere) with envM=[2,0], envN=[1,0]. Interval (0,2) contains integer 1 while (0,1) is empty, creating different 2-var NFs despite identical 1-var NFs. This falsifies PriorComposition.lean theorems and all plans (v2-v5) that attempted to prove this statement.",
+      "category": "INSIGHT",
+      "source_artifact": "specs/303_k_gt_0_depth_induction/plans/06_ef-game-composition-plan.md",
+      "confidence": 0.95,
+      "suggested_keywords": ["non-constant-env", "composition-theorem", "counterexample", "prior-structures", "2var-agreement", "false-theorem"]
     }
   ]
 }
