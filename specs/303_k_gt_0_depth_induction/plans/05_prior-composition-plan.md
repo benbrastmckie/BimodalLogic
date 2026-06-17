@@ -87,7 +87,7 @@ On Prior structures, this gap can be bridged because Prior-UZ/SZ guarantee witne
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Prior Composition Theorem -- Statement and Base Case [IN PROGRESS]
+### Phase 1: Prior Composition Theorem -- Statement and Base Case [COMPLETED]
 
 **Goal**: Define and prove the Prior composition theorem for K=0 (base case) in a new file `KampComposition.lean`. State the full theorem for all K.
 
@@ -98,36 +98,12 @@ Phases within the same wave can execute in parallel.
 - At K=0: 2-var NF is purely atomic. Atom agreement at `[x, t]` follows from 1-var atom agreement (predicates) + order matching. Prior-UZ/SZ not needed.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean` with imports from KampBypass.lean and PriorDefs.lean
-- [ ] State `prior_composition_2var`:
-  ```lean
-  theorem prior_composition_2var {sig : MonadicSignature}
-      (atomMap : Formula -> sig.preds)
-      (M N : OrderedMonadicStructure sig)
-      (h_UZ_M : semantic_prior_UZ M atomMap) (h_SZ_M : semantic_prior_SZ M atomMap)
-      (h_UZ_N : semantic_prior_UZ N atomMap) (h_SZ_N : semantic_prior_SZ N atomMap)
-      (K : Nat)
-      (t : M.carrier) (s : N.carrier)
-      (x : M.carrier) (x' : N.carrier)
-      (h_t_agree : forall nf, nf_eval_nf M (K+1) 1 (fun _ => t) nf <->
-          nf_eval_nf N (K+1) 1 (fun _ => s) nf)
-      (h_x_agree : forall nf, nf_eval_nf M (K+1) 1 (fun _ => x) nf <->
-          nf_eval_nf N (K+1) 1 (fun _ => x') nf)
-      (h_order_gt : t < x <-> s < x')
-      (h_order_lt : x < t <-> x' < s) :
-      forall nf : NormalForm sig K 2,
-        nf_eval_nf M K 2 (Fin.cons x (fun _ => t)) nf <->
-        nf_eval_nf N K 2 (Fin.cons x' (fun _ => s)) nf
-  ```
-- [ ] Prove the K=0 base case: depth-0 2-var NF is purely atomic. Atoms at `[x, t]` decompose into predicates at x, predicates at t, and order between x and t. All three follow from the hypotheses.
-- [ ] State helper lemma `prior_composition_quant_transfer` for the quantifier part (used in inductive step):
-  ```lean
-  -- Given depth-K 2-var NF agreement at [x, t] and [x', s],
-  -- transfer depth-(K-1) 3-var existentials
-  private theorem prior_composition_quant_transfer ...
-  ```
-- [ ] Add the file to the lakefile import chain (import in KampBypass.lean)
-- [ ] Verify `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition` succeeds
+- [x] **Task 1.1**: Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean` with imports from NfComposition.lean and PriorDefs.lean
+- [x] **Task 1.2**: State and prove `constenv_same_depth_2var` *(deviation: altered -- the general `prior_composition_2var` with non-constant envs is NOT provable without Prior-UZ/SZ at the NF level due to the order-gap counterexample. Instead proved same-depth 2-var on CONSTANT envs, which handles the eq zone and serves as infrastructure for the non-constant case)*
+- [x] **Task 1.3**: Prove helper lemmas: `pred_agree_cross`, `cross_1var_from_2var`, `cross_extend_fwd_1var`, `cross_extend_bwd_1var`, `exist_transfer_nvar_constenv` *(deviation: altered -- replaced prior_composition_quant_transfer with exist_transfer_nvar_constenv which generalizes exist_transfer_const_env to arbitrary arity on constant envs)*
+- [x] **Task 1.4**: Prove `constenv_same_depth_nvar` extending 2-var to n-var via constenv_2var_determines
+- [ ] **Task 1.5**: Add the file to the lakefile import chain (import in KampBypass.lean) *(deviation: deferred to Phase 3 when actually used)*
+- [x] **Task 1.6**: Verify `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition` succeeds with 0 sorries
 
 **Timing**: 2 hours
 **Depends on**: none
