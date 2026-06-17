@@ -250,50 +250,70 @@ private theorem exist_transfer_3var_nonconstenv {sig : MonadicSignature}
       (∃ y, nf_eval_nf M (K + 1) 2 (Fin.cons y (fun _ => x)) ssn2) ↔
       (∃ c, nf_eval_nf N (K + 1) 2 (Fin.cons c (fun _ => x')) ssn2) :=
     fun ssn2 => (hMq_x ssn2).trans (hNq_x ssn2).symm
+  -- Also extract from h_t
+  obtain ⟨_, hMq_t⟩ := nf_characteristic_satisfies M (K + 2) 1 (fun _ => t)
+  have h_char_t : nf_characteristic M (K + 2) 1 (fun _ => t) =
+      nf_characteristic N (K + 2) 1 (fun _ => t') :=
+    nf_eval_unique N (K + 2) 1 _ _ _
+      ((h_t _).mp (nf_characteristic_satisfies M _ _ _))
+      (nf_characteristic_satisfies N _ _ _)
+  obtain ⟨_, hNq_t⟩ := h_char_t ▸
+    nf_characteristic_satisfies N (K + 2) 1 (fun _ => t')
+  -- h_t quantifier: depth-(K+1) 2-var existential transfer at [_,t]/[_,t']
+  have hex_t : ∀ ssn2 : NormalForm sig (K + 1) 2,
+      (∃ y, nf_eval_nf M (K + 1) 2 (Fin.cons y (fun _ => t)) ssn2) ↔
+      (∃ c, nf_eval_nf N (K + 1) 2 (Fin.cons c (fun _ => t')) ssn2) :=
+    fun ssn2 => (hMq_t ssn2).trans (hNq_t ssn2).symm
   constructor
   · -- Forward: M → N
     rintro ⟨y, hy⟩
-    -- Step 1: Find c via h_xt's quantifier part (depth-K 3-var transfer)
-    -- Set chi_K = nf_char M K 3 [y,x,t]. Get c_K with depth-K 3-var at [y,x,t]/[c_K,x',t'].
+    -- Find c_x via h_x's quantifier (depth-(K+1) 2-var at [y,x]/[c_x,x'])
+    set chi_x := nf_characteristic M (K + 1) 2 (Fin.cons y (fun _ => x))
+    obtain ⟨c_x, hc_x⟩ := (hex_x chi_x).mp ⟨y, nf_characteristic_satisfies ..⟩
+    have h_2var_x := nf_agreement_from_shared_nf M _ N _ chi_x
+      (nf_characteristic_satisfies ..) hc_x
+    -- c_x has depth-(K+1) 1-var matching y
+    have h_cx_1var := cross_1var_from_2var M y x N c_x x' h_2var_x
+    -- Find c_t via h_t's quantifier (depth-(K+1) 2-var at [y,t]/[c_t,t'])
+    set chi_t := nf_characteristic M (K + 1) 2 (Fin.cons y (fun _ => t))
+    obtain ⟨c_t, hc_t⟩ := (hex_t chi_t).mp ⟨y, nf_characteristic_satisfies ..⟩
+    have h_2var_t := nf_agreement_from_shared_nf M _ N _ chi_t
+      (nf_characteristic_satisfies ..) hc_t
+    -- c_t has depth-(K+1) 1-var matching y
+    have h_ct_1var := cross_1var_from_2var M y t N c_t t' h_2var_t
+    -- From h_2var_x: c_x < x' iff y < x (order atom transfer)
+    -- From h_2var_t: c_t < t' iff y < t, c_t > t' iff y > t (order atom transfer)
+    -- The depth-K 3-var witness c_K has ALL orders correct
     set chi_K := nf_characteristic M K 3 (Fin.cons y (Fin.cons x (fun _ => t)))
     obtain ⟨c_K, hc_K⟩ := (hex_K chi_K).mp ⟨y, nf_characteristic_satisfies ..⟩
-    -- c_K has depth-K 3-var agreement with y at [y,x,t]/[c_K,x',t']
     have h_3var_K := nf_agreement_from_shared_nf M _ N _ chi_K
       (nf_characteristic_satisfies ..) hc_K
-    -- Step 2: Find c via h_x's quantifier part (depth-(K+1) 2-var transfer)
-    -- Set chi_Kp1 = nf_char M (K+1) 2 [y,x]. Get c with depth-(K+1) 2-var at [y,x]/[c,x'].
-    set chi_Kp1 := nf_characteristic M (K + 1) 2 (Fin.cons y (fun _ => x))
-    obtain ⟨c, hc⟩ := (hex_x chi_Kp1).mp ⟨y, nf_characteristic_satisfies ..⟩
-    -- c has depth-(K+1) 2-var agreement with y at [y,x]/[c,x']
-    have h_2var_Kp1 := nf_agreement_from_shared_nf M _ N _ chi_Kp1
-      (nf_characteristic_satisfies ..) hc
-    -- c has depth-(K+1) 1-var matching y
-    have h_c_1var := cross_1var_from_2var M y x N c x' h_2var_Kp1
-    -- Step 3: Show c satisfies sub_nf at [c,x',t'].
-    -- We have:
-    --   h_2var_Kp1: depth-(K+1) 2-var at [y,x]/[c,x'] (determines y-x relationship)
-    --   h_3var_K: depth-K 3-var at [y,x,t]/[c_K,x',t'] (determines all relationships at depth K)
-    --   h_c_1var: depth-(K+1) 1-var at y/c
-    -- The full depth-(K+1) 3-var agreement at [y,x,t]/[c,x',t'] requires combining:
-    --   (a) Atoms: preds at c match y (from h_c_1var), preds at x'/t' match x/t
-    --       (from h_x/h_t), orders y-x match c-x' (from h_2var_Kp1),
-    --       order x-t matches x'-t' (from h_xt), and y-t order matches c-t' order.
-    --   (b) Quantifiers: depth-K 4-var existential transfer at [w,y,x,t]/[w',c,x',t'].
-    -- Part (a): The y-t vs c-t' order transfer requires that c_K and c are in the
-    --   same zone relative to t' (which follows from c_K and c having the same
-    --   depth-K 1-var type, plus zone properties).
-    -- Part (b): The depth-K 4-var transfer is the "interval-splitting" game argument.
-    --
-    -- This is the same game-theoretic argument as in StaviCompleteness.lean
-    -- `nf_2var_existential_transfer` (line 2421 sorry).
+    -- c_K has correct orders relative to BOTH x' and t' at depth K.
+    -- c_K has depth-(K+1)-1 = depth-K 3-var agreement. We need depth-(K+1) 3-var.
+    -- The depth boost requires depth-K 4-var existential transfer, which is circular.
+    -- This is the fundamental limitation: without Prior+CharPart for the between-zone,
+    -- we cannot determine whether c_x or c_t (which have depth-(K+1) partial info)
+    -- are in the correct zone relative to the other anchor point.
     sorry
   · -- Backward: N → M (symmetric)
     rintro ⟨y', hy'⟩
-    -- Symmetric to forward using (hex_K).mpr and (hex_x).mpr
+    -- Find c_x via (hex_x).mpr
+    set chi_x := nf_characteristic N (K + 1) 2 (Fin.cons y' (fun _ => x'))
+    obtain ⟨c_x, hc_x⟩ := (hex_x chi_x).mpr ⟨y', nf_characteristic_satisfies ..⟩
+    have h_2var_x := nf_agreement_from_shared_nf N _ M _ chi_x
+      (nf_characteristic_satisfies ..) hc_x
+    have h_cx_1var := cross_1var_from_2var N y' x' M c_x x h_2var_x
+    -- Find c_t via (hex_t).mpr
+    set chi_t := nf_characteristic N (K + 1) 2 (Fin.cons y' (fun _ => t'))
+    obtain ⟨c_t, hc_t⟩ := (hex_t chi_t).mpr ⟨y', nf_characteristic_satisfies ..⟩
+    have h_2var_t := nf_agreement_from_shared_nf N _ M _ chi_t
+      (nf_characteristic_satisfies ..) hc_t
+    have h_ct_1var := cross_1var_from_2var N y' t' M c_t t h_2var_t
+    -- Depth-K 3-var witness
     set chi_K := nf_characteristic N K 3 (Fin.cons y' (Fin.cons x' (fun _ => t')))
     obtain ⟨c_K, hc_K⟩ := (hex_K chi_K).mpr ⟨y', nf_characteristic_satisfies ..⟩
-    set chi_Kp1 := nf_characteristic N (K + 1) 2 (Fin.cons y' (fun _ => x'))
-    obtain ⟨c, hc⟩ := (hex_x chi_Kp1).mpr ⟨y', nf_characteristic_satisfies ..⟩
+    have h_3var_K := nf_agreement_from_shared_nf N _ M _ chi_K
+      (nf_characteristic_satisfies ..) hc_K
     sorry
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
@@ -315,6 +335,7 @@ Both versions delegate the 3-var existential transfer to
     then M and N agree on all depth-(K+2) 2-var NFs at [x,t] / [x',t']. -/
 theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (K : Nat)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
     (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
@@ -371,12 +392,21 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
           obtain ⟨h_N1_atoms, h_N1_quant⟩ := h_N1
           constructor
           · intro a; exact (h_atom1 a).trans (h_N1_atoms a)
-          · -- depth-0 3-var existential transfer: purely atomic, requires zone-matching
+          · -- depth-0 3-var existential transfer: purely atomic
             intro ssn3; rw [← h_N1_quant ssn3]
-            -- At depth 0, nf_eval is purely atomic (no further quantifiers).
-            -- The transfer of ∃ w with matching atoms requires zone-matching:
-            -- - For w outside [t,x]: cross_extend_bwd_1var gives matching witness
-            -- - For w inside (t,x): Prior UZ/SZ needed to find w' in (t',x')
+            -- At depth 0, nf_eval is purely atomic (no quantifiers).
+            -- Zone decomposition based on ssn3's order atoms for w vs x, w vs t.
+            -- Consistency check: ssn3 must record t < x (matching h_order_M/N)
+            -- Otherwise the existential is vacuously false.
+            -- Extract the zone-determining order atoms
+            let w_lt_x := ssn3 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+            let x_lt_w := ssn3 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+            let w_lt_t := ssn3 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+            let t_lt_w := ssn3 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
+            let x_lt_t := ssn3 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide))
+            let t_lt_x := ssn3 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide))
+            -- First check x-t consistency: if ssn3 says x < t, no witness exists (t < x in M)
+            -- If ssn3 says t < x (correct), proceed with zone decomp
             sorry)
         sub_nf
   | succ K' ih =>
@@ -406,6 +436,7 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
 /-- Mirror for the Since zone (x < t). Same statement with reversed order. -/
 theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (K : Nat)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
     (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
@@ -482,6 +513,7 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     one-directional transfer from M₀ to M. -/
 theorem prior_2var_transfer_until {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (K : Nat)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
     (M₀ : OrderedMonadicStructure sig) (x₀ t₀ : M₀.carrier)
@@ -500,12 +532,13 @@ theorem prior_2var_transfer_until {sig : MonadicSignature}
     (sub_nf : NormalForm sig (K + 2) 2)
     (h_eval₀ : nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) sub_nf) :
     nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) sub_nf :=
-  (prior_nonconstenv_2var_agree_until atomMap K M x t M₀ x₀ t₀
+  (prior_nonconstenv_2var_agree_until atomMap h_surj K M x t M₀ x₀ t₀
     h_UZ h_SZ h_UZ₀ h_SZ₀ h_x h_t h_order h_order₀ sub_nf).mpr h_eval₀
 
 /-- Specialized version for the KampBypass backward Since direction. -/
 theorem prior_2var_transfer_since {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (K : Nat)
     (M : OrderedMonadicStructure sig) (x t : M.carrier)
     (M₀ : OrderedMonadicStructure sig) (x₀ t₀ : M₀.carrier)
@@ -524,7 +557,7 @@ theorem prior_2var_transfer_since {sig : MonadicSignature}
     (sub_nf : NormalForm sig (K + 2) 2)
     (h_eval₀ : nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) sub_nf) :
     nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) sub_nf :=
-  (prior_nonconstenv_2var_agree_since atomMap K M x t M₀ x₀ t₀
+  (prior_nonconstenv_2var_agree_since atomMap h_surj K M x t M₀ x₀ t₀
     h_UZ h_SZ h_UZ₀ h_SZ₀ h_x h_t h_order h_order₀ sub_nf).mpr h_eval₀
 
 /-! ## Second Component Projection from 2-var Agreement

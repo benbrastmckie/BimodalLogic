@@ -608,7 +608,7 @@ theorem existPart_succ_n1_bypass
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval
               (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀))
           -- Apply prior_2var_transfer_until to transfer h_eval₀ from M₀ to M
-          exact ⟨x, prior_2var_transfer_until atomMap k' M x t M₀ x₀ t₀
+          exact ⟨x, prior_2var_transfer_until atomMap h_surj k' M x t M₀ x₀ t₀
             h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_t_lt_x h_t₀_lt_x₀
             sub_nf h_eval₀⟩
         · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t until_formula
@@ -675,7 +675,7 @@ theorem existPart_succ_n1_bypass
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval
               (nf_characteristic_satisfies M₀ (k' + 1 + 1) 1 (fun _ => t₀))
           -- Apply prior_2var_transfer_since to transfer h_eval₀ from M₀ to M
-          exact ⟨x, prior_2var_transfer_since atomMap k' M x t M₀ x₀ t₀
+          exact ⟨x, prior_2var_transfer_since atomMap h_surj k' M x t M₀ x₀ t₀
             h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_x_lt_t h_x₀_lt_t₀
             sub_nf h_eval₀⟩
         · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t since_formula
