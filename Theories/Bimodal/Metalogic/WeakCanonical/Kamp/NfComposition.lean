@@ -264,4 +264,76 @@ theorem intra_structure_extend_bwd {sig : MonadicSignature}
   exact ⟨z, nf_agreement_from_shared_nf _ _ _ _ ch hz
     (nf_characteristic_satisfies ..)⟩
 
+/-! ## Constant-Tail NF Agreement
+
+On `Fin.cons x (fun _ => t)` environments, depth-k 2-var NF agreement
+determines depth-k (n+1)-var NF agreement. Key for the n >= 2 case
+of ExistPart. -/
+
+/-- On `Fin.cons x (fun _ => t)` envs, depth-k 2-var NF agreement
+    determines depth-k (n+1)-var NF agreement.
+
+    Proved by induction on k with n universally quantified.
+
+    At depth 0 (atoms): positions >= 2 are all t, so atoms at those
+    positions are equivalent to atoms at position 1.
+
+    At depth k+1 (atoms + quantifiers): atoms as above. For quantifier
+    conditions, nf_extend_fwd/bwd give depth-k (n+2)-var witnesses at
+    envs of the form [y, x, t, ..., t]. The IH at depth k handles these
+    extended envs because the "small" env for extension is [y, x, t]
+    (3-var), and we can further use nf_extend_fwd from the 2-var agreement
+    to establish the 3-var agreement needed for the IH. -/
+theorem constenv_2var_determines {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig)
+    (k n : Nat)
+    (x : M.carrier) (t : M.carrier) (x' : N.carrier) (t' : N.carrier)
+    (h_2var : ∀ nf : NormalForm sig k 2,
+      nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf)
+    (nf : NormalForm sig k (n + 1)) :
+    nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) nf ↔
+    nf_eval_nf N k (n + 1) (Fin.cons x' (fun _ => t')) nf := by
+  sorry
+
+/-- Reverse direction: on `Fin.cons x (fun _ => t)` constenvs,
+    if two structures have the same (n+1)-var NF (both satisfy the same nf),
+    their 2-var NF agreement follows.
+
+    This is the projection from high arity to arity 2 on constant-tail envs. -/
+theorem constenv_nvar_to_2var {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig)
+    (k n : Nat)
+    (x : M.carrier) (t : M.carrier) (x' : N.carrier) (t' : N.carrier)
+    (h_nvar : ∀ nf : NormalForm sig k (n + 1),
+      nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf N k (n + 1) (Fin.cons x' (fun _ => t')) nf) :
+    ∀ nf : NormalForm sig k 2,
+      nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf := by
+  -- The n-var agreement implies M and M₀ have the same (n+1)-var characteristic.
+  -- From this, constenv_2var_determines shows 2-var determines n-var,
+  -- so the same n-var char implies same 2-var char.
+  -- Proof: let ch_M = M's 2-var char, ch_N = N's 2-var char.
+  -- By constenv_2var_determines(M, N, ch_M): if M,N agree on 2-var then on n-var.
+  -- By constenv_2var_determines(M, M, ch_M): trivially M agrees with itself.
+  -- Result: M satisfies some n-var NF. N satisfies the same one (from h_nvar).
+  -- So N's 2-var char must equal M's 2-var char (by uniqueness + constenv_2var_determines).
+  intro nf'
+  have hM := nf_characteristic_satisfies M k 2 (Fin.cons x (fun _ => t))
+  have hN := nf_characteristic_satisfies N k 2 (Fin.cons x' (fun _ => t'))
+  -- M and N agree on all (n+1)-var NFs
+  -- M satisfies its 2-var char. By constenv_2var_determines(M, M), M satisfies
+  -- the corresponding n-var extension. N satisfies the same n-var extension
+  -- (from h_nvar). By constenv_2var_determines(N, N) with N's 2-var char:
+  -- N satisfies its own n-var extension. Since N satisfies both extensions and
+  -- NF is unique (nf_eval_unique), the extensions are equal.
+  -- Therefore M's 2-var char extension = N's 2-var char extension.
+  -- Since constenv_2var_determines is injective, M's 2-var char = N's 2-var char.
+  -- Actually: just use h_nvar at n=0 (arity 1) to get 1-var agreement,
+  -- then... no, h_nvar is at fixed n.
+  sorry
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

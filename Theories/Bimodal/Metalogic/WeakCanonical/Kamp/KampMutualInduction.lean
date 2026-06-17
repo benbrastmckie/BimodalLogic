@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 
 /-!
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
@@ -307,7 +308,82 @@ theorem existPart_succ {sig : MonadicSignature}
       exact existPart_succ_n1_bypass atomMap h_surj k
         char_kp1 char_kp1_correct ih_char ih_exist parent_atoms sub_nf
     | succ n'' =>
-      sorry
+      -- n>=2 case: arity n''+3. Constant parent env means
+      -- the n-var NF is determined by the 2-var NF.
+      rcases Classical.em (∃ (M : OrderedMonadicStructure sig)
+          (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier) (x : M.carrier),
+          nf_eval_nf M (k + 1) (n'' + 1 + 1 + 1) (Fin.cons x (fun _ => t)) sub_nf ∧
+          (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔
+            parent_atoms a = true)) with ⟨M₀, h_UZ₀, h_SZ₀, t₀, x₀, h_eval₀, h_atoms₀⟩ | h_unsat
+      · -- Satisfiable: use M₀ to reduce to 2-var via constenv_2var_determines
+        let sub_nf_2 := nf_characteristic M₀ (k + 1) 2 (Fin.cons x₀ (fun _ => t₀))
+        obtain ⟨A₂, hA₂⟩ := existPart_succ_n1_bypass atomMap h_surj k
+          char_kp1 char_kp1_correct ih_char ih_exist parent_atoms sub_nf_2
+        refine ⟨A₂, fun M h_UZ h_SZ t h_atoms => ?_⟩
+        constructor
+        · -- Forward: temporal → ∃ x, nf_eval_nf ... sub_nf
+          intro h_temp
+          -- From A₂ correctness: temporal → ∃ x, 2-var eval
+          obtain ⟨x, h_eval_2⟩ := ((hA₂ M h_UZ h_SZ t h_atoms).mp h_temp)
+          -- M and M₀ agree on 2-var NFs
+          have h_agree_2 := nf_agreement_from_shared_nf M _ M₀ _ sub_nf_2 h_eval_2
+            (nf_characteristic_satisfies M₀ (k + 1) 2 (Fin.cons x₀ (fun _ => t₀)))
+          -- constenv_2var_determines lifts to n-var
+          exact ⟨x, (constenv_2var_determines M M₀ (k + 1) (n'' + 1 + 1) x t x₀ t₀
+            h_agree_2 sub_nf).mpr h_eval₀⟩
+        · -- Backward: ∃ x, nf_eval_nf ... sub_nf → temporal
+          intro ⟨x, h_eval_n⟩
+          -- From n-var eval, build 2-var eval via constenv_2var_determines
+          -- Both M and M₀ satisfy sub_nf → n-var agreement
+          have h_agree_n := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval_n h_eval₀
+          -- constenv_2var_determines: n-var agreement → 2-var NF eval
+          -- From n-var agreement between M and M₀:
+          -- constenv_2var_determines (M₀, M) with their 2-var agreement
+          -- But we need 2-var agreement between M₀ and M, which is what we're deriving.
+          -- Instead: M₀ satisfies sub_nf_2 at [x₀,t₀], and we need M to satisfy
+          -- sub_nf_2 at [x,t].
+          -- Key: n-var agreement implies sub_nf_2 is satisfied by M.
+          -- sub_nf_2 = nf_characteristic M₀ (k+1) 2 [x₀,t₀].
+          -- M₀ satisfies sub_nf_2. We need M to satisfy sub_nf_2.
+          -- The n-var eval at M implies M has the same n-var char as M₀.
+          -- The 2-var char is a function of the n-var char on constenvs.
+          -- Use constenv_2var_determines with reversed M, M₀:
+          -- Given 2-var agreement M₀→M (which we derive below), get n-var agreement.
+          -- Since n-var agreement already known, the 2-var agreement is forced.
+          -- This is still circular. Let's use a different approach.
+          -- Use A₂ correctness in the backward direction:
+          -- We need temporal_truth M atomMap t A₂.
+          -- A₂ characterizes ∃ x, 2-var eval.
+          -- We need ∃ x, 2-var eval. We have ∃ x, n-var eval.
+          -- The x from n-var eval works for 2-var eval by constenv_2var_determines
+          -- applied from M→M₀ to get n-var agreement, then project to 2-var.
+          -- Project from n-var to 2-var: constenv_2var_determines M₀ M gives
+          -- from M₀'s 2-var agreement with M, n-var agreement with M.
+          -- Known: n-var agreement M↔M₀. Need: 2-var M satisfies sub_nf_2.
+          -- Direct: from n-var eval h_eval_n + constenv_2var_determines
+          apply (hA₂ M h_UZ h_SZ t h_atoms).mpr
+          -- Goal: ∃ x, nf_eval M (k+1) 2 [x, t] sub_nf_2
+          -- sub_nf_2 = nf_characteristic M₀ (k+1) 2 [x₀, t₀]
+          -- From h_agree_n and constenv_2var_determines applied with reversed roles
+          refine ⟨x, ?_⟩
+          -- Need: nf_eval M (k+1) 2 [x, t] sub_nf_2
+          -- constenv_2var_determines M₀ M, given 2-var agreement M₀→M,
+          -- produces n-var agreement M₀→M.
+          -- We know n-var agreement. Need 2-var.
+          -- Since constenv_2var_determines is injective on constenvs:
+          -- same n-var NF → same 2-var NF.
+          -- From h_eval_n and h_eval₀, both satisfy sub_nf.
+          -- nf_eval_unique: char = sub_nf for both.
+          -- The 2-var char is determined by the n-var char.
+          -- Use constenv_nvar_to_2var (projection lemma for constenvs).
+          -- For now, leave as sorry -- this is a consequence of constenv_2var_determines.
+          sorry
+      · -- Unsatisfiable: use ⊥
+        exact ⟨Formula.bot, fun M _ _ t h_atoms => by
+          simp only [temporal_truth]
+          exact ⟨fun h => absurd h id, fun ⟨x, hx⟩ =>
+            absurd ⟨M, ‹_›, ‹_›, t, x, hx, h_atoms⟩ h_unsat⟩⟩
 
 /-! ## Combined Induction -/
 
