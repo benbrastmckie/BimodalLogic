@@ -270,231 +270,200 @@ On `Fin.cons x (fun _ => t)` environments, depth-k 2-var NF agreement
 determines depth-k (n+1)-var NF agreement. Key for the n >= 2 case
 of ExistPart. -/
 
-/-- Auxiliary lemma: on constenvs, (n+1)-var NF is determined by 2-var NF.
-    Proved by induction on k with n universally quantified. -/
-private theorem constenv_2var_determines_aux {sig : MonadicSignature}
+/-- Non-dependent env extension: appends a value t at position m+1.
+    Unlike `Fin.snoc` which is dependently typed, this returns `Fin (m+2) → α`. -/
+private def env_extend {α : Type*} {m : Nat} (env : Fin (m + 1) → α) (t : α) :
+    Fin (m + 2) → α :=
+  fun i => if h : i.val < m + 1 then env ⟨i.val, h⟩ else t
+
+private theorem env_extend_eq {α : Type*} {m : Nat} (env : Fin (m + 1) → α) (t : α)
+    (h_last : env (Fin.last m) = t) (i : Fin (m + 2)) :
+    let idx : Fin (m + 1) := if h : i.val < m + 1 then ⟨i.val, h⟩ else Fin.last m
+    env_extend env t i = env idx := by
+  simp only [env_extend]; split <;> [rfl; exact h_last.symm]
+
+/-- Atom agreement on env_extend envs follows from atom agreement on base envs. -/
+private theorem env_extend_atom_agree {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (N : OrderedMonadicStructure sig)
+    {m : Nat} (envM : Fin (m + 1) → M.carrier) (envN : Fin (m + 1) → N.carrier)
+    (t : M.carrier) (t' : N.carrier)
+    (h_last_M : envM (Fin.last m) = t) (h_last_N : envN (Fin.last m) = t')
+    (h_atom : ∀ (a : AtomKind sig (m + 1)), atom_eval M envM a ↔ atom_eval N envN a) :
+    ∀ (a : AtomKind sig (m + 2)),
+      atom_eval M (env_extend envM t) a ↔ atom_eval N (env_extend envN t') a := by
+  intro a
+  let idx (i : Fin (m + 2)) : Fin (m + 1) :=
+    if h : i.val < m + 1 then ⟨i.val, h⟩ else Fin.last m
+  have env_eq_M : ∀ i, env_extend envM t i = envM (idx i) :=
+    fun i => env_extend_eq envM t h_last_M i
+  have env_eq_N : ∀ i, env_extend envN t' i = envN (idx i) :=
+    fun i => env_extend_eq envN t' h_last_N i
+  cases a with
+  | pred p i =>
+    simp only [atom_eval, env_eq_M, env_eq_N]; exact h_atom (.pred p (idx i))
+  | order i j hne =>
+    simp only [atom_eval, env_eq_M, env_eq_N]
+    by_cases heq : idx i = idx j
+    · constructor <;> intro h_lt <;> exact absurd (heq ▸ h_lt) (lt_irrefl _)
+    · exact h_atom (.order (idx i) (idx j) heq)
+
+/-- **Duplicate-last cross-structure lemma**: if two envs agree at depth k on
+    all (m+1)-var NFs, and the last positions hold values t/t', then they
+    agree on all (m+2)-var NFs with the extended envs.
+
+    Uses `env_extend` (non-dependent) to avoid `Fin.snoc` type issues. -/
+private theorem dup_last_cross {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (N : OrderedMonadicStructure sig) :
-    ∀ (k n : Nat) (x : M.carrier) (t : M.carrier) (x' : N.carrier) (t' : N.carrier),
-    (∀ nf : NormalForm sig k 2,
-      nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
-      nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf) →
-    ∀ nf : NormalForm sig k (n + 1),
-      nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) nf ↔
-      nf_eval_nf N k (n + 1) (Fin.cons x' (fun _ => t')) nf := by
-  -- Strategy: constenv_nvar_to_2var gives (n+1)-var -> 2-var.
-  -- We need the reverse: 2-var -> (n+1)-var.
-  -- Since nf_eval is unique (nf_eval_unique), it suffices to show:
-  -- nf_char M k (n+1) constenvM = nf_char N k (n+1) constenvN
-  --
-  -- Key proof idea: apply constenv_nvar_to_2var on M and on N separately
-  -- (setting both structures to M, or both to N) to get:
-  -- nf_char M k (n+1) constenvM is the UNIQUE (n+1)-var NF whose
-  -- 2-var projection is nf_char M k 2 constenvM_at_2.
-  -- Similarly for N. Since 2-var chars match (from h_2var),
-  -- the (n+1)-var chars must match IF the projection is injective.
-  --
-  -- The projection IS injective on constenvs: if two (n+1)-var NFs
-  -- on constenvs project to the same 2-var NF, they must be equal
-  -- (because the nf_eval is unique). This follows from:
-  -- nf_char M k (n+1) env is uniquely determined -> if it projects to
-  -- the same 2-var char, it must be the same (n+1)-var char.
-  --
-  -- Formally: for any env = Fin.cons a (fun _ => b),
-  -- nf_char M k (n+1) env uniquely exists.
-  -- nf_char M k 2 env uniquely exists.
-  -- constenv_nvar_to_2var shows: nf_eval M k (n+1) env (char_{n+1}) ->
-  --   nf_eval M k 2 env (constenv_nvar_to_2var ... char_{n+1}) where the
-  --   2-var projection of char_{n+1} is char_2.
-  --
-  -- From h_2var: char_2_M = char_2_N (in the sense of agreement).
-  -- From constenv_nvar_to_2var (M, M): (n+1)-var agrees between
-  --   (M, constenvM) and (M, constenvM) trivially.
-  --
-  -- The right formalization: show both M and N satisfy the (n+1)-var
-  -- characteristic of N. The atom part works from 2-var atom agreement.
-  -- The quantifier part requires more work.
-  --
-  -- Let me try the direct approach: induction on k for atoms,
-  -- and for quantifiers use constenv_nvar_to_2var + hex_3 + ih.
-  -- Proof approach: induction on k. At k=0, atoms on constenvs at (n+1)-var
-  -- are determined by 2-var atoms. At k+1, quantifier conditions involve (n+2)-var
-  -- NFs on extended constenvs [y,x,t,...,t]. The 2-var quantifier transfer gives
-  -- 3-var existential matching. Lifting from 3-var to (n+2)-var requires a
-  -- generalized version for "prefix + constant tail" envs, or an adapted
-  -- nf_drop_last_cross reverse for constenvs.
-  -- Strategy for next dispatch: generalize this theorem to work with envs of the
-  -- form (prefix ++ const), where prefix is any fixed tuple. Then the k+1 case
-  -- uses the IH at depth k with prefix extended by y.
-  sorry
-    /-  -- Preserved proof sketch for next dispatch:
-    set target := nf_characteristic N (k + 1) (n + 1) (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N (k + 1) (n + 1) (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M (k + 1) (n + 1) (Fin.cons x (fun _ => t)) target by
-      exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
+    ∀ (k m : Nat) (envM : Fin (m + 1) → M.carrier) (envN : Fin (m + 1) → N.carrier)
+    (t : M.carrier) (t' : N.carrier)
+    (h_last_M : envM (Fin.last m) = t)
+    (h_last_N : envN (Fin.last m) = t')
+    (h_agree : ∀ nf : NormalForm sig k (m + 1),
+      nf_eval_nf M k (m + 1) envM nf ↔ nf_eval_nf N k (m + 1) envN nf),
+    ∀ nf : NormalForm sig k (m + 2),
+      nf_eval_nf M k (m + 2) (env_extend envM t) nf ↔
+      nf_eval_nf N k (m + 2) (env_extend envN t') nf := by
+  intro k
+  induction k with
+  | zero =>
+    intro m envM envN t t' h_last_M h_last_N h_agree nf
+    -- At depth 0, nf_eval_nf is about atoms. Use env_extend_atom_agree.
+    simp only [nf_eval_nf]
+    have h_atom := atom_agreement_from_nf M envM N envN h_agree
+    have h_ext_atom := env_extend_atom_agree M N envM envN t t' h_last_M h_last_N h_atom
+    constructor <;> intro hDir a
+    · exact (h_ext_atom a).symm.trans (hDir a)
+    · exact (h_ext_atom a).trans (hDir a)
+  | succ k ih =>
+    intro m envM envN t t' h_last_M h_last_N h_agree nf
+    -- Show M,env_extend envM t satisfies char NF of N,env_extend envN t'
+    set target_nf := nf_characteristic N (k + 1) (m + 2) (env_extend envN t')
+    have h_N_sat := nf_characteristic_satisfies N (k + 1) (m + 2) (env_extend envN t')
+    suffices h_M_sat : nf_eval_nf M (k + 1) (m + 2) (env_extend envM t) target_nf by
+      exact nf_agreement_from_shared_nf M _ N _ target_nf h_M_sat h_N_sat nf
     obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
-    -- 2-var atom agreement
-    have h_atom_2var := atom_agreement_from_nf M _ N _ h_2var
-    -- 2-var quantifier transfer
-    have h_2var_k : ∀ nf : NormalForm sig k 2,
-        nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
-        nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf :=
-      fun nf' => nf_agreement_monotone k (k + 1) 2 (by omega) M _ N _ h_2var nf'
-    -- 3-var existential transfer
-    have h_char_2var_eq : nf_characteristic M (k + 1) 2 (Fin.cons x (fun _ => t)) =
-        nf_characteristic N (k + 1) 2 (Fin.cons x' (fun _ => t')) :=
-      nf_eval_unique N (k + 1) 2 _ _ _
-        ((h_2var _).mp (nf_characteristic_satisfies M (k + 1) 2 _))
-        (nf_characteristic_satisfies N (k + 1) 2 _)
-    obtain ⟨_, hMq_2⟩ := nf_characteristic_satisfies M (k + 1) 2 (Fin.cons x (fun _ => t))
-    obtain ⟨_, hNq_2⟩ := h_char_2var_eq ▸
-      nf_characteristic_satisfies N (k + 1) 2 (Fin.cons x' (fun _ => t'))
-    have hex_3 : ∀ chi : NormalForm sig k 3,
-        (∃ y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) chi) ↔
-        (∃ y', nf_eval_nf N k 3 (Fin.cons y' (Fin.cons x' (fun _ => t'))) chi) :=
-      fun chi => (hMq_2 chi).trans (hNq_2 chi).symm
+    have h_atom := atom_agreement_from_nf M envM N envN h_agree
+    have h_ext_atom := env_extend_atom_agree M N envM envN t t' h_last_M h_last_N h_atom
+    -- Existential transfer from (m+1)-var agreement at depth k+1
+    have h_char_eq : nf_characteristic M (k + 1) (m + 1) envM =
+        nf_characteristic N (k + 1) (m + 1) envN :=
+      nf_eval_unique N (k + 1) (m + 1) _ _ _
+        ((h_agree _).mp (nf_characteristic_satisfies M (k + 1) (m + 1) _))
+        (nf_characteristic_satisfies N (k + 1) (m + 1) _)
+    obtain ⟨_, hMq⟩ := nf_characteristic_satisfies M (k + 1) (m + 1) envM
+    obtain ⟨_, hNq⟩ := h_char_eq ▸ nf_characteristic_satisfies N (k + 1) (m + 1) envN
+    have hex : ∀ chi : NormalForm sig k (m + 2),
+        (∃ z, nf_eval_nf M k (m + 2) (Fin.cons z envM) chi) ↔
+        (∃ z, nf_eval_nf N k (m + 2) (Fin.cons z envN) chi) :=
+      fun chi => (hMq chi).trans (hNq chi).symm
+    -- Key: Fin.cons z (env_extend envM t) = env_extend (Fin.cons z envM) t
+    have h_ext_cons_M : ∀ z : M.carrier,
+        Fin.cons z (env_extend envM t) = env_extend (Fin.cons z envM) t := by
+      intro z; funext ⟨i, hi⟩
+      cases i with
+      | zero => simp [env_extend, Fin.cons]
+      | succ i =>
+        show env_extend envM t ⟨i, by omega⟩ = env_extend (Fin.cons z envM) t ⟨i + 1, hi⟩
+        simp only [env_extend]; split <;> split <;> [rfl; omega; omega; rfl]
+    have h_ext_cons_N : ∀ z : N.carrier,
+        Fin.cons z (env_extend envN t') = env_extend (Fin.cons z envN) t' := by
+      intro z; funext ⟨i, hi⟩
+      cases i with
+      | zero => simp [env_extend, Fin.cons]
+      | succ i =>
+        show env_extend envN t' ⟨i, by omega⟩ = env_extend (Fin.cons z envN) t' ⟨i + 1, hi⟩
+        simp only [env_extend]; split <;> split <;> [rfl; omega; omega; rfl]
+    have h_last_ext_M : ∀ z : M.carrier,
+        (Fin.cons z envM : Fin (m + 2) → M.carrier) (Fin.last (m + 1)) = t := by
+      intro z; unfold Fin.cons Fin.last; simp; exact h_last_M
+    have h_last_ext_N : ∀ z : N.carrier,
+        (Fin.cons z envN : Fin (m + 2) → N.carrier) (Fin.last (m + 1)) = t' := by
+      intro z; unfold Fin.cons Fin.last; simp; exact h_last_N
     constructor
     · -- Atoms
-      intro a
-      cases a with
-      | pred p i =>
-        cases i using Fin.cases with
-        | zero => exact (h_atom_2var (.pred p 0)).trans (h_N_atoms (.pred p 0))
-        | succ j =>
-          simp only [atom_eval, Fin.cons_succ] at h_atom_2var h_N_atoms ⊢
-          exact (h_atom_2var (.pred p ⟨1, by omega⟩)).trans (h_N_atoms (.pred p (Fin.succ j)))
-      | order i j hne =>
-        cases i using Fin.cases with
-        | zero =>
-          cases j using Fin.cases with
-          | zero => exact absurd rfl hne
-          | succ j' =>
-            simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_atom_2var h_N_atoms ⊢
-            exact (h_atom_2var (.order 0 ⟨1, by omega⟩ (by simp))).trans
-              (h_N_atoms (.order 0 (Fin.succ j') (Fin.succ_ne_zero j' ∘ Eq.symm)))
-        | succ i' =>
-          cases j using Fin.cases with
-          | zero =>
-            simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h_atom_2var h_N_atoms ⊢
-            exact (h_atom_2var (.order ⟨1, by omega⟩ 0 (by simp))).trans
-              (h_N_atoms (.order (Fin.succ i') 0 (Fin.succ_ne_zero i')))
-          | succ j' =>
-            simp only [atom_eval, Fin.cons_succ] at h_N_atoms ⊢
-            exact h_N_atoms (.order (Fin.succ i') (Fin.succ j')
-              (fun heq => hne (Fin.succ_injective _ heq)))
-    · -- Quantifiers: transfer (n+2)-var existentials
+      intro a; exact (h_ext_atom a).trans (h_N_atoms a)
+    · -- Quantifiers: transfer (m+3)-var existentials via IH
+      -- Transfer existential between Fin.cons z (env_extend envM t) and
+      -- Fin.cons z' (env_extend envN t') using ih and h_ext_cons rewriting
+      have h_exist_transfer :
+          ∀ (sub_nf : NormalForm sig k (m + 2 + 1)),
+          (∃ z, nf_eval_nf M k (m + 2 + 1) (Fin.cons z (env_extend envM t)) sub_nf) ↔
+          (∃ z', nf_eval_nf N k (m + 2 + 1) (Fin.cons z' (env_extend envN t')) sub_nf) := by
+        intro sub_nf
+        constructor
+        · rintro ⟨z, hz⟩
+          -- hz : nf_eval at Fin.cons z (env_extend envM t), DON'T rewrite
+          set chi := nf_characteristic M k (m + 2) (Fin.cons z envM)
+          -- Transfer witness: need nf_eval M k (m+2) (Fin.cons z envM) chi
+          -- Key: Fin.cons z (env_extend envM t) agrees with env_extend (Fin.cons z envM) t
+          have h_cons_sat : nf_eval_nf M k (m + 2) (Fin.cons z envM) chi :=
+            nf_characteristic_satisfies ..
+          obtain ⟨z', hz'⟩ := (hex chi).mp ⟨z, h_cons_sat⟩
+          have h_base := nf_agreement_from_shared_nf M _ N _ chi h_cons_sat hz'
+          -- ih gives agreement at env_extend envs (arity (m+1)+2 = m+2+1)
+          -- h_ext_cons_M/N relate Fin.cons z (env_extend envM t) to env_extend (Fin.cons z envM) t
+          exact ⟨z', (h_ext_cons_N z') ▸ ih (m + 1) (Fin.cons z envM) (Fin.cons z' envN) t t'
+            (h_last_ext_M z) (h_last_ext_N z') h_base sub_nf |>.mp
+            ((h_ext_cons_M z) ▸ hz)⟩
+        · rintro ⟨z', hz'⟩
+          set chi := nf_characteristic N k (m + 2) (Fin.cons z' envN)
+          have h_cons_sat : nf_eval_nf N k (m + 2) (Fin.cons z' envN) chi :=
+            nf_characteristic_satisfies ..
+          obtain ⟨z, hz⟩ := (hex chi).mpr ⟨z', h_cons_sat⟩
+          have h_base := nf_agreement_from_shared_nf M _ N _ chi hz h_cons_sat
+          exact ⟨z, (h_ext_cons_M z) ▸ ih (m + 1) (Fin.cons z envM) (Fin.cons z' envN) t t'
+            (h_last_ext_M z) (h_last_ext_N z') h_base sub_nf |>.mpr
+            ((h_ext_cons_N z') ▸ hz')⟩
       intro sub_nf
       rw [← h_N_quant sub_nf]
-      constructor
-      · -- M -> N: find y' in N from y in M
-        rintro ⟨y, hy⟩
-        -- Get 3-var NF of [y, x, t] in M
-        set chi_3 := nf_characteristic M k 3 (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)))
-        -- Transfer to N
-        obtain ⟨y', hy'_3⟩ := (hex_3 chi_3).mp ⟨y, nf_characteristic_satisfies ..⟩
-        -- 3-var agreement between [y,x,t] in M and [y',x',t'] in N
-        have h_agree_3 := nf_agreement_from_shared_nf M _ N _ chi_3
-          (nf_characteristic_satisfies ..) hy'_3
-        -- Lift: from 3-var agreement to (n+2)-var agreement using IH at depth k
-        -- The IH at k: 2-var agreement on constenvs -> (m+1)-var agreement
-        -- Applied to the INNER constenv [x, t]:
-        -- h_2var_k gives 2-var agreement at depth k
-        -- ih k n gives (n+1)-var agreement at depth k from 2-var agreement
-        -- But we need (n+2)-var agreement on [y, x, t, ..., t] and [y', x', t', ..., t']
-        -- from 3-var agreement on [y, x, t] and [y', x', t'].
-        -- [y, x, t, ..., t] = Fin.cons y (constenv at n+1)
-        -- [y, x, t] = Fin.cons y (constenv at 2)
-        -- By ih: constenv_nvar_to_2var at depth k: (n+1)-var constenv agreement implies 2-var
-        -- So: agreement on [y, constenv] at 3-var (= 2+1) and at (n+2)-var (= (n+1)+1) are
-        -- related by: (n+2)-var implies 3-var. We need the reverse.
-        -- The reverse uses ih at depth k: from 2-var agreement on constenv at depth k,
-        -- get (m+1)-var agreement. But [y, constenv] is NOT a constenv.
-        --
-        -- KEY INSIGHT: The (n+2)-var eval of [y,x,t,...,t] is determined by the
-        -- 3-var eval of [y,x,t] by constenv_nvar_to_2var applied to the
-        -- "outer" constenv Fin.cons x (fun _ => t).
-        -- Specifically: Fin.cons y (constenv_at_(n+1)) at (n+2)-var agrees with
-        -- Fin.cons y (constenv_at_2) at 3-var when viewed through the lens of
-        -- nf_drop_last_cross (which projects [y,x,t,...,t] -> [y,x,t,...,t] at lower arity).
-        --
-        -- From h_agree_3: M and N agree on 3-var NFs at [y,x,t] and [y',x',t'].
-        -- IH at depth k applied to constenv [x,t] and [x',t'] gives:
-        --   from h_2var_k (2-var agreement at depth k), get (n+1)-var agreement
-        --   on constenvs at depth k.
-        -- Then nf_drop_last_cross REVERSE (from arity-3 to arity-(n+2)):
-        --   We DON'T have reverse nf_drop_last_cross in general.
-        --   But on constenvs, we can CONSTRUCT the (n+2)-var eval from the 3-var eval
-        --   using the IH at k for the quantifier step.
-        --
-        -- Actually, let me use a completely different approach:
-        -- From hy: nf_eval M k (n+2) [y,x,t,...,t] sub_nf
-        -- From ih at k applied to constenv [x,t]: 2-var agreement at depth k implies
-        --   (n+1)-var agreement on constenvs at depth k.
-        -- Use constenv_nvar_to_2var at depth k on [y,x,t,...,t] and [y',x',t',...,t']:
-        --   If they agree at (n+2)-var, they agree at 3-var.
-        -- We need the CONVERSE: 3-var agreement implies (n+2)-var.
-        -- This is constenv_2var_determines at depth k for the inner constenv.
-        -- The inner constenv is [x,t] at arity 2. The extended env is [y,x,t,...,t].
-        -- This is NOT constenv form. So ih at depth k doesn't directly apply.
-        --
-        -- FINAL APPROACH: prove (n+2)-var agreement between [y,x,t,...,t] in M
-        -- and [y',x',t',...,t'] in N directly, using:
-        -- 1. ih at depth k for atoms (already handled above in constenv case)
-        -- 2. For quantifier sub-step: from 3-var agreement h_agree_3,
-        --    extract quantifier transfer at 4-var (from 3-var),
-        --    and use ih recursively.
-        -- This is another induction on k, which is what we already have!
-        -- The issue is that the quantifier case at depth k requires
-        -- depth-(k-1) transfers on larger arities, all the way down to depth 0.
-        -- At depth 0, the atom case handles all arities.
-        -- So the induction on k DOES work, but we need to show that
-        -- 3-var agreement on [y,x,t] implies (n+2)-var agreement on [y,x,t,...,t]
-        -- at depth k. This follows from nf_drop_last_cross in reverse,
-        -- which holds on constenvs.
-        --
-        -- nf_drop_last_cross gives: (n+2)-var agreement -> (n+1)-var agreement
-        -- (by projecting). The reverse needs: (n+1)-var agreement -> (n+2)-var.
-        -- On constenvs (where the last position is redundant), this holds
-        -- by EXACTLY the ih at depth k.
-        --
-        -- Wait, ih k n' gives: from 2-var constenv agreement at depth k,
-        -- (n'+1)-var constenv agreement at depth k. But the envs here are
-        -- [y, x, t, ..., t] and [y', x', t', ..., t'], which are NOT constenvs.
-        --
-        -- I think the correct proof requires a GENERALIZED version of the theorem
-        -- for "prefix + constant" envs. But that's too complex for this dispatch.
-        -- Let me use sorry and document this as a sub-sorry for next dispatch.
-        sorry
-      · -- N -> M: symmetric
-        sorry
-    -/
+      exact h_exist_transfer sub_nf
 
-/-- On `Fin.cons x (fun _ => t)` envs, depth-k 2-var NF agreement
-    determines depth-k (n+1)-var NF agreement.
+/-- On constenvs, `env_extend (Fin.cons x (fun _ : Fin m => t)) t`
+    equals `Fin.cons x (fun _ : Fin (m+1) => t)`. -/
+private theorem constenv_extend_eq {α : Type*} (x t : α) (m : Nat) :
+    env_extend (Fin.cons x (fun _ : Fin m => t)) t =
+    (Fin.cons x (fun (_ : Fin (m + 1)) => t)) := by
+  funext ⟨i, hi⟩; simp only [env_extend]
+  cases i with
+  | zero => simp [Fin.cons]
+  | succ i => simp only [Fin.cons]; split <;> rfl
 
-    Proved by induction on k with n universally quantified.
+/-- Auxiliary lemma: on constenvs, (n+1)-var NF is determined by 2-var NF.
+    Uses `dup_last_cross` iteratively: starting from 2-var constenv agreement,
+    repeatedly add a duplicate t-position to lift to (n+1)-var.
 
-    At depth 0 (atoms): positions >= 2 are all t, so atoms at those
-    positions are equivalent to atoms at position 1.
-
-    At depth k+1 (atoms + quantifiers): atoms as above. For quantifier
-    conditions, nf_extend_fwd/bwd give depth-k (n+2)-var witnesses at
-    envs of the form [y, x, t, ..., t]. The IH at depth k handles these
-    extended envs because the "small" env for extension is [y, x, t]
-    (3-var), and we can further use nf_extend_fwd from the 2-var agreement
-    to establish the 3-var agreement needed for the IH. -/
-theorem constenv_2var_determines {sig : MonadicSignature}
+    The constenv `Fin.cons x (fun _ => t)` has `envM (Fin.last m) = t` for
+    all m >= 1, so `dup_last_cross` applies at each step. -/
+private theorem constenv_2var_determines_aux {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (N : OrderedMonadicStructure sig)
-    (k n : Nat)
+    (k : Nat)
     (x : M.carrier) (t : M.carrier) (x' : N.carrier) (t' : N.carrier)
     (h_2var : ∀ nf : NormalForm sig k 2,
       nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf)
-    (nf : NormalForm sig k (n + 1)) :
-    nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) nf ↔
-    nf_eval_nf N k (n + 1) (Fin.cons x' (fun _ => t')) nf :=
-  constenv_2var_determines_aux M N k n x t x' t' h_2var nf
+    (n : Nat) :
+    ∀ nf : NormalForm sig k (n + 2),
+      nf_eval_nf M k (n + 2) (Fin.cons x (fun _ : Fin (n + 1) => t)) nf ↔
+      nf_eval_nf N k (n + 2) (Fin.cons x' (fun _ : Fin (n + 1) => t')) nf := by
+  induction n with
+  | zero => exact h_2var
+  | succ n' ih =>
+    -- ih gives (n'+2)-var agreement on constenvs.
+    -- Apply dup_last_cross to get (n'+3)-var.
+    have h_last_M : (Fin.cons x (fun _ : Fin (n' + 1) => t) :
+        Fin (n' + 2) → M.carrier) (Fin.last (n' + 1)) = t := by
+      unfold Fin.cons Fin.last; simp
+    have h_last_N : (Fin.cons x' (fun _ : Fin (n' + 1) => t') :
+        Fin (n' + 2) → N.carrier) (Fin.last (n' + 1)) = t' := by
+      unfold Fin.cons Fin.last; simp
+    intro nf
+    have h_dup := dup_last_cross M N k (n' + 1)
+      (Fin.cons x (fun _ : Fin (n' + 1) => t))
+      (Fin.cons x' (fun _ : Fin (n' + 1) => t'))
+      t t' h_last_M h_last_N ih nf
+    rwa [constenv_extend_eq, constenv_extend_eq] at h_dup
 
 /-- On constenvs, `Fin.castSucc` projection preserves the constenv structure:
     `(Fin.cons x (fun _ : Fin (m+1) => t)) ∘ Fin.castSucc = Fin.cons x (fun _ : Fin m => t)` -/
@@ -645,5 +614,33 @@ theorem constenv_nvar_to_2var {sig : MonadicSignature}
       (Fin.cons x' (fun _ : Fin (n' + 2) => t'))
       h_nvar nf
     rwa [constenv_castSucc, constenv_castSucc] at h_drop
+
+/-- On `Fin.cons x (fun _ => t)` envs, depth-k 2-var NF agreement
+    determines depth-k (n+1)-var NF agreement.
+
+    For n >= 1, delegates to `constenv_2var_determines_aux` which uses
+    `dup_last_cross` iteratively. For n = 0 (1-var from 2-var), uses
+    `nf_drop_last_cross` + `constenv_castSucc`. -/
+theorem constenv_2var_determines {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig)
+    (k n : Nat)
+    (x : M.carrier) (t : M.carrier) (x' : N.carrier) (t' : N.carrier)
+    (h_2var : ∀ nf : NormalForm sig k 2,
+      nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) nf ↔
+      nf_eval_nf N k 2 (Fin.cons x' (fun _ => t')) nf)
+    (nf : NormalForm sig k (n + 1)) :
+    nf_eval_nf M k (n + 1) (Fin.cons x (fun _ => t)) nf ↔
+    nf_eval_nf N k (n + 1) (Fin.cons x' (fun _ => t')) nf := by
+  cases n with
+  | zero =>
+    -- 1-var from 2-var: project via nf_drop_last_cross
+    have h_proj := nf_drop_last_cross M N k 1
+      (Fin.cons x (fun _ : Fin 1 => t))
+      (Fin.cons x' (fun _ : Fin 1 => t'))
+      h_2var nf
+    rwa [constenv_castSucc x t 0, constenv_castSucc x' t' 0] at h_proj
+  | succ n' =>
+    exact constenv_2var_determines_aux M N k x t x' t' h_2var n' nf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

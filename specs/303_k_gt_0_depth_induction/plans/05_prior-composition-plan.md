@@ -87,7 +87,7 @@ On Prior structures, this gap can be bridged because Prior-UZ/SZ guarantee witne
 
 Phases within the same wave can execute in parallel.
 
-### Phase 1: Prior Composition Theorem -- Statement and Base Case [NOT STARTED]
+### Phase 1: Prior Composition Theorem -- Statement and Base Case [IN PROGRESS]
 
 **Goal**: Define and prove the Prior composition theorem for K=0 (base case) in a new file `KampComposition.lean`. State the full theorem for all K.
 
