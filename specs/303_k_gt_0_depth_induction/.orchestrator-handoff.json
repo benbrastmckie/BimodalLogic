@@ -1,62 +1,56 @@
 {
   "status": "partial",
-  "summary": "Deep analysis of sorry sites confirmed plan v8 approach is correct and necessary. No code changes yet. Established that (1) 1-var NF transfer is provably FALSE even on Prior structures, (2) current GeneralExistPart top/bot formulas carry no information, (3) GeneralExistPartIndiv with actual temporal formulas via zone decomposition is the ONLY viable path. The sorry at KampBypass.lean:636,688 requires enriching the Until/Since formulas with quantifier conjunctions built from GeneralExistPartIndiv.",
+  "summary": "Defined GeneralExistPartIndiv with individual 1-var NF parameters (env_nfs : Fin r -> NormalForm sig (k+1) 1). Type signature compiles. Backward-compatible GeneralExistPart and generalExistPart_all are sorry-free. Zone decomposition proofs for generalExistPartIndiv_zero and generalExistPartIndiv_succ are sorry (require Rabinovich Prop 3.5 construction).",
   "phases_completed": 0,
   "phases_total": 5,
+  "blockers": [],
+  "continuation_context": {
+    "is_successor": true,
+    "phase_in_progress": 1,
+    "implementation_started": true,
+    "type_signature_done": true,
+    "base_case_sorry": true,
+    "inductive_step_sorry": true,
+    "backward_compat_sorry_free": true,
+    "next_step": "Implement zone decomposition for generalExistPartIndiv_zero (Rabinovich Prop 3.5): classify y's position relative to environment, build temporal formula per zone, prove iff"
+  },
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-dispatch2-handoff.md",
+  "next_action_hint": "Implement generalExistPartIndiv_zero proof via zone decomposition at depth 0. The formula A for each ssn must encode y's zone position relative to environment elements using nested Until/Since. Existing infrastructure: KampForward.lean (enriched_vecEA2_until/since), VecEADecomp.lean (zone classification), ZoneBridge.lean (zone <-> temporal bridge).",
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean"
+  ],
   "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
+      "line": 143,
+      "statement": "theorem generalExistPartIndiv_zero : GeneralExistPartIndiv atomMap 0",
+      "assumption": "Existential at depth 0 with individual 1-var NF preconditions has a temporal characterization",
+      "why_deferred": "Requires zone decomposition construction (Rabinovich Prop 3.5) to build actual temporal formulas instead of top/bot. Classical satisfiability cannot work with individual 1-var NFs (counterexample: Z with [0,2] vs [0,1])",
+      "next_dispatch": "Build zone decomposition: classify y's position relative to env elements, construct nested Until/Since formula per zone, prove bidirectional"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean",
+      "line": 171,
+      "statement": "theorem generalExistPartIndiv_succ : GeneralExistPartIndiv atomMap (k + 1)",
+      "assumption": "Existential at depth k+1 decomposes into atom part (CharPart(k+1)) + quantifier part (GeneralExistPartIndiv(k))",
+      "why_deferred": "Depends on generalExistPartIndiv_zero being proved first. Uses same zone decomposition pattern plus quantifier conjunction from ih_gen_exist_k",
+      "next_dispatch": "Implement after generalExistPartIndiv_zero is sorry-free"
+    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 636,
       "statement": "existPart_succ_n1_bypass Until zone quantifier part",
-      "assumption": "Assumes 3-var existentials can be transferred from 1-var NF agreements alone",
-      "why_deferred": "1-var NF transfer is provably false. Requires GeneralExistPartIndiv with actual temporal formulas (not top/bot) via zone decomposition. Current GeneralExistPart produces top/bot which carries no information when embedded in enriched formula.",
-      "next_dispatch": "Implement GeneralExistPartIndiv definition with 1-var NF parameters. Prove base case (k=0) using zone decomposition. Prove inductive step. Enrich Until formula with quantifier conjunction. Close sorry."
+      "assumption": "Individual 1-var NF agreement insufficient for 2-var transfer without enriched formula",
+      "why_deferred": "Requires GeneralExistPartIndiv at r=2 with enriched Until formula (Phase 4)",
+      "next_dispatch": "Close after Phases 1-3 complete"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 688,
       "statement": "existPart_succ_n1_bypass Since zone quantifier part",
       "assumption": "Mirror of line 636",
-      "why_deferred": "Same root cause as line 636. Since zone is the mirror case.",
-      "next_dispatch": "Closes simultaneously with line 636 via mirrored GeneralExistPartIndiv application."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 542,
-      "statement": "Dead code, non-goal",
-      "assumption": "Not on critical path",
-      "why_deferred": "Dead code not imported by completeness chain",
-      "next_dispatch": "N/A"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 651,
-      "statement": "Dead code, non-goal",
-      "assumption": "Not on critical path",
-      "why_deferred": "Dead code not imported by completeness chain",
-      "next_dispatch": "N/A"
+      "why_deferred": "Same as line 636 (Since mirror)",
+      "next_dispatch": "Close after Phases 1-3 complete"
     }
-  ],
-  "blockers": [
-    "GeneralExistPartIndiv with actual temporal formulas (not top/bot) via zone decomposition must be implemented before the sorry can be closed. The existing GeneralExistPart classical satisfiability proof produces Formula.top/Formula.bot which carry no information. Estimated 400-800 lines of new code across GeneralExistPart.lean and KampBypass.lean."
-  ],
-  "continuation_context": {
-    "is_successor": false,
-    "phase_in_progress": 1,
-    "analysis_complete": true,
-    "key_findings": [
-      "1-var NF transfer FALSE on Prior structures (Z counterexample: [0,2] vs [0,1] with uniform predicate)",
-      "Current GeneralExistPart top/bot carries NO information for formula enrichment",
-      "GeneralExistPartIndiv with individual 1-var NF parameters and zone decomposition is REQUIRED",
-      "Depth-0 zone infrastructure exists in KampForward.lean/VecEADecomp.lean/ZoneBridge.lean",
-      "The eq-zone case (KampBypass.lean:705-844) provides the template for quantifier conjunction handling"
-    ],
-    "implementation_path": "Define GeneralExistPartIndiv -> prove k=0 base case -> prove k+1 step -> enrich Until/Since formulas -> close sorry"
-  },
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-1-analysis-handoff.md",
-  "next_action_hint": "Implement GeneralExistPartIndiv in GeneralExistPart.lean. Start with r=2 specialization. Use existing depth-0 zone infrastructure from KampForward.lean.",
-  "artifacts": [
-    "specs/303_k_gt_0_depth_induction/handoffs/phase-1-analysis-handoff.md",
-    "specs/303_k_gt_0_depth_induction/plans/08_generalexistpart-redesign-plan.md"
   ]
 }
