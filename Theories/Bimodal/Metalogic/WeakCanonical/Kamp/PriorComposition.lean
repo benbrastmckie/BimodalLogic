@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition
+import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
 # Prior-Specific Composition for Non-Constant Environments
@@ -48,6 +49,8 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
+open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula
+  nf_depth0_char_formula_correct)
 
 /-! ## Atom Agreement for Non-Constant 2-var Environments -/
 
