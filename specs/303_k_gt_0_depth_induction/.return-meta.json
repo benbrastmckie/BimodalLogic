@@ -1,12 +1,41 @@
 {
-  "status": "researched",
-  "task_number": 303,
-  "session_id": "sess_1781658866_2e6761",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/reports/02_depth-induction-resolution.md",
-      "type": "research",
-      "summary": "Deep analysis of k>0 depth induction blocker. Confirms root cause (constant-parent ExistPart vs non-constant env [y,x,t]). Recommends Path A (strengthen ExistPart to ExistPart_r with non-constant parent NF types). Dead code confirmed at NfCharFormula.lean:542. Estimated 400-600 lines for resolution."
+      "type": "plan",
+      "path": "specs/303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md",
+      "summary": "Implementation plan for ExistPart_r generalization to close k>0 depth induction sorries blocking completeness_discrete"
+    }
+  ],
+  "next_steps": "Run /implement 303 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1781661075_5cab61",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  },
+  "plan_metadata": {
+    "phases": 5,
+    "total_effort_hours": 8,
+    "complexity": "complex",
+    "research_integrated": true,
+    "plan_version": 4,
+    "dependency_waves": [[1], [2], [3], [4], [5]],
+    "reports_integrated": [
+      {
+        "path": "reports/02_depth-induction-resolution.md",
+        "integrated_in_plan_version": 4,
+        "integrated_date": "2026-06-16"
+      }
+    ]
+  },
+  "memory_candidates": [
+    {
+      "content": "When a formal proof's ExistPart/composition theorem uses constant-parent environments (fun _ => t) but the proof obligation involves non-constant environments [x, t], the solution is to parameterize ExistPart by parent NF types (ExistPart_r with r parent NFs). This is the Lean analog of GHR94 Section 12.8's decomposition formulas. The key insight: 1-var NF agreement at points x and t separately does NOT determine the 2-var NF at [x, t] -- a genuine information gap that no amount of transfer lemma chaining can bridge within the constant-parent constraint. The fix is architectural (change the definition), not tactical (work within the existing definition).",
+      "category": "INSIGHT",
+      "source_artifact": "specs/303_k_gt_0_depth_induction/plans/04_existpart-r-plan.md",
+      "confidence": 0.9,
+      "suggested_keywords": ["ExistPart", "constant-parent", "NF-agreement", "composition", "GHR94", "mutual-induction"]
     }
   ]
 }
