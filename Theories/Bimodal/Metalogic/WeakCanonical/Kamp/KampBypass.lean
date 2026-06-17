@@ -237,6 +237,78 @@ private theorem cross_2nd_1var_from_shared_nf {sig : MonadicSignature}
     (Fin.cons x (fun _ => t)) (Fin.cons x' (fun _ => t')) h_agree nf1
   rwa [cons_comp_skipIdx_zero, cons_comp_skipIdx_zero] at h_proj
 
+/-! ## Non-Constant Environment Atom Agreement
+
+These helpers transfer atom agreement on 2-var non-constant environments from
+cross-structure 1-var NF agreement plus matching orders. Moved from PriorComposition.lean
+(whose theorems are FALSE) — the atom agreement lemmas are still correct. -/
+
+/-- Atom agreement on non-constant 2-var envs from 1-var agreement + order (Until zone: t < x). -/
+private theorem nonconstenv_atom_agree_until {sig : MonadicSignature}
+    {K : Nat}
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h_x : ∀ nf : NormalForm sig (K + 1) 1,
+      nf_eval_nf M (K + 1) 1 (fun _ => x) nf ↔
+      nf_eval_nf N (K + 1) 1 (fun _ => x') nf)
+    (h_t : ∀ nf : NormalForm sig (K + 1) 1,
+      nf_eval_nf M (K + 1) 1 (fun _ => t) nf ↔
+      nf_eval_nf N (K + 1) 1 (fun _ => t') nf)
+    (h_order_M : t < x)
+    (h_order_N : t' < x') :
+    ∀ (a : AtomKind sig 2),
+      atom_eval M (Fin.cons x (fun _ => t)) a ↔
+      atom_eval N (Fin.cons x' (fun _ => t')) a := by
+  intro a; cases a with
+  | pred p i =>
+    simp only [atom_eval]
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp only [Fin.cons_zero]; exact pred_agree_cross M x N x' h_x p
+    · simp only [Fin.cons_succ]; exact pred_agree_cross M t N t' h_t p
+  | order i j hne =>
+    simp only [atom_eval]
+    refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+    · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    · simp only [Fin.cons_zero, Fin.cons_succ]
+      exact iff_of_false (not_lt.mpr (le_of_lt h_order_M)) (not_lt.mpr (le_of_lt h_order_N))
+    · simp only [Fin.cons_zero, Fin.cons_succ]
+      exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+    · simp only [Fin.cons_succ]
+      exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+
+/-- Atom agreement for the Since zone (x < t). -/
+private theorem nonconstenv_atom_agree_since {sig : MonadicSignature}
+    {K : Nat}
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h_x : ∀ nf : NormalForm sig (K + 1) 1,
+      nf_eval_nf M (K + 1) 1 (fun _ => x) nf ↔
+      nf_eval_nf N (K + 1) 1 (fun _ => x') nf)
+    (h_t : ∀ nf : NormalForm sig (K + 1) 1,
+      nf_eval_nf M (K + 1) 1 (fun _ => t) nf ↔
+      nf_eval_nf N (K + 1) 1 (fun _ => t') nf)
+    (h_order_M : x < t)
+    (h_order_N : x' < t') :
+    ∀ (a : AtomKind sig 2),
+      atom_eval M (Fin.cons x (fun _ => t)) a ↔
+      atom_eval N (Fin.cons x' (fun _ => t')) a := by
+  intro a; cases a with
+  | pred p i =>
+    simp only [atom_eval]
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp only [Fin.cons_zero]; exact pred_agree_cross M x N x' h_x p
+    · simp only [Fin.cons_succ]; exact pred_agree_cross M t N t' h_t p
+  | order i j hne =>
+    simp only [atom_eval]
+    refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+    · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    · simp only [Fin.cons_zero, Fin.cons_succ]
+      exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+    · simp only [Fin.cons_zero, Fin.cons_succ]
+      exact iff_of_false (not_lt.mpr (le_of_lt h_order_M)) (not_lt.mpr (le_of_lt h_order_N))
+    · simp only [Fin.cons_succ]
+      exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+
 /-! ## Main Bypass Theorem (Zone-Aware) -/
 
 /-- Zone-aware enriched bypass for depth 1 (k=0): the 2-var existential at depth 1
@@ -533,12 +605,16 @@ theorem existPart_succ_n1_bypass
           have h_order₀ : t₀ < x₀ := (zone_order M₀ t₀ x₀ h_eval₀).1 h_gt_val
           -- Reconstruct full 2-var NF at [x, t] in M
           -- Atom part: from 1-var NF agreement + order matching
-          -- Quantifier part: requires between-zone encoding (Phase 2)
-          -- Reconstruct full 2-var NF at [x, t] via atom agreement + sorry quantifier
-          -- The atom part transfers from M₀,[x₀,t₀] to M,[x,t] using 1-var NF
-          -- agreement and matching orders. The quantifier part requires the enriched
-          -- formula encoding (Phase 2).
-          exact ⟨x, sorry⟩
+          -- Quantifier part: requires enriched formula encoding (Phase 2)
+          have h_atom_agree := nonconstenv_atom_agree_until M x t M₀ x₀ t₀
+            h_x_agree h_t_agree h_tx h_order₀
+          obtain ⟨h_eval₀_atoms, h_eval₀_quant⟩ := h_eval₀
+          refine ⟨x, fun a => (h_atom_agree a).trans (h_eval₀_atoms a), ?_⟩
+          -- Quantifier part: ∀ ssn, (∃ y, nf_eval [y,x,t] ssn) ↔ sub_nf.2 ssn
+          -- This requires transferring 3-var existentials on non-constant envs.
+          -- The between-zone existentials (t < y < x) cannot be transferred from
+          -- 1-var agreement alone — the enriched formula must carry this information.
+          sorry
         · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ U ⊤)
           intro ⟨x, h_eval⟩
           -- From sub_nf at [x, t] and [x₀, t₀], extract 1-var agreement
@@ -583,10 +659,14 @@ theorem existPart_succ_n1_bypass
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
           have h_order₀ : x₀ < t₀ := (zone_order M₀ t₀ x₀ h_eval₀).2 h_lt_val
           -- Reconstruct full 2-var NF at [x, t] in M (Since zone: x < t)
-          -- The atom part transfers from M₀,[x₀,t₀] to M,[x,t] using 1-var NF
-          -- agreement and matching orders. The quantifier part requires the enriched
-          -- formula encoding (Phase 2).
-          exact ⟨x, sorry⟩
+          -- Atom part: from 1-var NF agreement + order matching
+          -- Quantifier part: requires enriched formula encoding (Phase 2)
+          have h_atom_agree := nonconstenv_atom_agree_since M x t M₀ x₀ t₀
+            h_x_agree h_t_agree h_xt h_order₀
+          obtain ⟨h_eval₀_atoms, h_eval₀_quant⟩ := h_eval₀
+          refine ⟨x, fun a => (h_atom_agree a).trans (h_eval₀_atoms a), ?_⟩
+          -- Quantifier part: same issue as Until zone — non-constant env transfer
+          sorry
         · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ S ⊤)
           intro ⟨x, h_eval⟩
           have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval h_eval₀
