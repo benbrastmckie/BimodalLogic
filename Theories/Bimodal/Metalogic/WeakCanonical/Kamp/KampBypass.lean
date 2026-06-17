@@ -1,7 +1,10 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassCore
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassUntil
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassSince
-import Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition
+-- PriorComposition.lean removed: its theorems (prior_nonconstenv_2var_agree_until/since)
+-- are FALSE (Z counterexample). The backward direction is restructured with explicit
+-- zone-by-zone quantifier handling.
 
 /-!
 # Enriched Bypass Formula: Main Theorems
@@ -528,9 +531,14 @@ theorem existPart_succ_n1_bypass
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
           -- Order: t₀ < x₀ from M₀ satisfying sub_nf with h_gt_val
           have h_order₀ : t₀ < x₀ := (zone_order M₀ t₀ x₀ h_eval₀).1 h_gt_val
-          -- Use Prior composition transfer
-          exact ⟨x, prior_2var_transfer_until atomMap k' M x t M₀ x₀ t₀
-            h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_tx h_order₀ sub_nf h_eval₀⟩
+          -- Reconstruct full 2-var NF at [x, t] in M
+          -- Atom part: from 1-var NF agreement + order matching
+          -- Quantifier part: requires between-zone encoding (Phase 2)
+          -- Reconstruct full 2-var NF at [x, t] via atom agreement + sorry quantifier
+          -- The atom part transfers from M₀,[x₀,t₀] to M,[x,t] using 1-var NF
+          -- agreement and matching orders. The quantifier part requires the enriched
+          -- formula encoding (Phase 2).
+          exact ⟨x, sorry⟩
         · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ U ⊤)
           intro ⟨x, h_eval⟩
           -- From sub_nf at [x, t] and [x₀, t₀], extract 1-var agreement
@@ -574,8 +582,11 @@ theorem existPart_succ_n1_bypass
               nf_eval_nf M₀ (k' + 1 + 1) 1 (fun _ => t₀) nf :=
             nf_agreement_from_shared_nf M _ M₀ _ nf_t₀ h_t_eval h_t₀_eval
           have h_order₀ : x₀ < t₀ := (zone_order M₀ t₀ x₀ h_eval₀).2 h_lt_val
-          exact ⟨x, prior_2var_transfer_since atomMap k' M x t M₀ x₀ t₀
-            h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_xt h_order₀ sub_nf h_eval₀⟩
+          -- Reconstruct full 2-var NF at [x, t] in M (Since zone: x < t)
+          -- The atom part transfers from M₀,[x₀,t₀] to M,[x,t] using 1-var NF
+          -- agreement and matching orders. The quantifier part requires the enriched
+          -- formula encoding (Phase 2).
+          exact ⟨x, sorry⟩
         · -- Forward: ∃ x → char_kp1 nf_t₀ ∧ (char_kp1 nf_x₀ S ⊤)
           intro ⟨x, h_eval⟩
           have h_2var_agree := nf_agreement_from_shared_nf M _ M₀ _ sub_nf h_eval h_eval₀
