@@ -8,11 +8,19 @@
   "requires_user_review": false,
   "sorry_inventory": [
     {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "line": 329,
+      "statement": "constenv_2var_determines_aux (k+1 case)",
+      "assumption": "From 2-var constenv agreement at depth k+1, derive (n+1)-var constenv agreement",
+      "why_deferred": "Extended envs [y,x,t,...,t] in quantifier case are NOT constenvs. Needs generalized prefix + constant tail theorem.",
+      "next_dispatch": "Generalize to prefix + constant tail envs"
+    },
+    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
       "line": 356,
       "statement": "existPart_succ_n1_bypass Until backward (k>0)",
       "assumption": "Core depth-gap problem",
-      "why_deferred": "Requires Prior composition or enriched formula",
+      "why_deferred": "Requires Prior composition theorem",
       "next_dispatch": "Plan v5 Phases 1-3"
     },
     {
@@ -24,31 +32,31 @@
       "next_dispatch": "Mirror Until proof"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "line": 298,
-      "statement": "constenv_2var_determines",
-      "assumption": "2-var -> n-var on constenvs",
-      "why_deferred": "Induction on k with generalized prefix",
-      "next_dispatch": "Prove by induction"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_2var_exist_formula_prior backward depth k+1 (dead code)",
+      "assumption": "Dead code",
+      "why_deferred": "Dead code",
+      "next_dispatch": "Ignore"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "line": 321,
-      "statement": "constenv_nvar_to_2var",
-      "assumption": "(n+2)-var -> 2-var on constenvs",
-      "why_deferred": "Iterate nf_drop_last",
-      "next_dispatch": "Prove via nf_drop_last"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "sorry sorry wiring (downstream)",
+      "assumption": "Downstream dependency",
+      "why_deferred": "Downstream",
+      "next_dispatch": "Phase 5"
     }
   ],
   "verification": {
-    "sorry_count": 6,
+    "sorry_count": 5,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
   "memory_candidates": [
-    "On constant-parent environments Fin.cons x (fun _ => t), n-var NF agreement is determined by 2-var NF agreement (constenv_2var_determines). The reverse (constenv_nvar_to_2var) requires input arity >= 2 (n+2), since 1-var to 2-var is upward composition, not projection.",
-    "The constenv castSucc projection identity: (Fin.cons x (fun _ => t)) compose Fin.castSucc = Fin.cons x (fun _ => t) at reduced arity. Proof: cases i; zero => rfl; succ => rfl.",
-    "For existPart_succ n>=2: use constenv_2var_determines for mp direction and constenv_nvar_to_2var for mpr direction, with M0 witness providing the 2-var NF sub_nf_2 = nf_characteristic M0 (k+1) 2 [x0, t0]."
+    "nf_drop_last_cross: cross-structure version of nf_drop_last. If M,envM and N,envN agree on all depth-k (n+1)-var NFs, then M,envM compose castSucc and N,envN compose castSucc agree on all depth-k n-var NFs. Proved by induction on k mirroring nf_drop_last. The k=0 case uses atom_agreement_from_nf + castSucc atom embedding. The k+1 case uses fin_cons_castSucc_comm to rewrite Fin.cons y (env compose castSucc) = (Fin.cons y env) compose castSucc, then applies the IH.",
+    "constenv_nvar_to_2var proof structure: iterate nf_drop_last_cross via Nat induction on n. At each step, apply nf_drop_last_cross to constenv at arity (n'+3), then rewrite via constenv_castSucc to get constenv at arity (n'+2). Clean 4-line proof.",
+    "constenv_2var_determines blocker: the k+1 quantifier case requires showing (n+2)-var agreement on [y,x,t,...,t] envs from 3-var agreement on [y,x,t]. These extended envs have prefix [y,x] and constant tail t, but are NOT of the form Fin.cons a (fun _ => b). The fix is to generalize the theorem to handle envs with arbitrary prefix length p: from (p+1)-var agreement on [prefix, t, ..., t] envs, derive (p+n)-var agreement."
   ]
 }
