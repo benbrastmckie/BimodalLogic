@@ -128,6 +128,7 @@ next_project_number: 305
   - [303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md]
   - [303_k_gt_0_depth_induction/plans/16_strong-d-induction-plan.md]
   - [303_k_gt_0_depth_induction/plans/17_reconstruction-induction-plan.md]
+  - [303_k_gt_0_depth_induction/plans/18_nvar-transfer-plan.md]
 
 **Description**: Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.
 
