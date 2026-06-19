@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Phase 7 completed: replaced simple induction K with Nat.strong_induction_on K in both prior_nonconstenv_2var_agree_until and prior_nonconstenv_2var_agree_since. Strong IH (∀ m < K, theorem at depth m+2) is now available at both sorry positions. Sorry count reduced from 4 to 2 (strong induction unifies K=0 and K=succ cases).",
+  "summary": "Phase 8 attempted: deep analysis revealed zone-3 existential transfer requires nested depth-arity induction with Prior-UZ/SZ — fundamentally more complex than anticipated. Added documentation section to PriorComposition.lean explaining proof strategy and key obstacle. Sorry count unchanged at 2 (critical path). Build passes.",
   "phases_completed": 7,
   "phases_total": 9,
   "sorry_inventory": [
@@ -9,35 +9,37 @@
       "line": 542,
       "statement": "theorem nf_exist_formula_correct (depth k+1 backward)",
       "assumption": "Prior composition needed for backward direction at depth k+1",
-      "why_deferred": "Not on critical path. Separate from completeness chain. Predates Phase 6.",
-      "next_dispatch": "Low priority. Can be resolved once PriorComposition sorry are closed."
+      "why_deferred": "Not on critical path. Separate from completeness chain.",
+      "next_dispatch": "Low priority. Resolve after PriorComposition."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
       "line": 657,
       "statement": "theorem nf_2var_exist_formula_prior (dead code k+2 branch)",
       "assumption": "Would need existPart_succ_n1_bypass ih_char, ih_exist, ih_all_char",
-      "why_deferred": "DEAD CODE. Function is deprecated; no longer called by main chain.",
-      "next_dispatch": "Can be deleted or left as-is. No impact on completeness."
+      "why_deferred": "DEAD CODE. Not called by main chain.",
+      "next_dispatch": "Can be deleted."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 264,
-      "statement": "prior_nonconstenv_2var_agree_until: quantifier part (zone-3 transfer)",
+      "line": 285,
+      "statement": "prior_nonconstenv_2var_agree_until: zone-3 quantifier transfer",
       "assumption": "∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf ↔ ∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf",
-      "why_deferred": "Phase 7 only restructures induction scaffolding; zone-3 argument is Phase 8",
-      "next_dispatch": "Phase 8: implement zone-3 witness construction using Prior-UZ/SZ + ih_strong + char_fn"
+      "why_deferred": "Requires nested depth-arity induction with Prior-UZ/SZ witness construction. The quantifier part at depth K+1 needs depth-K (n+1)-var transfer which recurses to depth 0. Nat.strong_induction_on introduces K✝ vs K variable mismatch preventing external helper theorems from being applied.",
+      "next_dispatch": "Phase 8 retry: (1) restructure to define helper INSIDE strong induction body to avoid K✝/K mismatch, (2) implement Prior-UZ witness placement using char_fn + cross_extend_bwd_1var from h_t and h_x, (3) prove depth-0 n-var atomic transfer base case, (4) implement nested decreasing-depth induction using Nat.rec or Nat.strongRecOn for quantifier part"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 315,
-      "statement": "prior_nonconstenv_2var_agree_since: quantifier part (zone-3 transfer)",
-      "assumption": "∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf ↔ ∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf (since: x < t)",
-      "why_deferred": "Phase 7 only restructures induction scaffolding; zone-3 argument is Phase 9",
-      "next_dispatch": "Phase 9: mirror of zone-3 construction for Since direction"
+      "line": 331,
+      "statement": "prior_nonconstenv_2var_agree_since: zone-3 quantifier transfer (mirror)",
+      "assumption": "Same as Until with x < t direction, using Prior-SZ",
+      "why_deferred": "Mirror of Until sorry",
+      "next_dispatch": "Mirror the Until proof using semantic_prior_SZ"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "Zone-3 existential transfer requires nested depth-arity induction — a new proof technique not yet implemented. Key sub-problems: (1) K✝/K variable binding issue with Nat.strong_induction_on, (2) finding witness w' with correct order relative to BOTH x' and t' simultaneously, (3) proving quantifier part at depth K by secondary induction down to depth 0"
+  ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
@@ -46,15 +48,15 @@
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean"
     ],
     "key_decisions": [
-      "Strong induction on K (not on D=K+2): equivalent because ih provides theorem at m+2 for m<K",
-      "Lambda absorbs nf quantifier: fun K ih_strong nf => avoids variable shadowing with K✝",
-      "Unified case: strong induction merges K=0 and K=succ into one body (2 sorry, not 4)",
-      "ih_strong type: ∀ m < K, ∀ nf, nf_eval_nf M (m+2) 2 env nf ↔ nf_eval_nf N (m+2) 2 env' nf",
-      "Atom part proved directly via nonconstenv_atom_agree_until/since (sorry-free, unchanged)",
-      "Quantifier part goal: ∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf ↔ ∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf"
+      "Helper theorems with sorry CANNOT be called from inside Nat.strong_induction_on body due to K✝/K mismatch — must define helpers inside the body or restructure",
+      "cross_extend_bwd_1var from h_t gives w₂ > t' (correct), from h_x gives w₁ < x' (correct), but neither witness satisfies BOTH constraints — Prior-UZ squeeze is essential",
+      "The depth-K 4-var quantifier part is the SAME type of problem at one lower depth / one higher arity — requires secondary induction terminating at depth 0 (atomic)",
+      "nf_extend_bwd (KampBypass.lean:57) is the generalized cross_extend: from depth-(K+1) r-var agreement, get depth-K (r+1)-var. But gives one depth LOWER than needed.",
+      "ih_strong at m=K-1 gives depth-(K+1) 2-var at [x,t]/[x',t']. Quantifier part gives depth-K 3-var transfer. ONE SHORT of the depth-(K+1) needed."
     ]
   }
 }

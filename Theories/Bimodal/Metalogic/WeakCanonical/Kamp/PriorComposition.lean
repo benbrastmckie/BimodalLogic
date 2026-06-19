@@ -194,6 +194,31 @@ private theorem depth0_3var_witness_check {sig : MonadicSignature}
 -- pred_agree_from_1var, pred_agree_from_1var_mono (only used by deleted code)
 -- zone_compatible_witness_bwd/fwd (FALSE)
 
+/-! ## Zone-3 Existential Transfer (Proof Obligation)
+
+The remaining sorry in the main theorems requires:
+- **Input**: depth-(K+2) 1-var at x/x' and t/t', Prior axioms, char formulas,
+  strong IH (2-var at all depths m+2 for m < K)
+- **Goal**: depth-(K+1) 3-var existential transfer on [_,x,t]/[_,x',t']
+
+**Proof strategy** (from Rabinovich, Lemma 5.1):
+1. Given w between t and x in M: characterize via `char_fn (K+1) (nf_characteristic M (K+1) 1 [w])`
+2. From h_t: existence above t of type nf_w transfers to ∃ w₂ > t' in N (cross_extend_bwd_1var)
+3. From h_x: existence below x of type nf_w transfers to ∃ w₁ < x' in N (cross_extend_bwd_1var)
+4. By semantic_prior_UZ at N: first occurrence w' > t' with char formula ≤ w₁ < x'
+5. w' has: same 1-var NF as w, correct order (t' < w' < x')
+6. Show nf_eval_nf N (K+1) 3 [w',x',t'] sub_nf:
+   - Atoms: from 1-var NF agreement at w/w' + h_x + h_t + order
+   - Quant (depth-K, 4-var): requires nested induction on depth
+     (from K+1 down to 0, increasing arity; terminates at depth 0 = purely atomic)
+
+**Key obstacle**: The quant part requires `∃ v, nf_eval M K 4 [v,w,x,t] sub ↔ ∃ v', nf_eval N K 4 [v',w',x',t'] sub`.
+This is a depth-K 4-var existential transfer on non-constant env — the same TYPE of
+problem as the original but at one lower depth and one higher arity. Requires a secondary
+induction (decreasing depth, increasing arity) terminating at depth 0 where all NFs are
+purely atomic and the transfer reduces to finding points with matching predicates + orders
+in a Prior structure (guaranteed by UZ/SZ density). -/
+
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
 The main theorems use strong induction on K. At each step, the quantifier part
@@ -243,7 +268,6 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
   -- Strong induction on K: IH provides the theorem at ALL K' < K
-  -- This gives us the 2-var agreement at all depths D' = K'+2 < K+2
   exact Nat.strong_induction_on K (fun K ih_strong nf => by
     set target := nf_characteristic N (K + 2) 2 (Fin.cons x' (fun _ => t'))
     have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 (Fin.cons x' (fun _ => t'))
@@ -253,13 +277,8 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     have h_atom := nonconstenv_atom_agree_until M x t N x' t' h_x h_t h_order_M h_order_N
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier part: depth-(K+1) 3-var existential transfer
-      -- Goal: ∀ sub_nf : NF (K+1) 3, (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
-      -- Strong IH available: ∀ K' < K, full theorem at depth K'+2
-      -- This provides 2-var agreement at depths 2..K+1 (all lower depths)
-      -- Zone decomposition on w relative to t,x:
-      --   Zones 1,2,4,5: cross_extend_bwd_1var from h_x or h_t
-      --   Zone 3 (t < w < x): Prior-UZ/SZ + char_fn + strong IH
+    · -- Quantifier part: zone-3 existential transfer (Prior-UZ/SZ + nested depth induction)
+      -- See "Zone-3 Existential Transfer (Proof Obligation)" section above
       intro sub_nf; rw [← h_N_quant sub_nf]
       sorry)
 
@@ -305,13 +324,8 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier part: depth-(K+1) 3-var existential transfer (Since: x < t)
-      -- Goal: ∀ sub_nf : NF (K+1) 3, (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
-      -- Strong IH available: ∀ K' < K, full theorem at depth K'+2
-      -- This provides 2-var agreement at depths 2..K+1 (all lower depths)
-      -- Zone decomposition on w relative to x,t (reversed from Until):
-      --   Zones 1,2,4,5: cross_extend_bwd_1var from h_x or h_t
-      --   Zone 3 (x < w < t): Prior-UZ/SZ + char_fn + strong IH
       intro sub_nf; rw [← h_N_quant sub_nf]
+      -- Zone-3 argument with Prior-SZ + nested depth induction
       sorry)
 
 /-- Specialized version for the KampBypass backward Until direction:
