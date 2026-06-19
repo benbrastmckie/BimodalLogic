@@ -191,4 +191,55 @@ theorem prior_hasDefinableSUP {sig : MonadicSignature}
              exact this,
            Or.inl h_Pr0⟩
 
+/-! ## Attained INF (Specialized for Prior Structures)
+
+For Prior structures, the first occurrence is always attained (P(r0) holds directly).
+The K+ disjunct is vacuous. This simplification avoids the limit-point case analysis
+needed for general Dedekind-complete chains. -/
+
+/-- A structure has attained infima: like `HasDefinableINF`, but the first occurrence
+    is always attained (P(r0) holds). No K+ case. Strictly stronger than `HasDefinableINF`. -/
+structure HasAttainedINF {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
+  /-- For any TL-definable predicate P and interval (z0, z1), if P occurs
+      somewhere in (z0, z1), then there is an attained first-occurrence point r0
+      with P(r0) and ¬P on (z0, r0). -/
+  first_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
+    z0 < z1 →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
+      (∀ y : M.carrier, z0 < y → y < r0 → ¬temporal_truth M atomMap y P) ∧
+      temporal_truth M atomMap r0 P
+
+/-- `HasAttainedINF` implies `HasDefinableINF`. -/
+theorem HasAttainedINF.toHasDefinableINF {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    (h : HasAttainedINF M atomMap) : HasDefinableINF M atomMap where
+  first_occ P z0 z1 h_lt h_occ := by
+    obtain ⟨r0, hr0_above, hr0_below, h_no_before, h_P_r0⟩ := h.first_occ P z0 z1 h_lt h_occ
+    exact ⟨r0, hr0_above, le_of_lt hr0_below, h_no_before, Or.inl h_P_r0⟩
+
+/-- Prior structures have attained infima.
+    This is strictly stronger than `prior_hasDefinableINF`: the K+ case never arises. -/
+theorem prior_hasAttainedINF {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_UZ : semantic_prior_UZ M atomMap) :
+    HasAttainedINF M atomMap where
+  first_occ := by
+    intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
+    have h_exists : ∃ s, z0 < s ∧ temporal_truth M atomMap s P := ⟨x, h_z0_x, h_Px⟩
+    obtain ⟨r0, h_z0_r0, h_Pr0, h_neg⟩ := h_UZ z0 P h_exists
+    have h_r0_le_x : r0 ≤ x := by
+      by_contra h_gt
+      push_neg at h_gt
+      have := h_neg x h_z0_x h_gt
+      simp only [Formula.neg, temporal_truth] at this
+      exact this h_Px
+    exact ⟨r0, h_z0_r0, lt_of_le_of_lt h_r0_le_x h_x_z1,
+           fun y hy1 hy2 => by
+             have := h_neg y hy1 hy2
+             simp only [Formula.neg, temporal_truth] at this
+             exact this,
+           h_Pr0⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
