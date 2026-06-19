@@ -1,66 +1,60 @@
 {
-  "status": "blocked",
-  "summary": "Phase 6 blocked: deleted FALSE zone_compatible_witness_bwd/fwd (2 sorry removed), then discovered nonconstenv_exist_transfer_general is ALSO FALSE at D=0 when n > 0 (counterexample: Z, P=evens, envM=[10,0], envN=[2,0]). The between-zone existential transfer requires 2-var agreement at the anchor PAIR, which the D-induction cannot provide. Fix requires bypassing nonconstenv_exist_transfer_general and inlining the existential transfer into prior_nonconstenv_2var_agree_until/since using the K-induction IH. Current sorry count: 2 (both in the FALSE nonconstenv_exist_transfer_general). Plan needs v16 revision.",
+  "status": "partial",
+  "summary": "Phase 6 cleanup completed: deleted FALSE nonconstenv_exist_transfer_general and its callers (nonconstenv_exist_transfer_until/since), deleted pred_agree_from_1var/pred_agree_from_1var_mono (only used by deleted code). Restructured prior_nonconstenv_2var_agree_until/since to use sorry directly at the 4 quantifier positions with zone decomposition approach comments. Build passes. KampBypass 0 sorry. PriorComposition 4 sorry at correct structural positions (lines 264, 285, 336, 354).",
   "phases_completed": 5,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 304,
-      "statement": "nonconstenv_exist_transfer_general D=0 case",
-      "assumption": "Depth-0 (n+2)-var existential transfer from depth-1 1-var at each anchor + orders + Prior-UZ/SZ + char",
-      "why_deferred": "THEOREM IS FALSE at D=0 when n > 0. Counterexample: Z, P=evens, envM=[10,0], envN=[2,0]. Between-zone existential 'even w with 0<w<10' vs 'even w with 0<w<2' -- M has witness (w=2), N does not.",
-      "next_dispatch": "Delete nonconstenv_exist_transfer_general entirely. Inline 3-var existential transfer into prior_nonconstenv_2var_agree_until/since where K-induction IH provides 2-var agreement at anchor pair."
+      "line": 264,
+      "statement": "prior_nonconstenv_2var_agree_until K=0 quantifier part",
+      "assumption": "depth-1 3-var existential transfer on until zone (t < x) at K=0",
+      "why_deferred": "Zone decomposition + Prior-UZ/SZ squeeze not yet implemented",
+      "next_dispatch": "Implement zone decomposition: zones 1,2,4,5 via cross_extend_bwd_1var; zone 3 via Prior-UZ/SZ + char_fn"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 315,
-      "statement": "nonconstenv_exist_transfer_general D=d+1 case",
-      "assumption": "Depth-(d+1) transfer, IH calls D=0 at high arity",
-      "why_deferred": "Depends on FALSE D=0 case via arity climbing.",
-      "next_dispatch": "Same: delete and restructure."
+      "line": 285,
+      "statement": "prior_nonconstenv_2var_agree_until K=succ K' quantifier part",
+      "assumption": "depth-(K'+2) 3-var existential transfer on until zone at K=succ K'",
+      "why_deferred": "IH gives depth-(K'+1) 3-var; need depth boost from K'+1 to K'+2 via zone + char",
+      "next_dispatch": "Apply IH for depth-(K'+2) 2-var, extract quantifier part, boost depth via zone decomposition"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 336,
+      "statement": "prior_nonconstenv_2var_agree_since K=0 quantifier part",
+      "assumption": "depth-1 3-var existential transfer on since zone (x < t) at K=0",
+      "why_deferred": "Mirror of until K=0 case with reversed zone ordering",
+      "next_dispatch": "Implement zone decomposition (mirror of until K=0)"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 354,
+      "statement": "prior_nonconstenv_2var_agree_since K=succ K' quantifier part",
+      "assumption": "depth-(K'+2) 3-var existential transfer on since zone at K=succ K'",
+      "why_deferred": "Mirror of until K=succ K' case",
+      "next_dispatch": "Apply IH, depth boost via zone decomposition (mirror of until)"
     }
   ],
-  "blockers": [
-    "nonconstenv_exist_transfer_general is FALSE at D=0 for n > 0. Counterexample: Z with P=evens, envM=[10,0], envN=[2,0]. Depth-1 1-var NFs agree at 10/2 (both even, same depth-0 2-var existentials above/below). But sub_nf encoding 'w even, 0 < w < 10' is satisfiable in M but not N. The between-zone transfer requires 2-var agreement at the anchor pair [envM(0),envM(1)]/[envN(0),envN(1)], which individual 1-var agreements do not provide. This makes the entire D-induction approach (which calls D=0 at high arity via arity climbing) unsalvageable.",
-    "ARCHITECTURAL CHANGE NEEDED: (1) Delete nonconstenv_exist_transfer_general, nonconstenv_exist_transfer_until, nonconstenv_exist_transfer_since. (2) Rewrite prior_nonconstenv_2var_agree_until/since to prove the depth-(K+1) 3-var existential transfer inline, using the K-induction IH's 2-var quantifier part (depth-(K'+1) 3-var transfer) plus a 'depth boost' from K'+1 to K'+2 via zone analysis + Prior-UZ/SZ + char. (3) For K=0 base: prove depth-1 3-var transfer directly using h_x/h_t at depth 2. The depth-1 3-var at K=0 requires zone analysis where outer zones use cross_extend and the between-zone uses Prior-UZ/SZ with char(0) + the quantifier conditions from h_x/h_t (depth-1 2-var from cross_extend provides the depth-0 existential conditions needed to resolve the between-zone 4-var purely-atomic existentials)."
-  ],
+  "blockers": [],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 6,
     "plan_path": "specs/303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md",
-    "plan_needs_revision": true,
-    "revision_reason": "nonconstenv_exist_transfer_general is FALSE -- need plan v16 that eliminates it and inlines into prior_nonconstenv_2var_agree",
+    "plan_needs_revision": false,
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
     ],
     "key_decisions": [
-      "zone_compatible_witness_bwd/fwd are FALSE and DELETED",
-      "nonconstenv_exist_transfer_general is FALSE at D=0 for n > 0 -- MUST BE DELETED",
-      "Root cause: between-zone needs 2-var at anchor pair, D-induction only has 1-var at each anchor",
-      "Multi-depth char_fn is CORRECT and should be kept (used by prior_nonconstenv_2var_agree)",
-      "Correct architecture: inline 3-var transfer into prior_nonconstenv_2var_agree using K-induction IH",
-      "For K=succ K': IH quantifier part gives depth-(K'+1) 3-var transfer, need depth boost to K'+2",
-      "For K=0: depth-1 3-var transfer directly from h_x/h_t at depth 2",
-      "The depth boost lemma should be a new private theorem: from depth-d 3-var agreement + depth-(d+1) 1-var at witness + depth-(d+1) 2-var at anchor pair -> depth-(d+1) 3-var agreement",
-      "The depth boost uses: atoms are depth-independent; quantifiers require depth-d 4-var transfer which uses an arity climbing inner loop terminating at depth 0 where the 2-var at anchor pair resolves the between-zone"
-    ],
-    "counterexample_nonconstenv_exist_transfer_general": {
-      "D": 0,
-      "n": 1,
-      "structure": "Z with P = {n : n is even}",
-      "envM": "[10, 0]",
-      "envN": "[2, 0]",
-      "h_1var_depth": 1,
-      "h_1var_satisfied": "10 and 2 are both even with same depth-0 existentials above/below; 0 and 0 trivially agree",
-      "h_orders_satisfied": "0 < 10 iff 0 < 2 (both true)",
-      "sub_nf": "w even AND 0 < w AND w < envM(0)",
-      "M_satisfiable": "w = 2 (even, 0 < 2 < 10)",
-      "N_not_satisfiable": "no even in (0, 2) = {1}",
-      "why_depth_1_insufficient": "depth-1 1-var at 10/2 captures which depth-0 2-var types exist above/below each anchor independently, but NOT which types exist BETWEEN two anchors. The between-zone is a 3-var property requiring 2-var agreement at the pair."
-    }
+      "Deleted nonconstenv_exist_transfer_general (FALSE) and callers",
+      "Deleted pred_agree_from_1var/pred_agree_from_1var_mono (only used by deleted code)",
+      "4 sorry now at correct structural positions in prior_nonconstenv_2var_agree_until/since",
+      "K=0 sorry at lines 264, 336: need zone decomposition with cross_extend + Prior-UZ/SZ + char_fn",
+      "K=succ K' sorry at lines 285, 354: need IH application + depth boost via zone + char",
+      "Multi-depth char_fn/char_correct params correctly threaded (kept from Phase 5)"
+    ]
   }
 }
