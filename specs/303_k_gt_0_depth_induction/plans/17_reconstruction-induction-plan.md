@@ -265,7 +265,14 @@ depth-(K+1) 3-var agreement. The inner reconstruction induction is ALREADY PROVE
 
 ---
 
-### Phase 9: nf_extend_bwd Accessibility + Inner Cascade Infrastructure [NOT STARTED]
+### Phase 9: nf_extend_bwd Accessibility + Inner Cascade Infrastructure [BLOCKED]
+
+**BLOCKER** (Phase 9):
+- **What failed**: The proposed `reconstruction_depth_transfer` lemma (Task 9.3) has the SAME depth gap it claims to bridge. The inner induction at fixed arity n+1 cannot handle the quantifier part which is at arity n+2. Specifically: at step d+1, the quantifier part needs depth-d (n+2)-var existential transfer. nf_extend_bwd from the depth-K (n+1)-var agreement gives depth-(K-1) (n+2)-var matched witnesses. The inner IH at d gives depth-d (n+1)-var agreement (SAME arity), not depth-d (n+2)-var. So the quantifier transfer still has gap: need depth-d at arity n+2, have depth-(K-1) at arity n+2 from nf_extend, and inner IH gives depth-d at arity n+1 (wrong arity).
+- **What was tried**: (1) exist_transfer_from_full_agree with ih_strong: d<=K only. (2) reconstruction_depth_agree with depth-K 3-var: d<=K, same arity. (3) reconstruction_depth_agree with depth-(K+1) 2-var: wrong arity. (4) generalExistPart_from_classical: circular. (5) Composition of multiple 2-var agreements: different environments.
+- **Why stuck**: The depth gap is fundamental at the current abstraction level. Each application of nf_extend_bwd drops depth by 1 while increasing arity by 1. No existing theorem can compose multiple agreements at different arities to bridge the gap. reconstruction_depth_agree (Phase 8) operates at FIXED arity and cannot cross arity boundaries.
+- **What is needed**: A fundamentally new proof technique. Best candidate: descending induction from depth K+1 to 0 with INCREASING arity (K+4-d at level d), where the base case (d=0, purely atomic) uses Prior-UZ/SZ density for arbitrary-arity atomic existentials, and each step uses exist_transfer_from_full_agree with the ORIGINAL ih_strong hypothesis (depth-(K+1) 2-var) for the quantifier transfer. This is NOT the same as reconstruction_depth_agree (which uses fixed arity).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Goal**: (1) Make `nf_extend_bwd` accessible from PriorComposition.lean. (2) Implement the inner reconstruction-depth induction as a helper lemma that bridges the depth gap from K to K+1 in the zone-3 quantifier part.
 
