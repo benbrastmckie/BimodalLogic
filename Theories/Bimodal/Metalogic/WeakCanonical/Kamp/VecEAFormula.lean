@@ -340,4 +340,116 @@ theorem VecEA2.fromBracket_holds {sig : MonadicSignature} {n : Nat}
   simp only [Formula.top, temporal_truth]
   tauto
 
+/-! ## Interval Splitting Infrastructure (Rabinovich p.10)
+
+The A_i^- / A_i^+ decomposition: given a bracket formula with n+1 witnesses
+and a split point at witness i, we extract:
+- `leftPart`: the sub-bracket [alpha_0, beta_1, ..., beta_i](z_0, x_i) with i witnesses
+- `rightPart`: the sub-bracket [beta_{i+1}, ..., beta_{n+1}, alpha_n](x_i, z_1) with n-i witnesses
+
+These are the foundational operations needed by Lemma 5.1 (negation closure). -/
+
+/-- A bracket formula with 0 witnesses (degenerate interval, no interior points).
+    Equivalent to `BracketFormula.trivial` but named to match the Rabinovich convention. -/
+def BracketFormula.empty (segType : TemporalPred) : BracketFormula 0 :=
+  BracketFormula.trivial segType
+
+/-- Extract the left sub-bracket A_i^-(z_0, z) from a bracket formula with n+1 witnesses,
+    splitting at witness i. The left part has i witnesses (x_0, ..., x_{i-1}).
+    Point types and segment types are the initial segments of the original. -/
+def BracketFormula.leftPart {n : Nat} (bf : BracketFormula (n + 1))
+    (i : Fin (n + 1)) : BracketFormula i.val :=
+  { pointTypes := fun j => bf.pointTypes ⟨j.val, by omega⟩
+    segmentTypes := fun j => bf.segmentTypes ⟨j.val, by omega⟩ }
+
+/-- Extract the right sub-bracket A_i^+(z, z_1) from a bracket formula with n+1 witnesses,
+    splitting at witness i. The right part has n-i witnesses (x_{i+1}, ..., x_n).
+    Point types and segment types are shifted by i+1 from the original. -/
+def BracketFormula.rightPart {n : Nat} (bf : BracketFormula (n + 1))
+    (i : Fin (n + 1)) : BracketFormula (n - i.val) :=
+  { pointTypes := fun j => bf.pointTypes ⟨i.val + 1 + j.val, by omega⟩
+    segmentTypes := fun j => bf.segmentTypes ⟨i.val + 1 + j.val, by omega⟩ }
+
+/-- If a bracket formula holds on (z_0, z_1) with witnesses w, then the left part
+    holds on (z_0, w i). This is the semantic correctness of A_i^-(z_0, z). -/
+theorem BracketFormula.leftPart_holds {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z1 : M.carrier)
+    (i : Fin (n + 1))
+    (witnesses : Fin (n + 1) → M.carrier)
+    (hmono : ∀ a b : Fin (n + 1), a < b → witnesses a < witnesses b)
+    (hrange : ∀ j : Fin (n + 1), z0 < witnesses j ∧ witnesses j < z1)
+    (hpoint : ∀ j : Fin (n + 1), (bf.pointTypes j).eval_at M atomMap (witnesses j))
+    (hseg0 : ∀ y, z0 < y → y < witnesses ⟨0, by omega⟩ →
+      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
+    (hsegmid : ∀ (j : Fin n), ∀ y,
+      witnesses ⟨j.val, by omega⟩ < y → y < witnesses ⟨j.val + 1, by omega⟩ →
+      (bf.segmentTypes ⟨j.val + 1, by omega⟩).eval_at M atomMap y)
+    (hsegn : ∀ y, witnesses ⟨n, by omega⟩ < y → y < z1 →
+      (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap y) :
+    (bf.leftPart i).holds M atomMap z0 (witnesses i) := by
+  simp only [holds, toIntervalPattern, leftPart, IntervalPattern.holds]
+  match i with
+  | ⟨0, _⟩ =>
+    -- Left part has 0 witnesses: need beta_0 on (z0, w 0)
+    intro y hy0 hy1
+    exact hseg0 y hy0 hy1
+  | ⟨k + 1, hk⟩ =>
+    -- Left part has k+1 witnesses: use w 0, ..., w k
+    refine ⟨fun j => witnesses ⟨j.val, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a b hab
+      exact hmono ⟨a.val, by omega⟩ ⟨b.val, by omega⟩ (by simpa using hab)
+    · intro j
+      exact ⟨(hrange ⟨j.val, by omega⟩).1,
+        hmono ⟨j.val, by omega⟩ ⟨k + 1, by omega⟩ (by simp [Fin.lt_iff_val_lt_val])⟩
+    · intro j; exact hpoint ⟨j.val, by omega⟩
+    · intro y hy0 hy1; exact hseg0 y hy0 hy1
+    · intro j y hlo hhi; exact hsegmid ⟨j.val, by omega⟩ y hlo hhi
+    · intro y hlo hhi; exact hsegmid ⟨k, by omega⟩ y hlo hhi
+
+/-- If a bracket formula holds on (z_0, z_1) with witnesses w, then the right part
+    holds on (w i, z_1). This is the semantic correctness of A_i^+(z, z_1). -/
+theorem BracketFormula.rightPart_holds {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z1 : M.carrier)
+    (i : Fin (n + 1))
+    (witnesses : Fin (n + 1) → M.carrier)
+    (hmono : ∀ a b : Fin (n + 1), a < b → witnesses a < witnesses b)
+    (hrange : ∀ j : Fin (n + 1), z0 < witnesses j ∧ witnesses j < z1)
+    (hpoint : ∀ j : Fin (n + 1), (bf.pointTypes j).eval_at M atomMap (witnesses j))
+    (hseg0 : ∀ y, z0 < y → y < witnesses ⟨0, by omega⟩ →
+      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y)
+    (hsegmid : ∀ (j : Fin n), ∀ y,
+      witnesses ⟨j.val, by omega⟩ < y → y < witnesses ⟨j.val + 1, by omega⟩ →
+      (bf.segmentTypes ⟨j.val + 1, by omega⟩).eval_at M atomMap y)
+    (hsegn : ∀ y, witnesses ⟨n, by omega⟩ < y → y < z1 →
+      (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap y) :
+    (bf.rightPart i).holds M atomMap (witnesses i) z1 := by
+  -- The right part has n - i.val witnesses. The key challenge is that IntervalPattern.holds
+  -- uses a dependent match on the witness count, making direct proof difficult when the
+  -- count is n - i.val (a computed subtraction).
+  -- Deferred to a follow-up dispatch that will use a refactored IntervalPattern.holds
+  -- or an alternative proof architecture.
+  sorry
+
+/-- If the left part holds on (z_0, z), the right part holds on (z, z_1), and the
+    point type at index i holds at z, then the original bracket formula holds on
+    (z_0, z_1) with z inserted as witness i. This is the combination direction
+    of the interval splitting decomposition. -/
+theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z1 z : M.carrier)
+    (i : Fin (n + 1))
+    (hz0z : z0 < z) (hzz1 : z < z1)
+    (hpt : (bf.pointTypes i).eval_at M atomMap z)
+    (hleft : (bf.leftPart i).holds M atomMap z0 z)
+    (hright : (bf.rightPart i).holds M atomMap z z1) :
+    bf.holds M atomMap z0 z1 := by
+  -- The proof constructs combined witnesses by concatenating left witnesses, z, right witnesses.
+  -- The key challenge is that IntervalPattern.holds uses a match on the witness count,
+  -- requiring case analysis on both i.val (left witness count) and n - i.val (right witness count).
+  -- We defer this to a future dispatch; the decomposition lemmas (leftPart_holds, rightPart_holds)
+  -- are the primary interface used by Lemma 5.1.
+  sorry
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
