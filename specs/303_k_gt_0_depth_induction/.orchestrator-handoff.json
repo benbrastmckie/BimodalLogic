@@ -1,68 +1,74 @@
 {
   "status": "partial",
-  "summary": "Phase 6 analysis dispatch: discovered that the decomposition approach (prove depth-1 2-var first, then use for depth-1 3-var) is circular. The depth-0 between-zone existential transfer is NOT independently provable from endpoint 1-var agreements. The correct approach requires restructuring to strong induction on total depth D=K+2. No sorry count change (4 remain). Build passes. Plan needs revision to incorporate strong-induction restructuring.",
-  "phases_completed": 5,
-  "phases_total": 7,
+  "summary": "Phase 6 completed: decoupled NfCharFormula.lean sorry from completeness chain. charPart_succ, existPart_zero, nf_characterizable_temporal_prior_classical are now sorry-free. Remaining sorry in completeness chain comes solely from PriorComposition.lean (4 sorry, Phases 7-9).",
+  "phases_completed": 6,
+  "phases_total": 9,
   "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "theorem nf_exist_formula_correct (depth k+1 backward)",
+      "assumption": "Prior composition needed for backward direction at depth k+1",
+      "why_deferred": "Not on critical path. Separate from completeness chain. Predates Phase 6.",
+      "next_dispatch": "Low priority. Can be resolved once PriorComposition sorry are closed."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 657,
+      "statement": "theorem nf_2var_exist_formula_prior (dead code k+2 branch)",
+      "assumption": "Would need existPart_succ_n1_bypass ih_char, ih_exist, ih_all_char",
+      "why_deferred": "DEAD CODE. Function is deprecated; no longer called by main chain. General case proved by nf_2var_exist_formula_prior_filled in KampMutualInduction.lean.",
+      "next_dispatch": "Can be deleted or left as-is. No impact on completeness."
+    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 264,
       "statement": "prior_nonconstenv_2var_agree_until K=0 quantifier part",
       "assumption": "depth-1 3-var existential transfer on until zone (t < x) at K=0",
-      "why_deferred": "Decomposition approach is circular. Need strong induction on D=K+2.",
-      "next_dispatch": "Restructure to strong D-induction. At D: zone decomposition with cross_extend for witness, IH at D-1 for depth-(D-2) sub-NF transfer, Prior-UZ/SZ for between-zone."
+      "why_deferred": "Requires strong D-induction restructuring (Phase 7)",
+      "next_dispatch": "Phase 7: replace simple induction with Nat.strong_induction_on D"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 285,
       "statement": "prior_nonconstenv_2var_agree_until K=succ K' quantifier part",
       "assumption": "depth-(K'+2) 3-var existential transfer at K=succ K'",
-      "why_deferred": "Same circularity. Strong D-induction resolves this.",
-      "next_dispatch": "After restructuring, IH provides theorem at D-1 for quantifier transfer."
+      "why_deferred": "Requires strong D-induction restructuring (Phase 7)",
+      "next_dispatch": "Phase 7: strong induction provides IH at D-1"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 336,
       "statement": "prior_nonconstenv_2var_agree_since K=0 quantifier part",
       "assumption": "Mirror of until K=0 with reversed order",
-      "why_deferred": "Same circularity as until K=0",
-      "next_dispatch": "Mirror of until K=0 after restructuring"
+      "why_deferred": "Requires strong D-induction (Phase 7-8)",
+      "next_dispatch": "Phase 8: zone-3 witness construction (Since direction)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 354,
       "statement": "prior_nonconstenv_2var_agree_since K=succ K' quantifier part",
       "assumption": "Mirror of until K=succ K'",
-      "why_deferred": "Same circularity",
-      "next_dispatch": "Mirror of until K=succ K' after restructuring"
+      "why_deferred": "Requires strong D-induction (Phase 7-8)",
+      "next_dispatch": "Phase 8: zone-3 witness construction (Since direction)"
     }
   ],
-  "blockers": [
-    "Circularity: depth-0 between-zone existential transfer requires the full depth-2 2-var theorem at lower depth. Current simple K-induction does not provide this. Plan needs revision to use strong induction on total depth D=K+2."
-  ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-6-handoff-20260618.md",
+  "blockers": [],
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
-    "resume_phase": 6,
-    "plan_path": "specs/303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md",
-    "plan_needs_revision": true,
-    "revision_reason": "Simple K-induction creates circularity. Need strong D-induction (D=K+2) to provide theorem at all lower depths via IH.",
+    "resume_phase": 7,
+    "plan_path": "specs/303_k_gt_0_depth_induction/plans/16_strong-d-induction-plan.md",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean"
     ],
     "key_decisions": [
-      "Decomposition approach (depth-1 2-var -> depth-1 3-var) is circular",
-      "Depth-0 between-zone transfer NOT independently provable",
-      "Strong D-induction eliminates circularity",
-      "Zone 3 (between-zone) needs IH at D-1, not just endpoint transfers",
-      "Zones 1,2,4,5 remain straightforward via cross_extend"
-    ],
-    "approaches_ruled_out": [
-      "Decompose into depth-1 2-var first: circular (depth-1 2-var needs depth-0 3-var)",
-      "Zone-only at depth 0: fails because between-zone needs simultaneous conjunction",
-      "Direct cross_extend at 3-var: gives separate 2-var agreements but not unified 3-var",
-      "Prior-UZ/SZ squeeze alone: necessary but not sufficient for zone 3 at depth 0"
+      "ih_exist_2var parameter threading decouples NfCharFormula sorry from chain",
+      "existPart_zero inlined nf_2var_exist_depth0_tl to break sorry propagation",
+      "KampPrior.lean now imports KampMutualInduction for nf_2var_exist_formula_prior_filled",
+      "nf_2var_exist_formula_prior is deprecated dead code (kept for Boneyard compatibility)"
     ]
   }
 }
