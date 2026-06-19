@@ -189,6 +189,323 @@ private theorem depth0_3var_witness_check {sig : MonadicSignature}
 -- depth0_3var_exist_transfer_until/since DELETED (FALSE -- counterexample in report 15)
 -- exist_transfer_3var_nonconstenv DELETED (unprovable without Prior+CharPart)
 
+/-! ## Generalized Multi-Arity Existential Transfer on Prior Structures
+
+Transfer `∃ w, nf_eval_nf M D (n+2) (Fin.cons w envM) sub_nf` between Prior
+structures given depth-(D+1) 1-var agreement at each component of envM/envN
+and matching orders. The proof proceeds by induction on D:
+
+- D=0: purely atomic. Zone analysis on w gives a witness w' with matching
+  predicates (from 1-var agreement) and matching orders.
+- D=d+1: atoms via zone analysis; quantifier conditions (depth-d (n+3)-var
+  existentials) transferred using the IH at one higher arity.
+
+The between-zone case (w strictly between two anchors with no direct 2-var
+agreement) uses the char formula + Prior-UZ/SZ squeeze argument. -/
+
+/-- Predicate agreement from depth ≥ 1 1-var NF agreement. -/
+private theorem pred_agree_from_1var {sig : MonadicSignature}
+    {K : Nat}
+    (M : OrderedMonadicStructure sig) (a : M.carrier)
+    (N : OrderedMonadicStructure sig) (b : N.carrier)
+    (h : ∀ nf : NormalForm sig (K + 1) 1,
+      nf_eval_nf M (K + 1) 1 (fun _ => a) nf ↔
+      nf_eval_nf N (K + 1) 1 (fun _ => b) nf)
+    (p : sig.preds) :
+    M.interp p a ↔ N.interp p b :=
+  pred_agree_cross M a N b h p
+
+/-- Predicate agreement at depth D from depth-(D+1) 1-var via monotonicity. -/
+private theorem pred_agree_from_1var_mono {sig : MonadicSignature}
+    {D : Nat}
+    (M : OrderedMonadicStructure sig) (a : M.carrier)
+    (N : OrderedMonadicStructure sig) (b : N.carrier)
+    (h : ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => a) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => b) nf)
+    (p : sig.preds) :
+    M.interp p a ↔ N.interp p b :=
+  pred_agree_cross M a N b h p
+
+/-- Zone-compatible witness existence on Prior structures.
+    Given depth-(D+1) 1-var agreement at envM(i)/envN(i) for all i, matching
+    orders between all anchor pairs, Prior-UZ/SZ, and char_fn/char_correct,
+    for any w in M there exists w' in N with:
+    1. depth-(D+1) 1-var agreement at w/w'  (from cross_extend)
+    2. matching orders: w < envM(i) ↔ w' < envN(i) for all i
+
+    The outer-zone and equality cases follow from cross_extend + transitivity.
+    The between-zone case requires the Prior-UZ/SZ squeeze argument.
+
+    NOTE: This lemma encapsulates the hardest part of the multi-anchor
+    existential transfer. The sorry here is the between-zone witness
+    construction, which requires showing that if a characteristic formula
+    holds at some point between two anchors in M, it also holds between the
+    corresponding anchors in N. -/
+private theorem zone_compatible_witness_bwd {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {D : Nat}
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    {n : Nat}
+    (envM : Fin (n + 1) → M.carrier) (envN : Fin (n + 1) → N.carrier)
+    (h_1var : ∀ (i : Fin (n + 1)), ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => envM i) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => envN i) nf)
+    (h_orders : ∀ (i j : Fin (n + 1)), i ≠ j →
+      (envM i < envM j ↔ envN i < envN j))
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ D) (nf_1 : NormalForm sig d 1)
+        (S : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ S atomMap)
+        (h_SZ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf S d 1 (fun _ => t) nf_1)
+    (w : M.carrier) :
+    ∃ w' : N.carrier,
+      (∀ nf : NormalForm sig D 1,
+        nf_eval_nf M D 1 (fun _ => w) nf ↔ nf_eval_nf N D 1 (fun _ => w') nf) ∧
+      (∀ (i : Fin (n + 1)), (w < envM i ↔ w' < envN i) ∧ (envM i < w ↔ envN i < w')) := by
+  sorry
+
+/-- Symmetric: for any w' in N, find zone-compatible w in M. -/
+private theorem zone_compatible_witness_fwd {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {D : Nat}
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    {n : Nat}
+    (envM : Fin (n + 1) → M.carrier) (envN : Fin (n + 1) → N.carrier)
+    (h_1var : ∀ (i : Fin (n + 1)), ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => envM i) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => envN i) nf)
+    (h_orders : ∀ (i j : Fin (n + 1)), i ≠ j →
+      (envM i < envM j ↔ envN i < envN j))
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ D) (nf_1 : NormalForm sig d 1)
+        (S : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ S atomMap)
+        (h_SZ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf S d 1 (fun _ => t) nf_1)
+    (w' : N.carrier) :
+    ∃ w : M.carrier,
+      (∀ nf : NormalForm sig D 1,
+        nf_eval_nf M D 1 (fun _ => w) nf ↔ nf_eval_nf N D 1 (fun _ => w') nf) ∧
+      (∀ (i : Fin (n + 1)), (w < envM i ↔ w' < envN i) ∧ (envM i < w ↔ envN i < w')) := by
+  sorry
+
+/-- Generalized existential transfer on Prior structures.
+    Given depth-(D+1) 1-var agreement at each component of the base
+    environments envM/envN, matching orders between all pairs, and
+    characteristic formula parameters, transfers depth-D (n+2)-var
+    existentials. -/
+private theorem nonconstenv_exist_transfer_general {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (M : OrderedMonadicStructure sig)
+    (N : OrderedMonadicStructure sig)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula) :
+    ∀ (D n : Nat)
+    (envM : Fin (n + 1) → M.carrier) (envN : Fin (n + 1) → N.carrier)
+    (h_1var : ∀ (i : Fin (n + 1)), ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => envM i) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => envN i) nf)
+    (h_orders : ∀ (i j : Fin (n + 1)), i ≠ j →
+      (envM i < envM j ↔ envN i < envN j))
+    (char_correct : ∀ (d : Nat) (_ : d ≤ D) (nf_1 : NormalForm sig d 1)
+        (S : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ S atomMap)
+        (h_SZ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf S d 1 (fun _ => t) nf_1)
+    (sub_nf : NormalForm sig D (n + 2)),
+    (∃ w, nf_eval_nf M D (n + 2) (Fin.cons w envM) sub_nf) ↔
+    (∃ w', nf_eval_nf N D (n + 2) (Fin.cons w' envN) sub_nf) := by
+  intro D; induction D with
+  | zero =>
+    intro n envM envN h_1var h_orders char_correct sub_nf
+    -- Depth 0: purely atomic. Use zone-compatible witness.
+    constructor
+    · rintro ⟨w, hw⟩
+      obtain ⟨w', h_w_1var, h_w_orders⟩ := zone_compatible_witness_bwd
+        atomMap h_surj M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N envM envN
+        h_1var h_orders char_fn char_correct w
+      -- Build depth-0 (n+2)-var NF agreement from 1-var + orders
+      have h_atom : ∀ a : AtomKind sig (n + 2),
+          atom_eval M (Fin.cons w envM) a ↔ atom_eval N (Fin.cons w' envN) a := by
+        intro a; cases a with
+        | pred p i =>
+          simp only [atom_eval]
+          refine Fin.cases ?_ (fun j => ?_) i
+          · simp only [Fin.cons_zero]
+            have h := atom_agreement_from_nf M (fun _ => w) N (fun _ => w') h_w_1var
+              (.pred p ⟨0, by omega⟩)
+            simp only [atom_eval] at h; exact h
+          · simp only [Fin.cons_succ]
+            exact pred_agree_cross M (envM j) N (envN j) (h_1var j) p
+        | order i j hne =>
+          simp only [atom_eval]
+          -- Case split on whether each index is 0 or succ
+          match i, j, hne with
+          | ⟨0, _⟩, ⟨0, _⟩, hne => exact absurd (Fin.ext rfl) hne
+          | ⟨0, _⟩, ⟨j'+1, _⟩, _ => exact (h_w_orders ⟨j', by omega⟩).1
+          | ⟨i'+1, _⟩, ⟨0, _⟩, _ => exact (h_w_orders ⟨i', by omega⟩).2
+          | ⟨i'+1, _⟩, ⟨j'+1, _⟩, hne =>
+            exact h_orders ⟨i', by omega⟩ ⟨j', by omega⟩
+              (fun h => by have := Fin.mk.inj h; subst this; exact absurd rfl hne)
+      exact ⟨w', fun a => (h_atom a).symm.trans (hw a)⟩
+    · rintro ⟨w', hw'⟩
+      obtain ⟨w, h_w_1var, h_w_orders⟩ := zone_compatible_witness_fwd
+        atomMap h_surj M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N envM envN
+        h_1var h_orders char_fn char_correct w'
+      have h_atom : ∀ a : AtomKind sig (n + 2),
+          atom_eval M (Fin.cons w envM) a ↔ atom_eval N (Fin.cons w' envN) a := by
+        intro a; cases a with
+        | pred p i =>
+          simp only [atom_eval]
+          refine Fin.cases ?_ (fun j => ?_) i
+          · simp only [Fin.cons_zero]
+            have h := atom_agreement_from_nf M (fun _ => w) N (fun _ => w') h_w_1var
+              (.pred p ⟨0, by omega⟩)
+            simp only [atom_eval] at h; exact h
+          · simp only [Fin.cons_succ]
+            exact pred_agree_cross M (envM j) N (envN j) (h_1var j) p
+        | order i j hne =>
+          simp only [atom_eval]
+          match i, j, hne with
+          | ⟨0, _⟩, ⟨0, _⟩, hne => exact absurd (Fin.ext rfl) hne
+          | ⟨0, _⟩, ⟨j'+1, _⟩, _ => exact (h_w_orders ⟨j', by omega⟩).1
+          | ⟨i'+1, _⟩, ⟨0, _⟩, _ => exact (h_w_orders ⟨i', by omega⟩).2
+          | ⟨i'+1, _⟩, ⟨j'+1, _⟩, hne =>
+            exact h_orders ⟨i', by omega⟩ ⟨j', by omega⟩
+              (fun h => by have := Fin.mk.inj h; subst this; exact absurd rfl hne)
+      exact ⟨w, fun a => (h_atom a).trans (hw' a)⟩
+  | succ d ih =>
+    intro n envM envN h_1var h_orders char_correct sub_nf
+    constructor
+    · -- Forward: given w in M, find zone-compatible w' in N
+      rintro ⟨w, hw⟩
+      obtain ⟨w', h_w_1var, h_w_orders⟩ := zone_compatible_witness_bwd
+        atomMap h_surj M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N envM envN
+        h_1var h_orders char_fn char_correct w
+      -- Build the shared NF target
+      set target := nf_characteristic N (d + 1) (n + 2) (Fin.cons w' envN)
+      have h_N_sat := nf_characteristic_satisfies N (d + 1) (n + 2) (Fin.cons w' envN)
+      suffices h_M_sat : nf_eval_nf M (d + 1) (n + 2) (Fin.cons w envM) target by
+        exact ⟨w', (nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat sub_nf).mp hw⟩
+      obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+      -- 1-var conditions for the extended env (depth d+1 from zone_compatible at D=d+1)
+      have h_1var_ext : ∀ (i : Fin ((n + 1) + 1)) (nf_1 : NormalForm sig (d + 1) 1),
+          nf_eval_nf M (d + 1) 1 (fun _ => (Fin.cons w envM : Fin ((n + 1) + 1) → M.carrier) i) nf_1 ↔
+          nf_eval_nf N (d + 1) 1 (fun _ => (Fin.cons w' envN : Fin ((n + 1) + 1) → N.carrier) i) nf_1 := by
+        intro i nf_1
+        refine Fin.cases ?_ (fun j => ?_) i
+        · simp only [Fin.cons_zero]; exact h_w_1var nf_1
+        · simp only [Fin.cons_succ]
+          exact nf_agreement_monotone (d + 1) (d + 1 + 1) 1 (by omega)
+            M _ N _ (h_1var j) nf_1
+      -- Order matching for extended env
+      -- Order matching for extended env: use match on Fin indices
+      have h_orders_ext : ∀ (i j : Fin ((n + 1) + 1)), i ≠ j →
+          ((Fin.cons w envM : Fin ((n + 1) + 1) → M.carrier) i <
+           (Fin.cons w envM : Fin ((n + 1) + 1) → M.carrier) j ↔
+           (Fin.cons w' envN : Fin ((n + 1) + 1) → N.carrier) i <
+           (Fin.cons w' envN : Fin ((n + 1) + 1) → N.carrier) j) := by
+        intro ⟨i, hi⟩ ⟨j, hj⟩ hij
+        match i, j, hi, hj with
+        | 0, 0, _, _ => exact absurd rfl hij
+        | 0, j'+1, _, _ => exact (h_w_orders ⟨j', by omega⟩).1
+        | i'+1, 0, _, _ => exact (h_w_orders ⟨i', by omega⟩).2
+        | i'+1, j'+1, _, _ =>
+          exact h_orders ⟨i', by omega⟩ ⟨j', by omega⟩
+            (fun h => by have := Fin.mk.inj h; subst this; exact absurd rfl hij)
+      constructor
+      · -- Atoms: use 1-var agreement for preds, order matching for orders
+        intro a; rw [← h_N_atoms a]
+        cases a with
+        | pred p i =>
+          simp only [atom_eval]
+          exact pred_agree_from_1var_mono M _ N _
+            (fun nf_1 => h_1var_ext i nf_1) p
+        | order i j hne =>
+          simp only [atom_eval]
+          exact h_orders_ext i j hne
+      · -- Quantifiers: use IH with zone-compatible orders
+        intro chi
+        rw [← h_N_quant chi]
+        exact ih (n + 1) (Fin.cons w envM) (Fin.cons w' envN)
+          h_1var_ext h_orders_ext
+          (fun d' hd' => char_correct d' (Nat.le_step hd'))
+          chi
+    · -- Backward: given w' in N, find zone-compatible w in M (symmetric)
+      rintro ⟨w', hw'⟩
+      obtain ⟨w, h_w_1var, h_w_orders⟩ := zone_compatible_witness_fwd
+        atomMap h_surj M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N envM envN
+        h_1var h_orders char_fn char_correct w'
+      set target := nf_characteristic M (d + 1) (n + 2) (Fin.cons w envM)
+      have h_M_sat := nf_characteristic_satisfies M (d + 1) (n + 2) (Fin.cons w envM)
+      suffices h_N_sat : nf_eval_nf N (d + 1) (n + 2) (Fin.cons w' envN) target by
+        exact ⟨w, (nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat sub_nf).mpr hw'⟩
+      obtain ⟨h_M_atoms, h_M_quant⟩ := h_M_sat
+      have h_1var_ext : ∀ (i : Fin ((n + 1) + 1)) (nf_1 : NormalForm sig (d + 1) 1),
+          nf_eval_nf M (d + 1) 1 (fun _ => (Fin.cons w envM : Fin ((n + 1) + 1) → M.carrier) i) nf_1 ↔
+          nf_eval_nf N (d + 1) 1 (fun _ => (Fin.cons w' envN : Fin ((n + 1) + 1) → N.carrier) i) nf_1 := by
+        intro i nf_1
+        refine Fin.cases ?_ (fun j => ?_) i
+        · simp only [Fin.cons_zero]; exact h_w_1var nf_1
+        · simp only [Fin.cons_succ]
+          exact nf_agreement_monotone (d + 1) (d + 1 + 1) 1 (by omega)
+            M _ N _ (h_1var j) nf_1
+      have h_orders_ext : ∀ (i j : Fin ((n + 1) + 1)), i ≠ j →
+          ((Fin.cons w envM : Fin ((n + 1) + 1) → M.carrier) i <
+           (Fin.cons w envM : Fin ((n + 1) + 1) → M.carrier) j ↔
+           (Fin.cons w' envN : Fin ((n + 1) + 1) → N.carrier) i <
+           (Fin.cons w' envN : Fin ((n + 1) + 1) → N.carrier) j) := by
+        intro ⟨i, hi⟩ ⟨j, hj⟩ hij
+        match i, j, hi, hj with
+        | 0, 0, _, _ => exact absurd rfl hij
+        | 0, j'+1, _, _ => exact (h_w_orders ⟨j', by omega⟩).1
+        | i'+1, 0, _, _ => exact (h_w_orders ⟨i', by omega⟩).2
+        | i'+1, j'+1, _, _ =>
+          exact h_orders ⟨i', by omega⟩ ⟨j', by omega⟩
+            (fun h => by have := Fin.mk.inj h; subst this; exact absurd rfl hij)
+      constructor
+      · -- Atoms
+        intro a; rw [← h_M_atoms a]
+        cases a with
+        | pred p i =>
+          simp only [atom_eval]
+          exact (pred_agree_from_1var_mono M _ N _
+            (fun nf_1 => h_1var_ext i nf_1) p).symm
+        | order i j hne =>
+          simp only [atom_eval]
+          exact (h_orders_ext i j hne).symm
+      · -- Quantifiers: use IH
+        intro chi
+        rw [← h_M_quant chi]
+        exact (ih (n + 1) (Fin.cons w envM) (Fin.cons w' envN)
+          h_1var_ext h_orders_ext
+          (fun d' hd' => char_correct d' (Nat.le_step hd'))
+          chi).symm
+
 /-! ## Cross-Structure 3-var Existential Transfer on Non-Constant Envs
 
 Transfer `∃ w, nf_eval_nf M D 3 [w,x,t] sub_nf` between Prior structures
@@ -238,28 +555,25 @@ private theorem nonconstenv_exist_transfer_until {sig : MonadicSignature}
         nf_eval_nf M d 1 (fun _ => t) nf_1)
     (sub_nf : NormalForm sig D 3) :
     (∃ w, nf_eval_nf M D 3 (Fin.cons w (Fin.cons x (fun _ => t))) sub_nf) ↔
-    (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) := by
-  -- Forward direction: given w in M, find w' in N
-  -- Backward: symmetric
-  -- Both directions use cross_extend_bwd/fwd from h_x and h_t
-  -- to find witnesses, then establish NF agreement
-  constructor
-  · rintro ⟨w, hw⟩
-    -- Get witnesses from both anchor points
-    obtain ⟨w'_x, hw'_x⟩ := cross_extend_bwd_1var M x N x' h_x w
-    obtain ⟨w'_t, hw'_t⟩ := cross_extend_bwd_1var M t N t' h_t w
-    -- Both have depth-D 1-var agreement with w
-    have h_w_wx := cross_1var_from_2var M w x N w'_x x' hw'_x
-    have h_w_wt := cross_1var_from_2var M w t N w'_t t' hw'_t
-    -- w'_x and w'_t have the same depth-D 1-var NF (unique via nf_eval_unique)
-    -- Zone analysis determines which witness to use and verifies orders
-    sorry
-  · rintro ⟨w', hw'⟩
-    obtain ⟨w_x, hw_x⟩ := cross_extend_fwd_1var M x N x' h_x w'
-    obtain ⟨w_t, hw_t⟩ := cross_extend_fwd_1var M t N t' h_t w'
-    have h_w'_wx := cross_1var_from_2var M w_x x N w' x' hw_x
-    have h_w'_wt := cross_1var_from_2var M w_t t N w' t' hw_t
-    sorry
+    (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) :=
+  nonconstenv_exist_transfer_general atomMap h_surj M N
+    h_UZ_M h_SZ_M h_UZ_N h_SZ_N char_fn D 1
+    (Fin.cons x (fun _ => t)) (Fin.cons x' (fun _ => t'))
+    (fun i nf => by
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp only [Fin.cons_zero]; exact h_x nf
+      · simp only [Fin.cons_succ]; exact h_t nf)
+    (fun i j hij => by
+      match i, j with
+      | ⟨0, _⟩, ⟨0, _⟩ => exact absurd rfl hij
+      | ⟨0, _⟩, ⟨1, _⟩ =>
+        show x < t ↔ x' < t'
+        exact iff_of_false (not_lt.mpr (le_of_lt h_order_M)) (not_lt.mpr (le_of_lt h_order_N))
+      | ⟨1, _⟩, ⟨0, _⟩ =>
+        show t < x ↔ t' < x'
+        exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+      | ⟨1, _⟩, ⟨1, _⟩ => exact absurd rfl hij)
+    char_correct sub_nf
 
 /-- Mirror for the Since zone (x < t). -/
 private theorem nonconstenv_exist_transfer_since {sig : MonadicSignature}
@@ -290,21 +604,25 @@ private theorem nonconstenv_exist_transfer_since {sig : MonadicSignature}
         nf_eval_nf M d 1 (fun _ => t) nf_1)
     (sub_nf : NormalForm sig D 3) :
     (∃ w, nf_eval_nf M D 3 (Fin.cons w (Fin.cons x (fun _ => t))) sub_nf) ↔
-    (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) := by
-  -- Mirror of Until case with reversed order (x < t instead of t < x)
-  constructor
-  · rintro ⟨w, hw⟩
-    obtain ⟨w'_x, hw'_x⟩ := cross_extend_bwd_1var M x N x' h_x w
-    obtain ⟨w'_t, hw'_t⟩ := cross_extend_bwd_1var M t N t' h_t w
-    have h_w_wx := cross_1var_from_2var M w x N w'_x x' hw'_x
-    have h_w_wt := cross_1var_from_2var M w t N w'_t t' hw'_t
-    sorry
-  · rintro ⟨w', hw'⟩
-    obtain ⟨w_x, hw_x⟩ := cross_extend_fwd_1var M x N x' h_x w'
-    obtain ⟨w_t, hw_t⟩ := cross_extend_fwd_1var M t N t' h_t w'
-    have h_w'_wx := cross_1var_from_2var M w_x x N w' x' hw_x
-    have h_w'_wt := cross_1var_from_2var M w_t t N w' t' hw_t
-    sorry
+    (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) :=
+  nonconstenv_exist_transfer_general atomMap h_surj M N
+    h_UZ_M h_SZ_M h_UZ_N h_SZ_N char_fn D 1
+    (Fin.cons x (fun _ => t)) (Fin.cons x' (fun _ => t'))
+    (fun i nf => by
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp only [Fin.cons_zero]; exact h_x nf
+      · simp only [Fin.cons_succ]; exact h_t nf)
+    (fun i j hij => by
+      match i, j with
+      | ⟨0, _⟩, ⟨0, _⟩ => exact absurd rfl hij
+      | ⟨0, _⟩, ⟨1, _⟩ =>
+        show x < t ↔ x' < t'
+        exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+      | ⟨1, _⟩, ⟨0, _⟩ =>
+        show t < x ↔ t' < x'
+        exact iff_of_false (not_lt.mpr (le_of_lt h_order_M)) (not_lt.mpr (le_of_lt h_order_N))
+      | ⟨1, _⟩, ⟨1, _⟩ => exact absurd rfl hij)
+    char_correct sub_nf
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
