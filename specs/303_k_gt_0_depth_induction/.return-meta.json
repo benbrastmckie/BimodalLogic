@@ -1,8 +1,53 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "phase_number": 8,
   "task_number": 303,
-  "started_at": "2026-06-19T00:00:00Z"
+  "started_at": "2026-06-19T00:00:00Z",
+  "completed_at": "2026-06-19T01:00:00Z",
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 449,
+      "statement": "prior_nonconstenv_2var_agree_until (forward)",
+      "assumption": "w2 satisfies sub_nf",
+      "why_deferred": "Requires ih_strong + reconstruction_depth_agree",
+      "next_dispatch": "Phase 9-10"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 454,
+      "statement": "prior_nonconstenv_2var_agree_until (backward)",
+      "assumption": "w2 satisfies sub_nf",
+      "why_deferred": "Symmetric",
+      "next_dispatch": "Phase 9-10"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 505,
+      "statement": "prior_nonconstenv_2var_agree_since (forward)",
+      "assumption": "w2 satisfies sub_nf",
+      "why_deferred": "Since mirror",
+      "next_dispatch": "Phase 9-10"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 509,
+      "statement": "prior_nonconstenv_2var_agree_since (backward)",
+      "assumption": "w2 satisfies sub_nf",
+      "why_deferred": "Symmetric",
+      "next_dispatch": "Phase 9-10"
+    }
+  ],
+  "verification": {
+    "sorry_count": 4,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "depth-0 multi-variable existential transfer from 1-var NF agreements at endpoints is FALSE even on Prior structures (report 15 counterexample). Use exist_transfer_from_full_agree instead: extract existential transfer from quantifier condition of depth-(K+1) full agreement + monotonicity.",
+    "reconstruction_depth_agree subsumes the planned inner reconstruction induction: given depth-(K+1) (n+1)-var full agreement, proves depth-d (n+1)-var agreement for all d <= K+1. Base case by monotonicity, step by exist_transfer_from_full_agree."
+  ]
 }
