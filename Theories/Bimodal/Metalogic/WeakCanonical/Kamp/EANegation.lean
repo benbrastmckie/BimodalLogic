@@ -513,10 +513,254 @@ theorem neg_orderedPointsExist_is_vbracket :
 The negation of "exists z in (z_0, z_1) such that bracket.holds z_0 z" is V-EA
 on Prior structures. This is Rabinovich's Corollary 5.4 (p.9).
 
-The F-chain reduction converts the partial bracket to orderedPointsExist with
-TL-definable predicates, then applies Lemma 5.3. Implementation deferred to
-a future dispatch — requires careful treatment of the bounded vs. unbounded
-Until distinction.
+### Approach: F-Chain Reduction
+
+Given a bracket formula bf with n witnesses on (z_0, z), define the F-chain:
+- F_{n-1} := alpha_{n-1}.conj (Until(beta_n, top)) -- last witness: alpha AND "beta_n holds until some point"
+- F_i := alpha_i.conj (Until(beta_{i+1}, F_{i+1})) -- i-th witness: alpha AND "beta Until next F"
+- F_0 handles the first segment via beta_0
+
+The bracket holding on (z_0, z) implies orderedPointsExist 1 F_chain z_0 z
+(the bracket witnesses provide the Until/orderedPointsExist witnesses).
+Combined with the existential over z, this gives
+orderedPointsExist 1 F_chain z_0 z_1 ⊇ ∃ z, bracket(z_0, z).
+
+By Lemma 5.3, ¬orderedPointsExist is V-bracket, giving us a V-bracket
+formula V such that V.holds → ¬∃ z, bracket(z_0, z).
+
+For the full equivalence on Prior structures (V.holds ↔ ¬∃z, bracket),
+we prove the converse using HasAttainedINF: if ¬∃z bracket(z_0, z),
+then no F-chain witnesses exist in (z_0, z_1) either, because any
+F-chain witness with bounded Until (where the Until target is in-interval)
+would reconstruct a bracket.
 -/
+
+/-! ### F-Chain Construction
+
+Build compound temporal predicates that absorb bracket segment types
+via Until. Each F_i at point x_i asserts: alpha_i(x_i) AND the rest
+of the bracket structure continues forward from x_i. -/
+
+/-- Build the F-chain formula for a bracket formula, computing from the right.
+    `fChainFrom bf i` returns the compound TemporalPred at witness index i.
+
+    - Base (i = n-1): `alpha_{n-1} AND (beta_n Until ⊤)`
+    - Step (i < n-1): `alpha_i AND (beta_{i+1} Until F_{i+1})`
+
+    This is defined by recursion on (n - 1 - i), the distance from the rightmost witness.
+    The beta_0 (first segment) is NOT folded in; it is a separate prefix condition. -/
+def BracketFormula.fChainFrom {n : Nat} (bf : BracketFormula (n + 1))
+    (i : Fin (n + 1)) : TemporalPred :=
+  if h : i.val = n then
+    -- Base: F_n = alpha_n AND (beta_{n+1} Until top)
+    ⟨Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
+      (Formula.untl Formula.top (bf.segmentTypes ⟨n + 1, by omega⟩).formula)⟩
+  else
+    -- Step: F_i = alpha_i AND (beta_{i+1} Until F_{i+1})
+    have h_lt : i.val < n := by omega
+    let F_next := bf.fChainFrom ⟨i.val + 1, by omega⟩
+    ⟨Formula.and (bf.pointTypes i).formula
+      (Formula.untl F_next.formula (bf.segmentTypes ⟨i.val + 1, by omega⟩).formula)⟩
+termination_by n - i.val
+
+/-- The F-chain predicate at the first witness (index 0). -/
+def BracketFormula.fChainPred {n : Nat} (bf : BracketFormula (n + 1)) :
+    TemporalPred :=
+  bf.fChainFrom ⟨0, by omega⟩
+
+/-- The partial bracket existential: there exists z in (z_0, z_1) such that
+    the bracket formula holds on (z_0, z). -/
+def BracketFormula.partialBracketExist {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula n) (z0 z1 : M.carrier) : Prop :=
+  ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ bf.holds M atomMap z0 z
+
+/-- Semantic characterization of `fChainFrom` at the base case (i = n).
+    F_n(x) ↔ alpha_n(x) ∧ ∃ s > x, ⊤(s) ∧ beta_{n+1} on (x, s). -/
+theorem BracketFormula.fChainFrom_base {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (x : M.carrier) :
+    (bf.fChainFrom ⟨n, by omega⟩).eval_at M atomMap x ↔
+    (bf.pointTypes ⟨n, by omega⟩).eval_at M atomMap x ∧
+    ∃ s : M.carrier, x < s ∧
+      (∀ r : M.carrier, x < r → r < s →
+        (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) := by
+  -- Unfold fChainFrom at the base case (i = n)
+  have h_eq : bf.fChainFrom ⟨n, by omega⟩ =
+    ⟨Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
+      (Formula.untl Formula.top (bf.segmentTypes ⟨n + 1, by omega⟩).formula)⟩ := by
+    conv_lhs => rw [fChainFrom]; simp only [Fin.val_mk, dite_true]
+  rw [h_eq]
+  simp only [TemporalPred.eval_at, Formula.and, Formula.neg, temporal_truth]
+  constructor
+  · -- mp: double-negation elimination on conjunctive normal form
+    intro h
+    have h_alpha : temporal_truth M atomMap x (bf.pointTypes ⟨n, by omega⟩).formula := by
+      by_contra h_neg
+      exact h (fun h1' _ => h_neg h1')
+    refine ⟨h_alpha, ?_⟩
+    by_contra h_neg; push_neg at h_neg
+    exact h (fun _ h_untl => by
+      obtain ⟨s, hs_lt, _, hs_seg⟩ := h_untl
+      obtain ⟨r, hr1, hr2, hr3⟩ := h_neg s hs_lt
+      exact hr3 (hs_seg r hr1 hr2))
+  · -- mpr: construct the Until witness
+    rintro ⟨h1, s, hs_lt, hs_seg⟩
+    intro h_neg
+    have h_top : temporal_truth M atomMap s Formula.top := by
+      simp only [Formula.top, temporal_truth]; exact id
+    exact h_neg h1 ⟨s, hs_lt, h_top, fun r hr1 hr2 => hs_seg r hr1 hr2⟩
+
+/-- Semantic characterization of `fChainFrom` at a step case (i < n).
+    F_i(x) ↔ alpha_i(x) ∧ ∃ s > x, F_{i+1}(s) ∧ beta_{i+1} on (x, s). -/
+theorem BracketFormula.fChainFrom_step {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (i : Fin (n + 1)) (h_lt : i.val < n)
+    (x : M.carrier) :
+    (bf.fChainFrom i).eval_at M atomMap x ↔
+    (bf.pointTypes i).eval_at M atomMap x ∧
+    ∃ s : M.carrier, x < s ∧
+      (bf.fChainFrom ⟨i.val + 1, by omega⟩).eval_at M atomMap s ∧
+      (∀ r : M.carrier, x < r → r < s →
+        (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r) := by
+  have h_ne : i.val ≠ n := by omega
+  -- Unfold fChainFrom at i (step case)
+  have h_eq : bf.fChainFrom i =
+    ⟨Formula.and (bf.pointTypes i).formula
+      (Formula.untl (bf.fChainFrom ⟨i.val + 1, by omega⟩).formula
+        (bf.segmentTypes ⟨i.val + 1, by omega⟩).formula)⟩ := by
+    conv_lhs => rw [fChainFrom]
+    split
+    · omega
+    · rfl
+  rw [h_eq]
+  simp only [TemporalPred.eval_at, Formula.and, Formula.neg, temporal_truth]
+  constructor
+  · -- mp: extract alpha_i AND Until from double-negation
+    intro h
+    have h_alpha : temporal_truth M atomMap x (bf.pointTypes i).formula := by
+      by_contra h_neg
+      exact h (fun h1' _ => h_neg h1')
+    refine ⟨h_alpha, ?_⟩
+    by_contra h_neg; push_neg at h_neg
+    exact h (fun _ h_untl => by
+      obtain ⟨s, hs_lt, hs_F, hs_seg⟩ := h_untl
+      obtain ⟨r, hr1, hr2, hr3⟩ := h_neg s hs_lt hs_F
+      exact hr3 (hs_seg r hr1 hr2))
+  · rintro ⟨h1, s, hs_lt, hs_F, hs_seg⟩
+    intro h_neg
+    exact h_neg h1 ⟨s, hs_lt, hs_F, fun r hr1 hr2 => hs_seg r hr1 hr2⟩
+
+/-- **Forward direction**: If a bracket formula with n+1 witnesses holds on (z_0, z),
+    then the first witness x_0 satisfies the F-chain predicate F_0, and beta_0
+    holds on (z_0, x_0).
+
+    The proof unpacks the bracket witnesses and shows each F_i holds at x_i
+    using the bracket's segment types as Until witnesses. -/
+theorem BracketFormula.bracket_implies_fChainPred
+    {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z : M.carrier)
+    (h : bf.holds M atomMap z0 z) :
+    ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z ∧
+      bf.fChainPred.eval_at M atomMap x0 ∧
+      (∀ y : M.carrier, z0 < y → y < x0 →
+        (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) := by
+  simp only [holds, toIntervalPattern, IntervalPattern.holds] at h
+  obtain ⟨w, hmono, hrange, hpoint, hseg0, hseg_mid, hseg_last⟩ := h
+  refine ⟨w ⟨0, by omega⟩, (hrange ⟨0, by omega⟩).1, (hrange ⟨0, by omega⟩).2, ?_, hseg0⟩
+  -- Show F_0(w 0) holds. We prove the stronger statement: F_i(w i) for all i.
+  -- Helper: F_i(w i) for all i, proved by reverse induction (from i = n down to 0)
+  have h_fchain : ∀ (i : Fin (n + 1)),
+      (bf.fChainFrom i).eval_at M atomMap (w i) := by
+    -- Prove by induction on d = (n - i), the distance from the right end
+    -- We use a helper that takes d explicitly
+    suffices h : ∀ (d : Nat) (i : Fin (n + 1)), i.val + d = n →
+        (bf.fChainFrom i).eval_at M atomMap (w i) by
+      intro i; exact h (n - i.val) i (by omega)
+    intro d
+    induction d with
+    | zero =>
+      -- Base: i.val = n, so F_n(w n) = alpha_n AND (beta_{n+1} Until top)
+      intro i hd
+      have h_i_eq : i.val = n := by omega
+      -- Rewrite fChainFrom i as fChainFrom ⟨n, _⟩
+      have h_fi : bf.fChainFrom i = bf.fChainFrom ⟨n, by omega⟩ := by
+        congr 1; ext; exact h_i_eq
+      rw [h_fi, fChainFrom_base]
+      have h_wi : w i = w ⟨n, by omega⟩ := by congr 1; ext; exact h_i_eq
+      rw [h_wi]
+      exact ⟨hpoint ⟨n, by omega⟩, z, (hrange ⟨n, by omega⟩).2,
+        fun r hr1 hr2 => hseg_last r hr1 hr2⟩
+    | succ d' ih =>
+      -- Step: i.val + (d' + 1) = n, so i.val < n
+      intro i hd
+      have h_i_lt : i.val < n := by omega
+      rw [fChainFrom_step M atomMap bf i h_i_lt]
+      constructor
+      · exact hpoint i
+      · refine ⟨w ⟨i.val + 1, by omega⟩,
+          hmono i ⟨i.val + 1, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)), ?_, ?_⟩
+        · -- F_{i+1}(w(i+1))
+          exact ih ⟨i.val + 1, by omega⟩ (by simp [Fin.val_mk]; omega)
+        · -- beta_{i+1} on (w i, w(i+1))
+          match n with
+          | 0 => omega
+          | n' + 1 =>
+            intro r hr1 hr2
+            exact hseg_mid ⟨i.val, by omega⟩ r hr1 hr2
+  exact h_fchain ⟨0, by omega⟩
+
+/-- **Corollary 5.4, forward direction** (Rabinovich 2014, p.9):
+    There exists a VBracketFormula v such that v.holds implies
+    ¬(∃ z ∈ (z₀,z₁), bracket.holds z₀ z) on structures with HasAttainedINF.
+
+    The construction: for bracket bf with n+1 witnesses, define F_0 via
+    the F-chain. Apply Lemma 5.3 to get V such that V.holds ↔ ¬orderedPointsExist 1 F_0.
+    Then V.holds → ¬orderedPointsExist 1 F_0 → ¬(∃z, bracket(z_0, z)).
+
+    The reverse direction (¬∃z bracket → V.holds) requires Lemma 5.1 (Phase 4)
+    or a direct argument on Prior structures showing that orderedPointsExist
+    F_0 implies ∃z bracket. This is deferred to Phase 4. -/
+theorem neg_partialBracketExist_sufficient
+    {n : Nat} (bf : BracketFormula (n + 1)) :
+    ∃ (v : VBracketFormula),
+    ∀ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+      (atomMap : Formula → sig.preds) (h_INF : HasAttainedINF M atomMap)
+      (z0 z1 : M.carrier), z0 < z1 →
+      (v.holds M atomMap z0 z1 → ¬ bf.partialBracketExist M atomMap z0 z1) := by
+  -- Get the V-bracket for ¬orderedPointsExist 1 (fun _ => bf.fChainPred)
+  obtain ⟨v_neg, hv_neg⟩ := neg_orderedPointsExist_is_vbracket 1 (fun _ => bf.fChainPred)
+  refine ⟨v_neg, fun M atomMap h_INF z0 z1 h_lt hv => ?_⟩
+  -- V-bracket holds → ¬orderedPointsExist 1 F_0 → ¬∃z bracket
+  have h_neg_ordered := (hv_neg M atomMap h_INF z0 z1 h_lt).mp hv
+  -- Show ¬∃z bracket
+  intro ⟨z, hz0z, hzz1, h_bracket⟩
+  -- bracket implies orderedPointsExist via fChainPred
+  obtain ⟨x0, hx0_above, hx0_below, h_F0, _⟩ :=
+    BracketFormula.bracket_implies_fChainPred M atomMap bf z0 z h_bracket
+  -- orderedPointsExist 1 F_0 z0 z1 holds (x0 is the witness)
+  apply h_neg_ordered
+  simp only [orderedPointsExist, IntervalPattern.allBetaTrue, IntervalPattern.holds]
+  refine ⟨fun _ => x0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro a b hab; exact absurd hab (by omega)
+  · intro _; exact ⟨hx0_above, lt_trans hx0_below hzz1⟩
+  · intro _; exact h_F0
+  · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
+  · intro j; exact Fin.elim0 j
+  · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
+
+/-- **Corollary 5.4, full biconditional** (Rabinovich 2014, p.9):
+    The negation of ∃z∈(z₀,z₁), bracket.holds z₀ z is equivalent to a V-bracket
+    formula on Prior structures. The full equivalence requires Lemma 5.1 (Phase 4)
+    for the reverse direction; this sorry tracks that dependency. -/
+theorem neg_partialBracketExist_is_vbracket
+    (n : Nat) (bf : BracketFormula n) :
+    ∃ (v : VBracketFormula),
+    ∀ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+      (atomMap : Formula → sig.preds) (h_INF : HasAttainedINF M atomMap)
+      (z0 z1 : M.carrier), z0 < z1 →
+      (v.holds M atomMap z0 z1 ↔ ¬ bf.partialBracketExist M atomMap z0 z1) := by
+  sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
