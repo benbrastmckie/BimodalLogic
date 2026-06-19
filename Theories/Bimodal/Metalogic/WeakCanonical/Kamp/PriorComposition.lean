@@ -280,7 +280,41 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     · -- Quantifier part: zone-3 existential transfer (Prior-UZ/SZ + nested depth induction)
       -- See "Zone-3 Existential Transfer (Proof Obligation)" section above
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry)
+      -- Goal: (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ (∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf)
+      -- Strategy: use cross_extend_bwd_1var from h_t and h_x to find witnesses
+      -- with matching 1-var types, then apply Prior-UZ/SZ for zone-3 placement
+      constructor
+      · -- Forward: ∃ w in M → ∃ w' in N
+        rintro ⟨w, hw⟩
+        -- Get w₂ > t' with depth-(K+1) 2-var agreement at [w,t]/[w₂,t']
+        obtain ⟨w₂, hw₂⟩ := cross_extend_bwd_1var M t N t' h_t w
+        -- Get w₁ < x' with depth-(K+1) 2-var agreement at [w,x]/[w₁,x']
+        obtain ⟨w₁, hw₁⟩ := cross_extend_bwd_1var M x N x' h_x w
+        -- Project to 1-var: w₂ has same depth-(K+1) 1-var type as w
+        have h_1var_w₂ := cross_1var_from_2var M w t N w₂ t' hw₂
+        -- Project to 1-var: w₁ has same depth-(K+1) 1-var type as w
+        have h_1var_w₁ := cross_1var_from_2var M w x N w₁ x' hw₁
+        -- Get w's depth-(K+1) 1-var characteristic NF
+        -- w₂ and w₁ have same depth-(K+1) 1-var type as w
+        -- (cross_1var_from_2var gives the pointwise iff)
+        -- The remaining goal is to show w₂ satisfies sub_nf at [w₂,x',t']
+        -- Need: w₂ > t' (from 2-var agreement encoding order of w relative to t)
+        -- Need: w₁ < x' (from 2-var agreement encoding order of w relative to x)
+        -- Then: apply semantic_prior_UZ at N with char_fn (K+1) nf_w
+        --   to get first occurrence w' > t' satisfying char_fn (K+1) nf_w
+        --   with w' ≤ w₁ < x', giving t' < w' < x' (zone 3)
+        -- Finally: show nf_eval_nf N (K+1) 3 [w',x',t'] sub_nf
+        -- For now, use w₂ directly as witness (it has matching 1-var type;
+        -- the full zone-3 argument with Prior-UZ squeeze is the next step)
+        -- Use generalExistPart_from_classical pattern: since M witnesses the
+        -- existential at depth-(K+1) 3-var under sub_nf, and w₂ has matching
+        -- 1-var type, try classical transfer
+        exact ⟨w₂, sorry⟩
+      · -- Backward: ∃ w' in N → ∃ w in M (symmetric to forward)
+        rintro ⟨w', hw'⟩
+        -- Use cross_extend_fwd_1var to get matching witness in M
+        obtain ⟨w₂, hw₂⟩ := cross_extend_fwd_1var M t N t' h_t w'
+        exact ⟨w₂, sorry⟩)
 
 /-- Mirror for the Since zone (x < t). Same statement with reversed order. -/
 theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
@@ -325,8 +359,17 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier part: depth-(K+1) 3-var existential transfer (Since: x < t)
       intro sub_nf; rw [← h_N_quant sub_nf]
-      -- Zone-3 argument with Prior-SZ + nested depth induction
-      sorry)
+      -- Same structure as Until case but with reversed orders and Prior-SZ
+      constructor
+      · -- Forward: ∃ w in M → ∃ w' in N
+        rintro ⟨w, hw⟩
+        -- Get w₂ with depth-(K+1) 2-var agreement at [w,t]/[w₂,t']
+        obtain ⟨w₂, hw₂⟩ := cross_extend_bwd_1var M t N t' h_t w
+        exact ⟨w₂, sorry⟩
+      · -- Backward: ∃ w' in N → ∃ w in M (symmetric)
+        rintro ⟨w', hw'⟩
+        obtain ⟨w₂, hw₂⟩ := cross_extend_fwd_1var M t N t' h_t w'
+        exact ⟨w₂, sorry⟩)
 
 /-- Specialized version for the KampBypass backward Until direction:
     one-directional transfer from M₀ to M. -/
