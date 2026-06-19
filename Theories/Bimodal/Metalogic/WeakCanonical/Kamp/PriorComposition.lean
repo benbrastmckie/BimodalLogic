@@ -239,7 +239,27 @@ private theorem nonconstenv_exist_transfer_until {sig : MonadicSignature}
     (sub_nf : NormalForm sig D 3) :
     (∃ w, nf_eval_nf M D 3 (Fin.cons w (Fin.cons x (fun _ => t))) sub_nf) ↔
     (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) := by
-  sorry
+  -- Forward direction: given w in M, find w' in N
+  -- Backward: symmetric
+  -- Both directions use cross_extend_bwd/fwd from h_x and h_t
+  -- to find witnesses, then establish NF agreement
+  constructor
+  · rintro ⟨w, hw⟩
+    -- Get witnesses from both anchor points
+    obtain ⟨w'_x, hw'_x⟩ := cross_extend_bwd_1var M x N x' h_x w
+    obtain ⟨w'_t, hw'_t⟩ := cross_extend_bwd_1var M t N t' h_t w
+    -- Both have depth-D 1-var agreement with w
+    have h_w_wx := cross_1var_from_2var M w x N w'_x x' hw'_x
+    have h_w_wt := cross_1var_from_2var M w t N w'_t t' hw'_t
+    -- w'_x and w'_t have the same depth-D 1-var NF (unique via nf_eval_unique)
+    -- Zone analysis determines which witness to use and verifies orders
+    sorry
+  · rintro ⟨w', hw'⟩
+    obtain ⟨w_x, hw_x⟩ := cross_extend_fwd_1var M x N x' h_x w'
+    obtain ⟨w_t, hw_t⟩ := cross_extend_fwd_1var M t N t' h_t w'
+    have h_w'_wx := cross_1var_from_2var M w_x x N w' x' hw_x
+    have h_w'_wt := cross_1var_from_2var M w_t t N w' t' hw_t
+    sorry
 
 /-- Mirror for the Since zone (x < t). -/
 private theorem nonconstenv_exist_transfer_since {sig : MonadicSignature}
@@ -271,7 +291,20 @@ private theorem nonconstenv_exist_transfer_since {sig : MonadicSignature}
     (sub_nf : NormalForm sig D 3) :
     (∃ w, nf_eval_nf M D 3 (Fin.cons w (Fin.cons x (fun _ => t))) sub_nf) ↔
     (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) := by
-  sorry
+  -- Mirror of Until case with reversed order (x < t instead of t < x)
+  constructor
+  · rintro ⟨w, hw⟩
+    obtain ⟨w'_x, hw'_x⟩ := cross_extend_bwd_1var M x N x' h_x w
+    obtain ⟨w'_t, hw'_t⟩ := cross_extend_bwd_1var M t N t' h_t w
+    have h_w_wx := cross_1var_from_2var M w x N w'_x x' hw'_x
+    have h_w_wt := cross_1var_from_2var M w t N w'_t t' hw'_t
+    sorry
+  · rintro ⟨w', hw'⟩
+    obtain ⟨w_x, hw_x⟩ := cross_extend_fwd_1var M x N x' h_x w'
+    obtain ⟨w_t, hw_t⟩ := cross_extend_fwd_1var M t N t' h_t w'
+    have h_w'_wx := cross_1var_from_2var M w_x x N w' x' hw_x
+    have h_w'_wt := cross_1var_from_2var M w_t t N w' t' hw_t
+    sorry
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
