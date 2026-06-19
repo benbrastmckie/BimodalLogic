@@ -750,6 +750,114 @@ theorem neg_partialBracketExist_sufficient
   · intro j; exact Fin.elim0 j
   · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
 
+/-! ## Lemma 5.1: Full Negation Closure for Bracket Formulas
+
+The negation of any bracket formula is equivalent to a V-bracket formula on
+structures with `HasAttainedINF`. This is the main technical lemma of Section 5.
+
+Proof by induction on n (the number of witnesses):
+- Base (n = 0): ¬(∀ y ∈ (z₀,z₁), β₀(y)) ↔ ∃ y ∈ (z₀,z₁), ¬β₀(y)
+  which is a bracket with 1 witness, point type β₀.neg, segments True.
+- Step (n+1 → n): Use HasAttainedINF to find first α₀-occurrence r₀.
+  The bracket decomposes via prepend into:
+    ∃ r₀, α₀(r₀) ∧ β₀ on (z₀, r₀) ∧ rightPart.holds r₀ z₁
+  Apply IH to rightPart (n witnesses) for the V-bracket on (r₀, z₁).
+  Prepend r₀ to each IH disjunct for the V-bracket on (z₀, z₁).
+-/
+
+/-- Base case: negation of a 0-witness bracket (universal segment condition)
+    is a V-bracket with a single 1-witness disjunct. -/
+theorem neg_bracket_zero_is_vbracket (bf : BracketFormula 0) :
+    ∃ (v : VBracketFormula),
+    ∀ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+      (atomMap : Formula → sig.preds)
+      (z0 z1 : M.carrier), z0 < z1 →
+      (v.holds M atomMap z0 z1 ↔ ¬ bf.holds M atomMap z0 z1) := by
+  -- bf.holds = ∀ y ∈ (z0, z1), beta_0(y)
+  -- ¬bf.holds = ∃ y ∈ (z0, z1), ¬beta_0(y) = bracket with 1 witness
+  let neg_bf : BracketFormula 1 :=
+    { pointTypes := fun _ => (bf.segmentTypes ⟨0, by omega⟩).neg
+      segmentTypes := fun _ => TemporalPred.top }
+  refine ⟨⟨[⟨1, neg_bf⟩]⟩, fun M atomMap z0 z1 _h_lt => ?_⟩
+  constructor
+  · -- Forward: V-bracket holds → ¬bf.holds
+    rintro ⟨⟨m, bf'⟩, h_mem, h_holds⟩
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at h_mem
+    obtain rfl := congr_arg Sigma.fst h_mem
+    have hbf'_eq : bf' = neg_bf := eq_of_heq (Sigma.mk.inj h_mem).2
+    subst hbf'_eq
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+      IntervalPattern.holds] at h_holds
+    obtain ⟨w, _, hrange, hpoint, _, _, _⟩ := h_holds
+    intro h_bf
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+      IntervalPattern.holds] at h_bf
+    have h_neg := hpoint ⟨0, by omega⟩
+    simp only [neg_bf, TemporalPred.neg, TemporalPred.eval_at,
+      Formula.neg, temporal_truth] at h_neg
+    exact h_neg (h_bf (w ⟨0, by omega⟩) (hrange ⟨0, by omega⟩).1 (hrange ⟨0, by omega⟩).2)
+  · -- Backward: ¬bf.holds → V-bracket holds
+    intro h_neg
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+      IntervalPattern.holds] at h_neg
+    push_neg at h_neg
+    obtain ⟨y, hy0, hy1, hy_neg⟩ := h_neg
+    refine ⟨⟨1, neg_bf⟩, ?_, ?_⟩
+    · simp [VBracketFormula]
+    · simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+        IntervalPattern.holds]
+      refine ⟨fun _ => y, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro a b hab; exact absurd hab (by omega)
+      · intro _; exact ⟨hy0, hy1⟩
+      · intro ⟨j, hj⟩; simp at hj; subst hj
+        simp only [neg_bf, TemporalPred.neg, TemporalPred.eval_at,
+          Formula.neg, temporal_truth]
+        exact hy_neg
+      · intro y' _ _; exact TemporalPred.eval_at_top M atomMap y'
+      · intro ⟨j, hj⟩; exact absurd hj (by omega)
+      · intro y' _ _; exact TemporalPred.eval_at_top M atomMap y'
+
+/-- **Lemma 5.1** (Rabinovich 2014, pp.7-11): The negation of any bracket
+    formula is equivalent to a V-bracket formula on structures with
+    `HasAttainedINF` (which includes all Prior structures).
+
+    The V-bracket is constructed purely from the bracket's types, independent
+    of the structure M. -/
+theorem neg_bracket_is_vbracket :
+    ∀ (n : Nat) (bf : BracketFormula n),
+    ∃ (v : VBracketFormula),
+    ∀ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+      (atomMap : Formula → sig.preds) (h_INF : HasAttainedINF M atomMap)
+      (z0 z1 : M.carrier), z0 < z1 →
+      (v.holds M atomMap z0 z1 ↔ ¬ bf.holds M atomMap z0 z1) := by
+  intro n
+  induction n with
+  | zero =>
+    intro bf
+    obtain ⟨v, hv⟩ := neg_bracket_zero_is_vbracket bf
+    exact ⟨v, fun M atomMap _h_INF z0 z1 h_lt => hv M atomMap z0 z1 h_lt⟩
+  | succ n ih =>
+    intro bf
+    -- The induction step requires a different decomposition than Lemma 5.3.
+    -- We cannot simply "peel off" the first witness because the segment types
+    -- create coupling: knowing alpha_0 doesn't occur in (z0, r0) doesn't
+    -- tell us anything about beta_0 (segmentTypes 0) on (z0, r0).
+    --
+    -- The correct approach (Rabinovich p.10) decomposes by the first SEGMENT
+    -- TYPE failure, not the first point type. Three cases:
+    -- 1. ¬orderedPointsExist (all point types fail) → Lemma 5.3
+    -- 2. orderedPointsExist but some beta fails → split at first failure
+    -- 3. Everything holds → bracket holds (contradiction with negation)
+    --
+    -- For now we use the IH on rightPart and construct a V-bracket that
+    -- covers the forward direction (V-bracket → ¬bracket). The backward
+    -- direction (¬bracket → V-bracket) requires the full three-case analysis.
+    --
+    -- Approach: use neg_orderedPointsExist_is_vbracket (Lemma 5.3) for the
+    -- point-type-failure case, and IH + splitAt for the segment-failure case.
+    -- Construct V-bracket covering all failure modes.
+    sorry
+
 /-- **Corollary 5.4, full biconditional** (Rabinovich 2014, p.9):
     The negation of ∃z∈(z₀,z₁), bracket.holds z₀ z is equivalent to a V-bracket
     formula on Prior structures. The full equivalence requires Lemma 5.1 (Phase 4)

@@ -153,7 +153,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Lemma 5.1 -- Full Negation Closure [NOT STARTED]
+### Phase 4: Lemma 5.1 -- Full Negation Closure [IN PROGRESS]
 
 **Goal**: Prove the main technical lemma: the negation of any bracket formula [alpha_0, beta_1, ..., alpha_n](z_0, z_1) is a V-EA formula on Prior structures. This is the core of Rabinovich Section 5, using interval splitting from Phase 1 and the base cases from Phases 2-3.
 
