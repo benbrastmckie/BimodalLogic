@@ -1,6 +1,6 @@
 {
-  "status": "partial",
-  "summary": "Added nvar_transfer_from_1var_agree theorem to PriorComposition.lean. Base case (d=0, pure atoms) and step-case atom part proved sorry-free. Step-case quantifier part has 2 new sorries for the Prior-UZ/SZ gap placement. Build passes. Pre-existing 4 sorries unchanged.",
+  "status": "blocked",
+  "summary": "All patch-based approaches to zone-3 existential transfer have failed. The proof architecture has diverged from Rabinovich 2014. A systematic refactoring to align with the literature's induction structure is required before implementation can proceed.",
   "phases_completed": 8,
   "phases_total": 10,
   "sorry_inventory": [
@@ -8,55 +8,60 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 459,
       "statement": "nvar_transfer_from_1var_agree quantifier step (forward)",
-      "assumption": "Existential transfer: given x in M, find x' in N in the same gap",
-      "why_deferred": "Requires Prior-UZ gap placement with char_fn",
-      "next_dispatch": "Implement gap determination + Prior-UZ first-occurrence + IH application"
+      "assumption": "Prior-UZ gap placement for interior witness",
+      "why_deferred": "Proof architecture divergence from Rabinovich — patch attempts exhausted"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 462,
       "statement": "nvar_transfer_from_1var_agree quantifier step (backward)",
-      "assumption": "Symmetric: given x' in N, find x in M",
-      "why_deferred": "Symmetric to forward, uses Prior-SZ",
-      "next_dispatch": "Implement symmetric gap placement"
+      "assumption": "Symmetric",
+      "why_deferred": "Same divergence"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 554,
-      "statement": "prior_nonconstenv_2var_agree_until forward (pre-existing)",
-      "assumption": "w2 satisfies sub_nf at [w2, x', t']",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
+      "statement": "prior_nonconstenv_2var_agree_until forward zone-3",
+      "assumption": "Depends on nvar_transfer resolution",
+      "why_deferred": "Blocked by nvar_transfer"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 559,
-      "statement": "prior_nonconstenv_2var_agree_until backward (pre-existing)",
-      "assumption": "Symmetric backward",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
+      "statement": "prior_nonconstenv_2var_agree_until backward zone-3",
+      "assumption": "Symmetric",
+      "why_deferred": "Blocked by nvar_transfer"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 610,
-      "statement": "prior_nonconstenv_2var_agree_since forward (pre-existing)",
-      "assumption": "Zone-3 Since direction",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
+      "statement": "prior_nonconstenv_2var_agree_since forward zone-3",
+      "assumption": "Since mirror",
+      "why_deferred": "Blocked by nvar_transfer"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 614,
-      "statement": "prior_nonconstenv_2var_agree_since backward (pre-existing)",
-      "assumption": "Symmetric backward",
-      "why_deferred": "Pre-existing",
-      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
+      "statement": "prior_nonconstenv_2var_agree_since backward zone-3",
+      "assumption": "Symmetric",
+      "why_deferred": "Blocked by nvar_transfer"
     }
   ],
-  "blockers": [],
-  "continuation_path": null,
+  "blockers": [
+    "STRUCTURAL DIVERGENCE FROM LITERATURE: The Lean proof architecture (NF-based, depth induction with separate arity) does not faithfully encode Rabinovich's proof (exists-forall formulas, witness-count induction with interval splitting). Multiple patch attempts (10+ dispatches) have all failed at the same gap — transferring existential witnesses while preserving order relative to multiple environment components simultaneously. A systematic refactoring is required to align the proof architecture with the literature before the sorry can be closed."
+  ],
   "continuation_context": {
-    "next_action": "Implement Prior-UZ gap placement in the forward direction of exist_transfer_from_1var_prior (line 459). The goal state has ih (depth d all r), h_1var (depth d+1), h_order, Prior-UZ/SZ, and char_fn/char_correct available. The proof requires: 1) determine x's gap in sorted env, 2) use 2-var existential transfer from h_1var at the lower bounding component, 3) apply Prior-UZ with char_fn to find first occurrence in the gap, 4) apply IH at depth d arity r+1.",
-    "is_successor": false
+    "is_successor": false,
+    "required_action": "systematic_literature_alignment_research",
+    "dispatch_history": [
+      "Phase 8 v16: zone-3 witness construction — BLOCKED (arity explosion)",
+      "Phase 8 v16 retry: zone-3 framework — partial (split sorry, no closure)",
+      "Phase 9 v17: reconstruction_depth_agree — proved but CANNOT bridge gap",
+      "Phase 10 v17: zone-3 assembly — BLOCKED (reconstruction insufficient)",
+      "Phase 9 v18: nvar_transfer standalone — base case ok, quantifier step BLOCKED",
+      "Phase 9 v18 retry: gap placement — BLOCKED (order relative to multiple components)",
+      "Phase 9 v18 retry 2: focused gap placement — BLOCKED (same fundamental issue)"
+    ],
+    "root_cause": "The NF encoding commits to fixed-arity evaluation. Rabinovich's proof operates on variable-arity interval formulas where the number of witnesses decreases at each induction step. The Lean code's depth-first NF decomposition creates a depth gap that cannot be bridged without simultaneously handling all arities — which the current architecture doesn't support cleanly."
   }
 }

@@ -1792,7 +1792,7 @@
     {
       "project_number": 303,
       "project_name": "k_gt_0_depth_induction",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
