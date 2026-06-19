@@ -1,54 +1,30 @@
 {
   "status": "partial",
-  "summary": "Phase 6 partial: refactored char params from single-depth to multi-depth across 4 files (PriorComposition, KampBypass, KampMutualInduction, NfCharFormula). Factored 4 inline sorry into 2 well-typed helper theorems. Core 3-var existential transfer proof not yet closed -- requires zone analysis + induction on D.",
+  "summary": "Phase 6 partial: Multi-depth char refactoring complete across 4 files. Original 4 inline sorry in main theorems replaced by 2 well-typed helper sorry (zone_compatible_witness_bwd/fwd). However, analysis discovered zone_compatible_witness is FALSE as stated (counterexample: Z with P=evens, envM=[4,-1], envN=[0,-1], w=1). The factoring through a sub_nf-independent witness is incorrect -- the witness must depend on sub_nf. The proof strategy needs revision: either (a) abandon the zone_compatible_witness factoring and prove nonconstenv_exist_transfer_general with sub_nf-dependent witness selection, or (b) restructure to use the nf_characteristic approach where the 2-var agreements from cross_extend at each anchor are composed into n-var agreement.",
   "phases_completed": 5,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 256,
-      "statement": "nonconstenv_exist_transfer_until (forward direction)",
-      "assumption": "w' from cross_extend_bwd_1var satisfies full depth-D 3-var NF at [w',x',t']",
-      "why_deferred": "Requires zone analysis + Prior-UZ/SZ for between-zone witness + induction on D for quantifier cascade",
-      "next_dispatch": "Generalize to arbitrary arity, prove by induction on D. D=0 is purely atomic (zone+pred). D=d+1 uses IH at higher arity."
+      "line": 275,
+      "statement": "zone_compatible_witness_bwd",
+      "assumption": "For any w in M, exists w' in N with depth-D 1-var agreement AND matching orders relative to all anchors",
+      "why_deferred": "THEOREM IS FALSE as stated. Counterexample: Z with P=evens, envM=[4,-1], envN=[0,-1], w=1. The interval (-1,0) in Z is empty. The factoring through a sub_nf-independent witness is wrong.",
+      "next_dispatch": "DELETE zone_compatible_witness_bwd/fwd. Restructure nonconstenv_exist_transfer_general with sub_nf-dependent witness. For D=0: sub_nf encodes w's zone via order atoms, so witness depends on sub_nf. For D>0: use nf_characteristic approach with IH."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 262,
-      "statement": "nonconstenv_exist_transfer_until (backward direction)",
-      "assumption": "Symmetric to forward",
-      "why_deferred": "Same structure as forward",
-      "next_dispatch": "Follows from forward by symmetry (swap M/N)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 301,
-      "statement": "nonconstenv_exist_transfer_since (forward direction)",
-      "assumption": "Mirror of Until with x < t",
-      "why_deferred": "Same structure as Until forward",
-      "next_dispatch": "Mirror of Until proof"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 307,
-      "statement": "nonconstenv_exist_transfer_since (backward direction)",
-      "assumption": "Symmetric to forward",
-      "why_deferred": "Same structure as forward",
-      "next_dispatch": "Follows from forward by symmetry"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 651,
-      "statement": "existPart_succ_n1_bypass ih_all_char parameter (pre-existing)",
-      "assumption": "ih_all_char at all depths d <= k+1",
-      "why_deferred": "Pre-existing sorry from prior phases; filled when kamp_mutual_induction provides ih_all_char",
-      "next_dispatch": "Will be resolved when kamp_mutual_induction fills it"
+      "line": 308,
+      "statement": "zone_compatible_witness_fwd",
+      "assumption": "Symmetric to bwd",
+      "why_deferred": "SAME ISSUE as bwd -- theorem is FALSE",
+      "next_dispatch": "DELETE along with bwd"
     }
   ],
   "blockers": [
-    "nonconstenv_exist_transfer_until/since: requires proof that zone analysis + Prior-UZ/SZ + multi-depth char determines 3-var NF agreement from 2-var agreement at individual component pairs"
+    "zone_compatible_witness_bwd/fwd is FALSE as stated. The factoring through a sub_nf-independent witness is incorrect. The witness must depend on sub_nf because at D=0, sub_nf encodes the zone (via order atoms) and only certain zones have witnesses. At D>0, the quantifier conditions constrain which witness works. NEXT STEP: rewrite nonconstenv_exist_transfer_general with sub_nf-dependent witness selection, possibly by induction on D where D=0 case analyzes sub_nf's order atoms to determine the zone and finds the witness, and D>0 uses nf_characteristic + IH."
   ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-6-partial-handoff.md",
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 6,
@@ -56,27 +32,16 @@
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean"
     ],
     "key_decisions": [
-      "Changed char params from single-depth to multi-depth (char_fn : forall d, NormalForm sig d 1 -> Formula)",
-      "Added ih_all_char parameter to existPart_succ_n1_bypass and existPart_succ",
-      "Changed kamp_mutual_induction from simple induction to Nat.strong_induction_on",
-      "Factored 4 sorry in main theorems into 2 helper theorems (nonconstenv_exist_transfer_until/since)",
-      "Helper theorems take D (depth) as explicit parameter -- enables induction on D in future dispatch"
-    ]
-  },
-  "artifacts": [
-    {
-      "type": "handoff",
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-6-partial-handoff.md"
-    }
-  ],
-  "verification": {
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 2,
-    "build_passed": true
+      "Multi-depth char (char_fn : forall d, NormalForm sig d 1 -> Formula) is CORRECT and should be kept",
+      "nonconstenv_exist_transfer_general with D-induction and n-arity is the right structure",
+      "zone_compatible_witness factoring is WRONG (FALSE theorem) -- must be replaced",
+      "The witness must depend on sub_nf, not be independent",
+      "D=0 base case: sub_nf order atoms determine w's zone; for outer zones use cross_extend, for between-zone use Prior-UZ/SZ, for equality zones use the anchor directly",
+      "D>0 inductive step: use nf_characteristic approach; atoms from 1-var+orders (zone-dependent); quantifiers from IH at higher arity"
+    ],
+    "counterexample": "Z with P=evens, envM=[4,-1], envN=[0,-1], w=1. h_1var satisfied (4 and 0 both even, same depth-1 NFs; -1 and -1 trivially). h_orders: -1<4 iff -1<0, both true. But no integer exists in (-1,0), so zone_compatible_witness fails."
   }
 }
