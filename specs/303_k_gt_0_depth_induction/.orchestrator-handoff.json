@@ -1,79 +1,51 @@
 {
   "status": "blocked",
-  "summary": "Phase 9-10 BLOCKED: reconstruction_depth_agree CANNOT bridge the zone-3 depth gap. Detailed analysis confirms the gap is fundamental — need depth-(K+1) 3-var transfer but only have depth-K 3-var from ih_strong. reconstruction_depth_agree operates at FIXED arity and requires the target depth as INPUT (cannot upgrade from K to K+1). exist_transfer_from_full_agree requires d <= k where k+1 is input depth, giving d <= K only (need K+1). New infrastructure required.",
+  "summary": "Phase 9 blocked: standalone nvar_transfer_from_1var lemma cannot be proved as conceived. The depth gap (need depth-(K+1) arity-3 from depth-(K+1) arity-2) is irreducible with available NF algebra. A sorry-free convenience wrapper exist_transfer_at_full_depth was added. Exhaustive analysis confirms 5 approaches fail. Requires architectural redesign.",
   "phases_completed": 8,
   "phases_total": 10,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 449,
-      "statement": "prior_nonconstenv_2var_agree_until (forward zone-3)",
-      "assumption": "nf_eval_nf N (K+1) 3 [w2,x',t'] sub_nf",
-      "why_deferred": "DEPTH GAP CONFIRMED IRREDUCIBLE: ih_strong at m=K-1 gives depth-(K+1) 2-var at [x,t]/[x',t']. Its quantifier condition gives depth-K 3-var existential transfer, producing w_nf with depth-K 3-var full agreement at [w,x,t]/[w_nf,x',t']. But proving nf_eval_nf N (K+1) 3 [w_nf,x',t'] sub_nf requires the QUANTIFIER PART at depth K: depth-K 4-var existential transfer at [v,w,x,t]/[v',w_nf,x',t']. This needs depth-(K+1) 3-var agreement — CIRCULAR. reconstruction_depth_agree with K_param=K-1 gives d <= K at FIXED arity 3. exist_transfer_from_full_agree with depth-K 3-var gives d <= K-1 at arity 4. Gap cascades: K -> K-1 -> ... -> 0 (atomic base).",
-      "next_dispatch": "RESEARCH NEEDED: Determine whether (a) inner depth induction from 0 to K+1 with Prior-UZ/SZ density at base, (b) joint depth+arity induction, or (c) reformulation using temporal characterization is the correct resolution. Then implement the chosen approach as a new helper lemma."
+      "statement": "prior_nonconstenv_2var_agree_until zone-3 forward",
+      "assumption": "w₂ satisfies depth-(K+1) 3-var sub_nf at [w₂,x',t']",
+      "why_deferred": "Fundamental depth gap: exist_transfer_from_full_agree gives depth-K arity-3 from depth-(K+1) arity-2, goal needs depth-(K+1) arity-3. Gap is 1 depth level per arity increase. Irreducible with pure NF algebra.",
+      "next_dispatch": "Research architectural alternatives: (a) inner depth cascade 0->K+1 with increasing arity, (b) direct sub_nf evaluation using atoms from depth-K 3-var + quantifiers from exist_transfer at d<=K-1, (c) reformulate proof to avoid 3-var transfer entirely"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 454,
-      "statement": "prior_nonconstenv_2var_agree_until (backward zone-3)",
-      "assumption": "Symmetric to forward",
-      "why_deferred": "Same depth gap as line 449",
+      "statement": "prior_nonconstenv_2var_agree_until zone-3 backward",
+      "assumption": "Same depth gap, reverse direction",
+      "why_deferred": "Same as line 449",
       "next_dispatch": "Same as line 449"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 505,
-      "statement": "prior_nonconstenv_2var_agree_since (forward zone-3)",
-      "assumption": "Since mirror of until forward",
-      "why_deferred": "Same depth gap",
+      "statement": "prior_nonconstenv_2var_agree_since zone-3 forward",
+      "assumption": "Same depth gap, Since direction",
+      "why_deferred": "Same as line 449",
       "next_dispatch": "Same as line 449"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 509,
-      "statement": "prior_nonconstenv_2var_agree_since (backward zone-3)",
-      "assumption": "Symmetric to Since forward",
-      "why_deferred": "Same depth gap",
+      "statement": "prior_nonconstenv_2var_agree_since zone-3 backward",
+      "assumption": "Same depth gap, Since backward",
+      "why_deferred": "Same as line 449",
       "next_dispatch": "Same as line 449"
     }
   ],
   "blockers": [
-    "DEPTH GAP IS FUNDAMENTAL: The quantifier part of depth-(K+2) 2-var agreement at [x,t]/[x',t'] requires depth-(K+1) 3-var existential transfer. Available: depth-K 3-var from ih_strong(K-1) quantifier condition. exist_transfer_from_full_agree gives d <= K. reconstruction_depth_agree gives d <= K at same arity. The off-by-one gap cannot be bridged by existing infrastructure.",
-    "PHASE 8 CLAIM WAS INCORRECT: The handoff stated 'apply reconstruction_depth_agree to upgrade depth-K to depth-(K+1)'. This is mathematically impossible with the theorem's type signature: reconstruction_depth_agree takes depth-(K+1) as INPUT and produces d <= K+1 — it cannot PRODUCE depth-(K+1) from depth-K.",
-    "NEW INFRASTRUCTURE NEEDED: The resolution requires a fundamentally new lemma. Three candidate approaches from report 18: (a) inner induction on d from 0 to K+1 within the quantifier part, with depth-0 base using Prior-UZ/SZ atomic density, (b) joint depth+arity induction proving transfer at all levels simultaneously, (c) 'Prior uplift' theorem showing depth-K r-var + depth-(K+1) 1-var per component + Prior axioms implies depth-(K+1) r-var."
+    "The standalone nvar_transfer_from_1var lemma requires proving: from depth-(d+1) 1-var at each component + order matching → depth-(d+1) r-var. The quantifier step needs a single witness z' with correct orders relative to ALL env components. cross_extend_bwd_1var gives z' with correct order relative to ONE component only. Prior-UZ bounding fails because the two witnesses from different components have no guaranteed relative ordering.",
+    "5 approaches exhausted: (1) induction on d with all r (order matching gap), (2) depth upgrade K→K+1 via 1-var (same gap), (3) exist_transfer at d=K (already maximal), (4) reconstruction_depth_agree (fixed arity), (5) Prior-UZ dual bounding (witnesses not guaranteed in correct relative positions)"
   ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-9-10-blocker-20260619.md",
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 9,
-    "plan_path": "specs/303_k_gt_0_depth_induction/plans/17_reconstruction-induction-plan.md",
-    "key_finding": "reconstruction_depth_agree does NOT bridge the zone-3 depth gap. It operates at fixed arity and requires its target depth as input. The depth gap is confirmed irreducible by all 5 approaches attempted. New proof technique required — likely an inner induction that descends from K+1 to 0, increasing arity at each step and terminating at purely atomic (depth 0) where Prior-UZ/SZ density applies.",
-    "approaches_exhausted_with_evidence": [
-      {
-        "approach": "exist_transfer_from_full_agree with ih_strong at K-1",
-        "why_fails": "ih_strong gives depth-(K+1) 2-var. exist_transfer: k=K, d<=K. Goal needs d=K+1.",
-        "lean_evidence": "exist_transfer_from_full_agree type: d <= k, k+1 = input depth"
-      },
-      {
-        "approach": "reconstruction_depth_agree with depth-K 3-var",
-        "why_fails": "K_param = K-1, output d <= K. Same as input depth. No upgrade.",
-        "lean_evidence": "reconstruction_depth_agree output: d <= K_param + 1 = K"
-      },
-      {
-        "approach": "reconstruction_depth_agree with depth-(K+1) 2-var",
-        "why_fails": "Wrong arity: n=1 gives 2-var output, not 3-var existential",
-        "lean_evidence": "reconstruction_depth_agree output arity = n+1 = input arity"
-      },
-      {
-        "approach": "generalExistPart_from_classical",
-        "why_fails": "Needs depth-(K+2) 2-var as precondition — that IS the outer conclusion",
-        "lean_evidence": "generalExistPart requires nf_eval_nf at depth k+1 of env as precondition"
-      },
-      {
-        "approach": "Combine hw2 [w,t]/[w2,t'] with ih_strong [x,t]/[x',t']",
-        "why_fails": "Different environments, cannot compose to get 3-var at [w,x,t]/[w_nf,x',t']",
-        "lean_evidence": "Each agreement extends by 1 variable from different bases"
-      }
-    ]
+    "plan_path": "specs/303_k_gt_0_depth_induction/plans/18_nvar-transfer-plan.md",
+    "key_discovery": "exist_transfer_from_full_agree at d=K is the MAXIMUM available from pure NF algebra. The gap is exactly 1 depth per 1 arity increase. The fundamental issue: cross_extend_bwd_1var from a single base component cannot produce a witness with correct orders relative to MULTIPLE components simultaneously.",
+    "recommended_next_research": "Investigate whether the w_nf approach (ih_strong → depth-K 3-var FULL agreement at [w,x,t]/[w_nf,x',t'] with w_nf in zone 3) can close the sorry DIRECTLY by showing nf_eval N (K+1) 3 [w_nf,x',t'] sub_nf via: (a) atoms from depth-K atom agreement, (b) quantifiers from exist_transfer_from_full_agree applied to the depth-K 3-var agreement (gives d<=K-1 at arity 4). The inner quantifiers of sub_nf are at depth K, which asks about depth-K 4-var. Can depth-(K-1) 4-var suffice because sub_nf.2 chi4 only depends on chi4's evaluation, not its full depth-K structure? Research whether nf_eval at depth K+1 can be decomposed into depth-K atoms + depth-(K-1) quantifier conditions."
   }
 }

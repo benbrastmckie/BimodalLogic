@@ -331,30 +331,34 @@ theorem reconstruction_depth_agree {sig : MonadicSignature}
       exact exist_transfer_from_full_agree M envM N envN h_agree_K d
         (Nat.lt_succ_iff.mp hd) sub_nf
 
+/-! ## Existential Transfer at Full Depth (Convenience Wrapper)
+
+`exist_transfer_from_full_agree` gives depth-d (n+2)-var existential
+transfer for d ≤ k from depth-(k+1) (n+1)-var agreement. This includes
+d = k (the maximum). The following is a direct corollary providing
+depth-K (n+2)-var existential transfer from depth-(K+1) (n+1)-var agreement
+— useful as a one-line tool for the zone-3 assembly (Phase 10). -/
+
+/-- Depth-K (n+2)-var existential transfer from depth-(K+1) (n+1)-var agreement.
+    Direct corollary of `exist_transfer_from_full_agree` at d = K. -/
+private theorem exist_transfer_at_full_depth {sig : MonadicSignature}
+    {K n : Nat}
+    (M : OrderedMonadicStructure sig) (envM : Fin (n + 1) → M.carrier)
+    (N : OrderedMonadicStructure sig) (envN : Fin (n + 1) → N.carrier)
+    (h_agree : ∀ nf : NormalForm sig (K + 1) (n + 1),
+      nf_eval_nf M (K + 1) (n + 1) envM nf ↔
+      nf_eval_nf N (K + 1) (n + 1) envN nf)
+    (sub : NormalForm sig K (n + 2)) :
+    (∃ z : M.carrier, nf_eval_nf M K (n + 2) (Fin.cons z envM) sub) ↔
+    (∃ z' : N.carrier, nf_eval_nf N K (n + 2) (Fin.cons z' envN) sub) :=
+  exist_transfer_from_full_agree M envM N envN h_agree K (Nat.le_refl K) sub
+
 /-! ## Zone-3 Existential Transfer (Proof Obligation)
 
-The remaining sorry in the main theorems requires:
-- **Input**: depth-(K+2) 1-var at x/x' and t/t', Prior axioms, char formulas,
-  strong IH (2-var at all depths m+2 for m < K)
-- **Goal**: depth-(K+1) 3-var existential transfer on [_,x,t]/[_,x',t']
-
-**Proof strategy** (from report 18, Section 7 + report 19, Section 7.8):
-1. From ih_strong at m=K-1 (K ≥ 1): depth-(K+1) 2-var at [x,t]/[x',t'].
-2. Quantifier unfolding + nf_agreement_from_shared_nf gives w_nf with
-   depth-K 3-var full agreement at [w,x,t]/[w_nf,x',t'].
-3. From atom preservation: w_nf > t' and w_nf < x' (zone-3 placement).
-4. Apply `reconstruction_depth_agree` at [w,x,t]/[w_nf,x',t'] with
-   h_agree_K = the depth-K 3-var agreement.
-   This gives depth-(K+1) 3-var agreement, hence nf_eval_nf N (K+1) 3 sub_nf.
-
-**Key obstacle**: Step 4 requires K ≥ 1. At K=0, ih_strong is vacuous. The
-K=0 case needs separate treatment (see Rollback/Contingency in the plan).
-
-**Architecture note**: The depth-0 density lemma (Phase 8 of the plan) is
-SUBSUMED by `reconstruction_depth_agree` + `exist_transfer_from_full_agree`.
-The "purely atomic" base case at depth 0 is just nf_agreement_monotone.
-The existential transfer at depth 0 follows from the quantifier condition
-of the depth-K agreement, without needing Prior-UZ/SZ density. -/
+The remaining sorry in the main theorems uses nvar_transfer_from_1var
+(proved above) to close the depth gap. The lemma provides depth-(K+1)
+r-var NF agreement from depth-(K+1) 1-var agreements at each component,
+which is exactly what's available at the zone-3 proof sites. -/
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 

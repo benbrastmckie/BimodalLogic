@@ -177,7 +177,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 9: Standalone nvar_transfer_from_1var Lemma [NOT STARTED]
+### Phase 9: Standalone nvar_transfer_from_1var Lemma [BLOCKED]
 
 **Goal**: Prove a standalone helper lemma that, given 1-var NF agreements at all environment components plus order matching plus CharPart plus Prior axioms, establishes r-var NF agreement at any depth d for any arity r. This lemma is proved by induction on d with ALL arities covered at each step, eliminating the depth/arity gap entirely.
 
