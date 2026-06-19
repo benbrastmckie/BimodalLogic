@@ -1799,10 +1799,10 @@
       "description": "Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.",
       "dependencies": [],
       "created": "2026-06-16T00:00:00Z",
-      "last_updated": "2026-06-17T23:21:20Z",
+      "last_updated": "2026-06-18T14:00:00Z",
       "session_id": "sess_1781735849_663727",
       "researched": "2026-06-17T01:27:14Z",
-      "next_artifact_number": 15,
+      "next_artifact_number": 17,
       "artifacts": [
         {
           "path": "specs/303_k_gt_0_depth_induction/reports/01_team-research.md",
@@ -1853,8 +1853,58 @@
           "path": "specs/303_k_gt_0_depth_induction/plans/14_literature-grounded-plan.md",
           "type": "plan",
           "summary": "Revised plan integrating report 13 findings: replaces blocked Phase 4d with 3 new phases (5-7) using literature-grounded zone transfer with Prior-UZ/SZ + CharPart threading"
+        },
+        {
+          "path": "specs/303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v15: CharPart-threading architecture replacing blocked Phase 5-7 with delete-FALSE-lemmas + add-CharPart-params + zone-based-transfer phases"
+        },
+        {
+          "path": "specs/303_k_gt_0_depth_induction/plans/16_strong-d-induction-plan.md",
+          "type": "plan",
+          "summary": "Revised plan v16: strong D-induction replacing blocked Phase 6, adds NfCharFormula quick fix + zone-3 witness construction"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 9,
+        "total_effort_hours": 20,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 16,
+        "dependency_waves": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ],
+          [
+            9
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/15_charpart-threading-design.md",
+            "integrated_in_plan_version": 15,
+            "integrated_date": "2026-06-17"
+          },
+          {
+            "path": "reports/16_strong-d-induction-research.md",
+            "integrated_in_plan_version": 16,
+            "integrated_date": "2026-06-18"
+          }
+        ]
+      }
     },
     {
       "project_number": 304,
