@@ -146,46 +146,46 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 7: Strong D-Induction Scaffolding [NOT STARTED]
+### Phase 7: Strong D-Induction Scaffolding [COMPLETED]
 
 **Goal**: Replace simple `induction K` with `Nat.strong_induction_on D` (where D=K+2) in PriorComposition.lean. Restructure the main theorems to be parametric in D. The IH provides the theorem at all depths < D.
 
 **Tasks**:
-- [ ] Factor out `strong_prior_nonconstenv_2var_agree_until_aux` with explicit D parameter:
+- [x] Factor out `strong_prior_nonconstenv_2var_agree_until_aux` with explicit D parameter: *(deviation: skipped — separate aux theorem unnecessary; `Nat.strong_induction_on K` applied directly inside the existing theorem body is cleaner and type-checks without wrapper)*
+- [x] Implement the outer wrapper using `Nat.strong_induction_on`:
   ```lean
-  private theorem strong_prior_nonconstenv_2var_agree_until_aux (D : Nat)
-    (IH : ∀ D' < D, <theorem statement at D'>) :
-    <theorem statement at D>
+  theorem prior_nonconstenv_2var_agree_until ... := by
+    exact Nat.strong_induction_on K (fun K ih_strong nf => by ...)
   ```
-- [ ] Implement the outer wrapper using `Nat.strong_induction_on`:
-  ```lean
-  theorem prior_nonconstenv_2var_agree_until ... :=
-    Nat.strong_induction_on (K + 2) (fun D IH => ...)
-  ```
-- [ ] Inside the aux theorem, split into atom part (reuse existing `nonconstenv_atom_agree_until` -- sorry-free) and quantifier part (sorry placeholder for Phase 8)
-- [ ] Apply IH at D-1 to get depth-(D-1) 2-var at [x,t]/[x',t'] (from `nf_agreement_monotone` weakening h_x, h_t from depth D to D-1)
-- [ ] Mirror all restructuring for `prior_nonconstenv_2var_agree_since`
-- [ ] Verify: `lake build PriorComposition` succeeds (4 sorry remain, now inside strong induction structure)
-- [ ] Verify: `lake build KampBypass` still succeeds with 0 sorry
+  *(deviation: altered — used strong induction on K directly rather than on D=K+2; this is equivalent since `ih_strong : ∀ m < K, theorem_at_(m+2)` covers all depths 2..K+1)*
+- [x] Inside the aux theorem, split into atom part (reuse existing `nonconstenv_atom_agree_until` -- sorry-free) and quantifier part (sorry placeholder for Phase 8)
+- [x] Apply IH at D-1 to get depth-(D-1) 2-var at [x,t]/[x',t'] (from `nf_agreement_monotone` weakening h_x, h_t from depth D to D-1) *(deviation: deferred to task Phase 8 — IH is now available in context via ih_strong; actual application happens when closing sorry)*
+- [x] Mirror all restructuring for `prior_nonconstenv_2var_agree_since`
+- [x] Verify: `lake build PriorComposition` succeeds (2 sorry remain -- consolidated from 4 because strong induction unifies K=0/K=succ cases)
+- [x] Verify: `lake build KampBypass` still succeeds with 0 sorry
 
-**Sorry budget**: 4 (same count, relocated to new structural positions inside strong induction).
+**Sorry budget**: 2 (reduced from 4; strong induction unifies K=0 and K=succ K' into single case per theorem, consolidating 2 sorry per theorem into 1).
 
-**Timing**: 2-3 hours (1 dispatch session)
+**Timing**: 30 minutes (1 dispatch session)
+
+**Completed**: 2026-06-19
 
 **Depends on**: 6
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean` -- restructure induction
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean` -- restructured induction from simple `induction K` to `Nat.strong_induction_on K`
 
-**Key patterns**:
-- `Nat.strong_induction_on` usage: see KampMutualInduction.lean:397 for existing pattern
-- `nf_agreement_monotone`: NormalForm.lean:339 -- weakens depth-D to depth-(D-1)
+**Key patterns used**:
+- `Nat.strong_induction_on` usage: matches KampMutualInduction.lean:410 pattern
+- Lambda absorbs the nf quantifier: `fun K ih_strong nf => by` avoids variable shadowing
+- `nf_agreement_monotone` not needed in scaffolding phase (will be used in Phase 8 to invoke IH)
 - char_correct bound: `d <= K+1 = D-1` covers all needed depths
 
-**Verification**:
-- `lake build PriorComposition` succeeds
-- `lake build KampBypass` succeeds with 0 sorry
-- `grep -c sorry PriorComposition.lean` returns exactly 4
+**Verification (completed)**:
+- `lake build PriorComposition` succeeds (988 jobs, warnings only)
+- `lake build KampBypass` succeeds (1247 jobs) with 0 sorry
+- `grep -c sorry PriorComposition.lean` returns exactly 2 (one per main theorem, inside strong induction)
+- Both sorry positions have `ih_strong : ∀ m < K, ...` available in context
 
 ---
 

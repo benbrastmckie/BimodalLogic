@@ -242,47 +242,26 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
-  induction K with
-  | zero =>
-    intro nf
-    set target := nf_characteristic N 2 2 (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N 2 2 (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) target by
+  -- Strong induction on K: IH provides the theorem at ALL K' < K
+  -- This gives us the 2-var agreement at all depths D' = K'+2 < K+2
+  exact Nat.strong_induction_on K (fun K ih_strong nf => by
+    set target := nf_characteristic N (K + 2) 2 (Fin.cons x' (fun _ => t'))
+    have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 (Fin.cons x' (fun _ => t'))
+    suffices h_M_sat : nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) target by
       exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
     obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
     have h_atom := nonconstenv_atom_agree_until M x t N x' t' h_x h_t h_order_M h_order_N
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier part: depth-1 3-var existential transfer
-      -- Goal: ∀ sub_nf : NF 1 3, (∃ w, nf_eval M 1 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
-      -- Available: h_x at depth 2, h_t at depth 2, char_fn/char_correct at d ≤ 1,
-      --   Prior-UZ/SZ on M and N, h_order_M : t < x, h_order_N : t' < x'
-      -- Approach: Zone decomposition on w relative to t,x.
+    · -- Quantifier part: depth-(K+1) 3-var existential transfer
+      -- Goal: ∀ sub_nf : NF (K+1) 3, (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
+      -- Strong IH available: ∀ K' < K, full theorem at depth K'+2
+      -- This provides 2-var agreement at depths 2..K+1 (all lower depths)
+      -- Zone decomposition on w relative to t,x:
       --   Zones 1,2,4,5: cross_extend_bwd_1var from h_x or h_t
-      --   Zone 3 (t < w < x): Prior-UZ/SZ + char_fn to find between-zone witness
+      --   Zone 3 (t < w < x): Prior-UZ/SZ + char_fn + strong IH
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
-  | succ K' ih =>
-    intro nf
-    set target := nf_characteristic N (K' + 3) 2 (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N (K' + 3) 2 (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M (K' + 3) 2 (Fin.cons x (fun _ => t)) target by
-      exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
-    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
-    have h_atom := nonconstenv_atom_agree_until M x t N x' t' h_x h_t h_order_M h_order_N
-    constructor
-    · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier: depth-(K'+2) 3-var existential transfer
-      -- Goal: ∀ sub_nf : NF (K'+2) 3, (∃ w, nf_eval M (K'+2) 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
-      -- Available: h_x at depth K'+3, h_t at depth K'+3,
-      --   ih : (h_x_mono at K'+2) → (h_t_mono at K'+2) → char_fn → char_correct_mono → depth-(K'+2) 2-var
-      --   char_fn/char_correct at d ≤ K'+1, Prior-UZ/SZ on M and N
-      -- Key: Apply IH with monotone h_x, h_t to get h_xt_IH : depth-(K'+2) 2-var
-      --   h_xt_IH quantifier part gives depth-(K'+1) 3-var transfer
-      --   Zone decomposition + cross_extend_bwd_1var for outer zones
-      --   Zone 3: Prior-UZ/SZ + char_fn for between-zone depth boost from K'+1 to K'+2
-      intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
+      sorry)
 
 /-- Mirror for the Since zone (x < t). Same statement with reversed order. -/
 theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
@@ -314,44 +293,26 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
-  induction K with
-  | zero =>
-    intro nf
-    set target := nf_characteristic N 2 2 (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N 2 2 (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) target by
+  -- Strong induction on K: IH provides the theorem at ALL K' < K
+  -- This gives us the 2-var agreement at all depths D' = K'+2 < K+2
+  exact Nat.strong_induction_on K (fun K ih_strong nf => by
+    set target := nf_characteristic N (K + 2) 2 (Fin.cons x' (fun _ => t'))
+    have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 (Fin.cons x' (fun _ => t'))
+    suffices h_M_sat : nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) target by
       exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
     obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
     have h_atom := nonconstenv_atom_agree_since M x t N x' t' h_x h_t h_order_M h_order_N
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier part: depth-1 3-var existential transfer (Since: x < t)
-      -- Goal: ∀ sub_nf : NF 1 3, (∃ w, nf_eval M 1 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
-      -- Available: h_x at depth 2, h_t at depth 2, char_fn/char_correct at d ≤ 1,
-      --   Prior-UZ/SZ on M and N, h_order_M : x < t, h_order_N : x' < t'
-      -- Approach: Zone decomposition on w relative to x,t (reversed from Until).
+    · -- Quantifier part: depth-(K+1) 3-var existential transfer (Since: x < t)
+      -- Goal: ∀ sub_nf : NF (K+1) 3, (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
+      -- Strong IH available: ∀ K' < K, full theorem at depth K'+2
+      -- This provides 2-var agreement at depths 2..K+1 (all lower depths)
+      -- Zone decomposition on w relative to x,t (reversed from Until):
       --   Zones 1,2,4,5: cross_extend_bwd_1var from h_x or h_t
-      --   Zone 3 (x < w < t): Prior-UZ/SZ + char_fn to find between-zone witness
+      --   Zone 3 (x < w < t): Prior-UZ/SZ + char_fn + strong IH
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
-  | succ K' ih =>
-    intro nf
-    set target := nf_characteristic N (K' + 3) 2 (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N (K' + 3) 2 (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M (K' + 3) 2 (Fin.cons x (fun _ => t)) target by
-      exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
-    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
-    have h_atom := nonconstenv_atom_agree_since M x t N x' t' h_x h_t h_order_M h_order_N
-    constructor
-    · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier: depth-(K'+2) 3-var existential transfer (Since: x < t)
-      -- Goal: ∀ sub_nf : NF (K'+2) 3, (∃ w, nf_eval M (K'+2) 3 [w,x,t] sub_nf) ↔ target.2 sub_nf
-      -- Available: h_x at depth K'+3, h_t at depth K'+3,
-      --   ih : (h_x_mono at K'+2) → (h_t_mono at K'+2) → char_fn → char_correct_mono → depth-(K'+2) 2-var
-      --   char_fn/char_correct at d ≤ K'+1, Prior-UZ/SZ on M and N
-      -- Key: Same approach as Until case but with reversed zone ordering
-      intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
+      sorry)
 
 /-- Specialized version for the KampBypass backward Until direction:
     one-directional transfer from M₀ to M. -/
