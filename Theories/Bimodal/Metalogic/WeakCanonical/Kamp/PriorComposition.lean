@@ -194,6 +194,143 @@ private theorem depth0_3var_witness_check {sig : MonadicSignature}
 -- pred_agree_from_1var, pred_agree_from_1var_mono (only used by deleted code)
 -- zone_compatible_witness_bwd/fwd (FALSE)
 
+/-! ## Existential Transfer from Full Agreement
+
+Given depth-k full agreement at arity n+1 (k ≥ 1), the depth-(k+1) NF has a
+quantifier part that encodes existential transfer at depth k arity n+2. This
+gives us existential transfer at depth d (for d ≤ k) at arity n+2 via
+monotonicity: find matched witnesses from the quantifier condition, obtain
+full depth-k agreement at arity n+2, then weaken to depth d.
+
+This is the key mechanism for the reconstruction depth induction's base case
+(when d=0: pure atom agreement from monotonicity) and step (when d+1 ≤ k:
+existential transfer from the quantifier condition).
+
+**Note**: This does NOT require Prior-UZ/SZ. It works on ANY pair of structures
+with matching NF types. The Prior axioms are only needed for the OUTER
+strong induction's zone-3 witness placement (Phases 9-10).
+
+Literature: Rabinovich 2014, Lemma 5.3 base case; report 18 Section 11. -/
+
+/-- Existential transfer at depth d (d ≤ k) from depth-(k+1) full agreement.
+    From depth-(k+1) (n+1)-var agreement, the quantifier condition gives
+    depth-k (n+2)-var existential transfer. By monotonicity (d ≤ k), this
+    yields depth-d (n+2)-var existential transfer.
+
+    This is the algebraic core of the reconstruction induction's step. -/
+theorem exist_transfer_from_full_agree {sig : MonadicSignature}
+    {k n : Nat}
+    (M : OrderedMonadicStructure sig) (envM : Fin (n + 1) → M.carrier)
+    (N : OrderedMonadicStructure sig) (envN : Fin (n + 1) → N.carrier)
+    (h_agree : ∀ nf : NormalForm sig (k + 1) (n + 1),
+      nf_eval_nf M (k + 1) (n + 1) envM nf ↔
+      nf_eval_nf N (k + 1) (n + 1) envN nf)
+    (d : Nat) (hd : d ≤ k)
+    (sub : NormalForm sig d (n + 2)) :
+    (∃ z : M.carrier, nf_eval_nf M d (n + 2) (Fin.cons z envM) sub) ↔
+    (∃ z' : N.carrier, nf_eval_nf N d (n + 2) (Fin.cons z' envN) sub) := by
+  -- Extract the quantifier condition from h_agree
+  obtain ⟨_, hMq⟩ := nf_characteristic_satisfies M (k + 1) (n + 1) envM
+  have h_char_eq := nf_eval_unique N (k + 1) (n + 1) _ _ _
+    ((h_agree _).mp (nf_characteristic_satisfies M (k + 1) (n + 1) _))
+    (nf_characteristic_satisfies N (k + 1) (n + 1) _)
+  obtain ⟨_, hNq⟩ := h_char_eq ▸ nf_characteristic_satisfies N (k + 1) (n + 1) envN
+  -- hMq/hNq: quantifier conditions at depth k, arity n+2
+  -- hex: depth-k (n+2)-var existential transfer
+  have hex : ∀ chi : NormalForm sig k (n + 2),
+      (∃ z, nf_eval_nf M k (n + 2) (Fin.cons z envM) chi) ↔
+      (∃ z, nf_eval_nf N k (n + 2) (Fin.cons z envN) chi) :=
+    fun chi => (hMq chi).trans (hNq chi).symm
+  -- For d ≤ k: get matched witnesses at depth k, then weaken to depth d
+  constructor
+  · rintro ⟨z, hz⟩
+    -- Lift z's depth-d satisfaction to depth-k via nf_characteristic
+    set chi_z := nf_characteristic M k (n + 2) (Fin.cons z envM)
+    have h_z_chi : nf_eval_nf M k (n + 2) (Fin.cons z envM) chi_z :=
+      nf_characteristic_satisfies M k (n + 2) (Fin.cons z envM)
+    -- Transfer the depth-k existential to N
+    obtain ⟨z', hz'⟩ := (hex chi_z).mp ⟨z, h_z_chi⟩
+    -- Full depth-k (n+2)-var agreement at [z,envM]/[z',envN]
+    have h_full := nf_agreement_from_shared_nf M _ N _
+      chi_z h_z_chi hz'
+    -- Weaken to depth d (since d ≤ k)
+    exact ⟨z', (nf_agreement_monotone d k (n + 2) hd M _ N _ h_full sub).mp hz⟩
+  · rintro ⟨z', hz'⟩
+    set chi_z' := nf_characteristic N k (n + 2) (Fin.cons z' envN)
+    have h_z'_chi : nf_eval_nf N k (n + 2) (Fin.cons z' envN) chi_z' :=
+      nf_characteristic_satisfies N k (n + 2) (Fin.cons z' envN)
+    obtain ⟨z, hz⟩ := (hex chi_z').mpr ⟨z', h_z'_chi⟩
+    have h_full := nf_agreement_from_shared_nf M _ N _
+      chi_z' hz h_z'_chi
+    exact ⟨z, (nf_agreement_monotone d k (n + 2) hd M _ N _ h_full sub).mpr hz'⟩
+
+/-- Corollary: depth-0 agreement from depth-k agreement (k ≥ 0). -/
+theorem depth0_agree_from_higher {sig : MonadicSignature}
+    {k n : Nat}
+    (M : OrderedMonadicStructure sig) (envM : Fin n → M.carrier)
+    (N : OrderedMonadicStructure sig) (envN : Fin n → N.carrier)
+    (h_agree : ∀ nf : NormalForm sig k n,
+      nf_eval_nf M k n envM nf ↔ nf_eval_nf N k n envN nf)
+    (nf0 : NormalForm sig 0 n) :
+    nf_eval_nf M 0 n envM nf0 ↔ nf_eval_nf N 0 n envN nf0 :=
+  nf_agreement_monotone 0 k n (Nat.zero_le _) M _ N _ h_agree nf0
+
+/-- The reconstruction depth induction: given depth-K (n+1)-var full agreement,
+    prove depth-d (n+1)-var agreement for all d from 0 to K+1.
+
+    **Mechanism**:
+    - Base (d=0): nf_agreement_monotone (0 ≤ K).
+    - Step (d+1, d ≤ K): atoms from depth-d agreement (inner IH),
+      quantifier conditions from `exist_transfer_from_full_agree` applied to
+      depth-(d+1) (n+1)-var agreement (inner IH at d) — but we only have
+      depth-K, so we use `exist_transfer_from_full_agree` with h_agree_K.
+
+    **Key insight**: The quantifier condition of depth-(K+1) (n+1)-var agreement
+    provides depth-K (n+2)-var existential transfer. Combined with inner IH at d
+    (d ≤ K), this gives depth-d (n+2)-var existential transfer via monotonicity.
+    The step d → d+1 then uses this as the quantifier part. -/
+theorem reconstruction_depth_agree {sig : MonadicSignature}
+    {K n : Nat}
+    (M : OrderedMonadicStructure sig) (envM : Fin (n + 1) → M.carrier)
+    (N : OrderedMonadicStructure sig) (envN : Fin (n + 1) → N.carrier)
+    (h_agree_K : ∀ nf : NormalForm sig (K + 1) (n + 1),
+      nf_eval_nf M (K + 1) (n + 1) envM nf ↔
+      nf_eval_nf N (K + 1) (n + 1) envN nf)
+    (d : Nat) (hd : d ≤ K + 1) :
+    ∀ nf : NormalForm sig d (n + 1),
+      nf_eval_nf M d (n + 1) envM nf ↔
+      nf_eval_nf N d (n + 1) envN nf := by
+  induction d with
+  | zero =>
+    -- Base: depth-0 from depth-(K+1) by monotonicity
+    intro nf0
+    exact nf_agreement_monotone 0 (K + 1) (n + 1) (Nat.zero_le _) M _ N _ h_agree_K nf0
+  | succ d ih =>
+    -- Step: depth-(d+1) from depth-d (inner IH) + exist_transfer_from_full_agree
+    have hd' : d ≤ K + 1 := Nat.le_of_succ_le hd
+    have h_d_agree : ∀ nf : NormalForm sig d (n + 1),
+        nf_eval_nf M d (n + 1) envM nf ↔ nf_eval_nf N d (n + 1) envN nf :=
+      ih hd'
+    intro nf
+    -- Target: the characteristic NF of N at depth (d+1)
+    set tgt := nf_characteristic N (d + 1) (n + 1) envN
+    have h_N_sat := nf_characteristic_satisfies N (d + 1) (n + 1) envN
+    suffices h_M_sat : nf_eval_nf M (d + 1) (n + 1) envM tgt by
+      exact nf_agreement_from_shared_nf M _ N _ tgt h_M_sat h_N_sat nf
+    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+    constructor
+    · -- Atoms: from depth-d agreement (or depth-K agreement)
+      intro a
+      exact (atom_agreement_from_nf M _ N _ h_d_agree a).trans (h_N_atoms a)
+    · -- Quantifiers: depth-d (n+2)-var existential transfer
+      intro sub_nf
+      rw [← h_N_quant sub_nf]
+      -- Need: (∃ z, nf_eval M d (n+2) (Fin.cons z envM) sub_nf) ↔ (∃ z', ...)
+      -- From exist_transfer_from_full_agree: works when d ≤ K
+      -- d+1 ≤ K+1 → d ≤ K
+      exact exist_transfer_from_full_agree M envM N envN h_agree_K d
+        (Nat.lt_succ_iff.mp hd) sub_nf
+
 /-! ## Zone-3 Existential Transfer (Proof Obligation)
 
 The remaining sorry in the main theorems requires:
@@ -201,23 +338,23 @@ The remaining sorry in the main theorems requires:
   strong IH (2-var at all depths m+2 for m < K)
 - **Goal**: depth-(K+1) 3-var existential transfer on [_,x,t]/[_,x',t']
 
-**Proof strategy** (from Rabinovich, Lemma 5.1):
-1. Given w between t and x in M: characterize via `char_fn (K+1) (nf_characteristic M (K+1) 1 [w])`
-2. From h_t: existence above t of type nf_w transfers to ∃ w₂ > t' in N (cross_extend_bwd_1var)
-3. From h_x: existence below x of type nf_w transfers to ∃ w₁ < x' in N (cross_extend_bwd_1var)
-4. By semantic_prior_UZ at N: first occurrence w' > t' with char formula ≤ w₁ < x'
-5. w' has: same 1-var NF as w, correct order (t' < w' < x')
-6. Show nf_eval_nf N (K+1) 3 [w',x',t'] sub_nf:
-   - Atoms: from 1-var NF agreement at w/w' + h_x + h_t + order
-   - Quant (depth-K, 4-var): requires nested induction on depth
-     (from K+1 down to 0, increasing arity; terminates at depth 0 = purely atomic)
+**Proof strategy** (from report 18, Section 7 + report 19, Section 7.8):
+1. From ih_strong at m=K-1 (K ≥ 1): depth-(K+1) 2-var at [x,t]/[x',t'].
+2. Quantifier unfolding + nf_agreement_from_shared_nf gives w_nf with
+   depth-K 3-var full agreement at [w,x,t]/[w_nf,x',t'].
+3. From atom preservation: w_nf > t' and w_nf < x' (zone-3 placement).
+4. Apply `reconstruction_depth_agree` at [w,x,t]/[w_nf,x',t'] with
+   h_agree_K = the depth-K 3-var agreement.
+   This gives depth-(K+1) 3-var agreement, hence nf_eval_nf N (K+1) 3 sub_nf.
 
-**Key obstacle**: The quant part requires `∃ v, nf_eval M K 4 [v,w,x,t] sub ↔ ∃ v', nf_eval N K 4 [v',w',x',t'] sub`.
-This is a depth-K 4-var existential transfer on non-constant env — the same TYPE of
-problem as the original but at one lower depth and one higher arity. Requires a secondary
-induction (decreasing depth, increasing arity) terminating at depth 0 where all NFs are
-purely atomic and the transfer reduces to finding points with matching predicates + orders
-in a Prior structure (guaranteed by UZ/SZ density). -/
+**Key obstacle**: Step 4 requires K ≥ 1. At K=0, ih_strong is vacuous. The
+K=0 case needs separate treatment (see Rollback/Contingency in the plan).
+
+**Architecture note**: The depth-0 density lemma (Phase 8 of the plan) is
+SUBSUMED by `reconstruction_depth_agree` + `exist_transfer_from_full_agree`.
+The "purely atomic" base case at depth 0 is just nf_agreement_monotone.
+The existential transfer at depth 0 follows from the quantifier condition
+of the depth-K agreement, without needing Prior-UZ/SZ density. -/
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 

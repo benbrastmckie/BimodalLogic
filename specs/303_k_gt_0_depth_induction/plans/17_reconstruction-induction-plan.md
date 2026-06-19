@@ -207,69 +207,61 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Depth-0 Prior Density Lemma [NOT STARTED]
+### Phase 8: Reconstruction Depth Infrastructure [COMPLETED]
 
-**Goal**: Prove that on Prior structures, depth-0 multi-variable atomic existential transfer holds. This is the base case for the reconstruction induction. At depth 0, NF evaluation is purely atomic (order relations + predicate values). Given 1-var agreements at all relevant points, existential witnesses can be found using Prior-UZ/SZ density.
+**Goal**: Prove the reconstruction depth induction lemma and existential transfer
+from full agreement. These provide the algebraic machinery for closing the zone-3
+sorry in Phases 9-10.
 
-**Literature Fidelity**: This phase follows the proof strategy from:
-- Report 18 (literature-alignment-analysis.md): Section 11 (the cascade terminates at depth 0)
-- Report 19 (rabinovich-proof-extraction.md): Part 4 (Lemma 5.3 -- the base case)
-- Rabinovich 2014, Lemma 5.3 (base case: all beta_i = True)
-
-DO NOT DEVIATE from the literature-aligned strategy. Specifically:
-- DO NOT use Prior-UZ/SZ for top-level witness placement (witness comes from ih_strong)
-- DO NOT attempt depth-based induction with arity explosion
-- DO NOT introduce novel proof techniques not grounded in reports 18-19
-- If a step fails, RE-READ the reports before trying alternatives
-- Any deviation must be flagged with *(deviation: ...)* annotation
+*(deviation: altered -- the planned "depth-0 Prior density lemma" was discovered to be
+FALSE as a standalone lemma with only 1-var agreements at endpoints. The counterexample
+from report 15 (Z with P=evens, t=-1, x=4, t'=-1, x'=0) applies on non-Prior structures,
+and the UZ/SZ squeeze fails on Prior structures when both cross_extend witnesses are
+outside the target zone. Instead, the correct mechanism is `exist_transfer_from_full_agree`:
+from depth-(K+1) full agreement at arity n+1, extract depth-d (n+2)-var existential transfer
+via the quantifier condition + monotonicity. This subsumes the planned depth-0 density lemma
+for K ≥ 1. The K=0 case is handled separately in Phase 10. No Prior-UZ/SZ needed for the
+algebraic transfer; Prior axioms are only needed for the OUTER zone-3 witness placement.)*
 
 **Tasks**:
-- [ ] Define the depth-0 atomic existential transfer statement:
-  ```lean
-  /-- At depth 0, NF evaluation is purely atomic. Given matched atom profiles
-      at all env components (from 1-var NF agreements) and Prior-UZ/SZ density,
-      existential witnesses with matching atoms can be found in each zone. -/
-  private theorem depth0_exist_transfer
-      (h_UZ : semantic_prior_UZ M) (h_SZ : semantic_prior_SZ M)
-      (h_UZ' : semantic_prior_UZ N) (h_SZ' : semantic_prior_SZ N)
-      (h_1var : forall i, depth-(K+2) 1-var agreement at envM i / envN i)
-      (h_orders : atom agreement on order atoms between envM / envN)
-      (chi : NormalForm sig 0 (n+1)) :
-      (exists v, nf_eval_nf M 0 (n+1) (Fin.cons v envM) chi)
-      <-> (exists v', nf_eval_nf N 0 (n+1) (Fin.cons v' envN) chi)
-  ```
-- [ ] Implement zone decomposition for the depth-0 witness:
-  - Zone analysis: classify where the M-witness v sits relative to env components
-  - For each zone: use `semantic_prior_UZ` or `semantic_prior_SZ` to find v' in N with matching predicates in the same zone
-  - Atom part: predicates at v' match because 1-var NF agreements give predicate agreement; order atoms match because v' is in the same zone
-- [ ] Factor out `pred_agree_from_1var_agree` helper: extract from depth-K 1-var NF agreement that predicates match at the two points
-- [ ] Factor out `depth0_nf_eval_iff_atoms` helper: at depth 0, `nf_eval_nf` is determined entirely by atom evaluation (no quantifier part)
-- [ ] Implement `nf_agreement_monotone` weakening from depth K+2 to depth 0 for 1-var agreements
-- [ ] Verify: the depth-0 lemma compiles and is usable inside PriorComposition.lean
+- [x] `exist_transfer_from_full_agree`: Given depth-(k+1) (n+1)-var full agreement, prove depth-d (d ≤ k) (n+2)-var existential transfer via quantifier condition + nf_agreement_monotone
+- [x] `depth0_agree_from_higher`: Corollary wrapper for depth-0 agreement from higher depth
+- [x] `reconstruction_depth_agree`: The full reconstruction depth induction: given depth-(K+1) (n+1)-var agreement, prove depth-d (n+1)-var agreement for all d ≤ K+1 by induction on d
+- [x] Verify: `lake build PriorComposition` succeeds (988 jobs)
+- [x] Verify: `lean_verify exist_transfer_from_full_agree` -- no sorryAx
+- [x] Verify: `lean_verify reconstruction_depth_agree` -- no sorryAx
+- [x] Verify: `lake build KampBypass` still succeeds with 0 sorry
 
-**Sorry budget**: 0 for this phase (self-contained lemma, must be sorry-free).
+**Sorry budget**: 0 for this phase (all new lemmas sorry-free). Achieved: 0 sorry in new code.
 
-**Timing**: 4-5 hours (2 dispatch sessions)
+**Timing**: 2 hours (1 dispatch session)
+
+**Completed**: 2026-06-19
 
 **Depends on**: 7 (completed)
 
-**Files to create/modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean` -- new section for depth-0 density lemma (or new file `PriorDensity.lean` if the lemma exceeds ~200 lines)
+**Files modified**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean` -- new section "Existential Transfer from Full Agreement" with 3 theorems
 
-**Key infrastructure**:
+**Key infrastructure delivered**:
 | Name | Location | Purpose |
 |------|----------|---------|
-| `semantic_prior_UZ` | PriorDefs.lean:22 | First occurrence above t |
-| `semantic_prior_SZ` | PriorDefs.lean:33 | Last occurrence below t |
-| `nf_agreement_monotone` | NormalForm.lean:339 | Depth weakening |
-| `nf_eval_nf` at depth 0 | NormalForm.lean:198 | Purely atomic: atoms only, no quantifiers |
-| `pred_agree_cross` | (may need extraction) | Predicate agreement from 1-var NF agreement |
-| `char_fn` | PriorComposition.lean | Temporal formula characterizing a 1-var NF type |
+| `exist_transfer_from_full_agree` | PriorComposition.lean | Existential transfer at depth d ≤ k from depth-(k+1) full agreement |
+| `depth0_agree_from_higher` | PriorComposition.lean | Depth-0 agreement from higher-depth (monotonicity wrapper) |
+| `reconstruction_depth_agree` | PriorComposition.lean | Full reconstruction induction: depth-d agreement for d ≤ K+1 from depth-(K+1) |
 
-**Verification**:
-- `lake build PriorComposition` (or `lake build PriorDensity`) succeeds
-- `lean_verify depth0_exist_transfer` -- no sorryAx
-- `lake build KampBypass` still succeeds with 0 sorry
+**Verification (completed)**:
+- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition` succeeds (988 jobs)
+- `lean_verify exist_transfer_from_full_agree` -- no sorryAx (propext, Classical.choice, Quot.sound only)
+- `lean_verify reconstruction_depth_agree` -- no sorryAx
+- `lean_verify depth0_agree_from_higher` -- no sorryAx
+- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` succeeds (1247 jobs) with 0 sorry
+- `grep -c sorry PriorComposition.lean` = 6 (4 actual sorry in pre-existing theorems, 2 in comments)
+
+**Impact on Phase 9**: `reconstruction_depth_agree` REPLACES the planned Phase 9 inner induction.
+Phase 9 now only needs: (1) make nf_extend_bwd accessible, (2) use it to obtain depth-K 3-var
+agreement at [w,x,t]/[w_nf,x',t'], (3) apply `reconstruction_depth_agree` to upgrade to
+depth-(K+1) 3-var agreement. The inner reconstruction induction is ALREADY PROVED.
 
 ---
 

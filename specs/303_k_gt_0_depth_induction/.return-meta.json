@@ -1,39 +1,8 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "phase_number": 8,
   "task_number": 303,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 312,
-      "statement": "Until forward: nf_eval_nf N (K+1) 3 [w2,x',t'] sub_nf"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 317,
-      "statement": "Until backward: nf_eval_nf M (K+1) 3 [w2,x,t] sub_nf"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 368,
-      "statement": "Since forward: nf_eval_nf N (K+1) 3 [w2,x',t'] sub_nf"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 372,
-      "statement": "Since backward: nf_eval_nf M (K+1) 3 [w2,x,t] sub_nf"
-    }
-  ],
-  "verification": {
-    "sorry_count": 4,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "memory_candidates": [
-    "In Nat.strong_induction_on K (fun K ih => ...), the outer K and inner K are definitionally equal but Lean's elaborator treats them as different free variables (K-dagger vs K). Avoid explicit type annotations that reference K when hypotheses like h_t use the outer K. Use underscore for type inference instead.",
-    "generalExistPart_from_classical at depth k requires depth-(k+1) r-var FULL agreement as precondition. Cannot be used to prove the depth-(K+2) 2-var agreement theorem because that's circular.",
-    "cross_extend_bwd_1var from h_t (depth-(K+2) 1-var) gives depth-(K+1) 2-var agreement. cross_1var_from_2var projects the first component to depth-(K+1) 1-var agreement."
-  ]
+  "started_at": "2026-06-19T00:00:00Z"
 }
