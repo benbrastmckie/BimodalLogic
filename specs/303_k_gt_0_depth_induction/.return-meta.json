@@ -4,29 +4,30 @@
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "session_id": "sess_1781827486_855fab",
   "task_number": 303,
+  "phase": 6,
   "phases_completed": 5,
   "phases_total": 7,
-  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-handoff.md",
+  "handoff_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-6-partial-handoff.md",
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 255,
-      "statement": "K=0 quant of prior_nonconstenv_2var_agree_until"
+      "line": 256,
+      "statement": "nonconstenv_exist_transfer_until (forward)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 270,
-      "statement": "K>0 quant of prior_nonconstenv_2var_agree_until"
+      "line": 262,
+      "statement": "nonconstenv_exist_transfer_until (backward)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 316,
-      "statement": "K=0 quant of prior_nonconstenv_2var_agree_since"
+      "line": 301,
+      "statement": "nonconstenv_exist_transfer_since (forward)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 331,
-      "statement": "K>0 quant of prior_nonconstenv_2var_agree_since"
+      "line": 307,
+      "statement": "nonconstenv_exist_transfer_since (backward)"
     }
   ],
   "verification": {
@@ -36,7 +37,7 @@
     "build_passed": true
   },
   "memory_candidates": [
-    "CharPart param depth mismatch: existPart_succ_n1_bypass has char_kp1 at depth k+1, but prior_2var_transfer_until with K=k' needs depth K+1=k'+1. Construct from ih_char via Exists.choose instead.",
-    "depth0_3var_exist_transfer_until/since are FALSE (counterexample: Z with P=evens). exist_transfer_3var_nonconstenv is unprovable without Prior+CharPart. All three deleted in plan v15 Phase 5."
+    "Multi-depth char pattern: when induction on K needs CharPart at depth K'+1 but also at lower depths, use strong induction (Nat.strong_induction_on) to provide ih_all_char at all d <= k. Construct total char_fn with dif_pos conditional for d <= bound.",
+    "3-var existential transfer on non-constant envs requires zone analysis + Prior-UZ/SZ. Cannot use nf_extend_bwd (circular -- needs 2-var agreement being proved). Cannot use constenv_2var_determines (env is non-constant). The proof must be done by induction on D (depth of sub_nf), generalizing to all arities n >= 2."
   ]
 }

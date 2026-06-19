@@ -1,65 +1,76 @@
 {
   "status": "partial",
-  "summary": "Phase 5 completed: deleted 3 FALSE/unprovable lemmas, added CharPart parameters to 4 theorems, updated 2 KampBypass call sites. PriorComposition builds with 4 sorry (quantifier placeholders). KampBypass remains 0 sorry. Phase 6 (zone-based between-zone transfer to close all 4 sorry) not started -- requires Prior-UZ/SZ squeeze argument estimated at 6-10 hours.",
+  "summary": "Phase 6 partial: refactored char params from single-depth to multi-depth across 4 files (PriorComposition, KampBypass, KampMutualInduction, NfCharFormula). Factored 4 inline sorry into 2 well-typed helper theorems. Core 3-var existential transfer proof not yet closed -- requires zone analysis + induction on D.",
   "phases_completed": 5,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 255,
-      "statement": "K=0 quantifier part of prior_nonconstenv_2var_agree_until",
-      "assumption": "depth-1 3-var existential transfer at [w,x,t]/[w',x',t'] with t<x, t'<x'",
-      "why_deferred": "Between-zone case requires Prior-UZ/SZ squeeze + depth-0 4-var atomic argument. Estimated 6-10 hours for all 4 sorry.",
-      "next_dispatch": "Implement between_zone_depth0_transfer_until helper using zone decomposition + Prior-UZ/SZ"
+      "line": 256,
+      "statement": "nonconstenv_exist_transfer_until (forward direction)",
+      "assumption": "w' from cross_extend_bwd_1var satisfies full depth-D 3-var NF at [w',x',t']",
+      "why_deferred": "Requires zone analysis + Prior-UZ/SZ for between-zone witness + induction on D for quantifier cascade",
+      "next_dispatch": "Generalize to arbitrary arity, prove by induction on D. D=0 is purely atomic (zone+pred). D=d+1 uses IH at higher arity."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 270,
-      "statement": "K>0 quantifier part of prior_nonconstenv_2var_agree_until",
-      "assumption": "depth-(K'+2) 3-var existential transfer with IH giving K'+1",
-      "why_deferred": "Same zone-based approach at higher depth with IH + CharPart for depth boost",
-      "next_dispatch": "Implement between_zone_succ_transfer_until using IH + zone decomposition"
+      "line": 262,
+      "statement": "nonconstenv_exist_transfer_until (backward direction)",
+      "assumption": "Symmetric to forward",
+      "why_deferred": "Same structure as forward",
+      "next_dispatch": "Follows from forward by symmetry (swap M/N)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 316,
-      "statement": "K=0 quantifier part of prior_nonconstenv_2var_agree_since",
-      "assumption": "mirror of sorry #1 with reversed order",
-      "why_deferred": "Mirror of until case",
-      "next_dispatch": "Implement between_zone_depth0_transfer_since"
+      "line": 301,
+      "statement": "nonconstenv_exist_transfer_since (forward direction)",
+      "assumption": "Mirror of Until with x < t",
+      "why_deferred": "Same structure as Until forward",
+      "next_dispatch": "Mirror of Until proof"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 331,
-      "statement": "K>0 quantifier part of prior_nonconstenv_2var_agree_since",
-      "assumption": "mirror of sorry #2 with reversed order",
-      "why_deferred": "Mirror of until case at higher depth",
-      "next_dispatch": "Implement between_zone_succ_transfer_since"
+      "line": 307,
+      "statement": "nonconstenv_exist_transfer_since (backward direction)",
+      "assumption": "Symmetric to forward",
+      "why_deferred": "Same structure as forward",
+      "next_dispatch": "Follows from forward by symmetry"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 651,
+      "statement": "existPart_succ_n1_bypass ih_all_char parameter (pre-existing)",
+      "assumption": "ih_all_char at all depths d <= k+1",
+      "why_deferred": "Pre-existing sorry from prior phases; filled when kamp_mutual_induction provides ih_all_char",
+      "next_dispatch": "Will be resolved when kamp_mutual_induction fills it"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-handoff.md",
+  "blockers": [
+    "nonconstenv_exist_transfer_until/since: requires proof that zone analysis + Prior-UZ/SZ + multi-depth char determines 3-var NF agreement from 2-var agreement at individual component pairs"
+  ],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-6-partial-handoff.md",
   "continuation_context": {
-    "is_successor": false,
+    "is_successor": true,
     "resume_phase": 6,
     "plan_path": "specs/303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean"
     ],
-    "key_lemmas": [
-      "cross_extend_bwd_1var",
-      "cross_1var_from_2var",
-      "nf_agreement_from_shared_nf",
-      "nf_characteristic_satisfies",
-      "nf_eval_unique"
+    "key_decisions": [
+      "Changed char params from single-depth to multi-depth (char_fn : forall d, NormalForm sig d 1 -> Formula)",
+      "Added ih_all_char parameter to existPart_succ_n1_bypass and existPart_succ",
+      "Changed kamp_mutual_induction from simple induction to Nat.strong_induction_on",
+      "Factored 4 sorry in main theorems into 2 helper theorems (nonconstenv_exist_transfer_until/since)",
+      "Helper theorems take D (depth) as explicit parameter -- enables induction on D in future dispatch"
     ]
   },
   "artifacts": [
     {
       "type": "handoff",
-      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-handoff.md"
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-6-partial-handoff.md"
     }
   ],
   "verification": {
