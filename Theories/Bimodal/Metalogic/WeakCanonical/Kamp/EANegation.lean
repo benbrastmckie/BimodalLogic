@@ -508,4 +508,15 @@ theorem neg_orderedPointsExist_is_vbracket :
           simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
           exact h_occ y hy0 hy1
 
+/-! ## Corollary 5.4: Partial Bracket Negation
+
+The negation of "exists z in (z_0, z_1) such that bracket.holds z_0 z" is V-EA
+on Prior structures. This is Rabinovich's Corollary 5.4 (p.9).
+
+The F-chain reduction converts the partial bracket to orderedPointsExist with
+TL-definable predicates, then applies Lemma 5.3. Implementation deferred to
+a future dispatch — requires careful treatment of the bounded vs. unbounded
+Until distinction.
+-/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
