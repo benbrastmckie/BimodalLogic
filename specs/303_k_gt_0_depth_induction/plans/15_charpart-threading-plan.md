@@ -1,7 +1,7 @@
 # Implementation Plan: Close PriorComposition Sorry via CharPart-Threading Architecture
 
 - **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [IN PROGRESS] (Phases 1-4 completed, Phases 5-7 revised from v14)
+- **Status**: [IN PROGRESS] (Phases 1-5 completed, Phase 6 blocked — restructuring needed)
 - **Effort**: 16 hours (5-7 dispatch sessions)
 - **Dependencies**: None (k=0 infrastructure is sorry-free, KampBypass.lean is sorry-free)
 - **Research Inputs**: reports/09_interval-splitting-mapping.md, reports/11_vea-negation-closure-design.md, reports/12_fraisse-game-analysis.md, reports/13_literature-grounded-proof-strategy.md, reports/15_charpart-threading-design.md
@@ -20,7 +20,7 @@ Plan v15 replaces the blocked Phases 5-7 from plan v14. The Phase 5 blocker is d
 
 The fix threads `char_kp1_fn`/`char_kp1_correct` parameters (formula-level CharPart(K+1)) through `prior_nonconstenv_2var_agree_until/since` and `prior_2var_transfer_until/since`. These parameters are already available in `existPart_succ_n1_bypass` (KampBypass.lean:425-432) and need only be forwarded to the PriorComposition call sites. No changes are needed to `kamp_mutual_induction` or `KampMutualInduction.lean` -- the CharPart flows through the existing parameter chain.
 
-Current state: KampBypass.lean is sorry-free (0 sorry). PriorComposition.lean has 4 sorry at lines 274, 345 (in FALSE `depth0_3var_exist_transfer_until/since`) and 460, 480 (in unprovable `exist_transfer_3var_nonconstenv`). All 4 sorry trace to the same root cause: attempting between-zone existential transfer from endpoint 1-var agreement alone, without temporal formula encoding.
+Current state (after Phase 5 + cleanup): KampBypass.lean is sorry-free (0 sorry). PriorComposition.lean has 4 sorry at lines 264, 285, 336, 354 (quantifier parts of `prior_nonconstenv_2var_agree_until/since` in K=0 and K>0 cases). All FALSE/unprovable intermediate lemmas have been deleted (~247 lines removed). The 4 sorry trace to a single root cause: the between-zone (zone 3) existential transfer requires the full theorem at lower depth, creating circularity under simple K-induction. The fix is to restructure to strong induction on total depth D=K+2.
 
 ### Research Integration
 
@@ -67,11 +67,11 @@ Advances: "Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) -> 
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Zone 3 (between-zone) Prior-UZ/SZ squeeze argument requires more case analysis than estimated | M | H | Factor each zone into a private helper lemma. The between-zone at depth 0 is purely atomic, bounding complexity. Use `set_option maxHeartbeats` if needed. Existing zone infrastructure (lines 130-186) demonstrates the pattern. |
-| K>0 step depth boost from K'+1 to K'+2 for 3-var agreement requires arity climbing | H | M | Report 15 shows the IH provides depth-(K'+2) 2-var h_xt whose quantifier part gives depth-(K'+1) 3-var transfer. The zone argument with CharPart(K'+2) handles the boost. If this fails, implement strong induction descending from K to 0 (terminates because depth-0 is atomic). |
-| `cross_extend_bwd_1var` witnesses for zones 1,2,4,5 need depth-0 3-var conditions (not just 1-var) at higher arities | M | M | At depth 0, all quantifier conditions are purely atomic. The 4-var depth-0 conditions reduce to predicate + order checks, solvable by zone analysis. Factor into a `depth0_4var_atomic_transfer` helper if needed. |
-| Heartbeat limits exceeded by zone decomposition case analysis | M | H | Factor zone analysis into private helpers (one per zone pair). The existing `depth0_3var_witness_check` (line 149) demonstrates the factoring pattern. Use `set_option maxHeartbeats 800000` as safety valve. |
-| Removing 3 definitions mid-file disrupts line numbering for downstream sorry references | L | L | Delete and restructure in a single coherent edit. Verify `lake build` immediately after restructuring. |
+| Zone 3 (between-zone) requires full theorem at lower depth — not just endpoint conditions | H | CONFIRMED | Simple K-induction creates circularity. Restructure to strong D-induction (D=K+2) so IH provides theorem at ALL lower depths. This is the current blocker. |
+| Strong D-induction restructuring changes theorem signature or breaks callers | M | L | The external signature of `prior_nonconstenv_2var_agree_until/since` is unchanged — only the internal induction scheme changes. KampBypass call sites are unaffected. |
+| Zone 3 at depth D still requires complex case analysis after restructuring | M | M | With strong IH, the zone-3 argument becomes: (1) cross_extend for candidate witness, (2) IH at D-1 for depth-(D-2) transfer at candidate, (3) Prior-UZ/SZ for between-zone placement. Factor into private helpers. |
+| Heartbeat limits exceeded by strong induction + zone decomposition | M | H | Factor zone analysis into private helpers. Use `set_option maxHeartbeats 800000` as safety valve. |
+| `Nat.strong_rec_on` or equivalent not available for the induction scheme needed | L | L | Lean 4 provides `Nat.strongRecOn`, `WellFoundedRelation`, and manual well-founded recursion. Alternatively, prove a standalone `strong_prior_nonconstenv_2var_agree` by Nat.strongRecOn and have the original theorems call it. |
 
 ## Implementation Phases
 
@@ -220,56 +220,56 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Implement Zone-Based Between-Zone Transfer (Closes All 4 Sorry) [IN PROGRESS]
+### Phase 6: Implement Zone-Based Between-Zone Transfer (Closes All 4 Sorry) [BLOCKED]
 
-**Goal**: Replace the 4 sorry from Phase 5 with complete proofs using the zone-based between-zone transfer with Prior-UZ/SZ squeeze argument and CharPart-based temporal formula encoding. This phase closes all remaining sorry in PriorComposition.lean.
+**Goal**: Replace the 4 sorry from Phase 5 with complete proofs using zone-based between-zone transfer with Prior-UZ/SZ squeeze and CharPart temporal formula encoding.
 
-**Blocker resolved** (dispatch 2026-06-18): Deleted FALSE `nonconstenv_exist_transfer_general` and its callers (`nonconstenv_exist_transfer_until/since`). Deleted helper lemmas only used by deleted code (`pred_agree_from_1var`, `pred_agree_from_1var_mono`). Restructured quantifier parts of `prior_nonconstenv_2var_agree_until/since` to use sorry placeholders directly with structured comments documenting the zone decomposition approach and available hypotheses at each sorry site. Build passes, KampBypass remains 0 sorry. PriorComposition now has exactly 4 sorry at lines 264, 285, 336, 354 (2 per theorem, K=0 and K=succ K' cases).
+**Status**: BLOCKED — simple K-induction creates circularity. Requires restructuring to strong induction on total depth D=K+2.
 
-**Tasks**:
-
-**Cleanup (completed)**:
-- [x] Delete `nonconstenv_exist_transfer_general` (FALSE at D=0 when n > 0)
-- [x] Delete `nonconstenv_exist_transfer_until` (called FALSE theorem)
-- [x] Delete `nonconstenv_exist_transfer_since` (called FALSE theorem)
+**Cleanup completed** (dispatches 2026-06-18):
+- [x] Delete `nonconstenv_exist_transfer_general` (FALSE at D=0 when n > 0; counterexample: Z, P=evens, envM=[10,0], envN=[2,0])
+- [x] Delete `nonconstenv_exist_transfer_until/since` (called FALSE theorem)
+- [x] Delete `zone_compatible_witness_bwd/fwd` (FALSE — zone-3 witness not guaranteed)
 - [x] Delete `pred_agree_from_1var`, `pred_agree_from_1var_mono` (only used by deleted code)
-- [x] Restructure quantifier parts of `prior_nonconstenv_2var_agree_until` with sorry + approach comments
-- [x] Restructure quantifier parts of `prior_nonconstenv_2var_agree_since` with sorry + approach comments
-- [x] Verify `lake build PriorComposition` succeeds (4 sorry)
+- [x] Restructure quantifier parts of `prior_nonconstenv_2var_agree_until/since` with sorry + zone decomposition comments
+- [x] Verify `lake build PriorComposition` succeeds (4 sorry at lines 264, 285, 336, 354)
 - [x] Verify `lake build KampBypass` succeeds (0 sorry)
 
-**K=0 Base Case (closes 2 sorry in `prior_nonconstenv_2var_agree_until/since`)**:
-- [ ] Implement zone decomposition for depth-1 3-var existential transfer at [y,x,t]/[y',x',t']:
-  - Zone 5 (y > x): `cross_extend_bwd_1var` from h_x gives y' > x'. At depth 1, the 3-var eval decomposes into atoms (sorry-free) + depth-0 4-var quantifier (purely atomic, finitely checkable).
-  - Zone 4 (y = x): use x' as witness. Predicates and orders transfer from h_x.
-  - Zone 1 (y < t): symmetric via h_t and `cross_extend_bwd_1var`.
-  - Zone 2 (y = t): use t' as witness.
-  - Zone 3 (t < y < x): **The critical case.** From h_x quantifier part: exists s' < x' with depth-1 2-var at [y,x]/[s',x']. From h_t quantifier part: exists s'' > t' with depth-1 2-var at [y,t]/[s'',t']. Both s' and s'' have depth-1 1-var matching y. Apply Prior-UZ/SZ squeeze: Prior-UZ at t' gives first occurrence p of y's predicate pattern above t', with p <= s'' so p > t'. Prior-SZ at x' gives last occurrence q below x', with q >= s' so q < x'. Use p (or q) as the between-zone witness if t' < p < x'.
-- [ ] Factor zone 3 into a private helper `between_zone_depth0_transfer_until`
-- [ ] Implement mirror for `prior_nonconstenv_2var_agree_since` (zone 3 with reversed order)
-- [ ] Factor into `between_zone_depth0_transfer_since`
+**Approaches attempted and ruled out** (5 dispatch sessions):
+1. **Direct zone decomposition at K=0**: Zones 1,2,4,5 work via `cross_extend_bwd_1var`. Zone 3 (between-zone) fails — `cross_extend` from h_x and h_t give witnesses on separate sides but cannot guarantee a single witness in (t', x').
+2. **Prior-UZ/SZ squeeze alone**: Gives first/last occurrences of predicate pattern above t'/below x', but these are 1-var conditions. The 3-var NF requires simultaneous conjunction of "above t'" AND "below x'" at a single point — not guaranteed by two independent Prior applications.
+3. **Decomposition into depth-1 2-var first**: Circular — depth-1 2-var at [x,t] needs depth-0 3-var transfer, which is the very thing being proved.
+4. **`nonconstenv_exist_transfer_general`**: FALSE (counterexample found). Between-zone transfer at depth 0 requires 2-var agreement at anchor pair, not just independent 1-var.
+5. **`zone_compatible_witness_bwd/fwd`**: FALSE — zone-3 witness existence not provable from endpoint conditions.
 
-**K=succ K' Step (closes 2 sorry in `prior_nonconstenv_2var_agree_until/since`)**:
-- [ ] Use IH (h_xt from IH at depth K'+2) to get depth-(K'+1) 3-var transfer from its quantifier part
-- [ ] Implement zone decomposition for the depth boost from K'+1 to K'+2 for 3-var agreement:
-  - Zones 1,2,4,5: `cross_extend_bwd_1var` at depth K'+2 (analogous to K=0 case)
-  - Zone 3: The c_K witness from the IH has depth-K' 3-var agreement but needs depth-(K'+1). Use CharPart(K'+2) to build temporal formula for c_K's depth-(K'+1) 1-var NF. Transfer via depth-(K'+2) 1-var agreement at x/x' and t/t'. Combine with zone-based argument to establish depth-(K'+1) 3-var at the witness.
-- [ ] Factor zone 3 at K>0 into `between_zone_succ_transfer_until`
-- [ ] Mirror for since direction
+**Root cause** (confirmed across 5 dispatches):
+The depth-0 between-zone existential transfer is NOT independently provable from endpoint 1-var agreements alone. The between-zone is a 2-variable interval containment property that requires the full theorem at lower depth. The current simple `induction K` structure does not provide this.
 
-**Verification tasks**:
-- [ ] Verify: `lake build PriorComposition` succeeds with 0 sorry
-- [ ] Verify: `lake build KampBypass` succeeds with 0 sorry
-- [ ] Verify: `grep -rn "sorry" PriorComposition.lean` returns 0 results (excluding comments)
+**Required restructuring** (from analysis dispatch 2026-06-18):
+Restructure `prior_nonconstenv_2var_agree_until/since` from simple `induction K` to **strong induction on total depth D=K+2**:
+- At depth D, the quantifier part asks about depth-(D-1) 3-var transfers
+- The depth-(D-1) 3-var transfer uses `cross_extend` to get candidate witnesses
+- The depth-(D-2) quantifier conditions at the candidates transfer via P(D-2)
+- P(D-2) is available from the strong IH (provides theorem at ALL lower depths)
+- This eliminates circularity: zone-3 at depth D uses the theorem at depth D-1 (from IH), not the current depth
+
+**Tasks remaining**:
+- [ ] Restructure `prior_nonconstenv_2var_agree_until` to use strong induction on D=K+2 (replace `induction K` with `Nat.strong_rec_on` or equivalent)
+- [ ] Implement zone decomposition for depth-(D-1) 3-var existential transfer:
+  - Zones 1,2,4,5: `cross_extend_bwd_1var` (straightforward, patterns established)
+  - Zone 3 (between): use IH at D-1 to get depth-(D-2) transfer, then `cross_extend` + Prior-UZ/SZ for the depth-(D-1) witness
+- [ ] Mirror for `prior_nonconstenv_2var_agree_since`
+- [ ] Verify `lake build PriorComposition` succeeds with 0 sorry
+- [ ] Verify `lake build KampBypass` succeeds with 0 sorry
 
 **Sorry budget**: 0. Target: reduce from 4 to 0.
 
-**Timing**: 10 hours (3-4 dispatch sessions)
+**Timing**: 8-12 hours (2-3 dispatch sessions, restructuring + zone proofs)
 
 **Depends on**: 5
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean` -- implement zone-based transfer proofs in K=0 base and K>0 step
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean` — restructure induction and implement zone-based transfer
 
 **Verification**:
 - `lake build PriorComposition` succeeds with 0 sorry
@@ -313,7 +313,7 @@ Phases within the same wave can execute in parallel.
 - [x] After Phase 2: `lake build KampBypass` succeeds; sorry count = 2 (at between-zone sites only)
 - [x] After Phase 3: Research report written with actionable design
 - [x] After Phase 4 (4a-4c): KampBypass.lean sorry-free; PriorComposition.lean reduced to 4 sorry
-- [ ] After Phase 5: `lake build PriorComposition` + `lake build KampBypass` succeed; sorry count in PriorComposition = 4 (restructured positions); KampBypass sorry = 0
+- [x] After Phase 5: `lake build PriorComposition` + `lake build KampBypass` succeed; sorry count in PriorComposition = 4 (restructured positions at lines 264, 285, 336, 354); KampBypass sorry = 0
 - [ ] After Phase 6: `lake build PriorComposition` succeeds; sorry count = 0; `lean_verify prior_nonconstenv_2var_agree_until` clean
 - [ ] After Phase 7: `lean_verify completeness_discrete` clean; `lake build` succeeds; no sorry in Kamp directory
 
@@ -328,10 +328,8 @@ Phases within the same wave can execute in parallel.
 
 ## Rollback/Contingency
 
-1. **Phase 5 restructuring breaks KampBypass.lean build**: The only change to KampBypass.lean is adding two parameters to two call sites. If the types do not match, check the `K` vs `k` indexing (PriorComposition uses `K`, KampBypass uses `k'`; the relationship is `K = k'` so `K+1 = k'+1`). The `char_kp1_fn` type at both sites should unify without coercion.
+1. **Phase 6 strong-induction restructuring fails to compile**: The external signature is unchanged; only the internal proof structure changes. If `Nat.strongRecOn` creates type-level issues, use manual well-founded recursion with `have : D' < D := ...` and `termination_by D`.
 
-2. **Phase 6 Zone 3 (between-zone) Prior-UZ/SZ squeeze fails at K=0**: The outer zones (1,2,4,5) are straightforward and should be proved first to reduce sorry count. If the between-zone squeeze requires more infrastructure than estimated, document the specific gap and create a focused sorry with detailed comments. At depth 0, the between-zone involves only atomic conditions (depth-0 4-var is purely predicate + order), bounding the complexity.
+2. **Phase 6 zone-3 argument still fails after restructuring**: With the strong IH providing the theorem at all lower depths, the zone-3 argument should be: cross_extend for witness, IH at D-1 for sub-NF transfer, Prior-UZ/SZ for placement. If this still fails, the mathematical approach needs revisiting — create a focused research dispatch to investigate alternative proof architectures.
 
-3. **Phase 6 K>0 step requires full arity-climbing recursion**: If the simpler CharPart-based depth boost does not work, implement strong induction on depth d descending from K to 0. This terminates because depth-0 is purely atomic. If arity climbing exceeds complexity budget (> 500 lines), re-scope as a separate sub-task.
-
-4. **Any phase**: `git revert` to restore pre-attempt state. Do NOT re-attempt GeneralExistPartOrdered, BetweenZoneExistPart, `depth0_3var_exist_transfer_until/since`, or `exist_transfer_3var_nonconstenv` (all confirmed FALSE or unprovable as standalone statements).
+3. **Any phase**: `git revert` to restore pre-attempt state. Do NOT re-attempt: GeneralExistPartOrdered, BetweenZoneExistPart, `depth0_3var_exist_transfer_until/since`, `exist_transfer_3var_nonconstenv`, `nonconstenv_exist_transfer_general`, `zone_compatible_witness_bwd/fwd` (all confirmed FALSE or unprovable as standalone statements across 10+ dispatch sessions).
