@@ -100,7 +100,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 5.3 -- All-Betas-True Base Case [NOT STARTED]
+### Phase 2: Lemma 5.3 -- All-Betas-True Base Case [IN PROGRESS]
 
 **Goal**: Prove that the negation of "exists ordered points x_1 < ... < x_n in (z_0, z_1) with P_i(x_i)" is equivalent to a V-EA formula on Prior structures. This is Rabinovich Lemma 5.3 (p.8), the base case for the negation closure induction.
 
