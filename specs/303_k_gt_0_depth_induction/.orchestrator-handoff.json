@@ -1,81 +1,71 @@
 {
-  "status": "blocked",
-  "summary": "Phase 5 BLOCKED: depth0_3var_exist_transfer_until/since are FALSE as stated (counterexample found). The between-zone 3-var existential transfer does NOT follow from depth-2 1-var agreement at endpoints plus Prior-UZ/SZ alone. Counterexample: (Z, P=evens), t=t'=-1, x=4, x'=0. Both endpoints have depth-2 1-var NF agreement by 2-periodicity, Prior holds on Z, but M has P-point in (-1,4) while N has empty interval (-1,0). Root cause: 2-variable interval containment cannot be determined from two 1-variable endpoint conditions. Fix requires adding CharPart parameter and merging Phases 5+6.",
-  "phases_completed": 4,
+  "status": "partial",
+  "summary": "Phase 5 completed: deleted 3 FALSE/unprovable lemmas, added CharPart parameters to 4 theorems, updated 2 KampBypass call sites. PriorComposition builds with 4 sorry (quantifier placeholders). KampBypass remains 0 sorry. Phase 6 (zone-based between-zone transfer to close all 4 sorry) not started -- requires Prior-UZ/SZ squeeze argument estimated at 6-10 hours.",
+  "phases_completed": 5,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 274,
-      "statement": "depth0_3var_exist_transfer_until (between-zone case)",
-      "assumption": "Assumes depth-0 3-var between-zone transfer follows from endpoint depth-2 1-var agreement + Prior-UZ/SZ",
-      "why_deferred": "STATEMENT IS FALSE. Counterexample: (Z, P=evens), t=t'=-1, x=4, x'=0. Needs CharPart parameter to build depth-1 2-var agreement via temporal formula transfer.",
-      "next_dispatch": "Merge Phase 5+6: add CharPart(K+1) to prior_nonconstenv_2var_agree_until, build depth-1 2-var via existPart temporal formula transfer, then extract depth-0 3-var from quantifier part"
+      "line": 255,
+      "statement": "K=0 quantifier part of prior_nonconstenv_2var_agree_until",
+      "assumption": "depth-1 3-var existential transfer at [w,x,t]/[w',x',t'] with t<x, t'<x'",
+      "why_deferred": "Between-zone case requires Prior-UZ/SZ squeeze + depth-0 4-var atomic argument. Estimated 6-10 hours for all 4 sorry.",
+      "next_dispatch": "Implement between_zone_depth0_transfer_until helper using zone decomposition + Prior-UZ/SZ"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 345,
-      "statement": "depth0_3var_exist_transfer_since (between-zone case)",
-      "assumption": "Mirror of _until sorry",
-      "why_deferred": "STATEMENT IS FALSE (same counterexample, symmetric). Needs same CharPart fix.",
-      "next_dispatch": "Fixed simultaneously with sorry at line 274"
+      "line": 270,
+      "statement": "K>0 quantifier part of prior_nonconstenv_2var_agree_until",
+      "assumption": "depth-(K'+2) 3-var existential transfer with IH giving K'+1",
+      "why_deferred": "Same zone-based approach at higher depth with IH + CharPart for depth boost",
+      "next_dispatch": "Implement between_zone_succ_transfer_until using IH + zone decomposition"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 460,
-      "statement": "exist_transfer_3var_nonconstenv forward (general K)",
-      "assumption": "Depth boost from K to K+1 in 3-var transfer",
-      "why_deferred": "Phase 6 target. Requires CharPart(K+1) parameter for the depth boost.",
-      "next_dispatch": "Add char_kp1 parameter, implement between-zone at general K via CharPart"
+      "line": 316,
+      "statement": "K=0 quantifier part of prior_nonconstenv_2var_agree_since",
+      "assumption": "mirror of sorry #1 with reversed order",
+      "why_deferred": "Mirror of until case",
+      "next_dispatch": "Implement between_zone_depth0_transfer_since"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 480,
-      "statement": "exist_transfer_3var_nonconstenv backward (general K)",
-      "assumption": "Symmetric of forward direction",
-      "why_deferred": "Phase 6 target. Same CharPart fix as forward.",
-      "next_dispatch": "Fixed simultaneously with sorry at line 460"
+      "line": 331,
+      "statement": "K>0 quantifier part of prior_nonconstenv_2var_agree_since",
+      "assumption": "mirror of sorry #2 with reversed order",
+      "why_deferred": "Mirror of until case at higher depth",
+      "next_dispatch": "Implement between_zone_succ_transfer_since"
     }
   ],
-  "blockers": [
-    {
-      "phase": 5,
-      "description": "depth0_3var_exist_transfer_until/since are FALSE as standalone lemmas",
-      "counterexample": "(Z, <, P=evens), t=t'=-1, x=4, x'=0. depth-2 1-var NF agree at endpoints by 2-periodicity; Prior-UZ/SZ hold on Z; M has P-point 0 in (-1,4) but N has empty interval (-1,0).",
-      "root_cause": "A 2-variable interval containment property (exists point between t and x with predicates sigma) cannot be determined from two independent 1-variable conditions at the endpoints. The depth-2 1-var NF at t captures intervals relative to t (like (t, x_new)) but x_new need not equal x'. Similarly for the NF at x.",
-      "approaches_tried": [
-        "Direct transfer via h_t and h_x depth-1 2-var quantifier extraction: gives witnesses outside (t',x')",
-        "Prior-UZ/SZ to locate first/last occurrence: fails when all transferred witnesses are outside (t',x')",
-        "Zone decomposition (zones 1,2,4,5 work, zone 3 blocked): outer zones use cross_extend_bwd_1var successfully",
-        "Combine h_t and h_x transfers with Prior: Case C (both outside) confirmed possible by counterexample",
-        "Counterexample construction on (Z, P=evens): confirms statement is FALSE"
-      ],
-      "recommended_fix": {
-        "approach": "Merge Phases 5 and 6. Add CharPart(K+1) parameter throughout.",
-        "details": [
-          "Add CharPart(K+1) parameter to prior_nonconstenv_2var_agree_until/since signatures",
-          "Add CharPart(K+1) parameter to prior_2var_transfer_until/since signatures",
-          "Thread CharPart from existPart_succ_n1_bypass call sites (already available there as char_kp1)",
-          "Remove or restructure depth0_3var_exist_transfer_until/since (current statements are FALSE)",
-          "At K=0 base case: use existPart_succ_n1_bypass_k0 with char_1 to build temporal formula A for each depth-1 2-var NF. A has operator depth <= 2. Transfer A's truth via depth-2 1-var agreement. This gives depth-1 2-var agreement at [x,t]/[x',t'] without needing depth-0 3-var transfer first. Then depth-0 3-var follows from depth-1 2-var quantifier part.",
-          "At K>0 inductive step: IH gives depth-(K+1) 2-var. Use exist_transfer_3var_nonconstenv with h_xt from IH. The sorry lines 460/480 are resolved by the depth boost using CharPart(K+1)."
-        ],
-        "key_mathematical_insight": "The between-zone is a 2-variable property. It can ONLY be established by first proving full depth-(K+1) 2-var agreement at [x,t]/[x',t'], which requires temporal formula transfer via CharPart. The formula-level transfer sidesteps the need to prove 3-var existentials independently."
-      }
-    }
-  ],
+  "blockers": [],
+  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-handoff.md",
   "continuation_context": {
     "is_successor": false,
-    "current_phase": 5,
-    "phase_status": "blocked",
-    "next_action": "Research dispatch to design the CharPart-threaded architecture, then implementation dispatch to execute the merged Phase 5+6",
-    "key_insight": "depth0_3var_exist_transfer_until/since are FALSE. The fix is to add CharPart as a parameter and build depth-1 2-var agreement via temporal formula transfer, avoiding the between-zone standalone lemma entirely."
+    "resume_phase": 6,
+    "plan_path": "specs/303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md",
+    "key_files": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/PriorDefs.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean"
+    ],
+    "key_lemmas": [
+      "cross_extend_bwd_1var",
+      "cross_1var_from_2var",
+      "nf_agreement_from_shared_nf",
+      "nf_characteristic_satisfies",
+      "nf_eval_unique"
+    ]
   },
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/plans/14_literature-grounded-plan.md",
-      "type": "plan",
-      "summary": "Phase 5 marked [BLOCKED] with detailed blocker analysis"
+      "type": "handoff",
+      "path": "specs/303_k_gt_0_depth_induction/handoffs/phase-5-handoff.md"
     }
-  ]
+  ],
+  "verification": {
+    "sorry_count": 4,
+    "vacuous_count": 0,
+    "axiom_count": 2,
+    "build_passed": true
+  }
 }

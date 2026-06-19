@@ -220,7 +220,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Implement Zone-Based Between-Zone Transfer (Closes All 4 Sorry) [NOT STARTED]
+### Phase 6: Implement Zone-Based Between-Zone Transfer (Closes All 4 Sorry) [IN PROGRESS]
 
 **Goal**: Replace the 4 sorry from Phase 5 with complete proofs using the zone-based between-zone transfer with Prior-UZ/SZ squeeze argument and CharPart-based temporal formula encoding. This phase closes all remaining sorry in PriorComposition.lean.
 
