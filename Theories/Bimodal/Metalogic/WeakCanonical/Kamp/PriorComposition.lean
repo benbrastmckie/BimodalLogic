@@ -226,21 +226,20 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
       nf_eval_nf N (K + 2) 1 (fun _ => t') nf)
     (h_order_M : t < x)
     (h_order_N : t' < x')
-    (char_kp1_fn : NormalForm sig (K + 1) 1 → Formula)
-    (char_kp1_correct : ∀ (nf_1 : NormalForm sig (K + 1) 1)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
         (M : OrderedMonadicStructure sig)
         (h_UZ : semantic_prior_UZ M atomMap)
         (h_SZ : semantic_prior_SZ M atomMap)
         (t : M.carrier),
-        temporal_truth M atomMap t (char_kp1_fn nf_1) ↔
-        nf_eval_nf M (K + 1) 1 (fun _ => t) nf_1) :
+        temporal_truth M atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf M d 1 (fun _ => t) nf_1) :
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
   induction K with
   | zero =>
     intro nf
-    -- Show M,[x,t] satisfies the char NF of N,[x',t'] at depth 2
     set target := nf_characteristic N 2 2 (Fin.cons x' (fun _ => t'))
     have h_N_sat := nf_characteristic_satisfies N 2 2 (Fin.cons x' (fun _ => t'))
     suffices h_M_sat : nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) target by
@@ -250,7 +249,6 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier part: depth-1 3-var existential transfer
-      -- Requires CharPart-based zone transfer (Phase 6)
       intro sub_nf; rw [← h_N_quant sub_nf]
       sorry
   | succ K' ih =>
@@ -264,8 +262,7 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier: depth-(K'+2) 3-var existential transfer
-      -- IH gives depth-(K'+2) 2-var at [x,t]/[x',t'] from depth-(K'+2) 1-var
-      -- Requires CharPart-based zone transfer (Phase 6)
+      -- IH available via ih with char_fn restricted to d ≤ K'+1
       intro sub_nf; rw [← h_N_quant sub_nf]
       sorry
 
@@ -288,14 +285,14 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
       nf_eval_nf N (K + 2) 1 (fun _ => t') nf)
     (h_order_M : x < t)
     (h_order_N : x' < t')
-    (char_kp1_fn : NormalForm sig (K + 1) 1 → Formula)
-    (char_kp1_correct : ∀ (nf_1 : NormalForm sig (K + 1) 1)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
         (M : OrderedMonadicStructure sig)
         (h_UZ : semantic_prior_UZ M atomMap)
         (h_SZ : semantic_prior_SZ M atomMap)
         (t : M.carrier),
-        temporal_truth M atomMap t (char_kp1_fn nf_1) ↔
-        nf_eval_nf M (K + 1) 1 (fun _ => t) nf_1) :
+        temporal_truth M atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf M d 1 (fun _ => t) nf_1) :
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
@@ -311,7 +308,6 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier part: depth-1 3-var existential transfer
-      -- Requires CharPart-based zone transfer (Phase 6)
       intro sub_nf; rw [← h_N_quant sub_nf]
       sorry
   | succ K' ih =>
@@ -325,8 +321,6 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier: depth-(K'+2) 3-var existential transfer
-      -- IH gives depth-(K'+2) 2-var at [x,t]/[x',t'] from depth-(K'+2) 1-var
-      -- Requires CharPart-based zone transfer (Phase 6)
       intro sub_nf; rw [← h_N_quant sub_nf]
       sorry
 
@@ -350,20 +344,20 @@ theorem prior_2var_transfer_until {sig : MonadicSignature}
       nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf)
     (h_order : t < x)
     (h_order₀ : t₀ < x₀)
-    (char_kp1_fn : NormalForm sig (K + 1) 1 → Formula)
-    (char_kp1_correct : ∀ (nf_1 : NormalForm sig (K + 1) 1)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
         (M : OrderedMonadicStructure sig)
         (h_UZ : semantic_prior_UZ M atomMap)
         (h_SZ : semantic_prior_SZ M atomMap)
         (t : M.carrier),
-        temporal_truth M atomMap t (char_kp1_fn nf_1) ↔
-        nf_eval_nf M (K + 1) 1 (fun _ => t) nf_1)
+        temporal_truth M atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf M d 1 (fun _ => t) nf_1)
     (sub_nf : NormalForm sig (K + 2) 2)
     (h_eval₀ : nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) sub_nf) :
     nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) sub_nf :=
   (prior_nonconstenv_2var_agree_until atomMap h_surj K M x t M₀ x₀ t₀
     h_UZ h_SZ h_UZ₀ h_SZ₀ h_x h_t h_order h_order₀
-    char_kp1_fn char_kp1_correct sub_nf).mpr h_eval₀
+    char_fn char_correct sub_nf).mpr h_eval₀
 
 /-- Specialized version for the KampBypass backward Since direction. -/
 theorem prior_2var_transfer_since {sig : MonadicSignature}
@@ -384,20 +378,20 @@ theorem prior_2var_transfer_since {sig : MonadicSignature}
       nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf)
     (h_order : x < t)
     (h_order₀ : x₀ < t₀)
-    (char_kp1_fn : NormalForm sig (K + 1) 1 → Formula)
-    (char_kp1_correct : ∀ (nf_1 : NormalForm sig (K + 1) 1)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
         (M : OrderedMonadicStructure sig)
         (h_UZ : semantic_prior_UZ M atomMap)
         (h_SZ : semantic_prior_SZ M atomMap)
         (t : M.carrier),
-        temporal_truth M atomMap t (char_kp1_fn nf_1) ↔
-        nf_eval_nf M (K + 1) 1 (fun _ => t) nf_1)
+        temporal_truth M atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf M d 1 (fun _ => t) nf_1)
     (sub_nf : NormalForm sig (K + 2) 2)
     (h_eval₀ : nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) sub_nf) :
     nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) sub_nf :=
   (prior_nonconstenv_2var_agree_since atomMap h_surj K M x t M₀ x₀ t₀
     h_UZ h_SZ h_UZ₀ h_SZ₀ h_x h_t h_order h_order₀
-    char_kp1_fn char_kp1_correct sub_nf).mpr h_eval₀
+    char_fn char_correct sub_nf).mpr h_eval₀
 
 /-! ## Second Component Projection from 2-var Agreement
 

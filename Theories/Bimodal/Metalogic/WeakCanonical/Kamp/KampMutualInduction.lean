@@ -297,7 +297,15 @@ theorem existPart_succ {sig : MonadicSignature}
     (k : Nat)
     (ih_char : CharPart atomMap k)
     (ih_char_succ : CharPart atomMap (k + 1))
-    (ih_exist : ExistPart atomMap h_surj k) :
+    (ih_exist : ExistPart atomMap h_surj k)
+    (ih_all_char : ∀ (d : Nat), d ≤ k →
+        ∀ (nf_d : NormalForm sig d 1),
+          ∃ (A : Formula),
+            ∀ (M : OrderedMonadicStructure sig)
+              (h_UZ : semantic_prior_UZ M atomMap)
+              (h_SZ : semantic_prior_SZ M atomMap)
+              (t : M.carrier),
+              temporal_truth M atomMap t A ↔ nf_eval_nf M d 1 (fun _ => t) nf_d) :
     ExistPart atomMap h_surj (k + 1) := by
   intro n hn char_kp1 char_kp1_correct parent_atoms sub_nf
   cases n with
@@ -307,7 +315,7 @@ theorem existPart_succ {sig : MonadicSignature}
     | zero =>
       exact existPart_succ_n1_bypass atomMap h_surj k
         char_kp1 char_kp1_correct ih_char ih_exist
-        parent_atoms sub_nf
+        ih_all_char parent_atoms sub_nf
     | succ n'' =>
       -- n>=2 case: arity n''+3. Constant parent env means
       -- the n-var NF is determined by the 2-var NF.
@@ -321,7 +329,7 @@ theorem existPart_succ {sig : MonadicSignature}
         let sub_nf_2 := nf_characteristic M₀ (k + 1) 2 (Fin.cons x₀ (fun _ => t₀))
         obtain ⟨A₂, hA₂⟩ := existPart_succ_n1_bypass atomMap h_surj k
           char_kp1 char_kp1_correct ih_char ih_exist
-          parent_atoms sub_nf_2
+          ih_all_char parent_atoms sub_nf_2
         refine ⟨A₂, fun M h_UZ h_SZ t h_atoms => ?_⟩
         constructor
         · -- Forward: temporal → ∃ x, nf_eval_nf ... sub_nf
@@ -379,23 +387,36 @@ theorem existPart_succ {sig : MonadicSignature}
 /-! ## Combined Induction -/
 
 /-- The combined mutual induction:
-    CharPart(k) ∧ ExistPart(k) for all k. -/
+    CharPart(k) ∧ ExistPart(k) for all k.
+    Uses strong induction to provide ih_all_char at all lower depths. -/
 theorem kamp_mutual_induction {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (k : Nat) :
     CharPart atomMap k ∧ ExistPart atomMap h_surj k := by
-  induction k with
-  | zero =>
-    exact ⟨charPart_zero atomMap h_surj,
-           existPart_zero atomMap h_surj⟩
-  | succ k' ih =>
-    have ih_char := ih.1
-    have ih_exist := ih.2
-    have char_succ := charPart_succ atomMap h_surj k' ih_char ih_exist
-    have exist_succ := existPart_succ atomMap h_surj k' ih_char char_succ
-      ih_exist
-    exact ⟨char_succ, exist_succ⟩
+  exact Nat.strong_induction_on k fun k ih => by
+    cases k with
+    | zero =>
+      exact ⟨charPart_zero atomMap h_surj,
+             existPart_zero atomMap h_surj⟩
+    | succ k' =>
+      have ih_at_k' := ih k' (by omega)
+      have ih_char := ih_at_k'.1
+      have ih_exist := ih_at_k'.2
+      have char_succ := charPart_succ atomMap h_surj k' ih_char ih_exist
+      -- Build ih_all_char from strong IH
+      have ih_all_char : ∀ (d : Nat), d ≤ k' →
+          ∀ (nf_d : NormalForm sig d 1),
+            ∃ (A : Formula),
+              ∀ (M : OrderedMonadicStructure sig)
+                (h_UZ : semantic_prior_UZ M atomMap)
+                (h_SZ : semantic_prior_SZ M atomMap)
+                (t : M.carrier),
+                temporal_truth M atomMap t A ↔ nf_eval_nf M d 1 (fun _ => t) nf_d :=
+        fun d hd => (ih d (by omega)).1
+      have exist_succ := existPart_succ atomMap h_surj k' ih_char char_succ
+        ih_exist ih_all_char
+      exact ⟨char_succ, exist_succ⟩
 
 /-! ## Filling the Original Sorry -/
 
