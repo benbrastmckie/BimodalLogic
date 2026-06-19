@@ -1,47 +1,66 @@
 {
-  "status": "partial",
-  "summary": "Phase 6 partial: Multi-depth char refactoring complete across 4 files. Original 4 inline sorry in main theorems replaced by 2 well-typed helper sorry (zone_compatible_witness_bwd/fwd). However, analysis discovered zone_compatible_witness is FALSE as stated (counterexample: Z with P=evens, envM=[4,-1], envN=[0,-1], w=1). The factoring through a sub_nf-independent witness is incorrect -- the witness must depend on sub_nf. The proof strategy needs revision: either (a) abandon the zone_compatible_witness factoring and prove nonconstenv_exist_transfer_general with sub_nf-dependent witness selection, or (b) restructure to use the nf_characteristic approach where the 2-var agreements from cross_extend at each anchor are composed into n-var agreement.",
+  "status": "blocked",
+  "summary": "Phase 6 blocked: deleted FALSE zone_compatible_witness_bwd/fwd (2 sorry removed), then discovered nonconstenv_exist_transfer_general is ALSO FALSE at D=0 when n > 0 (counterexample: Z, P=evens, envM=[10,0], envN=[2,0]). The between-zone existential transfer requires 2-var agreement at the anchor PAIR, which the D-induction cannot provide. Fix requires bypassing nonconstenv_exist_transfer_general and inlining the existential transfer into prior_nonconstenv_2var_agree_until/since using the K-induction IH. Current sorry count: 2 (both in the FALSE nonconstenv_exist_transfer_general). Plan needs v16 revision.",
   "phases_completed": 5,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 275,
-      "statement": "zone_compatible_witness_bwd",
-      "assumption": "For any w in M, exists w' in N with depth-D 1-var agreement AND matching orders relative to all anchors",
-      "why_deferred": "THEOREM IS FALSE as stated. Counterexample: Z with P=evens, envM=[4,-1], envN=[0,-1], w=1. The interval (-1,0) in Z is empty. The factoring through a sub_nf-independent witness is wrong.",
-      "next_dispatch": "DELETE zone_compatible_witness_bwd/fwd. Restructure nonconstenv_exist_transfer_general with sub_nf-dependent witness. For D=0: sub_nf encodes w's zone via order atoms, so witness depends on sub_nf. For D>0: use nf_characteristic approach with IH."
+      "line": 304,
+      "statement": "nonconstenv_exist_transfer_general D=0 case",
+      "assumption": "Depth-0 (n+2)-var existential transfer from depth-1 1-var at each anchor + orders + Prior-UZ/SZ + char",
+      "why_deferred": "THEOREM IS FALSE at D=0 when n > 0. Counterexample: Z, P=evens, envM=[10,0], envN=[2,0]. Between-zone existential 'even w with 0<w<10' vs 'even w with 0<w<2' -- M has witness (w=2), N does not.",
+      "next_dispatch": "Delete nonconstenv_exist_transfer_general entirely. Inline 3-var existential transfer into prior_nonconstenv_2var_agree_until/since where K-induction IH provides 2-var agreement at anchor pair."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 308,
-      "statement": "zone_compatible_witness_fwd",
-      "assumption": "Symmetric to bwd",
-      "why_deferred": "SAME ISSUE as bwd -- theorem is FALSE",
-      "next_dispatch": "DELETE along with bwd"
+      "line": 315,
+      "statement": "nonconstenv_exist_transfer_general D=d+1 case",
+      "assumption": "Depth-(d+1) transfer, IH calls D=0 at high arity",
+      "why_deferred": "Depends on FALSE D=0 case via arity climbing.",
+      "next_dispatch": "Same: delete and restructure."
     }
   ],
   "blockers": [
-    "zone_compatible_witness_bwd/fwd is FALSE as stated. The factoring through a sub_nf-independent witness is incorrect. The witness must depend on sub_nf because at D=0, sub_nf encodes the zone (via order atoms) and only certain zones have witnesses. At D>0, the quantifier conditions constrain which witness works. NEXT STEP: rewrite nonconstenv_exist_transfer_general with sub_nf-dependent witness selection, possibly by induction on D where D=0 case analyzes sub_nf's order atoms to determine the zone and finds the witness, and D>0 uses nf_characteristic + IH."
+    "nonconstenv_exist_transfer_general is FALSE at D=0 for n > 0. Counterexample: Z with P=evens, envM=[10,0], envN=[2,0]. Depth-1 1-var NFs agree at 10/2 (both even, same depth-0 2-var existentials above/below). But sub_nf encoding 'w even, 0 < w < 10' is satisfiable in M but not N. The between-zone transfer requires 2-var agreement at the anchor pair [envM(0),envM(1)]/[envN(0),envN(1)], which individual 1-var agreements do not provide. This makes the entire D-induction approach (which calls D=0 at high arity via arity climbing) unsalvageable.",
+    "ARCHITECTURAL CHANGE NEEDED: (1) Delete nonconstenv_exist_transfer_general, nonconstenv_exist_transfer_until, nonconstenv_exist_transfer_since. (2) Rewrite prior_nonconstenv_2var_agree_until/since to prove the depth-(K+1) 3-var existential transfer inline, using the K-induction IH's 2-var quantifier part (depth-(K'+1) 3-var transfer) plus a 'depth boost' from K'+1 to K'+2 via zone analysis + Prior-UZ/SZ + char. (3) For K=0 base: prove depth-1 3-var transfer directly using h_x/h_t at depth 2. The depth-1 3-var at K=0 requires zone analysis where outer zones use cross_extend and the between-zone uses Prior-UZ/SZ with char(0) + the quantifier conditions from h_x/h_t (depth-1 2-var from cross_extend provides the depth-0 existential conditions needed to resolve the between-zone 4-var purely-atomic existentials)."
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 6,
     "plan_path": "specs/303_k_gt_0_depth_induction/plans/15_charpart-threading-plan.md",
+    "plan_needs_revision": true,
+    "revision_reason": "nonconstenv_exist_transfer_general is FALSE -- need plan v16 that eliminates it and inlines into prior_nonconstenv_2var_agree",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypass.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampMutualInduction.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampComposition.lean"
     ],
     "key_decisions": [
-      "Multi-depth char (char_fn : forall d, NormalForm sig d 1 -> Formula) is CORRECT and should be kept",
-      "nonconstenv_exist_transfer_general with D-induction and n-arity is the right structure",
-      "zone_compatible_witness factoring is WRONG (FALSE theorem) -- must be replaced",
-      "The witness must depend on sub_nf, not be independent",
-      "D=0 base case: sub_nf order atoms determine w's zone; for outer zones use cross_extend, for between-zone use Prior-UZ/SZ, for equality zones use the anchor directly",
-      "D>0 inductive step: use nf_characteristic approach; atoms from 1-var+orders (zone-dependent); quantifiers from IH at higher arity"
+      "zone_compatible_witness_bwd/fwd are FALSE and DELETED",
+      "nonconstenv_exist_transfer_general is FALSE at D=0 for n > 0 -- MUST BE DELETED",
+      "Root cause: between-zone needs 2-var at anchor pair, D-induction only has 1-var at each anchor",
+      "Multi-depth char_fn is CORRECT and should be kept (used by prior_nonconstenv_2var_agree)",
+      "Correct architecture: inline 3-var transfer into prior_nonconstenv_2var_agree using K-induction IH",
+      "For K=succ K': IH quantifier part gives depth-(K'+1) 3-var transfer, need depth boost to K'+2",
+      "For K=0: depth-1 3-var transfer directly from h_x/h_t at depth 2",
+      "The depth boost lemma should be a new private theorem: from depth-d 3-var agreement + depth-(d+1) 1-var at witness + depth-(d+1) 2-var at anchor pair -> depth-(d+1) 3-var agreement",
+      "The depth boost uses: atoms are depth-independent; quantifiers require depth-d 4-var transfer which uses an arity climbing inner loop terminating at depth 0 where the 2-var at anchor pair resolves the between-zone"
     ],
-    "counterexample": "Z with P=evens, envM=[4,-1], envN=[0,-1], w=1. h_1var satisfied (4 and 0 both even, same depth-1 NFs; -1 and -1 trivially). h_orders: -1<4 iff -1<0, both true. But no integer exists in (-1,0), so zone_compatible_witness fails."
+    "counterexample_nonconstenv_exist_transfer_general": {
+      "D": 0,
+      "n": 1,
+      "structure": "Z with P = {n : n is even}",
+      "envM": "[10, 0]",
+      "envN": "[2, 0]",
+      "h_1var_depth": 1,
+      "h_1var_satisfied": "10 and 2 are both even with same depth-0 existentials above/below; 0 and 0 trivially agree",
+      "h_orders_satisfied": "0 < 10 iff 0 < 2 (both true)",
+      "sub_nf": "w even AND 0 < w AND w < envM(0)",
+      "M_satisfiable": "w = 2 (even, 0 < 2 < 10)",
+      "N_not_satisfiable": "no even in (0, 2) = {1}",
+      "why_depth_1_insufficient": "depth-1 1-var at 10/2 captures which depth-0 2-var types exist above/below each anchor independently, but NOT which types exist BETWEEN two anchors. The between-zone is a 3-var property requiring 2-var agreement at the pair."
+    }
   }
 }
