@@ -189,6 +189,90 @@ private theorem depth0_3var_witness_check {sig : MonadicSignature}
 -- depth0_3var_exist_transfer_until/since DELETED (FALSE -- counterexample in report 15)
 -- exist_transfer_3var_nonconstenv DELETED (unprovable without Prior+CharPart)
 
+/-! ## Cross-Structure 3-var Existential Transfer on Non-Constant Envs
+
+Transfer `∃ w, nf_eval_nf M D 3 [w,x,t] sub_nf` between Prior structures
+given depth-(D+1) 1-var agreement at x/x' and t/t'.
+
+The proof proceeds by induction on D:
+- D=0: purely atomic, handled by zone analysis + predicate matching
+- D=d+1: atoms handled as above; quantifier conditions (depth-d 4-var
+  existentials) transferred using the IH at arity 4 (which reduces to
+  the D=d case via the same zone decomposition at higher arity).
+
+The multi-depth char parameter enables the zone-3 (between-zone) transfer
+at each induction step via Prior-UZ/SZ. -/
+
+/-- Generalized nonconstenv n-var NF agreement on Prior structures.
+    Given depth-(D+1) 1-var agreement at each component of non-constant
+    environments (Until zone: env[1] < env[0]) and multi-depth char,
+    we get depth-D n-var existential transfer for n ≥ 2.
+
+    This is the main workhorse for the quantifier part of
+    `prior_nonconstenv_2var_agree_until/since`. -/
+private theorem nonconstenv_exist_transfer_until {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (D : Nat)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (h_x : ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => x) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => x') nf)
+    (h_t : ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => t) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => t') nf)
+    (h_order_M : t < x)
+    (h_order_N : t' < x')
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ D) (nf_1 : NormalForm sig d 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf M d 1 (fun _ => t) nf_1)
+    (sub_nf : NormalForm sig D 3) :
+    (∃ w, nf_eval_nf M D 3 (Fin.cons w (Fin.cons x (fun _ => t))) sub_nf) ↔
+    (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) := by
+  sorry
+
+/-- Mirror for the Since zone (x < t). -/
+private theorem nonconstenv_exist_transfer_since {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (D : Nat)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (h_x : ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => x) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => x') nf)
+    (h_t : ∀ nf : NormalForm sig (D + 1) 1,
+      nf_eval_nf M (D + 1) 1 (fun _ => t) nf ↔
+      nf_eval_nf N (D + 1) 1 (fun _ => t') nf)
+    (h_order_M : x < t)
+    (h_order_N : x' < t')
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ D) (nf_1 : NormalForm sig d 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf M d 1 (fun _ => t) nf_1)
+    (sub_nf : NormalForm sig D 3) :
+    (∃ w, nf_eval_nf M D 3 (Fin.cons w (Fin.cons x (fun _ => t))) sub_nf) ↔
+    (∃ w', nf_eval_nf N D 3 (Fin.cons w' (Fin.cons x' (fun _ => t'))) sub_nf) := by
+  sorry
+
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
 The main theorems use strong induction on K. At each step, the quantifier part
@@ -250,7 +334,9 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier part: depth-1 3-var existential transfer
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
+      exact nonconstenv_exist_transfer_until atomMap h_surj 1
+        M x t N x' t' h_UZ_M h_SZ_M h_UZ_N h_SZ_N
+        h_x h_t h_order_M h_order_N char_fn char_correct sub_nf
   | succ K' ih =>
     intro nf
     set target := nf_characteristic N (K' + 3) 2 (Fin.cons x' (fun _ => t'))
@@ -262,9 +348,10 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     constructor
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier: depth-(K'+2) 3-var existential transfer
-      -- IH available via ih with char_fn restricted to d ≤ K'+1
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
+      exact nonconstenv_exist_transfer_until atomMap h_surj (K' + 2)
+        M x t N x' t' h_UZ_M h_SZ_M h_UZ_N h_SZ_N
+        h_x h_t h_order_M h_order_N char_fn char_correct sub_nf
 
 /-- Mirror for the Since zone (x < t). Same statement with reversed order. -/
 theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
@@ -309,7 +396,9 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier part: depth-1 3-var existential transfer
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
+      exact nonconstenv_exist_transfer_since atomMap h_surj 1
+        M x t N x' t' h_UZ_M h_SZ_M h_UZ_N h_SZ_N
+        h_x h_t h_order_M h_order_N char_fn char_correct sub_nf
   | succ K' ih =>
     intro nf
     set target := nf_characteristic N (K' + 3) 2 (Fin.cons x' (fun _ => t'))
@@ -322,7 +411,9 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     · intro a; exact (h_atom a).trans (h_N_atoms a)
     · -- Quantifier: depth-(K'+2) 3-var existential transfer
       intro sub_nf; rw [← h_N_quant sub_nf]
-      sorry
+      exact nonconstenv_exist_transfer_since atomMap h_surj (K' + 2)
+        M x t N x' t' h_UZ_M h_SZ_M h_UZ_N h_SZ_N
+        h_x h_t h_order_M h_order_N char_fn char_correct sub_nf
 
 /-- Specialized version for the KampBypass backward Until direction:
     one-directional transfer from M₀ to M. -/
