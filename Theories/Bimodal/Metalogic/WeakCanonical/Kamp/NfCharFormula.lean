@@ -603,12 +603,16 @@ on Prior structures.
 This existence can be proved via the negation closure lemma + the VEF translation. -/
 
 /-- For Prior structures, there exists a temporal formula correctly characterizing
-    the realizability of each 2-variable sub-NF. Classical existence; does not
-    construct the formula explicitly.
+    the realizability of each 2-variable sub-NF at depth 0 or 1.
 
-    This is the Prior-specific version of StaviCompleteness.nf_2var_existence_characterizable.
+    **DEPRECATED**: This function is no longer used in the main completeness chain.
+    The general-depth result (for all k) is proved by
+    `nf_2var_exist_formula_prior_filled` (KampMutualInduction.lean) which uses
+    the mutual induction `kamp_mutual_induction`. The main consumer
+    `nf_characterizable_temporal_prior_classical` now takes `ih_exist_2var` as a
+    parameter instead of calling this function.
 
-    Requires Phase 3 (negation closure) for the proof. -/
+    Only k=0 and k=1 cases are implemented here (sorry-free). -/
 theorem nf_2var_exist_formula_prior
     {sig : MonadicSignature} (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -638,17 +642,19 @@ theorem nf_2var_exist_formula_prior
     exact ⟨A, fun M _ _ t _ => hA M t⟩
   | 1 =>
     -- Depth 1 (inner depth 0): 3-var quantifier conditions are purely atomic.
-    -- Use existPart_succ_n1_bypass_k0 directly (bypasses the depth >= 2 sorry
-    -- in existPart_succ_n1_bypass). The k0 path uses KampForward zone
-    -- composition theorems which are sorry-free at depth 0.
+    -- Use existPart_succ_n1_bypass_k0 directly (bypasses the depth >= 2 case).
+    -- The k0 path uses KampForward zone composition theorems which are sorry-free
+    -- at depth 0.
     exact existPart_succ_n1_bypass_k0 atomMap h_surj char_k char_k_correct
       parent_atoms sub_nf
-  | k + 2 =>
-    -- Depth k+2 (k >= 0): use the enriched bypass formula from KampBypass.lean.
-    -- The bypass encodes both atom AND quantifier conditions, avoiding the
-    -- broken backward direction of nf_exist_formula.
-    exact existPart_succ_n1_bypass atomMap h_surj (k + 1) char_k char_k_correct
-      sorry sorry sorry parent_atoms sub_nf
+  | _ + 2 =>
+    -- DEAD CODE: This branch is never reached in the live build.
+    -- The general-depth result is proved by nf_2var_exist_formula_prior_filled
+    -- (KampMutualInduction.lean) via kamp_mutual_induction.
+    -- nf_characterizable_temporal_prior_classical now takes ih_exist_2var as a
+    -- parameter (bypassing this function entirely).
+    -- Kept for Boneyard signature compatibility only.
+    exact sorry
 
 /-- Using classical existence formulas, prove nf_characterizable_temporal_prior
     at depth k+1. This is the approach taken by StaviCompleteness for the
@@ -663,6 +669,16 @@ theorem nf_characterizable_temporal_prior_classical
         (h_SZ : semantic_prior_SZ M atomMap)
         (t : M.carrier),
         temporal_truth M atomMap t A ↔ nf_eval_nf M k 1 (fun _ => t) nf)
+    (ih_exist_2var : ∀ (parent_atoms : AtomKind sig 1 → Bool)
+        (sub_nf : NormalForm sig k 2),
+        ∃ (A : Formula),
+          ∀ (M : OrderedMonadicStructure sig)
+            (h_UZ : semantic_prior_UZ M atomMap)
+            (h_SZ : semantic_prior_SZ M atomMap)
+            (t : M.carrier),
+            (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
+            (temporal_truth M atomMap t A ↔
+             ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf))
     (nf : NormalForm sig (k + 1) 1) :
     ∃ A : Formula, ∀ (M : OrderedMonadicStructure sig)
       (h_UZ : semantic_prior_UZ M atomMap)
@@ -681,10 +697,10 @@ theorem nf_characterizable_temporal_prior_classical
       nf_eval_nf M k 1 (fun _ => t) nf_k :=
     fun nf_k => Classical.choose_spec (ih nf_k)
   -- For each 2-variable sub_nf, classically choose a correct existence formula
+  -- Uses ih_exist_2var (provided by caller from mutual induction) instead of
+  -- nf_2var_exist_formula_prior (which has sorry at k >= 2).
   let exist_f : NormalForm sig k 2 → Formula :=
-    fun sub_nf => Classical.choose
-      (nf_2var_exist_formula_prior atomMap h_surj k char_k char_k_correct
-        nf.1 sub_nf)
+    fun sub_nf => Classical.choose (ih_exist_2var nf.1 sub_nf)
   have exist_f_correct : ∀ (sub_nf : NormalForm sig k 2)
       (M : OrderedMonadicStructure sig)
       (h_UZ : semantic_prior_UZ M atomMap)
@@ -693,9 +709,7 @@ theorem nf_characterizable_temporal_prior_classical
       (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ nf.1 a = true) →
       (temporal_truth M atomMap t (exist_f sub_nf) ↔
        ∃ x : M.carrier, nf_eval_nf M k (1 + 1) (Fin.cons x (fun _ => t)) sub_nf) :=
-    fun sub_nf => Classical.choose_spec
-      (nf_2var_exist_formula_prior atomMap h_surj k char_k char_k_correct
-        nf.1 sub_nf)
+    fun sub_nf => Classical.choose_spec (ih_exist_2var nf.1 sub_nf)
   -- Build the full formula: atom literals AND quantifier existence formulas
   let atom_lits := (Fintype.elems (α := sig.preds)).val.toList.map fun p =>
     atom_literal atomMap h_surj p (nf.1 (.pred p ⟨0, by omega⟩))

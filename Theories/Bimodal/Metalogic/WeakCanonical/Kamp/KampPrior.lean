@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampMutualInduction
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -152,11 +153,25 @@ noncomputable def nf_characterizable_temporal_prior
           (t : M.carrier),
           temporal_truth M atomMap t A ↔ nf_eval_nf M k 1 (fun _ => t) nf' :=
       fun nf' => ⟨(ih nf').val, (ih nf').property⟩
-    -- Use nf_characterizable_temporal_prior_classical (NfCharFormula.lean) which
-    -- constructs the characterizing formula via Classical.choose on 2-var existence
-    -- formulas (nf_2var_exist_formula_prior), converting back to Subtype
+    -- Build char_k/char_k_correct from ih' for nf_2var_exist_formula_prior_filled
+    let char_k : NormalForm sig k 1 → Formula :=
+      fun nf_k => Classical.choose (ih' nf_k)
+    have char_k_correct : ∀ (nf_k : NormalForm sig k 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_k nf_k) ↔
+        nf_eval_nf M k 1 (fun _ => t) nf_k :=
+      fun nf_k => Classical.choose_spec (ih' nf_k)
+    -- Use nf_characterizable_temporal_prior_classical (NfCharFormula.lean) with
+    -- ih_exist_2var provided by nf_2var_exist_formula_prior_filled (sorry-free
+    -- via kamp_mutual_induction).
     exact Classical.indefiniteDescription _
-      (nf_characterizable_temporal_prior_classical atomMap h_surj k ih' nf)
+      (nf_characterizable_temporal_prior_classical atomMap h_surj k ih'
+        (fun parent_atoms sub_nf => nf_2var_exist_formula_prior_filled atomMap
+          h_surj k char_k char_k_correct parent_atoms sub_nf)
+        nf)
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,
     proved via Kamp/Rabinovich 2014 (relativized from Dedekind completeness

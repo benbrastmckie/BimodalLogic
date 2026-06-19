@@ -156,7 +156,10 @@ theorem charPart_succ {sig : MonadicSignature}
       nf_eval_nf M k 1 (fun _ => t) nf_k :=
     fun nf_k => Classical.choose_spec (ih_char nf_k)
   exact nf_characterizable_temporal_prior_classical atomMap h_surj k
-    (fun nf_k => ⟨char_k nf_k, char_k_correct nf_k⟩) nf
+    (fun nf_k => ⟨char_k nf_k, char_k_correct nf_k⟩)
+    (fun parent_atoms sub_nf => ih_exist 1 (by omega) char_k char_k_correct
+      parent_atoms sub_nf)
+    nf
 
 /-! ## ExistPart: Base Case
 
@@ -179,8 +182,10 @@ theorem existPart_zero {sig : MonadicSignature}
   | succ n' =>
     cases n' with
     | zero =>
-      exact nf_2var_exist_formula_prior atomMap h_surj 0
-        char_0 char_0_correct parent_atoms sub_nf
+      -- Inline the k=0 case of nf_2var_exist_formula_prior to avoid sorry
+      -- dependency. At depth 0, nf_2var_exist_depth0_tl is sorry-free.
+      obtain ⟨A, hA⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf
+      exact ⟨A, fun M _ _ t _ => hA M t⟩
     | succ n'' =>
       let sub_nf_2 : NormalForm sig 0 2 := fun a => match a with
         | .pred p ⟨0, _⟩ => sub_nf (.pred p ⟨0, by omega⟩)
@@ -197,8 +202,16 @@ theorem existPart_zero {sig : MonadicSignature}
         | .order ⟨0, _⟩ ⟨_ + 2, h⟩ _ => absurd h (by omega)
         | .order ⟨1, _⟩ ⟨_ + 2, h⟩ _ => absurd h (by omega)
         | .order ⟨_ + 2, h⟩ _ _ => absurd h (by omega)
-      obtain ⟨A_2, hA2⟩ := nf_2var_exist_formula_prior atomMap h_surj 0
-        char_0 char_0_correct parent_atoms sub_nf_2
+      -- Inline the k=0 case to avoid sorry dependency
+      obtain ⟨A_2, hA2_raw⟩ := nf_2var_exist_depth0_tl atomMap h_surj sub_nf_2
+      have hA2 : ∀ (M : OrderedMonadicStructure sig)
+          (h_UZ : semantic_prior_UZ M atomMap)
+          (h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          (∀ (a : AtomKind sig 1), atom_eval M (fun _ => t) a ↔ parent_atoms a = true) →
+          (temporal_truth M atomMap t A_2 ↔
+           ∃ x : M.carrier, nf_eval_nf M 0 (1 + 1) (Fin.cons x (fun _ => t)) sub_nf_2) :=
+        fun M _ _ t _ => hA2_raw M t
       rcases Classical.em (∃ (M : OrderedMonadicStructure sig)
           (t : M.carrier) (x : M.carrier),
           nf_eval_nf M 0 (n'' + 2 + 1) (Fin.cons x (fun _ => t)) sub_nf ∧
