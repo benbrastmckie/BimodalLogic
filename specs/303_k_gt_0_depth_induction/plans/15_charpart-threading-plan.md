@@ -220,9 +220,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 6: Implement Zone-Based Between-Zone Transfer (Closes All 4 Sorry) [IN PROGRESS]
+### Phase 6: Implement Zone-Based Between-Zone Transfer (Closes All 4 Sorry) [BLOCKED]
 
 **Goal**: Replace the 4 sorry from Phase 5 with complete proofs using the zone-based between-zone transfer with Prior-UZ/SZ squeeze argument and CharPart-based temporal formula encoding. This phase closes all remaining sorry in PriorComposition.lean.
+
+**BLOCKER** (Phase 6):
+- **What failed**: `nonconstenv_exist_transfer_general` is FALSE at D=0 when n > 0. Counterexample: M = N = (Z, P=evens), envM=[10,0], envN=[2,0]. Depth-1 1-var NFs agree at 10/2 and 0/0, orders match, Prior-UZ/SZ hold, but the between-zone existential "exists even w with 0 < w < 10" is satisfied in M (w=2) while "exists even w with 0 < w < 2" is not in N (no even in (0,2)). The D-induction calls D=0 at high arity via arity climbing, and the D=0 case is FALSE.
+- **What was tried**: (1) `zone_compatible_witness_bwd/fwd` (FALSE -- sub_nf-independent witnesses don't exist for between-zone). (2) Restructured `nonconstenv_exist_transfer_general` with sub_nf-dependent witness selection using `cross_extend_bwd_1var` from each anchor + Prior-UZ/SZ. (3) Analyzed whether cross_extend from multiple anchors + Prior-UZ/SZ can produce a between-zone witness -- it cannot, because 2-var agreement from a single anchor doesn't capture orders relative to other anchors.
+- **Why stuck**: The between-zone existential transfer requires 2-var agreement at the ANCHOR PAIR [envM(i),envM(j)]/[envN(i),envN(j)], which is what we're trying to prove (circular). The circularity is broken by the K-induction in `prior_nonconstenv_2var_agree_until`, but `nonconstenv_exist_transfer_general` doesn't have access to the K-induction IH.
+- **What is needed**: Bypass `nonconstenv_exist_transfer_general` entirely. Inline the 3-var existential transfer directly into `prior_nonconstenv_2var_agree_until/since`, where the K-induction IH provides depth-(K'+2) 2-var agreement at the anchor pair. For K=0: the K=0 base needs a direct proof of depth-1 3-var transfer using h_x, h_t at depth 2 and Prior-UZ/SZ + char formulas. For K=succ K': use the IH's 2-var quantifier part to get depth-(K'+1) 3-var transfer, then boost by 1 depth via the same zone+Prior-UZ/SZ argument. This is essentially the Rabinovich Lemma 5.1 induction with arity climbing as an inner loop.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Tasks**:
 
