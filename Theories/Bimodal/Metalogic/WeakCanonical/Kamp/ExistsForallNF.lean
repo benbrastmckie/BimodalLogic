@@ -131,6 +131,78 @@ def IntervalPattern.holds {sig : MonadicSignature} {n : Nat}
       (∀ y : M.carrier, witnesses ⟨n, by omega⟩ < y → y < z1 →
         (pat.beta ⟨n + 1, by omega⟩).eval_at M atomMap y)
 
+/-! ### IntervalPattern.holds helper lemmas
+
+These provide non-matching characterizations of `holds` for use when the
+witness count `n` is not syntactically `0` or `k + 1` (e.g., `n - i.val`). -/
+
+/-- Transport `IntervalPattern.holds` along an equality of witness counts. -/
+theorem IntervalPattern.holds_of_eq {sig : MonadicSignature} {m n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (pat : IntervalPattern m) (z0 z1 : M.carrier) (h : m = n) :
+    pat.holds M atomMap z0 z1 =
+    (h ▸ pat : IntervalPattern n).holds M atomMap z0 z1 := by
+  subst h; rfl
+
+/-- `IntervalPattern.holds` for 0 witnesses unfolds to the forall form. -/
+theorem IntervalPattern.holds_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (pat : IntervalPattern 0) (z0 z1 : M.carrier) :
+    pat.holds M atomMap z0 z1 ↔
+    ∀ y : M.carrier, z0 < y → y < z1 → (pat.beta ⟨0, by omega⟩).eval_at M atomMap y := by
+  simp only [IntervalPattern.holds]
+
+/-- `IntervalPattern.holds` for `n+1` witnesses unfolds to the existential form. -/
+theorem IntervalPattern.holds_succ {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (pat : IntervalPattern (n + 1)) (z0 z1 : M.carrier) :
+    pat.holds M atomMap z0 z1 ↔
+    ∃ (witnesses : Fin (n + 1) → M.carrier),
+      (∀ i j : Fin (n + 1), i < j → witnesses i < witnesses j) ∧
+      (∀ i : Fin (n + 1), z0 < witnesses i ∧ witnesses i < z1) ∧
+      (∀ i : Fin (n + 1), (pat.alpha i).eval_at M atomMap (witnesses i)) ∧
+      (∀ y : M.carrier, z0 < y → y < witnesses ⟨0, by omega⟩ →
+        (pat.beta ⟨0, by omega⟩).eval_at M atomMap y) ∧
+      (∀ (i : Fin n), ∀ y : M.carrier,
+        witnesses ⟨i.val, by omega⟩ < y → y < witnesses ⟨i.val + 1, by omega⟩ →
+        (pat.beta ⟨i.val + 1, by omega⟩).eval_at M atomMap y) ∧
+      (∀ y : M.carrier, witnesses ⟨n, by omega⟩ < y → y < z1 →
+        (pat.beta ⟨n + 1, by omega⟩).eval_at M atomMap y) := by
+  simp only [IntervalPattern.holds]
+
+/-- Convert `IntervalPattern.holds` at witness count `m` to the zero-witness form
+    when `m = 0`. This handles the case where `m` is a computed expression
+    (like `n - i.val`) that equals 0 but is not syntactically 0. -/
+theorem IntervalPattern.holds_eq_zero {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (alpha : Fin m → TemporalPred) (beta : Fin (m + 1) → TemporalPred)
+    (z0 z1 : M.carrier) (h : m = 0) :
+    (IntervalPattern.mk alpha beta).holds M atomMap z0 z1 ↔
+    ∀ y : M.carrier, z0 < y → y < z1 →
+      (beta ⟨0, by omega⟩).eval_at M atomMap y := by
+  subst h; simp only [IntervalPattern.holds]
+
+/-- Convert `IntervalPattern.holds` at witness count `m` to the successor form
+    when `m = k + 1`. This handles the case where `m` is a computed expression
+    (like `n - i.val`) that equals `k + 1` but is not syntactically a successor. -/
+theorem IntervalPattern.holds_eq_succ {sig : MonadicSignature} {m k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (alpha : Fin m → TemporalPred) (beta : Fin (m + 1) → TemporalPred)
+    (z0 z1 : M.carrier) (h : m = k + 1) :
+    (IntervalPattern.mk alpha beta).holds M atomMap z0 z1 ↔
+    ∃ (witnesses : Fin (k + 1) → M.carrier),
+      (∀ i j : Fin (k + 1), i < j → witnesses i < witnesses j) ∧
+      (∀ i : Fin (k + 1), z0 < witnesses i ∧ witnesses i < z1) ∧
+      (∀ i : Fin (k + 1), (alpha ⟨i.val, by omega⟩).eval_at M atomMap (witnesses i)) ∧
+      (∀ y : M.carrier, z0 < y → y < witnesses ⟨0, by omega⟩ →
+        (beta ⟨0, by omega⟩).eval_at M atomMap y) ∧
+      (∀ (i : Fin k), ∀ y : M.carrier,
+        witnesses ⟨i.val, by omega⟩ < y → y < witnesses ⟨i.val + 1, by omega⟩ →
+        (beta ⟨i.val + 1, by omega⟩).eval_at M atomMap y) ∧
+      (∀ y : M.carrier, witnesses ⟨k, by omega⟩ < y → y < z1 →
+        (beta ⟨k + 1, by omega⟩).eval_at M atomMap y) := by
+  subst h; simp only [IntervalPattern.holds]
+
 /-! ## V-Exists-Forall Formulas
 
 A V-exists-forall formula (Rabinovich Def 3.3) is a formula equivalent to

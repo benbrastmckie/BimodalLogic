@@ -82,8 +82,8 @@ Phases within the same wave can execute in parallel.
 - [x] Define `BracketFormula.leftPart (bf : BracketFormula (n + 1)) (i : Fin (n + 1)) : BracketFormula i.val` -- the A_i^-(z_0, z) sub-bracket from z_0 to witness x_i
 - [x] Define `BracketFormula.rightPart (bf : BracketFormula (n + 1)) (i : Fin (n + 1)) : BracketFormula (n - i.val)` -- the A_i^+(z, z_1) sub-bracket from witness x_i to z_1
 - [x] Prove `BracketFormula.leftPart_holds`: if bf.holds on (z_0, z_1) with witnesses w, then leftPart holds on (z_0, w i) -- sorry-free
-- [ ] Prove `BracketFormula.rightPart_holds`: if bf.holds on (z_0, z_1) with witnesses w, then rightPart holds on (w i, z_1) *(deviation: deferred -- IntervalPattern.holds dependent match on n-i.val prevents reduction; needs refactored holds or alternative proof architecture)*
-- [ ] Prove `BracketFormula.splitAt_combine`: if leftPart holds on (z_0, z) and rightPart holds on (z, z_1) and pointType alpha_i holds at z, then bf.holds on (z_0, z_1) with z inserted as witness i *(deviation: deferred -- depends on rightPart_holds; same IntervalPattern.holds match issue)*
+- [x] Prove `BracketFormula.rightPart_holds`: if bf.holds on (z_0, z_1) with witnesses w, then rightPart holds on (w i, z_1) -- sorry-free. Uses `IntervalPattern.holds_eq_zero`/`holds_eq_succ` helpers added to ExistsForallNF.lean to handle the dependent match on `n - i.val`.
+- [ ] Prove `BracketFormula.splitAt_combine`: if leftPart holds on (z_0, z) and rightPart holds on (z, z_1) and pointType alpha_i holds at z, then bf.holds on (z_0, z_1) with z inserted as witness i *(deviation: deferred -- complex Fin index arithmetic with 4-way case split; not needed until Phase 4)*
 - [x] Add `BracketFormula.empty : BracketFormula 0` constructor for degenerate interval (no witnesses)
 
 **Timing**: 2 hours

@@ -425,12 +425,51 @@ theorem BracketFormula.rightPart_holds {sig : MonadicSignature} {n : Nat}
     (hsegn : ∀ y, witnesses ⟨n, by omega⟩ < y → y < z1 →
       (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap y) :
     (bf.rightPart i).holds M atomMap (witnesses i) z1 := by
-  -- The right part has n - i.val witnesses. The key challenge is that IntervalPattern.holds
-  -- uses a dependent match on the witness count, making direct proof difficult when the
-  -- count is n - i.val (a computed subtraction).
-  -- Deferred to a follow-up dispatch that will use a refactored IntervalPattern.holds
-  -- or an alternative proof architecture.
-  sorry
+  -- Rewrite as IntervalPattern.holds on the rightPart pattern
+  simp only [holds, toIntervalPattern, rightPart]
+  -- The witness count is n - i.val. We generalize it to allow the match to reduce.
+  -- Key technique: revert hypotheses, generalize n - i.val, then intro back.
+  have hle : i.val ≤ n := Nat.lt_succ_iff.mp i.isLt
+  -- We use Nat.sub_eq_zero_iff_le and case analysis
+  rcases eq_or_lt_of_le hle with hi_eq | hi_lt
+  · -- i.val = n → n - i.val = 0
+    have h0 : n - i.val = 0 := by omega
+    rw [IntervalPattern.holds_eq_zero (h := h0)]
+    intro y hy_lo hy_hi
+    have hwi : witnesses i = witnesses ⟨n, by omega⟩ := by congr 1; ext; exact hi_eq
+    rw [hwi] at hy_lo
+    convert hsegn y hy_lo hy_hi using 3; simp [Fin.ext_iff]; omega
+  · -- i.val < n → n - i.val ≥ 1
+    have hni_pos : 0 < n - i.val := Nat.sub_pos_of_lt hi_lt
+    obtain ⟨k, hk⟩ : ∃ k, n - i.val = k + 1 := ⟨n - i.val - 1, by omega⟩
+    -- Now we need to show IntervalPattern.holds for an IntervalPattern (n - i.val)
+    -- where n - i.val = k + 1. We use holds_eq_succ.
+    rw [IntervalPattern.holds_eq_succ (h := hk)]
+    refine ⟨fun j => witnesses ⟨i.val + 1 + j.val, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a b hab; dsimp only
+      exact hmono ⟨i.val + 1 + a.val, by omega⟩ ⟨i.val + 1 + b.val, by omega⟩
+        (Fin.mk_lt_mk.mpr (by omega))
+    · intro j; dsimp only
+      exact ⟨hmono ⟨i.val, by omega⟩ ⟨i.val + 1 + j.val, by omega⟩
+        (Fin.mk_lt_mk.mpr (by omega)),
+             (hrange ⟨i.val + 1 + j.val, by omega⟩).2⟩
+    · intro j; dsimp only; exact hpoint ⟨i.val + 1 + j.val, by omega⟩
+    · intro y hy_lo hy_hi; dsimp only at hy_hi ⊢
+      exact hsegmid ⟨i.val, by omega⟩ y hy_lo hy_hi
+    · intro j y hy_lo hy_hi; dsimp only at hy_lo hy_hi ⊢
+      exact hsegmid ⟨i.val + 1 + j.val, by omega⟩ y hy_lo hy_hi
+    · intro y hy_lo hy_hi; dsimp only at hy_lo ⊢
+      have hiv : i.val + 1 + k = n := by omega
+      have hfin : (⟨i.val + 1 + k, by omega⟩ : Fin (n + 1)) = ⟨n, by omega⟩ := by
+        ext; exact hiv
+      rw [hfin] at hy_lo
+      have hsv : i.val + 1 + (k + 1) = n + 1 := by omega
+      have hsf : (⟨i.val + 1 + (k + 1), by omega⟩ : Fin (n + 2)) = ⟨n + 1, by omega⟩ := by
+        ext; exact hsv
+      show TemporalPred.eval_at M atomMap (bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩) y
+      rw [show bf.segmentTypes ⟨i.val + 1 + (k + 1), _⟩ =
+              bf.segmentTypes ⟨n + 1, _⟩ from by rw [hsf]]
+      exact hsegn y hy_lo hy_hi
 
 /-- If the left part holds on (z_0, z), the right part holds on (z, z_1), and the
     point type at index i holds at z, then the original bracket formula holds on
@@ -445,11 +484,6 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
     (hleft : (bf.leftPart i).holds M atomMap z0 z)
     (hright : (bf.rightPart i).holds M atomMap z z1) :
     bf.holds M atomMap z0 z1 := by
-  -- The proof constructs combined witnesses by concatenating left witnesses, z, right witnesses.
-  -- The key challenge is that IntervalPattern.holds uses a match on the witness count,
-  -- requiring case analysis on both i.val (left witness count) and n - i.val (right witness count).
-  -- We defer this to a future dispatch; the decomposition lemmas (leftPart_holds, rightPart_holds)
-  -- are the primary interface used by Lemma 5.1.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
