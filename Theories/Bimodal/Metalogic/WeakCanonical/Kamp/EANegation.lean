@@ -245,30 +245,60 @@ theorem BracketFormula.prepend_holds_inv {sig : MonadicSignature} {k : Nat}
       refine ⟨fun j => w ⟨j.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
       · intro a b hab
         exact hmono ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩
-          (by simp [Fin.lt_iff_val_lt_val] at hab ⊢; omega)
+          (Fin.mk_lt_mk.mpr (Nat.succ_lt_succ (Fin.mk_lt_mk.mp hab)))
       · intro j
-        exact ⟨hmono ⟨0, by omega⟩ ⟨j.val + 1, by omega⟩
-          (by simp [Fin.lt_iff_val_lt_val]; omega),
+        exact ⟨hmono ⟨0, by omega⟩ ⟨j.val + 1, by omega⟩ (by exact Fin.mk_lt_mk.mpr (by omega)),
                (hrange ⟨j.val + 1, by omega⟩).2⟩
       · intro j
         have := hpoint ⟨j.val + 1, by omega⟩
         simp [dif_neg (show j.val + 1 ≠ 0 from by omega)] at this
-        convert this using 2; ext; simp; omega
+        convert this using 2
       · intro y hy0 hy1
         have := hseg_mid ⟨0, by omega⟩ y hy0 hy1
         simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
-        convert this using 2; ext; simp
+        convert this using 2
       · intro j y hy0 hy1
         have := hseg_mid ⟨j.val + 1, by omega⟩ y
-          (by convert hy0 using 2; ext; simp; omega)
-          (by convert hy1 using 2; ext; simp; omega)
+          (by convert hy0 using 2)
+          (by convert hy1 using 2)
         simp [dif_neg (show j.val + 1 + 1 ≠ 0 from by omega)] at this
-        convert this using 2; ext; simp; omega
+        convert this using 2
       · intro y hy0 hy1
         have := hseg_last y
-          (by convert hy0 using 2; ext; simp; omega) hy1
+          (by convert hy0 using 2) hy1
         simp [dif_neg (show k' + 1 + 1 ≠ 0 from by omega)] at this
-        convert this using 2; ext; simp; omega
+        convert this using 2
+
+/-- Decompose orderedPointsExist (n+1): if the first predicate doesn't hold in (z0, r0),
+    then the remaining witnesses give orderedPointsExist n (shift Ps) r0 z1. -/
+theorem orderedPointsExist_decompose {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (n : Nat) (Ps : Fin (n + 1) → TemporalPred) (z0 z1 r0 : M.carrier)
+    (hSeg : ∀ y : M.carrier, z0 < y → y < r0 →
+      ¬ (Ps ⟨0, by omega⟩).eval_at M atomMap y)
+    (h : orderedPointsExist M atomMap (n + 1) Ps z0 z1) :
+    orderedPointsExist M atomMap n (fun i => Ps i.succ) r0 z1 := by
+  match n with
+  | 0 => exact orderedPointsExist_zero M atomMap _ _ _
+  | n' + 1 =>
+    simp only [orderedPointsExist, IntervalPattern.allBetaTrue, IntervalPattern.holds] at h ⊢
+    obtain ⟨w, hmono, hrange, hpoint, _, _, _⟩ := h
+    have h_r0_le_w0 : r0 ≤ w ⟨0, by omega⟩ := by
+      by_contra hc; push_neg at hc
+      exact hSeg (w ⟨0, by omega⟩) (hrange ⟨0, by omega⟩).1 hc (hpoint ⟨0, by omega⟩)
+    refine ⟨fun j => w ⟨j.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a b hab
+      exact hmono ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩
+        (Fin.mk_lt_mk.mpr (Nat.succ_lt_succ (Fin.mk_lt_mk.mp hab)))
+    · intro j
+      exact ⟨lt_of_le_of_lt h_r0_le_w0
+        (hmono ⟨0, by omega⟩ ⟨j.val + 1, by omega⟩
+          (by exact Fin.mk_lt_mk.mpr (by omega))),
+             (hrange ⟨j.val + 1, by omega⟩).2⟩
+    · intro j; exact hpoint ⟨j.val + 1, by omega⟩
+    · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
+    · intro _ y _ _; exact TemporalPred.eval_at_top M atomMap y
+    · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
 
 /-! ## Lemma 5.3: Full Statement (Negation of Ordered Points is VBracket)
 
@@ -417,94 +447,30 @@ theorem neg_orderedPointsExist_is_vbracket :
         simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
         exact this (hpoint ⟨0, by omega⟩)
       · -- Case B: prepended IH disjunct
-        -- Extract m = m' + 1 and bf from h_eq'
         have hm_eq := congr_arg Sigma.fst h_eq'
-        simp at hm_eq
-        subst hm_eq
+        simp at hm_eq; subst hm_eq
         have hbf_eq : BracketFormula.prepend (Ps ⟨0, by omega⟩).neg (Ps ⟨0, by omega⟩) bf' = bf :=
           eq_of_heq (Sigma.mk.inj h_eq').2
         subst hbf_eq
-        -- Extract the prepended bracket structure
-        simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
-          BracketFormula.prepend, IntervalPattern.holds] at h_holds
-        obtain ⟨w', hmono', hrange', hpoint', hseg0', hseg_mid', hseg_last'⟩ := h_holds
-        let r0 := w' ⟨0, by omega⟩
-        -- Point type at w'(0) is Ps 0 (from prepend)
-        have hPt_r0 : (Ps ⟨0, by omega⟩).eval_at M atomMap r0 := by
-          have := hpoint' ⟨0, by omega⟩
-          simp [dif_pos (show (0 : Nat) = 0 from rfl)] at this; exact this
-        -- Segment on (z0, r0) is ¬(Ps 0)
-        have hSeg_r0 : ∀ y, z0 < y → y < r0 →
-            (Ps ⟨0, by omega⟩).neg.eval_at M atomMap y := by
-          intro y hy0 hy1; have := hseg0' y hy0 hy1
-          simp [dif_pos (show (0 : Nat) = 0 from rfl)] at this; exact this
-        -- Reconstruct bf'.holds on (r0, z1) from the remaining witnesses
-        have h_bf'_holds : bf'.holds M atomMap r0 z1 := by
-          simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
-            IntervalPattern.holds]
-          match m' with
-          | 0 =>
-            intro y hy0 hy1
-            have := hseg_last' y hy0 hy1
-            simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
-            exact this
-          | m'' + 1 =>
-            refine ⟨fun j => w' ⟨j.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
-            · intro a b hab
-              exact hmono' ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩
-                (by simp [Fin.lt_iff_val_lt_val] at hab ⊢; omega)
-            · intro j
-              exact ⟨hmono' ⟨0, by omega⟩ ⟨j.val + 1, by omega⟩
-                (by simp [Fin.lt_iff_val_lt_val]; omega),
-                     (hrange' ⟨j.val + 1, by omega⟩).2⟩
-            · intro j
-              have := hpoint' ⟨j.val + 1, by omega⟩
-              simp [dif_neg (show j.val + 1 ≠ 0 from by omega)] at this
-              convert this using 3; simp [Fin.ext_iff]; omega
-            · intro y hy0 hy1
-              have := hseg_mid' ⟨0, by omega⟩ y hy0 hy1
-              simp [dif_neg (show (0 : Nat) + 1 ≠ 0 from by omega)] at this
-              convert this using 3; simp [Fin.ext_iff]; omega
-            · intro j y hy0 hy1
-              have := hseg_mid' ⟨j.val + 1, by omega⟩ y
-                (by convert hy0 using 3; simp [Fin.ext_iff]; omega)
-                (by convert hy1 using 3; simp [Fin.ext_iff]; omega)
-              simp [dif_neg (show j.val + 1 + 1 ≠ 0 from by omega)] at this
-              convert this using 3; simp [Fin.ext_iff]; omega
-            · intro y hy0 hy1
-              have := hseg_last' y
-                (by convert hy0 using 3; simp [Fin.ext_iff]; omega) hy1
-              simp [dif_neg (show m'' + 1 + 1 ≠ 0 from by omega)] at this
-              convert this using 3; simp [Fin.ext_iff]; omega
-        -- By IH, ¬orderedPointsExist n (shift Ps) r0 z1
+        -- Use prepend_holds_inv to decompose
+        obtain ⟨r0, hr0_above, hr0_below, _, hSeg_r0, h_bf'_holds⟩ :=
+          BracketFormula.prepend_holds_inv M atomMap bf'
+            (Ps ⟨0, by omega⟩).neg (Ps ⟨0, by omega⟩) z0 z1 h_holds
+        -- bf' ∈ v_IH, bf'.holds on (r0, z1) → v_IH.holds on (r0, z1)
         have hv_IH_holds : v_IH.holds M atomMap r0 z1 :=
           ⟨⟨m', bf'⟩, h_mem', h_bf'_holds⟩
-        have h_neg_tail := ((hv_IH M atomMap h_INF r0 z1
-          (lt_trans (hrange' ⟨0, by omega⟩).1 (hrange' ⟨0, by omega⟩).2)).mp hv_IH_holds)
-        -- Now: suppose orderedPointsExist (n+1) Ps z0 z1
-        intro ⟨w_orig, hmono_orig, hrange_orig, hpoint_orig, _, _, _⟩
-        -- w_orig(0) satisfies Ps 0, and ¬(Ps 0) on (z0, r0), so w_orig(0) ≥ r0
-        have h_r0_le_w0 : r0 ≤ w_orig ⟨0, by omega⟩ := by
-          by_contra h; push_neg at h
-          have := hSeg_r0 (w_orig ⟨0, by omega⟩) (hrange_orig ⟨0, by omega⟩).1 h
-          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
-          exact this (hpoint_orig ⟨0, by omega⟩)
-        -- Remaining witnesses are in (r0, z1)
-        apply h_neg_tail
-        simp only [orderedPointsExist, IntervalPattern.allBetaTrue, IntervalPattern.holds]
-        refine ⟨fun j => w_orig ⟨j.val + 1, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
-        · intro a b hab
-          exact hmono_orig ⟨a.val + 1, by omega⟩ ⟨b.val + 1, by omega⟩
-            (by simp [Fin.lt_iff_val_lt_val] at hab ⊢; omega)
-        · intro j
-          exact ⟨lt_of_le_of_lt h_r0_le_w0
-            (hmono_orig ⟨0, by omega⟩ ⟨j.val + 1, by omega⟩
-              (by simp [Fin.lt_iff_val_lt_val]; omega)),
-                 (hrange_orig ⟨j.val + 1, by omega⟩).2⟩
-        · intro j; exact hpoint_orig ⟨j.val + 1, by omega⟩
-        · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
-        · intro _ y _ _; exact TemporalPred.eval_at_top M atomMap y
-        · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
+        -- By IH: ¬orderedPointsExist n (shift Ps) r0 z1
+        have h_neg_tail := (hv_IH M atomMap h_INF r0 z1 hr0_below).mp hv_IH_holds
+        -- Show ¬orderedPointsExist (n+1) Ps z0 z1
+        -- Proof: from orderedPointsExist (n+1), get orderedPointsExist n (shift) r0 z1,
+        -- contradicting h_neg_tail. This uses h_decompose_witnesses (defined below).
+        exact fun h_exists => h_neg_tail
+          (orderedPointsExist_decompose M atomMap n Ps z0 z1 r0
+            (fun y hy0 hy1 => by
+              have := hSeg_r0 y hy0 hy1
+              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
+              exact this)
+            h_exists)
     · -- Backward: ¬ orderedPointsExist → VBracket holds
       intro h_neg
       by_cases h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
