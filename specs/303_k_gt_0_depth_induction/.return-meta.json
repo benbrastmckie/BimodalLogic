@@ -3,41 +3,37 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 303,
-  "phase": 8,
-  "phases_completed": 7,
-  "phases_total": 9,
-  "started_at": "2026-06-19T00:00:00Z",
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 312,
+      "statement": "Until forward: nf_eval_nf N (K+1) 3 [w2,x',t'] sub_nf"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 317,
+      "statement": "Until backward: nf_eval_nf M (K+1) 3 [w2,x,t] sub_nf"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 368,
+      "statement": "Since forward: nf_eval_nf N (K+1) 3 [w2,x',t'] sub_nf"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 372,
+      "statement": "Since backward: nf_eval_nf M (K+1) 3 [w2,x,t] sub_nf"
+    }
+  ],
   "verification": {
-    "sorry_count_critical_path": 2,
-    "sorry_count_dead_code": 2,
+    "sorry_count": 4,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true
   },
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 285,
-      "statement": "prior_nonconstenv_2var_agree_until: zone-3 quantifier transfer",
-      "assumption": "∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf ↔ ∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf",
-      "why_deferred": "Requires nested depth-arity induction with Prior-UZ/SZ. The depth-K quantifier part creates same-type problem at one lower depth / one higher arity. Nat.strong_induction_on creates K✝/K binding mismatch preventing external helper application.",
-      "next_dispatch": "Restructure strong induction to avoid K✝/K issue; implement Prior-UZ witness placement; close depth-0 base case; implement nested decreasing-depth induction"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 331,
-      "statement": "prior_nonconstenv_2var_agree_since: zone-3 quantifier transfer (mirror)",
-      "assumption": "Same as Until but with x < t (Since direction)",
-      "why_deferred": "Structurally identical to Until — mirror using semantic_prior_SZ",
-      "next_dispatch": "Mirror the Until proof"
-    }
-  ],
-  "blockers": [
-    "Zone-3 existential transfer requires nested depth-arity induction (new proof technique needed)"
-  ],
   "memory_candidates": [
-    "Nat.strong_induction_on K (fun K ih ...) creates K✝ vs K mismatch: external helper theorems cannot be applied to goals inside the lambda. Solution: define helpers INSIDE the body or restructure to use refine/suffices pattern.",
-    "Zone-3 nonconstenv existential transfer on Prior structures requires NESTED depth-arity induction: at depth K+1 with n vars, quant part needs depth-K (n+1)-var transfer. Recurses downward in depth, upward in arity. Terminates at depth 0 (purely atomic). Cannot use cross_extend_bwd_1var alone.",
-    "cross_extend_bwd_1var from h_t gives w₂ > t' but unknown w₂ < x'. From h_x gives w₁ < x' but unknown t' < w₁. Prior-UZ squeeze needed to find witness in (t', x')."
+    "In Nat.strong_induction_on K (fun K ih => ...), the outer K and inner K are definitionally equal but Lean's elaborator treats them as different free variables (K-dagger vs K). Avoid explicit type annotations that reference K when hypotheses like h_t use the outer K. Use underscore for type inference instead.",
+    "generalExistPart_from_classical at depth k requires depth-(k+1) r-var FULL agreement as precondition. Cannot be used to prove the depth-(K+2) 2-var agreement theorem because that's circular.",
+    "cross_extend_bwd_1var from h_t (depth-(K+2) 1-var) gives depth-(K+1) 2-var agreement. cross_1var_from_2var projects the first component to depth-(K+1) 1-var agreement."
   ]
 }
