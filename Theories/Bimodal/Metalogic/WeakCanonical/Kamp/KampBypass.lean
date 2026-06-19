@@ -556,6 +556,16 @@ theorem existPart_succ_n1_bypass
       -- 1-var NF agreement does NOT determine 2-var NF on constant environments.
       -- Closing requires enriched formula encoding quantifier conditions via ih_exist,
       -- or a Prior compositionality theorem (Rabinovich Lemma 5.1).
+      -- Construct depth-(k'+1) CharPart from ih_char for Prior composition transfer
+      let char_k := fun nf_k : NormalForm sig (k' + 1) 1 => (ih_char nf_k).choose
+      have char_k_correct : ∀ (nf_k : NormalForm sig (k' + 1) 1)
+          (M : OrderedMonadicStructure sig)
+          (h_UZ : semantic_prior_UZ M atomMap)
+          (h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t (char_k nf_k) ↔
+          nf_eval_nf M (k' + 1) 1 (fun _ => t) nf_k :=
+        fun nf_k => (ih_char nf_k).choose_spec
       -- Zone dispatch
       match h_gt_val : sub_nf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)),
             h_lt_val : sub_nf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) with
@@ -610,7 +620,7 @@ theorem existPart_succ_n1_bypass
           -- Apply prior_2var_transfer_until to transfer h_eval₀ from M₀ to M
           exact ⟨x, prior_2var_transfer_until atomMap h_surj k' M x t M₀ x₀ t₀
             h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_t_lt_x h_t₀_lt_x₀
-            sub_nf h_eval₀⟩
+            char_k char_k_correct sub_nf h_eval₀⟩
         · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t until_formula
           intro ⟨x, h_eval⟩
           have h_t_lt_x : t < x := (zone_order M t x h_eval).1 h_gt_val
@@ -677,7 +687,7 @@ theorem existPart_succ_n1_bypass
           -- Apply prior_2var_transfer_since to transfer h_eval₀ from M₀ to M
           exact ⟨x, prior_2var_transfer_since atomMap h_surj k' M x t M₀ x₀ t₀
             h_UZ h_SZ h_UZ₀ h_SZ₀ h_x_agree h_t_agree h_x_lt_t h_x₀_lt_t₀
-            sub_nf h_eval₀⟩
+            char_k char_k_correct sub_nf h_eval₀⟩
         · -- mpr: ∃ x, nf_eval_nf ... → temporal_truth M t since_formula
           intro ⟨x, h_eval⟩
           have h_x_lt_t : x < t := (zone_order M t x h_eval).2 h_lt_val
