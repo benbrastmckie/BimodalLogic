@@ -1,51 +1,62 @@
 {
-  "status": "blocked",
-  "summary": "Phase 9 blocked: standalone nvar_transfer_from_1var lemma cannot be proved as conceived. The depth gap (need depth-(K+1) arity-3 from depth-(K+1) arity-2) is irreducible with available NF algebra. A sorry-free convenience wrapper exist_transfer_at_full_depth was added. Exhaustive analysis confirms 5 approaches fail. Requires architectural redesign.",
+  "status": "partial",
+  "summary": "Added nvar_transfer_from_1var_agree theorem to PriorComposition.lean. Base case (d=0, pure atoms) and step-case atom part proved sorry-free. Step-case quantifier part has 2 new sorries for the Prior-UZ/SZ gap placement. Build passes. Pre-existing 4 sorries unchanged.",
   "phases_completed": 8,
   "phases_total": 10,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 449,
-      "statement": "prior_nonconstenv_2var_agree_until zone-3 forward",
-      "assumption": "w₂ satisfies depth-(K+1) 3-var sub_nf at [w₂,x',t']",
-      "why_deferred": "Fundamental depth gap: exist_transfer_from_full_agree gives depth-K arity-3 from depth-(K+1) arity-2, goal needs depth-(K+1) arity-3. Gap is 1 depth level per arity increase. Irreducible with pure NF algebra.",
-      "next_dispatch": "Research architectural alternatives: (a) inner depth cascade 0->K+1 with increasing arity, (b) direct sub_nf evaluation using atoms from depth-K 3-var + quantifiers from exist_transfer at d<=K-1, (c) reformulate proof to avoid 3-var transfer entirely"
+      "line": 459,
+      "statement": "nvar_transfer_from_1var_agree quantifier step (forward)",
+      "assumption": "Existential transfer: given x in M, find x' in N in the same gap",
+      "why_deferred": "Requires Prior-UZ gap placement with char_fn",
+      "next_dispatch": "Implement gap determination + Prior-UZ first-occurrence + IH application"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 454,
-      "statement": "prior_nonconstenv_2var_agree_until zone-3 backward",
-      "assumption": "Same depth gap, reverse direction",
-      "why_deferred": "Same as line 449",
-      "next_dispatch": "Same as line 449"
+      "line": 462,
+      "statement": "nvar_transfer_from_1var_agree quantifier step (backward)",
+      "assumption": "Symmetric: given x' in N, find x in M",
+      "why_deferred": "Symmetric to forward, uses Prior-SZ",
+      "next_dispatch": "Implement symmetric gap placement"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 505,
-      "statement": "prior_nonconstenv_2var_agree_since zone-3 forward",
-      "assumption": "Same depth gap, Since direction",
-      "why_deferred": "Same as line 449",
-      "next_dispatch": "Same as line 449"
+      "line": 554,
+      "statement": "prior_nonconstenv_2var_agree_until forward (pre-existing)",
+      "assumption": "w2 satisfies sub_nf at [w2, x', t']",
+      "why_deferred": "Pre-existing",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 509,
-      "statement": "prior_nonconstenv_2var_agree_since zone-3 backward",
-      "assumption": "Same depth gap, Since backward",
-      "why_deferred": "Same as line 449",
-      "next_dispatch": "Same as line 449"
+      "line": 559,
+      "statement": "prior_nonconstenv_2var_agree_until backward (pre-existing)",
+      "assumption": "Symmetric backward",
+      "why_deferred": "Pre-existing",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 610,
+      "statement": "prior_nonconstenv_2var_agree_since forward (pre-existing)",
+      "assumption": "Zone-3 Since direction",
+      "why_deferred": "Pre-existing",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 614,
+      "statement": "prior_nonconstenv_2var_agree_since backward (pre-existing)",
+      "assumption": "Symmetric backward",
+      "why_deferred": "Pre-existing",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree"
     }
   ],
-  "blockers": [
-    "The standalone nvar_transfer_from_1var lemma requires proving: from depth-(d+1) 1-var at each component + order matching → depth-(d+1) r-var. The quantifier step needs a single witness z' with correct orders relative to ALL env components. cross_extend_bwd_1var gives z' with correct order relative to ONE component only. Prior-UZ bounding fails because the two witnesses from different components have no guaranteed relative ordering.",
-    "5 approaches exhausted: (1) induction on d with all r (order matching gap), (2) depth upgrade K→K+1 via 1-var (same gap), (3) exist_transfer at d=K (already maximal), (4) reconstruction_depth_agree (fixed arity), (5) Prior-UZ dual bounding (witnesses not guaranteed in correct relative positions)"
-  ],
+  "blockers": [],
+  "continuation_path": null,
   "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 9,
-    "plan_path": "specs/303_k_gt_0_depth_induction/plans/18_nvar-transfer-plan.md",
-    "key_discovery": "exist_transfer_from_full_agree at d=K is the MAXIMUM available from pure NF algebra. The gap is exactly 1 depth per 1 arity increase. The fundamental issue: cross_extend_bwd_1var from a single base component cannot produce a witness with correct orders relative to MULTIPLE components simultaneously.",
-    "recommended_next_research": "Investigate whether the w_nf approach (ih_strong → depth-K 3-var FULL agreement at [w,x,t]/[w_nf,x',t'] with w_nf in zone 3) can close the sorry DIRECTLY by showing nf_eval N (K+1) 3 [w_nf,x',t'] sub_nf via: (a) atoms from depth-K atom agreement, (b) quantifiers from exist_transfer_from_full_agree applied to the depth-K 3-var agreement (gives d<=K-1 at arity 4). The inner quantifiers of sub_nf are at depth K, which asks about depth-K 4-var. Can depth-(K-1) 4-var suffice because sub_nf.2 chi4 only depends on chi4's evaluation, not its full depth-K structure? Research whether nf_eval at depth K+1 can be decomposed into depth-K atoms + depth-(K-1) quantifier conditions."
+    "next_action": "Implement Prior-UZ gap placement in the forward direction of exist_transfer_from_1var_prior (line 459). The goal state has ih (depth d all r), h_1var (depth d+1), h_order, Prior-UZ/SZ, and char_fn/char_correct available. The proof requires: 1) determine x's gap in sorted env, 2) use 2-var existential transfer from h_1var at the lower bounding component, 3) apply Prior-UZ with char_fn to find first occurrence in the gap, 4) apply IH at depth d arity r+1.",
+    "is_successor": false
   }
 }

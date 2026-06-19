@@ -1,23 +1,66 @@
 {
-  "status": "in_progress",
-  "artifacts": [
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "sorry_inventory": [
     {
-      "type": "plan",
-      "path": "specs/303_k_gt_0_depth_induction/plans/18_nvar-transfer-plan.md",
-      "summary": "Revised plan v18: standalone nvar_transfer_from_1var lemma replacing blocked reconstruction approach, aligned with Rabinovich Prop 4.3"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 459,
+      "statement": "nvar_transfer_from_1var_agree quantifier step (forward)",
+      "assumption": "Given x in M satisfying depth-d (r+1)-var NF at [x, env], there exists x' in N satisfying the same NF at [x', env']",
+      "why_deferred": "Requires Prior-UZ/SZ gap placement: finding witness x' with correct order relative to ALL env' components simultaneously",
+      "next_dispatch": "Implement Prior-UZ gap placement: determine gap, use 2-var transfer for candidate, Prior-UZ first-occurrence for placement, IH at depth d arity r+1"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 462,
+      "statement": "nvar_transfer_from_1var_agree quantifier step (backward)",
+      "assumption": "Symmetric to forward: given x' in N, find x in M",
+      "why_deferred": "Same gap-placement issue, using Prior-SZ instead of Prior-UZ",
+      "next_dispatch": "Implement symmetric Prior-SZ gap placement"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 554,
+      "statement": "prior_nonconstenv_2var_agree_until quantifier forward (pre-existing)",
+      "assumption": "w2 satisfies sub_nf at [w2, x', t'] in N",
+      "why_deferred": "Pre-existing sorry from prior dispatches",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree into this sorry site"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 559,
+      "statement": "prior_nonconstenv_2var_agree_until quantifier backward (pre-existing)",
+      "assumption": "Symmetric backward direction",
+      "why_deferred": "Pre-existing sorry from prior dispatches",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree into this sorry site"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 610,
+      "statement": "prior_nonconstenv_2var_agree_since quantifier forward (pre-existing)",
+      "assumption": "Zone-3 witness placement for Since direction",
+      "why_deferred": "Pre-existing sorry from prior dispatches",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree into this sorry site"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 614,
+      "statement": "prior_nonconstenv_2var_agree_since quantifier backward (pre-existing)",
+      "assumption": "Symmetric backward direction for Since",
+      "why_deferred": "Pre-existing sorry from prior dispatches",
+      "next_dispatch": "Wire nvar_transfer_from_1var_agree into this sorry site"
     }
   ],
-  "next_steps": "Phase 9 in progress: implement standalone nvar_transfer_from_1var lemma",
-  "metadata": {
-    "session_id": "sess_1750291200_p9impl",
-    "agent_type": "lean-implementation-hard-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-    "phase_count": 10,
-    "estimated_hours": 14,
-    "reports_integrated": [
-      "reports/18_literature-alignment-analysis.md",
-      "reports/19_rabinovich-proof-extraction.md"
-    ]
-  }
+  "verification": {
+    "sorry_count": 6,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    "nvar_transfer_from_1var_agree in PriorComposition.lean: from depth-d 1-var agreements at each component + order matching + Prior-UZ/SZ + CharPart, derive depth-d r-var NF agreement. Base case (d=0, pure atoms) and step-case atom part proved sorry-free. Step-case quantifier requires Prior-UZ gap placement for witness selection in the correct gap between sorted env components.",
+    "The general nvar transfer from 1-var agreements is FALSE without Prior-UZ/SZ. Counterexample: (0,2) and (0,1) in (Z,<) have same 1-var types at each component and same order, but different 2-var NFs because the gap between them has different cardinality. Prior-UZ/SZ constrains gap structure to make the lemma true.",
+    "The fundamental quantifier-step difficulty: from depth-(d+1) 1-var agreement at component i, exist_transfer_from_full_agree gives depth-d 2-var existential transfer. This finds a witness with matching type relative to ONE component, but potentially DIFFERENT witnesses for different components. Prior-UZ first-occurrence resolves this by placing the witness in the correct gap (between consecutive sorted env' components), giving correct orders relative to ALL components simultaneously."
+  ]
 }

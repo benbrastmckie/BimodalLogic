@@ -353,12 +353,113 @@ private theorem exist_transfer_at_full_depth {sig : MonadicSignature}
     (∃ z' : N.carrier, nf_eval_nf N K (n + 2) (Fin.cons z' envN) sub) :=
   exist_transfer_from_full_agree M envM N envN h_agree K (Nat.le_refl K) sub
 
-/-! ## Zone-3 Existential Transfer (Proof Obligation)
+/-! ## Standalone nvar Transfer from 1-var Agreements (Prior-Based)
 
-The remaining sorry in the main theorems uses nvar_transfer_from_1var
-(proved above) to close the depth gap. The lemma provides depth-(K+1)
-r-var NF agreement from depth-(K+1) 1-var agreements at each component,
-which is exactly what's available at the zone-3 proof sites. -/
+Multi-variable NF agreement from componentwise 1-var agreements, order
+matching, and Prior-UZ/SZ axioms with CharPart characteristic formulas.
+
+The proof is by induction on d (depth), with ALL arities r handled
+simultaneously at each depth level.
+
+- Base (d = 0): Pure atom matching from pred_agree_cross + h_order.
+- Step (d+1): Atoms same as base. Quantifier: given x in M satisfying
+  sub_nf at [x, env], find x' in N using Prior-UZ gap placement and
+  apply IH at depth d on arity r+1.
+
+Literature: Rabinovich 2014, Lemma 5.1.
+
+Proof status: base case and step-case atoms proved sorry-free.
+Step-case quantifier part has sorry at the Prior-UZ/SZ gap placement
+(the order-matching obligation for the extended environment). -/
+
+/-- Standalone nvar transfer: from depth-d 1-var agreements at each env
+    component + order matching + Prior-UZ/SZ + CharPart, derive depth-d
+    r-var NF agreement. Induction on d with r universally quantified.
+
+    The char_correct bound is d' < d (strict) since at depth d+1, the
+    quantifier step uses char_fn at depth d (which is < d+1). -/
+theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) :
+    ∀ (d : Nat) (r : Nat)
+    (M : OrderedMonadicStructure sig) (env : Fin r → M.carrier)
+    (N : OrderedMonadicStructure sig) (env' : Fin r → N.carrier)
+    (_ : semantic_prior_UZ M atomMap) (_ : semantic_prior_SZ M atomMap)
+    (_ : semantic_prior_UZ N atomMap) (_ : semantic_prior_SZ N atomMap)
+    (h_1var : ∀ (i : Fin r), ∀ nf : NormalForm sig d 1,
+      nf_eval_nf M d 1 (fun _ => env i) nf ↔
+      nf_eval_nf N d 1 (fun _ => env' i) nf)
+    (h_order : ∀ (i j : Fin r), env i < env j ↔ env' i < env' j)
+    (char_fn : ∀ (d' : Nat), NormalForm sig d' 1 → Formula)
+    (char_correct : ∀ (d' : Nat) (_ : d' < d) (nf_1 : NormalForm sig d' 1)
+        (S : OrderedMonadicStructure sig)
+        (_ : semantic_prior_UZ S atomMap) (_ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d' nf_1) ↔
+        nf_eval_nf S d' 1 (fun _ => t) nf_1),
+    ∀ nf : NormalForm sig d r,
+      nf_eval_nf M d r env nf ↔ nf_eval_nf N d r env' nf := by
+  intro d; induction d with
+  | zero =>
+    -- depth 0: purely atomic
+    intro r M env N env' _ _ _ _ h_1var h_order _ _ nf
+    simp only [nf_eval_nf]
+    have h_atom : ∀ (a : AtomKind sig r),
+        atom_eval M env a ↔ atom_eval N env' a := by
+      intro a; cases a with
+      | pred p i =>
+        simp only [atom_eval]
+        have h_a := atom_agreement_from_nf M (fun _ => env i) N (fun _ => env' i)
+          (h_1var i) (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at h_a; exact h_a
+      | order i j _ =>
+        simp only [atom_eval]
+        exact h_order i j
+    exact ⟨fun hM a => (h_atom a).symm.trans (hM a),
+           fun hN a => (h_atom a).trans (hN a)⟩
+  | succ d ih =>
+    intro r M env N env' h_UZ_M h_SZ_M h_UZ_N h_SZ_N h_1var h_order char_fn char_correct nf
+    -- Atom agreement
+    have h_atom : ∀ (a : AtomKind sig r),
+        atom_eval M env a ↔ atom_eval N env' a := by
+      intro a; cases a with
+      | pred p i =>
+        simp only [atom_eval]
+        have h_a := atom_agreement_from_nf M (fun _ => env i) N (fun _ => env' i)
+          (h_1var i) (.pred p ⟨0, by omega⟩)
+        simp only [atom_eval] at h_a; exact h_a
+      | order i j _ =>
+        simp only [atom_eval]
+        exact h_order i j
+    -- Characteristic NF strategy
+    set tgt := nf_characteristic N (d + 1) r env'
+    have h_N_sat := nf_characteristic_satisfies N (d + 1) r env'
+    suffices h_M_sat : nf_eval_nf M (d + 1) r env tgt by
+      exact nf_agreement_from_shared_nf M _ N _ tgt h_M_sat h_N_sat nf
+    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+    refine ⟨fun a => (h_atom a).trans (h_N_atoms a), fun sub_nf => ?_⟩
+    rw [← h_N_quant sub_nf]
+    -- Quantifier: depth-d (r+1)-var existential transfer.
+    -- From h_1var(i) at depth d+1, the quantifier condition gives
+    -- depth-d 2-var existential transfer relative to env(i)/env'(i).
+    -- The witness x' is found via Prior-UZ gap placement, ensuring
+    -- correct order relative to ALL env' components simultaneously.
+    -- Then IH at depth d, arity r+1 closes the proof.
+    -- Full gap-placement proof requires Prior-UZ/SZ zone analysis.
+    -- The quantifier step uses:
+    --   1. h_1var(i) quantifier condition → depth-d 2-var existential transfer
+    --   2. Prior-UZ/SZ + char_fn → gap placement of witness
+    --   3. IH at depth d, arity r+1 → depth-d (r+1)-var agreement
+    -- Forward: given x in M, find x' in N in the same gap, then apply IH.
+    -- Backward: symmetric using Prior-SZ.
+    constructor
+    · rintro ⟨x, hx⟩
+      -- Get depth-d 2-var existential transfer from h_1var at any component
+      -- Place witness in correct gap via Prior-UZ + char_fn
+      -- Apply IH at depth d, arity r+1
+      sorry
+    · rintro ⟨x', hx'⟩
+      -- Symmetric backward direction using Prior-SZ
+      sorry
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
