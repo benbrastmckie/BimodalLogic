@@ -1,7 +1,7 @@
 # Implementation Plan: Close PriorComposition Sorry via Strong D-Induction
 
 - **Task**: 303 - k_gt_0_depth_induction
-- **Status**: [IN PROGRESS] (Phases 1-5 completed, Phase 6 blocked -- restructured as Phases 6-9)
+- **Status**: [IN PROGRESS] (Phases 1-7 completed, Phase 8 in progress)
 - **Effort**: 20 hours (6-8 dispatch sessions)
 - **Dependencies**: None (k=0 infrastructure is sorry-free, KampBypass.lean is sorry-free)
 - **Research Inputs**: reports/09_interval-splitting-mapping.md, reports/11_vea-negation-closure-design.md, reports/12_fraisse-game-analysis.md, reports/13_literature-grounded-proof-strategy.md, reports/15_charpart-threading-design.md, reports/16_strong-d-induction-research.md
@@ -20,7 +20,7 @@ Plan v16 replaces the blocked Phase 6 from plan v15 with four new phases (6-9) g
 
 Additionally, report 16 identified an independent blocker in NfCharFormula.lean:651 (3 sorry with incorrect arguments to `existPart_succ_n1_bypass`) that can be fixed quickly by restructuring to use `nf_2var_exist_formula_prior_filled`.
 
-Current state: KampBypass.lean is sorry-free (0 sorry). PriorComposition.lean has 4 sorry at lines 264, 285, 336, 354 (quantifier parts of `prior_nonconstenv_2var_agree_until/since` in K=0 and K>0 cases). NfCharFormula.lean has 3 sorry at line 651.
+Current state (after Phases 6-7): KampBypass.lean is sorry-free (0 sorry). PriorComposition.lean has 2 sorry at lines 264, 315 (zone-3 quantifier parts of `prior_nonconstenv_2var_agree_until/since` under strong induction — unified from 4 sorry). NfCharFormula.lean critical path is sorry-free (1 sorry remains in deprecated dead-code `nf_2var_exist_formula_prior`).
 
 ### Research Integration
 
@@ -189,9 +189,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 8: Zone-3 Witness Construction [NOT STARTED]
+### Phase 8: Zone-3 Witness Construction [BLOCKED]
 
 **Goal**: Implement the zone-3 between-zone argument for the Until direction. Use Prior-UZ/SZ to place witness w' in (t', x') with the correct depth-(D-1) 1-var NF, then prove w' satisfies the sub-NF by reconstructing atom part + quantifier part. The quantifier part recurses at depth D-2 (terminates at depth 0 = purely atomic).
+
+**BLOCKER** (Phase 8):
+- **What failed**: Cannot close sorry for zone-3 existential transfer. Goal: `∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf ↔ ∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf`
+- **What was tried**: (1) cross_extend_bwd_1var from h_t gives w₂ > t' but unknown w₂ < x'. From h_x gives w₁ < x' but unknown t' < w₁. (2) Attempted external helper theorems — blocked by Nat.strong_induction_on K✝/K variable mismatch. (3) Explored nf_extend_bwd, constenv_2var_determines, nf_skipIdx_cross — all give one depth SHORT of what's needed.
+- **Why stuck**: Three independent obstacles: (a) Prior-UZ/SZ witness placement needs char_fn transfer + squeeze argument not yet formalized; (b) Quantifier part at depth K+1 requires depth-K (n+1)-var transfer, creating recursive same-type problem at lower depth / higher arity — needs secondary induction; (c) Nat.strong_induction_on binding prevents calling external helpers (K✝ vs K).
+- **What is needed**: (1) Restructure to avoid K✝/K issue (define `have` helper INSIDE the strong induction body, or use `suffices` pattern with explicit K coercion). (2) Implement depth-0 n-var atomic transfer base case (find point with matching predicates + orders using Prior density). (3) Implement Prior-UZ witness placement: char_fn transfer via temporal_truth + h_t, then apply semantic_prior_UZ to get first occurrence in correct zone. (4) Implement nested depth induction for quantifier part (Nat.rec from K+1 down to 0, proving n-var transfer at each level using Prior witness at previous level).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Tasks**:
 - [ ] Implement zone decomposition helper that classifies witness w into zones:
@@ -215,10 +222,10 @@ Phases within the same wave can execute in parallel.
     - Use `nf_extend_bwd` from depth-(D-1) 2-var to get depth-(D-2) witnesses
     - Recursive argument terminates at depth 0 (purely atomic, no quantifier conditions)
 - [ ] Implement helper lemma: `zone3_exist_transfer_until` that encapsulates the zone-3 argument
-- [ ] Close the 2 Until sorry (K=0 and K=succ cases) using the zone decomposition
-- [ ] Verify: `lake build PriorComposition` succeeds with 2 sorry remaining (Since cases only)
+- [ ] Close the 1 Until sorry (line 264, unified K case under strong induction) using zone decomposition
+- [ ] Verify: `lake build PriorComposition` succeeds with 1 sorry remaining (Since case only)
 
-**Sorry budget**: 2 (Until direction closed, Since direction remaining).
+**Sorry budget**: 1 (Until direction closed, Since direction remaining — 1 sorry per theorem after Phase 7 unification).
 
 **Timing**: 6-8 hours (2-3 dispatch sessions)
 
@@ -257,7 +264,7 @@ Phases within the same wave can execute in parallel.
   - Use `semantic_prior_SZ` (last occurrence below) instead of `semantic_prior_UZ`
   - Apply `cross_extend_bwd_1var` from h_x for zones below x, from h_t for zones above t
   - Zone 3 for since: x < w < t (between x and t, reversed direction)
-- [ ] Close the 2 Since sorry (K=0 and K=succ cases)
+- [ ] Close the 1 Since sorry (line 315, unified K case under strong induction)
 - [ ] Verify: `lake build PriorComposition` succeeds with 0 sorry
 - [ ] Run `lean_verify prior_nonconstenv_2var_agree_until` -- confirm no sorryAx
 - [ ] Run `lean_verify prior_nonconstenv_2var_agree_since` -- confirm no sorryAx
@@ -289,8 +296,8 @@ Phases within the same wave can execute in parallel.
 - [x] After Phase 3: Research report written with actionable design
 - [x] After Phase 4 (4a-4c): KampBypass.lean sorry-free; PriorComposition.lean reduced to 4 sorry
 - [x] After Phase 5: `lake build PriorComposition` + `lake build KampBypass` succeed; sorry count in PriorComposition = 4; KampBypass sorry = 0
-- [ ] After Phase 6: `lake build NfCharFormula` succeeds; sorry at line 651 eliminated
-- [ ] After Phase 7: `lake build PriorComposition` succeeds; sorry count still 4 (inside strong induction); structure verified correct
+- [x] After Phase 6: `lake build NfCharFormula` succeeds; sorry at line 651 eliminated from critical path (dead-code sorry remains)
+- [x] After Phase 7: `lake build PriorComposition` succeeds; sorry count = 2 (reduced from 4 by strong induction unifying K=0/K=succ cases)
 - [ ] After Phase 8: `lake build PriorComposition` succeeds; sorry count = 2 (Until closed, Since remaining)
 - [ ] After Phase 9: `lean_verify completeness_discrete` clean; `lake build` succeeds; no sorry in Kamp directory
 
