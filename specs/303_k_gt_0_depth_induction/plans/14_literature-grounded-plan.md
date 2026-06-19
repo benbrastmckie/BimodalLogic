@@ -163,7 +163,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 5: Depth-0 Between-Zone Transfer (Closes S3/S4) [PARTIAL]
+### Phase 5: Depth-0 Between-Zone Transfer (Closes S3/S4) [BLOCKED]
 
 **Goal**: Prove the depth-0 3-var existential transfer for the between-zone case in the base cases of `prior_nonconstenv_2var_agree_until` and `prior_nonconstenv_2var_agree_since`. At depth 0, `nf_eval_nf` is purely atomic, so the between-zone reduces to finding a point with matching monadic predicates in the interval (t', x').
 
@@ -186,8 +186,47 @@ Phases within the same wave can execute in parallel.
 2. Use KampBypass `existPart_succ_n1_bypass_k0` infrastructure to bridge
 3. Restructure base case to avoid needing the between-zone transfer directly
 
+**BLOCKER** (Phase 5):
+- **What failed**: `depth0_3var_exist_transfer_until/since` are FALSE as stated. The between-zone
+  condition "exists w in (t, x) with predicates sigma" does NOT transfer from depth-2 1-var
+  agreement at endpoints x/x' and t/t' plus Prior-UZ/SZ alone.
+- **Counterexample**: M = N = (Z, <, P = even integers), t = t' = -1, x = 4, x' = 0.
+  - depth-2 1-var at x=4 / x'=0: both even, same NF by 2-periodicity of P = evens.
+  - depth-2 1-var at t=-1 / t'=-1: same point, same NF.
+  - M: exists w=0 in (-1, 4) with P(0)=true. N: interval (-1, 0) is empty, no P-point.
+  - Prior-UZ/SZ hold on Z (discrete order). All conditions met, but transfer fails.
+- **Root cause**: The depth-2 1-var NF at t captures depth-1 2-var quantifier conditions
+  relative to t, including "exists s > t with sigma AND exists z in (t, s) with tau".
+  But the transferred witness s' may not equal x' (s' could be at a different position).
+  The between-zone of (t', s') need not coincide with (t', x'). Similarly from h_x.
+  Two 1-variable conditions (at t and x separately) cannot express a 2-variable
+  interval containment property.
+- **Confirmed FALSE depth-2 1-var NF check**: depth-2 1-var NF of 4 and 0 in
+  (Z, P=evens) are the same because: (a) same predicates (both even, P=true),
+  (b) same depth-1 neighbor patterns by 2-periodicity (nearest P-neighbor above at +2,
+  nearest non-P at +1, etc.), (c) depth-0 3-var between-zone conditions at [s, 4] and
+  [s, 0] with matching s values have the same NF due to translation invariance of P=evens.
+- **What is needed**: Restructure to either:
+  (a) Add CharPart(K+1) parameter and use temporal formula transfer (Phase 6 approach,
+      needed even at K=0 base case), or
+  (b) Add depth-(K+1) 2-var agreement h_xt as an explicit parameter to
+      `exist_transfer_3var_nonconstenv`, with the base case h_xt at depth 0 = atom agreement
+      from `nonconstenv_atom_agree_until`, and higher depths from induction, or
+  (c) Restructure the induction in `prior_nonconstenv_2var_agree_until` to simultaneously
+      prove depth-d 2-var agreement for all d <= K+2 by strong induction, with the depth-1
+      2-var case using temporal formula transfer via CharPart(1).
+
+**Recommended fix (option c)**: Merge Phases 5 and 6. Add `char_1 : CharPart atomMap 1` as a
+parameter to `prior_nonconstenv_2var_agree_until/since` (propagated from the mutual induction
+call site which has CharPart at all depths). Use `existPart_succ_n1_bypass_k0` with char_1 to
+build a temporal formula A for each depth-1 2-var NF chi. A works in all Prior structures.
+Transfer A's truth via depth-2 1-var agreement (since A has operator depth 2). This gives
+depth-1 2-var agreement at [x,t]/[x',t'] without needing depth-0 3-var transfer first. Then
+the depth-0 3-var transfer follows from the depth-1 2-var quantifier part.
+
 **Tasks remaining**:
-- [ ] Resolve between-zone blocker via one of the approaches above
+- [ ] *(deviation: blocked — `depth0_3var_exist_transfer_until/since` are FALSE as stated)*
+  Resolve between-zone blocker via architectural restructuring (merge with Phase 6)
 - [ ] Verify: `lake build PriorComposition` succeeds with sorry count reduced from 4 to 2 (S1/S2 only)
 
 **Key technical detail for Zone 3 (Case C)**: At depth 0, we have depth-2 1-var agreement at x/x' and t/t'. `cross_extend_bwd_1var(h_t, w)` uses the FULL depth-2 hypothesis to produce w_t with depth-1 2-var agreement at [w,t]/[w_t,t']. The depth-1 2-var includes quantifier conditions: for each depth-0 3-var chi, `(exists z, nf_eval M 0 3 [z,w,t] chi) <-> (exists z', nf_eval N 0 3 [z',w_t,t'] chi)`. Similarly for w_x from h_x. In Case C (w_t >= x', w_x <= t'), the point x in M satisfies x > w, x > t with specific predicates. The depth-1 2-var transfer from [w,t]/[w_t,t'] gives z' > w_t >= x' with x's predicates. The point t in M satisfies t < w, t < x. The transfer from [w,x]/[w_x,x'] gives z'' < w_x <= t' with t's predicates. These witnesses are OUTSIDE (t', x'), but their existence establishes that the predicate patterns ARE realized in N. The Prior-UZ/SZ argument then constrains the first/last occurrence to be INSIDE the interval. If this fails, the contradiction may come from the depth-1 2-var quantifier transfer encoding the between-zone census.
