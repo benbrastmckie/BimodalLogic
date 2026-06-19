@@ -100,17 +100,19 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Lemma 5.3 -- All-Betas-True Base Case [IN PROGRESS]
+### Phase 2: Lemma 5.3 -- All-Betas-True Base Case [COMPLETED]
 
 **Goal**: Prove that the negation of "exists ordered points x_1 < ... < x_n in (z_0, z_1) with P_i(x_i)" is equivalent to a V-EA formula on Prior structures. This is Rabinovich Lemma 5.3 (p.8), the base case for the negation closure induction.
 
 **Tasks**:
-- [ ] Define `neg_ordered_points_spec` -- the semantic predicate: "there do NOT exist n strictly ordered points in (z_0, z_1) each satisfying their respective temporal predicate"
-- [ ] Prove base case (n=0): trivially True (no witnesses to negate)
-- [ ] Prove base case (n=1): `not (exists x in (z_0, z_1), P(x))` is equivalent to `forall y in (z_0, z_1), not P(y)`, which is a bracket formula with 0 witnesses and segment type `not P`
-- [ ] Prove inductive step: Given P_1 does not occur in (z_0, z_1), we are done. Otherwise, use `HasDefinableINF` (from `prior_hasDefinableINF`) to get r_0 = first occurrence of P_1 in (z_0, z_1). Split into sub-cases: (a) P_1(r_0) holds -- reduce to n-1 problem on (r_0, z_1); (b) K+(P_1)(r_0) -- use `kplus_formula` for TL encoding
-- [ ] Assemble the V-EA formula for the negation using `VBracketFormula.disj` for case combination
-- [ ] Prove `neg_ordered_points_is_vbracket`: the full Lemma 5.3 statement
+- [x] Define `BracketFormula.prepend` -- prepend a witness to a bracket formula *(deviation: altered -- added as infrastructure for the inductive step, not in original plan)*
+- [x] Prove `BracketFormula.prepend_holds` and `prepend_holds_inv` -- semantic correctness of prepend
+- [x] Prove `orderedPointsExist_decompose` -- combine first witness with tail ordered points
+- [x] Define `VBracketFormula.prependAll` -- map prepend over IH disjuncts
+- [x] Prove base case (n=0): VBracketFormula with empty disjuncts (always False) matches not-True
+- [x] Prove base case (n=1): `not (exists x in (z_0, z_1), P(x))` equivalent to bracket with 0 witnesses *(done in prior dispatch)*
+- [x] Prove inductive step: Use `HasAttainedINF` (from `prior_hasAttainedINF`) for first occurrence. *(deviation: altered -- uses HasAttainedINF instead of HasDefinableINF to avoid K+ limit-point case)*
+- [x] Prove `neg_orderedPointsExist_is_vbracket`: the full Lemma 5.3 statement -- sorry-free
 
 **Timing**: 2 hours
 
