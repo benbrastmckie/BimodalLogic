@@ -838,24 +838,30 @@ theorem neg_bracket_is_vbracket :
     exact ⟨v, fun M atomMap _h_INF z0 z1 h_lt => hv M atomMap z0 z1 h_lt⟩
   | succ n ih =>
     intro bf
-    -- The induction step requires a different decomposition than Lemma 5.3.
-    -- We cannot simply "peel off" the first witness because the segment types
-    -- create coupling: knowing alpha_0 doesn't occur in (z0, r0) doesn't
-    -- tell us anything about beta_0 (segmentTypes 0) on (z0, r0).
+    -- BLOCKER: The direct BracketFormula negation via first-witness prepend
+    -- is UNSOUND for witnesses x_0 > r_0 (first alpha_0 occurrence):
+    -- rightPart.holds(x_0, z_1) does not imply rightPart.holds(r_0, z_1)
+    -- because the first segment of rightPart widens from (x_0, w_1) to
+    -- (r_0, w_1) and beta_1 may not hold on the extra piece (r_0, x_0).
     --
-    -- The correct approach (Rabinovich p.10) decomposes by the first SEGMENT
-    -- TYPE failure, not the first point type. Three cases:
-    -- 1. ¬orderedPointsExist (all point types fail) → Lemma 5.3
-    -- 2. orderedPointsExist but some beta fails → split at first failure
-    -- 3. Everything holds → bracket holds (contradiction with negation)
+    -- The paper (Rabinovich 2014, p.10) avoids this by placing alpha_0 at
+    -- the ENDPOINT z_0 (not an interior witness), eliminating x_0 > r_0.
+    -- This requires the VecEA2 convention where endpointLeft = alpha_0.
     --
-    -- For now we use the IH on rightPart and construct a V-bracket that
-    -- covers the forward direction (V-bracket → ¬bracket). The backward
-    -- direction (¬bracket → V-bracket) requires the full three-case analysis.
+    -- Correct approach: prove neg_vecEA2_is_vvecEA2 by induction on n
+    -- (interior witness count), then derive neg_bracket_is_vbracket as
+    -- a corollary via VecEA2.fromBracket. The VecEA2 induction uses:
+    --   Case 1: endpoint failure → trivial VVecEA2
+    --   Case 2: first segment everywhere → reduces to VecEA2 (n-1) via
+    --           Corollary 5.4 or direct IH
+    --   Case 3: first segment fails → split at failure point, IH on parts
     --
-    -- Approach: use neg_orderedPointsExist_is_vbracket (Lemma 5.3) for the
-    -- point-type-failure case, and IH + splitAt for the segment-failure case.
-    -- Construct V-bracket covering all failure modes.
+    -- The VVecEA2-to-VBracketFormula conversion for the corollary requires
+    -- showing that endpoint conditions can be absorbed or are trivial
+    -- when the original VecEA2 has top endpoints.
+    --
+    -- This requires substantial new infrastructure beyond the current
+    -- dispatch's scope. See the handoff document for the detailed plan.
     sorry
 
 /-- **Corollary 5.4, full biconditional** (Rabinovich 2014, p.9):

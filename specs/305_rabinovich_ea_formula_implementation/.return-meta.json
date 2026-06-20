@@ -1,40 +1,9 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "task_number": 305,
   "session_id": "sess_1750366788_a1b2c3",
-  "phase": 4,
-  "requires_user_review": true,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 859,
-      "statement": "theorem neg_bracket_is_vbracket (inductive step for n+1)",
-      "assumption": "Negation of bracket with n+1 witnesses is V-bracket on Prior structures",
-      "why_deferred": "Peel-off-first-witness approach fails: segment type coupling prevents reconstruction. Need different decomposition strategy.",
-      "next_dispatch": "Research correct approach: segment-type-based decomposition, or F-chain reverse, or endpoint convention change"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 872,
-      "statement": "theorem neg_partialBracketExist_is_vbracket",
-      "assumption": "Full biconditional for Corollary 5.4",
-      "why_deferred": "Depends on Lemma 5.1",
-      "next_dispatch": "After Lemma 5.1"
-    }
-  ],
-  "verification": {
-    "sorry_count": 2,
-    "vacuous_count": 0,
-    "axiom_count": 0,
-    "build_passed": true
-  },
-  "memory_candidates": [
-    "BracketFormula.splitAt_combine proof: 4-case split on (i.val = 0 vs > 0) x (n - i.val = 0 vs > 0). Key tactic patterns: dif_pos/dif_neg for dite simplification, congr 1 + simp only [Fin.ext_iff] + omega for Fin-indexed type equality, congrArg for witness function equality.",
-    "CRITICAL: The peel-off-first-witness approach (Lemma 5.3 pattern) does NOT generalize to Lemma 5.1. Our BracketFormula has ALL witnesses interior to (z0, z1) with NO endpoint conditions. The paper places alpha_0 at endpoint z_0 itself. Finding first alpha_0-occurrence r0 gives not-alpha_0 on (z0, r0) but NOT beta_0 (segmentTypes 0) on (z0, r0), so splitAt_combine at index 0 cannot reconstruct the bracket.",
-    "neg_bracket_zero_is_vbracket: For BracketFormula 0, negation = exists y with not-beta_0(y), a 1-witness bracket with pointType = beta_0.neg, segmentTypes = top. Sorry-free.",
-    "For Fin arithmetic in IntervalPattern proofs: Fin.val_lt_val does NOT exist. Use Fin.lt_iff_val_lt_val or Fin.lt_def instead."
-  ],
-  "handoff_path": "specs/305_rabinovich_ea_formula_implementation/.orchestrator-handoff.json"
+  "task_number": 305,
+  "phase_number": 4,
+  "started_at": "2026-06-19T00:00:00Z"
 }

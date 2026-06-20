@@ -153,18 +153,30 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Lemma 5.1 -- Full Negation Closure [IN PROGRESS]
+### Phase 4: Lemma 5.1 -- Full Negation Closure [BLOCKED]
 
 **Goal**: Prove the main technical lemma: the negation of any bracket formula [alpha_0, beta_1, ..., alpha_n](z_0, z_1) is a V-EA formula on Prior structures. This is the core of Rabinovich Section 5, using interval splitting from Phase 1 and the base cases from Phases 2-3.
+
+**BLOCKER** (Phase 4):
+- **What failed**: The "peel off first witness" approach for BracketFormula (n+1) is UNSOUND for x_0 > r_0 (first alpha_0 occurrence). The prepend construction produces a V-bracket that holds when rightPart fails at r_0, but bf.holds might still be true with a LATER witness x_0 > r_0 where rightPart succeeds on the narrower interval (x_0, z_1). The interval mismatch: rightPart.holds(x_0, z_1) does NOT imply rightPart.holds(r_0, z_1) because the first segment widens from (x_0, w_1) to (r_0, w_1).
+- **What was tried**:
+  1. Prepend with segment alpha_0.neg (no beta_0 info): soundness fails for x_0 > r_0 because rightPart at x_0 might succeed while failing at r_0.
+  2. Prepend with segment alpha_0.neg.conj beta_0: still fails because beta_0 on the open interval (z_0, r_0) doesn't give beta_0 on [r_0, x_0).
+  3. Segment-failure decomposition (orderedPointsExist + segment failure brackets): forward direction fails because the failure point from one witness config is not necessarily in the correct segment of another config.
+  4. F-chain approach: forward direction works (V.holds -> not orderedPointsExist -> not bf.holds) but backward direction fails because Until witnesses in the F-chain are unbounded and can escape beyond z_1.
+  5. Split-at-every-position decomposition: produces a universal over split points that is not expressible as a BracketFormula.
+- **Why stuck**: BracketFormula has ALL witnesses interior with NO endpoint conditions. The paper's proof (Rabinovich p.10) REQUIRES alpha_0 at the endpoint z_0 (not interior) to eliminate the "x_0 > r_0" case. Our BracketFormula convention makes this impossible.
+- **What is needed**: Prove `neg_vecEA2_is_vvecEA2` (paper's Lemma 5.1 for VecEA2 with endpoint conditions), then derive `neg_bracket_is_vbracket` via `VecEA2.fromBracket`. This requires: (a) VecEA2 negation by induction on n using 3-case decomposition, (b) VVecEA2-to-VBracketFormula conversion for the trivial-endpoint case. Both require new infrastructure.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder (sorry is present as type-correct placeholder pending the VecEA2 approach implementation).
 
 **Tasks**:
 - [x] Prove base case (n=0): `neg_bracket_zero_is_vbracket` — sorry-free. ¬(∀ y ∈ (z₀,z₁), β₀(y)) ↔ ∃ y, ¬β₀(y), which is a 1-witness bracket.
 - [x] Prove `BracketFormula.splitAt_combine` sorry-free *(deviation: altered — proved via subagent; 4-case split on (i.val=0 vs >0) x (n-i.val=0 vs >0) with dif_pos/dif_neg for dite, congr+Fin.ext_iff+omega for index matching)*
-- [ ] Prove inductive step (n+1): three-case decomposition *(deviation: altered — the paper's three-case decomposition does NOT map directly to our bracket convention because our brackets have NO endpoint conditions; a different decomposition strategy is needed)*
-  - **Blocking insight**: The "peel off first witness" approach (analogous to Lemma 5.3) fails because finding the first alpha_0-occurrence r0 gives ¬alpha_0 on (z0, r0), but NOT beta_0 on (z0, r0). Without beta_0 on (z0, r0), splitAt_combine cannot reconstruct the full bracket. The paper avoids this because it puts alpha_0 at the endpoint z0 itself.
-  - **Possible fix**: Decompose by first SEGMENT failure (beta_0), not first POINT type failure. Find first ¬beta_0 occurrence, split there. On (z0, r), beta_0 holds everywhere, reducing to orderedPointsExist with alpha conditions only (handle via Lemma 5.3). On (r, z1), apply IH to the sub-bracket.
+- [ ] Prove inductive step (n+1): VecEA2 three-case decomposition *(deviation: altered — requires new VecEA2 induction approach; see BLOCKER above)*
+  - **Blocking insight**: Direct BracketFormula negation via prepend is UNSOUND for x_0 > r_0. The paper avoids this by placing alpha_0 at the endpoint z_0 (VecEA2 convention).
+  - **Required approach**: Prove `neg_vecEA2_is_vvecEA2` by induction on n (VecEA2 parameter), using Cases 1-3 from Rabinovich p.10. Then derive BracketFormula negation as corollary via `VecEA2.fromBracket`.
 - [ ] Assemble: combine all cases using `VBracketFormula.disj`
-- [ ] Prove `neg_bracket_is_vbracket`: the full Lemma 5.1 statement, by induction on n (witness count)
+- [ ] Prove `neg_bracket_is_vbracket`: the full Lemma 5.1 statement, via VecEA2 negation corollary
 - [ ] Verify that the induction is well-founded (n strictly decreases in each case)
 
 **Timing**: 3 hours
