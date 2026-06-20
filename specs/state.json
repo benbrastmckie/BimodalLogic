@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "blocked",
+      "status": "partial",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-20T22:25:06Z",
+      "last_updated": "2026-06-20T22:46:53Z",
       "session_id": "sess_1781994274_50b342",
       "artifacts": [
         {
@@ -1980,7 +1980,7 @@
     {
       "project_number": 306,
       "project_name": "add_combinatorial_bracketformula_conjunction_to_veceaclosure",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Add a structural, model-independent BracketFormula conjunction to VecEAClosure.lean. The existing `conj_to_bracket_exists` only proves existence (∃ n, ∃ bf, ...) which cannot be used inside the VecEA2 negation closure induction. This task adds:\n\n1. `BracketFormula.conjStruct (bf1 : BracketFormula n1) (bf2 : BracketFormula n2) : BracketFormula (n1 + n2)` -- a concrete combined bracket formula whose n1+n2 witnesses are the n1 witnesses of bf1 followed by the n2 witnesses of bf2. Point types are concatenated. Segment types interleave: for positions in bf1's range, conjoin the corresponding bf1 segment with the overall bf2 trivial segment (top), and vice versa for bf2's range.\n\n2. `BracketFormula.conjStruct_holds` -- if bf1.holds M atomMap z0 z1 and bf2.holds M atomMap z0 z1, then (conjStruct bf1 bf2).holds M atomMap z0 z1. The proof reuses the witness interleaving approach from the n1+1/n2+1 case in the existing `conj_to_bracket_exists`.\n\n3. `VBracketFormula.conj_struct` -- a fixed disjunct-list conjunction of VBracketFormulas: given v1 and v2, returns a VBracketFormula whose disjuncts are all pairwise combinations (conjStruct d1 d2) for d1 in v1.disjuncts, d2 in v2.disjuncts. Prove that if v1.holds and v2.holds then (conj_struct v1 v2).holds.\n\n4. `VVecEA2.conj_struct` -- analogous structural conjunction for VVecEA2, combining endpoint conditions (conj) and brackets (conjStruct). Prove the semantic direction.\n\nThese definitions return fixed syntactic objects (not existential witnesses), enabling the VecEA2 negation closure induction in EANegation.lean (Phase 4 of task 305) to produce a concrete VVecEA2 from the three-case decomposition.",
       "effort": "1-2 hours",
@@ -1988,14 +1988,49 @@
       "topic": "completeness",
       "dependencies": [],
       "created": "2026-06-20T22:28:09Z",
-      "last_updated": "2026-06-20T22:28:09Z",
+      "last_updated": "2026-06-20T22:46:33Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/03_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "type": "plan",
+          "path": "specs/306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/plans/01_bracket-conj-plan.md",
+          "summary": "2-phase plan for structural BracketFormula conjunction in VecEAClosure.lean"
+        },
+        {
+          "type": "plan",
+          "path": "specs/306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/plans/01_bracket-conj-plan.md",
+          "summary": "2-phase plan: conjStruct definition + VBracketFormula/VVecEA2 lifting"
+        },
+        {
+          "type": "summary",
+          "path": "specs/306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/summaries/01_bracket-conj-summary.md",
+          "summary": "Execution summary for task 306"
         }
-      ]
+      ],
+      "session_id": "sess_1781994865_a99fcc",
+      "planned": "2026-06-20T22:45:00Z",
+      "next_artifact_number": 2,
+      "plan_metadata": {
+        "phases": 2,
+        "total_effort_hours": 2,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ]
+        ],
+        "reports_integrated": []
+      },
+      "completion_summary": "Added structural conjunction operations (conjStruct, conj_struct) for BracketFormula, VBracketFormula, and VVecEA2 to VecEAClosure.lean. All six definitions and theorems verified sorry-free. Full project build passes."
     }
   ],
   "artifacts": [

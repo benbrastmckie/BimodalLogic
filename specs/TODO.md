@@ -11,7 +11,7 @@ next_project_number: 307
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,303,305,306 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,303,305 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 95,192,196,231,292,293,294,298,299 | 161,187,191,194,230,291,300,303 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193 | 189,192,196 | automation |
 | 4 | 177,178 | 131,193 | formula-refactor |
@@ -26,8 +26,7 @@ next_project_number: 307
 303 [BLOCKED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
-305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
-306 [RESEARCHED] — Add a structural, model-independent BracketFormula conjunction to
+305 [PARTIAL] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
 
 ### Formula Refactor
 
@@ -102,11 +101,15 @@ next_project_number: 307
 
 ### 306. Add combinatorial bracketformula conjunction to veceaclosure
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
 - **Research**: [305_rabinovich_ea_formula_implementation/reports/03_spawn-analysis.md]
+- **Plan**:
+  - [306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/plans/01_bracket-conj-plan.md]
+  - [306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/plans/01_bracket-conj-plan.md]
+- **Summary**: [306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/summaries/01_bracket-conj-summary.md]
 
 **Description**: Add a structural, model-independent BracketFormula conjunction to VecEAClosure.lean. The existing `conj_to_bracket_exists` only proves existence (∃ n, ∃ bf, ...) which cannot be used inside the VecEA2 negation closure induction. This task adds:
 
@@ -123,7 +126,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 ---
 
 ### 305. Rabinovich ea formula implementation
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
