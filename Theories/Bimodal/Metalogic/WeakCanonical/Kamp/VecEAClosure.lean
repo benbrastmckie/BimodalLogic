@@ -97,6 +97,130 @@ theorem BracketFormula.conj_to_bracket_exists
       fun _ y _ _ => TemporalPred.eval_at_top M atomMap y,
       fun y _ _ => TemporalPred.eval_at_top M atomMap y⟩
 
+/-! ## Structural Conjunction for BracketFormula (Task 306)
+
+Model-independent conjunction that returns a concrete BracketFormula (inside a Σ-type)
+rather than wrapping in an existential. Needed for the VecEA2 negation closure induction
+where a fixed syntactic object is required. -/
+
+/-- Structural conjunction of two bracket formulas. Returns a concrete BracketFormula
+    (with varying witness count depending on the case) that holds whenever both inputs hold.
+    This is the model-independent version of `conj_to_bracket_exists`. -/
+def BracketFormula.conjStruct {n1 n2 : Nat}
+    (bf1 : BracketFormula n1) (bf2 : BracketFormula n2) : Σ n, BracketFormula n :=
+  match n1, n2 with
+  | 0, 0 =>
+    ⟨0, ⟨Fin.elim0, fun _ =>
+      (bf1.segmentTypes ⟨0, by omega⟩).conj (bf2.segmentTypes ⟨0, by omega⟩)⟩⟩
+  | 0, n2 + 1 =>
+    ⟨n2 + 1, ⟨bf2.pointTypes, fun i =>
+      (bf1.segmentTypes ⟨0, by omega⟩).conj (bf2.segmentTypes i)⟩⟩
+  | n1 + 1, 0 =>
+    ⟨n1 + 1, ⟨bf1.pointTypes, fun i =>
+      (bf1.segmentTypes i).conj (bf2.segmentTypes ⟨0, by omega⟩)⟩⟩
+  | n1 + 1, _ + 1 =>
+    ⟨n1 + 1, ⟨bf1.pointTypes, fun _ => TemporalPred.top⟩⟩
+
+/-- If both bracket formulas hold on (z0, z1), their structural conjunction holds.
+    This is the semantic correctness theorem for `conjStruct`. -/
+theorem BracketFormula.conjStruct_holds
+    {sig : MonadicSignature} {n1 n2 : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf1 : BracketFormula n1) (bf2 : BracketFormula n2)
+    (z0 z1 : M.carrier)
+    (h1 : bf1.holds M atomMap z0 z1) (h2 : bf2.holds M atomMap z0 z1) :
+    (conjStruct bf1 bf2).2.holds M atomMap z0 z1 := by
+  simp only [holds, toIntervalPattern, IntervalPattern.holds] at h1 h2
+  match n1, n2, bf1, bf2, h1, h2 with
+  | 0, 0, bf1, bf2, h1, h2 =>
+    simp only [conjStruct, holds, toIntervalPattern, IntervalPattern.holds]
+    intro y hy0 hy1
+    exact (TemporalPred.eval_at_conj M atomMap _ _ y).mpr ⟨h1 y hy0 hy1, h2 y hy0 hy1⟩
+  | 0, n2 + 1, bf1, bf2, h1, h2 =>
+    obtain ⟨w, hm, hi, hp, hs0, hsm, hsl⟩ := h2
+    simp only [conjStruct, holds, toIntervalPattern, IntervalPattern.holds]
+    exact ⟨w, hm, hi, hp,
+      fun y hy0 hy1 => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
+        ⟨h1 y hy0 (lt_trans hy1 (hi ⟨0, by omega⟩).2), hs0 y hy0 hy1⟩,
+      fun i y hlo hhi => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
+        ⟨h1 y (lt_trans (hi ⟨i.val, by omega⟩).1 hlo)
+              (lt_trans hhi (hi ⟨i.val + 1, by omega⟩).2),
+         hsm i y hlo hhi⟩,
+      fun y hlo hy1 => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
+        ⟨h1 y (lt_trans (hi ⟨n2, by omega⟩).1 hlo) hy1, hsl y hlo hy1⟩⟩
+  | n1 + 1, 0, bf1, bf2, h1, h2 =>
+    obtain ⟨w, hm, hi, hp, hs0, hsm, hsl⟩ := h1
+    simp only [conjStruct, holds, toIntervalPattern, IntervalPattern.holds]
+    exact ⟨w, hm, hi, hp,
+      fun y hy0 hy1 => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
+        ⟨hs0 y hy0 hy1, h2 y hy0 (lt_trans hy1 (hi ⟨0, by omega⟩).2)⟩,
+      fun i y hlo hhi => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
+        ⟨hsm i y hlo hhi,
+         h2 y (lt_trans (hi ⟨i.val, by omega⟩).1 hlo)
+              (lt_trans hhi (hi ⟨i.val + 1, by omega⟩).2)⟩,
+      fun y hlo hy1 => (TemporalPred.eval_at_conj M atomMap _ _ y).mpr
+        ⟨hsl y hlo hy1, h2 y (lt_trans (hi ⟨n1, by omega⟩).1 hlo) hy1⟩⟩
+  | n1 + 1, _ + 1, bf1, _, h1, _ =>
+    obtain ⟨w1, hm1, hi1, hp1, _, _, _⟩ := h1
+    simp only [conjStruct, holds, toIntervalPattern, IntervalPattern.holds]
+    exact ⟨w1, hm1, hi1, hp1,
+      fun y _ _ => TemporalPred.eval_at_top M atomMap y,
+      fun _ y _ _ => TemporalPred.eval_at_top M atomMap y,
+      fun y _ _ => TemporalPred.eval_at_top M atomMap y⟩
+
+/-! ## Structural Conjunction for V-Bracket and V-VecEA2 (Task 306) -/
+
+/-- Structural conjunction of two V-bracket formulas via Cartesian product of
+    disjunct lists. Each pair of disjuncts is combined using `conjStruct`. -/
+def VBracketFormula.conj_struct (v1 v2 : VBracketFormula) : VBracketFormula :=
+  { disjuncts := v1.disjuncts.flatMap fun ⟨_, bf1⟩ =>
+      v2.disjuncts.map fun ⟨_, bf2⟩ =>
+        bf1.conjStruct bf2 }
+
+/-- If both V-bracket formulas hold on (z0, z1), their structural conjunction holds. -/
+theorem VBracketFormula.conj_struct_holds
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (v1 v2 : VBracketFormula) (z0 z1 : M.carrier)
+    (h1 : v1.holds M atomMap z0 z1) (h2 : v2.holds M atomMap z0 z1) :
+    (conj_struct v1 v2).holds M atomMap z0 z1 := by
+  obtain ⟨⟨n1, bf1⟩, hm1, hh1⟩ := h1
+  obtain ⟨⟨n2, bf2⟩, hm2, hh2⟩ := h2
+  refine ⟨bf1.conjStruct bf2, ?_, BracketFormula.conjStruct_holds M atomMap bf1 bf2 z0 z1 hh1 hh2⟩
+  simp only [conj_struct]
+  exact List.mem_flatMap.mpr ⟨⟨n1, bf1⟩, hm1, List.mem_map.mpr ⟨⟨n2, bf2⟩, hm2, rfl⟩⟩
+
+/-- Structural conjunction of two V-VecEA2 formulas via Cartesian product of
+    disjunct lists, conjoining endpoint predicates and bracket formulas. -/
+def VVecEA2.conj_struct (v1 v2 : VVecEA2) : VVecEA2 :=
+  { disjuncts := v1.disjuncts.flatMap fun ⟨_, vea1⟩ =>
+      v2.disjuncts.map fun ⟨_, vea2⟩ =>
+        let bfConj := vea1.bracket.conjStruct vea2.bracket
+        ⟨bfConj.1,
+          { endpointLeft := vea1.endpointLeft.conj vea2.endpointLeft
+            endpointRight := vea1.endpointRight.conj vea2.endpointRight
+            bracket := bfConj.2 }⟩ }
+
+/-- If both V-VecEA2 formulas hold on (z0, z1), their structural conjunction holds. -/
+theorem VVecEA2.conj_struct_holds
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (v1 v2 : VVecEA2) (z0 z1 : M.carrier)
+    (h1 : v1.holds M atomMap z0 z1) (h2 : v2.holds M atomMap z0 z1) :
+    (conj_struct v1 v2).holds M atomMap z0 z1 := by
+  obtain ⟨⟨n1, vea1⟩, hm1, hel1, her1, hbr1⟩ := h1
+  obtain ⟨⟨n2, vea2⟩, hm2, hel2, her2, hbr2⟩ := h2
+  let bfConj := vea1.bracket.conjStruct vea2.bracket
+  refine ⟨⟨bfConj.1,
+    { endpointLeft := vea1.endpointLeft.conj vea2.endpointLeft
+      endpointRight := vea1.endpointRight.conj vea2.endpointRight
+      bracket := bfConj.2 }⟩, ?_, ?_, ?_, ?_⟩
+  · simp only [conj_struct]
+    exact List.mem_flatMap.mpr ⟨⟨n1, vea1⟩, hm1, List.mem_map.mpr ⟨⟨n2, vea2⟩, hm2, rfl⟩⟩
+  · exact (TemporalPred.eval_at_conj M atomMap _ _ z0).mpr ⟨hel1, hel2⟩
+  · exact (TemporalPred.eval_at_conj M atomMap _ _ z1).mpr ⟨her1, her2⟩
+  · exact BracketFormula.conjStruct_holds M atomMap _ _ z0 z1 hbr1 hbr2
+
 /-! ## Conjunction for V-Bracket and V-VecEA2 -/
 
 theorem VBracketFormula.conj_holds_vbracket
