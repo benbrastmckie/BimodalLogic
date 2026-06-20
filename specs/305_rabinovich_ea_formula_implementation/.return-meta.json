@@ -1,7 +1,11 @@
 {
-  "status": "partial",
-  "metadata": {
-    "cycles_used": 5,
-    "final_state": "partial"
-  }
+  "status": "researched",
+  "agent_type": "spawn-agent",
+  "delegation_path": ["orchestrator", "spawn", "skill-spawn", "spawn-agent"],
+  "task_number": 305,
+  "slug": "rabinovich_ea_formula_implementation",
+  "artifact_number": "03",
+  "session_id": "sess_1781994274_50b342",
+  "proposed_task_count": 1,
+  "next_steps": "Skill postflight will create tasks from .spawn-return.json"
 }

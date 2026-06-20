@@ -1,5 +1,5 @@
 ---
-next_project_number: 306
+next_project_number: 307
 ---
 
 # TODO
@@ -11,7 +11,7 @@ next_project_number: 306
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,303,305 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,303,305,306 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 95,192,196,231,292,293,294,298,299 | 161,187,191,194,230,291,300,303 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193 | 189,192,196 | automation |
 | 4 | 177,178 | 131,193 | formula-refactor |
@@ -26,7 +26,8 @@ next_project_number: 306
 303 [BLOCKED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
-305 [PARTIAL] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+306 [RESEARCHED] — Add a structural, model-independent BracketFormula conjunction to
 
 ### Formula Refactor
 
@@ -99,8 +100,30 @@ next_project_number: 306
 
 ## Tasks
 
+### 306. Add combinatorial bracketformula conjunction to veceaclosure
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+- **Research**: [305_rabinovich_ea_formula_implementation/reports/03_spawn-analysis.md]
+
+**Description**: Add a structural, model-independent BracketFormula conjunction to VecEAClosure.lean. The existing `conj_to_bracket_exists` only proves existence (∃ n, ∃ bf, ...) which cannot be used inside the VecEA2 negation closure induction. This task adds:
+
+1. `BracketFormula.conjStruct (bf1 : BracketFormula n1) (bf2 : BracketFormula n2) : BracketFormula (n1 + n2)` -- a concrete combined bracket formula whose n1+n2 witnesses are the n1 witnesses of bf1 followed by the n2 witnesses of bf2. Point types are concatenated. Segment types interleave: for positions in bf1's range, conjoin the corresponding bf1 segment with the overall bf2 trivial segment (top), and vice versa for bf2's range.
+
+2. `BracketFormula.conjStruct_holds` -- if bf1.holds M atomMap z0 z1 and bf2.holds M atomMap z0 z1, then (conjStruct bf1 bf2).holds M atomMap z0 z1. The proof reuses the witness interleaving approach from the n1+1/n2+1 case in the existing `conj_to_bracket_exists`.
+
+3. `VBracketFormula.conj_struct` -- a fixed disjunct-list conjunction of VBracketFormulas: given v1 and v2, returns a VBracketFormula whose disjuncts are all pairwise combinations (conjStruct d1 d2) for d1 in v1.disjuncts, d2 in v2.disjuncts. Prove that if v1.holds and v2.holds then (conj_struct v1 v2).holds.
+
+4. `VVecEA2.conj_struct` -- analogous structural conjunction for VVecEA2, combining endpoint conditions (conj) and brackets (conjStruct). Prove the semantic direction.
+
+These definitions return fixed syntactic objects (not existential witnesses), enabling the VecEA2 negation closure induction in EANegation.lean (Phase 4 of task 305) to produce a concrete VVecEA2 from the three-case decomposition.
+
+---
+
 ### 305. Rabinovich ea formula implementation
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
