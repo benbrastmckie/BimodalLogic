@@ -838,31 +838,51 @@ theorem neg_bracket_is_vbracket :
     exact ⟨v, fun M atomMap _h_INF z0 z1 h_lt => hv M atomMap z0 z1 h_lt⟩
   | succ n ih =>
     intro bf
-    -- BLOCKER: The direct BracketFormula negation via first-witness prepend
-    -- is UNSOUND for witnesses x_0 > r_0 (first alpha_0 occurrence):
-    -- rightPart.holds(x_0, z_1) does not imply rightPart.holds(r_0, z_1)
-    -- because the first segment of rightPart widens from (x_0, w_1) to
-    -- (r_0, w_1) and beta_1 may not hold on the extra piece (r_0, x_0).
+    -- Strategy: Use the F-chain characterization (bracket_implies_fChainPred)
+    -- to reduce to Lemma 5.3 (orderedPointsExist negation).
     --
-    -- The paper (Rabinovich 2014, p.10) avoids this by placing alpha_0 at
-    -- the ENDPOINT z_0 (not an interior witness), eliminating x_0 > r_0.
-    -- This requires the VecEA2 convention where endpointLeft = alpha_0.
+    -- The F-chain predicate fChainPred absorbs the bracket's point types and
+    -- segment types (via Until) into a single TemporalPred. By Lemma 5.3,
+    -- ¬orderedPointsExist 1 fChainPred is a VBracketFormula.
     --
-    -- Correct approach: prove neg_vecEA2_is_vvecEA2 by induction on n
-    -- (interior witness count), then derive neg_bracket_is_vbracket as
-    -- a corollary via VecEA2.fromBracket. The VecEA2 induction uses:
-    --   Case 1: endpoint failure → trivial VVecEA2
-    --   Case 2: first segment everywhere → reduces to VecEA2 (n-1) via
-    --           Corollary 5.4 or direct IH
-    --   Case 3: first segment fails → split at failure point, IH on parts
+    -- Forward direction (V.holds → ¬bf.holds):
+    --   V.holds → ¬orderedPointsExist 1 fChainPred → ¬bf.holds
+    --   (contrapositive of bracket_implies_fChainPred)
     --
-    -- The VVecEA2-to-VBracketFormula conversion for the corollary requires
-    -- showing that endpoint conditions can be absorbed or are trivial
-    -- when the original VecEA2 has top endpoints.
+    -- Backward direction (¬bf.holds → V.holds):
+    --   Requires showing orderedPointsExist 1 fChainPred → bf.holds,
+    --   which needs the F-chain witnesses to be bounded by z₁.
+    --   On HasAttainedINF structures, this requires the VecEA2 endpoint
+    --   convention (Rabinovich p.10) to handle the first-segment issue.
+    --   Deferred: see sorry_inventory in handoff.
     --
-    -- This requires substantial new infrastructure beyond the current
-    -- dispatch's scope. See the handoff document for the detailed plan.
-    sorry
+    -- Construction: V from Lemma 5.3 applied to fChainPred
+    obtain ⟨v_neg, hv_neg⟩ := neg_orderedPointsExist_is_vbracket 1 (fun _ => bf.fChainPred)
+    refine ⟨v_neg, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
+    constructor
+    · -- Forward: V.holds → ¬bf.holds
+      intro hv h_bf
+      -- From bf.holds, extract fChainPred witness
+      obtain ⟨x0, hx0_above, hx0_below, h_fchain, _⟩ :=
+        BracketFormula.bracket_implies_fChainPred M atomMap bf z0 z1 h_bf
+      -- orderedPointsExist 1 fChainPred z0 z1 holds
+      have h_ord : orderedPointsExist M atomMap 1 (fun _ => bf.fChainPred) z0 z1 := by
+        simp only [orderedPointsExist, IntervalPattern.allBetaTrue, IntervalPattern.holds]
+        refine ⟨fun _ => x0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+        · intro a b hab; exact absurd hab (by omega)
+        · intro _; exact ⟨hx0_above, hx0_below⟩
+        · intro _; exact h_fchain
+        · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
+        · intro j; exact Fin.elim0 j
+        · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
+      -- V.holds says ¬orderedPointsExist, contradiction
+      exact ((hv_neg M atomMap h_INF z0 z1 h_lt).mp hv) h_ord
+    · -- Backward: ¬bf.holds → V.holds
+      -- Requires: orderedPointsExist 1 fChainPred z0 z1 → bf.holds z0 z1
+      -- This direction needs the VecEA2 endpoint convention (Rabinovich p.10)
+      -- to bound the F-chain Until witnesses within (z0, z1).
+      -- Deferred to a future dispatch with VecEA2 infrastructure.
+      sorry
 
 /-- **Corollary 5.4, full biconditional** (Rabinovich 2014, p.9):
     The negation of ∃z∈(z₀,z₁), bracket.holds z₀ z is equivalent to a V-bracket
@@ -875,6 +895,92 @@ theorem neg_partialBracketExist_is_vbracket
       (atomMap : Formula → sig.preds) (h_INF : HasAttainedINF M atomMap)
       (z0 z1 : M.carrier), z0 < z1 →
       (v.holds M atomMap z0 z1 ↔ ¬ bf.partialBracketExist M atomMap z0 z1) := by
-  sorry
+  match n with
+  | 0 =>
+    -- For BracketFormula 0, partialBracketExist z0 z1 = ∃ z ∈ (z0, z1), ∀ y ∈ (z0, z), seg_0(y).
+    -- On HasAttainedINF: partialBracketExist holds iff (z0, z1) is non-empty.
+    -- So ¬partialBracketExist ↔ (z0, z1) is empty ↔ V.holds (trivial bracket with top.neg).
+    let v : VBracketFormula :=
+      ⟨[⟨0, BracketFormula.trivial TemporalPred.top.neg⟩]⟩
+    refine ⟨v, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
+    -- Key helper: on HasAttainedINF, partialBracketExist holds whenever (z0, z1) is non-empty
+    have h_nonempty_implies :
+        (∃ z : M.carrier, z0 < z ∧ z < z1) →
+        bf.partialBracketExist M atomMap z0 z1 := by
+      intro ⟨z', hz0', hz1'⟩
+      -- Case split on whether seg_0 fails somewhere in (z0, z1)
+      by_cases h_seg : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧
+          ¬ (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y
+      · -- seg_0 fails: use HasAttainedINF to find first failure point r
+        obtain ⟨r, hr_above, hr_below, h_no_before, h_neg_r⟩ :=
+          h_INF.first_occ (bf.segmentTypes ⟨0, by omega⟩).neg.formula z0 z1 h_lt (by
+            obtain ⟨y, hy1, hy2, hy3⟩ := h_seg
+            exact ⟨y, hy1, hy2, by
+              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+              exact hy3⟩)
+        -- seg_0 holds on (z0, r) since r is first failure
+        refine ⟨r, hr_above, hr_below, ?_⟩
+        simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+        intro y hy0 hy1
+        -- y ∈ (z0, r), seg_0(y) holds because r is first ¬seg_0 point
+        by_contra h_neg_y
+        have h_y_has_neg : temporal_truth M atomMap y (bf.segmentTypes ⟨0, by omega⟩).neg.formula := by
+          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+          exact h_neg_y
+        exact h_no_before y hy0 hy1 h_y_has_neg
+      · -- seg_0 holds everywhere in (z0, z1): take z = z'
+        push_neg at h_seg
+        exact ⟨z', hz0', hz1', by
+          simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+          intro y hy0 hy1
+          exact h_seg y hy0 (lt_trans hy1 hz1')⟩
+    -- V.holds ↔ (z0, z1) is empty
+    -- V.holds = ∃ bf ∈ [trivial top.neg], bf.holds = (trivial top.neg).holds
+    --         = ∀ y ∈ (z0, z1), top.neg(y) = ∀ y ∈ (z0, z1), False
+    --         = (z0, z1) is empty
+    constructor
+    · -- Forward: V.holds → ¬partialBracketExist
+      intro ⟨⟨m, bf'⟩, h_mem, h_holds⟩
+      simp only [v, List.mem_cons, List.not_mem_nil, or_false] at h_mem
+      obtain rfl := congr_arg Sigma.fst h_mem
+      have hbf'_eq : bf' = BracketFormula.trivial TemporalPred.top.neg :=
+        eq_of_heq (Sigma.mk.inj h_mem).2
+      subst hbf'_eq
+      rw [BracketFormula.trivial_holds] at h_holds
+      -- h_holds : ∀ y ∈ (z0, z1), top.neg(y) — so (z0, z1) is empty
+      intro ⟨z, hz0, hzz1, _⟩
+      -- z ∈ (z0, z1) gives a contradiction with h_holds at z
+      -- Actually z is in (z0, z1), we need a point in (z0, z) to get the bracket's segment
+      -- But partialBracketExist says bf.holds z0 z which for BracketFormula 0
+      -- means ∀ y ∈ (z0, z), seg_0(y). That's fine.
+      -- The contradiction: z ∈ (z0, z1), so top.neg(z) should hold, but top.neg = ¬True = False
+      have := h_holds z hz0 hzz1
+      simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
+      exact this id
+    · -- Backward: ¬partialBracketExist → V.holds
+      intro h_neg
+      -- ¬partialBracketExist means (z0, z1) is empty (by h_nonempty_implies)
+      have h_empty : ¬∃ z : M.carrier, z0 < z ∧ z < z1 := by
+        intro h_ne
+        exact h_neg (h_nonempty_implies h_ne)
+      -- V.holds = (trivial top.neg).holds = ∀ y ∈ (z0, z1), top.neg(y) — vacuously True
+      refine ⟨⟨0, BracketFormula.trivial TemporalPred.top.neg⟩, ?_, ?_⟩
+      · simp [v]
+      · rw [BracketFormula.trivial_holds]
+        intro y hy0 hy1
+        exact absurd ⟨y, hy0, hy1⟩ h_empty
+  | n + 1 =>
+    -- For BracketFormula (n+1): use existing neg_partialBracketExist_sufficient
+    -- for the forward direction, backward direction requires fChainPred → bracket
+    obtain ⟨v_suff, hv_suff⟩ := neg_partialBracketExist_sufficient bf
+    refine ⟨v_suff, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
+    constructor
+    · exact hv_suff M atomMap h_INF z0 z1 h_lt
+    · -- Backward: ¬partialBracketExist → V.holds
+      -- Requires: orderedPointsExist 1 fChainPred z0 z1 → partialBracketExist
+      -- This needs fChainPred(x0) → ∃ z, bf.holds z0 z, which requires
+      -- bounding the F-chain Until witnesses AND reconstructing beta_0.
+      -- Deferred to future dispatch with VecEA2 infrastructure.
+      sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
