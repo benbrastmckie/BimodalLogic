@@ -74,7 +74,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Interval Splitting Infrastructure [PARTIAL]
+### Phase 1: Interval Splitting Infrastructure [COMPLETED]
 
 **Goal**: Define `BracketFormula.splitAt` (the A_i^-/A_i^+ decomposition from Rabinovich p.10) and prove semantic correctness. This is the foundational operation needed by Lemma 5.1.
 
@@ -83,7 +83,7 @@ Phases within the same wave can execute in parallel.
 - [x] Define `BracketFormula.rightPart (bf : BracketFormula (n + 1)) (i : Fin (n + 1)) : BracketFormula (n - i.val)` -- the A_i^+(z, z_1) sub-bracket from witness x_i to z_1
 - [x] Prove `BracketFormula.leftPart_holds`: if bf.holds on (z_0, z_1) with witnesses w, then leftPart holds on (z_0, w i) -- sorry-free
 - [x] Prove `BracketFormula.rightPart_holds`: if bf.holds on (z_0, z_1) with witnesses w, then rightPart holds on (w i, z_1) -- sorry-free. Uses `IntervalPattern.holds_eq_zero`/`holds_eq_succ` helpers added to ExistsForallNF.lean to handle the dependent match on `n - i.val`.
-- [ ] Prove `BracketFormula.splitAt_combine`: if leftPart holds on (z_0, z) and rightPart holds on (z, z_1) and pointType alpha_i holds at z, then bf.holds on (z_0, z_1) with z inserted as witness i *(deviation: deferred -- complex Fin index arithmetic with 4-way case split; not needed until Phase 4)*
+- [x] Prove `BracketFormula.splitAt_combine`: if leftPart holds on (z_0, z) and rightPart holds on (z, z_1) and pointType alpha_i holds at z, then bf.holds on (z_0, z_1) with z inserted as witness i *(deviation: proved in Phase 4 dispatch via subagent; 4-case split with dif_pos/dif_neg)*
 - [x] Add `BracketFormula.empty : BracketFormula 0` constructor for degenerate interval (no witnesses)
 
 **Timing**: 2 hours
@@ -159,7 +159,7 @@ Phases within the same wave can execute in parallel.
 
 **Tasks**:
 - [x] Prove base case (n=0): `neg_bracket_zero_is_vbracket` — sorry-free. ¬(∀ y ∈ (z₀,z₁), β₀(y)) ↔ ∃ y, ¬β₀(y), which is a 1-witness bracket.
-- [ ] Prove `BracketFormula.splitAt_combine` sorry-free *(deviation: still sorry — complex Fin index arithmetic with 4-case split; subagent dispatched)*
+- [x] Prove `BracketFormula.splitAt_combine` sorry-free *(deviation: altered — proved via subagent; 4-case split on (i.val=0 vs >0) x (n-i.val=0 vs >0) with dif_pos/dif_neg for dite, congr+Fin.ext_iff+omega for index matching)*
 - [ ] Prove inductive step (n+1): three-case decomposition *(deviation: altered — the paper's three-case decomposition does NOT map directly to our bracket convention because our brackets have NO endpoint conditions; a different decomposition strategy is needed)*
   - **Blocking insight**: The "peel off first witness" approach (analogous to Lemma 5.3) fails because finding the first alpha_0-occurrence r0 gives ¬alpha_0 on (z0, r0), but NOT beta_0 on (z0, r0). Without beta_0 on (z0, r0), splitAt_combine cannot reconstruct the full bracket. The paper avoids this because it puts alpha_0 at the endpoint z0 itself.
   - **Possible fix**: Decompose by first SEGMENT failure (beta_0), not first POINT type failure. Find first ¬beta_0 occurrence, split there. On (z0, r), beta_0 holds everywhere, reducing to orderedPointsExist with alpha conditions only (handle via Lemma 5.3). On (r, z1), apply IH to the sub-bracket.
