@@ -2,7 +2,7 @@
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
-  "session_id": "sess_1750366788_a1b2c3",
+  "session_id": "sess_1781923151_d42096",
   "task_number": 305,
   "phase_number": 4,
   "requires_user_review": true,
@@ -11,18 +11,18 @@
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 885,
-      "statement": "theorem neg_bracket_is_vbracket (backward direction: ¬bf.holds → V.holds)",
-      "assumption": "F-chain V satisfies backward direction of biconditional",
-      "why_deferred": "F-chain V is wrong for backward direction (counter-example exists: bf with beta_0=False). Requires VecEA2 endpoint convention (neg_vecEA2_is_vvecEA2).",
-      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2, derive correct V, prove biconditional"
+      "statement": "theorem neg_bracket_is_vbracket (backward: not bf.holds -> V.holds for succ n)",
+      "assumption": "F-chain V satisfies backward direction",
+      "why_deferred": "F-chain V is the WRONG V. Requires combinatorial bracket conjunction infrastructure plus neg_vecEA2_is_vvecEA2.",
+      "next_dispatch": "Add combinatorial conjunction, prove neg_vecEA2_is_vvecEA2, derive neg_bracket_is_vbracket"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 984,
       "statement": "theorem neg_partialBracketExist_is_vbracket (backward for n >= 1)",
-      "assumption": "V from neg_partialBracketExist_sufficient satisfies backward",
-      "why_deferred": "Same root cause as neg_bracket_is_vbracket backward",
-      "next_dispatch": "Follows from neg_bracket_is_vbracket or direct VecEA2 approach"
+      "assumption": "Depends on neg_bracket_is_vbracket",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Follows from neg_bracket_is_vbracket"
     }
   ],
   "verification": {
@@ -33,14 +33,14 @@
   },
   "memory_candidates": [
     {
-      "content": "BracketFormula negation via prepend at first alpha_0 occurrence r_0 is UNSOUND for x_0 > r_0: rightPart.holds(x_0, z_1) does not imply rightPart.holds(r_0, z_1) because the first segment widens from (x_0, w_1) to (r_0, w_1) without beta_1 info on the extra piece. Five approaches were tried and all fail: (1) prepend with alpha_0.neg, (2) prepend with alpha_0.neg.conj beta_0, (3) segment-failure decomposition, (4) F-chain approach, (5) split-at-every-position. The correct approach uses VecEA2 endpoint convention where alpha_0 is at the FIXED endpoint z_0, eliminating x_0 > r_0.",
-      "keywords": ["BracketFormula", "negation", "prepend", "unsound", "interval mismatch", "VecEA2"],
-      "topic": "lean4-proof-strategy"
+      "content": "The F-chain V (from neg_orderedPointsExist_is_vbracket 1 fChainPred) is the WRONG V for the backward direction of neg_bracket_is_vbracket. Five dispatches confirmed: (1) fChainPred omits seg_0 (first segment type), (2) Until witnesses may exceed z1, (3) counter-example: bf with seg_0=bot has bf.holds=False but orderedPointsExist 1 fChainPred = True. The correct approach requires Rabinovich's 'Cond_i AND Form_i' construction, which needs COMBINATORIAL bracket conjunction (currently only existential conjunction exists in VecEAClosure.lean). Prepend-based approaches fail due to interval mismatch: rightPart.holds(r0,z1) failing does not imply rightPart.holds(x0,z1) failing for x0 > r0.",
+      "keywords": ["neg_bracket_is_vbracket", "F-chain", "fChainPred", "backward", "wrong V", "combinatorial conjunction", "interval mismatch", "VecEA2"],
+      "topic": "lean4-proof-obstruction"
     },
     {
-      "content": "The F-chain characterization (bracket_implies_fChainPred) is genuinely one-directional for the full bracket biconditional. Forward: bf.holds → orderedPointsExist 1 fChainPred (proved). Backward: orderedPointsExist → bf.holds is FALSE because (1) fChainPred omits beta_0, (2) Until witnesses may exceed z1. Counter-example: bf with beta_0=False, alpha_0=True has bf.holds=False but orderedPointsExist 1 fChainPred=True. The V constructed from Lemma 5.3 applied to fChainPred gives V.holds → ¬bf.holds (correct) but ¬bf.holds does NOT imply V.holds. For the backward direction of neg_partialBracketExist_is_vbracket, the same issue arises.",
-      "keywords": ["F-chain", "fChainPred", "one-directional", "backward", "counter-example", "orderedPointsExist"],
-      "topic": "lean4-proof-strategy"
+      "content": "VecEAClosure.lean has only EXISTENTIAL bracket conjunction: conj_to_bracket_exists takes two bracket formulas + their holds proofs and produces an existentially-quantified combined bracket. This is NOT combinatorial -- the resulting bracket depends on the specific structure M and witness configuration. The paper's Lemma 5.1 proof needs COMBINATORIAL conjunction: given bf1 : BracketFormula n1 and bf2 : BracketFormula n2, produce bf3 : BracketFormula n3 with bf3.holds <-> bf1.holds AND bf2.holds, independent of M. This is the missing infrastructure for Rabinovich's 'Cond_i AND Form_i' decomposition.",
+      "keywords": ["combinatorial conjunction", "existential conjunction", "VecEAClosure", "BracketFormula", "infrastructure gap"],
+      "topic": "lean4-infrastructure"
     }
   ]
 }
