@@ -158,15 +158,12 @@ Phases within the same wave can execute in parallel.
 **Goal**: Prove the main technical lemma: the negation of any bracket formula [alpha_0, beta_1, ..., alpha_n](z_0, z_1) is a V-EA formula on Prior structures. This is the core of Rabinovich Section 5, using interval splitting from Phase 1 and the base cases from Phases 2-3.
 
 **Tasks**:
-- [ ] Define the three-case decomposition per Rabinovich p.10:
-  - Case 1: `not alpha_0(z_0)` or `K+(not beta_1)(z_0)` -- endpoint failure
-  - Case 2: `alpha_0(z_0)` and `beta_1` holds throughout (z_0, z_1) -- guard succeeds but no interior witness matches
-  - Case 3: `alpha_0(z_0)` and `not K+(not beta_1)(z_0)`, exists x in (z_0, z_1) with `not beta_1(x)` -- INF splitting point
-- [ ] Prove Case 1: endpoint failure is directly V-EA (point predicates are temporal)
-- [ ] Prove Case 2 (n=0): full guard but no witness -- reduces to segment-type negation, directly V-EA
-- [ ] Prove Case 2 (n>=1): guard succeeds on first segment -- use `splitAt` to reduce to A_0^+(z_0, z_1) with n-1 witnesses and apply IH
-- [ ] Prove Case 3: use `HasDefinableINF` on `not beta_1` to find first failure point z. Split at z via `leftPart`/`rightPart`. Apply IH to the sub-brackets A_i^-(z_0, z) and A_i^+(z, z_1)
-- [ ] Assemble: combine all three cases using `VBracketFormula.disj`
+- [x] Prove base case (n=0): `neg_bracket_zero_is_vbracket` — sorry-free. ¬(∀ y ∈ (z₀,z₁), β₀(y)) ↔ ∃ y, ¬β₀(y), which is a 1-witness bracket.
+- [ ] Prove `BracketFormula.splitAt_combine` sorry-free *(deviation: still sorry — complex Fin index arithmetic with 4-case split; subagent dispatched)*
+- [ ] Prove inductive step (n+1): three-case decomposition *(deviation: altered — the paper's three-case decomposition does NOT map directly to our bracket convention because our brackets have NO endpoint conditions; a different decomposition strategy is needed)*
+  - **Blocking insight**: The "peel off first witness" approach (analogous to Lemma 5.3) fails because finding the first alpha_0-occurrence r0 gives ¬alpha_0 on (z0, r0), but NOT beta_0 on (z0, r0). Without beta_0 on (z0, r0), splitAt_combine cannot reconstruct the full bracket. The paper avoids this because it puts alpha_0 at the endpoint z0 itself.
+  - **Possible fix**: Decompose by first SEGMENT failure (beta_0), not first POINT type failure. Find first ¬beta_0 occurrence, split there. On (z0, r), beta_0 holds everywhere, reducing to orderedPointsExist with alpha conditions only (handle via Lemma 5.3). On (r, z1), apply IH to the sub-bracket.
+- [ ] Assemble: combine all cases using `VBracketFormula.disj`
 - [ ] Prove `neg_bracket_is_vbracket`: the full Lemma 5.1 statement, by induction on n (witness count)
 - [ ] Verify that the induction is well-founded (n strictly decreases in each case)
 
