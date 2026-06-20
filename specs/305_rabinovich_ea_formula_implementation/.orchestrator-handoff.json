@@ -1,56 +1,41 @@
 {
-  "status": "blocked",
-  "summary": "Phase 4 (Lemma 5.1 inductive step) remains BLOCKED after exhaustive analysis. Five approaches for direct BracketFormula negation all fail due to interval mismatch: prepend at first alpha_0 occurrence r_0 is unsound for later witnesses x_0 > r_0 (rightPart.holds widens from (x_0,w_1) to (r_0,w_1) without beta_1 info on extra piece). The paper's proof REQUIRES alpha_0 at the ENDPOINT z_0 (VecEA2 convention). Correct approach: prove neg_vecEA2_is_vvecEA2 by induction on n, then derive neg_bracket_is_vbracket as corollary. Two sorries remain at EANegation.lean:865,878. Build passes.",
+  "status": "partial",
+  "summary": "Proved forward direction of neg_bracket_is_vbracket inductive step and n=0 case of neg_partialBracketExist_is_vbracket. Backward directions require VecEA2 endpoint approach.",
   "phases_completed": 3,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 865,
-      "statement": "theorem neg_bracket_is_vbracket (succ n ih case)",
-      "assumption": "For BracketFormula (n+1), there exists a VBracketFormula equivalent to the negation on HasAttainedINF structures",
-      "why_deferred": "Direct BracketFormula negation via prepend is UNSOUND for x_0 > r_0 (interval mismatch). The paper's proof requires VecEA2 endpoint convention (alpha_0 at z_0, not interior). Need neg_vecEA2_is_vvecEA2 first, then derive BracketFormula corollary.",
-      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2 in EANegation.lean by induction on n (VecEA2 parameter), using Rabinovich Cases 1-3. Then derive neg_bracket_is_vbracket via VecEA2.fromBracket + VVecEA2-to-VBracketFormula conversion."
+      "line": 885,
+      "statement": "theorem neg_bracket_is_vbracket (backward direction of inductive step: ¬bf.holds → V.holds)",
+      "assumption": "The V from Lemma 5.3 applied to fChainPred satisfies: ¬bf.holds z0 z1 → V.holds z0 z1",
+      "why_deferred": "The F-chain characterization is genuinely one-directional. Forward (bf.holds → orderedPointsExist 1 fChainPred) works via bracket_implies_fChainPred. Backward (orderedPointsExist → bf.holds) fails because: (1) fChainPred does NOT capture beta_0 (first segment type), (2) F-chain Until witnesses may exceed z1 bound, (3) the V constructed from the F-chain is the WRONG V for backward direction (counter-example: bf with beta_0=False has bf.holds=False but orderedPointsExist=True). The correct V construction requires the VecEA2 endpoint approach from Rabinovich p.10.",
+      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2 by induction on n (VecEA2 witness count). The VecEA2 approach places alpha_0 at the endpoint z0, eliminating the universal-over-first-witness problem. Then derive neg_bracket_is_vbracket via VecEA2.fromBracket."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 878,
-      "statement": "theorem neg_partialBracketExist_is_vbracket",
-      "assumption": "Full biconditional for Corollary 5.4: negation of partial bracket existential is V-bracket",
-      "why_deferred": "Depends on neg_bracket_is_vbracket (Lemma 5.1). Forward direction already sorry-free (neg_partialBracketExist_sufficient).",
-      "next_dispatch": "Once neg_bracket_is_vbracket is proved, derive using F-chain + Lemma 5.3 + Lemma 5.1."
+      "line": 984,
+      "statement": "theorem neg_partialBracketExist_is_vbracket (backward direction for n >= 1: ¬partial → V.holds)",
+      "assumption": "The V from neg_partialBracketExist_sufficient satisfies backward direction",
+      "why_deferred": "Same root cause as neg_bracket_is_vbracket. The forward direction uses neg_partialBracketExist_sufficient (sorry-free). The backward requires orderedPointsExist 1 fChainPred → bf.partialBracketExist, blocked by missing beta_0.",
+      "next_dispatch": "May be derivable once neg_bracket_is_vbracket is fully proved, or prove directly via VecEA2."
     }
   ],
   "blockers": [
-    "neg_bracket_is_vbracket inductive step: direct BracketFormula approach unsound due to interval mismatch for x_0 > r_0. Requires VecEA2 endpoint convention (neg_vecEA2_is_vvecEA2). Goal state at EANegation.lean:865: exists v : VBracketFormula, v.holds <-> not bf.holds for bf : BracketFormula (n+1)."
+    "neg_bracket_is_vbracket backward direction: the F-chain V is the wrong construction for biconditional. Requires neg_vecEA2_is_vvecEA2 with VecEA2 endpoint convention to construct the correct V."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff-20260619.md",
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "current_phase": 4,
-    "phase_status": "blocked",
-    "sorry_count": 2,
-    "build_status": "pass_with_sorries",
-    "completed_phases": [1, 2, 3],
-    "key_insight": "Paper's Lemma 5.1 proof requires alpha_0 at endpoint z_0 (VecEA2 convention). Direct BracketFormula approach with all-interior witnesses cannot avoid the interval mismatch for x_0 > r_0. VecEA2 induction on n correctly reduces Case 2 from n to n-1 witnesses because alpha_0 at the endpoint is consumed.",
+    "resume_phase": 4,
+    "key_insight": "Three previous dispatch attempts (including this one) have confirmed: the F-chain characterization (bracket_implies_fChainPred) is genuinely one-directional because fChainPred omits beta_0 and allows Until witnesses beyond z1. A counter-example proves the backward direction FALSE with the F-chain V. The ONLY valid approach is neg_vecEA2_is_vvecEA2 which places alpha_0 at endpoint z0. This dispatch proved the forward direction and the n=0 partialBracketExist case, providing partial progress.",
+    "files_modified": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean"],
+    "preserved_theorems": ["neg_bracket_zero_is_vbracket", "neg_orderedPointsExist_is_vbracket", "neg_partialBracketExist_sufficient"],
     "approaches_tried_and_failed": [
-      "Prepend with alpha_0.neg segment: unsound for x_0 > r_0",
-      "Prepend with alpha_0.neg.conj beta_0 segment: unsound for x_0 > r_0 (beta_0 on open interval (z0,r0) doesn't cover [r0,x0))",
-      "Segment-failure decomposition: forward direction fails (failure point from one witness config not in same segment of another)",
-      "F-chain approach: forward works but backward fails (Until witnesses unbounded, escape z_1)",
-      "Split-at-every-position: produces universal over split points, not expressible as BracketFormula"
-    ],
-    "next_action": "Implement neg_vecEA2_is_vvecEA2, then derive neg_bracket_is_vbracket",
-    "files_modified_this_dispatch": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "specs/305_rabinovich_ea_formula_implementation/plans/01_ea-formula-plan.md",
-      "specs/305_rabinovich_ea_formula_implementation/.return-meta.json"
+      "F-chain V for biconditional (this dispatch): forward works, backward is FALSE (counter-example exists)",
+      "Prepend with alpha_0.neg segment (prior dispatch): unsound for x_0 > r_0",
+      "Segment-failure decomposition (prior dispatch): forward fails",
+      "Split-at-every-position (prior dispatch): universal over split points"
     ]
-  },
-  "next_action_hint": "implement --hard: prove neg_vecEA2_is_vvecEA2 by induction on n using VecEA2 endpoint convention, then derive neg_bracket_is_vbracket as corollary",
-  "artifacts": {
-    "handoff": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff-20260619.md",
-    "plan": "specs/305_rabinovich_ea_formula_implementation/plans/01_ea-formula-plan.md",
-    "research": "specs/305_rabinovich_ea_formula_implementation/reports/02_bracket-negation-design.md"
   }
 }
