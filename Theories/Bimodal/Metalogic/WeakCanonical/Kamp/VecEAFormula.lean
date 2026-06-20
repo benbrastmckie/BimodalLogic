@@ -484,6 +484,286 @@ theorem BracketFormula.splitAt_combine {sig : MonadicSignature} {n : Nat}
     (hleft : (bf.leftPart i).holds M atomMap z0 z)
     (hright : (bf.rightPart i).holds M atomMap z z1) :
     bf.holds M atomMap z0 z1 := by
-  sorry
+  simp only [holds, toIntervalPattern]
+  simp only [holds, toIntervalPattern, leftPart] at hleft
+  simp only [holds, toIntervalPattern, rightPart] at hright
+  have hi_le : i.val ≤ n := Nat.lt_succ_iff.mp i.isLt
+  rcases Nat.eq_or_lt_of_le (Nat.zero_le i.val) with hi0 | hi_pos
+  · rw [IntervalPattern.holds_eq_zero (h := hi0.symm)] at hleft
+    rcases Nat.eq_or_lt_of_le (Nat.zero_le n) with hn0 | hn_pos
+    · rw [IntervalPattern.holds_eq_zero (h := by omega)] at hright
+      refine ⟨fun _ => z, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro a b hab; exact absurd hab (by omega)
+      · intro _; exact ⟨hz0z, hzz1⟩
+      · intro j
+        have hji : j = i := by simp only [Fin.ext_iff]; omega
+        rw [hji]; exact hpt
+      · intro y hy0 hy1; exact hleft y hy0 hy1
+      · intro j; exact absurd j.isLt (by omega)
+      · intro y hy0 hy1
+        convert hright y hy0 hy1 using 1
+        show bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + 0, _⟩
+        congr 1; simp only [Fin.ext_iff]; omega
+    · obtain ⟨np, rfl⟩ : ∃ k, n = k + 1 := ⟨n - 1, by omega⟩
+      rw [IntervalPattern.holds_eq_succ (h := by show np + 1 - i.val = np + 1; omega)] at hright
+      obtain ⟨wR, hmR, hrR, hpR, hs0R, hsmR, hslR⟩ := hright
+      let w : Fin (np + 2) → M.carrier := fun j =>
+        if hj : j.val = 0 then z else wR ⟨j.val - 1, by omega⟩
+      refine ⟨w, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro a b hab; show w a < w b; simp only [w]
+        by_cases ha0 : a.val = 0
+        · have hb0 : b.val ≠ 0 := by omega
+          simp only [ha0, dite_true, hb0, dite_false]
+          calc z < wR ⟨0, by omega⟩ := (hrR ⟨0, by omega⟩).1
+               _ ≤ wR ⟨b.val - 1, by omega⟩ := by
+                  rcases Nat.eq_or_lt_of_le (Nat.zero_le (b.val - 1)) with h | h
+                  · simp [← h]
+                  · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨b.val - 1, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))
+        · have hb0 : b.val ≠ 0 := by omega
+          simp only [ha0, dite_false, hb0, dite_false]
+          exact hmR ⟨a.val - 1, by omega⟩ ⟨b.val - 1, by omega⟩ (Fin.mk_lt_mk.mpr (by omega))
+      · intro j; show z0 < w j ∧ w j < z1; simp only [w]
+        by_cases hj0 : j.val = 0
+        · simp only [hj0, dite_true]; exact ⟨hz0z, hzz1⟩
+        · simp only [hj0, dite_false]
+          exact ⟨lt_trans hz0z (calc
+            z < wR ⟨0, by omega⟩ := (hrR ⟨0, by omega⟩).1
+            _ ≤ wR ⟨j.val - 1, by omega⟩ := by
+                rcases Nat.eq_or_lt_of_le (Nat.zero_le (j.val - 1)) with h | h
+                · simp [← h]
+                · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨j.val - 1, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))),
+            (hrR ⟨j.val - 1, by omega⟩).2⟩
+      · intro j; show (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+        by_cases hj0 : j.val = 0
+        · simp only [hj0, dite_true]
+          have : j = i := by simp only [Fin.ext_iff]; omega
+          rw [this]; exact hpt
+        · simp only [hj0, dite_false]
+          have h : bf.pointTypes j = bf.pointTypes ⟨i.val + 1 + (j.val - 1), by omega⟩ := by
+            congr 1; simp only [Fin.ext_iff]; omega
+          rw [h]; exact hpR ⟨j.val - 1, by omega⟩
+      · intro y hy0 hy1
+        have : w ⟨0, by omega⟩ = z := by simp [w]
+        rw [this] at hy1; exact hleft y hy0 hy1
+      · intro j y hy_lo hy_hi
+        have hw_lo : w ⟨j.val, by omega⟩ =
+            if hj : j.val = 0 then z else wR ⟨j.val - 1, by omega⟩ := by simp [w]
+        have hw_hi' : w ⟨j.val + 1, by omega⟩ = wR ⟨j.val, by omega⟩ := by
+          simp [w, show j.val + 1 ≠ 0 from by omega]
+        rw [hw_lo] at hy_lo; rw [hw_hi'] at hy_hi
+        by_cases hj0 : j.val = 0
+        · simp only [hj0, dite_true] at hy_lo
+          have hhi : y < wR ⟨0, by omega⟩ := by
+            convert hy_hi using 2; simp only [Fin.ext_iff]; omega
+          convert hs0R y hy_lo hhi using 1
+          show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + 0, _⟩
+          congr 1; simp only [Fin.ext_iff]; omega
+        · simp only [hj0, dite_false] at hy_lo
+          have hlo : wR ⟨j.val - 1, by omega⟩ < y := hy_lo
+          have hhi : y < wR ⟨(j.val - 1) + 1, by omega⟩ := by
+            convert hy_hi using 2; simp only [Fin.ext_iff]; omega
+          convert hsmR ⟨j.val - 1, by omega⟩ y hlo hhi using 1
+          show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + (j.val - 1 + 1), _⟩
+          congr 1; simp only [Fin.ext_iff]; omega
+      · intro y hy_lo hy_hi
+        have hw_last : w ⟨np + 1, by omega⟩ = wR ⟨np, by omega⟩ := by
+          simp [w, show np + 1 ≠ 0 from by omega]
+        rw [hw_last] at hy_lo
+        convert hslR y hy_lo hy_hi using 1
+        show bf.segmentTypes ⟨np + 1 + 1, _⟩ = bf.segmentTypes ⟨i.val + 1 + (np + 1), _⟩
+        congr 1; simp only [Fin.ext_iff]; omega
+  · obtain ⟨k, hk⟩ : ∃ k, i.val = k + 1 := ⟨i.val - 1, by omega⟩
+    have hi_fin : i = ⟨k + 1, hk ▸ i.isLt⟩ := by ext; exact hk
+    rw [hi_fin] at hleft hright hpt
+    rw [IntervalPattern.holds_eq_succ (h := rfl)] at hleft
+    obtain ⟨wL, hmL, hrL, hpL, hs0L, hsmL, hslL⟩ := hleft
+    have hi_le' : k + 1 ≤ n := hk ▸ hi_le
+    rcases Nat.eq_or_lt_of_le hi_le' with hi_eq | hi_lt
+    · rw [IntervalPattern.holds_eq_zero (h := by omega)] at hright
+      let w : Fin (n + 1) → M.carrier := fun j =>
+        if hle : j.val ≤ k then wL ⟨j.val, by omega⟩ else z
+      refine ⟨w, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro a b hab; show w a < w b; simp only [w]
+        by_cases ha : a.val ≤ k
+        · by_cases hb : b.val ≤ k
+          · simp only [ha, dite_true, hb, dite_true]
+            exact hmL ⟨a.val, by omega⟩ ⟨b.val, by omega⟩ (Fin.mk_lt_mk.mpr (by omega))
+          · simp only [ha, dite_true, hb, dite_false]
+            calc wL ⟨a.val, by omega⟩ ≤ wL ⟨k, by omega⟩ := by
+                    rcases Nat.eq_or_lt_of_le ha with h | h
+                    · subst h; exact le_rfl
+                    · exact le_of_lt (hmL ⟨a.val, by omega⟩ ⟨k, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))
+                 _ < z := (hrL ⟨k, by omega⟩).2
+        · simp only [ha, dite_false]; omega
+      · intro j; show z0 < w j ∧ w j < z1; simp only [w]
+        by_cases hj : j.val ≤ k
+        · simp only [hj, dite_true]
+          exact ⟨(hrL ⟨j.val, by omega⟩).1, lt_trans (hrL ⟨j.val, by omega⟩).2 hzz1⟩
+        · simp only [hj, dite_false]; exact ⟨hz0z, hzz1⟩
+      · intro j; show (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+        by_cases hj : j.val ≤ k
+        · simp only [hj, dite_true]; exact hpL ⟨j.val, by omega⟩
+        · simp only [hj, dite_false]
+          have h : bf.pointTypes j = bf.pointTypes ⟨k + 1, hk ▸ i.isLt⟩ := by
+            congr 1; simp only [Fin.ext_iff]; omega
+          rw [h]; exact hpt
+      · intro y hy0 hy1
+        have : w ⟨0, by omega⟩ = wL ⟨0, by omega⟩ := by simp [w, show (0 : Nat) ≤ k from by omega]
+        rw [this] at hy1; exact hs0L y hy0 hy1
+      · intro j y hy_lo hy_hi
+        have hw_lo : w ⟨j.val, by omega⟩ =
+            if hle : j.val ≤ k then wL ⟨j.val, by omega⟩ else z := by simp [w]
+        have hw_hi_eq : w ⟨j.val + 1, by omega⟩ =
+            if hle : j.val + 1 ≤ k then wL ⟨j.val + 1, by omega⟩ else z := by simp [w]
+        rw [hw_lo] at hy_lo; rw [hw_hi_eq] at hy_hi
+        by_cases hj : j.val ≤ k
+        · by_cases hj1 : j.val + 1 ≤ k
+          · simp only [hj, dite_true] at hy_lo; simp only [hj1, dite_true] at hy_hi
+            exact hsmL ⟨j.val, by omega⟩ y hy_lo hy_hi
+          · simp only [hj, dite_true] at hy_lo; simp only [hj1, dite_false] at hy_hi
+            have hlo : wL ⟨k, by omega⟩ < y := by
+              convert hy_lo using 2; simp only [Fin.ext_iff]; omega
+            convert hslL y hlo hy_hi using 1
+            show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨k + 1, _⟩
+            congr 1; simp only [Fin.ext_iff]; omega
+        · simp only [hj, dite_false] at hy_lo
+          simp only [show ¬(j.val + 1 ≤ k) from by omega, dite_false] at hy_hi
+          exact absurd (lt_trans hy_lo hy_hi) (lt_irrefl _)
+      · intro y hy_lo hy_hi
+        have : w ⟨n, by omega⟩ = z := by simp [w, show ¬(n ≤ k) from by omega]
+        rw [this] at hy_lo
+        convert hright y hy_lo hy_hi using 1
+        show bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1, _⟩
+        congr 1; simp only [Fin.ext_iff]; omega
+    · obtain ⟨m, hm_eq⟩ : ∃ m, n - (k + 1) = m + 1 := ⟨n - (k + 1) - 1, by omega⟩
+      rw [IntervalPattern.holds_eq_succ (h := hm_eq)] at hright
+      obtain ⟨wR, hmR, hrR, hpR, hs0R, hsmR, hslR⟩ := hright
+      let w : Fin (n + 1) → M.carrier := fun j =>
+        if h1 : j.val ≤ k then wL ⟨j.val, by omega⟩
+        else if h2 : j.val = k + 1 then z
+        else wR ⟨j.val - (k + 2), by omega⟩
+      refine ⟨w, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      · intro a b hab; show w a < w b; simp only [w]
+        by_cases ha1 : a.val ≤ k
+        · by_cases hb1 : b.val ≤ k
+          · simp only [dif_pos ha1, dif_pos hb1]
+            exact hmL ⟨a.val, by omega⟩ ⟨b.val, by omega⟩ (Fin.mk_lt_mk.mpr (by omega))
+          · simp only [dif_pos ha1, dif_neg hb1]
+            by_cases hb2 : b.val = k + 1
+            · simp only [dif_pos hb2]
+              calc wL ⟨a.val, by omega⟩ ≤ wL ⟨k, by omega⟩ := by
+                      rcases Nat.eq_or_lt_of_le ha1 with h | h
+                      · exact le_of_eq (congrArg wL (by ext; exact h))
+                      · exact le_of_lt (hmL ⟨a.val, by omega⟩ ⟨k, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))
+                   _ < z := (hrL ⟨k, by omega⟩).2
+            · simp only [dif_neg hb2]
+              calc wL ⟨a.val, by omega⟩ ≤ wL ⟨k, by omega⟩ := by
+                      rcases Nat.eq_or_lt_of_le ha1 with h | h
+                      · exact le_of_eq (congrArg wL (by ext; exact h))
+                      · exact le_of_lt (hmL ⟨a.val, by omega⟩ ⟨k, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))
+                   _ < z := (hrL ⟨k, by omega⟩).2
+                   _ < wR ⟨0, by omega⟩ := (hrR ⟨0, by omega⟩).1
+                   _ ≤ wR ⟨b.val - (k + 2), by omega⟩ := by
+                      rcases Nat.eq_or_lt_of_le (Nat.zero_le (b.val - (k + 2))) with h | h
+                      · simp [← h]
+                      · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨b.val - (k + 2), by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))
+        · by_cases ha2 : a.val = k + 1
+          · have hb1 : ¬(b.val ≤ k) := by omega
+            have hb2 : b.val ≠ k + 1 := by omega
+            simp only [dif_neg ha1, dif_pos ha2, dif_neg hb1, dif_neg hb2]
+            calc z < wR ⟨0, by omega⟩ := (hrR ⟨0, by omega⟩).1
+                 _ ≤ wR ⟨b.val - (k + 2), by omega⟩ := by
+                    rcases Nat.eq_or_lt_of_le (Nat.zero_le (b.val - (k + 2))) with h | h
+                    · simp [← h]
+                    · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨b.val - (k + 2), by omega⟩ (Fin.mk_lt_mk.mpr (by omega)))
+          · have hb1 : ¬(b.val ≤ k) := by omega
+            have hb2 : b.val ≠ k + 1 := by omega
+            simp only [dif_neg ha1, dif_neg ha2, dif_neg hb1, dif_neg hb2]
+            exact hmR ⟨a.val - (k + 2), by omega⟩ ⟨b.val - (k + 2), by omega⟩ (Fin.mk_lt_mk.mpr (by omega))
+      · intro j; show z0 < w j ∧ w j < z1; simp only [w]
+        by_cases hj1 : j.val ≤ k
+        · simp only [hj1, dite_true]
+          exact ⟨(hrL ⟨j.val, by omega⟩).1, lt_trans (hrL ⟨j.val, by omega⟩).2 hzz1⟩
+        · by_cases hj2 : j.val = k + 1
+          · simp only [dif_neg hj1, dif_pos hj2]; exact ⟨hz0z, hzz1⟩
+          · simp only [dif_neg hj1, dif_neg hj2]
+            exact ⟨lt_trans hz0z (lt_of_lt_of_le (hrR ⟨0, by omega⟩).1
+              (by rcases Nat.eq_or_lt_of_le (Nat.zero_le (j.val - (k + 2))) with h | h
+                  · simp [← h]
+                  · exact le_of_lt (hmR ⟨0, by omega⟩ ⟨j.val - (k + 2), by omega⟩ (Fin.mk_lt_mk.mpr (by omega))))),
+              (hrR ⟨j.val - (k + 2), by omega⟩).2⟩
+      · intro j; show (bf.pointTypes j).eval_at M atomMap (w j); simp only [w]
+        by_cases hj1 : j.val ≤ k
+        · simp only [hj1, dite_true]; exact hpL ⟨j.val, by omega⟩
+        · by_cases hj2 : j.val = k + 1
+          · simp only [dif_neg hj1, dif_pos hj2]
+            have h : bf.pointTypes j = bf.pointTypes ⟨k + 1, hk ▸ i.isLt⟩ := by
+              congr 1; simp only [Fin.ext_iff]; omega
+            rw [h]; exact hpt
+          · simp only [dif_neg hj1, dif_neg hj2]
+            have h : bf.pointTypes j = bf.pointTypes ⟨(k + 1) + 1 + (j.val - (k + 2)), by omega⟩ := by
+              congr 1; simp only [Fin.ext_iff]; omega
+            rw [h]; exact hpR ⟨j.val - (k + 2), by omega⟩
+      · intro y hy0 hy1
+        have : w ⟨0, by omega⟩ = wL ⟨0, by omega⟩ := by simp [w, show (0 : Nat) ≤ k from by omega]
+        rw [this] at hy1; exact hs0L y hy0 hy1
+      · intro j y hy_lo hy_hi
+        have hw_lo : w ⟨j.val, by omega⟩ =
+            if h1 : j.val ≤ k then wL ⟨j.val, by omega⟩
+            else if h2 : j.val = k + 1 then z
+            else wR ⟨j.val - (k + 2), by omega⟩ := by simp [w]
+        have hw_hi_eq : w ⟨j.val + 1, by omega⟩ =
+            if h1 : j.val + 1 ≤ k then wL ⟨j.val + 1, by omega⟩
+            else if h2 : j.val + 1 = k + 1 then z
+            else wR ⟨j.val + 1 - (k + 2), by omega⟩ := by simp [w]
+        rw [hw_lo] at hy_lo; rw [hw_hi_eq] at hy_hi
+        by_cases hj1 : j.val ≤ k
+        · by_cases hj1' : j.val + 1 ≤ k
+          · simp only [dif_pos hj1] at hy_lo; simp only [dif_pos hj1'] at hy_hi
+            exact hsmL ⟨j.val, by omega⟩ y hy_lo hy_hi
+          · simp only [dif_pos hj1] at hy_lo
+            simp only [dif_neg hj1', dif_pos (show j.val + 1 = k + 1 from by omega)] at hy_hi
+            have hlo' : wL ⟨k, by omega⟩ < y := by
+              convert hy_lo using 2; simp only [Fin.ext_iff]; omega
+            have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern (n + 1)).beta ⟨j.val + 1, by omega⟩ =
+                bf.segmentTypes ⟨k + 1, by omega⟩ := by
+              show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨k + 1, _⟩
+              congr 1; simp only [Fin.ext_iff]; omega
+            rw [hseg]; exact hslL y hlo' hy_hi
+        · by_cases hj2 : j.val = k + 1
+          · simp only [dif_neg hj1, dif_pos hj2] at hy_lo
+            have hj1' : ¬(j.val + 1 ≤ k) := by omega
+            have hj2' : j.val + 1 ≠ k + 1 := by omega
+            simp only [dif_neg hj1', dif_neg hj2'] at hy_hi
+            have hhi : y < wR ⟨0, by omega⟩ := by
+              convert hy_hi using 2; simp only [Fin.ext_iff]; omega
+            have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern (n + 1)).beta ⟨j.val + 1, by omega⟩ =
+                bf.segmentTypes ⟨(k + 1) + 1 + 0, by omega⟩ := by
+              show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + 0, _⟩
+              congr 1; simp only [Fin.ext_iff]; omega
+            rw [hseg]; exact hs0R y hy_lo hhi
+          · simp only [dif_neg hj1, dif_neg hj2] at hy_lo
+            have hj1' : ¬(j.val + 1 ≤ k) := by omega
+            have hj2' : j.val + 1 ≠ k + 1 := by omega
+            simp only [dif_neg hj1', dif_neg hj2'] at hy_hi
+            have hlo : wR ⟨j.val - (k + 2), by omega⟩ < y := hy_lo
+            have hhi : y < wR ⟨(j.val - (k + 2)) + 1, by omega⟩ := by
+              convert hy_hi using 2; simp only [Fin.ext_iff]; omega
+            have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern (n + 1)).beta ⟨j.val + 1, by omega⟩ =
+                bf.segmentTypes ⟨(k + 1) + 1 + (j.val - (k + 2) + 1), by omega⟩ := by
+              show bf.segmentTypes ⟨j.val + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + (j.val - (k + 2) + 1), _⟩
+              congr 1; simp only [Fin.ext_iff]; omega
+            rw [hseg]; exact hsmR ⟨j.val - (k + 2), by omega⟩ y hlo hhi
+      · intro y hy_lo hy_hi
+        have hw_n : w ⟨n, by omega⟩ = wR ⟨n - (k + 2), by omega⟩ := by
+          simp [w, show ¬(n ≤ k) from by omega, show n ≠ k + 1 from by omega]
+        rw [hw_n] at hy_lo
+        have hlo : wR ⟨m, by omega⟩ < y := by
+          convert hy_lo using 2; simp only [Fin.ext_iff]; omega
+        have hseg : ({ alpha := bf.pointTypes, beta := bf.segmentTypes } : IntervalPattern (n + 1)).beta ⟨n + 1, by omega⟩ =
+            bf.segmentTypes ⟨(k + 1) + 1 + (m + 1), by omega⟩ := by
+          show bf.segmentTypes ⟨n + 1, _⟩ = bf.segmentTypes ⟨(k + 1) + 1 + (m + 1), _⟩
+          congr 1; simp only [Fin.ext_iff]; omega
+        rw [hseg]; exact hslR y hlo hy_hi
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
