@@ -1,52 +1,56 @@
 {
-  "status": "partial",
-  "summary": "Phase 4 partially complete. splitAt_combine proved sorry-free (subagent). neg_bracket_zero_is_vbracket (Lemma 5.1 base case) proved sorry-free. Phase 1 now fully COMPLETED. Inductive step of Lemma 5.1 blocked on design issue: peel-off-first-witness approach does not generalize to brackets with segment types. Two sorries remain, build passes.",
+  "status": "blocked",
+  "summary": "Phase 4 (Lemma 5.1 inductive step) remains BLOCKED after exhaustive analysis. Five approaches for direct BracketFormula negation all fail due to interval mismatch: prepend at first alpha_0 occurrence r_0 is unsound for later witnesses x_0 > r_0 (rightPart.holds widens from (x_0,w_1) to (r_0,w_1) without beta_1 info on extra piece). The paper's proof REQUIRES alpha_0 at the ENDPOINT z_0 (VecEA2 convention). Correct approach: prove neg_vecEA2_is_vvecEA2 by induction on n, then derive neg_bracket_is_vbracket as corollary. Two sorries remain at EANegation.lean:865,878. Build passes.",
   "phases_completed": 3,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 859,
-      "statement": "theorem neg_bracket_is_vbracket (inductive step for n+1)",
-      "assumption": "The negation of a bracket formula with n+1 witnesses is a V-bracket on Prior structures",
-      "why_deferred": "The Lemma 5.3 peel-off-first-witness approach fails for general brackets: finding first alpha_0-occurrence r0 via HasAttainedINF gives not-alpha_0 on (z0,r0) but NOT beta_0 on (z0,r0), so splitAt_combine cannot reconstruct. Need segment-type-based decomposition or F-chain reverse direction.",
-      "next_dispatch": "Research: (A) decompose by first segment type failure + Lemma 5.3, or (B) prove F-chain reverse direction on Prior structures, or (C) add endpoint conditions to bracket formula to match the paper's convention."
+      "line": 865,
+      "statement": "theorem neg_bracket_is_vbracket (succ n ih case)",
+      "assumption": "For BracketFormula (n+1), there exists a VBracketFormula equivalent to the negation on HasAttainedINF structures",
+      "why_deferred": "Direct BracketFormula negation via prepend is UNSOUND for x_0 > r_0 (interval mismatch). The paper's proof requires VecEA2 endpoint convention (alpha_0 at z_0, not interior). Need neg_vecEA2_is_vvecEA2 first, then derive BracketFormula corollary.",
+      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2 in EANegation.lean by induction on n (VecEA2 parameter), using Rabinovich Cases 1-3. Then derive neg_bracket_is_vbracket via VecEA2.fromBracket + VVecEA2-to-VBracketFormula conversion."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 872,
+      "line": 878,
       "statement": "theorem neg_partialBracketExist_is_vbracket",
-      "assumption": "Full biconditional for Corollary 5.4",
-      "why_deferred": "Depends on Lemma 5.1 (neg_bracket_is_vbracket)",
-      "next_dispatch": "After Lemma 5.1: express partial bracket as bracket on (z0,z1) via F-chain, apply Lemma 5.1"
+      "assumption": "Full biconditional for Corollary 5.4: negation of partial bracket existential is V-bracket",
+      "why_deferred": "Depends on neg_bracket_is_vbracket (Lemma 5.1). Forward direction already sorry-free (neg_partialBracketExist_sufficient).",
+      "next_dispatch": "Once neg_bracket_is_vbracket is proved, derive using F-chain + Lemma 5.3 + Lemma 5.1."
     }
   ],
   "blockers": [
-    "Lemma 5.1 inductive step: need correct decomposition strategy for bracket negation with segment types (the paper's three-case approach assumes endpoint conditions our BracketFormula lacks)"
+    "neg_bracket_is_vbracket inductive step: direct BracketFormula approach unsound due to interval mismatch for x_0 > r_0. Requires VecEA2 endpoint convention (neg_vecEA2_is_vvecEA2). Goal state at EANegation.lean:865: exists v : VBracketFormula, v.holds <-> not bf.holds for bf : BracketFormula (n+1)."
   ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff-20260619.md",
   "continuation_context": {
     "is_successor": false,
+    "current_phase": 4,
+    "phase_status": "blocked",
+    "sorry_count": 2,
+    "build_status": "pass_with_sorries",
     "completed_phases": [1, 2, 3],
-    "next_phase": 4,
-    "key_design_decisions": [
-      "HasAttainedINF (PriorINF.lean) replaces HasDefinableINF for Lemma 5.3",
-      "BracketFormula.prepend uses dite for Fin proofs; prepend_holds and prepend_holds_inv proved sorry-free",
-      "orderedPointsExist_decompose factored as standalone helper for witness combination",
-      "VBracketFormula.prependAll constructs negation VBracket syntactically from IH disjuncts",
-      "BracketFormula.fChainFrom uses well-founded recursion on (n - i.val) for F-chain construction",
-      "neg_partialBracketExist_sufficient proved via Lemma 5.3 composition (one-directional but sorry-free)",
-      "neg_bracket_zero_is_vbracket (Lemma 5.1 base case) proved sorry-free",
-      "splitAt_combine proved sorry-free via 4-case split with dif_pos/dif_neg and congr+Fin.ext_iff+omega",
-      "CRITICAL: Peel-off-first-witness approach does NOT generalize from Lemma 5.3 to Lemma 5.1. Our BracketFormula has ALL witnesses interior with NO endpoint conditions, while the paper places alpha_0 at endpoint z_0. Segment type coupling prevents reconstruction via splitAt_combine."
+    "key_insight": "Paper's Lemma 5.1 proof requires alpha_0 at endpoint z_0 (VecEA2 convention). Direct BracketFormula approach with all-interior witnesses cannot avoid the interval mismatch for x_0 > r_0. VecEA2 induction on n correctly reduces Case 2 from n to n-1 witnesses because alpha_0 at the endpoint is consumed.",
+    "approaches_tried_and_failed": [
+      "Prepend with alpha_0.neg segment: unsound for x_0 > r_0",
+      "Prepend with alpha_0.neg.conj beta_0 segment: unsound for x_0 > r_0 (beta_0 on open interval (z0,r0) doesn't cover [r0,x0))",
+      "Segment-failure decomposition: forward direction fails (failure point from one witness config not in same segment of another)",
+      "F-chain approach: forward works but backward fails (Until witnesses unbounded, escape z_1)",
+      "Split-at-every-position: produces universal over split points, not expressible as BracketFormula"
     ],
-    "files_modified": [
+    "next_action": "Implement neg_vecEA2_is_vvecEA2, then derive neg_bracket_is_vbracket",
+    "files_modified_this_dispatch": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
-      "specs/305_rabinovich_ea_formula_implementation/plans/01_ea-formula-plan.md"
+      "specs/305_rabinovich_ea_formula_implementation/plans/01_ea-formula-plan.md",
+      "specs/305_rabinovich_ea_formula_implementation/.return-meta.json"
     ]
   },
-  "next_action_hint": "research",
-  "artifacts": [
-    "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff.md"
-  ]
+  "next_action_hint": "implement --hard: prove neg_vecEA2_is_vvecEA2 by induction on n using VecEA2 endpoint convention, then derive neg_bracket_is_vbracket as corollary",
+  "artifacts": {
+    "handoff": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff-20260619.md",
+    "plan": "specs/305_rabinovich_ea_formula_implementation/plans/01_ea-formula-plan.md",
+    "research": "specs/305_rabinovich_ea_formula_implementation/reports/02_bracket-negation-design.md"
+  }
 }

@@ -1,9 +1,41 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "session_id": "sess_1750366788_a1b2c3",
   "task_number": 305,
   "phase_number": 4,
-  "started_at": "2026-06-19T00:00:00Z"
+  "requires_user_review": true,
+  "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff-20260619.md",
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 865,
+      "statement": "theorem neg_bracket_is_vbracket (succ n ih case)",
+      "assumption": "BracketFormula (n+1) negation is V-bracket on HasAttainedINF structures",
+      "why_deferred": "Direct BracketFormula approach unsound; requires VecEA2 endpoint convention",
+      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2, derive corollary"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 878,
+      "statement": "theorem neg_partialBracketExist_is_vbracket",
+      "assumption": "Partial bracket existential negation biconditional",
+      "why_deferred": "Depends on neg_bracket_is_vbracket",
+      "next_dispatch": "Follows from neg_bracket_is_vbracket"
+    }
+  ],
+  "verification": {
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true
+  },
+  "memory_candidates": [
+    {
+      "content": "BracketFormula negation via prepend at first alpha_0 occurrence r_0 is UNSOUND for x_0 > r_0: rightPart.holds(x_0, z_1) does not imply rightPart.holds(r_0, z_1) because the first segment widens from (x_0, w_1) to (r_0, w_1) without beta_1 info on the extra piece. Five approaches were tried and all fail: (1) prepend with alpha_0.neg, (2) prepend with alpha_0.neg.conj beta_0, (3) segment-failure decomposition, (4) F-chain approach, (5) split-at-every-position. The correct approach uses VecEA2 endpoint convention where alpha_0 is at the FIXED endpoint z_0, eliminating x_0 > r_0.",
+      "keywords": ["BracketFormula", "negation", "prepend", "unsound", "interval mismatch", "VecEA2"],
+      "topic": "lean4-proof-strategy"
+    }
+  ]
 }
