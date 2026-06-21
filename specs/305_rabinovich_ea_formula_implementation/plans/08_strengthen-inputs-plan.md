@@ -218,13 +218,23 @@ h_rvar at depth (d+1), arity r:
 
 ---
 
-### Phase 6d: Fill Downstream Consumers (Lines 575/580/631/635) [BLOCKED]
+### Phase 6d: Fill Downstream Consumers (Lines 563/568/619/623) [BLOCKED]
 
 **BLOCKER** (Phase 6d):
 - **What failed**: The h_rvar approach cannot resolve the downstream consumers. `nvar_transfer_from_1var_agree` at depth K+1 arity 3 requires h_rvar at depth K+2 arity 3, which is HARDER than the goal (depth K+1 3-var). The depth arithmetic is fundamentally circular: `ih_strong` gives 2-var at depth K+1, whose quantifier condition gives 3-var existential transfer at depth K (not K+1). The gap from depth K to K+1 cannot be bridged without the outer theorem's conclusion.
-- **What was tried**: (1) Using `nvar_transfer_from_1var_agree` with h_rvar from ih_strong -- requires depth K+2 (circular). (2) Using `exist_transfer_from_full_agree` from ih_strong -- gives depth K (not K+1). (3) Using `reconstruction_depth_agree` -- only reconstructs UP TO the input depth.
-- **Why stuck**: The strong induction on K establishes depth-(K+2) 2-var from depth-(m+2) 2-var (m < K). The quantifier step needs depth-(K+1) 3-var existential transfer over `[x,t]/[x',t']`. This requires zone analysis with Prior-UZ/SZ to find witnesses with BOTH correct 1-var type AND correct zone placement. The zone analysis is the original unsolved problem (Rabinovich zone-3 argument).
-- **What is needed**: Implement Prior-UZ/SZ zone-3 witness placement: given w in M between t and x, find w' in N between t' and x' with the same depth-(K+1) 1-var NF type. This requires characteristic formulas + Prior-UZ first/last occurrence axioms to squeeze the witness into the correct zone.
+- **What was tried** (dispatch 5, 2026-06-20, exhaustive analysis):
+  (1) Using `nvar_transfer_from_1var_agree` with h_rvar from ih_strong -- requires depth K+2 3-var (circular).
+  (2) Using `exist_transfer_from_full_agree` from ih_strong at K-1 -- gives depth-K 3-var existential (not K+1).
+  (3) Using `reconstruction_depth_agree` -- only reconstructs UP TO the input depth.
+  (4) Using `exist_transfer_at_full_depth` with hw2 (depth-(K+1) 2-var at [w,t]/[w2,t']) -- gives existential at env [z,w,t], wrong base env.
+  (5) Using characteristic NF approach at 3-var level -- needs h_rvar at K+2 (same circular issue).
+  (6) Direct zone-3 Prior-UZ approach with witness r0 in (t',x') -- finds the right witness but the depth-(K+1) 3-var evaluation at [r0,x',t'] has the same quantifier transfer problem at depth K 4-var.
+  (7) Building h_rvar by descending chain from high depth -- fails because 1-var for w/w2 only available at depth K+1, not K+2+.
+  (8) Strengthening strong induction to prove all arities simultaneously -- viable but requires complete proof restructuring.
+- **Root cause (definitive)**: The off-by-one in the NF quantifier structure: nf_eval_nf at depth d+1 has quantifier conditions at depth d (one less). To transfer depth-(K+1) 3-var existentials, one needs depth-(K+2) 2-var agreement (the theorem being proved). This circularity is inherent to the characteristic NF approach combined with strong induction on K for 2-var only.
+- **Why stuck**: The strong induction on K establishes depth-(K+2) 2-var from depth-(m+2) 2-var (m < K). The quantifier step needs depth-(K+1) 3-var existential transfer over `[x,t]/[x',t']`. Every approach to provide this requires either (a) h_rvar at K+2 (circular), (b) 2-var at K+2 (what we're proving), or (c) a fundamentally different proof architecture.
+- **What is needed**: Restructure the proof to use a JOINT induction that proves r-var for all r >= 2 simultaneously, or implement a zone-3 transfer lemma by well-founded induction on depth that generates matched witnesses via Prior-UZ at each level without requiring h_rvar. The latter approach (induction on sub_nf depth, with arity increasing at each step but depth decreasing) terminates at depth 0 (atoms only). See "Resolution Approach" below.
+- **Resolution Approach**: Add a new lemma `prior_zone3_exist_transfer` proved by induction on the depth d of the sub_nf, universally quantified over arity r. At d=0: purely atomic, zone-based witness placement via Prior-UZ. At d+1: atoms (zone-based) + quantifier conditions from IH at d (arity r+1). The witness at each level is found by Prior-UZ in the interval (t', x'), giving correct zone placement. The IH applies because depth decreases even as arity increases.
 - **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder.
 
 **Goal (original, now blocked)**: Fill sorries at lines 575, 580, 631, 635 in `prior_nonconstenv_2var_agree_until` and `prior_nonconstenv_2var_agree_since` by calling `nvar_transfer_from_1var_agree` with the `h_rvar` parameter derived from `ih_strong`.
