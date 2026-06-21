@@ -437,4 +437,131 @@ theorem neg_bounded_exists {sig : MonadicSignature}
                (fun y hy0 hy1 => (TemporalPred.eval_at_neg' M atomMap
                  (bf.pointTypes ⟨0, by omega⟩) y).mpr (h_exists y hy0 hy1))⟩
 
+/-! ## Proposition 4.2: VecEA2 Negation Closure
+
+The negation of a VecEA2 formula (and VVecEA2 formula) produces a VVecEA2 formula
+on structures with HasAttainedINF. This is Rabinovich 2014, Proposition 4.2.
+
+### Three-Case Decomposition
+
+A VecEA2 formula has the form: endpointLeft(z_0) AND endpointRight(z_1) AND bracket(z_0, z_1)
+Its negation decomposes via de Morgan:
+- Case 1a: not endpointLeft(z_0) — trivial VVecEA2
+- Case 1b: not endpointRight(z_1) — trivial VVecEA2
+- Case 2+3: both endpoints hold, bracket fails — apply neg_interval_formula
+
+### References
+- Rabinovich 2014, Proposition 4.2 (p. 6)
+-/
+
+/-- Wrap each bracket formula in a VBracketFormula with endpoint predicates to
+    form a VVecEA2. -/
+def VBracketFormula.toVVecEA2WithEndpoints
+    (v : VBracketFormula) (epL epR : TemporalPred) : VVecEA2 :=
+  { disjuncts := v.disjuncts.map fun ⟨n, bf⟩ =>
+      ⟨n, { endpointLeft := epL, endpointRight := epR, bracket := bf }⟩ }
+
+/-- Semantics of toVVecEA2WithEndpoints: holds iff some bracket disjunct holds
+    and both endpoint predicates hold. -/
+theorem VBracketFormula.toVVecEA2WithEndpoints_holds
+    {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (v : VBracketFormula) (epL epR : TemporalPred)
+    (z0 z1 : M.carrier)
+    (hL : epL.eval_at M atomMap z0)
+    (hR : epR.eval_at M atomMap z1)
+    (hv : v.holds M atomMap z0 z1) :
+    (v.toVVecEA2WithEndpoints epL epR).holds M atomMap z0 z1 := by
+  obtain ⟨⟨n, bf⟩, hmem, hbf⟩ := hv
+  refine ⟨⟨n, { endpointLeft := epL, endpointRight := epR, bracket := bf }⟩, ?_, hL, hR, hbf⟩
+  simp only [toVVecEA2WithEndpoints]
+  exact List.mem_map.mpr ⟨⟨n, bf⟩, hmem, rfl⟩
+
+/-- **Proposition 4.2 (single conjunct)**: The negation of a `VecEA2` formula
+    produces a `VVecEA2` formula on structures with `HasAttainedINF`. -/
+theorem neg_vecEA2 {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    (h_INF : HasAttainedINF M atomMap)
+    (n : Nat) (vea : VecEA2 n) (z0 z1 : M.carrier)
+    (h_lt : z0 < z1)
+    (h_neg : ¬vea.holds M atomMap z0 z1) :
+    ∃ v : VVecEA2, v.holds M atomMap z0 z1 := by
+  simp only [VecEA2.holds] at h_neg
+  push_neg at h_neg
+  -- Three cases via de Morgan
+  by_cases hL : vea.endpointLeft.eval_at M atomMap z0
+  · by_cases hR : vea.endpointRight.eval_at M atomMap z1
+    · -- Case 2+3: both endpoints hold, bracket fails
+      have h_neg_bracket : ¬vea.bracket.holds M atomMap z0 z1 := h_neg hL hR
+      -- Apply Lemma 5.1 to get V-bracket
+      obtain ⟨vbf, hvbf⟩ := neg_interval_formula h_INF n vea.bracket z0 z1 h_lt h_neg_bracket
+      -- Wrap with original endpoints
+      exact ⟨vbf.toVVecEA2WithEndpoints vea.endpointLeft vea.endpointRight,
+             vbf.toVVecEA2WithEndpoints_holds M atomMap
+               vea.endpointLeft vea.endpointRight z0 z1 hL hR hvbf⟩
+    · -- Case 1b: endpointRight fails
+      refine ⟨⟨[⟨0, { endpointLeft := TemporalPred.top,
+                       endpointRight := vea.endpointRight.neg,
+                       bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩,
+              ⟨0, _⟩, List.mem_singleton.mpr rfl,
+              TemporalPred.eval_at_top M atomMap z0,
+              (TemporalPred.eval_at_neg' M atomMap vea.endpointRight z1).mpr hR,
+              ?_⟩
+      exact (BracketFormula.trivial_holds M atomMap TemporalPred.top z0 z1).mpr
+        (fun y _ _ => TemporalPred.eval_at_top M atomMap y)
+  · -- Case 1a: endpointLeft fails
+    refine ⟨⟨[⟨0, { endpointLeft := vea.endpointLeft.neg,
+                     endpointRight := TemporalPred.top,
+                     bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩,
+            ⟨0, _⟩, List.mem_singleton.mpr rfl,
+            (TemporalPred.eval_at_neg' M atomMap vea.endpointLeft z0).mpr hL,
+            TemporalPred.eval_at_top M atomMap z1,
+            ?_⟩
+    exact (BracketFormula.trivial_holds M atomMap TemporalPred.top z0 z1).mpr
+      (fun y _ _ => TemporalPred.eval_at_top M atomMap y)
+
+/-- Helper: the negation of all disjuncts in a list produces a VVecEA2. -/
+private theorem neg_disjunct_list {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    (h_INF : HasAttainedINF M atomMap)
+    (z0 z1 : M.carrier) (h_lt : z0 < z1)
+    (ds : List (Σ n, VecEA2 n))
+    (h_neg : ∀ d ∈ ds, ¬d.2.holds M atomMap z0 z1) :
+    ∃ v : VVecEA2, v.holds M atomMap z0 z1 := by
+  induction ds with
+  | nil =>
+    -- Empty list: produce a trivially-true VVecEA2
+    refine ⟨⟨[⟨0, { endpointLeft := TemporalPred.top,
+                     endpointRight := TemporalPred.top,
+                     bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩,
+            ⟨0, _⟩, List.mem_singleton.mpr rfl,
+            TemporalPred.eval_at_top M atomMap z0,
+            TemporalPred.eval_at_top M atomMap z1,
+            ?_⟩
+    exact (BracketFormula.trivial_holds M atomMap TemporalPred.top z0 z1).mpr
+      (fun y _ _ => TemporalPred.eval_at_top M atomMap y)
+  | cons d ds ih =>
+    have h_neg_d : ¬d.2.holds M atomMap z0 z1 :=
+      h_neg d (List.mem_cons_self ..)
+    obtain ⟨v_d, hv_d⟩ := neg_vecEA2 h_INF d.1 d.2 z0 z1 h_lt h_neg_d
+    have h_neg_rest : ∀ d' ∈ ds, ¬d'.2.holds M atomMap z0 z1 :=
+      fun d' hm => h_neg d' (List.mem_cons_of_mem d hm)
+    obtain ⟨v_rest, hv_rest⟩ := ih h_neg_rest
+    exact VVecEA2.conj_holds_vvecEA2 M atomMap v_d v_rest z0 z1 h_lt hv_d hv_rest
+
+/-- **Proposition 4.2** (Rabinovich 2014): The negation of a `VVecEA2` formula
+    produces a `VVecEA2` formula on structures with `HasAttainedINF`.
+
+    This is the main negation closure theorem for 2-free-variable vec-EA formulas. -/
+theorem neg_2var_vec_ea {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    (h_INF : HasAttainedINF M atomMap)
+    (v : VVecEA2) (z0 z1 : M.carrier)
+    (h_lt : z0 < z1)
+    (h_neg : ¬v.holds M atomMap z0 z1) :
+    ∃ v' : VVecEA2, v'.holds M atomMap z0 z1 := by
+  simp only [VVecEA2.holds] at h_neg
+  push_neg at h_neg
+  exact neg_disjunct_list h_INF z0 z1 h_lt v.disjuncts h_neg
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

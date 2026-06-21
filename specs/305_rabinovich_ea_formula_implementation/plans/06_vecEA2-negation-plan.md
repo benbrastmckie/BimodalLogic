@@ -197,7 +197,7 @@ theorem neg_bounded_exists
 
 ---
 
-### Phase 5: Proposition 4.2 -- VecEA2 Negation Closure [NOT STARTED]
+### Phase 5: Proposition 4.2 -- VecEA2 Negation Closure [COMPLETED]
 
 **Goal**: Port `VBracketFormula.toVVecEA2WithEndpoints`, `neg_vecEA2`, and `neg_2var_vec_ea` from Boneyard NegationClosureProp42.lean. This is the VecEA2-level three-case decomposition that matches the paper's Case 1 (endpoint failure) and Case 2+3 (bracket interior fails) structure.
 
