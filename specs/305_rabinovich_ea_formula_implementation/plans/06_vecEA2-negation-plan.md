@@ -250,7 +250,7 @@ theorem neg_2var_vec_ea
 
 ---
 
-### Phase 6: ExistPart Rewire [NOT STARTED]
+### Phase 6: ExistPart Rewire [NOT STARTED] *(prerequisite infra complete)*
 
 **Goal**: Replace the sorry-containing backward direction in `existPart_succ_n1_bypass` (k>0 case, KampBypass.lean) with a new proof path that uses EA negation closure (`neg_2var_vec_ea`) instead of `prior_2var_transfer_until/since` from PriorComposition.lean. This eliminates all 4 live sorrys on the critical path.
 

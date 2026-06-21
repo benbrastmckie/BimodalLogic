@@ -1,41 +1,76 @@
 {
-  "status": "researched",
-  "summary": "Research dispatch 7: Root cause analysis of 6 failed dispatches. The sorry at line 1047 (neg_bracket_is_vbracket backward, beta_0(r_0) sub-case) is structurally unsolvable at BracketFormula level with model-independent V-bracket. The paper's Lemma 5.1 proves negation closure at VecEA2 level (with endpoint conditions), not BracketFormula level. Proposition 4.2 (the actual downstream consumer) only needs the model-dependent forward direction. The Boneyard has complete proofs (neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea) using a 3-case inductive structure that avoids the beta_0(r_0) problem entirely.",
-  "phases_completed": 3,
+  "status": "partial",
+  "summary": "Completed Phases 4-5: neg_interval_formula (Lemma 5.1), neg_bounded_exists (Cor 5.4), and neg_2var_vec_ea (Prop 4.2) all sorry-free in EANegationClosure.lean. Phase 6 (KampBypass rewire) not started.",
+  "phases_completed": 5,
   "phases_total": 7,
   "sorry_inventory": [
     {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 459,
+      "statement": "prior_nonconstenv_2var_agree_until (quantifier step case, UZ gap)",
+      "assumption": "Gap placement for until-zone Prior structures at depth K+2",
+      "why_deferred": "Phase 6 will bypass this entirely via EA negation closure path",
+      "next_dispatch": "Phase 6: rewire KampBypass k>0 to use neg_2var_vec_ea + VVecEA2.translateLeft"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 554,
+      "statement": "prior_nonconstenv_2var_agree_until (quantifier step, positive branch)",
+      "assumption": "Transfer of exists-witness across structures in until zone",
+      "why_deferred": "Same as above - entire PriorComposition will be bypassed",
+      "next_dispatch": "Phase 6"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 610,
+      "statement": "prior_nonconstenv_2var_agree_since (quantifier step, positive branch)",
+      "assumption": "Transfer of exists-witness across structures in since zone",
+      "why_deferred": "Same as above - entire PriorComposition will be bypassed",
+      "next_dispatch": "Phase 6"
+    },
+    {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1047,
-      "statement": "neg_bracket_is_vbracket backward (beta_0(r_0) sub-case)",
-      "assumption": "Model-independent V-bracket for BracketFormula-level negation",
-      "why_deferred": "Structurally unsolvable at BracketFormula level. Replace with model-dependent neg_bracket_forward (Boneyard approach).",
-      "resolution": "Port Boneyard neg_interval_formula to new EANegationClosure.lean"
+      "statement": "neg_bracket_is_vbracket (backward direction, beta_0(r0) case)",
+      "assumption": "Biconditional direction needs endpoint induction",
+      "why_deferred": "Non-critical: model-dependent forward path in EANegationClosure.lean bypasses this",
+      "next_dispatch": "Not needed for critical path"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1172,
-      "statement": "neg_partialBracketExist_is_vbracket backward (n+1)",
-      "assumption": "Biconditional for partial bracket negation",
-      "why_deferred": "Depends on neg_bracket_is_vbracket resolution. Replace with model-dependent neg_partialBracketExist_forward.",
-      "resolution": "Port Boneyard neg_bounded_exists to new EANegationClosure.lean"
+      "statement": "neg_partialBracketExist_is_vbracket (backward n+1)",
+      "assumption": "Requires fChainPred -> bracket reconstruction",
+      "why_deferred": "Non-critical: neg_bounded_exists in EANegationClosure.lean provides forward direction",
+      "next_dispatch": "Not needed for critical path"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "Dead code (deprecated NfCharFormula)",
+      "assumption": "N/A",
+      "why_deferred": "Dead code, not on critical path",
+      "next_dispatch": "Non-goal per plan"
     }
   ],
-  "blockers": [],
-  "continuation_path": "Create EANegationClosure.lean with model-dependent forward-only proofs ported from Boneyard",
+  "blockers": [
+    "Phase 6: Rewire KampBypass k>0 case to use neg_2var_vec_ea + VVecEA2.translateLeft instead of prior_2var_transfer_until/since. Requires mapping nf_eval_nf to VecEA2 types."
+  ],
   "continuation_context": {
-    "is_successor": true,
-    "what_was_done": "Identified root cause of 6 failed dispatches: model-independent biconditional at BracketFormula level is strictly harder than needed. Created 5-column lemma mapping table. Verified Boneyard approach avoids beta_0(r_0) problem. Confirmed no downstream consumers need the biconditional.",
-    "what_remains": "Port Boneyard proofs (neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea) to active codebase. Estimated 400-600 lines. Then Phase 6 (ExistPart rewire) and Phase 7 (integration).",
-    "key_insight": "The Boneyard's neg_interval_formula uses Case B1 with 'bf.tail fails on (r0, z1)' (contrapositive of bracket_tail_satisfiable). This eliminates the beta_0(r_0) sub-case because the case split is on the SEGMENT condition (z_0, r_0), not the POINT value at r_0. rightPart at index 0 IS tail (definitionally equal), so existing infrastructure suffices.",
-    "boneyard_source": "Theories/Bimodal/Boneyard/KampNegationClosure/NegationClosure5.lean (lines 966-1033 for neg_interval_formula, 859-937 for neg_bounded_exists)",
-    "boneyard_prop42": "Theories/Bimodal/Boneyard/KampNegationClosure/NegationClosureProp42.lean (lines 75-117 for neg_vecEA2, 159-169 for neg_2var_vec_ea)",
-    "porting_notes": {
-      "replace_semantic_prior_UZ_with": "HasAttainedINF",
-      "replace_tail_with": "rightPart ⟨0, by omega⟩",
-      "replace_bracket_prepend_holds_with": "prepend_holds",
-      "replace_pureSeg_with": "trivial",
-      "port_helpers": ["TemporalPred.eval_at_neg", "inf_bracket_formula", "inf_formula_prior_is_vbracket", "bracket_tail_satisfiable", "prior_UZ_successor (for Cor 5.4 n=0)"]
+    "is_successor": false,
+    "resume_phase": 6,
+    "key_insight": "The mapping from nf_eval_nf to VecEA2 requires understanding how CharPart at depth k+1 defines temporal predicates (point types) and how the bracket segment types correspond to the quantifier structure of the NormalForm. VecEATranslation.lean already provides VVecEA2.translateLeft for converting back to Formula. The k>0 Until/Since zones in KampBypass.lean (lines 605-740) use prior_2var_transfer_until/since which have sorries. The alternative: express the 2-var NF as VecEA2, use neg_2var_vec_ea for negation closure, then VVecEA2.translateLeft for the formula."
+  },
+  "artifacts": [
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
+      "type": "implementation",
+      "summary": "New file with sorry-free neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea"
+    },
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-5-handoff.md",
+      "type": "handoff",
+      "summary": "Phase 5 completion handoff with Phase 6 requirements"
     }
-  }
+  ]
 }
