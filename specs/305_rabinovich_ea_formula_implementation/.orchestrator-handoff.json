@@ -1,50 +1,34 @@
 {
   "status": "partial",
-  "summary": "5th dispatch: deep mathematical analysis of Lemma 5.1 backward direction. Identified that the F-chain V is fundamentally wrong (not just hard to prove). The correct approach requires combinatorial bracket conjunction infrastructure (Option A from handoff) to implement the paper's 'Cond_i AND Form_i' decomposition.",
+  "summary": "6th dispatch: Rewrote neg_bracket_is_vbracket n+1 case with correct 3-disjunct VBracketFormula (CaseA/CaseC/CaseD using IH on rightPart). Proved complete forward direction for all 3 disjunct types. Proved backward for CaseA (no alpha_0), CaseC (beta_0 failure), CaseD (¬beta_0 at first alpha_0 + rightPart failure). One sub-case remains: beta_0(r0) holds at first alpha_0 point, requires VecEA2 endpoint induction.",
   "phases_completed": 3,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 885,
-      "statement": "theorem neg_bracket_is_vbracket (backward: not bf.holds -> V.holds for succ n)",
-      "assumption": "F-chain V satisfies backward direction",
-      "why_deferred": "F-chain V is the WRONG V for backward direction. seg_0 is not encoded in fChainPred, and Until witnesses may exceed z1. Counter-example: bf with seg_0=bot has bf.holds=False but orderedPointsExist 1 fChainPred=True. The correct V requires the paper's Cond_i AND Form_i construction, which needs COMBINATORIAL bracket conjunction (not currently available -- VecEAClosure only has existential conjunction).",
-      "next_dispatch": "1) Add combinatorial bracket conjunction to VecEAClosure.lean. 2) Prove neg_vecEA2_is_vvecEA2 using Cond AND Form with the new conjunction. 3) Derive neg_bracket_is_vbracket via VecEA2.fromBracket."
+      "line": 1047,
+      "statement": "neg_bracket_is_vbracket backward (beta_0(r0) sub-case)",
+      "assumption": "V.holds(z0, z1) when beta_0(r0) holds at first alpha_0 point",
+      "why_deferred": "Requires VecEA2 endpoint induction (Rabinovich Lemma 5.1 p.10). At the BracketFormula level, the V-bracket cannot universally block all x0 > r0 when beta_0(r0) holds.",
+      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2 with endpoint conditions, then derive neg_bracket_is_vbracket"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 984,
-      "statement": "theorem neg_partialBracketExist_is_vbracket (backward for n >= 1)",
-      "assumption": "V from neg_partialBracketExist_sufficient satisfies backward",
-      "why_deferred": "Same root cause. Depends on neg_bracket_is_vbracket.",
-      "next_dispatch": "Follows from neg_bracket_is_vbracket once proved."
+      "line": 1172,
+      "statement": "neg_partialBracketExist_is_vbracket backward (n+1)",
+      "assumption": "orderedPointsExist 1 fChainPred → partialBracketExist",
+      "why_deferred": "fChainPred missing beta_0 and Until witnesses unbounded. Depends on neg_bracket_is_vbracket resolution.",
+      "next_dispatch": "After resolving neg_bracket_is_vbracket sorry, use neg_bracket_is_vbracket to construct alternative V"
     }
   ],
   "blockers": [
-    "neg_bracket_is_vbracket backward: requires combinatorial bracket conjunction infrastructure (VecEAClosure.lean) plus neg_vecEA2_is_vvecEA2 implementation. 5 dispatch attempts have confirmed prepend-based approaches are UNSOUND due to interval mismatch.",
-    "The paper's proof uses 'Cond_i AND Form_i' where Cond_i is a universal condition (e.g., 'first segment holds everywhere') conjoined with Form_i (the negation for that case). Our codebase only has existential conjunction (conj_to_bracket_exists), not combinatorial conjunction needed for V-bracket construction independent of M."
+    "neg_bracket_is_vbracket backward: beta_0(r0) sub-case requires VecEA2 endpoint induction"
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-handoff-analysis.md",
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 4,
-    "key_insight": "5 dispatches have now confirmed: (1) F-chain V is wrong for backward direction (counter-example exists), (2) prepend at first occurrence is unsound for x0 > r0, (3) VecEA2 endpoint convention is necessary but not sufficient alone, (4) the paper's Cond_i AND Form_i approach requires COMBINATORIAL bracket conjunction, (5) VecEAClosure only has existential conjunction. The missing infrastructure is a combinatorial BracketFormula conjunction operation that produces a new BracketFormula from two inputs, with a semantic correctness theorem.",
-    "files_modified": [],
-    "preserved_theorems": ["neg_bracket_zero_is_vbracket", "neg_orderedPointsExist_is_vbracket", "neg_partialBracketExist_sufficient", "bracket_implies_fChainPred"],
-    "approaches_tried_and_failed": [
-      "F-chain V for biconditional (dispatches 1-5): forward works, backward is FALSE",
-      "Prepend with alpha_0.neg segment (dispatches 2-3): unsound for x_0 > r_0",
-      "Prepend with alpha_0.neg.conj beta_0 (dispatch 2): fails for x_0 > r_0",
-      "Segment-failure decomposition (dispatch 3): forward fails",
-      "Split-at-every-position (dispatch 3): universal over split points",
-      "fChainPred_implies_bracket (dispatch 5): FALSE (seg_0 omission + unbounded witnesses)",
-      "VecEA2 negation via direct Case 2/3 (dispatch 5): Case 2 interval mismatch persists when using prepend for universal over interior witnesses",
-      "bracketBuildRight as TemporalPred for neg_orderedPointsExist (dispatch 5): P(z0) captures partial bracket exist with ANY right endpoint, not specific z1"
-    ],
-    "required_infrastructure": [
-      "Combinatorial BracketFormula conjunction: given bf1 : BracketFormula n1 and bf2 : BracketFormula n2, produce bf3 : BracketFormula n3 with bf3.holds <-> bf1.holds AND bf2.holds. This is needed for the Cond_i AND Form_i decomposition.",
-      "Alternative: define neg_bracket_is_vbracket using a mutual induction with neg_partialBracketExist_is_vbracket, where Case 2 reduces to partial bracket existential varying left endpoint."
-    ]
+    "what_was_done": "Replaced the fChainPred-based VBracketFormula with a 3-disjunct IH-based construction. Forward direction fully proved for all disjuncts. Backward direction proved for 3 out of 4 sub-cases.",
+    "what_remains": "beta_0(r0) sub-case backward, and neg_partialBracketExist_is_vbracket n+1 backward",
+    "key_insight": "The BracketFormula-level proof cannot handle the sub-case where beta_0(r0) holds because the V-bracket (existential structure) cannot universally block all potential first witnesses x0 > r0. The paper uses VecEA2 endpoint conditions that provide a recursive decomposition: restricting to (r0, z1) changes the endpoint condition from top to alpha_0, giving a decreasing measure for induction."
   }
 }

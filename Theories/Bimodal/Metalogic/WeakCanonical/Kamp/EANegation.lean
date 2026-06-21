@@ -838,51 +838,239 @@ theorem neg_bracket_is_vbracket :
     exact ⟨v, fun M atomMap _h_INF z0 z1 h_lt => hv M atomMap z0 z1 h_lt⟩
   | succ n ih =>
     intro bf
-    -- Strategy: Use the F-chain characterization (bracket_implies_fChainPred)
-    -- to reduce to Lemma 5.3 (orderedPointsExist negation).
-    --
-    -- The F-chain predicate fChainPred absorbs the bracket's point types and
-    -- segment types (via Until) into a single TemporalPred. By Lemma 5.3,
-    -- ¬orderedPointsExist 1 fChainPred is a VBracketFormula.
-    --
-    -- Forward direction (V.holds → ¬bf.holds):
-    --   V.holds → ¬orderedPointsExist 1 fChainPred → ¬bf.holds
-    --   (contrapositive of bracket_implies_fChainPred)
-    --
-    -- Backward direction (¬bf.holds → V.holds):
-    --   Requires showing orderedPointsExist 1 fChainPred → bf.holds,
-    --   which needs the F-chain witnesses to be bounded by z₁.
-    --   On HasAttainedINF structures, this requires the VecEA2 endpoint
-    --   convention (Rabinovich p.10) to handle the first-segment issue.
-    --   Deferred: see sorry_inventory in handoff.
-    --
-    -- Construction: V from Lemma 5.3 applied to fChainPred
-    obtain ⟨v_neg, hv_neg⟩ := neg_orderedPointsExist_is_vbracket 1 (fun _ => bf.fChainPred)
-    refine ⟨v_neg, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
+    -- Decomposition: bf.holds z0 z1 ↔ ∃ x0 ∈ (z0, z1),
+    --   alpha_0(x0) ∧ beta_0 on (z0, x0) ∧ rightPart(0).holds(x0, z1)
+    let alpha_0 := bf.pointTypes ⟨0, by omega⟩
+    let beta_0 := bf.segmentTypes ⟨0, by omega⟩
+    -- IH: negation of rightPart (BracketFormula n) is a VBracketFormula
+    obtain ⟨v_r, hv_r⟩ := ih (bf.rightPart ⟨0, by omega⟩)
+    -- VBracketFormula V with three types of disjuncts:
+    -- CaseA: trivial alpha_0.neg — no alpha_0 in interval
+    let caseA : Σ n, BracketFormula n := ⟨0, BracketFormula.trivial alpha_0.neg⟩
+    -- CaseC: 1-witness bracket with ¬alpha_0 ∧ ¬beta_0 at y, ¬alpha_0 on (z0, y)
+    --   Captures: beta_0 failure before any alpha_0 point
+    let caseC : Σ n, BracketFormula n :=
+      ⟨1, BracketFormula.single (alpha_0.neg.conj beta_0.neg) alpha_0.neg TemporalPred.top⟩
+    -- CaseD: for each IH disjunct bf_m, prepend with ¬alpha_0 segment and
+    --   alpha_0 ∧ ¬beta_0 point type. Captures: first alpha_0 point has ¬beta_0,
+    --   and rightPart fails there.
+    let caseD := VBracketFormula.prependAll alpha_0.neg (alpha_0.conj beta_0.neg) v_r
+    let result : VBracketFormula := ⟨caseA :: caseC :: caseD.disjuncts⟩
+    refine ⟨result, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
+    -- Helper: bf.holds decomposes at index 0
+    have h_bf_decomp :
+        bf.holds M atomMap z0 z1 ↔
+        ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z1 ∧
+          alpha_0.eval_at M atomMap x0 ∧
+          (∀ y : M.carrier, z0 < y → y < x0 → beta_0.eval_at M atomMap y) ∧
+          (bf.rightPart ⟨0, by omega⟩).holds M atomMap x0 z1 := by
+      constructor
+      · intro h
+        simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+          IntervalPattern.holds] at h
+        obtain ⟨w, hmono, hrange, hpoint, hseg0, hseg_mid, hseg_last⟩ := h
+        refine ⟨w ⟨0, by omega⟩, (hrange ⟨0, by omega⟩).1, (hrange ⟨0, by omega⟩).2,
+          hpoint ⟨0, by omega⟩, hseg0, ?_⟩
+        exact BracketFormula.rightPart_holds M atomMap bf z0 z1
+          ⟨0, by omega⟩ w hmono hrange hpoint hseg0 hseg_mid hseg_last
+      · intro ⟨x0, hx0_above, hx0_below, hPt, hSeg, h_rp⟩
+        exact BracketFormula.splitAt_combine M atomMap bf z0 z1 x0
+          ⟨0, by omega⟩ hx0_above hx0_below hPt
+          (by rw [BracketFormula.leftPart]; simp only [BracketFormula.holds,
+            BracketFormula.toIntervalPattern, IntervalPattern.holds]; exact hSeg)
+          h_rp
     constructor
     · -- Forward: V.holds → ¬bf.holds
-      intro hv h_bf
-      -- From bf.holds, extract fChainPred witness
-      obtain ⟨x0, hx0_above, hx0_below, h_fchain, _⟩ :=
-        BracketFormula.bracket_implies_fChainPred M atomMap bf z0 z1 h_bf
-      -- orderedPointsExist 1 fChainPred z0 z1 holds
-      have h_ord : orderedPointsExist M atomMap 1 (fun _ => bf.fChainPred) z0 z1 := by
-        simp only [orderedPointsExist, IntervalPattern.allBetaTrue, IntervalPattern.holds]
-        refine ⟨fun _ => x0, ?_, ?_, ?_, ?_, ?_, ?_⟩
-        · intro a b hab; exact absurd hab (by omega)
-        · intro _; exact ⟨hx0_above, hx0_below⟩
-        · intro _; exact h_fchain
-        · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
-        · intro j; exact Fin.elim0 j
-        · intro y _ _; exact TemporalPred.eval_at_top M atomMap y
-      -- V.holds says ¬orderedPointsExist, contradiction
-      exact ((hv_neg M atomMap h_INF z0 z1 h_lt).mp hv) h_ord
+      intro ⟨⟨m, bf'⟩, h_mem, h_holds⟩
+      simp only [result, caseA, caseC, caseD, VBracketFormula.prependAll,
+        List.mem_cons, List.mem_map] at h_mem
+      rcases h_mem with h_eq | h_eq | ⟨⟨m', bf_m⟩, h_mem', h_eq'⟩
+      · -- CaseA: ¬alpha_0 everywhere
+        obtain rfl := congr_arg Sigma.fst h_eq
+        have hbf_eq : bf' = BracketFormula.trivial alpha_0.neg :=
+          eq_of_heq (Sigma.mk.inj h_eq).2
+        subst hbf_eq
+        rw [BracketFormula.trivial_holds] at h_holds
+        rw [h_bf_decomp]
+        push_neg
+        intro x0 hx0_above hx0_below hPt
+        exact absurd hPt (by
+          have := h_holds x0 hx0_above hx0_below
+          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
+          exact this)
+      · -- CaseC: ∃ y with ¬alpha_0(y) ∧ ¬beta_0(y), ¬alpha_0 on (z0, y)
+        obtain rfl := congr_arg Sigma.fst h_eq
+        have hbf_eq : bf' = BracketFormula.single (alpha_0.neg.conj beta_0.neg) alpha_0.neg TemporalPred.top :=
+          eq_of_heq (Sigma.mk.inj h_eq).2
+        subst hbf_eq
+        simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+          BracketFormula.single, IntervalPattern.holds] at h_holds
+        obtain ⟨w, _, hrange, hpoint, hseg0, _, _⟩ := h_holds
+        -- w 0 is the witness y with ¬alpha_0(y) ∧ ¬beta_0(y)
+        set y := w ⟨0, by omega⟩
+        have hy_above := (hrange ⟨0, by omega⟩).1
+        have hy_below := (hrange ⟨0, by omega⟩).2
+        have h_pt := hpoint ⟨0, by omega⟩
+        simp at h_pt
+        have h_neg_alpha_y : ¬ alpha_0.eval_at M atomMap y := by
+          have := (TemporalPred.eval_at_conj M atomMap alpha_0.neg beta_0.neg y).mp h_pt
+          exact this.1
+        have h_neg_beta_y : ¬ beta_0.eval_at M atomMap y := by
+          have := (TemporalPred.eval_at_conj M atomMap alpha_0.neg beta_0.neg y).mp h_pt
+          exact this.2
+        -- ¬alpha_0 on (z0, y)
+        have h_neg_alpha_seg : ∀ t : M.carrier, z0 < t → t < y →
+            ¬ alpha_0.eval_at M atomMap t := by
+          intro t ht0 hty h_alpha_t
+          have := hseg0 t ht0 hty
+          simp only [ite_true] at this
+          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
+            temporal_truth] at this
+          exact this h_alpha_t
+        -- For any x0 with alpha_0(x0): x0 > y, so y ∈ (z0, x0), ¬beta_0(y) kills bf
+        rw [h_bf_decomp]
+        push_neg
+        intro x0 hx0_above hx0_below hPt_x0
+        -- alpha_0(x0) and x0 must be > y
+        have hx0_gt_y : x0 > y := by
+          by_contra h; push_neg at h
+          rcases lt_or_eq_of_le h with hlt | heq
+          · exact h_neg_alpha_seg x0 hx0_above hlt hPt_x0
+          · exact h_neg_alpha_y (heq ▸ hPt_x0)
+        -- y ∈ (z0, x0), ¬beta_0(y) — beta_0 segment fails
+        intro h_seg
+        exact absurd (h_seg y hy_above hx0_gt_y) h_neg_beta_y
+      · -- CaseD: prepended IH disjunct with alpha_0 ∧ ¬beta_0 at r
+        have hm_eq := congr_arg Sigma.fst h_eq'
+        simp at hm_eq; subst hm_eq
+        have hbf_eq : BracketFormula.prepend alpha_0.neg (alpha_0.conj beta_0.neg) bf_m = bf' :=
+          eq_of_heq (Sigma.mk.inj h_eq').2
+        subst hbf_eq
+        -- Decompose the prepended bracket
+        obtain ⟨r0, hr0_above, hr0_below, h_pt_r0, h_seg_r0, h_bf_m_holds⟩ :=
+          BracketFormula.prepend_holds_inv M atomMap bf_m
+            alpha_0.neg (alpha_0.conj beta_0.neg) z0 z1 h_holds
+        -- Extract alpha_0(r0) and ¬beta_0(r0) from point type
+        have h_alpha_r0 : alpha_0.eval_at M atomMap r0 := by
+          exact ((TemporalPred.eval_at_conj M atomMap alpha_0 beta_0.neg r0).mp h_pt_r0).1
+        have h_neg_beta_r0 : ¬ beta_0.eval_at M atomMap r0 := by
+          exact ((TemporalPred.eval_at_conj M atomMap alpha_0 beta_0.neg r0).mp h_pt_r0).2
+        -- ¬alpha_0 on (z0, r0)
+        have h_neg_alpha_seg : ∀ t, z0 < t → t < r0 → ¬ alpha_0.eval_at M atomMap t := by
+          intro t ht0 htr h_at
+          have := h_seg_r0 t ht0 htr
+          simp [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth] at this
+          exact this h_at
+        -- bf_m ∈ v_r → ¬rightPart.holds(r0, z1)
+        have h_vr_holds : v_r.holds M atomMap r0 z1 :=
+          ⟨⟨m', bf_m⟩, h_mem', h_bf_m_holds⟩
+        have h_neg_rp : ¬ (bf.rightPart ⟨0, by omega⟩).holds M atomMap r0 z1 :=
+          (hv_r M atomMap h_INF r0 z1 hr0_below).mp h_vr_holds
+        -- Show ¬bf.holds
+        rw [h_bf_decomp]
+        push_neg
+        intro x0 hx0_above hx0_below hPt_x0
+        -- x0 ≥ r0 (from ¬alpha_0 on (z0, r0))
+        have hx0_ge_r0 : x0 ≥ r0 := by
+          by_contra h; push_neg at h
+          exact h_neg_alpha_seg x0 hx0_above h hPt_x0
+        rcases eq_or_lt_of_le hx0_ge_r0 with rfl | hx0_gt_r0
+        · -- x0 = r0: rightPart fails
+          intro _
+          exact h_neg_rp
+        · -- x0 > r0: r0 ∈ (z0, x0) with ¬beta_0(r0) → beta_0 segment fails
+          intro h_seg
+          exact absurd (h_seg r0 hr0_above hx0_gt_r0) h_neg_beta_r0
     · -- Backward: ¬bf.holds → V.holds
-      -- Requires: orderedPointsExist 1 fChainPred z0 z1 → bf.holds z0 z1
-      -- This direction needs the VecEA2 endpoint convention (Rabinovich p.10)
-      -- to bound the F-chain Until witnesses within (z0, z1).
-      -- Deferred to a future dispatch with VecEA2 infrastructure.
-      sorry
+      intro h_neg
+      rw [h_bf_decomp] at h_neg; push_neg at h_neg
+      -- h_neg : ∀ x0, z0 < x0 → x0 < z1 → alpha_0(x0) →
+      --         (∀ y, z0 < y → y < x0 → beta_0(y)) → ¬rp.holds(x0, z1)
+      -- Case split: does alpha_0 occur in (z0, z1)?
+      by_cases h_occ : ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
+          alpha_0.eval_at M atomMap x
+      · -- alpha_0 occurs: find first occurrence r0
+        obtain ⟨r0, hr0_above, hr0_below, h_no_before, h_alpha_r0⟩ :=
+          h_INF.first_occ alpha_0.formula z0 z1 h_lt (by
+            obtain ⟨x, hx1, hx2, hx3⟩ := h_occ; exact ⟨x, hx1, hx2, hx3⟩)
+        -- Case split: does beta_0 fail in (z0, r0)?
+        by_cases h_beta_seg : ∃ y : M.carrier, z0 < y ∧ y < r0 ∧
+            ¬ beta_0.eval_at M atomMap y
+        · -- beta_0 fails somewhere in (z0, r0): use CaseC
+          obtain ⟨y, hy_above, hy_below, h_no_before_y, h_neg_beta_y⟩ :=
+            h_INF.first_occ beta_0.neg.formula z0 r0 hr0_above (by
+              obtain ⟨y, hy1, hy2, hy3⟩ := h_beta_seg
+              refine ⟨y, hy1, hy2, ?_⟩
+              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+              exact hy3)
+          have h_neg_alpha_y : ¬ alpha_0.eval_at M atomMap y := by
+            intro h_ay
+            exact h_no_before y hy_above hy_below h_ay
+          refine ⟨⟨1, BracketFormula.single (alpha_0.neg.conj beta_0.neg)
+            alpha_0.neg TemporalPred.top⟩, ?_, ?_⟩
+          · simp [result, caseC]
+          · simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+              BracketFormula.single, IntervalPattern.holds]
+            refine ⟨fun _ => y, ?_, ?_, ?_, ?_, ?_, ?_⟩
+            · intro a b hab; exact absurd hab (by omega)
+            · intro _; exact ⟨hy_above, lt_trans hy_below hr0_below⟩
+            · intro ⟨j, hj⟩; simp at hj; subst hj; simp
+              exact (TemporalPred.eval_at_conj M atomMap alpha_0.neg beta_0.neg y).mpr
+                ⟨by simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
+                    temporal_truth]; exact h_neg_alpha_y,
+                 by simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
+                    temporal_truth] at h_neg_beta_y ⊢; exact h_neg_beta_y⟩
+            · intro t ht0 hty
+              simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+              exact h_no_before t ht0 (lt_trans hty hy_below)
+            · intro ⟨j, hj⟩; exact absurd hj (by omega)
+            · intro t _ _; exact TemporalPred.eval_at_top M atomMap t
+        · -- beta_0 on (z0, r0): rightPart must fail at (r0, z1)
+          push_neg at h_beta_seg
+          have h_seg_ok : ∀ y, z0 < y → y < r0 → beta_0.eval_at M atomMap y :=
+            fun y hy0 hyr => h_beta_seg y hy0 hyr
+          have h_neg_rp : ¬ (bf.rightPart ⟨0, by omega⟩).holds M atomMap r0 z1 :=
+            h_neg r0 hr0_above hr0_below h_alpha_r0 h_seg_ok
+          -- By IH: v_r.holds(r0, z1)
+          have h_vr := (hv_r M atomMap h_INF r0 z1 hr0_below).mpr h_neg_rp
+          obtain ⟨⟨m', bf_m⟩, h_mem', h_bf_m_holds⟩ := h_vr
+          -- Case split on beta_0(r0) to choose CaseD disjunct
+          by_cases h_beta_r0 : beta_0.eval_at M atomMap r0
+          · -- beta_0(r0) holds: CaseD needs ¬beta_0(r0) at the point type.
+            -- This sub-case requires VecEA2 endpoint infrastructure
+            -- (Rabinovich Lemma 5.1 full proof, p.10).
+            -- When beta_0(r0) ∧ beta_0 on (z0, r0) ∧ ¬rp.holds(r0, z1):
+            -- for any x0 > r0 with alpha_0(x0), either beta_0 fails on (r0, x0)
+            -- or rightPart fails at (x0, z1). This is ¬bf.holds(r0, z1),
+            -- but expressing it as a V-bracket on (z0, z1) requires endpoint
+            -- induction (not available at the BracketFormula level).
+            sorry
+          · -- ¬beta_0(r0): CaseD fires with alpha_0 ∧ ¬beta_0 at r0
+            refine ⟨⟨m' + 1, bf_m.prepend alpha_0.neg (alpha_0.conj beta_0.neg)⟩, ?_, ?_⟩
+            · simp only [result, caseA, caseC, caseD, VBracketFormula.prependAll,
+                List.mem_cons, List.mem_map]
+              right; right; exact ⟨⟨m', bf_m⟩, h_mem', rfl⟩
+            · exact BracketFormula.prepend_holds M atomMap bf_m
+                alpha_0.neg (alpha_0.conj beta_0.neg)
+                z0 z1 r0 hr0_above hr0_below
+                ((TemporalPred.eval_at_conj M atomMap alpha_0 beta_0.neg r0).mpr
+                  ⟨h_alpha_r0, by
+                    simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
+                      temporal_truth]
+                    exact h_beta_r0⟩)
+                (fun y hy0 hyr => by
+                  simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg,
+                    temporal_truth]
+                  exact h_no_before y hy0 hyr)
+                h_bf_m_holds
+      · -- No alpha_0 in (z0, z1): CaseA
+        push_neg at h_occ
+        refine ⟨⟨0, BracketFormula.trivial alpha_0.neg⟩, ?_, ?_⟩
+        · simp [result, caseA]
+        · rw [BracketFormula.trivial_holds]
+          intro y hy0 hy1
+          simp only [TemporalPred.neg, TemporalPred.eval_at, Formula.neg, temporal_truth]
+          exact h_occ y hy0 hy1
 
 /-- **Corollary 5.4, full biconditional** (Rabinovich 2014, p.9):
     The negation of ∃z∈(z₀,z₁), bracket.holds z₀ z is equivalent to a V-bracket
