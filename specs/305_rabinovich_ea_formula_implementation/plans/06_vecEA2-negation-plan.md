@@ -1,7 +1,7 @@
 # Implementation Plan: VecEA2-Level Negation Closure (Rabinovich Lemma 5.1)
 
 - **Task**: 305 - Rabinovich EA-formula implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: Phases 1-3 [COMPLETED] (interval splitting, Lemma 5.3, Corollary 5.4 forward)
 - **Research Inputs**:
@@ -123,7 +123,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 4: Boneyard Port -- Helper Definitions, bracket_tail_satisfiable, and Lemma 5.1 Forward [NOT STARTED]
+### Phase 4: Boneyard Port -- Helper Definitions, bracket_tail_satisfiable, and Lemma 5.1 Forward [COMPLETED]
 
 **Goal**: Create `EANegationClosure.lean` and port all helper definitions, `bracket_tail_satisfiable`, the INF bracket formula infrastructure, `prior_UZ_successor`, `neg_bounded_exists` (Corollary 5.4 forward), and `neg_interval_formula` (Lemma 5.1 forward) from Boneyard NegationClosure5.lean. All adapted to use `HasAttainedINF` instead of `semantic_prior_UZ`.
 
