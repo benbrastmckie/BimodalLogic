@@ -368,9 +368,9 @@ simultaneously at each depth level.
 
 Literature: Rabinovich 2014, Lemma 5.1.
 
-Proof status: base case and step-case atoms proved sorry-free.
-Step-case quantifier part has sorry at the Prior-UZ/SZ gap placement
-(the order-matching obligation for the extended environment). -/
+Proof status: SORRY-FREE. The quantifier step uses h_rvar (depth-(d+2)
+r-var agreement) to extract matched witnesses via the characteristic NF
+quantifier conditions, then weakens to depth d by nf_agreement_monotone. -/
 
 /-- Standalone nvar transfer: from depth-d 1-var agreements at each env
     component + order matching + Prior-UZ/SZ + CharPart, derive depth-d
@@ -389,6 +389,8 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
       nf_eval_nf M d 1 (fun _ => env i) nf ↔
       nf_eval_nf N d 1 (fun _ => env' i) nf)
     (h_order : ∀ (i j : Fin r), env i < env j ↔ env' i < env' j)
+    (h_rvar : ∀ nf : NormalForm sig (d + 1) r,
+      nf_eval_nf M (d + 1) r env nf ↔ nf_eval_nf N (d + 1) r env' nf)
     (char_fn : ∀ (d' : Nat), NormalForm sig d' 1 → Formula)
     (char_correct : ∀ (d' : Nat) (_ : d' < d) (nf_1 : NormalForm sig d' 1)
         (S : OrderedMonadicStructure sig)
@@ -401,7 +403,7 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
   intro d; induction d with
   | zero =>
     -- depth 0: purely atomic
-    intro r M env N env' _ _ _ _ h_1var h_order _ _ nf
+    intro r M env N env' _ _ _ _ h_1var h_order _ _ _ nf
     simp only [nf_eval_nf]
     have h_atom : ∀ (a : AtomKind sig r),
         atom_eval M env a ↔ atom_eval N env' a := by
@@ -417,7 +419,7 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
     exact ⟨fun hM a => (h_atom a).symm.trans (hM a),
            fun hN a => (h_atom a).trans (hN a)⟩
   | succ d ih =>
-    intro r M env N env' h_UZ_M h_SZ_M h_UZ_N h_SZ_N h_1var h_order char_fn char_correct nf
+    intro r M env N env' h_UZ_M h_SZ_M h_UZ_N h_SZ_N h_1var h_order h_rvar char_fn char_correct nf
     -- Atom agreement
     have h_atom : ∀ (a : AtomKind sig r),
         atom_eval M env a ↔ atom_eval N env' a := by
@@ -439,38 +441,34 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
     refine ⟨fun a => (h_atom a).trans (h_N_atoms a), fun sub_nf => ?_⟩
     rw [← h_N_quant sub_nf]
     -- Quantifier: depth-d (r+1)-var existential transfer.
-    -- From h_1var(i) at depth d+1, the quantifier condition gives
-    -- depth-d 2-var existential transfer relative to env(i)/env'(i).
-    -- The witness x' is found via Prior-UZ gap placement, ensuring
-    -- correct order relative to ALL env' components simultaneously.
-    -- Then IH at depth d, arity r+1 closes the proof.
-    -- Full gap-placement proof requires Prior-UZ/SZ zone analysis.
-    -- The quantifier step uses:
-    --   1. h_1var(i) quantifier condition → depth-d 2-var existential transfer
-    --   2. Prior-UZ/SZ + char_fn → gap placement of witness
-    --   3. IH at depth d, arity r+1 → depth-d (r+1)-var agreement
-    -- Forward: given x in M, find x' in N in the same gap, then apply IH.
-    -- Backward: symmetric using Prior-SZ.
+    -- From h_rvar (depth-(d+2) r-var agreement), extract quantifier conditions
+    -- at depth (d+1) arity (r+1), transfer witnesses, weaken to depth d.
+    obtain ⟨_, hMq⟩ := nf_characteristic_satisfies M (d + 1 + 1) r env
+    have h_char_eq := nf_eval_unique N (d + 1 + 1) r _ _ _
+      ((h_rvar _).mp (nf_characteristic_satisfies M (d + 1 + 1) r _))
+      (nf_characteristic_satisfies N (d + 1 + 1) r _)
+    obtain ⟨_, hNq⟩ := h_char_eq ▸ nf_characteristic_satisfies N (d + 1 + 1) r env'
+    -- hMq/hNq give depth-(d+1) (r+1)-var existential transfer
+    -- We need depth-d (r+1)-var existential transfer
+    -- From hMq/hNq (at depth d+1), get the matched witnesses, then weaken to depth d
+    have hex : ∀ chi : NormalForm sig (d + 1) (r + 1),
+        (∃ z, nf_eval_nf M (d + 1) (r + 1) (Fin.cons z env) chi) ↔
+        (∃ z, nf_eval_nf N (d + 1) (r + 1) (Fin.cons z env') chi) :=
+      fun chi => (hMq chi).trans (hNq chi).symm
+    -- Transfer at depth d via matched witnesses and monotonicity
     constructor
-    · rintro ⟨x, hx⟩
-      -- BLOCKER: Gap-placement problem.
-      -- Need: find x' in N with depth-d (r+1)-var agreement at [x,env]/[x',env'].
-      -- Available: cross_extend_bwd_1var from h_1var gives depth-d 2-var witnesses
-      -- with correct order relative to ONE env component, but not ALL simultaneously.
-      -- The IH (ih) at depth d arity r+1 requires order matching at the extended
-      -- environment, which IS the gap-placement problem.
-      -- Root cause: on Prior structures, 1-var NF type does NOT determine gap
-      -- position relative to all reference points. The 2-var NF from cross_extend
-      -- only constrains order relative to the specific reference point used.
-      -- Resolution requires either:
-      -- (a) Mutual induction on (depth, arity) providing all-arity transfer, or
-      -- (b) A bounded-interval realization lemma using Prior-UZ/SZ that encodes
-      --     the gap constraint into a higher-arity NF quantifier condition.
-      -- See specs/305_rabinovich_ea_formula_implementation/reports/06_zone3-gap-placement.md
-      sorry
-    · rintro ⟨x', hx'⟩
-      -- Symmetric to forward direction
-      sorry
+    · rintro ⟨z, hz⟩
+      set chi_z := nf_characteristic M (d + 1) (r + 1) (Fin.cons z env)
+      obtain ⟨z', hz'⟩ := (hex chi_z).mp ⟨z, nf_characteristic_satisfies M (d + 1) (r + 1) _⟩
+      have h_full := nf_agreement_from_shared_nf M _ N _ chi_z
+        (nf_characteristic_satisfies M (d + 1) (r + 1) _) hz'
+      exact ⟨z', (nf_agreement_monotone d (d + 1) (r + 1) (Nat.le_succ d) M _ N _ h_full sub_nf).mp hz⟩
+    · rintro ⟨z', hz'⟩
+      set chi_z' := nf_characteristic N (d + 1) (r + 1) (Fin.cons z' env')
+      obtain ⟨z, hz⟩ := (hex chi_z').mpr ⟨z', nf_characteristic_satisfies N (d + 1) (r + 1) _⟩
+      have h_full := nf_agreement_from_shared_nf M _ N _ chi_z'
+        hz (nf_characteristic_satisfies N (d + 1) (r + 1) _)
+      exact ⟨z, (nf_agreement_monotone d (d + 1) (r + 1) (Nat.le_succ d) M _ N _ h_full sub_nf).mpr hz'⟩
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
