@@ -1,34 +1,41 @@
 {
-  "status": "partial",
-  "summary": "6th dispatch: Rewrote neg_bracket_is_vbracket n+1 case with correct 3-disjunct VBracketFormula (CaseA/CaseC/CaseD using IH on rightPart). Proved complete forward direction for all 3 disjunct types. Proved backward for CaseA (no alpha_0), CaseC (beta_0 failure), CaseD (¬beta_0 at first alpha_0 + rightPart failure). One sub-case remains: beta_0(r0) holds at first alpha_0 point, requires VecEA2 endpoint induction.",
+  "status": "researched",
+  "summary": "Research dispatch 7: Root cause analysis of 6 failed dispatches. The sorry at line 1047 (neg_bracket_is_vbracket backward, beta_0(r_0) sub-case) is structurally unsolvable at BracketFormula level with model-independent V-bracket. The paper's Lemma 5.1 proves negation closure at VecEA2 level (with endpoint conditions), not BracketFormula level. Proposition 4.2 (the actual downstream consumer) only needs the model-dependent forward direction. The Boneyard has complete proofs (neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea) using a 3-case inductive structure that avoids the beta_0(r_0) problem entirely.",
   "phases_completed": 3,
   "phases_total": 7,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1047,
-      "statement": "neg_bracket_is_vbracket backward (beta_0(r0) sub-case)",
-      "assumption": "V.holds(z0, z1) when beta_0(r0) holds at first alpha_0 point",
-      "why_deferred": "Requires VecEA2 endpoint induction (Rabinovich Lemma 5.1 p.10). At the BracketFormula level, the V-bracket cannot universally block all x0 > r0 when beta_0(r0) holds.",
-      "next_dispatch": "Implement neg_vecEA2_is_vvecEA2 with endpoint conditions, then derive neg_bracket_is_vbracket"
+      "statement": "neg_bracket_is_vbracket backward (beta_0(r_0) sub-case)",
+      "assumption": "Model-independent V-bracket for BracketFormula-level negation",
+      "why_deferred": "Structurally unsolvable at BracketFormula level. Replace with model-dependent neg_bracket_forward (Boneyard approach).",
+      "resolution": "Port Boneyard neg_interval_formula to new EANegationClosure.lean"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1172,
       "statement": "neg_partialBracketExist_is_vbracket backward (n+1)",
-      "assumption": "orderedPointsExist 1 fChainPred → partialBracketExist",
-      "why_deferred": "fChainPred missing beta_0 and Until witnesses unbounded. Depends on neg_bracket_is_vbracket resolution.",
-      "next_dispatch": "After resolving neg_bracket_is_vbracket sorry, use neg_bracket_is_vbracket to construct alternative V"
+      "assumption": "Biconditional for partial bracket negation",
+      "why_deferred": "Depends on neg_bracket_is_vbracket resolution. Replace with model-dependent neg_partialBracketExist_forward.",
+      "resolution": "Port Boneyard neg_bounded_exists to new EANegationClosure.lean"
     }
   ],
-  "blockers": [
-    "neg_bracket_is_vbracket backward: beta_0(r0) sub-case requires VecEA2 endpoint induction"
-  ],
-  "continuation_path": null,
+  "blockers": [],
+  "continuation_path": "Create EANegationClosure.lean with model-dependent forward-only proofs ported from Boneyard",
   "continuation_context": {
-    "is_successor": false,
-    "what_was_done": "Replaced the fChainPred-based VBracketFormula with a 3-disjunct IH-based construction. Forward direction fully proved for all disjuncts. Backward direction proved for 3 out of 4 sub-cases.",
-    "what_remains": "beta_0(r0) sub-case backward, and neg_partialBracketExist_is_vbracket n+1 backward",
-    "key_insight": "The BracketFormula-level proof cannot handle the sub-case where beta_0(r0) holds because the V-bracket (existential structure) cannot universally block all potential first witnesses x0 > r0. The paper uses VecEA2 endpoint conditions that provide a recursive decomposition: restricting to (r0, z1) changes the endpoint condition from top to alpha_0, giving a decreasing measure for induction."
+    "is_successor": true,
+    "what_was_done": "Identified root cause of 6 failed dispatches: model-independent biconditional at BracketFormula level is strictly harder than needed. Created 5-column lemma mapping table. Verified Boneyard approach avoids beta_0(r_0) problem. Confirmed no downstream consumers need the biconditional.",
+    "what_remains": "Port Boneyard proofs (neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea) to active codebase. Estimated 400-600 lines. Then Phase 6 (ExistPart rewire) and Phase 7 (integration).",
+    "key_insight": "The Boneyard's neg_interval_formula uses Case B1 with 'bf.tail fails on (r0, z1)' (contrapositive of bracket_tail_satisfiable). This eliminates the beta_0(r_0) sub-case because the case split is on the SEGMENT condition (z_0, r_0), not the POINT value at r_0. rightPart at index 0 IS tail (definitionally equal), so existing infrastructure suffices.",
+    "boneyard_source": "Theories/Bimodal/Boneyard/KampNegationClosure/NegationClosure5.lean (lines 966-1033 for neg_interval_formula, 859-937 for neg_bounded_exists)",
+    "boneyard_prop42": "Theories/Bimodal/Boneyard/KampNegationClosure/NegationClosureProp42.lean (lines 75-117 for neg_vecEA2, 159-169 for neg_2var_vec_ea)",
+    "porting_notes": {
+      "replace_semantic_prior_UZ_with": "HasAttainedINF",
+      "replace_tail_with": "rightPart ⟨0, by omega⟩",
+      "replace_bracket_prepend_holds_with": "prepend_holds",
+      "replace_pureSeg_with": "trivial",
+      "port_helpers": ["TemporalPred.eval_at_neg", "inf_bracket_formula", "inf_formula_prior_is_vbracket", "bracket_tail_satisfiable", "prior_UZ_successor (for Cor 5.4 n=0)"]
+    }
   }
 }
