@@ -1,7 +1,7 @@
 # Implementation Plan: Strengthen nvar_transfer Inputs (h_rvar Hypothesis)
 
 - **Task**: 305 - Rabinovich EA-formula implementation
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Phases 1-5 [COMPLETED] (EANegationClosure.lean sorry-free, ~570 lines)
 - **Research Inputs**:
