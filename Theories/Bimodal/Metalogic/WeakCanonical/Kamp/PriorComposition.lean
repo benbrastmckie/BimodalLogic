@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition
+import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
@@ -469,6 +470,58 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
       have h_full := nf_agreement_from_shared_nf M _ N _ chi_z'
         hz (nf_characteristic_satisfies N (d + 1) (r + 1) _)
       exact ⟨z, (nf_agreement_monotone d (d + 1) (r + 1) (Nat.le_succ d) M _ N _ h_full sub_nf).mpr hz'⟩
+
+/-! ## One-Directional Existential Transfer via Prior-UZ
+
+The core zone-3 mechanism: by Nat.rec on depth d, with arity r universally
+quantified. At each depth, witnesses are found using HasAttainedINF.first_occ
+with char_fn formulas, and quantifier conditions transfer by the IH at lower
+depth. The 1-var agreement level is d+1 (one above the NF depth), matching
+the depth loss from cross_extend_bwd_1var.
+
+Literature: Rabinovich 2014, Lemma 5.3 (EF-game witness placement). -/
+
+/-- One-directional existential transfer from M to N on Prior structures.
+    By induction on d (NF depth), with arity r universally quantified.
+
+    Key mechanism at each depth step:
+    1. Find z' via HasAttainedINF.first_occ with char_fn formula
+    2. Atoms match from 1-var type agreement + order matching
+    3. Quantifier conditions transfer by IH at depth d-1, all arities -/
+private theorem prior_exist_transfer_one_dir {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (M N : OrderedMonadicStructure sig)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (K : Nat)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
+        (S : OrderedMonadicStructure sig)
+        (_ : semantic_prior_UZ S atomMap) (_ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf S d 1 (fun _ => t) nf_1) :
+    ∀ (d : Nat) (_ : d ≤ K + 1) (r : Nat)
+      (envM : Fin r → M.carrier) (envN : Fin r → N.carrier)
+      (_ : ∀ (i : Fin r), ∀ nf : NormalForm sig (d + 1) 1,
+        nf_eval_nf M (d + 1) 1 (fun _ => envM i) nf ↔
+        nf_eval_nf N (d + 1) 1 (fun _ => envN i) nf)
+      (_ : ∀ (i j : Fin r), envM i < envM j ↔ envN i < envN j)
+      (sub : NormalForm sig d (r + 1)),
+      (∃ z : M.carrier, nf_eval_nf M d (r + 1) (Fin.cons z envM) sub) →
+      ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub := by
+  intro d hd r envM envN h_1var h_order sub ⟨z, hz⟩
+  -- Strategy: use exist_transfer_from_full_agree with the (d+1)-depth
+  -- r-var agreement obtained by applying nvar_transfer_from_1var_agree.
+  -- From h_1var at depth d+1, the depth-0 NF agreement gives atom matching.
+  -- The depth-d r-var agreement provides h_rvar for nvar_transfer at d-1,
+  -- and the chain builds up to depth d.
+  -- However, we need h_rvar at depth d+1 for nvar_transfer at d.
+  -- This is supplied by the outer hypothesis h_1var and the existing cross_extend
+  -- mechanism via the characteristic NF quantifier conditions.
+  sorry
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
