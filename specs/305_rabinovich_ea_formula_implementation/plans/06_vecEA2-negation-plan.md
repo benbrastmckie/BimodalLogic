@@ -250,7 +250,14 @@ theorem neg_2var_vec_ea
 
 ---
 
-### Phase 6: ExistPart Rewire [NOT STARTED] *(prerequisite infra complete)*
+### Phase 6: ExistPart Rewire [BLOCKED] *(prerequisite infra complete)*
+
+**BLOCKER** (Phase 6):
+- **What failed**: The "rewire to EA negation closure" approach requires bridging `nf_eval_nf M (k'+2) 2 [x,t] sub_nf` to VecEA2/VVecEA2 at arbitrary depth. This bridge does not exist in the codebase. The alternative (filling sorries in `nvar_transfer_from_1var_agree`) requires a "zone-3 gap-placement" proof that transfers depth-(K+1) 3-var existentials between structures using Prior-UZ/SZ squeeze arguments.
+- **What was tried**: (1) Attempted to build VecEA2 from depth-(k'+2) 2-var NF -- requires encoding quantifier conditions as BracketFormula segments, which is a major new construction. (2) Attempted to use `exist_transfer_from_full_agree` to bridge 2-var agreement to 3-var existential transfer -- fails because the depth of the 3-var existential (K+1) exceeds the maximum transferable depth (K) from depth-(K+1) 2-var agreement. (3) Attempted zone-based decomposition in `prior_nonconstenv_2var_agree_until` -- zones 1,2,4,5 are tractable but zone 3 (between-zone t < w < x) fundamentally requires proving that a witness w₂ with matching 1-var type and correct ordering relative to t' ALSO has correct ordering relative to x', which requires the Prior-UZ squeeze argument.
+- **Why stuck**: The gap between "depth-(K+1) 2-var agreement at [w,t]/[w₂,t']" and "depth-(K+1) 3-var satisfaction at [w₂,x',t']" cannot be bridged without either: (a) the full gap-placement proof using Prior-UZ/SZ to place the witness in the correct zone relative to ALL environment components simultaneously, or (b) a "NF-to-VecEA2 at arbitrary depth" construction that maps the depth-(k'+2) 2-var NF into a VecEA2 whose semantics exactly capture the NF evaluation. Both are substantial (~300-500 line) constructions.
+- **What is needed**: A dedicated research dispatch to design the zone-3 gap-placement proof. The key sub-problem: given w₂ in N with depth-(K+1) 1-var type matching w, and w₂ > t' (from 2-var agreement), prove w₂ < x' (or find an alternative w' with t' < w' < x' and matching 1-var type). This requires using `semantic_prior_UZ` with `char_fn` to find the first occurrence of the matching type above t', then showing it is below x' using the structural constraints of the depth-(K+2) 1-var agreement at x/x'.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Replace the sorry-containing backward direction in `existPart_succ_n1_bypass` (k>0 case, KampBypass.lean) with a new proof path that uses EA negation closure (`neg_2var_vec_ea`) instead of `prior_2var_transfer_until/since` from PriorComposition.lean. This eliminates all 4 live sorrys on the critical path.
 
