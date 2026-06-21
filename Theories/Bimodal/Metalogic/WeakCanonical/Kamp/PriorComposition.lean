@@ -453,12 +453,23 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
     -- Backward: symmetric using Prior-SZ.
     constructor
     · rintro ⟨x, hx⟩
-      -- Get depth-d 2-var existential transfer from h_1var at any component
-      -- Place witness in correct gap via Prior-UZ + char_fn
-      -- Apply IH at depth d, arity r+1
+      -- BLOCKER: Gap-placement problem.
+      -- Need: find x' in N with depth-d (r+1)-var agreement at [x,env]/[x',env'].
+      -- Available: cross_extend_bwd_1var from h_1var gives depth-d 2-var witnesses
+      -- with correct order relative to ONE env component, but not ALL simultaneously.
+      -- The IH (ih) at depth d arity r+1 requires order matching at the extended
+      -- environment, which IS the gap-placement problem.
+      -- Root cause: on Prior structures, 1-var NF type does NOT determine gap
+      -- position relative to all reference points. The 2-var NF from cross_extend
+      -- only constrains order relative to the specific reference point used.
+      -- Resolution requires either:
+      -- (a) Mutual induction on (depth, arity) providing all-arity transfer, or
+      -- (b) A bounded-interval realization lemma using Prior-UZ/SZ that encodes
+      --     the gap constraint into a higher-arity NF quantifier condition.
+      -- See specs/305_rabinovich_ea_formula_implementation/reports/06_zone3-gap-placement.md
       sorry
     · rintro ⟨x', hx'⟩
-      -- Symmetric backward direction using Prior-SZ
+      -- Symmetric to forward direction
       sorry
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)

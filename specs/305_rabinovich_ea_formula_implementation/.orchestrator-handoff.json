@@ -1,96 +1,75 @@
 {
   "status": "blocked",
-  "summary": "Phase 6 blocked: zone-3 gap-placement proof for non-constant environment NF transfer requires substantial new infrastructure (~300-500 lines). Both the 'rewire to EA negation closure' approach and the 'fill PriorComposition sorry' approach reduce to the same fundamental sub-problem: bridging depth-(K+1) 2-var agreement to depth-(K+1) 3-var existential transfer on Prior structures via gap-placement with semantic_prior_UZ.",
-  "phases_completed": 5,
-  "phases_total": 7,
+  "summary": "Phases 6a-6d blocked by fundamental architectural issue in nvar_transfer_from_1var_agree. The gap-placement problem (finding witness with correct order relative to ALL env components simultaneously) cannot be solved within the current proof architecture. cross_extend_bwd_1var gives witnesses with correct order relative to ONE reference point; combining multiple witnesses requires bounded-interval realization which is circular with the theorem being proved.",
+  "phases_completed": 0,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 459,
-      "statement": "nvar_transfer_from_1var_agree (quantifier step, forward)",
-      "assumption": "Given x in M with nf_eval at depth d+1 arity r+1, find x' in N with same NF satisfaction",
-      "why_deferred": "Requires zone-3 gap-placement: Prior-UZ squeeze to place witness in correct interval. 3 approaches attempted, all reduce to same sub-problem.",
-      "next_dispatch": "Research dispatch to design zone-3 proof using semantic_prior_UZ with char_fn"
+      "line": 470,
+      "statement": "nvar_transfer_from_1var_agree quantifier step (forward)",
+      "assumption": "Given x in M with nf_eval at depth d arity r+1, can find x' in N with same eval",
+      "why_deferred": "Gap-placement problem: need x' with correct order relative to ALL env' components. cross_extend gives order for ONE component only. IH application at extended env requires order matching, creating circularity.",
+      "next_dispatch": "Restructure proof using mutual induction on (depth, arity) or strengthen theorem to provide depth-(d+1) r-var agreement enabling exist_transfer"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 462,
-      "statement": "nvar_transfer_from_1var_agree (quantifier step, backward)",
-      "assumption": "Symmetric to forward direction using semantic_prior_SZ",
-      "why_deferred": "Same fundamental gap-placement sub-problem as line 459",
-      "next_dispatch": "Same research dispatch (symmetric proof)"
+      "line": 473,
+      "statement": "nvar_transfer_from_1var_agree quantifier step (backward)",
+      "assumption": "Symmetric to forward direction",
+      "why_deferred": "Same gap-placement problem as forward direction",
+      "next_dispatch": "Resolves with forward direction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 554,
-      "statement": "prior_nonconstenv_2var_agree_until (forward, zone-3 witness)",
-      "assumption": "w₂ satisfies depth-(K+1) 3-var NF at [w₂,x',t'] given 2-var agreement at [w,t]/[w₂,t']",
-      "why_deferred": "Depends on nvar_transfer_from_1var_agree (or equivalent zone-3 proof)",
-      "next_dispatch": "Resolved once nvar_transfer_from_1var_agree is filled"
+      "line": 565,
+      "statement": "prior_nonconstenv_2var_agree_until forward quantifier",
+      "assumption": "Depth-(K+1) 3-var existential transfer from M to N",
+      "why_deferred": "Depends on nvar_transfer_from_1var_agree (lines 470/473). Cannot be filled independently.",
+      "next_dispatch": "Fills automatically once nvar_transfer_from_1var_agree is proved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 559,
-      "statement": "prior_nonconstenv_2var_agree_until (backward)",
+      "line": 570,
+      "statement": "prior_nonconstenv_2var_agree_until backward quantifier",
       "assumption": "Symmetric to forward",
-      "why_deferred": "Same dependency",
-      "next_dispatch": "Same as line 554"
+      "why_deferred": "Depends on nvar_transfer_from_1var_agree",
+      "next_dispatch": "Fills automatically once nvar_transfer_from_1var_agree is proved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 610,
-      "statement": "prior_nonconstenv_2var_agree_since (forward, zone-3 witness)",
-      "assumption": "Mirror of Until zone for Since direction",
-      "why_deferred": "Same fundamental sub-problem",
-      "next_dispatch": "Same research dispatch"
+      "line": 621,
+      "statement": "prior_nonconstenv_2var_agree_since forward quantifier",
+      "assumption": "Depth-(K+1) 3-var existential transfer (since zone)",
+      "why_deferred": "Depends on nvar_transfer_from_1var_agree",
+      "next_dispatch": "Fills automatically once nvar_transfer_from_1var_agree is proved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 614,
-      "statement": "prior_nonconstenv_2var_agree_since (backward)",
-      "assumption": "Symmetric",
-      "why_deferred": "Same dependency",
-      "next_dispatch": "Same research dispatch"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1047,
-      "statement": "neg_bracket_is_vbracket (backward, beta_0 case)",
-      "assumption": "Non-critical: bypassed by forward-only EANegationClosure",
-      "why_deferred": "Structurally unsolvable beta_0(r_0) problem",
-      "next_dispatch": "Not needed for critical path"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1172,
-      "statement": "neg_partialBracketExist_is_vbracket (backward n+1)",
-      "assumption": "Non-critical: bypassed",
-      "why_deferred": "Depends on neg_bracket_is_vbracket backward",
-      "next_dispatch": "Not needed"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 542,
-      "statement": "Dead code (deprecated)",
-      "assumption": "N/A",
-      "why_deferred": "Dead code, not on critical path",
-      "next_dispatch": "Cleanup only"
+      "line": 625,
+      "statement": "prior_nonconstenv_2var_agree_since backward quantifier",
+      "assumption": "Symmetric to forward",
+      "why_deferred": "Depends on nvar_transfer_from_1var_agree",
+      "next_dispatch": "Fills automatically once nvar_transfer_from_1var_agree is proved"
     }
   ],
   "blockers": [
-    "Zone-3 gap-placement proof: given w₂ in N from cross_extend_bwd_1var with matching depth-(K+1) 1-var type and w₂ > t', need to show (or find alternative) w₂ < x' to satisfy the full 3-var NF. The argument: (1) char_fn(K+1)(nf_w) characterizes w's type as temporal formula, (2) semantic_prior_UZ on N with this formula in (t', x') finds first occurrence w' with t' < w' < x', (3) structural constraint from h_x bounds w' below x'. Step (3) requires showing that the depth-(K+2) 1-var agreement at x/x' implies no element with w's type can exceed x', which follows from the quantifier part of h_x encoding interval structure."
+    "Gap-placement problem in nvar_transfer_from_1var_agree: cross_extend_bwd_1var produces witnesses with depth-d 2-var agreement relative to a SINGLE reference point, but the IH at depth d requires order matching relative to ALL env components simultaneously. This is circular: the IH needs order matching as input, but establishing order matching requires the IH at arity 2 (which also needs order matching for its own extension). The fundamental issue is that the theorem induction structure (on depth d only, with arity r universally quantified) does not provide enough IH strength to bridge the one-depth gap between what exist_transfer_from_full_agree provides and what the quantifier step needs."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-6-handoff.md",
   "continuation_context": {
     "is_successor": false,
-    "phase_to_resume": 6,
-    "key_insight": "Three approaches were analyzed and all reduce to the same sub-problem. The zone-3 proof mechanism: (1) From h_1var_w₂, w₂ has matching depth-(K+1) 1-var type as w. (2) From hw₂ (2-var agreement at [w,t]/[w₂,t']), w₂ > t'. (3) From hw₁ (2-var agreement at [w,x]/[w₁,x']), w₁ < x'. (4) w₂ and w₁ have the same 1-var type. (5) Using semantic_prior_UZ on N with char_fn characterizing this type in (t', x'), find w' in (t', x'). (6) Apply IH (nvar_transfer_from_1var_agree at depth d) to establish full 3-var agreement. Step 5 requires showing a witness EXISTS in (t', x'), which follows from w₁ < x' (step 3) and the type transfer. Step 6 requires order matching of w' relative to all env' components."
+    "resume_phase": "6a",
+    "critical_insight": "The proof architecture needs restructuring. Three viable paths: (1) Mutual induction on (d,r) where the IH provides ALL arities at depth d AND arity r at depth d+1. (2) Strengthen nvar_transfer_from_1var_agree to take depth-(d+1) r-var agreement as ADDITIONAL input (from the existing ih_strong in the 2-var theorems). (3) Eliminate the standalone nvar_transfer_from_1var_agree entirely and inline the argument into prior_nonconstenv_2var_agree_until/since using a combined strong induction that simultaneously proves 2-var agreement AND provides the 3-var existential transfer at each depth.",
+    "files_to_modify": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean"
+    ],
+    "estimated_remaining_lines": 400
   },
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
-      "type": "implementation",
-      "summary": "Sorry-free Lemma 5.1, Cor 5.4, Prop 4.2 (Phases 4-5)"
+      "path": "specs/305_rabinovich_ea_formula_implementation/plans/07_zone3-gap-placement-plan.md",
+      "type": "plan",
+      "summary": "Implementation plan with Phase 6a marked BLOCKED with detailed blocker documentation"
     }
   ]
 }
