@@ -1,7 +1,7 @@
 # Implementation Plan: Task #305 -- NF-to-VecEA Depth-1 Bridge (v18)
 
 - **Task**: 305 - Rabinovich EA-formula implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None (all VecEA infrastructure sorry-free; ExistPart(0-1), CharPart(0-2) sorry-free)
 - **Research Inputs**: specs/305_rabinovich_ea_formula_implementation/reports/17_faithful-bridge-design.md
@@ -74,7 +74,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Depth-0 3-var Existential to VecEA2 Conversion [NOT STARTED]
+### Phase 1: Depth-0 3-var Existential to VecEA2 Conversion [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The plan identifies only 2 sorry sites (lines 869, 964) as critical path. Implementation analysis discovered 3 ADDITIONAL sorries on the critical path at K=0: `zone_compatible_witness` d=1 (line 647), `nf_eval_from_lower_agree` d=0 (line 507), and `zone_compatible_witness` d=0 (line 642).
+- **What was tried**: 
+  1. Direct zone decomposition with Prior-UZ/SZ squeeze for zone 3
+  2. VecEA bracket approach with temporal transfer
+  3. Depth-1 2-var NF transfer approach
+  4. Combined two-endpoint squeeze argument
+  All approaches fail because the zone-3 "between" constraint (t < w < x) is a 3-variable condition that cannot be decomposed into a conjunction of 2-variable conditions with the SAME existential witness.
+- **Why stuck**: The K=0 case requires depth-2 2-var agreement at [x,t]/[x',t']. The current proof structure constructs this via h_agree_env (depth-1 2-var agreement) + prior_exist_transfer_bidir (depth-1 3-var existential transfer). But prior_exist_transfer_bidir at d=1 calls zone_compatible_witness at d=1 which has an independent sorry. Even if h_agree_env is proved, zone_compatible_witness d=1 requires nf_eval_from_lower_agree d=0 which has its own sorry. All three sorries reduce to the SAME fundamental problem: proving that "exists w in (t,x) with preds P_w" transfers between Prior structures when h_x and h_t only provide endpoint agreements.
+- **What is needed**: The K=0 proof must be RESTRUCTURED to bypass zone_compatible_witness entirely. Two approaches:
+  (A) Prove the depth-0 zone-3 transfer directly (hard math), then fix all 3 sorries
+  (B) Restructure the K=0 case to prove depth-2 2-var agreement WITHOUT the h_agree_env intermediate -- i.e., prove the quantifier transfer at depth 1 directly using a different mechanism
+  Either approach requires new research: the direct squeeze via Prior-UZ/SZ does NOT straightforwardly work (see detailed analysis in handoff).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Create a new file `NfToVecEA1.lean` that converts depth-0 3-var NF existentials (with 2-var environment [x,t]) into VecEA2 formulas and proves correctness. This is the depth-1 analog of the existing depth-0 2-var conversion in NfToVecEA.lean.
 
