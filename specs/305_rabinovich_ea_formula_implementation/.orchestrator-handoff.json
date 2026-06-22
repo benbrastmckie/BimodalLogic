@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Teammate resolved the critical zone_compatible_witness sorry for d >= 2, r >= 1 by adding h_agree_env parameter. The remaining critical-path sorry is K=0 in prior_nonconstenv_2var_agree_until/since (lines 869, 964): depth-1 2-var agreement from depth-2 1-var. Reduces to depth-0 3-var existential transfer. Zones 1/5 solvable by transitivity, zone 3 'both outside' sub-case is the remaining hard problem. Build succeeds with 7 sorries (3 original non-critical + 4 new degenerate stubs). sorryAx propagates to existPart_succ_n1_bypass via K=0 path.",
+  "summary": "Deep research into K=0 base case. Root cause identified: depth-0 between-zone predicate witness transfer cannot be derived from endpoint depth-2 1-var agreements alone. The squeeze argument (Prior-UZ/SZ + F(P)/S(P) transfer) fails -- counterexample on Z proves naive approach false. Paper sidesteps via witness-count induction. Three resolution paths identified with varying confidence.",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [
@@ -9,31 +9,39 @@
       "line": 869,
       "statement": "prior_nonconstenv_2var_agree_until K=0: depth-1 2-var from depth-2 1-var",
       "assumption": "Depth-0 3-var existential transfer at [x,t]/[x',t'] with t < x, t' < x'",
-      "why_deferred": "Zone 3 'both outside' sub-case: cross_extend witnesses s_x <= t' and s_t >= x' may both fall outside (t', x'). Prior-UZ first occurrence above t' may be at or beyond x'.",
-      "next_dispatch": "Prove K=0 by direct depth-0 zone case analysis. Zone 1/5 by transitivity. Zone 3: use the 3-var quantifier condition from depth-1 2-var agreement at [w,x]/[s_x,x'] which provides a companion for t between s_x and x'. Establish that this companion constrains s_x's position relative to t'."
+      "why_deferred": "Between-zone transfer unprovable from endpoint 1-var NFs. Depth barrier: encoding 'between two endpoints' requires depth-3+ temporal formula from either endpoint, but h_t/h_x provide only depth-2.",
+      "next_dispatch": "Investigate depth-1 NF squeeze or between-zone transfer lemma via combined endpoint quantifier conditions"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 964,
       "statement": "prior_nonconstenv_2var_agree_since K=0",
       "assumption": "Mirror of Until K=0",
-      "why_deferred": "Same as Until K=0",
-      "next_dispatch": "Prove by symmetry"
+      "why_deferred": "Same root cause as Until K=0",
+      "next_dispatch": "Prove by symmetry after Until resolved"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 507,
+      "statement": "nf_eval_from_lower_agree d=0",
+      "assumption": "depth-0 (n+1)-var existential transfer",
+      "why_deferred": "Theorem lacks Prior hypotheses; same root cause as K=0",
+      "next_dispatch": "May become unneeded if K=0 resolved via different architecture"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 642,
       "statement": "zone_compatible_witness d=0",
-      "assumption": "d=0 unreachable in actual call path",
-      "why_deferred": "Low priority: callers always use d=K+1 >= 1",
-      "next_dispatch": "Can remain sorry"
+      "assumption": "depth-0 per-component to joint witness",
+      "why_deferred": "Same root cause; callers use d >= 1",
+      "next_dispatch": "Low priority"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 647,
       "statement": "zone_compatible_witness d=1",
-      "assumption": "Blocked by nf_eval_from_lower_agree d=0",
-      "why_deferred": "Not on critical path if K=0 in main theorems resolved directly",
+      "assumption": "Depends on nf_eval_from_lower_agree d=0",
+      "why_deferred": "Blocked by line 507",
       "next_dispatch": "Low priority"
     },
     {
@@ -41,38 +49,53 @@
       "line": 658,
       "statement": "zone_compatible_witness r=0",
       "assumption": "r=0 unreachable in actual call path",
-      "why_deferred": "Low priority",
+      "why_deferred": "Degenerate",
       "next_dispatch": "Can remain sorry"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 507,
-      "statement": "nf_eval_from_lower_agree d=0",
-      "assumption": "Not on critical path",
-      "why_deferred": "Theorem lacks Prior hypotheses",
-      "next_dispatch": "Low priority"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 555,
       "statement": "nf_eval_from_lower_agree n=0",
       "assumption": "Arity 0 degenerate",
-      "why_deferred": "Not on critical path",
-      "next_dispatch": "Low priority"
+      "why_deferred": "Degenerate",
+      "next_dispatch": "Can remain sorry"
     }
   ],
   "blockers": [
-    "K=0 in prior_nonconstenv_2var_agree_until/since (lines 869, 964): depth-0 3-var existential transfer for zone-3 between-case. sorryAx propagates to existPart_succ_n1_bypass."
+    "K=0 between-zone transfer (lines 869, 964): depth barrier prevents encoding 'between two endpoints' from single-endpoint 1-var NF agreements. Counterexample on Z proves naive squeeze fails."
+  ],
+  "resolution_paths": [
+    {
+      "name": "depth-1 NF squeeze",
+      "confidence": "40%",
+      "description": "Use char_fn at depth 1 to encode richer NF constraints. Uncertain whether depth-1 constraints suffice to force witness between t' and x'.",
+      "effort": "medium"
+    },
+    {
+      "name": "between-zone transfer lemma",
+      "confidence": "50%",
+      "description": "Transfer depth-1 2-var NF at [x,t] via h_t to get [x1',t']. Extract between-zone existential from x1'. Requires relating x1' to x'.",
+      "effort": "high"
+    },
+    {
+      "name": "witness-count induction restructure",
+      "confidence": "80%",
+      "description": "Match paper's induction structure. Avoids K=0 entirely. Major refactor.",
+      "effort": "very high"
+    }
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
-    "resume_from": "K=0 sorry in Until/Since main theorems (depth-0 3-var zone placement)",
+    "resume_from": "K=0 sorry in Until/Since main theorems (between-zone depth barrier)",
     "key_decisions": [
       "h_agree_env added to zone_compatible_witness and prior_exist_transfer_bidir",
       "d >= 2 r >= 1 proved sorry-free via exist_transfer_from_full_agree + nf_eval_from_lower_agree",
       "Main theorems construct h_agree_env recursively: K >= 1 uses theorem at K-1; K = 0 is sorry",
-      "K=0 IS reachable: KampBypass.existPart_succ_n1_bypass at k=1 calls with K=k'=0"
-    ]
+      "K=0 IS reachable: KampBypass.existPart_succ_n1_bypass at k=1 calls with K=k'=0",
+      "Counterexample on Z proves naive F(P)+S(P) squeeze insufficient for between-zone",
+      "Paper avoids K=0 via witness-count induction (not NF-depth)"
+    ],
+    "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/15_k0-base-case-design.md"
   }
 }
