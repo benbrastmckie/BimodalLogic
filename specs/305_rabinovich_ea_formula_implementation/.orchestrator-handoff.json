@@ -1,78 +1,44 @@
 {
   "status": "partial",
-  "summary": "Proved the algebraic inductive step of nf_eval_from_lower_agree (new lemma: depth-(d+1) agreement from depth-d agreement, for d >= 1, n >= 1). Identified a fundamental gap in prior_exist_transfer_one_dir: the between-zone case at d=0 with r >= 2 is unprovable with only depth-1 1-var agreements. Constructed a counterexample showing the theorem statement needs stronger hypotheses. The until/since sorry sites remain blocked by the d=0 base case.",
+  "summary": "Eliminated 4 downstream sorry sites (Until/Since forward/backward quantifier parts) by introducing prior_exist_transfer_bidir and wiring it into the main theorems. Reduced PriorComposition.lean from 7 sorries to 3. Removed strong induction from Until/Since proofs to fix K-shadowing type mismatch. The remaining sorry (prior_exist_transfer_bidir body) is the core multi-variable zone-placement problem.",
   "phases_completed": 0,
-  "phases_total": 3,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 507,
-      "statement": "nf_eval_from_lower_agree base case (d=0)",
-      "assumption": "From depth-0 n-var agreement, prove depth-1 n-var agreement",
-      "why_deferred": "Requires Prior-UZ/SZ to transfer depth-0 (n+1)-var existentials. The between-zone case needs temporal formula to occur in a specific interval, not guaranteed by atom agreement alone.",
-      "next_dispatch": "Research: either strengthen hypotheses (add h_1var at depth >= 2) or prove using Prior-UZ/SZ with zone analysis that h_1var constraints force formula into correct interval."
+      "statement": "nf_eval_from_lower_agree d=0 base case",
+      "assumption": "Assumes depth-0 n-var atom agreement implies depth-1 n-var biconditional evaluation",
+      "why_deferred": "Requires Prior-UZ/SZ for quantifier conditions at depth 0, but theorem does not take Prior hypotheses. Not on critical path if prior_exist_transfer_bidir is proved directly.",
+      "next_dispatch": "Either add Prior hypotheses to nf_eval_from_lower_agree, or fold into prior_exist_transfer_bidir"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 555,
-      "statement": "nf_eval_from_lower_agree n=0 case",
-      "assumption": "Depth-(d+1) 0-var -> depth-(d+2) 0-var agreement",
-      "why_deferred": "exist_transfer_from_full_agree type mismatch for Fin 0 env",
-      "next_dispatch": "Handle as degenerate: arity-0 quantifier conditions at arity 1"
+      "statement": "nf_eval_from_lower_agree n=0 edge case",
+      "assumption": "At n=0 (empty env), quantifier condition needs separate argument",
+      "why_deferred": "Not on critical path (downstream uses n>=2)",
+      "next_dispatch": "Low priority"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 623,
-      "statement": "prior_exist_transfer_one_dir",
-      "assumption": "One-directional existential transfer by Nat.rec on d",
-      "why_deferred": "Between-zone at d=0 with r >= 2 is unprovable with current hypotheses. Counterexample: M with P at z=1 between t=0 and x=2, N with P only outside (0,2), both Prior structures with matching depth-1 1-var NFs at t/t' and x/x'.",
-      "next_dispatch": "Restructure: (1) add h_rvar for base case, (2) use 2-var agreement from calling context strong induction, or (3) prove until/since directly"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 694,
-      "statement": "prior_nonconstenv_2var_agree_until forward quantifier",
-      "assumption": "nf_eval N (K+1) 3 [w₂,x',t'] sub_nf from cross_extend witness",
-      "why_deferred": "Blocked by nf_eval_from_lower_agree d=0 base case",
-      "next_dispatch": "Wire once base case resolved"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 698,
-      "statement": "prior_nonconstenv_2var_agree_until backward quantifier",
-      "assumption": "Symmetric to forward",
-      "why_deferred": "Same blocker",
-      "next_dispatch": "Wire once base case resolved"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 749,
-      "statement": "prior_nonconstenv_2var_agree_since forward quantifier",
-      "assumption": "Mirror of Until",
-      "why_deferred": "Same blocker",
-      "next_dispatch": "Wire once base case resolved"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 753,
-      "statement": "prior_nonconstenv_2var_agree_since backward quantifier",
-      "assumption": "Mirror of Until backward",
-      "why_deferred": "Same blocker",
-      "next_dispatch": "Wire once base case resolved"
+      "line": 632,
+      "statement": "prior_exist_transfer_bidir body (bidirectional depth-d (r+1)-var existential transfer)",
+      "assumption": "From depth-(d+1) 1-var agreements + order matching + Prior-UZ/SZ, transfer depth-d (r+1)-var existentials bidirectionally",
+      "why_deferred": "Core zone-placement problem. Inductive step needs: (1) 1-var extraction from 2-var cross_extend, (2) zone-order matching for witnesses relative to non-anchor env components. Both sub-problems are tractable but require Prior-UZ/SZ interval existence arguments.",
+      "next_dispatch": "Prove by Nat.rec on d. Step d+1: cross_extend from env component gives depth-(d+1) 2-var agreement, extract 1-var for z/z', weaken h_1var for env components. For zone-order: use Prior-UZ applied at lower boundary, Prior-SZ applied at upper boundary, show formula is satisfied in interval via cross_extend witnesses from both boundaries."
     }
   ],
-  "blockers": [
-    "The d=0 base case of nf_eval_from_lower_agree (and prior_exist_transfer_one_dir) requires Prior-UZ/SZ to transfer depth-0 (n+1)-var existentials. The between-zone case needs a temporal formula (char_fn) to occur in a specific interval. Counterexample shows this is not guaranteed by depth-1 1-var agreements alone. Resolution options: (a) strengthen hypotheses, (b) use 2-var agreement from calling context strong induction, (c) prove direct zone analysis showing h_1var constraints force formula into interval."
-  ],
-  "key_insights": {
-    "algebraic_step_proved": "nf_eval_from_lower_agree inductive step (d >= 1, n >= 1) is sorry-free. Uses exist_transfer_from_full_agree for depth-d matched witnesses, nf_agreement_from_shared_nf for full agreement, IH for depth upgrade. This is the CORE algebraic mechanism.",
-    "counterexample_for_base": "M = (Q, <) with P only at z=1, env=[0,2]. N = (Q, <) with P at -1 and 5, env=[0,2]. Both Prior structures. h_1var at depth 1 matches (chi with P(y)>0 true in both; chi with P(y)<2 true in both). But ∃ z' in (0,2) with P in N fails (P only at -1 and 5). Additional check: h_1var at x=2 fails because ∃ y>2 with P is false in M but true in N (y=5). So counterexample requires P constrained to interval by h_1var.",
-    "partial_resolution": "For the specific application (r=2, env=[x,t]), h_1var constraints DO force P into [t',x']: no P below t' (from h_1var at t), no P above x' (from h_1var at x), P(t')=false and P(x')=false (from pred agreement). Combined with P existing above t' and below x': P must exist in (t',x'). This argument is specific to r=2 and uses properties of the h_1var constraints. May generalize.",
-    "depth_1_gap_confirmed": "The depth-1 gap is real: exist_transfer from depth-(d+1) agreement gives depth-d existential, but quantifier conditions need depth-(d+1) existential. The IH bridges one level per application. The full chain recurses to d=0 where the gap materializes as the base case problem."
-  },
+  "blockers": [],
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
-    "resume_phase": 1,
-    "resume_from": "nf_eval_from_lower_agree algebraic step proved, base case blocked"
+    "resume_from": "4 downstream sorries eliminated, prior_exist_transfer_bidir body remaining",
+    "key_decisions": [
+      "Introduced prior_exist_transfer_bidir (bidirectional) because quantifier biconditional needs both M->N and N->M at depth d",
+      "prior_exist_transfer_one_dir is .mp wrapper over bidir",
+      "Removed Nat.strong_induction_on from Until/Since to fix K-shadowing: moved env setup (h_1var_env, h_order_env) outside the strong induction body",
+      "Env setup uses set envM_xt / envN_xt with explicit Fin 2 → carrier type annotation to avoid dependent type issues with Fin.cons"
+    ]
   }
 }
