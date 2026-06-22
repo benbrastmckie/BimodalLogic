@@ -9,7 +9,7 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
