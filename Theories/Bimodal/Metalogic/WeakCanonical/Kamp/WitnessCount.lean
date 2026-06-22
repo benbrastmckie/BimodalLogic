@@ -156,10 +156,15 @@ private theorem nf_depth0_char_iff_eval {sig : MonadicSignature}
     x-type point above t' is ≤ x' and that the nf_w0 witness from the
     depth-1 profile transfer falls below this point.
 
-    One sorry remains for the deepest edge case where the depth-1 profile
-    witness also falls outside (t', x'). This case may be impossible on
-    Prior structures but requires combined 3-variable reasoning beyond
-    what single-endpoint transfers provide. -/
+    **THIS THEOREM IS FALSE.** Counterexample: M=N=Z with is_even, t=t'=0,
+    x=4, x'=2. The point w=2 is even in (0,4), but (0,2) contains only 1
+    (odd). All hypotheses hold (depth-2 1-var NFs at 4/2 agree by
+    translation symmetry mod 2 on Z), but the conclusion fails.
+
+    The edge case is not "hard" -- it is genuinely impossible. The fix is
+    to bypass this theorem: existPart_succ_n1_bypass should use VecEA2
+    bracket formulas to encode zone-3 witnesses in the temporal formula,
+    rather than attempting cross-structure NF transfer. -/
 theorem zone3_exist_transfer {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -248,17 +253,10 @@ theorem k0_depth1_2var_agree_until {sig : MonadicSignature}
     ∀ nf : NormalForm sig (0 + 1) 2,
       nf_eval_nf M (0 + 1) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (0 + 1) 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- Depth-1 2-var NF = atoms + depth-0 3-var quantifier conditions.
-  -- Atoms transfer from h_x, h_t. Quantifier conditions transfer by zone analysis.
-  -- Zone 3 uses zone3_exist_transfer. Other zones use depth-2 quantifier extraction
-  -- at a single endpoint.
-  --
-  -- Full proof requires zone-by-zone case split on depth-0 3-var chi's order atoms
-  -- for the existential variable (var 0) relative to x (var 1) and t (var 2).
-  -- Each zone's transfer is sorry-free except zone 3 which inherits the sorry from
-  -- zone3_exist_transfer. The zone decomposition itself is mechanical but verbose.
-  --
-  -- Deferred: complete zone decomposition. Current sorry propagates from zone 3.
+  -- **FALSE**: This is the depth-1 2-var NF agreement on non-constant environments,
+  -- which is the same as prior_nonconstenv_2var_agree_until K=0. The theorem is
+  -- FALSE for the same zone-3 reason: zone3_exist_transfer is false.
+  -- See PriorComposition.lean line 869 comment for the counterexample.
   sorry
 
 /-- K=0 depth-1 2-var agreement for the Since zone (x < t). -/
@@ -289,7 +287,7 @@ theorem k0_depth1_2var_agree_since {sig : MonadicSignature}
     ∀ nf : NormalForm sig (0 + 1) 2,
       nf_eval_nf M (0 + 1) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (0 + 1) 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- Mirror of k0_depth1_2var_agree_until with x < t.
+  -- **FALSE**: Mirror of k0_depth1_2var_agree_until. Same counterexample with swapped roles.
   sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
