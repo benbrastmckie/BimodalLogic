@@ -1,7 +1,7 @@
 # Implementation Plan: One-Directional Zone-3 Existential Transfer
 
 - **Task**: 305 - Rabinovich EA-formula implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: Phases 1-5, 6a-6c [COMPLETED]; Phase 6d [BLOCKED] (prior plan v8)
 - **Research Inputs**: specs/305_rabinovich_ea_formula_implementation/reports/07_zone3-induction-design.md
@@ -73,7 +73,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Define `prior_zone3_exist_transfer` Statement and Base Case [NOT STARTED]
+### Phase 1: Define `prior_zone3_exist_transfer` Statement and Base Case [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The existing `prior_exist_transfer_one_dir` (line 524) has the correct signature but the proof strategy described in comments (char NF + exist_transfer_from_full_agree) is wrong. The char-NF approach inherently loses 1 depth level per arity increase.
+- **What was tried**: (1) Direct application of exist_transfer_from_full_agree from ih_strong at K-1: gives depth-K 3-var existential but goal needs K+1. (2) nvar_transfer_from_1var_agree at depth K+1: needs h_rvar at depth K+2 = circular. (3) Reconstruction_depth_agree from depth-K 3-var: max output is depth K, not K+1. (4) Zone-3 squeeze with Prior-UZ and char_fn(K+1): existence in (t',x') not guaranteed when both cross_extend companions are outside interval.
+- **Why stuck**: The depth gap is intrinsic to the char-NF proof architecture. Every arity increase via exist_transfer_from_full_agree costs exactly 1 depth level. To bridge from 2-var (depth K+2) to 3-var existential (depth K+1), we need depth-(K+2) 2-var agreement, which is the CONCLUSION being proved.
+- **What is needed**: Restructure the proof to follow Rabinovich's EF-game induction on depth d (not K), handling all arities simultaneously. The IH at d-1 needs only depth-(d-1) 1-var matching, which cross_extend from depth-d 1-var provides exactly. A research dispatch should resolve the zone-3 existence question for general r.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Add the new lemma with its full type signature and prove the base case (d=0). The lemma proves one-directional existential transfer: given w in zone 3 of M satisfying depth-d 3-var sub_nf, produce w' in zone 3 of N satisfying the same sub_nf.
 
