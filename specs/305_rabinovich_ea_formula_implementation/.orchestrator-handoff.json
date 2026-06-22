@@ -1,95 +1,81 @@
 {
-  "status": "blocked",
-  "summary": "Implementation blocked: sorry chain analysis revealed 5 critical-path sorries (not 2). All reduce to zone-3 between-endpoint existential transfer. 5 implementation approaches analyzed and failed. Plan v18 needs revision. The VecEA bridge approach (plan Path B) is circular because temporal transfer requires the Kamp theorem being proved. New research needed for correct mathematical argument.",
+  "status": "partial",
+  "summary": "Phase 1 partial: Created WitnessCount.lean with sorry-free temporal_truth_transfer theorem (table + doets_lemma_1_1 composition). Zone-3 transfer structure established but core sorry remains. Deep analysis reveals the mathematical challenge: F(P_w)/S(P_w) transfers at depth 2 give P_w points above t' and below x' but cannot guarantee overlap in (t', x'). The depth-2 quantifier transfer gives linked witnesses (y' and z' from the same NF) but z' < x' requires y' <= x', which is unresolved.",
+  "session_id": "sess_1750618000_orch305",
   "phases_completed": 0,
   "phases_total": 5,
+  "plan_version": 19,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/19_witness-count-restructure-plan.md",
   "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 63,
+      "statement": "char_fn_depth0_operator_depth",
+      "assumption": "char_fn 0 produces formulas with operator_depth 0",
+      "why_deferred": "Depends on how char_fn is constructed in KampPrior pipeline; may need to add as explicit hypothesis",
+      "next_dispatch": "Add operator_depth bound as parameter or prove from concrete char_fn construction"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 141,
+      "statement": "zone3_exist_transfer (the core sorry)",
+      "assumption": "Given P_w point between t and x on M, find P_w point between t' and x' on N",
+      "why_deferred": "The fundamental mathematical challenge: two-endpoint F/S transfer does not guarantee interval overlap; depth-2 quantifier transfer gives linked witnesses but y' <= x' is unresolved",
+      "next_dispatch": "Research whether witness-count induction (Rabinovich Lemma 5.3) can break the circularity, or whether the depth-2 transfer combined with HasAttainedINF on a carefully chosen formula resolves y' <= x'"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 186,
+      "statement": "k0_depth1_2var_agree_until",
+      "assumption": "Full K=0 depth-1 2-var agreement",
+      "why_deferred": "Depends on zone3_exist_transfer being resolved first",
+      "next_dispatch": "Implement once zone3_exist_transfer is proved"
+    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 869,
-      "statement": "prior_nonconstenv_2var_agree_until K=0: depth-1 2-var from depth-2 1-var",
-      "assumption": "Between-zone predicate witness transfer at depth 0",
-      "why_deferred": "Irreducible to all NF-depth mechanisms. Requires formula-level (VecEA) approach.",
-      "next_dispatch": "NF-to-VecEA bridge (Path B)"
+      "statement": "prior_nonconstenv_2var_agree_until K=0 case",
+      "assumption": "Depth-1 2-var agreement from depth-2 1-var agreement on Prior structures",
+      "why_deferred": "Target sorry; depends on k0_depth1_2var_agree_until",
+      "next_dispatch": "Replace with call to k0_depth1_2var_agree_until once proved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 964,
-      "statement": "prior_nonconstenv_2var_agree_since K=0",
-      "assumption": "Mirror of Until K=0",
-      "why_deferred": "Same as Until K=0",
-      "next_dispatch": "Symmetry after Until resolved"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 507,
-      "statement": "nf_eval_from_lower_agree d=0 (not on critical path if K=0 resolved via bridge)",
-      "why_deferred": "Would be bypassed by VecEA bridge"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 642,
-      "statement": "zone_compatible_witness d=0 (not on critical path)",
-      "why_deferred": "Would be bypassed"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 647,
-      "statement": "zone_compatible_witness d=1 (not on critical path)",
-      "why_deferred": "Would be bypassed"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 658,
-      "statement": "zone_compatible_witness r=0 (degenerate, unreachable)",
-      "why_deferred": "Can remain sorry"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 555,
-      "statement": "nf_eval_from_lower_agree n=0 (degenerate)",
-      "why_deferred": "Can remain sorry"
+      "statement": "prior_nonconstenv_2var_agree_since K=0 case",
+      "assumption": "Mirror of Until direction",
+      "why_deferred": "Target sorry; depends on Since mirror of k0_depth1_2var_agree_until",
+      "next_dispatch": "Replace with call to Since mirror once proved"
     }
   ],
   "blockers": [
-    "K=0 between-zone transfer: irreducible to NF-depth mechanisms. Paper avoids via witness-count induction. VecEA framework has the right structure but lacks NF-to-VecEA bridge at depth > 0."
+    "Zone-3 interval constraint: given P_w point between t and x on M, the depth-2 quantifier transfer gives y' > t' with depth-1 2-var NF matching [x,t] and z' between t' and y'. But z' < x' requires y' <= x'. Neither HasAttainedINF on the depth-0 char formula (which gives first x-type point r0 <= min(y', x'), but doesn't constrain y' <= x') nor the symmetric h_x transfer (which gives w2 < x' but w2 might be <= t') resolves this."
   ],
-  "resolution_paths": [
-    {
-      "name": "Path B: NF-to-VecEA bridge (RECOMMENDED)",
-      "confidence": "70%",
-      "description": "Build depth-k 2-var NF to VecEA2 conversion, leveraging existing sorry-free EANegationClosure and VecEA infrastructure. 500-900 lines across 2-4 files.",
-      "effort": "medium-high",
-      "key_insight": "VecEA framework already has witness-count induction (BracketFormula n). NfToVecEA handles depth 0. Bridge to depth > 0 is the gap."
-    },
-    {
-      "name": "Path A: Direct between-zone lemma",
-      "confidence": "50%",
-      "description": "Prove between_zone_predicate_transfer using combined depth-2 information from both endpoints. 250-500 lines in PriorComposition.lean.",
-      "effort": "medium",
-      "key_insight": "h_x at depth 2 encodes depth-1 2-var NF at [w,x] which encodes depth-0 3-var patterns. But controlling transferred witness position relative to t' is unproven."
-    },
-    {
-      "name": "Path C: Full witness-count restructure (NOT recommended)",
-      "confidence": "80%",
-      "description": "Match paper exactly with witness-count induction. 900-1400 lines across 4-6 files. Too expensive relative to benefit.",
-      "effort": "very high"
+  "key_discoveries": [
+    "temporal_truth_transfer theorem: composes table_correctness + table_depth_bound + doets_lemma_1_1 to transfer temporal formulas of operator_depth <= k via depth-k 1-var NF agreement. This is a powerful general tool.",
+    "operator_depth of F(P_w) = max(operator_depth(char_fn 0 nf_w0), 0) + 2 = 2 when char_fn 0 has operator_depth 0. Transferable via h_t at depth 2.",
+    "Two-endpoint F/S transfer (F(P_w) at t + S(P_w) at x) gives P_w points above t' and below x' but CANNOT guarantee overlap in (t', x'). This is a GENUINE gap, not an artifact of the proof strategy.",
+    "The depth-2 quantifier transfer from h_t gives LINKED witnesses (y' and z') but constraining z' < x' requires y' <= x', which is the core mathematical challenge.",
+    "The plan's approach via BracketFormula/VecEA2 has operator_depth 4, too deep for the depth-2 transfer. An alternative encoding or the witness-count induction is needed."
+  ],
+  "new_infrastructure": {
+    "temporal_truth_transfer": {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 42,
+      "status": "sorry-free",
+      "description": "Generic temporal truth transfer from depth-k 1-var NF agreement for formulas of operator_depth <= k"
     }
-  ],
-  "continuation_path": "plan",
+  },
+  "continuation_path": "research",
   "continuation_context": {
     "is_successor": true,
-    "resume_from": "K=0 sorry resolution via NF-to-VecEA bridge",
-    "key_decisions": [
-      "Full witness-count restructure rejected as too expensive (900-1400 lines) when targeted bridge suffices",
-      "VecEA framework already implements witness-count induction sorry-free (EANegationClosure)",
-      "NfToVecEA handles depth 0; depth > 0 bridge is the specific gap to fill",
-      "nvar_transfer_from_1var_agree h_rvar is circular at depth-2 2-var -- confirmed via H4",
-      "Between-zone squeeze fails on Z (counterexample confirmed via H4)",
-      "K=0 is the SOLE blocker for entire kamp_prior_expressive_completeness pipeline",
-      "If K=0 resolved, all 7 PriorComposition sorries either resolve or become non-critical-path"
-    ],
-    "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/16_witness-count-restructure.md",
-    "prior_research": "specs/305_rabinovich_ea_formula_implementation/reports/15_k0-base-case-design.md"
+    "prior_plans_failed": ["v18 (NF-to-VecEA bridge)", "v19 Phase 1 partial (zone-3 interval constraint)"],
+    "recommended_flags": "--hard",
+    "recommended_investigation_order": [
+      "1. RESEARCH: Can witness-count induction (Rabinovich Lemma 5.3) break the circularity? The idea: at n=0 witness types, zone-3 is vacuous; at n+1, use IH to get depth-1 2-var agreement for n types, then transfer the (n+1)-th type using the partial agreement.",
+      "2. RESEARCH: Is there a formula of operator_depth <= 2 that encodes 'exists P_w between t and x'? The VecEA2 approach gives depth 4. Maybe a simpler encoding exists.",
+      "3. RESEARCH: Can the depth-2 quantifier condition from h_t be combined with HasAttainedINF on a DIFFERENT formula (not the depth-0 char formula) to constrain y' <= x'?",
+      "4. ALTERNATIVE: Consider whether zone_compatible_witness at d=0 can be proved directly, bypassing the current approach entirely."
+    ]
   }
 }
