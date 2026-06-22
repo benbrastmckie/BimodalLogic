@@ -9,7 +9,7 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -53,6 +53,11 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/12_zone-decomposition-plan.md",
           "type": "plan",
           "summary": "v12: Zone-decomposition direct wiring — delete prior_exist_transfer_one_dir, case-split on zone at each sorry site"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/08_nf-eval-boost-design.md",
+          "type": "report",
+          "summary": "H3/H4 research: char_fn + Prior-UZ/SZ avoids depth loss, prior_exist_transfer_one_dir has correct signature"
         }
       ],
       "previous_status": "partial",

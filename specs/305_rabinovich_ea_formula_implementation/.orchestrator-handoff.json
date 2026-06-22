@@ -1,77 +1,68 @@
 {
-  "status": "blocked",
-  "summary": "Phase 1 (plan v12) BLOCKED: depth-1 gap prevents direct wiring at sorry site line 595. Analysis of 6 approaches confirms the gap is fundamental. Resolution requires either (a) nf_eval_boost_prior helper lemma (depth induction with Prior-UZ/SZ zone placement), (b) restructuring outer strong induction to all-arity, or (c) variable projection lemma for extracting 2-var from n-var agreement.",
+  "status": "researched",
+  "summary": "Research complete: the algebraic nf_eval_boost_prior approach is IMPOSSIBLE (depth-D agreement gives depth-(D-1) transfer structurally). The correct approach is completing prior_exist_transfer_one_dir (line 491-524) using Prior-UZ/SZ + char_fn for witness placement with full-depth 1-var matching. The existing signature is correct. Proof: Nat.rec on d with r universal. At each step, char_fn converts 1-var type to temporal formula, Prior-UZ finds first occurrence in correct zone, char_correct reconverts to NF eval. IH handles quantifier conditions. Zone-3 interval bounding (witness between envN_i and envN_j) is the highest risk item.",
   "phases_completed": 0,
-  "phases_total": 3,
+  "phases_total": 0,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 524,
       "statement": "prior_exist_transfer_one_dir",
-      "assumption": "One-directional existential transfer from 1-var agreements",
-      "why_deferred": "Theorem as stated requires restructuring (confirmed by plans v9-v12)",
-      "next_dispatch": "Delete if approach (b) chosen; reprove with stronger signature if approach (a) chosen"
+      "assumption": "One-directional existential transfer from 1-var agreements + Prior-UZ/SZ + char_fn",
+      "why_deferred": "This IS the correct lemma to prove. The sorry needs filling, not deletion.",
+      "next_dispatch": "Implement proof by Nat.rec on d with Prior-UZ/SZ witness placement"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 595,
       "statement": "nf_eval_nf N (K+1) 3 [w2,x',t'] sub_nf (forward Until)",
       "assumption": "Depth-(K+1) 3-var existential transfer on Prior structures",
-      "why_deferred": "Depth-1 gap: need depth-(K+2) 2-var agreement (circular) or new nf_eval_boost_prior lemma",
-      "next_dispatch": "Implement nf_eval_boost_prior helper OR restructure outer strong induction to all-arity"
+      "why_deferred": "Wire to prior_exist_transfer_one_dir after it is proved",
+      "next_dispatch": "Replace cross_extend_bwd_1var + sorry with prior_exist_transfer_one_dir call"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 599,
       "statement": "nf_eval_nf M (K+1) 3 [w2,x,t] sub_nf (backward Until)",
       "assumption": "Symmetric to line 595",
-      "why_deferred": "Same depth-1 gap as line 595",
-      "next_dispatch": "Resolve with same mechanism as line 595"
+      "why_deferred": "Wire to prior_exist_transfer_one_dir with M/N swapped",
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with structures swapped"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 650,
       "statement": "nf_eval_nf N (K+1) 3 [...] sub_nf (forward Since)",
       "assumption": "Symmetric to line 595 with reversed orders",
-      "why_deferred": "Same depth-1 gap as line 595",
-      "next_dispatch": "Resolve with same mechanism as line 595"
+      "why_deferred": "Same mechanism as line 595",
+      "next_dispatch": "Apply prior_exist_transfer_one_dir"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 654,
       "statement": "nf_eval_nf M (K+1) 3 [...] sub_nf (backward Since)",
       "assumption": "Symmetric to line 595",
-      "why_deferred": "Same depth-1 gap as line 595",
-      "next_dispatch": "Resolve with same mechanism as line 595"
+      "why_deferred": "Apply prior_exist_transfer_one_dir with M/N swapped",
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with structures swapped"
     }
   ],
-  "blockers": [
-    {
-      "type": "missing_infrastructure",
-      "description": "Need 'nf_eval_boost_prior' helper: from depth-d r-var agreement + Prior-UZ/SZ + char_fn, prove depth-(d+1) r-var eval transfers one-directionally. Proof by Nat.rec on d with r universally quantified. Base case (d=0) requires zone-based witness placement using HasAttainedINF.first_occ. Step case uses exist_transfer_from_full_agree + IH. Key difficulty: base case zone placement needs interval existence transfer via 2-var agreement at zone boundary pairs, which requires threading h_t/h_x through all recursive levels.",
-      "goal_state": "nf_eval_nf N (K+1) 3 (Fin.cons w2 (Fin.cons x' fun _ => t')) sub_nf",
-      "approaches_tried": [
-        "cross_extend_bwd_1var from h_t (zone problem: w2 vs x' unknown)",
-        "ih_strong quantifier transfer (depth-K not K+1)",
-        "nvar_transfer_from_1var_agree (needs h_rvar, circular)",
-        "reconstruction_depth_agree (wrong direction, goes down not up)",
-        "exist_transfer_from_full_agree on hw2 (wrong env shape for 4-var)",
-        "NF eval boost standalone (base case needs interval existence from 2-var agreement)"
-      ]
-    }
-  ],
+  "blockers": [],
   "continuation_context": {
-    "next_phase": 1,
-    "is_retry": true,
-    "approach_to_try": "Write nf_eval_boost_prior as helper lemma above sorry site. The proof IS constructive: by Nat.rec on d. At d=0: zone analysis using HasAttainedINF.first_occ + char_fn for witness placement. At d+1: exist_transfer_from_full_agree for witness finding + IH for verification. Key: must thread depth-(K+2) 1-var agreements (h_t, h_x) and depth-(K+1) 2-var agreements (ih_strong, hw2) through all recursive levels, not just rely on depth-d r-var agreement.",
-    "alternative_approach": "Restructure prior_nonconstenv_2var_agree_until to prove all-arity agreement (forall r) simultaneously via strong induction on K. Then ih_strong provides depth-(K+1) r-var for all r, giving h_rvar for nvar_transfer_from_1var_agree. This is cleaner but modifies existing proof architecture (currently only proves 2-var).",
-    "key_insight": "The depth-1 gap is bridgeable via EF-game-style duplicator strategy: at each round, find witness with one-lower-depth agreement. After K+1 rounds, depth 0 (purely atomic). The proof chain: depth-K 3-var -> depth-(K-1) 4-var -> ... -> depth-0 (K+3)-var. At depth 0: atoms only, no quantifier conditions. The formalization challenge is the simultaneously increasing arity and decreasing depth in the Nat.rec."
+    "approach": "Complete prior_exist_transfer_one_dir proof, then wire sorry sites",
+    "key_insight": "char_fn + Prior-UZ/SZ gives full-depth 1-var matching WITHOUT the cross_extend depth loss. This is the essential mechanism that makes the proof work where algebraic approaches fail.",
+    "highest_risk": "Zone-3 interval bounding: ensuring the Prior-UZ witness lands between the correct pair of env elements in N. May require using both endpoints' 1-var agreements (one from above, one from below).",
+    "postmortem_constraints": [
+      "Do NOT attempt algebraic nf_eval_boost_prior (proved impossible)",
+      "Do NOT use cross_extend as primary witness mechanism (loses one depth)",
+      "Do NOT delete prior_exist_transfer_one_dir (it has the correct signature)",
+      "DO use char_fn + Prior-UZ/SZ for witness placement at every depth level",
+      "DO use IH at d-1 for quantifier conditions of depth-d NFs"
+    ]
   },
   "artifacts": [
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/12_zone-decomposition-plan.md",
-      "type": "plan",
-      "summary": "Plan v12 Phase 1 blocked with detailed 6-approach analysis"
+      "path": "specs/305_rabinovich_ea_formula_implementation/reports/08_nf-eval-boost-design.md",
+      "type": "report",
+      "summary": "Comprehensive design for prior_exist_transfer_one_dir proof + sorry site wiring"
     }
   ]
 }
