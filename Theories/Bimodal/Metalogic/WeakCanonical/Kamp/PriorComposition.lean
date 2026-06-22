@@ -471,6 +471,114 @@ theorem nvar_transfer_from_1var_agree {sig : MonadicSignature}
         hz (nf_characteristic_satisfies N (d + 1) (r + 1) _)
       exact ⟨z, (nf_agreement_monotone d (d + 1) (r + 1) (Nat.le_succ d) M _ N _ h_full sub_nf).mpr hz'⟩
 
+/-! ## Algebraic NF Evaluation Upgrade
+
+Constructive evaluation upgrade: from depth-d n-var agreement,
+derive depth-(d+1) n-var agreement.
+
+For d ≥ 1 (i.e., the IH step starting from d+1 agreement), the proof
+is PURELY ALGEBRAIC:
+- Atoms transfer from depth-d agreement.
+- Quantifier conditions: `exist_transfer_from_full_agree` from depth-(d+1)
+  agreement gives depth-d (n+1)-var existential transfer. Matched witnesses
+  have depth-d (n+1)-var agreement. Apply IH at d to upgrade.
+
+For d = 0, the quantifier conditions require depth-0 (n+1)-var existential
+transfer, which is NOT algebraically provable (needs Prior-UZ/SZ).
+The d=0 case is left as sorry. -/
+
+/-- Algebraic evaluation upgrade: depth-(d+1) agreement from depth-d agreement,
+    by Nat.rec on d. Proves the BICONDITIONAL (both M→N and N→M). -/
+private theorem nf_eval_from_lower_agree {sig : MonadicSignature}
+    (M N : OrderedMonadicStructure sig) :
+    ∀ (d n : Nat)
+    (envM : Fin n → M.carrier) (envN : Fin n → N.carrier)
+    (h_agree_d : ∀ nf : NormalForm sig d n,
+      nf_eval_nf M d n envM nf ↔ nf_eval_nf N d n envN nf)
+    (sub : NormalForm sig (d + 1) n),
+    nf_eval_nf M (d + 1) n envM sub ↔ nf_eval_nf N (d + 1) n envN sub := by
+  intro d
+  induction d with
+  | zero =>
+    intro n envM envN h_agree_0 sub
+    -- Base case (d=0): sub at depth 1. h_agree_0: depth-0 n-var (atom) agreement.
+    -- Atoms transfer from h_agree_0. Quantifier conditions require depth-0
+    -- (n+1)-var existential transfer, which needs Prior-UZ/SZ.
+    sorry
+  | succ d ih =>
+    intro n envM envN h_agree_dp1 sub
+    -- Inductive step: h_agree at depth d+1, sub at depth d+2.
+    -- Prove nf_eval_nf M (d+2) n envM sub ↔ nf_eval_nf N (d+2) n envN sub.
+    -- Both sides decompose into (atoms, quantifiers).
+    have h_atom : ∀ a : AtomKind sig n,
+        atom_eval M envM a ↔ atom_eval N envN a :=
+      atom_agreement_from_nf M envM N envN h_agree_dp1
+    -- For the biconditional, show both characteristic NFs match.
+    set tgt_N := nf_characteristic N (d + 2) n envN
+    have h_N_sat := nf_characteristic_satisfies N (d + 2) n envN
+    set tgt_M := nf_characteristic M (d + 2) n envM
+    have h_M_sat := nf_characteristic_satisfies M (d + 2) n envM
+    -- Show M satisfies tgt_N (then by nf_agreement_from_shared_nf, full agreement)
+    suffices h_M_sat_tgtN : nf_eval_nf M (d + 2) n envM tgt_N by
+      exact nf_agreement_from_shared_nf M envM N envN tgt_N h_M_sat_tgtN h_N_sat sub
+    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+    refine ⟨fun a => (h_atom a).trans (h_N_atoms a), fun chi => ?_⟩
+    rw [← h_N_quant chi]
+    -- Goal: (∃ x, nf_eval M (d+1) (n+1) [x, envM] chi) ↔
+    --       (∃ x', nf_eval N (d+1) (n+1) [x', envN] chi)
+    -- From h_agree at depth d+1 arity n:
+    -- exist_transfer_from_full_agree with k+1 = d+1, (n'+1) = n gives
+    -- depth-d (n'+2)-var = depth-d (n+1)-var existential transfer.
+    -- Then matched witnesses have depth-d (n+1)-var agreement.
+    -- IH upgrades to depth-(d+1) (n+1)-var biconditional.
+    --
+    -- For this to work type-theoretically, n must be ≥ 1 (n = n' + 1).
+    -- For n = 0: the quantifier condition at arity 1 = (0+1) needs separate handling.
+    -- exist_transfer_from_full_agree: h_agree at (k+1) (n+1) vars.
+    -- With k = d, n+1 = our n. So our agreement at (d+1) n vars matches.
+    -- Output: depth d' ≤ d, arity n+1. Env: Fin n → carrier.
+    -- This is exactly what we need!
+    -- BUG FIX: exist_transfer needs envM : Fin (n+1) → M.carrier where n+1
+    -- is the agreement arity. Our env is Fin n, and agreement at arity n.
+    -- So n_exist = n - 1, giving envM : Fin n → carrier. Let me check:
+    -- exist_transfer_from_full_agree {k n : Nat} ... (envM : Fin (n+1) → M.carrier)
+    -- So Fin (n+1) = our Fin n → n+1 = n → n = n-1.
+    -- For n = 0: n-1 is ill-defined. But Fin 0 → carrier is the empty env.
+    -- Actually for n = 0: the quantifier at (d+2) arity 0 has sub_nf at (d+1) arity 1.
+    -- exist_transfer needs Fin 1 env... but we have Fin 0 env.
+    -- For n = 0: no quantifier conditions (arity 0 NF at depth d+2 is
+    -- (AtomKind sig 0 → Bool) × (NF (d+1) 1 → Bool). AtomKind sig 0 is empty
+    -- (no predicates or orders with 0 variables). Quantifier: NF (d+1) 1 → Bool.
+    -- So there ARE quantifier conditions. We need to handle n=0 specially.
+    -- For now, use sorry for the n=0 case and handle n≥1.
+    match n with
+    | 0 => sorry  -- n=0: degenerate (no env), needs separate argument
+    | n' + 1 =>
+      -- n = n'+1 ≥ 1. h_agree_dp1 at (d+1) (n'+1) vars.
+      -- exist_transfer_from_full_agree with k = d, n = n' (so (n+1) = n'+1 = our arity).
+      -- Env: Fin (n'+1) → carrier = our Fin (n'+1) → carrier.
+      -- Output: depth d' ≤ d, arity n'+2 = our n'+2.
+      have hex := exist_transfer_from_full_agree M envM N envN h_agree_dp1 d
+        (Nat.le_refl d)
+      constructor
+      · rintro ⟨x, hx⟩
+        -- Compute depth-d characteristic of [x, envM] and transfer at depth d
+        set chi_d := nf_characteristic M d (n' + 1 + 1) (Fin.cons x envM)
+        have h_x_d_sat := nf_characteristic_satisfies M d (n' + 1 + 1) (Fin.cons x envM)
+        obtain ⟨x', hx'_d⟩ := (hex chi_d).mp ⟨x, h_x_d_sat⟩
+        -- Full depth-d agreement at [x, envM]/[x', envN]
+        have h_d_agree := nf_agreement_from_shared_nf M (Fin.cons x envM)
+          N (Fin.cons x' envN) chi_d h_x_d_sat hx'_d
+        -- IH: depth-d agreement → depth-(d+1) biconditional
+        exact ⟨x', (ih (n' + 1 + 1) (Fin.cons x envM) (Fin.cons x' envN) h_d_agree chi).mp hx⟩
+      · rintro ⟨x', hx'⟩
+        set chi_d' := nf_characteristic N d (n' + 1 + 1) (Fin.cons x' envN)
+        have h_x'_d_sat := nf_characteristic_satisfies N d (n' + 1 + 1) (Fin.cons x' envN)
+        obtain ⟨x, hx_d⟩ := (hex chi_d').mpr ⟨x', h_x'_d_sat⟩
+        have h_d_agree := nf_agreement_from_shared_nf M (Fin.cons x envM)
+          N (Fin.cons x' envN) chi_d' hx_d h_x'_d_sat
+        exact ⟨x, (ih (n' + 1 + 1) (Fin.cons x envM) (Fin.cons x' envN) h_d_agree chi).mpr hx'⟩
+
 /-! ## One-Directional Existential Transfer via Prior-UZ
 
 The core zone-3 mechanism: by Nat.rec on depth d, with arity r universally
