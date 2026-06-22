@@ -504,6 +504,7 @@ private theorem nf_eval_from_lower_agree {sig : MonadicSignature}
     -- Base case (d=0): sub at depth 1. h_agree_0: depth-0 n-var (atom) agreement.
     -- Atoms transfer from h_agree_0. Quantifier conditions require depth-0
     -- (n+1)-var existential transfer, which needs Prior-UZ/SZ.
+    -- **FALSE for same zone-3 reason as K=0.** Dead code: not called from main pipeline.
     sorry
   | succ d ih =>
     intro n envM envN h_agree_dp1 sub
@@ -639,11 +640,14 @@ private theorem zone_compatible_witness {sig : MonadicSignature}
     -- d = 0: sub is purely atomic. Use h_witness_i to find a witness.
     -- At depth 0, nf_eval_nf is just atom_eval matching.
     -- Need: ∃ z', ∀ a : AtomKind sig (r+1), atom_eval N [z',envN] a ↔ sub a = true
+    -- **FALSE for same zone-3 reason as K=0.** Dead code: not called from main pipeline.
     sorry
   | 1, hd =>
     -- d = 1: exist_transfer_from_full_agree from h_agree_env gives depth-0
     -- matched witness. nf_eval_from_lower_agree at d=0 is sorry.
     -- Handle by direct application of exist_transfer + sorry for upgrade.
+    -- **FALSE: depends on nf_eval_from_lower_agree d=0 which is false.**
+    -- Dead code: not called from main pipeline.
     sorry
   | d + 2, hd =>
     -- d ≥ 2: the main case.
@@ -655,6 +659,7 @@ private theorem zone_compatible_witness {sig : MonadicSignature}
       -- h_agree_env at arity 0 is vacuous. Use h_witness_i which is vacuous (Fin 0).
       -- Actually, from hz: z satisfies sub in M. We need z' in N.
       -- Use exist_transfer from some 1-var agreement... but we have no env components.
+      -- Dead code: r=0 never occurs in actual call chain (env always has ≥ 1 component).
       sorry
     | r' + 1 =>
       -- r = r'+1 ≥ 1, d+2 ≥ 2.
@@ -865,7 +870,13 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     match K with
     | 0 =>
       -- K = 0: need depth-1 2-var agreement from depth-2 1-var.
-      -- This requires Prior axioms for the depth-0 existential at arity 3.
+      -- **THIS CASE IS FALSE.** Counterexample: Z with is_even, t=0, x=4, t'=0, x'=2.
+      -- Depth-2 1-var NFs at 4/2 agree (translation symmetry mod 2 on Z), but
+      -- depth-1 2-var NFs at [4,0]/[2,0] differ: the zone-3 existential
+      -- "∃ w ∈ (0,x) with is_even(w)" holds at x=4 (w=2) but fails at x=2
+      -- (only 1 in (0,2), which is odd). The fix is in KampBypass.lean:
+      -- existPart_succ_n1_bypass must use VecEA2 bracket formulas to encode
+      -- zone-3 witnesses, bypassing prior_2var_transfer_until entirely.
       sorry
     | K' + 1 =>
       -- K = K'+1: use this theorem recursively at K'.
@@ -961,7 +972,10 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
       nf_eval_nf M (K + 1) 2 envM_xt nf ↔
       nf_eval_nf N (K + 1) 2 envN_xt nf := by
     match K with
-    | 0 => sorry
+    | 0 =>
+      -- **THIS CASE IS FALSE.** Mirror of Until K=0. Same counterexample:
+      -- Z with is_even, x=0, t=4, x'=0, t'=2 (x < t in Since).
+      sorry
     | K' + 1 =>
       have h_x_weak : ∀ nf : NormalForm sig (K' + 2) 1,
           nf_eval_nf M (K' + 2) 1 (fun _ => x) nf ↔
