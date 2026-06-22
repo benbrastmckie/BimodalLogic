@@ -1,6 +1,6 @@
 {
-  "status": "partial",
-  "summary": "Deep research into K=0 base case. Root cause identified: depth-0 between-zone predicate witness transfer cannot be derived from endpoint depth-2 1-var agreements alone. The squeeze argument (Prior-UZ/SZ + F(P)/S(P) transfer) fails -- counterexample on Z proves naive approach false. Paper sidesteps via witness-count induction. Three resolution paths identified with varying confidence.",
+  "status": "researched",
+  "summary": "Comprehensive analysis of witness-count restructure vs NF-depth approach for K=0 blocker. Conclusion: full restructure is unnecessary and risky. Recommended path: targeted NF-to-VecEA bridge that leverages existing sorry-free VecEA infrastructure (EANegationClosure with witness-count induction). Three paths analyzed: (A) direct between-zone lemma (50% confidence, 250-500 lines), (B) NF-to-VecEA bridge (70% confidence, 500-900 lines, RECOMMENDED), (C) full witness-count restructure (high confidence but 900-1400 lines, NOT recommended).",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [
@@ -8,94 +8,88 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 869,
       "statement": "prior_nonconstenv_2var_agree_until K=0: depth-1 2-var from depth-2 1-var",
-      "assumption": "Depth-0 3-var existential transfer at [x,t]/[x',t'] with t < x, t' < x'",
-      "why_deferred": "Between-zone transfer unprovable from endpoint 1-var NFs. Depth barrier: encoding 'between two endpoints' requires depth-3+ temporal formula from either endpoint, but h_t/h_x provide only depth-2.",
-      "next_dispatch": "Investigate depth-1 NF squeeze or between-zone transfer lemma via combined endpoint quantifier conditions"
+      "assumption": "Between-zone predicate witness transfer at depth 0",
+      "why_deferred": "Irreducible to all NF-depth mechanisms. Requires formula-level (VecEA) approach.",
+      "next_dispatch": "NF-to-VecEA bridge (Path B)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 964,
       "statement": "prior_nonconstenv_2var_agree_since K=0",
       "assumption": "Mirror of Until K=0",
-      "why_deferred": "Same root cause as Until K=0",
-      "next_dispatch": "Prove by symmetry after Until resolved"
+      "why_deferred": "Same as Until K=0",
+      "next_dispatch": "Symmetry after Until resolved"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 507,
-      "statement": "nf_eval_from_lower_agree d=0",
-      "assumption": "depth-0 (n+1)-var existential transfer",
-      "why_deferred": "Theorem lacks Prior hypotheses; same root cause as K=0",
-      "next_dispatch": "May become unneeded if K=0 resolved via different architecture"
+      "statement": "nf_eval_from_lower_agree d=0 (not on critical path if K=0 resolved via bridge)",
+      "why_deferred": "Would be bypassed by VecEA bridge"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 642,
-      "statement": "zone_compatible_witness d=0",
-      "assumption": "depth-0 per-component to joint witness",
-      "why_deferred": "Same root cause; callers use d >= 1",
-      "next_dispatch": "Low priority"
+      "statement": "zone_compatible_witness d=0 (not on critical path)",
+      "why_deferred": "Would be bypassed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 647,
-      "statement": "zone_compatible_witness d=1",
-      "assumption": "Depends on nf_eval_from_lower_agree d=0",
-      "why_deferred": "Blocked by line 507",
-      "next_dispatch": "Low priority"
+      "statement": "zone_compatible_witness d=1 (not on critical path)",
+      "why_deferred": "Would be bypassed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 658,
-      "statement": "zone_compatible_witness r=0",
-      "assumption": "r=0 unreachable in actual call path",
-      "why_deferred": "Degenerate",
-      "next_dispatch": "Can remain sorry"
+      "statement": "zone_compatible_witness r=0 (degenerate, unreachable)",
+      "why_deferred": "Can remain sorry"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 555,
-      "statement": "nf_eval_from_lower_agree n=0",
-      "assumption": "Arity 0 degenerate",
-      "why_deferred": "Degenerate",
-      "next_dispatch": "Can remain sorry"
+      "statement": "nf_eval_from_lower_agree n=0 (degenerate)",
+      "why_deferred": "Can remain sorry"
     }
   ],
   "blockers": [
-    "K=0 between-zone transfer (lines 869, 964): depth barrier prevents encoding 'between two endpoints' from single-endpoint 1-var NF agreements. Counterexample on Z proves naive squeeze fails."
+    "K=0 between-zone transfer: irreducible to NF-depth mechanisms. Paper avoids via witness-count induction. VecEA framework has the right structure but lacks NF-to-VecEA bridge at depth > 0."
   ],
   "resolution_paths": [
     {
-      "name": "depth-1 NF squeeze",
-      "confidence": "40%",
-      "description": "Use char_fn at depth 1 to encode richer NF constraints. Uncertain whether depth-1 constraints suffice to force witness between t' and x'.",
-      "effort": "medium"
+      "name": "Path B: NF-to-VecEA bridge (RECOMMENDED)",
+      "confidence": "70%",
+      "description": "Build depth-k 2-var NF to VecEA2 conversion, leveraging existing sorry-free EANegationClosure and VecEA infrastructure. 500-900 lines across 2-4 files.",
+      "effort": "medium-high",
+      "key_insight": "VecEA framework already has witness-count induction (BracketFormula n). NfToVecEA handles depth 0. Bridge to depth > 0 is the gap."
     },
     {
-      "name": "between-zone transfer lemma",
+      "name": "Path A: Direct between-zone lemma",
       "confidence": "50%",
-      "description": "Transfer depth-1 2-var NF at [x,t] via h_t to get [x1',t']. Extract between-zone existential from x1'. Requires relating x1' to x'.",
-      "effort": "high"
+      "description": "Prove between_zone_predicate_transfer using combined depth-2 information from both endpoints. 250-500 lines in PriorComposition.lean.",
+      "effort": "medium",
+      "key_insight": "h_x at depth 2 encodes depth-1 2-var NF at [w,x] which encodes depth-0 3-var patterns. But controlling transferred witness position relative to t' is unproven."
     },
     {
-      "name": "witness-count induction restructure",
+      "name": "Path C: Full witness-count restructure (NOT recommended)",
       "confidence": "80%",
-      "description": "Match paper's induction structure. Avoids K=0 entirely. Major refactor.",
+      "description": "Match paper exactly with witness-count induction. 900-1400 lines across 4-6 files. Too expensive relative to benefit.",
       "effort": "very high"
     }
   ],
-  "continuation_path": null,
+  "continuation_path": "plan",
   "continuation_context": {
     "is_successor": true,
-    "resume_from": "K=0 sorry in Until/Since main theorems (between-zone depth barrier)",
+    "resume_from": "K=0 sorry resolution via NF-to-VecEA bridge",
     "key_decisions": [
-      "h_agree_env added to zone_compatible_witness and prior_exist_transfer_bidir",
-      "d >= 2 r >= 1 proved sorry-free via exist_transfer_from_full_agree + nf_eval_from_lower_agree",
-      "Main theorems construct h_agree_env recursively: K >= 1 uses theorem at K-1; K = 0 is sorry",
-      "K=0 IS reachable: KampBypass.existPart_succ_n1_bypass at k=1 calls with K=k'=0",
-      "Counterexample on Z proves naive F(P)+S(P) squeeze insufficient for between-zone",
-      "Paper avoids K=0 via witness-count induction (not NF-depth)"
+      "Full witness-count restructure rejected as too expensive (900-1400 lines) when targeted bridge suffices",
+      "VecEA framework already implements witness-count induction sorry-free (EANegationClosure)",
+      "NfToVecEA handles depth 0; depth > 0 bridge is the specific gap to fill",
+      "nvar_transfer_from_1var_agree h_rvar is circular at depth-2 2-var -- confirmed via H4",
+      "Between-zone squeeze fails on Z (counterexample confirmed via H4)",
+      "K=0 is the SOLE blocker for entire kamp_prior_expressive_completeness pipeline",
+      "If K=0 resolved, all 7 PriorComposition sorries either resolve or become non-critical-path"
     ],
-    "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/15_k0-base-case-design.md"
+    "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/16_witness-count-restructure.md",
+    "prior_research": "specs/305_rabinovich_ea_formula_implementation/reports/15_k0-base-case-design.md"
   }
 }
