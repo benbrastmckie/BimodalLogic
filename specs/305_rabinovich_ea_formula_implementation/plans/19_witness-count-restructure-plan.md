@@ -91,7 +91,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Witness-Count Measure and NF Quantifier Decomposition [IN PROGRESS]
+### Phase 1: Witness-Count Measure and NF Quantifier Decomposition [IN PROGRESS] *(resumed — dispatch 2)*
 
 **Goal**: Define the witness-count measure that maps a depth-(K+1) 2-var NF existential condition (on a specific structure and environment) to a natural number n, and prove that this n bounds the number of distinct existential witnesses between two endpoints. This is the bridge between the NF framework's vertical quantifier depth and Rabinovich's horizontal witness count.
 
