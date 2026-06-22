@@ -1,69 +1,58 @@
 {
-  "status": "planned",
-  "summary": "Plan v13 created: 3 phases, 5 hours. Phase 1 completes prior_exist_transfer_one_dir proof (Nat.rec on d, char_fn + Prior-UZ/SZ witness placement, ~100-150 lines). Phase 2 wires 4 sorry sites (lines 595/599/650/654) via prior_exist_transfer_one_dir application (~60-100 lines). Phase 3 verifies sorry elimination propagates through KampBypass to completeness_discrete.",
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/13_charfn-prior-proof-plan.md",
+  "status": "blocked",
+  "summary": "Phase 1 blocked on zone-3 interval bounding for prior_exist_transfer_one_dir. The proof requires finding a witness between two env elements (envN_i, envN_j) with matching depth-d 1-var NF type, but cross_extend from individual endpoints does not guarantee the witness lands in the correct interval. Additionally, the strong induction structure at call sites introduces a K/K_outer mismatch preventing direct wiring of the lemma.",
   "phases_completed": 0,
   "phases_total": 3,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 524,
-      "statement": "prior_exist_transfer_one_dir",
-      "target_phase": 1,
-      "approach": "Nat.rec on d with char_fn + Prior-UZ/SZ witness placement"
+      "line": 515,
+      "statement": "theorem prior_exist_transfer_one_dir",
+      "assumption": "Zone-3 witness placement: z' between envN_i and envN_j with matching NF type",
+      "why_deferred": "Zone-3 interval bounding unresolved: cross_extend gives witnesses outside the target interval; char_fn + Prior-UZ gives first occurrence but without upper bound",
+      "next_dispatch": "Resolve zone-3 bounding, possibly via 3-var compound transfer at lower depth or restructured induction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 595,
-      "statement": "Until forward 3-var existential transfer",
-      "target_phase": 2,
-      "approach": "Apply prior_exist_transfer_one_dir directly"
+      "line": 586,
+      "statement": "sorry in prior_nonconstenv_2var_agree_until (forward)",
+      "assumption": "depth-(K+1) 3-var existential transfer M to N",
+      "why_deferred": "Blocked by prior_exist_transfer_one_dir + K/K_outer mismatch",
+      "next_dispatch": "Wire via prior_exist_transfer_one_dir or prove directly"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 599,
-      "statement": "Until backward 3-var existential transfer",
-      "target_phase": 2,
-      "approach": "Apply prior_exist_transfer_one_dir with M/N swapped"
+      "line": 590,
+      "statement": "sorry in prior_nonconstenv_2var_agree_until (backward)",
+      "assumption": "depth-(K+1) 3-var existential transfer N to M",
+      "why_deferred": "Same as forward + M/N swap",
+      "next_dispatch": "Wire via prior_exist_transfer_one_dir"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 650,
-      "statement": "Since forward 3-var existential transfer",
-      "target_phase": 2,
-      "approach": "Apply prior_exist_transfer_one_dir directly"
+      "statement": "sorry in prior_nonconstenv_2var_agree_since (forward)",
+      "assumption": "depth-(K+1) 3-var existential transfer (Since zone)",
+      "why_deferred": "Mirror of Until forward",
+      "next_dispatch": "Wire via prior_exist_transfer_one_dir"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 654,
-      "statement": "Since backward 3-var existential transfer",
-      "target_phase": 2,
-      "approach": "Apply prior_exist_transfer_one_dir with M/N swapped"
+      "statement": "sorry in prior_nonconstenv_2var_agree_since (backward)",
+      "assumption": "depth-(K+1) 3-var existential transfer (Since, backward)",
+      "why_deferred": "Mirror of Until backward",
+      "next_dispatch": "Wire via prior_exist_transfer_one_dir"
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "Zone-3 interval bounding: finding z' in (envN_i, envN_j) with matching depth-d 1-var NF type when z is between envM_i and envM_j",
+    "K/K_outer mismatch: strong induction at call sites has universally quantified K while h_x/h_t/char_correct fixed at K_outer"
+  ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-handoff-20260622.md",
   "continuation_context": {
-    "approach": "Complete prior_exist_transfer_one_dir proof (Phase 1), wire sorry sites (Phase 2), verify propagation (Phase 3)",
-    "key_insight": "char_fn + Prior-UZ/SZ gives full-depth 1-var matching WITHOUT the cross_extend depth loss. Witnesses are found via temporal formula characterization + first-occurrence analysis (Rabinovich Lemma 5.3), not quantifier extraction.",
-    "highest_risk": "Zone-3 interval bounding: ensuring the Prior-UZ witness lands between the correct pair of env elements in N. Mitigation: use both endpoints' 1-var agreements (Prior-UZ from below + Prior-SZ from above).",
-    "postmortem_constraints": [
-      "Do NOT use cross_extend_bwd_1var as primary zone-3 witness mechanism (loses one depth)",
-      "Do NOT use nvar_transfer_from_1var_agree at depth K+1 arity 3 (circular h_rvar)",
-      "Do NOT use exist_transfer_from_full_agree as PRIMARY mechanism for depth K+1 (gives depth K only)",
-      "Do NOT modify existing sorry-free infrastructure",
-      "MUST use char_fn + Prior-UZ/SZ for witness placement (Rabinovich Lemma 5.3)"
-    ]
-  },
-  "artifacts": [
-    {
-      "path": "specs/305_rabinovich_ea_formula_implementation/reports/08_nf-eval-boost-design.md",
-      "type": "report",
-      "summary": "H3/H4 research: char_fn + Prior-UZ/SZ avoids depth loss, prior_exist_transfer_one_dir has correct signature"
-    },
-    {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/13_charfn-prior-proof-plan.md",
-      "type": "plan",
-      "summary": "v13: char_fn + Prior-UZ/SZ proof — 3 phases, 5h, complete prior_exist_transfer_one_dir + wire sorry sites"
-    }
-  ]
+    "next_phase": 1,
+    "is_successor": false,
+    "resume_from": "zone-3 interval bounding resolution"
+  }
 }

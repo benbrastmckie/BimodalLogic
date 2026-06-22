@@ -77,7 +77,15 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Complete `prior_exist_transfer_one_dir` (Line 524 Sorry) [NOT STARTED]
+### Phase 1: Complete `prior_exist_transfer_one_dir` (Line 524 Sorry) [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The zone-3 witness placement: finding z' in the interval (envN_i, envN_j) with matching depth-d 1-var NF type when z is between envM_i and envM_j.
+- **What was tried**: (1) cross_extend_bwd_1var from envM_i gives z' > envN_i but not necessarily < envN_j; (2) cross_extend from envM_j gives z' < envN_j but not necessarily > envN_i; (3) char_fn + Prior-UZ gives first occurrence above envN_i but no bound below envN_j; (4) algebraic approach via exist_transfer_from_full_agree always falls one depth short.
+- **Why stuck**: The depth-d 2-var type at [z, envM_i] encodes z's relationship to envM_i but NOT to envM_j. So the witness from cross_extend at envM_i has no guaranteed position relative to envN_j. The char_fn + Prior-UZ approach gives first occurrence above envN_i, but proving it's below envN_j requires establishing that the temporal formula (char_fn d nf_z) is satisfied in the open interval (envN_i, envN_j). This in turn requires showing that either z'_from_i < envN_j or z'_from_j > envN_i, neither of which follows from the available 2-var matchings.
+- **What is needed**: A proof that on Prior structures, if a temporal formula phi is satisfied at z'_i > envN_i (from 2-var transfer at envM_i) and at z'_j < envN_j (from 2-var transfer at envM_j), then HasAttainedINF.first_occ can find a witness in the open interval (envN_i, envN_j). This requires showing z'_j > envN_i OR z'_i < envN_j. This may require a stronger transfer mechanism that uses BOTH endpoints simultaneously (a 3-var argument), or a novel use of the Prior-UZ/SZ axioms to bound the first occurrence.
+- **Additional context**: The strong induction structure introduces a K/K_outer mismatch: inside Nat.strong_induction_on, the induction variable K is universally quantified but h_x/h_t/char_correct are fixed at K_outer. The wiring of prior_exist_transfer_one_dir at the call sites requires K ≤ K_outer, which is not formally available in the typing context. This prevents direct application of the lemma at the sorry sites even if the lemma were proved.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Fill the sorry at line 524 with the full proof by Nat.rec on d, using char_fn + Prior-UZ/SZ for witness placement at each depth level.
 

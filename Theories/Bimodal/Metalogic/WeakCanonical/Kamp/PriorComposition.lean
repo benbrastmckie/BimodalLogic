@@ -512,15 +512,6 @@ private theorem prior_exist_transfer_one_dir {sig : MonadicSignature}
       (sub : NormalForm sig d (r + 1)),
       (∃ z : M.carrier, nf_eval_nf M d (r + 1) (Fin.cons z envM) sub) →
       ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub := by
-  intro d hd r envM envN h_1var h_order sub ⟨z, hz⟩
-  -- Strategy: use exist_transfer_from_full_agree with the (d+1)-depth
-  -- r-var agreement obtained by applying nvar_transfer_from_1var_agree.
-  -- From h_1var at depth d+1, the depth-0 NF agreement gives atom matching.
-  -- The depth-d r-var agreement provides h_rvar for nvar_transfer at d-1,
-  -- and the chain builds up to depth d.
-  -- However, we need h_rvar at depth d+1 for nvar_transfer at d.
-  -- This is supplied by the outer hypothesis h_1var and the existing cross_extend
-  -- mechanism via the characteristic NF quantifier conditions.
   sorry
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
