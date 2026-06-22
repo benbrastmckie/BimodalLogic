@@ -1,86 +1,72 @@
 {
   "status": "blocked",
-  "summary": "zone3_exist_transfer (WitnessCount.lean:163) is FALSE. Constructed counterexample on Z (integers) with even/odd predicate: t=t'=0, x=4, x'=2, w=2 even. The interval (0,2) on Z contains only 1 (odd), so no even point exists in (t',x')=(0,2), despite w=2 being even in (t,x)=(0,4). The depth-2 1-var NFs at 4 and 2 agree (translation symmetry on Z), so all hypotheses of zone3_exist_transfer are satisfied but the conclusion fails. This confirms the irreducibility finding from report 15. The F(P_w)/S(P_w) approach and the depth-1 profile transfer + contradiction approach in the task description CANNOT resolve the edge case because the theorem itself is false. The correct resolution path is plan v19 (witness-count restructure using BracketFormula/VecEA machinery with HasAttainedINF for interval localization).",
+  "summary": "prior_nonconstenv_2var_agree_until at K=0 is FALSE (not just hard to prove). Counterexample: Z with is_even, (x,t)=(4,0), (x',t')=(2,0). Depth-2 1-var NFs at 4 and 2 agree (translation symmetry mod 2), but depth-2 2-var NFs at [4,0] and [2,0] differ because exists w in (0,4) even (w=2) but no even w in (0,2). The false theorem propagates through prior_2var_transfer_until to all K values. Fix requires restructuring existPart_succ_n1_bypass at k>=1 to not use prior_2var_transfer_until, using VecEA-mediated bracket formulas instead.",
   "session_id": "sess_1750620000_orch305b",
   "phases_completed": 0,
-  "phases_total": 5,
-  "plan_version": 19,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/19_witness-count-restructure-plan.md",
+  "phases_total": 4,
+  "plan_version": 18,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/18_nf-vecEA-bridge-plan.md",
   "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 219,
-      "statement": "zone3_exist_transfer edge case (THEOREM IS FALSE)",
-      "assumption": "When F(P_w) witness y1 >= x' AND S(P_w) witness y2 <= t', exists w' in (t',x') with nf_w0",
-      "why_deferred": "THEOREM IS FALSE. Counterexample: M=N=Z with even/odd predicate, t=t'=0, x=4, x'=2. Depth-2 1-var NFs agree at 4 and 2 (translation symmetry), but (0,2) contains no even point while (0,4) contains w=2. The zone-3 depth-0 predicate transfer is provably irreducible within the NF-depth induction framework.",
-      "next_dispatch": "Abandon zone3_exist_transfer entirely. Implement plan v19 (witness-count restructure): define witness-count measure, build NF-to-BracketFormula conversion, prove bracket-level transfer using HasAttainedINF + Prior axioms for interval localization."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 262,
-      "statement": "k0_depth1_2var_agree_until",
-      "assumption": "Full K=0 depth-1 2-var agreement for Until zone",
-      "why_deferred": "Depends on zone3_exist_transfer which is FALSE. Cannot be proved via zone decomposition.",
-      "next_dispatch": "Replace with direct call to new witness-count transfer theorem from plan v19 Phase 4."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 293,
-      "statement": "k0_depth1_2var_agree_since",
-      "assumption": "Mirror of Until",
-      "why_deferred": "Mirror; depends on zone3_exist_transfer which is FALSE.",
-      "next_dispatch": "Replace with mirror of witness-count transfer."
-    },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 869,
-      "statement": "prior_nonconstenv_2var_agree_until K=0 case",
-      "assumption": "Depth-1 2-var agreement from depth-2 1-var",
-      "why_deferred": "The K=0 case requires zone-3 transfer which is irreducible in the NF framework.",
-      "next_dispatch": "Wire in witness-count restructure result from plan v19 Phase 4."
+      "statement": "prior_nonconstenv_2var_agree_until K=0",
+      "assumption": "Depth-2 2-var agreement from depth-2 1-var at endpoints on Prior structures",
+      "why_deferred": "THEOREM IS FALSE. Counterexample: Z with is_even, (x,t)=(4,0), (x',t')=(2,0). Zone-3 depth-0 existential (even w between 0 and x) differs at x=4 vs x=2. Cannot be fixed; must be bypassed.",
+      "next_dispatch": "Restructure existPart_succ_n1_bypass to bypass prior_2var_transfer_until for k>=1"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 964,
-      "statement": "prior_nonconstenv_2var_agree_since K=0 case",
+      "statement": "prior_nonconstenv_2var_agree_since K=0",
       "assumption": "Mirror of Until K=0",
-      "why_deferred": "Mirror; same irreducibility.",
-      "next_dispatch": "Wire in mirror of witness-count restructure."
+      "why_deferred": "THEOREM IS FALSE (same counterexample). Must be bypassed.",
+      "next_dispatch": "Mirror of Until fix"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 219,
+      "statement": "zone3_exist_transfer",
+      "assumption": "Zone-3 depth-0 predicate transfer between Prior structures",
+      "why_deferred": "THEOREM IS FALSE. Same Z counterexample.",
+      "next_dispatch": "Delete this theorem and its dependents"
     }
   ],
   "blockers": [
-    "zone3_exist_transfer is FALSE (counterexample: Z integers, even/odd, t=0 x=4 x'=2). The entire WitnessCount.lean zone-3 approach must be abandoned. Plan v19 (witness-count restructure) is the correct resolution path but requires 4-5 phases of new infrastructure.",
-    "The task description's resolution strategy (depth-1 2-var NF profile transfer + HasAttainedINF + case split + contradiction for deepest case) CANNOT work because the underlying theorem is false, not just hard to prove."
+    {
+      "description": "prior_nonconstenv_2var_agree_until at K=0 is FALSE, AND the entire theorem is false at all K (recursion bottoms out at K=0). Counterexample: Z with is_even, M=N=Z, t=t'=0, x=4, x'=2. The fix requires bypassing prior_2var_transfer_until in existPart_succ_n1_bypass.",
+      "what_failed": "The theorem statement itself is false. Depth-2 2-var NF agreement on non-constant environments does NOT follow from depth-2 1-var endpoint agreements on Prior structures. Zone-3 existentials (witnesses between endpoints) cannot be transferred between structures even with Prior-UZ/SZ.",
+      "what_was_tried": "Analysis of the goal at K=0 sorry (line 869). Zone decomposition shows zones 1,2,4,5 transfer via exist_transfer_from_full_agree on h_x/h_t. Zone 3 requires exists w in (t,x) with preds matching to transfer to exists w' in (t',x') with preds matching. This is provably false (Z counterexample). The code AFTER the sorry also calls zone_compatible_witness at d=1 (sorry) and nf_eval_from_lower_agree at d=0 (sorry), both of which are also false for the same reason.",
+      "impact": "existPart_succ_n1_bypass at k>=1 backward direction is unprovable with current architecture. All K values of prior_nonconstenv_2var_agree_until/since are broken.",
+      "suggested_fix": "NEW PLAN: Modify existPart_succ_n1_bypass to use VecEA2 bracket formulas for the backward direction at k>=1 (same pattern as k=0 enriched bypass). The formula A encodes zone-3 witnesses using BracketFormula, which guarantees witnesses are in the correct interval by construction. The bracket point types use char_fn at appropriate depths. This bypasses PriorComposition entirely."
+    }
   ],
-  "key_discoveries": [
-    "COUNTEREXAMPLE proving zone3_exist_transfer is FALSE: M=N=Z with sig having one predicate 'is_even'. t=t'=0, x=4, x'=2. Depth-2 1-var NFs at x=4 and x'=2 agree (translation symmetry: shift by -2 maps depth-k structures identically for all k). w=2 is even and in (0,4). But (0,2) on Z contains only {1}, which is odd. So no even point in (0,2). All hypotheses satisfied, conclusion false.",
-    "The operator_depth of bracketBuildRight for BracketFormula n=1 is 6 (not 4 as previously estimated). Formula.untl adds 2 per level, not 1. The n=0 case already has depth 4 (the G(top) guard adds another Until layer). This exceeds the depth-2 transfer budget even more severely than thought.",
-    "The correct K=0 resolution from Rabinovich uses a SEMANTIC bracket transfer with HasAttainedINF for interval localization, NOT temporal formula transfer of bounded operator_depth. The Prior axiom gives first-occurrence localization: first x-type above t' is <= x' (since x' is x-type). P_w existence above t' transfers via F(P_w) at depth 2. The interval localization then places the witness in (t', x').",
-    "All existing sorry-free infrastructure in WitnessCount.lean (temporal_truth_transfer, depth2_quant_transfer, nf_depth0_char_operator_depth, nf_depth0_char_iff_eval) remains valid and useful for plan v19. Only zone3_exist_transfer and its dependents need replacement."
-  ],
-  "analysis_detail": {
-    "counterexample": {
-      "structure": "Z (integers) with one unary predicate 'is_even'",
-      "M_equals_N": true,
-      "sig": "MonadicSignature with card preds = 1",
-      "t": 0, "t_prime": 0,
-      "x": 4, "x_prime": 2,
-      "w": 2,
-      "depth2_1var_agree_x_x_prime": "TRUE by translation symmetry (shift -2)",
-      "depth2_1var_agree_t_t_prime": "TRUE trivially (same point)",
-      "h_order_M": "0 < 4 TRUE",
-      "h_order_N": "0 < 2 TRUE",
-      "h_UZ": "TRUE (Z satisfies Prior-UZ: first even above n is next even >= n+1)",
-      "h_SZ": "TRUE (Z satisfies Prior-SZ: last even below n is prev even <= n-1)",
-      "w_in_interval_M": "2 in (0,4) TRUE, 2 is even TRUE",
-      "conclusion_fails": "No even integer in (0,2). Only integer is 1 which is odd."
-    },
-    "why_contradiction_argument_fails": "The task description proposes: if w1 >= x' and w2 <= t', use depth-1 NF consistency to derive contradiction. Specifically, if 'no x-type between t and w' in M, then after transfer to [w1,t'], no x-type in (t',w1). But x' is x-type in (t',w1), contradiction. However: (1) This argument only works when 'no x-type between t and w' holds in M. If there IS an x-type between t and w, the NF records it and no contradiction arises. (2) When nf_w0 = nf_x0 (w and x have same predicates), the 'first x-type above t' could be w itself, and the contradiction collapses. (3) In the Z counterexample: nf_w0 = nf_x0 = 'is_even', and the depth-1 NF at [w=2, t=0] records 'no even in (0,2)' as a 3-var quantifier condition, which correctly matches 'no even in (0,2)' at [w1=2, t'=0] in N (where w1=2 and x'=2 coincide, so there's no contradiction with 'x-type in (t', w1)').",
-    "plan_v19_validity": "Plan v19 resolves the K=0 sorry via witness-count induction, avoiding the zone-3 depth-0 transfer entirely. The VecEA/BracketFormula machinery with HasAttainedINF provides INTERVAL LOCALIZATION: the first x-type above t' is guaranteed <= x' (since x' is x-type). This forces transferred witnesses into (t', x'). Plan v19 Phases 1-3 build this infrastructure; Phase 4 wires it in."
-  },
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "resume_phase": 1,
-    "recommended_next": "Implement plan v19 Phase 1 (witness-count measure). The WitnessCount.lean file should be REPLACED (not patched), removing the false zone3_exist_transfer and its dependents. Keep the sorry-free infrastructure (temporal_truth_transfer, depth2_quant_transfer, nf_depth0_char_*). Add new witness-count definitions and properties."
+    "key_findings": [
+      "prior_nonconstenv_2var_agree_until is FALSE at K=0 (and therefore at all K via recursion)",
+      "prior_nonconstenv_2var_agree_since is FALSE at K=0 (mirror)",
+      "zone3_exist_transfer (WitnessCount.lean) is FALSE (previously known, now confirmed to extend to prior_nonconstenv)",
+      "zone_compatible_witness at d=0 and d=1 are also false",
+      "nf_eval_from_lower_agree at d=0 is false",
+      "Z counterexample: is_even predicate, (x,t)=(4,0) vs (x',t')=(2,0). Depth-2 1-var agreement holds at 4/2 and 0/0, Prior axioms hold on Z, but depth-2 2-var agreement fails at [4,0]/[2,0]",
+      "The THEOREM existPart_succ_n1_bypass IS true (from Rabinovich's paper), but the current PROOF is wrong",
+      "The fix requires changing the formula A in the backward direction to include bracket-encoded zone-3 witnesses",
+      "The existing k=0 enriched bypass (VecEA2 brackets) is the correct template for the fix",
+      "New research needed: generalize enriched_bypass_until/since from handling NormalForm sig 1 2 to NormalForm sig (k+2) 2"
+    ],
+    "files_analyzed": [
+      "PriorComposition.lean: full sorry analysis, goal states at lines 869/964, prior_exist_transfer_bidir chain",
+      "KampBypass.lean: existPart_succ_n1_bypass architecture, k'=0 vs k'+1 dispatch",
+      "KampBypassUntil.lean: enriched_bypass_until pattern (template for fix)",
+      "KampBypassCore.lean: enriched_vecEA2_until definition",
+      "NfToVecEA.lean: depth-0 NF-to-VecEA bridge (sorry-free)",
+      "NormalForm.lean: nf_eval_nf definition, NormalForm type structure",
+      "PriorINF.lean: HasAttainedINF, prior_hasAttainedINF",
+      "PriorDefs.lean: semantic_prior_UZ/SZ definitions",
+      "WitnessCount.lean: zone3_exist_transfer (FALSE), k0_depth1_2var_agree (depends on false theorem)",
+      "VecEAFormula.lean: BracketFormula structure and holds semantics"
+    ]
   }
 }
