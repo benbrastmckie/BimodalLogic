@@ -1,7 +1,7 @@
 {
   "status": "partial",
-  "summary": "Phase 1 partial: Created WitnessCount.lean with sorry-free temporal_truth_transfer theorem (table + doets_lemma_1_1 composition). Zone-3 transfer structure established but core sorry remains. Deep analysis reveals the mathematical challenge: F(P_w)/S(P_w) transfers at depth 2 give P_w points above t' and below x' but cannot guarantee overlap in (t', x'). The depth-2 quantifier transfer gives linked witnesses (y' and z' from the same NF) but z' < x' requires y' <= x', which is unresolved.",
-  "session_id": "sess_1750618000_orch305",
+  "summary": "Built sorry-free infrastructure for K=0 zone-3 transfer in WitnessCount.lean. Four key theorems proved sorry-free: temporal_truth_transfer, depth2_quant_transfer, nf_depth0_char_operator_depth, nf_depth0_char_iff_eval. Zone-3 main path (y1<x' or y2>t') is sorry-free. Edge case (y1>=x' AND y2<=t') remains sorry. PriorComposition.lean sorry sites at lines 869/964 NOT yet resolved.",
+  "session_id": "sess_1750620000_orch305b",
   "phases_completed": 0,
   "phases_total": 5,
   "plan_version": 19,
@@ -9,73 +9,59 @@
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 63,
-      "statement": "char_fn_depth0_operator_depth",
-      "assumption": "char_fn 0 produces formulas with operator_depth 0",
-      "why_deferred": "Depends on how char_fn is constructed in KampPrior pipeline; may need to add as explicit hypothesis",
-      "next_dispatch": "Add operator_depth bound as parameter or prove from concrete char_fn construction"
+      "line": 219,
+      "statement": "zone3_exist_transfer edge case",
+      "assumption": "When F(P_w) witness y1 >= x' AND S(P_w) witness y2 <= t', there exists w' in (t', x') with nf_w0",
+      "why_deferred": "Requires combined 3-variable reasoning. Single-endpoint depth-2 temporal transfers produce witnesses that may both fall outside (t', x'). The edge case may be impossible on Prior structures but proving it requires either: (a) a formula of operator_depth <= 2 encoding the interval constraint, (b) proof via depth-1 quantifier conditions + HasAttainedINF first-x-type argument showing the case is impossible, or (c) the witness-count induction approach from Rabinovich Lemma 5.3.",
+      "next_dispatch": "Research: formalize the impossibility of the edge case via the argument that in M, the depth-1 profile at [w,t] encodes 'no x-type between t and w' when true, and after transfer to [w1,t'] in N, HasAttainedINF first x-type r0 between t' and w1 contradicts 'no x-type between t' and w1' when w1 >= r0 > t'. This forces w1 < r0 <= x', giving w1 in (t', x'). When nf_w0 = x-type, w is itself x-type so the first x-type above t in M is <= w < x, which means the depth-2 quantifier condition correctly records this and forces the transferred witness below x'."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 141,
-      "statement": "zone3_exist_transfer (the core sorry)",
-      "assumption": "Given P_w point between t and x on M, find P_w point between t' and x' on N",
-      "why_deferred": "The fundamental mathematical challenge: two-endpoint F/S transfer does not guarantee interval overlap; depth-2 quantifier transfer gives linked witnesses but y' <= x' is unresolved",
-      "next_dispatch": "Research whether witness-count induction (Rabinovich Lemma 5.3) can break the circularity, or whether the depth-2 transfer combined with HasAttainedINF on a carefully chosen formula resolves y' <= x'"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 186,
+      "line": 262,
       "statement": "k0_depth1_2var_agree_until",
-      "assumption": "Full K=0 depth-1 2-var agreement",
-      "why_deferred": "Depends on zone3_exist_transfer being resolved first",
-      "next_dispatch": "Implement once zone3_exist_transfer is proved"
+      "assumption": "Full K=0 depth-1 2-var agreement for Until zone",
+      "why_deferred": "Depends on zone3_exist_transfer; zone decomposition not written because zone 3 has sorry.",
+      "next_dispatch": "Implement full zone decomposition once zone3_exist_transfer is sorry-free."
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 869,
-      "statement": "prior_nonconstenv_2var_agree_until K=0 case",
-      "assumption": "Depth-1 2-var agreement from depth-2 1-var agreement on Prior structures",
-      "why_deferred": "Target sorry; depends on k0_depth1_2var_agree_until",
-      "next_dispatch": "Replace with call to k0_depth1_2var_agree_until once proved"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 964,
-      "statement": "prior_nonconstenv_2var_agree_since K=0 case",
-      "assumption": "Mirror of Until direction",
-      "why_deferred": "Target sorry; depends on Since mirror of k0_depth1_2var_agree_until",
-      "next_dispatch": "Replace with call to Since mirror once proved"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 293,
+      "statement": "k0_depth1_2var_agree_since",
+      "assumption": "Mirror of Until for Since zone",
+      "why_deferred": "Mirror; depends on zone3_exist_transfer.",
+      "next_dispatch": "Mirror until proof once sorry-free."
     }
   ],
   "blockers": [
-    "Zone-3 interval constraint: given P_w point between t and x on M, the depth-2 quantifier transfer gives y' > t' with depth-1 2-var NF matching [x,t] and z' between t' and y'. But z' < x' requires y' <= x'. Neither HasAttainedINF on the depth-0 char formula (which gives first x-type point r0 <= min(y', x'), but doesn't constrain y' <= x') nor the symmetric h_x transfer (which gives w2 < x' but w2 might be <= t') resolves this."
+    "zone3_exist_transfer edge case: y1>=x' AND y2<=t' needs combined 3-variable reasoning"
   ],
   "key_discoveries": [
-    "temporal_truth_transfer theorem: composes table_correctness + table_depth_bound + doets_lemma_1_1 to transfer temporal formulas of operator_depth <= k via depth-k 1-var NF agreement. This is a powerful general tool.",
-    "operator_depth of F(P_w) = max(operator_depth(char_fn 0 nf_w0), 0) + 2 = 2 when char_fn 0 has operator_depth 0. Transferable via h_t at depth 2.",
-    "Two-endpoint F/S transfer (F(P_w) at t + S(P_w) at x) gives P_w points above t' and below x' but CANNOT guarantee overlap in (t', x'). This is a GENUINE gap, not an artifact of the proof strategy.",
-    "The depth-2 quantifier transfer from h_t gives LINKED witnesses (y' and z') but constraining z' < x' requires y' <= x', which is the core mathematical challenge.",
-    "The plan's approach via BracketFormula/VecEA2 has operator_depth 4, too deep for the depth-2 transfer. An alternative encoding or the witness-count induction is needed."
+    "nf_depth0_char_formula has operator_depth 0 (proved). This makes F(P_w) and S(P_w) have operator_depth 2, exactly fitting the depth-2 transfer budget.",
+    "temporal_truth_transfer composes table_correctness + table_depth_bound + doets_lemma_1_1: if depth-k 1-var NF agreement holds, temporal formulas of operator_depth <= k transfer.",
+    "depth2_quant_transfer extracts depth-1 2-var existential transfer from depth-2 1-var agreement via characteristic NF quantifier part.",
+    "VecEA2 bracket encoding for n=1 witness has operator_depth 4, exceeding the depth-2 budget. Cannot use VecEA2 directly for zone-3 transfer.",
+    "The edge case where F(P_w) and S(P_w) witnesses both fall outside (t', x') is the core mathematical challenge. On Prior structures, this case may be provably impossible via the depth-1 quantifier + first-x-type-point argument."
   ],
   "new_infrastructure": {
     "temporal_truth_transfer": {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 42,
-      "status": "sorry-free",
-      "description": "Generic temporal truth transfer from depth-k 1-var NF agreement for formulas of operator_depth <= k"
+      "line": 44,
+      "status": "sorry-free"
+    },
+    "depth2_quant_transfer": {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 64,
+      "status": "sorry-free"
+    },
+    "nf_depth0_char_operator_depth": {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
+      "line": 105,
+      "status": "sorry-free"
     }
   },
-  "continuation_path": "research",
   "continuation_context": {
-    "is_successor": true,
-    "prior_plans_failed": ["v18 (NF-to-VecEA bridge)", "v19 Phase 1 partial (zone-3 interval constraint)"],
-    "recommended_flags": "--hard",
-    "recommended_investigation_order": [
-      "1. RESEARCH: Can witness-count induction (Rabinovich Lemma 5.3) break the circularity? The idea: at n=0 witness types, zone-3 is vacuous; at n+1, use IH to get depth-1 2-var agreement for n types, then transfer the (n+1)-th type using the partial agreement.",
-      "2. RESEARCH: Is there a formula of operator_depth <= 2 that encodes 'exists P_w between t and x'? The VecEA2 approach gives depth 4. Maybe a simpler encoding exists.",
-      "3. RESEARCH: Can the depth-2 quantifier condition from h_t be combined with HasAttainedINF on a DIFFERENT formula (not the depth-0 char formula) to constrain y' <= x'?",
-      "4. ALTERNATIVE: Consider whether zone_compatible_witness at d=0 can be proved directly, bypassing the current approach entirely."
-    ]
+    "is_successor": false,
+    "resume_phase": 1,
+    "recommended_next": "Research the edge case resolution: use depth-1 quantifier conditions from [w,t] profile to prove y1 < x' via HasAttainedINF first-x-type-point argument."
   }
 }
