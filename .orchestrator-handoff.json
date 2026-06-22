@@ -1,50 +1,41 @@
 {
   "status": "partial",
-  "summary": "Threaded h_surj through Prior composition chain (4 theorem signatures + 2 KampBypass call sites). Added hex_t extraction to exist_transfer_3var_nonconstenv. Added KampTranslation import for nf_depth0_char_formula. Full mathematical analysis confirmed: all 4 sorry sites share a single root cause requiring the Fraisse game argument (simultaneous induction on depth and arity). No sorry resolved; infrastructure added for future dispatch.",
+  "summary": "Restructured prior_exist_transfer_bidir proof: extracted zone_compatible_witness helper as the single sorry point. The main theorem body is now sorry-free, delegating to zone_compatible_witness for zone-3 multi-component witness placement. Used exist_transfer_from_full_agree to build per-component 2-var matched witnesses, then zone_compatible_witness combines them. Pre-existing sorries at lines 507 and 555 (nf_eval_from_lower_agree d=0 and n=0 cases) remain unchanged. Full project builds cleanly.",
   "phases_completed": 0,
   "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 300,
-      "statement": "exist_transfer_3var_nonconstenv (forward)",
-      "assumption": "c_x or c_t is in correct zone, or Prior-UZ/SZ finds witness in between-zone",
-      "why_deferred": "Requires Fraisse game: depth-K 4-var transfer circular without simultaneous (depth, arity) induction",
-      "next_dispatch": "Implement fraisse_transfer lemma with simultaneous induction"
+      "line": 507,
+      "statement": "nf_eval_from_lower_agree (d=0 base case)",
+      "assumption": "depth-0 to depth-1 algebraic upgrade requires Prior-UZ/SZ for existential transfer",
+      "why_deferred": "Pre-existing sorry, NOT on critical path for prior_exist_transfer_bidir",
+      "next_dispatch": "Prove d=0 base of nf_eval_from_lower_agree using Prior axioms"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 320,
-      "statement": "exist_transfer_3var_nonconstenv (backward)",
-      "assumption": "Symmetric to forward",
-      "why_deferred": "Same as forward",
-      "next_dispatch": "Mirror of forward in fraisse_transfer"
+      "line": 555,
+      "statement": "nf_eval_from_lower_agree (n=0 degenerate case)",
+      "assumption": "Quantifier conditions at arity 0 with empty env need separate argument",
+      "why_deferred": "Pre-existing sorry, NOT on critical path for prior_exist_transfer_bidir",
+      "next_dispatch": "Prove n=0 case of nf_eval_from_lower_agree step"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 413,
-      "statement": "prior_nonconstenv_2var_agree_until K=0 base case",
-      "assumption": "Depth-0 3-var transfer for between-zone",
-      "why_deferred": "Same root cause: between-zone at depth 0 still needs higher-arity transfer",
-      "next_dispatch": "Base case of fraisse_transfer handles depth-0 between-zone via Prior-UZ/SZ + nf_depth0_char_formula"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 491,
-      "statement": "prior_nonconstenv_2var_agree_since K=0 base case",
-      "assumption": "Mirror of Until K=0",
-      "why_deferred": "Same as Until K=0",
-      "next_dispatch": "Mirror"
+      "line": 645,
+      "statement": "private theorem zone_compatible_witness (zone-3 multi-component witness placement)",
+      "assumption": "Given per-component 2-var matched witnesses z_i (each with correct order vs envN_i and matching depth-d 1-var type), a single z' exists in N with correct orders vs ALL envN components and matching depth-d (r+1)-var NF",
+      "why_deferred": "Zone-3 placement requires: (1) sorting env components, (2) determining z's zone among envM, (3) for between-zone: cross_extend from both boundary components and Prior-UZ first_occ on target interval, (4) verifying (r+1)-var NF from zone placement. Mathematical argument is known but formal Lean case analysis is substantial.",
+      "next_dispatch": "Prove zone_compatible_witness: zone analysis on z's position among envM, use cross_extend from boundary components + Prior-UZ first_occ to find z' in corresponding envN interval, verify (r+1)-var NF satisfaction"
     }
   ],
   "blockers": [
-    "exist_transfer_3var_nonconstenv: Fraisse game argument needed. Depth-(K+1) 3-var transfer requires depth-K 4-var which requires depth-(K+1) 3-var (circular). Resolution: simultaneous induction on (depth, arity). Estimated 300-500 lines."
+    "zone_compatible_witness at line 645: zone-3 multi-component witness placement requires Prior-UZ interval analysis"
   ],
-  "continuation_path": "specs/303_k_gt_0_depth_induction/handoffs/phase-4d-dispatch2-handoff.md",
+  "continuation_path": null,
   "continuation_context": {
-    "is_successor": true,
-    "resume_phase": "4d",
-    "dispatch_number": 3,
-    "note": "Infrastructure in place: h_surj available, nf_depth0_char_formula imported, hex_t extracted. Next dispatch should implement fraisse_transfer mutual induction lemma."
+    "current_phase": "zone-3 induction plan implementation",
+    "last_completed": "Restructured prior_exist_transfer_bidir to delegate to zone_compatible_witness",
+    "next_action": "Implement zone_compatible_witness body using zone analysis + Prior-UZ first_occ"
   }
 }

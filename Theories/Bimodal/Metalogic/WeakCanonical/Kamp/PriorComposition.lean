@@ -589,6 +589,61 @@ the depth loss from cross_extend_bwd_1var.
 
 Literature: Rabinovich 2014, Lemma 5.3 (EF-game witness placement). -/
 
+/-- Zone-compatible witness placement (sorry): given z in M and, for each env
+    component i, a matched witness z_i in N with full depth-d 2-var agreement
+    at [z, envM_i]/[z_i, envN_i], find a SINGLE z' in N that has:
+    (a) the same depth-d 1-var NF as z (matching all z_i's 1-var type)
+    (b) correct order relative to ALL envN components simultaneously
+    (c) full depth-d (r+1)-var NF satisfaction matching [z, envM] in M
+
+    The mathematical argument uses char_fn + Prior-UZ to place z' in the
+    correct zone among envN components, but the formal proof requires
+    substantial case analysis on zones and interval arithmetic.
+
+    SORRY STATUS: This is the sole remaining leaf sorry in the zone-3
+    construction. Once proved, prior_exist_transfer_bidir becomes sorry-free. -/
+private theorem zone_compatible_witness {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (M N : OrderedMonadicStructure sig)
+    (h_UZ_M : semantic_prior_UZ M atomMap) (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap) (h_SZ_N : semantic_prior_SZ N atomMap)
+    (K : Nat)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
+        (S : OrderedMonadicStructure sig)
+        (_ : semantic_prior_UZ S atomMap) (_ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf S d 1 (fun _ => t) nf_1)
+    (d : Nat) (hd : d ≤ K + 1) (r : Nat)
+    (envM : Fin r → M.carrier) (envN : Fin r → N.carrier)
+    (h_1var : ∀ (i : Fin r), ∀ nf : NormalForm sig (d + 1) 1,
+        nf_eval_nf M (d + 1) 1 (fun _ => envM i) nf ↔
+        nf_eval_nf N (d + 1) 1 (fun _ => envN i) nf)
+    (h_order : ∀ (i j : Fin r), envM i < envM j ↔ envN i < envN j)
+    (z : M.carrier)
+    (h_witness_i : ∀ i : Fin r,
+        ∃ z_i : N.carrier, ∀ nf : NormalForm sig d 2,
+          nf_eval_nf M d 2 (Fin.cons z (fun _ => envM i)) nf ↔
+          nf_eval_nf N d 2 (Fin.cons z_i (fun _ => envN i)) nf)
+    (sub : NormalForm sig d (r + 1))
+    (hz : nf_eval_nf M d (r + 1) (Fin.cons z envM) sub) :
+    ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub := by
+  -- Mathematical proof sketch:
+  -- 1. From h_witness_i, each z_i has depth-d 1-var agreement with z
+  --    (via cross_1var_from_2var) and correct order vs envN_i
+  --    (from 2-var atom agreement).
+  -- 2. Zone analysis: determine z's position among envM components.
+  -- 3. For z between envM_lo and envM_hi: need z' between envN_lo and envN_hi.
+  --    From component lo: z_lo > envN_lo with char_fn d nf_z satisfied.
+  --    From component hi: z_hi < envN_hi with char_fn d nf_z satisfied.
+  --    At least one of z_lo, z_hi is in (envN_lo, envN_hi), or use
+  --    Prior-UZ first_occ to find z' in the interval.
+  -- 4. For z equal to envM_i: use envN_i directly.
+  -- 5. For z outside all envM: use cross_extend from nearest component.
+  -- 6. Verify sub satisfaction from depth-d (r+1)-var agreement at [z,envM]/[z',envN].
+  sorry
+
 /-- Bidirectional depth-d (r+1)-var existential transfer on Prior structures.
     By Nat.rec on depth d, with arity r universally quantified.
 
@@ -620,16 +675,44 @@ private theorem prior_exist_transfer_bidir {sig : MonadicSignature}
       (sub : NormalForm sig d (r + 1)),
       (∃ z : M.carrier, nf_eval_nf M d (r + 1) (Fin.cons z envM) sub) ↔
       ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub := by
-  -- Proof by induction on d with arity r universally quantified.
-  -- Both directions proved simultaneously (quantifier biconditional needs both).
-  -- Sub-obligations:
-  -- d=0 base: depth-0 multi-var existential (zone analysis + Prior-UZ/SZ)
-  -- d+1 step: cross_extend from env component gives depth-(d+1) 2-var agreement,
-  --   extract 1-var agreement, verify atoms + orders, use IH for quantifiers.
-  -- Key unresolved sub-lemmas:
-  -- 1. 1-var extraction from 2-var cross_extend
-  -- 2. Zone-order matching (z/z' orders relative to non-anchor env components)
-  sorry
+  -- Biconditional from zone_compatible_witness applied in both directions.
+  intro d hd r envM envN h_1var h_order sub
+  constructor
+  · -- Forward: M → N
+    rintro ⟨z, hz⟩
+    -- Build per-component matched witnesses from exist_transfer_from_full_agree
+    have h_witness_i : ∀ i : Fin r,
+        ∃ z_i : N.carrier, ∀ nf : NormalForm sig d 2,
+          nf_eval_nf M d 2 (Fin.cons z (fun _ => envM i)) nf ↔
+          nf_eval_nf N d 2 (Fin.cons z_i (fun _ => envN i)) nf := by
+      intro i
+      set chi_zi := nf_characteristic M d 2 (Fin.cons z (fun _ => envM i))
+      have h_zi_sat := nf_characteristic_satisfies M d 2 (Fin.cons z (fun _ => envM i))
+      obtain ⟨z_i, hz_i⟩ := (exist_transfer_from_full_agree M (fun _ => envM i)
+        N (fun _ => envN i) (h_1var i) d le_rfl chi_zi).mp ⟨z, h_zi_sat⟩
+      exact ⟨z_i, nf_agreement_from_shared_nf M _ N _ chi_zi h_zi_sat hz_i⟩
+    exact zone_compatible_witness atomMap M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N
+      K char_fn char_correct d hd r envM envN h_1var h_order z h_witness_i sub hz
+  · -- Backward: N → M (symmetric, swap M↔N)
+    rintro ⟨z', hz'⟩
+    have h_1var' : ∀ (i : Fin r), ∀ nf : NormalForm sig (d + 1) 1,
+        nf_eval_nf N (d + 1) 1 (fun _ => envN i) nf ↔
+        nf_eval_nf M (d + 1) 1 (fun _ => envM i) nf :=
+      fun i nf => (h_1var i nf).symm
+    have h_order' : ∀ (i j : Fin r), envN i < envN j ↔ envM i < envM j :=
+      fun i j => (h_order i j).symm
+    have h_witness_i' : ∀ i : Fin r,
+        ∃ z_i : M.carrier, ∀ nf : NormalForm sig d 2,
+          nf_eval_nf N d 2 (Fin.cons z' (fun _ => envN i)) nf ↔
+          nf_eval_nf M d 2 (Fin.cons z_i (fun _ => envM i)) nf := by
+      intro i
+      set chi_zi := nf_characteristic N d 2 (Fin.cons z' (fun _ => envN i))
+      have h_zi_sat := nf_characteristic_satisfies N d 2 (Fin.cons z' (fun _ => envN i))
+      obtain ⟨z_i, hz_i⟩ := (exist_transfer_from_full_agree N (fun _ => envN i)
+        M (fun _ => envM i) (h_1var' i) d le_rfl chi_zi).mp ⟨z', h_zi_sat⟩
+      exact ⟨z_i, nf_agreement_from_shared_nf N _ M _ chi_zi h_zi_sat hz_i⟩
+    exact zone_compatible_witness atomMap N M h_UZ_N h_SZ_N h_UZ_M h_SZ_M
+      K char_fn char_correct d hd r envN envM h_1var' h_order' z' h_witness_i' sub hz'
 
 /-- One-directional existential transfer from M to N on Prior structures.
     Corollary of `prior_exist_transfer_bidir`. -/
