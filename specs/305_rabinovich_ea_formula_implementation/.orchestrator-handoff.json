@@ -1,58 +1,62 @@
 {
-  "status": "blocked",
-  "summary": "Phase 1 blocked on zone-3 interval bounding for prior_exist_transfer_one_dir. The proof requires finding a witness between two env elements (envN_i, envN_j) with matching depth-d 1-var NF type, but cross_extend from individual endpoints does not guarantee the witness lands in the correct interval. Additionally, the strong induction structure at call sites introduces a K/K_outer mismatch preventing direct wiring of the lemma.",
+  "status": "researched",
+  "summary": "Deep research completed: Rabinovich's interval bounding uses NF atom part in 3-var existential transfer (not temporal formulas). The ih_2var quantifier condition provides zone-3 witnesses at depth K with automatic interval bounds from order atoms. The depth-1 gap (K vs K+1) is bridged by one-directional transfer via Nat.rec on depth d. prior_exist_transfer_one_dir (line 515) has the correct signature. Proof structure: base d=0 via atomic zone transfer, step d+1 via ih_2var witness + recursive quantifier verification.",
   "phases_completed": 0,
-  "phases_total": 3,
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 515,
       "statement": "theorem prior_exist_transfer_one_dir",
-      "assumption": "Zone-3 witness placement: z' between envN_i and envN_j with matching NF type",
-      "why_deferred": "Zone-3 interval bounding unresolved: cross_extend gives witnesses outside the target interval; char_fn + Prior-UZ gives first occurrence but without upper bound",
-      "next_dispatch": "Resolve zone-3 bounding, possibly via 3-var compound transfer at lower depth or restructured induction"
+      "assumption": "One-directional existential transfer by Nat.rec on depth d with arity universally quantified",
+      "why_deferred": "Main proof target - requires completing the induction proof",
+      "next_dispatch": "Implement via Nat.rec on d: base d=0 atomic, step d+1 uses ih_2var + recursive quantifier transfer"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 586,
       "statement": "sorry in prior_nonconstenv_2var_agree_until (forward)",
       "assumption": "depth-(K+1) 3-var existential transfer M to N",
-      "why_deferred": "Blocked by prior_exist_transfer_one_dir + K/K_outer mismatch",
-      "next_dispatch": "Wire via prior_exist_transfer_one_dir or prove directly"
+      "why_deferred": "Wire after prior_exist_transfer_one_dir is proved",
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with env=[x,t], env'=[x',t']"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 590,
       "statement": "sorry in prior_nonconstenv_2var_agree_until (backward)",
       "assumption": "depth-(K+1) 3-var existential transfer N to M",
-      "why_deferred": "Same as forward + M/N swap",
-      "next_dispatch": "Wire via prior_exist_transfer_one_dir"
+      "why_deferred": "Wire after prior_exist_transfer_one_dir with M/N swapped",
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with M/N swapped"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 650,
+      "line": 641,
       "statement": "sorry in prior_nonconstenv_2var_agree_since (forward)",
       "assumption": "depth-(K+1) 3-var existential transfer (Since zone)",
       "why_deferred": "Mirror of Until forward",
-      "next_dispatch": "Wire via prior_exist_transfer_one_dir"
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with reversed order"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 654,
+      "line": 645,
       "statement": "sorry in prior_nonconstenv_2var_agree_since (backward)",
       "assumption": "depth-(K+1) 3-var existential transfer (Since, backward)",
       "why_deferred": "Mirror of Until backward",
-      "next_dispatch": "Wire via prior_exist_transfer_one_dir"
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with reversed order + M/N swap"
     }
   ],
-  "blockers": [
-    "Zone-3 interval bounding: finding z' in (envN_i, envN_j) with matching depth-d 1-var NF type when z is between envM_i and envM_j",
-    "K/K_outer mismatch: strong induction at call sites has universally quantified K while h_x/h_t/char_correct fixed at K_outer"
-  ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-handoff-20260622.md",
+  "blockers": [],
+  "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/13_interval-bounding-design.md",
+  "key_insights": {
+    "interval_bounding": "NF atom part encodes order (t < w < x); transferred 3-var NF automatically gives t' < z' < x'. No temporal formula needed.",
+    "depth_gap_resolution": "One-directional Nat.rec on d: ih_2var gives depth-d zone-3 witness, atoms verified from depth-d 1-var, quantifier conditions by recursion at depth d-1 using exist_transfer_from_full_agree chain.",
+    "char_fn_mechanism": "char_fn(d, nf) + Prior-UZ gives full depth-d 1-var matching without the depth loss inherent in cross_extend_bwd_1var.",
+    "case_c_resolution": "When both cross_extend witnesses are outside the interval, ih_2var quantifier condition provides a depth-K zone-3 witness. Depth-(K+1) evaluation is achieved constructively: atoms from depth-K matching, quantifier conditions by recursion."
+  },
   "continuation_context": {
-    "next_phase": 1,
-    "is_successor": false,
-    "resume_from": "zone-3 interval bounding resolution"
-  }
+    "next_phase": "plan",
+    "is_successor": true,
+    "resume_from": "research complete"
+  },
+  "next_steps": "Run /plan 305 to create implementation plan for prior_exist_transfer_one_dir proof"
 }
