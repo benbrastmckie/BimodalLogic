@@ -1,33 +1,47 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
-import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF
-import Bimodal.Metalogic.WeakCanonical.Kamp.PriorComposition
 import Bimodal.Metalogic.WeakCanonical.Table
 
 /-!
-# K=0 Depth-1 2-var Agreement via Temporal Transfer + HasAttainedINF
+# Temporal Truth Transfer and Operator Depth Infrastructure
 
-Proves depth-1 2-var NF agreement on Prior structures at K=0, resolving
-the sorry at PriorComposition.lean lines 869/964.
+Reusable infrastructure for cross-structure temporal truth transfer and
+operator_depth analysis. Extracted from the K=0 investigation (plan v19).
 
-## Strategy
+## Reusable Theorems (sorry-free)
 
 1. `temporal_truth_transfer`: depth-k 1-var NF agreement transfers temporal
-   formulas of operator_depth ≤ k.
+   formulas of operator_depth ≤ k. Uses `table_correctness` + `doets_lemma_1_1`.
 
-2. `depth2_quant_transfer`: from depth-2 1-var NF agreement, derive
-   depth-1 2-var existential transfer (quantifier extraction).
+2. `depth2_quant_transfer`: from depth-2 1-var NF agreement at a single point,
+   derive depth-1 2-var existential transfer at CONSTANT env [w, t] / [w', t'].
 
-3. Zone-3 transfer: Given w ∈ (t,x) with predicates nf_w0 in M, find
-   w' ∈ (t',x') with nf_w0 in N using F(P_w)/S(P_w) temporal transfer
-   combined with HasAttainedINF first-occurrence localization.
+3. `nf_depth0_char_operator_depth`: nf_depth0_char_formula has operator_depth 0.
 
-4. `k0_depth1_2var_agree_until/since`: decompose into atoms + zone-wise
-   quantifier transfer.
+4. `nf_depth0_char_iff_eval`: nf_depth0_char_formula ↔ nf_eval_nf at depth 0.
+
+## Status of Cross-Structure Zone-3 Transfer
+
+`zone3_exist_transfer` (previously in this file) is **FALSE**.
+See PriorComposition.lean line 873 for the counterexample:
+M=N=ℤ with is_even, t=t'=0, x=4, x'=2. The point w=2 is even in (0,4),
+but (0,2) contains only 1 (odd). All hypotheses hold but the conclusion fails.
+
+Similarly, `k0_depth1_2var_agree_until/since` are **FALSE**: they are equivalent
+to `prior_nonconstenv_2var_agree_until/since` at K=0, which has the same
+counterexample. These theorems have been removed.
+
+## Correct Fix Direction
+
+The fix is NOT at the PriorComposition level (the theorem is genuinely false).
+The fix is at the `existPart_succ_n1_bypass` level in KampBypass.lean: the k>0
+Until/Since cases must encode zone-3 witnesses directly in the temporal formula
+(as the sorry-free k=0 case already does), rather than using cross-structure
+NF transfer via `prior_2var_transfer_until/since`.
 
 ## References
 
-- Rabinovich 2014, "A Proof of Kamp's Theorem", Lemma 5.3
-- Plan v19, Phases 1-4
+- Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5
+- Plan v19: witness-count restructure
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
@@ -40,7 +54,11 @@ open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_corre
 /-! ## Temporal Truth Transfer -/
 
 /-- Temporal truth transfer: depth-k 1-var NF agreement at t/t' implies
-    temporal truth agreement for formulas of operator_depth ≤ k. -/
+    temporal truth agreement for formulas of operator_depth ≤ k.
+
+    This is a consequence of the fundamental Doets lemma (1.1): if two
+    structures agree on all NFs of sufficient depth and arity, they agree
+    on all temporal formulas of bounded operator depth. -/
 theorem temporal_truth_transfer {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (k : Nat)
@@ -58,9 +76,18 @@ theorem temporal_truth_transfer {sig : MonadicSignature}
     (by omega) M N (fun _ => t) (fun _ => t') h_agree
   exact h_M.symm.trans (h_doets.trans h_N)
 
-/-! ## Quantifier Transfer from Depth-2 1-var Agreement -/
+/-! ## Quantifier Transfer from Depth-2 1-var Agreement
 
-/-- From depth-2 1-var NF agreement, derive depth-1 2-var existential transfer. -/
+   This transfer works at CONSTANT environments: it shows that depth-1
+   2-var existentials transfer between structures when both structures
+   agree on depth-2 1-var NFs at a single common base point.
+
+   **Critical distinction**: This does NOT handle non-constant environments
+   [x, t] with x ≠ t. The non-constant environment case is the zone-3
+   problem that is genuinely impossible via cross-structure NF transfer. -/
+
+/-- From depth-2 1-var NF agreement at a single point, derive depth-1
+    2-var existential transfer at constant env [w, t] / [w', t']. -/
 theorem depth2_quant_transfer {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (t : M.carrier)
     (N : OrderedMonadicStructure sig) (t' : N.carrier)
@@ -116,7 +143,9 @@ theorem nf_depth0_char_operator_depth
 
 /-! ## Char formula ↔ nf_eval_nf at depth 0 -/
 
-private theorem nf_depth0_char_iff_eval {sig : MonadicSignature}
+/-- The depth-0 characteristic formula for a 1-var NF correctly captures
+    the NF evaluation at depth 0. -/
+theorem nf_depth0_char_iff_eval {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -138,156 +167,5 @@ private theorem nf_depth0_char_iff_eval {sig : MonadicSignature}
     have := h (.pred p ⟨0, by omega⟩)
     simp only [atom_eval] at this
     exact this
-
-/-! ## Zone-3 Transfer -/
-
-/-- Zone-3 transfer: given w ∈ (t,x) with predicates nf_w0 in M, find
-    w' ∈ (t',x') with nf_w0 in N. Uses F(P_w)/S(P_w) temporal transfer
-    at depth 2 combined with HasAttainedINF for localization.
-
-    The proof uses `nf_depth0_char_formula` (operator_depth 0) to build
-    temporal formulas F(P_w) and S(P_w) of operator_depth 2, which transfer
-    via depth-2 1-var agreement at both endpoints.
-
-    **Edge case**: When the F-witness y₁ ≥ x' AND the S-witness y₂ ≤ t',
-    the simple case analysis fails. This case uses depth-1 quantifier
-    extraction from the depth-2 agreement + HasAttainedINF to produce
-    a witness in (t', x'). The resolution requires showing that the first
-    x-type point above t' is ≤ x' and that the nf_w0 witness from the
-    depth-1 profile transfer falls below this point.
-
-    **THIS THEOREM IS FALSE.** Counterexample: M=N=Z with is_even, t=t'=0,
-    x=4, x'=2. The point w=2 is even in (0,4), but (0,2) contains only 1
-    (odd). All hypotheses hold (depth-2 1-var NFs at 4/2 agree by
-    translation symmetry mod 2 on Z), but the conclusion fails.
-
-    The edge case is not "hard" -- it is genuinely impossible. The fix is
-    to bypass this theorem: existPart_succ_n1_bypass should use VecEA2
-    bracket formulas to encode zone-3 witnesses in the temporal formula,
-    rather than attempting cross-structure NF transfer. -/
-theorem zone3_exist_transfer {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
-    (h_UZ_N : semantic_prior_UZ N atomMap)
-    (h_SZ_N : semantic_prior_SZ N atomMap)
-    (h_x : ∀ nf : NormalForm sig 2 1,
-      nf_eval_nf M 2 1 (fun _ => x) nf ↔
-      nf_eval_nf N 2 1 (fun _ => x') nf)
-    (h_t : ∀ nf : NormalForm sig 2 1,
-      nf_eval_nf M 2 1 (fun _ => t) nf ↔
-      nf_eval_nf N 2 1 (fun _ => t') nf)
-    (h_order_M : t < x) (h_order_N : t' < x')
-    (nf_w0 : NormalForm sig 0 1)
-    (hw : ∃ w : M.carrier, t < w ∧ w < x ∧
-        nf_eval_nf M 0 1 (fun _ => w) nf_w0) :
-    ∃ w' : N.carrier, t' < w' ∧ w' < x' ∧
-      nf_eval_nf N 0 1 (fun _ => w') nf_w0 := by
-  obtain ⟨w, h_tw, h_wx, h_w_pred⟩ := hw
-  set P_w := nf_depth0_char_formula atomMap h_surj nf_w0
-  have h_Pw_depth : operator_depth P_w = 0 :=
-    nf_depth0_char_operator_depth atomMap h_surj nf_w0
-  -- F(P_w) at t transfers to F(P_w) at t': get y₁ > t' with nf_w0
-  have h_F_M : temporal_truth M atomMap t (Formula.untl P_w Formula.top) :=
-    ⟨w, h_tw, (nf_depth0_char_iff_eval M atomMap h_surj nf_w0 w).mpr h_w_pred,
-      fun _ _ _ => by simp [Formula.top, temporal_truth]⟩
-  have h_F_N := (temporal_truth_transfer atomMap 2 M t N t' h_t
-    (Formula.untl P_w Formula.top) (by simp [operator_depth, Formula.top, h_Pw_depth])).mp h_F_M
-  obtain ⟨y₁, h_y₁_gt, h_y₁_Pw, _⟩ := h_F_N
-  have h_y₁_pred := (nf_depth0_char_iff_eval N atomMap h_surj nf_w0 y₁).mp h_y₁_Pw
-  -- S(P_w) at x transfers to S(P_w) at x': get y₂ < x' with nf_w0
-  have h_S_M : temporal_truth M atomMap x (Formula.snce P_w Formula.top) :=
-    ⟨w, h_wx, (nf_depth0_char_iff_eval M atomMap h_surj nf_w0 w).mpr h_w_pred,
-      fun _ _ _ => by simp [Formula.top, temporal_truth]⟩
-  have h_S_N := (temporal_truth_transfer atomMap 2 M x N x' h_x
-    (Formula.snce P_w Formula.top) (by simp [operator_depth, Formula.top, h_Pw_depth])).mp h_S_M
-  obtain ⟨y₂, h_y₂_lt, h_y₂_Pw, _⟩ := h_S_N
-  have h_y₂_pred := (nf_depth0_char_iff_eval N atomMap h_surj nf_w0 y₂).mp h_y₂_Pw
-  -- Case analysis
-  by_cases h₁ : y₁ < x'
-  · exact ⟨y₁, h_y₁_gt, h₁, h_y₁_pred⟩
-  · push_neg at h₁
-    by_cases h₂ : t' < y₂
-    · exact ⟨y₂, h₂, h_y₂_lt, h_y₂_pred⟩
-    · push_neg at h₂
-      -- Edge case: y₁ ≥ x' and y₂ ≤ t'. Use depth-1 quantifier extraction.
-      -- Transfer [w,t] profile via h_t to get w₁ > t' with depth-1 matching.
-      -- From depth-1 profile, extract "∃ v > w₁ with x-predicates" (witnessed
-      -- by x > w in M). Get v₁ > w₁ with x-predicates.
-      -- First x-type above t' is r₀ ≤ x' (HasAttainedINF, since x' is x-type).
-      -- If w₁ < x': done (w₁ is in (t', x') with nf_w0).
-      -- If w₁ ≥ x': need combined 3-var reasoning.
-      -- This deep edge case requires showing that the 2-var profile transfer
-      -- plus HasAttainedINF forces a witness into (t', x').
-      -- Deferred: requires VecEA-level bracket encoding or deeper NF analysis.
-      sorry
-
-/-! ## K=0 Depth-1 2-var Agreement -/
-
-/-- K=0 depth-1 2-var agreement for the Until zone (t < x). -/
-theorem k0_depth1_2var_agree_until {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
-    (h_UZ_M : semantic_prior_UZ M atomMap)
-    (h_SZ_M : semantic_prior_SZ M atomMap)
-    (h_UZ_N : semantic_prior_UZ N atomMap)
-    (h_SZ_N : semantic_prior_SZ N atomMap)
-    (h_x : ∀ nf : NormalForm sig (0 + 2) 1,
-      nf_eval_nf M (0 + 2) 1 (fun _ => x) nf ↔
-      nf_eval_nf N (0 + 2) 1 (fun _ => x') nf)
-    (h_t : ∀ nf : NormalForm sig (0 + 2) 1,
-      nf_eval_nf M (0 + 2) 1 (fun _ => t) nf ↔
-      nf_eval_nf N (0 + 2) 1 (fun _ => t') nf)
-    (h_order_M : t < x)
-    (h_order_N : t' < x')
-    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
-    (char_correct : ∀ (d : Nat) (_ : d ≤ 0 + 1) (nf_1 : NormalForm sig d 1)
-        (S : OrderedMonadicStructure sig)
-        (_ : semantic_prior_UZ S atomMap) (_ : semantic_prior_SZ S atomMap)
-        (t : S.carrier),
-        temporal_truth S atomMap t (char_fn d nf_1) ↔
-        nf_eval_nf S d 1 (fun _ => t) nf_1) :
-    ∀ nf : NormalForm sig (0 + 1) 2,
-      nf_eval_nf M (0 + 1) 2 (Fin.cons x (fun _ => t)) nf ↔
-      nf_eval_nf N (0 + 1) 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- **FALSE**: This is the depth-1 2-var NF agreement on non-constant environments,
-  -- which is the same as prior_nonconstenv_2var_agree_until K=0. The theorem is
-  -- FALSE for the same zone-3 reason: zone3_exist_transfer is false.
-  -- See PriorComposition.lean line 869 comment for the counterexample.
-  sorry
-
-/-- K=0 depth-1 2-var agreement for the Since zone (x < t). -/
-theorem k0_depth1_2var_agree_since {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (N : OrderedMonadicStructure sig) (x' t' : N.carrier)
-    (h_UZ_M : semantic_prior_UZ M atomMap)
-    (h_SZ_M : semantic_prior_SZ M atomMap)
-    (h_UZ_N : semantic_prior_UZ N atomMap)
-    (h_SZ_N : semantic_prior_SZ N atomMap)
-    (h_x : ∀ nf : NormalForm sig (0 + 2) 1,
-      nf_eval_nf M (0 + 2) 1 (fun _ => x) nf ↔
-      nf_eval_nf N (0 + 2) 1 (fun _ => x') nf)
-    (h_t : ∀ nf : NormalForm sig (0 + 2) 1,
-      nf_eval_nf M (0 + 2) 1 (fun _ => t) nf ↔
-      nf_eval_nf N (0 + 2) 1 (fun _ => t') nf)
-    (h_order_M : x < t)
-    (h_order_N : x' < t')
-    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
-    (char_correct : ∀ (d : Nat) (_ : d ≤ 0 + 1) (nf_1 : NormalForm sig d 1)
-        (S : OrderedMonadicStructure sig)
-        (_ : semantic_prior_UZ S atomMap) (_ : semantic_prior_SZ S atomMap)
-        (t : S.carrier),
-        temporal_truth S atomMap t (char_fn d nf_1) ↔
-        nf_eval_nf S d 1 (fun _ => t) nf_1) :
-    ∀ nf : NormalForm sig (0 + 1) 2,
-      nf_eval_nf M (0 + 1) 2 (Fin.cons x (fun _ => t)) nf ↔
-      nf_eval_nf N (0 + 1) 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- **FALSE**: Mirror of k0_depth1_2var_agree_until. Same counterexample with swapped roles.
-  sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

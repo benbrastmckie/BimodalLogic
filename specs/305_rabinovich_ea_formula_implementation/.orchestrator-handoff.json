@@ -1,72 +1,49 @@
 {
-  "status": "blocked",
-  "summary": "prior_nonconstenv_2var_agree_until at K=0 is FALSE (not just hard to prove). Counterexample: Z with is_even, (x,t)=(4,0), (x',t')=(2,0). Depth-2 1-var NFs at 4 and 2 agree (translation symmetry mod 2), but depth-2 2-var NFs at [4,0] and [2,0] differ because exists w in (0,4) even (w=2) but no even w in (0,2). The false theorem propagates through prior_2var_transfer_until to all K values. Fix requires restructuring existPart_succ_n1_bypass at k>=1 to not use prior_2var_transfer_until, using VecEA-mediated bracket formulas instead.",
-  "session_id": "sess_1750620000_orch305b",
+  "status": "partial",
+  "summary": "Cleaned WitnessCount.lean: removed 3 false theorems (zone3_exist_transfer, k0_depth1_2var_agree_until/since), retained sorry-free infrastructure (temporal_truth_transfer, depth bounds). Full build passes. Documented that the fix must restructure existPart_succ_n1_bypass at k>0 in KampBypass.lean to encode zone-3 witnesses directly, rather than using cross-structure NF transfer via the false prior_nonconstenv_2var_agree_until.",
   "phases_completed": 0,
-  "phases_total": 4,
-  "plan_version": 18,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/18_nf-vecEA-bridge-plan.md",
+  "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 869,
+      "line": 880,
       "statement": "prior_nonconstenv_2var_agree_until K=0",
-      "assumption": "Depth-2 2-var agreement from depth-2 1-var at endpoints on Prior structures",
-      "why_deferred": "THEOREM IS FALSE. Counterexample: Z with is_even, (x,t)=(4,0), (x',t')=(2,0). Zone-3 depth-0 existential (even w between 0 and x) differs at x=4 vs x=2. Cannot be fixed; must be bypassed.",
-      "next_dispatch": "Restructure existPart_succ_n1_bypass to bypass prior_2var_transfer_until for k>=1"
+      "assumption": "Depth-1 2-var agreement from depth-2 1-var at endpoints on Prior structures",
+      "why_deferred": "THEOREM IS FALSE. Counterexample: Z with is_even, (x,t)=(4,0), (x',t')=(2,0). Even on Prior structures. Fix is architectural: restructure existPart_succ_n1_bypass to not depend on this.",
+      "next_dispatch": "Restructure existPart_succ_n1_bypass k>0 Until case (KampBypass.lean:605-673) to encode zone-3 witnesses via VecEA2 brackets"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 964,
+      "line": 978,
       "statement": "prior_nonconstenv_2var_agree_since K=0",
-      "assumption": "Mirror of Until K=0",
-      "why_deferred": "THEOREM IS FALSE (same counterexample). Must be bypassed.",
-      "next_dispatch": "Mirror of Until fix"
+      "assumption": "Mirror of Until",
+      "why_deferred": "THEOREM IS FALSE (same counterexample, swapped roles)",
+      "next_dispatch": "Mirror of Until fix in KampBypass.lean:674-740"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/WitnessCount.lean",
-      "line": 219,
-      "statement": "zone3_exist_transfer",
-      "assumption": "Zone-3 depth-0 predicate transfer between Prior structures",
-      "why_deferred": "THEOREM IS FALSE. Same Z counterexample.",
-      "next_dispatch": "Delete this theorem and its dependents"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 542,
+      "statement": "nf_exist_backward_depth_succ",
+      "assumption": "Downstream of PriorComposition",
+      "why_deferred": "Depends on prior_nonconstenv_2var_agree; becomes dead code once KampBypass is fixed",
+      "next_dispatch": "Will be obsoleted by KampBypass fix"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
+      "line": 657,
+      "statement": "nf_2var_exist_formula_prior k>0",
+      "assumption": "Downstream of PriorComposition",
+      "why_deferred": "Depends on prior_nonconstenv_2var_agree; becomes dead code once KampBypass is fixed",
+      "next_dispatch": "Will be obsoleted by KampBypass fix"
     }
   ],
   "blockers": [
-    {
-      "description": "prior_nonconstenv_2var_agree_until at K=0 is FALSE, AND the entire theorem is false at all K (recursion bottoms out at K=0). Counterexample: Z with is_even, M=N=Z, t=t'=0, x=4, x'=2. The fix requires bypassing prior_2var_transfer_until in existPart_succ_n1_bypass.",
-      "what_failed": "The theorem statement itself is false. Depth-2 2-var NF agreement on non-constant environments does NOT follow from depth-2 1-var endpoint agreements on Prior structures. Zone-3 existentials (witnesses between endpoints) cannot be transferred between structures even with Prior-UZ/SZ.",
-      "what_was_tried": "Analysis of the goal at K=0 sorry (line 869). Zone decomposition shows zones 1,2,4,5 transfer via exist_transfer_from_full_agree on h_x/h_t. Zone 3 requires exists w in (t,x) with preds matching to transfer to exists w' in (t',x') with preds matching. This is provably false (Z counterexample). The code AFTER the sorry also calls zone_compatible_witness at d=1 (sorry) and nf_eval_from_lower_agree at d=0 (sorry), both of which are also false for the same reason.",
-      "impact": "existPart_succ_n1_bypass at k>=1 backward direction is unprovable with current architecture. All K values of prior_nonconstenv_2var_agree_until/since are broken.",
-      "suggested_fix": "NEW PLAN: Modify existPart_succ_n1_bypass to use VecEA2 bracket formulas for the backward direction at k>=1 (same pattern as k=0 enriched bypass). The formula A encodes zone-3 witnesses using BracketFormula, which guarantees witnesses are in the correct interval by construction. The bracket point types use char_fn at appropriate depths. This bypasses PriorComposition entirely."
-    }
+    "existPart_succ_n1_bypass k>0 backward direction uses false prior_2var_transfer_until/since. Must restructure to encode zone-3 witnesses directly via VecEA2 brackets, matching the sorry-free k=0 pattern."
   ],
-  "continuation_path": null,
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/enriched-until-analysis-handoff.md",
   "continuation_context": {
     "is_successor": false,
-    "key_findings": [
-      "prior_nonconstenv_2var_agree_until is FALSE at K=0 (and therefore at all K via recursion)",
-      "prior_nonconstenv_2var_agree_since is FALSE at K=0 (mirror)",
-      "zone3_exist_transfer (WitnessCount.lean) is FALSE (previously known, now confirmed to extend to prior_nonconstenv)",
-      "zone_compatible_witness at d=0 and d=1 are also false",
-      "nf_eval_from_lower_agree at d=0 is false",
-      "Z counterexample: is_even predicate, (x,t)=(4,0) vs (x',t')=(2,0). Depth-2 1-var agreement holds at 4/2 and 0/0, Prior axioms hold on Z, but depth-2 2-var agreement fails at [4,0]/[2,0]",
-      "The THEOREM existPart_succ_n1_bypass IS true (from Rabinovich's paper), but the current PROOF is wrong",
-      "The fix requires changing the formula A in the backward direction to include bracket-encoded zone-3 witnesses",
-      "The existing k=0 enriched bypass (VecEA2 brackets) is the correct template for the fix",
-      "New research needed: generalize enriched_bypass_until/since from handling NormalForm sig 1 2 to NormalForm sig (k+2) 2"
-    ],
-    "files_analyzed": [
-      "PriorComposition.lean: full sorry analysis, goal states at lines 869/964, prior_exist_transfer_bidir chain",
-      "KampBypass.lean: existPart_succ_n1_bypass architecture, k'=0 vs k'+1 dispatch",
-      "KampBypassUntil.lean: enriched_bypass_until pattern (template for fix)",
-      "KampBypassCore.lean: enriched_vecEA2_until definition",
-      "NfToVecEA.lean: depth-0 NF-to-VecEA bridge (sorry-free)",
-      "NormalForm.lean: nf_eval_nf definition, NormalForm type structure",
-      "PriorINF.lean: HasAttainedINF, prior_hasAttainedINF",
-      "PriorDefs.lean: semantic_prior_UZ/SZ definitions",
-      "WitnessCount.lean: zone3_exist_transfer (FALSE), k0_depth1_2var_agree (depends on false theorem)",
-      "VecEAFormula.lean: BracketFormula structure and holds semantics"
-    ]
+    "last_phase": "analysis and cleanup",
+    "next_action": "Restructure existPart_succ_n1_bypass k>0 Until/Since cases in KampBypass.lean"
   }
 }
