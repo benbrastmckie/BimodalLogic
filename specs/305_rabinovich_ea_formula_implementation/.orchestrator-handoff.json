@@ -1,77 +1,70 @@
 {
   "status": "blocked",
-  "summary": "Cycle 3: Exhaustive analysis proves depth gap is intrinsic to char-NF proof architecture. Resolution: restructure to Rabinovich EF-game induction on depth d with universal arity r. Cross_extend from depth-(d+1) gives depth-d 1-var matching IH at d-1. Zone-3 existence from ih_strong 3-var existential.",
+  "summary": "Phase 1 of plan v10 BLOCKED: Standalone VecEA bridge lemma approach for depth-0 bounded existential transfer is fundamentally incorrect. 1-var NF agreement at individual endpoints does not jointly constrain the interval between them. 5 approaches analyzed and all fail. Correct resolution (from research report 07): generalize outer strong induction to prove r-var agreement for ALL r >= 2 simultaneously. Plan revision required.",
   "phases_completed": 0,
-  "phases_total": 5,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 524,
-      "statement": "prior_exist_transfer_one_dir: one-directional existential transfer at depth d arity r+1 from M to N",
-      "assumption": "Induction on d with Prior-UZ witness finding and IH for quantifier conditions",
-      "why_deferred": "Zone-3 witness existence in interval (t', x') requires combining cross_extend companions with Prior-UZ/SZ and 2-var agreement quantifier conditions; hard case analysis (both companions outside interval) not yet implemented",
-      "next_dispatch": "Prove prior_exist_transfer_one_dir by Nat.rec on d: (1) depth-0 base case via atom matching with cross_extend, (2) depth d+1 step via char_fn/Prior-UZ for witness + IH for quantifier transfer, (3) zone-3 existence lemma for the hard case where both companions are outside (t', x')"
+      "statement": "theorem prior_exist_transfer_one_dir",
+      "assumption": "One-directional existential transfer on Prior structures via depth induction",
+      "why_deferred": "Plan v10 bridge approach incorrect; needs generalized arity induction (rvar_agree_gen)",
+      "next_dispatch": "Revise plan: replace bridge approach with rvar_agree_gen restructuring"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 616,
-      "statement": "nf_eval_nf N (K+1) 3 (Fin.cons w2 (Fin.cons x' (fun _ => t'))) sub_nf",
-      "assumption": "Zone-3 existential transfer (until forward)",
-      "why_deferred": "Blocked on prior_exist_transfer_one_dir proof",
-      "next_dispatch": "Apply prior_exist_transfer_one_dir with d=K+1, r=2, env=[x,t]/[x',t']"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 621,
-      "statement": "nf_eval_nf M (K+1) 3 (Fin.cons w2 (Fin.cons x (fun _ => t))) sub_nf",
-      "assumption": "Zone-3 existential transfer (until backward)",
-      "why_deferred": "Blocked on prior_exist_transfer_one_dir (N-to-M direction)",
-      "next_dispatch": "Apply symmetric version of prior_exist_transfer_one_dir"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 672,
-      "statement": "nf_eval_nf N (K+1) 3 (Fin.cons w2 (Fin.cons x' (fun _ => t'))) sub_nf",
-      "assumption": "Zone-3 existential transfer (since forward)",
+      "line": 595,
+      "statement": "sorry in prior_nonconstenv_2var_agree_until (forward direction)",
+      "assumption": "nf_eval N (K+1) 3 [w₂,x',t'] sub_nf from hw₂",
       "why_deferred": "Blocked on prior_exist_transfer_one_dir",
-      "next_dispatch": "Same as until forward, with order reversed"
+      "next_dispatch": "Follows from rvar_agree_gen"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 676,
-      "statement": "nf_eval_nf M (K+1) 3 (Fin.cons w2 (Fin.cons x (fun _ => t))) sub_nf",
-      "assumption": "Zone-3 existential transfer (since backward)",
-      "why_deferred": "Blocked on prior_exist_transfer_one_dir",
-      "next_dispatch": "Same as until backward"
+      "line": 599,
+      "statement": "sorry in prior_nonconstenv_2var_agree_until (backward direction)",
+      "assumption": "Symmetric to line 595",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Follows from rvar_agree_gen"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 650,
+      "statement": "sorry in prior_nonconstenv_2var_agree_since (forward direction)",
+      "assumption": "Since-zone version of 595",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Follows from rvar_agree_gen"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 654,
+      "statement": "sorry in prior_nonconstenv_2var_agree_since (backward direction)",
+      "assumption": "Since-zone version of 599",
+      "why_deferred": "Same root cause",
+      "next_dispatch": "Follows from rvar_agree_gen"
     }
   ],
   "blockers": [
-    "prior_exist_transfer_one_dir proof body: zone-3 witness existence in interval (t', x') when both cross_extend companions are outside the interval. The hard case (w2 >= x' AND w1 <= t') requires showing char_fn formula is realized in (t', x') using the full 2-var agreement quantifier conditions combined with Prior-UZ/SZ."
+    "Plan v10 Phase 1 approach (standalone depth-0 bridge lemmas) is fundamentally incorrect. 1-var NF agreement at individual endpoints does not jointly constrain the interval between them. The bounded existential transfer requires joint pair information (2-var agreement), which is the very thing being proved. Resolution: generalize outer strong induction to all arities r >= 2 simultaneously (see research report 07 'Definitive Recommended Architecture'). This requires restructuring PriorComposition.lean, not standalone bridge lemmas."
   ],
   "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 1,
-    "resume_objective": "Prove prior_exist_transfer_one_dir body",
-    "key_analysis": {
-      "depth_gap": "From depth-(K+1) 2-var agreement, exist_transfer_from_full_agree gives depth-K 3-var existential transfer. Need depth-(K+1). Gap is intrinsic: exist_transfer always loses 1 depth level.",
-      "nvar_transfer_circular": "nvar_transfer_from_1var_agree at d=K+1 needs h_rvar at depth K+2 arity 2, which IS the goal.",
-      "correct_approach": "Induction on d (NF depth) with universal arity r. 1-var agreement at depth d+1 for each env component. Witnesses via Prior-UZ (HasAttainedINF.first_occ with char_fn). Quantifier conditions by IH at depth d with env extended by [z,z'].",
-      "zone3_hard_case": "When both cross_extend companions (w2 from h_t, w1 from h_x) are outside (t', x'), need to prove char_fn formula is realized in the interval. This is the mathematical content of the Prior-UZ/SZ axioms: every temporal formula realized on both sides of an interval has occurrences constrained by the boundary points' types.",
-      "ih_structure": "IH at depth d with env [z,envM]/[z',envN] needs: (a) 1-var at d+1 for z/z' -- from char_fn construction via Prior-UZ giving depth-(d+1) 1-var match; (b) 1-var at d+1 for envM/envN -- weaken from depth d+2; (c) order matching -- from atom matching at depth d+1."
-    },
-    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-zone3-handoff-20260621.md"
+    "next_phase": null,
+    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-vecEA-bridge-handoff.md",
+    "recommended_action": "revise_plan",
+    "revision_guidance": "Replace plan v10 with a plan that restructures prior_nonconstenv_2var_agree_until into prior_nonconstenv_rvar_agree_gen. Key mechanism: strong induction on K with r universally quantified. At quantifier step, ih_strong at m=K-1 with arity r+1 gives the needed existential transfer. New variable from cross_extend gets depth-(K+1) 1-var agreement and order from 2-var atoms."
   },
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-zone3-handoff-20260621.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-vecEA-bridge-handoff.md",
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "type": "implementation",
-      "summary": "Added prior_exist_transfer_one_dir theorem statement (sorry body) and PriorINF import"
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorExistPart.lean",
+      "type": "code",
+      "summary": "Placeholder file with blocker documentation; to be replaced when plan is revised"
     },
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-zone3-handoff-20260621.md",
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-vecEA-bridge-handoff.md",
       "type": "handoff",
-      "summary": "Detailed analysis of depth gap, zone-3 witness existence problem, and recommended approaches"
+      "summary": "Detailed analysis of 5 attempted approaches and their failure modes, with root cause and recommended resolution"
     }
   ]
 }

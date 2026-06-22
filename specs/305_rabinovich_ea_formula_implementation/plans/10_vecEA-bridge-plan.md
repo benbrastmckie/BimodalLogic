@@ -1,7 +1,7 @@
 # Implementation Plan: VecEA Bridge for Zone-3 Existential Transfer
 
 - **Task**: 305 - Rabinovich EA-formula implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: Phases 1-5, 6a-6c [COMPLETED] from prior plans; sorry-free VecEA translation pipeline
 - **Research Inputs**: specs/305_rabinovich_ea_formula_implementation/reports/07_zone3-induction-design.md
@@ -79,7 +79,14 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: NF-to-Temporal Bridge Lemma (Depth 0, 3-var) [NOT STARTED]
+### Phase 1: NF-to-Temporal Bridge Lemma (Depth 0, 3-var) [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: Standalone depth-0 3-var bounded existential transfer via VecEA bridge lemmas. The approach of converting ∃ w ∈ (t,x) to VecEA2.holdsLeft temporal formula and transferring via h_t at depth 2.
+- **What was tried**: (1) cross_extend_bwd_1var from both endpoints — each gives a witness on one side but not in the interval; (2) VecEA2.translateLeft_correct — existentially quantifies the right endpoint, losing binding to specific x'; (3) Nested Until temporal formula with char_fn — temporal depth 2 captured by depth-2 NF, but the transferred formula gives ∃ w' > t' with ∃ v' > w' having pred_x, without bounding w' < x'; (4) UZ/SZ first/last occurrence argument — cannot prevent the scenario where ALL occurrences of the witness type above t' are ≥ x' and all below x' are ≤ t'; (5) Depth-1 2-var NF quantifier condition encoding (∃ w > t, pred_w ∧ ∃ v > w, pred_x) — same unbounded issue.
+- **Why stuck**: 1-var NF agreement at individual endpoints t/t' and x/x' does NOT jointly constrain the interval (t', x'). Each endpoint's NF captures half-line conditions (above/below that point), not conditions bounded by the OTHER endpoint. The bounded existential `∃ w ∈ (t', x')` requires JOINT information about the pair [x,t], which is exactly the 2-var agreement being proved.
+- **What is needed**: The correct resolution (from research report 07) is to generalize the outer strong induction to prove r-var agreement for ALL r ≥ 2 simultaneously, so that ih_strong at m=K-1 provides depth-(K+1) (r+1)-var agreement via quantifier conditions. This requires restructuring PriorComposition.lean, not standalone bridge lemmas.
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Create a new file `PriorExistPart.lean` containing a bridge lemma that converts a depth-0 3-var bounded existential (zone 3: t < w < x) into a temporal formula, and proves that 1-var agreement at depth 2 suffices to transfer it.
 
