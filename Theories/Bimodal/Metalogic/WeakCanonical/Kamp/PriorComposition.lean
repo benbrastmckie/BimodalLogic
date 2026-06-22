@@ -589,13 +589,50 @@ the depth loss from cross_extend_bwd_1var.
 
 Literature: Rabinovich 2014, Lemma 5.3 (EF-game witness placement). -/
 
-/-- One-directional existential transfer from M to N on Prior structures.
-    By induction on d (NF depth), with arity r universally quantified.
+/-- Bidirectional depth-d (r+1)-var existential transfer on Prior structures.
+    By Nat.rec on depth d, with arity r universally quantified.
 
-    Key mechanism at each depth step:
-    1. Find z' via HasAttainedINF.first_occ with char_fn formula
-    2. Atoms match from 1-var type agreement + order matching
-    3. Quantifier conditions transfer by IH at depth d-1, all arities -/
+    The proof finds z' via cross_extend + Prior-UZ/SZ zone placement,
+    and uses the IH at depth d for quantifier conditions.
+
+    Both directions proved simultaneously (quantifier biconditional needs both). -/
+private theorem prior_exist_transfer_bidir {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (M N : OrderedMonadicStructure sig)
+    (h_UZ_M : semantic_prior_UZ M atomMap)
+    (h_SZ_M : semantic_prior_SZ M atomMap)
+    (h_UZ_N : semantic_prior_UZ N atomMap)
+    (h_SZ_N : semantic_prior_SZ N atomMap)
+    (K : Nat)
+    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
+    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
+        (S : OrderedMonadicStructure sig)
+        (_ : semantic_prior_UZ S atomMap) (_ : semantic_prior_SZ S atomMap)
+        (t : S.carrier),
+        temporal_truth S atomMap t (char_fn d nf_1) ↔
+        nf_eval_nf S d 1 (fun _ => t) nf_1) :
+    ∀ (d : Nat) (_ : d ≤ K + 1) (r : Nat)
+      (envM : Fin r → M.carrier) (envN : Fin r → N.carrier)
+      (_ : ∀ (i : Fin r), ∀ nf : NormalForm sig (d + 1) 1,
+        nf_eval_nf M (d + 1) 1 (fun _ => envM i) nf ↔
+        nf_eval_nf N (d + 1) 1 (fun _ => envN i) nf)
+      (_ : ∀ (i j : Fin r), envM i < envM j ↔ envN i < envN j)
+      (sub : NormalForm sig d (r + 1)),
+      (∃ z : M.carrier, nf_eval_nf M d (r + 1) (Fin.cons z envM) sub) ↔
+      ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub := by
+  -- Proof by induction on d with arity r universally quantified.
+  -- Both directions proved simultaneously (quantifier biconditional needs both).
+  -- Sub-obligations:
+  -- d=0 base: depth-0 multi-var existential (zone analysis + Prior-UZ/SZ)
+  -- d+1 step: cross_extend from env component gives depth-(d+1) 2-var agreement,
+  --   extract 1-var agreement, verify atoms + orders, use IH for quantifiers.
+  -- Key unresolved sub-lemmas:
+  -- 1. 1-var extraction from 2-var cross_extend
+  -- 2. Zone-order matching (z/z' orders relative to non-anchor env components)
+  sorry
+
+/-- One-directional existential transfer from M to N on Prior structures.
+    Corollary of `prior_exist_transfer_bidir`. -/
 private theorem prior_exist_transfer_one_dir {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (M N : OrderedMonadicStructure sig)
@@ -619,8 +656,10 @@ private theorem prior_exist_transfer_one_dir {sig : MonadicSignature}
       (_ : ∀ (i j : Fin r), envM i < envM j ↔ envN i < envN j)
       (sub : NormalForm sig d (r + 1)),
       (∃ z : M.carrier, nf_eval_nf M d (r + 1) (Fin.cons z envM) sub) →
-      ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub := by
-  sorry
+      ∃ z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub :=
+  fun d hd r envM envN h_1var h_order sub =>
+    (prior_exist_transfer_bidir atomMap M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N
+      K char_fn char_correct d hd r envM envN h_1var h_order sub).mp
 
 /-! ## Prior-Specific 2-var Transfer (Main Theorems)
 
@@ -670,32 +709,41 @@ theorem prior_nonconstenv_2var_agree_until {sig : MonadicSignature}
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- Strong induction on K: IH provides the theorem at ALL K' < K
-  exact Nat.strong_induction_on K (fun K ih_strong nf => by
-    set target := nf_characteristic N (K + 2) 2 (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) target by
-      exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
-    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
-    have h_atom := nonconstenv_atom_agree_until M x t N x' t' h_x h_t h_order_M h_order_N
-    constructor
-    · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier part: zone-3 existential transfer (Prior-UZ/SZ + nested depth induction)
-      -- See "Zone-3 Existential Transfer (Proof Obligation)" section above
-      intro sub_nf; rw [← h_N_quant sub_nf]
-      -- Goal: (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ (∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf)
-      -- Strategy: use cross_extend_bwd_1var from h_t and h_x to find witnesses
-      -- with matching 1-var types, then apply Prior-UZ/SZ for zone-3 placement
-      constructor
-      · -- Forward: ∃ w in M → ∃ w' in N
-        rintro ⟨w, hw⟩
-        -- Get w₂ > t' with depth-(K+1) 2-var agreement at [w,t]/[w₂,t']
-        obtain ⟨w₂, hw₂⟩ := cross_extend_bwd_1var M t N t' h_t w
-        exact ⟨w₂, sorry⟩
-      · -- Backward: ∃ w' in N → ∃ w in M (symmetric to forward)
-        rintro ⟨w', hw'⟩
-        obtain ⟨w₂, hw₂⟩ := cross_extend_fwd_1var M t N t' h_t w'
-        exact ⟨w₂, sorry⟩)
+  -- The 2-var agreement follows from atom agreement + quantifier biconditional.
+  -- The quantifier biconditional uses prior_exist_transfer_bidir at d = K+1, r = 2.
+  set envM_xt := (Fin.cons x (fun _ => t) : Fin 2 → M.carrier)
+  set envN_xt := (Fin.cons x' (fun _ => t') : Fin 2 → N.carrier)
+  have h_1var_env : ∀ (i : Fin 2), ∀ nf : NormalForm sig (K + 2) 1,
+      nf_eval_nf M (K + 2) 1 (fun _ => envM_xt i) nf ↔
+      nf_eval_nf N (K + 2) 1 (fun _ => envN_xt i) nf := by
+    intro i; refine Fin.cases ?_ (fun i' => ?_) i
+    · simp only [envM_xt, envN_xt, Fin.cons_zero]; exact h_x
+    · simp only [envM_xt, envN_xt, Fin.cons_succ]; exact h_t
+  have h_order_env : ∀ (i j : Fin 2), envM_xt i < envM_xt j ↔ envN_xt i < envN_xt j := by
+    intro i j; refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+    · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    · simp only [envM_xt, envN_xt, Fin.cons_zero, Fin.cons_succ]
+      exact iff_of_false (not_lt.mpr (le_of_lt h_order_M)) (not_lt.mpr (le_of_lt h_order_N))
+    · simp only [envM_xt, envN_xt, Fin.cons_zero, Fin.cons_succ]
+      exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+    · simp only [envM_xt, envN_xt, Fin.cons_succ]
+      exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+  have h_atom := nonconstenv_atom_agree_until M x t N x' t' h_x h_t h_order_M h_order_N
+  intro nf
+  -- Use the characteristic NF approach: show M satisfies N's characteristic.
+  set target := nf_characteristic N (K + 2) 2 envN_xt
+  have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 envN_xt
+  suffices h_M_sat : nf_eval_nf M (K + 2) 2 envM_xt target by
+    exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
+  obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+  constructor
+  · intro a; exact (h_atom a).trans (h_N_atoms a)
+  · -- Quantifier part: use prior_exist_transfer_bidir
+    intro sub_nf; rw [← h_N_quant sub_nf]
+    -- Goal: (∃ w, nf_eval M (K+1) 3 [w,x,t] sub_nf) ↔ (∃ w', nf_eval N (K+1) 3 [w',x',t'] sub_nf)
+    exact prior_exist_transfer_bidir atomMap M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N K
+      char_fn char_correct (K + 1) (le_refl _) 2 envM_xt envN_xt
+      h_1var_env h_order_env sub_nf
 
 /-- Mirror for the Since zone (x < t). Same statement with reversed order. -/
 theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
@@ -727,30 +775,37 @@ theorem prior_nonconstenv_2var_agree_since {sig : MonadicSignature}
     ∀ nf : NormalForm sig (K + 2) 2,
       nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) nf ↔
       nf_eval_nf N (K + 2) 2 (Fin.cons x' (fun _ => t')) nf := by
-  -- Strong induction on K: IH provides the theorem at ALL K' < K
-  -- This gives us the 2-var agreement at all depths D' = K'+2 < K+2
-  exact Nat.strong_induction_on K (fun K ih_strong nf => by
-    set target := nf_characteristic N (K + 2) 2 (Fin.cons x' (fun _ => t'))
-    have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 (Fin.cons x' (fun _ => t'))
-    suffices h_M_sat : nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) target by
-      exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
-    obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
-    have h_atom := nonconstenv_atom_agree_since M x t N x' t' h_x h_t h_order_M h_order_N
-    constructor
-    · intro a; exact (h_atom a).trans (h_N_atoms a)
-    · -- Quantifier part: depth-(K+1) 3-var existential transfer (Since: x < t)
-      intro sub_nf; rw [← h_N_quant sub_nf]
-      -- Same structure as Until case but with reversed orders and Prior-SZ
-      constructor
-      · -- Forward: ∃ w in M → ∃ w' in N
-        rintro ⟨w, hw⟩
-        -- Get w₂ with depth-(K+1) 2-var agreement at [w,t]/[w₂,t']
-        obtain ⟨w₂, hw₂⟩ := cross_extend_bwd_1var M t N t' h_t w
-        exact ⟨w₂, sorry⟩
-      · -- Backward: ∃ w' in N → ∃ w in M (symmetric)
-        rintro ⟨w', hw'⟩
-        obtain ⟨w₂, hw₂⟩ := cross_extend_fwd_1var M t N t' h_t w'
-        exact ⟨w₂, sorry⟩)
+  -- Same structure as Until but with x < t orders swapped.
+  set envM_xt := (Fin.cons x (fun _ => t) : Fin 2 → M.carrier)
+  set envN_xt := (Fin.cons x' (fun _ => t') : Fin 2 → N.carrier)
+  have h_1var_env : ∀ (i : Fin 2), ∀ nf : NormalForm sig (K + 2) 1,
+      nf_eval_nf M (K + 2) 1 (fun _ => envM_xt i) nf ↔
+      nf_eval_nf N (K + 2) 1 (fun _ => envN_xt i) nf := by
+    intro i; refine Fin.cases ?_ (fun i' => ?_) i
+    · simp only [envM_xt, envN_xt, Fin.cons_zero]; exact h_x
+    · simp only [envM_xt, envN_xt, Fin.cons_succ]; exact h_t
+  have h_order_env : ∀ (i j : Fin 2), envM_xt i < envM_xt j ↔ envN_xt i < envN_xt j := by
+    intro i j; refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+    · exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    · simp only [envM_xt, envN_xt, Fin.cons_zero, Fin.cons_succ]  -- Since: x < t both true
+      exact Iff.intro (fun _ => h_order_N) (fun _ => h_order_M)
+    · simp only [envM_xt, envN_xt, Fin.cons_zero, Fin.cons_succ]  -- Since: t < x both false
+      exact iff_of_false (not_lt.mpr (le_of_lt h_order_M)) (not_lt.mpr (le_of_lt h_order_N))
+    · simp only [envM_xt, envN_xt, Fin.cons_succ]
+      exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+  have h_atom := nonconstenv_atom_agree_since M x t N x' t' h_x h_t h_order_M h_order_N
+  intro nf
+  set target := nf_characteristic N (K + 2) 2 envN_xt
+  have h_N_sat := nf_characteristic_satisfies N (K + 2) 2 envN_xt
+  suffices h_M_sat : nf_eval_nf M (K + 2) 2 envM_xt target by
+    exact nf_agreement_from_shared_nf M _ N _ target h_M_sat h_N_sat nf
+  obtain ⟨h_N_atoms, h_N_quant⟩ := h_N_sat
+  constructor
+  · intro a; exact (h_atom a).trans (h_N_atoms a)
+  · intro sub_nf; rw [← h_N_quant sub_nf]
+    exact prior_exist_transfer_bidir atomMap M N h_UZ_M h_SZ_M h_UZ_N h_SZ_N K
+      char_fn char_correct (K + 1) (le_refl _) 2 envM_xt envN_xt
+      h_1var_env h_order_env sub_nf
 
 /-- Specialized version for the KampBypass backward Until direction:
     one-directional transfer from M₀ to M. -/
