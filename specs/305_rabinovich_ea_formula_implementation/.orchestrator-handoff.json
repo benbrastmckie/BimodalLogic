@@ -1,23 +1,55 @@
 {
-  "status": "blocked",
-  "summary": "Exhaustive analysis of zone_compatible_witness (line 645) confirms a fundamental depth-gap in the NF induction architecture. exist_transfer_from_full_agree loses one depth level: depth-k agreement yields depth-(k-1) existential transfer. Every approach (merging with prior_exist_transfer_bidir, Nat.rec on d, characteristic NF approach) hits the same circular dependency: building depth-(d+2) r-var agreement requires depth-(d+1) existential transfer in its quantifier, which is the goal. Resolution requires a new proof architecture (EF-game induction or direct zone-placement via Prior-UZ/SZ). No code changes made; file is clean.",
+  "status": "partial",
+  "summary": "Added h_agree_env (joint r-var agreement) to zone_compatible_witness and threaded it through prior_exist_transfer_bidir. The d>=2 r>=1 case is now sorry-free using exist_transfer_from_full_agree + nf_eval_from_lower_agree. Internal recursion on K in prior_nonconstenv_2var_agree_until/since provides h_agree_env via the theorem at K-1. K=0 base case left as sorry (depth-1 2-var from depth-2 1-var, requires Prior-UZ/SZ at depth 0). External interfaces unchanged; KampBypass builds cleanly.",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 645,
-      "statement": "private theorem zone_compatible_witness ... : exists z' : N.carrier, nf_eval_nf N d (r + 1) (Fin.cons z' envN) sub",
-      "assumption": "Given per-component depth-d 2-var agreements at [z, envM_i]/[z_i, envN_i], depth-(d+1) 1-var agreements + order matching, find a single z' satisfying the full (r+1)-var NF sub at [z', envN]",
-      "why_deferred": "Fundamental depth gap: exist_transfer_from_full_agree from depth-(d+1) r-var gives depth-d (r+1)-var, but goal needs depth-(d+1). Building depth-(d+2) needs depth-(d+1) in quantifier = circular. Zone placement (z' correct order vs ALL env components) not solvable by NF algebra alone.",
-      "next_dispatch": "Research: design EF-game-style induction or direct zone-placement argument. Most promising lead: the 3-var existential condition from depth-(d+1) 2-var agreement at [z, envM_hi]/[z_hi, envN_hi] encodes a companion for envM_lo between z_hi and envN_hi. If this companion can be shown to be >= envN_lo, then z_hi is in the interval (envN_lo, envN_hi)."
+      "line": 869,
+      "statement": "prior_nonconstenv_2var_agree_until K=0 h_agree_env construction",
+      "assumption": "Depth-1 2-var agreement at [x,t]/[x',t'] from depth-2 1-var at x/x' and t/t'",
+      "why_deferred": "Requires depth-0 3-var existential transfer for the quantifier part, which needs Prior-UZ/SZ zone placement. The between-zone case (t < w < x mapping to t' < w' < x') needs first_occ/last_occ from UZ/SZ axioms.",
+      "next_dispatch": "Prove depth-0 3-var existential transfer using Prior-UZ first_occ: from h_x/h_t get witnesses above t' and below x', use UZ first_occ to place one in (t',x')"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 964,
+      "statement": "prior_nonconstenv_2var_agree_since K=0 h_agree_env construction",
+      "assumption": "Same as Until K=0 but with reversed order (x < t)",
+      "why_deferred": "Same as Until K=0",
+      "next_dispatch": "Prove simultaneously with Until K=0"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 642,
+      "statement": "zone_compatible_witness d=0 case",
+      "assumption": "Depth-0 (r+1)-var existential from h_agree_env + h_1var",
+      "why_deferred": "Not on critical path (d=K+1 >= 1 in all callers when K >= 0). Pure atom existential needs Prior-UZ zone placement.",
+      "next_dispatch": "Low priority; subsumed by K=0 fix"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 647,
+      "statement": "zone_compatible_witness d=1 case",
+      "assumption": "Depth-0 upgrade via nf_eval_from_lower_agree d=0 which is sorry",
+      "why_deferred": "Not on critical path (d=K+1 >= 2 when K >= 1, and K=0 already has its own sorry). Blocked by nf_eval_from_lower_agree d=0.",
+      "next_dispatch": "Low priority; subsumed by K=0 fix"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 658,
+      "statement": "zone_compatible_witness r=0 case",
+      "assumption": "Empty environment degenerate case",
+      "why_deferred": "Never on critical path (callers always have r=2)",
+      "next_dispatch": "Low priority; could be proved by direct 1-var existential transfer"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 507,
       "statement": "nf_eval_from_lower_agree d=0 base case",
       "assumption": "depth-0 -> depth-1 agreement upgrade needs Prior-UZ/SZ",
-      "why_deferred": "Not on critical path; theorem lacks Prior hypotheses",
+      "why_deferred": "Pre-existing; not on critical path; theorem lacks Prior hypotheses",
       "next_dispatch": "Low priority"
     },
     {
@@ -25,29 +57,23 @@
       "line": 555,
       "statement": "nf_eval_from_lower_agree n=0 case",
       "assumption": "arity 0 degenerate case",
-      "why_deferred": "Not on critical path",
+      "why_deferred": "Pre-existing; not on critical path",
       "next_dispatch": "Low priority"
     }
   ],
   "blockers": [
-    "zone_compatible_witness (line 645): Fundamental depth-gap in NF induction architecture. All approaches tried: (1) Nat.rec on d inside zone_compatible_witness -- zone placement problem for between-zone case; (2) merging zone_compatible_witness into prior_exist_transfer_bidir with Nat.rec on d -- quantifier condition needs depth-(d+1) transfer but IH gives depth-d; (3) building depth-(d+2) r-var agreement for exist_transfer_from_full_agree -- needs depth-(d+1) transfer in quantifier = circular. Resolution requires research dispatch for new proof architecture."
+    "K=0 base case in prior_nonconstenv_2var_agree_until/since (lines 869/964): depth-1 2-var agreement from depth-2 1-var + Prior axioms. Requires depth-0 3-var existential transfer for the between-zone case."
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": true,
-    "resume_from": "zone_compatible_witness blocked; 4 downstream sorries already eliminated in prior dispatch",
+    "resume_from": "h_agree_env added to zone_compatible_witness; d>=2 r>=1 case proved; K>=1 case proved via recursion. K=0 remains.",
     "key_decisions": [
-      "prior_exist_transfer_bidir (bidirectional) correct: quantifier biconditional needs both directions",
-      "prior_exist_transfer_one_dir is .mp wrapper",
-      "zone_compatible_witness is called from prior_exist_transfer_bidir with h_witness_i built from exist_transfer_from_full_agree",
-      "Depth gap is intrinsic: exist_transfer_from_full_agree from depth-k agreement gives depth-(k-1) transfer"
-    ],
-    "approaches_exhausted": [
-      "Nat.rec on d inside zone_compatible_witness",
-      "Merging zone_compatible_witness into prior_exist_transfer_bidir with Nat.rec on d",
-      "Building depth-(d+2) r-var agreement from h_1var + h_order + IH",
-      "Per-component z_i witnesses with zone placement analysis",
-      "char_fn + Prior-UZ for between-zone witness"
+      "h_agree_env at depth d arity r added to zone_compatible_witness signature",
+      "For d>=2 r>=1: exist_transfer_from_full_agree gets depth-(d-1) matched witness, nf_eval_from_lower_agree upgrades to depth d",
+      "prior_exist_transfer_bidir threads h_agree_env through to zone_compatible_witness",
+      "prior_nonconstenv_2var_agree_until/since: internal match on K to construct h_agree_env; at K+1, recursive call at K provides it",
+      "External interface unchanged: prior_2var_transfer_until/since and KampBypass callers unmodified"
     ]
   }
 }
