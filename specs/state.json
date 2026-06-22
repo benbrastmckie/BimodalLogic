@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-22T08:15:20Z",
+      "last_updated": "2026-06-22T08:45:00Z",
       "session_id": "sess_1782109265_fb3086",
       "artifacts": [
         {
@@ -58,10 +58,40 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/08_nf-eval-boost-design.md",
           "type": "report",
           "summary": "H3/H4 research: char_fn + Prior-UZ/SZ avoids depth loss, prior_exist_transfer_one_dir has correct signature"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/13_charfn-prior-proof-plan.md",
+          "type": "plan",
+          "summary": "v13: char_fn + Prior-UZ/SZ proof — complete prior_exist_transfer_one_dir, wire 4 sorry sites, 3 phases, 5h"
         }
       ],
       "previous_status": "partial",
-      "next_artifact_number": 13
+      "next_artifact_number": 14,
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 5,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 13,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/08_nf-eval-boost-design.md",
+            "integrated_in_plan_version": 13,
+            "integrated_date": "2026-06-22"
+          }
+        ]
+      }
     },
     {
       "project_number": 300,
