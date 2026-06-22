@@ -1,70 +1,57 @@
 {
   "status": "blocked",
-  "summary": "Phase 1 of plan v10 BLOCKED: Standalone VecEA bridge lemma approach for depth-0 bounded existential transfer is fundamentally incorrect. 1-var NF agreement at individual endpoints does not jointly constrain the interval between them. 5 approaches analyzed and all fail. Correct resolution (from research report 07): generalize outer strong induction to prove r-var agreement for ALL r >= 2 simultaneously. Plan revision required.",
+  "summary": "Phase 1 blocked: prior_exist_transfer_one_dir cannot be proved as stated. The theorem requires zone-3 witness placement with correct ordering relative to ALL env elements, but the available hypotheses (componentwise 1-var agreements + order matching) are insufficient. Every approach (cross_extend, exist_transfer_from_full_agree, nvar_transfer_from_1var_agree, Prior-UZ/SZ zone analysis) hits a one-depth circular dependency confirmed by research report 07.",
   "phases_completed": 0,
-  "phases_total": 4,
+  "phases_total": 3,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 524,
-      "statement": "theorem prior_exist_transfer_one_dir",
-      "assumption": "One-directional existential transfer on Prior structures via depth induction",
-      "why_deferred": "Plan v10 bridge approach incorrect; needs generalized arity induction (rvar_agree_gen)",
-      "next_dispatch": "Revise plan: replace bridge approach with rvar_agree_gen restructuring"
+      "statement": "prior_exist_transfer_one_dir : ... -> (exists z, nf_eval M d (r+1) (Fin.cons z envM) sub) -> exists z', nf_eval N d (r+1) (Fin.cons z' envN) sub",
+      "assumption": "One-directional existential transfer from h_1var at depth d+1 for each env component + h_order",
+      "why_deferred": "Theorem as stated is not provable without additional hypotheses (ih_2var or h_rvar). The zone-3 case requires ordering relative to ALL env elements simultaneously, which single-anchor cross_extend cannot provide.",
+      "next_dispatch": "Restructure outer theorem to either: (a) generalize strong induction to all arities, (b) wire zone-3 transfer directly using one-directional depth-induction from report 07, or (c) add ih_env_agree parameter derived from ih_strong"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 595,
-      "statement": "sorry in prior_nonconstenv_2var_agree_until (forward direction)",
-      "assumption": "nf_eval N (K+1) 3 [w₂,x',t'] sub_nf from hw₂",
-      "why_deferred": "Blocked on prior_exist_transfer_one_dir",
-      "next_dispatch": "Follows from rvar_agree_gen"
+      "statement": "exact <w2, sorry> in prior_nonconstenv_2var_agree_until (forward Until)",
+      "assumption": "3-var existential transfer for zone-3 witness",
+      "why_deferred": "Downstream of prior_exist_transfer_one_dir",
+      "next_dispatch": "Resolve via restructured outer theorem"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 599,
-      "statement": "sorry in prior_nonconstenv_2var_agree_until (backward direction)",
-      "assumption": "Symmetric to line 595",
-      "why_deferred": "Same root cause",
-      "next_dispatch": "Follows from rvar_agree_gen"
+      "statement": "exact <w2, sorry> in prior_nonconstenv_2var_agree_until (backward Until)",
+      "assumption": "3-var existential transfer (reverse direction)",
+      "why_deferred": "Downstream of prior_exist_transfer_one_dir",
+      "next_dispatch": "Resolve via restructured outer theorem"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 650,
-      "statement": "sorry in prior_nonconstenv_2var_agree_since (forward direction)",
-      "assumption": "Since-zone version of 595",
-      "why_deferred": "Same root cause",
-      "next_dispatch": "Follows from rvar_agree_gen"
+      "statement": "exact <w2, sorry> in prior_nonconstenv_2var_agree_since (forward Since)",
+      "assumption": "3-var existential transfer for zone-3 witness",
+      "why_deferred": "Downstream of prior_exist_transfer_one_dir",
+      "next_dispatch": "Resolve via restructured outer theorem"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 654,
-      "statement": "sorry in prior_nonconstenv_2var_agree_since (backward direction)",
-      "assumption": "Since-zone version of 599",
-      "why_deferred": "Same root cause",
-      "next_dispatch": "Follows from rvar_agree_gen"
+      "statement": "exact <w2, sorry> in prior_nonconstenv_2var_agree_since (backward Since)",
+      "assumption": "3-var existential transfer (reverse direction)",
+      "why_deferred": "Downstream of prior_exist_transfer_one_dir",
+      "next_dispatch": "Resolve via restructured outer theorem"
     }
   ],
   "blockers": [
-    "Plan v10 Phase 1 approach (standalone depth-0 bridge lemmas) is fundamentally incorrect. 1-var NF agreement at individual endpoints does not jointly constrain the interval between them. The bounded existential transfer requires joint pair information (2-var agreement), which is the very thing being proved. Resolution: generalize outer strong induction to all arities r >= 2 simultaneously (see research report 07 'Definitive Recommended Architecture'). This requires restructuring PriorComposition.lean, not standalone bridge lemmas."
+    "prior_exist_transfer_one_dir (line 524): theorem as stated requires zone-3 witness with correct ordering relative to ALL r env elements. Available hypotheses (componentwise 1-var agreements + h_order) cannot produce this. Cross_extend gives ordering relative to one anchor only. Building r-var agreement requires exist_transfer_from_full_agree which creates one-depth circular dependency. Research report 07 confirmed this after 8 approaches across 5 dispatch cycles. Resolution requires restructuring the outer theorem (prior_nonconstenv_2var_agree_until/since) to either generalize the strong induction to all arities simultaneously or wire zone-3 transfer directly using one-directional depth-induction with ih_strong's 2-var quantifier conditions for witness localization."
   ],
+  "continuation_path": null,
   "continuation_context": {
-    "next_phase": null,
-    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-vecEA-bridge-handoff.md",
-    "recommended_action": "revise_plan",
-    "revision_guidance": "Replace plan v10 with a plan that restructures prior_nonconstenv_2var_agree_until into prior_nonconstenv_rvar_agree_gen. Key mechanism: strong induction on K with r universally quantified. At quantifier step, ih_strong at m=K-1 with arity r+1 gives the needed existential transfer. New variable from cross_extend gets depth-(K+1) 1-var agreement and order from 2-var atoms."
+    "next_action": "Revise plan: restructure outer theorem to avoid prior_exist_transfer_one_dir, using one-directional depth-induction with ih_strong-derived zone-3 witnesses",
+    "key_insight": "The one-depth-offset in NF quantifier structure (depth-(d+1) NF has quantifiers at depth d) creates fundamental circularity when combined with componentwise 1-var agreements. Resolution requires either (a) all-arity strong induction, (b) direct zone-3 wiring in outer theorem, or (c) adding ih_env_agree parameter."
   },
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-vecEA-bridge-handoff.md",
-  "artifacts": [
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorExistPart.lean",
-      "type": "code",
-      "summary": "Placeholder file with blocker documentation; to be replaced when plan is revised"
-    },
-    {
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-vecEA-bridge-handoff.md",
-      "type": "handoff",
-      "summary": "Detailed analysis of 5 attempted approaches and their failure modes, with root cause and recommended resolution"
-    }
-  ]
+  "artifacts": []
 }
