@@ -63,6 +63,11 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/13_charfn-prior-proof-plan.md",
           "type": "plan",
           "summary": "v13: char_fn + Prior-UZ/SZ proof — complete prior_exist_transfer_one_dir, wire 4 sorry sites, 3 phases, 5h"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/14_constructive-eval-design.md",
+          "type": "report",
+          "summary": "Constructive eval by Nat.rec: algebraic step (d>=1) + Prior-UZ base (d=0), all H4 challenges verified HIGH"
         }
       ],
       "previous_status": "partial",

@@ -136,6 +136,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
   - [305_rabinovich_ea_formula_implementation/reports/05_vecEA2-level-lemma51.md]
   - [305_rabinovich_ea_formula_implementation/reports/07_zone3-induction-design.md]
   - [305_rabinovich_ea_formula_implementation/reports/08_nf-eval-boost-design.md]
+  - [305_rabinovich_ea_formula_implementation/reports/14_constructive-eval-design.md]
 - **Plan**:
   - [305_rabinovich_ea_formula_implementation/plans/10_vecEA-bridge-plan.md]
   - [305_rabinovich_ea_formula_implementation/plans/11_depth-induction-plan.md]

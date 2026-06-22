@@ -1,6 +1,6 @@
 {
   "status": "researched",
-  "summary": "Deep research completed: Rabinovich's interval bounding uses NF atom part in 3-var existential transfer (not temporal formulas). The ih_2var quantifier condition provides zone-3 witnesses at depth K with automatic interval bounds from order atoms. The depth-1 gap (K vs K+1) is bridged by one-directional transfer via Nat.rec on depth d. prior_exist_transfer_one_dir (line 515) has the correct signature. Proof structure: base d=0 via atomic zone transfer, step d+1 via ih_2var witness + recursive quantifier verification.",
+  "summary": "Deep research on constructive evaluation by Nat.rec on NF depth d. The proposed approach is VALID with a nuance: for d >= 1, the evaluation upgrade is purely algebraic (exist_transfer_from_full_agree provides matched witnesses, IH bridges depth gap). For d = 0, Prior-UZ/SZ is required because atomic existential transfer at higher arity from lower-arity agreement is not algebraically provable. The correct target is completing prior_exist_transfer_one_dir (line 515) which integrates both mechanisms. The 4 downstream sorry sites wire directly to it.",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [
@@ -9,8 +9,8 @@
       "line": 515,
       "statement": "theorem prior_exist_transfer_one_dir",
       "assumption": "One-directional existential transfer by Nat.rec on depth d with arity universally quantified",
-      "why_deferred": "Main proof target - requires completing the induction proof",
-      "next_dispatch": "Implement via Nat.rec on d: base d=0 atomic, step d+1 uses ih_2var + recursive quantifier transfer"
+      "why_deferred": "Main proof target: Nat.rec on d with Prior-UZ/SZ base case (d=0) and algebraic step (d>=1)",
+      "next_dispatch": "Implement: base d=0 via zone analysis + char_fn + Prior-UZ, step d+1 via char_fn witness finding + exist_transfer_from_full_agree + recursive IH"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
@@ -18,7 +18,7 @@
       "statement": "sorry in prior_nonconstenv_2var_agree_until (forward)",
       "assumption": "depth-(K+1) 3-var existential transfer M to N",
       "why_deferred": "Wire after prior_exist_transfer_one_dir is proved",
-      "next_dispatch": "Apply prior_exist_transfer_one_dir with env=[x,t], env'=[x',t']"
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with d=K+1, r=2, env=[x,t]/[x',t']"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
@@ -26,15 +26,15 @@
       "statement": "sorry in prior_nonconstenv_2var_agree_until (backward)",
       "assumption": "depth-(K+1) 3-var existential transfer N to M",
       "why_deferred": "Wire after prior_exist_transfer_one_dir with M/N swapped",
-      "next_dispatch": "Apply prior_exist_transfer_one_dir with M/N swapped"
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with M/N swapped, h_1var symmetric"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
       "line": 641,
       "statement": "sorry in prior_nonconstenv_2var_agree_since (forward)",
       "assumption": "depth-(K+1) 3-var existential transfer (Since zone)",
-      "why_deferred": "Mirror of Until forward",
-      "next_dispatch": "Apply prior_exist_transfer_one_dir with reversed order"
+      "why_deferred": "Mirror of Until forward with reversed order",
+      "next_dispatch": "Apply prior_exist_transfer_one_dir (order-independent)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
@@ -42,21 +42,24 @@
       "statement": "sorry in prior_nonconstenv_2var_agree_since (backward)",
       "assumption": "depth-(K+1) 3-var existential transfer (Since, backward)",
       "why_deferred": "Mirror of Until backward",
-      "next_dispatch": "Apply prior_exist_transfer_one_dir with reversed order + M/N swap"
+      "next_dispatch": "Apply prior_exist_transfer_one_dir with M/N swap + reversed order"
     }
   ],
   "blockers": [],
-  "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/13_interval-bounding-design.md",
+  "research_report": "specs/305_rabinovich_ea_formula_implementation/reports/14_constructive-eval-design.md",
   "key_insights": {
-    "interval_bounding": "NF atom part encodes order (t < w < x); transferred 3-var NF automatically gives t' < z' < x'. No temporal formula needed.",
-    "depth_gap_resolution": "One-directional Nat.rec on d: ih_2var gives depth-d zone-3 witness, atoms verified from depth-d 1-var, quantifier conditions by recursion at depth d-1 using exist_transfer_from_full_agree chain.",
-    "char_fn_mechanism": "char_fn(d, nf) + Prior-UZ gives full depth-d 1-var matching without the depth loss inherent in cross_extend_bwd_1var.",
-    "case_c_resolution": "When both cross_extend witnesses are outside the interval, ih_2var quantifier condition provides a depth-K zone-3 witness. Depth-(K+1) evaluation is achieved constructively: atoms from depth-K matching, quantifier conditions by recursion."
+    "constructive_eval_architecture": "Nat.rec on d is valid: d >= 1 is purely algebraic (exist_transfer_from_full_agree + IH), d = 0 requires Prior-UZ/SZ for atomic existential witness construction.",
+    "algebraic_step_mechanism": "From depth-d n-var agreement: exist_transfer_from_full_agree gives depth-(d-1) (n+1)-var existential transfer with FULL agreement at matched witness. IH at d-1 upgrades to depth-d evaluation.",
+    "base_case_impossibility": "Depth-0 n-var agreement CANNOT give depth-0 (n+1)-var existential transfer algebraically. Counterexample: M={a<b} with p(a)=T,p(b)=F vs N={c} with p(c)=T. Same 1-var atoms but different 2-var existentials.",
+    "prior_uz_base_mechanism": "At d=0, char_fn(0, nf_u) is propositional (just predicates). Prior-UZ gives first occurrence of this predicate profile in any interval. Zone analysis + h_1var quantifier conditions establish existence in the target interval.",
+    "integration_with_sorry_sites": "For K >= 1: ih_strong at K-1 gives depth-K zone-3 witness via 3-var NF order atoms. nf_eval_upgrade bridges K to K+1. For K = 0: prior_exist_transfer_one_dir handles directly.",
+    "backward_direction": "depth-d agreement is biconditional. exist_transfer is biconditional. IH applies with M/N swapped. Prior hypotheses available for both structures at sorry sites."
   },
   "continuation_context": {
     "next_phase": "plan",
     "is_successor": true,
-    "resume_from": "research complete"
+    "resume_from": "constructive eval research complete",
+    "prior_reports": ["08_nf-eval-boost-design.md", "13_interval-bounding-design.md", "14_constructive-eval-design.md"]
   },
-  "next_steps": "Run /plan 305 to create implementation plan for prior_exist_transfer_one_dir proof"
+  "next_steps": "Run /plan 305 to create implementation plan for completing prior_exist_transfer_one_dir"
 }
