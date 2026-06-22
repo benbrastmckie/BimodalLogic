@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "implementing",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-21T22:34:52Z",
+      "last_updated": "2026-06-22T06:12:16Z",
       "session_id": "sess_1782081249_34d51f",
       "artifacts": [
         {
@@ -40,13 +40,13 @@
           "summary": "Zone-3 induction design: one-directional existential transfer by well-founded induction on sub_nf depth. H4-verified, 8 approaches analyzed."
         },
         {
-          "path": "specs/305_rabinovich_ea_formula_implementation/plans/09_zone3-induction-plan.md",
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/10_vecEA-bridge-plan.md",
           "type": "plan",
-          "summary": "v9: one-directional zone-3 existential transfer via well-founded induction on depth d. 5 phases, 6 hours."
+          "summary": "v10: VecEA bridge approach — NF→temporal via sorry-free Prop 3.5 pipeline"
         }
       ],
       "previous_status": "partial",
-      "next_artifact_number": 6
+      "next_artifact_number": 11
     },
     {
       "project_number": 300,
