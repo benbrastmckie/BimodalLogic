@@ -1,49 +1,82 @@
 {
   "status": "partial",
-  "summary": "Cleaned WitnessCount.lean: removed 3 false theorems (zone3_exist_transfer, k0_depth1_2var_agree_until/since), retained sorry-free infrastructure (temporal_truth_transfer, depth bounds). Full build passes. Documented that the fix must restructure existPart_succ_n1_bypass at k>0 in KampBypass.lean to encode zone-3 witnesses directly, rather than using cross-structure NF transfer via the false prior_nonconstenv_2var_agree_until.",
+  "summary": "Filled atom parts of both zone3_from_bracket and nf_eval_from_enriched_witnesses in KampBypassK1.lean. Proved backward between_tx direction in nf_eval_from_enriched_witnesses using zone3_witnesses hypothesis. Added zone_general_between_tx_orders and pred_transfer_from_1var helper lemmas. Seven sorry stubs remain in quantifier transfer and zone classification areas.",
   "phases_completed": 0,
-  "phases_total": 5,
+  "phases_total": 1,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 880,
-      "statement": "prior_nonconstenv_2var_agree_until K=0",
-      "assumption": "Depth-1 2-var agreement from depth-2 1-var at endpoints on Prior structures",
-      "why_deferred": "THEOREM IS FALSE. Counterexample: Z with is_even, (x,t)=(4,0), (x',t')=(2,0). Even on Prior structures. Fix is architectural: restructure existPart_succ_n1_bypass to not depend on this.",
-      "next_dispatch": "Restructure existPart_succ_n1_bypass k>0 Until case (KampBypass.lean:605-673) to encode zone-3 witnesses via VecEA2 brackets"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 201,
+      "statement": "nf_eval_from_enriched_witnesses: below_t zone transfer",
+      "assumption": "3-var existential with w < t factors through constant-env 2-var existential at t",
+      "why_deferred": "Requires showing below_t 3-var NF [w,x,t] factors into 2-var NF at [w,t] plus fixed x conditions, then depth2_quant_transfer from h_t applies",
+      "next_dispatch": "Factor below_t 3-var existential into constant-env 2-var existential"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 978,
-      "statement": "prior_nonconstenv_2var_agree_since K=0",
-      "assumption": "Mirror of Until",
-      "why_deferred": "THEOREM IS FALSE (same counterexample, swapped roles)",
-      "next_dispatch": "Mirror of Until fix in KampBypass.lean:674-740"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 204,
+      "statement": "nf_eval_from_enriched_witnesses: eq_t zone transfer",
+      "assumption": "nf_eval at [t,x,t] transfers via constenv_same_depth_nvar",
+      "why_deferred": "Requires adapting constenv_same_depth_nvar to env [t,x,t]",
+      "next_dispatch": "Build eq_t zone bridge using constenv_same_depth_nvar + h_x"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 542,
-      "statement": "nf_exist_backward_depth_succ",
-      "assumption": "Downstream of PriorComposition",
-      "why_deferred": "Depends on prior_nonconstenv_2var_agree; becomes dead code once KampBypass is fixed",
-      "next_dispatch": "Will be obsoleted by KampBypass fix"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 210,
+      "statement": "nf_eval_from_enriched_witnesses: between_tx forward (M -> M0)",
+      "assumption": "Given w in M with between_tx evaluation, find w0 in M0",
+      "why_deferred": "zone3_witnesses only provides M0->M direction; forward requires prior_exist_transfer_bidir-style argument",
+      "next_dispatch": "Implement forward between_tx transfer using zone_compatible_witness"
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfCharFormula.lean",
-      "line": 657,
-      "statement": "nf_2var_exist_formula_prior k>0",
-      "assumption": "Downstream of PriorComposition",
-      "why_deferred": "Depends on prior_nonconstenv_2var_agree; becomes dead code once KampBypass is fixed",
-      "next_dispatch": "Will be obsoleted by KampBypass fix"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 228,
+      "statement": "nf_eval_from_enriched_witnesses: eq_x zone transfer",
+      "assumption": "nf_eval at [x,x,t] transfers via constenv_same_depth_nvar",
+      "why_deferred": "Symmetric to eq_t",
+      "next_dispatch": "Build eq_x zone bridge analogous to eq_t"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 230,
+      "statement": "nf_eval_from_enriched_witnesses: above_x zone transfer",
+      "assumption": "3-var existential with w > x factors through constant-env 2-var at x",
+      "why_deferred": "Symmetric to below_t using h_x instead of h_t",
+      "next_dispatch": "Factor above_x 3-var existential into constant-env 2-var existential"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 234,
+      "statement": "nf_eval_from_enriched_witnesses: inconsistent zone",
+      "assumption": "Contradictory order atoms mean no point satisfies chi",
+      "why_deferred": "Requires ssn_order_consistent-style reasoning at general depth",
+      "next_dispatch": "Prove inconsistent zone implies empty existential"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+      "line": 368,
+      "statement": "zone3_from_bracket: quantifier part (depth-K 4-var existential transfer)",
+      "assumption": "depth-(K+1) 3-var NF agreement between M,[w,x,t] and M0,[w0,x0,t0]",
+      "why_deferred": "Circular: proving this agreement IS the current theorem. For K=0, depth-0 4-var is purely atomic and could be handled directly. For K>0, need inductive multi-var agreement from 1-var.",
+      "next_dispatch": "K=0: direct zone analysis on depth-0 4-var. K>0: separate inductive lemma for multi-var agreement from 1-var."
     }
   ],
   "blockers": [
-    "existPart_succ_n1_bypass k>0 backward direction uses false prior_2var_transfer_until/since. Must restructure to encode zone-3 witnesses directly via VecEA2 brackets, matching the sorry-free k=0 pattern."
+    "zone3_from_bracket quantifier part: circular dependency on depth-(K+1) 3-var NF agreement",
+    "nf_eval_from_enriched_witnesses non-between zones: require constant-env factoring or zone_compatible_witness infrastructure"
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/enriched-until-analysis-handoff.md",
+  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "last_phase": "analysis and cleanup",
-    "next_action": "Restructure existPart_succ_n1_bypass k>0 Until/Since cases in KampBypass.lean"
+    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
+    "proved": [
+      "zone3_from_bracket: full atom part (predicates + all 6 order cases)",
+      "zone_general_between_tx_orders helper lemma",
+      "pred_transfer_from_1var helper lemma",
+      "nf_eval_from_enriched_witnesses: full atom part for 2-var env",
+      "nf_eval_from_enriched_witnesses: backward between_tx direction via zone3_witnesses"
+    ],
+    "remaining_sorries": 7,
+    "key_insight": "The circularity in zone3_from_bracket can be broken for K=0 by direct zone analysis on depth-0 4-var NFs. For K>0, a separate inductive lemma building multi-var NF agreement from 1-var agreements is needed."
   }
 }
