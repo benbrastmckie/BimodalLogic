@@ -291,8 +291,8 @@ noncomputable def nf_characterizable_temporal_prior_combined
            (fun sub_nf M' h_UZ' h_SZ' t' => (ih_B sub_nf).property M' h_UZ' h_SZ' t')
            nf M h_UZ h_SZ t⟩,
     -- Part B at depth k+1: use FOToVEA bridge (Rabinovich Prop 4.3)
-    -- NF → nf_to_formula → MonadicFormula sig 2 → .ex → MonadicFormula sig 1
-    -- → fo_to_temporal → Formula
+    -- NF existential → nf_exist_to_temporal → Formula
+    -- (works directly with NormalForm, bypasses MonadicFormula)
     fun sub_nf =>
       ⟨nf_exist_to_temporal atomMap h_surj sub_nf,
        fun M h_UZ h_SZ t =>

@@ -112,6 +112,8 @@ Fully sequential: each phase builds on the previous. No parallel execution possi
 
 ### Phase 1: FOToVEA.lean Core -- Mutual Structural Induction Skeleton + Atom/And/Neg Cases [IN PROGRESS]
 
+*(deviation: altered — Instead of mutual structural induction on MonadicFormula, using NF enumeration + Part A decomposition approach. The existential case is handled by decomposing into arity-2 NFs and using Part B IH, avoiding the arity tower.)*
+
 **Goal**: Create `FOToVEA.lean` with the mutual structural induction skeleton for `fo_to_vvea_1` (arity 1) and `fo_to_vvea_2` (arity 2), and implement the atom, conjunction, and negation cases. The existential case is left as sorry (addressed in Phase 2).
 
 **Tasks**:

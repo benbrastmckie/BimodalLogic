@@ -36,7 +36,9 @@ The succ k case of `nf_characterizable_temporal_prior` uses the combined
 induction from `NfExistTL.lean`. Part A (arity-1 NF characterization) at
 each depth is built from Part B (arity-2 existential elimination) at the
 previous depth. Part B at depth 0 is sorry-free. Part B at depth k+1
-requires arity tower infrastructure (sorry in NfExistTL.lean).
+has a localized sorry at `nf_exist_to_temporal_aux` in `FOToVEA.lean`
+(arity tower obstruction: depth-(k+1) arity-2 NF existentials require
+arity-3 decomposition at depth k, which at depth > 0 needs Lemma 3.2).
 
 ## References
 
@@ -131,7 +133,8 @@ This creates a circular dependency that requires independent infrastructure
     - k=0: `nf_depth0_char_formula` (atom literals)
     - k+1: combined induction from `NfExistTL.lean` using Part B at depth k.
       Part B at depth 0 is sorry-free (`nf_2var_exist_depth0_tl`).
-      Part B at depth k+1 has sorry (arity tower obstruction).
+      Part B at depth k+1 has localized sorry at `nf_exist_to_temporal_aux`
+      (arity tower: requires Lemma 3.2 for arity-3 at depth > 0).
 -/
 noncomputable def nf_characterizable_temporal_prior
     {sig : MonadicSignature}
