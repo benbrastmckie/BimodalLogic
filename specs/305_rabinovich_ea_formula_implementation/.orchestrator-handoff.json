@@ -46,8 +46,8 @@
       ]
     }
   ],
-  "continuation_context": "Plan v31 is blocked at Phase 1 due to a fundamental construction deficiency in neg_interval_formula_indep. The codebase's Lemma 5.1 forward proof (neg_interval_formula_indep_correct) is sorry-free but the construction is strictly weaker than Rabinovich's biconditional claim. A plan revision (v32) is needed that either fixes the construction or uses an alternative architecture. The ArityReduction.lean archival is complete.",
-  "next_action_hint": "Run /research 305 to investigate resolution paths, then /revise 305 for plan v32. Focus on whether fixing case B.2 to encode beta_0 failure is tractable without breaking the forward proof.",
+  "continuation_context": "Research complete (report 17). B.2 fix designed: neg_b2_bracket_formula (2-witness bracket encoding beta_0 failure + alpha_0 occurrence) replaces inf_bracket_formula. Forward proof modification is surgical (~16 lines changed). However, BOTH B.1 and B.2 backward proofs have gaps: model-independent construction uses model-dependent split points (first alpha_0 occurrence), so the IH's interval doesn't match bracket witnesses at w_0 > r_0. Root cause: Rabinovich's convention places alpha_0 at endpoint z_0 (not interior witness), avoiding this problem. Two viable paths: (1) Full Rabinovich restructure with Cor 5.4 biconditional (~300-500 lines, requires fixing S2 sorry), or (2) Bypass backward direction entirely via VecEA_m approach (plan v31 Phases 2-4 if backward is not needed) or semantic transfer argument.",
+  "next_action_hint": "Run /revise 305 for plan v32. Key decision: whether to restructure neg_interval_formula_indep to match Rabinovich's case analysis (beta_0 failure as primary case split, requires Cor 5.4 biconditional) or bypass the backward direction entirely. Report 17 Section 9 outlines a Path 2 bypass approach. The B.2-only fix is insufficient.",
   "artifacts": [
     {
       "type": "handoff",
