@@ -16,8 +16,8 @@
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-23T16:59:39Z",
-      "session_id": "sess_1782221000_plan",
+      "last_updated": "2026-06-23T19:15:00Z",
+      "session_id": "sess_1782234661_3b566f",
       "artifacts": [
         {
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/01_ea-formula-research.md",
@@ -68,16 +68,21 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/25_faithful-rabinovich-chain.md",
           "type": "plan",
           "summary": "v25: 5-phase faithful Rabinovich chain — Cor 5.4, Lemma 5.1, Prop 4.2, Prop 4.3, KampPrior sorry elimination"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/26_restricted-mutual-induction.md",
+          "type": "plan",
+          "summary": "v26: 4-phase restricted mutual induction -- FOToVEA core, arity reduction + existential closure, bridge wiring, verification"
         }
       ],
-      "previous_status": "planned",
+      "previous_status": "implementing",
       "next_artifact_number": 14,
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 12,
+        "phases": 4,
+        "total_effort_hours": 8,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 25,
+        "plan_version": 26,
         "dependency_waves": [
           [
             1
@@ -90,15 +95,17 @@
           ],
           [
             4
-          ],
-          [
-            5
           ]
         ],
         "reports_integrated": [
           {
             "path": "reports/24_z-completeness-rabinovich.md",
             "integrated_in_plan_version": 25,
+            "integrated_date": "2026-06-23"
+          },
+          {
+            "path": "handoffs/phase-4-arity-tower-analysis-20260623.md",
+            "integrated_in_plan_version": 26,
             "integrated_date": "2026-06-23"
           }
         ]

@@ -1,73 +1,82 @@
 {
   "status": "partial",
-  "summary": "Created FOToVEA.lean with fo_to_temporal bridge structure and wired into NfExistTL.lean. The Part B k+1 sorry at NfExistTL.lean:301 is replaced with nf_exist_to_temporal bridge. The sorry is now concentrated in fo_to_temporal_correct (FOToVEA.lean:87). Build passes (1705 jobs). The key technical finding: the VVecEA2-based mutual induction cannot produce model-independent formulas because neg_2var_vec_ea and conj_holds_vvecEA2 give existential witnesses. The NF-disjunction approach has circular formula construction. The correct approach likely requires NF-level direct construction or a finite-depth formula unrolling.",
+  "summary": "5 cycles completed. Created NfExistTL.lean (323 lines, Part A/B induction) and FOToVEA.lean (105 lines, bridge structure). Sorry narrowed from bare KampPrior:158 to fo_to_temporal_correct (FOToVEA.lean:87). Build passes (1705 jobs). Key finding: model-independent negation closure via case disjunction is the resolution path.",
   "phases_completed": 0,
   "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
       "line": 87,
-      "statement": "theorem fo_to_temporal_correct : temporal_truth M atomMap t (fo_to_temporal phi) ↔ eval M (fun _ => t) phi",
-      "assumption": "fo_to_temporal returns Formula.bot for all/ex cases (incorrect placeholder). The real formula needs to handle existential/universal quantification over the carrier.",
-      "why_deferred": "The ex case requires converting exists x, eval M [x, t] alpha (alpha : MonadicFormula sig 2) to a temporal formula. This is the core of Rabinovich Prop 4.3. The VVecEA2-based approach produces model-dependent existential witnesses, not model-independent formulas. The NF-disjunction approach creates circular formula definitions.",
-      "next_dispatch": "Implement correct fo_to_temporal for the ex case. Three viable paths: (1) NF-level direct construction case-splitting on order booleans with VecEA2 for each direction, (2) finite-depth formula unrolling avoiding circularity, (3) alternative proof architecture that avoids the MonadicFormula detour."
+      "statement": "fo_to_temporal_correct",
+      "assumption": "fo_to_temporal returns Formula.bot for all/ex cases (placeholder)",
+      "why_deferred": "Requires model-independent negation closure (neg_vecEA2_indep) that collects all case disjuncts instead of case-splitting per model. Current neg_2var_vec_ea produces model-dependent witnesses.",
+      "next_dispatch": "Implement neg_vecEA2_indep via case disjunction (~600-800 lines), then complete fo_to_vvea_1/fo_to_vvea_2 mutual induction using only model-independent operations."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
       "line": 160,
       "statement": "neg_vecEA2_is_vvecEA2 succ case",
-      "assumption": "Model-independent VecEA2 negation at n+1",
-      "why_deferred": "Structurally unprovable at BracketFormula level; model-dependent alternative exists",
-      "next_dispatch": "Non-critical path. Model-dependent neg_2var_vec_ea suffices."
+      "assumption": "Non-critical path",
+      "why_deferred": "Structurally unprovable at BracketFormula level",
+      "next_dispatch": "No action needed."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1084,
       "statement": "neg_bracket beta_0 case",
-      "assumption": "BracketFormula-level negation impossibility",
-      "why_deferred": "Structurally unprovable; documented impossibility",
-      "next_dispatch": "Non-critical path."
+      "assumption": "Non-critical path",
+      "why_deferred": "Structurally unprovable",
+      "next_dispatch": "No action needed."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1235,
       "statement": "neg_partialBracketExist backward n+1",
-      "assumption": "F-chain backward direction",
-      "why_deferred": "Structurally unprovable; model-dependent alternative exists",
-      "next_dispatch": "Non-critical path."
+      "assumption": "Non-critical path",
+      "why_deferred": "Structurally unprovable",
+      "next_dispatch": "No action needed."
     }
   ],
   "blockers": [
-    "fo_to_temporal_correct (FOToVEA.lean:87): The fo_to_temporal function returns incorrect Formula.bot for all/ex cases. Need correct formula construction for the existential case of MonadicFormula sig 1."
+    "fo_to_temporal_correct (FOToVEA.lean:87): needs model-independent negation closure. Resolution: neg_vecEA2_indep via case disjunction (~600-800 lines), conj_struct backward direction (~50-100 lines)."
   ],
   "continuation_context": {
     "is_successor": false,
-    "bridge_structure": "NfExistTL.lean Part B k+1 now uses nf_exist_to_temporal -> fo_to_temporal -> Formula. The sorry chain is: kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior_partA -> nf_characterizable_temporal_prior_combined -> nf_exist_to_temporal_correct -> fo_to_temporal_correct (sorry).",
-    "key_finding": "VVecEA2-based mutual induction cannot produce model-independent formulas. neg_2var_vec_ea gives existential witnesses. NF-disjunction approach has circular formula construction (Part_A_{k+2} references Part_B_{k+1} which references Part_A_{k+2}).",
-    "viable_paths": [
-      "NF-level direct construction: case-split on order booleans, build VecEA2 for future/past/equal directions. The depth-0 pattern from nf_2var_exist_depth0_tl extends to depth k+1 if quantifier clauses can be handled.",
-      "Finite-depth formula tree: define all Part_A and Part_B formulas for a fixed depth simultaneously (avoid circular definitions by finite enumeration).",
-      "Well-founded induction on total formula size: structural induction on MonadicFormula with explicit termination on sizeOf."
+    "bridge_structure": "kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior -> nf_characterizable_temporal_prior_partA -> nf_characterizable_temporal_prior_combined (Part B k+1) -> nf_exist_to_temporal_correct -> fo_to_temporal_correct (sorry)",
+    "resolution_path": {
+      "step_1": "Build neg_vecEA2_indep : VecEA2 n -> VVecEA2 collecting ALL case disjuncts. ~600-800 lines.",
+      "step_2": "Prove conj_struct backward direction. ~50-100 lines.",
+      "step_3": "Complete fo_to_vvea_1/fo_to_vvea_2 mutual structural induction. ~200-300 lines.",
+      "step_4": "Wire bridge: fo_to_temporal phi = (fo_to_vvea_1 phi).translateLeft. ~100 lines.",
+      "step_5": "Verify: lake build, sorry audit."
+    },
+    "key_decisions": [
+      "Model-independence IS required (verified from theorem type signature)",
+      "Rabinovich's proof IS constructive — each negation case produces a specific V-EA formula",
+      "Current Lean formalization case-splits per model instead of collecting all cases",
+      "Fix: collect all case disjuncts (at most 3^(n+1)) into a single model-independent VVecEA2",
+      "Arity tower still needs Lemma 3.2(2) — VecEADecomp handles depth-0, depth>0 needs nf_to_formula+IH"
     ],
-    "files_created": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean"],
-    "files_modified": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean"]
+    "files_created": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean", "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean"],
+    "files_modified": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"],
+    "reports": ["specs/305_rabinovich_ea_formula_implementation/reports/25_model-indep-resolution.md"]
   },
+  "next_action_hint": "Revise plan v26 to add model-independent negation closure phase. Then /orchestrate 305 --hard --lit to continue.",
   "artifacts": [
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean",
+      "type": "source",
+      "summary": "Combined Part A/Part B induction (323 lines). Part A sorry-free at all depths."
+    },
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
       "type": "source",
-      "summary": "FOToVEA bridge file: fo_to_temporal, nf_exist_to_temporal, bridge theorems"
+      "summary": "Bridge structure: fo_to_temporal, nf_exist_to_temporal (105 lines, 1 sorry)"
     },
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-fotovea-bridge-20260623.md",
-      "type": "handoff",
-      "summary": "Phase 1 handoff with technical analysis and viable paths"
-    },
-    {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/26_restricted-mutual-induction.md",
-      "type": "plan",
-      "summary": "Current plan (v4) with 4 phases"
+      "path": "specs/305_rabinovich_ea_formula_implementation/reports/25_model-indep-resolution.md",
+      "type": "report",
+      "summary": "H3/H4 research: model-independence required, neg_vecEA2_indep via case disjunction is resolution"
     }
-  ],
-  "next_action_hint": "Focus on implementing correct fo_to_temporal for the ex case. The most promising approach is NF-level direct construction extending the depth-0 pattern (nf_2var_exist_depth0_tl) to handle depth k+1 quantifier clauses."
+  ]
 }

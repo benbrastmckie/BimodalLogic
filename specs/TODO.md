@@ -140,7 +140,9 @@ These definitions return fixed syntactic objects (not existential witnesses), en
   - [305_rabinovich_ea_formula_implementation/reports/17_faithful-bridge-design.md]
   - [305_rabinovich_ea_formula_implementation/reports/20_eanegation-sorry-analysis.md]
   - [305_rabinovich_ea_formula_implementation/reports/24_z-completeness-rabinovich.md]
-- **Plan**: [305_rabinovich_ea_formula_implementation/plans/24_faithful-restructure.md]
+- **Plan**:
+  - [305_rabinovich_ea_formula_implementation/plans/25_faithful-rabinovich-chain.md]
+  - [305_rabinovich_ea_formula_implementation/plans/26_restricted-mutual-induction.md]
 
 **Description**: Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion
 
