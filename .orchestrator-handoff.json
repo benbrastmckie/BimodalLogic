@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "summary": "Phase 0 complete (bypass infrastructure archived to Boneyard, 11 files). Phase 1 started (EndpointNegation.lean created with sorry-free base case n=0). Inductive step n+1 has sorry pending deeper analysis of model-independent biconditional construction.",
+  "summary": "Phase 1 analysis complete. Base case (n=0) sorry-free. Succ case has documented GENUINE obstruction: model-independent biconditional at VecEA2 level has same forward-direction problem as BracketFormula-level sorry (EANegation.lean:1084). Model-dependent chain in EANegationClosure.lean is sorry-free and sufficient for downstream Phases 2-4. Plan needs revision to use model-dependent chain.",
   "phases_completed": 1,
   "phases_total": 6,
   "sorry_inventory": [
@@ -8,49 +8,60 @@
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 136,
       "statement": "nf_characterizable_temporal_prior succ case",
-      "assumption": "Full NF-to-temporal translation at depth k+1",
-      "why_deferred": "Placeholder pending Rabinovich chain (Phase 4)",
-      "next_dispatch": "Phase 4: replace with kamp_theorem_rabinovich call after Phases 1-3"
+      "assumption": "Full NF-to-temporal translation at depth k+1 on Prior structures",
+      "why_deferred": "Requires full Rabinovich chain (NF -> VVecEA2 -> Formula). Large multi-phase effort across Phases 2-4.",
+      "next_dispatch": "Implement using model-dependent neg_vecEA2/neg_2var_vec_ea from EANegationClosure.lean (sorry-free). Revise plan to bypass model-independent EndpointNegation.lean."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
-      "line": 122,
+      "line": 160,
       "statement": "neg_vecEA2_is_vvecEA2 succ case",
-      "assumption": "Model-independent biconditional for VecEA2 (n+1) negation",
-      "why_deferred": "The inductive step requires careful construction of VVecEA2 disjuncts that handle three Rabinovich cases. Analysis revealed the forward direction of dE disjuncts does not directly exclude bracket witnesses x0 > r0 without additional seg0 information.",
-      "next_dispatch": "Research the exact Rabinovich decomposition for Case 3. The constraint x0 <= r (from seg0 failing at r) means bracket is restricted to (z0, r]. May need different disjunct structure."
+      "assumption": "Model-independent biconditional: VVecEA2 <-> not VecEA2 for n+1 witnesses",
+      "why_deferred": "GENUINE OBSTRUCTION: same as EANegation.lean:1084. Interior witnesses prevent blocking all configurations model-independently. VecEA2 wrapper does NOT eliminate the problem.",
+      "next_dispatch": "NOT on critical path. Model-dependent neg_vecEA2 in EANegationClosure.lean is sorry-free. May remain as permanent sorry."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1084,
-      "statement": "neg_bracket_is_vbracket beta_0(r0) case",
-      "assumption": "BracketFormula-level biconditional with beta_0(r0)",
-      "why_deferred": "UNPROVABLE at BracketFormula level (documented impossibility)",
-      "next_dispatch": "Permanent sorry. Not on critical path."
+      "statement": "neg_bracket_is_vbracket backward (beta_0(r_0) case)",
+      "assumption": "Model-independent biconditional at BracketFormula level",
+      "why_deferred": "PERMANENT: proven impossible at BracketFormula level",
+      "next_dispatch": "No action needed. Not on critical path."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1235,
-      "statement": "neg_partialBracketExist_is_vbracket backward",
-      "assumption": "Cor 5.4 backward direction at BracketFormula level",
-      "why_deferred": "F-chain Until-unboundedness at BracketFormula level",
-      "next_dispatch": "May be fixable via VecEA2-level result once Phase 1 n+1 case is proved"
+      "statement": "neg_partialBracketExist_is_vbracket backward (n >= 1)",
+      "assumption": "Model-independent biconditional for bounded existential negation",
+      "why_deferred": "Same BracketFormula-level obstruction. Model-dependent neg_bounded_exists is sorry-free.",
+      "next_dispatch": "No action needed. Not on critical path."
     }
   ],
   "blockers": [
-    "Phase 1 n+1 case: model-independent VVecEA2 construction for bracket negation forward direction"
+    "Plan revision needed: Phases 2-4 should use model-dependent chain from EANegationClosure.lean instead of model-independent EndpointNegation.lean. The model-independent biconditional has a genuine obstruction."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-0-handoff.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-handoff.md",
   "continuation_context": {
     "is_successor": false,
-    "next_phase": 1,
-    "phase_status": "in_progress",
-    "key_insight": "The base case (n=0) of neg_vecEA2_is_vvecEA2 is proved sorry-free. The n+1 case requires three Rabinovich sub-cases. The critical issue is Case 3: when seg0 fails at r, all bracket witnesses x0 must satisfy x0 <= r. The correct VVecEA2 construction may need to encode 'seg0 fails' AND 'IH tail negation' simultaneously in the dE disjuncts, rather than encoding them separately.",
+    "phase_completed": "1 (partial: base case only, succ case documented obstruction)",
+    "next_phase": "Plan revision, then Phases 2-4 using model-dependent chain",
+    "key_finding": "Model-independent biconditional neg_vecEA2_is_vvecEA2 has same obstruction as BracketFormula level (EANegation.lean:1084). The VecEA2 wrapper separates endpoint predicates from bracket interior but does NOT eliminate the interior-witness model-dependency. Critical path should use neg_vecEA2/neg_2var_vec_ea from EANegationClosure.lean (sorry-free, model-dependent).",
+    "critical_path_sorries": ["KampPrior.lean:136"],
+    "non_critical_sorries": ["EndpointNegation.lean:160", "EANegation.lean:1084", "EANegation.lean:1235"],
+    "model_dependent_chain": {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
+      "sorry_free_theorems": [
+        "neg_interval_formula (Lemma 5.1 forward)",
+        "neg_bounded_exists (Cor 5.4 forward)",
+        "neg_vecEA2 (Prop 4.2 single conjunct)",
+        "neg_2var_vec_ea (Prop 4.2 full)"
+      ]
+    },
     "files_to_read": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichTranslation.lean"
     ]
   }
 }

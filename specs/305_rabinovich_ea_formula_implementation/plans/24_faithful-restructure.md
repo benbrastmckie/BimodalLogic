@@ -121,41 +121,45 @@ Phases are strictly sequential because each builds on the previous: archival fir
 
 ---
 
-### Phase 1: VecEA2-Level Lemma 5.1 (Endpoint Bracket Negation) [IN PROGRESS]
+### Phase 1: VecEA2-Level Lemma 5.1 (Endpoint Bracket Negation) [PARTIAL]
 
 **Goal**: Implement `neg_vecEA2_is_vvecEA2` in a new file `EndpointNegation.lean`, proving that the negation of a VecEA2 formula is model-independently equivalent to a VVecEA2. This is the core new theorem following Rabinovich pp. 7-11.
 
-**Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean`
-- [ ] Define the theorem signature:
-  ```
-  theorem neg_vecEA2_is_vvecEA2 (n : Nat) (vea : VecEA2 n) :
-      exists (v : VVecEA2),
-      forall {sig} (M : ...) (atomMap : ...) (h_INF : HasAttainedINF M atomMap)
-        (z0 z1 : M.carrier), z0 < z1 ->
-        (v.holds M atomMap z0 z1 <-> not (vea.holds M atomMap z0 z1))
-  ```
-- [ ] Implement base case (n = 0): neg (alpha_0(z_0) AND forall y in (z_0,z_1), seg_0(y)) -- decompose into two VVecEA2 disjuncts via de Morgan
-- [ ] Implement inductive step Case 1: neg alpha_0(z_0) -- trivial VVecEA2 disjunct with endpointLeft = alpha_0.neg
-- [ ] Implement inductive step Case 2: alpha_0(z_0) AND seg_0 everywhere -- reduces to Cor 5.4 partial bracket negation on rightPart with n witnesses, apply IH
-- [ ] Implement inductive step Case 3: alpha_0(z_0) AND seg_0 fails at some point -- use HasAttainedINF to find first failure, split bracket via leftPart/rightPart, apply IH on each half (fewer witnesses)
-- [ ] Prove both directions of the biconditional for each case
-- [ ] Also fix Cor 5.4 backward direction (EANegation.lean:1235) using the VecEA2-level result
-- [ ] Verify `lake build` succeeds with EndpointNegation.lean
+**OBSTRUCTION ANALYSIS** (documented in EndpointNegation.lean):
+- The model-independent biconditional for the succ case has the SAME obstruction as the
+  BracketFormula-level sorry at EANegation.lean:1084. The VecEA2 wrapper places endpointLeft
+  at the fixed endpoint z0, but the bracket's INTERIOR witnesses x0,...,xn remain existentially
+  quantified. The forward direction (v.holds -> not vea.holds) requires blocking ALL witness
+  configurations, but having not-tail.holds at one point r0 does not block configurations
+  starting from a different point x0 > r0.
+- The model-DEPENDENT versions in EANegationClosure.lean are ALL sorry-free:
+  - `neg_vecEA2` (Prop 4.2 single conjunct) -- sorry-free
+  - `neg_2var_vec_ea` (Prop 4.2 full) -- sorry-free
+  - `neg_interval_formula` (Lemma 5.1 forward) -- sorry-free
+  - `neg_bounded_exists` (Cor 5.4 forward) -- sorry-free
+- **Decision**: Phases 2-4 should use the model-dependent chain from EANegationClosure.lean.
+  The succ case sorry in EndpointNegation.lean is NOT on the critical path.
 
-**Timing**: 4 hours
+**Tasks**:
+- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean`
+- [x] Define the theorem signature
+- [x] Implement base case (n = 0): sorry-free, 3 disjuncts via de Morgan
+- [ ] Implement inductive step *(deviation: deferred -- model-independent biconditional has genuine obstruction; see OBSTRUCTION ANALYSIS above)*
+- [ ] Also fix Cor 5.4 backward direction (EANegation.lean:1235) *(deviation: deferred -- not on critical path; model-dependent version sorry-free)*
+- [x] Verify `lake build` succeeds with EndpointNegation.lean
+
+**Timing**: 4 hours (actual: base case complete, succ case has documented obstruction)
 
 **Depends on**: 0
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- NEW (~300-400 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` -- fix Cor 5.4 backward sorry at line 1235
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- NEW (~160 lines, base case sorry-free, succ case sorry with analysis)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` -- Cor 5.4 backward sorry NOT fixable (same obstruction)
 
 **Verification**:
-- `neg_vecEA2_is_vvecEA2` compiles sorry-free
-- `lean_verify` on `neg_vecEA2_is_vvecEA2` reports no sorryAx
+- `neg_vecEA2_is_vvecEA2` base case sorry-free (n=0)
+- `neg_vecEA2_is_vvecEA2` succ case has sorry (documented obstruction, not on critical path)
 - `lake build` succeeds
-- Cor 5.4 backward sorry (EANegation.lean:1235) eliminated
 
 ---
 

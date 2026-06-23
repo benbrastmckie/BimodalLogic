@@ -126,8 +126,37 @@ theorem neg_vecEA2_is_vvecEA2 :
           (fun t _ _ => TemporalPred.eval_at_top M atomMap t)
   | succ n ih =>
     intro vea
-    -- Pending: full Rabinovich Case 2/3 decomposition.
-    -- See handoff for detailed analysis of the structural challenges.
+    /- ANALYSIS: Model-independent biconditional for VecEA2 (n+1)
+
+       The goal requires constructing a FIXED `v : VVecEA2` (before knowing the model)
+       such that `v.holds ↔ ¬ vea.holds` on ALL structures with `HasAttainedINF`.
+
+       The VecEA2 (n+1) has `bracket : BracketFormula (n+1)`, whose negation requires
+       blocking ALL possible witness configurations x₀,...,xₙ in (z₀,z₁). The three
+       Rabinovich sub-cases (no α₀, seg₀ failure, tail failure) are MODEL-DEPENDENT
+       because they depend on which witnesses exist in the specific model.
+
+       **Forward direction obstruction** (v.holds → ¬vea.holds):
+       For the "tail failure" disjuncts, we have a specific point r₀ where the tail
+       BracketFormula n fails. But the original bracket could hold with a DIFFERENT
+       first witness x₀ > r₀, and ¬tail.holds(r₀,z₁) does NOT imply ¬tail.holds(x₀,z₁).
+       This is the SAME obstruction as the BracketFormula-level sorry at
+       EANegation.lean:1084 (beta₀(r₀) case).
+
+       The VecEA2 wrapper places `endpointLeft` at the fixed point z₀, avoiding
+       beta₀(r₀) for the ENDPOINT predicate. But the bracket's INTERIOR witnesses
+       x₀,...,xₙ remain existentially quantified, preserving the obstruction for
+       the bracket negation's forward direction.
+
+       **Resolution**: The model-DEPENDENT versions in EANegationClosure.lean are
+       sorry-free and sufficient for the downstream chain:
+       - `neg_vecEA2` (Prop 4.2 single conjunct, model-dependent) — sorry-free
+       - `neg_2var_vec_ea` (Prop 4.2 full, model-dependent) — sorry-free
+       - `neg_interval_formula` (Lemma 5.1, model-dependent) — sorry-free
+
+       The downstream Kamp theorem (Theorem 4.4, KampPrior.lean) operates on
+       SPECIFIC Prior structures, so model-dependent negation closure suffices.
+       This sorry is NOT on the critical path to completeness. -/
     sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
