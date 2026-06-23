@@ -100,7 +100,14 @@ Fully sequential: each phase depends on the previous. No parallel execution poss
 
 ---
 
-### Phase 1: Fix Cor 5.4 Backward Direction [NOT STARTED]
+### Phase 1: Fix Cor 5.4 Backward Direction [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: Backward direction of `neg_partialBracketExist_is_vbracket` for n+1
+- **What was tried**: Analysis of goal state shows need for ¬partialBracketExist → v_suff.holds, but v_suff is constructed from fChainPred whose Until witnesses are unbounded
+- **Why stuck**: Structurally unprovable at BracketFormula level (documented in EANegation.lean:1211-1228). Model-independent biconditional cannot be established because Until witnesses may lie outside (z0, z1)
+- **What is needed**: N/A - using contingency path (model-dependent negation from EANegationClosure.lean)
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Eliminate the sorry at EANegation.lean:1235 (`neg_partialBracketExist_is_vbracket`, n+1 backward case) by replacing the fChainPred-based approach with a bounded construction that keeps Until witnesses within (z0, z1).
 
@@ -125,7 +132,14 @@ Fully sequential: each phase depends on the previous. No parallel execution poss
 
 ---
 
-### Phase 2: VecEA2-Level Lemma 5.1 via Segment-Type Decomposition [NOT STARTED]
+### Phase 2: VecEA2-Level Lemma 5.1 via Segment-Type Decomposition [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Model-independent biconditional for VecEA2 (n+1) negation
+- **What was tried**: Depends on Phase 1 (Cor 5.4 backward) which is blocked
+- **Why stuck**: Same structural obstruction: interior existential witnesses make case analysis model-dependent (documented in EndpointNegation.lean:129-159)
+- **What is needed**: N/A - using contingency path (model-dependent negation from EANegationClosure.lean)
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Eliminate the sorry at EndpointNegation.lean:160 (`neg_vecEA2_is_vvecEA2`, succ case) by implementing Rabinovich's segment-type case analysis. The base case (n=0) is already sorry-free (125 lines). The succ case requires decomposing the negation into three sub-cases based on endpoint predicates and segment-type satisfaction.
 
@@ -155,7 +169,14 @@ Fully sequential: each phase depends on the previous. No parallel execution poss
 
 ---
 
-### Phase 3: Model-Independent Prop 4.2 Negation [NOT STARTED]
+### Phase 3: Model-Independent Prop 4.2 Negation [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: Depends on Phase 2 (model-independent VecEA2 negation) which is blocked
+- **What was tried**: Phase 2 is prerequisite
+- **Why stuck**: Upstream dependency blocked
+- **What is needed**: N/A - using contingency path (model-dependent neg_2var_vec_ea from EANegationClosure.lean suffices for KampPrior)
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Build `neg_2var_vec_ea_indep`: a model-independent version of Prop 4.2 that produces a fixed VVecEA2 (before knowing the model) whose holds-predicate is equivalent to the negation of any input VVecEA2 on all structures with HasAttainedINF. This is the bridge from the model-dependent negation closure (EANegationClosure.lean) to the model-independent structural induction (Prop 4.3).
 
@@ -183,7 +204,9 @@ Fully sequential: each phase depends on the previous. No parallel execution poss
 
 ---
 
-### Phase 4: Prop 4.3 Structural Induction (FO -> VVecEA2) [NOT STARTED]
+### Phase 4: Prop 4.3 Structural Induction (FO -> VVecEA2) [IN PROGRESS]
+
+*(deviation: altered — using model-dependent negation from EANegationClosure.lean per contingency path, since Phases 1-3 are blocked by structural obstructions)*
 
 **Goal**: Prove `fo_to_vvea`: Rabinovich's Prop 4.3, that every `MonadicFormula sig 2` is model-independently equivalent to a VVecEA2 on structures with HasAttainedINF. Uses structural induction on MonadicFormula, which handles all arities simultaneously and avoids the arity tower problem that blocked the prior plan.
 
