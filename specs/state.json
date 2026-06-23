@@ -62,7 +62,7 @@
         {
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/21_eanegation-sorry-fix.md",
           "type": "plan",
-          "summary": "v21: EndpointBracketFormula approach — 5 phases, 12h, fixes S1+S2 via Rabinovich-faithful endpoint bracket + temporal transfer for PriorComposition sorry elimination"
+          "summary": "v21: Rabinovich-aligned EndpointBracketFormula approach — 5 phases, 12h, new type matching bracket notation, bridge to BracketFormula, model-independent Prop 4.2, PriorComposition sorry elimination"
         }
       ],
       "previous_status": "partial",
