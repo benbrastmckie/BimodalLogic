@@ -1,74 +1,43 @@
 {
   "status": "partial",
-  "summary": "Proved inconsistent zone in nf_eval_from_enriched_witnesses (sorry count 7->6). Remaining 6 sorries are blocked by circularity: multi-var NF agreement requires the 2-var agreement being established.",
+  "summary": "Consolidated 6 sorry stubs in KampBypassK1.lean into 2 structurally identical sorries via nonconstenv_3var_exist_transfer helper. All quantifier zones in nf_eval_from_enriched_witnesses now handled uniformly. Build passes.",
   "phases_completed": 0,
-  "phases_total": 7,
+  "phases_total": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 201,
-      "statement": "nf_eval_from_enriched_witnesses: below_t zone transfer",
-      "assumption": "3-var existential with w < t transfers between M and M0",
-      "why_deferred": "Quantifier conditions at depth K require 3-var agreement at [w,x,t]/[w0,x0,t0], which requires 2-var agreement at [x,t]/[x0,t0] -- the theorem's conclusion. Circular.",
-      "next_dispatch": "Restructure theorem with inner depth induction on K, or add 2-var agreement as hypothesis"
+      "line": 156,
+      "statement": "private theorem nonconstenv_3var_exist_transfer (h_2var_agree sorry)",
+      "assumption": "depth-(K+2) 2-var NF agreement at [x,t]/[x',t'] from pointwise depth-(K+2) 1-var agreements at x/x' and t/t'",
+      "why_deferred": "Genuine infrastructure gap: constructing non-constant env multi-var NF agreement from pointwise 1-var agreements. The circularity is that exist_transfer_from_full_agree needs the multi-var agreement to produce the existential transfer, but the existential transfer IS the quantifier condition of the multi-var agreement. prior_nonconstenv_2var_agree_until solves this for K>=1 but has a sorry at K=0 (the original motivation for the bypass).",
+      "next_dispatch": "Prove nonconstenv_3var_exist_transfer by (a) induction on depth with a new existential-transfer bootstrap, (b) using prior_nonconstenv_2var_agree_until for K>=1 and a separate K=0 argument, or (c) a completely new approach to non-constant env agreement."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 204,
-      "statement": "nf_eval_from_enriched_witnesses: eq_t zone transfer",
-      "assumption": "nf_eval at [t,x,t] chi transfers to nf_eval at [t0,x0,t0] chi",
-      "why_deferred": "Atoms transfer but quantifier part needs depth-K 4-var existential transfer at [v,t,x,t], requiring 3-var agreement. Circular.",
-      "next_dispatch": "Same as below_t"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 210,
-      "statement": "nf_eval_from_enriched_witnesses: between_tx forward (M -> M0)",
-      "assumption": "Given w in M between t and x, find matching w0 in M0",
-      "why_deferred": "zone3_witnesses only provides M0->M direction. Forward requires symmetric argument or exist_transfer which is circular.",
-      "next_dispatch": "Add symmetric zone3_witnesses hypothesis or prove via exist_transfer if 2-var agreement available"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 228,
-      "statement": "nf_eval_from_enriched_witnesses: eq_x zone transfer",
-      "assumption": "nf_eval at [x,x,t] chi transfers to nf_eval at [x0,x0,t0] chi",
-      "why_deferred": "Symmetric to eq_t. Same circularity.",
-      "next_dispatch": "Same as eq_t"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 230,
-      "statement": "nf_eval_from_enriched_witnesses: above_x zone transfer",
-      "assumption": "3-var existential with w > x transfers between M and M0",
-      "why_deferred": "Symmetric to below_t using h_x. Same circularity.",
-      "next_dispatch": "Same as below_t"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 401,
-      "statement": "zone3_from_bracket: quantifier part (depth-K 4-var existential transfer)",
-      "assumption": "depth-K 4-var existential transfer at [v,w,x,t]/[v0,w0,x0,t0]",
-      "why_deferred": "Requires depth-(K+1) 3-var agreement at [w,x,t]/[w0,x0,t0]. Circular. For K=0: depth-0 is purely atomic but 4-var atom transfer still needs order+pred agreement at all 4 points.",
-      "next_dispatch": "K=0: direct atomic 4-var transfer. K>0: inductive multi-var agreement from 1-var."
+      "line": 393,
+      "statement": "theorem zone3_from_bracket (h_3var_agree sorry)",
+      "assumption": "depth-(K+1) 3-var NF agreement at [w,x,t]/[w0,x0,t0] from pointwise depth-(K+2) 1-var agreements at w/w0, x/x0, t/t0",
+      "why_deferred": "Same infrastructure gap as nonconstenv_3var_exist_transfer but at 3-var env instead of 2-var.",
+      "next_dispatch": "Same resolution as nonconstenv_3var_exist_transfer - both collapse to the same problem."
     }
   ],
   "blockers": [
-    "All 6 remaining sorries share root blocker: nf_eval_from_enriched_witnesses tries to build 2-var agreement from 1-var agreements + zone3_witnesses, but non-between zones and zone3_from_bracket quantifiers need multi-var agreement at the same or lower depth, creating circularity. Resolution: (a) add inner depth induction on K, (b) add 2-var agreement as hypothesis and prove it elsewhere, or (c) restructure as mutual induction."
+    "Non-constant env multi-var NF agreement from pointwise 1-var agreements: no existing theorem handles this without Prior axiom-based transfer (which is false at K=0). Need new infrastructure, likely involving induction on depth with a novel bootstrap mechanism."
   ],
   "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
     "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
     "proved": [
-      "inconsistent zone: both sides False via contradictory order atoms (w<x AND x<w or w<t AND t<w)",
+      "nonconstenv_3var_exist_transfer structure: reduces 3-var existential transfer to 2-var agreement via exist_transfer_from_full_agree",
+      "nf_eval_from_enriched_witnesses: all quantifier zones handled uniformly (no zone case split needed)",
+      "zone3_from_bracket: quantifier part structured via exist_transfer_from_full_agree from 3-var agreement",
       "zone3_from_bracket: full atom part (predicates + all 6 order cases) [pre-existing]",
       "zone_general_between_tx_orders helper lemma [pre-existing]",
       "pred_transfer_from_1var helper lemma [pre-existing]",
-      "nf_eval_from_enriched_witnesses: full atom part for 2-var env [pre-existing]",
-      "nf_eval_from_enriched_witnesses: backward between_tx direction [pre-existing]"
+      "nf_eval_from_enriched_witnesses: full atom part for 2-var env [pre-existing]"
     ],
-    "remaining_sorries": 6,
-    "key_insight": "The non-between zones (eq_t, eq_x, below_t, above_x) and the forward between_tx all need the very 2-var agreement that nf_eval_from_enriched_witnesses is constructing. The zone3_from_bracket quantifier needs 3-var agreement. These are all instances of the same circularity: building n-var agreement from 1-var agreements requires (n-1)-var agreement which is not available as a hypothesis. Breaking this requires either: (1) a joint induction on depth K and arity, (2) splitting the theorem to separate the between_tx case from the rest, or (3) adding the 2-var agreement as an explicit hypothesis (and proving it by induction elsewhere)."
+    "remaining_sorries": 2,
+    "key_insight": "All 6 original sorry stubs were instances of the same problem: transferring existentials at non-constant envs from pointwise 1-var agreements. The nonconstenv_3var_exist_transfer helper captures this precisely: it reduces the 3-var existential transfer to depth-(K+2) 2-var agreement via exist_transfer_from_full_agree. The 2-var agreement is the ONLY remaining sorry. This is mathematically identical to prior_nonconstenv_2var_agree_until's K=0 sorry, which is the root problem the bypass was designed to circumvent."
   }
 }
