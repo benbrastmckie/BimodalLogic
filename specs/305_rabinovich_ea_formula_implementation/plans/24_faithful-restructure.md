@@ -121,7 +121,7 @@ Phases are strictly sequential because each builds on the previous: archival fir
 
 ---
 
-### Phase 1: VecEA2-Level Lemma 5.1 (Endpoint Bracket Negation) [NOT STARTED]
+### Phase 1: VecEA2-Level Lemma 5.1 (Endpoint Bracket Negation) [IN PROGRESS]
 
 **Goal**: Implement `neg_vecEA2_is_vvecEA2` in a new file `EndpointNegation.lean`, proving that the negation of a VecEA2 formula is model-independently equivalent to a VVecEA2. This is the core new theorem following Rabinovich pp. 7-11.
 
