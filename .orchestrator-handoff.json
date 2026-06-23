@@ -1,67 +1,65 @@
 {
-  "status": "partial",
-  "summary": "Phase 1 analysis complete. Base case (n=0) sorry-free. Succ case has documented GENUINE obstruction: model-independent biconditional at VecEA2 level has same forward-direction problem as BracketFormula-level sorry (EANegation.lean:1084). Model-dependent chain in EANegationClosure.lean is sorry-free and sufficient for downstream Phases 2-4. Plan needs revision to use model-dependent chain.",
+  "status": "blocked",
+  "summary": "Phase 2 (depth-k existential-to-temporal translation) BLOCKED by arity growth in depth induction. The NF-based depth induction at arity 2 requires arity-3 existentials at depth k, which requires arity-4 at depth k-1, etc. constenv_2var_determines only applies to constenvs (z,c,c,...,c), not general envs (y,x,t). The model-dependent negation closure (neg_2var_vec_ea) cannot produce model-independent temporal formulas. Rabinovich's Prop 4.3 uses structural induction on FO formulas (all arities simultaneously), which our NF-based approach cannot replicate.",
   "phases_completed": 1,
-  "phases_total": 6,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 136,
       "statement": "nf_characterizable_temporal_prior succ case",
       "assumption": "Full NF-to-temporal translation at depth k+1 on Prior structures",
-      "why_deferred": "Requires full Rabinovich chain (NF -> VVecEA2 -> Formula). Large multi-phase effort across Phases 2-4.",
-      "next_dispatch": "Implement using model-dependent neg_vecEA2/neg_2var_vec_ea from EANegationClosure.lean (sorry-free). Revise plan to bypass model-independent EndpointNegation.lean."
+      "why_deferred": "BLOCKED: depth induction on k does not close. At depth k+1, arity-2 existentials decompose into arity-3 existentials at depth k, but constenv_2var_determines does not apply to non-constenv envs (y,x,t). The model-dependent negation closure (neg_2var_vec_ea) cannot produce model-independent formulas.",
+      "next_dispatch": "Research alternative approach: (a) structural induction on MonadicFormula with model-independent VVecEA2 negation, (b) generalized constenv composition for non-constenvs, (c) re-route critical path through integer expressive completeness (US_expressively_complete_over_Z, sorry-free)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
       "line": 160,
       "statement": "neg_vecEA2_is_vvecEA2 succ case",
-      "assumption": "Model-independent biconditional: VVecEA2 <-> not VecEA2 for n+1 witnesses",
-      "why_deferred": "GENUINE OBSTRUCTION: same as EANegation.lean:1084. Interior witnesses prevent blocking all configurations model-independently. VecEA2 wrapper does NOT eliminate the problem.",
-      "next_dispatch": "NOT on critical path. Model-dependent neg_vecEA2 in EANegationClosure.lean is sorry-free. May remain as permanent sorry."
+      "assumption": "Model-independent biconditional",
+      "why_deferred": "GENUINE OBSTRUCTION (same as EANegation.lean:1084). Not on critical path.",
+      "next_dispatch": "No action needed."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1084,
-      "statement": "neg_bracket_is_vbracket backward (beta_0(r_0) case)",
-      "assumption": "Model-independent biconditional at BracketFormula level",
-      "why_deferred": "PERMANENT: proven impossible at BracketFormula level",
-      "next_dispatch": "No action needed. Not on critical path."
+      "statement": "neg_bracket_is_vbracket backward",
+      "assumption": "Model-independent biconditional",
+      "why_deferred": "PERMANENT impossibility",
+      "next_dispatch": "No action needed."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1235,
-      "statement": "neg_partialBracketExist_is_vbracket backward (n >= 1)",
-      "assumption": "Model-independent biconditional for bounded existential negation",
-      "why_deferred": "Same BracketFormula-level obstruction. Model-dependent neg_bounded_exists is sorry-free.",
-      "next_dispatch": "No action needed. Not on critical path."
+      "statement": "neg_partialBracketExist_is_vbracket backward",
+      "assumption": "Model-independent biconditional",
+      "why_deferred": "PERMANENT impossibility",
+      "next_dispatch": "No action needed."
     }
   ],
   "blockers": [
-    "Plan revision needed: Phases 2-4 should use model-dependent chain from EANegationClosure.lean instead of model-independent EndpointNegation.lean. The model-independent biconditional has a genuine obstruction."
+    "Phase 2 arity growth: depth induction for nf_2var_exist_tl at arity 2 requires arity-3 existentials at depth k. The env (y,x,t) is not a constenv, so constenv_2var_determines does not apply. Six approaches tried (direct depth induction, mutual induction, constenv reduction, recursive kamp, doets_lemma_1_1 reduction, model-dependent VVecEA2), all fail. See handoffs/phase-2-arity-growth-blocker.md for full analysis."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-handoff.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-arity-growth-blocker.md",
   "continuation_context": {
-    "is_successor": false,
-    "phase_completed": "1 (partial: base case only, succ case documented obstruction)",
-    "next_phase": "Plan revision, then Phases 2-4 using model-dependent chain",
-    "key_finding": "Model-independent biconditional neg_vecEA2_is_vvecEA2 has same obstruction as BracketFormula level (EANegation.lean:1084). The VecEA2 wrapper separates endpoint predicates from bracket interior but does NOT eliminate the interior-witness model-dependency. Critical path should use neg_vecEA2/neg_2var_vec_ea from EANegationClosure.lean (sorry-free, model-dependent).",
+    "is_successor": true,
+    "phase_completed": "1 (partial: base case sorry-free, succ case blocked)",
+    "next_phase": "Research alternative approaches per Options A-D in handoff",
+    "blocker_type": "mathematical_gap",
+    "key_finding": "The NF depth induction at a fixed arity does not close because existential quantification increases arity. Rabinovich's structural induction on FO formulas handles all arities simultaneously, but our NF-based approach cannot replicate this without additional infrastructure.",
+    "resolution_options": [
+      "A: Structural induction on MonadicFormula with model-independent VVecEA2 negation",
+      "B: Generalized constenv composition for non-constenv envs (y,x,t)",
+      "C: Different induction measure (total quantifier complexity across arities)",
+      "D: Re-route critical path through integer expressive completeness (US_expressively_complete_over_Z)"
+    ],
     "critical_path_sorries": ["KampPrior.lean:136"],
-    "non_critical_sorries": ["EndpointNegation.lean:160", "EANegation.lean:1084", "EANegation.lean:1235"],
-    "model_dependent_chain": {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
-      "sorry_free_theorems": [
-        "neg_interval_formula (Lemma 5.1 forward)",
-        "neg_bounded_exists (Cor 5.4 forward)",
-        "neg_vecEA2 (Prop 4.2 single conjunct)",
-        "neg_2var_vec_ea (Prop 4.2 full)"
-      ]
-    },
     "files_to_read": [
+      "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-arity-growth-blocker.md",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/RabinovichTranslation.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean"
     ]
   }
 }

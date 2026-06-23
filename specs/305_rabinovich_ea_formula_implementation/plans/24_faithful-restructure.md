@@ -1,10 +1,10 @@
-# Implementation Plan: Task #305
+# Implementation Plan: Task #305 (Revised)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation
-- **Status**: [NOT STARTED]
-- **Effort**: 12 hours
+- **Status**: [IN PROGRESS]
+- **Effort**: 8 hours
 - **Dependencies**: None (all required sorry-free infrastructure exists)
-- **Research Inputs**: reports/23_restructure-research.md
+- **Research Inputs**: reports/23_restructure-research.md, handoffs/phase-1-handoff.md
 - **Artifacts**: plans/24_faithful-restructure.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,62 +12,66 @@
 
 ## Overview
 
-Full restructuring of the Kamp theorem proof to follow Rabinovich's faithful proof chain: Lemma 5.1 -> Prop 4.2 -> Prop 4.3 -> Theorem 4.4. The current codebase uses NF-depth mutual induction via ~5,900 lines of bypass infrastructure (KampBypass, KampMutualInduction, NfCharFormula, PriorComposition sorry stubs) that deviates from Rabinovich and carries 5 sorry sites on the critical path. The restructuring archives bypass files to Boneyard, implements the faithful Rabinovich chain in 4 new files (~800-1200 lines), and updates KampPrior.lean to use the new proof. Net result: ~4,700 fewer lines, 5 fewer sorry sites on the critical path, and a proof that matches the literature step-by-step.
+Eliminate the sorry at KampPrior.lean:136 (`nf_characterizable_temporal_prior` succ case) by implementing the NF-to-temporal translation using the model-dependent negation closure chain from EANegationClosure.lean. Phase 0 (bypass archival) and Phase 1 (EndpointNegation base case) are complete. The original plan's Phases 2-4 assumed model-independent negation via EndpointNegation.lean, which has a genuine obstruction (same as EANegation.lean:1084). This revision redirects the critical path through the model-dependent chain, which is entirely sorry-free.
 
 ### Research Integration
 
-Key findings from report 23 (restructure-research.md):
-- VecEA2 type already has `endpointLeft` field matching Rabinovich's alpha_0 at z_0 -- no type changes needed
-- The beta_0(r0) impossibility at BracketFormula level (EANegation.lean:1084) is bypassed entirely by working at VecEA2 level where alpha_0 is at the fixed endpoint
-- Rabinovich uses two induction principles: (1) induction on witness count n for Lemma 5.1, and (2) structural induction on FO formulas for Prop 4.3 -- neither involves NF depth
-- Prior structures trivially satisfy HasAttainedINF (already proved sorry-free as `prior_hasAttainedINF`)
-- The model-dependent negation closure (EANegationClosure.lean) is entirely sorry-free and provides the case-analysis template for the model-independent version
+Key findings from report 23 (restructure-research.md) and phase-1-handoff.md:
+- The model-independent biconditional `neg_vecEA2_is_vvecEA2` (EndpointNegation.lean) has the SAME obstruction as EANegation.lean:1084 -- interior witnesses prevent blocking all configurations model-independently
+- The model-DEPENDENT chain in EANegationClosure.lean is entirely sorry-free: `neg_vecEA2`, `neg_2var_vec_ea`, `neg_interval_formula`, `neg_bounded_exists`
+- For KampPrior completeness on Prior structures, model-dependent negation closure suffices because the proof operates on specific canonical models
+- `constenv_2var_determines` (NfComposition.lean) reduces n-var NF evaluation to 2-var NF evaluation for const-env evaluations -- only 2-var NFs need VecEA2 treatment
+- `nf_2var_exist_depth0_tl` (NfToVecEA.lean) handles depth-0 existentials via VecEA2 translation (sorry-free)
+- `translate_correct` (RabinovichTranslation.lean) converts VecEA2 to temporal formulas via Prop 3.5 (sorry-free)
+- Prior structures trivially satisfy HasAttainedINF (`prior_hasAttainedINF`, sorry-free)
 
 ### Prior Plan Reference
 
-Plan v23 (faithful-beta0-fix.md) attempted to fix the beta_0(r0) sorry at the BracketFormula level. After exhaustive analysis of three approaches, it concluded the BracketFormula-level model-independent biconditional is unprovable -- alpha_0 at an interior existential witness creates model-dependent recursion that no finite V-bracket can handle. The plan correctly identified that the fix requires working at the VecEA2 level (endpoint convention). This restructuring plan implements that conclusion as a full chain rather than a targeted fix.
+Plan v24 (original) attempted a 6-phase restructuring using model-independent negation. Phase 0 completed (11 bypass files archived). Phase 1 discovered the model-independent obstruction. This revision narrows scope to the single critical-path sorry and uses the model-dependent chain.
 
-Lessons learned from prior plan:
-- Effort calibration: the prior plan estimated 4 hours for a single-file modification but found the beta_0(r0) issue required architectural change. This plan estimates 12 hours for the full restructuring.
-- The detailed impossibility analysis in the prior plan confirms that the BracketFormula-level sorry at EANegation.lean:1084 should remain as documented (it is genuinely unprovable at that level and unused downstream).
-- Risk: Case 2 of Lemma 5.1 (seg holds everywhere, reducing to Cor 5.4) was identified as the highest-risk step.
+### Critical Path Analysis
 
-### Roadmap Alignment
+Only one sorry is on the critical path to `completeness_discrete`:
+```
+completeness_discrete
+  -> kamp_prior_expressive_completeness
+    -> nf_characterizable_temporal_prior (succ case)  <-- KampPrior.lean:136
+```
 
-This plan advances the following ROADMAP.md items:
-- **Critical path**: Closing the sorry chain through `existPart_succ_n1_bypass` k>0 case -- by replacing the KampBypass infrastructure entirely with the faithful Rabinovich chain, this eliminates the bypass-rooted sorry chain
-- **Discrete completeness**: Moving `kamp_prior_expressive_completeness` to a sorry-free Rabinovich-based proof directly advances sorry-free `completeness_discrete`
+The succ case must construct a `Formula` that characterizes a depth-(k+1) arity-1 NF on Prior structures. By `nf_eval_nf` at depth k+1, this requires:
+1. Atom predicates at t (handled by `nf_depth0_char_formula`, already available)
+2. For each `sub_nf : NormalForm sig k 2`, a temporal formula for `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` when `quant_assignment sub_nf = true`
+3. For each `sub_nf` with `quant_assignment sub_nf = false`, a temporal formula for the negation of that existential
+
+Steps 2-3 are where the model-dependent chain enters:
+- Positive existentials: decompose via order direction (future/past/equal), build VecEA2, translate via Prop 3.5
+- Negative existentials: use `neg_2var_vec_ea` from EANegationClosure.lean to get VVecEA2, then translate
+
+The depth induction works because `nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` at depth k involves existentials over depth-(k-1) NFs, which the IH handles.
 
 ## Goals & Non-Goals
 
 **Goals**:
-- Archive bypass infrastructure (8 files, ~5,900 lines) to Boneyard
-- Implement VecEA2-level Lemma 5.1 (`neg_vecEA2_is_vvecEA2`) following Rabinovich pp. 7-11
-- Implement model-independent Prop 4.2 (`neg_vvecEA2_model_indep`) using Lemma 5.1
-- Implement Prop 4.3 structural induction (`fo_to_vea`) for 1-free-variable FO formulas
-- Implement Theorem 4.4 (`kamp_theorem_rabinovich`) combining Prop 4.3 + Prop 3.5
-- Update KampPrior.lean to use the Rabinovich chain instead of mutual induction
-- Fix Cor 5.4 backward direction sorry (EANegation.lean:1235) using VecEA2-level Lemma 5.1
-- Achieve `lake build` success at every phase
-- Eliminate 5 of 6 sorry sites from the critical path
+- Eliminate the sorry at KampPrior.lean:136 (`nf_characterizable_temporal_prior` succ case)
+- Build the NF-to-temporal translation for depth k+1 using the model-dependent chain
+- Achieve sorry-free `kamp_prior_expressive_completeness` and `completeness_discrete`
+- Maintain `lake build` success at every phase
 
 **Non-Goals**:
-- Changing VecEA2, BracketFormula, or VBracketFormula type definitions (they already match Rabinovich)
-- Fixing the BracketFormula-level sorry at EANegation.lean:1084 (proven unprovable)
-- Implementing the full Lemma 3.2.2 (general free-variable reduction) -- the 1-free-var case does not need it
-- Modifying any sorry-free KEEP files (EANegationClosure, VecEAClosure, PriorINF, etc.)
+- Fixing the model-independent EndpointNegation.lean succ sorry (genuine obstruction, not on critical path)
+- Fixing EANegation.lean sorries at lines 1084 and 1235 (permanent impossibilities)
+- Creating new infrastructure files (ModelIndepNegation.lean, FOToVEA.lean, KampRabinovich.lean from original plan) -- the model-dependent chain makes these unnecessary
+- Modifying any existing sorry-free files
 - Addressing Stavi expressive completeness sorries (separate sorry chain)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Lemma 5.1 Case 2 (seg everywhere -> Cor 5.4) requires complex F-chain reduction | H | M | The model-dependent `neg_interval_formula` in EANegationClosure.lean provides a sorry-free template for the case analysis structure. The forward direction of Cor 5.4 is already proved; only the backward direction needs VecEA2-level proof. |
-| Lemma 5.1 Case 3 (interval splitting) index arithmetic for combining sub-bracket negations | M | M | leftPart/rightPart/splitAt_combine infrastructure already exists sorry-free in VecEAFormula.lean. Use the existing splitting algebra directly. |
-| Prop 4.3 negation case may need free-variable reduction beyond 2-var scope | M | L | For 1-free-variable Kamp theorem, each existential introduces one new variable pairing with the single free variable, staying within the 2-var scope handled by Prop 4.2. The general case (Lemma 3.2.2) is not needed. |
-| KampForward.lean imports KampBypass -- archiving KampBypass may break KampForward | H | M | Check whether KampForward actually uses any KampBypass definitions (preliminary grep shows only a comment reference). Remove the import if unused, or move needed definitions to a shared file. |
-| GeneralExistPart.lean imports KampBypass with no actual usage | L | H | Remove the unused import during cleanup. |
-| Archival breaks `lake build` due to transitive import chains | H | L | Archive incrementally: move files to Boneyard one-at-a-time, remove imports from remaining files, verify `lake build` after each step. |
+| Depth-k existential decomposition at arity 2 may not reduce cleanly to VecEA2 | H | M | `nf_2var_exist_depth0_tl` handles depth 0. For depth k>0, the NF structure at arity 2 has quantifier components over depth-(k-1) arity-3 NFs, but `constenv_2var_determines` collapses these to 2-var. The induction goes on k. |
+| IH provides arity-1 translation but we need arity-2 existential translation | H | M | The IH gives 1-var depth-k NF -> Formula. The 2-var existential decomposes by order direction into endpoint + bracket. The endpoint predicates are 1-var formulas (handled by IH). The bracket's interior witness predicates are also 1-var (evaluated at specific points). |
+| Model-dependent negation closure introduces `HasAttainedINF M atomMap` hypothesis | M | L | KampPrior already works under `semantic_prior_UZ`/`semantic_prior_SZ` hypotheses, and `prior_hasAttainedINF` derives HasAttainedINF from these. The hypothesis threads through naturally. |
+| Building the conjunction over all sub_nf with their characteristic formulas may be complex | M | M | Use `Fintype.elems` to enumerate all `NormalForm sig k 2`, filter by quant_assignment, and take a conjunction of temporal formulas. The same pattern is used in `kamp_prior_expressive_completeness` for the disjunction over good NFs. |
 
 ## Implementation Phases
 
@@ -78,232 +82,182 @@ This plan advances the following ROADMAP.md items:
 | 2 | 1 | 0 |
 | 3 | 2 | 1 |
 | 4 | 3 | 2 |
-| 5 | 4 | 3 |
-| 6 | 5 | 4 |
 
-Phases are strictly sequential because each builds on the previous: archival first, then the Rabinovich chain bottom-up, then integration, then cleanup.
+Phases are strictly sequential: Phase 0 and 1 are complete, Phase 2 builds the depth-induction infrastructure, Phase 3 fills the sorry.
 
 ---
 
 ### Phase 0: Archive Bypass Infrastructure to Boneyard [COMPLETED]
 
-**Goal**: Move the 8 files that will be replaced by the Rabinovich chain to `Boneyard/`, update imports in remaining files so `lake build` passes.
+**Goal**: Move the 8+ bypass files to Boneyard/, update imports so `lake build` passes.
 
 **Tasks**:
-- [ ] Move KampBypassCore.lean to Boneyard/KampBypassCore.lean (681 lines)
-- [ ] Move KampBypassEqCase.lean to Boneyard/KampBypassEqCase.lean (891 lines)
-- [ ] Move KampBypassBridge.lean to Boneyard/KampBypassBridge.lean (545 lines)
-- [ ] Move KampBypassUntil.lean to Boneyard/KampBypassUntil.lean (979 lines)
-- [ ] Move KampBypassSince.lean to Boneyard/KampBypassSince.lean (1307 lines)
-- [ ] Move KampBypass.lean to Boneyard/KampBypass.lean (889 lines)
-- [ ] Move KampMutualInduction.lean to Boneyard/KampMutualInduction.lean (446 lines)
-- [ ] Move NfCharFormula.lean to Boneyard/NfCharFormula.lean (755 lines)
-- [ ] Move PriorComposition.lean sorry stubs to Boneyard/ (keep sorry-free infrastructure if any is used elsewhere; otherwise move entire file)
-- [x] **Task 0.10**: Remove KampBypass import from KampForward.lean *(deviation: altered -- KampForward archived to Boneyard since it uses ssn_xt_compatible from KampBypassCore and nothing in new chain imports it)*
-- [x] **Task 0.11**: Remove KampBypass import from GeneralExistPart.lean *(deviation: altered -- GeneralExistPart archived to Boneyard since nothing in new chain imports it)*
-- [ ] Update KampPrior.lean imports: remove `KampMutualInduction` and `NfCharFormula` imports, replace proof body with `sorry` placeholder (to be filled in Phase 4)
-- [ ] Verify `lake build` succeeds after all archival
+- [x] Move KampBypassCore, KampBypassEqCase, KampBypassBridge, KampBypassUntil, KampBypassSince, KampBypass, KampMutualInduction, NfCharFormula to Boneyard/
+- [x] Archive KampForward and GeneralExistPart to Boneyard/ (used KampBypass internally)
+- [x] Move PriorComposition sorry stubs to Boneyard/
+- [x] Update KampPrior.lean: remove old imports, replace proof body with sorry placeholder
+- [x] Verify `lake build` succeeds
 
-**Timing**: 1.5 hours
+**Timing**: 1.5 hours (actual: completed)
 
 **Depends on**: none
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` -- destination for archived files
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampForward.lean` -- remove KampBypass import
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/GeneralExistPart.lean` -- remove KampBypass import
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- replace imports and proof body
-
-**Verification**:
-- All 8 files moved to Boneyard/
-- `lake build` succeeds
-- `grep -rn "KampBypass\|KampMutualInduction\|NfCharFormula" Theories/ --include="*.lean" | grep -v Boneyard` shows only KampPrior.lean (placeholder) and comments
+**Completed**: 2026-06-23
 
 ---
 
-### Phase 1: VecEA2-Level Lemma 5.1 (Endpoint Bracket Negation) [PARTIAL]
+### Phase 1: VecEA2-Level Lemma 5.1 Base Case [PARTIAL]
 
-**Goal**: Implement `neg_vecEA2_is_vvecEA2` in a new file `EndpointNegation.lean`, proving that the negation of a VecEA2 formula is model-independently equivalent to a VVecEA2. This is the core new theorem following Rabinovich pp. 7-11.
-
-**OBSTRUCTION ANALYSIS** (documented in EndpointNegation.lean):
-- The model-independent biconditional for the succ case has the SAME obstruction as the
-  BracketFormula-level sorry at EANegation.lean:1084. The VecEA2 wrapper places endpointLeft
-  at the fixed endpoint z0, but the bracket's INTERIOR witnesses x0,...,xn remain existentially
-  quantified. The forward direction (v.holds -> not vea.holds) requires blocking ALL witness
-  configurations, but having not-tail.holds at one point r0 does not block configurations
-  starting from a different point x0 > r0.
-- The model-DEPENDENT versions in EANegationClosure.lean are ALL sorry-free:
-  - `neg_vecEA2` (Prop 4.2 single conjunct) -- sorry-free
-  - `neg_2var_vec_ea` (Prop 4.2 full) -- sorry-free
-  - `neg_interval_formula` (Lemma 5.1 forward) -- sorry-free
-  - `neg_bounded_exists` (Cor 5.4 forward) -- sorry-free
-- **Decision**: Phases 2-4 should use the model-dependent chain from EANegationClosure.lean.
-  The succ case sorry in EndpointNegation.lean is NOT on the critical path.
+**Goal**: Implement `neg_vecEA2_is_vvecEA2` in EndpointNegation.lean.
 
 **Tasks**:
-- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean`
-- [x] Define the theorem signature
-- [x] Implement base case (n = 0): sorry-free, 3 disjuncts via de Morgan
-- [ ] Implement inductive step *(deviation: deferred -- model-independent biconditional has genuine obstruction; see OBSTRUCTION ANALYSIS above)*
-- [ ] Also fix Cor 5.4 backward direction (EANegation.lean:1235) *(deviation: deferred -- not on critical path; model-dependent version sorry-free)*
-- [x] Verify `lake build` succeeds with EndpointNegation.lean
+- [x] Create EndpointNegation.lean with theorem signature
+- [x] Implement base case (n = 0): sorry-free, 3 disjuncts via de Morgan (~125 lines)
+- [ ] ~~Implement succ case~~ (GENUINE OBSTRUCTION: same as EANegation.lean:1084; interior witnesses prevent model-independent biconditional; documented in EndpointNegation.lean)
+- [x] Verify `lake build` succeeds
 
-**Timing**: 4 hours (actual: base case complete, succ case has documented obstruction)
+**OBSTRUCTION**: The succ case is NOT on the critical path. The model-dependent versions in EANegationClosure.lean (`neg_vecEA2`, `neg_2var_vec_ea`) are sorry-free and sufficient for KampPrior. The EndpointNegation.lean sorry remains as a documented impossibility (same class as EANegation.lean:1084).
+
+**Timing**: 4 hours (actual: base case done, succ case blocked)
 
 **Depends on**: 0
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- NEW (~160 lines, base case sorry-free, succ case sorry with analysis)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` -- Cor 5.4 backward sorry NOT fixable (same obstruction)
-
-**Verification**:
-- `neg_vecEA2_is_vvecEA2` base case sorry-free (n=0)
-- `neg_vecEA2_is_vvecEA2` succ case has sorry (documented obstruction, not on critical path)
-- `lake build` succeeds
+**Completed** (partial): 2026-06-23
 
 ---
 
-### Phase 2: Model-Independent Prop 4.2 (Negation of V-EA) [NOT STARTED]
+### Phase 2: Depth-k Existential-to-Temporal Translation [BLOCKED]
 
-**Goal**: Implement `neg_vvecEA2_model_indep` in a new file `ModelIndepNegation.lean`, proving that the negation of a VVecEA2 formula is model-independently equivalent to a VVecEA2. This follows Rabinovich Prop 4.2 via de Morgan + Lemma 5.1 + conjunction closure.
+**Goal**: Implement a theorem that translates `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` into a temporal formula on Prior structures, for arbitrary depth k. This is the key missing piece for filling KampPrior.lean:136.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ModelIndepNegation.lean`
-- [ ] Import EndpointNegation.lean, VecEAClosure.lean
-- [ ] Implement single-conjunct case: neg VecEA2 -> VVecEA2 (directly from Lemma 5.1)
-- [ ] Implement de Morgan decomposition: neg (VVecEA2) = neg (disj of VecEA2) = conj of (neg VecEA2) = conj of VVecEA2
-- [ ] Use `VVecEA2.conj_holds_vvecEA2` from VecEAClosure.lean for conjunction closure
-- [ ] Prove model-independent biconditional
+- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean`
+- [ ] Import NfToVecEA.lean, EANegationClosure.lean, VecEATranslation.lean, NfComposition.lean, PriorDefs.lean
+- [ ] Implement the main theorem `nf_2var_exist_tl` by induction on depth k:
+  ```
+  nf_2var_exist_tl :
+    forall (k : Nat) (sub_nf : NormalForm sig k 2),
+    exists (A : Formula), forall (M : ...) (h_UZ : ...) (h_SZ : ...) (t : M.carrier),
+      temporal_truth M atomMap t A <->
+      exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf
+  ```
+- [ ] **Base case (k = 0)**: Delegate to `nf_2var_exist_depth0_tl` from NfToVecEA.lean (already sorry-free; does not need Prior hypotheses)
+- [ ] **Inductive step (k+1)**: The NF at depth (k+1) arity 2 has:
+  - Atom predicates on (x, t): order atoms determine direction (x < t, x > t, x = t)
+  - Quantifier map: for each depth-k arity-3 sub_nf, whether `exists y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) sub_nf` holds
+  - By `constenv_nvar_to_2var`, the arity-3 evaluation reduces to arity-2 evaluation on (y, x) or (y, t) envs. But the IH applies at arity 2, depth k, giving temporal formulas for each sub-sub-existential.
+  - The translation composes: build the conjunction of atom literals + quantifier formulas, wrap in the appropriate temporal operator (U/S) based on order direction.
+- [ ] Implement the negation case: `nf_2var_notexist_tl` for `not exists x, ...` using `neg_2var_vec_ea` from EANegationClosure.lean to get VVecEA2, then translate via `VVecEA2.translateLeft`/`translateRight`
 - [ ] Verify `lake build` succeeds
 
-**Timing**: 1.5 hours
+**Timing**: 3 hours
 
 **Depends on**: 1
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ModelIndepNegation.lean` -- NEW (~100-150 lines)
+**Files to create**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean` -- NEW (~200-400 lines)
+
+**BLOCKER** (Phase 2):
+- **What failed**: The depth induction on k for `nf_2var_exist_tl` does not close.
+  At depth k+1, `nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` decomposes
+  into atoms at (x,t) AND quantifier conditions involving depth-k arity-3 existentials
+  `exists y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) sub_sub_nf`.
+  The env `(y, x, t)` is NOT a constenv (x and t can differ), so
+  `constenv_2var_determines` / `constenv_nvar_to_2var` do not apply.
+  The IH at depth k for arity 2 cannot handle arity-3 existentials.
+- **What was tried**:
+  1. Direct depth induction on k: fails because arity grows (2 -> 3 -> 4 -> ...)
+  2. Mutual induction on (k, arity 1) and (k, arity 2): fails because arity-2 step
+     needs arity-3 at depth k
+  3. Strengthened induction for all arities: would require proving for all n, but
+     `constenv_2var_determines` only applies to constenvs of form (z, c, c, ..., c)
+  4. Using `nf_to_formula` + `kamp_prior_expressive_completeness` recursively:
+     circular -- `kamp_prior_expressive_completeness` calls `nf_characterizable_temporal_prior`
+  5. Using `doets_lemma_1_1` to reduce 2-var to 1-var: fails because knowing individual
+     1-var NFs of x and t does not determine their 2-var NF
+  6. Using VVecEA2 negation closure: model-dependent (produces different VVecEA2 for each M),
+     cannot construct model-independent temporal formula from it
+- **Why stuck**: Rabinovich's proof of Prop 4.3 uses structural induction on FO formulas
+  (not NF depth induction). The structural induction handles ALL arities simultaneously,
+  using Prop 4.2 (negation closure) for the negation case and Lemma 3.4 (V-EA closure
+  under existential) for the existential case. Our NF-based approach packages the
+  formula structure into a depth index, but this loses the structural induction's ability
+  to handle all arities at once. The depth induction at a FIXED arity doesn't close
+  because existential quantification increases arity by 1.
+- **What is needed**: One of:
+  (a) Implement Prop 4.3 by structural induction on MonadicFormula (not NF depth),
+      using VEF closure results + Prop 4.2 negation closure. This requires building
+      model-independent VVecEA2 formulas, not just model-dependent ones.
+  (b) Prove a generalized `constenv_2var_determines` that works for non-constenvs
+      (env = (y, x, t) with x != t), reducing arity-3 to arity-2.
+  (c) Find a different induction measure that decreases at each step (e.g., total
+      quantifier complexity across all arities, not just depth at a fixed arity).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Verification**:
-- `neg_vvecEA2_model_indep` compiles sorry-free
-- `lean_verify` reports no sorryAx
-- `lake build` succeeds
+- BLOCKED: `nf_2var_exist_tl` and `nf_2var_notexist_tl` cannot be implemented
+  with the current infrastructure
 
 ---
 
-### Phase 3: Prop 4.3 Structural Induction (FO to V-EA) [NOT STARTED]
+### Phase 3: Fill KampPrior.lean Sorry [BLOCKED]
 
-**Goal**: Implement `fo_to_vea` in a new file `FOToVEA.lean`, proving that every 1-free-variable FO formula is equivalent to a V-EA formula over Dedekind complete chains. This follows Rabinovich Prop 4.3 via structural induction on FO formulas.
+**Goal**: Replace the sorry at KampPrior.lean:136 with a proof using Phase 2's `nf_2var_exist_tl` and `nf_2var_notexist_tl`.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean`
-- [ ] Import ModelIndepNegation.lean, VecEAClosure.lean, NfToVecEA.lean
-- [ ] Implement the atomic case: use NfToVecEA bridge (depth-0 NF to VecEA2) -- atomic predicates P(x) and order atoms x < y are trivially EA formulas
-- [ ] Implement the disjunction case: if phi equiv VVecEA2 and psi equiv VVecEA2, then (phi OR psi) equiv VVecEA2 by closure under disjunction (Lemma 3.4 / VecEAClosure)
-- [ ] Implement the negation case: if phi equiv VVecEA2 (with at most 2 free vars), then neg phi equiv VVecEA2 by Prop 4.2 (ModelIndepNegation)
-- [ ] Implement the existential case: if phi equiv VVecEA2, then (exists x, phi) equiv VVecEA2 by Lemma 3.4 closure under existential quantification (VecEAClosure)
-- [ ] Handle the free-variable bookkeeping: for the 1-free-variable target, each existential introduces a variable pairing with the single free variable, staying within 2-var scope
-- [ ] Prove model-independent equivalence
+- [ ] Add `import Bimodal.Metalogic.WeakCanonical.Kamp.NfExistTL` to KampPrior.lean
+- [ ] Fill the `succ k ih` case of `nf_characterizable_temporal_prior`:
+  1. Extract `nf` as `(atom_assignment, quant_assignment)` via pattern match on `NormalForm sig (k+1) 1`
+  2. Build atom predicate formula: conjunction of atom literals at t (reuse `nf_depth0_char_formula` for the atom part, or build manually for arity 1)
+  3. For each `sub_nf : NormalForm sig k 2`:
+     - If `quant_assignment sub_nf = true`: get temporal formula from `nf_2var_exist_tl k sub_nf`
+     - If `quant_assignment sub_nf = false`: get temporal formula from `nf_2var_notexist_tl k sub_nf`
+  4. Combine via conjunction: atom_formula AND (conjunction over all sub_nf of their formulas)
+  5. Prove biconditional: forward uses `nf_eval_nf` decomposition at depth k+1; backward reconstructs NF evaluation from temporal truth
+- [ ] Verify `kamp_prior_expressive_completeness` becomes sorry-free (it calls `nf_characterizable_temporal_prior` which now has no sorry)
+- [ ] Run `lean_verify` on `kamp_prior_expressive_completeness`
+- [ ] Run `lean_verify` on `completeness_discrete` to check sorry chain reduction
 - [ ] Verify `lake build` succeeds
+- [ ] Run sorry audit: `grep -rn "sorry" Theories/ --include="*.lean" | grep -v Boneyard | grep -v "sorry-free\|-- sorry\|/- sorry"`
 
 **Timing**: 2.5 hours
 
 **Depends on**: 2
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean` -- NEW (~200-300 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFY (fill sorry, add import)
+
+**BLOCKER** (Phase 3):
+- **Blocked by**: Phase 2 (depth-k existential translation)
+- Phase 3 cannot proceed until Phase 2 provides `nf_2var_exist_tl` and `nf_2var_notexist_tl`
 
 **Verification**:
-- `fo_to_vea` compiles sorry-free
-- `lean_verify` reports no sorryAx
-- `lake build` succeeds
-
----
-
-### Phase 4: Theorem 4.4 and KampPrior Update [NOT STARTED]
-
-**Goal**: Implement `kamp_theorem_rabinovich` in a new file `KampRabinovich.lean` (Prop 4.3 + Prop 3.5), then update KampPrior.lean to use the Rabinovich chain instead of the mutual induction pathway.
-
-**Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampRabinovich.lean`
-- [ ] Import FOToVEA.lean, RabinovichTranslation.lean
-- [ ] Implement `kamp_theorem_rabinovich`: for any 1-free-variable FO formula phi, (1) apply fo_to_vea to get VVecEA2 equivalent, (2) apply Prop 3.5 (ExistsForallSpec.translate_correct from RabinovichTranslation.lean) to get TL(U,S) equivalent
-- [ ] Update KampPrior.lean imports: replace `NfCharFormula` and `KampMutualInduction` with `KampRabinovich`
-- [ ] Rewrite `kamp_prior_expressive_completeness` proof body to use `kamp_theorem_rabinovich` instantiated with `prior_hasAttainedINF` (the Prior -> HasAttainedINF proof)
-- [ ] Preserve the theorem's type signature exactly (external API unchanged)
-- [ ] Verify `lake build` succeeds
-
-**Timing**: 1.5 hours
-
-**Depends on**: 3
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampRabinovich.lean` -- NEW (~50-100 lines)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFY (replace imports and proof body)
-
-**Verification**:
-- `kamp_theorem_rabinovich` compiles sorry-free
-- `kamp_prior_expressive_completeness` compiles sorry-free via new chain
-- `lean_verify` on `kamp_prior_expressive_completeness` reports no sorryAx
-- `lake build` succeeds
-- PriorExpressiveness.lean (which imports KampPrior) still builds
-
----
-
-### Phase 5: Cleanup and Final Verification [NOT STARTED]
-
-**Goal**: Comprehensive sorry audit, remove dead imports, verify the complete build, and confirm the sorry reduction from 6 to 1 on the critical path.
-
-**Tasks**:
-- [ ] Run `grep -rn "sorry" Theories/ --include="*.lean" | grep -v Boneyard | grep -v "sorry-free\|-- sorry\|/- sorry"` to audit all remaining sorry sites
-- [ ] Verify the EANegation.lean:1084 sorry remains with its impossibility documentation (unchanged, unused downstream)
-- [ ] Verify the EANegation.lean:1235 sorry was eliminated in Phase 1
-- [ ] Verify PriorComposition.lean sorry stubs are in Boneyard (eliminated by archival)
-- [ ] Verify NfCharFormula.lean sorry stubs are in Boneyard (eliminated by archival)
-- [ ] Remove any unused imports from files that previously depended on bypass infrastructure
-- [ ] Run full `lake build` and verify zero errors
-- [ ] Run `lean_verify` on `completeness_discrete` to check the sorry chain reduction
-- [ ] Verify that the sorry chain from `completeness_discrete` through `kamp_prior_expressive_completeness` no longer includes `existPart_succ_n1_bypass`
-
-**Timing**: 1 hour
-
-**Depends on**: 4
-
-**Files to modify**:
-- Various files -- dead import removal
-- No new files created
-
-**Verification**:
-- `lake build` succeeds with zero errors
-- Sorry audit shows 1 sorry in EANegation.lean (documented impossibility, unused downstream)
-- `lean_verify` on key theorems reports expected axiom usage
-- Net line count: ~800-1200 lines added (4 new files), ~5,900 lines archived
+- BLOCKED: depends on Phase 2 resolution
 
 ## Testing & Validation
 
 - [ ] `lake build` succeeds after each phase (incremental verification)
-- [ ] `neg_vecEA2_is_vvecEA2` (Lemma 5.1) is sorry-free (`lean_verify`)
-- [ ] `neg_vvecEA2_model_indep` (Prop 4.2) is sorry-free (`lean_verify`)
-- [ ] `fo_to_vea` (Prop 4.3) is sorry-free (`lean_verify`)
-- [ ] `kamp_theorem_rabinovich` (Theorem 4.4) is sorry-free (`lean_verify`)
+- [ ] `nf_2var_exist_tl` is sorry-free (`lean_verify`)
+- [ ] `nf_2var_notexist_tl` is sorry-free (`lean_verify`)
+- [ ] `nf_characterizable_temporal_prior` is sorry-free (`lean_verify`)
 - [ ] `kamp_prior_expressive_completeness` is sorry-free (`lean_verify`)
-- [ ] Sorry count on critical path reduced from 6 to 1
+- [ ] Sorry count on critical path reduced: KampPrior.lean:136 eliminated
 - [ ] External API (type signature of `kamp_prior_expressive_completeness`) unchanged
 - [ ] PriorExpressiveness.lean and Completeness.lean still build correctly
 
 ## Artifacts & Outputs
 
-- `specs/305_rabinovich_ea_formula_implementation/plans/24_faithful-restructure.md` -- this plan
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- NEW (Lemma 5.1)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ModelIndepNegation.lean` -- NEW (Prop 4.2)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean` -- NEW (Prop 4.3)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampRabinovich.lean` -- NEW (Theorem 4.4)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFIED (use Rabinovich chain)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean` -- MODIFIED (Cor 5.4 fix)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` -- 8+ archived files
+- `specs/305_rabinovich_ea_formula_implementation/plans/24_faithful-restructure.md` -- this plan (revised)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean` -- NEW (depth-k existential TL translation)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFIED (sorry eliminated)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- EXISTS (Phase 1, partial)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` -- EXISTS (Phase 0, 11 archived files)
 
 ## Rollback/Contingency
 
 - **Full rollback**: `git checkout -- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` restores all files. Boneyard additions are safe (no code depends on them).
-- **Partial rollback after Phase 0**: Restore archived files from Boneyard by moving them back. The archival is a rename operation, fully reversible.
-- **Phase 1 blocked**: If Lemma 5.1 VecEA2-level proof encounters an unforeseen obstruction, the model-dependent version (EANegationClosure.lean) remains sorry-free and provides a fallback. Document the obstruction, restore bypass files from Boneyard, and the codebase returns to its prior state with no regression.
-- **Phase 3 blocked**: If structural induction on FO formulas requires the full Lemma 3.2.2 (general free-variable reduction), implement a restricted version for the 1-free-variable case or restore the mutual induction pathway from Boneyard.
+- **Phase 2 blocked**: If the depth-k existential translation encounters an unforeseen obstruction in the inductive step, consider:
+  1. Splitting into two sub-phases: depth-0 (already done via `nf_2var_exist_depth0_tl`) and depth-1+ (new)
+  2. Using a different induction strategy (e.g., on the NF structure directly rather than depth)
+  3. As a last resort, restore bypass files from Boneyard (the codebase returns to prior state)
+- **Phase 3 blocked**: If the NF decomposition at depth k+1 does not match the expected form, the obstruction is in the conjunction construction. The individual pieces (existential translation, negation closure) are sorry-free, so the issue would be in the wiring. Debug by checking `nf_eval_nf` unfolding at the specific depth.
