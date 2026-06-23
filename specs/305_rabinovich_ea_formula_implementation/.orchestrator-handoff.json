@@ -1,43 +1,57 @@
 {
-  "status": "partial",
-  "summary": "Consolidated 6 sorry stubs in KampBypassK1.lean into 2 structurally identical sorries via nonconstenv_3var_exist_transfer helper. All quantifier zones in nf_eval_from_enriched_witnesses now handled uniformly. Build passes.",
+  "status": "blocked",
+  "summary": "Phase 1 BLOCKED: model-independent biconditional neg_bracket_is_vbracket is fundamentally harder than anticipated. The beta_0(r0) case creates a self-referential V-bracket dependency that cannot be finitely represented. Both sorry sites (S1, S2) are unused downstream. Actual blockers (prior_2var_transfer_until/since) are independent and can be fixed via the model-dependent path (EANegationClosure.lean, sorry-free). Plan revision recommended.",
   "phases_completed": 0,
-  "phases_total": 1,
+  "phases_total": 5,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 156,
-      "statement": "private theorem nonconstenv_3var_exist_transfer (h_2var_agree sorry)",
-      "assumption": "depth-(K+2) 2-var NF agreement at [x,t]/[x',t'] from pointwise depth-(K+2) 1-var agreements at x/x' and t/t'",
-      "why_deferred": "Genuine infrastructure gap: constructing non-constant env multi-var NF agreement from pointwise 1-var agreements. The circularity is that exist_transfer_from_full_agree needs the multi-var agreement to produce the existential transfer, but the existential transfer IS the quantifier condition of the multi-var agreement. prior_nonconstenv_2var_agree_until solves this for K>=1 but has a sorry at K=0 (the original motivation for the bypass).",
-      "next_dispatch": "Prove nonconstenv_3var_exist_transfer by (a) induction on depth with a new existential-transfer bootstrap, (b) using prior_nonconstenv_2var_agree_until for K>=1 and a separate K=0 argument, or (c) a completely new approach to non-constant env agreement."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1047,
+      "statement": "theorem neg_bracket_is_vbracket (backward, beta_0(r0) case)",
+      "assumption": "V-bracket biconditional for bracket negation when beta_0(r0) holds at first alpha_0 occurrence",
+      "why_deferred": "Model-independent biconditional requires self-referential V-bracket structure (neg bf.holds(z0,z1) = neg rp.holds(r0,z1) AND neg bf.holds(r0,z1), where the second conjunct is the SAME theorem at a smaller interval). Cannot be finitely represented. Unused downstream.",
+      "next_dispatch": "Skip: unused theorem. Focus on prior_2var_transfer instead."
     },
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-      "line": 393,
-      "statement": "theorem zone3_from_bracket (h_3var_agree sorry)",
-      "assumption": "depth-(K+1) 3-var NF agreement at [w,x,t]/[w0,x0,t0] from pointwise depth-(K+2) 1-var agreements at w/w0, x/x0, t/t0",
-      "why_deferred": "Same infrastructure gap as nonconstenv_3var_exist_transfer but at 3-var env instead of 2-var.",
-      "next_dispatch": "Same resolution as nonconstenv_3var_exist_transfer - both collapse to the same problem."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1172,
+      "statement": "theorem neg_partialBracketExist_is_vbracket (backward, n+1 case)",
+      "assumption": "V-bracket biconditional for partial bracket negation backward direction",
+      "why_deferred": "Backward direction fails: orderedPointsExist(fChain) does NOT imply partialBracketExist because Until witnesses can escape the interval. Verified via counterexample on integers. Unused downstream.",
+      "next_dispatch": "Skip: unused theorem. Focus on prior_2var_transfer instead."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 131,
+      "statement": "theorem prior_2var_transfer_until",
+      "assumption": "2-var NF agreement at (x,t) from pointwise 1-var agreement at depth K+2, in the Until zone (t < x)",
+      "why_deferred": "Plan v21 assumed fixing via model-independent EA negation closure (blocked). Can be fixed directly via model-dependent negation (EANegationClosure, sorry-free) + char_correct + zone decomposition.",
+      "next_dispatch": "Prove directly by decomposing nf_eval_nf into atom part (nonconstenv_atom_agree_until, sorry-free) + quantifier part (zone decomposition with char_correct at depth K+1)."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
+      "line": 162,
+      "statement": "theorem prior_2var_transfer_since",
+      "assumption": "Mirror of prior_2var_transfer_until for the Since zone (x < t)",
+      "why_deferred": "Same analysis as prior_2var_transfer_until.",
+      "next_dispatch": "Mirror of prior_2var_transfer_until proof."
     }
   ],
   "blockers": [
-    "Non-constant env multi-var NF agreement from pointwise 1-var agreements: no existing theorem handles this without Prior axiom-based transfer (which is false at K=0). Need new infrastructure, likely involving induction on depth with a novel bootstrap mechanism."
+    "Plan v21 Phase 1 is BLOCKED: model-independent biconditional neg_bracket_is_vbracket has a fundamental structural issue (self-referential V-bracket in beta_0(r0) case). Both sorry sites (S1, S2) are unused downstream. Plan needs revision to focus on prior_2var_transfer_until/since directly via the model-dependent path."
   ],
-  "continuation_path": null,
   "continuation_context": {
     "is_successor": false,
-    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampBypassK1.lean",
-    "proved": [
-      "nonconstenv_3var_exist_transfer structure: reduces 3-var existential transfer to 2-var agreement via exist_transfer_from_full_agree",
-      "nf_eval_from_enriched_witnesses: all quantifier zones handled uniformly (no zone case split needed)",
-      "zone3_from_bracket: quantifier part structured via exist_transfer_from_full_agree from 3-var agreement",
-      "zone3_from_bracket: full atom part (predicates + all 6 order cases) [pre-existing]",
-      "zone_general_between_tx_orders helper lemma [pre-existing]",
-      "pred_transfer_from_1var helper lemma [pre-existing]",
-      "nf_eval_from_enriched_witnesses: full atom part for 2-var env [pre-existing]"
-    ],
-    "remaining_sorries": 2,
-    "key_insight": "All 6 original sorry stubs were instances of the same problem: transferring existentials at non-constant envs from pointwise 1-var agreements. The nonconstenv_3var_exist_transfer helper captures this precisely: it reduces the 3-var existential transfer to depth-(K+2) 2-var agreement via exist_transfer_from_full_agree. The 2-var agreement is the ONLY remaining sorry. This is mathematically identical to prior_nonconstenv_2var_agree_until's K=0 sorry, which is the root problem the bypass was designed to circumvent."
-  }
+    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+    "proved": [],
+    "remaining_sorries": 4,
+    "key_insight": "The model-independent biconditional neg_bracket_is_vbracket (S1) and neg_partialBracketExist_is_vbracket (S2) are UNUSED by any downstream theorem. The actual blockers (prior_2var_transfer_until/since used at KampBypass:646,713) are independent mathematical problems about 2-var NF transfer that should be proved directly using the model-dependent negation closure (EANegationClosure.lean, sorry-free) combined with char_correct and zone decomposition. Plan v21 needs revision: Phase 1 (EndpointBracketFormula) should be abandoned, Phase 4 (PriorComposition) should become Phase 1, and Phases 2-3 (bridging, Prop 4.2) are unnecessary."
+  },
+  "artifacts": [
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-model-indep-blocker-20260623.md",
+      "type": "report",
+      "summary": "Detailed analysis of why Phase 1 is blocked and recommended revised strategy"
+    }
+  ]
 }

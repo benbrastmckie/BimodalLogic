@@ -75,7 +75,16 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: EndpointBracketFormula with Negation Theorems [NOT STARTED]
+### Phase 1: EndpointBracketFormula with Negation Theorems [BLOCKED]
+
+**BLOCKER** (Phase 1):
+- **What failed**: The model-independent biconditional `v.holds ↔ ¬bf.holds` for BracketFormula(n+1) cannot be expressed as a finite VBracketFormula when beta_0(r0) holds. The EndpointBracketFormula approach (placing alpha_0 at the endpoint) does NOT resolve this because the inner bracket negation still requires `neg_bracket_is_vbracket` at the same witness count.
+- **What was tried**: Comprehensive analysis of EndpointBracketFormula design, mutual induction structure, F-chain approach, prepend-based CaseE disjuncts, and interval-shrinking recursive decomposition. All approaches encounter the same fundamental obstacle: the bracket negation creates a universal quantifier over interior witness positions, and a V-bracket (existential structure) cannot capture this universal for ALL models simultaneously.
+- **Why stuck**: The negation `¬bf.holds(z0, z1)` in the beta_0(r0) case decomposes as `¬rightPart.holds(r0, z1) ∧ ¬bf.holds(r0, z1)`. The second conjunct uses the SAME theorem at a smaller interval, creating a circular dependency. The V-bracket v must contain disjuncts that reference v itself (infinite self-referential structure). On any SPECIFIC model, the chain terminates, but the model-independent V-bracket must work for ALL models simultaneously.
+- **Key finding**: The model-DEPENDENT version (`neg_interval_formula` in EANegationClosure.lean) IS sorry-free because it takes `¬bf.holds` as INPUT and produces SOME v that holds (model-dependent choice). The model-independent biconditional is a strictly stronger theorem that may require a fundamentally different proof structure (e.g., well-founded induction on the interval, or Dedekind completeness rather than HasAttainedINF).
+- **Additional finding**: Both `neg_bracket_is_vbracket` (S1) and `neg_partialBracketExist_is_vbracket` (S2) are UNUSED downstream. The actual blockers are `prior_2var_transfer_until/since` in PriorComposition.lean (used in KampBypass.lean lines 646, 713), which are independent mathematical problems about 2-var NF transfer.
+- **What is needed**: Either (a) revise the plan to prove `prior_2var_transfer_until/since` directly using the model-dependent negation closure (EANegationClosure.lean, sorry-free) combined with VecEA translation, bypassing the model-independent biconditional entirely; OR (b) prove the model-independent biconditional using well-founded induction on the interval or a Dedekind completeness argument (significantly harder).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
 **Goal**: Define `EndpointBracketFormula` matching Rabinovich's bracket notation and prove Lemma 5.1 and Corollary 5.4 for this type, following the paper step-by-step. This is the mathematical core of the fix.
 
