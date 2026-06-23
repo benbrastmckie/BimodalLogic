@@ -173,7 +173,7 @@ All phases are sequential. Phase 1 is lightweight cleanup. Phases 2-4 form a str
 
 ---
 
-### Phase 2: Model-Independent Negation Closure via Disjunction Construction [NOT STARTED]
+### Phase 2: Model-Independent Negation Closure via Disjunction Construction [COMPLETED]
 
 **Goal**: Build `neg_interval_formula_indep` -- a model-independent version of Lemma 5.1 -- by constructing Rabinovich's three-case disjunction syntactically. Then build `neg_2var_vec_ea_indep` (model-independent Prop 4.2) using it. This is the core technical contribution that unblocks the entire chain.
 
