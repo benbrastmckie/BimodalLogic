@@ -1,41 +1,14 @@
 {
-  "status": "partial",
-  "summary": "Restructured prior_exist_transfer_bidir proof: extracted zone_compatible_witness helper as the single sorry point. The main theorem body is now sorry-free, delegating to zone_compatible_witness for zone-3 multi-component witness placement. Used exist_transfer_from_full_agree to build per-component 2-var matched witnesses, then zone_compatible_witness combines them. Pre-existing sorries at lines 507 and 555 (nf_eval_from_lower_agree d=0 and n=0 cases) remain unchanged. Full project builds cleanly.",
-  "phases_completed": 0,
-  "phases_total": 1,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 507,
-      "statement": "nf_eval_from_lower_agree (d=0 base case)",
-      "assumption": "depth-0 to depth-1 algebraic upgrade requires Prior-UZ/SZ for existential transfer",
-      "why_deferred": "Pre-existing sorry, NOT on critical path for prior_exist_transfer_bidir",
-      "next_dispatch": "Prove d=0 base of nf_eval_from_lower_agree using Prior axioms"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 555,
-      "statement": "nf_eval_from_lower_agree (n=0 degenerate case)",
-      "assumption": "Quantifier conditions at arity 0 with empty env need separate argument",
-      "why_deferred": "Pre-existing sorry, NOT on critical path for prior_exist_transfer_bidir",
-      "next_dispatch": "Prove n=0 case of nf_eval_from_lower_agree step"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 645,
-      "statement": "private theorem zone_compatible_witness (zone-3 multi-component witness placement)",
-      "assumption": "Given per-component 2-var matched witnesses z_i (each with correct order vs envN_i and matching depth-d 1-var type), a single z' exists in N with correct orders vs ALL envN components and matching depth-d (r+1)-var NF",
-      "why_deferred": "Zone-3 placement requires: (1) sorting env components, (2) determining z's zone among envM, (3) for between-zone: cross_extend from both boundary components and Prior-UZ first_occ on target interval, (4) verifying (r+1)-var NF from zone placement. Mathematical argument is known but formal Lean case analysis is substantial.",
-      "next_dispatch": "Prove zone_compatible_witness: zone analysis on z's position among envM, use cross_extend from boundary components + Prior-UZ first_occ to find z' in corresponding envN interval, verify (r+1)-var NF satisfaction"
-    }
-  ],
-  "blockers": [
-    "zone_compatible_witness at line 645: zone-3 multi-component witness placement requires Prior-UZ interval analysis"
-  ],
-  "continuation_path": null,
-  "continuation_context": {
-    "current_phase": "zone-3 induction plan implementation",
-    "last_completed": "Restructured prior_exist_transfer_bidir to delegate to zone_compatible_witness",
-    "next_action": "Implement zone_compatible_witness body using zone analysis + Prior-UZ first_occ"
-  }
+  "task_number": 305,
+  "task_slug": "rabinovich_ea_formula_implementation",
+  "session_id": "sess_1782191203_6e98b6",
+  "agent": "reviser-agent",
+  "status": "planned",
+  "plan_version": 23,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/23_faithful-beta0-fix.md",
+  "phase_count": 1,
+  "estimated_hours": 4,
+  "reports_integrated": ["reports/22_faithfulness-audit.md"],
+  "revision_summary": "Plan v22 (zone decomposition for prior_2var_transfer) was blocked by circular depth dependency in NF-depth approach. Plan v23 targets the beta_0(r0) sorry in EANegation.lean:1047 via VecEA2-level Lemma 5.1 following Rabinovich's endpoint convention. Key finding: the BracketFormula-level model-independent biconditional is unprovable (the self-referential forward direction for x0 > r0 cannot be finitely resolved). The VecEA2-level formulation with alpha_0 at the endpoint z_0 avoids the issue entirely and opens the faithful Rabinovich chain.",
+  "next_step": "Run /implement 305 to execute the plan"
 }

@@ -1,16 +1,14 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
-import Bimodal.Metalogic.WeakCanonical.Kamp.KampMutualInduction
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!
-# Kamp's Theorem for Prior Structures (Rabinovich 2014 Relativized)
+# Kamp's Theorem for Prior Structures (Rabinovich 2014)
 
 Proves that {U,S} is expressively complete for Prior structures by
-implementing Rabinovich 2014's composition-based proof, relativized
-from Dedekind completeness to `semantic_prior_UZ/SZ`.
+implementing Rabinovich 2014's proof chain: Lemma 5.1 -> Prop 4.2 ->
+Prop 4.3 -> Theorem 4.4.
 
 ## Main Result
 
@@ -18,21 +16,23 @@ from Dedekind completeness to `semantic_prior_UZ/SZ`.
   an equivalent `Formula` (using only U,S) on Prior structures.
   Same type signature as `US_expressively_complete_over_prior`.
 
-## Proof Architecture
+## Proof Architecture (Rabinovich Chain)
 
-The proof mirrors `stavi_expressive_completeness` but replaces the sorry-
-tainted `nf_characterizable_by_stavi` with `nf_characterizable_temporal_prior`
-(Prior-specific temporal characterization using Formulas, not StaviFormulas):
+The proof uses Rabinovich's faithful chain:
+1. Lemma 5.1: VecEA2 negation closure at the endpoint level
+2. Prop 4.2: Model-independent negation of V-EA formulas
+3. Prop 4.3: Every FO formula is equivalent to V-EA (structural induction)
+4. Theorem 4.4: Prop 4.3 + Prop 3.5 gives FO -> TL(U,S)
 
-1. `kamp_prior_expressive_completeness` enumerates depth-k NFs and builds
-   a disjunction of their temporal characterizations (exactly as
-   `stavi_expressive_completeness` does, but with `Formula` output)
-2. `nf_characterizable_temporal_prior` converts each NF to a Formula
-   (by induction on k, using Prior-UZ/SZ for the interval decomposition
-   negation case in the Rabinovich argument)
-3. The NF infrastructure (`doets_lemma_1_1`, `nf_exists_unique`, etc.)
-   and the NF-to-Formula infrastructure (`nf_to_formula`, `nf_to_formula_correct`)
-   are all sorry-free and reused directly
+The NF infrastructure (`doets_lemma_1_1`, `nf_exists_unique`, etc.)
+and the NF-to-Formula infrastructure (`nf_to_formula`, `nf_to_formula_correct`)
+are all sorry-free and reused directly.
+
+## Status
+
+Placeholder: the proof body uses sorry pending implementation of the
+Rabinovich chain (EndpointNegation, ModelIndepNegation, FOToVEA,
+KampRabinovich). Will be replaced in Phase 4 of task 305.
 
 ## References
 
@@ -97,20 +97,8 @@ formula that characterizes it on Prior structures.
 **k = 0**: Use `nf_depth0_char_formula` (conjunction of atom literals).
 No Prior hypotheses needed -- works on all structures.
 
-**k + 1**: The NF records an atom assignment plus which depth-k 2-variable
-NFs are realized. By the IH, depth-k 1-variable NFs have temporal
-characterizations on Prior structures. The key step is expressing
-"∃ x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf" as a
-temporal formula on Prior structures.
-
-The atom part of the 2-var NF determines the order relation (x < t,
-x = t, or x > t), mapping to Since, equality, or Until cases.
-
-For each order case, the existence of a witness with the right NF
-properties is expressed using Until/Since with guards derived from
-the IH temporal formulas. The negation case (showing a 2-var NF is
-NOT realized) uses Prior-UZ/SZ via Rabinovich's interval decomposition
-argument (the key place where Prior structure restriction matters).
+**k + 1**: Will be filled by the Rabinovich chain (Phase 4, task 305).
+Currently uses sorry as placeholder.
 -/
 
 /-- For Prior structures, every depth-k arity-1 NF is characterizable
@@ -120,10 +108,10 @@ argument (the key place where Prior structure restriction matters).
     The resulting formula correctly characterizes the NF on any structure
     satisfying `semantic_prior_UZ` and `semantic_prior_SZ`.
 
-    **Proof by induction on k (Rabinovich 2014, relativized)**:
+    **Proof by the Rabinovich chain (Rabinovich 2014)**:
     - k=0: `nf_depth0_char_formula` (atom literals, order-class-agnostic)
-    - k+1: Combines IH temporal formulas via Until/Since, using Prior-UZ/SZ
-      for the negation closure step (Rabinovich Prop 4.2 relativized)
+    - k+1: Rabinovich chain: Lemma 5.1 -> Prop 4.2 -> Prop 4.3 -> Thm 4.4
+      (pending implementation in EndpointNegation.lean et al.)
 -/
 noncomputable def nf_characterizable_temporal_prior
     {sig : MonadicSignature}
@@ -144,34 +132,8 @@ noncomputable def nf_characterizable_temporal_prior
     exact ⟨Separation.nf_depth0_char_formula atomMap h_surj nf,
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
   | succ k ih =>
-    -- Depth k+1: atom assignment + quantifier assignment
-    -- Convert IH from Subtype to Exists form for nf_characterizable_temporal_prior_classical
-    have ih' : ∀ (nf' : NormalForm sig k 1), ∃ A : Formula,
-        ∀ (M : OrderedMonadicStructure sig)
-          (h_UZ : semantic_prior_UZ M atomMap)
-          (h_SZ : semantic_prior_SZ M atomMap)
-          (t : M.carrier),
-          temporal_truth M atomMap t A ↔ nf_eval_nf M k 1 (fun _ => t) nf' :=
-      fun nf' => ⟨(ih nf').val, (ih nf').property⟩
-    -- Build char_k/char_k_correct from ih' for nf_2var_exist_formula_prior_filled
-    let char_k : NormalForm sig k 1 → Formula :=
-      fun nf_k => Classical.choose (ih' nf_k)
-    have char_k_correct : ∀ (nf_k : NormalForm sig k 1)
-        (M : OrderedMonadicStructure sig)
-        (h_UZ : semantic_prior_UZ M atomMap)
-        (h_SZ : semantic_prior_SZ M atomMap)
-        (t : M.carrier),
-        temporal_truth M atomMap t (char_k nf_k) ↔
-        nf_eval_nf M k 1 (fun _ => t) nf_k :=
-      fun nf_k => Classical.choose_spec (ih' nf_k)
-    -- Use nf_characterizable_temporal_prior_classical (NfCharFormula.lean) with
-    -- ih_exist_2var provided by nf_2var_exist_formula_prior_filled (sorry-free
-    -- via kamp_mutual_induction).
-    exact Classical.indefiniteDescription _
-      (nf_characterizable_temporal_prior_classical atomMap h_surj k ih'
-        (fun parent_atoms sub_nf => nf_2var_exist_formula_prior_filled atomMap
-          h_surj k char_k char_k_correct parent_atoms sub_nf)
-        nf)
+    -- Depth k+1: placeholder pending Rabinovich chain (task 305 Phase 4)
+    exact sorry
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,
     proved via Kamp/Rabinovich 2014 (relativized from Dedekind completeness

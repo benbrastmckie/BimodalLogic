@@ -85,7 +85,7 @@ Phases are strictly sequential because each builds on the previous: archival fir
 
 ---
 
-### Phase 0: Archive Bypass Infrastructure to Boneyard [NOT STARTED]
+### Phase 0: Archive Bypass Infrastructure to Boneyard [COMPLETED]
 
 **Goal**: Move the 8 files that will be replaced by the Rabinovich chain to `Boneyard/`, update imports in remaining files so `lake build` passes.
 
@@ -99,8 +99,8 @@ Phases are strictly sequential because each builds on the previous: archival fir
 - [ ] Move KampMutualInduction.lean to Boneyard/KampMutualInduction.lean (446 lines)
 - [ ] Move NfCharFormula.lean to Boneyard/NfCharFormula.lean (755 lines)
 - [ ] Move PriorComposition.lean sorry stubs to Boneyard/ (keep sorry-free infrastructure if any is used elsewhere; otherwise move entire file)
-- [ ] Remove `import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` from KampForward.lean (grep shows no actual usage of KampBypass definitions, only a comment reference)
-- [ ] Remove `import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypass` from GeneralExistPart.lean (no actual usage)
+- [x] **Task 0.10**: Remove KampBypass import from KampForward.lean *(deviation: altered -- KampForward archived to Boneyard since it uses ssn_xt_compatible from KampBypassCore and nothing in new chain imports it)*
+- [x] **Task 0.11**: Remove KampBypass import from GeneralExistPart.lean *(deviation: altered -- GeneralExistPart archived to Boneyard since nothing in new chain imports it)*
 - [ ] Update KampPrior.lean imports: remove `KampMutualInduction` and `NfCharFormula` imports, replace proof body with `sorry` placeholder (to be filled in Phase 4)
 - [ ] Verify `lake build` succeeds after all archival
 
