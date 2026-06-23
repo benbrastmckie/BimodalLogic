@@ -204,9 +204,9 @@ Fully sequential: each phase depends on the previous. No parallel execution poss
 
 ---
 
-### Phase 4: Prop 4.3 Structural Induction (FO -> VVecEA2) [IN PROGRESS]
+### Phase 4: Prop 4.3 Structural Induction (FO -> VVecEA2) [PARTIAL]
 
-*(deviation: altered — using model-dependent negation from EANegationClosure.lean per contingency path, since Phases 1-3 are blocked by structural obstructions)*
+*(deviation: altered — restructured as combined Part A/Part B induction on NF depth k. Part A (arity-1 NF to temporal) is sorry-free for all k. Part B (arity-2 existential to temporal) is sorry-free at depth 0 (via nf_2var_exist_depth0_tl) but has sorry at depth k+1 (arity tower: NormalForm sig k 3 requires 3-variable decomposition at depth k). Created NfExistTL.lean (323 lines). Phases 1-3 skipped per contingency — model-independent negation not needed for Part A induction.)*
 
 **Goal**: Prove `fo_to_vvea`: Rabinovich's Prop 4.3, that every `MonadicFormula sig 2` is model-independently equivalent to a VVecEA2 on structures with HasAttainedINF. Uses structural induction on MonadicFormula, which handles all arities simultaneously and avoids the arity tower problem that blocked the prior plan.
 
