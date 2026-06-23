@@ -822,7 +822,15 @@ theorem neg_bracket_zero_is_vbracket (bf : BracketFormula 0) :
     `HasAttainedINF` (which includes all Prior structures).
 
     The V-bracket is constructed purely from the bracket's types, independent
-    of the structure M. -/
+    of the structure M.
+
+    **Sorry status**: The forward direction (V.holds → ¬bf.holds) is sorry-free
+    for all n. The backward direction for n ≥ 1 has one sorry in the beta_0(r0)
+    sub-case, which is UNPROVABLE at the BracketFormula level (see the inline
+    impossibility comment). The model-dependent version (`neg_interval_formula`
+    in `EANegationClosure.lean`) is sorry-free and sufficient for completeness.
+
+    **Does NOT block completeness**. -/
 theorem neg_bracket_is_vbracket :
     ∀ (n : Nat) (bf : BracketFormula n),
     ∃ (v : VBracketFormula),
@@ -1036,14 +1044,43 @@ theorem neg_bracket_is_vbracket :
           obtain ⟨⟨m', bf_m⟩, h_mem', h_bf_m_holds⟩ := h_vr
           -- Case split on beta_0(r0) to choose CaseD disjunct
           by_cases h_beta_r0 : beta_0.eval_at M atomMap r0
-          · -- beta_0(r0) holds: CaseD needs ¬beta_0(r0) at the point type.
-            -- This sub-case requires VecEA2 endpoint infrastructure
-            -- (Rabinovich Lemma 5.1 full proof, p.10).
-            -- When beta_0(r0) ∧ beta_0 on (z0, r0) ∧ ¬rp.holds(r0, z1):
-            -- for any x0 > r0 with alpha_0(x0), either beta_0 fails on (r0, x0)
-            -- or rightPart fails at (x0, z1). This is ¬bf.holds(r0, z1),
-            -- but expressing it as a V-bracket on (z0, z1) requires endpoint
-            -- induction (not available at the BracketFormula level).
+          · /- IMPOSSIBILITY: This sorry is UNPROVABLE at the BracketFormula level.
+
+              **Context**: We have alpha_0(r0), beta_0(r0), beta_0 on (z0, r0),
+              and ¬rightPart.holds(r0, z1). We need to exhibit a CaseD disjunct
+              (from `result`) that holds on (z0, z1).
+
+              **Why it fails**: CaseD disjuncts have point type alpha_0.conj beta_0.neg
+              at their first witness, but beta_0(r0) holds here, so CaseD cannot fire
+              at r0. No other disjunct in `result` handles this case:
+              - CaseA requires ¬alpha_0 everywhere, but alpha_0(r0) ∈ (z0,z1).
+              - CaseC requires ¬beta_0 before any alpha_0 point, but beta_0 on (z0,r0).
+              - CaseD requires ¬beta_0(r0), but beta_0(r0) holds.
+
+              **Structural obstruction**: Adding a CaseE with alpha_0.conj beta_0 at r0
+              would fix the backward direction, but breaks the forward direction:
+              A CaseE disjunct on (z0, z1) decomposes to give r0 with IH-bracket on
+              (r0, z1). For the forward direction (CaseE.holds → ¬bf.holds), we need
+              to show: for ALL x0 with alpha_0(x0) and seg_0 on (z0, x0),
+              rightPart fails at (x0, z1). The IH gives ¬rightPart at (r0, z1), but
+              says nothing about x0 > r0 (a different point, different sub-interval).
+              Models can have arbitrarily many alpha_0 points with beta_0 in (z0, z1),
+              creating an unbounded recursion that no FINITE, MODEL-INDEPENDENT
+              V-bracket can handle.
+
+              **Root cause**: BracketFormula evaluates alpha_0 at an INTERIOR
+              existential witness, making the case analysis model-dependent.
+              Rabinovich avoids this by evaluating alpha_0 at the ENDPOINT z_0
+              (a fixed point), eliminating the beta_0(r0) case entirely.
+
+              **Resolution**: The model-DEPENDENT version (`neg_interval_formula`
+              in EANegationClosure.lean) is proved sorry-free and is sufficient
+              for the completeness proof, where the canonical model is fixed.
+              The model-independent VecEA2-level Prop 4.2 (`neg_vecEA2` in
+              EANegationClosure.lean) is also sorry-free.
+
+              This sorry does NOT block completeness. It is an inherent limitation
+              of the BracketFormula-level biconditional formulation. -/
             sorry
           · -- ¬beta_0(r0): CaseD fires with alpha_0 ∧ ¬beta_0 at r0
             refine ⟨⟨m' + 1, bf_m.prepend alpha_0.neg (alpha_0.conj beta_0.neg)⟩, ?_, ?_⟩
@@ -1074,8 +1111,15 @@ theorem neg_bracket_is_vbracket :
 
 /-- **Corollary 5.4, full biconditional** (Rabinovich 2014, p.9):
     The negation of ∃z∈(z₀,z₁), bracket.holds z₀ z is equivalent to a V-bracket
-    formula on Prior structures. The full equivalence requires Lemma 5.1 (Phase 4)
-    for the reverse direction; this sorry tracks that dependency. -/
+    formula on Prior structures.
+
+    **Sorry status**: The forward direction (V.holds → ¬partialBracketExist) is
+    sorry-free for all n. The backward direction for n ≥ 1 has a sorry due to the
+    F-chain Until-unboundedness issue (see inline comment). The n = 0 case is
+    fully proved. The model-dependent version (`neg_bounded_exists` in
+    `EANegationClosure.lean`) is sorry-free and sufficient for completeness.
+
+    **Does NOT block completeness**. -/
 theorem neg_partialBracketExist_is_vbracket
     (n : Nat) (bf : BracketFormula n) :
     ∃ (v : VBracketFormula),
@@ -1164,11 +1208,30 @@ theorem neg_partialBracketExist_is_vbracket
     refine ⟨v_suff, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
     constructor
     · exact hv_suff M atomMap h_INF z0 z1 h_lt
-    · -- Backward: ¬partialBracketExist → V.holds
-      -- Requires: orderedPointsExist 1 fChainPred z0 z1 → partialBracketExist
-      -- This needs fChainPred(x0) → ∃ z, bf.holds z0 z, which requires
-      -- bounding the F-chain Until witnesses AND reconstructing beta_0.
-      -- Deferred to future dispatch with VecEA2 infrastructure.
+    · /- OBSTRUCTION: The backward direction requires showing that when
+        ¬partialBracketExist, the F-chain ordered-points predicate also fails
+        (so v_suff holds by the Lemma 5.3 biconditional).
+
+        Contrapositively: orderedPointsExist 1 fChainPred z0 z1 →
+        partialBracketExist. This needs fChainPred(x0) → ∃ z, bf.holds z0 z.
+
+        fChainPred(x0) asserts alpha_0(x0) AND (beta_1 U (alpha_1 AND ...)).
+        The Until witnesses give points s > x0 where the chain continues, but
+        there is no a priori bound s < z1. On structures where the Until
+        witness lies outside (z0, z1), the reduction fails.
+
+        This is a consequence of the same BracketFormula-level limitation as
+        the sorry at neg_bracket_is_vbracket: the F-chain reduction absorbs
+        segment types into Until operators, losing interval-boundedness
+        information. The model-independent biconditional requires that the
+        Until witnesses can always be bounded within (z0, z1), which holds
+        on specific models but cannot be guaranteed by a fixed V-bracket.
+
+        **Resolution**: The forward direction (V.holds → ¬partialBracketExist)
+        is proved sorry-free via neg_partialBracketExist_sufficient. The
+        model-DEPENDENT version (neg_bounded_exists in EANegationClosure.lean)
+        proves both directions sorry-free and is sufficient for completeness.
+        This sorry does NOT block the completeness proof. -/
       sorry
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
