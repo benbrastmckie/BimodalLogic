@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-23T19:15:00Z",
+      "last_updated": "2026-06-23T21:00:00Z",
       "session_id": "sess_1782234661_3b566f",
       "artifacts": [
         {
@@ -73,16 +73,66 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/26_restricted-mutual-induction.md",
           "type": "plan",
           "summary": "v26: 4-phase restricted mutual induction -- FOToVEA core, arity reduction + existential closure, bridge wiring, verification"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/14_faithfulness-audit.md",
+          "type": "report",
+          "summary": "H2/H3/H4 faithfulness audit: arity tower not in Rabinovich, NF-depth approach diverged, Path B (segment-type decomposition) recommended"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/28_faithful-rabinovich-chain.md",
+          "type": "plan",
+          "summary": "v28: 4-phase faithful Rabinovich chain — segment-type fix, model-indep Prop 4.2/4.3, KampPrior rewiring"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/29_disjunction-construction.md",
+          "type": "plan",
+          "summary": "v29: 4-phase post-Boneyard plan — cleanup, disjunction construction, Prop 4.2/4.3, KampPrior rewiring"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/30_structural-induction-refactor.md",
+          "type": "plan",
+          "summary": "v30: 4-phase structural induction refactor -- Boneyard archival, IsVEA predicate + Lemma 3.2(2), Prop 4.3, KampPrior rewiring"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/15_arity-tower-deviation.md",
+          "type": "report",
+          "summary": "Root cause: arity tower is artifact of NF-depth approach, not in Rabinovich. H3 mapping, refactoring plan."
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/30_structural-induction-refactor.md",
+          "type": "plan",
+          "summary": "v30: 4-phase structural induction refactor — Boneyard archival, IsVEA + Lemma 3.2(2), Prop 4.3, KampPrior rewiring"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/16_syntactic-vea-design.md",
+          "type": "report",
+          "summary": "Syntactic VecEA_m design: consecutive-pair product replacing failed IsVEA predicate. H3 mapping, type signatures, implementation ordering."
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/31_syntactic-vecEA-m.md",
+          "type": "plan",
+          "summary": "v31: 4-phase syntactic VecEA_m design -- backward Prop 4.2, VecEA_m/VVecEA_m types + closure, Prop 4.3 structural induction, KampPrior rewiring"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/31_syntactic-vecEA-m.md",
+          "type": "plan",
+          "summary": "v31: 4-phase syntactic VecEA_m — Prop 4.2 backward, VecEAGeneral.lean types+ops, Prop 4.3 structural induction, KampPrior rewiring"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/17_b2-construction-fix.md",
+          "type": "report",
+          "summary": "B.2 fix insufficient: B.1 backward also blocked. Two paths: Rabinovich restructure (needs Cor 5.4) or bypass backward direction."
         }
       ],
       "previous_status": "implementing",
-      "next_artifact_number": 14,
+      "next_artifact_number": 18,
       "plan_metadata": {
         "phases": 4,
-        "total_effort_hours": 8,
+        "total_effort_hours": 10,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 26,
+        "plan_version": 31,
         "dependency_waves": [
           [
             1
@@ -106,6 +156,26 @@
           {
             "path": "handoffs/phase-4-arity-tower-analysis-20260623.md",
             "integrated_in_plan_version": 26,
+            "integrated_date": "2026-06-23"
+          },
+          {
+            "path": "reports/14_faithfulness-audit.md",
+            "integrated_in_plan_version": 28,
+            "integrated_date": "2026-06-23"
+          },
+          {
+            "path": "reports/15_arity-tower-deviation.md",
+            "integrated_in_plan_version": 30,
+            "integrated_date": "2026-06-23"
+          },
+          {
+            "path": "reports/16_syntactic-vea-design.md",
+            "integrated_in_plan_version": 31,
+            "integrated_date": "2026-06-23"
+          },
+          {
+            "path": "reports/16_syntactic-vea-design.md",
+            "integrated_in_plan_version": 31,
             "integrated_date": "2026-06-23"
           }
         ]
