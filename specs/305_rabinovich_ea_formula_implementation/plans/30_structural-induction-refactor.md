@@ -131,7 +131,20 @@ All phases are strictly sequential. Each phase depends on the previous one.
 
 ---
 
-### Phase 2: Generalized V-EA Predicate and Lemma 3.2(2) Arity Reduction [NOT STARTED]
+### Phase 2: Generalized V-EA Predicate and Lemma 3.2(2) Arity Reduction [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Negation closure of IsVEA at arity >= 2. The `.all` case of `fo_isVEA` (Prop 4.3) requires `.all phi = .not (.ex (.not phi))`, which needs IsVEA for `.not phi`. Proving IsVEA for `.not phi` requires a biconditional for VVecEA2 negation: `neg_v.holds z0 z1 ↔ ¬v.holds z0 z1`.
+- **What was tried**:
+  1. Direct structural recursion on MonadicFormula with IsVEA result -- blocked by `.not` case
+  2. Strengthened IH proving `IsVEA phi ∧ IsVEA (.not phi)` -- still blocked because the `.and` conjunction case has correlated existentials, and `.not (.ex phi)` reduces to `.all (.not phi)` which is circular
+  3. Avoiding the `.all` case by handling it via `.not (.ex (.not phi))` -- the `.not` case at arity >= 3 requires VVecEA2 for `∃env. conds ∧ ¬eval phi`, which is not the VVecEA2 negation of `∃env. conds ∧ eval phi`
+  4. At arity 2 specifically, the projection is deterministic (env determined by z0, z1), so negation = VVecEA2 negation. The forward direction (`¬v.holds → neg_v.holds`) is `neg_2var_vec_ea_indep_correct`. The backward direction (`neg_v.holds → ¬v.holds`) requires disjointness of `v.holds` and `neg_v.holds`, which is not proved in the codebase.
+- **Why it's stuck**: The existing `neg_2var_vec_ea_indep_correct` provides only one direction of the VVecEA2 negation biconditional. The backward direction (showing `v.holds` and `neg_v.holds` cannot both hold on the same interval) would need a disjointness argument about the three-case construction (cases A, B1, B2). This is likely provable but requires non-trivial additional infrastructure (~100-200 lines).
+- **What is needed**: Either (a) prove the backward direction `neg_2var_vec_ea_indep_backward: (neg_2var_vec_ea_indep v).holds z0 z1 → ¬v.holds z0 z1` on Prior structures, or (b) find an alternative approach that avoids the VVecEA2 negation biconditional, possibly by defining a different predicate that carries both the formula and its negation simultaneously.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder
+
+**Partial progress**: `IsVEA` definition is complete and `isVEA_ex` (existential closure) is proved sorry-free in `ArityReduction.lean`. This is the core of Lemma 3.2(2) -- the result that prevents the arity tower.
 
 **Goal**: Define a predicate `IsVEA` expressing that a MonadicFormula at arbitrary arity m is semantically equivalent to a V-EA formula on Prior structures. Implement Lemma 3.2(2): every m-variable EA formula (expressed via `IsVEA`) decomposes into a conjunction of 2-variable EAs. This is the arity firewall that prevents the arity tower.
 
