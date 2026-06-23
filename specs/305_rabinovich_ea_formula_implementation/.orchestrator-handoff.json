@@ -1,76 +1,73 @@
 {
   "status": "partial",
-  "summary": "Exhaustive mathematical analysis of the sorry at NfExistTL.lean:301 (Part B at depth k+1). Confirmed the arity tower barrier is INTRINSIC to the NF-depth induction approach: every attempt to convert depth-(k+1) arity-2 existentials to temporal creates a circularity where the formula needs Part A at depth k+2 which needs Part B at k+1. Identified the resolution: implement Rabinovich Prop 4.3 via structural induction on MonadicFormula with VVEA_n (semantic V-EA for arbitrary arity), Lemma 3.2(2) (arity reduction), and Lemma 3.4(3) (existential closure). Build passes (1700 jobs). No code changes in this dispatch.",
+  "summary": "Created FOToVEA.lean with fo_to_temporal bridge structure and wired into NfExistTL.lean. The Part B k+1 sorry at NfExistTL.lean:301 is replaced with nf_exist_to_temporal bridge. The sorry is now concentrated in fo_to_temporal_correct (FOToVEA.lean:87). Build passes (1705 jobs). The key technical finding: the VVecEA2-based mutual induction cannot produce model-independent formulas because neg_2var_vec_ea and conj_holds_vvecEA2 give existential witnesses. The NF-disjunction approach has circular formula construction. The correct approach likely requires NF-level direct construction or a finite-depth formula unrolling.",
   "phases_completed": 0,
-  "phases_total": 5,
+  "phases_total": 4,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean",
-      "line": 301,
-      "statement": "nf_characterizable_temporal_prior_combined Part B at depth k+1",
-      "assumption": "∃ x, nf_eval_nf M (k+1) 2 (x::t) sub_nf is temporally definable on Prior structures",
-      "why_deferred": "INTRINSIC CIRCULARITY in NF-depth induction: Part B at k+1 via nf_to_formula gives MonadicFormula sig 1 of depth k+2; converting to temporal needs Part A at k+2 which needs Part B at k+1. Resolution requires Rabinovich Prop 4.3 structural induction with V-EA arity reduction (Lemma 3.2(2)).",
-      "next_dispatch": "Implement semantic VVEA_n for arbitrary arity n, then Lemma 3.2(2) (arity reduction VVEA_n -> conjunction of VVEA_2), then Lemma 3.4(3) (existential closure), then Prop 4.3 structural induction on MonadicFormula. Estimated 650-1000 lines across 2-3 dispatches."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1084,
-      "statement": "neg_bracket_is_vbracket backward beta_0(r0) sub-case",
-      "assumption": "Finite model-independent V-bracket handles beta_0 at first alpha_0 point",
-      "why_deferred": "UNPROVABLE at BracketFormula level. Model-dependent neg_interval_formula is sorry-free and sufficient.",
-      "next_dispatch": "No fix possible. Not on critical path."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1235,
-      "statement": "neg_partialBracketExist_is_vbracket backward n>=1 case",
-      "assumption": "F-chain Until witnesses bounded within (z0,z1) by fixed V-bracket",
-      "why_deferred": "UNPROVABLE. Model-dependent neg_bounded_exists is sorry-free and sufficient.",
-      "next_dispatch": "No fix possible. Not on critical path."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
+      "line": 87,
+      "statement": "theorem fo_to_temporal_correct : temporal_truth M atomMap t (fo_to_temporal phi) ↔ eval M (fun _ => t) phi",
+      "assumption": "fo_to_temporal returns Formula.bot for all/ex cases (incorrect placeholder). The real formula needs to handle existential/universal quantification over the carrier.",
+      "why_deferred": "The ex case requires converting exists x, eval M [x, t] alpha (alpha : MonadicFormula sig 2) to a temporal formula. This is the core of Rabinovich Prop 4.3. The VVecEA2-based approach produces model-dependent existential witnesses, not model-independent formulas. The NF-disjunction approach creates circular formula definitions.",
+      "next_dispatch": "Implement correct fo_to_temporal for the ex case. Three viable paths: (1) NF-level direct construction case-splitting on order booleans with VecEA2 for each direction, (2) finite-depth formula unrolling avoiding circularity, (3) alternative proof architecture that avoids the MonadicFormula detour."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
       "line": 160,
       "statement": "neg_vecEA2_is_vvecEA2 succ case",
-      "assumption": "Model-independent biconditional for VecEA2 (n+1) negation",
-      "why_deferred": "Interior existential witnesses make case analysis model-dependent. Model-dependent neg_vecEA2 is sorry-free.",
-      "next_dispatch": "Potentially fixable via Rabinovich segment-type decomposition but not on critical path."
+      "assumption": "Model-independent VecEA2 negation at n+1",
+      "why_deferred": "Structurally unprovable at BracketFormula level; model-dependent alternative exists",
+      "next_dispatch": "Non-critical path. Model-dependent neg_2var_vec_ea suffices."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1084,
+      "statement": "neg_bracket beta_0 case",
+      "assumption": "BracketFormula-level negation impossibility",
+      "why_deferred": "Structurally unprovable; documented impossibility",
+      "next_dispatch": "Non-critical path."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1235,
+      "statement": "neg_partialBracketExist backward n+1",
+      "assumption": "F-chain backward direction",
+      "why_deferred": "Structurally unprovable; model-dependent alternative exists",
+      "next_dispatch": "Non-critical path."
     }
   ],
   "blockers": [
-    "Part B at depth k+1 (NfExistTL.lean:301): INTRINSIC CIRCULARITY in NF-depth induction. The combined Part A/Part B approach works for Part A (uses Part B at depth k from IH) but Part B at k+1 faces an irreducible circular dependency: every resolution attempt (Doets+NF disjunction, nf_to_formula bridge, rearranged induction, well-founded on depth, formula structural induction) produces the same loop where depth d needs depth d. RESOLUTION: Rabinovich Prop 4.3 structural induction on MonadicFormula with VVEA_n arity reduction."
+    "fo_to_temporal_correct (FOToVEA.lean:87): The fo_to_temporal function returns incorrect Formula.bot for all/ex cases. Need correct formula construction for the existential case of MonadicFormula sig 1."
   ],
   "continuation_context": {
     "is_successor": false,
-    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-arity-tower-analysis-20260623.md",
-    "next_phase": 4,
-    "last_phase_completed": 0,
-    "remaining_work": "Implement Rabinovich Prop 4.3 structural induction. Required infrastructure: (1) VVEA_n semantic V-EA for arbitrary arity n -- define as existential predicate with n free variables, (2) Lemma 3.2(2) arity reduction -- every VVEA_n is equivalent to conjunction of VVEA_2 projections, (3) Lemma 3.4(3) existential closure -- ∃y VVEA_{n+1} is VVEA_n, (4) Prop 4.3 structural induction -- every MonadicFormula sig n is VVEA_n, using IH + Prop 4.2 (neg_2var_vec_ea, sorry-free) + Lemma 3.2(2) + Lemma 3.4(3), (5) Bridge -- specialize Prop 4.3 to n=1, convert VVEA_1 to temporal via Prop 3.5 / translateLeft, wire into NfExistTL Part B. Estimated 650-1000 lines across 2-3 dispatches.",
-    "key_decisions": [
-      "CONFIRMED: NF-depth induction CANNOT resolve Part B at k+1 -- circularity is intrinsic, not an implementation gap",
-      "CONFIRMED: Rabinovich Prop 4.3 (structural induction on formula with V-EA arity reduction) is the ONLY viable resolution path",
-      "CONFIRMED: Prop 4.2 (negation closure for 2-var EA) is available model-dependently as neg_2var_vec_ea (sorry-free)",
-      "CONFIRMED: Lemma 3.2(2) is the key missing piece -- without arity reduction, the ex case at arity 2 introduces arity 3 indefinitely",
-      "CONFIRMED: VecEADecomp handles depth-0 arbitrary-arity existentials (zone-based decomposition), providing the BASE CASE for a hypothetical recursive Lemma 3.2(2)",
-      "Five attempted approaches (Doets+NF disjunction, nf_to_formula bridge, rearranged induction, well-founded on depth, formula structural induction) all produce the same circular dependency"
-    ]
+    "bridge_structure": "NfExistTL.lean Part B k+1 now uses nf_exist_to_temporal -> fo_to_temporal -> Formula. The sorry chain is: kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior_partA -> nf_characterizable_temporal_prior_combined -> nf_exist_to_temporal_correct -> fo_to_temporal_correct (sorry).",
+    "key_finding": "VVecEA2-based mutual induction cannot produce model-independent formulas. neg_2var_vec_ea gives existential witnesses. NF-disjunction approach has circular formula construction (Part_A_{k+2} references Part_B_{k+1} which references Part_A_{k+2}).",
+    "viable_paths": [
+      "NF-level direct construction: case-split on order booleans, build VecEA2 for future/past/equal directions. The depth-0 pattern from nf_2var_exist_depth0_tl extends to depth k+1 if quantifier clauses can be handled.",
+      "Finite-depth formula tree: define all Part_A and Part_B formulas for a fixed depth simultaneously (avoid circular definitions by finite enumeration).",
+      "Well-founded induction on total formula size: structural induction on MonadicFormula with explicit termination on sizeOf."
+    ],
+    "files_created": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean"],
+    "files_modified": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean"]
   },
-  "next_action_hint": "Start a RESEARCH dispatch to design the VVEA_n type and Lemma 3.2(2) implementation. Key questions: (1) should VVEA_n be syntactic (inductive) or semantic (existential predicate)? Semantic is simpler but harder to compute with. (2) Does Lemma 3.2(2) need to be proved for the NF-based representation, or can it be proved at the MonadicFormula level using nf_to_formula? (3) Can the structural induction on MonadicFormula be implemented as a single well-founded recursion in Lean 4, or does it need mutual induction across arities?",
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean",
-      "type": "implementation",
-      "summary": "Combined Part A/Part B induction (323 lines, 1 sorry at line 301). Part A sorry-free for all k. Part B sorry-free at k=0 only."
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
+      "type": "source",
+      "summary": "FOToVEA bridge file: fo_to_temporal, nf_exist_to_temporal, bridge theorems"
     },
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-4-arity-tower-analysis-20260623.md",
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-fotovea-bridge-20260623.md",
       "type": "handoff",
-      "summary": "Definitive analysis of the arity tower barrier with 5 attempted resolution approaches and the identified viable path (Rabinovich Prop 4.3)."
+      "summary": "Phase 1 handoff with technical analysis and viable paths"
     },
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/25_faithful-rabinovich-chain.md",
+      "path": "specs/305_rabinovich_ea_formula_implementation/plans/26_restricted-mutual-induction.md",
       "type": "plan",
-      "summary": "Updated Phase 4 status to [BLOCKED] with full blocker documentation and resolution path."
+      "summary": "Current plan (v4) with 4 phases"
     }
-  ]
+  ],
+  "next_action_hint": "Focus on implementing correct fo_to_temporal for the ex case. The most promising approach is NF-level direct construction extending the depth-0 pattern (nf_2var_exist_depth0_tl) to handle depth k+1 quantifier clauses."
 }
