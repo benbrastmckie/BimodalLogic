@@ -1,6 +1,4 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfExistTL
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -155,11 +153,11 @@ noncomputable def nf_characterizable_temporal_prior
     exact ⟨Separation.nf_depth0_char_formula atomMap h_surj nf,
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
   | succ k _ih =>
-    -- Depth k+1: use the combined induction from NfExistTL.lean.
-    -- Part A at depth k+1 is built from Part B at depth k.
-    -- Part B at depth 0 is sorry-free (nf_2var_exist_depth0_tl).
-    -- Part B at depth k+1 requires arity tower infrastructure (sorry).
-    exact nf_characterizable_temporal_prior_partA atomMap h_surj (k + 1) nf
+    -- TODO: Wire Rabinovich's chain here (Prop 4.3 + Prop 3.5).
+    -- Previously used NF-depth mutual induction (now in Boneyard/).
+    -- The faithful path: structural formula induction producing V-EA,
+    -- then Prop 3.5 (RabinovichTranslation) converts to temporal.
+    sorry
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,
     proved via Kamp/Rabinovich 2014 (relativized from Dedekind completeness
