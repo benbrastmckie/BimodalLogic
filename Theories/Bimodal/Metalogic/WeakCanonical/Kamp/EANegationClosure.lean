@@ -8,12 +8,22 @@ Proves Lemma 5.1 and Corollary 5.4 of Rabinovich 2014 in model-dependent,
 forward-only form. These avoid the structurally unsolvable beta_0(r_0) problem
 that blocks the biconditional approach in `EANegation.lean`.
 
+This file provides the **model-dependent foundation** for the model-independent
+version in `NegationIndep.lean`. Specifically:
+- `neg_interval_formula` is model-dependent Lemma 5.1 (existential output)
+- `neg_2var_vec_ea` is model-dependent Prop 4.2 (existential output)
+The model-independent versions (`neg_interval_formula_indep`,
+`neg_2var_vec_ea_indep`) in `NegationIndep.lean` construct fixed VVecEA2
+formulas whose correctness on each model follows from the model-dependent
+theorems here.
+
 ## Key Theorems
 
-- `neg_interval_formula`: Lemma 5.1 forward — if ¬bf.holds z0 z1 on a Prior
+- `neg_interval_formula`: Lemma 5.1 forward -- if not bf.holds z0 z1 on a Prior
   structure, there exists a VBracketFormula that holds on (z0, z1).
-- `neg_bounded_exists`: Corollary 5.4 forward — if ¬(∃z, bf.holds z0 z) on
+- `neg_bounded_exists`: Corollary 5.4 forward -- if not (exists z, bf.holds z0 z) on
   a Prior structure, there exists a VBracketFormula that holds on (z0, z1).
+- `neg_2var_vec_ea`: Prop 4.2 -- negation of VVecEA2 produces VVecEA2 (model-dependent).
 
 ## Provenance
 

@@ -16,13 +16,15 @@ Prop 4.3 -> Theorem 4.4.
   an equivalent `Formula` (using only U,S) on Prior structures.
   Same type signature as `US_expressively_complete_over_prior`.
 
-## Proof Architecture (Rabinovich Chain)
+## Proof Architecture (Rabinovich Chain via Disjunction Construction)
 
-The proof uses Rabinovich's faithful chain:
-1. Lemma 5.1: VecEA2 negation closure at the endpoint level
-2. Prop 4.2: Model-independent negation of V-EA formulas
-3. Prop 4.3: Every FO formula is equivalent to V-EA (structural induction)
-4. Theorem 4.4: Prop 4.3 + Prop 3.5 gives FO -> TL(U,S)
+The proof uses Rabinovich's faithful chain (plan v29):
+1. Lemma 5.1: Model-independent negation closure via three-case disjunction
+   construction (`NegationIndep.lean`)
+2. Prop 4.2: Model-independent negation of V-EA formulas (`NegationIndep.lean`)
+3. Prop 4.3: Every FO formula is equivalent to V-EA via structural formula
+   induction (`Prop43.lean`)
+4. Theorem 4.4: Prop 4.3 + Prop 3.5 (RabinovichTranslation) gives FO -> TL(U,S)
 
 The NF infrastructure (`doets_lemma_1_1`, `nf_exists_unique`, etc.)
 and the NF-to-Formula infrastructure (`nf_to_formula`, `nf_to_formula_correct`)
@@ -30,13 +32,8 @@ are all sorry-free and reused directly.
 
 ## Status
 
-The succ k case of `nf_characterizable_temporal_prior` uses the combined
-induction from `NfExistTL.lean`. Part A (arity-1 NF characterization) at
-each depth is built from Part B (arity-2 existential elimination) at the
-previous depth. Part B at depth 0 is sorry-free. Part B at depth k+1
-has a localized sorry at `nf_exist_to_temporal_aux` in `FOToVEA.lean`
-(arity tower obstruction: depth-(k+1) arity-2 NF existentials require
-arity-3 decomposition at depth k, which at depth > 0 needs Lemma 3.2).
+The succ k case of `nf_characterizable_temporal_prior` has a sorry that
+will be replaced by the Rabinovich chain: Prop 4.3 + Prop 3.5.
 
 ## References
 
@@ -99,28 +96,9 @@ Core construction: translate a depth-k arity-1 normal form to a temporal
 formula that characterizes it on Prior structures.
 
 - **k = 0**: `nf_depth0_char_formula` (conjunction of atom literals).
-- **k + 1**: Requires converting each `∃ x, nf_eval_nf M k 2 (x::t) sub_nf` to
-  temporal. The depth-0 sub-NF existential is handled sorry-free by
-  `nf_2var_exist_depth0_tl` (NfToVecEA.lean). The general case requires
-  additional infrastructure for multi-arity V-EA formulas (Rabinovich Prop 4.3),
-  the Stavi backward direction (StaviCompleteness.lean:2873), or
-  Z-transfer (NF realizability on Z).
-
-### Obstruction Analysis
-
-The IH at `succ k` provides depth-k arity-1 formulas. Each quantifier clause
-requires expressing `∃ x, nf_eval M k 2 (x::t) sub_nf` as temporal, which
-(via `nf_to_formula_correct`) is `eval M (fun _ => t) (.ex (nf_to_formula sub_nf))`,
-a `MonadicFormula sig 1` with depth k+1 -- the same depth being constructed.
-This creates a circular dependency that requires independent infrastructure
-(one of paths a-d below) to break.
-
-### Resolution Paths
-
-- **(a)** Rabinovich Prop 4.3: V-EA structural induction -- needs arity >= 3 V-EA
-- **(b)** Stavi chain: `flatten_stavi_correct_prior` + fix sorry at line 2873
-- **(c)** Z-transfer: `US_expressively_complete_over_Z` + NF realizability on Z
-- **(d)** Mutual induction: MonadicFormula sig 1 + arity 2 VVecEA2 -- needs arity 3
+- **k + 1**: Convert the NF to a `MonadicFormula sig 1` via `nf_to_formula`,
+  then apply Prop 4.3 (`fo_to_vea`) to get a VVecEA2, then apply
+  Prop 3.5 (`VVecEA2.translateLeft`) to get a temporal Formula.
 -/
 
 /-- For Prior structures, every depth-k arity-1 NF is characterizable
@@ -129,10 +107,9 @@ This creates a circular dependency that requires independent infrastructure
     This is the Prior-specific replacement for `nf_characterizable_by_stavi`.
 
     - k=0: `nf_depth0_char_formula` (atom literals)
-    - k+1: combined induction from `NfExistTL.lean` using Part B at depth k.
-      Part B at depth 0 is sorry-free (`nf_2var_exist_depth0_tl`).
-      Part B at depth k+1 has localized sorry at `nf_exist_to_temporal_aux`
-      (arity tower: requires Lemma 3.2 for arity-3 at depth > 0).
+    - k+1: Convert NF to MonadicFormula via `nf_to_formula`, apply Prop 4.3
+      (`fo_to_vea`) to get VVecEA2, then Prop 3.5 (`VVecEA2.translateLeft`)
+      to get temporal Formula.
 -/
 noncomputable def nf_characterizable_temporal_prior
     {sig : MonadicSignature}
@@ -153,10 +130,10 @@ noncomputable def nf_characterizable_temporal_prior
     exact ⟨Separation.nf_depth0_char_formula atomMap h_surj nf,
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
   | succ k _ih =>
-    -- TODO: Wire Rabinovich's chain here (Prop 4.3 + Prop 3.5).
-    -- Previously used NF-depth mutual induction (now in Boneyard/).
-    -- The faithful path: structural formula induction producing V-EA,
-    -- then Prop 3.5 (RabinovichTranslation) converts to temporal.
+    -- TODO (plan v29 Phase 4): Wire Rabinovich's chain here.
+    -- 1. nf_to_formula nf : MonadicFormula sig 1
+    -- 2. fo_to_vea (nf_to_formula nf) : VVecEA2 (Prop 4.3, Prop43.lean)
+    -- 3. VVecEA2.translateLeft : Formula (Prop 3.5, VecEATranslation.lean)
     sorry
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,

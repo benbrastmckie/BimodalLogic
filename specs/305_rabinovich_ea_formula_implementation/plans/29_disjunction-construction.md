@@ -134,7 +134,7 @@ All phases are sequential. Phase 1 is lightweight cleanup. Phases 2-4 form a str
 
 ---
 
-### Phase 1: Comment Cleanup and Archival Hygiene [NOT STARTED]
+### Phase 1: Comment Cleanup and Archival Hygiene [COMPLETED]
 
 **Goal**: Remove stale references to boneyarded files (FOToVEA.lean, NfExistTL.lean, EndpointNegation.lean) from active Kamp/ files. Update documentation to reflect the post-Boneyard state and the new disjunction-construction approach. Verify the codebase builds cleanly.
 
