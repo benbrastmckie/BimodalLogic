@@ -99,35 +99,106 @@ The original proofs (archived in Boneyard/PriorComposition.lean) used a semantic
 composition approach that is provably false at K=0. The Rabinovich formula-level
 path (EANegation.lean) will replace these. -/
 
-theorem prior_2var_transfer_until {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (K : Nat)
-    (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (M₀ : OrderedMonadicStructure sig) (x₀ t₀ : M₀.carrier)
-    (h_UZ : semantic_prior_UZ M atomMap)
-    (h_SZ : semantic_prior_SZ M atomMap)
-    (h_UZ₀ : semantic_prior_UZ M₀ atomMap)
-    (h_SZ₀ : semantic_prior_SZ M₀ atomMap)
-    (h_x : ∀ nf : NormalForm sig (K + 2) 1,
-      nf_eval_nf M (K + 2) 1 (fun _ => x) nf ↔
-      nf_eval_nf M₀ (K + 2) 1 (fun _ => x₀) nf)
-    (h_t : ∀ nf : NormalForm sig (K + 2) 1,
-      nf_eval_nf M (K + 2) 1 (fun _ => t) nf ↔
-      nf_eval_nf M₀ (K + 2) 1 (fun _ => t₀) nf)
-    (h_order : t < x)
-    (h_order₀ : t₀ < x₀)
-    (char_fn : ∀ (d : Nat), NormalForm sig d 1 → Formula)
-    (char_correct : ∀ (d : Nat) (_ : d ≤ K + 1) (nf_1 : NormalForm sig d 1)
-        (M : OrderedMonadicStructure sig)
-        (h_UZ : semantic_prior_UZ M atomMap)
-        (h_SZ : semantic_prior_SZ M atomMap)
-        (t : M.carrier),
-        temporal_truth M atomMap t (char_fn d nf_1) ↔
-        nf_eval_nf M d 1 (fun _ => t) nf_1)
+/-! ### Multi-variable NF agreement from pairwise 1-variable agreement
+
+The key technical lemma: if n variables in two structures have matching
+1-variable NF types at depth d+1 and matching pairwise orderings, then
+the n-variable NF agrees at depth d. Proved by induction on d.
+
+At depth 0 only atoms matter (orderings + predicates), so the result follows
+from pairwise ordering agreement and predicate agreement extracted from
+1-var NF types. At depth d+1, the quantifier part introduces a new variable w.
+We transfer w using the quantifier component of one of the existing variables'
+1-var NF agreement (at depth d+2 → d+1 existential transfer), then apply
+the IH at depth d with n+1 variables.
+-/
+
+/-- Extract the quantifier-existential transfer from 1-var NF agreement at depth k+1.
+If t in M and t₀ in M₀ agree on all depth-(k+1) 1-var NFs, then for any
+depth-k 2-var NF chi2, (∃ w in M) ↔ (∃ w₀ in M₀). -/
+private theorem quant_exist_transfer_from_1var {sig : MonadicSignature}
+    {k : Nat}
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (N : OrderedMonadicStructure sig) (t' : N.carrier)
+    (h : ∀ nf : NormalForm sig (k + 1) 1,
+      nf_eval_nf M (k + 1) 1 (fun _ => t) nf ↔
+      nf_eval_nf N (k + 1) 1 (fun _ => t') nf) :
+    ∀ chi2 : NormalForm sig k 2,
+      (∃ w, nf_eval_nf M k 2 (Fin.cons w (fun _ => t)) chi2) ↔
+      (∃ w', nf_eval_nf N k 2 (Fin.cons w' (fun _ => t')) chi2) := by
+  intro chi2
+  -- From h, M and N satisfy the same depth-(k+1) 1-var NFs at t/t'
+  -- Their quantifier components therefore agree on existential conditions
+  have hex : ∀ sub : NormalForm sig k 2,
+      (∃ w, nf_eval_nf M k 2 (Fin.cons w (fun _ => t)) sub) ↔
+      (∃ w', nf_eval_nf N k 2 (Fin.cons w' (fun _ => t')) sub) := by
+    -- Get the shared characteristic NF
+    set nf_M := nf_characteristic M (k + 1) 1 (fun _ => t)
+    have h_M_sat := nf_characteristic_satisfies M (k + 1) 1 (fun _ => t)
+    have h_N_sat := (h nf_M).mp h_M_sat
+    -- Both satisfy nf_M at depth k+1, so their quantifier components agree
+    obtain ⟨_, h_Mq⟩ := h_M_sat
+    -- N satisfies nf_M, extract its quantifier part
+    have h_char_eq := nf_eval_unique N (k + 1) 1 _ _ nf_M h_N_sat
+      (nf_characteristic_satisfies N (k + 1) 1 (fun _ => t'))
+    obtain ⟨_, h_Nq⟩ := h_char_eq ▸ nf_characteristic_satisfies N (k + 1) 1 (fun _ => t')
+    intro sub
+    exact (h_Mq sub).symm.trans (h_Nq sub)
+  exact hex chi2
+
+/-- Multi-variable NF agreement from pairwise agreement: depth-0 case.
+At depth 0, nf_eval_nf is purely atomic (orderings + predicates). -/
+private theorem multivar_agree_depth0 {sig : MonadicSignature}
+    {n : Nat}
+    (M : OrderedMonadicStructure sig) (env_M : Fin n → M.carrier)
+    (N : OrderedMonadicStructure sig) (env_N : Fin n → N.carrier)
+    (h_pred : ∀ (i : Fin n) (p : sig.preds),
+      M.interp p (env_M i) ↔ N.interp p (env_N i))
+    (h_ord : ∀ (i j : Fin n), env_M i < env_M j ↔ env_N i < env_N j) :
+    ∀ nf : NormalForm sig 0 n,
+      nf_eval_nf M 0 n env_M nf ↔ nf_eval_nf N 0 n env_N nf := by
+  intro nf
+  -- Both sides are: ∀ a, atom_eval _ env a ↔ (nf a = true)
+  -- atom_eval for pred is interp, for order is <
+  simp only [nf_eval_nf]
+  have h_atom_iff : ∀ a : AtomKind sig n,
+      atom_eval M env_M a ↔ atom_eval N env_N a := by
+    intro a; cases a with
+    | pred p i => simp only [atom_eval]; exact h_pred i p
+    | order i j hne => simp only [atom_eval]; exact h_ord i j
+  constructor <;> intro h a
+  · exact (h_atom_iff a).symm.trans (h a)
+  · exact (h_atom_iff a).trans (h a)
+
     (sub_nf : NormalForm sig (K + 2) 2)
     (h_eval₀ : nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) sub_nf) :
     nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  -- BLOCKED: The quantifier step requires 3-var existential transfer at depth K+1,
+  -- which needs 2-var NF agreement at depth K+1 (available from IH on K via
+  -- nvar_transfer_from_1var_agree with h_rvar). However, the h_rvar for the
+  -- Boneyard's nvar_transfer_from_1var_agree requires full r-var agreement at
+  -- depth d+1, creating a circular dependency.
+  --
+  -- The correct approach (from Boneyard/PriorComposition.lean) uses
+  -- nvar_transfer_from_1var_agree which takes h_rvar (depth-(d+1) r-var agreement)
+  -- as a hypothesis. For the main theorem at depth K+2, this requires depth-(K+3)
+  -- 2-var agreement. The resolution is to:
+  -- (a) Restructure as strong induction on K where the IH provides 2-var agreement
+  --     at all lower depths, then use nvar_transfer_from_1var_agree with the IH
+  --     as h_rvar; OR
+  -- (b) Inline the transfer into KampBypass.lean's mutual induction where hex
+  --     is available directly from the CharPart/ExistPart decomposition.
+  --
+  -- Key infrastructure already proved (sorry-free):
+  -- - quant_exist_transfer_from_1var: 2-var existential transfer from 1-var agreement
+  -- - multivar_agree_depth0: multi-var agreement at depth 0 from orderings + predicates
+  -- - nonconstenv_atom_agree_until/since: 2-var atom transfer
+  -- - nf_skipIdx_cross: (n+1)-var → n-var projection
+  --
+  -- The Boneyard archive (Kamp/Boneyard/PriorComposition.lean) contains a sorry-free
+  -- nvar_transfer_from_1var_agree that proves this given h_rvar. Restoring and
+  -- adapting it requires providing h_rvar, which needs the proof to be restructured
+  -- as strong induction on K.
   sorry
 
 theorem prior_2var_transfer_since {sig : MonadicSignature}
@@ -159,6 +230,9 @@ theorem prior_2var_transfer_since {sig : MonadicSignature}
     (sub_nf : NormalForm sig (K + 2) 2)
     (h_eval₀ : nf_eval_nf M₀ (K + 2) 2 (Fin.cons x₀ (fun _ => t₀)) sub_nf) :
     nf_eval_nf M (K + 2) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  -- Mirror of prior_2var_transfer_until with reversed ordering (x < t).
+  -- Same blocker: needs nvar_transfer_from_1var_agree with h_rvar.
+  -- See the detailed blocker analysis in prior_2var_transfer_until above.
   sorry
 
 /-! ## Second Component Projection from 2-var Agreement
