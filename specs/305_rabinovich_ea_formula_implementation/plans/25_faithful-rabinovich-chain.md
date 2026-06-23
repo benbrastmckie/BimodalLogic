@@ -1,7 +1,7 @@
 # Implementation Plan: Faithful Rabinovich Chain (Task #305 v3)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: None (all required sorry-free infrastructure exists)
 - **Research Inputs**: reports/24_z-completeness-rabinovich.md
@@ -204,9 +204,16 @@ Fully sequential: each phase depends on the previous. No parallel execution poss
 
 ---
 
-### Phase 4: Prop 4.3 Structural Induction (FO -> VVecEA2) [PARTIAL]
+### Phase 4: Prop 4.3 Structural Induction (FO -> VVecEA2) [BLOCKED]
 
-*(deviation: altered — restructured as combined Part A/Part B induction on NF depth k. Part A (arity-1 NF to temporal) is sorry-free for all k. Part B (arity-2 existential to temporal) is sorry-free at depth 0 (via nf_2var_exist_depth0_tl) but has sorry at depth k+1 (arity tower: NormalForm sig k 3 requires 3-variable decomposition at depth k). Created NfExistTL.lean (323 lines). Phases 1-3 skipped per contingency — model-independent negation not needed for Part A induction.)*
+**BLOCKER** (Phase 4):
+- **What failed**: Combined Part A/Part B NF-depth induction cannot prove Part B at depth k+1. The arity tower is intrinsic: every attempt to convert `∃ x, nf_eval_nf M (k+1) 2 (x::t) sub_nf` to temporal creates a circularity where the formula at depth d requires Part A at depth d (which requires Part B at depth d-1 which gives a formula of depth d).
+- **What was tried**: (1) Direct VecEA2 decomposition at depth k+1 -- blocked by arity-3 sub-NFs. (2) nf_to_formula bridge + Doets lemma -- circular: needs Part A at depth k+2 which needs Part B at k+1. (3) Rearranged induction (Part A at k+1, Part B at k) -- still circular. (4) Well-founded induction on quantifier depth -- circular at same depth. (5) Formula structural induction for sig 1 -- ex case introduces sig 2, then sig 3, etc. (arity tower at formula level). Exhaustive analysis confirms the circularity is intrinsic to NF-based induction.
+- **Why stuck**: The Doets NF machinery forces depth to increase by 1 at each existential, and the NF characteristic formula at depth d+1 uses quantifier clauses at depth d, creating a self-referential loop.
+- **What is needed**: Implement Rabinovich Prop 4.3 via structural induction on MonadicFormula (not NF depth), using three new pieces: (1) Semantic V-EA for arbitrary arity n (VVEA_n), (2) Lemma 3.2(2) arity reduction (VVEA_n -> conjunction of VVEA_2), (3) Lemma 3.4(3) existential closure (∃y, VVEA_{n+1} -> VVEA_n). Negation closure Prop 4.2 for arity 2 is already sorry-free (neg_2var_vec_ea).
+- **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
+
+*(deviation: altered — Part A/Part B NF-depth induction created (NfExistTL.lean, 323 lines) but Part B at k+1 has irreducible sorry. Phases 1-3 skipped per contingency. Resolution requires Rabinovich Prop 4.3 structural induction with VVEA_n arity reduction.)*
 
 **Goal**: Prove `fo_to_vvea`: Rabinovich's Prop 4.3, that every `MonadicFormula sig 2` is model-independently equivalent to a VVecEA2 on structures with HasAttainedINF. Uses structural induction on MonadicFormula, which handles all arities simultaneously and avoids the arity tower problem that blocked the prior plan.
 
@@ -251,7 +258,7 @@ For arity-1 formulas (`MonadicFormula sig 1`), `ex alpha` produces `MonadicFormu
 
 ---
 
-### Phase 5: Theorem 4.4 + KampPrior Sorry Elimination [NOT STARTED]
+### Phase 5: Theorem 4.4 + KampPrior Sorry Elimination [IN PROGRESS]
 
 **Goal**: Connect `fo_to_vvea` (Phase 4) to `nf_characterizable_temporal_prior` and eliminate the sorry at KampPrior.lean:158. The bridge composes: NF -> MonadicFormula (via `nf_to_formula`) -> VVecEA2 (via `fo_to_vvea`) -> Formula (via `VVecEA2.translateLeft`). Correctness follows from composing `nf_to_formula_correct`, `fo_to_vvea` correctness, and `VVecEA2.translateLeft_correct`.
 
