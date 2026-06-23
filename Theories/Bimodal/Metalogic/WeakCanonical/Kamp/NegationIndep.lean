@@ -325,4 +325,12 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
   push_neg at h_neg
   exact neg_disjunct_list_indep_correct h_INF z0 z1 h_lt v.disjuncts h_neg
 
+-- NOTE: The backward direction (neg_2var_vec_ea_indep_backward) was attempted
+-- but found to be unprovable with the current construction. See plan v31
+-- Phase 1 BLOCKER documentation for details. The case B.2 (inf_bracket_formula)
+-- in neg_interval_formula_indep is NOT disjoint from the original bracket formula.
+-- A concrete counterexample: bf with pt(0)=P, all segments=top on (0,10) with
+-- P holding only at 5 makes both bf.holds (witness 5) and
+-- inf_bracket_formula(P).holds (witness 5, P.neg on (0,5)) true simultaneously.
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
