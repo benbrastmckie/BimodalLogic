@@ -12,7 +12,7 @@ Main bypass theorems that dispatch to the three direction-specific proofs.
 See KampBypassCore.lean for shared definitions and equality case, and KampBypassUntil/Since.lean
 for the direction-specific correctness proofs.
 
-Factored from a single 4488-line file (task 301).
+Factored from a single 4488-line file for modularity.
 
 ## References
 

@@ -4,7 +4,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassBridge
 # Enriched Bypass Formula: Until Direction (t < x)
 
 Forward and backward proof lemmas for the Until direction, plus the
-main Until case theorem. Split from KampBypass.lean (task 301).
+main Until case theorem. Split from KampBypass.lean for modularity.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp

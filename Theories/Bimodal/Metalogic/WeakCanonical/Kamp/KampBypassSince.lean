@@ -4,7 +4,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassBridge
 # Enriched Bypass Formula: Since Direction (x < t)
 
 Correctness proof for the Since (backward) direction of the enriched bypass formula.
-Split from KampBypass.lean (task 301).
+Split from KampBypass.lean for modularity.
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp

@@ -8,13 +8,6 @@ Temporal characterization of existentials on non-constant environments via
 classical top/bot with full r-var NF precondition. The `GeneralExistPart`
 formulation uses `nf_agreement_from_shared_nf` to transfer between structures.
 
-## Note on GeneralExistPartOrdered
-
-`GeneralExistPartOrdered` (individual 1-var NFs + pairwise orders) was
-previously included as a third mutual induction conjunct but is FALSE at
-all depths (Z counterexample with translation homogeneity). Deleted in
-plan v9, Phase 1.
-
 ## References
 
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5, Lemma 5.1

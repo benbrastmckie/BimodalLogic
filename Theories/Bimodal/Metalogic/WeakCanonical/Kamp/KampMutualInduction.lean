@@ -5,46 +5,29 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 /-!
 # Generalized P_n(k) Mutual Induction (Rabinovich 2014 Section 5)
 
-The main remaining sorry in the Kamp theorem pipeline is
-`existPart_succ_n1_bypass` at depth k+1 for k>0 (KampBypass.lean).
-Its backward direction requires characterizing 3-var existentials
-temporally, which requires 4-var existentials at lower depth, etc.
-
-## Architecture
-
-The proof proceeds by mutual induction on k (depth):
+Mutual induction on k (NF depth) establishing CharPart(k) ∧ ExistPart(k).
 
 ### CharPart(k)
 Every arity-1 depth-k NF has a temporal characteristic formula.
-- k=0: `nf_depth0_char_formula` (atom literals)
+- k=0: `nf_depth0_char_formula` (atom literals), sorry-free
 - k+1: from CharPart(k) + ExistPart(k) via
   `nf_characterizable_temporal_prior_classical`
 
 ### ExistPart(k)
-For ALL n >= 1 and all (n+1)-var depth-k NFs, the existential
+For all n ≥ 1 and all (n+1)-var depth-k NFs, the existential
 is temporally characterizable on Prior structures.
-- k=0: depth-0 NFs are purely atomic; proved for all n (sorry-free)
-- k+1: requires ExistPart(k) at arity n+1 for quantifier conditions
-
-### Dependency Chain
-```
-CharPart(0)    <-- nf_depth0_char_formula (sorry-free)
-ExistPart(0)   <-- nf_2var_exist_formula_prior (n=1, sorry-free)
-                   + depth-0 multi-var (n>=2, sorry-free via bool_eq_of_iff_same)
-CharPart(k+1)  <-- CharPart(k) + ExistPart(k)
-                   via nf_characterizable_temporal_prior_classical (sorry-free)
-ExistPart(k+1) <-- CharPart(k+1) + ExistPart(k)
-                   via arity-climbing + negation closure (sorry at k>0)
-```
+- k=0: depth-0 NFs are purely atomic; sorry-free for all n
+- k+1, n=1: `existPart_succ_n1_bypass` (sorry at k>0 via
+  `prior_2var_transfer_until/since` — to be replaced by
+  Rabinovich's EA negation closure, see EANegation.lean)
+- k+1, n≥2: arity-climbing from n=1 case, sorry-free
 
 ## Main Results
 
-- `charPart_zero`: CharPart(0), sorry-free
-- `charPart_succ`: CharPart(k+1) from CharPart(k) + ExistPart(k), sorry-free
+- `charPart_zero`, `charPart_succ`: CharPart at all k
 - `existPart_zero`: ExistPart(0), sorry-free for all n
-- `existPart_succ`: ExistPart(k+1), sorry at k>0 (via existPart_succ_n1_bypass)
+- `existPart_succ`: ExistPart(k+1), sorry at k>0
 - `kamp_mutual_induction`: combined ∀ k, CharPart(k) ∧ ExistPart(k)
-- `nf_2var_exist_formula_prior_filled`: fills nf_2var_exist_formula_prior
 
 ## References
 

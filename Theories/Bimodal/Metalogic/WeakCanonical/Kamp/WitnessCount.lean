@@ -5,9 +5,9 @@ import Bimodal.Metalogic.WeakCanonical.Table
 # Temporal Truth Transfer and Operator Depth Infrastructure
 
 Reusable infrastructure for cross-structure temporal truth transfer and
-operator_depth analysis. Extracted from the K=0 investigation (plan v19).
+operator_depth analysis.
 
-## Reusable Theorems (sorry-free)
+## Theorems (sorry-free)
 
 1. `temporal_truth_transfer`: depth-k 1-var NF agreement transfers temporal
    formulas of operator_depth ≤ k. Uses `table_correctness` + `doets_lemma_1_1`.
@@ -18,30 +18,6 @@ operator_depth analysis. Extracted from the K=0 investigation (plan v19).
 3. `nf_depth0_char_operator_depth`: nf_depth0_char_formula has operator_depth 0.
 
 4. `nf_depth0_char_iff_eval`: nf_depth0_char_formula ↔ nf_eval_nf at depth 0.
-
-## Status of Cross-Structure Zone-3 Transfer
-
-`zone3_exist_transfer` (previously in this file) is **FALSE**.
-See PriorComposition.lean line 873 for the counterexample:
-M=N=ℤ with is_even, t=t'=0, x=4, x'=2. The point w=2 is even in (0,4),
-but (0,2) contains only 1 (odd). All hypotheses hold but the conclusion fails.
-
-Similarly, `k0_depth1_2var_agree_until/since` are **FALSE**: they are equivalent
-to `prior_nonconstenv_2var_agree_until/since` at K=0, which has the same
-counterexample. These theorems have been removed.
-
-## Correct Fix Direction
-
-The fix is NOT at the PriorComposition level (the theorem is genuinely false).
-The fix is at the `existPart_succ_n1_bypass` level in KampBypass.lean: the k>0
-Until/Since cases must encode zone-3 witnesses directly in the temporal formula
-(as the sorry-free k=0 case already does), rather than using cross-structure
-NF transfer via `prior_2var_transfer_until/since`.
-
-## References
-
-- Rabinovich 2014, "A Proof of Kamp's Theorem", Section 5
-- Plan v19: witness-count restructure
 -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
