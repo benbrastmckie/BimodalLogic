@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-23T05:26:08Z",
+      "last_updated": "2026-06-23T12:30:00Z",
       "session_id": "sess_1782191203_6e98b6",
       "artifacts": [
         {
@@ -63,31 +63,29 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/21_eanegation-sorry-fix.md",
           "type": "plan",
           "summary": "v21: Rabinovich-aligned EndpointBracketFormula approach — 5 phases, 12h, new type matching bracket notation, bridge to BracketFormula, model-independent Prop 4.2, PriorComposition sorry elimination"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/22_prior-transfer-direct.md",
+          "type": "plan",
+          "summary": "v22: Direct PriorComposition transfer — 2 phases, 6h, zone decomposition with char_correct, bypasses model-independent biconditional entirely"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/23_faithful-beta0-fix.md",
+          "type": "plan",
+          "summary": "v23: VecEA2-level Lemma 5.1 with endpoint alpha_0 convention, resolves BracketFormula impossibility, opens faithful Rabinovich chain"
         }
       ],
-      "previous_status": "partial",
+      "previous_status": "planned",
       "next_artifact_number": 14,
       "plan_metadata": {
-        "phases": 5,
-        "total_effort_hours": 12,
+        "phases": 1,
+        "total_effort_hours": 4,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 21,
+        "plan_version": 23,
         "dependency_waves": [
           [
             1
-          ],
-          [
-            2
-          ],
-          [
-            3
-          ],
-          [
-            4
-          ],
-          [
-            5
           ]
         ],
         "reports_integrated": [
@@ -100,6 +98,16 @@
             "path": "reports/17_faithful-bridge-design.md",
             "integrated_in_plan_version": 21,
             "integrated_date": "2026-06-22"
+          },
+          {
+            "path": "handoffs/phase-1-model-indep-blocker-20260623.md",
+            "integrated_in_plan_version": 22,
+            "integrated_date": "2026-06-23"
+          },
+          {
+            "path": "reports/22_faithfulness-audit.md",
+            "integrated_in_plan_version": 23,
+            "integrated_date": "2026-06-23"
           }
         ]
       }
