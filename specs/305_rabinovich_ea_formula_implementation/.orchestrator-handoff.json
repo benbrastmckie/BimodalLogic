@@ -1,10 +1,10 @@
 {
   "status": "partial",
-  "plan_version": 30,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/30_structural-induction-refactor.md",
-  "summary": "Phase 1 completed (Prop43.lean boneyarded, k=1 deps inlined). Phase 2 blocked: IsVEA predicate defined, isVEA_ex proved sorry-free, but fo_isVEA (Prop 4.3) blocked on VVecEA2 negation biconditional backward direction. Critical-path sorry at KampPrior.lean:287 unchanged.",
+  "plan_version": 31,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/31_syntactic-vecEA-m.md",
+  "summary": "Plan v31 Phase 1 BLOCKED: neg_2var_vec_ea_indep_backward is unprovable with current bracket negation construction. Case B.2 (inf_bracket_formula) is not disjoint from original bracket (concrete counterexample found). ArityReduction.lean archived to Boneyard (cleanup complete). Build passes. Plan requires revision to address the fundamental construction deficiency.",
   "phases_total": 4,
-  "phases_completed": 1,
+  "phases_completed": 0,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
@@ -12,7 +12,7 @@
       "statement": "nf_characterizable_temporal_prior succ (succ k') case",
       "critical_path": true,
       "plan_phase": 4,
-      "remediation": "Blocked: requires Phase 2 completion (IsVEA negation closure)"
+      "remediation": "BLOCKED: requires backward Prop 4.2 which is unprovable with current construction"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
@@ -20,7 +20,7 @@
       "statement": "neg_bracket_is_vbracket beta_0 case",
       "critical_path": false,
       "plan_phase": null,
-      "remediation": "Leave as-is (inherent VBracketFormula limitation)"
+      "remediation": "Leave as-is"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
@@ -28,40 +28,30 @@
       "statement": "neg_partialBracketExist_is_vbracket backward n+1",
       "critical_path": false,
       "plan_phase": null,
-      "remediation": "Leave as-is (non-critical, forward direction sorry-free)"
+      "remediation": "Leave as-is"
     }
   ],
   "blockers": [
     {
-      "phase": 2,
-      "description": "VVecEA2 negation biconditional: neg_2var_vec_ea_indep gives forward direction only (not v.holds -> neg_v.holds). Backward direction (neg_v.holds -> not v.holds) needs disjointness proof for three-case A/B1/B2 construction.",
-      "unblock_options": [
-        "Prove neg_2var_vec_ea_indep_backward (~100-200 lines case analysis)",
-        "Alternative: mutual fo1_to_temporal + fo2_to_vvecEA2 at arities 1-2 only",
-        "Alternative: different proof strategy (table method, compactness)"
+      "phase": 1,
+      "task": "1.1",
+      "description": "neg_2var_vec_ea_indep_backward is unprovable",
+      "root_cause": "inf_bracket_formula (case B.2 in neg_interval_formula_indep) only encodes alpha_0.neg on first segment, not beta_0 failure. This makes the construction non-disjoint from the original bracket formula.",
+      "counterexample": "bf with pt(0)=P, all segments=top on (0,10) with P holding only at 5: both bf.holds (witnesses 5,8) and inf_bracket_formula(P).holds (witness 5, P.neg on (0,5)) are true simultaneously.",
+      "impact": "Blocks Phases 2-4: VecEA_m.neg correctness (Phase 2) requires backward Prop 4.2 for interval negation disjuncts. Without biconditional, Prop 4.3 negation case is unprovable.",
+      "resolution_paths": [
+        "Fix neg_interval_formula_indep case B.2 to encode beta_0 failure (~200 lines of proof changes to sorry-free code)",
+        "Alternative proof architecture avoiding bracket negation biconditional (uncharted territory)",
+        "Attempt backward direction only on Prior structures with HasAttainedINF (likely insufficient based on analysis)"
       ]
     }
   ],
-  "preserved_infrastructure": [
+  "continuation_context": "Plan v31 is blocked at Phase 1 due to a fundamental construction deficiency in neg_interval_formula_indep. The codebase's Lemma 5.1 forward proof (neg_interval_formula_indep_correct) is sorry-free but the construction is strictly weaker than Rabinovich's biconditional claim. A plan revision (v32) is needed that either fixes the construction or uses an alternative architecture. The ArityReduction.lean archival is complete.",
+  "next_action_hint": "Run /research 305 to investigate resolution paths, then /revise 305 for plan v32. Focus on whether fixing case B.2 to encode beta_0 failure is tractable without breaking the forward proof.",
+  "artifacts": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationIndep.lean",
-      "lines": 328,
-      "status": "sorry-free"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
-      "status": "sorry-free"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAClosure.lean",
-      "status": "sorry-free"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ArityReduction.lean",
-      "status": "sorry-free",
-      "role": "NEW: IsVEA predicate + isVEA_ex (existential closure)"
+      "type": "handoff",
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-1-handoff-20260623T231349.md"
     }
-  ],
-  "continuation_context": "Phase 2 is blocked on the negation biconditional. The existential closure (isVEA_ex) works because the bound variable is already existentially quantified in the IsVEA projection. The negation case fails because at arity >= 3, negating inside an existential projection is not the same as negating the VVecEA2. At arity 2, it IS the VVecEA2 negation (Prop 4.2), but only the forward direction is proved.",
-  "next_action_hint": "Research the backward direction of Prop 4.2 (neg_2var_vec_ea_indep_backward) or explore alternative approaches to close the KampPrior sorry without the full IsVEA theory."
+  ]
 }
