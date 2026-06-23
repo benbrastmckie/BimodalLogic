@@ -1,16 +1,16 @@
 {
   "status": "partial",
-  "summary": "5 cycles completed. Created NfExistTL.lean (323 lines, Part A/B induction) and FOToVEA.lean (105 lines, bridge structure). Sorry narrowed from bare KampPrior:158 to fo_to_temporal_correct (FOToVEA.lean:87). Build passes (1705 jobs). Key finding: model-independent negation closure via case disjunction is the resolution path.",
-  "phases_completed": 0,
+  "summary": "Phase 1 completed: restructured FOToVEA.lean to narrow sorry scope. Deleted fo_to_temporal/fo_to_temporal_correct (blanket sorry over all MonadicFormula sig 1). Replaced with nf_exist_to_temporal_aux (localized sorry covering only depth-(k+1) arity-2 NF existentials). Build passes (1701 jobs). The sorry now explicitly decomposes into atom layer (sorry-free) + quantifier layer (sorry at depth > 0 due to arity tower).",
+  "phases_completed": 1,
   "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
-      "line": 87,
-      "statement": "fo_to_temporal_correct",
-      "assumption": "fo_to_temporal returns Formula.bot for all/ex cases (placeholder)",
-      "why_deferred": "Requires model-independent negation closure (neg_vecEA2_indep) that collects all case disjuncts instead of case-splitting per model. Current neg_2var_vec_ea produces model-dependent witnesses.",
-      "next_dispatch": "Implement neg_vecEA2_indep via case disjunction (~600-800 lines), then complete fo_to_vvea_1/fo_to_vvea_2 mutual induction using only model-independent operations."
+      "line": 118,
+      "statement": "nf_exist_to_temporal_aux: ∃ A, ∀ M t, temporal_truth M atomMap t A ↔ ∃ x, nf_eval_nf M (k+1) 2 (x::t) sub_nf",
+      "assumption": "Existence of temporal formula for depth-(k+1) arity-2 NF existentials on Prior structures",
+      "why_deferred": "The proof decomposes into: (1) Atom layer — determining x < t / t < x / x = t and predicate conditions — handled sorry-free by VecEA2/NfToVecEA. (2) Quantifier layer — each arity-3 existential ∃ y, nf_eval_nf M k 3 [y,x,t] snf3 — handled at depth 0 by VecEADecomp (sorry-free), but at depth > 0 requires generalized arity reduction (Lemma 3.2). The arity tower: depth k+1 arity 2 → depth k arity 3 → depth k-1 arity 4 → ... → depth 0 arity k+3. At depth 0, VecEADecomp handles arity 3 only (897 lines); arbitrary arity at depth 0 needs generalized zone decomposition.",
+      "next_dispatch": "Three-step resolution: (1) Wire VecEADecomp zones into temporal formula for depth-0 arity-3 existentials (~200 lines). (2) Implement generalized depth-0 zone decomposition for arbitrary arity by induction on arity (~500-800 lines). (3) Implement lexicographic (k,n) descent composing the depth-0 base with quantifier layer reduction (~300 lines)."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
@@ -18,7 +18,7 @@
       "statement": "neg_vecEA2_is_vvecEA2 succ case",
       "assumption": "Non-critical path",
       "why_deferred": "Structurally unprovable at BracketFormula level",
-      "next_dispatch": "No action needed."
+      "next_dispatch": "No action needed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
@@ -26,7 +26,7 @@
       "statement": "neg_bracket beta_0 case",
       "assumption": "Non-critical path",
       "why_deferred": "Structurally unprovable",
-      "next_dispatch": "No action needed."
+      "next_dispatch": "No action needed"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
@@ -34,49 +34,50 @@
       "statement": "neg_partialBracketExist backward n+1",
       "assumption": "Non-critical path",
       "why_deferred": "Structurally unprovable",
-      "next_dispatch": "No action needed."
+      "next_dispatch": "No action needed"
     }
   ],
   "blockers": [
-    "fo_to_temporal_correct (FOToVEA.lean:87): needs model-independent negation closure. Resolution: neg_vecEA2_indep via case disjunction (~600-800 lines), conj_struct backward direction (~50-100 lines)."
+    "nf_exist_to_temporal_aux (FOToVEA.lean:118): depth-(k+1) arity-2 NF existential needs temporal formula. Requires generalized depth-0 zone decomposition for arbitrary arity + lexicographic (k,n) arity descent."
   ],
   "continuation_context": {
     "is_successor": false,
-    "bridge_structure": "kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior -> nf_characterizable_temporal_prior_partA -> nf_characterizable_temporal_prior_combined (Part B k+1) -> nf_exist_to_temporal_correct -> fo_to_temporal_correct (sorry)",
-    "resolution_path": {
-      "step_1": "Build neg_vecEA2_indep : VecEA2 n -> VVecEA2 collecting ALL case disjuncts. ~600-800 lines.",
-      "step_2": "Prove conj_struct backward direction. ~50-100 lines.",
-      "step_3": "Complete fo_to_vvea_1/fo_to_vvea_2 mutual structural induction. ~200-300 lines.",
-      "step_4": "Wire bridge: fo_to_temporal phi = (fo_to_vvea_1 phi).translateLeft. ~100 lines.",
-      "step_5": "Verify: lake build, sorry audit."
-    },
-    "key_decisions": [
-      "Model-independence IS required (verified from theorem type signature)",
-      "Rabinovich's proof IS constructive — each negation case produces a specific V-EA formula",
-      "Current Lean formalization case-splits per model instead of collecting all cases",
-      "Fix: collect all case disjuncts (at most 3^(n+1)) into a single model-independent VVecEA2",
-      "Arity tower still needs Lemma 3.2(2) — VecEADecomp handles depth-0, depth>0 needs nf_to_formula+IH"
+    "bridge_structure": "kamp_prior_expressive_completeness -> nf_characterizable_temporal_prior -> nf_characterizable_temporal_prior_partA -> nf_characterizable_temporal_prior_combined (Part B k+1) -> nf_exist_to_temporal_correct -> nf_exist_to_temporal_aux (sorry)",
+    "key_findings": [
+      "The previous plan's approach (mutual structural induction on MonadicFormula at arities 1 and 2) is blocked by the arity tower: .ex at arity 2 introduces arity 3, which cannot be reduced to arity 2 without Lemma 3.2",
+      "The previous handoff's claim that 'model-independent negation closure' is needed was INCORRECT for the NF-direct approach. The restructured sorry at nf_exist_to_temporal_aux works directly with NFs and needs no MonadicFormula translation",
+      "The correct resolution path is lexicographic (k,n) descent: depth k+1 arity 2 -> depth k arity 3 -> ... -> depth 0 arity k+3, with generalized depth-0 zone decomposition as the base case",
+      "VecEADecomp.lean (897 lines) handles depth-0 arity 3. Generalizing to arbitrary arity at depth 0 is a finite combinatorial problem: enumerate orderings of m variables, decompose into pairwise 2-variable conditions",
+      "The fo_to_temporal approach via MonadicFormula is fundamentally circular when used inside the NF depth induction. The NF-direct approach (nf_exist_to_temporal_aux) avoids this circularity"
     ],
-    "files_created": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean", "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean"],
-    "files_modified": ["Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"],
-    "reports": ["specs/305_rabinovich_ea_formula_implementation/reports/25_model-indep-resolution.md"]
-  },
-  "next_action_hint": "Revise plan v26 to add model-independent negation closure phase. Then /orchestrate 305 --hard --lit to continue.",
-  "artifacts": [
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean",
-      "type": "source",
-      "summary": "Combined Part A/Part B induction (323 lines). Part A sorry-free at all depths."
+    "resolution_path": {
+      "step_1": "Wire VecEADecomp zone theorems into a single nf_3var_exist_depth0_tl function that produces temporal formulas for depth-0 arity-3 existentials. All pieces exist, just need composition. ~200 lines.",
+      "step_2": "Implement generalized depth-0 zone decomposition for arbitrary arity m by induction on m. Base cases m <= 3 use existing infrastructure. Step case m+1 adds a new variable, case-splits on its position, decomposes into pairwise VVecEA2 conditions. ~500-800 lines.",
+      "step_3": "Implement the lexicographic (k,n) descent: at (k+1,2) use (k,3); at (k,3) use (k-1,4); ...; at (0,m) use generalized depth-0 decomposition. ~300 lines.",
+      "step_4": "Compose the layers into nf_exist_to_temporal_aux to eliminate the sorry. ~100-200 lines."
     },
+    "files_modified": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
+    ]
+  },
+  "next_action_hint": "Revise plan to replace Phase 2 (arity reduction) with the three-step resolution path: (1) wire depth-0 arity-3 zones, (2) generalize to arbitrary arity at depth 0, (3) lexicographic descent. Estimate ~1000-1300 additional lines across 2-3 new files.",
+  "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean",
       "type": "source",
-      "summary": "Bridge structure: fo_to_temporal, nf_exist_to_temporal (105 lines, 1 sorry)"
+      "summary": "Restructured: nf_exist_to_temporal via Classical.choose on nf_exist_to_temporal_aux (149 lines, 1 localized sorry)"
     },
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/reports/25_model-indep-resolution.md",
-      "type": "report",
-      "summary": "H3/H4 research: model-independence required, neg_vecEA2_indep via case disjunction is resolution"
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean",
+      "type": "source",
+      "summary": "Combined Part A/Part B induction (322 lines). Updated comments for NF-direct architecture."
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "type": "source",
+      "summary": "Updated documentation to reflect nf_exist_to_temporal_aux sorry location."
     }
   ]
 }
