@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
+import Bimodal.Metalogic.WeakCanonical.Kamp.FOToVEA
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -289,16 +290,13 @@ noncomputable def nf_characterizable_temporal_prior_combined
          nf_succ_char_formula_correct atomMap h_surj exist_tl_fn
            (fun sub_nf M' h_UZ' h_SZ' t' => (ih_B sub_nf).property M' h_UZ' h_SZ' t')
            nf M h_UZ h_SZ t⟩,
-    -- Part B at depth k+1: requires arity-3 NF infrastructure
-    -- For each sub_nf : NormalForm sig (k+1) 2, we need to convert
-    -- ∃ x, nf_eval_nf M (k+1) 2 (x::t) sub_nf to temporal.
-    -- The NF at depth k+1 arity 2 has quantifier assignments on
-    -- NormalForm sig k 3, which introduces 3-variable sub-NFs.
-    -- This requires either Rabinovich's Lemma 3.2.2 (reduction to
-    -- 2-free-variable EA) or arity-3+ V-EA infrastructure.
-    -- SORRY: Part B at depth k+1 is deferred pending arity tower resolution.
-    fun sub_nf => ⟨Formula.bot, fun M h_UZ h_SZ t => by
-      sorry⟩)
+    -- Part B at depth k+1: use FOToVEA bridge (Rabinovich Prop 4.3)
+    -- NF → nf_to_formula → MonadicFormula sig 2 → .ex → MonadicFormula sig 1
+    -- → fo_to_temporal → Formula
+    fun sub_nf =>
+      ⟨nf_exist_to_temporal atomMap h_surj sub_nf,
+       fun M h_UZ h_SZ t =>
+         nf_exist_to_temporal_correct atomMap h_surj sub_nf M h_UZ h_SZ t⟩)
 
 /-! ## Extract Part A: the main theorem for use in KampPrior -/
 
