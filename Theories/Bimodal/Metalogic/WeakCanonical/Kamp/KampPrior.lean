@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -94,24 +95,38 @@ theorem nf_depth0_char_formula_correct_arity1
 Core construction: translate a depth-k arity-1 normal form to a temporal
 formula that characterizes it on Prior structures.
 
-**k = 0**: Use `nf_depth0_char_formula` (conjunction of atom literals).
-No Prior hypotheses needed -- works on all structures.
+- **k = 0**: `nf_depth0_char_formula` (conjunction of atom literals).
+- **k + 1**: Requires converting each `∃ x, nf_eval_nf M k 2 (x::t) sub_nf` to
+  temporal. The depth-0 sub-NF existential is handled sorry-free by
+  `nf_2var_exist_depth0_tl` (NfToVecEA.lean). The general case requires
+  additional infrastructure for multi-arity V-EA formulas (Rabinovich Prop 4.3),
+  the Stavi backward direction (StaviCompleteness.lean:2873), or
+  Z-transfer (NF realizability on Z).
 
-**k + 1**: Will be filled by the Rabinovich chain (Phase 4, task 305).
-Currently uses sorry as placeholder.
+### Obstruction Analysis
+
+The IH at `succ k` provides depth-k arity-1 formulas. Each quantifier clause
+requires expressing `∃ x, nf_eval M k 2 (x::t) sub_nf` as temporal, which
+(via `nf_to_formula_correct`) is `eval M (fun _ => t) (.ex (nf_to_formula sub_nf))`,
+a `MonadicFormula sig 1` with depth k+1 -- the same depth being constructed.
+This creates a circular dependency that requires independent infrastructure
+(one of paths a-d below) to break.
+
+### Resolution Paths
+
+- **(a)** Rabinovich Prop 4.3: V-EA structural induction -- needs arity >= 3 V-EA
+- **(b)** Stavi chain: `flatten_stavi_correct_prior` + fix sorry at line 2873
+- **(c)** Z-transfer: `US_expressively_complete_over_Z` + NF realizability on Z
+- **(d)** Mutual induction: MonadicFormula sig 1 + arity 2 VVecEA2 -- needs arity 3
 -/
 
 /-- For Prior structures, every depth-k arity-1 NF is characterizable
     by a temporal formula (using only U and S).
 
     This is the Prior-specific replacement for `nf_characterizable_by_stavi`.
-    The resulting formula correctly characterizes the NF on any structure
-    satisfying `semantic_prior_UZ` and `semantic_prior_SZ`.
 
-    **Proof by the Rabinovich chain (Rabinovich 2014)**:
-    - k=0: `nf_depth0_char_formula` (atom literals, order-class-agnostic)
-    - k+1: Rabinovich chain: Lemma 5.1 -> Prop 4.2 -> Prop 4.3 -> Thm 4.4
-      (pending implementation in EndpointNegation.lean et al.)
+    - k=0: `nf_depth0_char_formula` (atom literals)
+    - k+1: sorry (pending resolution of obstruction; see section comment above)
 -/
 noncomputable def nf_characterizable_temporal_prior
     {sig : MonadicSignature}
@@ -131,8 +146,15 @@ noncomputable def nf_characterizable_temporal_prior
     -- Depth 0: conjunction of atom literals (no temporal operators needed)
     exact ⟨Separation.nf_depth0_char_formula atomMap h_surj nf,
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
-  | succ k ih =>
-    -- Depth k+1: placeholder pending Rabinovich chain (task 305 Phase 4)
+  | succ k _ih =>
+    -- Depth k+1: requires converting ∃x, nf_eval_nf M k 2 (x::t) sub_nf
+    -- to temporal, for each sub_nf : NormalForm sig k 2.
+    -- The IH provides depth-k arity-1 formulas, but the existential has depth k+1.
+    -- Resolution requires one of: (a) Rabinovich Prop 4.3 structural induction
+    -- with general V-EA for arity ≥ 3, (b) fixing the Stavi chain sorry at
+    -- nf_exist_sf_guarded_backward + flatten_stavi_correct_prior, or
+    -- (c) Z-transfer via US_expressively_complete_over_Z + NF realizability on Z.
+    -- For k = 0: nf_2var_exist_depth0_tl (NfToVecEA.lean) handles this sorry-free.
     exact sorry
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,

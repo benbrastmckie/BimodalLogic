@@ -1,10 +1,10 @@
-# Implementation Plan: Task #305 (Revised)
+# Implementation Plan: Task #305 (Revised v2)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation
 - **Status**: [IN PROGRESS]
-- **Effort**: 8 hours
+- **Effort**: 10 hours
 - **Dependencies**: None (all required sorry-free infrastructure exists)
-- **Research Inputs**: reports/23_restructure-research.md, handoffs/phase-1-handoff.md
+- **Research Inputs**: reports/23_restructure-research.md, handoffs/phase-1-handoff.md, handoffs/phase-2-arity-growth-blocker.md
 - **Artifacts**: plans/24_faithful-restructure.md (this file)
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean4
@@ -12,22 +12,37 @@
 
 ## Overview
 
-Eliminate the sorry at KampPrior.lean:136 (`nf_characterizable_temporal_prior` succ case) by implementing the NF-to-temporal translation using the model-dependent negation closure chain from EANegationClosure.lean. Phase 0 (bypass archival) and Phase 1 (EndpointNegation base case) are complete. The original plan's Phases 2-4 assumed model-independent negation via EndpointNegation.lean, which has a genuine obstruction (same as EANegation.lean:1084). This revision redirects the critical path through the model-dependent chain, which is entirely sorry-free.
+Eliminate the sorry at KampPrior.lean:136 (`nf_characterizable_temporal_prior` succ case) by following Rabinovich's actual proof structure: structural induction on MonadicFormula (Prop 4.3), not NF depth induction. The previous plan (v24) attempted depth induction on k at a fixed arity, which is BLOCKED by arity growth (depth-k arity-2 needs depth-(k-1) arity-3, etc.). This revision replaces blocked Phases 2-3 with three new phases matching Rabinovich's approach: model-independent negation (Prop 4.2), structural induction `fo_to_vvea` (Prop 4.3), and bridge to KampPrior sorry elimination.
+
+Phase 0 (bypass archival) is complete. Phase 1 (EndpointNegation base case) is partial but not on the critical path.
 
 ### Research Integration
 
-Key findings from report 23 (restructure-research.md) and phase-1-handoff.md:
+Key findings integrated into this revision:
+
+**From report 23 (restructure-research.md) and phase-1-handoff.md:**
 - The model-independent biconditional `neg_vecEA2_is_vvecEA2` (EndpointNegation.lean) has the SAME obstruction as EANegation.lean:1084 -- interior witnesses prevent blocking all configurations model-independently
 - The model-DEPENDENT chain in EANegationClosure.lean is entirely sorry-free: `neg_vecEA2`, `neg_2var_vec_ea`, `neg_interval_formula`, `neg_bounded_exists`
-- For KampPrior completeness on Prior structures, model-dependent negation closure suffices because the proof operates on specific canonical models
-- `constenv_2var_determines` (NfComposition.lean) reduces n-var NF evaluation to 2-var NF evaluation for const-env evaluations -- only 2-var NFs need VecEA2 treatment
-- `nf_2var_exist_depth0_tl` (NfToVecEA.lean) handles depth-0 existentials via VecEA2 translation (sorry-free)
 - `translate_correct` (RabinovichTranslation.lean) converts VecEA2 to temporal formulas via Prop 3.5 (sorry-free)
 - Prior structures trivially satisfy HasAttainedINF (`prior_hasAttainedINF`, sorry-free)
 
-### Prior Plan Reference
+**From phase-2-arity-growth-blocker handoff:**
+- NF depth induction at fixed arity BLOCKED: arity grows (2 -> 3 -> 4 -> ...) at each depth step
+- `constenv_2var_determines` only applies to constenvs `(z, c, c, ..., c)`, not general envs `(y, x, t)`
+- Rabinovich's Prop 4.3 uses structural induction on FO formulas (all arities simultaneously), which avoids the arity growth problem entirely
+- Option A (structural induction on MonadicFormula) is the recommended resolution
 
-Plan v24 (original) attempted a 6-phase restructuring using model-independent negation. Phase 0 completed (11 bypass files archived). Phase 1 discovered the model-independent obstruction. This revision narrows scope to the single critical-path sorry and uses the model-dependent chain.
+### H3 Lemma Mapping Table
+
+| Source | Lean Identifier | Status |
+|--------|----------------|--------|
+| Prop 4.2 (model-indep negation) | `neg_2var_vec_ea_indep` | NEEDED (Phase 2) |
+| Prop 4.3 (FO -> V-EA) | `fo_to_vvea` | NEEDED (Phase 3) |
+| Prop 4.2 (model-dep negation) | `neg_2var_vec_ea` | EXISTS (EANegationClosure.lean) |
+| Lemma 5.1 (interval negation) | `neg_interval_formula` | EXISTS (EANegationClosure.lean) |
+| Prop 3.5 (V-EA -> TL translation) | `ExistsForallSpec.translate_correct` | EXISTS (RabinovichTranslation.lean) |
+| Lemma 3.4 (V-EA closure) | `VVecEA2.conj_holds_vvecEA2` + existential closure | EXISTS (VecEAClosure.lean) |
+| Bridge | `nf_characterizable_temporal_prior` | SORRY (Phase 4) |
 
 ### Critical Path Analysis
 
@@ -38,40 +53,38 @@ completeness_discrete
     -> nf_characterizable_temporal_prior (succ case)  <-- KampPrior.lean:136
 ```
 
-The succ case must construct a `Formula` that characterizes a depth-(k+1) arity-1 NF on Prior structures. By `nf_eval_nf` at depth k+1, this requires:
-1. Atom predicates at t (handled by `nf_depth0_char_formula`, already available)
-2. For each `sub_nf : NormalForm sig k 2`, a temporal formula for `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` when `quant_assignment sub_nf = true`
-3. For each `sub_nf` with `quant_assignment sub_nf = false`, a temporal formula for the negation of that existential
-
-Steps 2-3 are where the model-dependent chain enters:
-- Positive existentials: decompose via order direction (future/past/equal), build VecEA2, translate via Prop 3.5
-- Negative existentials: use `neg_2var_vec_ea` from EANegationClosure.lean to get VVecEA2, then translate
-
-The depth induction works because `nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` at depth k involves existentials over depth-(k-1) NFs, which the IH handles.
+The revised approach for the succ case:
+1. Each depth-(k+1) arity-1 NF decomposes into atoms + existential quantifiers over depth-k arity-2 NFs
+2. The existential part is expressible as a `MonadicFormula sig 2`
+3. Apply `fo_to_vvea` (Prop 4.3, structural induction) to get a model-independent VVecEA2
+4. Apply `ExistsForallSpec.translate_correct` (Prop 3.5) to translate VVecEA2 to a temporal formula
+5. Fill the sorry at KampPrior.lean:136
 
 ## Goals & Non-Goals
 
 **Goals**:
 - Eliminate the sorry at KampPrior.lean:136 (`nf_characterizable_temporal_prior` succ case)
-- Build the NF-to-temporal translation for depth k+1 using the model-dependent chain
+- Build model-independent negation closure `neg_2var_vec_ea_indep` (Prop 4.2)
+- Prove `fo_to_vvea` by structural induction on MonadicFormula (Prop 4.3)
+- Bridge `fo_to_vvea` to `nf_characterizable_temporal_prior` via Prop 3.5
 - Achieve sorry-free `kamp_prior_expressive_completeness` and `completeness_discrete`
 - Maintain `lake build` success at every phase
 
 **Non-Goals**:
 - Fixing the model-independent EndpointNegation.lean succ sorry (genuine obstruction, not on critical path)
 - Fixing EANegation.lean sorries at lines 1084 and 1235 (permanent impossibilities)
-- Creating new infrastructure files (ModelIndepNegation.lean, FOToVEA.lean, KampRabinovich.lean from original plan) -- the model-dependent chain makes these unnecessary
-- Modifying any existing sorry-free files
+- The abandoned NfExistTL.lean approach (NF depth induction blocked by arity growth)
+- Modifying any existing sorry-free files (except KampPrior.lean for sorry elimination)
 - Addressing Stavi expressive completeness sorries (separate sorry chain)
 
 ## Risks & Mitigations
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Depth-k existential decomposition at arity 2 may not reduce cleanly to VecEA2 | H | M | `nf_2var_exist_depth0_tl` handles depth 0. For depth k>0, the NF structure at arity 2 has quantifier components over depth-(k-1) arity-3 NFs, but `constenv_2var_determines` collapses these to 2-var. The induction goes on k. |
-| IH provides arity-1 translation but we need arity-2 existential translation | H | M | The IH gives 1-var depth-k NF -> Formula. The 2-var existential decomposes by order direction into endpoint + bracket. The endpoint predicates are 1-var formulas (handled by IH). The bracket's interior witness predicates are also 1-var (evaluated at specific points). |
-| Model-dependent negation closure introduces `HasAttainedINF M atomMap` hypothesis | M | L | KampPrior already works under `semantic_prior_UZ`/`semantic_prior_SZ` hypotheses, and `prior_hasAttainedINF` derives HasAttainedINF from these. The hypothesis threads through naturally. |
-| Building the conjunction over all sub_nf with their characteristic formulas may be complex | M | M | Use `Fintype.elems` to enumerate all `NormalForm sig k 2`, filter by quant_assignment, and take a conjunction of temporal formulas. The same pattern is used in `kamp_prior_expressive_completeness` for the disjunction over good NFs. |
+| Model-independent negation may require enumerating too many VBracketFormula outputs | M | M | `neg_interval_formula` produces outputs determined by TemporalPred labels (finite, model-independent structure). The disjunction over all possible outputs is finite and well-defined. |
+| Structural induction on MonadicFormula may not match VVecEA2 semantics cleanly at `lt` case | M | L | The `lt` constructor `MonadicFormula.lt i j` for 2-var formulas is an order atom. VVecEA2 already encodes order information via endpoint predicates and bracket structure. Map `lt 0 1` to a VVecEA2 that holds iff z0 < z1 (trivially true in the open interval context). |
+| Bridging `fo_to_vvea` output to `nf_characterizable_temporal_prior` requires connecting MonadicFormula evaluation with NF evaluation | H | M | At depth k+1, `nf_eval_nf` decomposes into atom assignments + quantifier map. The quantifier map is itself expressible as a conjunction of existential MonadicFormulas. The bridge composes: NF -> MonadicFormula -> VVecEA2 -> TL Formula. |
+| The `all` (universal) case of MonadicFormula structural induction | M | L | Express `all alpha` as `not (ex (not alpha))`. Use negation closure (Prop 4.2) + existential closure (Lemma 3.4). No separate universal case needed. |
 
 ## Implementation Phases
 
@@ -80,10 +93,11 @@ The depth induction works because `nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) su
 |------|--------|------------|
 | 1 | 0 | -- |
 | 2 | 1 | 0 |
-| 3 | 2 | 1 |
+| 3 | 2 | -- |
 | 4 | 3 | 2 |
+| 5 | 4 | 3 |
 
-Phases are strictly sequential: Phase 0 and 1 are complete, Phase 2 builds the depth-induction infrastructure, Phase 3 fills the sorry.
+Phase 2 has no dependency on Phase 1 (different approach). Phases 3 and 4 are strictly sequential after Phase 2.
 
 ---
 
@@ -126,119 +140,152 @@ Phases are strictly sequential: Phase 0 and 1 are complete, Phase 2 builds the d
 
 ---
 
-### Phase 2: Depth-k Existential-to-Temporal Translation [BLOCKED]
-
-**Goal**: Implement a theorem that translates `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` into a temporal formula on Prior structures, for arbitrary depth k. This is the key missing piece for filling KampPrior.lean:136.
-
-**Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean`
-- [ ] Import NfToVecEA.lean, EANegationClosure.lean, VecEATranslation.lean, NfComposition.lean, PriorDefs.lean
-- [ ] Implement the main theorem `nf_2var_exist_tl` by induction on depth k:
-  ```
-  nf_2var_exist_tl :
-    forall (k : Nat) (sub_nf : NormalForm sig k 2),
-    exists (A : Formula), forall (M : ...) (h_UZ : ...) (h_SZ : ...) (t : M.carrier),
-      temporal_truth M atomMap t A <->
-      exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf
-  ```
-- [ ] **Base case (k = 0)**: Delegate to `nf_2var_exist_depth0_tl` from NfToVecEA.lean (already sorry-free; does not need Prior hypotheses)
-- [ ] **Inductive step (k+1)**: The NF at depth (k+1) arity 2 has:
-  - Atom predicates on (x, t): order atoms determine direction (x < t, x > t, x = t)
-  - Quantifier map: for each depth-k arity-3 sub_nf, whether `exists y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) sub_nf` holds
-  - By `constenv_nvar_to_2var`, the arity-3 evaluation reduces to arity-2 evaluation on (y, x) or (y, t) envs. But the IH applies at arity 2, depth k, giving temporal formulas for each sub-sub-existential.
-  - The translation composes: build the conjunction of atom literals + quantifier formulas, wrap in the appropriate temporal operator (U/S) based on order direction.
-- [ ] Implement the negation case: `nf_2var_notexist_tl` for `not exists x, ...` using `neg_2var_vec_ea` from EANegationClosure.lean to get VVecEA2, then translate via `VVecEA2.translateLeft`/`translateRight`
-- [ ] Verify `lake build` succeeds
-
-**Timing**: 3 hours
-
-**Depends on**: 1
-
-**Files to create**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean` -- NEW (~200-400 lines)
+### Phase 2: Model-Independent Negation [BLOCKED]
 
 **BLOCKER** (Phase 2):
-- **What failed**: The depth induction on k for `nf_2var_exist_tl` does not close.
-  At depth k+1, `nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` decomposes
-  into atoms at (x,t) AND quantifier conditions involving depth-k arity-3 existentials
-  `exists y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) sub_sub_nf`.
-  The env `(y, x, t)` is NOT a constenv (x and t can differ), so
-  `constenv_2var_determines` / `constenv_nvar_to_2var` do not apply.
-  The IH at depth k for arity 2 cannot handle arity-3 existentials.
-- **What was tried**:
-  1. Direct depth induction on k: fails because arity grows (2 -> 3 -> 4 -> ...)
-  2. Mutual induction on (k, arity 1) and (k, arity 2): fails because arity-2 step
-     needs arity-3 at depth k
-  3. Strengthened induction for all arities: would require proving for all n, but
-     `constenv_2var_determines` only applies to constenvs of form (z, c, c, ..., c)
-  4. Using `nf_to_formula` + `kamp_prior_expressive_completeness` recursively:
-     circular -- `kamp_prior_expressive_completeness` calls `nf_characterizable_temporal_prior`
-  5. Using `doets_lemma_1_1` to reduce 2-var to 1-var: fails because knowing individual
-     1-var NFs of x and t does not determine their 2-var NF
-  6. Using VVecEA2 negation closure: model-dependent (produces different VVecEA2 for each M),
-     cannot construct model-independent temporal formula from it
-- **Why stuck**: Rabinovich's proof of Prop 4.3 uses structural induction on FO formulas
-  (not NF depth induction). The structural induction handles ALL arities simultaneously,
-  using Prop 4.2 (negation closure) for the negation case and Lemma 3.4 (V-EA closure
-  under existential) for the existential case. Our NF-based approach packages the
-  formula structure into a depth index, but this loses the structural induction's ability
-  to handle all arities at once. The depth induction at a FIXED arity doesn't close
-  because existential quantification increases arity by 1.
-- **What is needed**: One of:
-  (a) Implement Prop 4.3 by structural induction on MonadicFormula (not NF depth),
-      using VEF closure results + Prop 4.2 negation closure. This requires building
-      model-independent VVecEA2 formulas, not just model-dependent ones.
-  (b) Prove a generalized `constenv_2var_determines` that works for non-constenvs
-      (env = (y, x, t) with x != t), reducing arity-3 to arity-2.
-  (c) Find a different induction measure that decreases at each step (e.g., total
-      quantifier complexity across all arities, not just depth at a fixed arity).
+- **What failed**: The plan's Phase 2-3-4 decomposition assumes the arity growth problem can be solved by structural induction on MonadicFormula (Rabinovich Prop 4.3). However, the `ex` case of the structural induction for `MonadicFormula sig 2` introduces `MonadicFormula sig 3`, which requires arity-3 V-EA infrastructure that does not exist in the codebase.
+- **What was tried**: (1) Direct NF depth induction with `nf_2var_exist_tl_prior` helper -- circular dependency: the depth-(k+1) characterization needs temporal formulas for existentials at depth k+1. (2) Mutual structural induction on MonadicFormula for arities 1 and 2 -- blocked by arity-3 V-EA. (3) Z-completeness transfer via `US_expressively_complete_over_Z` -- requires NF realizability on Z theorem (not proved). (4) Stavi conversion via `flatten_stavi_correct_prior` -- blocked by sorry at `nf_exist_sf_guarded_backward` (StaviCompleteness.lean:2873).
+- **Why stuck**: The fundamental obstruction is the arity tower: at NF depth k with arity n, the existential quantifier introduces arity n+1. The codebase has VVecEA2 (arity 2) but not general V-EA for arity >= 3. Rabinovich's Prop 4.3 requires V-EA for all arities simultaneously.
+- **What is needed**: One of four resolution paths: (a) Build general V-EA infrastructure for arity >= 3 (significant new infrastructure, ~500+ lines). (b) Fix the Stavi backward sorry at StaviCompleteness.lean:2873 (nf_exist_sf_guarded_backward). (c) Prove NF realizability on Z-structures (all depth-k arity-1 NFs are realized by some Z-structure). (d) Find an alternative proof structure that avoids the arity tower.
 - **Prohibited**: Do NOT use sorry, def X := True, or vacuous placeholder
 
+*(deviation: blocked -- arity growth obstruction prevents all four planned resolution paths)*
+
+**Goal**: Build `neg_2var_vec_ea_indep`, a model-independent version of `neg_2var_vec_ea` that produces a VVecEA2 whose structure depends only on the input VVecEA2 (not on any specific model M).
+
+**Signature**:
+```lean
+theorem neg_2var_vec_ea_indep {sig : MonadicSignature}
+    (v : VVecEA2) :
+    { v' : VVecEA2 //
+      ∀ (M : OrderedMonadicStructure sig)
+        (atomMap : Formula → sig.preds)
+        (h_INF : HasAttainedINF M atomMap)
+        (z0 z1 : M.carrier) (h_lt : z0 < z1),
+        (¬ v.holds M atomMap z0 z1) → v'.holds M atomMap z0 z1 }
+```
+
+**Technique**: Enumerate all possible VBracketFormula outputs from `neg_interval_formula` by case-splitting on boolean conditions (pointType occurrence at endpoints, segmentType satisfaction in the interval). Each case produces a VBracketFormula whose structure depends only on TemporalPred labels, which are model-independent. Take the disjunction of ALL possible outputs as the model-independent VVecEA2. Prove: for any Prior structure M, at least one disjunct holds.
+
+**Tasks**:
+- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ModelIndepNegation.lean`
+- [ ] Import EANegationClosure.lean, VecEAClosure.lean, VecEAFormula.lean
+- [ ] Analyze `neg_interval_formula` to catalog all possible VBracketFormula outputs (finite set determined by TemporalPred labels)
+- [ ] For each disjunct in VVecEA2: each disjunct's endpoint predicates and bracket formula are structurally determined by the input VVecEA2's TemporalPred labels
+- [ ] Build `neg_2var_vec_ea_indep` by taking the disjunction over all possible outputs
+- [ ] Prove correctness: for any model M satisfying HasAttainedINF, if `not v.holds M atomMap z0 z1` then `v'.holds M atomMap z0 z1` (at least one disjunct is the one `neg_2var_vec_ea` would produce for M)
+- [ ] Verify `lake build` succeeds
+
+**Timing**: 2.5 hours
+
+**Depends on**: none (uses existing sorry-free infrastructure in EANegationClosure.lean)
+
+**Files to create**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ModelIndepNegation.lean` -- NEW (~400 lines)
+
+**Key dependency**: `neg_interval_formula` in EANegationClosure.lean (sorry-free, model-dependent). This phase lifts it to model-independent by enumerating all possible case-split outcomes.
+
 **Verification**:
-- BLOCKED: `nf_2var_exist_tl` and `nf_2var_notexist_tl` cannot be implemented
-  with the current infrastructure
+- [ ] `neg_2var_vec_ea_indep` is sorry-free (`lean_verify`)
+- [ ] `lake build` succeeds
 
 ---
 
-### Phase 3: Fill KampPrior.lean Sorry [BLOCKED]
+### Phase 3: Structural Induction fo_to_vvea [NOT STARTED]
 
-**Goal**: Replace the sorry at KampPrior.lean:136 with a proof using Phase 2's `nf_2var_exist_tl` and `nf_2var_notexist_tl`.
+**Goal**: Prove `fo_to_vvea`, Rabinovich's Prop 4.3: every `MonadicFormula sig 2` is equivalent to a VVecEA2 on Prior structures. This uses structural induction on MonadicFormula, avoiding the arity growth problem that blocked the NF depth induction approach.
+
+**Signature**:
+```lean
+theorem fo_to_vvea {sig : MonadicSignature}
+    (psi : MonadicFormula sig 2) :
+    { v : VVecEA2 //
+      ∀ (M : OrderedMonadicStructure sig)
+        (atomMap : Formula → sig.preds)
+        (h_INF : HasAttainedINF M atomMap)
+        (z0 z1 : M.carrier) (h_lt : z0 < z1),
+        eval M (Fin.cons z0 (fun _ => z1)) psi ↔ v.holds M atomMap z0 z1 }
+```
+
+**Structural induction on MonadicFormula (Rabinovich Prop 4.3)**:
+- **`atom p i`**: Directly a VVecEA2 -- endpoint predicates encode whether `p` holds at `z0` (i=0) or `z1` (i=1)
+- **`lt i j`**: Order atom. For `lt 0 1` (z0 < z1), this is trivially true in the open interval context. Build a VVecEA2 that always holds. For `lt 1 0`, build one that never holds (empty disjunction).
+- **`not alpha`**: By IH, `alpha` maps to some `v : VVecEA2`. Apply `neg_2var_vec_ea_indep` from Phase 2 to get `v' : VVecEA2` encoding the negation.
+- **`and alpha beta`**: By IH, `alpha` maps to `v1` and `beta` maps to `v2`. Use `VVecEA2.conj_holds_vvecEA2` from VecEAClosure.lean (Lemma 3.4, conjunction closure).
+- **`ex alpha`**: By IH on `alpha : MonadicFormula sig 3`, get `v : VVecEA2` for the 3-variable formula. Apply VVecEA2 existential closure from VecEAClosure.lean (Lemma 3.4, existential quantification). Note: the IH applies to `alpha : MonadicFormula sig (2+1)` directly because structural induction handles all arities simultaneously.
+- **`all alpha`**: Express as `not (ex (not alpha))`. Use negation closure (Phase 2) + existential closure (Lemma 3.4) + negation closure again.
 
 **Tasks**:
-- [ ] Add `import Bimodal.Metalogic.WeakCanonical.Kamp.NfExistTL` to KampPrior.lean
+- [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean`
+- [ ] Import ModelIndepNegation.lean, VecEAClosure.lean, MonadicFO.lean
+- [ ] Implement `fo_to_vvea` by structural induction on MonadicFormula
+- [ ] Handle `atom` case: map predicate atoms to VVecEA2 endpoint predicates
+- [ ] Handle `lt` case: map order atoms to trivial/empty VVecEA2
+- [ ] Handle `not` case: apply `neg_2var_vec_ea_indep` (Phase 2)
+- [ ] Handle `and` case: apply `VVecEA2.conj_holds_vvecEA2` (VecEAClosure.lean)
+- [ ] Handle `ex` case: apply VVecEA2 existential closure (VecEAClosure.lean)
+- [ ] Handle `all` case: reduce to `not (ex (not alpha))` and compose closures
+- [ ] Verify `lake build` succeeds
+
+**Timing**: 2 hours
+
+**Depends on**: 2
+
+**Files to create**:
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean` -- NEW (~300 lines)
+
+**Verification**:
+- [ ] `fo_to_vvea` is sorry-free (`lean_verify`)
+- [ ] `lake build` succeeds
+
+---
+
+### Phase 4: Bridge and KampPrior Sorry Elimination [NOT STARTED]
+
+**Goal**: Connect `fo_to_vvea` to `nf_characterizable_temporal_prior` and eliminate the sorry at KampPrior.lean:136.
+
+**Bridge logic**:
+1. For each depth-(k+1) arity-1 NF, the existential quantifier part is expressible as a `MonadicFormula sig 2`
+2. Apply `fo_to_vvea` (Phase 3) to get a VVecEA2
+3. Apply `ExistsForallSpec.translate_correct` (Prop 3.5, RabinovichTranslation.lean) to translate VVecEA2 to a temporal `Formula`
+4. Compose with the atom predicate conjunction to get the full characteristic temporal formula
+5. Fill the sorry at KampPrior.lean:136
+
+**Tasks**:
+- [ ] Add imports for FOToVEA.lean and RabinovichTranslation.lean to KampPrior.lean
+- [ ] Build the bridge: for each `sub_nf : NormalForm sig k 2` in the quantifier map:
+  - Express `exists x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf` as evaluation of a `MonadicFormula sig 2`
+  - Apply `fo_to_vvea` to get VVecEA2
+  - Apply `ExistsForallSpec.translate_correct` to get temporal formula
 - [ ] Fill the `succ k ih` case of `nf_characterizable_temporal_prior`:
-  1. Extract `nf` as `(atom_assignment, quant_assignment)` via pattern match on `NormalForm sig (k+1) 1`
-  2. Build atom predicate formula: conjunction of atom literals at t (reuse `nf_depth0_char_formula` for the atom part, or build manually for arity 1)
-  3. For each `sub_nf : NormalForm sig k 2`:
-     - If `quant_assignment sub_nf = true`: get temporal formula from `nf_2var_exist_tl k sub_nf`
-     - If `quant_assignment sub_nf = false`: get temporal formula from `nf_2var_notexist_tl k sub_nf`
-  4. Combine via conjunction: atom_formula AND (conjunction over all sub_nf of their formulas)
-  5. Prove biconditional: forward uses `nf_eval_nf` decomposition at depth k+1; backward reconstructs NF evaluation from temporal truth
-- [ ] Verify `kamp_prior_expressive_completeness` becomes sorry-free (it calls `nf_characterizable_temporal_prior` which now has no sorry)
+  1. Build atom predicate formula (conjunction of atom literals at t)
+  2. For each quantifier component, get temporal formula via the bridge
+  3. Combine into a single temporal formula characterizing the NF
+  4. Prove biconditional correctness
+- [ ] Verify `kamp_prior_expressive_completeness` becomes sorry-free
 - [ ] Run `lean_verify` on `kamp_prior_expressive_completeness`
 - [ ] Run `lean_verify` on `completeness_discrete` to check sorry chain reduction
 - [ ] Verify `lake build` succeeds
 - [ ] Run sorry audit: `grep -rn "sorry" Theories/ --include="*.lean" | grep -v Boneyard | grep -v "sorry-free\|-- sorry\|/- sorry"`
 
-**Timing**: 2.5 hours
+**Timing**: 1.5 hours
 
-**Depends on**: 2
+**Depends on**: 3
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFY (fill sorry, add import)
-
-**BLOCKER** (Phase 3):
-- **Blocked by**: Phase 2 (depth-k existential translation)
-- Phase 3 cannot proceed until Phase 2 provides `nf_2var_exist_tl` and `nf_2var_notexist_tl`
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFY (fill sorry, add imports)
 
 **Verification**:
-- BLOCKED: depends on Phase 2 resolution
+- [ ] `nf_characterizable_temporal_prior` is sorry-free (`lean_verify`)
+- [ ] `kamp_prior_expressive_completeness` is sorry-free (`lean_verify`)
+- [ ] `completeness_discrete` sorry chain reduced
+- [ ] `lake build` succeeds
 
 ## Testing & Validation
 
 - [ ] `lake build` succeeds after each phase (incremental verification)
-- [ ] `nf_2var_exist_tl` is sorry-free (`lean_verify`)
-- [ ] `nf_2var_notexist_tl` is sorry-free (`lean_verify`)
+- [ ] `neg_2var_vec_ea_indep` is sorry-free (`lean_verify`)
+- [ ] `fo_to_vvea` is sorry-free (`lean_verify`)
 - [ ] `nf_characterizable_temporal_prior` is sorry-free (`lean_verify`)
 - [ ] `kamp_prior_expressive_completeness` is sorry-free (`lean_verify`)
 - [ ] Sorry count on critical path reduced: KampPrior.lean:136 eliminated
@@ -247,17 +294,22 @@ Phases are strictly sequential: Phase 0 and 1 are complete, Phase 2 builds the d
 
 ## Artifacts & Outputs
 
-- `specs/305_rabinovich_ea_formula_implementation/plans/24_faithful-restructure.md` -- this plan (revised)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfExistTL.lean` -- NEW (depth-k existential TL translation)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFIED (sorry eliminated)
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- EXISTS (Phase 1, partial)
+- `specs/305_rabinovich_ea_formula_implementation/plans/24_faithful-restructure.md` -- this plan (revised v2)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ModelIndepNegation.lean` -- NEW (Phase 2, model-independent negation, ~400 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/FOToVEA.lean` -- NEW (Phase 3, FO -> VVecEA2, ~300 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` -- MODIFIED (Phase 4, sorry eliminated, ~200 lines added)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean` -- EXISTS (Phase 1, partial, not on critical path)
 - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/` -- EXISTS (Phase 0, 11 archived files)
 
 ## Rollback/Contingency
 
-- **Full rollback**: `git checkout -- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` restores all files. Boneyard additions are safe (no code depends on them).
-- **Phase 2 blocked**: If the depth-k existential translation encounters an unforeseen obstruction in the inductive step, consider:
-  1. Splitting into two sub-phases: depth-0 (already done via `nf_2var_exist_depth0_tl`) and depth-1+ (new)
-  2. Using a different induction strategy (e.g., on the NF structure directly rather than depth)
-  3. As a last resort, restore bypass files from Boneyard (the codebase returns to prior state)
-- **Phase 3 blocked**: If the NF decomposition at depth k+1 does not match the expected form, the obstruction is in the conjunction construction. The individual pieces (existential translation, negation closure) are sorry-free, so the issue would be in the wiring. Debug by checking `nf_eval_nf` unfolding at the specific depth.
+- **Full rollback**: `git checkout -- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/` restores all files. New files (ModelIndepNegation.lean, FOToVEA.lean) can simply be deleted.
+- **Phase 2 blocked**: If enumerating all `neg_interval_formula` outputs proves infeasible, consider:
+  1. Using a weaker model-independent result that covers enough cases for the structural induction
+  2. Restricting to Prior structures at the `neg_2var_vec_ea_indep` level (weakening from HasAttainedINF to Prior hypotheses)
+- **Phase 3 blocked**: If the structural induction `ex` case does not compose cleanly:
+  1. Check whether VecEAClosure existential closure handles the arity shift from `MonadicFormula sig 3` to VVecEA2
+  2. If not, may need an intermediate lemma bridging 3-variable VecEA to 2-variable VecEA2
+- **Phase 4 blocked**: If connecting MonadicFormula evaluation to NF evaluation is difficult, consider:
+  1. Building the bridge lemma separately: `nf_eval_nf_as_monadic_eval` showing NF evaluation equals evaluation of an explicit MonadicFormula
+  2. As a last resort, restore bypass files from Boneyard (the codebase returns to prior state)

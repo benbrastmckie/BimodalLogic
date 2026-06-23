@@ -1,16 +1,16 @@
 {
   "status": "blocked",
-  "summary": "Phase 2 (depth-k existential-to-temporal translation) BLOCKED by arity growth in depth induction. The NF-based depth induction at arity 2 requires arity-3 existentials at depth k, which requires arity-4 at depth k-1, etc. constenv_2var_determines only applies to constenvs (z,c,c,...,c), not general envs (y,x,t). The model-dependent negation closure (neg_2var_vec_ea) cannot produce model-independent temporal formulas. Rabinovich's Prop 4.3 uses structural induction on FO formulas (all arities simultaneously), which our NF-based approach cannot replicate.",
+  "summary": "Phase 2 BLOCKED by arity growth obstruction. Deep analysis of 4 resolution paths completed. The sorry at KampPrior.lean:131 requires converting depth-k arity-2 NF existentials to temporal formulas. The IH provides depth-k arity-1, but the existential has depth k+1 (circular). Added NfToVecEA import to KampPrior.lean. Documented obstruction with 4 resolution paths. Recommended path: Z-completeness transfer (path c).",
   "phases_completed": 1,
   "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 136,
+      "line": 158,
       "statement": "nf_characterizable_temporal_prior succ case",
       "assumption": "Full NF-to-temporal translation at depth k+1 on Prior structures",
-      "why_deferred": "BLOCKED: depth induction on k does not close. At depth k+1, arity-2 existentials decompose into arity-3 existentials at depth k, but constenv_2var_determines does not apply to non-constenv envs (y,x,t). The model-dependent negation closure (neg_2var_vec_ea) cannot produce model-independent formulas.",
-      "next_dispatch": "Research alternative approach: (a) structural induction on MonadicFormula with model-independent VVecEA2 negation, (b) generalized constenv composition for non-constenvs, (c) re-route critical path through integer expressive completeness (US_expressively_complete_over_Z, sorry-free)"
+      "why_deferred": "BLOCKED: circular dependency in depth induction. The existential over arity-2 NFs at depth k produces a MonadicFormula sig 1 of depth k+1, which is the same depth being constructed. Four resolution paths identified (see handoff).",
+      "next_dispatch": "Research and implement path (c): Z-completeness transfer via US_expressively_complete_over_Z + NF realizability on Z. Requires proving: every NormalForm sig k n is realizable on some Z-structure."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
@@ -38,28 +38,44 @@
     }
   ],
   "blockers": [
-    "Phase 2 arity growth: depth induction for nf_2var_exist_tl at arity 2 requires arity-3 existentials at depth k. The env (y,x,t) is not a constenv, so constenv_2var_determines does not apply. Six approaches tried (direct depth induction, mutual induction, constenv reduction, recursive kamp, doets_lemma_1_1 reduction, model-dependent VVecEA2), all fail. See handoffs/phase-2-arity-growth-blocker.md for full analysis."
+    "KampPrior.lean:131 sorry: circular dependency in nf_characterizable_temporal_prior depth induction. The existential ∃x, nf_eval_nf M k 2 (x::t) sub_nf has depth k+1, same as the characterization being built. Four resolution paths identified; recommended: Z-transfer (path c)."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-arity-growth-blocker.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-obstruction-handoff.md",
   "continuation_context": {
     "is_successor": true,
     "phase_completed": "1 (partial: base case sorry-free, succ case blocked)",
-    "next_phase": "Research alternative approaches per Options A-D in handoff",
+    "next_phase": "Research and implement path (c): Z-completeness transfer",
     "blocker_type": "mathematical_gap",
-    "key_finding": "The NF depth induction at a fixed arity does not close because existential quantification increases arity. Rabinovich's structural induction on FO formulas handles all arities simultaneously, but our NF-based approach cannot replicate this without additional infrastructure.",
+    "key_finding": "The NF depth induction produces a circular dependency: depth k+1 characterization needs depth k+1 existential conversion. Four resolution paths identified. Path (c) Z-transfer appears most tractable: prove NF realizability on Z, then transfer US_expressively_complete_over_Z to Prior structures.",
     "resolution_options": [
-      "A: Structural induction on MonadicFormula with model-independent VVecEA2 negation",
-      "B: Generalized constenv composition for non-constenv envs (y,x,t)",
-      "C: Different induction measure (total quantifier complexity across arities)",
-      "D: Re-route critical path through integer expressive completeness (US_expressively_complete_over_Z)"
+      "A: Rabinovich Prop 4.3 -- needs general V-EA for arity >= 3 (~500+ lines)",
+      "B: Fix Stavi backward sorry -- needs GHR93 bridge lemma (~300-500 lines)",
+      "C: Z-transfer -- needs NF realizability on Z (~200-400 lines) [RECOMMENDED]",
+      "D: Mutual MonadicFormula/VVecEA2 induction -- same arity tower as A"
     ],
-    "critical_path_sorries": ["KampPrior.lean:136"],
+    "critical_path_sorries": ["KampPrior.lean:158"],
+    "key_infrastructure": {
+      "sorry_free": [
+        "nf_2var_exist_depth0_tl (NfToVecEA.lean) -- depth-0 existential to temporal",
+        "nf_to_formula_correct (NormalForm.lean) -- NF to MonadicFormula",
+        "table_correctness (Table.lean) -- Formula to MonadicFormula",
+        "flatten_stavi_correct_prior (PriorExpressiveness.lean) -- Stavi to temporal on Prior",
+        "US_expressively_complete_over_Z (Theorem.lean) -- Z-completeness",
+        "neg_2var_vec_ea (EANegationClosure.lean) -- model-dependent VVecEA2 negation",
+        "VecEA2.translateLeft_correct (VecEATranslation.lean) -- VecEA2 to temporal",
+        "ExistsForallSpec.translate_correct (RabinovichTranslation.lean) -- Prop 3.5"
+      ],
+      "sorry_blocked": [
+        "nf_exist_sf_guarded_backward (StaviCompleteness.lean:2873) -- Stavi backward",
+        "nf_characterizable_temporal_prior succ (KampPrior.lean:131) -- this sorry"
+      ]
+    },
     "files_to_read": [
-      "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-arity-growth-blocker.md",
+      "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-obstruction-handoff.md",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfComposition.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/ExpressiveCompleteness/Theorem.lean"
     ]
   }
 }
