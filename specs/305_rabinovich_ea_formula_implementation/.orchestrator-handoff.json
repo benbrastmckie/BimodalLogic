@@ -1,73 +1,67 @@
 {
   "status": "partial",
-  "summary": "Implemented plan v29 phases 1-4. Phase 1: comment cleanup (complete). Phase 2: model-independent negation closure via disjunction construction -- neg_interval_formula_indep and neg_2var_vec_ea_indep (complete, sorry-free). Phase 3: depth-(k+1) NF characterization infrastructure -- nf_succ_char_formula + nf_2var_exist_depth0_tl_fn (complete, sorry-free). Phase 4: wired depth-1 case into KampPrior.lean (partial -- k=0 and k=1 sorry-free, k>=2 blocked by arity tower).",
-  "phases_completed": 3,
+  "plan_version": 30,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/30_structural-induction-refactor.md",
+  "summary": "Phase 1 completed (Prop43.lean boneyarded, k=1 deps inlined). Phase 2 blocked: IsVEA predicate defined, isVEA_ex proved sorry-free, but fo_isVEA (Prop 4.3) blocked on VVecEA2 negation biconditional backward direction. Critical-path sorry at KampPrior.lean:287 unchanged.",
   "phases_total": 4,
+  "phases_completed": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 154,
+      "line": 287,
       "statement": "nf_characterizable_temporal_prior succ (succ k') case",
-      "assumption": "Needs depth-k arity-2 existential to temporal conversion at depth k >= 1",
-      "why_deferred": "Arity tower obstruction: depth-k arity-2 NFs involve depth-(k-1) arity-3 quantifier conditions. Requires either generalization of V-EA to arbitrary arity (Lemma 3.2.2) or a novel approach to handle higher-arity NF decomposition.",
-      "next_dispatch": "Research: investigate arity-3 V-EA or alternative approach to bypass arity tower"
+      "critical_path": true,
+      "plan_phase": 4,
+      "remediation": "Blocked: requires Phase 2 completion (IsVEA negation closure)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1084,
       "statement": "neg_bracket_is_vbracket beta_0 case",
-      "assumption": "BracketFormula-level biconditional",
-      "why_deferred": "Non-critical, documented VBracketFormula limitation",
-      "next_dispatch": "Leave as-is"
+      "critical_path": false,
+      "plan_phase": null,
+      "remediation": "Leave as-is (inherent VBracketFormula limitation)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
       "line": 1235,
       "statement": "neg_partialBracketExist_is_vbracket backward n+1",
-      "assumption": "F-chain contrapositive",
-      "why_deferred": "Non-critical, documented F-chain limitation",
-      "next_dispatch": "Leave as-is"
+      "critical_path": false,
+      "plan_phase": null,
+      "remediation": "Leave as-is (non-critical, forward direction sorry-free)"
     }
   ],
   "blockers": [
     {
-      "phase": 4,
-      "description": "Arity tower: nf_characterizable_temporal_prior at depth k+2 requires converting depth-(k+1) arity-2 NF existentials to temporal, which involves depth-k arity-3 quantifier conditions. VVecEA2 only handles arity 2. Resolving requires either generalizing V-EA formulas to arbitrary arity (Rabinovich Lemma 3.2.2) or finding a novel decomposition that avoids arity growth.",
-      "approaches_tried": [
-        "Direct structural formula induction (blocked at ex constructor -- arity grows)",
-        "NF disjunction trick at depth k+1 (circular -- references formulas being defined)",
-        "Mutual induction on depth with arities 1 and 2 (only handles one level)",
-        "Model-independent negation closure (Phase 2) -- helps negation but not arity reduction"
-      ],
-      "unblocking_suggestions": [
-        "Implement VecEA_n (general n-ary V-EA) and prove closure properties for arbitrary arity",
-        "Prove Lemma 3.2.2 (arity reduction from m-variable EA to 2-variable EA via projection)",
-        "Find non-constructive lifting from model-dependent neg_2var_vec_ea to model-independent for arbitrary depth"
+      "phase": 2,
+      "description": "VVecEA2 negation biconditional: neg_2var_vec_ea_indep gives forward direction only (not v.holds -> neg_v.holds). Backward direction (neg_v.holds -> not v.holds) needs disjointness proof for three-case A/B1/B2 construction.",
+      "unblock_options": [
+        "Prove neg_2var_vec_ea_indep_backward (~100-200 lines case analysis)",
+        "Alternative: mutual fo1_to_temporal + fo2_to_vvecEA2 at arities 1-2 only",
+        "Alternative: different proof strategy (table method, compactness)"
       ]
     }
   ],
-  "continuation_context": "The critical-path sorry has been narrowed from 'all depths >= 1' to 'depths >= 2'. Depth 0 and depth 1 are sorry-free. The remaining sorry at KampPrior.lean:154 is the succ (succ k') case, requiring arity-3 NF infrastructure. All Phase 2 results (model-independent negation closure) are sorry-free and independently valuable. Prop43.lean provides the sorry-free generic infrastructure (nf_succ_char_formula) that makes the depth-1 case work -- this same infrastructure will handle general k once the arity-2 existential conversion is available at all depths.",
-  "next_action_hint": "Research task: investigate arity-3 V-EA formulas and Rabinovich Lemma 3.2.2 to unblock the arity tower at depth >= 2",
-  "artifacts": [
+  "preserved_infrastructure": [
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/29_disjunction-construction.md",
-      "type": "plan",
-      "summary": "v29: 4-phase post-Boneyard plan, phases 1-3 complete, phase 4 partial"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationIndep.lean",
+      "lines": 328,
+      "status": "sorry-free"
     },
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationIndep.lean",
-      "type": "implementation",
-      "summary": "Model-independent Lemma 5.1 + Prop 4.2 via disjunction construction (309 lines, sorry-free)"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean",
+      "status": "sorry-free"
     },
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop43.lean",
-      "type": "implementation",
-      "summary": "Depth-(k+1) NF characterization infrastructure: nf_succ_char_formula + depth-0 wrapper (183 lines, sorry-free)"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAClosure.lean",
+      "status": "sorry-free"
     },
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "type": "implementation",
-      "summary": "Updated with k=0/k=1 sorry-free cases, sorry narrowed to k>=2"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ArityReduction.lean",
+      "status": "sorry-free",
+      "role": "NEW: IsVEA predicate + isVEA_ex (existential closure)"
     }
-  ]
+  ],
+  "continuation_context": "Phase 2 is blocked on the negation biconditional. The existential closure (isVEA_ex) works because the bound variable is already existentially quantified in the IsVEA projection. The negation case fails because at arity >= 3, negating inside an existential projection is not the same as negating the VVecEA2. At arity 2, it IS the VVecEA2 negation (Prop 4.2), but only the forward direction is proved.",
+  "next_action_hint": "Research the backward direction of Prop 4.2 (neg_2var_vec_ea_indep_backward) or explore alternative approaches to close the KampPrior sorry without the full IsVEA theory."
 }
