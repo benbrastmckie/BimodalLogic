@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassCore
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassEqCase
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassUntil
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassSince
 import Bimodal.Metalogic.WeakCanonical.Kamp.KampComposition

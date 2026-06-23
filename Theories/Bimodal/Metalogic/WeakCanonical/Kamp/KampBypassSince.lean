@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassCore
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampBypassBridge
 
 /-!
 # Enriched Bypass Formula: Since Direction (x < t)
