@@ -239,7 +239,7 @@ Each form is a VVecEA2 formula that holds EXACTLY when the corresponding case ap
 
 ---
 
-### Phase 3: Prop 4.3 -- Structural Formula Induction (FO -> V-EA) [NOT STARTED]
+### Phase 3: Prop 4.3 -- Structural Formula Induction (FO -> V-EA) [COMPLETED]
 
 **Goal**: Implement Prop 4.3 via structural induction on MonadicFormula: every first-order monadic formula is equivalent to a V-EA formula on Prior structures. This is the core theorem that connects the negation closure (Phase 2) to the translation (Phase 4).
 
