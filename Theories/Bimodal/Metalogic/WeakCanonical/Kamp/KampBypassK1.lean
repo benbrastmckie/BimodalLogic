@@ -228,10 +228,43 @@ theorem nf_eval_from_enriched_witnesses {sig : MonadicSignature}
       sorry
     · -- above_x: SORRY — symmetric to below_t but using h_x instead of h_t.
       sorry
-    · -- inconsistent: SORRY — should be provable by showing inconsistent order
-      -- atoms mean no point can satisfy chi, so both sides are false.
-      -- Requires ssn_order_consistent-style reasoning at general depth.
-      sorry
+    · -- inconsistent: contradictory order atoms mean no witness exists on either side.
+      -- Extract the contradictory atoms from ssn_zone_general
+      have h_no_witness : ∀ (N : OrderedMonadicStructure sig) (a b : N.carrier),
+          ¬∃ w, nf_eval_nf N (K + 1) (2 + 1)
+            (Fin.cons w (Fin.cons a (fun _ => b))) chi := by
+        intro N a b ⟨w, hw_atoms_w, _⟩
+        simp only [ssn_zone_general] at h_zone_chi
+        revert h_zone_chi; split_ifs with h1 h2 h3 h4 h5 h6 h7
+        all_goals (intro _)
+        · -- y_lt_x && x_lt_y: w < a and a < w
+          simp [Bool.and_eq_true, NormalForm.atom_assgn] at h1
+          have := (hw_atoms_w (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))).mpr h1.1
+          have := (hw_atoms_w (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h1.2
+          simp only [atom_eval, Fin.cons] at *
+          exact absurd (lt_trans ‹w < a› ‹a < w›) (lt_irrefl _)
+        · -- y_lt_t && t_lt_y: w < b and b < w
+          simp [Bool.and_eq_true, NormalForm.atom_assgn] at h2
+          have := (hw_atoms_w (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h2.1
+          have := (hw_atoms_w (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h2.2
+          simp only [atom_eval, Fin.cons] at *
+          exact absurd (lt_trans ‹w < b› ‹b < w›) (lt_irrefl _)
+        · -- else-else-else inconsistent: unreachable
+          -- From h3 (not y_lt_t = true) and h7 (not (!y_lt_x && !x_lt_y) = true):
+          -- we derive: not y_lt_t, not x_lt_y (from h4),
+          -- not (t_lt_y && y_lt_x) (from h5), not (!t_lt_y && !y_lt_t) (from h6),
+          -- not (!x_lt_y && !y_lt_x) (from h7).
+          -- From !y_lt_t (h3) and !(!t_lt_y && !y_lt_t) (h6): t_lt_y = true
+          -- From !x_lt_y (h4) and !(!x_lt_y && !y_lt_x) (h7): y_lt_x = true
+          -- But h5 says !(t_lt_y && y_lt_x). Contradiction.
+          simp [NormalForm.atom_assgn, Bool.and_eq_true, Bool.not_eq_true',
+            Bool.not_eq_eq_eq_not, Bool.not_true] at *
+          -- After simp, the Boolean contradictions should close
+          rcases h1 with ⟨h1a, h1b⟩ | ⟨h1a, h1b⟩ <;>
+            rcases h2 with ⟨h2a, h2b⟩ | ⟨h2a, h2b⟩ <;> simp_all
+      constructor
+      · exact fun h => absurd h (h_no_witness M x t)
+      · exact fun h => absurd h (h_no_witness M₀ x₀ t₀)
 
 /- The zone-3 witness provision from bracket witnesses.
    Given bracket witnesses w₁ < ... < wₘ in (t, x) from a VecEA2 bracket,
