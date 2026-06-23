@@ -282,7 +282,7 @@ Each form is a VVecEA2 formula that holds EXACTLY when the corresponding case ap
 
 ---
 
-### Phase 4: Wire into KampPrior.lean + Final Verification [NOT STARTED]
+### Phase 4: Wire into KampPrior.lean + Final Verification [PARTIAL]
 
 **Goal**: Replace the sorry at KampPrior.lean:160 (`nf_characterizable_temporal_prior` succ case) using the Rabinovich chain: Prop 4.3 (FO -> V-EA) composed with Prop 3.5 (V-EA 1-var -> TL). Verify the full chain is sorry-free. Run complete sorry audit.
 

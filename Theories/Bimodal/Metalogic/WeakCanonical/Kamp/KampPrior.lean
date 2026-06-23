@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
+import Bimodal.Metalogic.WeakCanonical.Kamp.Prop43
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
@@ -32,8 +33,10 @@ are all sorry-free and reused directly.
 
 ## Status
 
-The succ k case of `nf_characterizable_temporal_prior` has a sorry that
-will be replaced by the Rabinovich chain: Prop 4.3 + Prop 3.5.
+- k=0 (depth 0): sorry-free (`nf_depth0_char_formula`)
+- k=1 (depth 1): sorry-free (`nf_succ_char_formula` + `nf_2var_exist_depth0_tl`)
+- k>=2 (depth >= 2): sorry at arity tower (depth-k arity-2 existentials
+  require depth-(k-1) arity-3 NF decomposition, Rabinovich Lemma 3.2.2)
 
 ## References
 
@@ -107,9 +110,8 @@ formula that characterizes it on Prior structures.
     This is the Prior-specific replacement for `nf_characterizable_by_stavi`.
 
     - k=0: `nf_depth0_char_formula` (atom literals)
-    - k+1: Convert NF to MonadicFormula via `nf_to_formula`, apply Prop 4.3
-      (`fo_to_vea`) to get VVecEA2, then Prop 3.5 (`VVecEA2.translateLeft`)
-      to get temporal Formula.
+    - k=1: `nf_succ_char_formula` with `nf_2var_exist_depth0_tl` (sorry-free)
+    - k>=2: sorry (arity tower: requires Lemma 3.2.2 for arity-3 at depth > 0)
 -/
 noncomputable def nf_characterizable_temporal_prior
     {sig : MonadicSignature}
@@ -130,11 +132,26 @@ noncomputable def nf_characterizable_temporal_prior
     exact ⟨Separation.nf_depth0_char_formula atomMap h_surj nf,
       fun M _ _ t => nf_depth0_char_formula_correct_arity1 M atomMap h_surj nf t⟩
   | succ k _ih =>
-    -- TODO (plan v29 Phase 4): Wire Rabinovich's chain here.
-    -- 1. nf_to_formula nf : MonadicFormula sig 1
-    -- 2. fo_to_vea (nf_to_formula nf) : VVecEA2 (Prop 4.3, Prop43.lean)
-    -- 3. VVecEA2.translateLeft : Formula (Prop 3.5, VecEATranslation.lean)
-    sorry
+    -- Depth k+1: use nf_succ_char_formula with a function converting
+    -- depth-k arity-2 existentials to temporal formulas.
+    match k with
+    | 0 =>
+      -- At k=0: depth-1 NF. The existentials involve depth-0 arity-2 NFs,
+      -- which are handled by nf_2var_exist_depth0_tl (sorry-free).
+      exact ⟨nf_succ_char_formula atomMap h_surj
+              (nf_2var_exist_depth0_tl_fn atomMap h_surj) nf,
+        fun M h_UZ h_SZ t =>
+          nf_succ_char_formula_correct atomMap h_surj
+            (nf_2var_exist_depth0_tl_fn atomMap h_surj)
+            (fun sub_nf M' _ _ t' =>
+              nf_2var_exist_depth0_tl_fn_correct atomMap h_surj sub_nf M' t')
+            nf M h_UZ h_SZ t⟩
+    | k' + 1 =>
+      -- At k=k'+1 (depth k'+2): the existentials involve depth-(k'+1) arity-2
+      -- NFs, which require depth-k' arity-3 decomposition (arity tower
+      -- obstruction). This case is blocked pending generalization of V-EA
+      -- formulas to arbitrary arity (Rabinovich Lemma 3.2.2).
+      sorry
 
 /-- Main theorem: {U,S} expressive completeness for Prior structures,
     proved via Kamp/Rabinovich 2014 (relativized from Dedekind completeness
