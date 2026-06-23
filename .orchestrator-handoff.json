@@ -1,14 +1,56 @@
 {
-  "task_number": 305,
-  "task_slug": "rabinovich_ea_formula_implementation",
-  "session_id": "sess_1782191203_6e98b6",
-  "agent": "reviser-agent",
-  "status": "planned",
-  "plan_version": 23,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/23_faithful-beta0-fix.md",
-  "phase_count": 1,
-  "estimated_hours": 4,
-  "reports_integrated": ["reports/22_faithfulness-audit.md"],
-  "revision_summary": "Plan v22 (zone decomposition for prior_2var_transfer) was blocked by circular depth dependency in NF-depth approach. Plan v23 targets the beta_0(r0) sorry in EANegation.lean:1047 via VecEA2-level Lemma 5.1 following Rabinovich's endpoint convention. Key finding: the BracketFormula-level model-independent biconditional is unprovable (the self-referential forward direction for x0 > r0 cannot be finitely resolved). The VecEA2-level formulation with alpha_0 at the endpoint z_0 avoids the issue entirely and opens the faithful Rabinovich chain.",
-  "next_step": "Run /implement 305 to execute the plan"
+  "status": "partial",
+  "summary": "Phase 0 complete (bypass infrastructure archived to Boneyard, 11 files). Phase 1 started (EndpointNegation.lean created with sorry-free base case n=0). Inductive step n+1 has sorry pending deeper analysis of model-independent biconditional construction.",
+  "phases_completed": 1,
+  "phases_total": 6,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 136,
+      "statement": "nf_characterizable_temporal_prior succ case",
+      "assumption": "Full NF-to-temporal translation at depth k+1",
+      "why_deferred": "Placeholder pending Rabinovich chain (Phase 4)",
+      "next_dispatch": "Phase 4: replace with kamp_theorem_rabinovich call after Phases 1-3"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
+      "line": 122,
+      "statement": "neg_vecEA2_is_vvecEA2 succ case",
+      "assumption": "Model-independent biconditional for VecEA2 (n+1) negation",
+      "why_deferred": "The inductive step requires careful construction of VVecEA2 disjuncts that handle three Rabinovich cases. Analysis revealed the forward direction of dE disjuncts does not directly exclude bracket witnesses x0 > r0 without additional seg0 information.",
+      "next_dispatch": "Research the exact Rabinovich decomposition for Case 3. The constraint x0 <= r (from seg0 failing at r) means bracket is restricted to (z0, r]. May need different disjunct structure."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1084,
+      "statement": "neg_bracket_is_vbracket beta_0(r0) case",
+      "assumption": "BracketFormula-level biconditional with beta_0(r0)",
+      "why_deferred": "UNPROVABLE at BracketFormula level (documented impossibility)",
+      "next_dispatch": "Permanent sorry. Not on critical path."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1235,
+      "statement": "neg_partialBracketExist_is_vbracket backward",
+      "assumption": "Cor 5.4 backward direction at BracketFormula level",
+      "why_deferred": "F-chain Until-unboundedness at BracketFormula level",
+      "next_dispatch": "May be fixable via VecEA2-level result once Phase 1 n+1 case is proved"
+    }
+  ],
+  "blockers": [
+    "Phase 1 n+1 case: model-independent VVecEA2 construction for bracket negation forward direction"
+  ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-0-handoff.md",
+  "continuation_context": {
+    "is_successor": false,
+    "next_phase": 1,
+    "phase_status": "in_progress",
+    "key_insight": "The base case (n=0) of neg_vecEA2_is_vvecEA2 is proved sorry-free. The n+1 case requires three Rabinovich sub-cases. The critical issue is Case 3: when seg0 fails at r, all bracket witnesses x0 must satisfy x0 <= r. The correct VVecEA2 construction may need to encode 'seg0 fails' AND 'IH tail negation' simultaneously in the dE disjuncts, rather than encoding them separately.",
+    "files_to_read": [
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EndpointNegation.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAFormula.lean"
+    ]
+  }
 }
