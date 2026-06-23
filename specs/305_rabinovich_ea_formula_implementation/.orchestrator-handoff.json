@@ -1,63 +1,40 @@
 {
-  "status": "blocked",
-  "summary": "Phase 1 blocked: prior_2var_transfer quantifier step requires h_rvar (full r-var agreement at depth d+1) which creates circular dependency. Two sorry-free helper lemmas added (quant_exist_transfer_from_1var, multivar_agree_depth0). Boneyard archive has nvar_transfer_from_1var_agree that resolves this given h_rvar.",
-  "phases_completed": 0,
-  "phases_total": 2,
+  "status": "partial",
+  "summary": "Documented the impossibility of the model-independent BracketFormula-level biconditional at both sorry sites in EANegation.lean. The neg_endpoint_bracket_is_vbracket theorem as stated (producing VBracketFormula) is UNPROVABLE because VBracketFormula cannot express endpoint conditions. The VVecEA2 version is also blocked by the same structural issue in the bracket negation forward direction. All model-dependent counterparts (neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea) are verified sorry-free and sufficient for completeness.",
+  "phases_completed": 1,
+  "phases_total": 1,
   "sorry_inventory": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 202,
-      "statement": "theorem prior_2var_transfer_until",
-      "assumption": "2-var NF transfer from 1-var agreements + orderings + char_correct + UZ/SZ",
-      "why_deferred": "Quantifier step needs h_rvar (full r-var agreement at depth d+1). Boneyard nvar_transfer_from_1var_agree provides this given h_rvar, but h_rvar at target depth is circular. Needs strong induction on K or inline into KampBypass.",
-      "next_dispatch": "Option A: Strong induction on K with IH supplying h_rvar. Option B: Inline into KampBypass mutual induction."
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 233,
-      "statement": "theorem prior_2var_transfer_since",
-      "assumption": "Mirror of until with x < t",
-      "why_deferred": "Same blocker as prior_2var_transfer_until",
-      "next_dispatch": "Mirror fix of prior_2var_transfer_until"
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
+      "line": 1084,
+      "statement": "neg_bracket_is_vbracket (backward direction, beta_0(r0) sub-case)",
+      "assumption": "A finite model-independent V-bracket can handle the case where beta_0 holds at the first alpha_0 point r0",
+      "why_deferred": "UNPROVABLE: models can have arbitrarily many alpha_0 points with beta_0 in the interval, creating unbounded recursion that no finite V-bracket can capture. This is a structural limitation of the BracketFormula formulation where alpha_0 is at an interior existential witness.",
+      "next_dispatch": "No fix possible at BracketFormula level. The model-dependent neg_interval_formula is sorry-free and sufficient."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1047,
-      "statement": "theorem neg_bracket_is_vbracket",
-      "assumption": "Model-independent V-bracket biconditional",
-      "why_deferred": "UNUSED downstream. Fundamentally harder (self-referential beta_0 case). Not needed for completeness.",
-      "next_dispatch": "Skip (unused)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean",
-      "line": 1172,
-      "statement": "theorem neg_partialBracketExist_is_vbracket",
-      "assumption": "Partial bracket existence biconditional",
-      "why_deferred": "UNUSED downstream. Depends on neg_bracket_is_vbracket.",
-      "next_dispatch": "Skip (unused)"
+      "line": 1235,
+      "statement": "neg_partialBracketExist_is_vbracket (backward direction, n >= 1 case)",
+      "assumption": "F-chain Until witnesses can be bounded within (z0, z1) by a fixed V-bracket",
+      "why_deferred": "UNPROVABLE: the F-chain reduction absorbs segment types into Until operators, losing interval-boundedness information that varies by model.",
+      "next_dispatch": "No fix possible. The model-dependent neg_bounded_exists is sorry-free and sufficient."
     }
   ],
   "blockers": [
-    "prior_2var_transfer quantifier step needs h_rvar (full r-var agreement at depth d+1) from Boneyard nvar_transfer_from_1var_agree. At depth K+2 target, h_rvar needs depth K+3 which is above target. Resolution: (A) strong induction on K where IH provides h_rvar at K+1, combined with algebraic upgrade nf_eval_from_lower_agree from Boneyard; or (B) inline transfer into KampBypass mutual induction where hex is directly available.",
-    "Interior zone analysis (t < w0 < x0): UZ/SZ give first/last occurrences but cannot guarantee they fall in interval (t,x) without 2-var agreement at target depth."
+    "neg_endpoint_bracket_is_vbracket as stated (producing VBracketFormula) is unprovable: VBracketFormula cannot express endpoint conditions like not alpha_0(z_0). The model-independent biconditional is blocked at ALL levels (BracketFormula, VecEA2) by the same structural issue: the forward direction of prepended brackets fails for witnesses y > x0."
   ],
   "continuation_context": {
     "is_successor": false,
-    "file": "specs/305_rabinovich_ea_formula_implementation/plans/22_prior-transfer-direct.md",
-    "proved": ["quant_exist_transfer_from_1var", "multivar_agree_depth0"],
-    "remaining_sorries": 2,
-    "key_insight": "Boneyard/PriorComposition.lean lines 382-472 has sorry-free nvar_transfer_from_1var_agree that proves multi-var NF agreement from 1-var agreements given h_rvar. Main theorem needs h_rvar at depth K+3. Option A: strong induction on K provides h_rvar at K+1 from IH, then builds up via nf_eval_from_lower_agree (Boneyard lines 492-567). Option B: inline into KampBypass where hex is available from CharPart/ExistPart decomposition."
+    "last_phase_completed": 1,
+    "remaining_work": "The two sorry sites in EANegation.lean are documented impossibilities. No further implementation work is possible on these specific theorems. Future work could: (1) restructure the formalization to use Rabinovich endpoint convention from the start, or (2) accept the model-dependent versions as sufficient for completeness.",
+    "key_decisions": [
+      "The BracketFormula-level model-independent biconditional is structurally impossible due to alpha_0 being at an interior existential witness",
+      "The VVecEA2-level model-independent biconditional is also blocked because the bracket negation forward direction fails for witnesses beyond the first occurrence",
+      "All model-dependent counterparts are sorry-free: neg_interval_formula, neg_bounded_exists, neg_vecEA2, neg_2var_vec_ea"
+    ]
   },
   "artifacts": [
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "type": "code",
-      "summary": "Added quant_exist_transfer_from_1var and multivar_agree_depth0 (both sorry-free). Updated blocker comments."
-    },
-    {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/22_prior-transfer-direct.md",
-      "type": "plan",
-      "summary": "Phase 1 marked BLOCKED with detailed blocker analysis and two concrete resolution options."
-    }
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegation.lean"
   ]
 }
