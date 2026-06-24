@@ -2,60 +2,53 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 2 dispatch 5: Filled 2 of 3 sorrys (merge forward direction). Added skipFin/unskipFin infrastructure and proved merge_forward sorry-free. 1 sorry remains: translateEF1 strict total order case (line 574).",
+  "summary": "Phase 2 dispatch 6: Replaced the sorry at line 574 (translateEF1 strict total order case) with a full proof structure (~670 new lines). Defined rank function via nf_lt_bool + Finset.filter, proved injectivity/surjectivity/monotonicity. Both forward and backward directions are structurally written. About 20 mechanical build errors remain (Fin bound proofs, List API naming, convert arguments).",
   "phases_total": 3,
   "phases_completed": 1,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "line": 574,
-      "statement": "Case B: transitive strict total order -> translateEF1 formula",
-      "assumption": "Given h_has_eq (every pair strictly ordered) and h_trans (transitivity), produce Formula equivalent to existential",
-      "why_deferred": "Requires rank function construction, translateEF1_correct API research, and biconditional proof",
-      "next_dispatch": "Research translateEF1_correct signature, define nf_rank, build alpha/beta parameters, prove biconditional"
-    }
-  ],
+  "sorry_inventory": [],
   "blockers": [
-    "translateEF1 case at line 574: needs rank function + translateEF1_correct biconditional proof"
+    "~20 mechanical build errors in NfDepth0Generalized.lean preventing compilation. No sorry keywords remain. Errors are: Fin bound omega failures inside refine blocks, List.get_map renamed to List.getElem_map, convert/congr argument mismatches in forward and backward direction proofs."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-5.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-6.md",
   "continuation_context": {
     "is_successor": true,
     "next_phase": 2,
     "completed_phases": [1],
-    "resume_point": "Fill remaining sorry at line 574 (translateEF1 strict total order case)",
-    "approach": "Define nf_rank counting predecessors, prove injective via h_trans, build translateEF1 parameters, prove biconditional via translateEF1_correct",
+    "resume_point": "Fix remaining ~20 build errors in NfDepth0Generalized.lean. Start with helper lemmas (buildRight_top_of_mono lines 326-336, buildLeft_top_of_mono lines 366-378), then forward direction (lines 886-976), then backward direction convert calls.",
+    "approach": "All proof structure is written. Fix mechanical issues: (1) Fin bound proofs by pre-computing bounds as `have` before refine, (2) Replace List.get_map with List.getElem_map, (3) Fix convert/congr arguments in the backward direction chain proofs",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean"
     ],
     "key_decisions": [
-      "merge_forward proved sorry-free using unskipFin + nf_order_irrel for dependent type handling",
-      "skipFin_ne, unskipFin, skipFin_unskipFin, unskipFin_skipFin infrastructure added",
-      "j=free-var case uses merge_forward with swapped i/j roles",
-      "Only translateEF1 case remains (strict total order on n+2 positions)"
+      "Used nf_lt_bool : Fin (n+2) -> Fin (n+2) -> Bool for rank filter to avoid Prop/Bool issues with Finset.filter",
+      "Used h_lt_acyclic helper to avoid proof-irrelevance issues with NF order atoms",
+      "Factored buildRight_top_of_mono and buildLeft_top_of_mono as standalone private theorems",
+      "Forward direction extracts witnesses via h_extract_right/h_extract_left then builds pts piecewise",
+      "Backward direction uses helper theorems with monotone pts",
+      "Rank injectivity proved via ssubset of Finset filters using nf_lt_bool"
     ]
   },
-  "next_action_hint": "Fill the 1 remaining sorry at line 574. The translateEF1 case needs: (1) research translateEF1_correct from Translation.lean, (2) define rank function, (3) prove bijectivity, (4) build alpha/beta, (5) prove biconditional. This is the most complex sorry and may need a separate dispatch focused on Translation.lean API.",
+  "next_action_hint": "Fix the ~20 build errors. They are all mechanical: omega can't prove Fin bounds when inside nested tactic blocks (fix by hoisting bounds), List.get_map doesn't exist (use List.getElem_map), and convert/congr needs exact argument matching. No conceptual issues remain.",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "summary": "649 lines. All merge cases proved. 1 sorry remains at line 574 (translateEF1 case)."
+      "summary": "~1200 lines. 0 sorrys. Full proof structure for translateEF1 case. ~20 build errors."
     },
     {
       "type": "handoff",
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-5.md",
-      "summary": "Phase 2 dispatch 5 handoff with sorry inventory"
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-6.md",
+      "summary": "Phase 2 dispatch 6 handoff with error inventory"
     }
   ],
   "session_id": "sess_1782276572_7ce596",
   "verification": {
-    "sorry_count": 1,
+    "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "build_passed": true,
-    "lines_written": 649
+    "build_passed": false,
+    "lines_written": 1200
   }
 }
