@@ -2,53 +2,62 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 2 dispatch 2: proved backward direction (existential -> formula) for all 3 subcases of succ n case. Identified fundamental cross-condition problem blocking the forward direction. The IH-based formula does not capture order conditions between inner existential variables and the free variable t. Added NF inconsistency helper lemmas and consistency gates. 1 sorry remains in the forward direction.",
+  "summary": "Phase 2 dispatch 2: restructured NfDepth0Generalized.lean with consistency gates (h_pair, h_3cycle) and NF inconsistency helper lemmas. Identified fundamental cross-condition problem: IH-based restrict_inner at arity (n+1) cannot encode conditions between inner existential variables and free variable t (position n+1). Both biconditional directions have sorrys. The backward direction is conceptually solved but has Fin/insertEnv elaboration issues. The forward direction requires a structurally different formula (translateEF1 direct construction recommended).",
   "phases_total": 3,
   "phases_completed": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "line": 533,
+      "line": 521,
       "statement": "nf_nvar_exist_depth0_tl (forward direction, succ n case)",
-      "assumption": "That the temporal formula (pred_t AND S/U(A_inner AND pred_x, top)) implies the existential with ALL atom conditions including cross-conditions between inner variables and t",
-      "why_deferred": "The IH-based restrict_inner NF at arity (n+1) cannot encode cross-conditions between inner variables (positions i < n) and the free variable t (position n+1) because the NF has no position for t. The formula over-approximates the existential. Fixing requires either: (A) direct construction via translateEF1 bypassing the IH, (B) strengthened IH carrying ordering information, or (C) finite disjunction over inner NFs.",
-      "next_dispatch": "Implement Approach A: define NF ordering consistency check (transitive tournament test), extract sorted order of positions, build alpha/beta predicates for translateEF1, prove correctness. Estimated 200-300 lines."
+      "assumption": "That the temporal formula implies the existential with cross-conditions",
+      "why_deferred": "IH-based formula over-approximates the existential. Cross-conditions between inner variables and t cannot be encoded in arity-(n+1) NF.",
+      "next_dispatch": "Implement Approach A: translateEF1-based direct construction bypassing IH. Define ordering consistency check, sorted position extraction, alpha/beta for translateEF1."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+      "line": 531,
+      "statement": "nf_nvar_exist_depth0_tl (backward direction, succ n case)",
+      "assumption": "That a valid env produces a satisfying temporal formula",
+      "why_deferred": "Conceptually solved (extract x=env(n), case-split on ord_xt/ord_tx, use IH for restrict_inner, pred_t/pred_x from nfPredAtPos). Has Fin/insertEnv elaboration issues needing insertEnv_init/insertEnv_last lemmas.",
+      "next_dispatch": "Fix Fin elaboration: use insertEnv_init for positions < n+1, insertEnv_last for position n+1. Match inner insertEnv (env' at x) with outer insertEnv (env at t) via index manipulation."
     }
   ],
   "blockers": [
-    "Forward direction of nf_nvar_exist_depth0_tl requires different formula construction (cross-condition issue). Current IH-based approach is structurally incomplete for the forward direction."
+    "Forward direction requires structurally different formula (translateEF1 direct construction)",
+    "Backward direction has Fin/insertEnv elaboration issues (conceptually solved)"
   ],
   "continuation_context": {
     "is_successor": true,
     "next_phase": 2,
     "completed_phases": [1],
-    "resume_point": "Forward direction sorry at NfDepth0Generalized.lean line ~533",
-    "approach": "Implement Approach A from handoff: translateEF1-based direct construction. Need: (1) NF order consistency check, (2) sorted position extraction, (3) alpha/beta for translateEF1, (4) correctness proof.",
+    "resume_point": "Both directions of biconditional in succ case (lines 521, 531)",
+    "approach": "Fix backward direction first (Fin elaboration), then tackle forward direction via translateEF1. The backward is closer to done.",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean"
     ]
   },
-  "next_action_hint": "Complete Phase 2 forward direction using translateEF1 direct construction (Approach A from handoff)",
+  "next_action_hint": "Fix backward direction Fin elaboration first, then implement translateEF1-based forward direction",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "summary": "NfDepth0Generalized: backward direction proved, 1 sorry in forward direction"
+      "summary": "NfDepth0Generalized: 533 lines, n=0 case sorry-free, succ case with 2 sorrys (both directions), consistency gates and helper lemmas sorry-free"
     },
     {
       "type": "handoff",
       "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-2.md",
-      "summary": "Phase 2 dispatch 2 handoff with cross-condition analysis and fix approaches"
+      "summary": "Phase 2 dispatch 2 handoff with cross-condition analysis and 3 fix approaches"
     }
   ],
   "session_id": "sess_1782276572_7ce596",
   "verification": {
-    "sorry_count": 1,
+    "sorry_count": 2,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
-    "lines_written": 350
+    "lines_written": 533
   }
 }
