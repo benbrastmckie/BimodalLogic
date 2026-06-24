@@ -1,40 +1,15 @@
 {
   "status": "partial",
-  "task_number": 305,
-  "plan_version": 35,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md",
-  "session_id": "sess_1782335051_7f6679",
-  "agent_type": "orchestrator (skill-orchestrate, hard)",
-  "summary": "Phase 1 H6 3-strike cap reached with a CONCLUSIVE-NEGATIVE verdict (the abstract merge_forward_succ leaf is a non-theorem as specified). Per user direction, the strike series was NOT treated as abandonment: a cheap read-only decision fork re-ran the Phase 0 gate and RESOLVED it to Route A' (H4-verified, reports/36_phase0-regate-decision.md). Route B re-confirmed circular (needs no_gaps_discrete_model_surgery, the bridge it claims to bypass). Strike-3 Obstruction-2 dissolves in situ at KampPrior.lean:391 (model's characteristic NF supplies the quant-backward witness). ALL landed sorry-free assets (renameNF block, mergeNF_succ/mergeNF_succ_atom, totalUnskip) PRESERVED in the build path and directly reused by Route A'; added PRESERVED & REUSABLE banners in NfDepth0Generalized.lean so they are not removed as 'unused'. Plan updated: Phase 1 re-framed (abstract leaf retired, not abandoned), new Phase 1' (in-situ Route A', ~250-420 lines, MEDIUM) added with H3 reuse map. Build GREEN; baseline 2 sorry preserved; axiom set unchanged.",
-  "phases_completed": 1,
+  "summary": "Phase 1 decision gate committed (REBUILD: Boneyard/Prop43.lean is arity-tower infra, not structural Prop 4.3; no archived Prop 4.3 exists). Phase 2 Lemma 3.2(2) arity firewall landed sorry-free in new module Kamp/VecEAArityFirewall.lean. Build GREEN (1671 jobs); 2 live sorries = baseline (KampPrior:391/394); axiom set unchanged.",
+  "phases_completed": 2,
   "phases_total": 6,
-  "phases_detail": {
-    "phase_0_gate": "COMPLETED (re-eval RESOLVED: Route A')",
-    "phase_1_mergeNF_succ": "SUPERSEDED (abstract leaf retired; assets preserved & reused)",
-    "phase_1_prime_insitu": "NOT STARTED (next dispatch; ~250-420 lines, MEDIUM risk)"
-  },
-  "mode": "hard",
-  "hard_contracts": ["H2", "H4", "H6", "H9"],
-  "route_decision": "A-prime",
-  "continuation_context": {
-    "is_successor": true,
-    "resume_phase": "1-prime",
-    "first_action": "Phase 1' (Route A'): discharge the x=t collapse IN SITU at KampPrior.lean:391 (n=1 critical arm). Instantiate sub_nf as the model's characteristic NF so the quant-backward witness is realizable (sidestepping strike-3 Obstruction-2). Assemble from the PRESERVED landed assets — mergeNF_succ + mergeNF_succ_atom + renameNF_eval_iff.mpr (needs only r-after-f=id, which skipFin/unskipFin supply) + char_k1/ih_exist_1. Do NOT re-derive these and do NOT retry a 4th abstract merge encoding. Strikes reset for this re-specified leaf. Verify sorry-free + lake build GREEN + axiom set unchanged.",
-    "decision_report_path": "specs/305_rabinovich_ea_formula_implementation/reports/36_phase0-regate-decision.md",
-    "strike3_handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-3.md",
-    "preserved_assets_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-    "h6_strike_count": {"phase_1_abstract_merge": 3, "phase_1_prime_insitu": 0}
-  },
+  "next_action_hint": "Dispatch Phase 3 (Prop 4.2 model-indep backward, NegationIndep:331) cautiously — it is documented UNFIXABLE at BracketFormula level (report 18) and non-blocking; plan line 226 pre-authorizes falling back to the model-DEPENDENT Prop 4.2 interim. Then Phase 4 REBUILD Prop 4.3 structural FO induction consuming the firewall.",
   "blockers": [],
-  "verification": {
-    "sorry_count": 2,
-    "sorry_count_note": "Baseline preserved: KampPrior.lean:391 (n=1 critical, target of Phase 1') and :394 (off-path). No new sorries. Comment-only edits to NfDepth0Generalized.lean this dispatch.",
-    "axiom_count": 2,
-    "build_passed": true,
-    "lean_verify_completeness_discrete": ["propext", "sorryAx", "Classical.choice", "Lean.ofReduceBool", "Lean.trustCompiler", "Quot.sound"]
+  "continuation_context": {
+    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-arity-firewall-20260624.md",
+    "next_phase": 3
   },
   "artifacts": [
-    {"path": "specs/305_rabinovich_ea_formula_implementation/reports/36_phase0-regate-decision.md", "type": "report", "summary": "Phase 0 re-gate decision: Route A' (in-situ x=t collapse), Route B proven circular; H3 reuse map + H4 failure-mode analysis + implementation sketch."},
-    {"path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md", "type": "plan", "summary": "Updated: Phase 1 re-framed (abstract leaf retired, assets preserved); new Phase 1' (in-situ Route A')."}
+    {"path": "specs/305_rabinovich_ea_formula_implementation/summaries/37_faithful-rabinovich-path-summary.md", "type": "summary", "summary": "Phases 1-2 implementation summary: gate verdict REBUILD + Lemma 3.2(2) arity firewall sorry-free"}
   ]
 }
