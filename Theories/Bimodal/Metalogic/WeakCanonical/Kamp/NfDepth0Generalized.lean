@@ -119,6 +119,40 @@ theorem skipFin_injective {m : Nat} (skip : Fin (m + 1)) :
   ext
   split at heq' <;> split at heq' <;> simp at heq' <;> omega
 
+theorem skipFin_ne {m : Nat} (skip : Fin (m + 1)) (k : Fin m) :
+    skipFin skip k ≠ skip := by
+  intro h
+  have h' : (skipFin skip k).val = skip.val := congr_arg Fin.val h
+  simp only [skipFin] at h'
+  split at h' <;> simp_all <;> omega
+
+/-- Inverse of skipFin: for m ≠ skip, map back to Fin m. -/
+def unskipFin {m : Nat} (skip : Fin (m + 1)) (pos : Fin (m + 1))
+    (h : pos ≠ skip) : Fin m :=
+  if hlt : pos.val < skip.val then ⟨pos.val, by omega⟩
+  else ⟨pos.val - 1, by
+    have : pos.val ≠ skip.val := fun he => h (Fin.ext he)
+    omega⟩
+
+theorem skipFin_unskipFin {m : Nat} (skip : Fin (m + 1)) (pos : Fin (m + 1))
+    (h : pos ≠ skip) : skipFin skip (unskipFin skip pos h) = pos := by
+  have h_val_ne : pos.val ≠ skip.val := fun he => h (Fin.ext he)
+  simp only [skipFin, unskipFin]
+  by_cases hlt : pos.val < skip.val
+  · simp only [hlt, ↓reduceDIte]
+  · simp only [hlt, ↓reduceDIte]
+    have : ¬(pos.val - 1 < skip.val) := by omega
+    simp only [this, ↓reduceDIte]; ext; simp_all; omega
+
+theorem unskipFin_skipFin {m : Nat} (skip : Fin (m + 1)) (k : Fin m) :
+    unskipFin skip (skipFin skip k) (skipFin_ne skip k) = k := by
+  simp only [unskipFin, skipFin]
+  by_cases hlt : k.val < skip.val
+  · simp only [hlt, ↓reduceDIte]
+  · simp only [hlt, ↓reduceDIte]
+    have : ¬(k.val + 1 < skip.val) := by omega
+    simp only [this, ↓reduceDIte]; ext; simp_all
+
 /-- Merge position `j` in a depth-0 NF by dropping it. -/
 noncomputable def mergeNF {sig : MonadicSignature} {m : Nat}
     (sub_nf : NormalForm sig 0 (m + 1)) (j : Fin (m + 1))
@@ -127,6 +161,25 @@ noncomputable def mergeNF {sig : MonadicSignature} {m : Nat}
   | .pred p k => sub_nf (.pred p (skipFin j k))
   | .order k₁ k₂ h => sub_nf (.order (skipFin j k₁) (skipFin j k₂)
       (skipFin_injective j |>.ne h))
+
+/-- Forward direction of merge: from merged NF satisfaction, build full satisfaction.
+    Given env' satisfying mergeNF sub_nf j, construct env satisfying sub_nf
+    by duplicating the value at position i at position j. -/
+theorem merge_forward {sig : MonadicSignature} {n : Nat}
+    (sub_nf : NormalForm sig 0 (n + 2))
+    (i j : Fin (n + 2)) (h_ne : i ≠ j)
+    (h_ij_false : sub_nf (.order i j h_ne) = false)
+    (h_ji_false : sub_nf (.order j i (Ne.symm h_ne)) = false)
+    (h_pred : ∀ p : sig.preds, sub_nf (.pred p i) = sub_nf (.pred p j))
+    (h_ord : ∀ (k : Fin (n + 2)) (h_ki : k ≠ i) (h_kj : k ≠ j),
+      sub_nf (.order i k (Ne.symm h_ki)) = sub_nf (.order j k (Ne.symm h_kj)) ∧
+      sub_nf (.order k i h_ki) = sub_nf (.order k j h_kj))
+    (h_j_le_n : j.val ≤ n)
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (env' : Fin n → M.carrier)
+    (h_merged : nf_eval_nf M 0 (n + 1) (insertEnv env' t) (mergeNF sub_nf j)) :
+    ∃ env : Fin (n + 1) → M.carrier, nf_eval_nf M 0 (n + 2) (insertEnv env t) sub_nf := by
+  sorry
 
 /-! ## Succ case: translateEF1-based construction
 
@@ -211,10 +264,63 @@ private theorem nf_nvar_exist_depth0_tl_succ
           -- skipFin i maps Fin (n+1) → Fin (n+2), skipping i.
           -- The last position in Fin (n+1) is ⟨n, _⟩.
           -- skipFin i ⟨n, _⟩ = ⟨n+1, _⟩ = j (since i.val < n+1)
-          -- Wait, skipFin i ⟨n, _⟩: if n < i.val then ⟨n,_⟩ else ⟨n+1,_⟩.
-          -- Since i ≠ j = ⟨n+1,_⟩, i.val ≤ n, so n ≥ i.val, so skipFin i ⟨n,_⟩ = ⟨n+1,_⟩.
-          -- So the last position in merged maps to j = ⟨n+1,_⟩ = free variable. Good.
-          sorry
+          -- Since j is the free variable (position n+1) and i ≠ j, i.val ≤ n.
+          -- Drop i instead: merge on position i.
+          have h_i_le_n : i.val ≤ n := by
+            by_contra h; push_neg at h
+            have hi_eq : i.val = n + 1 := by omega
+            exact h_ne (by rw [h_j_last]; exact Fin.ext hi_eq)
+          -- Swap i and j roles for merge_forward
+          have h_pred_sym : ∀ p : sig.preds, sub_nf (.pred p j) = sub_nf (.pred p i) :=
+            fun p => (h_pred p).symm
+          have h_ord_sym : ∀ (k : Fin (n + 2)) (h_kj : k ≠ j) (h_ki : k ≠ i),
+              sub_nf (.order j k (Ne.symm h_kj)) = sub_nf (.order i k (Ne.symm h_ki)) ∧
+              sub_nf (.order k j h_kj) = sub_nf (.order k i h_ki) := by
+            intro k h_kj h_ki
+            have := h_ord k h_ki h_kj
+            exact ⟨this.1.symm, this.2.symm⟩
+          let merged_i : NormalForm sig 0 (n + 1) := mergeNF sub_nf i
+          obtain ⟨A_merged, hA_merged⟩ := ih merged_i
+          exact ⟨A_merged, fun M t => by
+            rw [hA_merged M t]
+            constructor
+            · intro ⟨env', h_merged⟩
+              exact merge_forward sub_nf j i (Ne.symm h_ne) h_ji_false h_ij_false
+                h_pred_sym h_ord_sym h_i_le_n M t env' h_merged
+            · intro ⟨env, h_nf⟩
+              -- Backward: drop position i (symmetric to the j case below)
+              have h_eq : insertEnv env t j = insertEnv env t i := by
+                by_contra h_ne_vals
+                rcases lt_or_gt_of_ne h_ne_vals with h_lt | h_gt
+                · have := (h_nf (.order j i (Ne.symm h_ne))).mp h_lt
+                  rw [h_ji_false] at this; exact Bool.noConfusion this
+                · have := (h_nf (.order i j h_ne)).mp h_gt
+                  rw [h_ij_false] at this; exact Bool.noConfusion this
+              let env' : Fin n → M.carrier := fun k =>
+                insertEnv env t (skipFin i ⟨k.val, by omega⟩)
+              refine ⟨env', ?_⟩
+              have h_ie_eq : ∀ k : Fin (n + 1),
+                  insertEnv env' t k = insertEnv env t (skipFin i k) := by
+                intro ⟨kv, hkv⟩
+                simp only [insertEnv, env']
+                split
+                · next h_lt => rfl
+                · next h_nlt =>
+                  have : kv = n := by omega
+                  subst this
+                  simp only [skipFin, show ¬(kv < i.val) from by omega]
+                  simp [dif_neg (show ¬(kv + 1 < kv + 1) from by omega)]
+              intro a
+              match a with
+              | .pred p pos =>
+                simp only [mergeNF, merged_i, atom_eval]
+                rw [h_ie_eq pos]
+                exact h_nf (.pred p (skipFin i pos))
+              | .order pos₁ pos₂ h_ne_pos =>
+                simp only [mergeNF, merged_i, atom_eval]
+                rw [h_ie_eq pos₁, h_ie_eq pos₂]
+                exact h_nf (.order (skipFin i pos₁) (skipFin i pos₂)
+                  (skipFin_injective i |>.ne h_ne_pos))⟩
         · -- j is NOT the free variable. Drop j.
           have h_j_le_n : j.val ≤ n := by
             by_contra h
@@ -228,13 +334,8 @@ private theorem nf_nvar_exist_depth0_tl_succ
             constructor
             · -- Forward: ∃ env' sat merged → ∃ env sat sub_nf
               intro ⟨env', h_merged⟩
-              -- Build env : Fin (n+1) → M.carrier from env' by inserting at j.
-              -- For positions < j: env(pos) = env'(pos)
-              -- For j: env(j) = value at position i in insertEnv env' t
-              -- For positions > j: env(pos) = env'(pos - 1)
-              -- In general: insertEnv env t (skipFin j k) = insertEnv env' t k
-              -- and insertEnv env t j = insertEnv env t i
-              sorry
+              exact merge_forward sub_nf i j h_ne h_ij_false h_ji_false
+                h_pred h_ord h_j_le_n M t env' h_merged
             · -- Backward: ∃ env sat sub_nf → ∃ env' sat merged
               intro ⟨env, h_nf⟩
               -- Positions i and j get the same value
