@@ -1,53 +1,43 @@
 {
   "status": "partial",
-  "plan_version": 33,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 3 partial: proved n=0 case of nf_nvar_exist_all_depths at depth k+1 (using inlined char_k1). The n=1 case (critical path) and n≥2 (off critical path) remain as sorry. Build passes. Extensive analysis documented in handoff showing the n=1 case requires a self-referential formula construction or mutual definition of char(k+2) and exist(k+1, 1).",
-  "phases_total": 3,
-  "phases_completed": 2,
+  "task_number": 305,
+  "plan_version": 34,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/34_approach5-arity2-char.md",
+  "session_id": "sess_1782319610_816c48",
+  "agent_type": "lean-implementation-hard-agent",
+  "summary": "Implementation dispatch on plan v34 (Approach 5). After exhaustively reading the depth-0 binder (nf_2var_exist_depth0_tl) and its VecEA2 zone machinery plus the mergeNF/merge_forward collapse machinery, established that the n=1 critical-path sorry (KampPrior.lean) is NOT separable into Phase-1 helper + Phase-2 wiring as the plan assumed: nf_succ_char_formula2 cannot exist as a standalone pair-(x,t) Formula (a Formula evaluates at one point; the x-binder must be intrinsic). More importantly, refined report 18's risk analysis: the true blocker is twofold, NOT the Fin 2 telescoping bridge (which is trivial and already proved twice in-file). (1) Joint x-t coupling: the depth-(k+1) arity-2 quant layer's clause exists-y nf_eval k 3 (y,x,t) qnf couples the bound x with the free t, so the depth-0 binder's independent x-/t-projections do not transfer. (2) The zone-split and merge/collapse support machinery (nf_vecEA2_future/past, VecEA2 reconstruction, mergeNF, merge_forward) exist only at depth 0; the x=t zone needs a depth-k merge collapsing arity-3 (y,x,t) to (y,t). No regression: build green, baseline 2 sorries preserved, all Preserved Assets intact. Detailed actionable construction (mergeNF_succ first, then depth-(k+1) zone endpoints carrying char_k1 + arity-3 IH, then assemble/bind) written to handoff.",
+  "phases_completed": 0,
+  "phases_total": 4,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 406,
-      "statement": "nf_nvar_exist_all_depths k+1 n=1 case: ∃ A, temporal_truth M atomMap t A ↔ ∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf",
-      "assumption": "Temporal formula for 1-variable existential at depth k+1",
-      "why_deferred": "Self-referential: exist(k+1, 1, sub_nf) requires char(k+2), which requires exist(k+1, 1, ·). The formula definition uses itself for DIFFERENT sub_nf' values. This is a fixed-point equation on Formula that Lean cannot express directly.",
-      "next_dispatch": "Try mutual definition approach: define combined(k) returning both char(k+1) and exist(k+1, 1) as a pair, where exist uses char from the SAME pair. Or try direct Since/Until construction for the n=1 case."
+      "line": 391,
+      "statement": "nf_nvar_exist_all_depths k+1 n=1 arm: exists A, temporal_truth M atomMap t A <-> exists env:Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
+      "assumption": "Needs the depth-(k+1) arity-2 existential binder for the pair (x,t).",
+      "why_deferred": "Blocked: requires a depth-k generalization of mergeNF/merge_forward (currently depth-0 only) for the x=t zone, plus handling joint x-t coupling in the depth-(k+1) quant layer (the depth-0 binder relies on independent x-/t-projections that do not exist when a quant layer is present). Estimated 250-400 lines of new faithful construction. Not the Fin 2 bridge that report 18 flagged (that part is trivial).",
+      "next_dispatch": "1) Generalize mergeNF/merge_forward to NormalForm sig k (m+1) (mergeNF_succ). 2) Build three-way order-zone split on sub_nf.1 order booleans with depth-(k+1) endpoint TemporalPreds from char_k1 + arity-3 IH nf_nvar_exist_all_depths k 2; interval bracket must carry cross-clause coupling. 3) Assemble via VecEA2.translateLeft/translateRight + equality and wire into the n=1 arm using nf_nvar_exist_all_depths_fn k 2 and the in-file Fin-1 bridge."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 409,
-      "statement": "nf_nvar_exist_all_depths k+1 n≥2 case",
-      "assumption": "Off critical path",
-      "why_deferred": "Main theorem only needs n=0 and n=1",
-      "next_dispatch": "After n=1 is resolved"
+      "line": 394,
+      "statement": "nf_nvar_exist_all_depths k+1 n>=2 arm",
+      "assumption": "Needs n-ary generalization of the n=1 binder.",
+      "why_deferred": "Off critical path; depends on resolving the n=1 sorry first.",
+      "next_dispatch": "After n=1 is cleared, generalize via mergeNF_succ arity-merge over the n=1 result."
     }
   ],
   "blockers": [
-    "nf_nvar_exist_all_depths k+1 n=1 case at KampPrior.lean:406: self-referential formula construction for 1-variable existential at depth k+1"
+    "n=1 critical-path arm (KampPrior.lean:391): the depth-(k+1) arity-2 existential binder requires a depth-k generalization of the depth-0-only merge machinery (mergeNF/merge_forward) and resolution of joint x-t coupling in the quant layer. Goal text: exists A, forall M h_UZ h_SZ t, temporal_truth M atomMap t A <-> exists env:Fin 1 -> M.carrier, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf."
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-3-dispatch-2.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 3,
-    "completed_phases": [1, 2],
-    "resume_point": "Phase 3 Task 3.6: prove n=1 case of nf_nvar_exist_all_depths at KampPrior.lean:406",
-    "approach": "The n=1 case requires building exist(k+1, 1, sub_nf) for ALL sub_nf simultaneously. The formula for each sub_nf is a disjunction over depth-(k+2) NFs, where each disjunct uses nf_succ_char_formula with the SAME exist function. This is a fixed-point equation. Options: (1) mutual def with char(k+2), (2) direct Since/Until construction, (3) classical existence proof via nf_to_formula + doets_lemma_1_1.",
-    "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
-    ],
-    "key_decisions": [
-      "Split k+1 case into n=0 (proved), n=1 (sorry, critical), n≥2 (sorry, off-path)",
-      "Built char_k1 and exist_tl_fn_k infrastructure inside the k+1 case",
-      "Identified that exist(k+1, 1) and char(k+2) form a mutual dependency"
-    ]
+    "resume_phase": 1,
+    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v34-phase-1-blocked.md",
+    "first_action": "Implement mergeNF_succ / merge_forward_succ (depth-k generalization of NfDepth0Generalized.lean:157/168), the x=t zone of the n=1 binder."
   },
-  "next_action_hint": "The n=1 case requires resolving the exist(k+1,1)/char(k+2) mutual dependency. Best approach: define a combined function that returns BOTH char(k+1) and exist(k,1) at each depth, so that at depth k+1 the function returns exist(k+1,1) using char(k+2) built from exist(k+1,1) — but this requires the fixed-point to be expressed in Lean. Alternative: build the formula directly using nested Since/Until chains at depth k+1.",
-  "session_id": "sess_1782303584_fd76a7",
   "verification": {
     "sorry_count": 2,
-    "vacuous_count": 0,
-    "axiom_count": 0,
+    "axiom_count": 2,
     "build_passed": true
   }
 }

@@ -385,24 +385,9 @@ noncomputable def nf_nvar_exist_all_depths
             funext ⟨i, hi⟩; simp [insertEnv]
           rwa [this] at h_env⟩
     | 1 =>
-      -- n = 1: ∃ x : M.carrier, nf_eval_nf M (k+1) 2 (insertEnv (fun _ => x) t) sub_nf
-      -- This is the critical case needed by the main theorem.
-      -- We use the "simultaneous NF disjunction" at depth k+2:
-      -- The condition ↔ (nf_characteristic M (k+2) 1 (fun _ => t)).2 sub_nf = true.
-      --
-      -- Define exist_1var_fn : NormalForm sig (k+1) 2 → Formula by:
-      --   exist_1var_fn(sub_nf') := disjunction over {nf' : NF sig (k+2) 1 | nf'.2 sub_nf'} of
-      --     nf_succ_char_formula(exist_1var_fn, nf')
-      --
-      -- This is a self-referential formula definition. We prove existence using
-      -- the "P = Q" argument: truth(exist_1var_fn(sub_nf')) at t equals
-      -- (nf_characteristic M (k+2) 1 (fun _ => t)).2 sub_nf' = true.
-      --
-      -- The proof works because:
-      -- 1. nf_succ_char_formula(f, nf') is true at t iff nf' is THE characteristic NF of t
-      --    (by atom matching + quantifier matching using f)
-      -- 2. The characteristic NF's quantifier part determines which sub_nf' are satisfiable.
-      -- 3. The disjunction selects exactly the NFs whose quantifier part includes sub_nf'.
+      -- n = 1: ∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf
+      -- This is the critical case needed by the main theorem (Approach 5, report 18).
+      -- See handoff for the committed construction and remaining obligation.
       sorry
     | n + 2 =>
       -- n ≥ 2: off the critical path. The main theorem only needs n = 0 and n = 1.
