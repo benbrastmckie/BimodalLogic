@@ -520,15 +520,109 @@ theorem nf_nvar_exist_depth0_tl
             intro h_form
             sorry
           · -- Backward: existential → formula
-            -- The backward direction is conceptually straightforward:
-            -- given env satisfying sub_nf, extract x = env(n), show
-            -- pred_t at t, show restrict_inner satisfied by inner env
-            -- at x (using IH), show pred_x at x, and use the right
-            -- temporal operator (Since/Until/conjunction) based on x-vs-t.
-            -- The proof sketch is correct but has Fin/insertEnv
-            -- elaboration issues. Deferred to next dispatch.
             intro ⟨env, h_nf⟩
-            sorry⟩
+            -- Set x = env(n), the existential variable being peeled off
+            set x := env ⟨n, by omega⟩ with hx_def
+            -- Key facts about insertEnv at the last two positions
+            have h_ie_n : insertEnv env t ⟨n, by omega⟩ = x := by
+              dsimp [insertEnv]; split <;> (first | exact hx_def.symm | omega)
+            have h_ie_n1 : insertEnv env t ⟨n + 1, by omega⟩ = t := by
+              dsimp [insertEnv]; split
+              · next h => omega
+              · rfl
+            -- Order between x and t from h_nf
+            have h_ord_xt : x < t ↔ ord_xt = true := by
+              have := h_nf (.order ⟨n, by omega⟩ ⟨n + 1, by omega⟩
+                (by simp [Fin.ext_iff]))
+              simp only [atom_eval, h_ie_n, h_ie_n1] at this; exact this
+            have h_ord_tx : t < x ↔ ord_tx = true := by
+              have := h_nf (.order ⟨n + 1, by omega⟩ ⟨n, by omega⟩
+                (by simp [Fin.ext_iff]))
+              simp only [atom_eval, h_ie_n1, h_ie_n] at this; exact this
+            -- Helper: pred_t holds at t
+            have h_pred_t : temporal_truth M atomMap t pred_t := by
+              show (nfPredAtPos atomMap h_surj sub_nf ⟨n + 1, by omega⟩).eval_at M atomMap t
+              rw [nfPredAtPos_correct]
+              intro p
+              have := h_nf (.pred p ⟨n + 1, by omega⟩)
+              simp only [atom_eval, h_ie_n1] at this; exact this
+            -- Helper: pred_x holds at x
+            have h_pred_x : temporal_truth M atomMap x pred_x := by
+              show (nfPredAtPos atomMap h_surj sub_nf ⟨n, by omega⟩).eval_at M atomMap x
+              rw [nfPredAtPos_correct]
+              intro p
+              have := h_nf (.pred p ⟨n, by omega⟩)
+              simp only [atom_eval, h_ie_n] at this; exact this
+            -- Helper: A_inner holds at x (inner existential satisfied)
+            have h_A_inner_x : temporal_truth M atomMap x A_inner := by
+              rw [hA_inner M x]
+              -- Witness: env' i = env ⟨i.val, ...⟩ for i : Fin n
+              refine ⟨fun i => env ⟨i.val, by omega⟩, ?_⟩
+              -- Show insertEnv env' x = env (as functions Fin (n+1) → M.carrier)
+              have h_env_eq : insertEnv (fun i : Fin n => env ⟨i.val, by omega⟩) x = env := by
+                funext ⟨i, hi⟩
+                dsimp [insertEnv]
+                split
+                · next h => congr 1
+                · next h =>
+                  have : i = n := by omega
+                  subst this; exact hx_def.symm
+              rw [h_env_eq]
+              -- Show: ∀ a : AtomKind sig (n+1), atom_eval M env a ↔ restrict_inner a = true
+              intro a
+              match a with
+              | .pred p i =>
+                simp only [restrict_inner]
+                have h_ie_i : insertEnv env t ⟨i.val, by omega⟩ = env i := by
+                  simp [insertEnv, show i.val < n + 1 from i.isLt]
+                have := h_nf (.pred p ⟨i.val, by omega⟩)
+                simp only [atom_eval, h_ie_i] at this
+                simp only [atom_eval]; exact this
+              | .order i j h_ne =>
+                simp only [restrict_inner]
+                have h_ie_i : insertEnv env t ⟨i.val, by omega⟩ = env i := by
+                  simp [insertEnv, show i.val < n + 1 from i.isLt]
+                have h_ie_j : insertEnv env t ⟨j.val, by omega⟩ = env j := by
+                  simp [insertEnv, show j.val < n + 1 from j.isLt]
+                have := h_nf (.order ⟨i.val, by omega⟩ ⟨j.val, by omega⟩
+                  (by simp [Fin.ext_iff]; exact fun heq => h_ne (Fin.ext heq)))
+                simp only [atom_eval, h_ie_i, h_ie_j] at this
+                simp only [atom_eval]; exact this
+            -- Helper to produce temporal_truth for .and formulas
+            -- Case split on ord_xt and ord_tx using split_ifs
+            split_ifs with h_xt_val h_tx_val
+            · -- x < t case: formula is pred_t ∧ S(at_x, ⊤)
+              rw [temporal_truth_and]
+              exact ⟨h_pred_t,
+                ⟨x, h_ord_xt.mpr h_xt_val,
+                  (temporal_truth_and M atomMap x A_inner pred_x).mpr
+                    ⟨h_A_inner_x, h_pred_x⟩,
+                  fun _ _ _ => temporal_truth_top M atomMap _⟩⟩
+            · -- t < x case: formula is pred_t ∧ U(at_x, ⊤)
+              rw [temporal_truth_and]
+              exact ⟨h_pred_t,
+                ⟨x, h_ord_tx.mpr h_tx_val,
+                  (temporal_truth_and M atomMap x A_inner pred_x).mpr
+                    ⟨h_A_inner_x, h_pred_x⟩,
+                  fun _ _ _ => temporal_truth_top M atomMap _⟩⟩
+            · -- x = t case: formula is pred_t ∧ (A_inner ∧ pred_x)
+              -- Show x = t (both order booleans false)
+              have h_xt_false : ord_xt = false := Bool.eq_false_iff.mpr h_xt_val
+              have h_tx_false : ord_tx = false := Bool.eq_false_iff.mpr h_tx_val
+              have h_x_eq_t : x = t := by
+                by_contra h_ne
+                rcases lt_or_gt_of_ne h_ne with h_lt | h_gt
+                · exact absurd (h_ord_xt.mp h_lt)
+                    (by rw [h_xt_false]; exact Bool.noConfusion)
+                · exact absurd (h_ord_tx.mp h_gt)
+                    (by rw [h_tx_false]; exact Bool.noConfusion)
+              rw [temporal_truth_and]
+              constructor
+              · exact h_pred_t
+              · rw [temporal_truth_and]
+                constructor
+                · rw [← h_x_eq_t]; exact h_A_inner_x
+                · rw [← h_x_eq_t]; exact h_pred_x⟩
 
 /-- Convenience wrapper: extract just the formula. -/
 noncomputable def nf_nvar_exist_depth0_tl_fn
