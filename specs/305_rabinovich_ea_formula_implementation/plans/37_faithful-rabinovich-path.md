@@ -112,15 +112,15 @@ parameter, arity ≤ 2). Full triage in `handoffs/phase-1-gate-rebuild-20260624.
 
 ---
 
-### Phase 2: Lemma 3.2(2) — arity firewall [NOT STARTED]
+### Phase 2: Lemma 3.2(2) — arity firewall [COMPLETED]
 
 **Goal**: Build Lemma 3.2(2) — "every exists-forall formula is equivalent to a conjunction of exists-forall formulas with at most two free variables" (Rabinovich md:78) — the one genuinely missing piece that *prevents* the arity tower (currently no live identifier). This is the structural guarantee that arity never exceeds 2 in the negation closure.
 
 **Tasks**:
-- [ ] Locate the V-EA conjunction infrastructure (`VecEAClosure.lean` / `VecEADecomp.lean`, Lemma 3.2(1) conj) and the arbitrary-arity `VecEA_m.existClosure` to use as the reduction target.
-- [ ] State Lemma 3.2(2): an arity-m V-EA formula is equivalent to a conjunction of arity-≤2 V-EA formulas. Add it with a live identifier (e.g. in `VecEAClosure.lean` or a new firewall module).
-- [ ] Prove it faithfully (Rabinovich md:78), reusing Lemma 3.2(1) conjunction closure; arity is capped at 2 by construction. No NF-depth, no recursion on a depth index.
-- [ ] `lean_verify` the new lemma is sorry-free; confirm it lives on (or can be wired to) the negation-closure path.
+- [x] Locate the V-EA conjunction infrastructure and the arbitrary-arity `VecEA_m.existClosure`. *(completed: `VecEA_m.holds` is literally a conjunction of arity-1 endpoint conditions + arity-2 interval-bracket conditions; `conjStruct`/`conj_holds` confirmed in VecEA_m.lean; `existClosure` bidirectional confirmed.)*
+- [x] State Lemma 3.2(2) with a live identifier. *(completed: new module `Kamp/VecEAArityFirewall.lean`; main theorem `VecEA_m.arity_firewall`.)*
+- [x] Prove it faithfully (Rabinovich md:78); arity capped at 2 by construction. *(completed: decomposition into `endpointComponent : VecEA_m 1` and `intervalComponent : VecEA_m 2`, each arity ≤ 2 by type; biconditional `arity_firewall` proved sorry-free. No NF-depth, no depth-index recursion, no arity-3 appeal.)*
+- [x] `lean_verify` sorry-free. *(completed: `lean_verify VecEA_m.arity_firewall` → axioms [propext, Classical.choice, Quot.sound], no sorryAx, no new axioms. Module builds GREEN (989 jobs). OFF live import path — baseline `completeness_discrete` unchanged, wiring deferred to Phase 5.)*
 
 **Timing**: 2.5 hours (~100–200 lines)
 
