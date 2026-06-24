@@ -26,7 +26,7 @@ next_project_number: 307
 303 [BLOCKED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
-305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+305 [RESEARCHED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
 
 ### Formula Refactor
 
@@ -126,7 +126,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 ---
 
 ### 305. Rabinovich ea formula implementation
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -146,6 +146,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
   - [305_rabinovich_ea_formula_implementation/reports/17_b2-construction-fix.md]
   - [305_rabinovich_ea_formula_implementation/reports/18_rabinovich-restructure-design.md]
   - [305_rabinovich_ea_formula_implementation/reports/18_circularity-resolution-n1.md]
+  - [305_rabinovich_ea_formula_implementation/reports/35_team-research.md]
 - **Plan**: [305_rabinovich_ea_formula_implementation/plans/34_approach5-arity2-char.md]
 
 **Description**: Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion
