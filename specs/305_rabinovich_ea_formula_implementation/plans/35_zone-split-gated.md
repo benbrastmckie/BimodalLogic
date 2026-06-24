@@ -217,14 +217,26 @@ Route B, Phases 1-3 are replaced by the re-anchor execution as noted in Phase 1.
 
 ### Phase 1: `mergeNF_succ` — depth-k position merge (x=t zone) [IN PROGRESS]
 
-> **STRIKE 1 of 3** (handoffs/v35-phase-1-strike-1.md). Attempt 1 built a single-variance
-> `renameNF` precomposition functor along `skipFin j`; it fails to type-check at the quant layer
-> because that layer is **contravariant** (it needs renaming along a `Fin (m'+1) → Fin (m+1)`
-> map, the opposite direction of the injection). Diagnosis sharpens v34 Obstacle 2: the functor
-> needs a **retraction** (`unskipFin j`, already proven in NfDepth0Generalized.lean), not just
-> the injection. Strike-2 next action: retraction-carrying `renameNF` + `nf_eval_nf` commutation
-> by `induction k`, then specialize to `mergeNF_succ`/`merge_forward_succ`. Build GREEN preserved
-> (attempt fully reverted; 0 `.lean` changes). Descend-only respected; no forbidden path touched.
+> **STRIKE 2 of 3** (handoffs/v35-phase-1-strike-2.md). The strike-1 retraction-functor plan was
+> implemented **in full and proven sorry-free**: `renameNF` (retraction-carrying, with the new
+> collision→`false` idea making precomposition total along non-injective maps), `renameNF_roundtrip`,
+> and the bidirectional semantic congruence `renameNF_eval_iff` (induction on k). **Conclusive
+> negative result**: `renameNF_eval_iff` intrinsically REQUIRES the index maps to be mutually
+> inverse (BIJECTIVE — both `f∘r=id` and `r∘f=id`), forced by the contravariant quant layer
+> (the recursion swaps `(f,r)`; the `∀ qnf` clauses at differing arities correspond only under a
+> bijection). The merge map `skipFin j` is injective-not-surjective (has `r∘f=id` but VIOLATES
+> `f∘r=id` at the dropped position j), so the functor is **structurally insufficient for the merge**
+> — closing strike-1's open Obstacle 2 as a negative verdict for BOTH syntactic encodings.
+> Strike-3 next action: handle the dropped position `j` by the **bespoke value-duplication**
+> argument (depth-0 `merge_forward`-style, using `h_pred`/`h_ord` at j) lifted through the quant
+> layer, reusing the proven `renameNF_eval_iff` `mpr` direction (needs only `r∘f=id`, which the
+> merge has) for the bijection-free half. Proven `renameNF` block saved at
+> handoffs/v35-phase-1-strike-2-renameNF-proven.lean.txt. Build GREEN preserved (0 `.lean` changes;
+> the proven work is in a `.lean.txt` reference, not the build path). Descend-only respected; no
+> forbidden path touched. *(in progress — handoff; 2 of 3 strikes used on this leaf)*
+>
+> **STRIKE 1 of 3** (handoffs/v35-phase-1-strike-1.md): single-variance `renameNF` along `skipFin j`
+> failed to type-check (contravariant quant layer needs a retraction). Superseded by strike 2.
 
 - **Goal:** Generalize `mergeNF` / `merge_forward` (NfDepth0Generalized.lean:157/168) from
   `NormalForm sig 0 (m+1)` to `NormalForm sig k (m+1)`, mapping the quant layer (depth-k) through the

@@ -3,14 +3,14 @@
   "task_number": 305,
   "plan_version": 35,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md",
-  "session_id": "sess_1782320767_188e83",
+  "session_id": "sess_1782334000_b2f91a",
   "agent_type": "lean-implementation-hard-agent",
-  "summary": "Phase 0 decision gate COMPLETED with concrete spike evidence: committed to Route A (fix-in-place zone-split). G1 (re-anchor) is non-viable -- routing completeness_discrete through US_expressively_complete_over_Z is circular (the Z->discrete bridge presupposes the very no_gaps_discrete_model_surgery it would replace) and faces a structure-type gap (OrderedMonadicStructure/temporal_truth vs IntStructureFromSig/int_truth, with no existing bridging lemma). G2: semantic_prior_UZ first-occurrence is adequate for the discrete target (sorry-free prior_UZ_first_transition already delivers it on SuccOrder/PredOrder). Bonus: only arity n=1 is live, so KampPrior.lean:394 (n+2) is genuinely off-path -> Phase 4 is verification-only. Phase 1 (mergeNF_succ) attempted: built a single-variance renameNF precomposition functor; it fails to type-check at the quant layer (contravariant -- needs a retraction along unskipFin j, not just the skipFin j injection). This is STRIKE 1 of 3 on that leaf; the attempt was fully reverted, build is GREEN, zero .lean files changed. Diagnosis sharpens v34 Obstacle 2.",
+  "summary": "Phase 1 STRIKE 2 of 3 on phase_1_mergeNF_succ. The strike-1 retraction-functor plan was implemented in FULL and proven sorry-free/axiom-free (renameNF with the new collision->false idea making precomposition total along non-injective maps; renameNF_roundtrip; the bidirectional semantic congruence renameNF_eval_iff by induction on k). CONCLUSIVE NEGATIVE RESULT: renameNF_eval_iff intrinsically requires the two index maps to be mutually inverse (BIJECTIVE -- both f.r=id and r.f=id), forced by the contravariant quant layer (the induction swaps (f,r); the per-arity forall qnf quant clauses correspond only under a bijection). The merge map skipFin j is injective-not-surjective: it has r.f=id (unskipFin_skipFin) but VIOLATES f.r=id at the dropped position j. Therefore BOTH syntactic NF-precomposition encodings (strike-1 plain and strike-2 retraction) are structurally insufficient for a (non-bijective) position merge -- this closes strike-1's open Obstacle 2 as a negative verdict. Stopped cleanly per H6 (no thrash; 2 of 3 strikes used). Build GREEN; 0 .lean files changed; baseline (2 sorries, axiom set, no top-level axioms) unchanged. The proven renameNF/renameNF_eval_iff block is preserved verbatim at handoffs/v35-phase-1-strike-2-renameNF-proven.lean.txt for strike-3 reuse.",
   "phases_completed": 1,
   "phases_total": 6,
   "phases_detail": {
     "phase_0_gate": "COMPLETED (Route A committed)",
-    "phase_1_mergeNF_succ": "IN PROGRESS (strike 1 of 3; build GREEN, attempt reverted)"
+    "phase_1_mergeNF_succ": "IN PROGRESS (strike 2 of 3; build GREEN; functor route proven structurally insufficient for the merge -- value-duplication route is the strike-3 plan)"
   },
   "mode": "hard",
   "hard_contracts": ["H2", "H6", "H9"],
@@ -19,10 +19,10 @@
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 391,
-      "statement": "nf_nvar_exist_all_depths (k+1) (n=1) arm: ∃ A : Formula, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔ ∃ env : Fin 1 → M.carrier, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
+      "statement": "nf_nvar_exist_all_depths (k+1) (n=1) arm: exists A : Formula, forall M h_UZ h_SZ t, temporal_truth M atomMap t A <-> exists env : Fin 1 -> M.carrier, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
       "assumption": "Critical-path n=1 binder: needs the depth-(k+1) arity-2 existential over (x,t) assembled as a 3-way zone match (x<t / x=t / t<x), with x bound via the Fin-2 generalization of the in-file Fin-1 telescoping bridge.",
-      "why_deferred": "Blocked on Phase 1 mergeNF_succ (x=t zone), the make-or-break leaf. Strike 1: the depth-k position-merge needs a retraction-carrying renameNF functor (contravariant quant layer); single-variance renameNF along skipFin j does not type-check. Phases 2-3 (zone endpoints, assemble+wire) depend on Phase 1.",
-      "next_dispatch": "Strike 2 on Phase 1: define renameNF carrying a retraction r (unskipFin j, totalized to map the dropped position j -> i) so the quant-layer variance matches: renameNF (liftIdx g) (liftIdx r) : NormalForm sig k (m+1) -> NormalForm sig k (m'+1). Prove nf_eval_nf commutation by induction on k. Then specialize to mergeNF_succ / merge_forward_succ. See handoffs/v35-phase-1-strike-1.md for the two encodings."
+      "why_deferred": "Blocked on Phase 1 mergeNF_succ (x=t zone), the make-or-break leaf. Strike 2 proved the retraction-functor route (renameNF_eval_iff) sorry-free but CONCLUSIVELY INSUFFICIENT for the merge: the congruence requires bijective index maps, but the merge map skipFin j is injective-not-surjective (violates f.r=id at the dropped position j). Phases 2-3 (zone endpoints, assemble+wire) depend on Phase 1.",
+      "next_dispatch": "Strike 3 (FINAL strike on this leaf): prove mergeNF_succ/merge_forward_succ by the BESPOKE VALUE-DUPLICATION argument -- mirror sorry-free depth-0 merge_forward (NfDepth0Generalized.lean:168), building the duplicating env full_val (value at j := value at i) and discharging the atom layer with h_transfer_pred/h_transfer_order, then lift the QUANT layer using the merge-compatibility hyps h_pred/h_ord at j (NOT a generic rename congruence). Reuse the proven renameNF_eval_iff mpr direction (needs only r.f=id, which the merge HAS) from handoffs/v35-phase-1-strike-2-renameNF-proven.lean.txt for the bijection-free half. If strike 3 also fails: STOP and re-run the Phase 0 gate (plan Rollback/Contingency), do NOT reopen Approach-5."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
@@ -33,20 +33,24 @@
       "next_dispatch": "Phase 4 is verification-only: confirm dead via lean_verify completeness_discrete and leave as a documented off-path sorry (baseline-neutral). Only prove if a future consumer makes it live."
     }
   ],
-  "blockers": [],
+  "blockers": [
+    "Phase 1 leaf phase_1_mergeNF_succ NOT cleared (strike 2 of 3). KampPrior.lean:391 (n=1 critical-path) remains a main-target sorry, so completeness_discrete still depends on sorryAx. The retraction-functor route is proven structurally insufficient (non-bijective merge); strike 3 must use the value-duplication route. The off-path KampPrior.lean:394 (n>=2) also remains (baseline-neutral, dead-path)."
+  ],
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 1,
-    "first_action": "Phase 1 strike 2: in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean, define a retraction-carrying renameNF (g : Fin m -> Fin m', r : Fin m' -> Fin m, retraction proof) recursing at the quant layer via liftIdx of BOTH g and r so the contravariant quant layer type-checks; for the merge use g = skipFin j, r = unskipFin j totalized (dropped position j |-> i). Prove nf_eval_nf commutation by induction on k. Then derive mergeNF_succ + merge_forward_succ (lift the depth-0 merge_forward full_val env-duplication through the quant layer). Verify sorry-free + lake build GREEN + axiom count unchanged.",
-    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-1.md",
+    "first_action": "Phase 1 STRIKE 3 (FINAL): prove mergeNF_succ/merge_forward_succ in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean by the value-duplication argument. (1) Recover the proven renameNF + renameNF_eval_iff block from handoffs/v35-phase-1-strike-2-renameNF-proven.lean.txt (sorry-free, axiom-free) -- you MAY add it to the file as infrastructure since its mpr direction needs only r.f=id which the merge satisfies. (2) Build merge_forward_succ at depth k+1 mirroring depth-0 merge_forward (lines 168-293): construct the duplicating env env_new/full_val, discharge the atom layer (.1) via the existing h_transfer_pred/h_transfer_order reasoning, and discharge the QUANT layer (.2) by a value-duplication congruence at depth k that exploits h_pred/h_ord at position j (the compatible-subspace surjectivity that a bare bijection lacks). This is the genuine make-or-break content (~120-200 lines). Verify sorry-free + lake build GREEN + axiom set unchanged. If it fails, this is strike 3 of 3 -> STOP and re-run Phase 0 gate per plan Rollback/Contingency; do NOT reopen Approach-5.",
+    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-2.md",
+    "proven_infrastructure_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-2-renameNF-proven.lean.txt",
     "gate_decision_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-gate-decision.md",
-    "h6_strike_count": {"phase_1_mergeNF_succ": 1}
+    "strike1_handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-1.md",
+    "h6_strike_count": {"phase_1_mergeNF_succ": 2}
   },
   "verification": {
     "sorry_count": 2,
-    "sorry_count_note": "Baseline preserved: exactly the 2 live code sorries on the completeness_discrete chain (KampPrior.lean:391 critical, :394 off-path). (Boneyard/ and Expressiveness/CaseAnalysis sorries are not in the completeness_discrete cone; lean_verify reports a single sorryAx source traced through the KampPrior chain.)",
+    "sorry_count_note": "Baseline preserved: exactly the 2 live code sorries on the completeness_discrete chain (KampPrior.lean:391 critical main-target, :394 off-path). No new sorries introduced. 0 .lean files changed this dispatch.",
     "axiom_count": 2,
-    "axiom_count_note": "The 2 acceptable non-sorry project axioms beyond standard Lean (propext/Classical.choice/Quot.sound) are Lean.ofReduceBool + Lean.trustCompiler (from native_decide). Zero top-level 'axiom' declarations in the build path. No new axioms introduced. completeness_discrete still depends on sorryAx (the genuine blocker).",
+    "axiom_count_note": "The 2 acceptable non-sorry project axioms beyond standard Lean (propext/Classical.choice/Quot.sound) are Lean.ofReduceBool + Lean.trustCompiler (from native_decide). Zero top-level 'axiom' declarations in the build path (the 2 '^axiom ' grep hits are comments in Boneyard files). No new axioms introduced.",
     "build_passed": true,
     "build_jobs": 1700,
     "lean_verify_completeness_discrete": ["propext", "sorryAx", "Classical.choice", "Lean.ofReduceBool", "Lean.trustCompiler", "Quot.sound"]
@@ -55,7 +59,17 @@
     {
       "path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md",
       "type": "plan",
-      "summary": "Hard-mode gated zone-split implementation plan for task 305 (6 phases, decision gate first)."
+      "summary": "Hard-mode gated zone-split implementation plan for task 305 (6 phases, decision gate first). Phase 1 annotated STRIKE 2 of 3."
+    },
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-2.md",
+      "type": "handoff",
+      "summary": "Phase 1 strike 2: retraction functor proven sorry-free but structurally insufficient for the (non-bijective) merge; value-duplication strike-3 plan."
+    },
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-2-renameNF-proven.lean.txt",
+      "type": "reference",
+      "summary": "Sorry-free, axiom-free renameNF + renameNF_eval_iff (bidirectional congruence, induction on k) preserved verbatim for strike-3 reuse."
     },
     {
       "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-gate-decision.md",
@@ -65,7 +79,7 @@
     {
       "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-1.md",
       "type": "handoff",
-      "summary": "Phase 1 strike 1: renameNF contravariance obstacle + retraction-based strike-2 plan."
+      "summary": "Phase 1 strike 1: renameNF contravariance obstacle + retraction-based strike-2 plan (superseded)."
     }
   ]
 }
