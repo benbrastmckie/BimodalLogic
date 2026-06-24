@@ -1,7 +1,7 @@
 # Implementation Plan: B.2 Fix and Impossibility Documentation (Task #305 v32)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (all prerequisite sorry-free infrastructure exists)
 - **Research Inputs**: reports/18_rabinovich-restructure-design.md
@@ -72,22 +72,18 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: Define and Prove neg_b2_bracket_formula [NOT STARTED]
+### Phase 1: Define and Prove neg_b2_bracket_formula [COMPLETED]
 
 **Goal**: Add the `neg_b2_bracket_formula` definition and its two correctness theorems to `EANegationClosure.lean`, then replace the B.2 case in `NegationIndep.lean` and update its correctness proof.
 
 **Tasks**:
-- [ ] Add `neg_b2_bracket_formula` definition after `inf_bracket_formula_hasINF` (around line 226) in `EANegationClosure.lean`:
-  ```lean
-  def neg_b2_bracket_formula (alpha_0 beta_0 : TemporalPred) : BracketFormula 2
-  ```
-  with `pointTypes := fun i => if i.val = 0 then beta_0.neg else alpha_0` and `segmentTypes := fun i => if i.val <= 1 then alpha_0.neg else TemporalPred.top`
-- [ ] Prove `neg_b2_bracket_formula_hasINF` (~30 lines): given first alpha_0 at `r0` and beta_0 failure on `(z0, r0)`, construct the 2-witness bracket holding on `(z0, z1)`. Witnesses: `y` (beta_0 failure point) and `r0` (first alpha_0).
-- [ ] Prove `neg_b2_bracket_formula_disjoint` (~20 lines): given `neg_b2_bracket_formula.holds` and `bf.holds` for a bracket with matching alpha_0/beta_0, derive `False`. Proof chain: alpha_0.neg on (z0, x) forces bf's first witness w_0 >= x, so y < x <= w_0 puts beta_0.neg(y) in segment (z0, w_0), contradicting beta_0 on (z0, w_0).
-- [ ] In `NegationIndep.lean`, replace `neg_interval_formula_indep` Case B2 definition (line 82): change `⟨[⟨1, inf_bracket_formula (bf.pointTypes ⟨0, by omega⟩)⟩]⟩` to `⟨[⟨2, neg_b2_bracket_formula (bf.pointTypes ⟨0, by omega⟩) (bf.segmentTypes ⟨0, by omega⟩)⟩]⟩`
-- [ ] In `NegationIndep.lean`, update `neg_interval_formula_indep_correct` Case B2 proof (lines 154-161): replace `inf_bracket_formula_hasINF` call with `neg_b2_bracket_formula_hasINF`, passing both `alpha_0` and `beta_0` plus `h_seg` (the beta_0 failure hypothesis already in scope)
-- [ ] Update the NOTE comment at NegationIndep.lean:328-334 to reference report 18, the B.2 fix, and confirm B.1 remains the sole unfixable gap
-- [ ] Run `lake build` to verify all changes compile
+- [x] Add `neg_b2_bracket_formula` definition after `inf_bracket_formula_hasINF` (around line 226) in `EANegationClosure.lean` *(deviation: altered -- pointTypes(0) changed from `beta_0.neg` to `(beta_0.neg).conj (alpha_0.neg)` to close a gap in the disjointness proof where witnesses could coincide)*
+- [x] Prove `neg_b2_bracket_formula_hasINF` (~30 lines): given first alpha_0 at `r0` and beta_0 failure on `(z0, r0)`, construct the 2-witness bracket holding on `(z0, z1)`. Witnesses: `y` (beta_0 failure point) and `r0` (first alpha_0).
+- [x] Prove `neg_b2_bracket_formula_disjoint` (~20 lines): given `neg_b2_bracket_formula.holds` and `bf.holds` for a bracket with matching alpha_0/beta_0, derive `False`. Proof chain: alpha_0.neg on (z0, x) forces bf's first witness w_0 >= x, so y < x <= w_0 puts beta_0.neg(y) in segment (z0, w_0), contradicting beta_0 on (z0, w_0).
+- [x] In `NegationIndep.lean`, replace `neg_interval_formula_indep` Case B2 definition (line 82): change `⟨[⟨1, inf_bracket_formula (bf.pointTypes ⟨0, by omega⟩)⟩]⟩` to `⟨[⟨2, neg_b2_bracket_formula (bf.pointTypes ⟨0, by omega⟩) (bf.segmentTypes ⟨0, by omega⟩)⟩]⟩`
+- [x] In `NegationIndep.lean`, update `neg_interval_formula_indep_correct` Case B2 proof (lines 154-161): replace `inf_bracket_formula_hasINF` call with `neg_b2_bracket_formula_hasINF`, passing both `alpha_0` and `beta_0` plus `h_seg` (the beta_0 failure hypothesis already in scope)
+- [x] Update the NOTE comment at NegationIndep.lean:328-334 to reference report 18, the B.2 fix, and confirm B.1 remains the sole unfixable gap
+- [x] Run `lake build` to verify all changes compile
 
 **Timing**: 1.5 hours
 

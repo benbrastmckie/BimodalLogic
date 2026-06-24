@@ -26,7 +26,7 @@ next_project_number: 307
 303 [BLOCKED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
   └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
   └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
-305 [PLANNED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+305 [IMPLEMENTING] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
 
 ### Formula Refactor
 
@@ -126,7 +126,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 ---
 
 ### 305. Rabinovich ea formula implementation
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None

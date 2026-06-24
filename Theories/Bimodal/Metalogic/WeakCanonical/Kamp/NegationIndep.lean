@@ -77,9 +77,10 @@ def neg_interval_formula_indep : (n : Nat) → BracketFormula n → VBracketForm
     let caseB1 : VBracketFormula :=
       VBracketFormula.prependAll (bf.pointTypes ⟨0, by omega⟩).neg
         (bf.pointTypes ⟨0, by omega⟩) ih
-    -- Case B2: pointTypes(0) occurs (INF bracket)
+    -- Case B2: pointTypes(0) occurs, segmentTypes(0) fails (beta_0 failure bracket)
     let caseB2 : VBracketFormula :=
-      ⟨[⟨1, inf_bracket_formula (bf.pointTypes ⟨0, by omega⟩)⟩]⟩
+      ⟨[⟨2, neg_b2_bracket_formula (bf.pointTypes ⟨0, by omega⟩)
+                                    (bf.segmentTypes ⟨0, by omega⟩)⟩]⟩
     -- Disjunction of all three cases
     ⟨caseA.disjuncts ++ caseB1.disjuncts ++ caseB2.disjuncts⟩
 
@@ -151,10 +152,12 @@ theorem neg_interval_formula_indep_correct :
         simp only [VBracketFormula.prependAll, List.mem_append, List.mem_map]
         left; right
         exact ⟨⟨k, bf_v⟩, h_mem, rfl⟩
-      · -- Case B2: segmentTypes(0) fails on (z0, r0) → INF bracket
-        have h_inf := inf_bracket_formula_hasINF h_INF
-          (bf.pointTypes ⟨0, by omega⟩) z0 z1 h_lt h_exists
-        refine ⟨⟨1, inf_bracket_formula (bf.pointTypes ⟨0, by omega⟩)⟩, ?_, h_inf⟩
+      · -- Case B2: segmentTypes(0) fails on (z0, r0) → neg_b2_bracket
+        have h_b2 := neg_b2_bracket_formula_hasINF h_INF
+          (bf.pointTypes ⟨0, by omega⟩) (bf.segmentTypes ⟨0, by omega⟩)
+          z0 z1 h_lt r0 hr0_above hr0_below hPr0 h_neg_before h_seg
+        refine ⟨⟨2, neg_b2_bracket_formula (bf.pointTypes ⟨0, by omega⟩)
+                                            (bf.segmentTypes ⟨0, by omega⟩)⟩, ?_, h_b2⟩
         -- Membership: (A ++ B1) ++ B2, need B2 -- right
         simp only [List.mem_append]
         right
@@ -326,11 +329,21 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
   exact neg_disjunct_list_indep_correct h_INF z0 z1 h_lt v.disjuncts h_neg
 
 -- NOTE: The backward direction (neg_2var_vec_ea_indep_backward) was attempted
--- but found to be unprovable with the current construction. See plan v31
--- Phase 1 BLOCKER documentation for details. The case B.2 (inf_bracket_formula)
--- in neg_interval_formula_indep is NOT disjoint from the original bracket formula.
--- A concrete counterexample: bf with pt(0)=P, all segments=top on (0,10) with
--- P holding only at 5 makes both bf.holds (witness 5) and
--- inf_bracket_formula(P).holds (witness 5, P.neg on (0,5)) true simultaneously.
+-- but found to be unprovable with the current construction. See report 18
+-- (specs/305_rabinovich_ea_formula_implementation/reports/18_rabinovich-restructure-design.md)
+-- for the definitive analysis.
+--
+-- The B.2 gap has been FIXED: `neg_b2_bracket_formula` (in EANegationClosure.lean)
+-- replaces the old `inf_bracket_formula` in Case B.2. The new formula is disjoint
+-- from the original bracket formula (proved by `neg_b2_bracket_formula_disjoint`).
+--
+-- The B.1 gap remains UNFIXABLE at the BracketFormula level (report 18, Section 4):
+-- V-bracket formulas are existentially quantified, but the backward direction requires
+-- universal quantification over all possible bracket witness arrangements which vary
+-- per model. The IH gives negation on a specific sub-interval (r0, z1) but the bracket
+-- witness w_0 could be > r0, giving a different sub-interval (w_0, z1).
+--
+-- This does NOT block completeness: the model-dependent `neg_interval_formula` in
+-- EANegationClosure.lean is sorry-free and suffices for the completeness argument.
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

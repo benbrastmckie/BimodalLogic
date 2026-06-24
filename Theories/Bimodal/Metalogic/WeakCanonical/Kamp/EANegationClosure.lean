@@ -224,6 +224,160 @@ theorem inf_bracket_formula_hasINF {sig : MonadicSignature}
   exact ⟨r0, hr0_above, hr0_strict, hPr0, fun y hy0 hy1 =>
     (TemporalPred.eval_at_neg' M atomMap P y).mpr (h_neg y hy0 hy1)⟩
 
+/-! ## B.2 Bracket Formula: neg_b2_bracket_formula
+
+The 2-witness bracket formula encoding that beta_0 fails before the first
+alpha_0 point. Used in Case B.2 of neg_interval_formula_indep (NegationIndep.lean)
+to replace inf_bracket_formula, enabling the backward (disjointness) proof.
+
+The first witness carries both beta_0.neg AND alpha_0.neg (as a conjunction)
+to close all cases in the disjointness argument -- this prevents the witness
+from coinciding with any alpha_0 point of the original bracket formula. -/
+
+/-- The B.2 bracket formula: encodes that beta_0 fails before the first alpha_0.
+    Two witnesses: y (beta_0 failure, alpha_0 non-occurrence) < x (first alpha_0).
+    - pointTypes(0) = (beta_0.neg).conj (alpha_0.neg) at y
+    - pointTypes(1) = alpha_0 at x
+    - segmentTypes(0) = alpha_0.neg on (z_0, y)
+    - segmentTypes(1) = alpha_0.neg on (y, x)
+    - segmentTypes(2) = top on (x, z_1) -/
+def neg_b2_bracket_formula (alpha_0 beta_0 : TemporalPred) : BracketFormula 2 :=
+  { pointTypes := fun i => if i.val = 0 then (beta_0.neg).conj (alpha_0.neg) else alpha_0
+    segmentTypes := fun i =>
+      if i.val ≤ 1 then alpha_0.neg else TemporalPred.top }
+
+/-- If alpha_0 has first occurrence r0 in (z0, z1) and beta_0 fails on (z0, r0),
+    then neg_b2_bracket_formula holds on (z0, z1). -/
+theorem neg_b2_bracket_formula_hasINF {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    (h_INF : HasAttainedINF M atomMap)
+    (alpha_0 beta_0 : TemporalPred) (z0 z1 : M.carrier) (h_lt : z0 < z1)
+    (r0 : M.carrier) (hr0_above : z0 < r0) (hr0_below : r0 < z1)
+    (hPr0 : alpha_0.eval_at M atomMap r0)
+    (h_neg_before : ∀ y : M.carrier, z0 < y → y < r0 → ¬alpha_0.eval_at M atomMap y)
+    (h_seg_fail : ¬∀ y : M.carrier, z0 < y → y < r0 → beta_0.eval_at M atomMap y) :
+    (neg_b2_bracket_formula alpha_0 beta_0).holds M atomMap z0 z1 := by
+  push_neg at h_seg_fail
+  obtain ⟨y0, hy0_above, hy0_below, h_beta_neg⟩ := h_seg_fail
+  -- Witnesses: y0 (beta_0 failure, also alpha_0.neg since y0 < r0) and r0 (first alpha_0)
+  simp only [neg_b2_bracket_formula, BracketFormula.holds, BracketFormula.toIntervalPattern,
+             IntervalPattern.holds]
+  refine ⟨fun ⟨i, hi⟩ => if i = 0 then y0 else r0, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Strictly increasing
+    intro ⟨i, hi⟩ ⟨j, hj⟩ hij
+    simp only [Fin.lt_def] at hij
+    have hi0 : i = 0 := by omega
+    have hj1 : j = 1 := by omega
+    subst hi0; subst hj1
+    simp; exact hy0_below
+  · -- All in (z0, z1)
+    intro ⟨i, hi⟩
+    by_cases h : i = 0
+    · subst h; simp; exact ⟨hy0_above, lt_trans hy0_below hr0_below⟩
+    · have h1 : i = 1 := by omega
+      subst h1; simp; exact ⟨hr0_above, hr0_below⟩
+  · -- Point types
+    intro ⟨i, hi⟩
+    by_cases h : i = 0
+    · subst h; simp
+      exact (TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg y0).mpr
+        ⟨(TemporalPred.eval_at_neg' M atomMap beta_0 y0).mpr h_beta_neg,
+         (TemporalPred.eval_at_neg' M atomMap alpha_0 y0).mpr (h_neg_before y0 hy0_above hy0_below)⟩
+    · have h1 : i = 1 := by omega
+      subst h1; simp; exact hPr0
+  · -- Segment 0: alpha_0.neg on (z0, y0)
+    intro y hy0 hy1
+    simp at hy1
+    exact (TemporalPred.eval_at_neg' M atomMap alpha_0 y).mpr
+      (h_neg_before y hy0 (lt_trans hy1 hy0_below))
+  · -- Middle segments: segment 1 is alpha_0.neg on (y0, r0)
+    intro ⟨i, hi⟩ y hy_lo hy_hi
+    have hi0 : i = 0 := by omega
+    subst hi0
+    simp [show ¬((0 : Nat) + 1 = 0) from by omega] at hy_lo hy_hi
+    exact (TemporalPred.eval_at_neg' M atomMap alpha_0 y).mpr
+      (h_neg_before y (lt_trans hy0_above hy_lo) hy_hi)
+  · -- Last segment: top on (r0, z1)
+    intro y _ _
+    simp
+    exact TemporalPred.eval_at_top M atomMap y
+
+/-- If neg_b2_bracket_formula(alpha_0, beta_0) holds on (z0, z1) and bf has
+    alpha_0 as its first point type and beta_0 as its first segment type,
+    then bf cannot hold on (z0, z1).
+
+    Proof: From neg_b2_bracket_formula we get y < x with alpha_0.neg on all
+    of (z0, x) (including the point y via the conjunction). From bf we get
+    alpha_0(w_0) forcing w_0 >= x. Then y is in (z0, w_0) with beta_0.neg(y),
+    contradicting beta_0 on (z0, w_0) from bf. -/
+theorem neg_b2_bracket_formula_disjoint {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
+    {n : Nat} (bf : BracketFormula (n + 1))
+    (alpha_0 beta_0 : TemporalPred)
+    (h_pt : bf.pointTypes ⟨0, by omega⟩ = alpha_0)
+    (h_seg : bf.segmentTypes ⟨0, by omega⟩ = beta_0)
+    (z0 z1 : M.carrier)
+    (h_b2 : (neg_b2_bracket_formula alpha_0 beta_0).holds M atomMap z0 z1)
+    (h_bf : bf.holds M atomMap z0 z1) : False := by
+  -- Extract witnesses from neg_b2_bracket_formula
+  simp only [neg_b2_bracket_formula, BracketFormula.holds, BracketFormula.toIntervalPattern,
+             IntervalPattern.holds] at h_b2
+  obtain ⟨w_b2, hm_b2, hbnd_b2, hpt_b2, hseg0_b2, hseg_mid_b2, _⟩ := h_b2
+  -- Extract witnesses from bf.holds
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+             IntervalPattern.holds] at h_bf
+  obtain ⟨w_bf, _, hbnd_bf, hpt_bf, hseg0_bf, _, _⟩ := h_bf
+  -- Key facts from bf: alpha_0(w_bf(0)) and beta_0 on (z0, w_bf(0))
+  have h_alpha_0_at_w0 : alpha_0.eval_at M atomMap (w_bf ⟨0, by omega⟩) := by
+    have := hpt_bf ⟨0, by omega⟩; rw [h_pt] at this; exact this
+  have h_beta_0_seg : ∀ y : M.carrier, z0 < y → y < w_bf ⟨0, by omega⟩ →
+      beta_0.eval_at M atomMap y := by
+    intro y hy0 hy1
+    have := hseg0_bf y hy0 hy1; rw [h_seg] at this; exact this
+  -- Key facts from neg_b2_bracket_formula:
+  -- w_b2(0) has (beta_0.neg).conj(alpha_0.neg), so both beta_0.neg and alpha_0.neg
+  have h_conj := hpt_b2 ⟨0, by omega⟩
+  simp at h_conj
+  have h_beta_neg_y : ¬beta_0.eval_at M atomMap (w_b2 ⟨0, by omega⟩) :=
+    (TemporalPred.eval_at_neg' M atomMap beta_0 _).mp
+      ((TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg _).mp h_conj).1
+  have h_alpha_neg_y : ¬alpha_0.eval_at M atomMap (w_b2 ⟨0, by omega⟩) :=
+    (TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp
+      ((TemporalPred.eval_at_conj M atomMap beta_0.neg alpha_0.neg _).mp h_conj).2
+  -- Step 1: Show w_bf(0) >= w_b2(1) (i.e., ¬(w_bf(0) < w_b2(1)))
+  -- alpha_0.neg on (z0, w_b2(0)) from segment 0, on (w_b2(0), w_b2(1)) from segment 1,
+  -- and alpha_0.neg AT w_b2(0) from the conjunction.
+  -- So alpha_0.neg on the closed-open set [z0+, w_b2(1)) covers w_bf(0) if w_bf(0) < w_b2(1).
+  have h_wbf0_not_lt : ¬(w_bf ⟨0, by omega⟩ < w_b2 ⟨1, by omega⟩) := by
+    intro h_lt_x
+    -- w_bf(0) is in (z0, w_b2(1)), show alpha_0.neg(w_bf(0))
+    have h_wbf0_above : z0 < w_bf ⟨0, by omega⟩ := (hbnd_bf ⟨0, by omega⟩).1
+    by_cases h_ord2 : w_bf ⟨0, by omega⟩ < w_b2 ⟨0, by omega⟩
+    · -- In segment 0: alpha_0.neg on (z0, w_b2(0))
+      have := hseg0_b2 (w_bf ⟨0, by omega⟩) h_wbf0_above h_ord2
+      simp at this
+      exact absurd h_alpha_0_at_w0
+        ((TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp this)
+    · push_neg at h_ord2
+      by_cases h_eq : w_bf ⟨0, by omega⟩ = w_b2 ⟨0, by omega⟩
+      · -- w_bf(0) = w_b2(0): use alpha_0.neg from the conjunction
+        rw [h_eq] at h_alpha_0_at_w0
+        exact h_alpha_neg_y h_alpha_0_at_w0
+      · -- w_b2(0) < w_bf(0) < w_b2(1): in segment 1, alpha_0.neg
+        have h_lo : w_b2 ⟨0, by omega⟩ < w_bf ⟨0, by omega⟩ :=
+          lt_of_le_of_ne h_ord2 (Ne.symm h_eq)
+        have := hseg_mid_b2 ⟨0, by omega⟩ (w_bf ⟨0, by omega⟩) h_lo h_lt_x
+        simp at this
+        exact absurd h_alpha_0_at_w0
+          ((TemporalPred.eval_at_neg' M atomMap alpha_0 _).mp this)
+  -- Step 2: w_bf(0) >= w_b2(1), so w_b2(0) < w_b2(1) <= w_bf(0)
+  push_neg at h_wbf0_not_lt
+  have h_y_above : z0 < w_b2 ⟨0, by omega⟩ := (hbnd_b2 ⟨0, by omega⟩).1
+  have h_y_below : w_b2 ⟨0, by omega⟩ < w_bf ⟨0, by omega⟩ :=
+    lt_of_lt_of_le (hm_b2 ⟨0, by omega⟩ ⟨1, by omega⟩ (by simp [Fin.lt_def])) h_wbf0_not_lt
+  -- Step 3: beta_0 on (z0, w_bf(0)) from bf, but beta_0.neg at w_b2(0) -- contradiction
+  exact h_beta_neg_y (h_beta_0_seg _ h_y_above h_y_below)
+
 /-- The INF formula produces a VBracketFormula witnessing the first occurrence. -/
 theorem inf_formula_is_vbracket {sig : MonadicSignature}
     {M : OrderedMonadicStructure sig} {atomMap : Formula → sig.preds}
