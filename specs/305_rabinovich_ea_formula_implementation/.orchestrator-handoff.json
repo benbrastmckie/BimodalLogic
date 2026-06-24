@@ -2,52 +2,53 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 2 partial: created NfDepth0Generalized.lean with correct type signatures and n=0 base case proved. The inductive step (n+1 multi-variable existentials) has 1 sorry due to cross-conditions between peeled existential variable and inner witnesses preventing clean IH application. Requires direct nested Since/Until chain construction.",
+  "summary": "Phase 2 dispatch 2: proved backward direction (existential -> formula) for all 3 subcases of succ n case. Identified fundamental cross-condition problem blocking the forward direction. The IH-based formula does not capture order conditions between inner existential variables and the free variable t. Added NF inconsistency helper lemmas and consistency gates. 1 sorry remains in the forward direction.",
   "phases_total": 3,
   "phases_completed": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "line": 121,
-      "statement": "nf_nvar_exist_depth0_tl (succ n case)",
-      "assumption": "The multi-variable existential at depth 0 with n+1 existential variables is TL-definable",
-      "why_deferred": "Cross-conditions between peeled existential variable and inner witnesses prevent clean IH application. Requires direct nested temporal chain construction.",
-      "next_dispatch": "Build sinceChain/untilChain, enumerate orderings from NF order booleans, prove correctness"
+      "line": 533,
+      "statement": "nf_nvar_exist_depth0_tl (forward direction, succ n case)",
+      "assumption": "That the temporal formula (pred_t AND S/U(A_inner AND pred_x, top)) implies the existential with ALL atom conditions including cross-conditions between inner variables and t",
+      "why_deferred": "The IH-based restrict_inner NF at arity (n+1) cannot encode cross-conditions between inner variables (positions i < n) and the free variable t (position n+1) because the NF has no position for t. The formula over-approximates the existential. Fixing requires either: (A) direct construction via translateEF1 bypassing the IH, (B) strengthened IH carrying ordering information, or (C) finite disjunction over inner NFs.",
+      "next_dispatch": "Implement Approach A: define NF ordering consistency check (transitive tournament test), extract sorted order of positions, build alpha/beta predicates for translateEF1, prove correctness. Estimated 200-300 lines."
     }
   ],
   "blockers": [
-    "nf_nvar_exist_depth0_tl inductive step: n+1 existentials at depth 0 require direct nested temporal chain construction"
+    "Forward direction of nf_nvar_exist_depth0_tl requires different formula construction (cross-condition issue). Current IH-based approach is structurally incomplete for the forward direction."
   ],
   "continuation_context": {
-    "next_phase": 2,
     "is_successor": true,
+    "next_phase": 2,
     "completed_phases": [1],
-    "resume_point": "NfDepth0Generalized.lean line 121 sorry",
-    "approach": "Build sinceChain/untilChain, enumerate orderings, prove correctness",
+    "resume_point": "Forward direction sorry at NfDepth0Generalized.lean line ~533",
+    "approach": "Implement Approach A from handoff: translateEF1-based direct construction. Need: (1) NF order consistency check, (2) sorted position extraction, (3) alpha/beta for translateEF1, (4) correctness proof.",
     "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEA_m.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean"
     ]
   },
-  "next_action_hint": "Complete Phase 2 by proving the n+1 inductive step of nf_nvar_exist_depth0_tl using nested Since/Until chains",
+  "next_action_hint": "Complete Phase 2 forward direction using translateEF1 direct construction (Approach A from handoff)",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "summary": "NfDepth0Generalized scaffold: ~140 lines, 1 sorry, type signatures correct for Phase 3"
+      "summary": "NfDepth0Generalized: backward direction proved, 1 sorry in forward direction"
     },
     {
       "type": "handoff",
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-partial.md",
-      "summary": "Phase 2 partial handoff with analysis and recommended approach"
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-2.md",
+      "summary": "Phase 2 dispatch 2 handoff with cross-condition analysis and fix approaches"
     }
   ],
-  "session_id": "sess_1782269270_ea99a3",
+  "session_id": "sess_1782276572_7ce596",
   "verification": {
     "sorry_count": 1,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
-    "lines_written": 140
+    "lines_written": 350
   }
 }
