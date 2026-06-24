@@ -215,8 +215,26 @@ Route B, Phases 1-3 are replaced by the re-anchor execution as noted in Phase 1.
 > written for **Route A** (the corroborated default); a Route-B selection collapses Wave 3-4 into
 > one re-anchor phase with the same verification discipline.
 
-### Phase 1: `mergeNF_succ` — depth-k position merge (x=t zone) [IN PROGRESS]
+### Phase 1: `mergeNF_succ` — depth-k position merge (x=t zone) [BLOCKED]
 
+> **STRIKE 3 of 3 — CAP REACHED; CONCLUSIVE NEGATIVE** (handoffs/v35-phase-1-strike-3.md).
+> The value-duplication route was carried out and yielded a conclusive verdict: **the Phase-1
+> leaf `merge_forward_succ` is not a theorem as specified.** Two independent obstructions:
+> (1) any renaming-mediated env-congruence bridging the wide (`full_val`) and narrow (`env'`)
+> existentials needs BOTH index sections (the merge-roundtrip forces `f∘r=id` AND `r∘f=id`); the
+> merge supplies only `r∘f=id` — re-confirming the bijectivity obstruction now at the env level and
+> single-directionally, not just the index level. (2) The conclusion's quant `←` direction would
+> manufacture a model witness from an ARBITRARY `Bool` quantifier assignment `sub_nf.2`; at depth
+> `k+1` (unlike depth 0, which has no quant layer) the forward lemma is FALSE for abstract `sub_nf`
+> and demands a quant-merge-compatibility no atom-level `h_pred`/`h_ord` supplies. **Landed
+> sorry-free reusable assets**: `totalUnskip`/`totalUnskip_skipFin`, `mergeNF_succ` (the merge
+> *definition*) + `mergeNF_succ_atom`, and the full `renameNF` infra — all in the build path, GREEN.
+> Per H6 the 3-strike budget is exhausted with a mathematical (not tactical) verdict → **re-run the
+> Phase 0 gate** weighing Route A′ (discharge x=t in situ at KampPrior:391 using the model's
+> characteristic NF, NOT a standalone forward lemma) vs Route B (re-anchor through
+> `US_expressively_complete_over_Z`). Do NOT retry a fourth merge encoding; do NOT reopen Approach-5.
+> *(BLOCKED — strike cap; leaf mis-specified; gate re-eval required)*
+>
 > **STRIKE 2 of 3** (handoffs/v35-phase-1-strike-2.md). The strike-1 retraction-functor plan was
 > implemented **in full and proven sorry-free**: `renameNF` (retraction-carrying, with the new
 > collision→`false` idea making precomposition total along non-injective maps), `renameNF_roundtrip`,
@@ -243,11 +261,16 @@ Route B, Phases 1-3 are replaced by the re-anchor execution as noted in Phase 1.
   position drop. This is the x=t zone (collapse `(y,x,t) -> (y,t)`) and the smallest self-contained
   piece. **Make-or-break leaf** (Obstacle 2 + quant-layer commutation).
 - **Tasks:**
-  - [ ] Add `mergeNF_succ` + `merge_forward_succ` (and correctness) BEFORE the recursive
+  - [x] Add `mergeNF_succ` + `merge_forward_succ` (and correctness) BEFORE the recursive
     `nf_nvar_exist_all_depths` (KampPrior.lean:252) or in NfDepth0Generalized.lean. Non-recursive in
-    `k`; appeals only to depth-`k` content (descend-only invariant).
+    `k`; appeals only to depth-`k` content (descend-only invariant). *(deviation: altered —
+    `mergeNF_succ` definition + `mergeNF_succ_atom` + `totalUnskip` landed sorry-free;
+    `merge_forward_succ` proven to be a non-theorem as specified, see strike-3 handoff)*
   - [ ] Prove the forward direction maps the quant clause through the merged position.
-  - [ ] `lean_verify` the new lemmas are sorry-free.
+    *(deviation: BLOCKED — conclusively impossible as a standalone leaf; quant `←` direction is
+    false for abstract `sub_nf`, and any renaming bridge needs a bijection the merge lacks)*
+  - [x] `lean_verify` the new lemmas are sorry-free. *(landed assets verified: `mergeNF_succ_atom`
+    = [propext, Quot.sound])*
 - **Timing:** 1.5 hours (~80-150 lines)
 - **Depends on:** 0
 - **Owner:** lean-implementation-hard-agent (one hole)
