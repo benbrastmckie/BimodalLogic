@@ -161,13 +161,16 @@ for Prop 4.3 (Phase 4). H6 churn cap honored (1 attempt, conclusive negative, st
 
 ---
 
-### Phase 4: Revive or rebuild Prop 4.3 (structural FO induction) [NOT STARTED]
+### Phase 4: Revive or rebuild Prop 4.3 (structural FO induction) [IN PROGRESS]
 
 **Goal**: Produce a sorry-free Prop 4.3 — structural induction on the FO formula (atomic / disjunction / negation-via-Prop-4.2 / existential-via-Lemma-3.4), with **no depth parameter** (Rabinovich md:106) — in the mode the Phase 1 gate selected (REVIVE the Boneyard proof, or REBUILD from Rabinovich §4). This is the asset that replaces the entire `nf_nvar_exist_all_depths` depth recursion.
 
 **Tasks**:
 - [ ] If REVIVE: lift `Boneyard/Prop43.lean` onto a live module, filling its enumerated gaps with Phase 2 (Lemma 3.2(2)) and Phase 3 (Prop 4.2 backward); update imports to current names.
-- [ ] If REBUILD: construct Prop 4.3 fresh — atomic case (forward translation already sorry-free), disjunction (Lemma 3.2(1) conj / De Morgan), negation case (Phase 3 Prop 4.2 model-indep biconditional), existential case (Lemma 3.4 `existClosure`), arity held ≤ 2 by Phase 2.
+- [ ] If REBUILD: construct Prop 4.3 fresh — atomic case (forward translation already sorry-free), disjunction (Lemma 3.2(1) conj / De Morgan), negation case (Phase 3 Prop 4.2 model-indep biconditional), existential case (Lemma 3.4 `existClosure`), arity held ≤ 2 by Phase 2. *(in progress — split into 4a/4b/4c per phase-3 handoff)*
+  - [x] **Phase 4a (DONE this dispatch)**: arbitrary-arity negation closure. New file `Kamp/EAVecNegationClosure.lean` (off live import path). `neg_vec_ea_m : ¬v.holds env → ∃ v', v'.holds env` for `VVecEA_m m`, model-dependent existential form (matches the codebase's `neg_2var_vec_ea` existential convention; the literal `VVecEA_m m → VVecEA_m m` total-function signature from the dispatch is *not* the codebase convention — every negation-closure layer here is the `¬holds → ∃ holds` existential). Built faithfully via `arity_firewall` (Phase 2) + `not_and_or`/`push_neg` De Morgan + arity-2 base `neg_vecEA2` (Phase 3 `EANegationClosure`). Lift constructors `VecEA_m.liftEndpoint`/`liftInterval`/`VVecEA_m.liftInterval` re-lift arity-≤2 closures to arity m. Sorry-free; axioms `[propext, Classical.choice, Quot.sound]` (= baseline). GREEN. *(deviation: altered — existential form not total-function form; reason: codebase convention)*
+  - [ ] **Phase 4b (REMAINING)**: state Prop 4.3 over `MonadicFormula sig m`; close atom/lt/and/or cases and the existential case (`existClosure` + the `Fin.cons`↔rightmost-variable re-indexing lemma, handoff item 2). Leave `not` consuming 4a's `neg_vec_ea_m`.
+  - [ ] **Phase 4c (REMAINING)**: wire the `not` case via `neg_vec_ea_m` and assemble the full Prop 4.3 correctness biconditional vs `MonadicFO.eval`. End GREEN, sorry-free, off-path.
 - [ ] Confirm the recursion is structural on the FO formula, not on an NF-depth index (descend-only / fixed-arity invariant).
 - [ ] `lean_verify` Prop 4.3 is sorry-free in isolation (it may still be off the live import path at this point — that is wired in Phase 5).
 
