@@ -107,7 +107,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Depth-0 All-Arity NF Existential Conversion [NOT STARTED]
+### Phase 2: Depth-0 All-Arity NF Existential Conversion [PARTIAL]
 
 **Goal**: Generalize the depth-0 NF-to-temporal conversion from arity 2 (NfToVecEA.lean, sorry-free) and arity 3 (VecEADecomp.lean, sorry-free) to arbitrary arity n. At depth 0, NFs are purely atomic (predicate and order assignments) with no quantifier layer, so the existential `exists x, nf_eval_nf M 0 (n+1) (x :: env) sub_nf` decomposes into zones determined by order booleans. Each zone produces a VecEA_m formula that can be existentially closed and translated to temporal.
 
