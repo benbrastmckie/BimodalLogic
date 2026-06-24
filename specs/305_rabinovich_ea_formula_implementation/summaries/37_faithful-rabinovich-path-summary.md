@@ -96,8 +96,37 @@ sub-phase, plus the `.ex` case needs `Fin.cons`-vs-`existClosure` re-indexing gl
 decomposition (Phase 4a negation closure → 4b easy cases + ex glue → 4c not case) is in
 `handoffs/phase-3-prop42-backward-20260624.md`. Stopping at the Phase 3 GREEN boundary per H8.
 
+## Phase 4a — DONE (this dispatch), sorry-free, GREEN
+
+The genuine long pole — the **arbitrary-arity negation closure** — landed sorry-free in a new
+off-path file `Kamp/EAVecNegationClosure.lean`:
+
+```
+neg_vec_ea_m (h_INF) {m} (v : VVecEA_m m) (env) (StrictMono env) :
+    ¬v.holds env → ∃ v', v'.holds env
+```
+
+Built **faithfully** via the Phase 2 `arity_firewall` (decompose arity-m EA → conjunction of
+arity-≤2 components) + `not_and_or`/`push_neg` De Morgan + the Phase 3 arity-2 base
+`neg_vecEA2`, with three lift constructors (`liftEndpoint`, `liftInterval`, `VVecEA_m.liftInterval`)
+re-lifting arity-≤2 closures back to arity `m`. NOT via NF-depth/arity-tower descent.
+
+**Deviation (load-bearing for 4c)**: the dispatch asked for a total function
+`VVecEA_m m → VVecEA_m m`; that is not the codebase convention (every closure layer here is the
+existential `¬holds → ∃ holds`, and a total function would need the model-INDEPENDENT
+biconditional negation that Phase 3 proved unfixable). The existential form is the correct,
+sufficient artifact for Prop 4.3's `not` case (Prop 4.3 is itself a model-by-model
+biconditional). See `handoffs/phase-4a-negation-closure-20260624.md`.
+
+`lean_verify neg_vec_ea_m` → `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
+`lake build` full GREEN (1700 jobs); `Metalogic.Metalogic` GREEN (1671 = baseline); live-path
+sorry baseline **2** (`KampPrior:391,:394`) UNCHANGED; axiom set unchanged. Committed
+(`eee41b94a task 305 phase 4a: ...`).
+
 ## Next dispatch
 
-Plan v37 **Phase 4** — recommend splitting into 4a/4b/4c. Start with **Phase 4a
-(arbitrary-arity negation closure via the Phase 2 arity firewall)** — the genuine long pole;
-everything else depends on it. Resume from `handoffs/phase-3-prop42-backward-20260624.md`.
+Plan v37 **Phase 4b** (Prop 4.3 easy cases + `.ex` existential glue), then **4c** (wire the
+`not` case via `neg_vec_ea_m` + assemble the Prop 4.3 correctness biconditional). The main 4b
+cost is the `Fin.cons` (De-Bruijn index-0 prepend) ↔ `existClosure` (rightmost-variable absorb)
+re-indexing lemma. 4c slots `neg_vec_ea_m` directly into the `not` case. Resume from
+`handoffs/phase-4a-negation-closure-20260624.md`.
