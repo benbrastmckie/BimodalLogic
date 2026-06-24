@@ -345,5 +345,21 @@ theorem neg_2var_vec_ea_indep_correct {sig : MonadicSignature}
 --
 -- This does NOT block completeness: the model-dependent `neg_interval_formula` in
 -- EANegationClosure.lean is sorry-free and suffices for the completeness argument.
+--
+-- PHASE 3 RESOLUTION (task 305, plan v37, session sess_1782337996_6c54a7, 2026-06-24):
+-- The obstruction was RE-CONFIRMED with one genuine attempt at the live VVecEA2 level.
+-- A candidate `neg_2var_vec_ea_indep_backward : (neg_2var_vec_ea_indep v).holds → ¬v.holds`
+-- was stated and probed: `aesop` makes no progress and `exact?` finds nothing, because the
+-- disjunction construction in `neg_vecEA2_indep` is NOT a biconditional — its three cases
+-- (1a endpointLeft.neg, 1b endpointRight.neg, 23 bracket-negation) overlap, and the backward
+-- direction bottoms out at the `neg_interval_formula_indep` backward = the B.1 interval
+-- mismatch above (universal quantification over per-model bracket witnesses). Per plan v37
+-- line 226/236, Phase 3 therefore takes the PRE-AUTHORIZED model-DEPENDENT interim:
+--   Prop 4.2 = `neg_2var_vec_ea` (EANegationClosure.lean, sorry-free, axioms
+--   [propext, Classical.choice, Quot.sound]) supplies the negation case for Prop 4.3 (Phase 4).
+-- This is a COMPLETED-via-documented-fallback for Phase 3, not a blocker: the model-dependent
+-- biconditional path is sufficient for the completeness argument and introduces no new sorry
+-- or axiom. The model-INDEPENDENT backward gap is a known, bounded, follow-up item — it is NOT
+-- on the live completeness path.
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
