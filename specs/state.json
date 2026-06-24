@@ -9,7 +9,7 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -95,14 +95,14 @@
           "summary": "v32: 2-phase B.2 fix + impossibility documentation — neg_b2_bracket_formula with disjointness proof, definitive B.1/Cor 5.4 impossibility docs"
         }
       ],
-      "previous_status": "researching",
+      "previous_status": "researched",
       "next_artifact_number": 18,
       "plan_metadata": {
-        "phases": 2,
+        "phases": 3,
         "total_effort_hours": 2.5,
         "complexity": "medium",
         "research_integrated": true,
-        "plan_version": 32,
+        "plan_version": 33,
         "dependency_waves": [
           [
             1

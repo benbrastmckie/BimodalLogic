@@ -1,46 +1,10 @@
 {
-  "status": "researched",
-  "plan_version": null,
-  "plan_path": null,
-  "summary": "Research report 19 identifies the correct critical path to eliminate KampPrior.lean:287. Report 24's Phase 1-2 (Cor 5.4 backward, VecEA2 biconditional) are impossible and off-path. The correct approach is NF-based strong induction on depth, avoiding V-EA negation entirely. Three phases: (1) VecEA_m types + existential closure, (2) depth-0 all-arity zone decomposition, (3) strong induction + KampPrior rewire. Estimated 700-1200 lines.",
-  "phases_total": null,
-  "phases_completed": null,
-  "sorry_inventory": [
-    {
-      "file": "KampPrior.lean",
-      "line": 287,
-      "identifier": "nf_characterizable_temporal_prior",
-      "critical": true,
-      "fix_approach": "NF-based strong induction on depth with depth-0 all-arity base case"
-    },
-    {
-      "file": "EANegation.lean",
-      "line": 1090,
-      "identifier": "neg_bracket_is_vbracket",
-      "critical": false,
-      "fix_approach": "Documented impossible (report 18 Section 4)"
-    },
-    {
-      "file": "EANegation.lean",
-      "line": 1249,
-      "identifier": "neg_partialBracketExist_is_vbracket",
-      "critical": false,
-      "fix_approach": "Documented impossible (report 18 Section 10)"
-    }
-  ],
-  "blockers": [],
-  "continuation_context": "Ready for planning phase. Key insight: NF induction avoids V-EA negation by using Formula.neg for universal quantifier cases. VecEA_m needed only for existential closure, not negation.",
-  "next_action_hint": "Run /plan 305 to create implementation plan from this research",
-  "artifacts": [
-    {
-      "type": "research",
-      "path": "specs/305_rabinovich_ea_formula_implementation/reports/19_critical-path-research.md",
-      "summary": "Critical path: 3-phase NF-based strong induction (700-1200 lines)"
-    },
-    {
-      "type": "research",
-      "path": "specs/305_rabinovich_ea_formula_implementation/reports/24_z-completeness-rabinovich.md",
-      "summary": "Prior research (partially superseded by report 19)"
-    }
-  ]
+  "status": "planned",
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
+  "plan_version": 33,
+  "phase_count": 3,
+  "estimated_hours": 8,
+  "next_action": "implement",
+  "session_id": "sess_1782269270_ea99a3",
+  "summary": "Plan v33 created: NF-based strong induction on depth. 3 phases: (1) VecEA_m types + existential closure, (2) depth-0 all-arity NF conversion, (3) strong induction replacing KampPrior.lean:287 sorry. Estimated 700-1050 lines, 8 hours."
 }
