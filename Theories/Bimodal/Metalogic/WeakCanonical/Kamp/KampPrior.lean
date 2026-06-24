@@ -294,65 +294,119 @@ noncomputable def nf_nvar_exist_all_depths
     -- the atom conditions with each quantifier clause, wrapped in the
     -- Since/Until chain from nf_nvar_exist_depth0_tl's approach.
     --
-    -- For each qnf : NormalForm sig k (n+2), by the IH at depth k:
-    let ih_formula := fun (qnf : NormalForm sig k (n + 2)) =>
-      nf_nvar_exist_all_depths atomMap h_surj k (n + 1) qnf
-    -- ih_formula qnf gives ∃ A, ∀ M ..., temporal_truth M atomMap t A ↔
-    --   ∃ env' : Fin (n+1), nf_eval_nf M k (n+2) (insertEnv env' t) qnf
-    --
-    -- Now build the overall formula as a disjunction over depth-(k+1) arity-(n+1) NFs.
-    -- ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
-    -- ↔ ∃ env, nf_characteristic M (k+1) (n+1) (insertEnv env t) = sub_nf
-    --
-    -- The characteristic NF has atom part matching sub_nf.1 and quantifier part
-    -- matching sub_nf.2. The quantifier part at (insertEnv env t) is:
-    -- fun qnf => decide (∃ x, nf_eval_nf M k (n+2) (Fin.cons x (insertEnv env t)) qnf)
-    --
-    -- So nf_characteristic M (k+1) (n+1) (insertEnv env t) = sub_nf iff:
-    -- (1) ∀ a, decide (atom_eval M (insertEnv env t) a) = sub_nf.1 a  [atoms]
-    -- (2) ∀ qnf, decide (∃ x, ...) = sub_nf.2 qnf                   [quantifiers]
-    --
-    -- Condition (2) iff: ∀ qnf, (∃ x, ...) ↔ sub_nf.2 qnf = true
-    --
-    -- The coupling: env appears in BOTH conditions. We cannot separate them.
-    --
-    -- Resolution: Observe that ∃ env with nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
-    -- is equivalent to: the n-variable existential at depth 0 for a REFINED atom
-    -- condition that also checks quantifier compatibility.
-    --
-    -- Specifically, define a depth-0 NF sub_nf' : AtomKind sig (n+1) → Bool that
-    -- extends sub_nf.1 with additional boolean constraints from the quantifier layer.
-    -- But AtomKind sig (n+1) only has pred and order atoms, not quantifier atoms.
-    --
-    -- Alternative: use the identity nf_eval_nf M (k+1) m env sub_nf ↔
-    -- nf_eval_nf M 0 m env sub_nf.1 ∧ ∀ qnf, (∃ x, ...) ↔ sub_nf.2 qnf
-    --
-    -- Then: ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
-    -- ↔ ∃ env, nf_eval_nf M 0 (n+1) (insertEnv env t) sub_nf.1 ∧ <quant_conds(env)>
-    --
-    -- The depth-0 existential sub_nf.1 determines the ordering and predicates.
-    -- Given the ordering, the quantifier conditions are additional constraints.
-    --
-    -- We use a simple overapproximation + filtering approach:
-    -- Formula = (depth-0 exist for sub_nf.1) ∧ (conjunction of quantifier formulas)
-    -- This is WRONG because the quantifier formulas from the IH quantify over ALL env',
-    -- not just env' extending the specific env from the depth-0 existential.
-    --
-    -- The correct formula requires a tighter coupling.
-    -- For now, we use Classical.choice on the existence.
-    --
-    -- Existence proof: The condition ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
-    -- is a first-order property of t (quantifier depth k+1+n). By the NF theory,
-    -- it defines a union of depth-(k+1+n) arity-1 NF types for t.
-    -- Therefore, it is equivalent to a disjunction of depth-(k+1+n) arity-1 NF
-    -- characteristic formulas. Each such formula is temporal (by strong induction,
-    -- which we prove in the main theorem below).
-    --
-    -- However, this argument is circular (it uses the main theorem to prove
-    -- a helper for the main theorem). To break the circularity, we use the
-    -- observation that the formula can be built CONSTRUCTIVELY from the depth-0
-    -- existential and the IH formulas, using the Prior structure conditions.
-    sorry
+    -- Depth k+1: the condition ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf
+    -- is a first-order monadic property of t. We build the temporal formula
+    -- iteratively: first construct exist_1var at depth k+1 (via simultaneous
+    -- fixed-point on NormalForm sig (k+1) 2 → Formula), then bootstrap
+    -- char/exist at higher depths, then use NF disjunction for the n-variable case.
+
+    -- Step 1: Build exist_1var_fn at depth k simultaneously for all sub_nf's.
+    -- From the IH at depth k, we have exist(k, 1, _):
+    have ih_exist_1 : ∀ (sub_nf' : NormalForm sig k 2),
+        ∃ (A : Formula), ∀ (M : OrderedMonadicStructure sig)
+          (h_UZ : semantic_prior_UZ M atomMap)
+          (h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔
+          ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf' :=
+      fun sub_nf' => by
+        have h := nf_nvar_exist_all_depths atomMap h_surj k 1 sub_nf'
+        obtain ⟨A, hA⟩ := h
+        refine ⟨A, fun M h_UZ h_SZ t => ?_⟩
+        rw [hA M h_UZ h_SZ t]
+        have h_env_eq : ∀ (env : Fin 1 → M.carrier),
+            insertEnv env t = Fin.cons (env ⟨0, by omega⟩) (fun _ => t) := by
+          intro env; funext ⟨i, hi⟩
+          simp only [insertEnv]
+          by_cases h : i < 1
+          · have h_i0 : i = 0 := by omega
+            subst h_i0; simp [h, Fin.cons]
+          · have h_i1 : i = 1 := by omega
+            subst h_i1
+            simp only [show ¬(1 < 1) from by omega, ↓reduceDIte]; rfl
+        constructor
+        · rintro ⟨env, h_env⟩
+          exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
+        · intro ⟨x, hx⟩
+          exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
+
+    -- Step 2: Build char at depth k+1 using ih_exist_1.
+    let exist_tl_fn_k : NormalForm sig k 2 → Formula :=
+      fun sub_nf' => (ih_exist_1 sub_nf').choose
+
+    have exist_tl_fn_k_correct : ∀ (sub_nf' : NormalForm sig k 2)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (exist_tl_fn_k sub_nf') ↔
+        ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf' :=
+      fun sub_nf' => (ih_exist_1 sub_nf').choose_spec
+
+    -- char at depth k+1: for each nf' : NormalForm sig (k+1) 1, a temporal formula
+    let char_k1 : NormalForm sig (k + 1) 1 → Formula :=
+      fun nf' => nf_succ_char_formula atomMap h_surj exist_tl_fn_k nf'
+
+    have char_k1_correct : ∀ (nf' : NormalForm sig (k + 1) 1)
+        (M : OrderedMonadicStructure sig)
+        (h_UZ : semantic_prior_UZ M atomMap)
+        (h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t (char_k1 nf') ↔
+        nf_eval_nf M (k + 1) 1 (fun _ => t) nf' :=
+      fun nf' M h_UZ h_SZ t =>
+        nf_succ_char_formula_correct atomMap h_surj exist_tl_fn_k
+          (fun sub_nf' M' h_UZ' h_SZ' t' =>
+            exist_tl_fn_k_correct sub_nf' M' h_UZ' h_SZ' t')
+          nf' M h_UZ h_SZ t
+
+    -- Step 3: For n = 0, the result follows directly from char_k1.
+    -- For n ≥ 1, we need to bootstrap to higher depths and use NF disjunction.
+    -- The general case uses the monadic formula approach:
+    -- The condition is equivalent to eval M (fun _ => t) phi where
+    -- phi : MonadicFormula sig 1 has QD = k+1+n.
+    -- By doets_lemma_1_1, its truth depends on arity-1 NF at depth k+1+n.
+    -- The formula is a disjunction over "good" depth-(k+1+n) arity-1 NFs.
+    -- For each good NF, the characteristic formula is built iteratively
+    -- from char_k1 upward.
+
+    -- Case split on n
+    match n with
+    | 0 =>
+      -- n = 0: ∃ env : Fin 0, nf_eval_nf M (k+1) 1 (insertEnv env t) sub_nf
+      -- Trivially equivalent to nf_eval_nf M (k+1) 1 (fun _ => t) sub_nf.
+      -- Use char_k1 directly.
+      ⟨char_k1 sub_nf, fun M h_UZ h_SZ t => by
+        rw [char_k1_correct sub_nf M h_UZ h_SZ t]
+        constructor
+        · intro h; exact ⟨Fin.elim0, by rwa [insertEnv_zero]⟩
+        · rintro ⟨env, h_env⟩
+          have : insertEnv env t = fun _ => t := by
+            funext ⟨i, hi⟩; simp [insertEnv]
+          rwa [this] at h_env⟩
+    | 1 =>
+      -- n = 1: ∃ x : M.carrier, nf_eval_nf M (k+1) 2 (insertEnv (fun _ => x) t) sub_nf
+      -- This is the critical case needed by the main theorem.
+      -- We use the "simultaneous NF disjunction" at depth k+2:
+      -- The condition ↔ (nf_characteristic M (k+2) 1 (fun _ => t)).2 sub_nf = true.
+      --
+      -- Define exist_1var_fn : NormalForm sig (k+1) 2 → Formula by:
+      --   exist_1var_fn(sub_nf') := disjunction over {nf' : NF sig (k+2) 1 | nf'.2 sub_nf'} of
+      --     nf_succ_char_formula(exist_1var_fn, nf')
+      --
+      -- This is a self-referential formula definition. We prove existence using
+      -- the "P = Q" argument: truth(exist_1var_fn(sub_nf')) at t equals
+      -- (nf_characteristic M (k+2) 1 (fun _ => t)).2 sub_nf' = true.
+      --
+      -- The proof works because:
+      -- 1. nf_succ_char_formula(f, nf') is true at t iff nf' is THE characteristic NF of t
+      --    (by atom matching + quantifier matching using f)
+      -- 2. The characteristic NF's quantifier part determines which sub_nf' are satisfiable.
+      -- 3. The disjunction selects exactly the NFs whose quantifier part includes sub_nf'.
+      sorry
+    | n + 2 =>
+      -- n ≥ 2: off the critical path. The main theorem only needs n = 0 and n = 1.
+      sorry
 
 /-- Convenience wrapper: extract the formula from `nf_nvar_exist_all_depths`. -/
 noncomputable def nf_nvar_exist_all_depths_fn

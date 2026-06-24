@@ -2,53 +2,52 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 3 partially implemented. Restructured nf_characterizable_temporal_prior to use nf_nvar_exist_all_depths for all-depth all-arity existential conversion. The sorry at KampPrior.lean:287 (the k>=2 case) is eliminated -- the main theorem now handles all depths k. One sorry remains at nf_nvar_exist_all_depths k+1 case (KampPrior.lean:355). Build passes.",
+  "summary": "Phase 3 partial: proved n=0 case of nf_nvar_exist_all_depths at depth k+1 (using inlined char_k1). The n=1 case (critical path) and n≥2 (off critical path) remain as sorry. Build passes. Extensive analysis documented in handoff showing the n=1 case requires a self-referential formula construction or mutual definition of char(k+2) and exist(k+1, 1).",
   "phases_total": 3,
   "phases_completed": 2,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 355,
-      "statement": "nf_nvar_exist_all_depths k+1 case: ∃ A, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔ ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf",
-      "assumption": "There exists a temporal formula equivalent to the n-variable existential at depth k+1, constructible from the IH at depth k",
-      "why_deferred": "The construction requires encoding coupled atom+quantifier conditions as nested Since/Until chains. The IH provides formulas for unconditional (n+1)-variable existentials at depth k, but the quantifier layer needs 1-variable existentials with fixed environment. Three approaches tried without success.",
-      "next_dispatch": "Research the correct formula construction for the k+1 case: either extend translateEF1 with Formula-valued alpha/beta, or find a reduction from 1-variable-with-fixed-env to the unconditional existential."
+      "line": 406,
+      "statement": "nf_nvar_exist_all_depths k+1 n=1 case: ∃ A, temporal_truth M atomMap t A ↔ ∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf",
+      "assumption": "Temporal formula for 1-variable existential at depth k+1",
+      "why_deferred": "Self-referential: exist(k+1, 1, sub_nf) requires char(k+2), which requires exist(k+1, 1, ·). The formula definition uses itself for DIFFERENT sub_nf' values. This is a fixed-point equation on Formula that Lean cannot express directly.",
+      "next_dispatch": "Try mutual definition approach: define combined(k) returning both char(k+1) and exist(k+1, 1) as a pair, where exist uses char from the SAME pair. Or try direct Since/Until construction for the n=1 case."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 409,
+      "statement": "nf_nvar_exist_all_depths k+1 n≥2 case",
+      "assumption": "Off critical path",
+      "why_deferred": "Main theorem only needs n=0 and n=1",
+      "next_dispatch": "After n=1 is resolved"
     }
   ],
   "blockers": [
-    "nf_nvar_exist_all_depths k+1 case at KampPrior.lean:355: need temporal formula construction for n-variable existential at depth k+1 using IH at depth k"
+    "nf_nvar_exist_all_depths k+1 n=1 case at KampPrior.lean:406: self-referential formula construction for 1-variable existential at depth k+1"
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-3-dispatch-1.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-3-dispatch-2.md",
   "continuation_context": {
     "is_successor": true,
     "next_phase": 3,
     "completed_phases": [1, 2],
-    "resume_point": "Phase 3 Task 3.6: prove the k+1 case of nf_nvar_exist_all_depths at KampPrior.lean:355",
-    "approach": "Need to construct temporal formula for n-variable existential at depth k+1 using IH at depth k. Viable paths: (a) extend translateEF1 framework with Formula-valued alpha/beta, (b) recursive nested Since/Until construction, (c) reduce 1-variable-with-fixed-env to unconditional existential.",
+    "resume_point": "Phase 3 Task 3.6: prove n=1 case of nf_nvar_exist_all_depths at KampPrior.lean:406",
+    "approach": "The n=1 case requires building exist(k+1, 1, sub_nf) for ALL sub_nf simultaneously. The formula for each sub_nf is a disjunction over depth-(k+2) NFs, where each disjunct uses nf_succ_char_formula with the SAME exist function. This is a fixed-point equation. Options: (1) mutual def with char(k+2), (2) direct Since/Until construction, (3) classical existence proof via nf_to_formula + doets_lemma_1_1.",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
     ],
     "key_decisions": [
-      "Defined nf_nvar_exist_all_depths as ∃-valued function",
-      "Used insertEnv/Fin.cons bridge for arity-2 specialization",
-      "Eliminated match on k in nf_characterizable_temporal_prior",
-      "Import for NfDepth0Generalized.lean added"
+      "Split k+1 case into n=0 (proved), n=1 (sorry, critical), n≥2 (sorry, off-path)",
+      "Built char_k1 and exist_tl_fn_k infrastructure inside the k+1 case",
+      "Identified that exist(k+1, 1) and char(k+2) form a mutual dependency"
     ]
   },
-  "next_action_hint": "Research the formula construction for nf_nvar_exist_all_depths k+1. The core challenge: atoms and quantifiers share existential variables. The quantifier conditions involve 1-variable existentials with fixed outer environment, not matching the IH's unconditional existential.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "summary": "~460 lines. 1 sorry (nf_nvar_exist_all_depths k+1). Build passes. nf_characterizable_temporal_prior works for all depths."
-    }
-  ],
+  "next_action_hint": "The n=1 case requires resolving the exist(k+1,1)/char(k+2) mutual dependency. Best approach: define a combined function that returns BOTH char(k+1) and exist(k,1) at each depth, so that at depth k+1 the function returns exist(k+1,1) using char(k+2) built from exist(k+1,1) — but this requires the fixed-point to be expressed in Lean. Alternative: build the formula directly using nested Since/Until chains at depth k+1.",
   "session_id": "sess_1782303584_fd76a7",
   "verification": {
-    "sorry_count": 1,
+    "sorry_count": 2,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "build_passed": true,
-    "lines_written": 203
+    "build_passed": true
   }
 }

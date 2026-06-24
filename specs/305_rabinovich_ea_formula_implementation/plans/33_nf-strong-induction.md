@@ -124,42 +124,19 @@ No ROADMAP.md found.
 
 ---
 
-### Phase 2b: Fix Build Errors [NOT STARTED]
+### Phase 2b: Fix Build Errors [COMPLETED]
 
-**Goal**: Fix the ~20 mechanical build errors in NfDepth0Generalized.lean to achieve clean `lake build`. No sorry elimination needed — all sorrys are already removed. This is purely mechanical error fixing.
+**Goal**: Fix the ~20 mechanical build errors in NfDepth0Generalized.lean to achieve clean `lake build`.
 
-**Known error categories** (from dispatch 6 handoff):
-1. **Helper lemmas (lines ~328-378)**: `buildRight_top_of_mono` / `buildLeft_top_of_mono`
-   - Fin bound proofs inside `refine` blocks failing `omega`
-   - Fix: pre-compute bounds as `have` statements before `refine`
-2. **Forward direction (lines ~886-976)**: witness extraction and monotonicity
-   - `List.get_map` → `List.getElem_map` (Mathlib API rename)
-   - `omega` failures from missing Fin bound hypotheses
-   - `convert` / `congr` argument mismatches
-3. **Backward direction (lines ~1020+)**: chain construction
-   - `List.map_congr_left` argument type issues
-   - `convert` calls with wrong number of arguments
+**What was fixed** (dispatches 7-8):
+- [x] Replaced `Fin.cons` witnesses with explicit if-then-else functions (avoids `Fin.induction` computation issues)
+- [x] Helped omega with Fin.val coercions via explicit `have` statements and `show` blocks
+- [x] Fixed `List.get_map` → modern List API (`List.getElem_map`, `List.ext_getElem`)
+- [x] Restructured backward direction proofs using `List.map_map` + `List.map_congr_left`
+- [x] Fixed `convert`/`congr` subgoal structure throughout
+- [x] All `buildRight_top_of_mono` / `buildLeft_top_of_mono` Fin bound proofs fixed
 
-**Tasks**:
-- [ ] Run `lake build` to get exact error list
-- [ ] Fix Fin bound proofs in buildRight_top_of_mono / buildLeft_top_of_mono
-- [ ] Replace `List.get_map` with `List.getElem_map` throughout
-- [ ] Fix `convert` / `congr` argument mismatches in forward direction
-- [ ] Fix `List.map_congr_left` in backward direction
-- [ ] Verify `lake build` passes with zero errors and zero sorrys
-- [ ] Verify `lean_verify` on `nf_nvar_exist_depth0_tl` shows no sorry dependencies
-
-**Timing**: 3 hours
-
-**Depends on**: 2a (completed)
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean` — fix errors in existing code
-
-**Verification**:
-- `lake build` succeeds with zero errors
-- `grep -n "sorry" NfDepth0Generalized.lean` returns only comments (no executable sorry)
-- `lean_verify` on `nf_nvar_exist_depth0_tl` shows no sorry in dependency chain
+**Files**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean` (~1310 lines, 0 errors, 0 sorrys)
 
 ---
 
@@ -173,7 +150,7 @@ No ROADMAP.md found.
 - [x] **Task 3.3**: Define `nf_nvar_exist_all_depths_fn` and `nf_nvar_exist_all_depths_fn_correct` : convenience wrapper extracting formula and correctness. *(completed)*
 - [x] **Task 3.4**: Rewrite `nf_characterizable_temporal_prior` to use `nf_nvar_exist_all_depths_fn` at depth k for the exist_tl_fn. Proof uses `insertEnv env t = Fin.cons (env 0) (fun _ => t)` bridge. *(completed — no sorry in nf_characterizable_temporal_prior itself)*
 - [x] **Task 3.5**: Verify old sorry at KampPrior.lean:287 is eliminated *(confirmed — nf_characterizable_temporal_prior now handles all depths via nf_nvar_exist_all_depths)*
-- [ ] **Task 3.6**: Prove the k+1 case of `nf_nvar_exist_all_depths` *(BLOCKED — requires constructing temporal formula for n-variable existential at depth k+1 using IH at depth k; the core challenge is that atoms and quantifiers share the same existential variables)*
+- [ ] **Task 3.6**: Prove the k+1 case of `nf_nvar_exist_all_depths` *(deviation: altered — n=0 case proved using char_k1; n=1 and n≥2 cases remain sorry. The n=1 case is the critical path: it requires a simultaneous fixed-point construction where exist(k+1, 1, _) and char(k+2, _) are defined mutually, or a self-referential NF-disjunction formula with a "P=Q" correctness argument)*
 - [ ] **Task 3.7**: Run `lake build` with zero errors and zero sorrys in KampPrior.lean
 - [ ] **Task 3.8**: Verify `lean_verify` on kamp_prior_expressive_completeness shows no sorry
 
@@ -228,6 +205,9 @@ No ROADMAP.md found.
 | 3 | 3 | Partial | Restructured to 3-way case split. 3 sorrys (from 1, but fixable). |
 | 4 | 4 | Partial | Filled 2 merge sorrys. Added skipFin/unskipFin. 1 sorry remains. |
 | 5 | 5 | Partial | Wrote translateEF1 proof structure (~670 lines). 0 sorrys, ~20 build errors. |
+| 6 | 6 | Complete | Phase 2b: fixed all ~20 build errors. 0 sorrys, 0 errors. |
+| 7 | 7 | Partial | Phase 3: restructured nf_characterizable_temporal_prior, eliminated old sorry at :287. 1 sorry remains at nf_nvar_exist_all_depths k+1 (line 355). |
+| 8 | 8 | In progress | Phase 3 continuation: attempting to prove nf_nvar_exist_all_depths k+1. |
 
 ## Rollback/Contingency
 
