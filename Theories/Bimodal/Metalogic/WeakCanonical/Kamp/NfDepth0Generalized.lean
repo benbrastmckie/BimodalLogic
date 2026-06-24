@@ -179,7 +179,117 @@ theorem merge_forward {sig : MonadicSignature} {n : Nat}
     (env' : Fin n → M.carrier)
     (h_merged : nf_eval_nf M 0 (n + 1) (insertEnv env' t) (mergeNF sub_nf j)) :
     ∃ env : Fin (n + 1) → M.carrier, nf_eval_nf M 0 (n + 2) (insertEnv env t) sub_nf := by
-  sorry
+  -- NF order is proof-irrelevant: sub_nf (.order a b h1) = sub_nf (.order a b h2)
+  have nf_order_irrel : ∀ (a b : Fin (n + 2)) (h1 h2 : a ≠ b),
+      sub_nf (.order a b h1) = sub_nf (.order a b h2) := by
+    intro a b h1 h2; congr 1
+  -- Build full_val that duplicates i's value at position j
+  let full_val : Fin (n + 2) → M.carrier := fun m =>
+    if hm : m = j then insertEnv env' t (unskipFin j i h_ne)
+    else insertEnv env' t (unskipFin j m hm)
+  let env_new : Fin (n + 1) → M.carrier := fun k => full_val ⟨k.val, by omega⟩
+  have h_ie_full : ∀ m : Fin (n + 2), insertEnv env_new t m = full_val m := by
+    intro ⟨mv, hmv⟩; simp only [insertEnv, env_new]
+    by_cases h : mv < n + 1
+    · simp only [h, ↓reduceDIte]
+    · have : mv = n + 1 := by omega
+      subst this
+      simp only [show ¬(n + 1 < n + 1) from by omega, ↓reduceDIte, full_val,
+        show (⟨n + 1, hmv⟩ : Fin (n + 2)) ≠ j from by
+          intro h; have := congr_arg Fin.val h; simp at this; omega,
+        ↓reduceDIte, unskipFin, show ¬(n + 1 < j.val) from by omega,
+        ↓reduceDIte, insertEnv, show ¬(n + 1 - 1 < n) from by omega, ↓reduceDIte]
+  have h_fv_j_eq_i : full_val j = full_val i := by
+    simp [full_val, show ¬(i = j) from fun h => h_ne (h ▸ rfl)]
+  have h_fv_ne_j : ∀ (pos : Fin (n + 2)) (h : pos ≠ j),
+      full_val pos = insertEnv env' t (unskipFin j pos h) := by
+    intro pos h; simp [full_val, h]
+  -- Core transfer: for atoms not involving j, use merged directly
+  -- For atoms involving j, transfer to i using h_pred/h_ord
+  have h_transfer_pred : ∀ (p : sig.preds) (pos : Fin (n + 2)),
+      M.interp p (full_val pos) ↔ (sub_nf (.pred p pos) = true) := by
+    intro p pos
+    by_cases h_pos_j : pos = j
+    · rw [show full_val pos = full_val i from h_pos_j ▸ h_fv_j_eq_i]
+      rw [h_fv_ne_j i (fun h => h_ne (h ▸ rfl))]
+      have := h_merged (.pred p (unskipFin j i h_ne))
+      simp only [mergeNF, atom_eval, skipFin_unskipFin j i h_ne] at this
+      rw [h_pos_j, ← h_pred p]; exact this
+    · rw [h_fv_ne_j pos h_pos_j]
+      have := h_merged (.pred p (unskipFin j pos h_pos_j))
+      simp only [mergeNF, atom_eval, skipFin_unskipFin j pos h_pos_j] at this
+      exact this
+  have h_transfer_order : ∀ (p1 p2 : Fin (n + 2)) (hne : p1 ≠ p2),
+      (full_val p1 < full_val p2) ↔ (sub_nf (.order p1 p2 hne) = true) := by
+    intro p1 p2 hne
+    by_cases h1j : p1 = j
+    · by_cases h2j : p2 = j
+      · exact absurd (h1j.trans h2j.symm) hne
+      · -- p1 = j: transfer to i
+        rw [show full_val p1 = full_val i from h1j ▸ h_fv_j_eq_i]
+        by_cases h2i : p2 = i
+        · -- order(j, i): equal values, false
+          rw [show full_val p2 = full_val i from h2i ▸ rfl]
+          rw [show full_val i = insertEnv env' t (unskipFin j i h_ne) from
+            h_fv_ne_j i (fun h => h_ne (h ▸ rfl))]
+          constructor
+          · intro h; exact absurd h (lt_irrefl _)
+          · intro h
+            have heq : sub_nf (.order p1 p2 hne) = sub_nf (.order j i (Ne.symm h_ne)) := by
+              subst h1j; subst h2i; exact nf_order_irrel _ _ _ _
+            rw [heq, h_ji_false] at h; exact Bool.noConfusion h
+        · rw [h_fv_ne_j i (fun h => h_ne (h ▸ rfl)), h_fv_ne_j p2 h2j]
+          have h_ord_eq := (h_ord p2 h2i h2j).1
+          have h1 := h_merged (.order (unskipFin j i h_ne) (unskipFin j p2 h2j)
+            (by intro heq; exact h2i (by
+              have := congr_arg (skipFin j) heq
+              rw [skipFin_unskipFin, skipFin_unskipFin] at this; exact this.symm)))
+          simp only [mergeNF, atom_eval, skipFin_unskipFin] at h1
+          -- Transfer: sub_nf (.order p1 p2 hne) = sub_nf (.order i p2 ...)
+          -- then use ← h_ord_eq to get sub_nf (.order j p2 ...)
+          have hsub : sub_nf (.order p1 p2 hne) = sub_nf (.order j p2 (Ne.symm h2j)) := by
+            subst h1j; exact nf_order_irrel _ _ _ _
+          rw [hsub, ← h_ord_eq]; exact h1
+    · by_cases h2j : p2 = j
+      · -- p2 = j: transfer to i
+        rw [show full_val p2 = full_val i from h2j ▸ h_fv_j_eq_i]
+        by_cases h1i : p1 = i
+        · -- order(i, j): equal values, false
+          rw [show full_val p1 = full_val i from h1i ▸ rfl]
+          rw [show full_val i = insertEnv env' t (unskipFin j i h_ne) from
+            h_fv_ne_j i (fun h => h_ne (h ▸ rfl))]
+          constructor
+          · intro h; exact absurd h (lt_irrefl _)
+          · intro h
+            have heq : sub_nf (.order p1 p2 hne) = sub_nf (.order i j h_ne) := by
+              subst h1i; subst h2j; exact nf_order_irrel _ _ _ _
+            rw [heq, h_ij_false] at h; exact Bool.noConfusion h
+        · rw [h_fv_ne_j p1 h1j, h_fv_ne_j i (fun h => h_ne (h ▸ rfl))]
+          have h_ord_eq := (h_ord p1 h1i h1j).2
+          have h1 := h_merged (.order (unskipFin j p1 h1j) (unskipFin j i h_ne)
+            (by intro heq; exact h1i (by
+              have := congr_arg (skipFin j) heq
+              rw [skipFin_unskipFin, skipFin_unskipFin] at this; exact this)))
+          simp only [mergeNF, atom_eval, skipFin_unskipFin] at h1
+          have hsub : sub_nf (.order p1 p2 hne) = sub_nf (.order p1 j h1j) := by
+            subst h2j; exact nf_order_irrel _ _ _ _
+          rw [hsub, ← h_ord_eq]; exact h1
+      · -- Both ≠ j: direct from merged
+        rw [h_fv_ne_j p1 h1j, h_fv_ne_j p2 h2j]
+        have h1 := h_merged (.order (unskipFin j p1 h1j) (unskipFin j p2 h2j)
+          (by intro heq; exact hne (by
+            have := congr_arg (skipFin j) heq
+            rw [skipFin_unskipFin, skipFin_unskipFin] at this; exact this)))
+        simp only [mergeNF, atom_eval, skipFin_unskipFin] at h1
+        exact h1
+  refine ⟨env_new, fun a => ?_⟩
+  match a with
+  | .pred p pos =>
+    simp only [atom_eval]; rw [h_ie_full pos]
+    exact h_transfer_pred p pos
+  | .order p1 p2 hne =>
+    simp only [atom_eval]; rw [h_ie_full p1, h_ie_full p2]
+    exact h_transfer_order p1 p2 hne
 
 /-! ## Succ case: translateEF1-based construction
 
