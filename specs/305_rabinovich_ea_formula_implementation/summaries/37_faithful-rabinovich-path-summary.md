@@ -61,9 +61,43 @@ Module builds GREEN (989 jobs). OFF live import path — baseline unchanged (wir
   The mapping instead established that no structural Prop 4.3 exists to map, forcing REBUILD.
   This is the intended gate outcome, not a divergence from plan intent.
 
+## Phase 3 — Prop 4.2 model-independent backward (COMPLETED-via-documented-fallback)
+
+Dispatch 2 (session sess_1782337996_6c54a7, 2026-06-24).
+
+Made **one genuine attempt** to close the model-independent backward, then took the
+**pre-authorized model-dependent interim** (plan line 226/236).
+
+- Stated candidate `neg_2var_vec_ea_indep_backward : (neg_2var_vec_ea_indep v).holds → ¬v.holds`
+  at the live `VVecEA2` level; `lean_goal` confirmed goal `⊢ ¬VVecEA2.holds M atomMap v z0 z1`.
+- `lean_multi_attempt`: `aesop` no progress, `exact?` no result — the obstruction is structural
+  (the disjunction construction `neg_vecEA2_indep` is exhaustive but **not disjoint**, so it is
+  not a biconditional; backward bottoms out at the B.1 interval mismatch, report 18 §2.3/§4).
+  This **re-confirms** the documented `:331` obstruction. H6 churn cap honored: 1 attempt,
+  conclusive negative, stopped.
+- **Interim taken**: `neg_2var_vec_ea` (model-dependent Prop 4.2, EANegationClosure.lean,
+  sorry-free, axioms `[propext, Classical.choice, Quot.sound]`) supplies the negation case for
+  Prop 4.3 (Phase 4). The model-independent backward is a bounded follow-up, OFF the live
+  completeness path.
+- Edits: `NegationIndep.lean:331` NOTE region got a **PHASE 3 RESOLUTION** comment block
+  (off-path, comment-only); plan Phase 3 marked `[COMPLETED]` with deviation annotations.
+- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NegationIndep` GREEN (990 jobs);
+  `lake build Bimodal.Metalogic.Metalogic` GREEN (1671 jobs); 2 live sorries = baseline; axiom
+  set unchanged. Committed (`task 305 phase 3: ...`).
+
+## Phase 4 — NOT attempted this dispatch (H8 sizing)
+
+Phase 4 (REBUILD Prop 4.3 structural FO induction over `MonadicFormula`) does **not** fit one
+clean green-ending run: it requires an **arbitrary-arity negation closure that does not yet
+exist** (grep confirms only arity-2 `neg_2var_vec_ea`). The faithful route is to consume the
+Phase 2 `arity_firewall` (arity-m EA → conjunction of arity-≤2 components) + De Morgan +
+per-component `neg_2var_vec_ea`, but that reassembly is itself a ~150–250-line sorry-free
+sub-phase, plus the `.ex` case needs `Fin.cons`-vs-`existClosure` re-indexing glue. Full
+decomposition (Phase 4a negation closure → 4b easy cases + ex glue → 4c not case) is in
+`handoffs/phase-3-prop42-backward-20260624.md`. Stopping at the Phase 3 GREEN boundary per H8.
+
 ## Next dispatch
 
-Phase 3 (Prop 4.2 model-indep backward, `NegationIndep:331`) — HIGH risk, documented
-UNFIXABLE at BracketFormula level (report 18) and non-blocking; plan line 226 pre-authorizes
-the model-DEPENDENT Prop 4.2 interim. Then Phase 4 REBUILD Prop 4.3 consuming the firewall.
-Resume from `handoffs/phase-2-arity-firewall-20260624.md`.
+Plan v37 **Phase 4** — recommend splitting into 4a/4b/4c. Start with **Phase 4a
+(arbitrary-arity negation closure via the Phase 2 arity firewall)** — the genuine long pole;
+everything else depends on it. Resume from `handoffs/phase-3-prop42-backward-20260624.md`.

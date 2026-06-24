@@ -1,15 +1,18 @@
 {
-  "status": "partial",
-  "summary": "Phase 1 decision gate committed (REBUILD: Boneyard/Prop43.lean is arity-tower infra, not structural Prop 4.3; no archived Prop 4.3 exists). Phase 2 Lemma 3.2(2) arity firewall landed sorry-free in new module Kamp/VecEAArityFirewall.lean. Build GREEN (1671 jobs); 2 live sorries = baseline (KampPrior:391/394); axiom set unchanged.",
-  "phases_completed": 2,
+  "status": "implemented",
+  "summary": "Phase 3 COMPLETED-via-documented-fallback: one genuine attempt re-confirmed the model-independent backward B.1 obstruction (aesop/exact? fail; report 18 §2.3/§4), so per plan line 226/236 took the pre-authorized model-DEPENDENT Prop 4.2 interim (neg_2var_vec_ea, sorry-free) to feed Phase 4. Phase 4 NOT attempted (H8: REBUILD Prop 4.3 needs an arbitrary-arity negation closure that does not yet exist, so it cannot land sorry-free in one run). Build GREEN (1671 jobs); 2 live sorries = baseline (KampPrior:391/394); axiom set unchanged.",
+  "phases_completed": 3,
   "phases_total": 6,
-  "next_action_hint": "Dispatch Phase 3 (Prop 4.2 model-indep backward, NegationIndep:331) cautiously — it is documented UNFIXABLE at BracketFormula level (report 18) and non-blocking; plan line 226 pre-authorizes falling back to the model-DEPENDENT Prop 4.2 interim. Then Phase 4 REBUILD Prop 4.3 structural FO induction consuming the firewall.",
+  "next_action_hint": "Dispatch Phase 4 split into 4a/4b/4c. START with Phase 4a: build the arbitrary-arity negation closure neg_vec_ea_m : VVecEA_m m -> VVecEA_m m via the Phase 2 arity_firewall (arity-m EA -> conjunction of arity-<=2 components) + De Morgan + per-component neg_2var_vec_ea, sorry-free off-path (~150-250 lines). Then 4b (Prop 4.3 atom/lt/and/or/ex cases, ex via existClosure + Fin.cons re-indexing) and 4c (wire the not case + full biconditional). 4a is the genuine long pole; everything else depends on it.",
   "blockers": [],
   "continuation_context": {
-    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-2-arity-firewall-20260624.md",
-    "next_phase": 3
+    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-3-prop42-backward-20260624.md",
+    "next_phase": 4
   },
   "artifacts": [
-    {"path": "specs/305_rabinovich_ea_formula_implementation/summaries/37_faithful-rabinovich-path-summary.md", "type": "summary", "summary": "Phases 1-2 implementation summary: gate verdict REBUILD + Lemma 3.2(2) arity firewall sorry-free"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NegationIndep.lean", "type": "source", "summary": "Phase 3: :331 NOTE region extended with PHASE 3 RESOLUTION block (model-indep backward obstruction re-confirmed; model-dependent interim adopted; comment-only, off live path)"},
+    {"path": "specs/305_rabinovich_ea_formula_implementation/handoffs/phase-3-prop42-backward-20260624.md", "type": "handoff", "summary": "Phase 3 detailed handoff: one-attempt obstruction re-confirmation + interim decision + full Phase 4 sizing/decomposition (4a/4b/4c)"},
+    {"path": "specs/305_rabinovich_ea_formula_implementation/summaries/37_faithful-rabinovich-path-summary.md", "type": "summary", "summary": "Updated cumulative summary: Phases 1-3 + Phase 4 sizing rationale"},
+    {"path": "specs/305_rabinovich_ea_formula_implementation/plans/37_faithful-rabinovich-path.md", "type": "plan", "summary": "Phase 3 marked [COMPLETED] with deviation annotations"}
   ]
 }
