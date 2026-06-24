@@ -328,12 +328,10 @@ private theorem buildRight_top_of_mono {sig : MonadicSignature} {n : Nat}
     have h_br2 : base_rank + 1 < n + 2 := by omega
     have h_ih_bound : base_rank + 1 + m ≤ n + 1 := by omega
     refine ⟨pts ⟨base_rank + 1, h_br2⟩, ?_, ?_, ?_, ?_⟩
-    · exact h_pts_mono ⟨base_rank, h_br1⟩ ⟨base_rank + 1, h_br2⟩ (by omega)
+    · exact h_pts_mono _ _ (by simp)
     · exact h_alpha_pts ⟨base_rank + 1, h_br2⟩
     · exact fun r _ _ => temporal_truth_top M atomMap r
     · convert ih (base_rank + 1) h_ih_bound using 2
-      apply List.map_congr_left
-      intro i _; congr 1; congr 1; omega
 
 /-- Symmetric for buildLeft_spec. -/
 private theorem buildLeft_top_of_mono {sig : MonadicSignature} {n : Nat}
@@ -368,12 +366,10 @@ private theorem buildLeft_top_of_mono {sig : MonadicSignature} {n : Nat}
     have h_br1 : base_rank - 1 < n + 2 := by omega
     have h_br2 : base_rank < n + 2 := by omega
     refine ⟨pts ⟨base_rank - 1, h_br1⟩, ?_, ?_, ?_, ?_⟩
-    · exact h_pts_mono ⟨base_rank - 1, h_br1⟩ ⟨base_rank, h_br2⟩ (by omega)
+    · apply h_pts_mono; show base_rank - 1 < base_rank; omega
     · exact h_alpha_pts ⟨base_rank - 1, h_br1⟩
     · exact fun r _ _ => temporal_truth_top M atomMap r
     · convert ih (base_rank - 1) (by omega) (by omega) using 2
-      apply List.map_congr_left
-      intro i _; congr 1; congr 1; omega
 
 /-! ## Succ case: translateEF1-based construction
 
@@ -875,22 +871,26 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 obtain ⟨x, h_lt, h_alpha_x, _, h_rest⟩ := h_spec
                 have h_rest_len : rest.length = m := by simp at h_len; exact h_len
                 obtain ⟨ws_rest, h_ws_alpha, h_ws_ord⟩ := ih x rest rm h_rest_len h_rest
-                refine ⟨Fin.cons x ws_rest, ?_, ?_⟩
+                have h_mk_ws (j : Nat) (hj : j < m + 1) (h_pos : j ≠ 0) : j - 1 < m := by omega
+                refine ⟨fun ⟨j, hj⟩ => if h : j = 0 then x else ws_rest ⟨j - 1, h_mk_ws j hj h⟩, ?_, ?_⟩
                 · intro ⟨i, hi⟩
+                  dsimp only []
                   cases i with
-                  | zero => simp [Fin.cons]; exact h_alpha_x
+                  | zero => simp; exact h_alpha_x
                   | succ i =>
-                    simp only [Fin.cons, Fin.cases]
+                    simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
-                    convert this using 1
+                    convert this using 2
                 · intro ⟨i, hi⟩
+                  dsimp only []
                   cases i with
-                  | zero => simp [Fin.cons]; exact h_lt
+                  | zero => simp; exact h_lt
                   | succ i =>
-                    simp only [Fin.cons, Fin.cases]
+                    simp only [Nat.succ_ne_zero, ↓reduceDIte, dif_neg (Nat.succ_ne_zero i)]
                     have := h_ws_ord ⟨i, by omega⟩
-                    convert this using 1
-                    simp [Fin.cons, Fin.cases]
+                    simp only [show (⟨i, by omega⟩ : Fin m).val = i from rfl] at this
+                    convert this using 2
+                    all_goals (first | omega | (congr 1; ext; omega))
           -- Extract left witnesses similarly
           have h_extract_left : ∀ (m : Nat) (base : M.carrier)
               (pairs : List (TemporalPred × TemporalPred)) (lm : TemporalPred)
@@ -913,22 +913,26 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 obtain ⟨x, h_lt, h_alpha_x, _, h_rest⟩ := h_spec
                 have h_rest_len : rest.length = m := by simp at h_len; exact h_len
                 obtain ⟨ws_rest, h_ws_alpha, h_ws_ord⟩ := ih x rest lm h_rest_len h_rest
-                refine ⟨Fin.cons x ws_rest, ?_, ?_⟩
+                have h_mk_ws (j : Nat) (hj : j < m + 1) (h_pos : j ≠ 0) : j - 1 < m := by omega
+                refine ⟨fun ⟨j, hj⟩ => if h : j = 0 then x else ws_rest ⟨j - 1, h_mk_ws j hj h⟩, ?_, ?_⟩
                 · intro ⟨i, hi⟩
+                  dsimp only []
                   cases i with
-                  | zero => simp [Fin.cons]; exact h_alpha_x
+                  | zero => simp; exact h_alpha_x
                   | succ i =>
-                    simp only [Fin.cons, Fin.cases]
+                    simp only [Nat.succ_ne_zero, ↓reduceDIte]
                     have := h_ws_alpha ⟨i, by omega⟩
-                    convert this using 1
+                    convert this using 2
                 · intro ⟨i, hi⟩
+                  dsimp only []
                   cases i with
-                  | zero => simp [Fin.cons]; exact h_lt
+                  | zero => simp; exact h_lt
                   | succ i =>
-                    simp only [Fin.cons, Fin.cases]
+                    simp only [Nat.succ_ne_zero, ↓reduceDIte, dif_neg (Nat.succ_ne_zero i)]
                     have := h_ws_ord ⟨i, by omega⟩
-                    convert this using 1
-                    simp [Fin.cons, Fin.cases]
+                    simp only [show (⟨i, by omega⟩ : Fin m).val = i from rfl] at this
+                    convert this using 2
+                    all_goals (first | omega | (congr 1; ext; omega))
           -- Apply extraction to get right witnesses
           have h_right_len : ((List.finRange (n + 1 - k.val)).map fun i =>
               let idx := k.val + 1 + i.val
@@ -964,56 +968,66 @@ private theorem nf_nvar_exist_depth0_tl_succ
               split
               · next h_gt =>
                 have := h_rw_alpha ⟨r.val - k.val - 1, by omega⟩
-                simp only [List.get_map, List.get_finRange] at this
+                simp at this
                 convert this using 2
-                simp; omega
+                · congr 1; exact Fin.ext (by simp; omega)
               · next h_ngt =>
                 have h_lt : r.val < k.val := by omega
                 have := h_lw_alpha ⟨k.val - 1 - r.val, by omega⟩
-                simp only [List.get_map, List.get_finRange] at this
+                simp at this
                 convert this using 2
-                simp; omega
+                · congr 1; exact Fin.ext (by simp; omega)
           -- Chain monotonicity helper: if each w_i < w_{i+1}, then w_i < w_j for i < j
           have chain_mono_right : ∀ (i j : Fin (n + 1 - k.val)),
               i.val < j.val → right_ws i < right_ws j := by
-            intro i j h_lt_ij
-            induction j using Fin.inductionOn with
-            | zero => exact absurd h_lt_ij (by omega)
+            intro i ⟨j_val, hj⟩ h_lt_ij
+            induction j_val with
+            | zero => simp at h_lt_ij
             | succ j' ih =>
-              have h_step := h_rw_ord ⟨j'.val + 1, by omega⟩
-              simp only [show (j'.val + 1 : Nat) = 0 ↔ False from by omega, dif_neg (by trivial)] at h_step
-              by_cases h_eq : i.val = j'.val
+              have h_step := h_rw_ord ⟨j' + 1, hj⟩
+              simp only [show (⟨j' + 1, hj⟩ : Fin _).val = j' + 1 from rfl,
+                dif_neg (Nat.succ_ne_zero j')] at h_step
+              by_cases h_eq : i.val = j'
               · convert h_step using 1
                 exact congrArg right_ws (Fin.ext h_eq)
-              · exact lt_trans (ih ⟨j'.val, by omega⟩ (by omega)) h_step
+              · have hj' : j' < n + 1 - k.val := by omega
+                have h_jval : (⟨j' + 1, hj⟩ : Fin (n + 1 - k.val)).val = j' + 1 := rfl
+                have h_ilt_nat : i.val < j' := by omega
+                exact lt_trans (ih hj' h_ilt_nat) h_step
           have chain_mono_left : ∀ (i j : Fin k.val),
               i.val < j.val → left_ws j < left_ws i := by
-            intro i j h_lt_ij
-            induction j using Fin.inductionOn with
-            | zero => exact absurd h_lt_ij (by omega)
+            intro i ⟨j_val, hj⟩ h_lt_ij
+            induction j_val with
+            | zero => simp at h_lt_ij
             | succ j' ih =>
-              have h_step := h_lw_ord ⟨j'.val + 1, by omega⟩
-              simp only [show (j'.val + 1 : Nat) = 0 ↔ False from by omega, dif_neg (by trivial)] at h_step
-              by_cases h_eq : i.val = j'.val
+              have h_step := h_lw_ord ⟨j' + 1, hj⟩
+              simp only [show (⟨j' + 1, hj⟩ : Fin _).val = j' + 1 from rfl,
+                dif_neg (Nat.succ_ne_zero j')] at h_step
+              by_cases h_eq : i.val = j'
               · convert h_step using 1
                 exact congrArg left_ws (Fin.ext h_eq)
-              · exact lt_trans h_step (ih ⟨j'.val, by omega⟩ (by omega))
+              · have hj' : j' < k.val := by omega
+                have h_jval : (⟨j' + 1, hj⟩ : Fin k.val).val = j' + 1 := rfl
+                have h_ilt_nat : i.val < j' := by omega
+                exact lt_trans h_step (ih hj' h_ilt_nat)
           -- Right witnesses are all > t
           have h_rw_gt_t : ∀ i : Fin (n + 1 - k.val), t < right_ws i := by
             intro i
-            have h0 := h_rw_ord ⟨0, by omega⟩
-            simp at h0
-            by_cases h_eq : i.val = 0
-            · convert h0; exact congrArg right_ws (Fin.ext h_eq)
-            · exact lt_trans h0 (chain_mono_right ⟨0, by omega⟩ i (by omega))
+            have h_ne : n + 1 - k.val > 0 := Nat.pos_of_ne_zero (by intro h; exact absurd i.isLt (by omega))
+            have h0 := h_rw_ord ⟨0, h_ne⟩
+            simp only [show (⟨0, h_ne⟩ : Fin (n + 1 - k.val)).val = 0 from rfl, dite_true] at h0
+            rcases Nat.eq_or_lt_of_le (Nat.zero_le i.val) with h_eq | h_gt
+            · convert h0 using 1; exact congrArg right_ws (Fin.ext h_eq.symm)
+            · exact lt_trans h0 (chain_mono_right ⟨0, h_ne⟩ i h_gt)
           -- Left witnesses are all < t
           have h_lw_lt_t : ∀ i : Fin k.val, left_ws i < t := by
             intro i
-            have h0 := h_lw_ord ⟨0, by omega⟩
-            simp at h0
-            by_cases h_eq : i.val = 0
-            · convert h0; exact congrArg left_ws (Fin.ext h_eq)
-            · exact lt_trans (chain_mono_left ⟨0, by omega⟩ i (by omega)) h0
+            have h_ne : k.val > 0 := Nat.pos_of_ne_zero (by intro h; exact absurd i.isLt (by omega))
+            have h0 := h_lw_ord ⟨0, h_ne⟩
+            simp only [show (⟨0, h_ne⟩ : Fin k.val).val = 0 from rfl, dite_true] at h0
+            rcases Nat.eq_or_lt_of_le (Nat.zero_le i.val) with h_eq | h_gt
+            · convert h0 using 1; exact congrArg left_ws (Fin.ext h_eq.symm)
+            · exact lt_trans (chain_mono_left ⟨0, h_ne⟩ i h_gt) h0
           -- pts is strictly monotone
           have h_pts_mono : ∀ r₁ r₂ : Fin (n + 2), r₁.val < r₂.val → pts r₁ < pts r₂ := by
             intro r₁ r₂ h_lt_r
@@ -1032,8 +1046,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
                 -- r₁ > k, r₂ > k: both right witnesses
                 simp only [show ¬(r₂ = k) from by intro h; exact absurd (congr_arg Fin.val h) (by omega),
                   show k.val < r₂.val from by omega, ↓reduceDIte]
-                exact chain_mono_right ⟨r₁.val - k.val - 1, by omega⟩
-                  ⟨r₂.val - k.val - 1, by omega⟩ (by omega)
+                have hr₁ : r₁.val - k.val - 1 < n + 1 - k.val := by omega
+                have hr₂ : r₂.val - k.val - 1 < n + 1 - k.val := by omega
+                have hlt : r₁.val - k.val - 1 < r₂.val - k.val - 1 := by omega
+                exact chain_mono_right ⟨r₁.val - k.val - 1, hr₁⟩
+                  ⟨r₂.val - k.val - 1, hr₂⟩ hlt
               · next h_ngt₁ =>
                 -- r₁ < k
                 split
@@ -1049,8 +1066,11 @@ private theorem nf_nvar_exist_depth0_tl_succ
                       (h_rw_gt_t ⟨r₂.val - k.val - 1, by omega⟩)
                   · next h_ngt₂ =>
                     -- Both < k: both left witnesses, opposite index order
-                    exact chain_mono_left ⟨k.val - 1 - r₂.val, by omega⟩
-                      ⟨k.val - 1 - r₁.val, by omega⟩ (by omega)
+                    have hr₂ : k.val - 1 - r₂.val < k.val := by omega
+                    have hr₁ : k.val - 1 - r₁.val < k.val := by omega
+                    have hlt : (k.val - 1 - r₂.val) < (k.val - 1 - r₁.val) := by omega
+                    exact chain_mono_left ⟨k.val - 1 - r₂.val, hr₂⟩
+                      ⟨k.val - 1 - r₁.val, hr₁⟩ hlt
           -- Build env from pts
           let env : Fin (n + 1) → M.carrier := fun i =>
             pts (nf_rank ⟨i.val, by omega⟩)
@@ -1151,14 +1171,8 @@ private theorem nf_nvar_exist_depth0_tl_succ
                    TemporalPred.top)),
                 buildRight_spec M atomMap pairs TemporalPred.top
                   (pts ⟨base_rank, by omega⟩) by
-              have := h_gen (n + 1 - k.val) k.val (by omega) _ rfl
-              convert this using 2
-              congr 1
-              apply List.map_congr_left
-              intro i _
-              constructor
-              · congr 1; exact Fin.ext (by simp; omega)
-              · congr 1; exact Fin.ext (by simp; omega)
+              convert h_gen (n + 1 - k.val) k.val (by omega) _ rfl using 2
+              exact h_pts_t.symm
             intro m
             induction m with
             | zero =>
@@ -1170,27 +1184,22 @@ private theorem nf_nvar_exist_depth0_tl_succ
             | succ m ih =>
               intro base_rank h_bound pairs h_pairs
               subst h_pairs
-              simp only [buildRight_spec]
+              rw [List.finRange_succ, List.map_cons, buildRight_spec]
               refine ⟨pts ⟨base_rank + 1, by omega⟩, ?_, ?_, ?_, ?_⟩
-              · exact h_pts_mono ⟨base_rank, by omega⟩ ⟨base_rank + 1, by omega⟩ (by omega)
-              · simp only [List.get_map, List.get_finRange]
-                have : (alpha ⟨base_rank + 1 + (0 : Fin (m + 1)).val, by omega⟩) =
-                    alpha ⟨base_rank + 1, by omega⟩ := by congr 1; exact Fin.ext (by simp)
-                rw [this]
+              · apply h_pts_mono; show base_rank < base_rank + 1; omega
+              · simp
                 exact h_alpha_pts ⟨base_rank + 1, by omega⟩
               · intro r _ _
                 simp [TemporalPred.eval_at, TemporalPred.top]
                 exact temporal_truth_top M atomMap r
               · have := ih (base_rank + 1) (by omega) _ rfl
-                convert this using 2
-                congr 1
-                apply List.ext_get
-                · simp [List.length_map, List.length_finRange]
-                · intro i h₁ h₂
-                  simp only [List.get_map, List.get_finRange]
-                  constructor
-                  · congr 1; exact Fin.ext (by simp; omega)
-                  · congr 1; exact Fin.ext (by simp; omega)
+                convert this using 1
+                rw [List.map_map]
+                apply List.map_congr_left
+                intro i _
+                simp only [Function.comp_def, Fin.val_succ]
+                congr 1; congr 1
+                apply Fin.ext; show base_rank + 1 + (i.val + 1) = base_rank + 1 + 1 + i.val; omega
           · -- buildLeft_spec: left chain
             suffices h_gen : ∀ (m : Nat) (base_rank : Nat)
                 (h_base : base_rank ≤ n + 1)
@@ -1201,14 +1210,8 @@ private theorem nf_nvar_exist_depth0_tl_succ
                    TemporalPred.top)),
                 buildLeft_spec M atomMap pairs TemporalPred.top
                   (pts ⟨base_rank, by omega⟩) by
-              have := h_gen k.val k.val (by omega) (by omega) _ rfl
-              convert this using 2
-              congr 1
-              apply List.map_congr_left
-              intro i _
-              constructor
-              · congr 1; exact Fin.ext (by simp; omega)
-              · congr 1; exact Fin.ext (by simp; omega)
+              convert h_gen k.val k.val (by omega) (by omega) _ rfl using 2
+              exact h_pts_t.symm
             intro m
             induction m with
             | zero =>
@@ -1220,27 +1223,22 @@ private theorem nf_nvar_exist_depth0_tl_succ
             | succ m ih =>
               intro base_rank h_base h_bound pairs h_pairs
               subst h_pairs
-              simp only [buildLeft_spec]
+              rw [List.finRange_succ, List.map_cons, buildLeft_spec]
               refine ⟨pts ⟨base_rank - 1, by omega⟩, ?_, ?_, ?_, ?_⟩
-              · exact h_pts_mono ⟨base_rank - 1, by omega⟩ ⟨base_rank, by omega⟩ (by omega)
-              · simp only [List.get_map, List.get_finRange]
-                have : (alpha ⟨base_rank - 1 - (0 : Fin (m + 1)).val, by omega⟩) =
-                    alpha ⟨base_rank - 1, by omega⟩ := by congr 1; exact Fin.ext (by simp)
-                rw [this]
+              · apply h_pts_mono; show base_rank - 1 < base_rank; omega
+              · simp
                 exact h_alpha_pts ⟨base_rank - 1, by omega⟩
               · intro r _ _
                 simp [TemporalPred.eval_at, TemporalPred.top]
                 exact temporal_truth_top M atomMap r
               · have := ih (base_rank - 1) (by omega) (by omega) _ rfl
-                convert this using 2
-                congr 1
-                apply List.ext_get
-                · simp [List.length_map, List.length_finRange]
-                · intro i h₁ h₂
-                  simp only [List.get_map, List.get_finRange]
-                  constructor
-                  · congr 1; exact Fin.ext (by simp; omega)
-                  · congr 1; exact Fin.ext (by simp; omega)
+                convert this using 1
+                rw [List.map_map]
+                apply List.map_congr_left
+                intro i _
+                simp only [Function.comp_def, Fin.val_succ]
+                congr 1; congr 1
+                apply Fin.ext; show base_rank - 1 - (i.val + 1) = base_rank - 1 - 1 - i.val; omega
       · -- Non-transitive: find 3-cycle, existential is empty.
         push_neg at h_trans
         obtain ⟨a, b, c, h_ab, h_bc, h_ac, h_ord_ab, h_ord_bc, h_not_ac⟩ := h_trans
