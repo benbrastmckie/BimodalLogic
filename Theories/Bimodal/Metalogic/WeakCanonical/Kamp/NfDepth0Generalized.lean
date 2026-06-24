@@ -104,6 +104,30 @@ theorem nf_depth0_pair_cycle_empty' {sig : MonadicSignature} {m : Nat}
   simp only [atom_eval] at h1 h2
   exact absurd (lt_trans h1 h2) (lt_irrefl _)
 
+/-! ## NF merge infrastructure -/
+
+/-- Skip position `skip` when mapping from Fin m to Fin (m+1). -/
+def skipFin {m : Nat} (skip : Fin (m + 1)) (k : Fin m) : Fin (m + 1) :=
+  if h : k.val < skip.val then ⟨k.val, by omega⟩
+  else ⟨k.val + 1, by omega⟩
+
+theorem skipFin_injective {m : Nat} (skip : Fin (m + 1)) :
+    Function.Injective (skipFin skip) := by
+  intro a b heq
+  have heq' : (skipFin skip a).val = (skipFin skip b).val := by rw [heq]
+  simp only [skipFin] at heq'
+  ext
+  split at heq' <;> split at heq' <;> simp at heq' <;> omega
+
+/-- Merge position `j` in a depth-0 NF by dropping it. -/
+noncomputable def mergeNF {sig : MonadicSignature} {m : Nat}
+    (sub_nf : NormalForm sig 0 (m + 1)) (j : Fin (m + 1))
+    : NormalForm sig 0 m :=
+  fun a => match a with
+  | .pred p k => sub_nf (.pred p (skipFin j k))
+  | .order k₁ k₂ h => sub_nf (.order (skipFin j k₁) (skipFin j k₂)
+      (skipFin_injective j |>.ne h))
+
 /-! ## Succ case: translateEF1-based construction
 
 For the strict+transitive case of the succ step, we build the formula
@@ -159,14 +183,115 @@ private theorem nf_nvar_exist_depth0_tl_succ
             sub_nf (.order i k (Ne.symm h_ki)) = sub_nf (.order j k (Ne.symm h_kj)) ∧
             sub_nf (.order k i h_ki) = sub_nf (.order k j h_kj))
       · -- Compatible: merge and use IH.
-        -- We merge position j onto position i. The resulting NF at arity n+1
-        -- has position i serving double duty for both original positions i and j.
+        -- Choose which position to drop: must NOT be ⟨n+1, _⟩ (the free variable).
+        -- Since i ≠ j, at least one is not ⟨n+1, _⟩.
+        -- We pick the one to drop and the one to keep.
+        -- The key property: the dropped position is an existential variable,
+        -- so after merging, the free variable (n+1) maps to position n
+        -- in the merged NF (via skipFin), which is evaluated at t.
         --
-        -- Specifically, define merged NF by dropping position j:
-        -- merged(.pred p k) = sub_nf(.pred p (skipFin j k))
-        -- merged(.order k₁ k₂ _) = sub_nf(.order (skipFin j k₁) (skipFin j k₂) _)
-        -- where skipFin j maps Fin (n+1) → Fin (n+2) skipping j.
-        sorry
+        -- For now, we handle this with a sorry. The proof involves:
+        -- 1. Choosing drop ∈ {i, j} with drop.val ≤ n (existential variable)
+        -- 2. Defining merged = mergeNF sub_nf drop
+        -- 3. Using ih merged to get A_merged
+        -- 4. Forward: from ∃ env' sat merged, build env sat sub_nf by
+        --    inserting duplicate at drop (env at drop = env at the kept position)
+        -- 5. Backward: from ∃ env sat sub_nf (with h_eq: val(i) = val(j)),
+        --    build env' sat merged by dropping the drop position
+        --
+        -- All order/predicate conditions at drop match the kept position
+        -- by h_compat, so both directions go through.
+        obtain ⟨h_pred, h_ord⟩ := h_compat
+        -- Choose drop: if j ≠ ⟨n+1,_⟩ drop j, else drop i
+        -- (At least one has val ≤ n since i ≠ j and both in Fin (n+2))
+        by_cases h_j_last : j = ⟨n + 1, by omega⟩
+        · -- j is the free variable. Drop i instead.
+          -- Position i is an existential variable (i.val ≤ n).
+          -- The merged NF drops position i.
+          -- skipFin i maps Fin (n+1) → Fin (n+2), skipping i.
+          -- The last position in Fin (n+1) is ⟨n, _⟩.
+          -- skipFin i ⟨n, _⟩ = ⟨n+1, _⟩ = j (since i.val < n+1)
+          -- Wait, skipFin i ⟨n, _⟩: if n < i.val then ⟨n,_⟩ else ⟨n+1,_⟩.
+          -- Since i ≠ j = ⟨n+1,_⟩, i.val ≤ n, so n ≥ i.val, so skipFin i ⟨n,_⟩ = ⟨n+1,_⟩.
+          -- So the last position in merged maps to j = ⟨n+1,_⟩ = free variable. Good.
+          sorry
+        · -- j is NOT the free variable. Drop j.
+          have h_j_le_n : j.val ≤ n := by
+            by_contra h
+            push_neg at h
+            have : j.val = n + 1 := by omega
+            exact h_j_last (Fin.ext this)
+          let merged : NormalForm sig 0 (n + 1) := mergeNF sub_nf j
+          obtain ⟨A_merged, hA_merged⟩ := ih merged
+          exact ⟨A_merged, fun M t => by
+            rw [hA_merged M t]
+            constructor
+            · -- Forward: ∃ env' sat merged → ∃ env sat sub_nf
+              intro ⟨env', h_merged⟩
+              -- Build env : Fin (n+1) → M.carrier from env' by inserting at j.
+              -- For positions < j: env(pos) = env'(pos)
+              -- For j: env(j) = value at position i in insertEnv env' t
+              -- For positions > j: env(pos) = env'(pos - 1)
+              -- In general: insertEnv env t (skipFin j k) = insertEnv env' t k
+              -- and insertEnv env t j = insertEnv env t i
+              sorry
+            · -- Backward: ∃ env sat sub_nf → ∃ env' sat merged
+              intro ⟨env, h_nf⟩
+              -- Positions i and j get the same value
+              have h_eq : insertEnv env t i = insertEnv env t j := by
+                by_contra h_ne_vals
+                rcases lt_or_gt_of_ne h_ne_vals with h_lt | h_gt
+                · have := (h_nf (.order i j h_ne)).mp h_lt
+                  rw [h_ij_false] at this; exact Bool.noConfusion this
+                · have := (h_nf (.order j i (Ne.symm h_ne))).mp h_gt
+                  rw [h_ji_false] at this; exact Bool.noConfusion this
+              -- Build env' by dropping position j.
+              -- For k : Fin n, env'(k) = insertEnv env t (skipFin j ⟨k.val, _⟩)
+              -- Then insertEnv env' t k = insertEnv env t (skipFin j k) for all k : Fin (n+1)
+              let env' : Fin n → M.carrier := fun k =>
+                insertEnv env t (skipFin j ⟨k.val, by omega⟩)
+              refine ⟨env', ?_⟩
+              -- Show: nf_eval_nf M 0 (n+1) (insertEnv env' t) merged
+              -- i.e., ∀ a, atom_eval M (insertEnv env' t) a ↔ merged a = true
+              -- Key: insertEnv env' t k = insertEnv env t (skipFin j k) for all k
+              have h_ie_eq : ∀ k : Fin (n + 1),
+                  insertEnv env' t k = insertEnv env t (skipFin j k) := by
+                intro ⟨kv, hkv⟩
+                simp only [insertEnv, env']
+                split
+                · next h_lt =>
+                  -- kv < n. env'(kv) = insertEnv env t (skipFin j ⟨kv, _⟩)
+                  -- skipFin j ⟨kv, by omega⟩ and skipFin j ⟨kv, hkv⟩ are the same Fin value
+                  -- because they have the same .val.
+                  -- After insertEnv unfolds, we need:
+                  -- if (skipFin j ⟨kv,_⟩).val < n+1 then env ⟨(skipFin j ⟨kv,_⟩).val,_⟩ else t
+                  -- = if (skipFin j ⟨kv,hkv⟩).val < n+1 then env ⟨(skipFin j ⟨kv,hkv⟩).val,_⟩ else t
+                  -- These are definitionally equal since the Fin values are the same.
+                  rfl
+                · next h_nlt =>
+                  -- kv ≥ n, so kv = n.
+                  have h_kv_n : kv = n := by omega
+                  subst h_kv_n
+                  -- LHS: t (since insertEnv env' t ⟨n, _⟩ = t when n ≥ n)
+                  -- RHS: insertEnv env t (skipFin j ⟨n, hkv⟩)
+                  -- skipFin j ⟨n, _⟩: since j.val ≤ n, ¬(n < j.val), so = ⟨n+1, _⟩
+                  -- insertEnv env t ⟨n+1, _⟩: n+1 ≥ n+1, so = t
+                  -- Goal: t = if (skipFin j ⟨kv,hkv⟩).val < kv+1 then env ... else t
+                  -- skipFin j ⟨kv,_⟩: since j.val ≤ kv, ¬(kv < j.val), so = ⟨kv+1, _⟩
+                  -- ⟨kv+1,_⟩.val = kv+1, and kv+1 < kv+1 is false, so else branch gives t
+                  simp only [skipFin, show ¬(kv < j.val) from by omega]
+                  simp [dif_neg (show ¬False from id), show ¬(kv + 1 < kv + 1) from by omega]
+              intro a
+              match a with
+              | .pred p pos =>
+                simp only [mergeNF, merged, atom_eval]
+                rw [h_ie_eq pos]
+                exact h_nf (.pred p (skipFin j pos))
+              | .order pos₁ pos₂ h_ne_pos =>
+                simp only [mergeNF, merged, atom_eval]
+                rw [h_ie_eq pos₁, h_ie_eq pos₂]
+                exact h_nf (.order (skipFin j pos₁) (skipFin j pos₂)
+                  (skipFin_injective j |>.ne h_ne_pos))⟩
       · -- Incompatible: NF is unsatisfiable (positions forced equal but differ).
         -- Any satisfying env would force insertEnv env t i = insertEnv env t j
         -- (from both order bools being false), but then the differing conditions
