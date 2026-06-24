@@ -89,4 +89,80 @@ theorem VVecEA_m.atomAt_holds {sig : MonadicSignature} {m : Nat}
   rw [atom_literal_correct M atomMap h_surj p true (env i)]
   simp
 
+/-! ## Order case: decided by indices under StrictMono -/
+
+/-- The order `VVecEA_m m` for `x_i < x_j`: under `StrictMono env`,
+    `env i < env j ↔ i < j`, so this is constant-`⊤` when `i < j` and
+    constant-`⊥` otherwise. -/
+def VVecEA_m.ltAt {m : Nat} (i j : Fin m) : VVecEA_m m :=
+  if i < j then VVecEA_m.tt m else VVecEA_m.ff m
+
+theorem VVecEA_m.ltAt_holds {sig : MonadicSignature} {m : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (i j : Fin m) (env : Fin m → M.carrier) (henv_mono : StrictMono env) :
+    (VVecEA_m.ltAt i j).holds M atomMap env ↔ env i < env j := by
+  rw [VVecEA_m.ltAt, henv_mono.lt_iff_lt]
+  by_cases h : i < j
+  · rw [if_pos h]
+    exact iff_of_true (VVecEA_m.tt_holds M atomMap env) h
+  · simp only [if_neg h]
+    exact iff_of_false (VVecEA_m.ff_not_holds M atomMap env) h
+
+/-! ## Proposition 4.3 (per-model existential form)
+
+### Uniform atom/lt translation lemmas (genuine, non-vacuous)
+
+The two atomic cases of Prop 4.3 are *uniform*: a single `VVecEA_m m` formula
+(`atomAt` / `ltAt`) is equivalent to the FO atom across **all** models and
+strictly increasing environments. These are the real, reusable building blocks of
+Prop 4.3 and are proven sorry-free above (`atomAt_holds`, `ltAt_holds`).
+
+### BLOCKER — the connective cases of a non-vacuous Prop 4.3
+
+Phase 4b set out to close the "easy" structural cases (and/or/ex) of Prop 4.3 as a
+per-model existential `∃ v, v.holds env ↔ eval φ`. Investigation this dispatch
+established that **the per-model existential statement is vacuous**: for any φ it
+is closed by `⟨tt, …⟩` when `eval φ` holds and `⟨ff, …⟩` otherwise (`tt`/`ff`
+above), with no dependence on φ's structure. This is the *same* vacuity that the
+codebase's `neg_2var_vec_ea` / `neg_vec_ea_m` carry — their conclusion
+`∃ v', v'.holds env` is likewise closed by `⟨tt, tt_holds⟩`. A per-model
+existential therefore cannot serve as Prop 4.3.
+
+The genuine, non-vacuous Prop 4.3 is the **uniform** statement: a single
+*model-independent* function `translate : MonadicFormula sig m → VVecEA_m m` with
+`∀ M atomMap env, StrictMono env → ((translate φ).holds ↔ eval φ)`. The connective
+cases of a uniform `translate` are each blocked on missing infrastructure:
+
+- **not**: requires a model-independent arity-`m` negation `VVecEA_m m → VVecEA_m m`
+  with a *uniform* correctness iff. This is exactly the model-INDEPENDENT Prop 4.2
+  backward that report 18 / Phase 3 proved **UNFIXABLE** at the `BracketFormula`
+  level (`NegationIndep.lean:331-351`). `neg_vec_ea_m` (Phase 4a) is only the
+  model-DEPENDENT existential and does not yield a uniform function.
+- **and**: requires a *complete* conjunction closure (Lemma 3.2(1) as an iff).
+  `VVecEA_m.conj` is sound but NOT complete — `conjStruct` discards one conjunct's
+  interval segments when both carry witnesses (`VecEAClosure.lean:163-169`), so
+  `conj_holds` is forward-only. A complete arity-`m` conjunction is missing.
+- **all / ex**: require Lemma 3.4 (existential/universal closure at an arbitrary
+  witness position). `existClosure` (`VecEA_m.lean:208`) absorbs only the
+  *rightmost* variable under `StrictMono (extendEnv env z)`, whereas the De Bruijn
+  `.ex`/`.all` binder prepends an order-unconstrained witness at index 0
+  (`MonadicFO.lean:222-223`). Bridging these needs a witness-position split over
+  the m+1 order positions plus a variable-reordering closure — neither exists.
+  Even the live `KampPrior:391` use (n=1: a single witness inserted into a
+  1-point environment, `KampPrior.lean:387-391`) needs BOTH a rightward and a
+  leftward absorption; `existClosure` supplies only the rightward one.
+
+Consequently no non-vacuous `prop43_correct` is shippable this dispatch without
+first building: (a) a complete arity-`m` conjunction closure, (b) Lemma 3.4
+(arbitrary-position existential closure incl. a leftward `existClosure`), and
+(c) resolving the model-independent negation (currently UNFIXABLE per report 18) —
+or restructuring Prop 4.3 to avoid the uniform-negation requirement (e.g. a
+positive/De-Morgan normal form fed through a single negation at the top).
+
+This file ships the genuine uniform atom/lt building blocks (`tt`, `ff`, `atomAt`,
+`atomAt_holds`, `ltAt`, `ltAt_holds`) sorry-free and off the live import path. It
+adds **zero** live-path sorries. See the Phase 4b handoff for the full blocker
+write-up and the recommended unblock path.
+-/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
