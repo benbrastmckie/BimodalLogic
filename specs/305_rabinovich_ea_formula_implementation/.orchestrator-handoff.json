@@ -2,74 +2,60 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 2 dispatch 4: Replaced the fundamentally broken succ case (1 unfixable sorry) with a correctly structured three-way case split (3 fixable sorrys). The original IH-based Since/Until formula cannot handle cross-conditions between inner variables and t. New architecture: (a) merge NF-equal positions + IH, (b) translateEF1 for strict total orders, (c) bot for inconsistent NFs. All inconsistency sub-cases and the merge backward direction are fully proved. Build passes.",
+  "summary": "Phase 2 dispatch 5: Filled 2 of 3 sorrys (merge forward direction). Added skipFin/unskipFin infrastructure and proved merge_forward sorry-free. 1 sorry remains: translateEF1 strict total order case (line 574).",
   "phases_total": 3,
   "phases_completed": 1,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "line": 217,
-      "statement": "Case A: j = free variable sub-case of merge",
-      "assumption": "Symmetric to j != free-var case by merging i instead of j",
-      "why_deferred": "Requires mirroring proof structure with mergeNF sub_nf i",
-      "next_dispatch": "Copy j != free-var proof, swap i/j roles"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "line": 237,
-      "statement": "Case A forward: env' sat merged -> env sat sub_nf",
-      "assumption": "Duplicate insertion at merged position preserves NF satisfaction",
-      "why_deferred": "Needs full_val construction and atom-by-atom verification using h_compat",
-      "next_dispatch": "Construct full_val, verify atoms"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "line": 363,
+      "line": 574,
       "statement": "Case B: transitive strict total order -> translateEF1 formula",
-      "assumption": "NF order is a transitive tournament defining unique sorted permutation",
-      "why_deferred": "Requires rank computation infrastructure (nf_rank, injectivity, sorted permutation) and translateEF1 biconditional proof",
-      "next_dispatch": "Define nf_rank counting predecessors, prove bijective via h_trans, build translateEF1 formula, prove biconditional via translateEF1_correct"
+      "assumption": "Given h_has_eq (every pair strictly ordered) and h_trans (transitivity), produce Formula equivalent to existential",
+      "why_deferred": "Requires rank function construction, translateEF1_correct API research, and biconditional proof",
+      "next_dispatch": "Research translateEF1_correct signature, define nf_rank, build alpha/beta parameters, prove biconditional"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-4.md",
+  "blockers": [
+    "translateEF1 case at line 574: needs rank function + translateEF1_correct biconditional proof"
+  ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-5.md",
   "continuation_context": {
     "is_successor": true,
     "next_phase": 2,
     "completed_phases": [1],
-    "resume_point": "Fill 3 remaining sorrys in nf_nvar_exist_depth0_tl_succ (lines 217, 237, 363)",
-    "approach": "Merge case (lines 217, 237) uses skipFin/mergeNF with h_compat. TranslateEF1 case (line 363) uses rank function for sorted permutation.",
+    "resume_point": "Fill remaining sorry at line 574 (translateEF1 strict total order case)",
+    "approach": "Define nf_rank counting predecessors, prove injective via h_trans, build translateEF1 parameters, prove biconditional via translateEF1_correct",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean"
     ],
     "key_decisions": [
-      "IH-based formula approach is fundamentally broken for forward direction (CONFIRMED and replaced)",
-      "Three-way case split: inconsistent NF (proved), NF-equal merge (partially proved), strict total order via translateEF1 (sorry)",
-      "skipFin/mergeNF infrastructure defined and working",
-      "Compatibility check requires BOTH predicate and order agreement at merged positions",
-      "When j is the free variable (position n+1), must merge i instead to preserve insertEnv structure"
+      "merge_forward proved sorry-free using unskipFin + nf_order_irrel for dependent type handling",
+      "skipFin_ne, unskipFin, skipFin_unskipFin, unskipFin_skipFin infrastructure added",
+      "j=free-var case uses merge_forward with swapped i/j roles",
+      "Only translateEF1 case remains (strict total order on n+2 positions)"
     ]
   },
-  "next_action_hint": "Fill the 3 remaining sorrys. Priority: (1) line 237 (merge forward, most straightforward), (2) line 217 (merge j=free-var, symmetric), (3) line 363 (translateEF1, needs rank infrastructure). The merge sorrys should be achievable in one dispatch. The translateEF1 sorry may need a separate dispatch for the rank function + sorted permutation.",
+  "next_action_hint": "Fill the 1 remaining sorry at line 574. The translateEF1 case needs: (1) research translateEF1_correct from Translation.lean, (2) define rank function, (3) prove bijectivity, (4) build alpha/beta, (5) prove biconditional. This is the most complex sorry and may need a separate dispatch focused on Translation.lean API.",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "summary": "438 lines. n=0 case sorry-free. Succ case restructured: inconsistency cases proved, merge backward proved, 3 sorrys remain."
+      "summary": "649 lines. All merge cases proved. 1 sorry remains at line 574 (translateEF1 case)."
     },
     {
       "type": "handoff",
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-4.md",
-      "summary": "Phase 2 dispatch 4 handoff with sorry inventory, implementation plan for remaining work"
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-5.md",
+      "summary": "Phase 2 dispatch 5 handoff with sorry inventory"
     }
   ],
   "session_id": "sess_1782276572_7ce596",
   "verification": {
-    "sorry_count": 3,
+    "sorry_count": 1,
     "vacuous_count": 0,
     "axiom_count": 0,
     "build_passed": true,
-    "lines_written": 438
+    "lines_written": 649
   }
 }

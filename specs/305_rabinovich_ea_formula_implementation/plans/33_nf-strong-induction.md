@@ -12,7 +12,9 @@
 
 ## Overview
 
-This plan eliminates the sole critical-path sorry at KampPrior.lean:287 (the k>=2 case of `nf_characterizable_temporal_prior`) using Approach A from report 19: NF-based strong induction on quantifier depth. The key insight is that the arity tower (arity 2 needs arity 3 needs arity 4...) is broken by strong induction on depth: at each depth step k -> k+1, arity increases by 1 but depth decreases by 1; at depth 0 ALL arities are handled because there are no quantifier conditions. Temporal negation (`Formula.neg`) handles the universal case trivially, bypassing the impossible V-EA negation biconditional entirely. The plan proceeds in 3 phases: (1) generalized VecEA_m types with existential closure, (2) depth-0 all-arity NF-to-temporal conversion, (3) strong induction assembly replacing the sorry.
+This plan eliminates the sole critical-path sorry at KampPrior.lean:287 (the k>=2 case of `nf_characterizable_temporal_prior`) using Approach A from report 19: NF-based strong induction on quantifier depth. The key insight is that the arity tower (arity 2 needs arity 3 needs arity 4...) is broken by strong induction on depth: at each depth step k -> k+1, arity increases by 1 but depth decreases by 1; at depth 0 ALL arities are handled because there are no quantifier conditions. Temporal negation (`Formula.neg`) handles the universal case trivially, bypassing the impossible V-EA negation biconditional entirely. The plan proceeds in 3 phases: (1) generalized VecEA_m types with existential closure, (2) depth-0 all-arity NF-to-temporal conversion via `translateEF1`, (3) strong induction assembly replacing the sorry.
+
+**Phase 2 approach pivot (dispatches 1-3)**: The original Phase 2 design used VecEA_m zones with inductive existential peeling. After 3 implementation dispatches, this was proven structurally unfixable: the IH-based formula (restrict_inner at arity n+1) cannot encode cross-conditions between inner existential variables and the free variable t. The replacement uses `translateEF1` from Translation.lean, which handles all n+2 positions in a single Since/Until chain. At depth 0, all interval predicates (beta) are `TemporalPred.top`, making the chain a pure ordering-with-predicates assertion. See handoffs v33-phase-2-dispatch-2.md and v33-phase-2-dispatch-3.md for the full analysis.
 
 ### Research Integration
 
@@ -21,8 +23,15 @@ This plan eliminates the sole critical-path sorry at KampPrior.lean:287 (the k>=
 - Report 24's chain (Cor 5.4 fix, VecEA2 biconditional) is incorrect: both are impossible at BracketFormula level, and they do not address the arity tower.
 - The NF induction avoids negation entirely: `Formula.neg` provides trivial biconditional correctness at the temporal level. No V-EA negation (Prop 4.2, Lemma 5.1) is needed.
 - Strong induction on depth k resolves the arity tower: depth-0 handles all arities (no quantifier conditions); depth k+1 arity-n decomposes into atom layer + depth-k arity-(n+1) quantifier layer.
-- VecEA_m types ARE needed but only for existential closure, not negation. Operations needed: type definition, conjunction, existential closure.
-- Estimated effort from report 19: 700-1050 lines across 3-4 phases.
+- VecEA_m types are used in Phase 1 for existential closure infrastructure (conjunction, disjunction, type definitions). Phase 2 uses `translateEF1` directly instead of VecEA_m zones.
+- Estimated effort from report 19: 700-1050 lines across 3-4 phases. Revised upward after Phase 2 pivot.
+
+**From dispatches 1-3 (Phase 2 implementation)**:
+- IH-based formula (peeling one existential variable at a time) is fundamentally broken for the forward direction. Cross-conditions between inner witnesses and t are undetermined when both are on the same side of x.
+- `translateEF1 n k alpha beta` (Translation.lean:243) is the correct tool: it builds a single Since/Until chain for all n+1 positions with evaluation point at rank k.
+- At depth 0, `beta = TemporalPred.top` everywhere (no interval quantifier conditions).
+- The formula is a disjunction over NF-consistent orderings. For each ordering, rank positions, set k = rank of t, build alpha from `nfPredAtPos`.
+- Backward direction (existential → formula) is already proved sorry-free for all 3 subcases.
 
 ### Prior Plan Reference
 
@@ -55,8 +64,8 @@ No ROADMAP.md found.
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
-| Zone generalization from arity 3 to arity n is harder than expected | H | M | Use inductive construction over Fin permutations rather than explicit case enumeration; fall back to bounded arity (up to 6) if general case is too complex |
-| VecEA_m existential closure Fin index arithmetic is error-prone | M | M | Build on existing VBracketFormula.existsBounded_right (sorry-free); validate with lean_goal at each step |
+| translateEF1 alpha/beta construction doesn't type-check for n+2 positions | H | M | Verify Fin arithmetic with lean_goal at each step; use nfPredAtPos (already sorry-free) for alpha construction |
+| Disjunction over consistent orderings produces too many cases | M | M | At depth 0, NF order booleans determine the ordering; enumerate only NF-consistent orderings (not all permutations) |
 | Nat.strongRecOn encoding for the strong induction does not type-check cleanly | M | L | Lean 4 has Nat.strongRecOn returning Sort u; if needed, use WellFoundedRelation on Nat with lt_wfRel |
 | Performance: type-checking time explodes for large NF spaces | M | L | All definitions already noncomputable; monitor with lean_profile_proof; the completeness proof uses Classical.dec for good_prop |
 | Existing sorry-free code breaks during refactoring | H | L | Phase 1-2 create new files only; Phase 3 modifies only the sorry site in KampPrior.lean; incremental lake build after each phase |
@@ -109,31 +118,51 @@ Phases within the same wave can execute in parallel.
 
 ### Phase 2: Depth-0 All-Arity NF Existential Conversion [IN PROGRESS]
 
-**Goal**: Generalize the depth-0 NF-to-temporal conversion from arity 2 (NfToVecEA.lean, sorry-free) and arity 3 (VecEADecomp.lean, sorry-free) to arbitrary arity n. At depth 0, NFs are purely atomic (predicate and order assignments) with no quantifier layer, so the existential `exists x, nf_eval_nf M 0 (n+1) (x :: env) sub_nf` decomposes into zones determined by order booleans. Each zone produces a VecEA_m formula that can be existentially closed and translated to temporal.
+**Goal**: For arbitrary arity n, convert depth-0 NF existentials to temporal formulas using `translateEF1` (from Translation.lean). At depth 0, NFs are purely atomic — the order booleans fully determine the linear ordering among all positions, and predicates are simple boolean assignments. The formula is a disjunction over all NF-consistent orderings, each realized as a `translateEF1` chain.
+
+**Approach evolution**: The original VecEA_m zone-based approach (dispatches 1-2) failed because the IH-based formula cannot capture cross-conditions between inner existential variables and the free variable t. After 3 dispatches confirming this is structurally unfixable, the approach was replaced with direct `translateEF1` construction which handles all n+2 positions in a single Since/Until chain.
+
+**Key insight**: `translateEF1 n k alpha beta` produces a temporal formula asserting witnesses exist at positions 0..n with predicates `alpha`, interval conditions `beta`, and the evaluation point t at rank k. At depth 0, all `beta = TemporalPred.top` (no interval conditions), so the chain just asserts witnesses exist in the right order with the right predicates.
+
+**Current state** (644 lines, 1 sorry):
+- [x] File created with imports, helpers (nfPredAtPos, insertEnv lemmas, consistency gates)
+- [x] n=0 base case proved sorry-free
+- [x] Backward direction (existential → formula) proved sorry-free for all 3 subcases
+- [ ] Forward direction sorry at line 521: replace IH-based formula with translateEF1
 
 **Tasks**:
-- [ ] Create new file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean`
-- [ ] Import VecEA_m.lean, NfToVecEA.lean, VecEADecomp.lean, VecEATranslation.lean
-- [ ] Define `nf_proj_var` : extract 1-var NF from n-var depth-0 NF for variable i (generalize nf_y_proj, nf_x_proj3, nf_t_proj3)
-- [ ] Prove `extract_var_nf` : correctness of projection (generalize extract_y_nf, extract_x_nf3, extract_t_nf3)
-- [ ] Define `nf_zone_vecEA_m` : for a given zone (permutation of n+1 variables determining order), construct a VecEA_m formula for the existential. Each variable position determines whether it is an endpoint or a bracket witness
-- [ ] Prove `nf_zone_vecEA_m_correct` : for each consistent zone, the VecEA_m formula correctly captures `exists x, nf_eval_nf M 0 (n+1) (x :: env) sub_nf` restricted to that zone
-- [ ] Define `nf_nvar_exist_depth0_tl` : the main function. For a depth-0 arity-(n+1) NF sub_nf, produce a temporal Formula equivalent to the existential. Construction: (a) enumerate all consistent zones, (b) for each zone build VecEA_m, (c) apply existClosure n-1 times to reduce to VVecEA_m 2, (d) specialize to VVecEA2 via toVecEA2, (e) apply translateLeft to get temporal Formula, (f) take disjunction over all zones
-- [ ] Prove `nf_nvar_exist_depth0_tl_correct` : biconditional correctness `temporal_truth t A <-> exists env, nf_eval_nf M 0 (n+1) (env :: t) sub_nf`
-- [ ] Specialize: verify that at n=1 (arity 2) the result is consistent with existing `nf_2var_exist_depth0_tl`
-- [ ] Verify with `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized`
+- [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean`
+- [x] Define `nfPredAtPos` : extract predicate at position i from depth-0 NF
+- [x] Prove `nfPredAtPos_correct` : correctness of predicate extraction
+- [x] Define `nf_nvar_exist_depth0_tl` theorem statement (induction on n)
+- [x] Prove n=0 base case (single existential variable)
+- [x] Prove backward direction of succ n case (3 subcases: x<t, t<x, x=t)
+- [ ] Replace succ n forward direction with translateEF1-based construction:
+  - [ ] For each NF-consistent ordering σ of n+2 positions, determine rank k of t
+  - [ ] Build `alpha : Fin (n+1) → TemporalPred` using `nfPredAtPos` at each rank
+  - [ ] Set `beta : Fin (n+2) → TemporalPred` to `TemporalPred.top` (depth 0)
+  - [ ] Use `translateEF1 (n+1) k alpha beta` as formula for this ordering
+  - [ ] Take disjunction over all consistent orderings
+  - [ ] Prove forward biconditional using `translateEF1_correct`
+- [ ] Verify with `lake build`
 
-**Timing**: 3 hours
+**Timing**: 5 hours (revised from 3; approach pivot added complexity)
 
 **Depends on**: 1
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean` -- NEW file (~300 lines)
+- `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean` -- existing file (~644 lines, targeting ~500-700 after rewrite)
+
+**Key references**:
+- `Translation.lean` : `translateEF1`, `translateEF1_correct` (the core Since/Until chain builder)
+- `ExistsForallNF.lean` : `translateEF1` definition (line 311)
+- `NfToVecEA.lean` : arity-2 pattern (`nf_2var_exist_depth0_tl`) for reference
+- `specs/literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md` : mathematical basis
 
 **Verification**:
 - `lake build` succeeds with the new file
-- `nf_nvar_exist_depth0_tl_correct` is sorry-free
-- All zone constructions sorry-free
+- `nf_nvar_exist_depth0_tl` is sorry-free (both directions)
+- n=0 base case remains sorry-free
 
 ---
 
