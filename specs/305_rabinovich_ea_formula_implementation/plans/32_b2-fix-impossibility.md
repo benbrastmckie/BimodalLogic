@@ -101,22 +101,22 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 2: Document Impossibility in Sorry Comments [NOT STARTED]
+### Phase 2: Document Impossibility in Sorry Comments [COMPLETED]
 
 **Goal**: Update the sorry comments at EANegation.lean lines 1084 and 1235 to contain definitive impossibility analysis, referencing report 18 findings and the structural reason.
 
 **Tasks**:
-- [ ] Update the sorry comment block at EANegation.lean:1047-1083 (B.1 backward sorry) to add:
+- [x] Update the sorry comment block at EANegation.lean:1047-1083 (B.1 backward sorry) to add:
   - Reference to report 18 Section 4 confirming the B.1 gap is fundamental
   - Note that the B.2 gap has been fixed by `neg_b2_bracket_formula_disjoint`
   - Precise structural reason: V-bracket formulas are existentially quantified (there exist witnesses); backward direction requires universal quantification over all possible bracket witness arrangements which vary per model; IH gives negation on one specific sub-interval (r0, z1) but bracket witness w_0 could be > r0 giving different sub-interval (w_0, z1)
   - Confirm this sorry does NOT block completeness (model-dependent `neg_interval_formula` in EANegationClosure.lean is sorry-free)
-- [ ] Update the sorry comment block at EANegation.lean:1211-1234 (Corollary 5.4 backward sorry) to add:
+- [x] Update the sorry comment block at EANegation.lean:1211-1234 (Corollary 5.4 backward sorry) to add:
   - Reference to report 18 Section 10 confirming the Corollary 5.4 biconditional is also unprovable with interior-witness convention
   - Structural reason parallels B.1: bounded existential's witness determines the sub-interval, and different witnesses give different intervals
   - Note that the F-chain Until-unboundedness is a special case of this same existential-vs-universal mismatch
   - Confirm this sorry does NOT block completeness (model-dependent `neg_bounded_exists` in EANegationClosure.lean is sorry-free)
-- [ ] Run `lake build` to verify comments do not introduce syntax issues
+- [x] Run `lake build` to verify comments do not introduce syntax issues
 
 **Timing**: 1 hour
 

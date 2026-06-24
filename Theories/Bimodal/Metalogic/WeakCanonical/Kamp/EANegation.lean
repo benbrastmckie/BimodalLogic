@@ -1046,6 +1046,13 @@ theorem neg_bracket_is_vbracket :
           by_cases h_beta_r0 : beta_0.eval_at M atomMap r0
           · /- IMPOSSIBILITY: This sorry is UNPROVABLE at the BracketFormula level.
 
+              (Confirmed by report 18, Section 4: "The B.1 Backward Gap: A
+              Fundamental Interval Mismatch".)
+
+              NOTE: The B.2 case has been FIXED. `neg_b2_bracket_formula_disjoint`
+              (in EANegationClosure.lean) proves the B.2 backward direction
+              sorry-free. Only this B.1 case remains unprovable.
+
               **Context**: We have alpha_0(r0), beta_0(r0), beta_0 on (z0, r0),
               and ¬rightPart.holds(r0, z1). We need to exhibit a CaseD disjunct
               (from `result`) that holds on (z0, z1).
@@ -1057,16 +1064,15 @@ theorem neg_bracket_is_vbracket :
               - CaseC requires ¬beta_0 before any alpha_0 point, but beta_0 on (z0,r0).
               - CaseD requires ¬beta_0(r0), but beta_0(r0) holds.
 
-              **Structural obstruction**: Adding a CaseE with alpha_0.conj beta_0 at r0
-              would fix the backward direction, but breaks the forward direction:
-              A CaseE disjunct on (z0, z1) decomposes to give r0 with IH-bracket on
-              (r0, z1). For the forward direction (CaseE.holds → ¬bf.holds), we need
-              to show: for ALL x0 with alpha_0(x0) and seg_0 on (z0, x0),
-              rightPart fails at (x0, z1). The IH gives ¬rightPart at (r0, z1), but
-              says nothing about x0 > r0 (a different point, different sub-interval).
-              Models can have arbitrarily many alpha_0 points with beta_0 in (z0, z1),
-              creating an unbounded recursion that no FINITE, MODEL-INDEPENDENT
-              V-bracket can handle.
+              **Structural reason (existential vs universal mismatch)**: V-bracket
+              formulas are existentially quantified -- they assert the existence of
+              witness points. The backward direction requires universal quantification
+              over ALL possible bracket witness arrangements, which vary per model.
+              Specifically: the IH gives ¬rightPart on one specific sub-interval
+              (r0, z1), but the bracket witness w_0 could be > r0, giving a different
+              sub-interval (w_0, z1). The monotonicity property needed -- "if the
+              negation V-bracket holds on (r0, z1), it holds on (w_0, z1) for all
+              w_0 >= r0" -- is FALSE in general (report 18, Section 4.3).
 
               **Root cause**: BracketFormula evaluates alpha_0 at an INTERIOR
               existential witness, making the case analysis model-dependent.
@@ -1208,24 +1214,32 @@ theorem neg_partialBracketExist_is_vbracket
     refine ⟨v_suff, fun M atomMap h_INF z0 z1 h_lt => ?_⟩
     constructor
     · exact hv_suff M atomMap h_INF z0 z1 h_lt
-    · /- OBSTRUCTION: The backward direction requires showing that when
-        ¬partialBracketExist, the F-chain ordered-points predicate also fails
-        (so v_suff holds by the Lemma 5.3 biconditional).
+    · /- IMPOSSIBILITY: The backward direction of the Corollary 5.4
+        biconditional is UNPROVABLE at the BracketFormula level.
+
+        (Confirmed by report 18, Section 10: "Corollary 5.4 Model-Independent
+        Biconditional: Provability Analysis". Section 10.3 concludes: "The
+        Corollary 5.4 biconditional at BracketFormula level is also unprovable
+        with the interior-witness convention.")
+
+        **What is needed**: ¬partialBracketExist → V.holds, i.e., when no
+        bracket witness exists in (z0, z1), the F-chain ordered-points
+        predicate also fails (so v_suff holds by the Lemma 5.3 biconditional).
 
         Contrapositively: orderedPointsExist 1 fChainPred z0 z1 →
         partialBracketExist. This needs fChainPred(x0) → ∃ z, bf.holds z0 z.
 
-        fChainPred(x0) asserts alpha_0(x0) AND (beta_1 U (alpha_1 AND ...)).
-        The Until witnesses give points s > x0 where the chain continues, but
-        there is no a priori bound s < z1. On structures where the Until
-        witness lies outside (z0, z1), the reduction fails.
-
-        This is a consequence of the same BracketFormula-level limitation as
-        the sorry at neg_bracket_is_vbracket: the F-chain reduction absorbs
-        segment types into Until operators, losing interval-boundedness
-        information. The model-independent biconditional requires that the
-        Until witnesses can always be bounded within (z0, z1), which holds
-        on specific models but cannot be guaranteed by a fixed V-bracket.
+        **Structural reason (same existential vs universal mismatch as B.1)**:
+        The bounded existential's witness determines the sub-interval for the
+        recursive bracket, and different witnesses give different intervals.
+        Specifically: fChainPred(x0) asserts alpha_0(x0) AND (beta_1 U
+        (alpha_1 AND ...)). The Until witnesses give points s > x0 where the
+        chain continues, but there is no a priori bound s < z1. On structures
+        where the Until witness lies outside (z0, z1), the reduction fails.
+        The F-chain Until-unboundedness is a special case of the existential
+        vs universal quantification mismatch identified in B.1: the F-chain
+        reduction absorbs segment types into Until operators, losing
+        interval-boundedness information that varies per model.
 
         **Resolution**: The forward direction (V.holds → ¬partialBracketExist)
         is proved sorry-free via neg_partialBracketExist_sufficient. The
