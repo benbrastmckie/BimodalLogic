@@ -1,7 +1,7 @@
 # Implementation Plan: NF-Based Strong Induction on Depth (Task #305 v33)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours
 - **Dependencies**: None (all prerequisite sorry-free infrastructure exists)
 - **Research Inputs**: reports/19_critical-path-research.md
@@ -74,7 +74,7 @@ Phases within the same wave can execute in parallel.
 
 ---
 
-### Phase 1: VecEA_m Types and Existential Closure [NOT STARTED]
+### Phase 1: VecEA_m Types and Existential Closure [COMPLETED]
 
 **Goal**: Define generalized VecEA_m (m-free-variable) and VVecEA_m types with existential closure, conjunction, and disjunction operations. These generalize the existing VecEA2/VVecEA2 from 2 free variables to arbitrary arity m.
 
