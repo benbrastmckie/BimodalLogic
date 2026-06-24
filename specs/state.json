@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "implementing",
+      "status": "researched",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-24T02:59:14Z",
+      "last_updated": "2026-06-24T03:16:05Z",
       "session_id": "sess_1782269270_ea99a3",
       "artifacts": [
         {
@@ -95,7 +95,7 @@
           "summary": "v32: 2-phase B.2 fix + impossibility documentation — neg_b2_bracket_formula with disjointness proof, definitive B.1/Cor 5.4 impossibility docs"
         }
       ],
-      "previous_status": "implementing",
+      "previous_status": "researching",
       "next_artifact_number": 18,
       "plan_metadata": {
         "phases": 2,
