@@ -305,15 +305,31 @@ theorem merge_forward {sig : MonadicSignature} {n : Nat}
 
 /-! ## Index-map renaming of normal forms (depth-general infrastructure)
 
+PRESERVED & REUSABLE — DO NOT REMOVE. Sorry-free/axiom-free assets landed during
+task 305 v35 Phase 1. Consumed by Route A′ (revised zone-split; see
+`reports/36_phase0-regate-decision.md`): the `mpr` direction of `renameNF_eval_iff`
+and the `mergeNF_succ`/`mergeNF_succ_atom` merge definition below are reused to
+assemble the in-situ x=t collapse at `KampPrior.lean:391`. These look like generic
+plumbing but are load-bearing for the live `completeness_discrete` chain.
+
 `renameNF f r` precomposes a normal form's atom/quant layers with an index map.
 `f : Fin b → Fin a` is the forward map (relating positions of the *result* arity `b`
 to the *source* arity `a`), and `r : Fin a → Fin b` is a retraction used to descend
 through the contravariant quantifier layer.
 
-PROVEN SORRY-FREE/AXIOM-FREE during v35 Phase 1 (task 305). LIMITATION: the full
-bidirectional `renameNF_eval_iff` needs BOTH sections (`f ∘ r = id` AND `r ∘ f = id`,
-i.e. a bijective index map). For the (non-bijective) merge we use only the `mpr`
-direction, which needs only `r ∘ f = id` — which `skipFin`/`unskipFin` satisfy. -/
+PROVEN SORRY-FREE/AXIOM-FREE during v35 Phase 1 (task 305).
+
+Strike history (H6 three-strike cap on the abstract `merge_forward_succ` leaf — all
+conclusive-negative, which is WHY the project pivoted to Route A′ rather than abandoning):
+  • Strike 1: plain NF-precomposition — insufficient.
+  • Strike 2: retraction-functor `renameNF_eval_iff` — the full bidirectional form needs
+    BOTH sections (`f ∘ r = id` AND `r ∘ f = id`, i.e. a bijective index map); the merge
+    `skipFin j` is injective-not-surjective, so only the `mpr` half (needs just `r ∘ f = id`,
+    which `skipFin`/`unskipFin` satisfy) survives — and that half is what Route A′ uses.
+  • Strike 3: value-duplication — proved the *abstract* leaf is a non-theorem (its quant
+    `←` direction would manufacture a model witness from arbitrary `Bool` data). This
+    obstruction DISSOLVES in situ at `KampPrior.lean:391`, where the model supplies the
+    witness — exactly why depth-0 `merge_forward` is true. Hence Route A′. -/
 
 /-- Lift an index map over a freshly-bound (`Fin.cons`) variable at position 0. -/
 def liftIdx {a b : Nat} (f : Fin a → Fin b) : Fin (a + 1) → Fin (b + 1) :=
@@ -568,7 +584,12 @@ lives in the compatible (duplicated) subspace where a bare bijection would not. 
 /-- Depth-`(k+1)` position merge: drop position `j` from an arity-`(n+2)` NF, with `i'` the
     reduced-arity twin (the kept position in `Fin (n+1)`). The atom layer precomposes with
     `skipFin j` (= depth-0 `mergeNF`); the quant layer precomposes the depth-`k` sub-NF with the
-    lifted retraction `(skipFin j, totalUnskip j i')`. -/
+    lifted retraction `(skipFin j, totalUnskip j i')`.
+
+    PRESERVED & REUSABLE (task 305 Route A′ — see `reports/36_phase0-regate-decision.md`):
+    this definition + `mergeNF_succ_atom` are the directly-reused merge assets for the in-situ
+    x=t collapse at `KampPrior.lean:391`. DO NOT REMOVE as "unused": the consumer lands in a
+    later dispatch. -/
 noncomputable def mergeNF_succ {sig : MonadicSignature} {k n : Nat}
     (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
     : NormalForm sig (k + 1) (n + 1) :=

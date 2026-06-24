@@ -229,11 +229,22 @@ Route B, Phases 1-3 are replaced by the re-anchor execution as noted in Phase 1.
 > and demands a quant-merge-compatibility no atom-level `h_pred`/`h_ord` supplies. **Landed
 > sorry-free reusable assets**: `totalUnskip`/`totalUnskip_skipFin`, `mergeNF_succ` (the merge
 > *definition*) + `mergeNF_succ_atom`, and the full `renameNF` infra — all in the build path, GREEN.
-> Per H6 the 3-strike budget is exhausted with a mathematical (not tactical) verdict → **re-run the
-> Phase 0 gate** weighing Route A′ (discharge x=t in situ at KampPrior:391 using the model's
-> characteristic NF, NOT a standalone forward lemma) vs Route B (re-anchor through
-> `US_expressively_complete_over_Z`). Do NOT retry a fourth merge encoding; do NOT reopen Approach-5.
-> *(BLOCKED — strike cap; leaf mis-specified; gate re-eval required)*
+> Per H6 the 3-strike budget is exhausted with a mathematical (not tactical) verdict on the
+> *abstract* leaf. **GATE RE-EVAL RESOLVED → Route A′** (decision report:
+> `reports/36_phase0-regate-decision.md`, H4-verified). Route B was re-confirmed **circular**
+> (it needs `no_gaps_discrete_model_surgery`, the very bridge it claims to bypass). Strike-3's
+> fatal Obstruction-2 (quant `←` can't realize `sub_nf.2` from arbitrary `Bool`) **dissolves in
+> situ at `KampPrior.lean:391`**, where `sub_nf` is the model's characteristic NF and the model
+> itself supplies the `←` witness — exactly why depth-0 `merge_forward` is true.
+>
+> **NOT abandoned, NOT a wasted strike series.** The 3 strikes were the means by which the leaf
+> was correctly *re-specified*: the abstract standalone `merge_forward_succ` is retired, but ALL
+> landed assets are PRESERVED in the build path and **directly reused** by Route A′ — `mergeNF_succ`
+> /`mergeNF_succ_atom` (the merge definition), `renameNF_eval_iff` `mpr` (needs only `r∘f=id`, which
+> the merge has), `totalUnskip`. See the PRESERVED & REUSABLE banners in
+> `NfDepth0Generalized.lean`. Continuation is Phase 1′ below (next dispatch). Do NOT retry a fourth
+> *abstract* merge encoding; do NOT reopen Approach-5; do NOT delete the landed assets as "unused".
+> *(BLOCKED on the abstract leaf only → superseded by Phase 1′ (Route A′), assets preserved)*
 >
 > **STRIKE 2 of 3** (handoffs/v35-phase-1-strike-2.md). The strike-1 retraction-functor plan was
 > implemented **in full and proven sorry-free**: `renameNF` (retraction-carrying, with the new
@@ -277,6 +288,38 @@ Route B, Phases 1-3 are replaced by the re-anchor execution as noted in Phase 1.
 - **Files to modify:** `NfDepth0Generalized.lean` (or top of `KampPrior.lean`)
 - **Verification:** `lake build` GREEN; `mergeNF_succ`/`merge_forward_succ` sorry-free; baseline
   sorries unchanged at 2 (391/394 still present); axiom count == 2. Three-strikes budget applies.
+
+### Phase 1′: In-situ x=t collapse at `KampPrior.lean:391` (Route A′) [NOT STARTED]
+
+> **This supersedes the abstract Phase 1 leaf** per the resolved gate (Route A′). The merge is no
+> longer proved as a standalone `merge_forward_succ` over abstract `sub_nf`; instead the x=t zone is
+> discharged directly inside the `nf_nvar_exist_all_depths (k+1)` n=1 arm, where `sub_nf` is the
+> model's characteristic NF and the model supplies the quant `←` witness that the abstract leaf
+> lacked. Reuse — do not re-derive — the landed assets.
+
+- **Goal:** Discharge the x=t (`x=t` zone) sub-goal of the n=1 critical arm at `KampPrior.lean:391`
+  in situ, collapsing `(y,x,t) -> (y,t)` using the model's characteristic NF rather than an abstract
+  forward lemma. This clears the `sorryAx` source on `completeness_discrete` for the x=t zone.
+- **Reused landed assets (H3 — DO NOT re-derive, DO NOT delete):**
+  - `mergeNF_succ` + `mergeNF_succ_atom` (`NfDepth0Generalized.lean`) — the merge definition + atom layer.
+  - `renameNF_eval_iff` `mpr` direction (`NfDepth0Generalized.lean`) — needs only `r∘f=id`, which `skipFin`/`unskipFin` supply.
+  - `totalUnskip` / `totalUnskip_skipFin`, `liftIdx` lemmas (same file).
+  - `char_k1` / `ih_exist_1` engines (`KampPrior.lean`) — the per-arity existential machinery already proven.
+- **Tasks:**
+  - [ ] Locate the x=t arm of the 3-way zone match at `KampPrior.lean:391` (n=1 critical path).
+  - [ ] Instantiate `sub_nf` as the model's characteristic NF (concrete model, not abstract), so the
+        quant `←` witness is realizable — sidestepping strike-3 Obstruction-2.
+  - [ ] Assemble the collapse from `mergeNF_succ`/`mergeNF_succ_atom` + `renameNF_eval_iff.mpr` +
+        `char_k1`/`ih_exist_1`; the merge-compatibility holds by construction (free here).
+  - [ ] `lean_verify completeness_discrete`: confirm `sorryAx` no longer sourced from the x=t arm and
+        axiom set unchanged = `[propext, sorryAx*, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound]`
+        (`sorryAx` may persist only via the off-path `:394` until Phase 4).
+- **Estimate:** ~250–420 lines, MEDIUM risk (per `reports/36_phase0-regate-decision.md`).
+- **H6 note:** Strikes reset for this re-specified leaf (the abstract-leaf cap does not carry over —
+  it was a *different*, now-retired goal). Standard 3-strike budget applies to Phase 1′ afresh.
+- **Depends on:** 0 (gate, resolved Route A′); reuses Phase 1 landed assets.
+- **Owner:** lean-implementation-hard-agent.
+- **Files to modify:** `KampPrior.lean` (the `:391` arm), reusing `NfDepth0Generalized.lean` assets.
 
 ### Phase 2: Depth-(k+1) future/past zone endpoints [NOT STARTED]
 

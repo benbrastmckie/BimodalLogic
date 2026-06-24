@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-06-24T17:25:41Z",
+      "last_updated": "2026-06-24T21:29:24Z",
       "session_id": "sess_1782321620_e42607",
       "artifacts": [
         {
@@ -103,10 +103,15 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md",
           "type": "plan",
           "summary": "Hard-mode gated zone-split implementation plan (6 phases, decision gate first)."
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/36_phase0-regate-decision.md",
+          "type": "report",
+          "summary": "Phase 0 re-gate decision: Route A-prime (in-situ x=t collapse); Route B proven circular. H3 reuse map, H4 failure-mode analysis, implementation sketch."
         }
       ],
       "previous_status": "blocked",
-      "next_artifact_number": 36,
+      "next_artifact_number": 37,
       "plan_metadata": {
         "phases": 3,
         "total_effort_hours": 2.5,
@@ -129,7 +134,7 @@
           }
         ]
       },
-      "blockers": "n=1 critical-path arm (KampPrior.lean:391): depth-(k+1) arity-2 existential binder needs a depth-k generalization of the depth-0-only mergeNF/merge_forward machinery plus joint x-t coupling resolution (~250-400 lines). Build green, baseline 2 sorry preserved, no new axioms.",
+      "blockers": "Route A′ RESOLVED (gate re-eval, reports/36_phase0-regate-decision.md, H4-verified): Route B circular; abstract merge_forward_succ leaf retired but ALL landed assets PRESERVED & reused. NEXT = Phase 1′: discharge x=t collapse in situ at KampPrior.lean:391 via the model's characteristic NF (model supplies the quant ← witness that the abstract leaf lacked), reusing mergeNF_succ/mergeNF_succ_atom + renameNF_eval_iff.mpr + char_k1/ih_exist_1. ~250-420 lines, MEDIUM risk. Build GREEN, baseline 2 sorry preserved, axiom set unchanged. Do NOT retry a 4th abstract merge encoding; do NOT delete landed assets.",
       "researched": "2026-06-24T17:18:21Z"
     },
     {
