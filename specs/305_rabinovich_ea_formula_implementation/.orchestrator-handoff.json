@@ -1,43 +1,71 @@
 {
   "status": "partial",
   "task_number": 305,
-  "plan_version": 34,
-  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/34_approach5-arity2-char.md",
-  "session_id": "sess_1782319610_816c48",
+  "plan_version": 35,
+  "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md",
+  "session_id": "sess_1782320767_188e83",
   "agent_type": "lean-implementation-hard-agent",
-  "summary": "Implementation dispatch on plan v34 (Approach 5). After exhaustively reading the depth-0 binder (nf_2var_exist_depth0_tl) and its VecEA2 zone machinery plus the mergeNF/merge_forward collapse machinery, established that the n=1 critical-path sorry (KampPrior.lean) is NOT separable into Phase-1 helper + Phase-2 wiring as the plan assumed: nf_succ_char_formula2 cannot exist as a standalone pair-(x,t) Formula (a Formula evaluates at one point; the x-binder must be intrinsic). More importantly, refined report 18's risk analysis: the true blocker is twofold, NOT the Fin 2 telescoping bridge (which is trivial and already proved twice in-file). (1) Joint x-t coupling: the depth-(k+1) arity-2 quant layer's clause exists-y nf_eval k 3 (y,x,t) qnf couples the bound x with the free t, so the depth-0 binder's independent x-/t-projections do not transfer. (2) The zone-split and merge/collapse support machinery (nf_vecEA2_future/past, VecEA2 reconstruction, mergeNF, merge_forward) exist only at depth 0; the x=t zone needs a depth-k merge collapsing arity-3 (y,x,t) to (y,t). No regression: build green, baseline 2 sorries preserved, all Preserved Assets intact. Detailed actionable construction (mergeNF_succ first, then depth-(k+1) zone endpoints carrying char_k1 + arity-3 IH, then assemble/bind) written to handoff.",
-  "phases_completed": 0,
-  "phases_total": 4,
+  "summary": "Phase 0 decision gate COMPLETED with concrete spike evidence: committed to Route A (fix-in-place zone-split). G1 (re-anchor) is non-viable -- routing completeness_discrete through US_expressively_complete_over_Z is circular (the Z->discrete bridge presupposes the very no_gaps_discrete_model_surgery it would replace) and faces a structure-type gap (OrderedMonadicStructure/temporal_truth vs IntStructureFromSig/int_truth, with no existing bridging lemma). G2: semantic_prior_UZ first-occurrence is adequate for the discrete target (sorry-free prior_UZ_first_transition already delivers it on SuccOrder/PredOrder). Bonus: only arity n=1 is live, so KampPrior.lean:394 (n+2) is genuinely off-path -> Phase 4 is verification-only. Phase 1 (mergeNF_succ) attempted: built a single-variance renameNF precomposition functor; it fails to type-check at the quant layer (contravariant -- needs a retraction along unskipFin j, not just the skipFin j injection). This is STRIKE 1 of 3 on that leaf; the attempt was fully reverted, build is GREEN, zero .lean files changed. Diagnosis sharpens v34 Obstacle 2.",
+  "phases_completed": 1,
+  "phases_total": 6,
+  "phases_detail": {
+    "phase_0_gate": "COMPLETED (Route A committed)",
+    "phase_1_mergeNF_succ": "IN PROGRESS (strike 1 of 3; build GREEN, attempt reverted)"
+  },
+  "mode": "hard",
+  "hard_contracts": ["H2", "H6", "H9"],
+  "route_decision": "A",
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 391,
-      "statement": "nf_nvar_exist_all_depths k+1 n=1 arm: exists A, temporal_truth M atomMap t A <-> exists env:Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
-      "assumption": "Needs the depth-(k+1) arity-2 existential binder for the pair (x,t).",
-      "why_deferred": "Blocked: requires a depth-k generalization of mergeNF/merge_forward (currently depth-0 only) for the x=t zone, plus handling joint x-t coupling in the depth-(k+1) quant layer (the depth-0 binder relies on independent x-/t-projections that do not exist when a quant layer is present). Estimated 250-400 lines of new faithful construction. Not the Fin 2 bridge that report 18 flagged (that part is trivial).",
-      "next_dispatch": "1) Generalize mergeNF/merge_forward to NormalForm sig k (m+1) (mergeNF_succ). 2) Build three-way order-zone split on sub_nf.1 order booleans with depth-(k+1) endpoint TemporalPreds from char_k1 + arity-3 IH nf_nvar_exist_all_depths k 2; interval bracket must carry cross-clause coupling. 3) Assemble via VecEA2.translateLeft/translateRight + equality and wire into the n=1 arm using nf_nvar_exist_all_depths_fn k 2 and the in-file Fin-1 bridge."
+      "statement": "nf_nvar_exist_all_depths (k+1) (n=1) arm: ∃ A : Formula, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔ ∃ env : Fin 1 → M.carrier, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
+      "assumption": "Critical-path n=1 binder: needs the depth-(k+1) arity-2 existential over (x,t) assembled as a 3-way zone match (x<t / x=t / t<x), with x bound via the Fin-2 generalization of the in-file Fin-1 telescoping bridge.",
+      "why_deferred": "Blocked on Phase 1 mergeNF_succ (x=t zone), the make-or-break leaf. Strike 1: the depth-k position-merge needs a retraction-carrying renameNF functor (contravariant quant layer); single-variance renameNF along skipFin j does not type-check. Phases 2-3 (zone endpoints, assemble+wire) depend on Phase 1.",
+      "next_dispatch": "Strike 2 on Phase 1: define renameNF carrying a retraction r (unskipFin j, totalized to map the dropped position j -> i) so the quant-layer variance matches: renameNF (liftIdx g) (liftIdx r) : NormalForm sig k (m+1) -> NormalForm sig k (m'+1). Prove nf_eval_nf commutation by induction on k. Then specialize to mergeNF_succ / merge_forward_succ. See handoffs/v35-phase-1-strike-1.md for the two encodings."
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 394,
-      "statement": "nf_nvar_exist_all_depths k+1 n>=2 arm",
-      "assumption": "Needs n-ary generalization of the n=1 binder.",
-      "why_deferred": "Off critical path; depends on resolving the n=1 sorry first.",
-      "next_dispatch": "After n=1 is cleared, generalize via mergeNF_succ arity-merge over the n=1 result."
+      "statement": "nf_nvar_exist_all_depths (k+1) (n>=2, the n+2 arm) sorry",
+      "assumption": "n-ary generalization of the n=1 binder over mergeNF_succ.",
+      "why_deferred": "OFF the live path: Phase 0 gate confirmed nf_nvar_exist_all_depths is consumed only at arity n=1 (via nf_characterizable_temporal_prior k+1 arm at KampPrior.lean:469 and the internal ih_exist_1 at :313, both 'k 1'). No live consumer requests n>=2.",
+      "next_dispatch": "Phase 4 is verification-only: confirm dead via lean_verify completeness_discrete and leave as a documented off-path sorry (baseline-neutral). Only prove if a future consumer makes it live."
     }
   ],
-  "blockers": [
-    "n=1 critical-path arm (KampPrior.lean:391): the depth-(k+1) arity-2 existential binder requires a depth-k generalization of the depth-0-only merge machinery (mergeNF/merge_forward) and resolution of joint x-t coupling in the quant layer. Goal text: exists A, forall M h_UZ h_SZ t, temporal_truth M atomMap t A <-> exists env:Fin 1 -> M.carrier, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf."
-  ],
+  "blockers": [],
   "continuation_context": {
     "is_successor": true,
     "resume_phase": 1,
-    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v34-phase-1-blocked.md",
-    "first_action": "Implement mergeNF_succ / merge_forward_succ (depth-k generalization of NfDepth0Generalized.lean:157/168), the x=t zone of the n=1 binder."
+    "first_action": "Phase 1 strike 2: in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean, define a retraction-carrying renameNF (g : Fin m -> Fin m', r : Fin m' -> Fin m, retraction proof) recursing at the quant layer via liftIdx of BOTH g and r so the contravariant quant layer type-checks; for the merge use g = skipFin j, r = unskipFin j totalized (dropped position j |-> i). Prove nf_eval_nf commutation by induction on k. Then derive mergeNF_succ + merge_forward_succ (lift the depth-0 merge_forward full_val env-duplication through the quant layer). Verify sorry-free + lake build GREEN + axiom count unchanged.",
+    "handoff_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-1.md",
+    "gate_decision_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-gate-decision.md",
+    "h6_strike_count": {"phase_1_mergeNF_succ": 1}
   },
   "verification": {
     "sorry_count": 2,
+    "sorry_count_note": "Baseline preserved: exactly the 2 live code sorries on the completeness_discrete chain (KampPrior.lean:391 critical, :394 off-path). (Boneyard/ and Expressiveness/CaseAnalysis sorries are not in the completeness_discrete cone; lean_verify reports a single sorryAx source traced through the KampPrior chain.)",
     "axiom_count": 2,
-    "build_passed": true
-  }
+    "axiom_count_note": "The 2 acceptable non-sorry project axioms beyond standard Lean (propext/Classical.choice/Quot.sound) are Lean.ofReduceBool + Lean.trustCompiler (from native_decide). Zero top-level 'axiom' declarations in the build path. No new axioms introduced. completeness_discrete still depends on sorryAx (the genuine blocker).",
+    "build_passed": true,
+    "build_jobs": 1700,
+    "lean_verify_completeness_discrete": ["propext", "sorryAx", "Classical.choice", "Lean.ofReduceBool", "Lean.trustCompiler", "Quot.sound"]
+  },
+  "artifacts": [
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/plans/35_zone-split-gated.md",
+      "type": "plan",
+      "summary": "Hard-mode gated zone-split implementation plan for task 305 (6 phases, decision gate first)."
+    },
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-gate-decision.md",
+      "type": "handoff",
+      "summary": "Phase 0 committed route decision: Route A, with G1/G2 spike evidence."
+    },
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v35-phase-1-strike-1.md",
+      "type": "handoff",
+      "summary": "Phase 1 strike 1: renameNF contravariance obstacle + retraction-based strike-2 plan."
+    }
+  ]
 }
