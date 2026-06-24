@@ -153,6 +153,18 @@ theorem unskipFin_skipFin {m : Nat} (skip : Fin (m + 1)) (k : Fin m) :
     have : ¬(k.val + 1 < skip.val) := by omega
     simp only [this, ↓reduceDIte]; ext; simp_all
 
+/-- Total retraction of `skipFin skip`: sends the dropped position `skip` to the
+    image-preimage of the twin `keep`, and every other position back via `unskipFin`. -/
+def totalUnskip {m : Nat} (skip : Fin (m + 1)) (keep : Fin m) :
+    Fin (m + 1) → Fin m :=
+  fun pos => if h : pos = skip then keep else unskipFin skip pos h
+
+/-- `totalUnskip` is a left inverse (retraction) of `skipFin`: `r ∘ f = id`. -/
+theorem totalUnskip_skipFin {m : Nat} (skip : Fin (m + 1)) (keep : Fin m)
+    (k : Fin m) : totalUnskip skip keep (skipFin skip k) = k := by
+  simp only [totalUnskip, dif_neg (skipFin_ne skip k)]
+  exact unskipFin_skipFin skip k
+
 /-- Merge position `j` in a depth-0 NF by dropping it. -/
 noncomputable def mergeNF {sig : MonadicSignature} {m : Nat}
     (sub_nf : NormalForm sig 0 (m + 1)) (j : Fin (m + 1))
@@ -543,6 +555,35 @@ theorem renameNF_eval_iff {sig : MonadicSignature}
       intro qnf
       rw [quant_iff qnf]
       exact hq (renameNF (liftIdx r) (liftIdx f) qnf)
+
+/-! ## Value-duplication congruence for the (non-bijective) merge
+
+The full bidirectional `renameNF_eval_iff` requires a BIJECTIVE index map. The merge map
+`skipFin j` is injective-not-surjective, so it lacks `f ∘ r = id`. The following one-directional
+congruence drops the missing `hsec` (`f ∘ r = id`) and keeps only `hsec2` (`r ∘ f = id`), at the
+cost of demanding the env-level compatibility `hcomp2` (`E = e ∘ r`) to hold on ALL positions —
+which, for the merge, the *duplicating* environment `full_val` satisfies precisely because it
+lives in the compatible (duplicated) subspace where a bare bijection would not. -/
+
+/-- Depth-`(k+1)` position merge: drop position `j` from an arity-`(n+2)` NF, with `i'` the
+    reduced-arity twin (the kept position in `Fin (n+1)`). The atom layer precomposes with
+    `skipFin j` (= depth-0 `mergeNF`); the quant layer precomposes the depth-`k` sub-NF with the
+    lifted retraction `(skipFin j, totalUnskip j i')`. -/
+noncomputable def mergeNF_succ {sig : MonadicSignature} {k n : Nat}
+    (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
+    : NormalForm sig (k + 1) (n + 1) :=
+  renameNF (skipFin j) (totalUnskip j i') sub_nf
+
+/-- The atom layer of `mergeNF_succ` equals the depth-0 `mergeNF` of the atom layer. -/
+theorem mergeNF_succ_atom {sig : MonadicSignature} {k n : Nat}
+    (sub_nf : NormalForm sig (k + 1) (n + 2)) (j : Fin (n + 2)) (i' : Fin (n + 1))
+    (a : AtomKind sig (n + 1)) :
+    (mergeNF_succ sub_nf j i').1 a = mergeNF (sub_nf.1) j a := by
+  cases a with
+  | pred p k => rfl
+  | order k₁ k₂ h =>
+    simp only [mergeNF_succ, renameNF, mergeNF]
+    rw [dif_neg (skipFin_injective j |>.ne h)]
 
 /-! ## Helper: buildRight_spec / buildLeft_spec with all-top beta from monotone points -/
 
