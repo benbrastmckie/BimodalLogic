@@ -2,53 +2,53 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 2 dispatch 6: Replaced the sorry at line 574 (translateEF1 strict total order case) with a full proof structure (~670 new lines). Defined rank function via nf_lt_bool + Finset.filter, proved injectivity/surjectivity/monotonicity. Both forward and backward directions are structurally written. About 20 mechanical build errors remain (Fin bound proofs, List API naming, convert arguments).",
+  "summary": "Phase 3 partially implemented. Restructured nf_characterizable_temporal_prior to use nf_nvar_exist_all_depths for all-depth all-arity existential conversion. The sorry at KampPrior.lean:287 (the k>=2 case) is eliminated -- the main theorem now handles all depths k. One sorry remains at nf_nvar_exist_all_depths k+1 case (KampPrior.lean:355). Build passes.",
   "phases_total": 3,
-  "phases_completed": 1,
-  "sorry_inventory": [],
-  "blockers": [
-    "~20 mechanical build errors in NfDepth0Generalized.lean preventing compilation. No sorry keywords remain. Errors are: Fin bound omega failures inside refine blocks, List.get_map renamed to List.getElem_map, convert/congr argument mismatches in forward and backward direction proofs."
+  "phases_completed": 2,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 355,
+      "statement": "nf_nvar_exist_all_depths k+1 case: ∃ A, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔ ∃ env, nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf",
+      "assumption": "There exists a temporal formula equivalent to the n-variable existential at depth k+1, constructible from the IH at depth k",
+      "why_deferred": "The construction requires encoding coupled atom+quantifier conditions as nested Since/Until chains. The IH provides formulas for unconditional (n+1)-variable existentials at depth k, but the quantifier layer needs 1-variable existentials with fixed environment. Three approaches tried without success.",
+      "next_dispatch": "Research the correct formula construction for the k+1 case: either extend translateEF1 with Formula-valued alpha/beta, or find a reduction from 1-variable-with-fixed-env to the unconditional existential."
+    }
   ],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-6.md",
+  "blockers": [
+    "nf_nvar_exist_all_depths k+1 case at KampPrior.lean:355: need temporal formula construction for n-variable existential at depth k+1 using IH at depth k"
+  ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-3-dispatch-1.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 2,
-    "completed_phases": [1],
-    "resume_point": "Fix remaining ~20 build errors in NfDepth0Generalized.lean. Start with helper lemmas (buildRight_top_of_mono lines 326-336, buildLeft_top_of_mono lines 366-378), then forward direction (lines 886-976), then backward direction convert calls.",
-    "approach": "All proof structure is written. Fix mechanical issues: (1) Fin bound proofs by pre-computing bounds as `have` before refine, (2) Replace List.get_map with List.getElem_map, (3) Fix convert/congr arguments in the backward direction chain proofs",
+    "next_phase": 3,
+    "completed_phases": [1, 2],
+    "resume_point": "Phase 3 Task 3.6: prove the k+1 case of nf_nvar_exist_all_depths at KampPrior.lean:355",
+    "approach": "Need to construct temporal formula for n-variable existential at depth k+1 using IH at depth k. Viable paths: (a) extend translateEF1 framework with Formula-valued alpha/beta, (b) recursive nested Since/Until construction, (c) reduce 1-variable-with-fixed-env to unconditional existential.",
     "key_files": [
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
-      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean"
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
     ],
     "key_decisions": [
-      "Used nf_lt_bool : Fin (n+2) -> Fin (n+2) -> Bool for rank filter to avoid Prop/Bool issues with Finset.filter",
-      "Used h_lt_acyclic helper to avoid proof-irrelevance issues with NF order atoms",
-      "Factored buildRight_top_of_mono and buildLeft_top_of_mono as standalone private theorems",
-      "Forward direction extracts witnesses via h_extract_right/h_extract_left then builds pts piecewise",
-      "Backward direction uses helper theorems with monotone pts",
-      "Rank injectivity proved via ssubset of Finset filters using nf_lt_bool"
+      "Defined nf_nvar_exist_all_depths as ∃-valued function",
+      "Used insertEnv/Fin.cons bridge for arity-2 specialization",
+      "Eliminated match on k in nf_characterizable_temporal_prior",
+      "Import for NfDepth0Generalized.lean added"
     ]
   },
-  "next_action_hint": "Fix the ~20 build errors. They are all mechanical: omega can't prove Fin bounds when inside nested tactic blocks (fix by hoisting bounds), List.get_map doesn't exist (use List.getElem_map), and convert/congr needs exact argument matching. No conceptual issues remain.",
+  "next_action_hint": "Research the formula construction for nf_nvar_exist_all_depths k+1. The core challenge: atoms and quantifiers share existential variables. The quantifier conditions involve 1-variable existentials with fixed outer environment, not matching the IH's unconditional existential.",
   "artifacts": [
     {
       "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "summary": "~1200 lines. 0 sorrys. Full proof structure for translateEF1 case. ~20 build errors."
-    },
-    {
-      "type": "handoff",
-      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-6.md",
-      "summary": "Phase 2 dispatch 6 handoff with error inventory"
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "summary": "~460 lines. 1 sorry (nf_nvar_exist_all_depths k+1). Build passes. nf_characterizable_temporal_prior works for all depths."
     }
   ],
-  "session_id": "sess_1782276572_7ce596",
+  "session_id": "sess_1782303584_fd76a7",
   "verification": {
-    "sorry_count": 0,
+    "sorry_count": 1,
     "vacuous_count": 0,
     "axiom_count": 0,
-    "build_passed": false,
-    "lines_written": 1200
+    "build_passed": true,
+    "lines_written": 203
   }
 }
