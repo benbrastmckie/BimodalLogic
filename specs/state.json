@@ -9,7 +9,7 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "planned",
+      "status": "blocked",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -139,7 +139,7 @@
           }
         ]
       },
-      "blockers": "Route A′ RESOLVED (gate re-eval, reports/36_phase0-regate-decision.md, H4-verified): Route B circular; abstract merge_forward_succ leaf retired but ALL landed assets PRESERVED & reused. NEXT = Phase 1′: discharge x=t collapse in situ at KampPrior.lean:391 via the model's characteristic NF (model supplies the quant ← witness that the abstract leaf lacked), reusing mergeNF_succ/mergeNF_succ_atom + renameNF_eval_iff.mpr + char_k1/ih_exist_1. ~250-420 lines, MEDIUM risk. Build GREEN, baseline 2 sorry preserved, axiom set unchanged. Do NOT retry a 4th abstract merge encoding; do NOT delete landed assets.",
+      "blockers": "Phase 4 (Prop 4.3 correctness) BLOCKED: per-model existential framing is VACUOUS (closed by tt/ff for any phi). Non-vacuous uniform translate needs 3 pieces — (not) model-independent arity-m negation [UNFIXABLE per report 18], (and) complete arity-m conjunction [Lemma 3.2(1) iff; conj is forward-only], (all/ex) Lemma 3.4 arbitrary-position existential closure [existClosure only absorbs rightmost var]. Recommended: restructure Prop 4.3 to positive/De-Morgan NF + /research --hard on Lemma 3.2(1) + Lemma 3.4. Reusable sorry-free progress: Kamp/Prop43.lean atom/lt/tt/ff blocks. Build GREEN, baseline 2 sorries.",
       "researched": "2026-06-24T21:45:00Z"
     },
     {
