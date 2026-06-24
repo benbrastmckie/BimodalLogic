@@ -161,7 +161,41 @@ for Prop 4.3 (Phase 4). H6 churn cap honored (1 attempt, conclusive negative, st
 
 ---
 
-### Phase 4: Revive or rebuild Prop 4.3 (structural FO induction) [IN PROGRESS]
+### Phase 4: Revive or rebuild Prop 4.3 (structural FO induction) [BLOCKED]
+
+**BLOCKER** (Phase 4b/4c, dispatch sess_1782337996_6c54a7, 2026-06-24):
+- **What failed**: A non-vacuous Prop 4.3 cannot be assembled from the available
+  closures. The per-model existential statement `∃ v, v.holds env ↔ eval φ`
+  (the codebase's `neg_2var_vec_ea`/`neg_vec_ea_m` convention) is **vacuous** —
+  closed by `⟨tt, …⟩` / `⟨ff, …⟩` independent of φ. A genuine Prop 4.3 must be the
+  *uniform* statement (single model-independent `translate : MonadicFormula sig m →
+  VVecEA_m m` with `∀ M env, StrictMono env → ((translate φ).holds ↔ eval φ)`).
+- **What was tried**: Stated and built the per-model existential induction (all 6
+  cases closable via tt/ff + forward conj + neg_vec_ea_m) — REJECTED as vacuous.
+  Surveyed the codebase for the uniform connective closures.
+- **Why it's stuck** (uniform `translate` connective cases):
+  - **not**: needs model-independent arity-`m` negation with a uniform iff =
+    the model-INDEPENDENT Prop 4.2 backward proved UNFIXABLE (report 18,
+    `NegationIndep.lean:331-351`). `neg_vec_ea_m` is only model-dependent existential.
+  - **and**: needs a *complete* arity-`m` conjunction (Lemma 3.2(1) iff).
+    `VVecEA_m.conj` is forward-only (`conjStruct` over-approximates,
+    `VecEAClosure.lean:163-169`). Missing.
+  - **all/ex**: needs Lemma 3.4 (arbitrary-position existential closure incl. a
+    leftward `existClosure`). `existClosure` (`VecEA_m.lean:208`) only absorbs the
+    rightmost variable; the De Bruijn binder prepends an order-unconstrained
+    witness at index 0. The witness-position split + reordering closure is missing.
+    Even live `KampPrior:391` (n=1) needs both leftward and rightward absorption.
+- **What is needed**: build (a) complete arity-`m` conjunction closure, (b) Lemma
+  3.4 (arbitrary-position ex closure + leftward existClosure), and (c) resolve the
+  model-indep negation (UNFIXABLE as-is — likely requires restructuring Prop 4.3
+  into a positive/De-Morgan normal form with a single top-level negation, avoiding
+  per-connective uniform negation). This is a multi-phase research+build effort, not
+  a single dispatch.
+- **Prohibited workarounds**: NO `sorry`, NO `def X := True`, NO vacuous per-model
+  existential presented as Prop 4.3.
+- **Shipped sorry-free this dispatch**: `Kamp/Prop43.lean` — genuine uniform
+  atom/lt building blocks (`tt`, `ff`, `atomAt`/`atomAt_holds`, `ltAt`/`ltAt_holds`),
+  off live path, axioms = baseline, zero live-path sorry added.
 
 **Goal**: Produce a sorry-free Prop 4.3 — structural induction on the FO formula (atomic / disjunction / negation-via-Prop-4.2 / existential-via-Lemma-3.4), with **no depth parameter** (Rabinovich md:106) — in the mode the Phase 1 gate selected (REVIVE the Boneyard proof, or REBUILD from Rabinovich §4). This is the asset that replaces the entire `nf_nvar_exist_all_depths` depth recursion.
 
@@ -169,8 +203,8 @@ for Prop 4.3 (Phase 4). H6 churn cap honored (1 attempt, conclusive negative, st
 - [ ] If REVIVE: lift `Boneyard/Prop43.lean` onto a live module, filling its enumerated gaps with Phase 2 (Lemma 3.2(2)) and Phase 3 (Prop 4.2 backward); update imports to current names.
 - [ ] If REBUILD: construct Prop 4.3 fresh — atomic case (forward translation already sorry-free), disjunction (Lemma 3.2(1) conj / De Morgan), negation case (Phase 3 Prop 4.2 model-indep biconditional), existential case (Lemma 3.4 `existClosure`), arity held ≤ 2 by Phase 2. *(in progress — split into 4a/4b/4c per phase-3 handoff)*
   - [x] **Phase 4a (DONE this dispatch)**: arbitrary-arity negation closure. New file `Kamp/EAVecNegationClosure.lean` (off live import path). `neg_vec_ea_m : ¬v.holds env → ∃ v', v'.holds env` for `VVecEA_m m`, model-dependent existential form (matches the codebase's `neg_2var_vec_ea` existential convention; the literal `VVecEA_m m → VVecEA_m m` total-function signature from the dispatch is *not* the codebase convention — every negation-closure layer here is the `¬holds → ∃ holds` existential). Built faithfully via `arity_firewall` (Phase 2) + `not_and_or`/`push_neg` De Morgan + arity-2 base `neg_vecEA2` (Phase 3 `EANegationClosure`). Lift constructors `VecEA_m.liftEndpoint`/`liftInterval`/`VVecEA_m.liftInterval` re-lift arity-≤2 closures to arity m. Sorry-free; axioms `[propext, Classical.choice, Quot.sound]` (= baseline). GREEN. *(deviation: altered — existential form not total-function form; reason: codebase convention)*
-  - [ ] **Phase 4b (REMAINING)**: state Prop 4.3 over `MonadicFormula sig m`; close atom/lt/and/or cases and the existential case (`existClosure` + the `Fin.cons`↔rightmost-variable re-indexing lemma, handoff item 2). Leave `not` consuming 4a's `neg_vec_ea_m`.
-  - [ ] **Phase 4c (REMAINING)**: wire the `not` case via `neg_vec_ea_m` and assemble the full Prop 4.3 correctness biconditional vs `MonadicFO.eval`. End GREEN, sorry-free, off-path.
+  - [x] **Phase 4b (PARTIAL — atom/lt landed; and/all/ex BLOCKED)**: new file `Kamp/Prop43.lean` (off live path). Closed the genuine *uniform* atom/lt cases sorry-free: `VVecEA_m.atomAt`/`atomAt_holds` (atom p i ↔ `M.interp p (env i)`, via `atom_literal`) and `VVecEA_m.ltAt`/`ltAt_holds` (`x_i < x_j` decided by indices under StrictMono). Plus `tt`/`ff` constants. *(deviation: altered — the per-model existential framing the dispatch assumed (close and/or/ex via conj/disj/existClosure) was found VACUOUS (tt/ff close it for any φ); a non-vacuous Prop 4.3 requires a uniform translate whose connective cases are blocked — see Phase 4 BLOCKER above.)*
+  - [ ] **Phase 4c (BLOCKED)**: the `not`/`and`/`all`/`ex` cases of a uniform Prop 4.3 are blocked on missing infrastructure (complete arity-`m` conjunction, Lemma 3.4 arbitrary-position ex closure, model-indep negation). Requires a follow-up research+build effort. *(deviation: deferred — blocked, see Phase 4 BLOCKER.)*
 - [ ] Confirm the recursion is structural on the FO formula, not on an NF-depth index (descend-only / fixed-arity invariant).
 - [ ] `lean_verify` Prop 4.3 is sorry-free in isolation (it may still be off the live import path at this point — that is wired in Phase 5).
 

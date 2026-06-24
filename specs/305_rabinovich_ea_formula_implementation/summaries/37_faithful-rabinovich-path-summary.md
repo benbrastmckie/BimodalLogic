@@ -123,10 +123,35 @@ biconditional). See `handoffs/phase-4a-negation-closure-20260624.md`.
 sorry baseline **2** (`KampPrior:391,:394`) UNCHANGED; axiom set unchanged. Committed
 (`eee41b94a task 305 phase 4a: ...`).
 
+## Phase 4b (sess_1782337996_6c54a7, 2026-06-24) — atom/lt landed; Phase 4 BLOCKED
+
+New file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop43.lean` (off live path, sorry-free,
+axioms = baseline). Shipped the **genuine uniform** atom/lt cases of Prop 4.3:
+`VVecEA_m.atomAt`/`atomAt_holds` (`atom p i ↔ M.interp p (env i)` for all M/env, via
+`atom_literal`) and `VVecEA_m.ltAt`/`ltAt_holds` (`x_i < x_j` decided by indices under
+`StrictMono`), plus `tt`/`ff` constants. `lean_verify atomAt_holds`/`ltAt_holds` →
+`[propext, Classical.choice, Quot.sound]`, no sorryAx.
+
+**Conclusive blocker (Phase 4 → [BLOCKED])**: the per-model existential framing the dispatch
+assumed — `∃ v, v.holds env ↔ eval φ`, closing and/or/ex via conj/disj/existClosure — is
+**vacuous** (closed by `tt`/`ff` independent of φ; the same vacuity that `neg_2var_vec_ea`/
+`neg_vec_ea_m`'s `∃ v', v'.holds` already carry). A non-vacuous Prop 4.3 needs a *uniform*
+`translate : MonadicFormula sig m → VVecEA_m m` with a model-independent correctness iff, whose
+connective cases are each blocked: **not** = model-indep Prop 4.2 backward (UNFIXABLE, report 18);
+**and** = complete arity-`m` conjunction (`conj` is forward-only, `VecEAClosure.lean:163-169`);
+**all/ex** = Lemma 3.4 (arbitrary-position ex closure; `existClosure` is rightmost-only). Even live
+`KampPrior:391` (n=1) needs both leftward and rightward absorption. See
+`handoffs/phase-4b-prop43-blocker-20260624.md` for the full write-up and recommended unblock path
+(positive/De-Morgan NF to dodge uniform negation → complete conjunction → Lemma 3.4).
+
+Live-path sorry baseline **2** (`KampPrior:391,:394`) UNCHANGED; full `lake build` GREEN (1700);
+zero new axioms. Committed (`task 305 phase 4b: Prop43 uniform atom/lt blocks + non-vacuity blocker`).
+
 ## Next dispatch
 
-Plan v37 **Phase 4b** (Prop 4.3 easy cases + `.ex` existential glue), then **4c** (wire the
-`not` case via `neg_vec_ea_m` + assemble the Prop 4.3 correctness biconditional). The main 4b
-cost is the `Fin.cons` (De-Bruijn index-0 prepend) ↔ `existClosure` (rightmost-variable absorb)
-re-indexing lemma. 4c slots `neg_vec_ea_m` directly into the `not` case. Resume from
-`handoffs/phase-4a-negation-closure-20260624.md`.
+Phase 4 is **BLOCKED** pending a research+build effort on (1) a positive/De-Morgan normal form to
+avoid the UNFIXABLE uniform negation, (2) a complete arity-`m` conjunction closure (Lemma 3.2(1)
+iff), and (3) Lemma 3.4 (arbitrary-position existential closure + leftward `existClosure`).
+Recommend `/research --hard` on Lemma 3.2(1) + Lemma 3.4 mechanization before resuming the build.
+The uniform atom/lt building blocks in `Kamp/Prop43.lean` are sorry-free and reusable. Resume from
+`handoffs/phase-4b-prop43-blocker-20260624.md`.
