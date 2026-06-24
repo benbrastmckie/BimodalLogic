@@ -78,17 +78,27 @@ No `roadmap_flag` was set for this planning run and no ROADMAP.md path was suppl
 
 Phase 1 is the decision gate and must complete and commit before any downstream phase. Phases 2 (arity firewall) and 3 (Prop 4.2 backward) are independent of each other and may run in parallel (Wave 2) once the gate is settled. Phase 4 (Prop 4.3 proper) consumes both, plus the Phase 1 triage verdict. Phase 5 re-anchors `KampPrior` and rewires imports. Phase 6 is final verification.
 
-### Phase 1: Boneyard triage + decision gate on Prop 4.3 [NOT STARTED]
+### Phase 1: Boneyard triage + decision gate on Prop 4.3 [COMPLETED]
+
+**GATE VERDICT (committed 2026-06-24, session sess_1782337996_6c54a7): REBUILD.**
+`Kamp/Boneyard/Prop43.lean` is NOT the structural FO-induction Prop 4.3 — it is the
+arity-tower `nf_succ_char_formula` / depth-(k+1) NF-characterization infrastructure
+(the FORBIDDEN NF-depth machinery). It is sorry-free but is the wrong asset; reviving
+it would reintroduce the arity tower. No live `StructuralInduction.lean` exists anywhere
+(the `KampPrior.lean:28` header reference is aspirational). Therefore REVIVE is impossible
+and the gate selects REBUILD: Phase 4 reconstructs Prop 4.3 fresh from Rabinovich §4
+(atomic / disjunction / negation-via-Prop-4.2 / existential-via-Lemma-3.4, no depth
+parameter, arity ≤ 2). Full triage in `handoffs/phase-1-gate-rebuild-20260624.md`.
 
 **Goal**: Settle, with read-only spike work, exactly what in `Boneyard/Prop43.lean` is revivable — what compiles, what sorries it carries, what it depends on — and commit a written decision: REVIVE (wire the archived proof, filling named gaps) vs REBUILD (reconstruct Prop 4.3 from Rabinovich §4 directly). Also pre-survey the `KampPrior` import-rewire surface so Phase 5 is de-risked. No `.lean` edits to the live path in this phase.
 
 **Tasks**:
-- [ ] Read `Boneyard/Prop43.lean` in full; enumerate every `sorry`, every import, and the transitive dependency set (which faithful assets it needs: Prop 4.2 model-indep, Lemma 3.2(2), Lemma 3.4, Prop 3.5).
-- [ ] `lean_verify` / `lean_build` probe (read-only) to record which declarations in Prop43 currently compile vs error vs carry `sorry`.
-- [ ] Map Prop43's structural cases (atomic / disjunction / negation-via-Prop-4.2 / existential-via-Lemma-3.4) against Rabinovich (2014) §4 Prop 4.3 (md:106) to confirm faithfulness of whatever is revived.
-- [ ] Survey the `KampPrior` import surface: list the negation-closure modules that must be added to the live path, and check for any import cycle risk against current imports (`ExistsForallNF`, `NfToVecEA`, `NfDepth0Generalized`).
-- [ ] **Decision criterion (explicit, verifiable)**: choose **REVIVE** iff Prop43 compiles with ≤ 2 named gaps that map exactly to Phase 2 (Lemma 3.2(2)) and/or Phase 3 (Prop 4.2 backward), with no NF-depth parameter and no arity-3+ appeal. Otherwise choose **REBUILD** (Phase 4 reconstructs Prop 4.3 from Rabinovich §4 directly). Record the verdict, the sorry/dependency inventory, and the import-rewire surface in the dispatch handoff. Ambiguity defaults to REBUILD (bounded, faithful).
-- [ ] Commit the gate decision; from here Phase 4's mode (REVIVE vs REBUILD) is fixed.
+- [x] Read `Boneyard/Prop43.lean` in full; enumerate every `sorry`, every import, and the transitive dependency set. *(completed: Prop43.lean is sorry-free but is `nf_succ_char_formula` arity-tower infra, NOT structural Prop 4.3; imports NfToVecEA/NormalForm/PriorDefs/KampTranslation; off live import path)*
+- [x] `lean_verify` / `lean_build` probe (read-only) to record which declarations compile vs error vs carry `sorry`. *(completed: `lake build Bimodal.Metalogic.Metalogic` GREEN, 1671 jobs; `completeness_discrete` axioms = propext, sorryAx, Classical.choice, Lean.ofReduceBool, Lean.trustCompiler, Quot.sound — baseline confirmed)*
+- [x] Map Prop43's structural cases against Rabinovich §4 Prop 4.3. *(deviation: altered — Prop43.lean does NOT contain structural cases; it is the depth-(k+1) NF-char machinery. No live structural Prop 4.3 exists anywhere; `StructuralInduction.lean` referenced in KampPrior:28 does not exist.)*
+- [x] Survey the `KampPrior` import surface; check cycle risk. *(completed: KampPrior currently imports ExistsForallNF, NfToVecEA, NfDepth0Generalized + NormalForm/PriorDefs/KampTranslation. Faithful assets VecEA_m, RabinovichTranslation, EANegationClosure, NegationIndep, VecEAClosure are all OFF-path and sorry-free except NegationIndep:331. `nf_nvar_exist_all_depths` (the :391/:394 sorry host) has NO external live consumer — only PriorExpressiveness imports KampPrior, via the wrapper chain.)*
+- [x] **Decision criterion**: choose REVIVE iff Prop43 compiles with ≤ 2 named gaps mapping to P2/P3 with no NF-depth/arity-3+ appeal. *(VERDICT: REBUILD. Prop43.lean is the arity-tower infra itself — reviving it reintroduces the forbidden NF-depth recursion. No revivable structural Prop 4.3 exists. Gate selects REBUILD per documented fallback.)*
+- [x] Commit the gate decision; Phase 4 mode fixed = **REBUILD**.
 
 **Timing**: 1.5 hours (read + probes; no construction)
 
