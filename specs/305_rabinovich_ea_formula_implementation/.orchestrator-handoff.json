@@ -2,7 +2,7 @@
   "status": "partial",
   "plan_version": 33,
   "plan_path": "specs/305_rabinovich_ea_formula_implementation/plans/33_nf-strong-induction.md",
-  "summary": "Phase 2 dispatch 2: backward direction (existential -> formula) fully proved for all 3 subcases (x<t, t<x, x=t). Forward direction blocked by cross-condition structural issue: IH-based restrict_inner at arity (n+1) cannot encode conditions between inner existential variables and free variable t. Recommended fix: translateEF1-based direct construction. File: 644 lines, 1 sorry.",
+  "summary": "Phase 2 dispatch 3: Deep analysis confirmed the IH-based formula is fundamentally unprovable for the forward direction. The cross-condition problem (inner witnesses vs t when both are on the same side of x) is inherent to the one-variable-at-a-time peeling approach in temporal logic. Even NF-boolean transitivity (established from satisfying assignment) does not help because the IH produces witnesses relative to x without constraining them relative to t. The correct fix: replace the succ case formula with translateEF1-based construction that handles all n+2 positions in a single Since/Until chain. Detailed implementation plan in handoff v33-phase-2-dispatch-3.md.",
   "phases_total": 3,
   "phases_completed": 1,
   "sorry_inventory": [
@@ -11,36 +11,51 @@
       "line": 521,
       "statement": "nf_nvar_exist_depth0_tl (forward direction, succ n case)",
       "assumption": "That the temporal formula implies the full arity-(n+2) existential including cross-conditions between inner variables and t",
-      "why_deferred": "IH-based formula over-approximates the existential. restrict_inner at arity (n+1) has no position for t, so cross-conditions (order between positions i<n and position n+1) are not enforced. The formula may be satisfiable when the existential is not.",
-      "next_dispatch": "Implement translateEF1-based direct construction: (1) define NF ordering consistency check, (2) extract sorted position order, (3) build alpha/beta for translateEF1, (4) prove correctness via translateEF1_correct."
+      "why_deferred": "FUNDAMENTAL: Current IH-based formula (restrict_inner at arity n+1) cannot capture cross-conditions between inner variables and t. Temporal formulas evaluated at x can only constrain witnesses relative to x, not relative to t. When inner witnesses and t are on same side of x, relative order is undetermined by IH. Must replace entire succ case formula with translateEF1-based construction.",
+      "next_dispatch": "Replace succ case (lines 191-635) with translateEF1-based formula: (1) add import Translation.lean, (2) by_cases on universally empty existential, (3) if non-empty, define sorted permutation from satisfying assignment using rank = Fintype.card {i // pts i < pts j OR (pts i = pts j AND i.val < j.val)}, (4) build alpha = nfPredAtPos and beta = TemporalPred.top, (5) use translateEF1 with k = rank of t, (6) prove biconditional using translateEF1_correct showing buildRight_spec/buildLeft_spec match nf_eval_nf"
     }
   ],
   "blockers": [
-    "Forward direction of nf_nvar_exist_depth0_tl: IH-based formula over-approximates existential (cross-condition structural limitation)"
+    "Forward direction of nf_nvar_exist_depth0_tl: current formula structurally cannot capture cross-conditions. Must replace with translateEF1-based formula."
   ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-3.md",
   "continuation_context": {
     "is_successor": true,
     "next_phase": 2,
     "completed_phases": [1],
-    "resume_point": "Forward direction sorry at NfDepth0Generalized.lean line 521",
-    "approach": "Implement Approach A from handoff: replace IH-based formula with translateEF1 direct construction. The backward direction is fully proved and can be preserved.",
+    "resume_point": "Replace entire succ case (lines 191-635) with translateEF1-based formula",
+    "approach": "translateEF1-based direct construction using sorted permutation from satisfying assignment",
     "key_files": [
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Translation.lean",
+      "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExistsForallNF.lean",
       "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfToVecEA.lean"
+    ],
+    "key_decisions": [
+      "IH-based formula approach is fundamentally broken for forward direction",
+      "translateEF1 is the correct tool: handles all positions in single chain",
+      "Sorting/ranking uses satisfying assignment but formula works for all M",
+      "Backward direction proof at lines 532-635 must be preserved or adapted",
+      "All beta arrays are TemporalPred.top at depth 0 (no interval conditions)",
+      "Rank definition needs tie-breaking rule for positions with same image"
     ]
   },
-  "next_action_hint": "Implement translateEF1-based forward direction (Approach A). The backward direction proof should be preserved or adapted.",
+  "next_action_hint": "Replace entire succ case with translateEF1-based construction. Do NOT attempt to fix the forward direction of the current formula -- it is provably unfixable.",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean",
-      "summary": "644 lines. n=0 case sorry-free. Succ case: backward direction proved, 1 sorry in forward direction. Helper lemmas all sorry-free."
+      "summary": "644 lines. n=0 case sorry-free. Succ case: backward direction proved, 1 sorry in forward direction at line 521."
+    },
+    {
+      "type": "handoff",
+      "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-3.md",
+      "summary": "Phase 2 dispatch 3 handoff with deep analysis proving IH approach unfixable, translateEF1 implementation plan"
     },
     {
       "type": "handoff",
       "path": "specs/305_rabinovich_ea_formula_implementation/handoffs/v33-phase-2-dispatch-2.md",
-      "summary": "Phase 2 dispatch 2 handoff with cross-condition analysis and 3 fix approaches"
+      "summary": "Phase 2 dispatch 2 handoff with cross-condition analysis and 3 fix approaches (Approach A = translateEF1 recommended)"
     }
   ],
   "session_id": "sess_1782276572_7ce596",
