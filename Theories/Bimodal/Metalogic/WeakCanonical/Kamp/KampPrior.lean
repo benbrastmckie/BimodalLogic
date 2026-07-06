@@ -52,55 +52,14 @@ open Bimodal.Metalogic.WeakCanonical.Separation (atom_literal atom_literal_corre
   formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
   nf_depth0_char_formula nf_depth0_char_formula_correct)
 
-/-! ## Arity-1 Atom Classification -/
+/-! ## Arity-1 Atom Classification / NF Characterization Infrastructure
 
-/-- For arity 1, there are no order atoms: every `AtomKind sig 1` is a pred atom. -/
-theorem atomKind_arity1_is_pred {sig : MonadicSignature} (a : AtomKind sig 1) :
-    ∃ (p : sig.preds), a = .pred p ⟨0, by omega⟩ := by
-  match a with
-  | .pred p i =>
-    have : i = ⟨0, by omega⟩ := Fin.ext (by omega)
-    subst this
-    exact ⟨p, rfl⟩
-  | .order i j h =>
-    have hi : i = ⟨0, by omega⟩ := Fin.ext (by omega)
-    have hj : j = ⟨0, by omega⟩ := Fin.ext (by omega)
-    subst hi; subst hj
-    exact absurd rfl h
-
-/-! ## NF Characterization Infrastructure (inlined from Prop43.lean, v30 Phase 1)
-
-Definitions for converting depth-(k+1) arity-1 NFs to temporal formulas,
-used by the k=1 case of `nf_characterizable_temporal_prior`. -/
-
-/-- Build the temporal formula for a single quantifier clause of a
-    depth-(k+1) arity-1 NF: positive (existential) or negative (universal). -/
-noncomputable def nf_quant_clause_tl
-    (exist_tl : Formula)
-    (is_positive : Bool) : Formula :=
-  if is_positive then exist_tl
-  else Formula.neg exist_tl
-
-/-- Correctness of `nf_quant_clause_tl`. -/
-theorem nf_quant_clause_tl_correct {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig)
-    (atomMap : Formula → sig.preds)
-    (t : M.carrier)
-    (exist_tl : Formula)
-    (is_positive : Bool)
-    (P : Prop)
-    (h_exist : temporal_truth M atomMap t exist_tl ↔ P) :
-    temporal_truth M atomMap t (nf_quant_clause_tl exist_tl is_positive) ↔
-    (P ↔ (is_positive = true)) := by
-  simp only [nf_quant_clause_tl]
-  cases is_positive
-  · simp only [ite_false, Bool.false_eq_true, iff_false]
-    simp only [Formula.neg, temporal_truth]
-    constructor
-    · intro h hP; exact h (h_exist.mpr hP)
-    · intro h htt; exact h (h_exist.mp htt)
-  · simp only [ite_true, iff_true]
-    exact h_exist
+`atomKind_arity1_is_pred`, `nf_quant_clause_tl`, and `nf_quant_clause_tl_correct` were RELOCATED to
+`NfDepth0Generalized.lean` (task 307 Phase 7). They are small generic helpers; moving them to a module
+that both `KampPrior` and the multi-anchor bridge already import lets the bridge drop its
+`import KampPrior`, breaking the import cycle that blocked wiring the bound-anchor converter into
+`:391`. They remain in the same namespace and are re-exposed here via the existing
+`import ...NfDepth0Generalized` (line 3), so every downstream use below is unchanged. -/
 
 /-- Build the characteristic temporal formula for a depth-(k+1) arity-1 NF,
     given a function that converts depth-k arity-2 existentials to temporal. -/

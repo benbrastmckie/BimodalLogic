@@ -1,5 +1,8 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable
-import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
+-- NOTE (task 307 Phase 7): `import ...KampPrior` was REMOVED to break the import cycle that blocked
+-- wiring this bridge into `KampPrior.lean:391`. The two symbols this file used from KampPrior
+-- (`nf_quant_clause_tl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
+-- `NfDepth0Generalized` and reach here transitively via `NfZoneFlattenNavigable`.
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge (task 308)

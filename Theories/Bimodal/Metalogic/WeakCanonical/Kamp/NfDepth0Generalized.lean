@@ -1718,4 +1718,55 @@ converter / characteristic-NF machinery) is built to supply. The report-39 Phase
 x=t arm is NOT separable from the Phase-11 crux. See the Phase 10 blocker in
 `plans/39_direct-nf-construction.md`. -/
 
+/-! ## Shared arity-1 / quant-clause helpers (relocated from KampPrior, task 307 Phase 7)
+
+These three small generic helpers were originally defined in `KampPrior.lean`. They are relocated
+here — a module BOTH `KampPrior` and the multi-anchor bridge (`NfMultiAnchorBridge`, via
+`NfZoneFlattenNavigable`) already import — so the bridge no longer needs to `import KampPrior`. This
+breaks the import cycle that blocked wiring the bound-anchor converter into `KampPrior.lean:391`
+(task 307 Phase 7 relocation step). Both are unchanged; only their home module moved. -/
+
+/-- For arity 1, there are no order atoms: every `AtomKind sig 1` is a pred atom. -/
+theorem atomKind_arity1_is_pred {sig : MonadicSignature} (a : AtomKind sig 1) :
+    ∃ (p : sig.preds), a = .pred p ⟨0, by omega⟩ := by
+  match a with
+  | .pred p i =>
+    have : i = ⟨0, by omega⟩ := Fin.ext (by omega)
+    subst this
+    exact ⟨p, rfl⟩
+  | .order i j h =>
+    have hi : i = ⟨0, by omega⟩ := Fin.ext (by omega)
+    have hj : j = ⟨0, by omega⟩ := Fin.ext (by omega)
+    subst hi; subst hj
+    exact absurd rfl h
+
+/-- Build the temporal formula for a single quantifier clause of a
+    depth-(k+1) arity-1 NF: positive (existential) or negative (universal). -/
+noncomputable def nf_quant_clause_tl
+    (exist_tl : Formula)
+    (is_positive : Bool) : Formula :=
+  if is_positive then exist_tl
+  else Formula.neg exist_tl
+
+/-- Correctness of `nf_quant_clause_tl`. -/
+theorem nf_quant_clause_tl_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (t : M.carrier)
+    (exist_tl : Formula)
+    (is_positive : Bool)
+    (P : Prop)
+    (h_exist : temporal_truth M atomMap t exist_tl ↔ P) :
+    temporal_truth M atomMap t (nf_quant_clause_tl exist_tl is_positive) ↔
+    (P ↔ (is_positive = true)) := by
+  simp only [nf_quant_clause_tl]
+  cases is_positive
+  · simp only [ite_false, Bool.false_eq_true, iff_false]
+    simp only [Formula.neg, temporal_truth]
+    constructor
+    · intro h hP; exact h (h_exist.mpr hP)
+    · intro h htt; exact h (h_exist.mp htt)
+  · simp only [ite_true, iff_true]
+    exact h_exist
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
