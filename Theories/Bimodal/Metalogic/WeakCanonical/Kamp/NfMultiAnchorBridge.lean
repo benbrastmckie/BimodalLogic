@@ -1747,4 +1747,79 @@ noncomputable def bracketEndChar_k1 {sig : MonadicSignature}
           endpointRight := TemporalPred.bot
           bracket := BracketFormula.single TemporalPred.bot TemporalPred.bot TemporalPred.bot })
 
+/-! ## Task 311 Phase 2: k=1 gate re-probe under the E[Σ]-fold — DECISION GATE → R2 = NO-GO at
+`VecEA2 1` (Risk R1 materialized; the fold itself is VINDICATED)
+
+**Lead evidence (Def 3.1, PDF p.4 — per plan-v2 rule N3, adapted to the NO-GO outcome).**
+Rabinovich's α_j/β_j are ONE-variable quantifier-free formulas: no joint multi-point atom exists,
+so the arity-4 residual `[x_1,w,x,t]` that NO-GOed the OLD probe (Phase 10 record above,
+:1592-1624, residual :1607-1609) has no Rabinovich counterpart — it was a Lean `nf_eval_nf`
+arity-growth artifact, and the E[Σ]-fold RESTORES Def-4.1 fidelity. This re-probe CONFIRMS that:
+chain steps 1-2 of the plan-v2 proof chain discharge against the landed sorry-free fold assets —
+`nf_eval_nf1_iff_efold` (NfEFold:490) rewrites the k=1 evaluation into the fold form plus the
+off-fiber clause, and `nf_quant_layer_fold_k1_gate` (NfEFold:525) reduces the OLD residual
+verbatim to zone-bounded MONADIC existentials over `EAtomDom sig 0 3` (the "innermost fold /
+iteration" reading is the **Def 4.1 p.6 note**; **Prop 4.3 (p.6)** licenses only
+residual-is-∨∃∀ over E[Σ] atoms, realized locally via the fold, NOT literal structural
+induction — 305 report 14). **No arity-4 object and no navigated arity-3 characteristic arises
+at any step.** The old blocker is dead.
+
+**The NEW blocker (chain step 4, interval zones — the plan-named Risk R1 surface).** The k=1
+correctness target `BracketCarrierCorrect` restricted to the bracket zone (the six k0-mirror
+order hypotheses on `qnf.1`) is **FALSE for the carrier above**: its LHS→RHS direction fails on
+the interior-POSITIVE fold bits. The `ptW` chains (:1725-1732) encode `b zXW χ = true` as
+`bracketBuildLeft (BracketFormula.single ⟨char χ⟩ segL segL) xType` at the bracket witness `w`,
+but `bracketBuildLeft_correct` (VecEATranslation:503) reads `∃ z0 < w` with `xType`**-typed**
+anchor `z0` — an existential over the endpoint TYPE, not the fixed endpoint `x` itself (the
+two-fixed-endpoint `(z_0,z_1)` framing is **Lemma 3.2(2) (p.4) + the §5 bracket notation
+`[α_0,…,α_n](z_0,z_1)` (p.7)**; **Prop 3.5 (p.5)** supplies only the ∃-witness→Until/Since
+folding mechanism). The chain's χ-witness may land in `(z0, x]`, OUTSIDE `(x, w)`. Machine-
+captured leaf (this dispatch, `lean_goal` on the extracted obligation): hypotheses
+`z0 < w`, `xType z0`, one witness `ws 0 ∈ (z0, w)` with `char χ` — goal
+`∃ u, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ`; the needed `x < ws 0` is underivable
+(`lean_multi_attempt`: every candidate fails exactly there).
+
+**Semantic counterexample** (dense order — this is NOT a proof-search stall): sig = one
+predicate `P`; `M` = ℝ with `P ⊨ {1}`; `x = 2`, `t = 10`; `χ_P`/`χ_0` the P-true/P-false
+1-types. `qnf.1` = the bracket-zone atom layer with all three point types `χ_0`. `qnf.2` =
+fiber-supported bits (off-fiber false): `zPastX`: both types true (P-witness `1 < 2`); `zAtX`,
+`zAtW`, `zAtT`: `χ_0` true, `χ_P` false; `zXW`: `χ_0` true, **`χ_P` true — the unrealizable
+bit**; `zWT`, `zFutT`: `χ_0` true, `χ_P` false; inconsistent zones false. Both gate conjuncts
+hold, so the carrier is the real (non-⊥) branch. LHS holds at `(2, 10)`: bracket witness
+`w = 5`; the `zXW`-positive chain for `χ_P` anchors at `z0 = 0` (type `χ_0 = xType`) and
+absorbs `u = 1 ∈ (0, 5)` — outside `(x, w) = (2, 5)`; `segL ≡ ⊤` (both `zXW` bits positive),
+`segR` = `¬char χ_P`, true on `(5, 10)`; all endpoint literals check. RHS is FALSE for EVERY
+`w`: the atom layer forces `2 < w < 10`, and the fold quant-layer biconditional at
+`(zXW, χ_P)` demands a P-point in `(2, w)` — but `P ∩ (2, ∞) = ∅`. Hence
+`(bracketEndChar_k1 … qnf).holds M atomMap x t` holds while
+`∃ w, nf_eval_nf M 1 3 [w,x,t] qnf` fails. (Checked by hand against `IntervalPattern.holds`,
+`temporal_truth`, `nf_eval_efold`, `nf_quant_layer_fold_iff` this dispatch.)
+
+**Isolation — why this is a `VecEA2 1` SHAPE limit, not a fixable proof gap.** A
+`BracketFormula 1` has exactly ONE interior witness slot (`w`). Each interior-positive
+`(zone, χ)` bit is an ADDITIONAL existential strictly inside `(x,w)` / `(w,t)`; per
+**Lemma 3.4 (p.5)** its witness must JOIN the bracket's existential prefix — witness-count
+growth, which is exactly what `BracketFormula.existsBounded_right` (VecEAClosure:265)
+implements: its conclusion is `∃ m, ∃ bf' : BracketFormula m, …` (n → n+2 witnesses). Nothing
+with the carrier's FIXED `BracketFormula 1` output can consume it, and no monadic temporal
+formula at `w` (or at a type-anchored `z0`) can pin a witness strictly inside `(x, w)`, because
+monadic point types cannot separate points `≤ x` from points in `(x, w)` — the counterexample
+exploits precisely this. Note the defect is ONE-directional: the RHS→LHS direction of the k=1
+instance IS dischargeable for this carrier (take `z0 := x`; interior points all carry
+positive-bit types, so the segment exclusions hold) — the carrier is sound but under-
+constraining, so the correctness `↔` fails.
+
+**Escalation (Risk R1 fence, plan v2 Rollback #2; audit caveat C3).** Per the fence this is a
+G6-SHAPE decision, NOT an implementer call: the carrier codomain is left UNCHANGED, no third
+anchor is introduced, `bracketEndChar_k1` above stays intact, sorry-free, and OFF the live path
+(nothing imports/wires it). The Rabinovich-faithful fix direction for the orchestrator /
+`/revise 311`: anchors stay `{x, t}` (Lemma 3.2(2) caps ANCHORS at ≤2 — audit Red Flag C:
+witness-count growth under ∃-closure is licensed, anchor-count growth is not), while the
+bracket carries the interior-positive witnesses ALONGSIDE `w` — i.e. a carrier codomain of
+`VVecEA2` / `Σ n, VecEA2 n` (the §5 bracket `[α_0,…,α_n](z_0,z_1)`, p.7, has n witnesses),
+with `BracketFormula.existsBounded_right` as the assembly vehicle. Chain steps 1-3 and 5
+(fold bridge, gate corollary, atom-layer kit, off-fiber gate) are UNAFFECTED by the codomain
+change. Per the DECISION-GATE contract no partial correctness theorem and no `sorry` is
+landed for the k=1 instance. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

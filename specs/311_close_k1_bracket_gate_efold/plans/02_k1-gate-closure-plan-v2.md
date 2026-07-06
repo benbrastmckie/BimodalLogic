@@ -307,7 +307,40 @@ parallel opportunity), and Phase 2 consumes Phase 1's definition by name. One ag
 - **Timing:** ~1.5-2 hours (one agent run).
 - **Depends on:** none
 
-### Phase 2: Prove `bracketEndChar_k1_correct` sorry-free + record R2 = GO [NOT STARTED]
+### Phase 2: Prove `bracketEndChar_k1_correct` sorry-free + record R2 = GO [BLOCKED]
+
+**BLOCKER** (Phase 2, 2026-07-06 dispatch — Risk R1 MATERIALIZED; escalated per Rollback #2/#3):
+- **What failed**: Chain step 4, interval zones. The target `↔` (k=1 `BracketCarrierCorrect`
+  restricted to the six bracket-zone order hypotheses) is **FALSE for the Phase-1 carrier** —
+  refuted by a dense-order semantic counterexample, not merely stalled. LHS→RHS fails on the
+  interior-POSITIVE fold bits: the `ptW` chains encode `b zXW χ = true` via
+  `bracketBuildLeft (BracketFormula.single ⟨char χ⟩ segL segL) xType` at the bracket witness `w`,
+  and `bracketBuildLeft_correct` (VecEATranslation:503) anchors at `∃ z0 < w` of the endpoint
+  TYPE `xType` — not at the fixed endpoint `x` — so the χ-witness may land in `(z0, x]`, outside
+  `(x, w)`. Counterexample (full detail in the NO-GO record, NfMultiAnchorBridge.lean:1750-1823):
+  sig = {P}, M = ℝ, P ⊨ {1}, x = 2, t = 10, fiber-supported `qnf.2` with `b zXW χ_P = true`;
+  carrier holds at (2,10) via w=5, z0=0, u=1 ∉ (2,5); RHS false for every w.
+- **What was tried**: leaf obligation extracted and machine-probed this dispatch (`lean_goal`):
+  hypotheses `z0 < w`, `xType z0`, witness `ws 0 ∈ (z0, w)` of type χ; goal
+  `∃ u, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ`. `lean_multi_attempt` (3 candidate
+  discharges) all fail exactly at `x < ws 0`; `lean_state_search` returns nothing relevant
+  (the goal is semantically false given the hypotheses).
+- **Why stuck**: `VecEA2 1` SHAPE limit — a `BracketFormula 1` has ONE interior witness slot;
+  each interior-positive `(zone, χ)` bit is an additional existential strictly inside
+  `(x,w)`/`(w,t)` whose witness must JOIN the bracket prefix (Lemma 3.4, p.5).
+  `BracketFormula.existsBounded_right` (VecEAClosure:265) — the plan-named absorption vehicle —
+  concludes `∃ m, ∃ bf' : BracketFormula m, …` (witness growth n→n+2), which nothing with the
+  carrier's fixed `BracketFormula 1` output can consume. Monadic point types cannot separate
+  points ≤ x from points in (x,w). RHS→LHS direction IS dischargeable (carrier sound but
+  under-constraining) — the biconditional fails.
+- **What is needed**: G6-SHAPE decision by the orchestrator (audit caveat C3 fence): grow the
+  bracket WITNESS count (anchors stay `{x,t}` ≤2, Lemma 3.2(2); audit Red Flag C licenses
+  witness growth), e.g. carrier codomain `VVecEA2` / `Σ n, VecEA2 n`, assembled via
+  `existsBounded_right`. Chain steps 1-3/5 (fold bridge, gate corollary, atom-layer kit,
+  off-fiber gate) are unaffected. Route: `/revise 311` (or fold into `/revise 309` plan v4).
+- **Prohibited**: no sorry, no vacuous placeholder, no carrier edit — all honored: the dispatch
+  landed ONLY the additive R2 = NO-GO record (doc-comment, zero declarations); carrier
+  `bracketEndChar_k1` intact, sorry-free, off the live path; build GREEN.
 
 - **Goal:** Close the exact blocker goal — the `k=1` instance of `BracketCarrierCorrect`
   (Bridge:1546-1552) — sorry-free via the gate corollary, and record the GO verdict.
@@ -337,17 +370,30 @@ parallel opportunity), and Phase 2 consumes Phase 1's definition by name. One ag
         Risk R1 fence applies); inconsistent zones = false by order-conflict falsity
         (`nf_depth0_pair_cycle_empty'`, NfDepth0Generalized:93). Use
         `bracketBuildLeft/Right(_correct)`. NO simp/omega/aesop chain-step shortcut (G5).
+        *(deviation: REFUTED — interval-zone case is FALSE for the carrier (LHS→RHS,
+        interior-positive bits); Risk R1 fence invoked; see BLOCKER above)*
   - [ ] Chain step 5 — close the off-fiber conjunct via the carrier's Phase-1 gate (Risk R2).
-  - [ ] Record the **R2 = GO** doc-comment mirroring the Phase 10 handoff format
+        *(deviation: deferred — steps 1-3/5 are unaffected by the refutation and remain the
+        discharge route for the revised-shape carrier; not landed this dispatch since the
+        target `↔` is unprovable at step 4)*
+  - [x] Record the **R2 = GO** doc-comment mirroring the Phase 10 handoff format
         (Bridge:1586-1618). Per **N3/C4**, LEAD with: Def 3.1's α_j/β_j are one-variable
         quantifier-free formulas (no joint multi-point atom exists in Rabinovich), so the arity-4
         residual was a Lean `nf_eval_nf` artifact; the fold restores Def-4.1 fidelity. Then the
         evidence: gate closed via `nf_quant_layer_fold_k1_gate`, no arity-4 residual, no navigated
         arity-3 characteristic; Path B un-falsified at k=1; 309's R3/R4 dispatchable via
-        `/revise 309` (plan v4).
-  - [ ] Verify: `lake build` GREEN full tree; live sorries still exactly 2 (KampPrior:351/354);
+        `/revise 309` (plan v4). *(deviation: altered — **R2 = NO-GO at `VecEA2 1`** recorded
+        instead (Rollback #3 path), NfMultiAnchorBridge.lean:1750-1823, with the N3 Def-3.1 lead
+        adapted: fold vindicated (no arity-4 residual, steps 1-2 discharge), blocker moved to the
+        interior-positive witness-count SHAPE limit; N1/N2 split citations included)*
+  - [x] Verify: `lake build` GREEN full tree; live sorries still exactly 2 (KampPrior:351/354);
         `#print axioms` (or `lean_verify`) on BOTH `bracketEndChar_k1` and
         `bracketEndChar_k1_correct` = `[propext, Classical.choice, Quot.sound]`; citation grep (R5).
+        *(deviation: altered — full build GREEN (1705 jobs); ZERO new sorries (diff is +75
+        comment-only lines); `lean_verify bracketEndChar_k1` = `[propext, Classical.choice,
+        Quot.sound]`; `bracketEndChar_k1_correct` not landed (NO-GO — no partial theorem, no
+        sorry, per DECISION-GATE contract); citation markers "p.7" and "Def 4.1 p.6 note"
+        present in the new record)*
 - **Estimated output:** ~100-160 lines (one theorem + zone case analysis + GO doc-comment).
 - **Bounded-unit test:** one theorem with a fixed 5-step chain against landed lemmas — a fixed,
   finite attempt surface (every chain step names its discharging lemma), not open-ended research.
