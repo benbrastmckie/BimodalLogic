@@ -1,5 +1,5 @@
 ---
-next_project_number: 308
+next_project_number: 309
 ---
 
 # TODO
@@ -12,10 +12,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,307 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,305 | 161,187,191,194,230,291,300,307 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 193,303 | 189,192,196,305 | completeness, automation |
-| 4 | 95,177,178,299 | 131,193,303 | completeness, formula-refactor |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,308 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,308 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 193,305 | 189,192,196,307 | completeness, automation |
+| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
+| 5 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -24,11 +25,12 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-307 [IMPLEMENTING] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
-  └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
-    └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
-      └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-      └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
+308 [NOT STARTED] — Build the depth-graded multi-anchor characteristic FORMULA builde
+  └─ 307 [BLOCKED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
+    └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+      └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+        └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+        └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -101,12 +103,45 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ## Tasks
 
-### 307. Kamp cor54 bound anchor zone converter
-- **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+### 308. Multi anchor char formula bridge
+- **Effort**: 10-15 hours
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
+- **Research**: [307_kamp_cor54_bound_anchor_zone_converter/reports/02_diag-blocker-audit.md]
+
+**Description**: Build the depth-graded multi-anchor characteristic FORMULA builder (the "multi-anchor bracket bridge"), spawned from task 307's diagnostic blocker audit (specs/307_kamp_cor54_bound_anchor_zone_converter/reports/02_diag-blocker-audit.md). Task 307's Phases 3-6 are ALL blocked on this single missing object; it is also task 305's recurring Phase-11b crux. Build it once, off the live import path, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound].
+
+DELIVERABLES:
+1. `nf_char2_formula : NormalForm sig (k+1) 2 -> Formula` satisfying `temporal_truth M atomMap t (nf_char2_formula sub_nf) <-> nf_eval_nf M (k+1) 2 (fun _=>t) sub_nf` (diagonal/constant two-anchor env) -- the arity-2 analog of `nf_succ_char_formula` (arity-1, KampPrior.lean:107-118). Consumes `nf_char3_eq_succ_iff` and `nf_characteristic_quant_split3` (both sorry-free theorems in NfZoneDepthK.lean), `renameNF_eval_diag0` (NfDepth0Generalized.lean:1646, sorry-free) for the diagonal depth-0 base, and `bracketBuildLeft`/`bracketBuildRight` (+ `_correct`, VecEATranslation.lean:50/234, sorry-free) for the w-zone navigation.
+2. The general navigated bounded-existential corollary at arbitrary depth k (`nf_zone_flatten_navigable`): `exists w, nf_eval M k 3 [w,x,t] q <-> ` a `bracketBuild` disjunction over w's zones relative to (x,t), each depth-k residual discharged by the IH, endpoints NAVIGATED, w a bracket witness (env arity never grows past the {w,x,t}=3 -> {x,t}=2 reduction; anchor set stays {x,t}; respects Rabinovich's <=2 free-variable cap, Lemma 3.2.2).
+
+Deliverable 1 unblocks task 307 Phase 3; deliverable 2 unblocks task 307 Phases 4/5/6; both together directly supply task 305's Phase-11b multi-anchor bracket bridge crux. Estimated ~400-700 lines; recursion on depth k.
+
+LITERATURE GROUNDING (Tier 1): ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md, Corollary 5.4 F_i chain (md:154-157: `F_n := alpha_n`, `F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)`) and Lemma 5.1 inner w-zone case decomposition (md:159-169). Follow the F_i chain step-by-step (no simp/omega shortcut of a chain step).
+
+HARD MODE REQUIRED (R-A): this bridge is the same object task 305's Phase-11b lineage has repeatedly failed to land across three prior refutations. Dispatch this task with `--hard` (H5 churn tracking mandatory). Encode the following as a Postmortem-forbidden 'Do NOT' list and check every candidate construction against it before implementing:
+  (a) Do NOT re-attempt a projection-based VecEA2 bridge for the x=t diagonal case -- `liftIdx(totalUnskip)` is non-injective, so the coupled quant layer does not factor through per-variable projections (proven in NfZoneDepthK.lean, Phase 10 / `renameNF_eval_diag0` context).
+  (b) Do NOT re-attempt a flat single-interval atomic bracket absorption (D1 flat-bracket) -- a depth-0 atomic `BracketFormula` is confined to the closed interval [x,t] and cannot capture exterior-w realizability (proven sorry-free by `interior_bracket_cannot_realize_exterior_sub_k1`, NfZoneDepthK1Probe.lean).
+  (c) Do NOT re-attempt an arity-1-collapse repair for the diagonal arm (`char_k1 (diagCollapse sub_nf)`) -- this reduces to the depth-(k+1) lift of `diagDup_eval_zero`, which is already documented sorry-free as a non-theorem (NfDepth0Generalized.lean:1691-1719; liftIdx r is non-injective, the `<-` direction fails). This route BINDS at the actual :391 obligation because sub_nf there is universally quantified (see task 307 report 02, section 1).
+
+SELF-DECOMPOSITION GUIDANCE (R-B): ~400-700 lines may exceed one dispatch. Phase-decompose internally, diagonal-first: build deliverable 1 (`nf_char2_formula`, the diagonal/constant case) before deliverable 2 (the general navigated bridge at arbitrary depth k) -- deliverable 1 is smaller, unblocks task 307 Phase 3 alone, and de-risks the recursive bracket-assembly machinery before extending it to the general case. Note even the diagonal-only version needs the full recursive bridge one depth down (the diagonal env collapses the seven w-zones to three, but each zone still encodes a depth-(k-1) diagonal characteristic), so do not expect deliverable 1 alone to materially shrink the total work -- it is a legitimate first phase, not a shortcut.
+
+CONSUMPTION NOTES FOR TASK 305 (R-C): the bridge built here is task 305's Phase-11b crux. On completion, hand back explicit consumption notes (in a summary under specs/308_multi_anchor_char_formula_bridge/summaries/) documenting: the exact signatures of `nf_char2_formula` and the general navigated corollary, which task-305 artifacts/plans reference the Phase-11b bridge and should be rewired to reuse these definitions verbatim rather than rebuilding, and any depth/anchor-count assumptions task 305's rewire must respect. This ensures task 305 reuses the shared object instead of re-deriving it.
+
+PRESERVED REUSABLE ASSETS (must not be rebuilt; consume, do not re-derive): `nf_char3_eq_succ_iff`, `nf_characteristic_quant_split3`, `nf_characteristic_quant_succ` (NfZoneDepthK.lean, all sorry-free theorems verified by lean_local_search); `renameNF_eval_diag0` (NfDepth0Generalized.lean:1646, sorry-free); `bracketBuildLeft`/`bracketBuildRight` (+ `_correct`, VecEATranslation.lean:50/234, sorry-free); `nf_succ_char_formula`/`_correct` (KampPrior.lean:107/121, arity-1 template); reuse the landed `diagDup`/`diagDup_eval_zero` (depth-0 duplication base, NfZoneFlattenNavigable.lean:243) verbatim.
+
+GOAL STATE: both deliverables sorry-free, off the live import path, `lake build` GREEN, axiom set unchanged (propext/Classical.choice/Quot.sound only). Document consumption notes for task 305 per R-C above. Once complete, task 307 resumes Phases 3-6 using these two objects as prerequisites.
+
+---
+
+### 307. Kamp cor54 bound anchor zone converter
+- **Effort**: 6-10 hours
+- **Status**: [BLOCKED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: Task 308
 - **Handoff**: [305_rabinovich_ea_formula_implementation/.orchestrator-handoff.json]
 - **Summary**: [305_rabinovich_ea_formula_implementation/summaries/40_phase16-gate-no-go-summary.md]
 - **Plan**:
