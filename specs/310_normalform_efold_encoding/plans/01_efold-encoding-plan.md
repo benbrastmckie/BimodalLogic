@@ -204,7 +204,7 @@ exists within this task (the file is a single ownership territory; the only para
 cross-task — 311 is gated on this task's completion). Phases 3 and 4 carry pre-declared H8 split
 seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit budget is exceeded.
 
-### Phase 1: Fold encoding core (ZoneSpec, EAtomDom, NormalFormEFold, nf_eval_efold) [NOT STARTED]
+### Phase 1: Fold encoding core (ZoneSpec, EAtomDom, NormalFormEFold, nf_eval_efold) [IN PROGRESS]
 - **Goal:** Land the fold TYPE and EVALUATOR plus the trivial depth-0 coincidence — the load-bearing
   new objects — in `Kamp/NfEFold.lean`.
 - **Artifact / done-when:** `NormalFormEFold`, `nf_eval_efold`, and `nf_eval_efold_zero_iff` compile
