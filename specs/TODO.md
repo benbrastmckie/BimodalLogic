@@ -24,7 +24,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-305 [RESEARCHED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+305 [PLANNED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
   └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
     └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
@@ -127,7 +127,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 ---
 
 ### 305. Rabinovich ea formula implementation
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
@@ -151,7 +151,9 @@ These definitions return fixed syntactic objects (not existential witnesses), en
   - [305_rabinovich_ea_formula_implementation/reports/36_phase0-regate-decision.md]
   - [305_rabinovich_ea_formula_implementation/reports/37_hard-findings-critical-audit.md]
   - [305_rabinovich_ea_formula_implementation/reports/38_prop43-unblock-design.md]
-- **Plan**: [305_rabinovich_ea_formula_implementation/plans/37_faithful-rabinovich-path.md]
+- **Plan**:
+  - [305_rabinovich_ea_formula_implementation/plans/37_faithful-rabinovich-path.md]
+  - [305_rabinovich_ea_formula_implementation/plans/38_lemma34-m1-rewire.md]
 
 **Description**: Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion
 

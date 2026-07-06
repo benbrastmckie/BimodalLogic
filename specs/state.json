@@ -9,14 +9,14 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
       "description": "Implement Rabinovich's proof of Kamp's theorem (Option A from report 20): faithful EA-formula formalization with negation closure via interval splitting. Define EAFormula type, prove closure properties (Lemma 3.2/3.4), V-EA to TL conversion (Prop 3.5), INF formula construction, Lemma 5.3/Corollary 5.4, full Lemma 5.1 (negation closure by induction on witness count n), and Propositions 4.2/4.3. Then rewire KampBypass k>0 to use the new single-structure path, eliminating all PriorComposition sorry. ~2200 lines across 8 new files. Depends on: existing CharPart/NormalForm infrastructure (sorry-free). Blocks: task 303 completion",
       "dependencies": [],
       "created": "2026-06-19T19:00:48Z",
-      "last_updated": "2026-07-06T03:06:40Z",
+      "last_updated": "2026-07-06T03:12:53Z",
       "session_id": "sess_1783306400_33dd64",
       "artifacts": [
         {
@@ -118,6 +118,11 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/38_prop43-unblock-design.md",
           "type": "report",
           "summary": "Prop 4.3 unblock design: De Morgan restructure REJECTED (relocates negation to universal-closure); live sorry KampPrior:391 needs only Lemma 3.4 m=1 (existClosureLeft + n=1 position split), NOT conjunction/negation; conjComplete (Lemma 3.2(1)) + faithful bidirectional Prop 4.2 designs for standalone uniform Prop 4.3; REVISE plan 37 for live path, SPAWN uniform Prop 4.3."
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/38_lemma34-m1-rewire.md",
+          "type": "plan",
+          "summary": "v38 Lemma 3.4 m=1 live-path rewire (supersedes blocked plan-37 Phase 4-6 tail; per report 38). 3 executable phases numbered 7/8/9 continuing plan-37 numbering: Phase 7 leftward existential closure (bracketBuildLeft + existClosureLeft + iff, Since-mirror of proven existClosure, HIGH, ~250-400 lines, off-path); Phase 8 n=1 witness-position 3-arm split (before/at/after t via existClosureLeft + existClosure + x=t subst, combined by VVecEA_m.disj) wired DIRECTLY into KampPrior:391 (MEDIUM-HIGH, ~200-350 lines, live sorry 2->1); Phase 9 verification of :394 cleared/off-path + axiom/sorryAx audit (final 2->0 or 1). NO uniform Prop 4.3, NO De Morgan restructure (report 38 REJECTED), NO arity tower. Uniform Prop 4.3 recorded as /spawn candidate, off completeness path. Every phase GREEN ~1700 jobs; axioms Lean.ofReduceBool/Lean.trustCompiler unchanged."
         }
       ],
       "previous_status": "blocked",

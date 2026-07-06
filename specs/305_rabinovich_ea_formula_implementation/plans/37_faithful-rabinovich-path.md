@@ -163,6 +163,8 @@ for Prop 4.3 (Phase 4). H6 churn cap honored (1 attempt, conclusive negative, st
 
 ### Phase 4: Revive or rebuild Prop 4.3 (structural FO induction) [BLOCKED]
 
+**SUPERSEDED-BY** (2026-07-05): the blocked Phase 4–6 tail is replaced by `plans/38_lemma34-m1-rewire.md` (Lemma 3.4 m=1 live-path rewire, per report 38); the uniform Prop 4.3 below is off the completeness path and deferred to a `/spawn` candidate.
+
 **BLOCKER** (Phase 4b/4c, dispatch sess_1782337996_6c54a7, 2026-06-24):
 - **What failed**: A non-vacuous Prop 4.3 cannot be assembled from the available
   closures. The per-model existential statement `∃ v, v.holds env ↔ eval φ`
