@@ -142,6 +142,33 @@ formula whose endpoint `TemporalPred` is the depth-`k` characteristic-type predi
 `nf_zone_exists_partition5` the same way; the point zones (`y=x`,`y=t`) reduce to the diagonal
 depth-0 base `renameNF_eval_diag0`. Do NOT retry projection `VecEA2`.
 
+## Phase 11b D1 — flattening probe VERDICT: NO-GO (report 40 §3.2, session sess_1783315428_d370a2)
+
+The "Precise continuation" above (the multi-anchor bracket bridge) was audited in
+`reports/40_phase11b-divergence-audit.md` and superseded by the corrected D1 flattening probe
+`nf_zone_mid_flatten_k1`. That probe was executed in the sibling module `NfZoneDepthK1Probe.lean`
+and the make-or-break claim — *"the coupled quant witness `w` absorbs as a second bracket witness
+on the fixed `(x, t)` interval with a single-point (depth-0 atomic) type"* — is **refuted,
+sorry-free**:
+
+* At `k = 1` the innermost `sub : NormalForm sig 0 4` fixes every pairwise order atom of
+  `[w, y, x, t]`, including `(0, 2) = (w < x)`. So the coupled realizability layer
+  (`nf_characteristic_quant_split3`) genuinely contains **exterior** zones `w < x` and `t < w`,
+  and the mid-zone LHS's quant biconditional constrains realizability there.
+* A `BracketFormula.holds M atomMap x t bf` with the mandated depth-0 **atomic** types is confined
+  to the closed interval `[x, t]`: witnesses are strictly interior (`IntervalPattern.holds`), and
+  atomic `eval_at` is a local valuation (`temporal_truth` on `.atom`/`.box`, no navigation). It
+  cannot testify to nor rule out exterior-`w` realizability.
+* `NfZoneDepthK1Probe.interior_bracket_cannot_realize_exterior_sub_k1` mechanizes the contradiction:
+  no interior `w ∈ (x, t)` realizes an exterior-demanding `sub`.
+
+**Consequence.** Do NOT build the flat `(x, t)`-bracket bridge — it drops exterior-`w` content the
+mid-zone LHS pins down. **STOP and `/spawn` the Uniform-Prop-4.3 negation-closure route
+(plan v39:181; `Prop43.lean`, `EAVecNegationClosure.lean`).** The faithful Rabinovich construction
+needs past-of-`x` / future-of-`t` temporal navigation (nested `Until`/`Since`, Cor 5.4 `F_i`
+chain) — exactly the endpoint machinery the flat reframing tried to avoid; it is not a flat
+`BracketFormula.holds … x t` disjunction.
+
 ## References
 - Rabinovich 2014 §5 (interval split), Cor 5.4 (`F_i` chain)
 - `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)
