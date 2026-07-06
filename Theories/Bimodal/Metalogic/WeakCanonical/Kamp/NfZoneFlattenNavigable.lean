@@ -353,4 +353,55 @@ theorem A_past_correct {sig : MonadicSignature} {k : Nat}
   rw [navigated_bracket_reaches_exterior_past]
   exact exists_congr fun x => and_congr_right fun hx => h_past x hx
 
+/-! ## Phase 6: A_future arm (`t < x`) — outer `bracketBuildRight` (Until) navigation
+
+The exact **dual** of Phase 5. The **future** disjunct of the Phase-2 trichotomy
+`nf_zone_exists_trichotomy_k1` is `∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`:
+the bound anchor `x` lies in the **future exterior** of the fixed origin `t`. It is realized by an
+OUTER **navigated** `bracketBuildRight` (Until) chain walking from `t` forward to the bound witness
+`x`, with a trivial (`top`) segment — the `navigated_bracket_reaches_exterior_future` pillar (Since-
+mirror of the past pillar; sorry-free, on top of the preserved asset `bracketBuildRight_correct`).
+`x` is laid as a bracket witness (never a named free anchor), so `A_future` = `bracketBuildRight`
+applied to a single endpoint `TemporalPred` `futureEnd`.
+
+`futureEnd` is the OUTER endpoint hook: the depth-`(k+1)` arity-2 characteristic of `sub_nf` at the
+navigated witness `x`, coupled to the fixed origin `t` (env `[x, t]`), checked by `.eval_at` at `x`;
+its correctness `h_fut` is the recursion IH, and (exactly as in Phase 5) the Phase-4 brick
+`nf_zone_flatten_navigable_brick` is consumed inside `futureEnd`/`h_fut` (the quant layer of the
+arity-2 char at `[x,t]` flattens via the brick), wired at Phase 7. The A_future ASSEMBLY stays
+hook-parametric over `futureEnd`/`h_fut`.
+
+### Route audit — identical to Phase 5 (dual)
+Two-endpoint architectural fact respected (`x` couples to endpoint `t` only; deeper structure absorbed
+as bracket witnesses in `futureEnd`); endpoint NAVIGATED (route (b), not depth-0 atomic); no arity-1
+collapse / no projection `VecEA2` (route (c)/(a)). Placed cycle-safe in this KampPrior-independent
+file alongside `A_past`. -/
+
+/-- **A_future arm** (task 307 Phase 6): the outer `bracketBuildRight` (Until) navigation from the
+fixed origin `t` forward to the bound witness `x` in the future exterior, over a single endpoint hook
+`futureEnd` (the depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). Dual of `A_past`. -/
+noncomputable def A_future (futureEnd : TemporalPred) : Formula :=
+  bracketBuildRight (BracketFormula.trivial TemporalPred.top) futureEnd
+
+/-- **A_future arm correctness** (task 307 Phase 6). Dual of `A_past_correct`: under the endpoint-hook
+correctness `h_fut` (the recursion IH: the navigated endpoint `futureEnd.eval_at` at a future witness
+`t < x` characterizes the depth-`(k+1)` arity-2 evaluation of `sub_nf` on `[x, t]`), `A_future` holds
+at `t` iff the future disjunct `∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` of
+`nf_zone_exists_trichotomy_k1` holds. A direct application of the future-reach pillar
+`navigated_bracket_reaches_exterior_future` (built on the preserved asset `bracketBuildRight_correct`),
+never rebuilding the navigation mechanism. -/
+theorem A_future_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier)
+    (futureEnd : TemporalPred)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_fut : ∀ x : M.carrier, t < x →
+      (futureEnd.eval_at M atomMap x ↔
+        nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)) :
+    temporal_truth M atomMap t (A_future futureEnd) ↔
+      ∃ x : M.carrier, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  simp only [A_future]
+  rw [navigated_bracket_reaches_exterior_future]
+  exact exists_congr fun x => and_congr_right fun hx => h_fut x hx
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

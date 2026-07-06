@@ -401,13 +401,30 @@ neither `NfMultiAnchorBridge` nor `KampPrior` — so they live in the **KampPrio
 - **Estimated output:** ~150-250 lines. **Done when:** A_past arm iff proven sorry-free, build green.
 - **Depends on:** 2, 4
 
-### Phase 6: A_future arm (t < x) via bracketBuildRight [NOT STARTED]
+### Phase 6: A_future arm (t < x) via bracketBuildRight [COMPLETED]
+
+**COMPLETED** (2026-07-06, session sess_1783353840_ba1b1d). Exact dual of Phase 5. Landed `A_future` +
+`A_future_correct` in `NfZoneFlattenNavigable.lean` (append-only, alongside A_past, cycle-safe).
+`A_future futureEnd := bracketBuildRight (BracketFormula.trivial TemporalPred.top) futureEnd` — the
+OUTER Until-navigation from origin `t` forward to the bound witness `x` in the future exterior — and
+`A_future_correct` proves `temporal_truth M t (A_future futureEnd) ↔ ∃ x, t < x ∧ nf_eval_nf M (k+1) 2
+(Fin.cons x (fun _ => t)) sub_nf` (the exact future disjunct of `nf_zone_exists_trichotomy_k1`) by a
+direct application of the preserved-asset-backed pillar `navigated_bracket_reaches_exterior_future`
+(= `bracketBuildRight_correct` + trivial-segment collapse) — navigation reused, NOT rebuilt.
+Hook-parametric over `futureEnd`/`h_fut` (the recursion IH); the Phase-4 brick is consumed inside the
+deferred endpoint construction (Phase 7), identically to A_past. `lake build` GREEN (994 jobs;
+downstream `NfMultiAnchorBridge` 996 jobs); `lean_verify A_future_correct` axioms `[propext,
+Classical.choice, Quot.sound]`, 0 warnings, 0 domain axioms; live-path sorry count unchanged at 2.
+
 - **Goal:** Dual of Phase 5: `A_future` as a `bracketBuildRight` (Until) chain; prove the
-  future-disjunct iff.
+  future-disjunct iff — DONE.
 - **Tasks:**
-  - [ ] Define `A_future` via `bracketBuildRight` over the Phase-4 flattened endpoint.
-  - [ ] Prove `A_future_correct`: `temporal_truth M t A_future ↔ ∃x>t, nf_eval M (k+1) 2 [x,t] sub_nf`
-        using `bracketBuildRight_correct` + `nf_zone_flatten_navigable` + `exist_tl_fn_k_correct`.
+  - [x] Define `A_future` via `bracketBuildRight` over the endpoint hook. *(deviation: altered —
+        same as Phase 5: endpoint is the parametric hook `futureEnd`, the Phase-4 brick consumed one
+        level in (Phase 7); assembly stays hook-parametric.)*
+  - [x] Prove `A_future_correct` via `navigated_bracket_reaches_exterior_future`. *(deviation: altered
+        — residual carried by the endpoint hook `h_fut` (IH), same rationale as Phase 5.)*
+  - Placement deviation: landed in `NfZoneFlattenNavigable.lean` (cycle-safe), alongside A_past.
 - **Verification:** `lake build` GREEN; sorry-free; axioms 2; live-path sorry still 2.
 - **Estimated output:** ~150-250 lines. **Done when:** A_future arm iff proven sorry-free, build green.
 - **Depends on:** 2, 4
