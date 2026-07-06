@@ -225,7 +225,7 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
 - **Estimated output:** ~70-110 lines.
 - **Depends on:** none.
 
-### Phase 2: Depth-0 split kit + round-trip lemmas (the losslessness/bijection data) [NOT STARTED]
+### Phase 2: Depth-0 split kit + round-trip lemmas (the losslessness/bijection data) [IN PROGRESS]
 - **Goal:** Land the four split-kit definitions and the four round-trip lemmas that make the depth-0
   factorization a proven BIJECTION — the G2 losslessness defense that distinguishes the fold from
   the refuted lossy projections.

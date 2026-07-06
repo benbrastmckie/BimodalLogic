@@ -133,4 +133,133 @@ theorem nf_eval_efold_zero_iff {sig : MonadicSignature}
   simp only [skipFin, dif_neg h]
   rfl
 
+/-! ## Phase 2: Depth-0 split kit + round-trip lemmas (Def 3.1 three channels, PDF p.4)
+
+For `sub : NormalForm sig 0 (n+1)` with the fresh variable at index `0` (matching
+`Fin.cons x env`), the atoms of `AtomKind sig (n+1)` partition into exactly three
+Rabinovich channels (Def 3.1, PDF p.4): the **ordering** channel of the fresh
+variable against each env point (`nf0_zoneSpec`), the **monadic point type** of the
+fresh variable (`nf0_projFresh`), and the **env restriction** dropping the fresh
+variable (`nf0_dropFresh`). `nf0_assemble` reassembles the three channels, and the
+four round-trip lemmas prove this is a *bijection of characterizations* — the G2
+losslessness defence that distinguishes the fold from the refuted lossy depth-k
+projections (deviation D7: these projections are depth-0 ONLY). -/
+
+/-- Ordering channel (Def 3.1, PDF p.4): the order atoms coupling the fresh variable
+    (index `0`) to each env point `i` (index `i.succ`). `(zs i).1` records `fresh <
+    env i` (atom `.order 0 i.succ`), `(zs i).2` records `env i < fresh` (atom
+    `.order i.succ 0`). This is the ONLY channel through which the quantified witness
+    meets the fixed environment points. -/
+def nf0_zoneSpec {sig : MonadicSignature} {n : Nat}
+    (sub : NormalForm sig 0 (n + 1)) : ZoneSpec n :=
+  fun i => (sub (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+            sub (.order i.succ 0 (Fin.succ_ne_zero i)))
+
+/-- Monadic point-type channel (Def 3.1, PDF p.4): the predicate atoms of the fresh
+    variable, read off as a `NormalForm sig 0 1`. `AtomKind sig 1` has no order atoms
+    (`i ≠ j` is uninhabited at arity 1, cf. `nf_y_proj` VecEADecomp:33), so the order
+    case is discharged by `absurd`. -/
+def nf0_projFresh {sig : MonadicSignature} {n : Nat}
+    (sub : NormalForm sig 0 (n + 1)) : NormalForm sig 0 1 :=
+  fun a => match a with
+  | .pred p _ => sub (.pred p 0)
+  | .order i j h => absurd (Subsingleton.elim i j) h
+
+/-- Env-restriction channel (Def 3.1, PDF p.4): drop the fresh variable at position
+    `0`. REUSES `mergeNF` at position `0` (NfDepth0Generalized:169); `skipFin ⟨0⟩`
+    maps `Fin n` to indices `1..n` (see `skipFin_zero_succ`). -/
+noncomputable def nf0_dropFresh {sig : MonadicSignature} {n : Nat}
+    (sub : NormalForm sig 0 (n + 1)) : NormalForm sig 0 n :=
+  mergeNF sub ⟨0, Nat.succ_pos n⟩
+
+/-- Reassemble a full `(n+1)`-ary depth-0 NF from the three Def-3.1 channels (PDF
+    p.4). Predicate atoms: index `0` reads the monadic type `χ`, index `i.succ` reads
+    the env restriction `r`. Order atoms: `(0, j.succ) ↦ (zs j).1`, `(i.succ, 0) ↦
+    (zs i).2`, `(i.succ, j.succ) ↦ r`'s order atom; `(0,0)` is impossible by the
+    atom's own `i ≠ j`. Pure `Fin.cases` bookkeeping, no semantics. -/
+def nf0_assemble {sig : MonadicSignature} {n : Nat}
+    (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
+    NormalForm sig 0 (n + 1) :=
+  fun a => match a with
+  | .pred p i => Fin.cases (χ (.pred p 0)) (fun i' => r (.pred p i')) i
+  | .order i j h =>
+      Fin.cases (motive := fun i => i ≠ j → Bool)
+        (fun h0 => Fin.cases (motive := fun j => (0 : Fin (n + 1)) ≠ j → Bool)
+          (fun h00 => absurd rfl h00)
+          (fun j' _ => (zs j').1) j h0)
+        (fun i' hs => Fin.cases (motive := fun j => (i'.succ) ≠ j → Bool)
+          (fun _ => (zs i').2)
+          (fun j' hss => r (.order i' j' (fun he => hss (congrArg Fin.succ he)))) j hs)
+        i h
+
+/-- Round-trip 1 (`nf0_zoneSpec`): reassembling then re-reading the ordering channel
+    recovers `zs`. Def 3.1 ordering channel bijectivity (PDF p.4). -/
+theorem nf0_zoneSpec_assemble {sig : MonadicSignature} {n : Nat}
+    (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
+    nf0_zoneSpec (nf0_assemble zs χ r) = zs := by
+  funext i
+  simp only [nf0_zoneSpec, nf0_assemble, Fin.cases_zero, Fin.cases_succ]
+
+/-- Round-trip 2 (`nf0_projFresh`): reassembling then re-reading the monadic
+    point-type channel recovers `χ`. Def 3.1 point-type channel bijectivity (PDF
+    p.4). -/
+theorem nf0_projFresh_assemble {sig : MonadicSignature} {n : Nat}
+    (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
+    nf0_projFresh (nf0_assemble zs χ r) = χ := by
+  funext a
+  match a with
+  | .pred p i =>
+    have hi : i = 0 := Subsingleton.elim i 0
+    subst hi
+    simp only [nf0_projFresh, nf0_assemble, Fin.cases_zero]
+  | .order i j h => exact absurd (Subsingleton.elim i j) h
+
+/-- Round-trip 3 (`nf0_dropFresh`): reassembling then re-reading the env-restriction
+    channel recovers `r`. Def 3.1 env-restriction channel bijectivity (PDF p.4). -/
+theorem nf0_dropFresh_assemble {sig : MonadicSignature} {n : Nat}
+    (zs : ZoneSpec n) (χ : NormalForm sig 0 1) (r : NormalForm sig 0 n) :
+    nf0_dropFresh (nf0_assemble zs χ r) = r := by
+  funext a
+  match a with
+  | .pred p i =>
+    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    simp only [nf0_assemble, Fin.cases_succ]
+  | .order i j h =>
+    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    simp only [nf0_assemble, Fin.cases_succ]
+
+/-- Round-trip 4 (`nf0_split_assemble`): splitting `sub` into its three Def-3.1
+    channels and reassembling recovers `sub` exactly. With the three projection
+    round-trips this makes the depth-0 factorization a BIJECTION, not a projection —
+    the G2 losslessness defence (Def 3.1, PDF p.4; deviation D7 rebuttal). -/
+theorem nf0_split_assemble {sig : MonadicSignature} {n : Nat}
+    (sub : NormalForm sig 0 (n + 1)) :
+    nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub) = sub := by
+  funext a
+  match a with
+  | .pred p i =>
+    refine Fin.cases ?_ ?_ i
+    · simp only [nf0_assemble, nf0_projFresh, Fin.cases_zero]
+    · intro i'
+      simp only [nf0_assemble, nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
+  | .order i j h =>
+    refine Fin.cases (motive := fun i => (h : i ≠ j) →
+        nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub)
+          (.order i j h) = sub (.order i j h)) ?_ ?_ i h
+    · intro h0
+      refine Fin.cases (motive := fun j => (h : (0 : Fin (n + 1)) ≠ j) →
+          nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub)
+            (.order 0 j h) = sub (.order 0 j h)) ?_ ?_ j h0
+      · intro h00; exact absurd rfl h00
+      · intro j' hj
+        simp only [nf0_assemble, nf0_zoneSpec, Fin.cases_zero, Fin.cases_succ]
+    · intro i' hi
+      refine Fin.cases (motive := fun j => (h : i'.succ ≠ j) →
+          nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) (nf0_dropFresh sub)
+            (.order i'.succ j h) = sub (.order i'.succ j h)) ?_ ?_ j hi
+      · intro h0
+        simp only [nf0_assemble, nf0_zoneSpec, Fin.cases_zero, Fin.cases_succ]
+      · intro j' hj
+        simp only [nf0_assemble, nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
