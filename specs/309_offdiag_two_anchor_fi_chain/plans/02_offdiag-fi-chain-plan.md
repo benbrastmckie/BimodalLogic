@@ -280,7 +280,13 @@ cycle-safe: only `PriorExpressiveness` + Boneyard import KampPrior). Full-tree `
 sorries UNCHANGED at 2 (`:351`/`:354` after the +1 import-line shift). This is the ONLY new import
 edge permitted; it is done. History only — do not re-add or move it.
 
-### Phase 6: Depth-0 navigated arity-3 endpoint base + interface [IN PROGRESS]
+### Phase 6: Depth-0 navigated arity-3 endpoint base + interface [COMPLETED]
+
+*(landed as documented §4.3 strategic-sorry skeleton — the §4.3 base-case risk BINDS: a closed
+navigated-`w` `TemporalPred` cannot reference the arbitrary carrier anchors `a, b`; anchor pinning
+needs Phase-7's non-trivial segment. `endChar0` + `EndCharCarrier` interface + sorry-free
+`endChar0_wlocus_correct` landed; full `endChar0_correct` carries ONE flagged strategic sorry
+[NfMultiAnchorBridge.lean:1066], follow_up_task = discharge depth-0 navigated base after Phase 7.)*
 
 - **Goal**: Resolve report 02 §4.3. Build (or adapt from `nf_nvar_exist_depth0_tl_fn`) the closed
   depth-0 **navigated** characteristic
