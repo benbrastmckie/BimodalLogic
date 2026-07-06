@@ -1,5 +1,5 @@
 ---
-next_project_number: 310
+next_project_number: 312
 ---
 
 # TODO
@@ -12,11 +12,13 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,309 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 193,305 | 189,192,196,307 | completeness, automation |
-| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
-| 5 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,310 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,311 | 161,187,191,194,230,291,300,310 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,311 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -104,18 +106,100 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+310 [NOT STARTED] — Define a new fixed-arity monadic E[Sigma]-fold evaluation for Nor
+  └─ 311 [NOT STARTED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
+
+### 311. Close k1 bracket gate efold
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 310
+
+**Description**: Using the fixed-arity monadic E[Sigma]-fold encoding delivered by the prerequisite task (Define NormalForm E[Sigma]-fold encoding), redo task 309's Phase 10 (R2) k=1 decision-gate probe UNDER THE NEW ENCODING and close it GO. This is the encoding-level task's acceptance probe (task 309 plan v3 Phase 10 NO-GO handoff, commit 8fd4340b1): the exact goal that failed under the OLD nf_eval_nf-only encoding must close under the new fold.
+
+BLOCKER GOAL SHAPE THIS TASK MUST CLOSE (task 309, NfMultiAnchorBridge.lean:1546-1552, `BracketCarrierCorrect` at k=1):
+  (carrier qnf).holds M atomMap x t <-> exists w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+for `carrier : BracketEndCharCarrier sig 1 := NormalForm sig 1 3 -> VecEA2 1` (NfMultiAnchorBridge.lean:1536), where under the OLD encoding the residual after atom-layer discharge was the irreducible arity-4 goal
+  forall sub_nf : NormalForm sig 0 4, (exists x_1, nf_eval_nf M 0 4 (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ => t))) sub_nf) <-> qnf.2 sub_nf = true
+(env [x_1,w,x,t], arity 4, coupling bracket witness w to BOTH fixed endpoints x,t). This task must rebuild the quant-layer discharge of `qnf.2` using the prerequisite task's fold encoding (folding the depth-0 quant layer into a monadic E[Sigma]-atom evaluated at [w,x,t], not at an arity-4 env) so the residual never arises. Use the prerequisite task's documented fold definition name(s) and bridge lemma signature(s) (see its completion summary) -- do not redefine the fold independently.
+
+RABINOVICH GROUNDING (report 03, reports/03_rabinovich-faithful-path-research.md): Def 4.1 (PDF p.5, E[Sigma] monadic-atom fold), Lemma 3.2(2) (PDF p.4, <=2 free variables as a standing invariant of the carrier TYPE), Prop 3.5 (PDF p.5, exists x_i -> Until/Since bracket witness at FIXED endpoints z_0,z_1, never an interior witness).
+
+FALSIFIED ROUTES (do not resurrect): endChar carrier (NfMultiAnchorBridge.lean:1029, arity-1 navigated point characteristic, provably FALSE in free-anchor form per :1058-1069); VecEA2 bracket carrier at the OLD nf_eval_nf encoding (NfMultiAnchorBridge.lean:1586-1618, this task's direct predecessor blocker) -- NOTE: G6's carrier SHAPE (BracketEndCharCarrier / VecEA2 1 / fixed endpoints {x,t} / w as bracket witness) stays CORRECT after the prerequisite task's re-encoding lands; do not change the carrier shape, only the quant-layer discharge mechanism underneath it.
+
+GUARDS (carry verbatim, from plans/03_offdiag-fi-chain-plan.md Postmortem Constraints):
+- G1 -- No arity-1 collapse of the off-diagonal. (Refuted: report 02 SS1; NfDepth0Generalized:1691-1719.)
+- G2 -- No projection-based VecEA2 / third-free-anchor tower. (Refuted: specs/305 report 40; R2.)
+- G3 -- No trivial-top segment on the off-diagonal arms. A closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment (a real interval type, not top/trivial).
+- G4 -- w stays a bracket witness. Env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap.
+- G5 -- Follow Cor 5.4 / Prop 3.5 F_i chains step-by-step; no simp/omega/aesop shortcut of a chain step (literature-fidelity policy). Cite Rabinovich PDF p.4-5 at every chain step.
+- G6 -- The recursion carrier MUST be the two-anchor bracket characteristic with FIXED endpoints z_0,z_1 (Prop 3.5, PDF p.5): NormalForm sig k 3 -> VecEA2 1 (two endpoint TemporalPreds + one interval TemporalPred), {x,t} FIXED, w a bracket WITNESS. It MUST NOT be an arity-1 navigated point characteristic nor an interior-existential-witness evaluation. CRITICAL DISTINCTION from G2: G2 bars a THIRD free anchor; G6's VecEA2 is a fixed-endpoint bracket, not a projection tower -- anchors stay {x,t} (2, fixed).
+- Corrected Anchor-Cap Statement: the hook-discharge path MUST keep the anchor set at {x,t} (<=2) by the bracket-witness-collapse mechanism, NOT by nf_char3_deeper_split (NfMultiAnchorBridge.lean:625-642, which grows arity 3->4 and anchors {x,t}->{y,x,t} -- forbidden tower).
+
+CONSUME, DO NOT REBUILD (all sorry-free, task 309 assets, PLUS the prerequisite task's new fold definition/bridge lemma(s)): nf_3var_bracket_xyt/_correct (VecEADecomp.lean:233/244); char_k1/_correct (KampPrior.lean:307/310); bracketBuildLeft/_correct (VecEATranslation.lean:273/503) and bracketBuildRight/_correct (VecEATranslation.lean:50/234); BracketEndCharCarrier / BracketCarrierCorrect / bracketEndChar_k0 / bracketEndChar_k0_correct (NfMultiAnchorBridge.lean:1536/1546/1557/1571, task 309 Phase 9); nf_zone_flatten_navigable(_brick)/_correct (NfMultiAnchorBridge.lean:689/709); A_diag/_correct (NfMultiAnchorBridge.lean:763/808); nf_zone_exists_trichotomy_k1 (NfZoneFlattenNavigable.lean:188); Phases 1-5 assets (A_past/A_future + _correct, NfZoneFlattenNavigable.lean:335/386; nf_char2_atom_offdiag_{origin,endpoint,correct}, NfMultiAnchorBridge.lean:364/375/391; nf_char3_endpoint_tl/_correct, NfMultiAnchorBridge.lean:891/907; nf_char2_past_formula/_correct, NfMultiAnchorBridge.lean:992/1015; nf_char2_future_formula/_correct, NfMultiAnchorBridge.lean:1185).
+
+GOAL STATE: the k=1 BracketCarrierCorrect instance (NfMultiAnchorBridge.lean:1546-1552 restricted to k=1) proved sorry-free using the new fold encoding, off the live path until wired; lake build GREEN; axioms exactly [propext, Classical.choice, Quot.sound]; explicit GO verdict recorded (mirroring the Phase 10 handoff format: 'R2 = GO', with evidence that the fold closed via the prerequisite task's lemma with no arity-4 residual and no navigated arity-3 characteristic) so task 309 can resume via /revise 309 (plan v4) then /implement 309 with the fold-backed carrier. Estimated ~150-300 lines (hard-mode; H8 sizing).
+
+AFTER COMPLETION: once both spawned tasks land, task 309 remains [BLOCKED] until /revise 309 folds the new encoding + GO verdict into a plan v4; live sorries stay at 2 (:354 remains task 305 scope) until 309's own future R3/R4-equivalent phases close :351.
+
+---
+
+### 310. Normalform efold encoding
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+
+**Description**: Define a new fixed-arity monadic E[Sigma]-fold evaluation for NormalForm depth-recursion (Rabinovich 2014 Def 4.1, PDF p.5), as a parallel/alternative encoding alongside `nf_eval_nf` (Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean:198-207), which currently grows environment arity n -> n+1 at every depth descent:
+
+  nf_eval_nf (k+1) n env <atom_assignment, quant_assignment> :=
+    (atom layer) AND
+    (forall sub_nf : NormalForm sig k (n+1), (exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf) <-> quant_assignment sub_nf)
+
+BLOCKER THIS TASK RESOLVES (task 309, R2 NO-GO, commit 8fd4340b1, session sess_1783359214_93fd70): at k=1, arity 3 ([w,x,t]), the quant layer of `nf_eval_nf M 1 3 [w,x,t] qnf` unfolds to
+  forall sub_nf : NormalForm sig 0 4, (exists x_1, nf_eval_nf M 0 4 [x_1,w,x,t] sub_nf) <-> qnf.2 sub_nf = true
+-- an irreducible arity-4 residual coupling the bracket witness w to BOTH fixed endpoints x,t (plus a fresh existential x_1). No monadic VecEA2 component (each reading a single point) can supply it. This is the SAME wall hit independently by two routes: task-309 plan-v2 Phase 8 (endChar arity-4->3 re-bounding) and plan-v3 R2 (VecEA2 bracket carrier, NfMultiAnchorBridge.lean:1586-1618).
+
+RABINOVICH GROUNDING (report 03, specs/309_offdiag_two_anchor_fi_chain/reports/03_rabinovich-faithful-path-research.md, full-PDF read of ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf):
+- Def 3.1 (PDF p.4): alpha_j/beta_j endpoint/interval types are quantifier-free, ONE-variable.
+- Lemma 3.2(2) (PDF p.4): every existential-universal formula is equivalent to a conjunction of such formulas with AT MOST TWO free variables -- a standing invariant, not a hand-checked guard.
+- Prop 3.5 (PDF p.5): exists x_i collapses into an Until/Since BRACKET WITNESS; the two anchors z_0,z_1 are FIXED bracket endpoints, never an interior existential witness.
+- Def 4.1 (PDF p.5): the E[Sigma] expansion -- 'the set of unary predicate names Sigma union {A | A is a TL(Until,Since)-formula over Sigma}' -- folds each ALREADY-PROCESSED quantifier depth into a MONADIC (arity-1) atom before the next level is decomposed. Rabinovich never grows arity with depth; depth lives in Until/Since NESTING over quantifier-free atoms, not in sub-evaluation arity.
+
+FALSIFIED ROUTES (do not resurrect; both hit the identical residual under the OLD nf_eval_nf encoding):
+- endChar carrier (plan-v2 Phase 8): `EndCharCarrier := NormalForm sig k 3 -> TemporalPred` (NfMultiAnchorBridge.lean:1029) -- arity-1 navigated point characteristic; provably FALSE in free-anchor form (endChar0_correct deviation note, NfMultiAnchorBridge.lean:1058-1069): a closed navigated-w TemporalPred cannot read anchor positions.
+- VecEA2 bracket carrier at the OLD encoding (plan-v3 R2, this task's direct blocker): `BracketEndCharCarrier := NormalForm sig k 3 -> VecEA2 1` (NfMultiAnchorBridge.lean:1536), `BracketCarrierCorrect` (NfMultiAnchorBridge.lean:1546-1552) -- G6's carrier SHAPE (two-anchor bracket, fixed endpoints, w as bracket witness) stays CORRECT after this task's re-encoding; only the underlying nf_eval_nf recursion it must bridge to needs the E[Sigma]-fold. Do not conclude G6 itself was wrong; do not change the carrier shape.
+
+GUARDS (carry verbatim into every dispatch, from plans/03_offdiag-fi-chain-plan.md Postmortem Constraints):
+- G1 -- No arity-1 collapse of the off-diagonal. (Refuted: report 02 SS1; NfDepth0Generalized:1691-1719.)
+- G2 -- No projection-based VecEA2 / third-free-anchor tower. (Refuted: specs/305 report 40; R2.)
+- G3 -- No trivial-top segment on the off-diagonal arms. A closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment (a real interval type, not top/trivial).
+- G4 -- w stays a bracket witness. Env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap.
+- G5 -- Follow Cor 5.4 / Prop 3.5 F_i chains step-by-step; no simp/omega/aesop shortcut of a chain step (literature-fidelity policy). Cite Rabinovich PDF p.4-5 at every chain step.
+- G6 -- The recursion carrier MUST be the two-anchor bracket characteristic with FIXED endpoints z_0,z_1 (Prop 3.5, PDF p.5): NormalForm sig k 3 -> VecEA2 1 (two endpoint TemporalPreds + one interval TemporalPred), {x,t} FIXED, w a bracket WITNESS. It MUST NOT be an arity-1 navigated point characteristic nor an interior-existential-witness evaluation. CRITICAL DISTINCTION from G2: G2 bars a THIRD free anchor; G6's VecEA2 is a fixed-endpoint bracket, not a projection tower -- anchors stay {x,t} (2, fixed).
+- Corrected Anchor-Cap Statement: the hook-discharge path MUST keep the anchor set at {x,t} (<=2) by the bracket-witness-collapse mechanism, NOT by nf_char3_deeper_split (NfMultiAnchorBridge.lean:625-642, which grows arity 3->4 and anchors {x,t}->{y,x,t} -- forbidden tower).
+
+CONSUME, DO NOT REBUILD (all sorry-free, task 309 assets): nf_3var_bracket_xyt/_correct (VecEADecomp.lean:233/244, the depth-0 base collapse); char_k1/_correct (KampPrior.lean:307/310, the depth-k arity-1 E[Sigma]-atom); bracketBuildLeft/_correct (VecEATranslation.lean:273/503) and bracketBuildRight/_correct (VecEATranslation.lean:50/234); BracketEndCharCarrier / BracketCarrierCorrect / bracketEndChar_k0 / bracketEndChar_k0_correct (NfMultiAnchorBridge.lean:1536/1546/1557/1571, task 309 Phase 9 -- the carrier SHAPE to preserve, not rebuild); nf_zone_flatten_navigable(_brick)/_correct (NfMultiAnchorBridge.lean:689/709); A_diag/_correct (NfMultiAnchorBridge.lean:763/808); nf_zone_exists_trichotomy_k1 (NfZoneFlattenNavigable.lean:188); Phases 1-5 assets (A_past/A_future segment-carrying + _correct, NfZoneFlattenNavigable.lean:335/386; nf_char2_atom_offdiag_{origin,endpoint,correct}, NfMultiAnchorBridge.lean:364/375/391; nf_char3_endpoint_tl/_correct, NfMultiAnchorBridge.lean:891/907; nf_char2_past_formula/_correct, NfMultiAnchorBridge.lean:992/1015; nf_char2_future_formula/_correct, NfMultiAnchorBridge.lean:1185).
+
+SCOPE OF THIS TASK (deliberately narrow -- NOT a project-wide re-encoding of NormalForm.lean; report 03 SS3 'Adjustment to the NormalForm encoding' explicitly rejects a project-scale rewrite): define a NEW fixed-arity monadic-fold evaluation function (suggested name `nf_eval_efold` or similar -- implementer's choice, document the name in the summary) ALONGSIDE `nf_eval_nf`, whose quant-layer clause folds the processed depth into a monadic E[Sigma]-atom (a TemporalPred/char_k1-shaped object) evaluated at the SAME arity-n env, rather than recursing into an arity-(n+1) sub-evaluation. Prove the fold's depth-0 case coincides with nf_eval_nf's depth-0 atom-assignment case (the trivial base), and prove a bridge/equivalence lemma relating one step of the fold's quant-layer recursion to one step of nf_eval_nf's quant-layer recursion FOR THE ARITY-3 TWO-ANCHOR SHAPE task 309 needs (env [w,x,t] with fixed x,t) -- i.e. establish that folding nf_eval_nf's depth-(k+1) quant layer via a monadic E[Sigma]-atom (rather than growing arity to n+1) is propositionally equivalent to the existing nf_eval_nf semantics for that shape. This is the load-bearing new object; do NOT attempt to replace nf_eval_nf's global definition or migrate unrelated consumers.
+
+GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the new fold definition + bridge/equivalence lemma(s) sorry-free; axioms exactly [propext, Classical.choice, Quot.sound] on every new lemma; the new encoding sits OFF the live import path until the follow-up task consumes it to re-close the k=1 gate. Estimated ~150-280 lines (hard-mode phase sizing, H8: one agent run per phase; split into sub-phases if it overruns). Document the exact fold definition name(s) and bridge lemma signature(s) in the completion summary -- the follow-up task depends on them.
+
+---
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
+- **Dependencies**: Task 310, Task 311
 - **Research**: [307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md]
 
 **Description**: Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).
