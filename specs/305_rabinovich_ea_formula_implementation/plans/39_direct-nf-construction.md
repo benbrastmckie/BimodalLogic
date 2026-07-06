@@ -336,7 +336,25 @@ via `/orchestrate 305 --hard` with a fresh cycle budget. <<<**
 
 ---
 
-### Phase 11: Depth-k two-anchor arity-3 zone converter (incl. x=t arm) [NOT STARTED]
+### Phase 11: Depth-k two-anchor arity-3 zone converter (incl. x=t arm) [PARTIAL]
+
+**PARTIAL** (Phase 11a, session sess_1783315428_d370a2): depth-k atom/order extraction
+groundwork landed sorry-free, off-path, in new file
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean`
+(`nf_eval_atom_layer`, `nf3_order_iff`, and the six `nf3_order_{yx,yt,xy,xt,ty,tx}` facts —
+the exact `h_o_*` hypotheses `reconstruct_nf_3var` consumes, generalized to depth k). Full
+`lake build` GREEN (1700 jobs); live-path sorry baseline UNCHANGED at 2; axioms
+`[propext, Classical.choice, Quot.sound]` on every new decl; zero new top-level axioms.
+**11b crux REMAINS**: the faithful depth-k zone converter (and the x=t arm downstream of it) is
+NOT landed — the naive projection-based `VecEA2` generalization is a NON-theorem at depth k
+(the quant layer `qnf.2 : NormalForm sig (k-1) 4 → Bool` couples y,x,t through a shared 4th
+quantified variable and does not factor through per-variable projections; same structural
+failure as the Phase-10 x=t non-theorem). No strategic sorry was stated for it because any
+non-vacuous statement presupposes the joint-characteristic-type construction (an
+`∃ formula, …` is vacuous / Postmortem-forbidden). See the DIVERGENCE NOTE in
+`NfZoneDepthK.lean` for the full obstruction analysis. Resume Phase 11b next dispatch: build the
+`∃ y`-through-coupled-quant-layer converter via `bracketBuildLeft`/`bracketBuildRight` fed with
+depth-k joint characteristic types (Rabinovich §5 / Cor 5.4), then the folded-in x=t arm.
 
 *(= report 39 Phase 8b. THE CRUX. MEDIUM-LOW confidence. Likely 2 dispatches — split into 11a/11b at
 dispatch time if a single dispatch cannot land it GREEN. **Absorbs the depth-(k+1) x=t arm folded in
@@ -369,14 +387,24 @@ NON-theorem and is NOT attempted (Phase 10 diagnosis).
 in scope at `:391`).
 
 **Tasks**:
-- [ ] Read `VecEADecomp.lean:518-731` (`nf_3var_zone_*` + `_correct`) and `NfToVecEA.lean:217,259`
+- [x] Read `VecEADecomp.lean:518-731` (`nf_3var_zone_*` + `_correct`) and `NfToVecEA.lean:217,259`
   (`nf_vecEA2_past/future`) as the depth-0 templates; read `bracketBuildLeft/Right` signatures.
+  *(11a done: templates + `NormalForm`/`nf_eval_nf` structure read.)*
+- [x] Landed sorry-free depth-k **atom/order extraction** groundwork in `NfZoneDepthK.lean`:
+  `nf_eval_atom_layer` (uniform depth-k atom-layer iff), `nf3_order_iff` (general depth-k order
+  extraction on `[y,x,t]`), and the six `nf3_order_{yx,yt,xy,xt,ty,tx}` facts. *(deviation from
+  original task list: extraction layer added as explicit reusable lemmas — this is the part of
+  the depth-k converter that genuinely generalizes; consumed by every zone forward direction +
+  Phase-14 split.)*
 - [ ] Define the depth-k zone converter(s) `nf_zone_depthk_*` over `NormalForm sig k 3`, parameterized
   by the depth-k IH formula function (point/segment `TemporalPred` = `exist_tl_fn_k _` / its `¬`).
+  *(deferred to 11b — the CRUX: naive projection-based `VecEA2` is a NON-theorem at depth k, see
+  DIVERGENCE NOTE in `NfZoneDepthK.lean`; needs joint-characteristic-type construction.)*
 - [ ] Prove the zone iff against `nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _=>t))) qnf` directly,
   mirroring the depth-0 `nf_3var_zone_*_correct` proofs, feeding the depth-k IH formulas through
-  `bracketBuildLeft`/`bracketBuildRight`.
-- [ ] `lean_verify` each declaration sorry-free; off the live path.
+  `bracketBuildLeft`/`bracketBuildRight`. *(deferred to 11b.)*
+- [x] `lean_verify` each landed declaration sorry-free; off the live path. *(11a decls verified:
+  axioms `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.)*
 
 **File targets**: new file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean`
 (imports the depth-0 zone lemmas + bracket builders as templates). Off the live import path.
