@@ -340,7 +340,51 @@ headings.
 - **Guards enforced**: G2, G4, G6 (the type is the invariant).
 - **Commit**: `task 309 phase 9: two-anchor VecEA2 bracket carrier reformulation (R1)`
 
-### Phase 10: k=1 de-risking probe — DECISION GATE (R2) [NOT STARTED]
+### Phase 10: k=1 de-risking probe — DECISION GATE (R2) [BLOCKED]
+
+**R2 VERDICT: NO-GO** (session sess_1783359214_93fd70). The `k=1` fold does NOT close as a `VecEA2`
+bracket: it leaves an irreducible arity-4 residual, exactly the plan-v2 Phase-8 obstruction, now
+falsified at k=1 in one bounded dispatch. Path B halts. R3/R4 are NOT dispatched. `/spawn` an
+encoding-level task (scope below). This is a SUCCESSFUL gate outcome — the gate did its job.
+
+**BLOCKER** (Phase 10, R2 NO-GO):
+- **What was probed**: the most faithful `k=1` carrier `bracketEndChar_k1 qnf := nf_3var_bracket_xyt
+  atomMap h_surj qnf.1` (mirror the sorry-free depth-0 collapse on the atom part `qnf.1`), and its
+  `BracketCarrierCorrect`-at-`k=1` obligation
+  `(carrier qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M 1 3 [w,x,t] qnf`.
+- **Failing goal shape (captured via `lean_goal` + `lean_multi_attempt`, NfMultiAnchorBridge.lean
+  ~:1632)**: after `rw [nf_3var_bracket_xyt_correct …]` (discharges the atom layer) and
+  `refine ⟨w, h_atom, ?_⟩` (splits off the depth-1 quant conjunct), the residual is
+  ```
+  h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x fun _ ↦ t)) qnf.1   -- ATOM layer only
+  ⊢ ∀ (sub_nf : NormalForm sig 0 (3 + 1)),
+      (∃ x_1, nf_eval_nf M 0 (3 + 1) (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) sub_nf)
+        ↔ qnf.2 sub_nf = true
+  ```
+  `simp_all [nf_eval_nf]` reduces each clause to the two irreducible halves
+  `(∃ x_1, ∀ a:AtomKind sig 4, atom_eval M (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) a ↔
+  sub_nf a) ⟷ qnf.2 sub_nf`.
+- **Why stuck (root cause)**: the residual env `[x_1, w, x, t]` is **arity 4** — it couples the
+  bracket witness `w` to BOTH fixed endpoints `x, t` (plus a fresh existential `x_1`), and the atom-
+  only carrier discarded `qnf.2` (the quant assignment). A `VecEA2 1` carrier's components
+  (`endpointLeft`@x, `endpointRight`@t, interval@w) are each **monadic** `TemporalPred`s reading a
+  single point; none can represent a property coupling `w` to `x` and `t`. Discharging it would
+  require a **navigated arity-3 characteristic** (read `w` while `x, t` are navigated in) — precisely
+  what G6 bars, and precisely the arity-4 → arity-3 re-bounding obstruction that blocked plan-v2
+  Phase 8 (`nf_eval_nf M (k+1) 3` produces arity-4 subs an arity-3 carrier cannot consume). Report
+  03's OPEN RISK ("the depth-`k` lift silently re-introduces a navigated arity-3 characteristic when
+  `nf_eval_nf M k 3 [w,x,t] qnf`, `k ≥ 1`, is expanded") is CONFIRMED at `k=1`. No monadic bracket
+  carrier (not just the atom-only one) closes it, because even `w`'s own depth-1 arity-1 char is an
+  arity-2 property of `w` alone and cannot pull back `qnf.2`'s arity-4 quant coupling to `x, t`.
+- **What is needed (`/spawn` scope, report 03 §4 R2 NO-GO fallback)**: spawn a dedicated
+  **encoding-level task** — *"NormalForm E[Σ]-fold: re-encode `nf_eval_nf` so each quantifier depth
+  folds into a fixed-arity monadic E[Σ]-atom (Rabinovich Def 4.1, PDF p.5) rather than growing the
+  environment arity with depth. Only then is the depth-`k` divergence load-bearing; until it lands,
+  task 309 stays `[BLOCKED]` on the `KampPrior.lean:351` arm (live sorries stay at 2; `:354` remains
+  task 305)."* R3/R4 remain undispatched.
+- **Prohibited**: Do NOT land a `sorry`/vacuous carrier to fake a GO; do NOT resurrect the
+  endChar/seg navigated route; do NOT route through `nf_char3_deeper_split` (anchor tower). None were
+  done — the probe was removed; NfMultiAnchorBridge.lean stays sorry-free and green.
 
 **THIS PHASE IS AN EXPLICIT GO/NO-GO DECISION GATE.** A hard-mode implement agent MUST treat a failed
 probe as a STOP-AND-REPORT condition — do NOT push past it into R3/R4, do NOT attempt a workaround brick,

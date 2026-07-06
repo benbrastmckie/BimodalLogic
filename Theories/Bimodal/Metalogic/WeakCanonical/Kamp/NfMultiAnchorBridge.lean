@@ -1583,4 +1583,38 @@ theorem bracketEndChar_k0_correct {sig : MonadicSignature}
       ∃ w : M.carrier, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn :=
   nf_3var_bracket_xyt_correct atomMap h_surj ssn h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
+/-! ## Phase 10 (task 309, R2): k=1 de-risking probe — DECISION GATE → NO-GO
+
+R2 tested whether the two-anchor `VecEA2 1` bracket carrier (R1) can characterize the depth-1
+arity-3 evaluation `∃ w, nf_eval_nf M 1 3 [w,x,t] qnf` — the single experiment deciding Path B
+(report 03 §3 OPEN RISK, §4 R2). **Verdict: NO-GO** (this dispatch; commit history / handoff).
+
+`qnf : NormalForm sig 1 3 = (AtomKind sig 3 → Bool) × (NormalForm sig 0 4 → Bool)`, so
+`nf_eval_nf M 1 3 [w,x,t] qnf` (k+1 = 1) unfolds to the conjunction of
+  (atom layer)  `nf_eval_nf M 0 3 [w,x,t] qnf.1`, and
+  (quant layer) `∀ sub : NormalForm sig 0 4, (∃ x_1, nf_eval_nf M 0 4 [x_1,w,x,t] sub) ↔ qnf.2 sub`.
+
+The most faithful k=1 carrier mirrors the sorry-free depth-0 collapse `nf_3var_bracket_xyt` on the
+atom part `qnf.1`. Its correctness `↔` was probed: after `nf_3var_bracket_xyt_correct` discharges the
+atom layer and `refine ⟨w, h_atom, ?_⟩` splits the goal, the residual is the depth-1 quant layer
+
+  ⊢ ∀ (sub_nf : NormalForm sig 0 4),
+      (∃ x_1, atom_eval M (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) a ↔ sub_nf a) ↔
+        qnf.2 sub_nf = true
+
+with only the atom-layer hypothesis `h_atom : nf_eval_nf M 0 3 [w,x,t] qnf.1` in context. This is an
+irreducible **arity-4 residual**: the env `[x_1, w, x, t]` couples the bracket witness `w` to BOTH
+fixed endpoints `x, t` (plus a fresh existential `x_1`), and `qnf.2` was discarded by the atom-only
+carrier. No `VecEA2 1` monadic component (`endpointLeft`@x / `endpointRight`@t / interval@w, each
+reading a single point) can supply it; discharging it requires a NAVIGATED arity-3 characteristic
+(reading `w` while `x, t` are navigated in) — exactly what G6 bars and exactly the arity-4 → arity-3
+re-bounding obstruction that blocked plan-v2 Phase 8. `exact h_atom` / `exact h_atom sub_nf` fail with
+type/arity mismatch; `simp_all [nf_eval_nf]` leaves the two irreducible sub-goals
+`(∃ x_1 …arity-4…) ⟷ qnf.2 sub_nf`. Verified via `lean_goal` + `lean_multi_attempt` this dispatch.
+
+Per the DECISION-GATE contract, no probe carrier or `sorry` is committed (a NO-GO lands no partial
+carrier). Path B halts at `:351`; the follow-up is a spawned NormalForm E[Σ]-fold encoding task (see
+plan Phase 10 [BLOCKED] record). The R1 carrier (`BracketEndCharCarrier` / `BracketCarrierCorrect` /
+`bracketEndChar_k0` / `_correct`, above) remains sorry-free and off the live path. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
