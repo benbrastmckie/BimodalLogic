@@ -262,7 +262,7 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
 - **Estimated output:** ~100-160 lines (report §9 flags this as the riskiest phase for overrun).
 - **Depends on:** 2.
 
-### Phase 4: Bridge lemmas + k=1 gate corollary (the DONE signal) [IN PROGRESS]
+### Phase 4: Bridge lemmas + k=1 gate corollary (the DONE signal) [COMPLETED]
 - **Goal:** Deliver the general-`n` one-step engine, the k=1 whole-evaluation transport, and the
   gate corollary stated VERBATIM against the R2 NO-GO residual — task 311's entry point.
 - **Artifact / done-when:** `nf_quant_layer_fold_iff`, `efold_of_nf1`, `nf_eval_nf1_iff_efold`, and
@@ -270,15 +270,15 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
   NfMultiAnchorBridge.lean:1601-1603 (spawn-analysis §Root Cause) character-for-character; acceptance
   gate 1-4 pass. **This gate corollary proven sorry-free is the task's DONE signal.**
 - **Tasks:**
-  - [ ] `nf_quant_layer_fold_iff` (report §5.3, GENERAL `n`, full iff). Forward/backward per report
+  - [x] `nf_quant_layer_fold_iff` (report §5.3, GENERAL `n`, full iff). Forward/backward per report
         §5.3 proof shape; second-conjunct off-fiber falsity via `nf_eval_unique` (NormalForm.lean:245) + `h_r`. Cite Prop 4.3 p.6.
-  - [ ] `efold_of_nf1` (transport `NormalForm sig 1 n → NormalFormEFold sig 1 n`) (report §5.4).
-  - [ ] `nf_eval_nf1_iff_efold` (report §5.4) — atom layers coincide definitionally; quant layers via
-        `nf_quant_layer_fold_iff` with `r := qnf.1`; explicit off-fiber falsity conjunct (NOT absorbed). Cite Def 4.1 p.5, Lemma 3.4 p.5.
-  - [ ] `nf_quant_layer_fold_k1_gate` (report §5.5) — one-line instantiation
+  - [x] `efold_of_nf1` (transport `NormalForm sig 1 n → NormalFormEFold sig 1 n`) (report §5.4).
+  - [x] `nf_eval_nf1_iff_efold` (report §5.4) — atom layers coincide definitionally; quant layers via
+        `nf_quant_layer_fold_iff` with `r := qnf.1`; explicit off-fiber falsity conjunct (NOT absorbed). Cite Def 4.1 p.5, Lemma 3.4 p.5. *(atom/quant layer unfolding via `Iff.rfl`; prod reshuffle via `e.1/e.2` and `(zs, χ)`.)*
+  - [x] `nf_quant_layer_fold_k1_gate` (report §5.5) — one-line instantiation
         `nf_quant_layer_fold_iff M _ qnf.1 h_atom qnf.2` at n=3, env `[w,x,t]`; LHS = verbatim R2 residual. Cite Prop 4.3 p.6, Lemma 3.4 p.5.
-  - [ ] `#print axioms nf_quant_layer_fold_k1_gate` = `[propext, Classical.choice, Quot.sound]`.
-- **H8 split seam (pre-declared, exercise only on one-run overrun):**
+  - [x] `#print axioms nf_quant_layer_fold_k1_gate` = `[propext, Classical.choice, Quot.sound]` (verified via `lean_verify`; all three new theorems match exactly).
+- **H8 split seam (pre-declared, exercise only on one-run overrun):** *(NOT exercised — both sub-phases landed in one dispatch; 4.1 committed separately as an incremental green milestone.)*
   - **Phase 4.1** — `nf_quant_layer_fold_iff` (the load-bearing engine; only proof using `nf_eval_unique`) sorry-free.
   - **Phase 4.2** — `efold_of_nf1` + `nf_eval_nf1_iff_efold` + `nf_quant_layer_fold_k1_gate` sorry-free.
 - **Deviation carried:** D7 — this bridge is claimed ONLY at depth-0 subs (k=1); NO depth-k (k≥1)

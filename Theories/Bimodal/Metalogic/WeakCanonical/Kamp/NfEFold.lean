@@ -463,4 +463,79 @@ theorem nf_quant_layer_fold_iff {sig : MonadicSignature}
         rw [HB sub heq] at hqt
         exact Bool.noConfusion hqt
 
+/-- Transport a depth-1 `NormalForm` into the fold encoding along its own atom layer (the
+    compatible fiber over `qnf.1`, Def 4.1 PDF p.5). The atom layer is carried unchanged; the
+    quant layer reads `qnf.2` at the reassembled sub `nf0_assemble e.1 e.2 qnf.1` — i.e. the
+    unique `(n+1)`-ary sub whose env-restriction is `qnf.1`, order channel `e.1`, point type
+    `e.2`. Subs off that fiber are invisible to the fold (that is the ≤2-cap at work); their
+    falsity is recorded separately by `nf_eval_nf1_iff_efold`. -/
+noncomputable def efold_of_nf1 {sig : MonadicSignature} {n : Nat}
+    (qnf : NormalForm sig 1 n) : NormalFormEFold sig 1 n :=
+  ⟨qnf.1, fun e => qnf.2 (nf0_assemble e.1 e.2 qnf.1)⟩
+
+/-- The k=1 whole-evaluation bridge (Def 4.1 PDF p.5; Lemma 3.4 PDF p.5): `nf_eval_nf` at depth 1
+    is the fold evaluation of the transported form `efold_of_nf1 qnf`, PLUS the explicit off-fiber
+    falsity of `qnf.2`. Both directions are used by task 311.
+
+    The atom layers coincide definitionally (`qnf.1 : AtomKind sig n → Bool` IS a
+    `NormalForm sig 0 n`, and both atom conjuncts are `∀ a, atom_eval M env a ↔ · a = true`,
+    NormalForm.lean:201-204). The quant layers are bridged by `nf_quant_layer_fold_iff` with
+    `r := qnf.1` and `h_r :=` the shared atom layer.
+
+    The off-fiber clause `∀ sub, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false` CANNOT be absorbed
+    silently: `qnf.2`'s values on subs whose env-restriction contradicts `qnf.1` are unconstrained
+    by the fold (it has no slot for them — the point of the ≤2 cap), but `nf_eval_nf M 1 n env qnf`
+    FORCES them false. Making it an explicit conjunct is the honest bridge; it is decidable and
+    model-independent (§5.4). -/
+theorem nf_eval_nf1_iff_efold {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat}
+    (env : Fin n → M.carrier) (qnf : NormalForm sig 1 n) :
+    nf_eval_nf M 1 n env qnf ↔
+      (nf_eval_efold M 1 n env (efold_of_nf1 qnf) ∧
+       ∀ sub : NormalForm sig 0 (n + 1), nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) := by
+  -- Unfold both evaluations to their (shared) atom conjunct + quant conjunct (defeq).
+  have hnf : nf_eval_nf M 1 n env qnf ↔
+      (nf_eval_nf M 0 n env qnf.1 ∧
+        (∀ sub : NormalForm sig 0 (n + 1),
+          (∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) ↔
+            qnf.2 sub = true)) := Iff.rfl
+  have hef : nf_eval_efold M 1 n env (efold_of_nf1 qnf) ↔
+      (nf_eval_nf M 0 n env qnf.1 ∧
+        (∀ e : EAtomDom sig 0 n,
+          (∃ x : M.carrier, zoneHolds M env e.1 x ∧ nf_eval_nf M 0 1 (fun _ => x) e.2) ↔
+            qnf.2 (nf0_assemble e.1 e.2 qnf.1) = true)) := Iff.rfl
+  rw [hnf, hef]
+  constructor
+  · -- Forward: the atom layer supplies `h_r`; fold the quant layer via the engine.
+    rintro ⟨hA, hQ⟩
+    have hfold := (nf_quant_layer_fold_iff M env qnf.1 hA qnf.2).mp hQ
+    exact ⟨⟨hA, fun e => hfold.1 e.1 e.2⟩, hfold.2⟩
+  · -- Backward: reassemble the quant layer from the fold form + off-fiber clause.
+    rintro ⟨⟨hA, hEQ⟩, hOFF⟩
+    refine ⟨hA, ?_⟩
+    exact (nf_quant_layer_fold_iff M env qnf.1 hA qnf.2).mpr
+      ⟨fun zs χ => hEQ (zs, χ), hOFF⟩
+
+/-- **The gate corollary — task 310's DONE signal.** The exact R2 NO-GO residual
+    (NfMultiAnchorBridge.lean:1601-1603), fold-reduced: under `h_atom` (available at that proof
+    point), the arity-4 quant residual is equivalent to zone-bounded MONADIC existentials over
+    env `[w,x,t]` (Prop 4.3 innermost fold, PDF p.6; Lemma 3.4, PDF p.5) plus the off-fiber
+    falsity of `qnf.2`. No arity-4 object remains on the RHS. A one-line instantiation of
+    `nf_quant_layer_fold_iff` at `n = 3`. Task 311 discharges the RHS. -/
+theorem nf_quant_layer_fold_k1_gate {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (qnf : NormalForm sig 1 3)
+    (h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1) :
+    (∀ sub_nf : NormalForm sig 0 4,
+        (∃ x_1, nf_eval_nf M 0 4
+          (Fin.cons x_1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub_nf) ↔
+          qnf.2 sub_nf = true)
+    ↔
+    ((∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+        (∃ x_1, zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs x_1 ∧
+          nf_eval_nf M 0 1 (fun _ => x_1) χ) ↔
+          qnf.2 (nf0_assemble zs χ qnf.1) = true) ∧
+     (∀ sub_nf, nf0_dropFresh sub_nf ≠ qnf.1 → qnf.2 sub_nf = false)) :=
+  nf_quant_layer_fold_iff M _ qnf.1 h_atom qnf.2
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
