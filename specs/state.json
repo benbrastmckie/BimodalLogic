@@ -9,7 +9,7 @@
     {
       "project_number": 305,
       "project_name": "rabinovich_ea_formula_implementation",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -159,7 +159,7 @@
           }
         ]
       },
-      "blockers": "Phase 4 (Prop 4.3 correctness) BLOCKED: per-model existential framing is VACUOUS (closed by tt/ff for any phi). Non-vacuous uniform translate needs 3 pieces — (not) model-independent arity-m negation [UNFIXABLE per report 18], (and) complete arity-m conjunction [Lemma 3.2(1) iff; conj is forward-only], (all/ex) Lemma 3.4 arbitrary-position existential closure [existClosure only absorbs rightmost var]. Recommended: restructure Prop 4.3 to positive/De-Morgan NF + /research --hard on Lemma 3.2(1) + Lemma 3.4. Reusable sorry-free progress: Kamp/Prop43.lean atom/lt/tt/ff blocks. Build GREEN, baseline 2 sorries.",
+      "blockers": "Phase 10 partial (plan v39): renameNF_eval_diag0 landed sorry-free (depth-0, reusable); depth-(k+1) lift is a genuine non-theorem sharing the Phase 11 realizability crux. RE-SCOPE on resume: fold x=t arm into Phase 11 (characteristic-NF/zone machinery first). Build GREEN, live-path baseline 2 sorries (KampPrior:391,:394), axioms unchanged. Resume: /orchestrate 305 --hard (phases 11-15, plan 39).",
       "researched": "2026-06-24T21:45:00Z"
     },
     {
