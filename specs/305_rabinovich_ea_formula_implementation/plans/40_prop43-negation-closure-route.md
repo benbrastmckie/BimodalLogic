@@ -273,7 +273,21 @@ route into the Deferred `/spawn` closeout.
 
 ---
 
-### Phase 16: GO/NO-GO GATE — exterior-navigation capture at k=1 [NOT STARTED]
+### Phase 16: GO/NO-GO GATE — exterior-navigation capture at k=1 [PARTIAL]
+
+> **GATE VERDICT: NO-GO** (2026-07-06, sess_1783315428_d370a2). Landed sorry-free, off-path, in
+> `Kamp/NfZoneNavProbe.lean` (4 theorems, axioms `[propext, Classical.choice, Quot.sound]`, `lake
+> build` GREEN, live sorry baseline unchanged at 2). The gate as stated (free anchor `x`) is a
+> **non-theorem**: `no_x_independent_formula_captures_future_zone_k1` proves that for *every*
+> candidate formula `A` (not just `bracketBuildRight`), the future-zone gate iff is contradictory in
+> any non-degenerate model. Root cause — the *free-anchor identification obstruction*: the RHS
+> `∃ y, t<y ∧ nf_eval_nf M 1 3 (zoneEnv3 y x t) qnf` pins `x`'s local monadic type
+> (`future_zone_pins_x_pred`), but an `x`-independent formula at `t` has one fixed truth value
+> (`gate_forces_x_independence`) — navigation from `t`/`y` can quantify over past points but cannot
+> *name* the specific free anchor `x`. This is the future-navigable sibling of D1's interior
+> confinement and report 40 §2.1-A's arity tower; all three converge. Per the GATE DECISION below:
+> **STOP. Do not attempt Phases 17-20.** `/spawn` the residual (Deferred section). Full divergence
+> note (Rabinovich §5 verbatim) is in-file at `NfZoneNavProbe.lean`.
 
 **THE MAKE-OR-BREAK GATE.** One dispatch. Decisive. Tests the single unverified premise on which the
 whole route rests: **does temporal navigation (`bracketBuildRight`/`bracketBuildLeft` + depth-k IH
@@ -331,15 +345,19 @@ resolves it); Rabinovich §5 exterior navigation (`md:119-157`); `bracketBuildRi
 (EANegationClosure:492); D1 obstruction (`NfZoneDepthK1Probe.lean`) as the exact contrast case.
 
 **Tasks**:
-- [ ] Read `bracketBuildRight`/`bracketBuildRight_correct` (VecEATranslation:50,234), `neg_bounded_exists`
-  (EANegationClosure:492), `prior_hasAttainedINF` (PriorINF:224), and the preserved
-  `nf_characteristic_quant_split3`/`nf_char3_eq_succ_iff` (NfZoneDepthK:514,537).
-- [ ] `lean_goal` at the k=1 future-zone existential to pin exact env indices; state `A_fut_k1` as a
-  concrete `bracketBuildRight` construction (types = depth-0 IH realizability formulas + `¬`).
-- [ ] Prove `A_fut_k1_correct` sorry-free: `bracketBuildRight_correct` for the realized ∃-direction;
-  `prior_hasAttainedINF h_UZ` → `neg_bounded_exists`/`neg_interval_formula` for the exterior/not-realized
-  direction. If the coupling to `x` cannot be expressed → record NO-GO with the precise obstruction.
-- [ ] `lean_verify A_fut_k1_correct`: sorry-free, axioms `[propext, Classical.choice, Quot.sound]`.
+- [x] Read `bracketBuildRight`/`bracketBuildRight_correct` (VecEATranslation:50,234),
+  `nf_char3_eq_succ_iff`/`nf_characteristic_quant_split3` (NfZoneDepthK:514,537), D1 probe
+  (`NfZoneDepthK1Probe.lean`), Rabinovich §5 Cor 5.4, and report 40 §2.1-A.
+- [x] `nf_eval_atom_layer` at the k=1 future-zone existential to pin exact env indices *(deviation:
+  altered — used the sorry-free `nf_eval_atom_layer` atom-layer extraction rather than a fresh
+  `lean_goal` probe; it directly exposes that `zoneEnv3` index 1 = `x` and `atom_eval (.pred p 1) =
+  M.interp p x`, which is the load-bearing fact)*.
+- [x] Attempt `A_fut_k1_correct` → **refuted (NO-GO)** *(deviation: altered — instead of a sorried
+  `A_fut_k1`, proved the stronger sorry-free obstruction that NO `x`-independent `A` can satisfy the
+  gate iff. Building a doomed `A_fut_k1` with a `sorry` would violate the zero-debt / off-path
+  constraint; the obstruction lemma is the sanctioned NO-GO artifact "mirroring D1")*.
+- [x] `lean_verify` all four probe theorems: sorry-free, axioms `[propext, Classical.choice,
+  Quot.sound]`. ✓
 
 **File targets**: new off-path module `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneNavProbe.lean`.
 
