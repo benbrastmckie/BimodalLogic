@@ -106,7 +106,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-310 [RESEARCHED] — Define a new fixed-arity monadic E[Sigma]-fold evaluation for Nor
+310 [IMPLEMENTING] — Define a new fixed-arity monadic E[Sigma]-fold evaluation for Nor
   └─ 311 [NOT STARTED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
@@ -152,7 +152,7 @@ AFTER COMPLETION: once both spawned tasks land, task 309 remains [BLOCKED] until
 
 ### 310. Normalform efold encoding
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None

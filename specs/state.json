@@ -2278,7 +2278,7 @@
     {
       "project_number": 310,
       "project_name": "normalform_efold_encoding",
-      "status": "researched",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "effort": "high",
