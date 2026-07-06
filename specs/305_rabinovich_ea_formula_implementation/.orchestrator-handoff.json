@@ -3,9 +3,9 @@
   "skeleton": false,
   "task": 305,
   "phase": 11,
-  "sub_phase": "11a",
+  "sub_phase": "11b",
   "session_id": "sess_1783315428_d370a2",
-  "summary": "Phase 11a: landed the depth-k atom/order extraction groundwork for the two-anchor arity-3 zone converter, sorry-free and off the live import path, in new file NfZoneDepthK.lean. This is the portion of the depth-k zone converter that genuinely generalizes from depth 0. The 11b crux (the faithful converter + folded-in x=t arm) remains: the naive projection-based VecEA2 generalization is a NON-theorem at depth k because the quant layer couples y,x,t through a shared 4th quantified variable.",
+  "summary": "Phase 11b framing advance: superseded the refuted projection framing with the correct characteristic-type framing and landed its sorry-free foundation (7 new lemmas, off-path, baseline axioms). nf_zone_exists_iff_char pivots the target from per-variable glue to characteristic-type occurrence; nf_zone_partition5 + exists_trichotomy_split give the five Rabinovich F_i zones; nf_characteristic_quant_succ + nf_eval_quant_layer expose the coupled joint realizability set the projection route could not factor. The irreducible crux (nested outer-y/inner-w bracket assembly feeding the depth-k IH through bracketBuildLeft/Right) is now precisely isolated but not landed — it is the ~400-700 line Rabinovich Cor 5.4 F_i-chain body scoped to the next dispatch.",
   "phases_completed": 10,
   "phases_total": 15,
   "build_state": "GREEN (full lake build, 1700 jobs)",
@@ -13,14 +13,13 @@
   "live_path_sorry_current": 2,
   "axioms_status": "unchanged: [propext, Classical.choice, Quot.sound] on every new decl; zero new top-level axioms (grep '^axiom ' Theories/ = 2, baseline)",
   "landed_sorry_free": [
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_atom_layer",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_iff",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_yx",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_yt",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_xy",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_xt",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_ty",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_tx"
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_quant_layer",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_exists_iff_char",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.exists_trichotomy_split",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_partition5",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_exists_partition5",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_characteristic_atom_succ",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_characteristic_quant_succ"
   ],
   "sorry_inventory": [
     {
@@ -29,8 +28,8 @@
       "statement": "| 1 => arm of the arity-2 existential engine: exists env, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
       "strategic": false,
       "assumption": "The depth-(k+1) arity-2 existential engine exist_tl_fn_{k+1} (assembled from the depth-k zone converter + x<t/t<x/x=t arms) discharges this.",
-      "why_deferred": "Pre-existing live-path baseline sorry; Phase 14 rewires it. Not touched this dispatch (Phase 11 scope only). Blocked upstream by the Phase 11b crux.",
-      "follow_up_task": "task 305 Phase 14 (after Phase 11b + 12 + 13)"
+      "why_deferred": "Pre-existing live-path baseline sorry; Phase 14 rewires it. Not touched this dispatch (Phase 11 scope only). Blocked upstream by the Phase 11b bracket-integration crux.",
+      "follow_up_task": "task 305 Phase 14 (after Phase 11b bracket integration + 12 + 13)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
@@ -44,17 +43,17 @@
   ],
   "blockers": [
     {
-      "target": "depth-k two-anchor arity-3 zone converter (nf_zone_depthk_*) + folded-in x=t arm",
-      "phase": "11b",
-      "verbatim_goal": "For qnf : NormalForm sig k 3, express exists y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf as a nested Since/Until bracket splitting y by zone, with depth-k IH formulas (exist_tl_fn_k and its neg) as the bracket point/segment TemporalPred types.",
-      "root_cause": "At depth k+1, nf_eval_nf's quant layer qnf.2 : NormalForm sig k 4 -> Bool has semantics: forall sub, (exists w, nf_eval_nf M k 4 (Fin.cons w [y,x,t]) sub) <-> (qnf.2 sub = true). This couples y,x,t simultaneously through the shared quantified w and does NOT factor through per-variable projections. The naive projection-based VecEA2 (endpoint/witness = per-variable characteristic formulas glued by order atoms via reconstruct_nf_3var, the depth-0 template) satisfies only the forward direction; the reverse is a genuine NON-theorem (same structural failure as the Phase-10 x=t arm: liftIdx(totalUnskip) non-injectivity cannot recover non-diagonal-realizable coupled sub-forms).",
-      "why_no_strategic_sorry": "Any non-vacuous statement of the faithful converter presupposes the joint-characteristic-type construction; an existential 'exists formula, iff' is vacuous (closed by Classical.choice) and is explicitly forbidden by the plan Postmortem Constraints. The honest artifact is the sorry-free extraction layer + the DIVERGENCE NOTE in NfZoneDepthK.lean."
+      "target": "depth-k two-anchor arity-3 zone converter bracket integration (nf_zone_depthk_* : the open-zone existentials -> Since/Until brackets) + folded-in x=t arm",
+      "phase": "11b (continuation)",
+      "verbatim_goal": "Convert each open zone of nf_zone_exists_partition5 (exists y<x .. char=qnf; exists x<y<t .. char=qnf; exists y>t .. char=qnf) into a temporal formula at anchors x,t via bracketBuildLeft/bracketBuildRight, whose endpoint/segment TemporalPreds encode char[y,x,t]=qnf.",
+      "root_cause": "The characteristic type char[y,x,t]'s quant layer is the coupled joint realizability set exists w, nf_eval_nf M (k-1) 4 [w,y,x,t] sub (now exposed sorry-free by nf_characteristic_quant_succ). This does NOT reduce to a point predicate at y; it requires an inner w-zone split (exists_trichotomy_split applied at boundaries y,x,t) turning each w-zone into a depth-(k-1) IH temporal formula via nf_nvar_exist_all_depths_fn (KampPrior:397, gated on semantic_prior_UZ/SZ). The nested outer-y / inner-w bracket assembly is Rabinovich's genuine Cor 5.4 F_i chain (~400-700 lines), too large for this dispatch. The projection-based VecEA2 remains a refuted NON-theorem and must NOT be retried.",
+      "why_no_strategic_sorry": "A bare 'exists formula, iff' statement of the converter is vacuous (closed by Classical.choice) and explicitly forbidden by the plan Postmortem Constraints. The honest artifact is the sorry-free characteristic-type + zone-partition foundation (7 lemmas) plus the precise continuation recorded in the NfZoneDepthK.lean 'Phase 11b progress' note. No non-vacuous partial statement of the full converter is possible without the bracket-assembly body itself."
     }
   ],
   "continuation_path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
-  "next_action_hint": "Resume Phase 11b in a fresh dispatch: build the faithful depth-k zone converter that pushes the exists-y THROUGH the coupled quant layer using characteristic types of the joint (w, y) configuration relative to the two anchors, fed as segment/point TemporalPreds through bracketBuildLeft/bracketBuildRight (Rabinovich 2014 section 5 / Cor 5.4). Reuse the sorry-free 11a extraction lemmas (nf_eval_atom_layer, nf3_order_*) for the forward direction and order routing, and renameNF_eval_diag0 (Phase 10) for the x=t arm's depth-0 base. Do NOT retry the projection-based VecEA2 (refuted NON-theorem).",
+  "next_action_hint": "Resume Phase 11b bracket integration in a fresh dispatch. Foundation is landed sorry-free in NfZoneDepthK.lean: use nf_zone_exists_partition5 to reduce to five zones; for each OPEN zone apply bracketBuildLeft (past: y<x) / bracketBuildRight (future: y>t, and x<y<t as a bounded Until) whose endpoint TemporalPred encodes char[y,x,t]=qnf; resolve char's coupled quant layer (nf_characteristic_quant_succ) by an INNER w-zone split (exists_trichotomy_split at boundaries y,x,t) feeding depth-(k-1) IH formulas from nf_nvar_exist_all_depths_fn (KampPrior:397/405, gated on semantic_prior_UZ/SZ). Point zones y=x/y=t (diagonal envs [x,x,t]/[t,x,t]) use renameNF_eval_diag0 for the depth-0 base = the x=t arm. Do NOT retry projection-based VecEA2. See the NfZoneDepthK.lean 'Phase 11b progress' note for the full continuation spec.",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean (new, sorry-free, off-path)",
-    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 11 -> [PARTIAL] with 11a/11b annotations)"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean (extended: +7 sorry-free lemmas, updated divergence note with 11b progress + continuation)",
+    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 11 PARTIAL: 11b framing-advance annotation)"
   ]
 }

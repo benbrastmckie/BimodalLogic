@@ -345,6 +345,21 @@ groundwork landed sorry-free, off-path, in new file
 the exact `h_o_*` hypotheses `reconstruct_nf_3var` consumes, generalized to depth k). Full
 `lake build` GREEN (1700 jobs); live-path sorry baseline UNCHANGED at 2; axioms
 `[propext, Classical.choice, Quot.sound]` on every new decl; zero new top-level axioms.
+
+**PARTIAL update** (Phase 11b framing advance, same session): the refuted *projection* framing
+is superseded by the correct *characteristic-type* framing, whose sorry-free foundation now
+lands in `NfZoneDepthK.lean` (7 new lemmas, off-path, baseline axioms, full build GREEN 1700
+jobs): `nf_eval_quant_layer` (coupled quant-layer companion to 11a's atom layer);
+`nf_zone_exists_iff_char` (reduces `∃ y, nf_eval_nf … qnf` to `∃ y, nf_characteristic … = qnf`
+via `nf_eval_unique` — the pivot from glue to type-occurrence); `exists_trichotomy_split` +
+`nf_zone_partition5` + `nf_zone_exists_partition5` (the five Rabinovich `F_i` zones, composed
+with the reduction); `nf_characteristic_atom_succ` / `nf_characteristic_quant_succ` (the depth-k
+IH interface — the characteristic quant layer is exactly the coupled joint realizability set
+`∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub`). The remaining crux is now precisely isolated:
+the nested outer-`y` / inner-`w` bracket assembly feeding `nf_nvar_exist_all_depths_fn`
+(KampPrior:397) through `bracketBuildLeft`/`bracketBuildRight` — see the "Phase 11b progress"
+section of the `NfZoneDepthK.lean` module note for the exact continuation.
+
 **11b crux REMAINS**: the faithful depth-k zone converter (and the x=t arm downstream of it) is
 NOT landed — the naive projection-based `VecEA2` generalization is a NON-theorem at depth k
 (the quant layer `qnf.2 : NormalForm sig (k-1) 4 → Bool` couples y,x,t through a shared 4th
