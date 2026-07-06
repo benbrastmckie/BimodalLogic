@@ -290,19 +290,31 @@ they are serialized under the H7 single-file territory contract (no parallel wav
   Classical.choice, Quot.sound]`; `lake build` green. No forbidden route used (coupled `∃w` split
   directly on full env, not projected — route (a) guard).
 
-### Phase 5: Assemble `nf_zone_flatten_navigable` + `_correct` (Deliverable 2 COMPLETE) [NOT STARTED]
+### Phase 5: Assemble `nf_zone_flatten_navigable` + `_correct` (Deliverable 2 COMPLETE) [COMPLETED]
 - **Goal:** Assemble the general navigated bounded-existential corollary at arbitrary depth `k`
   (recursion on `k`, structurally terminating) from the P4 helpers, and prove its correctness iff.
   Completing this phase unblocks task 307 Phases 4/5/6.
 - **Tasks:**
-  - [ ] Define `nf_zone_flatten_navigable` at arbitrary `k` as the `bracketBuild` disjunction over
+  - [x] Define `nf_zone_flatten_navigable` at arbitrary `k` as the `bracketBuild` disjunction over
     `w`'s five zones relative to `(x,t)`, endpoints navigated, `w` a bracket witness; recurse on `k`
-    with `k=0` bottoming out in P1's `nf_zone_flatten_navigable_zero`.
-  - [ ] Prove `nf_zone_flatten_navigable_correct`:
+    with `k=0` bottoming out in P1's `nf_zone_flatten_navigable_zero`. *(deviation: altered — landed as
+    a **Prop-valued corollary** (not a single `Formula`): the two open exterior zones `w<x` / `t<w`
+    navigate from DISTINCT origins `x` / `t`, so they cannot share one formula's truth-point. Parametric
+    over the two navigated endpoint hooks `pastEnd`/`futureEnd : NormalForm sig k 3 → TemporalPred`,
+    exactly mirroring the Phase-2 hook parametricity (plan-sanctioned R-B) — the k-recursion is threaded
+    through the hooks (k=0 bottoms out in `nf_zone_flatten_navigable_zero`), so no literal `Nat.rec`.)*
+  - [x] Prove `nf_zone_flatten_navigable_correct`:
     `(∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔ (the bracketBuild disjunction)` via the P4 five-zone
     split, `bracketBuildLeft`/`Right_correct` per open zone, and the depth-`k` IH for each residual.
-  - [ ] Confirm structural termination on `k` and the arity-≤3 invariant (P4 lemma) throughout.
-  - [ ] `lake build` green.
+    *(realized via `nf_char2_zone_split5` (route (a) full-env split) + `navigated_bracket_reaches_exterior_past`/`_future`
+    (route (b) navigated exterior brackets) with the two hook-correctness hypotheses `h_past`/`h_fut`
+    as the depth-k IH; the two point zones `w=x`/`w=t` and the bounded interior `x<w<t` stay honest
+    arity-3 `nf_eval_nf` residuals (route (c) — no arity collapse), discharged one depth down by the
+    caller / `nf_char3_deeper_split`.)*
+  - [x] Confirm structural termination on `k` and the arity-≤3 invariant (P4 lemma) throughout.
+    *(no recursion in the landed object — parametric hooks; arity stays 3 / anchor set `{x,t}` per
+    `zoneEnv3_arity_invariant`, every residual an `nf_eval_nf M k 3 (zoneEnv3 · x t)`.)*
+  - [x] `lake build` green.
 - **Timing:** ~2-3 h. **Estimated output:** ~180-300 lines.
 - **Depends on:** 4.
 - **Done when:** `nf_zone_flatten_navigable` and `nf_zone_flatten_navigable_correct` are sorry-free;

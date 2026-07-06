@@ -489,4 +489,90 @@ theorem nf_char3_deeper_split {sig : MonadicSignature}
   exact exists_nested_split3
     (fun w => nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
 
+/-! ## Phase 5: assemble `nf_zone_flatten_navigable` + `_correct` (Deliverable 2 COMPLETE)
+
+The general navigated bounded-existential **corollary** at arbitrary anchors `(x, t)`, assembled from
+the Phase-4 five-zone split (`nf_char2_zone_split5`) and the two navigated-reach pillars
+(`navigated_bracket_reaches_exterior_past` / `_future`). This is the arbitrary-anchor generalization
+of the Phase-2 diagonal converter `nf_char2_diag_exist_tl` (which handled the single-boundary `x = t`
+case): here there are TWO boundaries `x < t`, so the coupled arity-3 existential
+`∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` splits into FIVE zones of `w` relative to `(x, t)` —
+`w < x` (past exterior of `x`), `w = x`, `x < w < t` (bounded interior), `w = t`, `t < w`
+(future exterior of `t`).
+
+Following Rabinovich 2014 Cor 5.4 (`F_i` chain), the two OPEN EXTERIOR zones are realized by NAVIGATED
+`bracketBuild*` chains — `bracketBuildLeft` walking into the past exterior `w < x` from origin `x`,
+`bracketBuildRight` walking into the future exterior `t < w` from origin `t` — each with a trivial
+(`top`) segment, so the navigated bracket collapses to the bare exterior existential and its endpoint
+`TemporalPred` (the depth-`k` characteristic of `q` at the navigated witness) is checked exactly at the
+exterior witness. The two point zones (`w = x`, `w = t`) and the bounded interior (`x < w < t`) stay as
+depth-`k` residuals, discharged one depth down by the IH / `nf_char3_deeper_split` at the caller
+(exactly as the arity-1 template `nf_succ_char_formula` threads its recursion through `exist_tl_fn`,
+and as Phase 2 threads the point zone through `diagChar`).
+
+Recursion on `k` is threaded through the two navigated endpoint HOOKS `pastEnd` / `futureEnd`
+(mirroring the Phase-2 hook parametricity, plan-sanctioned R-B): at `k = 0` these bottom out in
+`nf_zone_flatten_navigable_zero` (Phase 1); at `k ≥ 1` the caller supplies endpoints whose
+`.eval_at` correctness one depth down is the IH. The assembly and its correctness iff are proven here
+once, sorry-free.
+
+### Route audit (Postmortem forbidden-route guards)
+- **(a)** The coupled `∃ w` is split DIRECTLY on the full env `zoneEnv3 w x t = [w, x, t]` via
+  `nf_char2_zone_split5` — no per-variable projection of the coupled quant layer.
+- **(b)** Both open-exterior-zone endpoints are NAVIGATED recursive `bracketBuild*` `TemporalPred`s
+  (via `navigated_bracket_reaches_exterior_past` / `_future`), never depth-0 atomic brackets.
+- **(c)** Every residual stays an honest arity-3 `nf_eval_nf` on the full env `zoneEnv3 · x t`
+  (anchor set `{x, t}`, env arity `≤ 3` per `zoneEnv3_arity_invariant`); nothing is collapsed to
+  arity 1.
+-/
+
+/-- **Deliverable 2: the general navigated bounded-existential corollary (RHS shape).** The five-zone
+navigated disjunction that characterizes `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` at arbitrary
+anchors `(x, t)`. Parametric over the two navigated endpoint hooks `pastEnd` (past-exterior `Since`
+endpoint, checked at `x`) and `futureEnd` (future-exterior `Until` endpoint, checked at `t`) — exactly
+as the Phase-2 diagonal converter and the arity-1 template are parametric over their recursion hooks.
+The two open exterior zones are navigated `bracketBuild*` chains (route (b) guard); the two point zones
+and the bounded interior stay honest arity-3 `nf_eval_nf` residuals on the full env (routes (a)/(c)
+guards). `w` is always a bracket witness, never a named free anchor. -/
+noncomputable def nf_zone_flatten_navigable {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (q : NormalForm sig k 3) : Prop :=
+  temporal_truth M atomMap x
+      (bracketBuildLeft (BracketFormula.trivial TemporalPred.top) (pastEnd q)) ∨
+    nf_eval_nf M k 3 (zoneEnv3 x x t) q ∨
+    (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) ∨
+    nf_eval_nf M k 3 (zoneEnv3 t x t) q ∨
+    temporal_truth M atomMap t
+      (bracketBuildRight (BracketFormula.trivial TemporalPred.top) (futureEnd q))
+
+/-- **Correctness of deliverable 2.** Under the two navigated-endpoint-hook correctness hypotheses
+(each exterior endpoint `.eval_at` at its navigated witness characterizes the coupled arity-3
+evaluation one depth down — the recursion IH at `k ≥ 1`, the Phase-1 base at `k = 0`), the coupled
+arity-3 existential over arbitrary anchors `(x, t)` holds iff the five-zone navigated disjunction
+holds. Assembled from `nf_char2_zone_split5` (route (a): direct full-env five-zone split) + the two
+navigated-reach pillars (route (b)); the three residual zones match definitionally (route (c):
+arity stays 3, anchor set `{x, t}`). -/
+theorem nf_zone_flatten_navigable_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (q : NormalForm sig k 3)
+    (h_past : ∀ w : M.carrier, w < x →
+      ((pastEnd q).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (zoneEnv3 w x t) q))
+    (h_fut : ∀ w : M.carrier, t < w →
+      ((futureEnd q).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (zoneEnv3 w x t) q)) :
+    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
+      nf_zone_flatten_navigable M atomMap x t pastEnd futureEnd q := by
+  rw [nf_char2_zone_split5]
+  simp only [nf_zone_flatten_navigable]
+  rw [navigated_bracket_reaches_exterior_past,
+      navigated_bracket_reaches_exterior_future]
+  refine or_congr (exists_congr fun w => and_congr_right fun hw => (h_past w hw).symm) ?_
+  refine or_congr Iff.rfl (or_congr Iff.rfl (or_congr Iff.rfl ?_))
+  exact exists_congr fun w => and_congr_right fun hw => (h_fut w hw).symm
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
