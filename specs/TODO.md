@@ -105,7 +105,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-311 [PLANNED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
+311 [RESEARCHED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
@@ -114,10 +114,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 311. Close k1 bracket gate efold
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310
+- **Research**: [311_close_k1_bracket_gate_efold/reports/01_rabinovich-faithfulness-audit.md]
 
 **Description**: Using the fixed-arity monadic E[Sigma]-fold encoding delivered by the prerequisite task (Define NormalForm E[Sigma]-fold encoding), redo task 309's Phase 10 (R2) k=1 decision-gate probe UNDER THE NEW ENCODING and close it GO. This is the encoding-level task's acceptance probe (task 309 plan v3 Phase 10 NO-GO handoff, commit 8fd4340b1): the exact goal that failed under the OLD nf_eval_nf-only encoding must close under the new fold.
 
