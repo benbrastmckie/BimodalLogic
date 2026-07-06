@@ -1,39 +1,16 @@
 {
-  "status": "partial",
-  "summary": "Phase 8 BLOCKED. The plan scoped the KampPrior:391 rewire as wiring existClosure/existClosureLeft/disj + an x=t substitution into the | 1 => arm. That wiring is inapplicable at general depth: those combinators are stated over VecEA_m.holds, but the arm target is over nf_eval_nf M (k+1) 2 ... and NO NF(k+1)->VecEA_m bridge exists (every NF->VecEA/temporal converter in the tree is depth-0). The x=t arm's mergeNF_succ collapse has only its atom layer proven (renameNF_eval_iff needs a bijection; the merge is non-injective); the x<t/t<x directional arms need depth-(k+1) Since/Until bracket builders that do not exist. :391 sorry KEPT, build GREEN at baseline HEAD, git diff clean, live-path sorry count unchanged at 2, zero new axioms, no partial rewire landed.",
+  "status": "researched",
+  "summary": "Report 39 root-causes the Phase 8 BLOCKER: report 38 designed the split against ih_exist_1's conclusion (depth k, ∃x nf_eval_nf M k 2 …) but the verified :391 goal (lean_term_goal) is depth k+1 (∃env nf_eval_nf M (k+1) (1+1) (insertEnv env t) sub_nf) — a different object from VecEA_m.holds, so existClosure/existClosureLeft/disj are inapplicable and no NF(k+1)↔VecEA_m iff exists. CHEAPEST CORRECT ROUTE = a DIRECT nf_eval_nf construction mirroring the proven nf_succ_char_formula (char_k1), pushing negation to the formula level (avoiding uniform Prop 4.2) and case-splitting on sub_nf.1's decidable order atoms (not a runtime VecEA disj). A per-model bridge is vacuous; any bridge must be a uniform NormalForm(k+1)2→Formula. The one genuinely hard piece is a depth-k generalization of the two-anchor arity-3 zone converter (nf_3var_zone_* exist only at depth 0; depth-0 NFs have no quant layer so the base case does not de-risk it). x=t arm needs mergeNF_succ's quant-layer collapse — provable via a diagonal-specialized eval lemma (NfDepth0Generalized:580-582), NOT unfixable. :391 is load-bearing at arbitrary k (kamp_prior_expressive_completeness → nf_characterizable_temporal_prior succ → nf_nvar_exist_all_depths_fn k 1). Sizing: 5-7 dispatches / ~1400-2300 lines, crux MEDIUM-LOW, exceeds ~4-dispatch budget → PAUSE.",
+  "artifacts": [
+    {
+      "path": "specs/305_rabinovich_ea_formula_implementation/reports/39_depth-k1-bridge-design.md",
+      "type": "report",
+      "summary": "Depth-(k+1) NF->temporal bridge design for KampPrior:391: root-causes report 38's depth-k/k+1 goal error (H4 failure), selects direct nf_eval_nf route with formula-level negation + decidable order-atom case split (not VecEA_m), specifies the missing depth-k two-anchor zone converter, Q3 mergeNF_succ quant collapse (diagonal-specialized, fixable), 5-7 dispatch phase decomposition (8a-8e), PAUSE recommendation."
+    }
+  ],
+  "blockers": [],
+  "next_action_hint": "Revise plan 38: replace the mis-scoped VecEA_m existClosure/disj wiring for :391 with the direct nf_eval_nf construction (mirror nf_succ_char_formula, formula-level ¬, decidable sub_nf.1 order-atom 3-way case split). Phases: 8a mergeNF_succ_quant (x=t arm, MEDIUM, ~250-400L, self-contained/reusable) → 8b depth-k two-anchor arity-3 zone converter (THE CRUX, MEDIUM-LOW, ~400-700L, likely 2 dispatches) → 8c x<t past arm via bracketBuildLeft (MEDIUM) → 8d t<x future arm via bracketBuildRight (MEDIUM) → 8e assembly+rewire :391 (MEDIUM-HIGH). Either commit a dedicated ~6-dispatch budget, or spawn 8a as the first verified brick while re-scoping (8a alone will NOT drop the :391 sorry).",
   "phases_completed": 1,
   "phases_total": 3,
-  "skeleton": false,
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 391,
-      "statement": "nf_nvar_exist_all_depths ... (k+1) 1 (the | 1 => arm): produce A with temporal_truth M atomMap t A <-> exists env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
-      "strategic": false,
-      "assumption": "Pre-existing live-path baseline sorry. Phase 8 could not discharge it: the 3-arm split requires an NF(k+1)->VecEA_m bridge (directional arms) and mergeNF_succ quant-layer collapse correctness (x=t arm), neither of which exists.",
-      "why_deferred": "Blocked on missing depth-(k+1) infrastructure; see plan Phase 8 BLOCKER block and blockers[0] below.",
-      "follow_up_task": "task 305 Phase 8 (after plan-38 revision adds a depth-(k+1) NF->VecEA_m bridge phase)"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 394,
-      "statement": "nf_nvar_exist_all_depths ... (the | n+2 => arm)",
-      "strategic": false,
-      "assumption": "Pre-existing live-path baseline sorry (n>=2). Untouched by Phase 8.",
-      "why_deferred": "Phase 9 target; out of Phase 8 scope.",
-      "follow_up_task": "task 305 Phase 9 (plan v38)"
-    }
-  ],
-  "blockers": [
-    {
-      "description": "The | 1 => arm at KampPrior.lean:391 cannot be discharged as scoped. existClosure/existClosureLeft/disj are stated over VecEA_m.holds (VecEA_m.lean:245,:426,:135); the arm target is over nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf. The bridge nf_eval_nf M (k+1) 2 env sub_nf <-> (vea : VecEA_m 2).holds M atomMap env does NOT exist at any depth > 0 (all NF->VecEA/temporal converters are depth-0: NfToVecEA.lean:503,:217,:259; VecEADecomp nf_3var_zone_*). x=t arm: mergeNF_succ (NfDepth0Generalized.lean:593) has only its atom layer proven (mergeNF_succ_atom:599); quant-layer collapse correctness is open because renameNF_eval_iff (:440) requires f-compose-r = id on the larger arity (a bijection), which the non-injective merge violates. x<t/t<x arms: depth-(k+1) Since/Until bracket builders do not exist (only depth-0 nf_vecEA2_past/future). Needs a plan-38 revision inserting a depth-(k+1) NF->VecEA_m bridge phase before the :391 rewire.",
-      "target": "nf_nvar_exist_all_depths | 1 => arm at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:391",
-      "verbatim_goal": "sub_nf : NormalForm sig (k + 1) (1 + 1)\n-- in scope: char_k1 : NormalForm sig (k+1) 1 -> Formula (single-point, depth k+1); exist_tl_fn_k : NormalForm sig k 2 -> Formula (depth-k arity-2 existential); ih_exist_1\n|- exists A, forall (M : OrderedMonadicStructure sig), semantic_prior_UZ M atomMap -> semantic_prior_SZ M atomMap -> forall (t : M.carrier), temporal_truth M atomMap t A <-> exists env, nf_eval_nf M (k + 1) (1 + 1) (insertEnv env t) sub_nf"
-    }
-  ],
-  "artifacts": [
-    "specs/305_rabinovich_ea_formula_implementation/plans/38_lemma34-m1-rewire.md",
-    "specs/305_rabinovich_ea_formula_implementation/summaries/38_lemma34-m1-rewire-summary.md"
-  ],
-  "next_action_hint": "Revise plan 38: insert a new phase that builds the depth-(k+1) NF->VecEA_m(2) bridge (mirror VecEADecomp.lean + NfToVecEA.lean at depth k+1 via the depth-k IH exist_tl_fn_k) and the depth-(k+1) directional Since/Until bracket builders, PLUS the mergeNF_succ quant-layer collapse correctness for the x=t arm. Only after that bridge exists can the plan-38 3-arm wiring (existClosureLeft / existClosure / disj) discharge KampPrior:391. Do NOT attempt the rewire before the bridge exists; do NOT reintroduce an arity tower casually (Postmortem Constraints)."
+  "recommendation": "pause"
 }

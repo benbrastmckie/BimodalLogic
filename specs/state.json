@@ -123,6 +123,11 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/plans/38_lemma34-m1-rewire.md",
           "type": "plan",
           "summary": "v38 Lemma 3.4 m=1 live-path rewire (supersedes blocked plan-37 Phase 4-6 tail; per report 38). 3 executable phases numbered 7/8/9 continuing plan-37 numbering: Phase 7 leftward existential closure (bracketBuildLeft + existClosureLeft + iff, Since-mirror of proven existClosure, HIGH, ~250-400 lines, off-path); Phase 8 n=1 witness-position 3-arm split (before/at/after t via existClosureLeft + existClosure + x=t subst, combined by VVecEA_m.disj) wired DIRECTLY into KampPrior:391 (MEDIUM-HIGH, ~200-350 lines, live sorry 2->1); Phase 9 verification of :394 cleared/off-path + axiom/sorryAx audit (final 2->0 or 1). NO uniform Prop 4.3, NO De Morgan restructure (report 38 REJECTED), NO arity tower. Uniform Prop 4.3 recorded as /spawn candidate, off completeness path. Every phase GREEN ~1700 jobs; axioms Lean.ofReduceBool/Lean.trustCompiler unchanged."
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/reports/39_depth-k1-bridge-design.md",
+          "type": "report",
+          "summary": "Depth-(k+1) NF->temporal bridge design for KampPrior:391; root-causes report 38 depth-k/k+1 goal error; route=direct nf_eval_nf construction w/ formula-level negation (not VecEA_m); 5-7 dispatch sizing; PAUSE recommendation"
         }
       ],
       "previous_status": "blocked",
