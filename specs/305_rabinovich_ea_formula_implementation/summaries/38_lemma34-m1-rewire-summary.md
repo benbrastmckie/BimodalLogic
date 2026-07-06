@@ -45,3 +45,34 @@ source of truth, still sorry-free.
 
 - Phase 8 (n=1 witness-position split + live rewire of `KampPrior:391`) can now consume
   `VecEA_m.existClosureLeft` (leftward), the existing `existClosure` (rightward), and `VVecEA_m.disj`.
+
+---
+
+## Phase 8 — n=1 witness-position split + live rewire of KampPrior:391 [BLOCKED]
+
+**Dispatch**: sess_1783306400_33dd64 (lean-implementation-hard-agent, single-phase).
+
+**Outcome**: BLOCKED. `:391` sorry kept; build GREEN at baseline HEAD (326adc4e1); `git diff` clean;
+live-path sorry count unchanged at 2 (`:391`, `:394`); no code landed (no regression, no partial
+rewire). Zero new axioms.
+
+**Why** (full detail in plan Phase 8 BLOCKER block): the plan scoped Phase 8 as *wiring* the
+existing `existClosure`/`existClosureLeft`/`disj` into the `| 1 =>` arm. That wiring is
+inapplicable at general depth: those combinators consume `VecEA_m` structures and their
+correctness (`VecEA_m.lean:245`,`:426`,`:135`) is stated over `VecEA_m.holds`, but the arm target
+is `∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`. The required bridge
+`nf_eval_nf M (k+1) 2 env sub_nf ↔ (vea : VecEA_m 2).holds M atomMap env` **does not exist at any
+depth > 0** — every NF→VecEA/temporal converter (`nf_2var_exist_depth0_tl` `NfToVecEA.lean:503`,
+`nf_vecEA2_future/past_correct`, VecEADecomp `nf_3var_zone_*`) is depth-0.
+
+**Per-arm status**:
+- `x = t` (middle): diagonal collapse `mergeNF_succ` (`NfDepth0Generalized.lean:593`) exists but
+  only its atom layer (`mergeNF_succ_atom`) is proven; quant-layer collapse correctness is open —
+  the general `renameNF_eval_iff` (`:440`) needs a bijection (`f∘r = id` on the larger arity),
+  which the non-injective merge violates.
+- `x < t` / `t < x` (directional): depth-(k+1) Since/Until bracket builders do not exist (only
+  the depth-0 `nf_vecEA2_past`/`future`).
+
+**Recommendation**: revise plan 38 to insert a dedicated phase building the depth-(k+1) NF→VecEA_m
+bridge (mirror `VecEADecomp.lean` + `NfToVecEA.lean` at depth k+1 via the depth-k IH
+`exist_tl_fn_k`) BEFORE the `:391` rewire. Only then does the 3-arm wiring become executable.

@@ -258,7 +258,56 @@ sub-phase ends GREEN.
 
 ---
 
-### Phase 8: n=1 witness-position split + live rewire of KampPrior:391 [NOT STARTED]
+### Phase 8: n=1 witness-position split + live rewire of KampPrior:391 [BLOCKED]
+
+**BLOCKER** (Phase 8, dispatch sess_1783306400_33dd64):
+- **What failed**: The `| 1 =>` arm at `KampPrior.lean:391` cannot be discharged as scoped. Its
+  verbatim goal (n specialized to 1):
+  ```
+  sub_nf : NormalForm sig (k + 1) (1 + 1)
+  -- in scope: char_k1 : NormalForm sig (k+1) 1 → Formula  (single-point, depth k+1)
+  --           exist_tl_fn_k : NormalForm sig k 2 → Formula (depth-k arity-2 existential)
+  ⊢ ∃ A, ∀ (M : OrderedMonadicStructure sig),
+        semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+        ∀ (t : M.carrier), temporal_truth M atomMap t A ↔
+          ∃ env, nf_eval_nf M (k + 1) (1 + 1) (insertEnv env t) sub_nf
+  ```
+- **Root cause — the 3-arm "wiring" has no wire at depth k+1**: `existClosure` /
+  `existClosureLeft` (and `disj`) operate on `VecEA_m` structures; their correctness lemmas
+  (`existClosure_correct` `VecEA_m.lean:245`, `existClosureLeft_correct` `:426`) relate
+  `VecEA_m.holds`, NOT `nf_eval_nf`. To feed them the arm's `sub_nf : NormalForm sig (k+1) 2`
+  requires a translation `nf_eval_nf M (k+1) 2 env sub_nf ↔ (vea : VecEA_m 2).holds M atomMap env`.
+  **No such NF→VecEA_m bridge exists at general depth.** Every NF→VecEA/temporal converter in the
+  tree is depth-0 only: `nf_2var_exist_depth0_tl` (`NfToVecEA.lean:503`),
+  `nf_vecEA2_future_correct`/`nf_vecEA2_past_correct` (`:217`/`:259`), and the VecEADecomp zone
+  lemmas (`nf_3var_zone_*`, all take `NormalForm sig 0 _`). A grep for
+  `nf_eval_nf M (k...)` against `holds`/`VecEA`/`temporal_truth` returns empty.
+- **What was tried**: (1) Captured the exact goal via a tactic-mode scratch probe (reverted;
+  baseline restored, `git diff` clean). (2) Mapped the NF↔VecEA bridge surface across all 8 Kamp
+  files. (3) x=t arm: `mergeNF_succ` (`NfDepth0Generalized.lean:593`) is the preserved diagonal
+  collapse, but only its **atom layer** (`mergeNF_succ_atom` `:599`) is proven; the quant-layer
+  semantic correctness is deferred. The general rename-correctness lemma `renameNF_eval_iff`
+  (`:440`) requires `f ∘ r = id` on the LARGER arity (a bijection), which a **non-injective**
+  merge violates — so it does not close the x=t collapse. (4) x<t / t<x arms: their depth-(k+1)
+  directional Since/Until bracket builders do not exist (only the depth-0 `nf_vecEA2_past`/`future`).
+- **Why stuck**: All three arms require the k+1 generalization of the depth-0 machinery
+  (`NfToVecEA.lean` + `VecEADecomp.lean`, ~1500 lines combined) — i.e. the genuine hard core of
+  Kamp's theorem. The plan (Risk table rows "x=t middle arm needs a substitution not yet isolated"
+  and "insertEnv index-ordering mismatch") anticipated friction but scoped Phase 8 as a "wiring"
+  of the existing (rightmost) `existClosure`; that wiring is inapplicable because its NF→VecEA_m
+  endpoint does not exist at depth k+1.
+- **What is needed**: EITHER (a) build the NF(k+1)→VecEA_m(2) translation + a depth-(k+1)
+  directional-bracket layer (mirror VecEADecomp/NfToVecEA at depth k+1 via the depth-k IH
+  `exist_tl_fn_k`), then the plan's wiring becomes possible; OR (b) prove the `mergeNF_succ`
+  quant-layer collapse correctness (bespoke, since `renameNF_eval_iff` needs a bijection) for the
+  x=t arm and separately build the two directional arms. Both are larger than a single Phase-8
+  dispatch and edge into the arity-tower territory the plan's Postmortem Constraints forbid
+  re-deriving casually — this needs a plan revision (a dedicated depth-(k+1) NF→VecEA bridge
+  phase) before the `:391` rewire can be attempted.
+- **Prohibited**: Do NOT use a vacuous placeholder, `def X := True`, or a per-model existential;
+  do NOT land a partial rewire that raises the live-path sorry count or breaks the build. `:391`
+  stays as the single baseline sorry.
+
 
 **Goal**: Assemble the n=1 3-arm witness-position disjunction (witness `x` before / at / after the
 single point `t`) and wire it into the `| 1 =>` arm at `KampPrior.lean:391`, discharging the live
