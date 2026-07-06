@@ -253,16 +253,43 @@ Phases 3/5/6 consume the three disjuncts directly.
 - **Estimated output:** ~120-200 lines. **Done when:** trichotomy lemma proven sorry-free, build green.
 - **Depends on:** 1 (GO)
 
-### Phase 3: A_diag arm (x = t), assets only [BLOCKED]
-- **Goal:** Discharge the diagonal disjunct `nf_eval M (k+1) 2 [t,t] sub_nf` by collapsing arity
-  2 → 1 via value-duplication and characterizing with `char_k1`. No new math (assets only).
-- **Tasks:**
-  - [ ] Prove `A_diag_correct`: `temporal_truth M t (char_k1 (diagCollapse sub_nf)) ↔
-        nf_eval M (k+1) 2 [t,t] sub_nf` using `renameNF_eval_diag0` (depth-0 base) composed with
-        `char_k1_correct`. *(deviation: BLOCKED — the plain iff is a non-theorem at depth k+1; the
-        arity-1-collapse route is refuted below. Sorry-free scaffolding landed instead.)*
+### Phase 3: A_diag arm (x = t), assets only [COMPLETED]
 
-**BLOCKER (Phase 3)** — recorded 2026-07-06, session sess_1783342946_dfd523:
+**COMPLETED** (2026-07-06, session sess_1783353840_ba1b1d) — BLOCKER RESOLVED by prerequisite task
+308. The arity-1-collapse route (below) stays refuted; the correct object is task 308's two-anchor
+characteristic FORMULA builder `nf_char2_formula` / `nf_char2_formula_correct`
+(`NfMultiAnchorBridge.lean`, deliverable 1, sorry-free). Landed `A_diag` + `A_diag_correct` in
+`NfMultiAnchorBridge.lean` (append-only): `A_diag := nf_char2_formula …`, and `A_diag_correct` proves
+`temporal_truth M t (A_diag …) ↔ nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf` — the exact
+diagonal disjunct of the Phase-2 trichotomy `nf_zone_exists_trichotomy_k1` — by composing
+`nf_char2_formula_correct` (its `h_exist_correct` discharged per-`qnf` via
+`nf_char2_diag_exist_tl_correct`) with the constant-env identity
+`(Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t)`. Pure consumption glue, no new math.
+The arm stays hook-parametric over the depth-`k` recursion hooks `pastEnd`/`futureEnd`/`diagChar` and
+their correctness `h_past`/`h_fut`/`h_diag` (the depth-`k` arity-3 IH), exactly as `nf_char2_formula`
+is; the induction (Phase 4 / `nf_nvar_exist_all_depths`) supplies the hooks. `lake build` GREEN (996
+jobs); `lean_verify A_diag`/`A_diag_correct` axioms exactly `[propext, Classical.choice, Quot.sound]`,
+0 warnings; live-path sorry count unchanged at 2 (`:391`, `:394`; `NfMultiAnchorBridge` is a leaf, no
+importers, off the live path).
+
+- **Goal:** Discharge the diagonal disjunct `nf_eval M (k+1) 2 [t,t] sub_nf` — RESOLVED via task 308's
+  `nf_char2_formula` (NOT the refuted arity-1 collapse). No new math (assets only, consumption glue).
+- **Tasks:**
+  - [x] Prove `A_diag_correct` for the diagonal disjunct via task 308's `nf_char2_formula_correct` +
+        `nf_char2_diag_exist_tl_correct` + the constant-env identity. *(deviation: altered — the
+        original arity-1-collapse route `char_k1 (diagCollapse sub_nf)` is a non-theorem at depth k+1
+        (BLOCKER below, still valid); replaced by consuming task 308's two-anchor characteristic
+        formula builder, which is the correct object.)*
+  - [x] Land `A_diag` + `A_diag_correct` in `NfMultiAnchorBridge.lean`. *(deviation: altered target
+        file — the plan says land in `NfZoneFlattenNavigable.lean`, but the arm consumes
+        `nf_char2_formula` which lives in `NfMultiAnchorBridge` (which imports `NfZoneFlattenNavigable`);
+        placing it in `NfZoneFlattenNavigable` would create an import cycle. `NfMultiAnchorBridge` is
+        the only valid home and is itself a leaf off the live path.)*
+
+**BLOCKER (Phase 3) [RESOLVED by task 308]** — recorded 2026-07-06, session sess_1783342946_dfd523.
+The refutation below (the arity-1-collapse route is a non-theorem) remains correct and is why task 308
+was spawned; task 308 delivered the two-anchor characteristic formula builder that this phase now
+consumes, so the BLOCKER is discharged without re-attempting the refuted route:
 - **What failed:** `A_diag_correct` as a plain iff for arbitrary `sub_nf : NormalForm sig (k+1) 2`.
   Any `char_k1`-of-collapse formula characterizes only `Coll sub_nf = char₁[t]`, strictly weaker
   than the diagonal disjunct `sub_nf = char₂[t,t]` (collapse is non-injective).
@@ -295,7 +322,7 @@ Quot.sound]`; live-path sorry count unchanged at 2.
 - **Estimated output:** ~80-160 lines. **Done when:** A_diag arm iff proven sorry-free, build green.
 - **Depends on:** 1 (GO)
 
-### Phase 4: depth-graded navigable flattening brick (general k) [NOT STARTED]
+### Phase 4: depth-graded navigable flattening brick (general k) [IN PROGRESS]
 - **Goal:** Generalize the Phase-1 k=1 probe to `nf_zone_flatten_navigable` at arbitrary depth:
   `∃w, nf_eval M k 3 [w,x,t] q ↔` a `bracketBuild` disjunction over `w`'s zones relative to
   `(x,t)`, endpoints NAVIGATED and each zone's depth-`k` residual discharged by the IH

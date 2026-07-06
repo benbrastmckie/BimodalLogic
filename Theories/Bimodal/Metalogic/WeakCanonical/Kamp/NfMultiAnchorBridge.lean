@@ -575,4 +575,84 @@ theorem nf_zone_flatten_navigable_correct {sig : MonadicSignature} {k : Nat}
   refine or_congr Iff.rfl (or_congr Iff.rfl (or_congr Iff.rfl ?_))
   exact exists_congr fun w => and_congr_right fun hw => (h_fut w hw).symm
 
+/-! ## Task 307, Phase 3: the A_diag arm (`x = t` diagonal disjunct of the `:391` trichotomy)
+
+Task 307's `nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable.lean) splits the `:391` RHS
+existential `∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` into three order zones of
+`x` relative to the fixed origin `t`. The **diagonal** (middle) disjunct is
+`nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf` — the arity-2 sub-NF evaluated on the
+constant env `[t, t]` (both anchors collapse onto `t`).
+
+Task 307's Phase-3 BLOCKER (recorded in the plan + the OBSTRUCTION note in
+`NfZoneFlattenNavigable.lean`) established that the originally-planned arity-1-collapse route
+(`char_k1 (diagCollapse sub_nf)`) is a genuine **non-theorem** at depth `k+1` (forbidden route (c)).
+Task 308 supplies the correct object: `nf_char2_formula` (deliverable 1) is the two-anchor
+characteristic FORMULA builder, and `nf_char2_formula_correct` gives exactly
+`temporal_truth M atomMap t (nf_char2_formula …) ↔ nf_eval_nf M (k+1) 2 (fun _ => t) sub_nf` — the
+diagonal disjunct, since `(Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t)`.
+
+This arm is **pure consumption glue** (assets only, no new mathematics): it instantiates
+`nf_char2_formula_correct`, discharging its `h_exist_correct` hypothesis via the Phase-2 diagonal
+converter correctness `nf_char2_diag_exist_tl_correct`. It stays **hook-parametric** over the three
+depth-`k` recursion hooks `pastEnd`/`futureEnd`/`diagChar` and their correctness `h_past`/`h_fut`/
+`h_diag` (the depth-`k` arity-3 IH), exactly as `nf_char2_formula`/`_correct` are — the induction
+(task-307 Phase 4 / the `nf_nvar_exist_all_depths` recursion) supplies the hooks.
+
+**File placement note (deviation from plan Phase-3 "land in NfZoneFlattenNavigable.lean").** The A_diag
+arm consumes `nf_char2_formula`, which lives in this file (`NfMultiAnchorBridge`), and this file
+already imports `NfZoneFlattenNavigable`. Placing the arm in `NfZoneFlattenNavigable` would require
+that file to import `NfMultiAnchorBridge`, an import cycle. This leaf file is the only valid home;
+it stays off the live import path (no importers), preserving the live-path sorry baseline (2). -/
+
+/-- **A_diag arm** (task 307 Phase 3): the diagonal (`x = t`) disjunct of the `:391` trichotomy,
+realized by task 308's two-anchor characteristic formula builder `nf_char2_formula`. Definitionally
+`nf_char2_formula` at the three depth-`k` recursion hooks; named for the Phase-7 assembly
+`A := A_past ∨ A_diag ∨ A_future`. -/
+noncomputable def A_diag {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (diagChar : NormalForm sig k 3 → Formula)
+    (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
+  nf_char2_formula atomMap h_surj pastEnd futureEnd diagChar sub_nf
+
+/-- **A_diag arm correctness** (task 307 Phase 3). Under the three depth-`k` recursion-hook
+correctness hypotheses (`h_past`/`h_fut` — the navigated exterior endpoints characterize the coupled
+arity-3 evaluation at their witnesses; `h_diag` — the point characteristic at `w = t`), the A_diag
+formula holds at `t` iff the diagonal disjunct `nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf`
+holds. Pure composition of `nf_char2_formula_correct` (whose `h_exist_correct` is discharged per-`qnf`
+by `nf_char2_diag_exist_tl_correct`) with the constant-env identity
+`(Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t)`. No arity-1 collapse (route (c) guard):
+the depth-`(k+1)` quant layer routes through the honest arity-3 navigated existential. -/
+theorem A_diag_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (diagChar : NormalForm sig k 3 → Formula)
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (h_past : ∀ (qnf : NormalForm sig k 3) (w : M.carrier), w < t →
+      ((pastEnd qnf).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+    (h_fut : ∀ (qnf : NormalForm sig k 3) (w : M.carrier), t < w →
+      ((futureEnd qnf).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+    (h_diag : ∀ (qnf : NormalForm sig k 3),
+      temporal_truth M atomMap t (diagChar qnf) ↔
+        nf_eval_nf M k 3 (Fin.cons t (fun _ => t)) qnf)
+    (sub_nf : NormalForm sig (k + 1) 2) :
+    temporal_truth M atomMap t
+        (A_diag atomMap h_surj pastEnd futureEnd diagChar sub_nf) ↔
+      nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf := by
+  simp only [A_diag]
+  have h_env : (Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t) := by
+    funext i
+    rw [cons_const_apply t t i]
+    by_cases h : i.val = 0 <;> simp [h]
+  rw [h_env]
+  exact nf_char2_formula_correct atomMap h_surj pastEnd futureEnd diagChar M t
+    (fun qnf => nf_char2_diag_exist_tl_correct M atomMap t pastEnd futureEnd diagChar qnf
+      (h_past qnf) (h_fut qnf) (h_diag qnf)) sub_nf
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
