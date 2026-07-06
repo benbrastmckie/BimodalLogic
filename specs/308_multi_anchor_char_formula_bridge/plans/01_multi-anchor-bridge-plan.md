@@ -1,7 +1,7 @@
 # Implementation Plan: Multi-Anchor Characteristic Formula Bridge (task 308)
 
 - **Task**: 308 - multi_anchor_char_formula_bridge
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10-15 hours (6 phases, ~1.5-3 h each)
 - **Dependencies**: None (all preserved assets already landed; off the live import path)
 - **Research Inputs**: reports/01_multi-anchor-bridge-research.md (H4-verified, Tier 1 Rabinovich 2014)
@@ -169,23 +169,26 @@ Phases are fully sequential. P3 (deliverable-1 assembly) and P4 (general-recursi
 logically independent given P2, but both write the single leaf file `NfMultiAnchorBridge.lean`, so
 they are serialized under the H7 single-file territory contract (no parallel wave).
 
-### Phase 1: File scaffold + diagonal depth-0 atom layer + k=0 zone-flatten base [NOT STARTED]
+### Phase 1: File scaffold + diagonal depth-0 atom layer + k=0 zone-flatten base [COMPLETED]
 - **Goal:** Stand up the new leaf file and land the two bottom-of-recursion sorry-free lemmas: the
   diagonal atom-layer iff at `[t,t]`, and the `k=0` base of the zone-flatten (endpoints are atom
   types, no navigation yet).
 - **Tasks:**
-  - [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` with module
+  - [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` with module
     docstring, `import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable` and
     `import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior` (import nothing else — keep it a leaf).
-  - [ ] Paste the Postmortem forbidden-route (a)/(b)/(c) "Do NOT" list as a top-of-file block comment
+  - [x] Paste the Postmortem forbidden-route (a)/(b)/(c) "Do NOT" list as a top-of-file block comment
     so every future dispatch sees it in-file.
-  - [ ] Land `nf_char2_atom_layer` (name at implementer discretion): the diagonal atom-layer iff for
-    `sub_nf.1 : NormalForm sig 0 2` on constant env `[t,t]`, using `nf_depth0_char_formula` +
-    `renameNF_eval_diag0` (order atoms constant-false at `[t,t]`; predicate atoms reduce to point
-    `t`). Reuse `diagDup`/`diagDup_eval_zero` verbatim; do not re-derive.
-  - [ ] Land `nf_zone_flatten_navigable_zero`: the `k=0` base case of deliverable 2 (endpoints are
-    atom/anchor types via `renameNF_eval_diag0` / depth-0 char; no `bracketBuild*` navigation yet).
-  - [ ] `lake build` the new file green.
+  - [x] Land `nf_char2_atom_layer` *(deviation: altered — stated as the diagonal atom-layer iff for
+    the value-duplicated form `diagDup nf1` (`nf1 : NormalForm sig 0 2`→1), the exact `renameNF_eval_diag0`
+    /`diagDup_eval_zero` base; the arbitrary-`sub_nf.1` order-atom / pred-agreement guard is deferred to
+    the Phase-3 assembly where the `atom_part` formula is built. Uses `nf_depth0_char_formula` +
+    `diagDup_eval_zero` verbatim, diagonal collapse at depth-0 atom layer only.)*
+  - [x] Land `nf_zone_flatten_navigable_zero`: the `k=0` base case of deliverable 2 (endpoints are
+    atom/anchor types via `renameNF_eval_diag0` / depth-0 char; no `bracketBuild*` navigation yet)
+    *(realized via the tail-diagonal duplication `diagDup3`/`diagDup3_eval_zero`, a direct
+    `renameNF_eval_diag0` instance, wrapped existentially.)*
+  - [x] `lake build` the new file green.
 - **Timing:** ~1.5-2 h. **Estimated output:** ~150-250 lines.
 - **Depends on:** none.
 - **Done when:** file `lake build`s green; `nf_char2_atom_layer` and `nf_zone_flatten_navigable_zero`

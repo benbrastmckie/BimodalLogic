@@ -1,0 +1,157 @@
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable
+import Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior
+
+/-!
+# Multi-Anchor Characteristic Formula Bridge (task 308)
+
+A new **leaf** file (nothing imports it; it imports nothing beyond
+`NfZoneFlattenNavigable` — which transitively pulls `VecEATranslation`,
+`NfZoneDepthK`, `NfDepth0Generalized` — and `KampPrior`). It hosts the
+sorry-free depth-graded two-anchor characteristic-formula bridge deliverables.
+
+## Deliverables (built across the task-308 phases)
+1. `nf_char2_formula : NormalForm sig (k+1) 2 → Formula` (Phase 3).
+2. `nf_zone_flatten_navigable` at arbitrary depth `k` (Phase 5).
+
+## This file — Phase 1 (bottom-of-recursion bases)
+- `nf_char2_atom_layer`: the **diagonal depth-0 atom-layer** iff — the depth-0
+  characteristic formula of an arity-1 NF characterizes the arity-2 evaluation of
+  its diagonal value-duplication `diagDup` on the constant env `[t,t]`. Built from
+  `nf_depth0_char_formula` + `diagDup_eval_zero` (i.e. `renameNF_eval_diag0`).
+- `nf_zone_flatten_navigable_zero`: the `k = 0` base of deliverable 2 — the arity-3
+  tail-diagonal existential of a duplicated NF `diagDup3` on `[w,t,t]` equals the
+  arity-2 existential on `[w,t]`. Endpoints are atom/anchor types via
+  `renameNF_eval_diag0`; **no `bracketBuild*` navigation yet**.
+
+## Postmortem forbidden-route list (BINDING — read before writing any construction)
+
+Every future dispatch on this file MUST check each candidate construction against
+these three refuted routes (task-305 Phase-11b lineage + task-307 blocker audit):
+
+- **(a) Do NOT** re-attempt a projection-based VecEA2 bridge for the `x=t` diagonal
+  case. `liftIdx(totalUnskip)` is non-injective; the coupled quant layer does not
+  factor through per-variable projections. Split the coupled `∃w` **directly** on the
+  full env `[w,x,t]` (`exists_nested_split3` / `exists_trichotomy_split`) and discharge
+  through `nf_char3_eq_succ_iff`'s joint decomposition — never per-variable projection.
+- **(b) Do NOT** re-attempt a flat single-interval atomic bracket absorption. A depth-0
+  atomic `BracketFormula` is confined to `[x,t]` and cannot capture exterior-`w`
+  realizability. Endpoint types MUST be **navigated** recursive `bracketBuild*`
+  `TemporalPred`s, not depth-0 atomic brackets.
+- **(c) Do NOT** re-attempt an arity-1-collapse repair for the diagonal arm
+  (`char_k1 (diagCollapse sub_nf)`). At depth `k+1` this is the documented **non-theorem**
+  (`NfDepth0Generalized.lean:1691-1719`; `liftIdx r` non-injective, `←` fails).
+
+**Settled**: the diagonal collapse (`renameNF_eval_diag0`) is used **only at the depth-0
+atom layer**, where it is a proven iff. The depth-`(k+1)` quant layer goes through the
+honest arity-3 navigated existential — **never** collapsed to arity 1.
+
+## References
+- Rabinovich 2014, "A Proof of Kamp's Theorem", Cor 5.4 (`F_i` chain).
+- `specs/308_multi_anchor_char_formula_bridge/plans/01_multi-anchor-bridge-plan.md`
+- `specs/308_multi_anchor_char_formula_bridge/reports/01_multi-anchor-bridge-research.md`
+-/
+
+namespace Bimodal.Metalogic.WeakCanonical.Kamp
+
+open Bimodal.Syntax
+open Bimodal.Metalogic.WeakCanonical
+open Bimodal.Metalogic.WeakCanonical.Separation
+  (nf_depth0_char_formula nf_depth0_char_formula_correct)
+
+/-! ## Phase 1a: diagonal depth-0 atom layer (deliverable-1 base)
+
+The atom part of the two-anchor characteristic on the diagonal env `[t,t]`. On that
+env all order atoms are constant-false (`t < t`) and both predicate positions reduce to
+the single point `t`; this is exactly the diagonal value-duplication `diagDup` of an
+arity-1 NF. The depth-0 characteristic formula of the arity-1 NF therefore characterizes
+the arity-2 evaluation of `diagDup nf1` — via `renameNF_eval_diag0` (as packaged by
+`diagDup_eval_zero`) at the **depth-0 atom layer only**. -/
+
+/-- **Diagonal depth-0 atom-layer iff.** The depth-0 characteristic formula of an arity-1
+NF `nf1` holds at `t` iff the diagonal value-duplication `diagDup nf1` evaluates on the
+constant arity-2 env `[t,t]`. This is the diagonal atom layer of deliverable 1, discharged
+by `nf_depth0_char_formula_correct` + `diagDup_eval_zero` (the depth-0 instance of
+`renameNF_eval_diag0`). The diagonal collapse appears here, at depth 0, where it is a
+proven iff — never at the depth-`(k+1)` quant layer (forbidden route (c)). -/
+theorem nf_char2_atom_layer {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf1 : NormalForm sig 0 1) (t : M.carrier) :
+    temporal_truth M atomMap t (nf_depth0_char_formula atomMap h_surj nf1) ↔
+    nf_eval_nf M 0 2 (fun _ => t) (diagDup nf1) := by
+  rw [nf_depth0_char_formula_correct, diagDup_eval_zero]
+  simp only [nf_eval_nf]
+  constructor
+  · intro h a
+    obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred a
+    simp only [atom_eval]
+    exact h p
+  · intro h p
+    have hp := h (.pred p ⟨0, by omega⟩)
+    simpa only [atom_eval] using hp
+
+/-! ## Phase 1b: `k = 0` base of the navigated zone-flatten (deliverable-2 base)
+
+The bottom of the depth recursion of deliverable 2. At `k = 0` there is no navigation:
+the arity-3 env `[w,t,t]` has its two `t`-anchors collapsed, so the diagonal
+value-duplication `diagDup3` of an arity-2 NF evaluates on `[w,t,t]` iff the arity-2 NF
+evaluates on `[w,t]`. The `∃w`-wrapped form is the `k = 0` base consumed by the Phase-2/5
+recursion (where `k ≥ 1` replaces the endpoints with navigated `bracketBuild*` chains). -/
+
+/-- Tail-expansion `Fin 2 → Fin 3`: the arity-2 positions embed as the first two
+arity-3 positions (`0 ↦ 0`, `1 ↦ 1`). -/
+def tailExpand3 : Fin 2 → Fin 3 := fun i => ⟨i.val, by omega⟩
+
+/-- Tail-merge `Fin 3 → Fin 2`: the two trailing anchor positions collapse onto one
+(`0 ↦ 0`, `1 ↦ 1`, `2 ↦ 1`). -/
+def tailMerge3 : Fin 3 → Fin 2 := fun i => if i.val = 0 then 0 else 1
+
+/-- Retraction: merging after expanding is the identity on `Fin 2`. -/
+theorem tailMerge3_expand3_id : ∀ i : Fin 2, tailMerge3 (tailExpand3 i) = i := by
+  decide
+
+/-- A constant-tail environment `Fin.cons w (fun _ => t)` (any arity) takes value `w`
+at position `0` and `t` at every other position. -/
+private theorem cons_const_apply {α : Type*} (w t : α) {m : Nat} (k : Fin (m + 1)) :
+    (Fin.cons w (fun _ => t) : Fin (m + 1) → α) k = if k.val = 0 then w else t := by
+  induction k using Fin.cases with
+  | zero => simp [Fin.cons_zero]
+  | succ j => simp [Fin.cons_succ]
+
+/-- **Tail value-duplication** of an arity-2 NF to arity 3 (depth 0): duplicate the
+second anchor onto both trailing positions. `renameNF tailMerge3 tailExpand3`. -/
+def diagDup3 {sig : MonadicSignature}
+    (q2 : NormalForm sig 0 2) : NormalForm sig 0 3 :=
+  renameNF tailMerge3 tailExpand3 q2
+
+/-- **Depth-0 tail-diagonal duplication equivalence.** On the arity-3 env `[w,t,t]`
+(both trailing anchors `= t`), the tail-duplicated `diagDup3 q2` evaluates iff the
+arity-2 `q2` evaluates on `[w,t]`. Direct instance of `renameNF_eval_diag0`. -/
+theorem diagDup3_eval_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (q2 : NormalForm sig 0 2) (w t : M.carrier) :
+    nf_eval_nf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2) ↔
+    nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2 := by
+  simp only [diagDup3]
+  refine renameNF_eval_diag0 M tailExpand3 tailMerge3
+    (Fin.cons w (fun _ => t)) (Fin.cons w (fun _ => t))
+    ?_ ?_ tailMerge3_expand3_id q2
+  · intro i
+    rw [cons_const_apply w t i, cons_const_apply w t (tailExpand3 i)]
+    simp only [tailExpand3]
+  · intro i
+    rw [cons_const_apply w t i, cons_const_apply w t (tailMerge3 i)]
+    by_cases h : i.val = 0 <;> simp [tailMerge3, h]
+
+/-- **`k = 0` base of deliverable 2 (navigated zone-flatten).** The arity-3 tail-diagonal
+existential of a duplicated NF `diagDup3 q2` on `[w,t,t]` equals the arity-2 existential
+of `q2` on `[w,t]`. Endpoints are atom/anchor types via `renameNF_eval_diag0`; no
+`bracketBuild*` navigation is used at `k = 0`. This is the bottom of the depth recursion
+that Phases 2 and 5 unfold at `k ≥ 1` with navigated endpoints. -/
+theorem nf_zone_flatten_navigable_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (q2 : NormalForm sig 0 2) (t : M.carrier) :
+    (∃ w, nf_eval_nf M 0 3 (Fin.cons w (fun _ => t)) (diagDup3 q2)) ↔
+    (∃ w, nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2) :=
+  exists_congr (fun w => diagDup3_eval_zero M q2 w t)
+
+end Bimodal.Metalogic.WeakCanonical.Kamp
