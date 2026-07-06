@@ -1,7 +1,7 @@
 # Implementation Plan: Multi-Anchor Characteristic Formula Bridge (task 308)
 
 - **Task**: 308 - multi_anchor_char_formula_bridge
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10-15 hours (6 phases, ~1.5-3 h each)
 - **Dependencies**: None (all preserved assets already landed; off the live import path)
 - **Research Inputs**: reports/01_multi-anchor-bridge-research.md (H4-verified, Tier 1 Rabinovich 2014)
@@ -321,16 +321,16 @@ they are serialized under the H7 single-file territory contract (no parallel wav
   recursion on `k` is structurally terminating; `lean_verify` on both returns exactly `[propext,
   Classical.choice, Quot.sound]`; `lake build` green. Deliverable 2 is complete.
 
-### Phase 6: Axiom verification, full build, R-C consumption-notes summary [NOT STARTED]
+### Phase 6: Axiom verification, full build, R-C consumption-notes summary [COMPLETED]
 - **Goal:** Final verification of both deliverables and the R-C hand-off to task 305.
 - **Tasks:**
-  - [ ] Run `lean_verify` on `nf_char2_formula`, `nf_char2_formula_correct`,
+  - [x] Run `lean_verify` on `nf_char2_formula`, `nf_char2_formula_correct`,
     `nf_zone_flatten_navigable`, `nf_zone_flatten_navigable_correct` — each must return axioms
-    **exactly** `[propext, Classical.choice, Quot.sound]` with no warnings.
-  - [ ] Run a full `lake build` (whole project) and confirm GREEN; confirm `NfMultiAnchorBridge.lean`
-    has zero importers (still a leaf, off the live import path) via grep.
-  - [ ] Confirm zero `sorry` tokens in `NfMultiAnchorBridge.lean` (grep `-c sorry` = 0).
-  - [ ] Write `specs/308_multi_anchor_char_formula_bridge/summaries/01_multi-anchor-bridge-summary.md`
+    **exactly** `[propext, Classical.choice, Quot.sound]` with no warnings. *(all four = baseline, 0 warnings.)*
+  - [x] Run a full `lake build` (whole project) and confirm GREEN; confirm `NfMultiAnchorBridge.lean`
+    has zero importers (still a leaf, off the live import path) via grep. *(build GREEN, 1700 jobs; 0 importers.)*
+  - [x] Confirm zero `sorry` tokens in `NfMultiAnchorBridge.lean` (grep `-c sorry` = 0). *(0 real sorry tokens; the 5 grep hits are all "sorry-free" in comments.)*
+  - [x] Write `specs/308_multi_anchor_char_formula_bridge/summaries/01_multi-anchor-bridge-summary.md`
     with the R-C consumption notes: exact signatures of `nf_char2_formula` and
     `nf_zone_flatten_navigable` (with module path), which task-305 artifacts/plans reference the
     Phase-11b bridge and should be rewired to reuse these definitions verbatim rather than rebuild,

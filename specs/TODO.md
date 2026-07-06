@@ -12,11 +12,10 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,308 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,308 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 193,305 | 189,192,196,307 | completeness, automation |
-| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
-| 5 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,307 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,305 | 161,187,191,194,230,291,300,307 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 193,303 | 189,192,196,305 | completeness, automation |
+| 4 | 95,177,178,299 | 131,193,303 | completeness, formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -25,12 +24,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-308 [IMPLEMENTING] — Build the depth-graded multi-anchor characteristic FORMULA builde
-  └─ 307 [BLOCKED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
-    └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
-      └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
-        └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-        └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
+307 [BLOCKED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
+  └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+    └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+      └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+      └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -105,7 +103,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 308. Multi anchor char formula bridge
 - **Effort**: 10-15 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
