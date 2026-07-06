@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "updated": "2026-07-06T12:36:59Z",
+  "entries": [
+    {
+      "doc_id": "rabinovich_2014",
+      "reason": "Task 305: primary source — A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)"
+    },
+    {
+      "doc_id": "kamp_1968_tense-logic-linear-order",
+      "reason": "Task 305: original Kamp theorem source (background)"
+    }
+  ]
+}
