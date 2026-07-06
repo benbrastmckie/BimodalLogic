@@ -335,7 +335,7 @@ step.)*
 - **Guards enforced**: G3 (non-trivial segment), G4, G5.
 - **Commit**: `task 309 phase 5: nf_char2_future_formula dual`
 
-### Phase 6: Rewire KampPrior.lean:350 + import edge + axiom check [NOT STARTED]
+### Phase 6: Rewire KampPrior.lean:350 + import edge + axiom check [IN PROGRESS]
 
 - **Goal**: Add `import …Kamp.NfMultiAnchorBridge` to `KampPrior.lean` (cycle-safe, D1), rewire the
   `:350` arm to `A := nf_char2_past_formula … ∨ A_diag … ∨ nf_char2_future_formula …`, prove it via

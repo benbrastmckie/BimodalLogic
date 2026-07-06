@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.ExistsForallNF
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfToVecEA
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
