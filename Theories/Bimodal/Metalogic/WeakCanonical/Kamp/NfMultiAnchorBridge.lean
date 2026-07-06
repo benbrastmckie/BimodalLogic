@@ -387,4 +387,106 @@ theorem nf_char2_formula_correct {sig : MonadicSignature}
       rw [nf_quant_clause_tl_correct M atomMap t _ _ _ (h_exist_correct qnf)]
       exact h_quants qnf
 
+/-! ## Phase 4: general zone-flatten decomposition helpers (arbitrary anchors `(x,t)`)
+
+The three named sorry-free helpers that Phase 5 assembles into deliverable 2 at arbitrary
+anchors `(x, t)` (not just the diagonal `x = t` of Phases 1-2). Everything routes through the
+preserved sorry-free NfZoneDepthK machinery (`nf_char3_eq_succ_iff`,
+`nf_characteristic_quant_split3`, `exists_nested_split3`) — consumed verbatim, never re-derived.
+
+### Route audit (Postmortem forbidden-route guards)
+- **(a)** The five-zone split and the deeper coupled layer split the existential DIRECTLY on the
+  full env (`zoneEnv3 w x t` / `Fin.cons w (zoneEnv3 y x t)`) — no per-variable projection.
+- **(b)** The deeper layer keeps the endpoint obligation as `char[·] = q` (fed to navigated
+  brackets in P5), never a flat depth-0 atomic bracket.
+- **(c)** The arity-invariance lemma certifies the env arity never grows past `{w,x,t}=3` (anchor
+  set stays `{x,t}=2` when the outer witness is peeled) — no arity-1 collapse.
+-/
+
+/-- **Arity-invariance guardrail (R-C termination).** The env arity of the navigated existential
+never exceeds `{w, x, t} = 3`, reducing to the two-anchor set `{x, t} = 2` when the outer witness
+is peeled, and the anchor set of the outer formula stays exactly `{x, t}`:
+
+1. peeling the outer witness `y` from the arity-3 zone env `[y, x, t]` returns the canonical
+   arity-2 anchor env `[x, t]` (`Fin.cons x (fun _ => t)`) — witness-independent, so the anchor
+   set stays `{x, t}` (Rabinovich ≤2 free-variable cap);
+2. peeling a deeper witness `w` from the arity-4 coupled env `[w, y, x, t]` returns the arity-3
+   zone env `[y, x, t]` — the coupled layer does NOT grow the anchor set (route (c) guard). -/
+theorem zoneEnv3_arity_invariant {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (y x t : M.carrier) :
+    Fin.tail (zoneEnv3 y x t) = Fin.cons x (fun _ => t) ∧
+    (∀ w : M.carrier,
+      Fin.tail (Fin.cons w (zoneEnv3 y x t) : Fin 4 → M.carrier) = zoneEnv3 y x t) := by
+  refine ⟨?_, ?_⟩
+  · simp only [zoneEnv3, Fin.tail_cons]
+  · intro w
+    simp only [Fin.tail_cons]
+
+/-- Generic **two-boundary five-zone split** of an existential: any witness lies below `x`, at `x`,
+strictly between `x` and `t`, at `t`, or above `t`. Unconditionally valid (nested `lt_trichotomy`);
+degenerate anchor orders merely empty/overlap zones, which a disjunction tolerates. The atom of the
+outer `y`-zone decomposition — the mirror of the inner `exists_nested_split3`. -/
+theorem exists_zone_split5 {α : Type*} [LinearOrder α] (P : α → Prop) (x t : α) :
+    (∃ w, P w) ↔
+      (∃ w, w < x ∧ P w) ∨ P x ∨
+      (∃ w, x < w ∧ w < t ∧ P w) ∨ P t ∨ (∃ w, t < w ∧ P w) := by
+  constructor
+  · rintro ⟨w, hw⟩
+    rcases lt_trichotomy w x with hwx | hwx | hwx
+    · exact Or.inl ⟨w, hwx, hw⟩
+    · exact Or.inr (Or.inl (hwx ▸ hw))
+    · rcases lt_trichotomy w t with hwt | hwt | hwt
+      · exact Or.inr (Or.inr (Or.inl ⟨w, hwx, hwt, hw⟩))
+      · exact Or.inr (Or.inr (Or.inr (Or.inl (hwt ▸ hw))))
+      · exact Or.inr (Or.inr (Or.inr (Or.inr ⟨w, hwt, hw⟩)))
+  · rintro (⟨w, _, hw⟩ | hx | ⟨w, _, _, hw⟩ | ht | ⟨w, _, hw⟩)
+    · exact ⟨w, hw⟩
+    · exact ⟨x, hx⟩
+    · exact ⟨w, hw⟩
+    · exact ⟨t, ht⟩
+    · exact ⟨w, hw⟩
+
+/-- **Five-zone witness split of the arity-3 zone existential** over arbitrary anchors `(x, t)`.
+Splits `∃ w, nf_eval_nf M k 3 [w, x, t] q` into the five order zones of `w` relative to `x`, `t`
+(`w < x`, `w = x`, `x < w < t`, `w = t`, `t < w`), tolerating degenerate anchor orders. The coupled
+existential is split DIRECTLY on the full env `zoneEnv3 w x t` (route (a) guard), never projected.
+The open zones feed `bracketBuild*` and the point zones the diagonal collapse in Phase 5. -/
+theorem nf_char2_zone_split5 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (q : NormalForm sig k 3) (x t : M.carrier) :
+    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
+      (∃ w, w < x ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) ∨
+      nf_eval_nf M k 3 (zoneEnv3 x x t) q ∨
+      (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) ∨
+      nf_eval_nf M k 3 (zoneEnv3 t x t) q ∨
+      (∃ w, t < w ∧ nf_eval_nf M k 3 (zoneEnv3 w x t) q) :=
+  exists_zone_split5 (fun w => nf_eval_nf M k 3 (zoneEnv3 w x t) q) x t
+
+/-- **Deeper coupled-layer decomposition** one recursion down (arity-4 `[w, y, x, t]`).
+`char[y, x, t] = q` at depth `k+1` holds iff the atom layers agree pointwise at the anchors AND,
+for every depth-`k` sub-form `sub`, the coupled inner realizability set — split into the SEVEN inner
+`w`-zones relative to `y, x, t` (`nf_characteristic_quant_split3` / `exists_nested_split3`) — matches
+`q`'s quant assignment. Combines `nf_char3_eq_succ_iff` (the complete atom+quant decomposition) with
+the inner seven-zone split. The coupled `∃ w` is split DIRECTLY on the full arity-4 env
+`Fin.cons w (zoneEnv3 y x t)` (route (a) guard); the endpoint stays a `char[·] = q` obligation that
+Phase 5 navigates with `bracketBuild*` (route (b) guard), never arity-collapsed (route (c) guard). -/
+theorem nf_char3_deeper_split {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
+    (q : NormalForm sig (k + 1) 3) :
+    nf_characteristic M (k + 1) 3 (zoneEnv3 y x t) = q ↔
+      (∀ a : AtomKind sig 3, atom_eval M (zoneEnv3 y x t) a ↔ (q.atom_assgn a = true)) ∧
+      (∀ sub : NormalForm sig k 4,
+        ((∃ w, w < y ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+          nf_eval_nf M k 4 (Fin.cons y (zoneEnv3 y x t)) sub ∨
+          (∃ w, y < w ∧ w < x ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+          nf_eval_nf M k 4 (Fin.cons x (zoneEnv3 y x t)) sub ∨
+          (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+          nf_eval_nf M k 4 (Fin.cons t (zoneEnv3 y x t)) sub ∨
+          (∃ w, t < w ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub)) ↔
+          (q.quant_assgn sub = true)) := by
+  rw [nf_char3_eq_succ_iff]
+  refine and_congr Iff.rfl (forall_congr' fun sub => iff_congr ?_ Iff.rfl)
+  exact exists_nested_split3
+    (fun w => nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

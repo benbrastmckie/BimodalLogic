@@ -253,24 +253,36 @@ they are serialized under the H7 single-file territory contract (no parallel wav
   both returns exactly `[propext, Classical.choice, Quot.sound]`; `lake build` green. Deliverable 1
   is complete and task-307 Phase 3 is unblocked.
 
-### Phase 4: General zone-flatten decomposition helpers (five-zone + arity invariant + deeper layer) [NOT STARTED]
+### Phase 4: General zone-flatten decomposition helpers (five-zone + arity invariant + deeper layer) [COMPLETED]
 - **Goal:** Land the named sorry-free helper lemmas for the arbitrary-`(x,t)` case that P5 assembles:
   the five-zone split, the arity-≤3 invariance lemma, and the deeper coupled-layer decomposition via
   `nf_characteristic_quant_split3`.
 - **Tasks:**
-  - [ ] State and prove the arity-invariance lemma: the env arity of the navigated existential never
+  - [x] State and prove the arity-invariance lemma: the env arity of the navigated existential never
     exceeds `{w,x,t}=3`, reducing to `{x,t}=2` when `w` is peeled; anchor set of the outer formula
-    stays `{x,t}` (Rabinovich ≤2 cap). This is the R-C termination guardrail.
-  - [ ] Land the five-zone split of `∃w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` over `(x,t)`
+    stays `{x,t}` (Rabinovich ≤2 cap). This is the R-C termination guardrail. *(landed as
+    `zoneEnv3_arity_invariant`: conjunct 1 = outer-witness peel returns arity-2 anchor env
+    `Fin.cons x (fun _ => t)`; conjunct 2 = deeper-witness peel returns arity-3 zone env, no growth.
+    Proved via `Fin.tail_cons`; axioms `[propext, Quot.sound]` ⊆ baseline.)*
+  - [x] Land the five-zone split of `∃w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` over `(x,t)`
     (`w<x`, `w=x`, `x<w<t`, `w=t`, `t<w`) via `exists_nested_split3`, tolerating degenerate anchor
-    orders (a disjunction empties/overlaps zones harmlessly).
-  - [ ] Land the deeper coupled-layer decomposition one recursion down (arity-4 `[w',w,x,t]`) via
+    orders (a disjunction empties/overlaps zones harmlessly). *(deviation: altered — landed as
+    `nf_char2_zone_split5`, proved via a new generic two-boundary `exists_zone_split5` helper
+    (nested `lt_trichotomy`), the outer-`y` mirror of `exists_nested_split3` — the outer split needs
+    only 2 boundaries/5 zones, not the inner 3-boundary/7-zone `exists_nested_split3`. Split is on the
+    full env `zoneEnv3 w x t` (route (a) guard). Axioms = baseline.)*
+  - [x] Land the deeper coupled-layer decomposition one recursion down (arity-4 `[w',w,x,t]`) via
     `nf_characteristic_quant_split3` (seven zones) + `nf_char3_eq_succ_iff`, discharging the endpoint
     `char[w,x,t]=q` into an atom-point predicate + a quant layer that is the same bridge one depth
-    down. Endpoints re-navigate to anchors via nested `bracketBuild*` (route (b) guard); use
-    navigated reach probes (`navigated_bracket_reaches_exterior_future`/`_past`) as the exterior-`w`
-    coupling evidence.
-  - [ ] `lake build` green.
+    down. *(landed as `nf_char3_deeper_split`: `nf_char3_eq_succ_iff` supplies the atom+quant
+    decomposition; the quant `∃ w` is replaced by the seven inner `w`-zone disjunction via
+    `exists_nested_split3` (the same split `nf_characteristic_quant_split3` uses). Split directly on
+    the full arity-4 env `Fin.cons w (zoneEnv3 y x t)` (route (a) guard); the endpoint stays a
+    `char[·]=q` obligation for Phase 5 to navigate with `bracketBuild*` (route (b) guard), never
+    arity-collapsed (route (c) guard). Axioms = baseline. The navigated reach probes
+    `navigated_bracket_reaches_exterior_future`/`_past` are the P5 assembly interface, not needed by
+    this pure decomposition lemma.)*
+  - [x] `lake build` green.
 - **Timing:** ~2.5-3 h. **Estimated output:** ~250-380 lines.
 - **Depends on:** 3 (serialized under single-file territory; logically depends on P1 + P2 machinery).
 - **Done when:** the arity-invariance lemma, the five-zone split lemma, and the deeper coupled-layer
