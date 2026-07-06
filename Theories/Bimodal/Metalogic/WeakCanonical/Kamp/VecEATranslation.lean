@@ -240,6 +240,275 @@ theorem bracketBuildRight_correct {sig : MonadicSignature} {n : Nat}
       bf.holds M atomMap t z1 := by
   rw [bracketBuildRight_iff_chainHolds, chainHolds_iff_holds M atomMap]
 
+/-! ## Leftward (Since-based) bracket translation (Rabinovich 2014, Prop 3.5 mirror)
+
+The Since-mirror of `bracketBuildRight`. Where `bracketBuildRight bf endRight`
+holds at `z0` iff there is a future `z1 > z0` closing the bracket, the leftward
+`bracketBuildLeft bf endLeft` holds at `z1` iff there is a past `z0 < z1` with
+`endLeft` at `z0` and the bracket on `(z0, z1)`. Witnesses are absorbed from the
+right (nearest to `z1`) via `Formula.snce`, the Since analog of the `Formula.untl`
+used by `bracketBuildRight`. -/
+
+/-- Recursive chain-of-existentials specification matching `bracketBuildLeft`.
+    Peels the rightmost witness first (Since walks into the past from `z1`). -/
+def chainHoldsLeft {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
+    {n : Nat} → BracketFormula n → TemporalPred → M.carrier → Prop
+  | 0, bf, endLeft, z1 =>
+    ∃ z0 : M.carrier, z0 < z1 ∧
+      endLeft.eval_at M atomMap z0 ∧
+      ∀ y : M.carrier, z0 < y → y < z1 →
+        (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y
+  | n + 1, bf, endLeft, z1 =>
+    let shifted : BracketFormula n :=
+      { pointTypes := fun i => bf.pointTypes ⟨i.val, by omega⟩
+        segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩ }
+    ∃ x : M.carrier, x < z1 ∧
+      (bf.pointTypes ⟨n, by omega⟩).eval_at M atomMap x ∧
+      (∀ r : M.carrier, x < r → r < z1 →
+        (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) ∧
+      chainHoldsLeft M atomMap shifted endLeft x
+
+/-- Recursively translate a bracket formula to a leftward (Since) temporal formula. -/
+noncomputable def bracketBuildLeft :
+    {n : Nat} → BracketFormula n → TemporalPred → Formula
+  | 0, bf, endLeft =>
+    buildLeft [(endLeft, bf.segmentTypes ⟨0, by omega⟩)] TemporalPred.top
+  | n + 1, bf, endLeft =>
+    let shifted : BracketFormula n :=
+      { pointTypes := fun i => bf.pointTypes ⟨i.val, by omega⟩
+        segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩ }
+    Formula.snce
+      (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
+        (bracketBuildLeft shifted endLeft))
+      (bf.segmentTypes ⟨n + 1, by omega⟩).formula
+
+/-! ## Definitional unfolding lemmas (structural matches resist `simp`/`unfold`) -/
+
+theorem chainHoldsLeft_zero_eq {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula 0) (endLeft : TemporalPred) (z1 : M.carrier) :
+    chainHoldsLeft M atomMap bf endLeft z1 =
+      ∃ z0 : M.carrier, z0 < z1 ∧ endLeft.eval_at M atomMap z0 ∧
+        ∀ y : M.carrier, z0 < y → y < z1 →
+          (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y := rfl
+
+theorem chainHoldsLeft_succ_eq {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    {n : Nat} (bf : BracketFormula (n + 1)) (endLeft : TemporalPred) (z1 : M.carrier) :
+    chainHoldsLeft M atomMap bf endLeft z1 =
+      ∃ x : M.carrier, x < z1 ∧
+        (bf.pointTypes ⟨n, by omega⟩).eval_at M atomMap x ∧
+        (∀ r : M.carrier, x < r → r < z1 →
+          (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) ∧
+        chainHoldsLeft M atomMap
+          (BracketFormula.mk
+            (fun i : Fin n => bf.pointTypes ⟨i.val, by omega⟩)
+            (fun i : Fin (n + 1) => bf.segmentTypes ⟨i.val, by omega⟩))
+          endLeft x := rfl
+
+theorem bracketBuildLeft_zero_eq (bf : BracketFormula 0) (endLeft : TemporalPred) :
+    bracketBuildLeft bf endLeft =
+      buildLeft [(endLeft, bf.segmentTypes ⟨0, by omega⟩)] TemporalPred.top := rfl
+
+theorem bracketBuildLeft_succ_eq {n : Nat} (bf : BracketFormula (n + 1))
+    (endLeft : TemporalPred) :
+    bracketBuildLeft bf endLeft =
+      Formula.snce
+        (Formula.and (bf.pointTypes ⟨n, by omega⟩).formula
+          (bracketBuildLeft
+            (BracketFormula.mk
+              (fun i : Fin n => bf.pointTypes ⟨i.val, by omega⟩)
+              (fun i : Fin (n + 1) => bf.segmentTypes ⟨i.val, by omega⟩))
+            endLeft))
+        (bf.segmentTypes ⟨n + 1, by omega⟩).formula := rfl
+
+/-! ## Helper: append witness to bracket holds (leftward peel) -/
+
+/-- Append a witness x (as the rightmost witness) to the drop-last bracket's
+    witnesses to get full bracket holds. Mirror of `bracket_prepend_witness`. -/
+private theorem bracket_append_witness {sig : MonadicSignature} {m : Nat}
+    (bf : BracketFormula (m + 1))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 x : M.carrier) (hz0x : z0 < x) (hxz1 : x < z1)
+    (hpt : (bf.pointTypes ⟨m, by omega⟩).eval_at M atomMap x)
+    (hseg : ∀ r, x < r → r < z1 → (bf.segmentTypes ⟨m + 1, by omega⟩).eval_at M atomMap r)
+    (hshifted : BracketFormula.holds M atomMap
+      (BracketFormula.mk
+        (fun i : Fin m => bf.pointTypes ⟨i.val, by omega⟩)
+        (fun i : Fin (m + 1) => bf.segmentTypes ⟨i.val, by omega⟩))
+      z0 x) :
+    bf.holds M atomMap z0 z1 := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+    at hshifted ⊢
+  match m with
+  | 0 =>
+    -- 0 shifted witnesses → 1 total witness (x)
+    exact ⟨fun _ => x, fun i j h => absurd h (by omega), fun _ => ⟨hz0x, hxz1⟩,
+           fun i => by
+             have : i = ⟨0, by omega⟩ := Fin.ext (by omega)
+             rw [this]; exact hpt,
+           hshifted, fun i => i.elim0, hseg⟩
+  | m' + 1 =>
+    -- (m'+1) shifted witnesses → (m'+2) total witnesses
+    obtain ⟨w', hinc', hbnd', hpt', hseg0', hsegmid', hsegn'⟩ := hshifted
+    refine ⟨fun i => if h : i.val < m' + 1 then w' ⟨i.val, h⟩ else x, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · -- strictly increasing
+      intro i j hij
+      have hij_val : i.val < j.val := hij
+      by_cases hi : i.val < m' + 1 <;> by_cases hj : j.val < m' + 1
+      · simp only [dif_pos hi, dif_pos hj]
+        exact hinc' ⟨i.val, hi⟩ ⟨j.val, hj⟩ (by simp only [Fin.lt_def]; omega)
+      · simp only [dif_pos hi, dif_neg hj]
+        exact (hbnd' ⟨i.val, hi⟩).2
+      · exfalso; omega
+      · exfalso; omega
+    · -- all in (z0, z1)
+      intro i
+      by_cases hi : i.val < m' + 1
+      · simp only [dif_pos hi]
+        exact ⟨(hbnd' ⟨i.val, hi⟩).1, lt_trans (hbnd' ⟨i.val, hi⟩).2 hxz1⟩
+      · simp only [dif_neg hi]; exact ⟨hz0x, hxz1⟩
+    · -- point types
+      intro i
+      by_cases hi : i.val < m' + 1
+      · simp only [dif_pos hi]; exact hpt' ⟨i.val, hi⟩
+      · simp only [dif_neg hi]
+        have hb : i.val < m' + 1 + 1 := i.isLt
+        have hi_eq : i.val = m' + 1 := by omega
+        have : i = ⟨m' + 1, by omega⟩ := Fin.ext hi_eq
+        rw [this]; exact hpt
+    · -- beta_0 on (z0, w 0)
+      intro y hy0 hyw
+      simp only [dif_pos (show (0 : Nat) < m' + 1 from by omega)] at hyw
+      exact hseg0' y hy0 hyw
+    · -- beta_{i+1} on (w i, w (i+1))
+      intro i y hy1 hy2
+      by_cases hi1 : i.val + 1 < m' + 1
+      · -- both endpoints inside w'
+        simp only [dif_pos (show i.val < m' + 1 from by omega), dif_pos hi1] at hy1 hy2
+        exact hsegmid' ⟨i.val, by omega⟩ y hy1 hy2
+      · -- i.val + 1 = m' + 1, right endpoint is x, left is w' i
+        have hb : i.val < m' + 1 := i.isLt
+        have him : i.val = m' := by omega
+        simp only [dif_pos (show i.val < m' + 1 from by omega),
+                   dif_neg (show ¬(i.val + 1 < m' + 1) from by omega)] at hy1 hy2
+        simp only [him] at hy1 ⊢
+        exact hsegn' y hy1 hy2
+    · -- beta_{m'+2} on (w (m'+1), z1) = (x, z1)
+      intro y hy1 hy2
+      simp only [dif_neg (show ¬(m' + 1 < m' + 1) from by omega)] at hy1
+      exact hseg y hy1 hy2
+
+/-! ## Helper: extract last witness from bracket holds -/
+
+/-- Extract the last (rightmost) witness from bracket formula holds.
+    Mirror of `bracket_extract_first_witness`. -/
+private theorem bracket_extract_last_witness {sig : MonadicSignature} {m : Nat}
+    (bf : BracketFormula (m + 1))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 : M.carrier)
+    (hbf : bf.holds M atomMap z0 z1) :
+    ∃ x : M.carrier, x < z1 ∧
+      (bf.pointTypes ⟨m, by omega⟩).eval_at M atomMap x ∧
+      (∀ r, x < r → r < z1 → (bf.segmentTypes ⟨m + 1, by omega⟩).eval_at M atomMap r) ∧
+      z0 < x ∧
+      BracketFormula.holds M atomMap
+        (BracketFormula.mk
+          (fun i : Fin m => bf.pointTypes ⟨i.val, by omega⟩)
+          (fun i : Fin (m + 1) => bf.segmentTypes ⟨i.val, by omega⟩))
+        z0 x := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+    at hbf ⊢
+  match m with
+  | 0 =>
+    obtain ⟨w, _, hbnd, hpt, hseg0, _, hsegn⟩ := hbf
+    exact ⟨w ⟨0, by omega⟩, (hbnd ⟨0, by omega⟩).2, hpt ⟨0, by omega⟩,
+           hsegn, (hbnd ⟨0, by omega⟩).1, hseg0⟩
+  | m' + 1 =>
+    obtain ⟨w, hinc, hbnd, hpt, hseg0, hsegmid, hsegn⟩ := hbf
+    refine ⟨w ⟨m' + 1, by omega⟩, (hbnd ⟨m' + 1, by omega⟩).2,
+           hpt ⟨m' + 1, by omega⟩, hsegn, (hbnd ⟨m' + 1, by omega⟩).1, ?_⟩
+    refine ⟨fun i => w ⟨i.val, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    · intro i j hij
+      exact hinc ⟨i.val, by omega⟩ ⟨j.val, by omega⟩ (by
+        simp only [Fin.lt_def] at hij ⊢; omega)
+    · intro i
+      exact ⟨(hbnd ⟨i.val, by omega⟩).1,
+             hinc ⟨i.val, by omega⟩ ⟨m' + 1, by omega⟩ (by
+               simp only [Fin.lt_def]; omega)⟩
+    · exact fun i => hpt ⟨i.val, by omega⟩
+    · exact hseg0
+    · intro i y hy1 hy2; exact hsegmid ⟨i.val, by omega⟩ y hy1 hy2
+    · intro y hy1 hy2; exact hsegmid ⟨m', by omega⟩ y hy1 hy2
+
+/-! ## chainHoldsLeft ↔ BracketFormula.holds -/
+
+theorem chainHoldsLeft_iff_holds {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula n) (endLeft : TemporalPred)
+    (z1 : M.carrier) :
+    chainHoldsLeft M atomMap bf endLeft z1 ↔
+    ∃ z0 : M.carrier, z0 < z1 ∧ endLeft.eval_at M atomMap z0 ∧
+      bf.holds M atomMap z0 z1 := by
+  induction n generalizing z1 with
+  | zero =>
+    rw [chainHoldsLeft_zero_eq]
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+  | succ m ih =>
+    rw [chainHoldsLeft_succ_eq]
+    constructor
+    · intro ⟨x, hx, hpt, hseg, hchain⟩
+      rw [ih] at hchain
+      obtain ⟨z0, hz0x, hend, hshifted⟩ := hchain
+      exact ⟨z0, lt_trans hz0x hx, hend,
+             bracket_append_witness bf M atomMap z0 z1 x hz0x hx hpt hseg hshifted⟩
+    · intro ⟨z0, hz0z1, hend, hbf⟩
+      obtain ⟨x, hxz1, hpt, hseg, hz0x, hshifted⟩ :=
+        bracket_extract_last_witness bf M atomMap z0 z1 hbf
+      exact ⟨x, hxz1, hpt, hseg, (ih _ x).mpr ⟨z0, hz0x, hend, hshifted⟩⟩
+
+/-! ## bracketBuildLeft ↔ chainHoldsLeft -/
+
+theorem bracketBuildLeft_iff_chainHoldsLeft {sig : MonadicSignature} {n : Nat}
+    (bf : BracketFormula n) (endLeft : TemporalPred)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (bracketBuildLeft bf endLeft) ↔
+    chainHoldsLeft M atomMap bf endLeft t := by
+  induction n generalizing t with
+  | zero =>
+    rw [bracketBuildLeft_zero_eq, chainHoldsLeft_zero_eq, buildLeft_correct]
+    simp only [buildLeft_spec]
+    constructor
+    · intro ⟨z0, hz, hend, hseg, _⟩; exact ⟨z0, hz, hend, hseg⟩
+    · intro ⟨z0, hz, hend, hseg⟩
+      exact ⟨z0, hz, hend, hseg, fun s _ => by
+        simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]⟩
+  | succ m ih =>
+    rw [bracketBuildLeft_succ_eq, chainHoldsLeft_succ_eq]
+    simp only [temporal_truth]
+    constructor
+    · intro ⟨x, hx, h_event, h_guard⟩
+      rw [temporal_truth_and] at h_event
+      exact ⟨x, hx, h_event.1, h_guard, (ih _ x).mp h_event.2⟩
+    · intro ⟨x, hx, hpt, hseg, hchain⟩
+      refine ⟨x, hx, ?_, hseg⟩
+      rw [temporal_truth_and]
+      exact ⟨hpt, (ih _ x).mpr hchain⟩
+
+/-! ## Main correctness theorem (leftward) -/
+
+/-- Correctness of `bracketBuildLeft` (Proposition 3.5 core, Since-mirror). -/
+theorem bracketBuildLeft_correct {sig : MonadicSignature} {n : Nat}
+    (bf : BracketFormula n) (endLeft : TemporalPred)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (bracketBuildLeft bf endLeft) ↔
+    ∃ z0 : M.carrier, z0 < t ∧ endLeft.eval_at M atomMap z0 ∧
+      bf.holds M atomMap z0 t := by
+  rw [bracketBuildLeft_iff_chainHoldsLeft, chainHoldsLeft_iff_holds M atomMap]
+
 /-! ## VecEA2 translation -/
 
 /-- Translate a `VecEA2 n` to a temporal formula with the free variable at z_0. -/
