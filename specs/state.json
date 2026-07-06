@@ -1928,7 +1928,7 @@
     {
       "project_number": 303,
       "project_name": "k_gt_0_depth_induction",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "topic": "completeness",
@@ -1937,7 +1937,7 @@
         305
       ],
       "created": "2026-06-16T00:00:00Z",
-      "last_updated": "2026-07-06T02:58:58Z",
+      "last_updated": "2026-07-06T03:03:29Z",
       "session_id": "sess_1783306400_33dd64",
       "researched": "2026-06-17T01:27:14Z",
       "next_artifact_number": 19,
@@ -2016,6 +2016,11 @@
           "path": "specs/303_k_gt_0_depth_induction/reports/10_blocker-resolution-path.md",
           "type": "research",
           "summary": "Blocker resolution: decision (a) SUBSUMPTION. The 6 PriorComposition.lean sorries are already off the live path (archived to Boneyard by task 305 Phase 0). Task 303 subsumed by 305 faithful-Rabinovich KampPrior:391/:394 re-anchor. 0 Lean dispatches for 303; re-scope to dependent+cleanup."
+        },
+        {
+          "path": "specs/303_k_gt_0_depth_induction/plans/19_subsumption-closure-plan.md",
+          "type": "plan",
+          "summary": "Hard-mode subsumption closure plan (2 phases, gated). Resolution (a): 303 subsumed by 305; 0 Lean proof dispatches. Phase 1 (hard entry gate on 305 clearing KampPrior:391/:394) deletes the 3 retired Boneyard files (PriorComposition.lean, PriorComposition_old.lean, KampBypassK1.lean) + confirms GREEN build; Phase 2 writes closure note. Prohibits any nvar_transfer/cross-structure/zone-3 proof work."
         }
       ],
       "plan_metadata": {

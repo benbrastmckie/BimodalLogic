@@ -1,22 +1,17 @@
 {
-  "status": "researched",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
+  "status": "planned",
+  "agent_type": "planner-hard-agent",
+  "delegation_path": ["orchestrator", "plan", "planner-hard-agent"],
   "session_id": "sess_1783306400_33dd64",
   "task_number": 303,
-  "findings_count": 3,
-  "adversarial_verification_triggered": true,
-  "recommendation": "(a)",
+  "phase_count": 2,
+  "estimated_hours": 1,
+  "postmortem_rules_count": 5,
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/reports/10_blocker-resolution-path.md",
-      "type": "report",
-      "summary": "Decision (a) SUBSUMPTION. The 6 PriorComposition.lean sorries are already off the live path (archived to Boneyard by task 305 Phase 0). Task 303 subsumed by 305 faithful-Rabinovich KampPrior:391/:394 re-anchor. 0 Lean dispatches for 303."
+      "path": "specs/303_k_gt_0_depth_induction/plans/19_subsumption-closure-plan.md",
+      "type": "plan",
+      "summary": "Gated 2-phase subsumption closure plan; entry gate on task 305; deletes 3 Boneyard files; 0 proof dispatches."
     }
-  ],
-  "memory_candidates": [
-    "Task 303/305 (BimodalLogic Kamp completeness): the NF-based cross-structure witness-transfer architecture (PriorComposition.lean nvar_transfer_from_1var_agree / prior_nonconstenv_2var_agree) is REFUTED, not merely stuck. Two independent audits converge: report 20 (10+ failed dispatches, wrong abstraction) and 305 Phase 4 (the per-model existential shape exists v, v.holds env iff eval phi is VACUOUS, closable by tt/ff for any phi). The faithful replacement is a uniform model-independent translate : MonadicFormula -> VVecEA_m (Rabinovich Prop 4.3).",
-    "When a blocker handoff references sorries in a specific file, verify the file still exists on the live path FIRST. Task 303's handoff listed 6 sorries in PriorComposition.lean that a sibling task (305) had already archived wholesale to Boneyard/. Reverse-dependency grep (import.*Boneyard outside Boneyard/) returning empty confirms archived code is off-path and its sorries cannot block completeness. Stale handoff JSON < live codebase state at HEAD."
-  ],
-  "next_steps": "Task 303 is subsumed by task 305. No /plan needed. On task 305 Phase 5/6 clearing KampPrior:391/:394, close 303 via an optional cleanup dispatch (delete Boneyard/KampBypassArchive/, lake build). Re-scope 303 description and keep dependency [305]."
+  ]
 }

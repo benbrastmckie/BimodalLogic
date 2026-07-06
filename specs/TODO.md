@@ -25,7 +25,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
-  └─ 303 [RESEARCHED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+  └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
     └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
     └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
@@ -167,7 +167,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 ---
 
 ### 303. K gt 0 depth induction
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: Task 305
@@ -188,6 +188,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
   - [303_k_gt_0_depth_induction/plans/16_strong-d-induction-plan.md]
   - [303_k_gt_0_depth_induction/plans/17_reconstruction-induction-plan.md]
   - [303_k_gt_0_depth_induction/plans/18_nvar-transfer-plan.md]
+  - [303_k_gt_0_depth_induction/plans/19_subsumption-closure-plan.md]
 
 **Description**: Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovich Section 5 Lemma 5.1 interval-splitting induction. This is the SOLE remaining sorry blocking completeness_discrete. The k=0 infrastructure (complete and sorry-free, ~4400 lines) provides the template. Estimated effort: 200-400 lines. The key step: when negating an exists-forall formula with n witnesses at depth k+1, each insertion point creates sub-interval negation problems with fewer witnesses at depth k.
 

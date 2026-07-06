@@ -1,14 +1,15 @@
 {
-  "status": "researched",
-  "summary": "Decision (a) SUBSUMPTION, already physically realized. Task 303's six PriorComposition.lean sorries (nvar_transfer_from_1var_agree, prior_nonconstenv_2var_agree_until/since) no longer exist on the live path: task 305 Phase 0 archived PriorComposition.lean wholesale to Boneyard/KampBypassArchive/ (commits 3413d0292, 32b4fae37), and Boneyard is imported by nothing live. completeness_discrete no longer references PriorComposition; its live Kamp/Prior arm routes through KampPrior.lean, whose only live sorries are :391 (n=1 critical) and :394 (n>=2 off-path) -- the nf_nvar_exist_all_depths artifact that is task 305's territory (305 plan v37 Phase 5). Option (b) direct fix is refuted (2 independent audits: the cross-structure/per-model-existential shape is vacuous). Option (c) corrected target (uniform Prop 4.3) belongs to 305, not 303. Task 303 needs 0 Lean proof dispatches; re-scope to dependent-on-305 + optional Boneyard cleanup after 305 Phase 5/6.",
+  "status": "planned",
+  "summary": "Hard-mode subsumption closure plan written (plans/19_subsumption-closure-plan.md, 2 phases). Resolution (a) SUBSUMPTION per report 10 (H4-verified): task 303's six PriorComposition.lean sorries are off the live path (archived to Boneyard by task 305 Phase 0, commits 3413d0292/32b4fae37); completeness_discrete routes through KampPrior.lean whose only live sorries (:391/:394) are 305's territory. 303 needs 0 Lean proof dispatches. Phase 1 opens with a HARD ENTRY GATE (task 305 status=completed OR KampPrior:391/:394 cleared AND lake build GREEN); if unsatisfied the implementer exits immediately blocked-on-dependency. On gate pass, Phase 1 deletes the 3 retired Boneyard files (PriorComposition.lean, PriorComposition_old.lean, KampBypassK1.lean), confirms GREEN build + no live references; Phase 2 writes the closure note. Postmortem constraints forbid re-opening any nvar_transfer / cross-structure-transfer / zone-3 proof work (refuted by 2 independent audits after 10+ failed dispatches).",
   "artifacts": [
     {
-      "path": "specs/303_k_gt_0_depth_induction/reports/10_blocker-resolution-path.md",
-      "type": "report",
-      "summary": "Blocker resolution path: decision (a) subsumption with reverse-dependency analysis proving the 6 sorries are archived/off-path, retire-vs-keep table, re-scope text, and H4 verification against the documented failure mode."
+      "path": "specs/303_k_gt_0_depth_induction/plans/19_subsumption-closure-plan.md",
+      "type": "plan",
+      "summary": "2-phase gated subsumption closure plan. Phase 1: hard entry gate on task 305 + delete 3 retired Boneyard files + GREEN lake build. Phase 2: closure note. 0 Lean proof dispatches; prohibits refuted cross-structure-transfer work."
     }
   ],
   "blockers": [],
-  "next_action_hint": "Task 303 is subsumed by task 305 and needs no /plan or Lean dispatch. Set dependencies=[305] (done in state.json). When 305 clears KampPrior:391/:394 (its plan v37 Phase 5/6), close 303 with a small cleanup implementation: delete Theories/Bimodal/Boneyard/KampBypassArchive/{PriorComposition.lean,PriorComposition_old.lean,KampBypassK1.lean}, run lake build to confirm no regression, write the closure note. Do NOT dispatch any nvar_transfer / cross-structure-transfer proof work -- that architecture is refuted.",
-  "recommendation": "(a)"
+  "next_action_hint": "hold implementation until task 305 completes (entry gate); Phase 1 exits blocked-on-dependency if 305 has not cleared KampPrior:391/:394",
+  "phases_completed": 0,
+  "phases_total": 2
 }
