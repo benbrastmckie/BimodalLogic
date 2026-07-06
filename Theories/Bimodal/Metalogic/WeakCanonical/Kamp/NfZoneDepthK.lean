@@ -176,4 +176,50 @@ theorem nf3_order_tx {sig : MonadicSignature}
   have hgen := nf3_order_iff M k qnf y x t h ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)
   simpa [Fin.cons] using hgen
 
+/-! ## Phase 11b: the joint characteristic-type reduction
+
+The DIVERGENCE NOTE above refutes the *projection* route. The faithful route (Rabinovich §5)
+keeps the witness `y` and the shared quantified `w` **jointly**, working with the
+**characteristic normal form** of `[y, x, t]` rather than per-variable projections. The lemmas
+below are the sorry-free foundation of that route: they replace the existential over
+`nf_eval_nf` by an existential over *characteristic-type equality*, and expose the quant layer
+as a genuine (non-projected) coupling condition. -/
+
+/-- Quant-layer companion to `nf_eval_atom_layer`: from a satisfied depth-`k+1` normal form,
+    recover the quantifier-layer equivalence — for every depth-`k` sub-form with one extra
+    variable, existential realizability over the extended env `Fin.cons w env` matches the
+    quant assignment. This is the other half of the succ-case decomposition of `nf_eval_nf`
+    (11a landed the atom half); together they characterize a satisfied depth-`k+1` NF. The
+    `∃ w` here is the coupling the projection route cannot factor — it is carried *verbatim*
+    into the zone converter's realizability obligations. -/
+theorem nf_eval_quant_layer {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier) (nf : NormalForm sig (k + 1) n)
+    (h : nf_eval_nf M (k + 1) n env nf) (sub : NormalForm sig k (n + 1)) :
+    (∃ w, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) ↔ (nf.quant_assgn sub = true) := by
+  obtain ⟨atomA, quantA⟩ := nf
+  exact h.2 sub
+
+/-- **Characteristic-type reduction** (foundational for the depth-`k` zone converter). The
+    two-anchor arity-3 existential over the witness `y` is equivalent to the existence of a
+    witness whose *characteristic normal form* at `[y, x, t]` is exactly `qnf`. By
+    `nf_exists_unique`, `[y, x, t]` satisfies `qnf` iff `qnf` is its characteristic NF, so the
+    `∃ y` ranges over exactly the witnesses realizing `qnf` as a characteristic type. This is
+    the genuine (non-projection) reformulation on which Rabinovich's zone split (§5, Cor 5.4)
+    operates: the zone converter now reasons about *which characteristic types occur* as `y`
+    ranges over each zone, rather than gluing independent per-variable projections. -/
+theorem nf_zone_exists_iff_char {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (qnf : NormalForm sig k 3) (x t : M.carrier) :
+    (∃ y, nf_eval_nf M k 3 (zoneEnv3 y x t) qnf) ↔
+    (∃ y, nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) := by
+  constructor
+  · rintro ⟨y, hy⟩
+    exact ⟨y, nf_eval_unique M k 3 (zoneEnv3 y x t) _ _
+      (nf_characteristic_satisfies M k 3 (zoneEnv3 y x t)) hy⟩
+  · rintro ⟨y, hy⟩
+    refine ⟨y, ?_⟩
+    rw [← hy]
+    exact nf_characteristic_satisfies M k 3 (zoneEnv3 y x t)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
