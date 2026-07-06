@@ -1,7 +1,7 @@
 # Implementation Plan: Bound-Anchor Zone Converter (Kamp Cor 5.4, KampPrior.lean:391)
 
 - **Task**: 307 - kamp_cor54_bound_anchor_zone_converter
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14-20 hours (8 phases; gated — NO-GO branch is shorter)
 - **Dependencies**: None (residual of task 305 Phase 16; task 305 rewire is downstream of this task)
 - **Research Inputs**: reports/01_bound-anchor-verdict.md (VERDICT (a): uniform navigable A exists)
@@ -166,7 +166,7 @@ practice (append disjoint lemma blocks), not dispatched concurrently. Phases 5 a
 that file and serialize. Only cross-file independence (new file vs KampPrior.lean) is truly
 parallel. Wave membership expresses dependency readiness; file ownership caps real parallelism.
 
-### Phase 1: k=1 navigated-flattening GO/NO-GO probe [NOT STARTED]
+### Phase 1: k=1 navigated-flattening GO/NO-GO probe [IN PROGRESS]
 - **Goal:** Decide R1. Prove (or refute) that the coupled core `∃w, nf_eval M 1 3 [w,x,t] q` at
   `k=1` is equivalent to a `bracketBuild` disjunction over `w`'s zones whose endpoint types are
   DEPTH-GRADED / NAVIGATED (Until/Since reaching exterior `w`) — categorically distinct from the
