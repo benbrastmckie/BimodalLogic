@@ -1688,4 +1688,34 @@ theorem renameNF_eval_diag0 {sig : MonadicSignature}
         rw [hcomp2 i, hcomp2 j]
         exact hnf (.order (r i) (r j) hr)
 
+/-! ### Depth lift of the diagonal congruence is BLOCKED at the quant layer (Phase 10 divergence)
+
+The depth-0 congruence `renameNF_eval_diag0` above does NOT lift to depth `K+1` as an
+unconditional iff. Mirroring `renameNF_eval_iff`, after transferring the atom layer via
+`renameNF_eval_diag0` the residual quant-layer obligation is (goal captured via `lean_goal`):
+
+```
+(∀ sub_nf : NormalForm sig K (a+1),
+    (∃ x, nf_eval_nf M K (a+1) (Fin.cons x E) sub_nf) ↔ nq (renameNF (liftIdx f) (liftIdx r) sub_nf))
+  ↔
+(∀ sub_nf : NormalForm sig K (b+1),
+    (∃ x, nf_eval_nf M K (b+1) (Fin.cons x e) sub_nf) ↔ nq sub_nf)
+```
+
+The `→` direction is provable (the round-trip
+`renameNF (liftIdx f) (liftIdx r) (renameNF (liftIdx r) (liftIdx f) g) = g` holds because
+`skipFin`/`liftIdx f` is *injective*, plus `IH`). The `←` direction is a genuine NON-theorem:
+the LHS ranges over ALL `sub_nf : NormalForm sig K (a+1)`, but the collapse-then-expand
+`renameNF (liftIdx r) (liftIdx f) (renameNF (liftIdx f) (liftIdx r) sub_nf)` does NOT recover
+`sub_nf` because `liftIdx r` (= `liftIdx (totalUnskip …)`) is *non-injective*. Concretely, a
+`sub_nf` that is not diagonal-invariant is unrealizable on the diagonal env `Fin.cons x E`
+(so its `∃ x …` is false), yet `nq` of its collapse can be `true` — so the duplicated form
+`renameNF r f nf` is generally NOT satisfied by `E` even when `nf` is satisfied by `e`.
+
+This is exactly the realizability structure that Phase 11 (the depth-`k` two-anchor zone
+converter / characteristic-NF machinery) is built to supply. The report-39 Phase-8a scoping
+(x=t collapse "self-contained, before Phase 11") holds only at depth 0; at depth `k ≥ 1` the
+x=t arm is NOT separable from the Phase-11 crux. See the Phase 10 blocker in
+`plans/39_direct-nf-construction.md`. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
