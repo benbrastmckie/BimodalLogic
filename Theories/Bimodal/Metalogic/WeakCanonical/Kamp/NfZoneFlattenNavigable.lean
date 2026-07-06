@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneDepthK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
 /-!
 # Phase 1 GO/NO-GO GATE — navigated (depth-graded) flattening at `k = 1` (task 307, plan 01)
@@ -193,5 +194,58 @@ theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature}
       (∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
   exists_trichotomy_split
     (fun x => nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) t
+
+/-! ## Phase 3: A_diag arm (x = t) — diagonal value-duplication collapse
+
+The middle disjunct of `nf_zone_exists_trichotomy_k1` is the **diagonal** term
+`nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf` — evaluation of the arity-2 sub-NF on the
+**constant** environment `[t, t]` (both anchors collapse onto the fixed origin `t`). The goal is to
+characterize this by an arity-1 characteristic formula (`char_k1`) applied to a **value-duplication
+collapse** of `sub_nf`, per Obstruction 1: factor through `renameNF_eval_diag0`
+(NfDepth0Generalized.lean:1646) + `char_k1_correct`, NEVER per-variable projection.
+
+### Collapse / expand maps (arity 2 ↔ 1)
+
+`diagCollapseMap : Fin 2 → Fin 1` merges both anchor positions to the single position `0`;
+`diagExpandMap : Fin 1 → Fin 2` embeds the single position as position `0`. Their composite
+`diagCollapseMap ∘ diagExpandMap = id` (the retraction `hsec2` that `renameNF_eval_diag0` needs),
+but `diagExpandMap ∘ diagCollapseMap ≠ id` (the section `hsec` that the *non-injective* merge
+violates — exactly why `renameNF_eval_iff` is inapplicable and the depth-lift is delicate). -/
+
+/-- Collapse map arity 2 → 1: merge both anchor positions to the single position `0`. -/
+def diagCollapseMap : Fin 2 → Fin 1 := fun _ => 0
+
+/-- Expand map arity 1 → 2: the single position embeds as position `0`. -/
+def diagExpandMap : Fin 1 → Fin 2 := fun _ => 0
+
+/-- The retraction `hsec2`: collapsing after expanding is the identity on `Fin 1`. -/
+theorem diagCollapse_expand_id : ∀ i : Fin 1, diagCollapseMap (diagExpandMap i) = i := by
+  intro i
+  simp only [diagCollapseMap]
+  exact (Fin.fin_one_eq_zero i).symm
+
+/-- **Value-duplication** of an arity-1 NF to arity 2 (any depth): duplicate the single position
+    onto both anchor positions. `renameNF diagCollapseMap diagExpandMap : NF k 1 → NF k 2`. -/
+def diagDup {sig : MonadicSignature} {k : Nat}
+    (nf : NormalForm sig k 1) : NormalForm sig k 2 :=
+  renameNF diagCollapseMap diagExpandMap nf
+
+/-! ### Depth-0 base: duplication equivalence on the constant environment
+
+At depth 0 the value-duplication equivalence holds **in both directions** (this is exactly
+`renameNF_eval_diag0`, which drops the failing section `hsec` and needs only value compatibility on
+the constant env plus the retraction `hsec2`). This is the sorry-free base that Obstruction 1's
+diagonal factoring rests on. -/
+
+/-- **Depth-0 constant-env duplication equivalence.** On the constant environment `fun _ => t`,
+    the duplicated arity-2 NF `diagDup nf` evaluates iff the arity-1 `nf` does. Direct instance of
+    `renameNF_eval_diag0` with the diagonal (all-`t`) env, `E = e = fun _ => t`. -/
+theorem diagDup_eval_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (nf : NormalForm sig 0 1) (t : M.carrier) :
+    nf_eval_nf M 0 2 (fun _ => t) (diagDup nf) ↔ nf_eval_nf M 0 1 (fun _ => t) nf := by
+  simp only [diagDup]
+  exact renameNF_eval_diag0 M diagExpandMap diagCollapseMap
+    (fun _ => t) (fun _ => t)
+    (fun _ => rfl) (fun _ => rfl) diagCollapse_expand_id nf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
