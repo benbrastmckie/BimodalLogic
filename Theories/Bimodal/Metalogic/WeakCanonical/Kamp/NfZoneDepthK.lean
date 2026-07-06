@@ -97,6 +97,51 @@ arm (`nf_zone_partition5`'s `y=t` point zone on the diagonal env `[t,x,t]`) is d
 same machinery, using `renameNF_eval_diag0` for its depth-0 base. **Do NOT** retry the
 projection-based `VecEA2` (refuted; see the DIVERGENCE NOTE above).
 
+## Phase 11b BODY progress — inner-`w` split landed (sorry-free); zones NOT independently landable
+
+The Phase-11b **body** dispatch (session sess_1783315428_d370a2, 2nd continuation) landed the
+inner-`w` split foundation the continuation point above called for, sorry-free and off-path
+(all `[propext, Classical.choice, Quot.sound]`, full module GREEN):
+
+* `nf_char_eq_iff_eval` — general-depth pivot `char[…] = qnf ↔ nf_eval_nf … qnf` (factors the
+  reasoning inlined in `nf_zone_exists_iff_char`; used at every zone).
+* `exists_nested_split3` — generic **unconditional** three-boundary nested-trichotomy split of any
+  `∃`, the inner-`w` analog of `exists_trichotomy_split`. Valid for ANY placement of the three
+  boundaries (nested trichotomy ⇒ exhaustive; degenerate orders merely empty/overlap zones).
+* `nf_characteristic_quant_split3` — splits the coupled quant layer
+  `(char[y,x,t]).quant_assgn sub` (= `∃ w, nf_eval_nf M k 4 [w,y,x,t] sub` via
+  `nf_characteristic_quant_succ`) into the **seven inner `w`-zones** at boundaries `y, x, t`
+  (`w<y`, `w=y`, `y<w<x`, `w=x`, `x<w<t`, `w=t`, `t<w`).
+* `nf_char3_eq_succ_iff` — the complete `char[y,x,t] = qnf` decomposition into atom-layer agreement
+  (11a's six order facts + pred facts) AND quant-layer agreement (the coupled inner set per `sub`).
+
+**Refined obstruction (why the zones are NOT independently landable — supersedes the "land
+zone-by-zone" expectation).** Both the OUTER `y`-split (`nf_zone_partition5`) and the INNER
+`w`-split (`nf_characteristic_quant_split3`) are now sorry-free. The remaining gap is a SINGLE
+shared construction, not five separable arms: converting an *open* zone existential into a
+temporal formula requires a **multi-anchor bounded** existential (e.g. `∃ w, y<w<x ∧ …[w,y,x,t]…`,
+anchored at THREE points `y,x,t`), but the only IH engine available, `nf_nvar_exist_all_depths_fn`
+(KampPrior:397, correctness `:405`), delivers only a **single-anchor** existential
+`∃ env, nf_eval_nf M k (n+1) (insertEnv env t) sub` (anchored at the one evaluation point `t`).
+Bridging single-anchor IH → multi-anchor bounded zone is exactly the `bracketBuildLeft`/
+`bracketBuildRight` assembly whose endpoint/segment `TemporalPred`s must themselves encode
+`char[·] = qnf` via `nf_char3_eq_succ_iff` + `nf_characteristic_quant_split3` — recursively, one
+depth down. This endpoint-encoding machinery is **shared verbatim across all five zones**, so no
+single zone's converter arm closes in isolation; the honest unit of remaining work is the whole
+nested (outer-`y` / inner-`w`) bracket-assembly body (Rabinovich Cor 5.4 `F_i` chain, ~400-700
+lines), for which no non-vacuous partial statement exists (an `∃ formula, …` is
+`Classical.choice`-vacuous and Postmortem-forbidden). The sorry-free artifact of this dispatch is
+the inner-`w` split foundation above, which discharges the "inner `w`-zone split" step named in the
+continuation point and leaves the multi-anchor bracket bridge as the sole remaining crux.
+
+**Precise continuation (next dispatch).** Build, off-path, the multi-anchor bounded-existential
+bracket bridge: for each open inner `w`-zone of `nf_characteristic_quant_split3`, express
+`∃ w, (bounds y/x/t) ∧ nf_eval_nf M k 4 [w,y,x,t] sub` as a `bracketBuildRight`/`bracketBuildLeft`
+formula whose endpoint `TemporalPred` is the depth-`k` characteristic-type predicate (encoded via
+`nf_char3_eq_succ_iff` fed one depth down), then assemble the outer `y`-zones of
+`nf_zone_exists_partition5` the same way; the point zones (`y=x`,`y=t`) reduce to the diagonal
+depth-0 base `renameNF_eval_diag0`. Do NOT retry projection `VecEA2`.
+
 ## References
 - Rabinovich 2014 §5 (interval split), Cor 5.4 (`F_i` chain)
 - `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)

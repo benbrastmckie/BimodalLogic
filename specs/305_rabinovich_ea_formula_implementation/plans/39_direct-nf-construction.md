@@ -360,6 +360,20 @@ the nested outer-`y` / inner-`w` bracket assembly feeding `nf_nvar_exist_all_dep
 (KampPrior:397) through `bracketBuildLeft`/`bracketBuildRight` — see the "Phase 11b progress"
 section of the `NfZoneDepthK.lean` module note for the exact continuation.
 
+**PARTIAL update** (Phase 11b BODY, same session, 2nd continuation): landed the inner-`w` split
+foundation sorry-free in `NfZoneDepthK.lean` (off-path, baseline axioms, full module GREEN 992
+jobs): `nf_char_eq_iff_eval` (general-depth char-equality pivot), `exists_nested_split3` (generic
+unconditional 3-boundary nested-trichotomy split), `nf_characteristic_quant_split3` (splits the
+coupled quant layer into the seven inner `w`-zones at boundaries `y,x,t`), and `nf_char3_eq_succ_iff`
+(complete `char[y,x,t]=qnf` decomposition into atom + coupled-quant layers). This discharges the
+"inner `w`-zone split" step the prior handoff named as required. **Refined finding**: the five zones
+are NOT independently landable — converting any open zone needs a MULTI-anchor (y,x,t) bounded
+existential, but the IH engine `nf_nvar_exist_all_depths_fn` (KampPrior:397) delivers only a
+SINGLE-anchor (`t`) existential; the bridging `bracketBuildLeft/Right` assembly + endpoint
+characteristic-encoding is shared verbatim across all five zones, so the honest remaining unit is
+the whole nested bracket-assembly body (Cor 5.4 `F_i` chain, ~400-700 lines), with no non-vacuous
+partial statement. See the "Phase 11b BODY progress" section of the `NfZoneDepthK.lean` module note.
+
 **11b crux REMAINS**: the faithful depth-k zone converter (and the x=t arm downstream of it) is
 NOT landed — the naive projection-based `VecEA2` generalization is a NON-theorem at depth k
 (the quant layer `qnf.2 : NormalForm sig (k-1) 4 → Bool` couples y,x,t through a shared 4th
