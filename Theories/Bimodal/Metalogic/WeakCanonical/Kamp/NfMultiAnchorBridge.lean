@@ -1065,6 +1065,82 @@ theorem endChar0_correct {sig : MonadicSignature}
   -- STRATEGIC SORRY (task 309 P6, report 02 §4.3): depth-0 navigated arity-3 base; see follow_up_task
   sorry
 
+/-! ## Phase 7 (task 309): non-trivial interior `β_i` segment `seg` + `holds`-correctness
+
+Rabinovich 2014 Cor 5.4 (md:154-157): `F_{i-1} := α_{i-1} ∧ (β_i Until F_i)`. The interior `β_i`
+segment is the interval-type that must hold throughout the open interval `(x, t)` between the two
+fixed anchors; the bound `F_i` witness `w` (a *bracket* witness inside `(x, t)`, never a free
+anchor — G4) carries the per-`qnf` navigated interior characteristic `endChar qnf` (the Phase-6/8
+interface predicate `EndCharCarrier`). This phase builds that segment as a `BracketFormula 0` whose
+single interval type is the interface predicate `endChar qnf` (NON-trivial: the real interior
+characteristic, not `TemporalPred.top` — G3), and proves its `holds`-shape reduction
+(`seg_holds_correct`) plus the hook-parametric coupling to the `nf_eval_nf` interior evaluation
+(`seg_holds_coupled`).
+
+A `BracketFormula 0` `.holds` is *definitionally* the universal-over-interval form
+`∀ y ∈ (x, t), (segType).eval_at y` (`IntervalPattern.holds` at `n = 0`,
+ExistsForallNF:110-112; `BracketFormula.trivial_holds`). That is exactly Rabinovich's `β_i`: the
+interval type holding throughout the open interval up to the `F_i` witness. The `∃ w` interior
+existential named in the Phase-7 deliverable is recovered when this segment is placed as the
+interior interval-type of the enclosing `bracketBuildLeft` witness bracket in the Phase-8 assembly
+(the witness is laid by the bracket, the `β_i` rides between bracket endpoints) — not by `seg`
+alone, which stays a pure `BracketFormula 0` interval-type per the plan's signature.
+
+### Route audit (Postmortem forbidden-route guards)
+- **G3** — `seg`'s interval type is the genuine `endChar qnf` interior characteristic (parametric,
+  non-`⊤`); the off-diagonal `(x, t)` interior rides this non-trivial segment, never a trivial-top.
+- **G4** — anchors stay `{x, t} = 2`; the interior point `y` is a bracket witness of the enclosing
+  bracket, never a third free anchor; `endChar : NormalForm sig k 3 → TemporalPred` keeps arity ≤ 3.
+- **G5** — the segment is exactly the `β_i` of the Cor 5.4 chain step (md:154-157); its `holds`
+  reduction is proved manually through `BracketFormula.trivial_holds`, and the coupling bridge is a
+  manual `constructor`/`intro` (no `simp`/`omega`/`aesop` shortcut of the chain step). The `(x, t)`
+  coupling stays a hook (`h_endChar`), discharged in Phase 8 via `endChar_correct` exactly as
+  Phases 4/5 defer their `h_quant` coupling — NOT a `sorry`.
+-/
+
+/-- **`seg`** (task 309 Phase 7): the Rabinovich `β_i` non-trivial interior segment (md:154-157).
+A `BracketFormula 0` whose single interval type is the Phase-6/8 interface predicate `endChar qnf`
+— the per-`qnf` navigated interior characteristic that must hold at the bound `F_i` witness inside
+`(x, t)`. NON-trivial in the G3 sense: the interval type is the real interior characteristic, not
+`TemporalPred.top`. `endChar` is the recursion carrier fixed in Phase 6 (`EndCharCarrier`); Phase 8
+instantiates it with the depth-`k` recursion (base `endChar0`, step brick+seg). -/
+noncomputable def seg {sig : MonadicSignature} {k : Nat}
+    (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) : BracketFormula 0 :=
+  BracketFormula.trivial (endChar qnf)
+
+/-- **`seg_holds_correct`** (task 309 Phase 7, sorry-free leaf): the interior segment holds on
+`(x, t)` iff the interface predicate `endChar qnf` holds at every interior point — the `β_i`
+universal-over-interval characterization the enclosing `bracketBuildLeft` consumes (Rabinovich
+md:154-157). Direct through `BracketFormula.trivial_holds`. Anchors `{x, t}` (G4); the interval
+type is the genuine `endChar qnf`, not `⊤` (G3). -/
+theorem seg_holds_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) (x t : M.carrier) :
+    (seg endChar qnf).holds M atomMap x t ↔
+      ∀ y : M.carrier, x < y → y < t → (endChar qnf).eval_at M atomMap y := by
+  simp only [seg]
+  exact BracketFormula.trivial_holds M atomMap (endChar qnf) x t
+
+/-- **`seg_holds_coupled`** (task 309 Phase 7): under the per-point interface-correctness hook
+`h_endChar` — `(endChar qnf).eval_at y ↔ nf_eval_nf M k 3 (zoneEnv3 y x t) qnf`, the coupling
+Phase 8 discharges via `endChar_correct` — the segment holds on `(x, t)` iff the interior arity-3
+navigated evaluation holds throughout the open interval. This is the `nf_eval_nf`-coupled interior
+form named in the Phase-7 deliverable. The coupling stays a hook (as Phases 4/5 defer `h_quant`),
+NOT a `sorry`. Anchors provably `{x, t}` (G4); manual bridge, no tactic shortcut (G5). -/
+theorem seg_holds_coupled {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (endChar : EndCharCarrier sig k) (qnf : NormalForm sig k 3) (x t : M.carrier)
+    (h_endChar : ∀ y : M.carrier,
+      (endChar qnf).eval_at M atomMap y ↔ nf_eval_nf M k 3 (zoneEnv3 y x t) qnf) :
+    (seg endChar qnf).holds M atomMap x t ↔
+      ∀ y : M.carrier, x < y → y < t → nf_eval_nf M k 3 (zoneEnv3 y x t) qnf := by
+  rw [seg_holds_correct]
+  constructor
+  · intro h y hxy hyt
+    exact (h_endChar y).mp (h y hxy hyt)
+  · intro h y hxy hyt
+    exact (h_endChar y).mpr (h y hxy hyt)
+
 /-! ## Phase 4 (task 309): `nf_char2_past_formula` + `_correct` — the off-diagonal `F_i` chain past arm
 
 The load-bearing new object. Assembles the OUTER non-trivial-segment `bracketBuildLeft` navigation

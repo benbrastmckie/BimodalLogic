@@ -322,7 +322,23 @@ needs Phase-7's non-trivial segment. `endChar0` + `EndCharCarrier` interface + s
 - **Guards enforced**: G1, G4.
 - **Commit**: `task 309 phase 6: depth-0 navigated arity-3 endpoint base`
 
-### Phase 7: Non-trivial interior segment builder + holds correctness [NOT STARTED]
+### Phase 7: Non-trivial interior segment builder + holds correctness [COMPLETED]
+
+*(Landed sorry-free, commit pending. `seg`/`seg_holds_correct`/`seg_holds_coupled`
+(NfMultiAnchorBridge.lean, after `endChar0_correct`); axioms exactly
+`[propext, Classical.choice, Quot.sound]` on both `_correct` lemmas; module builds GREEN
+(995 jobs). Deviation — altered: the deliverable `seg_holds_correct` is stated in the
+`BracketFormula 0` **universal-over-interval** form `∀ y ∈ (x,t), (endChar qnf).eval_at y`
+(the genuine Rabinovich `β_i`, ExistsForallNF:110-112 / `BracketFormula.trivial_holds`), NOT a
+literal biconditional to `∃ w, x<w<t ∧ nf_eval_nf …` — which is **definitionally impossible** for
+a witness-free `BracketFormula 0` (its `.holds` is a `∀`, not `∃`; the `∃w` is supplied by the
+enclosing `bracketBuildLeft` witness in Phase 8, not by `seg`). The `nf_eval_nf`-coupled interior
+form named in the deliverable is delivered as the companion `seg_holds_coupled`, with the `(x,t)`
+anchor coupling carried as a hook `h_endChar` (discharged in Phase 8 via `endChar_correct`, exactly
+as Phases 4/5 defer `h_quant`) rather than a `sorry`. G3/G4/G5 satisfied. The Phase-6
+`endChar0_correct` strategic sorry (:1066) is NOT discharged here — Phase 7 does not redefine
+`endChar0`; the base's anchor under-definition is Phase-8 base-wiring / the dedicated base-case
+task per the follow_up_task.)*
 
 - **Goal**: Build the Rabinovich `β_i` interior segment `seg : BracketFormula 0` whose
   `seg.holds M atomMap x t` encodes the **bounded-interior** zone
