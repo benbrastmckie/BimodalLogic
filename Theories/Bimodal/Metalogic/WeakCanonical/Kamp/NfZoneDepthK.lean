@@ -366,4 +366,113 @@ theorem nf_characteristic_quant_succ {sig : MonadicSignature}
     (nf_characteristic_satisfies M (k + 1) n env) sub
   exact h.symm
 
+/-! ## Phase 11b (body): the inner `w`-zone split of the coupled quant layer
+
+The zone converter's endpoint/segment `TemporalPred`s must encode `char[y,x,t] = qnf`. By the
+foundation lemmas above, that equality decomposes into an atom-layer agreement (six order facts +
+predicate facts, all pointwise decidable — 11a's extraction layer) and a **quant-layer agreement**
+`∀ sub, (∃ w, nf_eval_nf M k 4 [w,y,x,t] sub) ↔ qnf.quant_assgn sub` (the coupled joint
+realizability set exposed sorry-free by `nf_characteristic_quant_succ`). The bracket assembly needs
+this coupled `∃ w` split into `w`-zones relative to the boundaries `y, x, t`, exactly mirroring the
+outer `y`-split (`nf_zone_partition5`). The lemmas below land that inner split sorry-free.
+
+Everything here is unconditional (nested trichotomy), off-path, and carries the baseline axioms. -/
+
+/-- **Characteristic-equality pivot** (general depth). A characteristic normal form equals a given
+    `qnf` iff `qnf` is satisfied by the same environment. This factors the reasoning inlined in
+    `nf_zone_exists_iff_char` into a standalone reusable lemma: it converts every *type-occurrence*
+    obligation `char[…] = qnf` into a *satisfaction* obligation `nf_eval_nf … qnf`, which then
+    unfolds (at `k+1`) into the atom/quant layers. Used at every zone (open and point). -/
+theorem nf_char_eq_iff_eval {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier) (qnf : NormalForm sig k n) :
+    nf_characteristic M k n env = qnf ↔ nf_eval_nf M k n env qnf := by
+  constructor
+  · intro h
+    rw [← h]
+    exact nf_characteristic_satisfies M k n env
+  · intro h
+    exact nf_eval_unique M k n env _ _ (nf_characteristic_satisfies M k n env) h
+
+/-- **Generic three-boundary nested split** of an existential. Any witness lies, relative to the
+    three boundaries `a`, `b`, `c` (taken in the fixed nesting order `a` then `b` then `c`), in one
+    of seven zones: below `a`, at `a`, strictly between `a` and `b`, at `b`, strictly between `b`
+    and `c`, at `c`, or above `c`. **Unconditionally valid** for ANY placement of `a, b, c` (it is a
+    nested trichotomy: split on `a`, then within `> a` split on `b`, then within `> b` split on
+    `c`), so degenerate boundary orders merely empty/overlap zones — a disjunction tolerates that.
+    This is the inner-`w` analog of the outer atom `exists_trichotomy_split` used by
+    `nf_zone_partition5`. -/
+theorem exists_nested_split3 {α : Type*} [LinearOrder α] (P : α → Prop) (a b c : α) :
+    (∃ y, P y) ↔
+      (∃ y, y < a ∧ P y) ∨ P a ∨
+      (∃ y, a < y ∧ y < b ∧ P y) ∨ P b ∨
+      (∃ y, b < y ∧ y < c ∧ P y) ∨ P c ∨
+      (∃ y, c < y ∧ P y) := by
+  constructor
+  · rintro ⟨y, hy⟩
+    rcases lt_trichotomy y a with h | h | h
+    · exact Or.inl ⟨y, h, hy⟩
+    · exact Or.inr (Or.inl (h ▸ hy))
+    · rcases lt_trichotomy y b with h2 | h2 | h2
+      · exact Or.inr (Or.inr (Or.inl ⟨y, h, h2, hy⟩))
+      · exact Or.inr (Or.inr (Or.inr (Or.inl (h2 ▸ hy))))
+      · rcases lt_trichotomy y c with h3 | h3 | h3
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨y, h2, h3, hy⟩))))
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (h3 ▸ hy))))))
+        · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr ⟨y, h3, hy⟩)))))
+  · rintro (⟨y, _, hy⟩ | h | ⟨y, _, _, hy⟩ | h | ⟨y, _, _, hy⟩ | h | ⟨y, _, hy⟩)
+    · exact ⟨y, hy⟩
+    · exact ⟨a, h⟩
+    · exact ⟨y, hy⟩
+    · exact ⟨b, h⟩
+    · exact ⟨y, hy⟩
+    · exact ⟨c, h⟩
+    · exact ⟨y, hy⟩
+
+/-- **Inner `w`-zone split of the characteristic quant layer** (Rabinovich §5, inner `F_j` chain).
+    The quant assignment `qnf.quant_assgn sub` of the characteristic type of `[y,x,t]` — which by
+    `nf_characteristic_quant_succ` is exactly the coupled realizability set
+    `∃ w, nf_eval_nf M k 4 [w,y,x,t] sub` — is split into the seven inner `w`-zones relative to the
+    three boundaries `y`, `x`, `t`. This is the inner analog of `nf_zone_partition5`: where that
+    splits the OUTER witness `y` by the two anchors, this splits the coupled INNER witness `w` by
+    the three points `y, x, t`. Each open inner zone `∃ w, (bounds) ∧ nf_eval_nf M k 4 [w,y,x,t] sub`
+    is what the depth-`(k-1)` IH formula (`nf_nvar_exist_all_depths_fn`, KampPrior:397) internalizes
+    as a temporal segment, and each point inner zone `nf_eval_nf M k 4 [p,y,x,t] sub` (`p ∈ {y,x,t}`)
+    is a diagonal (value-collision) configuration. Unconditional; off-path; baseline axioms. -/
+theorem nf_characteristic_quant_split3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
+    (sub : NormalForm sig k 4) :
+    ((nf_characteristic M (k + 1) 3 (zoneEnv3 y x t)).quant_assgn sub = true) ↔
+      (∃ w, w < y ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+      nf_eval_nf M k 4 (Fin.cons y (zoneEnv3 y x t)) sub ∨
+      (∃ w, y < w ∧ w < x ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+      nf_eval_nf M k 4 (Fin.cons x (zoneEnv3 y x t)) sub ∨
+      (∃ w, x < w ∧ w < t ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ∨
+      nf_eval_nf M k 4 (Fin.cons t (zoneEnv3 y x t)) sub ∨
+      (∃ w, t < w ∧ nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) := by
+  rw [nf_characteristic_quant_succ M k 3 (zoneEnv3 y x t) sub]
+  exact exists_nested_split3
+    (fun w => nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) y x t
+
+/-- **Complete decomposition of a characteristic-type equality at depth `k+1`, two-anchor arity-3.**
+    `char[y,x,t] = qnf` holds iff the atom layers agree pointwise (the six order facts + predicate
+    facts — 11a's extraction layer discharges each) AND, for every depth-`k` sub-form `sub`, the
+    coupled inner realizability set matches the quant assignment. This is the exact obligation the
+    zone converter's endpoint `TemporalPred` must encode: the atom part is a decidable point
+    predicate at the anchors, and the quant part is `nf_characteristic_quant_split3`'s inner
+    `w`-zone chain fed through the depth-`(k-1)` IH. It is the succ-layer companion of the general
+    `nf_char_eq_iff_eval` pivot. -/
+theorem nf_char3_eq_succ_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat) (y x t : M.carrier)
+    (qnf : NormalForm sig (k + 1) 3) :
+    nf_characteristic M (k + 1) 3 (zoneEnv3 y x t) = qnf ↔
+      (∀ a : AtomKind sig 3,
+        atom_eval M (zoneEnv3 y x t) a ↔ (qnf.atom_assgn a = true)) ∧
+      (∀ sub : NormalForm sig k 4,
+        (∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
+          (qnf.quant_assgn sub = true)) := by
+  rw [nf_char_eq_iff_eval]
+  obtain ⟨atomA, quantA⟩ := qnf
+  simp only [nf_eval_nf, NormalForm.atom_assgn, NormalForm.quant_assgn]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
