@@ -312,7 +312,7 @@ Phase 10). The orchestrator dispatches exactly one phase per cycle by heading-sc
 (`^### Phase [0-9]+(\.[0-9]+)?: .*\[(NOT STARTED|PARTIAL|IN PROGRESS)\]`); Phases 9-12 are the only open
 headings.
 
-### Phase 9: Two-anchor VecEA2 bracket carrier reformulation + interface (R1) [NOT STARTED]
+### Phase 9: Two-anchor VecEA2 bracket carrier reformulation + interface (R1) [COMPLETED]
 
 - **Goal**: Replace the abandoned navigated carrier
   `EndCharCarrier := NormalForm sig k 3 → TemporalPred` with the **two-anchor bracket carrier**

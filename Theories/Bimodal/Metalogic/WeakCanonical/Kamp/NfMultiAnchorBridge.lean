@@ -1497,4 +1497,90 @@ theorem nf_char2_future_formula_correct {sig : MonadicSignature}
     obtain ⟨⟨horig, hend⟩, hqe, hseg⟩ := (key x hx).mp hnf
     exact ⟨horig, x, hx, ⟨hend, hqe⟩, hseg⟩
 
+/-! ## Phase 9 (task 309, R1): Two-anchor VecEA2 bracket carrier reformulation + interface
+
+Report 03 (the revision authority; full-PDF Rabinovich 2014 read) established that the plan-v2
+navigated carrier `EndCharCarrier := NormalForm sig k 3 → TemporalPred` (above, :1029) has **no
+counterpart in Rabinovich's proof** and is provably FALSE in free-anchor form
+(`endChar0_correct` deviation note, :1058-1069): a closed navigated-`w` `TemporalPred` cannot read
+the anchor positions. That is the ≤2 free-variable cap (Lemma 3.2(2), PDF p.4) surfacing.
+
+The v3 carrier (report 03 Path B, ENDORSED) is the **two-anchor bracket characteristic** of
+Rabinovich Prop 3.5 (PDF p.5): the interior existential `∃x_i` collapses to an Until/Since **bracket
+witness**, with the two anchors `{x,t}` the **fixed** bracket endpoints (`z_0, z_1`) and the interval
+content a monadic `E[Σ]`-atom (Def 4.1, PDF p.5). This is a `VecEA2 1` — two endpoint `TemporalPred`s
+(`endpointLeft`/`endpointRight` at the fixed anchors) plus one interval `BracketFormula 1`. The
+depth-0 instance already exists sorry-free (`nf_3var_bracket_xyt`/`_correct`, VecEADecomp:233/244);
+Phases R2/R3 lift it to depth `k` threading the depth-`k` arity-1 point characteristic (`char_k1`,
+KampPrior:307, the E[Σ]-atom) as endpoint/interval types.
+
+**G6 (the v3 carrier guard) vs. G2 (do NOT conflate).** G2 bars a *projection-based `VecEA2` tower*
+that introduces a **third free anchor** (specs/305 report 40 — a genuine ≤2-cap violation). This
+carrier is a *two-anchor* bracket where the `VecEA2` is the Prop-3.5 bracket-**witness** structure:
+`{x,t}` are FIXED endpoints (2, not a third free anchor) and `w` is a bracket witness, never a third
+anchor (G4). Free-variable count is structurally ≤2 by the carrier type itself (Lemma 3.2(2)). The
+`VecEA2` shape alone does not violate G2; a *third free anchor* would.
+
+This phase installs the carrier TYPE (so the arity-4 obstruction cannot re-form) and states the
+fixed-endpoint correctness signature, mirroring `nf_3var_bracket_xyt_correct` (VecEADecomp:244). The
+retained abandoned-route `EndCharCarrier`/`endChar0`/`seg` defs above are left inert and untouched. -/
+
+/-- **Two-anchor VecEA2 bracket carrier** (task 309 Phase 9, R1; report 03 Path B; Rabinovich Prop 3.5,
+PDF p.5). The v3 recursion carrier: a `NormalForm sig k 3` is characterized as a `VecEA2 1` — two
+endpoint `TemporalPred`s (the fixed anchor types at `z_0 = x`, `z_1 = t`) plus one interval
+`BracketFormula 1` (the Until/Since bracket witness). This REPLACES the abandoned navigated
+`EndCharCarrier := NormalForm sig k 3 → TemporalPred` (:1029, retained but off the live path): here
+`{x,t}` are the FIXED bracket endpoints (≤2, Lemma 3.2(2)) and `w` is a bracket WITNESS (G4/G6), so no
+arity-4 quant layer and no third free anchor (G2-safe: the `VecEA2` is a bracket-witness structure,
+not a projection tower) can form. -/
+abbrev BracketEndCharCarrier (sig : MonadicSignature) (k : Nat) : Type :=
+  NormalForm sig k 3 → VecEA2 1
+
+/-- **Target fixed-endpoint correctness for the two-anchor bracket carrier** (task 309 Phase 9, R1;
+Rabinovich Prop 3.5, PDF p.5). The stated interface obligation Phases R2 (`k=1` decision gate) and R3
+(depth-`k` lift) discharge: the carrier's `VecEA2.holds` at the fixed anchor pair `(x, t)` is
+equivalent to the existence of a **bracket witness** `w` realizing the arity-3 depth-`k` evaluation
+`nf_eval_nf M k 3 [w, x, t] qnf`. `{x,t}` are the FIXED endpoints; `w` is the bracket witness (G4/G6).
+Mirrors `nf_3var_bracket_xyt_correct` (VecEADecomp:244) with the depth generalized to arbitrary `k`.
+Free-variable count is structurally ≤2 (Lemma 3.2(2), PDF p.4) — the two endpoints. -/
+def BracketCarrierCorrect {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    {k : Nat} (carrier : BracketEndCharCarrier sig k) : Prop :=
+  ∀ (qnf : NormalForm sig k 3) (x t : M.carrier),
+    (carrier qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+
+/-- **`k = 0` carrier instance** (task 309 Phase 9, R1). The depth-0 two-anchor bracket carrier is the
+already-sorry-free `nf_3var_bracket_xyt` (VecEADecomp:233), confirming it inhabits
+`BracketEndCharCarrier sig 0` (the recursion base for R3). Prop 3.5 depth-0 collapse (PDF p.5). -/
+noncomputable def bracketEndChar_k0 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    BracketEndCharCarrier sig 0 :=
+  nf_3var_bracket_xyt atomMap h_surj
+
+/-- **`k = 0` fixed-endpoint correctness** (task 309 Phase 9, R1; sorry-free leaf). The depth-0 instance
+of `BracketCarrierCorrect`, restricted to the `x < y < t` bracket zone (the order hypotheses of
+`nf_3var_bracket_xyt_correct`, VecEADecomp:244): the depth-0 carrier's `holds` at the fixed anchors
+`(x, t)` is equivalent to a bracket witness `w` (the interior `y`) realizing `nf_eval_nf M 0 3 [w,x,t]`.
+Discharged directly by the landed sorry-free `nf_3var_bracket_xyt_correct` — no simp/omega/aesop
+chain-step shortcut (G5). Confirms the carrier's correctness signature typechecks against the exact
+`∃ w, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t)))` target at `k = 0`; Phases R2/R3 lift the
+order-zone-conditional depth-0 result to the unconditional depth-`k` `BracketCarrierCorrect`. -/
+theorem bracketEndChar_k0_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (ssn : NormalForm sig 0 3)
+    (h_xy : ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_k0 atomMap h_surj ssn).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) ssn :=
+  nf_3var_bracket_xyt_correct atomMap h_surj ssn h_xy h_yt h_xt h_yx h_ty h_tx M x t
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
