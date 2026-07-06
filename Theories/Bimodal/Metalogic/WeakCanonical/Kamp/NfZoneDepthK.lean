@@ -62,6 +62,41 @@ non-vacuous statement of the faithful converter presupposes that construction (a
 plan's Postmortem Constraints); the honest artifact is the sorry-free extraction layer below plus
 this note.
 
+## Phase 11b progress — faithful framing landed (sorry-free), bracket integration remains
+
+The Phase-11b dispatch (session sess_1783315428_d370a2) **replaced the refuted projection framing
+with the correct characteristic-type framing** and landed its sorry-free foundation. Concretely,
+these declarations (all `[propext, Classical.choice, Quot.sound]`, off-path) now exist below:
+
+* `nf_eval_quant_layer` — quant-layer companion to 11a's `nf_eval_atom_layer`; exposes the
+  coupled `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` layer verbatim (no projection).
+* `nf_zone_exists_iff_char` — reduces `∃ y, nf_eval_nf M k 3 [y,x,t] qnf` to
+  `∃ y, nf_characteristic M k 3 [y,x,t] = qnf` via `nf_eval_unique`. This is the pivot: the
+  target is now *characteristic-type occurrence*, not a per-variable glue.
+* `exists_trichotomy_split` (generic single-boundary atom), `nf_zone_partition5`, and
+  `nf_zone_exists_partition5` — the five Rabinovich `F_i` zones (`y<x`, `y=x`, `x<y<t`, `y=t`,
+  `t<y`), unconditionally valid, composed with the reduction. The generic split is the reusable
+  atom for BOTH the outer `y`-split and the inner `w`-split (see below).
+* `nf_characteristic_atom_succ` / `nf_characteristic_quant_succ` — the depth-`k` IH interface:
+  the characteristic type's atom layer is `decide ∘ atom_eval`, and its quant layer is exactly
+  the coupled joint realizability set `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub`.
+
+**Precise continuation point (the irreducible crux, next dispatch).** Convert each *open* zone of
+`nf_zone_exists_partition5` (`∃ y<x …`, `∃ x<y<t …`, `∃ y>t …`) into a temporal formula at the
+anchors via `bracketBuildLeft`/`bracketBuildRight` (`VecEATranslation.lean:273/50`, correctness
+`:503/:234`, shape `∃ z, order ∧ endpoint.eval_at z ∧ bracket.holds`). The obstruction the
+foundation now isolates: the endpoint/segment `TemporalPred`s must encode `char[y,x,t] = qnf`,
+whose **quant layer** (via `nf_characteristic_quant_succ`) is the coupled
+`∃ w, nf_eval_nf M (k-1) 4 [w,y,x,t] sub`. This does not reduce to a point predicate at `y`; it
+must be resolved by an **inner `w`-zone split** (apply `exists_trichotomy_split` three times, with
+boundaries `y`, `x`, `t`), turning each `w`-zone into a depth-`(k-1)` IH temporal formula supplied
+by `nf_nvar_exist_all_depths_fn` (KampPrior.lean:397, correctness `:405`, gated on
+`semantic_prior_UZ/SZ`). The nested (outer `y` / inner `w`) bracket assembly is Rabinovich's
+genuine Cor 5.4 `F_i` chain and is the ~400-700 line body scoped to the next dispatch. The x=t
+arm (`nf_zone_partition5`'s `y=t` point zone on the diagonal env `[t,x,t]`) is downstream of the
+same machinery, using `renameNF_eval_diag0` for its depth-0 base. **Do NOT** retry the
+projection-based `VecEA2` (refuted; see the DIVERGENCE NOTE above).
+
 ## References
 - Rabinovich 2014 §5 (interval split), Cor 5.4 (`F_i` chain)
 - `VecEADecomp.lean:407-744` (depth-0 templates: `reconstruct_nf_3var`, `nf_3var_zone_*`)
