@@ -248,4 +248,43 @@ theorem diagDup_eval_zero {sig : MonadicSignature}
     (fun _ => t) (fun _ => t)
     (fun _ => rfl) (fun _ => rfl) diagCollapse_expand_id nf
 
+/-! ### Phase-3 OBSTRUCTION: the diagonal arm is NOT arity-1-collapsible at depth `k+1`
+
+The plan's Phase-3 route ("`A_diag_correct` as a plain iff `temporal_truth M t (char_k1 (collapse
+sub_nf)) ↔ nf_eval_nf M (k+1) 2 [t,t] sub_nf`, assets only") is a **non-theorem for arbitrary
+`sub_nf`** at depth `k+1`. This is the depth-`≥1` diagonal crux flagged sorry-free in
+`NfDepth0Generalized.lean:1691-1719` ("at depth `k ≥ 1` the x=t arm is NOT separable from the
+Phase-11 crux"), here re-derived directly for the constant-env `[t,t]` case.
+
+**Why the depth-0 base (`diagDup_eval_zero`) does not lift.** Unfolding
+`nf_eval_nf M (k+1) 2 (fun _ => t) sub_nf` at the quant layer, and any `char_k1`-of-a-collapse
+formula's truth, both reduce a per-sub-form obligation to the **inner iff**
+
+```
+(∃ x, nf_eval_nf M k 3 (Fin.cons x (fun _ => t)) sub_a)          -- env [x, t, t]
+  ↔ (∃ x, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) (Coll' sub_a))   -- env [x, t]
+```
+
+where `Coll' := renameNF (liftIdx diagExpandMap) (liftIdx diagCollapseMap)` collapses the two
+`t`-positions. The `→` direction holds (the merged positions genuinely carry equal values `t`), but
+the `←` direction is **false**: pick a non-diagonal-invariant `sub_a` (e.g. one whose atom layer
+demands `order 1 2`, unsatisfiable at `[x,t,t]` since `t < t` is false) whose collapse `Coll' sub_a`
+is nonetheless a realizable arity-2 characteristic. Then the RHS holds while the LHS fails, because
+`nf_characteristic M k 3 [x,t,t]` is always diagonal-invariant and no `x` makes `sub_a` its value.
+
+**Consequence.** `nf_characteristic M (k+1) 2 (fun _ => t) ≠ diagDup (nf_characteristic M (k+1) 1
+(fun _ => t))` in general: the arity-2 characteristic encodes strictly more (which non-diagonal
+sub-forms are unrealizable) than any arity-1 collapse can carry. Hence **no `char_k1`-of-collapse
+formula characterizes the diagonal disjunct for arbitrary `sub_nf`.** A correct `A_diag` requires a
+genuine **arity-2 (two-anchor) characteristic FORMULA builder** at depth `k+1` — which does not
+exist as an asset (`KampPrior.nf_succ_char_formula` is arity-1 only; `NfZoneDepthK.nf_char3_eq_succ_iff`
+is an equality *decomposition*, not a temporal-formula construction). Building it is the two-anchor
+"Phase-11 crux".
+
+This is a **grounded scoping obstruction**, not a proof-engineering stall (it does not contradict
+research VERDICT (a): a uniform navigable `A` still exists — but the diagonal arm's realization needs
+the two-anchor characteristic machinery, not the arity-1 collapse the plan assumed). Sorry-free
+scaffolding landed here: `diagCollapseMap`/`diagExpandMap`, `diagCollapse_expand_id`, `diagDup`,
+`diagDup_eval_zero`. See task-307 handoff `next_action_hint` for the spawn recommendation. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -253,13 +253,43 @@ Phases 3/5/6 consume the three disjuncts directly.
 - **Estimated output:** ~120-200 lines. **Done when:** trichotomy lemma proven sorry-free, build green.
 - **Depends on:** 1 (GO)
 
-### Phase 3: A_diag arm (x = t), assets only [NOT STARTED]
+### Phase 3: A_diag arm (x = t), assets only [BLOCKED]
 - **Goal:** Discharge the diagonal disjunct `nf_eval M (k+1) 2 [t,t] sub_nf` by collapsing arity
   2 → 1 via value-duplication and characterizing with `char_k1`. No new math (assets only).
 - **Tasks:**
   - [ ] Prove `A_diag_correct`: `temporal_truth M t (char_k1 (diagCollapse sub_nf)) ↔
         nf_eval M (k+1) 2 [t,t] sub_nf` using `renameNF_eval_diag0` (depth-0 base) composed with
-        `char_k1_correct`.
+        `char_k1_correct`. *(deviation: BLOCKED — the plain iff is a non-theorem at depth k+1; the
+        arity-1-collapse route is refuted below. Sorry-free scaffolding landed instead.)*
+
+**BLOCKER (Phase 3)** — recorded 2026-07-06, session sess_1783342946_dfd523:
+- **What failed:** `A_diag_correct` as a plain iff for arbitrary `sub_nf : NormalForm sig (k+1) 2`.
+  Any `char_k1`-of-collapse formula characterizes only `Coll sub_nf = char₁[t]`, strictly weaker
+  than the diagonal disjunct `sub_nf = char₂[t,t]` (collapse is non-injective).
+- **What was tried:** value-duplication collapse maps built and the depth-0 base
+  (`diagDup_eval_zero`) proven sorry-free via `renameNF_eval_diag0`. Attempting to lift to depth
+  `k+1` reduces, at the quant layer, to the inner iff
+  `(∃x, nf_eval M k 3 [x,t,t] sub_a) ↔ (∃x, nf_eval M k 2 [x,t] (Coll' sub_a))`.
+- **Why stuck (grounded, not a stall):** the `←` direction of that inner iff is FALSE — a
+  non-diagonal-invariant `sub_a` (e.g. demanding `order 1 2`, unsatisfiable at `[x,t,t]` since
+  `t<t` is false) can have a realizable collapse, so RHS holds while LHS fails. Therefore
+  `char₂[t,t] ≠ diagDup(char₁[t])`; the arity-2 characteristic carries information no arity-1
+  collapse encodes. This is exactly the depth-`≥1` diagonal crux flagged sorry-free at
+  `NfDepth0Generalized.lean:1691-1719`. The plan mis-scoped Phase 3 as "assets only" on a depth-0
+  intuition.
+- **What is needed:** a genuine **arity-2 (two-anchor) characteristic FORMULA builder** at depth
+  `k+1` (the "Phase-11 crux"). It does not exist as an asset: `nf_succ_char_formula` is arity-1
+  only, and `nf_char3_eq_succ_iff` is an equality *decomposition*, not a formula construction.
+  Recommend spawning a task to build the two-anchor characteristic converter, which Phases 3/5/6
+  then consume. Does NOT contradict VERDICT (a): a uniform navigable `A` still exists.
+- **Prohibited:** no `sorry` (none introduced; live-path count stays 2), no `def X := True`, no
+  arity-1-collapse `A_diag` (refuted above).
+
+Sorry-free scaffolding landed in `NfZoneFlattenNavigable.lean` (append-only): `diagCollapseMap`,
+`diagExpandMap`, `diagCollapse_expand_id`, `diagDup`, `diagDup_eval_zero`, plus the in-code
+OBSTRUCTION note. `lake build` GREEN (994 jobs); axioms exactly `[propext, Classical.choice,
+Quot.sound]`; live-path sorry count unchanged at 2.
+
 - **Verification:** `lake build` GREEN; sorry-free; axioms unchanged; NO projection used
   (Obstruction 1 constraint); live-path sorry still 2.
 - **Estimated output:** ~80-160 lines. **Done when:** A_diag arm iff proven sorry-free, build green.
