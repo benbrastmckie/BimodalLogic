@@ -2179,7 +2179,7 @@
     {
       "project_number": 307,
       "project_name": "kamp_cor54_bound_anchor_zone_converter",
-      "status": "not_started",
+      "status": "planning",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -2188,7 +2188,7 @@
       "parent_task": 305,
       "dependencies": [],
       "created": "2026-07-06T00:00:00Z",
-      "last_updated": "2026-07-06T00:00:00Z",
+      "last_updated": "2026-07-06T13:15:16Z",
       "artifacts": [
         {
           "type": "handoff",
@@ -2209,8 +2209,14 @@
           "type": "report",
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/40_phase11b-divergence-audit.md",
           "summary": "Divergence audit: refutation history of the projection and arity-tower routes this task must not repeat"
+        },
+        {
+          "type": "report",
+          "path": "specs/307_kamp_cor54_bound_anchor_zone_converter/reports/01_bound-anchor-verdict.md",
+          "summary": "Decisive bound-anchor verdict (a): uniform navigable A exists; free-anchor obstruction does not recur under binding."
         }
-      ]
+      ],
+      "session_id": "sess_1783342946_dfd523"
     }
   ],
   "artifacts": [
