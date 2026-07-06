@@ -325,33 +325,33 @@ They are therefore placed in this **KampPrior-independent** file (unlike Phase 3
 needs KampPrior-side `nf_char2_formula`), directly advancing the Phase-7 relocation concern: the
 outer-navigation arms can live cycle-safe. -/
 
-/-- **A_past arm** (task 307 Phase 5): the outer `bracketBuildLeft` (Since) navigation from the fixed
-origin `t` back to the bound witness `x` in the past exterior, over a single endpoint hook `pastEnd`
-(the depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). The trivial (`top`) segment
-makes the chain collapse to the bare past-exterior existential (`navigated_bracket_reaches_exterior_past`). -/
-noncomputable def A_past (pastEnd : TemporalPred) : Formula :=
-  bracketBuildLeft (BracketFormula.trivial TemporalPred.top) pastEnd
+/-- **A_past arm** (task 307 Phase 5; task 309 Phase 1 segment refactor): the outer
+`bracketBuildLeft` (Since) navigation from the fixed origin `t` back to the bound witness `x` in the
+past exterior, over a caller-supplied non-trivial segment `seg : BracketFormula 0` (the Rabinovich
+Cor 5.4 `β_i` segment, md:154-157) and a single endpoint hook `pastEnd` (the depth-`(k+1)` arity-2
+characteristic at the navigated `[x, t]`). The segment is now a parameter (previously hardcoded to
+`BracketFormula.trivial TemporalPred.top`): per guard G3, the off-diagonal `(x, t)` coupling MUST
+ride the non-trivial `β_i` segment supplied by the caller, so this def is segment-parametric. -/
+noncomputable def A_past (seg : BracketFormula 0) (pastEnd : TemporalPred) : Formula :=
+  bracketBuildLeft seg pastEnd
 
-/-- **A_past arm correctness** (task 307 Phase 5). Under the endpoint-hook correctness `h_past` (the
-recursion IH: the navigated endpoint `pastEnd.eval_at` at a past witness `x < t` characterizes the
-depth-`(k+1)` arity-2 evaluation of `sub_nf` on `[x, t]`), `A_past` holds at `t` iff the past disjunct
-`∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` of `nf_zone_exists_trichotomy_k1`
-holds. Pure outer navigation: a direct application of the past-reach pillar
-`navigated_bracket_reaches_exterior_past` (built on the preserved asset `bracketBuildLeft_correct`),
-never rebuilding the navigation mechanism. -/
-theorem A_past_correct {sig : MonadicSignature} {k : Nat}
+/-- **A_past arm correctness** (task 307 Phase 5; task 309 Phase 1 segment refactor). `A_past seg
+pastEnd` holds at `t` iff there is a past endpoint `z0 < t` where `pastEnd` holds and the caller's
+segment `seg` holds on the open interval `(z0, t)`. This is the segment-carrying characterization the
+off-diagonal `F_i` chain (Phase 4) needs: a direct application of the preserved asset
+`bracketBuildLeft_correct` (Rabinovich Cor 5.4 `β_i` past bracket, md:154-157), never rebuilding the
+navigation mechanism. The `nf_eval_nf` coupling of `pastEnd` at `[x, t]` is discharged by the caller
+one level up (Phase 4), not here — this lemma is purely the outer navigation ↔ segment-witness
+equivalence. -/
+theorem A_past_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier)
-    (pastEnd : TemporalPred)
-    (sub_nf : NormalForm sig (k + 1) 2)
-    (h_past : ∀ x : M.carrier, x < t →
-      (pastEnd.eval_at M atomMap x ↔
-        nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)) :
-    temporal_truth M atomMap t (A_past pastEnd) ↔
-      ∃ x : M.carrier, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+    (seg : BracketFormula 0) (pastEnd : TemporalPred) :
+    temporal_truth M atomMap t (A_past seg pastEnd) ↔
+      ∃ z0 : M.carrier, z0 < t ∧ pastEnd.eval_at M atomMap z0 ∧
+        seg.holds M atomMap z0 t := by
   simp only [A_past]
-  rw [navigated_bracket_reaches_exterior_past]
-  exact exists_congr fun x => and_congr_right fun hx => h_past x hx
+  exact bracketBuildLeft_correct seg pastEnd M atomMap t
 
 /-! ## Phase 6: A_future arm (`t < x`) — outer `bracketBuildRight` (Until) navigation
 
@@ -377,31 +377,29 @@ as bracket witnesses in `futureEnd`); endpoint NAVIGATED (route (b), not depth-0
 collapse / no projection `VecEA2` (route (c)/(a)). Placed cycle-safe in this KampPrior-independent
 file alongside `A_past`. -/
 
-/-- **A_future arm** (task 307 Phase 6): the outer `bracketBuildRight` (Until) navigation from the
-fixed origin `t` forward to the bound witness `x` in the future exterior, over a single endpoint hook
-`futureEnd` (the depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). Dual of `A_past`. -/
-noncomputable def A_future (futureEnd : TemporalPred) : Formula :=
-  bracketBuildRight (BracketFormula.trivial TemporalPred.top) futureEnd
+/-- **A_future arm** (task 307 Phase 6; task 309 Phase 1 segment refactor): the outer
+`bracketBuildRight` (Until) navigation from the fixed origin `t` forward to the bound witness `x` in
+the future exterior, over a caller-supplied non-trivial segment `seg : BracketFormula 0` (the
+Rabinovich Cor 5.4 future-dual `β_i` segment, md:154-157) and a single endpoint hook `futureEnd` (the
+depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). Dual of `A_past`; the segment is a
+parameter per guard G3 (the off-diagonal `(t, x)` coupling rides the non-trivial segment). -/
+noncomputable def A_future (seg : BracketFormula 0) (futureEnd : TemporalPred) : Formula :=
+  bracketBuildRight seg futureEnd
 
-/-- **A_future arm correctness** (task 307 Phase 6). Dual of `A_past_correct`: under the endpoint-hook
-correctness `h_fut` (the recursion IH: the navigated endpoint `futureEnd.eval_at` at a future witness
-`t < x` characterizes the depth-`(k+1)` arity-2 evaluation of `sub_nf` on `[x, t]`), `A_future` holds
-at `t` iff the future disjunct `∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` of
-`nf_zone_exists_trichotomy_k1` holds. A direct application of the future-reach pillar
-`navigated_bracket_reaches_exterior_future` (built on the preserved asset `bracketBuildRight_correct`),
-never rebuilding the navigation mechanism. -/
-theorem A_future_correct {sig : MonadicSignature} {k : Nat}
+/-- **A_future arm correctness** (task 307 Phase 6; task 309 Phase 1 segment refactor). Dual of
+`A_past_correct`: `A_future seg futureEnd` holds at `t` iff there is a future endpoint `z1 > t` where
+`futureEnd` holds and the caller's segment `seg` holds on the open interval `(t, z1)`. A direct
+application of the preserved asset `bracketBuildRight_correct` (Rabinovich Cor 5.4 future-dual `β_i`
+bracket, md:154-157), never rebuilding the navigation mechanism. The `nf_eval_nf` coupling of
+`futureEnd` at `[x, t]` is discharged by the caller one level up (Phase 5). -/
+theorem A_future_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (t : M.carrier)
-    (futureEnd : TemporalPred)
-    (sub_nf : NormalForm sig (k + 1) 2)
-    (h_fut : ∀ x : M.carrier, t < x →
-      (futureEnd.eval_at M atomMap x ↔
-        nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)) :
-    temporal_truth M atomMap t (A_future futureEnd) ↔
-      ∃ x : M.carrier, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+    (seg : BracketFormula 0) (futureEnd : TemporalPred) :
+    temporal_truth M atomMap t (A_future seg futureEnd) ↔
+      ∃ z1 : M.carrier, t < z1 ∧ futureEnd.eval_at M atomMap z1 ∧
+        seg.holds M atomMap t z1 := by
   simp only [A_future]
-  rw [navigated_bracket_reaches_exterior_future]
-  exact exists_congr fun x => and_congr_right fun hx => h_fut x hx
+  exact bracketBuildRight_correct seg futureEnd M atomMap t
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
