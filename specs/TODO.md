@@ -12,13 +12,12 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,310 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,311 | 161,187,191,194,230,291,300,310 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309 | 189,192,196,311 | automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,311 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,311 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
+| 5 | 303 | 305 | completeness |
+| 6 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -106,9 +105,8 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-310 [IMPLEMENTING] — Define a new fixed-arity monadic E[Sigma]-fold evaluation for Nor
-  └─ 311 [NOT STARTED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+311 [NOT STARTED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -152,7 +150,7 @@ AFTER COMPLETION: once both spawned tasks land, task 309 remains [BLOCKED] until
 
 ### 310. Normalform efold encoding
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
