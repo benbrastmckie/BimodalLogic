@@ -3,33 +3,38 @@
   "skeleton": false,
   "task": 305,
   "phase": 11,
-  "sub_phase": "11b",
+  "sub_phase": "11b-body",
   "session_id": "sess_1783315428_d370a2",
-  "summary": "Phase 11b framing advance: superseded the refuted projection framing with the correct characteristic-type framing and landed its sorry-free foundation (7 new lemmas, off-path, baseline axioms). nf_zone_exists_iff_char pivots the target from per-variable glue to characteristic-type occurrence; nf_zone_partition5 + exists_trichotomy_split give the five Rabinovich F_i zones; nf_characteristic_quant_succ + nf_eval_quant_layer expose the coupled joint realizability set the projection route could not factor. The irreducible crux (nested outer-y/inner-w bracket assembly feeding the depth-k IH through bracketBuildLeft/Right) is now precisely isolated but not landed — it is the ~400-700 line Rabinovich Cor 5.4 F_i-chain body scoped to the next dispatch.",
+  "summary": "Phase 11b BODY advance: landed the inner-w zone-split foundation sorry-free (4 new lemmas), discharging the exact 'inner w-zone split' step the prior handoff named as the required next brick. nf_characteristic_quant_split3 splits the coupled quant layer (exists w, nf_eval_nf M k 4 [w,y,x,t] sub) into the seven inner w-zones at boundaries y,x,t; nf_char3_eq_succ_iff gives the complete char[y,x,t]=qnf decomposition into atom + coupled-quant layers; nf_char_eq_iff_eval is the general-depth char-equality pivot; exists_nested_split3 is the generic unconditional 3-boundary split. REFINED FINDING (supersedes the 'land zone-by-zone' expectation): the five zones are NOT independently landable. Converting any open zone requires a MULTI-anchor (y,x,t) bounded existential, but the only IH engine nf_nvar_exist_all_depths_fn (KampPrior:397) delivers a SINGLE-anchor (t) existential; the bridging bracketBuildLeft/Right assembly + endpoint characteristic-encoding is shared verbatim across all five zones, so the honest remaining unit is the whole nested (outer-y/inner-w) bracket-assembly body (Rabinovich Cor 5.4 F_i chain, ~400-700 lines), for which no non-vacuous partial statement exists (an 'exists formula, iff' is Classical.choice-vacuous and Postmortem-forbidden).",
   "phases_completed": 10,
   "phases_total": 15,
-  "build_state": "GREEN (full lake build, 1700 jobs)",
+  "build_state": "GREEN (scoped module build, 992 jobs; full lake build unchanged)",
   "live_path_sorry_baseline": 2,
   "live_path_sorry_current": 2,
   "axioms_status": "unchanged: [propext, Classical.choice, Quot.sound] on every new decl; zero new top-level axioms (grep '^axiom ' Theories/ = 2, baseline)",
-  "landed_sorry_free": [
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_quant_layer",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_exists_iff_char",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.exists_trichotomy_split",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_partition5",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_zone_exists_partition5",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_characteristic_atom_succ",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_characteristic_quant_succ"
+  "landed_sorry_free_this_dispatch": [
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_char_eq_iff_eval",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.exists_nested_split3",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_characteristic_quant_split3",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_char3_eq_succ_iff"
   ],
+  "zone_converter_status": {
+    "note": "Zones are NOT independently landable; all five share the single multi-anchor bracket-assembly + endpoint-encoding construction. Statuses below are of the SHARED converter, decomposed by zone for reporting only.",
+    "y_lt_x (open, past, bracketBuildLeft)": "BLOCKED on shared multi-anchor bracket bridge",
+    "y_eq_x (point, diagonal [x,x,t])": "BLOCKED at depth k+1 (quant layer); depth-0 base = renameNF_eval_diag0 (available)",
+    "x_lt_y_lt_t (open, bounded Until)": "BLOCKED on shared multi-anchor bracket bridge",
+    "y_eq_t (point, diagonal [t,x,t], = x=t arm)": "BLOCKED at depth k+1 (quant layer); depth-0 base = renameNF_eval_diag0 (available)",
+    "t_lt_y (open, future, bracketBuildRight)": "BLOCKED on shared multi-anchor bracket bridge"
+  },
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 391,
       "statement": "| 1 => arm of the arity-2 existential engine: exists env, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
       "strategic": false,
-      "assumption": "The depth-(k+1) arity-2 existential engine exist_tl_fn_{k+1} (assembled from the depth-k zone converter + x<t/t<x/x=t arms) discharges this.",
-      "why_deferred": "Pre-existing live-path baseline sorry; Phase 14 rewires it. Not touched this dispatch (Phase 11 scope only). Blocked upstream by the Phase 11b bracket-integration crux.",
-      "follow_up_task": "task 305 Phase 14 (after Phase 11b bracket integration + 12 + 13)"
+      "assumption": "The depth-(k+1) arity-2 existential engine (assembled from the depth-k zone converter + x<t/t<x/x=t arms) discharges this.",
+      "why_deferred": "Pre-existing live-path baseline sorry; Phase 14 rewires it. Not touched this dispatch (Phase 11 scope only). Blocked upstream by the Phase 11b multi-anchor bracket-bridge crux.",
+      "follow_up_task": "task 305 Phase 14 (after Phase 11b bracket bridge + 12 + 13)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
@@ -43,17 +48,17 @@
   ],
   "blockers": [
     {
-      "target": "depth-k two-anchor arity-3 zone converter bracket integration (nf_zone_depthk_* : the open-zone existentials -> Since/Until brackets) + folded-in x=t arm",
-      "phase": "11b (continuation)",
-      "verbatim_goal": "Convert each open zone of nf_zone_exists_partition5 (exists y<x .. char=qnf; exists x<y<t .. char=qnf; exists y>t .. char=qnf) into a temporal formula at anchors x,t via bracketBuildLeft/bracketBuildRight, whose endpoint/segment TemporalPreds encode char[y,x,t]=qnf.",
-      "root_cause": "The characteristic type char[y,x,t]'s quant layer is the coupled joint realizability set exists w, nf_eval_nf M (k-1) 4 [w,y,x,t] sub (now exposed sorry-free by nf_characteristic_quant_succ). This does NOT reduce to a point predicate at y; it requires an inner w-zone split (exists_trichotomy_split applied at boundaries y,x,t) turning each w-zone into a depth-(k-1) IH temporal formula via nf_nvar_exist_all_depths_fn (KampPrior:397, gated on semantic_prior_UZ/SZ). The nested outer-y / inner-w bracket assembly is Rabinovich's genuine Cor 5.4 F_i chain (~400-700 lines), too large for this dispatch. The projection-based VecEA2 remains a refuted NON-theorem and must NOT be retried.",
-      "why_no_strategic_sorry": "A bare 'exists formula, iff' statement of the converter is vacuous (closed by Classical.choice) and explicitly forbidden by the plan Postmortem Constraints. The honest artifact is the sorry-free characteristic-type + zone-partition foundation (7 lemmas) plus the precise continuation recorded in the NfZoneDepthK.lean 'Phase 11b progress' note. No non-vacuous partial statement of the full converter is possible without the bracket-assembly body itself."
+      "target": "Phase 11b multi-anchor bounded-existential bracket bridge (the sole remaining crux; shared across all five zones)",
+      "phase": "11b (body continuation)",
+      "verbatim_goal": "For each open inner w-zone of nf_characteristic_quant_split3, express exists w, (bounds among y,x,t) and nf_eval_nf M k 4 [w,y,x,t] sub as a bracketBuildRight/bracketBuildLeft formula whose endpoint TemporalPred is the depth-k characteristic-type predicate (via nf_char3_eq_succ_iff, one depth down); then assemble the outer y-zones of nf_zone_exists_partition5 identically. Point zones y=x/y=t reduce to the diagonal depth-0 base renameNF_eval_diag0.",
+      "root_cause": "The IH engine nf_nvar_exist_all_depths_fn (KampPrior:397, correctness :405) produces only a SINGLE-anchor existential exists env, nf_eval_nf M k (n+1) (insertEnv env t) sub (anchored at the one evaluation point t). Every zone converter arm requires a MULTI-anchor (y,x,t) BOUNDED existential. Bridging single-anchor IH to multi-anchor bounded zone IS the bracketBuildLeft/Right assembly, whose endpoint/segment TemporalPreds must recursively encode char[.]=qnf. This endpoint-encoding machinery is shared verbatim across all five zones, so no single zone closes in isolation. This is Rabinovich's Cor 5.4 F_i chain, ~400-700 lines, one nested induction. The projection-based VecEA2 remains a refuted NON-theorem and must NOT be retried.",
+      "why_no_strategic_sorry": "A bare 'exists formula, iff' statement of the converter or of any single zone arm is vacuous (closed by Classical.choice) and explicitly forbidden by the plan Postmortem Constraints. The inner/outer split layers are now BOTH sorry-free (nf_zone_partition5 outer, nf_characteristic_quant_split3 inner); the only non-vacuous remaining artifact is the bracket-assembly body itself, which cannot be partially stated without building it."
     }
   ],
   "continuation_path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
-  "next_action_hint": "Resume Phase 11b bracket integration in a fresh dispatch. Foundation is landed sorry-free in NfZoneDepthK.lean: use nf_zone_exists_partition5 to reduce to five zones; for each OPEN zone apply bracketBuildLeft (past: y<x) / bracketBuildRight (future: y>t, and x<y<t as a bounded Until) whose endpoint TemporalPred encodes char[y,x,t]=qnf; resolve char's coupled quant layer (nf_characteristic_quant_succ) by an INNER w-zone split (exists_trichotomy_split at boundaries y,x,t) feeding depth-(k-1) IH formulas from nf_nvar_exist_all_depths_fn (KampPrior:397/405, gated on semantic_prior_UZ/SZ). Point zones y=x/y=t (diagonal envs [x,x,t]/[t,x,t]) use renameNF_eval_diag0 for the depth-0 base = the x=t arm. Do NOT retry projection-based VecEA2. See the NfZoneDepthK.lean 'Phase 11b progress' note for the full continuation spec.",
+  "next_action_hint": "Resume Phase 11b in a fresh dispatch to build the multi-anchor bounded-existential bracket bridge. BOTH split layers are now landed sorry-free in NfZoneDepthK.lean: nf_zone_exists_partition5 (outer y-split into 5 zones) and nf_characteristic_quant_split3 (inner w-split into 7 zones), joined by nf_char3_eq_succ_iff. The sole remaining crux: bridge the SINGLE-anchor IH engine nf_nvar_exist_all_depths_fn (KampPrior:397, gives exists env, nf_eval_nf ... (insertEnv env t) sub) to the MULTI-anchor bounded zone existentials via bracketBuildLeft (past y<x)/bracketBuildRight (future t<y; and x<y<t as bounded Until), endpoint TemporalPred = depth-k characteristic predicate encoded recursively via nf_char3_eq_succ_iff. Point zones y=x/y=t use renameNF_eval_diag0 for the depth-0 base. Zones are NOT independently landable (shared endpoint machinery) — budget the whole ~400-700 line body as one unit. Do NOT retry projection VecEA2. See the 'Phase 11b BODY progress' section of the NfZoneDepthK.lean module note for the full continuation spec.",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean (extended: +7 sorry-free lemmas, updated divergence note with 11b progress + continuation)",
-    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 11 PARTIAL: 11b framing-advance annotation)"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean (extended: +4 sorry-free lemmas nf_char_eq_iff_eval/exists_nested_split3/nf_characteristic_quant_split3/nf_char3_eq_succ_iff, updated module note with Phase 11b BODY progress + refined multi-anchor obstruction + continuation)",
+    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 11 PARTIAL: 11b BODY annotation)"
   ]
 }
