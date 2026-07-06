@@ -197,7 +197,17 @@ The executable phases below are numbered 7/8/9, continuing plan 37's numbering. 
 
 ---
 
-### Phase 7: Leftward existential closure — bracketBuildLeft + existClosureLeft + iff [NOT STARTED]
+### Phase 7: Leftward existential closure — bracketBuildLeft + existClosureLeft + iff [COMPLETED]
+
+**Deviation (bracketBuildLeft already existed)**: Report 38 stated `bracketBuildLeft` (+`_correct`)
+was MISSING; in fact a complete, sorry-free copy existed in `NfToVecEA.lean` (downstream of
+`VecEATranslation.lean`), carrying an outdated "sorries at n > 0" docstring. Because `VecEA_m`
+(where `existClosureLeft` lives) is upstream of `NfToVecEA`, that copy was unreachable. Resolution:
+the canonical `bracketBuildLeft`/`_correct` (with `chainHoldsLeft`, `bracket_append_witness`,
+`bracket_extract_last_witness`) now lives in `VecEATranslation.lean`; the duplicate block was
+removed from `NfToVecEA.lean` and its two `bracketBuildLeft_correct_zero` usages repointed to the
+general `bracketBuildLeft_correct`. Net effect: single source of truth, still sorry-free, and the
+leftward translation is now available to `VecEA_m`.
 
 **Goal**: Build the Since-mirror of the proven rightward absorption: `bracketBuildLeft`
 (+ `_correct`) and `VecEA_m.existClosureLeft` (+ `_correct` / `_correct_rev`), absorbing the
@@ -206,19 +216,22 @@ Sorry-free, off the live import path. This is a structural mirror of sorry-free 
 HIGH confidence).
 
 **Tasks**:
-- [ ] Read `VecEATranslation.lean:50,234` (`bracketBuildRight` + `bracketBuildRight_correct`) and
+- [x] Read `VecEATranslation.lean:50,234` (`bracketBuildRight` + `bracketBuildRight_correct`) and
   `VecEA_m.lean:208–332` (`existClosure` + `_correct` :245 + `_correct_rev` :314) as the mirror
-  templates; confirm `Formula.snce` / `weak_since` (`Formula.lean:474`) / `all_past` signatures.
-- [ ] Build `noncomputable def bracketBuildLeft : {n : Nat} → BracketFormula n → TemporalPred → Formula`
+  templates; confirm `Formula.snce` / `buildLeft` (`Translation.lean:199`) signatures.
+- [x] Build `noncomputable def bracketBuildLeft : {n : Nat} → BracketFormula n → TemporalPred → Formula`
   (Since analog of `bracketBuildRight`; holds at `z1` iff `∃ z0 < z1` with the endpoint + bracket on
-  `(z0, z1)`), in `VecEATranslation.lean` (append-only).
-- [ ] Prove `bracketBuildLeft_correct` as the Since-mirror of `bracketBuildRight_correct`.
-- [ ] Build `def VecEA_m.existClosureLeft {m} (vea : VecEA_m (m+1)) : VecEA_m m` (absorb leftmost
+  `(z0, z1)`), in `VecEATranslation.lean`. *(deviation: consolidated from a pre-existing
+  `NfToVecEA.lean` copy — see Phase 7 heading note.)*
+- [x] Prove `bracketBuildLeft_correct` as the Since-mirror of `bracketBuildRight_correct`
+  (via `chainHoldsLeft` + `bracket_append_witness` / `bracket_extract_last_witness`).
+- [x] Build `def VecEA_m.existClosureLeft {m} (vea : VecEA_m (m+1)) : VecEA_m m` (absorb leftmost
   var `z0`: fold interval `(z0,z1)` + endpoint `(z0)` into endpoint `(z1)`) in `VecEA_m.lean`
-  (append-only), reusing `VecEAFormula.leftPart` for index shifting.
-- [ ] Prove `existClosureLeft_correct` and `existClosureLeft_correct_rev` (the two directions of the
-  leftward absorption iff), signatures verbatim from the Source-to-Implementation Mapping table.
-- [ ] `lean_verify` each new declaration: sorry-free, axioms = baseline, no `sorryAx`.
+  (append-only). *(deviation: used `prependEnv` = index-0 prepend, not `leftPart`.)*
+- [x] Prove `existClosureLeft_correct` and `existClosureLeft_correct_rev` (the two directions of the
+  leftward absorption iff), signatures per the Source-to-Implementation Mapping table.
+- [x] `lean_verify` each new declaration: sorry-free, axioms = `[propext, Classical.choice, Quot.sound]`,
+  no `sorryAx`.
 
 **File targets**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEATranslation.lean` (append
 `bracketBuildLeft` + `_correct`), `.../Kamp/VecEA_m.lean` (append `existClosureLeft` + `_correct` /
