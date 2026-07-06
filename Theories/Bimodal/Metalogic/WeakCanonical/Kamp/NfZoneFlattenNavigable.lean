@@ -79,4 +79,85 @@ theorem navigated_bracket_reaches_exterior_future {sig : MonadicSignature}
     intro y _ _
     simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
 
+/-- **Navigation reaches the past exterior** (Since-mirror). Dual of the future pillar via
+    `bracketBuildLeft`: a navigated leftward bracket with a trivial (`top`) segment, evaluated at
+    `t`, holds iff there is a past-exterior witness `w` (`w < t`) at which `endLeft` holds. This is
+    the `Since`-navigation reach into the past exterior `w < x` zone that D1's interior-confined
+    atomic bracket also could not testify to. -/
+theorem navigated_bracket_reaches_exterior_past {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (endLeft : TemporalPred) (t : M.carrier) :
+    temporal_truth M atomMap t
+        (bracketBuildLeft (BracketFormula.trivial TemporalPred.top) endLeft) ↔
+      ∃ w : M.carrier, w < t ∧ endLeft.eval_at M atomMap w := by
+  rw [bracketBuildLeft_correct]
+  constructor
+  · rintro ⟨z0, hz0, hend, _⟩
+    exact ⟨z0, hz0, hend⟩
+  · rintro ⟨w, hw, hend⟩
+    refine ⟨w, hw, hend, ?_⟩
+    rw [BracketFormula.trivial_holds]
+    intro y _ _
+    simp [TemporalPred.eval_at, TemporalPred.top, Formula.top, temporal_truth]
+
+/-! ## The GO/NO-GO probe: depth-graded NAVIGATED flattening composes at `k = 1`
+
+The decisive gate for R1. The refuted atomic D1 (`interior_bracket_cannot_realize_exterior_sub_k1`)
+showed a depth-0 **atomic** endpoint type is interior-confined and cannot express any coupling to an
+**exterior** witness. The probe below shows the **navigated** endpoint type is not so confined: a
+`bracketBuildRight` chain from `t` reaches an exterior-future witness `w` (`t < w`), and its endpoint
+type may itself be a **navigated** `bracketBuildLeft` chain that walks back from `w` to a further
+bound witness `z0` (`z0 < w`). This is exactly Rabinovich's Cor 5.4 `F_i` nesting
+(`F_{i-1} := α_{i-1} ∧ (β_i Until F_i)`) realized at depth `k = 1`: the deeper witness is **laid as a
+bracket witness** in one navigated chain, never named as a free anchor and never carried by an
+atomic single-point type. The composition is sorry-free — the mechanism the bound-anchor construction
+needs provably works, and no impossibility surfaces (contrast the free-anchor NO-GO of
+`no_x_independent_formula_captures_future_zone_k1`, which required a *free* `∀x` gate absent here). -/
+
+/-- **Phase-1 GO/NO-GO PROBE (navigated flattening at `k = 1`).** The nested navigated bracket
+    `bracketBuildRight (t → w) ∘ bracketBuildLeft (w → z0)`, evaluated at `t`, is equivalent to the
+    coupled two-witness existential `∃ w, t < w ∧ ∃ z0, z0 < w ∧ innerEnd.eval_at z0`. Both witnesses
+    `w` (future exterior of `t`) and `z0` (past of `w`) are **existentially bound and navigated-to**,
+    laid as bracket witnesses in a single `F_i` chain — never named. `innerEnd` is an **arbitrary**
+    (possibly itself navigated/depth-graded) endpoint type, so this composes to any depth.
+
+    This is the corrected sibling of the refuted atomic D1: where D1 proved an atomic `(x,t)`-bracket
+    cannot reach exterior `w`, this proves the navigated chain does — and moreover couples that
+    exterior `w` to a back-navigated witness `z0`, the precise coupling the depth-graded flattening
+    requires. Sorry-free ⇒ **GO** for R1: navigation expresses the bound-witness coupling at `k = 1`,
+    the Phase-16 free-anchor obstruction does not recur, and the plan proceeds to Phase 2. -/
+theorem nf_zone_flatten_navigable_k1_probe {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (innerEnd : TemporalPred) (t : M.carrier) :
+    temporal_truth M atomMap t
+        (bracketBuildRight (BracketFormula.trivial TemporalPred.top)
+          ⟨bracketBuildLeft (BracketFormula.trivial TemporalPred.top) innerEnd⟩) ↔
+      ∃ w : M.carrier, t < w ∧ ∃ z0 : M.carrier, z0 < w ∧ innerEnd.eval_at M atomMap z0 := by
+  rw [navigated_bracket_reaches_exterior_future]
+  refine exists_congr (fun w => and_congr_right (fun _ => ?_))
+  -- the endpoint type at `w` is itself a navigated (Since) bracket back into the past
+  exact navigated_bracket_reaches_exterior_past M atomMap innerEnd w
+
+/-! ## Grounding: the real `:391` core's exterior-future zone has the navigable shape
+
+Connecting the probe to the actual obligation. The `:391` coupled core
+`∃ w, nf_eval_nf M 1 3 (zoneEnv3 w x t) q` splits (asset `nf_zone_exists_partition5`) into five
+`w`-zones relative to `(x, t)`. Its **exterior-future** zone `∃ w, t < w ∧ …` — the very zone the
+atomic D1 bracket provably cannot realize — has exactly the shape `∃ w, t < w ∧ P w` that the
+navigated future bracket captures (`navigated_bracket_reaches_exterior_future`), with
+`P w := nf_eval_nf M 1 3 (zoneEnv3 w x t) q`. The residual Phase-4 obligation is to realize this `P`
+as the navigated endpoint type (nested back-navigation to `x`, `t` per the `F_i` chain); the probe
+above establishes that such an endpoint's exterior reach and back-coupling are expressible. -/
+
+/-- The exterior-future zone of the `:391` core, extracted from the sorry-free zone partition and
+    re-expressed in `nf_eval_nf` form (via `nf_char_eq_iff_eval`). This is the make-or-break zone:
+    D1 refuted the *atomic* bracket here, and its shape `∃ w, t < w ∧ P w` is precisely the target of
+    `navigated_bracket_reaches_exterior_future`. -/
+theorem exterior_future_zone_eval_shape {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (q : NormalForm sig 1 3) (x t : M.carrier) :
+    (∃ w, t < w ∧ nf_characteristic M 1 3 (zoneEnv3 w x t) = q) ↔
+      ∃ w, t < w ∧ nf_eval_nf M 1 3 (zoneEnv3 w x t) q := by
+  refine exists_congr (fun w => and_congr_right (fun _ => ?_))
+  exact nf_char_eq_iff_eval M 1 3 (zoneEnv3 w x t) q
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

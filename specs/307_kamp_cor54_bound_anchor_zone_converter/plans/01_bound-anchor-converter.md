@@ -166,7 +166,43 @@ practice (append disjoint lemma blocks), not dispatched concurrently. Phases 5 a
 that file and serialize. Only cross-file independence (new file vs KampPrior.lean) is truly
 parallel. Wave membership expresses dependency readiness; file ownership caps real parallelism.
 
-### Phase 1: k=1 navigated-flattening GO/NO-GO probe [IN PROGRESS]
+### Phase 1: k=1 navigated-flattening GO/NO-GO probe [COMPLETED]
+
+**GATE VERDICT: GO** (2026-07-06, session sess_1783342946_dfd523). The probe
+`nf_zone_flatten_navigable_k1_probe` is proven **sorry-free**, `lake build` GREEN (993 jobs),
+axioms exactly `[propext, Classical.choice, Quot.sound]` (2 baseline, zero domain axioms),
+live-path sorry count unchanged at 2 (`:391`, `:394`; probe file is off the live import path —
+`KampPrior.lean` does not import it). → **Proceed to Phase 2.**
+
+New file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneFlattenNavigable.lean` (4 sorry-free
+theorems):
+- `navigated_bracket_reaches_exterior_future` — the constructive dual of D1's
+  `interior_bracket_cannot_realize_exterior_sub_k1`: a `bracketBuildRight` (Until) chain from `t`
+  with a trivial (`top`) segment is equivalent to `∃ w, t < w ∧ endRight.eval_at w` for an
+  **arbitrary navigated** endpoint. Where D1 proved atomic brackets are interior-confined
+  (cannot reach exterior `w`), this proves navigated brackets reach the **future exterior** `t < w`.
+- `navigated_bracket_reaches_exterior_past` — Since-mirror; navigation reaches the past exterior
+  `w < t`.
+- `nf_zone_flatten_navigable_k1_probe` — **the gate**: the nested navigated bracket
+  `bracketBuildRight (t→w) ∘ bracketBuildLeft (w→z0)` at `t` is equivalent to the coupled
+  two-witness existential `∃ w, t < w ∧ ∃ z0, z0 < w ∧ innerEnd.eval_at z0`. Both `w` and `z0` are
+  existentially bound and **navigated-to** (laid as bracket witnesses in one Rabinovich `F_i`
+  chain), never named — the exact depth-graded coupling mechanism the flattening needs, and it
+  composes to arbitrary depth via the arbitrary `innerEnd`. Categorically distinct from the
+  refuted atomic D1 (navigated, not `.atom`/`.box`) and from the free-anchor NO-GO (both witnesses
+  bound, so `gate_forces_x_independence`'s free `∀x` premise is unstatable).
+- `exterior_future_zone_eval_shape` — grounds the probe in the real `:391` core: its
+  exterior-future zone `∃ w, t < w ∧ nf_eval_nf M 1 3 (zoneEnv3 w x t) q` (the make-or-break zone
+  D1 refuted for atomic types) has exactly the `∃ w, t < w ∧ P w` shape the navigated future
+  bracket captures.
+
+**R1 resolution:** the make-or-break claim (navigation can express the bound-witness coupling that
+atomic simplification could not) is established sorry-free at `k=1`; **no impossibility surfaced**
+(so this is not a NO-GO). The residual constructive obligation — realizing `P w := nf_eval_nf M 1 3
+(zoneEnv3 w x t) q` as the navigated endpoint type via nested back-navigation to `x, t` and
+discharging the depth-`k` residual by the IH — is the Phase-4 brick, exactly as planned. The
+mechanism it relies on (exterior reach + `F_i` back-coupling composition) is now proven to work.
+
 - **Goal:** Decide R1. Prove (or refute) that the coupled core `∃w, nf_eval M 1 3 [w,x,t] q` at
   `k=1` is equivalent to a `bracketBuild` disjunction over `w`'s zones whose endpoint types are
   DEPTH-GRADED / NAVIGATED (Until/Since reaching exterior `w`) — categorically distinct from the
