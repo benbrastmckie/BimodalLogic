@@ -1,34 +1,54 @@
 {
-  "status": "revised",
+  "status": "partial",
   "skeleton": false,
   "task": 305,
-  "phase": null,
+  "phase": 16,
   "session_id": "sess_1783315428_d370a2",
-  "verdict": "REVISED — plan v40 created (Uniform-Prop-4.3 negation-closure route pivot)",
-  "summary": "Plan v40 supersedes v39 for its remaining Phases 11-15. Both v39 crux approaches are refuted by sorry-free counterexamples (projection VecEA2 at Phase 10; flat single-interval atomic bracket at D1, interior_bracket_cannot_realize_exterior_sub_k1). Per user decision, pivoted INSIDE task 305 onto the Uniform-Prop-4.3 negation-closure route. The material de-risking asset: prior_hasAttainedINF (PriorINF.lean:224, sorry-free) converts the live-path h_UZ into HasAttainedINF, unlocking the model-dependent negation/INF closures (neg_bounded_exists = Cor 5.4 fwd, neg_interval_formula = Lemma 5.1 fwd) INSIDE the correctness proof, while the formula A is built model-independently from bracketBuildLeft/Right (Prop 3.5 nested Until/Since) + the depth-k IH exist_tl_fn_k + formula-level negation. Grounded verbatim in Rabinovich 2014 §3.5/§4.3/§5.1-5.4 (read this dispatch): the paper's Prop 4.2/4.3 are 'over Dedekind complete chains' and completeness is used 'in exactly one place: the INF formula' — so negation is model-class-dependent, NOT the uniform syntactic function prior plans over-demanded (divergence flagged in plan risk table). PLAN ACCOUNTING: phases_completed=10; phase 11 counted as +1 PARTIAL (11a/11b splits + D1 gate landed sorry-free off-path, all preserved as assets; flat/projection converter refuted); phases 12-14 ABANDONED (bracket route refuted); phase 15 verification folded into new Phase 20; 5 NEW phases numbered 16-20; phases_total = 10 + 1 (phase-11 partial) + 5 (new) = 16. HONEST VERDICT on :391 closability in ~6-cycle budget: UNCERTAIN, gated on Phase 16 (~40-50% conditional on Phase 16 GREEN, which is ~50-60%). Phase 16 is a 1-dispatch decisive go/no-go gate testing whether navigable (Until/Since + IH type + prior_hasAttainedINF) encoding captures the exterior-zone coupled existential the flat bracket provably could not; NO-GO closes out with bankable off-path assets + a named /spawn residual.",
+  "verdict": "NO-GO — Phase 16 gate decisively refuted (sorry-free obstruction). The exterior-navigation encoding does NOT capture the free-anchor future-zone existential.",
+  "summary": "Phase 16 GO/NO-GO GATE result: NO-GO. Landed sorry-free, off-path, in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneNavProbe.lean (4 theorems; axioms [propext, Classical.choice, Quot.sound]; lake build GREEN, 1700 jobs). The Phase-16 gate as stated (future exterior zone t<y with a FREE anchor x, x<t) is a NON-THEOREM, proven for EVERY candidate formula A (not merely the intended bracketBuildRight A_fut_k1): no_x_independent_formula_captures_future_zone_k1 derives False from the gate iff in any non-degenerate model. Root cause = the free-anchor identification obstruction: (1) future_zone_pins_x_pred — the RHS `exists y, t<y AND nf_eval_nf M 1 3 (zoneEnv3 y x t) qnf` pins x's local monadic type (atom layer forces M.interp p x <-> qnf's var-1 assignment); (2) gate_forces_x_independence — an x-independent formula A at t has ONE fixed truth value, so the gate iff would force the RHS independent of x. These collide: navigation (Until from t, Since back from y) can quantify over past points but CANNOT name the specific free anchor x. This is the future-navigable sibling of D1's interior-confinement obstruction (NfZoneDepthK1Probe.lean) and report 40 §2.1-A's arity-tower obstruction (single-point TemporalPred endpoint cannot carry a multi-anchor char[y,x,t]=qnf condition on a free second anchor) — all three converge on the same wall. In-file divergence note quotes Rabinovich §5 Cor 5.4 verbatim: the paper's F_i chain couples witnesses to the TWO interval endpoints, never to a third free anchor; the Lean gate was forced to diverge by demanding the endpoint encode a free anchor's depth-k characteristic type, which the paper's construction does not express. Per plan v40 GATE DECISION: STOP. Do NOT attempt Phases 17-20; do NOT recede to a new framing.",
+  "gate_verdict": "NO-GO",
   "phases_completed": 10,
   "phases_total": 16,
-  "new_phases": "16 (GO/NO-GO gate: exterior-navigation capture at k=1), 17 (past+interior zone converter arms), 18 (future+diagonal arms + full converter assembly), 19 (assemble exist_tl_fn_{k+1} + rewire KampPrior:391, 2->1), 20 (verify :394 reachability + axiom/sorryAx audit, absorbs v39 Phase 15)",
-  "go_no_go_gate": {
-    "phase": 16,
-    "claim": "CONCRETE (non-vacuous): define A_fut_k1 via bracketBuildRight (depth-0 IH realizability endpoint type) and prove A_fut_k1_correct: temporal_truth M t (A_fut_k1 ...) <-> (exists y, t < y AND nf_eval_nf M 1 3 (zoneEnv3 y x t) qnf), for all Prior M (via prior_hasAttainedINF h_UZ). Tests the future exterior zone t<y (mirror of the D1-refuted flat case) with temporal navigation instead of a flat atomic bracket.",
-    "green": "proceed to Phases 17-20",
-    "no_go": "STOP; land Prior->INF navigation wiring + obstruction lemma off-path GREEN; /spawn the Cor-5.4 multi-anchor-coupling task; keep :391 baseline"
-  },
-  "build_state": "GREEN at HEAD bce099aa8 (no Lean edited this dispatch; planning only)",
+  "landed_sorry_free": [
+    "Kamp.nf3_pred_x (var-1 monadic-atom extraction at [y,x,t])",
+    "Kamp.future_zone_pins_x_pred (RHS pins free anchor x's monadic type)",
+    "Kamp.gate_forces_x_independence (gate iff forces RHS independent of x)",
+    "Kamp.no_x_independent_formula_captures_future_zone_k1 (packaged NO-GO obstruction)"
+  ],
+  "build_state": "GREEN (lake build, 1700 jobs) at HEAD f011a3576",
   "live_path_sorry_baseline": 2,
   "live_path_sorry_current": 2,
-  "axioms_status": "unchanged: 2 top-level axioms (grep '^axiom ' Theories/ = 2)",
+  "axioms_status": "unchanged: 2 top-level axioms (grep '^axiom ' Theories/ = 2); all new decls [propext, Classical.choice, Quot.sound]",
+  "kampprior_rewired": false,
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 391,
+      "statement": "temporal_truth M atomMap t A <-> exists x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf (the :391 critical-path obligation)",
+      "strategic": false,
+      "assumption": "Pre-existing baseline sorry (NOT introduced this dispatch). The v40 route to discharge it via exterior-navigation is now refuted at the Phase 16 gate.",
+      "why_deferred": "Phase 16 gate NO-GO: the exterior-navigation zone converter cannot capture the free-anchor coupled existential. Route halted per plan v40 GATE DECISION.",
+      "follow_up_task": "See spawn_candidates PRIMARY below (multi-anchor single-point coupling residual)."
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 394,
+      "statement": "n>=2 general-m arm of the completeness_discrete obligation",
+      "strategic": false,
+      "assumption": "Pre-existing baseline sorry (NOT introduced this dispatch).",
+      "why_deferred": "Downstream of :391; was scheduled for plan v40 Phase 20, which is CONDITIONAL on Phase 16 GREEN (now NO-GO).",
+      "follow_up_task": "Blocked on the same residual as :391."
+    }
+  ],
   "blockers": [],
   "continuation_path": "specs/305_rabinovich_ea_formula_implementation/plans/40_prop43-negation-closure-route.md",
-  "audit_report": "specs/305_rabinovich_ea_formula_implementation/reports/40_phase11b-divergence-audit.md",
-  "next_action_hint": "Dispatch plan v40 Phase 16 (the GO/NO-GO gate) via /orchestrate 305 --hard or /implement 305 --hard. Build A_fut_k1 + A_fut_k1_correct sorry-free in the new off-path module Kamp/NfZoneNavProbe.lean, using bracketBuildRight_correct + prior_hasAttainedINF h_UZ -> neg_bounded_exists. GREEN -> continue 17-20; NO-GO -> /spawn per the gate's no_go branch. Do NOT build a flat atomic bracket (D1 refuted), do NOT retry projection VecEA2, do NOT reach for uniform VecEA negation (paper's negation is per-model, over Dedekind complete chains).",
+  "next_action_hint": "STOP: /spawn residual task 'Kamp Cor 5.4 depth-k zone converter — resolve the multi-anchor single-point coupling' per plan v40. The Phase 16 gate proved the exterior-navigation route cannot capture a FREE anchor's coupling. Residual must determine whether, with the second anchor x EXISTENTIALLY BOUND and navigated-to (not free, as in the real :391 goal `exists x, ...`), the coupling becomes expressible as a uniform navigable temporal formula — or establish the definitive obstruction there too. Do NOT attempt plan v40 Phases 17-20 (all CONDITIONAL on Phase 16 GREEN). Do NOT retry flat atomic bracket (D1), projection VecEA2, or uniform VecEA negation.",
   "spawn_candidates": [
-    "PRIMARY (if Phase 16 NO-GO): Kamp Cor 5.4 depth-k zone converter — resolve the multi-anchor single-point coupling (express the quantified zone witness's coupling to the second anchor as a uniform navigable temporal formula, or establish the definitive obstruction). Depends on task 305.",
-    "SECONDARY (unchanged from v39, off completeness path): uniform standalone Prop 4.3 as a library asset."
+    "PRIMARY (Phase 16 NO-GO trigger): Kamp Cor 5.4 depth-k zone converter — resolve the multi-anchor single-point coupling. Express the quantified zone witness's coupling to the second anchor as a uniform navigable temporal formula WHEN THAT ANCHOR IS EXISTENTIALLY BOUND (the real :391 shape `exists x, nf_eval M (k+1) 2 [x,t] sub_nf`), or establish the definitive obstruction. Depends on task 305. The free-anchor obstruction (this dispatch) does not by itself settle the bound-anchor case — that is the open residual.",
+    "SECONDARY (unchanged, off completeness path): uniform standalone Prop 4.3 as a library asset."
   ],
   "artifacts": [
-    "specs/305_rabinovich_ea_formula_implementation/plans/40_prop43-negation-closure-route.md (NEW, plan v40)",
-    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (SUPERSEDED-for-Phases-11-15 pointer added at top)"
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneNavProbe.lean (NEW, sorry-free, off-path — the Phase 16 NO-GO obstruction + divergence note)",
+    "specs/305_rabinovich_ea_formula_implementation/plans/40_prop43-negation-closure-route.md (Phase 16 marked [PARTIAL], NO-GO verdict recorded)"
   ]
 }
