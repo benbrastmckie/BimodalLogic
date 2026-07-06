@@ -25,7 +25,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-308 [RESEARCHED] — Build the depth-graded multi-anchor characteristic FORMULA builde
+308 [PLANNED] — Build the depth-graded multi-anchor characteristic FORMULA builde
   └─ 307 [BLOCKED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
     └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
       └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
@@ -105,7 +105,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 308. Multi anchor char formula bridge
 - **Effort**: 10-15 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
