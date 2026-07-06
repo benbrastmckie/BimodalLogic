@@ -1,38 +1,60 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 10 (mergeNF_succ_quant, x=t arm) PARTIAL. Landed sorry-free: renameNF_eval_diag0 (depth-0 value-duplication diagonal congruence, NfDepth0Generalized.lean) using hcomp/hcomp2/hsec2 + M.lt irreflexivity, dropping the failing hsec — the reusable atom-layer transfer + k=0 base case; axioms [propext, Classical.choice, Quot.sound]. The depth-k+1 lift is a GENUINE NON-THEOREM (not merely hard): the plain iff loses position-0 atom data; the diagonal congruence's quant '<-' direction fails because the duplicated form's quant layer ranges over ALL NF K (a+1) and the collapse-expand via the NON-injective liftIdx(totalUnskip) cannot recover non-diagonal-realizable sub-forms (unrealizable on the diagonal env yet nq-of-collapse can be true). This is the SAME realizability crux as Phase 11; report-39 Phase-8a's 'separable before Phase 11' scoping holds only at depth 0. lake build GREEN (1700 jobs); live-path sorry baseline UNCHANGED at 2 (KampPrior:391,:394); zero new axioms; KampPrior.lean untouched.",
-  "phases_completed": 0,
-  "phases_total": 6,
+  "task": 305,
+  "phase": 11,
+  "sub_phase": "11a",
+  "session_id": "sess_1783315428_d370a2",
+  "summary": "Phase 11a: landed the depth-k atom/order extraction groundwork for the two-anchor arity-3 zone converter, sorry-free and off the live import path, in new file NfZoneDepthK.lean. This is the portion of the depth-k zone converter that genuinely generalizes from depth 0. The 11b crux (the faithful converter + folded-in x=t arm) remains: the naive projection-based VecEA2 generalization is a NON-theorem at depth k because the quant layer couples y,x,t through a shared 4th quantified variable.",
+  "phases_completed": 10,
+  "phases_total": 15,
+  "build_state": "GREEN (full lake build, 1700 jobs)",
+  "live_path_sorry_baseline": 2,
+  "live_path_sorry_current": 2,
+  "axioms_status": "unchanged: [propext, Classical.choice, Quot.sound] on every new decl; zero new top-level axioms (grep '^axiom ' Theories/ = 2, baseline)",
+  "landed_sorry_free": [
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf_eval_atom_layer",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_iff",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_yx",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_yt",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_xy",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_xt",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_ty",
+    "Bimodal.Metalogic.WeakCanonical.Kamp.nf3_order_tx"
+  ],
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 391,
-      "statement": "| 1 => arm of the depth-(k+1) arity-2 existential converter (nf_nvar_exist_all_depths succ, n=1)",
-      "strategic": true,
-      "assumption": "arity-2 existential over depth-(k+1) NF is TL-definable via the 3-way order-atom split (x=t / x<t / t<x)",
-      "why_deferred": "Baseline live-path sorry; requires Phases 10-14. Phase 10's x=t arm is blocked on the Phase-11 depth-k realizability crux (see plan Phase 10 PARTIAL).",
-      "follow_up_task": "305 Phase 11 (re-scoped to include x=t arm) then 12/13/14"
+      "statement": "| 1 => arm of the arity-2 existential engine: exists env, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
+      "strategic": false,
+      "assumption": "The depth-(k+1) arity-2 existential engine exist_tl_fn_{k+1} (assembled from the depth-k zone converter + x<t/t<x/x=t arms) discharges this.",
+      "why_deferred": "Pre-existing live-path baseline sorry; Phase 14 rewires it. Not touched this dispatch (Phase 11 scope only). Blocked upstream by the Phase 11b crux.",
+      "follow_up_task": "task 305 Phase 14 (after Phase 11b + 12 + 13)"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
       "line": 394,
-      "statement": "| n+2 => arm of the depth-(k+1) arity-(n+2) existential converter (nf_nvar_exist_all_depths succ, n>=2)",
-      "strategic": true,
-      "assumption": "general-m (n>=2) existential closure",
-      "why_deferred": "Baseline live-path sorry; Phase 15 checks reachability (may be off live path).",
-      "follow_up_task": "305 Phase 15"
+      "statement": "| n+2 => arm (n>=2 arity closure)",
+      "strategic": false,
+      "assumption": "Either off the live path (documented non-blocking) or dischargeable by the phases-10-14 machinery at m <= existing arity.",
+      "why_deferred": "Pre-existing live-path baseline sorry; Phase 15 verifies reachability. Not in Phase 11 scope.",
+      "follow_up_task": "task 305 Phase 15"
     }
   ],
   "blockers": [
-    "Phase 10 depth-k+1 x=t collapse (mergeNF_succ_quant) is a NON-theorem. Stuck lean_goal (NfDepth0Generalized.lean succ case, after atom transfer via renameNF_eval_diag0): (forall sub_nf : NormalForm sig K (a+1), (exists x, nf_eval_nf M K (a+1) (Fin.cons x E) sub_nf) <-> nq (renameNF (liftIdx f) (liftIdx r) sub_nf)) <-> (forall sub_nf : NormalForm sig K (b+1), (exists x, nf_eval_nf M K (b+1) (Fin.cons x e) sub_nf) <-> nq sub_nf). The '->' half is provable; the '<-' half fails because liftIdx(totalUnskip) is non-injective so collapse-expand cannot recover non-diagonal-realizable sub_nf. Fix: build Phase 11 realizability machinery first, then the x=t arm follows."
+    {
+      "target": "depth-k two-anchor arity-3 zone converter (nf_zone_depthk_*) + folded-in x=t arm",
+      "phase": "11b",
+      "verbatim_goal": "For qnf : NormalForm sig k 3, express exists y, nf_eval_nf M k 3 (Fin.cons y (Fin.cons x (fun _ => t))) qnf as a nested Since/Until bracket splitting y by zone, with depth-k IH formulas (exist_tl_fn_k and its neg) as the bracket point/segment TemporalPred types.",
+      "root_cause": "At depth k+1, nf_eval_nf's quant layer qnf.2 : NormalForm sig k 4 -> Bool has semantics: forall sub, (exists w, nf_eval_nf M k 4 (Fin.cons w [y,x,t]) sub) <-> (qnf.2 sub = true). This couples y,x,t simultaneously through the shared quantified w and does NOT factor through per-variable projections. The naive projection-based VecEA2 (endpoint/witness = per-variable characteristic formulas glued by order atoms via reconstruct_nf_3var, the depth-0 template) satisfies only the forward direction; the reverse is a genuine NON-theorem (same structural failure as the Phase-10 x=t arm: liftIdx(totalUnskip) non-injectivity cannot recover non-diagonal-realizable coupled sub-forms).",
+      "why_no_strategic_sorry": "Any non-vacuous statement of the faithful converter presupposes the joint-characteristic-type construction; an existential 'exists formula, iff' is vacuous (closed by Classical.choice) and is explicitly forbidden by the plan Postmortem Constraints. The honest artifact is the sorry-free extraction layer + the DIVERGENCE NOTE in NfZoneDepthK.lean."
+    }
   ],
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
+  "next_action_hint": "Resume Phase 11b in a fresh dispatch: build the faithful depth-k zone converter that pushes the exists-y THROUGH the coupled quant layer using characteristic types of the joint (w, y) configuration relative to the two anchors, fed as segment/point TemporalPreds through bracketBuildLeft/bracketBuildRight (Rabinovich 2014 section 5 / Cor 5.4). Reuse the sorry-free 11a extraction lemmas (nf_eval_atom_layer, nf3_order_*) for the forward direction and order routing, and renameNF_eval_diag0 (Phase 10) for the x=t arm's depth-0 base. Do NOT retry the projection-based VecEA2 (refuted NON-theorem).",
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean (renameNF_eval_diag0 + divergence note)",
-    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 10 [PARTIAL] + blocker)",
-    "specs/305_rabinovich_ea_formula_implementation/summaries/39_direct-nf-construction-summary.md"
-  ],
-  "continuation_path": null,
-  "continuation_context": null,
-  "next_action_hint": "PAUSE. Resume via /orchestrate 305 --hard with a fresh cycle budget. RE-SCOPE: fold Phase 10's remaining x=t arm into Phase 11 (shared depth-k realizability crux) — build the characteristic-NF/zone machinery first, then the x=t arm follows (mergeNF_succ char[t,t]=char[t] restricted to realizable forms, or a compile-time diagonal-consistency guard in Phase 14). renameNF_eval_diag0 is a preserved reusable asset."
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean (new, sorry-free, off-path)",
+    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 11 -> [PARTIAL] with 11a/11b annotations)"
+  ]
 }
