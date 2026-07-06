@@ -4,16 +4,17 @@ next_project_number: 307
 
 # TODO
 
+Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-fatal)
 ## Task Order
 
-*Updated 2026-06-24. Generated from state.json dependency graph.*
+*Updated 2026-07-06. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,303,305 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 95,192,196,231,292,293,294,298,299 | 161,187,191,194,230,291,300,303 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 193 | 189,192,196 | automation |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,305 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,303 | 161,187,191,194,230,291,300,305 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 95,193,299 | 189,192,196,303 | completeness, automation |
 | 4 | 177,178 | 131,193 | formula-refactor |
 
 **Grouped by Topic** (indented = depends on parent):
@@ -23,10 +24,10 @@ next_project_number: 307
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-303 [BLOCKED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
-  └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-  └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+  └─ 303 [RESEARCHED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+    └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+    └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -166,10 +167,10 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 ---
 
 ### 303. K gt 0 depth induction
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
-- **Dependencies**: None
+- **Dependencies**: Task 305
 - **Research**:
   - [303_k_gt_0_depth_induction/reports/01_team-research.md]
   - [303_k_gt_0_depth_induction/reports/02_depth-induction-resolution.md]
@@ -179,6 +180,7 @@ These definitions return fixed syntactic objects (not existential witnesses), en
   - [303_k_gt_0_depth_induction/reports/07_literature-construction.md]
   - [303_k_gt_0_depth_induction/reports/09_interval-splitting-mapping.md]
   - [303_k_gt_0_depth_induction/reports/09_interval-splitting-mapping.md]
+  - [303_k_gt_0_depth_induction/reports/10_blocker-resolution-path.md]
 - **Summary**: [303_k_gt_0_depth_induction/summaries/02_depth-induction-summary.md]
 - **Plan**:
   - [303_k_gt_0_depth_induction/plans/14_literature-grounded-plan.md]

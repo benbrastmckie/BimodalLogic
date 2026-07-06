@@ -1,67 +1,14 @@
 {
-  "status": "blocked",
-  "summary": "All patch-based approaches to zone-3 existential transfer have failed. The proof architecture has diverged from Rabinovich 2014. A systematic refactoring to align with the literature's induction structure is required before implementation can proceed.",
-  "phases_completed": 8,
-  "phases_total": 10,
-  "sorry_inventory": [
+  "status": "researched",
+  "summary": "Decision (a) SUBSUMPTION, already physically realized. Task 303's six PriorComposition.lean sorries (nvar_transfer_from_1var_agree, prior_nonconstenv_2var_agree_until/since) no longer exist on the live path: task 305 Phase 0 archived PriorComposition.lean wholesale to Boneyard/KampBypassArchive/ (commits 3413d0292, 32b4fae37), and Boneyard is imported by nothing live. completeness_discrete no longer references PriorComposition; its live Kamp/Prior arm routes through KampPrior.lean, whose only live sorries are :391 (n=1 critical) and :394 (n>=2 off-path) -- the nf_nvar_exist_all_depths artifact that is task 305's territory (305 plan v37 Phase 5). Option (b) direct fix is refuted (2 independent audits: the cross-structure/per-model-existential shape is vacuous). Option (c) corrected target (uniform Prop 4.3) belongs to 305, not 303. Task 303 needs 0 Lean proof dispatches; re-scope to dependent-on-305 + optional Boneyard cleanup after 305 Phase 5/6.",
+  "artifacts": [
     {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 459,
-      "statement": "nvar_transfer_from_1var_agree quantifier step (forward)",
-      "assumption": "Prior-UZ gap placement for interior witness",
-      "why_deferred": "Proof architecture divergence from Rabinovich — patch attempts exhausted"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 462,
-      "statement": "nvar_transfer_from_1var_agree quantifier step (backward)",
-      "assumption": "Symmetric",
-      "why_deferred": "Same divergence"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 554,
-      "statement": "prior_nonconstenv_2var_agree_until forward zone-3",
-      "assumption": "Depends on nvar_transfer resolution",
-      "why_deferred": "Blocked by nvar_transfer"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 559,
-      "statement": "prior_nonconstenv_2var_agree_until backward zone-3",
-      "assumption": "Symmetric",
-      "why_deferred": "Blocked by nvar_transfer"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 610,
-      "statement": "prior_nonconstenv_2var_agree_since forward zone-3",
-      "assumption": "Since mirror",
-      "why_deferred": "Blocked by nvar_transfer"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/PriorComposition.lean",
-      "line": 614,
-      "statement": "prior_nonconstenv_2var_agree_since backward zone-3",
-      "assumption": "Symmetric",
-      "why_deferred": "Blocked by nvar_transfer"
+      "path": "specs/303_k_gt_0_depth_induction/reports/10_blocker-resolution-path.md",
+      "type": "report",
+      "summary": "Blocker resolution path: decision (a) subsumption with reverse-dependency analysis proving the 6 sorries are archived/off-path, retire-vs-keep table, re-scope text, and H4 verification against the documented failure mode."
     }
   ],
-  "blockers": [
-    "STRUCTURAL DIVERGENCE FROM LITERATURE: The Lean proof architecture (NF-based, depth induction with separate arity) does not faithfully encode Rabinovich's proof (exists-forall formulas, witness-count induction with interval splitting). Multiple patch attempts (10+ dispatches) have all failed at the same gap — transferring existential witnesses while preserving order relative to multiple environment components simultaneously. A systematic refactoring is required to align the proof architecture with the literature before the sorry can be closed."
-  ],
-  "continuation_context": {
-    "is_successor": false,
-    "required_action": "systematic_literature_alignment_research",
-    "dispatch_history": [
-      "Phase 8 v16: zone-3 witness construction — BLOCKED (arity explosion)",
-      "Phase 8 v16 retry: zone-3 framework — partial (split sorry, no closure)",
-      "Phase 9 v17: reconstruction_depth_agree — proved but CANNOT bridge gap",
-      "Phase 10 v17: zone-3 assembly — BLOCKED (reconstruction insufficient)",
-      "Phase 9 v18: nvar_transfer standalone — base case ok, quantifier step BLOCKED",
-      "Phase 9 v18 retry: gap placement — BLOCKED (order relative to multiple components)",
-      "Phase 9 v18 retry 2: focused gap placement — BLOCKED (same fundamental issue)"
-    ],
-    "root_cause": "The NF encoding commits to fixed-arity evaluation. Rabinovich's proof operates on variable-arity interval formulas where the number of witnesses decreases at each induction step. The Lean code's depth-first NF decomposition creates a depth gap that cannot be bridged without simultaneously handling all arities — which the current architecture doesn't support cleanly."
-  }
+  "blockers": [],
+  "next_action_hint": "Task 303 is subsumed by task 305 and needs no /plan or Lean dispatch. Set dependencies=[305] (done in state.json). When 305 clears KampPrior:391/:394 (its plan v37 Phase 5/6), close 303 with a small cleanup implementation: delete Theories/Bimodal/Boneyard/KampBypassArchive/{PriorComposition.lean,PriorComposition_old.lean,KampBypassK1.lean}, run lake build to confirm no regression, write the closure note. Do NOT dispatch any nvar_transfer / cross-structure-transfer proof work -- that architecture is refuted.",
+  "recommendation": "(a)"
 }
