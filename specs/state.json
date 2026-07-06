@@ -9,7 +9,7 @@
     {
       "project_number": 309,
       "project_name": "offdiag_two_anchor_fi_chain",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "priority": "critical",
       "effort": "high",
@@ -25,7 +25,8 @@
           "type": "report",
           "path": "specs/307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md"
         }
-      ]
+      ],
+      "blocker": "R2 k=1 gate NO-GO (commit 8fd4340b1): arity-4 quant-layer residual is inherent in the nf_eval_nf ENCODING — each quantifier depth grows env arity instead of folding into a fixed-arity monadic E[Sigma]-atom (Rabinovich Def 4.1). Both endChar (v2 P8) and VecEA2 bracket carrier (v3 R2) hit the same wall. Resolution: /spawn 309 — NormalForm E[Sigma]-fold encoding task."
     },
     {
       "project_number": 305,
