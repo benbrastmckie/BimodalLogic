@@ -373,6 +373,175 @@ theorem VecEA_m.existClosure_correct_rev {sig : MonadicSignature} {m : Nat}
     · have : i.val + 1 < m' + 1 := by omega
       exact (extendEnv_init env z ⟨i.val + 1, by omega⟩).symm
 
+/-! ## Leftward Existential Closure (Lemma 3.4, leftmost absorption)
+
+The Since-mirror of `existClosure`: absorb the *leftmost* free variable `z_0` by
+existential quantification. The leftmost interval bracket and `z_0`'s endpoint
+predicate are converted to a temporal condition at `z_1` via `bracketBuildLeft`. -/
+
+/-- Prepend a value `z` at index 0 of a `Fin m → X` environment, shifting the
+    rest up, producing `Fin (m + 1) → X`. Mirror of `extendEnv`. -/
+def prependEnv {α : Type*} {m : Nat} (z : α) (env : Fin m → α) :
+    Fin (m + 1) → α :=
+  fun i => if h : 0 < i.val then env ⟨i.val - 1, by omega⟩ else z
+
+@[simp] theorem prependEnv_zero {α : Type*} {m : Nat} (z : α) (env : Fin m → α) :
+    prependEnv z env ⟨0, by omega⟩ = z := by
+  simp [prependEnv]
+
+@[simp] theorem prependEnv_succ {α : Type*} {m : Nat} (z : α) (env : Fin m → α) (j : Fin m) :
+    prependEnv z env ⟨j.val + 1, by omega⟩ = env j := by
+  simp only [prependEnv, dif_pos (Nat.succ_pos j.val), Nat.add_sub_cancel, Fin.eta]
+
+/-- Leftward existential closure: absorb the leftmost free variable `z_0` via
+    existential quantification. The leftmost interval bracket (between `z_0` and
+    `z_1`) and `z_0`'s endpoint predicate become a temporal condition at `z_1`
+    via `bracketBuildLeft`, folded into `z_1`'s endpoint predicate. Remaining
+    free variables reindex down by one.
+
+    For m = 0: produces VecEA_m 0 (trivially empty).
+    For m >= 1: the result has m free variables with the leftmost interval
+    absorbed into `z_1`'s endpoint predicate. -/
+noncomputable def VecEA_m.existClosureLeft {m : Nat}
+    (vea : VecEA_m (m + 1)) : VecEA_m m :=
+  match m with
+  | 0 =>
+    { endpointTypes := Fin.elim0
+      intervalBrackets := fun i => absurd i.isLt (by omega) }
+  | m' + 1 =>
+    let leftBracket := vea.intervalBrackets ⟨0, by omega⟩
+    let absorbedEndpoint := vea.endpointTypes ⟨0, by omega⟩
+    let temporalCond := bracketBuildLeft leftBracket.2 absorbedEndpoint
+    { endpointTypes := fun i =>
+        if i.val = 0 then
+          -- new z_0 = old z_1: conjoin original endpoint with temporal condition
+          (vea.endpointTypes ⟨1, by omega⟩).conj ⟨temporalCond⟩
+        else
+          vea.endpointTypes ⟨i.val + 1, by omega⟩
+      intervalBrackets := fun i =>
+        vea.intervalBrackets ⟨i.val + 1, by omega⟩ }
+
+/-- Forward direction of leftward absorption: if `existClosureLeft` holds on env,
+    there exists z < env 0 extending env on the left such that vea holds. -/
+theorem VecEA_m.existClosureLeft_correct {sig : MonadicSignature} {m : Nat}
+    (hm : m ≥ 1)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (vea : VecEA_m (m + 1))
+    (env : Fin m → M.carrier)
+    (henv_mono : StrictMono env) :
+    vea.existClosureLeft.holds M atomMap env →
+    ∃ z : M.carrier, z < env ⟨0, by omega⟩ ∧
+      vea.holds M atomMap (prependEnv z env) := by
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+  intro ⟨hep_cl, hbr_cl⟩
+  simp only [existClosureLeft] at hep_cl hbr_cl
+  -- The endpoint at new position 0 has the conjoined temporal condition
+  have hep_first := hep_cl ⟨0, by omega⟩
+  simp only [if_pos] at hep_first
+  rw [TemporalPred.eval_at_conj] at hep_first
+  obtain ⟨hep_orig_first, htemp⟩ := hep_first
+  simp only [TemporalPred.eval_at] at htemp
+  rw [bracketBuildLeft_correct] at htemp
+  obtain ⟨z, hz_lt, hz_ep, hz_br⟩ := htemp
+  refine ⟨z, ?_, ?_, ?_⟩
+  · -- z < env ⟨0, _⟩
+    convert hz_lt using 2
+  · -- All endpoint predicates of vea hold on prependEnv z env
+    intro i
+    by_cases hi : i.val = 0
+    · -- i = 0: the absorbed variable, at z
+      have hi0 : i = ⟨0, by omega⟩ := Fin.ext hi
+      rw [hi0]
+      simp only [prependEnv_zero]
+      exact hz_ep
+    · -- i = j + 1: from env
+      obtain ⟨j, rfl⟩ : ∃ j : Fin (m' + 1), i = ⟨j.val + 1, by omega⟩ :=
+        (by
+        have hipos : 0 < i.val := Nat.pos_of_ne_zero hi
+        have hlt := i.isLt
+        exact ⟨⟨i.val - 1, by omega⟩, Fin.ext (show i.val = i.val - 1 + 1 from by omega)⟩)
+      simp only [prependEnv_succ]
+      by_cases hj : j.val = 0
+      · -- j = 0: old z_1's endpoint at env 0
+        have hj0 : j = ⟨0, by omega⟩ := Fin.ext hj
+        rw [hj0]
+        exact hep_orig_first
+      · -- j >= 1: from existClosureLeft endpoint (else branch)
+        have h := hep_cl j
+        rw [if_neg hj] at h
+        exact h
+  · -- All interval brackets of vea hold on prependEnv z env
+    intro i
+    by_cases hi : i.val = 0
+    · -- i = 0: interval (z, env 0) = leftBracket
+      have hi0 : i = ⟨0, by omega⟩ := Fin.ext hi
+      rw [hi0]
+      simp only [prependEnv_zero, prependEnv_succ]
+      convert hz_br using 2
+    · -- i = j + 1: interval (env j, env (j+1)) = intervalBrackets (j+1)
+      obtain ⟨j, rfl⟩ : ∃ j : Fin m', i = ⟨j.val + 1, by omega⟩ :=
+        (by
+        have hipos : 0 < i.val := Nat.pos_of_ne_zero hi
+        have hlt := i.isLt
+        exact ⟨⟨i.val - 1, by omega⟩, Fin.ext (show i.val = i.val - 1 + 1 from by omega)⟩)
+      simp only [prependEnv_succ]
+      convert hbr_cl j using 2
+
+/-- Reverse direction of leftward absorption: if there exists z < env 0 such that
+    vea holds on prependEnv z env, then existClosureLeft holds on env. -/
+theorem VecEA_m.existClosureLeft_correct_rev {sig : MonadicSignature} {m : Nat}
+    (hm : m ≥ 1)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (vea : VecEA_m (m + 1))
+    (env : Fin m → M.carrier)
+    (henv_mono : StrictMono env)
+    (z : M.carrier)
+    (hz : z < env ⟨0, by omega⟩)
+    (hvea : vea.holds M atomMap (prependEnv z env)) :
+    vea.existClosureLeft.holds M atomMap env := by
+  obtain ⟨hep_ext, hbr_ext⟩ := hvea
+  obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+  simp only [existClosureLeft, holds]
+  constructor
+  · -- Endpoint predicates for the result
+    intro i
+    by_cases hi : i.val = 0
+    · -- i = 0: conjoined endpoint
+      have hi0 : i = ⟨0, by omega⟩ := Fin.ext hi
+      rw [if_pos hi, TemporalPred.eval_at_conj, hi0]
+      constructor
+      · -- Original endpoint at env 0 = old z_1
+        have h := hep_ext ⟨0 + 1, by omega⟩
+        simp only [prependEnv_succ] at h
+        exact h
+      · -- Temporal condition at env 0
+        simp only [TemporalPred.eval_at]
+        rw [bracketBuildLeft_correct]
+        refine ⟨z, hz, ?_, ?_⟩
+        · -- absorbedEndpoint at z
+          have h := hep_ext ⟨0, by omega⟩
+          simp only [prependEnv_zero] at h
+          exact h
+        · -- leftBracket holds on (z, env 0)
+          have h := hbr_ext ⟨0, by omega⟩
+          simp only [prependEnv_zero, prependEnv_succ] at h
+          convert h using 2
+    · -- i = j + 1: original endpoint from env
+      rw [if_neg hi]
+      obtain ⟨j, rfl⟩ : ∃ j : Fin m', i = ⟨j.val + 1, by omega⟩ :=
+        (by
+        have hipos : 0 < i.val := Nat.pos_of_ne_zero hi
+        have hlt := i.isLt
+        exact ⟨⟨i.val - 1, by omega⟩, Fin.ext (show i.val = i.val - 1 + 1 from by omega)⟩)
+      have h := hep_ext ⟨j.val + 1 + 1, by omega⟩
+      simp only [prependEnv_succ] at h
+      exact h
+  · -- Interval brackets for the result
+    intro i
+    have h := hbr_ext ⟨i.val + 1, by omega⟩
+    simp only [prependEnv_succ] at h
+    convert h using 2
+
 /-! ## VVecEA_m Existential Closure -/
 
 /-- Existential closure for VVecEA_m: apply existClosure to each disjunct. -/
