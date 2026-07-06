@@ -24,7 +24,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-307 [PLANNED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
+307 [IMPLEMENTING] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
   └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
     └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
       └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
@@ -103,7 +103,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 307. Kamp cor54 bound anchor zone converter
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
