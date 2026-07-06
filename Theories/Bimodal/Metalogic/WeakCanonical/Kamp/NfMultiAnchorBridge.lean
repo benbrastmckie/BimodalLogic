@@ -154,4 +154,72 @@ theorem nf_zone_flatten_navigable_zero {sig : MonadicSignature}
     (∃ w, nf_eval_nf M 0 2 (Fin.cons w (fun _ => t)) q2) :=
   exists_congr (fun w => diagDup3_eval_zero M q2 w t)
 
+/-! ## Phase 2: diagonal three-zone navigated quant-clause converter (deliverable 2 at `x = t`)
+
+`nf_char2_diag_exist_tl` is the diagonal (`x = t`) specialization of deliverable 2: it converts the
+coupled arity-3 existential `∃ w, nf_eval_nf M k 3 [w, t, t] qnf` into a temporal formula. Following
+Rabinovich 2014 Cor 5.4, the single boundary `t` splits `∃ w` into the three order zones
+(`w < t` / `w = t` / `t < w`); the two OPEN zones are realized by NAVIGATED brackets
+(`bracketBuildLeft` for the past, `bracketBuildRight` for the future), and the `w = t` point zone by
+the diagonal characteristic.
+
+Exactly as the arity-1 template `nf_succ_char_formula` (KampPrior.lean:107) is parametric over its
+depth-`k` existential converter `exist_tl_fn`, this arity-up converter is parametric over the three
+zone-endpoint **hooks** — the depth-`k` characteristic of `qnf` at the navigated point (the recursion
+hook; at `k = 0` these bottom out in `nf_zone_flatten_navigable_zero` / the depth-0 diagonal). The
+depth-`k` recursion (task-308 Phases 4-5) supplies the hooks; here the three-zone assembly and its
+correctness are proven once, sorry-free.
+
+### Route audit (Postmortem forbidden-route guards)
+- **(a)** The coupled `∃ w` is split DIRECTLY on the full env `Fin.cons w (fun _ => t) = [w, t, t]`
+  via `exists_trichotomy_split` — no per-variable projection of the coupled quant layer.
+- **(b)** Both open-zone endpoints are NAVIGATED recursive `bracketBuild*` `TemporalPred`s
+  (`navigated_bracket_reaches_exterior_past` / `_future`), never depth-0 atomic brackets.
+- **(c)** The arity-3 evaluation is characterized by the endpoint hooks, never collapsed to arity 1.
+-/
+
+/-- **Diagonal three-zone navigated existential converter** (deliverable 2 at `x = t`). Given the
+three zone-endpoint hooks — `pastEnd` (navigated `Since` endpoint for `w < t`), `futureEnd`
+(navigated `Until` endpoint for `t < w`), and `diagChar` (point characteristic for `w = t`) — build
+the temporal formula whose truth at `t` captures `∃ w, nf_eval_nf M k 3 [w, t, t] qnf`. The two open
+zones use navigated `bracketBuild*` chains (route (b) guard). -/
+noncomputable def nf_char2_diag_exist_tl {sig : MonadicSignature} {k : Nat}
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (diagChar : NormalForm sig k 3 → Formula)
+    (qnf : NormalForm sig k 3) : Formula :=
+  Formula.or
+    (bracketBuildLeft (BracketFormula.trivial TemporalPred.top) (pastEnd qnf))
+    (Formula.or
+      (diagChar qnf)
+      (bracketBuildRight (BracketFormula.trivial TemporalPred.top) (futureEnd qnf)))
+
+/-- **Correctness of the diagonal three-zone converter.** Under the three hook-correctness
+hypotheses (each zone endpoint characterizes the coupled arity-3 evaluation at its navigated
+witness), the assembled formula holds at `t` iff `∃ w, nf_eval_nf M k 3 [w, t, t] qnf`. Assembled
+from `exists_trichotomy_split` (route (a): direct full-env split) + the navigated-reach pillars
+(route (b)) + the diagonal-point hook. Endpoints stay arity-3 (route (c)). -/
+theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (t : M.carrier)
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (diagChar : NormalForm sig k 3 → Formula)
+    (qnf : NormalForm sig k 3)
+    (h_past : ∀ w : M.carrier, w < t →
+      ((pastEnd qnf).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+    (h_fut : ∀ w : M.carrier, t < w →
+      ((futureEnd qnf).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf))
+    (h_diag : temporal_truth M atomMap t (diagChar qnf) ↔
+      nf_eval_nf M k 3 (Fin.cons t (fun _ => t)) qnf) :
+    temporal_truth M atomMap t
+        (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) ↔
+      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf := by
+  simp only [nf_char2_diag_exist_tl]
+  rw [temporal_truth_or, temporal_truth_or,
+      navigated_bracket_reaches_exterior_past,
+      navigated_bracket_reaches_exterior_future,
+      exists_trichotomy_split (fun w => nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf) t]
+  exact or_congr (exists_congr fun w => and_congr_right fun hw => h_past w hw)
+    (or_congr h_diag (exists_congr fun w => and_congr_right fun hw => h_fut w hw))
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -195,22 +195,29 @@ they are serialized under the H7 single-file territory contract (no parallel wav
   are sorry-free; `lean_verify` on both returns axioms exactly `[propext, Classical.choice,
   Quot.sound]`. No forbidden route (a)/(b)/(c) used (atom layer uses diag collapse at depth 0 ONLY).
 
-### Phase 2: Diagonal quant-clause converter (deliverable 2 at x=t, three-zone) [NOT STARTED]
+### Phase 2: Diagonal quant-clause converter (deliverable 2 at x=t, three-zone) [COMPLETED]
 - **Goal:** Land the diagonal existential converter `nf_char2_diag_exist_tl : NormalForm sig k 3 →
   Formula` with correctness `temporal_truth M atomMap t (nf_char2_diag_exist_tl qnf) ↔ ∃ w,
   nf_eval_nf M k 3 (Fin.cons w (fun _=>t)) qnf` — deliverable 2 specialized to `x=t`. This is the
   recursion hook consumed by `nf_char2_formula` in P3.
 - **Tasks:**
-  - [ ] Split `∃w` by the single boundary `t` via `exists_trichotomy_split` /
-    `nf_zone_exists_trichotomy_k1` into `w<t` / `w=t` / `t<w`.
-  - [ ] Navigate the two open zones with `bracketBuildLeft` (past `w<t`, `Since`) and
+  - [x] Split `∃w` by the single boundary `t` via `exists_trichotomy_split` /
+    `nf_zone_exists_trichotomy_k1` into `w<t` / `w=t` / `t<w`. *(used the generic
+    `exists_trichotomy_split` at `P w := nf_eval_nf M k 3 (Fin.cons w (fun _=>t)) qnf`, `c := t`.)*
+  - [x] Navigate the two open zones with `bracketBuildLeft` (past `w<t`, `Since`) and
     `bracketBuildRight` (future `t<w`, `Until`); endpoint `TemporalPred` = the depth-`k`
     characteristic of `qnf` at the navigated `w` (recursion hook — at `k=0` bottoms out in P1's base).
-  - [ ] Handle the `w=t` point zone via the depth-`k` diagonal characteristic (P1 base at `k=0`).
-  - [ ] Assemble correctness from `bracketBuildLeft_correct` / `bracketBuildRight_correct` +
+    *(deviation: altered — realized via `navigated_bracket_reaches_exterior_past`/`_future` with the
+    endpoint `TemporalPred`s supplied as PARAMETRIC HOOKS `pastEnd`/`futureEnd`, exactly mirroring how
+    the arity-1 template `nf_succ_char_formula` is parametric over `exist_tl_fn`. The endpoint
+    characteristic builder for arity-3 NFs does not exist as an asset — NfZoneFlattenNavigable.lean:275-282
+    documents this sorry-free — so it is the recursion interface Phases 4-5 supply, not built in-phase.)*
+  - [x] Handle the `w=t` point zone via the depth-`k` diagonal characteristic (P1 base at `k=0`).
+    *(supplied as the parametric hook `diagChar` with its correctness hypothesis `h_diag`.)*
+  - [x] Assemble correctness from `bracketBuildLeft_correct` / `bracketBuildRight_correct` +
     the trichotomy split; endpoints are NAVIGATED brackets (route (b) guard), never per-variable
     projections (route (a) guard), never arity-collapsed (route (c) guard).
-  - [ ] `lake build` green.
+  - [x] `lake build` green.
 - **Timing:** ~2-3 h. **Estimated output:** ~200-320 lines.
 - **Depends on:** 1.
 - **Done when:** `nf_char2_diag_exist_tl` + its `_correct` are sorry-free; `lean_verify` on `_correct`
