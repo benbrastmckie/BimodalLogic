@@ -9,7 +9,7 @@
     {
       "project_number": 309,
       "project_name": "offdiag_two_anchor_fi_chain",
-      "status": "blocked",
+      "status": "implementing",
       "task_type": "lean4",
       "priority": "critical",
       "effort": "high",
@@ -25,8 +25,7 @@
           "type": "report",
           "path": "specs/307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md"
         }
-      ],
-      "blocker": "Phase 9 (KampPrior:351 rewire) blocked on missing recursive primitive endChar/endChar_correct: arity-4 -> arity-3 brick-witness-collapse core (report 02 sections 4.1-4.2, ~300-500 lines). Phases 1-8 landed green, module 0 sorries. Recommended: /spawn 309."
+      ]
     },
     {
       "project_number": 305,
