@@ -225,7 +225,7 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
 - **Estimated output:** ~70-110 lines.
 - **Depends on:** none.
 
-### Phase 2: Depth-0 split kit + round-trip lemmas (the losslessness/bijection data) [IN PROGRESS]
+### Phase 2: Depth-0 split kit + round-trip lemmas (the losslessness/bijection data) [COMPLETED]
 - **Goal:** Land the four split-kit definitions and the four round-trip lemmas that make the depth-0
   factorization a proven BIJECTION — the G2 losslessness defense that distinguishes the fold from
   the refuted lossy projections.
@@ -233,12 +233,11 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
   match, no `sorry`), and `nf0_split_assemble` + `nf0_zoneSpec_assemble` + `nf0_projFresh_assemble`
   + `nf0_dropFresh_assemble` compile sorry-free; acceptance gate 1-4 pass.
 - **Tasks:**
-  - [ ] `nf0_zoneSpec` (fresh-var order atoms → ZoneSpec) (report §4.4). Cite Def 3.1 p.4 (ordering channel).
-  - [ ] `nf0_projFresh` (fresh-var pred atoms → `NormalForm sig 0 1`; absurd on order atoms at arity 1). Cite Def 3.1 p.4 (monadic α channel).
-  - [ ] `nf0_dropFresh := mergeNF sub ⟨0, _⟩` (REUSE NfDepth0Generalized:169). Cite Def 3.1 p.4 (env restriction).
-  - [ ] `nf0_assemble` — TOTAL match reassembling from the three channels (~15 lines `Fin.cases`
-        bookkeeping; the report §4.4 `sorry` is a report-level elision, implementer writes the full match).
-  - [ ] `nf0_split_assemble` (assemble ∘ split = id) + three projection round-trips — `funext` + atom cases.
+  - [x] `nf0_zoneSpec` (fresh-var order atoms → ZoneSpec) (report §4.4). Cite Def 3.1 p.4 (ordering channel).
+  - [x] `nf0_projFresh` (fresh-var pred atoms → `NormalForm sig 0 1`; absurd on order atoms at arity 1). Cite Def 3.1 p.4 (monadic α channel).
+  - [x] `nf0_dropFresh := mergeNF sub ⟨0, _⟩` (REUSE NfDepth0Generalized:169). Cite Def 3.1 p.4 (env restriction).
+  - [x] `nf0_assemble` — TOTAL match reassembling from the three channels *(h-carrying nested `Fin.cases (motive := fun i => i ≠ j → Bool)` for the order case; no sorry)*.
+  - [x] `nf0_split_assemble` (assemble ∘ split = id) + three projection round-trips — `funext` + atom cases *(nf0_dropFresh_assemble needs staged simp: `skipFin_zero_succ` must fire before `nf0_assemble` unfolds, else the `Fin.cases` on a non-succ discriminant is stuck)*.
 - **Deviation carried:** Bijectivity is the explicit rebuttal to D7's depth-k falsity — projections
   are depth-0 ONLY (Postmortem: no k≥1 projection).
 - **Estimated output:** ~90-140 lines.
