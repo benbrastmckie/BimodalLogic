@@ -335,7 +335,52 @@ step.)*
 - **Guards enforced**: G3 (non-trivial segment), G4, G5.
 - **Commit**: `task 309 phase 5: nf_char2_future_formula dual`
 
-### Phase 6: Rewire KampPrior.lean:350 + import edge + axiom check [IN PROGRESS]
+### Phase 6: Rewire KampPrior.lean:350 + import edge + axiom check [BLOCKED]
+
+**BLOCKER** (Phase 6, dispatch sess_1783359214_93fd70):
+
+- **Sub-task DONE (committed, green)**: The cycle-safe import edge
+  `import …Kamp.NfMultiAnchorBridge` was added to `KampPrior.lean` (commit `task 309 phase 6.1`).
+  D1 verified: full-tree `lake build` GREEN (1704 jobs), no downstream regression; Phases 1-5
+  material grep-confirmed sorry-free. Live-path sorries UNCHANGED at 2 (`:351`/`:354` after the
+  +1 import-line shift, formerly `:350`/`:353`).
+- **What is blocked**: The `:351` rewire (`n = 1` arm), i.e. closing the live-path sorry that
+  reduces 2 → 1. Cannot be completed as the planned "pure glue".
+- **What failed / root cause**: The Phase 4/5/diag correctness lemmas are all **hook-parametric**
+  and DEFER the coupling to hook-correctness hypotheses that this phase must discharge:
+  - `nf_char2_past_formula_correct` requires `h_quant : ∀ x < t, (quantEnd.eval_at x ∧
+    seg.holds M atomMap x t) ↔ (∀ qnf, (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf)`.
+  - `nf_char2_future_formula_correct` requires the dual `h_quant`.
+  - `A_diag_correct` requires `h_past`/`h_fut`/`h_diag` over `NormalForm sig k 3 → TemporalPred/Formula`.
+  Discharging any of these requires **constructing** the hook terms (`quantEnd`, non-trivial `seg`,
+  `pastEnd`/`futureEnd`/`diagChar`) — genuine TWO-ANCHOR navigated characteristics at depth `k`
+  (e.g. `nf_eval_nf M k 3 [w,x,t] q` at a navigated witness; the diag arm's `h_past` is itself
+  off-diagonal `[w,t,t]`, `w < t`). These:
+  - cannot use arity-1 collapse (G1 / route (c) guard) — the anchors are distinct;
+  - cannot ride `nf_zone_flatten_navigable`'s trivial-top exterior brackets to carry the `(x,t)`
+    coupling (G3: a closed endpoint under a trivial segment is model-independent and cannot
+    re-identify the distinct origin `t` off-diagonal — the settled-design claim that the `h_quant`
+    hooks are "discharged via nf_zone_flatten_navigable_brick" collides with this guard);
+  - require the non-trivial Rabinovich `β_i` segment plus a navigated arity-3 endpoint
+    characteristic that RE-FINDS the second anchor.
+  No existing builder supplies these hooks. `nf_char3_endpoint_tl` is only hook-parametric (needs
+  `atomPart` + `innerConv : NormalForm sig k 4 → Formula`, which recurse into the same two-anchor
+  problem). The arity-1 characteristic (`nf_succ_char_formula`/`char_k1`) works ONLY because at
+  arity 1 the single anchor is always `t` (no distinct second anchor to navigate to).
+- **Why stuck**: This is the endpoint-hook crux that blocked task 307 Phase 7 ("endpoint-hook
+  crux blocked", commit b28807116). Phases 1-5 landed all hook-PARAMETRIC scaffolding sorry-free,
+  but the hook DISCHARGE — the actual off-diagonal two-anchor characteristic construction — was
+  deferred to this phase and remains unbuilt. The plan estimated Phase 6 at 40-80 lines of "pure
+  glue"; it is in fact the central research-grade construction of the task. The disjunction
+  skeleton `A := nf_char2_past_formula … ∨ A_diag … ∨ nf_char2_future_formula …` cannot even be
+  written down without committing to these unsolved hook terms.
+- **What is needed**: A dedicated construction (new task) building the depth-`k` two-anchor
+  navigated arity-3 endpoint characteristics (`pastEnd`/`futureEnd`/`diagChar` for the diag arm
+  and `quantEnd`+non-trivial `seg` for the past/future arms) with their correctness discharged
+  through `nf_char3_endpoint_tl` + a navigated segment that re-identifies the second anchor
+  (Rabinovich Cor 5.4 `F_i` chain, md:154-157), obeying G1-G5.
+- **Prohibited**: Do NOT use `sorry`, `def X := True`, or a vacuous placeholder to fake closure;
+  do NOT relocate the `:351` sorry into an unproven disjunction skeleton on the live path.
 
 - **Goal**: Add `import …Kamp.NfMultiAnchorBridge` to `KampPrior.lean` (cycle-safe, D1), rewire the
   `:350` arm to `A := nf_char2_past_formula … ∨ A_diag … ∨ nf_char2_future_formula …`, prove it via
