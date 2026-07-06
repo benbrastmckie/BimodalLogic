@@ -224,20 +224,29 @@ they are serialized under the H7 single-file territory contract (no parallel wav
   returns exactly `[propext, Classical.choice, Quot.sound]`; `lake build` green. Endpoint types are
   navigated `bracketBuild*` `TemporalPred`s (confirm against route (b)).
 
-### Phase 3: Assemble `nf_char2_formula` + `_correct` (Deliverable 1 COMPLETE) [NOT STARTED]
+### Phase 3: Assemble `nf_char2_formula` + `_correct` (Deliverable 1 COMPLETE) [COMPLETED]
 - **Goal:** Build deliverable 1 by mirroring `nf_succ_char_formula` (arity-1) at arity 2, and prove
   its correctness against the diagonal/constant env `[t,t]`. Completing this phase unblocks task 307
   Phase 3.
 - **Tasks:**
-  - [ ] Define `nf_char2_formula sub_nf := formula_conjList (atom_part :: quant_clauses)` where
+  - [x] Define `nf_char2_formula sub_nf := formula_conjList (atom_part :: quant_clauses)` where
     `atom_part` is P1's diagonal atom characteristic and each `quant_clause` is
     `nf_quant_clause_tl (nf_char2_diag_exist_tl qnf) (sub_nf.2 qnf)` for `qnf : NormalForm sig k 3`
-    (mirroring the KampPrior template exactly, one arity up).
-  - [ ] Prove `nf_char2_formula_correct`:
+    (mirroring the KampPrior template exactly, one arity up). *(deviation: altered — the `atom_part`
+    for an arbitrary `sub_nf.1 : NormalForm sig 0 2` is a new `nf_char2_atom_part` builder that
+    discharges the Phase-1-deferred order-atom / pred-agreement guard: diagonal-consistent atoms
+    reduce to the arity-1 pred char; non-diagonal atoms collapse to `⊥`. `nf_char2_formula` stays
+    parametric over the three Phase-2 hooks `pastEnd`/`futureEnd`/`diagChar`, exactly as the arity-1
+    template `nf_succ_char_formula` is parametric over `exist_tl_fn` — the plan-sanctioned R-B
+    parametricity.)*
+  - [x] Prove `nf_char2_formula_correct`:
     `temporal_truth M atomMap t (nf_char2_formula sub_nf) ↔ nf_eval_nf M (k+1) 2 (fun _=>t) sub_nf`
     via `formula_conjList_iff` + `nf_quant_clause_tl_correct` per clause + P1 atom-layer iff + P2
-    diagonal quant iff (unfold `nf_eval_nf` at `k+1` per `nf_char3_eq_succ_iff`'s pattern).
-  - [ ] `lake build` green.
+    diagonal quant iff. *(deviation: altered — the Phase-2 converter iff is taken as the
+    `h_exist_correct` hypothesis, mirroring `nf_succ_char_formula_correct`'s `h_exist_correct`;
+    Phases 4-5 discharge it via `nf_char2_diag_exist_tl_correct`. `nf_char2_atom_part_correct`
+    supplies the atom layer.)*
+  - [x] `lake build` green.
 - **Timing:** ~1.5-2.5 h. **Estimated output:** ~120-220 lines.
 - **Depends on:** 2 (serialized after 2; consumes P1 + P2).
 - **Done when:** `nf_char2_formula` and `nf_char2_formula_correct` are sorry-free; `lean_verify` on

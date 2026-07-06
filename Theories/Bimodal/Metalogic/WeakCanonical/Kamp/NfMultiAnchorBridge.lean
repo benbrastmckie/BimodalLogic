@@ -56,7 +56,8 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation
-  (nf_depth0_char_formula nf_depth0_char_formula_correct)
+  (nf_depth0_char_formula nf_depth0_char_formula_correct
+   formula_conjList formula_conjList_iff)
 
 /-! ## Phase 1a: diagonal depth-0 atom layer (deliverable-1 base)
 
@@ -221,5 +222,169 @@ theorem nf_char2_diag_exist_tl_correct {sig : MonadicSignature} {k : Nat}
       exists_trichotomy_split (fun w => nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf) t]
   exact or_congr (exists_congr fun w => and_congr_right fun hw => h_past w hw)
     (or_congr h_diag (exists_congr fun w => and_congr_right fun hw => h_fut w hw))
+
+/-! ## Phase 3: assemble `nf_char2_formula` + `_correct` (Deliverable 1 COMPLETE)
+
+Mirrors the arity-1 template `nf_succ_char_formula` (KampPrior.lean:107) exactly, one arity up:
+`nf_char2_formula sub_nf := formula_conjList (atom_part :: quant_clauses)`, where `atom_part` is the
+diagonal depth-0 atom characteristic (Phase 1's layer, generalized here to an arbitrary
+`sub_nf.1 : NormalForm sig 0 2` — the Phase-1-deferred order-atom / pred-agreement guard) and each
+`quant_clause` wraps the Phase-2 diagonal three-zone navigated existential
+`nf_char2_diag_exist_tl` via `nf_quant_clause_tl`.
+
+Like the arity-1 template (parametric over `exist_tl_fn`), deliverable 1 stays parametric over the
+three Phase-2 recursion hooks `pastEnd`/`futureEnd`/`diagChar`; correctness takes the assembled
+Phase-2 converter iff as a hypothesis (`h_exist_correct`), exactly as `nf_succ_char_formula_correct`
+takes `h_exist_correct`. Phases 4-5 supply the hooks and discharge that hypothesis via
+`nf_char2_diag_exist_tl_correct`. Diagonal collapse is used ONLY at the depth-0 atom layer
+(route (c) guard); the depth-`(k+1)` quant layer routes through the honest arity-3 navigated
+existential (route (a)/(b) guards). -/
+
+/-- **Arity-2 diagonal depth-0 atom characteristic.** The atom part of the two-anchor
+characteristic on the diagonal env `[t,t]` for an arbitrary `nf2 : NormalForm sig 0 2`. On the
+diagonal, every order atom evaluates false (`t < t`) and the two predicate positions coincide, so the
+atom layer is satisfiable iff `nf2` is *diagonal-consistent* (all order atoms `false`, predicate
+positions agree); in that case it reduces to the arity-1 predicate characteristic
+(`nf_depth0_char_formula`). Otherwise it is `⊥` — the non-diagonal cases collapse to `⊥`, discharging
+the Phase-1-deferred order-atom / pred-agreement guard. -/
+noncomputable def nf_char2_atom_part {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) : Formula :=
+  if (∀ p : sig.preds, nf2 (.pred p 0) = nf2 (.pred p 1)) ∧
+      (∀ (i j : Fin 2) (h : i ≠ j), nf2 (.order i j h) = false) then
+    nf_depth0_char_formula atomMap h_surj
+      (fun a => match a with
+        | .pred p _ => nf2 (.pred p 0)
+        | .order i j h => absurd (Subsingleton.elim i j) h)
+  else
+    Formula.bot
+
+/-- **Correctness of the arity-2 diagonal atom characteristic.** Holds at `t` iff the arity-2 NF
+`nf2` evaluates on the constant diagonal env `[t,t]`. The diagonal collapse appears here at the
+depth-0 atom layer, where it is a proven iff (route (c) guard). -/
+theorem nf_char2_atom_part_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) (t : M.carrier) :
+    temporal_truth M atomMap t (nf_char2_atom_part atomMap h_surj nf2) ↔
+    nf_eval_nf M 0 2 (fun _ => t) nf2 := by
+  simp only [nf_char2_atom_part]
+  by_cases hcons : (∀ p : sig.preds, nf2 (.pred p 0) = nf2 (.pred p 1)) ∧
+      (∀ (i j : Fin 2) (h : i ≠ j), nf2 (.order i j h) = false)
+  · rw [if_pos hcons, nf_depth0_char_formula_correct]
+    simp only [nf_eval_nf]
+    constructor
+    · intro hpred a
+      cases a with
+      | pred p i =>
+        have hp := hpred p
+        have hi : nf2 (.pred p i) = nf2 (.pred p 0) := by
+          match i with
+          | 0 => rfl
+          | 1 => exact (hcons.1 p).symm
+        rw [hi]
+        simpa only [atom_eval] using hp
+      | order i j h =>
+        simp only [atom_eval]
+        rw [hcons.2 i j h]
+        simp only [Bool.false_eq_true, iff_false]
+        intro hlt
+        exact absurd hlt (by simpa using lt_irrefl t)
+    · intro hall p
+      have hp := hall (.pred p 0)
+      simpa only [atom_eval] using hp
+  · rw [if_neg hcons]
+    simp only [temporal_truth]
+    constructor
+    · exact False.elim
+    · intro heval
+      apply hcons
+      simp only [nf_eval_nf] at heval
+      refine ⟨fun p => ?_, fun i j hij => ?_⟩
+      · have h0 := heval (.pred p 0)
+        have h1 := heval (.pred p 1)
+        simp only [atom_eval] at h0 h1
+        have hiff : (nf2 (.pred p 0) = true) ↔ (nf2 (.pred p 1) = true) := h0.symm.trans h1
+        cases hb0 : nf2 (.pred p 0) <;> cases hb1 : nf2 (.pred p 1) <;> simp_all
+      · have ho := heval (.order i j hij)
+        simp only [atom_eval] at ho
+        have hfalse : ¬ ((fun (_ : Fin 2) => t) i < (fun (_ : Fin 2) => t) j) := by
+          simpa using lt_irrefl t
+        cases hb : nf2 (.order i j hij)
+        · rfl
+        · exact absurd (ho.mpr hb) hfalse
+
+/-- **Deliverable 1: the two-anchor characteristic FORMULA builder.** Mirrors
+`nf_succ_char_formula` (arity 1) one arity up. Parametric over the three Phase-2 recursion hooks
+`pastEnd`/`futureEnd`/`diagChar` (exactly as the arity-1 template is parametric over `exist_tl_fn`);
+Phases 4-5 supply the hooks. Assembles the diagonal atom characteristic conjoined with one quant
+clause per arity-3 sub-NF, each wrapping the Phase-2 navigated diagonal existential. -/
+noncomputable def nf_char2_formula {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (diagChar : NormalForm sig k 3 → Formula)
+    (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
+  let atom_part := nf_char2_atom_part atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
+  let quant_clauses := (Finset.univ.toList : List (NormalForm sig k 3)).map
+    (fun qnf => nf_quant_clause_tl
+      (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf))
+  formula_conjList (atom_part :: quant_clauses)
+
+/-- **Correctness of deliverable 1.** Under the Phase-2 converter iff (the `h_exist_correct`
+hypothesis, discharged by `nf_char2_diag_exist_tl_correct` once Phases 4-5 supply the hooks), the
+assembled formula holds at `t` iff `sub_nf` evaluates on the constant diagonal two-anchor env `[t,t]`.
+Assembled from `formula_conjList_iff` + `nf_char2_atom_part_correct` (atom layer, route (c) guard) +
+`nf_quant_clause_tl_correct` per clause (quant layer through the arity-3 navigated existential). -/
+theorem nf_char2_formula_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (diagChar : NormalForm sig k 3 → Formula)
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (h_exist_correct : ∀ (qnf : NormalForm sig k 3),
+      temporal_truth M atomMap t
+          (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) ↔
+        ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf)
+    (sub_nf : NormalForm sig (k + 1) 2) :
+    temporal_truth M atomMap t
+        (nf_char2_formula atomMap h_surj pastEnd futureEnd diagChar sub_nf) ↔
+      nf_eval_nf M (k + 1) 2 (fun _ => t) sub_nf := by
+  simp only [nf_char2_formula]
+  rw [formula_conjList_iff]
+  change _ ↔ (∀ (a : AtomKind sig 2), atom_eval M (fun _ => t) a ↔ (sub_nf.1 a = true)) ∧
+    (∀ (qnf : NormalForm sig k 3),
+      (∃ (w : M.carrier), nf_eval_nf M k 3 (Fin.cons w (fun _ => t)) qnf) ↔
+        (sub_nf.2 qnf = true))
+  have quant_mem : ∀ qnf : NormalForm sig k 3,
+      nf_quant_clause_tl (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf) ∈
+        List.map (fun qnf => nf_quant_clause_tl
+            (nf_char2_diag_exist_tl pastEnd futureEnd diagChar qnf) (sub_nf.2 qnf))
+          Finset.univ.toList :=
+    fun qnf => List.mem_map.mpr
+      ⟨qnf, Finset.mem_toList.mpr (Finset.mem_univ qnf), rfl⟩
+  constructor
+  · intro h_all
+    constructor
+    · have h_atom := h_all _ (.head _)
+      rw [nf_char2_atom_part_correct] at h_atom
+      simpa only [nf_eval_nf] using h_atom
+    · intro qnf
+      have h_clause := h_all _ (.tail _ (quant_mem qnf))
+      rw [nf_quant_clause_tl_correct M atomMap t _ _ _ (h_exist_correct qnf)] at h_clause
+      exact h_clause
+  · intro ⟨h_atoms, h_quants⟩ φ h_mem
+    cases h_mem with
+    | head =>
+      rw [nf_char2_atom_part_correct]
+      simpa only [nf_eval_nf] using h_atoms
+    | tail _ h_tail =>
+      obtain ⟨qnf, _, rfl⟩ := List.mem_map.mp h_tail
+      rw [nf_quant_clause_tl_correct M atomMap t _ _ _ (h_exist_correct qnf)]
+      exact h_quants qnf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
