@@ -1,7 +1,7 @@
 # Implementation Plan: Task #305 (v39 — direct nf_eval_nf construction for KampPrior:391)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS] (Phase 10 COMPLETED — depth-0 asset landed; x=t remainder folded into Phase 11; Phases 11-15 remaining)
 - **Effort**: ~12 hours (5-7 dispatches; only Phase 10 scheduled this session)
 - **Dependencies**: None (resumes from build-GREEN HEAD; baseline 2 live sorries `KampPrior.lean:391`/`:394`, single `sorryAx` in `completeness_discrete`, axioms `Lean.ofReduceBool`/`Lean.trustCompiler` + `propext`/`Classical.choice`/`Quot.sound`)
 - **Research Inputs**: reports/39_depth-k1-bridge-design.md (primary, Tier-1 literature-backed, H4-verified against `lean_term_goal` at `KampPrior.lean:391`); supersedes report 38's mis-scoped design
@@ -83,7 +83,8 @@ directly-reused bricks for phases 10-14.
 | Phase 4b: uniform atom/lt/tt/ff blocks (`atomAt`/`ltAt`/`tt`/`ff` + `_holds`) | `Kamp/Prop43.lean` | [COMPLETED] | 2026-06-24 (off-path) |
 | Phase 7 (plan v38): leftward closure (`bracketBuildLeft`+`_correct`, `existClosureLeft`+`_correct`/`_correct_rev`) | `VecEATranslation.lean`, `VecEA_m.lean` | [COMPLETED] | 2026-07 (sorry-free, off-path) |
 | char_k1 template (`nf_succ_char_formula` + `_correct`, formula-level `¬` via `nf_quant_clause_tl`) | `KampPrior.lean:107-177` | [PRESENT] | sorry-free depth-(k+1) arity-1 |
-| `mergeNF_succ` (def) + `mergeNF_succ_atom` (atom layer) | `NfDepth0Generalized.lean:593,599` | [PRESENT] | quant layer OPEN (Phase 10 target) |
+| `mergeNF_succ` (def) + `mergeNF_succ_atom` (atom layer) | `NfDepth0Generalized.lean:593,599` | [PRESENT] | depth-(k+1) quant layer OPEN (x=t arm folded into Phase 11) |
+| Phase 10: `renameNF_eval_diag0` (depth-0 diagonal value-duplication congruence) | `NfDepth0Generalized.lean` | [COMPLETED] | 2026-07 (sorry-free, off-path; reusable atom-layer/depth-0 base case for Phase 11) |
 | `bracketBuildRight`/`bracketBuildLeft` (+`_correct`), accept arbitrary `TemporalPred` | `VecEATranslation.lean:50` | [PRESENT] | Until/Since nesting, sorry-free |
 | `nf_3var_zone_{ytx,txy,yxt,xty}` (+`_correct`) — DEPTH-0 ONLY | `VecEADecomp.lean:518-731` | [PRESENT] | Phase 11 generalizes to depth-k |
 | `nf_vecEA2_past/future` (+`_correct`) — DEPTH-0 ONLY | `NfToVecEA.lean:217,259` | [PRESENT] | reference for Phase 11 |
@@ -98,7 +99,8 @@ Full lemma inventory in report 39 §"H3 Lemma-level mapping table". Live-path-re
 
 | Source (Rabinovich 2014) | Lean identifier (to build) | Type signature (from report 39, verified) | Phase |
 |---|---|---|---|
-| diagonal (x=t) arity collapse at depth k+1 | `mergeNF_succ_quant` (diagonal-specialized eval iff) | quant-layer correctness of `mergeNF_succ : NormalForm sig (k+1) (n+2) → Fin (n+2) → Fin (n+1) → NormalForm sig (k+1) (n+1)` on the duplicating env | 10 |
+| diagonal (x=t) arity collapse at depth k+1 (restricted to realizable forms) | x=t arm via char[t,t]=char[t] on realizable sub-forms (or Phase-14 diagonal-consistency guard) | depth-(k+1) diagonal collapse restricted to realizable forms; general `mergeNF_succ_quant` iff refuted as a NON-theorem (Phase 10) | 11 (folded in from 10) |
+| depth-0 diagonal value-duplication congruence (landed) | `renameNF_eval_diag0` | `nf_eval_nf M 0 a E (renameNF r f nf) ↔ nf_eval_nf M 0 b e nf` (drops `hsec`, keeps `hsec2`+`hcomp2`) | 10 [COMPLETED] |
 | §5 three-zone split, lifted depth-0 → depth-k | `nf_zone_depthk_*` (generalize `nf_3var_zone_*`) | depth-k two-anchor arity-3 `∃ y` zone converter; point/segment types = depth-k IH formulas | 11 |
 | Prop 3.5 / Cor 5.4 — Since chain (past arm) | past-arm converter via `bracketBuildLeft` | `NormalForm sig (k+1) 2 → Formula` for the `x<t` case; iff | 12 |
 | Prop 3.5 / Cor 5.4 — Until chain (future arm) | future-arm converter via `bracketBuildRight` | mirror of Phase 12 for the `t<x` case; iff | 13 |
@@ -194,17 +196,17 @@ adversarial verification, and this task's 38+ prior-plan churn history.
 **Dependency Analysis**:
 | Wave | Phases | Blocked by |
 |------|--------|------------|
-| 1 | 10 | -- |
-| 2 | 11 (may split 11a, 11b) | -- |
+| 1 | 10 [COMPLETED] | -- |
+| 2 | 11 (incl. x=t arm; may split 11a, 11b) | -- |
 | 3 | 12, 13 | 11 |
-| 4 | 14 | 10, 12, 13 |
+| 4 | 14 | 11, 12, 13 |
 | 5 | 15 | 14 |
 
-Phases 10 and 11 are independent (Phase 10 = x=t arm via `mergeNF_succ`; Phase 11 = the depth-k zone
-converter feeding the past/future arms), so they occupy different waves only by scheduling, not data
-dependency — either may go first. Phases 12 and 13 (past/future arms) both consume Phase 11's zone
-converter and can run in parallel. Phase 14 assembles 10+12+13 and rewires `:391`. Phase 15 verifies.
-**This session dispatches Phase 10 ONLY, then PAUSES** (see Overview).
+Phase 10 [COMPLETED] landed the depth-0 diagonal congruence `renameNF_eval_diag0`; its depth-(k+1)
+x=t remainder is folded into Phase 11 (shared realizability crux). Phase 11 now builds both the
+depth-k zone converter (feeding the past/future arms) and the x=t arm. Phases 12 and 13 (past/future
+arms) both consume Phase 11's zone converter and can run in parallel. Phase 14 assembles 11 (x=t) +
+12 + 13 and rewires `:391`. Phase 15 verifies. **Resume dispatches Phase 11** (see Overview).
 
 ### Historical Phase Ledger (plans 37/38 — closed, do not re-execute)
 
@@ -221,10 +223,22 @@ report 39's `8a-8e` decomposition is recorded per-phase.
 
 ---
 
-### Phase 10: mergeNF_succ_quant — diagonal quant-layer collapse (x=t arm) [PARTIAL]
+### Phase 10: mergeNF_succ_quant — diagonal quant-layer collapse (x=t arm) [COMPLETED]
 
-*(= report 39 Phase 8a. THE ONLY PHASE SCHEDULED FOR THE CURRENT SESSION — this is the next
-dispatch. Session PAUSES after this phase completes GREEN.)*
+*(= report 39 Phase 8a. Depth-0 asset landed sorry-free; depth-(k+1) x=t remainder re-scoped into
+Phase 11 on resume — see the "Re-scoped on resume" note below.)*
+
+**Re-scoped on resume** (user-approved fold, session sess_1783315428_d370a2): Phase 10's landed
+deliverable is `renameNF_eval_diag0` (the **depth-0** value-duplication diagonal congruence,
+sorry-free, in `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean`) — a
+preserved, reusable asset for the atom-layer transfer and the `k=0` base case. The remaining
+**depth-(k+1) x=t arm** is a **genuine NON-theorem in its Phase-10 form** (per the Phase-10 PARTIAL
+handoff diagnosis: the diagonal congruence's quant `←` direction fails because
+`liftIdx (totalUnskip)` is non-injective and cannot recover non-diagonal-realizable sub-forms).
+This is the SAME depth-`k` realizability crux Phase 11's zone / characteristic-NF machinery
+addresses, so the x=t remainder is **folded into Phase 11** (below) rather than pursued
+standalone. Phase 10 is therefore COMPLETE as scoped (depth-0 asset landed GREEN, off-path); the
+detailed PARTIAL diagnosis and divergence notes are preserved verbatim below for the record.
 
 **PARTIAL** (Phase 10, session sess_1783306400_33dd64):
 - **Landed sorry-free**: `renameNF_eval_diag0` (NfDepth0Generalized.lean, ~48 lines) — the
@@ -322,10 +336,12 @@ via `/orchestrate 305 --hard` with a fresh cycle budget. <<<**
 
 ---
 
-### Phase 11: Depth-k two-anchor arity-3 zone converter [NOT STARTED]
+### Phase 11: Depth-k two-anchor arity-3 zone converter (incl. x=t arm) [NOT STARTED]
 
 *(= report 39 Phase 8b. THE CRUX. MEDIUM-LOW confidence. Likely 2 dispatches — split into 11a/11b at
-dispatch time if a single dispatch cannot land it GREEN.)*
+dispatch time if a single dispatch cannot land it GREEN. **Absorbs the depth-(k+1) x=t arm folded in
+from Phase 10** — the two share the same depth-`k` realizability crux; see the Phase 10 "Re-scoped on
+resume" note.)*
 
 **Goal**: Generalize the depth-0 `nf_3var_zone_{ytx,txy,yxt,xty}` (`VecEADecomp.lean:518-731`) from
 depth 0 to **depth k**: a converter that expresses the two-anchor arity-3 existential
@@ -334,6 +350,18 @@ a **nested Since/Until bracket** splitting `y` by zone (`y<x`, `y=x`, `x<y<t`, `
 **depth-k IH formulas** (`exist_tl_fn_k` and its `¬`) as the bracket point/segment `TemporalPred`
 types. This is Rabinovich's Cor 5.4 `F_i`-chain lifted from depth-0 atom types to depth-k
 characteristic types (report 39 Q4).
+
+**x=t arm (folded in from Phase 10):** after building the depth-`k` two-anchor arity-3 zone
+converter / realizability machinery above, prove the **x=t arm** — the depth-(k+1) diagonal
+quant-layer collapse `mergeNF_succ char[t,t] = char[t]` **restricted to realizable (diagonal-
+invariant) forms** — using the same characteristic-NF realizability structure the zone converter
+supplies. `renameNF_eval_diag0` (Phase 10's sorry-free depth-0 diagonal congruence,
+NfDepth0Generalized.lean) is an **available reusable asset** for the atom-layer transfer and the
+depth-0 base case. If the restricted collapse resists within budget, the x=t arm may instead be
+discharged as a **compile-time diagonal-consistency guard on `sub_nf`** deferred to the Phase 14
+assembly (per the Phase-10 handoff `next_action_hint`); either route keeps the arm off the live
+path until Phase 14 consumes it. The general (unrestricted) `mergeNF_succ_quant` iff is a
+NON-theorem and is NOT attempted (Phase 10 diagnosis).
 
 **Reference grounding (H3, Tier 1)**: Rabinovich 2014 §5 (md:119-173) interval split, Cor 5.4
 (md:157) `F_i` chain; `nf_3var_zone_*` (depth-0 template, VecEADecomp:518-731); `bracketBuildLeft`/
@@ -360,7 +388,8 @@ zones + full converter.
 
 **Confidence**: MEDIUM-LOW (report 39 — the genuine inductive step of Kamp's theorem; untested at
 depth 0 because depth-0 NFs have no quant layer). **Timing**: ~4-6 hours (likely 2 dispatches).
-**Depends on**: none (independent of Phase 10; consumes only preserved depth-0 templates + IH).
+**Depends on**: none (Phase 10 is [COMPLETED]; Phase 11 reuses its landed `renameNF_eval_diag0`
+asset for the x=t arm's depth-0 base case, plus the preserved depth-0 templates + IH).
 
 **Verification**: `lake build` GREEN; `lean_verify` on each new decl → baseline axioms, no `sorryAx`;
 `grep '^axiom '` zero new; live-path sorry count unchanged at 2; no arity-4+ / NF-depth-tower growth.
@@ -429,17 +458,18 @@ instead of `bracketBuildLeft`; iff against the `A(1<0)=true` atom-layer branch.
 
 ### Phase 14: Assembly — order-atom 3-way split + rewire KampPrior:391 [NOT STARTED]
 
-*(= report 39 Phase 8e. MEDIUM-HIGH confidence, contingent on 10/12/13.)*
+*(= report 39 Phase 8e. MEDIUM-HIGH confidence, contingent on 11/12/13.)*
 
 **Goal**: Assemble the uniform `exist_tl_fn_{k+1} : NormalForm sig (k+1) 2 → Formula` via a
 **decidable compile-time 3-way case split on `sub_nf.1`** order atoms — `A(0<1)=false ∧ A(1<0)=false`
-→ x=t arm (Phase 10); `A(0<1)=true` → x<t arm (Phase 12); `A(1<0)=true` → t<x arm (Phase 13); both
-true → `A := ⊥` (unsatisfiable atom layer) — prove the combined iff against
+→ x=t arm (Phase 11, folded in from Phase 10); `A(0<1)=true` → x<t arm (Phase 12); `A(1<0)=true`
+→ t<x arm (Phase 13); both true → `A := ⊥` (unsatisfiable atom layer) — prove the combined iff against
 `∃ x, nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf`, and **rewire `KampPrior.lean:391`**
 (`| 1 =>` arm) to consume it, dropping live-path sorry count 2 → 1.
 
 **Reference grounding (H3, Tier 1)**: report 39 D1 (decidable order-atom split, `⊥` arm), the verified
-`:391` goal (`insertEnv env t = Fin.cons (env 0) (fun _=>t)`, KampPrior:482); phases 10/12/13 arms.
+`:391` goal (`insertEnv env t = Fin.cons (env 0) (fun _=>t)`, KampPrior:482); phases 11/12/13 arms
+(x=t from Phase 11, folded in from Phase 10).
 
 **Tasks**:
 - [ ] Build `exist_tl_fn_{k+1}` with the decidable `sub_nf.1` order-atom 3-way case split (+ `⊥` arm);
@@ -460,7 +490,7 @@ arm); assembly lemma in `Kamp/NfZoneDepthK.lean` or a new small module.
 `lean_verify completeness_discrete` shows the `:391`-sourced `sorryAx` gone, live-path sorry count
 2 → 1, baseline axioms unchanged.
 
-**Confidence**: MEDIUM-HIGH (contingent on 10/12/13). **Timing**: ~3 hours. **Depends on**: 10, 12, 13.
+**Confidence**: MEDIUM-HIGH (contingent on 11/12/13). **Timing**: ~3 hours. **Depends on**: 11, 12, 13.
 
 **Verification**:
 - `lake build` GREEN (~1700 jobs); `grep -n sorry KampPrior.lean` shows only the `:394` arm on the live path.
@@ -531,8 +561,8 @@ wanted only if the uniform Prop 4.3 is desired as a standalone library asset; it
 ## Artifacts & Outputs
 
 - plans/39_direct-nf-construction.md (this file)
-- Phase 10: `mergeNF_succ_quant` + x=t arm lemma in `NfDepth0Generalized.lean` — sorry-free, off-path
-- Phase 11: depth-k zone converter `nf_zone_depthk_*` in `Kamp/NfZoneDepthK.lean` — sorry-free, off-path
+- Phase 10 [COMPLETED]: `renameNF_eval_diag0` (depth-0 diagonal congruence) in `NfDepth0Generalized.lean` — sorry-free, off-path; depth-(k+1) x=t remainder folded into Phase 11
+- Phase 11: depth-k zone converter `nf_zone_depthk_*` (+ folded-in x=t arm) in `Kamp/NfZoneDepthK.lean` — sorry-free, off-path
 - Phase 12: x<t past-arm converter (via `bracketBuildLeft`) — sorry-free, off-path
 - Phase 13: t<x future-arm converter (via `bracketBuildRight`) — sorry-free, off-path
 - Phase 14: `exist_tl_fn_{k+1}` assembly; `KampPrior.lean:391` discharged; live-path sorry count 2 → 1
