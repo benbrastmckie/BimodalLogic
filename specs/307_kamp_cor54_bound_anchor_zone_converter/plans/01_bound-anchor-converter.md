@@ -360,14 +360,42 @@ at 2 (`:391`, `:394`; `NfMultiAnchorBridge` is a leaf, off the live path).
   count at 8). **Done when:** `nf_zone_flatten_navigable` proven sorry-free, build green.
 - **Depends on:** 1 (GO)
 
-### Phase 5: A_past arm (x < t) via bracketBuildLeft [NOT STARTED]
-- **Goal:** Build `A_past` as a `bracketBuildLeft` (Since) chain from `t` to the bound witness `x`,
-  its endpoint type the flattened navigable type from Phase 4; prove the past-disjunct iff.
+### Phase 5: A_past arm (x < t) via bracketBuildLeft [COMPLETED]
+
+**COMPLETED** (2026-07-06, session sess_1783353840_ba1b1d). Landed `A_past` + `A_past_correct` in
+`NfZoneFlattenNavigable.lean` (append-only). `A_past pastEnd := bracketBuildLeft
+(BracketFormula.trivial TemporalPred.top) pastEnd` — the OUTER Since-navigation from origin `t` back
+to the bound witness `x` in the past exterior — and `A_past_correct` proves `temporal_truth M t
+(A_past pastEnd) ↔ ∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` (the exact past
+disjunct of `nf_zone_exists_trichotomy_k1`) by a direct application of the preserved-asset-backed
+pillar `navigated_bracket_reaches_exterior_past` — the navigation mechanism (`bracketBuildLeft`) is
+reused, NOT rebuilt. Hook-parametric over the endpoint `pastEnd` and its correctness `h_past` (the
+recursion IH); the Phase-4 brick `nf_zone_flatten_navigable_brick` is consumed inside the deferred
+construction of `pastEnd`/`h_past` (the quant layer of the arity-2 char at `[x,t]` flattens via the
+brick), wired at Phase 7. `lake build` GREEN (994 jobs; downstream `NfMultiAnchorBridge` 996 jobs);
+`lean_verify A_past_correct` axioms `[propext, Classical.choice, Quot.sound]`, `A_past` axioms a subset
+(`[propext, Quot.sound]`), 0 warnings, 0 domain axioms; live-path sorry count unchanged at 2.
+
+**Cycle-safe placement (advances Phase-7 concern):** `A_past`/`A_past_correct` depend only on
+`navigated_bracket_reaches_exterior_past` (this file) and `bracketBuildLeft` (`VecEATranslation`) —
+neither `NfMultiAnchorBridge` nor `KampPrior` — so they live in the **KampPrior-independent**
+`NfZoneFlattenNavigable.lean`. The outer-navigation arms are cycle-safe; only Phase 3's `A_diag`
+(needs KampPrior-side `nf_char2_formula`) and the Phase-4 brick remain to be relocated for Phase 7.
+
+- **Goal:** Build `A_past` as a `bracketBuildLeft` (Since) chain from `t` to the bound witness `x`;
+  prove the past-disjunct iff — DONE.
 - **Tasks:**
-  - [ ] Define `A_past` via `bracketBuildLeft` over the Phase-4 flattened endpoint.
-  - [ ] Prove `A_past_correct`: `temporal_truth M t A_past ↔ ∃x<t, nf_eval M (k+1) 2 [x,t] sub_nf`
-        using `bracketBuildLeft_correct` (navigation) + `nf_zone_flatten_navigable` (endpoint) +
-        `exist_tl_fn_k_correct` (residual).
+  - [x] Define `A_past` via `bracketBuildLeft` over the endpoint hook. *(deviation: altered — endpoint
+        is the parametric hook `pastEnd : TemporalPred` (the depth-`(k+1)` arity-2 char at `[x,t]`),
+        not the Phase-4 flattened type directly; the Phase-4 brick is consumed one level in, inside
+        `h_past` (the IH), which is supplied at Phase 7. Assembly stays hook-parametric, mirroring
+        Phases 3/4.)*
+  - [x] Prove `A_past_correct` via `navigated_bracket_reaches_exterior_past` (= `bracketBuildLeft_correct`
+        + trivial-segment collapse). *(deviation: altered — the residual is carried by the endpoint
+        hook `h_past` rather than discharged inline by `exist_tl_fn_k_correct`; the IH is unavailable
+        off the live recursion, exactly as in Phases 3/4.)*
+  - Placement deviation: landed in `NfZoneFlattenNavigable.lean` (cycle-safe), not
+    `NfMultiAnchorBridge.lean` — A_past needs no KampPrior-side asset (preferred cycle-safe placement).
 - **Verification:** `lake build` GREEN; sorry-free; axioms 2; follows Rabinovich `F_i` chain (no
   simp/omega shortcut of a chain step); live-path sorry still 2.
 - **Estimated output:** ~150-250 lines. **Done when:** A_past arm iff proven sorry-free, build green.

@@ -287,4 +287,70 @@ the two-anchor characteristic machinery, not the arity-1 collapse the plan assum
 scaffolding landed here: `diagCollapseMap`/`diagExpandMap`, `diagCollapse_expand_id`, `diagDup`,
 `diagDup_eval_zero`. See task-307 handoff `next_action_hint` for the spawn recommendation. -/
 
+/-! ## Phase 5: A_past arm (`x < t`) — outer `bracketBuildLeft` (Since) navigation
+
+The **past** disjunct of the Phase-2 trichotomy `nf_zone_exists_trichotomy_k1` is
+`∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`: the bound anchor `x` lies in the
+**past exterior** of the fixed origin `t`. Following Rabinovich Cor 5.4, this zone is realized by an
+OUTER **navigated** `bracketBuildLeft` (Since) chain walking from `t` back to the bound witness `x`,
+with a trivial (`top`) segment — exactly the `navigated_bracket_reaches_exterior_past` pillar
+(established above, sorry-free, on top of the preserved asset `bracketBuildLeft_correct`). The chain
+lays `x` as a **bracket witness** (never a named free anchor), so `A_past` = `bracketBuildLeft`
+applied to a single endpoint `TemporalPred` `pastEnd`.
+
+`pastEnd` is the OUTER endpoint hook: the depth-`(k+1)` arity-2 characteristic of `sub_nf` at the
+navigated witness `x`, coupled to the fixed origin `t` (env `[x, t]`), checked by `.eval_at` at `x`.
+Its correctness `h_past` is the recursion IH one arity/one depth in: unfolding
+`nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` at the quant layer yields, per sub-form
+`qnf : NormalForm sig k 3`, the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf`
+— which is precisely what the **Phase-4 brick** `nf_zone_flatten_navigable_brick` (task 308 deliverable
+2, `NfMultiAnchorBridge.lean`) flattens into a five-zone navigated disjunction. So the Phase-4 brick is
+consumed **inside the construction of `pastEnd`/`h_past`** (the recursion, wired at Phase 7); the
+A_past ASSEMBLY here stays hook-parametric over `pastEnd`/`h_past`, exactly as Phase 3's `A_diag` and
+Phase 4's brick stay hook-parametric over their recursion hooks.
+
+### Route audit (Postmortem forbidden-route guards)
+- **Two-endpoint architectural fact (Rabinovich):** the witness `x` couples to the interval endpoint
+  `t` only (single-boundary past zone); deeper structure (the inner-`w` flattening) is absorbed as
+  bracket witnesses within the endpoint `pastEnd`, never as a new anchor.
+- **(b)** The endpoint is a NAVIGATED `TemporalPred` reached by `bracketBuildLeft` into the past
+  exterior `x < t`, never a depth-0 atomic bracket (D1 refuted the atomic route).
+- **(c)** No arity-1 collapse, no projection `VecEA2` bridge: `A_past` is pure outer navigation; the
+  arity-2 evaluation at `[x, t]` stays honest inside `h_past` (the IH).
+
+### Cycle-safe placement
+`A_past` / `A_past_correct` depend ONLY on `navigated_bracket_reaches_exterior_past` (this file) and
+`bracketBuildLeft` (`VecEATranslation`); neither references `NfMultiAnchorBridge` nor `KampPrior`.
+They are therefore placed in this **KampPrior-independent** file (unlike Phase 3's `A_diag`, which
+needs KampPrior-side `nf_char2_formula`), directly advancing the Phase-7 relocation concern: the
+outer-navigation arms can live cycle-safe. -/
+
+/-- **A_past arm** (task 307 Phase 5): the outer `bracketBuildLeft` (Since) navigation from the fixed
+origin `t` back to the bound witness `x` in the past exterior, over a single endpoint hook `pastEnd`
+(the depth-`(k+1)` arity-2 characteristic at the navigated `[x, t]`). The trivial (`top`) segment
+makes the chain collapse to the bare past-exterior existential (`navigated_bracket_reaches_exterior_past`). -/
+noncomputable def A_past (pastEnd : TemporalPred) : Formula :=
+  bracketBuildLeft (BracketFormula.trivial TemporalPred.top) pastEnd
+
+/-- **A_past arm correctness** (task 307 Phase 5). Under the endpoint-hook correctness `h_past` (the
+recursion IH: the navigated endpoint `pastEnd.eval_at` at a past witness `x < t` characterizes the
+depth-`(k+1)` arity-2 evaluation of `sub_nf` on `[x, t]`), `A_past` holds at `t` iff the past disjunct
+`∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf` of `nf_zone_exists_trichotomy_k1`
+holds. Pure outer navigation: a direct application of the past-reach pillar
+`navigated_bracket_reaches_exterior_past` (built on the preserved asset `bracketBuildLeft_correct`),
+never rebuilding the navigation mechanism. -/
+theorem A_past_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier)
+    (pastEnd : TemporalPred)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_past : ∀ x : M.carrier, x < t →
+      (pastEnd.eval_at M atomMap x ↔
+        nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)) :
+    temporal_truth M atomMap t (A_past pastEnd) ↔
+      ∃ x : M.carrier, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  simp only [A_past]
+  rw [navigated_bracket_reaches_exterior_past]
+  exact exists_congr fun x => and_congr_right fun hx => h_past x hx
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
