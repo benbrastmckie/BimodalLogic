@@ -1,3 +1,5 @@
+> **SUPERSEDED for remaining Phases 11-15** by plan v40 (`plans/40_prop43-negation-closure-route.md`): both v39 crux approaches (projection VecEA2; flat single-interval bracket) are refuted by sorry-free counterexample machinery; the route pivots onto the Uniform-Prop-4.3 negation-closure route. Phases 1-10 remain valid/preserved.
+
 # Implementation Plan: Task #305 (v39 — direct nf_eval_nf construction for KampPrior:391)
 
 - **Task**: 305 - rabinovich_ea_formula_implementation

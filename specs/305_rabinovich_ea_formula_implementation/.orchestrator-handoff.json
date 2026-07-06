@@ -1,59 +1,34 @@
 {
-  "status": "partial",
+  "status": "revised",
   "skeleton": false,
   "task": 305,
-  "phase": 11,
-  "sub_phase": "11b-D1-gate",
+  "phase": null,
   "session_id": "sess_1783315428_d370a2",
-  "verdict": "NO-GO",
-  "summary": "D1 go/no-go gate RESOLVED — VERDICT: NO-GO (decisive, sorry-free). Executed the corrected Phase-11b flattening probe nf_zone_mid_flatten_k1 (report 40 §3.2) in the new off-path sibling module NfZoneDepthK1Probe.lean. The make-or-break claim — 'the coupled quant witness w absorbs as a SECOND bracket witness on the fixed (x,t) interval with a single-point (depth-0 atomic) type' — is REFUTED. At k=1 the innermost sub : NormalForm sig 0 4 fixes every pairwise order atom of [w,y,x,t], including (0,2)=(w<x); so the coupled realizability layer (nf_characteristic_quant_split3) genuinely contains EXTERIOR w-zones (w<x, t<w) whose realizability the mid-zone LHS quant biconditional constrains. But a BracketFormula.holds M atomMap x t bf with the mandated depth-0 ATOMIC types is confined to the closed interval [x,t] — witnesses are strictly interior (IntervalPattern.holds, ExistsForallNF.lean:106-132) and atomic eval_at is a local valuation (temporal_truth on .atom/.box, no Until/Since navigation, Table.lean:186,189). Hence no atomic (x,t)-bracket disjunction can be equivalent to the LHS: the flat single-interval absorption drops exactly the exterior-w content, a NON-theorem 'for the same non-injectivity/locality that killed projection' (the report 40 §4 anticipated NO-GO trigger). 4 sorry-free lemmas landed (nf0_4_order_w_lt_x, nf0_4_exterior_witness_is_exterior, intervalPattern_witnesses_interior, interior_bracket_cannot_realize_exterior_sub_k1), all [propext, Classical.choice, Quot.sound] only, off the live import path. This is an honest, decisive NO-GO — NOT a fourth recession.",
+  "verdict": "REVISED — plan v40 created (Uniform-Prop-4.3 negation-closure route pivot)",
+  "summary": "Plan v40 supersedes v39 for its remaining Phases 11-15. Both v39 crux approaches are refuted by sorry-free counterexamples (projection VecEA2 at Phase 10; flat single-interval atomic bracket at D1, interior_bracket_cannot_realize_exterior_sub_k1). Per user decision, pivoted INSIDE task 305 onto the Uniform-Prop-4.3 negation-closure route. The material de-risking asset: prior_hasAttainedINF (PriorINF.lean:224, sorry-free) converts the live-path h_UZ into HasAttainedINF, unlocking the model-dependent negation/INF closures (neg_bounded_exists = Cor 5.4 fwd, neg_interval_formula = Lemma 5.1 fwd) INSIDE the correctness proof, while the formula A is built model-independently from bracketBuildLeft/Right (Prop 3.5 nested Until/Since) + the depth-k IH exist_tl_fn_k + formula-level negation. Grounded verbatim in Rabinovich 2014 §3.5/§4.3/§5.1-5.4 (read this dispatch): the paper's Prop 4.2/4.3 are 'over Dedekind complete chains' and completeness is used 'in exactly one place: the INF formula' — so negation is model-class-dependent, NOT the uniform syntactic function prior plans over-demanded (divergence flagged in plan risk table). PLAN ACCOUNTING: phases_completed=10; phase 11 counted as +1 PARTIAL (11a/11b splits + D1 gate landed sorry-free off-path, all preserved as assets; flat/projection converter refuted); phases 12-14 ABANDONED (bracket route refuted); phase 15 verification folded into new Phase 20; 5 NEW phases numbered 16-20; phases_total = 10 + 1 (phase-11 partial) + 5 (new) = 16. HONEST VERDICT on :391 closability in ~6-cycle budget: UNCERTAIN, gated on Phase 16 (~40-50% conditional on Phase 16 GREEN, which is ~50-60%). Phase 16 is a 1-dispatch decisive go/no-go gate testing whether navigable (Until/Since + IH type + prior_hasAttainedINF) encoding captures the exterior-zone coupled existential the flat bracket provably could not; NO-GO closes out with bankable off-path assets + a named /spawn residual.",
   "phases_completed": 10,
-  "phases_total": 15,
-  "build_state": "GREEN (Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneDepthK1Probe: 993 jobs; NfZoneDepthK note edit: 992 jobs; full lake build unchanged)",
+  "phases_total": 16,
+  "new_phases": "16 (GO/NO-GO gate: exterior-navigation capture at k=1), 17 (past+interior zone converter arms), 18 (future+diagonal arms + full converter assembly), 19 (assemble exist_tl_fn_{k+1} + rewire KampPrior:391, 2->1), 20 (verify :394 reachability + axiom/sorryAx audit, absorbs v39 Phase 15)",
+  "go_no_go_gate": {
+    "phase": 16,
+    "claim": "CONCRETE (non-vacuous): define A_fut_k1 via bracketBuildRight (depth-0 IH realizability endpoint type) and prove A_fut_k1_correct: temporal_truth M t (A_fut_k1 ...) <-> (exists y, t < y AND nf_eval_nf M 1 3 (zoneEnv3 y x t) qnf), for all Prior M (via prior_hasAttainedINF h_UZ). Tests the future exterior zone t<y (mirror of the D1-refuted flat case) with temporal navigation instead of a flat atomic bracket.",
+    "green": "proceed to Phases 17-20",
+    "no_go": "STOP; land Prior->INF navigation wiring + obstruction lemma off-path GREEN; /spawn the Cor-5.4 multi-anchor-coupling task; keep :391 baseline"
+  },
+  "build_state": "GREEN at HEAD bce099aa8 (no Lean edited this dispatch; planning only)",
   "live_path_sorry_baseline": 2,
   "live_path_sorry_current": 2,
-  "axioms_status": "unchanged: [propext, Classical.choice, Quot.sound] on every new decl (lean_verify confirmed all 4); zero new top-level axioms (grep '^axiom ' Theories/ = 2, baseline)",
-  "landed_sorry_free_this_dispatch": [
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf0_4_order_w_lt_x",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.nf0_4_exterior_witness_is_exterior",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.intervalPattern_witnesses_interior",
-    "Bimodal.Metalogic.WeakCanonical.Kamp.interior_bracket_cannot_realize_exterior_sub_k1"
-  ],
-  "refutation": {
-    "claim_tested": "report 40 §3.2 D1: mid-zone (x<y<t) existential at k=1 equals a disjunction of concrete BracketFormula.holds M atomMap x t bf_i over w's 7 zones, with depth-0 ATOMIC point/segment types (w absorbed as a second bracket witness on the fixed (x,t) interval).",
-    "counterexample_direction": "sub : NormalForm sig 0 4 whose (0,2) order atom (= w<x) is set. Any w realizing sub has w<x (nf0_4_exterior_witness_is_exterior), hence w NOT in (x,t). qnf.quant_assgn may set such an exterior-demanding sub, so the mid-zone LHS forces an exterior realizer.",
-    "current_behavior_of_rhs": "BracketFormula.holds M atomMap x t bf supplies only witnesses strictly interior to (x,t) (intervalPattern_witnesses_interior); with atomic types every eval_at is a local valuation (no navigation). The RHS is confined to [x,t] and is blind to exterior-w realizability.",
-    "required_behavior": "The iff needs the RHS to constrain realizability over ALL of M.carrier including w<x and t<w. A flat (x,t)-bracket cannot.",
-    "isolation": "interior_bracket_cannot_realize_exterior_sub_k1: no w with (x<w ∧ w<t) realizes an exterior-demanding sub. This is the exact 'absorb w as an interior bracket witness' step and it is a non-theorem for exterior w.",
-    "not_a_recession": "This is a bounded 1-dispatch refutation, not a deferral 'one layer deeper': it identifies a concrete structural impossibility (exterior witnesses do not flatten onto the interior interval with atomic types), matching report 40 §4's low-confidence risk flag."
-  },
-  "sorry_inventory": [
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 391,
-      "statement": "| 1 => arm of the arity-2 existential engine: exists env, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf",
-      "strategic": false,
-      "assumption": "The depth-(k+1) arity-2 existential engine (assembled from the depth-k zone converter) discharges this.",
-      "why_deferred": "Pre-existing live-path baseline sorry; NOT touched this dispatch (D1 gate scope only). Upstream depends on the Phase 11b converter, which the D1 NO-GO reroutes onto the Uniform-Prop-4.3 negation-closure route.",
-      "follow_up_task": "task 305 Phase 14, after the rerouted Phase 11b (Uniform-Prop-4.3) + 12 + 13"
-    },
-    {
-      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
-      "line": 394,
-      "statement": "| n+2 => arm (n>=2 arity closure)",
-      "strategic": false,
-      "assumption": "Either off the live path (documented non-blocking) or dischargeable by the phases-10-14 machinery at m <= existing arity.",
-      "why_deferred": "Pre-existing live-path baseline sorry; Phase 15 verifies reachability. Not in this dispatch's scope.",
-      "follow_up_task": "task 305 Phase 15"
-    }
-  ],
+  "axioms_status": "unchanged: 2 top-level axioms (grep '^axiom ' Theories/ = 2)",
   "blockers": [],
-  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
+  "continuation_path": "specs/305_rabinovich_ea_formula_implementation/plans/40_prop43-negation-closure-route.md",
   "audit_report": "specs/305_rabinovich_ea_formula_implementation/reports/40_phase11b-divergence-audit.md",
-  "next_action_hint": "STOP: /spawn Uniform-Prop-4.3 route (plan v39:181) per report 40. The D1 go/no-go gate is RESOLVED NO-GO: the flat single-(x,t)-interval flattening reframing is refuted (exterior-w realizability, zones w<x and t<w, cannot be captured by an atomic BracketFormula.holds ... x t confined to [x,t]). Do NOT build the flat bracket bridge; do NOT retry D2-D5 of report 40 (they are all conditional on D1 GREEN). Do NOT recede to a new framing. The faithful Rabinovich Cor 5.4 construction requires past-of-x/future-of-t temporal navigation (nested Until/Since) at the endpoints — NOT a flat interval disjunction — which is precisely what the Uniform-Prop-4.3 negation-closure route (Prop43.lean, EAVecNegationClosure.lean already exist) supplies. Next: /spawn a task to drive the Uniform-Prop-4.3 route to close Phase 11b's zone converter, then resume Phases 12-15.",
+  "next_action_hint": "Dispatch plan v40 Phase 16 (the GO/NO-GO gate) via /orchestrate 305 --hard or /implement 305 --hard. Build A_fut_k1 + A_fut_k1_correct sorry-free in the new off-path module Kamp/NfZoneNavProbe.lean, using bracketBuildRight_correct + prior_hasAttainedINF h_UZ -> neg_bounded_exists. GREEN -> continue 17-20; NO-GO -> /spawn per the gate's no_go branch. Do NOT build a flat atomic bracket (D1 refuted), do NOT retry projection VecEA2, do NOT reach for uniform VecEA negation (paper's negation is per-model, over Dedekind complete chains).",
+  "spawn_candidates": [
+    "PRIMARY (if Phase 16 NO-GO): Kamp Cor 5.4 depth-k zone converter — resolve the multi-anchor single-point coupling (express the quantified zone witness's coupling to the second anchor as a uniform navigable temporal formula, or establish the definitive obstruction). Depends on task 305.",
+    "SECONDARY (unchanged from v39, off completeness path): uniform standalone Prop 4.3 as a library asset."
+  ],
   "artifacts": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK1Probe.lean (NEW, off-path, sorry-free: D1 flattening probe NO-GO refutation — 4 lemmas + full module divergence note)",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfZoneDepthK.lean (module note updated: D1 VERDICT NO-GO pointer, supersedes the multi-anchor bracket-bridge continuation)",
-    "specs/305_rabinovich_ea_formula_implementation/reports/40_phase11b-divergence-audit.md (the authoritative corrected target that scoped this D1 gate)"
+    "specs/305_rabinovich_ea_formula_implementation/plans/40_prop43-negation-closure-route.md (NEW, plan v40)",
+    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (SUPERSEDED-for-Phases-11-15 pointer added at top)"
   ]
 }
