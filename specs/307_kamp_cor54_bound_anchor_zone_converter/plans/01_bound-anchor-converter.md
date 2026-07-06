@@ -230,13 +230,25 @@ mechanism it relies on (exterior reach + `F_i` back-coupling composition) is now
 - **Estimated output:** ~150-300 lines. **Done when:** GO or NO-GO recorded in handoff + build green.
 - **Depends on:** none
 
-### Phase 2: x-trichotomy split of the :391 RHS existential [NOT STARTED]
+### Phase 2: x-trichotomy split of the :391 RHS existential [COMPLETED]
+
+**COMPLETED** (2026-07-06, session sess_1783342946_dfd523). `nf_zone_exists_trichotomy_k1` proven
+**sorry-free** in `NfZoneFlattenNavigable.lean` (appended after the Phase-1 probes), `lake build`
+GREEN (993 jobs), axioms exactly `[propext, Classical.choice, Quot.sound]` (2 baseline, zero domain
+axioms), live-path sorry count unchanged at 2 (`:391`, `:394`; file still off the live import path).
+The lemma is a direct term-mode delegation to the generic atom `exists_trichotomy_split` (boundary
+`c := t`, `P x := nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`) — no navigation, no new
+math, as scoped. Env convention `Fin.cons x (fun _ => t)` matches `exist_tl_fn_k_correct` verbatim so
+Phases 3/5/6 consume the three disjuncts directly.
+
 - **Goal:** Unconditional split of `∃x, nf_eval M (k+1) 2 [x,t] sub_nf` into
   `(∃x<t, …) ∨ (x=t case) ∨ (∃x>t, …)` — the single-anchor analog of `nf_zone_exists_partition5`.
   Pure trichotomy on `x` vs the fixed origin `t`; no navigation, no new math.
 - **Tasks:**
-  - [ ] State and prove `nf_zone_exists_trichotomy_k1` (past / diagonal / future) reusing
+  - [x] State and prove `nf_zone_exists_trichotomy_k1` (past / diagonal / future) reusing
         `exists_trichotomy_split` / `nf_zone_exists_partition5` templates (NfZoneDepthK.lean).
+        *(delegated to `exists_trichotomy_split` directly — the single-boundary case collapses
+        `nf_zone_exists_partition5`'s five zones to three, needing only the generic atom.)*
 - **Verification:** `lake build` GREEN; lemma sorry-free; axioms unchanged; live-path sorry still 2.
 - **Estimated output:** ~120-200 lines. **Done when:** trichotomy lemma proven sorry-free, build green.
 - **Depends on:** 1 (GO)

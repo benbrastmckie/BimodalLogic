@@ -160,4 +160,38 @@ theorem exterior_future_zone_eval_shape {sig : MonadicSignature}
   refine exists_congr (fun w => and_congr_right (fun _ => ?_))
   exact nf_char_eq_iff_eval M 1 3 (zoneEnv3 w x t) q
 
+/-! ## Phase 2: x-trichotomy split of the `:391` RHS existential
+
+The `:391` obligation quantifies a single free anchor `x` over the arity-2 environment
+`Fin.cons x (fun _ => t)` (the depth-`(k+1)` sub-form's env `[x, t]`, origin `t` fixed). Before any
+navigation is built (Phases 4-6), the existential splits **unconditionally** into the three order
+zones of `x` relative to the fixed origin `t`: past (`x < t`), diagonal (`x = t`), future (`t < x`).
+This is the single-anchor analog of the arity-3 five-zone `nf_zone_exists_partition5`
+(NfZoneDepthK.lean) — here only ONE boundary (`t`) exists, so the five zones collapse to the three
+of the generic atom `exists_trichotomy_split`. No navigation, no characteristic-type machinery, no
+new mathematics: it is exactly `exists_trichotomy_split` at boundary `c := t` with
+`P x := nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf`.
+
+The env convention `Fin.cons x (fun _ => t)` matches `exist_tl_fn_k_correct` (KampPrior.lean:334-344)
+verbatim, so the past/future arms (Phases 5/6) and the diagonal arm (Phase 3) consume these three
+disjuncts directly. The diagonal disjunct is `P t = nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t))
+sub_nf` (the two-value collision `[t, t]` collapsed by `renameNF_eval_diag0` + `char_k1` in Phase 3).
+-/
+
+/-- **Single-anchor `x`-trichotomy split** of the `:391` RHS existential. The bound anchor `x` lies
+    below, at, or above the fixed origin `t`, splitting `∃ x, nf_eval_nf M (k+1) 2 [x,t] sub_nf` into
+    past / diagonal / future disjuncts. Unconditional (pure order trichotomy); the single-boundary
+    analog of `nf_zone_exists_partition5`, delegated directly to the generic atom
+    `exists_trichotomy_split`. Feeds Phase 3 (diagonal, `x=t`), Phase 5 (past, `x<t`), Phase 6
+    (future, `t<x`). -/
+theorem nf_zone_exists_trichotomy_k1 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
+    (∃ x, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ↔
+      (∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ∨
+      (nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf) ∨
+      (∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
+  exists_trichotomy_split
+    (fun x => nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) t
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
