@@ -298,4 +298,37 @@ theorem nf_zone_exists_partition5 {sig : MonadicSignature}
       (∃ y, t < y ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) :=
   (nf_zone_exists_iff_char M k qnf x t).trans (nf_zone_partition5 M k qnf x t)
 
+/-! ## Phase 11b: characteristic-type component evaluation lemmas
+
+These expose the two layers of the *characteristic* normal form `nf_characteristic M (k+1) n env`
+as concrete decidable predicates. Combined with the zone partition, they are the interface the
+depth-`k` IH plugs into: the quant layer is precisely the **coupled** joint realizability set
+`∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` (for `env = [y,x,t]` this is
+`∃ w, nf_eval_nf M k 4 [w,y,x,t] sub`, the `(w,y)`-joint coupling the projection route cannot
+factor), and the atom layer is the pointwise `atom_eval`. -/
+
+/-- Atom layer of the characteristic normal form: `atom_assgn` is exactly `decide ∘ atom_eval`. -/
+theorem nf_characteristic_atom_succ {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier) (a : AtomKind sig n) :
+    ((nf_characteristic M (k + 1) n env).atom_assgn a = true) ↔ atom_eval M env a := by
+  have h := nf_eval_atom_layer M (k + 1) n env (nf_characteristic M (k + 1) n env)
+    (nf_characteristic_satisfies M (k + 1) n env) a
+  exact h.symm
+
+/-- **Coupled realizability set of the characteristic type.** The quant layer of
+    `nf_characteristic M (k+1) n env` at a sub-form `sub` is exactly the joint existential
+    `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub`. This is the genuine (non-projected)
+    coupling: for the two-anchor env `[y,x,t]` the witness `w` and the whole configuration
+    `[y,x,t]` are quantified together. It is the exact predicate the depth-`k` IH formula
+    (`nf_nvar_exist_all_depths_fn`, KampPrior.lean:397) internalizes as a temporal formula. -/
+theorem nf_characteristic_quant_succ {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k n : Nat)
+    (env : Fin n → M.carrier) (sub : NormalForm sig k (n + 1)) :
+    ((nf_characteristic M (k + 1) n env).quant_assgn sub = true) ↔
+      (∃ w, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) := by
+  have h := nf_eval_quant_layer M k n env (nf_characteristic M (k + 1) n env)
+    (nf_characteristic_satisfies M (k + 1) n env) sub
+  exact h.symm
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
