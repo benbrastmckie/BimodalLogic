@@ -255,7 +255,23 @@ G4 preserved: `y` and inner `w` stay bracket witnesses, anchor set `{x,t}`.)*
 - **Guards enforced**: G4 (`w` bracket witness, ≤2 anchors), D2 (arity-3 hooks are new work).
 - **Commit**: `task 309 phase 3: arity-3 endpoint hooks`
 
-### Phase 4: nf_char2_past_formula + _correct (F_i chain past arm) [NOT STARTED]
+### Phase 4: nf_char2_past_formula + _correct (F_i chain past arm) [COMPLETED]
+
+*(Delivered as `nf_char2_past_formula` + `nf_char2_past_formula_correct` (NfMultiAnchorBridge.lean,
+after `nf_char3_endpoint_tl_correct`). Definition: `Formula.and (nf_char2_atom_offdiag_origin …
+sub_nf.1) (A_past seg (TemporalPred.conj (nf_char2_atom_offdiag_endpoint … sub_nf.1) quantEnd))` —
+the Phase-2 origin atom locus (checked at `t`, factors out of `∃ x`) conjoined with the Phase-1
+`A_past` outer `bracketBuildLeft` navigation over the caller's non-trivial segment `seg`, endpoint =
+Phase-2 endpoint atom locus ∧ the quant-endpoint hook `quantEnd`. `_correct` proves
+`temporal_truth M atomMap t (nf_char2_past_formula … sub_nf) ↔ ∃ x, x < t ∧ nf_eval_nf M (k+1) 2
+(Fin.cons x (fun _=>t)) sub_nf` under the depth-`k` IH `h_quant` (the `(x,t)` quant-layer coupling,
+routed through `nf_zone_flatten_navigable_brick` + Phase-3 hooks at the caller, exactly as
+`nf_char2_formula_correct` defers `h_exist_correct`). Assembly: `temporal_truth_and` (origin split) +
+`A_past_correct` (Phase 1) + `nf_char2_atom_offdiag_correct` (Phase 2) + the definitional
+depth-`(k+1)` `nf_eval_nf` unfolding (`Iff.rfl`; `zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _=>t))`)
++ explicit manual propositional glue (no `simp`/`omega`/`aesop` on the chain step, G5). Build GREEN;
+`#print axioms` = exactly `[propext, Classical.choice, Quot.sound]`; 0 new sorries. G1-G5 preserved:
+`x`/`w` bracket witnesses, anchor set `{x,t}`, `seg` a non-trivial parameter (not trivial-top).)*
 
 - **Goal**: Assemble the load-bearing `nf_char2_past_formula (…hooks…) (sub_nf : NormalForm sig (k+1) 2) : Formula`
   and prove `temporal_truth M atomMap t (nf_char2_past_formula … sub_nf) ↔ ∃ x, x < t ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf`.

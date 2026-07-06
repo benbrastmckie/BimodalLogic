@@ -946,4 +946,118 @@ theorem nf_char3_endpoint_tl_correct {sig : MonadicSignature} {k : Nat}
       rw [nf_quant_clause_tl_correct M atomMap y _ _ _ (h_inner sub)]
       exact h_quants sub
 
+/-! ## Phase 4 (task 309): `nf_char2_past_formula` + `_correct` — the off-diagonal `F_i` chain past arm
+
+The load-bearing new object. Assembles the OUTER non-trivial-segment `bracketBuildLeft` navigation
+(`A_past`, Phase 1) walking from the fixed origin `t` back into the past exterior to the bound
+witness `x < t`, whose endpoint at `x` conjoins the Phase-2 off-diagonal endpoint atom locus with a
+caller-supplied quant-endpoint hook `quantEnd`. The Phase-2 origin atom locus (t-position preds +
+off-diagonal order guard) factors OUT of the `∃ x` (it is `x`-independent once `x < t` is fixed).
+
+Rabinovich 2014 Cor 5.4 `F_i` chain (md:154-157): `F_{i-1} := α_{i-1} ∧ (β_i Until F_i)`. Here the
+past arm is the `Since`-dual: the outer `bracketBuildLeft` is the `β_i` past bracket, `x` is the bound
+`F_i` witness (a bracket witness, never a free anchor — G4), and the `(x, t)` quant coupling rides the
+non-trivial segment `seg` (G3: no trivial-top segment on the off-diagonal arm — `seg` is a parameter,
+not the hardcoded `BracketFormula.trivial TemporalPred.top`).
+
+The depth-`(k+1)` arity-2 evaluation at `[x, t]` decomposes (definitionally, matching `nf_eval_nf`'s
+own `k+1` unfolding) into the depth-0 atom layer `nf_eval_nf M 0 2 [x, t] sub_nf.1` and, per arity-3
+sub-NF `qnf`, the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf` matching
+`sub_nf.2 qnf`. The atom layer is discharged by Phase 2 (`nf_char2_atom_offdiag_correct`); the quant
+layer is the honest depth-`k` IH, deferred to the hook-correctness hypothesis `h_quant` (discharged
+one level up by the caller via `nf_zone_flatten_navigable_brick` + the Phase-3 endpoint hooks —
+exactly as `nf_char2_formula_correct` / `A_diag_correct` defer their coupling to `h_exist_correct` /
+`h_past`/`h_fut`/`h_diag`). `zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))` so the inner env
+matches `nf_eval_nf`'s `Fin.cons w [x, t]` verbatim (route (a)/(c): env arity stays `≤ 3`, anchor set
+`{x, t}`, `zoneEnv3_arity_invariant`).
+
+### Route audit (Postmortem forbidden-route guards)
+- **G1** — no arity-1 collapse: the depth-`(k+1)` quant layer routes through the honest arity-3
+  coupled existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf`, never a flat arity-1 term.
+- **G2** — no projection `VecEA2` / third-free-anchor tower: `x` is laid by the outer bracket; the
+  only anchors are `{x, t}`.
+- **G3** — the `(x, t)` coupling rides `seg` (a non-trivial `BracketFormula 0` parameter) and the
+  navigated endpoint, never a trivial-top segment.
+- **G4** — `x` and every inner `w` are bracket witnesses; the free-anchor set stays `{x, t} = 2`.
+- **G5** — the `F_i` chain step is `A_past seg (endpoint atom ∧ quantEnd)` built explicitly via
+  `A_past_correct` (Rabinovich md:154-157); the final propositional glue is fully manual (no
+  `simp`/`omega`/`aesop` shortcut of the chain step).
+-/
+
+/-- **`nf_char2_past_formula`** (task 309 Phase 4): the off-diagonal (`x < t`) two-anchor navigated
+characteristic FORMULA, past arm. The Phase-2 origin atom locus (checked at `t`, `x`-independent)
+conjoined with the Phase-1 `A_past` outer `bracketBuildLeft` navigation over the caller's non-trivial
+segment `seg`, whose endpoint at the bound witness `x` conjoins the Phase-2 endpoint atom locus with
+the quant-endpoint hook `quantEnd`. Rabinovich Cor 5.4 `F_i` chain past arm (md:154-157). -/
+noncomputable def nf_char2_past_formula {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (quantEnd : TemporalPred)
+    (seg : BracketFormula 0)
+    (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
+  Formula.and
+    (nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+    (A_past seg
+      (TemporalPred.conj
+        (nf_char2_atom_offdiag_endpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+        quantEnd))
+
+/-- **Correctness of `nf_char2_past_formula`** (task 309 Phase 4). Under the quant-endpoint-hook
+correctness hypothesis `h_quant` (the depth-`k` IH: at each past witness `x < t`, the hook's
+`.eval_at x` conjoined with the segment `seg` holding on `(x, t)` characterizes the coupled arity-3
+quant layer of `sub_nf` at `[x, t]`, one depth down), the past-arm formula holds at `t` iff there is a
+past witness `x < t` where `sub_nf` evaluates on the two-anchor env `[x, t]`. Assembled from
+`temporal_truth_and` (origin factor split) + `A_past_correct` (Phase 1 outer bracket) +
+`nf_char2_atom_offdiag_correct` (Phase 2 atom locus) + the depth-`(k+1)` `nf_eval_nf` unfolding, with
+the quant layer routed through `h_quant`. `zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))`
+matches `nf_eval_nf`'s inner env. Rabinovich Cor 5.4 `F_i` chain (md:154-157). -/
+theorem nf_char2_past_formula_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (quantEnd : TemporalPred)
+    (seg : BracketFormula 0)
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_quant : ∀ x : M.carrier, x < t →
+      ((quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap x t) ↔
+        (∀ qnf : NormalForm sig k 3,
+          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)))) :
+    temporal_truth M atomMap t
+        (nf_char2_past_formula atomMap h_surj quantEnd seg sub_nf) ↔
+      ∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  -- Conjunction of temporal predicates unfolds to conjunction of evaluations.
+  have conj_eval : ∀ (a b : TemporalPred) (z : M.carrier),
+      (TemporalPred.conj a b).eval_at M atomMap z ↔
+        a.eval_at M atomMap z ∧ b.eval_at M atomMap z := by
+    intro a b z
+    simp only [TemporalPred.conj, TemporalPred.eval_at]
+    exact temporal_truth_and M atomMap z a.formula b.formula
+  -- Per-witness decomposition of the depth-(k+1) evaluation at [x, t].
+  have key : ∀ x : M.carrier, x < t →
+      (nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (temporal_truth M atomMap t
+            (nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) ∧
+          (nf_char2_atom_offdiag_endpoint atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)).eval_at M atomMap x) ∧
+        (quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap x t)) := by
+    intro x hx
+    have hunf : nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)) ∧
+        (∀ qnf : NormalForm sig k 3,
+          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
+      Iff.rfl
+    rw [hunf, ← nf_char2_atom_offdiag_correct M atomMap h_surj
+          (sub_nf.1 : NormalForm sig 0 2) x t hx, ← h_quant x hx]
+  simp only [nf_char2_past_formula]
+  rw [temporal_truth_and, A_past_correct]
+  simp only [conj_eval]
+  constructor
+  · rintro ⟨horig, z0, hz0, ⟨hend, hqe⟩, hseg⟩
+    exact ⟨z0, hz0, (key z0 hz0).mpr ⟨⟨horig, hend⟩, hqe, hseg⟩⟩
+  · rintro ⟨x, hx, hnf⟩
+    obtain ⟨⟨horig, hend⟩, hqe, hseg⟩ := (key x hx).mp hnf
+    exact ⟨horig, x, hx, ⟨hend, hqe⟩, hseg⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
