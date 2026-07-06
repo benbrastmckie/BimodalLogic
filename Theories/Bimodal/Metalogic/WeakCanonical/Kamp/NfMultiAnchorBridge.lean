@@ -972,13 +972,23 @@ riding the outer `bracketBuildLeft`/`bracketBuildRight` navigation reaches the a
 order zone. That segment is the deliverable of **Phase 7** and is not yet built, so the standalone
 depth-0 navigated correctness cannot be closed within this phase's H8 budget.
 
-Per the plan's Phase-6 §4.3 FALLBACK clause, this dispatch lands the **documented strategic-sorry
-skeleton**: `endChar0` fully defined (a genuine, non-vacuous `w`-locus atom characteristic — the part
-of the arity-3 atom layer a navigated-`w` `TemporalPred` CAN read locally), the `w`-locus correctness
-`endChar0_wlocus_correct` proved **sorry-free**, the `EndCharCarrier` interface fixed, and the full
-navigated `endChar0_correct` stated with a single flagged strategic sorry whose discharge is deferred
-to a dedicated follow-up (the anchor pinning arrives with Phase 7's segment). This keeps Phases 7-9
-dispatchable and prevents the base-case from re-blocking the whole task.
+Phase-6 landed `endChar0` fully defined (a genuine, non-vacuous `w`-locus atom characteristic — the
+part of the arity-3 atom layer a navigated-`w` `TemporalPred` CAN read locally), the `w`-locus
+correctness `endChar0_wlocus_correct` proved **sorry-free**, and the `EndCharCarrier` interface fixed;
+the full navigated `endChar0_correct` was landed under the §4.3 FALLBACK with a flagged strategic sorry.
+
+**Phase-8 update (task 309 P8): that strategic sorry is DISCHARGED and the statement CORRECTED.** The
+Phase-6 free-anchor form was provably FALSE (a closed navigated-`w` `TemporalPred` cannot read the
+arbitrary carrier anchors `a, b`; concrete counterexample in `endChar0_correct`'s docstring below). The
+faithful base case adds the anchor+order **residual** hypothesis `h_res` — the very data the enclosing
+bracket exteriors / `x < w < t` witness bound pin as `a = x`, `b = t` (report 02 §4.2, G3/G4) — under
+which `endChar0` discharges the full depth-0 arity-3 atom layer **sorry-free**. The remaining Phase-8
+deliverable, the *recursive* primitive `endChar : NormalForm sig k 3 → TemporalPred` + `endChar_correct`
+(recursion on `k`), is NOT built here: the `nf_eval_nf` quant layer at depth `k+1` structurally needs
+arity-4 sub-evaluations `∃ x', nf_eval_nf M k 4 (Fin.cons x' (zoneEnv3 w a b)) sub`, which the fixed
+arity-3 `EndCharCarrier` interface cannot recursively consume without the brick-witness-collapse core
+(report 02 §4.1/§4.2, ~300-500 lines; anchor-management, NOT `nf_char3_deeper_split`). See the
+orchestrator handoff `follow_up_task` for that residual core.
 
 ### Route audit (Postmortem forbidden-route guards)
 - **G1** — no arity-1 collapse: `endChar0` reads the honest arity-3 atom layer's `w`-locus; the full
@@ -1041,29 +1051,61 @@ theorem endChar0_wlocus_correct {sig : MonadicSignature}
     have := h p
     simpa only [nf3_locus0] using this
 
-/-- **Correctness of the depth-0 navigated arity-3 endpoint base** (task 309 Phase 6). The navigated
-base's `.eval_at w` characterizes the full arity-3 depth-0 atom layer of `qnf` on the two-anchor env
-`zoneEnv3 w a b`, for a navigated witness `w` and two fixed anchors `{a, b} ⊆ {x, t}` (G4). This is
-the `k = 0` instance of the report-02 §1.4 primitive.
+/-- **Base-case discharge of the navigated arity-3 endpoint characteristic under the anchor residual**
+(task 309 Phase 8; DISCHARGES and CORRECTS the Phase-6 §4.3 strategic sorry — see the deviation note).
+The `k = 0` base of the report-02 §1.4 primitive.
 
-STRATEGIC SORRY (task 309 P6, report 02 §4.3; Phase-6 §4.3 FALLBACK — TRIGGERED): the depth-0
-**navigated** arity-3 base couples the two fixed anchor positions `a`, `b` (predicate layers at
-indices 1, 2) and the order zone among `{w, a, b}`, which a closed navigated-`w` `TemporalPred` reaches
-only through the Rabinovich `β_i` **non-trivial interior segment** (report 02 §4.2, G3). That segment
-is the deliverable of **Phase 7** and is not yet built, so this navigated correctness cannot be closed
-in this dispatch. `endChar0` and the sorry-free `w`-locus fragment `endChar0_wlocus_correct` are
-landed; the anchor-pinning discharge is deferred. See `follow_up_task` (dedicated depth-0 navigated
-base-case discharge, consuming Phase-7's segment). NOT an impossibility — the object exists (Rabinovich
-Cor 5.4 over Dedekind-complete chains, md:154-157); only the segment scaffolding is a phase away. -/
+**Why the Phase-6 free-anchor statement was false (concrete counterexample, G-diligence).** The
+Phase-6 `endChar0_correct` asserted `(endChar0 qnf).eval_at w ↔ nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf`
+for *arbitrary* `a b : M.carrier`, with a strategic `sorry`. That biconditional is provably FALSE, not
+merely hard: `endChar0`'s `.eval_at w = temporal_truth M atomMap w …` depends only on `M` and the
+navigated witness `w`, whereas the RHS `nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf` unfolds
+(NormalForm.lean:201) to `∀ atom, atom_eval M (zoneEnv3 w a b) atom ↔ qnf atom = true`, which also
+constrains the predicate layer at the anchor positions `a` (index 1: `atom_eval (.pred p 1) =
+M.interp p a`), `b` (index 2), and the order relations among `{w, a, b}` (`.order` atoms). Take `qnf`
+with `qnf (.pred p 1) = true` while `M.interp p a = false`: the RHS fails, but the LHS (reading only
+the `w`-locus, `nf3_locus0`) is unaffected — refuting the `↔`. A *closed* navigated-`w` `TemporalPred`
+cannot reference the arbitrary carrier anchors `a, b` as free values (report 02 §4.3 flagged the risk;
+this dispatch confirms it BINDS at the statement level).
+
+**Faithful base case (the mission's "pin a=x, b=t via the enclosing bracket witnesses").** The anchor
+predicate layers and the order zone among `{w, a, b}` are exactly the **residual** `h_res`, supplied in
+the full assembly by the bracket exteriors / the `x < w < t` witness bound that pin `a = x`, `b = t`
+(report 02 §4.2, G3/G4 — the non-trivial `β_i` segment machinery). Under `h_res`, `endChar0`'s
+locally-readable `w`-position predicate layer (`endChar0_wlocus_correct`) discharges the FULL depth-0
+arity-3 atom layer, sorry-free. This is the correctly-hypothesized `k = 0` instance the recursion's
+base wiring consumes; `w` stays a bracket witness (G4), anchors `{a, b} ⊆ {x, t}` (≤2 cap). -/
 theorem endChar0_correct {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (qnf : NormalForm sig 0 3) (w a b : M.carrier) :
+    (qnf : NormalForm sig 0 3) (w a b : M.carrier)
+    (h_res : ∀ atom : AtomKind sig 3, (∀ p : sig.preds, atom ≠ AtomKind.pred p 0) →
+      (atom_eval M (zoneEnv3 w a b) atom ↔ (qnf atom = true))) :
     (endChar0 atomMap h_surj qnf).eval_at M atomMap w ↔
       nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf := by
-  -- STRATEGIC SORRY (task 309 P6, report 02 §4.3): depth-0 navigated arity-3 base; see follow_up_task
-  sorry
+  rw [endChar0_wlocus_correct]
+  simp only [nf_eval_nf]
+  have hw0 : (zoneEnv3 w a b : Fin 3 → M.carrier) 0 = w := by
+    simp only [zoneEnv3, Fin.cons_zero]
+  constructor
+  · -- w-locus layer + residual ⇒ full atom layer
+    intro hpred atom
+    cases atom with
+    | pred p i =>
+      by_cases hi : i = 0
+      · subst hi
+        show atom_eval M (zoneEnv3 w a b) (AtomKind.pred p 0) ↔ qnf (.pred p 0) = true
+        simp only [atom_eval, hw0]
+        exact hpred p
+      · exact h_res (.pred p i) (fun p' heq => by injection heq with _ hi0; exact hi hi0)
+    | order i j hij =>
+      exact h_res (.order i j hij) (fun _ heq => by simp at heq)
+  · -- full atom layer ⇒ w-locus layer
+    intro hall p
+    have hp := hall (.pred p 0)
+    simp only [atom_eval, hw0] at hp
+    exact hp
 
 /-! ## Phase 7 (task 309): non-trivial interior `β_i` segment `seg` + `holds`-correctness
 
