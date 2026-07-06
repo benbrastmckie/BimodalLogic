@@ -280,7 +280,7 @@ cycle-safe: only `PriorExpressiveness` + Boneyard import KampPrior). Full-tree `
 sorries UNCHANGED at 2 (`:351`/`:354` after the +1 import-line shift). This is the ONLY new import
 edge permitted; it is done. History only — do not re-add or move it.
 
-### Phase 6: Depth-0 navigated arity-3 endpoint base + interface [NOT STARTED]
+### Phase 6: Depth-0 navigated arity-3 endpoint base + interface [IN PROGRESS]
 
 - **Goal**: Resolve report 02 §4.3. Build (or adapt from `nf_nvar_exist_depth0_tl_fn`) the closed
   depth-0 **navigated** characteristic

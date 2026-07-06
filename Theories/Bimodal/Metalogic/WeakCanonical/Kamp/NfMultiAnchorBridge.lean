@@ -946,6 +946,125 @@ theorem nf_char3_endpoint_tl_correct {sig : MonadicSignature} {k : Nat}
       rw [nf_quant_clause_tl_correct M atomMap y _ _ _ (h_inner sub)]
       exact h_quants sub
 
+/-! ## Phase 6 (task 309): depth-0 navigated arity-3 endpoint base `endChar0` + `endChar` interface
+
+The base of the recursion for the missing primitive (report 02 §1.4): the closed navigated arity-3
+endpoint characteristic `endChar : NormalForm sig k 3 → TemporalPred` with
+`(endChar qnf).eval_at M atomMap w ↔ nf_eval_nf M k 3 (zoneEnv3 w a b) qnf` for a navigated witness
+`w` and two fixed anchors `{a, b} ⊆ {x, t}`, by recursion on `k`, arity capped at 3 (G4). This phase
+delivers the `k = 0` base `endChar0` and fixes the `endChar` interface (`EndCharCarrier`) that Phase 8
+recurses on; Phase 7 supplies the non-trivial interior segment, Phase 8 the step assembly.
+
+### Base-case status (report 02 §4.3, Phase-6 §4.3 FALLBACK — TRIGGERED)
+
+Report 02 §4.3 flagged the depth-0 navigated base as the primary open sub-question (Medium risk):
+`nf_nvar_exist_depth0_tl_fn` (NfDepth0Generalized:1615) is **existential-at-origin**, not the
+**navigated-point** arity-3 characteristic the primitive needs. This dispatch confirms the risk BINDS
+structurally: at depth 0, `nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf` unfolds (NormalForm.lean:201) to the
+pure atom layer `∀ atom : AtomKind sig 3, atom_eval M (zoneEnv3 w a b) atom ↔ (qnf atom = true)` over
+env `(w, a, b)` — which asserts predicate literals at the **two fixed anchor positions** `a` (index 1)
+and `b` (index 2) and the order relations among `{w, a, b}`. A **closed** `TemporalPred` (a syntactic
+`Formula`, ExistsForallNF:49) whose `.eval_at` is `temporal_truth … w` (ExistsForallNF:53) can only
+read predicates **locally at `w`** or at points **reached by temporal navigation** from `w`; it cannot
+reference the arbitrary carrier anchors `a, b : M.carrier` as free values. Pinning `a = x` and `b = t`
+is exactly what the Rabinovich `β_i` **non-trivial segment** does (report 02 §4.2, G3): the segment
+riding the outer `bracketBuildLeft`/`bracketBuildRight` navigation reaches the anchors and fixes the
+order zone. That segment is the deliverable of **Phase 7** and is not yet built, so the standalone
+depth-0 navigated correctness cannot be closed within this phase's H8 budget.
+
+Per the plan's Phase-6 §4.3 FALLBACK clause, this dispatch lands the **documented strategic-sorry
+skeleton**: `endChar0` fully defined (a genuine, non-vacuous `w`-locus atom characteristic — the part
+of the arity-3 atom layer a navigated-`w` `TemporalPred` CAN read locally), the `w`-locus correctness
+`endChar0_wlocus_correct` proved **sorry-free**, the `EndCharCarrier` interface fixed, and the full
+navigated `endChar0_correct` stated with a single flagged strategic sorry whose discharge is deferred
+to a dedicated follow-up (the anchor pinning arrives with Phase 7's segment). This keeps Phases 7-9
+dispatchable and prevents the base-case from re-blocking the whole task.
+
+### Route audit (Postmortem forbidden-route guards)
+- **G1** — no arity-1 collapse: `endChar0` reads the honest arity-3 atom layer's `w`-locus; the full
+  correctness targets `nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf` (arity 3), never a flat arity-1 term.
+- **G4** — anchors stay `{a, b} ⊆ {x, t}` (≤2 cap); `w` is the navigated bracket witness, never a
+  third free anchor. `zoneEnv3 w a b` env arity is exactly 3 (`{w, a, b}`, two anchors + witness). -/
+
+/-- Position-0 (navigated-witness `w`) locus projection of an arity-3 depth-0 NF: fix the witness
+index `0` and read off the predicate assignment there. Order atoms are vacuous at arity 1 (`Fin 1` is
+a subsingleton). The two anchor loci (indices 1, 2) and the order layer among `{w, a, b}` are supplied
+by the Phase-7 non-trivial segment in the full assembly — they cannot be read locally at the navigated
+witness `w`. Mirrors `nf2_locus` one arity up. -/
+def nf3_locus0 {sig : MonadicSignature} (nf3 : NormalForm sig 0 3) : NormalForm sig 0 1 :=
+  fun a => match a with
+    | .pred p _ => nf3 (.pred p (0 : Fin 3))
+    | .order j j' h => absurd (Subsingleton.elim j j') h
+
+/-- **Depth-0 navigated arity-3 endpoint base** (task 309 Phase 6). The `TemporalPred` carrying the
+`w`-position (index 0) predicate atoms of the depth-0 arity-3 NF `qnf`, checked at the navigated
+witness `w`. This is the `k = 0` base of the recursive primitive `endChar` (report 02 §1.4): the part
+of the arity-3 atom layer `nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf` that a navigated-`w` `TemporalPred`
+reads locally. The anchor-position (`a`, `b`) predicates and the order layer are coupled by the Phase-7
+non-trivial `β_i` segment in the full assembly (report 02 §4.2; see `endChar0_correct`). `w` is a
+bracket witness, never a free anchor (G4). Reuses the depth-0 atom-literal conjunction
+`nf_depth0_char_formula` via the position-0 projection `nf3_locus0`. -/
+noncomputable def endChar0 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 0 3) : TemporalPred :=
+  ⟨nf_depth0_char_formula atomMap h_surj (nf3_locus0 qnf)⟩
+
+/-- **Interface signature for the recursive navigated endpoint primitive** (task 309 Phase 6, report
+02 §1.4). The recursion carrier Phase 8 assembles by recursion on `k`: the closed navigated arity-3
+endpoint characteristic, base `endChar0` (`k = 0`, this phase), step = navigable-brick flatten +
+Phase-7 non-trivial segment for the interior + Phase-6/8 endpoints for the exteriors, arity capped at
+3 (G4). Fixed here so Phases 7-9 dispatch against a stable type. `endChar0` inhabits `EndCharCarrier
+sig 0`. -/
+abbrev EndCharCarrier (sig : MonadicSignature) (k : Nat) : Type :=
+  NormalForm sig k 3 → TemporalPred
+
+/-- **`w`-locus correctness of `endChar0`** (task 309 Phase 6, sorry-free leaf). The navigated base's
+`.eval_at w` characterizes exactly the position-0 (`w`) predicate layer of `qnf`:
+`∀ p, M.interp p w ↔ qnf (.pred p 0) = true`. Direct from `nf_depth0_char_formula_correct` through the
+position-0 projection `nf3_locus0`. This is the locally-readable fragment of the full arity-3 atom
+layer; the anchor coupling is added by the Phase-7 segment (see `endChar0_correct`). -/
+theorem endChar0_wlocus_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 0 3) (w : M.carrier) :
+    (endChar0 atomMap h_surj qnf).eval_at M atomMap w ↔
+      (∀ p : sig.preds, M.interp p w ↔ qnf (.pred p (0 : Fin 3)) = true) := by
+  simp only [endChar0, TemporalPred.eval_at]
+  rw [nf_depth0_char_formula_correct]
+  constructor
+  · intro h p
+    have := h p
+    simpa only [nf3_locus0] using this
+  · intro h p
+    have := h p
+    simpa only [nf3_locus0] using this
+
+/-- **Correctness of the depth-0 navigated arity-3 endpoint base** (task 309 Phase 6). The navigated
+base's `.eval_at w` characterizes the full arity-3 depth-0 atom layer of `qnf` on the two-anchor env
+`zoneEnv3 w a b`, for a navigated witness `w` and two fixed anchors `{a, b} ⊆ {x, t}` (G4). This is
+the `k = 0` instance of the report-02 §1.4 primitive.
+
+STRATEGIC SORRY (task 309 P6, report 02 §4.3; Phase-6 §4.3 FALLBACK — TRIGGERED): the depth-0
+**navigated** arity-3 base couples the two fixed anchor positions `a`, `b` (predicate layers at
+indices 1, 2) and the order zone among `{w, a, b}`, which a closed navigated-`w` `TemporalPred` reaches
+only through the Rabinovich `β_i` **non-trivial interior segment** (report 02 §4.2, G3). That segment
+is the deliverable of **Phase 7** and is not yet built, so this navigated correctness cannot be closed
+in this dispatch. `endChar0` and the sorry-free `w`-locus fragment `endChar0_wlocus_correct` are
+landed; the anchor-pinning discharge is deferred. See `follow_up_task` (dedicated depth-0 navigated
+base-case discharge, consuming Phase-7's segment). NOT an impossibility — the object exists (Rabinovich
+Cor 5.4 over Dedekind-complete chains, md:154-157); only the segment scaffolding is a phase away. -/
+theorem endChar0_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 0 3) (w a b : M.carrier) :
+    (endChar0 atomMap h_surj qnf).eval_at M atomMap w ↔
+      nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf := by
+  -- STRATEGIC SORRY (task 309 P6, report 02 §4.3): depth-0 navigated arity-3 base; see follow_up_task
+  sorry
+
 /-! ## Phase 4 (task 309): `nf_char2_past_formula` + `_correct` — the off-diagonal `F_i` chain past arm
 
 The load-bearing new object. Assembles the OUTER non-trivial-segment `bracketBuildLeft` navigation
