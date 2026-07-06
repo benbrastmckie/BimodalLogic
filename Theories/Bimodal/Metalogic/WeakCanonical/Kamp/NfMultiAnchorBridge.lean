@@ -319,6 +319,155 @@ theorem nf_char2_atom_part_correct {sig : MonadicSignature}
         · rfl
         · exact absurd (ho.mpr hb) hfalse
 
+/-! ## Phase 2 (task 309): off-diagonal atom layer for `[x, t]` (`x < t`, `order 0 1 = true`)
+
+The **off-diagonal** analog of the diagonal atom part `nf_char2_atom_part` above. On the diagonal
+env `[t, t]` both loci coincide and every order atom is false; here the two loci `x < t` are
+DISTINCT and `order 0 1` (i.e. `x < t`) is TRUE. This is the D3 divergence: `nf_char2_atom_part`
+is diagonal-only (it returns `⊥` whenever any order atom is true), so a NEW atom layer is required
+for the endpoint of the Rabinovich Cor 5.4 `F_i` chain (md:154-157), where the bound witness `x`
+sits strictly in the past (resp. future) exterior of the origin `t`.
+
+Following the F_i chain architecture (`A_past seg pastEnd`, NfZoneFlattenNavigable.lean:335): the
+outer `bracketBuildLeft` navigates from origin `t` back to the bound endpoint `z0 = x`, checking
+`pastEnd.eval_at x` at the endpoint and the segment on `(x, t)`. The arity-2 atom layer at `[x, t]`
+therefore splits by LOCUS:
+
+- **x-position predicate atoms** (`.pred p 0`, `interp p x`) are checked at the navigated ENDPOINT
+  `x` — carried by `nf_char2_atom_offdiag_endpoint` (a `TemporalPred`, plugged in as `pastEnd`'s
+  atom part);
+- **t-position predicate atoms** (`.pred p 1`, `interp p t`) are asserted at the ORIGIN `t` — carried
+  by `nf_char2_atom_offdiag_origin` (a `Formula`, conjoined at the origin level in Phase 4);
+- **order atoms** are fixed by the strict `x < t` supplied by the bracket direction: `order 0 1 =
+  true`, `order 1 0 = false`. The origin builder guards on off-diagonal order consistency (an
+  order literal is `= true` iff its index pair is strictly increasing) and collapses to `⊥`
+  otherwise — the off-diagonal analog of the diagonal `⊥` guard, but keyed to `x < t` (D3), NOT to
+  "all order atoms false".
+
+Both loci reuse the arity-1 predicate-literal conjunction `nf_depth0_char_formula`
+(Separation/KampTranslation.lean:130) via the per-locus projection `nf2_locus`. G4: the anchor set
+stays `{x, t} = 2`; no arity growth. G5 N/A here (this is the atom leaf, not a chain step). -/
+
+/-- Per-locus arity-1 projection of an arity-2 depth-0 NF: fix the anchor index `i ∈ {0, 1}` and read
+off the predicate assignment there. Order atoms are vacuous at arity 1 (`Fin 1` is a subsingleton),
+mirroring the diagonal collapse inside `nf_char2_atom_part`. -/
+def nf2_locus {sig : MonadicSignature} (nf2 : NormalForm sig 0 2) (i : Fin 2) :
+    NormalForm sig 0 1 :=
+  fun a => match a with
+    | .pred p _ => nf2 (.pred p i)
+    | .order j j' h => absurd (Subsingleton.elim j j') h
+
+/-- **Off-diagonal endpoint atom characteristic** (task 309 Phase 2, D3). The `TemporalPred` carrying
+the `x`-position predicate atoms of `nf2`, checked at the navigated endpoint `x` (fed as the atom part
+of `A_past`/`A_future`'s `pastEnd`/`futureEnd`). Its `.eval_at x` characterizes
+`∀ p, interp p x ↔ nf2 (.pred p 0) = true`. -/
+noncomputable def nf_char2_atom_offdiag_endpoint {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) : TemporalPred :=
+  ⟨nf_depth0_char_formula atomMap h_surj (nf2_locus nf2 0)⟩
+
+/-- **Off-diagonal origin atom characteristic** (task 309 Phase 2, D3). The `Formula` carrying the
+`t`-position predicate atoms of `nf2`, asserted at the origin `t`, guarded by off-diagonal order
+consistency (each order literal is `= true` iff its index pair is strictly increasing — i.e. matches
+the strict `x < t`). Collapses to `⊥` when the order layer is not off-diagonal-consistent (the D3
+analog of the diagonal `⊥` guard). -/
+noncomputable def nf_char2_atom_offdiag_origin {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) : Formula :=
+  if (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (i : Fin 2) < j)) then
+    nf_depth0_char_formula atomMap h_surj (nf2_locus nf2 1)
+  else
+    Formula.bot
+
+/-- **Correctness of the off-diagonal atom layer** (task 309 Phase 2, D3). Given the strict order
+`x < t`, the two-anchor depth-0 atom layer `nf_eval_nf M 0 2 [x, t] nf2` holds iff BOTH the origin
+characteristic (t-position preds + order guard) holds at `t` AND the endpoint characteristic
+(x-position preds) holds at `x`. This is exactly the locus decomposition the F_i chain (Phase 4)
+needs: the t-position preds and the order layer factor OUT of the `∃ x` (they do not depend on `x`
+once `x < t` is fixed), leaving only the endpoint x-preds inside the navigated bracket. Rabinovich
+Cor 5.4 endpoint atom coupling (md:154-157). -/
+theorem nf_char2_atom_offdiag_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) (x t : M.carrier) (hxt : x < t) :
+    (temporal_truth M atomMap t (nf_char2_atom_offdiag_origin atomMap h_surj nf2) ∧
+      (nf_char2_atom_offdiag_endpoint atomMap h_surj nf2).eval_at M atomMap x) ↔
+    nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 := by
+  -- Environment values: position 0 ↦ x, position 1 ↦ t.
+  have he0 : (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) 0 = x := by
+    simp
+  have he1 : (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) 1 = t := by
+    simp
+  -- The env is strictly monotone: `env i < env j ↔ i < j` (since `x < t`).
+  have env_mono : ∀ (i j : Fin 2),
+      ((Fin.cons x (fun _ => t) : Fin 2 → M.carrier) i <
+        (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) j) ↔ (i < j) := by
+    intro i j
+    by_cases hi : i = 0 <;> by_cases hj : j = 0
+    · subst hi; subst hj; rw [he0]; simp
+    · have hj1 : j = 1 := by omega
+      subst hi; subst hj1; rw [he0, he1]
+      exact iff_of_true hxt (by decide)
+    · have hi1 : i = 1 := by omega
+      subst hj; subst hi1; rw [he0, he1]
+      exact iff_of_false (lt_asymm hxt) (by decide)
+    · have hi1 : i = 1 := by omega
+      have hj1 : j = 1 := by omega
+      subst hi1; subst hj1; rw [he1]; simp
+  -- Core locus decomposition of the depth-0 atom layer.
+  have core : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 ↔
+      ((∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (i : Fin 2) < j)) ∧
+        (∀ p : sig.preds, M.interp p x ↔ nf2 (.pred p 0) = true) ∧
+        (∀ p : sig.preds, M.interp p t ↔ nf2 (.pred p 1) = true)) := by
+    simp only [nf_eval_nf]
+    constructor
+    · intro h
+      refine ⟨fun i j hij => ?_, fun p => ?_, fun p => ?_⟩
+      · have hraw := h (.order i j hij)
+        simp only [atom_eval] at hraw
+        rw [env_mono i j] at hraw
+        exact hraw.symm
+      · have hraw := h (.pred p 0)
+        simp only [atom_eval] at hraw
+        rw [he0] at hraw
+        exact hraw
+      · have hraw := h (.pred p 1)
+        simp only [atom_eval] at hraw
+        rw [he1] at hraw
+        exact hraw
+    · intro ⟨hord, hxp, htp⟩ a
+      cases a with
+      | pred p i =>
+        simp only [atom_eval]
+        by_cases hi : i = 0
+        · subst hi; rw [he0]; exact hxp p
+        · have hi1 : i = 1 := by omega
+          subst hi1; rw [he1]; exact htp p
+      | order i j hij =>
+        simp only [atom_eval]
+        rw [env_mono i j]
+        exact (hord i j hij).symm
+  -- Assemble: unfold the two syntactic characteristics and combine with `core`.
+  rw [nf_char2_atom_offdiag_origin, core]
+  simp only [nf_char2_atom_offdiag_endpoint, TemporalPred.eval_at,
+    nf_depth0_char_formula_correct, nf2_locus]
+  by_cases hg : (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (i : Fin 2) < j))
+  · rw [if_pos hg]
+    simp only [nf_depth0_char_formula_correct, nf2_locus]
+    -- LHS: (t-preds) ∧ (x-preds); RHS: guard ∧ x-preds ∧ t-preds (guard = hg).
+    constructor
+    · rintro ⟨htp, hxp⟩; exact ⟨hg, hxp, htp⟩
+    · rintro ⟨_, hxp, htp⟩; exact ⟨htp, hxp⟩
+  · rw [if_neg hg]
+    simp only [temporal_truth]
+    -- LHS is `False ∧ _`; RHS forces the guard `hg`, contradiction.
+    constructor
+    · rintro ⟨hfalse, _⟩; exact hfalse.elim
+    · intro heval; exact absurd heval.1 hg
+
 /-- **Deliverable 1: the two-anchor characteristic FORMULA builder.** Mirrors
 `nf_succ_char_formula` (arity 1) one arity up. Parametric over the three Phase-2 recursion hooks
 `pastEnd`/`futureEnd`/`diagChar` (exactly as the arity-1 template is parametric over `exist_tl_fn`);

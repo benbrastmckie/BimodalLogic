@@ -188,7 +188,16 @@ so all six run sequentially regardless; the wave table records the logical paral
 - **Guards enforced**: G3 (non-trivial segment), D4 (scope to A_past/A_future only).
 - **Commit**: `task 309 phase 1: segment-carrying A_past/A_future`
 
-### Phase 2: Off-diagonal atom layer for [x,t] (new; D3) [NOT STARTED]
+### Phase 2: Off-diagonal atom layer for [x,t] (new; D3) [COMPLETED]
+
+*(Delivered as a locus PAIR to fit the `A_past`/`A_future` endpoint interface (NfZoneFlattenNavigable:335):
+`nf_char2_atom_offdiag_endpoint : TemporalPred` (x-position preds, checked at navigated `x`; the atom
+part of `pastEnd`/`futureEnd`) + `nf_char2_atom_offdiag_origin : Formula` (t-position preds at origin +
+off-diagonal order guard, ⊥ when order-inconsistent). Combined `nf_char2_atom_offdiag_correct`:
+given `x < t`, `(origin at t) ∧ (endpoint at x) ↔ nf_eval_nf M 0 2 [x,t] nf2` — the exact locus
+decomposition Phase 4 needs (t-preds + order factor out of `∃x`). Both loci reuse arity-1
+`nf_depth0_char_formula` via private `nf2_locus`. Axioms exactly `[propext, Classical.choice,
+Quot.sound]`.)*
 
 - **Goal**: Build a NEW off-diagonal atom characteristic for the `[x,t]` endpoint where
   `order 0 1 = true` (`x < t`): `x`-position atom literals navigated to `x`, `t`-position atom
