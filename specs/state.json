@@ -2179,7 +2179,7 @@
     {
       "project_number": 307,
       "project_name": "kamp_cor54_bound_anchor_zone_converter",
-      "status": "planning",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "completeness",
       "priority": "critical",
@@ -2188,7 +2188,7 @@
       "parent_task": 305,
       "dependencies": [],
       "created": "2026-07-06T00:00:00Z",
-      "last_updated": "2026-07-06T13:15:16Z",
+      "last_updated": "2026-07-06T13:20:21Z",
       "artifacts": [
         {
           "type": "handoff",
@@ -2214,6 +2214,11 @@
           "type": "report",
           "path": "specs/307_kamp_cor54_bound_anchor_zone_converter/reports/01_bound-anchor-verdict.md",
           "summary": "Decisive bound-anchor verdict (a): uniform navigable A exists; free-anchor obstruction does not recur under binding."
+        },
+        {
+          "type": "plan",
+          "path": "specs/307_kamp_cor54_bound_anchor_zone_converter/plans/01_bound-anchor-converter.md",
+          "summary": "8-phase bound-anchor converter plan: Phase 1 navigated-flattening GO/NO-GO probe, phases 2-7 construction, phase 8 wrap-up."
         }
       ],
       "session_id": "sess_1783342946_dfd523"
