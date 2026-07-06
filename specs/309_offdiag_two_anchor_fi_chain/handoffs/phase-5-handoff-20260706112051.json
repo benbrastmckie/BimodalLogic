@@ -1,0 +1,15 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "summary": "Phase 5 complete: nf_char2_future_formula + nf_char2_future_formula_correct (off-diagonal F_i chain future arm) landed sorry-free in NfMultiAnchorBridge.lean, the exact structural dual of Phase 4. Also added the order-flipped Phase-2 dual atom layer (nf_char2_atom_offdiag_origin_future + nf_char2_atom_offdiag_correct_future): the future RHS env Fin.cons x (fun _=>t) with t < x is antitone (env 0 = x > env 1 = t), so the order atom evaluates env i < env j iff (j:Fin 2) < i and the origin order guard flips accordingly; the endpoint x-preds locus is direction-independent and reused verbatim. Assembles A_future/bracketBuildRight outer navigation (Phase 1) + the dual atom loci + temporal_truth_and + definitional depth-(k+1) nf_eval_nf unfold (Iff.rfl) + manual propositional glue (no simp/omega/aesop on the chain step). Target RHS proven: temporal_truth M atomMap t (nf_char2_future_formula ... sub_nf) iff exists x, t < x and nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf, under the dual quant-hook h_quant (seg.holds M atomMap t x, t < x).",
+  "phases_completed": 5,
+  "phases_total": 6,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
+  "next_action_hint": "Phase 6: add import Kamp.NfMultiAnchorBridge to KampPrior.lean (cycle-safe, D1), rewire the :350 arm to A := nf_char2_past_formula ... A_diag ... nf_char2_future_formula ..., discharge via Fin 1 -> exists x bridge + rw [nf_zone_exists_trichotomy_k1] + three-way or_congr using nf_char2_past_formula_correct / A_diag_correct / nf_char2_future_formula_correct. Wire KampPrior local hooks (ih_exist_1 / exist_tl_fn_k / char_k1) as the recursion hooks. Then full lake build + #print axioms on the rewired nf_nvar_exist_all_depths live-path theorem = exactly [propext, Classical.choice, Quot.sound]; live-path sorry count 2 -> 1 (:350 closed, :353 remains).",
+  "files_touched": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean",
+    "specs/309_offdiag_two_anchor_fi_chain/plans/01_offdiag-fi-chain-plan.md"
+  ]
+}

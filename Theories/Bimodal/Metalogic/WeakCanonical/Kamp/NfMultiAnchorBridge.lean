@@ -1060,4 +1060,204 @@ theorem nf_char2_past_formula_correct {sig : MonadicSignature}
     obtain ⟨⟨horig, hend⟩, hqe, hseg⟩ := (key x hx).mp hnf
     exact ⟨horig, x, hx, ⟨hend, hqe⟩, hseg⟩
 
+/-! ## Phase 5 (task 309): `nf_char2_future_formula` + `_correct` — the off-diagonal `F_i` chain future arm
+
+The exact structural DUAL of Phase 4 (`nf_char2_past_formula`/`_correct`). The outer navigation is
+`A_future seg futureEnd` (`bracketBuildRight`, Phase 1) walking from the fixed origin `t` FORWARD into
+the future exterior to the bound witness `x` with `t < x`, whose endpoint at `x` conjoins the Phase-2
+off-diagonal endpoint atom locus with a caller-supplied quant-endpoint hook `quantEnd`.
+
+The one genuinely direction-sensitive piece: the future RHS env is `Fin.cons x (fun _ => t)` with
+`t < x`, so `env 0 = x` is now GREATER than `env 1 = t` (the env is antitone, not monotone as in the
+past arm). The order atom `.order i j` evaluates to `env i < env j ↔ (j : Fin 2) < i`, so the origin
+atom guard must be the FLIPPED off-diagonal guard `nf2 (.order i j h) = true ↔ (j : Fin 2) < i`
+(Phase-2 atom layer, order direction flipped — plan §Phase 5). The endpoint atom locus (`x`-position
+preds at the navigated `x`) is direction-INDEPENDENT and is reused verbatim
+(`nf_char2_atom_offdiag_endpoint`).
+
+Rabinovich 2014 Cor 5.4 `F_i` chain future arm (md:154-157): `F_{i-1} := α_{i-1} ∧ (β_i Until F_i)` —
+the `Until`-form (future) dual of the past arm's `Since`-form. The outer `bracketBuildRight` is the
+`β_i` future bracket, `x` is the bound `F_i` witness (a bracket witness, never a free anchor — G4), and
+the `(t, x)` quant coupling rides the non-trivial segment `seg` (G3: no trivial-top segment on the
+off-diagonal arm). Env arity stays `≤ 3`, anchor set `{x, t} = 2` (G4); the depth-`k` IH is deferred to
+the hook-correctness hypothesis `h_quant` (G1: honest arity-3 coupled existential, no arity-1 collapse;
+G2: no projection tower); the final propositional glue is fully manual (G5: no `simp`/`omega`/`aesop`
+shortcut of the chain step). -/
+
+/-- **Off-diagonal origin atom characteristic, future arm** (task 309 Phase 5). Dual of
+`nf_char2_atom_offdiag_origin`: carries the `t`-position predicate atoms of `nf2` asserted at the origin
+`t`, guarded by the FLIPPED off-diagonal order consistency (`nf2 (.order i j h) = true` iff its index
+pair is strictly DEcreasing — matching the future env `Fin.cons x (fun _ => t)` with `t < x`, where
+`env 0 = x > env 1 = t`). Collapses to `⊥` when the order layer is not future-off-diagonal-consistent.
+Rabinovich Cor 5.4 future arm endpoint atom coupling (md:154-157). -/
+noncomputable def nf_char2_atom_offdiag_origin_future {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) : Formula :=
+  if (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (j : Fin 2) < i)) then
+    nf_depth0_char_formula atomMap h_surj (nf2_locus nf2 1)
+  else
+    Formula.bot
+
+/-- **Correctness of the off-diagonal atom layer, future arm** (task 309 Phase 5). Given the strict
+order `t < x` (future), the two-anchor depth-0 atom layer `nf_eval_nf M 0 2 [x, t] nf2` holds iff BOTH
+the future origin characteristic (t-position preds + FLIPPED order guard) holds at `t` AND the endpoint
+characteristic (x-position preds) holds at `x`. Exact dual of `nf_char2_atom_offdiag_correct`: the
+antitone env `Fin.cons x (fun _ => t)` (`env 0 = x > env 1 = t`) makes the order atom
+`.order i j` evaluate to `env i < env j ↔ (j : Fin 2) < i`. Rabinovich Cor 5.4 future arm
+(md:154-157). -/
+theorem nf_char2_atom_offdiag_correct_future {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (nf2 : NormalForm sig 0 2) (x t : M.carrier) (hxt : t < x) :
+    (temporal_truth M atomMap t (nf_char2_atom_offdiag_origin_future atomMap h_surj nf2) ∧
+      (nf_char2_atom_offdiag_endpoint atomMap h_surj nf2).eval_at M atomMap x) ↔
+    nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 := by
+  -- Environment values: position 0 ↦ x, position 1 ↦ t.
+  have he0 : (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) 0 = x := by
+    simp
+  have he1 : (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) 1 = t := by
+    simp
+  -- The env is strictly ANTItone: `env i < env j ↔ j < i` (since `t < x`).
+  have env_mono : ∀ (i j : Fin 2),
+      ((Fin.cons x (fun _ => t) : Fin 2 → M.carrier) i <
+        (Fin.cons x (fun _ => t) : Fin 2 → M.carrier) j) ↔ (j < i) := by
+    intro i j
+    by_cases hi : i = 0 <;> by_cases hj : j = 0
+    · subst hi; subst hj; rw [he0]; simp
+    · have hj1 : j = 1 := by omega
+      subst hi; subst hj1; rw [he0, he1]
+      exact iff_of_false (lt_asymm hxt) (by decide)
+    · have hi1 : i = 1 := by omega
+      subst hj; subst hi1; rw [he0, he1]
+      exact iff_of_true hxt (by decide)
+    · have hi1 : i = 1 := by omega
+      have hj1 : j = 1 := by omega
+      subst hi1; subst hj1; rw [he1]; simp
+  -- Core locus decomposition of the depth-0 atom layer (flipped order guard).
+  have core : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) nf2 ↔
+      ((∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (j : Fin 2) < i)) ∧
+        (∀ p : sig.preds, M.interp p x ↔ nf2 (.pred p 0) = true) ∧
+        (∀ p : sig.preds, M.interp p t ↔ nf2 (.pred p 1) = true)) := by
+    simp only [nf_eval_nf]
+    constructor
+    · intro h
+      refine ⟨fun i j hij => ?_, fun p => ?_, fun p => ?_⟩
+      · have hraw := h (.order i j hij)
+        simp only [atom_eval] at hraw
+        rw [env_mono i j] at hraw
+        exact hraw.symm
+      · have hraw := h (.pred p 0)
+        simp only [atom_eval] at hraw
+        rw [he0] at hraw
+        exact hraw
+      · have hraw := h (.pred p 1)
+        simp only [atom_eval] at hraw
+        rw [he1] at hraw
+        exact hraw
+    · intro ⟨hord, hxp, htp⟩ a
+      cases a with
+      | pred p i =>
+        simp only [atom_eval]
+        by_cases hi : i = 0
+        · subst hi; rw [he0]; exact hxp p
+        · have hi1 : i = 1 := by omega
+          subst hi1; rw [he1]; exact htp p
+      | order i j hij =>
+        simp only [atom_eval]
+        rw [env_mono i j]
+        exact (hord i j hij).symm
+  -- Assemble: unfold the two syntactic characteristics and combine with `core`.
+  rw [nf_char2_atom_offdiag_origin_future, core]
+  simp only [nf_char2_atom_offdiag_endpoint, TemporalPred.eval_at,
+    nf_depth0_char_formula_correct, nf2_locus]
+  by_cases hg : (∀ (i j : Fin 2) (h : i ≠ j), (nf2 (.order i j h) = true ↔ (j : Fin 2) < i))
+  · rw [if_pos hg]
+    simp only [nf_depth0_char_formula_correct, nf2_locus]
+    constructor
+    · rintro ⟨htp, hxp⟩; exact ⟨hg, hxp, htp⟩
+    · rintro ⟨_, hxp, htp⟩; exact ⟨htp, hxp⟩
+  · rw [if_neg hg]
+    simp only [temporal_truth, false_and]
+    exact iff_of_false not_false (fun h => hg h.1)
+
+/-- **`nf_char2_future_formula`** (task 309 Phase 5): the off-diagonal (`t < x`) two-anchor navigated
+characteristic FORMULA, future arm. Dual of `nf_char2_past_formula`. The Phase-5 future origin atom
+locus (checked at `t`, `x`-independent, flipped order guard) conjoined with the Phase-1 `A_future`
+outer `bracketBuildRight` navigation over the caller's non-trivial segment `seg`, whose endpoint at the
+bound witness `x` conjoins the Phase-2 endpoint atom locus with the quant-endpoint hook `quantEnd`.
+Rabinovich Cor 5.4 `F_i` chain future arm (md:154-157). -/
+noncomputable def nf_char2_future_formula {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (quantEnd : TemporalPred)
+    (seg : BracketFormula 0)
+    (sub_nf : NormalForm sig (k + 1) 2) : Formula :=
+  Formula.and
+    (nf_char2_atom_offdiag_origin_future atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+    (A_future seg
+      (TemporalPred.conj
+        (nf_char2_atom_offdiag_endpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2))
+        quantEnd))
+
+/-- **Correctness of `nf_char2_future_formula`** (task 309 Phase 5). Dual of
+`nf_char2_past_formula_correct`. Under the quant-endpoint-hook correctness hypothesis `h_quant` (the
+depth-`k` IH: at each future witness `x > t`, the hook's `.eval_at x` conjoined with the segment `seg`
+holding on `(t, x)` characterizes the coupled arity-3 quant layer of `sub_nf` at `[x, t]`, one depth
+down), the future-arm formula holds at `t` iff there is a future witness `t < x` where `sub_nf`
+evaluates on the two-anchor env `[x, t]`. Assembled from `temporal_truth_and` (origin factor split) +
+`A_future_correct` (Phase 1 outer bracket) + `nf_char2_atom_offdiag_correct_future` (Phase 5 flipped
+atom locus) + the depth-`(k+1)` `nf_eval_nf` unfolding, with the quant layer routed through `h_quant`.
+`zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))` matches `nf_eval_nf`'s inner env. Rabinovich
+Cor 5.4 `F_i` chain future arm (md:154-157). -/
+theorem nf_char2_future_formula_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat}
+    (quantEnd : TemporalPred)
+    (seg : BracketFormula 0)
+    (M : OrderedMonadicStructure sig) (t : M.carrier)
+    (sub_nf : NormalForm sig (k + 1) 2)
+    (h_quant : ∀ x : M.carrier, t < x →
+      ((quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap t x) ↔
+        (∀ qnf : NormalForm sig k 3,
+          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)))) :
+    temporal_truth M atomMap t
+        (nf_char2_future_formula atomMap h_surj quantEnd seg sub_nf) ↔
+      ∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  -- Conjunction of temporal predicates unfolds to conjunction of evaluations.
+  have conj_eval : ∀ (a b : TemporalPred) (z : M.carrier),
+      (TemporalPred.conj a b).eval_at M atomMap z ↔
+        a.eval_at M atomMap z ∧ b.eval_at M atomMap z := by
+    intro a b z
+    simp only [TemporalPred.conj, TemporalPred.eval_at]
+    exact temporal_truth_and M atomMap z a.formula b.formula
+  -- Per-witness decomposition of the depth-(k+1) evaluation at [x, t] (t < x).
+  have key : ∀ x : M.carrier, t < x →
+      (nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (temporal_truth M atomMap t
+            (nf_char2_atom_offdiag_origin_future atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) ∧
+          (nf_char2_atom_offdiag_endpoint atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)).eval_at M atomMap x) ∧
+        (quantEnd.eval_at M atomMap x ∧ seg.holds M atomMap t x)) := by
+    intro x hx
+    have hunf : nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf ↔
+        (nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)) ∧
+        (∀ qnf : NormalForm sig k 3,
+          (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) ↔ (sub_nf.2 qnf = true)) :=
+      Iff.rfl
+    rw [hunf, ← nf_char2_atom_offdiag_correct_future M atomMap h_surj
+          (sub_nf.1 : NormalForm sig 0 2) x t hx, ← h_quant x hx]
+  simp only [nf_char2_future_formula]
+  rw [temporal_truth_and, A_future_correct]
+  simp only [conj_eval]
+  constructor
+  · rintro ⟨horig, z1, hz1, ⟨hend, hqe⟩, hseg⟩
+    exact ⟨z1, hz1, (key z1 hz1).mpr ⟨⟨horig, hend⟩, hqe, hseg⟩⟩
+  · rintro ⟨x, hx, hnf⟩
+    obtain ⟨⟨horig, hend⟩, hqe, hseg⟩ := (key x hx).mp hnf
+    exact ⟨horig, x, hx, ⟨hend, hqe⟩, hseg⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -301,7 +301,21 @@ depth-`(k+1)` `nf_eval_nf` unfolding (`Iff.rfl`; `zoneEnv3 w x t = Fin.cons w (F
 - **Guards enforced**: G1 (no arity-1 collapse), G2 (no projection tower), G4 (`w` witness), G5 (step-by-step).
 - **Commit**: `task 309 phase 4: nf_char2_past_formula F_i chain`
 
-### Phase 5: nf_char2_future_formula + _correct (F_i chain future dual) [NOT STARTED]
+### Phase 5: nf_char2_future_formula + _correct (F_i chain future dual) [COMPLETED]
+
+*(Delivered in NfMultiAnchorBridge.lean adjacent to Phase 4: `nf_char2_future_formula` +
+`nf_char2_future_formula_correct`, the exact structural dual of Phase 4. Assembly =
+`A_future`/`bracketBuildRight` outer navigation (Phase 1) + a future-dual off-diagonal atom layer
+(`nf_char2_atom_offdiag_origin_future` + `nf_char2_atom_offdiag_correct_future`, the "order direction
+flipped" Phase-2 dual: the antitone env `Fin.cons x (fun _=>t)` with `t < x` gives `env i < env j ↔
+(j:Fin 2) < i`, so the origin order guard flips to `↔ (j:Fin 2) < i`; the endpoint `x`-preds locus is
+direction-independent and reused verbatim) + `temporal_truth_and` + definitional depth-`(k+1)`
+`nf_eval_nf` unfold (`Iff.rfl`) + manual propositional glue. Target proven: `temporal_truth M atomMap t
+(nf_char2_future_formula … sub_nf) ↔ ∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf`
+under the dual quant-hook `h_quant` (`seg.holds M atomMap t x`, `t < x`). Build GREEN; `#print axioms`
+= exactly `[propext, Classical.choice, Quot.sound]`; 0 new sorries. G3-G5 preserved: `seg` a
+non-trivial parameter, `x`/`w` bracket witnesses, anchor set `{x,t}`, no simp/omega/aesop on the chain
+step.)*
 
 - **Goal**: Build the future dual `nf_char2_future_formula` + `_correct` with RHS
   `∃ x, t < x ∧ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf`, using `bracketBuildRight`
