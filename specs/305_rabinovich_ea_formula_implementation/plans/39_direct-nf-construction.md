@@ -221,10 +221,54 @@ report 39's `8a-8e` decomposition is recorded per-phase.
 
 ---
 
-### Phase 10: mergeNF_succ_quant — diagonal quant-layer collapse (x=t arm) [NOT STARTED]
+### Phase 10: mergeNF_succ_quant — diagonal quant-layer collapse (x=t arm) [PARTIAL]
 
 *(= report 39 Phase 8a. THE ONLY PHASE SCHEDULED FOR THE CURRENT SESSION — this is the next
 dispatch. Session PAUSES after this phase completes GREEN.)*
+
+**PARTIAL** (Phase 10, session sess_1783306400_33dd64):
+- **Landed sorry-free**: `renameNF_eval_diag0` (NfDepth0Generalized.lean, ~48 lines) — the
+  **depth-0** diagonal (value-duplication) congruence
+  `nf_eval_nf M 0 a E (renameNF r f nf) ↔ nf_eval_nf M 0 b e nf`, using value-compat
+  `hcomp` (`e = E∘f`) + `hcomp2` (`E = e∘r`) + retraction `hsec2` (`r∘f=id`) + `M.lt`
+  irreflexivity, dropping the failing `hsec` (`f∘r=id`). Axioms `[propext, Classical.choice,
+  Quot.sound]`, no `sorryAx`. This is the reusable atom-layer transfer + the `k=0` base case.
+- **Blocked (NON-theorem, not merely hard)**: the depth-`k+1` lift `mergeNF_succ_quant` / the
+  full x=t arm iff. After the atom layer transfers via `renameNF_eval_diag0`, the residual
+  quant-layer obligation (captured via `lean_goal`, NfDepth0Generalized.lean succ case) is:
+  ```
+  (∀ sub_nf : NormalForm sig K (a+1),
+      (∃ x, nf_eval_nf M K (a+1) (Fin.cons x E) sub_nf) ↔ nq (renameNF (liftIdx f) (liftIdx r) sub_nf))
+    ↔
+  (∀ sub_nf : NormalForm sig K (b+1),
+      (∃ x, nf_eval_nf M K (b+1) (Fin.cons x e) sub_nf) ↔ nq sub_nf)
+  ```
+  - **What was tried**: (1) plain top-level iff `nf_eval (k+1) 2 [t,t] sub_nf ↔ nf_eval (k+1) 1 [t]
+    (mergeNF_succ sub_nf 0 0)` — refuted: the arity-2 atom layer constrains BOTH positions
+    against `M(t)`, the merged arity-1 layer only position 1, so `.mpr` fails whenever
+    sub_nf's pred rows at positions 0,1 disagree. (2) The `renameNF_eval_diag` congruence
+    (evaluate the duplicated form on the bigger diagonal env) — the `→` half of its quant
+    layer IS provable (round-trip `renameNF (liftIdx f)(liftIdx r)(renameNF (liftIdx r)(liftIdx f) g)=g`
+    via `skipFin`/`liftIdx f` injectivity + IH), but the `←` half is a genuine non-theorem.
+  - **Why stuck (root cause)**: the quant layer of the *duplicated* form `renameNF r f nf`
+    ranges over ALL `sub_nf : NF K (a+1)`. The collapse-then-expand
+    `renameNF (liftIdx r)(liftIdx f)(renameNF (liftIdx f)(liftIdx r) sub_nf)` does NOT recover
+    `sub_nf` because `liftIdx r` (= `liftIdx (totalUnskip …)`) is **non-injective**. A
+    `sub_nf` that is not diagonal-invariant is unrealizable on the diagonal env `Fin.cons x E`
+    (its `∃ x …` is false), yet `nq` of its collapse can be `true` — so the duplicated form is
+    generally NOT satisfied by `E` even when the original is satisfied by `e`. This is exactly
+    the **realizability structure** the Phase-11 depth-`k` zone converter / characteristic-NF
+    machinery supplies. Report-39's Phase-8a scoping ("x=t collapse self-contained, before
+    Phase 11") holds only at depth 0; at depth `k ≥ 1` the x=t arm is **NOT separable** from
+    the Phase-11 crux.
+  - **What is needed**: build Phase 11's depth-`k` realizability machinery FIRST (or a
+    characteristic-NF collapse lemma `mergeNF_succ char[t,t] = char[t]` restricted to
+    diagonal-invariant/realizable sub-forms), then the x=t arm follows. Recommend RE-SCOPING:
+    fold Phase 10's remaining content into Phase 11 (they share the same inductive crux), or
+    add a compile-time diagonal-consistency guard on `sub_nf` in the Phase-14 assembly.
+  - **Prohibited fallbacks honored**: no `sorry` added to any path (baseline 2 unchanged); no
+    vacuous placeholder; no `VecEA_m` wiring / per-model bridge / uniform Prop 4.2-4.3 /
+    arity-tower; `renameNF_eval_iff` bijection route correctly avoided.
 
 **Goal**: Prove `mergeNF_succ_quant` — the **quant-layer** correctness of `mergeNF_succ` on the
 **duplicating (diagonal) environment** — giving the reduction

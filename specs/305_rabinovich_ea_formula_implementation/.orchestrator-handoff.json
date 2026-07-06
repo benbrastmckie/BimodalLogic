@@ -1,15 +1,38 @@
 {
-  "status": "planned",
-  "summary": "Plan v39 (plans/39_direct-nf-construction.md) supersedes plan-38's BLOCKED Phase 8. Per report 39 (Tier-1, H4-verified against lean_term_goal at KampPrior:391): :391 is depth k+1 over nf_eval_nf, NOT the depth-k VecEA_m object plan-38 wired, so existClosure/existClosureLeft/disj are inapplicable. Corrected route = direct nf_eval_nf construction (uniform NormalForm(k+1)2->Formula mirroring nf_succ_char_formula, formula-level negation, decidable sub_nf.1 order-atom 3-way case split); no VecEA_m wiring, no per-model bridge, no uniform Prop 4.2/4.3, no arity tower. 6 executable phases (plain integers 10-15): 10 mergeNF_succ_quant x=t arm (MEDIUM); 11 depth-k two-anchor arity-3 zone converter THE CRUX (MEDIUM-LOW, may split 11a/11b); 12 x<t past arm via bracketBuildLeft (MEDIUM); 13 t<x future arm via bracketBuildRight (MEDIUM); 14 assembly + rewire :391, live sorry 2->1 (MEDIUM-HIGH); 15 verify :394 + axiom/sorryAx audit. BUDGET-CONSTRAINED: only Phase 10 dispatched this session; PAUSE after Phase 10; phases 11-15 resume via /orchestrate 305 --hard with fresh budget. Every phase GREEN ~1700 jobs; axioms Lean.ofReduceBool/Lean.trustCompiler unchanged.",
-  "artifacts": [
+  "status": "partial",
+  "skeleton": false,
+  "summary": "Phase 10 (mergeNF_succ_quant, x=t arm) PARTIAL. Landed sorry-free: renameNF_eval_diag0 (depth-0 value-duplication diagonal congruence, NfDepth0Generalized.lean) using hcomp/hcomp2/hsec2 + M.lt irreflexivity, dropping the failing hsec — the reusable atom-layer transfer + k=0 base case; axioms [propext, Classical.choice, Quot.sound]. The depth-k+1 lift is a GENUINE NON-THEOREM (not merely hard): the plain iff loses position-0 atom data; the diagonal congruence's quant '<-' direction fails because the duplicated form's quant layer ranges over ALL NF K (a+1) and the collapse-expand via the NON-injective liftIdx(totalUnskip) cannot recover non-diagonal-realizable sub-forms (unrealizable on the diagonal env yet nq-of-collapse can be true). This is the SAME realizability crux as Phase 11; report-39 Phase-8a's 'separable before Phase 11' scoping holds only at depth 0. lake build GREEN (1700 jobs); live-path sorry baseline UNCHANGED at 2 (KampPrior:391,:394); zero new axioms; KampPrior.lean untouched.",
+  "phases_completed": 0,
+  "phases_total": 6,
+  "sorry_inventory": [
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
-      "type": "plan",
-      "summary": "v39 direct nf_eval_nf construction for KampPrior:391 (supersedes BLOCKED plan-38 Phase 8; per report 39). Phases 10-15: 10 mergeNF_succ_quant x=t arm (ONLY this-session dispatch, PAUSE after); 11 depth-k two-anchor arity-3 zone converter (CRUX, may split); 12/13 past/future arms via bracketBuildLeft/Right; 14 assembly+rewire :391 (sorry 2->1); 15 verify :394 + axiom audit. No VecEA_m wiring / per-model bridge / uniform Prop 4.2-4.3 / arity tower on live path."
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 391,
+      "statement": "| 1 => arm of the depth-(k+1) arity-2 existential converter (nf_nvar_exist_all_depths succ, n=1)",
+      "strategic": true,
+      "assumption": "arity-2 existential over depth-(k+1) NF is TL-definable via the 3-way order-atom split (x=t / x<t / t<x)",
+      "why_deferred": "Baseline live-path sorry; requires Phases 10-14. Phase 10's x=t arm is blocked on the Phase-11 depth-k realizability crux (see plan Phase 10 PARTIAL).",
+      "follow_up_task": "305 Phase 11 (re-scoped to include x=t arm) then 12/13/14"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+      "line": 394,
+      "statement": "| n+2 => arm of the depth-(k+1) arity-(n+2) existential converter (nf_nvar_exist_all_depths succ, n>=2)",
+      "strategic": true,
+      "assumption": "general-m (n>=2) existential closure",
+      "why_deferred": "Baseline live-path sorry; Phase 15 checks reachability (may be off live path).",
+      "follow_up_task": "305 Phase 15"
     }
   ],
-  "blockers": [],
-  "next_action_hint": "implement Phase 10 (mergeNF_succ_quant diagonal quant-layer collapse + x=t arm, off-path, ~250-400 lines, MEDIUM) then PAUSE. Phase 10 alone does NOT drop the :391 sorry (all arms + assembly at Phase 14 required). Resume phases 11-15 via /orchestrate 305 --hard with a fresh cycle budget.",
-  "phases_completed": 0,
-  "phases_total": 6
+  "blockers": [
+    "Phase 10 depth-k+1 x=t collapse (mergeNF_succ_quant) is a NON-theorem. Stuck lean_goal (NfDepth0Generalized.lean succ case, after atom transfer via renameNF_eval_diag0): (forall sub_nf : NormalForm sig K (a+1), (exists x, nf_eval_nf M K (a+1) (Fin.cons x E) sub_nf) <-> nq (renameNF (liftIdx f) (liftIdx r) sub_nf)) <-> (forall sub_nf : NormalForm sig K (b+1), (exists x, nf_eval_nf M K (b+1) (Fin.cons x e) sub_nf) <-> nq sub_nf). The '->' half is provable; the '<-' half fails because liftIdx(totalUnskip) is non-injective so collapse-expand cannot recover non-diagonal-realizable sub_nf. Fix: build Phase 11 realizability machinery first, then the x=t arm follows."
+  ],
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfDepth0Generalized.lean (renameNF_eval_diag0 + divergence note)",
+    "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md (Phase 10 [PARTIAL] + blocker)",
+    "specs/305_rabinovich_ea_formula_implementation/summaries/39_direct-nf-construction-summary.md"
+  ],
+  "continuation_path": null,
+  "continuation_context": null,
+  "next_action_hint": "PAUSE. Resume via /orchestrate 305 --hard with a fresh cycle budget. RE-SCOPE: fold Phase 10's remaining x=t arm into Phase 11 (shared depth-k realizability crux) — build the characteristic-NF/zone machinery first, then the x=t arm follows (mergeNF_succ char[t,t]=char[t] restricted to realizable forms, or a compile-time diagonal-consistency guard in Phase 14). renameNF_eval_diag0 is a preserved reusable asset."
 }
