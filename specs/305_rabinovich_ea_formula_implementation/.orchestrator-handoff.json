@@ -1,16 +1,15 @@
 {
-  "status": "researched",
-  "summary": "Report 39 root-causes the Phase 8 BLOCKER: report 38 designed the split against ih_exist_1's conclusion (depth k, ∃x nf_eval_nf M k 2 …) but the verified :391 goal (lean_term_goal) is depth k+1 (∃env nf_eval_nf M (k+1) (1+1) (insertEnv env t) sub_nf) — a different object from VecEA_m.holds, so existClosure/existClosureLeft/disj are inapplicable and no NF(k+1)↔VecEA_m iff exists. CHEAPEST CORRECT ROUTE = a DIRECT nf_eval_nf construction mirroring the proven nf_succ_char_formula (char_k1), pushing negation to the formula level (avoiding uniform Prop 4.2) and case-splitting on sub_nf.1's decidable order atoms (not a runtime VecEA disj). A per-model bridge is vacuous; any bridge must be a uniform NormalForm(k+1)2→Formula. The one genuinely hard piece is a depth-k generalization of the two-anchor arity-3 zone converter (nf_3var_zone_* exist only at depth 0; depth-0 NFs have no quant layer so the base case does not de-risk it). x=t arm needs mergeNF_succ's quant-layer collapse — provable via a diagonal-specialized eval lemma (NfDepth0Generalized:580-582), NOT unfixable. :391 is load-bearing at arbitrary k (kamp_prior_expressive_completeness → nf_characterizable_temporal_prior succ → nf_nvar_exist_all_depths_fn k 1). Sizing: 5-7 dispatches / ~1400-2300 lines, crux MEDIUM-LOW, exceeds ~4-dispatch budget → PAUSE.",
+  "status": "planned",
+  "summary": "Plan v39 (plans/39_direct-nf-construction.md) supersedes plan-38's BLOCKED Phase 8. Per report 39 (Tier-1, H4-verified against lean_term_goal at KampPrior:391): :391 is depth k+1 over nf_eval_nf, NOT the depth-k VecEA_m object plan-38 wired, so existClosure/existClosureLeft/disj are inapplicable. Corrected route = direct nf_eval_nf construction (uniform NormalForm(k+1)2->Formula mirroring nf_succ_char_formula, formula-level negation, decidable sub_nf.1 order-atom 3-way case split); no VecEA_m wiring, no per-model bridge, no uniform Prop 4.2/4.3, no arity tower. 6 executable phases (plain integers 10-15): 10 mergeNF_succ_quant x=t arm (MEDIUM); 11 depth-k two-anchor arity-3 zone converter THE CRUX (MEDIUM-LOW, may split 11a/11b); 12 x<t past arm via bracketBuildLeft (MEDIUM); 13 t<x future arm via bracketBuildRight (MEDIUM); 14 assembly + rewire :391, live sorry 2->1 (MEDIUM-HIGH); 15 verify :394 + axiom/sorryAx audit. BUDGET-CONSTRAINED: only Phase 10 dispatched this session; PAUSE after Phase 10; phases 11-15 resume via /orchestrate 305 --hard with fresh budget. Every phase GREEN ~1700 jobs; axioms Lean.ofReduceBool/Lean.trustCompiler unchanged.",
   "artifacts": [
     {
-      "path": "specs/305_rabinovich_ea_formula_implementation/reports/39_depth-k1-bridge-design.md",
-      "type": "report",
-      "summary": "Depth-(k+1) NF->temporal bridge design for KampPrior:391: root-causes report 38's depth-k/k+1 goal error (H4 failure), selects direct nf_eval_nf route with formula-level negation + decidable order-atom case split (not VecEA_m), specifies the missing depth-k two-anchor zone converter, Q3 mergeNF_succ quant collapse (diagonal-specialized, fixable), 5-7 dispatch phase decomposition (8a-8e), PAUSE recommendation."
+      "path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
+      "type": "plan",
+      "summary": "v39 direct nf_eval_nf construction for KampPrior:391 (supersedes BLOCKED plan-38 Phase 8; per report 39). Phases 10-15: 10 mergeNF_succ_quant x=t arm (ONLY this-session dispatch, PAUSE after); 11 depth-k two-anchor arity-3 zone converter (CRUX, may split); 12/13 past/future arms via bracketBuildLeft/Right; 14 assembly+rewire :391 (sorry 2->1); 15 verify :394 + axiom audit. No VecEA_m wiring / per-model bridge / uniform Prop 4.2-4.3 / arity tower on live path."
     }
   ],
   "blockers": [],
-  "next_action_hint": "Revise plan 38: replace the mis-scoped VecEA_m existClosure/disj wiring for :391 with the direct nf_eval_nf construction (mirror nf_succ_char_formula, formula-level ¬, decidable sub_nf.1 order-atom 3-way case split). Phases: 8a mergeNF_succ_quant (x=t arm, MEDIUM, ~250-400L, self-contained/reusable) → 8b depth-k two-anchor arity-3 zone converter (THE CRUX, MEDIUM-LOW, ~400-700L, likely 2 dispatches) → 8c x<t past arm via bracketBuildLeft (MEDIUM) → 8d t<x future arm via bracketBuildRight (MEDIUM) → 8e assembly+rewire :391 (MEDIUM-HIGH). Either commit a dedicated ~6-dispatch budget, or spawn 8a as the first verified brick while re-scoping (8a alone will NOT drop the :391 sorry).",
-  "phases_completed": 1,
-  "phases_total": 3,
-  "recommendation": "pause"
+  "next_action_hint": "implement Phase 10 (mergeNF_succ_quant diagonal quant-layer collapse + x=t arm, off-path, ~250-400 lines, MEDIUM) then PAUSE. Phase 10 alone does NOT drop the :391 sorry (all arms + assembly at Phase 14 required). Resume phases 11-15 via /orchestrate 305 --hard with a fresh cycle budget.",
+  "phases_completed": 0,
+  "phases_total": 6
 }

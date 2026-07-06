@@ -128,6 +128,11 @@
           "path": "specs/305_rabinovich_ea_formula_implementation/reports/39_depth-k1-bridge-design.md",
           "type": "report",
           "summary": "Depth-(k+1) NF->temporal bridge design for KampPrior:391; root-causes report 38 depth-k/k+1 goal error; route=direct nf_eval_nf construction w/ formula-level negation (not VecEA_m); 5-7 dispatch sizing; PAUSE recommendation"
+        },
+        {
+          "path": "specs/305_rabinovich_ea_formula_implementation/plans/39_direct-nf-construction.md",
+          "type": "plan",
+          "summary": "v39 direct nf_eval_nf construction for KampPrior:391 (supersedes BLOCKED plan-38 Phase 8; per report 39). Root cause: :391 is depth k+1 over nf_eval_nf, not the depth-k VecEA_m object plan-38 wired. Route: uniform NormalForm(k+1)2->Formula mirroring nf_succ_char_formula, formula-level negation, decidable sub_nf.1 order-atom 3-way split (no VecEA_m wiring, no per-model bridge, no uniform Prop 4.2/4.3). 6 phases 10-15: 10 mergeNF_succ_quant x=t arm (MEDIUM, ONLY this-session dispatch, PAUSE after); 11 depth-k two-anchor arity-3 zone converter THE CRUX (MEDIUM-LOW, may split 11a/11b); 12 x<t past arm via bracketBuildLeft; 13 t<x future arm via bracketBuildRight; 14 assembly+rewire :391 (live sorry 2->1); 15 verify :394 + axiom/sorryAx audit. Every phase GREEN ~1700 jobs; axioms unchanged."
         }
       ],
       "previous_status": "blocked",

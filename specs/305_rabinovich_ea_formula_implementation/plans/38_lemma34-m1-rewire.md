@@ -260,6 +260,8 @@ sub-phase ends GREEN.
 
 ### Phase 8: n=1 witness-position split + live rewire of KampPrior:391 [BLOCKED]
 
+**SUPERSEDED BY plan v39** (`plans/39_direct-nf-construction.md`): report 39 root-causes this blocker (`:391` is depth k+1 over `nf_eval_nf`, not the depth-k `VecEA_m` object this phase targeted). The direct `nf_eval_nf` construction (Phases 10-14 of plan v39) replaces this phase.
+
 **BLOCKER** (Phase 8, dispatch sess_1783306400_33dd64):
 - **What failed**: The `| 1 =>` arm at `KampPrior.lean:391` cannot be discharged as scoped. Its
   verbatim goal (n specialized to 1):
