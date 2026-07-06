@@ -429,10 +429,56 @@ Classical.choice, Quot.sound]`, 0 warnings, 0 domain axioms; live-path sorry cou
 - **Estimated output:** ~150-250 lines. **Done when:** A_future arm iff proven sorry-free, build green.
 - **Depends on:** 2, 4
 
-### Phase 7: Assemble A and wire into KampPrior.lean:391 [NOT STARTED]
+### Phase 7: Assemble A and wire into KampPrior.lean:391 [PARTIAL]
+
+**PARTIAL** (2026-07-06, session sess_1783353840_ba1b1d). Sub-step 1 (RELOCATION) COMPLETE and
+committed; sub-step 2 (ENDPOINT-HOOK CRUX) BLOCKED — grounded blocker below; `:391` left untouched
+(escape hatch: a clean partial beats a forced wire). Full `lake build` GREEN (1700 jobs); live-path
+sorry count unchanged at 2 (now `KampPrior.lean:350, :353` — shifted from `:391, :394` by the ~48
+lines the relocation removed; same two arms).
+
+**Sub-step 1 — DONE (import cycle resolved):** Relocated `atomKind_arity1_is_pred`,
+`nf_quant_clause_tl`, `nf_quant_clause_tl_correct` from `KampPrior.lean` to `NfDepth0Generalized.lean`
+(a module both `KampPrior` and `NfMultiAnchorBridge` already import) and dropped `import KampPrior`
+from `NfMultiAnchorBridge.lean`. The bridge is now KampPrior-independent, so a future dispatch can
+`import NfMultiAnchorBridge` into `KampPrior` to wire `:391`. Functionally neutral, full build green.
+
+**BLOCKER (Phase 7, sub-step 2) — the endpoint-hook construction (general-anchor two-anchor navigated
+characteristic):**
+- **What is needed:** `pastEnd`/`futureEnd : TemporalPred` (and the `NormalForm sig k 3 → TemporalPred`
+  hooks for A_diag) with correctness `h_past`/`h_fut : ∀ x, x < t (resp. t < x) →
+  (pastEnd.eval_at M atomMap x ↔ nf_eval_nf M (k+1) 2 (Fin.cons x (fun _ => t)) sub_nf)`. These are the
+  recursion-IH hooks the Phase-3/5/6 arm-correctness lemmas are parametric over.
+- **Why stuck (grounded in the type structure, not a tactic stall):** `nf_eval_nf M (k+1) 2
+  (Fin.cons x (fun _ => t)) sub_nf` depends on BOTH `x` and the DISTINCT point `t`. In the
+  trivial-segment assembly `A_past := bracketBuildLeft (BracketFormula.trivial TemporalPred.top)
+  pastEnd`, the segment that could carry the `t`-coupling is `top` (discarded), so `pastEnd` — a
+  syntactic `TemporalPred` evaluated at the single point `x` — must self-contain all coupling to `t`.
+  A temporal predicate at `x` cannot re-identify the specific semantic point `t` (only navigate to
+  SOME point of a given NF-type; `t` need not be unique of its type). Forcing it drives toward
+  re-identifying a third point (arity tower — forbidden by the Postmortem/obstruction guard).
+- **Required construction:** the `t`-coupling must be carried by the navigation STRUCTURE (Rabinovich
+  Cor 5.4 `F_i` chain with NON-trivial segments threading the `[x,t]` interval) — the general-anchor
+  two-anchor navigated characteristic builder. This is exactly the object task 308 deliberately left as
+  the `pastEnd`/`futureEnd` hooks (deliverable 2 is parametric over them), and task 305's Phase-11b
+  lineage circled three times (~400-700 lines, the recurring "multi-anchor bracket bridge" crux).
+- **Isolation:** the trivial-segment hook architecture is sound only at the diagonal `x = t` (A_diag,
+  Phase 3), where the two anchors coincide at the single point `t` and 308's `nf_char2_formula` applies
+  without re-identifying a distinct `t`. For `x ≠ t` (A_past/A_future) it needs the chain.
+- **Recommendation:** SPAWN a prerequisite (mirroring how the Phase-3 blocker spawned task 308) to
+  build the general-anchor two-anchor navigated characteristic `TemporalPred` endpoint builder via the
+  `F_i` non-trivial-segment chain (bottoming out in the depth-`k` IH and the Phase-4 brick
+  `nf_zone_flatten_navigable_brick`). It supersedes the trivial-segment `pastEnd`/`futureEnd` hooks and
+  is the last piece of new mathematics; on delivery, Phase 7 wiring is: `import NfMultiAnchorBridge`
+  into `KampPrior`, assemble `A := A_past ∨ A_diag ∨ A_future` via `nf_zone_exists_trichotomy_k1`
+  disjunction elimination + the three `_correct` lemmas, replace the `:391` sorry.
+- **Prohibited (honored):** no `sorry` introduced (live-path stays 2); no `def X := True`; no arity-1
+  collapse; no projection VecEA2; no third-anchor arity tower.
+
 - **Goal:** Define `A := A_past ∨ A_diag ∨ A_future`; prove the packaged iff by disjunction
   elimination over the Phase-2 trichotomy (each arm discharged by Phases 3/5/6); replace the
-  `:391` `sorry` with this witness. Reduce live-path sorry baseline 2 → 1.
+  `:391` `sorry` with this witness. Reduce live-path sorry baseline 2 → 1. *(Sub-step 1 done;
+  sub-step 2 blocked on the endpoint-hook construction above — assembly + wiring deferred.)*
 - **Tasks:**
   - [ ] State `bound_anchor_converter_k1`: the exact `:391` obligation
         `∃ A, ∀ M h_UZ h_SZ t, temporal_truth M t A ↔ ∃x, nf_eval M (k+1) 2 [x,t] sub_nf`.
