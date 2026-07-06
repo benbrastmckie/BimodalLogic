@@ -1,4 +1,10 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
+-- NOTE (task 311 Phase 1): `import ...Kamp.NfEFold` is cycle-free — NfEFold imports only
+-- `...WeakCanonical.NormalForm` and `...Kamp.NfDepth0Generalized` (NfEFold.lean:1-2), neither of
+-- which imports this file. It supplies the task-310 E[Σ]-fold assets (`efold_of_nf1`,
+-- `nf_eval_nf1_iff_efold`, `nf_quant_layer_fold_k1_gate`, the depth-0 split kit) consumed by the
+-- k=1 fold carrier `bracketEndChar_k1` below.
 -- NOTE (task 307 Phase 7): `import ...KampPrior` was REMOVED to break the import cycle that blocked
 -- wiring this bridge into `KampPrior.lean:391`. The two symbols this file used from KampPrior
 -- (`nf_quant_clause_tl`/`_correct`, `atomKind_arity1_is_pred`) were relocated to
@@ -1616,5 +1622,129 @@ Per the DECISION-GATE contract, no probe carrier or `sorry` is committed (a NO-G
 carrier). Path B halts at `:351`; the follow-up is a spawned NormalForm E[Σ]-fold encoding task (see
 plan Phase 10 [BLOCKED] record). The R1 carrier (`BracketEndCharCarrier` / `BracketCarrierCorrect` /
 `bracketEndChar_k0` / `_correct`, above) remains sorry-free and off the live path. -/
+
+/-! ## Task 311 Phase 1: the k=1 fold carrier instance (Path B, fold-backed)
+
+Consumes task 310's E[Σ]-fold assets (`Kamp/NfEFold.lean`): the transport `efold_of_nf1`
+(NfEFold:472) reads the depth-1 quant layer `qnf.2` ONLY through the fold's zone-bounded monadic
+E-atoms `EAtomDom sig 0 3 = ZoneSpec 3 × NormalForm sig 0 1` (Def 4.1, PDF p.5) — no `qnf.2`
+value is evaluated at an arity-4 environment, so the R2 NO-GO residual (:1601-1603 above) never
+re-forms. Correctness (`bracketEndChar_k1_correct`, the k=1 instance of `BracketCarrierCorrect`)
+is task 311 Phase 2 scope, routed through `nf_eval_nf1_iff_efold` (NfEFold:490) and the gate
+corollary `nf_quant_layer_fold_k1_gate` (NfEFold:525). -/
+
+/-- **k=1 two-anchor fold carrier** (task 311 Phase 1; audit-corrected N1 citations).
+
+Encodes a depth-1 arity-3 `qnf : NormalForm sig 1 3` as a `VecEA2 1` at the two FIXED endpoints
+`{x, t}` with `w` the single bracket WITNESS (G6 SHAPE, codomain `VecEA2 1` unchanged; anchors
+stay `{x, t}`, ≤2). Citation split (audit caveat C1 / rule N1): the two-fixed-endpoint
+`(z_0, z_1)` bracket framing is **Lemma 3.2(2) (PDF p.4) + the §5 bracket notation
+`[α_0, …, α_n](z_0, z_1)` (PDF p.7)**; **Prop 3.5 (PDF p.5)** is cited ONLY for the
+one-free-variable ∃-witness→Until/Since folding *mechanism* (the `Formula.snce`/`Formula.untl`
+literals and the `bracketBuildLeft`/`bracketBuildRight` chains below), never for the two-endpoint
+framing itself.
+
+Construction — every read of `qnf.2` goes through `efold_of_nf1` / `nf0_assemble` (the Def-4.1
+monadic-atom fold, PDF p.5); no arity-4 evaluation occurs:
+
+- **Endpoints** mirror the depth-0 collapse `nf_3var_bracket_xyt` (VecEADecomp:233) on the atom
+  layer `qnf.1`: `endpointLeft`/`endpointRight` carry the complete depth-0 point types
+  `nf_x_proj3 qnf.1` / `nf_t_proj3 qnf.1`, conjoined with the fold bits of the zones anchored
+  there — past-of-`x` and at-`x` on the left, at-`t` and future-of-`t` on the right — as
+  positive/negated Since/Until literals (Prop 3.5 folding mechanism, PDF p.5).
+- **Bracket** (`BracketFormula.single`, ONE witness `w` between the fixed endpoints, §5 bracket
+  notation PDF p.7): the point type carries `w`'s own complete type `nf_y_proj qnf.1`, the
+  equality-zone bits at `w`, and the POSITIVE interior-zone bits `(x, w)` / `(w, t)` folded as
+  `bracketBuildLeft` / `bracketBuildRight` Since/Until chains anchored at the endpoint types
+  (Prop 3.5 folding mechanism, PDF p.5; the interior witness joins the chain, never the anchor
+  set — Lemma 3.4, PDF p.5). The segment types carry the NEGATIVE interior-zone bits as
+  universal exclusions.
+- **Gate** (Risk R2 — mirroring Rabinovich's disjunctions ranging only over consistent order
+  types): the construction is the `⊥` carrier unless (i) `qnf.2` is false off the fiber over
+  `qnf.1` (the ≤2-cap honesty clause of `nf_eval_nf1_iff_efold`, NfEFold:490,495) and (ii) every
+  fold bit on a zone spec inconsistent with the bracket order `x < w < t` is false
+  (order-conflict falsity; cf. `nf_depth0_pair_cycle_empty'`, NfDepth0Generalized:93).
+
+The gate Prop is decidable in principle (`normalForm_fintype` / `normalForm_decEq`,
+NormalForm.lean:177/181); `Classical.dec` is used since the carrier is noncomputable anyway. -/
+noncomputable def bracketEndChar_k1 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    BracketEndCharCarrier sig 1 :=
+  fun qnf =>
+    -- Fold bits (Def 4.1, PDF p.5): the ONLY channel through which `qnf.2` is read.
+    let b : ZoneSpec 3 → NormalForm sig 0 1 → Bool :=
+      fun zs χ => (efold_of_nf1 qnf).2 (zs, χ)
+    -- Zone-spec constants relative to env `[w, x, t]` under the bracket order `x < w < t`
+    -- (Def 3.1 ordering channel, PDF p.4): `ltz`/`eqz`/`gtz` = witness below / at / above the
+    -- env point, encoded as `(x_1 < env i, env i < x_1)`.
+    let ltz : Bool × Bool := (true, false)
+    let eqz : Bool × Bool := (false, false)
+    let gtz : Bool × Bool := (false, true)
+    let mk3 : Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 3 := fun pw px pt =>
+      Fin.cons pw (Fin.cons px (fun _ => pt))
+    let zPastX := mk3 ltz ltz ltz    -- x_1 < x  (< w < t)
+    let zAtX   := mk3 ltz eqz ltz    -- x_1 = x
+    let zXW    := mk3 ltz gtz ltz    -- x < x_1 < w
+    let zAtW   := mk3 eqz gtz ltz    -- x_1 = w
+    let zWT    := mk3 gtz gtz ltz    -- w < x_1 < t
+    let zAtT   := mk3 gtz gtz eqz    -- x_1 = t
+    let zFutT  := mk3 gtz gtz gtz    -- t < x_1
+    -- Complete depth-0 monadic point types: the TL side of the fold's E-atoms.
+    let char : NormalForm sig 0 1 → Formula := nf_depth0_char_formula atomMap h_surj
+    let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
+    -- Biconditional literal at an anchor: assert positively or negatively per fold bit
+    -- (Prop 3.5 folding mechanism, PDF p.5).
+    let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
+    -- Endpoint types (the FIXED `z_0 = x`, `z_1 = t`: Lemma 3.2(2) PDF p.4 + §5 bracket PDF p.7).
+    let xType : TemporalPred := ⟨char (nf_x_proj3 qnf.1)⟩
+    let tType : TemporalPred := ⟨char (nf_t_proj3 qnf.1)⟩
+    let epL : TemporalPred :=
+      ⟨formula_conjList
+        (xType.formula
+          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (char χ) Formula.top))
+          ++ (allTypes.map fun χ => lit (b zAtX χ) (char χ)))⟩
+    let epR : TemporalPred :=
+      ⟨formula_conjList
+        (tType.formula
+          :: (allTypes.map fun χ => lit (b zAtT χ) (char χ))
+          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (char χ) Formula.top)))⟩
+    -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
+    let segL : TemporalPred :=
+      ⟨formula_conjList (allTypes.map fun χ =>
+        if b zXW χ then Formula.top else (char χ).neg)⟩
+    let segR : TemporalPred :=
+      ⟨formula_conjList (allTypes.map fun χ =>
+        if b zWT χ then Formula.top else (char χ).neg)⟩
+    -- Witness point type at `w`: complete type + equality-zone bits + interior POSITIVE bits
+    -- folded as Since/Until chains anchored at the endpoint types (Prop 3.5 mechanism, PDF p.5).
+    let ptW : TemporalPred :=
+      ⟨formula_conjList
+        (char (nf_y_proj qnf.1)
+          :: (allTypes.map fun χ => lit (b zAtW χ) (char χ))
+          ++ (allTypes.map fun χ =>
+               if b zXW χ then
+                 bracketBuildLeft (BracketFormula.single ⟨char χ⟩ segL segL) xType
+               else Formula.top)
+          ++ (allTypes.map fun χ =>
+               if b zWT χ then
+                 bracketBuildRight (BracketFormula.single ⟨char χ⟩ segR segR) tType
+               else Formula.top))⟩
+    -- Consistency of a zone spec with the bracket order `x < w < t` (the seven real zones).
+    let consistent : ZoneSpec 3 → Prop := fun zs =>
+      zs = zPastX ∨ zs = zAtX ∨ zs = zXW ∨ zs = zAtW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
+    -- The gate Prop (Risk R2 off-fiber honesty + order-conflict falsity).
+    let gate : Prop :=
+      (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
+      (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), ¬ consistent zs → b zs χ = false)
+    @dite _ gate (Classical.dec gate)
+      (fun _ =>
+        { endpointLeft := epL
+          endpointRight := epR
+          bracket := BracketFormula.single ptW segL segR })
+      (fun _ =>
+        { endpointLeft := TemporalPred.bot
+          endpointRight := TemporalPred.bot
+          bracket := BracketFormula.single TemporalPred.bot TemporalPred.bot TemporalPred.bot })
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

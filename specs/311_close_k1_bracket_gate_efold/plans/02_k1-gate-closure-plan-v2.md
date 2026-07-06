@@ -1,7 +1,7 @@
 # Implementation Plan: Close the k=1 Bracket Gate under the E[Σ]-Fold Encoding (v2, audit-integrated)
 
 - **Task**: 311 - close_k1_bracket_gate_efold
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours (2 phases, ~150-300 lines total; hard mode, H8 sizing)
 - **Dependencies**: 310 (COMPLETE — `Kamp/NfEFold.lean` landed sorry-free), parent 309 (BLOCKED, resumes via `/revise 309` after this task's GO verdict)
 - **Research Inputs**:
@@ -254,14 +254,15 @@ the same file (`NfMultiAnchorBridge.lean`, single-file territory, one owner per 
 parallel opportunity), and Phase 2 consumes Phase 1's definition by name. One agent run per phase
 (H8). Total ~150-300 lines across the two phases.
 
-### Phase 1: Define the k=1 fold carrier instance `bracketEndChar_k1` [NOT STARTED]
+### Phase 1: Define the k=1 fold carrier instance `bracketEndChar_k1` [COMPLETED]
 
 - **Goal:** Land the `k=1` carrier definition (typechecks, sorry-free) consuming 310's fold assets,
   with audit-corrected citations.
 - **Tasks:**
-  - [ ] Add `import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold` to `NfMultiAnchorBridge.lean`
+  - [x] Add `import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold` to `NfMultiAnchorBridge.lean`
         (cycle-free, verified: NfEFold imports only NormalForm + NfDepth0Generalized).
-  - [ ] Define `noncomputable def bracketEndChar_k1 … : BracketEndCharCarrier sig 1`, i.e.
+        *(landed at NfMultiAnchorBridge.lean:2; full build GREEN — no cycle)*
+  - [x] Define `noncomputable def bracketEndChar_k1 … : BracketEndCharCarrier sig 1`, i.e.
         `fun qnf : NormalForm sig 1 3 => (… : VecEA2 1)`, encoding `qnf`'s depth-1 content at the
         FIXED endpoints `{x,t}` with `w` the bracket witness (G6 SHAPE, codomain unchanged):
         endpoint `TemporalPred`s mirror the k=0 collapse `nf_3var_bracket_xyt` (VecEADecomp:233) on
@@ -271,17 +272,32 @@ parallel opportunity), and Phase 2 consumes Phase 1's definition by name. One ag
         `efold_of_nf1 qnf` (NfEFold:472), built with `BracketFormula.single` /
         `VecEA2.fromBracket` / `bracketBuildLeft/Right`. No `qnf.2` value is evaluated at arity 4 —
         quant content is read through `efold_of_nf1` / `nf0_assemble` only.
-  - [ ] Gate the construction on the off-fiber falsity of `qnf.2`
+        *(landed at NfMultiAnchorBridge.lean:1670-1748: endpoints = `nf_x_proj3`/`nf_t_proj3` via
+        `nf_depth0_char_formula` + exterior/equality-zone fold-bit literals; witness point type =
+        `nf_y_proj` + at-`w` bits + interior-positive bits as `bracketBuildLeft/Right` chains;
+        segment types = interior-negative universal exclusions)*
+  - [x] Gate the construction on the off-fiber falsity of `qnf.2`
         (`∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false` — decidable
         via NormalForm.lean:177/181, or `Classical.dec`; empty/⊥ carrier for incompatible `qnf`),
         mirroring Rabinovich's disjunctions ranging only over consistent order types (Risk R2).
-  - [ ] Doc-comment with the **N1 split citation** (caveat C1): Def 4.1 (p.5) for the monadic-atom
+        *(deviation: altered — gate is a conjunction of (i) the off-fiber clause AND (ii)
+        order-conflict falsity: every fold bit on a zone spec inconsistent with the bracket order
+        `x < w < t` must be false. (ii) is required for the LHS→RHS direction of Phase 2's `↔`:
+        nothing in the `VecEA2.holds` semantics can force an inconsistent-zone bit false, while on
+        the RHS such bits are false by order-conflict falsity (`nf_depth0_pair_cycle_empty'`) —
+        both gate conjuncts are RHS-derivable, so the gate is symmetric. This realizes the same
+        task-bullet rationale: "disjunctions ranging only over consistent order types".)*
+  - [x] Doc-comment with the **N1 split citation** (caveat C1): Def 4.1 (p.5) for the monadic-atom
         fold; **Prop 3.5 (p.5) only for the ∃-witness→Until/Since folding mechanism**;
         **Lemma 3.2(2) (p.4) + §5 bracket notation (p.7) for the two-fixed-endpoint framing**.
         Do not cite Prop 3.5 alone for the two-endpoint bracket.
-  - [ ] Verify: `lake build` GREEN (scoped module build acceptable mid-phase, full tree at phase
+  - [x] Verify: `lake build` GREEN (scoped module build acceptable mid-phase, full tree at phase
         end); no `sorry`; no vacuous definition; signature grep confirms codomain `VecEA2 1` (no
         `VVecEA2` / `VecEA2 2`).
+        *(full tree GREEN, 1705 jobs; 0 new sorries — all `sorry` matches in the file are prose;
+        vacuous grep = 0; no `VVecEA2`/`VecEA2 2` matches; `lean_verify` on `bracketEndChar_k1` =
+        `[propext, Classical.choice, Quot.sound]` exactly (R4 gate passed early); `git diff`
+        additive-only — 130 insertions, 0 deletions in Theories/)*
 - **Estimated output:** ~50-90 lines (one import + one `noncomputable def` + doc-comment).
 - **Bounded-unit test:** one definition; fixed attempt surface (a term construction against a known
   target type), not open-ended search. Done-criterion checkable in isolation.
