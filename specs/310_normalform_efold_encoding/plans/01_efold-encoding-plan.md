@@ -262,7 +262,7 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
 - **Estimated output:** ~100-160 lines (report §9 flags this as the riskiest phase for overrun).
 - **Depends on:** 2.
 
-### Phase 4: Bridge lemmas + k=1 gate corollary (the DONE signal) [NOT STARTED]
+### Phase 4: Bridge lemmas + k=1 gate corollary (the DONE signal) [IN PROGRESS]
 - **Goal:** Deliver the general-`n` one-step engine, the k=1 whole-evaluation transport, and the
   gate corollary stated VERBATIM against the R2 NO-GO residual — task 311's entry point.
 - **Artifact / done-when:** `nf_quant_layer_fold_iff`, `efold_of_nf1`, `nf_eval_nf1_iff_efold`, and

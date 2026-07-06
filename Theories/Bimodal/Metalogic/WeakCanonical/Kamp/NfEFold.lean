@@ -360,4 +360,107 @@ theorem nf_eval_nf0_cons_factor {sig : MonadicSignature}
           simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
             skipFin_zero_succ] using this
 
+/-! ## Phase 4: Bridge lemmas + k=1 gate corollary (Prop 4.3 innermost ∃-fold, PDF p.6)
+
+The DONE signal for task 310. `nf_quant_layer_fold_iff` is the load-bearing GENERAL-`n`
+one-step fold engine (the only proof consuming `nf_eval_unique`); it is Prop 4.3's innermost
+∃-step (PDF p.6) in NF form. `efold_of_nf1` transports a depth-1 NF into the fold encoding;
+`nf_eval_nf1_iff_efold` is the k=1 whole-evaluation bridge with the explicit off-fiber falsity
+conjunct (the honest bridge); `nf_quant_layer_fold_k1_gate` instantiates the engine at `n = 3`,
+env `[w,x,t]`, matching the R2 NO-GO residual (NfMultiAnchorBridge.lean:1601-1603) VERBATIM —
+task 311's entry point.
+
+D7 reminder: this bridge is claimed ONLY at depth-0 subs (k=1); NO depth-`k` (`k≥1`) pointwise
+equivalence is stated or attempted. The GENERAL-`n` engine's inside-out iteration belongs to
+task 309-R3, not here. -/
+
+/-- One step of `nf_eval_nf`'s quant layer over depth-0 subs is equivalent to the E[Σ]-fold form,
+    given the env's own depth-0 type `r` (`h_r : nf_eval_nf M 0 n env r`). This is Rabinovich
+    Prop 4.3's innermost ∃-fold (PDF p.6) transcribed in NF form.
+
+    - LHS: the R2 NO-GO residual shape — a joint `(n+1)`-ary existential per sub.
+    - RHS, first conjunct: zone-bounded MONADIC existentials (Def 3.1 α + ordering channels,
+      PDF p.4; the Lemma-3.4/Prop-3.5 objects the bracket machinery evaluates), quantifying only
+      over `ZoneSpec n × NormalForm sig 0 1` — no `(n+1)`-ary object remains.
+    - RHS, second conjunct: the explicit off-fiber falsity clause — subs whose env-restriction
+      is not `r` are forced false (via `nf_eval_unique`, NormalForm.lean:245).
+
+    Stated at GENERAL `n`: the proof is index-structural, and 309-R3's inside-out iteration
+    (Prop 4.3, PDF p.6) applies this same lemma at growing env arities. The gate corollary
+    instantiates `n = 3`. -/
+theorem nf_quant_layer_fold_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat}
+    (env : Fin n → M.carrier) (r : NormalForm sig 0 n)
+    (h_r : nf_eval_nf M 0 n env r)
+    (q : NormalForm sig 0 (n + 1) → Bool) :
+    (∀ sub : NormalForm sig 0 (n + 1),
+        (∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) ↔ q sub = true)
+    ↔
+    ((∀ (zs : ZoneSpec n) (χ : NormalForm sig 0 1),
+        (∃ x : M.carrier, zoneHolds M env zs x ∧ nf_eval_nf M 0 1 (fun _ => x) χ) ↔
+          q (nf0_assemble zs χ r) = true) ∧
+     (∀ sub : NormalForm sig 0 (n + 1), nf0_dropFresh sub ≠ r → q sub = false)) := by
+  -- Per-witness factorization with the third (env-restriction) factor collapsed by `h_r`.
+  have factor : ∀ (sub : NormalForm sig 0 (n + 1)) (x : M.carrier),
+      nf0_dropFresh sub = r →
+      (nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub ↔
+        zoneHolds M env (nf0_zoneSpec sub) x ∧
+          nf_eval_nf M 0 1 (fun _ => x) (nf0_projFresh sub)) := by
+    intro sub x hsub
+    rw [nf_eval_nf0_cons_factor M env x sub, hsub]
+    constructor
+    · rintro ⟨hz, hp, _⟩; exact ⟨hz, hp⟩
+    · rintro ⟨hz, hp⟩; exact ⟨hz, hp, h_r⟩
+  -- Existential lift of the factorization.
+  have factorE : ∀ (sub : NormalForm sig 0 (n + 1)), nf0_dropFresh sub = r →
+      ((∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) ↔
+        (∃ x : M.carrier, zoneHolds M env (nf0_zoneSpec sub) x ∧
+          nf_eval_nf M 0 1 (fun _ => x) (nf0_projFresh sub))) := by
+    intro sub hsub
+    exact exists_congr (fun x => factor sub x hsub)
+  -- Off-fiber: any joint witness forces the env-restriction to equal `r` (uniqueness).
+  have offF : ∀ (sub : NormalForm sig 0 (n + 1)),
+      (∃ x : M.carrier, nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub) →
+      nf0_dropFresh sub = r := by
+    intro sub hex
+    obtain ⟨x, hx⟩ := hex
+    have hfac := (nf_eval_nf0_cons_factor M env x sub).mp hx
+    exact nf_eval_unique M 0 n env (nf0_dropFresh sub) r hfac.2.2 h_r
+  constructor
+  · -- Forward.
+    intro H
+    refine ⟨?_, ?_⟩
+    · -- First conjunct: rewrite the joint existential to the monadic form via the round-trips.
+      intro zs χ
+      have hr := factorE (nf0_assemble zs χ r) (nf0_dropFresh_assemble zs χ r)
+      rw [nf0_zoneSpec_assemble, nf0_projFresh_assemble] at hr
+      exact hr.symm.trans (H (nf0_assemble zs χ r))
+    · -- Second conjunct: off-fiber falsity via uniqueness.
+      intro sub hne
+      by_contra hq
+      have hqt : q sub = true := by
+        cases hqv : q sub with
+        | false => exact absurd hqv hq
+        | true => rfl
+      exact hne (offF sub ((H sub).mpr hqt))
+  · -- Backward.
+    rintro ⟨HA, HB⟩ sub
+    by_cases heq : nf0_dropFresh sub = r
+    · -- Compatible fiber: `sub = nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) r`.
+      have hassemble :
+          nf0_assemble (nf0_zoneSpec sub) (nf0_projFresh sub) r = sub := by
+        have hsp := nf0_split_assemble sub
+        rw [heq] at hsp
+        exact hsp
+      have hA := HA (nf0_zoneSpec sub) (nf0_projFresh sub)
+      rw [hassemble] at hA
+      exact (factorE sub heq).trans hA
+    · -- Off fiber: both sides false.
+      constructor
+      · intro hex
+        exact absurd (offF sub hex) heq
+      · intro hqt
+        rw [HB sub heq] at hqt
+        exact Bool.noConfusion hqt
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
