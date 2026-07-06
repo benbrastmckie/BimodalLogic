@@ -243,17 +243,17 @@ seams (3.1/3.2, 4.1/4.2) to be exercised only if the one-run line/bounded-unit b
 - **Estimated output:** ~90-140 lines.
 - **Depends on:** 1.
 
-### Phase 3: Factorization theorem (nf_eval_nf0_cons_factor) [NOT STARTED]
+### Phase 3: Factorization theorem (nf_eval_nf0_cons_factor) [COMPLETED]
 - **Goal:** Prove the mathematical core — a depth-0 (n+1)-ary evaluation with the fresh witness
   consed factors EXACTLY into Rabinovich's Def 3.1 three channels (ordering / monadic point type /
   env restriction), losslessly.
 - **Artifact / done-when:** `nf_eval_nf0_cons_factor` (report §5.2, exact signature) compiles
   sorry-free; acceptance gate 1-4 pass.
 - **Tasks:**
-  - [ ] State `nf_eval_nf0_cons_factor` VERBATIM per report §5.2 (general `n`). Cite Def 3.1 p.4.
-  - [ ] Forward direction: unfold depth-0 `nf_eval_nf` both sides; instantiate at the four atom
+  - [x] State `nf_eval_nf0_cons_factor` VERBATIM per report §5.2 (general `n`). Cite Def 3.1 p.4.
+  - [x] Forward direction: unfold depth-0 `nf_eval_nf` both sides; instantiate at the four atom
         groups (generalized `extract_y_nf` pattern, VecEADecomp:55-66); `Fin.cons_zero`/`Fin.cons_succ`.
-  - [ ] Backward direction: given arbitrary `a : AtomKind sig (n+1)`, `Fin.cases` its indices,
+  - [x] Backward direction: given arbitrary `a : AtomKind sig (n+1)`, `Fin.cases` its indices,
         discharge from the matching channel.
 - **H8 split seam (pre-declared, exercise only on one-run overrun):**
   - **Phase 3.1** — forward direction (factor-out) sorry-free.

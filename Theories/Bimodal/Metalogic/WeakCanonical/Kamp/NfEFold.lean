@@ -262,4 +262,102 @@ theorem nf0_split_assemble {sig : MonadicSignature} {n : Nat}
       · intro j' hj
         simp only [nf0_assemble, nf0_dropFresh, mergeNF, skipFin_zero_succ, Fin.cases_succ]
 
+/-! ## Phase 3: The depth-0 factorization theorem (Def 3.1's three channels, PDF p.4) -/
+
+/-- A depth-0 `(n+1)`-ary evaluation with the fresh witness `x` consed at index `0`
+    factors EXACTLY into Rabinovich's Def 3.1 three channels (PDF p.4): the
+    **ordering** channel (`zoneHolds` on `nf0_zoneSpec`), the **monadic point type**
+    channel (`nf_eval_nf` at arity 1 on `nf0_projFresh`), and the **env restriction**
+    channel (`nf_eval_nf` at arity `n` on `nf0_dropFresh`). The factorization is
+    LOSSLESS: together with `nf0_split_assemble` (Phase 2) it exhibits a bijection of
+    characterizations, not a lossy projection — the G2 losslessness defence, and the
+    depth-0-ONLY rebuttal to deviation D7 (no depth-`k`, `k≥1`, pointwise equivalence
+    is claimed).
+
+    Proof: depth-0 `nf_eval_nf` on both sides unfolds to `∀ a, atom_eval M · a ↔ · a =
+    true`; the atoms of `AtomKind sig (n+1)` partition by index (`Fin.cases`) into the
+    fresh-vs-fresh (impossible), fresh-vs-env order (ordering channel), env pred /
+    env-vs-env order (env-restriction channel), and fresh pred (monadic channel)
+    groups, transported atom-by-atom via `Fin.cons_zero` / `Fin.cons_succ`. This
+    generalizes the `extract_y_nf` pattern (VecEADecomp:55-66) to arbitrary `n`. -/
+theorem nf_eval_nf0_cons_factor {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat}
+    (env : Fin n → M.carrier) (x : M.carrier) (sub : NormalForm sig 0 (n + 1)) :
+    nf_eval_nf M 0 (n + 1) (Fin.cons x env) sub ↔
+      zoneHolds M env (nf0_zoneSpec sub) x ∧
+      nf_eval_nf M 0 1 (fun _ => x) (nf0_projFresh sub) ∧
+      nf_eval_nf M 0 n env (nf0_dropFresh sub) := by
+  constructor
+  · -- Forward: factor out the three channels from the joint evaluation.
+    intro h
+    refine ⟨?_, ?_, ?_⟩
+    · -- Ordering channel (Def 3.1 order conjuncts, PDF p.4).
+      intro i
+      refine ⟨?_, ?_⟩
+      · have hz := h (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+        simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using hz
+      · have hz := h (.order i.succ 0 (Fin.succ_ne_zero i))
+        simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using hz
+    · -- Monadic point-type channel (Def 3.1 α, PDF p.4).
+      intro a
+      match a with
+      | .pred p i =>
+        have hp := h (.pred p 0)
+        simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hp
+      | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+    · -- Env-restriction channel (Def 3.1 env drop, PDF p.4).
+      intro a
+      match a with
+      | .pred p k =>
+        have hd := h (.pred p k.succ)
+        simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+          skipFin_zero_succ] using hd
+      | .order k₁ k₂ hne =>
+        have hd := h (.order k₁.succ k₂.succ
+          (fun he => hne (Fin.succ_injective _ he)))
+        simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+          skipFin_zero_succ] using hd
+  · -- Backward: reassemble the joint evaluation from the three channels.
+    rintro ⟨hz, hp, hd⟩
+    intro a
+    match a with
+    | .pred p i =>
+      refine Fin.cases ?_ ?_ i
+      · -- fresh predicate → monadic channel
+        have := hp (.pred p 0)
+        simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using this
+      · -- env predicate → env-restriction channel
+        intro i'
+        have := hd (.pred p i')
+        simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+          skipFin_zero_succ] using this
+    | .order i j hne =>
+      refine Fin.cases (motive := fun i => (hij : i ≠ j) →
+          (atom_eval M (Fin.cons x env) (.order i j hij)
+            ↔ sub (.order i j hij) = true)) ?_ ?_ i hne
+      · -- fresh is the left endpoint
+        intro h0
+        refine Fin.cases (motive := fun j => (h0j : (0 : Fin (n + 1)) ≠ j) →
+            (atom_eval M (Fin.cons x env) (.order 0 j h0j)
+              ↔ sub (.order 0 j h0j) = true)) ?_ ?_ j h0
+        · intro h00; exact absurd rfl h00
+        · -- (0, j'.succ): fresh < env j' → ordering channel .1
+          intro j' _
+          have := (hz j').1
+          simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using this
+      · -- env is the left endpoint
+        intro i' hi'
+        refine Fin.cases (motive := fun j => (hsj : i'.succ ≠ j) →
+            (atom_eval M (Fin.cons x env) (.order i'.succ j hsj)
+              ↔ sub (.order i'.succ j hsj) = true)) ?_ ?_ j hi'
+        · -- (i'.succ, 0): env i' < fresh → ordering channel .2
+          intro _
+          have := (hz i').2
+          simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ, nf0_zoneSpec] using this
+        · -- (i'.succ, j'.succ): env i' < env j' → env-restriction channel
+          intro j' hsj
+          have := hd (.order i' j' (fun he => hsj (congrArg Fin.succ he)))
+          simpa only [atom_eval, Fin.cons_succ, nf0_dropFresh, mergeNF,
+            skipFin_zero_succ] using this
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
