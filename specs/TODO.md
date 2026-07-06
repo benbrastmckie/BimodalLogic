@@ -105,7 +105,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-311 [NOT STARTED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
+311 [PLANNED] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
@@ -114,7 +114,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 311. Close k1 bracket gate efold
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310

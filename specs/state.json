@@ -2295,7 +2295,7 @@
     {
       "project_number": 311,
       "project_name": "close_k1_bracket_gate_efold",
-      "status": "not_started",
+      "status": "planned",
       "task_type": "lean4",
       "priority": "critical",
       "effort": "high",
