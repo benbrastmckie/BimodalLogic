@@ -847,4 +847,103 @@ theorem nf_zone_flatten_navigable_brick {sig : MonadicSignature} {k : Nat}
       nf_zone_flatten_navigable M atomMap x t pastEnd futureEnd q :=
   nf_zone_flatten_navigable_correct M atomMap x t pastEnd futureEnd q h_past h_fut
 
+/-! ## Phase 3 (task 309): arity-3 endpoint-hook construction (`D2`, new)
+
+The load-bearing endpoint hooks the off-diagonal `F_i` chain needs are the navigated
+witnesses' arity-3 characteristics `NormalForm sig k 3 → TemporalPred` that
+`nf_zone_flatten_navigable`'s `pastEnd`/`futureEnd` consume: at an exterior witness `w`
+(`w < x` past, `t < w` future), the endpoint `TemporalPred`'s `.eval_at w` must capture the
+coupled arity-3 evaluation `nf_eval_nf M k 3 (zoneEnv3 w x t) q` one depth down. Divergence
+D2: the KampPrior-local `exist_tl_fn_k` is an arity-2 existential converter (a proof-local
+`let`, not a top-level asset) and does NOT supply these arity-3 characteristics — they are
+genuine new construction, templated on `nf_char2_diag_exist_tl` / `nf_char2_formula`.
+
+`nf_char3_endpoint_tl` is the arity-3, `TemporalPred`-valued analog of the arity-1 template
+`nf_succ_char_formula` (KampPrior.lean:66) and the arity-2 diagonal `nf_char2_formula`
+(:476): it assembles the endpoint characteristic of `q : NormalForm sig (k+1) 3` at a
+navigated witness `y` as `formula_conjList (atomPart :: quant_clauses)`, where each
+`quant_clause` wraps the depth-`k`, **arity-4** coupled inner converter `innerConv`
+(the recursion hook — one depth down, mirroring how `nf_char2_formula` threads
+`nf_char2_diag_exist_tl` and the arity-1 template threads `exist_tl_fn`). It stays
+**hook-parametric** over `atomPart` (the arity-3 atom layer at the anchors, supplied by the
+Phase-2 off-diagonal atom locus pair in Phase 4) and `innerConv` (the depth-`k` IH); the
+assembly and its correctness are proven once, sorry-free.
+
+### Route audit (Postmortem forbidden-route guards)
+- **(a)** The correctness matches `nf_eval_nf M (k+1) 3 (zoneEnv3 y x t) q`'s own `k+1`
+  unfolding — atom layer at the full env `zoneEnv3 y x t = [y, x, t]` plus, per arity-4 sub,
+  the coupled `∃ w` on the full env `Fin.cons w (zoneEnv3 y x t) = [w, y, x, t]`, discharged
+  one depth down through `innerConv` (the caller routes it via `nf_char3_deeper_split` /
+  `nf_zone_flatten_navigable`, route (c)). No per-variable projection of the coupled layer.
+- **(b)** The inner converter's endpoints are the caller's navigated `bracketBuild*`
+  `TemporalPred`s; here they stay abstract hooks whose `.eval_at` correctness is the IH.
+- **G4** — `y` and every inner `w` are bracket witnesses laid in the `F_i` chain, never free
+  anchors; the free-anchor set stays `{x, t} = 2` (`zoneEnv3_arity_invariant`, Rabinovich ≤2
+  cap). Rabinovich Cor 5.4 `F_i` endpoint (md:154-157). -/
+
+/-- **Arity-3 endpoint characteristic builder** (task 309 Phase 3, D2). The `TemporalPred`
+whose `.eval_at` at a navigated witness `y` captures `nf_eval_nf M (k+1) 3 (zoneEnv3 y x t) q`,
+assembled hook-parametrically from `atomPart` (the arity-3 atom layer at the anchors) and
+`innerConv` (the depth-`k`, arity-4 coupled inner converter — the recursion hook one depth
+down). Exactly the arity-3, `TemporalPred`-valued analog of the arity-1 template
+`nf_succ_char_formula` and the arity-2 `nf_char2_formula`: `formula_conjList (atomPart ::
+quant_clauses)` with one `nf_quant_clause_tl` per arity-4 sub-NF. -/
+noncomputable def nf_char3_endpoint_tl {sig : MonadicSignature} {k : Nat}
+    (atomPart : Formula)
+    (innerConv : NormalForm sig k 4 → Formula)
+    (q : NormalForm sig (k + 1) 3) : TemporalPred :=
+  ⟨formula_conjList (atomPart ::
+    (Finset.univ.toList : List (NormalForm sig k 4)).map
+      (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub)))⟩
+
+/-- **Correctness of the arity-3 endpoint characteristic** (task 309 Phase 3, D2). Under the
+atom-hook correctness `h_atom` (the arity-3 atom layer at `[y, x, t]`) and the inner-converter
+correctness `h_inner` (each arity-4 sub's coupled `∃ w` on `[w, y, x, t]` — the depth-`k` IH),
+the assembled endpoint `TemporalPred`'s `.eval_at y` holds iff `q` evaluates on the full
+arity-3 env `zoneEnv3 y x t`. Assembled by matching `nf_eval_nf M (k+1) 3`'s own unfolding
+(`formula_conjList_iff` + `nf_quant_clause_tl_correct` per clause), exactly mirroring
+`nf_char2_formula_correct` one arity up. `y` and every inner `w` stay bracket witnesses;
+anchor set `{x, t}` (G4). Rabinovich Cor 5.4 `F_i` endpoint (md:154-157). -/
+theorem nf_char3_endpoint_tl_correct {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (y x t : M.carrier)
+    (atomPart : Formula)
+    (innerConv : NormalForm sig k 4 → Formula)
+    (q : NormalForm sig (k + 1) 3)
+    (h_atom : temporal_truth M atomMap y atomPart ↔
+      (∀ a : AtomKind sig 3, atom_eval M (zoneEnv3 y x t) a ↔ (q.1 a = true)))
+    (h_inner : ∀ sub : NormalForm sig k 4,
+      temporal_truth M atomMap y (innerConv sub) ↔
+        ∃ w : M.carrier, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) :
+    (nf_char3_endpoint_tl atomPart innerConv q).eval_at M atomMap y ↔
+      nf_eval_nf M (k + 1) 3 (zoneEnv3 y x t) q := by
+  simp only [nf_char3_endpoint_tl, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  change _ ↔ (∀ (a : AtomKind sig 3), atom_eval M (zoneEnv3 y x t) a ↔ (q.1 a = true)) ∧
+    (∀ (sub : NormalForm sig k 4),
+      (∃ (w : M.carrier), nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
+        (q.2 sub = true))
+  have quant_mem : ∀ sub : NormalForm sig k 4,
+      nf_quant_clause_tl (innerConv sub) (q.2 sub) ∈
+        List.map (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub))
+          Finset.univ.toList :=
+    fun sub => List.mem_map.mpr
+      ⟨sub, Finset.mem_toList.mpr (Finset.mem_univ sub), rfl⟩
+  constructor
+  · intro h_all
+    constructor
+    · have h_at := h_all _ (.head _)
+      exact h_atom.mp h_at
+    · intro sub
+      have h_clause := h_all _ (.tail _ (quant_mem sub))
+      rw [nf_quant_clause_tl_correct M atomMap y _ _ _ (h_inner sub)] at h_clause
+      exact h_clause
+  · intro ⟨h_atoms, h_quants⟩ φ h_mem
+    cases h_mem with
+    | head => exact h_atom.mpr h_atoms
+    | tail _ h_tail =>
+      obtain ⟨sub, _, rfl⟩ := List.mem_map.mp h_tail
+      rw [nf_quant_clause_tl_correct M atomMap y _ _ _ (h_inner sub)]
+      exact h_quants sub
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

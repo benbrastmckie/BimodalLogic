@@ -220,7 +220,19 @@ Quot.sound]`.)*
 - **Guards enforced**: D3 (new atom layer), G5 (step-by-step, no shortcut).
 - **Commit**: `task 309 phase 2: off-diagonal atom layer`
 
-### Phase 3: Arity-3 endpoint-hook construction (new; D2) [NOT STARTED]
+### Phase 3: Arity-3 endpoint-hook construction (new; D2) [COMPLETED]
+
+*(Delivered as `nf_char3_endpoint_tl` + `nf_char3_endpoint_tl_correct` (NfMultiAnchorBridge.lean,
+before the closing `end`, commit pending): the arity-3, `TemporalPred`-valued analog of the arity-1
+template `nf_succ_char_formula` and the arity-2 `nf_char2_formula`, one arity up. Builds the endpoint
+characteristic `NormalForm sig (k+1) 3 → TemporalPred` that Phase 4's `nf_char2_past_formula` plugs
+into `nf_zone_flatten_navigable`'s `pastEnd`/`futureEnd`. Hook-parametric over `atomPart` (arity-3
+atom layer at the anchors) and `innerConv` (depth-`k`, arity-4 coupled inner converter = the IH);
+`_correct` takes their correctness as hypotheses (`h_atom`/`h_inner`) and proves `.eval_at y ↔
+nf_eval_nf M (k+1) 3 (zoneEnv3 y x t) q` by matching `nf_eval_nf`'s `k+1` unfolding
+(`formula_conjList_iff` + `nf_quant_clause_tl_correct` per clause), mirroring
+`nf_char2_formula_correct`. Build GREEN; axioms exactly `[propext, Classical.choice, Quot.sound]`.
+G4 preserved: `y` and inner `w` stay bracket witnesses, anchor set `{x,t}`.)*
 
 - **Goal**: Build the arity-3 characteristic endpoint hooks
   (`NormalForm sig k 3 → TemporalPred`) that `nf_char2_past_formula` needs at navigated witnesses,
