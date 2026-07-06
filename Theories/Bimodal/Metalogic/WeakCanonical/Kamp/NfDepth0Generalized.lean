@@ -1628,4 +1628,64 @@ theorem nf_nvar_exist_depth0_tl_fn_correct
     ∃ env : Fin n → M.carrier, nf_eval_nf M 0 (n + 1) (insertEnv env t) sub_nf :=
   (nf_nvar_exist_depth0_tl atomMap h_surj n sub_nf).choose_spec M t
 
+/-! ## Diagonal (value-duplication) congruence for the non-bijective merge
+
+The full `renameNF_eval_iff` needs a *bijective* index map (both `f ∘ r = id` and `r ∘ f = id`).
+The merge forward map `skipFin j` is injective-not-surjective, so `f ∘ r = id` (`hsec`) fails.
+The lemmas below drop `hsec` and instead demand the *value-level* compatibilities `hcomp`
+(`e = E ∘ f`) and `hcomp2` (`E = e ∘ r`) to hold on ALL positions — which the *duplicating*
+(diagonal) environment satisfies precisely because it lives in the compatible subspace where a
+bare bijection would not (see the NfDepth0Generalized:580-582 sketch). Together with the
+retraction `hsec2` (`r ∘ f = id`, which `totalUnskip`/`skipFin` satisfy) and irreflexivity of
+`M.lt`, this suffices for the atom layer at every depth. The evaluated NF is `renameNF r f nf`
+(the *duplicated* form), so the backward atom transfer never needs the missing `hsec`. -/
+
+/-- Depth-0 diagonal congruence: evaluating the duplicated atom layer `renameNF r f nf` on the
+    compatible env `E` matches evaluating `nf` on `e`. Drops the `hsec` (`f ∘ r = id`) that the
+    non-injective merge violates; uses only value compatibility + the retraction `hsec2`. -/
+theorem renameNF_eval_diag0 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {a b : Nat}
+    (f : Fin b → Fin a) (r : Fin a → Fin b)
+    (E : Fin a → M.carrier) (e : Fin b → M.carrier)
+    (hcomp : ∀ i, e i = E (f i))
+    (hcomp2 : ∀ i, E i = e (r i))
+    (hsec2 : ∀ i, r (f i) = i)
+    (nf : NormalForm sig 0 b) :
+    nf_eval_nf M 0 a E (renameNF r f nf) ↔ nf_eval_nf M 0 b e nf := by
+  simp only [nf_eval_nf]
+  constructor
+  · -- duplicated form on E  →  original on e
+    intro hbig atom
+    match atom with
+    | .pred p k =>
+      have h := hbig (.pred p (f k))
+      simp only [renameNF, atom_eval] at h ⊢
+      rw [hcomp k, h, hsec2 k]
+    | .order k l hkl =>
+      have hfkl : f k ≠ f l := by
+        intro heq; exact hkl (by rw [← hsec2 k, ← hsec2 l, heq])
+      have h := hbig (.order (f k) (f l) hfkl)
+      simp only [renameNF, atom_eval] at h ⊢
+      rw [hcomp k, hcomp l]
+      rw [dif_neg (show ¬ (r (f k) = r (f l)) from by rw [hsec2 k, hsec2 l]; exact hkl)] at h
+      rw [show (AtomKind.order (r (f k)) (r (f l))
+            (by rw [hsec2 k, hsec2 l]; exact hkl) : AtomKind sig b)
+            = AtomKind.order k l hkl from by congr 1; exact hsec2 k; exact hsec2 l] at h
+      exact h
+  · -- original on e  →  duplicated form on E
+    intro hnf atomA
+    match atomA with
+    | .pred p i =>
+      simp only [renameNF, atom_eval]
+      rw [hcomp2 i]
+      exact hnf (.pred p (r i))
+    | .order i j hij =>
+      simp only [renameNF, atom_eval]
+      by_cases hr : r i = r j
+      · simp only [hr, dif_pos]
+        rw [hcomp2 i, hcomp2 j, hr]; simp
+      · simp only [hr, dif_neg, not_false_iff]
+        rw [hcomp2 i, hcomp2 j]
+        exact hnf (.order (r i) (r j) hr)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
