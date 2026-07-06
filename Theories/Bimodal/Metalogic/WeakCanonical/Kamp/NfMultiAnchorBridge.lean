@@ -655,4 +655,44 @@ theorem A_diag_correct {sig : MonadicSignature}
     (fun qnf => nf_char2_diag_exist_tl_correct M atomMap t pastEnd futureEnd diagChar qnf
       (h_past qnf) (h_fut qnf) (h_diag qnf)) sub_nf
 
+/-! ## Task 307, Phase 4: the general-`k` navigated flattening brick (arbitrary anchors `(x, t)`)
+
+The load-bearing constructive brick for the `:391` past/future arms (Phases 5/6). Task 308 already
+SHIPPED it as deliverable 2, `nf_zone_flatten_navigable` / `nf_zone_flatten_navigable_correct`
+(above): the coupled inner-`w` arity-3 existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` equals
+the five-zone navigated disjunction (`w < x` past-exterior via `bracketBuildLeft` from origin `x`;
+`w = x`; bounded interior `x < w < t`; `w = t`; `t < w` future-exterior via `bracketBuildRight` from
+origin `t`), under the two navigated-endpoint-hook correctness hypotheses `h_past`/`h_fut` — which
+ARE the depth-`k` IH (bottoming out at `k = 0` in `nf_zone_flatten_navigable_zero`).
+
+Phase 4 therefore **consumes 308's deliverable 2 verbatim, hook-parametric, without rebuilding**
+(exactly as Phase 3 consumed deliverable 1). The theorem below re-exposes the brick equivalence under
+a Phase-4 name as the single stable citation point that Phases 5/6 invoke — the past-exterior open
+zone is already the `bracketBuildLeft` navigation from `x` (Phase 5, `A_past`), the future-exterior
+open zone the `bracketBuildRight` navigation from `t` (Phase 6, `A_future`). The two point zones
+(`w = x`, `w = t`) and the bounded interior stay honest arity-3 residuals the caller discharges one
+depth down (via `nf_char3_deeper_split`), never arity-collapsed (route (c) guard). `w` is always a
+bracket witness, never a named free anchor; env arity never grows past `{w, x, t} = 3` reducing to
+`{x, t} = 2` (`zoneEnv3_arity_invariant`, Rabinovich ≤2 free-variable cap). -/
+
+/-- **Task 307 Phase 4 brick** — the general-`k` navigated flattening at arbitrary anchors `(x, t)`,
+consumed verbatim from task 308's deliverable 2. Under the two navigated-endpoint-hook correctness
+hypotheses (the depth-`k` IH), the coupled inner existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q`
+equals the five-zone navigated disjunction `nf_zone_flatten_navigable`. This is
+`nf_zone_flatten_navigable_correct` re-exposed as the Phase-5/6 citation point (NOT rebuilt). -/
+theorem nf_zone_flatten_navigable_brick {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (q : NormalForm sig k 3)
+    (h_past : ∀ w : M.carrier, w < x →
+      ((pastEnd q).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (zoneEnv3 w x t) q))
+    (h_fut : ∀ w : M.carrier, t < w →
+      ((futureEnd q).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (zoneEnv3 w x t) q)) :
+    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q) ↔
+      nf_zone_flatten_navigable M atomMap x t pastEnd futureEnd q :=
+  nf_zone_flatten_navigable_correct M atomMap x t pastEnd futureEnd q h_past h_fut
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

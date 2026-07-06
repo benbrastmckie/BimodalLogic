@@ -322,18 +322,38 @@ Quot.sound]`; live-path sorry count unchanged at 2.
 - **Estimated output:** ~80-160 lines. **Done when:** A_diag arm iff proven sorry-free, build green.
 - **Depends on:** 1 (GO)
 
-### Phase 4: depth-graded navigable flattening brick (general k) [IN PROGRESS]
-- **Goal:** Generalize the Phase-1 k=1 probe to `nf_zone_flatten_navigable` at arbitrary depth:
-  `∃w, nf_eval M k 3 [w,x,t] q ↔` a `bracketBuild` disjunction over `w`'s zones relative to
-  `(x,t)`, endpoints NAVIGATED and each zone's depth-`k` residual discharged by the IH
-  `exist_tl_fn_k_correct` (arity-2 bound-anchor closure). This is the load-bearing constructive brick.
+### Phase 4: depth-graded navigable flattening brick (general k) [COMPLETED]
+
+**COMPLETED** (2026-07-06, session sess_1783353840_ba1b1d) — consumed prerequisite task 308's
+deliverable 2 verbatim, hook-parametric, WITHOUT rebuilding. Task 308 already shipped this exact brick
+as `nf_zone_flatten_navigable` / `nf_zone_flatten_navigable_correct` (`NfMultiAnchorBridge.lean`,
+sorry-free): the coupled inner-`w` arity-3 existential `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q`
+equals the five-zone navigated disjunction (past-exterior `w < x` via `bracketBuildLeft` from `x`;
+`w = x`; interior `x < w < t`; `w = t`; future-exterior `t < w` via `bracketBuildRight` from `t`),
+under the two navigated-endpoint-hook correctness hypotheses `h_past`/`h_fut` — which ARE the depth-`k`
+IH (bottoming out at `k = 0` in `nf_zone_flatten_navigable_zero`). Phase 4 lands
+`nf_zone_flatten_navigable_brick` (append-only in `NfMultiAnchorBridge.lean`) — a Phase-4-named
+correctness re-export delegating to `nf_zone_flatten_navigable_correct`, the single stable citation
+point Phases 5/6 invoke. `lake build` GREEN (996 jobs); `lean_verify nf_zone_flatten_navigable_brick`
+axioms exactly `[propext, Classical.choice, Quot.sound]`, 0 warnings; live-path sorry count unchanged
+at 2 (`:391`, `:394`; `NfMultiAnchorBridge` is a leaf, off the live path).
+
+- **Goal:** Generalize the Phase-1 k=1 probe to `nf_zone_flatten_navigable` at arbitrary depth —
+  DELIVERED by task 308 (deliverable 2); Phase 4 consumes it hook-parametric, no rebuild.
 - **Tasks:**
-  - [ ] State `nf_zone_flatten_navigable` (depth-`k` graded; anchor set `{x,t}`; `w` a bracket
-        witness, never an env position — R2 constraint).
-  - [ ] (4.1 if split) Prove the w-zone partition (exterior-past / interior / exterior-future
-        relative to `x,t`), reusing `nf_zone_partition5` templates.
-  - [ ] (4.2 if split) Construct the navigated endpoint per zone; discharge each depth-`k`
-        residual by `exist_tl_fn_k_correct`; assemble the equivalence.
+  - [x] State `nf_zone_flatten_navigable` (depth-`k` graded; anchor set `{x,t}`; `w` a bracket
+        witness). *(deviation: altered — shipped by task 308 as deliverable 2; Phase 4 consumes it
+        verbatim rather than re-stating from scratch. Landed `nf_zone_flatten_navigable_brick`
+        re-export as the Phase-5/6 citation point.)*
+  - [x] w-zone partition (exterior-past / interior / exterior-future). *(deviation: altered —
+        delivered by task 308 as `nf_char2_zone_split5` / `exists_zone_split5`; consumed, not rebuilt.)*
+  - [x] Navigated endpoint per zone + assemble the equivalence. *(deviation: altered — the two open
+        exterior zones are `bracketBuild*` navigations and the assembly is
+        `nf_zone_flatten_navigable_correct` (task 308); the depth-`k` residuals stay hook obligations
+        (`h_past`/`h_fut` = the IH), discharged at Phase 7 by the `nf_nvar_exist_all_depths` recursion
+        rather than inline — the IH is unavailable off the live recursion.)*
+  - Target-file deviation: landed in `NfMultiAnchorBridge.lean` (the brick's home), not
+    `NfZoneFlattenNavigable.lean`, for the same import-cycle reason as Phase 3.
 - **Verification:** `lake build` GREEN; `lean_verify` sorry-free + axioms 2; env arity never grows
   beyond the `{w,x,t}=arity 3 → {x,t}=arity 2` reduction (no arity tower); live-path sorry still 2.
 - **Estimated output:** ~300-450 lines (R5: split into 4.1/4.2 if >500 lines or >4h; keep top-level
