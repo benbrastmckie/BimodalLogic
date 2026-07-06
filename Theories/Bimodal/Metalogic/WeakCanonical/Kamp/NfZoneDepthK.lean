@@ -222,4 +222,80 @@ theorem nf_zone_exists_iff_char {sig : MonadicSignature}
     rw [← hy]
     exact nf_characteristic_satisfies M k 3 (zoneEnv3 y x t)
 
+/-! ## Phase 11b: the witness zone partition (Rabinovich §5 / Cor 5.4 F_i chain)
+
+With the target existential reduced to characteristic-type equality
+(`nf_zone_exists_iff_char`), the witness `y` is split by its order position relative to the two
+anchors `x`, `t`. This is the semantic skeleton of Rabinovich's `F_i` chain: five zones
+`y < x`, `y = x`, `x < y < t`, `y = t`, `t < y`. The partition is **unconditionally valid** (it
+case-splits on the actual order relations; degenerate anchor orders merely empty/overlap zones,
+which a disjunction tolerates). Each zone existential is later converted to a temporal formula
+by feeding the depth-`k` IH through `bracketBuildLeft` (past zones) / `bracketBuildRight`
+(future zones). -/
+
+/-- Generic single-boundary trichotomy split of an existential: any witness lies below, at, or
+    above a fixed boundary `c`. The atom of the zone decomposition. -/
+theorem exists_trichotomy_split {α : Type*} [LinearOrder α] (P : α → Prop) (c : α) :
+    (∃ y, P y) ↔
+      (∃ y, y < c ∧ P y) ∨ P c ∨ (∃ y, c < y ∧ P y) := by
+  constructor
+  · rintro ⟨y, hy⟩
+    rcases lt_trichotomy y c with h | h | h
+    · exact Or.inl ⟨y, h, hy⟩
+    · exact Or.inr (Or.inl (h ▸ hy))
+    · exact Or.inr (Or.inr ⟨y, h, hy⟩)
+  · rintro (⟨y, _, hy⟩ | hc | ⟨y, _, hy⟩)
+    · exact ⟨y, hy⟩
+    · exact ⟨c, hc⟩
+    · exact ⟨y, hy⟩
+
+/-- **Five-zone witness partition** of the characteristic-type existential (Rabinovich's `F_i`
+    chain, §5 / Cor 5.4). Splits `∃ y, char[y,x,t] = qnf` into the five order zones of `y`
+    relative to the anchors `x`, `t`. Unconditionally valid; the converter dispatches on the
+    compile-time `x`/`t` order (from `qnf`'s order atoms) to select which zones are live and
+    which bracket builder consumes each. The `y = x` / `y = t` point zones become the diagonal
+    (two-value-collision) sub-problems handled by `renameNF_eval_diag0`; the open zones
+    (`y<x`, `x<y<t`, `t<y`) become `Since`/`Until` brackets over the depth-`k` IH. -/
+theorem nf_zone_partition5 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (qnf : NormalForm sig k 3) (x t : M.carrier) :
+    (∃ y, nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ↔
+      (∃ y, y < x ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nf_characteristic M k 3 (zoneEnv3 x x t) = qnf) ∨
+      (∃ y, x < y ∧ y < t ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nf_characteristic M k 3 (zoneEnv3 t x t) = qnf) ∨
+      (∃ y, t < y ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) := by
+  constructor
+  · rintro ⟨y, hy⟩
+    rcases lt_trichotomy y x with hyx | hyx | hyx
+    · exact Or.inl ⟨y, hyx, hy⟩
+    · exact Or.inr (Or.inl (hyx ▸ hy))
+    · rcases lt_trichotomy y t with hyt | hyt | hyt
+      · exact Or.inr (Or.inr (Or.inl ⟨y, hyx, hyt, hy⟩))
+      · exact Or.inr (Or.inr (Or.inr (Or.inl (hyt ▸ hy))))
+      · exact Or.inr (Or.inr (Or.inr (Or.inr ⟨y, hyt, hy⟩)))
+  · rintro (⟨y, _, hy⟩ | hx | ⟨y, _, _, hy⟩ | ht | ⟨y, _, hy⟩)
+    · exact ⟨y, hy⟩
+    · exact ⟨x, hx⟩
+    · exact ⟨y, hy⟩
+    · exact ⟨t, ht⟩
+    · exact ⟨y, hy⟩
+
+/-- The two-anchor arity-3 existential, fully split into its five witness zones (composition of
+    `nf_zone_exists_iff_char` with `nf_zone_partition5`). This is the exact statement the
+    depth-`k` zone converter must realize as a nested `Since`/`Until` bracket: LHS is the
+    semantic target `∃ y, nf_eval_nf …`, RHS is the zone-partitioned characteristic-type form
+    whose open zones feed the bracket builders and whose point zones feed the diagonal
+    collapse. -/
+theorem nf_zone_exists_partition5 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (qnf : NormalForm sig k 3) (x t : M.carrier) :
+    (∃ y, nf_eval_nf M k 3 (zoneEnv3 y x t) qnf) ↔
+      (∃ y, y < x ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nf_characteristic M k 3 (zoneEnv3 x x t) = qnf) ∨
+      (∃ y, x < y ∧ y < t ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) ∨
+      (nf_characteristic M k 3 (zoneEnv3 t x t) = qnf) ∨
+      (∃ y, t < y ∧ nf_characteristic M k 3 (zoneEnv3 y x t) = qnf) :=
+  (nf_zone_exists_iff_char M k qnf x t).trans (nf_zone_partition5 M k qnf x t)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
