@@ -366,7 +366,40 @@ task per the follow_up_task.)*
 - **Guards enforced**: G3, G4, G5.
 - **Commit**: `task 309 phase 7: non-trivial interior segment builder`
 
-### Phase 8: Recursive navigated endpoint primitive endChar + _correct [NOT STARTED]
+### Phase 8: Recursive navigated endpoint primitive endChar + _correct [BLOCKED]
+
+**Partial progress (task 309 P8, commit landed):** the Phase-6 base-case strategic sorry
+(`endChar0_correct`, NfMultiAnchorBridge:1066) is **DISCHARGED and the statement CORRECTED**, proved
+sorry-free (axioms `[propext, Classical.choice, Quot.sound]`). The Phase-6 free-anchor form
+(`(endChar0 qnf).eval_at w ↔ nf_eval_nf M 0 3 (zoneEnv3 w a b) qnf` for arbitrary `a b`) is provably
+FALSE (a closed navigated-`w` `TemporalPred.eval_at w` depends only on `M, w`, but the RHS constrains
+predicate layers at anchor positions `a` (index 1), `b` (index 2) and orders among `{w,a,b}` —
+counterexample `qnf (.pred p 1)=true` with `M.interp p a=false`). Corrected to the faithful
+residual-conditional base case: under the anchor+order residual hypothesis `h_res` (the data the
+enclosing bracket exteriors / `x<w<t` witness bound pin as `a=x`, `b=t` — report 02 §4.2, G3/G4),
+`endChar0` discharges the full depth-0 arity-3 atom layer. Module builds GREEN (995 jobs).
+
+**BLOCKER** (Phase 8 — the recursive primitive core):
+- **What failed**: the primary deliverables `endChar : NormalForm sig k 3 → TemporalPred` (recursion on
+  `k`) and `endChar_correct` are NOT built.
+- **Why stuck (structural, type-level)**: `nf_eval_nf M (k+1) 3 (zoneEnv3 w a b) qnf`'s quant layer
+  (NormalForm.lean:203-207) is `∀ sub : NormalForm sig k 4, (∃ x', nf_eval_nf M k 4 (Fin.cons x'
+  (zoneEnv3 w a b)) sub) ↔ qnf.2 sub = true` — the sub-NFs are **arity 4** (four points `{x',w,a,b}`),
+  which the fixed **arity-3** `EndCharCarrier sig k = NormalForm sig k 3 → TemporalPred` interface
+  cannot recursively consume. Re-bounding arity 4 → 3 is exactly the brick-witness-collapse +
+  non-trivial-segment core (report 02 §4.1/§4.2, ~300-500 lines). `nf_char3_deeper_split` is the
+  FORBIDDEN route (grows anchors 3→4→7-zone tower; Corrected Anchor-Cap Statement). The correct
+  arity-management mechanism is genuinely unbuilt — cannot be written type-correctly without it, so no
+  non-vacuous `endChar` def is possible in-dispatch (a placeholder would be a prohibited vacuous def).
+- **What was tried**: consumed `endChar0` (base), `seg`/`seg_holds_coupled` (Phase 7 interior),
+  `nf_zone_flatten_navigable(_brick)` (arity-3 5-zone flatten), `nf_char3_endpoint_tl` (endpoint shape,
+  itself needs arity-4 `innerConv`). All arity-3-bounded; none bridges the arity-4 quant layer without
+  the collapse.
+- **What is needed**: a dedicated follow-up building the arity-managing recursion core (the arity-4 →
+  arity-3 re-bounding via bracket-witness-collapse, keeping anchors `{x,t}`, NOT `nf_char3_deeper_split`),
+  then `endChar_correct` in the residual-threaded (contextually-pinned) form the base case now models.
+- **Prohibited**: Do NOT use `sorry`, a vacuous `endChar := fun _ => TemporalPred.top`, or
+  `nf_char3_deeper_split`.
 
 - **Goal**: Assemble the missing primitive (report 02 §1.4)
   `endChar : NormalForm sig k 3 → TemporalPred`
