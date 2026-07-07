@@ -7773,6 +7773,178 @@ theorem kvE_subBracket2V_sound_of_parts {sig : MonadicSignature}
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
+/-- **Multi-element σ-block: every sub-chain slot lies below a chosen pin** (task 326 Phase 5;
+    generalizes `bracketFromLists_flatMap_block_extract` :2322 from a single-head block
+    `head b :: tail b` to the k=2 outer block `subChain b ++ pins b` — the shape of `kvE2_body`'s
+    `slotsFor lL = lL.flatMap (fun σ => ptSub σ ++ pinSlots σ)` (:8505-8506), where
+    `ptSub σ = kvE_subChain2V charBase charK σ` is a MULTI-element list of per-arrangement
+    `fChainPred`s). Given a chosen pin `p0 ∈ pins a`, the order-preserving extraction
+    (`k1v_bracket_extract_mono`) places `a`'s whole block strictly-increasing and strictly below the
+    middle witness `w_outer`, with EVERY sub-chain slot `fcp ∈ subChain a` realized STRICTLY BELOW the
+    witness `q` of `p0` — because the entire `subChain a` segment PRECEDES the `pins a` segment in the
+    contiguous block, so every sub-chain witness carries a smaller monotone index than any pin witness.
+    The `< q` bound rides the sub-chain slot's STRUCTURAL position in the contiguous block (the monotone
+    `ws` sequence), never a formula literal (litmus PASS).
+
+    Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint (`w_outer`) point-insertion bound
+    is carried structurally by the monotone block ordering, faithful under the order-preserving
+    realization of the bracket's interval decomposition. **Lemma 5.3** (md:137-152): the arrangement
+    coverage that lets any chosen pin serve as the below-bound for the whole preceding sub-chain block. -/
+private theorem bracketFromLists_flatMap_subchain_below_pin {sig : MonadicSignature} {α : Type*}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (l : List α) (subChain pins : α → List TemporalPred)
+    (ptW segL segR : TemporalPred) (lR : List TemporalPred)
+    (x t : M.carrier) (a : α) (ha : a ∈ l)
+    (p0 : TemporalPred) (hp0 : p0 ∈ pins a)
+    (h : (bracketFromLists (l.flatMap (fun b => subChain b ++ pins b)) ptW lR segL segR).holds
+          M atomMap x t) :
+    ∃ w_outer q : M.carrier,
+      x < q ∧ q < w_outer ∧ w_outer < t ∧ p0.eval_at M atomMap q ∧
+      (∀ fcp ∈ subChain a, ∃ u : M.carrier, x < u ∧ u < q ∧ fcp.eval_at M atomMap u) := by
+  obtain ⟨pre, post, hl⟩ := List.append_of_mem ha
+  set fB : α → List TemporalPred := fun b => subChain b ++ pins b with hfB
+  have heq : l.flatMap fB = (pre.flatMap fB ++ fB a) ++ post.flatMap fB := by
+    rw [hl, List.flatMap_append, List.flatMap_cons, ← List.append_assoc]
+  rw [heq] at h
+  set pref := pre.flatMap fB with hpref
+  set suff := post.flatMap fB with hsuff
+  obtain ⟨ws, hmono, hrange, hpt⟩ :=
+    k1v_bracket_extract_mono M atomMap ((pref ++ fB a) ++ suff) lR ptW segL segR x t h
+  -- Index of the chosen pin `p0` within `pins a`, hence within the block `fB a = subChain a ++ pins a`.
+  obtain ⟨j0, hj0, hpj0⟩ := List.mem_iff_getElem.mp hp0
+  have hfa_len : (fB a).length = (subChain a).length + (pins a).length := by
+    rw [hfB]; simp only [List.length_append]
+  have hpin_lt : (subChain a).length + j0 < (fB a).length := by rw [hfa_len]; omega
+  have hLLlen : ((pref ++ fB a) ++ suff).length
+      = pref.length + (fB a).length + suff.length := by
+    simp only [List.length_append]
+  -- `w_outer` at the middle bracket position; `q` at the pin's global slot.
+  refine ⟨ws ⟨((pref ++ fB a) ++ suff).length, by omega⟩,
+          ws ⟨pref.length + ((subChain a).length + j0), by omega⟩, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (hrange _).1
+  · exact hmono _ _ (Fin.mk_lt_mk.mpr (by omega))
+  · exact (hrange _).2
+  · -- p0 @ q : point type at the pin's global slot is `(fB a)[|subChain a| + j0] = (pins a)[j0] = p0`.
+    have hpm := hpt ⟨pref.length + ((subChain a).length + j0), by omega⟩
+    have helem_pin : (((pref ++ fB a) ++ suff) ++ ptW :: lR)[pref.length + ((subChain a).length + j0)]'(by
+        simp only [List.length_append, List.length_cons]; omega) = p0 := by
+      rw [List.getElem_append_left (show pref.length + ((subChain a).length + j0)
+              < ((pref ++ fB a) ++ suff).length by simp only [List.length_append]; omega)]
+      rw [getElem_append3_mid pref (fB a) suff ((subChain a).length + j0) hpin_lt]
+      simp only [hfB]
+      rw [List.getElem_append_right (Nat.le_add_right (subChain a).length j0)]
+      simp only [Nat.add_sub_cancel_left]
+      exact hpj0
+    rw [helem_pin] at hpm
+    exact hpm
+  · -- Every sub-chain slot realized strictly below `q` (its index precedes the pin's index).
+    intro fcp hfcp
+    obtain ⟨i, hi, hfi⟩ := List.mem_iff_getElem.mp hfcp
+    have hi_block : i < (fB a).length := by rw [hfa_len]; omega
+    refine ⟨ws ⟨pref.length + i, by omega⟩, ?_, ?_, ?_⟩
+    · exact (hrange _).1
+    · exact hmono _ _ (Fin.mk_lt_mk.mpr (by omega))
+    · -- fcp @ u : point type at the sub-chain global slot is `(fB a)[i] = (subChain a)[i] = fcp`.
+      have hpi := hpt ⟨pref.length + i, by omega⟩
+      have helem_sub : (((pref ++ fB a) ++ suff) ++ ptW :: lR)[pref.length + i]'(by
+          simp only [List.length_append, List.length_cons]; omega) = fcp := by
+        rw [List.getElem_append_left (show pref.length + i < ((pref ++ fB a) ++ suff).length by
+              simp only [List.length_append]; omega)]
+        rw [getElem_append3_mid pref (fB a) suff i hi_block]
+        simp only [hfB]
+        rw [List.getElem_append_left hi]
+        exact hfi
+      rw [helem_sub] at hpi
+      exact hpi
+
+/-- **The bounded-point-insertion composition deliverable** (task 326 Phase 5 — the task's terminus).
+    From the OUTER k=2 bracket's soundness-side `.holds` over the fixed endpoints `(x, t)` — whose
+    left-witness block is `l.flatMap (fun b => kvE_subChain2V charBase charK b ++ pins b)` (exactly
+    `kvE2_body`'s `slotsFor`, :8505-8506) — and a chosen pin `p0 ∈ pins σ` that IS the anchor pin
+    `⟨charK (nfk_projFresh σ)⟩`, produce the bounded anchor bundle `(q, x < q, q < t, hanchor, hbelow)`
+    that `kvE_subBracket2V_sound_of_parts` (:7719) consumes: `q` realizes the fresh depth-1 anchor
+    `⟨charK (nfk_projFresh σ)⟩` and every `zXU`-positive `χ` is realized STRICTLY BELOW `q`.
+
+    Pipeline (all forward; reverse Cor 5.4 SIDESTEPPED): the generalized order-preserving extraction
+    `bracketFromLists_flatMap_subchain_below_pin` (Phase 1/5) delivers `q` (the pin witness, bounded
+    `x < q < w_outer < t`) plus `hreal` (every `kvE_subChain2V σ` slot realized in `(x, q)` by the
+    monotone block ordering — the sub-chain segment precedes the pins segment); `hreal` feeds Phase 4.2's
+    `kvE_subChain2V_hbelow_of_realized` to yield `hbelow`. The `q < t` bound rides `q < w_outer < t`
+    (slot monotonicity + Phase 1), never a formula literal (litmus PASS): no `x1 < e_i` position identity.
+    Rabinovich 2014 **Lemma 5.1** (md:169-171, pin bound), **Lemma 5.3** (md:137-152, arrangement
+    coverage), **Cor 5.4** (md:154-157, forward bounded interior placement). -/
+theorem kvE_sub2V_bounded_anchor_of_outer {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (l : List (NormalForm sig 1 4))
+    (pins : NormalForm sig 1 4 → List TemporalPred)
+    (ptW segL segR : TemporalPred) (lR : List TemporalPred)
+    (x t : M.carrier) (hσl : σ ∈ l)
+    (p0 : TemporalPred) (hp0 : p0 ∈ pins σ)
+    (hp0eq : p0 = (⟨charK (nfk_projFresh σ)⟩ : TemporalPred))
+    (h : (bracketFromLists (l.flatMap (fun b => kvE_subChain2V charBase charK b ++ pins b))
+          ptW lR segL segR).holds M atomMap x t) :
+    ∃ q : M.carrier, x < q ∧ q < t ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap q ∧
+      (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+        ∃ u : M.carrier, x < u ∧ u < q ∧
+          (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u) := by
+  obtain ⟨w_outer, q, hxq, hqw, hwt, hp0q, hsub⟩ :=
+    bracketFromLists_flatMap_subchain_below_pin M atomMap l (kvE_subChain2V charBase charK) pins
+      ptW segL segR lR x t σ hσl p0 hp0 h
+  refine ⟨q, hxq, hqw.trans hwt, ?_, ?_⟩
+  · rw [← hp0eq]; exact hp0q
+  · exact kvE_subChain2V_hbelow_of_realized charBase charK σ M atomMap x q hsub
+
+/-- **End-to-end k=2 sub-witness soundness from the outer bracket** (task 326 Phase 5; the interface
+    confirmation for task 321 Phase 10). Chains the bundle deliverable
+    `kvE_sub2V_bounded_anchor_of_outer` (at the standard instantiation
+    `charBase = nf_depth0_char_formula atomMap h_surj`) directly into `kvE_subBracket2V_sound_of_parts`
+    (:7719), PROVING BY CONSTRUCTION that the bundle `(q, hxx1, hx1t, hanchor, hbelow)` instantiates the
+    consumer's argument types EXACTLY — the anchor `⟨charK (nfk_projFresh σ)⟩` and the below-anchor
+    `⟨nf_depth0_char_formula atomMap h_surj χ⟩` witnesses unify with the consumer's expected shapes with
+    no coercion. `hgate` (the explicit outer-gate hypothesis, Amendment F3) is threaded through verbatim.
+    This is the lemma task 321 re-points Phase 10 at. Rabinovich 2014 Cor 5.4 (md:154-157). -/
+theorem kvE_subBracket2V_sound_of_outer {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (l : List (NormalForm sig 1 4))
+    (pins : NormalForm sig 1 4 → List TemporalPred)
+    (ptW segL segR : TemporalPred) (lR : List TemporalPred)
+    (hσl : σ ∈ l)
+    (p0 : TemporalPred) (hp0 : p0 ∈ pins σ)
+    (hp0eq : p0 = (⟨charK (nfk_projFresh σ)⟩ : TemporalPred))
+    (h : (bracketFromLists
+          (l.flatMap (fun b => kvE_subChain2V (nf_depth0_char_formula atomMap h_surj) charK b ++ pins b))
+          ptW lR segL segR).holds M atomMap x t)
+    (hgate : ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    ∃ x1 : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  obtain ⟨q, hxq, hqt, hanchor, hbelow⟩ :=
+    kvE_sub2V_bounded_anchor_of_outer (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap
+      l pins ptW segL segR lR x t hσl p0 hp0 hp0eq h
+  exact kvE_subBracket2V_sound_of_parts atomMap h_surj charK σ M w x t q hxq hqt hanchor hbelow hgate
+
 /-! ### Task 325 v2 Phase 1: the mandatory NON-VACUITY GATE
 
 Two consecutive prior iterations (task 324 Phase 6; task 325 v1 Phase 4) closed soundness over an

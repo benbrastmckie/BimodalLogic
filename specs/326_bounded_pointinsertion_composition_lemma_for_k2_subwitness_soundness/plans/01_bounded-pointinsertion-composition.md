@@ -338,15 +338,30 @@ block; if a single agent cannot own both, sequence 3 after 2. No phase edits an 
 - **Verification:** Scoped `lake build` green; no sorry; axiom-clean. If green, the CAVEAT is
   discharged. Cite Rabinovich 2014 Lemma 5.3 (md:137-152) for permutation coverage.
 
-### Phase 5: Bundle and feed the consumer [NOT STARTED]
+### Phase 5: Bundle and feed the consumer [COMPLETED]
 - **Goal:** Package `(q, hxx1, hx1t, hanchor, hbelow)` into the final additive lemma and verify it
-  type-checks against `kvE_subBracket2V_sound_of_parts` (`:7449`) with the outer gate `hgate`.
+  type-checks against `kvE_subBracket2V_sound_of_parts` (`:7719`) with the outer gate `hgate`.
 - **Tasks:**
-  - [ ] Assemble the bundle from Phases 2 (anchor+bound) and 4.2 (`hbelow`).
-  - [ ] State the final lemma (e.g. `kvE_sub2V_bounded_anchor_of_outer`) with the signature the
+  - [x] Assemble the bundle from Phases 2 (anchor+bound) and 4.2 (`hbelow`).
+        *(delivered: `kvE_sub2V_bounded_anchor_of_outer` (:7906) — from the outer bracket `.holds`
+        and a chosen anchor pin `p0 = ⟨charK (nfk_projFresh σ)⟩ ∈ pins σ`, produces
+        `∃ q, x < q ∧ q < t ∧ ⟨charK (nfk_projFresh σ)⟩.eval_at q ∧ hbelow(q)`.)*
+  - [x] State the final lemma (e.g. `kvE_sub2V_bounded_anchor_of_outer`) with the signature the
         research specifies (consumes the pin-slot extract + order-preserving extraction).
-  - [ ] Confirm the bundle instantiates `sound_of_parts`'s expected argument types EXACTLY
-        (type-check against `:7449-7504`); do NOT edit the consumer.
+        *(delivered. `hreal` discharged via new additive helper
+        `bracketFromLists_flatMap_subchain_below_pin` (:7789) generalizing Phase 1's single-head
+        block extract `head b :: tail b` to the multi-element `subChain b ++ pins b` — every
+        `kvE_subChain2V σ` slot realized `< q` because the sub-chain segment PRECEDES the pins
+        segment in the contiguous monotone block (LITMUS-clean: bound rides `ws` monotonicity, no
+        `x1<e_i` literal). `hreal` then feeds Phase 4.2's `kvE_subChain2V_hbelow_of_realized`.)*
+  - [x] Confirm the bundle instantiates `sound_of_parts`'s expected argument types EXACTLY
+        (type-check against `:7719`); do NOT edit the consumer.
+        *(CONFIRMED BY CONSTRUCTION: `kvE_subBracket2V_sound_of_outer` (:7962) chains the deliverable
+        (at `charBase = nf_depth0_char_formula atomMap h_surj`) directly into
+        `kvE_subBracket2V_sound_of_parts` — anchor `⟨charK (nfk_projFresh σ)⟩` and below-anchor
+        `⟨nf_depth0_char_formula atomMap h_surj χ⟩` witnesses unify with NO coercion; consumer
+        UNCHANGED. Scoped build green (1005 jobs); axioms = `[propext, Classical.choice, Quot.sound]`
+        on both public deliverables, no `sorryAx`.)*
 - **Timing:** ~0.5-1 hour (~40-80 lines)
 - **Depends on:** 2, 4.2
 - **Files:** NfMultiAnchorBridge.lean (additive)
