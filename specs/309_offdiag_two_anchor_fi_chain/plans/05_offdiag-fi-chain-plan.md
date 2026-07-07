@@ -470,9 +470,39 @@ tree GREEN (1705 jobs); 0 new sorries; `lean_verify` on `bracketEndChar_kv` AND
 - **Guards enforced:** G2, G4, G6-as-amended (the type is the invariant), N1, N4, N5.
 - **Commit:** `task 309 phase 12: depth-k V-carrier definition bracketEndChar_kv (R3a)`
 
-### Phase 13: Depth-k V-carrier correctness `bracketEndChar_kv_correct` (R3b) [IN PROGRESS]
+### Phase 13: Depth-k V-carrier correctness `bracketEndChar_kv_correct` (R3b) [BLOCKED]
 
 *(Dispatch ONLY after Phase 12 lands green.)*
+
+**BLOCKER** (Phase 13, 2026-07-06 — finding F1, NfMultiAnchorBridge.lean:3871-3934):
+- **What failed**: the phase's core deliverable `bracketEndChar_kv_correct : ∀ {k} (qnf …) …,
+  (bracketEndChar_kv … qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x
+  (fun _ => t))) qnf` is FALSE at `k = 2` — the soundness (LHS→RHS) direction. This is exactly
+  the gate-strength risk flagged in the Phase-12 handoff (Key Decision 3).
+- **What was tried / evidence**: four-element defect record in the file (F1). Counterexample:
+  `M = (ℚ, <)`, `P = {q, p, r}`, `q < x < u₂ < p < u₁ < w < t < r`; `u₁, u₂` share their depth-1
+  1-type but `[u₁,w,x,t]` / `[u₂,w,x,t]` have distinct depth-1 4-types in one fiber
+  `(zXW, χ, qnf.1)`; `qnf :=` characteristic type of `[w,x,t]`, `qnf' := qnf` with `sub₂`
+  un-marked. The landed machine-checked lemma `bracketEndChar_kv_factors` (:3838) proves
+  `bracketEndChar_kv 2 qnf' = bracketEndChar_kv 2 qnf` (the carrier factors through the fiber
+  data), while no `w'` realizes `qnf'` in `M` — so the two instances of the target `↔` are
+  jointly contradictory. `qnf'` is realizable in a discrete chain, so no consistency hypothesis
+  rescues the statement.
+- **Why stuck**: at `k ≥ 2` the fiber-existential fold-bit read (Phase-12 realization deviation
+  2) discards joint deeper structure of the fresh witness relative to the anchors; the depth-0
+  split-kit bijection that makes `k = 1` pointwise (NfEFold:235) has no `k ≥ 2` analog (D7,
+  NfEFold:373). Rabinovich avoids this by ENRICHING the `α_j`/`β_j` vocabulary at every Prop-4.3
+  fold round (Def 3.1 PDF p.4; Cor 5.4's `F_i` are TL formulas, PDF p.7); the plain
+  base-signature depth-`k` 1-types of `nfk_projFresh` cannot carry it.
+- **What is needed**: plan revision (v6): redesign the depth-`k` carrier with vocabulary
+  enrichment per fold round (inside-out iterated fold — the Def 4.1 p.6 note at full strength),
+  then restate Phase 13 against the revised carrier. The completeness direction and the landed
+  `k = 0` / `k = 1` instances are NOT refuted and should be preserved as the recursion base.
+- **Landed green (13a seam, sorry-free)**: `bracketEndChar_kv_correct_zero` (:3783),
+  `bracketEndChar_kv_correct_one` (:3811), `bracketEndChar_kv_factors` (:3838); full tree GREEN;
+  `lean_verify` = exactly `[propext, Classical.choice, Quot.sound]` on all three.
+- **Prohibited**: no `sorry`'d false theorem, no vacuous placeholder, no silent Phase-12 gate
+  change (per KD3).
 
 - **Goal:** Prove `bracketEndChar_kv_correct : BracketCarrierCorrectV (bracketEndChar_kv …)` for all
   `k` — i.e. `(bracketEndChar_kv … qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M k 3 (Fin.cons w
