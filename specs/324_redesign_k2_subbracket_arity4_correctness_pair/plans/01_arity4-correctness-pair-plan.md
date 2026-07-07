@@ -312,7 +312,7 @@ logical parallelism; sequential execution is the safe default.
 - **Commit point:** `task 324 phase 4: soundness lemma kvE_subBracket2_sound closed`
 - **Depends on:** 3
 
-### Phase 5: Completeness — fold extraction of inner witnesses [NOT STARTED]
+### Phase 5: Completeness — fold extraction of inner witnesses [COMPLETED]
 - **Goal:** Fold `nf_eval_depth1_fold_iff` (:5187) at `n=4` to extract σ's inner witnesses per zone
   from an honest `nf_eval_nf M 1 4` realization — the raw material for the reverse direction.
 - **Tasks:**

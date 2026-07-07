@@ -6587,4 +6587,135 @@ theorem kvE_subBracket2_sound {sig : MonadicSignature}
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
+/-! ### Phase 5 — Completeness: fold extraction of inner witnesses (task 324)
+
+The reverse-direction raw material. Starting from an honest depth-1 realization
+`nf_eval_nf M 1 4 (Fin.cons x1 [w, x, t]) σ` at the anchor `x1`, `nf_eval_depth1_fold_iff`
+(:5187 — the inside-out Def-4.1-p.6 fold, Prop 4.3 p.6) is driven FORWARD (`.mp`) to
+decompose the realization into (a) the atom layer, (b) the per-zone fold conditions
+`(∃ v, zoneHolds env zs v ∧ nf_eval_nf M 0 1 v χ) ↔ σ.2 (nf0_assemble zs χ σ.1) = true`, and
+(c) the off-fiber falsity clause. The `.mpr` half of each interior-zone fold condition then
+EXTRACTS, per positive fold bit, an honest depth-0 inner witness `v` together with its order
+position relative to the anchor `x1` — the below-anchor `zXU` witness `x < v < x1` (the
+redesign's Correction-1 signature datum, now extractable in the completeness direction too),
+and the above-anchor `zUW` (`x1 < v < w`) and `zWT` (`w < v < t`) witnesses. This is the
+monotone witness-enumeration data Phase 6 folds into `IntervalPattern.holds`; the three
+interior zones are kept SEPARATE at source (the soundness `_extract` conflated `zUW`/`zWT`
+into one disjunction — extraction supplies the finer, per-zone data Phase 6's per-slot
+enumeration needs). The `zoneHolds`-to-inequalities conversion is the arity-4 lift of the
+landed `k1v_zoneHolds_cons_iff` :2041 (Def 3.1 ordering channel, PDF p.4: the only channel
+through which a quantified witness meets the fixed env points). No `simp`/`omega`/`aesop` on
+chain steps (`by omega` is `Fin`-index typing in the cons-iff helper; `simp only [Fin.cons]`
+is index reduction, byte-identical to the k1v helper). Rabinovich Def 4.1 (PDF p.5-6),
+Prop 4.2 (md:100-101), Def 3.1 (md:61-74). -/
+
+/-- `zoneHolds` over the arity-4 anchor env `[x1, w, x, t]` at a pointwise `Fin.cons` zone spec,
+    unfolded to its four coordinate biconditionals — the arity-4 lift of `k1v_zoneHolds_cons_iff`
+    :2041 (Def 3.1 ordering channel, PDF p.4). -/
+private theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (e0 e1 e2 e3 v : M.carrier)
+    (p0 p1 p2 p3 : Bool × Bool) :
+    zoneHolds M (Fin.cons e0 (Fin.cons e1 (Fin.cons e2 (fun _ => e3))) : Fin 4 → M.carrier)
+      (Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3))) : ZoneSpec 4) v ↔
+    (((v < e0) ↔ p0.1 = true) ∧ ((e0 < v) ↔ p0.2 = true)) ∧
+    (((v < e1) ↔ p1.1 = true) ∧ ((e1 < v) ↔ p1.2 = true)) ∧
+    (((v < e2) ↔ p2.1 = true) ∧ ((e2 < v) ↔ p2.2 = true)) ∧
+    (((v < e3) ↔ p3.1 = true) ∧ ((e3 < v) ↔ p3.2 = true)) := by
+  constructor
+  · intro h
+    have h0 := h ⟨0, by omega⟩
+    have h1 := h ⟨1, by omega⟩
+    have h2 := h ⟨2, by omega⟩
+    have h3 := h ⟨3, by omega⟩
+    simp only [Fin.cons] at h0 h1 h2 h3
+    exact ⟨h0, h1, h2, h3⟩
+  · rintro ⟨h0, h1, h2, h3⟩ i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
+    | ⟨3, _⟩ => simpa only [Fin.cons] using h3
+
+/-- Below-anchor extraction: a `zXU` witness over the anchor env `[x1, w, x, t]` lies strictly
+    inside `(x, x1)` — BELOW the anchor `x1` (Def 3.1, PDF p.4; the redesign's Correction-1
+    below-anchor datum, extractable in the completeness direction). -/
+private theorem kvE_sub2_zoneHolds_zXU {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
+    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zXU v) :
+    x < v ∧ v < x1 := by
+  obtain ⟨hp0, _, hp2, _⟩ :=
+    (kvE_sub2_zoneHolds_cons_iff M x1 w x t v (true, false) (true, false) (false, true)
+      (true, false)).mp hz
+  exact ⟨hp2.2.mpr rfl, hp0.1.mpr rfl⟩
+
+/-- Above-anchor extraction: a `zUW` witness over the anchor env `[x1, w, x, t]` lies strictly
+    inside `(x1, w)` — ABOVE the anchor `x1`, below `w` (Def 3.1, PDF p.4). -/
+private theorem kvE_sub2_zoneHolds_zUW {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
+    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zUW v) :
+    x1 < v ∧ v < w := by
+  obtain ⟨hp0, hp1, _, _⟩ :=
+    (kvE_sub2_zoneHolds_cons_iff M x1 w x t v (false, true) (true, false) (false, true)
+      (true, false)).mp hz
+  exact ⟨hp0.2.mpr rfl, hp1.1.mpr rfl⟩
+
+/-- Above-anchor extraction: a `zWT` witness over the anchor env `[x1, w, x, t]` lies strictly
+    inside `(w, t)` — ABOVE `w` (Def 3.1, PDF p.4). -/
+private theorem kvE_sub2_zoneHolds_zWT {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
+    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zWT v) :
+    w < v ∧ v < t := by
+  obtain ⟨_, hp1, _, hp3⟩ :=
+    (kvE_sub2_zoneHolds_cons_iff M x1 w x t v (false, true) (false, true) (false, true)
+      (true, false)).mp hz
+  exact ⟨hp1.2.mpr rfl, hp3.1.mpr rfl⟩
+
+/-- **Completeness fold-extraction of inner witnesses** (task 324 Phase 5). Driving
+    `nf_eval_depth1_fold_iff` (:5187) FORWARD on an honest depth-1 realization at the anchor
+    `x1` yields the raw material for the reverse direction: the atom layer, the off-fiber
+    falsity clause, the forward zone-honesty channel (every genuine zone witness marks its
+    fold bit positive — consumed by the Phase-7 arrangement closure), and — per interior zone,
+    kept SEPARATE — the monotone inner-witness enumeration Phase 6 folds into
+    `IntervalPattern.holds`: each positive `zXU` fold bit yields a witness strictly BELOW the
+    anchor (`x < v < x1`, the Correction-1 signature datum), each positive `zUW`/`zWT` bit a
+    witness strictly ABOVE (`x1 < v < w`, resp. `w < v < t`), all as honest `nf_eval_nf M 0 1`
+    evaluations. Rabinovich Def 4.1 (PDF p.5-6), Prop 4.2 (md:100-101), Def 3.1 (md:61-74). -/
+theorem kvE_subBracket2_complete_extract {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier)
+    (h : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (∀ a : AtomKind sig 4,
+        atom_eval M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) a ↔ σ.1 a = true) ∧
+    (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+    (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+        ∃ v : M.carrier, x < v ∧ v < x1 ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
+    (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true →
+        ∃ v : M.carrier, x1 < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
+    (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true →
+        ∃ v : M.carrier, w < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ) := by
+  -- Forward fold decomposition (Prop 4.3 p.6, rule N2): atom layer + zone conditions + off-fiber.
+  obtain ⟨h_atom, h_zone, h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp h
+  refine ⟨h_atom, h_off, fun zs χ hex => (h_zone zs χ).mp hex, ?_, ?_, ?_⟩
+  · -- `zXU` below-anchor inner witnesses (Def 3.1 monotone enumeration, PDF p.4).
+    intro χ hbit
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zXU χ).mpr hbit
+    obtain ⟨hxv, hvx1⟩ := kvE_sub2_zoneHolds_zXU M x1 w x t v hz
+    exact ⟨v, hxv, hvx1, hv⟩
+  · -- `zUW` above-anchor inner witnesses.
+    intro χ hbit
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zUW χ).mpr hbit
+    obtain ⟨hx1v, hvw⟩ := kvE_sub2_zoneHolds_zUW M x1 w x t v hz
+    exact ⟨v, hx1v, hvw, hv⟩
+  · -- `zWT` above-`w` inner witnesses.
+    intro χ hbit
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zWT χ).mpr hbit
+    obtain ⟨hwv, hvt⟩ := kvE_sub2_zoneHolds_zWT M x1 w x t v hz
+    exact ⟨v, hwv, hvt, hv⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
