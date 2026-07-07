@@ -139,19 +139,19 @@ Phases within the same wave can execute in parallel (this plan is fully sequenti
 
 ---
 
-### Phase 3: Draft p5-counterfactual.typ Sections 1-6 (through CTL + headline S5) [NOT STARTED]
+### Phase 3: Draft p5-counterfactual.typ Sections 1-6 (through CTL + headline S5) [COMPLETED]
 
 **Goal**: Part III chapter core per research blueprint 3.1 items 1-6: motivation through the axiom ladder, headline S5 derivation, and perpetuity re-derivation, with forward references to Phase 2's Part IV labels.
 
 **Tasks**:
-- [ ] Chapter skeleton: level-1 heading with label `<ch:counterfactual>`, `#chapter-header(...)`, same up-front honesty paragraph pattern as Phase 2; cite `@brastmckie2025counterfactualworlds` at the head
-- [ ] Section 1 Motivation (~2 pages condensed): Totality (Nixon `(N)`, 391-458), Restriction (SDA vs STA, 486-521), INT/LL derivation of STA from SDA (555-567), Fine's constraints as assumptions (608-614), the stated aim: validate SDA without STA, no counterfactual primitive
-- [ ] Section 2 Working definitions: state space; possible states P *taken as given with explicit @-pointer to Part IV* (`<ch:constitutive>` + definition labels); compatibility, world states, World Space; compatible part / maximal compatible parts / **imposition defined** (656-663); Fine's four constraints *stated* as facts proven in Part IV (forward reference)
-- [ ] Section 3 Bilateral propositions: closed/exclusive/exhaustive ⟨V,F⟩ (855-864); impossible-states rationale; cite `@brastmckie2021identity`; ⊗/⊕ and ∧/∨/¬ operations (914-928); bilattice footnote optional (add refs to bib only if kept)
-- [ ] Section 4 Grammar with the **extensional-antecedent restriction** (876-899): two-sorted grammar exactly as in the paper; footnote (from 1013) that ModelChecker's unrestricted extension is NOT adopted; Divergence 4 remark: CTL stated over the book's derived H/G (Until/Since primitive per Part I), paper's H/G-primitive language strictly weaker, soundness unaffected — do NOT restate axioms with Until/Since
-- [ ] Section 5 Task semantics: truth clauses (938-947); **boxright in BOTH forms**: imposition form (946) AND basic mereological form (954-956); logical consequence (963-967); Divergence 6: follow the paper's unilateral clauses, evaluation at world histories, bivalence by World Space (950); optional remark on the Logos bilateral generalization
-- [ ] Section 6 The logics CL ⊂ CML ⊂ CTL via `principles`/`principle`/`pr()`: CL (R1, C1-C7 with paper names, 982-1003; derived D1/D2); CML (**HEADLINE `□A := ⊤ □→ A`**, 1014, with the why-CL-cannot-define-□ explanation, then M1-M5); headline theorem D3-D10 ⇒ **CML entails S5 with no frame constraints** (1046-1048) — soundness only, completeness open, stated honestly; CTL (TK/TD/GP/TR/LN/DF/NF/UF, 1051-1071); **perpetuity re-derivation** PD11 `□A → △A` (1649-1657) cross-referencing Part I's perpetuity chapter (05-theorems P1-P6): imposed semantically there, derived from counterfactual axioms here
-- [ ] Keep the paper's axiom/derived ledger exactly (C1-C7 axioms; D1-D11/PD11 derived)
+- [x] Chapter skeleton: level-1 heading with label `<ch:counterfactual>`, `#chapter-header(...)`, same up-front honesty paragraph pattern as Phase 2; cite `@brastmckie2025counterfactualworlds` at the head
+- [x] Section 1 Motivation (~2 pages condensed): Totality (Nixon `(N)`, 391-458), Restriction (SDA vs STA, 486-521), INT/LL derivation of STA from SDA (555-567), Fine's constraints as assumptions (608-614), the stated aim: validate SDA without STA, no counterfactual primitive
+- [x] Section 2 Working definitions: state space; possible states P *taken as given with explicit @-pointer to Part IV* (`<ch:constitutive>` + definition labels); compatibility, world states, World Space; compatible part / maximal compatible parts / **imposition defined** (656-663); Fine's four constraints *stated* as facts proven in Part IV (forward reference)
+- [x] Section 3 Bilateral propositions: closed/exclusive/exhaustive ⟨V,F⟩ (855-864); impossible-states rationale; cite `@brastmckie2021identity`; ⊗/⊕ and ∧/∨/¬ operations (914-928); bilattice footnote optional (add refs to bib only if kept)
+- [x] Section 4 Grammar with the **extensional-antecedent restriction** (876-899): two-sorted grammar exactly as in the paper; footnote (from 1013) that ModelChecker's unrestricted extension is NOT adopted; Divergence 4 remark: CTL stated over the book's derived H/G (Until/Since primitive per Part I), paper's H/G-primitive language strictly weaker, soundness unaffected — do NOT restate axioms with Until/Since
+- [x] Section 5 Task semantics: truth clauses (938-947); **boxright in BOTH forms**: imposition form (946) AND basic mereological form (954-956); logical consequence (963-967); Divergence 6: follow the paper's unilateral clauses, evaluation at world histories, bivalence by World Space (950); optional remark on the Logos bilateral generalization
+- [x] Section 6 The logics CL ⊂ CML ⊂ CTL via `principles`/`principle`/`pr()`: CL (R1, C1-C7 with paper names, 982-1003; derived D1/D2); CML (**HEADLINE `□A := ⊤ □→ A`**, 1014, with the why-CL-cannot-define-□ explanation, then M1-M5); headline theorem D3-D10 ⇒ **CML entails S5 with no frame constraints** (1046-1048) — soundness only, completeness open, stated honestly; CTL (TK/TD/GP/TR/LN/DF/NF/UF, 1051-1071); **perpetuity re-derivation** PD11 `□A → △A` (1649-1657) cross-referencing Part I's perpetuity chapter (05-theorems P1-P6): imposed semantically there, derived from counterfactual axioms here
+- [x] Keep the paper's axiom/derived ledger exactly (C1-C7 axioms; D1-D11/PD11 derived)
 
 **Timing**: 2 hours
 
