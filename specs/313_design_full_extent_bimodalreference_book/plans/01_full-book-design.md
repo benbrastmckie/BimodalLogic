@@ -218,7 +218,7 @@ Wave 4 phases each own exactly one new chapter file (Phase 8 additionally owns
 exclusively by Phase 5 after Phase 1's import-block edit; `SYNC-MAP.md` is owned by Phase 3
 then Phase 12; no Wave-4 phase touches either.
 
-### Phase 1: Template and Bibliography Port from LogosManual [NOT STARTED]
+### Phase 1: Template and Bibliography Port from LogosManual [COMPLETED]
 
 - **Goal:** `typst/template.typ` becomes a superset of its current self with LogosManual's
   environments ported, a bibliography apparatus exists, and notation collisions are resolved
@@ -227,29 +227,29 @@ then Phase 12; no Wave-4 phase touches either.
   `notation/bimodal-notation.typ`, `BimodalReference.typ` (import/show-rule block ONLY,
   lines 14-62 region).
 - **Tasks:**
-  - [ ] Port from `~/Projects/Logos/Theory/typst/manual/template.typ`: `proposition`,
+  - [x] Port from `~/Projects/Logos/Theory/typst/manual/template.typ`: `proposition`,
         `corollary`, `example`, `notation-env` (:54-60); `leansrc`/`leanref` (:93-96);
         `chapter-header(description, dependencies, connections)` (:111-130); `items`/`item`
         (:136-171); `principles`/`principle`/`pr()` (:183-216); fletcher `extension-node`
         helpers (:219-250). Keep existing `thmbox-show`, `definition/theorem/lemma/axiom/
         remark/proof` untouched.
-  - [ ] Add a `sync-banner(class, source, note)` helper rendering the per-chapter
+  - [x] Add a `sync-banner(class, source, note)` helper rendering the per-chapter
         sync-class banner (✓/⧖/○/◇ + source citation + "not formalized in this repository"
         note where class is ○/◇) — new, Bimodal-specific.
-  - [ ] Add heading `supplement: "Chapter"` + `ref` show rule (from `LogosManual.typ:40-51`)
+  - [x] Add heading `supplement: "Chapter"` + `ref` show rule (from `LogosManual.typ:40-51`)
         to `BimodalReference.typ`.
-  - [ ] Create `typst/bibliography.bib` seeded with: Brast-McKie possible-worlds (JPL),
+  - [x] Create `typst/bibliography.bib` seeded with: Brast-McKie possible-worlds (JPL),
         Brast-McKie counterfactual-worlds (JPL 2025), Burgess 1982, Xu, Vlach 1973,
         Kamp 1971, Cresswell 1990, Blackburn 2000, Gabbay et al. 2003,
         Demri-Goranko-Lange 2016, Baier-Katoen 2008 — entries marked `note = {verify
         before print}` where sourced from training knowledge (B-F3 caution). Wire
         `#bibliography` into the main file back matter. NO Lk entry (embargo).
-  - [ ] Resolve the 3 notation collisions (B-F4): keep Bimodal's `taskto` glyph as the
+  - [x] Resolve the 3 notation collisions (B-F4): keep Bimodal's `taskto` glyph as the
         book-wide task arrow (matches synced chapter 02), note Logos divergence in a
         comment; confirm `Dur`/triangle conventions already aligned; do NOT import the
         Logos constitutive layer now (that is 317's
         `notation/constitutive-notation.typ`).
-  - [ ] Verify: `typst compile BimodalReference.typ build/BimodalReference.pdf` exits 0;
+  - [x] Verify: `typst compile BimodalReference.typ build/BimodalReference.pdf` exits 0;
         visually spot-check one theorem box renders identically.
 - **Estimated output:** ~220 lines (template additions + bib + import edits).
 - **Done when:** compile green with all new environments available and bibliography rendering.
