@@ -412,7 +412,7 @@ with all wired entries.
 
 ---
 
-### Phase 7: Scripts and repo docs — sync-check, whitelist, SYNC-MAP, README [NOT STARTED]
+### Phase 7: Scripts and repo docs — sync-check, whitelist, SYNC-MAP, README [COMPLETED]
 
 **Goal**: `scripts/typst-sync-check.sh` runs checks 1 and 4 only and passes; repo docs
 no longer claim the sync-class system governs the PDF.

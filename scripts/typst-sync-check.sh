@@ -2,17 +2,16 @@
 # ============================================================================
 # typst-sync-check.sh
 #
-# Mechanical drift detector for Theories/Bimodal/typst/ (task 313, Phase 4;
-# task-312 suggested follow-up). Four checks:
+# Mechanical drift detector for Theories/Bimodal/typst/. Two checks:
 #   1. Name resolution   -- every backticked span in typst/**/*.typ resolves
 #                           against live Lean source (excl. Boneyard/) or
 #                           the whitelist.
-#   2. Banner presence   -- every chapter file included by
-#                           BimodalReference.typ carries #sync-banner(.
-#   3. Legend discipline -- no file whose dominant banner is paper/outlook
-#                           also carries a "check"-class banner call.
-#   4. Count freshness   -- regenerated status.typ (JSON) matches the
+#   2. Count freshness   -- regenerated status.typ (JSON) matches the
 #                           committed typst/generated/status.typ exactly.
+#
+# (The former banner-presence and legend-discipline checks were retired with
+# the sync-class banner system in task 319; the compiled book carries no
+# sync-class markings.)
 #
 # Exit code: 0 if all checks pass, 1 if any check fails (a per-violation
 # report is printed to stderr).
@@ -158,57 +157,9 @@ if ! echo "${CHECK1_REPORT}" | grep -q "^TOTAL_VIOLATIONS=0$"; then
 fi
 
 # ---------------------------------------------------------------------------
-# Check 2: Banner presence
+# Check 2: Count freshness
 # ---------------------------------------------------------------------------
-echo "== Check 2: sync-banner presence ==" >&2
-
-CHAPTER_FILES=$(grep -oE '#include "chapters/[^"]+\.typ"' "${MAIN_FILE}" | sed -E 's/#include "chapters\/([^"]+)"/\1/')
-
-CHECK2_FAIL=0
-for ch in ${CHAPTER_FILES}; do
-  f="${TYPST_DIR}/chapters/${ch}"
-  if [[ ! -f "${f}" ]]; then
-    echo "VIOLATION: included chapter file missing: chapters/${ch}" >&2
-    CHECK2_FAIL=1
-    continue
-  fi
-  if ! grep -q '#sync-banner(' "${f}"; then
-    echo "VIOLATION: chapters/${ch} has no #sync-banner( call" >&2
-    CHECK2_FAIL=1
-  fi
-done
-if [[ "${CHECK2_FAIL}" == "1" ]]; then
-  FAIL=1
-else
-  echo "All included chapters carry a #sync-banner( call." >&2
-fi
-
-# ---------------------------------------------------------------------------
-# Check 3: Legend discipline
-# ---------------------------------------------------------------------------
-echo "== Check 3: legend discipline (no check-class banner in paper/outlook files) ==" >&2
-
-CHECK3_FAIL=0
-for ch in ${CHAPTER_FILES}; do
-  f="${TYPST_DIR}/chapters/${ch}"
-  [[ -f "${f}" ]] || continue
-  has_dominant_paper_or_outlook=$(grep -c '#sync-banner("paper"\|#sync-banner("outlook"' "${f}")
-  has_check=$(grep -c '#sync-banner("check"' "${f}")
-  if [[ "${has_dominant_paper_or_outlook}" -gt 0 && "${has_check}" -gt 0 ]]; then
-    echo "VIOLATION: chapters/${ch} declares both a paper/outlook banner and a check-class banner (legend discipline violation)" >&2
-    CHECK3_FAIL=1
-  fi
-done
-if [[ "${CHECK3_FAIL}" == "1" ]]; then
-  FAIL=1
-else
-  echo "No paper/outlook chapter carries a conflicting check-class banner." >&2
-fi
-
-# ---------------------------------------------------------------------------
-# Check 4: Count freshness
-# ---------------------------------------------------------------------------
-echo "== Check 4: count freshness (generated/status.typ vs live regeneration) ==" >&2
+echo "== Check 2: count freshness (generated/status.typ vs live regeneration) ==" >&2
 
 if [[ ! -f "${STATUS_TYP}" ]]; then
   echo "VIOLATION: ${STATUS_TYP} does not exist -- run scripts/typst-status-counts.sh" >&2
@@ -284,6 +235,6 @@ if [[ "${FAIL}" == "1" ]]; then
   echo "typst-sync-check.sh: FAIL" >&2
   exit 1
 else
-  echo "typst-sync-check.sh: PASS (all 4 checks green)" >&2
+  echo "typst-sync-check.sh: PASS (all 2 checks green)" >&2
   exit 0
 fi
