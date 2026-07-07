@@ -2736,7 +2736,7 @@
     {
       "project_number": 323,
       "project_name": "review_and_revise_bimodalreference_uniform_standard",
-      "status": "planned",
+      "status": "completed",
       "task_type": "typst",
       "topic": "reference-book",
       "parent_task": 313,
@@ -2748,7 +2748,7 @@
       "description": "Full editorial review-and-revise pass over the entire BimodalReference monograph (Theories/Bimodal/typst/: all chapters/*.typ, front matter, notation) to raise it to a UNIFORM, FINISHED-BOOK standard. PRIMARY DIRECTIVE: write as a completed textbook, not a draft-in-progress. Remove the pervasive \"honest account / we state honestly / an honest X\" refrain and ALL meta-commentary in which the text narrates its own incompleteness or sync status -- a finished book does not explain what it has not yet done. Where prose currently hedges or editorializes about status (e.g. \"an honest account of what is and is not proven\", sync-class asides, apologetic framing of soundness-without-completeness, remarks about formalization frontiers), rewrite into confident, neutral expository prose. CRITICAL CONSTRAINT -- honesty-removal must NOT become overclaiming: every factual claim stays accurate. Metaphysical modality remains derived soundness-only (completeness is genuinely open); the decidability frontier still cites NO embargoed Lk results; of countermodels 1-12 only #1/#8/#9 are fully interpreted; no nonexistent local Lean theorems may be asserted. The change is TONE and COMPLETENESS-POSTURE, not truth-value. Where content genuinely remains to be written, do not confess it in prose -- instead place a clean \"TO BE CONTINUED...\" marker at that point in the body text and a typst comment (// TO BE CONTINUED: ...) stating concretely what remains (which theorem, which worked example, which subsection, which citation). Identify the weakest/thinnest sections by comparison against the strongest chapters (e.g. 03-proof-theory.typ ~356 lines, p5-counterfactual.typ ~505 lines) and bring them up to that bar: consistent expository depth, worked examples, cross-references, definitional completeness. PRESERVE byte-identical: the // SLOT-IN: anchors and the EMBARGO header comment in chapters/p3-decidability-frontier.typ (these belong to embargo-gated task 318 and are categorically distinct from TO-BE-CONTINUED gap markers -- do not conflate or remove them). Every backticked token must remain a resolving Lean name. ACCEPTANCE GATES: `typst compile Theories/Bimodal/typst/BimodalReference.typ` exits 0 and `scripts/typst-sync-check.sh` passes all checks. Deliver a per-chapter quality assessment in the task summary (which sections were revised, which gaps were marked TO BE CONTINUED and why).",
       "effort": "8-12 hours",
       "created": "2026-07-07T12:48:38Z",
-      "last_updated": "2026-07-07T13:15:15Z",
+      "last_updated": "2026-07-07T13:45:19Z",
       "session_id": "sess_1783429334_004250",
       "completion_summary": null,
       "artifacts": [
@@ -2761,6 +2761,11 @@
           "path": "specs/323_review_and_revise_bimodalreference_uniform_standard/plans/01_editorial-uniform-standard.md",
           "type": "plan",
           "summary": "7-phase editorial uniform-standard plan"
+        },
+        {
+          "path": "specs/323_review_and_revise_bimodalreference_uniform_standard/summaries/01_editorial-implementation-summary.md",
+          "type": "summary",
+          "summary": "Per-chapter editorial quality assessment"
         }
       ]
     },

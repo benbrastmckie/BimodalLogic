@@ -1,0 +1,5 @@
+# Phase 2 Handoff — Part I core tone pass
+- Status: COMPLETED. Gates: compile 0, sync PASS, banned grep clean on all six files.
+- 01-syntax: header comment trimmed only (prose already clean). 02-semantics: "(task 93)" dropped from footnote. 03-proof-theory: lines 217/221 rewritten (TM_c/TM_dc paper-side fact preserved, G7), header trimmed. 04-metalogic: line 18, completeness footnote, "Status and Work in Progress" retitled to "Open Steps in the Completeness Argument", Implementation Status neutralized, task-93 footnote cleaned, decidability section self-narration removed, WeakCanonical table row neutralized. 05-theorems: "(verified against the filesystem)" dropped. 06-notes: "Discrepancy Notes" retitled "Relation to the Published Presentation", lines 19/37-39/80/86 rewritten, "Project History" remark replaced by neutral "The Reflexive Alternative" remark, task-93 refs removed.
+- G1 verified: all completeness mentions state open-problem posture. G7 verified: TM_c/TM_dc + conservativity paper-side facts survive.
+- Next: Phase 3 (p2-frame-classes, p2-decidability-practice, p3-ltl-to-tm, p3-vlach-blstar).

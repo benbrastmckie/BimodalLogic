@@ -12,7 +12,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,323,324 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,324 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,324 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
@@ -107,7 +107,6 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
-323 [PLANNED] — Full editorial review-and-revise pass over the entire BimodalRefe
 
 ### Kamp_theorem_formalization
 
@@ -149,12 +148,13 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 323. Review and revise bimodalreference uniform standard
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 315, Task 316, Task 317
 - **Research**: [323_review_and_revise_bimodalreference_uniform_standard/reports/01_editorial-review-research.md]
 - **Plan**: [323_review_and_revise_bimodalreference_uniform_standard/plans/01_editorial-uniform-standard.md]
+- **Summary**: [323_review_and_revise_bimodalreference_uniform_standard/summaries/01_editorial-implementation-summary.md]
 
 **Description**: Full editorial review-and-revise pass over the entire BimodalReference monograph (Theories/Bimodal/typst/: all chapters/*.typ, front matter, notation) to raise it to a UNIFORM, FINISHED-BOOK standard. PRIMARY DIRECTIVE: write as a completed textbook, not a draft-in-progress. Remove the pervasive "honest account / we state honestly / an honest X" refrain and ALL meta-commentary in which the text narrates its own incompleteness or sync status -- a finished book does not explain what it has not yet done. Where prose currently hedges or editorializes about status (e.g. "an honest account of what is and is not proven", sync-class asides, apologetic framing of soundness-without-completeness, remarks about formalization frontiers), rewrite into confident, neutral expository prose. CRITICAL CONSTRAINT -- honesty-removal must NOT become overclaiming: every factual claim stays accurate. Metaphysical modality remains derived soundness-only (completeness is genuinely open); the decidability frontier still cites NO embargoed Lk results; of countermodels 1-12 only #1/#8/#9 are fully interpreted; no nonexistent local Lean theorems may be asserted. The change is TONE and COMPLETENESS-POSTURE, not truth-value. Where content genuinely remains to be written, do not confess it in prose -- instead place a clean "TO BE CONTINUED..." marker at that point in the body text and a typst comment (// TO BE CONTINUED: ...) stating concretely what remains (which theorem, which worked example, which subsection, which citation). Identify the weakest/thinnest sections by comparison against the strongest chapters (e.g. 03-proof-theory.typ ~356 lines, p5-counterfactual.typ ~505 lines) and bring them up to that bar: consistent expository depth, worked examples, cross-references, definitional completeness. PRESERVE byte-identical: the // SLOT-IN: anchors and the EMBARGO header comment in chapters/p3-decidability-frontier.typ (these belong to embargo-gated task 318 and are categorically distinct from TO-BE-CONTINUED gap markers -- do not conflate or remove them). Every backticked token must remain a resolving Lean name. ACCEPTANCE GATES: `typst compile Theories/Bimodal/typst/BimodalReference.typ` exits 0 and `scripts/typst-sync-check.sh` passes all checks. Deliver a per-chapter quality assessment in the task summary (which sections were revised, which gaps were marked TO BE CONTINUED and why).
 
