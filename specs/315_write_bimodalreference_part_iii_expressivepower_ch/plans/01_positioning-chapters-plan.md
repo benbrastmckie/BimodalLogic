@@ -151,15 +151,22 @@ execution — is safe; the research-recommended sequence is 2 before 3.)
 
 ---
 
-### Phase 2: Write p3-vlach-blstar.typ [NOT STARTED]
+### Phase 2: Write p3-vlach-blstar.typ [COMPLETED]
 
 **Goal**: Complete chapter "Vlach Operators and the BL#super[⋆] Tower" (~150-200
 lines), the citation-sensitive scholarly spine, replacing the placeholder sentence.
 
 **Tasks**:
-- [ ] Keep the existing heading `= Vlach Operators and the BL#super[⋆] Tower` (glyph ⋆,
+- [x] Keep the existing heading `= Vlach Operators and the BL#super[⋆] Tower` (glyph ⋆,
       not ★) and add label `<sec:vlach-blstar>`; optional `#chapter-header(...)` per
       the p2-frame-classes/p2-decidability-practice pattern.
+      [DEVIATION: heading label is `<ch:vlach-blstar>` instead of `<sec:vlach-blstar>`,
+      per orchestrator course correction — task 317 depends on a resolvable
+      `<ch:vlach-blstar>` label on this chapter heading. A typst heading carries one
+      label; no sibling chapter needs `@sec:vlach-blstar`, so no dangling refs.]
+      [DEVIATION: the `<sec:decidability-frontier>` label was added to the
+      p3-decidability-frontier.typ heading during this phase (heading line only, embargo
+      blocks untouched) so this chapter's forward reference compiles green.]
 - [ ] Motivation section: TM⁺ "lack[s] the means by which to cross reference either
       times or worlds" (possible_worlds.tex:1246); natural-language driver — tense
       anaphora ("Once, everyone now alive hadn't yet been born"), Kamp's "now",
