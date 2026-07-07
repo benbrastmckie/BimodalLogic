@@ -366,7 +366,7 @@ abstract, citation-backed Sources. This is the prose-heavy phase.
 
 ---
 
-### Phase 6: Wire citations into keeper-chapter prose [NOT STARTED]
+### Phase 6: Wire citations into keeper-chapter prose [COMPLETED]
 
 **Goal**: Plain-text author-year mentions become real `@`-citations; salvaged technical
 pointers from the dropped chapters land where formally relevant; References will render
