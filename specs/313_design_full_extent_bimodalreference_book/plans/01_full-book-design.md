@@ -282,7 +282,7 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 1.5 hours.
 - **Depends on:** none.
 
-### Phase 3: SYNC-MAP Status-Legend Extension and Per-Chapter Banners [NOT STARTED]
+### Phase 3: SYNC-MAP Status-Legend Extension and Per-Chapter Banners [COMPLETED]
 
 - **Goal:** SYNC-MAP gains the four-class legend as a first-class contract; every existing
   chapter carries a sync-class banner; hand-copied counts in chapters are replaced by
@@ -290,20 +290,20 @@ then Phase 12; no Wave-4 phase touches either.
 - **Territory:** `Theories/Bimodal/typst/SYNC-MAP.md`, `chapters/00-06*.typ` (banner block +
   count-import edits only).
 - **Tasks:**
-  - [ ] Add a "Sync-Class Legend" section to SYNC-MAP.md defining:
+  - [x] Add a "Sync-Class Legend" section to SYNC-MAP.md defining:
         ✓ lean-verified (every formal claim carries a resolving Lean anchor, sorry-free or
         sorry-status stated) / ⧖ with-sorries (Lean-anchored, open obligations) /
         ○ paper-sourced (proved in a cited paper, not formalized here) / ◇ outlook-planned
         (design/roadmap content, no proof anywhere). Record the enforcement rules: no ✓
         label in ○/◇ chapters; no unstamped Lean claim anywhere; per-claim overrides allowed
         inside a chapter via inline markers.
-  - [ ] Add `#sync-banner(...)` (Phase 1 helper) to each chapter 00-06 with classes:
+  - [x] Add `#sync-banner(...)` (Phase 1 helper) to each chapter 00-06 with classes:
         00 ✓/◇-mixed, 01 ✓, 02 ✓, 03 ✓, 04 ⧖, 05 ✓, 06 ⧖ — citing SYNC-MAP as authority.
-  - [ ] Replace hand-copied counts in `06-notes.typ` (43-sorry claim, :91 region) and
+  - [x] Replace hand-copied counts in `06-notes.typ` (43-sorry claim, :91 region) and
         `04-metalogic.typ` (any stated counts) with imports from `generated/status.typ`;
         keep the SYNC-MAP-stamp footnote pattern.
-  - [ ] Record in SYNC-MAP that per-chapter banners exist and are checkable (input to Phase 4).
-  - [ ] Verify: compile green; grep confirms no literal sorry-count digits remain in
+  - [x] Record in SYNC-MAP that per-chapter banners exist and are checkable (input to Phase 4).
+  - [x] Verify: compile green; grep confirms no literal sorry-count digits remain in
         chapter prose outside generated imports.
 - **Estimated output:** ~150 lines across 8 files.
 - **Done when:** all 7 chapters banner-marked, zero hand-copied counts, compile green.
