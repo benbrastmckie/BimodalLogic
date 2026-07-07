@@ -12,13 +12,12 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,320 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,320 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
+| 5 | 303 | 305 | completeness |
+| 6 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,9 +109,8 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-320 [RESEARCHED] — Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 
-  └─ 321 [RESEARCHED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+321 [RESEARCHED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -152,13 +150,14 @@ CONSTRAINTS (identical to New Task 0 -- binding, carried from plan v7, do not re
 
 ### 320. Derisk jointpinning route for the k2 carrier gate f4 followup
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
+- **Plan**: [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/plans/01_derisk-jointpinning-probe.md]
 
 **Description**: Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 with finding F4 (carrier-shape defect, the second-and-LAST gate NO-GO under v7 Amendment F3's one-round uniformization budget). F4 verdict record: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean, final section after :5533. F3 record (defect lineage) is the section immediately preceding it. Orchestrator handoff: specs/309_offdiag_two_anchor_fi_chain/.orchestrator-handoff.json. Plan v7 BLOCKER block + Amendment F3: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md lines ~277-460, 620-680, 893-996.
 
