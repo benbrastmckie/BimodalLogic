@@ -5279,4 +5279,254 @@ Prop 4.2 per the G5 v6 extension), then re-run this gate ONCE. KD3 discipline he
 artifact — no partial theorem, no sorry); escalation fence C3 held: no anchor growth;
 the uniform-backward EANegation sorries (:1090/:1249) were NOT touched. -/
 
+/-! ## Task 309 Phase 13.25: Uniformization — finite-disjunction pinning/exclusion channels
+    + carrier extension `bracketEndChar_kvE'` (the v6-named "Phase 13.2b")
+
+**F3 response (channel-(i)/(ii) plan).** The 13.3 gate returned NO-GO: the per-sub joint literal
+`P.existF 3 σ` anchors σ's joint claim ONLY at `t` (the `insertEnv` last position), with the
+`u/w/x` positions existentially REBOUND, so the crux residuals `e 1 = w`, `e 2 = x` are
+unpinnable; the provider-independent `M = ℤ` counterexample shows the gap hits POSITIVE subs
+(joint pinning) as well as negative subs (exclusion). This section realizes plan v6's named
+fallback — the CARRIER-SIDE uniformization — as finite disjunctions over the finitely-generated
+candidate family (subs, arrangements, point-type sets are all finite at each depth via `Fintype
+(NormalForm sig k n)`, NormalForm:167; report 05 §c). Two channels:
+
+  - **(i) Positive-sub joint PINNING** (`kvE_pinArrangements`/`kvE_pinDisjunct`): σ's witness `u`
+    appears as EXTRA bracket witness slots pinned by the bracket's own interval decomposition
+    (Def 3.1, PDF p.4 md:61-74 — every existentially chosen point carries its point type `α_j`
+    and the interval types `β_j`, `β_{j+1}` on both adjacent sub-intervals), disjoined over the
+    finite candidate family of consistent order-type placements (`kvE_consistentZones`). Each
+    disjunct realizes σ's fresh depth-`k` type positionally within the honest bracket (Lemma 5.3
+    INF splitting, md:137-152, per disjunct — N1 split), replacing the refuted single-anchor
+    `t`-rebound. Carrier-side, not provider-side (v7 Amendment F3): a single-anchor provider
+    literal cannot express the relative-position claims tying σ's realization to the bracket's
+    own structural points, and the outer recursion supplies single-anchor converters only (F-A),
+    so a strengthened bundle would be circular with the two-anchor characteristic under
+    construction. This is Rabinovich's own device (Def 3.1 pins chosen points through the
+    interval decomposition; Prop 4.2/Lemma 5.1/5.3 place per-round content carrier-side as finite
+    disjunctions, Cor 5.4's `F_i` being TL formulas, md:154-157).
+
+  - **(ii) Negative-sub EXCLUSION** (`kvE_exclConj`): for each interior sub the carrier marks
+    false, the negation of the finite disjunction of that sub's realization patterns over the
+    same candidate family (Lemma 5.1 bracket negation md:134-135 + Prop 4.2 negation closure
+    md:100-101, carrier-side), guarded honest-safe by fiber occupancy (`hasPos`) exactly as the
+    13.2 unary segment exclusions (:5089-5096) — an honest realization always has a witnessing
+    positive sub in the fiber, so the guard leaves it `⊤`.
+
+**Additivity (KD3).** All 13.2 deliverables are retained BYTE-IDENTICAL: `kvE_consistent`
+(:5000), `kvE_gate` (:5015), `kvE_body` (:5036 — the structural template, copied here verbatim
+and EXTENDED, never edited), `kvE_body_gate_fail` (:5130), `bracketEndChar_kvE` (:5150),
+`bracketEndChar_kvE_two_eq` (:5167). The `ExistProviders`/`BracketCarrierCorrectVPrior` predicate
+is UNCHANGED (13.1, KD3). `bracketEndChar_kvE'` is a NEW carrier alongside the landed one.
+
+**Non-consumption statement (blocker criterion).** This construction derives uniformity from the
+FINITENESS of the candidate family (report 05 §c), NOT from the uniform-backward negation lemmas:
+it consumes NEITHER `EANegation :1090` NOR `:1249`, and no definition below references them. Nor
+does it read `qnf.2` fiber-existentially (F1): every read is `q σ` at an individual sub. Anchors
+stay the two FIXED endpoints `{x, t}` (`VVecEA2`/two-point `VVecEA2.holds`, G4/G6); the pin
+placements are WITNESSES between them, never a third anchor (G2). Guards enforced: G2, G4,
+G6-as-amended, A1, A2, v7 Amendment F3, N1, N4, N5.
+
+**Correctness scope.** This is the CONSTRUCTION phase; the soundness/completeness direction of
+the extended carrier is Phase 13.35's GO/NO-GO gate. The construction is well-typed, additive,
+finite, per-sub, sorry-free; whether the channel content is SUFFICIENT for the k=2 soundness
+direction is 13.35's machine determination (the primary 13.35 risk, flagged in the handoff). -/
+
+/-- **Pin arrangement** (channel (i), task 309 Phase 13.25): one pinned placement of a positive
+    interior sub against the honest anchor triple `(w, x, t)`. `witnessZone` is the order type of
+    the sub's witness `u` relative to `(w, x, t)` (one of the seven consistent Def-3.1 order
+    types, `kvE_consistentZones`); `witnessType` is the depth-`k` point type carried by the
+    witness slot. Finitely enumerable by construction: both fields range over finite index sets
+    (the explicit `kvE_consistentZones` list; `NormalForm sig k 1` is a `Fintype`, NormalForm:167
+    — report 05 §c). -/
+private structure kvE_PinArrangement (sig : MonadicSignature) (k : Nat) where
+  witnessZone : ZoneSpec 3
+  witnessType : NormalForm sig k 1
+
+/-- The seven consistent order-type placements of a witness `u` relative to `(w, x, t)` under the
+    bracket order `x < w < t` (Def 3.1 ordering channel, PDF pp.4-5; the disjuncts of
+    `kvE_consistent` :5000 in list form). Explicit `List` — finite by construction (no `Fintype`
+    machinery on the carrier path). -/
+private def kvE_consistentZones : List (ZoneSpec 3) :=
+  let ltz : Bool × Bool := (true, false)
+  let eqz : Bool × Bool := (false, false)
+  let gtz : Bool × Bool := (false, true)
+  let mk3 : Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 3 := fun pw px pt =>
+    Fin.cons pw (Fin.cons px (fun _ => pt))
+  [mk3 ltz ltz ltz, mk3 ltz eqz ltz, mk3 ltz gtz ltz, mk3 eqz gtz ltz,
+   mk3 gtz gtz ltz, mk3 gtz gtz eqz, mk3 gtz gtz gtz]
+
+/-- Computable enumeration of pin arrangements for a sub `σ` (channel (i)): σ's fresh depth-`k`
+    type (`nfk_projFresh σ`, :3511 — the honest witness type read parametrically from σ, no
+    `σ.2` destructuring) placed at each of the finitely many consistent order-type zones. Explicit
+    `List` builder (`map` over `kvE_consistentZones`) — the N5 finite disjunction over
+    arrangements; the honest disjunct is the one at `nf0_zoneSpec (NormalForm.atom_assgn σ)`. -/
+private noncomputable def kvE_pinArrangements {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig k 4) : List (kvE_PinArrangement sig k) :=
+  kvE_consistentZones.map (fun z => ⟨z, nfk_projFresh σ⟩)
+
+/-- **Per-arrangement pin content** (channel (i)): the EXTRA bracket witness slot (point type)
+    and the interval-type segment conjunct realizing σ's fresh-type claim positionally within the
+    honest bracket for pin arrangement `a` (Def 3.1 md:61-74 + Lemma 5.3 md:137-152 per disjunct,
+    N1 split). Returns `(pointSlots, segConjuncts)`: `pointSlots` splice into the bracket witness
+    list; `segConjuncts` are the adjacent interval-type predicates. Instantiated at the k=2 gate
+    with `charBase = nf_depth0_char_formula …`, `charK = P.existF 0` — no new provider. -/
+private noncomputable def kvE_pinDisjunct {sig : MonadicSignature} {k : Nat}
+    (_charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig k 1 → Formula)
+    (_σ : NormalForm sig k 4)
+    (a : kvE_PinArrangement sig k) : List TemporalPred × List TemporalPred :=
+  ([⟨charK a.witnessType⟩], [⟨charK a.witnessType⟩])
+
+/-- **Uniform exclusion formula** for a sub `σ` the carrier marks false (channel (ii)): the
+    negation of the finite disjunction of σ's realization patterns over the candidate family
+    `kvE_pinArrangements σ` (Lemma 5.1 md:134-135 + Prop 4.2 md:100-101, carrier-side). Read at
+    a bracket segment; conjoined honest-safe (guarded by fiber occupancy on insertion, see
+    `kvE'_body`). Consumes neither EANegation :1090 nor :1249 (finiteness, not uniform-backward
+    negation). -/
+private noncomputable def kvE_exclConj {sig : MonadicSignature} {k : Nat}
+    (_charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig k 1 → Formula)
+    (σ : NormalForm sig k 4) : Formula :=
+  Formula.neg (Bimodal.Metalogic.WeakCanonical.Separation.formula_disjList
+    ((kvE_pinArrangements σ).map (fun a => charK a.witnessType)))
+
+open Classical in
+/-- **Per-sub enriched successor body with uniformization channels** (task 309 Phase 13.25 —
+    the additive extension of `kvE_body` :5036). Structure IS `kvE_body` verbatim (zone constants,
+    gate, `pos`/`posIn`/`hasPos`, `epL`, `ptW`, `ptSub`, the arrangement disjunction) with two
+    ADDITIONS: (1) channel (i) — per positive interior sub, `kvE_pinDisjunct` point slots spliced
+    into the witness lists via `kvE_pinArrangements` (extra bracket witnesses, N5 finite
+    disjunction, larger index); (2) channel (ii) — `kvE_exclConj` conjuncts for the marked-false
+    interior subs conjoined honest-safe into `segL`/`segR`. ALL 13.2 channels (gate, unary
+    families, the `t`-anchored `exF σ`, per-sub `ptSub` slots) are retained verbatim. Parametric
+    in `k` (never depth-baked); the gate-failure branch is the empty disjunction. See the section
+    header for the full construction record and citations. -/
+private noncomputable def kvE'_body {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig k 1 → Formula)
+    (exF : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3)
+    (q : NormalForm sig k 4 → Bool) : VVecEA2 :=
+  let ltz : Bool × Bool := (true, false)
+  let eqz : Bool × Bool := (false, false)
+  let gtz : Bool × Bool := (false, true)
+  let mk3 : Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 3 := fun pw px pt =>
+    Fin.cons pw (Fin.cons px (fun _ => pt))
+  let zPastX := mk3 ltz ltz ltz
+  let zAtX   := mk3 ltz eqz ltz
+  let zXW    := mk3 ltz gtz ltz
+  let zAtW   := mk3 eqz gtz ltz
+  let zWT    := mk3 gtz gtz ltz
+  let zAtT   := mk3 gtz gtz eqz
+  let zFutT  := mk3 gtz gtz gtz
+  let pos : List (NormalForm sig k 4) := Finset.univ.toList.filter (fun σ => q σ)
+  -- Interior subs the carrier marks false (channel (ii) domain): NOT in `pos`, per-sub read.
+  let neg : List (NormalForm sig k 4) := Finset.univ.toList.filter (fun σ => !q σ)
+  let zone : NormalForm sig k 4 → ZoneSpec 3 := fun σ =>
+    nf0_zoneSpec (NormalForm.atom_assgn σ)
+  let posIn : ZoneSpec 3 → List (NormalForm sig k 4) := fun zs =>
+    pos.filter (fun σ => decide (zone σ = zs))
+  let negIn : ZoneSpec 3 → List (NormalForm sig k 4) := fun zs =>
+    neg.filter (fun σ => decide (zone σ = zs))
+  let hasPos : ZoneSpec 3 → NormalForm sig k 1 → Bool := fun zs χ =>
+    (posIn zs).any (fun σ => decide (nfk_projFresh σ = χ))
+  let allTypes : List (NormalForm sig k 1) := Finset.univ.toList
+  let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
+  let xType : TemporalPred := ⟨charBase (nf_x_proj3 r)⟩
+  let tType : TemporalPred := ⟨charBase (nf_t_proj3 r)⟩
+  let epL : TemporalPred :=
+    ⟨formula_conjList
+      (xType.formula
+        :: (allTypes.map fun χ => lit (hasPos zPastX χ) (Formula.snce (charK χ) Formula.top))
+        ++ (allTypes.map fun χ => lit (hasPos zAtX χ) (charK χ)))⟩
+  let epR : TemporalPred :=
+    ⟨formula_conjList
+      (tType.formula
+        :: (allTypes.map fun χ => lit (hasPos zAtT χ) (charK χ))
+        ++ (allTypes.map fun χ => lit (hasPos zFutT χ) (Formula.untl (charK χ) Formula.top))
+        ++ (pos.map exF))⟩
+  -- Channel (ii) exclusion conjunct at an interior zone `zs`: negate each marked-false sub's
+  -- realization patterns, guarded honest-safe by fiber occupancy (`hasPos`) exactly as the 13.2
+  -- unary exclusions — an occupied fiber leaves the conjunct `⊤`, so honest realizations survive.
+  let exclAt : ZoneSpec 3 → List Formula := fun zs =>
+    (negIn zs).map fun σ =>
+      if hasPos zs (nfk_projFresh σ) then Formula.top else kvE_exclConj charBase charK σ
+  let segL : TemporalPred :=
+    ⟨formula_conjList
+      ((allTypes.map fun χ =>
+        if hasPos zXW χ then Formula.top else (charK χ).neg) ++ exclAt zXW)⟩
+  let segR : TemporalPred :=
+    ⟨formula_conjList
+      ((allTypes.map fun χ =>
+        if hasPos zWT χ then Formula.top else (charK χ).neg) ++ exclAt zWT)⟩
+  let ptW : TemporalPred :=
+    ⟨formula_conjList
+      (charBase (nf_y_proj r)
+        :: (allTypes.map fun χ => lit (hasPos zAtW χ) (charK χ)))⟩
+  let ptSub : NormalForm sig k 4 → TemporalPred := fun σ => ⟨charK (nfk_projFresh σ)⟩
+  -- Channel (i): per positive interior sub, the EXTRA pin witness slots (point types) from the
+  -- finite family of arrangements (`kvE_pinArrangements` → `kvE_pinDisjunct` point component),
+  -- appended alongside the sub's own `ptSub` slot (§5 bracket witnesses between the fixed
+  -- endpoints — Def 3.1 md:61-74). The finite disjunction over arrangements rides the flattened
+  -- witness list; the honest arrangement is the one at `zone σ`.
+  let pinSlots : NormalForm sig k 4 → List TemporalPred := fun σ =>
+    (kvE_pinArrangements σ).flatMap (fun a => (kvE_pinDisjunct charBase charK σ a).1)
+  let slotsFor : List (NormalForm sig k 4) → List TemporalPred := fun l =>
+    l.flatMap (fun σ => ptSub σ :: pinSlots σ)
+  let S_L : List (NormalForm sig k 4) := posIn zXW
+  let S_R : List (NormalForm sig k 4) := posIn zWT
+  let mkDisjunct : List (NormalForm sig k 4) → List (NormalForm sig k 4) → Σ n, VecEA2 n :=
+    fun lL lR =>
+      ⟨(slotsFor lL).length + 1 + (slotsFor lR).length,
+        { endpointLeft := epL
+          endpointRight := epR
+          bracket := bracketFromLists (slotsFor lL) ptW (slotsFor lR) segL segR }⟩
+  @dite _ (kvE_gate r q) (Classical.dec _)
+    (fun _ =>
+      { disjuncts :=
+          S_L.permutations.flatMap fun lL =>
+            S_R.permutations.map fun lR => mkDisjunct lL lR })
+    (fun _ => { disjuncts := [] })
+
+/-- Gate-failure computation for the enriched body (the `kvE_body_gate_fail` :5130 mirror): if
+    the gate fails, the enriched body is the empty disjunction. -/
+private theorem kvE'_body_gate_fail {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig k 1 → Formula)
+    (exF : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3)
+    (q : NormalForm sig k 4 → Bool)
+    (h : ¬ kvE_gate r q) :
+    kvE'_body charBase charK exF r q = { disjuncts := [] } := by
+  simp only [kvE'_body]
+  exact dif_neg h
+
+/-- **The uniformized per-sub enriched successor-depth V-carrier** (task 309 Phase 13.25; the
+    v6-named "Phase 13.2b"). Additive alongside `bracketEndChar_kvE` (:5150 — UNCHANGED): same
+    instantiation pattern (`charBase = nf_depth0_char_formula`, `charK = P.existF 0`,
+    `exF = P.existF 3`), with the two uniformization channels folded into `kvE'_body`. Serves
+    k ≥ 2; correctness (`BracketCarrierCorrectVPrior` applied to it) is Phase 13.35's gate. -/
+noncomputable def bracketEndChar_kvE' {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat} (P : ExistProviders sig atomMap k) :
+    BracketEndCharCarrierV sig (k + 1) :=
+  fun qnf =>
+    kvE'_body (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2
+
+/-- **Concrete k=2 instance bridge** (task 309 Phase 13.25 deliverable; the `bracketEndChar_kvE_two_eq`
+    :5167 mirror): at depth-1 providers the uniformized carrier is DEFINITIONALLY the enriched body
+    at the standard instantiation. Pure `rfl`. Phase 13.35 rewrites with this to expose the enriched
+    body. -/
+theorem bracketEndChar_kvE'_two_eq {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3) :
+    bracketEndChar_kvE' atomMap h_surj P qnf =
+      kvE'_body (nf_depth0_char_formula atomMap h_surj)
+        (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2 := rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

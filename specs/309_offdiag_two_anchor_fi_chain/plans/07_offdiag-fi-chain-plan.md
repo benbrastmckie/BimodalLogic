@@ -739,7 +739,25 @@ final section after :5201) is a Preserved/Live Asset and 13.25's primary design 
 only — full original phase spec (goal, deliverables, GO/NO-GO routing, consumables, acceptance)
 in plans/06_offdiag-fi-chain-plan.md:781-868.
 
-### Phase 13.25: Uniformization — finite-disjunction pinning/exclusion formulas + carrier channel extension (the v6-named "Phase 13.2b") [NOT STARTED]
+### Phase 13.25: Uniformization — finite-disjunction pinning/exclusion formulas + carrier channel extension (the v6-named "Phase 13.2b") [COMPLETED]
+
+**13.25 landed (construction green, additive, sorry-free).** Deliverables in
+`NfMultiAnchorBridge.lean` after the F3 record (:5282-5531): `kvE_PinArrangement`,
+`kvE_consistentZones`, `kvE_pinArrangements`, `kvE_pinDisjunct` (channel (i)), `kvE_exclConj`
+(channel (ii)), `kvE'_body` + `kvE'_body_gate_fail`, `bracketEndChar_kvE'`,
+`bracketEndChar_kvE'_two_eq`. Full tree GREEN (1709 jobs); `lean_verify` on
+`bracketEndChar_kvE'` and `bracketEndChar_kvE'_two_eq` = exactly
+`[propext, Classical.choice, Quot.sound]`; additive-only (250 insertions, 0 deletions —
+`kvE_body`/`bracketEndChar_kvE` byte-identical); 0 new sorries/axioms; :1090/:1249 NOT consumed
+(doc-comment discipline held; only the required non-consumption statement references them).
+*(deviation: `kvE'_pin_honest` honest-safety smoke lemma DEFERRED per H8 budget — it is the
+FIRST obligation of Phase 13.35, per this phase's own routing.)* **13.35 primary risk (flagged
+for the gate):** the discriminating per-sub JOINT content (σ's inner-witness structure vs the
+honest anchors) rides `σ.2`, not parametrically expressible in `kvE'_body` at symbolic k; the
+landed channels carry σ.1-level positional content (zone + fresh type) + finite-disjunction
+exclusion. Whether this suffices for the k=2 soundness direction is 13.35's machine
+determination — if the F3 crux residual recurs, that is the legitimate (machine-probed)
+escalation, NOT an armchair claim.
 
 *(This phase transcribes plan v6's Phase-13.3 "NO-GO, exclusion-content encoding" named fallback
 into plan form — report 05 §c contingency, executed. Scope is BOUNDED to that fallback.)*
