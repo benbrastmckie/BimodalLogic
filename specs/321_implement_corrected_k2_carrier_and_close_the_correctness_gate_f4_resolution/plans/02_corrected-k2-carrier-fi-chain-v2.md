@@ -1,7 +1,16 @@
 # Implementation Plan (v2): Corrected k=2 Carrier (nested F_i-chain) and F4 Correctness-Gate Resolution
 
+> **[SUPERSEDED]** by `plans/03_corrected-k2-carrier-gate-v3.md` (2026-07-07). v2's Stage A
+> (Phases 1-6, corrected carrier) and Stage B (Phase 7, construction-level F4 discrimination) +
+> the Phase 11 integrity sweep LANDED GREEN and are committed; those phases are carried forward
+> verbatim as [COMPLETED] in v3. v2's Phases 8-10 (Stages C/D, the k=2 `BracketCarrierCorrectVPrior`
+> gate) hit the pre-authorized sizing boundary (single "prove the gate" phase too large for one
+> dispatch) and are BLOCKED here. v3 decomposes exactly that remainder into single-dispatch-sized
+> phases so implementation resumes **within task 321** (no spawn). Read v3 for the live plan; this
+> file is retained for history.
+
 - **Task**: 321 - implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution
-- **Status**: [NOT STARTED]
+- **Status**: [SUPERSEDED]
 - **Effort**: 20 hours (Phase 1 already COMPLETED; ~19 hours remaining)
 - **Dependencies**: 320 (GO verdict on route b3, design spec §5 — COMPLETED)
 - **Research Inputs**:

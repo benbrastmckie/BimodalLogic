@@ -1,7 +1,13 @@
 # Implementation Plan: Corrected k=2 Carrier (nested F_i-chain) and F4 Correctness-Gate Resolution
 
+> **[SUPERSEDED by plans/02_corrected-k2-carrier-fi-chain-v2.md]** — This v1 plan BLOCKED at Phase 2
+> (task-320 design spec §5 was probe-level: general-`k` `σ.2` unrealizable; encoding under-specified;
+> no k≥2 gate precedent). Blocker research (`reports/01_blocker-research-successor-k.md`) resolved all
+> three findings with machine-checked formulations, and v2 supersedes this plan. Phase 1 [COMPLETED]
+> here is preserved verbatim in v2. Retained for history only; do not implement from this file.
+
 - **Task**: 321 - implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution
-- **Status**: [NOT STARTED]
+- **Status**: [SUPERSEDED]
 - **Effort**: 14 hours
 - **Dependencies**: 320 (GO verdict on route b3, design spec §5 — COMPLETED)
 - **Research Inputs**:
