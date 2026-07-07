@@ -564,22 +564,31 @@ historical record; do not re-execute; do not edit its landed artifact.)*
 - **Completed:** 2026-07-06 (4.1 helper kit commit 425d54d32 + 4.2 direction theorem; H8 escape
   hatch exercised as pre-authorized — delivered ~660 lines across the split, all additive)
 
-### Phase 5: Completeness direction (RHS→LHS), assembled `↔`, and R2 gate re-probe verdict [IN PROGRESS]
+### Phase 5: Completeness direction (RHS→LHS), assembled `↔`, and R2 gate re-probe verdict [COMPLETED]
 
 - **Goal:** Close the k=1 gate: land the completeness lemma, assemble
   `bracketEndChar_k1v_correct` (the k=1 `BracketCarrierCorrectV` instance in k0-mirror conditional
   form), and record the R2 re-probe verdict either way.
 - **Tasks:**
-  - [ ] State `private theorem bracketEndChar_k1v_complete` (six order hypotheses): from
+  - [x] State `private theorem bracketEndChar_k1v_complete` (six order hypotheses): from
         `∃ w, nf_eval_nf M 1 3 [w,x,t] qnf`, derive both gate conjuncts (RHS-derivable — v2
         Phase-1 record; off-fiber from `nf_eval_nf1_iff_efold`'s 2nd conjunct, order-conflict
         falsity from `nf_depth0_pair_cycle_empty'`), then the fold biconditionals per (zone, χ)
         via chain steps 1-2 (same NAMED lemmas as Phase 4, N2 citations).
-  - [ ] Realizing-point extraction: for each χ ∈ S_L (resp. S_R) the positive fold bit yields a
+        *(deviation: altered — the statement takes only the TWO positive bracket-zone bits
+        `h_xy`/`h_yt` (the four remaining k0-mirror bits are forced by the witness's atom layer
+        and unused); order-conflict falsity discharged by the `k1v_zone_consistent`
+        contrapositive as in Phase 4 — `nf_depth0_pair_cycle_empty'` again not needed (the
+        order conflict is semantic LinearOrder trichotomy). Landed at
+        NfMultiAnchorBridge.lean:2955 with per-(zone, χ) literal facts for all seven zones.)*
+  - [x] Realizing-point extraction: for each χ ∈ S_L (resp. S_R) the positive fold bit yields a
         point in `(x, w)` (resp. `(w, t)`) of complete type χ; distinctness across distinct χ by
         `nf_eval_unique` (NormalForm:245). Adapt the handoff's RHS→LHS insight: interior points
         all carry positive-bit types, so the `segL`/`segR` exclusions hold on all sub-segments.
-  - [ ] Arrangement selection (Risk R1', rule N5): private insertion-induction helper — by
+        *(landed: `hLreal`/`hRreal` + `hsegL_all`/`hsegR_all` inside the completeness proof —
+        the exclusions hold on ALL of `(x, w)`/`(w, t)` per the handoff insight; distinctness
+        via `nf_eval_unique` lives in `k1v_sorted_realization` (:2784))*
+  - [x] Arrangement selection (Risk R1', rule N5): private insertion-induction helper — by
         induction on the realized-point list, insert one point at a time in model order to build
         the sorted witness tuple AND the matching permutation `(lL, lR)` (the disjunct list
         contains ALL arrangements, so a target disjunct always exists); mirror the
@@ -587,11 +596,18 @@ historical record; do not re-execute; do not edit its landed artifact.)*
         the Lemma 3.4 p.5 vehicle, used as TEMPLATE since the target here is a fixed disjunct,
         not `∃ m`). Conclude the chosen disjunct's `VecEA2.holds`, hence `VVecEA2.holds`
         (VecEAFormula:276).
-  - [ ] Assemble `theorem bracketEndChar_k1v_correct` (six order hypotheses, k0-mirror form
+        *(landed as the pre-authorized 5.1/5.2 split: `k1v_sorted_insert` (:2738, one insertion
+        step) + `k1v_sorted_realization` (:2784, the induction) + `k1v_bracket_construct`
+        (:2825, the reverse of `k1v_bracket_extract`: assembles `bracketFromLists.holds` from
+        the sorted tagged points) + three private VecEADecomp extraction clones
+        (:2682/:2697/:2716, arity-1 projections of the atom layer)*
+  - [x] Assemble `theorem bracketEndChar_k1v_correct` (six order hypotheses, k0-mirror form
         :1577-1589 at depth 1): `(bracketEndChar_k1v … qnf).holds M atomMap x t ↔
         ∃ w, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf` from the two direction
         lemmas. Sorry-free.
-  - [ ] Record the **R2 re-probe verdict** doc-comment mirroring the handoff format
+        *(landed at :3378 — term-mode pair of `bracketEndChar_k1v_sound` (:2325) and
+        `bracketEndChar_k1v_complete` (:2966); all six k0-mirror hypotheses carried)*
+  - [x] Record the **R2 re-probe verdict** doc-comment mirroring the handoff format
         (:1586-1618 region, :1750-1823). Per **N3**, LEAD with the Def 3.1 evidence (α_j/β_j
         one-variable; arity-4 residual was a Lean artifact; fold restores Def-4.1 fidelity). Then:
         the G6 amendment (codomain `VecEA2 1` → witness-growing `VVecEA2`; anchors `{x,t}` fixed;
@@ -602,11 +618,22 @@ historical record; do not re-execute; do not edit its landed artifact.)*
         the amended carrier and is 311's DONE signal, enabling `/revise 309` (plan v4). If the
         probe instead fails (Risk R7): record **R2 = NO-GO** with the failing goal state, no
         partial theorem, no sorry — verdict either way.
-  - [ ] Verify: `lake build` GREEN full tree; live Kamp sorries still exactly 2 (KampPrior:351/354);
+        *(landed at :3394-3434: **R2 = GO**, N3 lead (Def 3.1 one-variable α_j/β_j; arity-4
+        residual was a Lean artifact; fold restores Def-4.1 fidelity), G6-amendment record,
+        no arity-4 residual / no navigated arity-3 characteristic / no third anchor evidence,
+        and the `/revise 309` (plan v4) downstream pointer)*
+  - [x] Verify: `lake build` GREEN full tree; live Kamp sorries still exactly 2 (KampPrior:351/354);
         `lean_verify` on `bracketEndChar_k1v`, `bracketEndChar_k1v_sound`,
         `bracketEndChar_k1v_complete`, `bracketEndChar_k1v_correct` =
         `[propext, Classical.choice, Quot.sound]`; citation grep (R5: "p.7", "Def 4.1 p.6 note",
         "fixed endpoint" markers); `git diff` additive-only.
+        *(full tree GREEN, 1705 jobs; Kamp census = exactly the baseline KampPrior:351/354 +
+        EANegation:1090/1249 (+ 2 pre-existing Kamp/Boneyard, out of scope); `lean_verify
+        bracketEndChar_k1v_correct` = `[propext, Classical.choice, Quot.sound]` exactly — the
+        assembled theorem transitively covers `_sound`, `_complete`, and all private helpers;
+        diff HEAD~3 = 768 insertions, 0 deletions; citation greps: "p.7" ×7, "p.6 note" ×3,
+        "fixed endpoint" ×13, "Lemma 3.4" ×7; N4 grep: the only `bracketBuild` match in the
+        new diff is verdict-record prose)*
 - **Estimated output:** ~200-400 lines (two theorems + insertion helper + verdict doc-comment).
 - **Bounded-unit test:** fixed chain against NAMED lemmas + one structured induction with a
   declared template; stopping condition independent of line count (G5, R7 fence).
@@ -618,30 +645,36 @@ historical record; do not re-execute; do not edit its landed artifact.)*
   `task 311 phase 5: close k=1 gate at V-carrier + R2 verdict`.
 - **Timing:** ~2.5-3 hours (one agent run).
 - **Depends on:** 4
+- **Completed:** 2026-07-06 (5.1 helper kit + completeness direction, commits 7cb5ca6a5/
+  0793dc1c6/6ec075c1c; 5.2 assembled `↔` + R2 = GO verdict, commit 8c9fde503; H8 escape hatch
+  exercised as pre-authorized)
 
 ## Testing & Validation
 
-- [ ] `lake build` GREEN on the full tree after each phase (Phase 3: defs typecheck; Phase 4:
+- [x] `lake build` GREEN on the full tree after each phase (Phase 3: defs typecheck; Phase 4:
       soundness closes; Phase 5: `↔` closes).
-- [ ] `lean_verify` (or `#print axioms`) on ALL new declarations (`BracketCarrierCorrectV`,
+- [x] `lean_verify` (or `#print axioms`) on ALL new declarations (`BracketCarrierCorrectV`,
       `bracketEndChar_k1v`, `bracketEndChar_k1v_sound`, `bracketEndChar_k1v_complete`,
       `bracketEndChar_k1v_correct`, any private helpers) = `[propext, Classical.choice,
       Quot.sound]` (Risk R4 gate).
-- [ ] Zero new `sorry` tokens in `NfMultiAnchorBridge.lean` (prose mentions in the NO-GO records
+- [x] Zero new `sorry` tokens in `NfMultiAnchorBridge.lean` (prose mentions in the NO-GO records
       excluded); repo live Kamp sorry count stays 2 (`KampPrior.lean:351/354`).
-- [ ] Anchor-cap grep (G2/G4/amended G6): every new `holds` obligation is at the two-point
+- [x] Anchor-cap grep (G2/G4/amended G6): every new `holds` obligation is at the two-point
       signature `(x t : M.carrier)`; no new declaration takes a third free carrier point; witness
       growth appears only inside `BracketFormula n` / `Σ n, VecEA2 n` disjuncts.
-- [ ] N4 grep: no `bracketBuildLeft`/`bracketBuildRight` occurrence in the NEW code outside the
+      (`bracketEndChar_k1v_correct` concludes at `(x, t)`; `w` is existentially bound on the RHS;
+      `k1v_bracket_construct`'s `w` is a bracket-witness argument of a PRIVATE construction
+      helper for `bracketFromLists`, not a carrier anchor.)
+- [x] N4 grep: no `bracketBuildLeft`/`bracketBuildRight` occurrence in the NEW code outside the
       `epL`/`epR` exterior-zone literals.
-- [ ] Citation grep (R5/N1/N2): new doc-comments contain "p.7" (§5 bracket) and "p.6 note"
+- [x] Citation grep (R5/N1/N2): new doc-comments contain "p.7" (§5 bracket) and "p.6 note"
       (Def 4.1 iteration) markers; Prop 3.5 never cited alone for the two-endpoint bracket in NEW
       comments.
-- [ ] Preservation check: `git diff` shows additive hunks after :1823 only; `bracketEndChar_k1`
+- [x] Preservation check: `git diff` shows additive hunks after :1823 only; `bracketEndChar_k1`
       (:1670-1748) and both NO-GO records (:1586-1618 region, :1750-1823) byte-identical;
-      `NfEFold.lean` untouched.
-- [ ] R2 verdict doc-comment present (GO or NO-GO), handoff-mirror format, N3 lead, G6-amendment
-      record.
+      `NfEFold.lean` untouched. (Phase 5 diff: 768 insertions, 0 deletions, all after :2665.)
+- [x] R2 verdict doc-comment present (GO or NO-GO), handoff-mirror format, N3 lead, G6-amendment
+      record. (**R2 = GO** at NfMultiAnchorBridge.lean:3394-3434.)
 
 ## Artifacts & Outputs
 
