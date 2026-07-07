@@ -222,7 +222,7 @@ deleted in the same phase so compile stays green.
 
 ---
 
-### Phase 3: Remove status tables, sorry reporting, inline symbols; fix cross-refs [NOT STARTED]
+### Phase 3: Remove status tables, sorry reporting, inline symbols; fix cross-refs [COMPLETED]
 
 **Goal**: No ✓/⧖/○/◇ symbols and no sorry-count reporting anywhere in reader-facing
 text; all cross-references that pointed at removed content reworded; compile green.
