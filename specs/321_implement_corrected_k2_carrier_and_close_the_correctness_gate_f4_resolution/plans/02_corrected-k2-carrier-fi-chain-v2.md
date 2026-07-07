@@ -335,7 +335,7 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
     sub-bracket (sole hypothesis `bf.holds`), axiom-clean, no `sorry`; no structural-identity premise
     in the signature; no `e`-equation residual.
 
-### Phase 5: Assemble kvE2_body (corrected enriched body, successor-parameterized) [NOT STARTED] (Stage A)
+### Phase 5: Assemble kvE2_body (corrected enriched body, successor-parameterized) [COMPLETED] (Stage A)
 
 - **Goal:** Build `kvE2_body` = `kvE'_body` with the flattened per-sub joint literal replaced by the
   sub-bracket slot splice (`kvE_subChain σ` at σ's honest bracket position); retain all non-joint

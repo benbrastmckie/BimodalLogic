@@ -5834,4 +5834,117 @@ theorem kvE_subBracket_implies_subChain {sig : MonadicSignature}
         ((kvE_subBracket charBase charK σ).2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
   (kvE_subBracket charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
 
+open Classical in
+/-- **Corrected per-sub enriched body** (task 321 Phase 5; report §3 item 4). Structurally IS
+    `kvE'_body` (:5405, same-module `private` reuse of `kvE_pinArrangements`/`kvE_pinDisjunct`/
+    `kvE_exclConj`/`bracketFromLists` is legal) with the ONE corrective change F1–F4 demanded: the
+    per-sub JOINT literal is replaced by the nested F_i-chain splice.
+    - `ptSub σ` is now `kvE_subChain charBase charK σ` (the nested sub-bracket's `fChainPred`, which
+      carries `σ`'s inner-witness structure via the nested-Until evaluation point), NOT the flat
+      `⟨charK (nfk_projFresh σ)⟩` (:5467) that F4 refuted as positionally vacuous.
+    - The `t`-anchored provider literal `pos.map exF` (`exF = P.existF 3`, :5448) is DROPPED
+      entirely — the `exF`/`P.existF 3` parameter disappears from the joint path (report §3 note),
+      so no `e`-rebinding site exists (the F4 crux `w = e 1` / `x = e 2` cannot arise). `P.existF 0`
+      (the unary `charK` channel) is retained.
+    ALL other channels (gate, unary `epL`/`epR` non-joint parts, zones, arrangements `pinSlots`,
+    `ptW`, `segL`/`segR`, channel-(ii) `exclAt`) are retained VERBATIM — F4 isolated the gap to the
+    per-sub joint channel ONLY.
+
+    **Depth note (forced by report §2/Q2).** This body is at the CONCRETE gate instance (subs
+    `σ : NormalForm sig 1 4`, `q : NormalForm sig 1 4 → Bool`, `charK : NormalForm sig 1 1 →
+    Formula`), because `kvE_subChain` reads `σ.2` through the depth-0 `nf0_assemble` engine, which
+    the report fixes at `j = 0` ("the gate instance j = 0 needs only the landed `nf0_assemble`"; the
+    general-`j` fold-engine lift is deferred follow-on). This is exactly the `k = 2` carrier the GO
+    gate targets; the general-`j` header is not needed for the gate. -/
+private noncomputable def kvE2_body {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (r : NormalForm sig 0 3)
+    (q : NormalForm sig 1 4 → Bool) : VVecEA2 :=
+  let ltz : Bool × Bool := (true, false)
+  let eqz : Bool × Bool := (false, false)
+  let gtz : Bool × Bool := (false, true)
+  let mk3 : Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 3 := fun pw px pt =>
+    Fin.cons pw (Fin.cons px (fun _ => pt))
+  let zPastX := mk3 ltz ltz ltz
+  let zAtX   := mk3 ltz eqz ltz
+  let zXW    := mk3 ltz gtz ltz
+  let zAtW   := mk3 eqz gtz ltz
+  let zWT    := mk3 gtz gtz ltz
+  let zAtT   := mk3 gtz gtz eqz
+  let zFutT  := mk3 gtz gtz gtz
+  let pos : List (NormalForm sig 1 4) := Finset.univ.toList.filter (fun σ => q σ)
+  let neg : List (NormalForm sig 1 4) := Finset.univ.toList.filter (fun σ => !q σ)
+  let zone : NormalForm sig 1 4 → ZoneSpec 3 := fun σ =>
+    nf0_zoneSpec (NormalForm.atom_assgn σ)
+  let posIn : ZoneSpec 3 → List (NormalForm sig 1 4) := fun zs =>
+    pos.filter (fun σ => decide (zone σ = zs))
+  let negIn : ZoneSpec 3 → List (NormalForm sig 1 4) := fun zs =>
+    neg.filter (fun σ => decide (zone σ = zs))
+  let hasPos : ZoneSpec 3 → NormalForm sig 1 1 → Bool := fun zs χ =>
+    (posIn zs).any (fun σ => decide (nfk_projFresh σ = χ))
+  let allTypes : List (NormalForm sig 1 1) := Finset.univ.toList
+  let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
+  let xType : TemporalPred := ⟨charBase (nf_x_proj3 r)⟩
+  let tType : TemporalPred := ⟨charBase (nf_t_proj3 r)⟩
+  let epL : TemporalPred :=
+    ⟨formula_conjList
+      (xType.formula
+        :: (allTypes.map fun χ => lit (hasPos zPastX χ) (Formula.snce (charK χ) Formula.top))
+        ++ (allTypes.map fun χ => lit (hasPos zAtX χ) (charK χ)))⟩
+  -- epR: the t-anchored joint literal `pos.map exF` is DROPPED (report §3 note; the joint content
+  -- rides `kvE_subChain` on the witness slot instead of any provider literal at `t`).
+  let epR : TemporalPred :=
+    ⟨formula_conjList
+      (tType.formula
+        :: (allTypes.map fun χ => lit (hasPos zAtT χ) (charK χ))
+        ++ (allTypes.map fun χ => lit (hasPos zFutT χ) (Formula.untl (charK χ) Formula.top)))⟩
+  let exclAt : ZoneSpec 3 → List Formula := fun zs =>
+    (negIn zs).map fun σ =>
+      if hasPos zs (nfk_projFresh σ) then Formula.top else kvE_exclConj charBase charK σ
+  let segL : TemporalPred :=
+    ⟨formula_conjList
+      ((allTypes.map fun χ =>
+        if hasPos zXW χ then Formula.top else (charK χ).neg) ++ exclAt zXW)⟩
+  let segR : TemporalPred :=
+    ⟨formula_conjList
+      ((allTypes.map fun χ =>
+        if hasPos zWT χ then Formula.top else (charK χ).neg) ++ exclAt zWT)⟩
+  let ptW : TemporalPred :=
+    ⟨formula_conjList
+      (charBase (nf_y_proj r)
+        :: (allTypes.map fun χ => lit (hasPos zAtW χ) (charK χ)))⟩
+  -- CORRECTED joint channel: the per-sub slot is the nested F_i-chain predicate `kvE_subChain`
+  -- (reads `σ.2` — where the F4 pair differs), NOT the flat `⟨charK (nfk_projFresh σ)⟩` (:5467).
+  let ptSub : NormalForm sig 1 4 → TemporalPred := fun σ => kvE_subChain charBase charK σ
+  let pinSlots : NormalForm sig 1 4 → List TemporalPred := fun σ =>
+    (kvE_pinArrangements σ).flatMap (fun a => (kvE_pinDisjunct charBase charK σ a).1)
+  let slotsFor : List (NormalForm sig 1 4) → List TemporalPred := fun l =>
+    l.flatMap (fun σ => ptSub σ :: pinSlots σ)
+  let S_L : List (NormalForm sig 1 4) := posIn zXW
+  let S_R : List (NormalForm sig 1 4) := posIn zWT
+  let mkDisjunct : List (NormalForm sig 1 4) → List (NormalForm sig 1 4) → Σ n, VecEA2 n :=
+    fun lL lR =>
+      ⟨(slotsFor lL).length + 1 + (slotsFor lR).length,
+        { endpointLeft := epL
+          endpointRight := epR
+          bracket := bracketFromLists (slotsFor lL) ptW (slotsFor lR) segL segR }⟩
+  @dite _ (kvE_gate r q) (Classical.dec _)
+    (fun _ =>
+      { disjuncts :=
+          S_L.permutations.flatMap fun lL =>
+            S_R.permutations.map fun lR => mkDisjunct lL lR })
+    (fun _ => { disjuncts := [] })
+
+/-- Gate-failure computation for the corrected body (the `kvE'_body_gate_fail` :5494 mirror). -/
+private theorem kvE2_body_gate_fail {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (r : NormalForm sig 0 3)
+    (q : NormalForm sig 1 4 → Bool)
+    (h : ¬ kvE_gate r q) :
+    kvE2_body charBase charK r q = { disjuncts := [] } := by
+  simp only [kvE2_body]
+  exact dif_neg h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
