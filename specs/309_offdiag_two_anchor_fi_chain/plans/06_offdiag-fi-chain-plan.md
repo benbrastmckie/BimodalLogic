@@ -640,7 +640,18 @@ strengthen the kv gate). Additive-only diff verified (822 insertions, 0 deletion
   (verdict-comment citation discipline), Do-NOT list (no gate strengthening).
 - **Commit:** `task 309 phase 13.0: F2 decision probe — relativized k=2 verdict for the current carrier`
 
-### Phase 13.1: Statement surgery — `ExistProviders` bundle + `BracketCarrierCorrectVPrior` + relativized k≤1 lifts [NOT STARTED]
+### Phase 13.1: Statement surgery — `ExistProviders` bundle + `BracketCarrierCorrectVPrior` + relativized k≤1 lifts [COMPLETED]
+
+> **COMPLETED (2026-07-06, sess_1783391112_643ec1)**: All deliverables landed additively after
+> the F2 verdict material in NfMultiAnchorBridge.lean (97 insertions, 0 deletions).
+> `ExistProviders` and `BracketCarrierCorrectVPrior` carry the exact report-05 Pillar 1
+> signatures; the six order hypotheses are stated uniformly via `NormalForm.atom_assgn`
+> (defeq to `qnf` at k=0 / `qnf.1` at k+1 — the only binder adjustment, documented in the
+> doc-comments; no elaboration-forced deviation otherwise). Both `_prior` lifts are
+> drop-hypotheses term-mode delegations to :3788/:3816; `lean_verify` axioms exactly
+> `[propext, Classical.choice, Quot.sound]`. Import edge `import …Kamp.EANegationClosure`
+> LANDED cycle-free (compile-verified, full tree GREEN 1709 jobs) — the explicit-Props
+> fallback was NOT needed. 0 new sorries; no preserved asset modified.
 
 *(Report 05 label: Phase 13.I. Dispatch ONLY after the 13.0 verdict is recorded; runs on BOTH
 13.0 branches — on the surgery-only branch its scope is amended by the v7 revision first.)*
