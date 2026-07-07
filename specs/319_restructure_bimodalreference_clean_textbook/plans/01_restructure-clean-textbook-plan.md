@@ -453,7 +453,7 @@ needs Phase 2)
 
 ---
 
-### Phase 8: Revise follow-up tasks 314-318 in state.json [NOT STARTED]
+### Phase 8: Revise follow-up tasks 314-318 in state.json [COMPLETED]
 
 **Goal**: Follow-up task descriptions match the restructured book; TODO.md regenerated.
 Dependencies already include 319 (research finding) — descriptions only.
