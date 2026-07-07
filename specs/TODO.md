@@ -109,7 +109,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+321 [IMPLEMENTING] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
@@ -252,7 +252,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [BLOCKED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 320, Task 326
@@ -263,6 +263,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/02_corrected-k2-carrier-fi-chain-v2.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/05_corrected-k2-carrier-gate-v5.md]
 
 **Description**: Depends on task 320's probe result. Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 (finding F4, carrier-shape defect -- see task 320's description for the full crux goal, counterexample, and literature grounding; do not re-derive, consume task 320's design spec directly). This task builds the FULL corrected construction for whichever route task 320's machine-checked probe confirmed viable -- expected b3, the nested F_i-chain/bracket recursion for positive interior subs, which the literature-alignment audit (specs/320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md) found to be the literature-faithful mechanism; b1 is a boxed falsifier expected NO-GO and b2 is only a lemma-level assist inside b3, per task 320's revised probe ladder -- exact choice and design spec supplied by task 320's report. Then re-run the k=2 BracketCarrierCorrectVPrior correctness gate to a GO verdict, using the F4 provider-independent Z-counterexample (M=Z, p={0}, r={13}, x=10, t=20, sigma''=char[14,16,11,20], honest char[14,15,10,20] false) as the mandatory adversarial test case (it MUST fail against the new construction).
 
