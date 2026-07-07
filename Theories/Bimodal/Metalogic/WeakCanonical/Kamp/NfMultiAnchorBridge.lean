@@ -3363,4 +3363,72 @@ private theorem bracketEndChar_k1v_complete {sig : MonadicSignature}
     rw [h1, h2]
     exact (hchar _ _).mpr (hpropsR _ (List.getElem_mem _)).2
 
+/-- **k=1 fixed-endpoint correctness for the witness-growing V-carrier** (task 311 Phase 5 —
+the k=1 instance of `BracketCarrierCorrectV` in k0-mirror conditional form, exactly
+`bracketEndChar_k0_correct` :1581-1594 at depth 1). Under the six bracket-zone order
+hypotheses on `qnf.1`, the `VVecEA2.holds` of `bracketEndChar_k1v` at the FIXED endpoints
+`(x, t)` is equivalent to the existence of a bracket witness `w` realizing the depth-1
+arity-3 evaluation. Sorry-free assembly of `bracketEndChar_k1v_sound` (LHS→RHS) and
+`bracketEndChar_k1v_complete` (RHS→LHS). Citations (rule N1 split): the two-fixed-endpoint
+`(z_0, z_1)` framing is **Lemma 3.2(2) (PDF p.4) + the §5 bracket notation
+`[α_0, …, α_n](z_0, z_1)` (PDF p.7)**; witness growth per disjunct is the printed §5 bracket
+shape (p.7) with **Lemma 3.4 (PDF p.5)** as the ∃-closure license; **Prop 3.5 (PDF p.5)** is
+cited ONLY for the ∃-witness→Until/Since folding mechanism in the `epL`/`epR` exterior-zone
+literals; the fold channel is **Def 4.1 (PDF p.5, iterated per the p.6 note)**. -/
+theorem bracketEndChar_k1v_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 1 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_k1v atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  ⟨bracketEndChar_k1v_sound atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t,
+   bracketEndChar_k1v_complete atomMap h_surj qnf h_xy h_yt M x t⟩
+
+/-! ## Task 311 Phase 5: k=1 gate re-probe under the E[Σ]-fold at the V-carrier —
+DECISION GATE → **R2 = GO** (verdict-mirror of the Phase 10 / Phase 2 records above)
+
+**Lead evidence (Def 3.1, PDF p.4 — rule N3).** Rabinovich's α_j/β_j are ONE-variable
+quantifier-free formulas: no joint multi-point atom exists, so the arity-4 residual
+`[x_1, w, x, t]` that NO-GOed the original probe (Phase 10 record, :1596-1628) has no
+Rabinovich counterpart — it was a Lean `nf_eval_nf` arity-growth artifact, and the E[Σ]-fold
+RESTORES Def-4.1 fidelity (PDF p.5, iterated per the p.6 note). This re-probe CONFIRMS it
+end-to-end: `bracketEndChar_k1v_correct` above is the k=1 instance of
+`BracketCarrierCorrectV` in k0-mirror conditional form, proved **sorry-free** with the fold
+as the ONLY channel through which `qnf.2` is read. **No arity-4 object, no navigated arity-3
+characteristic, and no third free anchor arises at any step** — both directions route the
+quant layer through `nf_quant_layer_fold_k1_gate` (NfEFold:525; task 310's gate corollary),
+whose per-(zone, χ) obligations are zone-bounded MONADIC existentials.
+
+**The G6 amendment carried the day (the Phase-3 record above, :1829-1850).** The v2 Phase 2
+re-probe (:1754-1827) refuted the FIXED codomain `VecEA2 1`: a one-witness bracket cannot
+host the interior-positive `(zone, χ)` witnesses (counterexample :1786-1800). The amended
+codomain — witness-growing `VecEA2 n` disjuncts assembled as `VVecEA2`, anchors capped at the
+FIXED `{x, t}` — is Rabinovich's own printed shape: **Lemma 3.2(2) (p.4)** caps ANCHORS at
+≤2 (a TYPE-level invariant of `VVecEA2.holds`, VecEAFormula:276), the **§5 bracket
+`[α_0, …, α_n](z_0, z_1)` (p.7)** carries `n` witnesses between the two fixed endpoints, and
+**Lemma 3.4 (p.5)** licenses each absorbed existential to JOIN the existential prefix as a
+witness. Interior-positive content rides bracket WITNESS slots (rule N4 — the refuted
+type-anchored `bracketBuildLeft/Right` interior chains stayed dead; they survive only in the
+`epL`/`epR` exterior-zone literals, where the anchor genuinely IS the fixed endpoint), and
+the model-dependent witness order rides the finite disjunction over ALL arrangements
+(rule N5), selected in the completeness direction by the `k1v_sorted_realization` insertion
+induction.
+
+**Verdict: R2 = GO.** The k=1 bracket gate is CLOSED at the V-carrier: the fold encoding
+(task 310) composes with the witness-growing codomain (this task) to characterize
+`∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` by a two-anchor `VVecEA2` at `(x, t)` under the
+bracket-zone order hypotheses. Path B is UN-FALSIFIED at k=1 under the amended carrier.
+`bracketEndChar_k1v` / `bracketEndChar_k1v_correct` stay OFF the live path until wired
+(nothing imports them); the live Kamp sorry baseline (2: KampPrior:351/354) is untouched.
+Downstream: task 309 resumes via `/revise 309` (plan v4) — the depth-`k` lift (R3) can now
+target `BracketCarrierCorrectV` with this k=1 instance as the recursion template over the
+k=0 base `bracketEndChar_k0_correct` (:1581-1594). -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
