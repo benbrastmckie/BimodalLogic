@@ -890,7 +890,36 @@ into plan form — report 05 §c contingency, executed. Scope is BOUNDED to that
   G5 + v6 extension (chain-step citations on every pin/exclusion builder).
 - **Commit:** `task 309 phase 13.25: uniformization — kvE' pinning/exclusion channels + carrier extension (v6-named 13.2b)`
 
-### Phase 13.35: k=2 correctness gate RE-RUN for `bracketEndChar_kvE'` — ONCE (the v6-named "13.3-re") [NOT STARTED]
+### Phase 13.35: k=2 correctness gate RE-RUN for `bracketEndChar_kvE'` — ONCE (the v6-named "13.3-re") [COMPLETED — NO-GO, carrier-shape defect (13.25 channels do not carry the discriminating per-sub joint content; F4)]
+
+**BLOCKER (Phase 13.35 — NO-GO verdict, finding F4; the second-and-LAST gate attempt):**
+- **What failed**: the k=2 soundness direction of `BracketCarrierCorrectVPrior atomMap
+  (bracketEndChar_kvE' atomMap h_surj P)` — the per-sub positive obligation. Captured crux (probe
+  B): after `P.correct 3 σ`, `he : nf_eval_nf M 1 (3+1) (insertEnv e t) σ`
+  (`insertEnv e t = [e 0, e 1, e 2, t]`, `u/w/x` rebound by `e : Fin 3 → M`) against goal
+  `nf_eval_nf M 1 (3+1) (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) σ`; the funext residual
+  is `w = e 1`, `x = e 2` with no pinning hypothesis — the F3 crux verbatim.
+- **What was tried (machine-probed, not armchair)**: probe A (`rfl`-confirmed) — channel (i)
+  `kvE_pinDisjunct` collapses over all seven consistent zones to the IDENTICAL `charK
+  (nfk_projFresh σ)` (the `witnessZone` field is discarded); channel content is a function of the
+  σ.1-level fresh type ALONE. probe B — transfers `exact ⟨e 0, he⟩` / `⟨u, he⟩` fail with type
+  mismatch `insertEnv e t ≠ [·, w, x, t]`; the channel-(i) deliverable (a `nfk_projFresh σ`
+  fresh-type witness in `(x,w)`) is a separate existential unrelated to `e 1 = w`, `e 2 = x`.
+- **Why stuck (root cause)**: the discriminating per-sub JOINT content (the sub's inner-witness
+  structure vs the honest anchors) rides `σ.2`; the landed 13.25 channels carry σ.1-level content
+  (channel (i): `nfk_projFresh σ`, positionally vacuous) plus a negative-only, fiber-guarded
+  exclusion (channel (ii), inert here — the dishonest positive `σ''` occupies the fiber and
+  collapses the guard to `⊤`). The F3 provider-independent ℤ counterexample (`M = ℤ`, `p={0}`,
+  `r={13}`, `x=10`, `t=20`, `σ'' = char [14,16,11,20]`) survives verbatim → the k=2 statement is
+  FALSE for `bracketEndChar_kvE'` under ANY correct depth-1 provider bundle.
+- **What is needed**: NOT another uniformization round (one-round budget exhausted, v7 Amendment
+  F3). Per the pre-committed Phase 13.35 routing (below): defect record F4 landed → orchestrator
+  ESCALATES the 309 blocker ladder (user decision / `/spawn 309` with F4 as blocker). Phases 13.4
+  and 14 MUST NOT be dispatched; do NOT `/revise` for a "13.2c"; do NOT weaken the 13.25 carrier
+  or the 13.1 predicate.
+- **Prohibited (honored)**: no `sorry`, no `def X := True`, no partial theorem landed. The only
+  Lean artifact is the F4 verdict record (NfMultiAnchorBridge.lean, final section after :5533 —
+  R2 house style). Full tree GREEN (1709 jobs).
 
 *(The single gate re-run the 13.3 routing licenses. DECISION GATE — the task-311 Phase-5 /
 13.0 / 13.3 verdict-record pattern: machine-probe, record the verdict either way, land no partial

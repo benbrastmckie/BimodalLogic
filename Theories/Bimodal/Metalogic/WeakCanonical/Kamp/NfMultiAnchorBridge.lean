@@ -5529,4 +5529,82 @@ theorem bracketEndChar_kvE'_two_eq {sig : MonadicSignature}
       kvE'_body (nf_depth0_char_formula atomMap h_surj)
         (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2 := rfl
 
+/-! ## Task 309 Phase 13.35: k=2 correctness gate RE-RUN for `bracketEndChar_kvE'` —
+DECISION GATE → **NO-GO (carrier-shape defect — the 13.25 channels do not carry the
+discriminating per-sub joint content; finding F4)** (the single, LAST gate re-run; verdict-mirror
+of the R2 GO record :3407-3445 and the F1/F2/F3 defect records; no partial theorem, no sorry).
+
+**Lead evidence (Def 3.1, PDF p.4 md:61-74 — rule N3).** In Rabinovich's exists-forall formulas,
+EVERY existentially chosen point is pinned by the bracket's own interval decomposition: it carries
+its point type `α_j` AND the adjacent interval types `β_j`, `β_{j+1}` on BOTH sub-intervals
+relative to the fixed endpoints. The 13.25 channel (i) `kvE_pinDisjunct` (:5374) was designed to
+realize this positionally (§ header md:5368-5373: "the EXTRA bracket witness slot … and the
+interval-type segment conjunct realizing σ's fresh-type claim positionally within the honest
+bracket … per disjunct"). As LANDED it does NOT: it returns `([⟨charK a.witnessType⟩],
+[⟨charK a.witnessType⟩])` with `a.witnessType = nfk_projFresh σ` (set in `kvE_pinArrangements`
+:5364) and the placement field `a.witnessZone` DISCARDED. The pin content is therefore a function
+of `nfk_projFresh σ` (the σ.1-level fresh depth-`k` type) ALONE — positionally vacuous.
+
+**Machine probe A (channel (i) collapse — `rfl`-confirmed).** The identity
+`(kvE_pinArrangements σ).map (fun a => kvE_pinDisjunct charBase charK σ a)
+  = kvE_consistentZones.map (fun _ => ([⟨charK (nfk_projFresh σ)⟩], [⟨charK (nfk_projFresh σ)⟩]))`
+closes by `rfl` (captured reduced state:
+`(fun a ↦ ([⟨charK a.witnessType⟩], …)) ∘ (fun z ↦ {witnessZone := z, witnessType := nfk_projFresh σ})`
+= `fun _ ↦ ([⟨charK (nfk_projFresh σ)⟩], …)`). Every one of the seven consistent-zone pin disjuncts
+for `σ` yields the IDENTICAL formula `charK (nfk_projFresh σ)`. Consequence: two subs with equal
+`nfk_projFresh` — e.g. F3's dishonest `σ'' = char [14,16,11,20]` and the honest `char [14,15,10,20]`
+(fresh type `type(14) = type(15)`) — get BYTE-IDENTICAL channel-(i) content; the channel cannot
+distinguish them.
+
+**Machine probe B (the per-sub positive soundness crux persists — captured type-mismatch states).**
+The extended carrier's `epR` retains the `t`-anchored provider literals `pos.map exF`
+(`exF = P.existF 3`, :5448 — kept verbatim from 13.2). Driving the soundness direction to the
+per-sub positive obligation and applying `P.correct 3 σ M h_UZ h_SZ t` gives
+`he : nf_eval_nf M 1 (3+1) (insertEnv e t) σ` (`ExistProviders.correct` :4856:
+`insertEnv e t = [e 0, e 1, e 2, t]`, anchor LAST, the `u/w/x` positions existentially REBOUND by
+`e : Fin 3 → M.carrier`), while the goal needs the honest env
+`Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t)) = [x_1, w, x, t]`. Captured probe states:
+`exact ⟨e 0, he⟩` → "he has type `nf_eval_nf M 1 (3+1) (insertEnv e t) σ` but is expected to have
+type `nf_eval_nf M 1 (3+1) (Fin.cons (e 0) (Fin.cons w (Fin.cons x fun x ↦ t))) σ`"; the funext
+bridge reduces to the residual point equations `w = e 1`, `x = e 2` with NO hypothesis relating the
+provider-chosen `e` to the honest anchors. Channel (i)'s actual deliverable after
+`k1v_bracket_extract` (:2150) is a fresh-type witness
+`hpin : ∃ u, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) (nfk_projFresh σ)` (probe A: this is ALL
+it carries) — a SEPARATE existential, unconnected to the residual `e 1 = w`, `e 2 = x`. So the F3
+crux (:5227-5236) recurs verbatim; the pin channel adds fresh-type witnesses, not anchor pinning.
+
+**Channel (ii) is inert on this counterexample.** `kvE_exclConj` (:5387) is applied ONLY to
+NEGATIVE subs (`negIn zs`, :5453) and is guarded honest-safe: `exclAt zs σ = if hasPos zs
+(nfk_projFresh σ) then Formula.top else kvE_exclConj …` (:5452-5454). In F3 the dishonest POSITIVE
+sub `σ''` occupies zone `zXW` with fresh type `type(14)`, so `hasPos zXW type(14) = true`; every
+marked-false sub sharing that fiber (the honest `c 14`, `qnf.2 (c 14) = false`) has its exclusion
+conjunct collapsed to `⊤`. The carrier-indistinguishability that defeats channel (i) also
+neutralizes the channel-(ii) guard.
+
+**Counterexample (defect bar, four elements — the statement is FALSE, provider-independent).**
+Verbatim from the F3 record (:5244-5270), now re-verified carrier-visible for `kvE'`: `M = ℤ`
+(Prior UZ/SZ hold), preds `p = {0}`, `r = {13}`, `x = 10`, `t = 20`,
+`σ'' := char [14,16,11,20]` (fake anchors sharing only `t`; on-fiber, zone `zXW`, fresh type
+`type(14)`), `qnf.2 (char [14,15,10,20]) := false`, `qnf.2 σ'' := true`. **Current behavior**: the
+extended carrier's LHS still HOLDS at `(10,20)` — the honest slots plus σ'''s pin slots (fresh type
+`type(14)`, realized honestly at `u = 14`) plus σ'''s `t`-anchored provider literal (its own fake
+realization `[14,16,11,20]` ends at `t = 20`) are all satisfied, and channel (ii) is guarded off.
+**Required behavior**: per-sub joint claims pinned against the honest anchor pair (Prop 4.2 uniform
+negation/exclusion at round k+1, md:100-101). **Isolation**: the gap is the per-sub joint/exclusion
+channel; gate, zones, unary families, arrangements behaved exactly as at k=1; provider-independent
+(only `P.correct` consumed — survives ANY correct depth-1 bundle, including Phase 14's).
+
+**Verdict: 13.35 = NO-GO, carrier-shape defect (finding F4).** The 13.25 uniformization added TWO
+channels but neither carries the discriminating per-sub JOINT content (the sub's inner-witness
+structure vs the honest anchors, which rides `σ.2`): channel (i) is a function of `nfk_projFresh σ`
+(σ.1-level) alone with `witnessZone` discarded (probe A, `rfl`), and channel (ii) is negative-only
+and guarded off by the dishonest sub's fiber occupancy. The provider literal still rebinds
+`u/w/x` (probe B). This is the PRE-COMMITTED second-and-LAST gate outcome: per the Phase 13.35
+routing (plan v7 :925-935; v7 Amendment F3 one-round budget), a second NO-GO is NOT another
+uniformization round — it ESCALATES to the orchestrator blocker ladder (defect record F4 →
+orchestrator halts the 309 ladder → user decision / `/spawn 309`). KD3 held: the 13.25 carrier and
+the 13.1 predicate are UNCHANGED (this record is the phase's only artifact — no partial theorem, no
+sorry). Escalation fence C3 held: no anchor growth; EANegation :1090/:1249 untouched. Phases 13.4
+and 14 MUST NOT be dispatched. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
