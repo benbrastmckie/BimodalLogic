@@ -2259,6 +2259,41 @@ private theorem k1v_bracket_extract {sig : MonadicSignature}
         · exact ih (j + 1) (by omega) (by omega) h'
     exact main lR.length lL.length (Nat.le_refl _) rfl hwu
 
+/-- **Order-preserving outer extraction** (task 326 Phase 1; strengthens `k1v_bracket_extract`
+    :2150, which forgets the witness ordering). From `(bracketFromLists lL ptW lR segL segR).holds`
+    at the FIXED endpoints `(x, t)`, recover the FULL strictly-increasing witness sequence
+    `ws : Fin (lL.length + 1 + lR.length) → M.carrier` realizing the concatenated point-type list
+    `lL ++ ptW :: lR` in order, every witness pinned in `(x, t)`. This exposes the monotone `ws`
+    that lives inside `IntervalPattern.holds` (surfaced by `bracket_implies_fChainPred`
+    `EANegation.lean:670`) but that `k1v_bracket_extract`'s per-element existential discards — the
+    ordering later phases need to place pin witnesses strictly ABOVE the interior sub-chain points.
+
+    Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint point-insertion bound is carried
+    STRUCTURALLY by slot position; the monotone `ws` is the order-preservation that makes the
+    structural (slot-position) bound faithful, never a formula literal (litmus PASS). -/
+private theorem k1v_bracket_extract_mono {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
+    (x t : M.carrier)
+    (h : (bracketFromLists lL ptW lR segL segR).holds M atomMap x t) :
+    ∃ ws : Fin (lL.length + 1 + lR.length) → M.carrier,
+      (∀ i j : Fin (lL.length + 1 + lR.length), i < j → ws i < ws j) ∧
+      (∀ i : Fin (lL.length + 1 + lR.length), x < ws i ∧ ws i < t) ∧
+      (∀ i : Fin (lL.length + 1 + lR.length),
+        ((lL ++ ptW :: lR)[i.val]'(by
+          simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap (ws i)) := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, bracketFromLists] at h
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show lL.length + 1 + lR.length = (lL.length + lR.length) + 1 by omega)] at h
+  obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩ := h
+  refine ⟨fun i => ws ⟨i.val, by omega⟩, ?_, ?_, ?_⟩
+  · intro i j hij
+    exact hmono ⟨i.val, by omega⟩ ⟨j.val, by omega⟩ (Fin.mk_lt_mk.mpr (Fin.lt_def.mp hij))
+  · intro i
+    exact hrange ⟨i.val, by omega⟩
+  · intro i
+    exact hpt ⟨i.val, by omega⟩
+
 /-- Reconstruct the arity-3 depth-0 atom layer at env `[w, x, t]` from the three arity-1
     point evaluations and the six order biconditionals. Private clone of the VecEADecomp
     reconstruction helper (that lemma is `private` there and not importable). Chain step 3
