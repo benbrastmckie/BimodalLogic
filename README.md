@@ -10,7 +10,7 @@ The repository implements the syntax, task semantics, proof theory, and metalogi
 
 **Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
-**Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
+**Specification**: [BimodalReference.pdf](/home/benjamin/Projects/BimodalLogic/Theories/Bimodal/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
 **Demo**: [BimodalProofs.lean](Theories/Bimodal/Examples/BimodalProofs.lean) — sorry-free demonstration proofs
 
