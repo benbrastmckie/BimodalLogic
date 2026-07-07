@@ -106,7 +106,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-319 [RESEARCHED] — Turn the BimodalReference book (Theories/Bimodal/typst/) from the
+319 [IMPLEMENTING] — Turn the BimodalReference book (Theories/Bimodal/typst/) from the
   └─ 314 [NOT STARTED] — Write chapters/p1-why-worlds.typ for BimodalReference (replacing 
   └─ 315 [NOT STARTED] — Write the four Part III chapters of BimodalReference (replacing P
   └─ 316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
@@ -166,11 +166,12 @@ CONSTRAINTS (binding, carried from plan v7 -- do not re-litigate): Guards G1-G6 
 
 ### 319. Restructure bimodalreference clean textbook
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 313
 - **Research**: [319_restructure_bimodalreference_clean_textbook/reports/01_restructure-clean-textbook-research.md]
+- **Plan**: [319_restructure_bimodalreference_clean_textbook/plans/01_restructure-clean-textbook-plan.md]
 
 **Description**: Turn the BimodalReference book (Theories/Bimodal/typst/) from the task-313 living-monograph-with-sync-scaffolding into a clean, direct textbook presentation at a rigorous formal level, with clear but concise explanations where essential — a natural unified whole with a clear narrative arc. Keep whatever can be kept (Part II and Part IV prose is essentially puzzle-free). Four workstreams:
 
