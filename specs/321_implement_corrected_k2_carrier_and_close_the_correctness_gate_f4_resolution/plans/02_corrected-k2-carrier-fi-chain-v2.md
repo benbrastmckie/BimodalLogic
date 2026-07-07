@@ -273,32 +273,31 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
     micro-check (in a NON-CONSUMED scratch block or via `lean_multi_attempt`) shows the fold-bit read
     yields DIFFERENT values on the F4 dishonest vs honest sub; no `simp`/`omega`/`aesop` in any body.
 
-### Phase 3: Construct kvE_subBracket (nested sub-bracket over σ.2, forced k1v routing) [NOT STARTED] (Stage A)
+### Phase 3: Construct kvE_subBracket (nested sub-bracket over σ.2, forced k1v routing) [COMPLETED] (Stage A)
 
 - **Goal:** Build `kvE_subBracket … (σ : NormalForm sig (j+1) 4) : Σ m, BracketFormula (m+1)`
   encoding σ's inner-witness structure as bracket witnesses between the honest anchor pair, read
   from `σ.2` via the forced `bracketEndChar_k1v` (:1940) zone-bit routing one arity up — the Cor 5.4
   recursive construction generalized one level, never a third anchor.
 - **Tasks:**
-  - [ ] Define `kvE_subBracket {sig} (charBase : NormalForm sig 0 1 → Formula)
+  - [x] Define `kvE_subBracket {sig} (charBase : NormalForm sig 0 1 → Formula)
         (charK : NormalForm sig 1 1 → Formula) (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m+1)`
         (gate instance; report §3 item 2 / probe-5 skeleton). The `(m+1)` shape (u's own slot)
-        guarantees `fChainPred` is available.
-  - [ ] Implement the forced zone routing (report §2/Q2 table), iterating `posInner`/`segExcl` over
-        each interior zone in order with per-zone segment types, folding the arrangement permutations
-        exactly as `kvE'_body` does at :5487-5489 (same `bracketFromLists` :1896 slot discipline):
-        - Interior zones (inside `(x,t)`) → extra bracket witness slots adjacent to u's slot, point
-          type `⟨charBase χ⟩` for positive bits.
-        - Point-coincidence zones (`v=x/u/w/t`) → conjuncts on the existing point type; u's slot gets
-          `charK (nfk_projFresh σ)` ∧ the `v=u` bits (landed `ptW` zAtW pattern :5463-5466).
-        - Exterior zones (`v<x`, `v>t`) → Since/Until literals into `epL`/`epR` (:5438-5448).
-        - Negative bits per interior zone → segment exclusion conjuncts `(charBase χ).neg` on refined
-          segments (`segL`/`segR` :5455-5462, one level in).
-  - [ ] Cite Rabinovich Def 3.1 (md:61-74), Lemma 5.1 point-insertion split (md:134-135) for endpoint
-        sharing; endpoints are the honest anchor pair `(x,w)` or `(w,t)` per σ's zone.
-  - [ ] Verify G-guard compliance: no arity-1 collapse (G1); no projection-based VecEA2/third-anchor
-        tower (G2); off-diagonal segments carry real interval types via `segmentTypes`, not trivial-top
-        (G3); anchor set fixed at 2, witnesses grow only (G4/G6-as-amended).
+        guarantees `fChainPred` is available. *(completed — landed; axiom-clean via `lean_verify`.)*
+  - [x] Implement the forced zone routing (report §2/Q2 table): interior-zone positives →
+        extra witness slots `⟨charBase χ⟩` (via `posSlots`, spliced before u's slot); interior-zone
+        negatives → `(charBase χ).neg` exclusion conjuncts on the segments (`segExcl`). *(completed —
+        `kvE_subInteriorZones` = [zXU, zUW, zWT] the arity-4 refinement of k1v's interior zones;
+        `posSlots`/`segExcl` route the `σ.2` bits.)* *(deviation: altered — point-coincidence and
+        exterior zones (`v=x/u/w/t`, `v<x`, `v>t`) are NOT re-encoded inside `kvE_subBracket`; they
+        remain handled at the OUTER `kvE2_body` level (`epL`/`epR`/`ptW`, Phase 5), exactly as in
+        `kvE'_body`. The sub-bracket carries only the interior-positive JOINT content — the exact gap
+        F4 isolated — keeping the arity-4 slot discipline minimal and the `(m+1)` `fChainPred` shape.)*
+  - [x] Cite Rabinovich Def 3.1 (md:61-74), Lemma 5.1 point-insertion split (md:134-135). *(completed —
+        cited in the docstring; endpoints are the honest anchor pair supplied by the outer body splice.)*
+  - [x] Verify G-guard compliance: no arity-1 collapse (G1); no third-anchor tower (G2 — the sub-bracket
+        is `Σ m, BracketFormula (m+1)`, witnesses grow, anchors fixed at 2); real exclusion segments via
+        `segExcl`, not trivial-top (G3); witnesses grow only (G4/G6). *(completed.)*
 - **Timing:** ~3 hours
 - **Depends on:** 2
 - **Files to modify:**

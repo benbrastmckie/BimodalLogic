@@ -5738,4 +5738,66 @@ theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature}
       fun zs χ => (NormalForm.quant_assgn σ)
         (nf0_assemble zs χ (NormalForm.atom_assgn σ)) := rfl
 
+/-- The three INTERIOR order-zones of an inner witness `v` relative to `σ`'s env `[u, w, x, t]`
+    under the honest bracket order `x < u < w < t` (task 321 Phase 3; the arity-4 analogue of the
+    k1v interior zones `zXW`/`zWT` at :1957-1959, refined by `u`). `zXU` = `x < v < u`,
+    `zUW` = `u < v < w`, `zWT` = `w < v < t`. These are the Def-3.1 interior sub-intervals of
+    `(x, t)` in which `σ`'s quantifier layer can demand a positive inner witness (PDF p.4
+    md:61-74); `zUW` is the F4 discriminator (`σ'' = char[14,16,11,20]` is positive there via
+    `(14,16) ∋ 15`, the honest `char[14,15,10,20]` is not: `(14,15) = ∅`). Exterior and
+    point-coincidence zones are handled at the outer body level (`epL`/`epR`, `ptW`), exactly as in
+    `kvE'_body`; here we route only the interior positives, which are what the flat joint literal
+    could not carry. -/
+noncomputable def kvE_subInteriorZones : List (ZoneSpec 4) :=
+  let ltz : Bool × Bool := (true, false)   -- v < env i
+  let gtz : Bool × Bool := (false, true)   -- env i < v
+  let mk4 : Bool × Bool → Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 4 :=
+    fun p0 p1 p2 p3 => Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3)))
+  -- coords: 0 ↦ u, 1 ↦ w, 2 ↦ x, 3 ↦ t
+  let zXU : ZoneSpec 4 := mk4 ltz ltz gtz ltz   -- x < v < u  (v<u, v<w, x<v, v<t)
+  let zUW : ZoneSpec 4 := mk4 gtz ltz gtz ltz   -- u < v < w  (u<v, v<w, x<v, v<t)
+  let zWT : ZoneSpec 4 := mk4 gtz gtz gtz ltz   -- w < v < t  (u<v, w<v, x<v, v<t)
+  [zXU, zUW, zWT]
+
+/-- **Nested sub-bracket over `σ.2`** (task 321 Phase 3; report §2/Q2 table + probe 5, machine-checked
+    skeleton GREEN). Encodes `σ`'s inner-witness structure (read from `σ.2` via `kvE_subFoldBits`)
+    as bracket WITNESSES between the honest anchor pair — the FORCED `bracketEndChar_k1v` (:1940)
+    zone-bit routing one arity up (arity 4 instead of 3), the Cor 5.4 recursive construction
+    generalized ONE level, never a third anchor. Returns `Σ m, BracketFormula (m + 1)`: the trailing
+    `+1` is `u`'s own slot (`charK (nfk_projFresh σ)`), which is what makes `fChainPred` available
+    (probe 6). Routing (report §2/Q2):
+    - Interior zones (`kvE_subInteriorZones`): each positive fold bit `kvE_subFoldBits σ zs χ` places
+      an EXTRA bracket witness slot with point type `⟨charBase χ⟩`, spliced before `u`'s slot.
+    - Negative bits per interior zone: `(charBase χ).neg` exclusion conjuncts on the refined segments
+      (the landed `segL`/`segR` pattern :5455-5462, one level in) — real exclusion segments, never
+      top (G3).
+    The construction reads `σ.2` (where the F4 pair differs), NOT the shared `σ.1` `nfk_projFresh`,
+    so — unlike the F4-refuted flat `charK (nfk_projFresh σ)` literal — the honest and dishonest subs
+    produce DIFFERENT witness-slot lists. Rabinovich Def 3.1 (md:61-74), Lemma 5.1 point-insertion
+    split (md:134-135). No `simp`/`omega`/`aesop` in the body (the `omega` below is a `Fin`-index
+    typing obligation in a proof term, identical to the landed `bracketFromLists` :1900). -/
+noncomputable def kvE_subBracket {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m + 1) :=
+  let bits := kvE_subFoldBits σ
+  let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
+  -- Interior-positive fold bits → extra bracket witness slots (point type ⟨charBase χ⟩),
+  -- one per (interior zone, positive type), in zone order (Def 3.1 md:61-74 one arity up).
+  let posSlots : List TemporalPred :=
+    kvE_subInteriorZones.flatMap (fun zs =>
+      (allTypes.filter (fun χ => bits zs χ)).map (fun χ => ⟨charBase χ⟩))
+  -- Interior-negative fold bits → segment exclusion conjuncts (charBase χ).neg (G3 real segments).
+  let segExcl : TemporalPred :=
+    ⟨formula_conjList
+      (kvE_subInteriorZones.flatMap (fun zs =>
+        allTypes.map fun χ => if bits zs χ then Formula.top else (charBase χ).neg))⟩
+  ⟨posSlots.length,
+    { pointTypes := fun i =>
+        (posSlots ++ [⟨charK (nfk_projFresh σ)⟩])[i.val]'(by
+          have := i.isLt
+          simp only [List.length_append, List.length_cons, List.length_nil]
+          omega)
+      segmentTypes := fun _ => segExcl }⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
