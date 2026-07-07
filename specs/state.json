@@ -2809,7 +2809,7 @@
         }
       ],
       "session_id": "sess_1783431658_f50ffc",
-      "completion_summary": "PARTIAL (machine-grounded): Phases 1-5 of 8 landed sorry-free/axiom-clean (kvE_subBracket2 anchor-at-x carrier, zone/reachability kit, kvE_subBracket2_sound soundness direction, completeness extraction kit; NfMultiAnchorBridge.lean ~:6120-6720). Phase 6 completeness converse machine-refuted for the current carrier (const all-zone segExcl segment types + fixed-order pointTypes); blocker research (report 02) confirms redesign to VVecEA2 arrangement-disjunction carrier with per-region segment types is unavoidable and needs its own 4-5 phase task. R2 fallback pre-authorized by plan.",
+      "completion_summary": "PARTIAL (terminal, superseded): Phases 1-5 of 8 landed sorry-free/axiom-clean (kvE_subBracket2 carrier, zone/reachability kit, kvE_subBracket2_sound, completeness extraction kit) and were consumed verbatim as SURVIVE assets by task 325. Phases 6-8 (completeness converse over kvE_subBracket2) are machine-refuted — a false forall-M statement (reports/02) — and were re-scoped into task 325, which delivered the corrected deliverable: kvE_subBracket2V nine-zone VVecEA2 carrier with driven sound+complete pair (completed 2026-07-07). No further work possible or needed on this task.",
       "previous_status": "partial"
     },
     {
