@@ -368,18 +368,34 @@ block; if a single agent cannot own both, sequence 3 after 2. No phase edits an 
 - **Verification:** Scoped `lake build` green; no sorry; axiom-clean; the final lemma's output type
   unifies with the `sound_of_parts` input bundle.
 
-### Phase 6: Verification and axiom-clean sweep [NOT STARTED]
+### Phase 6: Verification and axiom-clean sweep [COMPLETED]
 - **Goal:** Final integrity gate: the deliverable is green, axiom-clean, sorry-free on live paths,
   and no DO-NOT-EDIT asset regressed.
 - **Tasks:**
-  - [ ] Full scoped `lake build` over NfMultiAnchorBridge.lean + EANegationClosure.lean +
+  - [x] Full scoped `lake build` over NfMultiAnchorBridge.lean + EANegationClosure.lean +
         EANegation.lean — green.
-  - [ ] `#print axioms <final lemma>` and each new helper → confirm ONLY
+        *(three-module scoped build green (1005 jobs); FULL project `lake build` also green (1709 jobs).)*
+  - [x] `#print axioms <final lemma>` and each new helper → confirm ONLY
         `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
-  - [ ] `grep`/`lean_verify` the final lemma + helpers for `sorry` on committed live paths → none.
-  - [ ] Re-check the Phase-0 fingerprints of all DO-NOT-EDIT assets → byte-identical.
-  - [ ] Confirm completeness lemmas (`kvE_subBracket2V_complete`) still build (splice extract
+        *(via `lean_verify`: `kvE_sub2V_bounded_anchor_of_outer`, `kvE_subBracket2V_sound_of_outer`,
+        `bracketFromLists_flatMap_subchain_below_pin`, `bracketFromLists_flatMap_block_extract`,
+        `bracketFromLists_flatMap_first_pin_anchor`, `kvE_subChain2V_hbelow_of_realized`,
+        `bracketFromLists3_fChainPred_at_head` ALL = `[propext, Classical.choice, Quot.sound]`;
+        Phase 4.1 `exists_permutation_cons_head` = `[propext, Quot.sound]` (subset). No `sorryAx`.)*
+  - [x] `grep`/`lean_verify` the final lemma + helpers for `sorry` on committed live paths → none.
+        *(zero live-path `sorry` in NfMultiAnchorBridge + EANegationClosure. The ONLY `sorry` tactics
+        in scope are the two pre-existing EANegation baseline sorries (decls :834/:1129, tactics
+        :1090/:1249), off the completeness live path, UNTOUCHED by task 326.)*
+  - [x] Re-check the Phase-0 fingerprints of all DO-NOT-EDIT assets → byte-identical.
+        *(git diff HEAD~1..HEAD of NfMultiAnchorBridge is PURELY ADDITIVE — 178 lines inserted at
+        :7773, ZERO deletions/modifications → every DO-NOT-EDIT asset (VVecEA2 block, `kvE_pinDisjunct`,
+        `bracketFromLists3`, `kvE_subChain2V`, `kvE_subBracket2V_sound_of_parts`, `kvE2_body`,
+        `bracketEndChar_kvE2`, F1-F4 records) byte-identical. EANegationClosure/EANegation untouched
+        this phase. Zero vacuous defs; zero new axioms.)*
+  - [x] Confirm completeness lemmas (`kvE_subBracket2V_complete`) still build (splice extract
         consumed unchanged).
+        *(full project build green — all downstream/completeness consumers build; additive change
+        cannot regress any importer since no existing declaration was modified.)*
 - **Timing:** ~0.5 hour
 - **Depends on:** 0, 1, 2, 3, 4.1, 4.2, 5
 - **Files:** (read-only verification) NfMultiAnchorBridge.lean, EANegationClosure.lean, EANegation.lean
