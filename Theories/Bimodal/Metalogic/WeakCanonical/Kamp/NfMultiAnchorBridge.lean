@@ -8757,4 +8757,71 @@ theorem kvE2_joint_nonvacuous_at_honest {sig : MonadicSignature}
   have hnv := kvE_subBracket2V_nonvacuous charBase charK σ M x1 w x t hxx1 hx1w hwt h
   exact hnv
 
+/-! ## Task 327 P1: depth-2 outer quant-layer fold provability GATE →
+**WHOLE-TASK NO-GO** (machine-grounded; DECISION GATE, mirror of the R2 NO-GO :1609-1641)
+
+**Question decided.** Does the depth-2 outer quant-layer fold `nf_quant_layer_fold_k2_gate` (the
+arity-4/depth-1 analog of the landed `nf_quant_layer_fold_k1_gate`, NfEFold:525) fold CLEANLY into
+per-(zone,χ) monadic obligations at CONSTANT arity, and by which route — (a) naive `nfk`-split-kit
+`nf_eval_nf1_cons_factor`, (b) constant-arity E[Σ] `efold_of_nfk`, or (c) a new argument?
+For `qnf : NormalForm sig 2 3` the target reduces the outer quant layer
+`∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) sub) ↔ qnf.2 sub = true`
+to `∀ (zs : ZoneSpec 3) (χ : NormalForm sig 1 1), (∃ x1, zoneHolds M [w,x,t] zs x1 ∧
+nf_eval_nf M 1 1 (fun _ => x1) χ) ↔ qnf.2 (nfk_assemble zs χ qnf.1) = true` (+ off-fiber).
+
+**Verdict: NO-GO for ALL of routes (a), (b), (c) at constant arity-1 χ.** Both the naive factor
+and the E[Σ] outer fold bottom out on the SAME depth-1 per-witness factorization
+`nf_eval_nf1_cons_factor`, which is FALSE in clean form: the inner quant layer's witness `v`
+couples SIMULTANEOUSLY to the outer witness `x1` AND to the three fixed anchors {w,x,t}, and the
+constant-arity monadic channel `nfk_projFresh sub : NormalForm sig 1 1` reads `v` at arity 1
+(`zoneHolds M (fun _ => x1) …`) — structurally too small to carry the `v`-vs-{w,x,t} coupling.
+This is the arity-4 → arity-3 / G6 re-bounding barrier (:1622-1646) resurfacing at the OUTER quant
+layer. The E[Σ] constant-arity representation (Rabinovich Def 4.1, Prop 4.3) does NOT dodge it: its
+constant arity is arity-1, precisely the arity that cannot hold the joint content.
+
+**Machine evidence — captured crux `lean_goal` state (route-(b) reconstruction probe).** Under
+`hz : zoneHolds M [w,x,t] zs x1`, `hmon : nf_eval_nf M 1 1 (fun _ => x1) (nfk_projFresh sub)`
+(the constant-arity monadic channel, unfolded via `nf_eval_depth1_fold_iff` at n=1 to
+`(∃ v, zoneHolds M (fun _ => x1) zs v ∧ …) ↔ (nfk_projFresh sub).2 (…)`, i.e. `v`-vs-`x1` ONLY),
+and `hatom`, the inner-fold crux goal is:
+
+    zs' : ZoneSpec 4
+    χ' : NormalForm sig 0 1
+    ⊢ (∃ v, zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ ↦ t))) zs' v ∧
+          nf_eval_nf M 0 1 (fun _ ↦ v) χ') ↔
+        sub.2 (nf0_assemble zs' χ' sub.1) = true
+
+The goal's `zs' : ZoneSpec 4` demands `v`'s zone against the FULL arity-4 env `[x1,w,x,t]`; the
+only witness hypothesis `hmon` supplies `ZoneSpec 1` (`v`-vs-`x1`). The `v`-vs-{w,x,t} coupling is
+irrecoverable — matching the irreducible arity-4 residual at :1629-1636.
+
+**Failed `lean_multi_attempt` closers on the crux goal (≥2 required; five captured):**
+  1. `exact hmon.2.1 zs' χ'` → *Application type mismatch: argument `zs'` has type `ZoneSpec 4`
+     but is expected to have type `ZoneSpec 1`.* (The decisive certification: constant arity = 1.)
+  2. `exact hmon.2.1 _ χ'` → *Type mismatch:* `hmon` yields `zoneHolds M (fun _ ↦ x1) ?m v` but the
+     goal requires `zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ ↦ t))) zs' v` — the
+     environments (arity 1 vs arity 4) are irreconcilable.
+  3. `simp_all [nf_eval_nf, zoneHolds]` → unsolved: goal reduces to `∀ i : Fin 4, …` four-point
+     order constraints on `v`; `hmon` gives only the `(v < x1) ∧ (x1 < v)` single-point pair.
+  4. `constructor <;> intro <;> tauto` → `tauto` fails BOTH directions; the `mpr` branch leaves the
+     unfillable witness obligation `⊢ M.carrier` — no way to position the inner witness relative to
+     {w,x,t} from the x1-monadic data.
+  5. `aesop` → failed to prove the goal after exhaustive search (both `mp` and `mpr` remain).
+
+**LITMUS.** No `x1 < e_i` relative-position literal was introduced (the obstruction is the inner
+witness `v`'s coupling, not `x1`'s positioning); the certification rests on the arity-4 residual
+clause of the NO-GO exit criterion, not the LITMUS clause.
+
+**Route (c).** No constant-arity-1 χ argument can characterize `∃ x1, nf_eval_nf M 1 4 (cons x1
+[w,x,t]) sub`: models differing only in the inner witness's position relative to `w`, while
+agreeing on all arity-1 projections and on `x1`'s zone, are distinguished by the LHS — a semantic
+impossibility for any constant-arity-1 encoding. Growing χ's arity abandons the constant-arity
+design and re-enters the navigated-characteristic G6 barrier. Hence WHOLE-TASK NO-GO.
+
+**Consequence (recommendation).** The depth-2 carrier route as specified (constant-arity E[Σ]
+outer fold) is BLOCKED. **Do NOT start P2 (engine) or P3 (5-zone dischargers).** The whole k=2
+carrier route needs fundamental reconsideration: any viable path must carry the inner-witness
+joint content, which the ≤2-free-variable / constant-arity design forbids. Per DECISION-GATE
+(:1638) no partial carrier and no `sorry` is committed; this record is additive and inert. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

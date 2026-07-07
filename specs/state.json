@@ -2905,7 +2905,7 @@
     {
       "project_number": 327,
       "project_name": "k2_fold_engine_provability_gate_poc_or_nogo",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "description": "P1 (provability GATE — MUST run first, cheap make-or-break). Determine whether the depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate (arity-4/depth-1 analog of the landed nf_quant_layer_fold_k1_gate) folds CLEANLY, and by WHICH route: (a) naive nfk-split-kit factorization via nf_eval_nf1_cons_factor, (b) the constant-arity E[Sigma] efold route (efold_of_nfk / nf_eval_nf1_iff_efold analog), or (c) a new argument. Deliverable: EITHER a proven proof-of-concept skeleton certifying the route, OR a machine-grounded NO-GO with the exact failing goal. Context: a naive 0->1 lift is BLOCKED — it re-invokes the arity-4->arity-3 / G6 barrier documented at NfMultiAnchorBridge.lean:1622-1646; the naive nf_eval_nf1_cons_factor is likely FALSE (inner quant layer couples x1 to zoneHolds(cons x env)). This gate isolates the entire route's residual F4-flattening-relapse risk (LITMUS: reconstruction must ride evaluation-point/structural position, never an x1<e_i literal). If NO-GO, the whole carrier route needs fundamental reconsideration (do NOT start P2/P3). Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Prop 4.3 E[Sigma]-fold (constant-arity, avoids the navigated arity-4 characteristic), Cor 5.4 md:154-157. DO-NOT-EDIT: task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice (byte-identical to 8448ea135), BracketCarrierCorrectVPrior, EANegation, F1-F4 records — purely additive.",
       "effort": "4-8 hours",
@@ -2916,14 +2916,21 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
       ],
       "created": "2026-07-07T22:56:50Z",
-      "last_updated": "2026-07-07T22:56:50Z",
+      "last_updated": "2026-07-07T23:11:09Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md",
           "summary": "Architectural scope-map: P1 is the cheap provability gate for the k2 fold engine"
+        },
+        {
+          "type": "plan",
+          "path": "specs/327_k2_fold_engine_provability_gate_poc_or_nogo/plans/01_k2-fold-provability-gate.md",
+          "summary": "Hard-mode 3-phase provability gate plan (route-a barrier, route-b E[Sigma] efold make-or-break, PoC/NO-GO certify)"
         }
-      ]
+      ],
+      "session_id": "sess_1783465547_adec63",
+      "completion_summary": "GATE VERDICT: WHOLE-TASK NO-GO (machine-grounded). Depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate does not fold cleanly at constant arity by any route (a/b/c); the depth-1 per-witness factorization is FALSE (inner-witness joint coupling to x1 AND {w,x,t} cannot be carried by the arity-1 constant-arity monadic channel). Reproduces the G6 arity-4 barrier at NfMultiAnchorBridge.lean:1622-1646. Additive inert NO-GO record landed; lake build green; no sorry committed. Downstream P2 (task 328) and P3 (task 329) must NOT start."
     },
     {
       "project_number": 328,

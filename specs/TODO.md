@@ -12,15 +12,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,327 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,328 | 161,187,191,194,230,291,300,327 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,329 | 189,192,196,328 | automation, kamp_theorem_formalization |
-| 4 | 177,178,321 | 131,193,329 | formula-refactor, kamp_theorem_formalization |
-| 5 | 309 | 321 | kamp_theorem_formalization |
-| 6 | 307 | 309 | completeness |
-| 7 | 305 | 307 | completeness |
-| 8 | 303 | 305 | completeness |
-| 9 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,328 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,329 | 161,187,191,194,230,291,300,328 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,321 | 189,192,196,329 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -112,11 +111,10 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-327 [RESEARCHED] — P1 (provability GATE — MUST run first, cheap make-or-break). Dete
-  └─ 328 [RESEARCHED] — P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the
-    └─ 329 [RESEARCHED] — P3 (5-zone dischargers — depends on P2 statement). Land the non-i
-      └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+328 [RESEARCHED] — P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the
+  └─ 329 [RESEARCHED] — P3 (5-zone dischargers — depends on P2 statement). Land the non-i
+    └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -148,11 +146,12 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 327. K2 fold engine provability gate poc or nogo
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md]
+- **Plan**: [327_k2_fold_engine_provability_gate_poc_or_nogo/plans/01_k2-fold-provability-gate.md]
 
 **Description**: P1 (provability GATE — MUST run first, cheap make-or-break). Determine whether the depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate (arity-4/depth-1 analog of the landed nf_quant_layer_fold_k1_gate) folds CLEANLY, and by WHICH route: (a) naive nfk-split-kit factorization via nf_eval_nf1_cons_factor, (b) the constant-arity E[Sigma] efold route (efold_of_nfk / nf_eval_nf1_iff_efold analog), or (c) a new argument. Deliverable: EITHER a proven proof-of-concept skeleton certifying the route, OR a machine-grounded NO-GO with the exact failing goal. Context: a naive 0->1 lift is BLOCKED — it re-invokes the arity-4->arity-3 / G6 barrier documented at NfMultiAnchorBridge.lean:1622-1646; the naive nf_eval_nf1_cons_factor is likely FALSE (inner quant layer couples x1 to zoneHolds(cons x env)). This gate isolates the entire route's residual F4-flattening-relapse risk (LITMUS: reconstruction must ride evaluation-point/structural position, never an x1<e_i literal). If NO-GO, the whole carrier route needs fundamental reconsideration (do NOT start P2/P3). Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Prop 4.3 E[Sigma]-fold (constant-arity, avoids the navigated arity-4 characteristic), Cor 5.4 md:154-157. DO-NOT-EDIT: task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice (byte-identical to 8448ea135), BracketCarrierCorrectVPrior, EANegation, F1-F4 records — purely additive.
 
