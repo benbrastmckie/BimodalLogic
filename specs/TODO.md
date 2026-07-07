@@ -110,7 +110,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-324 [RESEARCHED] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
+324 [PLANNED] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
   └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
@@ -120,13 +120,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 324. Redesign k2 subbracket arity4 correctness pair
 - **Effort**: 10-14 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**:
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md]
   - [324_redesign_k2_subbracket_arity4_correctness_pair/reports/01_adversarial-verification.md]
+- **Plan**: [324_redesign_k2_subbracket_arity4_correctness_pair/plans/01_arity4-correctness-pair-plan.md]
 
 **Description**: Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 BracketCarrierCorrectVPrior gate over bracketEndChar_kvE2) is machine-grounded BLOCKED: the landed kvE_subBracket/kvE_subChain (task-321 Stage A, `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean`) supply only a strictly-upward Until chain from the outer witness slot `u`, which structurally cannot reach sigma's own interior zone `zXU = (x,v,u)` (below `u`); and the sole landed connector `kvE_subBracket_implies_subChain` runs bracket-holds -> chain-at-point, the wrong direction for soundness (soundness needs chain-at-point -> full `nf_eval_nf M 1 4` reconstruction). No arity-4 sub-bracket correctness pair (soundness + completeness, the analog of the landed k1v `:2338`/`:2979` templates one arity up, with a cross-body sigma.1 atom-layer recovery channel) exists among landed assets.
 
