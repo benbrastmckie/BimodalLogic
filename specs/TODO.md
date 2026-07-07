@@ -105,7 +105,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [PLANNED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -208,11 +208,12 @@ GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311
 - **Research**: [307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md]
+- **Plan**: [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
 
 **Description**: Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).
 
