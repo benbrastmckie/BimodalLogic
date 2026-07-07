@@ -1,51 +1,31 @@
 {
-  "status": "partial",
+  "status": "blocked",
   "skeleton": false,
-  "summary": "Phase 10 (Stage C soundness closure) hit a genuine, machine-documented STRUCTURAL obstruction and could not land as planned. The plan's phase10_first_step requires bridging hLwit/hRwit (per-fChainPred witness form over kvE_subChain2V, the re-pointed kvE2_body joint channel :8154) back to (kvE_subBracket2V sigma).holds so kvE_subBracket2V_sound (:7370) can be consumed. That bridge IS the reverse Cor 5.4 direction (fChainPred -> bracket), DOCUMENTED UNPROVABLE at EANegation.lean:1217-1234 (report 18 section 10.3, interior-witness convention). Only the FORWARD bracket_implies_fChainPred (EANegation:660) is landed; the pin channel (kvE_pinDisjunct :5374) supplies only the anchor fresh type, not the per-chi zXU below-anchor witnesses (hbelow) that kvE_subBracket2V_sound needs. DELIVERED: landed kvE_subBracket2V_sound_of_parts (green, axiom-clean, committed) — a .holds-free refactor proving the ONLY carrier-side inputs soundness truly consumes are (anchor x1, hbelow); this isolates the residual precisely and is the drop-in consumer for any corrected joint channel that recovers (anchor, hbelow) without the unprovable reverse direction. No live-path sorry introduced; module builds green; forbidden-list assets byte-identical.",
+  "summary": "Task 321 Phases 9-10 (Stage C soundness, one `bracketEndChar_kvE2_sound` commit) dispatch (sess_1783452940_63339e, --hard --lit). Phase 9 reduction recipe (v5 lines 383-399) applied VERBATIM and VERIFIED GREEN via lean_goal: `bracketEndChar_kvE2_two_eq` rewrite + `simp only [kvE2_body, VVecEA2.holds]` + gate split (isFalse closes, isTrue keeps `hg`) + flatMap/map destructure yields `hbr` DEFINITIONALLY in the `kvE_subBracket2V_sound_of_outer` `h`-shape (l:=lL, pins:=pinSlots, charK:=fun χ => P.existF 0 χ); `k1v_bracket_extract` gives `w`; `refine ⟨w,?_⟩; refine ⟨?_,?_⟩` splits into atom layer (dischargeable via k1v_reconstruct_nf3) + the depth-1-subs quant layer. Task-326's closer `kvE_subBracket2V_sound_of_outer` (:7910) DOES consume `hbr` for the INTERIOR joint crux (reverse-Cor-5.4 wall resolved as intended). BUT a NEW, upstream structural obstruction blocks the full assembly: the outer quant layer `∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ qnf.2 sub = true` has NO landed fold engine over depth-1 subs (only depth-0 `nf_quant_layer_fold_iff`/`_k1_gate` exist), and the 5 non-interior consistent zones store only the arity-1 fresh projection `charK (nfk_projFresh σ)` from which a full arity-4 depth-1 sub cannot be reconstructed. This is the DEFERRED general-j=1 fold-engine lift (kvE2_body doc :5602-5607). Working tree kept byte-identical to commit 8448ea135 (no sorry, no partial scaffolding committed).",
   "phases_completed": 8,
   "phases_total": 15,
   "sorry_inventory": [],
   "blockers": [
     {
       "phase": 10,
-      "target": "bracketEndChar_kvE2_sound (Stage C soundness closure)",
-      "what_failed": "Bridge hLwit/hRwit (fChainPred realizations over kvE_subChain2V) -> (kvE_subBracket2V sigma).holds, required to feed kvE_subBracket2V_sound (:7370).",
-      "root_cause": "Reverse Cor 5.4 direction fChainPred -> bracket is documented UNPROVABLE at EANegation.lean:1217-1234 (report 18 section 10.3, interior-witness convention). Only forward bracket_implies_fChainPred (EANegation:660) is landed. Phase-8 re-point (kvE_subChain -> kvE_subChain2V) fixed zXU reachability but left the joint channel as a flat fChainPred, provable forward (completeness) but not reverse (soundness). Splicing sub-content as flat TemporalPred entries into the outer bracket witness list (extracted via k1v_bracket_extract, one point per entry) is architecturally incompatible with recovering a nested sub-bracket .holds.",
-      "isolation": "kvE2_body joint channel at NfMultiAnchorBridge.lean:8154 (ptSub sigma = kvE_subChain2V charBase charK sigma). The exact missing datum is hbelow: per-chi, sigma.2(nf0_assemble kvE_sub2_zXU chi sigma.1)=true -> exists u in (x, x1) realizing nf_depth0_char_formula chi. Everything else soundness needs is supplied by hgate or the pin anchor.",
-      "resolution_options": [
-        "Re-plan option 1: redesign kvE2_body joint channel (321-owned) so the per-sub soundness obligation exposes (anchor, hbelow) directly (e.g. carry zXU reachability via kvE_subBracket2V_reaches_zXU :7246 off a genuinely-carried .holds), feeding the landed kvE_subBracket2V_sound_of_parts. Ripples into completeness (Phase 12+) and non-vacuity.",
-        "Re-plan option 2: research/spawn a reverse fChainPred -> bracket route under a convention other than the interior-witness convention that report 18 section 10.3 ruled out."
-      ],
-      "prohibited": "No live-path sorry, def X := True, or vacuous placeholder."
+      "target": "bracketEndChar_kvE2_sound (Stage C soundness closure — full BracketCarrierCorrectVPrior soundness half)",
+      "exact_goal": "quant layer conjunct: ∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ => t))) sub) ↔ qnf.2 sub = true",
+      "why_structural": "No landed fold engine reconstructs the outer depth-2 quant layer over DEPTH-1 subs. Landed engines (nf_quant_layer_fold_iff NfEFold:391, nf_quant_layer_fold_k1_gate NfEFold:525) are depth-0-subs only (reconstruct via nf0_assemble bijection). kvE_subBracket2V_sound_of_outer (:7910) covers ONLY the 2 interior zones (posIn zXW / posIn zWT) via the kvE_subChain2V joint channel; the 5 non-interior consistent zones (zPastX/zAtX/zAtW/zAtT/zFutT, all gate-permitted positive per kvE_consistent :5157) store only the arity-1 fresh projection charK(nfk_projFresh σ), insufficient to reconstruct or exclude a full arity-4 depth-1 sub. (zone σ, nfk_projFresh σ) does not determine σ.",
+      "task_326_status": "CONSUMED SUCCESSFULLY for the interior joint crux — resolved the reverse-Cor-5.4 x1<t wall as designed. It is NECESSARY but NOT SUFFICIENT for the full soundness half.",
+      "what_is_needed": "A NEW general-j=1 quant-layer fold engine: the arity-4/depth-1 analog of nf_quant_layer_fold_k1_gate reconstructing the outer quant layer over depth-1 subs across ALL 7 consistent zones from the carrier's per-zone channels. This is a plan-level scope gap (adjacent to Stage D fold work), NOT inside Phase 10's reuse-landed budget. Recommend /spawn a prerequisite task for this engine, then /revise 321 (v6) to insert a phase before Phase 10, then re-dispatch."
     }
   ],
-  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md",
-  "continuation_context": {
-    "is_successor": true,
-    "next_phase": 10,
-    "phase9_status": "IN PROGRESS (reduction+extraction machine-verified in prior dispatch; soundness closure blocked by the Phase-10 structural obstruction below — Phase 9 green code remains inseparable from a closure that is not currently attainable)",
-    "phase10_status": "BLOCKED (structural; see blockers[0]) — requires plan-level decision, not a local proof fix",
-    "landed_this_dispatch": {
-      "lemma": "kvE_subBracket2V_sound_of_parts",
-      "location": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean (after kvE_subBracket2V_sound :7370, before the Task 325 v2 Phase 1 block)",
-      "signature": ".holds-free refactor of kvE_subBracket2V_sound: takes (x1 : anchor, hxx1: x<x1, hx1t: x1<t, hanchor: charK(nfk_projFresh sigma) at x1, hbelow: per-chi zXU below-witnesses in (x,x1), hgate: the 6-conjunct forall-a bundle) and yields exists x1', nf_eval_nf M 1 4 [x1',w,x,t] sigma. Proof body identical to kvE_subBracket2V_sound :7399-7426.",
-      "axioms": ["propext", "Classical.choice", "Quot.sound"],
-      "why_valuable": "It is the drop-in soundness consumer for the corrected joint channel and pins the exact residual: the joint channel must recover (anchor, hbelow), NOT a flat fChainPred."
-    },
-    "verified_reduction_recipe_still_valid": "The Phase-9 entry+extraction recipe (rw two_eq; simp only [kvE2_body, VVecEA2.holds]; gate split; arrangement destructure; k1v_bracket_extract) remains machine-verified and is unaffected by this obstruction; it produces hLwit/hRwit as documented in the prior handoff. The obstruction is strictly downstream (hLwit -> kvE_subBracket2V.holds)."
+  "verified_green_progress": {
+    "phase_9_reduction": "Machine-verified via lean_goal on uncommitted WIP; recipe reusable VERBATIM (documented in plan v5 Phase 9 PROGRESS block). hbr in sound_of_outer h-shape with no show/change needed. Not committed (proof-side half-proof, no independent green terminus; removed from tree to keep build green).",
+    "closer_consumes_hbr": "kvE_subBracket2V_sound_of_outer type-checks against hbr for interior σ ∈ lL with pins := pinSlots (pin-membership shape ⟨charK (nfk_projFresh σ)⟩ ∈ pinSlots σ confirmed)."
   },
+  "continuation_context": {
+    "target_api": "bracketEndChar_kvE2_sound : (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t → ∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf, under the six BracketCarrierCorrectVPrior order hypotheses on qnf.1. This is the soundness half; Stage D Phase 11 needs the completeness half + the same outer quant-layer engine.",
+    "reduction_recipe_verified": "See plan v5 Phase 9 PROGRESS block for the verbatim green reduction prefix.",
+    "phase_11_stage_d": "Stage D (Phase 11) inner-witness fold extraction likely needs the SAME missing general-j=1 quant-layer engine — resolving it unblocks both directions."
+  },
+  "next_action_hint": "/spawn 321 'general-j=1 quant-layer fold engine: reconstruct ∀ sub:NormalForm sig 1 4, (∃x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ q sub from per-zone carrier channels across all 7 consistent zones — arity-4/depth-1 analog of nf_quant_layer_fold_k1_gate' ; then /revise 321 to insert the engine phase before Phase 10; then /orchestrate 321.",
   "artifacts": [
-    {"type": "source", "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"},
-    {"type": "plan", "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md"}
-  ],
-  "next_action_hint": "Phase 10 is structurally blocked by the documented-unprovable reverse Cor 5.4 direction (EANegation:1217-1234). Do NOT re-dispatch Phase 10 unchanged. Route to /revise (re-plan the kvE2_body joint channel to expose (anchor, hbelow) directly, feeding the landed kvE_subBracket2V_sound_of_parts) or /spawn a reverse-direction research task under a non-interior-witness convention. The landed kvE_subBracket2V_sound_of_parts is the consumer any corrected channel plugs into.",
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "build_passed": true,
-    "scoped_module": "Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge",
-    "axioms": ["propext", "Classical.choice", "Quot.sound"],
-    "forbidden_assets_byte_identical": true,
-    "new_green_lemmas": ["kvE_subBracket2V_sound_of_parts"]
-  }
+    {"path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/05_corrected-k2-carrier-gate-v5.md", "type": "plan", "summary": "v5 plan; Phase 9 annotated with VERIFIED reduction recipe + Phase 10 BLOCKED with F-house record of the missing general-j=1 outer quant-layer fold engine."}
+  ]
 }

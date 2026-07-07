@@ -363,7 +363,31 @@ landed and carried forward. Phases 9+10 execute and land as a single soundness c
   on the joint path; `two_eq` closes by `rfl`; `kvE_subBracket2V_nonvacuous` consumed; axiom-clean; no
   `sorry`; all forbidden-list assets byte-identical.
 
-### Phase 9: Stage C soundness reduction — gate entry + k1v channel extraction over the new carrier [NOT STARTED] (Stage C — reconciled from [BLOCKED], now closeable)
+### Phase 9: Stage C soundness reduction — gate entry + k1v channel extraction over the new carrier [BLOCKED] (Stage C — reduction VERIFIED green; lands jointly with Phase 10, which is BLOCKED)
+
+**PROGRESS (task 321 dispatch, session sess_1783452940_63339e):** The machine-verified reduction
+recipe (lines 383-399) was applied VERBATIM and **type-checks green** (confirmed via `lean_goal`
+on uncommitted WIP). Concretely verified:
+- `rw [bracketEndChar_kvE2_two_eq] at h`; `simp only [kvE2_body, VVecEA2.holds] at h`;
+  `obtain ⟨vea, hmem, hveah⟩ := h`; `split at hmem` (isFalse closes via `simp at hmem`; isTrue
+  keeps `hg : kvE_gate qnf.1 qnf.2`); `rw [List.mem_flatMap]`/`List.mem_map`; `subst hEq`;
+  `obtain ⟨hepL, hepR, hbr⟩ := hveah` — ALL type-check.
+- `hbr` IS in the `kvE_subBracket2V_sound_of_outer` `h`-shape: its bracket-list is
+  `lL.flatMap (fun σ => kvE_subChain2V (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) σ ++ pinSlots σ)`
+  where `pinSlots σ = (kvE_pinArrangements σ).flatMap (fun a => (kvE_pinDisjunct … σ a).1)` — this
+  is DEFINITIONALLY the closer's `h` argument with `l := lL`, `pins := pinSlots`,
+  `charK := fun χ => P.existF 0 χ`. No `show`/`change` needed.
+- `k1v_bracket_extract M atomMap _ _ _ _ _ x t hbr` yields
+  `⟨w, hxw, hwt, hptWe, hLwit, hRwit, hLgap, hRgap⟩` and `refine ⟨w, ?_⟩` reduces the goal to
+  `nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf`.
+- `refine ⟨?_, ?_⟩` splits that into the atom layer
+  `∀ a : AtomKind sig 3, atom_eval M [w,x,t] a ↔ qnf.1 a = true` (reconstructible via
+  `k1v_reconstruct_nf3`, exactly as k1v) and the quant layer (see Phase-10 BLOCKER).
+
+This reduction prefix is uncommitted (it is a proof-side half-proof with no independent green
+terminus; removed from the working tree to keep the build green). Re-dispatch can reuse the
+recipe above VERBATIM.
+
 
 **RECONCILIATION (v5):** v4 marked this phase `[BLOCKED]` because its machine-verified reduction recipe
 was inseparable from the then-BLOCKED Phase-10 closure (the reverse-Cor-5.4 wall). Task 326 unblocks the
@@ -414,7 +438,57 @@ theorem). No `sorry`-skeleton is committed at the 9/10 boundary.
   skeleton is NOT committed — the green terminus is the assembled Phase-10 theorem). Axiom-clean on
   anything eventually committed.
 
-### Phase 10: Stage C — per-sub soundness via kvE_subBracket2V_sound_of_outer (pin threading + hgate discharge) + non-joint channels + assembly [NOT STARTED] (Stage C — RE-POINTED at task 326)
+### Phase 10: Stage C — per-sub soundness via kvE_subBracket2V_sound_of_outer (pin threading + hgate discharge) + non-joint channels + assembly [BLOCKED] (Stage C — RE-POINTED at task 326; blocked on MISSING outer general-j=1 quant-layer fold engine)
+
+**BLOCKER (Phase 10; task 321 dispatch, session sess_1783452940_63339e — machine-grounded,
+F-house record):**
+
+- **What failed / exact goal.** After the Phase-9 reduction (verified green) and
+  `refine ⟨w, ?_⟩; refine ⟨?_, ?_⟩`, the residual soundness goal
+  `∃ w, nf_eval_nf M 2 3 (Fin.cons w [w,x,t]) qnf` splits (definitional unfold of `nf_eval_nf`
+  at successor depth, NormalForm.lean:198) into:
+  1. atom layer `∀ a : AtomKind sig 3, atom_eval M (Fin.cons w (Fin.cons x fun _ => t)) a ↔ qnf.1 a = true`
+     — DISCHARGEABLE via `k1v_reconstruct_nf3` exactly as k1v (`bracketEndChar_k1v_sound` :2578);
+  2. **quant layer** `∀ sub : NormalForm sig 1 4,
+     (∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ => t))) sub) ↔ qnf.2 sub = true`
+     — this is the conjunct that **cannot be discharged from landed assets**.
+- **Conjunct attempted.** The quant layer over **depth-1** subs `sub : NormalForm sig 1 4`.
+  `kvE_subBracket2V_sound_of_outer` (:7910) discharges the BACKWARD direction only for a
+  **single interior** sub `σ ∈ lL ⊆ posIn zXW` (and symmetrically `posIn zWT`) — the joint
+  channel carried by `kvE_subChain2V`. It does NOT discharge the quant layer over the other
+  **five** consistent zones (`zPastX`, `zAtX`, `zAtW`, `zAtT`, `zFutT`, all permitted positive by
+  `kvE_gate`/`kvE_consistent` :5157), nor the FORWARD (realization ⇒ bit) direction that needs a
+  per-sub exclusion for negative subs in those zones.
+- **Why structural (not effort).** For the 5 non-interior zones the carrier `kvE2_body` stores
+  ONLY the **arity-1 fresh projection** literal `charK (nfk_projFresh σ) = P.existF 0 (nfk_projFresh σ)`
+  (in `epL`/`ptW`/`epR` via `hasPos`), plus Since/Until wrappers. Reconstructing a full **arity-4**
+  depth-1 sub `σ : NormalForm sig 1 4` (its atom layer `σ.1 : NormalForm sig 0 4` at all of
+  `[x1,w,x,t]` AND its inner quant `σ.2`) from an arity-1 unary projection is impossible:
+  `(zone σ, nfk_projFresh σ)` does NOT determine `σ` (unlike the depth-0 case where
+  `nf0_assemble zs χ r` is a bijection). The ONLY landed quant-layer fold engines —
+  `nf_quant_layer_fold_iff` (NfEFold:391) and its gate wrapper `nf_quant_layer_fold_k1_gate`
+  (NfEFold:525) — are restricted to **depth-0 subs** (`NormalForm sig 0 (n+1)`, reconstructed via
+  `nf0_assemble`). `nf_eval_depth1_fold_iff` (:5344) reconstructs a *single* depth-1 form, not the
+  quant layer over depth-1 subs. **There is NO landed engine** producing
+  `∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ q sub = true`. This is
+  exactly the "general-`j` fold-engine lift" that the `kvE2_body` doc comment (:5602-5607) records
+  as **DEFERRED follow-on** — v5's Phase-10 step-5 "assemble the discharged channels + the closed
+  per-sub crux into the full soundness statement" presumes an outer quant-layer assembly that has
+  no landed realization.
+- **What is needed (concrete action to unblock).** A NEW general-`j=1` quant-layer fold engine
+  reconstructing the depth-2 outer quant layer over depth-1 subs from the carrier's per-zone
+  channels — the arity-4 / depth-1 analog of `nf_quant_layer_fold_k1_gate`, carrying the full
+  arity-4 sub structure for ALL 7 consistent zones (not just the 2 interior ones the task-326
+  joint channel `kvE_subChain2V` + `kvE_subBracket2V_sound_of_outer` cover). This is a plan-level
+  scope gap: it belongs in a dedicated phase/task (adjacent to Stage D's fold work), NOT inside
+  Phase 10's "reuse landed assets" budget. The `kvE_subBracket2V_sound_of_outer` re-point solves
+  the *interior joint* crux (the reverse-Cor-5.4 wall v4 hit) but is NOT sufficient for the full
+  `BracketCarrierCorrectVPrior` soundness half.
+- **Prohibited (honored).** No `sorry` (live-path or strategic) landed; no vacuous placeholder;
+  `kvE2_body`/`bracketEndChar_kvE2`/`kvE_subChain2V` splice UNTOUCHED (working tree byte-identical
+  to commit `8448ea135`); no landed asset edited; no reverse `fChainPred → .holds` lift attempted.
+
+**RE-POINT NOTE (v5) — original planning content follows:**
 
 - **RE-POINT NOTE (v5):** v4's Phase 10 was `[BLOCKED]` on the reverse-Cor-5.4 wall (lifting the flat
   `fChainPred` back to a nested `.holds`). Task 326's `kvE_subBracket2V_sound_of_outer` (:7910) is the
