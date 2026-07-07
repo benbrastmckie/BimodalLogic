@@ -4056,4 +4056,224 @@ private theorem f2_take_char0 {m n : Nat} (h : m ≤ n) (env : Fin n → F2M.car
   | pred p i => rfl
   | order i j h' => rfl
 
+/-- Depth-0 2-type congruence, value form (`Fin.cons` environments `[z, u]`): same `P`-bits and
+    same order pattern give the same characteristic 2-type. -/
+private theorem f2_char0_congr2 (z₁ u₁ z₂ u₂ : ℤ)
+    (hPz : (z₁ = 0 ∨ z₁ = 10 ∨ z₁ = 20) ↔ (z₂ = 0 ∨ z₂ = 10 ∨ z₂ = 20))
+    (hPu : (u₁ = 0 ∨ u₁ = 10 ∨ u₁ = 20) ↔ (u₂ = 0 ∨ u₂ = 10 ∨ u₂ = 20))
+    (h_zu : z₁ < u₁ ↔ z₂ < u₂) (h_uz : u₁ < z₁ ↔ u₂ < z₂) :
+    nf_characteristic F2M 0 2 (Fin.cons z₁ (fun _ => u₁)) =
+      nf_characteristic F2M 0 2 (Fin.cons z₂ (fun _ => u₂)) := by
+  apply f2_char0_congr
+  · intro i
+    match i with
+    | ⟨0, _⟩ => exact hPz
+    | ⟨1, _⟩ => exact hPu
+  · intro i j
+    match i, j with
+    | ⟨0, _⟩, ⟨0, _⟩ => exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+    | ⟨0, _⟩, ⟨1, _⟩ => exact h_zu
+    | ⟨1, _⟩, ⟨0, _⟩ => exact h_uz
+    | ⟨1, _⟩, ⟨1, _⟩ => exact iff_of_false (lt_irrefl _) (lt_irrefl _)
+
+/-- Depth-0 4-type congruence, value form (`Fin.cons` environments `[u, w, x, t]`). -/
+private theorem f2_char0_congr4 (u₁ w₁ x₁ t₁ u₂ w₂ x₂ t₂ : ℤ)
+    (hPu : (u₁ = 0 ∨ u₁ = 10 ∨ u₁ = 20) ↔ (u₂ = 0 ∨ u₂ = 10 ∨ u₂ = 20))
+    (hPw : (w₁ = 0 ∨ w₁ = 10 ∨ w₁ = 20) ↔ (w₂ = 0 ∨ w₂ = 10 ∨ w₂ = 20))
+    (hPx : (x₁ = 0 ∨ x₁ = 10 ∨ x₁ = 20) ↔ (x₂ = 0 ∨ x₂ = 10 ∨ x₂ = 20))
+    (hPt : (t₁ = 0 ∨ t₁ = 10 ∨ t₁ = 20) ↔ (t₂ = 0 ∨ t₂ = 10 ∨ t₂ = 20))
+    (h_uw : u₁ < w₁ ↔ u₂ < w₂) (h_wu : w₁ < u₁ ↔ w₂ < u₂)
+    (h_ux : u₁ < x₁ ↔ u₂ < x₂) (h_xu : x₁ < u₁ ↔ x₂ < u₂)
+    (h_ut : u₁ < t₁ ↔ u₂ < t₂) (h_tu : t₁ < u₁ ↔ t₂ < u₂)
+    (h_wx : w₁ < x₁ ↔ w₂ < x₂) (h_xw : x₁ < w₁ ↔ x₂ < w₂)
+    (h_wt : w₁ < t₁ ↔ w₂ < t₂) (h_tw : t₁ < w₁ ↔ t₂ < w₂)
+    (h_xt : x₁ < t₁ ↔ x₂ < t₂) (h_tx : t₁ < x₁ ↔ t₂ < x₂) :
+    nf_characteristic F2M 0 4 (Fin.cons u₁ (Fin.cons w₁ (Fin.cons x₁ (fun _ => t₁)))) =
+      nf_characteristic F2M 0 4 (Fin.cons u₂ (Fin.cons w₂ (Fin.cons x₂ (fun _ => t₂)))) := by
+  apply f2_char0_congr
+  · intro i
+    match i with
+    | ⟨0, _⟩ => exact hPu
+    | ⟨1, _⟩ => exact hPw
+    | ⟨2, _⟩ => exact hPx
+    | ⟨3, _⟩ => exact hPt
+  · intro i j
+    have irr : ∀ a b : ℤ, (a < a ↔ b < b) := fun a b =>
+      iff_of_false (lt_irrefl _) (lt_irrefl _)
+    match i, j with
+    | ⟨0, _⟩, ⟨0, _⟩ => exact irr _ _
+    | ⟨0, _⟩, ⟨1, _⟩ => exact h_uw
+    | ⟨0, _⟩, ⟨2, _⟩ => exact h_ux
+    | ⟨0, _⟩, ⟨3, _⟩ => exact h_ut
+    | ⟨1, _⟩, ⟨0, _⟩ => exact h_wu
+    | ⟨1, _⟩, ⟨1, _⟩ => exact irr _ _
+    | ⟨1, _⟩, ⟨2, _⟩ => exact h_wx
+    | ⟨1, _⟩, ⟨3, _⟩ => exact h_wt
+    | ⟨2, _⟩, ⟨0, _⟩ => exact h_xu
+    | ⟨2, _⟩, ⟨1, _⟩ => exact h_xw
+    | ⟨2, _⟩, ⟨2, _⟩ => exact irr _ _
+    | ⟨2, _⟩, ⟨3, _⟩ => exact h_xt
+    | ⟨3, _⟩, ⟨0, _⟩ => exact h_tu
+    | ⟨3, _⟩, ⟨1, _⟩ => exact h_tw
+    | ⟨3, _⟩, ⟨2, _⟩ => exact h_tx
+    | ⟨3, _⟩, ⟨3, _⟩ => exact irr _ _
+
+/-- Depth-0 5-type congruence, value form (`Fin.cons` environments `[z, u, w, x, t]`) — the
+    fresh-witness transfer workhorse for the F2 probe's per-entry checks. -/
+private theorem f2_char0_congr5 (z₁ u₁ w₁ x₁ t₁ z₂ u₂ w₂ x₂ t₂ : ℤ)
+    (hPz : (z₁ = 0 ∨ z₁ = 10 ∨ z₁ = 20) ↔ (z₂ = 0 ∨ z₂ = 10 ∨ z₂ = 20))
+    (hPu : (u₁ = 0 ∨ u₁ = 10 ∨ u₁ = 20) ↔ (u₂ = 0 ∨ u₂ = 10 ∨ u₂ = 20))
+    (hPw : (w₁ = 0 ∨ w₁ = 10 ∨ w₁ = 20) ↔ (w₂ = 0 ∨ w₂ = 10 ∨ w₂ = 20))
+    (hPx : (x₁ = 0 ∨ x₁ = 10 ∨ x₁ = 20) ↔ (x₂ = 0 ∨ x₂ = 10 ∨ x₂ = 20))
+    (hPt : (t₁ = 0 ∨ t₁ = 10 ∨ t₁ = 20) ↔ (t₂ = 0 ∨ t₂ = 10 ∨ t₂ = 20))
+    (h_zu : z₁ < u₁ ↔ z₂ < u₂) (h_uz : u₁ < z₁ ↔ u₂ < z₂)
+    (h_zw : z₁ < w₁ ↔ z₂ < w₂) (h_wz : w₁ < z₁ ↔ w₂ < z₂)
+    (h_zx : z₁ < x₁ ↔ z₂ < x₂) (h_xz : x₁ < z₁ ↔ x₂ < z₂)
+    (h_zt : z₁ < t₁ ↔ z₂ < t₂) (h_tz : t₁ < z₁ ↔ t₂ < z₂)
+    (h_uw : u₁ < w₁ ↔ u₂ < w₂) (h_wu : w₁ < u₁ ↔ w₂ < u₂)
+    (h_ux : u₁ < x₁ ↔ u₂ < x₂) (h_xu : x₁ < u₁ ↔ x₂ < u₂)
+    (h_ut : u₁ < t₁ ↔ u₂ < t₂) (h_tu : t₁ < u₁ ↔ t₂ < u₂)
+    (h_wx : w₁ < x₁ ↔ w₂ < x₂) (h_xw : x₁ < w₁ ↔ x₂ < w₂)
+    (h_wt : w₁ < t₁ ↔ w₂ < t₂) (h_tw : t₁ < w₁ ↔ t₂ < w₂)
+    (h_xt : x₁ < t₁ ↔ x₂ < t₂) (h_tx : t₁ < x₁ ↔ t₂ < x₂) :
+    nf_characteristic F2M 0 5
+        (Fin.cons z₁ (Fin.cons u₁ (Fin.cons w₁ (Fin.cons x₁ (fun _ => t₁))))) =
+      nf_characteristic F2M 0 5
+        (Fin.cons z₂ (Fin.cons u₂ (Fin.cons w₂ (Fin.cons x₂ (fun _ => t₂))))) := by
+  apply f2_char0_congr
+  · intro i
+    match i with
+    | ⟨0, _⟩ => exact hPz
+    | ⟨1, _⟩ => exact hPu
+    | ⟨2, _⟩ => exact hPw
+    | ⟨3, _⟩ => exact hPx
+    | ⟨4, _⟩ => exact hPt
+  · intro i j
+    have irr : ∀ a b : ℤ, (a < a ↔ b < b) := fun a b =>
+      iff_of_false (lt_irrefl _) (lt_irrefl _)
+    match i, j with
+    | ⟨0, _⟩, ⟨0, _⟩ => exact irr _ _
+    | ⟨0, _⟩, ⟨1, _⟩ => exact h_zu
+    | ⟨0, _⟩, ⟨2, _⟩ => exact h_zw
+    | ⟨0, _⟩, ⟨3, _⟩ => exact h_zx
+    | ⟨0, _⟩, ⟨4, _⟩ => exact h_zt
+    | ⟨1, _⟩, ⟨0, _⟩ => exact h_uz
+    | ⟨1, _⟩, ⟨1, _⟩ => exact irr _ _
+    | ⟨1, _⟩, ⟨2, _⟩ => exact h_uw
+    | ⟨1, _⟩, ⟨3, _⟩ => exact h_ux
+    | ⟨1, _⟩, ⟨4, _⟩ => exact h_ut
+    | ⟨2, _⟩, ⟨0, _⟩ => exact h_wz
+    | ⟨2, _⟩, ⟨1, _⟩ => exact h_wu
+    | ⟨2, _⟩, ⟨2, _⟩ => exact irr _ _
+    | ⟨2, _⟩, ⟨3, _⟩ => exact h_wx
+    | ⟨2, _⟩, ⟨4, _⟩ => exact h_wt
+    | ⟨3, _⟩, ⟨0, _⟩ => exact h_xz
+    | ⟨3, _⟩, ⟨1, _⟩ => exact h_xu
+    | ⟨3, _⟩, ⟨2, _⟩ => exact h_xw
+    | ⟨3, _⟩, ⟨3, _⟩ => exact irr _ _
+    | ⟨3, _⟩, ⟨4, _⟩ => exact h_xt
+    | ⟨4, _⟩, ⟨0, _⟩ => exact h_tz
+    | ⟨4, _⟩, ⟨1, _⟩ => exact h_tu
+    | ⟨4, _⟩, ⟨2, _⟩ => exact h_tw
+    | ⟨4, _⟩, ⟨3, _⟩ => exact h_tx
+    | ⟨4, _⟩, ⟨4, _⟩ => exact irr _ _
+
+/-! ### F2 probe: the concrete counterexample pair `(qnf, qnf')` at `k = 2`
+
+Report 05 F-B data, transcribed: anchors `[w, x, t] = [15, 2, 18]`, distinguishing points
+`u₁ = 12`, `u₂ = 4` (both in the interior zone `zXW`, both `¬P`, sharing their complete depth-1
+monadic point type), separated by the `P`-point `10 ∈ (x, u₁) \ (x, u₂)`. -/
+
+/-- Probe anchor environment `[w, x, t] = [15, 2, 18]`. -/
+private def f2env3 : Fin 3 → F2M.carrier := Fin.cons 15 (Fin.cons 2 (fun _ => 18))
+
+/-- `qnf`: the honest depth-2 characteristic 3-type of `[15, 2, 18]` in `M*` (realized at
+    `w = 15` by `nf_characteristic_satisfies`). -/
+private noncomputable def f2qnf : NormalForm f2sig 2 3 := nf_characteristic F2M 2 3 f2env3
+
+/-- `sub₁`: the depth-1 arity-4 type of `[u₁, w, x, t] = [12, 15, 2, 18]`. -/
+private noncomputable def f2sub1 : NormalForm f2sig 1 4 :=
+  nf_characteristic F2M 1 4 (Fin.cons 12 f2env3)
+
+/-- `sub₂`: the depth-1 arity-4 type of `[u₂, w, x, t] = [4, 15, 2, 18]`. -/
+private noncomputable def f2sub2 : NormalForm f2sig 1 4 :=
+  nf_characteristic F2M 1 4 (Fin.cons 4 f2env3)
+
+/-- `qnf'`: `qnf` with the `u₂`-sub un-marked — the F1 information-loss pattern (F1 item 1). -/
+private noncomputable def f2qnf' : NormalForm f2sig 2 3 :=
+  (f2qnf.1, fun σ => if σ = f2sub2 then false else f2qnf.2 σ)
+
+/-- Unfold: the atom layer of `qnf` is the depth-0 characteristic of the anchors. -/
+private theorem f2qnf_fst : f2qnf.1 = nf_characteristic F2M 0 3 f2env3 := rfl
+
+/-- Unfold: the quant layer of `qnf` is the realized-sub `decide` (honest marking). -/
+private theorem f2qnf_snd (σ : NormalForm f2sig 1 4) :
+    f2qnf.2 σ =
+      @decide (∃ u : ℤ, nf_eval_nf F2M 1 4 (Fin.cons u f2env3) σ)
+        (Classical.dec _) := rfl
+
+/-- Unfold: the quant layer of a depth-1 arity-4 characteristic is the realized-entry
+    `decide` over depth-0 arity-5 types. -/
+private theorem f2char14_snd (env : Fin 4 → F2M.carrier) (e : NormalForm f2sig 0 5) :
+    (nf_characteristic F2M 1 4 env).2 e =
+      @decide (∃ z : ℤ, nf_eval_nf F2M 0 5 (Fin.cons z env) e)
+        (Classical.dec _) := rfl
+
+/-- `sub₁` is marked in `qnf` (realized at `u₁ = 12`). -/
+private theorem f2_sub1_marked : f2qnf.2 f2sub1 = true := by
+  rw [f2qnf_snd]
+  exact @decide_eq_true _ (Classical.dec _)
+    ⟨12, nf_characteristic_satisfies F2M 1 4 (Fin.cons 12 f2env3)⟩
+
+/-- `sub₁` and `sub₂` share their full atom layer: same order pattern `x < u < w < t`, same
+    `P`-bits (both fresh points `¬P`) — the Def-3.1 ordering and env-restriction channels of
+    the two subs agree. -/
+private theorem f2_sub_atom_eq : f2sub1.1 = f2sub2.1 := by
+  show nf_characteristic F2M 0 4 (Fin.cons 12 f2env3) =
+    nf_characteristic F2M 0 4 (Fin.cons 4 f2env3)
+  exact f2_char0_congr _ _ (by decide) (by decide)
+
+/-- The distinguishing entry `e* :=` the depth-0 5-type of `[10, 12, 15, 2, 18]` — the type
+    "`P z` and `x < z < u < w < t`" (F1 item 1's depth-0 5-type, at the F-B points). -/
+private noncomputable def f2estar : NormalForm f2sig 0 5 :=
+  nf_characteristic F2M 0 5 (Fin.cons 10 (Fin.cons 12 f2env3))
+
+/-- `e*` is marked in `sub₁` (witness `z = 10`: `P 10` and `2 < 10 < 12`). -/
+private theorem f2_estar_in_sub1 : f2sub1.2 f2estar = true := by
+  rw [show f2sub1.2 f2estar = _ from f2char14_snd _ f2estar]
+  exact @decide_eq_true _ (Classical.dec _)
+    ⟨10, nf_characteristic_satisfies F2M 0 5 (Fin.cons 10 (Fin.cons 12 f2env3))⟩
+
+/-- `e*` is NOT marked in `sub₂`: a witness would need `P z` with `2 < z < 4` — the gap
+    `(x, u₂)` contains no `P`-point. THE information the fiber-existential read discards. -/
+private theorem f2_estar_not_in_sub2 : f2sub2.2 f2estar = false := by
+  rw [show f2sub2.2 f2estar = _ from f2char14_snd _ f2estar]
+  apply @decide_eq_false _ (Classical.dec _)
+  rintro ⟨z, hz⟩
+  rw [f2_eval_iff_char] at hz
+  -- Read the P-bit and the two order bits of `z` off the type equality.
+  have hP : ((z : ℤ) = 0 ∨ (z : ℤ) = 10 ∨ (z : ℤ) = 20) := by
+    have hb := congrFun hz (.pred () ⟨0, by omega⟩)
+    simp only [f2estar, nf_characteristic] at hb
+    have h10 : (10 : ℤ) = 0 ∨ (10 : ℤ) = 10 ∨ (10 : ℤ) = 20 := by norm_num
+    exact (decide_eq_decide.mp hb).mp h10
+  have hgt : (2 : ℤ) < z := by
+    have hb := congrFun hz (.order ⟨3, by omega⟩ ⟨0, by omega⟩ (Fin.ne_of_val_ne (by decide)))
+    simp only [f2estar, nf_characteristic] at hb
+    have h210 : (2 : ℤ) < 10 := by omega
+    exact (decide_eq_decide.mp hb).mp h210
+  have hlt : (z : ℤ) < 4 := by
+    have hb := congrFun hz (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (Fin.ne_of_val_ne Nat.zero_ne_one))
+    simp only [f2estar, nf_characteristic] at hb
+    have h1012 : (10 : ℤ) < 12 := by omega
+    exact (decide_eq_decide.mp hb).mp h1012
+  rcases hP with h | h | h <;> omega
+
+/-- `sub₁ ≠ sub₂` — they differ at `e*` (F1 item 1: distinct depth-1 arity-4 types). -/
+private theorem f2_sub_ne : f2sub1 ≠ f2sub2 := by
+  intro h
+  have hb : f2sub1.2 f2estar = f2sub2.2 f2estar := by rw [h]
+  rw [f2_estar_in_sub1, f2_estar_not_in_sub2] at hb
+  exact Bool.noConfusion hb
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
