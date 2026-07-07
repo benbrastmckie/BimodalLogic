@@ -212,18 +212,18 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 
 ---
 
-### Phase 5: Rewrite 06-notes.typ, Fix 05-theorems.typ and 00-introduction.typ [NOT STARTED]
+### Phase 5: Rewrite 06-notes.typ, Fix 05-theorems.typ and 00-introduction.typ [COMPLETED]
 
 **Goal**: Remove the reflexive-semantics self-contradiction, correct the historical/status tables, and align the light chapters with the counts and structure landed in Phases 2-4.
 
 **Tasks**:
-- [ ] `06-notes.typ:118-126`: delete the "Reflexive Temporal Semantics (Current)" section and its mis-citation of `02-semantics.typ`; replace with a short, correct history note: reflexive semantics was superseded by the strict/irreflexive A2 guard convention in task 93 (`Semantics/Truth.lean:10-17`), under which the temporal T-axioms are not valid
-- [ ] Rewrite the discrepancy/axiom-naming tables in `06-notes.typ` against the Phase 3 landed axiom presentation (BX constructor names vs paper schema names; TK/T4/TA/TL/TF now derived)
-- [ ] Correct all sorry/status counts in `06-notes.typ` from the Phase 1 SYNC-MAP regenerated numbers (the "20 sorries, all deprecated" claim is wrong); stamp with date + commit
-- [ ] `05-theorems.typ`: spot-fix the module table — `Propositional`/`Perpetuity` are subdirectories of `Theorems/`, not single files; add `ContextualProofs.lean` and `TemporalDerived.lean`; verify the full `Theorems/` listing against the filesystem; state Perpetuity P1-P6 sorry-free status as confirmed in Phase 1
-- [ ] `00-introduction.typ`: fix the "14 axioms / 7 rules" summary to the Phase 1 counts (rules stay 7), fix the directory listing to the live tree, and align the chapter-by-chapter abstract sentences with the rewritten chapters
-- [ ] Add "in progress" framing for Kamp/task-303/309-311 anywhere these chapters mention discrete completeness status
-- [ ] Compile check
+- [x] `06-notes.typ:118-126`: delete the "Reflexive Temporal Semantics (Current)" section and its mis-citation of `02-semantics.typ`; replace with a short, correct history note: reflexive semantics was superseded by the strict/irreflexive A2 guard convention in task 93 (`Semantics/Truth.lean:10-17`), under which the temporal T-axioms are not valid
+- [x] Rewrite the discrepancy/axiom-naming tables in `06-notes.typ` against the Phase 3 landed axiom presentation (BX constructor names vs paper schema names; TK/T4/TA/TL/TF now derived)
+- [x] Correct all sorry/status counts in `06-notes.typ` from the Phase 1 SYNC-MAP regenerated numbers (the "20 sorries, all deprecated" claim is wrong); stamp with date + commit
+- [x] `05-theorems.typ`: spot-fix the module table — `Propositional`/`Perpetuity` are subdirectories of `Theorems/`, not single files; add `ContextualProofs.lean` and `TemporalDerived.lean`; verify the full `Theorems/` listing against the filesystem; state Perpetuity P1-P6 sorry-free status as confirmed in Phase 1
+- [x] `00-introduction.typ`: fix the "14 axioms / 7 rules" summary to the Phase 1 counts (rules stay 7), fix the directory listing to the live tree, and align the chapter-by-chapter abstract sentences with the rewritten chapters
+- [x] Add "in progress" framing for Kamp/task-303/309-311 anywhere these chapters mention discrete completeness status
+- [x] Compile check
 
 **Timing**: 1.5 hours
 
