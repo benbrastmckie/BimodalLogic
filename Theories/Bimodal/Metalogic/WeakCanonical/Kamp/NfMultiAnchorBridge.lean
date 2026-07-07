@@ -7425,6 +7425,84 @@ theorem kvE_subBracket2V_sound {sig : MonadicSignature}
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
+/-- **Soundness-of-parts consumer for the corrected sub-bracket** (task 321 Phase 10; the
+    `.holds`-free refactor of `kvE_subBracket2V_sound` :7370). Isolates EXACTLY the carrier-side
+    inputs `kvE_subBracket2V_sound` actually consumes: the interior anchor witness `x1` (the fresh
+    depth-1 witness slot `ptX1 = charK (nfk_projFresh σ)`, realized at `x1 ∈ (x, t)`) and the per-χ
+    below-anchor `zXU`-reachability witnesses `hbelow` (`∃ u ∈ (x, x1)` realizing each `zXU`-positive
+    `χ`). Everything else is supplied by the explicit gate hypothesis `hgate` (Amendment F3 — no
+    provider pinning; the anchor IS the bracket's own witness). The proof body is IDENTICAL to
+    `kvE_subBracket2V_sound` from the post-extract point (:7399-7426); only the opening `.holds`
+    destructure + `kvE_subBracket2V_extract` call are replaced by the explicit `(x1, hanchor, hbelow)`
+    hypotheses.
+
+    STRUCTURAL PURPOSE (task 321 Phase 10 residual isolation): `kvE_subBracket2V_sound` requires the
+    full `(kvE_subBracket2V σ).holds`, which the re-pointed `kvE2_body` joint channel (:8154,
+    `ptSub σ = kvE_subChain2V σ` = a flat `bracketFromLists3.fChainPred`) cannot supply — lifting a
+    realized `fChainPred` to the nested `.holds` is the reverse Cor 5.4 direction, DOCUMENTED
+    UNPROVABLE at `EANegation.lean:1217-1234` (report 18 §10.3, interior-witness convention). This
+    lemma pins down that the ONLY carrier-side data soundness truly needs is `(x1, hbelow)` — the
+    fresh anchor + below-anchor reachability — so any corrected joint channel that exposes those two
+    (e.g. via `kvE_subBracket2V_reaches_zXU` :7246 off a genuinely-carried `.holds`, rather than a
+    flattened chain) feeds this consumer directly, WITHOUT the unprovable reverse direction.
+    Rabinovich Cor 5.4 (md:154-157), Prop 3.5 (md:87-94). -/
+theorem kvE_subBracket2V_sound_of_parts {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (x1 : M.carrier) (hxx1 : x < x1) (hx1t : x1 < t)
+    (hanchor : (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1)
+    (hbelow : ∀ χ : NormalForm sig 0 1,
+        σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+        ∃ u : M.carrier, x < u ∧ u < x1 ∧
+          (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred).eval_at M atomMap u)
+    (hgate : ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    ∃ x1' : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  -- Feed the supplied anchor `x1` to the explicit gate hypothesis (Amendment F3: no provider
+  -- pinning). Identical continuation to `kvE_subBracket2V_sound` :7399 onward, with the anchor and
+  -- below-witnesses now given as hypotheses instead of extracted from `.holds`.
+  obtain ⟨haw, hwt, h_atom, h_off, h_fwd, h_bwd⟩ := hgate x1 hxx1 hx1t hanchor
+  refine ⟨x1, ?_⟩
+  rw [nf_eval_depth1_fold_iff]
+  refine ⟨h_atom, ?_, h_off⟩
+  intro zs χ
+  refine ⟨fun hex => h_fwd zs χ hex, ?_⟩
+  intro hbit
+  by_cases hzs : zs = kvE_sub2_zXU
+  · -- Below-anchor zone `zXU = (x < v < x1)`: the supplied below-witness clause gives a witness
+    -- strictly below the anchor `x1` (Def 3.1, PDF p.4; the redesign's signature witness).
+    subst hzs
+    obtain ⟨u, hxu, hux1, hu⟩ := hbelow χ hbit
+    refine ⟨u, ?_, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
+    have huw : u < w := hux1.trans haw
+    have hut : u < t := huw.trans hwt
+    intro i
+    match i with
+    | ⟨0, _⟩ => exact ⟨iff_of_true hux1 rfl, iff_of_false (lt_asymm hux1) (by decide +revert)⟩
+    | ⟨1, _⟩ => exact ⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by decide +revert)⟩
+    | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxu) (by decide +revert), iff_of_true hxu rfl⟩
+    | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
+  · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
+    exact h_bwd zs χ hzs hbit
+
 /-! ### Task 325 v2 Phase 1: the mandatory NON-VACUITY GATE
 
 Two consecutive prior iterations (task 324 Phase 6; task 325 v1 Phase 4) closed soundness over an
