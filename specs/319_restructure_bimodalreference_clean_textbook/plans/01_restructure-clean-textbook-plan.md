@@ -171,7 +171,7 @@ Purely additive/corrective — no `.typ` changes, compile trivially stays green.
 
 ---
 
-### Phase 2: Remove banner/legend/notice machinery (calls + definitions) [NOT STARTED]
+### Phase 2: Remove banner/legend/notice machinery (calls + definitions) [COMPLETED]
 
 **Goal**: All `#sync-banner` calls, the legend box, `dominant-class` labels, and
 `#planned-chapter-notice` boxes are gone from the compiled book; template definitions
