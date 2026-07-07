@@ -181,6 +181,7 @@ CONSTRAINTS (binding, carried from plan v7 -- do not re-litigate): Guards G1-G6 
 - **Dependencies**: Task 313
 - **Research**: [319_restructure_bimodalreference_clean_textbook/reports/01_restructure-clean-textbook-research.md]
 - **Plan**: [319_restructure_bimodalreference_clean_textbook/plans/01_restructure-clean-textbook-plan.md]
+- **Summary**: [319_restructure_bimodalreference_clean_textbook/summaries/01_restructure-clean-textbook-summary.md]
 
 **Description**: Turn the BimodalReference book (Theories/Bimodal/typst/) from the task-313 living-monograph-with-sync-scaffolding into a clean, direct textbook presentation at a rigorous formal level, with clear but concise explanations where essential — a natural unified whole with a clear narrative arc. Keep whatever can be kept (Part II and Part IV prose is essentially puzzle-free). Four workstreams:
 

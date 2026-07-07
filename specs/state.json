@@ -2548,6 +2548,11 @@
           "path": "specs/319_restructure_bimodalreference_clean_textbook/plans/01_restructure-clean-textbook-plan.md",
           "type": "plan",
           "summary": "Restructure clean textbook plan"
+        },
+        {
+          "path": "specs/319_restructure_bimodalreference_clean_textbook/summaries/01_restructure-clean-textbook-summary.md",
+          "type": "summary",
+          "summary": "Restructure clean textbook summary"
         }
       ],
       "session_id": "sess_1783407088_0a61d1",
