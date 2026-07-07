@@ -1,5 +1,5 @@
 ---
-next_project_number: 323
+next_project_number: 324
 ---
 
 # TODO
@@ -12,7 +12,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321,323 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
@@ -106,15 +106,27 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
+323 [NOT STARTED] — Full editorial review-and-revise pass over the entire BimodalRefe
 
 ### Kamp_theorem_formalization
 
-321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+321 [PLANNED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
+
+### 323. Review and revise bimodalreference uniform standard
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: reference-book
+- **Dependencies**: Task 315, Task 316, Task 317
+
+**Description**: Full editorial review-and-revise pass over the entire BimodalReference monograph (Theories/Bimodal/typst/: all chapters/*.typ, front matter, notation) to raise it to a UNIFORM, FINISHED-BOOK standard. PRIMARY DIRECTIVE: write as a completed textbook, not a draft-in-progress. Remove the pervasive "honest account / we state honestly / an honest X" refrain and ALL meta-commentary in which the text narrates its own incompleteness or sync status -- a finished book does not explain what it has not yet done. Where prose currently hedges or editorializes about status (e.g. "an honest account of what is and is not proven", sync-class asides, apologetic framing of soundness-without-completeness, remarks about formalization frontiers), rewrite into confident, neutral expository prose. CRITICAL CONSTRAINT -- honesty-removal must NOT become overclaiming: every factual claim stays accurate. Metaphysical modality remains derived soundness-only (completeness is genuinely open); the decidability frontier still cites NO embargoed Lk results; of countermodels 1-12 only #1/#8/#9 are fully interpreted; no nonexistent local Lean theorems may be asserted. The change is TONE and COMPLETENESS-POSTURE, not truth-value. Where content genuinely remains to be written, do not confess it in prose -- instead place a clean "TO BE CONTINUED..." marker at that point in the body text and a typst comment (// TO BE CONTINUED: ...) stating concretely what remains (which theorem, which worked example, which subsection, which citation). Identify the weakest/thinnest sections by comparison against the strongest chapters (e.g. 03-proof-theory.typ ~356 lines, p5-counterfactual.typ ~505 lines) and bring them up to that bar: consistent expository depth, worked examples, cross-references, definitional completeness. PRESERVE byte-identical: the // SLOT-IN: anchors and the EMBARGO header comment in chapters/p3-decidability-frontier.typ (these belong to embargo-gated task 318 and are categorically distinct from TO-BE-CONTINUED gap markers -- do not conflate or remove them). Every backticked token must remain a resolving Lean name. ACCEPTANCE GATES: `typst compile Theories/Bimodal/typst/BimodalReference.typ` exits 0 and `scripts/typst-sync-check.sh` passes all checks. Deliver a per-chapter quality assessment in the task summary (which sections were revised, which gaps were marked TO BE CONTINUED and why).
+
+---
 
 ### 322. Review discrete logic completeness retrospective
 - **Status**: [COMPLETED]
@@ -128,13 +140,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 320
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
+- **Plan**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/02_corrected-k2-carrier-fi-chain-v2.md]
 
 **Description**: Depends on task 320's probe result. Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 (finding F4, carrier-shape defect -- see task 320's description for the full crux goal, counterexample, and literature grounding; do not re-derive, consume task 320's design spec directly). This task builds the FULL corrected construction for whichever route task 320's machine-checked probe confirmed viable -- expected b3, the nested F_i-chain/bracket recursion for positive interior subs, which the literature-alignment audit (specs/320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md) found to be the literature-faithful mechanism; b1 is a boxed falsifier expected NO-GO and b2 is only a lemma-level assist inside b3, per task 320's revised probe ladder -- exact choice and design spec supplied by task 320's report. Then re-run the k=2 BracketCarrierCorrectVPrior correctness gate to a GO verdict, using the F4 provider-independent Z-counterexample (M=Z, p={0}, r={13}, x=10, t=20, sigma''=char[14,16,11,20], honest char[14,15,10,20] false) as the mandatory adversarial test case (it MUST fail against the new construction).
 
