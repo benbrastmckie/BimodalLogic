@@ -304,7 +304,7 @@ replacing the placeholder sentence.
 
 ---
 
-### Phase 4: Write p3-decidability-frontier.typ [NOT STARTED]
+### Phase 4: Write p3-decidability-frontier.typ [COMPLETED]
 
 **Goal**: Complete chapter "The Decidability Frontier" (~90-130 lines) under full
 embargo compliance, with prose sections placed so each SLOT-IN anchor sits at the
