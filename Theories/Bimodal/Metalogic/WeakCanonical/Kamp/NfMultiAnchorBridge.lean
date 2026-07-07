@@ -3826,4 +3826,111 @@ theorem bracketEndChar_kv_correct_one {sig : MonadicSignature}
   rw [bracketEndChar_kv_one_eq atomMap h_surj charF h0 qnf]
   exact bracketEndChar_k1v_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
+open Classical in
+/-- **Fiber-factorization of the depth-`k` V-carrier** (task 309 Phase 13 — the machine-checked
+    ISOLATION half of finding F1, recorded in the section comment below). At every successor
+    depth the carrier is a function of the atom layer `qnf.1`, the atom-layer off-fiber Prop,
+    and the fiber-existential fold bits ONLY: two quant layers that agree on this data yield
+    EQUAL carriers, even when they disagree on the marking of individual depth-`k` arity-4 subs
+    inside a shared `(zoneSpec, projFresh)` fiber. Pure congruence on `kv_body` (:3568) — no
+    semantics. This is the information-loss channel that refutes the unconditional k≥2
+    soundness direction of the plan-v5 Phase 13 target (see F1 below). -/
+theorem bracketEndChar_kv_factors {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    {k : Nat} (qnf qnf' : NormalForm sig (k + 1) 3)
+    (h1 : qnf.1 = qnf'.1)
+    (hoff : (∀ sub : NormalForm sig k 4,
+        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false) ↔
+      (∀ sub : NormalForm sig k 4,
+        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf'.1 → qnf'.2 sub = false))
+    (hb : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig k 1),
+        (∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
+          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) ↔
+        (∃ sub : NormalForm sig k 4, qnf'.2 sub = true ∧
+          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ)) :
+    bracketEndChar_kv atomMap h_surj charF (k + 1) qnf =
+      bracketEndChar_kv atomMap h_surj charF (k + 1) qnf' := by
+  have e2 : (∀ sub : NormalForm sig k 4,
+        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false) =
+      (∀ sub : NormalForm sig k 4,
+        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf'.1 → qnf'.2 sub = false) :=
+    propext hoff
+  have e3 : (fun (zs : ZoneSpec 3) (χ : NormalForm sig k 1) =>
+        (decide (∃ sub : NormalForm sig k 4, qnf.2 sub = true ∧
+          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) : Bool)) =
+      (fun (zs : ZoneSpec 3) (χ : NormalForm sig k 1) =>
+        decide (∃ sub : NormalForm sig k 4, qnf'.2 sub = true ∧
+          nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ)) :=
+    funext fun zs => funext fun χ => decide_eq_decide.mpr (hb zs χ)
+  show kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 _ _ =
+    kv_body (nf_depth0_char_formula atomMap h_surj) (charF k) qnf'.1 _ _
+  rw [e2, e3, h1]
+
+/-! ## Task 309 Phase 13 finding F1: the unconditional depth-`k` correctness target is FALSE
+at `k = 2` for the Phase-12 carrier — the gate-strength defect anticipated by the Phase-12
+handoff (Key Decision 3) is REAL
+
+**Target refuted** (plan v5 Phase 13 deliverable): under the six bracket-zone order hypotheses
+and the `charF` correctness hypothesis alone,
+`(bracketEndChar_kv atomMap h_surj charF k qnf).holds M atomMap x t ↔
+∃ w, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf` fails at `k = 2` — the
+soundness (LHS→RHS) direction. Defect record (four elements):
+
+1. **Counterexample** (semantic). `sig` = one predicate `P`; `M` = `(ℚ, <)` with
+   `P = {q, p, r}` and `q < x < u₂ < p < u₁ < w < t < r`. Then `u₁, u₂` share their complete
+   depth-1 1-type `χ` (a `P`-point strictly below each: `p`/`q`; strictly above each: `r`/`p`;
+   none at; density realizes the non-`P` depth-0 2-types identically), but the depth-1 arity-4
+   types `sub₁ :=` type of `[u₁,w,x,t]` and `sub₂ :=` type of `[u₂,w,x,t]` are DISTINCT — the
+   depth-0 5-type "`P z` and `x < z <` fresh" is realized below `u₁` (via `z = p`) and not
+   below `u₂` — while sharing all fiber data: zone `zXW`, `nfk_projFresh = χ`,
+   atom-restriction `= qnf.1`. Let `qnf := nf_characteristic M 2 3 [w,x,t]` (realized at `w`:
+   `nf_characteristic_satisfies`, NormalForm:224) and `qnf' := qnf` with `sub₂` re-marked
+   `false`. Then: (a) `bracketEndChar_kv … 2 qnf' = bracketEndChar_kv … 2 qnf` — by
+   `bracketEndChar_kv_factors` above (`sub₁` keeps every fiber bit alive; the off-fiber clause
+   is unaffected by un-marking an on-fiber sub); (b) the six order hypotheses hold on
+   `qnf'.1 = qnf.1`; (c) NO `w'` realizes `qnf'` in `M`: for `w' > p` density supplies
+   `v ∈ (x, p)` with `[v,w',x,t]` of type `sub₂` — realized but marked false; for `w' ≤ p`
+   there is no `v < w'` with a `P`-point in `(x, v)` — `sub₁` marked true but unrealized
+   (`w' = p` is excluded by the atom layer: `P w'` must be false). The target `↔` at `qnf`
+   forces the carrier to HOLD at `(x, t)` (mpr at witness `w`); (a) transports that to `qnf'`;
+   the target `↔` at `qnf'` then forces `∃ w'` realizing `qnf'` — contradicting (c). NOTE:
+   `qnf'` IS realizable in a different chain (a discrete one with no point strictly between
+   `x` and `p`), so no qnf-consistency hypothesis rescues the statement either.
+
+2. **Current behavior**: at depth `k + 1` the carrier reads `qnf.2` ONLY through (i) the
+   atom-layer off-fiber Prop and (ii) the fiber-existential bits (:3661-3665);
+   `bracketEndChar_kv_factors` machine-checks this factorization.
+
+3. **Required behavior**: the quant layer of `nf_eval_nf M (k+1) 3 env qnf`
+   (NormalForm:203-207) is a per-sub BICONDITIONAL over depth-`k` arity-4 subs. At
+   `k + 1 ≥ 2` a fiber `(zs, χ)` over `qnf.1` contains ≥ 2 subs differing in deeper JOINT
+   layers (D7, NfEFold:373 — no pointwise assemble exists), and the biconditional
+   distinguishes in-fiber markings the carrier cannot see.
+
+4. **Isolation**: `k = 1` is saved by the depth-0 split-kit BIJECTION (`nf0_split_assemble`,
+   NfEFold:235): fibers are singletons, so the fiber-existential read IS the pointwise read
+   (the bridge :3710) — which is exactly why `bracketEndChar_k1v_correct` (:3378) is sorry-free
+   and why the refutation starts at `k = 2`. In Rabinovich the corresponding step iterates
+   Prop 4.3 (PDF p.6) with the `α_j`/`β_j` ENRICHED at every fold round: Def 3.1 (PDF p.4)
+   takes quantifier-free formulas over the CURRENT vocabulary, and after a round that
+   vocabulary includes the previous round's TL-definable content (the `F_i` of Cor 5.4,
+   PDF p.7, are TL formulas, not base-signature types) — so the joint structure of a fresh
+   witness relative to the anchors rides the enriched interval/point formulas. The Phase-12
+   realization instead projects subs to PLAIN depth-`k` 1-types over the BASE signature
+   (`nfk_projFresh`), discarding exactly that joint structure. The repair is a carrier/plan
+   revision (inside-out iterated fold with vocabulary enrichment — the Def 4.1 p.6 note read
+   at full strength), NOT a gate patch: any syntactic gate strengthening is either violated by
+   honest characteristic types (which DO distinguish same-fiber subs — the discrete-chain
+   realization of `qnf'`) or is model-dependent. Per Key Decision 3 of the Phase-12 handoff,
+   the Phase-12 gate is NOT silently changed here; this record is the mandated Phase-13
+   finding.
+
+**Not refuted**: the completeness direction (RHS→LHS) — the honest characteristic type's
+carrier holds at all depths on this analysis; a plan-v6 carrier revision can expect to retain
+the completeness shape. Landed in this phase: the recursion base `bracketEndChar_kv_correct_zero`
+and the first step `bracketEndChar_kv_correct_one` (both above, sorry-free — the 13a seam of the
+plan's H8 split note), plus the factorization lemma. Phase 13 is [BLOCKED] pending plan revision. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
