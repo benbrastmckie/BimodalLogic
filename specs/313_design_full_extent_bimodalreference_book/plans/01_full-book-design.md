@@ -521,24 +521,24 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2.5 hours.
 - **Depends on:** 4, 5.
 
-### Phase 11: Part IV Chapter — Dual Verification and Worked Examples [NOT STARTED]
+### Phase 11: Part IV Chapter — Dual Verification and Worked Examples [COMPLETED]
 
 - **Goal:** One chapter presenting the dual-verification architecture (proof certificates vs
   countermodels) and surfacing the sorry-free `Examples/` directory as worked material.
 - **Territory:** `chapters/p4-dual-verification.typ` only.
 - **Tasks:**
-  - [ ] Dual-verification section: ProofChecker derivations vs ModelChecker/Z3 countermodel
+  - [x] Dual-verification section: ProofChecker derivations vs ModelChecker/Z3 countermodel
         search (`README.md:183-184`), adapting the Proof Certificates / Counterexamples /
         Soundness Guarantees framing from Logos `01-introduction.typ:69-95` with citation
         (○ where the claim is architectural vision, ✓ where shipped).
-  - [ ] Worked examples: curated derivations from `Examples/BimodalProofs.lean` (sorry-free)
+  - [x] Worked examples: curated derivations from `Examples/BimodalProofs.lean` (sorry-free)
         rendered dual-track (informal motivation paragraph + Lean-anchored statement box —
         the D-R5.2 house style, demonstrated here for adoption by later chapters).
-  - [ ] Concrete temporal structures from `Examples/TemporalStructures.lean`: the dense and
+  - [x] Concrete temporal structures from `Examples/TemporalStructures.lean`: the dense and
         discrete instantiations as semantics-made-tangible.
-  - [ ] Chapter-header preamble + `#sync-banner(✓, ...)` with ○ marks on the
+  - [x] Chapter-header preamble + `#sync-banner(✓, ...)` with ○ marks on the
         cross-project framing.
-  - [ ] Verify: compile green; sync-check green.
+  - [x] Verify: compile green; sync-check green.
 - **Estimated output:** ~250 lines.
 - **Done when:** chapter complete; house style demonstrated; checks green.
 - **Timing:** 2.5 hours.
