@@ -1,7 +1,7 @@
 # Implementation Plan: Task #320 — De-risk the Joint-Pinning Route for the k=2 Carrier Gate (F4 Follow-Up)
 
 - **Task**: 320 - derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours (range 6-10)
 - **Dependencies**: None (parent task 309 blocked at Phase 13.35; this task de-risks before New Task 2 / task 321 implements)
 - **Research Inputs**:
@@ -293,7 +293,7 @@ the actual honest quadruple `[u,w,x,t]` at the site where b3 needs it.
 
 ---
 
-### Phase 6: GO-gate litmus + per-route GO/NO-GO decision [NOT STARTED]
+### Phase 6: GO-gate litmus + per-route GO/NO-GO decision [COMPLETED]
 
 **Goal**: Apply the position-by-evaluation-point litmus to each probed route and emit an explicit
 GO/NO-GO decision, ensuring no route is passed that carries a two-anchor positional identity inside a
@@ -322,7 +322,7 @@ single-point formula.
 
 ---
 
-### Phase 7: Deliverable — design spec (GO) or F5 defect record (all NO-GO) [NOT STARTED]
+### Phase 7: Deliverable — design spec (GO) or F5 defect record (all NO-GO) [COMPLETED]
 
 **Goal**: Author the task deliverable report in this task's `reports/` directory, in the F1-F4 house
 style, matching whichever branch Phase 6 selected.
@@ -355,7 +355,7 @@ style, matching whichever branch Phase 6 selected.
 
 ---
 
-### Phase 8: Scratch cleanup + landed-asset integrity verification [NOT STARTED]
+### Phase 8: Scratch cleanup + landed-asset integrity verification [COMPLETED]
 
 **Goal**: Ensure no landed asset was edited and the scratch probe code is either discarded or landed as
 a clearly-marked, non-consumed verdict addition, and that the repository still builds.
