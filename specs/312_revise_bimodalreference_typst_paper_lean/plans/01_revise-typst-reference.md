@@ -154,19 +154,19 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 
 ---
 
-### Phase 3: Rewrite 03-proof-theory.typ [NOT STARTED]
+### Phase 3: Rewrite 03-proof-theory.typ [COMPLETED]
 
 **Goal**: Full rewrite of the proof-theory chapter around the actual BX axiom system (all constructors, organized by layer) and the FrameClass parameter, with every axiom formula transcribed from the Lean `Axiom` constructors.
 
 **Tasks**:
-- [ ] Replace the "14 axiom schemata" presentation with the full BX constructor listing from `ProofSystem/Axioms.lean:37` (Phase 1's regenerated count), organized by the layers as they appear in the source (research: Propositional / S5 Modal / BX Temporal x2 with primed past-mirrors / Modal-Temporal Interaction / Uniformity / Prior / Z1 / Density — confirm layer names and grouping from the source file's own structure/comments, not from this plan)
-- [ ] Transcribe each axiom's formula directly from its Lean constructor definition — every table cell checked against the actual `Axiom` constructor before landing; no formula re-derived from the paper or from the old chapter. In particular fix TL (typst currently states `always phi -> G H phi`; paper `:1103` has future-linearity; the Lean constructor is authoritative) and include TB/seriality if and as it exists in the constructors
-- [ ] Remove TK, T4, TA, TL, TF from the axiom listing where they are now derived theorems: `Axioms.lean:38,74,111-112` confirms temp_k_dist/temp_4 derived; derived homes in `Theorems/TemporalDerived.lean` (task 116). Present them in a "derived from BX" subsection with their theorem names
-- [ ] Document the `FrameClass` parameter on `DerivationTree` (`ProofSystem/Derivation.lean:85-93`): Base/Dense/Discrete, which axiom layers activate per class, and the correspondence to the paper's TM / TM+ / TM_F / TM_D / TM_C / TM_DC hierarchy (per Phase 0 scope decision)
-- [ ] Keep the 7 inference rules (axiom, assumption, modus_ponens, necessitation, temporal_necessitation, temporal_duality, weakening) — verified still accurate; re-check names against `ProofSystem/Derivation.lean` while editing
-- [ ] Add an exposition aside contrasting the paper's economical 12-schema core TM presentation (`possible_worlds.tex:1087-1105`) with the Lean constructor-level system, explaining the granularity difference (CPL combinators spelled out, primed past-mirrors, frame-class axioms)
-- [ ] Add any needed notation macros additively to `notation/bimodal-notation.typ` (e.g., frame-class axiom notation, TB); do not restructure existing macros
-- [ ] Compile check
+- [x] Replace the "14 axiom schemata" presentation with the full BX constructor listing from `ProofSystem/Axioms.lean:37` (Phase 1's regenerated count), organized by the layers as they appear in the source (research: Propositional / S5 Modal / BX Temporal x2 with primed past-mirrors / Modal-Temporal Interaction / Uniformity / Prior / Z1 / Density — confirm layer names and grouping from the source file's own structure/comments, not from this plan)
+- [x] Transcribe each axiom's formula directly from its Lean constructor definition — every table cell checked against the actual `Axiom` constructor before landing; no formula re-derived from the paper or from the old chapter. In particular fix TL (typst currently states `always phi -> G H phi`; paper `:1103` has future-linearity; the Lean constructor is authoritative) and include TB/seriality if and as it exists in the constructors
+- [x] Remove TK, T4, TA, TL, TF from the axiom listing where they are now derived theorems: `Axioms.lean:38,74,111-112` confirms temp_k_dist/temp_4 derived; derived homes in `Theorems/TemporalDerived.lean` (task 116). Present them in a "derived from BX" subsection with their theorem names
+- [x] Document the `FrameClass` parameter on `DerivationTree` (`ProofSystem/Derivation.lean:85-93`): Base/Dense/Discrete, which axiom layers activate per class, and the correspondence to the paper's TM / TM+ / TM_F / TM_D / TM_C / TM_DC hierarchy (per Phase 0 scope decision)
+- [x] Keep the 7 inference rules (axiom, assumption, modus_ponens, necessitation, temporal_necessitation, temporal_duality, weakening) — verified still accurate; re-check names against `ProofSystem/Derivation.lean` while editing
+- [x] Add an exposition aside contrasting the paper's economical 12-schema core TM presentation (`possible_worlds.tex:1087-1105`) with the Lean constructor-level system, explaining the granularity difference (CPL combinators spelled out, primed past-mirrors, frame-class axioms)
+- [x] Add any needed notation macros additively to `notation/bimodal-notation.typ` (e.g., frame-class axiom notation, TB); do not restructure existing macros
+- [x] Compile check
 
 **Timing**: 2 hours
 
