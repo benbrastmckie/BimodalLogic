@@ -336,7 +336,7 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 1.5 hours.
 - **Depends on:** 2, 3.
 
-### Phase 5: Five-Part Restructure of the Main File with Stub Division Points [NOT STARTED]
+### Phase 5: Five-Part Restructure of the Main File with Stub Division Points [COMPLETED]
 
 - **Goal:** `BimodalReference.typ` presents the five-part monograph: part dividers with
   sync-class summaries, updated front matter, and every deferred chapter present as a styled
@@ -348,7 +348,7 @@ then Phase 12; no Wave-4 phase touches either.
   for Wave-4 chapters (`p2-frame-classes.typ`, `p2-decidability-practice.typ`,
   `p4-proof-automation.typ`, `p4-dataset-pipeline.typ`, `p4-dual-verification.typ`).
 - **Tasks:**
-  - [ ] Reorganize includes into five parts with divider pages:
+  - [x] Reorganize includes into five parts with divider pages:
         Part I (00-introduction, p1-why-worlds stub); Part II (01-syntax, 02-semantics,
         03-proof-theory, p2-frame-classes, 04-metalogic, p2-decidability-practice,
         05-theorems); Part III (p3-ltl-to-tm, p3-vlach-blstar, p3-decidability-frontier,
@@ -356,21 +356,21 @@ then Phase 12; no Wave-4 phase touches either.
         p4-dual-verification); Part V (p5-constitutive, p5-counterfactual — stubs);
         back matter (06-notes, bibliography). Each divider states the part's dominant
         sync-class and one-paragraph scope.
-  - [ ] Each stub file: `#sync-banner(◇, ...)` + chapter title + one-paragraph abstract
+  - [x] Each stub file: `#sync-banner(◇, ...)` + chapter title + one-paragraph abstract
         (from the synthesis book shape) + "Planned chapter — to be written under task
         {{FOLLOWUP:i}}" notice (314 for p1-why-worlds; 315 for the
         four p3-* stubs; 317 for the two p5-* stubs). Wave-4 shell files carry
         only banner + title (filled by Phases 6-11, same file, no main-file edit).
-  - [ ] `p3-decidability-frontier.typ` stub additionally declares the named slot-in
+  - [x] `p3-decidability-frontier.typ` stub additionally declares the named slot-in
         anchors (`// SLOT-IN: ladder-table`, `// SLOT-IN: complexity-map`,
         `// SLOT-IN: case-study`) required by decision 2 and consumed by 318.
-  - [ ] Front matter: title page "Primary Reference" block becomes a "Sources" block —
+  - [x] Front matter: title page "Primary Reference" block becomes a "Sources" block —
         possible-worlds paper, counterfactual-worlds paper (published), and the Lean
         repository as ground truth (A-F8; the Lk paper is NOT listed — embargo); abstract
         updated to describe the five-part living-monograph structure and the legend.
-  - [ ] Reading-guide legend box after the abstract: the four sync-class symbols and what
+  - [x] Reading-guide legend box after the abstract: the four sync-class symbols and what
         a reader (human or AI) may treat as ground truth.
-  - [ ] Verify: compile green; TOC shows five parts; stubs render as styled notices.
+  - [x] Verify: compile green; TOC shows five parts; stubs render as styled notices.
 - **Estimated output:** ~280 lines (main-file rewrite + 12 small files).
 - **Done when:** compile green, all includes wired, main file frozen for the rest of the plan.
 - **Timing:** 2 hours.
