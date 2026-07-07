@@ -2928,4 +2928,439 @@ private theorem k1v_bracket_construct {sig : MonadicSignature}
     refine hsegR y ?_ hy2
     exact lt_of_le_of_lt (hge_w (lL.length + lR.length) (by omega) (by omega)) hy1
 
+/-- **Completeness direction (RHS→LHS) of the k=1 V-carrier** (task 311 Phase 5). A bracket
+    witness `w` realizing the depth-1 arity-3 evaluation yields the `VVecEA2.holds` of
+    `bracketEndChar_k1v` at the FIXED endpoints `(x, t)`.
+
+    Only the two POSITIVE bracket-zone order bits (`x < w` via `h_xy`, `w < t` via `h_yt`)
+    are consumed: the remaining four k0-mirror bits are forced by the witness's atom layer
+    and are not needed (the assembled `bracketEndChar_k1v_correct` still carries all six,
+    mirroring `bracketEndChar_k0_correct` :1581-1594).
+
+    Chain (rules N1/N2 splits; no simp/omega/aesop shortcut of a documented step — G5):
+    1. Split the depth-1 evaluation into atom + quant layers (the same defeq split
+       `nf_eval_nf1_iff_efold` uses at NfEFold:497-501) and route the quant layer through
+       **`nf_quant_layer_fold_k1_gate`** (NfEFold:525) `.mp`: per **N2**, the **Def 4.1 p.6
+       note** licenses the innermost-fold reading and **Prop 4.3 (p.6)** only the "residual
+       is ∨∃∀ over E[Σ] atoms" reading (realized locally via the fold — 305 report 14). This
+       yields the per-(zone, χ) fold biconditionals and gate conjunct (i); no arity-4 object
+       and no navigated arity-3 characteristic arises.
+    2. Gate conjunct (ii): a positive fold bit on a zone inconsistent with `x < w < t` would
+       yield a realizing point, contradicting `k1v_zone_consistent` (Def 3.1: disjunctions
+       range only over consistent order types).
+    3. Endpoint/witness literals: the arity-1 projections of the atom layer supply the head
+       complete types; each (zone, χ) literal in `epL`/`ptW`/`epR` follows from its fold
+       biconditional — positive bits from the realizing point of the matching zone, negative
+       bits by contraposition (the realizing point would force the bit true). Exterior zones
+       use the Since/Until literals at the FIXED endpoints (Prop 3.5 p.5 folding mechanism —
+       N4-valid there: the anchor IS the fixed endpoint).
+    4. Interior-positive `(zXW/zWT, χ)` bits: each yields a realizing point strictly inside
+       `(x, w)` / `(w, t)`; `k1v_sorted_realization` (Risk R1' insertion induction) arranges
+       them in model order, selecting the matching arrangement disjunct of the `VVecEA2`
+       disjunction (rule N5 — ALL arrangements are present). Each realized point occupies a
+       bracket WITNESS slot between the fixed endpoints (§5 bracket p.7; the witness joins
+       the existential prefix, Lemma 3.4 p.5) — assembled by `k1v_bracket_construct`.
+    5. Segment exclusions: EVERY point of `(x, w)` (resp. `(w, t)`) satisfies `segL` (resp.
+       `segR`) — the handoff RHS→LHS insight: a `(char χ).neg` conjunct has a false fold bit,
+       and a point realizing χ inside the interior zone would force it true. -/
+private theorem bracketEndChar_k1v_complete {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 1 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (h : ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (bracketEndChar_k1v atomMap h_surj qnf).holds M atomMap x t := by
+  obtain ⟨w, hw⟩ := h
+  -- Chain step 1: split the depth-1 evaluation into atom + quant layers (defeq split,
+  -- NfEFold:497-501; N2 citation: Def 4.1 p.6 note for the innermost-fold reading).
+  have hwhole : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf ↔
+      (nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 ∧
+        (∀ sub : NormalForm sig 0 4,
+          (∃ x1 : M.carrier, nf_eval_nf M 0 4
+            (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub) ↔
+            qnf.2 sub = true)) := Iff.rfl
+  rw [hwhole] at hw
+  obtain ⟨h_atom, h_quant⟩ := hw
+  -- Gate corollary `.mp` (NfEFold:525): fold biconditionals + off-fiber falsity.
+  rw [nf_quant_layer_fold_k1_gate M w x t qnf h_atom] at h_quant
+  obtain ⟨hzone, hoff⟩ := h_quant
+  -- rfl-bridge to the fold-bit form, taken while `zs` is still a variable.
+  have hzone' : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+      (∃ u : M.carrier,
+        zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u ∧
+        nf_eval_nf M 0 1 (fun _ => u) χ) ↔
+      (efold_of_nf1 qnf).2 (zs, χ) = true := by
+    intro zs χ
+    rw [show (efold_of_nf1 qnf).2 (zs, χ) = qnf.2 (nf0_assemble zs χ qnf.1) from rfl]
+    exact hzone zs χ
+  -- Bracket order facts from the atom layer + the two positive order bits.
+  have hxw : x < w := by
+    have h1 := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr h_xy
+  have hwt : w < t := by
+    have h1 := h_atom (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr h_yt
+  have hxt : x < t := hxw.trans hwt
+  -- Complete-type correctness bridge (char χ at u ↔ arity-1 depth-0 evaluation).
+  have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+    fun χ' u => nfPred_correct M atomMap h_surj χ' u
+  -- Endpoint/witness arity-1 point evaluations (chain step 3 heads; VecEADecomp clones).
+  have h_y_nf := k1v_extract_y_nf M qnf.1 w x t h_atom
+  have h_x_nf := k1v_extract_x_nf3 M qnf.1 w x t h_atom
+  have h_t_nf := k1v_extract_t_nf3 M qnf.1 w x t h_atom
+  -- Zone-membership constructors at the seven consistent zones (Def 3.1 ordering channel).
+  have hzPastX : ∀ u, u < x → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) : ZoneSpec 3) u := by
+    intro u hux
+    have huw : u < w := hux.trans hxw
+    have hut : u < t := huw.trans hwt
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by simp)⟩,
+      ⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtX : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) : ZoneSpec 3) x := by
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by simp)⟩,
+      ⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
+      ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
+  have hzXW : ∀ u, x < u → u < w → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3) u := by
+    intro u hxu huw
+    have hut : u < t := huw.trans hwt
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtW : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3) w := by
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_irrefl w) (by simp), iff_of_false (lt_irrefl w) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxw) (by simp), iff_of_true hxw rfl⟩,
+      ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by simp)⟩⟩
+  have hzWT : ∀ u, w < u → u < t → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) : ZoneSpec 3) u := by
+    intro u hwu hut
+    have hxu : x < u := hxw.trans hwu
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwu) (by simp), iff_of_true hwu rfl⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtT : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) : ZoneSpec 3) t := by
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwt) (by simp), iff_of_true hwt rfl⟩,
+      ⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
+      ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+  have hzFutT : ∀ u, t < u → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))) : ZoneSpec 3) u := by
+    intro u htu
+    have hwu : w < u := hwt.trans htu
+    have hxu : x < u := hxw.trans hwu
+    rw [k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwu) (by simp), iff_of_true hwu rfl⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+  -- The gate Prop (chain step 2): conjunct (i) is the off-fiber clause from the corollary;
+  -- conjunct (ii) is order-conflict falsity via the `k1v_zone_consistent` contrapositive.
+  have hgate : (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
+      (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+        ¬(zs = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) ∨
+          zs = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) ∨
+          zs = Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+          zs = Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+          zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+          zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) ∨
+          zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))) →
+        (efold_of_nf1 qnf).2 (zs, χ) = false) := by
+    refine ⟨hoff, fun zs χ hncons => ?_⟩
+    cases hb : (efold_of_nf1 qnf).2 (zs, χ) with
+    | false => rfl
+    | true =>
+      obtain ⟨u, hzu, -⟩ := (hzone' zs χ).mpr hb
+      exact absurd (k1v_zone_consistent M w x t u hxw hwt zs hzu) hncons
+  -- Interior-positive realization (chain step 4): each positive interior fold bit yields a
+  -- realizing point strictly inside its zone.
+  have hLreal : ∀ χ : NormalForm sig 0 1,
+      (efold_of_nf1 qnf).2
+        (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) = true →
+      ∃ u, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+    intro χ hbit
+    obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hbit
+    rw [k1v_zoneHolds_cons_iff] at hzu
+    exact ⟨u, hzu.2.1.2.mpr rfl, hzu.1.1.mpr rfl, hev⟩
+  have hRreal : ∀ χ : NormalForm sig 0 1,
+      (efold_of_nf1 qnf).2
+        (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ) = true →
+      ∃ u, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+    intro χ hbit
+    obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hbit
+    rw [k1v_zoneHolds_cons_iff] at hzu
+    exact ⟨u, hzu.1.2.mpr rfl, hzu.2.2.1.mpr rfl, hev⟩
+  -- Segment exclusions on ALL of `(x, w)` / `(w, t)` (chain step 5, handoff insight).
+  have hsegL_all : ∀ u, x < u → u < w →
+      TemporalPred.eval_at M atomMap
+        ⟨formula_conjList ((Finset.univ.toList).map fun χ =>
+          if (efold_of_nf1 qnf).2
+              (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))),
+                χ) = true
+          then Formula.top
+          else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ u := by
+    intro u hxu huw
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+    cases hb : (efold_of_nf1 qnf).2
+        (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
+    | true =>
+      rw [if_pos rfl]
+      exact fun hfa => hfa
+    | false =>
+      rw [if_neg (by simp [hb])]
+      intro hch
+      have hbit := (hzone' _ χ).mp ⟨u, hzXW u hxu huw, (hchar χ u).mp hch⟩
+      rw [hb] at hbit
+      exact Bool.noConfusion hbit
+  have hsegR_all : ∀ u, w < u → u < t →
+      TemporalPred.eval_at M atomMap
+        ⟨formula_conjList ((Finset.univ.toList).map fun χ =>
+          if (efold_of_nf1 qnf).2
+              (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))),
+                χ) = true
+          then Formula.top
+          else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ u := by
+    intro u hwu hut
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+    cases hb : (efold_of_nf1 qnf).2
+        (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
+    | true =>
+      rw [if_pos rfl]
+      exact fun hfa => hfa
+    | false =>
+      rw [if_neg (by simp [hb])]
+      intro hch
+      have hbit := (hzone' _ χ).mp ⟨u, hzWT u hwu hut, (hchar χ u).mp hch⟩
+      rw [hb] at hbit
+      exact Bool.noConfusion hbit
+  -- Endpoint predicate at the FIXED left endpoint `x` (chain step 3; exterior Since literal
+  -- per Prop 3.5 p.5 folding mechanism — N4-valid: the anchor IS the fixed endpoint).
+  have hepL : TemporalPred.eval_at M atomMap
+      ⟨formula_conjList
+        ((nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)
+          :: (Finset.univ.toList).map fun χ =>
+              if (efold_of_nf1 qnf).2
+                  (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))),
+                    χ) = true
+              then Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top
+              else (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top).neg)
+          ++ (Finset.univ.toList).map fun χ =>
+              if (efold_of_nf1 qnf).2
+                  (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))),
+                    χ) = true
+              then nf_depth0_char_formula atomMap h_surj χ
+              else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ x := by
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hchar _ x).mpr h_x_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        cases hb : (efold_of_nf1 qnf).2
+            (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))), χ) with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          rw [k1v_zoneHolds_cons_iff] at hzu
+          exact ⟨u, hzu.2.1.1.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+        | false =>
+          rw [if_neg (by simp [hb])]
+          rintro ⟨s, hsx, hsχ, -⟩
+          have hbit := (hzone' _ χ).mp ⟨s, hzPastX s hsx, (hchar χ s).mp hsχ⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : (efold_of_nf1 qnf).2
+          (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))), χ) with
+      | true =>
+        rw [if_pos rfl]
+        obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+        rw [k1v_zoneHolds_cons_iff] at hzu
+        have hueq : u = x := le_antisymm
+          (not_lt.mp (k1v_not_of_iff_false hzu.2.1.2))
+          (not_lt.mp (k1v_not_of_iff_false hzu.2.1.1))
+        exact (hchar χ x).mpr (hueq ▸ hev)
+      | false =>
+        rw [if_neg (by simp [hb])]
+        intro hch
+        have hbit := (hzone' _ χ).mp ⟨x, hzAtX, (hchar χ x).mp hch⟩
+        rw [hb] at hbit
+        exact Bool.noConfusion hbit
+  -- Endpoint predicate at the FIXED right endpoint `t` (chain step 3; exterior Until
+  -- literal per Prop 3.5 p.5 — N4-valid: the anchor IS the fixed endpoint).
+  have hepR : TemporalPred.eval_at M atomMap
+      ⟨formula_conjList
+        ((nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)
+          :: (Finset.univ.toList).map fun χ =>
+              if (efold_of_nf1 qnf).2
+                  (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))),
+                    χ) = true
+              then nf_depth0_char_formula atomMap h_surj χ
+              else (nf_depth0_char_formula atomMap h_surj χ).neg)
+          ++ (Finset.univ.toList).map fun χ =>
+              if (efold_of_nf1 qnf).2
+                  (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))),
+                    χ) = true
+              then Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top
+              else (Formula.untl (nf_depth0_char_formula atomMap h_surj χ)
+                Formula.top).neg)⟩ t := by
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hchar _ t).mpr h_t_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        cases hb : (efold_of_nf1 qnf).2
+            (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))), χ) with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          rw [k1v_zoneHolds_cons_iff] at hzu
+          have hueq : u = t := le_antisymm
+            (not_lt.mp (k1v_not_of_iff_false hzu.2.2.2))
+            (not_lt.mp (k1v_not_of_iff_false hzu.2.2.1))
+          exact (hchar χ t).mpr (hueq ▸ hev)
+        | false =>
+          rw [if_neg (by simp [hb])]
+          intro hch
+          have hbit := (hzone' _ χ).mp ⟨t, hzAtT, (hchar χ t).mp hch⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : (efold_of_nf1 qnf).2
+          (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))), χ) with
+      | true =>
+        rw [if_pos rfl]
+        obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+        rw [k1v_zoneHolds_cons_iff] at hzu
+        exact ⟨u, hzu.2.2.2.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+      | false =>
+        rw [if_neg (by simp [hb])]
+        rintro ⟨s, hts, hsχ, -⟩
+        have hbit := (hzone' _ χ).mp ⟨s, hzFutT s hts, (hchar χ s).mp hsχ⟩
+        rw [hb] at hbit
+        exact Bool.noConfusion hbit
+  -- Witness point type at `w` (complete type + equality-zone literals ONLY, rule N4).
+  have hptW : TemporalPred.eval_at M atomMap
+      ⟨formula_conjList
+        (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)
+          :: (Finset.univ.toList).map fun χ =>
+              if (efold_of_nf1 qnf).2
+                  (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))),
+                    χ) = true
+              then nf_depth0_char_formula atomMap h_surj χ
+              else (nf_depth0_char_formula atomMap h_surj χ).neg)⟩ w := by
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_cons.mp hf with rfl | hf
+    · exact (hchar _ w).mpr h_y_nf
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : (efold_of_nf1 qnf).2
+          (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))), χ) with
+      | true =>
+        rw [if_pos rfl]
+        obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+        rw [k1v_zoneHolds_cons_iff] at hzu
+        have hueq : u = w := le_antisymm
+          (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+          (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+        exact (hchar χ w).mpr (hueq ▸ hev)
+      | false =>
+        rw [if_neg (by simp [hb])]
+        intro hch
+        have hbit := (hzone' _ χ).mp ⟨w, hzAtW, (hchar χ w).mp hch⟩
+        rw [hb] at hbit
+        exact Bool.noConfusion hbit
+  -- Chain step 4: sorted arrangements of the interior-positive enumerations (R1').
+  obtain ⟨psL, hpermL, hsortL, hpropsL⟩ :=
+    k1v_sorted_realization M x w
+      ((Finset.univ.toList).filter fun χ =>
+        (efold_of_nf1 qnf).2
+          (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))), χ))
+      ((Finset.nodup_toList _).filter _)
+      (fun χ hχ => hLreal χ (List.mem_filter.mp hχ).2)
+  obtain ⟨psR, hpermR, hsortR, hpropsR⟩ :=
+    k1v_sorted_realization M w t
+      ((Finset.univ.toList).filter fun χ =>
+        (efold_of_nf1 qnf).2
+          (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))), χ))
+      ((Finset.nodup_toList _).filter _)
+      (fun χ hχ => hRreal χ (List.mem_filter.mp hχ).2)
+  -- Combined witness list is sorted: left points < w < right points.
+  have hsortFull : (psL.map Prod.snd ++ w :: psR.map Prod.snd).Pairwise (· < ·) := by
+    rw [List.pairwise_append]
+    refine ⟨hsortL, ?_, ?_⟩
+    · rw [List.pairwise_cons]
+      refine ⟨?_, hsortR⟩
+      intro b hb
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hb
+      exact (hpropsR p hp).1.1
+    · intro a ha b hb
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp ha
+      have haw : p.2 < w := (hpropsL p hp).1.2
+      rcases List.mem_cons.mp hb with rfl | hb
+      · exact haw
+      · obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hb
+        exact haw.trans (hpropsR q hq).1.1
+  -- Enter the carrier: gate branch, then the (psL, psR) arrangement disjunct (rule N5).
+  simp only [bracketEndChar_k1v, VVecEA2.holds]
+  split
+  case isFalse hg => exact absurd hgate hg
+  case isTrue hg =>
+  refine ⟨_, List.mem_flatMap.mpr ⟨psL.map Prod.fst, List.mem_permutations.mpr hpermL,
+    List.mem_map.mpr ⟨psR.map Prod.fst, List.mem_permutations.mpr hpermR, rfl⟩⟩, ?_⟩
+  refine ⟨hepL, hepR, ?_⟩
+  -- The bracket: assembled by the construction lemma from the sorted realizations.
+  refine k1v_bracket_construct M atomMap _ _ _ _ _ x w t hxw hwt
+    (psL.map Prod.snd) (psR.map Prod.snd) (by simp) (by simp) hsortFull
+    ?_ ?_ hptW ?_ ?_ hsegL_all hsegR_all
+  · intro u hu
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+    exact (hpropsL p hp).1
+  · intro u hu
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+    exact (hpropsR p hp).1
+  · intro i hi
+    have hi' : i < psL.length := by simpa using hi
+    have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+        (psL.map Prod.fst))[i]'hi =
+        ⟨nf_depth0_char_formula atomMap h_surj ((psL[i]'hi').1)⟩ := by
+      simp only [List.getElem_map]
+    have h2 : (psL.map Prod.snd)[i]'(by simpa using hi') = (psL[i]'hi').2 := by
+      simp only [List.getElem_map]
+    rw [h1, h2]
+    exact (hchar _ _).mpr (hpropsL _ (List.getElem_mem _)).2
+  · intro i hi
+    have hi' : i < psR.length := by simpa using hi
+    have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+        (psR.map Prod.fst))[i]'hi =
+        ⟨nf_depth0_char_formula atomMap h_surj ((psR[i]'hi').1)⟩ := by
+      simp only [List.getElem_map]
+    have h2 : (psR.map Prod.snd)[i]'(by simpa using hi') = (psR[i]'hi').2 := by
+      simp only [List.getElem_map]
+    rw [h1, h2]
+    exact (hchar _ _).mpr (hpropsR _ (List.getElem_mem _)).2
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
