@@ -4917,4 +4917,287 @@ theorem bracketEndChar_kv_correct_one_prior {sig : MonadicSignature}
     bracketEndChar_kv_correct_one atomMap h_surj charF h0 qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t
 
+/-! ## Task 309 Phase 13.2: per-sub enriched successor-depth carrier `bracketEndChar_kvE`
+
+The redesigned successor-depth carrier (report 05 Pillar 2 — finding F1 item 3's "required
+behavior"), ADDITIVE alongside `bracketEndChar_kv` (:3667, untouched — it stays as the landed
+k ≤ 1 instance and F1 exhibit). The defining change is the **information channel**: every read
+of `qnf.2` is **per-sub** — `qnf.2 σ` at an individual `σ : NormalForm sig k 4` — never through
+`(ZoneSpec 3 × NormalForm sig k 1)` fiber existentials (the refuted F1 channel, factorization
+machine-checked at `bracketEndChar_kv_factors` :3851). Two per-sub features defeat that
+factorization:
+
+1. **Per-sub witness slots** (rule N4/N5): the interior-positive enumerations `S_L`/`S_R` list
+   positive SUBS `σ` (each `qnf.2 σ = true`, zone `zXW`/`zWT`), one bracket witness slot per
+   positive sub — distinct positive subs need distinct realizing points (`nf_eval_nf`'s per-sub
+   biconditional plus uniqueness, `nf_eval_unique` NormalForm:245), so per-sub slots encode the
+   multiplicity the fiber-existential read collapsed ("one witness per positive pair").
+2. **Per-sub joint literals at the right endpoint** (Def 3.1 enriched vocabulary, PDF p.4
+   md:61-74): each positive sub `σ` contributes the literal `P.existF 3 σ` to `epR`. Since
+   `insertEnv env t` places the anchor at the LAST position (NfDepth0Generalized:42) and the
+   quant layer of `nf_eval_nf M (k+1) 3 [w,x,t]` evaluates subs at `Fin.cons u [w,x,t]` =
+   `[u,w,x,t]` (fresh at 0, `t` at 3), the fixed endpoint `t` IS the position-3 anchor:
+   `temporal_truth M t (P.existF 3 σ) ↔ ∃ e : Fin 3 → M.carrier, nf_eval_nf M k 4 [e0,e1,e2,t] σ`
+   (`ExistProviders.correct`, :4856), of which the honest per-sub obligation
+   `∃ u, nf_eval_nf M k 4 [u,w,x,t] σ` is the `e = (u,w,x)` instance. These are Rabinovich's
+   per-round enriched formulas: Def 3.1's α/β at round k+1 range over the CURRENT vocabulary,
+   which after round k includes the previous round's TL-definable content (Cor 5.4's `F_i` are
+   TL formulas, PDF p.7 md:154-157) — realized here as provider-built formulas in existing
+   `TemporalPred` slots (report 05 F-C: enrichment is a read-channel change, NOT a codomain
+   change; codomain stays `VVecEA2`, anchors stay `{x, t}`, G2/G4).
+
+**Vocabulary at depth > 0 is provider-built throughout**: point characteristics are
+`charK := P.existF 0` (arity-1 instance of the bundle — `insertEnv (elim0) t = fun _ => t`, so
+`P.existF 0 χ` is the depth-`k` unary characteristic of `χ`), witness-slot point types are
+`⟨charK (nfk_projFresh σ)⟩` (the fresh channel of Def 4.1, PDF p.5, at depth `k` — :3511),
+joint literals are `P.existF 3 σ`. Only the atom-layer endpoint/`w` base types use the depth-0
+`nf_depth0_char_formula` (the only self-type `qnf.1` carries syntactically), as in `kv_body`.
+
+**Exclusion-literal design record (this phase's design deliverable, plan v6 Phase 13.2)**:
+negative subs contribute NO uniform joint literal. A candidate literal `¬(P.existF 3 σ)` at `t`
+for negative `σ` would OVER-exclude: `P.existF 3 σ` existentially rebinds the `w`/`x` positions,
+so it can hold at the honest `t` through fake anchors while `σ` is honestly negative — the
+uniform-negation gap of report 05 F-D (the EANegationClosure lemmas are model-dependent
+existentials and may be consumed only proof-side). Negative-sub content therefore enters the
+carrier ONLY through the honest-safe unary exclusions — `hasPos`-guarded segment conjunctions
+`segL`/`segR` and the `lit`-biconditional endpoint/`w` families, where `hasPos zs χ` (fiber
+occupancy) is COMPUTED from the per-sub positive list (`(posIn zs).any (nfk_projFresh · = χ)`),
+not read from `qnf.2` through fibers. The remaining negative-sub obligations are Phase 13.3's
+work, discharged proof-side via `prior_hasAttainedINF h_UZ` (PriorINF:224) + the
+EANegationClosure stack — exactly the F-D discipline.
+
+**Inner existentials (Lemma 3.4 / G6-as-amended)**: a positive sub's own inner existentials
+(its quant layer at depth k-1) ride the provider formula `P.existF 3 σ` — the Phase-14
+instantiation of the bundle is precisely the Lemma-3.4 (PDF p.5 md:84-85) flattened TL form in
+which each absorbed existential joined the prefix one round earlier. They do not occupy slots
+of THIS bracket: the A1 bundle supplies converters at depth `k` only, so slot-level flattening
+of depth-(k-1) content is outside the provider scope; witness growth in this bracket is
+per-positive-sub (G6-as-amended licenses the growth; the §5 bracket `[α_0,…,α_n](z_0,z_1)`
+PDF p.7 md:127-132 is its printed shape).
+
+**A2 discipline (per-sub read + inside-out fold discharge)**: the per-sub correctness
+obligations of Phase 13.3/13.4 are discharged INSIDE-OUT — at the k=2 instance each positive
+sub's inner layer is depth-0 and unfolds through `nf_eval_depth1_fold_iff` below (which consumes
+the general fold engine `nf_quant_layer_fold_iff`, NfEFold:391, itself built on the arity-5
+split-kit bijection `nf0_split_assemble`, NfEFold:235); at symbolic k the same layer is
+provider-mediated (`P.correct`). NO navigated arity-3/4 characteristic chains, NO third anchor:
+`VVecEA2.holds` keeps the two-point signature (VecEAFormula:276), Lemma 3.2(2)'s ≤2-anchor cap
+(PDF p.4 md:76-79) remains a TYPE-level invariant.
+
+Citation split (rule N1): the two-fixed-endpoint `(z_0, z_1)` framing is **Lemma 3.2(2) (PDF
+p.4) + the §5 bracket notation `[α_0,…,α_n](z_0,z_1)` (PDF p.7)**; **Prop 3.5 (PDF p.5)** is
+cited ONLY for the one-free-variable ∃-witness→Until/Since folding mechanism (the Since/Until
+literals in `epL`/`epR`). Per rule N2, **Prop 4.3 (PDF p.6)** is cited ONLY for "the residual
+is ∨∃∀ over E[Σ] atoms"; the inside-out iteration is the **Def 4.1 p.6 note** read at full
+strength (G5 as extended by plan v6: chain steps at k ≥ 2 additionally cite Def 3.1's
+enriched-vocabulary reading and Cor 5.4's TL-formula providers). -/
+
+/-- The seven zone specs consistent with the bracket order `x < w < t` over the env
+    `[w, x, t]` (Def 3.1 ordering channel, PDF pp.4-5: disjunctions range only over consistent
+    order types). Literal list identical to the RHS of `k1v_zone_consistent` (:2065), in the
+    order `zPastX, zAtX, zXW, zAtW, zWT, zAtT, zFutT`. Named (rather than a `let`) so the
+    Phase-13.2 gate is stateable outside the carrier body. -/
+private def kvE_consistent : ZoneSpec 3 → Prop := fun zs =>
+  zs = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) ∨
+  zs = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) ∨
+  zs = Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+  zs = Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+  zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+  zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) ∨
+  zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))
+
+/-- **Per-sub two-conjunct gate** for the Phase-13.2 carrier: (i) atom-layer off-fiber honesty
+    (subs whose atom layer does not restrict to `r` are marked false — the `kv` gate conjunct,
+    :3675, unchanged in shape) and (ii) PER-SUB order-conflict falsity (any sub whose own
+    atom-layer zone is inconsistent with `x < w < t` is marked false) — the per-sub reading of
+    `kv_body`'s fiber-level conjunct (:3637). Both conjuncts read `qnf.2` only at individual
+    subs (A2). -/
+private def kvE_gate {sig : MonadicSignature} {k : Nat}
+    (r : NormalForm sig 0 3) (q : NormalForm sig k 4 → Bool) : Prop :=
+  (∀ σ : NormalForm sig k 4,
+      nf0_dropFresh (NormalForm.atom_assgn σ) ≠ r → q σ = false) ∧
+  (∀ σ : NormalForm sig k 4,
+      ¬ kvE_consistent (nf0_zoneSpec (NormalForm.atom_assgn σ)) → q σ = false)
+
+open Classical in
+/-- **Per-sub successor body** of the Phase-13.2 enriched carrier (private builder, factored
+    per Risk R6 like `bracketFromLists` :1896 / `kv_body` :3581). Fully parametric in the three
+    formula providers — `charBase` (depth-0 atom-layer projections), `charK` (depth-`k` unary
+    characteristics; instantiated at `P.existF 0`), `exF` (per-sub joint configuration formulas
+    anchored at the position-3 point; instantiated at `P.existF 3`) — the atom layer `r`, and
+    the quant assignment `q` read PER-SUB. Construction record and citations: see the section
+    header above. Structure relative to `kv_body` (:3581): the zone constants, `lit`, endpoint
+    base types, `segL`/`segR`/`ptW` shapes and the arrangement disjunction are verbatim; the
+    fold-bit parameter `b` is REPLACED by per-sub enumeration (`pos`, `posIn`) with derived
+    fiber occupancy `hasPos`, the witness slots are per-SUB (`ptSub`, one slot per positive
+    interior sub), and `epR` gains the per-sub joint literals `exF σ`. Gate-failure branch:
+    the empty disjunction `⟨[]⟩` (its `holds` is `False`) — Rabinovich's empty disjunction over
+    inconsistent order types. -/
+private noncomputable def kvE_body {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig k 1 → Formula)
+    (exF : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3)
+    (q : NormalForm sig k 4 → Bool) : VVecEA2 :=
+  -- Zone-spec constants relative to env `[w, x, t]` under the bracket order `x < w < t`
+  -- (Def 3.1 ordering channel, PDF p.4), verbatim from `kv_body` (:3588-3600).
+  let ltz : Bool × Bool := (true, false)
+  let eqz : Bool × Bool := (false, false)
+  let gtz : Bool × Bool := (false, true)
+  let mk3 : Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 3 := fun pw px pt =>
+    Fin.cons pw (Fin.cons px (fun _ => pt))
+  let zPastX := mk3 ltz ltz ltz    -- x_1 < x  (< w < t)
+  let zAtX   := mk3 ltz eqz ltz    -- x_1 = x
+  let zXW    := mk3 ltz gtz ltz    -- x < x_1 < w
+  let zAtW   := mk3 eqz gtz ltz    -- x_1 = w
+  let zWT    := mk3 gtz gtz ltz    -- w < x_1 < t
+  let zAtT   := mk3 gtz gtz eqz    -- x_1 = t
+  let zFutT  := mk3 gtz gtz gtz    -- t < x_1
+  -- PER-SUB positive enumeration (A2): the ONLY reads of `q` in the whole body are `q σ`
+  -- at individual subs, here and in the gate. No fiber-existential read occurs (F1 item 3).
+  let pos : List (NormalForm sig k 4) := Finset.univ.toList.filter (fun σ => q σ)
+  let zone : NormalForm sig k 4 → ZoneSpec 3 := fun σ =>
+    nf0_zoneSpec (NormalForm.atom_assgn σ)
+  let posIn : ZoneSpec 3 → List (NormalForm sig k 4) := fun zs =>
+    pos.filter (fun σ => decide (zone σ = zs))
+  -- Fiber occupancy DERIVED from the per-sub positive list (honest-safe unary channel for
+  -- the exclusion literals — see the exclusion-literal design record in the section header).
+  let hasPos : ZoneSpec 3 → NormalForm sig k 1 → Bool := fun zs χ =>
+    (posIn zs).any (fun σ => decide (nfk_projFresh σ = χ))
+  let allTypes : List (NormalForm sig k 1) := Finset.univ.toList
+  -- Biconditional literal at an anchor (Prop 3.5 folding mechanism, PDF p.5).
+  let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
+  -- Endpoint base types (the FIXED `z_0 = x`, `z_1 = t`: Lemma 3.2(2) PDF p.4 + §5 bracket
+  -- PDF p.7 — rule N1 split).
+  let xType : TemporalPred := ⟨charBase (nf_x_proj3 r)⟩
+  let tType : TemporalPred := ⟨charBase (nf_t_proj3 r)⟩
+  let epL : TemporalPred :=
+    ⟨formula_conjList
+      (xType.formula
+        :: (allTypes.map fun χ => lit (hasPos zPastX χ) (Formula.snce (charK χ) Formula.top))
+        ++ (allTypes.map fun χ => lit (hasPos zAtX χ) (charK χ)))⟩
+  -- `epR` carries, beyond the `kv_body` unary families, the PER-SUB joint literals `exF σ`
+  -- for EVERY positive sub (any zone): `t` is the position-3 `insertEnv` anchor of the
+  -- per-sub obligation env `[u, w, x, t]` (Def 3.1 enriched vocabulary, PDF p.4 md:61-74;
+  -- Cor 5.4 `F_i`, PDF p.7). Positive subs only — see the exclusion-literal design record.
+  let epR : TemporalPred :=
+    ⟨formula_conjList
+      (tType.formula
+        :: (allTypes.map fun χ => lit (hasPos zAtT χ) (charK χ))
+        ++ (allTypes.map fun χ => lit (hasPos zFutT χ) (Formula.untl (charK χ) Formula.top))
+        ++ (pos.map exF))⟩
+  -- Segment types: universal exclusion of the unoccupied interior-zone fibers (honest-safe
+  -- unary exclusions; the per-sub negative content is Phase 13.3's proof-side work).
+  let segL : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ =>
+      if hasPos zXW χ then Formula.top else (charK χ).neg)⟩
+  let segR : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ =>
+      if hasPos zWT χ then Formula.top else (charK χ).neg)⟩
+  -- Witness point type at `w`: depth-0 base type + equality-zone biconditionals ONLY
+  -- (rule N4 — no interior chains; interior-positive content rides the witness slots below).
+  let ptW : TemporalPred :=
+    ⟨formula_conjList
+      (charBase (nf_y_proj r)
+        :: (allTypes.map fun χ => lit (hasPos zAtW χ) (charK χ)))⟩
+  -- PER-SUB witness slot point type: the depth-`k` unary characteristic of the sub's fresh
+  -- channel (Def 4.1 E[Σ]-atom at depth `k`, PDF p.5; `nfk_projFresh` :3511). The sub's
+  -- JOINT content rides its `epR` literal `exF σ`.
+  let ptSub : NormalForm sig k 4 → TemporalPred := fun σ => ⟨charK (nfk_projFresh σ)⟩
+  -- Interior-positive enumerations: per-SUB (one witness slot per positive interior sub —
+  -- distinct positive subs require distinct realizing points, `nf_eval_unique`).
+  let S_L : List (NormalForm sig k 4) := posIn zXW
+  let S_R : List (NormalForm sig k 4) := posIn zWT
+  -- One disjunct per arrangement (rule N5): positive interior subs occupy WITNESS slots
+  -- ordered between the fixed endpoints (§5 bracket, PDF p.7; Lemma 3.4, PDF p.5); the
+  -- model-dependent witness ORDER is carried by the finite disjunction over arrangements.
+  let mkDisjunct : List (NormalForm sig k 4) → List (NormalForm sig k 4) → Σ n, VecEA2 n :=
+    fun lL lR =>
+      ⟨(lL.map ptSub).length + 1 + (lR.map ptSub).length,
+        { endpointLeft := epL
+          endpointRight := epR
+          bracket := bracketFromLists (lL.map ptSub) ptW (lR.map ptSub) segL segR }⟩
+  @dite _ (kvE_gate r q) (Classical.dec _)
+    (fun _ =>
+      { disjuncts :=
+          S_L.permutations.flatMap fun lL =>
+            S_R.permutations.map fun lR => mkDisjunct lL lR })
+    (fun _ => { disjuncts := [] })
+
+/-- Gate-failure computation for the per-sub body: if the gate fails, the body returns the
+    empty disjunction (Rabinovich's empty disjunction over inconsistent order types) — the
+    `kv_body_gate_fail` (:3697) mirror for Phase 13.3's off-gate branch. -/
+private theorem kvE_body_gate_fail {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig k 1 → Formula)
+    (exF : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3)
+    (q : NormalForm sig k 4 → Bool)
+    (h : ¬ kvE_gate r q) :
+    kvE_body charBase charK exF r q = { disjuncts := [] } := by
+  simp only [kvE_body]
+  exact dif_neg h
+
+/-- **The per-sub enriched successor-depth V-carrier** (task 309 Phase 13.2; report 05
+    Pillar 2). See the section header above for the full construction record, the A2 per-sub
+    read discipline, the N1/N2 citation splits, the Def 3.1 enriched-vocabulary reading
+    (PDF p.4 md:61-74), and the exclusion-literal design record. Depth alignment (report 05
+    Pillar 3 note): the carrier needed at depth `k` is this definition at `k = j + 1` with
+    providers at depth `j = k - 1`; depth 0 stays `bracketEndChar_k0` (:1580) and depth 1
+    stays the landed k1v instance (:1940) — this definition serves k ≥ 2. Correctness
+    (`BracketCarrierCorrectVPrior` applied to it — provider-conditional in exactly the A1
+    sense, :4875) is Phase 13.3 (k = 2 GO/NO-GO gate) and Phase 13.4 (symbolic k). -/
+noncomputable def bracketEndChar_kvE {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat} (P : ExistProviders sig atomMap k) :
+    BracketEndCharCarrierV sig (k + 1) :=
+  fun qnf =>
+    kvE_body (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2
+
+/-- **Concrete k=2 instance bridge** (task 309 Phase 13.2 deliverable): at depth-1 providers
+    (`P : ExistProviders sig atomMap 1` — the k=2 carrier `BracketEndCharCarrierV sig 2`), the
+    carrier is DEFINITIONALLY the per-sub body at `charBase = nf_depth0_char_formula`,
+    `charK = P.existF 0`, `exF = P.existF 3`, atom layer `qnf.1`, and the per-sub read of
+    `qnf.2` over `σ : NormalForm sig 1 4`. Pure `rfl` — no semantics (the
+    `bracketEndChar_k1v_eq_kv_body` :3684 house pattern). Phase 13.3 rewrites with this to
+    expose the body, then discharges each positive sub's obligation inside-out via
+    `nf_eval_depth1_fold_iff` below (A2). -/
+theorem bracketEndChar_kvE_two_eq {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3) :
+    bracketEndChar_kvE atomMap h_surj P qnf =
+      kvE_body (nf_depth0_char_formula atomMap h_surj)
+        (fun χ => P.existF 0 χ) (fun σ => P.existF 3 σ) qnf.1 qnf.2 := rfl
+
+/-- **Depth-1 per-sub obligation decomposition** (task 309 Phase 13.2 — the exact literal
+    shapes of the k=2 instance, fixed via the fold engine): a depth-1 arity-`n` evaluation
+    splits into its atom layer plus the INSIDE-OUT folded quant layer — zone-bounded MONADIC
+    depth-0 existentials over `(ZoneSpec n × NormalForm sig 0 1)` against the arity-`(n+1)`
+    subs reassembled by `nf0_assemble`, plus the off-fiber falsity clause. Direct wrapper of
+    `nf_quant_layer_fold_iff` (NfEFold:391 — Prop 4.3's innermost ∃-fold, PDF p.6, cited per
+    rule N2 only for "the residual is ∨∃∀ over E[Σ] atoms"; the split-kit bijection
+    `nf0_split_assemble` NfEFold:235 rides inside the engine — at `n = 4` this is the arity-5
+    split of the plan's Phase-13.2 acceptance). Phase 13.3 consumes this at `n = 4`, env
+    `[u, w, x, t]`, `σ : NormalForm sig 1 4` — each positive sub's inner layer is depth-0 at
+    the k=2 instance, so this lemma IS the A2 inside-out discharge shape (Def 4.1 p.6 note). -/
+theorem nf_eval_depth1_fold_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat}
+    (env : Fin n → M.carrier) (σ : NormalForm sig 1 n) :
+    nf_eval_nf M 1 n env σ ↔
+      ((∀ a : AtomKind sig n, atom_eval M env a ↔ σ.1 a = true) ∧
+       ((∀ (zs : ZoneSpec n) (χ : NormalForm sig 0 1),
+           (∃ v : M.carrier, zoneHolds M env zs v ∧
+             nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+        (∀ τ : NormalForm sig 0 (n + 1), nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false))) := by
+  constructor
+  · rintro ⟨h_atom, h_quant⟩
+    exact ⟨h_atom, (nf_quant_layer_fold_iff M env σ.1 h_atom σ.2).mp h_quant⟩
+  · rintro ⟨h_atom, h_fold⟩
+    exact ⟨h_atom, (nf_quant_layer_fold_iff M env σ.1 h_atom σ.2).mpr h_fold⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
