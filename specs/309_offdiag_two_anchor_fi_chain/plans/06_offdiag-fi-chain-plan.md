@@ -700,7 +700,32 @@ strengthen the kv gate). Additive-only diff verified (822 insertions, 0 deletion
   Do-NOT list (no retired-name restatement).
 - **Commit:** `task 309 phase 13.1: statement surgery — ExistProviders + BracketCarrierCorrectVPrior + relativized k≤1 lifts`
 
-### Phase 13.2: Per-sub enriched carrier `bracketEndChar_kvE` — definition + concrete k=2 instance [IN PROGRESS]
+### Phase 13.2: Per-sub enriched carrier `bracketEndChar_kvE` — definition + concrete k=2 instance [COMPLETED]
+
+> **COMPLETED (2026-07-06, sess_1783391112_643ec1)**: All deliverables landed additively in
+> NfMultiAnchorBridge.lean (283 insertions, 0 deletions; commit `22334d430`). Landed:
+> `kvE_consistent` (:5000), `kvE_gate` (:5015), `kvE_body` (:5036, per-sub successor body),
+> `kvE_body_gate_fail` (:5130), `bracketEndChar_kvE` (:5150, codomain
+> `BracketEndCharCarrierV sig (k+1)` = `VVecEA2`-valued), `bracketEndChar_kvE_two_eq` (:5167,
+> rfl bridge — the concrete k=2 instance), `nf_eval_depth1_fold_iff` (:5187, the A2 inside-out
+> per-sub obligation decomposition for 13.3, wrapping `nf_quant_layer_fold_iff` with the
+> arity-5 split inside). `lean_verify` on all three public names = exactly
+> `[propext, Classical.choice, Quot.sound]`; full tree GREEN (1709 jobs); 0 new sorries; no
+> `VecEA2 1` in the new block; per-sub criterion met (every read of `qnf.2` is `q σ` at
+> individual subs — `pos` filter, per-sub gate, per-sub `epR` literals, per-sub slots).
+> **Design decisions (this phase's design deliverable)**: (1) per-sub joint literals
+> `P.existF 3 σ` anchor at `epR`/`t` — `insertEnv` places the provider anchor at the LAST
+> position, and `t` is position 3 of the per-sub obligation env `[u,w,x,t]`; (2) exclusion
+> literals are the honest-safe unary families ONLY (`hasPos`-guarded, computed from the
+> per-sub positive lists) — a uniform `¬(P.existF 3 σ)` for negative σ would over-exclude
+> (the F-D model-dependent-negation gap), so negative-sub joint content is 13.3 proof-side
+> work per plan; (3) *(deviation: altered — interpretation)* "σ's inner existentials
+> flattened as further bracket witnesses" is realized THROUGH the provider formula
+> `P.existF 3 σ` (the Phase-14 instantiation is the Lemma-3.4 flattened TL form), NOT as
+> additional slots of this bracket: the A1 bundle supplies depth-`k` converters only, so
+> slot-level flattening of depth-(k-1) content is outside provider scope and would break
+> uniformity in symbolic `k` (13.3/13.4 target the SAME definition). Witness growth in this
+> bracket is per-positive-sub, which also encodes the multiplicity the fiber read collapsed.
 
 *(Report 05 label: Phase 13.II-a. Dispatch ONLY after 13.1 lands green AND the 13.0 verdict was
 F2 CONFIRMED — SKIPPED on the surgery-only branch.)*
