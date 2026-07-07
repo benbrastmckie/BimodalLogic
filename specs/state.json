@@ -9,13 +9,13 @@
     {
       "project_number": 312,
       "project_name": "revise_bimodalreference_typst_paper_lean",
-      "status": "researched",
+      "status": "planned",
       "task_type": "typst",
       "description": "Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority",
       "topic": "publication-quality",
       "created": "2026-07-07T01:34:55Z",
-      "last_updated": "2026-07-07T02:33:41Z",
-      "session_id": "sess_1783391161_0d823e",
+      "last_updated": "2026-07-07T02:48:56Z",
+      "session_id": "sess_1783392202_264e33",
       "researched": "2026-07-07T02:33:41Z",
       "next_artifact_number": 2,
       "artifacts": [
@@ -23,6 +23,11 @@
           "path": "specs/312_revise_bimodalreference_typst_paper_lean/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research (4 teammates): Typst reference has drifted multiple generations behind Lean; strict semantics current, 42-constructor BX axiom system, deleted completeness architecture, self-contradiction in notes chapter"
+        },
+        {
+          "path": "specs/312_revise_bimodalreference_typst_paper_lean/plans/01_revise-typst-reference.md",
+          "type": "plan",
+          "summary": "7-phase plan (11h): scope decisions + live completeness-wiring verification, ground-truth SYNC-MAP inventory, chapter rewrites heaviest-first (04, 03, 01+02 in parallel, then 06+05+00), doc hygiene + compile/resolution/counts verification gate"
         }
       ]
     },
