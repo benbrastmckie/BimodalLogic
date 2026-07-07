@@ -2000,4 +2000,291 @@ noncomputable def bracketEndChar_k1v {sig : MonadicSignature}
               S_R.permutations.map fun lR => mkDisjunct lL lR })
       (fun _ => { disjuncts := [] })
 
+/-! ## Task 311 Phase 4: soundness direction (LHS→RHS) for the V-carrier — helper kit
+
+Private helper kit for `bracketEndChar_k1v_sound` (pre-authorized 4.1/4.2 split, plan v3
+Phase 4 H8 escape hatch). Chain citations (rule N1 split): the two-fixed-endpoint `(z_0, z_1)`
+bracket framing is **Lemma 3.2(2) (PDF p.4) + §5 bracket notation (PDF p.7)**; **Prop 3.5
+(PDF p.5)** is cited ONLY for the ∃-witness→Until/Since folding mechanism. Per rule N2, the
+gate-corollary rewrite in 4.2 cites the **Def 4.1 p.6 note** (innermost fold) and **Prop 4.3
+(p.6)** only for "the residual is ∨∃∀ over E[Σ] atoms" (realized locally via the fold —
+305 report 14). -/
+
+/-- Bool helper: a bit is forced `false` through its semantic biconditional when the
+    semantic side fails. -/
+private theorem k1v_bool_eq_false {b : Bool} {p : Prop} (h : p ↔ b = true) (hp : ¬p) :
+    b = false := by
+  cases hb : b
+  · rfl
+  · exact absurd (h.mpr hb) hp
+
+/-- `zoneHolds` over the bracket env `[w, x, t]` at a pointwise `Fin.cons` zone spec,
+    unfolded to its three coordinate biconditionals (Def 3.1 ordering channel, PDF p.4:
+    the only channel through which the quantified witness meets the fixed env points). -/
+private theorem k1v_zoneHolds_cons_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (w x t u : M.carrier) (pw px pt : Bool × Bool) :
+    zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      (Fin.cons pw (Fin.cons px (fun _ => pt)) : ZoneSpec 3) u ↔
+    (((u < w) ↔ pw.1 = true) ∧ ((w < u) ↔ pw.2 = true)) ∧
+    (((u < x) ↔ px.1 = true) ∧ ((x < u) ↔ px.2 = true)) ∧
+    (((u < t) ↔ pt.1 = true) ∧ ((t < u) ↔ pt.2 = true)) := by
+  constructor
+  · intro h
+    have h0 := h ⟨0, by omega⟩
+    have h1 := h ⟨1, by omega⟩
+    have h2 := h ⟨2, by omega⟩
+    simp only [Fin.cons] at h0 h1 h2
+    exact ⟨h0, h1, h2⟩
+  · rintro ⟨h0, h1, h2⟩ i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
+
+/-- Any zone spec realized by a point over the bracket env `[w, x, t]` with `x < w < t` is
+    one of the seven order-consistent zones (Def 3.1, PDF pp.4-5: disjunctions range only
+    over consistent order types). The contrapositive discharges the inconsistent-zone fold
+    bits against gate conjunct (ii) in the soundness direction. -/
+private theorem k1v_zone_consistent {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (zs : ZoneSpec 3)
+    (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u) :
+    zs = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false))) ∨
+    zs = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false))) ∨
+    zs = Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+    zs = Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))) := by
+  have h0 := hz ⟨0, by omega⟩
+  have h1 := hz ⟨1, by omega⟩
+  have h2 := hz ⟨2, by omega⟩
+  simp only [Fin.cons] at h0 h1 h2
+  -- Build the pointwise equality from the three coordinate pairs.
+  have hzs : ∀ (pw px pt : Bool × Bool),
+      zs ⟨0, by omega⟩ = pw → zs ⟨1, by omega⟩ = px → zs ⟨2, by omega⟩ = pt →
+      zs = Fin.cons pw (Fin.cons px (fun _ => pt)) := by
+    intro pw px pt e0 e1 e2
+    funext i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+  have hxt : x < t := hxw.trans hwt
+  rcases lt_trichotomy u x with hux | hux | hux
+  · -- u < x: zone zPastX
+    have huw : u < w := hux.trans hxw
+    have hut : u < t := huw.trans hwt
+    exact Or.inl (hzs _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hux, k1v_bool_eq_false h1.2 (lt_asymm hux)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))
+  · -- u = x: zone zAtX
+    subst hux
+    exact Or.inr (Or.inl (hzs _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hxw, k1v_bool_eq_false h0.2 (lt_asymm hxw)⟩)
+      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl u),
+        k1v_bool_eq_false h1.2 (lt_irrefl u)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hxt, k1v_bool_eq_false h2.2 (lt_asymm hxt)⟩)))
+  · -- x < u: split against w
+    rcases lt_trichotomy u w with huw | huw | huw
+    · -- x < u < w: zone zXW
+      have hut : u < t := huw.trans hwt
+      exact Or.inr (Or.inr (Or.inl (hzs _ _ _
+        (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))
+    · -- u = w: zone zAtW
+      subst huw
+      exact Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl u),
+          k1v_bool_eq_false h0.2 (lt_irrefl u)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hwt, k1v_bool_eq_false h2.2 (lt_asymm hwt)⟩)))))
+    · -- w < u: split against t
+      rcases lt_trichotomy u t with hut | hut | hut
+      · -- w < u < t: zone zWT
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))))
+      · -- u = t: zone zAtT
+        subst hut
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl u),
+            k1v_bool_eq_false h2.2 (lt_irrefl u)⟩)))))))
+      · -- t < u: zone zFutT
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
+
+/-- Extraction for `bracketFromLists` (§5 bracket `[α_0, …, α_n](z_0, z_1)`, PDF p.7): from
+    its `holds` at `(x, t)` obtain the middle witness `w` (bracket position `lL.length`),
+    the realization of every left/right point type strictly inside `(x, w)` / `(w, t)`, and
+    the gap classification: every point of `(x, w)` (resp. `(w, t)`) either carries a left
+    (resp. right) point type or satisfies the `segL` (resp. `segR`) exclusion segment. This
+    is the counterexample-defect fix of rule N4: witnesses are pinned strictly between the
+    FIXED endpoints by `IntervalPattern.holds` monotonicity (never type-anchored — the
+    refuted device of :1782-1796). -/
+private theorem k1v_bracket_extract {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
+    (x t : M.carrier)
+    (h : (bracketFromLists lL ptW lR segL segR).holds M atomMap x t) :
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      ptW.eval_at M atomMap w ∧
+      (∀ p ∈ lL, ∃ u, x < u ∧ u < w ∧ p.eval_at M atomMap u) ∧
+      (∀ p ∈ lR, ∃ u, w < u ∧ u < t ∧ p.eval_at M atomMap u) ∧
+      (∀ u, x < u → u < w →
+        segL.eval_at M atomMap u ∨ ∃ p ∈ lL, p.eval_at M atomMap u) ∧
+      (∀ u, w < u → u < t →
+        segR.eval_at M atomMap u ∨ ∃ p ∈ lR, p.eval_at M atomMap u) := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, bracketFromLists] at h
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show lL.length + 1 + lR.length = (lL.length + lR.length) + 1 by omega)] at h
+  obtain ⟨ws, hmono, hrange, hpt, hseg0, hsegmid, hseglast⟩ := h
+  -- Nat-indexed views of the point-type and range facts (proof-irrelevant reindexing).
+  have hpt' : ∀ (i : Nat) (hi : i < lL.length + lR.length + 1),
+      ((lL ++ ptW :: lR)[i]'(by
+        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap
+        (ws ⟨i, hi⟩) := fun i hi => hpt ⟨i, hi⟩
+  refine ⟨ws ⟨lL.length, by omega⟩,
+    (hrange ⟨lL.length, by omega⟩).1, (hrange ⟨lL.length, by omega⟩).2, ?_, ?_, ?_, ?_, ?_⟩
+  · -- The middle point type is `ptW`: index `lL.length` in `lL ++ ptW :: lR`.
+    have helem : (lL ++ ptW :: lR)[lL.length]'(by
+        simp only [List.length_append, List.length_cons]; omega) = ptW := by
+      rw [List.getElem_append_right (Nat.le_refl _)]
+      simp
+    have := hpt' lL.length (by omega)
+    rwa [helem] at this
+  · -- Every left point type is realized strictly inside `(x, w)`.
+    intro p hp
+    obtain ⟨j, hj, rfl⟩ := List.mem_iff_getElem.mp hp
+    refine ⟨ws ⟨j, by omega⟩, (hrange ⟨j, by omega⟩).1,
+      hmono ⟨j, by omega⟩ ⟨lL.length, by omega⟩ (Fin.mk_lt_mk.mpr hj), ?_⟩
+    have := hpt' j (by omega)
+    rwa [List.getElem_append_left hj] at this
+  · -- Every right point type is realized strictly inside `(w, t)`.
+    intro p hp
+    obtain ⟨j, hj, rfl⟩ := List.mem_iff_getElem.mp hp
+    refine ⟨ws ⟨lL.length + 1 + j, by omega⟩,
+      hmono ⟨lL.length, by omega⟩ ⟨lL.length + 1 + j, by omega⟩
+        (Fin.mk_lt_mk.mpr (by omega)),
+      (hrange ⟨lL.length + 1 + j, by omega⟩).2, ?_⟩
+    have helem : (lL ++ ptW :: lR)[lL.length + 1 + j]'(by
+        simp only [List.length_append, List.length_cons]; omega) = lR[j]'hj := by
+      rw [List.getElem_append_right (by omega)]
+      simp only [show lL.length + 1 + j - lL.length = j + 1 by omega,
+        List.getElem_cons_succ]
+    have := hpt' (lL.length + 1 + j) (by omega)
+    rwa [helem] at this
+  · -- Gap classification on `(x, w)`: witness slot or `segL`.
+    intro u hxu huw
+    have main : ∀ j (hj : j ≤ lL.length), u < ws ⟨j, by omega⟩ →
+        segL.eval_at M atomMap u ∨ ∃ p ∈ lL, p.eval_at M atomMap u := by
+      intro j
+      induction j with
+      | zero =>
+        intro _ hu0
+        left
+        have := hseg0 u hxu hu0
+        rwa [if_pos (Nat.zero_le lL.length)] at this
+      | succ j ih =>
+        intro hj hu
+        rcases lt_trichotomy u (ws ⟨j, by omega⟩) with h' | h' | h'
+        · exact ih (by omega) h'
+        · -- `u` IS witness `j` (with `j < lL.length`): it carries `lL[j]`.
+          right
+          have hptj := hpt' j (by omega)
+          rw [List.getElem_append_left (by omega)] at hptj
+          exact ⟨lL[j]'(by omega), List.getElem_mem _, by rw [h']; exact hptj⟩
+        · -- `ws j < u < ws (j+1)`: interior segment `j + 1 ≤ lL.length` carries `segL`.
+          left
+          have := hsegmid ⟨j, by omega⟩ u h' hu
+          rwa [if_pos hj] at this
+    exact main lL.length (Nat.le_refl _) huw
+  · -- Gap classification on `(w, t)`: witness slot or `segR`.
+    intro u hwu hut
+    have main : ∀ d j (hj : lL.length ≤ j) (hj2 : j + d = lL.length + lR.length),
+        ws ⟨j, by omega⟩ < u →
+        segR.eval_at M atomMap u ∨ ∃ p ∈ lR, p.eval_at M atomMap u := by
+      intro d
+      induction d with
+      | zero =>
+        intro j hj hj2 hju
+        have hjeq : j = lL.length + lR.length := by omega
+        subst hjeq
+        left
+        have := hseglast u hju hut
+        rwa [if_neg (show ¬(lL.length + lR.length + 1 ≤ lL.length) by omega)] at this
+      | succ d ih =>
+        intro j hj hj2 hju
+        rcases lt_trichotomy u (ws ⟨j + 1, by omega⟩) with h' | h' | h'
+        · -- `ws j < u < ws (j+1)` with `j ≥ lL.length`: segment `j+1 > lL.length` is `segR`.
+          left
+          have := hsegmid ⟨j, by omega⟩ u hju h'
+          rwa [if_neg (show ¬(j + 1 ≤ lL.length) by omega)] at this
+        · -- `u` IS witness `j + 1` (with `j + 1 > lL.length`): it carries `lR[j - lL.length]`.
+          right
+          have hptj := hpt' (j + 1) (by omega)
+          have helem : (lL ++ ptW :: lR)[j + 1]'(by
+              simp only [List.length_append, List.length_cons]; omega) =
+              lR[j - lL.length]'(by omega) := by
+            rw [List.getElem_append_right (by omega)]
+            simp only [show j + 1 - lL.length = (j - lL.length) + 1 by omega,
+              List.getElem_cons_succ]
+          rw [helem] at hptj
+          exact ⟨lR[j - lL.length]'(by omega), List.getElem_mem _, by rw [h']; exact hptj⟩
+        · exact ih (j + 1) (by omega) (by omega) h'
+    exact main lR.length lL.length (Nat.le_refl _) rfl hwu
+
+/-- Reconstruct the arity-3 depth-0 atom layer at env `[w, x, t]` from the three arity-1
+    point evaluations and the six order biconditionals. Private clone of the VecEADecomp
+    reconstruction helper (that lemma is `private` there and not importable). Chain step 3
+    of the soundness direction: the endpoint/witness point types plus the k0-mirror order
+    hypotheses assemble the atom layer (two-fixed-endpoint framing per **Lemma 3.2(2) PDF
+    p.4 + §5 bracket PDF p.7**, rule N1). -/
+private theorem k1v_reconstruct_nf3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (ssn : NormalForm sig 0 3) (y x t : M.carrier)
+    (h_y_nf : nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn))
+    (h_x_nf : nf_eval_nf M 0 1 (fun _ => x) (nf_x_proj3 ssn))
+    (h_t_nf : nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj3 ssn))
+    (h_o_yx : (y < x) ↔ (ssn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true))
+    (h_o_yt : (y < t) ↔ (ssn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true))
+    (h_o_xy : (x < y) ↔ (ssn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true))
+    (h_o_xt : (x < t) ↔ (ssn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true))
+    (h_o_ty : (t < y) ↔ (ssn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true))
+    (h_o_tx : (t < x) ↔ (ssn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)) :
+    nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn := by
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    have := h_y_nf (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons, nf_y_proj] at this ⊢; exact this
+  | .pred p ⟨1, _⟩ =>
+    have := h_x_nf (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons, nf_x_proj3] at this ⊢
+    convert this using 1
+  | .pred p ⟨2, _⟩ =>
+    have := h_t_nf (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons, nf_t_proj3] at this ⊢
+    convert this using 1
+  | .pred _ ⟨n + 3, h⟩ => exact absurd h (by omega)
+  | .order ⟨0, _⟩ ⟨0, _⟩ h_neq => exact absurd rfl h_neq
+  | .order ⟨0, _⟩ ⟨1, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_yx
+  | .order ⟨0, _⟩ ⟨2, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_yt
+  | .order ⟨1, _⟩ ⟨0, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_xy
+  | .order ⟨1, _⟩ ⟨1, _⟩ h_neq => exact absurd rfl h_neq
+  | .order ⟨1, _⟩ ⟨2, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_xt
+  | .order ⟨2, _⟩ ⟨0, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_ty
+  | .order ⟨2, _⟩ ⟨1, _⟩ _ => simp only [atom_eval, Fin.cons]; exact h_o_tx
+  | .order ⟨2, _⟩ ⟨2, _⟩ h_neq => exact absurd rfl h_neq
+  | .order ⟨n + 3, h⟩ _ _ => exact absurd h (by omega)
+  | .order _ ⟨n + 3, h⟩ _ => exact absurd h (by omega)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

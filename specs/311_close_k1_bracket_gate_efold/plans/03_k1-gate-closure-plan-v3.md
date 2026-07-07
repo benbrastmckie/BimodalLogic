@@ -1,7 +1,7 @@
 # Implementation Plan: Close the k=1 Bracket Gate under the E[Σ]-Fold Encoding (v3, witness-growth carrier after R2 = NO-GO at `VecEA2 1`)
 
 - **Task**: 311 - close_k1_bracket_gate_efold
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours total (5 phases; Phases 1-2 complete at ~5h; ~7h remaining across Phases 3-5; hard mode, H8 sizing)
 - **Dependencies**: 310 (COMPLETE — `Kamp/NfEFold.lean` landed sorry-free), parent 309 (BLOCKED, resumes via `/revise 309` after this task's GO verdict)
 - **Research Inputs**:
@@ -478,7 +478,7 @@ historical record; do not re-execute; do not edit its landed artifact.)*
 - **Depends on:** 2
 - **Completed:** 2026-07-06
 
-### Phase 4: Soundness direction (LHS→RHS) for the V-carrier [NOT STARTED]
+### Phase 4: Soundness direction (LHS→RHS) for the V-carrier [IN PROGRESS]
 
 - **Goal:** Land the private soundness lemma: if `(bracketEndChar_k1v … qnf).holds M atomMap x t`
   (under the six k0-mirror bracket-zone order hypotheses on `qnf.1`, exactly as
