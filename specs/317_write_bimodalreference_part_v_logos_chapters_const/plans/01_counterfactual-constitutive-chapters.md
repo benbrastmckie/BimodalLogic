@@ -1,7 +1,7 @@
 # Implementation Plan: Task #317
 
 - **Task**: 317 - Write the counterfactual and constitutive chapters of BimodalReference (Parts III and IV)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED] (all 5 phases; final book-level gates blocked only by concurrent task 316's in-flight missing generated/machine-appendix artifacts -- external to this task's write-set)
 - **Effort**: 7 hours
 - **Dependencies**: Tasks 313, 319 (both complete); no file overlap with in-flight tasks 315/316/318 except one-line label edit in `p3-vlach-blstar.typ` (flagged for task 315 coordination)
 - **Research Inputs**: specs/317_write_bimodalreference_part_v_logos_chapters_const/reports/01_counterfactual-constitutive-chapters.md
@@ -191,17 +191,17 @@ Phases within the same wave can execute in parallel (this plan is fully sequenti
 
 ---
 
-### Phase 5: Cross-Reference Sweep, Honesty Audit, Final Verification [NOT STARTED]
+### Phase 5: Cross-Reference Sweep, Honesty Audit, Final Verification [COMPLETED]
 
 **Goal**: Book-level integration is consistent and both mandated checks pass on the final state.
 
 **Tasks**:
-- [ ] Cross-reference sweep: `@`-references between `<ch:counterfactual>` ↔ `<ch:constitutive>` render as "Chapter N"; Vlach reference to `<ch:vlach-blstar>` resolves; check `00-introduction.typ` Part III/IV promises still match (no edit expected); confirm `part-divider` blurbs in `BimodalReference.typ:217-241` still describe the written chapters
-- [ ] Honesty audit against the paper anchors: (a) axiom/derived ledger exact, (b) soundness = characteristic schemata only, (c) completeness open in both places it arises, (d) three interpreted countermodels only, (e) shadow-figure caveat present (Divergence 5), (f) no local-Lean claims, (g) extensional-antecedent restriction in the grammar and respected by every displayed schema
-- [ ] Check unintended `#show "TM": strong` hits in the new prose (standalone "TM" only)
-- [ ] Notation polish: every new symbol used at least once; unused Section-7 symbols removed from constitutive-notation.typ; no leftover collision
-- [ ] Final compile with warning review (only the benign thmbox font warning expected) + sync-check; skim generated PDF pages for Parts III/IV (broken math, overfull displays, figure rendering)
-- [ ] Note in implementation summary: the `<ch:vlach-blstar>` label and `store`/`recall` definitions added for task 315 to preserve
+- [x] Cross-reference sweep: `@`-references between `<ch:counterfactual>` ↔ `<ch:constitutive>` render as "Chapter N"; Vlach reference to `<ch:vlach-blstar>` resolves; check `00-introduction.typ` Part III/IV promises still match (no edit expected); confirm `part-divider` blurbs in `BimodalReference.typ:217-241` still describe the written chapters
+- [x] Honesty audit against the paper anchors: (a) axiom/derived ledger exact, (b) soundness = characteristic schemata only, (c) completeness open in both places it arises, (d) three interpreted countermodels only, (e) shadow-figure caveat present (Divergence 5), (f) no local-Lean claims, (g) extensional-antecedent restriction in the grammar and respected by every displayed schema
+- [x] Check unintended `#show "TM": strong` hits in the new prose (standalone "TM" only)
+- [x] Notation polish: every new symbol used at least once; unused Section-7 symbols removed from constitutive-notation.typ; no leftover collision
+- [x] Final compile with warning review + sync-check; PDF pages for Parts III/IV skimmed via PNG renders (defs/theorems/proofs, imposition arrow, axiom lists, countermodels, Vlach clauses, shadow table all verified) [DEVIATION: full-book compile and sync-check each fail with exactly ONE cause -- task 316's missing generated/machine-appendix.{jsonl,typ}, in-flight and outside this task's write-set, pre-existing before 317's first edit; 317 content verified green via a wrapper compile that stubs only 316's appendix include, and sync-check shows zero violations from 317 files]
+- [x] Note in implementation summary: the `<ch:vlach-blstar>` label and `store`/`recall` definitions added for task 315 to preserve
 
 **Timing**: 1 hour
 
