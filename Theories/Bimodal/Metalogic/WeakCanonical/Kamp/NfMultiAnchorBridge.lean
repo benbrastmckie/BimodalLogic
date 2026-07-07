@@ -6380,4 +6380,114 @@ theorem kvE_subBracket2_reaches_zWT {sig : MonadicSignature}
   obtain ⟨u, hwu, huz1, hu⟩ := hright χ (Or.inr hbit)
   exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
 
+/-! ### Phase 3 — Soundness: atom-layer recovery channel + interior-fold ≤ per zone (task 324)
+
+Soundness building blocks consumed by Phase 4's `kvE_subBracket2_sound` assembly. Two channels:
+
+* **Atom-layer recovery channel** (`kvE_subBracket2_implies_subChain2`): the arity-4 corrected
+  analog of the landed holds→chain-at-point connector `kvE_subBracket_implies_subChain` :5824,
+  now instantiating the PROVEN `BracketFormula.bracket_implies_fChainPred` (EANegation:660) at the
+  *corrected* `kvE_subBracket2`. Whenever the redesigned bracket holds on `(z0, z)`, its
+  `fChainPred` (= `kvE_subChain2`, def :6170) is satisfied at a witness `x0` STRICTLY inside
+  `(z0, z)`, recovered from the bracket's OWN interval pattern — the F-chain predicate that
+  carries σ.1's order + predicate structure over the chain's evaluation points (report §2 probe 6).
+  No provider environment rebinds the anchors (Amendment F3); the positions ARE the bracket
+  witnesses, quantified by the temporal semantics. Rabinovich Cor 5.4 (md:154-157).
+
+* **Interior-fold ≤ per zone** (`kvE_subBracket2_fold_zXU/_zUW/_zWT`): for each interior zone,
+  a POSITIVE fold bit `σ.2 (nf0_assemble z* χ σ.1) = true` is REALIZED by the Phase-2 reachability
+  evidence (`kvE_subBracket2_reaches_z*`) as an honest normal-form witness. Reading the point
+  types through `charBase := nf_depth0_char_formula atomMap h_surj`, the char-formula realization
+  `⟨charBase χ⟩.eval_at` is bridged to the actual `nf_eval_nf M 0 1` evaluation via the correctness
+  lemma `nfPred_correct` (NfToVecEA:69) — the exact `hchar` bridge the k1v soundness template
+  :2370 uses. `zXU` places its witness strictly BELOW the anchor `w` (the below-anchor witness the
+  landed construction could not express); `zUW`/`zWT` strictly ABOVE. Rabinovich Cor 5.4
+  (md:154-157) step-by-step; no `simp`/`omega`/`aesop` on chain steps. -/
+
+/-- **Atom-layer recovery channel** (task 324 Phase 3). The corrected arity-4 holds→chain-at-point
+    connector: instantiates the PROVEN `BracketFormula.bracket_implies_fChainPred` (EANegation:660)
+    at the redesigned `kvE_subBracket2`. Whenever the bracket holds on `(z0, z)`, `kvE_subChain2`
+    (its `fChainPred`, def :6170) holds at a witness `x0` strictly inside `(z0, z)`, and every point
+    strictly below `x0` satisfies the leading segment type. This recovers σ.1's order + predicate
+    structure over the chain's evaluation points WITHOUT any provider environment (Amendment F3):
+    the anchor positions are the bracket witnesses, quantified by the temporal semantics. Arity-4
+    analog of the landed `kvE_subBracket_implies_subChain` :5824. Rabinovich Cor 5.4 (md:154-157). -/
+theorem kvE_subBracket2_implies_subChain2 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z : M.carrier)
+    (h : (kvE_subBracket2 charBase charK σ).2.holds M atomMap z0 z) :
+    ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z ∧
+      (kvE_subChain2 charBase charK σ).eval_at M atomMap x0 ∧
+      (∀ y : M.carrier, z0 < y → y < x0 →
+        ((kvE_subBracket2 charBase charK σ).2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
+  (kvE_subBracket2 charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
+
+/-- **Interior-fold ≤ — `zXU` (BELOW anchor)** (task 324 Phase 3). A positive `zXU` fold bit is
+    realized as an honest `nf_eval_nf M 0 1` witness `u` strictly BELOW the anchor witness `w`.
+    The Phase-2 `kvE_subBracket2_reaches_zXU` supplies the below-anchor char-formula witness; the
+    `nfPred_correct` (NfToVecEA:69) bridge — with `charBase = nf_depth0_char_formula atomMap h_surj`
+    — converts the char-formula realization to the actual normal-form evaluation, exactly as the
+    k1v soundness template's `hchar` :2370. Rabinovich Cor 5.4 (md:154-157). -/
+theorem kvE_subBracket2_fold_zXU {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
+    (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true)
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0 z1) :
+    ∃ u w : M.carrier, z0 < u ∧ u < w ∧ w < z1 ∧
+      nf_eval_nf M 0 1 (fun _ => u) χ ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w := by
+  obtain ⟨u, w, hz0u, huw, hwz1, hu, hw⟩ :=
+    kvE_subBracket2_reaches_zXU (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap z0 z1 χ
+      hbit h
+  exact ⟨u, w, hz0u, huw, hwz1, (nfPred_correct M atomMap h_surj χ u).mp hu, hw⟩
+
+/-- **Interior-fold ≤ — `zUW` (ABOVE anchor)** (task 324 Phase 3). A positive `zUW` fold bit is
+    realized as an honest `nf_eval_nf M 0 1` witness `u` strictly ABOVE the anchor witness `w`
+    (Phase-2 `kvE_subBracket2_reaches_zUW` + the `nfPred_correct` bridge). Rabinovich Cor 5.4
+    (md:154-157). -/
+theorem kvE_subBracket2_fold_zUW {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
+    (hbit : σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true)
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0 z1) :
+    ∃ w u : M.carrier, z0 < w ∧ w < u ∧ u < z1 ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
+      nf_eval_nf M 0 1 (fun _ => u) χ := by
+  obtain ⟨w, u, hz0w, hwu, huz1, hw, hu⟩ :=
+    kvE_subBracket2_reaches_zUW (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap z0 z1 χ
+      hbit h
+  exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
+
+/-- **Interior-fold ≤ — `zWT` (ABOVE anchor)** (task 324 Phase 3). A positive `zWT` fold bit is
+    realized as an honest `nf_eval_nf M 0 1` witness `u` strictly ABOVE the anchor witness `w`
+    (Phase-2 `kvE_subBracket2_reaches_zWT` + the `nfPred_correct` bridge). Rabinovich Cor 5.4
+    (md:154-157). -/
+theorem kvE_subBracket2_fold_zWT {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
+    (hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true)
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds M atomMap z0 z1) :
+    ∃ w u : M.carrier, z0 < w ∧ w < u ∧ u < z1 ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
+      nf_eval_nf M 0 1 (fun _ => u) χ := by
+  obtain ⟨w, u, hz0w, hwu, huz1, hw, hu⟩ :=
+    kvE_subBracket2_reaches_zWT (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap z0 z1 χ
+      hbit h
+  exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -273,7 +273,7 @@ logical parallelism; sequential execution is the safe default.
 - **Commit point:** `task 324 phase 2: per-zone reachability lemmas (kill-switch passed)`
 - **Depends on:** 1
 
-### Phase 3: Soundness — atom-layer recovery + interior-fold ≤ per zone [NOT STARTED]
+### Phase 3: Soundness — atom-layer recovery + interior-fold ≤ per zone [COMPLETED]
 - **Goal:** Recover σ.1's full atom layer (order + predicate bits over the chain's evaluation
   points) from the new construction, and close the interior-fold `≤` direction for each of the
   now-reachable `zXU`, `zUW`, `zWT`.
