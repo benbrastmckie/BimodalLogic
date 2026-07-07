@@ -6797,6 +6797,13 @@ noncomputable def kvE_subBracket2V {sig : MonadicSignature}
   let zXU : ZoneSpec 4 := mk4 ltz ltz gtz ltz   -- x < v < x1
   let zUW : ZoneSpec 4 := mk4 gtz ltz gtz ltz   -- x1 < v < w
   let zWT : ZoneSpec 4 := mk4 gtz gtz gtz ltz   -- w < v < t
+  -- Two interior WITNESS SELF-ZONES (v2 nine-zone correction; Def 3.1 md:61-74). Every honest σ
+  -- realizes x1 at its own self-zone (and w at its), so `nf_eval_depth1_fold_iff` (:5187) forces
+  -- `bits zAtX1 = true` (resp. `bits zAtW = true`); these MUST therefore be gate-consistent, else
+  -- the gate is unsatisfiable (the machine-verified v1 empty-gate blocker). k1v folds its single
+  -- witness self-zone `zAtW` :3277; the arity-4 carrier has TWO interior witnesses ⇒ two self-zones.
+  let zAtX1 : ZoneSpec 4 := mk4 eqz ltz gtz ltz   -- v = x1
+  let zAtW  : ZoneSpec 4 := mk4 gtz eqz gtz ltz   -- v = w
   -- Exterior zones for the two FIXED endpoints (Def 3.1 md:61-74).
   let zPastX : ZoneSpec 4 := mk4 ltz ltz ltz ltz   -- v < x
   let zAtX   : ZoneSpec 4 := mk4 ltz ltz eqz ltz   -- v = x
@@ -6837,16 +6844,30 @@ noncomputable def kvE_subBracket2V {sig : MonadicSignature}
   -- witness (coord 0, `nfk_projFresh σ`); `w` is the given interior anchor entering as a witness
   -- TYPE slot (Amendment F3 — no provider pinning; `charBase` of `w`'s coord-1 projection, realized
   -- by 1-type uniqueness).
-  let ptX1 : TemporalPred := ⟨charK (nfk_projFresh σ)⟩
-  let ptW : TemporalPred := ⟨charBase (proj 1)⟩
+  -- Witness self-type FOLDING (v2 nine-zone correction; arity-4 analog of k1v `hptW` :3277). Each
+  -- witness point type carries its complete type (head) PLUS its own self-zone's 1-type literals, so
+  -- soundness can re-derive the self-zone membership and completeness can discharge the witness
+  -- point. Amendment F3 preserved: a zone-literal fold on the complete 1-type, NOT a `w = e 1`
+  -- provider equation. `ptX1` folds `zAtX1`; `ptW` folds `zAtW`.
+  let ptX1 : TemporalPred :=
+    ⟨formula_conjList
+      (charK (nfk_projFresh σ)
+        :: (allTypes.map fun χ => lit (bits zAtX1 χ) (charBase χ)))⟩
+  let ptW : TemporalPred :=
+    ⟨formula_conjList
+      (charBase (proj 1)
+        :: (allTypes.map fun χ => lit (bits zAtW χ) (charBase χ)))⟩
   let charP : NormalForm sig 0 1 → TemporalPred := fun χ => ⟨charBase χ⟩
   -- Interior-positive enumerations, per region (duplicate-free `Finset.univ.toList`).
   let S_XU : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zXU χ)
   let S_UW : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zUW χ)
   let S_WT : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zWT χ)
-  -- Consistency of a zone spec with the bracket order `x < x1 < w < t` (seven real zones).
+  -- Consistency of a zone spec with the bracket order `x < x1 < w < t` (NINE real zones: the seven
+  -- exterior/interior zones PLUS the two interior witness self-zones `zAtX1`, `zAtW` — the v2
+  -- correction of the v1 empty-gate blocker, mirroring k1v's inclusion of its witness self-zone).
   let consistent : ZoneSpec 4 → Prop := fun zs =>
-    zs = zPastX ∨ zs = zAtX ∨ zs = zXU ∨ zs = zUW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
+    zs = zPastX ∨ zs = zAtX ∨ zs = zXU ∨ zs = zAtX1 ∨ zs = zUW ∨ zs = zAtW ∨ zs = zWT ∨
+      zs = zAtT ∨ zs = zFutT
   -- Gate (off-fiber honesty + order-conflict falsity): the arity-4 analog of k1v :1998.
   let gate : Prop :=
     (∀ sub : NormalForm sig 0 5, nf0_dropFresh sub ≠ σ.1 → σ.2 sub = false) ∧
@@ -7341,7 +7362,12 @@ private theorem kvE_subBracket2V_extract {sig : MonadicSignature}
   -- Extract the anchor + per-block point-type witnesses from the three-region bracket.
   obtain ⟨w, hz0w, hwz1, hanchor, hbelow, hUW, hWT⟩ :=
     bracketFromLists3_extract M atomMap _ _ _ _ _ _ _ _ z0 z1 hbr
-  refine ⟨w, hz0w, hwz1, hanchor, ?_, ?_⟩
+  refine ⟨w, hz0w, hwz1, ?_, ?_, ?_⟩
+  · -- Anchor: project the complete-type head conjunct out of the folded `ptX1` (v2 self-type fold;
+    -- k1v `hptW` :3277). `hanchor : ptX1_folded.eval_at`; its head is `charK (nfk_projFresh σ)`.
+    simp only [TemporalPred.eval_at] at hanchor ⊢
+    rw [formula_conjList_iff] at hanchor
+    exact hanchor _ List.mem_cons_self
   · -- `zXU`-positive `χ`: `⟨charBase χ⟩ ∈ lXU.map charP` via the arrangement permutation.
     intro χ hbit
     have hχmem : (⟨charBase χ⟩ : TemporalPred) ∈
