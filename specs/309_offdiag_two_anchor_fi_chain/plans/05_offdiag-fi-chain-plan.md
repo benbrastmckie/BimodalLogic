@@ -470,7 +470,7 @@ tree GREEN (1705 jobs); 0 new sorries; `lean_verify` on `bracketEndChar_kv` AND
 - **Guards enforced:** G2, G4, G6-as-amended (the type is the invariant), N1, N4, N5.
 - **Commit:** `task 309 phase 12: depth-k V-carrier definition bracketEndChar_kv (R3a)`
 
-### Phase 13: Depth-k V-carrier correctness `bracketEndChar_kv_correct` (R3b) [NOT STARTED]
+### Phase 13: Depth-k V-carrier correctness `bracketEndChar_kv_correct` (R3b) [IN PROGRESS]
 
 *(Dispatch ONLY after Phase 12 lands green.)*
 

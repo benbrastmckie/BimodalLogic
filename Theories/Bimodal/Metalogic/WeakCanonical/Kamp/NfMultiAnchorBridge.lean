@@ -3770,4 +3770,60 @@ theorem bracketEndChar_kv_one_eq {sig : MonadicSignature}
           rw [bracketEndChar_k1v_eq_kv_body atomMap h_surj qnf,
             kv_body_gate_fail _ _ _ _ _ hOFF]
 
+/-! ## Task 309 Phase 13 (R3b): depth-`k` V-carrier correctness — landed instances -/
+
+/-- **`k = 0` instance of the depth-`k` V-carrier correctness** (task 309 Phase 13, R3b — the
+    recursion BASE). The `k = 0` branch of `bracketEndChar_kv` (:3659) is the singleton-disjunct
+    wrapper of `bracketEndChar_k0` (:1567), so its `VVecEA2.holds` reduces to the `VecEA2.holds`
+    of the landed depth-0 bracket and the equivalence is exactly `bracketEndChar_k0_correct`
+    (:1581) — Prop 3.5 depth-0 collapse (PDF p.5); two-fixed-endpoint framing per Lemma 3.2(2)
+    (PDF p.4) + §5 bracket notation `[α_0, …, α_n](z_0, z_1)` (PDF p.7), rule N1 split. No
+    chain step is shortcut (G5): the singleton reduction is pure list computation, the semantic
+    content is the consumed k0 lemma. Anchors stay the FIXED `{x, t}` (G4/G6). -/
+theorem bracketEndChar_kv_correct_zero {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (qnf : NormalForm sig 0 3)
+    (h_xy : qnf (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_kv atomMap h_surj charF 0 qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  have hsing : (bracketEndChar_kv atomMap h_surj charF 0 qnf).holds M atomMap x t ↔
+      (bracketEndChar_k0 atomMap h_surj qnf).holds M atomMap x t := by
+    simp only [bracketEndChar_kv, VVecEA2.holds, List.mem_singleton, exists_eq_left]
+  exact hsing.trans
+    (bracketEndChar_k0_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t)
+
+/-- **`k = 1` instance of the depth-`k` V-carrier correctness** (task 309 Phase 13, R3b — the
+    first successor step). Under the depth-0 provider agreement `h0` (satisfied by the Phase-14
+    instantiation by construction, KampPrior:397 at depth 0), the documented k=1 bridge
+    `bracketEndChar_kv_one_eq` (:3710, pointwise EQUALITY via the depth-0 split-kit bijection —
+    Def 3.1's three-channel bijection, PDF p.4) rewrites the carrier to the landed
+    `bracketEndChar_k1v` (:1927), and the equivalence is the sorry-free
+    `bracketEndChar_k1v_correct` (:3378) verbatim — the R2 = GO record. Citations ride the
+    consumed lemma (rule N1 split there); no chain step is shortcut here (G5). -/
+theorem bracketEndChar_kv_correct_one {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (h0 : charF 0 = nf_depth0_char_formula atomMap h_surj)
+    (qnf : NormalForm sig 1 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_kv atomMap h_surj charF 1 qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  rw [bracketEndChar_kv_one_eq atomMap h_surj charF h0 qnf]
+  exact bracketEndChar_k1v_correct atomMap h_surj qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
