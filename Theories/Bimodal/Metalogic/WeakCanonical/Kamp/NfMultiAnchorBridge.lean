@@ -7569,4 +7569,198 @@ theorem kvE_subBracket2V_sound {sig : MonadicSignature}
   · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
     exact h_bwd zs χ hzs hbit
 
+/-! ### Task 325 v2 Phase 1: the mandatory NON-VACUITY GATE
+
+Two consecutive prior iterations (task 324 Phase 6; task 325 v1 Phase 4) closed soundness over an
+always-`False` carrier — vacuously. v2's structural countermeasure: an explicit, machine-checked
+non-vacuity lemma that MUST close before soundness/completeness are attempted, proving the corrected
+NINE-zone gate is satisfiable by an honest σ and the carrier's `disjuncts` list is non-empty. The
+key arity-4 realizability lemma `kvE_sub2V_zone_consistent` (the analog of `k1v_zone_consistent`
+:2065) shows every zone realized by a point over the honest env `[x1, w, x, t]` under the order
+`x < x1 < w < t` is one of the NINE consistent zones — its contrapositive discharges gate conjunct
+(ii). Rabinovich Def 3.1 (md:61-74), Prop 4.2 (md:100-101). -/
+
+/-- Any zone spec realized by a point over the anchor env `[x1, w, x, t]` with `x < x1 < w < t` is
+    one of the NINE order-consistent zones (Def 3.1, PDF pp.4-5: disjunctions range only over
+    consistent order types). The arity-4 lift of `k1v_zone_consistent` :2065, extended for the two
+    interior witness self-zones `zAtX1`, `zAtW`. Its contrapositive discharges the inconsistent-zone
+    fold bits against gate conjunct (ii) — the machine-verified v1 empty-gate fix. -/
+private theorem kvE_sub2V_zone_consistent {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (x1 w x t u : M.carrier)
+    (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (zs : ZoneSpec 4)
+    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs u) :
+    zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (false, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))) ∨
+    zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))) := by
+  have h0 := hz ⟨0, by omega⟩
+  have h1 := hz ⟨1, by omega⟩
+  have h2 := hz ⟨2, by omega⟩
+  have h3 := hz ⟨3, by omega⟩
+  simp only [Fin.cons] at h0 h1 h2 h3
+  have hzs : ∀ (p0 p1 p2 p3 : Bool × Bool),
+      zs ⟨0, by omega⟩ = p0 → zs ⟨1, by omega⟩ = p1 → zs ⟨2, by omega⟩ = p2 →
+        zs ⟨3, by omega⟩ = p3 →
+      zs = Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3))) := by
+    intro p0 p1 p2 p3 e0 e1 e2 e3
+    funext i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+    | ⟨3, _⟩ => simpa only [Fin.cons] using e3
+  have hxw : x < w := hxx1.trans hx1w
+  have hxt : x < t := hxw.trans hwt
+  have hx1t : x1 < t := hx1w.trans hwt
+  rcases lt_trichotomy u x with hux | hux | hux
+  · -- u < x : zPastX
+    have hux1 : u < x1 := hux.trans hxx1
+    have huw : u < w := hux1.trans hx1w
+    have hut : u < t := huw.trans hwt
+    exact Or.inl (hzs _ _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hux, k1v_bool_eq_false h2.2 (lt_asymm hux)⟩)
+      (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))
+  · -- u = x : zAtX
+    subst hux
+    exact Or.inr (Or.inl (hzs _ _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hxx1, k1v_bool_eq_false h0.2 (lt_asymm hxx1)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hxw, k1v_bool_eq_false h1.2 (lt_asymm hxw)⟩)
+      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl u),
+        k1v_bool_eq_false h2.2 (lt_irrefl u)⟩)
+      (Prod.ext_iff.mpr ⟨h3.1.mp hxt, k1v_bool_eq_false h3.2 (lt_asymm hxt)⟩)))
+  · -- x < u : split against x1
+    rcases lt_trichotomy u x1 with hux1 | hux1 | hux1
+    · -- x < u < x1 : zXU
+      have huw : u < w := hux1.trans hx1w
+      have hut : u < t := huw.trans hwt
+      exact Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+        (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
+        (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hux), h2.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))
+    · -- u = x1 : zAtX1
+      subst hux1
+      exact Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl u),
+          k1v_bool_eq_false h0.2 (lt_irrefl u)⟩)
+        (Prod.ext_iff.mpr ⟨h1.1.mp hx1w, k1v_bool_eq_false h1.2 (lt_asymm hx1w)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxx1), h2.2.mp hxx1⟩)
+        (Prod.ext_iff.mpr ⟨h3.1.mp hx1t, k1v_bool_eq_false h3.2 (lt_asymm hx1t)⟩)))))
+    · -- x1 < u : split against w
+      rcases lt_trichotomy u w with huw | huw | huw
+      · -- x1 < u < w : zUW
+        have hut : u < t := huw.trans hwt
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hux1), h0.2.mp hux1⟩)
+          (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hux), h2.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))))
+      · -- u = w : zAtW
+        subst huw
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1w), h0.2.mp hx1w⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl u),
+            k1v_bool_eq_false h1.2 (lt_irrefl u)⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxw), h2.2.mp hxw⟩)
+          (Prod.ext_iff.mpr ⟨h3.1.mp hwt, k1v_bool_eq_false h3.2 (lt_asymm hwt)⟩)))))))
+      · -- w < u : split against t
+        have hx1u : x1 < u := hx1w.trans huw
+        have hxu : x < u := hxw.trans huw
+        rcases lt_trichotomy u t with hut | hut | hut
+        · -- w < u < t : zWT
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm huw), h1.2.mp huw⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu), h2.2.mp hxu⟩)
+            (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))))))
+        · -- u = t : zAtT
+          subst hut
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm huw), h1.2.mp huw⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu), h2.2.mp hxu⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_irrefl u),
+              k1v_bool_eq_false h3.2 (lt_irrefl u)⟩)))))))))
+        · -- t < u : zFutT
+          have hx1u' : x1 < u := hx1t.trans hut
+          have hxu' : x < u := hxt.trans hut
+          have hwu' : w < u := hwt.trans hut
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (hzs _ _ _ _
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u'), h0.2.mp hx1u'⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu'), h1.2.mp hwu'⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu'), h2.2.mp hxu'⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
+
+/-- **NON-VACUITY GATE, part 1 — the corrected nine-zone gate holds for an honest σ**
+    (task 325 v2 Phase 1; the EXACT statement whose negation the removed v1 probe
+    `kvE_subBracket2V_gate_unsat_PROBE` proved over the old 7-zone gate — now flipped to provable).
+    From an honest depth-1 realization at the anchor env `[x1, w, x, t]` under the order
+    `x < x1 < w < t`, BOTH gate conjuncts hold: (i) off-fiber falsity is the fold's own off-fiber
+    clause; (ii) inconsistent-zone falsity via the `kvE_sub2V_zone_consistent` contrapositive — the
+    forced-true bits at `zAtX1`/`zAtW` no longer contradict conjunct (ii) because those self-zones
+    are now among the NINE consistent zones. Rabinovich Prop 4.2 (md:100-101), Def 3.1 (md:61-74). -/
+theorem kvE_subBracket2V_gate_holds_of_honest {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier)
+    (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (h : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (∀ sub : NormalForm sig 0 5, nf0_dropFresh sub ≠ σ.1 → σ.2 sub = false) ∧
+    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+      ¬(zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (false, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (false, true) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (false, true) (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+        zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))) ∨
+        zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))))) →
+      σ.2 (nf0_assemble zs χ σ.1) = false) := by
+  obtain ⟨_h_atom, h_zone, h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp h
+  refine ⟨h_off, fun zs χ hncons => ?_⟩
+  cases hb : σ.2 (nf0_assemble zs χ σ.1) with
+  | false => rfl
+  | true =>
+    obtain ⟨u, hzu, -⟩ := (h_zone zs χ).mpr hb
+    exact absurd (kvE_sub2V_zone_consistent M x1 w x t u hxx1 hx1w hwt zs hzu) hncons
+
+/-- **NON-VACUITY GATE, part 2 — the corrected carrier is inhabited for an honest σ**
+    (task 325 v2 Phase 1; refutes the removed v1 probe `kvE_subBracket2V_never_holds_PROBE`). For σ
+    arising from an actual model realization under `x < x1 < w < t`, the corrected nine-zone gate
+    holds (part 1), so the carrier takes the gate-true branch and its `disjuncts` list is the NON-empty
+    arrangement `flatMap` (the identity arrangement of each region-positive enumeration is always
+    present). Hence `(kvE_subBracket2V …).holds` is NOT definitionally `False`, and soundness
+    (Phase 2) can no longer close vacuously. Rabinovich Prop 4.2 (md:100-101). -/
+theorem kvE_subBracket2V_nonvacuous {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier)
+    (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (h : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (kvE_subBracket2V charBase charK σ).disjuncts ≠ [] := by
+  have hgate := kvE_subBracket2V_gate_holds_of_honest σ M x1 w x t hxx1 hx1w hwt h
+  simp only [kvE_subBracket2V]
+  split
+  case isTrue _ =>
+    apply List.ne_nil_of_mem
+    apply List.mem_flatMap.mpr
+    refine ⟨_, List.mem_permutations.mpr (List.Perm.refl _), ?_⟩
+    apply List.mem_flatMap.mpr
+    refine ⟨_, List.mem_permutations.mpr (List.Perm.refl _), ?_⟩
+    apply List.mem_map.mpr
+    exact ⟨_, List.mem_permutations.mpr (List.Perm.refl _), rfl⟩
+  case isFalse hg =>
+    exact absurd hgate hg
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

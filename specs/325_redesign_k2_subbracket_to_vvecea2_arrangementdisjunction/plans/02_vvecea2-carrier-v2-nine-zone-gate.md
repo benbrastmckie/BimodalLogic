@@ -307,7 +307,7 @@ corrected carrier and rejoin at Phase 4 — but all phases append to a single Le
 serially in order 1,2,3,4 (safe default, H7) OR enforce strict non-overlapping line-range ownership.
 **Neither Phase 2 nor Phase 3 may begin until the Phase-1 NON-VACUITY GATE is green.**
 
-### Phase 1: Corrected nine-zone-gate carrier + witness self-type folding + NON-VACUITY GATE [NOT STARTED]
+### Phase 1: Corrected nine-zone-gate carrier + witness self-type folding + NON-VACUITY GATE [COMPLETED]
 - **Goal:** Amend `kvE_subBracket2V` in place so its gate `consistent` set has NINE zones (adds
   `zAtX1`, `zAtW`) and `ptX1`/`ptW` fold their own witness self-zone 1-type literals; then DRIVE the
   mandatory NON-VACUITY GATE to a closed proof. This phase's completion is HARD-GATED on the
