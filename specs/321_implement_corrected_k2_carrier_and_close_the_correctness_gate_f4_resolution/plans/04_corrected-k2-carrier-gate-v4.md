@@ -1,7 +1,7 @@
 # Implementation Plan (v4): Corrected k=2 Carrier — Close the k=2 Correctness Gate (wire task-325's VVecEA2 correctness pair)
 
 - **Task**: 321 - implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~19 hours total (Stages A+B + integrity ≈ 13.5h COMPLETED and landed; ~9h remaining across the v4 wiring/gate close + final verdict — down from v3's ~17.5h because task 325 delivered the arity-4 sub-bracket correctness pair the v3 Phase-8 blocker demanded)
 - **Dependencies**: 320 (GO verdict on route b3, design spec §5 — COMPLETED). Task 324 is [ABANDONED] (superseded by 325); its landed Phases 1-5 assets remain consumable. The k=2 sub-bracket correctness pair is supplied by task 325 (COMPLETED 2026-07-07).
 - **Research Inputs**:
@@ -341,7 +341,40 @@ forward.
   axiom-clean; no `sorry`; `git diff` shows only the three authorized 321-owned edits + the additive
   `have`, all forbidden-list assets byte-identical.
 
-### Phase 9: Stage C soundness scaffolding — gate entry + k1v extraction reuse over the new carrier [NOT STARTED] (Stage C)
+### Phase 9: Stage C soundness scaffolding — gate entry + k1v extraction reuse over the new carrier [IN PROGRESS] (Stage C)
+
+<!-- Phase 9 progress (session sess_1783452940_63339e, 2026-07-07): The soundness-direction
+     reduction+extraction was MACHINE-VERIFIED green-modulo-sorry in an uncommitted WIP and then
+     removed (no `sorry` landed on the live path; NfMultiAnchorBridge.lean is byte-identical to the
+     Phase-8 commit 8448ea135). Verified recipe for the proof-side lemma
+     `bracketEndChar_kvE2_sound` (soundness half of `BracketCarrierCorrectVPrior` at
+     `bracketEndChar_kvE2`, conclusion `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf`):
+       `rw [bracketEndChar_kvE2_two_eq] at h`
+       `simp only [kvE2_body, VVecEA2.holds] at h`
+       `obtain ⟨vea, hmem, hveah⟩ := h; split at hmem`
+       `case isFalse hg => simp at hmem` (empty-disjunct gate-fail branch closes)
+       `case isTrue hg => rw [List.mem_flatMap] at hmem; obtain ⟨lL, hlLp, hmem⟩ := hmem;`
+       `rw [List.mem_map] at hmem; obtain ⟨lR, hlRp, hEq⟩ := hmem; subst hEq;`
+       `obtain ⟨hepL, hepR, hbr⟩ := hveah;`
+       `obtain ⟨w, hxw, hwt, hptWe, hLwit, hRwit, hLgap, hRgap⟩ := k1v_bracket_extract M atomMap _ _ _ _ _ x t hbr`
+     EXPOSED obligation structure (Phase-10 inputs), captured via lean_goal:
+       - gate channel: `hg : kvE_gate qnf.1 qnf.2`;
+       - arrangement: `lL`/`hlLp` ∈ `(posIn zXW).permutations`, `lR`/`hlRp` ∈ `(posIn zWT).permutations`;
+       - JOINT SLOT (task-3 CONFIRMED re-pointed): `hLwit`/`hRwit` :
+         `∀ p ∈ List.flatMap (fun σ => kvE_subChain2V (nf_depth0_char_formula atomMap h_surj)`
+         `(fun χ => P.existF 0 χ) σ ++ pinSlots σ) lL/lR, ∃ u, x<u∧u<w∧p.eval_at …` — the task-325
+         `kvE_subChain2V` shape (NOT the old `kvE_subChain`). Phase 10 must first bridge `hLwit`/`hRwit`
+         back to `(kvE_subBracket2V …).holds M atomMap x t` (the shape `kvE_subBracket2V_sound` :7370
+         consumes), then discharge its explicit `hgate`;
+       - non-joint channels: `hepL`/`hepR` (endpoint conjunctions at x/t), `hptWe` (ptW at w),
+         `hLgap`/`hRgap` (segL/segR gap classification incl. `exclAt`, channel-ii);
+       - remaining goal: `⊢ ∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf`.
+     This is an inline half-proof over `kvE2_body`'s internal `let`-bound objects (`slotsFor`/`epL`/
+     `segL`/…), so it is NOT independently committable green — a main-target `sorry` is forbidden here,
+     and a hypothesis-shaped wrapper cannot name the internal lets. Per this phase's Verification valve
+     ("commit nothing and report partial with the exposed obligation structure recorded in the handoff"),
+     nothing was committed. Phase 9's committable green code merges into Phase 10's `_sound` closure. -->
+
 
 - **Goal:** Open the `BracketCarrierCorrectVPrior` soundness direction (carrier holds ⇒ ∃w realization)
   for the re-pointed `bracketEndChar_kvE2`, reduce it through `bracketEndChar_kvE2_two_eq` to the
