@@ -111,7 +111,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-325 [RESEARCHED] — Task 324's Phases 1-5 landed a k=2 arity-4 sub-bracket constructi
+325 [IMPLEMENTING] — Task 324's Phases 1-5 landed a k=2 arity-4 sub-bracket constructi
   └─ 324 [BLOCKED] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
     └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
       └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
@@ -122,11 +122,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 325. Redesign k2 subbracket to vvecea2 arrangementdisjunction
 - **Effort**: 10-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
-- **Research**: [324_redesign_k2_subbracket_arity4_correctness_pair/reports/03_spawn-analysis.md]
+- **Research**:
+  - [324_redesign_k2_subbracket_arity4_correctness_pair/reports/03_spawn-analysis.md]
+  - [325_redesign_k2_subbracket_to_vvecea2_arrangementdisjunction/reports/01_adversarial-verification.md]
+- **Plan**: [325_redesign_k2_subbracket_to_vvecea2_arrangementdisjunction/plans/01_vvecea2-carrier-redesign.md]
 
 **Description**: Task 324's Phases 1-5 landed a k=2 arity-4 sub-bracket construction (kvE_subBracket2/kvE_subChain2, NfMultiAnchorBridge.lean:6120-6720) with a soundness direction (kvE_subBracket2_sound, :6530) and a completeness *extraction* kit (kvE_subBracket2_complete_extract, :6683). Phase 6 (the completeness converse) is machine-refuted: adversarially-verified blocker research (specs/324_redesign_k2_subbracket_arity4_correctness_pair/reports/02_phase6-blocker-research.md) proves the converse `(exists x1, nf_eval_nf M 1 4 [x1,w,x,t] sigma) -> (kvE_subBracket2 ...).2.holds M atomMap x t` is a FALSE forall-M statement over the current carrier, for two independent, machine-confirmed reasons: (1) kvE_subBracket2.segmentTypes is the CONSTANT segExcl (all-three-zone exclusion, :6159), but IntervalPattern.holds (ExistsForallNF.lean:106-132) requires each segment type to hold at EVERY point of its open segment, while the depth-1 fold (nf_eval_depth1_fold_iff :5187) only forces zone-membership <-> fold-bit for a point's OWN zone, never cross-zone positivity -- an interior point realized only in one zone survives the antecedent yet falsifies segExcl; (2) kvE_subBracket2.pointTypes is a FIXED filter-order list (Finset.univ.toList-derived leftSlots/rightSlots, :6139-6158), but IntervalPattern.holds needs strictly-monotone witnesses positionally matching that fixed order, and the model's realization order need not match it. Report 02 Q2 additionally shows no rescue is available on the current carrier: the codomain (Sigma m, BracketFormula (m+1), a single IntervalPattern) is structurally the wrong shape for completeness -- the landed k1v template's completeness (bracketEndChar_k1v_complete, :2979) is provable ONLY because that carrier is a VVecEA2 finite disjunction over arrangement permutations with PER-SIDE segment types (bracketFromLists.segmentTypes, :1902), letting completeness (a) select the model-sorted arrangement disjunct and (b) discharge each side's segment type because every point of that side is genuinely zone-positive there. A gate-hypothesis rescue is also rejected: in completeness .holds is the CONCLUSION (unlike soundness where it is the hypothesis), so any hypothesis strong enough to make it provable would itself assert the monotone-positional + per-segment conditions -- i.e. it would BE the conclusion, trivializing the deliverable.
 

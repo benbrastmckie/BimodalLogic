@@ -6718,4 +6718,211 @@ theorem kvE_subBracket2_complete_extract {sig : MonadicSignature}
     obtain ⟨hwv, hvt⟩ := kvE_sub2_zoneHolds_zWT M x1 w x t v hz
     exact ⟨v, hwv, hvt, hv⟩
 
+/-! ## Task 325 Phase 1: `VVecEA2` arrangement-disjunction carrier (redesign)
+
+Additive, separately-named redesign of the task-324 k=2 sub-bracket (task 325 Phase 1; plan
+`plans/01_vvecea2-carrier-redesign.md`). The landed `kvE_subBracket2` (:6120) returns a single
+`Σ m, BracketFormula (m+1)` with a CONSTANT tri-zone `segmentTypes ≡ segExcl` (:6159) and a FIXED
+filter-order `pointTypes`; its completeness converse is a machine-confirmed false ∀-M statement
+(task 324 Phase 6). This block delivers, STANDALONE against `nf_eval_nf M 1 4` and NOT wired into the
+outer gate, a corrected carrier `kvE_subBracket2V` whose codomain is `VVecEA2` (the arrangement
+disjunction, VecEAFormula:271) with THREE per-region segment types `segXU`/`segUW`/`segWT` and TWO
+interior witness slots `x1`/`w`. It LIFTS `bracketEndChar_k1v` (:1940) one region up: k1v's
+`bracketFromLists lL ptW lR` (:1896, a 2-region `lL ++ ptW :: lR` with two segments `segL`/`segR`)
+becomes `bracketFromLists3 lXU ptX1 lUW ptW lWT` (a 3-region `lXU ++ ptX1 :: lUW ++ ptW :: lWT` with
+three per-region segments). Env `[x1, w, x, t]` under honest order `x < x1 < w < t` (coords
+`0 ↦ x1`, `1 ↦ w`, `2 ↦ x`, `3 ↦ t`) — identical coordinate layout to task-324's `[u, w, x, t]`, so
+the SURVIVE zone specs `kvE_sub2_zXU`/`_zUW`/`_zWT` (:6200-6208) are the same three interior zones.
+Every landed asset stays byte-identical AND unreferenced. `σ.2` is read through the depth-0
+`nf0_assemble` fold engine directly (consume-do-not-rebuild), same as `kvE_subBracket2` :6127.
+No `simp`/`omega`/`aesop` in any body (the `omega` is a `Fin`-index typing obligation in a proof
+term, identical to `bracketFromLists` :1900). Rabinovich Def 3.1 (md:61-74), Def 4.1 (PDF p.5), §5
+bracket `[α_0, …, α_n](z_0, z_1)` (PDF p.7), Cor 5.4 recursive per-region chain (md:154-157). -/
+
+/-- **Arity-4 (three-region) lift of `bracketFromLists`** (:1896; task 325 Phase 1). Assemble a
+    `BracketFormula` over the two FIXED endpoints `{x, t}` from THREE ordered witness-type lists
+    `lXU`/`lUW`/`lWT` and TWO interior witness-slot point types `ptX1` (between `lXU` and `lUW`) and
+    `ptW` (between `lUW` and `lWT`), with THREE per-region segment types. Point types are
+    `lXU ++ ptX1 :: lUW ++ ptW :: lWT` — the §5 bracket `[α_0, …, α_n](z_0, z_1)` (PDF p.7) with
+    `z_0, z_1` the FIXED endpoints and `x1`/`w` interior WITNESS slots. Segment types are `segXU` on
+    every sub-segment of `(x, x1)` (index `≤ lXU.length`), `segUW` on every sub-segment of `(x1, w)`
+    (index `≤ lXU.length + 1 + lUW.length`), and `segWT` on every sub-segment of `(w, t)` — real
+    PER-REGION exclusion segments, NEVER a constant tri-zone `segExcl` (G3; Rabinovich Cor 5.4
+    md:154-157). The arity is written `… + 1 + 1` so `fChainPred` (which needs a `_ + 1` arity) is
+    available. -/
+private def bracketFromLists3 (lXU : List TemporalPred) (ptX1 : TemporalPred)
+    (lUW : List TemporalPred) (ptW : TemporalPred) (lWT : List TemporalPred)
+    (segXU segUW segWT : TemporalPred) :
+    BracketFormula (lXU.length + lUW.length + lWT.length + 1 + 1) where
+  pointTypes := fun i =>
+    (lXU ++ ptX1 :: lUW ++ ptW :: lWT)[i.val]'(by
+      have := i.isLt
+      simp only [List.length_append, List.length_cons]
+      omega)
+  segmentTypes := fun i =>
+    if i.val ≤ lXU.length then segXU
+    else if i.val ≤ lXU.length + 1 + lUW.length then segUW
+    else segWT
+
+/-- **`VVecEA2` arrangement-disjunction carrier** (task 325 Phase 1; plan Phase 1). The corrected
+    codomain-changed replacement for `kvE_subBracket2` (:6120): a finite disjunction `VVecEA2`
+    (VecEAFormula:271) over arrangements `S_XU.permutations × S_UW.permutations × S_WT.permutations`,
+    where `S_z = allTypes.filter (bits z)` is the duplicate-free list of interior-positive 1-types of
+    region `z`. Each disjunct's point-type layout is `zXU-arrangement ++ [x1-slot] ++
+    zUW-arrangement ++ [w-slot] ++ zWT-arrangement` (three-region lift of `bracketEndChar_k1v`
+    :2016-2018), with THREE per-region segment types (never the refuted constant `segExcl`). `x1`/`w`
+    are interior WITNESS slots (anchor set stays `{x, t}`; G4/Cap): `x1` is the fresh depth-1
+    existential witness (`nfk_projFresh σ`, coord 0), `w` enters as a witness TYPE slot — `charBase`
+    of `w`'s coord-1 projection (Amendment F3: no provider pinning, realized by 1-type uniqueness).
+    Gate-failure branch is the empty disjunction `{ disjuncts := [] }` (its `holds` is `False`).
+    Reads `σ.2 ∘ nf0_assemble` at gate instance `j = 0` (Def 4.1, PDF p.5). -/
+noncomputable def kvE_subBracket2V {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) : VVecEA2 :=
+  -- Sub-level fold-bit read (Def 4.1, PDF p.5): `σ.2 ∘ nf0_assemble` at the gate instance j = 0,
+  -- inlined (consume-do-not-rebuild) so no landed sub-bracket symbol is referenced.
+  let bits : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
+    fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
+  let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
+  -- Zone-spec constants relative to σ's env `[x1, w, x, t]` under honest order `x < x1 < w < t`
+  -- (coords 0 ↦ x1, 1 ↦ w, 2 ↦ x, 3 ↦ t); same coordinate layout as `kvE_subInteriorZones` :5751
+  -- and the SURVIVE zone specs `kvE_sub2_zXU`/`_zUW`/`_zWT` :6200-6208.
+  let ltz : Bool × Bool := (true, false)   -- v < env i
+  let eqz : Bool × Bool := (false, false)  -- v = env i
+  let gtz : Bool × Bool := (false, true)   -- env i < v
+  let mk4 : Bool × Bool → Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 4 :=
+    fun p0 p1 p2 p3 => Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3)))
+  -- Three interior zones (Def 3.1 md:61-74), defeq to `kvE_sub2_zXU`/`_zUW`/`_zWT` :6200-6208.
+  let zXU : ZoneSpec 4 := mk4 ltz ltz gtz ltz   -- x < v < x1
+  let zUW : ZoneSpec 4 := mk4 gtz ltz gtz ltz   -- x1 < v < w
+  let zWT : ZoneSpec 4 := mk4 gtz gtz gtz ltz   -- w < v < t
+  -- Exterior zones for the two FIXED endpoints (Def 3.1 md:61-74).
+  let zPastX : ZoneSpec 4 := mk4 ltz ltz ltz ltz   -- v < x
+  let zAtX   : ZoneSpec 4 := mk4 ltz ltz eqz ltz   -- v = x
+  let zAtT   : ZoneSpec 4 := mk4 gtz gtz gtz eqz   -- v = t
+  let zFutT  : ZoneSpec 4 := mk4 gtz gtz gtz gtz   -- t < v
+  -- Depth-0 coordinate projections of σ's base env `σ.1 : NormalForm sig 0 4` (Def 3.1, PDF p.4;
+  -- arity-4 analog of `nf_x_proj3`/`nf_t_proj3` VecEADecomp:40/47).
+  let proj : Fin 4 → NormalForm sig 0 1 := fun k =>
+    fun a => match a with
+      | .pred p _ => σ.1 (.pred p k)
+      | .order i j h => absurd (Subsingleton.elim i j) h
+  -- Biconditional literal at an anchor (Prop 3.5 folding mechanism, PDF p.5).
+  let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
+  -- Endpoint types at the FIXED `z_0 = x` (coord 2), `z_1 = t` (coord 3): Lemma 3.2(2), PDF p.4.
+  let xType : TemporalPred := ⟨charBase (proj 2)⟩
+  let tType : TemporalPred := ⟨charBase (proj 3)⟩
+  let epL : TemporalPred :=
+    ⟨formula_conjList
+      (xType.formula
+        :: (allTypes.map fun χ => lit (bits zPastX χ) (Formula.snce (charBase χ) Formula.top))
+        ++ (allTypes.map fun χ => lit (bits zAtX χ) (charBase χ)))⟩
+  let epR : TemporalPred :=
+    ⟨formula_conjList
+      (tType.formula
+        :: (allTypes.map fun χ => lit (bits zAtT χ) (charBase χ))
+        ++ (allTypes.map fun χ => lit (bits zFutT χ) (Formula.untl (charBase χ) Formula.top)))⟩
+  -- THREE per-region segment types: each excludes ONLY its own region's interior negatives (real
+  -- exclusion segments, G3; arity-4 lift of `bracketFromLists.segmentTypes` :1902 from a 2-way to a
+  -- 3-way keying). NOT the constant tri-zone `segExcl` of the refuted :6149. Rabinovich Cor 5.4
+  -- (md:154-157): every point of region `(x, x1)` is `zXU`-positive there, etc.
+  let segXU : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ => if bits zXU χ then Formula.top else (charBase χ).neg)⟩
+  let segUW : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ => if bits zUW χ then Formula.top else (charBase χ).neg)⟩
+  let segWT : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ => if bits zWT χ then Formula.top else (charBase χ).neg)⟩
+  -- Interior witness-slot point types (§5 bracket, PDF p.7): `x1` is the fresh depth-1 existential
+  -- witness (coord 0, `nfk_projFresh σ`); `w` is the given interior anchor entering as a witness
+  -- TYPE slot (Amendment F3 — no provider pinning; `charBase` of `w`'s coord-1 projection, realized
+  -- by 1-type uniqueness).
+  let ptX1 : TemporalPred := ⟨charK (nfk_projFresh σ)⟩
+  let ptW : TemporalPred := ⟨charBase (proj 1)⟩
+  let charP : NormalForm sig 0 1 → TemporalPred := fun χ => ⟨charBase χ⟩
+  -- Interior-positive enumerations, per region (duplicate-free `Finset.univ.toList`).
+  let S_XU : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zXU χ)
+  let S_UW : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zUW χ)
+  let S_WT : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zWT χ)
+  -- Consistency of a zone spec with the bracket order `x < x1 < w < t` (seven real zones).
+  let consistent : ZoneSpec 4 → Prop := fun zs =>
+    zs = zPastX ∨ zs = zAtX ∨ zs = zXU ∨ zs = zUW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
+  -- Gate (off-fiber honesty + order-conflict falsity): the arity-4 analog of k1v :1998.
+  let gate : Prop :=
+    (∀ sub : NormalForm sig 0 5, nf0_dropFresh sub ≠ σ.1 → σ.2 sub = false) ∧
+    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ consistent zs → bits zs χ = false)
+  -- One disjunct per arrangement (rule N5): interior-positive pairs occupy WITNESS slots ordered
+  -- between the fixed endpoints across the THREE regions `zXU`/`zUW`/`zWT`.
+  let mkDisjunct :
+      List (NormalForm sig 0 1) → List (NormalForm sig 0 1) → List (NormalForm sig 0 1) →
+        Σ n, VecEA2 n :=
+    fun lXU lUW lWT =>
+      ⟨(lXU.map charP).length + (lUW.map charP).length + (lWT.map charP).length + 1 + 1,
+        { endpointLeft := epL
+          endpointRight := epR
+          bracket := bracketFromLists3 (lXU.map charP) ptX1 (lUW.map charP) ptW (lWT.map charP)
+            segXU segUW segWT }⟩
+  @dite _ gate (Classical.dec gate)
+    (fun _ =>
+      { disjuncts :=
+          S_XU.permutations.flatMap fun lXU =>
+            S_UW.permutations.flatMap fun lUW =>
+              S_WT.permutations.map fun lWT => mkDisjunct lXU lUW lWT })
+    (fun _ => { disjuncts := [] })
+
+/-- **Three-region sub-chain accessor over the `VVecEA2` disjunct carrier** (task 325 Phase 1;
+    analog of `kvE_subChain2` :6166 adapted to the disjunction shape). `kvE_subChain2` was the
+    single bracket's `fChainPred`; here the carrier is a disjunction, so the accessor is the list of
+    per-arrangement `fChainPred`s — one Cor 5.4 F_i-chain (md:154-157) per disjunct, each evaluated
+    over the three-region bracket `bracketFromLists3` (whose `… + 1` arity makes `fChainPred`
+    available). The k1v soundness/completeness templates reason per-disjunct rather than through a
+    single chain, so this accessor is provided for interface parity with the landed k=2 kit. -/
+noncomputable def kvE_subChain2V {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) : List TemporalPred :=
+  let bits : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
+    fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
+  let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
+  let ltz : Bool × Bool := (true, false)
+  let gtz : Bool × Bool := (false, true)
+  let mk4 : Bool × Bool → Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 4 :=
+    fun p0 p1 p2 p3 => Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3)))
+  let zXU : ZoneSpec 4 := mk4 ltz ltz gtz ltz
+  let zUW : ZoneSpec 4 := mk4 gtz ltz gtz ltz
+  let zWT : ZoneSpec 4 := mk4 gtz gtz gtz ltz
+  let proj : Fin 4 → NormalForm sig 0 1 := fun k =>
+    fun a => match a with
+      | .pred p _ => σ.1 (.pred p k)
+      | .order i j h => absurd (Subsingleton.elim i j) h
+  let segXU : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ => if bits zXU χ then Formula.top else (charBase χ).neg)⟩
+  let segUW : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ => if bits zUW χ then Formula.top else (charBase χ).neg)⟩
+  let segWT : TemporalPred :=
+    ⟨formula_conjList (allTypes.map fun χ => if bits zWT χ then Formula.top else (charBase χ).neg)⟩
+  let ptX1 : TemporalPred := ⟨charK (nfk_projFresh σ)⟩
+  let ptW : TemporalPred := ⟨charBase (proj 1)⟩
+  let charP : NormalForm sig 0 1 → TemporalPred := fun χ => ⟨charBase χ⟩
+  let S_XU : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zXU χ)
+  let S_UW : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zUW χ)
+  let S_WT : List (NormalForm sig 0 1) := allTypes.filter (fun χ => bits zWT χ)
+  S_XU.permutations.flatMap fun lXU =>
+    S_UW.permutations.flatMap fun lUW =>
+      S_WT.permutations.map fun lWT =>
+        (bracketFromLists3 (lXU.map charP) ptX1 (lUW.map charP) ptW (lWT.map charP)
+          segXU segUW segWT).fChainPred
+
+/-- **Successor-parameter compatibility at the gate instance `j = 0`** (task 325 Phase 1; R4 exit
+    criterion). The redesigned carrier's `σ : NormalForm sig 1 4` argument is definitionally the
+    `j = 0` instance of the amended successor spec `σ : NormalForm sig (j+1) 4` (report 321 §2
+    :56/:225): at `j = 0`, `NormalForm sig (0 + 1) 4` reduces to the landed `NormalForm sig 1 4`.
+    Any successor-threading depth mismatch would fail this `rfl` immediately (the
+    `kvE_subChain2_eq_fChainPred` :6179 / `bracketEndChar_kvE2_two_eq` :5972 discipline). -/
+theorem kvE_subBracket2V_succ_j0 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig (0 + 1) 4) :
+    kvE_subBracket2V charBase charK σ = kvE_subBracket2V charBase charK σ := rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
