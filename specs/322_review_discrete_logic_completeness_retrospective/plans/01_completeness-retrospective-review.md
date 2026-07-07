@@ -197,17 +197,17 @@ territory is trivially the task directory).
   `specs/322_review_discrete_logic_completeness_retrospective/reports/03_streamlining-recommendations.md`,
   including candidate follow-up task descriptions (descriptions only — no task creation).
 - **Tasks:**
-  - [ ] For each of the report's seven recommendations, write a dispatchable entry with fields:
+  - [x] For each of the report's seven recommendations, write a dispatchable entry with fields:
     {What, Owner, Trigger/Gate, Concrete next action, Citation}. Preserve the report's priority
     order and the strengthened Rec-1 framing (Option A b3-probe first, Option B interval-EA
     rebuild pre-authorized as fallback; ~700-1050 line estimate per 305/reports/37 §4.4).
-  - [ ] Write the "Barred routes register" (report Rec 7): route a provider-pinning,
+  - [x] Write the "Barred routes register" (report Rec 7): route a provider-pinning,
     `nvar_transfer`/cross-structure transfer, arity-tower descent, flat-carrier kvE''
     iterations — each with its refutation citation, marked CLOSED.
-  - [ ] Write the "Litmus design gate" as a copy-pasteable checklist block (position-by-
+  - [x] Write the "Litmus design gate" as a copy-pasteable checklist block (position-by-
     evaluation-point litmus, arity firewall Lemma 3.2(2), G5 faithfulness-mapping precondition)
     suitable for direct inclusion in a future task-321/309-v8 plan guard set.
-  - [ ] Draft 2-4 candidate follow-up task descriptions in `/task`-ready prose, covering at
+  - [x] Draft 2-4 candidate follow-up task descriptions in `/task`-ready prose, covering at
     least: (a) the patch-vs-rebuild decision memo / b3 minimal probe re-point (report Rec 1+6,
     with the mandatory F4 Z counterexample data reproduced: `M=Z`, `p={0}`, `r={13}`, `x=10`,
     `t=20`, `sigma''=char[14,16,11,20]`); (b) churn-instrumentation fix (report Rec 4: count
@@ -215,8 +215,12 @@ territory is trivially the task directory).
     `.orchestrator-churn-state.json` and the three-strikes logic as targets); (c) the
     lean-extension context note capturing the litmus + arity firewall (report Context Extension
     Recommendation). Mark each as CANDIDATE — creation deferred to orchestrator/user.
-  - [ ] Cross-reference each entry to the review document's section anchors (Phase 1 output).
-  - [ ] Confirm `git status --porcelain -- Theories/` is empty.
+  - [x] Cross-reference each entry to the review document's section anchors (Phase 1 output).
+  - [x] Confirm `git status --porcelain -- Theories/` is empty *(deviation: altered — check
+    shows one pre-existing uncommitted non-Lean file, `Theories/Bimodal/typst/bibliography.bib`,
+    residue of task 319 bibliography work not touched by this task; `.lean`-scoped check
+    `git status --porcelain -- 'Theories/**/*.lean'` is empty, so the binding zero-.lean
+    constraint holds; drift left uncommitted for its owning session)*
 - **Estimated output:** ~200 lines (one document; advisory band 100-300).
 - **Done when:** `reports/03_streamlining-recommendations.md` exists; all seven recommendations
   have the five required fields; the barred-routes register and litmus checklist are present;
