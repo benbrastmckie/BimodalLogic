@@ -471,23 +471,23 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 3 hours.
 - **Depends on:** 4, 5.
 
-### Phase 9: Part IV Chapter — Proof Automation [NOT STARTED]
+### Phase 9: Part IV Chapter — Proof Automation [COMPLETED]
 
 - **Goal:** The ~8,900-line `Automation/` proof-automation half is surfaced: tactics, Aesop
   rule set, and the bounded proof-search engine, as a ✓-class chapter.
 - **Territory:** `chapters/p4-proof-automation.typ` only.
 - **Tasks:**
-  - [ ] Tactics: `tm_auto`, `apply_axiom`, `modal_t` (`Automation/Tactics/Commands.lean`) —
+  - [x] Tactics: `tm_auto`, `apply_axiom`, `modal_t` (`Automation/Tactics/Commands.lean`) —
         what each does, one worked invocation each (drawn from library usage, verified to
         exist).
-  - [ ] Aesop integration: the `TMLogic` rule set (`AesopRules.lean`), forward chaining and
+  - [x] Aesop integration: the `TMLogic` rule set (`AesopRules.lean`), forward chaining and
         normalization rules, when to reach for it vs `tm_auto`.
-  - [ ] Bounded proof search: `ProofSearch/Core.lean` engine and `Strategies.lean` — search
+  - [x] Bounded proof search: `ProofSearch/Core.lean` engine and `Strategies.lean` — search
         space, bounds, relationship to the tableau procedure (cross-ref Phase 8 chapter).
-  - [ ] `SuccessPatterns.lean` and `EFGameTactics.lean` one-section survey (the latter
+  - [x] `SuccessPatterns.lean` and `EFGameTactics.lean` one-section survey (the latter
         cross-referenced to the Kamp frontier, marked ⧖ where it serves in-progress work).
-  - [ ] Chapter-header preamble (assumes ch. 03 proof theory) + `#sync-banner(✓, ...)`.
-  - [ ] Verify: compile green; sync-check green.
+  - [x] Chapter-header preamble (assumes ch. 03 proof theory) + `#sync-banner(✓, ...)`.
+  - [x] Verify: compile green; sync-check green.
 - **Estimated output:** ~260 lines.
 - **Done when:** chapter complete with all module claims resolving; checks green.
 - **Timing:** 2.5 hours.
