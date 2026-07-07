@@ -309,30 +309,30 @@ deterministically with git stamps, and renders the `.typ` strictly from the JSON
 
 ---
 
-### Phase 4: Sync-check Check 3 and full verification sweep [NOT STARTED]
+### Phase 4: Sync-check Check 3 and full verification sweep [COMPLETED]
 
 **Goal**: Freshness of the machine appendix is enforced by `typst-sync-check.sh` without any
 `lake` invocation, and the complete pipeline is verified end-to-end.
 
 **Tasks**:
-- [ ] Add "Check 3: machine appendix freshness" to `scripts/typst-sync-check.sh`, sub-check A
+- [x] Add "Check 3: machine appendix freshness" to `scripts/typst-sync-check.sh`, sub-check A
       (count agreement): recompute `AXIOM_COUNT`/`RULE_COUNT` via the same inline awk scans
       `typst-status-counts.sh` uses over `Axioms.lean`/`Derivation.lean`, and compare against
       `jq -s` counts of `kind=="axiom"` / `kind=="inference_rule"` lines in the committed
       JSONL; fail with a "regenerate via bash scripts/typst-machine-appendix.sh" message on
       mismatch.
-- [ ] Add sub-check B (rendering agreement): re-render `machine-appendix.typ` from the
+- [x] Add sub-check B (rendering agreement): re-render `machine-appendix.typ` from the
       *committed* JSONL using the factored renderer with the *committed* stamp values
       (normalize-stamp treatment, per research), diff against the committed `.typ`; fail on any
       difference (proves the rendering is derived, not hand-edited).
-- [ ] Confirm Check 3 runs with jq/python/awk only — no `lake` invocation (runtime budget).
-- [ ] Full verification sweep: `lake build` green; `bash scripts/typst-machine-appendix.sh`
+- [x] Confirm Check 3 runs with jq/python/awk only — no `lake` invocation (runtime budget).
+- [x] Full verification sweep: `lake build` green; `bash scripts/typst-machine-appendix.sh`
       idempotent (double-run diff empty); typst compile green;
       `bash scripts/typst-sync-check.sh` green including Check 3.
-- [ ] Negative test for Check 3: temporarily delete one axiom line from a scratch copy of the
+- [x] Negative test for Check 3: temporarily delete one axiom line from a scratch copy of the
       JSONL (or point the checker at a doctored copy) and confirm the count-agreement sub-check
       fails; restore.
-- [ ] Ensure final commit includes both generated artifacts, the new chapter, the wiring edits,
+- [x] Ensure final commit includes both generated artifacts, the new chapter, the wiring edits,
       the two scripts changes, the Lean module, and the lakefile stanza.
 
 **Timing**: 2 hours
@@ -352,20 +352,22 @@ deterministically with git stamps, and renders the `.typ` strictly from the JSON
 
 ## Testing & Validation
 
-- [ ] `lake exe machine_appendix` exits 0; coverage assertions pass (42 axioms matching
-      `allAxiomNames`, 7 rules).
-- [ ] Every JSONL line parses under `jq .`; first line `kind=="metadata"` with correct counts
+- [x] `lake exe machine_appendix` exits 0; coverage assertions pass (42 axioms matching
+      `allAxiomNames`, 7 rules). *(deviation: altered — verified via the interpreter
+      (`lake env lean --run`); the native exe link OOMs on this machine, see Phase 2
+      Deviations)*
+- [x] Every JSONL line parses under `jq .`; first line `kind=="metadata"` with correct counts
       and stamps.
-- [ ] Spot-check fidelity: `modal_t` schema, `neg` definition unfolds to
+- [x] Spot-check fidelity: `modal_t` schema, `neg` definition unfolds to
       `{"tag":"imp",...,"right":{"tag":"bot"}}`, `density` → `Dense`, `prior_UZ` → `Discrete`,
       `linear_until`/`linear_since` carry 4 params including `θ`.
-- [ ] `typst compile BimodalReference.typ` green; appendix renders in back matter with stamp
+- [x] `typst compile BimodalReference.typ` green; appendix renders in back matter with stamp
       footer.
-- [ ] `bash scripts/typst-sync-check.sh` green (Checks 1, 2, and new Check 3); negative test
+- [x] `bash scripts/typst-sync-check.sh` green (Checks 1, 2, and new Check 3); negative test
       fails as expected.
-- [ ] Re-runnability: two consecutive script runs from the same commit produce byte-identical
+- [x] Re-runnability: two consecutive script runs from the same commit produce byte-identical
       artifacts.
-- [ ] No `sorry` introduced anywhere (structurally guaranteed — no proof obligations).
+- [x] No `sorry` introduced anywhere (structurally guaranteed — no proof obligations).
 
 ## Artifacts & Outputs
 

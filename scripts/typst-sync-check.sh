@@ -2,12 +2,17 @@
 # ============================================================================
 # typst-sync-check.sh
 #
-# Mechanical drift detector for Theories/Bimodal/typst/. Two checks:
+# Mechanical drift detector for Theories/Bimodal/typst/. Three checks:
 #   1. Name resolution   -- every backticked span in typst/**/*.typ resolves
 #                           against live Lean source (excl. Boneyard/) or
 #                           the whitelist.
 #   2. Count freshness   -- regenerated status.typ (JSON) matches the
 #                           committed typst/generated/status.typ exactly.
+#   3. Machine appendix  -- committed generated/machine-appendix.jsonl agrees
+#                           with a live recount of the Axiom/DerivationTree
+#                           constructor blocks, and machine-appendix.typ is
+#                           exactly the renderer's output for that JSONL
+#                           (jq/python/awk only; no lake invocation).
 #
 # (The former banner-presence and legend-discipline checks were retired with
 # the sync-class banner system in task 319; the compiled book carries no
@@ -229,12 +234,104 @@ PYEOF
 fi
 
 # ---------------------------------------------------------------------------
+# Check 3: machine appendix freshness
+#
+# Two sub-checks over the committed machine appendix artifacts (task 316):
+#   A. Count agreement -- the committed JSONL's axiom/rule line counts match
+#      a live recount of the `inductive Axiom` / `inductive DerivationTree`
+#      constructor blocks (same awk scans as typst-status-counts.sh), and
+#      the metadata line's counts match the actual line counts.
+#   B. Rendering agreement -- re-rendering machine-appendix.typ from the
+#      committed JSONL (with the committed stamps, which live inside the
+#      JSONL metadata line) reproduces the committed .typ byte-for-byte,
+#      proving the rendering is derived, never hand-edited.
+#
+# Runtime budget: jq/python/awk only -- no lake invocation.
+# ---------------------------------------------------------------------------
+echo "== Check 3: machine appendix freshness (generated/machine-appendix.*) ==" >&2
+
+MA_JSONL="${TYPST_DIR}/generated/machine-appendix.jsonl"
+MA_TYP="${TYPST_DIR}/generated/machine-appendix.typ"
+
+if [[ ! -f "${MA_JSONL}" || ! -f "${MA_TYP}" ]]; then
+  echo "VIOLATION: missing machine appendix artifact(s) (${MA_JSONL}, ${MA_TYP}) -- regenerate via: bash scripts/typst-machine-appendix.sh" >&2
+  FAIL=1
+else
+  # --- Sub-check A: count agreement (live source scans vs committed JSONL) ---
+  LIVE_AXIOM_COUNT=$(awk '/^inductive Axiom/,/deriving Repr/' "${BIMODAL_DIR}/ProofSystem/Axioms.lean" | grep -c '^  | ')
+  LIVE_RULE_COUNT=$(awk '
+    /^inductive DerivationTree/ { infile=1 }
+    infile && /^  \| / { count++ }
+    infile && /^[A-Za-z]/ && !/^inductive DerivationTree/ && NR>1 && seen { exit }
+    infile { seen=1 }
+    END { print count }
+  ' "${BIMODAL_DIR}/ProofSystem/Derivation.lean")
+
+  COUNT_REPORT=$(python3 - "${MA_JSONL}" "${LIVE_AXIOM_COUNT}" "${LIVE_RULE_COUNT}" << 'PYEOF'
+import json, sys
+
+path, live_axioms, live_rules = sys.argv[1], int(sys.argv[2]), int(sys.argv[3])
+counts = {"axiom": 0, "inference_rule": 0, "derived_operator": 0}
+meta = None
+mismatches = []
+with open(path, encoding="utf-8") as fh:
+    for i, line in enumerate(fh):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError:
+            mismatches.append(f"line {i+1} of machine-appendix.jsonl is not valid JSON")
+            continue
+        kind = obj.get("kind")
+        if kind == "metadata":
+            meta = obj
+        elif kind in counts:
+            counts[kind] += 1
+
+if meta is None:
+    mismatches.append("no metadata line in machine-appendix.jsonl")
+else:
+    for key, actual in (("axiom_count", counts["axiom"]),
+                        ("rule_count", counts["inference_rule"]),
+                        ("derived_operator_count", counts["derived_operator"])):
+        if meta.get(key) != actual:
+            mismatches.append(f"metadata {key}={meta.get(key)} but {actual} such lines present")
+
+if counts["axiom"] != live_axioms:
+    mismatches.append(f"committed axiom lines={counts['axiom']} but live Axioms.lean constructor count={live_axioms}")
+if counts["inference_rule"] != live_rules:
+    mismatches.append(f"committed inference_rule lines={counts['inference_rule']} but live Derivation.lean rule count={live_rules}")
+
+for m in mismatches:
+    print("VIOLATION: " + m + " -- regenerate via: bash scripts/typst-machine-appendix.sh")
+print(f"MA_COUNT_MISMATCHES={len(mismatches)}")
+PYEOF
+)
+  echo "${COUNT_REPORT}" >&2
+  if ! echo "${COUNT_REPORT}" | grep -q "^MA_COUNT_MISMATCHES=0$"; then
+    FAIL=1
+  fi
+
+  # --- Sub-check B: rendering agreement (re-render committed JSONL, diff) ---
+  RENDER_DIFF=$(bash "${REPO_ROOT}/scripts/typst-machine-appendix.sh" --render-only "${MA_JSONL}" | diff - "${MA_TYP}" 2>&1)
+  if [[ -n "${RENDER_DIFF}" ]]; then
+    echo "VIOLATION: generated/machine-appendix.typ does not match a re-render from the committed JSONL (hand edit or renderer drift) -- regenerate via: bash scripts/typst-machine-appendix.sh" >&2
+    echo "${RENDER_DIFF}" | head -20 >&2
+    FAIL=1
+  else
+    echo "machine-appendix.typ matches a re-render from the committed JSONL." >&2
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 if [[ "${FAIL}" == "1" ]]; then
   echo "typst-sync-check.sh: FAIL" >&2
   exit 1
 else
-  echo "typst-sync-check.sh: PASS (all 2 checks green)" >&2
+  echo "typst-sync-check.sh: PASS (all 3 checks green)" >&2
   exit 0
 fi
