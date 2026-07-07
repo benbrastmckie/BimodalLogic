@@ -323,7 +323,7 @@ placeholders carry citations; SLOT-IN anchors intact; compile green.
 
 ---
 
-### Phase 5: Rewrite front matter — introduction, abstract, title-page Sources [NOT STARTED]
+### Phase 5: Rewrite front matter — introduction, abstract, title-page Sources [COMPLETED]
 
 **Goal**: The book opens as a direct textbook: brief motivated introduction, textbook
 abstract, citation-backed Sources. This is the prose-heavy phase.
