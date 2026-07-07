@@ -1,5 +1,5 @@
 ---
-next_project_number: 322
+next_project_number: 323
 ---
 
 # TODO
@@ -12,7 +12,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,315,316,317,318,320 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,315,316,317,318,320,322 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,320 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
@@ -27,6 +27,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
+322 [NOT STARTED] — Review the discrete-logic completeness effort (Kamp theorem forma
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
@@ -120,6 +121,16 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Uncategorized
 
 ## Tasks
+
+### 322. Review discrete logic completeness retrospective
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: completeness
+- **Dependencies**: None
+
+**Description**: Review the discrete-logic completeness effort (Kamp theorem formalization retrospective): survey the past tasks (305-321 lineage and earlier completeness work), their reports/plans/verdict records (F1-F4), and the git history to diagnose why establishing completeness for the discrete logic has been so difficult — recurring failure modes, refuted-device churn, where literature fidelity vs formalization shortcuts diverged — and produce actionable recommendations to streamline the remaining attempt
+
+---
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
