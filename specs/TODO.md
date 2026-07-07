@@ -12,12 +12,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,311 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,311 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,309 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 193,305 | 189,192,196,307 | completeness, automation |
+| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
+| 5 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -105,8 +104,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-311 [IMPLEMENTING] — Using the fixed-arity monadic E[Sigma]-fold encoding delivered by
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -114,12 +112,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 311. Close k1 bracket gate efold
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310
 - **Research**: [311_close_k1_bracket_gate_efold/reports/01_rabinovich-faithfulness-audit.md]
-- **Summary**: [311_close_k1_bracket_gate_efold/summaries/01_k1-gate-closure-summary.md]
+- **Summary**:
+  - [311_close_k1_bracket_gate_efold/summaries/01_k1-gate-closure-summary.md]
+  - [311_close_k1_bracket_gate_efold/summaries/02_k1-gate-closure-v3-summary.md]
 - **Plan**: [311_close_k1_bracket_gate_efold/plans/03_k1-gate-closure-plan-v3.md]
 
 **Description**: Using the fixed-arity monadic E[Sigma]-fold encoding delivered by the prerequisite task (Define NormalForm E[Sigma]-fold encoding), redo task 309's Phase 10 (R2) k=1 decision-gate probe UNDER THE NEW ENCODING and close it GO. This is the encoding-level task's acceptance probe (task 309 plan v3 Phase 10 NO-GO handoff, commit 8fd4340b1): the exact goal that failed under the OLD nf_eval_nf-only encoding must close under the new fold.

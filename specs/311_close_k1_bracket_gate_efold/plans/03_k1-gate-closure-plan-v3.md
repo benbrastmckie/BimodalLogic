@@ -1,7 +1,7 @@
 # Implementation Plan: Close the k=1 Bracket Gate under the E[Σ]-Fold Encoding (v3, witness-growth carrier after R2 = NO-GO at `VecEA2 1`)
 
 - **Task**: 311 - close_k1_bracket_gate_efold
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours total (5 phases; Phases 1-2 complete at ~5h; ~7h remaining across Phases 3-5; hard mode, H8 sizing)
 - **Dependencies**: 310 (COMPLETE — `Kamp/NfEFold.lean` landed sorry-free), parent 309 (BLOCKED, resumes via `/revise 309` after this task's GO verdict)
 - **Research Inputs**:
