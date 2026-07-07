@@ -4,8 +4,18 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 312,
+  "next_project_number": 313,
   "active_projects": [
+    {
+      "project_number": 312,
+      "project_name": "revise_bimodalreference_typst_paper_lean",
+      "status": "not_started",
+      "task_type": "typst",
+      "description": "Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority",
+      "topic": "publication-quality",
+      "created": "2026-07-07T01:34:55Z",
+      "last_updated": "2026-07-07T01:34:55Z"
+    },
     {
       "project_number": 309,
       "project_name": "offdiag_two_anchor_fi_chain",

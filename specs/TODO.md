@@ -1,5 +1,5 @@
 ---
-next_project_number: 312
+next_project_number: 313
 ---
 
 # TODO
@@ -12,7 +12,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,312 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,309 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193,305 | 189,192,196,307 | completeness, automation |
 | 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
@@ -64,6 +64,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
+312 [NOT STARTED] — Systematically revise Theories/Bimodal/typst/BimodalReference.typ
 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
 
@@ -109,6 +110,16 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Uncategorized
 
 ## Tasks
+
+### 312. Revise bimodalreference typst paper lean
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: publication-quality
+- **Dependencies**: None
+
+**Description**: Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority
+
+---
 
 ### 311. Close k1 bracket gate efold
 - **Effort**: high
