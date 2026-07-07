@@ -1,6 +1,7 @@
 import Bimodal.Automation.DatasetGenerator
 import Bimodal.Automation.DataExport
 import Bimodal.Automation.ProofSearch.Core
+import Bimodal.Automation.AxiomNames
 import Bimodal.ProofSystem.Axioms
 
 /-!
@@ -293,29 +294,10 @@ def generateAllInstances : List TaggedFormula :=
 ## Axiom Coverage Verification
 -/
 
-/-- All 42 axiom constructor names. -/
-def allAxiomNames : List String :=
-  [ "prop_k", "prop_s", "ex_falso", "peirce"
-  , "modal_t", "modal_4", "modal_b", "modal_5_collapse", "modal_k_dist"
-  , "serial_future", "serial_past"
-  , "left_mono_until_G", "left_mono_since_H"
-  , "right_mono_until", "right_mono_since"
-  , "connect_future", "connect_past"
-  , "enrichment_until", "enrichment_since"
-  , "self_accum_until", "self_accum_since"
-  , "absorb_until", "absorb_since"
-  , "linear_until", "linear_since"
-  , "until_F", "since_P"
-  , "temp_linearity", "temp_linearity_past"
-  , "F_until_equiv", "P_since_equiv"
-  , "modal_future"
-  , "discrete_symm_fwd", "discrete_symm_bwd"
-  , "discrete_propagate_fwd", "discrete_propagate_bwd"
-  , "discrete_box_necessity"
-  , "prior_UZ", "prior_SZ"
-  , "z1"
-  , "density", "dense_indicator"
-  ]
+-- NOTE (task 316): `allAxiomNames` (the canonical 42-name list) moved to
+-- `Bimodal.Automation.AxiomNames` so that `MachineAppendixExport.lean` can
+-- share it (this module declares a root-level `main` and cannot be imported
+-- by another executable). Resolved here via the parent namespace.
 
 /-- Check which axiom names are covered by the generated instances. -/
 def checkCoverage (instances : List TaggedFormula) : List String × List String :=
@@ -356,6 +338,12 @@ def labelViaAxiomMatch (tf : TaggedFormula) : Option LabeledFormula :=
         countermodel := none
         metrics := metrics
         patternKey := patternKey
+        ruleProfile := none
+        decisionMethod := "axiom_match"
+        countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
+        proofReconstructionMethod := none
       }
     else
       -- Base axiom: label as valid with proof trace
@@ -371,6 +359,12 @@ def labelViaAxiomMatch (tf : TaggedFormula) : Option LabeledFormula :=
         countermodel := none
         metrics := metrics
         patternKey := patternKey
+        ruleProfile := none
+        decisionMethod := "axiom_match"
+        countermodelConsistent := none
+        enrichedCountermodel := none
+        semanticCountermodelSummary := none
+        proofReconstructionMethod := some "axiom_match"
       }
   | none => none
 
