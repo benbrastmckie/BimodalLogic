@@ -6777,6 +6777,47 @@ private def bracketFromLists3 (lXU : List TemporalPred) (ptX1 : TemporalPred)
     else if i.val ≤ lXU.length + 1 + lUW.length then segUW
     else segWT
 
+/-- **fChainPred F_0 below-witness extraction from the inner bracket** (task 326 Phase 3). For an
+    inner `bracketFromLists3` whose `zXU`-region point-type list is NON-EMPTY (`χ0 :: lXU'` — the
+    first `zXU` arrangement type `χ0`, `= ⟨charBase χ⟩` at the k=2 gate), a `.holds` at the inner
+    endpoints `(z0, z)` realizes the FIRST point type `χ0` at some `u ∈ (z0, z)`. This is the
+    forward `fChainPred → (pointTypes 0)` datum (Cor 5.4 sidestepped — pure forward direction):
+    `bracket_implies_fChainPred` (`EANegation.lean:660`) yields `F_0(u)`; unfolding the F-chain
+    one step at index 0 via `fChainFrom_step` (`EANegation.lean:616`, never the base case since the
+    `+ 1 + 1` arity keeps `0 < n`) extracts `(pointTypes 0).eval_at u`; and `pointTypes 0 = χ0`
+    holds by the head of the concatenated point list `(χ0 :: lXU') ++ ptX1 :: lUW ++ ptW :: lWT`
+    (`bracketFromLists3` `:6741-6745`). At assembly the endpoints instantiate to give `x < u < q`
+    (the `< q` bound inherited from Phase 1's block ordering; here the general `z0 < u < z` form).
+
+    Rabinovich 2014 **Lemma 5.3** (md:137-152): each arrangement's fresh depth-`k` type splits its
+    interval positionally; the first point of the `zXU` region is the below-anchor F_0 witness. -/
+private theorem bracketFromLists3_fChainPred_head_extract {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (χ0 : TemporalPred) (lXU' lUW lWT : List TemporalPred)
+    (ptX1 ptW segXU segUW segWT : TemporalPred)
+    (z0 z : M.carrier)
+    (h : (bracketFromLists3 (χ0 :: lXU') ptX1 lUW ptW lWT segXU segUW segWT).holds
+          M atomMap z0 z) :
+    ∃ u : M.carrier, z0 < u ∧ u < z ∧ χ0.eval_at M atomMap u := by
+  set bf := bracketFromLists3 (χ0 :: lXU') ptX1 lUW ptW lWT segXU segUW segWT with hbf
+  -- Forward direction (Cor 5.4 sidestepped): the first bracket witness satisfies F_0.
+  obtain ⟨x0, hz0x0, hx0z, hfchain, -⟩ :=
+    BracketFormula.bracket_implies_fChainPred M atomMap bf z0 z h
+  -- Index-0 is a STEP (never the base case): `0 < n` since the arity ends in `+ 1`. State the
+  -- bound with a concrete type so it is not blocked on the inferred arity metavariable.
+  have hlt0 : (0 : Nat) < (χ0 :: lXU').length + lUW.length + lWT.length + 1 := by
+    simp only [List.length_cons]; omega
+  -- Unfold F_0 and take one forward step at index 0.
+  unfold BracketFormula.fChainPred at hfchain
+  have hstep := (BracketFormula.fChainFrom_step M atomMap bf
+      ⟨0, Nat.lt_succ_of_lt hlt0⟩ hlt0 x0).mp hfchain
+  -- The first point type is `χ0` (head of the concatenated point list).
+  have hpt0 : bf.pointTypes ⟨0, Nat.lt_succ_of_lt hlt0⟩ = χ0 := by
+    rw [hbf]
+    simp only [bracketFromLists3, List.cons_append, List.getElem_cons_zero]
+  rw [hpt0] at hstep
+  exact ⟨x0, hz0x0, hx0z, hstep.1⟩
+
 /-- **`VVecEA2` arrangement-disjunction carrier** (task 325 Phase 1; plan Phase 1). The corrected
     codomain-changed replacement for `kvE_subBracket2` (:6120): a finite disjunction `VVecEA2`
     (VecEAFormula:271) over arrangements `S_XU.permutations × S_UW.permutations × S_WT.permutations`,

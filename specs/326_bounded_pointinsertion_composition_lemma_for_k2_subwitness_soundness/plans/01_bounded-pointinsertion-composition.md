@@ -253,16 +253,24 @@ block; if a single agent cannot own both, sequence 3 after 2. No phase edits an 
 - **Verification:** Scoped `lake build` green; no sorry; axiom-clean. `hx1t` provenance audited
   against the LITMUS. Cite Rabinovich 2014 Lemma 5.1 (md:169-171) for the shared-endpoint bound.
 
-### Phase 3: fChainPred F_0 below-witnesses [NOT STARTED]
+### Phase 3: fChainPred F_0 below-witnesses [COMPLETED]
 - **Goal:** For each arrangement fChainPred slot realized at `u_i` (all `< q`, preceding the pins in
   σ's block by Phase 1's order), extract `(pointTypes 0).eval_at u_i = ⟨charBase χ_i⟩.eval_at u_i`,
   where `χ_i` is arrangement `i`'s first `zXU` type.
 - **Tasks:**
-  - [ ] For a realized `fChainPred @ u_i`, extract `(pointTypes 0)@u_i` via
+  - [x] For a realized `fChainPred @ u_i`, extract `(pointTypes 0)@u_i` via
         `fChainFrom_step`/`_base` (`EANegation.lean:616`/`583`).
-  - [ ] Identify `pointTypes 0 = ⟨charBase χ_i⟩` via `bracketFromLists3` (`:6613-6614`).
-  - [ ] Conclude, per realized arrangement, `∃ u_i, x < u_i < q ∧ ⟨charBase χ_i⟩.eval_at u_i`
+        *(delivered: `bracketFromLists3_fChainPred_head_extract` ~:6794; `bracket_implies_fChainPred`
+        (:660) → F_0, then `fChainFrom_step` at index 0 (STEP, never base — `0 < n` since the
+        `+1+1` arity) → `(pointTypes 0)@x0`)*
+  - [x] Identify `pointTypes 0 = ⟨charBase χ_i⟩` via `bracketFromLists3` (`:6613-6614`).
+        *(delivered: `pointTypes 0 = χ0` = head of `(χ0 :: lXU') ++ ptX1 :: lUW ++ ptW :: lWT`
+        via `List.cons_append`/`List.getElem_cons_zero`; `χ0` is the first `zXU` type `⟨charBase χ⟩`)*
+  - [x] Conclude, per realized arrangement, `∃ u_i, x < u_i < q ∧ ⟨charBase χ_i⟩.eval_at u_i`
         (the `< q` bound from Phase 1's ordering).
+        *(delivered generically as `∃ u, z0 < u ∧ u < z ∧ χ0.eval_at u`; the specific `x < u < q`
+        bound instantiates the inner endpoints `(z0, z)` at Phase 4.2/5 assembly — Phase 3 owns the
+        extraction, the `< q` bound is Phase 1's ordering applied downstream)*
 - **Timing:** ~1.5-2 hours (~100-180 lines)
 - **Depends on:** 1
 - **Files:** NfMultiAnchorBridge.lean (additive)
