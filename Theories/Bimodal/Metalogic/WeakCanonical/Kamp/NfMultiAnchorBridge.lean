@@ -5200,4 +5200,83 @@ theorem nf_eval_depth1_fold_iff {sig : MonadicSignature}
   · rintro ⟨h_atom, h_fold⟩
     exact ⟨h_atom, (nf_quant_layer_fold_iff M env σ.1 h_atom σ.2).mpr h_fold⟩
 
+/-! ## Task 309 Phase 13.3: k=2 correctness gate for `bracketEndChar_kvE` —
+DECISION GATE → **NO-GO (exclusion-content encoding — the F-D gap materializes)**
+(verdict-mirror of the R2 GO record :3407-3445 and the F1/F2 defect records)
+
+**Lead evidence (Def 3.1, PDF p.4 md:61-74 — rule N3).** In Rabinovich's exists-forall
+formulas, EVERY existentially chosen point is pinned by the bracket's own interval
+decomposition: it sits between the two fixed endpoints `(z_0, z_1)` with its point type
+`α_j` AND the interval types `β_j`, `β_{j+1}` on BOTH adjacent sub-intervals — the joint
+content of each chosen point relative to the anchors is carried by the decomposition
+itself. The kvE per-sub joint literal `P.existF 3 σ` (the 13.2 enrichment channel) instead
+pins σ's joint claim ONLY at the right endpoint `t`: `insertEnv` places the provider anchor
+LAST, and the provider's `∃ env : Fin 3 → M.carrier` existentially REBINDS the u/w/x
+positions. Def 3.1 never produces this configuration. In the paper, per-round joint and
+negative content at round k+1 is carried by **Prop 4.2 (PDF p.6 md:100-101)** uniform
+negation-closure formulas — built by **Lemma 5.1 (md:134-135)** via **Lemma 5.3's INF
+splitting (md:137-152)** — which are CARRIER-SIDE finite disjunctions (Cor 5.4's `F_i` are
+TL formulas, md:154-157), not per-model facts.
+
+**Machine probe (soundness direction, k=2 instance).** The probe drove
+`(bracketEndChar_kvE atomMap h_surj P qnf).holds M atomMap x t` through
+`bracketEndChar_kvE_two_eq` (:5167), the arrangement destructuring, and
+`k1v_bracket_extract` (:2150) to the per-sub positive obligation, extracted the joint
+literal from `epR`, and applied `P.correct 3 σ M h_UZ h_SZ t`. Captured crux goal state:
+
+    e : Fin 3 → M.carrier
+    he : nf_eval_nf M 1 (3 + 1) (insertEnv e t) σ
+    ⊢ ∃ x_1, nf_eval_nf M 1 (3 + 1) (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ ↦ t))) σ
+
+Every other hypothesis in context (`hepL`/`hepR`/`hptWe`/`hLwit`/`hRwit`/`hLgap`/`hRgap`)
+carries fresh-channel UNARY content only (`P.existF 0` families over `nfk_projFresh`).
+Attempted transfers (lean_multi_attempt): `exact ⟨e 0, he⟩` — type mismatch
+`insertEnv e t ≠ Fin.cons (e 0) [w,x,t]`; `simpa [insertEnv, Fin.cons]` — same mismatch;
+the funext bridge leaves residuals `e 1 = w` and `e 2 = x` with NO hypothesis relating the
+provider-chosen `e` to the honest anchors. The proof-side negation stack
+(`prior_hasAttainedINF` PriorINF:224 + `neg_interval_formula` EANegationClosure:401,
+`neg_bounded_exists` :492, `neg_vecEA2`/`neg_2var_vec_ea` :646/:720,
+`neg_orderedPointsExist_is_vbracket` EANegation:347) cannot connect: each concludes a
+model-dependent `∃ v : VBracketFormula/VVecEA2, v.holds M atomMap z0 z1` with no link to
+the FIXED σ's realization — exactly the report 05 F-D caveat (model-dependent existentials,
+carrier fixed before `M`).
+
+**Counterexample (defect bar, four elements — the statement is FALSE, not merely hard).**
+Take `M = ℤ` (Prior UZ/SZ: every nonempty subset of ℤ bounded below/above has a
+min/max, so ALL first/last occurrences are attained), preds `p = {0}`, `r = {13}`;
+`x = 10`, `t = 20`. Write `char e := nf_characteristic M 1 4 e` and let
+`c_u := char [u, 15, 10, 20]` (the honest w=15 subs). Set `qnf.1 := ` depth-0 layer of
+`[15, 10, 20]`, and `qnf.2 := ` the honest w=15 assignment EXCEPT
+`qnf.2 (c 14) := false` and `qnf.2 σ'' := true` where `σ'' := char [14, 16, 11, 20]`
+(a fake-anchored tuple sharing only `t`; on-fiber: depth-0 layer of `[16, 11, 20]` =
+depth-0 layer of `[15, 10, 20]`; zone `zXW`; fresh depth-1 type = type(14) = type(15)).
+LHS HOLDS at `(10, 20)`: middle witness 15; slots for
+`S_L = {c 11, c 12, c 13, σ''}` at 11, 12, 13, 14 (fresh types τ_c, τ_c, τ_b, τ_a);
+`σ''`'s joint literal holds at 20 via its fake realization `[14, 16, 11, 20]`; every unary
+family is honest. RHS FAILS for every `w' ∈ (10, 20)`: `w' ≤ 13` kill the zAtW sub
+(`(10, w')` lacks `r`); `w' = 14` kills `c 12` (no τ_c-fresh `u` gives `(u, 14)` both an
+`r`-point and a non-`r` point); `w' = 15` kills `σ''` (`(10, u) ∋ r` forces `u = 14`, but
+`(14, 15) = ∅` against σ''s nonempty middle interval); `w' ∈ {16, 17, 18}` realize the
+`c 14`-form at `u = w' − 1` against `qnf.2 (c 14) = false`; `w' = 19` kills the zAtW sub
+(`(19, 20) = ∅`). **Current behavior**: the carrier's only per-sub joint channel is the
+`t`-anchored provider literal; a dishonest positive sub is carrier-indistinguishable from
+honest content (same depth-0 fiber, zone, fresh type, and `t`-anchored joint truth).
+**Required behavior**: per-sub joint claims pinned against the honest anchor pair — in
+Rabinovich, by Prop 4.2's uniform negation/exclusion disjunctions at round k+1.
+**Isolation**: the gap is confined to the exclusion/joint-pinning channel deliberately
+deferred by the 13.2 exclusion-literal design record (:4956-4967); no new obstruction in
+the 13.2 body arises (gate, zones, slots, unary families, and arrangement machinery all
+behaved exactly as at k=1); the counterexample is provider-independent (only `P.correct`
+is consumed), so the failure survives ANY correct depth-1 bundle, including Phase 14's.
+
+**Verdict: 13.3 = NO-GO, exclusion-content encoding.** The named fallback of plan v6
+applies: `/revise 309` (v7) inserting **Phase 13.2b — uniformization**: construct the
+needed uniform per-sub exclusion/pinning formulas as FINITE DISJUNCTIONS over the
+finitely-generated candidate family (subs, arrangements, point-type sets are all finite at
+each depth — report 05 §c contingency; the carrier-side realization of Lemma 5.3/5.1 +
+Prop 4.2 per the G5 v6 extension), then re-run this gate ONCE. KD3 discipline held: the
+13.2 carrier and the 13.1 predicate are UNCHANGED (this record is the phase's only
+artifact — no partial theorem, no sorry); escalation fence C3 held: no anchor growth;
+the uniform-backward EANegation sorries (:1090/:1249) were NOT touched. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

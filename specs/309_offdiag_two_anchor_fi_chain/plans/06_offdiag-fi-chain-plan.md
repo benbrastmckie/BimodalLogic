@@ -778,7 +778,31 @@ F2 CONFIRMED — SKIPPED on the surgery-only branch.)*
   discipline — this phase realizes it), N1, N4, N5.
 - **Commit:** `task 309 phase 13.2: per-sub enriched carrier bracketEndChar_kvE + concrete k=2 instance`
 
-### Phase 13.3: k=2 correctness GO/NO-GO gate for `bracketEndChar_kvE` [NOT STARTED]
+### Phase 13.3: k=2 correctness GO/NO-GO gate for `bracketEndChar_kvE` [COMPLETED — NO-GO, exclusion-encoding — routed to /revise 309 (v7) Phase 13.2b]
+
+**BLOCKER (Phase 13.3 — NO-GO verdict, exclusion-content encoding; gate completed 2026-07-06)**:
+- **What failed**: the soundness direction at k=2. Machine probe drove the carrier's `holds`
+  through `bracketEndChar_kvE_two_eq` + `k1v_bracket_extract` to the per-sub positive
+  obligation; the joint literal + `P.correct 3 σ M h_UZ h_SZ t` yield only
+  `he : nf_eval_nf M 1 4 (insertEnv e t) σ` (provider-chosen `e`), against goal
+  `∃ u, nf_eval_nf M 1 4 (Fin.cons u (Fin.cons w (Fin.cons x fun _ => t))) σ`.
+- **What was tried**: `exact ⟨e 0, he⟩` (type mismatch `insertEnv e t ≠ Fin.cons (e 0)
+  [w,x,t]`); `simpa [insertEnv, Fin.cons]` (same); funext bridge (residuals `e 1 = w`,
+  `e 2 = x` — no hypothesis relates `e` to the honest anchors); negation-stack consumption
+  (each lemma concludes a model-dependent `∃ v, v.holds` with no link to the fixed σ).
+- **Why stuck**: report 05's F-D gap materializes — and the statement is FALSE, not merely
+  hard: counterexample M = ℤ (Prior), p={0}, r={13}, x=10, t=20, with
+  `σ'' := nf_characteristic M 1 4 [14,16,11,20]` positive and the honest
+  `char [14,15,10,20]` set false — LHS holds, RHS fails for every w' (full record in
+  NfMultiAnchorBridge.lean Phase-13.3 verdict section, after :5201). Provider-independent
+  (only `P.correct` consumed), so it survives any correct depth-1 bundle.
+- **What is needed**: plan v6's NAMED FALLBACK — `/revise 309` (v7) inserting Phase 13.2b
+  (uniformization: uniform per-sub exclusion/pinning formulas as finite disjunctions over
+  the finitely-generated candidate family — carrier-side Lemma 5.3/5.1 + Prop 4.2), then
+  re-run this gate ONCE.
+- **Prohibited**: no sorry, no partial theorem landed (verdict record only); 13.2 carrier
+  and 13.1 predicate unchanged (KD3); no anchor growth (C3); EANegation :1090/:1249
+  untouched.
 
 *(Report 05 label: Phase 13.II-b. Dispatch ONLY after 13.2 lands green. DECISION GATE — the
 task-311 Phase-5 verdict-record pattern: machine-probe, record the verdict either way, land no
