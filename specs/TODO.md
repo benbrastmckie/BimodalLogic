@@ -112,7 +112,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-309 [IMPLEMENTING] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -286,7 +286,7 @@ GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311
