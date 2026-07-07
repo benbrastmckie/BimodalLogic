@@ -1,7 +1,7 @@
 # Implementation Plan: Full-Extent BimodalReference Book (Skeleton)
 
 - **Task**: 313 - design_full_extent_bimodalreference_book
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 26 hours (skeleton plan; follow-up tasks carry ~22 additional hours)
 - **Dependencies**: None (task 312 complete at commit `a883361bf`)
 - **Research Inputs**:
@@ -544,27 +544,27 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2.5 hours.
 - **Depends on:** 4, 5.
 
-### Phase 12: Integration, SYNC-MAP Re-Stamp, and Roadmap Registration [NOT STARTED]
+### Phase 12: Integration, SYNC-MAP Re-Stamp, and Roadmap Registration [COMPLETED]
 
 - **Goal:** The grown book passes the full verification battery, SYNC-MAP covers every new
   chapter, and the book exists as a named roadmap track.
 - **Territory:** `Theories/Bimodal/typst/SYNC-MAP.md`, `typst/README.md`, `specs/ROADMAP.md`.
 - **Tasks:**
-  - [ ] Extend SYNC-MAP's claim-verification coverage: run the Phase-6-style extraction over
+  - [x] Extend SYNC-MAP's claim-verification coverage: run the Phase-6-style extraction over
         all new/rewritten chapters (p2-*, p4-*, 00-introduction, trimmed 04-metalogic),
         append a "Task 313 chapters" verification section, re-stamp date + commit.
-  - [ ] Re-run `scripts/typst-status-counts.sh` and commit the regenerated `status.typ` at
+  - [x] Re-run `scripts/typst-status-counts.sh` and commit the regenerated `status.typ` at
         the stamp commit (document any drift from `a883361bf` caused by in-flight Lean tasks).
-  - [ ] Run `scripts/typst-sync-check.sh` — must exit 0 (all four checks).
-  - [ ] Full `typst compile BimodalReference.typ build/BimodalReference.pdf` — exit 0;
+  - [x] Run `scripts/typst-sync-check.sh` — must exit 0 (all four checks).
+  - [x] Full `typst compile BimodalReference.typ build/BimodalReference.pdf` — exit 0;
         TOC review: five parts, stubs styled, no orphaned includes.
-  - [ ] Update `typst/README.md`: five-part structure, sync-class legend, how to run the
+  - [x] Update `typst/README.md`: five-part structure, sync-class legend, how to run the
         two scripts, follow-up task pointers (314-318).
-  - [ ] Add the book to `specs/ROADMAP.md` as a named documentation/publication track under
+  - [x] Add the book to `specs/ROADMAP.md` as a named documentation/publication track under
         the Post-Completeness section (:1423-1431): the five parts, their sync classes, and
         the follow-up task numbers (D-F1) — additive edit only, no restructuring of the
         completeness roadmap.
-  - [ ] Verify: all checks green; git status shows only plan-scoped files.
+  - [x] Verify: all checks green; git status shows only plan-scoped files.
 - **Estimated output:** ~200 lines across 3 files.
 - **Done when:** verification battery green; SYNC-MAP authoritative for the whole book.
 - **Timing:** 2 hours.

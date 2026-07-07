@@ -1430,6 +1430,22 @@ and 268 abandoned (task 301 phase 4).
 12. **Tasks 185-193**: Tactics library + codebase refactoring
 13. **Tasks 177-178**: Final documentation + publication examples
 
+### Documentation Track: BimodalReference Living Monograph
+
+14. **Task 313** (skeleton, COMPLETED): five-part living monograph at
+    `Theories/Bimodal/typst/BimodalReference.typ`, replacing the prior flat 7-chapter
+    reference core. Parts and sync-classes: I Motivation and Positioning (◇ outlook,
+    stub), II The Bimodal Core (✓ lean-verified, ⧖ completeness), III Expressive Power
+    and Its Price (◇ outlook, Lk-embargoed, stubs), IV Automated and Neural Reasoning
+    (✓ lean-verified, complete), V Toward the Logos (◇ outlook, stubs). Infrastructure:
+    `scripts/typst-status-counts.sh` + `scripts/typst-sync-check.sh` (mechanical
+    claim-verification, extending the task-312 SYNC-MAP contract).
+    - **Task 314**: Part I motivation chapter ("Why Construct Possible Worlds")
+    - **Task 315**: Part III expressive-power chapters (four, Lk-abstracted)
+    - **Task 316**: Machine-readable JSONL appendix, exported from Lean
+    - **Task 317**: Part V Logos chapters (constitutive structure, tensed counterfactual logic)
+    - **Task 318**: Lk slot-in for the Decidability Frontier chapter (post-TACAS-acceptance only)
+
 ---
 
 ## Task Cross-Reference
