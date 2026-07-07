@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 327,
+  "next_project_number": 330,
   "active_projects": [
     {
       "project_number": 322,
@@ -2693,7 +2693,7 @@
     {
       "project_number": 321,
       "project_name": "implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Depends on task 320's probe result. Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 (finding F4, carrier-shape defect -- see task 320's description for the full crux goal, counterexample, and literature grounding; do not re-derive, consume task 320's design spec directly). This task builds the FULL corrected construction for whichever route task 320's machine-checked probe confirmed viable -- expected b3, the nested F_i-chain/bracket recursion for positive interior subs, which the literature-alignment audit (specs/320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md) found to be the literature-faithful mechanism; b1 is a boxed falsifier expected NO-GO and b2 is only a lemma-level assist inside b3, per task 320's revised probe ladder -- exact choice and design spec supplied by task 320's report. Then re-run the k=2 BracketCarrierCorrectVPrior correctness gate to a GO verdict, using the F4 provider-independent Z-counterexample (M=Z, p={0}, r={13}, x=10, t=20, sigma''=char[14,16,11,20], honest char[14,15,10,20] false) as the mandatory adversarial test case (it MUST fail against the new construction).\n\nFRAMING CAVEAT (binding, from the literature-alignment audit): \"carrier\" here means the Cor 5.4 RECURSIVE FORMULA-CONSTRUCTION realized in carrier form -- inter-anchor positional content carried by the EVALUATION POINT of nested temporal operators (Cor 5.4 md:154-157; Prop 3.5 single-free-variable nesting md:87-94), NEVER by a formula asserted at a single point claiming a relative-position identity between independently-bound variables. Building a third FLAT carrier variant (another kvE''-style body with smarter per-sub literals evaluated at t) is the exact shape refuted by F3/F4 and is OUT OF SCOPE regardless of what any intermediate probe suggests. The same position-by-evaluation-point litmus that gates task 320's design spec gates this task's GO verdict.\n\nDeliverable naming: land the new construction under NEW names taken from task 320's design spec -- prefer names reflecting the nested-chain structure (e.g. a bracketEndChar_nested / fChain-style family) over another primed flat-carrier name, since the deliverable is a recursive construction, not a kvE'' iteration -- additive alongside the landed bracketEndChar_kvE (13.2) and bracketEndChar_kvE' (13.25), following the F1-F4 house style (byte-identical preservation of all prior landed assets; no partial theorem; no sorry on any live path; verdict record either way).\n\nGOAL STATE for the overall chain: this task's GO gate is the prerequisite for task 309's Phase 13.4 (general-k one-step correctness) and Phase 14 (hook rewire discharging KampPrior.lean:351's strategic sorry, target axioms exactly [propext, Classical.choice, Quot.sound]). After this task completes, task 309 resumes via /implement 309 (possibly preceded by /revise 309 for a v8 re-pointing to the new deliverable names, mirroring the v6->v7 re-pointing pattern).\n\nCONSTRAINTS (identical to New Task 0 -- binding, carried from plan v7, do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (no arity-1 collapse G1; no projection-based VecEA2/third-anchor tower G2; no trivial-top segment G3; w stays a bracket WITNESS, anchor set {x,t} fixed at 2 G4; Cor 5.4/Prop 3.5 F_i chains step-by-step with citations, no simp/omega/aesop shortcuts G5; two-anchor fixed-endpoint bracket, VVecEA2 codomain, never a third anchor G6-as-amended). v7 Amendment F3 STILL BINDING: no provider-side pinning. Do NOT consume EANegation :1090/:1249. Do NOT edit any landed asset (bracketEndChar_kv/kvE_body/bracketEndChar_kvE, bracketEndChar_kvE'/kvE'_body/kvE_pinDisjunct/kvE_exclConj, the F1/F2/F3/F4 verdict records, ExistProviders/BracketCarrierCorrectVPrior, all task-310/311 material) -- purely additive. CONSUME-DO-NOT-REBUILD asset list: same as New Task 0 (E[Sigma]-fold engine, k1v proof kit, nf_eval_unique/nfPred_correct, A_past/A_future, bracketBuildLeft/Right, VVecEA2/bracketFromLists/existsBounded_right, fChainFrom/fChainPred, EANegationClosure forward stack proof-side only, prior_hasAttainedINF/HasAttainedINF). LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Def 3.1 md:61-74, Lemma 3.2(2) md:76-79, Prop 3.5 md:87-94, Prop 4.2 md:100-101, Lemma 5.1 md:134-135, Lemma 5.3 md:137-152, Cor 5.4 md:154-157) -- cite per G5 at every chain step, especially for the route task 320 selected. Secondary cross-check (from the alignment audit): Gabbay 1994 ch 9 SS9.3 / ch 10 SS10.3 confirm the whole prior-art corpus keeps every proof step single-anchor (position identity by evaluation point) -- if a proposed step needs a two-anchor single-point assertion, that is a design smell to escalate, not to engineer around.",
       "effort": "10-16 hours",
@@ -2701,13 +2701,15 @@
       "topic": "kamp_theorem_formalization",
       "dependencies": [
         320,
-        326
+        326,
+        328,
+        329
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
       ],
       "created": "2026-07-07T06:58:58Z",
-      "last_updated": "2026-07-07T22:25:25Z",
+      "last_updated": "2026-07-07T22:43:49Z",
       "artifacts": [
         {
           "type": "research",
@@ -2741,7 +2743,7 @@
         }
       ],
       "session_id": "sess_1783452940_63339e",
-      "previous_status": "blocked"
+      "previous_status": "implementing"
     },
     {
       "project_number": 323,
@@ -2899,6 +2901,79 @@
       ],
       "completion_summary": "Delivered the bounded point-insertion composition lemma family (kvE_sub2V_bounded_anchor_of_outer, kvE_subBracket2V_sound_of_outer) via the pin-slot route: the outer carrier pin slots supply a bounded charK anchor q with x<q<w_outer<t directly from .holds, sidestepping the documented-unprovable reverse Cor 5.4 fChainPred->bracket bridge that blocked tasks 320/324/325/321-P10. 8 additive lemmas, axiom-clean [propext,Classical.choice,Quot.sound], full build green (1709 jobs), all do-not-edit assets byte-identical. Unblocks task 321 Phase 10 (Stage C soundness).",
       "session_id": "sess_1783452940_63339e"
+    },
+    {
+      "project_number": 327,
+      "project_name": "k2_fold_engine_provability_gate_poc_or_nogo",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "P1 (provability GATE — MUST run first, cheap make-or-break). Determine whether the depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate (arity-4/depth-1 analog of the landed nf_quant_layer_fold_k1_gate) folds CLEANLY, and by WHICH route: (a) naive nfk-split-kit factorization via nf_eval_nf1_cons_factor, (b) the constant-arity E[Sigma] efold route (efold_of_nfk / nf_eval_nf1_iff_efold analog), or (c) a new argument. Deliverable: EITHER a proven proof-of-concept skeleton certifying the route, OR a machine-grounded NO-GO with the exact failing goal. Context: a naive 0->1 lift is BLOCKED — it re-invokes the arity-4->arity-3 / G6 barrier documented at NfMultiAnchorBridge.lean:1622-1646; the naive nf_eval_nf1_cons_factor is likely FALSE (inner quant layer couples x1 to zoneHolds(cons x env)). This gate isolates the entire route's residual F4-flattening-relapse risk (LITMUS: reconstruction must ride evaluation-point/structural position, never an x1<e_i literal). If NO-GO, the whole carrier route needs fundamental reconsideration (do NOT start P2/P3). Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Prop 4.3 E[Sigma]-fold (constant-arity, avoids the navigated arity-4 characteristic), Cor 5.4 md:154-157. DO-NOT-EDIT: task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice (byte-identical to 8448ea135), BracketCarrierCorrectVPrior, EANegation, F1-F4 records — purely additive.",
+      "effort": "4-8 hours",
+      "parent_task": 321,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
+      ],
+      "created": "2026-07-07T22:56:50Z",
+      "last_updated": "2026-07-07T22:56:50Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md",
+          "summary": "Architectural scope-map: P1 is the cheap provability gate for the k2 fold engine"
+        }
+      ]
+    },
+    {
+      "project_number": 328,
+      "project_name": "build_depth1_split_kit_and_k2_quant_layer_fold_engine",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the depth-1 split-kit: nfk_assemble/nfk_dropFresh/nfk_zoneSpec + round-trip lemmas + nf_eval_nf1_cons_factor, OR the E[Sigma] efold_of_nfk transport — whichever P1 certifies; NONE currently landed, only nf0_* + nfk_projFresh exist) AND land nf_quant_layer_fold_k2_gate (Layer 1, the arity-4/depth-1 outer quant-layer fold) in BOTH directions (backward bits->realization for soundness, forward realization->bits for completeness — it is SHARED across Stage C and Stage D). Recursion bottoms out at the landed generic nf_eval_unique (NormalForm:245, generic over k) + the landed depth-0 kit + nf_eval_depth1_fold_iff (inner monadic recursion). Route and PoC skeleton supplied by P1. Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Cor 5.4 md:154-157 (normal-form characterization, recursive in quantifier depth), Def 4.1 E[Sigma]. LITMUS + DO-NOT-EDIT as in P1; purely additive.",
+      "effort": "10-16 hours",
+      "parent_task": 321,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        327
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
+      ],
+      "created": "2026-07-07T22:56:50Z",
+      "last_updated": "2026-07-07T22:56:50Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md",
+          "summary": "Architectural scope-map: P2 builds Layer 2 split-kit + Layer 1 fold engine"
+        }
+      ]
+    },
+    {
+      "project_number": 329,
+      "project_name": "noninterior_5zone_dischargers_soundness_completeness",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "P3 (5-zone dischargers — depends on P2 statement). Land the non-interior per-(zone,chi) dischargers (Layer 3) for the 5 consistent zones task 326 never covered — zPastX, zAtX, zAtW, zAtT, zFutT — in BOTH directions (soundness + completeness). Task 326's kvE_subBracket2V_sound_of_outer/_complete are INTERIOR-ONLY (name only kvE_sub2_zXU); the 2 exterior zones zPastX (x1<x) and zFutT (x1>t) lie OUTSIDE the pin's (x,w_outer) reach and provably need the epL/epR Since/Until exterior channels (NOT pins); the boundary zones (zAtX/zAtW/zAtT) use ptW point channels. Each discharger's witness positioned by since/until REACH / bracket monotonicity / zone spec (Cor 5.4 evaluation-point positioning) — LITMUS: never an x1<e_i literal (F4-flattening relapse). Consumed by 321 v6 Phase 10 (soundness) and Phases 11-14 (completeness) alongside task 326's interior closers and P2's engine. Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Lemma 5.1 point-insertion md:169-171, Lemma 5.3 INF splitting md:137-152. DO-NOT-EDIT as in P1; purely additive.",
+      "effort": "12-20 hours",
+      "parent_task": 321,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        328
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
+      ],
+      "created": "2026-07-07T22:56:50Z",
+      "last_updated": "2026-07-07T22:56:50Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md",
+          "summary": "Architectural scope-map: P3 non-interior 5-zone dischargers"
+        }
+      ]
     }
   ],
   "artifacts": [
