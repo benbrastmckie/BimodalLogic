@@ -4,7 +4,10 @@
 
 TM is a bimodal logic combining S5 modality with irreflexive linear temporal logic,
 axiomatized via the **Burgess-Xu (BX) system**. This roadmap describes the current
-state of the completeness effort as of 2026-05-10.
+state of the completeness effort as of 2026-07-07 (multi-agent trajectory assessment:
+git archaeology, sorry inventory, Rabinovich coverage mapping, convergence audit).
+Header sections below are current; reference sections further down retain their
+original dates and remain valid as historical/technical documentation.
 
 **Architecture**: The proof system has 41 BX axioms organized in 6 layers:
 propositional (4), S5 modal (5), Burgess-Xu temporal (26), modal-temporal
@@ -20,18 +23,34 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
-**Current state** (2026-06-16, updated by task 301):
+**Current state** (2026-07-07, multi-agent assessment; supersedes the 2026-06-16 block):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
 - **Dense completeness** (`countermodel_dense`): Internally sorry-free
-- **Discrete completeness**: `completeness_discrete` has sorryAx via SOLE remaining sorry `existPart_succ_n1_bypass` k>0 case (KampBypass.lean). The k=0 case is fully sorry-free (~4400 lines, task 273). Task 303 targets the k>0 closure.
-- **Canonical truth lemma**: ReflexiveCanonical.lean sorry-free (task 141 resolved). 6 TruthLemma Until/Since sorries remain but are non-critical-path (parametric truth lemma handles via BFMCS coherence).
-- **Mixed case**: 0 sorries — resolved via structural axiom `discrete_box_necessity` (task 142). `mcs_mixed_case_absurd` moved to MCSMixedCase.lean (task 301).
-- **Z1 axiom**: Added with sorry-free soundness proof (task 123, completed 2026-05-13)
-- **Task 273 accomplishment**: ~1400 lines of sorry-free proofs closing all k=0 KampBypass sorries across Until, Since, and Eq directions. BracketFormula k encoding fix.
-- **Dead code cleanup** (task 301): VecEADecomposition archived to Boneyard. KampBypass.lean factored from 4488 lines into 4 files. chronicle_gap_contradiction confirmed as dead code.
+- **Discrete completeness**: `completeness_discrete` (BXCanonical/Completeness.lean:276) is blocked by exactly TWO live sorries, both inside `nf_nvar_exist_all_depths` (KampPrior.lean:212): the `n=1` arm at **KampPrior.lean:351** (the mathematical content — the depth-k≥2 Cor 5.4 F_i-chain converter) and the `n+2` arm at **:354** (commented "off the critical path" but in the same declaration, so it formally taints downstream; provable-or-refactorable since the main theorem needs only n=0,1). Everything else on the chain — Reynolds pipeline, `GoodStructuresModelSurgery`, `US_expressively_complete_over_prior`, `kamp_prior_expressive_completeness` — is sorry-free.
+- **NOTE — stale references**: `KampBypass.lean` no longer exists (Boneyard'd, task 305 Phase 0); the former `existPart_succ_n1_bypass` sorry chain and the "task 303 critical path" below are HISTORICAL. The Stavi chain (StaviCompleteness/EFGames) is superseded by the Kamp route and parked off the live path.
+- **All other Metalogic sorries (~44 sites) are parked or dead-path**: EANegation.lean:1090/:1249 (uniform-backward variants, documented non-blocking), reflexive TruthLemma variants, Bundle BFMCS (abandoned), EFGames/Stavi (superseded), Boneyard. `NfMultiAnchorBridge.lean` (7,572 lines, the active workface) carries **0 sorries** — all NO-GO verdicts live as prose records and machine-checked refutation theorems, not debt.
+- **k=0 case**: fully sorry-free (task 273, June). **k=1 case**: fully sorry-free — `bracketEndChar_k1v_sound` (:2338) / `_complete` (:2979) + kit (tasks 310/311); this is the proven template for all current work.
+- **k=2 correctness pair (tasks 321→324→325)**: in flight. Task 325 v2 Phase 1 landed (commits `be865449c`/`72c34be83`): nine-zone-gate VVecEA2 carrier `kvE_subBracket2V` with machine-checked NON-VACUITY pair (`kvE_subBracket2V_gate_holds_of_honest`/`_nonvacuous`) green — structurally excluding the vacuous-carrier failure class. Soundness re-drive + completeness pending.
 
-**Critical path**: Task 303 (k>0 depth induction via Rabinovich Section 5 Lemma 5.1) → sorry-free `completeness_discrete`. This is the SOLE remaining blocker. Only ONE sorry chain exists (through `existPart_succ_n1_bypass` k>0). The `chronicle_gap_contradiction` sorry is dead code — not on any live call path.
+**Critical path** (2026-07-07): task 325 v2 (driven soundness+completeness pair over the nine-zone VVecEA2 carrier, ~3-4 dispatches) → task 321 v4 (wire the pair into the outer `bracketEndChar_kvE2` gate, ~4-6 dispatches) → task 309 Phases 13.4/14 (general-k one-step correctness + KampPrior:351 rewire, ~2-4 dispatches) → KampPrior:354 n≥2 arm (generalize or restate for n≤1, ~1-2 dispatches) → final assembly + axiom audit (~1-2 dispatches). **Total: ~11-18 focused dispatches to a sorry-free `completeness_discrete`** — a bounded endgame, not an open research problem. Pre-authorized fallback if the carrier fails a fourth gate-class failure (retrospective Rec-1, "no fifth carrier"): Option B interval-typed EA-formula rebuild with witness-count induction (~700-1050 lines, scoped in 305/reports/37 §4.4).
+
+**Trajectory & convergence** (2026-07-07 audit): 344 commits on Kamp/ since June 11, +51.8k/−29.4k lines (churn/net ≈ 3.6×), two Boneyard resets (June 16/23, ~13.9k lines of abandoned bypass infrastructure). Three consecutive k=2 carrier failures share one gate/correctness class — 321 Phase 8 (upward-only chain, missing correctness-pair architecture), 324 Phase 6 (false-∀M completeness converse, wrong codomain), 325 v1 (7-zone gate unsatisfiable, vacuous soundness) — but the sequence is **converging, not thrashing**: diagnosis latency collapsed from ~3 weeks (303/305 era) to hours (all three 07-07 failures diagnosed and answered same-day); failures narrowed monotonically (architecture → codomain shape → finite-set enumeration bug); machine-verified refutation probes replaced speculative pivots; asset reuse is rising (324's zone/extraction kit survives verbatim into 325; v2 edits only the gate + two point-types); and each failure class is mechanically fenced off once seen (driven-proof discipline after 321; mandatory non-vacuity gate after 325 v1). Root obstruction across all eras (H4-verified retrospective, 322/reports/02): a property relating two independently-chosen points cannot be asserted by a single-point formula — the arity-≤2 E[Σ]-fold machinery (task 310) exists precisely to manage this, and its one remaining exposure is the symbolic-k generalization in task 309 Phase 13.4.
+
+**Rabinovich 2014 coverage** (paper → Lean, the best distance-to-done proxy):
+
+| Paper artifact | Lean counterpart | Status |
+|---|---|---|
+| Def 3.1 (∃∀-formulas, point/segment types) | `VecEAFormula.lean`, `ExistsForallNF.lean` | sorry-free |
+| Lemma 3.2 (closure + arity-≤2 firewall) | `VecEAClosure.lean`, `VecEAArityFirewall.lean` | sorry-free |
+| Prop 3.5 (V-∃∀ → TL translation) | `RabinovichTranslation.lean`, `VecEATranslation.lean` | sorry-free |
+| Def 4.1 (E[Σ]-fold normal form) | `NfEFold.lean` (task 310) | sorry-free |
+| Prop 4.2 (negation closure, ≤2 vars) | `EANegationClosure.lean`, `EAVecNegationClosure.lean` | sorry-free (model-dependent form) |
+| Lemma 5.1 (bracket-pattern negation) | `EANegationClosure.lean:401` | sorry-free (forward; syntactic backward parked, non-blocking) |
+| Lemma 5.3 (base case, arrangements/segments) | `IntervalPattern`, `bracketFromLists`, k1v carrier | sorry-free at k=1 |
+| Cor 5.4 (F_i chains) | `fChainFrom`/`fChainPred` (EANegation:552/567), k1v instance | k=1 CLOSED; **k≥2 converter = the sole open gap** (tasks 321/324/325 → KampPrior.lean:351) |
+
+Every paper artifact has a landed sorry-free counterpart except the depth-k≥2 instance of the Cor 5.4 chain converter — exactly where all current work is concentrated. By this proxy the formalization is in its last chapter.
 
 **Key architectural finding** (task 155, 7 research agents + 4 succ_cofinal agents, 2026-05-28/29):
 
@@ -46,15 +65,18 @@ mathematically false under irreflexive semantics and cannot be proved.
 
 The current architecture tries to prove the chronicle IS Z (via `IsSuccArchimedean → succ_embed_surjective`), which is the wrong approach. Task 202 implements the Reynolds bypass: connect the chronicle's formula structure to k-equivalence using the EF-game expressiveness infrastructure built in task 155.
 
-**Sorry chain** (verified by lean_verify, task 301):
+**Sorry chain** (verified 2026-07-07; the former terminus `existPart_succ_n1_bypass` /
+`KampBypass.lean` no longer exists — Boneyard'd by task 305 Phase 0):
 ```
-completeness_discrete
-  → countermodel_discrete_reynolds_v2
-    → limitdom_is_good
-      → no_gaps_discrete_model_surgery
-        → US_expressively_complete_over_prior
-          → kamp_prior_expressive_completeness
-            → existPart_succ_n1_bypass (k>0 sorry at KampBypass.lean)
+completeness_discrete (BXCanonical/Completeness.lean:276)
+  → countermodel_discrete_reynolds_v2 (IntegerModel/ReynoldsBridge.lean:724, sorry-free)
+    → GoodStructuresModelSurgery (sorry-free)
+      → US_expressively_complete_over_prior (PriorExpressiveness.lean:346, sorry-free)
+        → kamp_prior_expressive_completeness (KampPrior.lean:480)
+          → nf_characterizable_temporal_prior (KampPrior.lean:397)
+            → nf_nvar_exist_all_depths (KampPrior.lean:212)
+              → sorry at :351 (n=1 arm — the depth-k≥2 F_i-chain converter)
+              → sorry at :354 (n+2 arm — same declaration, needs proof or n≤1 restatement)
 ```
 Note: The old sorry chain through `chronicle_gap_contradiction → succ_cofinal →
 succ_embed_surjective` is DEAD CODE — not on any live call path to `completeness_discrete`.
@@ -68,7 +90,10 @@ The `succ_cofinal` chain remains in ChronicleToCountermodel.lean but is only use
 
 **The literature's approach (GHR93 Section 8, Reynolds 1994)**: Stavi expressive completeness ({U,S,U',S'} for all linear time) is proved via EF games (Theorem 6 + Proposition 7) with **no discreteness assumption**. Prior-UZ/SZ then eliminates U'/S' (always false on Prior structures — proved sorry-free in PriorExpressiveness.lean). The model surgery argument uses {U,S} expressive completeness to show all equivalence classes agree, deriving the contradiction that establishes IsSuccArchimedean. This chain requires the GENERAL `stavi_expressive_completeness`, not a discrete-only version.
 
-**Stavi sorry chain** (second independent sorry chain blocking `completeness_discrete`, verified 2026-06-09):
+**Stavi sorry chain** (HISTORICAL — superseded 2026-06/07: the live path now routes
+`US_expressively_complete_over_prior` through the Kamp/Rabinovich pipeline
+(PriorExpressiveness.lean:24 "bypasses the sorry-tainted stavi chain entirely");
+the EFGames/Stavi sorries are parked off the live path. Original 2026-06-09 record:):
 ```
 nf_2var_existential_transfer (StaviCompleteness.lean:2353, 2435)
   → nf_2var_from_interval_data
@@ -81,12 +106,14 @@ nf_2var_existential_transfer (StaviCompleteness.lean:2353, 2435)
 ```
 Root sorry: `nf_2var_existential_transfer` at the `j'+1` case, which needs 4-variable existential transfer to prove 3-variable NF agreement. The fix (task 273, plan v12): prove a **generalized existential transfer** by strong induction on depth j, universally quantified over arity n. This is GHR93 Proposition 7 transliterated to NF types. At each inductive step, `zone_match_witness` provides the matching point, and the IH at lower depth (with higher arity) provides the transfer. Terminates because depth strictly decreases. No IsSuccArchimedean needed.
 
-**Sorry summary (critical path to sorry-free `completeness`)**:
+**Sorry summary (HISTORICAL — see the 2026-07-07 "Current state" block above for the
+live inventory: 2 live sorries at KampPrior.lean:351/:354, ~44 parked/dead-path)**:
 
-*Discrete branch (Reynolds pipeline — tasks 139, 140)*:
+*Discrete branch (Reynolds pipeline — tasks 139, 140; since RESOLVED — ReynoldsBridge
+and GoodStructuresModelSurgery are sorry-free as of 2026-07-07)*:
 - 3 sorries in `NEquivalence.lean`: `ktype_finite`, `k_type_of`, `finite_types` (KEquivalenceFramework) — task 139
 - 2 sorries in `Table.lean`: `table`, `table_depth_bound` — task 140
-- Chronicle fallback in Transfer.lean pending truth transfer — task 140
+- Chronicle fallback in Transfer.lean pending truth transfer — task 140 (note: `Transfer.countermodel_discrete` at Transfer.lean:1256 is now DEPRECATED with an explicit sorry at :1270 — dead BX pipeline, off the `completeness_discrete` path)
 
 *Canonical model (task 141 -- RESOLVED, not on critical path)*:
 - 6 sorries in `TruthLemma.lean`: Until/Since forward/backward (4) + truth lemma cases (2) — non-critical-path, parametric truth lemma handles via BFMCS coherence
