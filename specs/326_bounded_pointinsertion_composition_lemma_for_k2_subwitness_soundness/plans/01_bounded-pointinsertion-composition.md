@@ -1,7 +1,7 @@
 # Implementation Plan: Bounded Point-Insertion Composition Lemma for k=2 Sub-Witness Soundness
 
 - **Task**: 326 - Bounded point-insertion composition lemma for k=2 sub-witness soundness
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 6-12 hours
 - **Dependencies**: None (parent task 321 resumes via `/revise 321` after this lands)
 - **Research Inputs**:
