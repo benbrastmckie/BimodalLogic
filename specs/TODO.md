@@ -1,5 +1,5 @@
 ---
-next_project_number: 326
+next_project_number: 327
 ---
 
 # TODO
@@ -12,12 +12,13 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,326 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,326 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -109,12 +110,37 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-321 [PLANNED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+326 [RESEARCHED] — Deliver ONE standalone, machine-verified Lean 4 lemma (name at im
+  └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
+
+### 326. Bounded pointinsertion composition lemma for k2 subwitness soundness
+- **Effort**: 6-12 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md]
+
+**Description**: Deliver ONE standalone, machine-verified Lean 4 lemma (name at implementer's discretion, e.g. `kvE_subBracket2V_holds_of_outer` or `kvE2_sub_bounded_recover`) that, given the outer bracket's soundness-side data over (x, t) -- the outer witness w with x < w < t, the per-slot extract `fChainPred @ u` for the sub sigma's spliced chain with u in (x, w) (from `kvE_subChain2V`), the outer segment classification on (x, w) (segL), and the outer gate -- produces the BOUNDED sub-anchor bundle: exists x1, x < x1, x1 < t, (charK (nfk_projFresh sigma)).eval_at x1, and the per-chi hbelow witnesses. This is exactly the (x1, hxx1, hx1t, hanchor, hbelow) bundle that the already-landed `kvE_subBracket2V_sound_of_parts` (NfMultiAnchorBridge.lean:7449) consumes to close task 321 Phase 10 (Stage C soundness).
+
+CRITICAL REQUIREMENT: `x1 < t` MUST be established STRUCTURALLY via a Rabinovich Lemma 5.1 shared-endpoint point-insertion split (A_i^-(x, x1) AND A_i^+(x1, t), literature: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md md:169-171), NEVER derived from the unbounded `fChainFrom_base`/`_step` chain (EANegation.lean:585/:622), which asserts `exists s > x` with no upper bound and is documented (report 03, Determination 1) as structurally incapable of supplying this bound.
+
+Candidate landed assets to consume (investigate in priority order per divergence audit report 03 Determination 3): (1) `neg_2var_vec_ea` (EANegationClosure.lean:720) and `neg_interval_formula` (EANegationClosure.lean:398) -- the VVecEA2 point-insertion/negation machinery, model-dependent (requires `HasAttainedINF`, available at the soundness site; this is the regime EANegation.lean:1244-1247 explicitly sanctions as sorry-free). (2) A bounded-above `Until` argument from the outer witness w (with w < t) plus segL's exclusion literals on (x, w), IF segL's actual content (NfMultiAnchorBridge.lean:8212-8215) excludes charK-carrying points below w -- check this before relying on it; if segL does not exclude such points, route (1) is mandatory.
+
+BINDING GO/NO-GO LITMUS (from task 320 report 01:210-212, restated in report 03 Determination 3): the delivered lemma is GO only if it carries the boundedness via an evaluation-point/structural split (Rabinovich), NOT via a single-point relative-position formula literal (e.g. `x1 < e_i`) between independently-bound variables -- that literal form is the exact F4 flattening relapse that tasks 320/324/325/321-v4-P10 all hit. If neither candidate route passes this litmus, escalate again rather than landing a flattening relapse.
+
+BINDING CONSTRAINTS (carried forward from task 321, do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (two anchors {x, t} fixed at 2, G4; w stays a bracket WITNESS never a third anchor). Amendment F3 STILL BINDING: no provider-side pinning. DO NOT EDIT (byte-identical, additive-only): the task-325 VVecEA2 block (kvE_subBracket2V / kvE_subBracket2V_sound / kvE_subBracket2V_complete / kvE_subBracket2V_sound_of_parts / kvE_subBracket2V_reaches_zXU), all landed EANegation.lean forward-stack assets (bracket_implies_fChainPred:660, fChainFrom_base/_step:585/622), BracketCarrierCorrectVPrior, ExistProviders, and all prior F1-F4 verdict records. Do NOT consume EANegation.lean:1090 or :1249 (the documented-unprovable reverse-direction sorry). The new lemma is purely additive.
+
+COMPLETION HANDOFF: on completion, task 321 resumes via `/revise 321` to produce a v5 plan re-pointing Phase 10 at this new lemma, feeding the already-landed `kvE_subBracket2V_sound_of_parts`. Completeness (Phases 12-14 of task 321, which already close via `kvE_subBracket2V_complete`) stays closed ONLY IF this task's lemma consumes the EXISTING flat `kvE_subChain2V` splice's extract output as-is and does NOT require a new joint-channel shape -- altering the splice shape would reopen the completeness risk flagged in report 03 Determination 2 (MEDIUM confidence: the flat splice lists ALL arrangement fChainPreds, only the sorted one is honest-realizable).
+
+Source of this specification: specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/03_divergence-audit-joint-channel.md (divergence audit, verdict ESCALATE) and specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/.orchestrator-handoff.json (blockers[0], continuation_context.landed_this_dispatch). Consume, do not re-derive.
+
+---
 
 ### 325. Redesign k2 subbracket to vvecea2 arrangementdisjunction
 - **Effort**: 10-16 hours
@@ -224,10 +250,10 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 320
+- **Dependencies**: Task 320, Task 326
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
