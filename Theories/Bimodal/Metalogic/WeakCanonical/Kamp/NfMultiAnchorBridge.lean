@@ -5607,4 +5607,94 @@ the 13.1 predicate are UNCHANGED (this record is the phase's only artifact — n
 sorry). Escalation fence C3 held: no anchor growth; EANegation :1090/:1249 untouched. Phases 13.4
 and 14 MUST NOT be dispatched. -/
 
+/-! ## Task 320 (F4 follow-up): Joint-Pinning De-Risk Probes — NON-CONSUMED verdict addition
+
+Machine-checked probe deliverable for task 320 (de-risk the joint-pinning route for the k=2
+carrier gate). This section is a NON-CONSUMED, ADDITIVE verdict record in the F1-F4 house style:
+nothing below is referenced by any landed carrier, predicate, or proof (`bracketEndChar_kv*`,
+`kvE'_body`, `ExistProviders`, `BracketCarrierCorrectVPrior` are all untouched and byte-identical).
+It records the GO/NO-GO probe evidence discriminating routes b1/b2/b3 (spawn analysis
+`specs/309_.../reports/06_spawn-analysis-f4.md`; literature-alignment audit
+`specs/320_.../reports/01_literature-alignment.md`). No sorry on any live path; all F_i-chain
+content is carried by the LANDED, PROVEN `EANegation` fChain machinery (Rabinovich Cor 5.4,
+md:154-157), never re-derived with `simp`/`omega`/`aesop` (G5). Full prose deliverable:
+`specs/320_.../reports/02_jointpinning-probe-results.md`.
+
+Route summary (see the report for the design spec):
+- **b1** (repair channel (i) to consume `witnessZone`): **NO-GO** — probe P1 re-confirms the
+  channel-(i) flattening collapse (`rfl`); Def 3.1 (md:61-74) pins σ's OWN witnesses, with no
+  counterpart across the provider/`e` boundary.
+- **b2** (structural-identity via `nf_eval_unique`/`nfPred_correct`): **NOT NEEDED** — probe P4
+  closes b3 without any type-realization/uniqueness hypothesis (none appears in P4's signature).
+- **b3** (nested F_i-chain sub-bracket, Cor 5.4): **GO** — probes P3/P4 show the LANDED fChain
+  machinery carries joint multi-anchor position by the nested-Until EVALUATION POINT (litmus
+  PASS), recovering honest witness positions from `bf.holds` alone, `e`-free.
+-/
+
+/-- **Probe P1 (Phase 1 baseline + Phase 2 b1 NO-GO): channel-(i) flattening collapse — `rfl`.**
+    Machine re-verification of the F4 record's probe A (:5548). The landed channel-(i) content
+    `kvE_pinDisjunct` mapped over the finite arrangement family `kvE_pinArrangements σ` collapses
+    to a CONSTANT function of `nfk_projFresh σ` (the σ.1-level fresh depth-`k` type): the
+    `witnessZone` placement field is discarded in `kvE_pinArrangements` (:5364, sets
+    `witnessType := nfk_projFresh σ`), so every one of the seven consistent-zone disjuncts yields
+    the identical pair `([⟨charK (nfk_projFresh σ)⟩], [⟨charK (nfk_projFresh σ)⟩])`. Two subs with
+    equal `nfk_projFresh` (F4's dishonest `char[14,16,11,20]` and honest `char[14,15,10,20]`,
+    `type(14)=type(15)`) therefore get byte-identical channel-(i) content: the pin channel is
+    positionally vacuous and cannot discriminate them. Def 3.1 (Rabinovich md:61-74) is a real
+    pinning discipline, but it pins σ's OWN witnesses inside σ's OWN bracket; it has no mechanism
+    for forcing the provider's independently-bound `e` to coincide with the honest anchors (the
+    actual F4 gap). Route b1 = NO-GO (an F5-strengthening refutation, not a live design). -/
+private theorem probe_P1_channel_i_collapse {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig k 1 → Formula)
+    (σ : NormalForm sig k 4) :
+    (kvE_pinArrangements σ).map (fun a => kvE_pinDisjunct charBase charK σ a)
+      = kvE_consistentZones.map
+          (fun _ => (([⟨charK (nfk_projFresh σ)⟩] : List TemporalPred),
+                     ([⟨charK (nfk_projFresh σ)⟩] : List TemporalPred))) := by
+  rfl
+
+/-- **Probe P3 (Phase 3): Cor 5.4 chain-shape MATCH for `fChainFrom`/`fChainPred`.** The landed,
+    PROVEN `BracketFormula.fChainFrom_step` (EANegation:616) IS Rabinovich Cor 5.4's step
+    `F_{i-1} := α_{i-1} ∧ (β_i Until F_i)` (md:154-157): `F_i` at `x` holds iff `α_i(x)` and there
+    is a forward point `s` where `F_{i+1}` holds with `β_{i+1}` along `(x, s)`. The position of the
+    NEXT anchor `s` is carried by the strict-Until EVALUATION POINT (md:41), never asserted as a
+    relative-position identity. Combined with the base case `F_n := α_n ∧ (β_{n+1} Until ⊤)`
+    (`fChainFrom_base`, EANegation:580 — the open-interval adaptation of Cor 5.4's `F_n := α_n`,
+    folding the trailing segment), `fChainFrom`/`fChainPred` (EANegation:552/:567) MATCH the Cor 5.4
+    shape. This probe type-checks only because the landed def and the Cor 5.4 recursion coincide;
+    hence the audit's MEDIUM-confidence claim 6 is machine-CONFIRMED. -/
+private theorem probe_P3_cor54_step_shape {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (i : Fin (n + 1)) (h_lt : i.val < n)
+    (x : M.carrier) :
+    (bf.fChainFrom i).eval_at M atomMap x ↔
+    (bf.pointTypes i).eval_at M atomMap x ∧
+    ∃ s : M.carrier, x < s ∧
+      (bf.fChainFrom ⟨i.val + 1, by omega⟩).eval_at M atomMap s ∧
+      (∀ r : M.carrier, x < r → r < s →
+        (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r) :=
+  bf.fChainFrom_step M atomMap i h_lt x
+
+/-- **Probe P4 (Phase 4): route b3 GO evidence — positions by evaluation point, `e`-free.**
+    The landed, PROVEN `BracketFormula.bracket_implies_fChainPred` (EANegation:660): whenever the
+    nested bracket holds on `(z0, z)`, the F-chain predicate `fChainPred` is satisfied at a witness
+    `x0` STRICTLY INSIDE `(z0, z)`, recovered from the bracket's OWN interval pattern. Unfolding
+    `fChainPred` through probe P3 (`fChainFrom_step`) exhibits each subsequent anchor at its own
+    honest position via the nested Until — WITHOUT any provider environment `e : Fin m → M.carrier`
+    and WITHOUT any residual `w = e 1` / `x = e 2`. This is precisely the joint multi-anchor content
+    the flattened literal `P.existF 3 σ` fails to carry (F4 probe B, :5559: there the provider's own
+    `e` rebinds `u/w/x`). Here the anchor positions ARE the bracket witnesses, quantified by the
+    temporal semantics — no environment ever rebinds them. Note the signature: `bf.holds` is the
+    SOLE hypothesis — NO structural-identity / `nf_eval_unique` / `nfPred_correct` premise is needed
+    (route b2 = NOT NEEDED, Phase 5). GO-gate litmus (position-by-evaluation-point): PASS. -/
+private theorem probe_P4_b3_positions_by_eval_point {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z : M.carrier)
+    (h : bf.holds M atomMap z0 z) :
+    ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z ∧
+      bf.fChainPred.eval_at M atomMap x0 ∧
+      (∀ y : M.carrier, z0 < y → y < x0 →
+        (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
+  bf.bracket_implies_fChainPred M atomMap z0 z h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
