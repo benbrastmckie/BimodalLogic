@@ -104,7 +104,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-313 [NOT STARTED] — Design the full extent of the BimodalReference book by examining 
+313 [RESEARCHED] — Design the full extent of the BimodalReference book by examining 
 
 ### Kamp_theorem_formalization
 
@@ -115,10 +115,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ## Tasks
 
 ### 313. Design full extent bimodalreference book
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
+- **Research**: [313_design_full_extent_bimodalreference_book/reports/01_team-research.md]
 
 **Description**: Design the full extent of the BimodalReference book by examining what /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, the BimodalLogic Lean codebase, and /home/benjamin/Philosophy/Papers/PossibleWorlds/Lk/main.tex still offer that is relevant and worth including in Theories/Bimodal/typst/BimodalReference.typ, toward a more complete, well-motivated, and well-explained account of the bimodal system and its applications. The account should: (1) acknowledge the sizable remaining project of carving off decidable fragments for fully automated reasoning, contrasted with training AI systems to reason proof-theoretically and to solve constraint systems, both deterministically checkable and fast; (2) present the system as closest to vanilla LTL extended first with S5 modal operators and then with Vlach operators for cross-referencing traces and times; (3) frame this as an early milestone in combined expressive power from unifying logics, with the full Logos aiming to vastly expand this; (4) plan a next chapter adding constitutive structure to provide the counterfactual semantics and logic of /home/benjamin/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex and /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ, carving off the next dimension of logical structure to yield a tensed counterfactual logic from which metaphysical modality can be derived. Deliverable: an initial design report mapping candidate content from each source to a proposed full book structure, to base further research on.
 

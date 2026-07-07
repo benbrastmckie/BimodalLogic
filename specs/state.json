@@ -9,12 +9,22 @@
     {
       "project_number": 313,
       "project_name": "design_full_extent_bimodalreference_book",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "typst",
       "description": "Design the full extent of the BimodalReference book by examining what /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, the BimodalLogic Lean codebase, and /home/benjamin/Philosophy/Papers/PossibleWorlds/Lk/main.tex still offer that is relevant and worth including in Theories/Bimodal/typst/BimodalReference.typ, toward a more complete, well-motivated, and well-explained account of the bimodal system and its applications. The account should: (1) acknowledge the sizable remaining project of carving off decidable fragments for fully automated reasoning, contrasted with training AI systems to reason proof-theoretically and to solve constraint systems, both deterministically checkable and fast; (2) present the system as closest to vanilla LTL extended first with S5 modal operators and then with Vlach operators for cross-referencing traces and times; (3) frame this as an early milestone in combined expressive power from unifying logics, with the full Logos aiming to vastly expand this; (4) plan a next chapter adding constitutive structure to provide the counterfactual semantics and logic of /home/benjamin/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex and /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ, carving off the next dimension of logical structure to yield a tensed counterfactual logic from which metaphysical modality can be derived. Deliverable: an initial design report mapping candidate content from each source to a proposed full book structure, to base further research on.",
       "topic": "reference-book",
       "created": "2026-07-07T03:44:10Z",
-      "last_updated": "2026-07-07T03:44:10Z"
+      "last_updated": "2026-07-07T03:56:18Z",
+      "session_id": "sess_1783395983_8bc762",
+      "researched": "2026-07-07T03:56:18Z",
+      "next_artifact_number": 2,
+      "artifacts": [
+        {
+          "path": "specs/313_design_full_extent_bimodalreference_book/reports/01_team-research.md",
+          "type": "report",
+          "summary": "Team research with 4 teammates: book design synthesis"
+        }
+      ]
     },
     {
       "project_number": 312,
