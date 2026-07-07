@@ -232,15 +232,21 @@ block; if a single agent cannot own both, sequence 3 after 2. No phase edits an 
 - **Verification:** Scoped `lake build` green; no sorry; axiom-clean; new lemma type-checks. Cite
   Rabinovich 2014 Lemma 5.1 (md:169-171) in the lemma doc-comment for the structural bound.
 
-### Phase 2: Bounded anchor from a pin [NOT STARTED]
+### Phase 2: Bounded anchor from a pin [COMPLETED]
 - **Goal:** Select the first pin witness `q` for σ and establish `x < q`, `q < w_outer < t`
   (⇒ `hx1t`), and `⟨charK (nfk_projFresh σ)⟩.eval_at q` (⇒ `hanchor`) — the bounded anchor,
   STRUCTURALLY from the pin's slot position (litmus PASS: no `x1 < e_i` literal).
 - **Tasks:**
-  - [ ] Identify the first pin index (`|ptSub σ|` within σ's block) from Phase 1's ordered points.
-  - [ ] Derive `x < q` and `q < w_outer < t` from Phase 1's monotone bound + `w_outer < t`
+  - [x] Identify the first pin index (`|ptSub σ|` within σ's block) from Phase 1's ordered points.
+        *(delivered generically: `p0 ∈ tail a` designates the head pin; at the gate `tail := pinSlots`,
+        `p0 := ⟨charK (nfk_projFresh σ)⟩` the head of `pinSlots σ` :5601)*
+  - [x] Derive `x < q` and `q < w_outer < t` from Phase 1's monotone bound + `w_outer < t`
         (`k1v_bracket_extract:2155`). Confirm `hx1t` traces to bracket monotonicity, not a literal.
-  - [ ] Extract `⟨charK (nfk_projFresh σ)⟩.eval_at q` from the pin point type (`kvE_pinDisjunct:5379`).
+        *(delivered: `bracketFromLists_flatMap_first_pin_anchor` ~:2390; `x<q` via `lt_trans hxu huq`,
+        `q<w_outer` from Phase 1's `hpins` (slot monotonicity), `w_outer<t` from Phase 1's `hwt`;
+        litmus PASS — no `x1<e_i` literal)*
+  - [x] Extract `⟨charK (nfk_projFresh σ)⟩.eval_at q` from the pin point type (`kvE_pinDisjunct:5379`).
+        *(delivered as `p0.eval_at M atomMap q` in the bundle; `p0` = the pin point type)*
 - **Timing:** ~1-1.5 hours (~60-120 lines)
 - **Depends on:** 1
 - **Files:** NfMultiAnchorBridge.lean (additive)

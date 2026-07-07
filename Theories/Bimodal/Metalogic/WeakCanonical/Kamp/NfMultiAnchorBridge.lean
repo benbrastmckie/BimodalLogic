@@ -2387,6 +2387,35 @@ private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} 
       rw [helem_pin] at hpq
       exact hpq
 
+/-- **Bounded anchor from the first pin slot** (task 326 Phase 2). Consuming the σ-block
+    contiguity extraction `bracketFromLists_flatMap_block_extract` (Phase 1), select the
+    designated pin `p0 ∈ tail a` and produce a witness `q` realizing it, STRUCTURALLY bounded
+    `x < q < w_outer < t`. The bound `q < w_outer` rides the pin's slot position within the
+    contiguous block (the monotone `ws` sequence), NEVER an `x1 < e_i` relative-position formula
+    literal (litmus PASS: `hx1t := q < t` traces to `hqw : q < w_outer` (slot monotonicity) and
+    `hwt : w_outer < t` (Phase 1), not a literal). At the k=2 gate this is instantiated with
+    `head := ptSub`, `tail := pinSlots`, `a := σ`, and `p0` the head pin `⟨charK (nfk_projFresh σ)⟩`
+    of `pinSlots σ` (:5601), giving `hanchor = (⟨charK (nfk_projFresh σ)⟩).eval_at q` and
+    `hx1t = q < t` directly (no reverse Cor 5.4, no third anchor: `w_outer` stays a witness).
+
+    Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint (`w_outer`) point-insertion
+    bound is carried structurally by the pin's slot position, faithful under the order-preserving
+    realization of the bracket's own interval decomposition. -/
+private theorem bracketFromLists_flatMap_first_pin_anchor {sig : MonadicSignature} {α : Type*}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (l : List α) (head : α → TemporalPred) (tail : α → List TemporalPred)
+    (ptW segL segR : TemporalPred) (lR : List TemporalPred)
+    (x t : M.carrier) (a : α) (ha : a ∈ l)
+    (p0 : TemporalPred) (hp0 : p0 ∈ tail a)
+    (h : (bracketFromLists (l.flatMap (fun b => head b :: tail b)) ptW lR segL segR).holds
+          M atomMap x t) :
+    ∃ w_outer q : M.carrier,
+      x < q ∧ q < w_outer ∧ w_outer < t ∧ p0.eval_at M atomMap q := by
+  obtain ⟨w_outer, u, _hxw, hwt, _hptW, hxu, _huw, _hhead, hpins⟩ :=
+    bracketFromLists_flatMap_block_extract M atomMap l head tail ptW segL segR lR x t a ha h
+  obtain ⟨q, huq, hqw, hpq⟩ := hpins p0 hp0
+  exact ⟨w_outer, q, lt_trans hxu huq, hqw, hwt, hpq⟩
+
 /-- Reconstruct the arity-3 depth-0 atom layer at env `[w, x, t]` from the three arity-1
     point evaluations and the six order biconditionals. Private clone of the VecEADecomp
     reconstruction helper (that lemma is `private` there and not importable). Chain step 3
