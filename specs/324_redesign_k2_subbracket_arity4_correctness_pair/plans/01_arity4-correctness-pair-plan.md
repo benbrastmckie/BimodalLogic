@@ -1,7 +1,7 @@
 # Implementation Plan: Redesign k=2 Sub-Bracket + Arity-4 Correctness Pair
 
 - **Task**: 324 - redesign_k2_subbracket_arity4_correctness_pair
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10-14 hours
 - **Dependencies**: None (standalone; parent task 321 resumes via /revise 321 after completion)
 - **Research Inputs**:
@@ -243,21 +243,28 @@ logical parallelism; sequential execution is the safe default.
 - **Commit point:** `task 324 phase 1: corrected sub-bracket construction (kvE_subBracket2/kvE_subChain2)`
 - **Depends on:** none
 
-### Phase 2: Per-zone reachability kill-switch (`_reaches_zXU/_zUW/_zWT`) [NOT STARTED]
+### Phase 2: Per-zone reachability kill-switch (`_reaches_zXU/_zUW/_zWT`) [COMPLETED]
 - **Goal:** Prove one concrete, machine-verified reachability lemma per interior zone against the
   chosen geometry — the mandatory design-validation gate (R1). This is a KILL-SWITCH: no downstream
   phase begins until all three are green.
+- **KILL-SWITCH VERDICT: GO** (2026-07-07). Anchor-at-`x` geometry validated: the below-anchor
+  `zXU` witness is expressible and machine-proven. No Since+Until pivot needed. All three
+  `_reaches_z*` lemmas compile sorry-free, scoped build green, axiom-clean
+  (`{propext, Classical.choice, Quot.sound}`).
 - **Tasks:**
-  - [ ] Prove `kvE_subBracket2_reaches_zXU`: the new chain expresses a witness in `zXU = (x,v,u)`
+  - [x] Prove `kvE_subBracket2_reaches_zXU`: the new chain expresses a witness in `zXU = (x,v,u)`
         BELOW the anchor (this is the exact obligation the original `kvE_subChain` could not meet).
-  - [ ] Prove `kvE_subBracket2_reaches_zUW` and `_reaches_zWT` (above-anchor zones; expected to reuse
-        the proven upward `fChainFrom` machinery unchanged if anchor-at-`x` was chosen).
-  - [ ] Each lemma is a real proof (holds/reach statement), NOT a `#eval`/type-check probe. Cite
-        Rabinovich Prop 3.5 (md:87-94) at each chain step.
-  - [ ] **KILL-SWITCH:** if `_reaches_zXU` cannot close under anchor-at-`x`, STOP; pivot to the
-        Since+Until pair (implement the `fChainFrom`-analog for the `Since` direction — `Formula.snce`
-        already used at `kvE2_body` :5893), redo `kvE_subBracket2`/`kvE_subChain2` accordingly in
-        Phase 1's block, and re-attempt all three reachability lemmas before proceeding.
+        *(Semantic reachability: `holds` → strictly-increasing witnesses (Def 3.1) place the
+        `zXU`-positive witness `u` strictly below the anchor witness `w`; `∃ u w, z0<u ∧ u<w ∧ w<z1 ∧
+        charBase χ @ u ∧ charK(nfk_projFresh σ) @ w`.)*
+  - [x] Prove `kvE_subBracket2_reaches_zUW` and `_reaches_zWT` (above-anchor zones; reuse the proven
+        upward monotone enumeration unchanged). *(Both above-anchor: `∃ w u, z0<w ∧ w<u ∧ u<z1 ∧
+        anchor @ w ∧ charBase χ @ u`.)*
+  - [x] Each lemma is a real proof (holds/reach statement), NOT a `#eval`/type-check probe. Cite
+        Rabinovich Prop 3.5 (md:87-94) at each chain step. *(Shared private extract
+        `kvE_subBracket2_extract` = arity-4 lift of `k1v_bracket_extract` :2150 bullets 1-3;
+        point-type reachability via `IntervalPattern.holds` strict monotonicity.)*
+  - [x] **KILL-SWITCH:** not triggered — anchor-at-`x` closed `_reaches_zXU`. No pivot to Since+Until.
 - **Estimated output:** ~150-250 lines (or more if the Since+Until pivot fires).
 - **Done when:** all three `_reaches_z*` lemmas compile sorry-free; scoped `lake build` green;
   `lean_verify` axiom-clean on each.

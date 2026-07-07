@@ -6182,4 +6182,202 @@ theorem kvE_subChain2_eq_fChainPred {sig : MonadicSignature}
     (σ : NormalForm sig 1 4) :
     kvE_subChain2 charBase charK σ = (kvE_subBracket2 charBase charK σ).2.fChainPred := rfl
 
+/-! ### Phase 2 — Per-zone reachability kill-switch (task 324)
+
+The design-validation gate (Risk R1) for the anchor-at-`x` geometry. Each interior zone gets one
+concrete, machine-verified reachability lemma against the *chosen* geometry — NOT a `#eval`/
+type-check probe. The lemmas semantically drive the `kvE_subBracket2` bracket: whenever it holds on
+an interval, its strictly increasing witnesses (Def 3.1 monotone enumeration, PDF p.4) place the
+`zXU`-positive witnesses BELOW the anchor `u`-slot and the `zUW`/`zWT`-positive witnesses ABOVE it —
+the below-anchor witness the landed `kvE_subChain` :5807 could not express. Rabinovich Prop 3.5
+(md:87-94, the ∃-witness → Until folding of an ascending chain) and §5 bracket `[α_0,…,α_n](z_0,z_1)`
+(PDF p.7). The three interior zone specs are rebound here as defeq clones of the def's internal
+`let`s (and of `kvE_subInteriorZones` :5751); `mk4 ltz ltz gtz ltz` etc. with `ltz = (true, false)`
+(`v < env i`) and `gtz = (false, true)` (`env i < v`). -/
+
+/-- Interior zone `zXU = (x < v < u)` — BELOW the anchor `u`. Defeq to `kvE_subBracket2`'s internal
+    `zXU` and to `kvE_subInteriorZones` :5751. Rabinovich Def 3.1 (md:61-74). -/
+private def kvE_sub2_zXU : ZoneSpec 4 :=
+  Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))))
+
+/-- Interior zone `zUW = (u < v < w)` — ABOVE the anchor `u`. Rabinovich Def 3.1 (md:61-74). -/
+private def kvE_sub2_zUW : ZoneSpec 4 :=
+  Fin.cons (false, true) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false))))
+
+/-- Interior zone `zWT = (w < v < t)` — ABOVE the anchor `u`. Rabinovich Def 3.1 (md:61-74). -/
+private def kvE_sub2_zWT : ZoneSpec 4 :=
+  Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false))))
+
+/-- Below-anchor witness slots of `kvE_subBracket2` (`leftSlots`, defeq to the def's internal
+    `let`). One witness point type per `zXU`-positive fold bit. Rabinovich Def 3.1 (md:61-74). -/
+private noncomputable def kvE_sub2_leftSlots {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (σ : NormalForm sig 1 4) : List TemporalPred :=
+  ((Finset.univ.toList : List (NormalForm sig 0 1)).filter
+    (fun χ => σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1))).map (fun χ => (⟨charBase χ⟩ : TemporalPred))
+
+/-- Above-anchor witness slots of `kvE_subBracket2` (`rightSlots`, defeq to the def's internal
+    `let`), in zone order `zUW, zWT`. Rabinovich Def 3.1 (md:61-74). -/
+private noncomputable def kvE_sub2_rightSlots {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (σ : NormalForm sig 1 4) : List TemporalPred :=
+  [kvE_sub2_zUW, kvE_sub2_zWT].flatMap (fun zs =>
+    ((Finset.univ.toList : List (NormalForm sig 0 1)).filter
+      (fun χ => σ.2 (nf0_assemble zs χ σ.1))).map (fun χ => (⟨charBase χ⟩ : TemporalPred)))
+
+/-- **Anchor-at-`x` point-type extraction** (task 324 Phase 2). Whenever the redesigned bracket
+    `kvE_subBracket2` holds on `(z_0, z_1)`, there is an anchor witness `w` realizing the `u`-slot
+    type `charK (nfk_projFresh σ)`, with every `zXU`-positive point type realized strictly BELOW
+    `w` and every `zUW`/`zWT`-positive point type realized strictly ABOVE `w`. This is the arity-4
+    lift of `k1v_bracket_extract` :2150 (bullets 1-3, point-type reachability only; the constant
+    `segExcl` segment types are irrelevant to point conditions). Rabinovich §5 bracket (PDF p.7),
+    Def 3.1 monotone witness enumeration (PDF p.4). -/
+private theorem kvE_subBracket2_extract {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 : M.carrier)
+    (h : (kvE_subBracket2 charBase charK σ).2.holds M atomMap z0 z1) :
+    ∃ w : M.carrier, z0 < w ∧ w < z1 ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
+      (∀ χ : NormalForm sig 0 1,
+        σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+        ∃ u : M.carrier, z0 < u ∧ u < w ∧
+          (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u) ∧
+      (∀ χ : NormalForm sig 0 1,
+        (σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true ∨
+         σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true) →
+        ∃ u : M.carrier, w < u ∧ u < z1 ∧
+          (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u) := by
+  -- Point-type list of the anchor-at-`x` bracket: `leftSlots ++ uSlot :: rightSlots`.
+  set lL := kvE_sub2_leftSlots charBase σ with hlL
+  set lR := kvE_sub2_rightSlots charBase σ with hlR
+  -- The constructed bracket's point-type function (rfl: the def sets `pointTypes` to exactly this).
+  have hpt_eq : (kvE_subBracket2 charBase charK σ).2.pointTypes =
+      fun i => (lL ++ (⟨charK (nfk_projFresh σ)⟩ : TemporalPred) :: lR)[i.val]'(by
+        have hlt := i.isLt
+        have hf : (kvE_subBracket2 charBase charK σ).fst = lL.length + lR.length := rfl
+        simp only [List.length_append, List.length_cons]
+        omega) := rfl
+  -- Unfold `holds` to the `n+1` existential witness form (Def 3.1, PDF p.4).
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern] at h
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ z0 z1
+      (show (kvE_subBracket2 charBase charK σ).1 + 1 = (lL.length + lR.length) + 1 from rfl)] at h
+  obtain ⟨ws, hmono, hrange, hpt, _, _, _⟩ := h
+  -- Nat-indexed point-type view (proof-irrelevant reindexing), rewritten by `hpt_eq`.
+  have hpt' : ∀ (i : Nat) (hi : i < lL.length + lR.length + 1),
+      ((lL ++ (⟨charK (nfk_projFresh σ)⟩ : TemporalPred) :: lR)[i]'(by
+        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap
+        (ws ⟨i, hi⟩) := by
+    intro i hi
+    have hi' := hpt ⟨i, hi⟩
+    simp only [hpt_eq] at hi'
+    exact hi'
+  refine ⟨ws ⟨lL.length, by omega⟩, (hrange ⟨lL.length, by omega⟩).1,
+    (hrange ⟨lL.length, by omega⟩).2, ?_, ?_, ?_⟩
+  · -- Anchor `uSlot` at index `lL.length` (§5 bracket middle slot, PDF p.7).
+    have helem : (lL ++ (⟨charK (nfk_projFresh σ)⟩ : TemporalPred) :: lR)[lL.length]'(by
+        simp only [List.length_append, List.length_cons]; omega)
+        = (⟨charK (nfk_projFresh σ)⟩ : TemporalPred) := by
+      rw [List.getElem_append_right (Nat.le_refl _)]
+      simp only [Nat.sub_self, List.getElem_cons_zero]
+    have := hpt' lL.length (by omega)
+    rwa [helem] at this
+  · -- Below-anchor: each `zXU`-positive point type realized strictly inside `(z0, w)`.
+    intro χ hχ
+    have hmem : (⟨charBase χ⟩ : TemporalPred) ∈ lL := by
+      rw [hlL, kvE_sub2_leftSlots]
+      exact List.mem_map.mpr
+        ⟨χ, List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ _), hχ⟩, rfl⟩
+    obtain ⟨j, hj, hjeq⟩ := List.mem_iff_getElem.mp hmem
+    refine ⟨ws ⟨j, by omega⟩, (hrange ⟨j, by omega⟩).1,
+      hmono ⟨j, by omega⟩ ⟨lL.length, by omega⟩ (Fin.mk_lt_mk.mpr hj), ?_⟩
+    have := hpt' j (by omega)
+    rw [List.getElem_append_left hj, hjeq] at this
+    exact this
+  · -- Above-anchor: each `zUW`/`zWT`-positive point type realized strictly inside `(w, z1)`.
+    intro χ hχ
+    have hmem : (⟨charBase χ⟩ : TemporalPred) ∈ lR := by
+      rw [hlR, kvE_sub2_rightSlots]
+      rcases hχ with h1 | h1
+      · exact List.mem_flatMap.mpr ⟨kvE_sub2_zUW, List.mem_cons.mpr (Or.inl rfl),
+          List.mem_map.mpr ⟨χ, List.mem_filter.mpr
+            ⟨Finset.mem_toList.mpr (Finset.mem_univ _), h1⟩, rfl⟩⟩
+      · exact List.mem_flatMap.mpr ⟨kvE_sub2_zWT,
+          List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl))),
+          List.mem_map.mpr ⟨χ, List.mem_filter.mpr
+            ⟨Finset.mem_toList.mpr (Finset.mem_univ _), h1⟩, rfl⟩⟩
+    obtain ⟨j, hj, hjeq⟩ := List.mem_iff_getElem.mp hmem
+    refine ⟨ws ⟨lL.length + 1 + j, by omega⟩,
+      hmono ⟨lL.length, by omega⟩ ⟨lL.length + 1 + j, by omega⟩ (Fin.mk_lt_mk.mpr (by omega)),
+      (hrange ⟨lL.length + 1 + j, by omega⟩).2, ?_⟩
+    have helem : (lL ++ (⟨charK (nfk_projFresh σ)⟩ : TemporalPred) :: lR)[lL.length + 1 + j]'(by
+        simp only [List.length_append, List.length_cons]; omega) = lR[j]'hj := by
+      rw [List.getElem_append_right (by omega)]
+      simp only [show lL.length + 1 + j - lL.length = j + 1 by omega, List.getElem_cons_succ]
+    have := hpt' (lL.length + 1 + j) (by omega)
+    rw [helem, hjeq] at this
+    exact this
+
+/-- **KILL-SWITCH — `zXU` reachability (BELOW the anchor)** (task 324 Phase 2, Risk R1). For every
+    `zXU`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
+    `u` realizing `charBase χ` strictly BELOW the anchor witness `w` (which realizes the `u`-slot
+    type). This is the exact obligation the landed `kvE_subChain` :5807 (upward-only, anchored at
+    `u`) could not meet — the below-anchor witness is now expressible. Rabinovich Prop 3.5
+    (md:87-94), §5 bracket (PDF p.7). -/
+theorem kvE_subBracket2_reaches_zXU {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
+    (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true)
+    (h : (kvE_subBracket2 charBase charK σ).2.holds M atomMap z0 z1) :
+    ∃ u w : M.carrier, z0 < u ∧ u < w ∧ w < z1 ∧
+      (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w := by
+  obtain ⟨w, hz0w, hwz1, hanchor, hleft, _⟩ :=
+    kvE_subBracket2_extract charBase charK σ M atomMap z0 z1 h
+  obtain ⟨u, hz0u, huw, hu⟩ := hleft χ hbit
+  exact ⟨u, w, hz0u, huw, hwz1, hu, hanchor⟩
+
+/-- **KILL-SWITCH — `zUW` reachability (ABOVE the anchor)** (task 324 Phase 2, Risk R1). For every
+    `zUW`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
+    `u` realizing `charBase χ` strictly ABOVE the anchor witness `w`. Reuses the proven upward
+    monotone enumeration unchanged. Rabinovich Prop 3.5 (md:87-94). -/
+theorem kvE_subBracket2_reaches_zUW {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
+    (hbit : σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true)
+    (h : (kvE_subBracket2 charBase charK σ).2.holds M atomMap z0 z1) :
+    ∃ w u : M.carrier, z0 < w ∧ w < u ∧ u < z1 ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
+      (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u := by
+  obtain ⟨w, hz0w, hwz1, hanchor, _, hright⟩ :=
+    kvE_subBracket2_extract charBase charK σ M atomMap z0 z1 h
+  obtain ⟨u, hwu, huz1, hu⟩ := hright χ (Or.inl hbit)
+  exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
+
+/-- **KILL-SWITCH — `zWT` reachability (ABOVE the anchor)** (task 324 Phase 2, Risk R1). For every
+    `zWT`-positive fold bit `χ`, whenever `kvE_subBracket2` holds on `(z_0, z_1)` there is a witness
+    `u` realizing `charBase χ` strictly ABOVE the anchor witness `w`. Rabinovich Prop 3.5
+    (md:87-94). -/
+theorem kvE_subBracket2_reaches_zWT {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 : M.carrier) (χ : NormalForm sig 0 1)
+    (hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true)
+    (h : (kvE_subBracket2 charBase charK σ).2.holds M atomMap z0 z1) :
+    ∃ w u : M.carrier, z0 < w ∧ w < u ∧ u < z1 ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap w ∧
+      (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u := by
+  obtain ⟨w, hz0w, hwz1, hanchor, _, hright⟩ :=
+    kvE_subBracket2_extract charBase charK σ M atomMap z0 z1 h
+  obtain ⟨u, hwu, huz1, hu⟩ := hright χ (Or.inr hbit)
+  exact ⟨w, u, hz0w, hwu, huz1, hanchor, hu⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
