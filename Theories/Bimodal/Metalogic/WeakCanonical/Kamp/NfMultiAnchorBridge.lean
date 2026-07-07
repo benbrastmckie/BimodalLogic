@@ -1,6 +1,11 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfZoneFlattenNavigable
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
+import Bimodal.Metalogic.WeakCanonical.PriorDefs
 import Mathlib.Data.List.Permutation
+-- NOTE (task 309 Phase 13.0): `import ...WeakCanonical.PriorDefs` supplies
+-- `semantic_prior_UZ`/`semantic_prior_SZ` (PriorDefs:22/:33) for the F2 decision-probe verdict
+-- record at the bottom of this file. Cycle-free: PriorDefs imports only `...WeakCanonical.Table`
+-- (already in this file's transitive closure); nothing in PriorDefs' closure imports this file.
 -- NOTE (task 311 Phase 4): `import Mathlib.Data.List.Permutation` supplies
 -- `List.mem_permutations` (arrangement-disjunct membership ↔ `List.Perm`), consumed by the
 -- soundness direction of the V-carrier. Mathlib-only; no project-file import added.
@@ -3932,5 +3937,123 @@ carrier holds at all depths on this analysis; a plan-v6 carrier revision can exp
 the completeness shape. Landed in this phase: the recursion base `bracketEndChar_kv_correct_zero`
 and the first step `bracketEndChar_kv_correct_one` (both above, sorry-free — the 13a seam of the
 plan's H8 split note), plus the factorization lemma. Phase 13 is [BLOCKED] pending plan revision. -/
+
+/-! ## Task 309 Phase 13.0: F2 decision probe — machinery
+
+Probe infrastructure for the F2 verdict record at the bottom of this file (additive; nothing
+above this line is edited). The probe machine-checks the report-05 F-B extension of F1 to the
+Prior model `M* = (ℤ, <)`, `P = {0, 10, 20}` — a model that (unlike F1's `(ℚ, <)` with finite
+`P`, which fails `semantic_prior_UZ`) SATISFIES both Prior hypotheses (PriorDefs:22/:33), so the
+UZ/SZ-relativized k=2 statement for the CURRENT carrier `bracketEndChar_kv` is exercised on its
+own turf. All declarations are probe-local (`private` where possible); the public verdict
+theorem is `f2_relativized_refutation` below. -/
+
+/-- One-predicate signature for the F2 probe (`()` names the single monadic predicate `P`). -/
+private abbrev f2sig : MonadicSignature := { preds := Unit }
+
+/-- Trivial atom map into the one-predicate probe signature. -/
+private abbrev f2atomMap : Formula → f2sig.preds := fun _ => ()
+
+/-- Surjectivity of the probe atom map (every predicate is hit by an atom). -/
+private theorem f2surj : ∀ p : f2sig.preds, ∃ a : Atom, f2atomMap (.atom a) = p :=
+  fun _ => ⟨Atom.mk_base "P", rfl⟩
+
+/-- The F2 probe model `M* = (ℤ, <)` with `P = {0, 10, 20}` (report 05 F-B; the discrete
+    extension of F1's counterexample pattern `q < x < u₂ < p < u₁ < w < t < r` at the concrete
+    points `0 < 2 < 4 < 10 < 12 < 15 < 18 < 20`). -/
+private abbrev F2M : OrderedMonadicStructure f2sig where
+  carrier := ℤ
+  interp := fun _ z => z = 0 ∨ z = 10 ∨ z = 20
+  carrier_order := inferInstance
+
+/-- `ℤ` first-occurrence principle: a nonempty subset of `(t, ∞)` has a least element
+    (`Nat.find` on the shifted index). Pure integer arithmetic, no model content. -/
+private theorem f2_int_first {Q : ℤ → Prop} (t : ℤ) (h : ∃ s, t < s ∧ Q s) :
+    ∃ s, t < s ∧ Q s ∧ ∀ r, t < r → r < s → ¬ Q r := by
+  classical
+  obtain ⟨s, hts, hs⟩ := h
+  have hP : ∃ n : ℕ, Q (t + 1 + (n : ℤ)) := by
+    refine ⟨(s - t - 1).toNat, ?_⟩
+    have hcast : t + 1 + (((s - t - 1).toNat : ℕ) : ℤ) = s := by omega
+    rw [hcast]; exact hs
+  refine ⟨t + 1 + (Nat.find hP : ℤ), by omega, Nat.find_spec hP, ?_⟩
+  intro r htr hrs h_r
+  have hm : ∃ m : ℕ, r = t + 1 + (m : ℤ) ∧ m < Nat.find hP :=
+    ⟨(r - t - 1).toNat, by omega, by omega⟩
+  obtain ⟨m, hmr, hmlt⟩ := hm
+  exact Nat.find_min hP hmlt (hmr ▸ h_r)
+
+/-- `ℤ` last-occurrence principle: a nonempty subset of `(-∞, t)` has a greatest element —
+    the mirror of `f2_int_first`. -/
+private theorem f2_int_last {Q : ℤ → Prop} (t : ℤ) (h : ∃ s, s < t ∧ Q s) :
+    ∃ s, s < t ∧ Q s ∧ ∀ r, s < r → r < t → ¬ Q r := by
+  classical
+  obtain ⟨s, hst, hs⟩ := h
+  have hP : ∃ n : ℕ, Q (t - 1 - (n : ℤ)) := by
+    refine ⟨(t - s - 1).toNat, ?_⟩
+    have hcast : t - 1 - (((t - s - 1).toNat : ℕ) : ℤ) = s := by omega
+    rw [hcast]; exact hs
+  refine ⟨t - 1 - (Nat.find hP : ℤ), by omega, Nat.find_spec hP, ?_⟩
+  intro r hsr hrt h_r
+  have hm : ∃ m : ℕ, r = t - 1 - (m : ℤ) ∧ m < Nat.find hP :=
+    ⟨(t - r - 1).toNat, by omega, by omega⟩
+  obtain ⟨m, hmr, hmlt⟩ := hm
+  exact Nat.find_min hP hmlt (hmr ▸ h_r)
+
+/-- `(ℤ, <)` satisfies semantic Prior-UZ (PriorDefs:22): every future occurrence of any
+    temporal `ψ` has a FIRST occurrence, with `ψ.neg` on the open gap (`f2_int_first`). -/
+private theorem f2_UZ : semantic_prior_UZ F2M f2atomMap := by
+  intro t ψ h
+  obtain ⟨s, hts, hs, hmin⟩ :=
+    f2_int_first (Q := fun z => temporal_truth F2M f2atomMap z ψ) t h
+  refine ⟨s, hts, hs, ?_⟩
+  intro r htr hrs
+  simp only [Formula.neg, temporal_truth]
+  exact hmin r htr hrs
+
+/-- `(ℤ, <)` satisfies semantic Prior-SZ (PriorDefs:33): every past occurrence of any
+    temporal `ψ` has a LAST occurrence, with `ψ.neg` on the open gap (`f2_int_last`). -/
+private theorem f2_SZ : semantic_prior_SZ F2M f2atomMap := by
+  intro t ψ h
+  obtain ⟨s, hst, hs, hmax⟩ :=
+    f2_int_last (Q := fun z => temporal_truth F2M f2atomMap z ψ) t h
+  refine ⟨s, hst, hs, ?_⟩
+  intro r hsr hrt
+  simp only [Formula.neg, temporal_truth]
+  exact hmax r hsr hrt
+
+/-- Evaluation is characteristic-equality (`nf_eval_unique` NormalForm:245 packaged with
+    `nf_characteristic_satisfies` NormalForm:224): a normal form holds at `env` iff it IS the
+    characteristic type of `env`. The probe's per-entry workhorse. -/
+private theorem f2_eval_iff_char {k n : Nat} (env : Fin n → F2M.carrier)
+    (σ : NormalForm f2sig k n) :
+    nf_eval_nf F2M k n env σ ↔ σ = nf_characteristic F2M k n env :=
+  ⟨fun h => nf_eval_unique F2M k n env σ _ h (nf_characteristic_satisfies F2M k n env),
+   fun h => h ▸ nf_characteristic_satisfies F2M k n env⟩
+
+/-- Depth-0 characteristic congruence: two `ℤ`-environments with the same `P`-pattern and the
+    same order pattern have EQUAL depth-0 characteristic types. Pure Def-3.1 channel bookkeeping
+    (`P`-bits + order bits are all a depth-0 type holds). -/
+private theorem f2_char0_congr {n : Nat} (e₁ e₂ : Fin n → F2M.carrier)
+    (hP : ∀ i, (e₁ i = 0 ∨ e₁ i = 10 ∨ e₁ i = 20) ↔ (e₂ i = 0 ∨ e₂ i = 10 ∨ e₂ i = 20))
+    (hO : ∀ i j, e₁ i < e₁ j ↔ e₂ i < e₂ j) :
+    nf_characteristic F2M 0 n e₁ = nf_characteristic F2M 0 n e₂ := by
+  funext a
+  simp only [nf_characteristic]
+  apply decide_eq_decide.mpr
+  cases a with
+  | pred p i => exact hP i
+  | order i j h => exact hO i j
+
+/-- Prefix restriction of a depth-0 characteristic is the characteristic of the restricted
+    environment (the depth-0 instance of `nfk_take` naturality). -/
+private theorem f2_take_char0 {m n : Nat} (h : m ≤ n) (env : Fin n → F2M.carrier) :
+    nfk_take h (nf_characteristic F2M 0 n env) =
+      nf_characteristic F2M 0 m (fun i => env (Fin.castLE h i)) := by
+  funext a
+  simp only [nfk_take, nf_characteristic]
+  cases a with
+  | pred p i => rfl
+  | order i j h' => rfl
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

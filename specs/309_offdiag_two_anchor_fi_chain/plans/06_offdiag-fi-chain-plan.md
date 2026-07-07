@@ -572,7 +572,7 @@ verdict is SURGERY-ONLY, the dispatcher runs `/revise 309` (v7) to strike Phases
 re-point Phase 14's dependency at 13.1 — Phases 13.2-13.4 MUST NOT be dispatched on that branch
 without the v7 revision.
 
-### Phase 13.0: F2 decision probe — is the relativized statement still false for the CURRENT carrier at k=2? [NOT STARTED]
+### Phase 13.0: F2 decision probe — is the relativized statement still false for the CURRENT carrier at k=2? [IN PROGRESS]
 
 *(Report 05 label: Phase 13.0. First dispatch of v6 — nothing else is dispatched before this
 verdict is recorded.)*
