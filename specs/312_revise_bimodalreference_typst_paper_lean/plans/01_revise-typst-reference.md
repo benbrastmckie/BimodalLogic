@@ -1,7 +1,7 @@
 # Implementation Plan: Revise BimodalReference.typ to Match Paper + Lean Source
 
 - **Task**: 312 - revise_bimodalreference_typst_paper_lean
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 11 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/312_revise_bimodalreference_typst_paper_lean/reports/01_team-research.md (synthesis of 4 teammates; per-teammate detail in 01_teammate-{a,b,c,d}-findings.md)
@@ -241,18 +241,18 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 
 ---
 
-### Phase 6: Doc Hygiene and Verification Gate [NOT STARTED]
+### Phase 6: Doc Hygiene and Verification Gate [COMPLETED]
 
 **Goal**: Land the hygiene fixes and enforce the Definition of Done: clean compile, all Lean references resolving in live source, all counts regenerated.
 
 **Tasks**:
-- [ ] Fix `Theories/Bimodal/typst/README.md:43`: dependency is `thmbox` (per `template.typ:10`), not `great-theorems`
-- [ ] Remove (or move into `build/`) the stray top-level `BimodalReference.pdf` so output location matches the documented `build/` convention
-- [ ] Add the Phase 0 latex-divergence note to `typst/README.md` (and the latex README if present): latex mirror stale as of {DATE}, typst authoritative; suggest follow-up task in the summary (do NOT edit `latex/` content)
-- [ ] Verification gate 1 — compile: `typst compile Theories/Bimodal/typst/BimodalReference.typ build/BimodalReference.pdf` succeeds with no errors
-- [ ] Verification gate 2 — reference resolution: re-run the Phase 1 extraction over the REVISED chapters against current HEAD; every backticked Lean name must resolve under `Theories/Bimodal` excluding `Boneyard/`; update SYNC-MAP verdicts to all-`verified` (any name resolving only in Boneyard is a bug — fix before closing)
-- [ ] Verification gate 3 — counts: re-derive axiom constructor count, layer count, and sorry counts from HEAD and confirm the landed chapter text matches (regenerated, not copied); refresh SYNC-MAP date/commit stamp
-- [ ] In the implementation summary, flag (without editing): `docs/reference/{axiom-reference,operators,tactic-reference}.md` staleness, and suggested follow-up tasks for latex/ sync and a `typst-sync-check.sh` drift detector
+- [x] Fix `Theories/Bimodal/typst/README.md:43`: dependency is `thmbox` (per `template.typ:10`), not `great-theorems`
+- [x] Remove (or move into `build/`) the stray top-level `BimodalReference.pdf` so output location matches the documented `build/` convention
+- [x] Add the Phase 0 latex-divergence note to `typst/README.md` (and the latex README if present): latex mirror stale as of {DATE}, typst authoritative; suggest follow-up task in the summary (do NOT edit `latex/` content)
+- [x] Verification gate 1 — compile: `typst compile Theories/Bimodal/typst/BimodalReference.typ build/BimodalReference.pdf` succeeds with no errors
+- [x] Verification gate 2 — reference resolution: re-run the Phase 1 extraction over the REVISED chapters against current HEAD; every backticked Lean name must resolve under `Theories/Bimodal` excluding `Boneyard/`; update SYNC-MAP verdicts to all-`verified` (any name resolving only in Boneyard is a bug — fix before closing)
+- [x] Verification gate 3 — counts: re-derive axiom constructor count, layer count, and sorry counts from HEAD and confirm the landed chapter text matches (regenerated, not copied); refresh SYNC-MAP date/commit stamp
+- [x] In the implementation summary, flag (without editing): `docs/reference/{axiom-reference,operators,tactic-reference}.md` staleness, and suggested follow-up tasks for latex/ sync and a `typst-sync-check.sh` drift detector
 
 **Timing**: 1 hour
 
@@ -270,13 +270,13 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 
 ## Testing & Validation
 
-- [ ] `typst compile Theories/Bimodal/typst/BimodalReference.typ build/BimodalReference.pdf` succeeds (run per chapter phase and at the gate)
-- [ ] Every backtick-quoted Lean identifier/filename in all 7 chapters resolves in live `Theories/Bimodal` source excluding `Boneyard/`
-- [ ] Axiom count, layer structure, and per-directory sorry counts in the document match a fresh grep of `ProofSystem/Axioms.lean` and `Metalogic/` at completion HEAD
-- [ ] No remaining claim that reflexive temporal semantics is current; no reference to `semantic_weak_completeness`, `FMP/`, or `Representation/`
-- [ ] Primary completeness narrative matches the Phase 0 live-wiring verification, with Bundle/BXCanonical/WeakCanonical/Algebraic all mentioned as active approaches
-- [ ] The 7 inference rules and the strict `<` truth conditions at `02-semantics.typ:85-90` are preserved (regression check — these were already correct)
-- [ ] SYNC-MAP.md exists, is complete, and is stamped with date + source commit
+- [x] `typst compile Theories/Bimodal/typst/BimodalReference.typ build/BimodalReference.pdf` succeeds (run per chapter phase and at the gate)
+- [x] Every backtick-quoted Lean identifier/filename in all 7 chapters resolves in live `Theories/Bimodal` source excluding `Boneyard/`
+- [x] Axiom count, layer structure, and per-directory sorry counts in the document match a fresh grep of `ProofSystem/Axioms.lean` and `Metalogic/` at completion HEAD
+- [x] No remaining claim that reflexive temporal semantics is current; no reference to `semantic_weak_completeness`, `FMP/`, or `Representation/`
+- [x] Primary completeness narrative matches the Phase 0 live-wiring verification, with Bundle/BXCanonical/WeakCanonical/Algebraic all mentioned as active approaches
+- [x] The 7 inference rules and the strict `<` truth conditions at `02-semantics.typ:85-90` are preserved (regression check — these were already correct)
+- [x] SYNC-MAP.md exists, is complete, and is stamped with date + source commit
 
 ## Artifacts & Outputs
 

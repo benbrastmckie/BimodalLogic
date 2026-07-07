@@ -9,12 +9,12 @@
     {
       "project_number": 312,
       "project_name": "revise_bimodalreference_typst_paper_lean",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "typst",
       "description": "Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority",
       "topic": "publication-quality",
       "created": "2026-07-07T01:34:55Z",
-      "last_updated": "2026-07-07T02:53:01Z",
+      "last_updated": "2026-07-07T03:11:08Z",
       "session_id": "sess_1783392719_6dfe8f",
       "researched": "2026-07-07T02:33:41Z",
       "next_artifact_number": 2,
@@ -29,7 +29,8 @@
           "type": "plan",
           "summary": "7-phase plan (11h): scope decisions + live completeness-wiring verification, ground-truth SYNC-MAP inventory, chapter rewrites heaviest-first (04, 03, 01+02 in parallel, then 06+05+00), doc hygiene + compile/resolution/counts verification gate"
         }
-      ]
+      ],
+      "completion_summary": "Revised all 7 typst chapters + main doc against live Lean source: 42-constructor BX system, Until/Since primitives, strict semantics, honest completeness status (BXCanonical.completeness, 43 sorries), SYNC-MAP.md claim table delivered; typst compile clean."
     },
     {
       "project_number": 309,
