@@ -64,7 +64,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-312 [PLANNED] — Systematically revise Theories/Bimodal/typst/BimodalReference.typ
+312 [IMPLEMENTING] — Systematically revise Theories/Bimodal/typst/BimodalReference.typ
 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
 
@@ -112,7 +112,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ## Tasks
 
 ### 312. Revise bimodalreference typst paper lean
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: typst
 - **Topic**: publication-quality
 - **Dependencies**: None

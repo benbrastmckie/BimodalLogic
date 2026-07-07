@@ -1,7 +1,7 @@
 # Implementation Plan: Revise BimodalReference.typ to Match Paper + Lean Source
 
 - **Task**: 312 - revise_bimodalreference_typst_paper_lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 11 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/312_revise_bimodalreference_typst_paper_lean/reports/01_team-research.md (synthesis of 4 teammates; per-teammate detail in 01_teammate-{a,b,c,d}-findings.md)
@@ -76,16 +76,16 @@ No prior plan.
 
 Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoint files).
 
-### Phase 0: Scope Decisions and Live Completeness-Wiring Verification [NOT STARTED]
+### Phase 0: Scope Decisions and Live Completeness-Wiring Verification [COMPLETED]
 
 **Goal**: Record the scoping calls explicitly and resolve the one open factual question (primary completeness path) from live source, so every later phase transcribes rather than guesses.
 
 **Tasks**:
-- [ ] Verify the CURRENT primary completeness wiring from live source, treating all doc surfaces as suspect: inspect `Theories/Bimodal/Metalogic/Metalogic.lean` imports, `Metalogic/Completeness.lean`, `Metalogic/BXCanonical/Completeness.lean`, `Metalogic/Bundle/`, and grep for the candidate top-level theorems (`completeness_discrete`, `fmp_completeness`, `countermodel_dense`, `bmcs_weak_completeness`). Record which theorem(s) are the wired, importable entry points and which paths are active-secondary. Candidates from conflicting sources: Chronicle path per `specs/ROADMAP.md`; Bundle/BFMCS per `Metalogic/README.md:11-13` (self-warned stale); BXCanonical wiring per teammate A. Decision rule: imports and `lean_verify`/grep on live source win over every README/ROADMAP claim.
-- [ ] Decide frame-class parametrization scope. Recommended: IN scope for `03-proof-theory.typ` (the `FrameClass` parameter and Base/Dense/Discrete axiom layers are inseparable from an accurate 42-constructor presentation, `ProofSystem/Derivation.lean:85-93`) and summary-level in `04-metalogic.typ` (per-frame-class soundness variants named, not proof-sketched); a dedicated frame-class chapter is deferred.
-- [ ] Record the `latex/BimodalReference.tex` decision: declared divergence this pass. Both `typst/README.md` and `latex/` README get an explicit "latex mirror is stale as of {DATE}; typst is authoritative" note in Phase 6; full latex sync is a follow-up task suggestion, not scope.
-- [ ] Record: Kamp/tasks 303/309-311 material appears only as a short "work in progress, not citable" note; paper's Objective Modality and 2D Semantics out of scope; `docs/reference/*.md` staleness flagged in the summary but not edited; paper §3.3 Extensions documented only where Lean-formalized (frame classes), else a one-line "not yet formalized" note.
-- [ ] Write all decisions into the preamble of `Theories/Bimodal/typst/SYNC-MAP.md` (created here, populated in Phase 1) so downstream phases and future tasks can cite them.
+- [x] Verify the CURRENT primary completeness wiring from live source, treating all doc surfaces as suspect: inspect `Theories/Bimodal/Metalogic/Metalogic.lean` imports, `Metalogic/Completeness.lean`, `Metalogic/BXCanonical/Completeness.lean`, `Metalogic/Bundle/`, and grep for the candidate top-level theorems (`completeness_discrete`, `fmp_completeness`, `countermodel_dense`, `bmcs_weak_completeness`). Record which theorem(s) are the wired, importable entry points and which paths are active-secondary. Candidates from conflicting sources: Chronicle path per `specs/ROADMAP.md`; Bundle/BFMCS per `Metalogic/README.md:11-13` (self-warned stale); BXCanonical wiring per teammate A. Decision rule: imports and `lean_verify`/grep on live source win over every README/ROADMAP claim.
+- [x] Decide frame-class parametrization scope. Recommended: IN scope for `03-proof-theory.typ` (the `FrameClass` parameter and Base/Dense/Discrete axiom layers are inseparable from an accurate 42-constructor presentation, `ProofSystem/Derivation.lean:85-93`) and summary-level in `04-metalogic.typ` (per-frame-class soundness variants named, not proof-sketched); a dedicated frame-class chapter is deferred.
+- [x] Record the `latex/BimodalReference.tex` decision: declared divergence this pass. Both `typst/README.md` and `latex/` README get an explicit "latex mirror is stale as of {DATE}; typst is authoritative" note in Phase 6; full latex sync is a follow-up task suggestion, not scope.
+- [x] Record: Kamp/tasks 303/309-311 material appears only as a short "work in progress, not citable" note; paper's Objective Modality and 2D Semantics out of scope; `docs/reference/*.md` staleness flagged in the summary but not edited; paper §3.3 Extensions documented only where Lean-formalized (frame classes), else a one-line "not yet formalized" note.
+- [x] Write all decisions into the preamble of `Theories/Bimodal/typst/SYNC-MAP.md` (created here, populated in Phase 1) so downstream phases and future tasks can cite them.
 
 **Timing**: 1 hour
 
@@ -100,17 +100,17 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 
 ---
 
-### Phase 1: Ground-Truth Inventory (SYNC-MAP) [NOT STARTED]
+### Phase 1: Ground-Truth Inventory (SYNC-MAP) [COMPLETED]
 
 **Goal**: Produce a complete claim -> verified/stale/not-found mapping for every Lean reference in the typst document, plus regenerated ground-truth counts, as the single factual basis for all chapter rewrites.
 
 **Tasks**:
-- [ ] Extract every backtick-quoted Lean identifier, filename, and directory name from all 7 chapter files (`chapters/00-introduction.typ` ... `06-notes.typ`) and `BimodalReference.typ` (e.g., `grep -oE '\x60[^\x60]+\x60'` per file, deduplicated)
-- [ ] Grep-verify each extracted name against live `Theories/Bimodal/` **excluding `Boneyard/`** (`grep -rn --include='*.lean' -F "{name}" Theories/Bimodal --exclude-dir=Boneyard`); classify as `verified` (resolves, meaning matches), `stale` (resolves only in Boneyard or meaning changed), or `not-found`
-- [ ] Record the verdict table in `Theories/Bimodal/typst/SYNC-MAP.md` with columns: chapter:line, claimed name, verdict, live location (file:line) or replacement
-- [ ] Regenerate ground-truth counts from source and record them in SYNC-MAP: axiom constructor count and layer structure from the `inductive Axiom` block in `ProofSystem/Axioms.lean` (count the constructors; do NOT copy 42/41 from any document), sorry count per `Metalogic/` subdirectory (`grep -rc sorry` excluding Boneyard, comments filtered), frame-class list from `ProofSystem/Derivation.lean:85-93` and `Semantics/FrameConditions/` (confirm directory name from source)
-- [ ] Confirm sorry-free status of Soundness (`Metalogic/Soundness.lean`, `DenseSoundness.lean`, `DiscreteSoundness.lean`) and Perpetuity P1-P6 (`Theorems/Perpetuity/`) — research says both are genuinely sorry-free; verify, do not assume
-- [ ] Stamp SYNC-MAP with date and git commit hash of the Lean source it was generated against
+- [x] Extract every backtick-quoted Lean identifier, filename, and directory name from all 7 chapter files (`chapters/00-introduction.typ` ... `06-notes.typ`) and `BimodalReference.typ` (e.g., `grep -oE '\x60[^\x60]+\x60'` per file, deduplicated)
+- [x] Grep-verify each extracted name against live `Theories/Bimodal/` **excluding `Boneyard/`** (`grep -rn --include='*.lean' -F "{name}" Theories/Bimodal --exclude-dir=Boneyard`); classify as `verified` (resolves, meaning matches), `stale` (resolves only in Boneyard or meaning changed), or `not-found`
+- [x] Record the verdict table in `Theories/Bimodal/typst/SYNC-MAP.md` with columns: chapter:line, claimed name, verdict, live location (file:line) or replacement
+- [x] Regenerate ground-truth counts from source and record them in SYNC-MAP: axiom constructor count and layer structure from the `inductive Axiom` block in `ProofSystem/Axioms.lean` (count the constructors; do NOT copy 42/41 from any document), sorry count per `Metalogic/` subdirectory (`grep -rc sorry` excluding Boneyard, comments filtered), frame-class list from `ProofSystem/Derivation.lean:85-93` and `Semantics/FrameConditions/` (confirm directory name from source)
+- [x] Confirm sorry-free status of Soundness (`Metalogic/Soundness.lean`, `DenseSoundness.lean`, `DiscreteSoundness.lean`) and Perpetuity P1-P6 (`Theorems/Perpetuity/`) — research says both are genuinely sorry-free; verify, do not assume
+- [x] Stamp SYNC-MAP with date and git commit hash of the Lean source it was generated against
 
 **Timing**: 1.5 hours
 
