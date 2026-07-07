@@ -5697,4 +5697,45 @@ private theorem probe_P4_b3_positions_by_eval_point {sig : MonadicSignature} {n 
         (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
   bf.bracket_implies_fChainPred M atomMap z0 z h
 
+/-! ## Task 321 (F4 resolution): Corrected k=2 carrier — nested F_i-chain sub-bracket
+    (v2 plan `plans/02_corrected-k2-carrier-fi-chain-v2.md`; blocker research
+    `reports/01_blocker-research-successor-k.md`, §3 drop-in amended design spec)
+
+Additive construction realizing route b3 (task-320 GO): the per-sub JOINT content that F1–F4
+could not carry (`σ`'s inner-witness structure relative to the honest anchor pair, which rides
+`σ.2`) is encoded as a nested sub-bracket via the FORCED `bracketEndChar_k1v` (:1940) zone-bit
+routing one arity up, read through the successor-depth fold engine `nf_eval_depth1_fold_iff`
+(:5187). Every definition below is APPENDED after the task-320 probe section; no landed asset is
+edited (`bracketEndChar_kv*`, `kvE'_body`, `kvE_pinDisjunct`, `kvE_exclConj`, `ExistProviders`,
+`BracketCarrierCorrectVPrior`, the F1–F4 records, the task-320 probes are all byte-identical). The
+whole `kvE2` layer is successor-parameterized at provider depth `j+1` (report Q1): the carrier is
+`BracketEndCharCarrierV sig (j+1+1)` — carrier depth `j+2`, the k ≥ 2 band this enriched carrier
+was always documented to serve (:5144-5148) — and at `j = 0` the header instantiates to the EXACT
+landed gate signature, closing the `two_eq` bridge by `rfl`. -/
+
+/-- **Sub-level fold-bit decoder** (task 321 Phase 2; report §2/Q2, probe 2, machine-checked GREEN).
+    For a positive interior sub `σ : NormalForm sig 1 4` (a literal successor, so `σ.2 :
+    NormalForm sig 0 5 → Bool` projects directly), `kvE_subFoldBits σ zs χ = true` iff `σ` demands
+    an inner witness `v` in zone `zs` (relative to `σ`'s own env `[u, w, x, t]`) of depth-0 monadic
+    type `χ`. This is the `nf_eval_depth1_fold_iff` (:5187) decomposition at `n = 4` over
+    `(ZoneSpec 4 × NormalForm sig 0 1)` via `nf0_assemble` (NfEFold:180) — the SAME Def-4.1 fold
+    (PDF p.5) the k1v carrier reads its `qnf.2` through (:1946), now one arity up. This is the
+    read that DISTINGUISHES the F4 pair at the bit level: on `σ'' = char[14,16,11,20]` vs honest
+    `char[14,15,10,20]`, `kvE_subFoldBits _ zXW _` differs (σ'' has an inner witness in `(14,16) ∋
+    15`; the honest sub has `(14,15) = ∅`) — the two subs share `σ.1` `nfk_projFresh` but differ at
+    `σ.2`, so the flat `charK (nfk_projFresh σ)` channel (:5467) that F4 refuted cannot see the
+    difference while this decoder can. -/
+noncomputable def kvE_subFoldBits {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
+  fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
+
+/-- The sub-fold-bit decoder via the NAMED landed destructors (`NormalForm.quant_assgn`,
+    `NormalForm.atom_assgn`) — DEFINITIONALLY equal to `kvE_subFoldBits` (probe 1b), recorded so
+    later proofs may rewrite either way. -/
+theorem kvE_subFoldBits_eq_destructors {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) :
+    kvE_subFoldBits σ =
+      fun zs χ => (NormalForm.quant_assgn σ)
+        (nf0_assemble zs χ (NormalForm.atom_assgn σ)) := rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
