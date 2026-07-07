@@ -1822,4 +1822,182 @@ with `BracketFormula.existsBounded_right` as the assembly vehicle. Chain steps 1
 change. Per the DECISION-GATE contract no partial correctness theorem and no `sorry` is
 landed for the k=1 instance. -/
 
+/-! ## Task 311 Phase 3: witness-growing carrier type + k=1 V-carrier (G6 as amended, plan v3)
+
+**G6 amendment record.** The carrier SHAPE is unchanged: the recursion carrier stays the
+two-anchor bracket characteristic with FIXED endpoints `z_0 = x`, `z_1 = t`, interior points as
+bracket WITNESSES — never an arity-1 navigated point characteristic, never an
+interior-existential-witness evaluation, never a third free anchor (G1/G2/G4 intact). ONLY the
+codomain is amended: `VecEA2 1` (one interior witness slot) → witness-growing `VecEA2 n`,
+assembled as a `VVecEA2` finite disjunction (VecEAFormula:271). Justification: the R2 = NO-GO
+refutation above (:1782-1796) — a `BracketFormula 1` cannot host the interior-positive
+`(zone, χ)` witnesses, and no monadic point type separates points `≤ x` from points in `(x, w)`.
+Rabinovich licenses for witness growth (anchors capped, witnesses not):
+
+- **Lemma 3.2(2) (PDF p.4)** caps ANCHORS (free variables) at ≤2; it says nothing capping
+  bracket witnesses.
+- The **§5 bracket notation `[α_0, …, α_n](z_0, z_1)` (PDF p.7)** carries `n` witnesses between
+  the two FIXED endpoints — witness growth is the printed shape of the bracket.
+- **Lemma 3.4 (PDF p.5)** (∨∃∀ closed under ∃): each absorbed existential JOINS the existential
+  prefix as a witness (`BracketFormula.existsBounded_right`, VecEAClosure:265, is the vehicle).
+
+Citation split (rule N1): the two-fixed-endpoint `(z_0, z_1)` framing is **Lemma 3.2(2) (p.4) +
+the §5 bracket notation (p.7)**; **Prop 3.5 (p.5)** is cited ONLY for the one-free-variable
+∃-witness→Until/Since folding mechanism. -/
+
+/-- **Witness-growing two-anchor bracket carrier type** (task 311 Phase 3; G6 as amended).
+Parallel V-variant of `BracketEndCharCarrier` (:1542, which stays untouched): the codomain is the
+finite disjunction `VVecEA2` of `Σ n, VecEA2 n` disjuncts (VecEAFormula:271), so each disjunct
+may carry `n` bracket witnesses between the two FIXED endpoints — the §5 bracket
+`[α_0, …, α_n](z_0, z_1)` (PDF p.7). Every disjunct's `holds` stays at the two-point signature
+(VecEAFormula:276), so Lemma 3.2(2)'s ≤2-anchor cap (PDF p.4) remains a TYPE-level invariant:
+witness growth is licensed, anchor growth is not (G2/G4). -/
+abbrev BracketEndCharCarrierV (sig : MonadicSignature) (k : Nat) : Type :=
+  NormalForm sig k 3 → VVecEA2
+
+/-- **Fixed-endpoint correctness for the witness-growing carrier** (task 311 Phase 3). V-variant
+of `BracketCarrierCorrect` (:1552, untouched): the carrier's `VVecEA2.holds` at the fixed anchor
+pair `(x, t)` is equivalent to the existence of a **bracket witness** `w` realizing the arity-3
+depth-`k` evaluation `nf_eval_nf M k 3 [w, x, t] qnf`. `{x, t}` are the FIXED endpoints
+(Lemma 3.2(2), PDF p.4 + §5 bracket notation, PDF p.7 — rule N1 split); `w` is a bracket witness,
+now one among the disjunct's `n` witnesses (G4, G6 as amended). -/
+def BracketCarrierCorrectV {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    {k : Nat} (carrier : BracketEndCharCarrierV sig k) : Prop :=
+  ∀ (qnf : NormalForm sig k 3) (x t : M.carrier),
+    (carrier qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M k 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+
+/-- Assemble a `BracketFormula` from an ordered left witness-type list, the middle `w` point
+type, and an ordered right witness-type list (disjunct builder factored into a named `private
+def` per Risk R6). Point types are the left list, then the `w` slot at position `lL.length`,
+then the right list — the §5 bracket `[α_0, …, α_n](z_0, z_1)` (PDF p.7) with `z_0, z_1` the
+FIXED endpoints. Segment types are `segL` on every segment left of the `w` slot (the
+sub-segments of `(x, w)`) and `segR` on every segment right of it (the sub-segments of
+`(w, t)`) — real exclusion segments, never top (G3). -/
+private def bracketFromLists (lL : List TemporalPred) (ptW : TemporalPred)
+    (lR : List TemporalPred) (segL segR : TemporalPred) :
+    BracketFormula (lL.length + 1 + lR.length) where
+  pointTypes := fun i =>
+    (lL ++ ptW :: lR)[i.val]'(by
+      simp only [List.length_append, List.length_cons]; omega)
+  segmentTypes := fun i => if i.val ≤ lL.length then segL else segR
+
+/-- **k=1 witness-growing two-anchor fold carrier** (task 311 Phase 3; G6 as amended by the
+plan-v3 amendment record above).
+
+Encodes a depth-1 arity-3 `qnf : NormalForm sig 1 3` as a `VVecEA2` at the two FIXED endpoints
+`{x, t}`: the interior-positive `(zone, χ)` fold bits become bracket WITNESSES ordered between
+the fixed endpoints, alongside `w` (rule N4: interior-positive content as bracket witnesses
+anchored between the FIXED endpoints; the type-anchored `bracketBuildLeft`/`bracketBuildRight`
+chains of `bracketEndChar_k1` (:1725-1732) were REFUTED at :1782-1796 and are REMOVED here —
+they survive only in the `epL`/`epR` exterior-zone literals, where the anchor genuinely IS the
+fixed endpoint). Citation split (rule N1): the two-fixed-endpoint framing is **Lemma 3.2(2)
+(PDF p.4) + the §5 bracket notation `[α_0, …, α_n](z_0, z_1)` (PDF p.7)**; **Prop 3.5 (PDF
+p.5)** is cited ONLY for the ∃-witness→Until/Since folding mechanism (the Since/Until literals
+in `epL`/`epR`).
+
+Construction — every read of `qnf.2` goes through `efold_of_nf1` (NfEFold:472; the Def-4.1
+monadic-atom fold, PDF p.5, read at depth 1 per the **Def 4.1 p.6 note** on iterated folds); no
+arity-4 evaluation occurs:
+
+- **Building blocks** are the Phase-1 blocks of `bracketEndChar_k1` (:1676-1739) verbatim: fold
+  bits `b`, the seven zone specs, `char`, `lit`, endpoint preds `epL`/`epR`, segment exclusions
+  `segL`/`segR`, and the two-conjunct gate (off-fiber falsity + order-conflict falsity).
+- **Witness point type at `w`**: the complete type `char (nf_y_proj qnf.1)` plus the zAtW
+  biconditional literals ONLY — no interior chains (rule N4).
+- **Disjuncts** (rule N5 — Rabinovich's ∨ over consistent order types, Def 3.1 pp.4-5): the
+  interior-positive enumerations `S_L` (zone `(x, w)`) and `S_R` (zone `(w, t)`) are
+  duplicate-free lists of complete 1-types; for each arrangement
+  `(lL, lR) ∈ S_L.permutations × S_R.permutations` there is one disjunct with
+  `lL.length + 1 + lR.length` witnesses: `epL`/`epR` at the fixed endpoints, point types = the
+  `char`s of `lL`, then the `w` point type, then the `char`s of `lR` (each interior-positive
+  pair occupies a WITNESS slot — §5 bracket, PDF p.7; its witness JOINS the existential prefix —
+  Lemma 3.4, PDF p.5), segment types `segL` left of the `w` slot and `segR` right of it. The
+  model-dependent witness ORDER is carried by the finite disjunction over arrangements, never by
+  a fixed-order assertion (rule N5); same-type multiplicity is not encoded (fold bits are
+  existential — one witness per positive pair).
+- **Gate-failure branch**: the empty disjunction `⟨[]⟩` (its `holds` is `False`) — Rabinovich's
+  empty disjunction over inconsistent order types. -/
+noncomputable def bracketEndChar_k1v {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    BracketEndCharCarrierV sig 1 :=
+  fun qnf =>
+    -- Fold bits (Def 4.1, PDF p.5): the ONLY channel through which `qnf.2` is read.
+    let b : ZoneSpec 3 → NormalForm sig 0 1 → Bool :=
+      fun zs χ => (efold_of_nf1 qnf).2 (zs, χ)
+    -- Zone-spec constants relative to env `[w, x, t]` under the bracket order `x < w < t`
+    -- (Def 3.1 ordering channel, PDF p.4), verbatim from `bracketEndChar_k1` (:1679-1692).
+    let ltz : Bool × Bool := (true, false)
+    let eqz : Bool × Bool := (false, false)
+    let gtz : Bool × Bool := (false, true)
+    let mk3 : Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 3 := fun pw px pt =>
+      Fin.cons pw (Fin.cons px (fun _ => pt))
+    let zPastX := mk3 ltz ltz ltz    -- x_1 < x  (< w < t)
+    let zAtX   := mk3 ltz eqz ltz    -- x_1 = x
+    let zXW    := mk3 ltz gtz ltz    -- x < x_1 < w
+    let zAtW   := mk3 eqz gtz ltz    -- x_1 = w
+    let zWT    := mk3 gtz gtz ltz    -- w < x_1 < t
+    let zAtT   := mk3 gtz gtz eqz    -- x_1 = t
+    let zFutT  := mk3 gtz gtz gtz    -- t < x_1
+    -- Complete depth-0 monadic point types: the TL side of the fold's E-atoms.
+    let char : NormalForm sig 0 1 → Formula := nf_depth0_char_formula atomMap h_surj
+    let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
+    -- Biconditional literal at an anchor (Prop 3.5 folding mechanism, PDF p.5).
+    let lit : Bool → Formula → Formula := fun bit f => if bit then f else f.neg
+    -- Endpoint types (the FIXED `z_0 = x`, `z_1 = t`: Lemma 3.2(2) PDF p.4 + §5 bracket PDF p.7).
+    let xType : TemporalPred := ⟨char (nf_x_proj3 qnf.1)⟩
+    let tType : TemporalPred := ⟨char (nf_t_proj3 qnf.1)⟩
+    let epL : TemporalPred :=
+      ⟨formula_conjList
+        (xType.formula
+          :: (allTypes.map fun χ => lit (b zPastX χ) (Formula.snce (char χ) Formula.top))
+          ++ (allTypes.map fun χ => lit (b zAtX χ) (char χ)))⟩
+    let epR : TemporalPred :=
+      ⟨formula_conjList
+        (tType.formula
+          :: (allTypes.map fun χ => lit (b zAtT χ) (char χ))
+          ++ (allTypes.map fun χ => lit (b zFutT χ) (Formula.untl (char χ) Formula.top)))⟩
+    -- Segment types: universal exclusion of the interior-zone NEGATIVE bits.
+    let segL : TemporalPred :=
+      ⟨formula_conjList (allTypes.map fun χ =>
+        if b zXW χ then Formula.top else (char χ).neg)⟩
+    let segR : TemporalPred :=
+      ⟨formula_conjList (allTypes.map fun χ =>
+        if b zWT χ then Formula.top else (char χ).neg)⟩
+    -- Witness point type at `w`: complete type + equality-zone bits ONLY (rule N4 — the
+    -- interior-positive chains of :1725-1732 are the refuted device and are REMOVED; the
+    -- interior-positive content rides the witness slots below instead).
+    let ptW : TemporalPred :=
+      ⟨formula_conjList
+        (char (nf_y_proj qnf.1)
+          :: (allTypes.map fun χ => lit (b zAtW χ) (char χ)))⟩
+    -- Consistency of a zone spec with the bracket order `x < w < t` (the seven real zones).
+    let consistent : ZoneSpec 3 → Prop := fun zs =>
+      zs = zPastX ∨ zs = zAtX ∨ zs = zXW ∨ zs = zAtW ∨ zs = zWT ∨ zs = zAtT ∨ zs = zFutT
+    -- The gate Prop (off-fiber honesty + order-conflict falsity), verbatim from :1737-1739.
+    let gate : Prop :=
+      (∀ sub : NormalForm sig 0 4, nf0_dropFresh sub ≠ qnf.1 → qnf.2 sub = false) ∧
+      (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), ¬ consistent zs → b zs χ = false)
+    -- Interior-positive enumerations (duplicate-free: `Finset.univ.toList`).
+    let S_L : List (NormalForm sig 0 1) := allTypes.filter (fun χ => b zXW χ)
+    let S_R : List (NormalForm sig 0 1) := allTypes.filter (fun χ => b zWT χ)
+    let charP : NormalForm sig 0 1 → TemporalPred := fun χ => ⟨char χ⟩
+    -- One disjunct per arrangement (rule N5): interior-positive pairs occupy WITNESS slots
+    -- ordered between the fixed endpoints (§5 bracket, PDF p.7; Lemma 3.4, PDF p.5).
+    let mkDisjunct : List (NormalForm sig 0 1) → List (NormalForm sig 0 1) → Σ n, VecEA2 n :=
+      fun lL lR =>
+        ⟨(lL.map charP).length + 1 + (lR.map charP).length,
+          { endpointLeft := epL
+            endpointRight := epR
+            bracket := bracketFromLists (lL.map charP) ptW (lR.map charP) segL segR }⟩
+    @dite _ gate (Classical.dec gate)
+      (fun _ =>
+        { disjuncts :=
+            S_L.permutations.flatMap fun lL =>
+              S_R.permutations.map fun lR => mkDisjunct lL lR })
+      (fun _ => { disjuncts := [] })
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

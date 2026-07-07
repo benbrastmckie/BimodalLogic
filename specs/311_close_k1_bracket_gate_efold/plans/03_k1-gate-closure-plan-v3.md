@@ -410,13 +410,13 @@ historical record; do not re-execute; do not edit its landed artifact.)*
 - **Completed:** 2026-07-06 (verdict resolved NO-GO; summary at
   `summaries/01_k1-gate-closure-summary.md`)
 
-### Phase 3: Witness-growing carrier type + k=1 V-carrier `bracketEndChar_k1v` [NOT STARTED]
+### Phase 3: Witness-growing carrier type + k=1 V-carrier `bracketEndChar_k1v` [COMPLETED]
 
 - **Goal:** Land the amended-G6 carrier type, its correctness predicate, and the k=1 instance
   definition (typechecks, sorry-free), reusing the Phase-1 building blocks with the refuted chain
   device removed.
 - **Tasks:**
-  - [ ] Define the V-variant carrier type and correctness predicate (parallel to :1542/:1552,
+  - [x] Define the V-variant carrier type and correctness predicate (parallel to :1542/:1552,
         which stay untouched):
         `abbrev BracketEndCharCarrierV (sig : MonadicSignature) (k : Nat) : Type :=
         NormalForm sig k 3 → VVecEA2` and
@@ -428,7 +428,9 @@ historical record; do not re-execute; do not edit its landed artifact.)*
         codomain `VecEA2 1` → witness-growing `VecEA2 n` via `VVecEA2`; refutation justification
         :1782-1796; licenses Lemma 3.2(2) p.4 / §5 bracket p.7 / Lemma 3.4 p.5) with N1 split
         citations.
-  - [ ] Define `noncomputable def bracketEndChar_k1v … : BracketEndCharCarrierV sig 1`:
+        *(landed: `BracketEndCharCarrierV` :1855, `BracketCarrierCorrectV` :1864; G6-amendment
+        record in the module doc-comment :1825-1846)*
+  - [x] Define `noncomputable def bracketEndChar_k1v … : BracketEndCharCarrierV sig 1`:
         - Reuse the Phase-1 building blocks verbatim (:1676-1739): fold bits
           `b zs χ := (efold_of_nf1 qnf).2 (zs, χ)`, the seven zone specs, `char`, `lit`,
           endpoint preds `epL`/`epR` (incl. the zPastX/zFutT Since/Until literals — N4-valid there:
@@ -448,13 +450,24 @@ historical record; do not re-execute; do not edit its landed artifact.)*
           right of it (real exclusion segments — G3-compliant, never top).
         - Gate-failure branch: the empty-disjunct `VVecEA2 ⟨[]⟩` (its `holds` is `False` —
           Rabinovich's empty disjunction over inconsistent order types).
-  - [ ] Doc-comment with N1 split + N4 flag ("interior-positive content as bracket witnesses
+        *(landed at :1923-2001; disjunct builder factored into `private def bracketFromLists`
+        :1879 per the pre-authorized Risk R6 mitigation — deviation: altered, the point-type/
+        segment-type assembly lives in the named private def rather than inline, so Phases 4-5
+        can reason about it via its equations)*
+  - [x] Doc-comment with N1 split + N4 flag ("interior-positive content as bracket witnesses
         anchored between the FIXED endpoints; type-anchored chains refuted at :1782-1796") + N5
         arrangement-disjunction citation (∨ over consistent order types).
-  - [ ] Verify: `lake build` GREEN full tree; no `sorry`; no vacuous definition; `lean_verify
+  - [x] Verify: `lake build` GREEN full tree; no `sorry`; no vacuous definition; `lean_verify
         bracketEndChar_k1v` = `[propext, Classical.choice, Quot.sound]`; `git diff` additive-only
         after :1823; `bracketEndChar_k1` and both NO-GO records byte-identical; grep confirms no
         new `bracketBuildLeft`/`bracketBuildRight` use outside `epL`/`epR`.
+        *(full tree GREEN, 1705 jobs; diff = 178 insertions, 0 deletions (byte-identical preserved
+        assets by construction); 0 new sorries — scoped census hits only the pre-existing
+        KampPrior:351/354, EANegation:1090/1249 (+ Boneyard/TruthLemma, out of scope); the only
+        `bracketBuild` match in new code is doc-comment prose (the N4 refutation flag) — zero code
+        uses; `lean_verify`: `bracketEndChar_k1v`, `BracketCarrierCorrectV` =
+        `[propext, Classical.choice, Quot.sound]`, `bracketFromLists` = `[propext, Quot.sound]`
+        (subset); citation markers "p.7" x9, "p.6 note" x1, "fixed endpoint" x11 in the diff)*
 - **Estimated output:** ~120-200 lines (two small defs + one carrier def + doc-comments).
 - **Bounded-unit test:** term constructions against known target types; fixed attempt surface;
   done-criterion checkable in isolation.
@@ -463,6 +476,7 @@ historical record; do not re-execute; do not edit its landed artifact.)*
   `task 311 phase 3: witness-growing V-carrier bracketEndChar_k1v`.
 - **Timing:** ~1.5-2 hours (one agent run).
 - **Depends on:** 2
+- **Completed:** 2026-07-06
 
 ### Phase 4: Soundness direction (LHS→RHS) for the V-carrier [NOT STARTED]
 
