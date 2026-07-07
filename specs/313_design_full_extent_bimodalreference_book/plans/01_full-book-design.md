@@ -405,31 +405,31 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2 hours.
 - **Depends on:** 4, 5.
 
-### Phase 7: Part II Chapter — Frame Classes and Extensions [NOT STARTED]
+### Phase 7: Part II Chapter — Frame Classes and Extensions [COMPLETED]
 
 - **Goal:** The D2-deferred frame-class chapter exists: DF/DN/CO correspondence, the
   frame-class lattice as implemented, Next/Previous as derived, and the conservative
   extension theorem stated — ✓-class core with explicitly marked ○ islands.
 - **Territory:** `chapters/p2-frame-classes.typ` only.
 - **Tasks:**
-  - [ ] Frame classes as implemented: `FrameClass` (Base/Dense/Discrete, partial order),
+  - [x] Frame classes as implemented: `FrameClass` (Base/Dense/Discrete, partial order),
         `minFrameClass` assignment (Base 37 / Discrete 3 / Dense 2 from generated counts),
         `FrameConditions/` semantics (FrameClass.lean, Validity.lean, Soundness.lean,
         Compatibility.lean) — all ✓ with resolving anchors.
-  - [ ] DF/DN/CO axioms and frame correspondence: paper §3.3 (`possible_worlds.tex:1162-1256`)
+  - [x] DF/DN/CO axioms and frame correspondence: paper §3.3 (`possible_worlds.tex:1162-1256`)
         + `app:discrete`/`app:dense`/`app:complete`; per-result status marks — Dense/Discrete
         formalized ✓, completeness-class TM_c/TM_dc and unformalized correspondences ○ with
         paper citations (A#8, A#13: per-item status verified against Lean during this phase,
         not assumed).
-  - [ ] Next/Previous as derived operators (X φ := ⊥ U φ over the strict Until/Since basis;
+  - [x] Next/Previous as derived operators (X φ := ⊥ U φ over the strict Until/Since basis;
         `thm:BLplus-NextPrevious` cited ○; definability-in-Lean noted ✓ where the derived
         forms exist in `Syntax/Formula.lean` — verify, do not assume).
-  - [ ] Conservative extension: state the theorem the paper calls `thm:ConservativeExtension`
+  - [x] Conservative extension: state the theorem the paper calls `thm:ConservativeExtension`
         with its Lean counterpart from `Metalogic/ConservativeExtension/` (0 sorries per
         SYNC-MAP) — resolve the exact declaration name from source before writing it.
-  - [ ] Chapter-header dependency preamble (assumes ch. 01-03) and `#sync-banner(✓, ...)`
+  - [x] Chapter-header dependency preamble (assumes ch. 01-03) and `#sync-banner(✓, ...)`
         with inline ○ marks.
-  - [ ] Verify: compile green; sync-check green (every backticked name resolves).
+  - [x] Verify: compile green; sync-check green (every backticked name resolves).
 - **Estimated output:** ~300 lines.
 - **Done when:** chapter complete, per-result status verified against live Lean, checks green.
 - **Timing:** 3 hours.
