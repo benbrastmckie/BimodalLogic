@@ -6490,4 +6490,101 @@ theorem kvE_subBracket2_fold_zWT {sig : MonadicSignature}
       hbit h
   exact ⟨w, u, hz0w, hwu, huz1, hw, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
 
+/-! ### Phase 4 — Soundness: off-fiber falsity gate + standalone assembly (task 324)
+
+The standalone soundness lemma `kvE_subBracket2_sound`, assembled against `nf_eval_nf M 1 4` via
+`nf_eval_depth1_fold_iff` (:5187 — the inside-out Def-4.1-p.6 fold, Prop 4.3 p.6, rule N2). It is
+STANDALONE: the outer gate-shaped hypothesis (analogous to `kvE_gate` :5015) is an EXPLICIT
+hypothesis, NEVER wired to the real outer gate (Amendment F3: no provider-side pinning; the
+anchor positions ARE the bracket witnesses, quantified by the temporal semantics).
+
+Division of labour (the honest content split, per the redesign's Correction-1 thesis):
+
+* The **bracket construction** discharges the BELOW-ANCHOR (`zXU`) existence witnesses — the
+  witnesses the landed `kvE_subChain` :5807 (upward-only, anchored at `u`) structurally could not
+  express. Given a positive `zXU` fold bit, `kvE_subBracket2_extract`'s below-clause supplies a
+  witness strictly BELOW the anchor, converted to an honest `nf_eval_nf M 0 1` via the
+  `nfPred_correct` bridge (NfToVecEA:69, the k1v `hchar` :2370) and placed in zone `zXU` relative
+  to the honest env `[a, w, x, t]`. Rabinovich Def 3.1 monotone enumeration (PDF p.4), §5 bracket
+  (PDF p.7).
+
+* The **explicit gate hypothesis** carries the remaining honest fold conditions the redesigned
+  bracket does not itself encode (it has no endpoint char-formula conjuncts and conflates the two
+  above-anchor zones): the atom layer, the off-fiber falsity clause, the forward zone honesty for
+  every zone, and the backward direction for every zone EXCEPT `zXU`. This is the analog of
+  `kvE_gate`'s per-sub off-fiber/consistency honesty, taken as an explicit standalone hypothesis
+  (Amendment F3). It does NOT contain the `zXU` existence witnesses — those are the bracket's
+  signature contribution — so the construction is genuinely load-bearing. -/
+
+/-- **Standalone soundness of the redesigned sub-bracket** (task 324 Phase 4). Whenever the
+    anchor-at-`x` bracket `kvE_subBracket2` holds on the FIXED endpoints `(x, t)`, and the explicit
+    outer gate-shaped hypothesis `hgate` supplies the honest fold conditions it does not itself
+    encode, there is a depth-1 witness `x1` realizing the arity-4 evaluation `nf_eval_nf M 1 4` at
+    the honest env `[x1, w, x, t]`. STANDALONE: `hgate` is an explicit hypothesis, never wired to
+    the real outer gate (Amendment F3 — no provider pinning; the anchor is the bracket's own
+    witness). The bracket's OWN contribution is the below-anchor (`zXU`) existence witnesses
+    (Correction 1: the below-anchor witness the landed `kvE_subChain` :5807 could not express).
+    Assembled via `nf_eval_depth1_fold_iff` (:5187), reusing the `bracketEndChar_k1v_sound` :2338
+    template shape one arity up. Rabinovich Def 3.1 (md:61-74), Prop 3.5 (md:87-94), Cor 5.4
+    (md:154-157). -/
+theorem kvE_subBracket2_sound {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h : (kvE_subBracket2 (nf_depth0_char_formula atomMap h_surj) charK σ).2.holds
+        M atomMap x t)
+    (hgate : ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    ∃ x1 : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  -- Extract the anchor `a` (§5 bracket middle witness, PDF p.7) and the below-anchor witness
+  -- clause from the redesigned bracket (Def 3.1 monotone enumeration, PDF p.4).
+  obtain ⟨a, hxa, hat, hanchor, hbelow, _habove⟩ :=
+    kvE_subBracket2_extract (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap x t h
+  -- Feed the anchor to the explicit gate hypothesis (Amendment F3: no provider pinning).
+  obtain ⟨haw, hwt, h_atom, h_off, h_fwd, h_bwd⟩ := hgate a hxa hat hanchor
+  refine ⟨a, ?_⟩
+  -- Assemble the depth-1 evaluation from the honest fold conditions (Def 4.1 p.6 note; the
+  -- inside-out fold of `nf_eval_depth1_fold_iff` :5187, Prop 4.3 p.6 — rule N2).
+  rw [nf_eval_depth1_fold_iff]
+  refine ⟨h_atom, ?_, h_off⟩
+  -- Zone matching: forward from the gate; backward from the gate for every zone EXCEPT the
+  -- below-anchor `zXU`, whose witnesses are supplied by the bracket (Correction 1).
+  intro zs χ
+  refine ⟨fun hex => h_fwd zs χ hex, ?_⟩
+  intro hbit
+  by_cases hzs : zs = kvE_sub2_zXU
+  · -- Below-anchor zone `zXU = (x < v < a)`: the bracket's own below-witness clause supplies a
+    -- witness strictly below the anchor `a` (Def 3.1, PDF p.4; the redesign's signature witness).
+    subst hzs
+    obtain ⟨u, hxu, hua, hu⟩ := hbelow χ hbit
+    refine ⟨u, ?_, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
+    -- `u` lies in `zXU` relative to env `[a, w, x, t]` under honest order `x < u < a < w < t`.
+    have huw : u < w := hua.trans haw
+    have hut : u < t := huw.trans hwt
+    intro i
+    match i with
+    | ⟨0, _⟩ => exact ⟨iff_of_true hua rfl, iff_of_false (lt_asymm hua) (by decide +revert)⟩
+    | ⟨1, _⟩ => exact ⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by decide +revert)⟩
+    | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxu) (by decide +revert), iff_of_true hxu rfl⟩
+    | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
+  · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
+    exact h_bwd zs χ hzs hbit
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

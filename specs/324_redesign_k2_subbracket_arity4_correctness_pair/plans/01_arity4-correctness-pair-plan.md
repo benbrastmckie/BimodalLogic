@@ -292,7 +292,7 @@ logical parallelism; sequential execution is the safe default.
 - **Commit point:** `task 324 phase 3: soundness atom-layer recovery + interior-fold`
 - **Depends on:** 2
 
-### Phase 4: Soundness — off-fiber falsity + assemble `kvE_subBracket2_sound` [NOT STARTED]
+### Phase 4: Soundness — off-fiber falsity + assemble `kvE_subBracket2_sound` [COMPLETED]
 - **Goal:** Handle off-fiber falsity via an explicit gate-shaped hypothesis and assemble the full
   standalone soundness lemma.
 - **Tasks:**
