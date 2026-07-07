@@ -7763,4 +7763,391 @@ theorem kvE_subBracket2V_nonvacuous {sig : MonadicSignature}
   case isFalse hg =>
     exact absurd hgate hg
 
+/-- **Standalone completeness of the redesigned `VVecEA2` sub-bracket** (task 325 v2 Phase 3; the
+    arity-4 three-region analog of `bracketEndChar_k1v_complete` :2979 — the direction that was
+    BLOCKED on both prior carriers). From an honest depth-1 realization at the anchor env
+    `[x1, w, x, t]` (order `x < x1 < w < t` supplied by the three σ.1 order bits), the corrected
+    NINE-zone `VVecEA2` arrangement disjunction holds at the FIXED endpoints `(x, t)`. Mechanism:
+    (a) the honest σ discharges the carrier gate via `kvE_subBracket2V_gate_holds_of_honest`
+    (Phase 1), so the disjuncts list is the non-empty `flatMap` (never the empty branch);
+    (b) `kvE_subBracket2_complete_extract` (SURVIVE, :6683) supplies the per-region monotone inner
+    witnesses; (c) `k1v_sorted_realization3` (:6947) selects the model-sorted arrangement disjunct;
+    (d) `k1v_bracket_construct3` (:7023) assembles the three-region bracket, discharging the three
+    per-region segment types `segXU`/`segUW`/`segWT` (each satisfiable because every point of its
+    region is genuinely zone-positive there — the exact property the refuted constant `segExcl`
+    violated); (e) the folded witness point types `ptX1`/`ptW` are discharged at `x1`/`w`. STANDALONE:
+    like soundness's `hgate`, the `charK`-realization of the fresh witness `x1` is an explicit
+    hypothesis `hcharK` (never wired to the real outer gate; Amendment F3 — no provider pinning).
+    Rabinovich Lemma 5.3 (md:137-152, per-region segment types + disjunction-over-arrangements),
+    Cor 5.4 (md:154-157, per-region F_i chain), Prop 4.2 (md:100-101), Def 3.1 (md:61-74). -/
+theorem kvE_subBracket2V_complete {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h_xx1 : σ.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_x1w : σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_wt : σ.1 (.order ⟨1, by omega⟩ ⟨3, by omega⟩ (by decide)) = true)
+    (hcharK : ∀ a : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a)
+    (h : ∃ x1 : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (kvE_subBracket2V (nf_depth0_char_formula atomMap h_surj) charK σ).holds M atomMap x t := by
+  obtain ⟨x1, hx1⟩ := h
+  -- Fold decomposition of the honest depth-1 realization (Prop 4.2, PDF p.6; rule N2).
+  obtain ⟨h_atom, h_zone, h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hx1
+  -- Recover the honest order `x < x1 < w < t` from the atom layer + the three σ.1 order bits.
+  have hxx1 : x < x1 := by
+    have h1 := h_atom (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1; exact h1.mpr h_xx1
+  have hx1w : x1 < w := by
+    have h1 := h_atom (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1; exact h1.mpr h_x1w
+  have hwt : w < t := by
+    have h1 := h_atom (.order ⟨1, by omega⟩ ⟨3, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1; exact h1.mpr h_wt
+  have hxw : x < w := hxx1.trans hx1w
+  have hxt : x < t := hxw.trans hwt
+  have hx1t : x1 < t := hx1w.trans hwt
+  -- Complete-type correctness bridge (charBase χ at u ↔ arity-1 depth-0 evaluation).
+  have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+    fun χ' u => nfPred_correct M atomMap h_surj χ' u
+  -- Coordinate-projection point evaluations of the two fixed endpoints and the witness `w`
+  -- (Def 3.1 ordering channel; the arity-4 analog of `k1v_extract_x_nf3`/`_t_nf3`/`_y_nf`).
+  have h_x_nf : nf_eval_nf M 0 1 (fun _ => x)
+      (fun a => match a with
+        | .pred p _ => σ.1 (.pred p (2 : Fin 4))
+        | .order i j h => absurd (Subsingleton.elim i j) h) := by
+    intro a
+    match a with
+    | .pred p _ =>
+      have := h_atom (.pred p (2 : Fin 4))
+      simp only [atom_eval, Fin.cons] at this ⊢; exact this
+    | .order i j h => exact absurd (Subsingleton.elim i j) h
+  have h_t_nf : nf_eval_nf M 0 1 (fun _ => t)
+      (fun a => match a with
+        | .pred p _ => σ.1 (.pred p (3 : Fin 4))
+        | .order i j h => absurd (Subsingleton.elim i j) h) := by
+    intro a
+    match a with
+    | .pred p _ =>
+      have := h_atom (.pred p (3 : Fin 4))
+      simp only [atom_eval, Fin.cons] at this ⊢; exact this
+    | .order i j h => exact absurd (Subsingleton.elim i j) h
+  have h_w_nf : nf_eval_nf M 0 1 (fun _ => w)
+      (fun a => match a with
+        | .pred p _ => σ.1 (.pred p (1 : Fin 4))
+        | .order i j h => absurd (Subsingleton.elim i j) h) := by
+    intro a
+    match a with
+    | .pred p _ =>
+      have := h_atom (.pred p (1 : Fin 4))
+      simp only [atom_eval, Fin.cons] at this ⊢; exact this
+    | .order i j h => exact absurd (Subsingleton.elim i j) h
+  -- Zone-membership constructors over the anchor env `[x1, w, x, t]` (Def 3.1, PDF p.4).
+  have hzPastX : ∀ v, v < x →
+      zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
+        (Fin.cons (true, false) (Fin.cons (true, false)
+          (Fin.cons (true, false) (fun _ => (true, false))))) v := by
+    intro v hvx
+    have hvx1 : v < x1 := hvx.trans hxx1
+    have hvw : v < w := hvx1.trans hx1w
+    have hvt : v < t := hvw.trans hwt
+    rw [kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hvx1 rfl, iff_of_false (lt_asymm hvx1) (by simp)⟩,
+      ⟨iff_of_true hvw rfl, iff_of_false (lt_asymm hvw) (by simp)⟩,
+      ⟨iff_of_true hvx rfl, iff_of_false (lt_asymm hvx) (by simp)⟩,
+      ⟨iff_of_true hvt rfl, iff_of_false (lt_asymm hvt) (by simp)⟩⟩
+  have hzAtX : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
+        (Fin.cons (true, false) (Fin.cons (true, false)
+          (Fin.cons (false, false) (fun _ => (true, false))))) x := by
+    rw [kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hxx1 rfl, iff_of_false (lt_asymm hxx1) (by simp)⟩,
+      ⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by simp)⟩,
+      ⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
+      ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
+  have hzXU : ∀ u, x < u → u < x1 →
+      zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zXU u := by
+    intro u hxu hux1
+    have huw : u < w := hux1.trans hx1w
+    have hut : u < t := huw.trans hwt
+    rw [show kvE_sub2_zXU = Fin.cons (true, false) (Fin.cons (true, false)
+        (Fin.cons (false, true) (fun _ => (true, false)))) from rfl, kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hux1 rfl, iff_of_false (lt_asymm hux1) (by simp)⟩,
+      ⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtX1 : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
+        (Fin.cons (false, false) (Fin.cons (true, false)
+          (Fin.cons (false, true) (fun _ => (true, false))))) x1 := by
+    rw [kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_irrefl x1) (by simp), iff_of_false (lt_irrefl x1) (by simp)⟩,
+      ⟨iff_of_true hx1w rfl, iff_of_false (lt_asymm hx1w) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxx1) (by simp), iff_of_true hxx1 rfl⟩,
+      ⟨iff_of_true hx1t rfl, iff_of_false (lt_asymm hx1t) (by simp)⟩⟩
+  have hzUW : ∀ u, x1 < u → u < w →
+      zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zUW u := by
+    intro u hx1u huw
+    have hxu : x < u := hxx1.trans hx1u
+    have hut : u < t := huw.trans hwt
+    rw [show kvE_sub2_zUW = Fin.cons (false, true) (Fin.cons (true, false)
+        (Fin.cons (false, true) (fun _ => (true, false)))) from rfl, kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hx1u) (by simp), iff_of_true hx1u rfl⟩,
+      ⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtW : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
+        (Fin.cons (false, true) (Fin.cons (false, false)
+          (Fin.cons (false, true) (fun _ => (true, false))))) w := by
+    rw [kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hx1w) (by simp), iff_of_true hx1w rfl⟩,
+      ⟨iff_of_false (lt_irrefl w) (by simp), iff_of_false (lt_irrefl w) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxw) (by simp), iff_of_true hxw rfl⟩,
+      ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by simp)⟩⟩
+  have hzWT : ∀ u, w < u → u < t →
+      zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zWT u := by
+    intro u hwu hut
+    have hx1u : x1 < u := hx1w.trans hwu
+    have hxu : x < u := hxw.trans hwu
+    rw [show kvE_sub2_zWT = Fin.cons (false, true) (Fin.cons (false, true)
+        (Fin.cons (false, true) (fun _ => (true, false)))) from rfl, kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hx1u) (by simp), iff_of_true hx1u rfl⟩,
+      ⟨iff_of_false (lt_asymm hwu) (by simp), iff_of_true hwu rfl⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtT : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
+        (Fin.cons (false, true) (Fin.cons (false, true)
+          (Fin.cons (false, true) (fun _ => (false, false))))) t := by
+    rw [kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hx1t) (by simp), iff_of_true hx1t rfl⟩,
+      ⟨iff_of_false (lt_asymm hwt) (by simp), iff_of_true hwt rfl⟩,
+      ⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
+      ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+  have hzFutT : ∀ v, t < v →
+      zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))) : Fin 4 → M.carrier)
+        (Fin.cons (false, true) (Fin.cons (false, true)
+          (Fin.cons (false, true) (fun _ => (false, true))))) v := by
+    intro v htv
+    have hwv : w < v := hwt.trans htv
+    have hx1v : x1 < v := hx1t.trans htv
+    have hxv : x < v := hxt.trans htv
+    rw [kvE_sub2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hx1v) (by simp), iff_of_true hx1v rfl⟩,
+      ⟨iff_of_false (lt_asymm hwv) (by simp), iff_of_true hwv rfl⟩,
+      ⟨iff_of_false (lt_asymm hxv) (by simp), iff_of_true hxv rfl⟩,
+      ⟨iff_of_false (lt_asymm htv) (by simp), iff_of_true htv rfl⟩⟩
+  -- Gate for the honest σ (Phase-1 non-vacuity result): the branch selector for the disjuncts.
+  have hgate := kvE_subBracket2V_gate_holds_of_honest σ M x1 w x t hxx1 hx1w hwt hx1
+  -- Per-region monotone inner witnesses (SURVIVE `kvE_subBracket2_complete_extract` :6683).
+  obtain ⟨_hatom2, _hoff2, _hfwd2, hbelowXU, hbelowUW, hbelowWT⟩ :=
+    kvE_subBracket2_complete_extract σ M x1 w x t hx1
+  -- The three region-positive enumerations (duplicate-free `Finset.univ.toList` filters).
+  set S_XU : List (NormalForm sig 0 1) :=
+    (Finset.univ.toList).filter (fun χ => σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1)) with hSXU
+  set S_UW : List (NormalForm sig 0 1) :=
+    (Finset.univ.toList).filter (fun χ => σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1)) with hSUW
+  set S_WT : List (NormalForm sig 0 1) :=
+    (Finset.univ.toList).filter (fun χ => σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1)) with hSWT
+  have hrealXU : ∀ χ ∈ S_XU, ∃ u, x < u ∧ u < x1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ hχ => hbelowXU χ (List.mem_filter.mp hχ).2
+  have hrealUW : ∀ χ ∈ S_UW, ∃ u, x1 < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ hχ => hbelowUW χ (List.mem_filter.mp hχ).2
+  have hrealWT : ∀ χ ∈ S_WT, ∃ u, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ hχ => hbelowWT χ (List.mem_filter.mp hχ).2
+  -- Sorted arrangement selection across the three regions (SURVIVE `k1v_sorted_realization3`).
+  obtain ⟨psXU, psUW, psWT, hpermXU, hpermUW, hpermWT, hsortFull, hpropsXU, hpropsUW, hpropsWT⟩ :=
+    k1v_sorted_realization3 M x x1 w t hxx1 hx1w hwt S_XU S_UW S_WT
+      ((Finset.nodup_toList _).filter _) ((Finset.nodup_toList _).filter _)
+      ((Finset.nodup_toList _).filter _) hrealXU hrealUW hrealWT
+  -- Enter the carrier: gate branch, then the (psXU, psUW, psWT) arrangement disjunct (rule N5).
+  simp only [kvE_subBracket2V, VVecEA2.holds]
+  split
+  case isFalse hg => exact absurd hgate hg
+  case isTrue hg =>
+  refine ⟨_, List.mem_flatMap.mpr ⟨psXU.map Prod.fst, List.mem_permutations.mpr hpermXU,
+    List.mem_flatMap.mpr ⟨psUW.map Prod.fst, List.mem_permutations.mpr hpermUW,
+      List.mem_map.mpr ⟨psWT.map Prod.fst, List.mem_permutations.mpr hpermWT, rfl⟩⟩⟩, ?_⟩
+  refine ⟨?_, ?_, ?_⟩
+  · -- Left endpoint predicate at the FIXED `x` (exterior Since + at-x literals; Prop 3.5 p.5).
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hchar _ x).mpr h_x_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        split
+        next hb =>
+          obtain ⟨v, hzv, hev⟩ := (h_zone _ χ).mpr hb
+          obtain ⟨⟨_, _⟩, _, ⟨hvx, _⟩, _⟩ := (kvE_sub2_zoneHolds_cons_iff M x1 w x t v _ _ _ _).mp hzv
+          exact ⟨v, hvx.mpr rfl, (hchar χ v).mpr hev, fun r _ _ hfa => hfa⟩
+        next hb =>
+          rintro ⟨s, hsx, hsχ, -⟩
+          have hbit := (h_zone _ χ).mp ⟨s, hzPastX s hsx, (hchar χ s).mp hsχ⟩
+          exact absurd hbit hb
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      split
+      next hb =>
+        obtain ⟨v, hzv, hev⟩ := (h_zone _ χ).mpr hb
+        obtain ⟨_, _, ⟨hvx, hxv⟩, _⟩ := (kvE_sub2_zoneHolds_cons_iff M x1 w x t v _ _ _ _).mp hzv
+        have hveq : v = x := le_antisymm (not_lt.mp (k1v_not_of_iff_false hxv))
+          (not_lt.mp (k1v_not_of_iff_false hvx))
+        exact (hchar χ x).mpr (hveq ▸ hev)
+      next hb =>
+        intro hch
+        have hbit := (h_zone _ χ).mp ⟨x, hzAtX, (hchar χ x).mp hch⟩
+        exact absurd hbit hb
+  · -- Right endpoint predicate at the FIXED `t` (at-t + exterior Until literals; Prop 3.5 p.5).
+    simp only [TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hchar _ t).mpr h_t_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        split
+        next hb =>
+          obtain ⟨v, hzv, hev⟩ := (h_zone _ χ).mpr hb
+          obtain ⟨_, _, _, ⟨hvt, htv⟩⟩ := (kvE_sub2_zoneHolds_cons_iff M x1 w x t v _ _ _ _).mp hzv
+          have hveq : v = t := le_antisymm (not_lt.mp (k1v_not_of_iff_false htv))
+            (not_lt.mp (k1v_not_of_iff_false hvt))
+          exact (hchar χ t).mpr (hveq ▸ hev)
+        next hb =>
+          intro hch
+          have hbit := (h_zone _ χ).mp ⟨t, hzAtT, (hchar χ t).mp hch⟩
+          exact absurd hbit hb
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      split
+      next hb =>
+        obtain ⟨v, hzv, hev⟩ := (h_zone _ χ).mpr hb
+        obtain ⟨_, _, _, ⟨_, htv⟩⟩ := (kvE_sub2_zoneHolds_cons_iff M x1 w x t v _ _ _ _).mp hzv
+        exact ⟨v, htv.mpr rfl, (hchar χ v).mpr hev, fun r _ _ hfa => hfa⟩
+      next hb =>
+        rintro ⟨s, hts, hsχ, -⟩
+        have hbit := (h_zone _ χ).mp ⟨s, hzFutT s hts, (hchar χ s).mp hsχ⟩
+        exact absurd hbit hb
+  · -- The three-region bracket, assembled from the sorted realizations (SURVIVE construct3).
+    refine k1v_bracket_construct3 M atomMap _ _ _ _ _ _ _ _ x x1 w t hxx1 hx1w hwt
+      (psXU.map Prod.snd) (psUW.map Prod.snd) (psWT.map Prod.snd)
+      (by simp) (by simp) (by simp) hsortFull ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
+    · intro u hu
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+      exact (hpropsXU p hp).1
+    · intro u hu
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+      exact (hpropsUW p hp).1
+    · intro u hu
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+      exact (hpropsWT p hp).1
+    · -- `ptX1` witness point at `x1`: charK head (via `hcharK`) + folded `zAtX1` literals.
+      simp only [TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_cons.mp hf with rfl | hf
+      · exact hcharK x1 hx1
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        split
+        next hb =>
+          obtain ⟨v, hzv, hev⟩ := (h_zone _ χ).mpr hb
+          obtain ⟨⟨hvx1, hx1v⟩, _, _, _⟩ := (kvE_sub2_zoneHolds_cons_iff M x1 w x t v _ _ _ _).mp hzv
+          have hveq : v = x1 := le_antisymm (not_lt.mp (k1v_not_of_iff_false hx1v))
+            (not_lt.mp (k1v_not_of_iff_false hvx1))
+          exact (hchar χ x1).mpr (hveq ▸ hev)
+        next hb =>
+          intro hch
+          have hbit := (h_zone _ χ).mp ⟨x1, hzAtX1, (hchar χ x1).mp hch⟩
+          exact absurd hbit hb
+    · -- `ptW` witness point at `w`: charBase head (`h_w_nf`) + folded `zAtW` literals.
+      simp only [TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hchar _ w).mpr h_w_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        split
+        next hb =>
+          obtain ⟨v, hzv, hev⟩ := (h_zone _ χ).mpr hb
+          obtain ⟨_, ⟨hvw, hwv⟩, _, _⟩ := (kvE_sub2_zoneHolds_cons_iff M x1 w x t v _ _ _ _).mp hzv
+          have hveq : v = w := le_antisymm (not_lt.mp (k1v_not_of_iff_false hwv))
+            (not_lt.mp (k1v_not_of_iff_false hvw))
+          exact (hchar χ w).mpr (hveq ▸ hev)
+        next hb =>
+          intro hch
+          have hbit := (h_zone _ χ).mp ⟨w, hzAtW, (hchar χ w).mp hch⟩
+          exact absurd hbit hb
+    · -- Per-index `zXU` point types on the `psXU` witnesses.
+      intro i hi
+      have hi' : i < psXU.length := by simpa using hi
+      have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+          (psXU.map Prod.fst))[i]'hi =
+          ⟨nf_depth0_char_formula atomMap h_surj ((psXU[i]'hi').1)⟩ := by
+        simp only [List.getElem_map]
+      have h2 : (psXU.map Prod.snd)[i]'(by simpa using hi') = (psXU[i]'hi').2 := by
+        simp only [List.getElem_map]
+      rw [h1, h2]
+      exact (hchar _ _).mpr (hpropsXU _ (List.getElem_mem _)).2
+    · -- Per-index `zUW` point types on the `psUW` witnesses.
+      intro i hi
+      have hi' : i < psUW.length := by simpa using hi
+      have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+          (psUW.map Prod.fst))[i]'hi =
+          ⟨nf_depth0_char_formula atomMap h_surj ((psUW[i]'hi').1)⟩ := by
+        simp only [List.getElem_map]
+      have h2 : (psUW.map Prod.snd)[i]'(by simpa using hi') = (psUW[i]'hi').2 := by
+        simp only [List.getElem_map]
+      rw [h1, h2]
+      exact (hchar _ _).mpr (hpropsUW _ (List.getElem_mem _)).2
+    · -- Per-index `zWT` point types on the `psWT` witnesses.
+      intro i hi
+      have hi' : i < psWT.length := by simpa using hi
+      have h1 : (List.map (fun χ => (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+          (psWT.map Prod.fst))[i]'hi =
+          ⟨nf_depth0_char_formula atomMap h_surj ((psWT[i]'hi').1)⟩ := by
+        simp only [List.getElem_map]
+      have h2 : (psWT.map Prod.snd)[i]'(by simpa using hi') = (psWT[i]'hi').2 := by
+        simp only [List.getElem_map]
+      rw [h1, h2]
+      exact (hchar _ _).mpr (hpropsWT _ (List.getElem_mem _)).2
+    · -- `segXU` exclusion on ALL of `(x, x1)` (Rabinovich Cor 5.4 md:154-157).
+      intro u hxu hux1
+      simp only [TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      split
+      next hb => exact fun hfa => hfa
+      next hb =>
+        intro hch
+        have hbit := (h_zone _ χ).mp ⟨u, hzXU u hxu hux1, (hchar χ u).mp hch⟩
+        exact absurd hbit hb
+    · -- `segUW` exclusion on ALL of `(x1, w)`.
+      intro u hx1u huw
+      simp only [TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      split
+      next hb => exact fun hfa => hfa
+      next hb =>
+        intro hch
+        have hbit := (h_zone _ χ).mp ⟨u, hzUW u hx1u huw, (hchar χ u).mp hch⟩
+        exact absurd hbit hb
+    · -- `segWT` exclusion on ALL of `(w, t)`.
+      intro u hwu hut
+      simp only [TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      split
+      next hb => exact fun hfa => hfa
+      next hb =>
+        intro hch
+        have hbit := (h_zone _ χ).mp ⟨u, hzWT u hwu hut, (hchar χ u).mp hch⟩
+        exact absurd hbit hb
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

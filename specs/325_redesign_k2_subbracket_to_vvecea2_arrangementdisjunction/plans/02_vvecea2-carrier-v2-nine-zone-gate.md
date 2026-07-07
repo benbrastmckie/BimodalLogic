@@ -386,30 +386,33 @@ serially in order 1,2,3,4 (safe default, H7) OR enforce strict non-overlapping l
 - **Commit point:** `task 325 phase 2: soundness re-driven non-vacuously over nine-zone carrier`
 - **Depends on:** 1 (NON-VACUITY GATE green)
 
-### Phase 3: Completeness driven closed — disjunct selection + per-region segment discharge [NOT STARTED]
+### Phase 3: Completeness driven closed — disjunct selection + per-region segment discharge [COMPLETED]
 - **Goal:** DRIVE the completeness direction (the one that was BLOCKED) to a closed proof over the
   corrected non-empty carrier: prove the gate holds for the honest σ (via Phase-1
   `kvE_subBracket2V_gate_holds_of_honest`), select the model-sorted arrangement disjunct, discharge
   the three per-region segment types, and assemble `kvE_subBracket2V_complete`.
 - **Tasks:**
-  - [ ] Consume the SURVIVE `kvE_subBracket2_complete_extract` (:6683) VERBATIM to extract σ's
+  - [x] Consume the SURVIVE `kvE_subBracket2_complete_extract` (:6683) VERBATIM to extract σ's
         per-zone monotone inner witnesses from an honest `nf_eval_nf M 1 4` realization (carrier-agnostic
         despite its name — Correction 3). Cite Rabinovich Prop 4.2 (md:100-101).
-  - [ ] Discharge the carrier gate for the honest σ via Phase-1 `kvE_subBracket2V_gate_holds_of_honest`
+  - [x] Discharge the carrier gate for the honest σ via Phase-1 `kvE_subBracket2V_gate_holds_of_honest`
         (this is precisely the step that was impossible on the v1 7-zone gate). Take the gate-true
         branch to reach the non-empty `flatMap` disjuncts list.
-  - [ ] Select the model-sorted disjunct via the SURVIVE `k1v_sorted_realization3` (:6926), then build
+  - [x] Select the model-sorted disjunct via the SURVIVE `k1v_sorted_realization3` (:6926), then build
         the `IntervalPattern.holds`/`VecEA2.holds` data via the SURVIVE `k1v_bracket_construct3` (:7002)
         and discharge `segXU`/`segUW`/`segWT` on each full region — satisfiable because every point of
         region `(x,x1)` is `zXU`-positive there (etc.). Also discharge the folded `ptX1`/`ptW`
         witness-point obligations at the interior witnesses `x1`/`w` (the k1v `ptW`-at-`w`
         discharge one witness up). Cite Rabinovich Lemma 5.3 (md:137-152) per segment/point condition.
-  - [ ] Assemble `kvE_subBracket2V_complete : (∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ) →
+  - [x] Assemble `kvE_subBracket2V_complete : (∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ) →
         holds`, selecting the disjunct via `VVecEA2.holds`'s `∃ vea ∈ disjuncts` (:276) at `(x,t)`.
-        Confirm `(sound, complete)` is the arity-4 analog of the k1v pair.
-  - [ ] **Driven-proof gate:** the lemma MUST close sorry-free and NON-vacuously. Genuine obstruction
+        Confirm `(sound, complete)` is the arity-4 analog of the k1v pair. *(deviation: altered — the
+        `ptX1` head is `charK (nfk_projFresh σ)`, a depth-1 type, so completeness takes an explicit
+        `hcharK` charK-realization hypothesis + three σ.1 order bits, the exact mirror of soundness's
+        explicit `hgate`; STANDALONE per plan Overview, not wired to the outer gate.)*
+  - [x] **Driven-proof gate:** the lemma MUST close sorry-free and NON-vacuously. Genuine obstruction
         ⇒ STOP, no `sorry`, no soundness-only acceptance, write a blocker report.
-  - [ ] No `simp`/`omega`/`aesop` on chain steps.
+  - [x] No `simp`/`omega`/`aesop` on chain steps.
 - **Estimated output:** ~300-400 lines (heavy construction machinery already SURVIVES in the Phase-2
   kit). **Pre-authorized sub-split** (H8): 3.1 = gate discharge + disjunct selection + per-region
   segment discharge; 3.2 = assemble `kvE_subBracket2V_complete`.
