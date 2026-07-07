@@ -1,5 +1,5 @@
 ---
-next_project_number: 325
+next_project_number: 326
 ---
 
 # TODO
@@ -12,13 +12,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,324 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,324 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,325 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,324 | 161,187,191,194,230,291,300,325 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,321 | 189,192,196,324 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,20 +111,66 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-324 [PARTIAL] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
-  └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+325 [RESEARCHED] — Task 324's Phases 1-5 landed a k=2 arity-4 sub-bracket constructi
+  └─ 324 [BLOCKED] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
+    └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
 
-### 324. Redesign k2 subbracket arity4 correctness pair
-- **Effort**: 10-14 hours
-- **Status**: [PARTIAL]
+### 325. Redesign k2 subbracket to vvecea2 arrangementdisjunction
+- **Effort**: 10-16 hours
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
+- **Research**: [324_redesign_k2_subbracket_arity4_correctness_pair/reports/03_spawn-analysis.md]
+
+**Description**: Task 324's Phases 1-5 landed a k=2 arity-4 sub-bracket construction (kvE_subBracket2/kvE_subChain2, NfMultiAnchorBridge.lean:6120-6720) with a soundness direction (kvE_subBracket2_sound, :6530) and a completeness *extraction* kit (kvE_subBracket2_complete_extract, :6683). Phase 6 (the completeness converse) is machine-refuted: adversarially-verified blocker research (specs/324_redesign_k2_subbracket_arity4_correctness_pair/reports/02_phase6-blocker-research.md) proves the converse `(exists x1, nf_eval_nf M 1 4 [x1,w,x,t] sigma) -> (kvE_subBracket2 ...).2.holds M atomMap x t` is a FALSE forall-M statement over the current carrier, for two independent, machine-confirmed reasons: (1) kvE_subBracket2.segmentTypes is the CONSTANT segExcl (all-three-zone exclusion, :6159), but IntervalPattern.holds (ExistsForallNF.lean:106-132) requires each segment type to hold at EVERY point of its open segment, while the depth-1 fold (nf_eval_depth1_fold_iff :5187) only forces zone-membership <-> fold-bit for a point's OWN zone, never cross-zone positivity -- an interior point realized only in one zone survives the antecedent yet falsifies segExcl; (2) kvE_subBracket2.pointTypes is a FIXED filter-order list (Finset.univ.toList-derived leftSlots/rightSlots, :6139-6158), but IntervalPattern.holds needs strictly-monotone witnesses positionally matching that fixed order, and the model's realization order need not match it. Report 02 Q2 additionally shows no rescue is available on the current carrier: the codomain (Sigma m, BracketFormula (m+1), a single IntervalPattern) is structurally the wrong shape for completeness -- the landed k1v template's completeness (bracketEndChar_k1v_complete, :2979) is provable ONLY because that carrier is a VVecEA2 finite disjunction over arrangement permutations with PER-SIDE segment types (bracketFromLists.segmentTypes, :1902), letting completeness (a) select the model-sorted arrangement disjunct and (b) discharge each side's segment type because every point of that side is genuinely zone-positive there. A gate-hypothesis rescue is also rejected: in completeness .holds is the CONCLUSION (unlike soundness where it is the hypothesis), so any hypothesis strong enough to make it provable would itself assert the monotone-positional + per-segment conditions -- i.e. it would BE the conclusion, trivializing the deliverable.
+
+DELIVERABLE (standalone against nf_eval_nf M 1 4, NOT wired into the outer gate): a corrected carrier `kvE_subBracket2V`/`kvE_subChain2V` (exact names at implementer discretion) plus a freshly re-derived, machine-driven-through soundness AND completeness pair over it, per report 02 Q3's corrected target definition:
+(1) CODOMAIN CHANGE: replace `Sigma m, BracketFormula (m+1)` with `VVecEA2` (`Sigma n, VecEA2 n`, a finite disjunction) -- satisfies Guard G6 (codomain may be witness-growing VVecEA2) and report 321/01 Section 2 (:225, which already declared VVecEA2 as the binding amended-spec codomain that kvE_subBracket2 deviated from).
+(2) FIXED ENDPOINTS: `{x, t}` only, every disjunct's VecEA2.holds evaluated at `(x,t)` -- satisfies Guard G4 (anchor set fixed at {x,t}) and the Corrected Anchor-Cap (endpoint/anchor count <= 2).
+(3) THREE INTERIOR REGIONS (not two, since the arity-4 env `[x1,w,x,t]` has two interior fixed references `x1` and `w`): regions `(x,x1)=zXU`, `(x1,w)=zUW`, `(w,t)=zWT`; both `x1` and `w` become bracket WITNESS SLOTS (not endpoints/anchors, so G4/Cap stay respected -- anchor count stays 2). Point-type layout per disjunct: `zXU-arrangement ++ [x1-slot] ++ zUW-arrangement ++ [w-slot] ++ zWT-arrangement`.
+(4) THREE PER-REGION SEGMENT TYPES: `segXU` excludes only zXU-negatives on (x,x1); `segUW` only zUW-negatives on (x1,w); `segWT` only zWT-negatives on (w,t) -- the arity-4 lift of `bracketFromLists.segmentTypes` (:1902), extended from a 2-way to a 3-way `if`. Satisfies Guard G3 (real exclusion segments, never top/const-multi-zone). Each region-segment is satisfiable in completeness because every point of that region is genuinely zone-positive there -- the exact property the old constant segExcl violated.
+(5) DISJUNCTS: one per arrangement in `S_XU.permutations x S_UW.permutations x S_WT.permutations` (each `S_z = allTypes.filter (bits z .)`), mirroring `bracketEndChar_k1v` (:2013-2018); gate-failure branch = empty disjunction (holds = False).
+(6) NO PROVIDER PINNING (Amendment F3): witness positions are the temporal-semantics-quantified bracket witnesses; no `w = e 1` / `x1 = e 0` residual equation. `w` enters as a witness TYPE slot (charBase of w's projection), realized by some point sorted between the zUW and zWT blocks, consistent with the given `w` by 1-type uniqueness.
+(7) SUCCESSOR-PARAMETERIZED COMPATIBILITY: the redesign must read sigma.2 at the j+1 successor shift (sigma : NormalForm sig (j+1) 4, per specs/321.../reports/01_blocker-research-successor-k.md Section 2 :56/:225); at j=0 this is the landed NormalForm sig 1 4. The VVecEA2 codomain is exactly the spec's declared target, so this redesign converges the carrier onto the amended spec rather than diverging further.
+(8) FULL CORRECTNESS PAIR: a soundness lemma (holds -> exists x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) sigma) GENUINELY RE-DERIVED (the landed kvE_subBracket2_sound binds the OLD single-bracket carrier and does not transfer), and a completeness lemma (the reverse), the arity-4 analog of bracketEndChar_k1v_sound (:2338) / bracketEndChar_k1v_complete (:2979), re-using the k1v template kit (k1v_sorted_realization/_insert/_bracket_construct/_bracket_extract, :2028-2825) one arity up but with a THREE-region (vs k1v's two-region) arrangement.
+
+DRIVEN-PROOF VALIDATION DISCIPLINE (mandatory, binding): do NOT accept the redesigned construction on type-check/probe grounds. Two consecutive prior constructions have now failed EXACTLY that way -- kvE_subBracket (task 321 Phase 8: type-checked and probed clean, but its upward-only chain anchored at an interior point could not reach the zXU zone below it) and kvE_subBracket2 (task 324 Phase 6: type-checked and probed clean at soundness, but the completeness converse is a false forall-M statement). The new construction MUST be validated by actually driving BOTH the soundness direction AND the completeness direction through to a closed, sorry-free proof before the construction counts as validated -- neither direction may be deferred, assumed, or accepted on the strength of the other having closed.
+
+PRESERVED-ASSET ACCOUNTING (per report 02, which asset survives near-verbatim vs must be re-derived):
+- SURVIVE NEAR-VERBATIM (reusable raw material, adapt/consume, do not rebuild from scratch): kvE_sub2_zoneHolds_cons_iff (:6615), _zXU/_zUW/_zWT (:6642-6671) -- pure zoneHolds<->inequalities over env [x1,w,x,t], carrier-agnostic; kvE_subBracket2_complete_extract (:6683) -- reads nf_eval_nf M 1 4, independent of carrier, supplies the per-zone monotone witnesses the new disjunct closure consumes; kvE_sub2_zXU/zUW/zWT zone specs (:6200-6209) -- fold-bit zone specs, carrier-independent.
+- RE-DERIVED (proof shape survives but statement changes, restated over the VVecEA2 disjunct .holds by destructuring the disjunction first, as bracketEndChar_k1v_sound :2352 does): kvE_subBracket2_extract (:6233), _reaches_z* (:6327-6381), kvE_subBracket2_fold_z* (:6434-6491), and kvE_subBracket2_sound (:6530) itself (soundness is stated against the CURRENT single bracket; this task owns a fresh sound/complete pair over the new carrier).
+- REPLACED (new separately-named defs; originals stay byte-identical and unreferenced): kvE_subBracket2 (:6120) and kvE_subChain2 (:6166).
+
+BINDING CONSTRAINTS (carried forward verbatim from task 324's description, self-contained):
+- Guards G1-G6 + Corrected Anchor-Cap (source: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md:230-260): G1 no arity-1 collapse; G2 no projection-based third-free-anchor tower; G3 no trivial-top segment on carrier interval types; G4 witnesses stay bracket witnesses, anchor set fixed at {x,t}; G5 follow Cor 5.4/Prop 3.5 F_i chains step-by-step, cite Rabinovich at every chain step, no simp/omega/aesop shortcut (by omega permitted ONLY for Fin-index typing in signatures); G6 carrier stays the two-anchor bracket characteristic, fixed endpoints, codomain may be witness-growing VVecEA2 but anchor count never exceeds 2.
+- Amendment F3: no provider-side pinning -- the provider disappears from the joint path; no w = e 1 / x = e 2 residual equation.
+- DO-NOT-EDIT landed assets byte-identical, EXTENDED to now also include task-324's landed Phases 1-5 code (kvE_subBracket2/kvE_subChain2 + the full zone/reachability/soundness/extraction kit, NfMultiAnchorBridge.lean ~:6120-6720), in addition to all prior do-not-edit assets: task-321 Stage A/B code (kvE_subFoldBits, kvE_subInteriorZones, kvE_subBracket, kvE_subChain, kvE_subBracket_implies_subChain, kvE2_body + gate-fail, bracketEndChar_kvE2 + two_eq, the Stage-B discrimination lemmas), BracketCarrierCorrectVPrior, ExistProviders, all task-310/311 material, the task-320 probes, bracketEndChar_k1v/_sound/_complete and the full k1v proof kit (:2028-2825). SAME NEW-DEFINITIONS-ONLY EXCEPTION as task 324 (authorized only for this task, not a general license): add NEW, separately-named definitions rather than editing kvE_subBracket2/kvE_subChain2 or any earlier landed asset in place; originals stay byte-identical and unreferenced by the new work. Do NOT edit kvE2_body/bracketEndChar_kvE2 to re-point at the new construction -- that re-pointing is task 321's own resumption work via a future /revise 321, out of scope here. This task's lemmas are stated and proved standalone against nf_eval_nf M 1 4, not yet wired into the outer gate.
+- CONSUME-DO-NOT-REBUILD list (extended per report 02's preserved-asset accounting): nf_eval_depth1_fold_iff (:5187), nf0_assemble (NfEFold.lean:180), nf_quant_layer_fold_iff (NfEFold:391), zone semantics kit (zoneHolds/EAtomDom), k1v helper kit (k1v_zoneHolds_cons_iff/k1v_zone_consistent/k1v_bracket_extract/k1v_reconstruct_nf3/k1v_sorted_insert/k1v_sorted_realization/k1v_bracket_construct, :2028-2825), bracketEndChar_k1v_sound/_complete direction templates, BracketFormula.bracket_implies_fChainPred (EANegation:660), existsBounded_right (VecEAClosure:265) -- PLUS, newly available from task 324's own Phases 1-5: kvE_sub2_zoneHolds_cons_iff/_zXU/_zUW/_zWT (:6615-6671), kvE_subBracket2_complete_extract (:6683), and the kvE_sub2_zXU/zUW/zWT zone specs (:6200-6209), all of which survive near-verbatim per report 02 and should be consumed/adapted rather than rebuilt.
+- No EANegation :1090/:1249 (uniform-backward variants) may be consumed -- both are live sorrys, machine-confirmed.
+- No simp/omega/aesop on chain-construction steps; by omega only for Fin-index typing; cite Rabinovich at every chain step per G5.
+- No sorry on any live path, including intermediate WIP; keep unfinished work uncommitted until green.
+- Literature grounding: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf -- Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 3.5 (md:87-94), Def 4.1 (md p.5-6), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152, base-case negation -> V-forall-exists, the source of the per-region segment-type + disjunction-over-arrangements structure), Cor 5.4 (md:154-157, F_i chain / per-beta_i Until-chaining that requires per-region, not constant, segment types).
+
+VERIFICATION: scoped lake build green after each committed lemma; axiom-clean (propext, Classical.choice, Quot.sound) via lean_verify; no forbidden tactics; no sorry; the new VVecEA2 carrier's per-region segment types and disjunct arrangement machine-verified to admit BOTH a closed soundness proof and a closed completeness proof (not merely a type-check) -- per the driven-proof validation discipline above.
+
+SUGGESTED PHASE SKELETON (per report 02, realistically 4-5 one-dispatch phases, ~150-400 lines each): P1 VVecEA2 carrier def + three per-region segment types + gate; P2 three-region sorted_realization/bracket_construct lift (extending k1v's two-region kit); P3 soundness over the disjunction (destructure disjunct first, as bracketEndChar_k1v_sound does); P4 completeness (disjunct selection + per-region segment discharge); optionally P5 successor-parameter threading / final integration if P1-P4 do not fully absorb it.
+
+AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered VVecEA2 carrier + full soundness/completeness pair into a v4 phase decomposition that re-points Phase 8 and downstream phases at it), then /implement 321.
+
+---
+
+### 324. Redesign k2 subbracket arity4 correctness pair
+- **Effort**: 10-14 hours
+- **Status**: [BLOCKED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 325
 - **Research**:
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md]
   - [324_redesign_k2_subbracket_arity4_correctness_pair/reports/01_adversarial-verification.md]
