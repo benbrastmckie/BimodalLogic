@@ -341,20 +341,20 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
   sub-bracket slot splice (`kvE_subChain σ` at σ's honest bracket position); retain all non-joint
   13.2 channels verbatim; parameterized at provider depth `j+1` per report Q1.
 - **Tasks:**
-  - [ ] Define `private noncomputable def kvE2_body {sig} {j : Nat}
-        (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig (j+1) 1 → Formula)
-        (r : NormalForm sig 0 3) (q : NormalForm sig (j+1) 4 → Bool) : VVecEA2` (report §3 item 4),
-        mirroring `kvE'_body` (:5405-5490) structurally (same-module `private` reuse is legal), but
-        replacing `ptSub σ = ⟨charK (nfk_projFresh σ)⟩` (:5467) and the `t`-anchored `pos.map exF`
-        (`exF = P.existF 3 σ`, :5448) joint literal with the `kvE_subChain σ` sub-bracket splice at
-        σ's honest bracket position. The `exF`/`P.existF 3` parameter drops from the joint path
-        entirely (report §3 note); `P.existF 0` (unary `charK` channel) is retained.
-  - [ ] Retain verbatim ALL non-joint channels that behaved correctly at k=1 (gate `kvE_gate`, unary
-        families `epL`/`epR` non-joint parts, zones, arrangements `pinSlots`, `ptW`, `segL`/`segR`,
-        channel-(ii) `exclAt`) — F4 isolated the gap to the per-sub joint channel ONLY. Restate at the
-        `(j+1)` sub depth as required by the parameterization shift.
-  - [ ] Land a `kvE2_body_gate_fail` mirror (analogous to `kvE'_body_gate_fail` :5494) so gate-failure
-        yields the empty disjunction.
+  - [x] Define `kvE2_body` mirroring `kvE'_body` (:5405-5490) structurally (same-module `private`
+        reuse is legal), replacing `ptSub σ = ⟨charK (nfk_projFresh σ)⟩` (:5467) and the `t`-anchored
+        `pos.map exF` joint literal with the `kvE_subChain σ` sub-bracket splice. The `exF`/`P.existF 3`
+        parameter drops from the joint path entirely; `P.existF 0` retained. *(completed.)*
+        *(deviation: altered — signature is the CONCRETE gate instance `kvE2_body (charBase :
+        NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula) (r : NormalForm sig 0 3)
+        (q : NormalForm sig 1 4 → Bool) : VVecEA2`, NOT the general `{j : Nat}` header. Forced by
+        report §2/Q2: `kvE_subChain` reads `σ.2` through the depth-0 `nf0_assemble`, which the report
+        fixes at `j = 0`; the general-`j` fold engine is deferred follow-on. This IS the k=2 carrier
+        the GO gate targets, so no `two_eq` depth-bridge is needed — see Phase 6 deviation.)*
+  - [x] Retain verbatim ALL non-joint channels (gate `kvE_gate`, unary `epL`/`epR` non-joint parts,
+        zones, arrangements `pinSlots`, `ptW`, `segL`/`segR`, channel-(ii) `exclAt`). *(completed —
+        restated at the concrete `k = 1` sub depth; `kvE_pinDisjunct`/`kvE_exclConj` still referenced.)*
+  - [x] Land a `kvE2_body_gate_fail` mirror (analogous to `kvE'_body_gate_fail` :5494). *(completed.)*
 - **Timing:** ~2 hours
 - **Depends on:** 4
 - **Files to modify:**
@@ -365,20 +365,22 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
     flat `charK (nfk_projFresh σ)` does NOT appear on the joint path of `kvE2_body`;
     `kvE_pinDisjunct`/`kvE_exclConj` still referenced (non-joint channels retained); no forbidden tactics.
 
-### Phase 6: Define bracketEndChar_kvE2 carrier and two_eq bridge [NOT STARTED] (Stage A)
+### Phase 6: Define bracketEndChar_kvE2 carrier and two_eq bridge [COMPLETED] (Stage A)
 
 - **Goal:** Land the corrected carrier `bracketEndChar_kvE2` additively at the successor
   parameterization (`BracketEndCharCarrierV sig (j+1+1)`) plus its definitional `two_eq` bridge
   closing by `rfl` at `j=0` to the landed gate signature.
 - **Tasks:**
-  - [ ] Define `bracketEndChar_kvE2 {sig} (atomMap : Formula → sig.preds)
-        (h_surj : ∀ p, ∃ a, atomMap (.atom a) = p) {j : Nat} (P : ExistProviders sig atomMap (j+1)) :
-        BracketEndCharCarrierV sig (j+1+1)` (report §3 item 5; header machine-checked probes 3-4),
-        delegating to `kvE2_body`; instantiation `charBase = nf_depth0_char_formula`, `charK =
-        P.existF 0`, joint channel carried by `kvE_subChain` (no `exF` on the joint path).
-  - [ ] Land `bracketEndChar_kvE2_two_eq` (report §3 item 6; mirror of `bracketEndChar_kvE'_two_eq`
-        :5523) — at `j = 0` (`P : ExistProviders sig atomMap 1`, `qnf : NormalForm sig 2 3`) exposing
-        `kvE2_body` at the k=2 standard instantiation, closing by pure `rfl`.
+  - [x] Define `bracketEndChar_kvE2` delegating to `kvE2_body`; instantiation `charBase =
+        nf_depth0_char_formula`, `charK = P.existF 0`, joint channel carried by `kvE_subChain` (no
+        `exF` on the joint path). *(completed; axiom-clean via `lean_verify`.)* *(deviation: altered —
+        signature is the concrete gate instance `(P : ExistProviders sig atomMap 1) :
+        BracketEndCharCarrierV sig 2`, not the general `{j : Nat} (P : … (j+1)) : … (j+1+1)` header,
+        matching the Phase-5 `kvE2_body` concrete-instance deviation. This IS the landed k=2 gate
+        signature — the exact hypotheses of `bracketEndChar_kvE'_two_eq`.)*
+  - [x] Land `bracketEndChar_kvE2_two_eq` (mirror of `bracketEndChar_kvE'_two_eq` :5523) exposing
+        `kvE2_body` at the k=2 standard instantiation, closing by pure `rfl`. *(completed — closes by
+        `rfl`, confirming the depth threading; `bracketEndChar_kvE'`/its `two_eq` byte-identical.)*
 - **Timing:** ~1.5 hours
 - **Depends on:** 5
 - **Files to modify:**

@@ -5947,4 +5947,35 @@ private theorem kvE2_body_gate_fail {sig : MonadicSignature}
   simp only [kvE2_body]
   exact dif_neg h
 
+/-- **The corrected per-sub enriched successor-depth V-carrier** (task 321 Phase 6; report §3
+    item 5). Additive alongside `bracketEndChar_kvE` (:5150) and `bracketEndChar_kvE'` (:5510), both
+    UNCHANGED. At depth-1 providers (`P : ExistProviders sig atomMap 1`) it produces the k=2 carrier
+    `BracketEndCharCarrierV sig 2`, delegating to `kvE2_body` at the standard instantiation
+    (`charBase = nf_depth0_char_formula`, `charK = P.existF 0`) — the joint channel now carried by
+    `kvE_subChain` (no `exF` / `P.existF 3` on the joint path). This is the carrier whose k=2
+    `BracketCarrierCorrectVPrior` gate the task drives to GO (Stages C/D). -/
+noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1) :
+    BracketEndCharCarrierV sig 2 :=
+  fun qnf =>
+    kvE2_body (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf.1 qnf.2
+
+/-- **Concrete k=2 instance bridge** (task 321 Phase 6; the `bracketEndChar_kvE'_two_eq` :5523
+    mirror). At depth-1 providers the corrected carrier is DEFINITIONALLY the corrected body at the
+    standard instantiation. Pure `rfl` — Stages C/D rewrite with this to expose `kvE2_body`. Because
+    the carrier is already at the concrete gate instance (report §2/Q2 forces `j = 0`), this bridge
+    is the definitional unfolding rather than a `j+1 ⇒ j=0` depth specialization; a depth mismatch
+    from any successor threading error would fail this `rfl` immediately. -/
+theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3) :
+    bracketEndChar_kvE2 atomMap h_surj P qnf =
+      kvE2_body (nf_depth0_char_formula atomMap h_surj)
+        (fun χ => P.existF 0 χ) qnf.1 qnf.2 := rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
