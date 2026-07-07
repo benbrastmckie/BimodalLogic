@@ -110,7 +110,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-321 [PLANNED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+321 [PARTIAL] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
@@ -140,7 +140,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 320
