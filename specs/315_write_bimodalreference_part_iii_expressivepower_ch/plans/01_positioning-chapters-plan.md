@@ -1,7 +1,7 @@
 # Implementation Plan: Task #315
 
 - **Task**: 315 - Write the three positioning chapters closing BimodalReference Part I
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None (task 319 restructure already landed; all sources readable)
 - **Research Inputs**: specs/315_write_bimodalreference_part_iii_expressivepower_ch/reports/01_positioning-chapters-research.md

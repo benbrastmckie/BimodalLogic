@@ -12,7 +12,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,315,316,317,318,320 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,320 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,320 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
@@ -106,9 +106,6 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-315 [PLANNED] — Write the three positioning chapters of BimodalReference Part I (
-316 [PLANNED] — Implement the machine-readable appendix (teammate D recommendatio
-317 [PLANNED] — Write the counterfactual and constitutive chapters of BimodalRefe
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
 
 ### Kamp_theorem_formalization
@@ -215,12 +212,13 @@ Verify: typst compile green (page count will change), revised scripts/typst-sync
 
 ### 317. Write bimodalreference part v logos chapters const
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 313, Task 319
 - **Research**: [317_write_bimodalreference_part_v_logos_chapters_const/reports/01_counterfactual-constitutive-chapters.md]
 - **Plan**: [317_write_bimodalreference_part_v_logos_chapters_const/plans/01_counterfactual-constitutive-chapters.md]
+- **Summary**: [317_write_bimodalreference_part_v_logos_chapters_const/summaries/01_counterfactual-constitutive-chapters-summary.md]
 
 **Description**: Write the counterfactual and constitutive chapters of BimodalReference (Parts III and IV; book order is counterfactual THEN constitutive -- p5-counterfactual.typ is Part III, p5-constitutive.typ concludes the book as Part IV), replacing the current one-sentence placeholders, as full adapted chapters -- BimodalReference OWNS this exposition, LogosManual links here (user decision 3). (1) chapters/p5-counterfactual.typ (Part III) -- adapted from counterfactual_worlds.tex sections 4-5 + Logos 03-dynamics.typ/07-proof-theory.typ: bilateral propositions, exact semantics, boxright clause in both imposition and mereological form, CL/CML/CTL axiom ladder via principle lists, HEADLINE: box A := top boxright A with S5 derived (metaphysical modality derived, soundness only -- completeness open, state honestly), perpetuity re-derivation, countermodels 1-12 as example environments with ModelChecker-reproducibility note, Vlach regimentation of tensed counterfactuals reusing Part I's store/recall operators; cite @brastmckie2025counterfactualworlds. (2) chapters/p5-constitutive.typ (Part IV) -- adapted from Logos manual 02-constitutive.typ (1623 lines) + counterfactual_worlds.tex sections 2.2-3.2: state lattice with parthood, task relation over all states, possible/world states DEFINED not primitive, imposition defined, Fine's constraints as theorems, worlds as maximal possible evolutions; closing comparison figure: the bimodal frame of Part I as the world-state shadow of this structure; cite @brastmckie2021identity for ground/essence. Follow teammate B's 9-item dependency-ordered staging list and resolve the 4 documented paper-vs-Logos divergences (duration-parameterized task relation; possible-state definition -- Lean is ground truth; stay propositional, point to LogosManual for FOL; state CTL over the book's Until/Since basis). Carry the extensional-antecedent restriction into the grammar (do not silently import ModelChecker's unrestricted extension). Plain textbook prose -- no sync-class banners or status symbols; state openly what is published, what is adapted, and what is not formalized. Add notation/constitutive-notation.typ importing the needed Logos state-space symbols; re-verify B's staging list against counterfactual_worlds.tex at drafting time. typst compile and scripts/typst-sync-check.sh must pass. Sources: teammate B findings F1/F2/F5 (specs/313_design_full_extent_bimodalreference_book/reports/01_teammate-b-findings.md).
 
@@ -228,12 +226,13 @@ Verify: typst compile green (page count will change), revised scripts/typst-sync
 
 ### 316. Generate machinereadable jsonl appendix for bimoda
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: reference-book
 - **Dependencies**: Task 313, Task 319
 - **Research**: [316_generate_machinereadable_jsonl_appendix_for_bimoda/reports/01_machinereadable-jsonl-appendix.md]
 - **Plan**: [316_generate_machinereadable_jsonl_appendix_for_bimoda/plans/01_machine-appendix-jsonl.md]
+- **Summary**: [316_generate_machinereadable_jsonl_appendix_for_bimoda/summaries/01_machine-appendix-jsonl-summary.md]
 
 **Description**: Implement the machine-readable appendix (teammate D recommendation R5.1, prioritized by the AI-practitioner audience decision): export the 42-constructor axiom table, 7 inference rules, and derived-operator definitions from Lean as JSONL matching the Automation/DatasetExporter.lean schema, generated by a lake exe or script and included in the BimodalReference build as an appendix (with a human-readable rendering plus a pointer to the raw JSONL artifact). Wire the dataset pipeline chapter (chapters/p4-dataset-pipeline.typ) to point at the shipped artifact (task 319 re-anchor: the former 'How to Read This Book If You Are an AI' introduction section was removed with the sync-class machinery). The appendix generation must be re-runnable and commit-stamped like scripts/typst-status-counts.sh output; never hand-copy the exported content. Verify: build produces the JSONL, typst compile green, sync-check green.
 
@@ -241,12 +240,13 @@ Verify: typst compile green (page count will change), revised scripts/typst-sync
 
 ### 315. Write bimodalreference part iii expressivepower ch
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 313, Task 319
 - **Research**: [315_write_bimodalreference_part_iii_expressivepower_ch/reports/01_positioning-chapters-research.md]
 - **Plan**: [315_write_bimodalreference_part_iii_expressivepower_ch/plans/01_positioning-chapters-plan.md]
+- **Summary**: [315_write_bimodalreference_part_iii_expressivepower_ch/summaries/01_positioning-chapters-summary.md]
 
 **Description**: Write the three positioning chapters of BimodalReference Part I (The Bimodal System), replacing the current one-sentence placeholders (they sit at the end of Part I, after 05-theorems.typ): (1) chapters/p3-ltl-to-tm.typ -- honest positioning of TM among temporal-modal logics (Until/Since over linear orders fused with S5 + interaction/uniformity; trace vs task semantics; conservativity as the bridge; NEVER describe TM as vanilla LTL+S5 -- that framing is extension-roadmap only); (2) chapters/p3-vlach-blstar.typ -- Vlach store/recall operators and BL-star (possible_worlds.tex 1246-1256), hybrid-logic prior-art framing (@vlach1973nowandthen, @cresswell1990entities, @blackburn2000hybrid -- verify citations before print), Kamp theorem correctly scoped (strict Until/Since, Dedekind-complete flows, @kamp1971formalproperties) and the Metalogic/WeakCanonical/Kamp/ formalization frontier status stated honestly in plain prose; (3) chapters/p3-decidability-frontier.typ -- the decidability frontier written at a level citing NO Lk-specific results (EMBARGO, user decision 2: no BL-star-ladder table lifted from Lk, no L_k complexity theorems attributed; general ceiling-and-descent narrative from published sources and general prior art only), PRESERVING the three // SLOT-IN: anchors and the EMBARGO header comment verbatim for post-acceptance insertion (task 318). The former p3-open-future.typ puzzle chapter is dropped (task 319): its technical content (Determined/Deterministic, actuality operators) lives as cited remarks in the semantics chapter. Plain textbook prose throughout -- no sync-class banners, no status symbols. Every backticked Lean name must resolve: typst compile and scripts/typst-sync-check.sh (checks 1+4 structure: name resolution + count freshness) must pass. Sources per teammate A rows 6, 8-10, 15-18 and teammate B F3 prior art.
 
