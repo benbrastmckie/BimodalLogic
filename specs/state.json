@@ -2857,7 +2857,7 @@
     {
       "project_number": 326,
       "project_name": "bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Deliver ONE standalone, machine-verified Lean 4 lemma (name at implementer's discretion, e.g. `kvE_subBracket2V_holds_of_outer` or `kvE2_sub_bounded_recover`) that, given the outer bracket's soundness-side data over (x, t) -- the outer witness w with x < w < t, the per-slot extract `fChainPred @ u` for the sub sigma's spliced chain with u in (x, w) (from `kvE_subChain2V`), the outer segment classification on (x, w) (segL), and the outer gate -- produces the BOUNDED sub-anchor bundle: exists x1, x < x1, x1 < t, (charK (nfk_projFresh sigma)).eval_at x1, and the per-chi hbelow witnesses. This is exactly the (x1, hxx1, hx1t, hanchor, hbelow) bundle that the already-landed `kvE_subBracket2V_sound_of_parts` (NfMultiAnchorBridge.lean:7449) consumes to close task 321 Phase 10 (Stage C soundness).\n\nCRITICAL REQUIREMENT: `x1 < t` MUST be established STRUCTURALLY via a Rabinovich Lemma 5.1 shared-endpoint point-insertion split (A_i^-(x, x1) AND A_i^+(x1, t), literature: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md md:169-171), NEVER derived from the unbounded `fChainFrom_base`/`_step` chain (EANegation.lean:585/:622), which asserts `exists s > x` with no upper bound and is documented (report 03, Determination 1) as structurally incapable of supplying this bound.\n\nCandidate landed assets to consume (investigate in priority order per divergence audit report 03 Determination 3): (1) `neg_2var_vec_ea` (EANegationClosure.lean:720) and `neg_interval_formula` (EANegationClosure.lean:398) -- the VVecEA2 point-insertion/negation machinery, model-dependent (requires `HasAttainedINF`, available at the soundness site; this is the regime EANegation.lean:1244-1247 explicitly sanctions as sorry-free). (2) A bounded-above `Until` argument from the outer witness w (with w < t) plus segL's exclusion literals on (x, w), IF segL's actual content (NfMultiAnchorBridge.lean:8212-8215) excludes charK-carrying points below w -- check this before relying on it; if segL does not exclude such points, route (1) is mandatory.\n\nBINDING GO/NO-GO LITMUS (from task 320 report 01:210-212, restated in report 03 Determination 3): the delivered lemma is GO only if it carries the boundedness via an evaluation-point/structural split (Rabinovich), NOT via a single-point relative-position formula literal (e.g. `x1 < e_i`) between independently-bound variables -- that literal form is the exact F4 flattening relapse that tasks 320/324/325/321-v4-P10 all hit. If neither candidate route passes this litmus, escalate again rather than landing a flattening relapse.\n\nBINDING CONSTRAINTS (carried forward from task 321, do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (two anchors {x, t} fixed at 2, G4; w stays a bracket WITNESS never a third anchor). Amendment F3 STILL BINDING: no provider-side pinning. DO NOT EDIT (byte-identical, additive-only): the task-325 VVecEA2 block (kvE_subBracket2V / kvE_subBracket2V_sound / kvE_subBracket2V_complete / kvE_subBracket2V_sound_of_parts / kvE_subBracket2V_reaches_zXU), all landed EANegation.lean forward-stack assets (bracket_implies_fChainPred:660, fChainFrom_base/_step:585/622), BracketCarrierCorrectVPrior, ExistProviders, and all prior F1-F4 verdict records. Do NOT consume EANegation.lean:1090 or :1249 (the documented-unprovable reverse-direction sorry). The new lemma is purely additive.\n\nCOMPLETION HANDOFF: on completion, task 321 resumes via `/revise 321` to produce a v5 plan re-pointing Phase 10 at this new lemma, feeding the already-landed `kvE_subBracket2V_sound_of_parts`. Completeness (Phases 12-14 of task 321, which already close via `kvE_subBracket2V_complete`) stays closed ONLY IF this task's lemma consumes the EXISTING flat `kvE_subChain2V` splice's extract output as-is and does NOT require a new joint-channel shape -- altering the splice shape would reopen the completeness risk flagged in report 03 Determination 2 (MEDIUM confidence: the flat splice lists ALL arrangement fChainPreds, only the sorted one is honest-realizable).\n\nSource of this specification: specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/03_divergence-audit-joint-channel.md (divergence audit, verdict ESCALATE) and specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/.orchestrator-handoff.json (blockers[0], continuation_context.landed_this_dispatch). Consume, do not re-derive.",
       "effort": "6-12 hours",
@@ -2869,7 +2869,7 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationClosure.lean"
       ],
       "created": "2026-07-07T20:31:11Z",
-      "last_updated": "2026-07-07T20:31:11Z",
+      "last_updated": "2026-07-07T20:53:21Z",
       "artifacts": [
         {
           "type": "research",
@@ -2880,6 +2880,11 @@
           "type": "research",
           "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 321 (bounded point-insertion prerequisite)"
+        },
+        {
+          "type": "plan",
+          "path": "specs/326_bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness/plans/01_bounded-pointinsertion-composition.md",
+          "summary": "8-phase hard-mode plan; pin-slot bounded-anchor route; Phase 4.2 hbelow assembly is the make-or-break CAVEAT; fallback = escalate not sorry"
         }
       ]
     }
