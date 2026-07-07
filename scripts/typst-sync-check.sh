@@ -118,9 +118,10 @@ for cand, files in sorted(candidates.items()):
             continue
         violations.append((cand, files, "multi-word span not found verbatim in Lean source (add to whitelist if intentional exposition, not a claim)"))
         continue
-    is_pathlike = "/" in cand or cand.endswith((".lean", ".md", ".sh", ".typ"))
+    cand_delined = strip_line_suffix(cand)
+    is_pathlike = "/" in cand_delined or cand_delined.endswith((".lean", ".md", ".sh", ".typ"))
     if is_pathlike:
-        rel = strip_line_suffix(cand)
+        rel = cand_delined
         allow_boneyard = "Boneyard" in rel.split("/")
         if rel.startswith("Theories/Bimodal/"):
             rel_bimodal = rel[len("Theories/Bimodal/"):]

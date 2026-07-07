@@ -435,36 +435,36 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 3 hours.
 - **Depends on:** 4, 5.
 
-### Phase 8: Part II Chapter — Decidability in Practice (+ 04-metalogic trim) [NOT STARTED]
+### Phase 8: Part II Chapter — Decidability in Practice (+ 04-metalogic trim) [COMPLETED]
 
 - **Goal:** The operational decision procedure gets its own honest chapter (entry points,
   fuel semantics, certificates, countermodels) and `04-metalogic.typ` sheds the moved
   material; the FMP discrepancy is resolved before either document states a status.
 - **Territory:** `chapters/p2-decidability-practice.typ`, `chapters/04-metalogic.typ`.
 - **Tasks:**
-  - [ ] FIRST: resolve the FMP discrepancy against `Metalogic/Decidability/Correctness.lean`
+  - [x] FIRST: resolve the FMP discrepancy against `Metalogic/Decidability/Correctness.lean`
         — read `fmp_completeness` (:123) and determine whether "In progress"
         (`04-metalogic.typ:260`) reflects an unwired completeness direction (stated over
         closure MCS bundles, not semantic validity) rather than sorries (README says
         sorry-free). Record the resolution in the chapter, in `06-notes`-style wording, and
         carry the corrected row into the status table. Both documents must state the SAME
         resolved status.
-  - [ ] Operational chapter content: `decide`/`isValid`/`isSatisfiable`, `DecisionResult`,
+  - [x] Operational chapter content: `decide`/`isValid`/`isSatisfiable`, `DecisionResult`,
         fuel semantics and the `timeout` branch (`DecisionProcedure.lean:122`),
         `TraceCertificate`/`TraceExport` certificate format, `CountermodelExtraction` —
         presented as a usable artifact with invocation examples.
-  - [ ] Honest metatheory section (postmortem rule): `decide_sound` proven ✓;
+  - [x] Honest metatheory section (postmortem rule): `decide_sound` proven ✓;
         `validity_decidable` is `Classical.em` — stated plainly as vacuous; no `Decidable`
         instance; semantic completeness of the tableau runs through the sorry-tainted chain
         (⧖); inherits `06-notes.typ:96-100` honesty.
-  - [ ] Closing normative status table (D-R3): rows = fragments/properties (tableau
+  - [x] Closing normative status table (D-R3): rows = fragments/properties (tableau
         soundness, FMP, verified termination, target decidable fragment), columns =
         status (✓/⧖/○/◇) — every non-✓ row phrased as a candidate roadmap task (feeds
         tasks 165/82/290/300).
-  - [ ] Trim `04-metalogic.typ`: replace its Decidability subsection with a two-paragraph
+  - [x] Trim `04-metalogic.typ`: replace its Decidability subsection with a two-paragraph
         summary + cross-reference to this chapter; keep the component-status table (with the
         corrected FMP row); preserve every Lean anchor either in place or in the new chapter.
-  - [ ] Verify: compile green; sync-check green; no decidability claim stronger than the
+  - [x] Verify: compile green; sync-check green; no decidability claim stronger than the
         resolved facts.
 - **Estimated output:** ~330 lines (new chapter ~280, 04-metalogic delta ~50).
 - **Done when:** FMP resolution recorded once and consistently; chapter + trim complete; checks green.
