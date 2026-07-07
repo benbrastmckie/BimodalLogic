@@ -117,6 +117,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Dependencies**: None
 - **Research**: [312_revise_bimodalreference_typst_paper_lean/reports/01_team-research.md]
 - **Plan**: [312_revise_bimodalreference_typst_paper_lean/plans/01_revise-typst-reference.md]
+- **Summary**: [312_revise_bimodalreference_typst_paper_lean/summaries/01_revise-typst-reference-summary.md]
 
 **Description**: Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority
 

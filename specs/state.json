@@ -28,6 +28,11 @@
           "path": "specs/312_revise_bimodalreference_typst_paper_lean/plans/01_revise-typst-reference.md",
           "type": "plan",
           "summary": "7-phase plan (11h): scope decisions + live completeness-wiring verification, ground-truth SYNC-MAP inventory, chapter rewrites heaviest-first (04, 03, 01+02 in parallel, then 06+05+00), doc hygiene + compile/resolution/counts verification gate"
+        },
+        {
+          "path": "specs/312_revise_bimodalreference_typst_paper_lean/summaries/01_revise-typst-reference-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: phase results, plan deviations, flagged follow-ups"
         }
       ],
       "completion_summary": "Revised all 7 typst chapters + main doc against live Lean source: 42-constructor BX system, Until/Since primitives, strict semantics, honest completeness status (BXCanonical.completeness, 43 sorries), SYNC-MAP.md claim table delivered; typst compile clean."
