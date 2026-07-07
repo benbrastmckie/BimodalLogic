@@ -4444,4 +4444,315 @@ private theorem f2_carrier_eq (charF : (j : Nat) → NormalForm f2sig j 1 → Fo
       bracketEndChar_kv f2atomMap f2surj charF 2 f2qnf' :=
   bracketEndChar_kv_factors f2atomMap f2surj charF (k := 1) f2qnf f2qnf' rfl f2_hoff f2_hb
 
+/-! ### F2 probe: no `w'` realizes `qnf'` in `M*` — the per-`w'` case analysis -/
+
+/-- Depth-2 evaluation unfold at `qnf'` (definitional). -/
+private theorem f2_eval2_qnf' (env : Fin 3 → F2M.carrier) :
+    nf_eval_nf F2M 2 3 env f2qnf' ↔
+      ((∀ a, atom_eval F2M env a ↔ f2qnf'.1 a = true) ∧
+       (∀ sub : NormalForm f2sig 1 4,
+         (∃ u : ℤ, nf_eval_nf F2M 1 4 (Fin.cons u env) sub) ↔ f2qnf'.2 sub = true)) :=
+  Iff.rfl
+
+/-- Fixed probe atoms, hoisted so their `Fin` proofs are fully elaborated at use sites
+    (inline `⟨_, by omega⟩` indices leave metavariables that block `Fin.cons` reduction
+    during unification). -/
+private abbrev f2a3_xw : AtomKind f2sig 3 := .order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)
+private abbrev f2a3_wt : AtomKind f2sig 3 := .order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)
+private abbrev f2a3_xt : AtomKind f2sig 3 := .order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)
+private abbrev f2a3_wx : AtomKind f2sig 3 := .order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)
+private abbrev f2a3_tw : AtomKind f2sig 3 := .order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)
+private abbrev f2a3_tx : AtomKind f2sig 3 := .order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)
+private abbrev f2a3_P : AtomKind f2sig 3 := .pred () ⟨0, by omega⟩
+private abbrev f2a4_xu : AtomKind f2sig 4 := .order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)
+private abbrev f2a4_uw : AtomKind f2sig 4 := .order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)
+private abbrev f2a4_wu : AtomKind f2sig 4 := .order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)
+private abbrev f2a4_ut : AtomKind f2sig 4 := .order ⟨0, by omega⟩ ⟨3, by omega⟩ (by decide)
+
+/-- Atom-bit transfer: a true atom bit of a depth-1 type equal to a characteristic type
+    semantically holds in the characteristic's environment. -/
+private theorem f2_bit_transfer {n : Nat} (σ : NormalForm f2sig 1 n)
+    (env : Fin n → F2M.carrier) (h : σ = nf_characteristic F2M 1 n env)
+    (a : AtomKind f2sig n) (hbit : σ.1 a = true) : atom_eval F2M env a :=
+  @of_decide_eq_true _ (Classical.dec _) ((congrFun (congrArg Prod.fst h) a).symm.trans hbit)
+
+/-- Quant-bit transfer: a true quant bit of a depth-1 arity-4 type equal to a characteristic
+    type is realized in the characteristic's environment. -/
+private theorem f2_qbit_transfer (σ : NormalForm f2sig 1 4)
+    (env : Fin 4 → F2M.carrier) (h : σ = nf_characteristic F2M 1 4 env)
+    (e : NormalForm f2sig 0 5) (hbit : σ.2 e = true) :
+    ∃ z : ℤ, nf_eval_nf F2M 0 5 (Fin.cons z env) e :=
+  @of_decide_eq_true _ (Classical.dec _)
+    ((congrFun (congrArg Prod.snd h) e).symm.trans hbit)
+
+/-- Facts about any fresh witness of `e*` over anchors `[u, w', 2, 18]`: it is a `P`-point
+    strictly inside `(2, u)` (read off the depth-0 5-type equality entry by entry). -/
+private theorem f2_estar_witness_facts (u w' z : ℤ)
+    (hz : f2estar = nf_characteristic F2M 0 5
+      (Fin.cons z (Fin.cons u (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ))))))) :
+    ((z : ℤ) = 0 ∨ z = 10 ∨ z = 20) ∧ (2 : ℤ) < z ∧ z < u := by
+  refine ⟨?_, ?_, ?_⟩
+  · have hb := congrFun hz (.pred () ⟨0, by omega⟩)
+    simp only [f2estar, nf_characteristic] at hb
+    have h10 : (10 : ℤ) = 0 ∨ (10 : ℤ) = 10 ∨ (10 : ℤ) = 20 := by norm_num
+    exact (decide_eq_decide.mp hb).mp h10
+  · have hb := congrFun hz (.order ⟨3, by omega⟩ ⟨0, by omega⟩ (Fin.ne_of_val_ne (by decide)))
+    simp only [f2estar, nf_characteristic] at hb
+    have h210 : (2 : ℤ) < 10 := by omega
+    exact (decide_eq_decide.mp hb).mp h210
+  · have hb := congrFun hz (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (Fin.ne_of_val_ne Nat.zero_ne_one))
+    simp only [f2estar, nf_characteristic] at hb
+    have h1012 : (10 : ℤ) < 12 := by omega
+    exact (decide_eq_decide.mp hb).mp h1012
+
+/-- **`sub₁` forces `w' ≥ 12`**: any realization of `sub₁` over anchors `[w', 2, 18]` needs a
+    fresh point `u ∈ (2, w')` whose gap `(2, u)` contains a `P`-point — so `u ≥ 11`, so
+    `w' ≥ 12` (report 05 F-B, `w' ≤ 11` branch). -/
+private theorem f2_sub1_forces (w' u : ℤ)
+    (h : nf_eval_nf F2M 1 4
+      (Fin.cons u (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ))))) f2sub1) :
+    (2 : ℤ) < u ∧ u < w' ∧ (11 : ℤ) ≤ u := by
+  rw [f2_eval_iff_char] at h
+  have h2u : (2 : ℤ) < u := by
+    have h212 : (2 : ℤ) < 12 := by omega
+    have hbit : f2sub1.1 f2a4_xu = true := @decide_eq_true _ (Classical.dec _) h212
+    exact f2_bit_transfer _ _ h f2a4_xu hbit
+  have huw : u < w' := by
+    have h1215 : (12 : ℤ) < 15 := by omega
+    have hbit : f2sub1.1 f2a4_uw = true := @decide_eq_true _ (Classical.dec _) h1215
+    exact f2_bit_transfer _ _ h f2a4_uw hbit
+  obtain ⟨z, hze⟩ := f2_qbit_transfer _ _ h f2estar f2_estar_in_sub1
+  rw [f2_eval_iff_char] at hze
+  obtain ⟨hPz, h2z, hzu⟩ := f2_estar_witness_facts u w' z hze
+  refine ⟨h2u, huw, ?_⟩
+  rcases hPz with h0 | h0 | h0 <;> omega
+
+/-- `τ`: the depth-1 arity-4 type of `[16, 15, 2, 18]` (fresh point in the `(w, t)` zone with
+    an EMPTY `(w, u)` gap — the discreteness-sensitive entry for the `w' = 17` branch). -/
+private noncomputable def f2tau : NormalForm f2sig 1 4 :=
+  nf_characteristic F2M 1 4 (Fin.cons 16 f2env3)
+
+/-- `τ ≠ sub₂` (they disagree on the order bit `u < w`). -/
+private theorem f2_tau_ne : f2tau ≠ f2sub2 := by
+  intro h
+  have hb := congrFun (congrArg Prod.fst h) f2a4_uw
+  have hn : ¬((16 : ℤ) < 15) := by omega
+  have h415 : (4 : ℤ) < 15 := by omega
+  have hL : f2tau.1 f2a4_uw = false := @decide_eq_false _ (Classical.dec _) hn
+  have hR : f2sub2.1 f2a4_uw = true := @decide_eq_true _ (Classical.dec _) h415
+  rw [hL, hR] at hb
+  exact Bool.noConfusion hb
+
+/-- `τ` is marked in `qnf` (realized at `u = 16`) hence in `qnf'` (`τ ≠ sub₂`). -/
+private theorem f2_tau_marked' : f2qnf'.2 f2tau = true := by
+  show (if f2tau = f2sub2 then false else f2qnf.2 f2tau) = true
+  rw [if_neg f2_tau_ne, f2qnf_snd]
+  exact @decide_eq_true _ (Classical.dec _)
+    ⟨16, nf_characteristic_satisfies F2M 1 4 (Fin.cons 16 f2env3)⟩
+
+/-- The `w'`-shift congruence for arity-5 types: transfer of a fresh 5-type between the
+    `[4, 15, 2, 18]` anchors and the `[4, w', 2, 18]` anchors (`12 ≤ w' ≤ 16`), given the
+    fresh points' matching cell data. -/
+private theorem f2_congr5_wshift (w' z z' : ℤ)
+    (hw : (12 : ℤ) ≤ w' ∧ w' ≤ 16)
+    (hPz : (z = 0 ∨ z = 10 ∨ z = 20) ↔ (z' = 0 ∨ z' = 10 ∨ z' = 20))
+    (hz4l : z < 4 ↔ z' < 4) (hz4r : 4 < z ↔ 4 < z')
+    (hzw : z < 15 ↔ z' < w') (hwz : 15 < z ↔ w' < z')
+    (hz2l : z < 2 ↔ z' < 2) (hz2r : 2 < z ↔ 2 < z')
+    (hz18l : z < 18 ↔ z' < 18) (hz18r : 18 < z ↔ 18 < z') :
+    nf_characteristic F2M 0 5
+        (Fin.cons z (Fin.cons 4 (Fin.cons 15 (Fin.cons 2 (fun _ => (18 : ℤ)))))) =
+      nf_characteristic F2M 0 5
+        (Fin.cons z' (Fin.cons 4 (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ)))))) :=
+  f2_char0_congr5 _ _ _ _ _ _ _ _ _ _
+    hPz Iff.rfl (iff_of_false (by decide) (by omega)) Iff.rfl Iff.rfl
+    hz4l hz4r hzw hwz hz2l hz2r hz18l hz18r
+    (iff_of_true (by decide) (by omega)) (iff_of_false (by decide) (by omega))
+    Iff.rfl Iff.rfl Iff.rfl Iff.rfl
+    (iff_of_false (by decide) (by omega)) (iff_of_true (by decide) (by omega))
+    (iff_of_true (by decide) (by omega)) (iff_of_false (by decide) (by omega))
+    Iff.rfl Iff.rfl
+
+/-- **`sub₂` is realized at every `w' ∈ [12, 16]`** (via `u = 4`): the depth-1 arity-4 type of
+    `[4, w', 2, 18]` EQUALS `sub₂` — anchor configurations agree, and every realized fresh
+    5-type transfers cell-by-cell (`f2_congr5_wshift`; the report's `12 ≤ w' ≤ 15` middle
+    branch, extended to 16 where the `(w', 18)` cell is still inhabited). This settles the
+    report's honest caveat: the per-entry type-match check SUCCEEDS on this range. -/
+private theorem f2_sub2_transfer (w' : ℤ) (h12 : (12 : ℤ) ≤ w') (h16 : w' ≤ 16) :
+    f2sub2 = nf_characteristic F2M 1 4
+      (Fin.cons 4 (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ))))) := by
+  have hw : (12 : ℤ) ≤ w' ∧ w' ≤ 16 := ⟨h12, h16⟩
+  refine Prod.ext ?_ ?_
+  · show nf_characteristic F2M 0 4 (Fin.cons 4 (Fin.cons 15 (Fin.cons 2 (fun _ => (18 : ℤ))))) =
+      nf_characteristic F2M 0 4 (Fin.cons 4 (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ)))))
+    exact f2_char0_congr4 _ _ _ _ _ _ _ _
+      Iff.rfl (iff_of_false (by decide) (by omega)) Iff.rfl Iff.rfl
+      (iff_of_true (by decide) (by omega)) (iff_of_false (by decide) (by omega))
+      Iff.rfl Iff.rfl Iff.rfl Iff.rfl
+      (iff_of_false (by decide) (by omega)) (iff_of_true (by decide) (by omega))
+      (iff_of_true (by decide) (by omega)) (iff_of_false (by decide) (by omega))
+      Iff.rfl Iff.rfl
+  · funext e
+    show (nf_characteristic F2M 1 4 (Fin.cons 4 f2env3)).2 e = _
+    simp only [f2char14_snd]
+    apply decide_eq_decide.mpr
+    constructor
+    · rintro ⟨z, hz⟩
+      rw [f2_eval_iff_char] at hz
+      by_cases hp : (z = 0 ∨ z = 10 ∨ z = 20)
+      · -- P-points sit in shift-stable cells: identity witness
+        refine ⟨z, ?_⟩
+        rw [f2_eval_iff_char, hz]
+        rcases hp with h0 | h0 | h0 <;>
+          (refine f2_congr5_wshift w' z z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> omega)
+      · rcases le_or_gt z 4 with hc | hc
+        · refine ⟨z, ?_⟩
+          rw [f2_eval_iff_char, hz]
+          refine f2_congr5_wshift w' z z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> omega
+        · rcases lt_trichotomy z 15 with hc2 | hc2 | hc2
+          · refine ⟨5, ?_⟩
+            rw [f2_eval_iff_char, hz]
+            refine f2_congr5_wshift w' z 5 hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> omega
+          · refine ⟨w', ?_⟩
+            rw [f2_eval_iff_char, hz]
+            refine f2_congr5_wshift w' z w' hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> omega
+          · rcases lt_or_ge z 18 with hc3 | hc3
+            · refine ⟨17, ?_⟩
+              rw [f2_eval_iff_char, hz]
+              refine f2_congr5_wshift w' z 17 hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> omega
+            · refine ⟨z, ?_⟩
+              rw [f2_eval_iff_char, hz]
+              refine f2_congr5_wshift w' z z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ <;> omega
+    · rintro ⟨z, hz⟩
+      rw [f2_eval_iff_char] at hz
+      by_cases hp : (z = 0 ∨ z = 10 ∨ z = 20)
+      · refine ⟨z, ?_⟩
+        rw [f2_eval_iff_char, hz]
+        rcases hp with h0 | h0 | h0 <;>
+          (refine Eq.symm (f2_congr5_wshift w' z z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_) <;> omega)
+      · rcases le_or_gt z 4 with hc | hc
+        · refine ⟨z, ?_⟩
+          rw [f2_eval_iff_char, hz]
+          refine Eq.symm (f2_congr5_wshift w' z z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_) <;> omega
+        · rcases lt_trichotomy z w' with hc2 | hc2 | hc2
+          · refine ⟨5, ?_⟩
+            rw [f2_eval_iff_char, hz]
+            refine Eq.symm (f2_congr5_wshift w' 5 z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_) <;> omega
+          · refine ⟨15, ?_⟩
+            rw [f2_eval_iff_char, hz]
+            refine Eq.symm (f2_congr5_wshift w' 15 z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_) <;> omega
+          · rcases lt_or_ge z 18 with hc3 | hc3
+            · refine ⟨17, ?_⟩
+              rw [f2_eval_iff_char, hz]
+              refine Eq.symm (f2_congr5_wshift w' 17 z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_) <;> omega
+            · refine ⟨z, ?_⟩
+              rw [f2_eval_iff_char, hz]
+              refine Eq.symm (f2_congr5_wshift w' z z hw ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_) <;> omega
+
+/-- **No `w'` realizes `qnf'` in `M*`** (report 05 F-B case analysis, machine-checked): the
+    atom layer pins `w' ∈ (2, 18) \ P`; `sub₁`'s marked bit forces `w' ≥ 12`
+    (`f2_sub1_forces`); on `12 ≤ w' ≤ 16` the UN-marked `sub₂` is realized at `u = 4`
+    (`f2_sub2_transfer`); at `w' = 17` the marked `τ` needs a fresh point in the EMPTY
+    `(17, 18)` gap. -/
+private theorem f2_no_witness :
+    ¬ ∃ w' : ℤ, nf_eval_nf F2M 2 3
+      (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ)))) f2qnf' := by
+  rintro ⟨w', hw⟩
+  obtain ⟨hA, hQ⟩ := (f2_eval2_qnf' _).mp hw
+  -- Step 1: atom-layer constraints on w'
+  have h2w : (2 : ℤ) < w' := by
+    have h215 : (2 : ℤ) < 15 := by omega
+    have hbit : f2qnf'.1 f2a3_xw = true := @decide_eq_true _ (Classical.dec _) h215
+    exact (hA f2a3_xw).mpr hbit
+  have hw18 : w' < 18 := by
+    have h1518 : (15 : ℤ) < 18 := by omega
+    have hbit : f2qnf'.1 f2a3_wt = true := @decide_eq_true _ (Classical.dec _) h1518
+    exact (hA f2a3_wt).mpr hbit
+  have hPw : ¬((w' : ℤ) = 0 ∨ w' = 10 ∨ w' = 20) := by
+    intro hcontra
+    have hae : atom_eval F2M (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ)))) f2a3_P := hcontra
+    have hbit := (hA f2a3_P).mp hae
+    have h15P : ¬((15 : ℤ) = 0 ∨ (15 : ℤ) = 10 ∨ (15 : ℤ) = 20) := by omega
+    have hfalse : f2qnf'.1 f2a3_P = false :=
+      @decide_eq_false _ (Classical.dec _) h15P
+    rw [hfalse] at hbit
+    exact Bool.noConfusion hbit
+  -- Step 2: sub₁'s marked bit forces w' ≥ 12
+  have hsub1' : f2qnf'.2 f2sub1 = true := by
+    show (if f2sub1 = f2sub2 then false else f2qnf.2 f2sub1) = true
+    rw [if_neg f2_sub_ne]
+    exact f2_sub1_marked
+  obtain ⟨u, hu⟩ := (hQ f2sub1).mpr hsub1'
+  obtain ⟨h2u, huw, h11u⟩ := f2_sub1_forces w' u hu
+  -- Step 3: split 12 ≤ w' ≤ 16 vs w' = 17
+  by_cases h17 : w' = 17
+  · -- τ needs a fresh point in the empty (17, 18) gap
+    obtain ⟨v, hv⟩ := (hQ f2tau).mpr f2_tau_marked'
+    rw [f2_eval_iff_char] at hv
+    have hwv : w' < v := by
+      have h1516 : (15 : ℤ) < 16 := by omega
+      have hbit : f2tau.1 f2a4_wu = true := @decide_eq_true _ (Classical.dec _) h1516
+      exact f2_bit_transfer _ _ hv f2a4_wu hbit
+    have hv18 : v < 18 := by
+      have h1618 : (16 : ℤ) < 18 := by omega
+      have hbit : f2tau.1 f2a4_ut = true := @decide_eq_true _ (Classical.dec _) h1618
+      exact f2_bit_transfer _ _ hv f2a4_ut hbit
+    omega
+  · -- 12 ≤ w' ≤ 16: the un-marked sub₂ is realized at u = 4
+    have h1216 : (12 : ℤ) ≤ w' ∧ w' ≤ 16 := by omega
+    have hreal : ∃ u₀ : ℤ, nf_eval_nf F2M 1 4
+        (Fin.cons u₀ (Fin.cons w' (Fin.cons 2 (fun _ => (18 : ℤ))))) f2sub2 := by
+      refine ⟨4, ?_⟩
+      rw [f2_eval_iff_char]
+      exact f2_sub2_transfer w' h1216.1 h1216.2
+    have hmarked := (hQ f2sub2).mp hreal
+    have hfalse : f2qnf'.2 f2sub2 = false := by
+      show (if f2sub2 = f2sub2 then false else f2qnf.2 f2sub2) = false
+      rw [if_pos rfl]
+    rw [hfalse] at hmarked
+    exact Bool.noConfusion hmarked
+
+/-- **Finding F2 verdict theorem (F2 CONFIRMED)**: the UZ/SZ-relativized `k = 2` correctness
+    statement for the CURRENT carrier `bracketEndChar_kv` (:3630) is FALSE — for EVERY
+    provider family `charF`. See the F2 verdict record below for the four-element defect
+    breakdown and routing consequence. -/
+theorem f2_relativized_refutation
+    (charF : (j : Nat) → NormalForm f2sig j 1 → Formula) :
+    ¬ (∀ (qnf : NormalForm f2sig 2 3),
+        qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true →
+        qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true →
+        qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true →
+        qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false →
+        qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false →
+        qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false →
+        ∀ (M : OrderedMonadicStructure f2sig),
+          semantic_prior_UZ M f2atomMap → semantic_prior_SZ M f2atomMap →
+          ∀ (x t : M.carrier),
+            ((bracketEndChar_kv f2atomMap f2surj charF 2 qnf).holds M f2atomMap x t ↔
+              ∃ w : M.carrier,
+                nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)) := by
+  intro h
+  -- the six bracket-zone order bits of the (shared) atom layer
+  have h215 : (2 : ℤ) < 15 := by omega
+  have h1518 : (15 : ℤ) < 18 := by omega
+  have h218 : (2 : ℤ) < 18 := by omega
+  have hn152 : ¬((15 : ℤ) < 2) := by omega
+  have hn1815 : ¬((18 : ℤ) < 15) := by omega
+  have hn182 : ¬((18 : ℤ) < 2) := by omega
+  have hxy : f2qnf.1 f2a3_xw = true := @decide_eq_true _ (Classical.dec _) h215
+  have hyt : f2qnf.1 f2a3_wt = true := @decide_eq_true _ (Classical.dec _) h1518
+  have hxt : f2qnf.1 f2a3_xt = true := @decide_eq_true _ (Classical.dec _) h218
+  have hyx : f2qnf.1 f2a3_wx = false := @decide_eq_false _ (Classical.dec _) hn152
+  have hty : f2qnf.1 f2a3_tw = false := @decide_eq_false _ (Classical.dec _) hn1815
+  have htx : f2qnf.1 f2a3_tx = false := @decide_eq_false _ (Classical.dec _) hn182
+  -- instantiate the statement at qnf and at qnf' (same atom layer), in M* at (x, t) = (2, 18)
+  have h1 := h f2qnf hxy hyt hxt hyx hty htx F2M f2_UZ f2_SZ 2 18
+  have h2 := h f2qnf' hxy hyt hxt hyx hty htx F2M f2_UZ f2_SZ 2 18
+  -- qnf is realized at w = 15, so the carrier holds at (2, 18)
+  have hholds : (bracketEndChar_kv f2atomMap f2surj charF 2 f2qnf).holds F2M f2atomMap 2 18 :=
+    h1.mpr ⟨15, nf_characteristic_satisfies F2M 2 3 f2env3⟩
+  -- the carrier cannot see the un-marking; transport and extract a qnf'-witness
+  rw [f2_carrier_eq charF] at hholds
+  exact f2_no_witness (h2.mp hholds)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
