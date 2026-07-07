@@ -7,41 +7,9 @@
 
 ## Overview
 
-The BimodalLogic repository contains a complete, Lean-native training data pipeline for the TM bimodal logic (combining S5 modal logic with linear temporal logic). The pipeline transforms the formal proof system into machine-learning–ready datasets for training an AlphaZero-style proof search assistant.
+**Canonical narrative: `Theories/Bimodal/typst/BimodalReference.typ` Part IV, "The BMLogic Dataset Pipeline"** (task 313 Phase 10). This file is an operational quick-reference (build/run commands, config knobs, schemas) for users of the pipeline; the dual-signal architecture description, the module-count discrepancy note, the Tier-1 feasibility gate results, and the Tier-2 theorem-mining recommendation live in the book chapter, not here, to avoid maintaining two divergent copies.
 
-The pipeline is implemented in 6 Lean modules under `Theories/Bimodal/Automation/`, compiled to two `lake exe` executables, and supplemented by a Python tensor converter script. Together these components enumerate formulas, decide their validity using the formal decision procedure, extract proof traces and countermodels, and export the results as JSONL or structured JSON files.
-
-The downstream consumer is [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness), an AlphaZero-style Python training harness containing the policy network, value network, and MCTS proof search engine. The integration between the two repositories is **artifact-only**: BimodalHarness never calls Lean at runtime. Instead, it reads JSONL files exported by `lake exe dataset_generator` and synced via `make sync-data`.
-
-A Tier 1 feasibility gate (small config, 2/2/8/3-atoms) confirmed that the pipeline is functionally complete and correctly implements the dual-signal architecture. The gate also identified a provability ratio imbalance (3.2% valid vs 15% minimum) that motivates theorem-mining techniques in Tier 2.
-
----
-
-## Architecture: Dual-Signal Training Data
-
-The pipeline produces **dual-signal** training data: two complementary supervisory signals that train the two neural networks in BimodalHarness.
-
-### Positive Signal: Proof Traces (Policy Network)
-
-For each formula decided as valid (a theorem of TM), the pipeline extracts a `ProofTrace` from the derivation tree:
-- **height**: Maximum depth of the proof tree
-- **axioms_used**: Names of axiom schemata applied (e.g., `modal_t`, `prop_k`, `bx_until`)
-- **rules_applied**: Names of inference rules used (e.g., `modus_ponens`, `necessitation`)
-
-The policy network learns to predict *which axioms and rules to apply* at each step of a proof search. Proof traces are its supervision signal.
-
-### Corrective Signal: Countermodels (Value Network)
-
-For each formula decided as invalid (a non-theorem), the pipeline extracts a `SimpleCountermodel`:
-- **trueAtoms**: Atoms that are true in the countermodel
-- **falseAtoms**: Atoms that are false in the countermodel
-- **formula**: The refuted formula
-
-The value network learns to estimate the probability that a given proof state leads to a valid proof. Countermodels are its corrective signal: they teach the network which formula shapes are *not* theorems.
-
-### Enriched Corrective Signal (Available, Not Yet Wired In)
-
-`EnrichedCountermodel.lean` provides a richer variant that retains the full saturated branch from the tableau, including which modal and temporal subformulas held or failed. This gives the value network deeper insight into *why* a formula is invalid. It is implemented and tested but not yet integrated into the main export pipeline (targeted for Tier 2).
+The BimodalLogic repository contains a Lean-native training data pipeline for the TM bimodal logic: it enumerates formulas, decides their validity using the formal decision procedure, extracts proof traces and countermodels, and exports the results as JSONL or structured JSON files, consumed by [BimodalHarness](https://github.com/benbrastmckie/BimodalHarness) (artifact-only integration -- see the book chapter and the Sync Mechanism section below).
 
 ---
 
@@ -707,69 +675,7 @@ Small config: `maxModalDepth=2`, `maxTemporalDepth=2`, `maxSize=8`, 3 atoms (p, 
 
 **Known invalid formulas (20/20)**: All 20 curated non-theorems (bare atoms, non-valid implications, `box p`, `diamond p`, `F(p)`, `P(p)`, contradictions, temporal formulas) correctly decided `.invalid`.
 
-### Dataset Statistics (Small Config)
-
-| Metric | Value |
-|--------|-------|
-| Total formulas | 254,252 |
-| Valid (theorems) | 8,284 (3.2%) |
-| Invalid (non-theorems) | 235,523 (92.6%) |
-| Timeout | 10,445 (4.1%) |
-| Provability ratio | 0.033 |
-
-### Operator Distribution
-
-| Category | Count | Percentage |
-|----------|-------|------------|
-| Implication | 91,152 | 35.9% |
-| Until | 62,480 | 24.6% |
-| Since | 62,480 | 24.6% |
-| Box | 38,136 | 15.0% |
-| Atom | 3 | < 0.01% |
-| Bottom | 1 | < 0.01% |
-
-### Feasibility Gate Results
-
-| Criterion | Target | Actual | Result |
-|-----------|--------|--------|--------|
-| Distinct formulas >= 1K | >= 1,000 | 254,252 | PASS |
-| Provability ratio | 0.15–0.70 | 0.033 | FAIL |
-| Proof height variance | > 2.0 | 0.0 | FAIL |
-| >= 3 categories > 10% | >= 3 | 4 | PASS |
-| < 80% trivially propositional | < 80% | 35.9% | PASS |
-| < 90% same decision | < 90% | 92.6% | FAIL |
-
-**Gate decision: FAILED (3 of 6 hard criteria not met)**
-
-### Root Causes
-
-1. **Provability ratio imbalance**: Random exhaustive enumeration overwhelmingly produces non-theorems. This is expected: most randomly constructed bimodal formulas are not tautologies of TM. Only 3.2% are valid vs the 15% minimum.
-
-2. **Proof height uniformity**: The decision procedure constructs proofs via the tableau method. `extractProofTrace` correctly processes the derivation tree, but tableau-generated proofs have a uniform shallow structure, yielding height 0 and zero variance for all valid formulas.
-
-3. **Category concentration**: 92.6% of formulas are invalid, exceeding the 90% cap. This is a consequence of the provability ratio imbalance.
-
-**Note**: Category diversity is good — 4 categories (Implication, Until, Since, Box) each account for > 10% of formulas. The structural diversity of the enumerator is not the issue; the theoremhood imbalance is.
-
----
-
-## Recommended Next Steps
-
-### Priority 1: Address Provability Ratio (Gate Blocker)
-
-- **Theorem mining**: Generate formulas by composing known axiom instances (apply modus ponens closure to BX axiom schemata). This guarantees new valid formulas at higher complexity.
-- **Biased enumeration**: Use a two-pass strategy — first enumerate from known-valid templates with atom replacement, then pad with random formulas to maintain diversity.
-- **Smaller formula sizes**: For complexity ≤ 4, propositional tautologies are more common. Focusing on this range increases the provability ratio with minimal code changes.
-
-### Priority 2: Address Proof Height Uniformity (Gate Blocker)
-
-- Investigate `extractProofTrace` behavior with the tableau-generated derivation trees. The tableau decision procedure likely produces flat `DerivationTree` structures that do not encode proof depth.
-- Consider using the tableau branch depth as a proxy for proof complexity.
-- Alternatively, implement explicit proof reconstruction that builds derivation trees with recorded depth information.
-
-### Priority 3: Integrate EnrichedCountermodel
-
-Wire `EnrichedCountermodel.lean` into the main export path (`DatasetExport.lean` and/or `DatasetExporter.lean`) so that the full saturated branch content is included in exported records. This activates the richer corrective signal for the value network.
+**Full dataset statistics, operator distribution, the 6-criterion feasibility gate table (3 of 6 FAILED), root-cause analysis, and the Tier-2 theorem-mining/biased-enumeration/EnrichedCountermodel-wiring recommendations are in the book's Part IV dataset-pipeline chapter (task 313 Phase 10) -- not duplicated here.**
 
 ### Planned Tasks
 

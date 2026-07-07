@@ -493,29 +493,29 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2.5 hours.
 - **Depends on:** 4, 5.
 
-### Phase 10: Part IV Chapter — The BMLogic Dataset Pipeline [NOT STARTED]
+### Phase 10: Part IV Chapter — The BMLogic Dataset Pipeline [COMPLETED]
 
 - **Goal:** The book becomes the canonical narrative home of the dual-signal training
   pipeline (move-and-cite from `docs/training/PIPELINE.md`), the centerpiece chapter for the
   primary audience.
 - **Territory:** `chapters/p4-dataset-pipeline.typ`, `docs/training/PIPELINE.md`.
 - **Tasks:**
-  - [ ] Adapt PIPELINE.md's architecture narrative: dual-signal design (proof traces →
+  - [x] Adapt PIPELINE.md's architecture narrative: dual-signal design (proof traces →
         policy network; countermodels → value network), pipeline flow (enumeration →
         oracle labeling → trace/countermodel extraction → JSONL export), the six
         `Automation/` modules and two `lake exe` executables, BimodalHarness artifact-only
         integration (`make sync-data`).
-  - [ ] Keep the honesty content: Tier-1 feasibility gate results including the 3.2%-valid
+  - [x] Keep the honesty content: Tier-1 feasibility gate results including the 3.2%-valid
         provability-ratio imbalance and the Tier-2 theorem-mining response;
         `EnrichedCountermodel` marked implemented-but-not-wired (◇ for Tier-2 plans).
-  - [ ] Frame with the practitioner thesis (decidable fragments = full automation; full
+  - [x] Frame with the practitioner thesis (decidable fragments = full automation; full
         logic = training signal with cheap deterministic checking) — the D-R4/Logos-labs
         pitch grounded in shipped code, cited to `README.md:183-184`.
-  - [ ] Reduce `docs/training/PIPELINE.md` to: operational quick-reference (build/run
+  - [x] Reduce `docs/training/PIPELINE.md` to: operational quick-reference (build/run
         commands, config knobs) + prominent pointer "canonical narrative:
         BimodalReference Part IV" — no duplicated architecture prose (postmortem rule).
-  - [ ] Chapter-header preamble + `#sync-banner(✓, ...)` with ◇ marks on Tier-2/future items.
-  - [ ] Verify: compile green; sync-check green; PIPELINE.md still serves `lake exe` users.
+  - [x] Chapter-header preamble + `#sync-banner(✓, ...)` with ◇ marks on Tier-2/future items.
+  - [x] Verify: compile green; sync-check green; PIPELINE.md still serves `lake exe` users.
 - **Estimated output:** ~320 lines (chapter ~270, PIPELINE.md rewrite ~50).
 - **Done when:** single canonical narrative exists; operational doc still functional; checks green.
 - **Timing:** 2.5 hours.
