@@ -1,5 +1,5 @@
 ---
-next_project_number: 324
+next_project_number: 325
 ---
 
 # TODO
@@ -12,12 +12,13 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321,323 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,323,324 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,324 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -106,24 +107,54 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Reference Book
 
 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
-323 [RESEARCHED] — Full editorial review-and-revise pass over the entire BimodalRefe
+323 [PLANNED] — Full editorial review-and-revise pass over the entire BimodalRefe
 
 ### Kamp_theorem_formalization
 
-321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+324 [RESEARCHED] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
+  └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
 
+### 324. Redesign k2 subbracket arity4 correctness pair
+- **Effort**: 10-14 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md]
+
+**Description**: Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 BracketCarrierCorrectVPrior gate over bracketEndChar_kvE2) is machine-grounded BLOCKED: the landed kvE_subBracket/kvE_subChain (task-321 Stage A, `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean`) supply only a strictly-upward Until chain from the outer witness slot `u`, which structurally cannot reach sigma's own interior zone `zXU = (x,v,u)` (below `u`); and the sole landed connector `kvE_subBracket_implies_subChain` runs bracket-holds -> chain-at-point, the wrong direction for soundness (soundness needs chain-at-point -> full `nf_eval_nf M 1 4` reconstruction). No arity-4 sub-bracket correctness pair (soundness + completeness, the analog of the landed k1v `:2338`/`:2979` templates one arity up, with a cross-body sigma.1 atom-layer recovery channel) exists among landed assets.
+
+DELIVERABLE (this task, standalone, NOT wired into the outer gate): (1) a corrected sub-bracket construction (new, separately-named definitions, e.g. `kvE_subBracket2`/`kvE_subChain2` — exact names at implementer discretion) whose chain(s) reach ALL THREE interior zones `[zXU, zUW, zWT]` (`kvE_subInteriorZones`), e.g. via a Since+Until pair, or by anchoring the chain at `x` instead of `u` — the redesign choice must be validated by actually driving the correctness proof through it, not accepted on type-check/probe grounds alone (the ORIGINAL kvE_subBracket already failed this way: it type-checked and probed clean but had an undiscovered semantic gap). (2) The soundness direction: sigma.1's full atom layer (order + predicate bits over `[u,w,x,t]` or the redesigned chain's evaluation points) recoverable from the new construction; the interior-fold `<=` direction closable for the now-reachable zXU alongside zUW/zWT; off-fiber falsity handled (may assume access to an outer gate-shaped hypothesis analogous to `kvE_gate`, stated as an explicit hypothesis of this task's standalone lemma rather than wired to the real outer gate). (3) The completeness direction: fold `nf_eval_depth1_fold_iff` (:5187) style extraction of inner witnesses, construction of `IntervalPattern.holds` data (Rabinovich Lemma 5.3, order-theoretic), and the arrangement-disjunct closure — the k1v `:2979` template pattern re-derived at arity 4.
+
+BINDING CONSTRAINTS (carry forward verbatim, self-contained):
+- Guards G1-G6 + Corrected Anchor-Cap (source: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md:230-260): G1 no arity-1 collapse; G2 no projection-based third-free-anchor tower; G3 no trivial-top segment on carrier interval types; G4 witnesses stay bracket witnesses, anchor set fixed at {x,t}; G5 follow Cor 5.4/Prop 3.5 F_i chains step-by-step, cite Rabinovich at every chain step, no simp/omega/aesop shortcut (by omega permitted ONLY for Fin-index typing in signatures); G6 carrier stays the two-anchor bracket characteristic, fixed endpoints, codomain may be witness-growing VVecEA2 but anchor count never exceeds 2.
+- Amendment F3: no provider-side pinning — the provider disappears from the joint path; no w = e 1 / x = e 2 residual equation.
+- Do-not-edit landed assets byte-identical, INCLUDING task-321 Stage A/B code (kvE_subFoldBits, kvE_subInteriorZones, kvE_subBracket, kvE_subChain, kvE_subBracket_implies_subChain, kvE2_body + gate-fail, bracketEndChar_kvE2 + two_eq, the Stage-B discrimination lemmas), BracketCarrierCorrectVPrior, ExistProviders, all task-310/311 material, the task-320 probes, bracketEndChar_k1v/_sound/_complete and the full k1v proof kit (:2028-2825). EXPLICIT EXCEPTION (authorized only for this task, not a general license): add NEW, separately-named definitions rather than editing kvE_subBracket/kvE_subChain in place; the originals stay byte-identical and unreferenced by the new work. Do NOT edit kvE2_body/bracketEndChar_kvE2 to re-point at the new construction — that re-pointing is task 321's own resumption work via a future /revise 321, out of scope here. This task's lemmas are stated and proved standalone against nf_eval_nf M 1 4, not yet wired into the outer gate.
+- Consume-do-not-rebuild list: nf_eval_depth1_fold_iff (:5187), nf0_assemble (NfEFold.lean:180), nf_quant_layer_fold_iff (NfEFold:391), zone semantics kit (zoneHolds/EAtomDom), k1v helper kit (k1v_zoneHolds_cons_iff/k1v_zone_consistent/k1v_bracket_extract/k1v_reconstruct_nf3/k1v_sorted_insert/k1v_sorted_realization/k1v_bracket_construct, :2028-2825), bracketEndChar_k1v_sound/_complete direction templates, BracketFormula.bracket_implies_fChainPred (EANegation:660), existsBounded_right (VecEAClosure:265).
+- No EANegation :1090/:1249 (uniform-backward variants) may be consumed.
+- No simp/omega/aesop on chain-construction steps; by omega only for Fin-index typing; cite Rabinovich at every chain step per G5.
+- No sorry on any live path, including intermediate WIP; keep unfinished work uncommitted until green.
+- Literature grounding: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf — Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 3.5 (md:87-94), Def 4.1 (md p.5-6), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152), Cor 5.4 (md:154-157). Report specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/01_blocker-research-successor-k.md Section 2 (Q1-Q3) is the binding amended design spec for the successor-parameterized sigma.2 read the construction must stay compatible with.
+
+VERIFICATION: scoped lake build green after each committed lemma; axiom-clean (propext, Classical.choice, Quot.sound) via lean_verify; no forbidden tactics; no sorry; the new construction's chains machine-verified to reach all three interior zones (a concrete probe/lemma per zone, not merely a type-check); the soundness and completeness lemmas both close standalone.
+
+AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered construction + correctness pair into a v4 phase decomposition that re-points Phase 8 and Phases 9-15 at it), then /implement 321.
+
+---
+
 ### 323. Review and revise bimodalreference uniform standard
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 315, Task 316, Task 317
 - **Research**: [323_review_and_revise_bimodalreference_uniform_standard/reports/01_editorial-review-research.md]
+- **Plan**: [323_review_and_revise_bimodalreference_uniform_standard/plans/01_editorial-uniform-standard.md]
 
 **Description**: Full editorial review-and-revise pass over the entire BimodalReference monograph (Theories/Bimodal/typst/: all chapters/*.typ, front matter, notation) to raise it to a UNIFORM, FINISHED-BOOK standard. PRIMARY DIRECTIVE: write as a completed textbook, not a draft-in-progress. Remove the pervasive "honest account / we state honestly / an honest X" refrain and ALL meta-commentary in which the text narrates its own incompleteness or sync status -- a finished book does not explain what it has not yet done. Where prose currently hedges or editorializes about status (e.g. "an honest account of what is and is not proven", sync-class asides, apologetic framing of soundness-without-completeness, remarks about formalization frontiers), rewrite into confident, neutral expository prose. CRITICAL CONSTRAINT -- honesty-removal must NOT become overclaiming: every factual claim stays accurate. Metaphysical modality remains derived soundness-only (completeness is genuinely open); the decidability frontier still cites NO embargoed Lk results; of countermodels 1-12 only #1/#8/#9 are fully interpreted; no nonexistent local Lean theorems may be asserted. The change is TONE and COMPLETENESS-POSTURE, not truth-value. Where content genuinely remains to be written, do not confess it in prose -- instead place a clean "TO BE CONTINUED..." marker at that point in the body text and a typst comment (// TO BE CONTINUED: ...) stating concretely what remains (which theorem, which worked example, which subsection, which citation). Identify the weakest/thinnest sections by comparison against the strongest chapters (e.g. 03-proof-theory.typ ~356 lines, p5-counterfactual.typ ~505 lines) and bring them up to that bar: consistent expository depth, worked examples, cross-references, definitional completeness. PRESERVE byte-identical: the // SLOT-IN: anchors and the EMBARGO header comment in chapters/p3-decidability-frontier.typ (these belong to embargo-gated task 318 and are categorically distinct from TO-BE-CONTINUED gap markers -- do not conflate or remove them). Every backticked token must remain a resolving Lean name. ACCEPTANCE GATES: `typst compile Theories/Bimodal/typst/BimodalReference.typ` exits 0 and `scripts/typst-sync-check.sh` passes all checks. Deliver a per-chapter quality assessment in the task summary (which sections were revised, which gaps were marked TO BE CONTINUED and why).
 
@@ -144,7 +175,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 320
+- **Dependencies**: Task 320, Task 324
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
