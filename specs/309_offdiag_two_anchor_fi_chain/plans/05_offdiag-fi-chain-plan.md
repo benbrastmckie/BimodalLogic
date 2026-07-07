@@ -1,7 +1,7 @@
 # Implementation Plan: Off-Diagonal Two-Anchor F_i Chain (task 309) — v4
 
 - **Task**: 309 - offdiag_two_anchor_fi_chain
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~8-12 hours (Phases 1-5 + 6.1 + 9 landed; Phase 10 gate NO-GO superseded by spawned GO; Phase 11 prerequisite closure landed via tasks 310/311; 3 open phases R3a/R3b/R4, ~290-520 lines Lean)
 - **Dependencies**: 310 (COMPLETE — `Kamp/NfEFold.lean` E[Σ]-fold landed sorry-free); 311 (COMPLETE — k=1 V-carrier `bracketEndChar_k1v_correct` GO, sorry-free)
 - **Research Inputs**:
@@ -419,7 +419,26 @@ all edit `NfMultiAnchorBridge.lean` / `KampPrior.lean` single-file territory, on
 One agent run per phase (H8). The orchestrator dispatches exactly one open phase per cycle by
 heading-scan; Phases 12-14 are the only open headings.
 
-### Phase 12: Depth-k V-carrier definition `bracketEndChar_kv` (R3a) [NOT STARTED]
+### Phase 12: Depth-k V-carrier definition `bracketEndChar_kv` (R3a) [COMPLETED]
+
+*(Landed 2026-07-06, NfMultiAnchorBridge.lean:3438-3776. Two documented realization deviations,
+both within the phase's settled shape: (1) the depth-`k` char provider is a PARAMETER family
+`charF : (j : Nat) → NormalForm sig j 1 → Formula` rather than a by-name consumption of
+`char_k1` — `char_k1`/`nf_characterizable_temporal_prior` live in KampPrior.lean, which IMPORTS
+NfMultiAnchorBridge (KampPrior.lean:4), so by-name consumption would re-create the import cycle
+removed by task 307 P7; Phase 14 instantiates `charF` at the KampPrior call site (the
+`nf_succ_char_formula`/`exist_tl_fn` parameterization pattern). (2) The depth-`k` fold bit is
+read FIBER-EXISTENTIALLY (`b zs χ = decide (∃ sub, qnf.2 sub = true ∧ zoneSpec = zs ∧
+nfk_projFresh sub = χ)`) rather than via a pointwise depth-`k` assemble — no such assemble
+exists at `k ≥ 1` (D7, NfEFold:373: deeper joint quant layers are not determined by
+`(zs, χ, qnf.1)`); under the gate's off-fiber conjunct this agrees with the `efold_of_nf1`
+pointwise read at k=1 (split-kit bijection), discharged by the documented bridge lemma
+`bracketEndChar_kv_one_eq` (pointwise EQUALITY, the acceptance's simp-bridge branch). New
+helpers: `nfk_take` (depth-`k` prefix restriction), `nfk_projFresh`, private shared successor
+body `kv_body` with `bracketEndChar_k1v_eq_kv_body : … = kv_body … := rfl`. Verification: full
+tree GREEN (1705 jobs); 0 new sorries; `lean_verify` on `bracketEndChar_kv` AND
+`bracketEndChar_kv_one_eq` = exactly `[propext, Classical.choice, Quot.sound]`;
+`bracketEndChar_k1v` untouched.)*
 
 - **Goal:** Generalize the k=1 V-carrier definition `bracketEndChar_k1v` (NfMultiAnchorBridge:1923) to
   a depth-`k` V-carrier `bracketEndChar_kv : BracketEndCharCarrierV sig k`, threading the E[Σ]-fold at
