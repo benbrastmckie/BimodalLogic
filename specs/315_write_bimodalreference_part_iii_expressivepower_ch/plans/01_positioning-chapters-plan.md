@@ -230,7 +230,7 @@ lines), the citation-sensitive scholarly spine, replacing the placeholder senten
 
 ---
 
-### Phase 3: Write p3-ltl-to-tm.typ [NOT STARTED]
+### Phase 3: Write p3-ltl-to-tm.typ [COMPLETED]
 
 **Goal**: Complete chapter "From LTL to TM: Honest Positioning" (~140-190 lines)
 replacing the placeholder sentence.
