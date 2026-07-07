@@ -167,15 +167,15 @@ Phases within the same wave can execute in parallel (this plan is fully sequenti
 
 ---
 
-### Phase 4: p5-counterfactual.typ Sections 7-9 — Countermodels, Vlach, Soundness [NOT STARTED]
+### Phase 4: p5-counterfactual.typ Sections 7-9 — Countermodels, Vlach, Soundness [COMPLETED]
 
 **Goal**: Complete Part III per blueprint items 7-9 with the countermodel-honesty and soundness-strength constraints applied exactly.
 
 **Tasks**:
-- [ ] Section 7 Countermodels: twelve invalid schemata (1088-1104) as a display list; `example` environments for the THREE fully interpreted countermodels only — #1 red ball/Mary (1110-1133), #8 Boris/Olga (1138-1173; note it also invalidates #1 and #11), #9/STA party case with Sobel-sequence footnote (1178-1208, fn 1202); #11/#12 by argument from D6 (1170-1173); ModelChecker-reproducibility footnote (`"disjoint" = True`, fn 1106); **do not claim twelve worked models** (Divergence 7)
-- [ ] Transcribe state assignments character-by-character from the .tex (highest-risk step); keep `γ(x) = a.e.g` form for the #8 world-set discrepancy
-- [ ] Section 8 Tensed counterfactuals via Vlach store/recall: N′ motivation (1223-1242); ↑ᵢ/↓ⁱ syntax + clauses (1251-1270) using Phase 1's `store(i)`/`recall(i)`, **explicitly presented as reusing Part I's operators** with @-reference to `<ch:vlach-blstar>`; regimentations (n)/(n′)/(n″) (1233, 1275, 1288); Jackson jump case d/u/l (1302-1353) citing `@jackson1977causal`; Icosahedron backwards case (1355-1366); Suppositional Accommodation remark (1343)
-- [ ] Section 9 Soundness and open problems: soundness at the paper's exact strength — characteristic schemata proven in the Appendix, enumerated: R1, C2, C3, C5, M3, M4, M5, □GA↔□A (paper 1855 wording); **completeness open** (969, 1500); limitations: events/processes idealized as states (1399-1428), discrete vs continuous time with DN/CO alternatives (1461-1487); not formalized in this repository (external Logos Lean covers the constitutive/dynamical layer partially)
+- [x] Section 7 Countermodels: twelve invalid schemata (1088-1104) as a display list; `example` environments for the THREE fully interpreted countermodels only — #1 red ball/Mary (1110-1133), #8 Boris/Olga (1138-1173; note it also invalidates #1 and #11), #9/STA party case with Sobel-sequence footnote (1178-1208, fn 1202); #11/#12 by argument from D6 (1170-1173); ModelChecker-reproducibility footnote (`"disjoint" = True`, fn 1106); **do not claim twelve worked models** (Divergence 7)
+- [x] Transcribe state assignments character-by-character from the .tex (highest-risk step); keep `γ(x) = a.e.g` form for the #8 world-set discrepancy
+- [x] Section 8 Tensed counterfactuals via Vlach store/recall: N′ motivation (1223-1242); ↑ᵢ/↓ⁱ syntax + clauses (1251-1270) using Phase 1's `store(i)`/`recall(i)`, **explicitly presented as reusing Part I's operators** with @-reference to `<ch:vlach-blstar>`; regimentations (n)/(n′)/(n″) (1233, 1275, 1288); Jackson jump case d/u/l (1302-1353) citing `@jackson1977causal`; Icosahedron backwards case (1355-1366); Suppositional Accommodation remark (1343)
+- [x] Section 9 Soundness and open problems: soundness at the paper's exact strength — characteristic schemata proven in the Appendix, enumerated: R1, C2, C3, C5, M3, M4, M5, □GA↔□A (paper 1855 wording); **completeness open** (969, 1500); limitations: events/processes idealized as states (1399-1428), discrete vs continuous time with DN/CO alternatives (1461-1487); not formalized in this repository (external Logos Lean covers the constitutive/dynamical layer partially)
 
 **Timing**: 1.5 hours
 
