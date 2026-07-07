@@ -572,10 +572,21 @@ verdict is SURGERY-ONLY, the dispatcher runs `/revise 309` (v7) to strike Phases
 re-point Phase 14's dependency at 13.1 — Phases 13.2-13.4 MUST NOT be dispatched on that branch
 without the v7 revision.
 
-### Phase 13.0: F2 decision probe — is the relativized statement still false for the CURRENT carrier at k=2? [IN PROGRESS]
+### Phase 13.0: F2 decision probe — is the relativized statement still false for the CURRENT carrier at k=2? [COMPLETED]
 
 *(Report 05 label: Phase 13.0. First dispatch of v6 — nothing else is dispatched before this
 verdict is recorded.)*
+
+**VERDICT (2026-07-06): F2 CONFIRMED — fully machine-checked, exceeding the deliverable bar.**
+`f2_relativized_refutation` (NfMultiAnchorBridge.lean, F2 probe section after the F1 record;
+axioms exactly `[propext, Classical.choice, Quot.sound]`) refutes the UZ/SZ-relativized k=2
+statement for `bracketEndChar_kv` for EVERY provider family `charF`, in the Prior model
+`M* = (ℤ, <)`, `P = {0,10,20}` with `f2_UZ`/`f2_SZ` machine-checked. The report-05 F-B caveat
+resolved affirmatively: the per-entry type-match check SUCCEEDS on `12 ≤ w' ≤ 16`
+(`f2_sub2_transfer`), with the discrete-gap type `τ` covering `w' = 17`. NO analysis-only
+residue — the counterexample itself is checked, not prose. **Routing: proceed to Phase 13.1
+and the FULL ladder 13.2 → 13.3 → 13.4 → 14** (do NOT collapse to surgery-only; do NOT
+strengthen the kv gate). Additive-only diff verified (822 insertions, 0 deletions, one file).
 
 - **Goal:** Settle finding F2 formally. Report 05 F-B argues (analysis-only, NOT machine-checked)
   that the F1 information loss survives UZ/SZ relativization: `M* = (ℤ, <)`, `P = {0,10,20}`,

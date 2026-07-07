@@ -4755,4 +4755,69 @@ theorem f2_relativized_refutation
   rw [f2_carrier_eq charF] at hholds
   exact f2_no_witness (h2.mp hholds)
 
+/-! ## Task 309 Phase 13.0 finding F2 (CONFIRMED): UZ/SZ relativization alone does NOT rescue
+the Phase-12 carrier at `k = 2` — statement surgery (Phase 13.1) is necessary but NOT
+sufficient; the full ladder 13.2 → 13.3 → 13.4 proceeds
+
+**Def 3.1 evidence first (rule N3)**: Rabinovich's α_j/β_j are ONE-VARIABLE quantifier-free
+formulas over the current (round-enriched) vocabulary (Def 3.1, PDF p.4), so the arity-4
+residual `[x_1, w, x, t]` whose in-fiber markings the F1/F2 counterexamples toggle had no
+Rabinovich counterpart — it is a Lean `nf_eval_nf` arity-growth artifact, and the fold restores
+Def-4.1 fidelity only if its E[Σ]-atom channel keeps the joint content the enriched vocabulary
+carries (Def 4.1, PDF p.5, read at depth `k` per the **p.6 note** — rule N2; Prop 4.3 (p.6) is
+cited ONLY for "the residual is ∨∃∀ over E[Σ] atoms", realized locally via the fold, not via
+literal structural induction). Relativizing the correctness statement to Prior structures
+(`semantic_prior_UZ`/`semantic_prior_SZ`, PriorDefs:22/:33) does not repair that channel: the
+checked refutation `f2_relativized_refutation` (above) instantiates the F1 mechanism inside a
+Prior model.
+
+**Machine-checked refutation record (mirrors the F1 four-element bar; NO analysis residue —
+every step below is a checked lemma in this section)**:
+
+1. **Counterexample**: `M* = (ℤ, <)`, `P = {0, 10, 20}` (report 05 F-B). `f2_UZ`/`f2_SZ`:
+   `M*` satisfies BOTH Prior hypotheses (nonempty `ℤ`-subsets bounded below/above have
+   least/greatest elements) — the escape route that disqualified F1's `(ℚ, <)` model (finite
+   `P` fails UZ) is closed. `qnf :=` the depth-2 characteristic 3-type of `[w, x, t] =
+   [15, 2, 18]`, realized at `w = 15`; `qnf' := qnf` with the `u₂ = 4` sub un-marked.
+   `f2_carrier_eq`: the carrier CANNOT distinguish them — `bracketEndChar_kv_factors` (:3838)
+   at the checked channel agreements `f2_sub_atom_eq` (ordering + env channels), `f2_sub_proj_eq`
+   (fresh point-type channel: `u₁ = 12` and `u₂ = 4` share their complete depth-1 1-type),
+   `f2_hoff`, `f2_hb` (the marked `sub₁` keeps every fiber bit alive), with `f2sub1 ≠ f2sub2`
+   witnessed by the entry `e*` = "`P z` and `x < z < u`" (`f2_estar_in_sub1` /
+   `f2_estar_not_in_sub2` — the `(2, 4)` gap has no `P`-point). `f2_no_witness`: NO `w'`
+   realizes `qnf'` — the atom layer pins `w' ∈ (2, 18) \ P`; `f2_sub1_forces` pins `w' ≥ 12`
+   (the marked `u₁`-sub needs a `P`-point inside `(2, u)`, so `u ≥ 11`); `f2_sub2_transfer`
+   realizes the UN-marked `sub₂` at `u = 4` for every `12 ≤ w' ≤ 16` (the report-05 honest
+   caveat resolved AFFIRMATIVELY: the per-entry type-match check SUCCEEDS, cell-by-cell via
+   `f2_congr5_wshift`); `w' = 17` dies on `τ`'s empty `(w', t) = (17, 18)` gap
+   (`f2_tau_marked'`). The two instances of the relativized `↔` at `(qnf, qnf')` are jointly
+   contradictory — for EVERY provider family `charF` (no provider hypothesis is even needed:
+   the mechanism never evaluates the carrier's formulas, only its factorization).
+2. **Current behavior**: unchanged from F1 item 2 — at successor depth the carrier reads
+   `qnf.2` ONLY through the atom-layer off-fiber Prop and the fiber-existential fold bits
+   (:3661-3665; machine-checked factorization :3838).
+3. **Required behavior**: unchanged from F1 item 3 — the quant layer of `nf_eval_nf` is a
+   per-sub BICONDITIONAL over depth-`k` arity-4 subs; at `k ≥ 2` a fiber holds ≥ 2 subs
+   differing in deeper joint layers (D7, NfEFold:373) that the carrier cannot see.
+4. **Isolation**: the discreteness worry (report 05 F-B caveat: gap-emptiness is
+   depth-1-visible in `ℤ`) is REAL but only reshapes which witness kills which `w'`-range
+   (`sub₂` covers `12-16` — one more point than the report's density sketch — and the
+   discrete-gap type `τ` covers `17`); it does not rescue the carrier. UZ/SZ buys attained
+   first/last occurrences (PriorINF:224), NOT the joint deeper structure of same-fiber subs.
+   The repair remains the v6 per-sub enriched carrier (`bracketEndChar_kvE`, Phases
+   13.2-13.4) — NOT a hypothesis patch, and NOT a gate patch (F1 item 4 stands: no kv-gate
+   strengthening).
+
+**Bracket framing citation (rule N1)**: nothing here re-frames the bracket — the carrier under
+refutation keeps the two-fixed-endpoint `(z_0, z_1)` framing of **Lemma 3.2(2) (PDF p.4) + the
+§5 bracket notation (PDF p.7)**, with **Prop 3.5 (PDF p.5)** cited only for the
+one-free-variable ∃-witness→Until/Since folding mechanism.
+
+**Verdict and routing (plan v6 Phase 13.0 three-way gate)**: **F2 CONFIRMED** — the
+UZ/SZ-relativized `k = 2` correctness statement for `bracketEndChar_kv` is FALSE
+(`f2_relativized_refutation`; `lean_verify` axioms exactly
+`[propext, Classical.choice, Quot.sound]`). Routing consequence: proceed to Phase 13.1
+(statement surgery: `ExistProviders` + `BracketCarrierCorrectVPrior`) AND the FULL ladder
+13.2 → 13.3 → 13.4 → 14. Do NOT collapse to surgery-only; do NOT strengthen the kv gate. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
