@@ -1,5 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
+-- task 326 Phase 4.1: `List.mem_permutations` (membership ↔ `List.Perm`) for the head-coverage helper
+import Mathlib.Data.List.Permutation
 
 /-!
 # EA Negation Closure (Model-Dependent, Forward-Only)
@@ -727,5 +729,38 @@ theorem neg_2var_vec_ea {sig : MonadicSignature}
   simp only [VVecEA2.holds] at h_neg
   push_neg at h_neg
   exact neg_disjunct_list h_INF z0 z1 h_lt v.disjuncts h_neg
+
+/-- **List.permutations head-coverage** (task 326 Phase 4.1). Every element of a list heads some
+    permutation of that list, in the CONS shape `χ :: rest`: given `χ ∈ l`, there exists `rest`
+    with `(χ :: rest) ∈ l.permutations`.
+
+    This is the pure combinatorial helper consumed by Phase 4.2 (`hbelow` assembly in
+    `NfMultiAnchorBridge.lean`). The k=2 sub-witness disjunction ranges over
+    `S_XU.permutations.flatMap …` (`NfMultiAnchorBridge.lean` `:6943-6945`, `:6985`); to select
+    the arrangement whose `lXU` region STARTS with a chosen `zXU`-positive type `χ`, Phase 4.2
+    instantiates `l := S_XU`, `χ := ⟨charBase χ⟩` and reads off `lXU := χ :: rest`. The membership
+    `(χ :: rest) ∈ S_XU.permutations` is exactly the flatMap key (via `List.mem_permutations`),
+    and the CONS head `χ` feeds Phase 3's `bracketFromLists3_fChainPred_head_extract`, whose input
+    bracket has the non-empty `zXU` region `χ0 :: lXU'` (`NfMultiAnchorBridge.lean` `:6794`).
+
+    Proof: `List.append_of_mem` splits `l = s ++ χ :: t`; `List.perm_middle` gives
+    `(s ++ χ :: t) ~ (χ :: (s ++ t))`, whose symmetric form witnesses membership via
+    `List.mem_permutations`. No `DecidableEq` is required (append-split, not `erase`).
+
+    Rabinovich 2014 **Lemma 5.3** (md:137-152) permutation-coverage support (citation optional —
+    this is a domain-free `List` fact). -/
+theorem exists_permutation_cons_head {α : Type*} {l : List α} {χ : α} (hχ : χ ∈ l) :
+    ∃ rest : List α, (χ :: rest) ∈ l.permutations := by
+  obtain ⟨s, t, rfl⟩ := List.append_of_mem hχ
+  exact ⟨s ++ t, List.mem_permutations.mpr List.perm_middle.symm⟩
+
+/-- **List.permutations head-coverage** (`head?` form; task 326 Phase 4.1). The literal statement
+    from the plan: every element of a list heads (`head? = some χ`) some permutation of that list.
+    A direct corollary of `exists_permutation_cons_head` — Phase 4.2 may consume either the CONS
+    form (to destructure the arrangement as `χ :: rest`) or this `head?` form. -/
+theorem exists_permutation_head?_eq {α : Type*} {l : List α} {χ : α} (hχ : χ ∈ l) :
+    ∃ p ∈ l.permutations, p.head? = some χ := by
+  obtain ⟨rest, hrest⟩ := exists_permutation_cons_head hχ
+  exact ⟨χ :: rest, hrest, rfl⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

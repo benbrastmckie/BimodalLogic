@@ -277,17 +277,30 @@ block; if a single agent cannot own both, sequence 3 after 2. No phase edits an 
 - **Verification:** Scoped `lake build` green; no sorry; axiom-clean. Cite Rabinovich 2014
   Lemma 5.3 (md:137-152) for the arrangement/point-type structure.
 
-### Phase 4.1: List.permutations head-coverage helper [NOT STARTED]
+### Phase 4.1: List.permutations head-coverage helper [COMPLETED]
 - **Goal:** Prove the pure combinatorial helper: every element of a list heads some permutation of
   that list (`∀ χ ∈ l, ∃ p ∈ l.permutations, p.head? = some χ`, or the form Phase 4.2 needs). This
   is the isolated, file-independent piece of the hardest step — provable early, in parallel with
   Phase 1, and it satisfies the H2 first-sorry-free-lemma bar.
 - **Tasks:**
-  - [ ] Search Mathlib (`lean_leansearch`/`lean_loogle`) for an existing head-coverage /
+  - [x] Search Mathlib (`lean_leansearch`/`lean_loogle`) for an existing head-coverage /
         `List.permutations` membership lemma before proving from scratch.
-  - [ ] If absent, prove the helper by induction / `List.permutations` structure. NO `simp`/`aesop`
+        *(No single packaged head-coverage lemma exists; assembled from three Mathlib primitives:
+        `List.mem_permutations` (`s ∈ t.permutations ↔ s ~ t`, `Mathlib.Data.List.Permutation`),
+        `List.append_of_mem` (`a ∈ l → ∃ s t, l = s ++ a :: t`, core), and `List.perm_middle`
+        (`(l₁ ++ a :: l₂) ~ (a :: (l₁ ++ l₂))`, core).)*
+  - [x] If absent, prove the helper by induction / `List.permutations` structure. NO `simp`/`aesop`
         as the load-bearing closer.
-  - [ ] State it in the exact shape Phase 4.2 consumes (coordinate the interface in the handoff).
+        *(delivered: `exists_permutation_cons_head` (EANegationClosure.lean :752) — no `simp`/`aesop`;
+        proof = `append_of_mem` split + `mem_permutations.mpr perm_middle.symm`. No `DecidableEq`
+        needed — append-split route, not `erase`. Required additive `import Mathlib.Data.List.Permutation`
+        (EANegationClosure's narrower closure lacked `List.mem_permutations`).)*
+  - [x] State it in the exact shape Phase 4.2 consumes (coordinate the interface in the handoff).
+        *(CONS form `∃ rest, (χ :: rest) ∈ l.permutations` is the make-or-break interface — the head
+        `χ` feeds Phase 3's `bracketFromLists3 (χ0 :: lXU')`, and membership is the `S_XU.permutations`
+        flatMap key. Also shipped the plan's literal `head?` form `exists_permutation_head?_eq`
+        (:761) as a corollary. Interface recorded in `.orchestrator-handoff.json`
+        `continuation_context`.)*
 - **Timing:** ~1-1.5 hours (~60-120 lines)
 - **Depends on:** 0
 - **Files:** EANegationClosure.lean (additive; disjoint from Phase 1's file for genuine parallelism)
