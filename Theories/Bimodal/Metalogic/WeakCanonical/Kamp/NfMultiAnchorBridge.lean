@@ -2294,6 +2294,99 @@ private theorem k1v_bracket_extract_mono {sig : MonadicSignature}
   · intro i
     exact hpt ⟨i.val, by omega⟩
 
+/-- Pure `List.getElem` fact: the middle block `B` of a left-associated triple append
+    `(A ++ B) ++ C` occupies the contiguous index range `[A.length, A.length + B.length)`.
+    Used (task 326 Phase 1) to thread σ-block contiguity through the outer `flatMap` indexing. -/
+private theorem getElem_append3_mid {α : Type*} (A B C : List α) (j : Nat) (hj : j < B.length) :
+    ((A ++ B) ++ C)[A.length + j]'(by
+      simp only [List.length_append]; omega) = B[j]'hj := by
+  rw [List.getElem_append_left (show A.length + j < (A ++ B).length by
+        simp only [List.length_append]; omega),
+      List.getElem_append_right (Nat.le_add_right A.length j)]
+  simp only [Nat.add_sub_cancel_left]
+
+/-- **σ-block contiguity through the outer `flatMap`** (task 326 Phase 1). For a bracket whose
+    left witness list is `l.flatMap (fun b => head b :: tail b)` — the shape of the `kvE2_body`
+    outer carrier `slotsFor lL = lL.flatMap (fun σ => ptSub σ :: pinSlots σ)` (`:5476`) — and an
+    element `a ∈ l`, the order-preserving extraction (`k1v_bracket_extract_mono`) places `a`'s
+    whole block strictly-increasing and strictly below the middle witness `w_outer`, with the block
+    HEAD (`head a` — the interior sub-chain point type `ptSub σ = kvE_subChain2V σ`) realized
+    STRICTLY BELOW every block-TAIL witness (`tail a` — the pin slots `pinSlots σ`). This is the
+    "pins are above the fChainPred F_0 point, both below `w_outer`" ordering that later phases
+    consume for free: the bound `q < w_outer < t` rides the pin's STRUCTURAL slot position in the
+    contiguous block, never a formula literal (litmus PASS).
+
+    Rabinovich 2014 **Lemma 5.1** (md:169-171): the shared-endpoint (`w_outer`) point-insertion
+    bound is carried structurally; the monotone block ordering is the faithful order-preservation
+    that makes the pin's slot-position bound sound. -/
+private theorem bracketFromLists_flatMap_block_extract {sig : MonadicSignature} {α : Type*}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (l : List α) (head : α → TemporalPred) (tail : α → List TemporalPred)
+    (ptW segL segR : TemporalPred) (lR : List TemporalPred)
+    (x t : M.carrier) (a : α) (ha : a ∈ l)
+    (h : (bracketFromLists (l.flatMap (fun b => head b :: tail b)) ptW lR segL segR).holds
+          M atomMap x t) :
+    ∃ w_outer u : M.carrier,
+      x < w_outer ∧ w_outer < t ∧ ptW.eval_at M atomMap w_outer ∧
+      x < u ∧ u < w_outer ∧ (head a).eval_at M atomMap u ∧
+      (∀ p ∈ tail a, ∃ q : M.carrier, u < q ∧ q < w_outer ∧ p.eval_at M atomMap q) := by
+  obtain ⟨pre, post, hl⟩ := List.append_of_mem ha
+  set fB : α → List TemporalPred := fun b => head b :: tail b with hfB
+  have heq : l.flatMap fB = (pre.flatMap fB ++ fB a) ++ post.flatMap fB := by
+    rw [hl, List.flatMap_append, List.flatMap_cons, ← List.append_assoc]
+  rw [heq] at h
+  set pref := pre.flatMap fB with hpref
+  set suff := post.flatMap fB with hsuff
+  obtain ⟨ws, hmono, hrange, hpt⟩ :=
+    k1v_bracket_extract_mono M atomMap ((pref ++ fB a) ++ suff) lR ptW segL segR x t h
+  have hfa_pos : 0 < (fB a).length := by rw [hfB]; simp
+  have hLLlen : ((pref ++ fB a) ++ suff).length
+      = pref.length + (fB a).length + suff.length := by
+    simp only [List.length_append]
+  refine ⟨ws ⟨((pref ++ fB a) ++ suff).length, by omega⟩,
+          ws ⟨pref.length, by omega⟩, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (hrange _).1
+  · exact (hrange _).2
+  · -- ptW @ w_outer : point type at index `lL.length` is `ptW`.
+    have hpm := hpt ⟨((pref ++ fB a) ++ suff).length, by omega⟩
+    have helem_mid : (((pref ++ fB a) ++ suff) ++ ptW :: lR)[((pref ++ fB a) ++ suff).length]'(by
+        simp only [List.length_append, List.length_cons]; omega) = ptW := by
+      rw [List.getElem_append_right (Nat.le_refl _)]
+      simp
+    rw [helem_mid] at hpm
+    exact hpm
+  · exact (hrange _).1
+  · exact hmono _ _ (Fin.mk_lt_mk.mpr (by omega))
+  · -- head a @ u : point type at block base `pref.length` is `(fB a)[0] = head a`.
+    have hpb := hpt ⟨pref.length, by omega⟩
+    have helem_head : (((pref ++ fB a) ++ suff) ++ ptW :: lR)[pref.length]'(by
+        simp only [List.length_append, List.length_cons]; omega) = head a := by
+      rw [List.getElem_append_left (show pref.length < ((pref ++ fB a) ++ suff).length by
+            simp only [List.length_append]; omega),
+          List.getElem_append_left (show pref.length < (pref ++ fB a).length by
+            simp only [List.length_append]; omega),
+          List.getElem_append_right (Nat.le_refl _)]
+      simp [hfB]
+    rw [helem_head] at hpb
+    exact hpb
+  · -- pins: each `p ∈ tail a` sits strictly above `u` and strictly below `w_outer`.
+    intro p hp
+    obtain ⟨j, hj, hpj⟩ := List.mem_iff_getElem.mp hp
+    have hj1 : j + 1 < (fB a).length := by rw [hfB]; simpa using hj
+    refine ⟨ws ⟨pref.length + (j + 1), by omega⟩, ?_, ?_, ?_⟩
+    · exact hmono _ _ (Fin.mk_lt_mk.mpr (by omega))
+    · exact hmono _ _ (Fin.mk_lt_mk.mpr (by omega))
+    · have hpq := hpt ⟨pref.length + (j + 1), by omega⟩
+      have helem_pin : (((pref ++ fB a) ++ suff) ++ ptW :: lR)[pref.length + (j + 1)]'(by
+          simp only [List.length_append, List.length_cons]; omega) = p := by
+        rw [List.getElem_append_left (show pref.length + (j + 1) < ((pref ++ fB a) ++ suff).length by
+              simp only [List.length_append]; omega),
+            getElem_append3_mid pref (fB a) suff (j + 1) hj1]
+        simp only [hfB, List.getElem_cons_succ]
+        exact hpj
+      rw [helem_pin] at hpq
+      exact hpq
+
 /-- Reconstruct the arity-3 depth-0 atom layer at env `[w, x, t]` from the three arity-1
     point evaluations and the six order biconditionals. Private clone of the VecEADecomp
     reconstruction helper (that lemma is `private` there and not importable). Chain step 3

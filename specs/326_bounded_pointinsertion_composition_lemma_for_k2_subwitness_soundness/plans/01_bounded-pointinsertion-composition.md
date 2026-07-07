@@ -180,40 +180,52 @@ helper lives in `EANegationClosure.lean` (genuinely parallel to Phase 1 — disj
 and 3 (same wave, same file) are conflict-free only if each owns a DISTINCT, append-only named lemma
 block; if a single agent cannot own both, sequence 3 after 2. No phase edits an existing declaration.
 
-### Phase 0: Baseline and integrity snapshot [NOT STARTED]
+### Phase 0: Baseline and integrity snapshot [COMPLETED]
 - **Goal:** Establish a green baseline and record the exact consumer signature + landmark line
   numbers the proof will target, so no later phase re-discovers or drifts.
 - **Tasks:**
-  - [ ] Run a scoped `lake build` over `NfMultiAnchorBridge.lean` + `EANegationClosure.lean` +
+  - [x] Run a scoped `lake build` over `NfMultiAnchorBridge.lean` + `EANegationClosure.lean` +
         `EANegation.lean`; confirm green baseline (record any pre-existing sorries/warnings).
-  - [ ] Read and transcribe the exact `kvE_subBracket2V_sound_of_parts` signature (`:7449-7504`),
+        *(baseline green, 1005 jobs; pre-existing sorries: EANegation.lean:834 and :1129 — the
+        documented-unprovable reverse-Cor-5.4 assets; only lint warnings otherwise)*
+  - [x] Read and transcribe the exact `kvE_subBracket2V_sound_of_parts` signature (`:7449-7504`),
         including the `hgate` hypothesis (`:7462` takes `a<t` as INPUT, yields `a<w` at `:7482` —
-        confirming the gate CONSUMES `hx1t`, cannot supply it).
-  - [ ] Confirm current-tree line numbers for `kvE_pinDisjunct` (`~:5374`), `slotsFor`/`mkDisjunct`
-        (`~:8233-8244`), `kvE_subChain2V` (`~:6757-6791`), `bracketFromLists3` (`~:6609-6621`),
-        `k1v_bracket_extract` (`~:2150`), `fChainFrom_base`/`_step` (`EANegation.lean:583`/`616`).
-  - [ ] Verify (`grep`/read) each DO-NOT-EDIT asset is present and record a byte/line fingerprint
-        to check against at Phase 6.
+        confirming the gate CONSUMES `hx1t`, cannot supply it). *(confirmed verbatim; `hbelow` uses
+        `nf_depth0_char_formula atomMap h_surj χ` with `u < x1`; hgate at :7462, `hgate x1 hxx1 hx1t hanchor`
+        at :7482)*
+  - [x] Confirm current-tree line numbers for `kvE_pinDisjunct` (`:5374`), `ptSub`/`pinSlots`/`slotsFor`/`mkDisjunct`
+        (`:5467`/`:5473`/`:5475`/`:5479`), `kvE_subChain2V` (`:6757`), `bracketFromLists3` (`:6609`),
+        `k1v_bracket_extract` (`:2150`), `fChainFrom_base`/`_step` (`EANegation.lean:580`/`616`),
+        `bracket_implies_fChainPred` (`EANegation.lean:660`, hmono unpacked :670).
+  - [x] Verify (`grep`/read) each DO-NOT-EDIT asset is present and record a byte/line fingerprint
+        to check against at Phase 6. *(all present; new work is PURELY ADDITIVE — inserted only
+        between `k1v_bracket_extract` end (:2260) and `k1v_reconstruct_nf3`; no DO-NOT-EDIT asset touched)*
 - **Timing:** ~0.5-1 hour
 - **Depends on:** none
 - **Files:** (read-only) NfMultiAnchorBridge.lean, EANegationClosure.lean, EANegation.lean
 - **Verification:** Scoped `lake build` green; consumer signature + landmark table recorded in the
   dispatch handoff. No file writes to Lean sources.
 
-### Phase 1: Order-preserving outer extraction [NOT STARTED]
+### Phase 1: Order-preserving outer extraction [COMPLETED]
 - **Goal:** Provide an extraction stronger than `k1v_bracket_extract` (`:2150`) that returns the
   MONOTONE witness sequence for σ's block `ptSub σ ++ pinSlots σ`, all in `(x, w_outer)` in
   strictly-increasing order — the ordering `k1v_bracket_extract` forgets (report 01 memory
   candidate 3; the monotone `ws` lives in `IntervalPattern.holds`, surfaced by
   `bracket_implies_fChainPred:670`).
 - **Tasks:**
-  - [ ] State an additive extraction lemma returning the realized points for σ's block in
-        strictly-increasing order with all `< w_outer` and `w_outer < t`.
-  - [ ] Prove it by threading the `hmono` (`ws` increasing sequence) from `IntervalPattern.holds`,
+  - [x] State an additive extraction lemma returning the realized points for σ's block in
+        strictly-increasing order with all `< w_outer` and `w_outer < t`. *(delivered:
+        `bracketFromLists_flatMap_block_extract`, NfMultiAnchorBridge.lean ~:2331; returns
+        `(w_outer, u, x<w_outer, w_outer<t, ptW@w_outer, x<u, u<w_outer, head a@u, ∀p∈tail a ∃q, u<q<w_outer ∧ p@q)`)*
+  - [x] Prove it by threading the `hmono` (`ws` increasing sequence) from `IntervalPattern.holds`,
         mirroring `bracket_implies_fChainPred` (`EANegation.lean:670`), NOT the per-element
-        existential of `k1v_bracket_extract`.
-  - [ ] Thread σ-block contiguity (`ptSub σ ++ pinSlots σ`, `:8236`) through the `flatMap` monotone
-        indexing so downstream phases get "pins are above the fChainPred F_0 points" for free.
+        existential of `k1v_bracket_extract`. *(delivered: `k1v_bracket_extract_mono`,
+        ~:2263 — general monotone extraction exposing the full increasing `ws`; block lemma consumes it)*
+  - [x] Thread σ-block contiguity (`ptSub σ :: pinSlots σ`, `:5476` — note `::`, not `++`) through
+        the `flatMap` monotone indexing so downstream phases get "pins are above the fChainPred F_0
+        points" for free. *(delivered via pure helper `getElem_append3_mid` ~:2288 +
+        `bracketFromLists_flatMap_block_extract`; `head a` = `ptSub σ` sub-chain point realized
+        STRICTLY BELOW every `tail a` = `pinSlots σ` witness — the ordering downstream consumes)*
 - **Timing:** ~1.5-2 hours (~100-200 lines)
 - **Depends on:** 0
 - **Files:** NfMultiAnchorBridge.lean (additive)
