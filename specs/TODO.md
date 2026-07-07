@@ -12,8 +12,8 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,313 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,307,314,315,316,317,318 | 161,187,191,194,230,291,300,309,313 | completeness, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,314,315,316,317,318 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,309 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193,305 | 189,192,196,307 | completeness, automation |
 | 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
 | 5 | 95,299 | 303 | completeness |
@@ -104,12 +104,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-313 [PLANNED] — Design the full extent of the BimodalReference book by examining 
-  └─ 314 [NOT STARTED] — Write chapters/p1-why-worlds.typ for BimodalReference (replacing 
-  └─ 315 [NOT STARTED] — Write the four Part III chapters of BimodalReference (replacing P
-  └─ 316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
-  └─ 317 [NOT STARTED] — Write the two Part V chapters of BimodalReference (replacing Phas
-  └─ 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
+314 [NOT STARTED] — Write chapters/p1-why-worlds.typ for BimodalReference (replacing 
+315 [NOT STARTED] — Write the four Part III chapters of BimodalReference (replacing P
+316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
+317 [NOT STARTED] — Write the two Part V chapters of BimodalReference (replacing Phas
+318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
 
 ### Kamp_theorem_formalization
 
@@ -175,12 +174,13 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ---
 
 ### 313. Design full extent bimodalreference book
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: None
 - **Research**: [313_design_full_extent_bimodalreference_book/reports/01_team-research.md]
 - **Plan**: [313_design_full_extent_bimodalreference_book/plans/01_full-book-design.md]
+- **Summary**: [313_design_full_extent_bimodalreference_book/summaries/01_full-book-design-summary.md]
 
 **Description**: Design the full extent of the BimodalReference book by examining what /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, the BimodalLogic Lean codebase, and /home/benjamin/Philosophy/Papers/PossibleWorlds/Lk/main.tex still offer that is relevant and worth including in Theories/Bimodal/typst/BimodalReference.typ, toward a more complete, well-motivated, and well-explained account of the bimodal system and its applications. The account should: (1) acknowledge the sizable remaining project of carving off decidable fragments for fully automated reasoning, contrasted with training AI systems to reason proof-theoretically and to solve constraint systems, both deterministically checkable and fast; (2) present the system as closest to vanilla LTL extended first with S5 modal operators and then with Vlach operators for cross-referencing traces and times; (3) frame this as an early milestone in combined expressive power from unifying logics, with the full Logos aiming to vastly expand this; (4) plan a next chapter adding constitutive structure to provide the counterfactual semantics and logic of /home/benjamin/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex and /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ, carving off the next dimension of logical structure to yield a tensed counterfactual logic from which metaphysical modality can be derived. Deliverable: an initial design report mapping candidate content from each source to a proposed full book structure, to base further research on.
 
