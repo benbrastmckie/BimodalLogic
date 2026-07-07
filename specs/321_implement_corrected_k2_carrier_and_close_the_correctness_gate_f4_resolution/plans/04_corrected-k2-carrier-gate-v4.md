@@ -341,7 +341,17 @@ forward.
   axiom-clean; no `sorry`; `git diff` shows only the three authorized 321-owned edits + the additive
   `have`, all forbidden-list assets byte-identical.
 
-### Phase 9: Stage C soundness scaffolding — gate entry + k1v extraction reuse over the new carrier [IN PROGRESS] (Stage C)
+### Phase 9: Stage C soundness scaffolding — gate entry + k1v extraction reuse over the new carrier [BLOCKED] (Stage C)
+
+**BLOCKER** (Phase 9; session sess_1783452940_63339e, 2026-07-07): Phase 9's reduction/extraction was
+machine-verified but is, by the plan's own commit-nothing valve, NOT independently green-committable —
+its committable green code merges into Phase 10's `_sound` closure. Phase 10 is now `[BLOCKED]`
+(structural: the reverse Cor 5.4 `fChainPred -> bracket` lift the closure needs is documented
+UNPROVABLE, `EANegation.lean:1217-1234` / report 18 §10.3 — see the Phase 10 BLOCKER below for the full
+diagnosis and re-plan options). Because Phase 9's deliverable is inseparable from that blocked closure,
+Phase 9 cannot reach a committed-green terminus under the current joint-channel design and is marked
+`[BLOCKED]` on the SAME root cause. The Phase-9 entry+extraction recipe itself remains valid and is
+unaffected; only the downstream closure is blocked. Resolve via the Phase 10 re-plan/spawn options.
 
 <!-- Phase 9 progress (session sess_1783452940_63339e, 2026-07-07): The soundness-direction
      reduction+extraction was MACHINE-VERIFIED green-modulo-sorry in an uncommitted WIP and then
