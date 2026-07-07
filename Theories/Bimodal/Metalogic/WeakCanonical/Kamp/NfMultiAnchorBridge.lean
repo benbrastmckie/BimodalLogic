@@ -6913,6 +6913,82 @@ noncomputable def kvE_subChain2V {sig : MonadicSignature}
         (bracketFromLists3 (lXU.map charP) ptX1 (lUW.map charP) ptW (lWT.map charP)
           segXU segUW segWT).fChainPred
 
+/-- **Three-region arrangement selection** (task 325 Phase 2; lift of `k1v_sorted_realization`
+    :2797 from two regions to three). Given three duplicate-free interior-positive type lists
+    `S_XU`/`S_UW`/`S_WT`, each realized somewhere strictly inside its own open region `(x, x1)` /
+    `(x1, w)` / `(w, t)`, produce three arrangements — permutations of the three lists tagged with
+    realizing points — whose combined witness list `psXU ++ x1 :: psUW ++ w :: psWT` (in model
+    order) is strictly increasing. Runs the per-region insertion induction `k1v_sorted_realization`
+    (Rabinovich Lemma 5.1 md:134-135) once per region, then stitches the three sorted blocks around
+    the two fixed interior witnesses `x1`/`w` (Def 3.1 strictly-increasing witnesses md:61-74). The
+    `VVecEA2` disjunction carries every arrangement (rule N5), so the arrangement selected here
+    always names an existing disjunct. -/
+private theorem k1v_sorted_realization3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (S_XU S_UW S_WT : List (NormalForm sig 0 1))
+    (hndXU : S_XU.Nodup) (hndUW : S_UW.Nodup) (hndWT : S_WT.Nodup)
+    (hrealXU : ∀ χ ∈ S_XU, ∃ u, x < u ∧ u < x1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hrealUW : ∀ χ ∈ S_UW, ∃ u, x1 < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hrealWT : ∀ χ ∈ S_WT, ∃ u, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ) :
+    ∃ (psXU psUW psWT : List (NormalForm sig 0 1 × M.carrier)),
+      List.Perm (psXU.map Prod.fst) S_XU ∧
+      List.Perm (psUW.map Prod.fst) S_UW ∧
+      List.Perm (psWT.map Prod.fst) S_WT ∧
+      (psXU.map Prod.snd ++ x1 :: psUW.map Prod.snd ++ w :: psWT.map Prod.snd).Pairwise (· < ·) ∧
+      (∀ p ∈ psXU, (x < p.2 ∧ p.2 < x1) ∧ nf_eval_nf M 0 1 (fun _ => p.2) p.1) ∧
+      (∀ p ∈ psUW, (x1 < p.2 ∧ p.2 < w) ∧ nf_eval_nf M 0 1 (fun _ => p.2) p.1) ∧
+      (∀ p ∈ psWT, (w < p.2 ∧ p.2 < t) ∧ nf_eval_nf M 0 1 (fun _ => p.2) p.1) := by
+  -- Per-region insertion induction (Rabinovich Lemma 5.1 md:134-135), once per region.
+  obtain ⟨psXU, hpermXU, hsortXU, hpropsXU⟩ :=
+    k1v_sorted_realization M x x1 S_XU hndXU hrealXU
+  obtain ⟨psUW, hpermUW, hsortUW, hpropsUW⟩ :=
+    k1v_sorted_realization M x1 w S_UW hndUW hrealUW
+  obtain ⟨psWT, hpermWT, hsortWT, hpropsWT⟩ :=
+    k1v_sorted_realization M w t S_WT hndWT hrealWT
+  refine ⟨psXU, psUW, psWT, hpermXU, hpermUW, hpermWT, ?_, hpropsXU, hpropsUW, hpropsWT⟩
+  -- Stitch the three sorted blocks around `x1` and `w` (Def 3.1 strictly-increasing witnesses).
+  -- Every `psUW` point exceeds `x1`; every point of the left block `psXU ++ x1 :: psUW` is < w.
+  have hUW_gt_x1 : ∀ b ∈ psUW.map Prod.snd, x1 < b := by
+    intro b hb
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hb
+    exact (hpropsUW p hp).1.1
+  have hWT_gt_w : ∀ b ∈ psWT.map Prod.snd, w < b := by
+    intro b hb
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hb
+    exact (hpropsWT p hp).1.1
+  have hleft_lt_w : ∀ a ∈ psXU.map Prod.snd ++ x1 :: psUW.map Prod.snd, a < w := by
+    intro a ha
+    rcases List.mem_append.mp ha with ha | ha
+    · obtain ⟨p, hp, rfl⟩ := List.mem_map.mp ha
+      exact ((hpropsXU p hp).1.2).trans hx1w
+    · rcases List.mem_cons.mp ha with rfl | ha
+      · exact hx1w
+      · obtain ⟨p, hp, rfl⟩ := List.mem_map.mp ha
+        exact (hpropsUW p hp).1.2
+  rw [List.pairwise_append]
+  refine ⟨?_, ?_, ?_⟩
+  · -- Left block `psXU ++ x1 :: psUW` is sorted.
+    rw [List.pairwise_append]
+    refine ⟨hsortXU, ?_, ?_⟩
+    · rw [List.pairwise_cons]
+      exact ⟨hUW_gt_x1, hsortUW⟩
+    · intro a ha b hb
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp ha
+      have hax1 : p.2 < x1 := (hpropsXU p hp).1.2
+      rcases List.mem_cons.mp hb with rfl | hb
+      · exact hax1
+      · exact hax1.trans (hUW_gt_x1 b hb)
+  · -- Right block `w :: psWT` is sorted.
+    rw [List.pairwise_cons]
+    exact ⟨hWT_gt_w, hsortWT⟩
+  · -- Cross: every left-block point < every right-block point.
+    intro a ha b hb
+    have haw : a < w := hleft_lt_w a ha
+    rcases List.mem_cons.mp hb with rfl | hb
+    · exact haw
+    · exact haw.trans (hWT_gt_w b hb)
+
 /-- **Successor-parameter compatibility at the gate instance `j = 0`** (task 325 Phase 1; R4 exit
     criterion). The redesigned carrier's `σ : NormalForm sig 1 4` argument is definitionally the
     `j = 0` instance of the amended successor spec `σ : NormalForm sig (j+1) 4` (report 321 §2

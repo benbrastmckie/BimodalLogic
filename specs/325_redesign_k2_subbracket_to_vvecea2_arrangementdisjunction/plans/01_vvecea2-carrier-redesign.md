@@ -309,7 +309,7 @@ sequential execution is recommended.
 - **Commit point:** `task 325 phase 1: VVecEA2 carrier kvE_subBracket2V + per-region segments + gate`
 - **Depends on:** none
 
-### Phase 2: Three-region construction kit lift (`sorted_realization` / `bracket_construct`) [NOT STARTED]
+### Phase 2: Three-region construction kit lift (`sorted_realization` / `bracket_construct`) [IN PROGRESS]
 - **Goal:** Lift the k1v two-region construction kit (`k1v_sorted_insert` :2751,
   `k1v_sorted_realization` :2797, `k1v_bracket_construct` :2838) one arity up to a **three-region**
   arrangement — the reusable machinery the completeness direction (Phase 4) consumes.
