@@ -1,5 +1,5 @@
 ---
-next_project_number: 320
+next_project_number: 322
 ---
 
 # TODO
@@ -12,11 +12,13 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,319 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,307,314,315,316,317,318 | 161,187,191,194,230,291,300,309,319 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 193,305 | 189,192,196,307 | completeness, automation |
-| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
-| 5 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,319,320 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,314,315,316,317,318,321 | 161,187,191,194,230,291,300,319,320 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -104,7 +106,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-319 [NOT STARTED] — Turn the BimodalReference book (Theories/Bimodal/typst/) from the
+319 [RESEARCHED] — Turn the BimodalReference book (Theories/Bimodal/typst/) from the
   └─ 314 [NOT STARTED] — Write chapters/p1-why-worlds.typ for BimodalReference (replacing 
   └─ 315 [NOT STARTED] — Write the four Part III chapters of BimodalReference (replacing P
   └─ 316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
@@ -113,18 +115,62 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+320 [RESEARCHED] — Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 
+  └─ 321 [RESEARCHED] — Depends on New Task 0's probe result. Task 309 (offdiag_two_ancho
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
 
+### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
+- **Effort**: 10-16 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 320
+- **Research**: [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
+
+**Description**: Depends on New Task 0's probe result. Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 (finding F4, carrier-shape defect -- see New Task 0's description for the full crux goal, counterexample, and literature grounding; do not re-derive, consume Task 0's design spec directly). This task builds the FULL corrected carrier construction for whichever route Task 0's machine-checked probe confirmed viable (b1 repaired witnessZone-consuming pin channel, b2 structural-identity route via nf_eval_unique/nfPred_correct, or b3 nested F_i-chain/bracket recursion for positive interior subs -- exact choice and design spec supplied by Task 0's report), and re-runs the k=2 BracketCarrierCorrectVPrior correctness gate to a GO verdict, using the F4 provider-independent Z-counterexample (M=Z, p={0}, r={13}, x=10, t=20, sigma''=char[14,16,11,20], honest char[14,15,10,20] false) as the mandatory adversarial test case (it MUST fail against the new construction).
+
+Deliverable naming: land the new construction under NEW names (e.g. bracketEndChar_kvE'' or an appropriately named nested-bracket carrier per Task 0's spec) -- additive alongside the landed bracketEndChar_kvE (13.2) and bracketEndChar_kvE' (13.25), following the F1-F4 house style (byte-identical preservation of all prior landed assets; no partial theorem; no sorry on any live path; verdict record either way).
+
+GOAL STATE for the overall chain: this task's GO gate is the prerequisite for task 309's Phase 13.4 (general-k one-step correctness) and Phase 14 (hook rewire discharging KampPrior.lean:351's strategic sorry, target axioms exactly [propext, Classical.choice, Quot.sound]). After this task completes, task 309 resumes via /implement 309 (possibly preceded by /revise 309 for a v8 re-pointing to the new deliverable names, mirroring the v6->v7 re-pointing pattern).
+
+CONSTRAINTS (identical to New Task 0 -- binding, carried from plan v7, do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (no arity-1 collapse G1; no projection-based VecEA2/third-anchor tower G2; no trivial-top segment G3; w stays a bracket WITNESS, anchor set {x,t} fixed at 2 G4; Cor 5.4/Prop 3.5 F_i chains step-by-step with citations, no simp/omega/aesop shortcuts G5; two-anchor fixed-endpoint bracket, VVecEA2 codomain, never a third anchor G6-as-amended). v7 Amendment F3 STILL BINDING: no provider-side pinning. Do NOT consume EANegation :1090/:1249. Do NOT edit any landed asset (bracketEndChar_kv/kvE_body/bracketEndChar_kvE, bracketEndChar_kvE'/kvE'_body/kvE_pinDisjunct/kvE_exclConj, the F1/F2/F3/F4 verdict records, ExistProviders/BracketCarrierCorrectVPrior, all task-310/311 material) -- purely additive. CONSUME-DO-NOT-REBUILD asset list: same as New Task 0 (E[Sigma]-fold engine, k1v proof kit, nf_eval_unique/nfPred_correct, A_past/A_future, bracketBuildLeft/Right, VVecEA2/bracketFromLists/existsBounded_right, fChainFrom/fChainPred, EANegationClosure forward stack proof-side only, prior_hasAttainedINF/HasAttainedINF). LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Def 3.1 md:61-74, Lemma 3.2(2) md:76-79, Prop 4.2 md:100-101, Lemma 5.1 md:134-135, Lemma 5.3 md:137-152, Cor 5.4 md:154-157) -- cite per G5 at every chain step, especially for whichever of b1/b2/b3 Task 0 selected.
+
+---
+
+### 320. Derisk jointpinning route for the k2 carrier gate f4 followup
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
+
+**Description**: Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 with finding F4 (carrier-shape defect, the second-and-LAST gate NO-GO under v7 Amendment F3's one-round uniformization budget). F4 verdict record: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean, final section after :5533. F3 record (defect lineage) is the section immediately preceding it. Orchestrator handoff: specs/309_offdiag_two_anchor_fi_chain/.orchestrator-handoff.json. Plan v7 BLOCKER block + Amendment F3: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md lines ~277-460, 620-680, 893-996.
+
+CRUX GOAL (verbatim, provider-independent): after `P.correct 3 sigma M h_UZ h_SZ t`, hypothesis `he : nf_eval_nf M 1 (3+1) (insertEnv e t) sigma` (`insertEnv e t = [e 0, e 1, e 2, t]`, anchor t LAST, u/w/x REBOUND by the provider's own `e : Fin 3 -> M.carrier`) against goal `nf_eval_nf M 1 (3+1) (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ => t))) sigma`; funext residual `w = e 1`, `x = e 2` UNPINNABLE -- no hypothesis relates provider-chosen e to the honest anchors. Channel (i) `kvE_pinDisjunct` rfl-collapses (probe A) to a positionally-vacuous `charK (nfk_projFresh sigma)` -- the `witnessZone` placement field is discarded, so channel content is a function of the sigma.1-level fresh type alone. Channel (ii) `kvE_exclConj` is negative-subs-only and its honest-safe guard (`hasPos` fiber occupancy) collapses to `Formula.top` when the dishonest positive sub shares the fiber. PROVIDER-INDEPENDENT COUNTEREXAMPLE: M = Z (Prior UZ/SZ trivially), preds p={0}, r={13}, x=10, t=20, dishonest positive sub sigma'' = char[14,16,11,20] (fake anchors sharing only t; on-fiber, zone zXW, fresh type type(14)), honest char[14,15,10,20] marked false -- the k=2 statement is FALSE for bracketEndChar_kvE' under ANY correct depth-1 provider bundle.
+
+GOAL: determine, via machine-checked minimal probes (NOT full carrier surgery), which route can actually carry the discriminating per-sub JOINT content (the sub's inner-witness structure relative to the honest anchor pair (w,x), which rides sigma.2) so a future carrier construction can close the k=2 soundness gap. Test in this order:
+(b1) Repair channel (i) to ACTUALLY consume `witnessZone` (encode which of the seven consistent zones the pin witness occupies AND the two adjacent segment types relative to (x,w,t), per Def 3.1's real pinning discipline -- point type alpha_j AND BOTH adjacent interval types beta_j, beta_{j+1}, Rabinovich PDF p.4 md:61-74), using the landed non-trivial-segment machinery (A_past/A_future NfZoneFlattenNavigable:335/:386, bracketBuildLeft/Right VecEATranslation, both valid only at fixed-endpoint literals per G3/N4). Expected (but NOT to be assumed without a probe) to still fail because a zone-faithful pin only constrains SIGMA's OWN fresh witness placement, not the provider's independently-bound `e`.
+(b2) If (b1) fails: probe whether `nf_eval_unique` (Theories/Bimodal/.../NormalForm.lean:245) / `nfPred_correct` (NfToVecEA.lean:69) can supply a structural-identity hypothesis -- that sigma IS (by the outer recursion's own construction/selection) the complete type realized by the ACTUAL honest quadruple [u,w,x,t], not merely realized by SOME environment -- which would force any other realizing environment (including the provider's e) to agree at each position via completeness-of-complete-types, collapsing the w=e1, x=e2 residual. Check whether this hypothesis is already implicit/derivable at the per-sub obligation site (the zone/arrangement selection machinery in kvE'_body) or would need new plumbing.
+(b3) If (b1) and (b2) both fail: probe a NESTED bracket / F_i-chain recursion for positive interior subs, per Rabinovich Cor 5.4 (md:154-157: F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)) and the negation-closure machinery of Prop 4.2 (md:100-101) / Lemma 5.1 (md:134-135) / Lemma 5.3 (md:137-152, INF splitting via Dedekind completeness) -- instead of flattening an interior positive sub's joint content into a single TL provider literal (P.existF 3 sigma at t), give the sub's own witness u an EXPLICIT two-anchor sub-bracket relative to the CURRENT bracket's real interval decomposition, so the TL evaluation at the actual honest point yields the honest positions directly (the same mechanism that already lets A_past/A_future see (x,t) under G3, generalized one level).
+
+DELIVERABLE: a report (in this new task's own specs/{NNN}_{slug}/reports/ directory) with (i) machine-checked probe results for each route attempted (rfl/exact/type-mismatch states captured, in the F1-F4 house style -- no partial theorem, no sorry landed on any live path), (ii) an explicit GO/NO-GO per route, (iii) for whichever route is GO: a concrete design spec (exact new definition names, signatures, and the demonstrated-closed crux goal) that New Task 2 can implement directly without re-deriving the decision, or (iv) if ALL THREE routes NO-GO in-budget: a new defect record (F5 candidate, F1-F4 house style) with a fresh counterexample proving the joint-pinning content is inexpressible in the current per-sub-literal ExistProviders architecture, plus an explicit recommendation for further escalation (do NOT silently absorb -- this is itself a blocker finding to surface).
+
+CONSTRAINTS (binding, carried from plan v7 -- do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (v7 plan lines 230-260): no arity-1 collapse (G1); no projection-based VecEA2/third-anchor tower (G2); no trivial-top segment on off-diagonal arms (G3); w stays a bracket WITNESS, anchor set {x,t} fixed at 2 (G4); Cor 5.4/Prop 3.5 F_i chains step-by-step with literature citations at every chain step, no simp/omega/aesop shortcuts (G5); carrier is the two-anchor fixed-endpoint bracket, VVecEA2 witness-growing codomain, never a third anchor (G6-as-amended). v7 Amendment F3 STILL BINDING: do NOT attempt provider-side pinning / pinned-anchor converters (the barred (a)-route -- circular with the outer recursion's single-anchor-only converters, finding F-A). Do NOT consume EANegation :1090/:1249 (uniform-backward sorries) -- needing them is itself a blocker finding to record and escalate, never silent absorption. Do NOT edit any landed asset: bracketEndChar_kv/kvE_body/bracketEndChar_kvE (13.2, F1/F2 exhibits), bracketEndChar_kvE'/kvE'_body/kvE_pinDisjunct/kvE_exclConj (13.25, the F4 exhibit), the F1/F2/F3/F4 verdict records, ExistProviders/BracketCarrierCorrectVPrior (13.1), all task-310/311 material -- any probe code is scratch-only (discarded before commit or landed as a clearly-marked non-consumed verdict addition, per house style). CONSUME-DO-NOT-REBUILD (task 309 asset list, plan v7 lines 142-197): the E[Sigma]-fold engine (nf_quant_layer_fold_iff NfEFold:391, nf_eval_depth1_fold_iff NfMultiAnchorBridge:5187, nf0_split_assemble NfEFold:235); the k1v proof kit (:2028-2825) and direction templates (:2325/:2966); nf_eval_unique (NormalForm:245) / nfPred_correct (NfToVecEA:69); A_past/A_future/_correct (NfZoneFlattenNavigable:335/:386); bracketBuildLeft/Right/_correct (VecEATranslation, fixed-endpoint literals only); VVecEA2/bracketFromLists/existsBounded_right (VecEAFormula:271, NfMultiAnchorBridge:1883, VecEAClosure:265); fChainFrom/fChainPred (EANegation:552/:567); the EANegationClosure forward stack (:401/:492/:646/:720) + neg_orderedPointsExist_is_vbracket (EANegation:347) -- PROOF-SIDE ONLY; prior_hasAttainedINF (PriorINF:224) + HasAttainedINF (PriorINF:202). LITERATURE GROUNDING (cite per G5 at every step): /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 -- Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152), Cor 5.4 (md:154-157).
+
+---
+
 ### 319. Restructure bimodalreference clean textbook
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 313
+- **Research**: [319_restructure_bimodalreference_clean_textbook/reports/01_restructure-clean-textbook-research.md]
 
 **Description**: Turn the BimodalReference book (Theories/Bimodal/typst/) from the task-313 living-monograph-with-sync-scaffolding into a clean, direct textbook presentation at a rigorous formal level, with clear but concise explanations where essential — a natural unified whole with a clear narrative arc. Keep whatever can be kept (Part II and Part IV prose is essentially puzzle-free). Four workstreams:
 
@@ -311,7 +357,7 @@ GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 310, Task 311
+- **Dependencies**: Task 310, Task 311, Task 320, Task 321
 - **Research**: [307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md]
 - **Plan**: [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
 

@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 320,
+  "next_project_number": 322,
   "active_projects": [
     {
       "project_number": 313,
@@ -92,12 +92,14 @@
       "parent_task": 307,
       "dependencies": [
         310,
-        311
+        311,
+        320,
+        321
       ],
       "description": "Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).\n\nOff the live import path, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound]. Deliverables (see task 307 report 03 SS4): (1) segment-carrying A_past/A_future + _correct in Kamp/NfZoneFlattenNavigable.lean (drop the forced `trivial top`; via bracketBuildLeft/Right_correct directly, ~80-120 lines); (2) nf_char2_past_formula / nf_char2_future_formula : NormalForm sig (k+1) 2 -> Formula with `temporal_truth M atomMap t (nf_char2_past_formula ... sub_nf) <-> exists x, x < t AND nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf` (future dual with t < x) — the F_i chain: outer NON-trivial-segment bracket from t to x, endpoint at x = the arity-2 characteristic of sub_nf at [x,t], quant layer (per qnf : NormalForm sig k 3) flattened via nf_zone_flatten_navigable_brick, residual arity-3 zones discharged by the depth-k IH (exist_tl_fn_k / nf_nvar_exist_all_depths); ~300-500 lines, recursion on k — the load-bearing new object; (3) rewire KampPrior.lean:350 to A := nf_char2_past_formula ... OR A_diag ... OR nf_char2_future_formula ..., proven via nf_zone_exists_trichotomy_k1 disjunction-elim + the three _correct lemmas, replacing the :350 sorry (live-path sorries 2 -> 1, :353 remains downstream per task 305 scope).\n\nCONSUME, DO NOT REBUILD (all sorry-free): all of task 308 (NfMultiAnchorBridge: nf_char2_formula deliverable 1, nf_zone_flatten_navigable(_brick) deliverable 2, nf_char2_zone_split5, nf_char2_atom_part(_correct), nf_quant_clause_tl); A_diag/_correct + the trichotomy nf_zone_exists_trichotomy_k1 (task 307 Phases 2-3); depth-0 bases diagDup/diagDup_eval_zero/renameNF_eval_diag0; bracketBuildLeft/Right(_correct) (Kamp/VecEATranslation.lean); the navigated pillars as the diagonal-only degenerate case. The import-cycle relocation is ALREADY LANDED (commit 69998c02d) — NfMultiAnchorBridge no longer imports KampPrior.\n\nFORBIDDEN ROUTES (obstruction guards G1-G5, task 307 report 03 SS4): G1 no arity-1 collapse of the off-diagonal (refuted, report 02 SS1; NfDepth0Generalized:1691-1719). G2 no projection-based VecEA2 / third-free-anchor tower (refuted, specs/305 report 40; R2). G3 no trivial-top segment on the off-diagonal arms (report 03 SS1.2/SS2.3: a closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment). G4 w stays a bracket witness (env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap). G5 follow Cor 5.4 F_i chains step-by-step (F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)); no simp/omega/aesop shortcut of a chain step (literature-fidelity policy).\n\nLITERATURE GROUNDING: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Lemma 5.1 md:134-152, Corollary 5.4 md:154-157).\n\nGOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit.",
       "created": "2026-07-06T16:50:37Z",
-      "last_updated": "2026-07-07T02:26:46Z",
-      "session_id": "sess_1783391112_643ec1",
+      "last_updated": "2026-07-07T06:51:23Z",
+      "session_id": "sess_1783407047_bca709",
       "artifacts": [
         {
           "type": "report",
@@ -120,7 +122,8 @@
           }
         ]
       },
-      "next_artifact_number": 6
+      "next_artifact_number": 6,
+      "previous_status": "implementing"
     },
     {
       "project_number": 305,
@@ -2514,7 +2517,7 @@
     {
       "project_number": 319,
       "project_name": "restructure_bimodalreference_clean_textbook",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "typst",
       "topic": "reference-book",
       "description": "Turn the BimodalReference book (Theories/Bimodal/typst/) from the task-313 living-monograph-with-sync-scaffolding into a clean, direct textbook presentation at a rigorous formal level, with clear but concise explanations where essential — a natural unified whole with a clear narrative arc. Keep whatever can be kept (Part II and Part IV prose is essentially puzzle-free). Four workstreams:\n\n(1) REMOVE the status-symbol/sync-class machinery from the compiled book (maintenance burden, distracting): every top-of-chapter #sync-banner(...) call; the Reading-Guide/Sync-Class Legend box (BimodalReference.typ:145-161) and the symbol mentions in the abstract (:141) and title-page Sources list (:111-118); the dominant-class labels passed to #part-divider (template.typ:236-253); the 'How to Read This Book If You Are an AI' symbol protocol (00-introduction.typ:151-160); the Closing Status Table with Roadmap column (p2-decidability-practice.typ:67-75) and the status table in 04-metalogic.typ; the #planned-chapter-notice stub boxes (drop the stub includes or replace with a single plain sentence). Update scripts/typst-sync-check.sh accordingly: KEEP check 1 (backticked Lean names must resolve — this is valuable and cheap) and check 4 (generated-count freshness) if counts are kept; REMOVE checks 2-3 (banner presence, legend discipline). Generated counts (#axiom-count, #rule-count etc. from generated/status.typ via scripts/typst-status-counts.sh) MAY be kept since they are script-generated, but remove sorry-count reporting from reader-facing text. Retire SYNC-MAP.md's PDF-governing role to a repo-side dev doc (update its header to say so).\n\n(2) REAL CITATIONS to the three relevant papers. bibliography.bib currently has entries but ZERO @-citations in any .typ file, so the References section renders empty. Add/complete entries with links and wire @-citations into the prose where the papers are drawn on: the possible-worlds draft as forthcoming in JPL with URL https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf; the published papers https://link.springer.com/article/10.1007/s10992-025-09793-8 (Counterfactual Worlds, JPL) and https://link.springer.com/article/10.1007/s10992-021-09612-w (Identity and Aboutness, JPL) — verify exact titles/years/DOIs against the Springer pages. Convert plain-text author-year mentions (Vlach 1973, Cresswell 1990, Kamp, Burgess, Xu, Reynolds, Doets) into real citations, adding bib entries as needed and clearing verify-before-print notes where confirmed. Embargo unchanged: no Lk entry (bibliography.bib:8-10).\n\n(3) RESTRUCTURE to the new narrative arc. Rewrite 00-introduction.typ as a brief introduction that motivates the project directly (unifying tense and modality in a verified system; no philosophical puzzles, no AI-practitioner-first framing) and outlines the structure: the book begins with the bimodal system, then applications, then adds the counterfactual logic, and concludes with the constitutive logic. Concretely: Part on the bimodal system = current Part II chapters plus the honest LTL-to-TM positioning and Vlach/BL-star material (p3-ltl-to-tm.typ, p3-vlach-blstar.typ) folded in as direct formal chapters, and p3-decidability-frontier.typ kept as a concise formal chapter PRESERVING the // SLOT-IN: anchors (needed by task 318); Part on applications = current Part IV (proof automation, dataset pipeline, dual verification) with the AI-training motivation kept brief; Part on counterfactual logic (p5-counterfactual.typ); concluding Part on constitutive logic (p5-constitutive.typ) — NOTE this inverts the current Part V chapter order, do not silently keep constitutive-then-counterfactual. DROP the philosophical-puzzle chapters from the book plan: p1-why-worlds.typ (eternalism critique, Prior chess-loop, Peircean/Ockhamist, Montague, Kaplan) and p3-open-future.typ (sea-battle, open future) — present their essential technical content (perpetuity principles, Determined/Deterministic, actuality operators) directly where formally relevant, with citations to the papers instead of puzzle-driven exposition.\n\n(4) REVISE follow-up tasks 314-318 in specs/state.json (descriptions, and dependencies to include this task) to align with the new direction, then regenerate TODO.md: 314 (Part I motivation chapter) shrinks to whatever brief motivation the introduction still needs or is abandoned/absorbed — decide and record; 315 drops p3-open-future as a puzzle chapter and drops all sync-banner/sync-class-legend constraints (backtick-resolution constraint stays); 316 (JSONL appendix) re-anchors its pointer since 'How to Read This Book If You Are an AI' is gone — decide the replacement location; 317 must match the new counterfactual-then-constitutive order and drop banner constraints; 318 unchanged except banner constraints removed (SLOT-IN anchors preserved by workstream 3).\n\nVerify: typst compile green (page count will change), revised scripts/typst-sync-check.sh green, References section renders non-empty with the three papers.",
@@ -2524,8 +2527,63 @@
         313
       ],
       "created": "2026-07-07T06:49:15Z",
-      "last_updated": "2026-07-07T06:49:15Z",
-      "artifacts": []
+      "last_updated": "2026-07-07T06:58:39Z",
+      "artifacts": [
+        {
+          "path": "specs/319_restructure_bimodalreference_clean_textbook/reports/01_restructure-clean-textbook-research.md",
+          "type": "report",
+          "summary": "Restructure clean textbook research"
+        }
+      ],
+      "session_id": "sess_1783407088_0a61d1"
+    },
+    {
+      "project_number": 320,
+      "project_name": "derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 with finding F4 (carrier-shape defect, the second-and-LAST gate NO-GO under v7 Amendment F3's one-round uniformization budget). F4 verdict record: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean, final section after :5533. F3 record (defect lineage) is the section immediately preceding it. Orchestrator handoff: specs/309_offdiag_two_anchor_fi_chain/.orchestrator-handoff.json. Plan v7 BLOCKER block + Amendment F3: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md lines ~277-460, 620-680, 893-996.\n\nCRUX GOAL (verbatim, provider-independent): after `P.correct 3 sigma M h_UZ h_SZ t`, hypothesis `he : nf_eval_nf M 1 (3+1) (insertEnv e t) sigma` (`insertEnv e t = [e 0, e 1, e 2, t]`, anchor t LAST, u/w/x REBOUND by the provider's own `e : Fin 3 -> M.carrier`) against goal `nf_eval_nf M 1 (3+1) (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ => t))) sigma`; funext residual `w = e 1`, `x = e 2` UNPINNABLE -- no hypothesis relates provider-chosen e to the honest anchors. Channel (i) `kvE_pinDisjunct` rfl-collapses (probe A) to a positionally-vacuous `charK (nfk_projFresh sigma)` -- the `witnessZone` placement field is discarded, so channel content is a function of the sigma.1-level fresh type alone. Channel (ii) `kvE_exclConj` is negative-subs-only and its honest-safe guard (`hasPos` fiber occupancy) collapses to `Formula.top` when the dishonest positive sub shares the fiber. PROVIDER-INDEPENDENT COUNTEREXAMPLE: M = Z (Prior UZ/SZ trivially), preds p={0}, r={13}, x=10, t=20, dishonest positive sub sigma'' = char[14,16,11,20] (fake anchors sharing only t; on-fiber, zone zXW, fresh type type(14)), honest char[14,15,10,20] marked false -- the k=2 statement is FALSE for bracketEndChar_kvE' under ANY correct depth-1 provider bundle.\n\nGOAL: determine, via machine-checked minimal probes (NOT full carrier surgery), which route can actually carry the discriminating per-sub JOINT content (the sub's inner-witness structure relative to the honest anchor pair (w,x), which rides sigma.2) so a future carrier construction can close the k=2 soundness gap. Test in this order:\n(b1) Repair channel (i) to ACTUALLY consume `witnessZone` (encode which of the seven consistent zones the pin witness occupies AND the two adjacent segment types relative to (x,w,t), per Def 3.1's real pinning discipline -- point type alpha_j AND BOTH adjacent interval types beta_j, beta_{j+1}, Rabinovich PDF p.4 md:61-74), using the landed non-trivial-segment machinery (A_past/A_future NfZoneFlattenNavigable:335/:386, bracketBuildLeft/Right VecEATranslation, both valid only at fixed-endpoint literals per G3/N4). Expected (but NOT to be assumed without a probe) to still fail because a zone-faithful pin only constrains SIGMA's OWN fresh witness placement, not the provider's independently-bound `e`.\n(b2) If (b1) fails: probe whether `nf_eval_unique` (Theories/Bimodal/.../NormalForm.lean:245) / `nfPred_correct` (NfToVecEA.lean:69) can supply a structural-identity hypothesis -- that sigma IS (by the outer recursion's own construction/selection) the complete type realized by the ACTUAL honest quadruple [u,w,x,t], not merely realized by SOME environment -- which would force any other realizing environment (including the provider's e) to agree at each position via completeness-of-complete-types, collapsing the w=e1, x=e2 residual. Check whether this hypothesis is already implicit/derivable at the per-sub obligation site (the zone/arrangement selection machinery in kvE'_body) or would need new plumbing.\n(b3) If (b1) and (b2) both fail: probe a NESTED bracket / F_i-chain recursion for positive interior subs, per Rabinovich Cor 5.4 (md:154-157: F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)) and the negation-closure machinery of Prop 4.2 (md:100-101) / Lemma 5.1 (md:134-135) / Lemma 5.3 (md:137-152, INF splitting via Dedekind completeness) -- instead of flattening an interior positive sub's joint content into a single TL provider literal (P.existF 3 sigma at t), give the sub's own witness u an EXPLICIT two-anchor sub-bracket relative to the CURRENT bracket's real interval decomposition, so the TL evaluation at the actual honest point yields the honest positions directly (the same mechanism that already lets A_past/A_future see (x,t) under G3, generalized one level).\n\nDELIVERABLE: a report (in this new task's own specs/{NNN}_{slug}/reports/ directory) with (i) machine-checked probe results for each route attempted (rfl/exact/type-mismatch states captured, in the F1-F4 house style -- no partial theorem, no sorry landed on any live path), (ii) an explicit GO/NO-GO per route, (iii) for whichever route is GO: a concrete design spec (exact new definition names, signatures, and the demonstrated-closed crux goal) that New Task 2 can implement directly without re-deriving the decision, or (iv) if ALL THREE routes NO-GO in-budget: a new defect record (F5 candidate, F1-F4 house style) with a fresh counterexample proving the joint-pinning content is inexpressible in the current per-sub-literal ExistProviders architecture, plus an explicit recommendation for further escalation (do NOT silently absorb -- this is itself a blocker finding to surface).\n\nCONSTRAINTS (binding, carried from plan v7 -- do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (v7 plan lines 230-260): no arity-1 collapse (G1); no projection-based VecEA2/third-anchor tower (G2); no trivial-top segment on off-diagonal arms (G3); w stays a bracket WITNESS, anchor set {x,t} fixed at 2 (G4); Cor 5.4/Prop 3.5 F_i chains step-by-step with literature citations at every chain step, no simp/omega/aesop shortcuts (G5); carrier is the two-anchor fixed-endpoint bracket, VVecEA2 witness-growing codomain, never a third anchor (G6-as-amended). v7 Amendment F3 STILL BINDING: do NOT attempt provider-side pinning / pinned-anchor converters (the barred (a)-route -- circular with the outer recursion's single-anchor-only converters, finding F-A). Do NOT consume EANegation :1090/:1249 (uniform-backward sorries) -- needing them is itself a blocker finding to record and escalate, never silent absorption. Do NOT edit any landed asset: bracketEndChar_kv/kvE_body/bracketEndChar_kvE (13.2, F1/F2 exhibits), bracketEndChar_kvE'/kvE'_body/kvE_pinDisjunct/kvE_exclConj (13.25, the F4 exhibit), the F1/F2/F3/F4 verdict records, ExistProviders/BracketCarrierCorrectVPrior (13.1), all task-310/311 material -- any probe code is scratch-only (discarded before commit or landed as a clearly-marked non-consumed verdict addition, per house style). CONSUME-DO-NOT-REBUILD (task 309 asset list, plan v7 lines 142-197): the E[Sigma]-fold engine (nf_quant_layer_fold_iff NfEFold:391, nf_eval_depth1_fold_iff NfMultiAnchorBridge:5187, nf0_split_assemble NfEFold:235); the k1v proof kit (:2028-2825) and direction templates (:2325/:2966); nf_eval_unique (NormalForm:245) / nfPred_correct (NfToVecEA:69); A_past/A_future/_correct (NfZoneFlattenNavigable:335/:386); bracketBuildLeft/Right/_correct (VecEATranslation, fixed-endpoint literals only); VVecEA2/bracketFromLists/existsBounded_right (VecEAFormula:271, NfMultiAnchorBridge:1883, VecEAClosure:265); fChainFrom/fChainPred (EANegation:552/:567); the EANegationClosure forward stack (:401/:492/:646/:720) + neg_orderedPointsExist_is_vbracket (EANegation:347) -- PROOF-SIDE ONLY; prior_hasAttainedINF (PriorINF:224) + HasAttainedINF (PriorINF:202). LITERATURE GROUNDING (cite per G5 at every step): /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 -- Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152), Cor 5.4 (md:154-157).",
+      "effort": "6-10 hours",
+      "parent_task": 309,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
+      ],
+      "created": "2026-07-07T06:58:58Z",
+      "last_updated": "2026-07-07T06:58:58Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md",
+          "summary": "Spawn analysis from parent task 309 (F4 blocker)"
+        }
+      ]
+    },
+    {
+      "project_number": 321,
+      "project_name": "implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Depends on New Task 0's probe result. Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 (finding F4, carrier-shape defect -- see New Task 0's description for the full crux goal, counterexample, and literature grounding; do not re-derive, consume Task 0's design spec directly). This task builds the FULL corrected carrier construction for whichever route Task 0's machine-checked probe confirmed viable (b1 repaired witnessZone-consuming pin channel, b2 structural-identity route via nf_eval_unique/nfPred_correct, or b3 nested F_i-chain/bracket recursion for positive interior subs -- exact choice and design spec supplied by Task 0's report), and re-runs the k=2 BracketCarrierCorrectVPrior correctness gate to a GO verdict, using the F4 provider-independent Z-counterexample (M=Z, p={0}, r={13}, x=10, t=20, sigma''=char[14,16,11,20], honest char[14,15,10,20] false) as the mandatory adversarial test case (it MUST fail against the new construction).\n\nDeliverable naming: land the new construction under NEW names (e.g. bracketEndChar_kvE'' or an appropriately named nested-bracket carrier per Task 0's spec) -- additive alongside the landed bracketEndChar_kvE (13.2) and bracketEndChar_kvE' (13.25), following the F1-F4 house style (byte-identical preservation of all prior landed assets; no partial theorem; no sorry on any live path; verdict record either way).\n\nGOAL STATE for the overall chain: this task's GO gate is the prerequisite for task 309's Phase 13.4 (general-k one-step correctness) and Phase 14 (hook rewire discharging KampPrior.lean:351's strategic sorry, target axioms exactly [propext, Classical.choice, Quot.sound]). After this task completes, task 309 resumes via /implement 309 (possibly preceded by /revise 309 for a v8 re-pointing to the new deliverable names, mirroring the v6->v7 re-pointing pattern).\n\nCONSTRAINTS (identical to New Task 0 -- binding, carried from plan v7, do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (no arity-1 collapse G1; no projection-based VecEA2/third-anchor tower G2; no trivial-top segment G3; w stays a bracket WITNESS, anchor set {x,t} fixed at 2 G4; Cor 5.4/Prop 3.5 F_i chains step-by-step with citations, no simp/omega/aesop shortcuts G5; two-anchor fixed-endpoint bracket, VVecEA2 codomain, never a third anchor G6-as-amended). v7 Amendment F3 STILL BINDING: no provider-side pinning. Do NOT consume EANegation :1090/:1249. Do NOT edit any landed asset (bracketEndChar_kv/kvE_body/bracketEndChar_kvE, bracketEndChar_kvE'/kvE'_body/kvE_pinDisjunct/kvE_exclConj, the F1/F2/F3/F4 verdict records, ExistProviders/BracketCarrierCorrectVPrior, all task-310/311 material) -- purely additive. CONSUME-DO-NOT-REBUILD asset list: same as New Task 0 (E[Sigma]-fold engine, k1v proof kit, nf_eval_unique/nfPred_correct, A_past/A_future, bracketBuildLeft/Right, VVecEA2/bracketFromLists/existsBounded_right, fChainFrom/fChainPred, EANegationClosure forward stack proof-side only, prior_hasAttainedINF/HasAttainedINF). LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Def 3.1 md:61-74, Lemma 3.2(2) md:76-79, Prop 4.2 md:100-101, Lemma 5.1 md:134-135, Lemma 5.3 md:137-152, Cor 5.4 md:154-157) -- cite per G5 at every chain step, especially for whichever of b1/b2/b3 Task 0 selected.",
+      "effort": "10-16 hours",
+      "parent_task": 309,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        320
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"
+      ],
+      "created": "2026-07-07T06:58:58Z",
+      "last_updated": "2026-07-07T06:58:58Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md",
+          "summary": "Spawn analysis from parent task 309 (F4 blocker)"
+        }
+      ]
     }
   ],
   "artifacts": [
@@ -2574,6 +2632,7 @@
     "code-quality",
     "dataset-enhancement",
     "literature",
-    "reference-book"
+    "reference-book",
+    "kamp_theorem_formalization"
   ]
 }
