@@ -58,9 +58,9 @@ Identifier/Type-Signature columns are vacuous by construction.
 | Research report F-4 (Divergence Map) | reports/01, "F-4" table | Review §"Literature fidelity vs shortcuts" (table reproduced with citations) | done (02 §5) |
 | Research report F-5 (what worked) | reports/01, "F-5" | Review §"What worked and why" | done (02 §6) |
 | Research report F-6 + D1-D3 | reports/01, "F-6"/"Decisions" | Review §"Root-cause synthesis" | done (02 §7) |
-| Research report Recommendations 1-7 | reports/01, "Recommendations" | Recommendations doc §1-§7 (expanded to dispatchable form) | pending |
+| Research report Recommendations 1-7 | reports/01, "Recommendations" | Recommendations doc §1-§7 (expanded to dispatchable form) | done (03 §1) |
 | Rabinovich 2014 anchors (Def 3.1, Lemma 3.2(2), Prop 3.5, Prop 4.2, Lemma 5.1/5.3, Cor 5.4) | ~/Projects/Literature/sources/rabinovich_2014/...md:61-157 (per report Appendix) | Cited wherever the review makes a fidelity claim | done (02 §5) |
-| Task 320 alignment audit (b3 GO-gate litmus) | specs/320_.../reports/01:23-37 (as cited in report F-4) | Recommendations doc §"Litmus design gate" | pending |
+| Task 320 alignment audit (b3 GO-gate litmus) | specs/320_.../reports/01:23-37 (as cited in report F-4) | Recommendations doc §"Litmus design gate" | done (03 §3) |
 
 Citation discipline: page/proposition-level anchors are inherited from the research report
 verbatim; the review does not weaken any citation to a bare author-year form.
@@ -229,22 +229,29 @@ territory is trivially the task directory).
 - **Timing:** ~1 hour.
 - **Depends on:** 1
 
-### Phase 3: Verification pass and wrap-up [NOT STARTED]
+### Phase 3: Verification pass and wrap-up [COMPLETED]
 
 - **Goal:** Verify citation integrity and deliverable completeness; write the implementation
   summary.
 - **Tasks:**
-  - [ ] Spot-verify the five highest-value Lean anchors cited in the review via grep (within
+  - [x] Spot-verify the five highest-value Lean anchors cited in the review via grep (within
     the <=5 spot-check budget): `KampPrior.lean:351` (live blocker sorry),
     `NfMultiAnchorBridge.lean` F1 :3884, F2 :3957, F3 :5204, F4 :5532. Annotate the review's
     Provenance note with "anchors re-verified 2026-07-07"; if any anchor drifted, record the
-    drift in the Provenance note (do not silently renumber).
-  - [ ] Structural check of both deliverables: all required sections present (Phase 1's eight;
+    drift in the Provenance note (do not silently renumber). *(all five verified in place,
+    zero drift; Provenance annotated)*
+  - [x] Structural check of both deliverables: all required sections present (Phase 1's eight;
     Phase 2's four blocks); every table row in F-1/F-3/F-4 reproductions carries a citation;
-    no "TODO"/placeholder text remains.
-  - [ ] Confirm the two settled-decision guards held: zero `.lean` modifications
-    (`git status --porcelain -- Theories/` empty) and zero new tasks in `specs/state.json`.
-  - [ ] Write the implementation summary at
+    no "TODO"/placeholder text remains. *(pass; no fixes needed)*
+  - [x] Confirm the two settled-decision guards held: zero `.lean` modifications
+    (`git status --porcelain -- Theories/` empty) and zero new tasks in `specs/state.json`
+    *(deviation: altered — Theories/ status shows concurrent-session drift not owned by this
+    task: `Theories/Bimodal/Automation/BenchmarkAnchors.lean` (modified) and
+    `Theories/Bimodal/Automation/MachineAppendixExport.lean` (untracked), benchmark/export
+    work unrelated to task 322, left uncommitted for its owning session; this task wrote zero
+    `.lean` files across all phases, so the binding constraint holds. state.json
+    active_projects count = 72, unchanged)*
+  - [x] Write the implementation summary at
     `specs/322_review_discrete_logic_completeness_retrospective/summaries/01_completeness-retrospective-review-summary.md`
     (what was produced, verification results, the CANDIDATE task list for user decision).
 - **Estimated output:** ~90 lines (summary + small annotations to the two documents).
@@ -256,16 +263,19 @@ territory is trivially the task directory).
 
 ## Testing & Validation
 
-- [ ] `reports/02_completeness-retrospective-review.md` exists with all eight required sections
+- [x] `reports/02_completeness-retrospective-review.md` exists with all eight required sections
   (grep for the eight section headings).
-- [ ] `reports/03_streamlining-recommendations.md` exists with 7 recommendation entries, the
-  barred-routes register, the litmus checklist, and 2-4 CANDIDATE task descriptions.
-- [ ] Citation integrity: no load-bearing table row lacking a `specs/`, `Theories/`, or
+- [x] `reports/03_streamlining-recommendations.md` exists with 7 recommendation entries, the
+  barred-routes register, the litmus checklist, and 2-4 CANDIDATE task descriptions (3).
+- [x] Citation integrity: no load-bearing table row lacking a `specs/`, `Theories/`, or
   Rabinovich `md:` citation (manual scan in Phase 3).
-- [ ] `git status --porcelain -- Theories/` empty after every phase (no Lean changes).
-- [ ] `jq '.active_projects | length' specs/state.json` unchanged by this task's implementation
-  (no task creation).
-- [ ] Summary file exists at `summaries/01_completeness-retrospective-review-summary.md`.
+- [x] `git status --porcelain -- Theories/` empty after every phase (no Lean changes)
+  *(deviation: altered — `.lean`-ownership form used; concurrent-session drift in
+  `Theories/Bimodal/Automation/` (Phases 2-3) and `Theories/Bimodal/typst/bibliography.bib`
+  (Phase 2) not owned by this task; this task made zero Theories/ edits)*.
+- [x] `jq '.active_projects | length' specs/state.json` unchanged by this task's implementation
+  (no task creation; 72 before and after).
+- [x] Summary file exists at `summaries/01_completeness-retrospective-review-summary.md`.
 
 ## Artifacts & Outputs
 

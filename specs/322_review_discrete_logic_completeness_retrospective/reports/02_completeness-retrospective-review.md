@@ -309,3 +309,11 @@ and the churn-counter undercount; **Medium-High** to the F2 machine-check claim 
 + dossier, not re-run first-hand); and **Medium** to the ~113 sorry-token count
 (filter-sensitive, resolved in §8). One contradiction (42 vs 113 sorry counts) was surfaced
 and resolved; no unresolved contradictions remain.
+
+**Anchors re-verified 2026-07-07** (task 322 Phase 3 spot-check, read-only): all five
+highest-value Lean anchors confirmed at their cited lines with zero drift —
+`KampPrior.lean:351` (live `sorry`, the `n=1` arm; full path
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean`),
+`NfMultiAnchorBridge.lean` F1 `:3884` (Phase 13 finding-F1 record), F2 `:3957`
+(`f2_relativized_refutation` verdict block), F3 `:5204` (Phase 13.3 NO-GO record), and
+F4 `:5532` (Phase 13.35 NO-GO record, finding F4).
