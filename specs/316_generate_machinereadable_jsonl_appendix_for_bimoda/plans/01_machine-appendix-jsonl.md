@@ -1,7 +1,7 @@
 # Implementation Plan: Task #316 — Machine-Readable JSONL Appendix for BimodalReference
 
 - **Task**: 316 - Generate machine-readable JSONL appendix for BimodalReference
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: None (task 319 restructure already landed; re-anchor target `chapters/p4-dataset-pipeline.typ` exists)
 - **Research Inputs**: specs/316_generate_machinereadable_jsonl_appendix_for_bimoda/reports/01_machinereadable-jsonl-appendix.md
