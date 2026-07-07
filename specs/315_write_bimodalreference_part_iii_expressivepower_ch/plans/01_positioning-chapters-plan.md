@@ -122,11 +122,14 @@ execution — is safe; the research-recommended sequence is 2 before 3.)
       `hmv2004`, `hirschHodkinsonKurucz2002`, `arecesBlackburnMarx2001`,
       `tenCateFranceschet2005`, `franceschetEtAl2003`, `demriLazic2009`,
       `alurHenzinger1994`, `goranko1996` (Lk/Lk.bib:260).
-- [ ] Add from `possible_worlds.bib` (normalize keys to the book's all-lowercase
+- [x] Add from `possible_worlds.bib` (normalize keys to the book's all-lowercase
       convention): `Pnueli1977`, `Clarke1982`, `Emerson1986`, `Lamport1980` (or
       `lamport1983`), `Vardi2001`, `Belnap2001`, `Rumberg2016`, `Thomason1984`,
       `Kurucz2003` (optional), `Clarkson2014`, `Finkbeiner2015`, `Finkbeiner2016`,
       `Finkbeiner2017`.
+      [DEVIATION: optional `Kurucz2003` skipped — it is the same GKWZ 2003 book already
+      present as `gabbay2003manyvalued`; chapters cite the existing key. Optional
+      `lind2021` added and cited (shifts of finite type).]
 - [ ] Record the final key spelling for every added entry (needed by Phases 2-4 when
       citing) — keep a short key list in the phase commit message or progress notes.
 - [ ] Preserve the embargo header comment at the top of `bibliography.bib` (NO Lk
@@ -374,7 +377,7 @@ natural insertion point of its future content.
 
 ---
 
-### Phase 5: Full verification, backtick and embargo audit [NOT STARTED]
+### Phase 5: Full verification, backtick and embargo audit [COMPLETED]
 
 **Goal**: Both gates green on the finished book; adversarial audit of the three
 predictable failure modes (backticks, Kamp attribution, embargo leakage).
