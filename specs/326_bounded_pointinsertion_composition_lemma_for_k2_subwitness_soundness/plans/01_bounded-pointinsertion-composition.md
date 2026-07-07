@@ -306,18 +306,32 @@ block; if a single agent cannot own both, sequence 3 after 2. No phase edits an 
 - **Files:** EANegationClosure.lean (additive; disjoint from Phase 1's file for genuine parallelism)
 - **Verification:** Scoped `lake build` green; no sorry; axiom-clean; helper type-checks standalone.
 
-### Phase 4.2: hbelow assembly [NOT STARTED] (HARDEST — make-or-break)
+### Phase 4.2: hbelow assembly [COMPLETED] (HARDEST — make-or-break)
 - **Goal:** For an arbitrary `zXU`-positive `χ` (`χ ∈ S_XU`), exhibit the arrangement whose `lXU`
   permutation starts with `χ` (via Phase 4.1 coverage over `kvE_subChain2V` `:6787-6791`), read its
   F_0 below-witness `u_χ < q` from Phase 3, and conclude `∃ u, x < u < q ∧ ⟨charBase χ⟩.eval_at u` —
   i.e. `hbelow(q)`. This is the single highest-risk step (report 01 lines 140-158).
 - **Tasks:**
-  - [ ] Instantiate Phase 4.1 coverage: pick the arrangement whose `lXU` heads with `χ`.
-  - [ ] Pull that arrangement's Phase-3 F_0 below-witness `u_χ` and its `< q` bound.
-  - [ ] Assemble the per-`χ` `hbelow` witness; universally quantify over `χ ∈ S_XU`.
-  - [ ] If assembly blocks (perm coverage interface mismatch OR monotone `< q` placement gap):
-        do NOT land a live-path sorry — invoke Rollback/Contingency (report NOT-PROVABLE-AS-SPEC
-        with the exact blocked sub-step and goal state).
+  - [x] Instantiate Phase 4.1 coverage: pick the arrangement whose `lXU` heads with `χ`.
+        *(delivered: `exists_permutation_cons_head` on `S_XU = Finset.univ.toList.filter (bits zXU)`
+        gives `rest` with `(χ::rest) ∈ S_XU.permutations`; that arrangement's `fChainPred` is a
+        member of `kvE_subChain2V σ` via `List.mem_flatMap`+`List.mem_map` — the flatMap carries
+        EVERY permutation; `lUW`/`lWT` take the identity permutation `List.Perm.refl`.)*
+  - [x] Pull that arrangement's Phase-3 F_0 below-witness `u_χ` and its `< q` bound.
+        *(delivered via new helper `bracketFromLists3_fChainPred_at_head` (:7001) — companion to
+        Phase 3's `_head_extract` consuming `fChainPred.eval_at u` DIRECTLY (the shape the OUTER
+        bracket realizes each slot as) rather than an inner `.holds`; reads `pointTypes 0 =
+        ⟨charBase χ⟩` at `u` via `fChainFrom_step` at index 0. The below-witness IS `u`; the `< q`
+        bound rides `hreal` (Phase 1's monotone block ordering — fChainPreds precede pins), never a
+        formula literal (LITMUS PASS).)*
+  - [x] Assemble the per-`χ` `hbelow` witness; universally quantify over `χ ∈ S_XU`.
+        *(delivered: `kvE_subChain2V_hbelow_of_realized` (:7036) — `∀ χ, σ.2 (nf0_assemble
+        kvE_sub2_zXU χ σ.1) = true → ∃ u, x < u ∧ u < q ∧ ⟨charBase χ⟩.eval_at u`, given
+        `hreal : ∀ fcp ∈ kvE_subChain2V σ, ∃ u, x < u ∧ u < q ∧ fcp.eval_at u`. Scoped build green
+        (1005 jobs); axioms = [propext, Classical.choice, Quot.sound] (no sorryAx).)*
+  - [x] If assembly blocks: invoke Rollback/Contingency. *(NOT triggered — assembly landed. The
+        make-or-break CAVEAT is DISCHARGED: perm-coverage↔below-witness interface matched via the
+        flatMap-carries-every-permutation membership + F_0 head read; no relapse, no live-path sorry.)*
 - **Timing:** ~2-3 hours (~120-200 lines)
 - **Depends on:** 2, 3, 4.1
 - **Files:** NfMultiAnchorBridge.lean (additive)

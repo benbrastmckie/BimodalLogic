@@ -7018,6 +7018,48 @@ private theorem bracketFromLists3_fChainPred_at_head {sig : MonadicSignature}
   rw [hpt0] at hstep
   exact hstep.1
 
+/-- **`hbelow` assembly over the sub-chain arrangements** (task 326 Phase 4.2 — make-or-break).
+    For an arbitrary `zXU`-positive `χ` (`σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`, i.e.
+    `χ ∈ S_XU`), given that every sub-chain `fChainPred` slot of `kvE_subChain2V σ` is realized
+    strictly inside `(x, q)` (`hreal` — the finished order facts delivered by Phase 1's block
+    extraction placing all sub-chain points below the first pin `q`, Phase 2), produce a
+    below-anchor witness `∃ u, x < u ∧ u < q ∧ ⟨charBase χ⟩.eval_at u`. This is `hbelow(q)`.
+
+    Route (Rabinovich 2014 **Lemma 5.3**, md:137-152 — permutation/arrangement coverage; forward
+    direction only, Cor 5.4 SIDESTEPPED): `exists_permutation_cons_head` (Phase 4.1) exhibits the
+    arrangement whose `lXU` permutation HEADS with `χ`; that arrangement's `fChainPred` is a member
+    of `kvE_subChain2V σ` (the `S_XU.permutations` flatMap carries EVERY permutation), so `hreal`
+    realizes it at some `u ∈ (x, q)`; `bracketFromLists3_fChainPred_at_head` reads off the F_0 head
+    `pointTypes 0 = ⟨charBase χ⟩` AT `u`. The `< q` bound rides Phase 1's monotone block ordering
+    carried in `hreal`, NEVER a formula literal (litmus PASS). Universally quantified over
+    `χ ∈ S_XU`. -/
+private theorem kvE_subChain2V_hbelow_of_realized {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x q : M.carrier)
+    (hreal : ∀ fcp ∈ kvE_subChain2V charBase charK σ,
+        ∃ u : M.carrier, x < u ∧ u < q ∧ fcp.eval_at M atomMap u) :
+    ∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+      ∃ u : M.carrier, x < u ∧ u < q ∧
+        (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u := by
+  intro χ hbit
+  -- (1) `χ ∈ S_XU`: the `zXU` fold bit is set, so `χ` survives the interior-positive filter.
+  --     `exists_permutation_cons_head` (Phase 4.1) hands the arrangement whose `lXU` HEADS with `χ`.
+  obtain ⟨rest, hperm⟩ := exists_permutation_cons_head (χ := χ)
+      (l := Finset.univ.toList.filter (fun ν => σ.2 (nf0_assemble kvE_sub2_zXU ν σ.1)))
+      (List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ _), hbit⟩)
+  -- (2) That arrangement's `fChainPred` is a member of `kvE_subChain2V σ` (the `S_XU.permutations`
+  --     flatMap carries EVERY permutation; `lUW`/`lWT` take the identity permutation). Realize it
+  --     in `(x, q)` via `hreal` — the membership proof fills the `fcp` slot.
+  obtain ⟨u, hxu, huq, hu⟩ := hreal _ (by
+    simp only [kvE_subChain2V, List.mem_flatMap, List.mem_map]
+    exact ⟨χ :: rest, hperm, _, List.mem_permutations.mpr (List.Perm.refl _),
+      _, List.mem_permutations.mpr (List.Perm.refl _), rfl⟩)
+  -- (3) F_0 head read-off (Phase 4.2 helper): the below-witness IS the realization point `u`.
+  exact ⟨u, hxu, huq, bracketFromLists3_fChainPred_at_head M atomMap _ _ _ _ _ _ _ _ _ u hu⟩
+
 /-- **Three-region arrangement selection** (task 325 Phase 2; lift of `k1v_sorted_realization`
     :2797 from two regions to three). Given three duplicate-free interior-positive type lists
     `S_XU`/`S_UW`/`S_WT`, each realized somewhere strictly inside its own open region `(x, x1)` /
