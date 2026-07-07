@@ -110,7 +110,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-324 [BLOCKED] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
+324 [PARTIAL] — Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 Bra
   └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
@@ -170,7 +170,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered VV
 
 ### 324. Redesign k2 subbracket arity4 correctness pair
 - **Effort**: 10-14 hours
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 325
