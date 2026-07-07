@@ -183,18 +183,18 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 
 ---
 
-### Phase 4: Rewrite 01-syntax.typ and Update 02-semantics.typ [NOT STARTED]
+### Phase 4: Rewrite 01-syntax.typ and Update 02-semantics.typ [COMPLETED]
 
 **Goal**: Correct the syntax chapter to the Until/Since primitive basis and complete the semantics chapter with the Reflection constraint and Until/Since truth clauses (its strict truth conditions are already correct and must be preserved).
 
 **Tasks**:
-- [ ] `01-syntax.typ:14-18`: replace the 6-primitive set `{atom, bot, imp, box, H, G}` with `{atom, bot, imp, box, untl, snce}` per `Syntax/Formula.lean:70-85` (Until/Since, Burgess convention: `untl(event, guard)` = Burgess `U(alpha, beta)`, event at witness, guard at intermediates — verify convention comment in source)
-- [ ] Present H/G/F/P as derived definitions with their actual Lean names (`Formula.all_future`, `Formula.all_past`, `Formula.some_future`, `Formula.some_past`, `Syntax/Formula.lean:109-155`), transcribing each definition from source
-- [ ] Add a note that the paper's base TM language (`possible_worlds.tex:~446`) uses H/G as primitives and that Lean's Until/Since basis is a conservative presentation change — Lean wins per task priority
-- [ ] `02-semantics.typ:34-38`: add the third Task Frame constraint, **Reflection** (`w =>_x u ==> u =>_{-x} w`), alongside Nullity and Compositionality; transcribe the formal statement from the Lean task-frame definition (locate in `Semantics/` — likely `TaskFrame.lean`; cite the found file:line in the chapter), cross-check paper `:902-907`
-- [ ] Add a `leanReflection` (or consistently-named) notation macro to `notation/bimodal-notation.typ`
-- [ ] Add truth clauses for `untl`/`snce` transcribed from `Semantics/Truth.lean`; PRESERVE the existing strict `<` truth conditions for H/G at `02-semantics.typ:85-90` (already correct — matches `Truth.lean:10-17` and paper `:948-949`)
-- [ ] Compile check
+- [x] `01-syntax.typ:14-18`: replace the 6-primitive set `{atom, bot, imp, box, H, G}` with `{atom, bot, imp, box, untl, snce}` per `Syntax/Formula.lean:70-85` (Until/Since, Burgess convention: `untl(event, guard)` = Burgess `U(alpha, beta)`, event at witness, guard at intermediates — verify convention comment in source)
+- [x] Present H/G/F/P as derived definitions with their actual Lean names (`Formula.all_future`, `Formula.all_past`, `Formula.some_future`, `Formula.some_past`, `Syntax/Formula.lean:109-155`), transcribing each definition from source
+- [x] Add a note that the paper's base TM language (`possible_worlds.tex:~446`) uses H/G as primitives and that Lean's Until/Since basis is a conservative presentation change — Lean wins per task priority
+- [x] `02-semantics.typ:34-38`: add the third Task Frame constraint, **Reflection** (`w =>_x u ==> u =>_{-x} w`), alongside Nullity and Compositionality; transcribe the formal statement from the Lean task-frame definition (locate in `Semantics/` — likely `TaskFrame.lean`; cite the found file:line in the chapter), cross-check paper `:902-907`
+- [x] Add a `leanReflection` (or consistently-named) notation macro to `notation/bimodal-notation.typ`
+- [x] Add truth clauses for `untl`/`snce` transcribed from `Semantics/Truth.lean`; PRESERVE the existing strict `<` truth conditions for H/G at `02-semantics.typ:85-90` (already correct — matches `Truth.lean:10-17` and paper `:948-949`)
+- [x] Compile check
 
 **Timing**: 2 hours
 
