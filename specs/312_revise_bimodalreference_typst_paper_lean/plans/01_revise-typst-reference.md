@@ -131,14 +131,14 @@ Phases within the same wave can execute in parallel (Phases 2, 3, 4 touch disjoi
 **Goal**: Full rewrite of the Metalogic chapter to describe the actual live `Metalogic/` tree, the Phase-0-confirmed primary completeness path, and an honest regenerated sorry inventory.
 
 **Tasks**:
-- [ ] Replace the architecture description: real subdirectory tree is `Core/`, `Bundle/`, `Algebraic/`, `BXCanonical/`, `WeakCanonical/`, `ConservativeExtension/`, `Decidability/`, `Relational/`, `SoundnessLemmas/` plus `Completeness.lean`, `Soundness.lean`, `DenseSoundness.lean`, `DiscreteSoundness.lean` (verify listing against filesystem at write time)
-- [ ] Delete all references to `semantic_weak_completeness`, `FMP/SemanticCanonicalModel.lean`, `Representation/`, and the "primary sorry-free completeness theorem" claim (all stale per SYNC-MAP; live only in Boneyard)
-- [ ] Present the Phase-0-confirmed primary completeness approach with its actual top-level theorem name(s) and file location; give the other active approaches (Bundle/BFMCS, BXCanonical, WeakCanonical, Algebraic) scoped secondary treatment — none silently dropped. Authorities: Phase 0 decision record; `Metalogic/Metalogic.lean:9-24`; `Metalogic/BXCanonical/Completeness.lean`; `Metalogic/README.md:11-13,21,23-28` (narrative cross-check only, self-warned stale)
-- [ ] Replace the sorry narrative: completeness is NOT sorry-free; use Phase 1 regenerated per-directory counts (research baseline: ~38-42 outside Boneyard — Chronicle/ChronicleToCountermodel ~20, WeakCanonical/TruthLemma ~20, Transfer ~17, BXCanonical/Completeness ~8, plus Kamp modules — but the landed numbers MUST be Phase 1's, stamped with date/commit). State plainly that Soundness (all 3 variants) and Perpetuity P1-P6 are sorry-free (as confirmed in Phase 1)
-- [ ] Delete the reflexive-semantics design narrative at `04-metalogic.typ:154` and its mis-citation of `02-semantics.typ`; the current semantics is strict/irreflexive per `Semantics/Truth.lean:10-17` and `Metalogic/Metalogic.lean:9-16` (task 93)
-- [ ] Fix the chapter-abstract axiom count (currently "15") to the Phase 1 regenerated count, consistent with ch03
-- [ ] Add a short "work in progress" note for the Kamp/discrete-completeness closure (tasks 303/309-311) without presenting results as settled
-- [ ] Compile check: `typst compile Theories/Bimodal/typst/BimodalReference.typ build/BimodalReference.pdf`
+- [x] Replace the architecture description: real subdirectory tree is `Core/`, `Bundle/`, `Algebraic/`, `BXCanonical/`, `WeakCanonical/`, `ConservativeExtension/`, `Decidability/`, `Relational/`, `SoundnessLemmas/` plus `Completeness.lean`, `Soundness.lean`, `DenseSoundness.lean`, `DiscreteSoundness.lean` (verify listing against filesystem at write time)
+- [x] Delete all references to `semantic_weak_completeness`, `FMP/SemanticCanonicalModel.lean`, `Representation/`, and the "primary sorry-free completeness theorem" claim (all stale per SYNC-MAP; live only in Boneyard)
+- [x] Present the Phase-0-confirmed primary completeness approach with its actual top-level theorem name(s) and file location; give the other active approaches (Bundle/BFMCS, BXCanonical, WeakCanonical, Algebraic) scoped secondary treatment — none silently dropped. Authorities: Phase 0 decision record; `Metalogic/Metalogic.lean:9-24`; `Metalogic/BXCanonical/Completeness.lean`; `Metalogic/README.md:11-13,21,23-28` (narrative cross-check only, self-warned stale)
+- [x] Replace the sorry narrative: completeness is NOT sorry-free; use Phase 1 regenerated per-directory counts (research baseline: ~38-42 outside Boneyard — Chronicle/ChronicleToCountermodel ~20, WeakCanonical/TruthLemma ~20, Transfer ~17, BXCanonical/Completeness ~8, plus Kamp modules — but the landed numbers MUST be Phase 1's, stamped with date/commit). State plainly that Soundness (all 3 variants) and Perpetuity P1-P6 are sorry-free (as confirmed in Phase 1)
+- [x] Delete the reflexive-semantics design narrative at `04-metalogic.typ:154` and its mis-citation of `02-semantics.typ`; the current semantics is strict/irreflexive per `Semantics/Truth.lean:10-17` and `Metalogic/Metalogic.lean:9-16` (task 93)
+- [x] Fix the chapter-abstract axiom count (currently "15") to the Phase 1 regenerated count, consistent with ch03
+- [x] Add a short "work in progress" note for the Kamp/discrete-completeness closure (tasks 303/309-311) without presenting results as settled
+- [x] Compile check: `typst compile Theories/Bimodal/typst/BimodalReference.typ build/BimodalReference.pdf`
 
 **Timing**: 2 hours
 
