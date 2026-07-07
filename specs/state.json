@@ -2873,6 +2873,11 @@
       "artifacts": [
         {
           "type": "research",
+          "path": "specs/326_bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness/reports/01_proof-strategy.md",
+          "summary": "Proof strategy + H4 adversarial verdict PROVABLE-WITH-CAVEAT: pin-slot route (bounded charK anchor from .holds, no reverse Cor 5.4); residual risk isolated to Phase 4 hbelow assembly"
+        },
+        {
+          "type": "research",
           "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 321 (bounded point-insertion prerequisite)"
         }

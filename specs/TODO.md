@@ -124,7 +124,9 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
-- **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md]
+- **Research**:
+  - [326_bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness/reports/01_proof-strategy.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md]
 
 **Description**: Deliver ONE standalone, machine-verified Lean 4 lemma (name at implementer's discretion, e.g. `kvE_subBracket2V_holds_of_outer` or `kvE2_sub_bounded_recover`) that, given the outer bracket's soundness-side data over (x, t) -- the outer witness w with x < w < t, the per-slot extract `fChainPred @ u` for the sub sigma's spliced chain with u in (x, w) (from `kvE_subChain2V`), the outer segment classification on (x, w) (segL), and the outer gate -- produces the BOUNDED sub-anchor bundle: exists x1, x < x1, x1 < t, (charK (nfk_projFresh sigma)).eval_at x1, and the per-chi hbelow witnesses. This is exactly the (x1, hxx1, hx1t, hanchor, hbelow) bundle that the already-landed `kvE_subBracket2V_sound_of_parts` (NfMultiAnchorBridge.lean:7449) consumes to close task 321 Phase 10 (Stage C soundness).
 
