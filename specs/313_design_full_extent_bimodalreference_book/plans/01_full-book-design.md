@@ -1,7 +1,7 @@
 # Implementation Plan: Full-Extent BimodalReference Book (Skeleton)
 
 - **Task**: 313 - design_full_extent_bimodalreference_book
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 26 hours (skeleton plan; follow-up tasks carry ~22 additional hours)
 - **Dependencies**: None (task 312 complete at commit `a883361bf`)
 - **Research Inputs**:
@@ -310,26 +310,26 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2 hours.
 - **Depends on:** 1, 2.
 
-### Phase 4: typst-sync-check.sh Drift Detector [NOT STARTED]
+### Phase 4: typst-sync-check.sh Drift Detector [COMPLETED]
 
 - **Goal:** The task-312 follow-up exists: a CI-runnable script that mechanically detects
   book↔Lean drift and legend violations.
 - **Territory:** `scripts/typst-sync-check.sh` (new).
 - **Tasks:**
-  - [ ] Check 1 — name resolution: extract all backticked names from
+  - [x] Check 1 — name resolution: extract all backticked names from
         `Theories/Bimodal/typst/**/*.typ`, resolve each via
         `grep -rn --include='*.lean' -F <name> Theories/Bimodal --exclude-dir=Boneyard`
         plus filesystem path checks (the SYNC-MAP Phase 6 method); whitelist file for
         deliberate historical `Boneyard/` references and external-repo (Logos) citations.
-  - [ ] Check 2 — banner presence: every file in `chapters/` included by
+  - [x] Check 2 — banner presence: every file in `chapters/` included by
         `BimodalReference.typ` contains a `#sync-banner(` call.
-  - [ ] Check 3 — legend discipline: no ✓/lean-verified banner or inline marker in a file
+  - [x] Check 3 — legend discipline: no ✓/lean-verified banner or inline marker in a file
         whose banner class is ○ or ◇.
-  - [ ] Check 4 — count freshness: regenerate via `scripts/typst-status-counts.sh` (JSON
+  - [x] Check 4 — count freshness: regenerate via `scripts/typst-status-counts.sh` (JSON
         mode) and diff against committed `generated/status.typ`; fail on mismatch.
-  - [ ] Exit non-zero on any failure with a per-violation report; document usage in
+  - [x] Exit non-zero on any failure with a per-violation report; document usage in
         `typst/README.md` is deferred to Phase 12 (README owned there).
-  - [ ] Verify: run against the Phase-3 tree — must pass; inject one fake stale name in a
+  - [x] Verify: run against the Phase-3 tree — must pass; inject one fake stale name in a
         scratch copy — must fail.
 - **Estimated output:** ~180 lines.
 - **Done when:** both the pass case and the seeded-failure case behave correctly.
