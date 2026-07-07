@@ -2789,6 +2789,11 @@
           "type": "research",
           "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 321 (Phase 8 blocker)"
+        },
+        {
+          "type": "report",
+          "path": "specs/324_redesign_k2_subbracket_arity4_correctness_pair/reports/01_adversarial-verification.md",
+          "summary": "Adversarial verification of spawn-analysis claims"
         }
       ]
     }
