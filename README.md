@@ -8,7 +8,7 @@ Whereas dynamical systems theory provides mathematical resources for modeling th
 
 The repository implements the syntax, task semantics, proof theory, and metalogic for the _Bimodal Logic of Tense and Modality_ (TM) which combines S5 modal operators with the Since/Until linear tense operators.
 
-**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems (under review)
+**Paper**: ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf) (Brast-McKie, forthcoming in JPL) — compositional semantics for bimodal logics grounded in non-deterministic dynamical systems
 
 **Specification**: [BimodalReference.pdf](Theories/Bimodal/latex/BimodalReference.pdf) — complete axiom schemas and proof-theoretic documentation (outdated)
 
@@ -78,7 +78,7 @@ A **task model** `M = (F, I)` extends a task frame `F` with an interpretation fu
 
 Relative to a world-history, any duration `x` may be referred to as the *time* after `x` duration from the origin (the additive unit `0` in `D`) in that world-history.
 
-The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf) (Brast-McKie, 2025), providing resources for modeling non-deterministic dynamical systems.
+The task semantics is developed in ["The Construction of Possible Worlds"](https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf) (Brast-McKie, 2025), providing resources for modeling non-deterministic dynamical systems.
 
 ---
 
@@ -194,8 +194,8 @@ If you use this project in your research, please cite:
 @article{brastmckie2025construction,
   title     = {The Construction of Possible Worlds},
   author    = {Brast-McKie, Benjamin},
-  year      = {2025},
-  url       = {https://benbrastmckie.com/wp-content/uploads/2026/05/possible_worlds.pdf}
+  year      = {2026},
+  url       = {https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf}
 }
 
 @software{proofchecker2025,

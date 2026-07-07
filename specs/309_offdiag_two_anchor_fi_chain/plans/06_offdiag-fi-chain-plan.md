@@ -700,7 +700,7 @@ strengthen the kv gate). Additive-only diff verified (822 insertions, 0 deletion
   Do-NOT list (no retired-name restatement).
 - **Commit:** `task 309 phase 13.1: statement surgery — ExistProviders + BracketCarrierCorrectVPrior + relativized k≤1 lifts`
 
-### Phase 13.2: Per-sub enriched carrier `bracketEndChar_kvE` — definition + concrete k=2 instance [NOT STARTED]
+### Phase 13.2: Per-sub enriched carrier `bracketEndChar_kvE` — definition + concrete k=2 instance [IN PROGRESS]
 
 *(Report 05 label: Phase 13.II-a. Dispatch ONLY after 13.1 lands green AND the 13.0 verdict was
 F2 CONFIRMED — SKIPPED on the surgery-only branch.)*
