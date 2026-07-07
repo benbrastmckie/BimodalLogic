@@ -1,7 +1,7 @@
 # Implementation Plan: Discrete-Logic Completeness Retrospective Review
 
 - **Task**: 322 - review_discrete_logic_completeness_retrospective
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None (diagnostic/retrospective; consumes artifacts of tasks 006-321)
 - **Research Inputs**: reports/01_completeness-retrospective.md (H4-verified, Tier 1)
@@ -53,13 +53,13 @@ Identifier/Type-Signature columns are vacuous by construction.
 
 | Source | Location | Review-document target | Status |
 |--------|----------|------------------------|--------|
-| Research report F-1 (single recurring obstruction) | reports/01, "F-1" table | Review §"The one obstruction, three costumes" | pending |
-| Research report F-2/F-3 (failure modes; F1-F4 churn table) | reports/01, "F-2"/"F-3" | Review §"Recurring failure modes" | pending |
-| Research report F-4 (Divergence Map) | reports/01, "F-4" table | Review §"Literature fidelity vs shortcuts" (table reproduced with citations) | pending |
-| Research report F-5 (what worked) | reports/01, "F-5" | Review §"What worked and why" | pending |
-| Research report F-6 + D1-D3 | reports/01, "F-6"/"Decisions" | Review §"Root-cause synthesis" | pending |
+| Research report F-1 (single recurring obstruction) | reports/01, "F-1" table | Review §"The one obstruction, three costumes" | done (02 §3) |
+| Research report F-2/F-3 (failure modes; F1-F4 churn table) | reports/01, "F-2"/"F-3" | Review §"Recurring failure modes" | done (02 §4) |
+| Research report F-4 (Divergence Map) | reports/01, "F-4" table | Review §"Literature fidelity vs shortcuts" (table reproduced with citations) | done (02 §5) |
+| Research report F-5 (what worked) | reports/01, "F-5" | Review §"What worked and why" | done (02 §6) |
+| Research report F-6 + D1-D3 | reports/01, "F-6"/"Decisions" | Review §"Root-cause synthesis" | done (02 §7) |
 | Research report Recommendations 1-7 | reports/01, "Recommendations" | Recommendations doc §1-§7 (expanded to dispatchable form) | pending |
-| Rabinovich 2014 anchors (Def 3.1, Lemma 3.2(2), Prop 3.5, Prop 4.2, Lemma 5.1/5.3, Cor 5.4) | ~/Projects/Literature/sources/rabinovich_2014/...md:61-157 (per report Appendix) | Cited wherever the review makes a fidelity claim | pending |
+| Rabinovich 2014 anchors (Def 3.1, Lemma 3.2(2), Prop 3.5, Prop 4.2, Lemma 5.1/5.3, Cor 5.4) | ~/Projects/Literature/sources/rabinovich_2014/...md:61-157 (per report Appendix) | Cited wherever the review makes a fidelity claim | done (02 §5) |
 | Task 320 alignment audit (b3 GO-gate litmus) | specs/320_.../reports/01:23-37 (as cited in report F-4) | Recommendations doc §"Litmus design gate" | pending |
 
 Citation discipline: page/proposition-level anchors are inherited from the research report
@@ -157,13 +157,13 @@ Fully sequential: Phase 2 cross-references the review's section anchors, and Pha
 both documents. No parallel opportunities (single-writer, single-deliverable-pair task; H7
 territory is trivially the task directory).
 
-### Phase 1: Author the retrospective review document [NOT STARTED]
+### Phase 1: Author the retrospective review document [COMPLETED]
 
 - **Goal:** Synthesize `reports/01_completeness-retrospective.md` into a polished, standalone
   review document at
   `specs/322_review_discrete_logic_completeness_retrospective/reports/02_completeness-retrospective-review.md`.
 - **Tasks:**
-  - [ ] Write the review with this required section skeleton (bounded unit = this one document):
+  - [x] Write the review with this required section skeleton (bounded unit = this one document):
     1. Executive summary (<=1 page: the one-obstruction thesis, the churn diagnosis, the
        fidelity-correlates-with-success signal, the headline recommendation).
     2. Arc overview: three eras (early 006-129, middle 141-301, recent 303-321) with the
@@ -177,11 +177,11 @@ territory is trivially the task directory).
        as preserved practice).
     7. Root-cause synthesis (report F-6) and settled decisions D1-D3.
     8. Sorry-count clarification box (the 42/113/1 contradiction-log resolution, reproduced).
-  - [ ] Carry every citation through verbatim (task-artifact path, Lean file:line, or
+  - [x] Carry every citation through verbatim (task-artifact path, Lean file:line, or
     Rabinovich md:NN anchor); no bare author-year citations for load-bearing claims.
-  - [ ] End the document with a "Provenance" note: derived from the H4-verified report, with
+  - [x] End the document with a "Provenance" note: derived from the H4-verified report, with
     its Adversarial Self-Verification confidence levels summarized in 3-5 lines.
-  - [ ] Confirm `git status --porcelain -- Theories/` is empty.
+  - [x] Confirm `git status --porcelain -- Theories/` is empty (verified 2026-07-07).
 - **Estimated output:** ~280 lines (one document; advisory band 100-300).
 - **Done when:** `reports/02_completeness-retrospective-review.md` exists, contains all eight
   required sections, every F-1/F-3/F-4 table row carries a citation, and the Lean tree is
