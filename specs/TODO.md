@@ -27,7 +27,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
 169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
 170 [NOT STARTED] — complete_dense_extension_completeness
-322 [NOT STARTED] — Review the discrete-logic completeness effort (Kamp theorem forma
+322 [RESEARCHED] — Review the discrete-logic completeness effort (Kamp theorem forma
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
@@ -123,7 +123,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ## Tasks
 
 ### 322. Review discrete logic completeness retrospective
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: completeness
 - **Dependencies**: None
