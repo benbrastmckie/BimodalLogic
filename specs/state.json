@@ -2927,10 +2927,15 @@
           "type": "plan",
           "path": "specs/327_k2_fold_engine_provability_gate_poc_or_nogo/plans/01_k2-fold-provability-gate.md",
           "summary": "Hard-mode 3-phase provability gate plan (route-a barrier, route-b E[Sigma] efold make-or-break, PoC/NO-GO certify)"
+        },
+        {
+          "type": "summary",
+          "path": "specs/327_k2_fold_engine_provability_gate_poc_or_nogo/summaries/01_k2-fold-provability-gate-summary.md",
+          "summary": "k=2 fold provability gate: machine-grounded NO-GO"
         }
       ],
       "session_id": "sess_1783465547_adec63",
-      "completion_summary": "GATE VERDICT: WHOLE-TASK NO-GO (machine-grounded). Depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate does not fold cleanly at constant arity by any route (a/b/c); the depth-1 per-witness factorization is FALSE (inner-witness joint coupling to x1 AND {w,x,t} cannot be carried by the arity-1 constant-arity monadic channel). Reproduces the G6 arity-4 barrier at NfMultiAnchorBridge.lean:1622-1646. Additive inert NO-GO record landed; lake build green; no sorry committed. Downstream P2 (task 328) and P3 (task 329) must NOT start."
+      "completion_summary": "GATE P1 verdict = machine-grounded NO-GO. The depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate does not fold cleanly at constant arity by any route (naive nfk-split-kit factor, constant-arity E[Sigma] efold, or a new argument): all bottom out on nf_eval_nf1_cons_factor, which is false in clean form because the inner-quant witness v couples jointly to outer witness x1 and anchors {w,x,t} while the constant-arity channel reads v at arity 1 (ZoneSpec 1) only — reproducing the arity-4/G6 barrier (NfMultiAnchorBridge.lean:1622-1646) at the outer layer. Machine evidence: crux lean_goal needs ZoneSpec 4 vs available ZoneSpec 1; 5 failed lean_multi_attempt closers captured. Additive inert NO-GO record appended; lake build green (1005 jobs), 0 sorry, no partial carrier. Downstream P2 (task 328) and P3 (task 329) MUST NOT start — the k=2 carrier route needs fundamental reconsideration."
     },
     {
       "project_number": 328,
