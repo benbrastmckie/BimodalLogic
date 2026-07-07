@@ -371,7 +371,43 @@ sequential execution is recommended.
 - **Commit point:** `task 325 phase 3: soundness lemma kvE_subBracket2V_sound closed`
 - **Depends on:** 1
 
-### Phase 4: Completeness — disjunct selection + per-region segment discharge (`kvE_subBracket2V_complete`) [NOT STARTED]
+### Phase 4: Completeness — disjunct selection + per-region segment discharge (`kvE_subBracket2V_complete`) [BLOCKED]
+
+**BLOCKER** (Phase 4) — genuine mathematical obstruction in the LANDED Phase-1 carrier
+`kvE_subBracket2V` (NfMultiAnchorBridge.lean:6779), which NEW-DEFINITIONS-ONLY forbids editing.
+Machine-verified (two probes built green over the actual carrier; see the handoff `blockers`).
+
+- **What failed:** the completeness conclusion `(kvE_subBracket2V (nf_depth0_char_formula atomMap
+  h_surj) charK σ).holds M atomMap x t` is DIRECTLY FALSE for every honest realization, so
+  `kvE_subBracket2V_complete : (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] σ) → …holds…` is unprovable (true
+  hypothesis, refutable conclusion). Proven by `kvE_subBracket2V_never_holds_PROBE` (compiled green).
+- **Root cause:** the carrier's gate `consistent` set (:6848-6849) has only SEVEN zones —
+  `zPastX, zAtX, zXU, zUW, zWT, zAtT, zFutT` — and OMITS the two interior WITNESS SELF-ZONES
+  `zAtX1` (v = x1, spec `(F,F)(T,F)(F,T)(T,F)`) and `zAtW` (v = w, spec `(F,T)(F,F)(F,T)(T,F)`).
+  For any honest `σ`, the anchor `x1` realizes its own complete 1-type `χ0` at `zAtX1`
+  (`nf_eval_depth1_fold_iff` forces `σ.2 (nf0_assemble zAtX1 χ0 σ.1) = true`); likewise `w` at
+  `zAtW`. But the gate's second conjunct `∀ zs χ, ¬consistent zs → σ.2 (nf0_assemble zs χ σ.1) =
+  false` then demands that same bit be `false`. Contradiction ⇒ gate false ⇒ carrier takes the
+  `disjuncts := []` branch ⇒ `.holds` is `False`. Proven by `kvE_subBracket2V_gate_unsat_PROBE`.
+- **Why soundness passed anyway:** `kvE_subBracket2V_sound` (:7488) has `.holds` as its HYPOTHESIS,
+  so an always-`False` carrier makes it vacuously discharged — the empty-list case is closed by
+  `simp at hmem` inside `kvE_subBracket2V_extract` (:7331). Soundness closing did NOT vouch for a
+  non-empty carrier (as the dispatch's DRIVEN-PROOF discipline warned). This is the SAME failure
+  class as task 324 Phase 6 (soundness holds vacuously; completeness a false ∀-M statement).
+- **Contrast with the k1v template:** `bracketEndChar_k1v`'s `consistent` set INCLUDES the single
+  witness self-zone `zAtW` (bracketEndChar_k1v_complete `hgate` :3090), and `ptW` folds the `zAtW`
+  literals (`hptW` :3277). The 3-region redesign dropped BOTH witness self-zones from the gate and
+  did not fold their self-types into `ptX1`/`ptW` (`ptX1 = ⟨charK (nfk_projFresh σ)⟩` :6840;
+  `ptW = ⟨charBase (proj 1)⟩` :6841 — neither carries the zAtX1/zAtW literals).
+- **What is needed (out of scope for Phase 4):** a Phase-1 carrier CORRECTION (new-defs `kvE_…V2`):
+  extend `consistent` to NINE zones (add `zAtX1`, `zAtW`) and fold each witness self-zone's 1-type
+  literals into `ptX1` / `ptW` respectively (arity-4 analog of k1v's `ptW` zAtW-folding). Then
+  re-derive Phase-3 soundness AND Phase-4 completeness over the corrected carrier. This requires
+  revising the plan (a v2 Phase 1) and re-doing Phases 1-4; it cannot be done under Phase-4's
+  new-definitions-only-append constraint against the existing `kvE_subBracket2V`.
+- **Prohibited (honored):** no `sorry` placed; no vacuous `def X := True`; no soundness-only
+  acceptance; the landed Phase-1/2/3 assets left byte-identical (working tree byte-identical to
+  commit be9f35965 for NfMultiAnchorBridge.lean).
 - **Goal:** DRIVE the completeness direction (the one that failed on the old carrier) to a closed
   proof: select the model-sorted arrangement disjunct, discharge the three per-region segment types,
   and assemble the standalone completeness lemma — the arity-4 analog of `bracketEndChar_k1v_complete`
