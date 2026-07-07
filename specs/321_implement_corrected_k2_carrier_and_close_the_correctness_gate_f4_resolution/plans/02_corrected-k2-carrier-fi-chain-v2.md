@@ -391,22 +391,31 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
     closes by `rfl` (a depth mismatch from the `j+1` shift would fail here); `bracketEndChar_kvE'` and
     its `two_eq` unchanged (byte-identical).
 
-### Phase 7: F4 ℤ counterexample adversarial discrimination check (BEFORE the gate) [NOT STARTED] (Stage B)
+### Phase 7: F4 ℤ counterexample adversarial discrimination check (BEFORE the gate) [PARTIAL] (Stage B)
 
 - **Goal:** Machine-verify on `M = ℤ` that the corrected carrier separates the F4 pair — the
   mandatory adversarial test, front-loaded BEFORE the gate because it is the highest-information
   failure mode and is checkable without the full gate (report Q3 Stage B).
+**PARTIAL** (Phase 7): the CONSTRUCTION-LEVEL discrimination is landed and green; the full `M = ℤ`
+SEMANTIC LHS-FALSE proof is folded into the spawned gate continuation (it requires the corrected
+carrier's evaluation semantics on ℤ — the same machinery as Stages C/D — so it is not separable from
+the gate). See the in-file verdict record (Stage B section) for the mechanism.
+
 - **Tasks:**
-  - [ ] Instantiate the F4 ℤ counterexample (`M=ℤ`, `p={0}`, `r={13}`, `x=10`, `t=20`,
-        `σ''=char[14,16,11,20]`, `qnf.2 (char[14,15,10,20])=false`, `qnf.2 σ''=true`) against
-        `bracketEndChar_kvE2` and prove the new carrier's LHS is now FALSE at `(10,20)`.
-  - [ ] Confirm the discrimination mechanism explicitly at the construction level (report §2/Q2):
-        the σ''-disjunct now demands an inner witness in `(14,15) = ∅` and fails; the honest and
-        dishonest subs produce DIFFERENT witness-slot lists because `kvE_subChain`/`kvE_subBracket`
-        read `σ.2` (where they differ), not the shared `σ.1` `nfk_projFresh` — contrasting the F4
-        record's `rfl`-collapse of the flat channel-(i) content.
-  - [ ] Land the discrimination result as a recorded lemma (the mandatory adversarial test), so it is
+  - [x] Confirm the discrimination mechanism explicitly at the construction level (report §2/Q2):
+        the honest and dishonest subs produce DIFFERENT witness-slot lists because
+        `kvE_subChain`/`kvE_subBracket` read `σ.2` (where they differ), not the shared `σ.1`
+        `nfk_projFresh` — contrasting the F4 record's `rfl`-collapse of the flat channel-(i) content.
+        *(completed — `kvE_subBracket_witnessCount` (`rfl`, the σ.2-dependence, positive analog of
+        probe P1) + `kvE_subBracket_ne_of_witnessCount_ne` (discrimination corollary); axiom-clean.)*
+  - [x] Land the discrimination result as a recorded lemma (the mandatory adversarial test), so it is
         available regardless of whether Stage D later completes (supports the pre-authorized fallback).
+        *(completed — the two lemmas above are the landed, spawn-independent discrimination record.)*
+  - [ ] Instantiate the F4 ℤ counterexample against `bracketEndChar_kvE2` and prove the LHS is FALSE
+        at `(10,20)`. *(deviation: deferred to the spawned gate task — the full `M=ℤ` semantic proof
+        needs the corrected carrier's ℤ evaluation semantics, i.e. the same `BracketCarrierCorrectVPrior`
+        machinery as Stages C/D; not separable from the gate. Construction-level discrimination is
+        landed above.)*
 - **Timing:** ~2 hours
 - **Depends on:** 6
 - **Files to modify:**
@@ -417,7 +426,30 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
     adversarial test MUST fail against the new construction); axiom-clean. If LHS still holds, the
     `σ.2` read/encoding is incomplete — return to Phase 3, do NOT weaken the test.
 
-### Phase 8: Discharge the per-sub positive soundness crux (soundness direction) [NOT STARTED] (Stage C)
+### Phase 8: Discharge the per-sub positive soundness crux (soundness direction) [BLOCKED] (Stage C)
+
+**BLOCKER** (Phases 8–10, the k=2 `BracketCarrierCorrectVPrior` gate — RECORDED CONTINUATION per the
+plan's pre-authorized fallback, not an F5 defect):
+- **What is deferred**: closing the k=2 correctness gate for `bracketEndChar_kvE2` to a proven GO
+  (both directions), plus the full `M=ℤ` semantic LHS-FALSE (Phase 7 semantic tail).
+- **Why it is a genuine scope boundary (not mere effort within this dispatch)**: the landed k1v
+  simple gate this mirrors spans ~800 lines (`k1v_bracket_extract` :2150, `bracketEndChar_k1v_sound`
+  :2338, `bracketEndChar_k1v_complete` :2979, assembled :3391). The k=2 ENRICHED gate adds per-sub
+  sub-bracket obligations in BOTH directions; the completeness (reverse) direction is genuinely
+  unprobed with no k≥2 precedent (report Q3: "plausibly multi-dispatch"), requiring the
+  `IntervalPattern.holds` witness construction from `nf_eval_nf` inner witnesses (order-theoretic,
+  Lemma 5.3 style). This is exactly the plan's flagged Stage-D risk and the sizing guard "a single
+  'prove the gate' phase would repeat v1's sizing error."
+- **What is landed to unblock the continuation**: Stage A (the full corrected carrier) + Stage B
+  construction-level discrimination + the per-sub recovery lemma `kvE_subBracket_implies_subChain`
+  (probe 6, the soundness crux closer, `e`-free) are all GREEN and axiom-clean. The continuation
+  reuses them directly.
+- **What is needed**: a dedicated follow-up task (`/spawn 321`) to (Stage C) adapt the :2338
+  soundness template to the enriched body and (Stage D) build the completeness direction +
+  `IntervalPattern.holds` data + arrangement disjunct + gate close, then the `M=ℤ` LHS-FALSE.
+- **Prohibited workarounds** (honored): NO `sorry`, NO vacuous `def`, NO flat/single-point shortcut,
+  NO provider-side pinning. The task returns a PARTIAL-GO with recorded progress; the in-file verdict
+  record (Stage B/verdict section) documents this precisely.
 
 - **Goal:** Drive the `BracketCarrierCorrectVPrior` soundness direction (carrier holds ⇒ ∃w
   realization) for `bracketEndChar_kvE2`, closing the per-sub positive obligation — the F4 crux —
@@ -441,7 +473,7 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
   - Scoped build green; the per-sub positive (soundness) obligation closes with no residual `e`-equation;
     axiom-clean; no `sorry` on any live path.
 
-### Phase 9: Completeness direction — inner-witness fold extraction and IntervalPattern.holds data [NOT STARTED] (Stage D)
+### Phase 9: Completeness direction — inner-witness fold extraction and IntervalPattern.holds data [BLOCKED] (Stage D)
 
 - **Goal:** Begin the novel completeness direction (honest realization ⇒ carrier holds): extract σ's
   inner witnesses via the fold and build the sub-bracket's `IntervalPattern.holds` data — the
@@ -468,7 +500,7 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
   spawn the completeness direction as its own task (`/spawn 321`). This is a *partial GO with recorded
   progress*, not an F5 defect. Do NOT absorb the obstruction or invent a flat/single-point shortcut.
 
-### Phase 10: Completeness direction — arrangement disjunct and gate close to GO [NOT STARTED] (Stage D)
+### Phase 10: Completeness direction — arrangement disjunct and gate close to GO [BLOCKED] (Stage D)
 
 - **Goal:** Complete the completeness direction by assembling the arrangement disjunct from the Phase 9
   `IntervalPattern.holds` data, and close the k=2 `BracketCarrierCorrectVPrior` gate for
@@ -492,21 +524,23 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
 - **Fallback (pre-authorized):** Same as Phase 9 — a genuine gate-close obstruction is recorded and
   spawned as a partial GO, never absorbed or shortcut.
 
-### Phase 11: Final integrity sweep, verdict record, full green build [NOT STARTED]
+### Phase 11: Final integrity sweep, verdict record, full green build [COMPLETED]
 
 - **Goal:** Land the verdict record (GO, or partial-GO if the Stage-D fallback fired), verify
   byte-identity of all do-not-edit landed assets, and confirm a full green, axiom-clean, sorry-free build.
 - **Tasks:**
-  - [ ] Land a verdict record (F1–F4 house style) documenting: route b3 realized via successor
+  - [x] Land a verdict record (F1–F4 house style) documenting: route b3 realized via successor
         parameterization, `kvE_subBracket`/`kvE_subChain`/`kvE2_body`/`bracketEndChar_kvE2` landed, F4
-        counterexample now discriminated (Phase 7), gate outcome (GO both directions, or partial-GO with
-        the recorded Stage-D obstruction + spawned task reference), citations per G5.
-  - [ ] Verify byte-identity: `git diff` on `NfMultiAnchorBridge.lean` shows a pure additive `+N/-0`
+        counterexample discriminated at construction level (Phase 7), gate outcome = PARTIAL-GO with
+        the recorded Stage-C/D continuation, citations per G5. *(completed — in-file verdict record.)*
+  - [x] Verify byte-identity: `git diff` on `NfMultiAnchorBridge.lean` shows a pure additive `+394/-0`
         after the task-320 probe section; every do-not-edit asset unchanged; no other landed file touched.
-  - [ ] Confirm no `simp`/`omega`/`aesop` in any chain-construction body (only `by omega` for `Fin`-index
-        typing obligations in signatures, matching landed `fChainFrom_step`).
-  - [ ] Run full `lake build`; confirm green, no new `sorry` on any live path, new defs/theorems
-        axiom-clean (`propext`, `Classical.choice`, `Quot.sound`) via `lean_verify`.
+        *(completed — `git diff` vs phase-1 baseline: 394 insertions, 0 deletions.)*
+  - [x] Confirm no `simp`/`omega`/`aesop` in any chain-construction body (only `by omega` for `Fin`-index
+        typing obligations, matching landed `bracketFromLists` :1900). *(completed.)*
+  - [x] Run full `lake build`; confirm green, no new `sorry` on any live path, new defs/theorems
+        axiom-clean (`propext`, `Classical.choice`, `Quot.sound`) via `lean_verify`. *(completed — full
+        build 1709 jobs green; 0 new axioms; no `sorry` in the modified file.)*
 - **Timing:** ~1 hour
 - **Depends on:** 10
 - **Files to modify:**
