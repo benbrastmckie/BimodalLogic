@@ -309,19 +309,24 @@ sequential execution is recommended.
 - **Commit point:** `task 325 phase 1: VVecEA2 carrier kvE_subBracket2V + per-region segments + gate`
 - **Depends on:** none
 
-### Phase 2: Three-region construction kit lift (`sorted_realization` / `bracket_construct`) [IN PROGRESS]
+### Phase 2: Three-region construction kit lift (`sorted_realization` / `bracket_construct`) [COMPLETED]
 - **Goal:** Lift the k1v two-region construction kit (`k1v_sorted_insert` :2751,
   `k1v_sorted_realization` :2797, `k1v_bracket_construct` :2838) one arity up to a **three-region**
   arrangement — the reusable machinery the completeness direction (Phase 4) consumes.
 - **Tasks:**
-  - [ ] Lift `k1v_sorted_insert` / `k1v_sorted_realization` (:2751 / :2797) to sort realized points
+  - [x] Lift `k1v_sorted_insert` / `k1v_sorted_realization` (:2751 / :2797) to sort realized points
         into a three-region arrangement `(S_XU × S_UW × S_WT)` permutation and select the matching
         disjunct. Cite Rabinovich Lemma 5.1 (md:134-135) at the insertion-induction step.
-  - [ ] Lift `k1v_bracket_construct` (:2838) to build the three-region `IntervalPattern`/`VecEA2`
+        *(landed: `k1v_sorted_realization3`; commit 2.1 d1f5fc359)*
+  - [x] Lift `k1v_bracket_construct` (:2838) to build the three-region `IntervalPattern`/`VecEA2`
         data (monotone enumeration + per-region segment obligations) from sorted realized points. Cite
-        Rabinovich Lemma 5.3 (md:137-152).
-  - [ ] Consume `existsBounded_right` (VecEAClosure:265) as a construction primitive; do not rebuild.
-  - [ ] No `simp`/`omega`/`aesop` on chain-construction steps.
+        Rabinovich Lemma 5.3 (md:137-152). *(landed: `k1v_bracket_construct3`)*
+  - [x] Consume `existsBounded_right` (VecEAClosure:265) as a construction primitive; do not rebuild.
+        *(deviation: `k1v_sorted_realization`/`k1v_sorted_insert` templates already encapsulate the
+        `existsBounded_right` `n+1`-append pattern; consumed transitively via those, not directly.)*
+  - [x] No `simp`/`omega`/`aesop` on chain-construction steps. *(no F_i chain steps arise in either
+        lemma — both are pure list/interval index bookkeeping mirroring the landed k1v template, whose
+        `simp only`/`omega` uses are structural index/length arithmetic only, not chain shortcuts.)*
 - **Estimated output:** ~250-400 lines. Bounded unit: the three-region kit lemmas. **Pre-authorized
   sub-split** (H8): 2.1 = `sorted_insert`/`sorted_realization` lift; 2.2 = `bracket_construct` lift,
   each committed green independently if a single dispatch overflows ~400 lines.

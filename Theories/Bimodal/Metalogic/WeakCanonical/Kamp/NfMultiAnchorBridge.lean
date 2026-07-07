@@ -6989,6 +6989,208 @@ private theorem k1v_sorted_realization3 {sig : MonadicSignature}
     · exact haw
     · exact haw.trans (hWT_gt_w b hb)
 
+/-- **Three-region bracket construction** (task 325 Phase 2; lift of `k1v_bracket_construct` :2838
+    to `bracketFromLists3`). The reverse of point-type extraction: given a sorted tuple of realizing
+    points — `usXU` strictly inside `(x, x1)`, the interior witness `x1`, `usUW` strictly inside
+    `(x1, w)`, the interior witness `w`, `usWT` strictly inside `(w, t)` — with each point type
+    realized at its point, the two interior witness types realized at `x1`/`w`, and the three
+    per-region exclusions `segXU`/`segUW`/`segWT` holding on ALL of `(x, x1)`/`(x1, w)`/`(w, t)`, the
+    three-region bracket holds at the FIXED endpoints `(x, t)`. Mirrors the append-a-witness
+    construction of `existsBounded_right` (VecEAClosure:265; Lemma 3.4 PDF p.5) with the witness
+    tuple assembled wholesale from `k1v_sorted_realization3`. Cite Rabinovich Lemma 5.3
+    (md:137-152). -/
+private theorem k1v_bracket_construct3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (lXU lUW lWT : List TemporalPred) (ptX1 ptW segXU segUW segWT : TemporalPred)
+    (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (usXU usUW usWT : List M.carrier)
+    (hlenXU : usXU.length = lXU.length) (hlenUW : usUW.length = lUW.length)
+    (hlenWT : usWT.length = lWT.length)
+    (hsort : (usXU ++ x1 :: usUW ++ w :: usWT).Pairwise (· < ·))
+    (hrangeXU : ∀ u ∈ usXU, x < u ∧ u < x1)
+    (hrangeUW : ∀ u ∈ usUW, x1 < u ∧ u < w)
+    (hrangeWT : ∀ u ∈ usWT, w < u ∧ u < t)
+    (hptx1 : ptX1.eval_at M atomMap x1)
+    (hptw : ptW.eval_at M atomMap w)
+    (hptXU : ∀ (i : Nat) (hi : i < lXU.length),
+      (lXU[i]'hi).eval_at M atomMap (usXU[i]'(by omega)))
+    (hptUW : ∀ (i : Nat) (hi : i < lUW.length),
+      (lUW[i]'hi).eval_at M atomMap (usUW[i]'(by omega)))
+    (hptWT : ∀ (i : Nat) (hi : i < lWT.length),
+      (lWT[i]'hi).eval_at M atomMap (usWT[i]'(by omega)))
+    (hsegXU : ∀ u, x < u → u < x1 → segXU.eval_at M atomMap u)
+    (hsegUW : ∀ u, x1 < u → u < w → segUW.eval_at M atomMap u)
+    (hsegWT : ∀ u, w < u → u < t → segWT.eval_at M atomMap u) :
+    (bracketFromLists3 lXU ptX1 lUW ptW lWT segXU segUW segWT).holds M atomMap x t := by
+  -- Combined witness list and its length.
+  have hlen : (usXU ++ x1 :: usUW ++ w :: usWT).length
+      = lXU.length + lUW.length + lWT.length + 1 + 1 := by
+    simp only [List.length_append, List.length_cons, hlenXU, hlenUW, hlenWT]; omega
+  -- Strict monotonicity of the combined list, as getElem comparisons.
+  have hmono : ∀ (a b : Nat) (ha : a < (usXU ++ x1 :: usUW ++ w :: usWT).length)
+      (hb : b < (usXU ++ x1 :: usUW ++ w :: usWT).length), a < b →
+      (usXU ++ x1 :: usUW ++ w :: usWT)[a] < (usXU ++ x1 :: usUW ++ w :: usWT)[b] :=
+    fun a b ha hb hab => List.pairwise_iff_getElem.mp hsort a b ha hb hab
+  -- The two interior witnesses sit at fixed indices: `x1` at `usXU.length`, `w` after the UW block.
+  have hx1_at : (usXU ++ x1 :: usUW ++ w :: usWT)[usXU.length]'(by rw [hlen]; omega) = x1 := by
+    rw [List.getElem_append_left (show usXU.length < (usXU ++ x1 :: usUW).length by
+          simp only [List.length_append, List.length_cons]; omega)]
+    rw [List.getElem_append_right (le_refl usXU.length)]
+    simp only [Nat.sub_self, List.getElem_cons_zero]
+  have hw_at : (usXU ++ x1 :: usUW ++ w :: usWT)[usXU.length + 1 + usUW.length]'(by
+        rw [hlen]; omega) = w := by
+    rw [List.getElem_append_right (show (usXU ++ x1 :: usUW).length ≤ usXU.length + 1 + usUW.length by
+          simp only [List.length_append, List.length_cons]; omega)]
+    simp only [show usXU.length + 1 + usUW.length - (usXU ++ x1 :: usUW).length = 0 by
+      simp only [List.length_append, List.length_cons]; omega, List.getElem_cons_zero]
+  -- Comparison helpers derived from monotonicity around the two interior anchors.
+  have hle_x1 : ∀ (j : Nat) (hj1 : j ≤ usXU.length)
+      (hj2 : j < (usXU ++ x1 :: usUW ++ w :: usWT).length),
+      (usXU ++ x1 :: usUW ++ w :: usWT)[j] ≤ x1 := by
+    intro j hj1 hj2
+    rcases Nat.lt_or_eq_of_le hj1 with hj | hj
+    · exact le_of_lt (lt_of_lt_of_eq (hmono j usXU.length hj2 (by rw [hlen]; omega) hj) hx1_at)
+    · subst hj; exact le_of_eq hx1_at
+  have hge_x1 : ∀ (j : Nat) (hj1 : usXU.length ≤ j)
+      (hj2 : j < (usXU ++ x1 :: usUW ++ w :: usWT).length),
+      x1 ≤ (usXU ++ x1 :: usUW ++ w :: usWT)[j] := by
+    intro j hj1 hj2
+    rcases Nat.lt_or_eq_of_le hj1 with hj | hj
+    · exact le_of_lt (lt_of_eq_of_lt hx1_at.symm (hmono usXU.length j (by rw [hlen]; omega) hj2 hj))
+    · subst hj; exact le_of_eq hx1_at.symm
+  have hle_w : ∀ (j : Nat) (hj1 : j ≤ usXU.length + 1 + usUW.length)
+      (hj2 : j < (usXU ++ x1 :: usUW ++ w :: usWT).length),
+      (usXU ++ x1 :: usUW ++ w :: usWT)[j] ≤ w := by
+    intro j hj1 hj2
+    rcases Nat.lt_or_eq_of_le hj1 with hj | hj
+    · exact le_of_lt (lt_of_lt_of_eq
+        (hmono j (usXU.length + 1 + usUW.length) hj2 (by rw [hlen]; omega) hj) hw_at)
+    · subst hj; exact le_of_eq hw_at
+  have hge_w : ∀ (j : Nat) (hj1 : usXU.length + 1 + usUW.length ≤ j)
+      (hj2 : j < (usXU ++ x1 :: usUW ++ w :: usWT).length),
+      w ≤ (usXU ++ x1 :: usUW ++ w :: usWT)[j] := by
+    intro j hj1 hj2
+    rcases Nat.lt_or_eq_of_le hj1 with hj | hj
+    · exact le_of_lt (lt_of_eq_of_lt hw_at.symm
+        (hmono (usXU.length + 1 + usUW.length) j (by rw [hlen]; omega) hj2 hj))
+    · subst hj; exact le_of_eq hw_at.symm
+  -- Every combined-list point lies strictly inside the fixed endpoints `(x, t)`.
+  have hrange_all : ∀ u ∈ usXU ++ x1 :: usUW ++ w :: usWT, x < u ∧ u < t := by
+    intro u hu
+    rcases List.mem_append.mp hu with hu | hu
+    · rcases List.mem_append.mp hu with hu | hu
+      · exact ⟨(hrangeXU _ hu).1, (hrangeXU _ hu).2.trans (hx1w.trans hwt)⟩
+      · rcases List.mem_cons.mp hu with rfl | hu
+        · exact ⟨hxx1, hx1w.trans hwt⟩
+        · exact ⟨hxx1.trans (hrangeUW _ hu).1, (hrangeUW _ hu).2.trans hwt⟩
+    · rcases List.mem_cons.mp hu with rfl | hu
+      · exact ⟨hxx1.trans hx1w, hwt⟩
+      · exact ⟨(hxx1.trans hx1w).trans (hrangeWT _ hu).1, (hrangeWT _ hu).2⟩
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, bracketFromLists3]
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show lXU.length + lUW.length + lWT.length + 1 + 1
+        = (lXU.length + lUW.length + lWT.length + 1) + 1 by omega)]
+  refine ⟨fun i => (usXU ++ x1 :: usUW ++ w :: usWT)[i.val]'(by
+      have := i.isLt; rw [hlen]; omega), ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Strict monotonicity.
+    intro i j hij
+    exact hmono i.val j.val (by have := i.isLt; rw [hlen]; omega)
+      (by have := j.isLt; rw [hlen]; omega) hij
+  · -- Range: all points strictly inside `(x, t)`.
+    intro i
+    exact hrange_all _ (List.getElem_mem _)
+  · -- Point types: five-way index split around the two interior witness slots.
+    intro i
+    simp only []
+    rcases Nat.lt_trichotomy i.val lXU.length with hi | hi | hi
+    · -- (a) `usXU` / `lXU` region.
+      rw [List.getElem_append_left (show i.val < (lXU ++ ptX1 :: lUW).length by
+            simp only [List.length_append, List.length_cons]; omega),
+        List.getElem_append_left hi,
+        List.getElem_append_left (show i.val < (usXU ++ x1 :: usUW).length by
+            simp only [List.length_append, List.length_cons]; omega),
+        List.getElem_append_left (show i.val < usXU.length by omega)]
+      exact hptXU i.val hi
+    · -- (b) `x1` interior witness slot.
+      rw [List.getElem_append_left (show i.val < (lXU ++ ptX1 :: lUW).length by
+            simp only [List.length_append, List.length_cons]; omega),
+        List.getElem_append_right (show lXU.length ≤ i.val from le_of_eq hi.symm),
+        List.getElem_append_left (show i.val < (usXU ++ x1 :: usUW).length by
+            simp only [List.length_append, List.length_cons]; omega),
+        List.getElem_append_right (show usXU.length ≤ i.val by omega)]
+      simp only [show i.val - lXU.length = 0 by omega, show i.val - usXU.length = 0 by omega,
+        List.getElem_cons_zero]
+      exact hptx1
+    · -- `i.val > lXU.length`: split around the `w` slot at `lXU.length + 1 + lUW.length`.
+      rcases Nat.lt_trichotomy i.val (lXU.length + 1 + lUW.length) with hi2 | hi2 | hi2
+      · -- (c) `usUW` / `lUW` region.
+        obtain ⟨j, hj⟩ : ∃ j, i.val = lXU.length + 1 + j := ⟨i.val - lXU.length - 1, by omega⟩
+        have hjUW : j < lUW.length := by omega
+        rw [List.getElem_append_left (show i.val < (lXU ++ ptX1 :: lUW).length by
+              simp only [List.length_append, List.length_cons]; omega),
+          List.getElem_append_right (show lXU.length ≤ i.val by omega),
+          List.getElem_append_left (show i.val < (usXU ++ x1 :: usUW).length by
+              simp only [List.length_append, List.length_cons]; omega),
+          List.getElem_append_right (show usXU.length ≤ i.val by omega)]
+        simp only [show i.val - lXU.length = j + 1 by omega,
+          show i.val - usXU.length = j + 1 by omega, List.getElem_cons_succ]
+        exact hptUW j hjUW
+      · -- (d) `w` interior witness slot.
+        rw [List.getElem_append_right (show (lXU ++ ptX1 :: lUW).length ≤ i.val by
+              simp only [List.length_append, List.length_cons]; omega),
+          List.getElem_append_right (show (usXU ++ x1 :: usUW).length ≤ i.val by
+              simp only [List.length_append, List.length_cons]; omega)]
+        simp only [show i.val - (lXU ++ ptX1 :: lUW).length = 0 by
+            simp only [List.length_append, List.length_cons]; omega,
+          show i.val - (usXU ++ x1 :: usUW).length = 0 by
+            simp only [List.length_append, List.length_cons]; omega, List.getElem_cons_zero]
+        exact hptw
+      · -- (e) `usWT` / `lWT` region.
+        obtain ⟨j, hj⟩ : ∃ j, i.val = lXU.length + 1 + lUW.length + 1 + j :=
+          ⟨i.val - (lXU.length + 1 + lUW.length) - 1, by omega⟩
+        have hival := i.isLt
+        have hjWT : j < lWT.length := by omega
+        rw [List.getElem_append_right (show (lXU ++ ptX1 :: lUW).length ≤ i.val by
+              simp only [List.length_append, List.length_cons]; omega),
+          List.getElem_append_right (show (usXU ++ x1 :: usUW).length ≤ i.val by
+              simp only [List.length_append, List.length_cons]; omega)]
+        simp only [show i.val - (lXU ++ ptX1 :: lUW).length = j + 1 by
+            simp only [List.length_append, List.length_cons]; omega,
+          show i.val - (usXU ++ x1 :: usUW).length = j + 1 by
+            simp only [List.length_append, List.length_cons]; omega, List.getElem_cons_succ]
+        exact hptWT j hjWT
+  · -- Leading segment `(x, ws 0)`: inside `(x, x1)`, so `segXU` (index `0 ≤ lXU.length`).
+    intro y hxy hy0
+    rw [if_pos (Nat.zero_le lXU.length)]
+    exact hsegXU y hxy (lt_of_lt_of_le hy0 (hle_x1 0 (Nat.zero_le _) (by rw [hlen]; omega)))
+  · -- Interior segments: three-way region split by the beta index `i.val + 1`.
+    intro i y h1 h2
+    by_cases hile : i.val + 1 ≤ lXU.length
+    · -- Region XU: `(ws i, ws (i+1)) ⊆ (x, x1)`.
+      rw [if_pos hile]
+      refine hsegXU y ?_ ?_
+      · exact (hrange_all _ (List.getElem_mem _)).1.trans h1
+      · exact lt_of_lt_of_le h2 (hle_x1 (i.val + 1) (by omega) (by have := i.isLt; rw [hlen]; omega))
+    · by_cases hile2 : i.val + 1 ≤ lXU.length + 1 + lUW.length
+      · -- Region UW: `(ws i, ws (i+1)) ⊆ (x1, w)`.
+        rw [if_neg hile, if_pos hile2]
+        refine hsegUW y ?_ ?_
+        · exact lt_of_le_of_lt (hge_x1 i.val (by omega) (by have := i.isLt; rw [hlen]; omega)) h1
+        · exact lt_of_lt_of_le h2 (hle_w (i.val + 1) (by omega) (by have := i.isLt; rw [hlen]; omega))
+      · -- Region WT: `(ws i, ws (i+1)) ⊆ (w, t)`.
+        rw [if_neg hile, if_neg hile2]
+        refine hsegWT y ?_ ?_
+        · exact lt_of_le_of_lt (hge_w i.val (by omega) (by have := i.isLt; rw [hlen]; omega)) h1
+        · exact h2.trans (hrange_all _ (List.getElem_mem _)).2
+  · -- Trailing segment `(ws last, t)`: inside `(w, t)`, so `segWT`.
+    intro y hy1 hy2
+    rw [if_neg (show ¬(lXU.length + lUW.length + lWT.length + 1 + 1 ≤ lXU.length) by omega),
+      if_neg (show ¬(lXU.length + lUW.length + lWT.length + 1 + 1 ≤ lXU.length + 1 + lUW.length) by
+        omega)]
+    refine hsegWT y ?_ hy2
+    exact lt_of_le_of_lt (hge_w (lXU.length + lUW.length + lWT.length + 1)
+      (by omega) (by rw [hlen]; omega)) hy1
+
 /-- **Successor-parameter compatibility at the gate instance `j = 0`** (task 325 Phase 1; R4 exit
     criterion). The redesigned carrier's `σ : NormalForm sig 1 4` argument is definitionally the
     `j = 0` instance of the amended successor spec `σ : NormalForm sig (j+1) 4` (report 321 §2
