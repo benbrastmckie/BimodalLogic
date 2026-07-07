@@ -258,34 +258,34 @@ deterministically with git stamps, and renders the `.typ` strictly from the JSON
 
 ---
 
-### Phase 3: Appendix chapter and book wiring [NOT STARTED]
+### Phase 3: Appendix chapter and book wiring [COMPLETED]
 
 **Goal**: The book renders the machine appendix from the generated `.typ` and
 `p4-dataset-pipeline.typ` points at the shipped artifact; typst compile green.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/typst/chapters/ax-machine-appendix.typ`: heading
+- [x] Create `Theories/Bimodal/typst/chapters/ax-machine-appendix.typ`: heading
       "Appendix: The Machine-Readable Axiomatization" (unnumbered via
       `#heading(numbering: none)` to match the back-matter References style), short prose for
       the AI-practitioner audience (what the artifact is; the `tag` formula-encoding table
       covering `atom`/`bot`/`imp`/`box`/`untl`/`snce`; the python two-line load idiom reused
       from `DatasetExport.lean`'s docstring), and the raw-artifact pointer
       `Theories/Bimodal/typst/generated/machine-appendix.jsonl` as a path-like backticked span.
-- [ ] In the chapter, `#import "../generated/machine-appendix.typ": axiom-table, rule-table,
+- [x] In the chapter, `#import "../generated/machine-appendix.typ": axiom-table, rule-table,
       derived-op-table, stamp-commit, stamp-date` and render three tables using the book's
       existing `stroke: none` + `table.hline()` figure style (per the Tier-1 gate table in
       p4-dataset-pipeline.typ), allowing page breaks for the 42-row axiom table; add the stamp
       footer ("Generated from live source at commit ... — never hand-copied").
-- [ ] Add a label on the appendix heading (e.g. `<machine-appendix>`) for cross-referencing.
-- [ ] Wire `BimodalReference.typ`: `#include "chapters/ax-machine-appendix.typ"` after
+- [x] Add a label on the appendix heading (e.g. `<machine-appendix>`) for cross-referencing.
+- [x] Wire `BimodalReference.typ`: `#include "chapters/ax-machine-appendix.typ"` after
       `chapters/06-notes.typ` and before the References heading.
-- [ ] Add subsection "Shipped Machine-Readable Axiomatization" to
+- [x] Add subsection "Shipped Machine-Readable Axiomatization" to
       `chapters/p4-dataset-pipeline.typ` (after "BimodalHarness Integration: Artifact-Only" or
       just before "Operational Pointer"): state that the axiom table, rules, and derived
       operators are shipped with the book as JSONL at
       `typst/generated/machine-appendix.jsonl`, cross-reference `@machine-appendix`, and note
       the encoding matches `dataset_generator` output (task-319 re-anchor).
-- [ ] Add whitelist entries to `Theories/Bimodal/typst/sync-check-whitelist.txt` for
+- [x] Add whitelist entries to `Theories/Bimodal/typst/sync-check-whitelist.txt` for
       non-Lean backticked spans introduced (e.g. `lake exe machine_appendix`, JSON field names
       like `schema_string`, `frame_class`, `kind` if not literal-grep-matching Lean source).
 
