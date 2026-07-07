@@ -5800,4 +5800,38 @@ noncomputable def kvE_subBracket {sig : MonadicSignature}
           omega)
       segmentTypes := fun _ => segExcl }⟩
 
+/-- **Sub-chain predicate** (task 321 Phase 4; report §3 item 3, probe 6). The Cor 5.4 F_i-chain
+    predicate of the nested sub-bracket — `σ`'s joint inner-witness content packaged as a single
+    `TemporalPred`, carried by the nested-Until EVALUATION POINT (never a relative-position
+    identity). `fChainPred` is available because `kvE_subBracket` returns the `(m+1)` shape. -/
+noncomputable def kvE_subChain {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) : TemporalPred :=
+  (kvE_subBracket charBase charK σ).2.fChainPred
+
+/-- **Position-recovery lemma at the CONSTRUCTED sub-bracket** (task 321 Phase 4; report §2 probe 6,
+    machine-checked GREEN — the upgrade from task-320 probe P4's "abstract recovery on generic `bf`"
+    to "recovery lemma applies to the concrete sub-bracket"). Instantiates the landed, PROVEN
+    `BracketFormula.bracket_implies_fChainPred` (EANegation:660) at
+    `bf := (kvE_subBracket charBase charK σ).2`: whenever the sub-bracket holds on `(z0, z)`,
+    `kvE_subChain … σ` is satisfied at a witness `x0` STRICTLY INSIDE `(z0, z)`, recovered from the
+    bracket's OWN interval pattern — with NO provider environment `e` and NO residual `w = e 1` /
+    `x = e 2` (the exact F4 crux, now dissolved: the anchor positions ARE the bracket witnesses,
+    quantified by the temporal semantics, never rebound by any `e`). Sole hypothesis is `bf.holds`;
+    no structural-identity / `nf_eval_unique` / `nfPred_correct` premise (route b2 NOT NEEDED).
+    Rabinovich Cor 5.4 (md:154-157) via `fChainFrom_step`/`fChainFrom_base` (probe P3 MATCH). -/
+theorem kvE_subBracket_implies_subChain {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z : M.carrier)
+    (h : (kvE_subBracket charBase charK σ).2.holds M atomMap z0 z) :
+    ∃ x0 : M.carrier, z0 < x0 ∧ x0 < z ∧
+      (kvE_subChain charBase charK σ).eval_at M atomMap x0 ∧
+      (∀ y : M.carrier, z0 < y → y < x0 →
+        ((kvE_subBracket charBase charK σ).2.segmentTypes ⟨0, by omega⟩).eval_at M atomMap y) :=
+  (kvE_subBracket charBase charK σ).2.bracket_implies_fChainPred M atomMap z0 z h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -307,22 +307,24 @@ deliberately placed BEFORE the gate (Stages C/D) to front-load the highest-infor
     no forbidden tactics; the construction reads `σ.2` via the Phase 2 fold bits (grep for their use,
     and for the ABSENCE of a single-point `charK (nfk_projFresh σ)` joint literal on the joint path).
 
-### Phase 4: Define kvE_subChain and its position-recovery lemma [NOT STARTED] (Stage A)
+### Phase 4: Define kvE_subChain and its position-recovery lemma [COMPLETED] (Stage A)
 
 - **Goal:** Wrap the sub-bracket's Cor 5.4 F_i-chain predicate as `kvE_subChain` and land the
   position-recovery lemma at the CONSTRUCTED sub-bracket (probe 6), carrying σ's joint content by
   nested-Until evaluation point.
 - **Tasks:**
-  - [ ] Define `kvE_subChain … (σ : NormalForm sig 1 4) : TemporalPred :=
+  - [x] Define `kvE_subChain … (σ : NormalForm sig 1 4) : TemporalPred :=
         (kvE_subBracket charBase charK σ).2.fChainPred` (report §3 item 3; `fChainPred` available by
-        the `(m+1)` shape).
-  - [ ] Land a recovery lemma instantiating the landed proven `BracketFormula.bracket_implies_fChainPred`
+        the `(m+1)` shape). *(completed.)*
+  - [x] Land a recovery lemma instantiating the landed proven `BracketFormula.bracket_implies_fChainPred`
         (EANegation:660) at the **constructed** `bf := (kvE_subBracket … σ).2` (probe 6, not a generic
         `bf`): from the sub-bracket holding on σ's honest interval, `kvE_subChain σ` is satisfied at a
         witness strictly inside, with NO provider environment `e` and NO residual `w = e 1`/`x = e 2`
-        (probe P4 shape).
-  - [ ] Cite Rabinovich Cor 5.4 (md:154-157) and Prop 3.5 (md:87-94) at the chain step; confirm the
-        step shape matches `probe_P3_cor54_step_shape` (§3, MATCH).
+        (probe P4 shape). *(completed — `kvE_subBracket_implies_subChain`; sole hypothesis `bf.holds`,
+        no `e`, axiom-clean via `lean_verify`.)*
+  - [x] Cite Rabinovich Cor 5.4 (md:154-157) and Prop 3.5 at the chain step; step shape matches
+        `probe_P3_cor54_step_shape` (§3, MATCH). *(completed — cited in docstring; the lemma delegates
+        to `bracket_implies_fChainPred`, which is built on `fChainFrom_step`/`fChainFrom_base`.)*
 - **Timing:** ~2 hours
 - **Depends on:** 3
 - **Files to modify:**
