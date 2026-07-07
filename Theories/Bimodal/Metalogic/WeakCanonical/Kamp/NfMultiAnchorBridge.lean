@@ -2663,4 +2663,155 @@ private theorem bracketEndChar_k1v_sound {sig : MonadicSignature}
   rw [nf_quant_layer_fold_k1_gate M w x t qnf h_atom]
   exact ⟨hzone, hg.1⟩
 
+/-! ## Task 311 Phase 5: completeness direction (RHS→LHS) — helper kit
+
+Private helper kit for `bracketEndChar_k1v_complete` (pre-authorized 5.1/5.2 split, plan v3
+Phase 5 H8 escape hatch). The arrangement-selection machinery (Risk R1', rule N5) is the
+insertion induction below: by induction on the interior-positive type list, insert one realized
+point at a time in model order, building the sorted witness tuple AND the matching arrangement
+simultaneously — mirroring the append-a-witness construction of
+`BracketFormula.existsBounded_right`'s `n+1` case (VecEAClosure:265, the **Lemma 3.4 (PDF p.5)**
+∃-closure vehicle, used as TEMPLATE: the target here is a fixed arrangement disjunct of the
+`VVecEA2` finite disjunction, not an `∃ m` conclusion). Citations per rule N1: the
+two-fixed-endpoint framing is **Lemma 3.2(2) (PDF p.4) + §5 bracket notation (PDF p.7)**. -/
+
+/-- Extract the arity-1 witness-point evaluation from the arity-3 depth-0 atom layer at env
+    `[y, x, t]` (variable 0). Private clone of the VecEADecomp extraction helper (that lemma
+    is `private` there and not importable), exactly as `k1v_reconstruct_nf3` clones the
+    reverse direction. -/
+private theorem k1v_extract_y_nf {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (ssn : NormalForm sig 0 3) (y x t : M.carrier)
+    (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
+    nf_eval_nf M 0 1 (fun _ => y) (nf_y_proj ssn) := by
+  intro a
+  match a with
+  | .pred p _ =>
+    have := h_nf (.pred p ⟨0, by omega⟩)
+    simp only [atom_eval, Fin.cons, nf_y_proj] at this ⊢
+    exact this
+  | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
+
+/-- Extract the arity-1 left-endpoint evaluation (variable 1, the FIXED `z_0 = x`) from the
+    arity-3 depth-0 atom layer. Private VecEADecomp clone (see `k1v_extract_y_nf`). -/
+private theorem k1v_extract_x_nf3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (ssn : NormalForm sig 0 3) (y x t : M.carrier)
+    (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
+    nf_eval_nf M 0 1 (fun _ => x) (nf_x_proj3 ssn) := by
+  intro a
+  match a with
+  | .pred p _ =>
+    have := h_nf (.pred p ⟨1, by omega⟩)
+    simp only [atom_eval] at this
+    have hfc1 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier)
+        ⟨1, by omega⟩ = x := by
+      simp [Fin.cons]; rfl
+    rw [hfc1] at this
+    simp only [nf_x_proj3]; exact this
+  | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
+
+/-- Extract the arity-1 right-endpoint evaluation (variable 2, the FIXED `z_1 = t`) from the
+    arity-3 depth-0 atom layer. Private VecEADecomp clone (see `k1v_extract_y_nf`). -/
+private theorem k1v_extract_t_nf3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (ssn : NormalForm sig 0 3) (y x t : M.carrier)
+    (h_nf : nf_eval_nf M 0 3 (Fin.cons y (Fin.cons x (fun _ => t))) ssn) :
+    nf_eval_nf M 0 1 (fun _ => t) (nf_t_proj3 ssn) := by
+  intro a
+  match a with
+  | .pred p _ =>
+    have := h_nf (.pred p ⟨2, by omega⟩)
+    simp only [atom_eval] at this
+    have hfc2 : (Fin.cons y (Fin.cons x (fun _ : Fin 1 => t)) : Fin 3 → M.carrier)
+        ⟨2, by omega⟩ = t := by
+      simp [Fin.cons]; rfl
+    rw [hfc2] at this
+    simp only [nf_t_proj3]; exact this
+  | .order i j h_neq => exact absurd (Fin.ext (by omega) : i = j) h_neq
+
+/-- **Insertion step of the arrangement-selection induction** (Risk R1', rule N5): insert one
+    tagged point into a snd-sorted list of tagged points, preserving sortedness, provided the
+    new point is distinct from every listed point. The insertion position is found by
+    trichotomy in model order — one step of the witness-insertion construction (template:
+    `existsBounded_right`'s `n+1` append case, VecEAClosure:265; Lemma 3.4 PDF p.5). -/
+private theorem k1v_sorted_insert {α : Type _} {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (q : α × M.carrier) (ps : List (α × M.carrier))
+    (hs : (ps.map Prod.snd).Pairwise (· < ·))
+    (hne : ∀ p ∈ ps, p.2 ≠ q.2) :
+    ∃ qs : List (α × M.carrier),
+      List.Perm qs (q :: ps) ∧ (qs.map Prod.snd).Pairwise (· < ·) := by
+  induction ps with
+  | nil => exact ⟨[q], List.Perm.refl _, List.pairwise_singleton _ _⟩
+  | cons p ps ih =>
+    rw [List.map_cons, List.pairwise_cons] at hs
+    rcases lt_trichotomy q.2 p.2 with hlt | heq | hgt
+    · -- `q` precedes the head: `q :: p :: ps` is already sorted.
+      refine ⟨q :: p :: ps, List.Perm.refl _, ?_⟩
+      rw [List.map_cons, List.pairwise_cons]
+      refine ⟨?_, ?_⟩
+      · intro b hb
+        rw [List.map_cons, List.mem_cons] at hb
+        rcases hb with rfl | hb
+        · exact hlt
+        · exact hlt.trans (hs.1 b hb)
+      · rw [List.map_cons, List.pairwise_cons]
+        exact hs
+    · exact absurd heq.symm (hne p List.mem_cons_self)
+    · -- `q` lands strictly after the head: insert into the tail.
+      obtain ⟨qs', hperm', hsort'⟩ :=
+        ih hs.2 (fun r hr => hne r (List.mem_cons_of_mem _ hr))
+      refine ⟨p :: qs', (hperm'.cons p).trans (List.Perm.swap q p ps), ?_⟩
+      rw [List.map_cons, List.pairwise_cons]
+      refine ⟨?_, hsort'⟩
+      intro b hb
+      obtain ⟨r, hr, rfl⟩ := List.mem_map.mp hb
+      rcases List.mem_cons.mp (hperm'.mem_iff.mp hr) with rfl | hrps
+      · exact hgt
+      · exact hs.1 r.2 (List.mem_map_of_mem hrps)
+
+/-- **Arrangement selection by insertion induction** (Risk R1', rule N5): every list of
+    complete 1-types each realized somewhere strictly inside `(a, b)` admits a simultaneous
+    arrangement — a permutation of the type list tagged with realizing points in strictly
+    increasing model order. Distinctness of the realizing points is automatic: distinct
+    complete 1-types exclude each other at any single point (`nf_eval_unique`,
+    NormalForm:245). The `VVecEA2` disjunction carries ALL arrangements (rule N5 — Rabinovich's
+    ∨ over consistent order types, Def 3.1 pp.4-5), so the arrangement selected here always
+    names an existing disjunct; each realized point occupies a bracket WITNESS slot between the
+    FIXED endpoints (§5 bracket `[α_0, …, α_n](z_0, z_1)`, PDF p.7; the witness joins the
+    existential prefix, Lemma 3.4 PDF p.5). -/
+private theorem k1v_sorted_realization {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (a b : M.carrier)
+    (S : List (NormalForm sig 0 1)) (hnd : S.Nodup)
+    (hreal : ∀ χ ∈ S, ∃ u, a < u ∧ u < b ∧ nf_eval_nf M 0 1 (fun _ => u) χ) :
+    ∃ ps : List (NormalForm sig 0 1 × M.carrier),
+      List.Perm (ps.map Prod.fst) S ∧
+      (ps.map Prod.snd).Pairwise (· < ·) ∧
+      ∀ p ∈ ps, (a < p.2 ∧ p.2 < b) ∧ nf_eval_nf M 0 1 (fun _ => p.2) p.1 := by
+  induction S with
+  | nil => exact ⟨[], by simp, by simp, by simp⟩
+  | cons χ S' ih =>
+    obtain ⟨u, hau, hub, huχ⟩ := hreal χ List.mem_cons_self
+    obtain ⟨ps', hperm', hsort', hprops'⟩ :=
+      ih (List.nodup_cons.mp hnd).2 (fun χ' h' => hreal χ' (List.mem_cons_of_mem _ h'))
+    -- The new point is distinct from every listed point: distinct complete 1-types
+    -- exclude each other at one point (`nf_eval_unique`), and `χ ∉ S'` by Nodup.
+    have hne : ∀ p ∈ ps', p.2 ≠ u := by
+      intro p hp heq
+      have hev : nf_eval_nf M 0 1 (fun _ => u) p.1 := heq ▸ (hprops' p hp).2
+      have hpq : p.1 = χ := nf_eval_unique M 0 1 _ p.1 χ hev huχ
+      have : χ ∈ S' := hperm'.mem_iff.mp (hpq ▸ List.mem_map_of_mem hp)
+      exact (List.nodup_cons.mp hnd).1 this
+    obtain ⟨qs, hqperm, hqsort⟩ := k1v_sorted_insert M (χ, u) ps' hsort' hne
+    refine ⟨qs, ?_, hqsort, ?_⟩
+    · have h1 : List.Perm (qs.map Prod.fst) (((χ, u) :: ps').map Prod.fst) := hqperm.map _
+      rw [List.map_cons] at h1
+      exact h1.trans (hperm'.cons χ)
+    · intro p hp
+      rcases List.mem_cons.mp (hqperm.mem_iff.mp hp) with rfl | hp'
+      · exact ⟨⟨hau, hub⟩, huχ⟩
+      · exact hprops' p hp'
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

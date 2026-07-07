@@ -564,7 +564,7 @@ historical record; do not re-execute; do not edit its landed artifact.)*
 - **Completed:** 2026-07-06 (4.1 helper kit commit 425d54d32 + 4.2 direction theorem; H8 escape
   hatch exercised as pre-authorized — delivered ~660 lines across the split, all additive)
 
-### Phase 5: Completeness direction (RHS→LHS), assembled `↔`, and R2 gate re-probe verdict [NOT STARTED]
+### Phase 5: Completeness direction (RHS→LHS), assembled `↔`, and R2 gate re-probe verdict [IN PROGRESS]
 
 - **Goal:** Close the k=1 gate: land the completeness lemma, assemble
   `bracketEndChar_k1v_correct` (the k=1 `BracketCarrierCorrectV` instance in k0-mirror conditional
