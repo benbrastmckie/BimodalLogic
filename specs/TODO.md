@@ -1,5 +1,5 @@
 ---
-next_project_number: 319
+next_project_number: 320
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,314,315,316,317,318 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,309 | completeness, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,319 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,307,314,315,316,317,318 | 161,187,191,194,230,291,300,309,319 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193,305 | 189,192,196,307 | completeness, automation |
 | 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
 | 5 | 95,299 | 303 | completeness |
@@ -104,11 +104,12 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-314 [NOT STARTED] — Write chapters/p1-why-worlds.typ for BimodalReference (replacing 
-315 [NOT STARTED] — Write the four Part III chapters of BimodalReference (replacing P
-316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
-317 [NOT STARTED] — Write the two Part V chapters of BimodalReference (replacing Phas
-318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
+319 [NOT STARTED] — Turn the BimodalReference book (Theories/Bimodal/typst/) from the
+  └─ 314 [NOT STARTED] — Write chapters/p1-why-worlds.typ for BimodalReference (replacing 
+  └─ 315 [NOT STARTED] — Write the four Part III chapters of BimodalReference (replacing P
+  └─ 316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
+  └─ 317 [NOT STARTED] — Write the two Part V chapters of BimodalReference (replacing Phas
+  └─ 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
 
 ### Kamp_theorem_formalization
 
@@ -118,12 +119,33 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ## Tasks
 
+### 319. Restructure bimodalreference clean textbook
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: reference-book
+- **Dependencies**: Task 313
+
+**Description**: Turn the BimodalReference book (Theories/Bimodal/typst/) from the task-313 living-monograph-with-sync-scaffolding into a clean, direct textbook presentation at a rigorous formal level, with clear but concise explanations where essential — a natural unified whole with a clear narrative arc. Keep whatever can be kept (Part II and Part IV prose is essentially puzzle-free). Four workstreams:
+
+(1) REMOVE the status-symbol/sync-class machinery from the compiled book (maintenance burden, distracting): every top-of-chapter #sync-banner(...) call; the Reading-Guide/Sync-Class Legend box (BimodalReference.typ:145-161) and the symbol mentions in the abstract (:141) and title-page Sources list (:111-118); the dominant-class labels passed to #part-divider (template.typ:236-253); the 'How to Read This Book If You Are an AI' symbol protocol (00-introduction.typ:151-160); the Closing Status Table with Roadmap column (p2-decidability-practice.typ:67-75) and the status table in 04-metalogic.typ; the #planned-chapter-notice stub boxes (drop the stub includes or replace with a single plain sentence). Update scripts/typst-sync-check.sh accordingly: KEEP check 1 (backticked Lean names must resolve — this is valuable and cheap) and check 4 (generated-count freshness) if counts are kept; REMOVE checks 2-3 (banner presence, legend discipline). Generated counts (#axiom-count, #rule-count etc. from generated/status.typ via scripts/typst-status-counts.sh) MAY be kept since they are script-generated, but remove sorry-count reporting from reader-facing text. Retire SYNC-MAP.md's PDF-governing role to a repo-side dev doc (update its header to say so).
+
+(2) REAL CITATIONS to the three relevant papers. bibliography.bib currently has entries but ZERO @-citations in any .typ file, so the References section renders empty. Add/complete entries with links and wire @-citations into the prose where the papers are drawn on: the possible-worlds draft as forthcoming in JPL with URL https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf; the published papers https://link.springer.com/article/10.1007/s10992-025-09793-8 (Counterfactual Worlds, JPL) and https://link.springer.com/article/10.1007/s10992-021-09612-w (Identity and Aboutness, JPL) — verify exact titles/years/DOIs against the Springer pages. Convert plain-text author-year mentions (Vlach 1973, Cresswell 1990, Kamp, Burgess, Xu, Reynolds, Doets) into real citations, adding bib entries as needed and clearing verify-before-print notes where confirmed. Embargo unchanged: no Lk entry (bibliography.bib:8-10).
+
+(3) RESTRUCTURE to the new narrative arc. Rewrite 00-introduction.typ as a brief introduction that motivates the project directly (unifying tense and modality in a verified system; no philosophical puzzles, no AI-practitioner-first framing) and outlines the structure: the book begins with the bimodal system, then applications, then adds the counterfactual logic, and concludes with the constitutive logic. Concretely: Part on the bimodal system = current Part II chapters plus the honest LTL-to-TM positioning and Vlach/BL-star material (p3-ltl-to-tm.typ, p3-vlach-blstar.typ) folded in as direct formal chapters, and p3-decidability-frontier.typ kept as a concise formal chapter PRESERVING the // SLOT-IN: anchors (needed by task 318); Part on applications = current Part IV (proof automation, dataset pipeline, dual verification) with the AI-training motivation kept brief; Part on counterfactual logic (p5-counterfactual.typ); concluding Part on constitutive logic (p5-constitutive.typ) — NOTE this inverts the current Part V chapter order, do not silently keep constitutive-then-counterfactual. DROP the philosophical-puzzle chapters from the book plan: p1-why-worlds.typ (eternalism critique, Prior chess-loop, Peircean/Ockhamist, Montague, Kaplan) and p3-open-future.typ (sea-battle, open future) — present their essential technical content (perpetuity principles, Determined/Deterministic, actuality operators) directly where formally relevant, with citations to the papers instead of puzzle-driven exposition.
+
+(4) REVISE follow-up tasks 314-318 in specs/state.json (descriptions, and dependencies to include this task) to align with the new direction, then regenerate TODO.md: 314 (Part I motivation chapter) shrinks to whatever brief motivation the introduction still needs or is abandoned/absorbed — decide and record; 315 drops p3-open-future as a puzzle chapter and drops all sync-banner/sync-class-legend constraints (backtick-resolution constraint stays); 316 (JSONL appendix) re-anchors its pointer since 'How to Read This Book If You Are an AI' is gone — decide the replacement location; 317 must match the new counterfactual-then-constitutive order and drop banner constraints; 318 unchanged except banner constraints removed (SLOT-IN anchors preserved by workstream 3).
+
+Verify: typst compile green (page count will change), revised scripts/typst-sync-check.sh green, References section renders non-empty with the three papers.
+
+---
+
 ### 318. Slot lk results into bimodalreference decidability
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
 - **Task Type**: typst
 - **Topic**: reference-book
-- **Dependencies**: Task 313
+- **Dependencies**: Task 313, Task 319
 
 **Description**: GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymous TACAS 2027 double-blind submission at ~/Philosophy/Papers/PossibleWorlds/Lk/) is accepted and the embargo (user decision 2 on task 313) lifts. Insert the Lk-specific content into chapters/p3-decidability-frontier.typ at the prepared // SLOT-IN: anchors, without renumbering chapters or sections: the BL-star ladder table (Lk 07-related-work.tex 32-104, tab:bl-star-ladder), the complexity map (L1 = PTL x S5 EXPSPACE-complete; L_k undecidable for k >= 2; alternation-freedom does not restore decidability, Theorem F-B; forall-AF-L_k PSPACE-complete flagship, Theorem F-A), and the hardware case study (constant-time as forall-forall, reset convergence, SVA/Logos-Hardware bridge, Lk 06-case-study.tex). Add the Lk bibliography entry with its final published citation. Mark all results with their publication status; note that none are Lean-formalized (Lk 08-conclusion.tex names Lean 4 formalization as future work). Include the honest trace-vs-task-semantics bridging caveats (Lk is discrete/future-only trace sets; TM is group-time/two-sided task frames). Sources: teammate A rows 15-18.
 
@@ -134,7 +156,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Status**: [NOT STARTED]
 - **Task Type**: typst
 - **Topic**: reference-book
-- **Dependencies**: Task 313
+- **Dependencies**: Task 313, Task 319
 
 **Description**: Write the two Part V chapters of BimodalReference (replacing Phase-5 stubs), as full adapted chapters — BimodalReference OWNS this exposition, LogosManual links here (user decision 3). (1) chapters/p5-constitutive.typ — adapted from Logos manual 02-constitutive.typ (1623 lines) + counterfactual_worlds.tex sections 2.2-3.2: state lattice with parthood, task relation over all states, possible/world states DEFINED not primitive, imposition defined, Fine's constraints as theorems, worlds as maximal possible evolutions; closing comparison figure: the bimodal frame of Part II as the world-state shadow of this structure. (2) chapters/p5-counterfactual.typ — adapted from counterfactual_worlds.tex sections 4-5 + Logos 03-dynamics.typ/07-proof-theory.typ: bilateral propositions, exact semantics, boxright clause in both imposition and mereological form, CL/CML/CTL axiom ladder via principle lists, HEADLINE: box A := top boxright A with S5 derived (metaphysical modality derived, soundness only — completeness open, state honestly), perpetuity re-derivation, countermodels 1-12 as example environments with ModelChecker-reproducibility note, Vlach regimentation of tensed counterfactuals reusing the Part III operators. Follow teammate B's 9-item dependency-ordered staging list and resolve the 4 documented paper-vs-Logos divergences (duration-parameterized task relation; possible-state definition — Lean is ground truth; stay propositional, point to LogosManual for FOL; state CTL over the book's Until/Since basis). Carry the extensional-antecedent restriction into the grammar (do not silently import ModelChecker's unrestricted extension). Everything paper-sourced(published)/planned sync-class; propositional restriction throughout; add notation/constitutive-notation.typ importing the needed Logos state-space symbols; re-verify B's staging list against counterfactual_worlds.tex at drafting time. Sources: teammate B findings F1/F2/F5 (specs/313_design_full_extent_bimodalreference_book/reports/01_teammate-b-findings.md).
 
@@ -145,7 +167,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: reference-book
-- **Dependencies**: Task 313
+- **Dependencies**: Task 313, Task 319
 
 **Description**: Implement the machine-readable appendix (teammate D recommendation R5.1, prioritized by the AI-practitioner audience decision): export the 42-constructor axiom table, 7 inference rules, and derived-operator definitions from Lean as JSONL matching the Automation/DatasetExporter.lean schema, generated by a lake exe or script and included in the BimodalReference build as an appendix (with a human-readable rendering plus a pointer to the raw JSONL artifact). Wire the 'How to Read This Book If You Are an AI' introduction section (written in the skeleton task) to point at the shipped artifact. The appendix generation must be re-runnable and commit-stamped like scripts/typst-status-counts.sh output; never hand-copy the exported content. Verify: build produces the JSONL, typst compile green, sync-check green.
 
@@ -156,7 +178,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Status**: [NOT STARTED]
 - **Task Type**: typst
 - **Topic**: reference-book
-- **Dependencies**: Task 313
+- **Dependencies**: Task 313, Task 319
 
 **Description**: Write the four Part III chapters of BimodalReference (replacing Phase-5 stubs): (1) chapters/p3-ltl-to-tm.typ — honest positioning of TM among temporal-modal logics (Until/Since over linear orders fused with S5 + interaction/uniformity; trace vs task semantics; conservativity as the bridge; NEVER describe TM as vanilla LTL+S5 — that framing is extension-roadmap only); (2) chapters/p3-vlach-blstar.typ — Vlach store/recall operators and BL-star (possible_worlds.tex 1246-1256), hybrid-logic prior-art framing (Vlach 1973, Cresswell 1990, Blackburn — verify citations before print), Kamp theorem correctly scoped (strict Until/Since, Dedekind-complete flows) and the Metalogic/WeakCanonical/Kamp/ formalization frontier status (with-sorries class); (3) chapters/p3-decidability-frontier.typ — the decidability frontier written at a level citing NO Lk-specific results (EMBARGO, user decision 2: no BL-star-ladder table lifted from Lk, no L_k complexity theorems attributed; general ceiling-and-descent narrative from published sources and general prior art only), preserving the // SLOT-IN: anchors for post-acceptance insertion; (4) chapters/p3-open-future.typ — sea-battle analysis, Determined/Deterministic (app:deterministic), actuality operators, dynamical systems/LTL/CTL/HyperLTL positioning (possible_worlds.tex 1291-1541). All chapters: paper-sourced/outlook sync-class banners; sync-check must pass; sources per teammate A rows 6, 8-10, 15-18 and teammate B F3 prior art.
 
@@ -167,7 +189,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Status**: [NOT STARTED]
 - **Task Type**: typst
 - **Topic**: reference-book
-- **Dependencies**: Task 313
+- **Dependencies**: Task 313, Task 319
 
 **Description**: Write chapters/p1-why-worlds.typ for BimodalReference (replacing the Phase-5 stub), adapting possible_worlds.tex sections 1-2 (lines 413-874) with citation (user decision: adapt freely with citation): temporary vs permanent sentences and the eternalism critique, perpetuity P1/P2 as touchstone, Prior's what/when conflation (chess-loop), Peircean/Ockhamist failure, Montague triviality, Kaplan/abundance dilemma, simulation metasemantics. State appendix results app:expressive, app:frame-impossible, app:abundant as theorems-with-citations (sync-class: paper-sourced, not formalized). Constraints inherited from the task-313 plan's Postmortem Constraints section: sync-class banner required (paper-sourced); no lean-verified labels; every backticked Lean name must resolve; motivation serves the AI-practitioner audience (does not lead the book). Verify with typst compile and scripts/typst-sync-check.sh. Sources: teammate A findings rows 1-4, 11-12 (specs/313_design_full_extent_bimodalreference_book/reports/01_teammate-a-findings.md).
 
