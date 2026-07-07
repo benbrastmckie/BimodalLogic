@@ -353,28 +353,30 @@ serially in order 1,2,3,4 (safe default, H7) OR enforce strict non-overlapping l
 - **Commit point:** `task 325 phase 1: nine-zone-gate carrier + witness self-type fold + non-vacuity gate`
 - **Depends on:** none
 
-### Phase 2: Soundness RE-DRIVEN non-vacuously over the corrected carrier [NOT STARTED]
+### Phase 2: Soundness RE-DRIVEN non-vacuously over the corrected carrier [COMPLETED]
 - **Goal:** RE-DRIVE the carrier-binding soundness chain over the corrected (now NON-empty) carrier so
   `kvE_subBracket2V_sound` closes NON-vacuously; confirm the SURVIVE kit is consumed unchanged.
 - **Tasks:**
-  - [ ] **Kit-survival confirmation (first, cheap):** Read and confirm `bracketFromLists3` (:6753),
-        `k1v_sorted_realization3` (:6926), `k1v_bracket_construct3` (:7002), `bracketFromLists3_extract`
-        (:7230) take `ptX1`/`ptW`/`segXU`/`segUW`/`segWT` as EXPLICIT arguments and conclude over
-        `bracketFromLists3 … .holds` — i.e. they do NOT bind the carrier gate — and therefore SURVIVE
-        the Phase-1 amendment byte-identical. Mark each SURVIVE; do NOT re-derive. (Justifies collapsing
-        the separate "kit re-wire" phase — see Realistic Phase Count note.)
-  - [ ] RE-DRIVE `kvE_subBracket2V_extract` (:7315), `_reaches_zXU`/`_zUW`/`_zWT` (:7371/7390/7409),
-        `_fold_z*` (:7430/7449/7468) over the corrected carrier. These `simp only [kvE_subBracket2V,
-        VVecEA2.holds]` and now destructure a non-empty disjuncts list whose `ptX1`/`ptW` carry the
-        extra self-zone literals; adjust the point-type extraction to account for the folded literals
-        (mirror k1v `hptW`'s literal handling :3277). Consume the SURVIVE `kvE_sub2_zoneHolds_cons_iff`
-        (:6615) / `_zXU`/`_zUW`/`_zWT` (:6644-6666) verbatim.
-  - [ ] RE-DRIVE `kvE_subBracket2V_sound : holds → ∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ`
-        (~:7488) so it closes NON-vacuously (the hypothesis `.holds` is now genuinely inhabitable per
-        Phase-1 non-vacuity). Reuse the :2338 template shape via SURVIVE `bracketFromLists3_extract`.
-        Cite Rabinovich Cor 5.4 / Prop 3.5 at each chain step.
-  - [ ] Amendment F3 check: no provider-side pinning; no `w = e 1` / `x1 = e 0` residual equation.
-  - [ ] No `simp`/`omega`/`aesop` on chain steps (`by omega` only for `Fin`-index typing).
+  - [x] **Kit-survival confirmation (first, cheap):** Confirmed `bracketFromLists3`, `k1v_sorted_realization3`,
+        `k1v_bracket_construct3`, `bracketFromLists3_extract` take `ptX1`/`ptW`/`segXU`/`segUW`/`segWT`
+        as EXPLICIT arguments and conclude over `bracketFromLists3 … .holds` (do NOT bind the carrier
+        gate); SURVIVE the Phase-1 amendment byte-identical.
+  - [x] RE-DRIVE `kvE_subBracket2V_extract` (:7330), `_reaches_zXU`/`_zUW`/`_zWT` (:7390/7409/7428),
+        `_fold_z*` (:7448/7467/7486) over the corrected carrier *(deviation: altered — the RE-DRIVE was
+        already performed as Phase 1's fix-forward, commits be865449c/72c34be83; this dispatch VERIFIED
+        the chain compiles green, sorry-free, and non-vacuously over the amended nine-zone carrier
+        rather than re-editing byte-identical code)*. These `simp only [kvE_subBracket2V, VVecEA2.holds]`
+        and destructure a non-empty disjuncts list whose `ptX1`/`ptW` carry the self-zone literals; the
+        anchor projection uses `formula_conjList_iff` + `List.mem_cons_self` (k1v `hptW` :3277). Consumes
+        the SURVIVE `kvE_sub2_zoneHolds_*` verbatim.
+  - [x] RE-DRIVE `kvE_subBracket2V_sound : holds → ∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ`
+        (:7514) — closes NON-vacuously: the hypothesis `.holds` is genuinely inhabitable per Phase-1
+        `kvE_subBracket2V_nonvacuous`. Extracts the anchor `a` via `kvE_subBracket2V_extract`, feeds the
+        explicit `hgate`, assembles via `nf_eval_depth1_fold_iff`. Rabinovich Cor 5.4 / Prop 3.5 cited.
+  - [x] Amendment F3 check: no provider-side pinning; no `w = e 1` / `x1 = e 0` residual equation (grep clean).
+  - [x] No `simp`/`omega`/`aesop` on chain steps (`by omega` only for `Fin`-index typing) — grep clean;
+        only the plan-authorized destructuring `simp only [kvE_subBracket2V, VVecEA2.holds]` + membership
+        bookkeeping present.
 - **Estimated output:** ~250-380 lines. **Pre-authorized sub-split** (H8): 2.1 = kit-survival check +
   re-derive `extract`/`_reaches`/`_fold`; 2.2 = re-assemble `kvE_subBracket2V_sound`.
 - **Done when:** `kvE_subBracket2V_sound` compiles sorry-free standalone AND non-vacuously (Phase-1
