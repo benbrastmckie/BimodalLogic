@@ -337,21 +337,30 @@ sequential execution is recommended.
 - **Commit point:** `task 325 phase 2: three-region sorted_realization/bracket_construct kit lift`
 - **Depends on:** 1
 
-### Phase 3: Soundness over the disjunction (`kvE_subBracket2V_sound`) [NOT STARTED]
+### Phase 3: Soundness over the disjunction (`kvE_subBracket2V_sound`) [COMPLETED]
 - **Goal:** RE-DERIVE the soundness building blocks over the new carrier's disjunct `.holds`
   (destructuring the disjunction FIRST) and assemble the standalone soundness lemma against
   `nf_eval_nf M 1 4`.
 - **Tasks:**
-  - [ ] Re-derive `kvE_subBracket2V_extract` / `_reaches_zXU`/`_zUW`/`_zWT` / `_fold_z*` (the RE-DERIVE
+  - [x] Re-derive `kvE_subBracket2V_extract` / `_reaches_zXU`/`_zUW`/`_zWT` / `_fold_z*` (the RE-DERIVE
         set — proof shapes at :6233/:6327/:6434 survive; statements change) restated over the disjunct
         `.holds`. Destructure via `simp only [kvE_subBracket2V, VVecEA2.holds]` exactly as
         `bracketEndChar_k1v_sound` does at :2352. Consume the SURVIVE `kvE_sub2_zoneHolds_cons_iff`
         (:6615) and `_zXU`/`_zUW`/`_zWT` (:6644-6666) VERBATIM (do not rebuild — Correction 3).
-  - [ ] Assemble `kvE_subBracket2V_sound : holds → ∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ`,
+        *(deviation: added a factored helper `bracketFromLists3_extract` doing the three-region
+        monotone point-type extraction with the lists as explicit args — avoids simp-inlined-lambda
+        `set`-fold fragility; `kvE_subBracket2V_extract` destructures the disjunction and calls it,
+        mirroring how `bracketEndChar_k1v_sound` calls `k1v_bracket_extract`. The SURVIVE
+        `kvE_sub2_zoneHolds_*` lemmas are consumed transitively by `_sound`'s zone-matching, which
+        reuses the old `kvE_subBracket2_sound` env-`[a,w,x,t]` `zoneHolds` reconstruction verbatim.)*
+  - [x] Assemble `kvE_subBracket2V_sound : holds → ∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ`,
         reusing the :2338 template shape (`k1v_bracket_extract` :2150 one arity up). Cite Rabinovich
-        Cor 5.4 / Prop 3.5 at each chain step.
-  - [ ] Amendment F3 check: no provider-side pinning; no `w = e 1` / `x1 = e 0` residual equation.
-  - [ ] No `simp`/`omega`/`aesop` on chain steps (`by omega` only for `Fin`-index typing).
+        Cor 5.4 / Prop 3.5 at each chain step. *(landed sorry-free, axiom-clean.)*
+  - [x] Amendment F3 check: no provider-side pinning; no `w = e 1` / `x1 = e 0` residual equation.
+        *(the anchor `a` is the bracket's own `ptX1` witness fed to `hgate`; no residual equation.)*
+  - [x] No `simp`/`omega`/`aesop` on chain steps (`by omega` only for `Fin`-index typing).
+        *(all `simp only` uses are definitional unfolds / list-index bookkeeping identical to the
+        landed k1v + old-kvE kits; `omega` only for `Fin`-index bounds.)*
 - **Estimated output:** ~250-380 lines. Bounded unit: the re-derived building blocks + `_sound`.
   **Pre-authorized sub-split** (H8): 3.1 = re-derive `extract`/`_reaches_z*`/`_fold_z*`; 3.2 =
   assemble `kvE_subBracket2V_sound`.
