@@ -478,31 +478,49 @@ historical record; do not re-execute; do not edit its landed artifact.)*
 - **Depends on:** 2
 - **Completed:** 2026-07-06
 
-### Phase 4: Soundness direction (LHS→RHS) for the V-carrier [IN PROGRESS]
+### Phase 4: Soundness direction (LHS→RHS) for the V-carrier [COMPLETED]
 
 - **Goal:** Land the private soundness lemma: if `(bracketEndChar_k1v … qnf).holds M atomMap x t`
   (under the six k0-mirror bracket-zone order hypotheses on `qnf.1`, exactly as
   `bracketEndChar_k0_correct` :1581-1586), then
   `∃ w, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf`. Sorry-free.
 - **Tasks:**
-  - [ ] State `private theorem bracketEndChar_k1v_sound` with the six order hypotheses. From
+  - [x] State `private theorem bracketEndChar_k1v_sound` with the six order hypotheses. From
         `VVecEA2.holds` obtain the arrangement disjunct `(lL, lR)` and its `VecEA2.holds`; from
         `IntervalPattern.holds` monotonicity the witness tuple is strictly ordered in `(x, t)` —
         take `w :=` the middle witness (position `lL.length`). Each `lL`-witness lies strictly in
         `(x, w)` and each `lR`-witness strictly in `(w, t)` **by construction** — the exact
         counterexample defect removed (rule N4; this replaces the refuted chain reading).
-  - [ ] Chain step 1 — rewrite the RHS target via **`nf_eval_nf1_iff_efold`** (NfEFold:490, n=3,
+        *(landed at NfMultiAnchorBridge.lean:2308 via the pre-authorized 4.1/4.2 split: private
+        helper kit `k1v_zoneHolds_cons_iff`/`k1v_zone_consistent`/`k1v_bracket_extract`/
+        `k1v_reconstruct_nf3` (Phase 4.1, commit 425d54d32) + the direction theorem (Phase 4.2).
+        Deviation: altered — one additive Mathlib import (`Mathlib.Data.List.Permutation`, for
+        `List.mem_permutations`) added at the file head; no project import, no declaration
+        modified, diff otherwise after :1823 as planned.)*
+  - [x] Chain step 1 — rewrite the RHS target via **`nf_eval_nf1_iff_efold`** (NfEFold:490, n=3,
         env `[w,x,t]`) into fold form + off-fiber clause; the off-fiber conjunct comes from gate
         conjunct (i). Cite per **N2** (Prop 4.3 p.6 = residual-is-∨∃∀ only; realized locally via
         the fold — 305 report 14).
-  - [ ] Chain step 2 — route the quant layer through **`nf_quant_layer_fold_k1_gate`**
+        *(deviation: altered — the LHS→RHS direction consumes the depth-1 unfold (`Iff.rfl`, the
+        same defeq split `nf_eval_nf1_iff_efold` itself uses at NfEFold:497-501) + the gate
+        corollary directly, because only the ∃-witness direction is being BUILT here, not
+        rewritten; N2 citation recorded in the doc-comment. `nf_eval_nf1_iff_efold` remains the
+        Phase-5 vehicle for the RHS→LHS direction as planned.)*
+  - [x] Chain step 2 — route the quant layer through **`nf_quant_layer_fold_k1_gate`**
         (NfEFold:525, `h_atom` from the atom layer): per-(zone, χ) obligations over
         `ZoneSpec 3 × NormalForm sig 0 1`. Cite per **N2** (Def 4.1 p.6 note = innermost fold;
-        Lemma 3.4 p.5 for ∃-closure).
-  - [ ] Chain step 3 — atom layer at the endpoints via `nf_3var_bracket_xyt_correct`
+        Lemma 3.4 p.5 for ∃-closure). *(landed: the `.mpr` of the gate corollary discharges the
+        quant layer from `hzone` + gate conjunct (i); no arity-4 residual arose at any point)*
+  - [x] Chain step 3 — atom layer at the endpoints via `nf_3var_bracket_xyt_correct`
         (VecEADecomp:244; k=0 template :1577) from `epL`/`epR` + the `w` point type
         (`nf_y_proj`); order bits from the six hypotheses + `x < w < t`. Cite per **N1**.
-  - [ ] Chain step 4 (per-zone matching, the previously refuted surface — now direct):
+        *(deviation: altered — `nf_3var_bracket_xyt_correct` concludes `∃ w'` for a fresh
+        witness, but the soundness chain needs the atom layer at the SPECIFIC middle witness `w`
+        already fixed by the bracket; the same k0 reconstruction it rests on
+        (`reconstruct_nf_3var`, VecEADecomp:407) is `private` and not importable, so a verbatim
+        private clone `k1v_reconstruct_nf3` landed in the Bridge with the N1 citation. Same
+        template, same inputs (three arity-1 point types + six order biconditionals).)*
+  - [x] Chain step 4 (per-zone matching, the previously refuted surface — now direct):
         - interior-POSITIVE `(zXW/zWT, χ)`: the corresponding arrangement witness realizes χ
           strictly inside the interior zone (monotonicity, step above) — cite §5 bracket p.7 +
           Lemma 3.4 p.5;
@@ -516,8 +534,22 @@ historical record; do not re-execute; do not edit its landed artifact.)*
         - inconsistent zones: gate conjunct (ii) (order-conflict falsity;
           `nf_depth0_pair_cycle_empty'` NfDepth0Generalized:93).
         NO simp/omega/aesop chain-step shortcut (G5).
-  - [ ] Verify: build GREEN full tree; no sorry; `lean_verify` axiom check; no edit to any
+        *(landed: all seven consistent zones + the inconsistent-zone arm proved inside `hzone`;
+        interior-negative completeness via the `k1v_bracket_extract` witness/gap classification +
+        `nf_eval_unique` (NormalForm:245) through `nfPred_correct` (NfToVecEA:69 — the
+        Bridge-accessible form of the KampPrior:168 arity-1 bridge, which is outside this file's
+        import closure); inconsistent zones discharged by `k1v_zone_consistent` trichotomy +
+        gate conjunct (ii) — `nf_depth0_pair_cycle_empty'` was not needed since the order
+        conflict is semantic (LinearOrder trichotomy), not atom-level)*
+  - [x] Verify: build GREEN full tree; no sorry; `lean_verify` axiom check; no edit to any
         existing declaration.
+        *(full tree GREEN, 1705 jobs; 0 new sorries — all `sorry` matches in the file are prose;
+        `#print axioms` on all five new declarations (`bracketEndChar_k1v_sound`,
+        `k1v_bracket_extract`, `k1v_zone_consistent`, `k1v_reconstruct_nf3`,
+        `k1v_zoneHolds_cons_iff`) = `[propext, Classical.choice, Quot.sound]` exactly; diff
+        Theories/ = insertions only, 0 deletions — every existing declaration byte-identical;
+        N4 grep: zero `bracketBuild*` occurrences in the new code; citation greps: "p.7" ×5,
+        "p.6 note" ×2, "fixed endpoint" ×4 in the new diff)*
 - **Estimated output:** ~150-300 lines (one private theorem + per-zone case analysis).
 - **Bounded-unit test:** a fixed chain against NAMED landed lemmas; if any single step fails
   against its named lemma after honest attempts, that is a NAMED blocker to escalate with goal
@@ -529,6 +561,8 @@ historical record; do not re-execute; do not edit its landed artifact.)*
   `task 311 phase 4: V-carrier soundness (LHS->RHS)`.
 - **Timing:** ~2-2.5 hours (one agent run).
 - **Depends on:** 3
+- **Completed:** 2026-07-06 (4.1 helper kit commit 425d54d32 + 4.2 direction theorem; H8 escape
+  hatch exercised as pre-authorized — delivered ~660 lines across the split, all additive)
 
 ### Phase 5: Completeness direction (RHS→LHS), assembled `↔`, and R2 gate re-probe verdict [NOT STARTED]
 
