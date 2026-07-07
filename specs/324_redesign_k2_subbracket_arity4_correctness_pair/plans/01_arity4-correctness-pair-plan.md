@@ -328,7 +328,46 @@ logical parallelism; sequential execution is the safe default.
 - **Commit point:** `task 324 phase 5: completeness fold-extraction of inner witnesses`
 - **Depends on:** 2
 
-### Phase 6: Completeness — `IntervalPattern.holds` construction (Rabinovich Lemma 5.3) [NOT STARTED]
+### Phase 6: Completeness — `IntervalPattern.holds` construction (Rabinovich Lemma 5.3) [PARTIAL]
+
+**BLOCKER (Phase 6, R2 genuine obstruction — machine-grounded 2026-07-07):** The completeness
+converse of `kvE_subBracket2_sound` — `(∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ) →
+(kvE_subBracket2 charBase charK σ).2.holds M atomMap x t` — is **FALSE for arbitrary `M`** and
+therefore not provable. This is a Phase-1 *design* defect in `kvE_subBracket2` (NfMultiAnchorBridge
+:6120-6159), surfaced only when the completeness proof is driven (exactly the failure mode the
+Postmortem Constraints warned about; the original `kvE_subBracket` had the dual latent *soundness*
+gap). Per the binding constraint "task-324 Phase-1..5 code: defects are blocker reports, not edits",
+`kvE_subBracket2` must not be edited here.
+
+- **Verbatim goal (machine-captured via probe `IntervalPattern.holds_eq_succ` refine):** the three
+  segment obligations
+  `case seg0 ⊢ ∀ (y : M.carrier), x < y → y < witnesses ⟨0,_⟩ → TemporalPred.eval_at M atomMap ((kvE_subBracket2 charBase charK σ).snd.segmentTypes ⟨0,_⟩) y`
+  (and the analogous `segI`, `segN` over interior/trailing segments).
+- **Root cause 1 — segment types too strong.** `kvE_subBracket2.segmentTypes ≡ fun _ => segExcl`
+  (:6159) where `segExcl` (:6149-6152) conjoins `if bits zs χ then ⊤ else (charBase χ).neg` over
+  **all three** interior zones `[zXU,zUW,zWT]`. `IntervalPattern.holds` (ExistsForallNF:106-132)
+  requires each `beta`/segment type to hold at **every** point of each open segment. So every
+  interior point `y`'s complete 1-type `χ_y` would have to be bit-positive in **all three** zones.
+- **Counterexample.** In any rich/dense `M`, take an interior point `y ∈ (x,t)` whose type `χ_y` is
+  realized **only** inside `(x,x1)` (so `bits zXU χ_y = true`, `bits zUW χ_y = bits zWT χ_y =
+  false`). Then `segExcl`'s `zUW`/`zWT` conjuncts for `χ_y` are `(charBase χ_y).neg`, which is FALSE
+  at `y` (y realizes `χ_y`). `y` lies in some interval segment, falsifying the segment obligation —
+  yet the honest realization `nf_eval_nf M 1 4` exists. Hence the converse is false.
+- **Root cause 2 (independent).** `kvE_subBracket2.pointTypes` is a **fixed** filter-order list
+  (`leftSlots ++ uSlot :: rightSlots`, filter order of `Finset.univ.toList`), but
+  `IntervalPattern.holds` demands **strictly monotone** witnesses realizing the types **positionally**.
+  The extracted witnesses need not sit in filter order, so no monotone assignment exists in general.
+- **Required fix (out of scope; belongs to a redesign task).** Mirror the landed k1v carrier:
+  `bracketEndChar_k1v` is a `VVecEA2` **disjunction over arrangements** with **per-side** segment
+  types (`segL` excludes only `zXW`-negatives, `segR` only `zWT`-negatives) — precisely what makes
+  `bracketEndChar_k1v_complete` (:2979) provable. The arity-4 completeness needs the same
+  arrangement-disjunction + per-zone-segment shape, which `kvE_subBracket2` (a single fixed-order,
+  all-zone-segExcl bracket) does not have. This is a Phase-1 redesign, not a Phase-6 construction.
+- **R2 fallback invoked (pre-authorized, plan Rollback/Contingency + report §2 :188-193):** Phases
+  1-5 remain the committed partial-GO deliverable (soundness direction complete, sorry-free,
+  axiom-clean). No `sorry` placed. Completeness is spawned as its own task (redesign
+  `kvE_subBracket2` into an arrangement-disjunction carrier, then re-drive Phases 6-7).
+
 - **Goal:** Build the `IntervalPattern.holds` data (monotone enumeration, range/point/segment
   conditions) from the extracted inner witnesses — the novel, highest-risk order-theoretic work
   (R2).
