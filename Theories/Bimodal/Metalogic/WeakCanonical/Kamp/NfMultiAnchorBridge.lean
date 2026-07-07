@@ -4276,4 +4276,172 @@ private theorem f2_sub_ne : f2sub1 ≠ f2sub2 := by
   rw [f2_estar_in_sub1, f2_estar_not_in_sub2] at hb
   exact Bool.noConfusion hb
 
+/-- The 2-variable prefix of the arity-5 witness environment is the fresh 2-type
+    environment `[z, u]` (index bookkeeping for `nfk_take` at the probe points). -/
+private theorem f2_cast2_env (h : 2 ≤ 5) (z u : ℤ) :
+    (fun i => (Fin.cons z (Fin.cons u f2env3) : Fin 5 → F2M.carrier) (Fin.castLE h i)) =
+      (Fin.cons z (fun _ => u) : Fin 2 → F2M.carrier) := by
+  funext i
+  match i with
+  | ⟨0, _⟩ => rfl
+  | ⟨1, _⟩ => rfl
+
+/-- The realized fresh-variable 2-types at `u₁ = 12` and `u₂ = 4` coincide (report 05 F-B:
+    both `¬P`, `P`-points strictly below — `{0, 10}` / `{0}` — and strictly above — `{20}` /
+    `{10, 20}` — and every `¬P` cell inhabited on both sides). -/
+private theorem f2_proj2_iff (χ' : NormalForm f2sig 0 2) :
+    (∃ z : ℤ, nf_characteristic F2M 0 2 (Fin.cons z (fun _ => (12 : ℤ))) = χ') ↔
+    (∃ z : ℤ, nf_characteristic F2M 0 2 (Fin.cons z (fun _ => (4 : ℤ))) = χ') := by
+  constructor
+  · rintro ⟨z, rfl⟩
+    by_cases hp : (z = 0 ∨ z = 10 ∨ z = 20)
+    · rcases lt_trichotomy z 12 with h | h | h
+      · exact ⟨0, f2_char0_congr2 _ _ _ _ (iff_of_true (by decide) hp) (by decide)
+          (iff_of_true (by decide) h) (iff_of_false (by decide) (by omega))⟩
+      · exfalso; rcases hp with h' | h' | h' <;> omega
+      · exact ⟨10, f2_char0_congr2 _ _ _ _ (iff_of_true (by decide) hp) (by decide)
+          (iff_of_false (by decide) (by omega)) (iff_of_true (by decide) h)⟩
+    · rcases lt_trichotomy z 12 with h | h | h
+      · exact ⟨1, f2_char0_congr2 _ _ _ _ (iff_of_false (by decide) hp) (by decide)
+          (iff_of_true (by decide) h) (iff_of_false (by decide) (by omega))⟩
+      · exact ⟨4, f2_char0_congr2 _ _ _ _ (iff_of_false (by decide) hp) (by decide)
+          (iff_of_false (by decide) (by omega)) (iff_of_false (by decide) (by omega))⟩
+      · exact ⟨5, f2_char0_congr2 _ _ _ _ (iff_of_false (by decide) hp) (by decide)
+          (iff_of_false (by decide) (by omega)) (iff_of_true (by decide) h)⟩
+  · rintro ⟨z, rfl⟩
+    by_cases hp : (z = 0 ∨ z = 10 ∨ z = 20)
+    · rcases lt_trichotomy z 4 with h | h | h
+      · exact ⟨0, f2_char0_congr2 _ _ _ _ (iff_of_true (by decide) hp) (by decide)
+          (iff_of_true (by decide) h) (iff_of_false (by decide) (by omega))⟩
+      · exfalso; rcases hp with h' | h' | h' <;> omega
+      · exact ⟨20, f2_char0_congr2 _ _ _ _ (iff_of_true (by decide) hp) (by decide)
+          (iff_of_false (by decide) (by omega)) (iff_of_true (by decide) h)⟩
+    · rcases lt_trichotomy z 4 with h | h | h
+      · exact ⟨1, f2_char0_congr2 _ _ _ _ (iff_of_false (by decide) hp) (by decide)
+          (iff_of_true (by decide) h) (iff_of_false (by decide) (by omega))⟩
+      · exact ⟨12, f2_char0_congr2 _ _ _ _ (iff_of_false (by decide) hp) (by decide)
+          (iff_of_false (by decide) (by omega)) (iff_of_false (by decide) (by omega))⟩
+      · exact ⟨13, f2_char0_congr2 _ _ _ _ (iff_of_false (by decide) hp) (by decide)
+          (iff_of_false (by decide) (by omega)) (iff_of_true (by decide) h)⟩
+
+/-- `u₁` and `u₂` share their complete depth-1 monadic point type `χ`: the fresh projections
+    (`nfk_projFresh`, the Def-4.1 E[Σ]-atom channel) of `sub₁` and `sub₂` are EQUAL. Atom
+    part: the shared atom layer (`f2_sub_atom_eq`); quant part: the realized fresh-2-type
+    transfer (`f2_proj2_iff`) through `nfk_take`/`f2_take_char0`. -/
+private theorem f2_sub_proj_eq : nfk_projFresh f2sub1 = nfk_projFresh f2sub2 := by
+  have hcomp : ∀ (u : ℤ) (χ' : NormalForm f2sig 0 2),
+      (∃ e : NormalForm f2sig 0 5,
+        (nf_characteristic F2M 1 4 (Fin.cons u f2env3)).2 e = true ∧
+          nfk_take (by omega) e = χ') ↔
+      (∃ z : ℤ, nf_characteristic F2M 0 2 (Fin.cons z (fun _ => u)) = χ') := by
+    intro u χ'
+    constructor
+    · rintro ⟨e, he, hproj⟩
+      rw [show (nf_characteristic F2M 1 4 (Fin.cons u f2env3)).2 e = _ from
+        f2char14_snd _ e] at he
+      obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) he
+      rw [f2_eval_iff_char] at hz
+      subst hz
+      rw [f2_take_char0, f2_cast2_env] at hproj
+      exact ⟨z, hproj⟩
+    · rintro ⟨z, hz⟩
+      refine ⟨nf_characteristic F2M 0 5 (Fin.cons z (Fin.cons u f2env3)), ?_, ?_⟩
+      · rw [show (nf_characteristic F2M 1 4 (Fin.cons u f2env3)).2 _ = _ from f2char14_snd _ _]
+        exact @decide_eq_true _ (Classical.dec _)
+          ⟨z, nf_characteristic_satisfies F2M 0 5 (Fin.cons z (Fin.cons u f2env3))⟩
+      · rw [f2_take_char0, f2_cast2_env]
+        exact hz
+  refine Prod.ext ?_ ?_
+  · show (fun a => f2sub1.1 (atomKind_castLE _ a)) = fun a => f2sub2.1 (atomKind_castLE _ a)
+    rw [f2_sub_atom_eq]
+  · funext χ'
+    show decide (∃ e, f2sub1.2 e = true ∧ nfk_take (by omega) e = χ') =
+      decide (∃ e, f2sub2.2 e = true ∧ nfk_take (by omega) e = χ')
+    apply decide_eq_decide.mpr
+    exact ((hcomp 12 χ').trans ((f2_proj2_iff χ').trans (hcomp 4 χ').symm))
+
+/-- The env-restriction channel of the probe subs is the anchor 3-type: dropping the fresh
+    variable from the arity-4 characteristic recovers `qnf.1` (Def 3.1 env channel). -/
+private theorem f2_drop_char (u : ℤ) :
+    nf0_dropFresh (nf_characteristic F2M 0 4 (Fin.cons u f2env3)) =
+      nf_characteristic F2M 0 3 f2env3 := by
+  funext a
+  cases a with
+  | pred p i =>
+    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    rfl
+  | order i j h =>
+    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    rfl
+
+/-- Off-fiber clause transfer: `qnf` and `qnf'` have equivalent atom-layer off-fiber falsity
+    clauses — un-marking the ON-fiber `sub₂` (whose env restriction IS `qnf.1`,
+    `f2_drop_char`) cannot affect any off-fiber sub. -/
+private theorem f2_hoff :
+    (∀ sub : NormalForm f2sig 1 4,
+        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ f2qnf.1 → f2qnf.2 sub = false) ↔
+    (∀ sub : NormalForm f2sig 1 4,
+        nf0_dropFresh (NormalForm.atom_assgn sub) ≠ f2qnf'.1 → f2qnf'.2 sub = false) := by
+  constructor
+  · intro h sub hne
+    show (if sub = f2sub2 then false else f2qnf.2 sub) = false
+    split
+    · rfl
+    · exact h sub hne
+  · intro h sub hne
+    by_cases hs : sub = f2sub2
+    · exfalso
+      apply hne
+      rw [hs]
+      show nf0_dropFresh (nf_characteristic F2M 0 4 (Fin.cons 4 f2env3)) =
+        nf_characteristic F2M 0 3 f2env3
+      exact f2_drop_char 4
+    · have hh := h sub hne
+      have hunf : f2qnf'.2 sub = (if sub = f2sub2 then false else f2qnf.2 sub) := rfl
+      rw [hunf, if_neg hs] at hh
+      exact hh
+
+/-- Fiber-existential transfer: every `(zs, χ)` fold bit survives the `sub₂` un-marking —
+    the shared-fiber companion `sub₁` (same ordering channel `f2_sub_atom_eq`, same fresh
+    projection `f2_sub_proj_eq`, still marked `f2_sub1_marked`) keeps the `(zXW, χ)` bit
+    alive; every other fiber is untouched. The machine-checked heart of F2: the carrier's
+    fiber-existential read cannot see the un-marking (F1 item 2 at the F-B model). -/
+private theorem f2_hb (zs : ZoneSpec 3) (χ : NormalForm f2sig 1 1) :
+    (∃ sub : NormalForm f2sig 1 4, f2qnf.2 sub = true ∧
+      nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) ↔
+    (∃ sub : NormalForm f2sig 1 4, f2qnf'.2 sub = true ∧
+      nf0_zoneSpec (NormalForm.atom_assgn sub) = zs ∧ nfk_projFresh sub = χ) := by
+  constructor
+  · rintro ⟨sub, hm, hz, hp⟩
+    by_cases hs : sub = f2sub2
+    · subst hs
+      refine ⟨f2sub1, ?_, ?_, ?_⟩
+      · show (if f2sub1 = f2sub2 then false else f2qnf.2 f2sub1) = true
+        rw [if_neg f2_sub_ne]
+        exact f2_sub1_marked
+      · rw [← hz]
+        show nf0_zoneSpec f2sub1.1 = nf0_zoneSpec f2sub2.1
+        rw [f2_sub_atom_eq]
+      · rw [← hp]
+        exact f2_sub_proj_eq
+    · refine ⟨sub, ?_, hz, hp⟩
+      show (if sub = f2sub2 then false else f2qnf.2 sub) = true
+      rw [if_neg hs]
+      exact hm
+  · rintro ⟨sub, hm, hz, hp⟩
+    refine ⟨sub, ?_, hz, hp⟩
+    have hunf : f2qnf'.2 sub = (if sub = f2sub2 then false else f2qnf.2 sub) := rfl
+    rw [hunf] at hm
+    by_cases hs : sub = f2sub2
+    · rw [if_pos hs] at hm; exact Bool.noConfusion hm
+    · rwa [if_neg hs] at hm
+
+/-- **Carrier equality at the F-B pair**: the current depth-`k` V-carrier cannot distinguish
+    `qnf` from `qnf'` — `bracketEndChar_kv_factors` (:3838) instantiated at the machine-checked
+    channel agreements above. Holds for EVERY provider family `charF`. -/
+private theorem f2_carrier_eq (charF : (j : Nat) → NormalForm f2sig j 1 → Formula) :
+    bracketEndChar_kv f2atomMap f2surj charF 2 f2qnf =
+      bracketEndChar_kv f2atomMap f2surj charF 2 f2qnf' :=
+  bracketEndChar_kv_factors f2atomMap f2surj charF (k := 1) f2qnf f2qnf' rfl f2_hoff f2_hb
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
