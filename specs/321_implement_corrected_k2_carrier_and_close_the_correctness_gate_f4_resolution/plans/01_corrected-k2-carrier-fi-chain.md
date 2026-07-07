@@ -145,20 +145,80 @@ Phases within the same wave can execute in parallel. This construction is inhere
 - **Verification:**
   - Green scoped build; task-320 probes present and axiom-clean; `git diff` clean at phase start.
 
-### Phase 2: Expose σ.2 inner-witness structure via sub-level projections [NOT STARTED]
+### Phase 2: Expose σ.2 inner-witness structure via sub-level projections [BLOCKED]
+
+**BLOCKER** (Phase 2 — surfaced here; also gates Phases 3-9):
+- **What failed**: Two independent, machine-grounded obstructions to the task-320 design spec §5,
+  discovered during Phase 2 feasibility probing.
+  1. **Design-spec §5(1) signature is not realizable as written.** The spec gives
+     `kvE_subBracket … (σ : NormalForm sig k 4) : BracketFormula m` with **general `k`** and says
+     read `σ.2`. Machine-confirmed: `σ.2` for `σ : NormalForm sig k 4` with a *variable* `k` fails to
+     elaborate — `error: Invalid projection … the expression σ has type NormalForm sig k 4 which does
+     not have fields` (NfMultiAnchorBridge.lean scratch probe at ~:5708). `NormalForm sig k 4` only
+     reduces to a pair `(atom_assgn, quant_assgn)` when `k` is a *literal successor*
+     (`NormalForm.lean:134-136`). A successor-specialized signature `(σ : NormalForm sig (k+1) 4)`
+     *does* elaborate (scratch `scratch_innerSubs_succ` built green), but the general-`k` body
+     `kvE'_body`/`kvE2_body` (parametric `{k}`, subs `σ : NormalForm sig k 4`) cannot call a
+     successor-only `kvE_subBracket` without a `k`-matching reformulation that the design spec does
+     not supply. The spec's "SINGLE new construction obligation … expose σ.2 via projections" glossed
+     this type-level obstruction; the honest resolution needs a design decision (match `kvE2_body` on
+     `k`, or restate the whole enriched-body/carrier family at successor-sub depth), not present in §5.
+  2. **The concrete `pointTypes`/`segmentTypes` encoding is under-specified and unvalidatable in
+     isolation.** §5(1) gives the *shape* ("σ's inner-witness structure as bracket witnesses between
+     the honest anchor pair, read from σ.2") but not the Lean term mapping `σ.2 : NormalForm sig 0 5 →
+     Bool` (at the k=2 gate) to `pointTypes : Fin m → TemporalPred` / `segmentTypes : Fin (m+1) →
+     TemporalPred`. Choosing this encoding IS the research contribution; landing an *invented*
+     encoding whose semantic correctness cannot be validated without the (unbuilt) Phase 7-8 gate is
+     exactly the under-proof-pressure construction the plan's Risk row 2 and Non-Goals forbid (the
+     flat-variant trap; "single-point relative-position assertion is an automatic escalation").
+- **What was tried**:
+  - Read design spec §5 (task-320 report 02), the landed `kvE'_body`/`kvE_pinDisjunct`/`kvE_exclConj`
+    (:5374-5530), the F4 record (:5532-5608), probes P1/P3/P4 (:5634-5698), `BracketFormula`
+    (VecEAFormula:128), `fChainFrom`/`fChainPred`/`bracket_implies_fChainPred` (EANegation:552-698),
+    `NormalForm`/`nf_eval_nf` (NormalForm:134-207), `BracketCarrierCorrectVPrior`/`ExistProviders`
+    (NfMultiAnchorBridge:4853-4888).
+  - Machine probe: `scratch_innerSubs_succ` (`σ : NormalForm sig (k+1) 4`, reads `σ.2`) — **built
+    green**. `scratch_innerSubs_genk` (`σ : NormalForm sig k 4`, per §5(1)) — **type error** ("does
+    not have fields"). Both scratch probes removed; file restored byte-identical to the green baseline.
+- **Why it's stuck**: The design spec is at the probe/abstract level (P3/P4 operate on an *abstract*
+  `bf : BracketFormula (n+1)`, never constructing one from a general-`k` sub's `σ.2`). Bridging from
+  the abstract recovery lemma to a concrete, general-`k`-integrable `kvE_subBracket` requires
+  resolving (1) the successor-depth `k`-matching and (2) the concrete inner-NF → bracket encoding —
+  neither supplied by §5. Downstream, Phases 7-8 require the **first-ever proven k≥2
+  `BracketCarrierCorrectVPrior`** for an enriched carrier: the only landed proven instances are the
+  *simple* `bracketEndChar_kv` at k=0/k=1 (:4899/:4915); both prior enriched k=2 gates
+  (`bracketEndChar_kvE` :5203, `bracketEndChar_kvE'` :5532) are NO-GO defect records (F1/F4). No
+  successful k≥2 template exists to reuse, and the reverse direction (honest realization ⟹
+  sub-bracket holds) plus the fChainPred→`nf_eval_nf` semantic bridge are unprobed and unbuilt.
+- **What is needed** (to unblock — user / `/revise 321` decision):
+  1. Amend the design spec (or task 320 report §5) with the concrete `kvE_subBracket` term: the exact
+     `k`-matching reformulation of `kvE2_body` (successor-sub specialization) AND the explicit
+     `pointTypes`/`segmentTypes` construction from `σ.2`'s inner NFs, with the intended
+     `nf_eval_nf`-connection stated.
+  2. Confirm the Phase 7-8 gate proof strategy against the reality that no proven k≥2 enriched-carrier
+     correctness precedent exists — likely a dedicated multi-phase proof-build task, not a single
+     construction pass.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, a vacuous placeholder, or an
+  invented flat/single-point per-sub literal (OUT OF SCOPE, F3/F4-refuted). Escalated per the plan's
+  "design smell → escalate, do not engineer around" directive (Risks table; Gabbay cross-check).
 
 - **Goal:** Provide the `σ.2` read the design spec §5 identifies as the SINGLE new construction
   obligation — expose an interior positive sub's inner anchor/segment types from its own normal form.
 - **Tasks:**
   - [ ] Identify, for `σ : NormalForm sig k 4`, the projections that expose σ's inner-witness
         structure (σ's own `u`, inner anchor pair, inner segment types) from `σ.2`, reusing the landed
-        `nf_x_proj3`/`nf_t_proj3`/`nf_y_proj` pattern (VecEADecomp:33-47).
+        `nf_x_proj3`/`nf_t_proj3`/`nf_y_proj` pattern (VecEADecomp:33-47). *(deviation: BLOCKED — the
+        design-spec §5(1) general-`k` signature `(σ : NormalForm sig k 4)` cannot read `σ.2`
+        (machine-confirmed type error "does not have fields"); only successor-depth `(k+1)` elaborates,
+        requiring a `k`-matching reformulation not supplied by §5.)*
   - [ ] Define, additively, any thin wrapper projections needed to read σ's inner anchor/segment types
         at the sub level (e.g. `nfk_subAnchor`/`nfk_subSegment`-style), each a projection over the
         existing normal-form structure — NOT a derived-identity hypothesis (route b2 is NOT NEEDED).
+        *(deviation: BLOCKED — concrete `pointTypes`/`segmentTypes` encoding from `σ.2` is
+        under-specified in §5 and unvalidatable without the unbuilt Phase 7-8 gate.)*
   - [ ] Confirm the read distinguishes the F4 pair: on `σ''=char[14,16,11,20]` vs honest
         `char[14,15,10,20]` the `σ.2` read must differ (they share `σ.1` `nfk_projFresh`=`type(14)`
-        but differ at `σ.2`).
+        but differ at `σ.2`). *(deviation: not reached — gated behind the projection obstruction above.)*
 - **Timing:** ~2 hours
 - **Depends on:** 1
 - **Files to modify:**
