@@ -376,30 +376,30 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2 hours.
 - **Depends on:** 1, 3.
 
-### Phase 6: Introduction Rewrite for the AI-Practitioner Arc [NOT STARTED]
+### Phase 6: Introduction Rewrite for the AI-Practitioner Arc [COMPLETED]
 
 - **Goal:** `00-introduction.typ` states the whole book's arc up front, led by the
   AI-training use case, with honest TM framing and the AI-reader guide.
 - **Territory:** `chapters/00-introduction.typ` only.
 - **Tasks:**
-  - [ ] Open with the practitioner thesis: TM as a verified reasoning substrate — decidable
+  - [x] Open with the practitioner thesis: TM as a verified reasoning substrate — decidable
         operational fragment for fully automated checking vs the full logic as a generator
         of dual-signal training data (proof traces → policy, countermodels → value), every
         output deterministically checkable (`README.md:183-184`, PIPELINE.md Overview —
         cite forward to Part IV).
-  - [ ] Honest system description (postmortem rule): Until/Since temporal logic over linear
+  - [x] Honest system description (postmortem rule): Until/Since temporal logic over linear
         orders fused with S5 plus interaction/uniformity layers over task frames; the
         LTL → +S5 → +store/recall tower presented ONLY as the extension roadmap, marked ◇.
-  - [ ] Book map: the five parts, one paragraph each, with sync-class of each part; keep and
+  - [x] Book map: the five parts, one paragraph each, with sync-class of each part; keep and
         re-caption the existing light-cone diagram; add the unification-grid frontispiece
         (D-R5.4: horizontal operator axis × vertical world-state-structure axis, TM shaded
         as the first verified cell) using Phase-1 fletcher helpers.
-  - [ ] "How to Read This Book If You Are an AI" section (D-R5.3): what the legend means,
+  - [x] "How to Read This Book If You Are an AI" section (D-R5.3): what the legend means,
         which claims are safe as ground truth (✓ only), where the machine-readable appendix
         will live (316), how names map to `Theories/Bimodal/` declarations.
-  - [ ] Keep the Project Structure section, updating the `Automation/`/`Examples/` line
+  - [x] Keep the Project Structure section, updating the `Automation/`/`Examples/` line
         (no longer "not covered in this manual" — point to Part IV).
-  - [ ] Verify: compile green; `scripts/typst-sync-check.sh` passes (all cited names resolve).
+  - [x] Verify: compile green; `scripts/typst-sync-check.sh` passes (all cited names resolve).
 - **Estimated output:** ~250 lines.
 - **Done when:** chapter reads as the book's front door for the primary audience; checks green.
 - **Timing:** 2 hours.
