@@ -1,5 +1,5 @@
 ---
-next_project_number: 313
+next_project_number: 314
 ---
 
 # TODO
@@ -12,7 +12,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,309,313 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,300,309 | completeness, publication-quality, sorry-elimination, ... |
 | 3 | 193,305 | 189,192,196,307 | completeness, automation |
 | 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
@@ -102,6 +102,10 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 300 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
+### Reference Book
+
+313 [NOT STARTED] — Design the full extent of the BimodalReference book by examining 
+
 ### Kamp_theorem_formalization
 
 309 [IMPLEMENTING] — Build the off-diagonal two-anchor navigated characteristic (Rabin
@@ -109,6 +113,16 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Uncategorized
 
 ## Tasks
+
+### 313. Design full extent bimodalreference book
+- **Status**: [NOT STARTED]
+- **Task Type**: typst
+- **Topic**: reference-book
+- **Dependencies**: None
+
+**Description**: Design the full extent of the BimodalReference book by examining what /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, the BimodalLogic Lean codebase, and /home/benjamin/Philosophy/Papers/PossibleWorlds/Lk/main.tex still offer that is relevant and worth including in Theories/Bimodal/typst/BimodalReference.typ, toward a more complete, well-motivated, and well-explained account of the bimodal system and its applications. The account should: (1) acknowledge the sizable remaining project of carving off decidable fragments for fully automated reasoning, contrasted with training AI systems to reason proof-theoretically and to solve constraint systems, both deterministically checkable and fast; (2) present the system as closest to vanilla LTL extended first with S5 modal operators and then with Vlach operators for cross-referencing traces and times; (3) frame this as an early milestone in combined expressive power from unifying logics, with the full Logos aiming to vastly expand this; (4) plan a next chapter adding constitutive structure to provide the counterfactual semantics and logic of /home/benjamin/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex and /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ, carving off the next dimension of logical structure to yield a tensed counterfactual logic from which metaphysical modality can be derived. Deliverable: an initial design report mapping candidate content from each source to a proposed full book structure, to base further research on.
+
+---
 
 ### 312. Revise bimodalreference typst paper lean
 - **Status**: [COMPLETED]
