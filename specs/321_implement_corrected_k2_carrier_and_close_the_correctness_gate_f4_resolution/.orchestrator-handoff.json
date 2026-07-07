@@ -1,0 +1,24 @@
+{
+  "status": "partial",
+  "summary": "Task 321 resume dispatch (v3, Phase 8). Stages A/B (Phases 1-7) remain LANDED, green, byte-identical, committed. Resuming Stage C (soundness), I machine-drove the per-sub soundness crux and hit a GENUINE machine-grounded structural obstruction that blocks the v3 decomposition as written. The soundness direction reduces to a per-positive-σ obligation `∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] σ`, whose only resource is the outer witness slot `kvE_subChain σ @ u`. Forcing it through nf_eval_depth1_fold_iff yields three unclosable sub-goals: (1) σ.1's FULL atom layer (order+pred bits at all 4 positions) — absent from the sub-chain; (2) the ⟸ interior-fold for arbitrary ZoneSpec 4 — the sub-chain is a strictly UPWARD Until chain from u (fChainFrom_base/_step), so σ's zXU=(x,v,u) interior zone below u is unreachable; (3) off-fiber needs the outer gate. The sole landed connector kvE_subBracket_implies_subChain has hypothesis bracket.holds z0 z (unavailable in soundness — wrong direction); exact? cannot close. The plan's Phase 10 premise ('crux closes via the landed e-free kvE_subBracket_implies_subChain') therefore does not hold. The zXU gap is a property of the do-not-edit landed kvE_subBracket, so it cannot be fixed proof-side. Per the binding per-phase escalation rule I recorded the blocker F-house-style in plan 03 (Phase 8 [BLOCKED]), kept all green work committed (nothing new — obstruction is at the crux entry), removed the WIP probe (file byte-identical to HEAD), and STOPPED. No sorry / vacuous def / shortcut used.",
+  "artifacts": [
+    {
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md",
+      "type": "plan",
+      "summary": "Phase 8 [BLOCKED] with full machine-grounded blocker record (three unclosable crux sub-goals, wrong-direction connector, zXU upward-chain gap, v4/spawn remedy)."
+    }
+  ],
+  "blockers": [
+    "Per-sub soundness crux: reconstructing nf_eval_nf M 1 4 [x1,w,x,t] σ from kvE_subChain σ @ u needs a NEW arity-4 sub-bracket soundness+completeness pair (σ.1 atom-layer recovery + interior-fold matching + off-fiber via gate), NOT the landed kvE_subBracket_implies_subChain (wrong direction).",
+    "Structural: kvE_subBracket's single upward chain from the σ-slot cannot reach σ's zXU=(x,v,u) interior positives below u; fixing requires editing the do-not-edit landed kvE_subBracket (Stage-A' redesign)."
+  ],
+  "continuation_context": {
+    "handoff_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md",
+    "next_phase": 8,
+    "resume_blocked": true,
+    "remedy": "/revise 321 to a v4: add a Stage-A' redesign of kvE_subBracket so all three interior zones (incl. zXU below the σ-slot) are reachable (e.g. Since+Until pair, or anchor the chain at x not u), then a NEW arity-4 sub-bracket correctness pair (re-derive the k1v :2338 soundness / :2979 completeness at arity 4 with a cross-body σ.1 atom-layer channel), THEN the gate assembly. Alternatively spawn the sub-bracket-correctness lemmas as an explicit prerequisite task. The current v3 Phases 8-10 (soundness = extraction reuse + landed crux closer) understate the missing sub-bracket-correctness theorem."
+  },
+  "next_action_hint": "/revise 321 (v4 with Stage-A' kvE_subBracket redesign + arity-4 sub-bracket correctness pair) — do NOT re-run /implement 321 on v3; Phase 8 is machine-grounded BLOCKED.",
+  "phases_completed": 7,
+  "phases_total": 15
+}
