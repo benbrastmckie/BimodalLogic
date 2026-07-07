@@ -398,7 +398,39 @@ forward.
   WIP and commit only the green prefix; do NOT land a `sorry`). Axiom-clean on anything committed. The
   reduction through `two_eq` type-checks; the joint slot exposes the `kvE_subBracket2V` holds shape.
 
-### Phase 10: Stage C — per-sub soundness via kvE_subBracket2V_sound (hgate discharge) + non-joint channels + assembly [NOT STARTED] (Stage C)
+### Phase 10: Stage C — per-sub soundness via kvE_subBracket2V_sound (hgate discharge) + non-joint channels + assembly [BLOCKED] (Stage C)
+
+**BLOCKER** (Phase 10; session sess_1783452940_63339e, 2026-07-07):
+- **What failed**: The planned `phase10_first_step` — "bridge `hLwit`/`hRwit` (per-fChainPred witness
+  form over `kvE_subChain2V σ`) back to `(kvE_subBracket2V σ).holds M atomMap x t`" — cannot close.
+  `kvE_subBracket2V_sound` (:7370) consumes `(kvE_subBracket2V σ).holds`; the re-pointed `kvE2_body`
+  joint channel (:8154, `ptSub σ = kvE_subChain2V charBase charK σ`) carries a FLAT
+  `bracketFromLists3.fChainPred` (one per arrangement). `k1v_bracket_extract` (:2150) on the outer
+  bracket yields `hLwit`: each such `fChainPred` *realized at one interior point*. Lifting a realized
+  `fChainPred` to the nested `.holds` is the REVERSE Cor 5.4 direction.
+- **What was tried / verified**: (a) Confirmed no landed `fChainPred → bracket` lemma exists — only the
+  forward `BracketFormula.bracket_implies_fChainPred` (EANegation:660). (b) Confirmed the pin channel
+  `kvE_pinDisjunct` (:5374 = `[⟨charK (nfk_projFresh σ)⟩]`) supplies ONLY the anchor's fresh type, not
+  the per-χ `zXU` below-anchor witnesses (`hbelow`) that `kvE_subBracket2V_sound` needs. (c) Landed
+  `kvE_subBracket2V_sound_of_parts` (green, axiom-clean, committed) — a `.holds`-free refactor proving
+  the ONLY carrier-side data soundness truly requires is `(x1 anchor, hbelow below-witnesses)`; the
+  joint channel cannot supply `hbelow` without the reverse direction.
+- **Why stuck (root cause)**: The reverse `fChainPred → bracket` direction is DOCUMENTED UNPROVABLE at
+  `EANegation.lean:1217-1234` ("The Corollary 5.4 biconditional at BracketFormula level is also
+  unprovable with the interior-witness convention", report 18 §10.3). The Phase-8 re-point from
+  `kvE_subChain` to `kvE_subChain2V` fixed `zXU` REACHABILITY but left the joint channel as a flat
+  `fChainPred`, which is provable FORWARD (completeness) but not REVERSE (soundness). Architecturally,
+  splicing sub-content as flat `TemporalPred` entries into the outer bracket's witness list (then
+  extracting via `k1v_bracket_extract`, which realizes each entry at a single point) is inherently
+  incompatible with recovering a nested sub-bracket `.holds`.
+- **What is needed (re-plan / spawn)**: EITHER (1) redesign `kvE2_body`'s joint channel (321-owned) so
+  the per-sub soundness obligation exposes `(anchor, hbelow)` directly — e.g. carry `zXU`-reachability
+  via `kvE_subBracket2V_reaches_zXU` (:7246) off a genuinely-carried `.holds`, feeding the landed
+  `kvE_subBracket2V_sound_of_parts` — rippling into completeness (Phase 12+) and non-vacuity; OR
+  (2) research a reverse `fChainPred → bracket` route under a DIFFERENT convention than the
+  "interior-witness convention" report 18 §10.3 ruled out. This is a plan-level decision, not a local
+  proof fix.
+- **Prohibited**: Do NOT land a live-path `sorry`, `def X := True`, or vacuous placeholder to force GO.
 
 - **Goal:** Close the per-sub positive obligation (the F4 crux) by **consuming**
   `kvE_subBracket2V_sound` (:7514), discharging its explicit `hgate` from the outer gate channels;

@@ -1,69 +1,51 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Phase 9 (Stage C soundness scaffolding): the soundness-direction reduction+extraction for the re-pointed bracketEndChar_kvE2 was MACHINE-VERIFIED green-modulo-sorry in an uncommitted WIP and then removed. The proof-side soundness half of BracketCarrierCorrectVPrior at bracketEndChar_kvE2 (conclusion `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf`) reduces via `rw [bracketEndChar_kvE2_two_eq]` then `simp only [kvE2_body, VVecEA2.holds]`, gate `split` (empty-disjunct isFalse branch closes by `simp`), arrangement destructure `(lL,lR)`, `VecEA2.holds` destructure `(hepL,hepR,hbr)`, and `k1v_bracket_extract` — all type-check. Task-3 CONFIRMED: the joint slot (hLwit/hRwit) now exposes `kvE_subChain2V (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) σ` (task 325), NOT the old kvE_subChain. Because the reduction is an inline half-proof over kvE2_body's internal let-bound objects (slotsFor/epL/segL/…), it cannot land as a standalone green lemma without a forbidden main-target sorry; per this phase's explicit Verification valve, NOTHING was committed to source. NfMultiAnchorBridge.lean is byte-identical to Phase-8 commit 8448ea135 (empty git diff); zero sorry on the live path; the Phase-8 green/axiom-clean state is preserved.",
+  "summary": "Phase 10 (Stage C soundness closure) hit a genuine, machine-documented STRUCTURAL obstruction and could not land as planned. The plan's phase10_first_step requires bridging hLwit/hRwit (per-fChainPred witness form over kvE_subChain2V, the re-pointed kvE2_body joint channel :8154) back to (kvE_subBracket2V sigma).holds so kvE_subBracket2V_sound (:7370) can be consumed. That bridge IS the reverse Cor 5.4 direction (fChainPred -> bracket), DOCUMENTED UNPROVABLE at EANegation.lean:1217-1234 (report 18 section 10.3, interior-witness convention). Only the FORWARD bracket_implies_fChainPred (EANegation:660) is landed; the pin channel (kvE_pinDisjunct :5374) supplies only the anchor fresh type, not the per-chi zXU below-anchor witnesses (hbelow) that kvE_subBracket2V_sound needs. DELIVERED: landed kvE_subBracket2V_sound_of_parts (green, axiom-clean, committed) — a .holds-free refactor proving the ONLY carrier-side inputs soundness truly consumes are (anchor x1, hbelow); this isolates the residual precisely and is the drop-in consumer for any corrected joint channel that recovers (anchor, hbelow) without the unprovable reverse direction. No live-path sorry introduced; module builds green; forbidden-list assets byte-identical.",
   "phases_completed": 8,
   "phases_total": 15,
-  "blockers": [],
+  "sorry_inventory": [],
+  "blockers": [
+    {
+      "phase": 10,
+      "target": "bracketEndChar_kvE2_sound (Stage C soundness closure)",
+      "what_failed": "Bridge hLwit/hRwit (fChainPred realizations over kvE_subChain2V) -> (kvE_subBracket2V sigma).holds, required to feed kvE_subBracket2V_sound (:7370).",
+      "root_cause": "Reverse Cor 5.4 direction fChainPred -> bracket is documented UNPROVABLE at EANegation.lean:1217-1234 (report 18 section 10.3, interior-witness convention). Only forward bracket_implies_fChainPred (EANegation:660) is landed. Phase-8 re-point (kvE_subChain -> kvE_subChain2V) fixed zXU reachability but left the joint channel as a flat fChainPred, provable forward (completeness) but not reverse (soundness). Splicing sub-content as flat TemporalPred entries into the outer bracket witness list (extracted via k1v_bracket_extract, one point per entry) is architecturally incompatible with recovering a nested sub-bracket .holds.",
+      "isolation": "kvE2_body joint channel at NfMultiAnchorBridge.lean:8154 (ptSub sigma = kvE_subChain2V charBase charK sigma). The exact missing datum is hbelow: per-chi, sigma.2(nf0_assemble kvE_sub2_zXU chi sigma.1)=true -> exists u in (x, x1) realizing nf_depth0_char_formula chi. Everything else soundness needs is supplied by hgate or the pin anchor.",
+      "resolution_options": [
+        "Re-plan option 1: redesign kvE2_body joint channel (321-owned) so the per-sub soundness obligation exposes (anchor, hbelow) directly (e.g. carry zXU reachability via kvE_subBracket2V_reaches_zXU :7246 off a genuinely-carried .holds), feeding the landed kvE_subBracket2V_sound_of_parts. Ripples into completeness (Phase 12+) and non-vacuity.",
+        "Re-plan option 2: research/spawn a reverse fChainPred -> bracket route under a convention other than the interior-witness convention that report 18 section 10.3 ruled out."
+      ],
+      "prohibited": "No live-path sorry, def X := True, or vacuous placeholder."
+    }
+  ],
+  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md",
   "continuation_context": {
     "is_successor": true,
-    "next_phase": 9,
-    "phase9_status": "reduction+extraction machine-verified; committable green code deferred to Phase 10 (inseparable — no green prefix landable in isolation)",
-    "verified_reduction_recipe": {
-      "target_lemma": "bracketEndChar_kvE2_sound (proof-side; do NOT edit BracketCarrierCorrectVPrior)",
-      "signature_mirror": "one depth up from bracketEndChar_k1v_sound (:2338): qnf : NormalForm sig 2 3; six order-bit hyps on qnf.atom_assgn (h_xy=true, h_yt=true, h_xt=true, h_yx=false, h_ty=false, h_tx=false); (M) (x t : M.carrier); (h : (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t); conclusion `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf`. No h_UZ/h_SZ (k1v_sound omits them).",
-      "entry_extraction_tactics": [
-        "rw [bracketEndChar_kvE2_two_eq] at h",
-        "simp only [kvE2_body, VVecEA2.holds] at h",
-        "obtain ⟨vea, hmem, hveah⟩ := h",
-        "split at hmem",
-        "case isFalse hg => simp at hmem",
-        "case isTrue hg => rw [List.mem_flatMap] at hmem; obtain ⟨lL, hlLp, hmem⟩ := hmem",
-        "rw [List.mem_map] at hmem; obtain ⟨lR, hlRp, hEq⟩ := hmem; subst hEq",
-        "obtain ⟨hepL, hepR, hbr⟩ := hveah",
-        "obtain ⟨w, hxw, hwt, hptWe, hLwit, hRwit, hLgap, hRgap⟩ := k1v_bracket_extract M atomMap _ _ _ _ _ x t hbr"
-      ]
+    "next_phase": 10,
+    "phase9_status": "IN PROGRESS (reduction+extraction machine-verified in prior dispatch; soundness closure blocked by the Phase-10 structural obstruction below — Phase 9 green code remains inseparable from a closure that is not currently attainable)",
+    "phase10_status": "BLOCKED (structural; see blockers[0]) — requires plan-level decision, not a local proof fix",
+    "landed_this_dispatch": {
+      "lemma": "kvE_subBracket2V_sound_of_parts",
+      "location": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean (after kvE_subBracket2V_sound :7370, before the Task 325 v2 Phase 1 block)",
+      "signature": ".holds-free refactor of kvE_subBracket2V_sound: takes (x1 : anchor, hxx1: x<x1, hx1t: x1<t, hanchor: charK(nfk_projFresh sigma) at x1, hbelow: per-chi zXU below-witnesses in (x,x1), hgate: the 6-conjunct forall-a bundle) and yields exists x1', nf_eval_nf M 1 4 [x1',w,x,t] sigma. Proof body identical to kvE_subBracket2V_sound :7399-7426.",
+      "axioms": ["propext", "Classical.choice", "Quot.sound"],
+      "why_valuable": "It is the drop-in soundness consumer for the corrected joint channel and pins the exact residual: the joint channel must recover (anchor, hbelow), NOT a flat fChainPred."
     },
-    "exposed_obligation_structure": {
-      "gate": "hg : kvE_gate qnf.1 qnf.2",
-      "arrangement": "lL/hlLp ∈ (posIn zXW).permutations [zXW = ⟨(true,false),(false,true),(true,false)⟩]; lR/hlRp ∈ (posIn zWT).permutations [zWT = ⟨(false,true),(false,true),(true,false)⟩]",
-      "witness": "w : M.carrier, hxw : x < w, hwt : w < t",
-      "joint_slot_LEFT": "hLwit : ∀ p ∈ List.flatMap (fun σ => kvE_subChain2V (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) σ ++ (kvE_pinArrangements σ).flatMap (fun a => (kvE_pinDisjunct … σ a).1)) lL, ∃ u, x<u ∧ u<w ∧ p.eval_at M atomMap u",
-      "joint_slot_RIGHT": "hRwit : same shape over lR with w<u ∧ u<t",
-      "non_joint": "hepL (endpointLeft at x), hepR (endpointRight at t), hptWe (ptW at w = nf_y_proj + zAtW literals), hLgap/hRgap (segL/segR gap classification: witness-slot ∨ exclAt, channel-ii)",
-      "remaining_goal": "⊢ ∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf"
-    },
-    "phase10_first_step": "Bridge hLwit/hRwit (per-fChainPred witness form over kvE_subChain2V σ) back to `(kvE_subBracket2V (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) σ).holds M atomMap x t` (the shape kvE_subBracket2V_sound :7370 consumes), then feed it + the outer-gate-derived hgate (∀ a∈(x,t), charK-real ⇒ anchor placement + nf_eval_nf reconstruction + off-fiber + zone folds) into kvE_subBracket2V_sound to obtain `∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ` (Amendment F3: NO provider e, NO w=e 1/x=e 2 residual). Then discharge non-joint channels and assemble the arity-4 reconstruction into the remaining goal. kvE_subBracket2V_sound signature is at :7370-7395; its hgate is the 6-conjunct ∀a bundle at :7379-7393.",
-    "key_line_numbers_current": {
-      "k1v_bracket_extract": 2150,
-      "bracketEndChar_k1v_sound_template": 2338,
-      "bracketEndChar_k1v_complete_template": 2979,
-      "kvE_subBracket2V": 6635,
-      "kvE_subChain2V": 6757,
-      "kvE_subBracket2V_sound": 7370,
-      "kvE_subBracket2V_nonvacuous": 7599,
-      "kvE_subBracket2V_complete": 7639,
-      "kvE2_body": 8088,
-      "bracketEndChar_kvE2": 8192,
-      "bracketEndChar_kvE2_two_eq": 8207,
-      "kvE2_joint_nonvacuous_at_honest": 8228,
-      "end_Bimodal_namespace": 8240
-    },
-    "note": "No source landed; NfMultiAnchorBridge.lean byte-identical to commit 8448ea135. Phase 9's green code is inseparable from Phase 10's _sound closure — recommend Phase 10 dispatch lands `bracketEndChar_kvE2_sound` as one green theorem using the verified recipe above. Rabinovich 2014 §5 ground truth: Cor 5.4 md:154-157 (recursive formula-construction, position by evaluation point), Prop 3.5 md:87-94, Lemma 5.3 md:137-152. NO simp/omega/aesop in chain bodies (G5)."
+    "verified_reduction_recipe_still_valid": "The Phase-9 entry+extraction recipe (rw two_eq; simp only [kvE2_body, VVecEA2.holds]; gate split; arrangement destructure; k1v_bracket_extract) remains machine-verified and is unaffected by this obstruction; it produces hLwit/hRwit as documented in the prior handoff. The obstruction is strictly downstream (hLwit -> kvE_subBracket2V.holds)."
   },
-  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md",
-  "sorry_inventory": [],
   "artifacts": [
     {"type": "source", "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean"},
     {"type": "plan", "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/04_corrected-k2-carrier-gate-v4.md"}
   ],
-  "next_action_hint": "Dispatch Phase 10 (Stage C per-sub soundness via kvE_subBracket2V_sound). Start from the machine-verified entry+extraction recipe in continuation_context.verified_reduction_recipe; bridge hLwit/hRwit to kvE_subBracket2V.holds, then consume kvE_subBracket2V_sound (:7370). Land bracketEndChar_kvE2_sound as one green theorem (Phase 9 code merges here). Do NOT edit BracketCarrierCorrectVPrior or any forbidden-list asset.",
+  "next_action_hint": "Phase 10 is structurally blocked by the documented-unprovable reverse Cor 5.4 direction (EANegation:1217-1234). Do NOT re-dispatch Phase 10 unchanged. Route to /revise (re-plan the kvE2_body joint channel to expose (anchor, hbelow) directly, feeding the landed kvE_subBracket2V_sound_of_parts) or /spawn a reverse-direction research task under a non-interior-witness convention. The landed kvE_subBracket2V_sound_of_parts is the consumer any corrected channel plugs into.",
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 0,
     "build_passed": true,
-    "source_byte_identical_to_phase8_commit": "8448ea135",
+    "scoped_module": "Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge",
     "axioms": ["propext", "Classical.choice", "Quot.sound"],
-    "forbidden_assets_byte_identical": true
+    "forbidden_assets_byte_identical": true,
+    "new_green_lemmas": ["kvE_subBracket2V_sound_of_parts"]
   }
 }
