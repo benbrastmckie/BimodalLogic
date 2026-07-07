@@ -6988,6 +6988,36 @@ noncomputable def kvE_subChain2V {sig : MonadicSignature}
         (bracketFromLists3 (lXU.map charP) ptX1 (lUW.map charP) ptW (lWT.map charP)
           segXU segUW segWT).fChainPred
 
+/-- **F_0 head extraction from a realized sub-chain `fChainPred`** (task 326 Phase 4.2 helper).
+    Companion to `bracketFromLists3_fChainPred_head_extract` (:6794), but consuming the
+    `fChainPred` point type *already realized at a single point `u`* (the shape delivered by the
+    OUTER bracket, which realizes each `kvE_subChain2V` slot as one of its witness point types),
+    rather than an inner bracket `.holds`. Reads off F_0's first point type at `u` itself: since
+    `fChainPred = fChainFrom 0` and the step characterization (`fChainFrom_step`) gives
+    `(pointTypes 0).eval_at u` as the head conjunct, and `pointTypes 0` is the head `χ0` of the
+    concatenated point list, the below-witness IS `u`. NO reverse Cor 5.4, NO bracket
+    reconstruction; a pure forward read of the F_0 chain head (Rabinovich Cor 5.4 forward,
+    md:154-157). -/
+private theorem bracketFromLists3_fChainPred_at_head {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (χ0 : TemporalPred) (lXU' lUW lWT : List TemporalPred)
+    (ptX1 ptW segXU segUW segWT : TemporalPred)
+    (u : M.carrier)
+    (h : (bracketFromLists3 (χ0 :: lXU') ptX1 lUW ptW lWT segXU segUW segWT).fChainPred.eval_at
+          M atomMap u) :
+    χ0.eval_at M atomMap u := by
+  set bf := bracketFromLists3 (χ0 :: lXU') ptX1 lUW ptW lWT segXU segUW segWT with hbf
+  have hlt0 : (0 : Nat) < (χ0 :: lXU').length + lUW.length + lWT.length + 1 := by
+    simp only [List.length_cons]; omega
+  unfold BracketFormula.fChainPred at h
+  have hstep := (BracketFormula.fChainFrom_step M atomMap bf
+      ⟨0, Nat.lt_succ_of_lt hlt0⟩ hlt0 u).mp h
+  have hpt0 : bf.pointTypes ⟨0, Nat.lt_succ_of_lt hlt0⟩ = χ0 := by
+    rw [hbf]
+    simp only [bracketFromLists3, List.cons_append, List.getElem_cons_zero]
+  rw [hpt0] at hstep
+  exact hstep.1
+
 /-- **Three-region arrangement selection** (task 325 Phase 2; lift of `k1v_sorted_realization`
     :2797 from two regions to three). Given three duplicate-free interior-positive type lists
     `S_XU`/`S_UW`/`S_WT`, each realized somewhere strictly inside its own open region `(x, x1)` /
