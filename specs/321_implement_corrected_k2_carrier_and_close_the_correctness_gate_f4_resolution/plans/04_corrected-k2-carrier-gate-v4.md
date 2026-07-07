@@ -293,7 +293,7 @@ forward.
 
 ---
 
-### Phase 8: Wiring foundation — re-point kvE2_body/bracketEndChar_kvE2 at kvE_subChain2V + re-derive two_eq [NOT STARTED]
+### Phase 8: Wiring foundation — re-point kvE2_body/bracketEndChar_kvE2 at kvE_subChain2V + re-derive two_eq [COMPLETED]
 
 - **DO-NOT-EDIT discipline note (binding):** `kvE2_body`, `kvE2_body_gate_fail`, `bracketEndChar_kvE2`,
   and `bracketEndChar_kvE2_two_eq` are **task 321's OWN Stage-A assets** (landed by commits
@@ -307,18 +307,30 @@ forward.
   to task 325's `kvE_subChain2V σ` (the sub-chain over `bracketFromLists3`), so `bracketEndChar_kvE2`
   characterizes the new `kvE_subBracket2V` carrier; re-derive the `two_eq` bridge; confirm non-vacuity.
 - **Tasks:**
-  - [ ] Edit `kvE2_body` (321-owned): replace the joint-channel splice `kvE_subChain σ` with
+  - [x] Edit `kvE2_body` (321-owned): replace the joint-channel splice `kvE_subChain σ` with
         `kvE_subChain2V σ` (:6901). Retain every non-joint 13.2 channel verbatim. No `P.existF 3` on
-        the joint path; `P.existF 0` retained.
-  - [ ] Confirm `bracketEndChar_kvE2` (321-owned) now delegates to the re-pointed `kvE2_body` at
+        the joint path; `P.existF 0` retained. *(deviation: altered — `kvE_subChain2V` returns
+        `List TemporalPred` (one fChainPred per arrangement-disjunct), not a single `TemporalPred`
+        like the old `kvE_subChain`, so `ptSub`'s codomain became `List TemporalPred` and the joint
+        splice in `slotsFor` changed from `ptSub σ :: pinSlots σ` to `ptSub σ ++ pinSlots σ`. All
+        non-joint channels byte-identical.)*
+  - [x] Confirm `bracketEndChar_kvE2` (321-owned) now delegates to the re-pointed `kvE2_body` at
         `BracketEndCharCarrierV sig 2` with `charBase = nf_depth0_char_formula`, `charK = P.existF 0`.
-  - [ ] Re-derive `bracketEndChar_kvE2_two_eq` (321-owned): should still close by `rfl` (the depth
-        threading is unchanged; only the joint splice's inner carrier changed). If `rfl` fails, fire the
-        sub-split valve (8b).
-  - [ ] **Non-vacuity gate (binding countermeasure):** confirm the re-pointed carrier is non-vacuous at
-        the honest σ by consuming `kvE_subBracket2V_nonvacuous` (:7743) — `disjuncts ≠ []` — BEFORE any
-        Stage-C/D direction is opened. Record the consumption as a `have` at the wiring boundary.
-  - [ ] Cite Rabinovich at each structural step (G5); no `simp`/`omega`/`aesop` in any body.
+        *(unchanged def; inherits the re-point through `kvE2_body`.)*
+  - [x] Re-derive `bracketEndChar_kvE2_two_eq` (321-owned): closes by `rfl` (verified green — depth
+        threading unchanged; valve 8b not needed).
+  - [x] **Non-vacuity gate (binding countermeasure):** consumed `kvE_subBracket2V_nonvacuous` (:7743)
+        as a `have` in new additive lemma `kvE2_joint_nonvacuous_at_honest` at the wiring boundary,
+        BEFORE any Stage-C/D direction. Axiom-clean.
+  - [x] Cite Rabinovich at each structural step (G5); no `simp`/`omega`/`aesop` in any body.
+  - *(deviation: altered — necessary relocation. The re-point makes `kvE2_body` reference
+    `kvE_subChain2V`/`kvE_subBracket2V` which are DEFINED LATER (task-325 block :6757/:7599) than
+    `kvE2_body`'s landed position (:5859), a Lean forward-reference error. Resolved by relocating the
+    four 321-owned defs (`kvE2_body`, `kvE2_body_gate_fail`, `bracketEndChar_kvE2`,
+    `bracketEndChar_kvE2_two_eq`) + the new `kvE2_joint_nonvacuous_at_honest` to just before
+    `end Bimodal…`, after the task-325 block. Task-325 VVecEA2 block + all other forbidden-list
+    assets stay byte-identical; `git diff` comm-verified that only the joint-channel lines + the new
+    lemma are content changes, the rest is pure relocation.)*
 - **Sub-split valve:** 8a = re-point `kvE2_body` + `bracketEndChar_kvE2`; 8b = re-derive `two_eq` +
   non-vacuity consumption. If 8a's build is green but 8b's `two_eq` needs shape adjustment, commit 8a's
   green prefix and continue 8b in the next dispatch.
