@@ -64,7 +64,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 ### Publication Quality
 
 180 [NOT STARTED] — copyright_headers_universe_polymorphism_line_limits
-312 [NOT STARTED] — Systematically revise Theories/Bimodal/typst/BimodalReference.typ
+312 [RESEARCHED] — Systematically revise Theories/Bimodal/typst/BimodalReference.typ
 292 [NOT STARTED] — Add Apache 2.0 copyright headers to all source files under Theori
 293 [NOT STARTED] — Audit and fix Mathlib linter compliance across all sorry-free mod
 
@@ -105,17 +105,18 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-309 [PLANNED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [IMPLEMENTING] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 ## Tasks
 
 ### 312. Revise bimodalreference typst paper lean
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: typst
 - **Topic**: publication-quality
 - **Dependencies**: None
+- **Research**: [312_revise_bimodalreference_typst_paper_lean/reports/01_team-research.md]
 
 **Description**: Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority
 
@@ -208,7 +209,7 @@ GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311
