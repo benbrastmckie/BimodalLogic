@@ -272,7 +272,7 @@ text; all cross-references that pointed at removed content reworded; compile gre
 
 ---
 
-### Phase 4: Restructure — include order, part dividers, drop chapters [NOT STARTED]
+### Phase 4: Restructure — include order, part dividers, drop chapters [COMPLETED]
 
 **Goal**: The book has the new four-part arc; two puzzle chapters deleted; stub
 placeholders carry citations; SLOT-IN anchors intact; compile green.
