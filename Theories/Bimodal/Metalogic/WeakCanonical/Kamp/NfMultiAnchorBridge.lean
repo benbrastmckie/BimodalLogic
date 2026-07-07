@@ -6091,4 +6091,95 @@ grow only (G2/G4/G6); no `simp`/`omega`/`aesop` in any chain-construction body (
 :1900); Rabinovich cited at every chain step (G5); all new symbols axiom-clean
 (`propext`, `Classical.choice`, `Quot.sound`); no `sorry` on any live path. -/
 
+/-! ## Task 324 (redesign): anchor-at-`x` corrected sub-bracket — arity-4 correctness pair
+
+Additive, separately-named redesign of the k=2 sub-bracket (task 324 Phase 1; plan
+`plans/01_arity4-correctness-pair-plan.md`). The landed `kvE_subBracket`/`kvE_subChain`
+(:5779/:5807) anchor the strictly-upward `fChainPred` at the interior σ-witness slot `u`: `u`'s own
+point type sits at the TOP of the ascending witness list `posSlots ++ [u]`, so a witness in
+`zXU = (x, v, u)` lying BELOW `u` is structurally inexpressible (task-321 Phase 8 machine-grounded
+blocker; adversarial-verification Correction 1: the defect is read-back geometry, not a missing
+zone). This redesign LIFTS the landed k1v LOWER-endpoint geometry one arity up: `bracketEndChar_k1v`
+(:1940) anchors its bracket `bracketFromLists lL ptW lR` over `(x, t)` at the lower endpoint `x`,
+with the middle `w`-slot BETWEEN the two witness lists, so a single upward `fChainPred` from `x`
+reaches every interior zone. Here `u` plays the role of k1v's `w`: `u`'s own slot is placed in the
+MIDDLE of the ascending witness list, BETWEEN the below-anchor `zXU` slots and the above-anchor
+`zUW`/`zWT` slots (`leftSlots ++ uSlot :: rightSlots`, the arity-4 lift of k1v's `lL ++ ptW :: lR`).
+A single upward `fChainPred` evaluated at the lower endpoint `x` then reaches all three interior
+zones `zXU` (below `u`), `zUW`, `zWT` (above `u`) in ascending order — the below-anchor witness the
+landed construction could not express.
+
+Every landed asset stays byte-identical AND unreferenced: this block reads `σ.2` through the depth-0
+`nf0_assemble` fold engine DIRECTLY (consume-do-not-rebuild; the same Def-4.1 fold, PDF p.5, that the
+landed `kvE_subFoldBits` :5730 and the k1v carrier :1946 read — inlined here so the new construction
+depends on no task-321 sub-bracket symbol) and rebinds the three interior zone specs locally via the
+same `mk4` pattern as `kvE_subInteriorZones` :5751. No `simp`/`omega`/`aesop` in the body (the
+`omega` is a `Fin`-index typing obligation in a proof term, identical to the landed `bracketFromLists`
+:1900 and `kvE_subBracket` :5798). Rabinovich Def 3.1 (md:61-74), Def 4.1 (PDF p.5), §5 bracket
+`[α_0, …, α_n](z_0, z_1)` (PDF p.7), Cor 5.4 recursive chain (md:154-157). -/
+noncomputable def kvE_subBracket2 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) : Σ m, BracketFormula (m + 1) :=
+  -- Sub-level fold-bit read (Def 4.1, PDF p.5): `σ.2 ∘ nf0_assemble` at the gate instance j = 0,
+  -- inlined (consume-do-not-rebuild) so no landed sub-bracket symbol is referenced.
+  let bits : ZoneSpec 4 → NormalForm sig 0 1 → Bool :=
+    fun zs χ => σ.2 (nf0_assemble zs χ σ.1)
+  let allTypes : List (NormalForm sig 0 1) := Finset.univ.toList
+  -- Interior zone specs relative to σ's env `[u, w, x, t]` under honest order `x < u < w < t`
+  -- (coords 0 ↦ u, 1 ↦ w, 2 ↦ x, 3 ↦ t), rebound locally (matches `kvE_subInteriorZones` :5751).
+  let ltz : Bool × Bool := (true, false)   -- v < env i
+  let gtz : Bool × Bool := (false, true)   -- env i < v
+  let mk4 : Bool × Bool → Bool × Bool → Bool × Bool → Bool × Bool → ZoneSpec 4 :=
+    fun p0 p1 p2 p3 => Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3)))
+  let zXU : ZoneSpec 4 := mk4 ltz ltz gtz ltz   -- x < v < u  (BELOW anchor u)
+  let zUW : ZoneSpec 4 := mk4 gtz ltz gtz ltz   -- u < v < w  (ABOVE anchor u)
+  let zWT : ZoneSpec 4 := mk4 gtz gtz gtz ltz   -- w < v < t  (ABOVE anchor u)
+  -- Below-anchor interior positives → left witness slots (Def 3.1 md:61-74; k1v `lL` one arity up).
+  let leftSlots : List TemporalPred :=
+    (allTypes.filter (fun χ => bits zXU χ)).map (fun χ => (⟨charBase χ⟩ : TemporalPred))
+  -- Above-anchor interior positives → right witness slots (k1v `lR` one arity up), zone order.
+  let rightSlots : List TemporalPred :=
+    [zUW, zWT].flatMap (fun zs =>
+      (allTypes.filter (fun χ => bits zs χ)).map (fun χ => (⟨charBase χ⟩ : TemporalPred)))
+  -- `u`'s own middle slot: the anchor point type BETWEEN left and right slots (k1v `ptW` at `w`,
+  -- §5 bracket PDF p.7, one arity up). THIS mid-placement is the anchor-at-`x` corrective change.
+  let uSlot : TemporalPred := ⟨charK (nfk_projFresh σ)⟩
+  -- Interior-negative bits → segment exclusion conjuncts (real segments, G3), all three zones.
+  let segExcl : TemporalPred :=
+    ⟨formula_conjList
+      ([zXU, zUW, zWT].flatMap (fun zs =>
+        allTypes.map fun χ => if bits zs χ then Formula.top else (charBase χ).neg))⟩
+  ⟨leftSlots.length + rightSlots.length,
+    { pointTypes := fun i =>
+        (leftSlots ++ uSlot :: rightSlots)[i.val]'(by
+          have := i.isLt
+          simp only [List.length_append, List.length_cons]
+          omega)
+      segmentTypes := fun _ => segExcl }⟩
+
+/-- **Anchor-at-`x` sub-chain predicate** (task 324 Phase 1; report §3 item 3 lifted). The Cor 5.4
+    F_i-chain predicate of the redesigned sub-bracket — `fChainPred` is available because
+    `kvE_subBracket2` returns the `(m+1)` shape. Evaluated at the lower endpoint `x`, its ascending
+    Until-chain reaches `zXU` (below `u`), then `u`, then `zUW`/`zWT` (above `u`) — the below-anchor
+    witness the landed `kvE_subChain` :5807 could not express. Rabinovich Cor 5.4 (md:154-157). -/
+noncomputable def kvE_subChain2 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) : TemporalPred :=
+  (kvE_subBracket2 charBase charK σ).2.fChainPred
+
+/-- **Definitional bridge / `two_eq`-style rfl compatibility check at j = 0** (task 324 Phase 1;
+    R3). Confirms the redesigned sub-chain is definitionally the `fChainPred` of the anchor-at-`x`
+    sub-bracket, and that the whole construction elaborates and reduces at the concrete gate instance
+    j = 0 (the depth-0 `nf0_assemble` read). The successor-parameterized carrier depth is `j + 2`
+    (subs `σ : NormalForm sig (j+1) 4`); at j = 0 this is the landed `NormalForm sig 1 4` instance,
+    and the bridge closes by `rfl` — any successor-threading depth mismatch would fail it immediately
+    (the `bracketEndChar_kvE2_two_eq` :5972 discipline, one arity up). -/
+theorem kvE_subChain2_eq_fChainPred {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) :
+    kvE_subChain2 charBase charK σ = (kvE_subBracket2 charBase charK σ).2.fChainPred := rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -217,7 +217,7 @@ them serially (recommended order 1,2,3,4,5,6,7,8) OR enforce strict append-only,
 line-range ownership if a parallel dispatch is attempted. The wave table documents the true
 logical parallelism; sequential execution is the safe default.
 
-### Phase 1: Corrected sub-bracket construction (`kvE_subBracket2`/`kvE_subChain2`) [NOT STARTED]
+### Phase 1: Corrected sub-bracket construction (`kvE_subBracket2`/`kvE_subChain2`) [COMPLETED]
 - **Goal:** Add the additive, redesigned-geometry construction reaching all three interior zones,
   preferring anchor-at-`x` (lift the landed k1v lower-endpoint bracket geometry one arity up), with
   the successor-parameterized header compatible at `j=0`.
