@@ -423,26 +423,29 @@ serially in order 1,2,3,4 (safe default, H7) OR enforce strict non-overlapping l
 - **Commit point:** `task 325 phase 3: completeness lemma kvE_subBracket2V_complete closed`
 - **Depends on:** 1 (NON-VACUITY GATE green)
 
-### Phase 4: Correctness-pair packaging + successor threading + final verification [NOT STARTED]
+### Phase 4: Correctness-pair packaging + successor threading + final verification [COMPLETED]
 - **Goal:** Confirm the full correctness pair is sorry-free, non-vacuous, axiom-clean,
   forbidden-tactic-free, the PRIOR do-not-edit invariant held throughout, and the successor-parameter
   threading is end-to-end compatible at `j=0`.
 - **Tasks:**
-  - [ ] Full scoped `lake build` green from a clean state.
-  - [ ] `lean_verify` on `kvE_subBracket2V_nonvacuous`, `kvE_subBracket2V_sound`, and
+  - [x] Full scoped `lake build` green (`Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge`,
+        exit 0, both before and after adding the packaging lemma).
+  - [x] `lean_verify` on `kvE_subBracket2V_nonvacuous`, `kvE_subBracket2V_sound`, and
         `kvE_subBracket2V_complete`: axioms ⊆ `{propext, Classical.choice, Quot.sound}`.
-  - [ ] Confirm NON-VACUITY: re-state (or reference) that `kvE_subBracket2V_nonvacuous` shows the
-        carrier is inhabited for an honest σ, so soundness did NOT close vacuously.
-  - [ ] `grep`-confirm zero `sorry` on the new live path (including no WIP `sorry`).
-  - [ ] Forbidden-tactic grep over ALL new/amended chain blocks (`simp`/`omega`/`aesop`; `by omega`
-        only in `Fin`-index typing positions).
-  - [ ] `git diff` over all PRIOR do-not-edit ranges: byte-identical, unreferenced by new work
-        (task-324 kit ~:6120-6720, k1v templates :2028-2979, task-321 Stage A/B, etc.). Confirm the
-        SURVIVE task-325 kit unedited.
-  - [ ] Confirm the successor header threads: `σ : NormalForm sig (j+1) 4` instantiates to landed
-        `NormalForm sig 1 4` at `j=0` (R4); the carrier converges onto the amended spec (321 §2 :225).
-  - [ ] Package a doc-comment lemma bundling `(kvE_subBracket2V_sound, kvE_subBracket2V_complete)` as
-        the arity-4 analog of the k1v pair (no new proof obligations).
+  - [x] Confirm NON-VACUITY: `kvE_subBracket2V_nonvacuous` (:7743) shows the carrier's `disjuncts`
+        is non-empty for an honest σ, so soundness did NOT close vacuously.
+  - [x] `grep`-confirm zero `sorry` on the new live path (0 in the task-325 block ≥:6728).
+  - [x] Forbidden-tactic grep over ALL new/amended chain blocks: no `aesop`; every `omega` is
+        `by omega` / a `simp only [List.length_*]; omega` `Fin`-index/length-typing obligation; only
+        the plan-authorized `simp only [explicit-lemma-list]` unfolds present.
+  - [x] `git diff` over all PRIOR do-not-edit ranges: byte-identical (no uncommitted change to the
+        module beyond the appended packaging lemma; task-324 kit, k1v templates, task-321 Stage A/B
+        untouched). SURVIVE task-325 kit unedited.
+  - [x] Confirm the successor header threads: `σ : NormalForm sig 1 4` (the `j=0` instance of
+        `NormalForm sig (j+1) 4`) throughout the pair; the carrier converges onto the amended spec.
+  - [x] Packaged doc-comment lemma `kvE_subBracket2V_correctness_pair` bundling
+        `(kvE_subBracket2V_sound, kvE_subBracket2V_complete)` as the arity-4 analog of the k1v pair
+        (no new proof obligations — each direction discharged by its Phase-2/3 lemma).
 - **Estimated output:** ~40-90 lines (packaging/doc lemma; no new heavy proofs).
 - **Done when:** all checks pass; the deliverable is a green, axiom-clean, NON-VACUOUS arity-4
   correctness pair over the corrected nine-zone `VVecEA2` carrier with BOTH directions driven closed.

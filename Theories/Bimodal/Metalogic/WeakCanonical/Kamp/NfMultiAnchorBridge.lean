@@ -8150,4 +8150,61 @@ theorem kvE_subBracket2V_complete {sig : MonadicSignature}
         have hbit := (h_zone _ χ).mp ⟨u, hzWT u hwu hut, (hchar χ u).mp hch⟩
         exact absurd hbit hb
 
+/-- **Arity-4 correctness pair** for the nine-zone `VVecEA2` carrier `kvE_subBracket2V` — the
+arity-4 analog of the k1v pair `(bracketEndChar_k1v_sound, bracketEndChar_k1v_complete)`
+(:2338 / :2979). Bundles the two independently-driven, sorry-free directions of task 325 v2:
+
+* **soundness** (`kvE_subBracket2V_sound`, Phase 2): the carrier `.holds` implies an honest
+  depth-1 realization `∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) σ` exists;
+* **completeness** (`kvE_subBracket2V_complete`, Phase 3): an honest realization implies the
+  carrier `.holds`.
+
+Both directions are machine-verified NON-vacuously: Phase-1 `kvE_subBracket2V_nonvacuous` proves
+the nine-zone gate `consistent` set (which now includes the witness self-zones `zAtX1`, `zAtW`) is
+satisfiable by an honest σ, so the carrier's `disjuncts` list is non-empty and soundness does not
+close over an empty carrier (the exact defect that voided task 324 Phase 6 and task 325 v1).
+
+Successor-parameterized at gate instance `j = 0` (`σ : NormalForm sig 1 4`, the landed instance of
+the amended-spec header `NormalForm sig (j+1) 4`). Codomain is `VVecEA2` with three per-region
+segment types `segXU`/`segUW`/`segWT`; anchor set fixed at `{x, t}` with `x1`, `w` as interior
+witness slots (Guard G4/Anchor-Cap). Standalone against `nf_eval_nf M 1 4`; NOT wired into the outer
+gate `kvE2_body`/`bracketEndChar_kvE2` (task 321's `/revise 321` work). No new proof obligations:
+each direction is discharged by the corresponding Phase-2/3 lemma. -/
+theorem kvE_subBracket2V_correctness_pair {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h_xx1 : σ.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_x1w : σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_wt : σ.1 (.order ⟨1, by omega⟩ ⟨3, by omega⟩ (by decide)) = true)
+    (hcharK : ∀ a : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a)
+    (hgate : ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    ((kvE_subBracket2V (nf_depth0_char_formula atomMap h_surj) charK σ).holds M atomMap x t →
+      ∃ x1 : M.carrier,
+        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) ∧
+    ((∃ x1 : M.carrier,
+        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) →
+      (kvE_subBracket2V (nf_depth0_char_formula atomMap h_surj) charK σ).holds M atomMap x t) :=
+  ⟨fun h => kvE_subBracket2V_sound atomMap h_surj charK σ M w x t h hgate,
+   fun h => kvE_subBracket2V_complete atomMap h_surj charK σ M w x t h_xx1 h_x1w h_wt hcharK h⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
