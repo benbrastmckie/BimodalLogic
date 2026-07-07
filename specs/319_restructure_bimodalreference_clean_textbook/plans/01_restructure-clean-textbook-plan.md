@@ -1,7 +1,7 @@
 # Implementation Plan: Restructure BimodalReference as Clean Textbook
 
 - **Task**: 319 - restructure_bimodalreference_clean_textbook
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None (task 313 complete; tasks 314-318 depend on this task)
 - **Research Inputs**: specs/319_restructure_bimodalreference_clean_textbook/reports/01_restructure-clean-textbook-research.md
@@ -496,7 +496,7 @@ Dependencies already include 319 (research finding) — descriptions only.
 
 ---
 
-### Phase 9: Final verification sweep [NOT STARTED]
+### Phase 9: Final verification sweep [COMPLETED]
 
 **Goal**: All task VERIFY criteria confirmed on the finished state; residual-artifact
 greps clean.

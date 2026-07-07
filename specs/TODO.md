@@ -12,8 +12,8 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,319,320 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,315,316,317,318,321 | 161,187,191,194,230,291,300,319,320 | publication-quality, sorry-elimination, automation, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,315,316,317,318,320 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,320 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
 | 5 | 305 | 307 | completeness |
@@ -106,11 +106,10 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Reference Book
 
-319 [IMPLEMENTING] — Turn the BimodalReference book (Theories/Bimodal/typst/) from the
-  └─ 315 [NOT STARTED] — Write the three positioning chapters of BimodalReference Part I (
-  └─ 316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
-  └─ 317 [NOT STARTED] — Write the counterfactual and constitutive chapters of BimodalRefe
-  └─ 318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
+315 [NOT STARTED] — Write the three positioning chapters of BimodalReference Part I (
+316 [NOT STARTED] — Implement the machine-readable appendix (teammate D recommendatio
+317 [NOT STARTED] — Write the counterfactual and constitutive chapters of BimodalRefe
+318 [NOT STARTED] — GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymo
 
 ### Kamp_theorem_formalization
 
@@ -165,7 +164,7 @@ CONSTRAINTS (binding, carried from plan v7 -- do not re-litigate): Guards G1-G6 
 
 ### 319. Restructure bimodalreference clean textbook
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: typst
 - **Topic**: reference-book
 - **Dependencies**: Task 313
