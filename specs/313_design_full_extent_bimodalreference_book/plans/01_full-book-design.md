@@ -256,7 +256,7 @@ then Phase 12; no Wave-4 phase touches either.
 - **Timing:** 2 hours.
 - **Depends on:** none.
 
-### Phase 2: Scripted Status Counts Generator [NOT STARTED]
+### Phase 2: Scripted Status Counts Generator [COMPLETED]
 
 - **Goal:** One single-source-of-truth generator for all volatile counts; no hand-copied
   number survives anywhere the book states a count.
@@ -264,7 +264,7 @@ then Phase 12; no Wave-4 phase touches either.
   `Theories/Bimodal/typst/generated/status.typ` (new, generated), `typst/generated/.gitignore`
   decision (commit the generated file — it is the stamped artifact).
 - **Tasks:**
-  - [ ] Write `scripts/typst-status-counts.sh`: reproduces SYNC-MAP Phase 1 methodology —
+  - [x] Write `scripts/typst-status-counts.sh`: reproduces SYNC-MAP Phase 1 methodology —
         comment-stripped `\bsorry\b` count over `Theories/Bimodal/Metalogic/**/*.lean`
         (block `/- -/` and line `--` comments removed), `Boneyard/` and nested
         `WeakCanonical/Kamp/Boneyard/` reported separately; `inductive Axiom` constructor
@@ -272,10 +272,10 @@ then Phase 12; no Wave-4 phase touches either.
         table. Output: `typst/generated/status.typ` defining typst values
         (`#let sorry-total`, `#let sorry-table`, `#let axiom-count`, `#let rule-count`,
         `#let stamp-commit`, `#let stamp-date`) — commit-stamped from `git rev-parse --short HEAD`.
-  - [ ] Emit the same data as JSON to stdout (for `typst-sync-check.sh` consumption in Phase 4).
-  - [ ] Run it; verify output matches SYNC-MAP's stamped values at `a883361bf` (42/7/43)
+  - [x] Emit the same data as JSON to stdout (for `typst-sync-check.sh` consumption in Phase 4).
+  - [x] Run it; verify output matches SYNC-MAP's stamped values at `a883361bf` (42/7/43)
         or document the delta if the tree moved.
-  - [ ] Add a header comment: "generated file — never edit; regenerate via
+  - [x] Add a header comment: "generated file — never edit; regenerate via
         scripts/typst-status-counts.sh".
 - **Estimated output:** ~120 lines (script + generated file).
 - **Done when:** script runs green, generated values match independent SYNC-MAP derivation.
