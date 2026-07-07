@@ -2814,4 +2814,118 @@ private theorem k1v_sorted_realization {sig : MonadicSignature}
       · exact ⟨⟨hau, hub⟩, huχ⟩
       · exact hprops' p hp'
 
+/-- Construction for `bracketFromLists` (the reverse of `k1v_bracket_extract`; §5 bracket
+    `[α_0, …, α_n](z_0, z_1)`, PDF p.7): given a sorted tuple of realizing points — left
+    points strictly inside `(x, w)`, the middle witness `w`, right points strictly inside
+    `(w, t)` — with each point type realized at its point and the `segL`/`segR` exclusions
+    holding on ALL of `(x, w)` / `(w, t)`, the bracket holds at the FIXED endpoints `(x, t)`.
+    Mirrors the append-a-witness construction of `existsBounded_right`'s `n+1` case
+    (VecEAClosure:265; Lemma 3.4 PDF p.5) with the witness tuple assembled wholesale from the
+    insertion-induction output of `k1v_sorted_realization`. -/
+private theorem k1v_bracket_construct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (lL lR : List TemporalPred) (ptW segL segR : TemporalPred)
+    (x w t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (usL usR : List M.carrier)
+    (hlenL : usL.length = lL.length) (hlenR : usR.length = lR.length)
+    (hsort : (usL ++ w :: usR).Pairwise (· < ·))
+    (hrangeL : ∀ u ∈ usL, x < u ∧ u < w)
+    (hrangeR : ∀ u ∈ usR, w < u ∧ u < t)
+    (hptw : ptW.eval_at M atomMap w)
+    (hptL : ∀ (i : Nat) (hi : i < lL.length),
+      (lL[i]'hi).eval_at M atomMap (usL[i]'(by omega)))
+    (hptR : ∀ (i : Nat) (hi : i < lR.length),
+      (lR[i]'hi).eval_at M atomMap (usR[i]'(by omega)))
+    (hsegL : ∀ u, x < u → u < w → segL.eval_at M atomMap u)
+    (hsegR : ∀ u, w < u → u < t → segR.eval_at M atomMap u) :
+    (bracketFromLists lL ptW lR segL segR).holds M atomMap x t := by
+  have hlen : (usL ++ w :: usR).length = lL.length + lR.length + 1 := by
+    simp only [List.length_append, List.length_cons, hlenL, hlenR]
+    omega
+  -- Everything in the combined witness list lies strictly inside the fixed endpoints.
+  have hrange_all : ∀ u ∈ usL ++ w :: usR, x < u ∧ u < t := by
+    intro u hu
+    rcases List.mem_append.mp hu with hu | hu
+    · exact ⟨(hrangeL _ hu).1, (hrangeL _ hu).2.trans hwt⟩
+    · rcases List.mem_cons.mp hu with rfl | hu
+      · exact ⟨hxw, hwt⟩
+      · exact ⟨hxw.trans (hrangeR _ hu).1, (hrangeR _ hu).2⟩
+  -- Points at index ≤ lL.length sit at or left of the middle witness `w`; ≥ at or right.
+  have hle_w : ∀ (j : Nat) (hj1 : j ≤ lL.length) (hj2 : j < (usL ++ w :: usR).length),
+      (usL ++ w :: usR)[j] ≤ w := by
+    intro j hj1 hj2
+    rcases Nat.lt_or_eq_of_le hj1 with hj | hj
+    · rw [List.getElem_append_left (by omega)]
+      exact le_of_lt (hrangeL _ (List.getElem_mem _)).2
+    · rw [List.getElem_append_right (by omega)]
+      simp only [show j - usL.length = 0 by omega, List.getElem_cons_zero]
+      exact le_refl w
+  have hge_w : ∀ (j : Nat) (hj1 : lL.length ≤ j) (hj2 : j < (usL ++ w :: usR).length),
+      w ≤ (usL ++ w :: usR)[j] := by
+    intro j hj1 hj2
+    rw [List.getElem_append_right (by omega)]
+    by_cases hj0 : j - usL.length = 0
+    · simp only [hj0, List.getElem_cons_zero]
+      exact le_refl w
+    · obtain ⟨d, hd⟩ : ∃ d, j - usL.length = d + 1 := ⟨j - usL.length - 1, by omega⟩
+      simp only [hd, List.getElem_cons_succ]
+      exact le_of_lt (hrangeR _ (List.getElem_mem _)).1
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, bracketFromLists]
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show lL.length + 1 + lR.length = (lL.length + lR.length) + 1 by omega)]
+  refine ⟨fun i => (usL ++ w :: usR)[i.val]'(by omega), ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Strict monotonicity from the sorted combined list.
+    intro i j hij
+    exact List.pairwise_iff_getElem.mp hsort i.val j.val (by omega) (by omega) hij
+  · -- Range: all points strictly inside the fixed endpoints.
+    intro i
+    exact hrange_all _ (List.getElem_mem _)
+  · -- Point types: three-way index split around the middle witness slot.
+    intro i
+    simp only []
+    rcases Nat.lt_trichotomy i.val lL.length with hi | hi | hi
+    · rw [List.getElem_append_left hi, List.getElem_append_left (show i.val < usL.length by omega)]
+      exact hptL i.val hi
+    · have h1 : (lL ++ ptW :: lR)[i.val]'(by
+          simp only [List.length_append, List.length_cons]; omega) = ptW := by
+        rw [List.getElem_append_right (le_of_eq hi.symm)]
+        simp only [show i.val - lL.length = 0 by omega, List.getElem_cons_zero]
+      have h2 : (usL ++ w :: usR)[i.val]'(by omega) = w := by
+        rw [List.getElem_append_right (show usL.length ≤ i.val by omega)]
+        simp only [show i.val - usL.length = 0 by omega, List.getElem_cons_zero]
+      rw [h1, h2]
+      exact hptw
+    · have hival := i.isLt
+      obtain ⟨j, hj⟩ : ∃ j, i.val = lL.length + 1 + j := ⟨i.val - lL.length - 1, by omega⟩
+      have hjR : j < lR.length := by omega
+      have h1 : (lL ++ ptW :: lR)[i.val]'(by
+          simp only [List.length_append, List.length_cons]; omega) = lR[j]'hjR := by
+        rw [List.getElem_append_right (show lL.length ≤ i.val by omega)]
+        simp only [show i.val - lL.length = j + 1 by omega, List.getElem_cons_succ]
+      have h2 : (usL ++ w :: usR)[i.val]'(by omega) = usR[j]'(by omega) := by
+        rw [List.getElem_append_right (show usL.length ≤ i.val by omega)]
+        simp only [show i.val - usL.length = j + 1 by omega, List.getElem_cons_succ]
+      rw [h1, h2]
+      exact hptR j hjR
+  · -- Leading segment `(x, ws 0)`: inside `(x, w)`, so `segL` (index 0 ≤ lL.length).
+    intro y hxy hy0
+    rw [if_pos (Nat.zero_le lL.length)]
+    exact hsegL y hxy (lt_of_lt_of_le hy0 (hle_w 0 (Nat.zero_le _) (by omega)))
+  · -- Interior segments: left of the `w` slot inside `(x, w)` → `segL`; right → `segR`.
+    intro i y h1 h2
+    by_cases hile : i.val + 1 ≤ lL.length
+    · rw [if_pos hile]
+      refine hsegL y ?_ ?_
+      · exact ((hrange_all _ (List.getElem_mem _)).1).trans h1
+      · exact lt_of_lt_of_le h2 (hle_w (i.val + 1) hile (by have := i.isLt; omega))
+    · rw [if_neg hile]
+      refine hsegR y ?_ ?_
+      · exact lt_of_le_of_lt (hge_w i.val (by omega) (by have := i.isLt; omega)) h1
+      · exact h2.trans (hrange_all _ (List.getElem_mem _)).2
+  · -- Trailing segment `(ws last, t)`: inside `(w, t)`, so `segR` (index lL+lR+1 > lL).
+    intro y hy1 hy2
+    rw [if_neg (show ¬(lL.length + lR.length + 1 ≤ lL.length) by omega)]
+    refine hsegR y ?_ hy2
+    exact lt_of_le_of_lt (hge_w (lL.length + lR.length) (by omega) (by omega)) hy1
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
