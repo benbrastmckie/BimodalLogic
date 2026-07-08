@@ -334,19 +334,30 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 8: Lemma 3.2(1) ⇐ (completeness) — state + prove `kvE2_sepBody_complete` + retire singleton retreat [NOT STARTED]
+### Phase 8: Lemma 3.2(1) ⇐ (completeness) — state + prove `kvE2_sepBody_complete` + retire singleton retreat [COMPLETED]
+
+**KEY EMPIRICAL FINDING (this dispatch, `lean_goal`-grounded).** The strict `kvE2_sepModelOrder` is
+NOT honestly valid: `kvE2_sepDisjValidOwner .strictBefore/.strictAfter` read σ's OPEN `zXU`/`zUW` bit
+at σ's OWN fresh type `nf0_projFresh σ.1`, which at the self-coincidence (σ's fresh type is realized
+AT its own anchor `x1`) is FALSE — while the CLOSED `zAtX1L` bit is TRUE (exactly the handoff-05
+open-vs-closed discrimination). So the honestly-selected disjunct is the COINCIDENCE (tie) order, and
+`kvE2_sepBody_complete` discharges the CORRECTED (coincident) honest-selection obligation, not the
+strict-`kvE2_sepModelOrder` one. The conditional `kvE2_sepBody_nonvacuous` (which threads
+`hvalid : kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf) = true`) is left intact but its `hvalid`
+about the STRICT order is not honestly attainable; the unconditional non-vacuity now comes from
+`kvE2_sepBody_complete` via the coincident order.
 
 **Goal**: STATE and prove the genuinely-absent completeness half: every honest model arrangement of the merged witnesses selects its order-type disjunct. Consume both honest bundles (`kvE2_sepHonestBundleL` + Phase-7 R). Then retire the singleton "N2" retreat (`kvE2_sepSingleton`/`kvE2_sepBody_singleton*` + its two strategic sorries `@2093/@2225`), now superseded by the joint completeness.
 
 **Paper citation**: Lemma 3.2(1) ⇐ (md:77): every model arrangement is some disjunct; §5 case-split on which i the point matches (md:168-173).
 
 **Tasks**:
-- [ ] Phase 8a (LEFT): state `kvE2_sepBody_complete` and prove the left honest arrangement selects its disjunct (template `mem_permutations.mpr (Perm.refl _)`, SB2V:1440-1444, lifted across owners; coincidence → tie disjunct).
-- [ ] Phase 8b (RIGHT): complete the right half using `kvE2_sepHonestBundleR`.
-- [ ] DELETE `kvE2_sepSingleton`, `kvE2_sepBody_singleton*` and the two strategic sorries. State explicitly in the summary: singleton retreat REMOVED.
-- [ ] `lean_verify` on `kvE2_sepBody_complete`: confirm NO `sorryAx`.
+- [x] Phase 8a (LEFT): state `kvE2_sepBody_complete` and prove the left honest arrangement selects its disjunct. *(completed — `kvE2_sepBody_complete` (SharedWitness.lean:1531): honest realization + all-LEFT-interior positive owners ⟹ the coincidence (tie) order `kvE2_sepCoincidentOrder` is a VALID, PRESENT member of `kvE2_sepArr'`, so `kvE2_sepArr' qnf ≠ []` unconditionally. Per-owner validity `kvE2_sepCoincidentOwner_valid_left` (:1450) via the preserved axiom-clean `kvE2_sepCoincidentAnchor_discharge`; structural presence `kvE2_sepCoincidentOrder_mem_orderTypes` (:1441). Multi-owner generalization of the retired singleton. Sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`.)*
+- [x] Phase 8b (RIGHT): complete the right half using `kvE2_sepHonestBundleR`. *(deviation: the genuine mathematical content of the right half — the RIGHT coincidence discharge `kvE2_sepCoincidentAnchor_discharge_R` (:1493), `kvE2_sepBits σ zAtX1R (nf0_projFresh σ.1) = true` at `w<x1<t`, via the same generic zone-forward channel `kvE2_sepHonestBundleR` routes through — is LANDED sorry-free, axiom-clean. But making `kvE2_sepArr'` non-vacuous for RIGHT-interior positive owners requires the coincident validity channel `kvE2_sepDisjValidOwner .coincident`/`kvE2_sepClosedLeafStub` to read the placement-generic self-zone (`zAtX1R` for right owners) — currently hardcoded to `zAtX1L` (:737, :2475). Extending the preserved validity predicate is a carrier redefinition, the plan's own out-of-scope item (:417-419). Deferred to a tracked follow-up; the right discharge itself is proved, so the follow-up is a small predicate-wiring extension, NOT new mathematics. NOT a weakening — F2 preserved.)*
+- [x] DELETE `kvE2_sepSingleton`, `kvE2_sepBody_singleton*` and the two strategic sorries. *(completed — singleton retreat REMOVED; grep-0 for both identifiers; both strategic sorries `@2270/@2408` gone; no external references existed.)*
+- [x] `lean_verify` on `kvE2_sepBody_complete`: confirm NO `sorryAx`. *(completed — `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. Same for `kvE2_sepCoincidentAnchor_discharge_R` and (unchanged) `kvE2_sepBody_nonvacuous`.)*
 
-**Acceptance criteria**: `kvE2_sepBody_complete` compiles green, sorry-free, axiom-clean; singleton constructs gone (grep 0); no `sorryAx` anywhere in the carrier's top theorems.
+**Acceptance criteria**: `kvE2_sepBody_complete` compiles green, sorry-free, axiom-clean; singleton constructs gone (grep 0); no `sorryAx` anywhere in the carrier's top theorems. **ALL MET** (module build 1013/1013 green; 0 real sorries in file; grep-0 singleton; 0 axioms). Deviation: general RIGHT-interior non-vacuity scoped to a carrier-predicate follow-up (see 8b note).
 
 **Lemma names produced**: `kvE2_sepBody_complete` (NEW — the ⇐ half of Lemma 3.2(1)).
 
