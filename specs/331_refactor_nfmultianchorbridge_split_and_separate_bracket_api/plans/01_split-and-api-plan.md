@@ -392,12 +392,12 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
 - **Timing:** ~60 min
 - **Depends on:** 5
 
-### Phase 7: Extract MergedQuarantine.lean (parts 1+2), NavigatedSpine.lean, umbrella reduction [NOT STARTED]
+### Phase 7: Extract MergedQuarantine.lean (parts 1+2), NavigatedSpine.lean, umbrella reduction [COMPLETED]
 - **Goal:** Extract the ENTIRE quarantine file in one step (parts 1+2 together, per the
   Phase-4 amendment), relocate the spine (~423 lines), and reduce the monolith to the
   umbrella file.
 - **Tasks:**
-  - [ ] Standard extraction: `MergedQuarantine.lean` = slab :5077-:5856 **minus the
+  - [x] Standard extraction: `MergedQuarantine.lean` = slab :5077-:5856 **minus the
         already-relocated `nf_eval_depth1_fold_iff` block (:5333-:5359, excised in Phase 3 —
         extract as two sub-slabs :5077-:5332 and :5360-:5856)** followed by slab :8608-:8826,
         all byte-identical. Imports: `PriorInterface` + `SubBracket2V` (verified acyclic:
@@ -414,26 +414,31 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
         `kvE2_joint_nonvacuous_at_honest` :8748, task-327 gate record :8760-:8826. Token
         edits: NONE — extracting both parts together restores same-module `private` reuse
         (`kvE_gate`/`kvE_pinArrangements`/`kvE_pinDisjunct`/`kvE_exclConj` stay private).
-  - [ ] Standard extraction: slab :8827-:9249 → `NavigatedSpine.lean`. Imports: `SubBracket2V`
+        *(deviation: altered — part 2 slab is :8586-:8826, not :8608-:8826, per the binding
+        Phase-6 boundary amendment: :8586-:8607 is `open Classical in` + the `kvE2_body` doc
+        comment, which moves with its declaration; byte-identity unchanged)*
+  - [x] Standard extraction: slab :8827-:9249 → `NavigatedSpine.lean`. Imports: `SubBracket2V`
         (NOT MergedQuarantine — all kvE2 mentions in this range are comments, verified :9006,
         :9015, :9187-:9243). Contents: audit record :8827-:8858 (incl. no-nesting rule
         :8841-:8846), `kvE_fold_navigated` :8881, `VVecEA2.disjList`/`disjList_holds`
         :8938/:8947, `reflatten_neg_step` :8976, `reflatten_prop43` :8991,
         `VVecEA2.holds_flatMap_map` :9018, 5+5 dischargers :9055-:9176, Phase-7 rescope record
         :9183-:9249.
-  - [ ] `NavigatedSpine.lean` header banner (additive, from the H3 table): `FAITHFUL API —
+  - [x] `NavigatedSpine.lean` header banner (additive, from the H3 table): `FAITHFUL API —
         SPINE + PROP 4.3 ENGINE (Rabinovich 2014)`: Prop 3.5 fold (md:87-94) →
         `kvE_fold_navigated` + dischargers; Lemma 3.4 (md:84-85) → `VVecEA2.disjList_holds`;
         Prop 4.2 (md:100-101) → `reflatten_neg_step`; Prop 4.3 (md:103-110) →
         `reflatten_prop43`.
-  - [ ] Reduce `NfMultiAnchorBridge.lean` to the umbrella: retain header module docstring
+  - [x] Reduce `NfMultiAnchorBridge.lean` to the umbrella: retain header module docstring
         :30-:79, replace all remaining content with the 10 `import` lines (Base, CarrierK1V,
         CarrierKv, RefutationF2, PriorInterface, MergedQuarantine, SubBracket, SubBracket2,
         SubBracket2V, NavigatedSpine). Target ~90 lines. Namespace block no longer needed in the
         umbrella (imports only).
-  - [ ] Token edits: NONE. Byte-identity checks on all slabs (quarantine sub-slabs
+  - [x] Token edits: NONE. Byte-identity checks on all slabs (quarantine sub-slabs
         :5077-:5332, :5360-:5856, :8608-:8826; spine :8827-:9249 — expected: empty diffs);
         `lake build` exit 0 (this also proves `KampPrior.lean` still compiles unchanged).
+        *(verified: all four slab diffs vs ORIG_SHA EMPTY (part 2 checked as :8586-:8826);
+        umbrella docstring orig :29-:78 EMPTY diff; `lake build` exit 0, 1719 jobs)*
 - **Estimated output:** ~1,395 lines relocated; ~55 banner/umbrella lines. Two module files +
   one mechanical umbrella rewrite, all fixed-scope.
 - **Done when:** `lake build` exit 0; monolith is imports+docstring only (~90 lines); all slab
