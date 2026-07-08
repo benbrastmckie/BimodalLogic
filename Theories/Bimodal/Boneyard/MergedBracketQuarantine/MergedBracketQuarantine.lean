@@ -1,3 +1,10 @@
+-- ARCHIVED from Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/MergedQuarantine.lean
+-- Reason: Refuted merged-bracket route (bracket-whose-points-are-brackets) — violates the
+--         no-nesting audit rule and Rabinovich 2014 Lemma 5.1 QF point-type requirement.
+-- Archived: 2026-07-08 (task 332)
+
+#exit
+
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SubBracket2V
 

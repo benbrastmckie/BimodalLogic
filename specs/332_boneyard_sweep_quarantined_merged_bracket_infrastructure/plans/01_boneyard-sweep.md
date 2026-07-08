@@ -115,7 +115,7 @@ quarantine so the default target stops building it.
 
 ---
 
-### Phase 2: Disposition of MergedQuarantine.lean [NOT STARTED]
+### Phase 2: Disposition of MergedQuarantine.lean [COMPLETED]
 
 **Goal**: Remove the 1026-line quarantine file from the live tree via the chosen disposition.
 

@@ -46,6 +46,7 @@ The Boneyard serves three roles:
 | [DiscreteXY](#discretexy) | 1 | 72 | Various | Discrete x_content/y_content approach, replaced by open guard semantics | 85 |
 | [FiltrationOrdering](#filtrationordering) | 1 | 167 | Filtration/SigmaOrdering.lean | Sigma-restricted ordering for filtration; BX1 removed under irreflexive semantics | 130 |
 | [KampNegationClosure](#kampnegationclosure) | 4 | 3,276 | WeakCanonical/Kamp/ | Negation closure chain (Rabinovich 2014 Sec 5) — no live downstream consumers | 302 |
+| MergedBracketQuarantine | 1 | 1,026 | WeakCanonical/Kamp/NfMultiAnchorBridge/ | Refuted merged-bracket route — violates no-nesting audit + Rabinovich Lemma 5.1 QF point-type; task-321 fallback | 332 |
 | [NonBurgessSeed](#nonburgessseed) | 0 | -- | PointInsertion.lean | Legacy g_content/h_content approach, hit density gap | 107 |
 | [OpenGuardInvalid](#openguardinvalid) | 0 | -- | TemporalDerived.lean | BX8/BX9 dependent + reflexivity-dependent theorems invalid under open guard (t,s) | 173 |
 | [QuasimodelOracle](#quasimodeloracle) | 3 | 1,467 | BXCanonical/ | Oracle approach abandoned: 25+ sorry gaps, BX11 perpetual deferral obstruction | 107 |
