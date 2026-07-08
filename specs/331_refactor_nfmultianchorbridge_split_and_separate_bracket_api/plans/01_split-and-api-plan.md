@@ -292,16 +292,51 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
 - **Timing:** ~60 min
 - **Depends on:** 2
 
-### Phase 4: Extract PriorInterface.lean and MergedQuarantine.lean part 1 [NOT STARTED]
+### Phase 4: Extract PriorInterface.lean and MergedQuarantine.lean part 1 [BLOCKED]
+
+**BLOCKER** (Phase 4):
+- **What failed**: the MergedQuarantine part-1 extraction. With :5077-:5856 (minus fold_iff)
+  relocated to `MergedQuarantine.lean` (byte-identity gates all EMPTY), `lake build` failed in
+  the monolith: `Unknown identifier kvE_exclConj` (orig :8653), `kvE_pinArrangements` (:8676),
+  `kvE_gate` (:8687, :8700) — all inside MergedQuarantine **part 2** (:8608-:8826), which stays
+  in the monolith until Phase 7.
+- **What was tried**: (a) the full planned extraction — slab diffs vs ORIG_SHA empty, build RED
+  with the four errors above; (b) pulling part 2 forward into `MergedQuarantine.lean` now —
+  impossible: `kvE2_body` (:8608) consumes `kvE_subChain2V` (:6955, SubBracket2V territory,
+  extracted only in Phase 6), so MergedQuarantine would need to import the monolith while the
+  monolith imports MergedQuarantine → import cycle.
+- **Why stuck**: Lean `private` is file-scoped. Part 1's private helpers (`kvE_gate` :5172,
+  `kvE_body` :5193, `kvE_pinArrangements` :5521, `kvE_pinDisjunct` :5531, `kvE_exclConj` :5544,
+  `kvE'_body` :5562) are consumed by part 2; the source itself documents the design assumption
+  at orig :8588-:8589 — "same-module `private` reuse of `kvE_pinArrangements`/`kvE_pinDisjunct`/
+  `kvE_exclConj`/... is legal". Extracting part 1 in Phase 4 while part 2 waits until Phase 7
+  breaks same-moduleness for phases 4-6. The binding ZERO-token-edit constraint (helpers are
+  do-not-edit and stay private — settled) forbids de-privatization.
+- **What is needed** (orchestrator decision; recommended = i):
+  (i) Amend the plan: defer the MergedQuarantine extraction to Phase 7, extracting parts 1+2
+      together once SubBracket2V exists (imports: PriorInterface + SubBracket2V). Zero token
+      edits ever; preserves the settled one-file decision. Phase 4 then = PriorInterface only
+      (already landed green this dispatch).
+  (ii) Sanction de-privatizing the part-1 helpers consumed cross-module — contradicts the
+      settled do-not-edit/private constraint.
+  (iii) Temporarily reverse the import (MergedQuarantine imports the monolith; monolith drops
+      the MergedQuarantine import until Phase 7) — requires verifying every kvE mention outside
+      part 2 in the remaining monolith is a comment; double import-flip in Phase 7; fragile.
+- **Prohibited**: no `sorry`, no vacuous placeholder was used; the working tree was fixed
+  forward to green (PriorInterface extracted; part-1 slab restored byte-identically to the
+  monolith; `MergedQuarantine.lean` removed).
+
 - **Goal:** Relocate the protected prior interface (~89 lines) and the first merged-route slab
   (~770 lines), establishing the quarantine file.
 - **Tasks:**
-  - [ ] Standard extraction: slab :4988-:5076 → `PriorInterface.lean`. Imports: `CarrierKv`.
+  - [x] Standard extraction: slab :4988-:5076 → `PriorInterface.lean`. Imports: `CarrierKv`.
         Contents: `ExistProviders` :5010, `BracketCarrierCorrectVPrior` :5032,
         `bracketEndChar_kv_correct_{zero,one}_prior` :5052/:5067. Protected byte-identical —
-        token edits: NONE.
+        token edits: NONE. *(landed green; commit this dispatch)*
   - [ ] Standard extraction: slabs :5077-:5766 **minus the already-relocated
         `nf_eval_depth1_fold_iff` block** plus :5767-:5856 → `MergedQuarantine.lean`. Imports:
+        *(deviation: BLOCKED — see BLOCKER above; extraction was executed byte-identically,
+        build went RED on part-2 private-helper references, state fixed forward to green)*
         `PriorInterface`. Header banner: `QUARANTINE / DEAD-CODE: merged-bracket route
         (bracket-whose-points-are-brackets) — violates the no-nesting audit rule and Rabinovich
         2014 Lemma 5.1 quantifier-free point-type requirement (md:134-135). Retained
