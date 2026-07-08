@@ -3163,7 +3163,13 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/SubBracket2V.lean"
       ],
-      "created": "2026-07-08T07:40:00Z"
+      "created": "2026-07-08T07:40:00Z",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md"
+        }
+      ]
     }
   ],
   "artifacts": [
