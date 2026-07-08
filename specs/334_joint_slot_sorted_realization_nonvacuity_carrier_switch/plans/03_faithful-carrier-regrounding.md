@@ -207,7 +207,7 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 3: Multi-anchor region-partition lift (`k1v_sorted_realizationK`) [NOT STARTED]
+### Phase 3: Multi-anchor region-partition lift (`k1v_sorted_realizationK`) [IN PROGRESS]
 
 **Goal**: Generalize the proven three-region `k1v_sorted_realization3` (`SubBracket2V.lean:379`) to a **k-region** partition around the merged, per-disjunct-fixed anchor set `A`, reusing `k1v_sorted_realization` (`CarrierK1V.lean:1447`) verbatim per region. Per-owner region-interior witnesses; distinctness is per-region-per-owner (type-driven `nf_eval_unique`, NormalForm:245) — NOT across owners at an anchor.
 

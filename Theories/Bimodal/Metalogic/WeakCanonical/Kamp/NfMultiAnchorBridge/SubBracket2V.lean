@@ -442,6 +442,114 @@ private theorem k1v_sorted_realization3 {sig : MonadicSignature}
     · exact haw
     · exact haw.trans (hWT_gt_w b hb)
 
+/-- **k-region interleave** (task 334 Phase 3; Def 3.1 interval decomposition, Rabinovich md:61-74).
+    Stitches a list of region blocks into a single witness list, interspersing each region's RIGHT
+    interior anchor (`e.2.1`) between consecutive blocks and DROPPING the final region's right anchor
+    (it is the fixed outer endpoint `a_k`, excluded from the witness list exactly as
+    `k1v_sorted_realization3` excludes `t`). Each entry is `(loᵢ, hiᵢ, blockᵢ)`; blocks are
+    point-tagged (`β × carrier`) and only the realizing point (`.2`) enters the list. For
+    `[(x,x1,psXU),(x1,w,psUW),(w,t,psWT)]` this is `psXU.snd ++ x1 :: psUW.snd ++ w :: psWT.snd`,
+    matching `k1v_sorted_realization3` verbatim. -/
+def interleaveK {sig : MonadicSignature} {M : OrderedMonadicStructure sig} {β : Type _} :
+    List (M.carrier × M.carrier × List (β × M.carrier)) → List M.carrier
+  | [] => []
+  | [(_, _, blk)] => blk.map Prod.snd
+  | (_, sep, blk) :: (e :: rest) => blk.map Prod.snd ++ sep :: interleaveK (e :: rest)
+
+/-- **Monotone lower bounds across a linked region list** (task 334 Phase 3 helper). If the region
+    anchors are linked (`e.2.1 = (next).1`, i.e. `hiᵢ = loᵢ₊₁`, Def 3.1 shared boundary) and each
+    region is non-degenerate (`loᵢ < hiᵢ`), then a lower bound below the first region's lower anchor
+    is below EVERY region's lower anchor. Used to thread the strict-below invariant through the
+    interleave stitch. -/
+private theorem k1v_stitch_lowers_ge {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {β : Type _} :
+    ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (b : M.carrier),
+      (∀ e ∈ regs, e.1 < e.2.1) →
+      List.Chain' (fun a c => a.2.1 = c.1) regs →
+      (∀ e, regs.head? = some e → b ≤ e.1) →
+      ∀ f ∈ regs, b ≤ f.1 := by
+  intro regs
+  induction regs with
+  | nil => intro b _ _ _ f hf; simp at hf
+  | cons e rest ih =>
+    intro b hpos hlink hhead f hf
+    have hbe : b ≤ e.1 := hhead e rfl
+    rcases List.mem_cons.mp hf with rfl | hf'
+    · exact hbe
+    · refine ih b (fun g hg => hpos g (List.mem_cons_of_mem _ hg))
+          ((List.chain'_cons'.mp hlink).2) ?_ f hf'
+      intro g hg
+      have hsep : e.2.1 = g.1 := (List.chain'_cons'.mp hlink).1 g hg
+      exact le_of_lt (lt_of_le_of_lt hbe (hsep ▸ hpos e List.mem_cons_self))
+
+/-- **k-region stitch** (task 334 Phase 3; the `k1v_sorted_realization3` stitch generalized to k
+    regions, Def 3.1 strictly-increasing witnesses md:61-74). Given region blocks each internally
+    sorted (`hsort`) and realized strictly inside `(loᵢ, hiᵢ)` (`hrange`), with non-degenerate,
+    boundary-linked, strictly-ordered anchors (`hpos`, `hlink`) all above a global left bound `lo`
+    (`hlo`), the interleaved witness list `interleaveK regs` is strictly increasing, and every point
+    exceeds `lo`. Every region-`i` point exceeds `hiᵢ₋₁` and is below `hiᵢ` — the k-fold lift of the
+    three-region stitch's "every UW point exceeds `x1`, every left-block point is `< w`". -/
+theorem k1v_stitch_regions {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {β : Type _} :
+    ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (lo : M.carrier),
+      (∀ e ∈ regs, (e.2.2.map Prod.snd).Pairwise (· < ·)) →
+      (∀ e ∈ regs, ∀ q ∈ e.2.2, e.1 < q.2 ∧ q.2 < e.2.1) →
+      (∀ e ∈ regs, e.1 < e.2.1) →
+      List.Chain' (fun a b => a.2.1 = b.1) regs →
+      (∀ e ∈ regs, lo ≤ e.1) →
+      (interleaveK regs).Pairwise (· < ·) ∧ ∀ y ∈ interleaveK regs, lo < y := by
+  intro regs
+  induction regs with
+  | nil =>
+    intro lo _ _ _ _ _
+    refine ⟨?_, ?_⟩ <;> simp [interleaveK]
+  | cons e rest ih =>
+    intro lo hsort hrange hpos hlink hlo
+    cases rest with
+    | nil =>
+      simp only [interleaveK]
+      refine ⟨hsort e List.mem_cons_self, ?_⟩
+      intro y hy
+      obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hy
+      exact lt_of_le_of_lt (hlo e List.mem_cons_self) (hrange e List.mem_cons_self q hq).1
+    | cons e' rest' =>
+      have hchain_tail : List.Chain' (fun a b => a.2.1 = b.1) (e' :: rest') :=
+        (List.chain'_cons.mp hlink).2
+      have hsep : e.2.1 = e'.1 := (List.chain'_cons.mp hlink).1
+      have hlo_tail : ∀ f ∈ (e' :: rest'), e.2.1 ≤ f.1 :=
+        k1v_stitch_lowers_ge (e' :: rest') e.2.1
+          (fun f hf => hpos f (List.mem_cons_of_mem _ hf))
+          hchain_tail
+          (by intro g hg
+              simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at hg
+              subst hg; exact le_of_eq hsep)
+      obtain ⟨ihpair, ihbound⟩ :=
+        ih e.2.1
+          (fun f hf => hsort f (List.mem_cons_of_mem _ hf))
+          (fun f hf => hrange f (List.mem_cons_of_mem _ hf))
+          (fun f hf => hpos f (List.mem_cons_of_mem _ hf))
+          hchain_tail hlo_tail
+      simp only [interleaveK]
+      refine ⟨?_, ?_⟩
+      · rw [List.pairwise_append]
+        refine ⟨hsort e List.mem_cons_self, ?_, ?_⟩
+        · rw [List.pairwise_cons]
+          exact ⟨fun y hy => ihbound y hy, ihpair⟩
+        · intro a ha b hb
+          obtain ⟨q, hq, rfl⟩ := List.mem_map.mp ha
+          have haq : q.2 < e.2.1 := (hrange e List.mem_cons_self q hq).2
+          rcases List.mem_cons.mp hb with rfl | hb'
+          · exact haq
+          · exact haq.trans (ihbound b hb')
+      · intro y hy
+        rcases List.mem_append.mp hy with hy | hy
+        · obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hy
+          exact lt_of_le_of_lt (hlo e List.mem_cons_self) (hrange e List.mem_cons_self q hq).1
+        · rcases List.mem_cons.mp hy with rfl | hy'
+          · exact lt_of_le_of_lt (hlo e List.mem_cons_self) (hpos e List.mem_cons_self)
+          · exact lt_of_le_of_lt (hlo e List.mem_cons_self)
+              (lt_trans (hpos e List.mem_cons_self) (ihbound y hy'))
+
 /-- **Three-region bracket construction** (task 325 Phase 2; lift of `k1v_bracket_construct` :2838
     to `bracketFromLists3`). The reverse of point-type extraction: given a sorted tuple of realizing
     points — `usXU` strictly inside `(x, x1)`, the interior witness `x1`, `usUW` strictly inside
