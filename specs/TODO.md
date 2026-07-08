@@ -1,10 +1,10 @@
 ---
-next_project_number: 331
+next_project_number: 332
 ---
 
 # TODO
 
-Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-fatal)
+Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 331 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-08. Generated from state.json dependency graph.*
@@ -12,12 +12,13 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,331 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,321 | 161,187,191,194,230,291,300,331 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,321 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -109,12 +110,40 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 321 [BLOCKED] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin (see above)
 
 ### Uncategorized
 
+331 [NOT STARTED] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
+  └─ 321 [BLOCKED] — (kamp_theorem_formalization: REDESIGN (v6, plan 06). Task 330's PDF-v) (see above)
+
 ## Tasks
+
+### 331. Refactor nfmultianchorbridge split and separate bracket api
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: None
+
+**Description**: Structural refactor to unblock task 321 Phase 7/8: split NfMultiAnchorBridge.lean and clean up the k=2 carrier API. RUNS BEFORE the next task-321 implementation attempt (task 321 now depends on this task). Purely mechanical/organizational — introduces NO new mathematical content and does NOT attempt to close the Phase-7 gate (that stays task 321).
+
+MOTIVATION. NfMultiAnchorBridge.lean has grown to ~9,249 lines — nearly double the next-largest file in the entire codebase — accreting the k=2 carrier machinery across tasks 320/325/326/330/321-v6. Task 321's blocker research (specs/321_.../.orchestrator-handoff.json, adversarially verified, Tier-1 grounded in Rabinovich 2014) established that the FAITHFUL route to close the gate is a per-sigma SEPARATE-BRACKET combination (Prop 4.2/4.3 disj/conj over standalone kvE_subBracket2V carriers), NOT the merged-bracket slotsFor construction (which is the un-faithful step: it builds bracket-whose-points-are-brackets, violating the file's own no-nesting audit rule at :8841-8846 and Lemma 5.1's quantifier-free-point-types requirement). This refactor prepares the file so the faithful rewrite is tractable and the dead merged-route machinery is clearly quarantined.
+
+SCOPE (mechanical split + API surfacing):
+1. Divide NfMultiAnchorBridge.lean into cohesive sub-modules along natural seams (confirm exact boundaries against the file): (a) baseline/quarantine defs + NormalForm/ZoneSpec/VecEA2 plumbing; (b) navigated spine kvE_fold_navigated + Prop 4.3 re-flatten machinery (VVecEA2.disjList_holds :8947, reflatten_prop43 :8991); (c) structural fold-collapse holds_flatMap_map; (d) per-arrangement non-interior dischargers (5+5 soundness/completeness); (e) task-326 standalone per-sub carrier closers (kvE_subBracket2V :6833, correctness_pair :8549, _sound_of_outer :7910, _complete :8159); (f) the merged-route kvE2_body/bracketFromLists gate assembly + slotsFor + subchain_below_pin + F1-F4 records. Preserve import-DAG acyclicity.
+
+2. Surface the FAITHFUL separate-bracket API as named, documented interface lemmas so task 321's next attempt can build the shared-interior-witness conjunction (the one genuine unbuilt object: exists w, conj over sigma of (kvE_subBracket2V sigma at that same shared w) = Lemma 5.1 point-insertion + Lemma 3.2(2) 2-var reduction). Expose the per-sub carrier + disjList_holds/VVecEA2.conj/neg_2var_vec_ea combinators as the clean public interface; keep the merged-route slotsFor/subchain_below_pin machinery in a clearly-marked QUARANTINE/DEAD-CODE module (do not delete in this task — task 321 retires it once the faithful route lands).
+
+BINDING CONSTRAINTS (non-negotiable):
+- SEMANTICS-PRESERVING ONLY. Every landed lemma/def keeps an identical statement and proof term; relocation across files is allowed, editing content is NOT. The do-not-edit (byte-identical) task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice, kvE_subChain2V, BracketCarrierCorrectVPrior/Prior, EANegation, and F1-F4 records must remain semantically byte-identical (a relocated copy with unchanged tokens is acceptable; a re-proof is not).
+- No sorry on any path; axiom-clean [propext, Classical.choice, Quot.sound]; full `lake build` exit 0 after EACH split commit (incremental, one module at a time).
+- Downstream consumers keep working via re-export shims if names move: KampPrior.lean:351 strategic-sorry hook, task 309 general-k consumers, and any importer of NfMultiAnchorBridge symbols. Verify with lake build across the whole Kamp directory.
+- Do NOT close the Phase-7 gate, do NOT build the shared-w combinator, do NOT run Phase-8. Those are task 321. Success = SAME theorems, SAME axioms, smaller files (target <= ~1500-2000 lines/module), clearer separate-bracket API, dead merged-route machinery quarantined.
+
+GOAL STATE: hand task 321's next (faithful, v7) implementation attempt a clean, split, well-documented API surface centered on separate per-sigma carriers, so the shared-interior-witness probe and rewrite (est. 400-700 additive lines per the research) can proceed without fighting a 9k-line monolith. LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md (Def 3.1, Lemma 3.2, Lemma 3.4, Prop 4.2, Prop 4.3, Lemma 5.1, Cor 5.4).
+
+---
 
 ### 330. K2 carrier faithfulness audit and correct fold representation
 - **Effort**: 8-16 hours
@@ -319,7 +348,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 320, Task 326, Task 330
+- **Dependencies**: Task 320, Task 326, Task 330, Task 331
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
