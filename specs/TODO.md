@@ -12,15 +12,14 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,330 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,328 | 161,187,191,194,230,291,300,330 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,329 | 189,192,196,328 | automation, kamp_theorem_formalization |
-| 4 | 177,178,321 | 131,193,329 | formula-refactor, kamp_theorem_formalization |
-| 5 | 309 | 321 | kamp_theorem_formalization |
-| 6 | 307 | 309 | completeness |
-| 7 | 305 | 307 | completeness |
-| 8 | 303 | 305 | completeness |
-| 9 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,328 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,329 | 161,187,191,194,230,291,300,328 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,321 | 189,192,196,329 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -112,11 +111,10 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-330 [NOT STARTED] — FOUNDATIONAL faithfulness audit + correct-fold-representation det
-  └─ 328 [BLOCKED] — P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the
-    └─ 329 [BLOCKED] — P3 (5-zone dischargers — depends on P2 statement). Land the non-i
-      └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+328 [BLOCKED] — P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the
+  └─ 329 [BLOCKED] — P3 (5-zone dischargers — depends on P2 statement). Land the non-i
+    └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -124,10 +122,11 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### 330. K2 carrier faithfulness audit and correct fold representation
 - **Effort**: 8-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
+- **Research**: [330_k2_carrier_faithfulness_audit_and_correct_fold_representation/reports/01_faithfulness-audit-fold-representation.md]
 
 **Description**: FOUNDATIONAL faithfulness audit + correct-fold-representation determination for the k=2 carrier route. SPAWNED because task 327 (P1 provability GATE) returned a machine-grounded WHOLE-TASK NO-GO: the depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate does NOT fold cleanly at constant arity by ANY route (naive nfk-split-kit factor, constant-arity E[Sigma] efold_of_nfk, or a new argument). This refuted the exact bet report 05 (specs/321_.../reports/05_remaining-k2-gate-architecture.md, Literature Grounding + Layer 2 sections) was built on: that route beta (E[Sigma] efold_of_nfk) would dodge the arity-4 barrier and was FAITHFUL to Rabinovich Def 4.1 constant-arity fold. Machine evidence (327 summary): the E[Sigma] channel's constant arity is arity-1 (ZoneSpec 1), precisely the arity that cannot carry the inner-witness joint coupling (crux goal needs ZoneSpec 4 over env [x1,w,x,t]; 5 failed lean_multi_attempt closers captured, decisive: `exact hmon.2.1 zs' chi'` -> ZoneSpec 4 vs ZoneSpec 1 mismatch).
 
