@@ -5,30 +5,45 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate-hard", "lean-implementation-hard-agent"],
   "skeleton": false,
-  "summary": "Phase 8 (O3) complete: joint soundness extraction landed in SharedWitness.lean (append-only, +449 lines; nothing else touched). Main theorem kvE2_sepDisjunct_extract: from a realized joint disjunct over valid interleavings, both joint endpoint realizations (epL@x, epR@t — carrying the five non-interior classes' sigma-level literals), the ONE shared witness w with x < w < t from the bracket's OWN range (FM-x1t) realizing kvE2_sepPtW, and at that SAME w the per-sigma bundle for every positive interior sigma of BOTH classes (kvE2_sepBundleL for left-interior zXW3: x1 in (x,w) realizing kvE2_sepPtX1L + every zXU-positive chi realized in (x,x1); kvE2_sepBundleR mirrored for right-interior zWT3 with zWX1 content — extracted despite the missing landed kit, per the Phase 7 watch item). kvE2_sepBody_extract lifts to carrier level with NO gate hypothesis (gate-failure branch is False). kvE2_sepDisjunct_halves delivers the shared-w pivot by CONSUMING the Lemma 5.1 kit BracketFormula.leftPart_holds/rightPart_holds through the generic kvE2_sepBracket_split_at and the witness-count normalization kvE2_sepCastBracket — the halves carry the refined-segment realizations Phase 9 (O4) needs. kvE2_sepBundleL_parts produces the EXACT kvE_subBracket2V_sound_of_parts input 5-tuple (x1, hxx1, hx1t, hanchor, hbelow). All positions read structurally off arrangement slot indices via region-rank pairwise (LITMUS-clean; no x1 < e_i literal; no chain). All 10 public theorems axiom-clean exactly [propext, Classical.choice, Quot.sound]; 0 sorries in the file; litmus grep 0 hits; no vacuous defs; full lake build green (1720 jobs); purely additive; no do-not-edit asset touched.",
+  "o4_verdict": "FAIL",
+  "o4_verdict_evidence": "O4 CRUX RECORD at end of SharedWitness.lean (commit e79da7f94): captured goal 'sigma.2 (nf0_assemble kvE_sub2_zXU chi sigma.1) = true' at a cross-sigma slot point, five failed closers, channel-exhaustion argument",
+  "summary": "Phase 9 (O4 make-or-break) reached its verdict within its one dedicated dispatch: FAIL, honest and evidenced. Derivable core landed sorry-free and axiom-clean: kvE2_sep_zone4_consistent (PUBLIC nine-zone consistency, the N-point re-derivation of the private kvE_sub2V_zone_consistent template, concluding the named kvE2_sepInnerConsistentL), kvE2_sepHgate_offFiber and kvE2_sepHgate_innerNine (gate clauses (iii)/(iv) surfaced as hgate conjunct dischargers), kvE2_sepSegForm_excludes (the Cor 5.4 segment exclusion channel). Together with the kvE2_sepLit biconditional endpoint/witness literals (six at/exterior zones, both directions) and sigma's own slot channel, five of the six hgate conjuncts (SubBracket2V.lean:1868-1882) are determined at the extracted anchor. The forward-zone conjunct (:1873-1877) is UNDERDETERMINED at cross-sigma slot points: for distinct left-interior positives sigma != tau with tau's zXU-chi slot interleaved below sigma's fresh slot (cross-sigma order is free in kvE2_sepSlotLe), the goal 'sigma.2 (nf0_assemble kvE_sub2_zXU chi sigma.1) = true' has NO carrier channel - all four kvE2_sepGate clauses conclude '= false', the segment contrapositive fires only on open intervals (v is a bracket point), the literals never cover zXU/zUW/zWT. Probed with the FULL hypothesis superset (realized disjunct h itself + gate + all Phase-8-extracted facts); five failed closers captured lean_goal-verbatim in the inert O4 CRUX RECORD (task-327 evidence style) plus channel exhaustion and the no-additive-repair analysis (conjunctive cross-sigma gate clause breaks honest derivability/non-vacuity FM-vac; disjunctive clause is arrangement-blind; faithful repair = bit-compatibility filtering of kvE2_sepArrL/R, a Phase-7 carrier re-definition owned by the Phase 10 gate). Second independent obstruction to the forall-anchor form: 'a < w' unprovable (right-region segments never exclude the charK E[Sigma]-atom). No sorry, no chain splicing (FM-merge), no x1 < e_i literal (LITMUS), no placeholder committed; probe removed before commit. Full lake build green (1720 jobs); purely additive (SharedWitness.lean + plan only). Phase 10 routing input per the plan's own table: FAIL on O4 -> N2 (single-positive-sub fragment; cross-sigma residue vanishes; the kvE_subBracket2V_sound_of_outer configuration already serves it).",
   "phases_total": 13,
-  "phases_completed": 8,
+  "phases_completed": 9,
   "artifacts": [
     {
       "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
       "type": "lean-module",
-      "summary": "Phase 8 O3 extraction appended: kvE2_sepDisjunct_extract, kvE2_sepBody_extract, kvE2_sepDisjunct_halves, kvE2_sepBracket_split_at, kvE2_sepBundleL/R (+_parts), kvE2_sepPtX1L/R_anchor, kvE2_sepCastBracket(+_holds), kvE2_sepPos_mem, private navigation plumbing (now 1,393 lines, sorry-free, axiom-clean)"
+      "summary": "Phase 9 O4 section appended: kvE2_sep_zone4_consistent, kvE2_sepHgate_offFiber, kvE2_sepHgate_innerNine, kvE2_sepSegForm_excludes (all public, sorry-free, axiom-clean) + the inert O4 CRUX RECORD (captured goal, five failed closers, channel exhaustion, N2 consequence). Now 1,614 lines, 0 sorries."
     },
     {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/08_phase8-joint-extraction-summary.md",
-      "type": "summary",
-      "summary": "Phase 8 implementation summary with verification table and recorded scope reading"
-    },
-    {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-8-handoff-20260707.md",
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-9-handoff-20260707.md",
       "type": "handoff",
-      "summary": "Landed API table, key decisions, Phase 9/10 watch items (right-interior kit gap, O4 crux residue, possible additive kvE2_sepGate extension), empty sorry inventory"
+      "summary": "Phase 9 handoff: FAIL evidence package for the Phase 10 decision gate (captured goal, closers, channel exhaustion, N2 dissolution argument, landed API table)"
+    },
+    {
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/09_phase9-o4-verdict-summary.md",
+      "type": "summary",
+      "summary": "Phase 9 implementation summary with verification table and the O4 FAIL verdict"
+    },
+    {
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md",
+      "type": "plan",
+      "summary": "Phase 9 marked [COMPLETED] with the dated O4 FAIL verdict note and per-task deviation annotations"
     }
   ],
-  "commits": ["2c55cf3f1", "8c22e01c5"],
   "blockers": [],
-  "sorry_inventory": [],
-  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-8-handoff-20260707.md",
+  "continuation_path": null,
   "continuation_context": null,
-  "next_action_hint": "Dispatch Phase 9 (O4 — MAKE-OR-BREAK, ONE dedicated dispatch, hard cap): derive each positive sigma's 6-conjunct hgate bundle (SubBracket2V.lean:1868-1882 spec) at the Phase-8-extracted shared w from realized refined segments + endpoint literals. Read handoffs/phase-8-handoff-20260707.md first — entry points (kvE2_sepBundleL_parts, kvE2_sepDisjunct_halves segment content, kvE2_sep_zone3_consistent case-bash shape) and watch items recorded there. On incomplete O4: capture the failing lean_goal as an inert record and route to the Phase 10 decision gate as FAIL — never chain splicing, never an x1 < e_i literal, never a gate-modulo-assumed-hgate."
+  "next_action_hint": "Dispatch Phase 10 (DECISION GATE): apply the plan's FAIL-on-O4 -> N2 routing - write the dated verdict record under the Phase 10 heading (cite commits 2c55cf3f1/8c22e01c5 phase 8, 7488001ec/e79da7f94 phase 9, and the captured goal from the O4 CRUX RECORD), promote Appendix N2's phase sequence (N2-A/N2-B/N2-C) as replacement content for Phases 11-12, re-run generate-todo.sh after the state edit.",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "build_passed": true,
+    "litmus_hits": 0,
+    "diff_scope": "SharedWitness.lean + plan file only (additive)"
+  },
+  "commits": ["7488001ec", "e79da7f94"]
 }
