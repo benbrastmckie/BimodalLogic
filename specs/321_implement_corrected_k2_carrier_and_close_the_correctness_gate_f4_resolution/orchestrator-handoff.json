@@ -1,0 +1,12 @@
+{
+  "status": "planned",
+  "summary": "v6 REDESIGN of the k=2 carrier route per task 330's PDF-verified faithfulness audit: drops the refuted constant-arity static arity-1 fold (the 'E[Sigma]-fold Def 4.1' mis-citation), adopts the navigated / witness-growing route (Prop 3.5 / Cor 5.4 nested Until/Since over flat exists-forall blocks with quantifier-free point types, higher FO depth via Prop 4.3 re-flatten induction). Consumes landed BracketCarrierCorrectV (:1881), neg_2var_vec_ea (EANegationClosure:722, Prop 4.2), and task-326 interior closers; adds the Prop 4.3 re-flatten wiring; folds in the redefined scope of ABANDONED tasks 328 (navigated fold) and 329 (5 non-interior-zone dischargers) without re-spawning them; preserves v5 Phase 15 as the F4 Z adversarial gate + verdict (now Phase 8). 8 phases, make-or-break navigated spine tested at Phase 2.",
+  "artifact": {
+    "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/06_corrected-k2-carrier-gate-v6-redesign.md",
+    "type": "plan",
+    "summary": "v6 redesign plan: navigated / witness-growing k=2 carrier route with Postmortem (v1-v5 failure lineage), Preserved-Assets table, hard-mode phase sizing, and LITMUS invariant (no x1<e_i literal; reconstruction rides evaluation-point/structural position)."
+  },
+  "phases_total": 8,
+  "next_action_hint": "Run /implement 321 --hard --lit to execute the v6 redesign starting at Phase 1 (baseline snapshot + refuted-infra quarantine), then the Phase 2 make-or-break navigated-fold spine.",
+  "session_id": "sess_1783467994_0da061"
+}
