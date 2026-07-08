@@ -1,10 +1,10 @@
 ---
-next_project_number: 333
+next_project_number: 334
 ---
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 332 (non-fatal)
+Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 332, 333 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-08. Generated from state.json dependency graph.*
@@ -14,7 +14,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 332 (
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,309,332 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 3 | 193,307,333 | 189,192,196,309,332 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
 | 6 | 95,299 | 303 | completeness |
@@ -109,13 +109,23 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 332 (
 
 ### Kamp_theorem_formalization
 
-321 [IMPLEMENTING] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 332 [NOT STARTED] — Post-321 Boneyard sweep of quarantined/refuted NfMultiAnchorBridg
+    └─ 333 [NOT STARTED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
 ## Tasks
+
+### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 321, Task 332
+
+**Description**: Successor to task 321 (F4 correctness gate): the bit-compatibility carrier redefinition that closes what task 321's additive-only v7 plan structurally could not. Task 321 reached a scoped PARTIAL: the O4 hgate forward-zone coverage residue does not close additively at singleton size (needs six interlocking LITMUS/no-nesting-constrained lemmas), and the multi-positive-sub fragment was deferred at the Phase 10 gate. Both route to the SAME fix identified by the crux analysis: redefine kvE2_sepArrL / kvE2_sepArrR (currently arrangement-blind) with bit-compatibility FILTERING so the interleaving enumeration only admits realizations whose zone bits are compatible with each sigma's fold content. This is a Phase-7 carrier RE-DEFINITION (out of task 321's additive scope; it kills the current canonical-list non-vacuity proof, which must be re-established). Deliverables: (1) redefined kvE2_sepArrL/R + restored non-vacuity; (2) discharge task 321's two remaining strategic sorries in SharedWitness.lean (kvE2_sepSingleton_coverage_left:1796, kvE2_sepBody_singleton_complete_left:1952) for the single-positive fragment; (3) lift to the full multi-positive-sub correctness pair; (4) run Phase 12 (N2-C gate wrapper) and Phase 13 (F4 Z adversarial LHS-FALSE + GO verdict record) from task 321's v7 plan; (5) full lake build green + axiom-clean surviving public API. Faithfulness constraints from 321 remain binding: Rabinovich 2014 Lemma 5.1 quantifier-free point types, no-nesting audit, LITMUS (no x1<e_i), F4 adversarial test must discriminate. Do not run concurrently with 321/332 (file_scope overlap on SharedWitness / NfMultiAnchorBridge).
+
+---
 
 ### 332. Boneyard sweep quarantined merged bracket infrastructure
 - **Status**: [NOT STARTED]
@@ -353,7 +363,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 320, Task 326, Task 330, Task 331
