@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 337,
+  "next_project_number": 338,
   "active_projects": [
     {
       "project_number": 322,
@@ -3217,17 +3217,18 @@
     {
       "project_number": 335,
       "project_name": "outer_gate_assembly_engine_kvE2_body",
-      "status": "partial",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.",
       "parent_task": 334,
       "dependencies": [
-        334
+        334,
+        337
       ],
       "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
       "created": "2026-07-08T21:34:34Z",
-      "last_updated": "2026-07-08T22:15:00Z",
-      "session_id": "sess_1783546987_0faeae_335",
+      "last_updated": "2026-07-08T22:31:02Z",
+      "session_id": "sess_1783549519_f8dfa9",
       "artifacts": [
         {
           "type": "report",
@@ -3280,7 +3281,7 @@
         "skeleton": false,
         "follow_up_tasks": []
       },
-      "previous_status": "implementing"
+      "previous_status": "partial"
     },
     {
       "project_number": 336,
@@ -3306,6 +3307,11 @@
           "type": "plan",
           "path": "specs/336_generalize_completeness_right_interior_zAtX1R/plans/01_generalize-completeness-right-interior.md",
           "summary": "4-phase plan: guard kvE2_sepClosedLeafStub on nf0_zoneSpec (zAtX1L/zAtX1R) + patch _valid_left; add kvE2_sepCoincidentOwner_valid_right mirror; relax kvE2_sepBody_complete hL->hLR with per-owner case split; verify axiom-cleanliness. Deliverable is hLR (left OR right interior), NOT unconditional; no sorry/axiom for the exterior-owner gap."
+        },
+        {
+          "type": "summary",
+          "path": "specs/336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md",
+          "summary": "COMPLETED: hL->hLR right-interior completeness generalization landed axiom-clean; guard on nf0_zoneSpec + mirror lemma valid_right + per-owner case split; exterior-owner gap kept as live hypothesis (no sorry/axiom)"
         }
       ],
       "completion_summary": "Generalized kvE2_sepBody_complete (Rabinovich Lemma 3.2(1) completeness half) from left-interior hL to left-OR-right interior hLR positive owners. Guarded kvE2_sepClosedLeafStub on nf0_zoneSpec (zXW3 to zAtX1L, else to zAtX1R); added kvE2_sepCoincidentOwner_valid_right mirror routing the landed axiom-clean discharge_R; per-owner rcases dispatch. Full build green; kvE2_sepBody_complete, kvE2_sepBody_nonvacuous, kvE2_sepArr_sound all axiom-clean [propext, Classical.choice, Quot.sound], no sorryAx. Exterior-owner gap honestly carried as hLR (no sorry/axiom). F5 preserved.",
@@ -3338,6 +3344,31 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 337,
+      "project_name": "build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Wire the general region engine k1v_sorted_realizationK (SubBracket2V.lean:633) into the kvE2_sepDisjunct slot/segment/endpoint layout (SharedWitness.lean), delivering a ⇐-direction holds BUILDER for the joint multi-owner disjunct bracket: given the merged per-owner slot lists kvE2_sepSlotsL/R qnf, each positive owner's honest bundle (kvE2_sepHonestBundleL/kvE2_sepHonestBundleR), and witnesses x < w < t, produce (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds M atomMap x t. Steps: (1) map each positive owner's honest bundle into a region compatible with k1v_sorted_realizationK's input shape; (2) run the engine to obtain a globally monotone interleaved witness sequence across all owners; (3) match that sequence to kvE2_sepBracketN's IntervalPattern point types and segments; (4) discharge the endpoint conjuncts kvE2_sepEpL/kvE2_sepEpR at x/t. Deliver as a new lemma (naming pattern: kvE2_sepDisjunct_holds_of_honest or similar, mirroring the existing kvE2_sepGate_holds_of_honest convention) in SharedWitness.lean, sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), preserving all seven faithfulness invariants F1-F7 (especially F5: no open/closed zone-key conflation, and the LITMUS at NavigatedSpine:437: no x1 < e_i relative-position literal -- witness bounds must come from the bracket range, never a chain). Treat all task-334/336 carrier lemmas (kvE2_sepBody_extract, kvE2_sepBody_complete, kvE2_sepHonestBundleL/R, kvE2_sepDisjunct_extract, kvE2_sepArr'_sound) as verified INPUTS -- apply them, do not re-derive or weaken them. FILE-SAFETY NOTE: this task is very likely to edit SharedWitness.lean, the same file task 336 (COMPLETED) just edited to generalize kvE2_sepBody_complete from hL to hLR. Task 336 is already complete so there is no live blocking dependency, but verify on start that the hLR-generalized kvE2_sepBody_complete signature (see specs/336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md) is the one in scope. On completion, task 335 re-dispatches Phases 2-4 (soundness, completeness, assembled k=2 gate) to consume this builder.",
+      "effort": "4-5 hours",
+      "parent_task": 335,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        336
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
+      "created": "2026-07-08T22:33:37Z",
+      "last_updated": "2026-07-08T22:33:37Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 335 (blocker: missing joint multi-owner disjunct bracket-holds engine)"
+        }
+      ]
     }
   ],
   "artifacts": [
