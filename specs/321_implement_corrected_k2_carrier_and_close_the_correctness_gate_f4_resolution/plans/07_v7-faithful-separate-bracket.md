@@ -446,7 +446,54 @@ crux-capture commit.
   full scope — the decision gate owns the routing. Snapshot via `git-snapshot.sh` before any
   revert of probe edits (only inert records are committed on FAIL, mirroring v6 Phase 7 practice).
 
-### Phase 10: DECISION GATE — FULL / N1 / N2 verdict on the Phase-B outcome [NOT STARTED]
+### Phase 10: DECISION GATE — FULL / N1 / N2 verdict on the Phase-B outcome [COMPLETED]
+
+**VERDICT RECORD (2026-07-07, dated gate note): N2 — single-positive-sub fragment.**
+
+- **Inputs**: Phase 8 PASS (commits `2c55cf3f1`, `8c22e01c5` — shared-`w` extraction + per-σ
+  bundles landed sorry-free, axiom-clean). Phase 9 FAIL (commits `7488001ec` derivable core,
+  `e79da7f94` crux capture + inert O4 CRUX RECORD). Evidence package:
+  `handoffs/phase-9-handoff-20260707.md`; O4 CRUX RECORD at `SharedWitness.lean:1562` ff.
+- **PASS-criteria check** (independently re-verified against the table above, not
+  rubber-stamped): criterion 1 HOLDS (Phase 8 extraction sorry-free, axiom-clean); criterion 2
+  FAILS — the forward-zone `hgate` conjunct (`SubBracket2V.lean:1873-1877`) is UNDERDETERMINED
+  at cross-σ slot points: for distinct left-interior positives σ ≠ τ with τ's `zXU`-χ slot
+  interleaved below σ's fresh slot, the captured goal
+  `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true` has NO carrier channel (all four
+  `kvE2_sepGate` clauses conclude `= false`; segments cover only OPEN intervals, never bracket
+  points; `kvE2_sepLit` literals cover only at/exterior zones). Five failed closers captured
+  `lean_goal`-verbatim, with channel-exhaustion and no-additive-repair analysis, in the O4
+  CRUX RECORD. The probe carried the FULL hypothesis superset (realized disjunct `h` itself +
+  all Phase-8-extractable facts), so the FAIL is not attributable to a dropped input; the
+  ∀-anchor form dies on a second independent obstruction (`a < w` unprovable — right-region
+  segments never exclude the `charK` E[Σ]-atom). Criterion 3 HOLDS (litmus + no-nesting clean,
+  additive-only diff) but is moot given criterion 2.
+- **FAIL condition matched verbatim**: "a per-σ zone bit required by `hgate` underdetermined
+  by the refined-conjunction segments + E[Σ]-atom literals (the derivation genuinely doesn't
+  go through)"; additionally "O4 not closed within its one dedicated dispatch".
+- **Routing applied**: FAIL on O4 → **N2**. N1 is disqualified (N1 does NOT dodge O4 — valid
+  only after an O4 PASS); FULL is disqualified (PASS criterion 2 fails). N2 isolates the same
+  make-or-break at minimum size: with ONE interior positive there are no cross-σ slots — every
+  left-list witness is σ's own bit-true 1-type (bit true by `kvE2_sepS` construction) or a
+  literal-covered self-zone — exactly the configuration `kvE_subBracket2V_sound_of_outer`
+  (`SubBracket2V.lean:1216`) + `kvE_sub2V_bounded_anchor_of_outer` (`:1182`) already serve.
+  Phase 9's landed lemmas (`kvE2_sep_zone4_consistent`, `kvE2_sepHgate_offFiber`,
+  `kvE2_sepHgate_innerNine`, `kvE2_sepSegForm_excludes`) remain LIVE N2 inputs.
+- **Deferred fragment (audit-sanctioned re-scope, recorded honestly)**: the multi-positive-sub
+  correctness fragment (≥ 2 interior positives — the cross-σ interleaving mathematics) is
+  DEFERRED out of task 321. The faithful repair identified by the crux analysis is
+  bit-compatibility FILTERING of `kvE2_sepArrL/R` — a Phase-7 carrier re-definition (kills the
+  canonical-list non-vacuity proof), outside this plan's additive scope — owned by a successor
+  task to be spawned after task 321 completes on the N2 fragment. **GOAL STATE re-statement
+  for the narrowed fragment**: the Phase 13 GO/NO-GO verdict for task 309 Phase 13.4 and the
+  `KampPrior.lean:351` strategic-sorry hook rewire now certifies the k=2 gate on the
+  single-positive-sub fragment (`∀ σ σ', qnf.2 σ = true → qnf.2 σ' = true → σ = σ'`) ONLY;
+  the general multi-positive case remains open pending the successor carrier re-definition.
+- **Amendment applied (this commit)**: Phases 11-12 replaced by the promoted Appendix N2
+  content (N2-A/N2-B → Phase 11; N2-C → Phase 12); Phase 13 unchanged except an explicit
+  N2-scope note; RE-SCOPE ladder annotated with the branch taken; appendix marked PROMOTED;
+  state.json task-321 description annotated with the scope amendment + `generate-todo.sh`
+  re-run.
 
 - **Goal:** Evaluate the O3+O4 outcome against concrete pass/fail criteria and route the
   remainder of the plan. This is the gate report 07 mandates after Phase B; its output is a
@@ -475,9 +522,13 @@ crux-capture commit.
     ~100-150 lines): restrict via `interiorBoundaryOnly` (Appendix N1) — a Phase-11-local
     narrowing, no gate re-run.
 - **Tasks:**
-  - [ ] Write the verdict record (FULL/N1-armed/N2) as a dated note in this plan file under
+  - [x] Write the verdict record (FULL/N1-armed/N2) as a dated note in this plan file under
         this phase heading, citing the Phase 8/9 commits and any captured failing goal.
-  - [ ] On FAIL: apply the N2 plan amendment (promote appendix, rescope Phases 11-12), commit.
+        *(landed above: N2, citing 2c55cf3f1/8c22e01c5 + 7488001ec/e79da7f94 and the captured
+        forward-zone goal)*
+  - [x] On FAIL: apply the N2 plan amendment (promote appendix, rescope Phases 11-12), commit.
+        *(Phases 11-12 rewritten below from Appendix N2; Phase 13 scope note added; state.json
+        description annotated; generate-todo.sh re-run)*
 - **Verification:** verdict record present; on FAIL, amended plan still satisfies
   plan-format-enforcement (phase heading regex, required sections).
 - **Estimated lines:** 0 Lean lines (record + possible plan amendment only).
@@ -486,78 +537,104 @@ crux-capture commit.
 - **Rollback/Contingency:** none needed (no code). The RE-SCOPE ladder (below) is the
   contingency structure this phase administers.
 
-### Phase 11: Gate assembly — soundness + completeness, both directions (O5 + O6) [NOT STARTED]
+### Phase 11: N2 singleton carrier + extraction + hgate + both directions (N2-A + N2-B; replaces FULL O5+O6 per the Phase 10 amendment) [NOT STARTED]
 
-- **Goal:** Assemble both directions of the shared-w correctness statement over the extracted
-  data: soundness by per-σ closer application + negatives via coverage; completeness from the
-  honest model to a realized joint disjunct.
+*(Re-scoped 2026-07-07 by the Phase 10 gate: verdict N2. Content promoted from Appendix N2,
+blocks N2-A and N2-B. The FULL O5+O6 assembly this section previously specified is superseded;
+its multi-positive mathematics is deferred to the successor task named in the Phase 10 verdict
+record.)*
+
+- **Goal:** Close the correctness pair on the single-positive-sub fragment
+  (`∀ σ σ', qnf.2 σ = true → qnf.2 σ' = true → σ = σ'`): degenerate the joint carrier to the
+  single σ's bracket (N2-A), then run extraction + O4-at-minimum-size + both directions over
+  ONE σ against σ's OWN segments (N2-B) — the configuration where the Phase 9 crux vanishes
+  (no cross-σ slots) and the landed `_of_outer` closers already serve.
 - **Target file(s):** `SharedWitness.lean` (append).
 - **Tasks:**
-  - [ ] O5 soundness assembly: apply `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1025`)
-        per σ ∈ pos with the Phase 8/9 data (FM-lvl: never to `qnf.2` wholesale). Negatives
-        (`qnf.2 sub = false`) via D3 ONLY: `nf_eval_unique` (`NormalForm.lean:245`) +
-        `nf_characteristic_satisfies` (`:224`) + the joint off-fiber gate clause — NOT
-        `neg_2var_vec_ea` or any pointwise-existence form.
-  - [ ] O6 completeness: honest `w` + per-σ honest `x1_σ` → select the joint sorted
-        interleaving (`exists_permutation_cons_head`, `EANegationClosure.lean:752`) → realize
-        slots + refined segments (each σ's completeness-side zone bits hold on each refined
-        sub-interval — per-σ `_complete` mechanism, `SubBracket2V.lean:1465`, doc `:1448-1464`)
-        → assemble via `BracketFormula.splitAt_combine` (`VecEAFormula.lean:478`, the Lemma 5.1
-        combine direction). Exterior/boundary literals via the landed intro dischargers
-        (`NavigatedSpine.lean:336-383`); extraction side already uses `:257-308`.
-  - [ ] Cite Lemma 3.4 (md:85) at the disjunction closure, Lemma 5.1 (md:168-171) at the
-        combine step, Prop 3.5 (md:91-94) at navigation literals (G5).
-- **Postmortem constraints:** FM-lvl (per-σ application only); FM-merge-dual (the joint carrier
-  is a DISJUNCTION over interleavings — the honest model realizes its OWN sorted interleaving,
-  never all splices simultaneously); D3 binding (no Prop 4.2 routing for negatives).
-- **N1 trigger (from Phase 10, armed only on exterior overrun):** if the exterior halves of
-  `epL`/`epR` wiring overrun this dispatch, restrict to `interiorBoundaryOnly` (Appendix N1) and
-  record the narrowing — O4 already passed, so N1 is sufficient and N2 is not needed.
-- **Verification:** `lake build` exit 0; `lean_verify` axiom check; litmus grep + no-nesting
-  audit; `git diff --stat` touches only `SharedWitness.lean`.
-- **Estimated lines:** 210-370 (O5 60-120; O6 150-250). If the dispatch overruns without an
-  exterior cause, split O5/O6 into 11 + a continuation dispatch of the same phase before
-  invoking N1.
-- **Timing:** ~3 hours. **Depends on:** 10.
-- **Commit:** `task 321 phase 11: gate soundness + completeness assembly`
-- **Rollback/Contingency:** fix-forward; N1 narrowing per above; snapshot before any revert.
+  - [ ] **N2-A — Degenerate carrier + wrapper** (replaces the FULL O1 consumption): the joint
+        carrier degenerates to the single σ's `kvE_subBracket2V` (`SubBracket2V.lean:139`)
+        plus the atom layer and negatives. O1 collapses to a wrapper def
+        (`kvE2_sepBody_singleton` or a restriction of the landed `kvE2_sepBody` — reuse
+        Phase 7's def, which IS landed) with a non-vacuity analog; no interleaving
+        enumeration. Est. 40-80 lines.
+        Green-substep commit: `task 321 phase 11 (N2-A): singleton carrier wrapper`.
+  - [ ] **N2-B — Singleton extraction + O4-at-minimum-size + both directions**: O3 collapses
+        to the landed per-σ extraction machinery (`kvE_sub2V_bounded_anchor_of_outer`
+        `SubBracket2V.lean:1182`; `kvE_subBracket2V_sound_of_outer` `:1216` as the assembled
+        shape). O4 remains — but over ONE σ against σ's OWN segments (every left-list witness
+        is σ's own bit-true 1-type or a literal-covered self-zone; Phase 9's landed
+        `kvE2_sep_zone4_consistent` / `kvE2_sepHgate_offFiber` / `kvE2_sepHgate_innerNine` /
+        `kvE2_sepSegForm_excludes` are LIVE inputs here). Then O5/O6 both directions with
+        negatives via D3 coverage ONLY (`nf_eval_unique` `NormalForm.lean:245` +
+        `nf_characteristic_satisfies` `:224` + off-fiber gate clause — NOT `neg_2var_vec_ea`
+        or any pointwise-existence form). Est. 120-200 lines.
+        Green-substep commit:
+        `task 321 phase 11 (N2-B): singleton extraction + hgate + both directions`.
+  - [ ] Cite Lemma 3.4 (md:85) at the disjunction closure, Lemma 5.1 (md:168-171) at any
+        split/combine step, Prop 3.5 (md:91-94) at navigation literals (G5).
+- **Postmortem constraints:** all FULL-route constraints remain binding — FM-lvl (per-σ
+  application only), D3 (no Prop 4.2 routing for negatives), FM-vac, LITMUS, no-nesting,
+  purely additive; the narrowing re-admits NO constant-arity or merged-bracket construction.
+- **Verification:** `lake build` exit 0; `lean_verify` axiom check; non-vacuity analog for the
+  singleton wrapper; litmus grep + no-nesting audit; `git diff --stat` touches only
+  `SharedWitness.lean`.
+- **Estimated lines:** 160-280 (N2-A 40-80; N2-B 120-200).
+- **Timing:** ~2.5 hours. **Depends on:** 10.
+- **Commit:** the two green-substep commits above (N2-A, then N2-B).
+- **Rollback/Contingency:** fix-forward; snapshot via `git-snapshot.sh` before any revert. If
+  the singleton O4 residue nonetheless fails (it should not — no cross-σ slots exist), capture
+  an inert crux record in house style and return a FAIL to the orchestrator; no further
+  narrowing rung exists below N2.
 
-### Phase 12: `BracketCarrierCorrectVPrior` gate wrapper (O7) [NOT STARTED]
+### Phase 12: N2-C gate wrapper restricted to the singleton fragment (replaces the FULL O7 wrapper per the Phase 10 amendment) [NOT STARTED]
 
-- **Goal:** Discharge the gate itself:
+*(Re-scoped 2026-07-07 by the Phase 10 gate: verdict N2. Content promoted from Appendix N2,
+block N2-C. The unconditional `BracketCarrierCorrectVPrior` discharge this section previously
+specified is superseded on the multi-positive side; the gate biconditional is stated under the
+explicit single-positive-sub restriction hypothesis.)*
+
+- **Goal:** Discharge the gate restricted to the fragment:
   ```lean
-  theorem kvE2_sepBody_correct_prior {sig : MonadicSignature}
-      (atomMap : Formula → sig.preds)
-      (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-      (P : ExistProviders sig atomMap) :
-      BracketCarrierCorrectVPrior atomMap
-        (fun qnf => kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (P.existF 0) qnf)
+  theorem kvE2_sepBody_correct_singleton … :
+    ∀ qnf, (∀ σ σ', qnf.2 σ = true → qnf.2 σ' = true → σ = σ') → (gate biconditional for qnf)
   ```
-  against `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`) with `ExistProviders`
-  (`PriorInterface.lean:40-45`), consuming Phase 11 both directions.
+  with the gate biconditional shaped against `BracketCarrierCorrectVPrior`
+  (`PriorInterface.lean:60`) / `ExistProviders` (`PriorInterface.lean:40-45`), consuming
+  Phase 11 (N2-A/N2-B) both directions. The verdict record (Phase 13) states the fragment
+  scope explicitly.
 - **Target file(s):** `SharedWitness.lean` (append).
 - **Tasks:**
   - [ ] Depth-2 unfold via `nf_eval_nf` (`NormalForm.lean:198-207`): atom clause over `[w,x,t]`
-        + outer quant clause `∀ sub : NormalForm sig 1 4, (∃ x1, …) ↔ qnf.2 sub`.
+        + outer quant clause `∀ sub : NormalForm sig 1 4, (∃ x1, …) ↔ qnf.2 sub`, under the
+        singleton restriction hypothesis.
   - [ ] Atom-layer reconstruction at `[w,x,t]` from the `epL`/`epR`/`ptW` heads — **re-derived
         additively per D2** (`k1v_reconstruct_nf3` `CarrierK1V.lean:918` is private and stays
         untouched; `nf_eval_depth1_fold_iff` `CarrierKv.lean:466` available as the depth-1 fold
         reference). Order-bit recovery at the integration site.
   - [ ] Both directions stated against the real `nf_eval_nf M 2 3` (FM-vac: no `True`-shaped
-        placeholder). `BracketCarrierCorrectVPrior` consumed byte-identically.
+        placeholder; the restriction hypothesis is an honest antecedent, not a vacuity device —
+        non-vacuity analog from N2-A witnesses a qnf satisfying it).
   - [ ] Cite Prop 4.3 (md:104-110) at the depth ladder (G5).
 - **Postmortem constraints:** FM-vac; D2 (no de-privatization); purely additive.
-- **Verification:** `lake build` exit 0; `lean_verify kvE2_sepBody_correct_prior` = exactly
+- **Verification:** `lake build` exit 0; `lean_verify kvE2_sepBody_correct_singleton` = exactly
   `[propext, Classical.choice, Quot.sound]`; litmus grep + no-nesting audit; `git diff` shows
   no 331-landed module touched.
-- **Estimated lines:** 60-100 (+40-60 atom-layer re-derivation → 100-160 total band).
+- **Estimated lines:** 40-70 (+40-60 atom-layer re-derivation → 80-130 total band).
 - **Timing:** ~2 hours. **Depends on:** 11.
-- **Commit:** `task 321 phase 12: BracketCarrierCorrectVPrior gate wrapper (kvE2_sepBody_correct_prior)`
+- **Commit:** `task 321 phase 12 (N2-C): singleton gate wrapper`
 - **Rollback/Contingency:** fix-forward. If the atom-layer re-derivation stalls specifically on
   a fact only `k1v_reconstruct_nf3` provides, do NOT de-privatize unilaterally — surface it as
   a one-token sanctioned-edit request (331 precedent) in the phase output and stop.
 
 ### Phase 13: F4 `ℤ` adversarial LHS-FALSE + integrity sweep + GO verdict record (O8, preserved v5-Phase-15 consumer) [NOT STARTED]
+
+*(Phase 10 amendment note, 2026-07-07: scope = **N2**. The F4 counterexample is a single-σ
+discriminator, so the adversarial gate runs unchanged and remains meaningful against the N2
+fragment. The verdict record MUST state the single-positive-sub fragment scope explicitly and
+name the deferred multi-positive successor work; the gate wrapper consumed is Phase 12's
+`kvE2_sepBody_correct_singleton` in place of the FULL `kvE2_sepBody_correct_prior`. The
+GO/NO-GO line for task 309 Phase 13.4 + the KampPrior hook rewire is fragment-scoped per the
+Phase 10 verdict record's GOAL STATE re-statement.)*
 
 - **Goal:** Discharge the mandatory F4 `ℤ` adversarial counterexample against the closed gate,
   run the full integrity sweep, and land the final GO/NO-GO verdict record — the deliverable
@@ -590,6 +667,10 @@ crux-capture commit.
   not a formatting issue: reopen Phase 11 (completeness) — never edit the test to pass.
 
 ## RE-SCOPE Ladder (trigger conditions — administered by Phase 10)
+
+**BRANCH TAKEN (2026-07-07, Phase 10 verdict): N2** — O4 failed its one dedicated dispatch
+(see the verdict record under Phase 10). The N2 rung below is now the live plan for
+Phases 11-12; N1 and FULL are closed for this task.
 
 ```
 FULL (Phases 7-13 as written, 670-1,120 lines)
@@ -661,6 +742,10 @@ subject to every postmortem constraint, the LITMUS, and the F4 adversarial test 
 ---
 
 ## Appendix — Fallback N2: single-positive-sub fragment (promoted by Phase 10 amendment ONLY)
+
+**PROMOTED 2026-07-07 by the Phase 10 gate (verdict N2)**: the blocks below have been copied
+into Phases 11-12 as replacement content per the amendment procedure. This appendix is retained
+verbatim as the promotion source of record; the live phase text above governs.
 
 **Not scannable phases by design** (no `### Phase N:` headings): these blocks are promoted into
 Phases 11-12 replacement content by an explicit plan amendment if and only if the Phase 10 gate

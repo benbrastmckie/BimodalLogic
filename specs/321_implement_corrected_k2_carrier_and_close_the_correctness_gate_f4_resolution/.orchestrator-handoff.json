@@ -5,45 +5,36 @@
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate-hard", "lean-implementation-hard-agent"],
   "skeleton": false,
-  "o4_verdict": "FAIL",
-  "o4_verdict_evidence": "O4 CRUX RECORD at end of SharedWitness.lean (commit e79da7f94): captured goal 'sigma.2 (nf0_assemble kvE_sub2_zXU chi sigma.1) = true' at a cross-sigma slot point, five failed closers, channel-exhaustion argument",
-  "summary": "Phase 9 (O4 make-or-break) reached its verdict within its one dedicated dispatch: FAIL, honest and evidenced. Derivable core landed sorry-free and axiom-clean: kvE2_sep_zone4_consistent (PUBLIC nine-zone consistency, the N-point re-derivation of the private kvE_sub2V_zone_consistent template, concluding the named kvE2_sepInnerConsistentL), kvE2_sepHgate_offFiber and kvE2_sepHgate_innerNine (gate clauses (iii)/(iv) surfaced as hgate conjunct dischargers), kvE2_sepSegForm_excludes (the Cor 5.4 segment exclusion channel). Together with the kvE2_sepLit biconditional endpoint/witness literals (six at/exterior zones, both directions) and sigma's own slot channel, five of the six hgate conjuncts (SubBracket2V.lean:1868-1882) are determined at the extracted anchor. The forward-zone conjunct (:1873-1877) is UNDERDETERMINED at cross-sigma slot points: for distinct left-interior positives sigma != tau with tau's zXU-chi slot interleaved below sigma's fresh slot (cross-sigma order is free in kvE2_sepSlotLe), the goal 'sigma.2 (nf0_assemble kvE_sub2_zXU chi sigma.1) = true' has NO carrier channel - all four kvE2_sepGate clauses conclude '= false', the segment contrapositive fires only on open intervals (v is a bracket point), the literals never cover zXU/zUW/zWT. Probed with the FULL hypothesis superset (realized disjunct h itself + gate + all Phase-8-extracted facts); five failed closers captured lean_goal-verbatim in the inert O4 CRUX RECORD (task-327 evidence style) plus channel exhaustion and the no-additive-repair analysis (conjunctive cross-sigma gate clause breaks honest derivability/non-vacuity FM-vac; disjunctive clause is arrangement-blind; faithful repair = bit-compatibility filtering of kvE2_sepArrL/R, a Phase-7 carrier re-definition owned by the Phase 10 gate). Second independent obstruction to the forall-anchor form: 'a < w' unprovable (right-region segments never exclude the charK E[Sigma]-atom). No sorry, no chain splicing (FM-merge), no x1 < e_i literal (LITMUS), no placeholder committed; probe removed before commit. Full lake build green (1720 jobs); purely additive (SharedWitness.lean + plan only). Phase 10 routing input per the plan's own table: FAIL on O4 -> N2 (single-positive-sub fragment; cross-sigma residue vanishes; the kvE_subBracket2V_sound_of_outer configuration already serves it).",
+  "gate_verdict": "N2",
+  "gate_verdict_rationale": "O4 failed its one dedicated dispatch (forward-zone hgate conjunct underdetermined at cross-sigma slot points, evidenced in the inert O4 CRUX RECORD, SharedWitness.lean:1562); the plan's routing table prescribes FAIL on O4 -> N2, and N1/FULL are disqualified (N1 requires an O4 PASS; FULL requires all PASS criteria).",
+  "summary": "Phase 10 (DECISION GATE) complete. Verdict: N2 (single-positive-sub fragment), independently re-verified against the plan's PASS/FAIL table from the Phase 8 PASS + Phase 9 FAIL evidence rather than rubber-stamped: PASS criterion 2 fails on the forward-zone conjunct with no carrier channel (five lean_goal-verbatim failed closers, channel exhaustion, no-additive-repair analysis), matching the plan's FAIL condition verbatim. Plan amendment applied per the phase's own procedure: dated VERDICT RECORD landed under the Phase 10 heading (marked [COMPLETED]); Phases 11-12 replaced by the promoted Appendix N2 content (N2-A/N2-B -> Phase 11, est. 160-280 lines; N2-C kvE2_sepBody_correct_singleton -> Phase 12, est. 80-130 lines), both [NOT STARTED]; Phase 13 annotated with the N2 fragment scope (F4 runs unchanged, single-sigma discriminator); RE-SCOPE ladder marked BRANCH TAKEN: N2; appendix marked PROMOTED. Deferred fragment recorded honestly in the plan and in state.json's task description: the multi-positive-sub case (faithful repair = bit-compatibility filtering of kvE2_sepArrL/R, a non-additive Phase-7 carrier re-definition) is deferred to a successor task; the GO/NO-GO deliverable for task 309 Phase 13.4 + KampPrior.lean:351 is now fragment-scoped. generate-todo.sh re-run. No Lean code written (per phase spec: 0 Lean lines). Phase 9's four landed lemmas remain live N2 inputs.",
   "phases_total": 13,
-  "phases_completed": 9,
+  "phases_completed": 10,
   "artifacts": [
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-      "type": "lean-module",
-      "summary": "Phase 9 O4 section appended: kvE2_sep_zone4_consistent, kvE2_sepHgate_offFiber, kvE2_sepHgate_innerNine, kvE2_sepSegForm_excludes (all public, sorry-free, axiom-clean) + the inert O4 CRUX RECORD (captured goal, five failed closers, channel exhaustion, N2 consequence). Now 1,614 lines, 0 sorries."
-    },
-    {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-9-handoff-20260707.md",
-      "type": "handoff",
-      "summary": "Phase 9 handoff: FAIL evidence package for the Phase 10 decision gate (captured goal, closers, channel exhaustion, N2 dissolution argument, landed API table)"
-    },
-    {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/09_phase9-o4-verdict-summary.md",
-      "type": "summary",
-      "summary": "Phase 9 implementation summary with verification table and the O4 FAIL verdict"
-    },
     {
       "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md",
       "type": "plan",
-      "summary": "Phase 9 marked [COMPLETED] with the dated O4 FAIL verdict note and per-task deviation annotations"
+      "summary": "Amended: Phase 10 [COMPLETED] with dated N2 verdict record; Phases 11-12 rewritten from promoted Appendix N2 (N2-A/N2-B, N2-C); Phase 13 N2-scope note; ladder + appendix annotations"
+    },
+    {
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-10-handoff-20260707.md",
+      "type": "handoff",
+      "summary": "Phase 10 handoff: verdict, rationale, durable-record inventory, and the re-scoped Phase 11-13 contract for the next dispatch"
+    },
+    {
+      "path": "specs/state.json",
+      "type": "state",
+      "summary": "Task 321 description appended with the SCOPE AMENDMENT paragraph (honest GOAL-STATE re-statement for the N2 fragment)"
+    },
+    {
+      "path": "specs/TODO.md",
+      "type": "todo",
+      "summary": "Regenerated via generate-todo.sh after the state edit"
     }
   ],
   "blockers": [],
-  "continuation_path": null,
+  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-10-handoff-20260707.md",
   "continuation_context": null,
-  "next_action_hint": "Dispatch Phase 10 (DECISION GATE): apply the plan's FAIL-on-O4 -> N2 routing - write the dated verdict record under the Phase 10 heading (cite commits 2c55cf3f1/8c22e01c5 phase 8, 7488001ec/e79da7f94 phase 9, and the captured goal from the O4 CRUX RECORD), promote Appendix N2's phase sequence (N2-A/N2-B/N2-C) as replacement content for Phases 11-12, re-run generate-todo.sh after the state edit.",
-  "sorry_inventory": [],
-  "verification": {
-    "sorry_count": 0,
-    "vacuous_count": 0,
-    "axiom_count_delta": 0,
-    "build_passed": true,
-    "litmus_hits": 0,
-    "diff_scope": "SharedWitness.lean + plan file only (additive)"
-  },
-  "commits": ["7488001ec", "e79da7f94"]
+  "next_action_hint": "Dispatch Phase 11 (re-scoped N2-A + N2-B): singleton carrier wrapper over the LANDED kvE2_sepBody (reuse Phase 7's def) + non-vacuity analog, then singleton extraction (kvE_sub2V_bounded_anchor_of_outer :1182 / kvE_subBracket2V_sound_of_outer :1216) + O4-at-minimum-size + both directions with negatives via D3 coverage only; append-only to SharedWitness.lean; two green-substep commits (N2-A, N2-B). Phase 9's four landed lemmas are live inputs. All binding constraints unchanged (navigated/witness-growing invariant, LITMUS, additive-only, DO-NOT-EDIT byte-identical, axiom-clean, no sorry on live paths).",
+  "sorry_inventory": []
 }
