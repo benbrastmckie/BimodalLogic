@@ -1,7 +1,7 @@
 # Implementation Plan: Task #334 — Faithful re-grounding of the NfMultiAnchorBridge carrier onto Rabinovich's proof architecture
 
 - **Task**: 334 - Joint slot sorted realization / nonvacuity carrier switch (faithful re-grounding)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Date**: 2026-07-08
 - **Effort**: 14-20 hours (9 phases; spike-gated at Phase 1; ~700-1050 net-new Lean lines)
 - **Dependencies**: None to start. Downstream: the outer-gate assembly (`kvE2_body` / `bracketEndChar_kvE2`, task 321 v4) is a SEPARATE obligation — see Phase 9 and Risk R3; it likely needs its own task.
@@ -154,18 +154,18 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 1: MAKE-OR-BREAK SPIKE — faithful architecture composes on a concrete 2-owner coincidence [NOT STARTED]
+### Phase 1: MAKE-OR-BREAK SPIKE — faithful architecture composes on a concrete 2-owner coincidence [COMPLETED]
 
 **Goal**: Prove, end-to-end on ONE concrete 2-owner arrangement, that an order-type-disjunction validity predicate reading the CLOSED `zAtX1L` bit in the coincidence disjunct makes non-vacuity TRUE for the exact `qnf` the additive filter made FALSE. This is the whole plan's premise; it must be settled before any rebuild.
 
 **Paper citation**: Lemma 3.2(1) (md:77) — coincidence is a disjunct; §5 meet-type shared point (md:168-173).
 
 **Tasks**:
-- [ ] Instantiate the handoff-05 counterexample as a concrete `qnf` with two positive left-interior owners σ, τ: σ realized at `[x1_σ,w,x,t]` with χ at x1_σ but NO χ-witness in `(x,x1_σ)` or `(x1_σ,w)` (so `σ.2(zXU χ)=false`, `σ.2(zUW χ)=false`, `σ.2(zAtX1L χ)=true`); τ realized at `[x1_τ,w,x,t]` with `x1_σ < x1_τ` and τ realizing χ at exactly `x1_σ`.
-- [ ] Define a MINIMAL order-type-disjunction validity predicate for this 2-owner set (anchor set `{x1_σ, x1_τ, w}`) enumerating the relevant order-types INCLUDING the tie `x1_σ = x1_τ` (coincidence disjunct).
-- [ ] Route the coincidence disjunct's validity through the CLOSED `zAtX1L` bit fed by the preserved `kvE2_sepCoincidentAnchor_discharge` (do NOT route through the open `zXU`/`zUW` bits).
-- [ ] Prove the coincidence disjunct is non-empty for this `qnf` (i.e. a real arrangement is admitted) — the exact obligation `kvE2_sepBody_nonvacuous` failed at.
-- [ ] Run `#print axioms` / `lean_verify` on the spike lemma; confirm `[propext, Classical.choice, Quot.sound]`, NO `sorryAx`.
+- [x] Instantiate the handoff-05 counterexample *(completed — altered: modeled via the realization-parametrized 2-owner arrangement matching `kvE2_sepCoincidentAnchor_discharge`'s hypotheses (σ = anchor-owning left-interior sub realized at `[x1,w,x,t]`; χ = foreign owner τ's base type realized AT `x1`; open bits `zXU`/`zUW` pinned false), rather than a hardcoded finite `sig`/`M`/`qnf` fixture. Rationale: the parametrized realization is a robust, general encoding of the exact counterexample that exercises the REAL preserved brick, avoiding fixture-decidability noise unrelated to the make-or-break.)*
+- [x] Define a MINIMAL order-type-disjunction validity predicate for this 2-owner set *(completed — `KvE2SepSpikeOrderType` = {strictBefore, strictAfter, coincident}; `kvE2_sepSpikeOrderTypes` list includes the tie disjunct; `kvE2_sepSpikeArr := orderTypes.filter (kvE2_sepSpikeDisjValid σ χ))*
+- [x] Route the coincidence disjunct's validity through the CLOSED `zAtX1L` bit *(completed — `kvE2_sepSpikeDisjValid .coincident = kvE2_sepBits σ zAtX1L χ`; strict disjuncts read `zXU`/`zUW`; no conflation)*
+- [x] Prove the coincidence disjunct is non-empty for this `qnf` *(completed — `kvE2_sepSpike_twoOwner_coincidence_nonvacuous : kvE2_sepSpikeArr σ χ ≠ []`, closing via `kvE2_sepCoincidentAnchor_discharge`. Companion `kvE2_sepSpike_additiveOpenOnly_vacuous` proves the open-only filter is `[]` on the same scenario — the plan-02 RED baseline dissolved.)*
+- [x] Run `lean_verify` on the spike lemma *(completed — `[propext, Classical.choice, Quot.sound]`, NO `sorryAx`; contrast lemma `[propext, Quot.sound]`)*
 
 **Acceptance criteria (GATE)**: spike lemma compiles green; sorry-free; axiom-clean. If ANY of these fail: STOP, do not proceed to Phase 2; write the obstruction to the phase summary and handoff (Risk R0 fallback).
 

@@ -2224,4 +2224,108 @@ theorem kvE2_sepBody_singleton_complete_left {sig : MonadicSignature}
       M atomMap x t := by
   sorry
 
+/-! ## Task 334 Phase 1 — MAKE-OR-BREAK SPIKE: faithful order-type disjunction composes
+
+The plan-02 additive open-zone filter (`kvE2_sepValid`/`kvE2_sepArrL/R`) was proven FALSE on a
+concrete 2-owner coincidence (handoff 05): with a foreign owner τ's χ-witness coinciding EXACTLY
+with σ's fresh anchor `x1_σ`, the extractor's reverse channels force σ's OPEN-zone bits
+`kvE2_sepBits σ zXU χ = false` and `kvE2_sepBits σ zUW χ = false`, while the CLOSED-zone bit
+`kvE2_sepBits σ zAtX1L χ = true` (via `kvE2_sepCoincidentAnchor_discharge`). The additive filter
+reads ONLY the open bits, so `kvE2_sepArrL = []` and `kvE2_sepBody_nonvacuous` is FALSE.
+
+This spike ABANDONS the additive-filter framing and builds the faithful Rabinovich Lemma 3.2(1)
+form (md:77): an order-type disjunction over the merged anchor set, where EACH disjunct reads the
+zone bit appropriate to ITS arrangement — strict disjuncts the OPEN `zXU`/`zUW` bits, the
+coincidence disjunct the CLOSED `zAtX1L` bit (§5 meet-typed shared point, md:168-173). The
+coincidence is a first-class DISJUNCT admitted by the closed channel, NOT a tie refuted by an
+open-bit inequality. This is per-order-type validity, NOT handoff-05's rejected "Option A" (a
+single disjunctive open∨closed filter over the same flat union). -/
+
+/-- Order-type index for the 2-owner spike: the relative placement of the foreign owner τ's
+    χ-witness against σ's fresh anchor `x1_σ` on the merged anchor set `{x1_σ, x1_τ, w}` (τ's
+    coincident witness identifies `x1_τ = x1_σ` in the `coincident` disjunct). Ties are a
+    first-class order-type (Lemma 3.2(1), md:77; §5 coincidence, md:168-173). -/
+inductive KvE2SepSpikeOrderType where
+  /-- τ's χ-witness STRICTLY BELOW `x1_σ` (`x < x1_τ < x1_σ`): reads σ's OPEN `zXU` bit. -/
+  | strictBefore
+  /-- τ's χ-witness STRICTLY ABOVE `x1_σ` (`x1_σ < x1_τ < w`): reads σ's OPEN `zUW` bit. -/
+  | strictAfter
+  /-- τ's χ-witness COINCIDENT at `x1_σ` (`x1_τ = x1_σ`): reads σ's CLOSED `zAtX1L` bit. -/
+  | coincident
+deriving DecidableEq
+
+/-- The 2-owner order-type disjunction list (Lemma 3.2(1) disjuncts over the merged anchor set,
+    md:77): the coincidence order-type is present as a first-class disjunct, unlike the additive
+    filter which enumerates only strict placements. -/
+def kvE2_sepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
+  [.strictBefore, .strictAfter, .coincident]
+
+/-- **Per-order-type validity** (the faithful replacement of the additive `kvE2_sepValid`): each
+    disjunct reads the fold bit appropriate to ITS arrangement. Strict disjuncts consume σ's OPEN
+    `zXU`/`zUW` bits (the surviving task-333 compat-leaf reads, `kvE2_sepCompat_lX1_eq`/`_after_eq`,
+    SW:409/422); the coincidence disjunct consumes σ's CLOSED `zAtX1L` bit fed by
+    `kvE2_sepCoincidentAnchor_discharge` (the §5 meet channel). No disjunct conflates open and
+    closed keys — the crux the additive filter structurally could not express (handoff 05). -/
+def kvE2_sepSpikeDisjValid {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) :
+    KvE2SepSpikeOrderType → Bool
+  | .strictBefore => kvE2_sepBits σ kvE_sub2_zXU χ
+  | .strictAfter  => kvE2_sepBits σ kvE_sub2_zUW χ
+  | .coincident   => kvE2_sepBits σ kvE2_sep_zAtX1L χ
+
+/-- The filtered valid order-type disjuncts (the faithful analog of `kvE2_sepArrL`, per-order-type
+    rather than an additive filter over a flat slot union). -/
+def kvE2_sepSpikeArr {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : List KvE2SepSpikeOrderType :=
+  kvE2_sepSpikeOrderTypes.filter (kvE2_sepSpikeDisjValid σ χ)
+
+/-- **CONTRAST — the plan-02 RED baseline.** The additive OPEN-zone-only filter (reading solely
+    the `zXU`/`zUW` bits, never the closed one) is EMPTY on the exact handoff-05 scenario. This is
+    precisely the obligation `kvE2_sepBody_nonvacuous` made FALSE: no strict disjunct survives when
+    the coincidence forces both open bits to `false`. -/
+theorem kvE2_sepSpike_additiveOpenOnly_vacuous {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
+    (hzXU : kvE2_sepBits σ kvE_sub2_zXU χ = false)
+    (hzUW : kvE2_sepBits σ kvE_sub2_zUW χ = false) :
+    ([KvE2SepSpikeOrderType.strictBefore, KvE2SepSpikeOrderType.strictAfter].filter
+      (kvE2_sepSpikeDisjValid σ χ)) = [] := by
+  have h1 : kvE2_sepSpikeDisjValid σ χ KvE2SepSpikeOrderType.strictBefore = false := hzXU
+  have h2 : kvE2_sepSpikeDisjValid σ χ KvE2SepSpikeOrderType.strictAfter = false := hzUW
+  simp [List.filter_cons, h1, h2]
+
+/-- **MAKE-OR-BREAK SPIKE (task 334 Phase 1 GATE).** On the exact 2-owner coincidence the additive
+    filter made FALSE (handoff 05) — σ a left-interior owner realized at `[x1,w,x,t]` with the
+    foreign owner τ's base type `χ` realized AT σ's fresh anchor `x1` and NO χ-witness strictly in
+    `(x,x1)` or `(x1,w)` (so σ's OPEN bits are `false`) — the faithful order-type-disjunction
+    filter is NON-VACUOUS: the coincidence disjunct is admitted via the CLOSED `zAtX1L` bit fed by
+    the preserved, axiom-clean `kvE2_sepCoincidentAnchor_discharge`.
+
+    This proves the faithful architecture COMPOSES on the make-or-break obligation: the closed
+    channel ROUTES into per-order-type validity (Lemma 3.2(1) coincidence disjunct, md:77;
+    §5 meet-type, md:168-173), where the additive open-only filter could not (type-mismatch,
+    handoff 05). Faithfulness invariants exercised: F2 (non-vacuity, coincidence direction),
+    F5 (closed vs open key discrimination — the crux), F1 (QF types via the preserved brick). -/
+theorem kvE2_sepSpike_twoOwner_coincidence_nonvacuous {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (χ : NormalForm sig 0 1)
+    (hp : nf_eval_nf M 0 1 (fun _ => x1) χ)
+    -- The handoff-05 OPEN-zone FALSE pins (no χ-witness strictly in `(x,x1)` or `(x1,w)`); kept as
+    -- scenario fidelity — non-vacuity of the FULL faithful arr needs only the coincidence disjunct,
+    -- while `kvE2_sepSpike_additiveOpenOnly_vacuous` shows these make the open-only filter empty.
+    (_hzXU : kvE2_sepBits σ kvE_sub2_zXU χ = false)
+    (_hzUW : kvE2_sepBits σ kvE_sub2_zUW χ = false) :
+    kvE2_sepSpikeArr σ χ ≠ [] := by
+  -- The CLOSED-zone bit is discharged TRUE by the preserved axiom-clean coincidence brick.
+  have hclosed : kvE2_sepBits σ kvE2_sep_zAtX1L χ = true :=
+    kvE2_sepCoincidentAnchor_discharge σ M x1 w x t hxx1 hx1w hwt hσ χ hp
+  -- The coincidence disjunct is therefore VALID and present in the filtered order-type list,
+  -- so the faithful arrangement set is non-empty — the exact obligation the additive filter failed.
+  apply List.ne_nil_of_mem (a := KvE2SepSpikeOrderType.coincident)
+  unfold kvE2_sepSpikeArr
+  rw [List.mem_filter]
+  refine ⟨by decide, ?_⟩
+  simpa [kvE2_sepSpikeDisjValid] using hclosed
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
