@@ -1,7 +1,7 @@
 # Implementation Plan: Task #332 — Boneyard Sweep of the Refuted Merged-Bracket Quarantine
 
 - **Task**: 332 - Boneyard sweep of quarantined/refuted merged-bracket infrastructure
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: Task 321 (verdict recorded; satisfied)
 - **Research Inputs**: reports/01_boneyard-sweep-inventory.md

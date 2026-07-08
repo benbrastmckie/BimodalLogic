@@ -4,7 +4,7 @@ next_project_number: 334
 
 # TODO
 
-Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 332, 333 (non-fatal)
+Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-08. Generated from state.json dependency graph.*
@@ -13,8 +13,8 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 332, 
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,332 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307,333 | 189,192,196,309,332 | completeness, automation |
+| 2 | 192,196,231,292,293,294,298,309,333 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
 | 6 | 95,299 | 303 | completeness |
@@ -111,8 +111,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 332, 
 
 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-  └─ 332 [NOT STARTED] — Post-321 Boneyard sweep of quarantined/refuted NfMultiAnchorBridg
-    └─ 333 [NOT STARTED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+  └─ 333 [NOT STARTED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
@@ -128,7 +127,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 332, 
 ---
 
 ### 332. Boneyard sweep quarantined merged bracket infrastructure
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: Task 321
 
