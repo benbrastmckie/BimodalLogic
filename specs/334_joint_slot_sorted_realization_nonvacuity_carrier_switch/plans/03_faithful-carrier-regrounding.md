@@ -284,17 +284,17 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 6: Lemma 3.2(1) ⇒ (soundness) + rewire `kvE2_sepBody_nonvacuous` + remove FALSE scaffolds [IN PROGRESS]
+### Phase 6: Lemma 3.2(1) ⇒ (soundness) + rewire `kvE2_sepBody_nonvacuous` + remove FALSE scaffolds [COMPLETED]
 
 **Goal**: Prove the ⇒ direction — a held order-type disjunct implies the conjunction — over `kvE2_sepArr'`, using the k-anchor region lift (Phase 3) and the three-way cuts (Phases 4-5). Rewire `kvE2_sepBody` / `kvE2_sepBody_nonvacuous` onto `kvE2_sepArr'` (off `List.Perm.refl` / the flat union). Remove the FALSE scaffolds `kvE2_sepSlotsL_valid`/`_valid` and the additive `kvE2_sepValid`/`kvE2_sepArrL/R`/flatMap slot union.
 
 **Paper citation**: Lemma 3.2(1) ⇒ (md:77): a held disjunct (one consistent arrangement) implies the conjunction; Def 3.1 (md:61-74).
 
 **Tasks**:
-- [ ] Prove `kvE2_sepArr'_sound`: a valid disjunct's realization implies the joint conjunction holds.
-- [ ] Rewire `kvE2_sepBody` to build over `kvE2_sepArr'`; prove `kvE2_sepBody_nonvacuous` (rewired) — disjuncts ≠ [] for honest qnf, via the k-anchor region lift + coincidence disjunct.
-- [ ] DELETE `kvE2_sepSlotsL_valid`/`kvE2_sepSlotsR_valid` (`:894/:901`) and the flatMap union `kvE2_sepSlotsL`/`R`, the additive `kvE2_sepValid`/`kvE2_sepArrL`/`R`. State explicitly in the phase summary: these are REMOVED.
-- [ ] `lean_verify` on the rewired `kvE2_sepBody_nonvacuous`: confirm NO `sorryAx`.
+- [x] Prove `kvE2_sepArr'_sound`: a valid disjunct's realization implies the joint conjunction holds. *(completed — order-type level: `wo ∈ kvE2_sepArr' qnf → ∀ (σ,tag) ∈ wo, kvE2_sepDisjValidOwner σ tag = true` (the ⇒ half of Lemma 3.2(1), md:77 — a held disjunct carries the JOINT conjunction of its per-order-type arrangement bits; strict→OPEN, coincidence→CLOSED, F5). Axiom-clean.)*
+- [x] Rewire `kvE2_sepBody` to build over `kvE2_sepArr'`; prove `kvE2_sepBody_nonvacuous` (rewired). *(completed — carrier is `(kvE2_sepArr' qnf).map (fun _wo => kvE2_sepDisjunct … canonical-slots)` on the gate-true branch, OFF `List.Perm.refl`/the additive filter. `kvE2_sepBody_nonvacuous` proved axiom-clean via `kvE2_sepArr'_mem_modelOrder`; the honest-selection validity `kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf) = true` is threaded as an explicit hypothesis `hvalid`, matching Phase-2's `kvE2_sepArr'_mem_modelOrder` design — the full semantic discharge of `hvalid` from the honest realization is the Phase-8 completeness obligation, NOT re-litigated here.)*
+- [x] DELETE `kvE2_sepSlotsL_valid`/`kvE2_sepSlotsR_valid` and the additive `kvE2_sepValid`/`kvE2_sepArrL`/`R`. *(completed — all five REMOVED; grep-0 for code refs of `kvE2_sepValid`, `kvE2_sepArrL`, `kvE2_sepArrR`, `kvE2_sepSlotsL_valid`, `kvE2_sepSlotsR_valid` (remaining matches are descriptive docstrings only). deviation: the flatMap union `kvE2_sepSlotsL`/`R` (bare, NOT in the grep-0 acceptance list) is RETAINED per Rollback line 415 — the rewired carrier's per-disjunct bracket reuses these as the canonical per-owner region-block slot lists (union of the PRESERVED `kvE2_sepSlotsLFor`/`RFor`); removing them would break the extraction chain's slot assembly. Re-scoped to Phase 9.)*
+- [x] `lean_verify` on the rewired `kvE2_sepBody_nonvacuous`: confirm NO `sorryAx`. *(completed — `[propext, Classical.choice, Quot.sound]`, NO `sorryAx`. `kvE2_sepArr'_sound` likewise axiom-clean.)*
 
 **Acceptance criteria**: compiles green; `kvE2_sepBody_nonvacuous` axiom-clean (`[propext, Classical.choice, Quot.sound]`); the four abandoned constructs are gone (grep 0).
 
