@@ -1,31 +1,54 @@
 {
-  "status": "blocked",
+  "status": "partial",
   "skeleton": false,
-  "summary": "Task 321 Phases 9-10 (Stage C soundness, one `bracketEndChar_kvE2_sound` commit) dispatch (sess_1783452940_63339e, --hard --lit). Phase 9 reduction recipe (v5 lines 383-399) applied VERBATIM and VERIFIED GREEN via lean_goal: `bracketEndChar_kvE2_two_eq` rewrite + `simp only [kvE2_body, VVecEA2.holds]` + gate split (isFalse closes, isTrue keeps `hg`) + flatMap/map destructure yields `hbr` DEFINITIONALLY in the `kvE_subBracket2V_sound_of_outer` `h`-shape (l:=lL, pins:=pinSlots, charK:=fun χ => P.existF 0 χ); `k1v_bracket_extract` gives `w`; `refine ⟨w,?_⟩; refine ⟨?_,?_⟩` splits into atom layer (dischargeable via k1v_reconstruct_nf3) + the depth-1-subs quant layer. Task-326's closer `kvE_subBracket2V_sound_of_outer` (:7910) DOES consume `hbr` for the INTERIOR joint crux (reverse-Cor-5.4 wall resolved as intended). BUT a NEW, upstream structural obstruction blocks the full assembly: the outer quant layer `∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ qnf.2 sub = true` has NO landed fold engine over depth-1 subs (only depth-0 `nf_quant_layer_fold_iff`/`_k1_gate` exist), and the 5 non-interior consistent zones store only the arity-1 fresh projection `charK (nfk_projFresh σ)` from which a full arity-4 depth-1 sub cannot be reconstructed. This is the DEFERRED general-j=1 fold-engine lift (kvE2_body doc :5602-5607). Working tree kept byte-identical to commit 8448ea135 (no sorry, no partial scaffolding committed).",
-  "phases_completed": 8,
-  "phases_total": 15,
+  "summary": "Task 321 v6 REDESIGN: Phases 1-6 landed sorry-free, additive, axiom-clean navigated-route infrastructure (baseline+quarantine; navigated spine kvE_fold_navigated; Prop 4.3 re-flatten machinery disjList_holds/reflatten_prop43; structural fold-collapse holds_flatMap_map; 5+5 non-interior soundness/completeness dischargers). Phase 7 (k=2 gate close) is BLOCKED on a machine-precise missing engine: kvE2_body's per-arrangement disjunct is a single MERGED bracket whose shared epL/epR/segL/segR encode UNION zone content, not the per-sub sigma.2(nf0_assemble ...) bits that the task-326 closer's hgate requires; those closers operate on the STANDALONE kvE_subBracket2V sigma (not wired into kvE2_body). This is NOT a NO-GO (route is structurally capable; per-sub bits are recoverable) — the gap is one missing decomposition lemma bracketFromLists_slot_decompose feeding a ~200-500 line kvE2_outer_fold engine. Phase 8 (F4 adversarial gate) cannot run without a closed gate. No sorry on any live path; build green; all do-not-edit assets byte-identical; additive-only (422/0).",
+  "phases_completed": 6,
+  "phases_total": 8,
   "sorry_inventory": [],
   "blockers": [
     {
-      "phase": 10,
-      "target": "bracketEndChar_kvE2_sound (Stage C soundness closure — full BracketCarrierCorrectVPrior soundness half)",
-      "exact_goal": "quant layer conjunct: ∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ => t))) sub) ↔ qnf.2 sub = true",
-      "why_structural": "No landed fold engine reconstructs the outer depth-2 quant layer over DEPTH-1 subs. Landed engines (nf_quant_layer_fold_iff NfEFold:391, nf_quant_layer_fold_k1_gate NfEFold:525) are depth-0-subs only (reconstruct via nf0_assemble bijection). kvE_subBracket2V_sound_of_outer (:7910) covers ONLY the 2 interior zones (posIn zXW / posIn zWT) via the kvE_subChain2V joint channel; the 5 non-interior consistent zones (zPastX/zAtX/zAtW/zAtT/zFutT, all gate-permitted positive per kvE_consistent :5157) store only the arity-1 fresh projection charK(nfk_projFresh σ), insufficient to reconstruct or exclude a full arity-4 depth-1 sub. (zone σ, nfk_projFresh σ) does not determine σ.",
-      "task_326_status": "CONSUMED SUCCESSFULLY for the interior joint crux — resolved the reverse-Cor-5.4 x1<t wall as designed. It is NECESSARY but NOT SUFFICIENT for the full soundness half.",
-      "what_is_needed": "A NEW general-j=1 quant-layer fold engine: the arity-4/depth-1 analog of nf_quant_layer_fold_k1_gate reconstructing the outer quant layer over depth-1 subs across ALL 7 consistent zones from the carrier's per-zone channels. This is a plan-level scope gap (adjacent to Stage D fold work), NOT inside Phase 10's reuse-landed budget. Recommend /spawn a prerequisite task for this engine, then /revise 321 (v6) to insert a phase before Phase 10, then re-dispatch."
+      "phase": 7,
+      "target": "BracketCarrierCorrectVPrior atomMap (bracketEndChar_kvE2 atomMap h_surj P) — k=2 gate, both directions",
+      "root_cause": "kvE2_body's per-arrangement disjunct is a single merged bracket bracketFromLists (slotsFor lL) ptW (slotsFor lR) segL segR where slotsFor concatenates every positive sub's F-chain into one point-type list; shared epL/epR/segL/segR/ptW encode UNION content (List.filter qnf.2).any (fun s' => nfk_projFresh s' = chi), NOT the per-sub sigma.2 (nf0_assemble zs chi sigma.1) bits that hgate requires. Landed task-326 closers (kvE_subBracket2V_correctness_pair/_sound_of_outer, :8549/:7910) operate on the standalone per-sub carrier kvE_subBracket2V sigma (explicitly NOT wired into kvE2_body, :8546-8547).",
+      "not_a_nogo": "The navigated route is structurally CAPABLE — correctness_pair (:8549) carries arity-4 depth-1 content via zoneHolds M [x1,w,x,t] zs v over ZoneSpec 4 (the exact joint content task-327 lacked); per-sub bits are recoverable since sigma's fChainPred is built from bits zs chi = sigma.2 (nf0_assemble zs chi sigma.1) (:6960). The gap is a missing lemma, not an impossibility. Distinct from the task-327 constant-arity NO-GO.",
+      "what_is_needed": "Land bracketFromLists_slot_decompose (from (bracketFromLists (A ++ chain ++ B) ptW R segL segR).holds x t, isolate the individual sub sigma's kvE_subChain2V fChainPred fragment realized at its own witness slot, independent of co-spliced slots A,B), then compose with task-326 fChainPred readers to build kvE2_outer_fold (kvE2_body.holds <-> atomLayer AND forall sigma, (exists x1, nf_eval M 1 4 [x1,w,x,t] sigma) <-> qnf.2 sigma), then close the Phase-7 gate both directions. Est ~200-500 lines; dedicated follow-on task.",
+      "captured_crux": "hcarrier : exists vea in (dite (kvE_gate qnf.1 qnf.2) (S_L.permutations.flatMap fun lL => S_R.permutations.map fun lR => <_, {endpointLeft:=epL; endpointRight:=epR; bracket := bracketFromLists (slotsFor lL) ptW (slotsFor lR) segL segR}>) (fun _ => {disjuncts:=[]})).disjuncts, VecEA2.holds M atomMap vea.snd x t;  sigma : NormalForm sig 1 4, hsigma : qnf.2 sigma = true  |- exists x1 w, nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ => t))) sigma"
     }
   ],
-  "verified_green_progress": {
-    "phase_9_reduction": "Machine-verified via lean_goal on uncommitted WIP; recipe reusable VERBATIM (documented in plan v5 Phase 9 PROGRESS block). hbr in sound_of_outer h-shape with no show/change needed. Not committed (proof-side half-proof, no independent green terminus; removed from tree to keep build green).",
-    "closer_consumes_hbr": "kvE_subBracket2V_sound_of_outer type-checks against hbr for interior σ ∈ lL with pins := pinSlots (pin-membership shape ⟨charK (nfk_projFresh σ)⟩ ∈ pinSlots σ confirmed)."
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "new_axiom_count": 0,
+    "build_passed": true,
+    "additive_only": true,
+    "additive_numstat": "422 0",
+    "do_not_edit_byte_identical": true,
+    "litmus_clean": true,
+    "axiom_clean": "[propext, Classical.choice, Quot.sound] on all new symbols per lean_verify"
   },
+  "landed_objects": [
+    "kvE_fold_navigated (Phase 2, spine name over landed correctness_pair)",
+    "VVecEA2.disjList + disjList_holds (Phase 3, finite-family disjunction collapse)",
+    "reflatten_neg_step (Phase 3, consumes Prop 4.2 neg_2var_vec_ea)",
+    "reflatten_prop43 (Phase 3, Prop 4.3 re-flatten composition)",
+    "VVecEA2.holds_flatMap_map (Phase 4, arrangement-product structural collapse)",
+    "kvE_nonInterior_{zPastX,zFutT,zAtX,zAtT,zAtW}_sound (Phase 5)",
+    "kvE_nonInterior_{zPastX,zFutT,zAtX,zAtT,zAtW}_complete (Phase 6)"
+  ],
+  "continuation_path": "spawn a dedicated follow-on task: bracketFromLists_slot_decompose + kvE2_outer_fold engine + Phase-7 gate close + Phase-8 F4",
   "continuation_context": {
-    "target_api": "bracketEndChar_kvE2_sound : (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t → ∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun _ => t)) qnf, under the six BracketCarrierCorrectVPrior order hypotheses on qnf.1. This is the soundness half; Stage D Phase 11 needs the completeness half + the same outer quant-layer engine.",
-    "reduction_recipe_verified": "See plan v5 Phase 9 PROGRESS block for the verbatim green reduction prefix.",
-    "phase_11_stage_d": "Stage D (Phase 11) inner-witness fold extraction likely needs the SAME missing general-j=1 quant-layer engine — resolving it unblocks both directions."
+    "is_successor": true,
+    "resume_phase": 7,
+    "baseline_sha": "71b0ea938d86355b22ef786ffb277026c6f05a98",
+    "head_sha": "cb1631d625934004d0ea640c236e5220dcdd03dd",
+    "target_file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean",
+    "first_action": "Land bracketFromLists_slot_decompose (isolate one sub's kvE_subChain2V fChainPred fragment from the slotsFor-merged bracket), then build kvE2_outer_fold, then close the Phase-7 gate, then Phase-8 F4.",
+    "landed_inputs_ready": "Phases 1-6 assets are the correct inputs; kvE_subChain2V :6955, bits :6960, correctness_pair :8549, sound_of_outer :7910, complete :8159, holds_flatMap_map, reflatten_prop43, 10 dischargers."
   },
-  "next_action_hint": "/spawn 321 'general-j=1 quant-layer fold engine: reconstruct ∀ sub:NormalForm sig 1 4, (∃x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ q sub from per-zone carrier channels across all 7 consistent zones — arity-4/depth-1 analog of nf_quant_layer_fold_k1_gate' ; then /revise 321 to insert the engine phase before Phase 10; then /orchestrate 321.",
-  "artifacts": [
-    {"path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/05_corrected-k2-carrier-gate-v5.md", "type": "plan", "summary": "v5 plan; Phase 9 annotated with VERIFIED reduction recipe + Phase 10 BLOCKED with F-house record of the missing general-j=1 outer quant-layer fold engine."}
-  ]
+  "metadata": {
+    "session_id": "sess_1783470318_b10c5a",
+    "agent_type": "lean-implementation-hard-agent",
+    "task_number": 321,
+    "plan_version": 6
+  }
 }

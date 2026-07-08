@@ -211,7 +211,15 @@ equivalence) to the Phase-4 fold engine caller.
   strategic sorry with follow-up), consuming `neg_2var_vec_ea`; no nested depth-k characteristic
   introduced; scoped build green.
 
-### Phase 4: Navigated witness-growing fold engine — full carrier (folds in former 328) [IN PROGRESS]
+### Phase 4: Navigated witness-growing fold engine — full carrier (folds in former 328) [COMPLETED]
+
+**Completed @ 0a4c3db4.** Landed `VVecEA2.holds_flatMap_map` — the structural core: the
+`S_L.permutations × S_R.permutations` arrangement-product membership collapse (flatMap/map),
+general over `mk`/`LL`/`LR` so Phase 7 applies it by `rw` after `dif_pos hgate` on `kvE2_body`.
+Sorry-free, axiom-clean, additive (203/0), do-not-edit byte-identical, LITMUS-clean. **Deferred to
+Phase 7 (by design — the gate is do-not-edit):** the SEMANTIC content — each arrangement's
+`.holds ↔ per-sub nf_eval` and the full `carrier.holds ↔ ∃ w, nf_eval_nf M k 3 [w,x,t] qnf`. Phase 7
+is the true semantic moment-of-truth (the task-327 NO-GO wall was at this outer quant layer).
 
 - **Goal:** Complete `kvE_fold_navigated` over the FULL carrier (all arrangements), realizing the
   Prop 3.5 / Cor 5.4 nested Until/Since fold over flat exists-forall blocks with witness growth —
@@ -230,7 +238,13 @@ equivalence) to the Phase-4 fold engine caller.
   `VVecEA2` witness-growth, sorry-free on the live path, axiom-clean, scoped build green; LITMUS
   respected (positions by evaluation point / Until-Since reach).
 
-### Phase 5: Per-arrangement non-interior dischargers — SOUNDNESS (folds in former 329) [NOT STARTED]
+### Phase 5: Per-arrangement non-interior dischargers — SOUNDNESS (folds in former 329) [COMPLETED]
+
+**Completed @ f76a3f1c.** 5 `_sound` dischargers (`kvE_nonInterior_{zPastX,zFutT,zAtX,zAtT,zAtW}_sound`).
+zPastX/zFutT do genuine Since/Until navigation extraction (real v6 content, Prop 3.5); zAtX/zAtT/zAtW
+are anchor point-realizations. Stated over raw `formula_conjList` + membership so every arrangement's
+epL/epR/ptW instantiates uniformly. Sorry-free, axiom-clean, additive (287/0), gate byte-identical,
+LITMUS-clean (uses `v < x`/`t < v` temporal reach, no `x1 < e_i`).
 
 - **Goal:** Discharge the soundness direction of the 5 non-interior zones (`zPastX`, `zAtX`,
   `zAtW`, `zAtT`, `zFutT`) per-arrangement over the `VVecEA2` channels — the object former task 329
@@ -247,7 +261,11 @@ equivalence) to the Phase-4 fold engine caller.
 - **Green stopping condition:** all 5 non-interior soundness dischargers sorry-free, axiom-clean,
   scoped build green.
 
-### Phase 6: Per-arrangement non-interior dischargers — COMPLETENESS (folds in former 329) [NOT STARTED]
+### Phase 6: Per-arrangement non-interior dischargers — COMPLETENESS (folds in former 329) [COMPLETED]
+
+**Completed @ c45e34ea.** 5 `_complete` dischargers mirroring Phase 5 (2 substantive exterior
+Since/Until introduction, 3 boundary identity realizations). Sorry-free, axiom-clean, additive
+(356/0), gate byte-identical, LITMUS-clean.
 
 - **Goal:** Discharge the completeness direction of the same 5 non-interior zones per-arrangement
   over the `VVecEA2` channels — the completeness half of the redefined former task 329.
@@ -262,7 +280,53 @@ equivalence) to the Phase-4 fold engine caller.
 - **Green stopping condition:** all 5 non-interior completeness dischargers sorry-free, axiom-clean,
   scoped build green.
 
-### Phase 7: Gate assembly — close `BracketCarrierCorrectVPrior` both directions [NOT STARTED]
+### Phase 7: Gate assembly — close `BracketCarrierCorrectVPrior` both directions [BLOCKED]
+
+**BLOCKER (Phase 7):**
+- **What failed:** the k=2 gate `BracketCarrierCorrectVPrior atomMap (bracketEndChar_kvE2 …)` does
+  NOT close in either direction from the landed Phases 1-6 assets. Two consecutive dedicated forks
+  (Phase-7 assembly + a focused `kvE2_outer_fold` engine attempt) hit the same wall with increasing
+  precision.
+- **Root cause (machine-precise):** `kvE2_body`'s per-arrangement disjunct is a SINGLE MERGED bracket
+  `bracketFromLists (slotsFor lL) ptW (slotsFor lR) segL segR` where
+  `slotsFor l = l.flatMap (fun σ => kvE_subChain2V … σ ++ pinSlots σ)` concatenates EVERY positive
+  sub's F-chain into one point-type list, and the shared `epL`/`epR`/`segL`/`segR`/`ptW` encode
+  UNION/existential zone content `(List.filter qnf.2 …).any (fun σ' => nfk_projFresh σ' = χ)` — NOT
+  the per-sub `σ.2 (nf0_assemble zs χ σ.1)` bits that the task-326 closer's `hgate` requires. The
+  landed `kvE_subBracket2V_correctness_pair`/`_sound_of_outer` (task 326) operate on the STANDALONE
+  per-sub carrier `kvE_subBracket2V σ` (explicitly "NOT wired into kvE2_body", :8546-8547) — a
+  structurally different bracket. So `hgate` cannot be discharged from the merged carrier's shared
+  union-segment structure.
+- **What was tried:** (fork 1) unfold `bracketEndChar_kvE2`/`kvE2_body`/`VVecEA2.holds`, apply
+  `VVecEA2.holds_flatMap_map`, route through the task-326 closers — type mismatch (level-mismatched
+  to the outer quant map) + unfilled `hgate`; `aesop`/`simp only` unsolved. (fork 2) genuine
+  construction probe with captured `lean_goal` at the decomposition point (bracket visibly carrying
+  `(filter qnf.2).any` union content); `exact?` found no closer; task-326 closers type-mismatch on
+  the `slotsFor`-merged bracket.
+- **Why stuck (NOT a NO-GO):** the navigated route is structurally CAPABLE — `correctness_pair`
+  (:8549) already carries the arity-4 depth-1 content via `zoneHolds M [x1,w,x,t] zs v` over
+  `ZoneSpec 4` (the exact joint content task-327 lacked; σ's own fChainPred is built from
+  `bits zs χ = σ.2 (nf0_assemble zs χ σ.1)`, :6960, so the per-sub bits ARE recoverable). The gap is
+  a MISSING lemma, not an impossibility.
+- **What is needed (precise, well-scoped follow-up):** land `bracketFromLists_slot_decompose` —
+  from `(bracketFromLists (A ++ chain ++ B) ptW R segL segR).holds x t`, isolate the individual sub
+  σ's `kvE_subChain2V` fChainPred fragment realized at its own witness slot (independent of the
+  co-spliced slots A, B) — then compose with the task-326 fChainPred readers to build the
+  `kvE2_outer_fold` engine (`kvE2_body.holds ↔ atomLayer ∧ ∀ σ, (∃ x1, nf_eval M 1 4 [x1,w,x,t] σ) ↔
+  qnf.2 σ`), then the Phase-7 gate both directions. Est. ~200-500 lines; a dedicated follow-on task.
+- **Prohibited (honored):** NO sorry on any live path; NO gate-modulo-assumed-`hgate`; NO vacuous
+  placeholder. Both probes were reverted; the only committed Phase-7 artifact is an inert decision
+  record (@ cb1631d) documenting the crux.
+
+**Phase 7 first pass @ cb1631d — RESCOPED, honest.** The gate does NOT close from the landed
+Phases 1-6 assets. This is NOT a task-327 NO-GO (the navigated route is structurally capable — the
+landed `kvE_subBracket2V_correctness_pair` :8549 carries the arity-4 depth-1 content via
+`zoneHolds M [x1,w,x,t] zs v` over `ZoneSpec 4`). The genuine missing piece is the **outer two-level
+assembly engine `kvE2_outer_fold`** (`kvE2_body.holds ↔ atomLayer ∧ ∀ σ, (∃ x1, nf_eval M 1 4
+[x1,w,x,t] σ) ↔ qnf.2 σ`), which v5 Phase-10 flagged missing and v6 Phase-4 delivered only
+STRUCTURALLY (`holds_flatMap_map`). This connector is UPSTREAM of all zones, so the "narrow zones"
+RE-SCOPE fallback cannot dodge it. No sorry committed; captured crux + 4 failed closers landed as an
+inert decision record. **Decisive engine attempt dispatched (below).**
 
 - **Goal:** Assemble the k=2 `BracketCarrierCorrectVPrior` gate to a proven GO in both directions
   over the navigated route: interior zones via the task-326 closers, non-interior zones via
@@ -280,7 +344,13 @@ equivalence) to the Phase-4 fold engine caller.
 - **Green stopping condition:** k=2 gate closes both directions, sorry-free on the live path,
   axiom-clean, scoped build green; `BracketCarrierCorrectVPrior` untouched.
 
-### Phase 8: F4 `ℤ` adversarial LHS-FALSE + integrity sweep + GO verdict record (preserved from v5 Phase 15) [NOT STARTED]
+### Phase 8: F4 `ℤ` adversarial LHS-FALSE + integrity sweep + GO verdict record (preserved from v5 Phase 15) [NOT STARTED — blocked by Phase 7]
+
+**Not started:** Phase 8 discharges the F4 adversarial counterexample against the CLOSED gate. Since
+Phase 7 is BLOCKED on the `kvE2_outer_fold` engine (no closed gate exists yet), the F4 test cannot
+run meaningfully against a closed carrier. Deferred to the follow-up task that lands the engine +
+gate. The integrity sweep half (additive-only, do-not-edit byte-identity, axiom-clean, 0 live sorry)
+is nonetheless GREEN for the Phases 1-6 delta (see Testing & Validation).
 
 - **Goal:** Discharge the mandatory F4 `ℤ` adversarial counterexample against the now-closed gate
   over the new navigated carrier, run the full integrity sweep, and land the final GO verdict —
