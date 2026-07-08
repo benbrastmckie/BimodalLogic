@@ -657,6 +657,56 @@ theorem k1v_sorted_realizationK {sig : MonadicSignature}
             simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at he
             subst he; exact le_refl _))).1
 
+/-- **k=3 regression check** (task 334 Phase 3 acceptance): the k-region lift `k1v_sorted_realizationK`
+    instantiates back to the exact conclusion shape of `k1v_sorted_realization3` (:379) when applied
+    to the three-region list `[(x,x1,S_XU),(x1,w,S_UW),(w,t,S_WT)]`. Confirms the generalization is
+    faithful — no behavioural drift from the proven three-region template. -/
+theorem k1v_sorted_realizationK_regress_k3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (x x1 w t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (S_XU S_UW S_WT : List (NormalForm sig 0 1))
+    (hndXU : S_XU.Nodup) (hndUW : S_UW.Nodup) (hndWT : S_WT.Nodup)
+    (hrealXU : ∀ χ ∈ S_XU, ∃ u, x < u ∧ u < x1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hrealUW : ∀ χ ∈ S_UW, ∃ u, x1 < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hrealWT : ∀ χ ∈ S_WT, ∃ u, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ) :
+    ∃ (psXU psUW psWT : List (NormalForm sig 0 1 × M.carrier)),
+      List.Perm (psXU.map Prod.fst) S_XU ∧
+      List.Perm (psUW.map Prod.fst) S_UW ∧
+      List.Perm (psWT.map Prod.fst) S_WT ∧
+      (psXU.map Prod.snd ++ x1 :: psUW.map Prod.snd ++ w :: psWT.map Prod.snd).Pairwise (· < ·) := by
+  obtain ⟨ps, hf, hpw⟩ := k1v_sorted_realizationK M
+    [(x, x1, S_XU), (x1, w, S_UW), (w, t, S_WT)]
+    (by intro r hr
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
+        rcases hr with rfl | rfl | rfl
+        · exact hxx1
+        · exact hx1w
+        · exact hwt)
+    (List.chain'_cons.mpr ⟨rfl, List.chain'_cons.mpr ⟨rfl, List.chain'_singleton _⟩⟩)
+    (by intro r hr
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
+        rcases hr with rfl | rfl | rfl
+        · exact hndXU
+        · exact hndUW
+        · exact hndWT)
+    (by intro r hr
+        simp only [List.mem_cons, List.not_mem_nil, or_false] at hr
+        rcases hr with rfl | rfl | rfl
+        · exact hrealXU
+        · exact hrealUW
+        · exact hrealWT)
+  obtain ⟨p0, ps1, hR0, hf1, rfl⟩ := List.forall₂_cons_right_iff.mp hf
+  obtain ⟨p1, ps2, hR1, hf2, rfl⟩ := List.forall₂_cons_right_iff.mp hf1
+  obtain ⟨p2, ps3, hR2, hf3, rfl⟩ := List.forall₂_cons_right_iff.mp hf2
+  rw [List.forall₂_nil_right_iff] at hf3
+  subst hf3
+  refine ⟨p0.2.2, p1.2.2, p2.2.2, hR0.2.2.1, hR1.2.2.1, hR2.2.2.1, ?_⟩
+  have e0 : p0.2.1 = x1 := hR0.2.1
+  have e1 : p1.2.1 = w := hR1.2.1
+  simp only [interleaveK] at hpw
+  rw [e0, e1] at hpw
+  simpa [List.append_assoc, List.cons_append] using hpw
+
 /-- **Three-region bracket construction** (task 325 Phase 2; lift of `k1v_bracket_construct` :2838
     to `bracketFromLists3`). The reverse of point-type extraction: given a sorted tuple of realizing
     points — `usXU` strictly inside `(x, x1)`, the interior witness `x1`, `usUW` strictly inside
