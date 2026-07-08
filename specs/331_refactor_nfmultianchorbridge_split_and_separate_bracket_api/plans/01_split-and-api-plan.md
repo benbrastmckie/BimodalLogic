@@ -1,7 +1,7 @@
 # Implementation Plan: Split NfMultiAnchorBridge.lean and Surface the Separate-Bracket API
 
 - **Task**: 331 - refactor_nfmultianchorbridge_split_and_separate_bracket_api
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours (8 phases, one agent dispatch each)
 - **Dependencies**: None (task 321 depends on THIS task)
 - **Research Inputs**: specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md
@@ -447,27 +447,27 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
 - **Timing:** ~90 min
 - **Depends on:** 6
 
-### Phase 8: Final verification gates and summary [NOT STARTED]
+### Phase 8: Final verification gates and summary [COMPLETED]
 - **Goal:** Prove the refactor is semantics-preserving end-to-end and write the summary. No file
   relocation in this phase.
 - **Tasks:**
-  - [ ] Full `lake build` at repo root: exit 0.
-  - [ ] Axiom check on the 4 flagship theorems via `lean_verify` (or `#print axioms` in a scratch
+  - [x] Full `lake build` at repo root: exit 0. *(1719 jobs)*
+  - [x] Axiom check on the 4 flagship theorems via `lean_verify` (or `#print axioms` in a scratch
         snippet): `kvE_subBracket2V_correctness_pair`, `reflatten_prop43`,
         `bracketEndChar_kvE2_two_eq`, `f2_relativized_refutation` — each must report exactly
         `[propext, Classical.choice, Quot.sound]`.
-  - [ ] Sorry gate: `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/` —
+  - [x] Sorry gate: `grep -rn "sorry" Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/` — *(47 = 47, all prose)*
         occurrence count and locations must match `git show $ORIG_SHA:...NfMultiAnchorBridge.lean | grep -c "sorry"`
         (pre-existing comment/record mentions only; zero new).
-  - [ ] Consumer gate: `git diff $ORIG_SHA -- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean`
+  - [x] Consumer gate: `git diff $ORIG_SHA -- Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean` *(empty; 1 import)*
         empty; `grep -rn "NfMultiAnchorBridge" Theories/ Tests/` still shows exactly 1 import
         (KampPrior.lean:4) + pre-existing comment refs.
-  - [ ] Reconciliation line-count audit: `wc -l` of umbrella + 10 modules; sum of relocated
+  - [x] Reconciliation line-count audit: `wc -l` of umbrella + 10 modules; sum of relocated *(9,493 total; max 2,097)*
         bodies ≈ 9,249 minus excised nothing (all content preserved); every module <= ~2,100
         lines; report the table in the summary.
-  - [ ] De-privatization audit: confirm exactly 11 `private ` removals total across all module
-        diffs vs `$ORIG_SHA` slabs (list them in the summary).
-  - [ ] Write `specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/summaries/01_split-summary.md`:
+  - [x] De-privatization audit: confirm exactly 11 `private ` removals total across all module
+        diffs vs `$ORIG_SHA` slabs (list them in the summary). *(reconstruction diff = exactly 22 lines = 11 pairs)*
+  - [x] Write `specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/summaries/01_split-summary.md`:
         module table (file, line count, role), the 11 de-privatizations, the one relocation, the
         three settled divergences carried forward, gate results, and the pointer for task 321 v7
         (API surface = SubBracket2V + NavigatedSpine banners).
@@ -481,10 +481,10 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
 
 ## Testing & Validation
 
-- [ ] `lake build` exit 0 after EVERY phase (1-8) — never batch.
-- [ ] Byte-identity slab diff per phase against `$ORIG_SHA` (empty, or exactly the phase's
+- [x] `lake build` exit 0 after EVERY phase (1-8) — never batch.
+- [x] Byte-identity slab diff per phase against `$ORIG_SHA` (empty, or exactly the phase's
       inventoried `private ` removals).
-- [ ] Phase 8 gates: axiom check (4 flagship theorems), sorry count parity, KampPrior untouched,
+- [x] Phase 8 gates: axiom check (4 flagship theorems), sorry count parity, KampPrior untouched,
       exactly-11 de-privatization audit, line-count reconciliation.
 - [ ] No test-suite changes expected; `Tests/BimodalTest` builds as part of `lake build` if in
       the default targets (do not add tests — this task is relocation-only).
