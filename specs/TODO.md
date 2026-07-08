@@ -116,16 +116,17 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 331 (
 
 ### Uncategorized
 
-331 [RESEARCHED] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
+331 [PLANNED] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
   └─ 321 [BLOCKED] — (kamp_theorem_formalization: REDESIGN (v6, plan 06). Task 330's PDF-v) (see above)
 
 ## Tasks
 
 ### 331. Refactor nfmultianchorbridge split and separate bracket api
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md]
+- **Plan**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/plans/01_split-and-api-plan.md]
 
 **Description**: Structural refactor to unblock task 321 Phase 7/8: split NfMultiAnchorBridge.lean and clean up the k=2 carrier API. RUNS BEFORE the next task-321 implementation attempt (task 321 now depends on this task). Purely mechanical/organizational — introduces NO new mathematical content and does NOT attempt to close the Phase-7 gate (that stays task 321).
 
