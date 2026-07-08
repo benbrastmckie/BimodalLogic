@@ -109,7 +109,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-321 [PLANNED] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+321 [IMPLEMENTING] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
@@ -343,7 +343,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 320, Task 326, Task 330, Task 331

@@ -1,7 +1,7 @@
 # Implementation Plan: Faithful Separate-Bracket Joint Carrier — Shared-Witness Conjunction and the k=2 Gate (v7)
 
 - **Task**: 321 - Implement corrected k=2 carrier and close the correctness gate (F4 resolution)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~15 hours for the open phases (7-13; six implementation dispatches + one decision gate). Phases 1-6 are landed (v6). Estimated 670-1,120 additive lines, per report 07 §3 (650-1,100 band).
 - **Dependencies**: 320 (route design spec, COMPLETED). 325 (VVecEA2 arity-4 pair, COMPLETED). 326 (per-σ interior closers, COMPLETED). 330 (faithfulness audit, COMPLETED — the v6 redesign basis). **331 (NfMultiAnchorBridge split + separate-bracket API, COMPLETED — the module landscape this plan is written against)**.
 - **Research Inputs**:
@@ -246,7 +246,26 @@ O1-O8 decomposition; v7 phases 7-13 below replace it. The merged carrier is quar
 (off-limits table); nothing below touches it. v6 Phase 8 (F4 adversarial consumer) is preserved
 as v7 Phase 13.
 
-### Phase 7: Joint carrier `kvE2_sepBody` + non-vacuity + membership collapse (O1 + O1b + O2) [NOT STARTED]
+### Phase 7: Joint carrier `kvE2_sepBody` + non-vacuity + membership collapse (O1 + O1b + O2) [COMPLETED]
+
+**Completion note (2026-07-07, sess_1783487859_3f6358):** Landed @ 5f3d4cdab (O1+O2) +
+c9dcc0c0e (O1b) in NEW `NfMultiAnchorBridge/SharedWitness.lean` (943 lines) + one umbrella
+import line. All named objects landed: `kvE2_sepBody`, `kvE2_sepGate`, `kvE2_sepDisjunct`,
+`kvE2_sepArrL`/`kvE2_sepArrR` (top-level interleaving sets = permutations filtered by the
+per-σ region-rank validity `kvE2_sepValid`), fresh N-slot builder `kvE2_sepBracketN`
+(per-index segment types), O2 collapse `kvE2_sepBody_holds_iff` (direct
+`VVecEA2.holds_flatMap_map` instantiation via `dif_pos` — no `let`-buried internals), O1b
+`kvE2_sepBody_nonvacuous` + `kvE2_sepGate_holds_of_honest`. Axiom-clean (exactly
+`[propext, Classical.choice, Quot.sound]`), litmus grep 0 hits, 0 sorries, full `lake build`
+green. *Recorded scope decision (deviation: altered — plan's O1 sketch was silent on
+σ-placement):* positive subs are classified by outer zone `nf0_zoneSpec σ.1` (seven-zone
+set incl. `zAtW3` witness self-zone); BOTH interior classes (`zXW3` left, `zWT3` right)
+receive tagged slot groups (mirrored right-interior zone constants added); the five
+non-interior classes ride σ-level `charK` `Since`/`Until`/at-anchor endpoint literals
+(merged-carrier pattern re-derived additively, the Phase-5/6 dischargers' shape). The inner
+nine-zone gate clause is stated for LEFT-interior positives only (the class the landed
+per-σ kit serves) — extending to the mirrored right class is deferred to Phases 8-10
+arbitration and is an additive file-internal change if needed.
 
 - **Goal:** Land the model-independent joint separate-content carrier as a concrete `def`, its
   non-vacuity lemma, and its arrangement-membership collapse — the Candidate A object staged
@@ -255,9 +274,9 @@ as v7 Phase 13.
   (imports: `SubBracket2V`, `NavigatedSpine` — nothing else from the bridge; D1) + ONE import
   line added to `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` (umbrella).
 - **Tasks:**
-  - [ ] Create `SharedWitness.lean` with a module banner citing this plan, report 07, and the
+  - [x] Create `SharedWitness.lean` with a module banner citing this plan, report 07, and the
         SubBracket2V API banner's "ONE unbuilt object" note (`SubBracket2V.lean:25-27`).
-  - [ ] O1 — state the carrier exactly per report 07 §2.2:
+  - [x] O1 — state the carrier exactly per report 07 §2.2:
         ```lean
         noncomputable def kvE2_sepBody {sig : MonadicSignature}
             (charBase : NormalForm sig 0 1 → Formula)
@@ -281,9 +300,11 @@ as v7 Phase 13.
         self-zones per witness slot (nine-zone lesson, `SubBracket2V.lean:160-166`).
         Cite Lemma 3.2(1) (md:77) at the interleaving enumeration, Lemma 5.1 (md:72) at the
         point-type discipline (G5).
-  - [ ] O1b — non-vacuity lemma (fresh analog of `kvE_subBracket2V_nonvacuous`,
+  - [x] O1b — non-vacuity lemma (fresh analog of `kvE_subBracket2V_nonvacuous`,
         `SubBracket2V.lean:1425`): the honest configuration produces a nonempty disjunct list.
-  - [ ] O2 — membership collapse: expose the disjunct builder and interleaving sets as
+        *(landed as `kvE2_sepBody_nonvacuous` + `kvE2_sepGate_holds_of_honest` +
+        `kvE2_sep_zone3_consistent`)*
+  - [x] O2 — membership collapse: expose the disjunct builder and interleaving sets as
         TOP-LEVEL `def`s (crux failed-closer-3 lesson: no `let`-buried `S_L`/`S_R`/`mkDisjunct`)
         and land the carrier-specific instantiation of `VVecEA2.holds_flatMap_map`
         (`NavigatedSpine.lean:220`) so `(kvE2_sepBody …).holds ↔ ∃ arrangement ∈ …, disjunct.holds`

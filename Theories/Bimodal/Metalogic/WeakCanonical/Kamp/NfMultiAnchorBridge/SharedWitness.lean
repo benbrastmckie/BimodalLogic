@@ -14,7 +14,7 @@ Every disjunct is a single FLAT bracket (Rabinovich 2014, `md:` refs to the Lite
 - ONE shared `ptW` slot + per positive interior σ one `charK (nfk_projFresh σ)` E[Σ]-atom
   slot plus σ's per-region interior-positive `charBase χ` slots — quantifier-free /
   E[Σ]-atom point types ONLY (**Lemma 5.1**, md:72: "alpha_j, beta_j are quantifier-free
-  formulas over Sigma"); no `fChainPred` in any point-type position (FM-merge), no
+  formulas over Sigma"); no chain predicate in any point-type position (FM-merge), no
   bracket-in-bracket (no-nesting, `NavigatedSpine.lean:43-48`).
 - Disjuncts enumerate the JOINT interleavings of every positive interior σ's slot sequence
   between the fixed endpoints `x`, the shared `w` slot, and `t` (**Lemma 3.2(1)**, md:77:

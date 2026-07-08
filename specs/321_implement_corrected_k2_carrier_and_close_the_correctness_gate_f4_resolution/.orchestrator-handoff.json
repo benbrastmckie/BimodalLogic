@@ -1,20 +1,38 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "task_number": 321,
-  "session_id": "sess_1783487025_1ad7e9",
-  "agent_type": "reviser-agent",
-  "delegation_path": ["orchestrator", "revise", "reviser-agent"],
-  "summary": "Plan v7 written against the post-331 module tree, synthesizing plan v6 with report 07's consolidated research. v6 Phases 1-6 preserved [COMPLETED]; the blocked v6 Phase 7 is replaced by phases 7-13 implementing report 07's Candidate A staged via C: a model-independent joint carrier kvE2_sepBody (one shared ptW slot, per-sigma charK E[Sigma]-atom slots, Lemma 3.2(1) joint interleavings, refined-conjunction segments) in a NEW module NfMultiAnchorBridge/SharedWitness.lean (imports SubBracket2V + NavigatedSpine only, one additive umbrella import). O4 (carrier-side per-sigma hgate derivation, the captured-crux residue) is isolated as Phase 9 with a hard one-dispatch cap, followed by an explicit DECISION GATE (Phase 10) whose FAIL branch promotes the N2 single-positive-sub fallback appendix (~200-350 lines) by plan amendment; an exterior overrun after an O4 PASS routes to N1 instead. Settled decisions recorded: D1 placement (new module), D2 O7 atom-layer re-derived additively (no de-privatization of the private k1v_reconstruct_nf3), D3 negatives via nf_eval_unique coverage never Prop 4.2 pointwise-existence forms, D4 Lemma 5.1 kit (leftPart_holds/rightPart_holds/splitAt_combine) consumed for every shared-w pivot. All coordinates post-331 fresh; estimated 670-1,120 additive lines; final phase is the preserved F4 Z adversarial gate + GO/NO-GO verdict record for task 309 Phase 13.4 + KampPrior.lean:351 hook rewire.",
+  "session_id": "sess_1783487859_3f6358",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate-hard", "lean-implementation-hard-agent"],
+  "skeleton": false,
+  "summary": "Phase 7 (O1+O1b+O2) complete: joint shared-witness carrier kvE2_sepBody landed in NEW SharedWitness.lean (943 additive lines) + one umbrella import line. O1: model-independent carrier with one shared ptW slot, per-interior-sigma charK E[Sigma]-atom slots, Lemma 3.2(1) joint interleavings (permutations + region-rank validity filter over tagged slots), refined-conjunction per-index segments (fresh N-slot builder kvE2_sepBracketN), sigma-level Since/Until navigation literals for the five non-interior outer placements, depth-2 gate (outer off-fiber + outer 7-zone consistency + inner off-fiber for all positives + inner 9-zone for left-interior positives) with empty-branch failure. O1b: kvE2_sepBody_nonvacuous via kvE2_sepGate_holds_of_honest (consumes nf_eval_depth1_fold_iff + the landed per-sigma honest gate lemma + a fresh arity-3 zone-consistency case bash). O2: kvE2_sepBody_holds_iff — direct dif_pos + VVecEA2.holds_flatMap_map instantiation over top-level builders (no let-burial; crux failed-closer-3 defect cannot recur). Full lake build green (1720 jobs); all four public theorems axiom-clean [propext, Classical.choice, Quot.sound]; 0 sorries; litmus grep 0 hits; purely additive; no do-not-edit asset touched. Recorded scope decision: sigma-placement classification by outer zone, both interior classes slotted, inner 9-zone clause left-interior only (right-interior extension deferred to Phases 8-10 arbitration).",
+  "phases_total": 13,
+  "phases_completed": 7,
   "artifacts": [
     {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md",
-      "type": "plan",
-      "summary": "v7 plan: joint sepBody carrier in SharedWitness.lean, O4 make-or-break Phase 9, decision gate Phase 10 with N2 fallback appendix, F4 adversarial gate Phase 13"
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "type": "lean-module",
+      "summary": "NEW joint shared-witness carrier module: kvE2_sepBody + gate + interleaving sets + N-slot builder + non-vacuity + membership collapse (943 lines, sorry-free, axiom-clean)"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean",
+      "type": "lean-module",
+      "summary": "One additive umbrella import line (D1)"
+    },
+    {
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/summaries/07_phase7-sepbody-carrier-summary.md",
+      "type": "summary",
+      "summary": "Phase 7 implementation summary with verification table and recorded deviations"
+    },
+    {
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-7-handoff-20260707.md",
+      "type": "handoff",
+      "summary": "Landed API table, key decisions, watch items for Phases 8-10, empty sorry inventory"
     }
   ],
   "blockers": [],
-  "next_action_hint": "implement",
-  "phases_total": 13,
-  "phases_completed": 6,
-  "prior_handoff_note": "Supersedes the sess_1783484615_56e1a4 report-07 research handoff (preserved in git history)."
+  "sorry_inventory": [],
+  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-7-handoff-20260707.md",
+  "continuation_context": null,
+  "next_action_hint": "Dispatch Phase 8 (O3, joint soundness extraction: shared w + per-sigma bundles from a realized disjunct via kvE2_sepBody_holds_iff + the Lemma 5.1 leftPart_holds/rightPart_holds kit). Read handoffs/phase-7-handoff-20260707.md first — it records the landed API table, the sigma-placement scope decision, and the right-interior watch item feeding the Phase 10 gate."
 }
