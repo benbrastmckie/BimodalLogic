@@ -720,12 +720,20 @@ noncomputable def kvE2_sepModelOrder {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
   (kvE2_sepPos qnf).map (fun σ => (σ, kvE2_sepModelTag σ))
 
-/-- **Closed-zone leaf — forward read** (Phase-4 placeholder). At a coincidence tie the disjunct is
-    validated by σ's CLOSED self-zone `zAtX1L` bit (§5 meet channel, md:168-173) fed by the
-    preserved axiom-clean `kvE2_sepCoincidentAnchor_discharge`. -/
+/-- **Closed-zone leaf — placement-generic forward read** (task 336). At a coincidence tie the
+    disjunct is validated by σ's CLOSED self-zone bit at its own fresh type (§5 meet channel,
+    md:168-173), fed by the preserved axiom-clean coincidence discharges. The self-zone key is
+    placement-appropriate: LEFT-interior owners (`nf0_zoneSpec σ.1 = kvE2_sep_zXW3`, `x < x1 < w`)
+    read the CLOSED `zAtX1L` bit (`kvE2_sepCoincidentAnchor_discharge`); every other placement
+    (in particular RIGHT-interior owners, `nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`) reads
+    the CLOSED `zAtX1R` bit (`kvE2_sepCoincidentAnchor_discharge_R`). Both branches read CLOSED
+    self-zone keys — never an OPEN key (F5). -/
 def kvE2_sepClosedLeafStub {sig : MonadicSignature}
     (σ : NormalForm sig 1 4) : Bool :=
-  kvE2_sepBits σ kvE2_sep_zAtX1L (nf0_projFresh σ.1)
+  if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
+    kvE2_sepBits σ kvE2_sep_zAtX1L (nf0_projFresh σ.1)
+  else
+    kvE2_sepBits σ kvE2_sep_zAtX1R (nf0_projFresh σ.1)
 
 /-- **Per-owner disjunct validity.** Strict placements read σ's OPEN zone bit; the `coincident` tie
     reads σ's CLOSED `zAtX1L` bit via the forward stub. No disjunct conflates open and closed keys
@@ -1476,8 +1484,8 @@ theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature}
   -- σ's own fresh base type is realized AT x1 (the fresh coordinate factor)
   have hfresh : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
     ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ.1).mp hσ.1).2.1
-  -- the coincidence discharge closes the CLOSED self-zone bit
-  rw [kvE2_sepClosedLeafStub]
+  -- the coincidence discharge closes the CLOSED self-zone bit (LEFT branch of the guard)
+  rw [kvE2_sepClosedLeafStub, if_pos hzone]
   exact kvE2_sepCoincidentAnchor_discharge σ M x1 w x t hxx1 hx1w hwt hσ (nf0_projFresh σ.1) hfresh
 
 /-- **Phase 8b (RIGHT) — right coincidence discharge** (mirror of `kvE2_sepCoincidentAnchor_discharge`
