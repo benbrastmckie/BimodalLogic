@@ -127,7 +127,7 @@ record house style.
 Phases within the same wave can execute in parallel (Phases 5 and 6 own disjoint lemma
 territory — soundness names vs completeness names — over the same additive file region, per H7).
 
-### Phase 1: Baseline snapshot + refuted-infrastructure quarantine [NOT STARTED]
+### Phase 1: Baseline snapshot + refuted-infrastructure quarantine [COMPLETED]
 
 - **Goal:** Capture a byte-identity baseline for every do-not-edit asset, record the baseline git
   SHA, and formally confirm no live path depends on the refuted constant-arity infrastructure that
