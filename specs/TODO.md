@@ -7,19 +7,17 @@ next_project_number: 331
 Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-07. Generated from state.json dependency graph.*
+*Updated 2026-07-08. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,328 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,329 | 161,187,191,194,230,291,300,328 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,321 | 189,192,196,329 | automation, kamp_theorem_formalization |
-| 4 | 177,178,309 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
-| 5 | 307 | 309 | completeness |
-| 6 | 305 | 307 | completeness |
-| 7 | 303 | 305 | completeness |
-| 8 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
+| 5 | 303 | 305 | completeness |
+| 6 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -111,10 +109,8 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 ### Kamp_theorem_formalization
 
-328 [BLOCKED] — P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the
-  └─ 329 [BLOCKED] — P3 (5-zone dischargers — depends on P2 statement). Land the non-i
-    └─ 321 [BLOCKED] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
-      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+321 [PLANNING] — Depends on task 320's probe result. Task 309 (offdiag_two_anchor_
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -148,7 +144,7 @@ FILE DISCIPLINE: primarily a read-only audit producing a research report. If any
 
 ### 329. Noninterior 5zone dischargers soundness completeness
 - **Effort**: 12-20 hours
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 328, Task 330
@@ -160,7 +156,7 @@ FILE DISCIPLINE: primarily a read-only audit producing a research report. If any
 
 ### 328. Build depth1 split kit and k2 quant layer fold engine
 - **Effort**: 10-16 hours
-- **Status**: [BLOCKED]
+- **Status**: [ABANDONED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 327, Task 330
@@ -320,10 +316,10 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [BLOCKED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 320, Task 326, Task 328, Task 329, Task 330
+- **Dependencies**: Task 320, Task 326, Task 330
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
