@@ -1,10 +1,10 @@
 ---
-next_project_number: 334
+next_project_number: 335
 ---
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (non-fatal)
+Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 334 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-08. Generated from state.json dependency graph.*
@@ -14,7 +14,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,309,333 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 3 | 193,307,334 | 189,192,196,309,333 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
 | 6 | 95,299 | 303 | completeness |
@@ -112,10 +112,20 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+    └─ 334 [NOT STARTED] — Successor to task 333 (partial at cycle budget): implement the no
 
 ### Uncategorized
 
 ## Tasks
+
+### 334. Joint slot sorted realization nonvacuity carrier switch
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 333
+
+**Description**: Successor to task 333 (partial at cycle budget): implement the novel joint slot-level sorted realization that closes the Phase 2 make-or-break task 333 converged on. Task 333 landed, green and axiom-clean, all four cross-sigma bit-compatibility compat leaves (kvE2_sepCompat_lX1_eq/_lX1_after_eq/_rX1_eq/_rX1_after_eq), the per-sigma honest witness bundle kvE2_sepHonestBundleL (blueprint point-map step 1), and resolved the faithfulness-audit soundness question as item-1a (fresh-less-sub exclusion owned by the refined-segment machinery kvE2_sepSegLForSub/RForSub; kvE2_sepCompat correctly silent, NO third clause). The sole remaining gap is the joint (multi-owner) model-sorted arrangement of Rabinovich 2014 Def 3.1 / Lemma 3.2(1)-<=direction: prove kvE2_sepJointSortedL/R and rewire kvE2_sepBody_nonvacuous. Spec is handoffs/03_phase2-joint-sort-frontier.md in the task 333 directory (faithfulness ledger + engineering frontier + risks). Ordered steps: (1) wire the filter switch by hand on HEAD via phase1-switch-and-repairs.patch mechanical renames (predicate defs already present, skip predicate-add hunk); (2) add the right-interior bundle kvE2_sepHonestBundleR; (3) prove kvE2_sepJointSortedL/R (~200-300 lines, slot-keyed sort tagged with real model points — CANNOT lift k1v_sorted_realization whose Nodup premise fails since joint slot chi-types recur across owners); (4) rewire kvE2_sepBody_nonvacuous off Perm.refl; then Phases 3-5 (the two strategic sorries kvE2_sepSingleton_coverage_left, kvE2_sepBody_singleton_complete_left) and Phases 12/13 (N2-C gate + F4 adversarial). Top risk: tie-freeness of the point assignment (need strict < x1_sigma) — resolve via point-injectivity (recommended, most paper-faithful to Def 3.1 strictly-increasing witness order) or a stable secondary owner/rank key. BINDING faithfulness constraints from 321/333: Rabinovich Lemma 5.1 quantifier-free point types; Lemma 3.2(1) filter grounding (never weaken to vacuity); Lemma 3.2(2) anchor cap 2; no-nesting audit; LITMUS (no x1<e_i); F4 adversarial test must DISCRIMINATE (never weaken). Do NOT run concurrently with 333 (file_scope overlap on SharedWitness). Preserve macro-side confinement invariant (L list only (x,w) slots, R only (w,t)).
+
+---
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
 - **Status**: [PARTIAL]
