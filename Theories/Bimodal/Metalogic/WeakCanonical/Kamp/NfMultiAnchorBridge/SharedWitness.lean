@@ -940,4 +940,281 @@ theorem kvE2_sepBody_nonvacuous {sig : MonadicSignature}
   case isFalse hg =>
     exact absurd hgate hg
 
+/-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
+
+From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
+`ptW` slot at bracket position `|lL|`; `x < w < t` from the bracket's OWN range — FM-x1t:
+witness bounds ride the bracket's range/ordering, never a chain) and, per positive interior
+σ, the witness bundle `(x1_σ, hxx1, hx1t, hanchor, hbelow)` — the inputs the task-326
+closer `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1025`) consumes. Positions are
+carried by the arrangement's slot INDICES (structural reads; LITMUS: no `x1 < e_i`
+relative-position literal anywhere). The shared-`w` pivot CONSUMES the Lemma 5.1 kit
+`BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`; D4 — the
+kit is never rebuilt). Templates (new N-slot code regardless):
+`kvE_sub2V_bounded_anchor_of_outer` (`SubBracket2V.lean:1182`, public) and the private
+`kvE_subBracket2V_extract` (`SubBracket2V.lean:762`, pattern only). Rabinovich 2014:
+Def 3.1 monotone enumeration (PDF p.4), Lemma 5.1 (md:72, md:168-171, md:218),
+Cor 5.4 (md:154-157). -/
+
+/-- Membership in the positive-sub spine is exactly fold-bit truth (Fintype enumeration). -/
+theorem kvE2_sepPos_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    (σ : NormalForm sig 1 4) :
+    σ ∈ kvE2_sepPos qnf ↔ qnf.2 σ = true := by
+  unfold kvE2_sepPos
+  rw [List.mem_filter]
+  simp
+
+/-- **Per-σ LEFT-interior soundness bundle at the shared witness** (O3): σ's fresh witness
+    `x1` strictly inside `(x, w)` realizing the folded fresh point type `kvE2_sepPtX1L`
+    (head = the `charK (nfk_projFresh σ)` E[Σ]-atom anchor — Lemma 5.1, md:72), with every
+    `zXU`-positive 1-type realized strictly BELOW `x1` (Cor 5.4, md:154-157). Bounds ride
+    the bracket's own ordering (FM-x1t). -/
+def kvE2_sepBundleL {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x : M.carrier) : Prop :=
+  ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+    (kvE2_sepPtX1L charBase charK σ).eval_at M atomMap x1 ∧
+    (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+      ∃ u : M.carrier, x < u ∧ u < x1 ∧
+        (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u)
+
+/-- **Per-σ RIGHT-interior soundness bundle at the shared witness** (O3, mirrored class):
+    σ's fresh witness `x1` strictly inside `(w, t)` realizing `kvE2_sepPtX1R`, with every
+    `zWX1`-positive 1-type (region `(w, x1)`) realized strictly BELOW `x1` and above `w`.
+    NOTE (Phase-7 watch item): no landed per-σ correctness kit serves this class yet; the
+    bundle is extracted for Phases 9-10 arbitration. -/
+def kvE2_sepBundleR {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w t : M.carrier) : Prop :=
+  ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+    (kvE2_sepPtX1R charBase charK σ).eval_at M atomMap x1 ∧
+    (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true →
+      ∃ u : M.carrier, w < u ∧ u < x1 ∧
+        (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u)
+
+/-- The `charK` E[Σ]-atom anchor head of a realized LEFT-interior fresh point type
+    (Lemma 5.1, md:72 — the atom predicates only of its own point; the
+    `kvE_subBracket2V_extract` head-projection pattern, `SubBracket2V.lean:798-802`). -/
+theorem kvE2_sepPtX1L_anchor {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x1 : M.carrier)
+    (h : (kvE2_sepPtX1L charBase charK σ).eval_at M atomMap x1) :
+    (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1 := by
+  simp only [kvE2_sepPtX1L, TemporalPred.eval_at] at h ⊢
+  rw [formula_conjList_iff] at h
+  exact h _ List.mem_cons_self
+
+/-- Mirrored anchor head projection for the RIGHT-interior fresh point type. -/
+theorem kvE2_sepPtX1R_anchor {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x1 : M.carrier)
+    (h : (kvE2_sepPtX1R charBase charK σ).eval_at M atomMap x1) :
+    (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1 := by
+  simp only [kvE2_sepPtX1R, TemporalPred.eval_at] at h ⊢
+  rw [formula_conjList_iff] at h
+  exact h _ List.mem_cons_self
+
+/-- A left-interior bundle under `w < t` yields EXACTLY the
+    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1025`) input 5-tuple
+    `(x1, hxx1, hx1t, hanchor, hbelow)` — `x1 < t` rides `x1 < w < t`, the bracket's own
+    ordering (FM-x1t; never a formula literal, LITMUS). -/
+theorem kvE2_sepBundleL_parts {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    {w x t : M.carrier} (hwt : w < t)
+    (h : kvE2_sepBundleL charBase charK σ M atomMap w x) :
+    ∃ x1 : M.carrier, x < x1 ∧ x1 < t ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1 ∧
+      (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+        ∃ u : M.carrier, x < u ∧ u < x1 ∧
+          (⟨charBase χ⟩ : TemporalPred).eval_at M atomMap u) := by
+  obtain ⟨x1, hxx1, hx1w, hpt, hbelow⟩ := h
+  exact ⟨x1, hxx1, hx1w.trans hwt,
+    kvE2_sepPtX1L_anchor charBase charK σ M atomMap x1 hpt, hbelow⟩
+
+/-- Mirrored bounded-anchor fragment for a right-interior bundle under `x < w`
+    (Phase-7 watch item: recorded for Phases 9-10 arbitration; no landed consumer yet). -/
+theorem kvE2_sepBundleR_parts {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    {w x t : M.carrier} (hxw : x < w)
+    (h : kvE2_sepBundleR charBase charK σ M atomMap w t) :
+    ∃ x1 : M.carrier, x < x1 ∧ x1 < t ∧
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1 := by
+  obtain ⟨x1, hwx1, hx1t, hpt, -⟩ := h
+  exact ⟨x1, hxw.trans hwx1, hx1t,
+    kvE2_sepPtX1R_anchor charBase charK σ M atomMap x1 hpt⟩
+
+/-! ### Witness-count normalization and the shared-`w` split (Lemma 5.1 kit consumption) -/
+
+/-- Witness-count normalization for bracket formulas: the joint count `|lL| + 1 + |lR|` is
+    not SYNTACTICALLY a successor, so re-type it without touching content (definitional
+    structure eta makes `kvE2_sepCastBracket rfl bf ≡ bf`). -/
+def kvE2_sepCastBracket {m n : Nat} (h : m = n) (bf : BracketFormula m) :
+    BracketFormula n where
+  pointTypes := fun i => bf.pointTypes ⟨i.val, by omega⟩
+  segmentTypes := fun i => bf.segmentTypes ⟨i.val, by omega⟩
+
+/-- The count cast preserves the bracket semantics. -/
+theorem kvE2_sepCastBracket_holds {sig : MonadicSignature} {m n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h : m = n) (bf : BracketFormula m) (z0 z1 : M.carrier) :
+    (kvE2_sepCastBracket h bf).holds M atomMap z0 z1 ↔ bf.holds M atomMap z0 z1 := by
+  subst h
+  exact Iff.rfl
+
+/-- **Shared-witness split for a realized bracket** (Lemma 5.1, md:168-171: the
+    `A_i^-`/`A_i^+` decomposition at "which `i` the new point corresponds to", md:218):
+    from `holds` over `(x, t)`, the witness at index `i` is strictly inside `(x, t)`,
+    realizes its point type, and BOTH halves hold at it — CONSUMING the landed kit
+    `BracketFormula.leftPart_holds`/`rightPart_holds` (`VecEAFormula.lean:375/:412`;
+    D4: the kit is consumed for every shared-`w` pivot, never rebuilt). -/
+theorem kvE2_sepBracket_split_at {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (x t : M.carrier) (i : Fin (n + 1))
+    (h : bf.holds M atomMap x t) :
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (bf.pointTypes i).eval_at M atomMap w ∧
+      (bf.leftPart i).holds M atomMap x w ∧
+      (bf.rightPart i).holds M atomMap w t := by
+  simp only [BracketFormula.holds, BracketFormula.toIntervalPattern,
+    IntervalPattern.holds] at h
+  obtain ⟨ws, hmono, hrange, hpt, hseg0, hsegmid, hsegn⟩ := h
+  exact ⟨ws i, (hrange i).1, (hrange i).2, hpt i,
+    BracketFormula.leftPart_holds M atomMap bf x t i ws hmono hrange hpt hseg0 hsegmid hsegn,
+    BracketFormula.rightPart_holds M atomMap bf x t i ws hmono hrange hpt hseg0 hsegmid hsegn⟩
+
+/-! ### Structural navigation helpers (private plumbing) -/
+
+/-- Point-list read at the shared `ptW` position `|L|` (§5 bracket, PDF p.7). -/
+private theorem kvE2_sep_getElem_mid {α : Type} (L R : List α) (p : α) :
+    (L ++ p :: R)[L.length]'(by
+      simp only [List.length_append, List.length_cons]; omega) = p := by
+  rw [List.getElem_append_right (Nat.le_refl _)]
+  simp only [Nat.sub_self, List.getElem_cons_zero]
+
+/-- Point-list read strictly left of the shared slot. -/
+private theorem kvE2_sep_getElem_left {α : Type} (L R : List α) (p : α)
+    (i : Nat) (hi : i < L.length) :
+    (L ++ p :: R)[i]'(by
+      simp only [List.length_append, List.length_cons]; omega) = L[i]'hi := by
+  rw [List.getElem_append_left hi]
+
+/-- Point-list read strictly right of the shared slot (offset `|L| + 1 + j`). -/
+private theorem kvE2_sep_getElem_right {α : Type} (L R : List α) (p : α)
+    (j : Nat) (hj : j < R.length) :
+    (L ++ p :: R)[L.length + 1 + j]'(by
+      simp only [List.length_append, List.length_cons]; omega) = R[j]'hj := by
+  rw [List.getElem_append_right (by omega)]
+  simp only [show L.length + 1 + j - L.length = j + 1 by omega, List.getElem_cons_succ]
+
+/-- In a valid arrangement, a slot of the SAME σ with strictly smaller region rank sits at
+    a strictly smaller index (the structural position read — LITMUS: positions by
+    arrangement index, never an `x1 < e_i` literal). -/
+private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature}
+    {l : List (KvE2SepSlot sig)}
+    (hpw : l.Pairwise (fun a b => kvE2_sepSlotLe a b = true))
+    {i j : Nat} (hi : i < l.length) (hj : j < l.length)
+    (hsub : kvE2_sepSlotSub (l[j]'hj) = kvE2_sepSlotSub (l[i]'hi))
+    (hrk : kvE2_sepSlotRank (l[j]'hj) < kvE2_sepSlotRank (l[i]'hi)) :
+    j < i := by
+  rcases Nat.lt_trichotomy j i with hlt | heq | hgt
+  · exact hlt
+  · subst heq; exact absurd hrk (lt_irrefl _)
+  · exfalso
+    have hle := List.pairwise_iff_getElem.mp hpw i j hi hj hgt
+    unfold kvE2_sepSlotLe at hle
+    rw [decide_eq_true hsub.symm, Bool.not_true, Bool.false_or, decide_eq_true_eq] at hle
+    omega
+
+/-- The two interior outer classes are distinct (index-0 order bits differ). -/
+private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
+  intro h
+  have h0 := congrFun h (0 : Fin 3)
+  simp only [kvE2_sep_zWT3, kvE2_sep_zXW3, Fin.cons_zero, Prod.mk.injEq] at h0
+  exact Bool.false_ne_true h0.1
+
+/-- σ's fresh-witness slot is in its canonical LEFT block (left-interior σ). -/
+private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    (.lX1 σ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
+  unfold kvE2_sepSlotsLFor
+  rw [if_pos hzone]
+  exact List.mem_append.mpr (Or.inr List.mem_cons_self)
+
+/-- A left-interior σ's `zXU`-positive 1-type slot is in its canonical LEFT block. -/
+private theorem kvE2_sep_lXU_mem_slotsLFor {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
+    {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true) :
+    (.lXU σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
+  unfold kvE2_sepSlotsLFor
+  rw [if_pos hzone]
+  exact List.mem_append.mpr
+    (Or.inl (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))
+
+/-- σ's fresh-witness slot is in its canonical RIGHT block (right-interior σ). -/
+private theorem kvE2_sep_rX1_mem_slotsRFor {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    (.rX1 σ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
+  unfold kvE2_sepSlotsRFor
+  rw [hzone, if_neg kvE2_sep_zWT3_ne_zXW3, if_pos rfl]
+  exact List.mem_append.mpr (Or.inr List.mem_cons_self)
+
+/-- A right-interior σ's `zWX1`-positive 1-type slot is in its canonical RIGHT block. -/
+private theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true) :
+    (.rWX1 σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
+  unfold kvE2_sepSlotsRFor
+  rw [hzone, if_neg kvE2_sep_zWT3_ne_zXW3, if_pos rfl]
+  exact List.mem_append.mpr
+    (Or.inl (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))
+
+/-- Arrangement-membership transfer: a slot of some positive σ's canonical block occurs in
+    every LEFT interleaving (permutation membership; Lemma 3.2(1), md:77). -/
+private theorem kvE2_sep_mem_arrL {sig : MonadicSignature}
+    {qnf : NormalForm sig 2 3} {lL : List (KvE2SepSlot sig)}
+    (hL : lL ∈ kvE2_sepArrL qnf) {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) : s ∈ lL := by
+  obtain ⟨hperm, -⟩ := List.mem_filter.mp hL
+  exact (List.mem_permutations.mp hperm).mem_iff.mpr
+    (List.mem_flatMap.mpr ⟨σ, hσ, hs⟩)
+
+/-- Arrangement-membership transfer, RIGHT side. -/
+private theorem kvE2_sep_mem_arrR {sig : MonadicSignature}
+    {qnf : NormalForm sig 2 3} {lR : List (KvE2SepSlot sig)}
+    (hR : lR ∈ kvE2_sepArrR qnf) {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) : s ∈ lR := by
+  obtain ⟨hperm, -⟩ := List.mem_filter.mp hR
+  exact (List.mem_permutations.mp hperm).mem_iff.mpr
+    (List.mem_flatMap.mpr ⟨σ, hσ, hs⟩)
+
+/-- A valid LEFT interleaving is pairwise-ordered under the region-rank relation. -/
+private theorem kvE2_sep_arrL_pairwise {sig : MonadicSignature}
+    {qnf : NormalForm sig 2 3} {lL : List (KvE2SepSlot sig)}
+    (hL : lL ∈ kvE2_sepArrL qnf) :
+    lL.Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+  have hv := (List.mem_filter.mp hL).2
+  unfold kvE2_sepValid at hv
+  exact of_decide_eq_true hv
+
+/-- A valid RIGHT interleaving is pairwise-ordered under the region-rank relation. -/
+private theorem kvE2_sep_arrR_pairwise {sig : MonadicSignature}
+    {qnf : NormalForm sig 2 3} {lR : List (KvE2SepSlot sig)}
+    (hR : lR ∈ kvE2_sepArrR qnf) :
+    lR.Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+  have hv := (List.mem_filter.mp hR).2
+  unfold kvE2_sepValid at hv
+  exact of_decide_eq_true hv
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
