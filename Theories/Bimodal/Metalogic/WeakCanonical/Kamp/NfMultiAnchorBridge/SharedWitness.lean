@@ -321,6 +321,75 @@ noncomputable def kvE2_sepSlotsR {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor
 
+/-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
+
+The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
+(`!(sub a = sub b)` ⇒ valid), which is arrangement-blind: it enumerates placements whose
+per-interval segment content is INconsistent with a positive sub's fold-bit content (the
+O4 CRUX defect, `SharedWitness` O4 block). Rabinovich 2014 Lemma 3.2(1) (md:77) admits only
+*consistent interval-decomposition refinements*: a foreign 1-type slot may sit in a region
+relative to another positive σ only when σ's fold bit for that (region, 1-type) is TRUE.
+
+The four definitions below encode that predicate. They are DELIBERATELY not yet wired into
+`kvE2_sepSlotLe`/`kvE2_sepValid`: switching the live filter breaks the identity-arrangement
+`kvE2_sepSlotsL_valid`/`_valid` and hence `kvE2_sepBody_nonvacuous`, whose repair requires a
+joint model-sorted arrangement (Phase 2 make-or-break — no single-σ `k1v_sorted_realization3`
+analog exists for the joint slot list). The full switch + mechanical downstream repair is
+captured, verified-compiling except those two lemmas, in
+`handoffs/phase1-switch-and-repairs.patch`. These staged defs read arrangement fresh-slot
+adjacency (slot INDICES) only, never a model-order `x1 < e_i` literal (LITMUS). -/
+
+/-- Optional base 1-type carried by a slot: `some χ` for the six 1-type slots, `none`
+    for the two fresh-witness E[Σ]-atom slots (`lX1`/`rX1`, which carry `charK`, no base χ). -/
+def kvE2_sepSlotChi {sig : MonadicSignature} :
+    KvE2SepSlot sig → Option (NormalForm sig 0 1)
+  | .lXU _ χ => some χ
+  | .lX1 _ => none
+  | .lUW _ χ => some χ
+  | .lWT _ χ => some χ
+  | .rXW _ χ => some χ
+  | .rWX1 _ χ => some χ
+  | .rX1 _ => none
+  | .rX1T _ χ => some χ
+
+/-- If the slot is a fresh-witness slot, the placement-generic zone pattern of its owner's
+    BEFORE-fresh interior region — `x<v<x1` (`kvE_sub2_zXU`) for a left-interior σ's `lX1`,
+    `w<v<x1` (`kvE2_sep_zWX1`) for a right-interior σ's `rX1`; `none` for 1-type slots. The
+    zone is EXACTLY the one the owner's own before-fresh 1-type slots read their bits at
+    (`kvE2_sepSlotsLFor`/`RFor`), so a foreign slot placed there is admitted iff its 1-type
+    is in σ's before-fresh segment. -/
+def kvE2_sepFreshZoneBefore {sig : MonadicSignature} :
+    KvE2SepSlot sig → Option (ZoneSpec 4)
+  | .lX1 _ => some kvE_sub2_zXU
+  | .rX1 _ => some kvE2_sep_zWX1
+  | _ => none
+
+/-- Owner's AFTER-fresh interior region zone pattern — `x1<v<w` (`kvE_sub2_zUW`) for a
+    left-interior σ's `lX1`, `x1<v<t` (`kvE_sub2_zWT`) for a right-interior σ's `rX1`;
+    `none` for 1-type slots. -/
+def kvE2_sepFreshZoneAfter {sig : MonadicSignature} :
+    KvE2SepSlot sig → Option (ZoneSpec 4)
+  | .lX1 _ => some kvE_sub2_zUW
+  | .rX1 _ => some kvE_sub2_zWT
+  | _ => none
+
+/-- Cross-σ bit-compatibility of the ordered pair `(a, b)` (`a` before `b` in the
+    arrangement), for slots of DIFFERENT owners: (1) if `b` is `σ`'s fresh slot and `a`
+    carries `χ`, then `a` lies in `σ`'s before-fresh region, admitted iff
+    `kvE2_sepBits σ (before-zone) χ = true`; (2) if `a` is `σ`'s fresh slot and `b` carries
+    `χ`, then `b` lies in `σ`'s after-fresh region, admitted iff
+    `kvE2_sepBits σ (after-zone) χ = true`. Two 1-type slots or two fresh slots impose no
+    cross constraint (their relative order does not place either inside the other's interval
+    decomposition). Bool-valued / `decide`-friendly (`kvE2_sepBits` is already `Bool`).
+    Rabinovich 2014 Lemma 3.2(1) (md:77). -/
+def kvE2_sepCompat {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
+  (match kvE2_sepFreshZoneBefore b, kvE2_sepSlotChi a with
+    | some zb, some χa => kvE2_sepBits (kvE2_sepSlotSub b) zb χa
+    | _, _ => true)
+  && (match kvE2_sepFreshZoneAfter a, kvE2_sepSlotChi b with
+    | some za, some χb => kvE2_sepBits (kvE2_sepSlotSub a) za χb
+    | _, _ => true)
+
 /-- Arrangement validity relation, Bool-valued: slots of the SAME σ must appear in
     non-decreasing region rank; slots of different σ are unconstrained (that freedom IS
     the Lemma 3.2(1) interleaving enumeration). -/
