@@ -1818,6 +1818,69 @@ theorem kvE2_sepSingleton_hgate_left {sig : MonadicSignature}
   -- backward-zone: a bit-true non-`zXU` zone has a realizing witness in the singleton bracket.
   · sorry
 
+/-- **Single-anchor soundness closer** (task 321 v7 Phase 11 N2-B; the ∀-anchor-obstruction
+    dissolver). A mechanical specialization of the landed `kvE_subBracket2V_sound_of_parts`
+    (`SubBracket2V.lean:1025`) whose consumed six-conjunct `hgate` is supplied ONLY at the
+    single extracted anchor `x1` — not the ∀-anchor form. The landed closer's body uses `hgate`
+    only at the extracted anchor (`SubBracket2V.lean:1058`: `obtain … := hgate x1 hxx1 hx1t
+    hanchor`), so this specialization is BODY-VERBATIM (lines 1059-1080) with the six-tuple
+    passed directly instead of applied from a universally-quantified hypothesis.
+
+    Rationale (Phase 11 N2-B crux, verbatim `lean_goal` below the crux record): the ∀-anchor
+    `hgate` that `kvE_subBracket2V_sound_of_parts` demands is UNPROVABLE at singleton size — the
+    conjunct `a < w` binds EVERY `a ∈ (x,t)` realizing `charK (nfk_projFresh σ)`, but the
+    singleton carrier's right-region content excludes only depth-0 `charBase` 1-types, never the
+    depth-1 anchor `charK (nfk_projFresh σ)`, so an honest model may realize the anchor above `w`
+    (the Phase-9 SECOND, cross-σ-INDEPENDENT obstruction, `:1636-1642`, which the singleton
+    restriction does NOT remove). This closer removes that obstruction by only ever needing the
+    six conjuncts at the ONE extracted `x1` (where `x1 < w` genuinely holds). Sorry-free. -/
+theorem kvE2_sepSingleton_sound_of_parts_at {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (x1 : M.carrier)
+    (hbelow : ∀ χ : NormalForm sig 0 1,
+        σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+        ∃ u : M.carrier, x < u ∧ u < x1 ∧
+          (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred).eval_at M atomMap u)
+    (haw : x1 < w) (hwt : w < t)
+    (h_atom : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1)
+    (h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
+    (h_fwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true)
+    (h_bwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) :
+    ∃ x1' : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  refine ⟨x1, ?_⟩
+  rw [nf_eval_depth1_fold_iff]
+  refine ⟨h_atom, ?_, h_off⟩
+  intro zs χ
+  refine ⟨fun hex => h_fwd zs χ hex, ?_⟩
+  intro hbit
+  by_cases hzs : zs = kvE_sub2_zXU
+  · subst hzs
+    obtain ⟨u, hxu, hux1, hu⟩ := hbelow χ hbit
+    refine ⟨u, ?_, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
+    have huw : u < w := hux1.trans haw
+    have hut : u < t := huw.trans hwt
+    intro i
+    match i with
+    | ⟨0, _⟩ => exact ⟨iff_of_true hux1 rfl, iff_of_false (lt_asymm hux1) (by decide +revert)⟩
+    | ⟨1, _⟩ => exact ⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by decide +revert)⟩
+    | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxu) (by decide +revert), iff_of_true hxu rfl⟩
+    | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
+  · exact h_bwd zs χ hzs hbit
+
 /-- **Both directions, FORWARD (O5 soundness)** for the left-interior singleton σ: the singleton
     carrier's `.holds` at the fixed endpoints yields σ's depth-1 realization at a shared witness
     `w`. Pipeline: `kvE2_sepBody_extract` (O3) → `kvE2_sepBundleL_parts` → the landed
