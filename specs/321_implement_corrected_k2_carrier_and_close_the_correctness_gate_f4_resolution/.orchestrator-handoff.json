@@ -1,22 +1,20 @@
 {
-  "status": "researched",
-  "phase": "v7 consolidated pre-implementation research (post-task-331 module landscape)",
+  "status": "planned",
   "task_number": 321,
-  "session_id": "sess_1783484615_56e1a4",
-  "agent_type": "lean-research-hard-agent",
-  "delegation_path": ["orchestrator", "research", "lean-research-hard-agent"],
-  "reference_grounding_tier": 1,
-  "literature_source": "/home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md",
-  "adversarial_verification_triggered": true,
-  "summary": "Report 07 consolidates the faithful separate-bracket route against the post-331 tree. (1) 38 load-bearing symbols re-mapped from stale monolith lines to fresh module:line coordinates, each grep/lean_local_search/read-verified: faithful API in NfMultiAnchorBridge/SubBracket2V.lean (kvE_subBracket2V :139, correctness_pair :1855, sound_of_outer :1216, complete :1465, sound_of_parts :1025) and NavigatedSpine.lean (kvE_fold_navigated :83, disjList_holds :149, reflatten_prop43 :193, holds_flatMap_map :220, 5+5 dischargers :257-383, Phase-7 crux record :385-449); gate at PriorInterface.lean:60; quarantine at MergedQuarantine.lean (kvE2_body :807, bracketEndChar_kvE2 :911, task-327 record :959-end). (2) NEW finding: the Lemma 5.1 shared-point insertion kit already exists BOTH directions (BracketFormula.leftPart/rightPart/leftPart_holds/rightPart_holds/splitAt_combine, VecEAFormula.lean:360-478) - the shared-w pivot machinery is landed; the unbuilt object shrinks to a concrete model-independent joint carrier kvE2_sepBody (Candidate A, staged via Candidate C) + 8 obligations, with the make-or-break isolated to O4 (carrier-side per-sigma hgate derivation, crux step (d)). (3) NEW caveat: neg_2var_vec_ea's landed statement is pointwise-existence (trivially satisfiable as stated) - negatives must route through nf_eval_unique/coverage, not Prop 4.2 existence forms; and k1v_reconstruct_nf3/k1v_bracket_extract were left private by the split (re-derive additively or sanction de-privatization). (4) Risk inversion: exterior zones now compose trivially at shared fixed endpoints; interior interleaving + hgate is the residual risk, so the RE-SCOPE fallback is re-derived two-axis (N1 interior+boundary; N2 single-positive-sub wired to an O4 failure). Estimate revised to 650-1100 additive lines, 5 phases, decision gate after Phase B (O3+O4).",
+  "session_id": "sess_1783487025_1ad7e9",
+  "agent_type": "reviser-agent",
+  "delegation_path": ["orchestrator", "revise", "reviser-agent"],
+  "summary": "Plan v7 written against the post-331 module tree, synthesizing plan v6 with report 07's consolidated research. v6 Phases 1-6 preserved [COMPLETED]; the blocked v6 Phase 7 is replaced by phases 7-13 implementing report 07's Candidate A staged via C: a model-independent joint carrier kvE2_sepBody (one shared ptW slot, per-sigma charK E[Sigma]-atom slots, Lemma 3.2(1) joint interleavings, refined-conjunction segments) in a NEW module NfMultiAnchorBridge/SharedWitness.lean (imports SubBracket2V + NavigatedSpine only, one additive umbrella import). O4 (carrier-side per-sigma hgate derivation, the captured-crux residue) is isolated as Phase 9 with a hard one-dispatch cap, followed by an explicit DECISION GATE (Phase 10) whose FAIL branch promotes the N2 single-positive-sub fallback appendix (~200-350 lines) by plan amendment; an exterior overrun after an O4 PASS routes to N1 instead. Settled decisions recorded: D1 placement (new module), D2 O7 atom-layer re-derived additively (no de-privatization of the private k1v_reconstruct_nf3), D3 negatives via nf_eval_unique coverage never Prop 4.2 pointwise-existence forms, D4 Lemma 5.1 kit (leftPart_holds/rightPart_holds/splitAt_combine) consumed for every shared-w pivot. All coordinates post-331 fresh; estimated 670-1,120 additive lines; final phase is the preserved F4 Z adversarial gate + GO/NO-GO verdict record for task 309 Phase 13.4 + KampPrior.lean:351 hook rewire.",
   "artifacts": [
     {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/07_v7-consolidated-faithful-route.md",
-      "type": "report",
-      "summary": "v7 consolidated research: full stale-to-fresh coordinate re-map, candidate signatures for the shared-interior-witness joint carrier (A/B/C with trade-offs), 8-obligation decomposition (650-1100 lines, O4 make-or-break), LITMUS/no-nesting compliance argument, two-axis RE-SCOPE fallback spec, quarantine table, adversarial self-verification"
+      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md",
+      "type": "plan",
+      "summary": "v7 plan: joint sepBody carrier in SharedWitness.lean, O4 make-or-break Phase 9, decision gate Phase 10 with N2 fallback appendix, F4 adversarial gate Phase 13"
     }
   ],
   "blockers": [],
-  "prior_handoff_note": "This supersedes the sess_1783470318_b10c5a report-06 handoff (preserved in git history); report 06's findings are consolidated and coordinate-corrected in report 07.",
-  "next_action_hint": "plan v7"
+  "next_action_hint": "implement",
+  "phases_total": 13,
+  "phases_completed": 6,
+  "prior_handoff_note": "Supersedes the sess_1783484615_56e1a4 report-07 research handoff (preserved in git history)."
 }
