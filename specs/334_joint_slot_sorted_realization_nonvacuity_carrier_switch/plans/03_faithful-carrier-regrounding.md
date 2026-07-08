@@ -232,17 +232,17 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 4: Closed-zone compat leaf + three-way segment-meet cut — LEFT [NOT STARTED]
+### Phase 4: Closed-zone compat leaf + three-way segment-meet cut — LEFT [COMPLETED]
 
 **Goal**: Build the 5th closed-zone (`zAtX1L`) compat leaf validating the coincidence disjunct, and replace the binary before/after left segment cut `kvE2_sepSegLForSub` (C7, `:561`) with a three-way before/**at**/after cut whose "at" case sets the segment type to the MEET and discharges via the closed brick. Re-host the two LEFT compat leaves (`kvE2_sepCompat_lX1_eq`, `kvE2_sepCompat_lX1_after_eq`) as strict-disjunct validators.
 
 **Paper citation**: §5 splitting `A_i = A_i^- ∧ A_i^+`, case-split on which i the new point matches (md:168-173, 213-219); §5 coincidence = meet type.
 
 **Tasks**:
-- [ ] Define `kvE2_sepCompat_zAtX1L_eq` (the 5th leaf: `kvE2_sepCompat` at a tie reads `kvE2_sepBits σ zAtX1L χ`), fed by `kvE2_sepCoincidentAnchor_discharge`.
-- [ ] Replace `kvE2_sepSegLForSub` with `kvE2_sepSegLForSub'` (three-way: before → left β; at → meet β_σ ∧ β_τ; after → right β), branching on `nf0_zoneSpec σ.1`.
-- [ ] Prove the "at" case is sound for negative owners' universal β over the shared interval (Risk R2 core content).
-- [ ] Confirm the two LEFT compat leaves survive as strict-disjunct validators (their statements unchanged; role re-hosted).
+- [x] Define `kvE2_sepCompat_zAtX1L_eq` (the 5th leaf: `kvE2_sepCompat` at a tie reads `kvE2_sepBits σ zAtX1L χ`), fed by `kvE2_sepCoincidentAnchor_discharge`. *(completed — SharedWitness.lean; concludes `kvE2_sepSpikeDisjValid σ χ .coincident = true` for a FOREIGN owner's base type `χ` at the tie, definitionally the CLOSED `zAtX1L` bit, discharged by the axiom-clean brick. Re-hosts `kvE2_sepClosedLeafStub`'s own-type read over foreign types. Axiom-clean `[propext, Classical.choice, Quot.sound]`.)*
+- [x] Replace `kvE2_sepSegLForSub` with `kvE2_sepSegLForSub'` (three-way: before → left β; at → meet β_σ ∧ β_τ; after → right β), branching on `nf0_zoneSpec σ.1`. *(completed — additive: binary `kvE2_sepSegLForSub` retained per abandon-list timing, Phase 6 rewires. `kvE2_sepSegLForSub'` keys on σ's placement TAG (`KvE2SepSpikeOrderType`): left-interior `zXW3` gets before→`zXU` / coincident→MEET / after→`zUW`; right-interior `zWT3` uniform `zXU`; else `top`.)*
+- [x] Prove the "at" case is sound for negative owners' universal β over the shared interval (Risk R2 core content). *(completed — `kvE2_sepSegLForSub'_at_sound`: for left-interior σ, the "at" case IS the §5 meet `A_i = A_i^- ∧ A_i^+` (md:168) = `Formula.and (segForm σ zXU) (segForm σ zUW)`, universal β over `(x,w)∖{x1}`. Non-vacuous (never `top`), QF (F1). Axiom-clean.)*
+- [x] Confirm the two LEFT compat leaves survive as strict-disjunct validators (their statements unchanged; role re-hosted). *(completed — `kvE2_sepCompat_lX1_eq` (:409) and `kvE2_sepCompat_lX1_after_eq` (:422) untouched; module builds green with them intact as the strict `zXU`/`zUW` disjunct validators.)*
 
 **Acceptance criteria**: compiles green; the "at" case discharges axiom-clean; the two LEFT compat leaves still typecheck in the new role.
 
