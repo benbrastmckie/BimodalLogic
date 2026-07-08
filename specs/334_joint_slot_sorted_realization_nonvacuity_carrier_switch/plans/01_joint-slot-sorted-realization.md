@@ -167,7 +167,51 @@ SKIP the predicate-add hunk (predicate defs already present at HEAD, :344-389).
 
 ---
 
-### Phase 2: CRUX — prove `kvE2_sepFreshAnchor_ne_baseChiPoint` (make-or-break, front-loaded) [NOT STARTED]
+### Phase 2: CRUX — prove `kvE2_sepFreshAnchor_ne_baseChiPoint` (make-or-break, front-loaded) [BLOCKED]
+
+**BLOCKER** (Phase 2 — the front-loaded make-or-break; escalated per plan Risk §1 / Rollback):
+- **What failed**: The joint sort's binding cross-σ cases (Phase 4 Case A/B) require, for a foreign
+  base-χ slot `a` (owner τ) adjacent to `.lX1 σ` in the `pt`-sorted list with `pt a ≤ x1_σ`, the
+  STRICT `pt a ≠ x1_σ` (to place `pt a` in σ's OPEN before/after-fresh zone and read the fold bit).
+  The needed lemma is an UNCONDITIONAL `kvE2_sepFreshAnchor_ne_baseChiPoint : p ≠ x1_σ` for any
+  base-χ point `p`.
+- **What was tried** (bounded attempt, deep):
+  1. Traced the exact reduction: `p = x1_σ` forces (via `nf_eval_nf0_cons_factor`, `NfEFold.lean:283`,
+     giving `x1_σ`'s own depth-0 base type `= nf0_projFresh σ.1`, then `nf_eval_unique`,
+     `NormalForm.lean:245`) the base-type equality `χ = nf0_projFresh σ.1`. So
+     `p ≠ x1_σ` ⟺ (contrapositive) reduces EXACTLY to the base-vs-base inequality
+     `χ ≠ nf0_projFresh σ.1`.
+  2. Landed the REDUCED lemma sorry-free, axiom-clean (`[propext, Classical.choice, Quot.sound]`):
+     `kvE2_sepFreshAnchor_ne_baseChiPoint` WITH hypothesis `hχne : χ ≠ nf0_projFresh σ.1`
+     (SharedWitness.lean ~:1133). This is the honest, reusable distinctness engine.
+  3. Searched the whole `WeakCanonical/` subtree (via Explore) for a fresh-vs-base / nf1-vs-nf0
+     type-separation lemma: NONE exists. The research's "E[Σ]-atom incompatible with a base type at a
+     point" intuition is UNSOUND — `charK = existF` (`NavigatedSpine.lean:411`) is an EXISTENTIAL
+     formula, so a single carrier point can satisfy both `charK (nfk_projFresh σ)` and a base type
+     `charBase χ` simultaneously. `nfk_projFresh σ : NormalForm sig 1 1` (depth-1) does not constrain
+     the point's depth-0 base type beyond its own characteristic `nf0_projFresh σ.1`.
+- **Why it's stuck**: The residual `χ ≠ nf0_projFresh σ.1` is NOT dischargeable in Phase 4.
+  `χ` is an arbitrary foreign base type from τ's `kvE2_sepS τ z` slot set; `nf0_projFresh σ.1` is
+  σ's fresh-coordinate base type. Distinct positive owners may legitimately carry the SAME base type,
+  and a foreign owner's χ-witness may coincide exactly with another owner's fresh anchor. In that
+  coincidence the unconditional lemma is FALSE, and the joint mergeSort-by-`pt` arrangement is
+  genuinely INVALID: the coincident point `x1_σ` lies in NEITHER of σ's open zones `(x, x1_σ)` nor
+  `(x1_σ, w)`, so neither Case-A (`kvE_sub2_zXU`) nor Case-B (`kvE_sub2_zUW`) compat can be
+  discharged via the fold ⇐ (`kvE_subBracket2_complete_extract`'s zone→witness channels require
+  STRICT open-interval membership). The single-`pt` mergeSort construction (the planned approach)
+  cannot separate two owners' witnesses that coincide with a fresh anchor.
+- **What is needed** (candidate directions for a research sub-task, none confirmed):
+  1. A construction that PERTURBS/AVOIDS fresh anchors when choosing χ-witnesses — needs "the open
+     interval contains a point ≠ the finitely-many fresh anchors realizing χ", i.e. a density/
+     infinitude argument on `M.carrier` intervals that is NOT available for a general `LinearOrder`.
+  2. A structural theorem that no positive owner's before/after-fresh slot set contains another
+     owner's fresh-coordinate base type `nf0_projFresh σ.1` (a global disjointness property of the
+     honest qnf's fold bits) — provability UNKNOWN.
+  3. A different (non-single-`pt`-mergeSort) joint arrangement whose validity does not route strictness
+     through the fresh-anchor boundary — would supersede the Def-3.1 strictly-increasing encoding.
+- **Prohibited workarounds**: Do NOT use `sorry` as if done, `def X := True`, or weaken the compat
+  filter to vacuity. The landed reduced lemma is a genuine (hypothesis-bearing) theorem, NOT a
+  placeholder.
 
 **Goal**: Prove the single boundary-distinctness lemma the joint sort needs to upgrade `≤` to
 strict `<` in the two binding cross-σ cases. Statement (to confirm/refine at implementation):
@@ -181,10 +225,10 @@ does NOT forbid one carrier point realizing both an nf1 E[Σ]-atom and an nf0 ba
 E[Σ]-atom / base-χ separation argument is required.
 
 **Tasks**:
-- [ ] State `kvE2_sepFreshAnchor_ne_baseChiPoint` precisely (fix env, owner, and the χ side conditions).
-- [ ] Attempt the semantic separation: the fresh anchor's E[Σ]-atom type (via `nfk_projFresh σ`) is incompatible with an nf0 base-χ realization at the same point — grounded in the no-nesting / quantifier-free constraints (Lemma 5.1). Search for/verify supporting in-house lemmas (`nf_eval_unique` seeds nf0-vs-nf0 only; find the E[Σ]-atom vs nf0-base discriminator).
-- [ ] If a direct type-class separation exists: prove sorry-free, axiom-clean.
-- [ ] ESCALATION (if it resists after a bounded attempt): do NOT vacuity-weaken. Write a blocker handoff documenting the exact goal state, what was tried, and the missing semantic lemma; recommend a dedicated research sub-task. STOP the plan here (do not proceed to Phases 4-6 on a false foundation).
+- [x] State `kvE2_sepFreshAnchor_ne_baseChiPoint` precisely (fix env, owner, and the χ side conditions). *(completed — landed in reduced form with hypothesis `χ ≠ nf0_projFresh σ.1`.)*
+- [x] Attempt the semantic separation *(deviation: altered — the "E[Σ]-atom vs nf0-base" semantic separation was DISPROVED as unsound (`charK = existF` is existential; a point may satisfy both). No fresh-vs-base discriminator exists in `WeakCanonical/`. The correct reduction is base-vs-base via `nf_eval_nf0_cons_factor` + `nf_eval_unique`.)*
+- [x] If a direct type-class separation exists: prove sorry-free, axiom-clean. *(completed — the REDUCED lemma is sorry-free + axiom-clean; the unconditional lemma the sort needs is NOT provable.)*
+- [x] ESCALATION: do NOT vacuity-weaken; document blocker; STOP before Phases 4-6. *(completed — Phase 2 marked [BLOCKED]; precise blocker documented above; no vacuity introduced.)*
 
 **Timing**: 2-4 hours (or escalate).
 
