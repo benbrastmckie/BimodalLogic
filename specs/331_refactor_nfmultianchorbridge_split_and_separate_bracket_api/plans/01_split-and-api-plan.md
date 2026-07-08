@@ -292,68 +292,39 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
 - **Timing:** ~60 min
 - **Depends on:** 2
 
-### Phase 4: Extract PriorInterface.lean and MergedQuarantine.lean part 1 [BLOCKED]
+### Phase 4: Extract PriorInterface.lean [COMPLETED]
 
-**BLOCKER** (Phase 4):
-- **What failed**: the MergedQuarantine part-1 extraction. With :5077-:5856 (minus fold_iff)
-  relocated to `MergedQuarantine.lean` (byte-identity gates all EMPTY), `lake build` failed in
-  the monolith: `Unknown identifier kvE_exclConj` (orig :8653), `kvE_pinArrangements` (:8676),
-  `kvE_gate` (:8687, :8700) — all inside MergedQuarantine **part 2** (:8608-:8826), which stays
-  in the monolith until Phase 7.
-- **What was tried**: (a) the full planned extraction — slab diffs vs ORIG_SHA empty, build RED
-  with the four errors above; (b) pulling part 2 forward into `MergedQuarantine.lean` now —
-  impossible: `kvE2_body` (:8608) consumes `kvE_subChain2V` (:6955, SubBracket2V territory,
-  extracted only in Phase 6), so MergedQuarantine would need to import the monolith while the
-  monolith imports MergedQuarantine → import cycle.
-- **Why stuck**: Lean `private` is file-scoped. Part 1's private helpers (`kvE_gate` :5172,
-  `kvE_body` :5193, `kvE_pinArrangements` :5521, `kvE_pinDisjunct` :5531, `kvE_exclConj` :5544,
-  `kvE'_body` :5562) are consumed by part 2; the source itself documents the design assumption
-  at orig :8588-:8589 — "same-module `private` reuse of `kvE_pinArrangements`/`kvE_pinDisjunct`/
-  `kvE_exclConj`/... is legal". Extracting part 1 in Phase 4 while part 2 waits until Phase 7
-  breaks same-moduleness for phases 4-6. The binding ZERO-token-edit constraint (helpers are
-  do-not-edit and stay private — settled) forbids de-privatization.
-- **What is needed** (orchestrator decision; recommended = i):
-  (i) Amend the plan: defer the MergedQuarantine extraction to Phase 7, extracting parts 1+2
-      together once SubBracket2V exists (imports: PriorInterface + SubBracket2V). Zero token
-      edits ever; preserves the settled one-file decision. Phase 4 then = PriorInterface only
-      (already landed green this dispatch).
-  (ii) Sanction de-privatizing the part-1 helpers consumed cross-module — contradicts the
-      settled do-not-edit/private constraint.
-  (iii) Temporarily reverse the import (MergedQuarantine imports the monolith; monolith drops
-      the MergedQuarantine import until Phase 7) — requires verifying every kvE mention outside
-      part 2 in the remaining monolith is a comment; double import-flip in Phase 7; fragile.
-- **Prohibited**: no `sorry`, no vacuous placeholder was used; the working tree was fixed
-  forward to green (PriorInterface extracted; part-1 slab restored byte-identically to the
-  monolith; `MergedQuarantine.lean` removed).
+**Amendment (2026-07-07, orchestrator-accepted resolution option i)**: this phase originally
+also covered MergedQuarantine part 1 (:5077-:5856 minus fold_iff). That extraction is
+structurally impossible before Phase 7: Lean `private` is file-scoped, and part 2
+(:8608-:8826, in the monolith until Phase 7) consumes part 1's private helpers (`kvE_gate`
+:5172, `kvE_body` :5193, `kvE_pinArrangements` :5521, `kvE_pinDisjunct` :5531, `kvE_exclConj`
+:5544, `kvE'_body` :5562 — same-module reuse assumption documented at orig :8588-:8589).
+Pulling part 2 forward was rejected (import cycle: `kvE2_body` :8608 uses `kvE_subChain2V`
+:6955, which is SubBracket2V territory extracted only in Phase 6, so MergedQuarantine would
+import the monolith while the monolith imports MergedQuarantine); de-privatizing the helpers
+was rejected (binding do-not-edit/private constraint). The attempted extraction was executed
+byte-identically, went RED on the four part-2 references (orig :8653/:8676/:8687/:8700), and
+was fixed forward to green: part-1 slab restored byte-identically to the monolith,
+`MergedQuarantine.lean` removed. Resolution: the ENTIRE MergedQuarantine extraction (parts
+1+2 together) moves to Phase 7, where SubBracket2V exists — zero token edits ever, one-file
+settled decision preserved. This phase is therefore PriorInterface only, which landed GREEN
+(commit f1cae4b57; fix-forward monolith restore committed green at d21d6f0dc).
 
-- **Goal:** Relocate the protected prior interface (~89 lines) and the first merged-route slab
-  (~770 lines), establishing the quarantine file.
+- **Goal:** Relocate the protected prior interface (~89 lines).
 - **Tasks:**
   - [x] Standard extraction: slab :4988-:5076 → `PriorInterface.lean`. Imports: `CarrierKv`.
         Contents: `ExistProviders` :5010, `BracketCarrierCorrectVPrior` :5032,
         `bracketEndChar_kv_correct_{zero,one}_prior` :5052/:5067. Protected byte-identical —
-        token edits: NONE. *(landed green; commit this dispatch)*
-  - [ ] Standard extraction: slabs :5077-:5766 **minus the already-relocated
-        `nf_eval_depth1_fold_iff` block** plus :5767-:5856 → `MergedQuarantine.lean`. Imports:
-        *(deviation: BLOCKED — see BLOCKER above; extraction was executed byte-identically,
-        build went RED on part-2 private-helper references, state fixed forward to green)*
-        `PriorInterface`. Header banner: `QUARANTINE / DEAD-CODE: merged-bracket route
-        (bracket-whose-points-are-brackets) — violates the no-nesting audit rule and Rabinovich
-        2014 Lemma 5.1 quantifier-free point-type requirement (md:134-135). Retained
-        byte-identical for the record; task 321 retires it once the faithful route lands. Do not
-        import from faithful modules.` Contents: `kvE_gate` :5172, `kvE_body` :5193,
-        `bracketEndChar_kvE` :5307, pin/excl channels :5507-:5560, `kvE'_body` :5562 (with
-        `slotsFor` local let :5632), `bracketEndChar_kvE'` :5667, task-320 probes :5767-:5856.
-        Part 2 (:8608-:8826) is appended in Phase 7 — leave the file's `end` in place; Phase 7
-        inserts before it.
-  - [ ] Token edits: NONE (the fold_iff block was already removed in Phase 3; everything else
-        moves byte-identically, including the do-not-edit records at :5866... note :5866/:6098
-        are in the SubBracket ranges, not here).
-  - [ ] Byte-identity checks (expected: empty diffs, modulo the excised fold_iff block in the
-        5077-5766 slab — diff in two sub-slabs around the excision); `lake build` exit 0.
-- **Estimated output:** ~860 lines relocated; ~40 scaffold/banner lines. Two bounded units.
-- **Done when:** `lake build` exit 0; slab diffs clean; quarantine banner present.
-- **Commit:** `task 331 phase 4: extract PriorInterface and MergedQuarantine part 1`
+        token edits: NONE.
+  - [x] Byte-identity checks (PriorInterface slab diff vs ORIG_SHA EMPTY; monolith remainder
+        vs orig :1-:28, :29-:87, :5077-:5332, :5360-:9249 all EMPTY); `lake build` exit 0
+        (1714 jobs).
+  - [x] ~~MergedQuarantine part 1 extraction~~ *(deviation: deferred to Phase 7 per accepted
+        amendment above — full quarantine file extracted there as parts 1+2 together)*
+- **Estimated output:** ~89 lines relocated; ~16 scaffold lines; 0 token edits.
+- **Done when:** `lake build` exit 0; PriorInterface slab diff empty.
+- **Commit:** `task 331 phase 4: extract PriorInterface` (landed as f1cae4b57 + d21d6f0dc)
 - **Timing:** ~60 min
 - **Depends on:** 3
 
@@ -413,16 +384,28 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
 - **Timing:** ~60 min
 - **Depends on:** 5
 
-### Phase 7: MergedQuarantine part 2, NavigatedSpine.lean, umbrella reduction [NOT STARTED]
-- **Goal:** Finish the quarantine (append :8608-:8826), relocate the spine (~423 lines), and
-  reduce the monolith to the umbrella file.
+### Phase 7: Extract MergedQuarantine.lean (parts 1+2), NavigatedSpine.lean, umbrella reduction [NOT STARTED]
+- **Goal:** Extract the ENTIRE quarantine file in one step (parts 1+2 together, per the
+  Phase-4 amendment), relocate the spine (~423 lines), and reduce the monolith to the
+  umbrella file.
 - **Tasks:**
-  - [ ] Append slab :8608-:8826 (byte-identical) to `MergedQuarantine.lean` before its `end`;
-        add `import ...NfMultiAnchorBridge.SubBracket2V` to `MergedQuarantine.lean` (verified
-        acyclic: SubBracket2V does not import MergedQuarantine; `kvE2_body` :8677 uses
-        `kvE_subChain2V` :6955 and `kvE2_joint_nonvacuous_at_honest` :8757 uses `_nonvacuous`
-        :8119). Contents: `kvE2_body` :8608, `bracketEndChar_kvE2` :8712,
-        `kvE2_joint_nonvacuous_at_honest` :8748, task-327 gate record :8760-:8826.
+  - [ ] Standard extraction: `MergedQuarantine.lean` = slab :5077-:5856 **minus the
+        already-relocated `nf_eval_depth1_fold_iff` block (:5333-:5359, excised in Phase 3 —
+        extract as two sub-slabs :5077-:5332 and :5360-:5856)** followed by slab :8608-:8826,
+        all byte-identical. Imports: `PriorInterface` + `SubBracket2V` (verified acyclic:
+        SubBracket2V does not import MergedQuarantine; `kvE2_body` :8677 uses `kvE_subChain2V`
+        :6955 and `kvE2_joint_nonvacuous_at_honest` :8757 uses `_nonvacuous` :8119). Header
+        banner: `QUARANTINE / DEAD-CODE: merged-bracket route
+        (bracket-whose-points-are-brackets) — violates the no-nesting audit rule and Rabinovich
+        2014 Lemma 5.1 quantifier-free point-type requirement (md:134-135). Retained
+        byte-identical for the record; task 321 retires it once the faithful route lands. Do
+        not import from faithful modules.` Contents part 1: `kvE_gate` :5172, `kvE_body`
+        :5193, `bracketEndChar_kvE` :5307, pin/excl channels :5507-:5560, `kvE'_body` :5562
+        (with `slotsFor` local let :5632), `bracketEndChar_kvE'` :5667, task-320 probes
+        :5767-:5856. Contents part 2: `kvE2_body` :8608, `bracketEndChar_kvE2` :8712,
+        `kvE2_joint_nonvacuous_at_honest` :8748, task-327 gate record :8760-:8826. Token
+        edits: NONE — extracting both parts together restores same-module `private` reuse
+        (`kvE_gate`/`kvE_pinArrangements`/`kvE_pinDisjunct`/`kvE_exclConj` stay private).
   - [ ] Standard extraction: slab :8827-:9249 → `NavigatedSpine.lean`. Imports: `SubBracket2V`
         (NOT MergedQuarantine — all kvE2 mentions in this range are comments, verified :9006,
         :9015, :9187-:9243). Contents: audit record :8827-:8858 (incl. no-nesting rule
@@ -440,14 +423,15 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
         CarrierKv, RefutationF2, PriorInterface, MergedQuarantine, SubBracket, SubBracket2,
         SubBracket2V, NavigatedSpine). Target ~90 lines. Namespace block no longer needed in the
         umbrella (imports only).
-  - [ ] Token edits: NONE. Byte-identity checks on both slabs (expected: empty diffs);
+  - [ ] Token edits: NONE. Byte-identity checks on all slabs (quarantine sub-slabs
+        :5077-:5332, :5360-:5856, :8608-:8826; spine :8827-:9249 — expected: empty diffs);
         `lake build` exit 0 (this also proves `KampPrior.lean` still compiles unchanged).
-- **Estimated output:** ~640 lines relocated; ~50 banner/umbrella lines. Two slab units + one
-  mechanical umbrella rewrite, all fixed-scope.
-- **Done when:** `lake build` exit 0; monolith is imports+docstring only (~90 lines); both slab
+- **Estimated output:** ~1,395 lines relocated; ~55 banner/umbrella lines. Two module files +
+  one mechanical umbrella rewrite, all fixed-scope.
+- **Done when:** `lake build` exit 0; monolith is imports+docstring only (~90 lines); all slab
   diffs empty; `git diff $ORIG_SHA -- .../KampPrior.lean` is empty.
-- **Commit:** `task 331 phase 7: extract NavigatedSpine, complete quarantine, umbrella file`
-- **Timing:** ~75 min
+- **Commit:** `task 331 phase 7: extract MergedQuarantine, NavigatedSpine, umbrella file`
+- **Timing:** ~90 min
 - **Depends on:** 6
 
 ### Phase 8: Final verification gates and summary [NOT STARTED]
