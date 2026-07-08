@@ -1146,6 +1146,41 @@ theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature}
     ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) p σ.1).mp hσ1).2.1
   exact hχne (nf_eval_unique M 0 1 (fun _ => p) χ (nf0_projFresh σ.1) hp hfresh)
 
+/-- **CRUX VERIFICATION SPIKE — coincident-anchor discharge** (task 334 Phase 3, the
+    front-loaded make-or-break). At a shared anchor `v = x1` (σ's fresh witness point), a
+    foreign base type `χ` realized AT that point (`nf_eval_nf M 0 1 (fun _ => x1) χ`) discharges
+    σ's CLOSED self-zone fold bit `kvE2_sepBits σ kvE2_sep_zAtX1L χ` — WITHOUT any `p ≠ x1`
+    inequality. Route: the extractor's generic zone-forward channel
+    (`SubBracket2.lean:614-618`, `∀ zs χ, (∃ v, zoneHolds env zs v ∧ v realizes χ) → bit = true`)
+    fired at the closed self-zone `kvE2_sep_zAtX1L` with witness `v = x1` (`zoneHolds` at the
+    anchor is a pure order fact given `x < x1 < w < t`). This is the Rabinovich §5 shared-anchor
+    meet-type identification (md:168-173): the point genuinely realizes both σ's depth-1 fresh
+    type and the foreign depth-0 `χ` (existential `charK`, NavigatedSpine:411), so the coincidence
+    is DISCHARGED, not refuted. No extractor extension needed — the generic channel already
+    quantifies over ALL zone specs including the closed self-zone. -/
+theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (χ : NormalForm sig 0 1)
+    (hp : nf_eval_nf M 0 1 (fun _ => x1) χ) :
+    kvE2_sepBits σ kvE2_sep_zAtX1L χ = true := by
+  obtain ⟨_, _, h_zonefwd, _, _, _⟩ := kvE_subBracket2_complete_extract σ M x1 w x t hσ
+  have hx1t : x1 < t := lt_trans hx1w hwt
+  refine h_zonefwd kvE2_sep_zAtX1L χ ⟨x1, ?_, hp⟩
+  -- `zoneHolds env kvE2_sep_zAtX1L x1` is a pure order fact (v = x1: `x < x1 < w < t`).
+  refine (kvE_sub2_zoneHolds_cons_iff M x1 w x t x1
+    (false, false) (true, false) (false, true) (true, false)).mpr ?_
+  refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩⟩
+  · exact iff_of_false (lt_irrefl _) (by decide)
+  · exact iff_of_false (lt_irrefl _) (by decide)
+  · exact iff_of_true hx1w rfl
+  · exact iff_of_false (not_lt.mpr (le_of_lt hx1w)) (by decide)
+  · exact iff_of_false (not_lt.mpr (le_of_lt hxx1)) (by decide)
+  · exact iff_of_true hxx1 rfl
+  · exact iff_of_true hx1t rfl
+  · exact iff_of_false (not_lt.mpr (le_of_lt hx1t)) (by decide)
+
 /-- **O1b — non-vacuity of the joint carrier** (fresh analog of
     `kvE_subBracket2V_nonvacuous`, `SubBracket2V.lean:1425`; FM-vac): for a `qnf` arising
     from an actual model realization under `x < w < t`, the depth-2 gate holds, so the
