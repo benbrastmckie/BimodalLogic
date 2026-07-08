@@ -3217,7 +3217,7 @@
     {
       "project_number": 335,
       "project_name": "outer_gate_assembly_engine_kvE2_body",
-      "status": "implementing",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.",
       "parent_task": 334,
@@ -3226,7 +3226,7 @@
       ],
       "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
       "created": "2026-07-08T21:34:34Z",
-      "last_updated": "2026-07-08T22:10:00Z",
+      "last_updated": "2026-07-08T22:15:00Z",
       "session_id": "sess_1783546987_0faeae_335",
       "artifacts": [
         {
@@ -3243,9 +3243,14 @@
           "type": "summary",
           "path": "specs/335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md",
           "summary": "Phase 1 delivered (live bracketEndChar_kvE2 def + rfl bridge, green + axiom-clean); Phases 2-4 BLOCKED on the un-landed joint multi-owner disjunct bracket-holds builder (task-334 deferral). Carrier INPUT + KampPrior untouched."
+        },
+        {
+          "type": "summary",
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md",
+          "summary": "PARTIAL: Phase 1 landed live bracketEndChar_kvE2 outer-gate carrier (axiom-clean); Phases 2-4 blocked on missing joint multi-owner disjunct bracket-holds builder (task-334 deferred obligation)"
         }
       ],
-      "completion_summary": null,
+      "completion_summary": "PARTIAL (1/4 phases). Phase 1 landed the first live outer-gate carrier bracketEndChar_kvE2 in new OuterGate.lean, delegating to task-334's verified kvE2_sepBody (axiom-clean [propext, Classical.choice, Quot.sound], rfl bridge, green build); SharedWitness.lean and KampPrior.lean byte-identical. Phases 2-4 (soundness/completeness connectors + assembled k=2 gate) BLOCKED on a missing prerequisite: the joint multi-owner disjunct bracket-holds builder over kvE2_sepSlotsL/R (a task-334-deferred obligation, SharedWitness.lean:1954). Unblocking path: dedicated follow-on wiring k1v_sorted_realizationK (SubBracket2V:633) into kvE2_sepDisjunct (~370 lines, comparable to bracketEndChar_k1v_complete), then re-dispatch Phases 2-4. Zero-debt: no sorry/vacuous placeholder introduced.",
       "topic": "kamp_theorem_formalization",
       "plan_metadata": {
         "phases": 4,
@@ -3274,12 +3279,13 @@
         ],
         "skeleton": false,
         "follow_up_tasks": []
-      }
+      },
+      "previous_status": "implementing"
     },
     {
       "project_number": 336,
       "project_name": "generalize_completeness_right_interior_zAtX1R",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): generalize kvE2_sepBody_complete (the ⇐ / completeness half of Rabinovich Lemma 3.2(1)) from the left-interior positive-owner class (currently gated by an explicit hL hypothesis) to right-interior owners. The right coincidence discharge kvE2_sepCoincidentAnchor_discharge_R is ALREADY landed sorry-free and axiom-clean (SharedWitness.lean:1493); this is small predicate-wiring — route the proved zAtX1R self-zone (SharedWitness :737/:2475) into the coincident validity predicate kvE2_sepDisjValidOwner .coincident / kvE2_sepClosedLeafStub, which currently hardcodes zAtX1L. NOT new mathematics. Keep kvE2_sepBody_complete and kvE2_sepBody_nonvacuous axiom-clean ([propext, Classical.choice, Quot.sound], no sorryAx); preserve all 7 faithfulness invariants.",
       "parent_task": 334,
@@ -3288,11 +3294,50 @@
       ],
       "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
       "created": "2026-07-08T21:34:34Z",
-      "last_updated": "2026-07-08T21:34:34Z",
-      "session_id": "sess_1783539835_7b6867",
-      "artifacts": [],
-      "completion_summary": null,
-      "topic": "kamp_theorem_formalization"
+      "last_updated": "2026-07-08T22:30:00Z",
+      "session_id": "sess_1783546987_0faeae_336",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/336_generalize_completeness_right_interior_zAtX1R/reports/01_generalize-completeness-right-interior.md",
+          "summary": "Right-interior completeness generalization research: wiring target zAtX1L hardcoded at kvE2_sepClosedLeafStub:728; discharge_R landed axiom-clean; strategy = zone-guard + mirror lemma + hL->hLR relaxation; scope correction (hL cannot be dropped unconditionally)"
+        },
+        {
+          "type": "plan",
+          "path": "specs/336_generalize_completeness_right_interior_zAtX1R/plans/01_generalize-completeness-right-interior.md",
+          "summary": "4-phase plan: guard kvE2_sepClosedLeafStub on nf0_zoneSpec (zAtX1L/zAtX1R) + patch _valid_left; add kvE2_sepCoincidentOwner_valid_right mirror; relax kvE2_sepBody_complete hL->hLR with per-owner case split; verify axiom-cleanliness. Deliverable is hLR (left OR right interior), NOT unconditional; no sorry/axiom for the exterior-owner gap."
+        }
+      ],
+      "completion_summary": "Generalized kvE2_sepBody_complete (Rabinovich Lemma 3.2(1) completeness half) from left-interior hL to left-OR-right interior hLR positive owners. Guarded kvE2_sepClosedLeafStub on nf0_zoneSpec (zXW3 to zAtX1L, else to zAtX1R); added kvE2_sepCoincidentOwner_valid_right mirror routing the landed axiom-clean discharge_R; per-owner rcases dispatch. Full build green; kvE2_sepBody_complete, kvE2_sepBody_nonvacuous, kvE2_sepArr_sound all axiom-clean [propext, Classical.choice, Quot.sound], no sorryAx. Exterior-owner gap honestly carried as hLR (no sorry/axiom). F5 preserved.",
+      "topic": "kamp_theorem_formalization",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 3,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_generalize-completeness-right-interior.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-08"
+          }
+        ]
+      }
     }
   ],
   "artifacts": [

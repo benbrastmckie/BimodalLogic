@@ -166,9 +166,12 @@ routing the landed `kvE2_sepCoincidentAnchor_discharge_R`.
 - [ ] Extract right-interior bounds `w < x1 < t` using the pattern in `kvE2_sepHonestBundleR`
       (:1275-1286: `hbit_wx1`/`hbit_x1t` → `hwx1`/`hx1t`), and obtain
       `hfresh : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1)`.
-- [ ] After `rw [kvE2_sepClosedLeafStub]`, select the right branch with
+- [x] After `rw [kvE2_sepClosedLeafStub]`, select the right branch with
       `rw [if_neg (fun h => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans h))]` (exact idiom at :2513),
-      then `exact kvE2_sepCoincidentAnchor_discharge_R …`.
+      then `exact kvE2_sepCoincidentAnchor_discharge_R …`. *(deviation: altered — the private
+      `kvE2_sep_zWT3_ne_zXW3` was declared LATER in the file than the new `_valid_right` lemma, so
+      it was moved up to just before `kvE2_sepClosedLeafStub` to be in scope; it remains in scope
+      for its original later use site. Also used `hcon` instead of shadowing name `h`.)*
 - [ ] `lean_verify kvE2_sepCoincidentOwner_valid_right`; confirm sorry-free and
       `[propext, Classical.choice, Quot.sound]`.
 
@@ -219,7 +222,7 @@ dispatch each owner to the placement-appropriate validator.
 
 ---
 
-### Phase 4: Full build + axiom-cleanliness verification [NOT STARTED]
+### Phase 4: Full build + axiom-cleanliness verification [COMPLETED]
 
 **Goal**: Prove the deliverable's invariants hold across the whole module.
 
