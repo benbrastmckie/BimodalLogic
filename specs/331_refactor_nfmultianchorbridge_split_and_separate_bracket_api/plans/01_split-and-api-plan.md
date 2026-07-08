@@ -261,25 +261,29 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
 - **Timing:** ~60 min
 - **Depends on:** 1
 
-### Phase 3: Extract CarrierKv.lean (+ fold_iff relocation) and RefutationF2.lean [NOT STARTED]
+### Phase 3: Extract CarrierKv.lean (+ fold_iff relocation) and RefutationF2.lean [COMPLETED]
 - **Goal:** Relocate depth-k carrier (~455 lines incl. the one cross-region relocation) and the
   self-contained F2 refutation record (~947 lines).
 - **Tasks:**
-  - [ ] Standard extraction: slab :3604-:4040 → `CarrierKv.lean`. Imports: `CarrierK1V`.
+  - [x] Standard extraction: slab :3604-:4040 → `CarrierKv.lean`. Imports: `CarrierK1V`.
         Contents: `atomKind_castLE` :3640, `nfk_take` :3656, `nfk_projFresh` :3668, `kv_body`
         :3738, `bracketEndChar_kv` :3824, `_correct_zero` :3953, `_correct_one` :3981,
         `_factors` :4008.
-  - [ ] **Sanctioned relocation**: cut the `nf_eval_depth1_fold_iff` block (docstring + theorem,
+  - [x] **Sanctioned relocation**: cut the `nf_eval_depth1_fold_iff` block (docstring + theorem,
         orig. :5344 — determine exact block bounds from `$ORIG_SHA`) out of the monolith and
         append it token-identically to the end of `CarrierKv.lean` (before `end`). Byte-identity
         of the block itself: extract the block's line range from `$ORIG_SHA` and diff.
-  - [ ] Token edit: remove `private ` from `atomKind_castLE` :3640 (used at :4520 in the f2
+        *(block bounds determined: orig :5333-:5358 (docstring :5333, theorem :5344-:5358);
+        excised from monolith with trailing blank :5359; block diff EMPTY)*
+  - [x] Token edit: remove `private ` from `atomKind_castLE` :3640 (used at :4520 in the f2
         block). Total sanctioned edits this phase: 1 de-privatization + 1 relocation.
-  - [ ] Standard extraction: slab :4041-:4987 → `RefutationF2.lean`. Imports: `CarrierKv`.
+  - [x] Standard extraction: slab :4041-:4987 → `RefutationF2.lean`. Imports: `CarrierKv`.
         Header banner: `QUARANTINE / NEGATIVE-RESULT RECORD (F1-F4): merged-route refutation
         machinery; retained byte-identical, do not extend`. Contents: F1 finding record :4041,
         `f2*` probe machinery :4117-:4822 (self-contained), `f2_relativized_refutation` :4884.
-  - [ ] Byte-identity checks for both slabs; `lake build` exit 0.
+  - [x] Byte-identity checks for both slabs (CarrierKv slab: exactly the 1 private-removal hunk;
+        fold_iff block: empty; RefutationF2 slab: empty; monolith remainder vs orig :4988-:5332
+        and :5360-:9249: both empty); `lake build` exit 0 (1713 jobs).
 - **Estimated output:** ~1,410 lines relocated; ~35 scaffold/banner lines; 2 sanctioned edits.
   Two bounded units, each a fixed slab.
 - **Done when:** `lake build` exit 0; both slab diffs show only sanctioned edits; monolith no
