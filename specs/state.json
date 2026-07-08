@@ -3348,7 +3348,7 @@
     {
       "project_number": 337,
       "project_name": "build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct",
-      "status": "researched",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Wire the general region engine k1v_sorted_realizationK (SubBracket2V.lean:633) into the kvE2_sepDisjunct slot/segment/endpoint layout (SharedWitness.lean), delivering a ⇐-direction holds BUILDER for the joint multi-owner disjunct bracket: given the merged per-owner slot lists kvE2_sepSlotsL/R qnf, each positive owner's honest bundle (kvE2_sepHonestBundleL/kvE2_sepHonestBundleR), and witnesses x < w < t, produce (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds M atomMap x t. Steps: (1) map each positive owner's honest bundle into a region compatible with k1v_sorted_realizationK's input shape; (2) run the engine to obtain a globally monotone interleaved witness sequence across all owners; (3) match that sequence to kvE2_sepBracketN's IntervalPattern point types and segments; (4) discharge the endpoint conjuncts kvE2_sepEpL/kvE2_sepEpR at x/t. Deliver as a new lemma (naming pattern: kvE2_sepDisjunct_holds_of_honest or similar, mirroring the existing kvE2_sepGate_holds_of_honest convention) in SharedWitness.lean, sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), preserving all seven faithfulness invariants F1-F7 (especially F5: no open/closed zone-key conflation, and the LITMUS at NavigatedSpine:437: no x1 < e_i relative-position literal -- witness bounds must come from the bracket range, never a chain). Treat all task-334/336 carrier lemmas (kvE2_sepBody_extract, kvE2_sepBody_complete, kvE2_sepHonestBundleL/R, kvE2_sepDisjunct_extract, kvE2_sepArr'_sound) as verified INPUTS -- apply them, do not re-derive or weaken them. FILE-SAFETY NOTE: this task is very likely to edit SharedWitness.lean, the same file task 336 (COMPLETED) just edited to generalize kvE2_sepBody_complete from hL to hLR. Task 336 is already complete so there is no live blocking dependency, but verify on start that the hLR-generalized kvE2_sepBody_complete signature (see specs/336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md) is the one in scope. On completion, task 335 re-dispatches Phases 2-4 (soundness, completeness, assembled k=2 gate) to consume this builder.",
       "effort": "4-5 hours",
@@ -3361,14 +3361,51 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
       ],
       "created": "2026-07-08T22:33:37Z",
-      "last_updated": "2026-07-08T22:33:37Z",
+      "last_updated": "2026-07-08T22:43:07Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 335 (blocker: missing joint multi-owner disjunct bracket-holds engine)"
+        },
+        {
+          "type": "plan",
+          "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/01_joint-disjunct-bracket-holds.md",
+          "summary": "5-phase sequential plan for the joint multi-owner disjunct bracket-holds engine (kvE2_sepDisjunct_holds_of_honest)"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 5,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-08"
+          }
+        ]
+      },
+      "blocker": "Phase 1 architectural: deliverable requires .holds for the FIXED flatMap slot arrangement kvE2_sepSlotsL/R qnf, which is not strictly-monotone-realizable when positive owners interleave. Engine k1v_sorted_realizationK returns a value-sorted List.Perm (a different arrangement); joint carrier kvE2_sepBody hardcodes the flatMap list (unlike the permutation-enumerating single-owner carrier). Codebase (SharedWitness.lean:334-337, :1038-1041) documents this as the unresolved make-or-break. Unblocking needs a carrier edit to kvE2_sepBody/kvE2_sepDisjunct (task-334 INPUT), forbidden by task 337 Non-Goals — requires a scope decision / new task."
     }
   ],
   "artifacts": [
