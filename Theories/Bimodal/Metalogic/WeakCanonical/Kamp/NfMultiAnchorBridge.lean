@@ -9027,4 +9027,88 @@ theorem VVecEA2.holds_flatMap_map {sig : MonadicSignature} {α β : Type}
   · rintro ⟨lL, hlL, lR, hlR, hvea⟩
     exact ⟨mk lL lR, ⟨lL, hlL, lR, hlR, rfl⟩, hvea⟩
 
+/-! ## Task 321 v6 REDESIGN — Phase 5: per-arrangement non-interior SOUNDNESS dischargers
+(folds in redefined former task 329, soundness half)
+
+The five non-interior zones (`zPastX`, `zAtX`, `zAtW`, `zAtT`, `zFutT`, Def 3.1 md:61-74) are the
+zones whose realizing witness is NOT strictly interior to `(x, w)`/`(w, t)`. Over the `VVecEA2`
+channel of `kvE_subBracket2V` (:6833) their fold-bit content is carried by the endpoint predicates
+`epL` (at the fixed left endpoint `x`), `epR` (at the fixed right endpoint `t`), and the witness
+point type `ptW` (at the interior anchor `w`) — each a `formula_conjList` of per-`χ` biconditional
+literals (`lit (bits z χ) …`). These SOUNDNESS dischargers extract, from an endpoint predicate
+holding at its anchor, the zone's realizing witness — the arrangement-independent core each
+per-arrangement disjunct feeds into the Phase-7 gate soundness assembly (they are stated over the
+raw `formula_conjList fs` + a membership hypothesis, so every arrangement's `epL`/`epR`/`ptW`
+instantiates them uniformly; NOT per-`(zone, χ:NormalForm sig 1 1)`).
+
+The two EXTERIOR zones carry the genuine NAVIGATION content (Prop 3.5 folding mechanism, md:87-94):
+`zPastX` rides the `Since` evaluation point (a past witness `v < x`), `zFutT` rides the `Until`
+evaluation point (a future witness `t < v`) — the reconstruction rides the temporal evaluation
+point, NEVER an `x1 < e_i` relative-position literal (LITMUS). The three BOUNDARY zones
+(`zAtX`/`zAtT`/`zAtW`) are point-realizations at the fixed anchors `x`/`t` and the interior anchor
+`w` respectively (the witness IS the anchor). -/
+
+/-- **`zPastX` soundness (exterior-past navigation).** From `epL` holding at the fixed left
+endpoint `x`, the `Since` literal `snce φ ⊤` (present when `bits zPastX χ = true`, with `φ = charBase χ`)
+yields a past witness `v < x` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the
+left endpoint. The witness rides the `Since` evaluation point (LITMUS: no `x1 < e_i` literal). -/
+theorem kvE_nonInterior_zPastX_sound {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x : M.carrier) (fs : List Formula) (φ : Formula)
+    (hmem : Formula.snce φ Formula.top ∈ fs)
+    (hepL : temporal_truth M atomMap x (formula_conjList fs)) :
+    ∃ v : M.carrier, v < x ∧ temporal_truth M atomMap v φ := by
+  have hlit := (formula_conjList_iff M atomMap x fs).mp hepL _ hmem
+  obtain ⟨s, hs_lt, hs_phi, _⟩ := hlit
+  exact ⟨s, hs_lt, hs_phi⟩
+
+/-- **`zFutT` soundness (exterior-future navigation).** From `epR` holding at the fixed right
+endpoint `t`, the `Until` literal `untl φ ⊤` (present when `bits zFutT χ = true`) yields a future
+witness `t < v` realizing `φ` — the Prop 3.5 folding mechanism (md:87-94) read at the right
+endpoint. The witness rides the `Until` evaluation point (LITMUS: no `x1 < e_i` literal). -/
+theorem kvE_nonInterior_zFutT_sound {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) (fs : List Formula) (φ : Formula)
+    (hmem : Formula.untl φ Formula.top ∈ fs)
+    (hepR : temporal_truth M atomMap t (formula_conjList fs)) :
+    ∃ v : M.carrier, t < v ∧ temporal_truth M atomMap v φ := by
+  have hlit := (formula_conjList_iff M atomMap t fs).mp hepR _ hmem
+  obtain ⟨s, hs_lt, hs_phi, _⟩ := hlit
+  exact ⟨s, hs_lt, hs_phi⟩
+
+/-- **`zAtX` soundness (left-boundary point-realization).** From `epL` holding at the fixed left
+endpoint `x`, the bare literal `φ = charBase χ` (present when `bits zAtX χ = true`) is realized AT
+`x` itself — the `v = x` zone (Def 3.1 md:61-74). The witness is the fixed anchor. -/
+theorem kvE_nonInterior_zAtX_sound {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x : M.carrier) (fs : List Formula) (φ : Formula)
+    (hmem : φ ∈ fs)
+    (hepL : temporal_truth M atomMap x (formula_conjList fs)) :
+    temporal_truth M atomMap x φ :=
+  (formula_conjList_iff M atomMap x fs).mp hepL _ hmem
+
+/-- **`zAtT` soundness (right-boundary point-realization).** From `epR` holding at the fixed right
+endpoint `t`, the bare literal `φ` (present when `bits zAtT χ = true`) is realized AT `t` itself —
+the `v = t` zone (Def 3.1 md:61-74). The witness is the fixed anchor. -/
+theorem kvE_nonInterior_zAtT_sound {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) (fs : List Formula) (φ : Formula)
+    (hmem : φ ∈ fs)
+    (hepR : temporal_truth M atomMap t (formula_conjList fs)) :
+    temporal_truth M atomMap t φ :=
+  (formula_conjList_iff M atomMap t fs).mp hepR _ hmem
+
+/-- **`zAtW` soundness (interior-anchor point-realization).** From the witness point type `ptW`
+holding at the interior anchor `w`, the self-zone literal `φ` (present when `bits zAtW χ = true`) is
+realized AT `w` itself — the `v = w` witness self-zone (v2 nine-zone correction; Def 3.1
+md:61-74). The witness is the interior anchor (Amendment F3 preserved: a zone-literal fold on the
+complete 1-type, NOT a `w = e 1` provider equation). -/
+theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w : M.carrier) (fs : List Formula) (φ : Formula)
+    (hmem : φ ∈ fs)
+    (hptW : temporal_truth M atomMap w (formula_conjList fs)) :
+    temporal_truth M atomMap w φ :=
+  (formula_conjList_iff M atomMap w fs).mp hptW _ hmem
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
