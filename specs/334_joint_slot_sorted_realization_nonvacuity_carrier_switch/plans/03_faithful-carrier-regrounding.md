@@ -284,7 +284,7 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 6: Lemma 3.2(1) ⇒ (soundness) + rewire `kvE2_sepBody_nonvacuous` + remove FALSE scaffolds [NOT STARTED]
+### Phase 6: Lemma 3.2(1) ⇒ (soundness) + rewire `kvE2_sepBody_nonvacuous` + remove FALSE scaffolds [IN PROGRESS]
 
 **Goal**: Prove the ⇒ direction — a held order-type disjunct implies the conjunction — over `kvE2_sepArr'`, using the k-anchor region lift (Phase 3) and the three-way cuts (Phases 4-5). Rewire `kvE2_sepBody` / `kvE2_sepBody_nonvacuous` onto `kvE2_sepArr'` (off `List.Perm.refl` / the flat union). Remove the FALSE scaffolds `kvE2_sepSlotsL_valid`/`_valid` and the additive `kvE2_sepValid`/`kvE2_sepArrL/R`/flatMap slot union.
 
