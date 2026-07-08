@@ -1,7 +1,7 @@
 # Implementation Plan: Split NfMultiAnchorBridge.lean and Surface the Separate-Bracket API
 
 - **Task**: 331 - refactor_nfmultianchorbridge_split_and_separate_bracket_api
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8 hours (8 phases, one agent dispatch each)
 - **Dependencies**: None (task 321 depends on THIS task)
 - **Research Inputs**: specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md
@@ -213,21 +213,25 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
 `bash .claude/scripts/git-snapshot.sh` FIRST, then restore to the previous green commit. Never
 `git reset --hard` / `git checkout --` on a dirty tree without the snapshot.
 
-### Phase 1: Extract Base.lean (:88-:1522) and record ORIG_SHA [NOT STARTED]
+### Phase 1: Extract Base.lean (:88-:1522) and record ORIG_SHA [COMPLETED]
 - **Goal:** Create module directory + `Base.lean` (~1,435 lines relocated); pin the pre-task
   snapshot all later phases diff against.
 - **Tasks:**
-  - [ ] `git rev-parse HEAD` → write to
+  - [x] `git rev-parse HEAD` → write to
         `specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/.orig-sha`
         (verify tree is clean first; if dirty, commit or snapshot before pinning).
-  - [ ] `mkdir -p Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/`.
-  - [ ] Standard extraction: slab :88-:1522 → `Base.lean`. Imports: copy the monolith's full
+        *(deviation: altered — tree had unrelated dirty files (pre-existing README.md edit +
+        preflight status files), but the monolith itself was verified byte-identical to HEAD
+        (`git diff HEAD -- <monolith>` empty), so ORIG_SHA=2146e9c05 is a valid pin.)*
+  - [x] `mkdir -p Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/`.
+  - [x] Standard extraction: slab :88-:1522 → `Base.lean`. Imports: copy the monolith's full
         original import block. Contents: phases 1-7 plumbing (`cons_const_apply` :143,
         `nf_char2_*` :213-:544, `nf_zone_flatten_navigable` :712, `A_diag` :786,
         `nf_char3_endpoint_tl` :914, `endChar0` :1040, `seg` :1172, off-diag formulas
         :1252/:1451).
-  - [ ] Token edits this phase: NONE.
-  - [ ] Byte-identity check (expected: empty diff), `lake build` exit 0.
+  - [x] Token edits this phase: NONE.
+  - [x] Byte-identity check (expected: empty diff — PASSED; full-monolith reconstruction diff
+        also empty), `lake build` exit 0 (1710 jobs, "Build completed successfully").
 - **Estimated output:** ~1,435 lines relocated; ~15 new scaffold lines. One bounded unit
   (one module file, fixed slab).
 - **Done when:** `lake build` exit 0; `Base.lean` slab diff empty; `.orig-sha` written.

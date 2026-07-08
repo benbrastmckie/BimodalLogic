@@ -116,13 +116,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 331 (
 
 ### Uncategorized
 
-331 [PLANNED] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
+331 [IMPLEMENTING] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
   └─ 321 [BLOCKED] — (kamp_theorem_formalization: REDESIGN (v6, plan 06). Task 330's PDF-v) (see above)
 
 ## Tasks
 
 ### 331. Refactor nfmultianchorbridge split and separate bracket api
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md]
