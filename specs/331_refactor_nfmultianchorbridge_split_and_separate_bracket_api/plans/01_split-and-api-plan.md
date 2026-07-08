@@ -353,11 +353,16 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
 - **Timing:** ~60 min
 - **Depends on:** 4
 
-### Phase 6: Extract SubBracket2V.lean (protected faithful-API slab) [NOT STARTED]
+### Phase 6: Extract SubBracket2V.lean (protected faithful-API slab) [COMPLETED]
 - **Goal:** Relocate the task-325/326 protected block (~1,874 lines) as one byte-identical slab
   and write the faithful separate-bracket API banner.
 - **Tasks:**
-  - [ ] Standard extraction: slab :6734-:8607 → `SubBracket2V.lean`. Imports: `SubBracket2`.
+  - [x] Standard extraction: slab :6734-:8607 → `SubBracket2V.lean`. Imports: `SubBracket2`.
+        *(deviation: altered — cut shifted to :6734-:8585; orig :8586-:8607 is `open Classical
+        in` + the `/-- ... -/` doc comment of `kvE2_body` :8608, which cannot dangle at module
+        end, so those 22 lines stay with their declaration in the monolith and move with
+        quarantine part 2 in Phase 7 (part 2 becomes :8586-:8826). Partition change only;
+        every line byte-identical.)*
         Contents (all protected byte-identical): `bracketFromLists3` :6766 (stays private),
         `kvE_subBracket2V` :6833, `kvE_subChain2V` :6955, `k1v_sorted_realization3` :7073,
         `k1v_bracket_construct3` :7149, `_sound` :7640, `_sound_of_parts` :7719,
@@ -365,7 +370,7 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
         stays private), `_bounded_anchor_of_outer` :7876, `_sound_of_outer` :7910,
         `_gate_holds_of_honest` :8086, `_nonvacuous` :8119, `_complete` :8159,
         `_correctness_pair` :8549.
-  - [ ] Header banner (new additive text, from the H3 mapping table above): `FAITHFUL
+  - [x] Header banner (new additive text, from the H3 mapping table above): `FAITHFUL
         SEPARATE-BRACKET API (Rabinovich 2014)` naming: Def 3.1 (md:61-74) → `kvE_subBracket2V`;
         Cor 5.4 (md:154-157) → `kvE_subChain2V`; Lemma 5.1 per-σ half (md:134-135) →
         `kvE_subBracket2V_correctness_pair`; correctness kit `_sound`/`_sound_of_parts`/
@@ -374,10 +379,11 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
         md:78) and `VVecEA2.conj_struct` (`VecEAClosure.lean:195`, Lemma 3.4, md:84-85); and an
         explicit note that the shared-interior-witness conjunction (`∃ w, ⋀_σ ...`) is the one
         unbuilt object, owned by task 321.
-  - [ ] Token edits inside the slab: NONE. (All 6 module-2 privates it consumes were already
+  - [x] Token edits inside the slab: NONE. (All 6 module-2 privates it consumes were already
         de-privatized in Phase 2; the 4 module-7 privates in Phase 5.)
-  - [ ] Byte-identity check (expected: EMPTY diff — this is the highest-value protected slab);
-        `lake build` exit 0.
+  - [x] Byte-identity check (expected: EMPTY diff — this is the highest-value protected slab);
+        `lake build` exit 0. *(verified: slab :6734-:8585 EMPTY vs ORIG_SHA; monolith remainder
+        EMPTY in five segments; lake build exit 0, 1717 jobs)*
 - **Estimated output:** ~1,874 lines relocated; ~45 banner/scaffold lines; 0 token edits. One
   bounded unit.
 - **Done when:** `lake build` exit 0; slab diff EMPTY; banner cites Rabinovich items with md
