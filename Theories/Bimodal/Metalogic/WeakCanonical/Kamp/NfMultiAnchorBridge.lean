@@ -8995,4 +8995,36 @@ theorem reflatten_prop43 {sig : MonadicSignature}
     ∃ v : VVecEA2, (v.holds M atomMap z0 z1 ↔ P) :=
   ⟨VVecEA2.disjList vs, by rw [VVecEA2.disjList_holds M atomMap vs z0 z1, hP]⟩
 
+/-! ## Task 321 v6 REDESIGN — Phase 4: navigated witness-growing fold engine (folds in former 328)
+
+**Scope (honest).** The carrier-level SEMANTIC equivalence
+`(carrier qnf).holds M atomMap x t ↔ ∃ w, nf_eval_nf M k 3 [w,x,t] qnf` IS the do-not-edit gate
+`BracketCarrierCorrectVPrior` (:5032), assembled in Phase 7 from the per-arrangement dischargers
+(Phases 5-6) and the per-sub navigated spine (Phase 2 / landed `kvE_subBracket2V_correctness_pair`).
+This phase lands the fold engine's STRUCTURAL CORE: the arrangement-disjunction collapse that
+unfolds the carrier's `VVecEA2.holds` — a doubly-nested product over
+`S_L.permutations × S_R.permutations` (the witness-growing arrangement enumeration, `kvE2_body`
+:8681-8691) — into the finite disjunction of per-arrangement obligations that the Phase-3 re-flatten
+machinery (`disjList_holds`, `reflatten_prop43`) and the Phases-5/6 dischargers consume. This is the
+Prop 3.5 / Cor 5.4 navigating fold read structurally (Rabinovich md:87-94, md:154-157): the model
+chooses ONE arrangement (`lL, lR`) of the interior witnesses between the FIXED endpoints `{x, t}`
+(anchors ≤2, Lemma 3.2(2), md:76-79), and the carrier holds iff SOME arrangement's bracket holds —
+never a fixed-order assertion (rule N5), never an `x1 < e_i` relative-position literal (LITMUS).
+
+Kept general over the disjunct builder `mk` and the arrangement lists so Phase 7 applies it to
+`kvE2_body`'s gate-case disjuncts by `rw` after `dif_pos`. Purely `List.mem_flatMap`/`List.mem_map`
+membership reasoning (the `by omega`-free structural fold); no `simp`/`omega`/`aesop` in the
+chain-construction body. -/
+theorem VVecEA2.holds_flatMap_map {sig : MonadicSignature} {α β : Type}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (LL : List α) (LR : List β) (mk : α → β → Σ n, VecEA2 n) (z0 z1 : M.carrier) :
+    (⟨LL.flatMap (fun lL => LR.map (fun lR => mk lL lR))⟩ : VVecEA2).holds M atomMap z0 z1 ↔
+      ∃ lL ∈ LL, ∃ lR ∈ LR, (mk lL lR).2.holds M atomMap z0 z1 := by
+  simp only [VVecEA2.holds, List.mem_flatMap, List.mem_map]
+  constructor
+  · rintro ⟨vea, ⟨lL, hlL, lR, hlR, rfl⟩, hvea⟩
+    exact ⟨lL, hlL, lR, hlR, hvea⟩
+  · rintro ⟨lL, hlL, lR, hlR, hvea⟩
+    exact ⟨mk lL lR, ⟨lL, hlL, lR, hlR, rfl⟩, hvea⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
