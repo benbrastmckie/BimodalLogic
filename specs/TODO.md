@@ -111,14 +111,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-  └─ 333 [NOT STARTED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+  └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
 ## Tasks
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Dependencies**: Task 321, Task 332
 
