@@ -239,20 +239,21 @@ add the inventoried edit. If the phase must be abandoned mid-edit, run
 - **Timing:** ~45 min
 - **Depends on:** none
 
-### Phase 2: Extract CarrierK1V.lean (:1523-:3603) with 6 de-privatizations [NOT STARTED]
+### Phase 2: Extract CarrierK1V.lean (:1523-:3603) with 6 de-privatizations [COMPLETED]
 - **Goal:** Relocate the k=1 V-carrier kit (~2,081 lines), the largest single module.
 - **Tasks:**
-  - [ ] Standard extraction: slab :1523-:3603 → `CarrierK1V.lean`. Imports: `Base`.
+  - [x] Standard extraction: slab :1523-:3603 → `CarrierK1V.lean`. Imports: `Base`.
         Contents: `bracketEndChar_k0` :1580, `_k1` :1687, `bracketFromLists` :1896,
         `bracketEndChar_k1v` :1940, k1v helper kit :2032-:3135, `_sound` :2495,
         `_complete` :3136, `_correct` :3548.
-  - [ ] Token edits this phase — remove `private ` from exactly these 6 (research Finding 4):
+  - [x] Token edits this phase — remove `private ` from exactly these 6 (research Finding 4):
         `bracketFromLists` :1896, `k1v_bool_eq_false` :2032, `k1v_not_of_iff_false` :2465,
         `k1v_bracket_extract_mono` :2274, `getElem_append3_mid` :2300,
         `k1v_sorted_realization` :2954.
-  - [ ] Byte-identity check (expected diff: exactly the 6 `private ` removals), `lake build`
-        exit 0.
-  - [ ] Optional split at :2836 (research Risk 5) is NOT taken — 2,081 lines is accepted;
+  - [x] Byte-identity check (expected diff: exactly the 6 `private ` removals — PASSED: 6 hunks,
+        12 diff lines, all leading-`private ` removals; monolith tail :3604-:9249 byte-identical),
+        `lake build` exit 0 (1711 jobs, "Build completed successfully").
+  - [x] Optional split at :2836 (research Risk 5) is NOT taken — 2,081 lines is accepted;
         do not re-open.
 - **Estimated output:** ~2,081 lines relocated; ~15 scaffold lines; 6 token edits.
 - **Done when:** `lake build` exit 0; slab diff shows only the 6 sanctioned edits.
