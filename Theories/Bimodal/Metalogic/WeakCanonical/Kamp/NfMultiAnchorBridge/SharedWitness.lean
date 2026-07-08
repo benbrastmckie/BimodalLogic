@@ -1569,28 +1569,34 @@ theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature}
   rw [kvE2_sepClosedLeafStub, if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
   exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0_projFresh σ.1) hfresh
 
-/-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; the ⇐ half the
-    carrier previously lacked, grep-0 before this dispatch). For an honest model realization whose
-    positive owners are all LEFT-interior (the class the landed kit serves — the multi-owner
-    generalization of the retired singleton), the honest COINCIDENCE (tie) arrangement is a VALID,
-    PRESENT member of the faithful carrier `kvE2_sepArr'`; hence the carrier is NON-VACUOUS
-    (`kvE2_sepArr' qnf ≠ []`) unconditionally — the ⇐ direction of Lemma 3.2(1) (md:77): every
-    honest arrangement selects its order-type disjunct (here the coincidence disjunct, §5 meet,
-    md:168-173). Consumes `kvE2_sepCoincidentOwner_valid_left` (8a; the bundle-L anchor + the
-    preserved coincidence discharge). Sorry-free, axiom-clean. Faithfulness: F2 (⇐ realized,
-    non-vacuous), F1, F5 (closed vs open key discrimination), F6.
+/-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; generalized to
+    right-interior owners in task 336). For an honest model realization whose positive owners are
+    each INTERIOR — LEFT (`nf0_zoneSpec σ.1 = kvE2_sep_zXW3`, `x < x1 < w`) OR RIGHT
+    (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`), the disjunction `hLR` — the honest
+    COINCIDENCE (tie) arrangement is a VALID, PRESENT member of the faithful carrier
+    `kvE2_sepArr'`; hence the carrier is NON-VACUOUS (`kvE2_sepArr' qnf ≠ []`) — the ⇐ direction of
+    Lemma 3.2(1) (md:77): every honest arrangement selects its order-type disjunct (here the
+    coincidence disjunct, §5 meet, md:168-173). The per-owner `rcases` dispatches each owner to its
+    placement-appropriate closed-self-zone validator: LEFT →
+    `kvE2_sepCoincidentOwner_valid_left` (`zAtX1L` bit, `kvE2_sepCoincidentAnchor_discharge`);
+    RIGHT → `kvE2_sepCoincidentOwner_valid_right` (`zAtX1R` bit,
+    `kvE2_sepCoincidentAnchor_discharge_R`), both routed through the placement-guarded
+    `kvE2_sepClosedLeafStub`. Sorry-free, axiom-clean. Faithfulness: F2 (⇐ realized, non-vacuous),
+    F1, F5 (closed vs open key discrimination), F6.
 
-    Right-interior owners: their honest closed bit is `zAtX1R` (`kvE2_sepCoincidentAnchor_discharge_R`,
-    proved above), which the current coincident validity channel does not yet read; extending the
-    predicate to the placement-generic self-zone is a tracked carrier-redefinition follow-up (plan
-    :417-419), NOT a weakening — the right discharge itself is landed sorry-free. -/
+    The interior hypothesis `hLR` remains a live obligation: `kvE2_sepPos` admits seven outer zone
+    classes (`kvE2_sepOuterConsistent`, :631-633) with no dichotomy forcing positive owners to be
+    interior. A fully unconditional completeness theorem over the exterior/boundary classes would
+    require new coincidence mathematics for those five classes and is out of scope — the gap is
+    honestly carried as `hLR`, not bridged by any `sorry` or axiom. -/
 theorem kvE2_sepBody_complete {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hL : ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
+        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
     kvE2_sepArr' qnf ≠ [] := by
   apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
   rw [kvE2_sepArr', List.mem_filter]
@@ -1599,7 +1605,10 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
   intro p hp
   rw [List.mem_map] at hp
   obtain ⟨σ, hσmem, rfl⟩ := hp
-  exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem (hL σ hσmem)
+  -- Dispatch each positive owner to its placement-appropriate closed-self-zone validator.
+  rcases hLR σ hσmem with hzone | hzone
+  · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
+  · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
 
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 

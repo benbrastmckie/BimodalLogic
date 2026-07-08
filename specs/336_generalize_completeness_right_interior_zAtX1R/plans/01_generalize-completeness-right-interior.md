@@ -186,7 +186,7 @@ routing the landed `kvE2_sepCoincidentAnchor_discharge_R`.
 
 ---
 
-### Phase 3: Relax `kvE2_sepBody_complete` `hL` → `hLR` with per-owner case split [NOT STARTED]
+### Phase 3: Relax `kvE2_sepBody_complete` `hL` → `hLR` with per-owner case split [COMPLETED]
 
 **Goal**: Change the completeness theorem's hypothesis to the left-OR-right disjunction and
 dispatch each owner to the placement-appropriate validator.
