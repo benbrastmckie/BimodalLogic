@@ -2557,4 +2557,86 @@ theorem kvE2_sepSegLForSub'_at_sound {sig : MonadicSignature}
           (kvE2_sepSegForm charBase σ kvE_sub2_zUW) := by
   simp only [kvE2_sepSegLForSub', hzone, if_pos]
 
+/-! ## Task 334 Phase 5 — three-way segment-meet cut (RIGHT)
+
+The RIGHT mirror of Phase 4. The §5 splitting `A_i = A_i^- ∧ A_i^+` (md:168) with the right
+sub-interval `A_i^+(z,z_1)` (md:170) is realized on the RIGHT region: the tie now belongs to a
+RIGHT-interior owner (`zWT3`, `w < x1_σ < t`), whose two open sub-intervals are the `(w, x1)`
+before-exclusion (`kvE2_sep_zWX1`) and the `(x1, t)` after-exclusion (`kvE_sub2_zWT`). The three-way
+before/**at**/after cut sets the "at" (coincidence) case to the MEET of those two, i.e. universal β
+over the whole shared interval `(w,t) ∖ {x1}` around the closed anchor. A LEFT-interior owner
+(`zXW3`) on the RIGHT region contributes its uniform `(w,t)` exclusion (`kvE_sub2_zWT`), exactly as
+in the binary cut `kvE2_sepSegRForSub` (`:574`) — no tie on the right region for a left-interior
+owner.
+
+Compat-leaf survival audit (Task 334 Phase 4+5, binding):
+  * All FOUR strict-disjunct compat leaves SURVIVE unchanged, re-hosted as strict-disjunct
+    validators (their statements are untouched; only their ROLE changed from bits of the abandoned
+    additive filter to per-order-type strict validators):
+      - `kvE2_sepCompat_lX1_eq`        (:409) — LEFT `strictBefore`, open key `kvE_sub2_zXU`;
+      - `kvE2_sepCompat_lX1_after_eq`  (:422) — LEFT `strictAfter`,  open key `kvE_sub2_zUW`;
+      - `kvE2_sepCompat_rX1_eq`        (:434) — RIGHT `strictBefore`, open key `kvE2_sep_zWX1`;
+      - `kvE2_sepCompat_rX1_after_eq`  (:446) — RIGHT `strictAfter`,  open key `kvE_sub2_zWT`.
+    NONE is replaced.
+  * ONE new closed-zone leaf was ADDED in Phase 4: `kvE2_sepCompat_zAtX1L_eq` (:2505), reading the
+    CLOSED `zAtX1L` key; it serves the coincidence disjunct on BOTH sides (the closed anchor
+    `x1_σ` is the same §5 meet-typed shared point whether σ is left- or right-interior), so no
+    separate right-side closed leaf is needed.
+
+Faithfulness invariants exercised: **F2** (the "at" case is the genuine two-sided meet, never
+`Formula.top` — no weakening to vacuity), **F5** (the coincidence disjunct reads the CLOSED
+`zAtX1L` key via `kvE2_sepCompat_zAtX1L_eq`; the strict disjuncts read the OPEN `zWX1`/`zWT` keys —
+never conflated), **F1** (the meet type is quantifier-free over Σ — a `Formula.and` of two
+`charBase`-fold segment forms), **F6** (per-bracket F-chain unaffected — a per-owner segment
+contribution combined ABOVE the chain).
+
+The binary `kvE2_sepSegRForSub` is left in place (additive build; its removal/rewiring is Phase 6). -/
+
+/-- **Three-way RIGHT segment cut** (Phase 5, supersedes the binary `kvE2_sepSegRForSub`, `:574`).
+    σ's exclusion contribution to a RIGHT-region refined sub-interval, keyed by σ's placement tag on
+    the merged anchor set (the order-type disjunct). Branches on `nf0_zoneSpec σ.1`:
+    * a LEFT-interior owner (`zXW3`) contributes its uniform `(w,t)` exclusion (`kvE_sub2_zWT`),
+      as in the binary cut — no tie on the right region for a left-interior owner;
+    * a RIGHT-interior owner (`zWT3`, `w < x1_σ < t`) gets the three-way before/**at**/after cut:
+      - `strictBefore` → the `(w, x1)` before-exclusion `kvE2_sep_zWX1`;
+      - `coincident`   → the **MEET** `A_i^- ∧ A_i^+` (§5 splitting, md:168; right sub-interval
+        `A_i^+(z,z_1)`, md:170): `Formula.and` of the `(w,x1)` and `(x1,t)` exclusions — universal
+        β over the whole shared interval, the closed anchor's two-sided content (F1 QF meet, F2
+        non-vacuous);
+      - `strictAfter`  → the `(x1, t)` after-exclusion `kvE_sub2_zWT`;
+    * a non-interior σ contributes `Formula.top` (its content rides its endpoint literal).
+    Additive: the binary `kvE2_sepSegRForSub` is retained; Phase 6 rewires the assembly onto this. -/
+noncomputable def kvE2_sepSegRForSub' {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (σ : NormalForm sig 1 4) (tag : KvE2SepSpikeOrderType) : Formula :=
+  if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
+    kvE2_sepSegForm charBase σ kvE_sub2_zWT
+  else if nf0_zoneSpec σ.1 = kvE2_sep_zWT3 then
+    match tag with
+    | .strictBefore => kvE2_sepSegForm charBase σ kvE2_sep_zWX1
+    | .coincident   =>
+        Formula.and (kvE2_sepSegForm charBase σ kvE2_sep_zWX1)
+          (kvE2_sepSegForm charBase σ kvE_sub2_zWT)
+    | .strictAfter  => kvE2_sepSegForm charBase σ kvE_sub2_zWT
+  else Formula.top
+
+/-- **"At"-case soundness** (Phase 5, Risk R2 core content — RIGHT mirror of
+    `kvE2_sepSegLForSub'_at_sound`). For a RIGHT-interior owner σ
+    (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`), the coincidence ("at") case of the three-way cut IS the
+    §5 meet `A_i = A_i^- ∧ A_i^+` (md:168; right sub-interval `A_i^+(z,z_1)`, md:170): the
+    `Formula.and` of σ's `(w,x1)` before-exclusion (`kvE2_sep_zWX1`) and `(x1,t)` after-exclusion
+    (`kvE_sub2_zWT`). This is the faithful universal-β-over-the-shared-interval type — σ excludes
+    every foreign χ it excludes on EITHER open sub-interval, i.e. over the whole interval
+    `(w,t) ∖ {x1}` around the closed anchor. Sound (not vacuity, F2): the meet is a genuine
+    two-sided `charBase`-fold conjunction, never `Formula.top`; QF (F1). Axiom-clean (definitional
+    reduction — no `sorryAx`). -/
+theorem kvE2_sepSegRForSub'_at_sound {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (σ : NormalForm sig 1 4) (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    kvE2_sepSegRForSub' charBase σ KvE2SepSpikeOrderType.coincident
+      = Formula.and (kvE2_sepSegForm charBase σ kvE2_sep_zWX1)
+          (kvE2_sepSegForm charBase σ kvE_sub2_zWT) := by
+  unfold kvE2_sepSegRForSub'
+  rw [if_neg (fun h => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans h)), if_pos hzone]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

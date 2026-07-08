@@ -258,17 +258,17 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 5: Three-way segment-meet cut — RIGHT [NOT STARTED]
+### Phase 5: Three-way segment-meet cut — RIGHT [COMPLETED]
 
 **Goal**: Mirror Phase 4 on the right: replace `kvE2_sepSegRForSub` (C7, `:574`) with the three-way cut; re-host the two RIGHT compat leaves (`kvE2_sepCompat_rX1_eq`, `kvE2_sepCompat_rX1_after_eq`) as strict-disjunct validators. Confirm the same closed-zone leaf serves the right coincidence disjunct.
 
 **Paper citation**: §5 splitting (md:168-173, 213-219), right sub-interval `A_i^+(z,z_1)` (md:170).
 
 **Tasks**:
-- [ ] Define `kvE2_sepSegRForSub'` (three-way before/at/after, right region).
-- [ ] Prove the "at" case sound (right-side, symmetric to Phase 4).
-- [ ] Confirm the two RIGHT compat leaves survive as strict-disjunct validators.
-- [ ] Record the compat-leaf survival audit: all four `kvE2_sepCompat_*_eq` survive; none replaced; one new closed leaf added (Phase 4).
+- [x] Define `kvE2_sepSegRForSub'` (three-way before/at/after, right region). *(completed — SharedWitness.lean:~2600; keys on σ's placement tag: LEFT-interior `zXW3` uniform `kvE_sub2_zWT`; RIGHT-interior `zWT3` three-way strictBefore→`zWX1` / coincident→MEET `Formula.and (zWX1) (zWT)` / strictAfter→`zWT`; else `top`. Additive — binary `kvE2_sepSegRForSub` (:574) retained for Phase 6.)*
+- [x] Prove the "at" case sound (right-side, symmetric to Phase 4). *(completed — `kvE2_sepSegRForSub'_at_sound`: for RIGHT-interior σ, the coincidence case IS the §5 meet `A_i^- ∧ A_i^+` (md:168, right sub-interval `A_i^+(z,z_1)` md:170) = `Formula.and (segForm zWX1) (segForm zWT)`, universal β over `(w,t)∖{x1}`. Non-vacuous (never `top`), QF (F1). Discharges the first `if` via the existing `kvE2_sep_zWT3_ne_zXW3` (:1414), second via `if_pos hzone`. Axiom-clean `[propext, Classical.choice, Quot.sound]`, NO `sorryAx`.)*
+- [x] Confirm the two RIGHT compat leaves survive as strict-disjunct validators. *(completed — `kvE2_sepCompat_rX1_eq` (:434) and `kvE2_sepCompat_rX1_after_eq` (:446) untouched; module builds green with them intact as the strict `zWX1`/`zWT` disjunct validators.)*
+- [x] Record the compat-leaf survival audit: all four `kvE2_sepCompat_*_eq` survive; none replaced; one new closed leaf added (Phase 4). *(completed — audit recorded in the Phase-5 banner docstring in SharedWitness.lean: all four `kvE2_sepCompat_{lX1,lX1_after,rX1,rX1_after}_eq` SURVIVE unchanged and re-hosted as strict-disjunct validators; NONE replaced; the ONE new closed leaf `kvE2_sepCompat_zAtX1L_eq` (Phase 4, :2505) reads the CLOSED `zAtX1L` key and serves the coincidence disjunct on BOTH sides — no separate right-side closed leaf needed.)*
 
 **Acceptance criteria**: compiles green; "at" case axiom-clean; four compat leaves + one closed leaf all live in the new roles.
 
