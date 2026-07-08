@@ -1115,6 +1115,37 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature}
   · intro χ hχ
     exact hbelowUW χ (List.mem_filter.mp hχ).2
 
+/-- **Fresh-anchor / base-χ point distinctness — REDUCED FORM** (task 334 Phase 2).
+    σ's fresh anchor `x1` realizes σ at env `[x1,w,x,t]`; its OWN depth-0 arity-1 base type is
+    therefore `nf0_projFresh σ.1` (extracted by `nf_eval_nf0_cons_factor`). Hence any point `p`
+    realizing a base type `χ` that DIFFERS from `nf0_projFresh σ.1` is distinct from `x1`
+    (`nf_eval_unique` forces the two base types equal on coincidence). This is the honest,
+    sorry-free, axiom-clean distinctness engine.
+
+    IMPORTANT (make-or-break residual): the hypothesis `hχne : χ ≠ nf0_projFresh σ.1` is the
+    genuine obstruction. Research established (and the crux investigation confirmed) that there
+    is NO fresh-vs-base type-separation lemma, and the "E[Σ]-atom incompatible with a base type
+    at a point" intuition is UNSOUND (`charK = existF` is existential; a point may satisfy both).
+    So the distinctness `p ≠ x1` can only come from the base-type inequality `χ ≠ nf0_projFresh σ.1`,
+    which is NOT dischargeable for arbitrary cross-owner base types — distinct positive owners may
+    carry the same base type, and a foreign owner's χ-witness may coincide exactly with another
+    owner's fresh anchor. See the Phase-2 blocker note in the plan. -/
+theorem kvE2_sepFreshAnchor_ne_baseChiPoint {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier)
+    (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (p : M.carrier) (χ : NormalForm sig 0 1)
+    (hp : nf_eval_nf M 0 1 (fun _ => p) χ)
+    (hχne : χ ≠ nf0_projFresh σ.1) :
+    p ≠ x1 := by
+  intro heq
+  subst heq
+  have hσ1 : nf_eval_nf M 0 4 (Fin.cons p (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 :=
+    hσ.1
+  have hfresh : nf_eval_nf M 0 1 (fun _ => p) (nf0_projFresh σ.1) :=
+    ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) p σ.1).mp hσ1).2.1
+  exact hχne (nf_eval_unique M 0 1 (fun _ => p) χ (nf0_projFresh σ.1) hp hfresh)
+
 /-- **O1b — non-vacuity of the joint carrier** (fresh analog of
     `kvE_subBracket2V_nonvacuous`, `SubBracket2V.lean:1425`; FM-vac): for a `qnf` arising
     from an actual model realization under `x < w < t`, the depth-2 gate holds, so the
