@@ -1239,6 +1239,67 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature}
   · intro χ hχ
     exact hbelowUW χ (List.mem_filter.mp hχ).2
 
+/-- **Per-owner RIGHT honest bundle** (task 334 Phase 7, C13 — the completeness-side mirror of
+    `kvE2_sepHonestBundleL` :1207). From an honest `qnf` and a RIGHT-interior owner σ
+    (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, i.e. `w < x1 < t`), extract σ's fresh anchor `x1`
+    strictly inside `(w, t)` together with real witnesses for each of its `zWX1`-positive
+    (region `(w, x1)`) and `zWT`-positive (region `(x1, t)`) 1-types. Symmetric to the LEFT
+    bundle: the LEFT bundle serves `zXU`/`zUW` around a `(x, w)`-interior anchor; this serves
+    `zWX1`/`zWT` around a `(w, t)`-interior anchor (`kvE_sub2_zWT` reads `x1 < v < t` for a
+    right-interior σ, per the placement-generic comment :102-105).
+
+    Proof route (mirrors L, per plan 03 Phase-7 tasks): `qnf`'s depth-2 quant layer supplies σ's
+    model witness `x1`; the depth-1 fold decomposition `nf_eval_depth1_fold_iff` (the extractor's
+    generic zone-forward channel, the SAME `h_zone` iff feeding `kvE_subBracket2_complete_extract`)
+    fired REVERSE (`.mpr`) at zones `zWX1`/`zWT` yields the region witnesses, whose intervals are
+    decoded by the pure order fact `kvE_sub2_zoneHolds_cons_iff` (the Phase-3 region structure;
+    Def 3.1 exterior/interior β, md:66-74; Lemma 3.2(1) ⇐ honest arrangement, md:77). No
+    `x1 < e_i` literal (F4); QF point types only (F1); disjunction realized non-vacuously per
+    honest owner (F2). -/
+private theorem kvE2_sepHonestBundleR {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    ∃ x1 : M.carrier, w < x1 ∧ x1 < t ∧
+      (∀ χ ∈ kvE2_sepS σ kvE2_sep_zWX1,
+        ∃ u : M.carrier, w < u ∧ u < x1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) ∧
+      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zWT,
+        ∃ u : M.carrier, x1 < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ) := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
+  obtain ⟨_h_atom, h_quant⟩ := h
+  obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+  obtain ⟨hσ_atom, h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
+  have hbit_wx1 : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+    rw [congrFun hzone ⟨0, by omega⟩]; decide
+  have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+    rw [congrFun hzone ⟨2, by omega⟩]; decide
+  have hwx1 : w < x1 := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_wx1
+  have hx1t : x1 < t := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1t
+  refine ⟨x1, hwx1, hx1t, ?_, ?_⟩
+  · intro χ hχ
+    have hbit : σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true := (List.mem_filter.mp hχ).2
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zWX1 χ).mpr hbit
+    obtain ⟨hp0, hp1, _, _⟩ :=
+      (kvE_sub2_zoneHolds_cons_iff M x1 w x t v (true, false) (false, true) (false, true)
+        (true, false)).mp hz
+    exact ⟨v, hp1.2.mpr rfl, hp0.1.mpr rfl, hv⟩
+  · intro χ hχ
+    have hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true := (List.mem_filter.mp hχ).2
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zWT χ).mpr hbit
+    obtain ⟨hp0, _, _, hp3⟩ :=
+      (kvE_sub2_zoneHolds_cons_iff M x1 w x t v (false, true) (false, true) (false, true)
+        (true, false)).mp hz
+    exact ⟨v, hp0.2.mpr rfl, hp3.1.mpr rfl, hv⟩
+
 /-- **Fresh-anchor / base-χ point distinctness — REDUCED FORM** (task 334 Phase 2).
     σ's fresh anchor `x1` realizes σ at env `[x1,w,x,t]`; its OWN depth-0 arity-1 base type is
     therefore `nf0_projFresh σ.1` (extracted by `nf_eval_nf0_cons_factor`). Hence any point `p`

@@ -310,15 +310,15 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 7: `kvE2_sepHonestBundleR` — completeness-side mirror [NOT STARTED]
+### Phase 7: `kvE2_sepHonestBundleR` — completeness-side mirror [COMPLETED]
 
 **Goal**: Build the absent right honest bundle (C13): from an honest `qnf`, a right-interior owner σ yields anchor `x1` + real witnesses per its `zWX1`/`zWT` 1-types, mirroring `kvE2_sepHonestBundleL` (`:1083`). This is the completeness-side per-owner input consumed by Phase 8.
 
 **Paper citation**: Def 3.1 exterior/interior β (md:66-74); Lemma 3.2(1) ⇐ honest arrangement (md:77).
 
 **Tasks**:
-- [ ] State `kvE2_sepHonestBundleR` symmetric to `kvE2_sepHonestBundleL`.
-- [ ] Prove via the extractor's generic forward channel + the region structure (Phase 3).
+- [x] State `kvE2_sepHonestBundleR` symmetric to `kvE2_sepHonestBundleL`. *(completed — SharedWitness.lean:1262, private theorem symmetric to L (:1207): RIGHT-interior owner σ (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`) yields anchor `x1` ∈ `(w, t)` + witnesses for `zWX1`-positive (region `(w, x1)`) and `zWT`-positive (region `(x1, t)`) 1-types. Signature mirrors L's exactly (same params, same `hxw`/`hwt` structure).)*
+- [x] Prove via the extractor's generic forward channel + the region structure (Phase 3). *(completed — routes through `nf_eval_depth1_fold_iff` (the SAME generic `h_zone` iff underlying `kvE_subBracket2_complete_extract`) fired REVERSE `.mpr` at `zWX1`/`zWT`, with intervals decoded by `kvE_sub2_zoneHolds_cons_iff` (the Phase-3 region structure). Green, sorry-free; `lean_verify` = `[propext, Classical.choice, Quot.sound]`, NO `sorryAx`. F1/F2/F4 preserved.)*
 
 **Acceptance criteria**: compiles green, sorry-free; symmetric to and consistent with the landed L bundle.
 
