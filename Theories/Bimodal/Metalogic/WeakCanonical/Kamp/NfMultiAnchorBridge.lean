@@ -9180,4 +9180,70 @@ theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature}
     temporal_truth M atomMap w φ :=
   hw_phi
 
+/-! ## Task 321 v6 REDESIGN — Phase 7: k=2 gate assembly → **RESCOPE (outer quant-layer connector
+is a genuine unbuilt ENGINE; declared follow-up)** — machine-grounded DECISION GATE
+
+**Question decided (with captured `lean_goal`).** Does the k=2 gate
+`BracketCarrierCorrectVPrior atomMap (bracketEndChar_kvE2 atomMap h_surj P)` (:5032 def, :8712
+carrier) close in both directions from the CURRENTLY LANDED v6 assets (Phases 1-6: the per-sub
+navigated spine `kvE_fold_navigated`/`kvE_subBracket2V_correctness_pair` :8549, the Prop 4.3
+re-flatten `reflatten_prop43`, the structural `VVecEA2.holds_flatMap_map`, and the 10 non-interior
+`_sound`/`_complete` dischargers)? **Verdict: NOT in one dispatch — the OUTER quant-layer connector
+between the depth-2 carrier and the depth-2 evaluation is a substantial UNBUILT engine.**
+
+**This is NOT a task-327-style NO-GO.** Task 327 (:8760-8825) certified the CONSTANT-ARITY route
+STRUCTURALLY impossible (`ZoneSpec 4` uncarryable by `ZoneSpec 1`). The v6 navigated route is
+structurally CAPABLE: the landed `kvE_subBracket2V_correctness_pair` (:8549) discharges the arity-4
+depth-1 sub instance in BOTH directions via `zoneHolds M [x1,w,x,t] zs v` over `ZoneSpec 4` — the
+joint content task-327 lacked. What is missing is the *assembly*, not the *capability*.
+
+**Captured soundness crux (`lean_goal`, mp direction).** After `intro qnf … M h_UZ h_SZ x t`,
+`constructor`, `intro hcarrier`:
+
+    hcarrier : VVecEA2.holds M atomMap (bracketEndChar_kvE2 atomMap h_surj P qnf) x t
+    ⊢ ∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x fun x ↦ t)) qnf
+
+The RHS unfolds (NormalForm:203-207) to the atom layer PLUS the outer quant layer
+`∀ sub : NormalForm sig 1 4, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔ qnf.2 sub = true` — the exact
+crux the task-327 record names. `kvE2_body` (:8608) is a TWO-LEVEL carrier: its witness slots are
+`charK`-typed (`charK = P.existF 0`) DEPTH-1 realizers connected to the inner reconstruction only
+through `ExistProviders.correct` (:5013), while each positive sub `σ` contributes a navigated
+sub-chain `kvE_subChain2V charBase charK σ` (:6674) SPLICED (via `slotsFor`) with all other subs'
+slots into ONE bracket. The connector must (a) unpack the arrangement disjunct, (b) build the outer
+witness `w` at the `ptW` slot, (c) type each depth-1 witness via `ExistProviders.correct`, (d)
+discharge each positive sub's inner `∃ x1` through its navigated sub-chain + the per-sub `hgate`
+(the arity-4 zone bridge, derivable from the carrier's `segXU`/`segUW`/`segWT` + `exclAt`
+structure — the honest half of `kvE_subBracket2V_gate_holds_of_honest` :8086), and (e) thread the
+depth-2 quant-layer fold. This is the "general-j=1 outer quant-layer fold engine" the v5 Phase-10
+record declared missing; the v6 Phase-4 delivered only its STRUCTURAL core (`holds_flatMap_map`),
+by design deferring the SEMANTIC assembly here.
+
+**Failed closers on the captured crux (≥2 required; four captured — task-327 evidence style):**
+  1. `exact kvE_subBracket2V_sound_of_outer atomMap h_surj (fun χ => P.existF 0 χ) qnf.2 …` →
+     *Application type mismatch: `qnf.2` has type `NormalForm sig 1 (3+1) → Bool` but is expected to
+     have type `NormalForm sig 1 4`.* The interior closer is PER-SUB (one `σ`); it is level-mismatched
+     to the OUTER quant map `qnf.2` — the connector, not the closer, is what must range over subs.
+  2. `simp only [bracketEndChar_kvE2, kvE2_body, VVecEA2.holds, VecEA2.holds] at hcarrier` → unfolds
+     `hcarrier` to the full two-level arrangement-disjunct `∃ vea ∈ (if kvE_gate … then flatMap …)`
+     existential; goal `∃ w, nf_eval_nf M 2 3 …` UNSOLVED (no bridge from disjunct to depth-2 eval).
+  3. `rw [VVecEA2.holds_flatMap_map] at hcarrier` → *rewrite failed: pattern not found* — the Phase-4
+     structural lemma does not match the un-unfolded `bracketEndChar_kvE2` carrier; its `let`-bound
+     `S_L`/`S_R`/`mkDisjunct` internals are not externally nameable (the Phase-4 scope note), so even
+     the structural collapse needs a carrier-specific re-derivation the connector must supply.
+  4. `aesop` → *failed to prove the goal after exhaustive search.*
+
+**LITMUS.** No `x1 < e_i` relative-position literal was introduced; the obstruction is the unbuilt
+two-level assembly, not a positioning literal. The captured crux rides the evaluation point (the
+`∃ w`/`∃ x1` existentials over `nf_eval_nf`), consistent with the navigated route.
+
+**Consequence (RESCOPE, plan §Rollback RE-SCOPE fallback).** The k=2 gate is NOT closed by this
+dispatch; per the honesty mandate NO `sorry` and NO gate-modulo-assumed-`hgate` is committed. The
+remaining work is a well-scoped, structurally-sanctioned ENGINE (≈ the deferred Phase-4 semantic
+assembly + Phase-7 glue), to be built in a dedicated follow-up:
+`kvE2_outer_fold` : `kvE2_body … .holds M atomMap x t ↔ (atomLayer ∧ ∀ σ, (∃ x1, nf_eval M 1 4
+[x1,w,x,t] σ) ↔ qnf.2 σ)` — unpacking the arrangement bracket into per-sub obligations via
+`ExistProviders.correct` + the navigated sub-chain + the `hgate` discharge from the carrier's
+per-region segment structure, then assembling the outer witness `w`. The v6 supporting bricks
+(Phases 1-6) are the correct, landed inputs to this engine. This record is additive and inert. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
