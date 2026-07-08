@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 332,
+  "next_project_number": 333,
   "active_projects": [
     {
       "project_number": 322,
@@ -3127,6 +3127,22 @@
         }
       ],
       "completion_summary": "Split 9,249-line NfMultiAnchorBridge.lean into 10 byte-identical modules + import-only umbrella (9,493 lines total); exactly 11 sanctioned de-privatizations + 1 fold_iff relocation; all Phase-8 gates pass (build 1719 jobs, 4 flagship theorems axiom-clean, sorry parity 47=47, KampPrior untouched); faithful separate-bracket API surfaced in SubBracket2V.lean + NavigatedSpine.lean for task 321."
+    },
+    {
+      "project_number": 332,
+      "project_name": "boneyard_sweep_quarantined_merged_bracket_infrastructure",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Post-321 Boneyard sweep of quarantined/refuted NfMultiAnchorBridge infrastructure. Task 331 extracted the refuted merged-bracket route (bracket-whose-points-are-brackets, violating the no-nesting audit rule and Rabinovich 2014 Lemma 5.1 quantifier-free point-type requirement) into Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/MergedQuarantine.lean as an in-tree byte-identical quarantine rather than archiving to Theories/Bimodal/Boneyard/. It is still live-imported by NavigatedSpine.lean and the umbrella NfMultiAnchorBridge.lean. AFTER task 321 completes (GO or fallback verdict recorded): (1) inventory which declarations in MergedQuarantine.lean (and any other v1-v5 refuted arity-1 fold-engine remnants, e.g. nfk_assemble/nfk_dropFresh/nfk_zoneSpec, efold_of_nfk, nf_quant_layer_fold_k2_gate) are still referenced by live code — if any are, either the reference is itself dead or the decl must stay; (2) move the genuinely dead quarantined material to Theories/Bimodal/Boneyard/ following the existing Boneyard module conventions (with provenance header), or delete if the byte-identical record is no longer needed; (3) remove the MergedQuarantine imports from NavigatedSpine.lean and NfMultiAnchorBridge.lean; (4) verify full lake build green and axiom-clean status of the surviving public API. Constraint: do not run concurrently with task 321 (file_scope overlap on NfMultiAnchorBridge).",
+      "dependencies": [
+        321
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
+        "Theories/Bimodal/Boneyard/"
+      ],
+      "created": "2026-07-08T06:39:39Z"
     }
   ],
   "artifacts": [

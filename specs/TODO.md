@@ -1,10 +1,10 @@
 ---
-next_project_number: 332
+next_project_number: 333
 ---
 
 # TODO
 
-Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-fatal)
+Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 332 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-08. Generated from state.json dependency graph.*
@@ -13,7 +13,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,321 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
+| 2 | 192,196,231,292,293,294,298,309,332 | 161,187,191,194,230,291,300,321 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
@@ -111,10 +111,20 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 
 321 [IMPLEMENTING] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+  └─ 332 [NOT STARTED] — Post-321 Boneyard sweep of quarantined/refuted NfMultiAnchorBridg
 
 ### Uncategorized
 
 ## Tasks
+
+### 332. Boneyard sweep quarantined merged bracket infrastructure
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 321
+
+**Description**: Post-321 Boneyard sweep of quarantined/refuted NfMultiAnchorBridge infrastructure. Task 331 extracted the refuted merged-bracket route (bracket-whose-points-are-brackets, violating the no-nesting audit rule and Rabinovich 2014 Lemma 5.1 quantifier-free point-type requirement) into Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/MergedQuarantine.lean as an in-tree byte-identical quarantine rather than archiving to Theories/Bimodal/Boneyard/. It is still live-imported by NavigatedSpine.lean and the umbrella NfMultiAnchorBridge.lean. AFTER task 321 completes (GO or fallback verdict recorded): (1) inventory which declarations in MergedQuarantine.lean (and any other v1-v5 refuted arity-1 fold-engine remnants, e.g. nfk_assemble/nfk_dropFresh/nfk_zoneSpec, efold_of_nfk, nf_quant_layer_fold_k2_gate) are still referenced by live code — if any are, either the reference is itself dead or the decl must stay; (2) move the genuinely dead quarantined material to Theories/Bimodal/Boneyard/ following the existing Boneyard module conventions (with provenance header), or delete if the byte-identical record is no longer needed; (3) remove the MergedQuarantine imports from NavigatedSpine.lean and NfMultiAnchorBridge.lean; (4) verify full lake build green and axiom-clean status of the surviving public API. Constraint: do not run concurrently with task 321 (file_scope overlap on NfMultiAnchorBridge).
+
+---
 
 ### 331. Refactor nfmultianchorbridge split and separate bracket api
 - **Status**: [COMPLETED]
