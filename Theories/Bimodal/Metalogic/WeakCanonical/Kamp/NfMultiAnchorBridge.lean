@@ -9111,4 +9111,73 @@ theorem kvE_nonInterior_zAtW_sound {sig : MonadicSignature}
     temporal_truth M atomMap w φ :=
   (formula_conjList_iff M atomMap w fs).mp hptW _ hmem
 
+/-! ## Task 321 v6 REDESIGN — Phase 6: per-arrangement non-interior COMPLETENESS dischargers
+
+The completeness mirrors of the Phase-5 `_sound` dischargers: where soundness EXTRACTS a witness
+from a held literal, completeness BUILDS the literal from a witness. Same VVecEA2-channel abstraction
+(over `φ : Formula` + `temporal_truth`), so every arrangement's `epL`/`epR`/`ptW` construction feeds
+the Phase-7 gate completeness assembly uniformly (NOT per-`(zone, χ:NormalForm sig 1 1)`).
+
+The two EXTERIOR zones carry the genuine NAVIGATION content (Prop 3.5 folding mechanism, md:87-94;
+Cor 5.4 md:154-157): `zPastX` INTRODUCES the `Since` literal `snce φ ⊤` from a past witness `v < x`,
+`zFutT` INTRODUCES the `Until` literal `untl φ ⊤` from a future witness `t < v` — the reconstruction
+rides the temporal evaluation point (the witness `v`), NEVER an `x1 < e_i` relative-position literal
+(LITMUS). The interval obligation is discharged by `temporal_truth_top` (the `⊤` segment is vacuous).
+The three BOUNDARY zones (`zAtX`/`zAtT`/`zAtW`) are point-realizations at the fixed anchors `x`/`t`
+and the interior anchor `w`: the bare literal `φ` held at the anchor IS its own completeness witness
+(Amendment F3 preserved: a zone-literal on the complete 1-type, not a `w = e 1` provider equation). -/
+
+/-- **`zPastX` completeness (exterior-past navigation).** A past witness `v < x` realizing `φ` BUILDS
+the `Since` literal `snce φ ⊤` at the fixed left endpoint `x` — the introduction direction of the
+Prop 3.5 folding mechanism (md:87-94). The witness rides the `Since` evaluation point; the `⊤`
+segment obligation is vacuous (`temporal_truth_top`). LITMUS: no `x1 < e_i` literal. -/
+theorem kvE_nonInterior_zPastX_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x v : M.carrier) (φ : Formula)
+    (hv_lt : v < x)
+    (hv_phi : temporal_truth M atomMap v φ) :
+    temporal_truth M atomMap x (Formula.snce φ Formula.top) :=
+  ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
+
+/-- **`zFutT` completeness (exterior-future navigation).** A future witness `t < v` realizing `φ`
+BUILDS the `Until` literal `untl φ ⊤` at the fixed right endpoint `t` — the introduction direction of
+the Prop 3.5 folding mechanism (md:87-94; Cor 5.4 md:154-157). The witness rides the `Until`
+evaluation point; the `⊤` segment obligation is vacuous. LITMUS: no `x1 < e_i` literal. -/
+theorem kvE_nonInterior_zFutT_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t v : M.carrier) (φ : Formula)
+    (hv_lt : t < v)
+    (hv_phi : temporal_truth M atomMap v φ) :
+    temporal_truth M atomMap t (Formula.untl φ Formula.top) :=
+  ⟨v, hv_lt, hv_phi, fun r _ _ => temporal_truth_top M atomMap r⟩
+
+/-- **`zAtX` completeness (left-boundary point-realization).** The bare literal `φ` realized AT the
+fixed left endpoint `x` IS its own completeness witness — the `v = x` zone (Def 3.1 md:61-74). No
+navigation: the anchor witnesses directly. -/
+theorem kvE_nonInterior_zAtX_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x : M.carrier) (φ : Formula)
+    (hx_phi : temporal_truth M atomMap x φ) :
+    temporal_truth M atomMap x φ :=
+  hx_phi
+
+/-- **`zAtT` completeness (right-boundary point-realization).** The bare literal `φ` realized AT the
+fixed right endpoint `t` IS its own completeness witness — the `v = t` zone (Def 3.1 md:61-74). -/
+theorem kvE_nonInterior_zAtT_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) (φ : Formula)
+    (ht_phi : temporal_truth M atomMap t φ) :
+    temporal_truth M atomMap t φ :=
+  ht_phi
+
+/-- **`zAtW` completeness (interior-anchor point-realization).** The self-zone literal `φ` realized
+AT the interior anchor `w` IS its own completeness witness — the `v = w` witness self-zone (v2
+nine-zone correction; Def 3.1 md:61-74; Amendment F3 preserved). -/
+theorem kvE_nonInterior_zAtW_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w : M.carrier) (φ : Formula)
+    (hw_phi : temporal_truth M atomMap w φ) :
+    temporal_truth M atomMap w φ :=
+  hw_phi
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
