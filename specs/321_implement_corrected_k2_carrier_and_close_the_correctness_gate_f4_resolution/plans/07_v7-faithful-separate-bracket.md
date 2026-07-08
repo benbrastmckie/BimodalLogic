@@ -537,7 +537,16 @@ crux-capture commit.
 - **Rollback/Contingency:** none needed (no code). The RE-SCOPE ladder (below) is the
   contingency structure this phase administers.
 
-### Phase 11: N2 singleton carrier + extraction + hgate + both directions (N2-A + N2-B; replaces FULL O5+O6 per the Phase 10 amendment) [NOT STARTED]
+### Phase 11: N2 singleton carrier + extraction + hgate + both directions (N2-A + N2-B; replaces FULL O5+O6 per the Phase 10 amendment) [PARTIAL]
+
+**SKELETON LANDED (2026-07-08).** N2-A fully closed (sorry-free); N2-B scaffold + both-direction
+statements landed green, with the core O4 `hgate` residue and the O6 completeness lift isolated as
+two TRACKED strategic sorries (see the N2-B crux record below). `lake build` exit 0; `git diff
+--stat` touches only `SharedWitness.lean` (+224 lines). Sorry-free landed pieces:
+`kvE2_sepBody_singleton` / `_eq` / `_nonvacuous` (N2-A), `kvE2_sepSingleton_neg_offFiber`,
+`kvE2_sepSingleton_neg_zone` (D3 negatives), `kvE2_sepBody_singleton_gate`. The forward theorem
+`kvE2_sepBody_singleton_sound_left` closes the full extraction→`kvE2_sepBundleL_parts`→
+`kvE_subBracket2V_sound_of_parts` pipeline modulo the one `hgate` lemma.
 
 *(Re-scoped 2026-07-07 by the Phase 10 gate: verdict N2. Content promoted from Appendix N2,
 blocks N2-A and N2-B. The FULL O5+O6 assembly this section previously specified is superseded;
@@ -551,14 +560,21 @@ record.)*
   (no cross-σ slots) and the landed `_of_outer` closers already serve.
 - **Target file(s):** `SharedWitness.lean` (append).
 - **Tasks:**
-  - [ ] **N2-A — Degenerate carrier + wrapper** (replaces the FULL O1 consumption): the joint
+  - [x] **N2-A — Degenerate carrier + wrapper** (replaces the FULL O1 consumption): the joint
         carrier degenerates to the single σ's `kvE_subBracket2V` (`SubBracket2V.lean:139`)
         plus the atom layer and negatives. O1 collapses to a wrapper def
         (`kvE2_sepBody_singleton` or a restriction of the landed `kvE2_sepBody` — reuse
         Phase 7's def, which IS landed) with a non-vacuity analog; no interleaving
-        enumeration. Est. 40-80 lines.
+        enumeration. Est. 40-80 lines. *(done: `kvE2_sepSingleton` predicate,
+        `kvE2_sepBody_singleton` reuse-wrapper + `_eq`, `kvE2_sepBody_singleton_nonvacuous`;
+        sorry-free; committed.)*
         Green-substep commit: `task 321 phase 11 (N2-A): singleton carrier wrapper`.
-  - [ ] **N2-B — Singleton extraction + O4-at-minimum-size + both directions**: O3 collapses
+  - [ ] **N2-B — Singleton extraction + O4-at-minimum-size + both directions** *(deviation:
+        altered — SKELETON landed, not fully closed. Scaffold + both-direction statements
+        (`kvE2_sepBody_singleton_sound_left`, `_complete_left`), the gate lemma, and D3 negatives
+        are green/sorry-free; the O4 `hgate` forward/backward-zone residue
+        (`kvE2_sepSingleton_hgate_left`) and the O6 completeness lift (`_complete_left`) are two
+        TRACKED strategic sorries — see the crux record below).* : O3 collapses
         to the landed per-σ extraction machinery (`kvE_sub2V_bounded_anchor_of_outer`
         `SubBracket2V.lean:1182`; `kvE_subBracket2V_sound_of_outer` `:1216` as the assembled
         shape). O4 remains — but over ONE σ against σ's OWN segments (every left-list witness
@@ -585,6 +601,40 @@ record.)*
   the singleton O4 residue nonetheless fails (it should not — no cross-σ slots exist), capture
   an inert crux record in house style and return a FAIL to the orchestrator; no further
   narrowing rung exists below N2.
+
+#### N2-B CRUX RECORD — task 321 v7 Phase 11 (2026-07-08): O4 hgate residue DEFERRED (inert; two tracked strategic sorries)
+
+**Not a route NO-GO; a scoped deferral.** N2-A and the N2-B scaffold landed green and additive
+(`git diff --stat` = `SharedWitness.lean` only, +224). What did NOT close in this dispatch: the
+per-σ `hgate` that the landed `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1025`)
+consumes, and the O6 completeness lift.
+
+**Key structural finding.** ALL landed soundness closers — `kvE_subBracket2V_sound` (`:946`),
+`_sound_of_parts` (`:1025`), `_sound_of_outer` (`:1216`) — take the six-conjunct `hgate` as a
+HYPOTHESIS; none derives its forward-zone conjunct (`:1873-1877`). So even at singleton size the
+O4 residue must be derived *by this section* from the carrier, not inherited. `kvE2_sepBody_extract`
+surfaces the endpoint/witness/bundle facts but NOT the bracket's full interval-decomposition
+coverage of `(x,t)` — the exact fact the forward-zone conjunct needs (every model point of `(x,t)`
+is a σ-own slot or a segment-covered open sub-interval → a realized zone point forces σ's fold bit
+true). The Phase-9 derivable core discharges the OTHER conjuncts (`kvE2_sepHgate_offFiber` gives
+inner off-fiber; `w < t` is direct), so the residue is isolated to `kvE2_sepSingleton_hgate_left`'s
+four internal holes (`a < w`, σ.1 atom layer, forward-zone, backward-zone).
+
+**Two tracked strategic sorries (five-condition test met: deliberate division boundary, tightly
+scoped to one lemma each, documented inline + here, tracked in the dispatch handoff, build-green):**
+1. `kvE2_sepSingleton_hgate_left` — the O4 forward/backward-zone residue (singleton bracket
+   interval-coverage). Follow-up: a per-σ segment-coverage lemma for the singleton bracket, then
+   discharge in place.
+2. `kvE2_sepBody_singleton_complete_left` — the O6 lift from the per-σ `kvE_subBracket2V.holds`
+   (produced by the landed `kvE_subBracket2V_complete` `:1465`) to the joint `kvE2_sepBody.holds`
+   at singleton size (O2 single-disjunct realization). Follow-up: the singleton disjunct
+   realization construction.
+
+**LITMUS / no-nesting.** No `x1 < e_i` relative-position literal introduced; no merged-bracket or
+constant-arity construct; purely additive (audited green). The prohibited patches (chain-splice
+FM-merge, `x1 < e_i`, gate-modulo-assumed `hgate`, vacuous placeholder) were NOT applied — the two
+sorries are honest, documented skeleton division points, each with a named follow-up. This record
+is additive and inert.
 
 ### Phase 12: N2-C gate wrapper restricted to the singleton fragment (replaces the FULL O7 wrapper per the Phase 10 amendment) [NOT STARTED]
 

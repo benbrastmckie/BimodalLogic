@@ -1,40 +1,72 @@
 {
-  "status": "implemented",
+  "status": "partial",
   "task_number": 321,
-  "session_id": "sess_1783487859_3f6358",
+  "session_id": "sess_1783494069_7e0fe7",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "orchestrate", "skill-orchestrate-hard", "lean-implementation-hard-agent"],
-  "skeleton": false,
-  "gate_verdict": "N2",
-  "gate_verdict_rationale": "O4 failed its one dedicated dispatch (forward-zone hgate conjunct underdetermined at cross-sigma slot points, evidenced in the inert O4 CRUX RECORD, SharedWitness.lean:1562); the plan's routing table prescribes FAIL on O4 -> N2, and N1/FULL are disqualified (N1 requires an O4 PASS; FULL requires all PASS criteria).",
-  "summary": "Phase 10 (DECISION GATE) complete. Verdict: N2 (single-positive-sub fragment), independently re-verified against the plan's PASS/FAIL table from the Phase 8 PASS + Phase 9 FAIL evidence rather than rubber-stamped: PASS criterion 2 fails on the forward-zone conjunct with no carrier channel (five lean_goal-verbatim failed closers, channel exhaustion, no-additive-repair analysis), matching the plan's FAIL condition verbatim. Plan amendment applied per the phase's own procedure: dated VERDICT RECORD landed under the Phase 10 heading (marked [COMPLETED]); Phases 11-12 replaced by the promoted Appendix N2 content (N2-A/N2-B -> Phase 11, est. 160-280 lines; N2-C kvE2_sepBody_correct_singleton -> Phase 12, est. 80-130 lines), both [NOT STARTED]; Phase 13 annotated with the N2 fragment scope (F4 runs unchanged, single-sigma discriminator); RE-SCOPE ladder marked BRANCH TAKEN: N2; appendix marked PROMOTED. Deferred fragment recorded honestly in the plan and in state.json's task description: the multi-positive-sub case (faithful repair = bit-compatibility filtering of kvE2_sepArrL/R, a non-additive Phase-7 carrier re-definition) is deferred to a successor task; the GO/NO-GO deliverable for task 309 Phase 13.4 + KampPrior.lean:351 is now fragment-scoped. generate-todo.sh re-run. No Lean code written (per phase spec: 0 Lean lines). Phase 9's four landed lemmas remain live N2 inputs.",
+  "skeleton": true,
+  "phase_number": 11,
+  "phase_status": "PARTIAL (skeleton landed)",
+  "summary": "Phase 11 (N2) landed as a documented strategic-sorry skeleton, touching only SharedWitness.lean (+224 lines). N2-A (singleton carrier wrapper kvE2_sepBody_singleton + _eq + non-vacuity analog) fully closed and sorry-free. N2-B scaffold: D3 negatives (kvE2_sepSingleton_neg_offFiber/_neg_zone), the gate lemma (kvE2_sepBody_singleton_gate), and both-direction statements (kvE2_sepBody_singleton_sound_left forward, _complete_left backward) landed green; the forward theorem closes the full extraction -> kvE2_sepBundleL_parts -> kvE_subBracket2V_sound_of_parts pipeline modulo one hgate lemma. KEY STRUCTURAL FINDING: all landed soundness closers take the 6-conjunct hgate as a HYPOTHESIS; none derives the forward-zone conjunct, so the O4 residue must be derived from the carrier by this section, and kvE2_sepBody_extract does not surface the required bracket interval coverage. The O4 hgate forward/backward-zone residue and the O6 completeness lift remain as two tracked strategic sorries. Full lake build exit 0 (1720 jobs); git diff --stat = SharedWitness.lean only.",
   "phases_total": 13,
   "phases_completed": 10,
   "artifacts": [
     {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "type": "lean",
+      "summary": "N2-A + N2-B appended (+224 lines): singleton wrapper, D3 negatives, gate lemma, both-direction statements; two tracked strategic sorries at the O4 hgate residue and the O6 completeness lift"
+    },
+    {
       "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/07_v7-faithful-separate-bracket.md",
       "type": "plan",
-      "summary": "Amended: Phase 10 [COMPLETED] with dated N2 verdict record; Phases 11-12 rewritten from promoted Appendix N2 (N2-A/N2-B, N2-C); Phase 13 N2-scope note; ladder + appendix annotations"
-    },
-    {
-      "path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-10-handoff-20260707.md",
-      "type": "handoff",
-      "summary": "Phase 10 handoff: verdict, rationale, durable-record inventory, and the re-scoped Phase 11-13 contract for the next dispatch"
-    },
-    {
-      "path": "specs/state.json",
-      "type": "state",
-      "summary": "Task 321 description appended with the SCOPE AMENDMENT paragraph (honest GOAL-STATE re-statement for the N2 fragment)"
-    },
-    {
-      "path": "specs/TODO.md",
-      "type": "todo",
-      "summary": "Regenerated via generate-todo.sh after the state edit"
+      "summary": "Phase 11 heading -> [PARTIAL]; N2-A checkbox done, N2-B annotated (skeleton deviation); N2-B CRUX RECORD added before Phase 12"
     }
   ],
-  "blockers": [],
-  "continuation_path": "specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/handoffs/phase-10-handoff-20260707.md",
+  "sorry_free_landed": [
+    "kvE2_sepSingleton (predicate)",
+    "kvE2_sepBody_singleton + kvE2_sepBody_singleton_eq",
+    "kvE2_sepBody_singleton_nonvacuous",
+    "kvE2_sepSingleton_neg_offFiber",
+    "kvE2_sepSingleton_neg_zone",
+    "kvE2_sepBody_singleton_gate"
+  ],
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "line": 1780,
+      "statement": "theorem kvE2_sepSingleton_hgate_left : ... -> a < w /\\ w < t /\\ nf_eval_nf M 0 4 [a,w,x,t] sigma.1 /\\ (off-fiber) /\\ (forward-zone) /\\ (backward-zone)",
+      "strategic": true,
+      "assumption": "Assumes the singleton bracket's full interval-decomposition coverage of (x,t): every model point is a sigma-own slot or a segment-covered open sub-interval, so a realized zone point forces sigma's fold bit true (forward-zone conjunct) plus its backward mate, plus a<w and sigma.1's atom layer at [a,w,x,t]. Conjuncts w<t and inner off-fiber ARE derived (kvE2_sepHgate_offFiber, the Phase-9 live input).",
+      "why_deferred": "The O4 crux. No landed soundness closer derives the forward-zone hgate conjunct (all take hgate as hypothesis); kvE2_sepBody_extract does not surface the bracket interval coverage the conjunct needs. Deriving that coverage over kvE2_sepDisjunct's segment structure is a self-contained construction outside this dispatch's extraction/assembly scope.",
+      "follow_up_task": "task 321 Phase 11 N2-B O4 coverage: per-sigma segment-coverage lemma for the singleton bracket, then discharge kvE2_sepSingleton_hgate_left in place"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "line": 1866,
+      "statement": "theorem kvE2_sepBody_singleton_complete_left : (exists x1, nf_eval_nf M 1 4 [x1,w,x,t] sigma) -> (kvE2_sepBody_singleton ... qnf).holds M atomMap x t",
+      "strategic": true,
+      "assumption": "Assumes the O6 lift from the per-sigma bracket kvE_subBracket2V.holds (produced by the landed kvE_subBracket2V_complete SubBracket2V.lean:1465) to the joint kvE2_sepBody.holds at singleton size (O2 single-disjunct realization of the degenerate interleaving product).",
+      "why_deferred": "The completeness construction (single realized disjunct of the degenerate interleaving product at singleton size) is a self-contained assembly outside this dispatch's extraction scope.",
+      "follow_up_task": "task 321 Phase 11 N2-B O6 lift: singleton disjunct realization, then discharge kvE2_sepBody_singleton_complete_left"
+    }
+  ],
+  "blockers": [
+    "O4 hgate forward-zone conjunct (SubBracket2V.lean:1873-1877) not derived from the carrier at singleton size: requires the singleton bracket's full interval-decomposition coverage of (x,t), not surfaced by kvE2_sepBody_extract. Residue goal: sigma.2 (nf0_assemble zs chi sigma.1) = true from a realized zone point.",
+    "O6 completeness lift from kvE_subBracket2V.holds to kvE2_sepBody.holds at singleton size (single-disjunct realization) not constructed."
+  ],
+  "verification": {
+    "build_passed": true,
+    "full_build_jobs": 1720,
+    "new_strategic_sorries_this_phase": 2,
+    "vacuous_count": 0,
+    "new_axiom_count": 0,
+    "litmus_x1_lt_ei": "clean",
+    "no_nesting_merged_constant_arity": "clean",
+    "git_diff_stat_scope": "SharedWitness.lean only (+224)",
+    "axiom_check_clean_api": "kvE2_sepBody_singleton_gate = [propext, Classical.choice, Quot.sound]",
+    "axiom_check_forward": "kvE2_sepBody_singleton_sound_left includes sorryAx (expected; depends on tracked hgate lemma)"
+  },
+  "continuation_path": null,
   "continuation_context": null,
-  "next_action_hint": "Dispatch Phase 11 (re-scoped N2-A + N2-B): singleton carrier wrapper over the LANDED kvE2_sepBody (reuse Phase 7's def) + non-vacuity analog, then singleton extraction (kvE_sub2V_bounded_anchor_of_outer :1182 / kvE_subBracket2V_sound_of_outer :1216) + O4-at-minimum-size + both directions with negatives via D3 coverage only; append-only to SharedWitness.lean; two green-substep commits (N2-A, N2-B). Phase 9's four landed lemmas are live inputs. All binding constraints unchanged (navigated/witness-growing invariant, LITMUS, additive-only, DO-NOT-EDIT byte-identical, axiom-clean, no sorry on live paths).",
-  "sorry_inventory": []
+  "next_action_hint": "Two options: (a) discharge the two Phase-11 strategic sorries via a dedicated dispatch (per-sigma singleton-bracket segment-coverage lemma for the O4 hgate residue; single-disjunct realization for the O6 lift), then proceed to Phase 12 (N2-C gate wrapper kvE2_sepBody_correct_singleton) consuming the closed both-directions; or (b) if the O4 coverage proves genuinely underivable at singleton size, invoke the plan's Phase 11 Rollback (no narrowing rung below N2) and return FAIL to the decision structure. The N2-A wrapper, D3 negatives, gate lemma, and forward/backward statements are all in place for Phase 12 to consume."
 }
