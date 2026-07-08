@@ -1654,4 +1654,52 @@ the landed `kvE_subBracket2V_sound_of_outer` (`SubBracket2V.lean:1216`) +
 `kvE_sub2V_bounded_anchor_of_outer` (`:1182`) already serve. The derivable core landed
 above remains live input to N2's per-σ gate work. This record is additive and inert. -/
 
+/-! ## Phase 11 (N2-A) — singleton carrier wrapper
+
+**Verdict N2 (Phase 10 decision gate):** the correctness pair is closed on the
+single-positive-sub fragment — `qnf` with at most one positive sub. Under this restriction
+the joint carrier `kvE2_sepBody` degenerates to a single σ's bracket: with one interior
+positive there are no cross-σ slots (the exact configuration in which the Phase 9 O4 crux
+vanishes). O1 collapses to a *reuse* of the landed `kvE2_sepBody` (D1 — purely additive; the
+carrier is NOT re-defined, no interleaving enumeration is introduced). The non-vacuity analog
+restates `kvE2_sepBody_nonvacuous` for the wrapper (FM-vac: an honest realization forces the
+gate-true branch with a NON-empty disjunct list, so no later direction closes vacuously). -/
+
+/-- The single-positive-sub restriction predicate (Phase 10 verdict N2): at most one positive
+    sub. This is the honest antecedent under which Phase 11/12 close the gate — NOT a vacuity
+    device (a realizable `qnf` satisfying it is exhibited by `kvE2_sepSingleton_satisfiable`). -/
+def kvE2_sepSingleton {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+  ∀ σ σ' : NormalForm sig 1 4, qnf.2 σ = true → qnf.2 σ' = true → σ = σ'
+
+/-- **N2-A singleton carrier wrapper.** A restriction of the landed joint carrier
+    `kvE2_sepBody` (reuse of Phase 7's def, per the plan's N2-A choice) — the degeneration is
+    a *scope* on the same object, not a new construction. Definitionally equal to
+    `kvE2_sepBody` (`kvE2_sepBody_singleton_eq`), so every landed structural lemma
+    (`_holds_iff`, `_extract`, `_nonvacuous`) transfers verbatim. -/
+noncomputable def kvE2_sepBody_singleton {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) : VVecEA2 :=
+  kvE2_sepBody charBase charK qnf
+
+@[simp] theorem kvE2_sepBody_singleton_eq {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) :
+    kvE2_sepBody_singleton charBase charK qnf = kvE2_sepBody charBase charK qnf := rfl
+
+/-- **Non-vacuity analog for the singleton wrapper** (FM-vac; fresh analog of
+    `kvE2_sepBody_nonvacuous`): a `qnf` arising from an actual model realization under
+    `x < w < t` forces the wrapper onto the gate-true branch with a NON-empty disjunct list. -/
+theorem kvE2_sepBody_singleton_nonvacuous {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (kvE2_sepBody_singleton charBase charK qnf).disjuncts ≠ [] :=
+  kvE2_sepBody_nonvacuous charBase charK qnf M w x t hxw hwt h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
