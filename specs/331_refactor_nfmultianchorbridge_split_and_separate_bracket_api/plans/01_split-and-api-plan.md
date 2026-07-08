@@ -328,22 +328,24 @@ settled decision preserved. This phase is therefore PriorInterface only, which l
 - **Timing:** ~60 min
 - **Depends on:** 3
 
-### Phase 5: Extract SubBracket.lean and SubBracket2.lean with 4 de-privatizations [NOT STARTED]
+### Phase 5: Extract SubBracket.lean and SubBracket2.lean with 4 de-privatizations [COMPLETED]
 - **Goal:** Relocate the faithful foundation modules (~250 + ~627 lines).
 - **Tasks:**
-  - [ ] Standard extraction: slab :5857-:6106 → `SubBracket.lean`. Imports: `PriorInterface`
+  - [x] Standard extraction: slab :5857-:6106 → `SubBracket.lean`. Imports: `PriorInterface`
         (NOT MergedQuarantine — faithful modules never import the quarantine). Contents: task-321
         F4 resolution: `kvE_subFoldBits` :5885, `kvE_subInteriorZones` :5908, `kvE_subBracket`
         :5936, `kvE_subChain` :5964, discrimination :6012-:6037, verdict record :6038-:6106.
         Includes do-not-edit record :5866 and :6098 — byte-identical.
-  - [ ] Standard extraction: slab :6107-:6733 → `SubBracket2.lean`. Imports: `SubBracket`.
+  - [x] Standard extraction: slab :6107-:6733 → `SubBracket2.lean`. Imports: `SubBracket`.
         Contents: task 324: `kvE_subBracket2` :6133, `kvE_subChain2` :6179, zone specs
         `kvE_sub2_z{XU,UW,WT}` :6213-:6221, kill-switch/soundness/completeness kit :6246-:6733.
-  - [ ] Token edits — remove `private ` from exactly these 4 (research Finding 4):
+  - [x] Token edits — remove `private ` from exactly these 4 (research Finding 4):
         `kvE_sub2_zXU` :6213, `kvE_sub2_zUW` :6217, `kvE_sub2_zWT` :6221,
         `kvE_sub2_zoneHolds_cons_iff` :6628.
-  - [ ] Byte-identity checks (SubBracket: empty diff; SubBracket2: exactly the 4 `private `
-        removals); `lake build` exit 0.
+  - [x] Byte-identity checks (SubBracket: empty diff — PASSED; SubBracket2: exactly the 4
+        `private ` removals — PASSED, 4 hunks/16 diff lines; monolith git diff = +2 import
+        lines, -877 slab lines, nothing else; sorry-mention parity exact, prose-only);
+        `lake build` exit 0 (1716 jobs, "Build completed successfully").
 - **Estimated output:** ~880 lines relocated; ~30 scaffold lines; 4 token edits.
 - **Done when:** `lake build` exit 0; slab diffs show only sanctioned edits; neither file
   imports `MergedQuarantine`.
