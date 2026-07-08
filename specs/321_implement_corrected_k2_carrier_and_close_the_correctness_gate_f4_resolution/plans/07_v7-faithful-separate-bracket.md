@@ -380,7 +380,7 @@ literals, which the extraction surfaces verbatim as the two endpoint conjuncts.
   record the precise failing goal (captured `lean_goal`) as an inert note and proceed to the
   Phase 10 gate with a FAIL input — do not attempt chain splicing.
 
-### Phase 9: Carrier-side per-σ `hgate` derivation (O4 — MAKE-OR-BREAK, one dedicated dispatch) [NOT STARTED]
+### Phase 9: Carrier-side per-σ `hgate` derivation (O4 — MAKE-OR-BREAK, one dedicated dispatch) [IN PROGRESS]
 
 - **Goal:** For each positive σ, at the Phase-8-extracted shared `w`, derive the 6-conjunct
   `hgate` bundle that `kvE_subBracket2V_correctness_pair` (`SubBracket2V.lean:1855`, bundle
