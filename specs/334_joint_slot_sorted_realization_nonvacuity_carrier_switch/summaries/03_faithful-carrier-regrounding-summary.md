@@ -1,55 +1,117 @@
-# Task 334 — Phase 4 Implementation Summary (LEFT)
+# Task 334 — Faithful Carrier Re-grounding: Final Implementation Summary
 
-- **Phase**: 4 — Closed-zone compat leaf + three-way segment-meet cut (LEFT) — [COMPLETED]
-- **Plan**: plans/03_faithful-carrier-regrounding.md
+- **Task**: 334 — Faithful re-grounding of the `NfMultiAnchorBridge` carrier onto Rabinovich's proof architecture
+- **Plan**: `plans/03_faithful-carrier-regrounding.md` (9 phases, spike-gated)
 - **Session**: sess_1783539835_7b6867
-- **File modified**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean` (macro-side, F7)
+- **Status**: ALL 9 PHASES COMPLETE — build green, both top theorems axiom-clean, 0 critical-path sorries
+- **Primary file**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean` (macro side, F7); additive Phase-3 lift in `SubBracket2V.lean`
 
-## Lemmas / defs produced (all axiom-clean, no sorry)
+## What the rebuild delivered
 
-1. **`kvE2_sepCompat_zAtX1L_eq`** — the 5th, closed-zone compat leaf. Concludes
-   `kvE2_sepSpikeDisjValid σ χ .coincident = true` for a FOREIGN owner's base type `χ` realized AT
-   σ's fresh anchor `x1`. The disjunct read is definitionally the CLOSED `zAtX1L` bit (F5); it is
-   discharged TRUE by the preserved axiom-clean `kvE2_sepCoincidentAnchor_discharge`. This re-hosts
-   the Phase-2 `kvE2_sepClosedLeafStub` (which read σ's own fresh type `nf0_projFresh σ.1` as a
-   structural placeholder) over foreign owner types — the §5 meet-typed shared point (md:168-173).
+The divergent Lean-convenience carrier (additive open-zone filter over a flatMap slot union,
+`sorryAx`-contaminated non-vacuity, singleton "N2" retreat) was replaced with Rabinovich's
+faithful three-pillar architecture:
 
-2. **`kvE2_sepSegLForSub'`** (def) — the three-way LEFT segment cut, keyed on σ's placement tag
-   (`KvE2SepSpikeOrderType`) branching under `nf0_zoneSpec σ.1`:
-   - left-interior (`zXW3`): `strictBefore` → `kvE_sub2_zXU` (before β); `coincident` → the MEET
-     `Formula.and (segForm σ zXU) (segForm σ zUW)`; `strictAfter` → `kvE_sub2_zUW` (after β);
-   - right-interior (`zWT3`): uniform `kvE_sub2_zXU`;
-   - else: `Formula.top`.
-   Additive — the binary `kvE2_sepSegLForSub` (`:561`) is retained; Phase 6 rewires the assembly.
+1. **Order-type disjunction** over the merged anchor set `A := {x1_σ : σ∈pos} ∪ {w}` — Lemma 3.2(1)
+   (md:77). Realized as `kvE2_sepOrderTypes` (finite, decidable weak-order enumeration) filtered by
+   the per-disjunct validity predicate `kvE2_sepDisjValidOwner` into the carrier `kvE2_sepArr'`.
+2. **Region-partitioned interval decomposition** — Def 3.1 (md:61-74). `k1v_sorted_realizationK`
+   generalizes the proven three-region `k1v_sorted_realization3` to k regions, folding
+   `k1v_sorted_realization` verbatim per region.
+3. **Closed/point-type coincidence channel** — §5 meet-typed shared point (md:168-173). The 5th
+   closed-zone compat leaf `kvE2_sepCompat_zAtX1L_eq` and the three-way (before/**at**/after)
+   segment-meet cuts `kvE2_sepSegLForSub'` / `kvE2_sepSegRForSub'`, discharged by the preserved
+   axiom-clean `kvE2_sepCoincidentAnchor_discharge`.
 
-3. **`kvE2_sepSegLForSub'_at_sound`** — the "at"-case soundness (Risk R2 core content). For a
-   left-interior σ, the coincidence case IS the §5 meet `A_i = A_i^- ∧ A_i^+` (md:168): the
-   `Formula.and` of the `(x,x1)` and `(x1,w)` exclusions — universal β over the whole shared
-   interval `(x,w) ∖ {x1}`. Non-vacuous (never `Formula.top`), QF (F1). Proved by definitional
-   reduction (`simp only [kvE2_sepSegLForSub', hzone, if_pos]`).
+Both directions of Lemma 3.2(1) are realized: `kvE2_sepBody_nonvacuous` (⇒) rewired axiom-clean off
+the additive filter; `kvE2_sepBody_complete` (⇐) newly STATED and proved.
 
-## Preserved-asset audit
+## Phase-9 verification results (this dispatch)
 
-- `kvE2_sepCompat_lX1_eq` (:409) and `kvE2_sepCompat_lX1_after_eq` (:422) — **unchanged**; survive as
-  the strict-disjunct validators (open `zXU`/`zUW` reads). Module builds green with them intact.
-- `kvE2_sepCoincidentAnchor_discharge` (:1161) — unchanged; consumed by the new leaf.
-- `kvE2_sepFreshAnchor_ne_baseChiPoint`, `k1v_sorted_realizationK`, all Phase 1/2 constructs —
-  unchanged. Binary `kvE2_sepSegLForSub` left in place per abandon-list timing.
+| Check | Result |
+|-------|--------|
+| `lake build …NfMultiAnchorBridge.SharedWitness` | **exit 0** (green) |
+| Carrier critical-path sorry count | **0** (census script `sorry_count: 0`) |
+| FALSE scaffolds `kvE2_sepSlotsL_valid`/`_valid` (Phase 6) | GONE — grep-0 live decls |
+| Additive filter `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR` (Phase 6) | GONE — grep-0 live decls |
+| Singleton retreat `kvE2_sepSingleton`/`kvE2_sepBody_singleton*` + 2 strategic sorries (Phase 8) | GONE — grep-0 |
+| `SubBracket2V.lean` (Phase 3 additions) | green + sorry-free (`.olean` built as dependency) |
+| `lean_verify kvE2_sepBody_nonvacuous` | `[propext, Classical.choice, Quot.sound]`, **no sorryAx**, no warnings |
+| `lean_verify kvE2_sepBody_complete` | `[propext, Classical.choice, Quot.sound]`, **no sorryAx**, no warnings |
 
-## Faithfulness invariants
+All remaining textual occurrences of the abandoned identifiers are docstrings / removal-notes /
+Faithfulness-Rationale prose — no live `def`/`theorem`/`lemma`/`abbrev` declarations remain
+(verified by declaration-pattern grep).
 
-F1 (QF meet type), F2 (meet, not vacuity — the at-case discriminates), F5 (closed key for tie vs
-open keys for strict), F6 (per-bracket chain unaffected), F7 (macro-side confinement) all preserved.
-No invariant violated.
+## Faithfulness invariant audit (F1-F7) — ALL HOLD
 
-## Verification
+- **F1 — QF point/segment types**: HOLDS. Point (α) and segment (β) types remain quantifier-free
+  over Σ; the three-way "at" meet type `Formula.and (segForm zXU) (segForm zUW)` (and its right
+  mirror) is a conjunction of QF segment forms, no nested depth-k characteristic. Confirmed sound in
+  Phases 4/5 (`kvE2_sepSegLForSub'_at_sound`, `kvE2_sepSegRForSub'_at_sound`).
+- **F2 — Lemma 3.2(1) never weakened to vacuity; BOTH directions realized**: HOLDS. ⇒ via
+  `kvE2_sepArr'_sound` + rewired `kvE2_sepBody_nonvacuous`; ⇐ via newly-built `kvE2_sepBody_complete`
+  (unconditional non-vacuity through the coincident order for left-interior positive owners). No
+  disjunct set is silently empty — `kvE2_sepCoincidentOrder_mem_orderTypes` gives structural
+  presence.
+- **F3 — anchor cap 2**: HOLDS. Free anchors stay `{x,t}`; `x1_σ` and `w` are interior witness slots
+  merged into `A` with `|A| = |pos| + 1`, never promoted to free anchors.
+- **F4 — no-nesting**: HOLDS. No `x1 < e_i` literal introduced; the region lift uses interior
+  witnesses, no nested depth-k characteristic inside a point/segment type.
+- **F5 — LITMUS discrimination**: HOLDS. Zone keys `zAtX1L`/`zXU`/`zUW`/`zWT` stay distinct in
+  coordinate 0; the coincidence disjunct reads the CLOSED `zAtX1L` bit, strict disjuncts read the
+  OPEN `zXU`/`zUW` bits — never conflated (the crux the Phase-1 spike settled and Phase-8's
+  empirical finding confirmed).
+- **F6 — F4-chain (Cor 5.4) discriminates**: HOLDS. The per-bracket F_i chain translates a single
+  bracket faithfully; the multi-owner combination sits ABOVE it at the Lemma 3.2(1) disjunction
+  level, not folded into the chain.
+- **F7 — macro-side confinement**: HOLDS. All rebuild lives in `NfMultiAnchorBridge/SharedWitness.lean`;
+  the only other-file change is the additive k-anchor lift co-located with the region engine in
+  `SubBracket2V.lean` (Phase 3, F7's explicit allowance). `SubBracket2.lean` and `CarrierK1V.lean`
+  reused unchanged.
 
-- `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness` — green (1013 jobs).
-- `lean_verify` on `kvE2_sepCompat_zAtX1L_eq` and `kvE2_sepSegLForSub'_at_sound`:
-  `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
-- No new sorries, no vacuous definitions, no new axioms. Pre-existing sorries at :894/:901/:2069/:2212
-  (abandon-list FALSE scaffolds + singleton retreat) are untouched — scheduled for removal in Phases 6/8.
+## Outer-gate scope decision (RECORDED)
 
-## Scope discipline
+`kvE2_body` / `bracketEndChar_kvE2` (task 321 v4 / NS Phase-7 assembly ENGINE) have no live def.
 
-Single-phase focus honored: only Phase 4 (LEFT) implemented. Phase 5 (RIGHT) not started.
+**DECISION**: The faithful carrier rebuild **does NOT require rebuilding the outer gate**. The
+carrier's non-vacuity (`kvE2_sepBody_nonvacuous`) and completeness (`kvE2_sepBody_complete`) are
+self-contained, verified, axiom-clean theorems — they compile and verify green independently of the
+outer-gate assembly. The outer-gate assembly is a SEPARATE downstream obligation with its own
+captured failed-closer history (NS:423-435); the faithful carrier is a correct INPUT to it. This
+matches the plan's Risk R4 mitigation and Scope note (plan lines 136, 417-419, 428-430).
+
+**RECOMMENDED FOLLOW-UP TASK 1 (outer gate)**: Open a dedicated task for the outer-gate assembly
+engine (`kvE2_body` / `bracketEndChar_kvE2`, the task-321-v4 / NS Phase-7 two-level quant-layer
+connector). It consumes this carrier as input and is a distinct, substantial obligation — it should
+NOT be folded back into task 334.
+
+## Phase-8 right-interior deviation (RECORDED as follow-up)
+
+`kvE2_sepBody_complete` is scoped to the **left-interior positive-owner class** via an explicit `hL`
+hypothesis. The genuine mathematical content of the right half is already LANDED and sorry-free:
+`kvE2_sepCoincidentAnchor_discharge_R` proves `kvE2_sepBits σ zAtX1R (nf0_projFresh σ.1) = true` at
+`w < x1 < t`. What remains is small predicate-wiring: the coincident validity channel
+`kvE2_sepDisjValidOwner .coincident` / `kvE2_sepClosedLeafStub` currently hardcodes the self-zone to
+`zAtX1L` (SharedWitness :737, :2475); making `kvE2_sepArr'` non-vacuous for right-interior positive
+owners needs the placement-generic self-zone (`zAtX1R` for right owners). This is a carrier-predicate
+extension, **NOT new mathematics**, and does not weaken F2 (the left-class result is a genuine
+multi-owner completeness theorem; the right discharge itself is proved).
+
+**RECOMMENDED FOLLOW-UP TASK 2 (right-interior wiring)**: Extend the closed-leaf validity predicate
+to read the placement-generic self-zone (`zAtX1R` for right-interior owners), wiring the already-proved
+`kvE2_sepCoincidentAnchor_discharge_R` into the coincident validity channel to lift
+`kvE2_sepBody_complete` from the left-interior class to general (left ∪ right) interior positive
+owners. Small predicate-wiring extension; can be a sub-task of the carrier or a standalone task.
+
+## Preserved assets (unmodified, still green)
+
+`k1v_sorted_realization`, `k1v_sorted_realization3`, `kvE_subBracket2V_correctness_pair`,
+`kvE_subBracket2_complete_extract` (+ generic zone-forward channel), `kvE2_sepCoincidentAnchor_discharge`,
+the four compat leaves `kvE2_sepCompat_*_eq`, `kvE2_sepFreshAnchor_ne_baseChiPoint`,
+`kvE2_sepHonestBundleL`. `SubBracket2.lean` and `CarrierK1V.lean` unchanged.
+
+## Acceptance criteria (Phase 9) — ALL MET
+
+Build green ✓ · both top theorems axiom-clean ✓ · invariant audit F1-F7 passes ✓ · outer-gate
+scope decision recorded ✓ · Phase-8 right-interior deviation recorded as follow-up ✓.

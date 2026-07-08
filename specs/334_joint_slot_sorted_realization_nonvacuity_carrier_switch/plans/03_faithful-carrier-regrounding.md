@@ -371,20 +371,20 @@ about the STRICT order is not honestly attainable; the unconditional non-vacuity
 
 ---
 
-### Phase 9: Final verification + outer-gate scope decision [NOT STARTED]
+### Phase 9: Final verification + outer-gate scope decision [COMPLETED]
 
 **Goal**: Full verification of the rebuilt carrier and an explicit, recorded decision on outer-gate entanglement.
 
 **Paper citation**: whole-carrier faithfulness audit against Def 3.1 / Lemma 3.2(1) / Lemma 5.1 / §5.
 
 **Tasks**:
-- [ ] `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness` → exit 0.
-- [ ] Sorry inventory: confirm the 2 FALSE scaffolds (Phase 6) and 2 singleton strategic sorries (Phase 8) are gone; report residual count (target: 0 in the carrier's critical path).
-- [ ] `lean_verify` axiom-clean check on BOTH `kvE2_sepBody_nonvacuous` and `kvE2_sepBody_complete`: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`.
-- [ ] Invariant audit: confirm all 7 faithfulness invariants (F1-F7) hold across the rebuilt carrier.
-- [ ] **Outer-gate scope decision (record explicitly)**: `kvE2_body`/`bracketEndChar_kvE2` have no live def (task 321 v4 / NS Phase-7 assembly ENGINE). DECISION: the faithful carrier rebuild does NOT require rebuilding the outer gate — the carrier's nonvacuity + completeness are self-contained, verified theorems. The outer-gate assembly is a SEPARATE downstream obligation. Recommend a dedicated follow-up task (see Summary). Record this in the phase summary and handoff.
+- [x] `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness` → exit 0. *(completed — exit 0.)*
+- [x] Sorry inventory: confirm the 2 FALSE scaffolds (Phase 6) and 2 singleton strategic sorries (Phase 8) are gone; report residual count (target: 0 in the carrier's critical path). *(completed — census script `sorry_count: 0`; grep-0 for live declarations of `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR`/`kvE2_sepSlotsL_valid`/`kvE2_sepSlotsR_valid`/`kvE2_sepSingleton`/`kvE2_sepBody_singleton` (all remaining textual matches are docstrings/removal-notes only). `SubBracket2V.lean` (Phase 3 additions) green + sorry-free — its `.olean` is built as a SharedWitness dependency. Residual carrier critical-path sorries: 0.)*
+- [x] `lean_verify` axiom-clean check on BOTH `kvE2_sepBody_nonvacuous` and `kvE2_sepBody_complete`: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`. *(completed — both return exactly `["propext","Classical.choice","Quot.sound"]`, no `sorryAx`, no warnings.)*
+- [x] Invariant audit: confirm all 7 faithfulness invariants (F1-F7) hold across the rebuilt carrier. *(completed — F1-F7 all HOLD; per-invariant audit recorded in the phase summary.)*
+- [x] **Outer-gate scope decision (record explicitly)**: `kvE2_body`/`bracketEndChar_kvE2` have no live def (task 321 v4 / NS Phase-7 assembly ENGINE). DECISION: the faithful carrier rebuild does NOT require rebuilding the outer gate — the carrier's nonvacuity + completeness are self-contained, verified theorems. The outer-gate assembly is a SEPARATE downstream obligation. Recommend a dedicated follow-up task (see Summary). Record this in the phase summary and handoff. *(completed — DECISION recorded: carrier verification is self-contained and does NOT require the outer gate; the outer-gate assembly engine is a SEPARATE downstream task. Recorded in summary + handoff. Phase-8 right-interior predicate-wiring deviation also recorded as a follow-up.)*
 
-**Acceptance criteria**: build green; both top theorems axiom-clean; invariant audit passes; scope decision recorded.
+**Acceptance criteria**: build green; both top theorems axiom-clean; invariant audit passes; scope decision recorded. **ALL MET.**
 
 **Lemma names produced**: none (verification phase).
 
