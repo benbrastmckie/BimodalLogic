@@ -544,9 +544,13 @@ statements landed green, with the core O4 `hgate` residue and the O6 completenes
 two TRACKED strategic sorries (see the N2-B crux record below). `lake build` exit 0; `git diff
 --stat` touches only `SharedWitness.lean` (+224 lines). Sorry-free landed pieces:
 `kvE2_sepBody_singleton` / `_eq` / `_nonvacuous` (N2-A), `kvE2_sepSingleton_neg_offFiber`,
-`kvE2_sepSingleton_neg_zone` (D3 negatives), `kvE2_sepBody_singleton_gate`. The forward theorem
-`kvE2_sepBody_singleton_sound_left` closes the full extraction→`kvE2_sepBundleL_parts`→
-`kvE_subBracket2V_sound_of_parts` pipeline modulo the one `hgate` lemma.
+`kvE2_sepSingleton_neg_zone` (D3 negatives), `kvE2_sepBody_singleton_gate`,
+`kvE2_sepSingleton_sound_of_parts_at` (the ∀-anchor dissolver, axiom-clean). The forward theorem
+`kvE2_sepBody_singleton_sound_left` closes the full extraction→pre-`parts` bundle→
+`kvE2_sepSingleton_sound_of_parts_at` pipeline modulo the one single-anchor coverage lemma
+`kvE2_sepSingleton_coverage_left` (third dispatch 2026-07-08: replaced the unprovable ∀-anchor
+`kvE2_sepSingleton_hgate_left`; see N2-B CRUX ADDENDUM-2). Two tracked strategic sorries remain:
+`kvE2_sepSingleton_coverage_left` and `kvE2_sepBody_singleton_complete_left`.
 
 *(Re-scoped 2026-07-07 by the Phase 10 gate: verdict N2. Content promoted from Appendix N2,
 blocks N2-A and N2-B. The FULL O5+O6 assembly this section previously specified is superseded;
@@ -695,6 +699,73 @@ by the landed helper). Full `lake build` exit 0 (1013 jobs, module scope); `git 
 change = `SharedWitness.lean` only. **This is a scoped-deferral with the blocking root cause isolated
 and its dissolver landed — NOT a route NO-GO; the Phase 11 Rollback (no rung below N2) is the
 fallback ONLY if the single-anchor coverage lemma is later judged out of additive scope.**
+
+#### N2-B CRUX ADDENDUM-2 — task 321 v7 Phase 11 (2026-07-08, third dispatch): ∀-anchor lemma REPLACED by honest single-anchor `coverage_left`; additive single-dispatch close EXHAUSTED (verbatim residue captured)
+
+**Not a route NO-GO; the additive path for a SINGLE-DISPATCH close is exhausted.** This dispatch
+executed the second dispatch's recorded blueprint (rewire `_sound_left` through the landed
+`kvE2_sepSingleton_sound_of_parts_at`, feeding the six conjuncts at the single extracted `x1`), and
+in doing so found and fixed a latent soundness smell: the second dispatch's `kvE2_sepSingleton_hgate_left`
+was the **∀-anchor** form, which the same dispatch's own root-cause analysis proved UNPROVABLE
+(conjunct `a < w` is false for `charK`-anchors realized above `w`). A strategic sorry on a
+provably-FALSE statement fails the five-condition test. **Fix-forward applied (committed, green):**
+`kvE2_sepSingleton_hgate_left` REMOVED; `_sound_left` rewired to obtain the single anchor `x1`
+(with `x1 < w` from the pre-`parts` bundle) and route the three residual conjuncts through the new
+single-anchor **`kvE2_sepSingleton_coverage_left`** (`SharedWitness.lean:1796`), which is
+provable-in-principle (it consumes the realized carrier `h`, whose bracket DOES carry the segment
+realizations). Sorry count unchanged at 2 (`coverage_left` + `complete_left`); the landed dissolver
+`kvE2_sepSingleton_sound_of_parts_at` re-verified axiom-clean `[propext, Classical.choice, Quot.sound]`.
+
+**Verbatim residue goals** (`lean_goal` at the three `coverage_left` obligations, all at the SINGLE
+anchor `x1` with `hxx1 : x < x1`, `hx1w : x1 < w`, `hwt : w < t`, `hpt : kvE2_sepPtX1L … x1`,
+`hbelow`, `h_off`, `h : (kvE2_sepBody …).holds M atomMap x t` in scope):
+```
+-- h_atom:
+⊢ nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x fun x ↦ t))) σ.1
+-- h_fwd:
+⊢ ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+    (∃ v, zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x fun x ↦ t))) zs v ∧ nf_eval_nf M 0 1 (fun x ↦ v) χ) →
+      σ.2 (nf0_assemble zs χ σ.1) = true
+-- h_bwd:
+⊢ ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+    σ.2 (nf0_assemble zs χ σ.1) = true →
+      ∃ v, zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x fun x ↦ t))) zs v ∧ nf_eval_nf M 0 1 (fun x ↦ v) χ
+```
+
+**Why not landable as a single additive dispatch (architectural, verified by full source trace).**
+The three conjuncts ARE true and provable-in-principle from `h`, but assembling them verified-green
+requires SIX interlocking new pieces, none currently landed:
+1. A **segment-surfacing extraction** — `kvE2_sepDisjunct_extract` DISCARDS the bracket segment
+   realizations (`⟨ws, hmono, hrange, hpt, -, -, -⟩` at `:1259`); the segments live only in the raw
+   `IntervalPattern.holds` (`ExistsForallNF.lean:106` — "beta holds everywhere in each open
+   sub-interval") or via `kvE2_sepDisjunct_halves`. `kvE2_sepBody_extract` (which `_sound_left`
+   uses) surfaces only the bundle, not the segments.
+2. A **point→interval location map**: given a model point `v` in zone `zs` over `[x1,w,x,t]`, locate
+   the bracket sub-interval containing it — combinatorial over the arrangement's witness positions,
+   LITMUS-constrained (must read arrangement slot INDICES, never an `x1 < e_i` literal).
+3. A **bracket-segment→σ-`segForm` refinement**: `kvE2_sepSegLForSub` (`:427`) gives σ's `zXU`
+   exclusion before its `lX1` cut and `zUW` after — matching the segment content to the zone
+   requires relating the bracket witness ORDER to the model order at `v` (again LITMUS-constrained).
+4. A **depth-0 1-type mutual-exclusivity lemma** (for the witness-point case: an `lXU` witness
+   realizes `charBase χ0` for exactly one `χ0`, whose `zXU` bit is true by slot membership).
+5. An **exterior/boundary decoder**: the exterior zones `zPastX`/`zAtX`/`zAtT`/`zFutT` (all
+   order-consistent per `kvE2_sep_zone4_consistent`) are NOT covered by segments (which tile only
+   `(x,t)`); their content lives in the endpoint predicates `kvE2_sepEpL`/`kvE2_sepEpR`, needing a
+   separate decoder for `h_fwd` there.
+6. The **`h_bwd` witness construction**: for each bit-true non-`zXU` zone, build a realizing model
+   point from the bracket's slot witnesses.
+
+**Verdict: additive N2 single-dispatch path EXHAUSTED.** The residue is not a soundness gap and not
+a fundamental wall for the FORWARD interior zones (the refined segments are correctly designed), but
+the six-piece coverage construction (each piece a substantial LITMUS/no-nesting-constrained lemma)
+decisively exceeds one verified-green additive dispatch — the same conclusion the Phase-9 (O4 FAIL)
+and Phase-11 second-dispatch records reached, now confirmed by executing the blueprint to its
+blocking goals. **The clean uniform route that collapses pieces 2–5 is the bit-compatibility carrier
+redefinition of `kvE2_sepArrL`/`kvE2_sepArrR`** (align per-interval segment content with per-zone σ
+exclusion so `h_fwd`/`h_bwd` follow uniformly) — explicitly OUT OF SCOPE for this dispatch (the
+multi-positive fix). Recommendation for the orchestrator: either commission the six-piece coverage
+as a dedicated multi-dispatch follow-up, or invoke the **Phase 11 Rollback** (no rung below N2) and
+close task 321 as a scoped partial. This record is additive and inert.
 
 ### Phase 12: N2-C gate wrapper restricted to the singleton fragment (replaces the FULL O7 wrapper per the Phase 10 amendment) [NOT STARTED]
 
