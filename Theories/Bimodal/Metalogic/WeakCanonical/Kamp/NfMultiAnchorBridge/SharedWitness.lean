@@ -1559,4 +1559,99 @@ theorem kvE2_sepSegForm_excludes {sig : MonadicSignature}
   simp only [TemporalPred.eval_at, Formula.neg, temporal_truth] at hneg ⊢
   exact hneg
 
+/-! ## O4 CRUX RECORD — task 321 v7 Phase 9 verdict: **FAIL** (inert; decision-gate input)
+
+**This is NOT a route NO-GO.** The derivable core above (`kvE2_sep_zone4_consistent`,
+`kvE2_sepHgate_offFiber`, `kvE2_sepHgate_innerNine`, `kvE2_sepSegForm_excludes`) plus the
+biconditional endpoint/witness literals (`kvE2_sepEpL`/`EpR`/`PtW`/`PtX1L` — covering the
+six at/exterior inner zones `zPastX4`/`zAtX4`/`zAtX1L`/`zAtWL`/`zAtT4`/`zFutT4` in BOTH
+directions) and σ's OWN slot channel (its `kvE2_sepS`-enumerated bit-true 1-types realized
+at its `lXU`/`lUW`/`lWT` slots) determine five of the six `hgate` conjuncts
+(`SubBracket2V.lean:1868-1882`) at the extracted anchor. What fails is exactly the
+forward-zone conjunct (`:1873-1877`) at a CROSS-σ slot point — the residue both prior
+handoffs flagged ("bracket points inside another σ's zone are not covered by segment
+exclusions; points sit between segments").
+
+**Captured crux (`lean_goal`, minimal instance; hypothesis set is the FULL superset — the
+realized joint disjunct `h` itself, arrangement memberships `hL`/`hR`, the gate `hg`, and
+every Phase-8-extractable fact `hepL`/`hepR`/`hptW`/`hptX1`/`hbundleL`, so the failure is
+not attributable to a dropped input).** With σ, τ distinct left-interior positives,
+`hτbit : kvE2_sepBits τ kvE_sub2_zXU χ = true`, and τ's χ-slot interleaved before σ's
+fresh slot (`kvE2_sepSlotLe` leaves cross-σ order free), the slot's witness `v` satisfies
+`x < v < x1` with `hχv : nf_eval_nf M 0 1 (fun _ => v) χ` in EVERY realization of that
+arrangement, and the forward-zone conjunct instantiated at `v` demands:
+
+    ⊢ σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true
+
+**Failed closers on the captured crux (five; task-327 evidence style):**
+  1. `exact hτbit` → *Type mismatch: has type `kvE2_sepBits τ kvE_sub2_zXU χ = true` but
+     is expected to have type `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`.* τ's bit does
+     not transfer to σ — the carrier has NO cross-σ bit channel.
+  2. `simp_all [kvE2_sepBits, kvE2_sepGate, kvE2_sepInnerConsistentL]` → unfolds the gate
+     to its four clauses; goal UNSOLVED. All four gate clauses conclude `… = false`
+     (off-fiber ×2, inconsistent-zone ×2); no clause in the entire carrier concludes a
+     bit-TRUE for σ from another σ's data.
+  3. `exact hg.2.2.2 σ hσ hσzone kvE_sub2_zXU χ (by simp [kvE2_sepInnerConsistentL])` →
+     residual sub-goal `¬ kvE_sub2_zXU = …` over the nine consistent patterns is FALSE
+     (`kvE_sub2_zXU` IS the third consistent pattern), and the clause's conclusion has the
+     wrong polarity (`= false`) besides.
+  4. `exact kvE2_sepSegForm_excludes … v (by assumption) (by assumption)` → leaves goals
+     `TemporalPred.eval_at M atomMap' ⟨kvE2_sepSegForm … σ kvE_sub2_zXU⟩ v` (unprovable:
+     `v` is a bracket POINT — the realized disjunct asserts segments only on the OPEN
+     intervals between consecutive witnesses, never at a witness) and
+     `kvE2_sepBits σ kvE_sub2_zXU χ = false` (wrong polarity: the exclusion channel
+     consumes a false bit; it cannot produce a true one at a non-segment point).
+  5. `aesop` → *failed to prove the goal after exhaustive search.*
+
+**Channel exhaustion (why no derivation exists, not merely none found).** The carrier's
+only model-fact→fold-bit channels are: (a) the segment contrapositive
+(`kvE2_sepSegForm_excludes`) — fires only at segment-covered points, and `v` is a witness
+point between segments; (b) the `kvE2_sepLit` biconditional literals at `x`/`w`/`t`/`x1` —
+stated only for the six at/exterior zones, never for the three open interior regions
+`zXU`/`zUW`/`zWT`; (c) σ's own slot membership (`kvE2_sepS σ zs` enumerates σ's bit-TRUE
+1-types) — τ's slot is not in σ's enumeration. The gate `kvE2_sepGate` contributes only
+falsity clauses. Hence `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true` is underdetermined
+by the realized carrier content — the plan's Phase 10 FAIL criterion verbatim ("a per-σ
+zone bit required by `hgate` underdetermined by the refined-conjunction segments +
+E[Σ]-atom literals").
+
+**Why no ADDITIVE repair closes it (probed at the bit level, not re-designed here):**
+  * A conjunctive cross-σ gate clause (`τ`'s `zXU`-bit true → σ's `zXU`- AND `zUW`- AND
+    `zAtX1`-bits true for that χ) is sound-sufficient but NOT honest-derivable: an honest
+    model may place every χ-point of `(x,w)` strictly above `x1_σ`, leaving σ's `zXU`-bit
+    honestly false — the clause would break `kvE2_sepGate_holds_of_honest` and non-vacuity
+    (FM-vac, prohibited).
+  * The honest-derivable DISJUNCTIVE clause (σ's `zXU`- OR `zAtX1`- OR `zUW`-bit true)
+    cannot select the disjunct matching the REALIZED arrangement's placement of τ's slot —
+    the Bool disjunction is arrangement-blind while the placement is arrangement-chosen.
+  * The faithful repair is BIT-COMPATIBILITY FILTERING of the interleaving enumeration
+    (admit an arrangement only when every cross-σ slot placement matches a true bit of
+    every other interior positive — Lemma 3.2(1)'s disjunction ranges over CONSISTENT
+    refinements, md:77). That re-defines `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR`
+    (Phase 7 carrier structure) with knock-on rework of O1b non-vacuity (the canonical
+    identity arrangement is no longer always admitted) and the O2/O3 membership plumbing —
+    a carrier re-definition outside this phase's additive scope, owned by the Phase 10
+    decision gate.
+
+**Second, independent obstruction to the ∀-anchor form (`:1868` binds every
+`a ∈ (x,t)` realizing the `charK` anchor).** Conjunct `a < w` requires the right region to
+EXCLUDE anchor-realizing points, but the right-region segment content for a left-interior
+σ (`kvE2_sepSegRForSub` = `kvE2_sepSegForm … kvE_sub2_zWT`) conjoins only depth-0
+`charBase` 1-type negations — the depth-1 `charK (nfk_projFresh σ)` E[Σ]-atom is never
+excluded there, and a right-interior τ with `nfk_projFresh τ = nfk_projFresh σ` even
+POSITIVELY realizes it above `w` at its `rX1` slot.
+
+**LITMUS.** No `x1 < e_i` relative-position literal was introduced or needed; the
+obstruction is a missing arrangement-bit compatibility constraint, not a positioning
+literal. Prohibited patches (chain splicing FM-merge, `x1 < e_i`, gate-modulo-assumed
+`hgate`, vacuous placeholder, `sorry`) were NOT applied.
+
+**Consequence (Phase 10 routing input).** O4 FAIL → per the plan's decision-gate table the
+indicated route is **N2** (single-positive-sub fragment): with ONE interior positive there
+are no cross-σ slots — every left-list witness is σ's own bit-true 1-type or the
+literal-covered self-zones — so the residue vanishes; this is exactly the configuration
+the landed `kvE_subBracket2V_sound_of_outer` (`SubBracket2V.lean:1216`) +
+`kvE_sub2V_bounded_anchor_of_outer` (`:1182`) already serve. The derivable core landed
+above remains live input to N2's per-σ gate work. This record is additive and inert. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

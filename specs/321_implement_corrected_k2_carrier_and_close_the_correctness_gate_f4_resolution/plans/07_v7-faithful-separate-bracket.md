@@ -380,7 +380,31 @@ literals, which the extraction surfaces verbatim as the two endpoint conjuncts.
   record the precise failing goal (captured `lean_goal`) as an inert note and proceed to the
   Phase 10 gate with a FAIL input — do not attempt chain splicing.
 
-### Phase 9: Carrier-side per-σ `hgate` derivation (O4 — MAKE-OR-BREAK, one dedicated dispatch) [IN PROGRESS]
+### Phase 9: Carrier-side per-σ `hgate` derivation (O4 — MAKE-OR-BREAK, one dedicated dispatch) [COMPLETED]
+
+**O4 VERDICT (2026-07-07, one dedicated dispatch as mandated): FAIL — honest, evidenced.**
+The derivable core landed sorry-free and axiom-clean (`kvE2_sep_zone4_consistent`,
+`kvE2_sepHgate_offFiber`, `kvE2_sepHgate_innerNine`, `kvE2_sepSegForm_excludes`,
+`SharedWitness.lean` Phase 9 section); together with the `kvE2_sepLit` biconditional
+endpoint/witness literals and σ's own slot channel these determine five of the six `hgate`
+conjuncts at the extracted anchor. The forward-zone conjunct (`SubBracket2V.lean:1873-1877`)
+is UNDERDETERMINED at cross-σ slot points: for distinct left-interior positives σ ≠ τ with
+τ's `zXU`-χ slot interleaved below σ's fresh slot, the captured goal
+`σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true` has NO carrier channel (all four
+`kvE2_sepGate` clauses conclude `= false`; the segment contrapositive cannot fire at a
+bracket point; the literals cover only at/exterior zones). Five failed closers captured
+`lean_goal`-verbatim in the inert O4 CRUX RECORD at the end of `SharedWitness.lean`
+(task-327 evidence style), plus a channel-exhaustion argument and the reason no additive
+gate clause repairs it (conjunctive form breaks honest derivability/non-vacuity;
+disjunctive form is arrangement-blind; the faithful repair is bit-compatibility filtering
+of `kvE2_sepArrL/R` — a Phase-7 carrier re-definition owned by the Phase 10 gate). A
+second independent obstruction blocks the ∀-anchor form (`a < w`: right-region segments
+never exclude the `charK` E[Σ]-atom). LITMUS clean; no sorry, no chain splicing, no
+placeholder committed. **Phase 10 routing input: FAIL on O4 → N2** (single positive sub:
+no cross-σ slots, residue vanishes; `kvE_subBracket2V_sound_of_outer` configuration).
+Evidence: `SharedWitness.lean` O4 CRUX RECORD; handoff
+`handoffs/phase-9-handoff-20260707.md`; commits `7488001ec` (derivable core) + the Phase 9
+crux-capture commit.
 
 - **Goal:** For each positive σ, at the Phase-8-extracted shared `w`, derive the 6-conjunct
   `hgate` bundle that `kvE_subBracket2V_correctness_pair` (`SubBracket2V.lean:1855`, bundle
@@ -390,17 +414,24 @@ literals, which the extraction surfaces verbatim as the two endpoint conjuncts.
   07 could not verify in advance.
 - **Target file(s):** `SharedWitness.lean` (append).
 - **Tasks:**
-  - [ ] Re-derive an N-point analog of the zone-consistency plumbing (`kvE_sub2V_zone_consistent`,
-        private `SubBracket2V.lean:1270`, is a template only).
+  - [x] Re-derive an N-point analog of the zone-consistency plumbing (`kvE_sub2V_zone_consistent`,
+        private `SubBracket2V.lean:1270`, is a template only). *(landed as PUBLIC
+        `kvE2_sep_zone4_consistent`, concluding the named `kvE2_sepInnerConsistentL`)*
   - [ ] Derive each per-σ zone biconditional from: the refined-conjunction segments (each
         refined sub-interval carries EVERY σ's exclusion content by O1's construction), the
         `charK (nfk_projFresh σ)` E[Σ]-atom literal at σ's own slot, and the joint
         `epL`/`epR`/`ptW` endpoint literals. The honest-side derivation
         `kvE_subBracket2V_gate_holds_of_honest` (`SubBracket2V.lean:1392`) is the shape target
         but consumes an `nf_eval` this direction does not have — the carrier-side derivation is
-        genuinely new.
-  - [ ] Cite Prop 3.5 (md:91-94) at each navigation literal and Lemma 5.1 (md:72) at each
-        quantifier-free segment read (G5).
+        genuinely new. *(deviation: FAILED at the crux — off-fiber + inconsistent-zone +
+        segment-channel + at/exterior-literal pieces landed (`kvE2_sepHgate_offFiber`,
+        `kvE2_sepHgate_innerNine`, `kvE2_sepSegForm_excludes`); the forward-zone conjunct is
+        underdetermined at cross-σ slot points — captured goal, five failed closers, and
+        channel-exhaustion argument in the inert O4 CRUX RECORD, `SharedWitness.lean`; FAIL
+        input to Phase 10 per the phase's own contingency)*
+  - [x] Cite Prop 3.5 (md:91-94) at each navigation literal and Lemma 5.1 (md:72) at each
+        quantifier-free segment read (G5). *(citations in the four landed lemma docstrings +
+        the crux record; Cor 5.4 md:154-157 at the segment channel)*
 - **Postmortem constraints:** This phase is the crux. PROHIBITED on failure: chain splicing
   (FM-merge), any `x1 < e_i` literal (LITMUS), a gate-modulo-assumed-`hgate`, a vacuous
   placeholder, a `sorry`. One dedicated dispatch ONLY — an incomplete O4 goes to Phase 10 as a
