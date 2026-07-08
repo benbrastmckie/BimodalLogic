@@ -591,4 +591,353 @@ theorem kvE2_sepBody_holds_iff {sig : MonadicSignature}
   exact VVecEA2.holds_flatMap_map M atomMap (kvE2_sepArrL qnf) (kvE2_sepArrR qnf)
     (kvE2_sepDisjunct charBase charK qnf) x t
 
+/-! ## O1b — non-vacuity (fresh analog of `kvE_subBracket2V_nonvacuous`,
+`SubBracket2V.lean:1425`; FM-vac discipline: the honest configuration must take the
+gate-true branch and produce a NON-empty disjunct list, so no later direction can close
+vacuously). -/
+
+/-- Bool bridge: a truth-value biconditional forces Bool equality. -/
+private theorem kvE2_sep_boolEq {b c : Bool} (h : (b = true) ↔ (c = true)) : b = c := by
+  cases b <;> cases c <;> simp_all
+
+/-- A trivially-total relation is pairwise on any list. -/
+private theorem kvE2_sep_pairwise_of_forall {α : Type} {R : α → α → Prop} :
+    ∀ {l : List α}, (∀ a b, R a b) → l.Pairwise R
+  | [], _ => List.Pairwise.nil
+  | _ :: _, h => List.Pairwise.cons (fun b _ => h _ b) (kvE2_sep_pairwise_of_forall h)
+
+/-- Pairwise over a `flatMap` from within-block pairwise + cross-block totality on a
+    duplicate-free spine. -/
+private theorem kvE2_sep_pairwise_flatMap {α β : Type} {R : β → β → Prop}
+    {f : α → List β} {l : List α} (hnd : l.Nodup)
+    (hin : ∀ a ∈ l, (f a).Pairwise R)
+    (hcross : ∀ a ∈ l, ∀ b ∈ l, a ≠ b → ∀ x ∈ f a, ∀ y ∈ f b, R x y) :
+    (l.flatMap f).Pairwise R := by
+  induction l with
+  | nil => exact List.Pairwise.nil
+  | cons a as ih =>
+    rw [List.flatMap_cons, List.pairwise_append]
+    obtain ⟨hna, hnd'⟩ := List.nodup_cons.mp hnd
+    refine ⟨hin a List.mem_cons_self,
+      ih hnd' (fun b hb => hin b (List.mem_cons_of_mem _ hb))
+        (fun b hb c hc => hcross b (List.mem_cons_of_mem _ hb) c (List.mem_cons_of_mem _ hc)),
+      ?_⟩
+    intro x hx y hy
+    obtain ⟨b, hb, hyb⟩ := List.mem_flatMap.mp hy
+    exact hcross a List.mem_cons_self b (List.mem_cons_of_mem _ hb)
+      (fun he => hna (he ▸ hb)) x hx y hyb
+
+/-- Rank monotonicity satisfies the validity relation (the `decide` right disjunct). -/
+private theorem kvE2_sepSlotLe_of_rank {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+    (h : kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) : kvE2_sepSlotLe a b = true := by
+  unfold kvE2_sepSlotLe
+  rw [decide_eq_true h, Bool.or_true]
+
+/-- Distinct owning subs satisfy the validity relation (the negated left disjunct). -/
+private theorem kvE2_sepSlotLe_of_sub_ne {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+    (h : kvE2_sepSlotSub a ≠ kvE2_sepSlotSub b) : kvE2_sepSlotLe a b = true := by
+  unfold kvE2_sepSlotLe
+  rw [decide_eq_false h, Bool.not_false, Bool.true_or]
+
+/-- Every slot of σ's canonical LEFT block is owned by σ. -/
+private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    {s : KvE2SepSlot sig} (h : s ∈ kvE2_sepSlotsLFor σ) : kvE2_sepSlotSub s = σ := by
+  unfold kvE2_sepSlotsLFor at h
+  split at h
+  · rcases List.mem_append.mp h with h' | h'
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp h'; rfl
+    · rcases List.mem_cons.mp h' with rfl | h''
+      · rfl
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp h''; rfl
+  · split at h
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp h; rfl
+    · exact (List.not_mem_nil h).elim
+
+/-- Every slot of σ's canonical RIGHT block is owned by σ. -/
+private theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    {s : KvE2SepSlot sig} (h : s ∈ kvE2_sepSlotsRFor σ) : kvE2_sepSlotSub s = σ := by
+  unfold kvE2_sepSlotsRFor at h
+  split at h
+  · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp h; rfl
+  · split at h
+    · rcases List.mem_append.mp h with h' | h'
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp h'; rfl
+      · rcases List.mem_cons.mp h' with rfl | h''
+        · rfl
+        · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp h''; rfl
+    · exact (List.not_mem_nil h).elim
+
+/-- σ's canonical LEFT block respects the region-rank order (`XU* < x1 < UW*`). -/
+private theorem kvE2_sepSlotsLFor_pairwise {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsLFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+  unfold kvE2_sepSlotsLFor
+  split
+  · refine List.pairwise_append.mpr ⟨?_, ?_, ?_⟩
+    · exact List.pairwise_map.mpr
+        (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.zero_le _))
+    · refine List.pairwise_cons.mpr ⟨?_, ?_⟩
+      · intro b hb
+        obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hb
+        exact kvE2_sepSlotLe_of_rank (Nat.le_succ 1)
+      · exact List.pairwise_map.mpr
+          (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+    · intro s hs b _
+      obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hs
+      exact kvE2_sepSlotLe_of_rank (Nat.zero_le _)
+  · split
+    · exact List.pairwise_map.mpr
+        (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+    · exact List.Pairwise.nil
+
+/-- σ's canonical RIGHT block respects the region-rank order (`WX1* < x1 < X1T*`). -/
+private theorem kvE2_sepSlotsRFor_pairwise {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsRFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+  unfold kvE2_sepSlotsRFor
+  split
+  · exact List.pairwise_map.mpr
+      (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+  · split
+    · refine List.pairwise_append.mpr ⟨?_, ?_, ?_⟩
+      · exact List.pairwise_map.mpr
+          (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.zero_le _))
+      · refine List.pairwise_cons.mpr ⟨?_, ?_⟩
+        · intro b hb
+          obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hb
+          exact kvE2_sepSlotLe_of_rank (Nat.le_succ 1)
+        · exact List.pairwise_map.mpr
+            (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+      · intro s hs b _
+        obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hs
+        exact kvE2_sepSlotLe_of_rank (Nat.zero_le _)
+    · exact List.Pairwise.nil
+
+/-- The positive-sub spine is duplicate-free (`Finset.univ.toList` + filter). -/
+private theorem kvE2_sepPos_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    (kvE2_sepPos qnf).Nodup :=
+  (Finset.nodup_toList _).filter _
+
+/-- The canonical LEFT slot list is a valid arrangement (identity interleaving). -/
+private theorem kvE2_sepSlotsL_valid {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    kvE2_sepValid (kvE2_sepSlotsL qnf) = true := by
+  unfold kvE2_sepValid
+  refine decide_eq_true ?_
+  unfold kvE2_sepSlotsL
+  refine kvE2_sep_pairwise_flatMap (kvE2_sepPos_nodup qnf)
+    (fun σ _ => kvE2_sepSlotsLFor_pairwise σ) ?_
+  intro a _ b _ hab s hs y hy
+  exact kvE2_sepSlotLe_of_sub_ne (by
+    rw [kvE2_sepSlotsLFor_sub hs, kvE2_sepSlotsLFor_sub hy]; exact hab)
+
+/-- The canonical RIGHT slot list is a valid arrangement (identity interleaving). -/
+private theorem kvE2_sepSlotsR_valid {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    kvE2_sepValid (kvE2_sepSlotsR qnf) = true := by
+  unfold kvE2_sepValid
+  refine decide_eq_true ?_
+  unfold kvE2_sepSlotsR
+  refine kvE2_sep_pairwise_flatMap (kvE2_sepPos_nodup qnf)
+    (fun σ _ => kvE2_sepSlotsRFor_pairwise σ) ?_
+  intro a _ b _ hab s hs y hy
+  exact kvE2_sepSlotLe_of_sub_ne (by
+    rw [kvE2_sepSlotsRFor_sub hs, kvE2_sepSlotsRFor_sub hy]; exact hab)
+
+/-- Dropping the fresh coordinate of a REALIZED arity-4 depth-0 base recovers the
+    arity-3 base realized at the same three points (Def 3.1 env-restriction channel):
+    both sides answer every `[w,x,t]`-atom by the same model truth. -/
+private theorem kvE2_sep_dropFresh_eq {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {x1 w x t : M.carrier}
+    (σ1 : NormalForm sig 0 4) (r : NormalForm sig 0 3)
+    (hσ : ∀ a : AtomKind sig 4,
+      atom_eval M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) a ↔ σ1 a = true)
+    (hr : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ r a = true) :
+    nf0_dropFresh σ1 = r := by
+  funext a
+  match a with
+  | .pred p i =>
+    have h4 := hσ (.pred p i.succ)
+    have h3 := hr (.pred p i)
+    simp only [atom_eval, Fin.cons_succ] at h4 h3
+    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    exact kvE2_sep_boolEq (h4.symm.trans h3)
+  | .order i j hne =>
+    have h4 := hσ (.order i.succ j.succ (fun he => hne (Fin.succ_injective _ he)))
+    have h3 := hr (.order i j hne)
+    simp only [atom_eval, Fin.cons_succ] at h4 h3
+    simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    exact kvE2_sep_boolEq (h4.symm.trans h3)
+
+/-- **Arity-3 outer zone consistency** (fresh analog of the private arity-4
+    `kvE_sub2V_zone_consistent`, `SubBracket2V.lean:1270` — template only, new code):
+    a point realized in some zone relative to the honest `[w,x,t]` (with `x < w < t`)
+    sits in one of the SEVEN consistent outer zones (Def 3.1, md:61-74). -/
+private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (zs : ZoneSpec 3)
+    (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u) :
+    kvE2_sepOuterConsistent zs := by
+  have h0 := hz ⟨0, by omega⟩
+  have h1 := hz ⟨1, by omega⟩
+  have h2 := hz ⟨2, by omega⟩
+  simp only [Fin.cons] at h0 h1 h2
+  have hzs : ∀ (p0 p1 p2 : Bool × Bool),
+      zs ⟨0, by omega⟩ = p0 → zs ⟨1, by omega⟩ = p1 → zs ⟨2, by omega⟩ = p2 →
+      zs = Fin.cons p0 (Fin.cons p1 (fun _ => p2)) := by
+    intro p0 p1 p2 e0 e1 e2
+    funext i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+  have hxt : x < t := hxw.trans hwt
+  rcases lt_trichotomy u x with hux | rfl | hux
+  · -- u < x : zPastX3
+    have huw : u < w := hux.trans hxw
+    have hut : u < t := hux.trans hxt
+    exact Or.inl (hzs _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hux, k1v_bool_eq_false h1.2 (lt_asymm hux)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))
+  · -- u = x : zAtX3
+    exact Or.inr (Or.inl (hzs _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hxw, k1v_bool_eq_false h0.2 (lt_asymm hxw)⟩)
+      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl _),
+        k1v_bool_eq_false h1.2 (lt_irrefl _)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hxt, k1v_bool_eq_false h2.2 (lt_asymm hxt)⟩)))
+  · -- x < u : split against w
+    rcases lt_trichotomy u w with huw | rfl | huw
+    · -- x < u < w : zXW3
+      have hut : u < t := huw.trans hwt
+      exact Or.inr (Or.inr (Or.inl (hzs _ _ _
+        (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))
+    · -- u = w : zAtW3 (the shared-witness self-zone)
+      exact Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl _),
+          k1v_bool_eq_false h0.2 (lt_irrefl _)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hwt, k1v_bool_eq_false h2.2 (lt_asymm hwt)⟩)))))
+    · -- w < u : split against t
+      rcases lt_trichotomy u t with hut | rfl | hut
+      · -- w < u < t : zWT3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))))
+      · -- u = t : zAtT3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl _),
+            k1v_bool_eq_false h2.2 (lt_irrefl _)⟩)))))))
+      · -- t < u : zFutT3
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
+
+/-- **The depth-2 joint gate holds for an honest `qnf`** (the arity-3 lift of
+    `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1392`): from an honest
+    depth-2 realization at `[w,x,t]` under `x < w < t`, all four gate clauses hold —
+    (i)/(ii) by realizing each positive sub and reading its atom layer against the model
+    (Prop 4.2, md:100-101); (iii) via the landed depth-1 fold decomposition
+    (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`); (iv) by CONSUMING the landed per-σ
+    honest gate lemma at the realized fresh witness. -/
+theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2_sepGate qnf := by
+  obtain ⟨h_atom, h_quant⟩ := h
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- (i) outer off-fiber falsity
+    intro σ hne
+    cases hb : qnf.2 σ with
+    | false => rfl
+    | true =>
+      obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+      exact absurd
+        (kvE2_sep_dropFresh_eq M σ.1 qnf.1
+          ((nf_eval_depth1_fold_iff M _ σ).mp hσ).1 h_atom) hne
+  · -- (ii) outer seven-zone consistency
+    intro σ hncons
+    cases hb : qnf.2 σ with
+    | false => rfl
+    | true =>
+      obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+      have hσ_atom := ((nf_eval_depth1_fold_iff M _ σ).mp hσ).1
+      have hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+          (nf0_zoneSpec σ.1) x1 := by
+        intro i
+        constructor
+        · have h1 := hσ_atom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+          simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+          exact h1
+        · have h1 := hσ_atom (.order i.succ 0 (Fin.succ_ne_zero i))
+          simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+          exact h1
+      exact absurd (kvE2_sep_zone3_consistent M w x t x1 hxw hwt _ hz) hncons
+  · -- (iii) inner off-fiber falsity for every positive sub
+    intro σ hb
+    obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+    exact ((nf_eval_depth1_fold_iff M _ σ).mp hσ).2.2
+  · -- (iv) inner nine-zone consistency for LEFT-interior positives
+    intro σ hb hzone
+    obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+    have hσ_atom := ((nf_eval_depth1_fold_iff M _ σ).mp hσ).1
+    -- Read the two left-interior order bits off the placement guard (the zone-spec
+    -- components ARE σ.1's fresh-coupling order bits, `nf0_zoneSpec` def).
+    have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+      rw [congrFun hzone ⟨1, by omega⟩]; decide
+    have hbit_x1w : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+      rw [congrFun hzone ⟨0, by omega⟩]; decide
+    -- Transfer the bits to real order facts through the realized atom layer.
+    have hxx1 : x < x1 := by
+      have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_xx1
+    have hx1w : x1 < w := by
+      have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_x1w
+    exact fun zs χ hncons =>
+      (kvE_subBracket2V_gate_holds_of_honest σ M x1 w x t hxx1 hx1w hwt hσ).2 zs χ hncons
+
+/-- **O1b — non-vacuity of the joint carrier** (fresh analog of
+    `kvE_subBracket2V_nonvacuous`, `SubBracket2V.lean:1425`; FM-vac): for a `qnf` arising
+    from an actual model realization under `x < w < t`, the depth-2 gate holds, so the
+    carrier takes the gate-true branch and its `disjuncts` list is the NON-empty
+    interleaving product (the canonical identity interleaving of each side is always a
+    member). Hence `(kvE2_sepBody …).holds` is not definitionally `False` and no later
+    direction can close vacuously. Rabinovich Prop 4.2 (md:100-101). -/
+theorem kvE2_sepBody_nonvacuous {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (kvE2_sepBody charBase charK qnf).disjuncts ≠ [] := by
+  have hgate := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
+  simp only [kvE2_sepBody]
+  split
+  case isTrue _ =>
+    apply List.ne_nil_of_mem
+    apply List.mem_flatMap.mpr
+    refine ⟨kvE2_sepSlotsL qnf,
+      List.mem_filter.mpr
+        ⟨List.mem_permutations.mpr (List.Perm.refl _), kvE2_sepSlotsL_valid qnf⟩, ?_⟩
+    apply List.mem_map.mpr
+    exact ⟨kvE2_sepSlotsR qnf,
+      List.mem_filter.mpr
+        ⟨List.mem_permutations.mpr (List.Perm.refl _), kvE2_sepSlotsR_valid qnf⟩, rfl⟩
+  case isFalse hg =>
+    exact absurd hgate hg
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
