@@ -116,15 +116,16 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 331 (
 
 ### Uncategorized
 
-331 [NOT STARTED] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
+331 [RESEARCHED] — Structural refactor to unblock task 321 Phase 7/8: split NfMultiA
   └─ 321 [BLOCKED] — (kamp_theorem_formalization: REDESIGN (v6, plan 06). Task 330's PDF-v) (see above)
 
 ## Tasks
 
 ### 331. Refactor nfmultianchorbridge split and separate bracket api
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: None
+- **Research**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md]
 
 **Description**: Structural refactor to unblock task 321 Phase 7/8: split NfMultiAnchorBridge.lean and clean up the k=2 carrier API. RUNS BEFORE the next task-321 implementation attempt (task 321 now depends on this task). Purely mechanical/organizational — introduces NO new mathematical content and does NOT attempt to close the Phase-7 gate (that stays task 321).
 
@@ -352,6 +353,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/06_faithful-separate-bracket-architecture.md]
 - **Plan**:
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/02_corrected-k2-carrier-fi-chain-v2.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md]

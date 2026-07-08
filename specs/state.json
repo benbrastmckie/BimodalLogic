@@ -3031,7 +3031,7 @@
     {
       "project_number": 331,
       "project_name": "refactor_nfmultianchorbridge_split_and_separate_bracket_api",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Structural refactor to unblock task 321 Phase 7/8: split NfMultiAnchorBridge.lean and clean up the k=2 carrier API. RUNS BEFORE the next task-321 implementation attempt (task 321 now depends on this task). Purely mechanical/organizational — introduces NO new mathematical content and does NOT attempt to close the Phase-7 gate (that stays task 321).\n\nMOTIVATION. NfMultiAnchorBridge.lean has grown to ~9,249 lines — nearly double the next-largest file in the entire codebase — accreting the k=2 carrier machinery across tasks 320/325/326/330/321-v6. Task 321's blocker research (specs/321_.../.orchestrator-handoff.json, adversarially verified, Tier-1 grounded in Rabinovich 2014) established that the FAITHFUL route to close the gate is a per-sigma SEPARATE-BRACKET combination (Prop 4.2/4.3 disj/conj over standalone kvE_subBracket2V carriers), NOT the merged-bracket slotsFor construction (which is the un-faithful step: it builds bracket-whose-points-are-brackets, violating the file's own no-nesting audit rule at :8841-8846 and Lemma 5.1's quantifier-free-point-types requirement). This refactor prepares the file so the faithful rewrite is tractable and the dead merged-route machinery is clearly quarantined.\n\nSCOPE (mechanical split + API surfacing):\n1. Divide NfMultiAnchorBridge.lean into cohesive sub-modules along natural seams (confirm exact boundaries against the file): (a) baseline/quarantine defs + NormalForm/ZoneSpec/VecEA2 plumbing; (b) navigated spine kvE_fold_navigated + Prop 4.3 re-flatten machinery (VVecEA2.disjList_holds :8947, reflatten_prop43 :8991); (c) structural fold-collapse holds_flatMap_map; (d) per-arrangement non-interior dischargers (5+5 soundness/completeness); (e) task-326 standalone per-sub carrier closers (kvE_subBracket2V :6833, correctness_pair :8549, _sound_of_outer :7910, _complete :8159); (f) the merged-route kvE2_body/bracketFromLists gate assembly + slotsFor + subchain_below_pin + F1-F4 records. Preserve import-DAG acyclicity.\n\n2. Surface the FAITHFUL separate-bracket API as named, documented interface lemmas so task 321's next attempt can build the shared-interior-witness conjunction (the one genuine unbuilt object: exists w, conj over sigma of (kvE_subBracket2V sigma at that same shared w) = Lemma 5.1 point-insertion + Lemma 3.2(2) 2-var reduction). Expose the per-sub carrier + disjList_holds/VVecEA2.conj/neg_2var_vec_ea combinators as the clean public interface; keep the merged-route slotsFor/subchain_below_pin machinery in a clearly-marked QUARANTINE/DEAD-CODE module (do not delete in this task — task 321 retires it once the faithful route lands).\n\nBINDING CONSTRAINTS (non-negotiable):\n- SEMANTICS-PRESERVING ONLY. Every landed lemma/def keeps an identical statement and proof term; relocation across files is allowed, editing content is NOT. The do-not-edit (byte-identical) task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice, kvE_subChain2V, BracketCarrierCorrectVPrior/Prior, EANegation, and F1-F4 records must remain semantically byte-identical (a relocated copy with unchanged tokens is acceptable; a re-proof is not).\n- No sorry on any path; axiom-clean [propext, Classical.choice, Quot.sound]; full `lake build` exit 0 after EACH split commit (incremental, one module at a time).\n- Downstream consumers keep working via re-export shims if names move: KampPrior.lean:351 strategic-sorry hook, task 309 general-k consumers, and any importer of NfMultiAnchorBridge symbols. Verify with lake build across the whole Kamp directory.\n- Do NOT close the Phase-7 gate, do NOT build the shared-w combinator, do NOT run Phase-8. Those are task 321. Success = SAME theorems, SAME axioms, smaller files (target <= ~1500-2000 lines/module), clearer separate-bracket API, dead merged-route machinery quarantined.\n\nGOAL STATE: hand task 321's next (faithful, v7) implementation attempt a clean, split, well-documented API surface centered on separate per-sigma carriers, so the shared-interior-witness probe and rewrite (est. 400-700 additive lines per the research) can proceed without fighting a 9k-line monolith. LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md (Def 3.1, Lemma 3.2, Lemma 3.4, Prop 4.2, Prop 4.3, Lemma 5.1, Cor 5.4).\n",
       "file_scope": [
@@ -3041,7 +3041,16 @@
       "blocks": [
         321
       ],
-      "created": "2026-07-08T01:40:36Z"
+      "created": "2026-07-08T01:40:36Z",
+      "last_updated": "2026-07-08T02:01:04Z",
+      "session_id": "sess_1783475175_afdf09",
+      "artifacts": [
+        {
+          "path": "specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md",
+          "type": "report",
+          "summary": "Section map (10 modules, exact line ranges), consumer/shim inventory, Rabinovich mapping table, de-privatization inventory, 11-step split order"
+        }
+      ]
     }
   ],
   "artifacts": [
