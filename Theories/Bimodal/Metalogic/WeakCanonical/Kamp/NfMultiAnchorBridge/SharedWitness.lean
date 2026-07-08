@@ -390,6 +390,31 @@ def kvE2_sepCompat {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
     | some za, some χb => kvE2_sepBits (kvE2_sepSlotSub a) za χb
     | _, _ => true)
 
+/-- **Cross-σ discrimination witness** (task 333 Phase-1 audit item 2, proof form —
+    stronger than the planned `#eval` sanity check, and abstract over any `sig`/`σ`/`χ`).
+    A foreign 1-type slot `a` (carrying `χ`) placed BEFORE a left-interior σ's fresh slot
+    `.lX1 σ` is admitted by the redefined compat filter iff σ's before-fresh
+    (`kvE_sub2_zXU`, region `(x, x1)`) fold bit for `χ` is TRUE: the compat value equals
+    that bit EXACTLY. Hence the filter REJECTS the arrangement-blind bad interleaving
+    (`kvE2_sepBits σ zXU χ = false` ⇒ `kvE2_sepCompat a (.lX1 σ) = false`) and ADMITS the
+    bit-true one — the cross-σ correctness the arrangement-blind task 321 filter lacked
+    (Rabinovich Lemma 3.2(1), md:77; interval-decomposition + Feferman–Vaught composition
+    md:74, md:207-236). The mirror for `.rX1` (right-interior fresh, `kvE2_sep_zWX1`) and
+    the after-fresh clause hold by the same reduction. NOTE (audit item 1a): a *fresh-less*
+    sub's whole macro-side region (a right-interior σ on the LEFT list; a left-interior σ on
+    the RIGHT list) is NOT keyed by this filter — its exclusion of foreign χ-points is owned
+    by the refined-segment machinery `kvE2_sepSegLForSub`/`kvE2_sepSegRForSub` (uniform
+    `kvE_sub2_zXU` / `kvE_sub2_zWT` segment forms), so the compat filter is CORRECTLY silent
+    there; no third compat clause is needed. -/
+theorem kvE2_sepCompat_lX1_eq {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (a : KvE2SepSlot sig)
+    (hχ : kvE2_sepSlotChi a = some χ) :
+    kvE2_sepCompat a (.lX1 σ) = kvE2_sepBits σ kvE_sub2_zXU χ := by
+  unfold kvE2_sepCompat
+  cases a <;>
+    simp_all [kvE2_sepFreshZoneBefore, kvE2_sepFreshZoneAfter, kvE2_sepSlotChi,
+      kvE2_sepSlotSub]
+
 /-- Arrangement validity relation, Bool-valued: slots of the SAME σ must appear in
     non-decreasing region rank; slots of different σ are unconstrained (that freedom IS
     the Lemma 3.2(1) interleaving enumeration). -/
