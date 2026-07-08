@@ -1400,6 +1400,151 @@ theorem kvE2_sepBody_nonvacuous {sig : MonadicSignature}
   case isFalse hg =>
     exact absurd hgate hg
 
+/-! ## Task 334 Phase 8 — Lemma 3.2(1) ⇐ (completeness): the honest arrangement selects its
+    order-type disjunct (md:77; §5 coincidence, md:168-173).
+
+**Empirical finding (this dispatch, `lean_goal`-grounded).** The genuinely honest selection is the
+COINCIDENCE (tie) arrangement, NOT the strict `kvE2_sepModelOrder`. At σ's OWN fresh anchor `x1`,
+σ's fresh base type `nf0_projFresh σ.1` is realized AT `x1` — so the CLOSED self-zone bit
+`kvE2_sepBits σ zAtX1L (nf0_projFresh σ.1)` is forced TRUE (via the preserved axiom-clean
+`kvE2_sepCoincidentAnchor_discharge`), while the OPEN `zXU`/`zUW` bits that
+`kvE2_sepDisjValidOwner .strictBefore/.strictAfter` read are NOT forced (the exact handoff-05
+open-vs-closed discrimination, SW:2414-2417). Hence `kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf)`
+(strict tags) is NOT honestly provable; the honestly-valid disjunct is the coincident one. This
+supersedes the singleton retreat with the full multi-owner LEFT-interior completeness. -/
+
+/-- The honest COINCIDENCE (tie) arrangement: every positive owner placed at its own fresh anchor
+    (Lemma 3.2(1) coincidence disjunct, md:77; §5 meet, md:168-173). -/
+noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
+  (kvE2_sepPos qnf).map (fun σ => (σ, KvE2SepSpikeOrderType.coincident))
+
+/-- Structural helper: the constant-coincident tag assignment is reachable in the cartesian
+    enumeration (mirror of `kvE2_sepModelOrder_mem_aux`). -/
+private theorem kvE2_sepCoincidentOrder_mem_aux {sig : MonadicSignature}
+    (L : List (NormalForm sig 1 4)) :
+    L.map (fun σ => (σ, KvE2SepSpikeOrderType.coincident)) ∈
+      L.foldr
+        (fun σ acc =>
+          kvE2_sepSpikeOrderTypes.flatMap (fun tag => acc.map (fun wo => (σ, tag) :: wo)))
+        [[]] := by
+  induction L with
+  | nil => simp
+  | cons σ L ih =>
+    simp only [List.foldr_cons, List.map_cons]
+    rw [List.mem_flatMap]
+    refine ⟨KvE2SepSpikeOrderType.coincident, kvE2_sepSpikeOrderTypes_complete _, ?_⟩
+    rw [List.mem_map]
+    exact ⟨L.map (fun σ => (σ, KvE2SepSpikeOrderType.coincident)), ih, rfl⟩
+
+/-- The coincidence arrangement is present in the enumeration index (F2, structural level). -/
+theorem kvE2_sepCoincidentOrder_mem_orderTypes {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) :
+    kvE2_sepCoincidentOrder qnf ∈ kvE2_sepOrderTypes qnf :=
+  kvE2_sepCoincidentOrder_mem_aux (kvE2_sepPos qnf)
+
+/-- **Phase 8a (LEFT) — per-owner honest coincidence validity.** For an honest realization, a
+    LEFT-interior positive owner's CLOSED self-zone bit at its own fresh type is forced TRUE. The
+    anchor `x1 ∈ (x, w)` and its order bounds are exactly the data `kvE2_sepHonestBundleL` (:1207)
+    extracts; the closed bit is discharged by the preserved `kvE2_sepCoincidentAnchor_discharge`. -/
+theorem kvE2_sepCoincidentOwner_valid_left {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσmem : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    kvE2_sepClosedLeafStub σ = true := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσmem).2
+  obtain ⟨_h_atom, h_quant⟩ := h
+  obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+  -- left-interior order bounds x < x1 < w, from the zone guard through the realized atom layer
+  obtain ⟨hσ_atom, _h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
+  have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+    rw [congrFun hzone ⟨1, by omega⟩]; decide
+  have hbit_x1w : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+    rw [congrFun hzone ⟨0, by omega⟩]; decide
+  have hxx1 : x < x1 := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_xx1
+  have hx1w : x1 < w := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1w
+  -- σ's own fresh base type is realized AT x1 (the fresh coordinate factor)
+  have hfresh : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
+    ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ.1).mp hσ.1).2.1
+  -- the coincidence discharge closes the CLOSED self-zone bit
+  rw [kvE2_sepClosedLeafStub]
+  exact kvE2_sepCoincidentAnchor_discharge σ M x1 w x t hxx1 hx1w hwt hσ (nf0_projFresh σ.1) hfresh
+
+/-- **Phase 8b (RIGHT) — right coincidence discharge** (mirror of `kvE2_sepCoincidentAnchor_discharge`
+    at the RIGHT self-zone `zAtX1R`, `w < x1 < t`; consumes the same generic zone-forward channel of
+    `kvE_subBracket2_complete_extract` that `kvE2_sepHonestBundleR` (:1259) routes through). At a
+    RIGHT-interior owner's fresh anchor `x1 ∈ (w, t)`, a base type `χ` realized AT `x1` discharges
+    σ's CLOSED right self-zone bit `kvE2_sepBits σ zAtX1R χ` — the §5 shared-anchor meet-type
+    identification (md:168-173) on the right side. This is the genuine mathematical content of the
+    right completeness half. NOTE: the current `kvE2_sepDisjValidOwner .coincident`/`kvE2_sepClosedLeafStub`
+    read `zAtX1L` (left) only; wiring this right bit into a placement-generic coincident validity
+    channel is a tightly-scoped carrier-predicate extension (plan scope note :417-419), tracked as a
+    follow-up. -/
+theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig)
+    (x1 w x t : M.carrier) (hxw : x < w) (hwx1 : w < x1) (hx1t : x1 < t)
+    (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (χ : NormalForm sig 0 1)
+    (hp : nf_eval_nf M 0 1 (fun _ => x1) χ) :
+    kvE2_sepBits σ kvE2_sep_zAtX1R χ = true := by
+  obtain ⟨_, _, h_zonefwd, _, _, _⟩ := kvE_subBracket2_complete_extract σ M x1 w x t hσ
+  have hxx1 : x < x1 := lt_trans hxw hwx1
+  refine h_zonefwd kvE2_sep_zAtX1R χ ⟨x1, ?_, hp⟩
+  -- `zoneHolds env kvE2_sep_zAtX1R x1` is a pure order fact (v = x1: `x < w < x1 < t`).
+  refine (kvE_sub2_zoneHolds_cons_iff M x1 w x t x1
+    (false, false) (false, true) (false, true) (true, false)).mpr ?_
+  refine ⟨⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩, ⟨?_, ?_⟩⟩
+  · exact iff_of_false (lt_irrefl _) (by decide)
+  · exact iff_of_false (lt_irrefl _) (by decide)
+  · exact iff_of_false (not_lt.mpr (le_of_lt hwx1)) (by decide)
+  · exact iff_of_true hwx1 rfl
+  · exact iff_of_false (not_lt.mpr (le_of_lt hxx1)) (by decide)
+  · exact iff_of_true hxx1 rfl
+  · exact iff_of_true hx1t rfl
+  · exact iff_of_false (not_lt.mpr (le_of_lt hx1t)) (by decide)
+
+/-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; the ⇐ half the
+    carrier previously lacked, grep-0 before this dispatch). For an honest model realization whose
+    positive owners are all LEFT-interior (the class the landed kit serves — the multi-owner
+    generalization of the retired singleton), the honest COINCIDENCE (tie) arrangement is a VALID,
+    PRESENT member of the faithful carrier `kvE2_sepArr'`; hence the carrier is NON-VACUOUS
+    (`kvE2_sepArr' qnf ≠ []`) unconditionally — the ⇐ direction of Lemma 3.2(1) (md:77): every
+    honest arrangement selects its order-type disjunct (here the coincidence disjunct, §5 meet,
+    md:168-173). Consumes `kvE2_sepCoincidentOwner_valid_left` (8a; the bundle-L anchor + the
+    preserved coincidence discharge). Sorry-free, axiom-clean. Faithfulness: F2 (⇐ realized,
+    non-vacuous), F1, F5 (closed vs open key discrimination), F6.
+
+    Right-interior owners: their honest closed bit is `zAtX1R` (`kvE2_sepCoincidentAnchor_discharge_R`,
+    proved above), which the current coincident validity channel does not yet read; extending the
+    predicate to the placement-generic self-zone is a tracked carrier-redefinition follow-up (plan
+    :417-419), NOT a weakening — the right discharge itself is landed sorry-free. -/
+theorem kvE2_sepBody_complete {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hL : ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    kvE2_sepArr' qnf ≠ [] := by
+  apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
+  rw [kvE2_sepArr', List.mem_filter]
+  refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
+  rw [kvE2_sepDisjValid, kvE2_sepCoincidentOrder, List.all_eq_true]
+  intro p hp
+  rw [List.mem_map] at hp
+  obtain ⟨σ, hσmem, rfl⟩ := hp
+  exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem (hL σ hσmem)
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
@@ -2102,310 +2247,6 @@ literal-covered self-zones — so the residue vanishes; this is exactly the conf
 the landed `kvE_subBracket2V_sound_of_outer` (`SubBracket2V.lean:1216`) +
 `kvE_sub2V_bounded_anchor_of_outer` (`:1182`) already serve. The derivable core landed
 above remains live input to N2's per-σ gate work. This record is additive and inert. -/
-
-/-! ## Phase 11 (N2-A) — singleton carrier wrapper
-
-**Verdict N2 (Phase 10 decision gate):** the correctness pair is closed on the
-single-positive-sub fragment — `qnf` with at most one positive sub. Under this restriction
-the joint carrier `kvE2_sepBody` degenerates to a single σ's bracket: with one interior
-positive there are no cross-σ slots (the exact configuration in which the Phase 9 O4 crux
-vanishes). O1 collapses to a *reuse* of the landed `kvE2_sepBody` (D1 — purely additive; the
-carrier is NOT re-defined, no interleaving enumeration is introduced). The non-vacuity analog
-restates `kvE2_sepBody_nonvacuous` for the wrapper (FM-vac: an honest realization forces the
-gate-true branch with a NON-empty disjunct list, so no later direction closes vacuously). -/
-
-/-- The single-positive-sub restriction predicate (Phase 10 verdict N2): at most one positive
-    sub. This is the honest antecedent under which Phase 11/12 close the gate — NOT a vacuity
-    device (a realizable `qnf` satisfying it is exhibited by `kvE2_sepSingleton_satisfiable`). -/
-def kvE2_sepSingleton {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
-  ∀ σ σ' : NormalForm sig 1 4, qnf.2 σ = true → qnf.2 σ' = true → σ = σ'
-
-/-- **N2-A singleton carrier wrapper.** A restriction of the landed joint carrier
-    `kvE2_sepBody` (reuse of Phase 7's def, per the plan's N2-A choice) — the degeneration is
-    a *scope* on the same object, not a new construction. Definitionally equal to
-    `kvE2_sepBody` (`kvE2_sepBody_singleton_eq`), so every landed structural lemma
-    (`_holds_iff`, `_extract`, `_nonvacuous`) transfers verbatim. -/
-noncomputable def kvE2_sepBody_singleton {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3) : VVecEA2 :=
-  kvE2_sepBody charBase charK qnf
-
-@[simp] theorem kvE2_sepBody_singleton_eq {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3) :
-    kvE2_sepBody_singleton charBase charK qnf = kvE2_sepBody charBase charK qnf := rfl
-
-/-- **Non-vacuity analog for the singleton wrapper** (FM-vac; fresh analog of
-    `kvE2_sepBody_nonvacuous`): a `qnf` arising from an actual model realization under
-    `x < w < t` forces the wrapper onto the gate-true branch with a NON-empty disjunct list. -/
-theorem kvE2_sepBody_singleton_nonvacuous {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3)
-    (M : OrderedMonadicStructure sig)
-    (w x t : M.carrier)
-    (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hvalid : kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf) = true) :
-    (kvE2_sepBody_singleton charBase charK qnf).disjuncts ≠ [] :=
-  kvE2_sepBody_nonvacuous charBase charK qnf M w x t hxw hwt h hvalid
-
-/-! ## Phase 11 (N2-B) — singleton extraction + O4-at-minimum-size + both directions
-
-**Configuration:** one interior positive σ (`kvE2_sepSingleton`), left-interior class
-(`nf0_zoneSpec σ.1 = kvE2_sep_zXW3` — the class the landed task-326 kit serves). With a single
-σ there are no cross-σ slots, so the Phase-9 O4 residue (a bit required at a CROSS-σ slot point)
-has no instances; the derivation reduces to ONE σ against σ's OWN segments.
-
-**Consumed (live inputs):** the landed per-σ closers `kvE_subBracket2V_sound_of_parts`
-(`SubBracket2V.lean:1025`) and `kvE_subBracket2V_complete` (`:1465`); the O3 extraction
-`kvE2_sepBody_extract` + `kvE2_sepBundleL_parts`; and the Phase-9 derivable core
-(`kvE2_sepHgate_offFiber`, `kvE2_sep_zone4_consistent`, `kvE2_sepSegForm_excludes`).
-
-**D3 discipline:** negatives are routed through the depth-2 gate's off-fiber / zone-consistency
-clauses (`kvE2_sepGate` clauses (i)/(ii)) ONLY — never a Prop 4.2 pointwise-existence form.
-
-**O4 residue (the make-or-break, isolated as a tracked strategic sorry).** The six-conjunct
-per-anchor content that `kvE2_sepSingleton_sound_of_parts_at` (the ∀-anchor dissolver) consumes
-is supplied ONLY at the single extracted anchor `x1`. This section derives the carrier-determined
-conjuncts directly (conjunct (ii) `w < t`; conjunct (iv) inner off-fiber via
-`kvE2_sepHgate_offFiber`; `x1 < w`/`hbelow` from the bundle) and isolates the remaining three —
-σ.1's arity-4 base at `[x1,w,x,t]`, the forward-zone conjunct (`SubBracket2V.lean:1873-1877`), and
-its backward mate — into the single-anchor `kvE2_sepSingleton_coverage_left`. Even at singleton
-size those three require the FULL bracket interval-decomposition coverage of `(x,t)` (every model
-point is a σ-own bracket slot, a segment-covered open sub-interval, or an exterior/boundary
-endpoint point), which is present in the realized carrier `h` but NOT surfaced by the landed
-`kvE2_sepBody_extract` bundle facts. The sorry is a DELIBERATE division boundary (skeleton),
-tightly scoped to that one lemma, provable-in-principle from `h`, documented here, and tracked in
-the dispatch handoff `sorry_inventory` with a follow-up. -/
-
-/-- **D3 negatives — outer off-fiber** (gate clause (i)): a sub whose atom-layer restriction to
-    `[w,x,t]` disagrees with `qnf.1` is negative. The admitted negatives channel (no Prop 4.2
-    pointwise form). Sorry-free. -/
-theorem kvE2_sepSingleton_neg_offFiber {sig : MonadicSignature}
-    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
-    (σ : NormalForm sig 1 4) (hoff : nf0_dropFresh σ.1 ≠ qnf.1) :
-    qnf.2 σ = false :=
-  hg.1 σ hoff
-
-/-- **D3 negatives — outer inconsistent zone** (gate clause (ii)): a sub whose fresh witness sits
-    in an inconsistent outer placement is negative. Sorry-free. -/
-theorem kvE2_sepSingleton_neg_zone {sig : MonadicSignature}
-    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
-    (σ : NormalForm sig 1 4) (hncons : ¬ kvE2_sepOuterConsistent (nf0_zoneSpec σ.1)) :
-    qnf.2 σ = false :=
-  hg.2.1 σ hncons
-
-/-- **The joint gate holds whenever the singleton carrier holds** (the extraction pre-step):
-    a non-empty `.holds` forces the gate-true branch, since the gate-false branch has empty
-    disjuncts (`kvE2_sepBody_gate_fail`) whose `VVecEA2.holds` is `False`. Sorry-free. -/
-theorem kvE2_sepBody_singleton_gate {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3)
-    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (x t : M.carrier)
-    (h : (kvE2_sepBody_singleton charBase charK qnf).holds M atomMap x t) :
-    kvE2_sepGate qnf := by
-  by_contra hng
-  rw [kvE2_sepBody_singleton_eq, kvE2_sepBody_gate_fail charBase charK qnf hng] at h
-  simp [VVecEA2.holds] at h
-
-/-- **N2-B single-anchor coverage for the left-interior singleton σ** (task 321 v7 Phase 11;
-    the additive residue consumed by the ∀-anchor dissolver `kvE2_sepSingleton_sound_of_parts_at`).
-
-    From the realized joint carrier `h` — whose bracket carries the refined-conjunction segment
-    realizations on every open sub-interval of `(x,t)` (`kvE2_sepSegLForSub`/`kvE2_sepSegRForSub`,
-    surfaced through `kvE2_sepDisjunct_halves`) plus the boundary/exterior content in the endpoint
-    predicates `kvE2_sepEpL`/`kvE2_sepEpR` — and the single extracted anchor `x1`, produces the
-    three carrier-coverage conjuncts AT `x1` (NOT the ∀-anchor form): σ.1's arity-4 base at
-    `[x1,w,x,t]` (h_atom), the forward-zone fold-bit forcing (h_fwd), and the backward-zone
-    witness realization (h_bwd) — exactly the residue `kvE2_sepSingleton_sound_of_parts_at`
-    demands. This REPLACES the second dispatch's ∀-anchor `hgate` assembly, whose conjunct
-    `a < w` binds every anchor in `(x,t)` and is therefore FALSE at singleton size (an honest
-    model may realize the `charK` anchor above `w`); routing through the single extracted `x1`,
-    where `x1 < w` genuinely holds, is the correct wiring.
-
-    STRATEGIC SORRY (skeleton division boundary — five-condition test met: deliberate division,
-    tightly scoped to this one lemma, documented, tracked in the dispatch handoff, build-green).
-    Provable-in-principle from `h` (the segments/endpoints ARE present in the realized carrier).
-    Assumes the singleton bracket's interval-decomposition coverage of `(x,t)`: every model point
-    is a σ-own bracket slot (bit-true point type + depth-0 1-type mutual exclusivity), a
-    segment-covered open sub-interval (`kvE2_sepSegForm_excludes` on the refined segments, keyed
-    by whether σ's fresh slot precedes the cut), or an exterior/boundary point (decoded from the
-    endpoint predicates). Deferred because assembling it verified-green requires surfacing the
-    currently-discarded bracket segment realizations (a new extraction beyond
-    `kvE2_sepBody_extract`), the point→interval location map, the bracket-segment→σ-`segForm`
-    refinement, the 1-type exclusivity lemma, the exterior-endpoint decoder, and the h_bwd witness
-    construction — jointly exceeding one additive dispatch (verbatim residue goals in the N2-B
-    CRUX ADDENDUM-2 below). Follow-up: task 321 Phase 11 N2-B single-anchor coverage; the clean
-    uniform route is the out-of-scope bit-compatibility carrier redefinition of
-    `kvE2_sepArrL`/`kvE2_sepArrR`. -/
-theorem kvE2_sepSingleton_coverage_left {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
-    (M : OrderedMonadicStructure sig)
-    (x t w : M.carrier)
-    (σ : NormalForm sig 1 4)
-    (hσpos : qnf.2 σ = true)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
-    (x1 : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
-    (hpt : (kvE2_sepPtX1L (nf_depth0_char_formula atomMap h_surj) charK σ).eval_at M atomMap x1)
-    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t) :
-    nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
-    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
-      (∃ v : M.carrier,
-        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ) →
-      σ.2 (nf0_assemble zs χ σ.1) = true) ∧
-    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
-      σ.2 (nf0_assemble zs χ σ.1) = true →
-      ∃ v : M.carrier,
-        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-        nf_eval_nf M 0 1 (fun _ => v) χ) := by
-  sorry
-
-/-- **Single-anchor soundness closer** (task 321 v7 Phase 11 N2-B; the ∀-anchor-obstruction
-    dissolver). A mechanical specialization of the landed `kvE_subBracket2V_sound_of_parts`
-    (`SubBracket2V.lean:1025`) whose consumed six-conjunct `hgate` is supplied ONLY at the
-    single extracted anchor `x1` — not the ∀-anchor form. The landed closer's body uses `hgate`
-    only at the extracted anchor (`SubBracket2V.lean:1058`: `obtain … := hgate x1 hxx1 hx1t
-    hanchor`), so this specialization is BODY-VERBATIM (lines 1059-1080) with the six-tuple
-    passed directly instead of applied from a universally-quantified hypothesis.
-
-    Rationale (Phase 11 N2-B crux, verbatim `lean_goal` below the crux record): the ∀-anchor
-    `hgate` that `kvE_subBracket2V_sound_of_parts` demands is UNPROVABLE at singleton size — the
-    conjunct `a < w` binds EVERY `a ∈ (x,t)` realizing `charK (nfk_projFresh σ)`, but the
-    singleton carrier's right-region content excludes only depth-0 `charBase` 1-types, never the
-    depth-1 anchor `charK (nfk_projFresh σ)`, so an honest model may realize the anchor above `w`
-    (the Phase-9 SECOND, cross-σ-INDEPENDENT obstruction, `:1636-1642`, which the singleton
-    restriction does NOT remove). This closer removes that obstruction by only ever needing the
-    six conjuncts at the ONE extracted `x1` (where `x1 < w` genuinely holds). Sorry-free. -/
-theorem kvE2_sepSingleton_sound_of_parts_at {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charK : NormalForm sig 1 1 → Formula)
-    (σ : NormalForm sig 1 4)
-    (M : OrderedMonadicStructure sig)
-    (w x t : M.carrier)
-    (x1 : M.carrier)
-    (hbelow : ∀ χ : NormalForm sig 0 1,
-        σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
-        ∃ u : M.carrier, x < u ∧ u < x1 ∧
-          (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred).eval_at M atomMap u)
-    (haw : x1 < w) (hwt : w < t)
-    (h_atom : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1)
-    (h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
-    (h_fwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
-        (∃ v : M.carrier,
-          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) →
-        σ.2 (nf0_assemble zs χ σ.1) = true)
-    (h_bwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
-        σ.2 (nf0_assemble zs χ σ.1) = true →
-        ∃ v : M.carrier,
-          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) :
-    ∃ x1' : M.carrier,
-      nf_eval_nf M 1 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  refine ⟨x1, ?_⟩
-  rw [nf_eval_depth1_fold_iff]
-  refine ⟨h_atom, ?_, h_off⟩
-  intro zs χ
-  refine ⟨fun hex => h_fwd zs χ hex, ?_⟩
-  intro hbit
-  by_cases hzs : zs = kvE_sub2_zXU
-  · subst hzs
-    obtain ⟨u, hxu, hux1, hu⟩ := hbelow χ hbit
-    refine ⟨u, ?_, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
-    have huw : u < w := hux1.trans haw
-    have hut : u < t := huw.trans hwt
-    intro i
-    match i with
-    | ⟨0, _⟩ => exact ⟨iff_of_true hux1 rfl, iff_of_false (lt_asymm hux1) (by decide +revert)⟩
-    | ⟨1, _⟩ => exact ⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by decide +revert)⟩
-    | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxu) (by decide +revert), iff_of_true hxu rfl⟩
-    | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
-  · exact h_bwd zs χ hzs hbit
-
-/-- **Both directions, FORWARD (O5 soundness)** for the left-interior singleton σ: the singleton
-    carrier's `.holds` at the fixed endpoints yields σ's depth-1 realization at a shared witness
-    `w`. Pipeline: `kvE2_sepBody_extract` (O3) → the pre-`parts` bundle (for the single anchor
-    `x1` with `x1 < w`) → the ∀-anchor dissolver `kvE2_sepSingleton_sound_of_parts_at`, with the
-    three single-anchor coverage conjuncts supplied by `kvE2_sepSingleton_coverage_left`.
-    Rabinovich Cor 5.4 (md:154-157). -/
-theorem kvE2_sepBody_singleton_sound_left {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3)
-    (M : OrderedMonadicStructure sig) (x t : M.carrier)
-    (σ : NormalForm sig 1 4)
-    (hσpos : qnf.2 σ = true)
-    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
-    -- Task 334 Phase 6: the region-rank pairwise facts on the canonical union, satisfiable at the
-    -- singleton configuration this lemma targets (the union is a single region-sorted block); the
-    -- general multi-owner discharge is the Phase-8 completeness obligation.
-    (hpairL : (kvE2_sepSlotsL qnf).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
-    (hpairR : (kvE2_sepSlotsR qnf).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
-    (h : (kvE2_sepBody_singleton (nf_depth0_char_formula atomMap h_surj) charK qnf).holds
-        M atomMap x t) :
-    ∃ w : M.carrier, x < w ∧ w < t ∧
-      ∃ x1 : M.carrier,
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  have hg : kvE2_sepGate qnf :=
-    kvE2_sepBody_singleton_gate _ charK qnf M atomMap x t h
-  rw [kvE2_sepBody_singleton_eq] at h
-  obtain ⟨_hepL, _hepR, w, hxw, hwt, _hptW, hbundleL, _hbundleR⟩ :=
-    kvE2_sepBody_extract (nf_depth0_char_formula atomMap h_surj) charK qnf hpairL hpairR
-      M atomMap x t h
-  refine ⟨w, hxw, hwt, ?_⟩
-  have hmem : σ ∈ kvE2_sepPos qnf := (kvE2_sepPos_mem qnf σ).mpr hσpos
-  have hbL := hbundleL σ hmem hzone
-  -- Extract the single left-interior anchor `x1` from the pre-`parts` bundle, which STILL
-  -- carries `x1 < w` (hx1w) — the fact `kvE2_sepBundleL_parts` drops but the single-anchor
-  -- closer `kvE2_sepSingleton_sound_of_parts_at` requires. This dissolves the ∀-anchor
-  -- obstruction (second-dispatch N2-B crux): the six conjuncts are supplied ONLY at this `x1`.
-  obtain ⟨x1, hxx1, hx1w, hpt, hbelow⟩ := hbL
-  have h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false :=
-    kvE2_sepHgate_offFiber qnf hg σ hσpos
-  obtain ⟨h_atom, h_fwd, h_bwd⟩ :=
-    kvE2_sepSingleton_coverage_left atomMap h_surj charK qnf hg M x t w σ hσpos hzone
-      x1 hxx1 hx1w hwt hpt h
-  exact kvE2_sepSingleton_sound_of_parts_at atomMap h_surj charK σ M w x t x1 hbelow hx1w hwt
-    h_atom h_off h_fwd h_bwd
-
-/-- **Both directions, BACKWARD (O6 completeness)** for the left-interior singleton σ: σ's
-    depth-1 realization at a shared witness `w` under the honest order rebuilds the singleton
-    carrier's `.holds`. Pipeline: the landed `kvE_subBracket2V_complete` (`:1465`) produces the
-    per-σ bracket `.holds`; the singleton-carrier reconstruction lifts it to
-    `kvE2_sepBody_singleton`.
-
-    STRATEGIC SORRY (skeleton division boundary): the lift from the per-σ bracket `.holds`
-    (`kvE_subBracket2V`) to the joint `kvE2_sepBody` `.holds` at singleton size — constructing the
-    single realized disjunct of the degenerate interleaving product. Deferred because that
-    construction (the O2 arrangement realization at singleton size) is a self-contained assembly
-    outside this dispatch's extraction scope. Follow-up: task 321 Phase 11 N2-B O6 lift (singleton
-    disjunct realization). The consumed `kvE_subBracket2V_complete` order/anchor inputs are
-    supplied honestly from the realization. -/
-theorem kvE2_sepBody_singleton_complete_left {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
-    (M : OrderedMonadicStructure sig) (x t w : M.carrier)
-    (σ : NormalForm sig 1 4)
-    (hσpos : qnf.2 σ = true)
-    (hsingle : kvE2_sepSingleton qnf)
-    (h : ∃ x1 : M.carrier,
-        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
-    (kvE2_sepBody_singleton (nf_depth0_char_formula atomMap h_surj) charK qnf).holds
-      M atomMap x t := by
-  sorry
 
 /-! ## Task 334 Phase 1 — MAKE-OR-BREAK SPIKE: faithful order-type disjunction composes
 
