@@ -181,17 +181,17 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 2: General order-type-disjunction index + per-disjunct validity predicate [NOT STARTED]
+### Phase 2: General order-type-disjunction index + per-disjunct validity predicate [COMPLETED]
 
 **Goal**: Generalize the Phase-1 spike to the k-owner merged anchor set `A := {x1_σ : σ∈kvE2_sepPos qnf} ∪ {w}`: a finite, decidable `List` of weak orders (ties allowed) on `A`, with a per-disjunct validity predicate. This replaces `kvE2_sepArrL/R := (flatMap slot union).permutations.filter (additive kvE2_sepValid)`.
 
 **Paper citation**: Lemma 3.2(1) (md:77) disjunction over merge order-types; Def 3.3 V-exists-forall (md:81-82).
 
 **Tasks**:
-- [ ] Define the weak-order index `kvE2_sepOrderTypes qnf : List (WeakOrder A)` (finite; `decide`-able; ties represent coincidences). Reuse `VVecEA2.disjList` (NavigatedSpine:140) for the disjunction carrier shape.
-- [ ] Define per-disjunct validity `kvE2_sepDisjValid qnf π`: strict adjacencies validated by the surviving open-zone compat leaves; ties validated by the (Phase-4) closed-zone leaf placeholder (stub to be filled once Phase 4 lands, or forward-declare).
-- [ ] Replace `kvE2_sepArrL/R` with `kvE2_sepArr' qnf := kvE2_sepOrderTypes qnf |>.filter (kvE2_sepDisjValid qnf)`.
-- [ ] Prove the index is non-empty for honest `qnf` at the structural level (decidability + at least the model-order disjunct present).
+- [x] Define the weak-order index `kvE2_sepOrderTypes qnf : List (WeakOrder A)` (finite; `decide`-able; ties represent coincidences). *(altered: `WeakOrder A` realized as `KvE2SepWeakOrder sig := List (NormalForm sig 1 4 × KvE2SepSpikeOrderType)` — per-owner placement tags of each `x1_σ` relative to the merge pivot `w`; enumeration is the cartesian `foldr` product `3^|pos|`. `VVecEA2.disjList` is the Phase-6 assembly consumer of this filtered list, not needed for the index definition itself; noted for Phase 6.)*
+- [x] Define per-disjunct validity `kvE2_sepDisjValid qnf π`: strict adjacencies validated by the surviving open-zone compat leaves; ties validated by the (Phase-4) closed-zone leaf placeholder. *(completed — `kvE2_sepDisjValidOwner`: strict → `kvE2_sepBits σ zXU/zUW`; tie → `kvE2_sepClosedLeafStub` forward-reading `kvE2_sepBits σ zAtX1L (nf0_projFresh σ.1)`. Genuine bit reads, NO sorry; Phase 4 re-hosts the closed read as `kvE2_sepCompat_zAtX1L_eq` over foreign types.)*
+- [x] Replace `kvE2_sepArrL/R` with `kvE2_sepArr' qnf := kvE2_sepOrderTypes qnf |>.filter (kvE2_sepDisjValid qnf)`. *(completed — `kvE2_sepArr'` built; old `kvE2_sepArrL/R` NOT yet deleted, per abandon-list timing they are removed in Phase 6 when the assembly is rewired; both coexist green for now.)*
+- [x] Prove the index is non-empty for honest `qnf` at the structural level (decidability + at least the model-order disjunct present). *(completed — `kvE2_sepArr'_decidable` instance; `kvE2_sepModelOrder_mem_orderTypes` (unconditional, enumeration contains the model order); `kvE2_sepArr'_mem_modelOrder` (model-order in the filtered carrier given its validity — the honest-selection hypothesis discharged in Phase 8). All axiom-clean `[propext, Classical.choice, Quot.sound]`.)*
 
 **Acceptance criteria**: compiles green; `kvE2_sepOrderTypes` and `kvE2_sepArr'` are `decide`-able and terminating; no new sorries beyond forward-declared closed-leaf stub (discharged in Phase 4).
 
