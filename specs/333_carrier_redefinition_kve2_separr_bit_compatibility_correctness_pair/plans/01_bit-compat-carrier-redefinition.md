@@ -238,6 +238,20 @@ strictly sequential — one phase per wave.
   new/changed symbols; `git diff --stat` touches only `SharedWitness.lean`.
 
 ### Phase 2: Re-establish non-vacuity via the honest witness-order arrangement (make-or-break) [NOT STARTED]
+
+> **Status note (session sess_1783522894_0a5276, HEAD `ec9e63b7c`)**: Confirmed make-or-break.
+> (1) Audit item 1 (fresh-less-sub cross-σ gap) RESOLVED as **1a** — the whole-macro-side exclusion
+> of a fresh-less sub is owned by `kvE2_sepSegLForSub`/`kvE2_sepSegRForSub` (uniform `kvE_sub2_zXU` /
+> `kvE_sub2_zWT` segment forms), so the compat filter is correctly silent; NO third clause added.
+> (2) Audit item 2 (mixed-class discrimination) landed as a **proof-form** universal theorem
+> `kvE2_sepCompat_lX1_eq` (a foreign χ-slot before σ's fresh slot is admitted iff σ's `zXU` bit for χ
+> is true) — stronger than an `#eval` datapoint, axiom-clean. (3) Proven structurally that NO
+> bit-independent arrangement passes for multi-positive qnf, so non-vacuity genuinely needs the
+> honest model-sorted arrangement — a NOVEL **joint slot-level sorted realization** (not a lift of
+> `k1v_sorted_realization`/`_3`, whose Nodup-type requirement fails because χ-types recur across
+> owners). Full blueprint + first-next-step in `handoffs/02_phase2-joint-sort-blueprint.md`. The
+> filter switch (`handoffs/phase1-switch-and-repairs.patch`) applies onto BASELINE `443684ae6`
+> (not HEAD). Build left GREEN with the switch reverted (staged-not-wired), 2 tracked sorries.
 - **Goal:** Prove that the honest witness-order arrangement passes the redefined `kvE2_sepValid`,
   replacing the now-false canonical-identity lemmas `kvE2_sepSlotsL_valid`/`_valid` (`:722`/`:734`),
   and rebuild `kvE2_sepBody_nonvacuous` (`:918-938`) on that witness. This is the FM-vac guard — the
