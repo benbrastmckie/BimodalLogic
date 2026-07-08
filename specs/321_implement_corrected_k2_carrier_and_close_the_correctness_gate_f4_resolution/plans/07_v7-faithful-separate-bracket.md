@@ -326,7 +326,28 @@ arbitration and is an additive file-internal change if needed.
   dispatch; only an inability to STATE the carrier model-independently escalates to the Phase 10
   gate early (direct to N2 assessment).
 
-### Phase 8: Joint soundness extraction — shared `w` + per-σ bundles (O3) [NOT STARTED]
+### Phase 8: Joint soundness extraction — shared `w` + per-σ bundles (O3) [COMPLETED]
+
+**Completion note (2026-07-07, sess_1783487859_3f6358):** Landed @ 2c55cf3f1 (bundles + kit
+split + navigation helpers) + 8c22e01c5 (extraction theorems) in `SharedWitness.lean`
+(append-only, +449 lines; nothing else touched). Public API: `kvE2_sepDisjunct_extract`
+(main O3 theorem: joint `epL`/`epR` realizations + shared `w` with `x < w < t` from the
+bracket's own range + per-σ bundles at that same `w`), `kvE2_sepBody_extract`
+(carrier-level, gate-hypothesis-free via `kvE2_sepBody_gate_fail`),
+`kvE2_sepDisjunct_halves` (shared-`w` pivot: both halves of the count-normalized joint
+bracket hold at `w`, CONSUMING `BracketFormula.leftPart_holds`/`rightPart_holds` through
+`kvE2_sepBracket_split_at`), `kvE2_sepBundleL`/`kvE2_sepBundleR` (per-σ bundle defs),
+`kvE2_sepBundleL_parts` (the exact `kvE_subBracket2V_sound_of_parts` input 5-tuple),
+`kvE2_sepBundleR_parts` (mirrored fragment), `kvE2_sepPtX1L/R_anchor` (charK head
+projections), `kvE2_sepCastBracket`(+`_holds`) (witness-count normalization),
+`kvE2_sepPos_mem`. All axiom-clean (exactly `[propext, Classical.choice, Quot.sound]`),
+0 sorries, litmus grep 0 hits, full `lake build` green. *Scope reading (deviation:
+altered — "for EVERY positive σ"):* per the recorded Phase 7 scope decision, bundles are
+extracted for the two INTERIOR classes (`zXW3` via `kvE2_sepBundleL`, `zWT3` via
+`kvE2_sepBundleR` — the mirrored class extracted despite the missing landed kit, per the
+Phase 7 watch item, for Phase 9/10 arbitration); the five non-interior classes carry no
+bracket slots by construction — their data are the σ-level `epL`/`epR`/`ptW` endpoint
+literals, which the extraction surfaces verbatim as the two endpoint conjuncts.
 
 - **Goal:** From a realized joint disjunct of `kvE2_sepBody`, extract the shared witness `w`
   (from the `ptW` slot; `x < w < t` from the bracket's own range) and, for EVERY positive σ,
@@ -334,16 +355,18 @@ arbitration and is an additive file-internal change if needed.
   closers consume.
 - **Target file(s):** `SharedWitness.lean` (append).
 - **Tasks:**
-  - [ ] State and prove the extraction theorem (Candidate C staging: over an arbitrary positive
+  - [x] State and prove the extraction theorem (Candidate C staging: over an arbitrary positive
         list where convenient, per the `kvE2_sepConj_sharedW` shape of report 07 §2.4):
         realized disjunct → `∃ w, x < w ∧ w < t ∧ wAnchor w ∧ ∀ σ ∈ pos, (per-σ bundle at that same w)`.
-  - [ ] Consume the Lemma 5.1 kit for the shared-`w` pivot: `BracketFormula.leftPart_holds` /
+        *(landed as `kvE2_sepDisjunct_extract` + `kvE2_sepBody_extract`)*
+  - [x] Consume the Lemma 5.1 kit for the shared-`w` pivot: `BracketFormula.leftPart_holds` /
         `rightPart_holds` (`VecEAFormula.lean:375/:412`) — from a realized joint bracket, both
         halves hold at the shared witness point. Cite Lemma 5.1 (md:168-171, md:218) at each
-        split step (G5).
-  - [ ] Use the landed extraction patterns as TEMPLATES (new code regardless — N slots vs 2):
+        split step (G5). *(landed as `kvE2_sepBracket_split_at` + `kvE2_sepDisjunct_halves`)*
+  - [x] Use the landed extraction patterns as TEMPLATES (new code regardless — N slots vs 2):
         `kvE_sub2V_bounded_anchor_of_outer` (public, `SubBracket2V.lean:1182`); the private
         `kvE_subBracket2V_extract` (`SubBracket2V.lean:762`) is a pattern only, not consumable.
+        *(followed: `holds_eq_succ` destructure + `hpt'` defeq re-typing + getElem navigation)*
 - **Postmortem constraints:** FM-x1t (`x1_σ < t` comes from the bracket's own range/ordering —
   every witness strictly inside `(x,t)`; the joint bracket is single-level, so the report-03
   wall does not arise; NEVER from a chain); FM-G6 (arity-4 zone data rides
