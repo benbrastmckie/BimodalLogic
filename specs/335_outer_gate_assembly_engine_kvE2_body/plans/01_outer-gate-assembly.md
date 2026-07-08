@@ -148,7 +148,27 @@ carrier, in a new isolated file wired into the aggregator.
 
 ---
 
-### Phase 2: ⇒ soundness direction lemma [NOT STARTED]
+### Phase 2: ⇒ soundness direction lemma [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Cannot build `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf`
+  from the carrier `holds`. `nf_eval_nf M 2 3` (NormalForm.lean:203-207) decomposes into the atom
+  layer over `[w,x,t]` PLUS the quant-layer iff `∀ sub, (∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] sub) ↔
+  qnf.2 sub = true` (BOTH directions, all subs). `kvE2_sepBody_extract` yields the endpoint/ptW
+  point realizations and the per-σ `kvE2_sepBundleL/R` for positive left/right-interior owners, and
+  `kvE_subBracket2V_sound_of_parts` (SubBracket2V.lean:1290) reconstructs a single positive σ's
+  inner realization — but only under a large per-σ `hgate` hypothesis and only the ⟸ direction.
+- **What was tried**: Grounded reading of `kvE2_sepBody_extract` (:1955), `_sound_of_parts`
+  (:1290), and the depth-2 eval structure. Confirmed the extract lands the per-σ bundle INPUTS but
+  not the reassembly of the full depth-2 evaluation.
+- **Why it's stuck**: The ⟹ direction of the quant iff (a point realizing σ forces `qnf.2 σ =
+  true`) and the outer atom-layer reconstruction over `[w,x,t]` have no landed connector; assembling
+  them is symmetric to the missing joint multi-owner bracket engine (see Phase 3 blocker).
+- **What is needed**: The joint-disjunct connector engine (Phase 3 blocker) plus a depth-2
+  quant-layer fold connecting per-σ realizations to `nf_eval_nf M 2 3`. A dedicated dispatch.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
+
 
 **Goal**: Prove the forward half of the gate as a standalone auxiliary lemma:
 carrier `holds` at `(x,t)` ⟹ `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf`.
@@ -182,7 +202,35 @@ This is the substantive connector engine (R-C).
 
 ---
 
-### Phase 3: ⇐ completeness direction lemma (left-interior) [NOT STARTED]
+### Phase 3: ⇐ completeness direction lemma (left-interior) [BLOCKED]
+
+**BLOCKER** (Phase 3):
+- **What failed**: Cannot build the joint disjunct realization
+  `(kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds M atomMap
+  x t`, which `kvE2_sepBody_holds_iff` (:840, mpr) requires to close the ⇐ direction. The gate
+  (`kvE2_sepGate_holds_of_honest` :1134) and the non-emptiness (`kvE2_sepBody_complete` :1531, which
+  DOES consume `hL`) compose fine, but the disjunct's `VecEA2.holds` (VecEAFormula:262) unfolds to
+  `endpointLeft@x ∧ endpointRight@t ∧ bracket.holds`, and `bracket.holds` is an
+  `IntervalPattern.holds` requiring a globally monotone witness sequence over ALL slots in the
+  merged per-owner lists `kvE2_sepSlotsL/R qnf` realizing every point type and every segment.
+- **What was tried**: Full survey of SharedWitness.lean builders — only extractors exist
+  (`kvE2_sepDisjunct_extract` :1807, `_halves` :1906, order-type `kvE2_sepArr'_sound` :2536); no ⇐
+  `holds` builder. Confirmed `kvE_subBracket2V_complete` (SubBracket2V:1730) builds only a per-σ
+  single-owner sub-bracket, and `bracketEndChar_k1v_complete` (CarrierK1V:1629) only the k=1
+  carrier — neither lifts to the joint disjunct. A probe lemma was drafted then removed (kept the
+  file sorry-free).
+- **Why it's stuck**: The joint multi-owner disjunct bracket-`holds` builder is an **un-landed**
+  obligation explicitly deferred by task 334 (`SharedWitness.lean:1954`: "the general multi-owner
+  pairwise discharge is the completeness-side Phase-8 obligation"). Building it is a substantial
+  dedicated construction, not a composition of landed lemmas.
+- **What is needed**: A new construction wiring the general region engine `k1v_sorted_realizationK`
+  (SubBracket2V.lean:633) into the `kvE2_sepDisjunct` slot/segment/endpoint layout: map each
+  positive owner's honest bundle (`kvE2_sepHonestBundleL`) into a region, run the engine to get a
+  monotone interleaved witness sequence, and match it to `kvE2_sepBracketN`'s `IntervalPattern`
+  point types + segments, plus discharge `kvE2_sepEpL/EpR` at `x`/`t`. This is a follow-on dispatch
+  (comparable in size to CarrierK1V's ~370-line `bracketEndChar_k1v_complete`).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
+
 
 **Goal**: Prove the reverse half as a standalone `hL`-guarded auxiliary lemma:
 `∃ w, nf_eval_nf M 2 3 …` (+ left-interior `hL`) ⟹ carrier `holds` at `(x,t)`.
@@ -212,7 +260,12 @@ This is the substantive connector engine (R-C).
 
 ---
 
-### Phase 4: Assemble k=2 gate-correctness theorem + faithfulness/scope audit [NOT STARTED]
+### Phase 4: Assemble k=2 gate-correctness theorem + faithfulness/scope audit [BLOCKED]
+
+**BLOCKER** (Phase 4): Depends on Phases 2 and 3, both BLOCKED (missing joint multi-owner
+disjunct bracket-`holds` builder). Cannot assemble the k=2 gate-correctness theorem without both
+directions. Deferred to the same follow-on dispatch. Do NOT use `sorry` or any vacuous placeholder.
+
 
 **Goal**: Combine the two directions into the delivered left-interior gate-correctness theorem,
 confirm axiom-cleanliness and F1-F7 preservation, and record the R-A/R-B scope decisions in the

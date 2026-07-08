@@ -71,4 +71,21 @@ theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature}
     bracketEndChar_kvE2 atomMap h_surj P qnf =
       kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf := rfl
 
+/-! ## Phases 2-4 — soundness/completeness/assembly: DEFERRED (see blocker in the plan)
+
+The ⇒ soundness (Phase 2), ⇐ left-interior completeness (Phase 3), and the assembled k=2
+gate-correctness theorem (Phase 4) are NOT delivered in this file. Closing them requires building
+the JOINT multi-owner disjunct bracket realization `(kvE2_sepDisjunct … (kvE2_sepSlotsL qnf)
+(kvE2_sepSlotsR qnf)).2.holds` (⇐) and reconstructing the depth-2 evaluation's atom+quant layers
+(⇒). This joint-disjunct bracket-`holds` builder is an **un-landed** completeness-side obligation
+explicitly deferred by task 334 (`SharedWitness.lean:1954`: "the general multi-owner pairwise
+discharge is the completeness-side Phase-8 obligation"). The landed builders are per-σ / single
+owner (`kvE_subBracket2V_complete`, `SubBracket2V.lean:1730`) or the k=1 carrier
+(`bracketEndChar_k1v_complete`, `CarrierK1V.lean:1629`); the joint disjunct over the merged
+per-owner slot lists has no landed `holds` builder. The general region engine
+`k1v_sorted_realizationK` (`SubBracket2V.lean:633`) is the intended foundation, but wiring it into
+the `kvE2_sepDisjunct` slot/segment/endpoint layout is a substantial dedicated construction that
+this session does not complete. Per the zero-debt discipline (no `sorry`, no vacuous placeholder),
+Phases 2-4 are left BLOCKED for a follow-on dispatch rather than papered over. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
