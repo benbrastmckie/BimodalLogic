@@ -207,16 +207,16 @@ Phases within the same wave can execute in parallel. Phase 1 is a HARD GATE: wav
 
 ---
 
-### Phase 3: Multi-anchor region-partition lift (`k1v_sorted_realizationK`) [IN PROGRESS]
+### Phase 3: Multi-anchor region-partition lift (`k1v_sorted_realizationK`) [COMPLETED]
 
 **Goal**: Generalize the proven three-region `k1v_sorted_realization3` (`SubBracket2V.lean:379`) to a **k-region** partition around the merged, per-disjunct-fixed anchor set `A`, reusing `k1v_sorted_realization` (`CarrierK1V.lean:1447`) verbatim per region. Per-owner region-interior witnesses; distinctness is per-region-per-owner (type-driven `nf_eval_unique`, NormalForm:245) — NOT across owners at an anchor.
 
 **Paper citation**: Def 3.1 interval decomposition (md:61-74); Lemma 5.1 per-region insertion (md:134-135).
 
 **Tasks**:
-- [ ] State `k1v_sorted_realizationK`: given fixed strictly-ordered anchors `a_0 < a_1 < … < a_k` and per-region Nodup type lists realized strictly interior, produce per-region point lists whose concatenation (stitched around the anchors) is `Pairwise (· < ·)`.
-- [ ] Prove by folding `k1v_sorted_realization` once per region and stitching (generalize the `k1v_sorted_realization3` stitch: every region-`i` point exceeds `a_i` and is below `a_{i+1}`).
-- [ ] Confirm the `.permutations`-as-disjunction machinery (SB2V:129,249-251) reuses per region.
+- [x] State `k1v_sorted_realizationK`: given fixed strictly-ordered anchors `a_0 < a_1 < … < a_k` and per-region Nodup type lists realized strictly interior, produce per-region point lists whose concatenation (stitched around the anchors) is `Pairwise (· < ·)`. *(completed — anchors encoded as the region list `[(a_i, a_{i+1}, S_i)]` with `hlink : hiᵢ = loᵢ₊₁` (`List.Chain'`) + `hpos : loᵢ < hiᵢ`; concatenation is `interleaveK ps` (blocks separated by interior anchors, final outer anchor dropped exactly as `k1v_sorted_realization3` drops `t`). SubBracket2V.lean.)*
+- [x] Prove by folding `k1v_sorted_realization` once per region and stitching (generalize the `k1v_sorted_realization3` stitch: every region-`i` point exceeds `a_i` and is below `a_{i+1}`). *(completed — `k1v_realizationK_build` folds `k1v_sorted_realization` (CarrierK1V:1447) verbatim per region producing the tagged arrangement + anchor `Chain'`/positivity; `k1v_stitch_regions` (+ `k1v_stitch_lowers_ge`) proves `interleaveK` strictly increasing by peeling one region and threading the strict-below invariant. All axiom-clean `[propext, Classical.choice, Quot.sound]`.)*
+- [x] Confirm the `.permutations`-as-disjunction machinery (SB2V:129,249-251) reuses per region. *(completed — the Forall₂ conclusion carries `List.Perm (p.2.2.map Prod.fst) r.2.2` PER region, so each region's selected arrangement is a permutation of that region's own type list — precisely what the per-region `S_z.permutations` flatMap (`kvE_subBracket2V` :249-251) enumerates; the k-region lift arranges each region independently, reusing the machinery per region without cross-owner coupling.)*
 
 **Acceptance criteria**: `k1v_sorted_realizationK` compiles green, sorry-free; instantiates back to `k1v_sorted_realization3` for k=3 (regression check).
 
