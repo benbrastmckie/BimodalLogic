@@ -155,7 +155,7 @@ checkpoint suitable for a per-phase commit.
 
 ---
 
-### Phase 2: Add `kvE2_sepCoincidentOwner_valid_right` mirror lemma [NOT STARTED]
+### Phase 2: Add `kvE2_sepCoincidentOwner_valid_right` mirror lemma [COMPLETED]
 
 **Goal**: Add the right-interior per-owner validator as a mechanical mirror of `_valid_left`,
 routing the landed `kvE2_sepCoincidentAnchor_discharge_R`.

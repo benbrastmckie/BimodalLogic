@@ -720,6 +720,13 @@ noncomputable def kvE2_sepModelOrder {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
   (kvE2_sepPos qnf).map (fun σ => (σ, kvE2_sepModelTag σ))
 
+/-- The two interior outer classes are distinct (index-0 order bits differ). -/
+private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
+  intro h
+  have h0 := congrFun h (0 : Fin 3)
+  simp only [kvE2_sep_zWT3, kvE2_sep_zXW3, Fin.cons_zero, Prod.mk.injEq] at h0
+  exact Bool.false_ne_true h0.1
+
 /-- **Closed-zone leaf — placement-generic forward read** (task 336). At a coincidence tie the
     disjunct is validated by σ's CLOSED self-zone bit at its own fresh type (§5 meet channel,
     md:168-173), fed by the preserved axiom-clean coincidence discharges. The self-zone key is
@@ -1521,6 +1528,47 @@ theorem kvE2_sepCoincidentAnchor_discharge_R {sig : MonadicSignature}
   · exact iff_of_true hx1t rfl
   · exact iff_of_false (not_lt.mpr (le_of_lt hx1t)) (by decide)
 
+/-- **Phase 8b (RIGHT) — per-owner honest coincidence validity** (task 336; mirror of
+    `kvE2_sepCoincidentOwner_valid_left`). For an honest realization, a RIGHT-interior positive
+    owner (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`) has its CLOSED right self-zone bit at
+    its own fresh type forced TRUE. The anchor `x1 ∈ (w, t)` and its order bounds are extracted
+    inline (the `kvE2_sepHonestBundleR` :1259 pattern); the closed `zAtX1R` bit is discharged by
+    the landed axiom-clean `kvE2_sepCoincidentAnchor_discharge_R`. The guard in
+    `kvE2_sepClosedLeafStub` selects the RIGHT (`else`) branch via `if_neg` on
+    `kvE2_sep_zWT3_ne_zXW3`. Sorry-free, axiom-clean; F5-faithful (CLOSED key). -/
+theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσmem : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    kvE2_sepClosedLeafStub σ = true := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσmem).2
+  obtain ⟨_h_atom, h_quant⟩ := h
+  obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+  -- right-interior order bounds w < x1 < t, from the zone guard through the realized atom layer
+  obtain ⟨hσ_atom, _h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
+  have hbit_wx1 : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+    rw [congrFun hzone ⟨0, by omega⟩]; decide
+  have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+    rw [congrFun hzone ⟨2, by omega⟩]; decide
+  have hwx1 : w < x1 := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_wx1
+  have hx1t : x1 < t := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1t
+  -- σ's own fresh base type is realized AT x1 (the fresh coordinate factor)
+  have hfresh : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
+    ((nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ.1).mp hσ.1).2.1
+  -- the right coincidence discharge closes the CLOSED self-zone bit (RIGHT branch of the guard)
+  rw [kvE2_sepClosedLeafStub, if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
+  exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0_projFresh σ.1) hfresh
+
 /-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; the ⇐ half the
     carrier previously lacked, grep-0 before this dispatch). For an honest model realization whose
     positive owners are all LEFT-interior (the class the landed kit serves — the multi-owner
@@ -1749,13 +1797,6 @@ private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature}
     unfold kvE2_sepSlotLe at hle
     rw [if_pos hsub.symm, decide_eq_true_eq] at hle
     omega
-
-/-- The two interior outer classes are distinct (index-0 order bits differ). -/
-private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
-  intro h
-  have h0 := congrFun h (0 : Fin 3)
-  simp only [kvE2_sep_zWT3, kvE2_sep_zXW3, Fin.cons_zero, Prod.mk.injEq] at h0
-  exact Bool.false_ne_true h0.1
 
 /-- σ's fresh-witness slot is in its canonical LEFT block (left-interior σ). -/
 private theorem kvE2_sep_lX1_mem_slotsLFor {sig : MonadicSignature}
