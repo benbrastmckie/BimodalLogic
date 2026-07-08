@@ -1217,4 +1217,176 @@ private theorem kvE2_sep_arrR_pairwise {sig : MonadicSignature}
   unfold kvE2_sepValid at hv
   exact of_decide_eq_true hv
 
+/-! ### The O3 extraction theorems -/
+
+/-- **O3 — joint soundness extraction from a realized disjunct** (task 321 v7 Phase 8;
+    report 07 §2.4 `kvE2_sepConj_sharedW` shape, Candidate C staging): from a realized
+    joint disjunct over valid interleavings, extract BOTH joint endpoint realizations, the
+    ONE shared witness `w` (the `ptW` slot at position `|lL|`; `x < w < t` from the
+    bracket's OWN range — FM-x1t), and at that SAME `w` the per-σ witness bundle for every
+    positive interior σ of either class. Each witness position is read structurally off
+    the arrangement's slot indices via Def 3.1 monotone enumeration (PDF p.4) — never an
+    `x1 < e_i` literal (LITMUS); each σ's `zXU`/`zWX1` interior content is realized
+    strictly below σ's fresh slot by the region-rank validity (Cor 5.4, md:154-157;
+    Lemma 3.2(1), md:77 at the interleaving membership). -/
+theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    {lL lR : List (KvE2SepSlot sig)}
+    (hL : lL ∈ kvE2_sepArrL qnf) (hR : lR ∈ kvE2_sepArrR qnf)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (h : (kvE2_sepDisjunct charBase charK qnf lL lR).2.holds M atomMap x t) :
+    (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x ∧
+    (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t ∧
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+        kvE2_sepBundleL charBase charK σ M atomMap w x) ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+        kvE2_sepBundleR charBase charK σ M atomMap w t) := by
+  obtain ⟨hepL, hepR, hbr⟩ := h
+  refine ⟨hepL, hepR, ?_⟩
+  -- Destructure the realized N-slot bracket (Def 3.1 monotone enumeration, PDF p.4).
+  simp only [kvE2_sepDisjunct, kvE2_sepBracketN, BracketFormula.holds,
+    BracketFormula.toIntervalPattern] at hbr
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show (lL.map (kvE2_sepSlotType charBase charK)).length + 1
+        + (lR.map (kvE2_sepSlotType charBase charK)).length
+      = (lL.map (kvE2_sepSlotType charBase charK)).length
+        + (lR.map (kvE2_sepSlotType charBase charK)).length + 1 by omega)] at hbr
+  obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩ := hbr
+  -- Canonical point-type reads (defeq re-typing; template `SubBracket2V.lean:699-702`).
+  have hpt' : ∀ (i : Nat) (hi : i < (lL.map (kvE2_sepSlotType charBase charK)).length
+        + (lR.map (kvE2_sepSlotType charBase charK)).length + 1),
+      ((lL.map (kvE2_sepSlotType charBase charK)
+          ++ kvE2_sepPtW charBase charK qnf
+            :: lR.map (kvE2_sepSlotType charBase charK))[i]'(by
+        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap
+        (ws ⟨i, hi⟩) := fun i hi => hpt ⟨i, hi⟩
+  refine ⟨ws ⟨(lL.map (kvE2_sepSlotType charBase charK)).length, by omega⟩,
+    (hrange _).1, (hrange _).2, ?_, ?_, ?_⟩
+  · -- The shared `ptW` realization at position `|lL|` (§5 bracket, PDF p.7).
+    have h1 := hpt' (lL.map (kvE2_sepSlotType charBase charK)).length (by omega)
+    rwa [kvE2_sep_getElem_mid] at h1
+  · -- LEFT-interior bundles: σ's fresh slot occurs in the LEFT interleaving.
+    intro σ hσpos hzone
+    obtain ⟨iσ, hiσ, hgetiσ⟩ := List.mem_iff_getElem.mp
+      (kvE2_sep_mem_arrL hL hσpos (kvE2_sep_lX1_mem_slotsLFor hzone))
+    have hiσm : iσ < (lL.map (kvE2_sepSlotType charBase charK)).length := by
+      simp only [List.length_map]; omega
+    refine ⟨ws ⟨iσ, by omega⟩, (hrange _).1,
+      hmono _ _ (Fin.mk_lt_mk.mpr hiσm), ?_, ?_⟩
+    · -- σ's folded fresh point type at its own slot (Lemma 5.1, md:72).
+      have h1 := hpt' iσ (by omega)
+      rwa [kvE2_sep_getElem_left _ _ _ iσ hiσm, List.getElem_map, hgetiσ] at h1
+    · -- Every `zXU`-positive 1-type strictly below σ's fresh slot (region-rank validity).
+      intro χ hbit
+      obtain ⟨jχ, hjχ, hgetjχ⟩ := List.mem_iff_getElem.mp
+        (kvE2_sep_mem_arrL hL hσpos (kvE2_sep_lXU_mem_slotsLFor hzone hbit))
+      have hji : jχ < iσ := kvE2_sep_index_lt_of_rank_lt (kvE2_sep_arrL_pairwise hL)
+        hiσ hjχ (by rw [hgetjχ, hgetiσ]; rfl) (by rw [hgetjχ, hgetiσ]; exact Nat.zero_lt_one)
+      have hjχm : jχ < (lL.map (kvE2_sepSlotType charBase charK)).length := by
+        simp only [List.length_map]; omega
+      refine ⟨ws ⟨jχ, by omega⟩, (hrange _).1,
+        hmono _ _ (Fin.mk_lt_mk.mpr hji), ?_⟩
+      have h1 := hpt' jχ (by omega)
+      rwa [kvE2_sep_getElem_left _ _ _ jχ hjχm, List.getElem_map, hgetjχ] at h1
+  · -- RIGHT-interior bundles (mirrored): σ's fresh slot occurs in the RIGHT interleaving.
+    intro σ hσpos hzone
+    obtain ⟨jσ, hjσ, hgetjσ⟩ := List.mem_iff_getElem.mp
+      (kvE2_sep_mem_arrR hR hσpos (kvE2_sep_rX1_mem_slotsRFor hzone))
+    have hjσm : jσ < (lR.map (kvE2_sepSlotType charBase charK)).length := by
+      simp only [List.length_map]; omega
+    refine ⟨ws ⟨(lL.map (kvE2_sepSlotType charBase charK)).length + 1 + jσ, by omega⟩,
+      hmono _ _ (Fin.mk_lt_mk.mpr (by omega)), (hrange _).2, ?_, ?_⟩
+    · have h1 := hpt' ((lL.map (kvE2_sepSlotType charBase charK)).length + 1 + jσ)
+        (by omega)
+      rwa [kvE2_sep_getElem_right _ _ _ jσ hjσm, List.getElem_map, hgetjσ] at h1
+    · intro χ hbit
+      obtain ⟨j', hj', hgetj'⟩ := List.mem_iff_getElem.mp
+        (kvE2_sep_mem_arrR hR hσpos (kvE2_sep_rWX1_mem_slotsRFor hzone hbit))
+      have hji : j' < jσ := kvE2_sep_index_lt_of_rank_lt (kvE2_sep_arrR_pairwise hR)
+        hjσ hj' (by rw [hgetj', hgetjσ]; rfl) (by rw [hgetj', hgetjσ]; exact Nat.zero_lt_one)
+      have hj'm : j' < (lR.map (kvE2_sepSlotType charBase charK)).length := by
+        simp only [List.length_map]; omega
+      refine ⟨ws ⟨(lL.map (kvE2_sepSlotType charBase charK)).length + 1 + j', by omega⟩,
+        hmono _ _ (Fin.mk_lt_mk.mpr (by omega)),
+        hmono _ _ (Fin.mk_lt_mk.mpr (by omega)), ?_⟩
+      have h1 := hpt' ((lL.map (kvE2_sepSlotType charBase charK)).length + 1 + j')
+        (by omega)
+      rwa [kvE2_sep_getElem_right _ _ _ j' hj'm, List.getElem_map, hgetj'] at h1
+
+/-- **Shared-`w` pivot for the joint disjunct** (Lemma 5.1, md:168-171/md:218 — the
+    `A_i^-`/`A_i^+` split at the index of the ONE shared `ptW` slot): from a realized
+    joint disjunct, the shared witness realizes `kvE2_sepPtW` and BOTH halves of the
+    count-normalized joint bracket hold at it — through the CONSUMED kit
+    `kvE2_sepBracket_split_at` = `BracketFormula.leftPart_holds`/`rightPart_holds` (D4).
+    The halves carry the refined-conjunction segment realizations for the Phase 9 (O4)
+    `hgate` derivation. -/
+theorem kvE2_sepDisjunct_halves {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (lL lR : List (KvE2SepSlot sig))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (h : (kvE2_sepDisjunct charBase charK qnf lL lR).2.holds M atomMap x t) :
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w ∧
+      ((kvE2_sepCastBracket
+          (n := (lL.map (kvE2_sepSlotType charBase charK)).length
+            + (lR.map (kvE2_sepSlotType charBase charK)).length + 1) (by simp only [kvE2_sepDisjunct]; omega)
+          (kvE2_sepDisjunct charBase charK qnf lL lR).2.bracket).leftPart
+        ⟨(lL.map (kvE2_sepSlotType charBase charK)).length, by omega⟩).holds
+          M atomMap x w ∧
+      ((kvE2_sepCastBracket
+          (n := (lL.map (kvE2_sepSlotType charBase charK)).length
+            + (lR.map (kvE2_sepSlotType charBase charK)).length + 1) (by simp only [kvE2_sepDisjunct]; omega)
+          (kvE2_sepDisjunct charBase charK qnf lL lR).2.bracket).rightPart
+        ⟨(lL.map (kvE2_sepSlotType charBase charK)).length, by omega⟩).holds
+          M atomMap w t := by
+  obtain ⟨-, -, hbr⟩ := h
+  have hbr' := (kvE2_sepCastBracket_holds M atomMap
+    (n := (lL.map (kvE2_sepSlotType charBase charK)).length
+      + (lR.map (kvE2_sepSlotType charBase charK)).length + 1) (by simp only [kvE2_sepDisjunct]; omega)
+    ((kvE2_sepDisjunct charBase charK qnf lL lR).2.bracket) x t).mpr hbr
+  obtain ⟨w, hxw, hwt, hptw, hleft, hright⟩ := kvE2_sepBracket_split_at M atomMap _ x t
+    ⟨(lL.map (kvE2_sepSlotType charBase charK)).length, by omega⟩ hbr'
+  refine ⟨w, hxw, hwt, ?_, hleft, hright⟩
+  have h2 : (kvE2_sepCastBracket
+      (n := (lL.map (kvE2_sepSlotType charBase charK)).length
+        + (lR.map (kvE2_sepSlotType charBase charK)).length + 1) (by simp only [kvE2_sepDisjunct]; omega)
+      (kvE2_sepDisjunct charBase charK qnf lL lR).2.bracket).pointTypes
+      ⟨(lL.map (kvE2_sepSlotType charBase charK)).length, by omega⟩
+      = kvE2_sepPtW charBase charK qnf := kvE2_sep_getElem_mid _ _ _
+  rwa [h2] at hptw
+
+/-- **O3 at carrier level**: extraction from any realized `kvE2_sepBody` (no gate
+    hypothesis — the gate-failure branch is the empty disjunction, whose `holds` is
+    `False`). Routes through the O2 membership collapse `kvE2_sepBody_holds_iff` and
+    `kvE2_sepDisjunct_extract`. -/
+theorem kvE2_sepBody_extract {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (h : (kvE2_sepBody charBase charK qnf).holds M atomMap x t) :
+    (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x ∧
+    (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t ∧
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+        kvE2_sepBundleL charBase charK σ M atomMap w x) ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+        kvE2_sepBundleR charBase charK σ M atomMap w t) := by
+  by_cases hg : kvE2_sepGate qnf
+  · rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t] at h
+    obtain ⟨lL, hL, lR, hR, hd⟩ := h
+    exact kvE2_sepDisjunct_extract charBase charK qnf hL hR M atomMap x t hd
+  · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
+    simp [VVecEA2.holds] at h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
