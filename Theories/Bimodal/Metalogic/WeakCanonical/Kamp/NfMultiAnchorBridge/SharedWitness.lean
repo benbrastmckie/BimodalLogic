@@ -415,6 +415,43 @@ theorem kvE2_sepCompat_lX1_eq {sig : MonadicSignature}
     simp_all [kvE2_sepFreshZoneBefore, kvE2_sepFreshZoneAfter, kvE2_sepSlotChi,
       kvE2_sepSlotSub]
 
+/-- **After-fresh mirror** of `kvE2_sepCompat_lX1_eq`: a foreign 1-type slot `b` (carrying
+    `χ`) placed AFTER a left-interior σ's fresh slot `.lX1 σ` is admitted iff σ's after-fresh
+    (`kvE_sub2_zUW`, region `(x1, w)`) fold bit for `χ` is TRUE. Consumed by the joint
+    sorted-realization proof (Phase 2) for the `p > x1_σ` branch. -/
+theorem kvE2_sepCompat_lX1_after_eq {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (b : KvE2SepSlot sig)
+    (hχ : kvE2_sepSlotChi b = some χ) :
+    kvE2_sepCompat (.lX1 σ) b = kvE2_sepBits σ kvE_sub2_zUW χ := by
+  unfold kvE2_sepCompat
+  cases b <;>
+    simp_all [kvE2_sepFreshZoneBefore, kvE2_sepFreshZoneAfter, kvE2_sepSlotChi,
+      kvE2_sepSlotSub]
+
+/-- **Right-list before-fresh** mirror: a foreign 1-type slot `a` (carrying `χ`) placed
+    BEFORE a right-interior σ's fresh slot `.rX1 σ` is admitted iff σ's before-fresh
+    (`kvE2_sep_zWX1`, region `(w, x1)`) fold bit for `χ` is TRUE. -/
+theorem kvE2_sepCompat_rX1_eq {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (a : KvE2SepSlot sig)
+    (hχ : kvE2_sepSlotChi a = some χ) :
+    kvE2_sepCompat a (.rX1 σ) = kvE2_sepBits σ kvE2_sep_zWX1 χ := by
+  unfold kvE2_sepCompat
+  cases a <;>
+    simp_all [kvE2_sepFreshZoneBefore, kvE2_sepFreshZoneAfter, kvE2_sepSlotChi,
+      kvE2_sepSlotSub]
+
+/-- **Right-list after-fresh** mirror: a foreign 1-type slot `b` (carrying `χ`) placed
+    AFTER a right-interior σ's fresh slot `.rX1 σ` is admitted iff σ's after-fresh
+    (`kvE_sub2_zWT`, region `(x1, t)`) fold bit for `χ` is TRUE. -/
+theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) (b : KvE2SepSlot sig)
+    (hχ : kvE2_sepSlotChi b = some χ) :
+    kvE2_sepCompat (.rX1 σ) b = kvE2_sepBits σ kvE_sub2_zWT χ := by
+  unfold kvE2_sepCompat
+  cases b <;>
+    simp_all [kvE2_sepFreshZoneBefore, kvE2_sepFreshZoneAfter, kvE2_sepSlotChi,
+      kvE2_sepSlotSub]
+
 /-- Arrangement validity relation, Bool-valued: slots of the SAME σ must appear in
     non-decreasing region rank; slots of different σ are unconstrained (that freedom IS
     the Lemma 3.2(1) interleaving enumeration). -/
