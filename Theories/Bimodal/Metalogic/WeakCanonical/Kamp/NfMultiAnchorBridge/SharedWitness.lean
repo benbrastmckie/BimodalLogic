@@ -453,11 +453,14 @@ theorem kvE2_sepCompat_rX1_after_eq {sig : MonadicSignature}
       kvE2_sepSlotSub]
 
 /-- Arrangement validity relation, Bool-valued: slots of the SAME σ must appear in
-    non-decreasing region rank; slots of different σ are unconstrained (that freedom IS
-    the Lemma 3.2(1) interleaving enumeration). -/
+    non-decreasing region rank; slots of different σ must be cross-σ bit-compatible
+    (`kvE2_sepCompat`) — the task 333/334 redefinition of the arrangement-blind task 321
+    filter (Rabinovich Lemma 3.2(1), md:77). -/
 def kvE2_sepSlotLe {sig : MonadicSignature} (a b : KvE2SepSlot sig) : Bool :=
-  !(decide (kvE2_sepSlotSub a = kvE2_sepSlotSub b))
-    || decide (kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b)
+  if kvE2_sepSlotSub a = kvE2_sepSlotSub b then
+    decide (kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b)
+  else
+    kvE2_sepCompat a b
 
 /-- Arrangement validity: every ordered pair respects `kvE2_sepSlotLe`. -/
 def kvE2_sepValid {sig : MonadicSignature} (l : List (KvE2SepSlot sig)) : Bool :=
@@ -758,17 +761,37 @@ private theorem kvE2_sep_pairwise_flatMap {α β : Type} {R : β → β → Prop
     exact hcross a List.mem_cons_self b (List.mem_cons_of_mem _ hb)
       (fun he => hna (he ▸ hb)) x hx y hyb
 
-/-- Rank monotonicity satisfies the validity relation (the `decide` right disjunct). -/
-private theorem kvE2_sepSlotLe_of_rank {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+/-- Same-owner rank monotonicity satisfies the validity relation (the `if`-true branch). -/
+private theorem kvE2_sepSlotLe_same {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+    (hsub : kvE2_sepSlotSub a = kvE2_sepSlotSub b)
     (h : kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) : kvE2_sepSlotLe a b = true := by
   unfold kvE2_sepSlotLe
-  rw [decide_eq_true h, Bool.or_true]
+  rw [if_pos hsub]
+  exact decide_eq_true h
 
-/-- Distinct owning subs satisfy the validity relation (the negated left disjunct). -/
-private theorem kvE2_sepSlotLe_of_sub_ne {sig : MonadicSignature} {a b : KvE2SepSlot sig}
-    (h : kvE2_sepSlotSub a ≠ kvE2_sepSlotSub b) : kvE2_sepSlotLe a b = true := by
+/-- Distinct owners satisfy the validity relation exactly when cross-σ bit-compatible
+    (`kvE2_sepCompat`) — the task 333/334 replacement of the unconditional `_of_sub_ne`. -/
+private theorem kvE2_sepSlotLe_of_ne_compat {sig : MonadicSignature} {a b : KvE2SepSlot sig}
+    (h : kvE2_sepSlotSub a ≠ kvE2_sepSlotSub b)
+    (hc : kvE2_sepCompat a b = true) : kvE2_sepSlotLe a b = true := by
   unfold kvE2_sepSlotLe
-  rw [decide_eq_false h, Bool.not_false, Bool.true_or]
+  rw [if_neg h]
+  exact hc
+
+/-- Same-owner, rank-sorted lists are `kvE2_sepSlotLe`-pairwise (bridges a rank-only
+    `Pairwise` to the validity relation on a single-σ block). -/
+private theorem kvE2_sep_pairwise_rank_same {sig : MonadicSignature}
+    {l : List (KvE2SepSlot sig)} {σ : NormalForm sig 1 4}
+    (hsub : ∀ s ∈ l, kvE2_sepSlotSub s = σ)
+    (hr : l.Pairwise (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b)) :
+    l.Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+  induction l with
+  | nil => exact List.Pairwise.nil
+  | cons x xs ih =>
+    rw [List.pairwise_cons] at hr ⊢
+    refine ⟨fun b hb => kvE2_sepSlotLe_same ?_ (hr.1 b hb),
+      ih (fun s hs => hsub s (List.mem_cons_of_mem _ hs)) hr.2⟩
+    rw [hsub x List.mem_cons_self, hsub b (List.mem_cons_of_mem _ hb)]
 
 /-- Every slot of σ's canonical LEFT block is owned by σ. -/
 private theorem kvE2_sepSlotsLFor_sub {sig : MonadicSignature} {σ : NormalForm sig 1 4}
@@ -799,79 +822,86 @@ private theorem kvE2_sepSlotsRFor_sub {sig : MonadicSignature} {σ : NormalForm 
     · exact (List.not_mem_nil h).elim
 
 /-- σ's canonical LEFT block respects the region-rank order (`XU* < x1 < UW*`). -/
-private theorem kvE2_sepSlotsLFor_pairwise {sig : MonadicSignature}
+private theorem kvE2_sepSlotsLFor_rankPairwise {sig : MonadicSignature}
     (σ : NormalForm sig 1 4) :
-    (kvE2_sepSlotsLFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+    (kvE2_sepSlotsLFor σ).Pairwise
+      (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
   unfold kvE2_sepSlotsLFor
   split
   · refine List.pairwise_append.mpr ⟨?_, ?_, ?_⟩
     · exact List.pairwise_map.mpr
-        (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.zero_le _))
+        (kvE2_sep_pairwise_of_forall fun _ _ => (Nat.zero_le _))
     · refine List.pairwise_cons.mpr ⟨?_, ?_⟩
       · intro b hb
         obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hb
-        exact kvE2_sepSlotLe_of_rank (Nat.le_succ 1)
+        exact (Nat.le_succ 1)
       · exact List.pairwise_map.mpr
-          (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+          (kvE2_sep_pairwise_of_forall fun _ _ => (Nat.le_refl _))
     · intro s hs b _
       obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hs
-      exact kvE2_sepSlotLe_of_rank (Nat.zero_le _)
+      exact (Nat.zero_le _)
   · split
     · exact List.pairwise_map.mpr
-        (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+        (kvE2_sep_pairwise_of_forall fun _ _ => (Nat.le_refl _))
     · exact List.Pairwise.nil
 
-/-- σ's canonical RIGHT block respects the region-rank order (`WX1* < x1 < X1T*`). -/
-private theorem kvE2_sepSlotsRFor_pairwise {sig : MonadicSignature}
+/-- σ's canonical LEFT block is a valid same-owner arrangement. -/
+private theorem kvE2_sepSlotsLFor_pairwise {sig : MonadicSignature}
     (σ : NormalForm sig 1 4) :
-    (kvE2_sepSlotsRFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) := by
+    (kvE2_sepSlotsLFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) :=
+  kvE2_sep_pairwise_rank_same (fun _ hs => kvE2_sepSlotsLFor_sub hs)
+    (kvE2_sepSlotsLFor_rankPairwise σ)
+
+/-- σ's canonical RIGHT block respects the region-rank order (`WX1* < x1 < X1T*`). -/
+private theorem kvE2_sepSlotsRFor_rankPairwise {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsRFor σ).Pairwise
+      (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
   unfold kvE2_sepSlotsRFor
   split
   · exact List.pairwise_map.mpr
-      (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+      (kvE2_sep_pairwise_of_forall fun _ _ => (Nat.le_refl _))
   · split
     · refine List.pairwise_append.mpr ⟨?_, ?_, ?_⟩
       · exact List.pairwise_map.mpr
-          (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.zero_le _))
+          (kvE2_sep_pairwise_of_forall fun _ _ => (Nat.zero_le _))
       · refine List.pairwise_cons.mpr ⟨?_, ?_⟩
         · intro b hb
           obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hb
-          exact kvE2_sepSlotLe_of_rank (Nat.le_succ 1)
+          exact (Nat.le_succ 1)
         · exact List.pairwise_map.mpr
-            (kvE2_sep_pairwise_of_forall fun _ _ => kvE2_sepSlotLe_of_rank (Nat.le_refl _))
+            (kvE2_sep_pairwise_of_forall fun _ _ => (Nat.le_refl _))
       · intro s hs b _
         obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hs
-        exact kvE2_sepSlotLe_of_rank (Nat.zero_le _)
+        exact (Nat.zero_le _)
     · exact List.Pairwise.nil
+
+/-- σ's canonical RIGHT block is a valid same-owner arrangement. -/
+private theorem kvE2_sepSlotsRFor_pairwise {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsRFor σ).Pairwise (fun a b => kvE2_sepSlotLe a b = true) :=
+  kvE2_sep_pairwise_rank_same (fun _ hs => kvE2_sepSlotsRFor_sub hs)
+    (kvE2_sepSlotsRFor_rankPairwise σ)
 
 /-- The positive-sub spine is duplicate-free (`Finset.univ.toList` + filter). -/
 private theorem kvE2_sepPos_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
     (kvE2_sepPos qnf).Nodup :=
   (Finset.nodup_toList _).filter _
 
-/-- The canonical LEFT slot list is a valid arrangement (identity interleaving). -/
+/-- The canonical LEFT slot list is a valid arrangement (identity interleaving).
+    NOTE: FALSE post-switch (the identity interleaving need not be cross-σ compat); retired
+    and replaced by `kvE2_sepJointSortedL` in Phase 6. -/
 private theorem kvE2_sepSlotsL_valid {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
-    kvE2_sepValid (kvE2_sepSlotsL qnf) = true := by
-  unfold kvE2_sepValid
-  refine decide_eq_true ?_
-  unfold kvE2_sepSlotsL
-  refine kvE2_sep_pairwise_flatMap (kvE2_sepPos_nodup qnf)
-    (fun σ _ => kvE2_sepSlotsLFor_pairwise σ) ?_
-  intro a _ b _ hab s hs y hy
-  exact kvE2_sepSlotLe_of_sub_ne (by
-    rw [kvE2_sepSlotsLFor_sub hs, kvE2_sepSlotsLFor_sub hy]; exact hab)
+    kvE2_sepValid (kvE2_sepSlotsL qnf) = true :=
+  -- SCAFFOLD sorry (task 334 Phase 1); removed by Phase 6 rewire
+  sorry
 
-/-- The canonical RIGHT slot list is a valid arrangement (identity interleaving). -/
+/-- The canonical RIGHT slot list is a valid arrangement (identity interleaving).
+    NOTE: FALSE post-switch; retired and replaced by `kvE2_sepJointSortedR` in Phase 6. -/
 private theorem kvE2_sepSlotsR_valid {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
-    kvE2_sepValid (kvE2_sepSlotsR qnf) = true := by
-  unfold kvE2_sepValid
-  refine decide_eq_true ?_
-  unfold kvE2_sepSlotsR
-  refine kvE2_sep_pairwise_flatMap (kvE2_sepPos_nodup qnf)
-    (fun σ _ => kvE2_sepSlotsRFor_pairwise σ) ?_
-  intro a _ b _ hab s hs y hy
-  exact kvE2_sepSlotLe_of_sub_ne (by
-    rw [kvE2_sepSlotsRFor_sub hs, kvE2_sepSlotsRFor_sub hy]; exact hab)
+    kvE2_sepValid (kvE2_sepSlotsR qnf) = true :=
+  -- SCAFFOLD sorry (task 334 Phase 1); removed by Phase 6 rewire
+  sorry
 
 /-- Dropping the fresh coordinate of a REALIZED arity-4 depth-0 base recovers the
     arity-3 base realized at the same three points (Def 3.1 env-restriction channel):
@@ -1311,7 +1341,7 @@ private theorem kvE2_sep_index_lt_of_rank_lt {sig : MonadicSignature}
   · exfalso
     have hle := List.pairwise_iff_getElem.mp hpw i j hi hj hgt
     unfold kvE2_sepSlotLe at hle
-    rw [decide_eq_true hsub.symm, Bool.not_true, Bool.false_or, decide_eq_true_eq] at hle
+    rw [if_pos hsub.symm, decide_eq_true_eq] at hle
     omega
 
 /-- The two interior outer classes are distinct (index-0 order bits differ). -/
