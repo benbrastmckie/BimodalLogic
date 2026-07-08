@@ -55,3 +55,32 @@ tracked, build-green). An inert N2-B CRUX RECORD is appended to the plan before 
 plan's Phase 11 Rollback/Contingency, there is no narrowing rung below N2: the follow-up either
 discharges these two sorries (then Phase 12 consumes the closed both-directions) or, if the O4
 coverage is genuinely underivable at singleton size, the decision structure returns FAIL.
+
+## Addendum (2026-07-08, second dispatch): root cause isolated + single-anchor closer landed
+
+The second N2-B dispatch did NOT fully discharge the two strategic sorries, but converted the
+open-ended deferral into a precise, verbatim-grounded diagnosis plus one sorry-free green advance:
+
+- **Root cause (corrects the Phase-10 premise).** The blocking obstruction is the Phase-9
+  **second, cross-sigma-INDEPENDENT** obstruction, not the cross-sigma slot crux. Verified this
+  dispatch that all three landed task-326 soundness closers (`kvE_subBracket2V_sound` `:946`,
+  `_sound_of_parts` `:1025`, `_sound_of_outer` `:1216`) demand the identical six-conjunct `hgate`
+  as a **forall-anchor** hypothesis. Its conjunct `a < w` binds every `a in (x,t)` realizing
+  `charK (nfk_projFresh sigma)`; an honest singleton model may realize that depth-1 anchor above
+  `w` (right-region segments exclude only depth-0 `charBase` types), so the forall-anchor form is
+  UNPROVABLE at singleton size. Captured via verbatim `lean_goal` at `SharedWitness.lean:1812`
+  (`case refine_1`, goal `|- a < w`, hypotheses = only the abstract gate `hg` + an unbounded anchor
+  `a`, NO carrier `.holds`). Recorded in the plan's N2-B CRUX ADDENDUM.
+
+- **Landed sorry-free (axiom-clean `[propext, Classical.choice, Quot.sound]`).**
+  `kvE2_sepSingleton_sound_of_parts_at` (`SharedWitness.lean:~1826`): a body-verbatim
+  specialization of `kvE_subBracket2V_sound_of_parts` consuming the six conjuncts ONLY at the
+  single extracted anchor `x1` (not forall-anchor). This **dissolves the forall-anchor obstruction**
+  — at the one `x1`, `x1 < w` genuinely holds and the cross-sigma crux is absent — reducing the O4
+  discharge to a single-anchor segment-coverage lemma.
+
+- **Outcome.** `status: partial`. Two strategic sorries remain (`kvE2_sepSingleton_hgate_left`
+  `:1780`; `kvE2_sepBody_singleton_complete_left` `:1929`). `lake build` exit 0 (1013 jobs); code
+  diff = `SharedWitness.lean` only. NOT a route NO-GO: the remaining additive path (single-anchor
+  coverage lemma + rewire `_sound_left`) is scoped and in-territory; Phase 11 Rollback is the
+  fallback only if that lemma is later judged to need the out-of-scope carrier re-definition.

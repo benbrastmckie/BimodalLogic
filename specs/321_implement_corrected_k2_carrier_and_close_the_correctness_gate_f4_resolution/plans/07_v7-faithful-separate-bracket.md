@@ -636,6 +636,66 @@ FM-merge, `x1 < e_i`, gate-modulo-assumed `hgate`, vacuous placeholder) were NOT
 sorries are honest, documented skeleton division points, each with a named follow-up. This record
 is additive and inert.
 
+#### N2-B CRUX ADDENDUM — task 321 v7 Phase 11 (2026-07-08, second dispatch): ROOT CAUSE isolated + single-anchor closer LANDED (NOT a NO-GO; scoped additive path clarified)
+
+**Verbatim `lean_goal` at the first `kvE2_sepSingleton_hgate_left` hole (`SharedWitness.lean:1812`,
+`case refine_1`):**
+```
+sig : MonadicSignature ; atomMap : Formula → sig.preds ; charK : NormalForm sig 1 1 → Formula
+qnf : NormalForm sig 2 3 ; hg : kvE2_sepGate qnf ; M : OrderedMonadicStructure sig
+x t w : M.carrier ; σ : NormalForm sig 1 4 ; hσpos : qnf.2 σ = true
+hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ; hwt : w < t
+a : M.carrier ; hxa : x < a ; hat : a < t
+hanchor : TemporalPred.eval_at M atomMap { formula := charK (nfk_projFresh σ) } a
+h_off : ∀ (τ : NormalForm sig 0 5), nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false
+⊢ a < w
+```
+
+**ROOT CAUSE (corrects the Phase-10 premise).** The blocking obstruction is NOT the cross-σ slot
+crux (which the singleton restriction DOES remove). It is the Phase-9 **SECOND, cross-σ-INDEPENDENT
+obstruction** (crux record `SharedWitness.lean:1636-1642`): the six-conjunct `hgate` that ALL three
+landed task-326 soundness closers (`kvE_subBracket2V_sound` `:946`, `_sound_of_parts` `:1025`,
+`_sound_of_outer` `:1216` — verified this dispatch: every one takes the identical `hgate` as a
+∀-anchor hypothesis, so NO closer bypasses it) demand is a **∀-anchor** statement: conjunct
+`a < w` binds EVERY `a ∈ (x,t)` realizing `charK (nfk_projFresh σ)`. As the verbatim goal shows,
+`kvE2_sepSingleton_hgate_left` receives only the abstract gate `hg` (whose four clauses conclude
+`… = false` ONLY) and `hanchor` — no carrier `.holds`, and no upper bound on `a`. An honest model
+satisfying the singleton carrier's `.holds` may realize the depth-1 anchor `charK (nfk_projFresh σ)`
+ABOVE `w` (the right-region segments exclude only depth-0 `charBase` 1-types, never the depth-1
+E[Σ]-atom anchor), so `a < w` is genuinely FALSE for such `a`. The ∀-anchor form is therefore
+UNPROVABLE at singleton size — **this is why the sorry could not be discharged as stated, and it is
+independent of σ-count.** The prior handoff's "coverage/plumbing at singleton" framing was correct
+about the cross-σ crux but missed that the ∀-anchor form is baked into the landed closers.
+
+**LANDED this dispatch (sorry-free, axiom-clean `[propext, Classical.choice, Quot.sound]`):**
+`kvE2_sepSingleton_sound_of_parts_at` (`SharedWitness.lean:~1826`) — a BODY-VERBATIM specialization
+of `kvE_subBracket2V_sound_of_parts` (`:1058-1080`) that consumes the six conjuncts ONLY at the
+single extracted anchor `x1` (not ∀-anchor). This **dissolves the ∀-anchor obstruction**: at the one
+extracted `x1`, `x1 < w` genuinely holds (left-interior fresh witness), and the cross-σ crux is
+absent at singleton, so the residual forward-zone obligation at `x1` escapes BOTH Phase-9
+obstructions.
+
+**Remaining additive path (in `SharedWitness.lean` territory, NO carrier re-definition — NOT a NO-GO,
+NO rollback needed):**
+1. A **single-anchor segment-coverage lemma**: from the realized singleton `kvE2_sepDisjunct`
+   `.holds` (available inside `_sound_left`), extract that the bracket witnesses + refined segments
+   tile `(x,t)`, so any model χ-point in an interior zone rel `[x1,w,x,t]` is either a σ-own slot
+   (→ bit-true) or lies in a segment-covered open sub-interval (→ `kvE2_sepSegForm_excludes`
+   contrapositive → bit-true). This supplies the six conjuncts AT `x1`.
+2. Rewire `kvE2_sepBody_singleton_sound_left` to obtain `x1 < w` from `kvE2_sepBundleL` (pre-`parts`,
+   which still carries `hx1w`) and feed the six `x1`-conjuncts into the new
+   `kvE2_sepSingleton_sound_of_parts_at`, discharging `kvE2_sepSingleton_hgate_left` (or bypassing
+   it). The segment-coverage extraction is the remaining self-contained construction (reads
+   `kvE2_sepSegs`/`kvE2_sepBracketN`/`kvE2_sepDisjunct_extract` internals); it is larger than one
+   additive dispatch could land verified-green, so it is left as a scoped follow-up.
+
+**Status of the two tracked strategic sorries (both remain, honest, tracked):**
+`kvE2_sepSingleton_hgate_left` (`:1780`) and `kvE2_sepBody_singleton_complete_left` (`:1929`, shifted
+by the landed helper). Full `lake build` exit 0 (1013 jobs, module scope); `git diff --stat` code
+change = `SharedWitness.lean` only. **This is a scoped-deferral with the blocking root cause isolated
+and its dissolver landed — NOT a route NO-GO; the Phase 11 Rollback (no rung below N2) is the
+fallback ONLY if the single-anchor coverage lemma is later judged out of additive scope.**
+
 ### Phase 12: N2-C gate wrapper restricted to the singleton fragment (replaces the FULL O7 wrapper per the Phase 10 amendment) [NOT STARTED]
 
 *(Re-scoped 2026-07-07 by the Phase 10 gate: verdict N2. Content promoted from Appendix N2,
