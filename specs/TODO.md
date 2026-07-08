@@ -112,14 +112,14 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
-    └─ 334 [NOT STARTED] — Successor to task 333 (partial at cycle budget): implement the no
+    └─ 334 [RESEARCHED] — Successor to task 333 (partial at cycle budget): implement the no
 
 ### Uncategorized
 
 ## Tasks
 
 ### 334. Joint slot sorted realization nonvacuity carrier switch
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 333
 
