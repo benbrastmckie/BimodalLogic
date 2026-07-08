@@ -1,7 +1,7 @@
 # Implementation Plan: Task #334 — Faithful re-grounding of the NfMultiAnchorBridge carrier onto Rabinovich's proof architecture
 
 - **Task**: 334 - Joint slot sorted realization / nonvacuity carrier switch (faithful re-grounding)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Date**: 2026-07-08
 - **Effort**: 14-20 hours (9 phases; spike-gated at Phase 1; ~700-1050 net-new Lean lines)
 - **Dependencies**: None to start. Downstream: the outer-gate assembly (`kvE2_body` / `bracketEndChar_kvE2`, task 321 v4) is a SEPARATE obligation — see Phase 9 and Risk R3; it likely needs its own task.
