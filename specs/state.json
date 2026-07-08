@@ -3054,6 +3054,11 @@
           "path": "specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/plans/01_split-and-api-plan.md",
           "type": "plan",
           "summary": "8-phase mechanical split plan with per-phase byte-identity gates"
+        },
+        {
+          "path": "specs/331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/summaries/01_split-summary.md",
+          "type": "summary",
+          "summary": "10-module split + umbrella, all 7 gates PASS, faithful API in SubBracket2V/NavigatedSpine, merged route quarantined"
         }
       ],
       "completion_summary": "Split 9,249-line NfMultiAnchorBridge.lean into 10 byte-identical modules + import-only umbrella (9,493 lines total); exactly 11 sanctioned de-privatizations + 1 fold_iff relocation; all Phase-8 gates pass (build 1719 jobs, 4 flagship theorems axiom-clean, sorry parity 47=47, KampPrior untouched); faithful separate-bracket API surfaced in SubBracket2V.lean + NavigatedSpine.lean for task 321."

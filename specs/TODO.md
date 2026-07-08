@@ -122,6 +122,7 @@ Warning: 1 task(s) have no topic and will render under Uncategorized: 298 (non-f
 - **Dependencies**: None
 - **Research**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md]
 - **Plan**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/plans/01_split-and-api-plan.md]
+- **Summary**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/summaries/01_split-summary.md]
 
 **Description**: Structural refactor to unblock task 321 Phase 7/8: split NfMultiAnchorBridge.lean and clean up the k=2 carrier API. RUNS BEFORE the next task-321 implementation attempt (task 321 now depends on this task). Purely mechanical/organizational — introduces NO new mathematical content and does NOT attempt to close the Phase-7 gate (that stays task 321).
 
