@@ -8856,4 +8856,62 @@ evaluation point / structural position of nested `Until`/`Since` operators.
 Per-asset byte-identity hashes recorded in
 `specs/321_.../` Phase-1 baseline snapshot. This note is additive and inert. -/
 
+/-! ## Task 321 v6 REDESIGN — Phase 2: navigated-fold SPINE `kvE_fold_navigated` (interior fragment)
+
+**Make-or-break established.** Audit §H5 target 2 asks whether the witness-growing carrier
+discharges the k≥1 instance via NAVIGATION (Until/Since reach over the evaluation point) rather than
+a static arity-1 channel — the wall the task-327 NO-GO (:8760-8825) certified for the constant-arity
+route. The answer is YES, and it is already realized by the LANDED task-325/326 witness-growing
+route: the sub-carrier `kvE_subBracket2V` (:6833, codomain `VVecEA2`) discharges the arity-4 depth-1
+sub instance `∃ x1, nf_eval_nf M 1 4 [x1,w,x,t] σ` in BOTH directions
+(`kvE_subBracket2V_correctness_pair` :8549), sorry-free and non-vacuously
+(`kvE_subBracket2V_nonvacuous` :8119), with the reconstruction riding `zoneHolds` membership over
+the anchor env `[x1,w,x,t]` (`kvE_subBracket2V_complete` :8159, zone constructors :8228-8294) — NOT
+an `x1 < e_i` relative-position literal (LITMUS respected; contrast the task-327 crux :8790).
+
+`kvE_fold_navigated` NAMES this spine as the single navigated biconditional in the
+`BracketCarrierCorrectV` `↔`-shape (:1881), at the sub granularity `σ : NormalForm sig 1 4` that the
+carrier-level `NormalForm sig k 3` obligation decomposes into over its outer quant layer. It CONSUMES
+the landed correctness pair; the carrier-level lift OVER the outer quant layer (composing the per-sub
+navigated spine into the full `∃ w, nf_eval_nf M k 3 [w,x,t] qnf`) is the navigated fold engine
+(Phase 4), whose higher-FO depth is discharged by the Prop 4.3 re-flatten induction (Phase 3) — never
+by nesting a depth-k characteristic (Prop 3.5 / Cor 5.4, Rabinovich md:87-94, md:154-157). Anchors
+stay `{x,t}` (≤2, Lemma 3.2(2), md:76-79); `x1`, `w` are interior WITNESS slots (witness growth
+licensed, anchor growth not). Purely consumes landed lemmas (no `simp`/`omega`/`aesop`). -/
+theorem kvE_fold_navigated {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h_xx1 : σ.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_x1w : σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true)
+    (h_wt : σ.1 (.order ⟨1, by omega⟩ ⟨3, by omega⟩ (by decide)) = true)
+    (hcharK : ∀ a : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a)
+    (hgate : ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    (kvE_subBracket2V (nf_depth0_char_formula atomMap h_surj) charK σ).holds M atomMap x t ↔
+      ∃ x1 : M.carrier,
+        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ :=
+  ⟨(kvE_subBracket2V_correctness_pair atomMap h_surj charK σ M w x t
+      h_xx1 h_x1w h_wt hcharK hgate).1,
+   (kvE_subBracket2V_correctness_pair atomMap h_surj charK σ M w x t
+      h_xx1 h_x1w h_wt hcharK hgate).2⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
