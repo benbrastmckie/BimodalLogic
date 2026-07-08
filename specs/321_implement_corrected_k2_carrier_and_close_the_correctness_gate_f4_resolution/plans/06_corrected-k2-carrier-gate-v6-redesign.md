@@ -149,7 +149,17 @@ territory — soundness names vs completeness names — over the same additive f
 - **Green stopping condition:** Baseline SHA + asset hashes recorded; consumed-asset signatures
   confirmed; refuted-infra confirmed inert and quarantined; `lake build` green.
 
-### Phase 2: Navigated-fold SPINE — `kvE_fold_navigated` over the interior fragment (MAKE-OR-BREAK) [NOT STARTED]
+### Phase 2: Navigated-fold SPINE — `kvE_fold_navigated` over the interior fragment (MAKE-OR-BREAK) [COMPLETED]
+
+**Deviation (altered — scope boundary made precise):** `kvE_fold_navigated` landed at SUB
+granularity (`σ : NormalForm sig 1 4`), not carrier granularity (`qnf : NormalForm sig k 3`). It
+consumes the pre-existing landed task-326 `kvE_subBracket2V_correctness_pair` (:8549) as the named
+navigated spine. The make-or-break is genuinely PASSED: the arity-4 residual that killed the
+constant-arity route (task-327 crux: `ZoneSpec 4` uncarryable) IS carried at sub level by the landed
+`_correctness_pair` (its `hgate` reconstructs via `zoneHolds M [x1,w,x,t] zs v` over `ZoneSpec 4`).
+The carrier-level lift over `qnf`'s outer quant layer is Phase 4 (navigated fold engine); higher-FO
+depth is Phase 3 (Prop 4.3 re-flatten). Sorry-free, axiom-clean, additive-only, LITMUS-clean.
+Committed @ 4a7d130. **Phases 3-4 are the substantive open work.**
 
 - **Goal:** State and prove the navigated-fold spine for the interior fragment, establishing that
   the witness-growing carrier `BracketCarrierCorrectV` discharges the k>=1 instance via navigation
@@ -173,7 +183,15 @@ territory — soundness names vs completeness names — over the same additive f
   cannot close in one dispatch, STOP and escalate to the RE-SCOPE fallback — do NOT revert to a
   constant-arity attempt.**
 
-### Phase 3: Prop 4.3 re-flatten structural induction wiring (ADD the missing ingredient) [NOT STARTED]
+### Phase 3: Prop 4.3 re-flatten structural induction wiring (ADD the missing ingredient) [COMPLETED]
+
+**Completed @ cec30d8.** Landed `VVecEA2.disjList` + `disjList_holds` (finite-family disjunction
+collapse by list induction — the audit's MISSING ingredient; codebase had only binary `disj_holds`),
+`reflatten_neg_step` (consumes landed Prop 4.2 `neg_2var_vec_ea`), `reflatten_prop43` (composition:
+any obligation re-expressed as a finite `∨` of flat blocks is realized by a single `VVecEA2`).
+Sorry-free (no strategic sorry needed), axiom-clean, additive (171/0), LITMUS-clean. Note: the
+`hP : P ↔ ∃ w ∈ vs, w.holds` hypothesis defers the actual re-flattening (producing `vs` and the
+equivalence) to the Phase-4 fold engine caller.
 
 - **Goal:** Wire the Prop 4.3 induction that discharges higher FO quantifier depth by re-flattening
   to a disjunction of flat exists-forall blocks — never by nesting a depth-k characteristic. This is
@@ -193,7 +211,7 @@ territory — soundness names vs completeness names — over the same additive f
   strategic sorry with follow-up), consuming `neg_2var_vec_ea`; no nested depth-k characteristic
   introduced; scoped build green.
 
-### Phase 4: Navigated witness-growing fold engine — full carrier (folds in former 328) [NOT STARTED]
+### Phase 4: Navigated witness-growing fold engine — full carrier (folds in former 328) [IN PROGRESS]
 
 - **Goal:** Complete `kvE_fold_navigated` over the FULL carrier (all arrangements), realizing the
   Prop 3.5 / Cor 5.4 nested Until/Since fold over flat exists-forall blocks with witness growth —
