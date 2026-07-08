@@ -1717,16 +1717,19 @@ has no instances; the derivation reduces to ONE σ against σ's OWN segments.
 **D3 discipline:** negatives are routed through the depth-2 gate's off-fiber / zone-consistency
 clauses (`kvE2_sepGate` clauses (i)/(ii)) ONLY — never a Prop 4.2 pointwise-existence form.
 
-**O4 residue (the make-or-break, isolated as a tracked strategic sorry).** The per-σ `hgate`
-that `kvE_subBracket2V_sound_of_parts` consumes has SIX conjuncts. This section derives the
-carrier-determined ones directly (conjunct (ii) `w < t`; conjunct (iv) inner off-fiber via
-`kvE2_sepHgate_offFiber`) and isolates the remaining ones — the forward-zone conjunct
-(`SubBracket2V.lean:1873-1877`) and its backward mate — into `kvE2_sepSingleton_hgate_left`.
-Even at singleton size those two conjuncts require the FULL bracket interval-decomposition
-coverage argument (every model point of `(x,t)` is a σ-own slot or lies in a segment-covered
-open sub-interval), which is not exposed by the landed `kvE2_sepBody_extract` bundle facts. The
-sorry is a DELIBERATE division boundary (skeleton), tightly scoped to that one lemma, documented
-here, and tracked in the dispatch handoff `sorry_inventory` with a follow-up. -/
+**O4 residue (the make-or-break, isolated as a tracked strategic sorry).** The six-conjunct
+per-anchor content that `kvE2_sepSingleton_sound_of_parts_at` (the ∀-anchor dissolver) consumes
+is supplied ONLY at the single extracted anchor `x1`. This section derives the carrier-determined
+conjuncts directly (conjunct (ii) `w < t`; conjunct (iv) inner off-fiber via
+`kvE2_sepHgate_offFiber`; `x1 < w`/`hbelow` from the bundle) and isolates the remaining three —
+σ.1's arity-4 base at `[x1,w,x,t]`, the forward-zone conjunct (`SubBracket2V.lean:1873-1877`), and
+its backward mate — into the single-anchor `kvE2_sepSingleton_coverage_left`. Even at singleton
+size those three require the FULL bracket interval-decomposition coverage of `(x,t)` (every model
+point is a σ-own bracket slot, a segment-covered open sub-interval, or an exterior/boundary
+endpoint point), which is present in the realized carrier `h` but NOT surfaced by the landed
+`kvE2_sepBody_extract` bundle facts. The sorry is a DELIBERATE division boundary (skeleton),
+tightly scoped to that one lemma, provable-in-principle from `h`, documented here, and tracked in
+the dispatch handoff `sorry_inventory` with a follow-up. -/
 
 /-- **D3 negatives — outer off-fiber** (gate clause (i)): a sub whose atom-layer restriction to
     `[w,x,t]` disagrees with `qnf.1` is negative. The admitted negatives channel (no Prop 4.2
@@ -1760,25 +1763,39 @@ theorem kvE2_sepBody_singleton_gate {sig : MonadicSignature}
   rw [kvE2_sepBody_singleton_eq, kvE2_sepBody_gate_fail charBase charK qnf hng] at h
   simp [VVecEA2.holds] at h
 
-/-- **N2-B O4 `hgate` assembly for the left-interior singleton σ** (the isolated crux).
+/-- **N2-B single-anchor coverage for the left-interior singleton σ** (task 321 v7 Phase 11;
+    the additive residue consumed by the ∀-anchor dissolver `kvE2_sepSingleton_sound_of_parts_at`).
 
-    Produces the six-conjunct `hgate` that `kvE_subBracket2V_sound_of_parts`
-    (`SubBracket2V.lean:1038-1052`) consumes. Conjunct (ii) `w < t` and conjunct (iv) inner
-    off-fiber (`kvE2_sepHgate_offFiber`) are derived directly from the carrier facts (the
-    Phase-9 core is a live input). The remaining conjuncts — `a < w`, σ.1's atom layer at
-    `[a,w,x,t]`, the forward-zone conjunct (`:1873-1877`, the O4 residue), and its backward mate
-    — require the full bracket interval-decomposition coverage of `(x,t)` (every model point is
-    a σ-own slot or a segment-covered interior point). That coverage is NOT surfaced by the
-    landed `kvE2_sepBody_extract` bundle; deriving it is the make-or-break residue the Phase 10
-    gate scoped to N2.
+    From the realized joint carrier `h` — whose bracket carries the refined-conjunction segment
+    realizations on every open sub-interval of `(x,t)` (`kvE2_sepSegLForSub`/`kvE2_sepSegRForSub`,
+    surfaced through `kvE2_sepDisjunct_halves`) plus the boundary/exterior content in the endpoint
+    predicates `kvE2_sepEpL`/`kvE2_sepEpR` — and the single extracted anchor `x1`, produces the
+    three carrier-coverage conjuncts AT `x1` (NOT the ∀-anchor form): σ.1's arity-4 base at
+    `[x1,w,x,t]` (h_atom), the forward-zone fold-bit forcing (h_fwd), and the backward-zone
+    witness realization (h_bwd) — exactly the residue `kvE2_sepSingleton_sound_of_parts_at`
+    demands. This REPLACES the second dispatch's ∀-anchor `hgate` assembly, whose conjunct
+    `a < w` binds every anchor in `(x,t)` and is therefore FALSE at singleton size (an honest
+    model may realize the `charK` anchor above `w`); routing through the single extracted `x1`,
+    where `x1 < w` genuinely holds, is the correct wiring.
 
-    STRATEGIC SORRY (skeleton division boundary): assumes the singleton bracket's interval
-    coverage yields the forward/backward zone match at the anchor. Deferred because that coverage
-    lemma over `kvE2_sepDisjunct`'s segment structure is a self-contained construction outside the
-    extraction-assembly scope of this dispatch. Follow-up: task 321 Phase 11 N2-B O4 coverage
-    (per-σ segment-coverage lemma for the singleton bracket), then discharge here. -/
-theorem kvE2_sepSingleton_hgate_left {sig : MonadicSignature}
+    STRATEGIC SORRY (skeleton division boundary — five-condition test met: deliberate division,
+    tightly scoped to this one lemma, documented, tracked in the dispatch handoff, build-green).
+    Provable-in-principle from `h` (the segments/endpoints ARE present in the realized carrier).
+    Assumes the singleton bracket's interval-decomposition coverage of `(x,t)`: every model point
+    is a σ-own bracket slot (bit-true point type + depth-0 1-type mutual exclusivity), a
+    segment-covered open sub-interval (`kvE2_sepSegForm_excludes` on the refined segments, keyed
+    by whether σ's fresh slot precedes the cut), or an exterior/boundary point (decoded from the
+    endpoint predicates). Deferred because assembling it verified-green requires surfacing the
+    currently-discarded bracket segment realizations (a new extraction beyond
+    `kvE2_sepBody_extract`), the point→interval location map, the bracket-segment→σ-`segForm`
+    refinement, the 1-type exclusivity lemma, the exterior-endpoint decoder, and the h_bwd witness
+    construction — jointly exceeding one additive dispatch (verbatim residue goals in the N2-B
+    CRUX ADDENDUM-2 below). Follow-up: task 321 Phase 11 N2-B single-anchor coverage; the clean
+    uniform route is the out-of-scope bit-compatibility carrier redefinition of
+    `kvE2_sepArrL`/`kvE2_sepArrR`. -/
+theorem kvE2_sepSingleton_coverage_left {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (M : OrderedMonadicStructure sig)
@@ -1786,37 +1803,21 @@ theorem kvE2_sepSingleton_hgate_left {sig : MonadicSignature}
     (σ : NormalForm sig 1 4)
     (hσpos : qnf.2 σ = true)
     (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
-    (hwt : w < t) :
-    ∀ a : M.carrier, x < a → a < t →
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
-      a < w ∧ w < t ∧
-      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
-      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
-        (∃ v : M.carrier,
-          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) →
-        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
-        σ.2 (nf0_assemble zs χ σ.1) = true →
-        ∃ v : M.carrier,
-          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) := by
-  intro a hxa hat hanchor
-  -- conjunct (iv) inner off-fiber is the Phase-9 derivable core (LIVE input):
-  have h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false :=
-    kvE2_sepHgate_offFiber qnf hg σ hσpos
-  refine ⟨?_, hwt, ?_, h_off, ?_, ?_⟩
-  -- `a < w`: the anchor sits in the left-interior region (x, w); rides the singleton bracket's
-  -- interval coverage.
-  · sorry
-  -- σ.1's atom layer at `[a, w, x, t]`: the fresh-coupling order bits + zone (zXW3).
-  · sorry
-  -- forward-zone (the O4 residue): a realized zone point forces σ's fold bit true — needs the
-  -- singleton bracket's full interval coverage of `(x, t)`.
-  · sorry
-  -- backward-zone: a bit-true non-`zXU` zone has a realizing witness in the singleton bracket.
-  · sorry
+    (x1 : M.carrier) (hxx1 : x < x1) (hx1w : x1 < w) (hwt : w < t)
+    (hpt : (kvE2_sepPtX1L (nf_depth0_char_formula atomMap h_surj) charK σ).eval_at M atomMap x1)
+    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t) :
+    nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+      (∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) →
+      σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+    (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+      σ.2 (nf0_assemble zs χ σ.1) = true →
+      ∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) := by
+  sorry
 
 /-- **Single-anchor soundness closer** (task 321 v7 Phase 11 N2-B; the ∀-anchor-obstruction
     dissolver). A mechanical specialization of the landed `kvE_subBracket2V_sound_of_parts`
@@ -1883,9 +1884,10 @@ theorem kvE2_sepSingleton_sound_of_parts_at {sig : MonadicSignature}
 
 /-- **Both directions, FORWARD (O5 soundness)** for the left-interior singleton σ: the singleton
     carrier's `.holds` at the fixed endpoints yields σ's depth-1 realization at a shared witness
-    `w`. Pipeline: `kvE2_sepBody_extract` (O3) → `kvE2_sepBundleL_parts` → the landed
-    `kvE_subBracket2V_sound_of_parts`, with the per-σ `hgate` supplied by
-    `kvE2_sepSingleton_hgate_left`. Rabinovich Cor 5.4 (md:154-157). -/
+    `w`. Pipeline: `kvE2_sepBody_extract` (O3) → the pre-`parts` bundle (for the single anchor
+    `x1` with `x1 < w`) → the ∀-anchor dissolver `kvE2_sepSingleton_sound_of_parts_at`, with the
+    three single-anchor coverage conjuncts supplied by `kvE2_sepSingleton_coverage_left`.
+    Rabinovich Cor 5.4 (md:154-157). -/
 theorem kvE2_sepBody_singleton_sound_left {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1908,10 +1910,18 @@ theorem kvE2_sepBody_singleton_sound_left {sig : MonadicSignature}
   refine ⟨w, hxw, hwt, ?_⟩
   have hmem : σ ∈ kvE2_sepPos qnf := (kvE2_sepPos_mem qnf σ).mpr hσpos
   have hbL := hbundleL σ hmem hzone
-  obtain ⟨x1, hxx1, hx1t, hanchor, hbelow⟩ :=
-    kvE2_sepBundleL_parts (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap hwt hbL
-  exact kvE_subBracket2V_sound_of_parts atomMap h_surj charK σ M w x t x1 hxx1 hx1t hanchor hbelow
-    (kvE2_sepSingleton_hgate_left atomMap charK qnf hg M x t w σ hσpos hzone hwt)
+  -- Extract the single left-interior anchor `x1` from the pre-`parts` bundle, which STILL
+  -- carries `x1 < w` (hx1w) — the fact `kvE2_sepBundleL_parts` drops but the single-anchor
+  -- closer `kvE2_sepSingleton_sound_of_parts_at` requires. This dissolves the ∀-anchor
+  -- obstruction (second-dispatch N2-B crux): the six conjuncts are supplied ONLY at this `x1`.
+  obtain ⟨x1, hxx1, hx1w, hpt, hbelow⟩ := hbL
+  have h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false :=
+    kvE2_sepHgate_offFiber qnf hg σ hσpos
+  obtain ⟨h_atom, h_fwd, h_bwd⟩ :=
+    kvE2_sepSingleton_coverage_left atomMap h_surj charK qnf hg M x t w σ hσpos hzone
+      x1 hxx1 hx1w hwt hpt h
+  exact kvE2_sepSingleton_sound_of_parts_at atomMap h_surj charK σ M w x t x1 hbelow hx1w hwt
+    h_atom h_off h_fwd h_bwd
 
 /-- **Both directions, BACKWARD (O6 completeness)** for the left-interior singleton σ: σ's
     depth-1 realization at a shared witness `w` under the honest order rebuilds the singleton
