@@ -1039,6 +1039,52 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature}
     exact fun zs χ hncons =>
       (kvE_subBracket2V_gate_holds_of_honest σ M x1 w x t hxx1 hx1w hwt hσ).2 zs χ hncons
 
+/-- **Per-σ honest witness bundle (LEFT list, left-interior σ)** — task 333 Phase 2
+    point-map step 1 (the ⇐-direction of Rabinovich Lemma 3.2(1), md:77). From the qnf
+    honest realization, a LEFT-interior positive σ (`x < x1_σ < w`, guard `hzone`) has at
+    its extracted fresh anchor `x1_σ` a real witness point in `(x, x1_σ)` for every 1-type
+    in `kvE2_sepS σ kvE_sub2_zXU`, and one in `(x1_σ, w)` for every 1-type in
+    `kvE2_sepS σ kvE_sub2_zUW`. These are exactly the `hrealXU`/`hrealUW` inputs the joint
+    slot sort consumes to place each foreign χ-slot on the model-correct side of `x1_σ` (so
+    that `kvE2_sepCompat` holds via `kvE2_sepCompat_lX1_eq`/`_lX1_after_eq`). Reuses the
+    do-not-edit extractor `kvE_subBracket2_complete_extract` (`SubBracket2.lean:606`); no new
+    model reasoning, and NO `x1 < e_i` model-order literal is exposed (LITMUS: the anchor
+    `x1_σ` is an interval endpoint of the witness bundle, never compared to a slot index). -/
+private theorem kvE2_sepHonestBundleL {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    ∃ x1 : M.carrier, x < x1 ∧ x1 < w ∧
+      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zXU,
+        ∃ u : M.carrier, x < u ∧ u < x1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) ∧
+      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zUW,
+        ∃ u : M.carrier, x1 < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ) := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
+  obtain ⟨h_atom, h_quant⟩ := h
+  obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+  obtain ⟨hσ_atom, _h_off, _h_zonefwd, hbelowXU, hbelowUW, _hbelowWT⟩ :=
+    kvE_subBracket2_complete_extract σ M x1 w x t hσ
+  have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+    rw [congrFun hzone ⟨1, by omega⟩]; decide
+  have hbit_x1w : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+    rw [congrFun hzone ⟨0, by omega⟩]; decide
+  have hxx1 : x < x1 := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_xx1
+  have hx1w : x1 < w := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1w
+  refine ⟨x1, hxx1, hx1w, ?_, ?_⟩
+  · intro χ hχ
+    exact hbelowXU χ (List.mem_filter.mp hχ).2
+  · intro χ hχ
+    exact hbelowUW χ (List.mem_filter.mp hχ).2
+
 /-- **O1b — non-vacuity of the joint carrier** (fresh analog of
     `kvE_subBracket2V_nonvacuous`, `SubBracket2V.lean:1425`; FM-vac): for a `qnf` arising
     from an actual model realization under `x < w < t`, the depth-2 gate holds, so the
