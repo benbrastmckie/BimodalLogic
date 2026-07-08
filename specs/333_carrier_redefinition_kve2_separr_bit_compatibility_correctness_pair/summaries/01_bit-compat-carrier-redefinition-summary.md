@@ -1,12 +1,35 @@
-# Task 333 Implementation Summary — Phase 1 partial (bit-compatibility carrier redefinition)
+# Task 333 Implementation Summary — Phase 2 partial (bit-compatibility carrier redefinition)
 
-- **Status**: partial (stopped cleanly at the Phase 2 make-or-break boundary; build GREEN)
+- **Status**: partial (green increments landed; joint-sort make-or-break NOT closed; build GREEN)
 - **Session**: sess_1783522894_0a5276
-- **Commit**: `e86d9dcf4`
-- **Phases completed**: 0 of 8 fully (Phase 1 partially landed — predicate staged)
+- **Commit**: `04ea18425` (latest); this cycle: `3e2129039`, `04ea18425`
+- **Phases completed**: 0 of 8 fully (Phase 1 predicate staged; Phase 2 partially advanced —
+  compat leaves + per-σ witness bundle landed; joint sort + non-vacuity rewire remain)
 - **Build**: `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness` exit 0
-- **Live sorries**: 2 (unchanged strategic pair: `:1889` `kvE2_sepSingleton_coverage_left`,
-  `:2021` `kvE2_sepBody_singleton_complete_left`)
+- **Live sorries**: 2 (unchanged strategic pair: `:1997` `kvE2_sepSingleton_coverage_left`,
+  `:2129` `kvE2_sepBody_singleton_complete_left`)
+
+## This cycle (final orchestrator cycle — Phase 2 advance)
+
+Landed three green, axiom-clean, committed increments toward the joint-sort make-or-break, and
+did NOT reach a full close of non-vacuity. The joint slot-level sorted realization (the genuine
+novel core) remains open; the filter switch is still staged-not-wired at HEAD.
+
+1. **Three mirror compat leaves** (`kvE2_sepCompat_lX1_after_eq`, `kvE2_sepCompat_rX1_eq`,
+   `kvE2_sepCompat_rX1_after_eq`) — completing the four reusable leaves that reduce every binding
+   cross-σ pair to a single `kvE2_sepBits` read. `[propext, Quot.sound]`.
+2. **`kvE2_sepHonestBundleL`** — per-σ honest witness bundle (blueprint point-map step 1) for the
+   left list, reusing the do-not-edit `kvE_subBracket2_complete_extract`. Confirmed the qnf gate's
+   per-σ existential yields a realization at exactly the env that extractor demands (`[x1,w,x,t]`),
+   so all zone→order plumbing is reusable per owner — a real de-risking of the frontier.
+3. **Rigorous continuation handoff** `handoffs/03_phase2-joint-sort-frontier.md` with the
+   faithfulness ledger, the Lean-engineering frontier (exact joint-sort shape, the
+   Nodup-recurrence obstruction, ordered next steps), and the tie-freeness / right-interior-bundle
+   risks.
+
+**Did the joint sorted realization close?** No. **Which compat leaves landed?** All four (one
+prior + three this cycle). **Is the filter switch wired green at HEAD?** No — still staged
+(`phase1-switch-and-repairs.patch`); HEAD build is green with the old arrangement-blind filter.
 
 ## What was done
 
@@ -45,6 +68,8 @@ switch was left staged (not wired) rather than committed red.
 
 ## Resume
 
-`handoffs/01_phase2-nonvacuity-make-or-break.md` gives the exact resume sequence (apply the patch,
-run the 2-positive sanity `#eval`, build the joint sorted arrangement, rebuild non-vacuity, then
-Phases 3–8).
+`handoffs/03_phase2-joint-sort-frontier.md` is the current resume blueprint (supersedes 01/02):
+wire the switch by hand on HEAD (predicate defs present), add the right-interior bundle, prove
+`kvE2_sepJointSortedL`/`R` (the joint sort — shape + risks specified there), rewire
+`kvE2_sepBody_nonvacuous`, then Phases 3–8. The four compat leaves and `kvE2_sepHonestBundleL`
+are landed and reusable.
