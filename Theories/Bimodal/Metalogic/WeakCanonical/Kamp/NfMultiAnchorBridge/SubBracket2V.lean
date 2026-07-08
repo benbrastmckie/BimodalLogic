@@ -550,6 +550,113 @@ theorem k1v_stitch_regions {sig : MonadicSignature} {M : OrderedMonadicStructure
           · exact lt_of_le_of_lt (hlo e List.mem_cons_self)
               (lt_trans (hpos e List.mem_cons_self) (ihbound y hy'))
 
+/-- **k-region arrangement build** (task 334 Phase 3 helper). Folds `k1v_sorted_realization`
+    (`CarrierK1V.lean:1447`, reused verbatim) once per region: given boundary-linked, non-degenerate
+    anchors and per-region Nodup type lists each realized strictly interior, produces a
+    point-tagged arrangement list `ps` mirroring the region skeleton (equal anchors), with per-region
+    permutation/sortedness/realization, and the anchor `Chain'`/positivity needed to feed the stitch.
+    Distinctness within each region is type-driven (`nf_eval_unique`, NormalForm:245), inside
+    `k1v_sorted_realization` — NEVER across owners at an anchor (F3/F4 preserved). -/
+private theorem k1v_realizationK_build {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) :
+    ∀ (regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1))),
+      (∀ r ∈ regions, r.1 < r.2.1) →
+      List.Chain' (fun a b => a.2.1 = b.1) regions →
+      (∀ r ∈ regions, r.2.2.Nodup) →
+      (∀ r ∈ regions, ∀ χ ∈ r.2.2, ∃ u, r.1 < u ∧ u < r.2.1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) →
+      ∃ ps : List (M.carrier × M.carrier × List (NormalForm sig 0 1 × M.carrier)),
+        List.Forall₂ (fun p r => p.1 = r.1 ∧ p.2.1 = r.2.1 ∧
+            List.Perm (p.2.2.map Prod.fst) r.2.2 ∧
+            (p.2.2.map Prod.snd).Pairwise (· < ·) ∧
+            (∀ q ∈ p.2.2, (r.1 < q.2 ∧ q.2 < r.2.1) ∧ nf_eval_nf M 0 1 (fun _ => q.2) q.1))
+          ps regions ∧
+        List.Chain' (fun a b => a.2.1 = b.1) ps ∧
+        (∀ p ∈ ps, p.1 < p.2.1) ∧
+        (∀ p ∈ ps, (p.2.2.map Prod.snd).Pairwise (· < ·)) ∧
+        (∀ p ∈ ps, ∀ q ∈ p.2.2, p.1 < q.2 ∧ q.2 < p.2.1) := by
+  intro regions
+  induction regions with
+  | nil =>
+    intro _ _ _ _
+    exact ⟨[], List.Forall₂.nil, List.chain'_nil, by simp, by simp, by simp⟩
+  | cons r rest ih =>
+    intro hpos hlink hnd hreal
+    obtain ⟨psblk, hpermblk, hsortblk, hpropsblk⟩ :=
+      k1v_sorted_realization M r.1 r.2.1 r.2.2 (hnd r List.mem_cons_self)
+        (fun χ hχ => hreal r List.mem_cons_self χ hχ)
+    obtain ⟨ps_rest, hf_rest, hchain_rest, hpos_rest, hsort_rest, hrange_rest⟩ :=
+      ih (fun r' hr' => hpos r' (List.mem_cons_of_mem _ hr'))
+         ((List.chain'_cons'.mp hlink).2)
+         (fun r' hr' => hnd r' (List.mem_cons_of_mem _ hr'))
+         (fun r' hr' => hreal r' (List.mem_cons_of_mem _ hr'))
+    refine ⟨(r.1, r.2.1, psblk) :: ps_rest,
+      List.Forall₂.cons ⟨rfl, rfl, hpermblk, hsortblk, hpropsblk⟩ hf_rest, ?_, ?_, ?_, ?_⟩
+    · -- anchor `Chain'` for the arrangement list
+      refine List.chain'_cons'.mpr ⟨?_, hchain_rest⟩
+      intro y hy
+      have hb := (List.chain'_cons'.mp hlink).1
+      cases rest with
+      | nil => cases hf_rest; simp at hy
+      | cons r' rest' =>
+        cases hf_rest with
+        | cons hRpr hf'' =>
+          have hz : r.2.1 = r'.1 := hb r' (by simp)
+          simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at hy
+          subst hy
+          exact hz.trans hRpr.1.symm
+    · -- positivity of arrangement anchors
+      intro p hp
+      rcases List.mem_cons.mp hp with rfl | hp'
+      · exact hpos r List.mem_cons_self
+      · exact hpos_rest p hp'
+    · -- per-region internal sortedness
+      intro p hp
+      rcases List.mem_cons.mp hp with rfl | hp'
+      · exact hsortblk
+      · exact hsort_rest p hp'
+    · -- per-region interior range
+      intro p hp q hq
+      rcases List.mem_cons.mp hp with rfl | hp'
+      · exact (hpropsblk q hq).1
+      · exact hrange_rest p hp' q hq
+
+/-- **Multi-anchor region-partition lift** (task 334 Phase 3; the k-region generalization of
+    `k1v_sorted_realization3` :379). Given fixed strictly-ordered, boundary-linked anchors
+    `a_0 < a_1 < … < a_k` (encoded as the region list `[(a_0,a_1,S_0), …, (a_{k-1},a_k,S_{k-1})]`
+    with `hlink : hiᵢ = loᵢ₊₁` and `hpos : loᵢ < hiᵢ`) and per-region Nodup type lists each realized
+    strictly interior, produces per-region point lists (`ps`, mirroring the region skeleton) whose
+    stitched concatenation `interleaveK ps` (blocks separated by the interior anchors `a_1,…,a_{k-1}`)
+    is `Pairwise (· < ·)`. Folds `k1v_sorted_realization` (CarrierK1V:1447) once per region then
+    stitches via `k1v_stitch_regions`, reusing the region engine verbatim (Def 3.1 md:61-74; Lemma
+    5.1 per-region insertion md:134-135). Faithfulness: region types stay QF (F1), witnesses are
+    region-interior not new anchors (F3), no `x1 < e_i` literal appears (F4). -/
+theorem k1v_sorted_realizationK {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1)))
+    (hpos : ∀ r ∈ regions, r.1 < r.2.1)
+    (hlink : List.Chain' (fun a b => a.2.1 = b.1) regions)
+    (hnd : ∀ r ∈ regions, r.2.2.Nodup)
+    (hreal : ∀ r ∈ regions, ∀ χ ∈ r.2.2, ∃ u, r.1 < u ∧ u < r.2.1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ) :
+    ∃ ps : List (M.carrier × M.carrier × List (NormalForm sig 0 1 × M.carrier)),
+      List.Forall₂ (fun p r => p.1 = r.1 ∧ p.2.1 = r.2.1 ∧
+          List.Perm (p.2.2.map Prod.fst) r.2.2 ∧
+          (p.2.2.map Prod.snd).Pairwise (· < ·) ∧
+          (∀ q ∈ p.2.2, (r.1 < q.2 ∧ q.2 < r.2.1) ∧ nf_eval_nf M 0 1 (fun _ => q.2) q.1))
+        ps regions ∧
+      (interleaveK ps).Pairwise (· < ·) := by
+  obtain ⟨ps, hf, hchain, hposps, hsortps, hrangeps⟩ :=
+    k1v_realizationK_build M regions hpos hlink hnd hreal
+  refine ⟨ps, hf, ?_⟩
+  cases ps with
+  | nil => simp [interleaveK]
+  | cons phead ptail =>
+    exact (k1v_stitch_regions (phead :: ptail) phead.1
+      hsortps hrangeps hposps hchain
+      (k1v_stitch_lowers_ge (phead :: ptail) phead.1 hposps hchain
+        (by intro e he
+            simp only [List.head?_cons, Option.mem_def, Option.some.injEq] at he
+            subst he; exact le_refl _))).1
+
 /-- **Three-region bracket construction** (task 325 Phase 2; lift of `k1v_bracket_construct` :2838
     to `bracketFromLists3`). The reverse of point-type extraction: given a sorted tuple of realizing
     points — `usXU` strictly inside `(x, x1)`, the interior witness `x1`, `usUW` strictly inside
