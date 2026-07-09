@@ -3647,14 +3647,20 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean"
       ],
       "created": "2026-07-09T17:13:06Z",
-      "last_updated": "2026-07-09T17:13:06Z",
+      "last_updated": "2026-07-09T17:39:02Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md",
           "summary": "Rabinovich-grounded blocker analysis (hLR inconsistency + coincidence merge); spawn analysis from parent task 337"
+        },
+        {
+          "type": "report",
+          "path": "specs/342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/reports/01_rabinovich-fidelity-audit.md",
+          "summary": "Rabinovich fidelity audit (PDF page-by-page); verdict FAITHFUL with citation correction D1"
         }
-      ]
+      ],
+      "session_id": "sess_1783617988_38e7cf"
     }
   ],
   "artifacts": [
