@@ -3224,6 +3224,23 @@ theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature}
   exact kvE2_sepSlotHonestGIdx_mono qnf M w x t h
     (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) hlt
 
+/-- **halign injectivity** (task 337 Phase 2 `hnd` ingredient): on the honest order the mergeSort
+    key `kvE2_sepSlotGIdx` is injective on the whole slot family. Composes the bridge with the
+    value-faithful `kvE2_sepSlotHonestGIdx_injOn`. This is the no-ties fact behind the joint sorted
+    lists' `Nodup`. -/
+theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepSlotBlock σ) (hb : b ∈ kvE2_sepSlotBlock τ)
+    (heq : kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h) a
+      = kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h) b) :
+    a = b := by
+  rw [kvE2_sepSlotGIdx_honestOrder qnf M w x t h hσ ha,
+      kvE2_sepSlotGIdx_honestOrder qnf M w x t h hτ hb] at heq
+  exact kvE2_sepSlotHonestGIdx_injOn qnf M w x t h
+    (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) heq
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
