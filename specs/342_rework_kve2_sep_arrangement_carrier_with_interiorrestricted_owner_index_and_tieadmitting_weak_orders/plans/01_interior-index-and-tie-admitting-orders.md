@@ -1,7 +1,7 @@
 # Implementation Plan: Interior-Restricted Owner Index and Tie-Admitting Weak Orders for kvE2_sep
 
 - **Task**: 342 - rework kvE2_sep arrangement carrier with interior-restricted owner index and tie-admitting weak orders
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 16 hours (9 phases, ~1.5-2.5h each; one phase per orchestrator cycle, 11 cycles available)
 - **Dependencies**: None (parent task 337 stays [BLOCKED] until this lands)
 - **Research Inputs**:
