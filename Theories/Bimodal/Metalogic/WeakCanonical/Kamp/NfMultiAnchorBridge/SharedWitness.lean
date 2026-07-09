@@ -350,12 +350,17 @@ noncomputable def kvE2_sepSlotsRFor {sig : MonadicSignature}
   else []
 
 /-- Canonical joint LEFT slot list: the union over all positive subs (Lemma 3.2(1) —
-    the conjunction's witness multiset between `x` and the shared `w`). -/
+    the conjunction's witness multiset between `x` and the shared `w`).
+    Task 342 Phase 2 (deliberate): stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
+    semantically equivalent since non-interior owners contribute `[]`
+    (`kvE2_sepPosI_flatMap_slotsLFor`); report 07 sanctions either anchor and the
+    conservative diff is smaller. -/
 noncomputable def kvE2_sepSlotsL {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsLFor
 
-/-- Canonical joint RIGHT slot list (between the shared `w` and `t`). -/
+/-- Canonical joint RIGHT slot list (between the shared `w` and `t`). Stays over
+    `kvE2_sepPos` (see `kvE2_sepSlotsL` — task 342 Phase 2 deliberate choice). -/
 noncomputable def kvE2_sepSlotsR {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor
@@ -381,10 +386,16 @@ noncomputable def kvE2_sepSlotBlock {sig : MonadicSignature}
   kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ
 
 /-- The full cross-owner individual-slot family (length `N` = total base+anchor slots across all
-    positive owners). The `Fin N` domain of the per-slot value-rank family `G` (Phase 6). -/
+    positive owners). The `Fin N` domain of the per-slot value-rank family `G` (Phase 6).
+    Task 342 Phase 2: re-anchored to flatMap over the interior index `kvE2_sepPosI` — the
+    VALUE is unchanged (`kvE2_sepAllSlots_eq_pos`; non-interior owners contribute empty
+    blocks), but the enumeration now ranges over bracket witnesses only, matching the
+    Rabinovich §5 (p.7) interleaving-index scope. NOT defeq to the old body — proofs that
+    decomposed the family over `kvE2_sepPos` repair by the one rewrite
+    `kvE2_sepAllSlots_eq_pos`. -/
 noncomputable def kvE2_sepAllSlots {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
-  (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock
+  (kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock
 
 /-- **Global per-individual-slot position** (Phase 6 `slotIndexOf`): the 0-based index of slot `s`
     in the full slot family. When `kvE2_sepAllSlots` is `Nodup` (see `kvE2_sepAllSlots_nodup`) this
@@ -393,13 +404,6 @@ noncomputable def kvE2_sepAllSlots {sig : MonadicSignature}
 noncomputable def kvE2_sepSlotIndexOf {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (s : KvE2SepSlot sig) : ℕ :=
   (kvE2_sepAllSlots qnf).idxOf s
-
-/-- A slot of a positive owner's block is a member of the full slot family. -/
-theorem kvE2_sepMem_allSlots {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
-    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
-    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
-    s ∈ kvE2_sepAllSlots qnf :=
-  List.mem_flatMap.mpr ⟨σ, hσ, hs⟩
 
 /-- Block membership splits over the two region blocks. -/
 theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} (σ : NormalForm sig 1 4)
@@ -518,6 +522,22 @@ theorem kvE2_sepPosI_flatMap_slotsRFor {sig : MonadicSignature} (qnf : NormalFor
   rw [decide_eq_false_iff_not, not_or] at hp
   exact kvE2_sepSlotsRFor_eq_nil hp.1 hp.2
 
+/-- **Universal re-anchoring repair tool** (task 342 Phase 2): the re-anchored slot family
+    has the SAME VALUE as the old full-`kvE2_sepPos` flatMap. Every proof that decomposed
+    `kvE2_sepAllSlots` over the full positive-owner list repairs by this one rewrite. -/
+theorem kvE2_sepAllSlots_eq_pos {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    kvE2_sepAllSlots qnf = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock := by
+  rw [kvE2_sepAllSlots, kvE2_sepPosI_flatMap_slotBlock]
+
+/-- A slot of a positive owner's block is a member of the full slot family. The hypothesis
+    stays over `kvE2_sepPos` (existing call sites compile unchanged): the slot itself forces
+    interiority via `kvE2_sepMem_posI_of_slot`. -/
+theorem kvE2_sepMem_allSlots {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
+    s ∈ kvE2_sepAllSlots qnf :=
+  List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_posI_of_slot hσ hs, hs⟩
+
 /-- The interior-positive 1-type enumeration is duplicate-free (filter of the `Nodup` `Finset.toList`). -/
 theorem kvE2_sepS_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) :
     (kvE2_sepS σ zs).Nodup :=
@@ -623,9 +643,7 @@ theorem kvE2_sepAllSlots_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 
     (kvE2_sepAllSlots qnf).Nodup := by
   rw [kvE2_sepAllSlots, List.nodup_flatMap]
   refine ⟨fun σ _ => kvE2_sepSlotBlock_nodup σ, ?_⟩
-  have hnd : (kvE2_sepPos qnf).Nodup :=
-    List.Nodup.filter _ (Finset.nodup_toList _)
-  exact hnd.imp (fun hne => kvE2_sep_blocks_disjoint hne)
+  exact (kvE2_sepPosI_nodup qnf).imp (fun hne => kvE2_sep_blocks_disjoint hne)
 
 /-- A family member's global index is `< N` (the `Fin N` domain bound for `G`, Phase 6). -/
 theorem kvE2_sepSlotIndexOf_lt {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
@@ -829,7 +847,7 @@ theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} (qnf : NormalFor
   have hall : kvE2_sepAllSlots qnf
       = pre.flatMap kvE2_sepSlotBlock
         ++ (kvE2_sepSlotBlock σ ++ post.flatMap kvE2_sepSlotBlock) := by
-    rw [kvE2_sepAllSlots, hpos, List.flatMap_append, List.flatMap_cons]
+    rw [kvE2_sepAllSlots_eq_pos, hpos, List.flatMap_append, List.flatMap_cons]
   have hoff : ∀ (i : Fin (kvE2_sepSlotBlock σ).length),
       kvE2_sepSlotIndexOf qnf ((kvE2_sepSlotBlock σ).get i)
         = (pre.flatMap kvE2_sepSlotBlock).length + i.val := by
@@ -1129,13 +1147,19 @@ noncomputable def kvE2_sepSegRForSub {sig : MonadicSignature}
      else kvE2_sepSegForm charBase σ kvE2_sep_zWX1)
   else Formula.top
 
-/-- Refined-conjunction segment type for the left region at cut `i`. -/
+/-- Refined-conjunction segment type for the left region at cut `i`.
+    Task 342 Phase 2 (deliberate): stays mapping over `kvE2_sepPos`, NOT `kvE2_sepPosI` —
+    semantically equivalent since non-interior owners contribute `⊤` conjuncts (the
+    `else Formula.top` branches), but the anchors differ SYNTACTICALLY at the formula
+    level, so re-anchoring would perturb formula-shape equalities for no semantic gain;
+    report 07 sanctions either anchor and the conservative diff is smaller. -/
 noncomputable def kvE2_sepSegLAt {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lL : List (KvE2SepSlot sig)) (i : Nat) : TemporalPred :=
   ⟨formula_conjList ((kvE2_sepPos qnf).map (kvE2_sepSegLForSub charBase lL i))⟩
 
-/-- Refined-conjunction segment type for the right region at cut `j`. -/
+/-- Refined-conjunction segment type for the right region at cut `j`. Stays over
+    `kvE2_sepPos` (see `kvE2_sepSegLAt` — task 342 Phase 2 deliberate choice). -/
 noncomputable def kvE2_sepSegRAt {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
     (lR : List (KvE2SepSlot sig)) (j : Nat) : TemporalPred :=
@@ -2435,7 +2459,7 @@ theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} (qnf : NormalForm si
     ((kvE2_sepPos qnf).zipIdx.map
         (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap (fun p => p.2.2)
       = (kvE2_sepAllSlots qnf).map f := by
-  rw [kvE2_sepAllSlots]; exact kvE2_sepZip_flatMap_aux g f (kvE2_sepPos qnf) 0
+  rw [kvE2_sepAllSlots_eq_pos]; exact kvE2_sepZip_flatMap_aux g f (kvE2_sepPos qnf) 0
 
 /-- The honest COINCIDENCE (tie) arrangement: every positive owner placed at its own fresh anchor
     (Lemma 3.2(1) coincidence disjunct, md:77; §5 meet, md:168-173). -/

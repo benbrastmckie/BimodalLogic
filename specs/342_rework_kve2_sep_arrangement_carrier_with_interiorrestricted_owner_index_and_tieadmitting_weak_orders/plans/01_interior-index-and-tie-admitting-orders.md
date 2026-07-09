@@ -260,25 +260,29 @@ edits to existing declarations; `#print axioms kvE2_sepPosI_flatMap_slotBlock` c
 **Timing**: 1.5h
 **Depends on**: none
 
-### Phase 2: Re-anchor the slot-family layer kvE2_sepAllSlots to kvE2_sepPosI [NOT STARTED]
+### Phase 2: Re-anchor the slot-family layer kvE2_sepAllSlots to kvE2_sepPosI [COMPLETED]
 
 **Goal**: `kvE2_sepAllSlots` (SW:346-348) flatMaps over `kvE2_sepPosI`; all its dependent
 Nodup/index/membership lemmas repaired via the Phase 1 transfer lemma.
 
 **Tasks**:
-- [ ] Edit `kvE2_sepAllSlots` to `(kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock`. Value is
+- [x] Edit `kvE2_sepAllSlots` to `(kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock`. Value is
   unchanged (Phase 1 transfer lemma) but NOT defeq — expect broken unfold/rfl proofs.
-- [ ] Add `kvE2_sepAllSlots_eq_pos` : `kvE2_sepAllSlots qnf = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock` (one `rw` from Phase 1) as the universal repair tool.
-- [ ] Repair `kvE2_sepAllSlots_nodup` (SW:472), `kvE2_sepMem_allSlots` (SW:~352; KEEP its
+- [x] Add `kvE2_sepAllSlots_eq_pos` : `kvE2_sepAllSlots qnf = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock` (one `rw` from Phase 1) as the universal repair tool.
+- [x] Repair `kvE2_sepAllSlots_nodup` (SW:472), `kvE2_sepMem_allSlots` (SW:~352; KEEP its
   hypothesis `hσ : σ ∈ kvE2_sepPos` — repair the proof via `kvE2_sepMem_posI_of_slot`, so all
   existing call sites compile unchanged), `kvE2_sepSlotIndexOf` bound/injectivity lemmas,
   `kvE2_sepConsistentBlock_slotIndexOf` (SW:725), and `kvE2_sepZipPayload_flatMap` (SW:~2280 —
   repair its proof with the transfer lemma; its statement over `kvE2_sepPos.zipIdx` is restated
-  in Phase 4 when its consumers move).
-- [ ] `kvE2_sepSlotsL/R` (SW:318-325) and `kvE2_sepSegLAt/RAt` (SW:983-994) stay mapping over
+  in Phase 4 when its consumers move). *(deviation: altered — `kvE2_sepMem_allSlots` RELOCATED
+  from above the Phase 1 transfer section to just below `kvE2_sepAllSlots_eq_pos`, because its
+  repaired proof needs `kvE2_sepMem_posI_of_slot`, declared later in the file; statement
+  verbatim-unchanged. `kvE2_sepSlotIndexOf_lt`/`_injOn` needed NO repair — they are
+  list-generic over `kvE2_sepAllSlots` and never unfold it.)*
+- [x] `kvE2_sepSlotsL/R` (SW:318-325) and `kvE2_sepSegLAt/RAt` (SW:983-994) stay mapping over
   `kvE2_sepPos` (semantically equivalent — non-interior contributions are `[]`/`⊤`; report 07
   sanctions either; the conservative diff is smaller). Record this choice in a comment.
-- [ ] Full `lake build`.
+- [x] Full `lake build`.
 
 **Estimated output**: ~100-250 lines of diff (1 def edit + proof repairs).
 **Done when**: build green; `#print axioms kvE2_sepAllSlots_nodup` clean; no statement other
