@@ -4599,6 +4599,59 @@ private theorem kvE2_sepBracketN_construct {sig : MonadicSignature}
       hyt
     rwa [hlen] at h1
 
+/-- **Phase-3 adversarial finding (task 337, cycle 11): the interior-restriction hypothesis
+    `hLR` is INCONSISTENT with the honest evaluation `h`.** The characteristic depth-1 type
+    `σ_w` of the configuration `(w; w, x, t)` — the shared witness read AT ITSELF — is always
+    realized (witness `x1 := w`, `nf_characteristic_satisfies`), so `h`'s quantifier layer
+    forces `qnf.2 σ_w = true`, i.e. `σ_w ∈ kvE2_sepPos qnf`. But `σ_w`'s ordering channel at
+    the `w`-coordinate is the self-zone pair `(false, false)` (`w < w` is irreflexive), so
+    `nf0_zoneSpec σ_w.1` is neither `kvE2_sep_zXW3` (which demands `(true, false)` there) nor
+    `kvE2_sep_zWT3` (`(false, true)`) — contradicting `hLR σ_w`. The same construction at
+    `x1 := x` / `x1 := t` populates `zAtX3` / `zAtT3`, so EVERY honest `qnf` has positive
+    owners in at least three non-interior classes. Consequence: every completeness-layer
+    theorem conditional on `h ∧ hLR` (`kvE2_sepBody_complete`,
+    `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepBody_complete_holds`, and the task-337
+    Phase-3/4 builders) is vacuously true as stated; a NON-vacuous completeness statement
+    must carry the boundary/self-zone positive classes through the endpoint/pivot literal
+    machinery (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW` already enumerate their
+    `kvE2_sepHasPos` bits) instead of excluding them by hypothesis. -/
+theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
+        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    False := by
+  -- The characteristic depth-1 type of `(w; w, x, t)`: always realized with witness `w`.
+  have hreal : nf_eval_nf M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t))))) :=
+    nf_characteristic_satisfies M 1 4 _
+  set σw : NormalForm sig 1 4 :=
+    nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t)))) with hσw
+  -- `h`'s quantifier layer forces the bit: `σw` is a positive owner.
+  have hbit : qnf.2 σw = true := (h.2 σw).mp ⟨w, hreal⟩
+  have hmem : σw ∈ kvE2_sepPos qnf := by
+    rw [kvE2_sepPos, List.mem_filter]
+    exact ⟨Finset.mem_toList.mpr (Finset.mem_univ _), hbit⟩
+  -- `σw`'s w-coordinate ordering pair is the self-zone `(false, false)`.
+  have hzw : nf0_zoneSpec σw.1 ⟨0, by omega⟩ = (false, false) := by
+    rw [hσw]
+    show (nf_characteristic M 1 4 _ |>.1 (.order 0 (Fin.succ ⟨0, by omega⟩)
+        (Fin.succ_ne_zero ⟨0, by omega⟩).symm),
+      nf_characteristic M 1 4 _ |>.1 (.order (Fin.succ ⟨0, by omega⟩) 0
+        (Fin.succ_ne_zero ⟨0, by omega⟩))) = (false, false)
+    simp only [nf_characteristic]
+    refine Prod.ext ?_ ?_ <;>
+      · simp only [decide_eq_false_iff_not, atom_eval, Fin.cons]
+        exact lt_irrefl w
+  rcases hLR σw hmem with hz | hz
+  · have h0 := congrFun hz ⟨0, by omega⟩
+    rw [hzw] at h0
+    exact absurd h0.symm (by rw [kvE2_sep_zXW3]; simp)
+  · have h0 := congrFun hz ⟨0, by omega⟩
+    rw [hzw] at h0
+    exact absurd h0.symm (by rw [kvE2_sep_zWT3]; simp)
+
 /-! ### The O3 extraction theorems -/
 
 /-- **O3 — joint soundness extraction from a realized disjunct** (task 321 v7 Phase 8;
