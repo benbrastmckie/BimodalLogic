@@ -1,11 +1,49 @@
-# Task 340 Phase 5 — Implementation Summary (partial)
+# Task 340 Phase 5 — Implementation Summary (COMPLETED)
 
 - **Task**: 340 - Per-slot global-index carrier enrichment for value-faithful slot order
 - **Phase**: 5 (model-dependent selection/aggregation lemma over the existing carrier)
-- **Status**: [IN PROGRESS] — partial (5.1 richness lemma + lex-rank kernel delivered; honest-order construction remains)
-- **Session**: sess_1783561356_89aa2d_340 (dispatch 1); sess_1783561356_89aa2d_340_cont (dispatch 2)
+- **Status**: [COMPLETED] — 5A-5D built against the settled design-gate layout, sorry-0, axiom-clean
+- **Session**: sess_1783561356_89aa2d_340 (dispatches 1-2 + this completing dispatch)
 - **Date**: 2026-07-08
 - **File**: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean
+
+## COMPLETED — 5A-5D honest value-rank construction (settled layout, report 06)
+
+The design gate (report 06, PASS) dissolved the coinciding-anchor "fork": two DISTINCT positive
+owners provably cannot share a fresh anchor (`kvE2_sepPos` is `Nodup`; `nf_eval_unique` forces
+equal-anchor ⟹ equal-owner). There is a SINGLE honest order — value-rank owner blocks with
+`.coincident` tags. Four green, sorry-0, axiom-clean (`{propext, Classical.choice, Quot.sound}`)
+milestones, each committed:
+
+- **5A keystone** — `kvE2_sepAnchorVal` (+ `_spec`), `kvE2_sepAnchor_injOn` (the keystone: distinct
+  owners ⟹ distinct anchors via `nf_eval_unique`), `kvE2_sepAnchorFam` + `kvE2_sepAnchorFam_injective`
+  (`List.get` on the `Nodup` spine + keystone → injective anchor family).
+- **5B honest order + membership** — `kvE2_sepHonestTuple` `(3r,3r+1,3r+2)` (+ `_consistent`),
+  `kvE2_sepHonestOrder` (all `.coincident`), `kvE2_sepHonestOrder_mem_orderTypes`, and
+  `kvE2_sepHonestOrder_mem_arr'` — the carrier member task 337 consumes. Membership is
+  tuple-agnostic: tag validators (`kvE2_sepCoincidentOwner_valid_left/right`) reused VERBATIM;
+  consistency by `omega`; `i₀`-Nodup via `kvE2_ordRank_injective` on the keystone-injective family.
+- **5C value-faithful monotonicity** — `kvE2_sepHonest_rank_strictMono`, `kvE2_sepHonest_cross_region`
+  (`i₂(σ)=3r_σ+2 < 3r_τ+1=i₁(τ)` from `x1_σ<x1_τ` via `kvE2_ordRank_strictMono` — the `a<u'<b`
+  cross-region disjunct task 339 dropped, now expressible under value-ranked indices),
+  `kvE2_sepHonest_same_owner_mono` (`i₀<i₁<i₂`).
+- **5D engine hand-off** — `kvE2_sepBody_complete_holds` wires the 5B carrier member into
+  `kvE2_sepBody_holds_iff.mpr`, taking the single 337-owned `.holds` (`kvE_subBracket2V_sound_of_parts`
+  over the regions bundle fed to `k1v_sorted_realizationK`) as the delegated hypothesis. Plus public
+  `kvE2_sepHonestAnchorBundleL/R` exposing per-owner `hnd`/`hreal` realizer data at the value-ranked
+  `kvE2_sepAnchorVal` anchors (the `k1v_sorted_realizationK` inputs).
+
+**Verification**: full project `lake build` green (1720 jobs); `sorry_count = 0`, `vacuous = 0`,
+new axioms `= 0`; axiom set `{propext, Classical.choice, Quot.sound}` on all 5A-5D key theorems.
+Remaining repo sorries are all in `Theories/Bimodal/Boneyard/` (archived, not built by default,
+out of scope). `kvE2_sepCoincidentOrder` and all Phase 1-4/6 assets untouched.
+
+**Delegated boundary (task 337)**: the honest disjunct's `.holds` — the regions realization incl.
+any meet-type folding of a foreign witness onto an anchor (report 06 R3) — is a realization-layer
+step, NOT a carrier change. Per the dispatch instruction, delivering the complete axiom-clean bundle
+up to this single delegated `.holds` is a valid Phase-5 completion.
+
+## Historical — dispatches 1-2 (superseded by the completion above)
 
 ## Delivered — dispatch 2 (continuation): lex-rank kernel (SW:783-832)
 

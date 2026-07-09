@@ -239,7 +239,7 @@ Together these discharge `kvE2_sepBody_holds_iff.mpr` (`∃ wo, .holds M`). **No
 | 2 | 2 | 1 | [COMPLETED] |
 | 3 | 3 | 2 | [COMPLETED] |
 | 4 | 4 | 3 | [COMPLETED] |
-| 5 | 5 (5.1 → 5.2) | 4 | [NOT STARTED] — the only remaining work |
+| 5 | 5 (5A → 5B → 5C → 5D) | 4 | [COMPLETED] — settled honest order, sorry-0, axiom-clean |
 | 6 | 6 | 5 | [COMPLETED] for Phases 1-4 scope; re-verification pass re-runs after 5 |
 
 Fully sequential. Phase 5's internal sub-phases 5.1 → 5.2 are sequential. **340 Phase 5 must complete
@@ -282,15 +282,31 @@ preserved. `lake build` green (1013 jobs), sorry-free. See plan 01 Phase 3 for t
 jobs), sorry-free, `kvE2_sepBody_complete` axiom-clean. Both `kvE2_sepModelOrder` and
 `kvE2_sepCoincidentOrder` remain arr' members (no-collapse preserved). See plan 01 Phase 4.
 
-### Phase 5: Model-dependent selection/aggregation lemma over the existing carrier (green) [IN PROGRESS]
+### Phase 5: Model-dependent selection/aggregation lemma over the existing carrier (green) [COMPLETED]
 
-**PROGRESS (2026-07-08, sess_1783561356_89aa2d_340):** Sub-phase 5.1 objective 1 (`kvE2_sepIdxTuple_mem_of_lt`)
-DELIVERED green, sorry-0, axiom-clean (`{propext, Quot.sound}`), committed. The remaining 5.1/5.2
-work (honest-order selection def + membership + monotonicity + the `hpos/hlink/hnd/hreal` bundle) is
-one indivisible model-dependent construction (per-slot M-value collection → sort by M's `LinearOrder`
-→ per-(owner,region-rank) global-position tuple), scoped larger than a single agent run. See the
-per-item deviation notes below and the Phase-5 handoff for the precise remaining-construction map.
-Carrier is CORRECT and UNCHANGED — this is NOT a carrier-change blocker.
+**COMPLETED (2026-07-08, sess_1783561356_89aa2d_340).** Built against the SETTLED layout of design
+gate report 06 (the coinciding-anchor fork is dissolved — two distinct owners provably cannot share
+an anchor). Four green, sorry-0, axiom-clean (`{propext, Classical.choice, Quot.sound}`) milestones,
+committed each:
+- **5A** (keystone): `kvE2_sepAnchorVal` + `kvE2_sepAnchorVal_spec` + `kvE2_sepAnchor_injOn` (distinct
+  owners ⟹ distinct anchors, via `nf_eval_unique`) + `kvE2_sepAnchorFam` + `kvE2_sepAnchorFam_injective`.
+- **5B**: `kvE2_sepHonestTuple` (owner-block `(3r,3r+1,3r+2)`) + `_consistent`, `kvE2_sepHonestOrder`
+  (all `.coincident` tags), `kvE2_sepHonestOrder_mem_orderTypes`, and `kvE2_sepHonestOrder_mem_arr'`
+  (the carrier member task 337 consumes — tag validators reused verbatim, consistency by omega,
+  `i₀`-Nodup via `kvE2_ordRank_injective` on the keystone-injective family).
+- **5C** (monotonicity): `kvE2_sepHonest_rank_strictMono`, `kvE2_sepHonest_cross_region`
+  (`i₂(σ)<i₁(τ)` from `x1_σ<x1_τ`, the `a<u'<b` disjunct 339 dropped), `kvE2_sepHonest_same_owner_mono`.
+- **5D** (engine hand-off): `kvE2_sepBody_complete_holds` (wires 5B into `kvE2_sepBody_holds_iff.mpr`,
+  delegating the single 337-owned `.holds` via `kvE_subBracket2V_sound_of_parts`) + public
+  `kvE2_sepHonestAnchorBundleL/R` (per-owner `hnd`/`hreal` data at the value-ranked anchors — the
+  `k1v_sorted_realizationK` inputs). Full project build green (1720 jobs). The regions realization
+  `.holds` (incl. any meet-type folding of a foreign witness onto an anchor, report 06 R3) is task
+  337's territory, NOT a carrier change — the sanctioned Phase-5 completion boundary.
+
+**PROGRESS (superseded):** Sub-phase 5.1 objective 1 (`kvE2_sepIdxTuple_mem_of_lt`) DELIVERED green,
+sorry-0, axiom-clean, committed. Handoff #2 mis-diagnosed a coinciding-anchor "fork"; the design gate
+(report 06) dissolved it, and the honest order above is the single settled construction. Carrier is
+CORRECT and UNCHANGED — this was never a carrier-change blocker.
 
 **REWRITTEN IN v2.** This phase is NOT blocked and needs NO carrier change or placeholder (reports
 02-05, and the Do-NOT above). It is a model-dependent selection/aggregation lemma living entirely in
