@@ -6536,4 +6536,251 @@ theorem kvE2_sepArr'_sound {sig : MonadicSignature}
   obtain ⟨⟨⟨hall, _hcons⟩, hanch⟩, htie⟩ := hv
   exact ⟨fun p hp => (List.all_eq_true.mp hall) p hp, hanch, htie⟩
 
+/-! ## Task 342 Phase 8 (b) — honest non-interior evaluation pack
+
+The endpoint/pivot honesty lemmas: from an honest evaluation `h`, the EXISTING literal
+conjunctions `kvE2_sepEpL`/`kvE2_sepPtW`/`kvE2_sepEpR` evaluate at their fixed points
+`x`/`w`/`t`. These are the obligations previously hidden behind `hLR`'s vacuity
+(`kvE2_sepHonest_hLR_absurd`): every honest `qnf` has positive owners in non-interior
+classes, and their content rides the endpoint/pivot literals — never the interleaving.
+Grounding: Rabinovich §5 (p.7) — the ψ0/ψ1/φ split routes non-interior positive witnesses
+to atomic E[Σ] endpoint literals via Prop 3.5 (pp.5,7); this section realizes exactly that
+routing in Lean. NO new literal machinery: every case below discharges an EXISTING literal
+family of the Part-I predicates (SW:886-946). The char-semantics hypotheses `hcb`/`hck`
+are the abstract form of the concrete `nf_depth0_char_formula` correctness
+(`nfPred_correct`) that the k1v template consumed (`CarrierK1V.lean:1672`). Witness bounds
+come from realized zone membership (`kvE_sub2_zoneHolds_cons_iff`) and the honest
+realization's own order channel — never a chain (LITMUS). -/
+
+/-- Bool bridge: an order iff against `b = true` computes the `decide`. -/
+private theorem kvE2_sep_decide_eq_of_iff {p : Prop} [Decidable p] {b : Bool}
+    (h : p ↔ b = true) : decide p = b := by
+  cases b with
+  | true => exact decide_eq_true (h.mpr rfl)
+  | false => exact decide_eq_false (fun hp => Bool.noConfusion (h.mp hp))
+
+/-- Prefix-restriction evaluation (depth 0): a realized arity-`n` depth-0 NF restricts to
+    a realized arity-`m` NF along `Fin.castLE` (the `nfk_take` atom channel is exactly the
+    cast-atom read). -/
+private theorem kvE2_sep_nfk_take_eval {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {m n : Nat} (hmn : m ≤ n)
+    (env : Fin n → M.carrier) (sub : NormalForm sig 0 n)
+    (hs : nf_eval_nf M 0 n env sub) :
+    nf_eval_nf M 0 m (fun i => env (Fin.castLE hmn i)) (nfk_take hmn sub) := by
+  intro a
+  match a with
+  | .pred p i => exact hs (.pred p (Fin.castLE hmn i))
+  | .order i j hne =>
+    exact hs (.order (Fin.castLE hmn i) (Fin.castLE hmn j)
+      (fun he => hne (Fin.castLE_injective hmn he)))
+
+/-- **Depth-1 fresh-projection factor** (task 342 Phase 8 (b)): a realized depth-1 owner
+    factors through its fresh depth-1 arity-1 projection at the witness point — the depth-1
+    analog of `nf_eval_nf0_cons_factor`'s monadic channel (Def 4.1, PDF p.5: the E[Σ]-atom
+    channel read at depth 1). The quant layer transports through `nf_characteristic` +
+    `nf_eval_unique` (NormalForm.lean:215/245) and the prefix restriction. -/
+theorem kvE2_sepProjFresh_eval {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat}
+    (env : Fin n → M.carrier) (v : M.carrier)
+    (σ : NormalForm sig 1 (n + 1))
+    (hσ : nf_eval_nf M 1 (n + 1) (Fin.cons v env) σ) :
+    nf_eval_nf M 1 1 (fun _ => v) (nfk_projFresh σ) := by
+  have henv : ∀ u : M.carrier,
+      (fun i => (Fin.cons u (Fin.cons v env) : Fin (n + 2) → M.carrier)
+        (Fin.castLE (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le n))) i))
+      = (Fin.cons u (fun _ => v) : Fin 2 → M.carrier) := by
+    intro u
+    funext i
+    match i with
+    | ⟨0, _⟩ => rfl
+    | ⟨1, _⟩ => rfl
+  refine ⟨?_, ?_⟩
+  · -- Atom layer: the fresh predicate channel (arity-1 order atoms are uninhabited).
+    intro a
+    match a with
+    | .pred p i =>
+      have hi : i = 0 := Subsingleton.elim i 0
+      subst hi
+      exact hσ.1 (.pred p 0)
+    | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+  · -- Quant layer: characteristic + uniqueness transport along the prefix restriction.
+    intro sub
+    simp only [decide_eq_true_eq]
+    constructor
+    · rintro ⟨u, hu⟩
+      have hchar := nf_characteristic_satisfies M 0 (n + 2) (Fin.cons u (Fin.cons v env))
+      have hbit : σ.2 (nf_characteristic M 0 (n + 2) (Fin.cons u (Fin.cons v env))) = true :=
+        (hσ.2 _).mp ⟨u, hchar⟩
+      have htake := kvE2_sep_nfk_take_eval M
+        (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le n)))
+        (Fin.cons u (Fin.cons v env)) _ hchar
+      rw [henv u] at htake
+      exact ⟨_, hbit, nf_eval_unique M 0 2 (Fin.cons u (fun _ => v)) _ _ htake hu⟩
+    · rintro ⟨sub', hbit, rfl⟩
+      obtain ⟨u, hu⟩ := (hσ.2 sub').mpr hbit
+      have htake := kvE2_sep_nfk_take_eval M
+        (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le n)))
+        (Fin.cons u (Fin.cons v env)) sub' hu
+      rw [henv u] at htake
+      exact ⟨u, htake⟩
+
+/-- Characteristic-type zone computation: the depth-1 arity-4 characteristic of the env
+    `[v, w, x, t]` has fresh ordering channel given coordinatewise by the decidable order
+    facts of `v` against `[w, x, t]` (Def 3.1 ordering channel, PDF p.4). -/
+private theorem kvE2_sepCharZone3 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v w x t : M.carrier)
+    (p0 p1 p2 : Bool × Bool)
+    (h0l : (v < w) ↔ p0.1 = true) (h0r : (w < v) ↔ p0.2 = true)
+    (h1l : (v < x) ↔ p1.1 = true) (h1r : (x < v) ↔ p1.2 = true)
+    (h2l : (v < t) ↔ p2.1 = true) (h2r : (t < v) ↔ p2.2 = true) :
+    nf0_zoneSpec (nf_characteristic M 1 4
+        (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t))))).1
+      = (Fin.cons p0 (Fin.cons p1 (fun _ => p2)) : ZoneSpec 3) := by
+  have hco : ∀ (i : Fin 3) (pi : Bool × Bool),
+      ((v < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i) ↔ pi.1 = true) →
+      (((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i < v) ↔ pi.2 = true) →
+      nf0_zoneSpec (nf_characteristic M 1 4
+          (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t))))).1 i = pi := by
+    intro i pi hl hr
+    refine Prod.ext (@kvE2_sep_decide_eq_of_iff _ (Classical.dec _) _ ?_)
+      (@kvE2_sep_decide_eq_of_iff _ (Classical.dec _) _ ?_)
+    · simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using hl
+    · simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using hr
+  funext i
+  match i with
+  | ⟨0, hlt⟩ => exact hco ⟨0, hlt⟩ p0 h0l h0r
+  | ⟨1, hlt⟩ => exact hco ⟨1, hlt⟩ p1 h1l h1r
+  | ⟨2, hlt⟩ => exact hco ⟨2, hlt⟩ p2 h2l h2r
+
+/-- Coordinate projection evaluation (arity 4): σ's depth-0 coordinate-`k` 1-type is
+    realized at the env's `k`-th point (reads σ's realized atom layer only). -/
+private theorem kvE2_sepProj4_eval {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
+    (σ : NormalForm sig 1 4)
+    (hσa : ∀ a : AtomKind sig 4, atom_eval M env a ↔ σ.1 a = true)
+    (k : Fin 4) :
+    nf_eval_nf M 0 1 (fun _ => env k) (kvE2_sepProj4 σ k) := by
+  intro a
+  match a with
+  | .pred p i => exact hσa (.pred p k)
+  | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+
+/-- Coordinate projection evaluation (arity 3, joint base): `qnf.1`'s coordinate-`k`
+    1-type is realized at the env's `k`-th point. -/
+private theorem kvE2_sepProj3_eval {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (env : Fin 3 → M.carrier)
+    (r : NormalForm sig 0 3)
+    (hr : ∀ a : AtomKind sig 3, atom_eval M env a ↔ r a = true)
+    (k : Fin 3) :
+    nf_eval_nf M 0 1 (fun _ => env k) (kvE2_sepProj3 r k) := by
+  intro a
+  match a with
+  | .pred p i => exact hr (.pred p k)
+  | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+
+/-- Ordering-channel fact (positive left bit): a realized owner's fresh witness sits
+    BELOW env point `i` when its zone bit says so. -/
+private theorem kvE2_sepZoneFact_lt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
+    (σ : NormalForm sig 1 4)
+    (hσa : ∀ at4 : AtomKind sig 4,
+      atom_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) at4 ↔ σ.1 at4 = true)
+    (i : Fin 3) (hbit : (nf0_zoneSpec σ.1 i).1 = true) :
+    a < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i := by
+  have h1 := hσa (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+  simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+  exact h1.mpr hbit
+
+/-- Ordering-channel fact (positive right bit): the fresh witness sits ABOVE env point
+    `i`. -/
+private theorem kvE2_sepZoneFact_gt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
+    (σ : NormalForm sig 1 4)
+    (hσa : ∀ at4 : AtomKind sig 4,
+      atom_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) at4 ↔ σ.1 at4 = true)
+    (i : Fin 3) (hbit : (nf0_zoneSpec σ.1 i).2 = true) :
+    (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i < a := by
+  have h1 := hσa (.order i.succ 0 (Fin.succ_ne_zero i))
+  simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+  exact h1.mpr hbit
+
+/-- Ordering-channel fact (negative left bit): the fresh witness is NOT below env point
+    `i` (self-zone/boundary extraction seed). -/
+private theorem kvE2_sepZoneFact_not_lt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
+    (σ : NormalForm sig 1 4)
+    (hσa : ∀ at4 : AtomKind sig 4,
+      atom_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) at4 ↔ σ.1 at4 = true)
+    (i : Fin 3) (hbit : (nf0_zoneSpec σ.1 i).1 = false) :
+    ¬ a < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i := by
+  have h1 := hσa (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+  simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+  exact fun hc => Bool.noConfusion ((h1.mp hc).symm.trans hbit)
+
+/-- Ordering-channel fact (negative right bit): the fresh witness is NOT above env point
+    `i`. -/
+private theorem kvE2_sepZoneFact_not_gt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (a w x t : M.carrier)
+    (σ : NormalForm sig 1 4)
+    (hσa : ∀ at4 : AtomKind sig 4,
+      atom_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) at4 ↔ σ.1 at4 = true)
+    (i : Fin 3) (hbit : (nf0_zoneSpec σ.1 i).2 = false) :
+    ¬ (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i < a := by
+  have h1 := hσa (.order i.succ 0 (Fin.succ_ne_zero i))
+  simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+  exact fun hc => Bool.noConfusion ((h1.mp hc).symm.trans hbit)
+
+/-- `kvE2_sepHasPos` introduction from an honest realization: a point `s` realizing the
+    depth-1 arity-1 type `χ` whose characteristic owner lands in outer class `zs` marks the
+    class bit positive (the σ-level literal driver, completeness direction). -/
+private theorem kvE2_sepHasPos_of_realized {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t s : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (zs : ZoneSpec 3)
+    (hzs : nf0_zoneSpec (nf_characteristic M 1 4
+        (Fin.cons s (Fin.cons w (Fin.cons x (fun _ => t))))).1 = zs)
+    (χ : NormalForm sig 1 1)
+    (hχ : nf_eval_nf M 1 1 (fun _ => s) χ) :
+    kvE2_sepHasPos qnf zs χ = true := by
+  have hreal := nf_characteristic_satisfies M 1 4
+    (Fin.cons s (Fin.cons w (Fin.cons x (fun _ => t))))
+  have hbit : qnf.2 (nf_characteristic M 1 4
+      (Fin.cons s (Fin.cons w (Fin.cons x (fun _ => t))))) = true :=
+    (h.2 _).mp ⟨s, hreal⟩
+  have hproj : nfk_projFresh (nf_characteristic M 1 4
+      (Fin.cons s (Fin.cons w (Fin.cons x (fun _ => t))))) = χ :=
+    nf_eval_unique M 1 1 (fun _ => s) _ _
+      (kvE2_sepProjFresh_eval M _ s _ hreal) hχ
+  rw [kvE2_sepHasPos, List.any_eq_true]
+  refine ⟨_, ?_, decide_eq_true hproj⟩
+  rw [kvE2_sepPosIn, List.mem_filter]
+  refine ⟨?_, decide_eq_true hzs⟩
+  rw [kvE2_sepPos, List.mem_filter]
+  exact ⟨Finset.mem_toList.mpr (Finset.mem_univ _), hbit⟩
+
+/-- `kvE2_sepHasPos` elimination under an honest realization: a positive class bit yields
+    a realized owner in that class whose fresh projection IS `χ`, realized at the owner's
+    honest witness point. -/
+private theorem kvE2_sepHasPos_witness {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (zs : ZoneSpec 3) (χ : NormalForm sig 1 1)
+    (hb : kvE2_sepHasPos qnf zs χ = true) :
+    ∃ (σ : NormalForm sig 1 4) (s : M.carrier),
+      nf0_zoneSpec σ.1 = zs ∧
+      nf_eval_nf M 1 4 (Fin.cons s (Fin.cons w (Fin.cons x (fun _ => t)))) σ ∧
+      nf_eval_nf M 1 1 (fun _ => s) χ := by
+  rw [kvE2_sepHasPos, List.any_eq_true] at hb
+  obtain ⟨σ, hσmem, hproj⟩ := hb
+  have hzone : nf0_zoneSpec σ.1 = zs :=
+    of_decide_eq_true (List.mem_filter.mp hσmem).2
+  have hbit : qnf.2 σ = true :=
+    (List.mem_filter.mp (List.mem_filter.mp hσmem).1).2
+  obtain ⟨s, hs⟩ := (h.2 σ).mpr hbit
+  refine ⟨σ, s, hzone, hs, ?_⟩
+  have hpf := kvE2_sepProjFresh_eval M _ s σ hs
+  rwa [of_decide_eq_true hproj] at hpf
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
