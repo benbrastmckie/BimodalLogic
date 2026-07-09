@@ -1724,6 +1724,42 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
     rw [this, List.zipIdx_map_snd]
     exact List.nodup_range'
 
+/-- **Phase 1 (task 337) — the honest coincidence witness is a carrier member.** Factored from
+    `kvE2_sepBody_complete`'s membership route: under an honest interior realization (`hLR`) the
+    COINCIDENCE arrangement `kvE2_sepCoincidentOrder qnf` (all-coincident tags, `zipIdx` ranks) is a
+    VALID, PRESENT member of `kvE2_sepArr' qnf` — the ⇐-direction witness weak order this task's
+    `.holds` builder plugs into `kvE2_sepBody_holds_iff.mpr`. Additive; edits no carrier declaration.
+    F5: validity reads only CLOSED self-zone bits (via the coincidence validators). -/
+theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
+        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    kvE2_sepCoincidentOrder qnf ∈ kvE2_sepArr' qnf := by
+  rw [kvE2_sepArr', List.mem_filter]
+  refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true]
+  refine ⟨?_, ?_⟩
+  · rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
+    show kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    rcases hLR σ hσmem with hzone | hzone
+    · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
+    · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
+  · rw [decide_eq_true_eq, kvE2_sepCoincidentOrder, List.map_map]
+    have : ((kvE2_sepPos qnf).zipIdx.map
+        ((fun p => p.2.2) ∘ fun p => (p.1, KvE2SepSpikeOrderType.coincident, p.2)))
+        = (kvE2_sepPos qnf).zipIdx.map Prod.snd := by
+      apply List.map_congr_left; intro p _; rfl
+    rw [this, List.zipIdx_map_snd]
+    exact List.nodup_range'
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
