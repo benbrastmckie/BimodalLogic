@@ -3241,6 +3241,43 @@ theorem kvE2_sepSlotGIdx_honestOrder_injOn {sig : MonadicSignature}
   exact kvE2_sepSlotHonestGIdx_injOn qnf M w x t h
     (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) heq
 
+/-! ### Task 337 Phase 1 — value-sorted merged slot lists (halign consumers)
+
+The joint lists `kvE2_sepSlotsLOf/ROf wo` are `mergeSort`ed by the merge key `kvE2_sepSlotMergeLe wo`
+(`= decide (kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b)`). Because that key is a total preorder
+(`≤` on the global-index ℕ), `List.pairwise_mergeSort` gives the lists `Pairwise` under the key —
+for ANY `wo`. Specialised to the honest order and threaded through the banked halign trio
+(`kvE2_sepSlotGIdx_honestOrder{,_mono,_injOn}`), the lists become genuinely value-sorted. These are
+the value-sortedness facts P2/P3 consume; they are NOT re-derivations of the trio. -/
+
+/-- The merge key `kvE2_sepSlotMergeLe wo` is transitive (globally, `≤` on ℕ). -/
+theorem kvE2_sepSlotMergeLe_trans {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+    (a b c : KvE2SepSlot sig)
+    (hab : kvE2_sepSlotMergeLe wo a b = true) (hbc : kvE2_sepSlotMergeLe wo b c = true) :
+    kvE2_sepSlotMergeLe wo a c = true := by
+  simp only [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab hbc ⊢
+  exact le_trans hab hbc
+
+/-- The merge key `kvE2_sepSlotMergeLe wo` is total (globally, `≤` on ℕ). -/
+theorem kvE2_sepSlotMergeLe_total {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+    (a b : KvE2SepSlot sig) :
+    kvE2_sepSlotMergeLe wo a b || kvE2_sepSlotMergeLe wo b a := by
+  simp only [kvE2_sepSlotMergeLe, Bool.or_eq_true, decide_eq_true_eq]
+  exact le_total _ _
+
+/-- **Merge-key sortedness, LEFT** (task 337 Phase 1 ingredient): the joint LEFT slot list is
+    `Pairwise` under the merge key `kvE2_sepSlotMergeLe wo`. Direct `List.pairwise_mergeSort`. -/
+theorem kvE2_sepSlotsLOf_mergeSorted {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+    (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotMergeLe wo a b = true) := by
+  rw [kvE2_sepSlotsLOf]
+  exact List.pairwise_mergeSort (kvE2_sepSlotMergeLe_trans wo) (kvE2_sepSlotMergeLe_total wo) _
+
+/-- **Merge-key sortedness, RIGHT** (mirror of `kvE2_sepSlotsLOf_mergeSorted`). -/
+theorem kvE2_sepSlotsROf_mergeSorted {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+    (kvE2_sepSlotsROf wo).Pairwise (fun a b => kvE2_sepSlotMergeLe wo a b = true) := by
+  rw [kvE2_sepSlotsROf]
+  exact List.pairwise_mergeSort (kvE2_sepSlotMergeLe_trans wo) (kvE2_sepSlotMergeLe_total wo) _
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
