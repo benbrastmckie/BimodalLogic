@@ -321,6 +321,53 @@ noncomputable def kvE2_sepSlotsR {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
   (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor
 
+/-! ## Task 340 Phases 3/6 foundation — the full per-individual-slot family (`Fin N`)
+
+Model-independent scaffolding for the per-slot value-rank carrier (plan Phase 6: "the FULL slot
+family `Fin N`"; handoff step (1): "slotIndexOf/positionOf, model-independent, from
+`kvE2_sepSlotsLFor ++ kvE2_sepSlotsRFor`"). `kvE2_sepSlotBlock σ` is σ's canonical individual-slot
+block (its LEFT then RIGHT region slots); `kvE2_sepAllSlots qnf` is the full cross-owner slot family
+whose length is `N` (total base+anchor slots). `kvE2_sepAllSlots_nodup` (the load-bearing
+distinctness fact) makes `kvE2_sepSlotIndexOf` a genuine embedding into `[0, N)`, so a value family
+`G j = (value_j, j)` over `Fin N` is injective (feeds `kvE2_ordRank_injective`, Phase 6). Every
+component is a syntactic filter of `σ` — no `M` appears (F4/F5/LITMUS clean; per gate report 09 the
+per-owner slot list stays model-independent). Rabinovich Def 3.1: the witness is a strict chain of
+INDIVIDUAL points, so the carrier ranges over per-individual-slot positions, not owner-region ranks. -/
+
+/-- σ's canonical per-individual-slot block: its LEFT region slots followed by its RIGHT region
+    slots (variable arity — the per-slot granularity Rabinovich Def 3.1 requires, replacing the
+    fixed 3-arity owner-region tuple this refinement removes). -/
+noncomputable def kvE2_sepSlotBlock {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) : List (KvE2SepSlot sig) :=
+  kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ
+
+/-- The full cross-owner individual-slot family (length `N` = total base+anchor slots across all
+    positive owners). The `Fin N` domain of the per-slot value-rank family `G` (Phase 6). -/
+noncomputable def kvE2_sepAllSlots {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) : List (KvE2SepSlot sig) :=
+  (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock
+
+/-- **Global per-individual-slot position** (Phase 6 `slotIndexOf`): the 0-based index of slot `s`
+    in the full slot family. When `kvE2_sepAllSlots` is `Nodup` (see `kvE2_sepAllSlots_nodup`) this
+    is a genuine injection on the family's members — the structural (model-independent) index the
+    lex value-rank family `G` uses in its second coordinate. -/
+noncomputable def kvE2_sepSlotIndexOf {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (s : KvE2SepSlot sig) : ℕ :=
+  (kvE2_sepAllSlots qnf).idxOf s
+
+/-- A slot of a positive owner's block is a member of the full slot family. -/
+theorem kvE2_sepMem_allSlots {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
+    s ∈ kvE2_sepAllSlots qnf :=
+  List.mem_flatMap.mpr ⟨σ, hσ, hs⟩
+
+/-- Block membership splits over the two region blocks. -/
+theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+    (s : KvE2SepSlot sig) :
+    s ∈ kvE2_sepSlotBlock σ ↔ s ∈ kvE2_sepSlotsLFor σ ∨ s ∈ kvE2_sepSlotsRFor σ := by
+  rw [kvE2_sepSlotBlock, List.mem_append]
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
