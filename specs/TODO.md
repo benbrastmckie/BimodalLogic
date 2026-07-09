@@ -1,5 +1,5 @@
 ---
-next_project_number: 339
+next_project_number: 340
 ---
 
 # TODO
@@ -12,14 +12,15 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,337 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,300,337 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,321 | 189,192,196,335 | automation, kamp_theorem_formalization |
-| 4 | 177,178,309,333 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
-| 5 | 307 | 309 | completeness |
-| 6 | 305 | 307 | completeness |
-| 7 | 303 | 305 | completeness |
-| 8 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,339 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,339 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,335 | 189,192,196,337 | automation, kamp_theorem_formalization |
+| 4 | 177,178,321 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
+| 5 | 309,333 | 321 | kamp_theorem_formalization |
+| 6 | 307 | 309 | completeness |
+| 7 | 305 | 307 | completeness |
+| 8 | 303 | 305 | completeness |
+| 9 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -111,15 +112,38 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-337 [PARTIAL] — Wire the general region engine k1v_sorted_realizationK (SubBracke
-  └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-    └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-      └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+339 [RESEARCHED] — THE PROBLEM (triply-verified across reports 02, 04, and task-338'
+  └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
+    └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+      └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+        └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
 ## Tasks
+
+### 339. Pointlevel crossowner slot merge for separatedbody holds
+- **Effort**: complex
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 338
+- **Research**: [339_pointlevel_crossowner_slot_merge_for_separatedbody_holds/reports/01_pointlevel-slot-merge-research.md]
+
+**Description**: THE PROBLEM (triply-verified across reports 02, 04, and task-338's own summary): task 338 enriched KvE2SepWeakOrder with a cross-owner merged-chain RANK (List (NormalForm sig 1 4 x KvE2SepSpikeOrderType x N)) and correctly rewired kvE2_sepBody to consume it -- but the slot lists it drives, kvE2_sepSlotsLOf/kvE2_sepSlotsROf (SharedWitness.lean:869-876), are a per-owner BLOCK flatMap: kvE2_sepOrderOwners wo (SW:861-863) permutes WHOLE owner blocks by rank, never interleaves individual points across owners. IntervalPattern.holds / holds_eq_succ (ExistsForallNF.lean:106-132, 188-204) demands ONE globally strictly-monotone witness function over the FULL concatenated slot list. For honest coincident models where two owners' interior witnesses genuinely interleave, no block ordering (in either direction) can supply that global witness -- proven RANK-INDEPENDENT by 5 lean_run_code adversarial experiments in report 04 (both block orders derive False via omega on the same interleaving honest model). This is the wrong granularity: Rabinovich Def 3.1 (md:65-74) builds a single global chain over the UNION of all owners' individual POINTS, not a reordering of owner blocks.
+
+CORE SCOPE: redesign kvE2_sepSlotsLOf/kvE2_sepSlotsROf (SharedWitness.lean:869-876) and their sequencing kvE2_sepOrderOwners (SharedWitness.lean:861-863) so the slots are a genuine POINT-LEVEL cross-owner merge keyed by merged-chain position -- every owner's individual slot entries (interval endpoints/anchors, e.g. lXU/lX1/lUW per SW:292-299) interleaved into ONE globally value-sorted chain -- rather than a block-level owner reordering. Then re-prove the dependent lemmas whose statements/bodies touch the slot lists: kvE2_sepBody_holds_iff (SW:970), kvE2_sepBody_nonvacuous (SW:1512), kvE2_sepBody_extract (SW:2163), and kvE2_sepDisjunct_extract (SW:2015). Preserve the enriched-weak-order type from task 338 and the no-collapse property (both kvE2_sepModelOrder and kvE2_sepCoincidentOrder must remain proven members of the enumeration). Task 337 Phase-1's kvE2_sepCoincidentOrder_mem_arr' (SW:1733) must continue to hold unchanged -- it feeds the membership half of the joint builder and is orthogonal to this slot-shape redesign.
+
+DESIGN-GROUNDING REQUIREMENT (lesson from task 338's insufficiency: a correct-but-wrong-layer fix): before implementing, first pin down the EXACT shape IntervalPattern.holds requires of the slot list (read ExistsForallNF.lean:106-204 -- the witnesses : Fin (n+1) -> M.carrier strict-monotonicity and alpha/beta segment obligations) AND confirm the point-level merge design is faithful to Rabinovich Def 3.1's single global chain (md:65-74) and to the k1v_sorted_realizationK engine's interleaveK merged-anchor output shape (SubBracket2V.lean:633, per report 04's engine-interface note) -- so the implementation actually closes the .holds gap rather than under-delivering at a different granularity again, as the block-level rank fix did.
+
+ACCEPTANCE: sorry-free; axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx); full lake build green; all seven faithfulness invariants F1-F7 preserved, especially F5 (no open/closed zone-key conflation) and the LITMUS test at NavigatedSpine.lean:437 (witness bounds must come from the bracket range, never an x1 < e_i relative-position literal on a raw chain). No load-bearing task-334/336/338 result destroyed (statements may extend/strengthen, per task 338's own precedent of extending rather than invalidating).
+
+HARD-MODE NOTE: this is a strong --hard candidate. It is foundational faithful-transcription work and the 3rd verified structural layer on this carrier (after task 334's original slots and task 338's rank enrichment), so quality/thoroughness over speed is warranted -- get the point-level merge design right against the Rabinovich source and the IntervalPattern.holds contract BEFORE writing proofs, rather than iterating through another under-delivering granularity.
+
+ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, Phases 2-6) is re-dispatched to consume the point-level-merged slot lists via kvE2_sepBody_holds_iff.mpr.
+
+---
 
 ### 338. Enrich separatedbody weakorder with crossowner anchor order
 - **Effort**: 6-8 hours
@@ -136,10 +160,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### 337. Build joint multiowner disjunct bracketholds engine for kve2 sepdisjunct
 - **Effort**: 4-5 hours
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 336, Task 338
+- **Dependencies**: Task 336, Task 338, Task 339
 - **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md]
 - **Plan**:
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/01_joint-disjunct-bracket-holds.md]
