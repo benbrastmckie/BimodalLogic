@@ -2609,33 +2609,32 @@ theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature}
   exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0_projFresh σ.1) hfresh
 
 /-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; generalized to
-    right-interior owners in task 336). For an honest model realization whose positive owners are
-    each INTERIOR — LEFT (`nf0_zoneSpec σ.1 = kvE2_sep_zXW3`, `x < x1 < w`) OR RIGHT
-    (`nf0_zoneSpec σ.1 = kvE2_sep_zWT3`, `w < x1 < t`), the disjunction `hLR` — the honest
-    COINCIDENCE (tie) arrangement is a VALID, PRESENT member of the faithful carrier
-    `kvE2_sepArr'`; hence the carrier is NON-VACUOUS (`kvE2_sepArr' qnf ≠ []`) — the ⇐ direction of
-    Lemma 3.2(1) (md:77): every honest arrangement selects its order-type disjunct (here the
-    coincidence disjunct, §5 meet, md:168-173). The per-owner `rcases` dispatches each owner to its
-    placement-appropriate closed-self-zone validator: LEFT →
+    right-interior owners in task 336; made UNCONDITIONAL in task 342 Part I). For an honest model
+    realization, the honest COINCIDENCE (tie) arrangement is a VALID, PRESENT member of the
+    faithful carrier `kvE2_sepArr'`; hence the carrier is NON-VACUOUS (`kvE2_sepArr' qnf ≠ []`) —
+    the ⇐ direction of Lemma 3.2(1) (md:77): every honest arrangement selects its order-type
+    disjunct (here the coincidence disjunct, §5 meet, md:168-173). The per-owner `rcases`
+    dispatches each owner to its placement-appropriate closed-self-zone validator: LEFT →
     `kvE2_sepCoincidentOwner_valid_left` (`zAtX1L` bit, `kvE2_sepCoincidentAnchor_discharge`);
     RIGHT → `kvE2_sepCoincidentOwner_valid_right` (`zAtX1R` bit,
     `kvE2_sepCoincidentAnchor_discharge_R`), both routed through the placement-guarded
     `kvE2_sepClosedLeafStub`. Sorry-free, axiom-clean. Faithfulness: F2 (⇐ realized, non-vacuous),
     F1, F5 (closed vs open key discrimination), F6.
 
-    The interior hypothesis `hLR` remains a live obligation: `kvE2_sepPos` admits seven outer zone
-    classes (`kvE2_sepOuterConsistent`, :631-633) with no dichotomy forcing positive owners to be
-    interior. A fully unconditional completeness theorem over the exterior/boundary classes would
-    require new coincidence mathematics for those five classes and is out of scope — the gap is
-    honestly carried as `hLR`, not bridged by any `sorry` or axiom. -/
+    Interiority is a CONSTRUCTION INVARIANT, not a hypothesis: the arrangement's owner index is
+    the interior-restricted carrier `kvE2_sepPosI`, so each owner's placement — LEFT
+    (`nf0_zoneSpec σ.1 = kvE2_sep_zXW3`, `x < x1 < w`) OR RIGHT (`kvE2_sep_zWT3`, `w < x1 < t`) —
+    is recovered definitionally via `kvE2_sepPosI_zone` (`List.mem_filter`). Rabinovich §5 (p.7):
+    the ψ0/ψ1/φ split routes non-interior positive witnesses to the atomic `E[Σ]` endpoint
+    literals via Prop 3.5, so only interior owners enter the interleaving; an interiority
+    hypothesis has no paper counterpart, and `kvE2_sepHonest_hLR_absurd` certifies that the
+    former `hLR` hypothesis was inconsistent with every honest evaluation. -/
 theorem kvE2_sepBody_complete {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
-        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepArr' qnf ≠ [] := by
   apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
   rw [kvE2_sepArr', List.mem_filter]
@@ -2643,7 +2642,7 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
   rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity, dispatched by placement (definitional
-    -- interiority via `kvE2_sepPosI_zone` — `hLR` no longer consumed).
+    -- interiority via `kvE2_sepPosI_zone` — a construction invariant of the owner index).
     rw [List.all_eq_true]
     intro p hp
     rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
@@ -2670,19 +2669,20 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
     exact kvE2_sepAllSlots_map_slotIndexOf_nodup qnf
 
 /-- **Phase 1 (task 337) — the honest coincidence witness is a carrier member.** Factored from
-    `kvE2_sepBody_complete`'s membership route: under an honest interior realization (`hLR`) the
-    COINCIDENCE arrangement `kvE2_sepCoincidentOrder qnf` (all-coincident tags, `zipIdx` ranks) is a
-    VALID, PRESENT member of `kvE2_sepArr' qnf` — the ⇐-direction witness weak order this task's
-    `.holds` builder plugs into `kvE2_sepBody_holds_iff.mpr`. Additive; edits no carrier declaration.
+    `kvE2_sepBody_complete`'s membership route: under an honest realization the COINCIDENCE
+    arrangement `kvE2_sepCoincidentOrder qnf` (all-coincident tags, `zipIdx` ranks) is a VALID,
+    PRESENT member of `kvE2_sepArr' qnf` — the ⇐-direction witness weak order this task's
+    `.holds` builder plugs into `kvE2_sepBody_holds_iff.mpr`. UNCONDITIONAL (task 342 Part I):
+    owner interiority is a construction invariant of the `kvE2_sepPosI` index (Rabinovich §5,
+    p.7 — the ψ0/ψ1/φ split routes non-interior witnesses to the endpoint literals via Prop 3.5),
+    recovered via `kvE2_sepPosI_zone`, never hypothesized. Additive; edits no carrier declaration.
     F5: validity reads only CLOSED self-zone bits (via the coincidence validators). -/
 theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
-        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepCoincidentOrder qnf ∈ kvE2_sepArr' qnf := by
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
@@ -3280,24 +3280,25 @@ theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature}
   rwa [List.length_map] at h
 
 /-- **The honest order is a carrier member** (task 340 Phase 5B — the object task 337 consumes).
-    Under an honest interior realization (`hLR`) the value-rank honest order is a VALID, PRESENT
-    member of `kvE2_sepArr' qnf`. The three `kvE2_sepDisjValid` conjuncts: (i) all-`.coincident`
-    validity reuses `kvE2_sepCoincidentOwner_valid_left/right` VERBATIM (tuple-agnostic, CLOSED
-    self-zone bit only); (ii) consistency via `kvE2_sepHonestTuple_consistent`; (iii) `i₀`-`Nodup`
-    from `kvE2_ordRank_injective` on the keystone-injective anchor family (through `3·`). -/
+    Under an honest realization the value-rank honest order is a VALID, PRESENT member of
+    `kvE2_sepArr' qnf`. UNCONDITIONAL (task 342 Part I): owner interiority is a construction
+    invariant of the `kvE2_sepPosI` index (Rabinovich §5, p.7), recovered via
+    `kvE2_sepPosI_zone`, never hypothesized. The three `kvE2_sepDisjValid` conjuncts: (i)
+    all-`.coincident` validity reuses `kvE2_sepCoincidentOwner_valid_left/right` VERBATIM
+    (tuple-agnostic, CLOSED self-zone bit only); (ii) consistency via
+    `kvE2_sepHonestTuple_consistent`; (iii) `i₀`-`Nodup` from `kvE2_ordRank_injective` on the
+    keystone-injective anchor family (through `3·`). -/
 theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
-        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepArr' qnf := by
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h, ?_⟩
   rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity (all tags `.coincident`), reused verbatim
-    -- (definitional interiority via `kvE2_sepPosI_zone` — `hLR` no longer consumed).
+    -- (definitional interiority via `kvE2_sepPosI_zone` — a construction invariant of the index).
     rw [List.all_eq_true]
     intro p hp
     rw [kvE2_sepHonestOrder, List.mem_map] at hp
@@ -4455,26 +4456,27 @@ the keystone-strict anchor family + `kvE2_ordRank_strictMono`, `hnd` per-zone ba
 base witness forced onto an anchor (report 06 R3) — is task 337's territory, NOT a carrier change.
 Below is the complete, axiom-clean reduction taking that one `.holds` as the delegated step. -/
 
-/-- **Phase 5D — the completeness hand-off to task 337.** Given the honest interior realization
-    (`hLR`) and the realization of the honest disjunct's own bracket (`hdisj`, the single 337-owned
-    `.holds`), the separated body holds at the fixed endpoints `x`, `t`. Wires the Phase-5B carrier
-    member `kvE2_sepHonestOrder_mem_arr'` into `kvE2_sepBody_holds_iff.mpr`. Complete and
-    axiom-clean UP TO the delegated `.holds` — the sanctioned Phase-5 completion boundary. -/
+/-- **Phase 5D — the completeness hand-off to task 337.** Given an honest realization and the
+    realization of the honest disjunct's own bracket (`hdisj`, the single 337-owned `.holds`),
+    the separated body holds at the fixed endpoints `x`, `t`. Wires the Phase-5B carrier member
+    `kvE2_sepHonestOrder_mem_arr'` into `kvE2_sepBody_holds_iff.mpr`. UNCONDITIONAL (task 342
+    Part I): owner interiority is a construction invariant of the `kvE2_sepPosI` index — no
+    interiority hypothesis (Rabinovich §5, p.7; `kvE2_sepHonest_hLR_absurd` documents why none
+    may return). Complete and axiom-clean UP TO the delegated `.holds` — the sanctioned Phase-5
+    completion boundary. -/
 theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
-        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
     (hdisj : (kvE2_sepDisjunct charBase charK qnf
         (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h))
         (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h))).2.holds M atomMap x t) :
     (kvE2_sepBody charBase charK qnf).holds M atomMap x t := by
   rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t]
   exact ⟨kvE2_sepHonestOrder qnf M w x t h,
-    kvE2_sepHonestOrder_mem_arr' qnf M w x t hxw hwt h hLR, hdisj⟩
+    kvE2_sepHonestOrder_mem_arr' qnf M w x t hxw hwt h, hdisj⟩
 
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
@@ -4877,15 +4879,18 @@ theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature}
     the arrangement's slot indices via Def 3.1 monotone enumeration (PDF p.4) — never an
     `x1 < e_i` literal (LITMUS); each σ's `zXU`/`zWX1` interior content is realized
     strictly below σ's fresh slot by the region-rank validity (Cor 5.4, md:154-157;
-    Lemma 3.2(1), md:77 at the interleaving membership). -/
+    Lemma 3.2(1), md:77 at the interleaving membership). Task 342 Part I: the coverage
+    hypotheses `hmemL`/`hmemR` quantify over the interior index `kvE2_sepPosI` (the carrier's
+    own owner index); the bundle conclusions stay zone-guarded over `kvE2_sepPos`, with
+    interiority upgraded via `kvE2_sepPosI_mem`. -/
 theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
     {lL lR : List (KvE2SepSlot sig)}
-    (hmemL : ∀ σ ∈ kvE2_sepPos qnf, ∀ s ∈ kvE2_sepSlotsLFor σ, s ∈ lL)
+    (hmemL : ∀ σ ∈ kvE2_sepPosI qnf, ∀ s ∈ kvE2_sepSlotsLFor σ, s ∈ lL)
     (hpairL : lL.Pairwise (fun a b => kvE2_sepSlotLe a b = true))
-    (hmemR : ∀ σ ∈ kvE2_sepPos qnf, ∀ s ∈ kvE2_sepSlotsRFor σ, s ∈ lR)
+    (hmemR : ∀ σ ∈ kvE2_sepPosI qnf, ∀ s ∈ kvE2_sepSlotsRFor σ, s ∈ lR)
     (hpairR : lR.Pairwise (fun a b => kvE2_sepSlotLe a b = true))
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
@@ -4924,8 +4929,10 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
     rwa [kvE2_sep_getElem_mid] at h1
   · -- LEFT-interior bundles: σ's fresh slot occurs in the LEFT interleaving.
     intro σ hσpos hzone
+    have hσI : σ ∈ kvE2_sepPosI qnf :=
+      (kvE2_sepPosI_mem qnf σ).mpr ⟨hσpos, Or.inl hzone⟩
     obtain ⟨iσ, hiσ, hgetiσ⟩ := List.mem_iff_getElem.mp
-      (hmemL σ hσpos _ (kvE2_sep_lX1_mem_slotsLFor hzone))
+      (hmemL σ hσI _ (kvE2_sep_lX1_mem_slotsLFor hzone))
     have hiσm : iσ < (lL.map (kvE2_sepSlotType charBase charK)).length := by
       simp only [List.length_map]; omega
     refine ⟨ws ⟨iσ, by omega⟩, (hrange _).1,
@@ -4936,7 +4943,7 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
     · -- Every `zXU`-positive 1-type strictly below σ's fresh slot (region-rank validity).
       intro χ hbit
       obtain ⟨jχ, hjχ, hgetjχ⟩ := List.mem_iff_getElem.mp
-        (hmemL σ hσpos _ (kvE2_sep_lXU_mem_slotsLFor hzone hbit))
+        (hmemL σ hσI _ (kvE2_sep_lXU_mem_slotsLFor hzone hbit))
       have hji : jχ < iσ := kvE2_sep_index_lt_of_rank_lt hpairL
         hiσ hjχ (by rw [hgetjχ, hgetiσ]; rfl) (by rw [hgetjχ, hgetiσ]; exact Nat.zero_lt_one)
       have hjχm : jχ < (lL.map (kvE2_sepSlotType charBase charK)).length := by
@@ -4947,8 +4954,10 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
       rwa [kvE2_sep_getElem_left _ _ _ jχ hjχm, List.getElem_map, hgetjχ] at h1
   · -- RIGHT-interior bundles (mirrored): σ's fresh slot occurs in the RIGHT interleaving.
     intro σ hσpos hzone
+    have hσI : σ ∈ kvE2_sepPosI qnf :=
+      (kvE2_sepPosI_mem qnf σ).mpr ⟨hσpos, Or.inr hzone⟩
     obtain ⟨jσ, hjσ, hgetjσ⟩ := List.mem_iff_getElem.mp
-      (hmemR σ hσpos _ (kvE2_sep_rX1_mem_slotsRFor hzone))
+      (hmemR σ hσI _ (kvE2_sep_rX1_mem_slotsRFor hzone))
     have hjσm : jσ < (lR.map (kvE2_sepSlotType charBase charK)).length := by
       simp only [List.length_map]; omega
     refine ⟨ws ⟨(lL.map (kvE2_sepSlotType charBase charK)).length + 1 + jσ, by omega⟩,
@@ -4958,7 +4967,7 @@ theorem kvE2_sepDisjunct_extract {sig : MonadicSignature}
       rwa [kvE2_sep_getElem_right _ _ _ jσ hjσm, List.getElem_map, hgetjσ] at h1
     · intro χ hbit
       obtain ⟨j', hj', hgetj'⟩ := List.mem_iff_getElem.mp
-        (hmemR σ hσpos _ (kvE2_sep_rWX1_mem_slotsRFor hzone hbit))
+        (hmemR σ hσI _ (kvE2_sep_rWX1_mem_slotsRFor hzone hbit))
       have hji : j' < jσ := kvE2_sep_index_lt_of_rank_lt hpairR
         hjσ hj' (by rw [hgetj', hgetjσ]; rfl) (by rw [hgetj', hgetjσ]; exact Nat.zero_lt_one)
       have hj'm : j' < (lR.map (kvE2_sepSlotType charBase charK)).length := by
@@ -5049,14 +5058,11 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
   · rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t] at h
     obtain ⟨wo, hwo, hd⟩ := h
     have hwo' : wo ∈ kvE2_sepOrderTypes qnf := (List.mem_filter.mp hwo).1
-    -- Task 342 Phase 3: `kvE2_sepSlotsL/ROf_mem` now index owners by `kvE2_sepPosI`; the
-    -- slot hypothesis forces interiority (`kvE2_sepMem_posI_of_slotL/R`, the `else []`
-    -- contrapositive), upgrading the extract-side `σ ∈ kvE2_sepPos`.
+    -- Task 342 Phase 5: `kvE2_sepDisjunct_extract`'s `hmemL/hmemR` now quantify over the
+    -- interior index `kvE2_sepPosI`, matching `kvE2_sepSlotsL/ROf_mem` directly.
     exact kvE2_sepDisjunct_extract charBase charK qnf
-      (fun σ hσ s hs =>
-        kvE2_sepSlotsLOf_mem qnf hwo' (kvE2_sepMem_posI_of_slotL hσ hs) hs) (hpairL wo hwo)
-      (fun σ hσ s hs =>
-        kvE2_sepSlotsROf_mem qnf hwo' (kvE2_sepMem_posI_of_slotR hσ hs) hs) (hpairR wo hwo)
+      (fun σ hσ s hs => kvE2_sepSlotsLOf_mem qnf hwo' hσ hs) (hpairL wo hwo)
+      (fun σ hσ s hs => kvE2_sepSlotsROf_mem qnf hwo' hσ hs) (hpairR wo hwo)
       M atomMap x t hd
   · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
     simp [VVecEA2.holds] at h

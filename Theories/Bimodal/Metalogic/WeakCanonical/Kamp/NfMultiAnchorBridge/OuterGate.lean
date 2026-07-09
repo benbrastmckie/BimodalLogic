@@ -19,19 +19,21 @@ INPUTS**; this file only *applies* them.
    `BracketEndCharCarrierV sig 2`, `CarrierK1V.lean:365`).
 3. **`bracketEndChar_kvE2_sound_two_prior`** — the ⇒ (soundness) half of the k=2 gate.
 4. **`bracketEndChar_kvE2_complete_two_prior_leftInterior`** — the ⇐ (completeness) half for the
-   LEFT-INTERIOR owner class (`hL`-guarded; see scope note below).
+   LEFT-INTERIOR owner class (see scope note below).
 5. **`bracketEndChar_kvE2_correct_two_prior_leftInterior`** — the assembled `k = 2`
    `BracketCarrierCorrectVPrior`-shaped correctness theorem for the left-interior class.
 
 ## Scope decisions (recorded in the file, resolved in the plan)
 
-- **R-A (⇐ generality) → LEFT-INTERIOR ONLY.** `kvE2_sepBody_complete` requires the hypothesis
-  `hL : ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3` (all positive owners
-  left-interior). Extending the validity channel (`kvE2_sepDisjValidOwner`) to the
-  placement-generic self-zone / right-interior class would touch the verified carrier INPUT and is
-  deferred to **task 336**. This task therefore proves the gate for the left-interior owner class
-  only, exposing the restriction as an EXPLICIT `hL` hypothesis rather than a hidden assumption
-  (additive, zero-debt).
+- **R-A (⇐ generality) → INTERIOR-RESTRICTED CARRIER (task 342 update).** `kvE2_sepBody_complete`
+  is now UNCONDITIONAL: the carrier's arrangements index their owners by the interior-restricted
+  list `kvE2_sepPosI` (a two-zone order-preserving filter of `kvE2_sepPos`), so each owner's
+  LEFT/RIGHT interiority is a construction invariant recovered definitionally
+  (`kvE2_sepPosI_zone`), never a hypothesis on realized types. The historical `hL`/`hLR`
+  interiority hypotheses of tasks 335/336 are GONE — `kvE2_sepHonest_hLR_absurd`
+  (`SharedWitness.lean`) machine-certifies that any such hypothesis is inconsistent with every
+  honest evaluation, which is why none may return. Non-interior positive owners ride the atomic
+  `E[Σ]` endpoint/pivot literals (Rabinovich §5, p.7, via Prop 3.5) rather than the interleaving.
 - **R-B (KampPrior wiring) → FOLLOW-ON.** The gate is NOT wired into `KampPrior.lean:351`
   (threading `ExistProviders` through `nf_nvar_exist_all_depths`'s `Nat.rec`/`n=1` case) — that
   integration is a distinct downstream task, out of scope here.

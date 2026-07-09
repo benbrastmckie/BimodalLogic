@@ -374,7 +374,7 @@ references it); axioms clean on both `mem_arr'` theorems.
 **Timing**: 2-2.5h
 **Depends on**: 3
 
-### Phase 5: Delete hLR (statement rewrites), restate kvE2_sepDisjunct_extract, OuterGate doc edit [NOT STARTED]
+### Phase 5: Delete hLR (statement rewrites), restate kvE2_sepDisjunct_extract, OuterGate doc edit [IN PROGRESS]
 
 **Goal**: Part I lands completely — no `hLR` anywhere except the retained design-guard
 certificate; extraction hypotheses over `kvE2_sepPosI`; prose corrected.
