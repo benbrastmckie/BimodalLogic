@@ -295,7 +295,31 @@ old `(3r,3r+1,3r+2)` behavior is transcribed into per-slot form with NO value-fa
 - **Estimated output**: ~200-300 lines.
 - **Depends on**: 1 (PASS).
 
-### Phase 3: Validity conjuncts (ii)+(iii) + per-slot enumeration richness (green) [NOT STARTED]
+### Phase 3: Validity conjuncts (ii)+(iii) + per-slot enumeration richness (green) [IN PROGRESS]
+
+**Landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed `phase 3.1`):** the
+variable-length `N`-bound enumeration `kvE2_sepIdxTuplesN (n : ℕ) : ℕ → List (List ℕ)` (all length-`L`
+lists with entries `< n`) + richness `kvE2_sepIdxTupleN_mem_of_forall_lt` (SW:~968-990). Reused
+verbatim in the atomic wiring (swap `kvE2_sepIdxTuples n` → `kvE2_sepIdxTuplesN n (kvE2_sepSlotBlock σ).length`
+in `kvE2_sepOrderTypes`).
+
+**CORRECTION to the naive framing below (found this dispatch — load-bearing for the next).** The
+consistency predicate CANNOT be a single strict chain over the block. `kvE2_sepSlotBlock σ` is NOT
+globally rank-sorted: for a left-interior owner it is `[lXU(rank0)…] lX1(1) [lUW(2)…] [lWT(0)…]` —
+rank DROPS from 2 (lUW, left region) back to 0 (lWT, right region) at the L→R boundary. Moreover
+`kvE2_sepSlotsLOf` sorts ONLY the left-region slots and `kvE2_sepSlotsROf` ONLY the right-region
+slots (separate mergeSorts). So `kvE2_sepConsistentTuple` must be REGION-SCOPED: within an owner's
+LEFT region, region-monotone (`lXU-gidx < lX1-gidx < lUW-gidx`); within its RIGHT region separately
+(`rWX1-gidx < rX1-gidx < rX1T-gidx`). A payload strictly-increasing along the whole block is WRONG.
+Recommended shape: `kvE2_sepConsistentTuple σ t := decide (∀ j < B.length, ∀ k < B.length,
+sameRegion(B[j],B[k]) → kvE2_sepSlotRank B[j] < kvE2_sepSlotRank B[k] → t.getD j 0 < t.getD k 0)`
+with `B = kvE2_sepSlotBlock σ` (owner now threaded via `kvE2_sepDisjValid` calling
+`kvE2_sepConsistentTuple p.1 p.2.2`). Conjunct (iii) → global `Nodup` over `wo.flatMap (·.2.2)`.
+
+Remaining: generalize `kvE2_sepConsistentTuple` (region-scoped, owner-threaded), rebuild
+`kvE2_sepDisjValid` (iii) global Nodup, thread the σ-dependent enumeration through
+`kvE2_sepOrderTypes` + `kvE2_sepOrderTypes_mem_aux` + `kvE2_sepOrderTypes_owners_aux`. COUPLED with
+Phase 4 + the model/coincident re-proofs (Phase 5) — atomic RED→GREEN.
 
 Generalize `kvE2_sepConsistentTuple` (SW:~902) from the per-owner `i₀<i₁<i₂` 3-chain to per-slot
 **region-rank monotonicity**: every `lXU`-gidx < the owner's anchor-gidx < every `lUW`-gidx (the
@@ -310,7 +334,18 @@ Ground: Def 3.1 per-owner interval order (R1-corrected); Lemma 3.2(1) enumeratio
 - **Estimated output**: ~180-280 lines.
 - **Depends on**: 2.
 
-### Phase 4: `kvE2_sepSlotGIdx` per-slot read + `kvE2_sepSlotMergeLe` re-sort (green) [NOT STARTED]
+### Phase 4: `kvE2_sepSlotGIdx` per-slot read + `kvE2_sepSlotMergeLe` re-sort (green) [IN PROGRESS]
+
+**Landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed `phase 4.1`):** the reader
+coordinate `kvE2_sepBlockPos s := (kvE2_sepSlotBlock (kvE2_sepSlotSub s)).idxOf s` + `kvE2_sepBlockPos_lt`
+(position `< block length` for block members; SW:~505-520). The atomic wiring reads
+`kvE2_sepSlotGIdx wo s := t.getD (kvE2_sepBlockPos s) 0` (t = the owner's block-length payload),
+STAYING model-independent (trip-wire respected — only the honest PAYLOAD VALUES are model-dependent,
+not the reader). `kvE2_sepBlockPos_lt` guarantees the `getD` hits a real entry.
+
+Remaining: rebuild `kvE2_sepSlotGIdx` (SW:~1183) to read at `kvE2_sepBlockPos` (drop `kvE2_sepSlotRank`),
+keep `kvE2_sepSlotMergeLe` single-level; `kvE2_sepSlotsLOf/ROf_mem` (mergeSort_perm) preserved
+comparator-agnostically. COUPLED with Phase 3 + Phase 5 — atomic RED→GREEN.
 
 Rebuild `kvE2_sepSlotGIdx` (SW:~1006) to read the per-slot index DIRECTLY (no longer via
 `kvE2_sepSlotRank` region-rank projection — that projection is the source of the tie). Keep
