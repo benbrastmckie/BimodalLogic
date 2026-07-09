@@ -112,7 +112,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-339 [RESEARCHED] — THE PROBLEM (triply-verified across reports 02, 04, and task-338'
+339 [IMPLEMENTING] — THE PROBLEM (triply-verified across reports 02, 04, and task-338'
   └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
     └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
       └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
@@ -125,11 +125,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### 339. Pointlevel crossowner slot merge for separatedbody holds
 - **Effort**: complex
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 338
 - **Research**: [339_pointlevel_crossowner_slot_merge_for_separatedbody_holds/reports/01_pointlevel-slot-merge-research.md]
+- **Plan**: [339_pointlevel_crossowner_slot_merge_for_separatedbody_holds/plans/01_pointlevel-slot-merge-plan.md]
 
 **Description**: THE PROBLEM (triply-verified across reports 02, 04, and task-338's own summary): task 338 enriched KvE2SepWeakOrder with a cross-owner merged-chain RANK (List (NormalForm sig 1 4 x KvE2SepSpikeOrderType x N)) and correctly rewired kvE2_sepBody to consume it -- but the slot lists it drives, kvE2_sepSlotsLOf/kvE2_sepSlotsROf (SharedWitness.lean:869-876), are a per-owner BLOCK flatMap: kvE2_sepOrderOwners wo (SW:861-863) permutes WHOLE owner blocks by rank, never interleaves individual points across owners. IntervalPattern.holds / holds_eq_succ (ExistsForallNF.lean:106-132, 188-204) demands ONE globally strictly-monotone witness function over the FULL concatenated slot list. For honest coincident models where two owners' interior witnesses genuinely interleave, no block ordering (in either direction) can supply that global witness -- proven RANK-INDEPENDENT by 5 lean_run_code adversarial experiments in report 04 (both block orders derive False via omega on the same interleaving honest model). This is the wrong granularity: Rabinovich Def 3.1 (md:65-74) builds a single global chain over the UNION of all owners' individual POINTS, not a reordering of owner blocks.
 
