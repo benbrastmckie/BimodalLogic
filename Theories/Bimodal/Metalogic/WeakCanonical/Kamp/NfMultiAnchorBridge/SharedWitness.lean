@@ -746,6 +746,24 @@ theorem kvE2_sepPlaceholderTuple_mem (n k : ℕ) (hk : k < n) :
   rw [List.mem_map]
   exact ⟨2 * n + k, List.mem_range.mpr (by omega), rfl⟩
 
+/-- **Enumeration richness** (task 340 Phase 5.1): every order-consistent global-index tuple whose
+    three components each lie in `[0, 3n)` is enumerated by `kvE2_sepIdxTuples n`. This is the
+    strict generalization of `kvE2_sepPlaceholderTuple_mem` (SW:740) from the region-primary
+    placeholder shape `(k, n+k, 2n+k)` to an ARBITRARY in-range tuple `(a, b, c)` — the membership
+    fact the model-value-faithful honest order (`kvE2_sepHonestOrder`) needs: an owner's three
+    slots' actual global positions in M's value order are all `< 3n` (there are `3n` slots total),
+    so the honest tuple is a member by exactly the same three `List.mem_flatMap`/`List.mem_range`
+    steps. Reads no zone bit; abstract-ℕ only (F4/LITMUS clean). -/
+theorem kvE2_sepIdxTuple_mem_of_lt (n a b c : ℕ)
+    (ha : a < 3 * n) (hb : b < 3 * n) (hc : c < 3 * n) :
+    (a, b, c) ∈ kvE2_sepIdxTuples n := by
+  rw [kvE2_sepIdxTuples, List.mem_flatMap]
+  refine ⟨a, List.mem_range.mpr ha, ?_⟩
+  rw [List.mem_flatMap]
+  refine ⟨b, List.mem_range.mpr hb, ?_⟩
+  rw [List.mem_map]
+  exact ⟨c, List.mem_range.mpr hc, rfl⟩
+
 /-- **General order-type-disjunction index** (Lemma 3.2(1), md:77): the finite `List` of weak
     orders on `A` — all per-owner (placement tag × per-slot global-index tuple) assignments, built as
     the cartesian `foldr` product over `kvE2_sepPos qnf`, with the tuple component ranging over
