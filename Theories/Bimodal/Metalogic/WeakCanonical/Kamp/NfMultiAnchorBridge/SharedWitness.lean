@@ -3161,6 +3161,24 @@ theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature}
     (kvE2_sepMem_allSlots qnf hσ hjmem) (kvE2_sepMem_allSlots qnf hσ hkmem) ?_
   exact kvE2_sepSlotValue_region_rank_mono qnf M w x t hxw hwt h hσ hjmem hkmem hreg hrank
 
+/-- **Global Nodup — prefix-sum payload** (task 340 Phase 5 flip conjunct (iii)): the flattened
+    model/coincident payload over the whole family is duplicate-free (the global slot index is
+    injective on the `Nodup` family). -/
+theorem kvE2_sepAllSlots_map_slotIndexOf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    ((kvE2_sepAllSlots qnf).map (kvE2_sepSlotIndexOf qnf)).Nodup :=
+  List.Nodup.map_on (fun a ha b hb hab => kvE2_sepSlotIndexOf_injOn qnf ha hb hab)
+    (kvE2_sepAllSlots_nodup qnf)
+
+/-- **Global Nodup — honest value-rank payload** (task 340 Phase 7 conjunct (iii)): the flattened
+    honest payload over the whole family is duplicate-free (`kvE2_sepSlotHonestGIdx` is injective on
+    the family via the lex index tiebreak — no value-distinctness needed). -/
+theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    ((kvE2_sepAllSlots qnf).map (kvE2_sepSlotHonestGIdx qnf M w x t h)).Nodup :=
+  List.Nodup.map_on (fun a ha b hb hab => kvE2_sepSlotHonestGIdx_injOn qnf M w x t h ha hb hab)
+    (kvE2_sepAllSlots_nodup qnf)
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
