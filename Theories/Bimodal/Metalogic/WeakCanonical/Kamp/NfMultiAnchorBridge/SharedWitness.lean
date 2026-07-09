@@ -2246,6 +2246,130 @@ theorem kvE2_sepHonest_same_owner_mono {sig : MonadicSignature}
   simp only [kvE2_sepConsistentTuple, decide_eq_true_eq] at this
   exact this
 
+/-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
+
+The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
+`kvE2_sepHonestOrder_mem_arr'` (5B) is the carrier member; the remaining obligation to make the
+separated body hold is the realization of the honest disjunct's own bracket — the single
+337-owned `.holds`, produced by `kvE_subBracket2V_sound_of_parts` (SubBracket2V.lean:1290) over
+the engine-precondition regions bundle (consecutive distinct-anchor intervals: `hpos`/`hlink` from
+the keystone-strict anchor family + `kvE2_ordRank_strictMono`, `hnd` per-zone base-type `Nodup`,
+`hreal` from the honest bundles `kvE2_sepHonestBundleL/R`) fed to `k1v_sorted_realizationK`
+(SubBracket2V.lean:633). That regions realization — including any meet-type folding for a foreign
+base witness forced onto an anchor (report 06 R3) — is task 337's territory, NOT a carrier change.
+Below is the complete, axiom-clean reduction taking that one `.holds` as the delegated step. -/
+
+/-- **Phase 5D — the completeness hand-off to task 337.** Given the honest interior realization
+    (`hLR`) and the realization of the honest disjunct's own bracket (`hdisj`, the single 337-owned
+    `.holds`), the separated body holds at the fixed endpoints `x`, `t`. Wires the Phase-5B carrier
+    member `kvE2_sepHonestOrder_mem_arr'` into `kvE2_sepBody_holds_iff.mpr`. Complete and
+    axiom-clean UP TO the delegated `.holds` — the sanctioned Phase-5 completion boundary. -/
+theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
+        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    (hdisj : (kvE2_sepDisjunct charBase charK qnf
+        (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h))
+        (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h))).2.holds M atomMap x t) :
+    (kvE2_sepBody charBase charK qnf).holds M atomMap x t := by
+  rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t]
+  exact ⟨kvE2_sepHonestOrder qnf M w x t h,
+    kvE2_sepHonestOrder_mem_arr' qnf M w x t hxw hwt h hLR, hdisj⟩
+
+/-- **Phase 5D — LEFT engine-precondition data at the value-ranked anchor.** The public,
+    canonical-anchor form of `kvE2_sepHonestBundleL`: for a LEFT-interior owner σ, at its
+    `kvE2_sepAnchorVal` anchor (the value the honest rank is computed from) there are real
+    witnesses in `(x, x1_σ)` for every `zXU`-positive base type and in `(x1_σ, w)` for every
+    `zUW`-positive base type. These are the `hnd`/`hreal` inputs (per the region base-type lists)
+    that task 337 feeds to `k1v_sorted_realizationK` for the honest-order regions. Mirrors the
+    private bundle proof with the anchor pinned to `kvE2_sepAnchorVal`. -/
+theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    x < kvE2_sepAnchorVal qnf M w x t h σ ∧ kvE2_sepAnchorVal qnf M w x t h σ < w ∧
+      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zXU,
+        ∃ u : M.carrier, x < u ∧ u < kvE2_sepAnchorVal qnf M w x t h σ ∧
+          nf_eval_nf M 0 1 (fun _ => u) χ) ∧
+      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zUW,
+        ∃ u : M.carrier, kvE2_sepAnchorVal qnf M w x t h σ < u ∧ u < w ∧
+          nf_eval_nf M 0 1 (fun _ => u) χ) := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
+  have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
+  obtain ⟨hσ_atom, _h_off, _h_zonefwd, hbelowXU, hbelowUW, _hbelowWT⟩ :=
+    kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
+  have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+    rw [congrFun hzone ⟨1, by omega⟩]; decide
+  have hbit_x1w : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+    rw [congrFun hzone ⟨0, by omega⟩]; decide
+  have hxx1 : x < kvE2_sepAnchorVal qnf M w x t h σ := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_xx1
+  have hx1w : kvE2_sepAnchorVal qnf M w x t h σ < w := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1w
+  refine ⟨hxx1, hx1w, ?_, ?_⟩
+  · intro χ hχ
+    exact hbelowXU χ (List.mem_filter.mp hχ).2
+  · intro χ hχ
+    exact hbelowUW χ (List.mem_filter.mp hχ).2
+
+/-- **Phase 5D — RIGHT engine-precondition data at the value-ranked anchor.** Right mirror of
+    `kvE2_sepHonestAnchorBundleL` for a RIGHT-interior owner σ (`w < x1_σ < t`): real witnesses in
+    `(w, x1_σ)` for `zWX1`-positive base types and in `(x1_σ, t)` for `zWT`-positive base types,
+    pinned to the canonical `kvE2_sepAnchorVal` anchor. -/
+theorem kvE2_sepHonestAnchorBundleR {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    w < kvE2_sepAnchorVal qnf M w x t h σ ∧ kvE2_sepAnchorVal qnf M w x t h σ < t ∧
+      (∀ χ ∈ kvE2_sepS σ kvE2_sep_zWX1,
+        ∃ u : M.carrier, w < u ∧ u < kvE2_sepAnchorVal qnf M w x t h σ ∧
+          nf_eval_nf M 0 1 (fun _ => u) χ) ∧
+      (∀ χ ∈ kvE2_sepS σ kvE_sub2_zWT,
+        ∃ u : M.carrier, kvE2_sepAnchorVal qnf M w x t h σ < u ∧ u < t ∧
+          nf_eval_nf M 0 1 (fun _ => u) χ) := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
+  have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
+  obtain ⟨hσ_atom, h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
+  have hbit_wx1 : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+    rw [congrFun hzone ⟨0, by omega⟩]; decide
+  have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+    rw [congrFun hzone ⟨2, by omega⟩]; decide
+  have hwx1 : w < kvE2_sepAnchorVal qnf M w x t h σ := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_wx1
+  have hx1t : kvE2_sepAnchorVal qnf M w x t h σ < t := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1t
+  refine ⟨hwx1, hx1t, ?_, ?_⟩
+  · intro χ hχ
+    have hbit : σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true := (List.mem_filter.mp hχ).2
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zWX1 χ).mpr hbit
+    obtain ⟨hp0, hp1, _, _⟩ :=
+      (kvE_sub2_zoneHolds_cons_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t v
+        (true, false) (false, true) (false, true) (true, false)).mp hz
+    exact ⟨v, hp1.2.mpr rfl, hp0.1.mpr rfl, hv⟩
+  · intro χ hχ
+    have hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true := (List.mem_filter.mp hχ).2
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zWT χ).mpr hbit
+    obtain ⟨hp0, _, _, hp3⟩ :=
+      (kvE_sub2_zoneHolds_cons_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t v
+        (false, true) (false, true) (false, true) (true, false)).mp hz
+    exact ⟨v, hp0.2.mpr rfl, hp3.1.mpr rfl, hv⟩
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
