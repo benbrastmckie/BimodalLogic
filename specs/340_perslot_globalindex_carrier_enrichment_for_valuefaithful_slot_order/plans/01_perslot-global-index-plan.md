@@ -233,7 +233,15 @@ Seven proofs (all validated on paper + scratch):
 - **Timing:** 2-4 hours
 - **Depends on:** none
 
-### Phase 2: Carrier type migration — enriched index field, behavior-preserving (green) [NOT STARTED]
+### Phase 2: Carrier type migration — enriched index field, behavior-preserving (green) [COMPLETED]
+
+**GREEN** (2026-07-08). Payload `ℕ`→`ℕ×ℕ×ℕ`; added `kvE2_sepPlaceholderTuple`/`kvE2_sepIdxTuples`
+/`kvE2_sepPlaceholderTuple_mem`; enumeration ranges tuples; `kvE2_sepOwnerRank`/`kvE2_sepOrderOwners`
+project `i₀` (= old owner rank, behavior identical); merge key unchanged (still 2-level lex on
+`giOf`-i₀); `kvE2_sepDisjValid` Nodup on `i₀`; model/coincident supply `(k,n+k,2n+k)`; re-proved
+`mem_aux`/`owners_aux`/model+coincident `mem_orderTypes`/`mem_arr'`/`kvE2_sepArr'_sound`. `lake build`
+green (1013 jobs), sorry-free, `kvE2_sepCoincidentOrder_mem_arr'` axiom-clean
+`{propext, Classical.choice, Quot.sound}`.
 - **Goal:** Land the enriched `KvE2SepWeakOrder` / `kvE2_sepOrderTypes` type carrying the per-slot
   global index, with the merge key TEMPORARILY defined to reproduce 339's exact order, so the WHOLE
   file compiles sorry-free before any behavioral change. This isolates mechanical type-plumbing from
