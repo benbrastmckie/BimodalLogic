@@ -331,31 +331,41 @@ returns nothing (only `kvE2_sepPosI` projections remain); axioms clean on the re
 **Timing**: 2h
 **Depends on**: 2
 
-### Phase 4: Re-anchor kvE2_sepCoincidentOrder and kvE2_sepHonestOrder (rank machinery repair) [NOT STARTED]
+### Phase 4: Re-anchor kvE2_sepCoincidentOrder and kvE2_sepHonestOrder (rank machinery repair) [COMPLETED]
 
 **Goal**: Both canonical witness orders enumerate over `kvE2_sepPosI`; the task-340 5A-5C rank
 machinery and all conjunct proofs repaired so that `hLR` becomes syntactically unused in every
 proof body (setting up Phase 5 as a pure statement deletion).
 
 **Tasks**:
-- [ ] `kvE2_sepCoincidentOrder` (SW:2292) and `kvE2_sepHonestOrder` (SW:3063): `zipIdx` over
+- [x] `kvE2_sepCoincidentOrder` (SW:2292) and `kvE2_sepHonestOrder` (SW:3063): `zipIdx` over
   `kvE2_sepPosI qnf`.
-- [ ] Restate/repair `kvE2_sepZipPayload_flatMap` (SW:~2280) over `kvE2_sepPosI.zipIdx` so the
+- [x] Restate/repair `kvE2_sepZipPayload_flatMap` (SW:~2280) over `kvE2_sepPosI.zipIdx` so the
   conjunct-(iii) Nodup routes still collapse to `kvE2_sepAllSlots.map f` (now definitionally
   aligned, both over `kvE2_sepPosI`).
-- [ ] Repair `kvE2_sepCoincidentOrder_mem_orderTypes`, `kvE2_sepHonestOrder_mem_orderTypes`
+- [x] Repair `kvE2_sepCoincidentOrder_mem_orderTypes`, `kvE2_sepHonestOrder_mem_orderTypes`
   (aux instances now over `kvE2_sepPosI`; tuple bounds unchanged via `kvE2_ordRank_lt` /
-  `kvE2_sepSlotIndexOf_lt`).
-- [ ] Re-check the 5A-5C rank machinery (SW:2531ff): `kvE2_sepSlotHonestGIdx` and its
+  `kvE2_sepSlotIndexOf_lt`). *(deviation: altered — the interim `hpos` binders Phase 3
+  installed were deleted; both lemmas are now UNCONDITIONAL, and `kvE2_sepPosI_eq_pos`
+  itself was deleted with zero remaining references)*
+- [x] Re-check the 5A-5C rank machinery (SW:2531ff): `kvE2_sepSlotHonestGIdx` and its
   injectivity are over `kvE2_sepAllSlots` — repair defeq-sensitive steps with
   `kvE2_sepAllSlots_eq_pos` where needed. Do NOT change the lex (value, slotIndex) payload —
   it stays the injective strict-order payload (Phase 9 adds the separate tie-reporting order).
-- [ ] In the four `hLR` theorems' proof bodies (SW:2445, 2489, 3095, 4249): membership now gives
+  *(deviation: altered — 5A-5C compiled unchanged (statement-level over `kvE2_sepAllSlots`);
+  the carrier-sensitive repairs instead landed in the 337 halign layer:
+  `kvE2_sepSlotGIdx_honestOrder`'s `find?` resolution now runs over `kvE2_sepPosI.zipIdx`
+  (membership via `kvE2_sepMem_posI_of_slot`), and the `valueSorted` pair's inline `hwo`
+  owner projection is now `= kvE2_sepPosI` with `kvE2_sepPosI_subset` feeding the mono calls)*
+- [x] In the four `hLR` theorems' proof bodies (SW:2445, 2489, 3095, 4249): membership now gives
   `hσmem : σ ∈ kvE2_sepPosI qnf`; replace every `rcases hLR σ hσmem with hzone | hzone` by
   `rcases (kvE2_sepPosI_mem …).mp hσmem |>.2 with hzone | hzone` (or via `kvE2_sepPosI_zone`),
   leaving `hLR` present in the statement but unused in the proof. Where a lemma needs
-  `σ ∈ kvE2_sepPos`, use `kvE2_sepPosI_subset`.
-- [ ] Full `lake build`; confirm `kvE2_sepHonest_hLR_absurd` (SW:4618) untouched by this diff.
+  `σ ∈ kvE2_sepPos`, use `kvE2_sepPosI_subset`. *(note: `kvE2_sepBody_complete_holds` has no
+  `rcases hLR`; it still forwards `hLR` to `kvE2_sepHonestOrder_mem_arr'`, whose binder
+  Phase 5 deletes — the only remaining destructuring use of `hLR` in the file is inside
+  `kvE2_sepHonest_hLR_absurd`, by design)*
+- [x] Full `lake build`; confirm `kvE2_sepHonest_hLR_absurd` (SW:4618) untouched by this diff.
 
 **Estimated output**: ~150-300 lines of diff.
 **Done when**: build green; the four theorems compile with `hLR` unused in proof bodies (verify:
