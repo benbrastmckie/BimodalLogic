@@ -338,6 +338,18 @@ theorems total.
 
 ### Phase 6: `value_j`→engine-point binding + honest per-slot order over `Fin N` (green) [NOT STARTED]
 
+**Foundation landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed):** handoff
+step (1) — the model-independent per-individual-slot family — is now in `SharedWitness.lean`:
+`kvE2_sepSlotBlock` (σ's LEFT++RIGHT block), `kvE2_sepAllSlots` (the full `Fin N` family),
+`kvE2_sepSlotIndexOf` (= `idxOf`), with `kvE2_sepSlotSub_of_mem_block`, `kvE2_sepMem_allSlots`,
+`kvE2_sepMem_slotBlock`, the load-bearing `kvE2_sepAllSlots_nodup` (per-block Nodup + cross-owner
+disjointness), and `kvE2_sepSlotIndexOf_lt` / `kvE2_sepSlotIndexOf_injOn` (the `Fin N` bound +
+structural injectivity for `G`'s index coordinate). Axiom-clean `{propext, Classical.choice,
+Quot.sound}`. The remaining Phase-6 work (the `value_j` binding from the honest bundles + defining
+`kvE2_sepHonestOrder` FROM `kvE2_ordRank G (slotIndexOf s)`, `G j = (value_j, j)` over `Fin N`) is
+still to do, and is COUPLED with Phases 3+4 (variable-length payload + per-slot reader + N-bound
+enumeration) — see the critical-coupling note in `.orchestrator-handoff.json`.
+
 **Design element 1 (report 08).** Prove the value-assignment lemma binding each base slot's rank key
 `value_j` to the engine's realized point, and the bridge "carrier index = value rank of realized
 points". Define `kvE2_sepHonestOrder` via `kvE2_ordRank G (slotIndexOf s)` with `G j = (value_j, j)`
