@@ -2342,8 +2342,15 @@ noncomputable def kvE2_sepBody {sig : MonadicSignature}
           -- Task 338 Phase 4: CONSUME `wo` — each disjunct realizes its OWN cross-owner slot
           -- order `kvE2_sepSlotsLOf/ROf wo` (the per-owner blocks sequenced by wo's merged-chain
           -- rank), NEVER the discarded-`_wo` fixed concatenation `kvE2_sepSlotsL/R qnf` (root bug).
+          -- Task 342 Phase 7: meet-folded GROUPED disjuncts — one strict bracket slot per tie
+          -- class (`kvE2_sepTieGroupedL/R wo`, the index-level tie classes), point type = the
+          -- meet of the tied slot types (`kvE2_sepDisjunct'`). On a Nodup payload the groups
+          -- are singletons and the disjunct agrees with the flat per-slot builder
+          -- (`kvE2_sepDisjunct'_map_singleton_iff`). Strict-quotient guard: ties collapse the
+          -- index, never the bracket.
           (kvE2_sepArr' qnf).map fun wo =>
-            kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo) })
+            kvE2_sepDisjunct' charBase charK qnf
+              (kvE2_sepTieGroupedL wo) (kvE2_sepTieGroupedR wo) })
     (fun _ => { disjuncts := [] })
 
 /-- Gate-failure computation (mirror of the landed `_gate_fail` house pattern). -/
@@ -2371,8 +2378,8 @@ theorem kvE2_sepBody_holds_iff {sig : MonadicSignature}
     (x t : M.carrier) :
     (kvE2_sepBody charBase charK qnf).holds M atomMap x t ↔
       ∃ wo ∈ kvE2_sepArr' qnf,
-        (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds
-          M atomMap x t := by
+        (kvE2_sepDisjunct' charBase charK qnf
+          (kvE2_sepTieGroupedL wo) (kvE2_sepTieGroupedR wo)).2.holds M atomMap x t := by
   simp only [kvE2_sepBody]
   rw [dif_pos hg]
   simp only [VVecEA2.holds, List.mem_map]
@@ -2918,8 +2925,9 @@ theorem kvE2_sepBody_nonvacuous {sig : MonadicSignature}
   simp only [kvE2_sepBody]
   split
   case isTrue _ =>
-    apply List.ne_nil_of_mem (a := kvE2_sepDisjunct charBase charK qnf
-      (kvE2_sepSlotsLOf (kvE2_sepModelOrder qnf)) (kvE2_sepSlotsROf (kvE2_sepModelOrder qnf)))
+    apply List.ne_nil_of_mem (a := kvE2_sepDisjunct' charBase charK qnf
+      (kvE2_sepTieGroupedL (kvE2_sepModelOrder qnf))
+      (kvE2_sepTieGroupedR (kvE2_sepModelOrder qnf)))
     exact List.mem_map.mpr
       ⟨kvE2_sepModelOrder qnf, kvE2_sepArr'_mem_modelOrder qnf hvalid, rfl⟩
   case isFalse hg =>
@@ -4970,27 +4978,11 @@ the keystone-strict anchor family + `kvE2_ordRank_strictMono`, `hnd` per-zone ba
 base witness forced onto an anchor (report 06 R3) — is task 337's territory, NOT a carrier change.
 Below is the complete, axiom-clean reduction taking that one `.holds` as the delegated step. -/
 
-/-- **Phase 5D — the completeness hand-off to task 337.** Given an honest realization and the
-    realization of the honest disjunct's own bracket (`hdisj`, the single 337-owned `.holds`),
-    the separated body holds at the fixed endpoints `x`, `t`. Wires the Phase-5B carrier member
-    `kvE2_sepHonestOrder_mem_arr'` into `kvE2_sepBody_holds_iff.mpr`. UNCONDITIONAL (task 342
-    Part I): owner interiority is a construction invariant of the `kvE2_sepPosI` index — no
-    interiority hypothesis (Rabinovich §5, p.7; `kvE2_sepHonest_hLR_absurd` documents why none
-    may return). Complete and axiom-clean UP TO the delegated `.holds` — the sanctioned Phase-5
-    completion boundary. -/
-theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
-    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hdisj : (kvE2_sepDisjunct charBase charK qnf
-        (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h))
-        (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h))).2.holds M atomMap x t) :
-    (kvE2_sepBody charBase charK qnf).holds M atomMap x t := by
-  rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t]
-  exact ⟨kvE2_sepHonestOrder qnf M w x t h,
-    kvE2_sepHonestOrder_mem_arr' qnf M w x t hxw hwt h, hdisj⟩
+-- NOTE (task 342 Phase 7): `kvE2_sepBody_complete_holds` (Phase 5D, the completeness
+-- hand-off to task 337) is RELOCATED below the grouped/flat singleton-compatibility block —
+-- post-rewire the carrier emits GROUPED disjuncts, and the flat `hdisj` is converted via
+-- `kvE2_sepDisjunct'_map_singleton_iff` on the honest order's singleton tie classes
+-- (`kvE2_sepHonestOrder_slotsLOf/ROf_gidx_nodup`). Statement unchanged.
 
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
@@ -5572,6 +5564,35 @@ theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature}
       show List.Sublist (kvE2_sepSlotsRFor σ) (kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ)
       exact List.sublist_append_right _ _)
 
+/-- **Phase 5D — the completeness hand-off to task 337** (RELOCATED here in task 342
+    Phase 7; statement unchanged). Given an honest realization and the realization of the
+    honest disjunct's own FLAT bracket (`hdisj`, the single 337-owned `.holds`), the
+    separated body holds at the fixed endpoints `x`, `t`. Wires the Phase-5B carrier member
+    `kvE2_sepHonestOrder_mem_arr'` into `kvE2_sepBody_holds_iff.mpr`; post-rewire the
+    carrier's disjunct is GROUPED, and the honest order's `kvE2_sepSlotGIdx` payload is
+    `Nodup` (`kvE2_sepHonestOrder_slotsLOf/ROf_gidx_nodup`), so its tie classes are
+    singletons and the flat `hdisj` converts via `kvE2_sepDisjunct'_map_singleton_iff`.
+    UNCONDITIONAL (task 342 Part I): owner interiority is a construction invariant of the
+    `kvE2_sepPosI` index — no interiority hypothesis (Rabinovich §5, p.7;
+    `kvE2_sepHonest_hLR_absurd` documents why none may return). Complete and axiom-clean UP
+    TO the delegated `.holds` — the sanctioned Phase-5 completion boundary. -/
+theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hdisj : (kvE2_sepDisjunct charBase charK qnf
+        (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h))
+        (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h))).2.holds M atomMap x t) :
+    (kvE2_sepBody charBase charK qnf).holds M atomMap x t := by
+  rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t]
+  refine ⟨kvE2_sepHonestOrder qnf M w x t h,
+    kvE2_sepHonestOrder_mem_arr' qnf M w x t hxw hwt h, ?_⟩
+  rw [kvE2_sepTieGroupedL_of_nodup _ (kvE2_sepHonestOrder_slotsLOf_gidx_nodup qnf M w x t h),
+    kvE2_sepTieGroupedR_of_nodup _ (kvE2_sepHonestOrder_slotsROf_gidx_nodup qnf M w x t h)]
+  exact (kvE2_sepDisjunct'_map_singleton_iff charBase charK qnf _ _ M atomMap x t).mpr hdisj
+
 /-- **Phase-3 adversarial finding (task 337, cycle 11): the interior-restriction hypothesis
     `hLR` is INCONSISTENT with the honest evaluation `h`.** The characteristic depth-1 type
     `σ_w` of the configuration `(w; w, x, t)` — the shared witness read AT ITSELF — is always
@@ -5791,7 +5812,16 @@ theorem kvE2_sepDisjunct_halves {sig : MonadicSignature}
     `hpairL`/`hpairR` on those lists (the ordering the extraction reads for same-owner slot
     location) are passed as hypotheses. They hold whenever the canonical union is a single
     region-sorted block (e.g. the singleton configuration; the general multi-owner pairwise
-    discharge is the completeness-side Phase-8 obligation). -/
+    discharge is the completeness-side Phase-8 obligation).
+
+    Task 342 Phase 7 (deviation, annotated): the carrier now emits GROUPED meet-folded
+    disjuncts, so this extraction additionally takes `hnd` — every realized weak order's
+    `kvE2_sepSlotGIdx` payload is duplicate-free — restricting it to the TIE-FREE
+    configuration, where the groups are singletons and the grouped disjunct converts to the
+    flat one (`kvE2_sepDisjunct'_map_singleton_iff`) feeding `kvE2_sepDisjunct_extract`
+    unchanged. The genuinely tie-admitting extraction (reading per-class witnesses through
+    `kvE2_sepClassType_eval_mem`) is the Phases 8-10 arbitration item, NOT a Phase-7
+    obligation. -/
 theorem kvE2_sepBody_extract {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
@@ -5800,6 +5830,9 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
       (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
     (hpairR : ∀ wo ∈ kvE2_sepArr' qnf,
       (kvE2_sepSlotsROf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
+    (hnd : ∀ wo ∈ kvE2_sepArr' qnf,
+      ((kvE2_sepSlotsLOf wo).map (kvE2_sepSlotGIdx wo)).Nodup ∧
+        ((kvE2_sepSlotsROf wo).map (kvE2_sepSlotGIdx wo)).Nodup)
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
     (h : (kvE2_sepBody charBase charK qnf).holds M atomMap x t) :
@@ -5815,6 +5848,11 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
   · rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t] at h
     obtain ⟨wo, hwo, hd⟩ := h
     have hwo' : wo ∈ kvE2_sepOrderTypes qnf := (List.mem_filter.mp hwo).1
+    -- Task 342 Phase 7: tie-free conversion — `hnd` makes the tie classes singletons, so
+    -- the grouped disjunct realization converts to the flat one.
+    rw [kvE2_sepTieGroupedL_of_nodup wo (hnd wo hwo).1,
+      kvE2_sepTieGroupedR_of_nodup wo (hnd wo hwo).2,
+      kvE2_sepDisjunct'_map_singleton_iff charBase charK qnf _ _ M atomMap x t] at hd
     -- Task 342 Phase 5: `kvE2_sepDisjunct_extract`'s `hmemL/hmemR` now quantify over the
     -- interior index `kvE2_sepPosI`, matching `kvE2_sepSlotsL/ROf_mem` directly.
     exact kvE2_sepDisjunct_extract charBase charK qnf
