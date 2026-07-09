@@ -764,6 +764,73 @@ theorem kvE2_sepIdxTuple_mem_of_lt (n a b c : ℕ)
   rw [List.mem_map]
   exact ⟨c, List.mem_range.mpr hc, rfl⟩
 
+/-! ### Task 340 Phase 5 — abstract lex-rank kernel (model-agnostic sort spec)
+
+The honest-order construction (steps 2/4/5 of the Phase-5 map) reduces every one of its obligations
+— the in-range bound `i < 3n`, the per-owner consistency `i₀<i₁<i₂`, the cross-owner `Nodup`, and
+the cross-region `a<u'<b` monotonicity — to ONE spec: the rank of an element in a finite family
+under a STRICT total order is `< n`, strictly monotone, and injective. The construction takes the
+strict order to be the LEX product `(model value, slot index)`, so that ties in the model value are
+broken by the (always distinct) slot index. This is exactly what the distinctness crux (SW:1585)
+forces: distinct owners may share witness values, so value alone is NOT a strict order; the index
+tiebreak makes it one WITHOUT any (unprovable) value-distinctness hypothesis. Pure `Finset.card`
+combinatorics; reads no model data; abstract over any `LinearOrder` (F4/LITMUS clean). -/
+
+/-- **Rank of `i` under a strict family** (task 340 Phase 5): the number of indices whose `g`-value
+    is strictly smaller. When `g` is injective this is the 0-based position of `i` in the ascending
+    sort of `g` — a bijection `Fin n → Fin n`'s underlying position map. The honest order uses
+    `g = (model value, slot index)` in the lex order. -/
+def kvE2_ordRank {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin n → β) (i : Fin n) : ℕ :=
+  (Finset.univ.filter (fun j => g j < g i)).card
+
+/-- Every rank is `< n` (it counts a subset of the `n-1` indices other than `i`). Gives the
+    `< 3n` enumeration-membership bound the honest tuple feeds to `kvE2_sepIdxTuple_mem_of_lt`. -/
+theorem kvE2_ordRank_lt {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin n → β) (i : Fin n) :
+    kvE2_ordRank g i < n := by
+  have hsub : Finset.univ.filter (fun j => g j < g i) ⊆ Finset.univ.erase i := by
+    intro j hj
+    rw [Finset.mem_filter] at hj
+    rw [Finset.mem_erase]
+    refine ⟨?_, Finset.mem_univ j⟩
+    rintro rfl
+    exact lt_irrefl _ hj.2
+  have hn : 0 < n := i.pos
+  calc kvE2_ordRank g i ≤ (Finset.univ.erase i).card := Finset.card_le_card hsub
+    _ = n - 1 := by
+        rw [Finset.card_erase_of_mem (Finset.mem_univ i), Finset.card_univ, Fintype.card_fin]
+    _ < n := by omega
+
+/-- **Strict monotonicity** (task 340 Phase 5): a strictly smaller `g`-value has a strictly smaller
+    rank. Supplies BOTH the per-owner consistency `i₀<i₁<i₂` (from the bundle chain `val₀<val₁<val₂`)
+    AND the cross-region `a<u'<b` monotonicity (from `val(σ,2) < val(τ,1)`). Needs only the single
+    strict inequality — no value-distinctness. -/
+theorem kvE2_ordRank_strictMono {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin n → β) {a b : Fin n}
+    (hab : g a < g b) : kvE2_ordRank g a < kvE2_ordRank g b := by
+  have hsub : Finset.univ.filter (fun j => g j < g a) ⊆ Finset.univ.filter (fun j => g j < g b) := by
+    intro j hj
+    rw [Finset.mem_filter] at hj ⊢
+    exact ⟨hj.1, lt_trans hj.2 hab⟩
+  apply Finset.card_lt_card
+  rw [Finset.ssubset_iff_of_subset hsub]
+  refine ⟨a, Finset.mem_filter.mpr ⟨Finset.mem_univ a, hab⟩, ?_⟩
+  rw [Finset.mem_filter]
+  push_neg
+  intro _
+  exact le_refl _
+
+/-- **Injectivity** (task 340 Phase 5): an injective family has an injective rank — the ranks are
+    `n` distinct values in `[0,n)`, hence a permutation of `Fin n`. Supplies the cross-owner `Nodup`
+    conjunct of `kvE2_sepDisjValid` (the honest `g = (value, index)` is injective in its index
+    component, so distinct slots get distinct ranks even when model values coincide). -/
+theorem kvE2_ordRank_injective {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin n → β)
+    (hg : Function.Injective g) : Function.Injective (kvE2_ordRank g) := by
+  intro a b hrank
+  by_contra hne
+  rcases lt_trichotomy (g a) (g b) with h | h | h
+  · exact absurd hrank (Nat.ne_of_lt (kvE2_ordRank_strictMono g h))
+  · exact hne (hg h)
+  · exact absurd hrank.symm (Nat.ne_of_lt (kvE2_ordRank_strictMono g h))
+
 /-- **General order-type-disjunction index** (Lemma 3.2(1), md:77): the finite `List` of weak
     orders on `A` — all per-owner (placement tag × per-slot global-index tuple) assignments, built as
     the cartesian `foldr` product over `kvE2_sepPos qnf`, with the tuple component ranging over
