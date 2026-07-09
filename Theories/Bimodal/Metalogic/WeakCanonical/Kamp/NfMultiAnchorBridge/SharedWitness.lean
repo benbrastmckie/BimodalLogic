@@ -641,7 +641,7 @@ theorem kvE2_sepSlotBlock_region_rank_sorted {sig : MonadicSignature} (σ : Norm
       = kvE2_sepSlotRegionLeft b) => h)
   intro a ha b hb hreg
   rw [kvE2_sepSlotsLFor_regionLeft σ ha, kvE2_sepSlotsRFor_regionRight σ hb] at hreg
-  exact absurd hreg (by decide)
+  exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
 
 /-- **Block-position alignment** (task 340 Phase 3 flip): within one region, a strictly smaller
     rank occupies a strictly earlier block position. The contrapositive of within-region rank
@@ -2948,6 +2948,108 @@ theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature}
     kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec (hbelowXU χ (List.mem_filter.mp hχ).2)
+
+/-- **Within-region value ordering** (task 340 Phase 7 conjunct (ii), the honest-consistency crux):
+    for two slots of the same owner σ in the same region with a strictly smaller region rank, the
+    smaller-rank slot's `value` is strictly smaller. Each region's rank-0/1/2 slots realize their
+    types in the nested intervals `(x,x1_σ) < x1_σ < (x1_σ,w)` (left) / `(w,x1_σ) < x1_σ < (x1_σ,t)`
+    (right) pinned by the value specs. Feeds `kvE2_sepSlotHonestGIdx_mono` to give honest consistency. -/
+theorem kvE2_sepSlotValue_region_rank_mono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {a b : KvE2SepSlot sig} (hamem : a ∈ kvE2_sepSlotBlock σ) (hbmem : b ∈ kvE2_sepSlotBlock σ)
+    (hreg : kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b)
+    (hrank : kvE2_sepSlotRank a < kvE2_sepSlotRank b) :
+    kvE2_sepSlotValue qnf M w x t h a < kvE2_sepSlotValue qnf M w x t h b := by
+  rw [kvE2_sepMem_slotBlock] at hamem hbmem
+  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_pos hz1, if_pos hz1] at hamem hbmem
+    rcases hamem with haL | haR
+    · rcases List.mem_append.mp haL with ha | ha
+      · obtain ⟨χa, hχa, rfl⟩ := List.mem_map.mp ha
+        rcases hbmem with hbL | hbR
+        · rcases List.mem_append.mp hbL with hb | hb
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+          · rcases List.mem_cons.mp hb with rfl | hb
+            · rw [kvE2_sepSlotValue_lX1]
+              exact (kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h σ hσ hz1 χa hχa).2.1
+            · obtain ⟨χb, hχb, rfl⟩ := List.mem_map.mp hb
+              exact lt_trans (kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h σ hσ hz1 χa hχa).2.1
+                (kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h σ hσ hz1 χb hχb).1
+        · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+      · rcases List.mem_cons.mp ha with rfl | ha
+        · rcases hbmem with hbL | hbR
+          · rcases List.mem_append.mp hbL with hb | hb
+            · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+            · rcases List.mem_cons.mp hb with rfl | hb
+              · exact absurd hrank (by simp [kvE2_sepSlotRank])
+              · obtain ⟨χb, hχb, rfl⟩ := List.mem_map.mp hb
+                rw [kvE2_sepSlotValue_lX1]
+                exact (kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h σ hσ hz1 χb hχb).1
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+        · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+          rcases hbmem with hbL | hbR
+          · rcases List.mem_append.mp hbL with hb | hb
+            · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+            · rcases List.mem_cons.mp hb with rfl | hb
+              · exact absurd hrank (by simp [kvE2_sepSlotRank])
+              · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+    · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp haR
+      rcases hbmem with hbL | hbR
+      · rcases List.mem_append.mp hbL with hb | hb
+        · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+        · rcases List.mem_cons.mp hb with rfl | hb
+          · exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+      · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbR; exact absurd hrank (by simp [kvE2_sepSlotRank])
+  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1, if_pos hz2, if_pos hz2]
+        at hamem hbmem
+      rcases hamem with haL | haR
+      · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp haL
+        rcases hbmem with hbL | hbR
+        · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hrank (by simp [kvE2_sepSlotRank])
+        · rcases List.mem_append.mp hbR with hb | hb
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+          · rcases List.mem_cons.mp hb with rfl | hb
+            · exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+            · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+      · rcases List.mem_append.mp haR with ha | ha
+        · obtain ⟨χa, hχa, rfl⟩ := List.mem_map.mp ha
+          rcases hbmem with hbL | hbR
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+          · rcases List.mem_append.mp hbR with hb | hb
+            · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+            · rcases List.mem_cons.mp hb with rfl | hb
+              · rw [kvE2_sepSlotValue_rX1]
+                exact (kvE2_sepSlotValue_rWX1_spec qnf M w x t hxw hwt h σ hσ hz2 χa hχa).2.1
+              · obtain ⟨χb, hχb, rfl⟩ := List.mem_map.mp hb
+                exact lt_trans (kvE2_sepSlotValue_rWX1_spec qnf M w x t hxw hwt h σ hσ hz2 χa hχa).2.1
+                  (kvE2_sepSlotValue_rX1T_spec qnf M w x t hxw hwt h σ hσ hz2 χb hχb).1
+        · rcases List.mem_cons.mp ha with rfl | ha
+          · rcases hbmem with hbL | hbR
+            · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+            · rcases List.mem_append.mp hbR with hb | hb
+              · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+              · rcases List.mem_cons.mp hb with rfl | hb
+                · exact absurd hrank (by simp [kvE2_sepSlotRank])
+                · obtain ⟨χb, hχb, rfl⟩ := List.mem_map.mp hb
+                  rw [kvE2_sepSlotValue_rX1]
+                  exact (kvE2_sepSlotValue_rX1T_spec qnf M w x t hxw hwt h σ hσ hz2 χb hχb).1
+          · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+            rcases hbmem with hbL | hbR
+            · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hbL; exact absurd hreg (by simp [kvE2_sepSlotRegionLeft])
+            · rcases List.mem_append.mp hbR with hb | hb
+              · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+              · rcases List.mem_cons.mp hb with rfl | hb
+                · exact absurd hrank (by simp [kvE2_sepSlotRank])
+                · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; exact absurd hrank (by simp [kvE2_sepSlotRank])
+    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1, if_neg hz2, if_neg hz2]
+        at hamem
+      simp only [List.not_mem_nil, or_self] at hamem
 
 /-- **The lex value family `G`** (Phase 6): over the full individual-slot family `Fin N`
     (`N = (kvE2_sepAllSlots qnf).length`), `G j = (value_j, j)` in the LEX product
