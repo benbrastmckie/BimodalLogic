@@ -461,41 +461,56 @@ round-trip lemma (`flatten` = sorted list) proved; no OPEN-key read added anywhe
 **Timing**: 2-2.5h
 **Depends on**: 5
 
-### Phase 7: Meet-folded grouped disjunct builder and kvE2_sepBody rewire [NOT STARTED]
+### Phase 7: Meet-folded grouped disjunct builder and kvE2_sepBody rewire [COMPLETED]
 
 **Goal**: One bracket slot per tie class; `kvE2_sepBody` emits grouped disjuncts;
 `kvE2_sepBody_holds_iff` and `kvE2_sepBody_complete_holds` restated over the grouped builder.
 
 **Tasks**:
-- [ ] Grouped segment dispatcher: cut `i` of a grouped list `gL` reuses the EXISTING per-cut
+- [x] Grouped segment dispatcher: cut `i` of a grouped list `gL` reuses the EXISTING per-cut
   refined conjunctions (SW:983-997) evaluated at the flat prefix — i.e. segment at grouped cut
   `i` = `kvE2_sepSegLAt charBase qnf gL.flatten ((gL.take i).flatten).length` (segments between
   two members of one tie class disappear with the slot; segments already meet-fold across all
   owners per cut, so tie folding is point-type grouping + cut reindexing ONLY — no new β
   machinery). Mirror for the right region; wrap as `kvE2_sepSegsG`.
-- [ ] `kvE2_sepDisjunct'` (TOP-LEVEL def, crux failed-closer-3 lesson: no let-buried builders),
+- [x] `kvE2_sepDisjunct'` (TOP-LEVEL def, crux failed-closer-3 lesson: no let-buried builders),
   consuming `gL gR : List (List (KvE2SepSlot sig))`:
   point types `gL.map (fun c => ⟨formula_conjList (c.map (kvE2_sepSlotType charBase charK))⟩)`,
   shared `ptW`, right mirror, `kvE2_sepBracketN` reused as-is, segments `kvE2_sepSegsG`.
   Docstring: strict-quotient guard (one slot per tie class; emitted disjunct is a strict Def-3.1
   bracket; forced by Def 3.1 (p.4), corroborated k=m (p.7) + Def 7.5 (p.13); Lemma 3.2(1) states
-  the closure without printed proof).
-- [ ] Singleton-compatibility lemma at `.holds` level (NOT syntactic): if every class of
+  the closure without printed proof). *(deviation: altered — point types via the named
+  `kvE2_sepClassType` (projects `.formula` off each slot type before `formula_conjList`), so
+  the class type is a first-class def the per-class eval lemmas attach to)*
+- [x] Singleton-compatibility lemma at `.holds` level (NOT syntactic): if every class of
   `gL`/`gR` is a singleton with `gL.flatten = lL`, `gR.flatten = lR`, then
   `(kvE2_sepDisjunct' … gL gR).2.holds M atomMap x t ↔ (kvE2_sepDisjunct … lL lR).2.holds M atomMap x t`
   (pointwise: `formula_conjList [f]` eval-equals `f`; segments align by cut arithmetic).
-- [ ] Small per-class evaluation helper (the only extraction-side deliverable this task owes):
+  Landed as `kvE2_sepDisjunct'_singleton_iff` (plan shape) over the core
+  `kvE2_sepDisjunct'_map_singleton_iff` (`gL = lL.map ([·])` shape, the form the Nodup
+  rewrites produce) and the private `kvE2_sepBracketN_holds_congr`.
+- [x] Small per-class evaluation helper (the only extraction-side deliverable this task owes):
   a realized class point of type `formula_conjList (c.map …)` realizes each member's type
-  (`formula_conjList` eval ⟹ each conjunct) — consumed by the 337 re-plan.
-- [ ] Rewire `kvE2_sepBody` (SW:1645): `(kvE2_sepArr' qnf).map fun wo => kvE2_sepDisjunct' charBase charK qnf (kvE2_sepTieGroupedL wo) (kvE2_sepTieGroupedR wo)`.
-- [ ] Restate `kvE2_sepBody_holds_iff` (SW:1682) over the grouped builder (same
+  (`formula_conjList` eval ⟹ each conjunct) — consumed by the 337 re-plan. Landed as
+  `kvE2_sepClassType_eval_iff` / `kvE2_sepClassType_eval_mem` / `_singleton_eval`.
+- [x] Rewire `kvE2_sepBody` (SW:1645): `(kvE2_sepArr' qnf).map fun wo => kvE2_sepDisjunct' charBase charK qnf (kvE2_sepTieGroupedL wo) (kvE2_sepTieGroupedR wo)`.
+- [x] Restate `kvE2_sepBody_holds_iff` (SW:1682) over the grouped builder (same
   `dif_pos`/`holds_flatMap_map` route).
-- [ ] Restate `kvE2_sepBody_complete_holds`: `hdisj` becomes the grouped disjunct of the (strict,
+- [x] Restate `kvE2_sepBody_complete_holds`: `hdisj` becomes the grouped disjunct of the (strict,
   Phase 4) `kvE2_sepHonestOrder` — its payload is Nodup, so `kvE2_sepTieGroupedL/R` are
   singletons and the proof wires through `holds_iff'` + `HonestOrder_mem_arr'` exactly as before.
-- [ ] `kvE2_sepDisjunct_extract` and `kvE2_sepBracketN_construct` are parametric in flat lists —
-  confirm untouched and still green.
-- [ ] Full `lake build`.
+  *(deviation: altered — `hdisj` KEPT in the FLAT shape (statement unchanged, preserving the
+  337-owned `.holds` interface); the proof converts flat→grouped via
+  `kvE2_sepDisjunct'_map_singleton_iff` on the honest Nodup payload
+  (`kvE2_sepHonestOrder_slotsLOf/ROf_gidx_nodup`, new). Theorem RELOCATED below the
+  singleton-compat block; Phase 9's `kvE2_sepBody_complete_holds'` takes the grouped shape.)*
+- [x] `kvE2_sepDisjunct_extract` and `kvE2_sepBracketN_construct` are parametric in flat lists —
+  confirm untouched and still green. *(deviation: altered — the CARRIER-level
+  `kvE2_sepBody_extract` (not in this task list, but a holds_iff consumer) gained an `hnd`
+  per-wo Nodup hypothesis restricting it to the tie-free configuration; grouped→flat via the
+  singleton-compat lemma, then `kvE2_sepDisjunct_extract` unchanged. The tie-admitting
+  extraction is the Phases 8-10 arbitration item.)*
+- [x] Full `lake build`.
 
 **Estimated output**: ~250-400 lines.
 **Done when**: build green; `kvE2_sepBody_complete_holds` axiom-clean over the grouped builder;
