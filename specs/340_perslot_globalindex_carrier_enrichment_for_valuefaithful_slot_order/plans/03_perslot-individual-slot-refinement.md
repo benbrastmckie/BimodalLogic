@@ -316,10 +316,20 @@ sameRegion(B[j],B[k]) → kvE2_sepSlotRank B[j] < kvE2_sepSlotRank B[k] → t.ge
 with `B = kvE2_sepSlotBlock σ` (owner now threaded via `kvE2_sepDisjValid` calling
 `kvE2_sepConsistentTuple p.1 p.2.2`). Conjunct (iii) → global `Nodup` over `wo.flatMap (·.2.2)`.
 
-Remaining: generalize `kvE2_sepConsistentTuple` (region-scoped, owner-threaded), rebuild
-`kvE2_sepDisjValid` (iii) global Nodup, thread the σ-dependent enumeration through
-`kvE2_sepOrderTypes` + `kvE2_sepOrderTypes_mem_aux` + `kvE2_sepOrderTypes_owners_aux`. COUPLED with
-Phase 4 + the model/coincident re-proofs (Phase 5) — atomic RED→GREEN.
+**Foundation landed (dispatch sess_1783578954_3bce55_340, 10 additive/green commits `phase 3.2`-`3.6`,
+`5.1`-`5.2`, `7.1`-`7.2`):** region tag (`kvE2_sepSlotRegionLeft`); within-region rank sortedness +
+block-position alignment (`kvE2_sepSlotBlock_region_rank_sorted`, `kvE2_sepBlock_pos_lt_of_rank_lt`);
+`kvE2_sepSlotIndexOf_block_mono`; the REGION-SCOPED consistency predicate `kvE2_sepConsistentBlock`
+(crux-corrected) + BOTH consistency proofs (`_slotIndexOf` prefix-sum, `_honest` value-rank via the
+crux `kvE2_sepSlotValue_region_rank_mono`); BOTH global-Nodup lemmas; enumeration-parametric
+`kvE2_sepOrderTypes_mem_aux'`/`_owners_aux'`; payload-flatten `kvE2_sepZipPayload_flatMap`. The atomic
+swap consuming these is logically complete/correct (saved `swap-attempt-cycle2.patch`) but reverted
+this dispatch for declaration reordering + the mergeSort-sortedness consumer layer (SW:1614-1627,
+1798-1860) — see `.orchestrator-handoff.json`.
+
+Remaining: apply the swap patch, relocate 3 declaration clusters (topological), mark 2 defs
+noncomputable, fix `kvE2_sepArr'_sound` conclusion, and re-prove the mergeSort-sortedness consumers
+against the `kvE2_sepBlockPos` reader. No new mathematics remains.
 
 Generalize `kvE2_sepConsistentTuple` (SW:~902) from the per-owner `i₀<i₁<i₂` 3-chain to per-slot
 **region-rank monotonicity**: every `lXU`-gidx < the owner's anchor-gidx < every `lUW`-gidx (the
