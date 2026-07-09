@@ -660,6 +660,41 @@ theorem kvE2_sepBlock_pos_lt_of_rank_lt {sig : MonadicSignature} (σ : NormalFor
   · have hp := (List.pairwise_iff_get.mp (kvE2_sepSlotBlock_region_rank_sorted σ)) k j h
     exact absurd (hp hreg.symm) (by omega)
 
+/-- **Global index is monotone along the block** (task 340 Phase 3/5 flip): within one owner's
+    block, a strictly earlier block position has a strictly smaller global slot index. Because the
+    block occurs as a contiguous `Nodup` infix of `kvE2_sepAllSlots`, `kvE2_sepSlotIndexOf` of the
+    `i`-th block slot is `(prefix length) + i`. Feeds the model/coincident prefix-sum consistency
+    (payload `block.map kvE2_sepSlotIndexOf`). -/
+theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {j k : Fin (kvE2_sepSlotBlock σ).length} (hjk : j.val < k.val) :
+    kvE2_sepSlotIndexOf qnf ((kvE2_sepSlotBlock σ).get j)
+      < kvE2_sepSlotIndexOf qnf ((kvE2_sepSlotBlock σ).get k) := by
+  have hposnd : (kvE2_sepPos qnf).Nodup := List.Nodup.filter _ (Finset.nodup_toList _)
+  obtain ⟨pre, post, hpos⟩ := List.append_of_mem hσ
+  have hσpre : σ ∉ pre := by
+    rw [hpos] at hposnd
+    intro hc
+    exact (List.nodup_append.mp hposnd).2.2 σ hc σ List.mem_cons_self rfl
+  have hall : kvE2_sepAllSlots qnf
+      = pre.flatMap kvE2_sepSlotBlock
+        ++ (kvE2_sepSlotBlock σ ++ post.flatMap kvE2_sepSlotBlock) := by
+    rw [kvE2_sepAllSlots, hpos, List.flatMap_append, List.flatMap_cons]
+  have hoff : ∀ (i : Fin (kvE2_sepSlotBlock σ).length),
+      kvE2_sepSlotIndexOf qnf ((kvE2_sepSlotBlock σ).get i)
+        = (pre.flatMap kvE2_sepSlotBlock).length + i.val := by
+    intro i
+    have hmem : (kvE2_sepSlotBlock σ).get i ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
+    have hnotP : (kvE2_sepSlotBlock σ).get i ∉ pre.flatMap kvE2_sepSlotBlock := by
+      intro hc
+      obtain ⟨τ, hτ, hsτ⟩ := List.mem_flatMap.mp hc
+      have hst : σ = τ :=
+        (kvE2_sepSlotSub_of_mem_block hmem).symm.trans (kvE2_sepSlotSub_of_mem_block hsτ)
+      exact hσpre (hst ▸ hτ)
+    rw [kvE2_sepSlotIndexOf, hall, List.idxOf_append_of_notMem hnotP,
+      List.idxOf_append_of_mem hmem, List.get_idxOf (kvE2_sepSlotBlock_nodup σ) i]
+  rw [hoff j, hoff k]; omega
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
