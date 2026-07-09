@@ -519,7 +519,7 @@ Kamp/ExistsForallNF.lean is empty); LITMUS grep (`grep -n "x1 <" ` on new code) 
 **Timing**: 2-2.5h
 **Depends on**: 6
 
-### Phase 8: Honest non-interior evaluation pack — foreign-base tie discharges and endpoint/pivot honesty lemmas [NOT STARTED]
+### Phase 8: Honest non-interior evaluation pack — foreign-base tie discharges and endpoint/pivot honesty lemmas [IN PROGRESS]
 
 **Goal**: The two additive lemma packs that discharge honest-model obligations previously hidden
 behind vacuity: (a) F5 foreign-base CLOSED-key discharges for base-anchor tie classes;

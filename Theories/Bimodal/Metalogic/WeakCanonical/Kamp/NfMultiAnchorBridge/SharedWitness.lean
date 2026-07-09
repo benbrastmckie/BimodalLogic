@@ -3116,6 +3116,101 @@ theorem kvE2_sepCoincidentOwner_valid_right {sig : MonadicSignature}
   rw [kvE2_sepClosedLeafStub, if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
   exact kvE2_sepCoincidentAnchor_discharge_R σ M x1 w x t hxw hwx1 hx1t hσ (nf0_projFresh σ.1) hfresh
 
+/-! ### Task 342 Phase 8 (a) — F5 foreign-base CLOSED-key discharges
+
+A base-anchor tie class reads the anchor owner's CLOSED self-zone bit at the FOREIGN base
+type (`kvE2_sepClosedLeafAt`, Phase 6). The discharges below prove that read TRUE whenever
+the foreign base type is honestly realized AT the anchor point — the tie-class situation
+(equal honest values). **F5**: the only keys entering any coincident read are the CLOSED
+`kvE2_sep_zAtX1L`/`kvE2_sep_zAtX1R` self-zone keys, routed through the preserved axiom-clean
+coincidence discharges `kvE2_sepCoincidentAnchor_discharge` (LEFT) / `_R` (RIGHT) — no OPEN
+key is read. Grounding: Rabinovich §5 (p.7) — the ψ₀/ψ₁/φ split routes non-interior
+witnesses to atomic E[Σ] endpoint literals via Prop 3.5, and the shared-anchor meet-type
+identification (md:168-173) makes the coincidence a DISCHARGED disjunct, never a refuted
+inequality. Tie-collapse is forced by Def 3.1 (p.4); Lemma 3.2(1) states the closure
+without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
+
+/-- **Foreign-base CLOSED-key discharge, placement-dispatched** (task 342 Phase 8 (a)): for
+    an INTERIOR owner σ realized at its anchor `a = x1_σ` (LEFT `x < x1_σ < w` or RIGHT
+    `w < x1_σ < t`, recovered definitionally from the interior index `kvE2_sepPosI` — never
+    hypothesized), any base type `χ` realized AT the anchor discharges σ's CLOSED self-zone
+    leaf read at the foreign type: `kvE2_sepClosedLeafAt σ χ = true`. LEFT owners route
+    through `kvE2_sepCoincidentAnchor_discharge` (CLOSED `zAtX1L` key); RIGHT owners through
+    `_R` (CLOSED `zAtX1R` key). The anchor's own order bounds are read off σ's realized
+    ordering channel (`nf0_zoneSpec`), never a formula literal (LITMUS). F5: no OPEN key
+    enters this read. -/
+theorem kvE2_sepClosedLeafAt_discharge {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2_sepPosI qnf)
+    (a : M.carrier)
+    (hσ : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (χ : NormalForm sig 0 1)
+    (hp : nf_eval_nf M 0 1 (fun _ => a) χ) :
+    kvE2_sepClosedLeafAt σ χ = true := by
+  obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
+  rcases kvE2_sepPosI_zone hσI with hzone | hzone
+  · -- LEFT-interior: x < x1_σ < w from σ's own realized ordering channel.
+    have hbit_aw : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).1 = true := by
+      rw [congrFun hzone ⟨0, by omega⟩]; decide
+    have hbit_xa : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+      rw [congrFun hzone ⟨1, by omega⟩]; decide
+    have haw : a < w := by
+      have h1 := hσ_atom (.order 0 (Fin.succ ⟨0, by omega⟩) (Fin.succ_ne_zero ⟨0, by omega⟩).symm)
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_aw
+    have hxa : x < a := by
+      have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_xa
+    rw [kvE2_sepClosedLeafAt, if_pos hzone]
+    exact kvE2_sepCoincidentAnchor_discharge σ M a w x t hxa haw hwt hσ χ hp
+  · -- RIGHT-interior: w < x1_σ < t (mirror; CLOSED `zAtX1R` key).
+    have hbit_wa : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+      rw [congrFun hzone ⟨0, by omega⟩]; decide
+    have hbit_at : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+      rw [congrFun hzone ⟨2, by omega⟩]; decide
+    have hwa : w < a := by
+      have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_wa
+    have hat : a < t := by
+      have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_at
+    rw [kvE2_sepClosedLeafAt,
+      if_neg (fun hcon => kvE2_sep_zWT3_ne_zXW3 (hzone.symm.trans hcon))]
+    exact kvE2_sepCoincidentAnchor_discharge_R σ M a w x t hxw hwa hat hσ χ hp
+
+/-- **Tie-read intro rule** (task 342 Phase 8 (a)): conjunct (iv) holds once every
+    anchor-involved payload tie is discharged at its partner's base type. Base-base tie
+    classes impose NO read — machine-checked here: a non-anchor first slot short-circuits
+    the guard (`isFalse` branch), and an anchor partner (`kvE2_sepSlotBaseType = none`)
+    closes by the `none` match arm. Only `(anchor, base-χ)` pairs ever reach the CLOSED-key
+    read (F5): the sole obligation forwarded to `hdis` is `kvE2_sepClosedLeafAt p.1 χ`. -/
+theorem kvE2_sepTieRead_of_discharge {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig)
+    (hdis : ∀ p ∈ wo, ∀ q ∈ wo,
+      ∀ sj ∈ (kvE2_sepSlotBlock p.1).zipIdx, ∀ sk ∈ (kvE2_sepSlotBlock q.1).zipIdx,
+        kvE2_sepSlotIsAnchor sj.1 = true → p.2.2.getD sj.2 0 = q.2.2.getD sk.2 0 →
+        ∀ χ, kvE2_sepSlotBaseType sk.1 = some χ → kvE2_sepClosedLeafAt p.1 χ = true) :
+    kvE2_sepTieRead wo = true := by
+  rw [kvE2_sepTieRead, List.all_eq_true]
+  intro p hp
+  rw [List.all_eq_true]
+  intro q hq
+  rw [List.all_eq_true]
+  intro sj hsj
+  rw [List.all_eq_true]
+  intro sk hsk
+  split
+  case isTrue hcond =>
+    rw [Bool.and_eq_true, decide_eq_true_eq] at hcond
+    cases hbt : kvE2_sepSlotBaseType sk.1 with
+    | some χ => exact hdis p hp q hq sj hsj sk hsk hcond.1 hcond.2 χ hbt
+    | none => rfl
+  case isFalse _ => rfl
+
 /-- **Lemma 3.2(1) ⇐ (completeness) — `kvE2_sepBody_complete`** (task 334 Phase 8; generalized to
     right-interior owners in task 336; made UNCONDITIONAL in task 342 Part I). For an honest model
     realization, the honest COINCIDENCE (tie) arrangement is a VALID, PRESENT member of the
@@ -3255,6 +3350,25 @@ theorem kvE2_sepAnchorVal_spec {sig : MonadicSignature}
       (Fin.cons (kvE2_sepAnchorVal qnf M w x t h σ) (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   rw [kvE2_sepAnchorVal, dif_pos hb]
   exact Classical.choose_spec ((h.2 σ).mpr hb)
+
+/-- **Foreign-base CLOSED-key discharge at the honest anchor value** (task 342 Phase 8 (a);
+    the exact shape Phase 9's tie-read conjunct (iv) consumes): under an honest evaluation
+    `h`, if base type `χ` is honestly realized AT an interior owner σ's honest anchor value
+    `kvE2_sepAnchorVal qnf M w x t h σ` (equal honest values — the base-anchor tie-class
+    situation), then the anchor owner's CLOSED self-zone leaf at the foreign type is TRUE.
+    F5: reads only the CLOSED `zAtX1L`/`zAtX1R` keys via `kvE2_sepClosedLeafAt_discharge`. -/
+theorem kvE2_sepClosedLeafAt_discharge_honest {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσI : σ ∈ kvE2_sepPosI qnf)
+    (χ : NormalForm sig 0 1)
+    (hp : nf_eval_nf M 0 1 (fun _ => kvE2_sepAnchorVal qnf M w x t h σ) χ) :
+    kvE2_sepClosedLeafAt σ χ = true :=
+  kvE2_sepClosedLeafAt_discharge qnf M w x t hxw hwt hσI _
+    (kvE2_sepAnchorVal_spec qnf M w x t h σ
+      (List.mem_filter.mp (kvE2_sepPosI_subset hσI)).2)
+    χ hp
 
 /-- **KEYSTONE** (task 340 Phase 5A): distinct positive owners have distinct anchors. If σ, τ are
     positive owners with equal anchors `a`, the single environment `[a, w, x, t]` realizes BOTH σ
