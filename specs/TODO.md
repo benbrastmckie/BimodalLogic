@@ -112,7 +112,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-340 [PLANNED] — Replace task 339's derived 2-level (region-rank primary, owner me
+340 [IMPLEMENTING] — Replace task 339's derived 2-level (region-rank primary, owner me
   └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
     └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
       └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
@@ -135,7 +135,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### 340. Perslot globalindex carrier enrichment for valuefaithful slot order
 - **Effort**: complex
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 339
