@@ -1,5 +1,5 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 337,

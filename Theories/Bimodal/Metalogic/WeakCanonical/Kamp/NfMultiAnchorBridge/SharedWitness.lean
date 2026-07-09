@@ -3146,6 +3146,67 @@ theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature}
       < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
   kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
 
+/-! ### Task 337 Phase 1 — the halign FOUNDATION bridge
+
+The joint sorted lists `kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder …)` are `mergeSort`ed by
+`kvE2_sepSlotMergeLe`, whose key reader is `kvE2_sepSlotGIdx wo`. On the honest order this reader
+projects, at `kvE2_sepBlockPos s`, the payload tuple `block.map kvE2_sepSlotHonestGIdx` — so the
+merge key of slot `s` is exactly its value-faithful index `kvE2_sepSlotHonestGIdx … s`. This is the
+load-bearing bridge from the structural sort key to the model value order. -/
+
+/-- **halign FOUNDATION bridge** (task 337 Phase 1): under the honest order, the mergeSort key
+    reader `kvE2_sepSlotGIdx` coincides with the value-faithful per-slot index
+    `kvE2_sepSlotHonestGIdx` on every slot of every positive owner's block. Resolves the honest
+    order's `find?` (owners are `kvE2_sepPos`-distinct) to `σ`'s payload, then reads it at
+    `kvE2_sepBlockPos s` via `kvE2_sepBlockMap_getD` / `List.idxOf_get`. -/
+theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
+    kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h) s
+      = kvE2_sepSlotHonestGIdx qnf M w x t h s := by
+  have hsub : kvE2_sepSlotSub s = σ := kvE2_sepSlotSub_of_mem_block hs
+  have hfind : (kvE2_sepHonestOrder qnf M w x t h).find?
+        (fun p => decide (p.1 = kvE2_sepSlotSub s))
+      = some (σ, KvE2SepSpikeOrderType.coincident,
+          (kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestGIdx qnf M w x t h)) := by
+    rw [hsub, kvE2_sepHonestOrder, List.find?_map]
+    have hex : ∃ q ∈ (kvE2_sepPos qnf).zipIdx,
+        ((fun p => decide (p.1 = σ)) ∘
+          (fun p : NormalForm sig 1 4 × ℕ =>
+            (p.1, KvE2SepSpikeOrderType.coincident,
+              (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotHonestGIdx qnf M w x t h)))) q = true := by
+      have hm : σ ∈ (kvE2_sepPos qnf).zipIdx.map Prod.fst := by
+        rw [List.zipIdx_map_fst]; exact hσ
+      obtain ⟨q, hq, hq1⟩ := List.mem_map.mp hm
+      exact ⟨q, hq, by simp [Function.comp, hq1]⟩
+    obtain ⟨q, hq, hqp⟩ := hex
+    cases hf : (kvE2_sepPos qnf).zipIdx.find?
+        ((fun p => decide (p.1 = σ)) ∘
+          (fun p : NormalForm sig 1 4 × ℕ =>
+            (p.1, KvE2SepSpikeOrderType.coincident,
+              (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotHonestGIdx qnf M w x t h)))) with
+    | none =>
+      rw [List.find?_eq_none] at hf
+      exact absurd hqp (by simpa using hf q hq)
+    | some r =>
+      have hr := List.find?_some hf
+      simp only [Function.comp, decide_eq_true_eq] at hr
+      simp [hr]
+  unfold kvE2_sepSlotGIdx
+  rw [hfind]
+  simp only [Option.map_some, Option.getD_some]
+  have hidx : kvE2_sepBlockPos s = (kvE2_sepSlotBlock σ).idxOf s := by
+    rw [kvE2_sepBlockPos, hsub]
+  rw [hidx]
+  have hlt : (kvE2_sepSlotBlock σ).idxOf s < (kvE2_sepSlotBlock σ).length :=
+    List.idxOf_lt_length_of_mem hs
+  rw [List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem hlt]
+  simp only [Option.map_some, Option.getD_some]
+  congr 1
+  exact List.idxOf_get hlt
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
