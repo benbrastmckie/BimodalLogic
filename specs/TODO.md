@@ -111,7 +111,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
+337 [RESEARCHED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
   └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
     └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
       └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
@@ -213,13 +213,14 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 
 ### 337. Build joint multiowner disjunct bracketholds engine for kve2 sepdisjunct
 - **Effort**: 4-5 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 336, Task 338, Task 339, Task 340, Task 342
 - **Research**:
   - [335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md]
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md]
+  - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/08_post-342-revision-strategy.md]
 - **Plan**:
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/01_joint-disjunct-bracket-holds.md]
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/02_model-order-merge-bracket-holds.md]

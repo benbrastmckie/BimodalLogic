@@ -3348,7 +3348,7 @@
     {
       "project_number": 337,
       "project_name": "build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct",
-      "status": "blocked",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Wire the general region engine k1v_sorted_realizationK (SubBracket2V.lean:633) into the kvE2_sepDisjunct slot/segment/endpoint layout (SharedWitness.lean), delivering a ⇐-direction holds BUILDER for the joint multi-owner disjunct bracket: given the merged per-owner slot lists kvE2_sepSlotsL/R qnf, each positive owner's honest bundle (kvE2_sepHonestBundleL/kvE2_sepHonestBundleR), and witnesses x < w < t, produce (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds M atomMap x t. Steps: (1) map each positive owner's honest bundle into a region compatible with k1v_sorted_realizationK's input shape; (2) run the engine to obtain a globally monotone interleaved witness sequence across all owners; (3) match that sequence to kvE2_sepBracketN's IntervalPattern point types and segments; (4) discharge the endpoint conjuncts kvE2_sepEpL/kvE2_sepEpR at x/t. Deliver as a new lemma (naming pattern: kvE2_sepDisjunct_holds_of_honest or similar, mirroring the existing kvE2_sepGate_holds_of_honest convention) in SharedWitness.lean, sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), preserving all seven faithfulness invariants F1-F7 (especially F5: no open/closed zone-key conflation, and the LITMUS at NavigatedSpine:437: no x1 < e_i relative-position literal -- witness bounds must come from the bracket range, never a chain). Treat all task-334/336 carrier lemmas (kvE2_sepBody_extract, kvE2_sepBody_complete, kvE2_sepHonestBundleL/R, kvE2_sepDisjunct_extract, kvE2_sepArr'_sound) as verified INPUTS -- apply them, do not re-derive or weaken them. FILE-SAFETY NOTE: this task is very likely to edit SharedWitness.lean, the same file task 336 (COMPLETED) just edited to generalize kvE2_sepBody_complete from hL to hLR. Task 336 is already complete so there is no live blocking dependency, but verify on start that the hLR-generalized kvE2_sepBody_complete signature (see specs/336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md) is the one in scope. On completion, task 335 re-dispatches Phases 2-4 (soundness, completeness, assembled k=2 gate) to consume this builder.",
       "effort": "4-5 hours",
@@ -3365,7 +3365,7 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
       ],
       "created": "2026-07-08T22:33:37Z",
-      "last_updated": "2026-07-09T17:07:38Z",
+      "last_updated": "2026-07-09T23:09:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -3391,6 +3391,11 @@
           "type": "report",
           "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md",
           "summary": "Rabinovich-grounded blocker research: hLR inconsistency root cause, Def 7.13 misattribution corrected to Def 3.1 + Lemma 3.2, two-part upstream redesign, blast radius, refutation-survived"
+        },
+        {
+          "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/08_post-342-revision-strategy.md",
+          "type": "report",
+          "summary": "337 unblocked by kvE2_sepBody_complete_holds'; retarget to grouped disjunct; O1-O4 open; triage 8 obsolete / 3 salvageable / 1 valid; siblings 321+333 obsoleted, 335 partially unblocked, 309 + 341 unchanged"
         }
       ],
       "plan_metadata": {
@@ -3445,7 +3450,9 @@
       "previous_status": "implementing",
       "completion_summary": "Phase 1 delivered green + axiom-clean: kvE2_sepCoincidentOrder_mem_arr' (honest coincidence weak order is a member of kvE2_sepArr'; the exact left-arrow membership witness for kvE2_sepBody_holds_iff.mpr). Phases 2-6 BLOCKED by a concretely-grounded structural carrier/engine mismatch: the task-338 slot list kvE2_sepSlotsLOf/ROf wo is a per-owner BLOCK flatMap, but k1v_sorted_realizationK requires a boundary-linked (Chain') region list and emits interleaveK ps in merged-anchor order; IntervalPattern.holds_eq_succ requires the witness strictly monotone in block-index order. For >=2 interior owners whose base-witness intervals interleave, block order != merged order, so no monotone witness exists (concrete lean checks: block-order regions fail Chain' by decide; block monotone forces a<u, p<a, u<p |- False by omega). Fixing requires editing kvE2_sepSlotsLOf/ROf into a genuine cross-owner slot MERGE (task-338 carrier edit) -- out of scope for this ADDITIVE task per Non-Goals :169-173 / Rollback :474-476. Recommend a new task to redesign the 338 carrier slot list as a cross-owner merge, after which v3 Phases 3-5 become realizable.",
       "blockers": "Phase 3 BLOCKED by certified inconsistency: kvE2_sepHonest_hLR_absurd proves the hLR hypothesis package unsatisfiable (sigma_w pinning, Rabinovich Def 3.1). hLR is a Lean-layer artifact with no source counterpart. Faithful fix = upstream carrier redesign Parts I (kvE2_sepPosI interior-restricted owner index replaces hLR) + II (tie-admitting weak orders; relax Nodup to anchor-distinct + ordered tie classes). Breaking edits reach COMPLETED tasks 336/338/339/340 carriers. See reports/07. Phases 1-2 green + banked.",
-      "prior_blocker_resolved": "Additive .holds builder blocked: 339's 2-level (region,ownerRank) slot key cannot value-faithfully order cross-region interleaving (honest σ.lUW witness can land below τ's anchor; verified report 06, rank-independent, 3 lean experiments). Needs task 340: per-slot GLOBAL INDEX reflecting model value order in the carrier. 340 is terminal (per-slot = fully value-faithful). Phase-1 lemma kvE2_sepCoincidentOrder_mem_arr' preserved."
+      "prior_blocker_resolved": "Additive .holds builder blocked: 339's 2-level (region,ownerRank) slot key cannot value-faithfully order cross-region interleaving (honest σ.lUW witness can land below τ's anchor; verified report 06, rank-independent, 3 lean experiments). Needs task 340: per-slot GLOBAL INDEX reflecting model value order in the carrier. 340 is terminal (per-slot = fully value-faithful). Phase-1 lemma kvE2_sepCoincidentOrder_mem_arr' preserved.",
+      "session_id": "sess_1783635493_aff8ff",
+      "researched": "2026-07-09T23:09:59Z"
     },
     {
       "project_number": 338,
