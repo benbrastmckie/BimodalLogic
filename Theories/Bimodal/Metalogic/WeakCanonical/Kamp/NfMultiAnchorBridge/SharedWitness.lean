@@ -3345,6 +3345,69 @@ theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature}
   rw [not_le] at hlt
   exact absurd hab (not_le.mpr (kvE2_sepSlotGIdx_honestOrder_mono qnf M w x t h hτ hσ hbτ haσ hlt))
 
+/-! ### Task 337 Phase 1 — region-assembly foundations (anchor boundary facts)
+
+The region-assembly helper (`kvE2_sepHonest_engineInputs`) feeds `k1v_sorted_realizationK` regions
+whose boundaries are the value-sorted interior anchors. The structural inputs `hpos`/`hlink`/`hbdry`
+rest on two anchor facts, banked here as green sub-lemmas (H2 decomposition of the partition):
+(i) each anchor (`.lX1`/`.rX1`) slot value lies strictly in its side's open interval — from the
+honest bundles; (ii) distinct interior owners have distinct anchor values — the keystone
+`kvE2_sepAnchor_injOn` lifted to the slot-value layer. These are model-order facts consumed as the
+`hpos` strictness and `hbdry` endpoints; they do NOT re-derive the banked halign/value-sortedness
+trio. -/
+
+/-- **LEFT anchor slot in `(x, w)`** (Phase 1 `hbdry`/`hpos` ingredient): a LEFT-interior owner's
+    `.lX1` slot value lies strictly between `x` and the shared `w`. Directly the honest bundle L's
+    anchor bounds, re-typed through the definitional `kvE2_sepSlotValue_lX1`. -/
+theorem kvE2_sepSlotValue_lX1_mem {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    x < kvE2_sepSlotValue qnf M w x t h (.lX1 σ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.lX1 σ) < w := by
+  rw [kvE2_sepSlotValue_lX1]
+  exact ⟨(kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone).1,
+    (kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone).2.1⟩
+
+/-- **RIGHT anchor slot in `(w, t)`** (mirror of `kvE2_sepSlotValue_lX1_mem`): a RIGHT-interior
+    owner's `.rX1` slot value lies strictly between the shared `w` and `t`. Honest bundle R. -/
+theorem kvE2_sepSlotValue_rX1_mem {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    w < kvE2_sepSlotValue qnf M w x t h (.rX1 σ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.rX1 σ) < t := by
+  rw [kvE2_sepSlotValue_rX1]
+  exact ⟨(kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone).1,
+    (kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone).2.1⟩
+
+/-- **LEFT anchor value distinctness** (Phase 1 `hpos` strictness ingredient): distinct positive
+    owners have distinct `.lX1` slot values. The keystone `kvE2_sepAnchor_injOn` at the slot-value
+    layer (via the definitional `kvE2_sepSlotValue_lX1`). -/
+theorem kvE2_sepSlotValue_lX1_injOn {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
+    (heq : kvE2_sepSlotValue qnf M w x t h (.lX1 σ)
+      = kvE2_sepSlotValue qnf M w x t h (.lX1 τ)) : σ = τ := by
+  rw [kvE2_sepSlotValue_lX1, kvE2_sepSlotValue_lX1] at heq
+  exact kvE2_sepAnchor_injOn qnf M w x t h hσ hτ heq
+
+/-- **RIGHT anchor value distinctness** (mirror): distinct positive owners have distinct `.rX1`
+    slot values. -/
+theorem kvE2_sepSlotValue_rX1_injOn {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
+    (heq : kvE2_sepSlotValue qnf M w x t h (.rX1 σ)
+      = kvE2_sepSlotValue qnf M w x t h (.rX1 τ)) : σ = τ := by
+  rw [kvE2_sepSlotValue_rX1, kvE2_sepSlotValue_rX1] at heq
+  exact kvE2_sepAnchor_injOn qnf M w x t h hσ hτ heq
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
