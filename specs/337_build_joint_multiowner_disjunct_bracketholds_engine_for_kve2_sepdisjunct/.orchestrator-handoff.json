@@ -2,67 +2,19 @@
   "task": 337,
   "status": "partial",
   "skeleton": false,
-  "summary": "PHASE 2 COMPLETE (cycle 10): kvE2_sepHonest_witnesses LANDED green + axiom-clean — the engine k1v_sorted_realizationK invoked once per side on the Phase-1 region lists (all preconditions consumed from kvE2_sepHonest_engineInputs, never re-derived), yielding psL/psR with the FULL engine Forall₂ guarantees exposed (boundary skeleton equalities, per-region type permutation, per-region sortedness, strict-interior range + realization per point). The two stitched chains satisfy per-side strict range bounds (every point of interleaveK psL in (x,w), every point of interleaveK psR in (w,t)) and concatenate around the single shared pivot w into the globally strictly monotone bracket witness chain (interleaveK psL ++ w :: interleaveK psR).Pairwise (<). Delivered in LIST form with pivot w at position |interleaveK psL| — the per-slot Fin re-indexing over kvE2_sepSlotsLOf/ROf wo is Phase 3's halign/point-type step per the carried-forward caveats (dedup'd engine points vs per-slot multiplicity, out-of-side rXW values, folded anchor-colliding types). Supporting: kvE2_sepGapRegions_lo_le/_hi_le (region endpoint bounds under the strict anchor chain), kvE2_sepInterleaveK_lt (global upper bound, dual of the stitcher's lower bound), kvE2_sepForall₂_mem_left + kvE2_sepForall₂_chain' (skeleton transfer through Forall₂, reusable in Phase 3). +229/-0 additive in SharedWitness.lean, zero sorries, commit e1637a864.",
+  "summary": "Phase 3 BLOCKED on a machine-checked spec-level defect: the hypothesis package h ∧ hLR of the Phase-3/4 targets is unsatisfiable (kvE2_sepHonest_hLR_absurd, green + axiom-clean, commit 050f32650) — the characteristic depth-1 type of (w; w,x,t) is always realized with witness w, forcing a zAtW3-class positive owner that refutes hLR in every honest instance. All hLR-conditional completeness theorems (kvE2_sepBody_complete, kvE2_sepCoincidentOrder_mem_arr', kvE2_sepBody_complete_holds, the planned Phase-3/4 builders) are vacuous as stated. Landed green before the finding: kvE2_sepBracketN_construct (commit c4b31500d), the generic N-slot bracket construction (mpr dual of kvE2_sepDisjunct_extract) — the reusable bracket-entangled structural core that survives any redesign. Zero sorries; full lake build green (1720 jobs); all 334/336/338/339/340 INPUTs untouched.",
   "phases_completed": 2,
-  "phases_partial": 0,
   "phases_total": 5,
-  "landed_this_dispatch": [
-    "kvE2_sepGapRegions_lo_le (every gap region's lo at least the global lo, under the strict boundary chain)",
-    "kvE2_sepGapRegions_hi_le (every gap region's hi at most the global hi, under the strict boundary chain)",
-    "kvE2_sepInterleaveK_lt (interleave global STRICT upper bound from per-region hi <= global hi; dual of k1v_stitch_regions .2)",
-    "kvE2_sepForall₂_mem_left (private: Forall₂ left-membership extraction)",
-    "kvE2_sepForall₂_chain' (private: boundary-link Chain' transfer from regions to engine point lists)",
-    "kvE2_sepHonest_witnesses (THE Phase-2 deliverable: psL/psR with full engine Forall₂ vs kvE2_sepHonestRegionsL/R + per-side bounds x < interleaveK psL < w and w < interleaveK psR < t + global (interleaveK psL ++ w :: interleaveK psR).Pairwise (<))"
-  ],
+  "sorry_count_in_sharedwitness": 0,
   "sorry_inventory": [],
-  "blockers": [],
-  "verification": {
-    "build_passed": true,
-    "build_scope": "lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness — GREEN (exit 0); module root is Bimodal, NOT Theories.Bimodal",
-    "sorry_count_in_sharedwitness": 0,
-    "sorry_matches_are_all_docstring_prose": true,
-    "sorry_census": "lean-sorry-census.sh Theories/ --cross-check: all remaining code sorries are Boneyard/ legacy (pre-existing, out of scope); compiler count 30 / stripper 163 mismatch is entirely pre-existing legacy files",
-    "vacuous_count_new": 0,
-    "new_axioms": 0,
-    "lean_verify": {
-      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepHonest_witnesses": ["propext", "Classical.choice", "Quot.sound"],
-      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepGapRegions_lo_le": ["propext", "Classical.choice", "Quot.sound"],
-      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepGapRegions_hi_le": ["propext", "Classical.choice", "Quot.sound"],
-      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepInterleaveK_lt": ["propext", "Classical.choice", "Quot.sound"]
-    },
-    "lean_verify_note": "kvE2_sepHonest_witnesses consumes both private helpers (unicode names rejected by the verify tool), so their axiom-cleanliness is covered transitively; no sorryAx anywhere",
-    "diff_scope": "Theories diff is SharedWitness.lean only, +229/-0 (purely additive)",
-    "preexisting_out_of_scope": "EANegation.lean:834,1129 (task 305) untouched and not counted; TemporalStructures.lean:269 vacuous hit pre-existing; both ^axiom grep hits are prose in Boneyard comments"
-  },
-  "preserved": [
-    "kvE2_sepHonest_engineInputs + all Phase-1 declarations (cycle 9) — untouched, CONSUMED by kvE2_sepHonest_witnesses",
-    "kvE2_sepCoincidentOrder_mem_arr' (v3 asset) — untouched",
-    "kvE2_sepHonestBaseRealizerL/R (cycle 8) — untouched, still available as Phase-3 owner-relative fallback",
-    "halign trio kvE2_sepSlotGIdx_honestOrder{,_mono,_injOn} — untouched (Phase 3 consumes)",
-    "value-sortedness + Nodup foundations (cycles 6-7) — untouched",
-    "All 334/336/338/339/340 declarations — untouched (all edits additive, inserted between the Phase-1 bundle and the Phase-5D docstring)"
+  "blockers": [
+    "Phase 3 [BLOCKED]: target hypothesis package `h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf` ∧ `hLR : ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3` is UNSATISFIABLE — proved as kvE2_sepHonest_hLR_absurd (SharedWitness.lean, axioms {propext, Classical.choice, Quot.sound}). σ_w := nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t)))) is always realized (witness w), h.2 forces qnf.2 σ_w = true, and σ_w's w-coordinate ordering pair is (false,false) — neither zXW3's (true,false) nor zWT3's (false,true). A non-vacuous constructive close of Phase 3 does not exist (F2 unachievable); a vacuous False.elim close was deliberately NOT landed.",
+    "Required upstream redesign (not a 337 edit): restate the completeness layer so honesty-forced boundary/self-zone positive classes (zAtX3/zAtW3/zAtT3 at minimum) are carried by the endpoint/pivot literals (kvE2_sepEpL/EpR/PtW already enumerate kvE2_sepHasPos bits) instead of excluded by hLR. Affects kvE2_sepBody_complete (task 336 shape), kvE2_sepBody_complete_holds (task 340 5D), and 337 Phases 3-4.",
+    "Secondary design caution for the redesigned interior fragment: IntervalPattern.holds requires STRICTLY monotone per-slot witnesses, but the full-multiset slot lists kvE2_sepSlotsLOf/ROf wo admit honest ties — (a) two same-type slots of different owners can share a single realizing point, (b) a base slot value can equal a foreign anchor (cycle-8 'resolution (a) is FALSE'). The redesign needs coincidence-MERGED slot lists (§5 meet at formula level; Rabinovich Def 7.13 union) or a distinct-realizer guarantee."
   ],
+  "continuation_path": null,
   "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 3,
-    "handoff": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783610916.md",
-    "immediate_next_action": "Phase 3 (kvE2_sepHonest_bracket_holds, HIGHEST-RISK, sized alone per H8): destructure kvE2_sepHonest_witnesses; do the per-slot re-indexing of the chain into kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo (halign trio + value-sortedness + pair pools kvE2_sepHonestBasePairsL/R for per-slot multiplicity), realize each slot's point type (engine Forall₂ realizers for gap types, meet-type fold AT anchors for folded types, pair-pool own-values where needed), prove the three kvE2_sepSegs segment families, close via IntervalPattern.holds_eq_succ.mpr. Structural dual: kvE2_sepDisjunct_extract.",
-    "phase3_alignment_caveats": [
-      "Engine points are dedup'd per gap TYPE; the bracket needs one point PER SLOT — use the pair pools kvE2_sepHonestBasePairsL/R (each slot's own value is a realizer) for the per-slot re-indexing.",
-      "An rXW pair value (right owner, left side) may fall OUTSIDE (x,w); its L-block point-type realization cannot come from an L gap — use the banked owner-relative fallback kvE2_sepHonestBaseRealizerL/R.",
-      "Folded (anchor-colliding) types are absent from gap lists; realize them AT their anchor via the meet-type fold (kvE2_sepGapTypes_mem_of characterizes gap membership).",
-      "Phase-2's per-side bounds + global Pairwise give mono/range for ANY sub-chain selection; the transfer helpers kvE2_sepForall₂_mem_left/kvE2_sepForall₂_chain' are reusable."
-    ]
-  },
-  "continuation_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783610916.md",
-  "next_action_hint": "Dispatch Phase 3 (bracket point-type + segment match -> .holds) consuming kvE2_sepHonest_witnesses. Do NOT re-derive the engine invocation or the banked foundations.",
-  "acceptance_met": true,
-  "modified_files": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.return-meta.json",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783610916.md",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/10_global-witness-landed-summary.md"
-  ]
+    "recommendation": "Do not re-dispatch Phase 3 against the current statement. Spawn an interface-redesign task (research + plan) for the hLR completeness layer, consuming: kvE2_sepHonest_hLR_absurd (the certificate), kvE2_sepBracketN_construct (the reusable .holds constructor), the Phase-1/2 banked engine assets, and the tie/merge caution in the phase-3 handoff.",
+    "handoff_artifact": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-3-handoff-1783615446.md"
+  }
 }

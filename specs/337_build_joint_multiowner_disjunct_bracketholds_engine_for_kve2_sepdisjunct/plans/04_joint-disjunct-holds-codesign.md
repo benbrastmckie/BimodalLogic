@@ -289,18 +289,55 @@ axiom-clean `{propext, Classical.choice, Quot.sound}`, 0 sorries.
 
 ---
 
-### Phase 3: Bracket point-type + segment match → `(kvE2_sepDisjunct … (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds` (step c) [IN PROGRESS]
+### Phase 3: Bracket point-type + segment match → `(kvE2_sepDisjunct … (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds` (step c) [BLOCKED]
+
+**BLOCKER** (Phase 3, cycle 11 — spec-level, machine-checked):
+- **What failed**: The Phase-3/4 target's hypothesis package `h ∧ hLR` is UNSATISFIABLE. Landed
+  green + axiom-clean (`{propext, Classical.choice, Quot.sound}`) as
+  `kvE2_sepHonest_hLR_absurd` (SharedWitness.lean, commit `050f32650`): the characteristic
+  depth-1 type `σ_w := nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t))))`
+  is ALWAYS realized (witness `x1 := w`, `nf_characteristic_satisfies`), so `h`'s quantifier
+  layer forces `qnf.2 σ_w = true` — a positive owner whose ordering channel at the
+  `w`-coordinate is the self-zone pair `(false, false)`, refuting `hLR σ_w` (both `zXW3` and
+  `zWT3` demand a strict pair there). The same construction at `x1 := x` / `x1 := t` populates
+  `zAtX3` / `zAtT3`. Hence every hLR-conditional completeness theorem
+  (`kvE2_sepBody_complete`, `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepBody_complete_holds`,
+  and this task's Phase-3/4 builders) is VACUOUSLY true as stated, and no non-vacuous
+  constructive close of Phase 3 exists (F2 unachievable: the statement has no instances).
+- **What was tried**: (i) the settled construction path — the generic N-slot bracket
+  construction `kvE2_sepBracketN_construct` (mpr dual of `kvE2_sepDisjunct_extract`, k=3
+  template lift) landed GREEN as the reusable structural core (commit `c4b31500d`);
+  (ii) per-slot witness analysis for the honest instantiation surfaced the strict-monotonicity
+  obstruction (below), motivating adversarial re-verification of the hypothesis package, which
+  produced the inconsistency lemma.
+- **Why stuck**: any sorry-free close of the stated target is necessarily equivalent to
+  `False.elim` on `kvE2_sepHonest_hLR_absurd` — violating this phase's own F2 acceptance
+  criterion (non-vacuous realizers). A constructive close cannot exist.
+- **What is needed** (upstream redesign, NOT a 337 edit): restate the completeness layer so the
+  honesty-forced boundary/self-zone positive classes (`zAtX3`/`zAtW3`/`zAtT3` at minimum) are
+  CARRIED by the endpoint/pivot literal machinery (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW`
+  already enumerate their `kvE2_sepHasPos` bits) instead of excluded by `hLR`. SECONDARY
+  design caution for the redesigned interior fragment: the joint bracket demands a STRICTLY
+  monotone per-slot witness family (`IntervalPattern.holds_eq_succ`), but (a) two same-type
+  slots of different owners (`.lXU σ χ`, `.lXU σ' χ` — both forced positive by honest
+  completeness) can have a SINGLE realizing point in the model, and (b) a base slot value can
+  coincide with a foreign anchor (cycle-8's own "resolution (a) is FALSE"); either tie makes
+  the full-multiset slot lists `kvE2_sepSlotsLOf/ROf wo` unrealizable by ANY strict witness
+  family. The redesign needs coincidence-MERGED slot lists (the §5 meet at formula level) or a
+  distinct-realizer guarantee — one point per SLOT cannot be honest in general.
+- **Prohibited**: Do NOT close Phase 3 via `(kvE2_sepHonest_hLR_absurd …).elim` (vacuous, F2);
+  do NOT use sorry/`def X := True`; do NOT weaken any 334/336/338/339/340 INPUT.
 
 **Goal** (**HIGHEST-RISK PHASE — the ONLY bracket-entangled step; sized alone per H8**): From the Phase-2 witness `ws`, prove every point-type realization and the `kvE2_sepSegs` segment families, then close `(kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds M atomMap x t` via `IntervalPattern.holds_eq_succ.mpr` (ExistsForallNF.lean:188) / `kvE_subBracket2V_sound_of_parts` (SubBracket2V.lean:1025). Deliver as a sorry-free private helper (suggested `kvE2_sepHonest_bracket_holds`).
 
 **`kvE2_sepBracketN` IntervalPattern structure (SW:602-608, report 04 Q1):** `pointTypes = lL ++ ptW :: lR` — a SINGLE interior distinguished slot `ptW` (= the shared `w`), NOT per-owner separators. `IntervalPattern.holds_eq_succ.mpr` requires ONE `witnesses : Fin (N+1) → M.carrier` that is (1) strictly monotone in block slot-index order AND (2) realizes each slot's point type at its block index, PLUS the three `beta` segment families along the open gaps. The landed k=3 template `SubBracket2V.lean:807-819` (`witnesses = usXU ++ x1 :: usUW ++ w :: usWT`, monotone → `.holds`) is the structural guide: `interleaveK`'s multi-separator output must be sliced to this single-`ptW` layout. The value-order alignment (`halignL/R`) is what makes the slice well-defined — the `x1_σ` anchors sit as type-carrying interior points inside `lL`/`lR` (report 04 Q5 caveat), `w` alone is `ptW`.
 
 **Tasks**:
-- [ ] `rw [IntervalPattern.holds_eq_succ …]` and `refine ⟨ws, ?_, ?_, ?_, ?_, ?_, ?_⟩` to expose the six mpr obligations (mono, range, point types, the three `beta` segment families) — dual to the extractor's `obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩`.
-- [ ] Mono + range: discharge from the Phase-2 helper directly.
-- [ ] Point types: for each slot index `i` into `kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo`, evaluate the slot's point type at `ws i` — left/right slots from the engine's per-region realizers (`hrealL/R` threaded through `psL/psR`'s `hf` `Forall₂`), pivot `ptW` from the shared `w`; positions read via the value-order alignment `halignL/R`.
-- [ ] Segments: for each inter-witness gap + the two boundary gaps, realize the refined-conjunction `beta` segment type from the region-interior realizers threaded through the engine's `ps` per-region guarantees.
-- [ ] Verify each `have` with `lean_goal`; keep sorry-free. **If nearing an agent-run boundary, commit the point-type portion as a standalone green lemma and continue segments as a follow-on green sub-step — never a `sorry`.**
+- [x] `rw [IntervalPattern.holds_eq_succ …]` and `refine ⟨ws, ?_, ?_, ?_, ?_, ?_, ?_⟩` to expose the six mpr obligations (mono, range, point types, the three `beta` segment families) — dual to the extractor's `obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩`. *(deviation: altered — landed as the standalone green generic construction `kvE2_sepBracketN_construct` (commit `c4b31500d`): all six mpr obligations exposed and discharged from list-shaped inputs; survives any hLR redesign)*
+- [ ] Mono + range: discharge from the Phase-2 helper directly. *(deviation: blocked — see BLOCKER: the honest instantiation's hypothesis package `h ∧ hLR` is inconsistent, `kvE2_sepHonest_hLR_absurd`)*
+- [ ] Point types: for each slot index `i` into `kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo`, evaluate the slot's point type at `ws i` — left/right slots from the engine's per-region realizers (`hrealL/R` threaded through `psL/psR`'s `hf` `Forall₂`), pivot `ptW` from the shared `w`; positions read via the value-order alignment `halignL/R`. *(deviation: blocked — under `hLR` all `zAtW3` `kvE2_sepHasPos` bits are false, so `kvE2_sepPtW`'s `charK` literals are all negative and only dischargeable through the inconsistency; see BLOCKER)*
+- [ ] Segments: for each inter-witness gap + the two boundary gaps, realize the refined-conjunction `beta` segment type from the region-interior realizers threaded through the engine's `ps` per-region guarantees. *(deviation: blocked — same root cause)*
+- [x] Verify each `have` with `lean_goal`; keep sorry-free. *(altered: both landed lemmas verified via scoped `lake build` + `lean_verify` — axioms `{propext, Classical.choice, Quot.sound}`, no `sorryAx`; zero sorries introduced)*
 
 **Timing**: 1.5 hours
 
