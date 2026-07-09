@@ -7,20 +7,19 @@ next_project_number: 339
 Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-08. Generated from state.json dependency graph.*
+*Updated 2026-07-09. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,338 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,338 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,335 | 189,192,196,337 | automation, kamp_theorem_formalization |
-| 4 | 177,178,321 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
-| 5 | 309,333 | 321 | kamp_theorem_formalization |
-| 6 | 307 | 309 | completeness |
-| 7 | 305 | 307 | completeness |
-| 8 | 303 | 305 | completeness |
-| 9 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,337 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,300,337 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,321 | 189,192,196,335 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309,333 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -112,12 +111,11 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-338 [RESEARCHED] — Foundational carrier-enrichment task, faithful to Rabinovich (201
-  └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
-    └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-      └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-        └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
+  └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+    └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+      └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
@@ -125,11 +123,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### 338. Enrich separatedbody weakorder with crossowner anchor order
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [338_enrich_separatedbody_weakorder_with_crossowner_anchor_order/reports/01_weakorder-enrichment-research.md]
+- **Plan**: [338_enrich_separatedbody_weakorder_with_crossowner_anchor_order/plans/01_weakorder-crossowner-enrichment.md]
 
 **Description**: Foundational carrier-enrichment task, faithful to Rabinovich (2014) per reports 01 (witness-ordering faithfulness) and 02 (coincident-order and weak-order scope) attached to task 337. THE PROBLEM: the task-334 weak-order type KvE2SepWeakOrder (SharedWitness.lean:694-695) records only a PER-OWNER tag relative to the shared point w and carries NO cross-owner interleaving of interior owners' fresh anchors. Rabinovich's merged disjuncts (Lemma 3.2(1), md:77) each pin a single GLOBAL order of the union of both owners' points, and coincidence of a witness with a reference point is a first-class disjunct (Def 3.1 / Lemma 5.3, md:145-152). SCOPE: (a) TYPE-LEVEL changes to KvE2SepSpikeOrderType (SW:679-686) and KvE2SepWeakOrder (SW:694-695) to encode cross-owner relative order on the merged anchor multiset (these are the only genuinely invalidating edits; everything else cascades from them). (b) BODY changes preserving existing signatures/return types: kvE2_sepOrderTypes (706-711, independent cartesian 3^|pos| -> enumeration of order-consistent global interleavings), kvE2_sepDisjValidOwner/kvE2_sepDisjValid (748-759, add a cross-owner consistency conjunct), kvE2_sepModelOrder (719-721, encode the strict cross-owner global order), kvE2_sepCoincidentOrder (1433-1435, the all-coincidence global order in the enriched type). (c) THE CENTRAL REWIRE: kvE2_sepBody (821-837, esp. 835-836) currently discards the weak order `_wo` and pins every disjunct to the fixed model-independent flatMap concatenation kvE2_sepSlotsL/R qnf (315-322); it must instead CONSUME `_wo` so each disjunct realizes its own cross-owner slot order. DOWNSTREAM PROOF REPAIR (statements survive/extend, re-run proofs, no load-bearing result invalidated): kvE2_sepBody_complete (1592-1611, conclusion `kvE2_sepArr' qnf != []` survives via kvE2_sepCoincidentOrder route), kvE2_sepCoincidentOwner_valid_left/_valid_right (1465, 1539, reused as per-owner component), kvE2_sepHonestBundleL/R (1211, 1257, reused/extended), membership lemmas kvE2_sepModelOrder_mem_orderTypes/kvE2_sepCoincidentOrder_mem_orderTypes and _mem_aux helpers (791-805, 1439-1459, proofs re-run against new enumeration body); kvE2_sepArr'_sound (2594-2601) conclusion STRENGTHENS with an added cross-owner consistency conjunct. CRITICAL CONSTRAINT: keep witness/anchor COINCIDENCE a first-class disjunct alongside strict cross-owner interleavings -- do not collapse the carrier to coincidence-only (breaks the soundness direction task 337 needs for models where owners' anchors strictly interleave) and do not force strict-only (breaks the honest completeness witness kvE2_sepBody_complete already relies on, since strict kvE2_sepModelOrder is a genuine Rabinovich r_0=z_0 semantic non-provability, not a bug). ACCEPTANCE: sorry-free; axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx); full `lake build` green; all seven faithfulness invariants F1-F7 preserved, especially F5 (no open/closed zone-key conflation) and the LITMUS test at NavigatedSpine.lean:437 (witness bounds must come from the bracket range, never an x1 < e_i relative-position literal on a raw chain). HARD-MODE NOTE: this is a strong --hard candidate -- foundational faithful-transcription work, and task 337 has already hit a Phase-1 structural block across two plan versions (plans/01, plans/02) without completing a phase, matching CLAUDE.md's --hard trigger conditions. On completion, task 337 (the joint multi-owner disjunct bracket.holds builder) is re-dispatched to consume the enriched weak-order via kvE2_sepBody's rewired output.
 

@@ -706,6 +706,18 @@ theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
     tag ∈ kvE2_sepSpikeOrderTypes := by
   cases tag <;> decide
 
+/-- **Cross-owner distinguishability witness** (the defining property this task installs). Two
+    owners `σ, τ` interleaving as `x1_σ < x1_τ` (ranks `0 < 1`) versus `x1_τ < x1_σ` (ranks `1 < 0`)
+    yield DISTINCT enriched weak orders. Under the task-334 carrier `List (NormalForm sig 1 4 ×
+    KvE2SepSpikeOrderType)` both collapse to the SAME value `[(σ, c), (τ, c)]` — the exact
+    under-specification (report 337/02 Q2) that blocked task 337. The added ℕ rank makes them
+    unequal, giving task 337's `.holds` builder the cross-owner data to consume. -/
+example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) :
+    ([(σ, KvE2SepSpikeOrderType.coincident, 0), (τ, KvE2SepSpikeOrderType.coincident, 1)]
+        : KvE2SepWeakOrder sig)
+      ≠ [(σ, KvE2SepSpikeOrderType.coincident, 1), (τ, KvE2SepSpikeOrderType.coincident, 0)] := by
+  simp
+
 /-- **General order-type-disjunction index** (Lemma 3.2(1), md:77): the finite `List` of weak
     orders on `A` — all per-owner (placement tag × merged-chain rank) assignments, built as the
     cartesian `foldr` product over `kvE2_sepPos qnf`, with the rank component ranging over

@@ -311,7 +311,7 @@ Each wave is a single phase = a single agent run.
   concatenation pin); structural lemmas re-proved; `kvE2_sepArr'_sound` strengthened; transient
   sorry count strictly less than Phase 3.
 
-### Phase 5: Verification — axiom gate + F1-F7 audit + full build [IN PROGRESS]
+### Phase 5: Verification — axiom gate + F1-F7 audit + full build [COMPLETED]
 - **Goal:** Discharge any residual transient sorry, then verify sorry-free + axiom-clean + full
   green + faithfulness.
 - **Tasks:**

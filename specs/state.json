@@ -3425,7 +3425,7 @@
     {
       "project_number": 338,
       "project_name": "enrich_separatedbody_weakorder_with_crossowner_anchor_order",
-      "status": "researched",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Foundational carrier-enrichment task, faithful to Rabinovich (2014) per reports 01 (witness-ordering faithfulness) and 02 (coincident-order and weak-order scope) attached to task 337. THE PROBLEM: the task-334 weak-order type KvE2SepWeakOrder (SharedWitness.lean:694-695) records only a PER-OWNER tag relative to the shared point w and carries NO cross-owner interleaving of interior owners' fresh anchors. Rabinovich's merged disjuncts (Lemma 3.2(1), md:77) each pin a single GLOBAL order of the union of both owners' points, and coincidence of a witness with a reference point is a first-class disjunct (Def 3.1 / Lemma 5.3, md:145-152). SCOPE: (a) TYPE-LEVEL changes to KvE2SepSpikeOrderType (SW:679-686) and KvE2SepWeakOrder (SW:694-695) to encode cross-owner relative order on the merged anchor multiset (these are the only genuinely invalidating edits; everything else cascades from them). (b) BODY changes preserving existing signatures/return types: kvE2_sepOrderTypes (706-711, independent cartesian 3^|pos| -> enumeration of order-consistent global interleavings), kvE2_sepDisjValidOwner/kvE2_sepDisjValid (748-759, add a cross-owner consistency conjunct), kvE2_sepModelOrder (719-721, encode the strict cross-owner global order), kvE2_sepCoincidentOrder (1433-1435, the all-coincidence global order in the enriched type). (c) THE CENTRAL REWIRE: kvE2_sepBody (821-837, esp. 835-836) currently discards the weak order `_wo` and pins every disjunct to the fixed model-independent flatMap concatenation kvE2_sepSlotsL/R qnf (315-322); it must instead CONSUME `_wo` so each disjunct realizes its own cross-owner slot order. DOWNSTREAM PROOF REPAIR (statements survive/extend, re-run proofs, no load-bearing result invalidated): kvE2_sepBody_complete (1592-1611, conclusion `kvE2_sepArr' qnf != []` survives via kvE2_sepCoincidentOrder route), kvE2_sepCoincidentOwner_valid_left/_valid_right (1465, 1539, reused as per-owner component), kvE2_sepHonestBundleL/R (1211, 1257, reused/extended), membership lemmas kvE2_sepModelOrder_mem_orderTypes/kvE2_sepCoincidentOrder_mem_orderTypes and _mem_aux helpers (791-805, 1439-1459, proofs re-run against new enumeration body); kvE2_sepArr'_sound (2594-2601) conclusion STRENGTHENS with an added cross-owner consistency conjunct. CRITICAL CONSTRAINT: keep witness/anchor COINCIDENCE a first-class disjunct alongside strict cross-owner interleavings -- do not collapse the carrier to coincidence-only (breaks the soundness direction task 337 needs for models where owners' anchors strictly interleave) and do not force strict-only (breaks the honest completeness witness kvE2_sepBody_complete already relies on, since strict kvE2_sepModelOrder is a genuine Rabinovich r_0=z_0 semantic non-provability, not a bug). ACCEPTANCE: sorry-free; axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx); full `lake build` green; all seven faithfulness invariants F1-F7 preserved, especially F5 (no open/closed zone-key conflation) and the LITMUS test at NavigatedSpine.lean:437 (witness bounds must come from the bracket range, never an x1 < e_i relative-position literal on a raw chain). HARD-MODE NOTE: this is a strong --hard candidate -- foundational faithful-transcription work, and task 337 has already hit a Phase-1 structural block across two plan versions (plans/01, plans/02) without completing a phase, matching CLAUDE.md's --hard trigger conditions. On completion, task 337 (the joint multi-owner disjunct bracket.holds builder) is re-dispatched to consume the enriched weak-order via kvE2_sepBody's rewired output.",
       "effort": "6-8 hours",
@@ -3436,14 +3436,63 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
       ],
       "created": "2026-07-08T23:43:42Z",
-      "last_updated": "2026-07-08T23:43:42Z",
+      "last_updated": "2026-07-08T00:00:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/338_enrich_separatedbody_weakorder_with_crossowner_anchor_order/reports/01_weakorder-enrichment-research.md",
           "summary": "Spawn analysis from parent task 337: weak-order cross-owner enrichment"
+        },
+        {
+          "type": "plan",
+          "path": "specs/338_enrich_separatedbody_weakorder_with_crossowner_anchor_order/plans/01_weakorder-crossowner-enrichment.md",
+          "summary": "Hard-mode 5-phase plan: cross-owner weak-order enrichment with transient sorry-skeleton, ending sorry-free + axiom-clean"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 8,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_weakorder-enrichment-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-08"
+          },
+          {
+            "path": "specs/337_.../reports/01_rabinovich-witness-ordering-faithfulness.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-08"
+          },
+          {
+            "path": "specs/337_.../reports/02_coincident-order-and-weakorder-scope.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-08"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      },
+      "completion_summary": "Enriched KvE2SepWeakOrder to carry cross-owner merged-chain rank (triple NF x tag x N), keeping the 3-value placement tag (F5) unchanged; enumeration now ranges over rank x tag; kvE2_sepDisjValid gained a Nodup cross-owner consistency conjunct; kvE2_sepBody rewired to CONSUME wo via rank-ordered slots kvE2_sepSlotsLOf/ROf (fixing the root bug that stalled task 337). Sorry-free, axiom-clean, full lake build green. Unblocks task 337."
     }
   ],
   "artifacts": [
