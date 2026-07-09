@@ -116,7 +116,47 @@ For an honest instance — `charBase`, `charK`, `qnf : NormalForm sig 2 3`, `M :
 
 Fully sequential: each phase consumes the sorry-free auxiliary lemma of the previous. Each phase is sized to one agent run (H8) and ends at a green, sorry-tracked `lake build`. **Phases 1–4 map one-to-one to the synthesis's steps (a)–(d); Phase 5 is the axiom-clean + faithfulness gate.**
 
-### Phase 1: Consume the 340-P5 engine-precondition bundle (step a) [NOT STARTED]
+### Phase 1: Consume the 340-P5 engine-precondition bundle (step a) [BLOCKED]
+
+**BLOCKER** (Phase 1 — interface mismatch, stop-guard fired):
+- **What failed**: The destructure of Preconditions (2)+(3) — the assembled boundary-linked
+  `regionsL/R` with `hpos/hlink/hnd/hreal`, the alignment fact `halignL/R`, and the endpoint
+  boundary alignment `hbdry` — has nothing to bind to. Task 340 landed the carrier member
+  (`kvE2_sepHonestOrder_mem_arr'`), per-owner realizer bundles (`kvE2_sepHonestAnchorBundleL/R`),
+  tuple-index monotonicity (`kvE2_sepHonest_cross_region`), and the reduction
+  `kvE2_sepBody_complete_holds` — but NOT the assembled region decomposition, NOT `halignL/R`,
+  NOT `hbdry`. The 340 Phase 5D docstring (SW:2249-2260) itself reassigns the regions assembly
+  to "task 337's territory", directly contradicting this plan's Preconditions (2)+(3) which pin
+  it as a verified 340 INPUT.
+- **What was tried / root cause (grounded in the landed defs, not speculation)**: The landed
+  `kvE2_sepSlotGIdx` (SW:1006-1013) reads `kvE2_sepHonestTuple` (SW:2095-2103) `= (3ρ, 3ρ+1, 3ρ+2)`
+  — exactly THREE index values per owner (ρ = `kvE2_ordRank`), one per region. `kvE2_sepSlotRank`
+  (SW:245-253) gives every `.lXU σ χ` rank 0 and every `.lUW σ χ` rank 2, so ALL of an owner's
+  region-0 base slots collapse to the SAME global index `3ρ` (and region-2 to `3ρ+2`).
+  `kvE2_sepSlotsLOf wo` (SW:1034) is `mergeSort` by this index, so within any owner-region block of
+  ≥2 base types the order is stable-input (enum) order, unrelated to the realizers' M-values. But
+  the bracket `.holds` (via `IntervalPattern.holds_eq_succ`, the mpr dual of
+  `kvE2_sepDisjunct_extract` SW:2625) needs a STRICTLY MONOTONE `ws` realizing each slot's
+  `charBase χ` point type at its mergeSort position, and the engine `k1v_sorted_realizationK`
+  (SubBracket2V:633-646) emits `interleaveK ps` with `ps.map fst` a `List.Perm` of the region
+  types sorted BY VALUE. Reconciling the value-sorted engine order with the tie-blocked mergeSort
+  order is exactly `halignL/R`, and it is UNPROVABLE against the landed per-owner-region index
+  whenever an owner-region holds ≥2 base types (the tie-block has no value-faithful order).
+- **Why stuck**: The seam object the plan anchored on (a value-faithful PER-SLOT global index) did
+  not land; the landed `kvE2_sepSlotGIdx` is PER-OWNER-REGION (3 values/owner, with ties). The
+  missing `halignL/R` + assembled regions + `hbdry` cannot be built inside 337 without re-deriving
+  the carrier-level value-faithfulness of the global index — the exact re-scope the synthesis
+  rejected (report 04 Q2) and this plan's Non-Goals + Rollback bullet 3 + interface-stability note
+  forbid.
+- **What is needed** (→ resolution, NOT a 337 edit): a task-340 follow-up that either (i) refines
+  the honest tuple / `kvE2_sepSlotGIdx` to a genuinely per-INDIVIDUAL-SLOT value-faithful global
+  index (distinct index per base type, value-ranked), landing `kvE2_sepSlotsLOf (kvE2_sepHonestOrder …)`
+  as a value-sorted chain; or (ii) lands the `halignL/R` + assembled boundary-linked `regionsL/R`
+  + `hbdry` bundle directly as consumable INPUTS (Preconditions (2)+(3) verbatim). Either restores
+  the acyclic `340 → 337` seam so 337's Phases 2-4 (engine invoke + single-`ptW` bracket match +
+  endpoint discharge) become executable as planned.
+- **Prohibited**: Do NOT use sorry, `def X := True`, or a vacuous placeholder; do NOT re-derive
+  the carrier value-faithfulness inside 337; do NOT edit any 334/336/338/339/340 declaration.
 
 **Goal**: Read the landed 340 Phase 5 signature, destructure the engine-precondition bundle into `wo`, `hmem : wo ∈ kvE2_sepArr' qnf`, and the L/R region decompositions with their four engine hypotheses (`hpos/hlink/hnd/hreal`) + alignment facts (`halignL/R`) + endpoint boundary alignment, and stage them as local `have`s in a private helper. Confirm the destructured `wo`/`hmem` match the ⇐ witness shape of `kvE2_sepBody_holds_iff` (SW:1111-1113). No new proof content — this phase pins the interface.
 

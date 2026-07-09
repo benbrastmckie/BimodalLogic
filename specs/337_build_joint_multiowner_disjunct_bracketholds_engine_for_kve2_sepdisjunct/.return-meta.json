@@ -1,0 +1,33 @@
+{
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "task_number": 337,
+  "session_id": "sess_1783561356_89aa2d_337",
+  "requires_user_review": true,
+  "stop_guard_invoked": true,
+  "phases_completed": 0,
+  "phases_total": 5,
+  "summary": "Phase-1 interface-stability stop-guard fired. Landed task-340 is weaker than plan Preconditions (2)+(3): delivers carrier member + per-owner realizer bundles + tuple monotonicity + the reduction, but NOT the assembled regionsL/R, halignL/R, or hbdry. Root cause: landed kvE2_sepSlotGIdx reads kvE2_sepHonestTuple = (3r,3r+1,3r+2) (per-owner-region, with ties), so kvE2_sepSlotsLOf (mergeSort) is not value-sorted within tie-blocks and the required halign to the engine's value-sorted interleaveK ps is unprovable when an owner-region has >=2 base types. No Lean written; no declaration edited.",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "build_passed": true,
+    "lean_file_edited": false
+  },
+  "blockers": [
+    "Phase 1 interface mismatch: 340-P5 did not deliver regionsL/R + halignL/R + hbdry; landed per-owner-region kvE2_sepSlotGIdx has ties making per-slot value-faithful alignment unprovable. Resolution: strengthen task 340 (per-individual-slot value-faithful global index, or the assembled engine-precondition bundle) then re-dispatch 337 Phases 2-4."
+  ],
+  "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
+  "artifacts": [
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/04_joint-disjunct-holds-codesign-summary.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json"
+  ],
+  "memory_candidates": [
+    "The 340<->337 seam: kvE2_sepSlotGIdx reads a PER-OWNER-REGION honest tuple (3r,3r+1,3r+2), so kvE2_sepSlotsLOf mergeSort has ties within each owner-region; a per-INDIVIDUAL-SLOT value-faithful global index is required for the bracket .holds witness match (halign to interleaveK ps).",
+    "Bracket .holds mpr for kvE2_sepDisjunct needs a strictly-monotone ws matching the mergeSort'd slot order; k1v_sorted_realizationK emits interleaveK ps sorted BY VALUE (a List.Perm of region types) -- the two orders coincide only if the global index is value-faithful per individual slot."
+  ]
+}

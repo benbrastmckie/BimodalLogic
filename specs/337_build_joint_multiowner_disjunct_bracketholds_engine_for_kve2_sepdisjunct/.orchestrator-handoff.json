@@ -1,0 +1,46 @@
+{
+  "task": 337,
+  "status": "partial",
+  "skeleton": false,
+  "summary": "Stop-guard fired at Phase 1 (as the prior planning handoff's next_action_hint predicted). The landed task-340 interface is weaker than the plan's Preconditions (2)+(3): task 340 delivered the carrier member (kvE2_sepHonestOrder_mem_arr', SW:2146), per-owner realizer bundles (kvE2_sepHonestAnchorBundleL/R, SW:2290/2329), tuple-index monotonicity (kvE2_sepHonest_cross_region, SW:2222), and the reduction kvE2_sepBody_complete_holds (SW:2267), but NOT the assembled boundary-linked regionsL/R, NOT the alignment fact halignL/R, and NOT the endpoint boundary alignment hbdry. Root cause is a carrier-granularity gap: the landed kvE2_sepSlotGIdx (SW:1006) reads kvE2_sepHonestTuple (SW:2095) = (3r,3r+1,3r+2), i.e. ONE global index per owner-REGION (with ties across all base slots of the same owner-region), not a value-faithful per-INDIVIDUAL-SLOT index. So kvE2_sepSlotsLOf (SW:1034, mergeSort by that index) is NOT value-sorted within tie-blocks, and the required halignL/R (mergeSort order = engine value-sorted interleaveK ps order) is unprovable whenever an owner-region holds >=2 base types. Per the stop-guard, 337 must NOT re-derive the carrier value-faithfulness inside 337. No Lean written; no declaration edited; SharedWitness.lean remains post-340 green.",
+  "phases_completed": 0,
+  "phases_total": 5,
+  "sorry_inventory": [],
+  "blockers": [
+    {
+      "phase": 1,
+      "kind": "interface_mismatch",
+      "target": "kvE2_sepHonest_engineInputs (Phase-1 destructure of the 340-P5 engine-precondition bundle)",
+      "what_failed": "obtain wo, hmem, regionsL/R, hpos/hlink/hnd/hreal L/R, halignL/R, hbdry from the landed 340 Phase 5 deliverable -- the region decomposition, the alignment fact, and the boundary alignment that Preconditions (2)+(3) pin as verified 340 INPUTS do not exist among the landed declarations.",
+      "what_is_missing": [
+        "Assembled boundary-linked regionsL/R : List (M.carrier x M.carrier x List (NormalForm sig 0 1)) with hpos/hlink/hnd/hreal consumable by k1v_sorted_realizationK (SubBracket2V.lean:633-646).",
+        "Alignment fact halignL/R tying kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder ...) (SW:1034/1040, mergeSort) to the engine value-sorted interleaveK ps order.",
+        "Endpoint boundary alignment hbdry (regionsL leftmost lo = x, rightmost hi = w; regionsR lo = w, hi = t)."
+      ],
+      "root_cause": "Landed kvE2_sepSlotGIdx (SW:1006-1013) reads kvE2_sepHonestTuple (SW:2095-2103) = (3r,3r+1,3r+2): one index per owner-REGION, not per individual slot. kvE2_sepSlotRank (SW:245-253) gives all .lXU slots rank 0 and all .lUW slots rank 2, so every base slot of one owner-region shares its global index (a tie). kvE2_sepSlotsLOf (SW:1034) mergeSorts by this tied index, so within a tie-block of >=2 base types the order is stable-input (enum) order, unrelated to realizer M-values. The bracket .holds (IntervalPattern.holds_eq_succ mpr, dual of kvE2_sepDisjunct_extract SW:2625) needs a strictly-monotone ws realizing each slot's charBase-chi type at its mergeSort position; the engine k1v_sorted_realizationK emits interleaveK ps value-sorted (ps.map fst a List.Perm of region types). These two orders cannot be reconciled (halign) against a tied per-owner-region index.",
+      "why_not_337_territory": "Building halignL/R + regionsL/R + hbdry requires re-deriving the carrier value-faithfulness of the global index down to individual slots -- the exact re-scope the 3-agent synthesis rejected (report 04 Q2) and the plan's Non-Goals + Rollback bullet 3 + interface-stability note forbid. The 340 Phase 5D docstring (SW:2249-2260) reassigns regions assembly to 337, but the ingredients it points to (per-owner bundles relative to a single anchor + fixed endpoints) do not give fine-grained realizer placement across merged anchor gaps, and the tied index cannot be value-sorted per-slot.",
+      "prohibited": "No sorry, no def X := True, no vacuous placeholder; do NOT re-derive carrier value-faithfulness inside 337; do NOT edit any 334/336/338/339/340 declaration."
+    }
+  ],
+  "resolution_options": [
+    "Preferred: spawn a task-340 follow-up that refines kvE2_sepHonestTuple / kvE2_sepSlotGIdx to a genuinely per-INDIVIDUAL-SLOT value-faithful global index (distinct value-ranked index per base type), landing kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder ...) as a value-sorted chain plus halignL/R + hbdry as consumable INPUTS. Restores the acyclic 340 -> 337 seam so 337 Phases 2-4 execute as planned.",
+    "Alternative: task 340 lands the assembled boundary-linked regionsL/R with hpos/hlink/hnd/hreal + halignL/R + hbdry directly (Preconditions (2)+(3) verbatim), leaving 337 only the engine invocation + single-ptW bracket match + endpoint discharge.",
+    "Alternative (re-plan 337, higher risk, needs orchestrator sign-off): expand 337's scope to ADD (not edit) a carrier-level value-faithful-order lemma about kvE2_sepSlotsLOf (kvE2_sepHonestOrder ...). Rejected by the current plan's Non-Goals and the synthesis; would override the stop-guard."
+  ],
+  "artifacts": [
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/04_joint-disjunct-holds-codesign-summary.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json"
+  ],
+  "modified_files": [],
+  "lean_file_untouched": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (no additive declarations landed; remains post-340 green)",
+  "continuation_context": null,
+  "continuation_path": null,
+  "next_action_hint": "Resolve the 340->337 seam before re-dispatching 337: spawn a task-340 follow-up to land a per-individual-slot value-faithful global index (or halignL/R + assembled regionsL/R + hbdry) so kvE2_sepSlotsLOf (kvE2_sepHonestOrder ...) is a value-sorted chain matching interleaveK ps. Once landed, re-dispatch 337 Phases 2-4 (engine invoke -> single-ptW bracket match -> endpoint discharge -> kvE2_sepDisjunct_holds_of_honest). Downstream: task 335 consumes kvE2_sepBody_holds_of_honest.",
+  "acceptance_met": false,
+  "stop_guard_invoked": true,
+  "reports_integrated": [
+    "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/04_337-codesign-interface.md",
+    "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/05_research-team-synthesis.md"
+  ]
+}
