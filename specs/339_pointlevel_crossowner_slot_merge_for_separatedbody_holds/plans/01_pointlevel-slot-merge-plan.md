@@ -217,7 +217,7 @@ applicable — single file, one owner). Each phase is one agent run ending at it
   spec is recorded in the implementation summary / a short design note under this task's `reports/`;
   NO source file is edited in this phase.
 
-### Phase 2: Point-level merge defs + shallow dependent lemmas [NOT STARTED]
+### Phase 2: Point-level merge defs + shallow dependent lemmas [COMPLETED]
 - **Goal:** Replace the block flatMap with the point-level merge and re-establish the two shallow
   dependent lemmas, ending at a compiling file.
 - **Tasks:**

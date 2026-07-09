@@ -862,18 +862,46 @@ def kvE2_sepOrderOwners {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) : List (NormalForm sig 1 4) :=
   (wo.mergeSort (fun a b => decide (a.2.2 ≤ b.2.2))).map Prod.fst
 
-/-- The wo-ordered joint LEFT slot list: the per-owner LEFT region blocks (`kvE2_sepSlotsLFor`),
-    sequenced by `wo`'s cross-owner RANK order — NOT the fixed `kvE2_sepPos` order the discarded-`_wo`
-    body pinned. Genuinely CONSUMES `wo`. Never asserts flat-union monotone validity (the deleted
-    FALSE `kvE2_sepSlotsL_valid` scaffold); the actual joint sorted-realization is task 337. -/
+/-- **Owner merged-chain rank read** (task 339): σ's merged-chain rank as recorded in `wo` (338's
+    per-owner rank field, consumed AS-IS). Owners not present in `wo` default to `0` (never occurs
+    on the enumeration index, where `wo.map Prod.fst = kvE2_sepPos qnf`). -/
+def kvE2_sepOwnerRank {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) (σ : NormalForm sig 1 4) : ℕ :=
+  ((wo.find? (fun p => decide (p.1 = σ))).map (fun p => p.2.2)).getD 0
+
+/-- **Point-level merge key** (task 339): the composite ℕ×ℕ sort key for a single slot, ordered
+    lexicographically with the intra-owner REGION rank (`kvE2_sepSlotRank`) PRIMARY and the owner's
+    cross-owner merged-chain rank (`kvE2_sepOwnerRank wo`) SECONDARY. Region-primary is what makes
+    the merge a genuine POINT-LEVEL interleaving (all owners' region-`k` slots together, ordered
+    among themselves by 338's cross-owner rank) rather than a contiguous per-owner BLOCK reordering
+    (which owner-primary would give — the exact block order report 04 proved rank-independent
+    insufficient). The key is an abstract ℕ×ℕ, never a model relative-position literal (F4/LITMUS
+    clean); it reads no zone bit (F5 clean). -/
+def kvE2_sepSlotMergeLe {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) (a b : KvE2SepSlot sig) : Bool :=
+  let ra := kvE2_sepSlotRank a
+  let rb := kvE2_sepSlotRank b
+  decide (ra < rb ∨ (ra = rb ∧
+    kvE2_sepOwnerRank wo (kvE2_sepSlotSub a) ≤ kvE2_sepOwnerRank wo (kvE2_sepSlotSub b)))
+
+/-- The wo-ordered joint LEFT slot list — a genuine POINT-LEVEL cross-owner merge (task 339): the
+    per-owner LEFT region slots, `mergeSort`ed by the composite point-level key
+    `kvE2_sepSlotMergeLe wo` (region rank primary, owner merged-chain rank secondary). Because
+    `mergeSort` is a permutation of its input, this carries the SAME slot multiset as the block
+    union `(kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor` (so every per-owner slot-membership
+    fact survives, `List.mergeSort_perm`), but individual owner slots are now interleaved into ONE
+    globally key-sorted chain (Rabinovich Def 3.1, single global chain over the union of points),
+    NOT sequenced as contiguous owner blocks. Genuinely CONSUMES `wo` (via `kvE2_sepOwnerRank`).
+    Never asserts flat-union monotone validity; the joint sorted-realization builder is task 337. -/
 noncomputable def kvE2_sepSlotsLOf {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
-  (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor
+  ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor).mergeSort (kvE2_sepSlotMergeLe wo)
 
-/-- The wo-ordered joint RIGHT slot list (right mirror of `kvE2_sepSlotsLOf`). Consumes `wo`. -/
+/-- The wo-ordered joint RIGHT slot list (right mirror of `kvE2_sepSlotsLOf`): point-level merge of
+    the per-owner RIGHT region slots by the same composite key. Consumes `wo`. -/
 noncomputable def kvE2_sepSlotsROf {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
-  (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor
+  ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor).mergeSort (kvE2_sepSlotMergeLe wo)
 
 /-- Structural helper: every disjunct in the `foldr` enumeration carries EXACTLY the positive
     owners in `kvE2_sepPos` order (one prepended entry per owner). -/
@@ -915,6 +943,32 @@ theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} (qnf : NormalForm sig 2
   have hperm := (List.mergeSort_perm wo (fun a b => decide (a.2.2 ≤ b.2.2))).map Prod.fst
   rw [kvE2_sepOrderTypes_owners qnf hwo] at hperm
   exact hperm.mem_iff.mpr hσ
+
+/-- **Point-level merge membership** (task 339, LEFT): every per-owner LEFT slot of a positive
+    owner is a member of the merged chain `kvE2_sepSlotsLOf wo`. Because the merge is a
+    `mergeSort` (hence a permutation, `List.mergeSort_perm`) of the block union
+    `(kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor`, membership reduces to the block-union
+    membership `kvE2_sepMem_orderOwners` — the same permutation technique as
+    `kvE2_sepMem_orderOwners` itself. This is the `hmemL` witness the `kvE2_sepBody_extract`
+    rewire consumes against the point-level def. -/
+theorem kvE2_sepSlotsLOf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
+    s ∈ kvE2_sepSlotsLOf wo := by
+  rw [kvE2_sepSlotsLOf]
+  exact (List.mergeSort_perm _ _).mem_iff.mpr
+    (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
+
+/-- **Point-level merge membership** (task 339, RIGHT mirror of `kvE2_sepSlotsLOf_mem`). -/
+theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
+    s ∈ kvE2_sepSlotsROf wo := by
+  rw [kvE2_sepSlotsROf]
+  exact (List.mergeSort_perm _ _).mem_iff.mpr
+    (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
 
 /-! ## The joint carrier (O1) -/
 
@@ -2184,12 +2238,8 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
     obtain ⟨wo, hwo, hd⟩ := h
     have hwo' : wo ∈ kvE2_sepOrderTypes qnf := (List.mem_filter.mp hwo).1
     exact kvE2_sepDisjunct_extract charBase charK qnf
-      (fun σ hσ s hs => by
-        show s ∈ (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor
-        exact List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo' hσ, hs⟩) (hpairL wo hwo)
-      (fun σ hσ s hs => by
-        show s ∈ (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor
-        exact List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo' hσ, hs⟩) (hpairR wo hwo)
+      (fun σ hσ s hs => kvE2_sepSlotsLOf_mem qnf hwo' hσ hs) (hpairL wo hwo)
+      (fun σ hσ s hs => kvE2_sepSlotsROf_mem qnf hwo' hσ hs) (hpairR wo hwo)
       M atomMap x t hd
   · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
     simp [VVecEA2.holds] at h
