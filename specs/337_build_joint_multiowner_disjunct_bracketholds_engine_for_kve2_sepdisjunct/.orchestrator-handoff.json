@@ -2,45 +2,64 @@
   "task": 337,
   "status": "partial",
   "skeleton": false,
-  "summary": "Stop-guard fired at Phase 1 (as the prior planning handoff's next_action_hint predicted). The landed task-340 interface is weaker than the plan's Preconditions (2)+(3): task 340 delivered the carrier member (kvE2_sepHonestOrder_mem_arr', SW:2146), per-owner realizer bundles (kvE2_sepHonestAnchorBundleL/R, SW:2290/2329), tuple-index monotonicity (kvE2_sepHonest_cross_region, SW:2222), and the reduction kvE2_sepBody_complete_holds (SW:2267), but NOT the assembled boundary-linked regionsL/R, NOT the alignment fact halignL/R, and NOT the endpoint boundary alignment hbdry. Root cause is a carrier-granularity gap: the landed kvE2_sepSlotGIdx (SW:1006) reads kvE2_sepHonestTuple (SW:2095) = (3r,3r+1,3r+2), i.e. ONE global index per owner-REGION (with ties across all base slots of the same owner-region), not a value-faithful per-INDIVIDUAL-SLOT index. So kvE2_sepSlotsLOf (SW:1034, mergeSort by that index) is NOT value-sorted within tie-blocks, and the required halignL/R (mergeSort order = engine value-sorted interleaveK ps order) is unprovable whenever an owner-region holds >=2 base types. Per the stop-guard, 337 must NOT re-derive the carrier value-faithfulness inside 337. No Lean written; no declaration edited; SharedWitness.lean remains post-340 green.",
+  "summary": "PRECONDITION GATE RE-VERIFIED AGAINST THE CURRENT FILE AND PASSED. The prior dispatch's status=blocked is STALE and is HEREBY OVERTURNED. Task 340 (Phases 5-7) landed the per-INDIVIDUAL-slot value-faithful global index the prior stop-guard said was missing: kvE2_sepSlotHonestGIdx (SW:2979) with kvE2_sepSlotHonestGIdx_mono (SW:2990, value-faithful) and kvE2_sepSlotHonestGIdx_injOn (SW:3012, injective/no ties), whose own docstrings (SW:2975-2978, 3059-3062) state verbatim that it 'replaces the tied (3r,3r+1,3r+2) owner-region tuple the 337 stop-guard refuted.' The tie-block obstruction is DISSOLVED. Per the delegation decision rule this is the 'derivable from landed 340 lemmas' case -> proceed to build; it is NOT a genuine missing precondition, so status is partial (not blocked). No genuine 340 re-dispatch is required. The remaining 337 work (build kvE2_sepDisjunct_holds_of_honest) is a genuine multi-phase construction (plan 04 Phases 1-5, ~4-5h) confirmed non-trivial by full engine-API analysis; this dispatch scoped it precisely for H1 per-phase re-dispatch and left SharedWitness.lean byte-for-byte UNTOUCHED and GREEN (scoped lake build exit 0). No Lean written this dispatch (no RED risk taken); the continuation below is turnkey.",
   "phases_completed": 0,
   "phases_total": 5,
   "sorry_inventory": [],
-  "blockers": [
-    {
-      "phase": 1,
-      "kind": "interface_mismatch",
-      "target": "kvE2_sepHonest_engineInputs (Phase-1 destructure of the 340-P5 engine-precondition bundle)",
-      "what_failed": "obtain wo, hmem, regionsL/R, hpos/hlink/hnd/hreal L/R, halignL/R, hbdry from the landed 340 Phase 5 deliverable -- the region decomposition, the alignment fact, and the boundary alignment that Preconditions (2)+(3) pin as verified 340 INPUTS do not exist among the landed declarations.",
-      "what_is_missing": [
-        "Assembled boundary-linked regionsL/R : List (M.carrier x M.carrier x List (NormalForm sig 0 1)) with hpos/hlink/hnd/hreal consumable by k1v_sorted_realizationK (SubBracket2V.lean:633-646).",
-        "Alignment fact halignL/R tying kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder ...) (SW:1034/1040, mergeSort) to the engine value-sorted interleaveK ps order.",
-        "Endpoint boundary alignment hbdry (regionsL leftmost lo = x, rightmost hi = w; regionsR lo = w, hi = t)."
-      ],
-      "root_cause": "Landed kvE2_sepSlotGIdx (SW:1006-1013) reads kvE2_sepHonestTuple (SW:2095-2103) = (3r,3r+1,3r+2): one index per owner-REGION, not per individual slot. kvE2_sepSlotRank (SW:245-253) gives all .lXU slots rank 0 and all .lUW slots rank 2, so every base slot of one owner-region shares its global index (a tie). kvE2_sepSlotsLOf (SW:1034) mergeSorts by this tied index, so within a tie-block of >=2 base types the order is stable-input (enum) order, unrelated to realizer M-values. The bracket .holds (IntervalPattern.holds_eq_succ mpr, dual of kvE2_sepDisjunct_extract SW:2625) needs a strictly-monotone ws realizing each slot's charBase-chi type at its mergeSort position; the engine k1v_sorted_realizationK emits interleaveK ps value-sorted (ps.map fst a List.Perm of region types). These two orders cannot be reconciled (halign) against a tied per-owner-region index.",
-      "why_not_337_territory": "Building halignL/R + regionsL/R + hbdry requires re-deriving the carrier value-faithfulness of the global index down to individual slots -- the exact re-scope the 3-agent synthesis rejected (report 04 Q2) and the plan's Non-Goals + Rollback bullet 3 + interface-stability note forbid. The 340 Phase 5D docstring (SW:2249-2260) reassigns regions assembly to 337, but the ingredients it points to (per-owner bundles relative to a single anchor + fixed endpoints) do not give fine-grained realizer placement across merged anchor gaps, and the tied index cannot be value-sorted per-slot.",
-      "prohibited": "No sorry, no def X := True, no vacuous placeholder; do NOT re-derive carrier value-faithfulness inside 337; do NOT edit any 334/336/338/339/340 declaration."
-    }
+  "blockers": [],
+  "gate_reverified": {
+    "prior_status": "blocked (stale)",
+    "current_status": "PASSED / derivable",
+    "prior_blocker_root_cause": "kvE2_sepSlotGIdx read a per-owner-REGION honest tuple (3r,3r+1,3r+2) with ties -> kvE2_sepSlotsLOf mergeSort not value-sorted within tie-blocks -> halign unprovable for owner-regions with >=2 base types.",
+    "why_now_resolved": "Task 340 Phase 7 replaced the tied owner-region tuple with the per-INDIVIDUAL-slot value-rank index kvE2_sepSlotHonestGIdx (kvE2_ordRank of the lex family kvE2_sepSlotG = (value, slotIndex), SW:2945). It is value-faithful (kvE2_sepSlotHonestGIdx_mono SW:2990) and injective on the slot family (kvE2_sepSlotHonestGIdx_injOn SW:3012). The honest carrier order kvE2_sepHonestOrder (SW:3063) now carries payload block.map kvE2_sepSlotHonestGIdx, and kvE2_sepHonestOrder_mem_arr' (SW:3095) proves membership. The tie-block that made halign unprovable no longer exists.",
+    "evidence_lines": ["SW:2939-2949 kvE2_sepSlotG (lex value+index, injective w/o value-distinctness)", "SW:2966-2973 kvE2_sepSlotG_lt_of_value_lt", "SW:2979-2985 kvE2_sepSlotHonestGIdx def", "SW:2990-3006 _mono", "SW:3012-3026 _injOn", "SW:3033-3047 kvE2_sepConsistentBlock_honest", "SW:3052-3057 kvE2_sepAllSlots_map_honestGIdx_nodup", "SW:3063-3068 kvE2_sepHonestOrder", "SW:3095-3127 kvE2_sepHonestOrder_mem_arr'", "SW:3149-3160 Phase-5D docstring: 'that regions realization ... is task 337 territory, NOT a carrier change'"]
+  },
+  "engine_input_derivation_map": {
+    "note": "Plan-04 Preconditions (2)+(3) are NOT delivered by 340 as ready-made region lemmas; 340 Phase 5D (SW:3149-3160) explicitly assigns the regionsL/R ASSEMBLY to 337. All INGREDIENTS to assemble them are now landed:",
+    "hpos_hlink": "The strictly-ordered anchor family: kvE2_sepAnchorFam (SW:2575) + kvE2_sepAnchorFam_injective (SW:2584) + kvE2_sepHonest_rank_strictMono (SW:3140); left anchors x1_sigma in (x,w) via kvE2_sepHonestAnchorBundleL (SW:2613), right anchors in (w,t) via kvE2_sepHonestAnchorBundleR (SW:2652). Region boundaries = the sorted anchor values; hlink (Chain') from consecutive sorted anchors.",
+    "hnd": "Per-region base-type Nodup from kvE2_sepS list Nodup (each zone base-type list is a filtered Finset.toList).",
+    "hreal": "DIRECTLY from kvE2_sepHonestAnchorBundleL/R (SW:2613/2652): each zXU/zUW/zWX1/zWT base type chi is realized at a witness strictly interior to its (bounded-by-anchor) sub-interval, exactly k1v_sorted_realizationK's hreal shape (SubBracket2V.lean:639).",
+    "halign": "kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder ...) is mergeSort by kvE2_sepSlotMergeLe = GIdx compare; on the honest order GIdx = kvE2_sepSlotHonestGIdx (value-faithful). REQUIRES a bridge lemma (see continuation immediate_next_action).",
+    "hbdry": "regionsL leftmost lo = x, rightmost hi -> pivot; regionsR lo = pivot, rightmost hi = t. From bundle interval bounds (x < x1 < w, w < x1 < t) and the fixed endpoints."
+  },
+  "confirmed_construction_subtleties": [
+    "VALUE TIES (crux): distinct owners may SHARE a kvE2_sepSlotValue (kvE2_sepSlotG uses a lex (value, slotIndex) tiebreak for injectivity WITHOUT value-distinctness, SW:2939-2949). Therefore the bracket witnesses CANNOT be kvE2_sepSlotValue directly (not strictly increasing under ties); they MUST be the engine's fresh strictly-increasing points interleaveK ps (k1v_sorted_realizationK, SubBracket2V.lean:633-646). The direct 'ws i = slotValue' shortcut is provably wrong. This is why plan-04 mandates the engine route.",
+    "CROSS-w SLOTS: a RIGHT-interior owner contributes .rXW slots to the LEFT list kvE2_sepSlotsLOf (kvE2_sepSlotsLFor zWT3 = zXU.map .rXW, SW:296-303) with value in (x, x1_sigma), x1_sigma in (w,t) -- so a left-list slot's value can exceed w. Mirror: a LEFT-interior owner contributes .lWT to the RIGHT list. The bracket pivot at index |lL| is therefore NOT necessarily the model w; it is a fresh point above all left-region values. Region assembly / segment cut-keying must respect this (region tag kvE2_sepSlotRegionLeft SW:496-505 and its non-monotone-across-boundary warning).",
+    "REFINED-CONJUNCTION SEGMENTS: the three IntervalPattern.holds_eq_succ segment families (beta_0 head, k middle gaps, beta_{k+1} tail; ExistsForallNF.lean:188-204) must each realize kvE2_sepSegs (SW:997) = per-positive-sigma exclusion forms kvE2_sepSegForm (SW:184) keyed by whether sigma's fresh slot is among the first i slots (a STRUCTURAL take-i.contains read, NOT an x1 < e_i literal). Discharge via kvE2_sepSegForm_excludes (SW:3768) + kvE2_sepSegLForSub'_at_sound (SW:4052) / kvE2_sepSegRForSub'_at_sound (SW:4133). This is plan-04 Phase 3, the highest-risk step, sized alone."
   ],
-  "resolution_options": [
-    "Preferred: spawn a task-340 follow-up that refines kvE2_sepHonestTuple / kvE2_sepSlotGIdx to a genuinely per-INDIVIDUAL-SLOT value-faithful global index (distinct value-ranked index per base type), landing kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder ...) as a value-sorted chain plus halignL/R + hbdry as consumable INPUTS. Restores the acyclic 340 -> 337 seam so 337 Phases 2-4 execute as planned.",
-    "Alternative: task 340 lands the assembled boundary-linked regionsL/R with hpos/hlink/hnd/hreal + halignL/R + hbdry directly (Preconditions (2)+(3) verbatim), leaving 337 only the engine invocation + single-ptW bracket match + endpoint discharge.",
-    "Alternative (re-plan 337, higher risk, needs orchestrator sign-off): expand 337's scope to ADD (not edit) a carrier-level value-faithful-order lemma about kvE2_sepSlotsLOf (kvE2_sepHonestOrder ...). Rejected by the current plan's Non-Goals and the synthesis; would override the stop-guard."
+  "continuation_context": {
+    "is_successor": true,
+    "resume_phase": 1,
+    "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+    "insertion_zone": "additive helpers AFTER kvE2_sepHonest_rank_strictMono (SW:3140-3147) and BEFORE the Phase-5D docstring (SW:3149); builder + corollary near kvE2_sepBody_complete_holds (SW:3167).",
+    "target_deliverables": [
+      "kvE2_sepDisjunct_holds_of_honest : (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf (kvE2_sepHonestOrder ...)) (kvE2_sepSlotsROf (kvE2_sepHonestOrder ...))).2.holds M atomMap x t",
+      "kvE2_sepBody_holds_of_honest : (kvE2_sepBody charBase charK qnf).holds M atomMap x t -- = kvE2_sepBody_complete_holds (SW:3167) fed the above as hdisj."
+    ],
+    "immediate_next_action": "Phase 2 halign FOUNDATION bridge lemma (land green first): prove `kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h) s = kvE2_sepSlotHonestGIdx qnf M w x t h s` for s in kvE2_sepSlotBlock sigma, sigma in kvE2_sepPos. Proof sketch: hsub := kvE2_sepSlotSub_of_mem_block hs; unfold kvE2_sepSlotGIdx; resolve the honest-order find? by (p.1 = sigma) to `some (sigma, coincident, block sigma .map kvE2_sepSlotHonestGIdx)` (kvE2_sepHonestOrder = (kvE2_sepPos).zipIdx.map ...; use List.find?_map + zipIdx-fst = pos + nodup of pos); then kvE2_sepBlockMap_getD (SW:713) at Fin index kvE2_sepBlockPos s (bound kvE2_sepBlockPos_lt SW:512) and List.idxOf_get to collapse block.get (idxOf s) = s. This bridges the mergeSort key to the value-faithful index and is the load-bearing halign fact.",
+    "structural_dual_to_mirror": "kvE2_sepDisjunct_extract (SW:3435-3525) is the EXACT DUAL: read its `obtain <ws, hmono, hrange, hpt, hseg0, hsegmid, hsegn>` destructure and its getElem_left/mid/right index reads (SW:3340-3359), then run it in reverse via IntervalPattern.holds_eq_succ.mpr (six conjuncts: mono/range/point/seg0/segmid/segn, ExistsForallNF.lean:188-204). The k=3 constructor template k1v_bracket_construct3 (SubBracket2V.lean:720-742, body 807-819, witnesses = usXU ++ x1 :: usUW ++ w :: usWT) is the single-owner shape guide to generalize.",
+    "phase_plan": [
+      "P1: bridge lemma above + assemble regionsL/R (List (carrier x carrier x List (NF 0 1))) from sorted honest anchors; prove hpos/hlink/hnd/hreal from the AnchorBundles. Green helper kvE2_sepHonest_engineInputs.",
+      "P2: k1v_sorted_realizationK on regionsL/R -> psL/psR + (interleaveK psS).Pairwise(<); build ws : Fin(N+1)->carrier re-indexed into kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo (pivot at |lL|) via halign; prove mono + range x<ws<t. Green helper kvE2_sepHonest_witnesses.",
+      "P3 (highest risk, alone): point-type realizations (each slot type at its ws index; pivot ptW) + the three refined-conjunction segment families via kvE2_sepSegForm_excludes/kvE2_sepSegLForSub'_at_sound/RForSub'_at_sound. Close via IntervalPattern.holds_eq_succ.mpr. Green helper kvE2_sepHonest_bracket_holds.",
+      "P4: endpoint discharge kvE2_sepEpL@x / kvE2_sepEpR@t from h (temporal Since/Until + atom literals; mirror kvE2_sepDisjunct_extract's hepL/hepR consumption); assemble kvE2_sepDisjunct_holds_of_honest; corollary kvE2_sepBody_holds_of_honest via kvE2_sepBody_complete_holds (SW:3167).",
+      "P5: lean_verify axiom-clean {propext, Classical.choice, Quot.sound} no sorryAx; F1-F7 audit; full lake build."
+    ]
+  },
+  "continuation_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
+  "next_action_hint": "Do NOT re-dispatch task 340 (its Phase-7 refinement already dissolved the blocker). Re-dispatch task 337 Phases 1-5 (now executable) with skill-lean-implementation-hard, ideally per-phase (H1): start with the halign bridge lemma + regions assembly (P1), then engine invoke (P2), then the single-ptW bracket match (P3, highest risk, sized alone), then endpoint discharge + builder + corollary (P4), then axiom/faithfulness gate (P5). Downstream: task 335 consumes kvE2_sepBody_holds_of_honest.",
+  "acceptance_met": false,
+  "stop_guard_invoked": false,
+  "lean_file_untouched": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (no additive declarations landed this dispatch; baseline scoped lake build GREEN, exit 0)",
+  "modified_files": [
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/04_joint-disjunct-holds-codesign-summary.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.return-meta.json"
   ],
   "artifacts": [
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/04_joint-disjunct-holds-codesign-summary.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json"
-  ],
-  "modified_files": [],
-  "lean_file_untouched": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (no additive declarations landed; remains post-340 green)",
-  "continuation_context": null,
-  "continuation_path": null,
-  "next_action_hint": "Resolve the 340->337 seam before re-dispatching 337: spawn a task-340 follow-up to land a per-individual-slot value-faithful global index (or halignL/R + assembled regionsL/R + hbdry) so kvE2_sepSlotsLOf (kvE2_sepHonestOrder ...) is a value-sorted chain matching interleaveK ps. Once landed, re-dispatch 337 Phases 2-4 (engine invoke -> single-ptW bracket match -> endpoint discharge -> kvE2_sepDisjunct_holds_of_honest). Downstream: task 335 consumes kvE2_sepBody_holds_of_honest.",
-  "acceptance_met": false,
-  "stop_guard_invoked": true,
-  "reports_integrated": [
-    "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/04_337-codesign-interface.md",
-    "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/05_research-team-synthesis.md"
   ]
 }

@@ -116,9 +116,25 @@ For an honest instance — `charBase`, `charK`, `qnf : NormalForm sig 2 3`, `M :
 
 Fully sequential: each phase consumes the sorry-free auxiliary lemma of the previous. Each phase is sized to one agent run (H8) and ends at a green, sorry-tracked `lake build`. **Phases 1–4 map one-to-one to the synthesis's steps (a)–(d); Phase 5 is the axiom-clean + faithfulness gate.**
 
-### Phase 1: Consume the 340-P5 engine-precondition bundle (step a) [BLOCKED]
+### Phase 1: Consume the 340-P5 engine-precondition bundle (step a) [IN PROGRESS]
 
-**BLOCKER** (Phase 1 — interface mismatch, stop-guard fired):
+**STOP-GUARD RESOLVED** (2026-07-09, re-verified against the CURRENT `SharedWitness.lean`,
+now 4174 lines vs. the ~2600 the prior stop-guard examined). Task 340 Phases 5-7 landed the
+per-INDIVIDUAL-slot value-faithful global index the prior blocker said was missing:
+- `kvE2_sepSlotHonestGIdx` (SW:2979) — per-slot value-rank index (`kvE2_ordRank` of the lex
+  family `kvE2_sepSlotG = (value, slotIndex)`, SW:2945), REPLACING the tied `(3r,3r+1,3r+2)`
+  owner-region tuple. Its own docstring (SW:2975-2978, 3059-3062) states it "replaces the tied
+  length-3 tuple the 337 stop-guard refuted."
+- `kvE2_sepSlotHonestGIdx_mono` (SW:2990) — value-faithful: `value a < value b → GIdx a < GIdx b`.
+- `kvE2_sepSlotHonestGIdx_injOn` (SW:3012) — injective on the slot family (no ties).
+- `kvE2_sepHonestOrder` (SW:3063) + `kvE2_sepHonestOrder_mem_arr'` (SW:3095) — the honest carrier
+  member built on that value-rank payload.
+The tie-block obstruction (`halign` unprovable) is therefore DISSOLVED: within any owner-region
+the value-rank index is strictly monotone in value. Per the delegation decision rule this is the
+"derivable from landed 340 lemmas" case → PROCEED TO BUILD (not blocked). The old blocker text
+below is retained for history only.
+
+**BLOCKER (SUPERSEDED — stale, retained for history)** (Phase 1 — interface mismatch, stop-guard fired):
 - **What failed**: The destructure of Preconditions (2)+(3) — the assembled boundary-linked
   `regionsL/R` with `hpos/hlink/hnd/hreal`, the alignment fact `halignL/R`, and the endpoint
   boundary alignment `hbdry` — has nothing to bind to. Task 340 landed the carrier member
