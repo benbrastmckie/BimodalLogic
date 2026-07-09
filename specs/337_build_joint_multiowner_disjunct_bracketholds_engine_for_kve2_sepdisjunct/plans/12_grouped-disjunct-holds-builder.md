@@ -166,7 +166,7 @@ grows as phases land); (ii) ends at a green, sorry-tracked `lake build` with a `
 axiom check on each new declaration; (iii) commits at every green milestone (per-phase, and per
 green sub-step within a phase — e.g. each standalone segment-eval lemma in Phase 4).
 
-### Phase 1: Foundation — reconfirm consumed declarations + per-class witness value function [NOT STARTED]
+### Phase 1: Foundation — reconfirm consumed declarations + per-class witness value function [IN PROGRESS]
 
 - **Goal:** Establish the shared substrate all of O1/O2/O3 consume: reconfirm the landed
   declarations at their current lines, and define the value-direct per-class witness value lists
