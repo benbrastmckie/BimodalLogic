@@ -1,14 +1,14 @@
 {
   "status": "partial",
   "skeleton": false,
-  "session_id": "sess_1783561356_89aa2d_340",
-  "summary": "Phases 1+2 complete from prior dispatches; Phase 6 slot-family foundation banked prior dispatch. THIS dispatch banked two further ADDITIVE green sorry-0 commits toward the coupled 3-4-6 flip and SHARPENED the flip's crux (a plan-level correction). Committed: (phase 3.1) the variable-length N-bound enumeration kvE2_sepIdxTuplesN + richness kvE2_sepIdxTupleN_mem_of_forall_lt — the per-owner-block-length enumeration replacing the WRONG 3*n bound; (phase 4.1) the reader coordinate kvE2_sepBlockPos + kvE2_sepBlockPos_lt — the per-INDIVIDUAL-slot index the refined kvE2_sepSlotGIdx reads the payload at (drops the tie-source kvE2_sepSlotRank). Both additive — no existing declaration changed, file never left green. Did NOT force the atomic flip: it remains genuinely all-or-nothing and is dominated by the model-dependent value binding (Phase 6 element 1, ~350 lines) which exceeds this dispatch's budget; forcing it would leave SharedWitness RED across the dispatch (postmortem-forbidden). Axiom-clean {propext, Classical.choice, Quot.sound}.",
+  "session_id": "sess_1783578954_3bce55_340",
+  "summary": "Banked the COMPLETE model-dependent value_j-binding foundation — the identified ~350-line Phase-6 bottleneck a prior full-budget dispatch declined to force — as four additive, green, axiom-clean committed milestones. No existing declaration changed; SharedWitness stayed green every step (never RED across the dispatch, per postmortem constraints). Landed: (6.1) kvE2_sepSlotValue, the report-08-element-1 data-flow-inversion binding (anchor slots -> kvE2_sepAnchorVal; base slots -> Classical.epsilon over the interval-constrained realization existence) + anchor definitional facts; (6.2) six base-slot interval-and-realization specs (lXU/lUW/rWX1/rX1T via honest bundles L/R, lWT/rXW via kvE_subBracket2_complete_extract) — every slot's value_j lies in its own region interval and realizes its base type; (6.3) kvE2_sepSlotG, the lex family G j = (value_j, j) over Fin N, + kvE2_sepSlotG_injective (from the index second coordinate, NO value-distinctness hypothesis, resolving the distinctness crux) + kvE2_sepSlotG_lt_of_value_lt; (6.4) kvE2_sepSlotHonestGIdx = kvE2_ordRank G, the per-INDIVIDUAL-slot value rank replacing the tied (3r,3r+1,3r+2) the 337 stop-guard refuted, + kvE2_sepSlotHonestGIdx_mono (Phase-7 conjunct (ii) region-monotonicity engine) + kvE2_sepSlotHonestGIdx_injOn (Phase-7 conjunct (iii) global-Nodup ingredient). The two HARDEST atomic-flip conjuncts now have proven engines. Did NOT open the remaining all-or-nothing structural flip (region-scoped consistency + N-bound enumeration threading + block-position reader + model/coincident re-proofs + honest membership), which the prior full-budget dispatch judged to exceed one dispatch and which cannot be half-landed without leaving SharedWitness RED across the dispatch (postmortem-forbidden).",
   "phases_total": 10,
   "phases_completed": 2,
-  "resume_phase": 3,
+  "resume_phase": 6,
   "escalation_required": false,
   "tripwire_fired": false,
-  "tripwire_note": "NOT fired. Both new decls are model-independent structural (idxOf / range enumeration). kvE2_sepSlotsLFor (SW:292) and kvE2_sepArr' membership remain untouched and model-independent. The reader (kvE2_sepSlotGIdx via kvE2_sepBlockPos) STAYS model-independent in the planned wiring; only the honest PAYLOAD VALUES are model-dependent — consistent with gate report 09.",
+  "tripwire_note": "NOT fired. All new declarations are additive; kvE2_sepSlotValue/G/HonestGIdx are model-dependent (as Phase 6 requires) but the reader kvE2_sepSlotGIdx, kvE2_sepSlotsLFor (SW:292), and kvE2_sepArr' membership remain untouched and model-independent. Gate report 09 (PASS resolution a) unaffected.",
   "sorry_inventory": [],
   "blockers": [],
   "verification": {
@@ -16,50 +16,62 @@
     "vacuous_count": 0,
     "axiom_count_delta": 0,
     "build_passed": true,
-    "scoped_build": "Bimodal...SharedWitness green (1013 jobs)",
+    "scoped_build": "SharedWitness green (1013 jobs); full lake build green (1720 jobs)",
     "axioms_verified": ["propext", "Classical.choice", "Quot.sound"],
-    "note": "SharedWitness has 0 real sorries (the 3 grep 'sorry' hits are docstring prose only). New decls: kvE2_sepIdxTuplesN, kvE2_sepIdxTupleN_mem_of_forall_lt, kvE2_sepBlockPos, kvE2_sepBlockPos_lt."
+    "axiom_check_theorems": ["kvE2_sepSlotValue_lXU_spec", "kvE2_sepSlotG_injective", "kvE2_sepSlotHonestGIdx_injOn"],
+    "note": "SharedWitness has 0 real sorries (single grep hit is docstring prose at SW:3461). EANegation.lean sorries (SW-external, lines 834/1129) are PRE-EXISTING and outside task 340's carrier-layer scope; unchanged by this dispatch."
   },
   "dispatch_progress": {
-    "landed": "Phase 3 enumeration foundation + Phase 4 reader-coordinate foundation (both additive, green, committed).",
+    "landed": "Complete model-dependent value_j binding + lex value rank (Phase 6 element 1, the bottleneck).",
     "new_declarations": [
-      "kvE2_sepIdxTuplesN (SW:~968): variable-length N-bound enumeration (all length-L lists, entries < n)",
-      "kvE2_sepIdxTupleN_mem_of_forall_lt (SW:~979): enumeration richness at the N bound (induction on the list)",
-      "kvE2_sepBlockPos (SW:~506): per-individual-slot reader coordinate = idxOf s within its owner block",
-      "kvE2_sepBlockPos_lt (SW:~512): block position < block length for block members (getD hits a real entry)"
+      "kvE2_sepSlotValue (SW:~2599): value_j -> engine-point binding (anchor -> anchorVal; base -> Classical.epsilon over interval-constrained realization)",
+      "kvE2_sepSlotValue_lX1/_rX1 (definitional anchor facts)",
+      "kvE2_sepSlotValue_lXU_spec/_lUW_spec/_rWX1_spec/_rX1T_spec/_lWT_spec/_rXW_spec (six base-slot interval-and-realization specs)",
+      "kvE2_sepSlotG (lex family G j = (value_j, j) over Fin N)",
+      "kvE2_sepSlotG_injective (index-coordinate injectivity, no value-distinctness)",
+      "kvE2_sepSlotG_lt_of_value_lt (value order -> lex order)",
+      "kvE2_sepSlotHonestGIdx (per-slot value rank kvE2_ordRank G)",
+      "kvE2_sepSlotHonestGIdx_mono (Phase-7 conjunct (ii) engine)",
+      "kvE2_sepSlotHonestGIdx_injOn (Phase-7 conjunct (iii) engine)"
     ],
     "commits": [
-      "task 340 phase 3.1: variable-length N-bound index enumeration + richness",
-      "task 340 phase 4.1: kvE2_sepBlockPos per-slot reader coordinate"
+      "task 340 phase 6.1: kvE2_sepSlotValue value_j->engine-point binding (additive, green)",
+      "task 340 phase 6.2: kvE2_sepSlotValue interval-and-realization specs (additive, green)",
+      "task 340 phase 6.3: kvE2_sepSlotG lex value family + injectivity (additive, green)",
+      "task 340 phase 6.4: kvE2_sepSlotHonestGIdx per-slot value rank + mono + injOn (additive, green)",
+      "task 340 phase 6: mark IN PROGRESS, record landed value-binding foundation"
     ]
   },
-  "crux_correction_this_dispatch": {
-    "finding": "The plan's Phase 3 framing ('generalize kvE2_sepConsistentTuple to per-slot region monotonicity') is under-specified and a naive strict-chain-over-block predicate is WRONG. kvE2_sepSlotBlock σ is NOT globally rank-sorted: for a left-interior owner the block is [lXU(rank0)…] lX1(1) [lUW(2)…] [lWT(0)…] — rank DROPS from 2 (lUW, LEFT region) back to 0 (lWT, RIGHT region) at the L→R boundary. Also kvE2_sepSlotsLOf sorts ONLY left-region slots and kvE2_sepSlotsROf ONLY right-region slots (separate mergeSorts).",
-    "consequence": "kvE2_sepConsistentTuple must be REGION-SCOPED, owner-threaded: within an owner's LEFT region region-monotone (lXU-gidx < lX1-gidx < lUW-gidx), within its RIGHT region separately (rWX1-gidx < rX1-gidx < rX1T-gidx). A payload strictly increasing along the WHOLE block does not give region monotonicity. Recommended: kvE2_sepConsistentTuple σ t := decide (∀ j k < B.length, sameRegion(B[j],B[k]) → rank B[j] < rank B[k] → t.getD j 0 < t.getD k 0), B = kvE2_sepSlotBlock σ; call it as kvE2_sepConsistentTuple p.1 p.2.2 in kvE2_sepDisjValid; conjunct (iii) → Nodup over wo.flatMap (·.2.2)."
-  },
   "remaining_map": {
-    "atomic_flip_is_all_or_nothing": "Changing kvE2_sepConsistentTuple to region-scoped/owner-threaded breaks the length-3 honest order (kvE2_sepHonestTuple = [3r,3r+1,3r+2], SW:2271) and its membership (kvE2_sepHonestOrder_mem_arr', SW:2323) — so the honest order MUST flip in the SAME green step. There is no green intermediate that changes consistency without also flipping the honest order. Hence 3+4+5(model/coincident)+6(value binding)+7(honest membership) are ONE atomic transition.",
-    "phase_3_remaining": "Generalize kvE2_sepConsistentTuple (region-scoped per crux_correction), rebuild kvE2_sepDisjValid conjunct (iii) to global Nodup over wo.flatMap (·.2.2), thread σ-dependent enumeration kvE2_sepIdxTuplesN n (kvE2_sepSlotBlock σ).length through kvE2_sepOrderTypes and generalize kvE2_sepOrderTypes_mem_aux / _owners_aux (they currently hardcode kvE2_sepIdxTuples n; the enumeration is now per-owner σ). Consume the LANDED kvE2_sepIdxTuplesN + kvE2_sepIdxTupleN_mem_of_forall_lt.",
-    "phase_4_remaining": "Rebuild kvE2_sepSlotGIdx (SW:1183) to t.getD (kvE2_sepBlockPos s) 0 (drop kvE2_sepSlotRank); keep kvE2_sepSlotMergeLe single-level. Consume the LANDED kvE2_sepBlockPos + kvE2_sepBlockPos_lt. kvE2_sepSlotsLOf/ROf_mem preserved comparator-agnostically (mergeSort_perm).",
-    "phase_5_remaining": "Re-prove kvE2_sepModelOrder + kvE2_sepCoincidentOrder membership under new consistency/enumeration. NOTE: their payloads (currently kvE2_sepPlaceholderTuple n k = [k,n+k,2n+k], length 3) must become block-length. For membership (NOT value-faithful) use a per-region PREFIX-SUM layout: owner σ payload assigns its LEFT-region block positions an increasing block of indices and its RIGHT-region block positions another — region-monotone by construction, globally Nodup by disjoint offset ranges, entries < N. PRESERVE 337-P1 kvE2_sepCoincidentOrder_mem_arr' by re-proving.",
-    "phase_6_remaining_HARDEST": "value_j binding (model-dependent, ~250-350 lines): define kvE2_sepSlotValue qnf M w x t h s : M.carrier — anchor slots (lX1/rX1) → kvE2_sepAnchorVal; base slots → Classical.choose of the honest-bundle witness (kvE2_sepHonestAnchorBundleL/R gives, per χ, ∃ u in (x,x1_σ) for before-region and (x1_σ,w) for after-region). Then G : Fin N → (M.carrier ×ₗ ℕ), G j = (kvE2_sepSlotValue (allSlots[j]), kvE2_sepSlotIndexOf (allSlots[j])), injective from the INDEX coordinate (kvE2_sepSlotIndexOf_injOn, LANDED). Honest per-slot index of s = kvE2_ordRank G (⟨slotIndexOf s, _⟩). Region monotonicity (Phase 3 predicate) then FOLLOWS from lex: value(lXU)<x1_σ=value(anchor)<value(lUW) via the bundle interval facts + kvE2_ordRank_strictMono. Global Nodup FREE from kvE2_ordRank_injective (G injective via index). Re-instantiate the LANDED kvE2_ordRank kernel at Fin N (slot family), NOT the anchor family.",
-    "phase_7_remaining": "kvE2_sepHonestOrder_mem_arr' re-proof for the per-slot honest order: (i) tag validators verbatim (coincident, closed self-zone), (ii) region-monotone consistency from Phase 6 lex facts, (iii) global Nodup from kvE2_ordRank_injective on the index-injective G.",
-    "phases_8_9_10": "UNCHANGED from prior handoff. Phase 8 halignL/R (mergeSort-by-gidx = engine value order) is the payoff of value-faithfulness; Phase 9 per-slot meet-type coincidence fold (GATED, approach fixed by reports/09); Phase 10 regionsL/R + hbdry + 337 export + final audit. TRIP-WIRE stays armed for Phase 9."
+    "atomic_flip_is_all_or_nothing": "Unchanged: changing kvE2_sepConsistentTuple to region-scoped/owner-threaded breaks the length-3 honest order (kvE2_sepHonestTuple, SW:~2319) and its membership (kvE2_sepHonestOrder_mem_arr', SW:~2371); the honest order MUST flip in the SAME green step. Phases 3+4+5+7 are ONE atomic RED->GREEN transition. It is now SMALLER: the hardest model-dependent ingredient (value binding + region-mono + global-Nodup engines) is DONE and additive; the remaining flip is largely structural/model-independent.",
+    "consume_the_landed_engines": "The atomic flip's new honest payload per owner sigma is the block-length list [kvE2_sepSlotHonestGIdx qnf M w x t h s | s in kvE2_sepSlotBlock sigma]; the refined kvE2_sepSlotGIdx reads it at kvE2_sepBlockPos s (LANDED). Region consistency (conjunct ii) discharges via kvE2_sepSlotHonestGIdx_mono fed the bundle interval facts (value(before-anchor base) < value(anchor)=anchorVal < value(after-anchor base), from kvE2_sepSlotValue_l*/_r* specs LANDED). Global Nodup (conjunct iii) discharges via kvE2_sepSlotHonestGIdx_injOn on kvE2_sepAllSlots_nodup (LANDED prior dispatch).",
+    "phase_3_remaining": "Region-scoped kvE2_sepConsistentTuple (owner-threaded; block rank NON-monotone at L->R boundary, left/right sorted separately — see crux_correction in the prior handoff) + kvE2_sepDisjValid (iii) global Nodup over wo.flatMap (fun p => p.2.2); thread kvE2_sepIdxTuplesN n (kvE2_sepSlotBlock sigma).length through kvE2_sepOrderTypes and generalize kvE2_sepOrderTypes_mem_aux / _owners_aux (currently hardcode kvE2_sepIdxTuples n). Consume LANDED kvE2_sepIdxTuplesN + kvE2_sepIdxTupleN_mem_of_forall_lt.",
+    "phase_4_remaining": "Rebuild kvE2_sepSlotGIdx (SW:~1231) to t.getD (kvE2_sepBlockPos s) 0 (drop kvE2_sepSlotRank); keep kvE2_sepSlotMergeLe single-level. Consume LANDED kvE2_sepBlockPos + kvE2_sepBlockPos_lt.",
+    "phase_5_remaining": "Re-prove kvE2_sepModelOrder + kvE2_sepCoincidentOrder membership; their payloads become block-length. For membership (NOT value-faithful) use a per-region PREFIX-SUM layout (region-monotone by construction, globally Nodup by disjoint offset ranges, entries < N). PRESERVE 337-P1 kvE2_sepCoincidentOrder_mem_arr' by re-proving.",
+    "phase_7_remaining": "kvE2_sepHonestOrder_mem_arr' for the per-slot honest order: (i) tag validators verbatim; (ii) region-mono via kvE2_sepSlotHonestGIdx_mono + bundle interval specs; (iii) global Nodup via kvE2_sepSlotHonestGIdx_injOn. Also RE-PROVE the Phase-5C corollaries that currently destructure the length-3 (3r,3r+1,3r+2) shape (kvE2_sepHonest_cross_region, kvE2_sepHonest_same_owner_mono, kvE2_sepHonestTuple_consistent) against the new per-slot payload.",
+    "phases_8_9_10": "UNCHANGED. Phase 8 halignL/R (payoff of value-faithfulness); Phase 9 per-slot meet-type coincidence fold (GATED, approach fixed by reports/09 PASS resolution a); Phase 10 regionsL/R + hbdry + 337 export + final audit."
   },
   "preserved_assets_intact": [
-    "kvE2_ordRank kernel + _lt/_strictMono/_injective (SW:783-832) — untouched",
-    "anchor keystone kvE2_sepAnchor_injOn / kvE2_sepAnchorFam_injective (SW:2218-2255) — untouched",
-    "slot-family foundation kvE2_sepAllSlots / kvE2_sepSlotIndexOf / _nodup / _lt / _injOn — untouched",
-    "honest bundles kvE2_sepHonestAnchorBundleL/R (SW:2468-2547) — untouched (supply the value_j witnesses)",
-    "kvE2_sepCoincidentOrder_mem_arr' (337-P1, SW:2141) — untouched",
+    "kvE2_ordRank kernel + _lt/_strictMono/_injective (SW:~1007) — untouched, re-instantiated at G",
+    "anchor keystone kvE2_sepAnchor_injOn / kvE2_sepAnchorFam_injective — untouched",
+    "slot-family foundation kvE2_sepAllSlots / kvE2_sepSlotIndexOf / _nodup / _lt / _injOn — untouched, consumed by the new value rank",
+    "honest bundles kvE2_sepHonestAnchorBundleL/R — untouched (supply the value_j interval witnesses)",
+    "kvE2_sepCoincidentOrder_mem_arr' (337-P1) — untouched",
     "kvE2_sepCoincidentAnchor_discharge / _R — untouched",
-    "slot enumeration finiteness kvE2_sepSlotsLFor/RFor (SW:292) — untouched (model-independent)"
+    "kvE2_sepBlockPos / kvE2_sepBlockPos_lt (Phase 4), kvE2_sepIdxTuplesN / _mem_of_forall_lt (Phase 3) — untouched, ready for the flip",
+    "Every 334/336/338/339 result — no load-bearing result destroyed"
   ],
+  "continuation_context": {
+    "is_successor": true,
+    "resume_phase": 6,
+    "next_objective": "Perform the coupled 3-4-5-7 atomic structural flip consuming the LANDED value-binding engines (kvE2_sepSlotHonestGIdx + _mono + _injOn, kvE2_sepSlotValue interval specs, kvE2_sepBlockPos, kvE2_sepIdxTuplesN). The hardest model-dependent ingredient is done; the remaining flip is largely structural.",
+    "import_sorry_inventory": []
+  },
   "continuation_path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/03_perslot-individual-slot-refinement.md",
-  "next_action_hint": "Re-dispatch /implement 340 --hard (full budget) for the atomic 3-4-5-6-7 flip. Consume the LANDED foundations: kvE2_sepIdxTuplesN + kvE2_sepIdxTupleN_mem_of_forall_lt (Phase 3 enumeration), kvE2_sepBlockPos + kvE2_sepBlockPos_lt (Phase 4 reader). HEED crux_correction: consistency is REGION-SCOPED not a strict chain (block rank is non-monotone at the L→R boundary; left/right sorted separately). Sequence: (1) region-scoped kvE2_sepConsistentTuple + owner-threaded kvE2_sepDisjValid(iii) global Nodup; (2) kvE2_sepSlotGIdx via kvE2_sepBlockPos; (3) enumeration wiring + kvE2_sepOrderTypes_mem_aux generalization; (4) model/coincident prefix-sum re-proofs; (5) value_j binding + G-at-Fin-N + honest membership. All ONE green step (honest order breaks the moment consistency changes). If the value binding (5) proves intractable in one dispatch, land (1)-(4) with a PREFIX-SUM honest order as a green intermediate (structurally per-slot-distinct, value-faithfulness deferred to a follow-up) rather than leaving RED — but note that defers halign.",
+  "next_action_hint": "Re-dispatch /implement 340 --hard (full budget) for the coupled 3-4-5-7 atomic structural flip. It is now materially SMALLER: the ~350-line model-dependent value binding is DONE and additive. Sequence: (1) new honest payload per owner = block-length list of kvE2_sepSlotHonestGIdx over kvE2_sepSlotBlock; (2) region-scoped kvE2_sepConsistentTuple + kvE2_sepDisjValid (iii) global Nodup; (3) kvE2_sepSlotGIdx via kvE2_sepBlockPos; (4) kvE2_sepOrderTypes N-bound enumeration + _mem_aux/_owners_aux generalization; (5) model/coincident prefix-sum membership re-proofs (preserve 337-P1); (6) honest membership via kvE2_sepSlotHonestGIdx_mono/_injOn + RE-PROVE the Phase-5C length-3 corollaries. ALL ONE green step. HEED crux_correction (consistency REGION-SCOPED, block rank non-monotone at L->R boundary). Do NOT leave SharedWitness RED across the dispatch.",
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean", "type": "source", "summary": "Additive Phase 3 enumeration + Phase 4 reader-coordinate foundations (green, sorry-0, axiom-clean); no existing declaration changed"},
-    {"path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/03_perslot-individual-slot-refinement.md", "type": "plan", "summary": "Phase 3/4 marked IN PROGRESS with landed-decl notes + the region-scoped consistency crux correction"},
-    {"path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/summaries/05_perslot-enumeration-reader-foundation-summary.md", "type": "summary", "summary": "This dispatch's execution summary"}
+    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean", "type": "source", "summary": "Complete model-dependent value_j binding + lex value rank (kvE2_sepSlotValue + 8 specs, kvE2_sepSlotG + injectivity, kvE2_sepSlotHonestGIdx + mono + injOn): 1 def + 11 theorems, additive, green, axiom-clean; no existing declaration changed"},
+    {"path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/03_perslot-individual-slot-refinement.md", "type": "plan", "summary": "Phase 6 marked IN PROGRESS with the landed value-binding foundation recorded and the remaining structural-flip work delineated"},
+    {"path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/summaries/06_value-binding-foundation-summary.md", "type": "summary", "summary": "This dispatch's execution summary"}
   ]
 }
