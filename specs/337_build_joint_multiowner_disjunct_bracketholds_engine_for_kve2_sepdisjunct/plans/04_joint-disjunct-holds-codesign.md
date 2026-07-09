@@ -174,9 +174,24 @@ below is retained for history only.
 - **Prohibited**: Do NOT use sorry, `def X := True`, or a vacuous placeholder; do NOT re-derive
   the carrier value-faithfulness inside 337; do NOT edit any 334/336/338/339/340 declaration.
 
+**337 CYCLE 5 PROGRESS (2026-07-09) — halign FOUNDATION LANDED GREEN**: The load-bearing
+`halign` fact the superseded blocker claimed unprovable is now proved, axiom-clean
+(`{propext, Classical.choice, Quot.sound}`), and committed as three additive lemmas after
+`kvE2_sepHonest_rank_strictMono`:
+- `kvE2_sepSlotGIdx_honestOrder` — the bridge: on `kvE2_sepHonestOrder`, the mergeSort key reader
+  `kvE2_sepSlotGIdx` equals the value-faithful per-slot index `kvE2_sepSlotHonestGIdx` on every
+  slot of every positive owner's block. (find? resolved via `List.find?_map` + `List.zipIdx_map_fst`
+  + `kvE2_sepPos` nodup; read via `kvE2_sepBlockMap_getD` + `List.idxOf_get`.)
+- `kvE2_sepSlotGIdx_honestOrder_mono` — `value a < value b → key a < key b` (bridge + `_mono`).
+- `kvE2_sepSlotGIdx_honestOrder_injOn` — key injective on the family (bridge + `_injOn`).
+These discharge `halignL/R`'s value-faithfulness core (the mergeSort key IS the value order). The
+REMAINING Phase-1 work is the region ASSEMBLY: building boundary-linked `regionsL/R` from the
+sorted honest anchors with `hpos/hlink/hnd/hreal` + `hbdry` (helper `kvE2_sepHonest_engineInputs`).
+
 **Goal**: Read the landed 340 Phase 5 signature, destructure the engine-precondition bundle into `wo`, `hmem : wo ∈ kvE2_sepArr' qnf`, and the L/R region decompositions with their four engine hypotheses (`hpos/hlink/hnd/hreal`) + alignment facts (`halignL/R`) + endpoint boundary alignment, and stage them as local `have`s in a private helper. Confirm the destructured `wo`/`hmem` match the ⇐ witness shape of `kvE2_sepBody_holds_iff` (SW:1111-1113). No new proof content — this phase pins the interface.
 
 **Tasks**:
+- [x] **Task 1.halign**: prove the halign bridge `kvE2_sepSlotGIdx_honestOrder` + `_mono` + `_injOn` *(deviation: landed — three additive green axiom-clean lemmas, the load-bearing `halign` core; see CYCLE 5 PROGRESS above)*.
 - [ ] Grep + `lean_hover_info`: the landed 340-P5 deliverable (`kvE2_sepBody_complete_holds` and/or its engine-input helper); `kvE2_sepBody_holds_iff` conclusion shape (SW:1104-1122, RHS 1111-1113); `kvE2_sepSlotsLOf/ROf` (SW:949-957); `kvE2_sepSlotGIdx` (SW:921-928); `k1v_sorted_realizationK` (SubBracket2V.lean:633-646); the preserved v3 asset `kvE2_sepCoincidentOrder_mem_arr'` (confirm still green, untouched).
 - [ ] Destructure the bundle: `obtain ⟨wo, hmem, regionsL, hposL, hlinkL, hndL, hrealL, halignL, regionsR, hposR, hlinkR, hndR, hrealR, halignR, hbdry⟩ := <340-P5 bundle>` (adapt to the landed shape).
 - [ ] If the landed 340-P5 shape is weaker than Preconditions (2)+(3), STOP and surface an interface mismatch (do NOT re-derive the engine hypotheses here).
