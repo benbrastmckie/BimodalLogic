@@ -477,6 +477,26 @@ theorem kvE2_sepAllSlots_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 
     List.Nodup.filter _ (Finset.nodup_toList _)
   exact hnd.imp (fun hne => kvE2_sep_blocks_disjoint hne)
 
+/-- A family member's global index is `< N` (the `Fin N` domain bound for `G`, Phase 6). -/
+theorem kvE2_sepSlotIndexOf_lt {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepAllSlots qnf) :
+    kvE2_sepSlotIndexOf qnf s < (kvE2_sepAllSlots qnf).length :=
+  List.idxOf_lt_length_of_mem hs
+
+/-- `kvE2_sepSlotIndexOf` is injective on family members (idxOf recovers the slot via
+    `List.idxOf_get`): the structural (model-independent) injectivity that, combined with the lex
+    value family, gives `G j = (value_j, j)` a globally injective index coordinate (Phase 6). -/
+theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {s r : KvE2SepSlot sig} (hs : s ∈ kvE2_sepAllSlots qnf) (hr : r ∈ kvE2_sepAllSlots qnf)
+    (h : kvE2_sepSlotIndexOf qnf s = kvE2_sepSlotIndexOf qnf r) : s = r := by
+  have hsl : (kvE2_sepAllSlots qnf).idxOf s < (kvE2_sepAllSlots qnf).length :=
+    List.idxOf_lt_length_of_mem hs
+  have hrl : (kvE2_sepAllSlots qnf).idxOf r < (kvE2_sepAllSlots qnf).length :=
+    List.idxOf_lt_length_of_mem hr
+  rw [← List.idxOf_get hsl, ← List.idxOf_get hrl]
+  congr 1
+  exact Fin.ext h
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
