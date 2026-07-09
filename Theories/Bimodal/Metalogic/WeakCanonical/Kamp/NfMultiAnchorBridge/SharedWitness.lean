@@ -2639,6 +2639,104 @@ theorem kvE2_sepSlotValue_rX1 {sig : MonadicSignature}
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
     kvE2_sepSlotValue qnf M w x t h (.rX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
 
+/-- **`lXU` slot value spec** (Phase 6): a before-anchor left base slot's value lies in `(x, x1_σ)`
+    and realizes its base type `χ`. From the honest bundle's below-anchor witnesses. -/
+theorem kvE2_sepSlotValue_lXU_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zXU) :
+    x < kvE2_sepSlotValue qnf M w x t h (.lXU σ χ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.lXU σ χ) < kvE2_sepAnchorVal qnf M w x t h σ
+      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.lXU σ χ)) χ := by
+  haveI : Nonempty M.carrier := ⟨x⟩
+  exact Classical.epsilon_spec
+    ((kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone).2.2.1 χ hχ)
+
+/-- **`lUW` slot value spec** (Phase 6): an after-anchor left base slot's value lies in `(x1_σ, w)`
+    and realizes `χ`. From the honest bundle's above-anchor witnesses. -/
+theorem kvE2_sepSlotValue_lUW_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zUW) :
+    kvE2_sepAnchorVal qnf M w x t h σ < kvE2_sepSlotValue qnf M w x t h (.lUW σ χ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.lUW σ χ) < w
+      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.lUW σ χ)) χ := by
+  haveI : Nonempty M.carrier := ⟨x⟩
+  exact Classical.epsilon_spec
+    ((kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone).2.2.2 χ hχ)
+
+/-- **`rWX1` slot value spec** (Phase 6): a before-anchor right base slot's value lies in
+    `(w, x1_σ)` and realizes `χ`. From the honest bundle R's below-anchor witnesses. -/
+theorem kvE2_sepSlotValue_rWX1_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE2_sep_zWX1) :
+    w < kvE2_sepSlotValue qnf M w x t h (.rWX1 σ χ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.rWX1 σ χ) < kvE2_sepAnchorVal qnf M w x t h σ
+      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rWX1 σ χ)) χ := by
+  haveI : Nonempty M.carrier := ⟨x⟩
+  exact Classical.epsilon_spec
+    ((kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone).2.2.1 χ hχ)
+
+/-- **`rX1T` slot value spec** (Phase 6): an after-anchor right base slot's value lies in
+    `(x1_σ, t)` and realizes `χ`. From the honest bundle R's above-anchor witnesses. -/
+theorem kvE2_sepSlotValue_rX1T_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zWT) :
+    kvE2_sepAnchorVal qnf M w x t h σ < kvE2_sepSlotValue qnf M w x t h (.rX1T σ χ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.rX1T σ χ) < t
+      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rX1T σ χ)) χ := by
+  haveI : Nonempty M.carrier := ⟨x⟩
+  exact Classical.epsilon_spec
+    ((kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone).2.2.2 χ hχ)
+
+/-- **`lWT` slot value spec** (Phase 6): a right-region base slot of a LEFT-interior owner lies in
+    `(w, t)` and realizes `χ`. Direct from the anchor realization's `zWT` extraction. -/
+theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zWT) :
+    w < kvE2_sepSlotValue qnf M w x t h (.lWT σ χ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.lWT σ χ) < t
+      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.lWT σ χ)) χ := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
+  have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
+  obtain ⟨_, _, _, _, _, hbelowWT⟩ :=
+    kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
+  haveI : Nonempty M.carrier := ⟨x⟩
+  exact Classical.epsilon_spec (hbelowWT χ (List.mem_filter.mp hχ).2)
+
+/-- **`rXW` slot value spec** (Phase 6): a left-region base slot of a RIGHT-interior owner lies in
+    `(x, x1_σ)` and realizes `χ`. Direct from the anchor realization's `zXU` extraction. -/
+theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zXU) :
+    x < kvE2_sepSlotValue qnf M w x t h (.rXW σ χ)
+      ∧ kvE2_sepSlotValue qnf M w x t h (.rXW σ χ) < kvE2_sepAnchorVal qnf M w x t h σ
+      ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rXW σ χ)) χ := by
+  have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
+  have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
+  obtain ⟨_, _, _, hbelowXU, _, _⟩ :=
+    kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
+  haveI : Nonempty M.carrier := ⟨x⟩
+  exact Classical.epsilon_spec (hbelowXU χ (List.mem_filter.mp hχ).2)
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
