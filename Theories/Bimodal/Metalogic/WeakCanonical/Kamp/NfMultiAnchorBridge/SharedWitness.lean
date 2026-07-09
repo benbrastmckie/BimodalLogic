@@ -1500,6 +1500,233 @@ def kvE2_sepClosedLeafStub {sig : MonadicSignature}
   else
     kvE2_sepBits σ kvE2_sep_zAtX1R (nf0_projFresh σ.1)
 
+/-! ### Task 342 Phase 6 — tie-admitting validity infrastructure
+
+The tie-collapse mechanism is forced by Def 3.1 (p.4: a single STRICT witness chain with free
+variables pinned `z_k = x_{i_k}` and conjunction semantics); Lemma 3.2(1) states the closure
+without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). Tie classes are
+INDEX-LEVEL DATA ONLY: they live in the weak order's payload tuples, and every emitted disjunct
+remains a strict Def-3.1 bracket — one slot per tie class with a conjoined point type
+(strict-quotient guard; the grouped builder is task 342 Phase 7). Admissible tie classes are
+base-base and base-foreign-anchor within a region. Anchor-anchor ties are EXCLUDED by the
+anchor-distinct conjunct below — a Lean-side, machine-checked pruning justified by the task-340
+Phase 5A keystone `nf_eval_unique` route (distinct positive owners provably cannot share a fresh
+anchor, so anchor-anchor tie order types are honestly unrealizable); this pruning has NO
+Rabinovich counterpart (audit note D7). -/
+
+/-- **Closed-zone leaf at a FOREIGN base type** (task 342 Phase 6): the foreign-type
+    generalization of `kvE2_sepClosedLeafStub` — the anchor owner σ's CLOSED self-zone bit read
+    at an arbitrary base type `χ` (its own fresh type is the `nf0_projFresh σ.1` instance,
+    `kvE2_sepClosedLeafStub_eq_at`). LEFT-interior owners read the CLOSED `zAtX1L` bit; every
+    other placement reads the CLOSED `zAtX1R` bit. F5: this is a CLOSED self-zone key read at
+    the foreign base type — no OPEN key enters any coincident read. This is the validity read a
+    base-anchor tie class imposes (the honest discharge at the foreign type is task 342
+    Phase 8). -/
+def kvE2_sepClosedLeafAt {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool :=
+  if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then
+    kvE2_sepBits σ kvE2_sep_zAtX1L χ
+  else
+    kvE2_sepBits σ kvE2_sep_zAtX1R χ
+
+/-- The forward stub is the own-fresh-type instance of the foreign-type leaf read. -/
+theorem kvE2_sepClosedLeafStub_eq_at {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    kvE2_sepClosedLeafStub σ = kvE2_sepClosedLeafAt σ (nf0_projFresh σ.1) := rfl
+
+/-- A slot is a fresh-witness ANCHOR slot (`lX1`/`rX1`) — the slot kinds whose payload index
+    participates in the anchor-distinct conjunct. -/
+def kvE2_sepSlotIsAnchor {sig : MonadicSignature} : KvE2SepSlot sig → Bool
+  | .lX1 _ => true
+  | .rX1 _ => true
+  | _ => false
+
+/-- The base type carried by a 1-type (base) slot; `none` for the anchor slots. -/
+def kvE2_sepSlotBaseType {sig : MonadicSignature} :
+    KvE2SepSlot sig → Option (NormalForm sig 0 1)
+  | .lXU _ χ => some χ
+  | .lX1 _ => none
+  | .lUW _ χ => some χ
+  | .lWT _ χ => some χ
+  | .rXW _ χ => some χ
+  | .rWX1 _ χ => some χ
+  | .rX1 _ => none
+  | .rX1T _ χ => some χ
+
+/-- Anchor slots carry no base type. -/
+theorem kvE2_sepSlotBaseType_eq_none_of_isAnchor {sig : MonadicSignature}
+    {s : KvE2SepSlot sig} (h : kvE2_sepSlotIsAnchor s = true) :
+    kvE2_sepSlotBaseType s = none := by
+  cases s <;> simp_all [kvE2_sepSlotIsAnchor, kvE2_sepSlotBaseType]
+
+/-- σ's fresh-anchor slot, by placement: `.lX1 σ` for a LEFT-interior owner, `.rX1 σ`
+    otherwise. -/
+def kvE2_sepAnchorSlot {sig : MonadicSignature} (σ : NormalForm sig 1 4) : KvE2SepSlot sig :=
+  if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then .lX1 σ else .rX1 σ
+
+/-- The anchor slot is owned by σ. -/
+theorem kvE2_sepSlotSub_anchorSlot {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    kvE2_sepSlotSub (kvE2_sepAnchorSlot σ) = σ := by
+  rw [kvE2_sepAnchorSlot]; split <;> rfl
+
+/-- The anchor-slot family is injective (the slot constructor carries its owner). -/
+theorem kvE2_sepAnchorSlot_injective {sig : MonadicSignature}
+    {σ τ : NormalForm sig 1 4} (h : kvE2_sepAnchorSlot σ = kvE2_sepAnchorSlot τ) : σ = τ := by
+  have := congrArg kvE2_sepSlotSub h
+  rwa [kvE2_sepSlotSub_anchorSlot, kvE2_sepSlotSub_anchorSlot] at this
+
+/-- An INTERIOR owner's anchor slot is a member of its slot block (the `.lX1`/`.rX1` entry of
+    `kvE2_sepSlotsLFor`/`kvE2_sepSlotsRFor`). -/
+theorem kvE2_sepAnchorSlot_mem_block {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    kvE2_sepAnchorSlot σ ∈ kvE2_sepSlotBlock σ := by
+  rw [kvE2_sepMem_slotBlock]
+  rcases hzone with hz | hz
+  · left
+    rw [kvE2_sepAnchorSlot, if_pos hz, kvE2_sepSlotsLFor, if_pos hz]
+    exact List.mem_append.mpr (Or.inr List.mem_cons_self)
+  · right
+    have hne : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3 :=
+      fun hc => kvE2_sep_zWT3_ne_zXW3 (hz.symm.trans hc)
+    rw [kvE2_sepAnchorSlot, if_neg hne, kvE2_sepSlotsRFor, if_neg hne, if_pos hz]
+    exact List.mem_append.mpr (Or.inr List.mem_cons_self)
+
+/-- **Anchor payload projection** (task 342 Phase 6): the owner's ANCHOR-slot payload index,
+    read from its per-slot tuple at the anchor's structural block position. Purely structural
+    (`kvE2_sepBlockPos` is a syntactic `idxOf`); reads no zone bit, no model data
+    (F4/F5/LITMUS clean). -/
+noncomputable def kvE2_sepAnchorPayload {sig : MonadicSignature}
+    (p : NormalForm sig 1 4 × KvE2SepSpikeOrderType × List ℕ) : ℕ :=
+  p.2.2.getD (kvE2_sepBlockPos (kvE2_sepAnchorSlot p.1)) 0
+
+/-- Reading the anchor payload off a `block.map g` payload returns `g` at the anchor slot
+    (interior owners only — the anchor slot must be a block member). -/
+theorem kvE2_sepAnchorPayload_map {sig : MonadicSignature} (g : KvE2SepSlot sig → ℕ)
+    {σ : NormalForm sig 1 4} (tag : KvE2SepSpikeOrderType)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    kvE2_sepAnchorPayload (σ, tag, (kvE2_sepSlotBlock σ).map g)
+      = g (kvE2_sepAnchorSlot σ) := by
+  have hmem := kvE2_sepAnchorSlot_mem_block hzone
+  have hlt : (kvE2_sepSlotBlock σ).idxOf (kvE2_sepAnchorSlot σ)
+      < (kvE2_sepSlotBlock σ).length := List.idxOf_lt_length_of_mem hmem
+  have hpos : kvE2_sepBlockPos (kvE2_sepAnchorSlot σ)
+      = (kvE2_sepSlotBlock σ).idxOf (kvE2_sepAnchorSlot σ) := by
+    rw [kvE2_sepBlockPos, kvE2_sepSlotSub_anchorSlot]
+  rw [kvE2_sepAnchorPayload, hpos]
+  rw [kvE2_sepBlockMap_getD σ g ⟨_, hlt⟩, List.idxOf_get]
+
+/-- **Anchor-distinct conjunct (iii')** (task 342 Phase 6): the cross-owner ANCHOR payload
+    indices are pairwise distinct. This is what remains of the old global-`Nodup` conjunct
+    after ties are admitted: base slots may tie freely (with each other and with foreign
+    anchors), but two ANCHORS never coincide. D7 (Lean-side pruning, no paper counterpart):
+    the exclusion is justified by the task-340 Phase 5A keystone route (`nf_eval_unique` —
+    distinct positive owners provably cannot share a fresh anchor), so anchor-anchor order
+    types are honestly unrealizable and dropping them preserves completeness; soundness is
+    untouched (fewer disjuncts). Reads no zone bit (abstract ℕ `Nodup`; F4/F5/LITMUS clean). -/
+noncomputable def kvE2_sepAnchorDistinct {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : Bool :=
+  decide (wo.map kvE2_sepAnchorPayload).Nodup
+
+/-- **Tie-class validity conjunct (iv)** (task 342 Phase 6): every payload tie involving an
+    ANCHOR slot imposes the anchor owner's CLOSED-key read at the tied base slot's type — for
+    each pair of slot occurrences with equal payload values where the first is the anchor slot
+    of owner `σa` and the second is a base slot of type `χ` (foreign or own), the disjunct is
+    admitted only when `kvE2_sepClosedLeafAt σa χ = true`. Base-base tie classes impose NO read
+    (F5-clean by construction); anchor-anchor ties are already excluded by (iii'), and each
+    class contains at most one anchor slot for the same reason. F5: the only key entering this
+    read path is the CLOSED `zAtX1L`/`zAtX1R` self-zone key (via `kvE2_sepClosedLeafAt`) — no
+    OPEN key enters any coincident read. Forced by Def 3.1 (p.4); Lemma 3.2(1) states the
+    closure without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
+noncomputable def kvE2_sepTieRead {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : Bool :=
+  wo.all fun p =>
+    wo.all fun q =>
+      (kvE2_sepSlotBlock p.1).zipIdx.all fun sj =>
+        (kvE2_sepSlotBlock q.1).zipIdx.all fun sk =>
+          if kvE2_sepSlotIsAnchor sj.1 && decide (p.2.2.getD sj.2 0 = q.2.2.getD sk.2 0) then
+            match kvE2_sepSlotBaseType sk.1 with
+            | some χ => kvE2_sepClosedLeafAt p.1 χ
+            | none => true
+          else true
+
+/-- **Shared tie-conjunct discharge under a globally-`Nodup` payload** (task 342 Phase 6): for
+    any weak order of the canonical `zipIdx`-map shape whose per-owner payload is `block.map g`
+    with `g` globally duplicate-free over the slot family, BOTH new conjuncts hold — (iii')
+    because the anchor payloads are a sub-selection of the duplicate-free family image, and
+    (iv) vacuously because equal payload values force equal slots (all tie classes are
+    singletons). This is the ONE repair lemma the three membership theorems share: their
+    payloads (`kvE2_sepSlotIndexOf`, `kvE2_sepSlotHonestGIdx`) are globally `Nodup` (banked:
+    `kvE2_sepAllSlots_map_slotIndexOf_nodup` / `_honestGIdx_nodup`). -/
+theorem kvE2_sepValid_tie_of_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    (tagf : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (g : KvE2SepSlot sig → ℕ)
+    (hnd : ((kvE2_sepAllSlots qnf).map g).Nodup) :
+    kvE2_sepAnchorDistinct ((kvE2_sepPosI qnf).zipIdx.map
+        (fun p => (p.1, tagf p.1, (kvE2_sepSlotBlock p.1).map g))) = true ∧
+      kvE2_sepTieRead ((kvE2_sepPosI qnf).zipIdx.map
+        (fun p => (p.1, tagf p.1, (kvE2_sepSlotBlock p.1).map g))) = true := by
+  have ginj := List.inj_on_of_nodup_map hnd
+  constructor
+  · -- (iii') anchor-distinct: anchor payloads are `g` at the (injective) anchor family.
+    rw [kvE2_sepAnchorDistinct, decide_eq_true_eq, List.map_map]
+    have hcongr : ((kvE2_sepPosI qnf).zipIdx.map
+          (kvE2_sepAnchorPayload ∘
+            (fun p => (p.1, tagf p.1, (kvE2_sepSlotBlock p.1).map g))))
+        = (kvE2_sepPosI qnf).zipIdx.map (fun p => g (kvE2_sepAnchorSlot p.1)) := by
+      apply List.map_congr_left
+      intro p hp
+      exact kvE2_sepAnchorPayload_map g (tagf p.1)
+        (kvE2_sepPosI_zone (List.fst_mem_of_mem_zipIdx hp))
+    rw [hcongr]
+    have hfst : (kvE2_sepPosI qnf).zipIdx.map (fun p => g (kvE2_sepAnchorSlot p.1))
+        = (kvE2_sepPosI qnf).map (fun σ => g (kvE2_sepAnchorSlot σ)) := by
+      conv_rhs => rw [← List.zipIdx_map_fst 0 (kvE2_sepPosI qnf)]
+      rw [List.map_map]
+      rfl
+    rw [hfst]
+    have hposI : (kvE2_sepPosI qnf).Nodup :=
+      List.Nodup.filter _ (List.Nodup.filter _ (Finset.nodup_toList _))
+    refine List.Nodup.map_on (fun σ hσ τ hτ heq => ?_) hposI
+    have hσa := kvE2_sepAnchorSlot_mem_block (kvE2_sepPosI_zone hσ)
+    have hτa := kvE2_sepAnchorSlot_mem_block (kvE2_sepPosI_zone hτ)
+    exact kvE2_sepAnchorSlot_injective
+      (ginj (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) hσa)
+        (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hτa) heq)
+  · -- (iv) tie-read: vacuous — equal `g`-values force equal slots (singleton classes).
+    rw [kvE2_sepTieRead, List.all_eq_true]
+    intro p hp
+    rw [List.all_eq_true]
+    intro q hq
+    obtain ⟨p', hp', rfl⟩ := List.mem_map.mp hp
+    obtain ⟨q', hq', rfl⟩ := List.mem_map.mp hq
+    rw [List.all_eq_true]
+    intro sj hsj
+    rw [List.all_eq_true]
+    intro sk hsk
+    obtain ⟨hjlt, hjeq⟩ := List.getElem?_eq_some_iff.mp
+      (List.mem_zipIdx_iff_getElem?.mp hsj)
+    obtain ⟨hklt, hkeq⟩ := List.getElem?_eq_some_iff.mp
+      (List.mem_zipIdx_iff_getElem?.mp hsk)
+    split
+    case isTrue hcond =>
+      rw [Bool.and_eq_true, decide_eq_true_eq] at hcond
+      obtain ⟨hanchor, heq⟩ := hcond
+      have hread1 : ((kvE2_sepSlotBlock p'.1).map g).getD sj.2 0
+          = g ((kvE2_sepSlotBlock p'.1).get ⟨sj.2, hjlt⟩) :=
+        kvE2_sepBlockMap_getD p'.1 g ⟨sj.2, hjlt⟩
+      have hread2 : ((kvE2_sepSlotBlock q'.1).map g).getD sk.2 0
+          = g ((kvE2_sepSlotBlock q'.1).get ⟨sk.2, hklt⟩) :=
+        kvE2_sepBlockMap_getD q'.1 g ⟨sk.2, hklt⟩
+      simp only [List.get_eq_getElem, hjeq, hkeq] at hread1 hread2
+      rw [hread1, hread2] at heq
+      have hjm : sj.1 ∈ kvE2_sepSlotBlock p'.1 := hjeq ▸ List.getElem_mem hjlt
+      have hkm : sk.1 ∈ kvE2_sepSlotBlock q'.1 := hkeq ▸ List.getElem_mem hklt
+      have hslots : sj.1 = sk.1 :=
+        ginj (kvE2_sepMem_allSlots qnf
+            (kvE2_sepPosI_subset (List.fst_mem_of_mem_zipIdx hp')) hjm)
+          (kvE2_sepMem_allSlots qnf
+            (kvE2_sepPosI_subset (List.fst_mem_of_mem_zipIdx hq')) hkm) heq
+      rw [← hslots, kvE2_sepSlotBaseType_eq_none_of_isAnchor hanchor]
+    case isFalse => rfl
+
 /-- **Per-owner disjunct validity.** Strict placements read σ's OPEN zone bit; the `coincident` tie
     reads σ's CLOSED `zAtX1L` bit via the forward stub. No disjunct conflates open and closed keys
     (F5). -/
@@ -1518,20 +1745,31 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature}
 def kvE2_sepConsistentTuple (t : List ℕ) : Bool :=
   decide (t.getD 0 0 < t.getD 1 0 ∧ t.getD 1 0 < t.getD 2 0)
 
-/-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`): a weak order
-    is valid iff (i) every per-owner placement is admitted by the owner's arrangement-appropriate
-    zone bit (the per-order-type read, F5), (ii) every owner's per-slot global-index tuple EXTENDS
-    its region order (`kvE2_sepConsistentTuple`, the task-340 linear-extension conjunct), AND (iii)
-    the cross-owner anchor-base indices `i₀` are pairwise distinct (`Nodup`) — the per-owner extension
-    plus distinct anchor bases give a genuine total order over the union (Lemma 3.2(1), md:77: one
-    consistent global order). The consistency conjunct (ii) is what makes the a<u'<b cross-region
-    interleaving admissible while keeping each owner's own slots region-ordered. Reads no zone bit in
-    (ii)/(iii). NOT an additive filter over a flat slot union. -/
+/-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`; task 342
+    Phase 6: tie-admitting): a weak order is valid iff (i) every per-owner placement is admitted
+    by the owner's arrangement-appropriate zone bit (the per-order-type read, F5), (ii) every
+    owner's per-slot global-index tuple EXTENDS its region order (`kvE2_sepConsistentBlock`, the
+    task-340 linear-extension conjunct), (iii') the cross-owner ANCHOR payload indices are
+    pairwise distinct (`kvE2_sepAnchorDistinct` — D7: a Lean-side `nf_eval_unique`-certified
+    pruning of the honestly-unrealizable anchor-anchor ties, no paper counterpart), AND (iv)
+    every base-anchor payload tie is admitted by the anchor owner's CLOSED-key read at the tied
+    base type (`kvE2_sepTieRead`; base-base ties impose no read). The former conjunct (iii) —
+    global `Nodup` over the flattened payload — is GONE: it made the Lemma 3.2(1) equality-case
+    order types unrepresentable (honest base-base slot ties and base-foreign-anchor ties realized
+    NO disjunct at all — a machine-certified completeness hole). Ties are INDEX-LEVEL data only:
+    each emitted disjunct remains a strict Def-3.1 bracket, one slot per tie class (strict-quotient
+    guard; the grouped builder is Phase 7). Forced by Def 3.1 (p.4); Lemma 3.2(1) states the
+    closure without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). The
+    consistency conjunct (ii) is what makes the a<u'<b cross-region interleaving admissible while
+    keeping each owner's own slots region-ordered. Reads no zone bit in (ii)/(iii'); (iv) reads
+    ONLY the CLOSED `zAtX1L`/`zAtX1R` self-zone keys (F5). NOT an additive filter over a flat
+    slot union. -/
 noncomputable def kvE2_sepDisjValid {sig : MonadicSignature}
     (_qnf : NormalForm sig 2 3) (wo : KvE2SepWeakOrder sig) : Bool :=
   wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2.1)
     && wo.all (fun p => kvE2_sepConsistentBlock p.1 p.2.2)
-    && decide (wo.flatMap (fun p => p.2.2)).Nodup
+    && kvE2_sepAnchorDistinct wo
+    && kvE2_sepTieRead wo
 
 /-- **The faithful carrier** (replacing `kvE2_sepArrL/R`): the valid order-type disjuncts, the
     per-order-type filter of the disjunction index (Lemma 3.2(1), md:77). -/
@@ -1713,6 +1951,146 @@ noncomputable def kvE2_sepSlotsLOf {sig : MonadicSignature}
 noncomputable def kvE2_sepSlotsROf {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
   ((kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor).mergeSort (kvE2_sepSlotMergeLe wo)
+
+/-! ### Task 342 Phase 6 — tie-class grouping
+
+Grouping the wo-sorted joint slot lists into maximal runs of equal merge key
+(`kvE2_sepSlotGIdx wo` — the wo-payload index). On the `mergeSort`ed lists equal keys are
+adjacent, so adjacent runs ARE the tie classes. Tie classes are INDEX-LEVEL data: the Phase-7
+grouped builder emits ONE strict bracket slot per class with the conjoined point type
+`formula_conjList (class.map (kvE2_sepSlotType charBase charK))` — the strict-quotient guard.
+Forced by Def 3.1 (p.4: single strict witness chain, free variables pinned, conjunction
+semantics); Lemma 3.2(1) states the closure without printed proof; corroborated by the k=m
+split (p.7) and Def 7.5 (p.13). -/
+
+/-- **Adjacent-run grouping kernel** (task 342 Phase 6, house pattern — this toolchain's
+    `List.splitBy` ships without lemma support): groups a list into maximal runs of adjacent
+    elements with equal `key`. On a key-sorted list (the only use site) the runs are exactly
+    the key's equivalence classes. Structural recursion; abstract over the element type
+    (reads no zone bit, no model data). -/
+def kvE2_sepTieRuns {α : Type*} (key : α → ℕ) : List α → List (List α)
+  | [] => []
+  | [a] => [[a]]
+  | a :: b :: rest =>
+    match kvE2_sepTieRuns key (b :: rest) with
+    | [] => [[a]]
+    | c :: cs => if key a = key b then (a :: c) :: cs else [a] :: c :: cs
+
+/-- Structural shape: grouping a cons yields a first run headed by the head element. -/
+theorem kvE2_sepTieRuns_shape {α : Type*} (key : α → ℕ) :
+    ∀ (l : List α) (x : α), ∃ t cs, kvE2_sepTieRuns key (x :: l) = (x :: t) :: cs
+  | [], _ => ⟨[], [], rfl⟩
+  | b :: rest, x => by
+    obtain ⟨t, cs, heq⟩ := kvE2_sepTieRuns_shape key rest b
+    by_cases hk : key x = key b
+    · exact ⟨b :: t, cs, by rw [kvE2_sepTieRuns, heq]; simp only [if_pos hk]⟩
+    · exact ⟨[], (b :: t) :: cs, by rw [kvE2_sepTieRuns, heq]; simp only [if_neg hk]⟩
+
+/-- **Round trip**: flattening the tie classes returns the (sorted) input list — the grouping
+    is a partition, losing and duplicating nothing. -/
+theorem kvE2_sepTieRuns_flatten {α : Type*} (key : α → ℕ) :
+    ∀ (l : List α), (kvE2_sepTieRuns key l).flatten = l
+  | [] => rfl
+  | [_] => rfl
+  | a :: b :: rest => by
+    have ih := kvE2_sepTieRuns_flatten key (b :: rest)
+    obtain ⟨t, cs, heq⟩ := kvE2_sepTieRuns_shape key rest b
+    rw [heq] at ih
+    by_cases hk : key a = key b
+    · rw [kvE2_sepTieRuns, heq]
+      simp only [if_pos hk]
+      simpa using ih
+    · rw [kvE2_sepTieRuns, heq]
+      simp only [if_neg hk]
+      simpa using ih
+
+/-- Every tie class is nonempty (each run is headed by an actual element). -/
+theorem kvE2_sepTieRuns_ne_nil {α : Type*} (key : α → ℕ) :
+    ∀ (l : List α), ∀ c ∈ kvE2_sepTieRuns key l, c ≠ []
+  | [] => by simp [kvE2_sepTieRuns]
+  | [a] => by simp [kvE2_sepTieRuns]
+  | a :: b :: rest => by
+    have ih := kvE2_sepTieRuns_ne_nil key (b :: rest)
+    obtain ⟨t, cs, heq⟩ := kvE2_sepTieRuns_shape key rest b
+    rw [heq] at ih
+    intro c hc
+    rw [kvE2_sepTieRuns, heq] at hc
+    by_cases hk : key a = key b
+    · simp only [if_pos hk] at hc
+      rcases List.mem_cons.mp hc with rfl | h
+      · exact List.cons_ne_nil _ _
+      · exact ih c (List.mem_cons_of_mem _ h)
+    · simp only [if_neg hk] at hc
+      rcases List.mem_cons.mp hc with rfl | h
+      · exact List.cons_ne_nil _ _
+      · exact ih c h
+
+/-- **Nodup keys ⟹ all classes are singletons**: when the key family is duplicate-free over
+    the list, the grouping degenerates to the singleton partition — the tie-free case, under
+    which the Phase-7 grouped builder coincides with the flat builder. -/
+theorem kvE2_sepTieRuns_of_nodup {α : Type*} (key : α → ℕ) :
+    ∀ (l : List α), (l.map key).Nodup → kvE2_sepTieRuns key l = l.map (fun a => [a])
+  | [], _ => rfl
+  | [_], _ => rfl
+  | a :: b :: rest, hnd => by
+    rw [List.map_cons, List.nodup_cons] at hnd
+    have hne : key a ≠ key b := fun hc => hnd.1 (by
+      rw [List.map_cons]
+      exact hc ▸ List.mem_cons_self)
+    have ih := kvE2_sepTieRuns_of_nodup key (b :: rest) hnd.2
+    obtain ⟨t, cs, heq⟩ := kvE2_sepTieRuns_shape key rest b
+    calc kvE2_sepTieRuns key (a :: b :: rest)
+        = [a] :: kvE2_sepTieRuns key (b :: rest) := by
+          rw [kvE2_sepTieRuns, heq]
+          simp only [if_neg hne]
+      _ = [a] :: (b :: rest).map (fun a => [a]) := by rw [ih]
+      _ = (a :: b :: rest).map (fun a => [a]) := rfl
+
+/-- **LEFT tie-class grouping** (task 342 Phase 6): the wo-sorted joint LEFT slot list grouped
+    into maximal runs of equal wo-payload index (`kvE2_sepSlotGIdx wo`, the merge key). Equal
+    keys are adjacent on the `mergeSort`ed list, so the runs are the tie classes. Consumed by
+    the Phase-7 grouped disjunct builder: one strict bracket slot per class (strict-quotient
+    guard — ties collapse the index, never the bracket). -/
+noncomputable def kvE2_sepTieGroupedL {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : List (List (KvE2SepSlot sig)) :=
+  kvE2_sepTieRuns (kvE2_sepSlotGIdx wo) (kvE2_sepSlotsLOf wo)
+
+/-- **RIGHT tie-class grouping** (right mirror of `kvE2_sepTieGroupedL`). -/
+noncomputable def kvE2_sepTieGroupedR {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : List (List (KvE2SepSlot sig)) :=
+  kvE2_sepTieRuns (kvE2_sepSlotGIdx wo) (kvE2_sepSlotsROf wo)
+
+/-- Round trip: the LEFT tie classes flatten back to the wo-sorted LEFT slot list. -/
+theorem kvE2_sepTieGroupedL_flatten {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+    (kvE2_sepTieGroupedL wo).flatten = kvE2_sepSlotsLOf wo :=
+  kvE2_sepTieRuns_flatten _ _
+
+/-- Round trip: the RIGHT tie classes flatten back to the wo-sorted RIGHT slot list. -/
+theorem kvE2_sepTieGroupedR_flatten {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+    (kvE2_sepTieGroupedR wo).flatten = kvE2_sepSlotsROf wo :=
+  kvE2_sepTieRuns_flatten _ _
+
+/-- Every LEFT tie class is nonempty. -/
+theorem kvE2_sepTieGroupedL_ne_nil {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+    ∀ c ∈ kvE2_sepTieGroupedL wo, c ≠ [] :=
+  kvE2_sepTieRuns_ne_nil _ _
+
+/-- Every RIGHT tie class is nonempty. -/
+theorem kvE2_sepTieGroupedR_ne_nil {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig) :
+    ∀ c ∈ kvE2_sepTieGroupedR wo, c ≠ [] :=
+  kvE2_sepTieRuns_ne_nil _ _
+
+/-- Nodup payload ⟹ every LEFT tie class is a singleton (the tie-free degenerate case). -/
+theorem kvE2_sepTieGroupedL_of_nodup {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+    (hnd : ((kvE2_sepSlotsLOf wo).map (kvE2_sepSlotGIdx wo)).Nodup) :
+    kvE2_sepTieGroupedL wo = (kvE2_sepSlotsLOf wo).map (fun s => [s]) :=
+  kvE2_sepTieRuns_of_nodup _ _ hnd
+
+/-- Nodup payload ⟹ every RIGHT tie class is a singleton (the tie-free degenerate case). -/
+theorem kvE2_sepTieGroupedR_of_nodup {sig : MonadicSignature} (wo : KvE2SepWeakOrder sig)
+    (hnd : ((kvE2_sepSlotsROf wo).map (kvE2_sepSlotGIdx wo)).Nodup) :
+    kvE2_sepTieGroupedR wo = (kvE2_sepSlotsROf wo).map (fun s => [s]) :=
+  kvE2_sepTieRuns_of_nodup _ _ hnd
 
 /-- Structural helper: every disjunct in the `foldr` enumeration carries EXACTLY the positive
     owners in `kvE2_sepPos` order (one prepended entry per owner). -/
@@ -2639,8 +3017,8 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
   apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
-  refine ⟨⟨?_, ?_⟩, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity, dispatched by placement (definitional
     -- interiority via `kvE2_sepPosI_zone` — a construction invariant of the owner index).
     rw [List.all_eq_true]
@@ -2662,11 +3040,14 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
     have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     exact kvE2_sepConsistentBlock_slotIndexOf qnf (kvE2_sepPosI_subset hσmem)
-  · -- (iii) cross-owner global Nodup over all slot indices.
-    rw [decide_eq_true_eq, kvE2_sepCoincidentOrder,
-      kvE2_sepZipPayload_flatMap qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-        (kvE2_sepSlotIndexOf qnf)]
-    exact kvE2_sepAllSlots_map_slotIndexOf_nodup qnf
+  · -- (iii') anchor-distinct: from the globally-Nodup prefix-sum payload.
+    rw [kvE2_sepCoincidentOrder]
+    exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
+      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).1
+  · -- (iv) tie-class reads: vacuous — all classes are singletons under the global Nodup.
+    rw [kvE2_sepCoincidentOrder]
+    exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
+      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
 
 /-- **Phase 1 (task 337) — the honest coincidence witness is a carrier member.** Factored from
     `kvE2_sepBody_complete`'s membership route: under an honest realization the COINCIDENCE
@@ -2686,8 +3067,8 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     kvE2_sepCoincidentOrder qnf ∈ kvE2_sepArr' qnf := by
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
-  refine ⟨⟨?_, ?_⟩, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · rw [List.all_eq_true]
     intro p hp
     rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
@@ -2705,10 +3086,14 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
     have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     exact kvE2_sepConsistentBlock_slotIndexOf qnf (kvE2_sepPosI_subset hσmem)
-  · rw [decide_eq_true_eq, kvE2_sepCoincidentOrder,
-      kvE2_sepZipPayload_flatMap qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-        (kvE2_sepSlotIndexOf qnf)]
-    exact kvE2_sepAllSlots_map_slotIndexOf_nodup qnf
+  · -- (iii') anchor-distinct: from the globally-Nodup prefix-sum payload.
+    rw [kvE2_sepCoincidentOrder]
+    exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
+      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).1
+  · -- (iv) tie-class reads: vacuous — all classes are singletons under the global Nodup.
+    rw [kvE2_sepCoincidentOrder]
+    exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
+      (kvE2_sepSlotIndexOf qnf) (kvE2_sepAllSlots_map_slotIndexOf_nodup qnf)).2
 
 /-! ### Task 340 Phase 5A — anchor family KEYSTONE (distinct owners ⟹ distinct anchors)
 
@@ -3283,11 +3668,13 @@ theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature}
     Under an honest realization the value-rank honest order is a VALID, PRESENT member of
     `kvE2_sepArr' qnf`. UNCONDITIONAL (task 342 Part I): owner interiority is a construction
     invariant of the `kvE2_sepPosI` index (Rabinovich §5, p.7), recovered via
-    `kvE2_sepPosI_zone`, never hypothesized. The three `kvE2_sepDisjValid` conjuncts: (i)
+    `kvE2_sepPosI_zone`, never hypothesized. The `kvE2_sepDisjValid` conjuncts: (i)
     all-`.coincident` validity reuses `kvE2_sepCoincidentOwner_valid_left/right` VERBATIM
     (tuple-agnostic, CLOSED self-zone bit only); (ii) consistency via
-    `kvE2_sepHonestTuple_consistent`; (iii) `i₀`-`Nodup` from `kvE2_ordRank_injective` on the
-    keystone-injective anchor family (through `3·`). -/
+    `kvE2_sepConsistentBlock_honest`; (iii')/(iv) via the shared tie discharge
+    `kvE2_sepValid_tie_of_nodup` on the globally-`Nodup` value-rank payload
+    (`kvE2_sepAllSlots_map_honestGIdx_nodup` — all tie classes are singletons here; task 342
+    Phase 6). -/
 theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (hxw : x < w) (hwt : w < t)
@@ -3295,8 +3682,8 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
     kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepArr' qnf := by
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
-  refine ⟨⟨?_, ?_⟩, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity (all tags `.coincident`), reused verbatim
     -- (definitional interiority via `kvE2_sepPosI_zone` — a construction invariant of the index).
     rw [List.all_eq_true]
@@ -3317,11 +3704,16 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
     have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
     exact kvE2_sepConsistentBlock_honest qnf M w x t hxw hwt h (kvE2_sepPosI_subset hσmem)
-  · -- (iii) cross-owner global Nodup on the value ranks (injective on the family).
-    rw [decide_eq_true_eq, kvE2_sepHonestOrder,
-      kvE2_sepZipPayload_flatMap qnf (fun _ => KvE2SepSpikeOrderType.coincident)
-        (kvE2_sepSlotHonestGIdx qnf M w x t h)]
-    exact kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h
+  · -- (iii') anchor-distinct: from the globally-Nodup value-rank payload.
+    rw [kvE2_sepHonestOrder]
+    exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
+      (kvE2_sepSlotHonestGIdx qnf M w x t h)
+      (kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h)).1
+  · -- (iv) tie-class reads: vacuous — all classes are singletons under the global Nodup.
+    rw [kvE2_sepHonestOrder]
+    exact (kvE2_sepValid_tie_of_nodup qnf (fun _ => KvE2SepSpikeOrderType.coincident)
+      (kvE2_sepSlotHonestGIdx qnf M w x t h)
+      (kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h)).2
 
 /-! ### Task 340 Phase 5C — value-faithful monotonicity (the honest `a < u' < b` interleave)
 
@@ -5621,11 +6013,10 @@ theorem kvE2_sepArr'_sound {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf) :
     (∀ p ∈ wo, kvE2_sepDisjValidOwner p.1 p.2.1 = true) ∧
-      (wo.flatMap (fun p => p.2.2)).Nodup := by
+      kvE2_sepAnchorDistinct wo = true ∧ kvE2_sepTieRead wo = true := by
   have hv : kvE2_sepDisjValid qnf wo = true := (List.mem_filter.mp hwo).2
-  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true] at hv
-  obtain ⟨⟨hall, _hcons⟩, hnodup⟩ := hv
-  refine ⟨fun p hp => (List.all_eq_true.mp hall) p hp, ?_⟩
-  exact of_decide_eq_true hnodup
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hv
+  obtain ⟨⟨⟨hall, _hcons⟩, hanch⟩, htie⟩ := hv
+  exact ⟨fun p hp => (List.all_eq_true.mp hall) p hp, hanch, htie⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

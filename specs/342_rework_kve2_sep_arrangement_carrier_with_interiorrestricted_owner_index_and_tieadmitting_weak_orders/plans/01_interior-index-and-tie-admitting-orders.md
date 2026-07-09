@@ -374,7 +374,7 @@ references it); axioms clean on both `mem_arr'` theorems.
 **Timing**: 2-2.5h
 **Depends on**: 3
 
-### Phase 5: Delete hLR (statement rewrites), restate kvE2_sepDisjunct_extract, OuterGate doc edit [IN PROGRESS]
+### Phase 5: Delete hLR (statement rewrites), restate kvE2_sepDisjunct_extract, OuterGate doc edit [COMPLETED]
 
 **Goal**: Part I lands completely — no `hLR` anywhere except the retained design-guard
 certificate; extraction hypotheses over `kvE2_sepPosI`; prose corrected.
@@ -409,44 +409,50 @@ certificate; extraction hypotheses over `kvE2_sepPosI`; prose corrected.
 **Timing**: 1.5-2h
 **Depends on**: 4
 
-### Phase 6: Tie-admitting validity — conjunct (iii) replacement and tie-class grouping [NOT STARTED]
+### Phase 6: Tie-admitting validity — conjunct (iii) replacement and tie-class grouping [COMPLETED]
 
 **Goal**: Replace the global-`Nodup` conjunct with anchor-distinct + tie-class wellformedness +
 tie-class validity reads; add the grouping functions. Existing (all-distinct payload) witness
 orders re-verify under the new predicate.
 
 **Tasks**:
-- [ ] `kvE2_sepClosedLeafAt (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool` — the
+- [x] `kvE2_sepClosedLeafAt (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1) : Bool` — the
   foreign-type generalization of `kvE2_sepClosedLeafStub` (SW:1316-1321): left-interior owners
   read `kvE2_sepBits σ kvE2_sep_zAtX1L χ`, all others `kvE2_sepBits σ kvE2_sep_zAtX1R χ`.
-  Lemma: `kvE2_sepClosedLeafStub σ = kvE2_sepClosedLeafAt σ (nf0_projFresh σ.1)`. Docstring:
-  F5 — this is a CLOSED self-zone key read at the foreign base type; no OPEN key enters any
-  coincident read.
-- [ ] Anchor-payload projection: a helper extracting each owner's ANCHOR-slot payload index from
-  `(σ, tag, t)` (the anchor slot is `.lX1 σ` resp. `.rX1 σ` at the structurally known position
-  `(kvE2_sepS σ kvE_sub2_zXU).length` resp. `(kvE2_sepS σ kvE2_sep_zWX1).length` in
-  `kvE2_sepSlotBlock σ` — reuse/`lean_local_search` any existing block-position lemma from 340).
-- [ ] Replace `kvE2_sepDisjValid` conjunct (iii) `decide (wo.flatMap (fun p => p.2.2)).Nodup`
-  (SW:1350-1354) with:
-  - (iii') **anchor-distinct**: the cross-owner ANCHOR payload indices are `Nodup` — docstring
-    carries the D7 note (Lean-side `nf_eval_unique`-certified pruning, no paper counterpart);
-  - (iv) **tie-class validity**: for every duplicated payload value (tie class, computed from
-    the full payload multiset), the class contains at most one anchor slot (free given (iii')),
-    and if it contains anchor slot of owner `σa` together with base slots of types
-    `χ₁, …, χₖ` (foreign or own), then `kvE2_sepClosedLeafAt σa χᵢ = true` for each `i`;
-    base-base classes impose no read (F5-clean by construction).
-  Keep conjuncts (i)/(ii) verbatim. Keep everything `Bool`/`decide`-able.
-- [ ] `kvE2_sepTieGroupedL/R (wo) : List (List (KvE2SepSlot sig))` — group
-  `kvE2_sepSlotsLOf/ROf wo` into maximal runs of equal wo-payload index (the merge key). Use
-  `List.splitBy` (or the file's house pattern) on the sorted list. Lemmas:
-  `(kvE2_sepTieGroupedL wo).flatten = kvE2_sepSlotsLOf wo`; every class `≠ []`; if the full
-  payload is `Nodup` then every class is a singleton (`kvE2_sepTieGroupedL wo = (kvE2_sepSlotsLOf wo).map ([·])`).
-- [ ] Repair the conjunct-(iii) branches of `kvE2_sepBody_complete`,
-  `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepHonestOrder_mem_arr'`: current payloads are
-  globally `Nodup` (banked facts), which implies (iii') (sublist of Nodup) and makes (iv)
-  vacuous (all classes singletons). Package this implication once as
-  `kvE2_sepDisjValid_tie_of_nodup`-style lemma and reuse in all three.
-- [ ] Full `lake build`.
+  Lemma: `kvE2_sepClosedLeafStub σ = kvE2_sepClosedLeafAt σ (nf0_projFresh σ.1)` (proved `rfl`).
+  Docstring: F5 — this is a CLOSED self-zone key read at the foreign base type; no OPEN key
+  enters any coincident read.
+- [x] Anchor-payload projection: a helper extracting each owner's ANCHOR-slot payload index from
+  `(σ, tag, t)` *(deviation: altered — implemented as `kvE2_sepAnchorSlot` (the `.lX1 σ`/`.rX1 σ`
+  slot by placement) + `kvE2_sepAnchorPayload` reading `t` at `kvE2_sepBlockPos (anchorSlot σ)`
+  (`idxOf`-based), instead of the `(kvE2_sepS σ …).length` position arithmetic; same content,
+  cleaner reuse of the banked `kvE2_sepBlockPos`/`kvE2_sepBlockMap_getD` machinery, and keeps
+  `kvE_sub2_` key names out of the new code entirely; read lemma `kvE2_sepAnchorPayload_map`)*.
+- [x] Replace `kvE2_sepDisjValid` conjunct (iii) `decide (wo.flatMap (fun p => p.2.2)).Nodup`
+  with:
+  - (iii') **anchor-distinct** (`kvE2_sepAnchorDistinct`): the cross-owner ANCHOR payload
+    indices are `Nodup` — docstring carries the D7 note (Lean-side `nf_eval_unique`-certified
+    pruning, no paper counterpart);
+  - (iv) **tie-class validity** (`kvE2_sepTieRead`): pairwise over slot occurrences — an equal
+    payload value pairing the anchor slot of owner `σa` with a base slot of type `χ` (foreign
+    or own) requires `kvE2_sepClosedLeafAt σa χ = true`; base-base pairs impose no read
+    (F5-clean by construction); at-most-one-anchor-per-class is free given (iii').
+  Conjuncts (i)/(ii) kept verbatim. Everything stays `Bool`/`decide`-able.
+- [x] `kvE2_sepTieGroupedL/R (wo) : List (List (KvE2SepSlot sig))` — group
+  `kvE2_sepSlotsLOf/ROf wo` into maximal runs of equal wo-payload index (`kvE2_sepSlotGIdx wo`,
+  the merge key) *(deviation: altered — house recursive kernel `kvE2_sepTieRuns` instead of
+  `List.splitBy`: this toolchain (v4.27.0-rc1) ships `splitBy` with no lemma support; the plan
+  sanctioned "or the file's house pattern")*. Lemmas proved: `kvE2_sepTieGroupedL/R_flatten`
+  (round trip), `_ne_nil` (classes nonempty), `_of_nodup` (Nodup payload ⟹ all singletons).
+- [x] Repair the conjunct-(iii) branches of `kvE2_sepBody_complete`,
+  `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepHonestOrder_mem_arr'` via the ONE shared lemma
+  `kvE2_sepValid_tie_of_nodup` (globally-`Nodup` payload ⟹ (iii') ∧ (iv)), instantiated with
+  the banked `kvE2_sepAllSlots_map_slotIndexOf_nodup` / `_honestGIdx_nodup`. *(deviation:
+  consequential repair — `kvE2_sepArr'_sound` (the fourth consumer, which destructured the old
+  (iii) into a global-`Nodup` conclusion) restated: its second component is now
+  `kvE2_sepAnchorDistinct wo = true ∧ kvE2_sepTieRead wo = true`; it had no downstream
+  consumers.)*
+- [x] Full `lake build` — green, 1720 jobs.
 
 **Estimated output**: ~250-400 lines.
 **Done when**: build green; the three completeness theorems re-verify axiom-clean; grouping
