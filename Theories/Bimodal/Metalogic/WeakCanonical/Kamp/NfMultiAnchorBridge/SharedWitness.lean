@@ -690,9 +690,16 @@ deriving DecidableEq
 def kvE2_sepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
   [.strictBefore, .strictAfter, .coincident]
 
-/-- A k-owner weak order on the merged anchor set `A`, one placement tag per positive owner. -/
+/-- A k-owner weak order on the merged anchor set `A`: one entry per positive owner carrying BOTH
+    its placement tag (relative to `w`, driving the F5 zone-bit read) AND its cross-owner **rank** —
+    the position of the owner's fresh anchor in the merged ascending chain `{x1_σ, x1_τ, …}`
+    (Lemma 3.2(1), md:77: one global order over the union of both owners' points). Two owners whose
+    anchors interleave differently (`x1_σ < x1_τ` vs `x1_τ < x1_σ`) receive DISTINCT rank tuples, so
+    they are now DISTINGUISHABLE — the cross-owner data task 337's `.holds` builder consumes. The
+    placement tag stays the 3-value per-owner type (F5: strict→OPEN, coincident→CLOSED); the ℕ rank
+    is the orthogonal merged-chain position. -/
 abbrev KvE2SepWeakOrder (sig : MonadicSignature) :=
-  List (NormalForm sig 1 4 × KvE2SepSpikeOrderType)
+  List (NormalForm sig 1 4 × KvE2SepSpikeOrderType × ℕ)
 
 /-- The order-type tag list is exhaustive: every tag is a member. -/
 theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
@@ -700,14 +707,21 @@ theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
   cases tag <;> decide
 
 /-- **General order-type-disjunction index** (Lemma 3.2(1), md:77): the finite `List` of weak
-    orders on `A`, all per-owner placement assignments, built as the cartesian `foldr` product over
-    `kvE2_sepPos qnf` — finite (`3 ^ |pos|`), terminating, `decide`-able. Replaces the abandoned
-    `kvE2_sepArrL/R` flat-slot-union `.permutations` carrier. -/
+    orders on `A` — all per-owner (placement tag × merged-chain rank) assignments, built as the
+    cartesian `foldr` product over `kvE2_sepPos qnf`, with the rank component ranging over
+    `List.range n` (`n = |pos|`, the number of anchors in the merged chain). Finite
+    (`(3·n) ^ |pos|`), terminating, `decide`-able. Enumerating ranks alongside tags is what makes
+    two differently-interleaving models yield DISTINCT weak orders (the under-specification this task
+    fixes); the order-CONSISTENCY of a rank tuple (distinct ranks = a genuine total order) is the
+    cross-owner conjunct of `kvE2_sepDisjValid`. Replaces the abandoned `kvE2_sepArrL/R`
+    flat-slot-union `.permutations` carrier. -/
 noncomputable def kvE2_sepOrderTypes {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : List (KvE2SepWeakOrder sig) :=
+  let n := (kvE2_sepPos qnf).length
   (kvE2_sepPos qnf).foldr
     (fun σ acc =>
-      kvE2_sepSpikeOrderTypes.flatMap (fun tag => acc.map (fun wo => (σ, tag) :: wo)))
+      kvE2_sepSpikeOrderTypes.flatMap (fun tag =>
+        (List.range n).flatMap (fun r => acc.map (fun wo => (σ, tag, r) :: wo))))
     [[]]
 
 /-- σ's canonical (model) placement tag, read from its realized outer zone class. -/
@@ -715,10 +729,13 @@ noncomputable def kvE2_sepModelTag {sig : MonadicSignature}
     (σ : NormalForm sig 1 4) : KvE2SepSpikeOrderType :=
   if nf0_zoneSpec σ.1 = kvE2_sep_zXW3 then .strictBefore else .strictAfter
 
-/-- The model weak order: each positive owner tagged with its canonical zone-class placement. -/
+/-- The model weak order: each positive owner tagged with its canonical zone-class placement AND
+    its rank = its index in `kvE2_sepPos` (via `zipIdx`, so the ranks are `0,1,…,n-1` — distinct,
+    hence order-consistent). The strict per-owner tags remain honestly-undischargeable (the genuine
+    Rabinovich `r_0=z_0` asymmetry, SW:1421-1429), so this stays a conditional disjunct. -/
 noncomputable def kvE2_sepModelOrder {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
-  (kvE2_sepPos qnf).map (fun σ => (σ, kvE2_sepModelTag σ))
+  (kvE2_sepPos qnf).zipIdx.map (fun p => (p.1, kvE2_sepModelTag p.1, p.2))
 
 /-- The two interior outer classes are distinct (index-0 order bits differ). -/
 private theorem kvE2_sep_zWT3_ne_zXW3 : kvE2_sep_zWT3 ≠ kvE2_sep_zXW3 := by
@@ -752,11 +769,15 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature}
   | .coincident   => kvE2_sepClosedLeafStub σ
 
 /-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`): a weak order
-    is valid iff every per-owner placement is admitted by the owner's arrangement-appropriate zone
-    bit. Per-order-type validity, NOT an additive filter over a flat slot union. -/
+    is valid iff (i) every per-owner placement is admitted by the owner's arrangement-appropriate
+    zone bit (the per-order-type read, F5), AND (ii) the **cross-owner** ranks are pairwise distinct
+    (`Nodup`) — i.e. the rank tuple is a genuine total order on the merged anchor chain (Lemma
+    3.2(1), md:77: one consistent global order over the union). This is the cross-owner consistency
+    conjunct that makes validity genuinely cross-owner, not merely a per-owner filter. NOT an
+    additive filter over a flat slot union. -/
 def kvE2_sepDisjValid {sig : MonadicSignature}
     (_qnf : NormalForm sig 2 3) (wo : KvE2SepWeakOrder sig) : Bool :=
-  wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2)
+  wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2.1) && decide (wo.map (fun p => p.2.2)).Nodup
 
 /-- **The faithful carrier** (replacing `kvE2_sepArrL/R`): the valid order-type disjuncts, the
     per-order-type filter of the disjunction index (Lemma 3.2(1), md:77). -/
@@ -769,29 +790,42 @@ instance kvE2_sepArr'_decidable {sig : MonadicSignature} (qnf : NormalForm sig 2
     DecidablePred (fun wo : KvE2SepWeakOrder sig => kvE2_sepDisjValid qnf wo = true) :=
   fun wo => inferInstanceAs (Decidable (kvE2_sepDisjValid qnf wo = true))
 
-/-- Structural non-emptiness helper: the canonical per-owner tag assignment on ANY owner list is
-    reachable in the cartesian enumeration. -/
-private theorem kvE2_sepModelOrder_mem_aux {sig : MonadicSignature}
-    (L : List (NormalForm sig 1 4)) :
-    L.map (fun σ => (σ, kvE2_sepModelTag σ)) ∈
+/-- **Structural non-emptiness helper** (generalized over rank bound `n`, tag map `f`, and the
+    `zipIdx` start `s`): the `(tag, rank)` assignment tagging each owner by `f` and ranking it by its
+    consecutive `zipIdx` index `s, s+1, …` — all `< n` — is reachable in the cartesian rank×tag
+    enumeration. Both `kvE2_sepModelOrder` and `kvE2_sepCoincidentOrder` are instances (`s = 0`,
+    `n = |pos|`). -/
+private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} (n : ℕ)
+    (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
+    (L : List (NormalForm sig 1 4)) (s : ℕ)
+    (hb : ∀ i, i < L.length → s + i < n) :
+    (L.zipIdx s).map (fun p => (p.1, f p.1, p.2)) ∈
       L.foldr
         (fun σ acc =>
-          kvE2_sepSpikeOrderTypes.flatMap (fun tag => acc.map (fun wo => (σ, tag) :: wo)))
+          kvE2_sepSpikeOrderTypes.flatMap (fun tag =>
+            (List.range n).flatMap (fun r => acc.map (fun wo => (σ, tag, r) :: wo))))
         [[]] := by
-  induction L with
+  induction L generalizing s with
   | nil => simp
   | cons σ L ih =>
-    simp only [List.foldr_cons, List.map_cons]
+    simp only [List.zipIdx_cons, List.map_cons, List.foldr_cons]
     rw [List.mem_flatMap]
-    refine ⟨kvE2_sepModelTag σ, kvE2_sepSpikeOrderTypes_complete _, ?_⟩
-    rw [List.mem_map]
-    exact ⟨L.map (fun σ => (σ, kvE2_sepModelTag σ)), ih, rfl⟩
+    refine ⟨f σ, kvE2_sepSpikeOrderTypes_complete _, ?_⟩
+    rw [List.mem_flatMap]
+    refine ⟨s, ?_, ?_⟩
+    · rw [List.mem_range]; simpa using hb 0 (by simp)
+    · rw [List.mem_map]
+      refine ⟨(L.zipIdx (s + 1)).map (fun p => (p.1, f p.1, p.2)), ?_, rfl⟩
+      exact ih (s + 1) (fun i hi => by
+        have := hb (i + 1) (by simpa using hi); omega)
 
 /-- The model-order disjunct is present in the enumeration index (F2, structural level). -/
 theorem kvE2_sepModelOrder_mem_orderTypes {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) :
-    kvE2_sepModelOrder qnf ∈ kvE2_sepOrderTypes qnf :=
-  kvE2_sepModelOrder_mem_aux (kvE2_sepPos qnf)
+    kvE2_sepModelOrder qnf ∈ kvE2_sepOrderTypes qnf := by
+  rw [kvE2_sepModelOrder, kvE2_sepOrderTypes]
+  exact kvE2_sepOrderTypes_mem_aux _ kvE2_sepModelTag (kvE2_sepPos qnf) 0
+    (fun i hi => by simpa using hi)
 
 /-- **Structural non-vacuity** (F2, md:77): whenever the honest model arrangement's disjunct is
     valid — the selection guaranteed by the honest bundle (full semantic discharge is Phase 8) —
@@ -1432,31 +1466,17 @@ supersedes the singleton retreat with the full multi-owner LEFT-interior complet
     (Lemma 3.2(1) coincidence disjunct, md:77; §5 meet, md:168-173). -/
 noncomputable def kvE2_sepCoincidentOrder {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) : KvE2SepWeakOrder sig :=
-  (kvE2_sepPos qnf).map (fun σ => (σ, KvE2SepSpikeOrderType.coincident))
+  (kvE2_sepPos qnf).zipIdx.map (fun p => (p.1, KvE2SepSpikeOrderType.coincident, p.2))
 
-/-- Structural helper: the constant-coincident tag assignment is reachable in the cartesian
-    enumeration (mirror of `kvE2_sepModelOrder_mem_aux`). -/
-private theorem kvE2_sepCoincidentOrder_mem_aux {sig : MonadicSignature}
-    (L : List (NormalForm sig 1 4)) :
-    L.map (fun σ => (σ, KvE2SepSpikeOrderType.coincident)) ∈
-      L.foldr
-        (fun σ acc =>
-          kvE2_sepSpikeOrderTypes.flatMap (fun tag => acc.map (fun wo => (σ, tag) :: wo)))
-        [[]] := by
-  induction L with
-  | nil => simp
-  | cons σ L ih =>
-    simp only [List.foldr_cons, List.map_cons]
-    rw [List.mem_flatMap]
-    refine ⟨KvE2SepSpikeOrderType.coincident, kvE2_sepSpikeOrderTypes_complete _, ?_⟩
-    rw [List.mem_map]
-    exact ⟨L.map (fun σ => (σ, KvE2SepSpikeOrderType.coincident)), ih, rfl⟩
-
-/-- The coincidence arrangement is present in the enumeration index (F2, structural level). -/
+/-- The coincidence arrangement is present in the enumeration index (F2, structural level): the
+    all-coincident tag assignment with consecutive `zipIdx` ranks is reachable in the cartesian
+    rank×tag enumeration (a `kvE2_sepOrderTypes_mem_aux` instance, `s = 0`). -/
 theorem kvE2_sepCoincidentOrder_mem_orderTypes {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) :
-    kvE2_sepCoincidentOrder qnf ∈ kvE2_sepOrderTypes qnf :=
-  kvE2_sepCoincidentOrder_mem_aux (kvE2_sepPos qnf)
+    kvE2_sepCoincidentOrder qnf ∈ kvE2_sepOrderTypes qnf := by
+  rw [kvE2_sepCoincidentOrder, kvE2_sepOrderTypes]
+  exact kvE2_sepOrderTypes_mem_aux _ (fun _ => KvE2SepSpikeOrderType.coincident)
+    (kvE2_sepPos qnf) 0 (fun i hi => by simpa using hi)
 
 /-- **Phase 8a (LEFT) — per-owner honest coincidence validity.** For an honest realization, a
     LEFT-interior positive owner's CLOSED self-zone bit at its own fresh type is forced TRUE. The
@@ -1601,14 +1621,27 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
   apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, kvE2_sepCoincidentOrder, List.all_eq_true]
-  intro p hp
-  rw [List.mem_map] at hp
-  obtain ⟨σ, hσmem, rfl⟩ := hp
-  -- Dispatch each positive owner to its placement-appropriate closed-self-zone validator.
-  rcases hLR σ hσmem with hzone | hzone
-  · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
-  · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
+  rw [kvE2_sepDisjValid, Bool.and_eq_true]
+  refine ⟨?_, ?_⟩
+  · -- (i) per-owner closed-self-zone validity, dispatched by placement.
+    rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
+    -- `p.2.1 = .coincident`, so `kvE2_sepDisjValidOwner p.1 p.2.1 = kvE2_sepClosedLeafStub σ`.
+    show kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    rcases hLR σ hσmem with hzone | hzone
+    · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
+    · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
+  · -- (ii) cross-owner consistency: the ranks `0,1,…,n-1` are pairwise distinct.
+    rw [decide_eq_true_eq, kvE2_sepCoincidentOrder, List.map_map]
+    have : ((kvE2_sepPos qnf).zipIdx.map
+        ((fun p => p.2.2) ∘ fun p => (p.1, KvE2SepSpikeOrderType.coincident, p.2)))
+        = (kvE2_sepPos qnf).zipIdx.map Prod.snd := by
+      apply List.map_congr_left; intro p _; rfl
+    rw [this, List.zipIdx_map_snd]
+    exact List.nodup_range'
 
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
@@ -2594,10 +2627,12 @@ disjunct conflates open and closed keys (F5). -/
 theorem kvE2_sepArr'_sound {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf) :
-    ∀ p ∈ wo, kvE2_sepDisjValidOwner p.1 p.2 = true := by
+    (∀ p ∈ wo, kvE2_sepDisjValidOwner p.1 p.2.1 = true) ∧
+      (wo.map (fun p => p.2.2)).Nodup := by
   have hv : kvE2_sepDisjValid qnf wo = true := (List.mem_filter.mp hwo).2
-  have hall := List.all_eq_true.mp hv
-  intro p hp
-  exact hall p hp
+  rw [kvE2_sepDisjValid, Bool.and_eq_true] at hv
+  obtain ⟨hall, hnodup⟩ := hv
+  refine ⟨fun p hp => (List.all_eq_true.mp hall) p hp, ?_⟩
+  exact of_decide_eq_true hnodup
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
