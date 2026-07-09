@@ -1,5 +1,5 @@
 ---
-next_project_number: 342
+next_project_number: 343
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,340 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,340 | publication-quality, sorry-elimination, automation, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,342 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,342 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,335 | 189,192,196,337 | automation, kamp_theorem_formalization |
 | 4 | 177,178,321,341 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
 | 5 | 309,333 | 321 | kamp_theorem_formalization |
@@ -112,7 +112,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-340 [IMPLEMENTING] — Replace task 339's derived 2-level (region-rank primary, owner me
+342 [RESEARCHED] — Upstream carrier redesign for the kvE2_sep completeness layer in 
   └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
     └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
       └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
@@ -123,6 +123,34 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 ### Uncategorized
 
 ## Tasks
+
+### 342. Rework kve2 sep arrangement carrier with interiorrestricted owner index and tieadmitting weak orders
+- **Effort**: 12-20 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md]
+
+**Description**: Upstream carrier redesign for the kvE2_sep completeness layer in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (SW:), unblocking task 337 Phases 3-4. Full design and blast-radius analysis: specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md (sections 4-5) — read it before planning. STANDING USER DIRECTIVE: consult the literature (Rabinovich 2014, 'A Proof of Kamp's Theorem', LMCS 10(1:14)) closely to ensure faithfulness; do not take what appears easiest but ends up not working — slow and steady wins the race.
+
+WHY: The hypothesis hLR (all positive owners strictly interior) is certified UNSATISFIABLE by kvE2_sepHonest_hLR_absurd (SW:4618, axiom-clean {propext, Classical.choice, Quot.sound}): the always-realized characteristic sigma_w := nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t)))) forces a positive owner whose w-coordinate ordering pair is (false,false) — neither zXW3's (true,false) nor zWT3's (false,true). Root cause: hLR is a Lean-layer artifact with NO Rabinovich counterpart. Rabinovich section 5 (p.7) splits every exists-forall formula into psi_0/psi_1 (non-interior witnesses, one-free-variable formulas that become ATOMIC E[Sigma] literals at the endpoints via Prop 3.5) plus phi (the strictly-interior bracket): interiority is a construction invariant of phi, never a hypothesis on realized types. The carrier indexed the arrangement by ALL positive owners (wo.map Prod.fst = kvE2_sepPos, SW:1563) while kvE2_sepDisjValidOwner (SW:1326) has honest validators only for the two interior classes, so hLR was added to force the mismatch closed. Independently, the Nodup conjunct (iii) of kvE2_sepDisjValid (SW:1350-1354) makes the Lemma 3.2(1) equality-case order types unrepresentable, so honest tie models (base-base slot ties; base-slot value equal to a foreign anchor — cycle-8 'resolution (a) is FALSE') realize no disjunct. Both defects must be fixed together; they rewrite the same declarations.
+
+RABINOVICH GROUNDING (cite exactly this way): Def 3.1 (p.4) — single STRICT witness chain x_n > ... > x_0, free variables pinned z_k = x_{i_k}. Lemma 3.2(1) (p.4) — conjunction closure via disjunction over order types of combined witnesses INCLUDING equality cases: tied witnesses collapse to ONE strict slot whose point type is the CONJUNCTION (meet) of the tied types, as a separate disjunct (see also the k=m case split, p.7). Section 5 (p.7) — psi_0/psi_1/phi split routing non-interior content to atomic E[Sigma] endpoint literals. Def 7.13 (p.15) is NOT the license for coincidence merging: it is segment-wise conjunction of per-interval brackets between DISTINCT reference points and licenses ONLY the outer x < w < t segmentation of kvE2_sepBody. Any 'Def 7.13 union' phrasing in older artifacts is a corrected misattribution. IntervalPattern.holds strict monotonicity (ExistsForallNF.lean:106-132) is SOURCE-MANDATED — do NOT weaken it.
+
+PART I — interior-restricted owner index. Add kvE2_sepPosI qnf := (kvE2_sepPos qnf).filter (fun sigma => decide (nf0_zoneSpec sigma.1 = kvE2_sep_zXW3 or nf0_zoneSpec sigma.1 = kvE2_sep_zWT3)) (order-preserving filter so Nodup/zipIdx foundations transfer) plus transfer lemmas. Re-anchor the owner index from kvE2_sepPos to kvE2_sepPosI in: kvE2_sepAllSlots (SW:348), kvE2_sepOrderTypes (SW:1277), kvE2_sepModelOrder (SW:1296), the owner-projection lemma (SW:1563) and membership lemmas (SW:1571, 1585, 1595), kvE2_sepCoincidentOrder (SW:2292), kvE2_sepHonestOrder (SW:3063) with its task-340 5A-5C rank machinery (SW:2531ff). Drop the hLR hypothesis from the four theorems kvE2_sepBody_complete (SW:2445), kvE2_sepCoincidentOrder_mem_arr' (SW:2489), kvE2_sepHonestOrder_mem_arr' (SW:3095), kvE2_sepBody_complete_holds (SW:4249) — the interiority disjunction is recovered definitionally via List.mem_filter. kvE2_sepDisjunct_extract (SW:4667) restates hmemL/hmemR over kvE2_sepPosI membership. Boundary classes zAtX3/zAtW3/zAtT3 ride the EXISTING kvE2_sepEpL/kvE2_sepPtW/kvE2_sepEpR literals (SW:886-903, 932-946, 908-925; zPastX3/zFutT3 on the Since/Until-navigated literals SW:892-893/916-917) with honest kvE2_sepHasPos bits via the biconditional kvE2_sepLit (SW:173). Non-interior owners already contribute [] slots (SW:292-311) and top segments (SW:959-980) — no new literal machinery. New additive obligations: endpoint/pivot honesty lemmas (honest h implies EpL/PtW/EpR literal evaluation), previously hidden behind vacuity. REJECTED alternative (user decision, do not implement): keeping wo over all of kvE2_sepPos with a non-interior true branch in kvE2_sepDisjValidOwner — explicitly rejected as unfaithful to the Lemma 3.2(1) interleaving index.
+
+PART II — tie-admitting weak orders with meet-folded disjuncts. Replace kvE2_sepDisjValid conjunct (iii) Nodup (SW:1350-1354) by anchor-distinct + ordered nonempty tie classes (equal payload entries = one class). Anchor-anchor ties remain excluded by the task-340 Phase 5A keystone nf_eval_unique (SW:2522-2529); admissible tie classes are base-base and base-foreign-anchor within a region. Add tie-class grouping functions (kvE2_sepTieGroupedL/R) and fold each tie class into ONE bracket slot with point type formula_conjList (class.map (kvE2_sepSlotType charBase charK)) in the disjunct builder (kvE2_sepDisjunct, SW:1020, or a primed successor consuming groups). Per-owner slot lists (kvE2_sepSlotsLFor/RFor, SW:292-311) are UNCHANGED — merging is a property of the order type, not the slot inventory. kvE2_sepBracketN (SW:1009) and the banked kvE2_sepBracketN_construct (SW:4521) are generic over point-type lists and survive unchanged. Tie-class validity: base-anchor classes read the anchor owner's CLOSED self-zone bit generalized from its own fresh type to the FOREIGN base type (extend the kvE2_sepClosedLeafStub pattern, SW:1316-1321 — this is the flagged F5 obligation: the discharge must read the anchor owner's CLOSED key at the foreign type; no open key may enter any coincident read); base-base classes read no self-zone key. kvE2_sepHonestOrder's value-rank payload (340 Phase 5B/5C) reports EQUAL indices exactly where honest values coincide. kvE2_sepArr' (SW:1358), kvE2_sepBody/kvE2_sepBody_holds_iff (SW:1645/1682) inherit the corrected carrier. Target completeness shape: kvE2_sepBody_complete_holds' per report 07 section 4 — no hLR, owners from kvE2_sepPosI, hdisj over the tie-grouped honest order.
+
+CROSS-TASK NOTE: tasks 336, 338, 339, 340 are COMPLETED and their landed carriers are being DELIBERATELY reworked here per user decision — this task owns that rework. Doc-only edit: OuterGate.lean:28 prose referencing kvE2_sepBody_complete's hLR.
+
+MUST-PRESERVE (banked green, axiom-clean): kvE2_sepHonest_engineInputs (SW:3952), kvE2_sepHonest_witnesses (SW:4141), kvE2_sepBracketN_construct (SW:4521), kvE2_sepHonestBaseRealizerL/R (SW:3503/3522), kvE2_sepCoincidentOrder_mem_arr' (restated without hLR, proof-shape-identical). RETAIN kvE2_sepHonest_hLR_absurd (SW:4618) verbatim as a permanent design guard — it must continue to compile; it certifies why hLR-style hypotheses must never return. Preserve the F1-F7 faithfulness invariants, especially F5 (no open/closed zone-key conflation), and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal anywhere; witness bounds come from the bracket range (IntervalPattern.holds's own range), never a chain.
+
+VERIFICATION: lake build green; #print axioms on the rebuilt completeness statements shows only {propext, Classical.choice, Quot.sound}; kvE2_sepHonest_hLR_absurd still compiles unchanged; no sorry introduced in landed (non-skeleton) declarations.
+
+AFTER COMPLETION: task 337 stays [BLOCKED] until this task lands; then re-plan 337 Phases 3-4 (/revise 337 or /plan 337) against the corrected interface — the engine's single delegated .holds obligation becomes the tie-grouped hdisj, with boundary-class content discharged from h at the endpoint/pivot conjuncts.
+
+---
 
 ### 341. Structural refactor sharedwitness carrier layer
 - **Status**: [NOT STARTED]
@@ -135,7 +163,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### 340. Perslot globalindex carrier enrichment for valuefaithful slot order
 - **Effort**: complex
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 339
@@ -187,8 +215,10 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 336, Task 338, Task 339, Task 340
-- **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md]
+- **Dependencies**: Task 336, Task 338, Task 339, Task 340, Task 342
+- **Research**:
+  - [335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md]
+  - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md]
 - **Plan**:
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/01_joint-disjunct-bracket-holds.md]
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/02_model-order-merge-bracket-holds.md]

@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 342,
+  "next_project_number": 343,
   "active_projects": [
     {
       "project_number": 322,
@@ -3358,13 +3358,14 @@
         336,
         338,
         339,
-        340
+        340,
+        342
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
       ],
       "created": "2026-07-08T22:33:37Z",
-      "last_updated": "2026-07-08T00:00:00Z",
+      "last_updated": "2026-07-09T17:07:38Z",
       "artifacts": [
         {
           "type": "research",
@@ -3385,6 +3386,11 @@
           "type": "plan",
           "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/03_rank-ordered-coincidence-holds-builder.md",
           "summary": "v3 (additive) 6-phase plan: rank-ordered coincidence holds builder on task-338's enriched carrier; no carrier edits, targets kvE2_sepSlotsLOf/ROf wo, delivers kvE2_sepDisjunct_holds_of_honest + kvE2_sepBody_holds_of_honest corollary"
+        },
+        {
+          "type": "report",
+          "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md",
+          "summary": "Rabinovich-grounded blocker research: hLR inconsistency root cause, Def 7.13 misattribution corrected to Def 3.1 + Lemma 3.2, two-part upstream redesign, blast radius, refutation-survived"
         }
       ],
       "plan_metadata": {
@@ -3436,9 +3442,10 @@
           }
         ]
       },
-      "previous_status": "partial",
+      "previous_status": "implementing",
       "completion_summary": "Phase 1 delivered green + axiom-clean: kvE2_sepCoincidentOrder_mem_arr' (honest coincidence weak order is a member of kvE2_sepArr'; the exact left-arrow membership witness for kvE2_sepBody_holds_iff.mpr). Phases 2-6 BLOCKED by a concretely-grounded structural carrier/engine mismatch: the task-338 slot list kvE2_sepSlotsLOf/ROf wo is a per-owner BLOCK flatMap, but k1v_sorted_realizationK requires a boundary-linked (Chain') region list and emits interleaveK ps in merged-anchor order; IntervalPattern.holds_eq_succ requires the witness strictly monotone in block-index order. For >=2 interior owners whose base-witness intervals interleave, block order != merged order, so no monotone witness exists (concrete lean checks: block-order regions fail Chain' by decide; block monotone forces a<u, p<a, u<p |- False by omega). Fixing requires editing kvE2_sepSlotsLOf/ROf into a genuine cross-owner slot MERGE (task-338 carrier edit) -- out of scope for this ADDITIVE task per Non-Goals :169-173 / Rollback :474-476. Recommend a new task to redesign the 338 carrier slot list as a cross-owner merge, after which v3 Phases 3-5 become realizable.",
-      "blockers": "Additive .holds builder blocked: 339's 2-level (region,ownerRank) slot key cannot value-faithfully order cross-region interleaving (honest σ.lUW witness can land below τ's anchor; verified report 06, rank-independent, 3 lean experiments). Needs task 340: per-slot GLOBAL INDEX reflecting model value order in the carrier. 340 is terminal (per-slot = fully value-faithful). Phase-1 lemma kvE2_sepCoincidentOrder_mem_arr' preserved."
+      "blockers": "Phase 3 BLOCKED by certified inconsistency: kvE2_sepHonest_hLR_absurd proves the hLR hypothesis package unsatisfiable (sigma_w pinning, Rabinovich Def 3.1). hLR is a Lean-layer artifact with no source counterpart. Faithful fix = upstream carrier redesign Parts I (kvE2_sepPosI interior-restricted owner index replaces hLR) + II (tie-admitting weak orders; relax Nodup to anchor-distinct + ordered tie classes). Breaking edits reach COMPLETED tasks 336/338/339/340 carriers. See reports/07. Phases 1-2 green + banked.",
+      "prior_blocker_resolved": "Additive .holds builder blocked: 339's 2-level (region,ownerRank) slot key cannot value-faithfully order cross-region interleaving (honest σ.lUW witness can land below τ's anchor; verified report 06, rank-independent, 3 lean experiments). Needs task 340: per-slot GLOBAL INDEX reflecting model value order in the carrier. 340 is terminal (per-slot = fully value-faithful). Phase-1 lemma kvE2_sepCoincidentOrder_mem_arr' preserved."
     },
     {
       "project_number": 338,
@@ -3581,7 +3588,7 @@
     {
       "project_number": 340,
       "project_name": "perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Replace task 339's derived 2-level (region-rank primary, owner merged-chain rank secondary) slot-merge key in SharedWitness.lean with a single per-slot GLOBAL INDEX reflecting model value order, so mergeSort reproduces the exact honest value order across ALL owners (a total order on the full slot multiset, not a region-by-owner product). Verified blocker (report 06, three lean_run_code experiments): honest models permit cross-region interleaving where an owner sigma's lUW witness (constrained only by x1_sigma < u < w, SW:1415-1419) can land below another owner tau's anchor; 339's region-primary key unconditionally places tau's anchor before sigma's lUW regardless of owner-rank choice, making the required monotone witness omega-unsatisfiable. CORE SCOPE: (1) enrich KvE2SepWeakOrder (SW:694-695) and kvE2_sepOrderTypes (SW:706-711) to carry a per-slot global index (enumeration ranges over order-consistent global interleavings of individual slots, not per-owner ranks); (2) collapse kvE2_sepSlotMergeLe (SW:880-885) to a single-level compare on that index, dropping the region-primary lex; (3) replace/supplement kvE2_sepOwnerRank (SW:868-870) with a per-slot index reader keyed on the slot; (4) re-sort kvE2_sepSlotsLOf/ROf (SW:896-904) by the global-index key, preserving mergeSort_perm membership; (5) add a consistency conjunct to kvE2_sepDisjValid[Owner] (SW:748-759): the per-slot global index must extend each owner's own region order (lXU < lX1 < lUW left, mirror right) -- a linear-extension-of-partial-order constraint; (6) update kvE2_sepCoincidentOrder (SW:1619-1621) and kvE2_sepBody_complete (SW:1590) so the honest completeness witness supplies a global index consistent with the model value order; (7) extend kvE2_sepHonestBundleL/R (SW:1408, 1460) to yield the cross-owner value order of the extracted witnesses (currently only per-owner (x, x1_sigma, w) bounds), threading the carrier's total order into the index. Re-prove kvE2_sepBody / _holds_iff / _nonvacuous / _extract and kvE2_sepDisjunct_extract. MUST PRESERVE: 339's mergeSort_perm membership route (kvE2_sepSlotsLOf_mem/ROf_mem); the same-owner rank<rank -> index<index property the existing extraction lemmas rely on; the no-collapse property (kvE2_sepModelOrder and kvE2_sepCoincidentOrder remain proven members of kvE2_sepArr'); and task 337 Phase-1's kvE2_sepCoincidentOrder_mem_arr' (SW:1733). TERMINALITY REQUIREMENT: planning for this task must OPEN with a design gate (mirroring 339's Phase 1) proving the per-slot index is fully value-faithful -- reproducing the exact honest value order for the cross-region interleaving case a < u' < b that broke 339 -- and faithful to Rabinovich Def 3.1's single global chain, establishing this as the terminal carrier layer (no fifth carrier layer needed) before implementation begins. ACCEPTANCE: sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), full lake build green, F1-F7 faithfulness invariants preserved (especially F5 zone-key non-conflation and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal). No load-bearing task-334/336/338/339 result destroyed. This is foundational faithful-transcription work on the terminal carrier layer; strongly recommend --hard mode.",
       "effort": "complex",
@@ -3594,7 +3601,7 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
       ],
       "created": "2026-07-09T01:36:22Z",
-      "last_updated": "2026-07-09T04:15:21Z",
+      "last_updated": "2026-07-09T08:02:30Z",
       "artifacts": [
         {
           "type": "research",
@@ -3607,7 +3614,7 @@
           "summary": "6-phase hard-mode plan for per-slot global-index carrier enrichment"
         }
       ],
-      "session_id": "sess_1783561356_89aa2d_340",
+      "session_id": "sess_1783578954_3bce55_340",
       "completion_summary": null
     },
     {
@@ -3623,6 +3630,30 @@
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ]
+    },
+    {
+      "project_number": 342,
+      "project_name": "rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Upstream carrier redesign for the kvE2_sep completeness layer in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (SW:), unblocking task 337 Phases 3-4. Full design and blast-radius analysis: specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md (sections 4-5) — read it before planning. STANDING USER DIRECTIVE: consult the literature (Rabinovich 2014, 'A Proof of Kamp's Theorem', LMCS 10(1:14)) closely to ensure faithfulness; do not take what appears easiest but ends up not working — slow and steady wins the race.\n\nWHY: The hypothesis hLR (all positive owners strictly interior) is certified UNSATISFIABLE by kvE2_sepHonest_hLR_absurd (SW:4618, axiom-clean {propext, Classical.choice, Quot.sound}): the always-realized characteristic sigma_w := nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t)))) forces a positive owner whose w-coordinate ordering pair is (false,false) — neither zXW3's (true,false) nor zWT3's (false,true). Root cause: hLR is a Lean-layer artifact with NO Rabinovich counterpart. Rabinovich section 5 (p.7) splits every exists-forall formula into psi_0/psi_1 (non-interior witnesses, one-free-variable formulas that become ATOMIC E[Sigma] literals at the endpoints via Prop 3.5) plus phi (the strictly-interior bracket): interiority is a construction invariant of phi, never a hypothesis on realized types. The carrier indexed the arrangement by ALL positive owners (wo.map Prod.fst = kvE2_sepPos, SW:1563) while kvE2_sepDisjValidOwner (SW:1326) has honest validators only for the two interior classes, so hLR was added to force the mismatch closed. Independently, the Nodup conjunct (iii) of kvE2_sepDisjValid (SW:1350-1354) makes the Lemma 3.2(1) equality-case order types unrepresentable, so honest tie models (base-base slot ties; base-slot value equal to a foreign anchor — cycle-8 'resolution (a) is FALSE') realize no disjunct. Both defects must be fixed together; they rewrite the same declarations.\n\nRABINOVICH GROUNDING (cite exactly this way): Def 3.1 (p.4) — single STRICT witness chain x_n > ... > x_0, free variables pinned z_k = x_{i_k}. Lemma 3.2(1) (p.4) — conjunction closure via disjunction over order types of combined witnesses INCLUDING equality cases: tied witnesses collapse to ONE strict slot whose point type is the CONJUNCTION (meet) of the tied types, as a separate disjunct (see also the k=m case split, p.7). Section 5 (p.7) — psi_0/psi_1/phi split routing non-interior content to atomic E[Sigma] endpoint literals. Def 7.13 (p.15) is NOT the license for coincidence merging: it is segment-wise conjunction of per-interval brackets between DISTINCT reference points and licenses ONLY the outer x < w < t segmentation of kvE2_sepBody. Any 'Def 7.13 union' phrasing in older artifacts is a corrected misattribution. IntervalPattern.holds strict monotonicity (ExistsForallNF.lean:106-132) is SOURCE-MANDATED — do NOT weaken it.\n\nPART I — interior-restricted owner index. Add kvE2_sepPosI qnf := (kvE2_sepPos qnf).filter (fun sigma => decide (nf0_zoneSpec sigma.1 = kvE2_sep_zXW3 or nf0_zoneSpec sigma.1 = kvE2_sep_zWT3)) (order-preserving filter so Nodup/zipIdx foundations transfer) plus transfer lemmas. Re-anchor the owner index from kvE2_sepPos to kvE2_sepPosI in: kvE2_sepAllSlots (SW:348), kvE2_sepOrderTypes (SW:1277), kvE2_sepModelOrder (SW:1296), the owner-projection lemma (SW:1563) and membership lemmas (SW:1571, 1585, 1595), kvE2_sepCoincidentOrder (SW:2292), kvE2_sepHonestOrder (SW:3063) with its task-340 5A-5C rank machinery (SW:2531ff). Drop the hLR hypothesis from the four theorems kvE2_sepBody_complete (SW:2445), kvE2_sepCoincidentOrder_mem_arr' (SW:2489), kvE2_sepHonestOrder_mem_arr' (SW:3095), kvE2_sepBody_complete_holds (SW:4249) — the interiority disjunction is recovered definitionally via List.mem_filter. kvE2_sepDisjunct_extract (SW:4667) restates hmemL/hmemR over kvE2_sepPosI membership. Boundary classes zAtX3/zAtW3/zAtT3 ride the EXISTING kvE2_sepEpL/kvE2_sepPtW/kvE2_sepEpR literals (SW:886-903, 932-946, 908-925; zPastX3/zFutT3 on the Since/Until-navigated literals SW:892-893/916-917) with honest kvE2_sepHasPos bits via the biconditional kvE2_sepLit (SW:173). Non-interior owners already contribute [] slots (SW:292-311) and top segments (SW:959-980) — no new literal machinery. New additive obligations: endpoint/pivot honesty lemmas (honest h implies EpL/PtW/EpR literal evaluation), previously hidden behind vacuity. REJECTED alternative (user decision, do not implement): keeping wo over all of kvE2_sepPos with a non-interior true branch in kvE2_sepDisjValidOwner — explicitly rejected as unfaithful to the Lemma 3.2(1) interleaving index.\n\nPART II — tie-admitting weak orders with meet-folded disjuncts. Replace kvE2_sepDisjValid conjunct (iii) Nodup (SW:1350-1354) by anchor-distinct + ordered nonempty tie classes (equal payload entries = one class). Anchor-anchor ties remain excluded by the task-340 Phase 5A keystone nf_eval_unique (SW:2522-2529); admissible tie classes are base-base and base-foreign-anchor within a region. Add tie-class grouping functions (kvE2_sepTieGroupedL/R) and fold each tie class into ONE bracket slot with point type formula_conjList (class.map (kvE2_sepSlotType charBase charK)) in the disjunct builder (kvE2_sepDisjunct, SW:1020, or a primed successor consuming groups). Per-owner slot lists (kvE2_sepSlotsLFor/RFor, SW:292-311) are UNCHANGED — merging is a property of the order type, not the slot inventory. kvE2_sepBracketN (SW:1009) and the banked kvE2_sepBracketN_construct (SW:4521) are generic over point-type lists and survive unchanged. Tie-class validity: base-anchor classes read the anchor owner's CLOSED self-zone bit generalized from its own fresh type to the FOREIGN base type (extend the kvE2_sepClosedLeafStub pattern, SW:1316-1321 — this is the flagged F5 obligation: the discharge must read the anchor owner's CLOSED key at the foreign type; no open key may enter any coincident read); base-base classes read no self-zone key. kvE2_sepHonestOrder's value-rank payload (340 Phase 5B/5C) reports EQUAL indices exactly where honest values coincide. kvE2_sepArr' (SW:1358), kvE2_sepBody/kvE2_sepBody_holds_iff (SW:1645/1682) inherit the corrected carrier. Target completeness shape: kvE2_sepBody_complete_holds' per report 07 section 4 — no hLR, owners from kvE2_sepPosI, hdisj over the tie-grouped honest order.\n\nCROSS-TASK NOTE: tasks 336, 338, 339, 340 are COMPLETED and their landed carriers are being DELIBERATELY reworked here per user decision — this task owns that rework. Doc-only edit: OuterGate.lean:28 prose referencing kvE2_sepBody_complete's hLR.\n\nMUST-PRESERVE (banked green, axiom-clean): kvE2_sepHonest_engineInputs (SW:3952), kvE2_sepHonest_witnesses (SW:4141), kvE2_sepBracketN_construct (SW:4521), kvE2_sepHonestBaseRealizerL/R (SW:3503/3522), kvE2_sepCoincidentOrder_mem_arr' (restated without hLR, proof-shape-identical). RETAIN kvE2_sepHonest_hLR_absurd (SW:4618) verbatim as a permanent design guard — it must continue to compile; it certifies why hLR-style hypotheses must never return. Preserve the F1-F7 faithfulness invariants, especially F5 (no open/closed zone-key conflation), and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal anywhere; witness bounds come from the bracket range (IntervalPattern.holds's own range), never a chain.\n\nVERIFICATION: lake build green; #print axioms on the rebuilt completeness statements shows only {propext, Classical.choice, Quot.sound}; kvE2_sepHonest_hLR_absurd still compiles unchanged; no sorry introduced in landed (non-skeleton) declarations.\n\nAFTER COMPLETION: task 337 stays [BLOCKED] until this task lands; then re-plan 337 Phases 3-4 (/revise 337 or /plan 337) against the corrected interface — the engine's single delegated .holds obligation becomes the tie-grouped hdisj, with boundary-class content discharged from h at the endpoint/pivot conjuncts.",
+      "effort": "12-20 hours",
+      "parent_task": 337,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean"
+      ],
+      "created": "2026-07-09T17:13:06Z",
+      "last_updated": "2026-07-09T17:13:06Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md",
+          "summary": "Rabinovich-grounded blocker analysis (hLR inconsistency + coincidence merge); spawn analysis from parent task 337"
+        }
       ]
     }
   ],
