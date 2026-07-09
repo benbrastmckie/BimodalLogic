@@ -3535,6 +3535,22 @@ theorem kvE2_sepHonestBaseRealizerR {sig : MonadicSignature}
   · obtain ⟨u, hau, hut, hev⟩ := hb.2.2.2 χ hc
     exact ⟨u, lt_trans hb.1 hau, hut, hev⟩
 
+/-! ### Task 337 Phase 1 — per-owner per-zone base-type `Nodup` (region `hnd` packaging)
+
+**Packaging decision (SECONDARY question resolved, grounded in code):** `k1v_sorted_realizationK`'s
+`hnd` is on the TYPE list `List (NormalForm sig 0 1)` of each region. Two DISTINCT base slots of
+DIFFERENT owners can carry the SAME base type `χ` in the same zone, so the FLAT joint left/right
+type list is NOT `Nodup` (even though the SLOT list is — `kvE2_sepSlotsLOf_nodup`), and simply
+`dedup`-ing the flat list is WRONG: the eventual bracket needs ONE strictly-ordered point PER SLOT,
+so collapsing shared types would under-count the points. The correct packaging — mirroring the
+single-owner sound path (`SubBracket2V.lean:1982`, `k1v_bracket_construct3` fed `hndXU`/`hndUW`/
+`hndWT` per single owner) — is PER-OWNER, PER-ZONE regions: each region's type list is a SINGLE
+owner's SINGLE-zone set `kvE2_sepS σ zs`, which is a `filter` of the `Nodup` `Finset.univ.toList`
+and hence `Nodup`. This banks that `hnd` foundation. The remaining engine-inputs delta is the
+CROSS-OWNER TILING of these per-owner regions (see the Phase-1 continuation note). The per-region
+`hnd` foundation `(kvE2_sepS σ zs).Nodup` is ALREADY BANKED as `kvE2_sepS_nodup` (:372) — a `filter`
+of the `Nodup` universe list — so it is CONSUMED, not re-derived. -/
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
