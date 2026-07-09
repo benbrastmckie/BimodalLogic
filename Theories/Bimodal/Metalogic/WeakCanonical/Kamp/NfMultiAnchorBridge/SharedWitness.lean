@@ -2193,6 +2193,59 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
       (kvE2_sepAnchorFam_injective qnf M w x t h) hrank
     exact congrArg Fin.val hfin
 
+/-! ### Task 340 Phase 5C — value-faithful monotonicity (the honest `a < u' < b` interleave)
+
+The value order is reproduced by the honest tuple's global indices. The load-bearing content
+(report 06 Q4): the cross-region step `i₂(σ) < i₁(τ) ⟺ r_σ < r_τ ⟺ x1_σ < x1_τ`. With the block
+tuple `(3r, 3r+1, 3r+2)`, `i₂(σ)=3r_σ+2` and `i₁(τ)=3r_τ+1`, so `i₂(σ) < i₁(τ) ⟺ r_σ < r_τ`
+(`omega`); and `x1_σ < x1_τ → r_σ < r_τ` is `kvE2_ordRank_strictMono` on the anchor family. This
+is the merged-chain monotonicity `kvE2_sepSlotsLOf/ROf` inherit through `kvE2_sepSlotGIdx` — the
+disjunct task 339 dropped, now expressible because indices are value-ranked not region-primary. -/
+
+/-- **Anchor order lifts to rank order** (task 340 Phase 5C): a strictly smaller anchor gets a
+    strictly smaller value rank. Direct `kvE2_ordRank_strictMono` on the anchor family. -/
+theorem kvE2_sepHonest_rank_strictMono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : Fin (kvE2_sepPos qnf).length}
+    (hlt : kvE2_sepAnchorFam qnf M w x t h a < kvE2_sepAnchorFam qnf M w x t h b) :
+    kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) a
+      < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
+  kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
+
+/-- **The honest cross-region interleave** (task 340 Phase 5C — the `a < u' < b` step, report 06 G6).
+    If owner `a`'s anchor is strictly below owner `b`'s anchor, then `a`'s region-2 slot global index
+    `i₂(a) = 3r_a+2` is strictly below `b`'s anchor global index `i₁(b) = 3r_b+1`. This is the
+    order-consistent linear-extension disjunct that repairs task 339's dropped `a<u'<b` case — it
+    holds precisely because the honest tuple is value-ranked (via the keystone-strict anchor family)
+    rather than region-primary. -/
+theorem kvE2_sepHonest_cross_region {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : Fin (kvE2_sepPos qnf).length}
+    (hlt : kvE2_sepAnchorFam qnf M w x t h a < kvE2_sepAnchorFam qnf M w x t h b) :
+    (kvE2_sepHonestTuple qnf M w x t h a.val).2.2
+      < (kvE2_sepHonestTuple qnf M w x t h b.val).2.1 := by
+  have hrank : kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) a
+      < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
+    kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
+  unfold kvE2_sepHonestTuple
+  rw [dif_pos a.isLt, dif_pos b.isLt]
+  simp only [Fin.eta]
+  omega
+
+/-- **Same-owner region monotonicity** (task 340 Phase 5C): each owner's own three global indices
+    are strictly increasing `i₀ < i₁ < i₂` (region order preserved). Corollary of the honest tuple
+    being `(3r, 3r+1, 3r+2)`. -/
+theorem kvE2_sepHonest_same_owner_mono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (i : ℕ) :
+    (kvE2_sepHonestTuple qnf M w x t h i).1 < (kvE2_sepHonestTuple qnf M w x t h i).2.1
+      ∧ (kvE2_sepHonestTuple qnf M w x t h i).2.1 < (kvE2_sepHonestTuple qnf M w x t h i).2.2 := by
+  have := kvE2_sepHonestTuple_consistent qnf M w x t h i
+  simp only [kvE2_sepConsistentTuple, decide_eq_true_eq] at this
+  exact this
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
