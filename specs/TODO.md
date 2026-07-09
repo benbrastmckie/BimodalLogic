@@ -12,15 +12,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,340 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,340 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,335 | 189,192,196,337 | automation, kamp_theorem_formalization |
-| 4 | 177,178,321 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
-| 5 | 309,333 | 321 | kamp_theorem_formalization |
-| 6 | 307 | 309 | completeness |
-| 7 | 305 | 307 | completeness |
-| 8 | 303 | 305 | completeness |
-| 9 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,337 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,300,337 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,321 | 189,192,196,335 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309,333 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -112,12 +111,11 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-340 [RESEARCHED] — Replace task 339's derived 2-level (region-rank primary, owner me
-  └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
-    └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-      └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-        └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+337 [PLANNED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
+  └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+    └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+      └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
@@ -125,11 +123,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### 340. Perslot globalindex carrier enrichment for valuefaithful slot order
 - **Effort**: complex
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 339
 - **Research**: [340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/01_perslot-global-index-research.md]
+- **Plan**: [340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/01_perslot-global-index-plan.md]
 
 **Description**: Replace task 339's derived 2-level (region-rank primary, owner merged-chain rank secondary) slot-merge key in SharedWitness.lean with a single per-slot GLOBAL INDEX reflecting model value order, so mergeSort reproduces the exact honest value order across ALL owners (a total order on the full slot multiset, not a region-by-owner product). Verified blocker (report 06, three lean_run_code experiments): honest models permit cross-region interleaving where an owner sigma's lUW witness (constrained only by x1_sigma < u < w, SW:1415-1419) can land below another owner tau's anchor; 339's region-primary key unconditionally places tau's anchor before sigma's lUW regardless of owner-rank choice, making the required monotone witness omega-unsatisfiable. CORE SCOPE: (1) enrich KvE2SepWeakOrder (SW:694-695) and kvE2_sepOrderTypes (SW:706-711) to carry a per-slot global index (enumeration ranges over order-consistent global interleavings of individual slots, not per-owner ranks); (2) collapse kvE2_sepSlotMergeLe (SW:880-885) to a single-level compare on that index, dropping the region-primary lex; (3) replace/supplement kvE2_sepOwnerRank (SW:868-870) with a per-slot index reader keyed on the slot; (4) re-sort kvE2_sepSlotsLOf/ROf (SW:896-904) by the global-index key, preserving mergeSort_perm membership; (5) add a consistency conjunct to kvE2_sepDisjValid[Owner] (SW:748-759): the per-slot global index must extend each owner's own region order (lXU < lX1 < lUW left, mirror right) -- a linear-extension-of-partial-order constraint; (6) update kvE2_sepCoincidentOrder (SW:1619-1621) and kvE2_sepBody_complete (SW:1590) so the honest completeness witness supplies a global index consistent with the model value order; (7) extend kvE2_sepHonestBundleL/R (SW:1408, 1460) to yield the cross-owner value order of the extracted witnesses (currently only per-owner (x, x1_sigma, w) bounds), threading the carrier's total order into the index. Re-prove kvE2_sepBody / _holds_iff / _nonvacuous / _extract and kvE2_sepDisjunct_extract. MUST PRESERVE: 339's mergeSort_perm membership route (kvE2_sepSlotsLOf_mem/ROf_mem); the same-owner rank<rank -> index<index property the existing extraction lemmas rely on; the no-collapse property (kvE2_sepModelOrder and kvE2_sepCoincidentOrder remain proven members of kvE2_sepArr'); and task 337 Phase-1's kvE2_sepCoincidentOrder_mem_arr' (SW:1733). TERMINALITY REQUIREMENT: planning for this task must OPEN with a design gate (mirroring 339's Phase 1) proving the per-slot index is fully value-faithful -- reproducing the exact honest value order for the cross-region interleaving case a < u' < b that broke 339 -- and faithful to Rabinovich Def 3.1's single global chain, establishing this as the terminal carrier layer (no fifth carrier layer needed) before implementation begins. ACCEPTANCE: sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), full lake build green, F1-F7 faithfulness invariants preserved (especially F5 zone-key non-conflation and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal). No load-bearing task-334/336/338/339 result destroyed. This is foundational faithful-transcription work on the terminal carrier layer; strongly recommend --hard mode.
 
@@ -173,7 +172,7 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 
 ### 337. Build joint multiowner disjunct bracketholds engine for kve2 sepdisjunct
 - **Effort**: 4-5 hours
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 336, Task 338, Task 339, Task 340

@@ -1,7 +1,7 @@
 # Implementation Plan (v2): Per-slot global-index carrier enrichment for value-faithful slot order
 
 - **Task**: 340 - Per-slot global-index carrier enrichment for value-faithful slot order
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: ~4-6 hours remaining (Phase 5 only; Phases 1-4 + Phase-6 verification already landed, ~16h delivered)
 - **Dependencies**: 339 (COMPLETED), 338 (COMPLETED), 336, 334 — carrier surface built by these tasks is read and extended, not re-derived. **Downstream: task 337** consumes this task's Phase-5 engine-precondition bundle (see "340↔337 Interface"). 340 Phase 5 is dispatched BEFORE 337 and must finish first; it consumes NOTHING 337 produces.
 - **Research Inputs**:
