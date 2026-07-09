@@ -2092,6 +2092,128 @@ theorem kvE2_sepTieGroupedR_of_nodup {sig : MonadicSignature} (wo : KvE2SepWeakO
     kvE2_sepTieGroupedR wo = (kvE2_sepSlotsROf wo).map (fun s => [s]) :=
   kvE2_sepTieRuns_of_nodup _ _ hnd
 
+/-! ### Task 342 Phase 7 — meet-folded grouped disjunct builder
+
+One STRICT bracket slot per tie class (the strict-quotient guard): a class's point type is
+the CONJUNCTION (meet) of its members' slot types; segments reuse the flat per-cut refined
+conjunctions evaluated at the flat prefix (segments already meet-fold across all owners per
+cut — Phase 4 finding — so tie folding is point-type grouping + cut reindexing ONLY). Ties
+collapse the INDEX, never the bracket: the emitted disjunct is a strict Def-3.1 bracket and
+`IntervalPattern.holds` strictness is untouched. Forced by Def 3.1 (p.4: single strict
+witness chain, free variables pinned, conjunction semantics); Lemma 3.2(1) states the
+closure without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
+
+/-- **Meet-folded point type of one tie class**: the conjunction of the members' slot types.
+    A tie is ONE slot whose point realizes every tied type — never two slots with a weakened
+    order (Def 3.1 conjunction semantics, p.4). -/
+noncomputable def kvE2_sepClassType {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (c : List (KvE2SepSlot sig)) : TemporalPred :=
+  ⟨formula_conjList (c.map (fun s => (kvE2_sepSlotType charBase charK s).formula))⟩
+
+/-- Class-point evaluation: the meet-folded class type is realized iff EVERY member's slot
+    type is realized at the point (conjunction semantics). -/
+theorem kvE2_sepClassType_eval_iff {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (c : List (KvE2SepSlot sig))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (y : M.carrier) :
+    (kvE2_sepClassType charBase charK c).eval_at M atomMap y ↔
+      ∀ s ∈ c, (kvE2_sepSlotType charBase charK s).eval_at M atomMap y := by
+  simp only [kvE2_sepClassType, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  constructor
+  · intro hall s hs
+    exact hall _ (List.mem_map_of_mem hs)
+  · intro hall f hf
+    obtain ⟨s, hs, rfl⟩ := List.mem_map.mp hf
+    exact hall s hs
+
+/-- **Per-class evaluation helper** (the one extraction-side deliverable owed to the 337
+    re-plan): a realized meet-folded class point realizes EACH member's slot type. -/
+theorem kvE2_sepClassType_eval_mem {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    {c : List (KvE2SepSlot sig)}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (y : M.carrier)
+    (h : (kvE2_sepClassType charBase charK c).eval_at M atomMap y)
+    {s : KvE2SepSlot sig} (hs : s ∈ c) :
+    (kvE2_sepSlotType charBase charK s).eval_at M atomMap y :=
+  (kvE2_sepClassType_eval_iff charBase charK c M atomMap y).mp h s hs
+
+/-- Singleton-class evaluation: the meet of one slot type eval-equals the slot type
+    (`formula_conjList [f]` is `f ∧ ⊤`, not `f` — eval-level only, never syntactic). -/
+theorem kvE2_sepClassType_singleton_eval {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (s : KvE2SepSlot sig)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (y : M.carrier) :
+    (kvE2_sepClassType charBase charK [s]).eval_at M atomMap y ↔
+      (kvE2_sepSlotType charBase charK s).eval_at M atomMap y := by
+  rw [kvE2_sepClassType_eval_iff]
+  exact List.forall_mem_singleton
+
+/-- Flattening the singleton partition returns the list (the tie-free degenerate shape). -/
+private theorem kvE2_sep_flatten_map_singleton {α : Type*} (l : List α) :
+    (l.map (fun a => [a])).flatten = l := by
+  induction l with
+  | nil => rfl
+  | cons a t ih => simp [ih]
+
+/-- **Grouped segment dispatcher** (task 342 Phase 7): cut `i` of the grouped LEFT list
+    reuses the EXISTING flat per-cut refined conjunction at the flat prefix — the segment at
+    grouped cut `i` is `kvE2_sepSegLAt` on `gL.flatten` at flat cut
+    `((gL.take i).flatten).length` (segments between two members of one tie class disappear
+    with the slot; segments already meet-fold across all owners per cut, so tie folding is
+    point-type grouping + cut reindexing ONLY — no new segment machinery). Right mirror with
+    the same boundary convention as `kvE2_sepSegs`. -/
+noncomputable def kvE2_sepSegsG {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
+    (gL gR : List (List (KvE2SepSlot sig))) (i : Nat) : TemporalPred :=
+  if i ≤ gL.length then
+    kvE2_sepSegLAt charBase qnf gL.flatten ((gL.take i).flatten).length
+  else
+    kvE2_sepSegRAt charBase qnf gR.flatten ((gR.take (i - gL.length - 1)).flatten).length
+
+/-- On the singleton partition the grouped dispatcher agrees with the flat dispatcher at
+    every bracket-relevant cut (singleton prefixes flatten to length exactly `i`). -/
+private theorem kvE2_sepSegsG_map_singleton {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (qnf : NormalForm sig 2 3)
+    (lL lR : List (KvE2SepSlot sig)) (i : Nat) (hi : i ≤ lL.length + 1 + lR.length) :
+    kvE2_sepSegsG charBase qnf (lL.map (fun s => [s])) (lR.map (fun s => [s])) i
+      = kvE2_sepSegs charBase qnf lL lR i := by
+  rw [kvE2_sepSegsG, kvE2_sepSegs]
+  by_cases hle : i ≤ lL.length
+  · rw [if_pos (by simpa using hle), if_pos hle,
+      kvE2_sep_flatten_map_singleton, ← List.map_take, kvE2_sep_flatten_map_singleton,
+      List.length_take]
+    congr 1
+    omega
+  · rw [if_neg (by simpa using hle), if_neg hle,
+      kvE2_sep_flatten_map_singleton, ← List.map_take, kvE2_sep_flatten_map_singleton,
+      List.length_take, List.length_map]
+    congr 1
+    omega
+
+/-- **Meet-folded grouped joint disjunct builder** (task 342 Phase 7; TOP-LEVEL per the crux
+    failed-closer-3 lesson — no let-buried builders). One STRICT Def-3.1 bracket slot per
+    tie class: the class point type is the meet `kvE2_sepClassType` of its members' slot
+    types, the shared `ptW` and both endpoint predicates are unchanged, `kvE2_sepBracketN`
+    is consumed AS-IS (generic over point-type lists), and segments ride the grouped
+    dispatcher `kvE2_sepSegsG`. STRICT-QUOTIENT GUARD: tie classes are index-level data
+    only — ties collapse the index, never the bracket, and `IntervalPattern.holds`
+    strictness is untouched. Forced by Def 3.1 (p.4); Lemma 3.2(1) states the closure
+    without printed proof; corroborated by the k=m split (p.7) and Def 7.5 (p.13). -/
+noncomputable def kvE2_sepDisjunct' {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (gL gR : List (List (KvE2SepSlot sig))) : Σ n, VecEA2 n :=
+  ⟨(gL.map (kvE2_sepClassType charBase charK)).length + 1
+      + (gR.map (kvE2_sepClassType charBase charK)).length,
+   { endpointLeft := kvE2_sepEpL charBase charK qnf
+     endpointRight := kvE2_sepEpR charBase charK qnf
+     bracket := kvE2_sepBracketN
+       (gL.map (kvE2_sepClassType charBase charK))
+       (kvE2_sepPtW charBase charK qnf)
+       (gR.map (kvE2_sepClassType charBase charK))
+       (kvE2_sepSegsG charBase qnf gL gR) }⟩
+
 /-- Structural helper: every disjunct in the `foldr` enumeration carries EXACTLY the positive
     owners in `kvE2_sepPos` order (one prepended entry per owner). -/
 private theorem kvE2_sepOrderTypes_owners_aux {sig : MonadicSignature} (n : ℕ)
