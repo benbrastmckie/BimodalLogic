@@ -269,7 +269,16 @@ green (1013 jobs), sorry-free, `kvE2_sepCoincidentOrder_mem_arr'` axiom-clean
 - **Timing:** 3-4 hours
 - **Depends on:** 1
 
-### Phase 3: Activate single-level merge key + re-sort + membership + pairwise (green) [NOT STARTED]
+### Phase 3: Activate single-level merge key + re-sort + membership + pairwise (green) [COMPLETED]
+
+**GREEN** (2026-07-08). Added `kvE2_sepSlotGIdx` (per-slot global-index reader: owner tuple
+component at slot region rank); collapsed `kvE2_sepSlotMergeLe` to single-level
+`decide (giOf a ≤ giOf b)`, dropped region-primary lex. `kvE2_sepSlotsLOf/ROf_mem` unchanged
+(mergeSort_perm route, comparator-agnostic — re-verified green). Replaced the interleaving example
+with the below-anchor `a<u'<b` case (`.lUW σ` before `.lX1 τ` when its global index is smaller) —
+the case 339 could NOT express — plus a same-owner region-monotonicity example. hpairL/hpairR
+per-owner block pairwise lemmas (`kvE2_sepSlotsLFor_pairwise`) are merge-key-agnostic, preserved.
+`lake build` green (1013 jobs), sorry-free.
 - **Goal:** Switch `kvE2_sepSlotMergeLe` to the true single-level per-slot-index compare, re-sort
   `kvE2_sepSlotsLOf/ROf`, and re-prove the membership and same-owner pairwise obligations under the
   new order.

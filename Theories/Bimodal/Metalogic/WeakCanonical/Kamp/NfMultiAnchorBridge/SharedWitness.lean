@@ -900,20 +900,30 @@ def kvE2_sepOwnerRank {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) (σ : NormalForm sig 1 4) : ℕ :=
   ((wo.find? (fun p => decide (p.1 = σ))).map (fun p => p.2.2.1)).getD 0
 
-/-- **Point-level merge key** (task 339): the composite ℕ×ℕ sort key for a single slot, ordered
-    lexicographically with the intra-owner REGION rank (`kvE2_sepSlotRank`) PRIMARY and the owner's
-    cross-owner merged-chain rank (`kvE2_sepOwnerRank wo`) SECONDARY. Region-primary is what makes
-    the merge a genuine POINT-LEVEL interleaving (all owners' region-`k` slots together, ordered
-    among themselves by 338's cross-owner rank) rather than a contiguous per-owner BLOCK reordering
-    (which owner-primary would give — the exact block order report 04 proved rank-independent
-    insufficient). The key is an abstract ℕ×ℕ, never a model relative-position literal (F4/LITMUS
-    clean); it reads no zone bit (F5 clean). -/
+/-- **Per-slot global index reader** (task 340): the single global index of slot `s` under `wo` —
+    read from the owner's per-slot index tuple `(i₀,i₁,i₂)` at `s`'s region rank. Owners not in `wo`
+    default to tuple `(0,0,0)` (never occurs on the enumeration index). This is the abstract ℕ the
+    single-level merge key compares — a total order on the full slot multiset (Rabinovich Def 3.1
+    single global chain), NOT a region×owner product. Reads no zone bit (F5 clean); never a model
+    relative-position literal (F4/LITMUS clean — the index is structural carrier data). -/
+def kvE2_sepSlotGIdx {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) (s : KvE2SepSlot sig) : ℕ :=
+  let t := ((wo.find? (fun p => decide (p.1 = kvE2_sepSlotSub s))).map
+    (fun p => p.2.2)).getD (0, 0, 0)
+  match kvE2_sepSlotRank s with
+  | 0 => t.1
+  | 1 => t.2.1
+  | _ => t.2.2
+
+/-- **Single-level per-slot global-index merge key** (task 340): compares two slots by their global
+    index `kvE2_sepSlotGIdx wo`. Region rank is NO LONGER primary — a region-2 slot of one owner can
+    precede a region-1 slot of another (the honest `a<u'<b` cross-region case, report 06, that the
+    dropped 339 region-primary lex could not express). The index is a total order over the union of
+    all owners' points (Def 3.1 single global chain), constrained to extend each owner's region order
+    by the `kvE2_sepDisjValid` consistency conjunct. Abstract ℕ compare; F4/F5/LITMUS clean. -/
 def kvE2_sepSlotMergeLe {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) (a b : KvE2SepSlot sig) : Bool :=
-  let ra := kvE2_sepSlotRank a
-  let rb := kvE2_sepSlotRank b
-  decide (ra < rb ∨ (ra = rb ∧
-    kvE2_sepOwnerRank wo (kvE2_sepSlotSub a) ≤ kvE2_sepOwnerRank wo (kvE2_sepSlotSub b)))
+  decide (kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b)
 
 /-- The wo-ordered joint LEFT slot list — a genuine POINT-LEVEL cross-owner merge (task 339): the
     per-owner LEFT region slots, `mergeSort`ed by the composite point-level key
@@ -1001,22 +1011,32 @@ theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
   exact (List.mergeSort_perm _ _).mem_iff.mpr
     (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
 
-/-- **Point-level interleaving witness** (task 339, the defining property of this redesign). For
-    two distinct owners `σ, τ` with merged-chain ranks `0 < 1`, `τ`'s LEFT region-0 slot (`.lXU τ`)
-    is placed by the merge key STRICTLY BETWEEN `σ`'s region-0 slot (`.lXU σ`) and `σ`'s region-2
-    slot (`.lUW σ`): `σ.lXU ≤ τ.lXU ≤ σ.lUW`. So `σ`'s own slots are NOT contiguous in the merged
-    chain — a foreign owner's slot interleaves between them. A per-owner BLOCK reordering (owner
-    rank primary) could never do this (it keeps all of `σ` before all of `τ` or vice versa); this
-    is exactly the block-order failure report 04 proved rank-independent-insufficient. Region-rank
-    is the PRIMARY merge key, so the interleaving holds independently of the owner ranks for the
-    cross-region pair, and by owner rank within the region-0 tie. -/
+/-- **Below-anchor cross-region interleaving** (task 340, the defining property this redesign
+    installs — the case report 06 proved 339's region-primary key could NOT express). With a per-slot
+    global index in which owner σ's region-2 slot `lUW` receives a STRICTLY SMALLER index than owner
+    τ's region-1 anchor slot `lX1` — the honest `a < u' < b` configuration (σ's `lUW` witness `u'`
+    below τ's anchor `b = x1_τ`) — the single-level merge key places `.lUW σ` BEFORE `.lX1 τ`.
+    Region rank is no longer primary: a region-2 slot precedes a foreign region-1 slot. Under any
+    2-level region-primary key (339) this is impossible, since region 1 < region 2 always forces
+    `.lX1 τ` first regardless of owner data (report 06 Experiment C rank-independence). -/
 example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
     (wo : KvE2SepWeakOrder sig)
-    (hσ0 : kvE2_sepOwnerRank wo σ = 0) (hτ1 : kvE2_sepOwnerRank wo τ = 1) :
-    kvE2_sepSlotMergeLe wo (.lXU σ χ) (.lXU τ χ) = true ∧
-    kvE2_sepSlotMergeLe wo (.lXU τ χ) (.lUW σ χ) = true := by
-  refine ⟨?_, ?_⟩ <;>
-    simp [kvE2_sepSlotMergeLe, kvE2_sepSlotRank, kvE2_sepSlotSub, hσ0, hτ1]
+    (hlt : kvE2_sepSlotGIdx wo (.lUW σ χ) < kvE2_sepSlotGIdx wo (.lX1 τ)) :
+    kvE2_sepSlotMergeLe wo (.lUW σ χ) (.lX1 τ) = true := by
+  simp only [kvE2_sepSlotMergeLe, decide_eq_true_eq]
+  omega
+
+/-- **Same-owner region monotonicity of the global index** (task 340): whenever an owner's index
+    tuple extends its region order (`i₀ < i₁ < i₂`, the `kvE2_sepDisjValid` consistency conjunct),
+    the global index is strictly increasing in region rank, so the merge keeps each owner's own
+    slots in `lXU < lX1 < lUW` order (preserving the same-owner `rank<rank ⟹ index<index` fact the
+    ⇒-extraction consumes). Here shown for σ's `lX1` (region 1) below `lUW` (region 2). -/
+example {sig : MonadicSignature} (σ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
+    (wo : KvE2SepWeakOrder sig)
+    (hlt : kvE2_sepSlotGIdx wo (.lX1 σ) < kvE2_sepSlotGIdx wo (.lUW σ χ)) :
+    kvE2_sepSlotMergeLe wo (.lX1 σ) (.lUW σ χ) = true := by
+  simp only [kvE2_sepSlotMergeLe, decide_eq_true_eq]
+  omega
 
 /-! ## The joint carrier (O1) -/
 
