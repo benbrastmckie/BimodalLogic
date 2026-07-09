@@ -2,14 +2,38 @@
 
 - **Task**: 340 - Per-slot global-index carrier enrichment for value-faithful slot order
 - **Phase**: 5 (model-dependent selection/aggregation lemma over the existing carrier)
-- **Status**: [IN PROGRESS] — partial (5.1 objective 1 delivered; honest-order construction remains)
-- **Session**: sess_1783561356_89aa2d_340
+- **Status**: [IN PROGRESS] — partial (5.1 richness lemma + lex-rank kernel delivered; honest-order construction remains)
+- **Session**: sess_1783561356_89aa2d_340 (dispatch 1); sess_1783561356_89aa2d_340_cont (dispatch 2)
 - **Date**: 2026-07-08
 - **File**: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean
 
-## Delivered
+## Delivered — dispatch 2 (continuation): lex-rank kernel (SW:783-832)
 
-`kvE2_sepIdxTuple_mem_of_lt` (SW:749-763) — the Phase-5.1 enumeration-richness lemma:
+The model-agnostic SORT SPEC that every remaining Phase-5 obligation reduces to (per handoff #1):
+
+```
+def kvE2_ordRank {β} [LinearOrder β] {n} (g : Fin n → β) (i : Fin n) : ℕ :=
+  (Finset.univ.filter (fun j => g j < g i)).card
+theorem kvE2_ordRank_lt         : kvE2_ordRank g i < n
+theorem kvE2_ordRank_strictMono : g a < g b → kvE2_ordRank g a < kvE2_ordRank g b
+theorem kvE2_ordRank_injective  : Function.Injective g → Function.Injective (kvE2_ordRank g)
+```
+
+Range `_lt` → the `<3n` bound feeding `kvE2_sepIdxTuple_mem_of_lt`; `_strictMono` → per-owner
+`i₀<i₁<i₂` AND the `a<u'<b` cross-region step; `_injective` → the cross-owner `Nodup`. Taking
+`g = (model value, slot index)` in the LEX order breaks value ties by the always-distinct slot
+index, sidestepping the SW:1585 value-distinctness crux with NO distinctness hypothesis. Green,
+sorry-0, axiom-clean `{propext, Classical.choice, Quot.sound}` (verified on `_injective`), committed
+(`task 340 phase 5.1: lex-rank kernel …`). Design-agnostic (works for the `n`-anchor or `3n`-slot
+family) → reused by whichever honest-order layout the next dispatch settles, hence not churn.
+
+Also surfaced two decisive structural facts (see handoff #2): the carrier tuple is per-(owner,
+REGION-RANK) COARSE (all `lXU σ χ` slots share `i₀`), and step-6 realizability collides with
+coinciding anchors (a strict region-rank order forces separation the model may not admit, routing
+coinciding-anchor owners to `kvE2_sepCoincidentOrder`) — an unsettled layout design point the def
+must resolve first.
+
+## Delivered — dispatch 1: `kvE2_sepIdxTuple_mem_of_lt` (SW:757-765) — enumeration-richness lemma:
 
 ```
 theorem kvE2_sepIdxTuple_mem_of_lt (n a b c : ℕ)

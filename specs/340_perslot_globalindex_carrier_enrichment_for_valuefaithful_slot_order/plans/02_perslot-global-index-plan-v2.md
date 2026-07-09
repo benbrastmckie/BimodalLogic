@@ -366,20 +366,37 @@ literally the RHS of `kvE2_sepBody_holds_iff` (SW:~1111), so it + the gate close
   - [x] Prove `kvE2_sepIdxTuple_mem_of_lt` (SW near the `kvE2_sepIdxTuples` defn) by the three
         `List.mem_flatMap`/`List.mem_range` steps mirroring `kvE2_sepPlaceholderTuple_mem` (SW:742-747).
         *(DONE 2026-07-08: added at SW:749-763, green, sorry-0, axiom-clean `{propext, Quot.sound}`, committed.)*
+  - [x] **Lex-rank kernel DELIVERED** (2026-07-08, continuation dispatch): `kvE2_ordRank` +
+        `kvE2_ordRank_lt` (range `< n`) + `kvE2_ordRank_strictMono` (`g a < g b → rank a < rank b`)
+        + `kvE2_ordRank_injective` (SW:783-832), green, sorry-0, axiom-clean
+        `{propext, Classical.choice, Quot.sound}`, committed. *(deviation: this is the model-agnostic
+        SORT SPEC that the handoff identifies as what steps 2/4/5 all reduce to — range→`i<3n`,
+        strictMono→`i₀<i₁<i₂` + `a<u'<b`, injective→`Nodup`. Uses the LEX `(value, index)` order so
+        ties in the model value are broken by the distinct slot index, sidestepping the SW:1585
+        value-distinctness crux WITHOUT any distinctness hypothesis. Design-agnostic: reused by
+        whichever honest-order layout the next dispatch settles.)*
   - [ ] Define `kvE2_sepHonestOrder qnf M w x t` (A): each interior owner `.coincident`, tuple =
         the owner's three slots' actual global positions in M's honest value order, aggregated by
         collect + sort + linear-extension over the per-owner honest bundles via
         `kvE_subBracket2_complete_extract` (do-not-edit extractor) + M's `LinearOrder`. Introduce NO
         new model reasoning beyond ordering already-extracted witnesses; NO `x1 < e_i` literal (LITMUS).
+        *(deviation: NOT YET DEFINED. Continuation dispatch surfaced an unsettled design point — see
+        handoff `phase-5-partial-handoff-2.md` §"Design decision the def hinges on": the carrier tuple
+        `(i₀,i₁,i₂)` is per-(owner, REGION-RANK) coarse (all `lXU σ χ` slots share `i₀`), so the def
+        must pick ONE representative M-value per (owner,region); and step-6 realizability collides with
+        coinciding anchors (a strict region-rank order forces separation the model may not admit,
+        routing coinciding-anchor owners to `kvE2_sepCoincidentOrder`). This must be settled before the
+        def is built, to avoid churning a membership proof against a to-be-redesigned layout.)*
   - [ ] Prove membership (B) `kvE2_sepHonestOrder_mem_arr'`, mirroring `kvE2_sepCoincidentOrder_mem_arr'`
-        (SW:1804) with conjuncts (ii) consistency `i₀<i₁<i₂` and (iii) `i₀`-Nodup re-proved for the
+        (SW:1899) with conjuncts (ii) consistency `i₀<i₁<i₂` and (iii) `i₀`-Nodup re-proved for the
         model tuples (honest global indices ⊂ `[0,3n)` ⟹ enumeration membership via
-        `kvE2_sepIdxTuple_mem_of_lt`; consistency from M's transitivity; Nodup from M's distinctness /
-        distinct anchors → distinct i₀).
+        `kvE2_sepIdxTuple_mem_of_lt`; consistency from `kvE2_ordRank_strictMono` on the bundle chain;
+        Nodup from `kvE2_ordRank_injective` on the lex family). *(deferred: blocked on the def above.)*
   - [ ] Prove monotonicity (C) `kvE2_sepHonestOrder_monotone`: `kvE2_sepSlotsLOf/ROf (kvE2_sepHonestOrder …)`
-        reproduce M's value order, from the tuple definition + `kvE2_sepSlotGIdx` (SW:921) + the
-        `mergeSort` sorted spec (including the `a<u'<b` cross-region case).
-  - [ ] `lake build` green, sorry-free checkpoint after 5.1; commit.
+        reproduce M's value order, from the tuple definition + `kvE2_sepSlotGIdx` (SW:939) + the
+        `mergeSort` sorted spec (including the `a<u'<b` cross-region case). *(deferred: blocked on the def.)*
+  - [ ] `lake build` green, sorry-free checkpoint after 5.1; commit. *(kernel checkpoint DONE + committed;
+        def/membership/monotonicity checkpoint pending.)*
 
 - **Tasks (sub-phase 5.2 — exported precondition bundle + unblocking-theorem reduction, green):**
   - [ ] Derive and EXPORT the engine-precondition bundle `hpos/hlink/hnd/hreal` for
