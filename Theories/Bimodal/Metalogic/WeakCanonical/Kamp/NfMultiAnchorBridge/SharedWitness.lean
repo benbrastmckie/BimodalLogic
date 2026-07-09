@@ -566,6 +566,100 @@ theorem kvE2_sepSlotsRFor_regionRight {sig : MonadicSignature} (σ : NormalForm 
         · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
     · simp [if_neg h1, if_neg h2] at hs
 
+/-- A constantly-true relation is `Pairwise` on any list. -/
+private theorem kvE2_pairwise_of_forall {X : Type*} (R : X → X → Prop) (l : List X)
+    (h : ∀ a b, R a b) : l.Pairwise R := by
+  induction l with
+  | nil => exact List.Pairwise.nil
+  | cons a t ih => exact List.Pairwise.cons (fun b _ => h a b) ih
+
+/-- σ's LEFT block is rank-non-decreasing (`lXU`(0) … `lX1`(1) … `lUW`(2); or `rXW`(0)). -/
+theorem kvE2_sepSlotsLFor_rank_sorted {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsLFor σ).Pairwise (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
+  rw [kvE2_sepSlotsLFor]
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · simp only [if_pos h1]
+    rw [List.pairwise_append]
+    refine ⟨?_, ?_, ?_⟩
+    · rw [List.pairwise_map]
+      exact kvE2_pairwise_of_forall _ _ (fun a b => by simp [kvE2_sepSlotRank])
+    · rw [List.pairwise_cons]
+      refine ⟨?_, ?_⟩
+      · intro b hb; obtain ⟨χ, _, rfl⟩ := List.mem_map.mp hb; simp [kvE2_sepSlotRank]
+      · rw [List.pairwise_map]
+        exact kvE2_pairwise_of_forall _ _ (fun a b => by simp [kvE2_sepSlotRank])
+    · intro a ha b hb
+      obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+      rcases List.mem_cons.mp hb with rfl | hb
+      · simp [kvE2_sepSlotRank]
+      · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp [kvE2_sepSlotRank]
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · simp only [if_neg h1, if_pos h2]
+      rw [List.pairwise_map]
+      exact kvE2_pairwise_of_forall _ _ (fun a b => by simp [kvE2_sepSlotRank])
+    · simp only [if_neg h1, if_neg h2]; exact List.Pairwise.nil
+
+/-- σ's RIGHT block is rank-non-decreasing (`lWT`(0); or `rWX1`(0) … `rX1`(1) … `rX1T`(2)). -/
+theorem kvE2_sepSlotsRFor_rank_sorted {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsRFor σ).Pairwise (fun a b => kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
+  rw [kvE2_sepSlotsRFor]
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · simp only [if_pos h1]
+    rw [List.pairwise_map]
+    exact kvE2_pairwise_of_forall _ _ (fun a b => by simp [kvE2_sepSlotRank])
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · simp only [if_neg h1, if_pos h2]
+      rw [List.pairwise_append]
+      refine ⟨?_, ?_, ?_⟩
+      · rw [List.pairwise_map]
+        exact kvE2_pairwise_of_forall _ _ (fun a b => by simp [kvE2_sepSlotRank])
+      · rw [List.pairwise_cons]
+        refine ⟨?_, ?_⟩
+        · intro b hb; obtain ⟨χ, _, rfl⟩ := List.mem_map.mp hb; simp [kvE2_sepSlotRank]
+        · rw [List.pairwise_map]
+          exact kvE2_pairwise_of_forall _ _ (fun a b => by simp [kvE2_sepSlotRank])
+      · intro a ha b hb
+        obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+        rcases List.mem_cons.mp hb with rfl | hb
+        · simp [kvE2_sepSlotRank]
+        · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp [kvE2_sepSlotRank]
+    · simp only [if_neg h1, if_neg h2]; exact List.Pairwise.nil
+
+/-- **Within-region rank sortedness** (task 340 Phase 3 flip): the block is rank-non-decreasing
+    within each region. Across the L→R boundary the region tags differ, so the constraint is
+    vacuous there (crux correction). This is the engine both the prefix-sum (model/coincident)
+    and value-rank (honest) consistency proofs consume. -/
+theorem kvE2_sepSlotBlock_region_rank_sorted {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotBlock σ).Pairwise
+      (fun a b => kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b →
+        kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b) := by
+  rw [kvE2_sepSlotBlock, List.pairwise_append]
+  refine ⟨?_, ?_, ?_⟩
+  · exact (kvE2_sepSlotsLFor_rank_sorted σ).imp (fun {a b} h (_ : kvE2_sepSlotRegionLeft a
+      = kvE2_sepSlotRegionLeft b) => h)
+  · exact (kvE2_sepSlotsRFor_rank_sorted σ).imp (fun {a b} h (_ : kvE2_sepSlotRegionLeft a
+      = kvE2_sepSlotRegionLeft b) => h)
+  intro a ha b hb hreg
+  rw [kvE2_sepSlotsLFor_regionLeft σ ha, kvE2_sepSlotsRFor_regionRight σ hb] at hreg
+  exact absurd hreg (by decide)
+
+/-- **Block-position alignment** (task 340 Phase 3 flip): within one region, a strictly smaller
+    rank occupies a strictly earlier block position. The contrapositive of within-region rank
+    sortedness — the fact the prefix-sum consistency proof needs (position order refines region
+    rank order). -/
+theorem kvE2_sepBlock_pos_lt_of_rank_lt {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+    {j k : Fin (kvE2_sepSlotBlock σ).length}
+    (hreg : kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get j)
+      = kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get k))
+    (hrank : kvE2_sepSlotRank ((kvE2_sepSlotBlock σ).get j)
+      < kvE2_sepSlotRank ((kvE2_sepSlotBlock σ).get k)) :
+    j.val < k.val := by
+  rcases lt_trichotomy j.val k.val with h | h | h
+  · exact h
+  · exact absurd (by rw [Fin.ext h] at hrank; exact hrank) (lt_irrefl _)
+  · have hp := (List.pairwise_iff_get.mp (kvE2_sepSlotBlock_region_rank_sorted σ)) k j h
+    exact absurd (hp hreg.symm) (by omega)
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
