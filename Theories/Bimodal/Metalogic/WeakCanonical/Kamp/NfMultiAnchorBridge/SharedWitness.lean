@@ -2737,6 +2737,42 @@ theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature}
   haveI : Nonempty M.carrier := ⟨x⟩
   exact Classical.epsilon_spec (hbelowXU χ (List.mem_filter.mp hχ).2)
 
+/-- **The lex value family `G`** (Phase 6): over the full individual-slot family `Fin N`
+    (`N = (kvE2_sepAllSlots qnf).length`), `G j = (value_j, j)` in the LEX product
+    `M.carrier ×ₗ Fin N`. The slot index second coordinate makes `G` injective WITHOUT any
+    value-distinctness hypothesis (the distinctness crux, SW:~1000): distinct owners may share
+    witness values, but the index tiebreak is always distinct. `kvE2_ordRank G` is then the
+    per-INDIVIDUAL-slot value rank — the value-faithful global index the refined carrier reads. -/
+noncomputable def kvE2_sepSlotG {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Fin (kvE2_sepAllSlots qnf).length → M.carrier ×ₗ Fin (kvE2_sepAllSlots qnf).length :=
+  fun j => toLex (kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get j), j)
+
+/-- `G` is injective (the slot-index second lex coordinate is injective), no value-distinctness
+    hypothesis needed. Feeds `kvE2_ordRank_injective` → the cross-owner global `Nodup` conjunct. -/
+theorem kvE2_sepSlotG_injective {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Function.Injective (kvE2_sepSlotG qnf M w x t h) := by
+  intro a b hab
+  have h2 : ((kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get a), a) :
+      M.carrier × Fin (kvE2_sepAllSlots qnf).length)
+      = (kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get b), b) :=
+    congrArg (ofLex) hab
+  exact (Prod.ext_iff.mp h2).2
+
+/-- A strictly smaller slot value forces a strictly smaller `G` (lex first coordinate), hence a
+    strictly smaller `kvE2_ordRank` — the region-monotonicity engine for the honest order. -/
+theorem kvE2_sepSlotG_lt_of_value_lt {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : Fin (kvE2_sepAllSlots qnf).length}
+    (hlt : kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get a)
+      < kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get b)) :
+    kvE2_sepSlotG qnf M w x t h a < kvE2_sepSlotG qnf M w x t h b := by
+  exact Prod.Lex.left _ _ hlt
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
