@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 340,
+  "next_project_number": 341,
   "active_projects": [
     {
       "project_number": 322,
@@ -3357,7 +3357,8 @@
       "dependencies": [
         336,
         338,
-        339
+        339,
+        340
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
@@ -3437,7 +3438,7 @@
       },
       "previous_status": "partial",
       "completion_summary": "Phase 1 delivered green + axiom-clean: kvE2_sepCoincidentOrder_mem_arr' (honest coincidence weak order is a member of kvE2_sepArr'; the exact left-arrow membership witness for kvE2_sepBody_holds_iff.mpr). Phases 2-6 BLOCKED by a concretely-grounded structural carrier/engine mismatch: the task-338 slot list kvE2_sepSlotsLOf/ROf wo is a per-owner BLOCK flatMap, but k1v_sorted_realizationK requires a boundary-linked (Chain') region list and emits interleaveK ps in merged-anchor order; IntervalPattern.holds_eq_succ requires the witness strictly monotone in block-index order. For >=2 interior owners whose base-witness intervals interleave, block order != merged order, so no monotone witness exists (concrete lean checks: block-order regions fail Chain' by decide; block monotone forces a<u, p<a, u<p |- False by omega). Fixing requires editing kvE2_sepSlotsLOf/ROf into a genuine cross-owner slot MERGE (task-338 carrier edit) -- out of scope for this ADDITIVE task per Non-Goals :169-173 / Rollback :474-476. Recommend a new task to redesign the 338 carrier slot list as a cross-owner merge, after which v3 Phases 3-5 become realizable.",
-      "blockers": "Phases 2-6 (.holds builder) blocked: task-338 slot lists kvE2_sepSlotsLOf/ROf are per-owner BLOCK flatMaps, but IntervalPattern.holds needs global point-level monotonicity. Triply-verified (impl counterexamples + adversarial verification report 04, rank-independent). Requires point-level cross-owner slot merge (extends 338). Phase-1 lemma kvE2_sepCoincidentOrder_mem_arr' preserved."
+      "blockers": "Additive .holds builder blocked: 339's 2-level (region,ownerRank) slot key cannot value-faithfully order cross-region interleaving (honest σ.lUW witness can land below τ's anchor; verified report 06, rank-independent, 3 lean experiments). Needs task 340: per-slot GLOBAL INDEX reflecting model value order in the carrier. 340 is terminal (per-slot = fully value-faithful). Phase-1 lemma kvE2_sepCoincidentOrder_mem_arr' preserved."
     },
     {
       "project_number": 338,
@@ -3576,6 +3577,31 @@
         "postmortem_rules_count": 7
       },
       "completion_summary": "Redesigned kvE2_sepSlotsLOf/ROf into a genuine point-level cross-owner slot merge (region-rank-primary mergeSort of the block union), re-proved all dependent lemmas sorry-free and axiom-clean, full build green. Closes the .holds granularity gap block ordering could not satisfy; unblocks task 337."
+    },
+    {
+      "project_number": 340,
+      "project_name": "perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Replace task 339's derived 2-level (region-rank primary, owner merged-chain rank secondary) slot-merge key in SharedWitness.lean with a single per-slot GLOBAL INDEX reflecting model value order, so mergeSort reproduces the exact honest value order across ALL owners (a total order on the full slot multiset, not a region-by-owner product). Verified blocker (report 06, three lean_run_code experiments): honest models permit cross-region interleaving where an owner sigma's lUW witness (constrained only by x1_sigma < u < w, SW:1415-1419) can land below another owner tau's anchor; 339's region-primary key unconditionally places tau's anchor before sigma's lUW regardless of owner-rank choice, making the required monotone witness omega-unsatisfiable. CORE SCOPE: (1) enrich KvE2SepWeakOrder (SW:694-695) and kvE2_sepOrderTypes (SW:706-711) to carry a per-slot global index (enumeration ranges over order-consistent global interleavings of individual slots, not per-owner ranks); (2) collapse kvE2_sepSlotMergeLe (SW:880-885) to a single-level compare on that index, dropping the region-primary lex; (3) replace/supplement kvE2_sepOwnerRank (SW:868-870) with a per-slot index reader keyed on the slot; (4) re-sort kvE2_sepSlotsLOf/ROf (SW:896-904) by the global-index key, preserving mergeSort_perm membership; (5) add a consistency conjunct to kvE2_sepDisjValid[Owner] (SW:748-759): the per-slot global index must extend each owner's own region order (lXU < lX1 < lUW left, mirror right) -- a linear-extension-of-partial-order constraint; (6) update kvE2_sepCoincidentOrder (SW:1619-1621) and kvE2_sepBody_complete (SW:1590) so the honest completeness witness supplies a global index consistent with the model value order; (7) extend kvE2_sepHonestBundleL/R (SW:1408, 1460) to yield the cross-owner value order of the extracted witnesses (currently only per-owner (x, x1_sigma, w) bounds), threading the carrier's total order into the index. Re-prove kvE2_sepBody / _holds_iff / _nonvacuous / _extract and kvE2_sepDisjunct_extract. MUST PRESERVE: 339's mergeSort_perm membership route (kvE2_sepSlotsLOf_mem/ROf_mem); the same-owner rank<rank -> index<index property the existing extraction lemmas rely on; the no-collapse property (kvE2_sepModelOrder and kvE2_sepCoincidentOrder remain proven members of kvE2_sepArr'); and task 337 Phase-1's kvE2_sepCoincidentOrder_mem_arr' (SW:1733). TERMINALITY REQUIREMENT: planning for this task must OPEN with a design gate (mirroring 339's Phase 1) proving the per-slot index is fully value-faithful -- reproducing the exact honest value order for the cross-region interleaving case a < u' < b that broke 339 -- and faithful to Rabinovich Def 3.1's single global chain, establishing this as the terminal carrier layer (no fifth carrier layer needed) before implementation begins. ACCEPTANCE: sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), full lake build green, F1-F7 faithfulness invariants preserved (especially F5 zone-key non-conflation and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal). No load-bearing task-334/336/338/339 result destroyed. This is foundational faithful-transcription work on the terminal carrier layer; strongly recommend --hard mode.",
+      "effort": "complex",
+      "parent_task": 337,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        339
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
+      "created": "2026-07-09T01:36:22Z",
+      "last_updated": "2026-07-09T01:36:22Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/01_perslot-global-index-research.md",
+          "summary": "Spawn analysis: per-slot global-index carrier enrichment (terminal layer) for value-faithful slot order"
+        }
+      ]
     }
   ],
   "artifacts": [
