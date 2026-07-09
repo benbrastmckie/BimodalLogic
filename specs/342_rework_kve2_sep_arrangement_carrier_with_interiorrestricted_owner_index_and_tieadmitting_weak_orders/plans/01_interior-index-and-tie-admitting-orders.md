@@ -571,23 +571,23 @@ inventoried per wrap-up contract, never silently dropped.
 **Timing**: 2-2.5h
 **Depends on**: 6 (uses `kvE2_sepClosedLeafAt`; independent of Phase 7)
 
-### Phase 9: Tie-reporting honest order and kvE2_sepBody_complete_holds' [NOT STARTED]
+### Phase 9: Tie-reporting honest order and kvE2_sepBody_complete_holds' [COMPLETED]
 
 **Goal**: The completeness keystone: an honest order whose payload reports EQUAL indices exactly
 where honest values coincide, its carrier membership under the tie-admitting validity, and the
 report 07 §4 target theorem.
 
 **Tasks**:
-- [ ] `kvE2_sepSlotHonestVIdx` — value-only rank: `kvE2_ordRank` over the honest slot-VALUE
+- [x] `kvE2_sepSlotHonestVIdx` — value-only rank: `kvE2_ordRank` over the honest slot-VALUE
   family (drop the slot-index lex tiebreak of `kvE2_sepSlotHonestGIdx`; `kvE2_ordRank` at
   SW:1219 needs no injectivity). Payload lemmas: equal honest values ⟹ equal rank (definitional
   for a rank counting strictly-smaller values); strictly smaller value ⟹ strictly smaller rank
   (`kvE2_ordRank_strictMono`); rank bound (`kvE2_ordRank_lt`). Do NOT modify the banked lex
   machinery — this is a new parallel definition.
-- [ ] `kvE2_sepHonestOrder'` : `zipIdx` over `kvE2_sepPosI`, all-`.coincident` tags, payload
+- [x] `kvE2_sepHonestOrder'` : `zipIdx` over `kvE2_sepPosI`, all-`.coincident` tags, payload
   `block.map kvE2_sepSlotHonestVIdx`. Membership in `kvE2_sepOrderTypes` via the aux instance
   (entries `< n` from the rank bound).
-- [ ] `kvE2_sepHonestOrder'_mem_arr'` — the four validity conjuncts:
+- [x] `kvE2_sepHonestOrder'_mem_arr'` — the four validity conjuncts:
   - (i) all-`.coincident` owner validity: reuse `kvE2_sepCoincidentOwner_valid_left/right`
     verbatim (tuple-agnostic).
   - (ii) per-owner consistency: the owner's own slot values are STRICTLY increasing (own base
@@ -601,12 +601,12 @@ report 07 §4 target theorem.
   - (iv) tie-class validity: members of a tie class share an honest value; a base-anchor class
     realizes the base type AT the anchor's honest point, so the Phase 8 (a) foreign-base
     discharge gives `kvE2_sepClosedLeafAt σa χ = true`; base-base classes impose no read.
-- [ ] `kvE2_sepBody_complete_holds'` (report 07 §4 shape, verbatim target):
+- [x] `kvE2_sepBody_complete_holds'` (report 07 §4 shape, verbatim target):
   no `hLR`; owners from `kvE2_sepPosI`; `hdisj` over
   `kvE2_sepDisjunct' … (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' …)) (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' …))`;
   wires `HonestOrder'_mem_arr'` into `kvE2_sepBody_holds_iff`'s `.mpr`. Keep the Phase 7
   `kvE2_sepBody_complete_holds` (strict-order instance) alongside as a corollary/variant.
-- [ ] **Exit verification gate** (all four, recorded in the summary):
+- [x] **Exit verification gate** (all four, recorded in the summary):
   1. `lake build` green.
   2. `lean_verify` / `#print axioms` on `kvE2_sepBody_complete`,
      `kvE2_sepCoincidentOrder_mem_arr'`, `kvE2_sepHonestOrder_mem_arr'`,

@@ -5689,7 +5689,11 @@ theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature}
     UNCONDITIONAL (task 342 Part I): owner interiority is a construction invariant of the
     `kvE2_sepPosI` index — no interiority hypothesis (Rabinovich §5, p.7;
     `kvE2_sepHonest_hLR_absurd` documents why none may return). Complete and axiom-clean UP
-    TO the delegated `.holds` — the sanctioned Phase-5 completion boundary. -/
+    TO the delegated `.holds` — the sanctioned Phase-5 completion boundary. Task 342
+    Phase 9: this is the SINGLETON (tie-free degenerate) variant — the lex payload forces
+    singleton tie classes, so the flat `hdisj` suffices; the PRIMARY completeness statement
+    covering genuinely-tied honest models is `kvE2_sepBody_complete_holds'` below, stated
+    over the tie-grouped disjunct of the tie-reporting order `kvE2_sepHonestOrder'`. -/
 theorem kvE2_sepBody_complete_holds {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
@@ -5759,6 +5763,411 @@ theorem kvE2_sepHonest_hLR_absurd {sig : MonadicSignature}
   · have h0 := congrFun hz ⟨0, by omega⟩
     rw [hzw] at h0
     exact absurd h0.symm (by rw [kvE2_sep_zWT3]; simp)
+
+/-! ### Task 342 Phase 9 — the tie-REPORTING honest order and the target completeness statement
+
+The Phase 5B/5C honest order (`kvE2_sepHonestOrder`) carries the LEX payload
+`(model value, slot index)`: the index tiebreak makes every honest tie class a SINGLETON, so the
+tie-admitting carrier machinery (Phases 6/7) is never exercised by it. Phase 9 installs the
+value-ONLY payload `kvE2_sepSlotHonestVIdx` (drop the index tiebreak; `kvE2_ordRank` needs no
+injectivity): its ranks are EQUAL exactly where honest slot VALUES coincide
+(`kvE2_sepSlotHonestVIdx_eq_iff`), so a genuinely-tied honest model produces genuinely
+non-singleton tie classes — the payload REPORTS the tie instead of breaking it. Tie classes
+remain INDEX-LEVEL data only (strict-quotient guard): every emitted disjunct is a strict
+Def-3.1 bracket, one slot per class, point type = the meet of the tied types. Forced by
+Def 3.1 (p.4); Lemma 3.2(1) states the closure without printed proof; corroborated by the
+k=m split (p.7) and Def 7.5 (p.13). Anchor-anchor ties stay excluded via the task-340
+Phase 5A keystone route (`nf_eval_unique` — a Lean-side, machine-checked pruning with NO
+Rabinovich counterpart, audit note D7). -/
+
+/-- **Rank-equality reports value-equality** (task 342 Phase 9 payload keystone): under ANY
+    family `g`, two indices have equal `kvE2_ordRank` iff their `g`-values are equal. The
+    `mpr` is definitional (the strictly-smaller filter set depends only on the value); the
+    `mp` is trichotomy + `kvE2_ordRank_strictMono`. This is what makes the value-only rank a
+    TIE-REPORTING payload: equal indices exactly where values coincide. -/
+theorem kvE2_ordRank_eq_iff {β : Type*} [LinearOrder β] {n : ℕ} (g : Fin n → β) (a b : Fin n) :
+    kvE2_ordRank g a = kvE2_ordRank g b ↔ g a = g b := by
+  constructor
+  · intro hrank
+    rcases lt_trichotomy (g a) (g b) with hlt | heq | hgt
+    · exact absurd hrank (Nat.ne_of_lt (kvE2_ordRank_strictMono g hlt))
+    · exact heq
+    · exact absurd hrank.symm (Nat.ne_of_lt (kvE2_ordRank_strictMono g hgt))
+  · intro hval
+    unfold kvE2_ordRank
+    simp only [hval]
+
+/-- **The honest slot-VALUE family** (task 342 Phase 9): the plain (non-lex) value family over
+    the full individual-slot enumeration — `V j = value((allSlots).get j)`. NOT injective in
+    general: distinct slots may share an honest value (the tie the value-only rank reports). -/
+noncomputable def kvE2_sepSlotV {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Fin (kvE2_sepAllSlots qnf).length → M.carrier :=
+  fun j => kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get j)
+
+/-- The value family at an index is the slot value of the enumerated slot (definitional). -/
+theorem kvE2_sepSlotV_get {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (j : Fin (kvE2_sepAllSlots qnf).length) :
+    kvE2_sepSlotV qnf M w x t h j
+      = kvE2_sepSlotValue qnf M w x t h ((kvE2_sepAllSlots qnf).get j) := rfl
+
+/-- **The tie-reporting per-slot index** (task 342 Phase 9): slot `s`'s VALUE-ONLY rank
+    `kvE2_ordRank (kvE2_sepSlotV …)` at its family position — the slot-index lex tiebreak of
+    `kvE2_sepSlotHonestGIdx` is DROPPED (`kvE2_ordRank` needs no injectivity), so two slots
+    receive EQUAL indices exactly when their honest values coincide
+    (`kvE2_sepSlotHonestVIdx_eq_iff`). A new parallel definition; the banked lex machinery is
+    untouched. Off-family defaults to `0`. -/
+noncomputable def kvE2_sepSlotHonestVIdx {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (s : KvE2SepSlot sig) : ℕ :=
+  if hs : kvE2_sepSlotIndexOf qnf s < (kvE2_sepAllSlots qnf).length then
+    kvE2_ordRank (kvE2_sepSlotV qnf M w x t h) ⟨kvE2_sepSlotIndexOf qnf s, hs⟩
+  else 0
+
+/-- **Strict monotonicity of the tie-reporting index** (Phase 9 conjunct-(ii) engine): a
+    strictly smaller honest value gives a strictly smaller value-only rank. Direct
+    `kvE2_ordRank_strictMono` — needs only the single strict inequality. -/
+theorem kvE2_sepSlotHonestVIdx_mono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
+    (hlt : kvE2_sepSlotValue qnf M w x t h a < kvE2_sepSlotValue qnf M w x t h b) :
+    kvE2_sepSlotHonestVIdx qnf M w x t h a < kvE2_sepSlotHonestVIdx qnf M w x t h b := by
+  have hal : kvE2_sepSlotIndexOf qnf a < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf ha
+  have hbl : kvE2_sepSlotIndexOf qnf b < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf hb
+  have hga : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf a, hal⟩ = a := List.idxOf_get hal
+  have hgb : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf b, hbl⟩ = b := List.idxOf_get hbl
+  unfold kvE2_sepSlotHonestVIdx
+  rw [dif_pos hal, dif_pos hbl]
+  apply kvE2_ordRank_strictMono
+  rw [kvE2_sepSlotV_get, kvE2_sepSlotV_get, hga, hgb]
+  exact hlt
+
+/-- **The tie-reporting payload law** (task 342 Phase 9 — the deliverable this phase exists
+    for): on family members, the value-only ranks are EQUAL exactly where the honest slot
+    VALUES coincide. This is what makes honest tie classes non-singleton when the model
+    genuinely ties — the payload reports the tie (Def 3.1 equality case, p.4) instead of
+    breaking it with the slot-index tiebreak. -/
+theorem kvE2_sepSlotHonestVIdx_eq_iff {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf) :
+    kvE2_sepSlotHonestVIdx qnf M w x t h a = kvE2_sepSlotHonestVIdx qnf M w x t h b ↔
+      kvE2_sepSlotValue qnf M w x t h a = kvE2_sepSlotValue qnf M w x t h b := by
+  have hal : kvE2_sepSlotIndexOf qnf a < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf ha
+  have hbl : kvE2_sepSlotIndexOf qnf b < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf hb
+  have hga : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf a, hal⟩ = a := List.idxOf_get hal
+  have hgb : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf b, hbl⟩ = b := List.idxOf_get hbl
+  unfold kvE2_sepSlotHonestVIdx
+  rw [dif_pos hal, dif_pos hbl, kvE2_ordRank_eq_iff,
+    kvE2_sepSlotV_get, kvE2_sepSlotV_get, hga, hgb]
+
+/-- **Honest consistency, tie-reporting payload** (Phase 9 conjunct (ii)): the payload
+    `block.map kvE2_sepSlotHonestVIdx` extends every region order. Own-slot ties CANNOT occur:
+    within a region the owner's rank-ordered slot values are STRICTLY increasing — its base
+    witnesses lie strictly inside their sub-intervals, strictly separated from the own anchor
+    (`kvE2_sepSlotValue_region_rank_mono`, fed by the honest bundles) — so the value-only ranks
+    are strictly increasing (`kvE2_sepSlotHonestVIdx_mono`); ties can only be CROSS-owner. -/
+theorem kvE2_sepConsistentBlock_honestV {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
+    kvE2_sepConsistentBlock σ
+      ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestVIdx qnf M w x t h)) = true := by
+  rw [kvE2_sepConsistentBlock, decide_eq_true_eq]
+  intro j k hreg hrank
+  rw [kvE2_sepBlockMap_getD, kvE2_sepBlockMap_getD]
+  have hjmem : (kvE2_sepSlotBlock σ).get j ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
+  have hkmem : (kvE2_sepSlotBlock σ).get k ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
+  refine kvE2_sepSlotHonestVIdx_mono qnf M w x t h
+    (kvE2_sepMem_allSlots qnf hσ hjmem) (kvE2_sepMem_allSlots qnf hσ hkmem) ?_
+  exact kvE2_sepSlotValue_region_rank_mono qnf M w x t hxw hwt h hσ hjmem hkmem hreg hrank
+
+/-- The anchor slot's honest value is its owner's canonical anchor value (both placement
+    branches are definitional instances of `kvE2_sepSlotValue_lX1`/`_rX1`). -/
+theorem kvE2_sepSlotValue_anchorSlot {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) :
+    kvE2_sepSlotValue qnf M w x t h (kvE2_sepAnchorSlot σ)
+      = kvE2_sepAnchorVal qnf M w x t h σ := by
+  rw [kvE2_sepAnchorSlot]; split <;> rfl
+
+/-- **Base-slot honest realization** (Phase 9 conjunct-(iv) ingredient): every base slot of a
+    positive owner's block realizes its base type AT its own honest slot value. Dispatches the
+    block membership over the region-block constructors and reads each case off its banked
+    Phase-6 value spec (the anchor slots carry no base type and are excluded by `hbt`). -/
+theorem kvE2_sepSlotValue_baseType_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {τ : NormalForm sig 1 4} (hτ : τ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock τ)
+    {χ : NormalForm sig 0 1} (hbt : kvE2_sepSlotBaseType s = some χ) :
+    nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h s) χ := by
+  rw [kvE2_sepMem_slotBlock] at hs
+  by_cases hz1 : nf0_zoneSpec τ.1 = kvE2_sep_zXW3
+  · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_pos hz1, if_pos hz1] at hs
+    rcases hs with hL | hR
+    · rcases List.mem_append.mp hL with h1 | h1
+      · obtain ⟨χ', hχ', rfl⟩ := List.mem_map.mp h1
+        simp only [kvE2_sepSlotBaseType, Option.some.injEq] at hbt
+        subst hbt
+        exact (kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h τ hτ hz1 _ hχ').2.2
+      · rcases List.mem_cons.mp h1 with rfl | h1
+        · simp [kvE2_sepSlotBaseType] at hbt
+        · obtain ⟨χ', hχ', rfl⟩ := List.mem_map.mp h1
+          simp only [kvE2_sepSlotBaseType, Option.some.injEq] at hbt
+          subst hbt
+          exact (kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h τ hτ hz1 _ hχ').2.2
+    · obtain ⟨χ', hχ', rfl⟩ := List.mem_map.mp hR
+      simp only [kvE2_sepSlotBaseType, Option.some.injEq] at hbt
+      subst hbt
+      exact (kvE2_sepSlotValue_lWT_spec qnf M w x t h τ hτ _ hχ').2.2
+  · by_cases hz2 : nf0_zoneSpec τ.1 = kvE2_sep_zWT3
+    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1,
+        if_pos hz2, if_pos hz2] at hs
+      rcases hs with hL | hR
+      · obtain ⟨χ', hχ', rfl⟩ := List.mem_map.mp hL
+        simp only [kvE2_sepSlotBaseType, Option.some.injEq] at hbt
+        subst hbt
+        exact (kvE2_sepSlotValue_rXW_spec qnf M w x t h τ hτ _ hχ').2.2
+      · rcases List.mem_append.mp hR with h1 | h1
+        · obtain ⟨χ', hχ', rfl⟩ := List.mem_map.mp h1
+          simp only [kvE2_sepSlotBaseType, Option.some.injEq] at hbt
+          subst hbt
+          exact (kvE2_sepSlotValue_rWX1_spec qnf M w x t hxw hwt h τ hτ hz2 _ hχ').2.2
+        · rcases List.mem_cons.mp h1 with rfl | h1
+          · simp [kvE2_sepSlotBaseType] at hbt
+          · obtain ⟨χ', hχ', rfl⟩ := List.mem_map.mp h1
+            simp only [kvE2_sepSlotBaseType, Option.some.injEq] at hbt
+            subst hbt
+            exact (kvE2_sepSlotValue_rX1T_spec qnf M w x t hxw hwt h τ hτ hz2 _ hχ').2.2
+    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1,
+        if_neg hz2, if_neg hz2] at hs
+      simp only [List.not_mem_nil, or_self] at hs
+
+/-- **The tie-REPORTING honest order** (task 342 Phase 9): all interior owners
+    `.coincident`-tagged with the value-ONLY rank payload `block.map kvE2_sepSlotHonestVIdx`.
+    Structural mirror of `kvE2_sepHonestOrder` with the tie-reporting payload: where
+    `kvE2_sepHonestOrder`'s lex tiebreak forces singleton tie classes, this order's payload
+    is EQUAL exactly where honest values coincide, so a genuinely-tied honest model yields
+    genuinely non-singleton tie classes under the tie-admitting carrier (Def 3.1 equality
+    case, p.4). Tie classes remain index-level data only (strict-quotient guard). -/
+noncomputable def kvE2_sepHonestOrder' {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : KvE2SepWeakOrder sig :=
+  (kvE2_sepPosI qnf).zipIdx.map
+    (fun p => (p.1, KvE2SepSpikeOrderType.coincident,
+      (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotHonestVIdx qnf M w x t h)))
+
+/-- The tie-reporting honest order is present in the enumeration index (F2): a
+    `kvE2_sepOrderTypes_mem_aux'` instance (`s = 0`, all-coincident tags, value-rank tuple);
+    every tuple component `< n` from `kvE2_ordRank_lt`. UNCONDITIONAL: carrier and enumeration
+    fold both range over the interior index `kvE2_sepPosI`. -/
+theorem kvE2_sepHonestOrder'_mem_orderTypes {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2_sepHonestOrder' qnf M w x t h ∈ kvE2_sepOrderTypes qnf := by
+  rw [kvE2_sepHonestOrder', kvE2_sepOrderTypes]
+  refine kvE2_sepOrderTypes_mem_aux' (fun _ => KvE2SepSpikeOrderType.coincident) _
+    (fun σ => (kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestVIdx qnf M w x t h))
+    (kvE2_sepPosI qnf) 0 (fun σ hσ => ?_)
+  have h := kvE2_sepIdxTupleN_mem_of_forall_lt (kvE2_sepAllSlots qnf).length
+    ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestVIdx qnf M w x t h)) (fun y hy => by
+      obtain ⟨s, hs, rfl⟩ := List.mem_map.mp hy
+      have hidx := kvE2_sepSlotIndexOf_lt qnf
+        (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) hs)
+      rw [kvE2_sepSlotHonestVIdx, dif_pos hidx]
+      exact kvE2_ordRank_lt _ _)
+  rwa [List.length_map] at h
+
+/-- **Anchor-distinct conjunct (iii′) for the tie-reporting order** (Phase 9): cross-owner
+    ANCHOR payload indices are pairwise distinct. The 5A keystone route: distinct interior
+    owners have distinct anchor VALUES (`kvE2_sepAnchor_injOn` via `nf_eval_unique` — the
+    Lean-side pruning with no Rabinovich counterpart, D7), and the value-only rank is
+    injective on distinct values (`kvE2_ordRank_eq_iff` both ways). Reads no zone bit. -/
+theorem kvE2_sepHonestOrder'_anchorDistinct {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2_sepAnchorDistinct (kvE2_sepHonestOrder' qnf M w x t h) = true := by
+  rw [kvE2_sepHonestOrder', kvE2_sepAnchorDistinct, decide_eq_true_eq, List.map_map]
+  have hcongr : ((kvE2_sepPosI qnf).zipIdx.map
+        (kvE2_sepAnchorPayload ∘
+          (fun p => (p.1, KvE2SepSpikeOrderType.coincident,
+            (kvE2_sepSlotBlock p.1).map (kvE2_sepSlotHonestVIdx qnf M w x t h)))))
+      = (kvE2_sepPosI qnf).zipIdx.map
+          (fun p => kvE2_sepSlotHonestVIdx qnf M w x t h (kvE2_sepAnchorSlot p.1)) := by
+    apply List.map_congr_left
+    intro p hp
+    exact kvE2_sepAnchorPayload_map _ KvE2SepSpikeOrderType.coincident
+      (kvE2_sepPosI_zone (List.fst_mem_of_mem_zipIdx hp))
+  rw [hcongr]
+  have hfst : (kvE2_sepPosI qnf).zipIdx.map
+        (fun p => kvE2_sepSlotHonestVIdx qnf M w x t h (kvE2_sepAnchorSlot p.1))
+      = (kvE2_sepPosI qnf).map
+          (fun σ => kvE2_sepSlotHonestVIdx qnf M w x t h (kvE2_sepAnchorSlot σ)) := by
+    conv_rhs => rw [← List.zipIdx_map_fst 0 (kvE2_sepPosI qnf)]
+    rw [List.map_map]
+    rfl
+  rw [hfst]
+  refine List.Nodup.map_on (fun σ hσ τ hτ heq => ?_) (kvE2_sepPosI_nodup qnf)
+  have hσa := kvE2_sepAnchorSlot_mem_block (kvE2_sepPosI_zone hσ)
+  have hτa := kvE2_sepAnchorSlot_mem_block (kvE2_sepPosI_zone hτ)
+  have hveq := (kvE2_sepSlotHonestVIdx_eq_iff qnf M w x t h
+    (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) hσa)
+    (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hτa)).mp heq
+  rw [kvE2_sepSlotValue_anchorSlot, kvE2_sepSlotValue_anchorSlot] at hveq
+  exact kvE2_sepAnchor_injOn qnf M w x t h
+    (kvE2_sepPosI_subset hσ) (kvE2_sepPosI_subset hτ) hveq
+
+/-- **Tie-class validity conjunct (iv) for the tie-reporting order** (Phase 9 — the conjunct
+    the Phase 8 (a) discharges were shaped for): every anchor-involved payload tie is
+    discharged. Route: `kvE2_sepTieRead_of_discharge` reduces (iv) to the per-(anchor,
+    base-χ) obligation; equal value-only ranks give equal honest slot VALUES
+    (`kvE2_sepSlotHonestVIdx_eq_iff`); the anchor slot's honest value is its owner's
+    `kvE2_sepAnchorVal` and the base slot's value realizes χ
+    (`kvE2_sepSlotValue_baseType_spec`), so χ is realized AT the anchor value — exactly
+    `kvE2_sepClosedLeafAt_discharge_honest`. F5: the only key entering the read is the CLOSED
+    self-zone key; base-base ties are read-free (machine-checked in the intro rule). -/
+theorem kvE2_sepHonestOrder'_tieRead {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2_sepTieRead (kvE2_sepHonestOrder' qnf M w x t h) = true := by
+  apply kvE2_sepTieRead_of_discharge
+  intro p hp q hq sj hsj sk hsk hanch heq χ hbt
+  rw [kvE2_sepHonestOrder'] at hp hq
+  obtain ⟨p', hp', rfl⟩ := List.mem_map.mp hp
+  obtain ⟨q', hq', rfl⟩ := List.mem_map.mp hq
+  have hσI : p'.1 ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hp'
+  have hτI : q'.1 ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hq'
+  obtain ⟨hjlt, hjeq⟩ := List.getElem?_eq_some_iff.mp
+    (List.mem_zipIdx_iff_getElem?.mp hsj)
+  obtain ⟨hklt, hkeq⟩ := List.getElem?_eq_some_iff.mp
+    (List.mem_zipIdx_iff_getElem?.mp hsk)
+  have hread1 : ((kvE2_sepSlotBlock p'.1).map
+        (kvE2_sepSlotHonestVIdx qnf M w x t h)).getD sj.2 0
+      = kvE2_sepSlotHonestVIdx qnf M w x t h ((kvE2_sepSlotBlock p'.1).get ⟨sj.2, hjlt⟩) :=
+    kvE2_sepBlockMap_getD p'.1 _ ⟨sj.2, hjlt⟩
+  have hread2 : ((kvE2_sepSlotBlock q'.1).map
+        (kvE2_sepSlotHonestVIdx qnf M w x t h)).getD sk.2 0
+      = kvE2_sepSlotHonestVIdx qnf M w x t h ((kvE2_sepSlotBlock q'.1).get ⟨sk.2, hklt⟩) :=
+    kvE2_sepBlockMap_getD q'.1 _ ⟨sk.2, hklt⟩
+  simp only [List.get_eq_getElem, hjeq, hkeq] at hread1 hread2
+  rw [hread1, hread2] at heq
+  have hjm : sj.1 ∈ kvE2_sepSlotBlock p'.1 := hjeq ▸ List.getElem_mem hjlt
+  have hkm : sk.1 ∈ kvE2_sepSlotBlock q'.1 := hkeq ▸ List.getElem_mem hklt
+  -- Equal value-only ranks report equal honest slot VALUES (the tie-reporting law).
+  have hveq : kvE2_sepSlotValue qnf M w x t h sj.1 = kvE2_sepSlotValue qnf M w x t h sk.1 :=
+    (kvE2_sepSlotHonestVIdx_eq_iff qnf M w x t h
+      (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσI) hjm)
+      (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτI) hkm)).mp heq
+  -- The anchor slot's honest value is its owner's canonical anchor value.
+  have hanchval : kvE2_sepSlotValue qnf M w x t h sj.1
+      = kvE2_sepAnchorVal qnf M w x t h p'.1 := by
+    have hsub : kvE2_sepSlotSub sj.1 = p'.1 := kvE2_sepSlotSub_of_mem_block hjm
+    cases hs1 : sj.1 with
+    | lX1 ρ =>
+      rw [hs1] at hsub
+      simp only [kvE2_sepSlotSub] at hsub
+      rw [hsub, kvE2_sepSlotValue_lX1]
+    | rX1 ρ =>
+      rw [hs1] at hsub
+      simp only [kvE2_sepSlotSub] at hsub
+      rw [hsub, kvE2_sepSlotValue_rX1]
+    | lXU ρ χ' => rw [hs1] at hanch; simp [kvE2_sepSlotIsAnchor] at hanch
+    | lUW ρ χ' => rw [hs1] at hanch; simp [kvE2_sepSlotIsAnchor] at hanch
+    | lWT ρ χ' => rw [hs1] at hanch; simp [kvE2_sepSlotIsAnchor] at hanch
+    | rXW ρ χ' => rw [hs1] at hanch; simp [kvE2_sepSlotIsAnchor] at hanch
+    | rWX1 ρ χ' => rw [hs1] at hanch; simp [kvE2_sepSlotIsAnchor] at hanch
+    | rX1T ρ χ' => rw [hs1] at hanch; simp [kvE2_sepSlotIsAnchor] at hanch
+  -- The tied base slot realizes χ at its own honest value = the anchor value.
+  have hχreal := kvE2_sepSlotValue_baseType_spec qnf M w x t hxw hwt h
+    (kvE2_sepPosI_subset hτI) hkm hbt
+  rw [← hveq, hanchval] at hχreal
+  exact kvE2_sepClosedLeafAt_discharge_honest qnf M w x t hxw hwt h hσI χ hχreal
+
+/-- **The tie-reporting honest order is a carrier member** (task 342 Phase 9 — the membership
+    `kvE2_sepBody_complete_holds'` wires into the completeness hand-off). UNCONDITIONAL:
+    owner interiority is a construction invariant of the `kvE2_sepPosI` index (Rabinovich §5,
+    p.7), recovered via `kvE2_sepPosI_zone`, never hypothesized. The `kvE2_sepDisjValid`
+    conjuncts: (i) all-`.coincident` validity reuses
+    `kvE2_sepCoincidentOwner_valid_left/right` VERBATIM (tuple-agnostic, CLOSED self-zone
+    bit only); (ii) consistency via `kvE2_sepConsistentBlock_honestV` (own-slot ties cannot
+    occur — the owner's own region values are strictly separated); (iii′) anchor-distinct
+    via the 5A keystone (D7 — Lean-side pruning, no paper counterpart); (iv) tie-class reads
+    via the Phase 8 (a) foreign-base CLOSED-key discharges. Unlike
+    `kvE2_sepHonestOrder_mem_arr'`, the tie conjuncts are NOT vacuous here: the payload
+    admits genuine cross-owner ties, and (iv) discharges them honestly. -/
+theorem kvE2_sepHonestOrder'_mem_arr' {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2_sepHonestOrder' qnf M w x t h ∈ kvE2_sepArr' qnf := by
+  rw [kvE2_sepArr', List.mem_filter]
+  refine ⟨kvE2_sepHonestOrder'_mem_orderTypes qnf M w x t h, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
+  · -- (i) per-owner closed-self-zone validity (all tags `.coincident`), reused verbatim
+    -- (definitional interiority via `kvE2_sepPosI_zone` — a construction invariant).
+    rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepHonestOrder', List.mem_map] at hp
+    obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    show kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    rcases kvE2_sepPosI_zone hσmem with hzone | hzone
+    · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ
+        (kvE2_sepPosI_subset hσmem) hzone
+    · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ
+        (kvE2_sepPosI_subset hσmem) hzone
+  · -- (ii) per-owner region-scoped consistency via the value-only monotonicity engine.
+    rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepHonestOrder', List.mem_map] at hp
+    obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPosI qnf := List.fst_mem_of_mem_zipIdx hmem
+    exact kvE2_sepConsistentBlock_honestV qnf M w x t hxw hwt h (kvE2_sepPosI_subset hσmem)
+  · -- (iii′) anchor-distinct: the 5A keystone route (D7).
+    exact kvE2_sepHonestOrder'_anchorDistinct qnf M w x t h
+  · -- (iv) tie-class reads: the Phase 8 (a) foreign-base CLOSED-key discharges.
+    exact kvE2_sepHonestOrder'_tieRead qnf M w x t hxw hwt h
+
+/-- **The task-342 target completeness statement — `kvE2_sepBody_complete_holds'`** (report 07
+    §4 shape; the PRIMARY completeness hand-off of this development). Given an honest
+    realization and the realization of the tie-reporting honest order's own GROUPED disjunct
+    (`hdisj`, taken over the tie-grouped `kvE2_sepTieGroupedL/R (kvE2_sepHonestOrder' …)` —
+    NOT flattened through a singleton conversion), the separated body holds at the fixed
+    endpoints. No `hLR`-style hypothesis: owners are drawn from the interior index
+    `kvE2_sepPosI` (Rabinovich §5, p.7; `kvE2_sepHonest_hLR_absurd` certifies why no such
+    hypothesis may return). Because `kvE2_sepHonestOrder'`'s payload reports ties, this
+    statement covers genuinely-tied honest models — the models whose tie classes are
+    non-singleton — which the Phase 7 singleton variant `kvE2_sepBody_complete_holds`
+    (retained below as the degenerate flat-`hdisj` corollary shape) cannot express. Complete
+    and axiom-clean UP TO the delegated `.holds` — the sanctioned completion boundary. -/
+theorem kvE2_sepBody_complete_holds' {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hdisj : (kvE2_sepDisjunct' charBase charK qnf
+        (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h))
+        (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h))).2.holds M atomMap x t) :
+    (kvE2_sepBody charBase charK qnf).holds M atomMap x t := by
+  rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t]
+  exact ⟨kvE2_sepHonestOrder' qnf M w x t h,
+    kvE2_sepHonestOrder'_mem_arr' qnf M w x t hxw hwt h, hdisj⟩
 
 /-! ### The O3 extraction theorems -/
 
