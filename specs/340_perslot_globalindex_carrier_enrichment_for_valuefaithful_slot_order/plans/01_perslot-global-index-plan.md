@@ -300,7 +300,17 @@ per-owner block pairwise lemmas (`kvE2_sepSlotsLFor_pairwise`) are merge-key-agn
 - **Timing:** 2-4 hours
 - **Depends on:** 2
 
-### Phase 4: Validity consistency conjunct + carrier-membership re-proofs (green) [NOT STARTED]
+### Phase 4: Validity consistency conjunct + carrier-membership re-proofs (green) [COMPLETED]
+
+**GREEN** (2026-07-08). Added `kvE2_sepConsistentTuple t := decide (t.1<t.2.1 ∧ t.2.1<t.2.2)`
+(per-owner linear-extension `i₀<i₁<i₂`, reads NO zone bit). `kvE2_sepDisjValid` now 3 conjuncts:
+(i) per-owner F5 zone read, (ii) `all kvE2_sepConsistentTuple` (linear extension), (iii) `i₀`-Nodup
+cross-owner total order. Re-proved `kvE2_sepBody_complete`, `kvE2_sepCoincidentOrder_mem_arr'`
+(337-P1 must-preserve), `kvE2_sepArr'_sound` for the 3-way split; placeholder tuples `(k,n+k,2n+k)`
+satisfy consistency (n≥1 from owner membership). `lake build` green (1013 jobs), sorry-free,
+`kvE2_sepBody_complete` axiom-clean `{propext, Classical.choice, Quot.sound}`. Both
+`kvE2_sepModelOrder` and `kvE2_sepCoincidentOrder` remain provable arr' members (no-collapse
+preserved).
 - **Goal:** Add the linear-extension-of-region-order consistency conjunct to `kvE2_sepDisjValid`,
   and re-prove that the model, coincidence, and honest witnesses remain valid members of
   `kvE2_sepArr'`.

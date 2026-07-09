@@ -808,16 +808,28 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature}
   | .strictAfter  => kvE2_sepBits σ kvE_sub2_zUW (nf0_projFresh σ.1)
   | .coincident   => kvE2_sepClosedLeafStub σ
 
+/-- **Per-owner index-tuple consistency** (task 340, the linear-extension conjunct): the owner's
+    per-slot global-index tuple `(i₀,i₁,i₂)` EXTENDS its region order — `i₀ < i₁ < i₂`, i.e. the
+    global index of its region-rank-0 slot precedes its fresh anchor (rank 1) precedes its region-2
+    slot (`lXU<lX1<lUW` left, `rWX1<rX1<rX1T` right). A linear extension of each owner's region
+    partial order (Lemma 3.2(1), md:77: one consistent global order over the union). Reads NO zone
+    bit (F5 clean); an abstract ℕ compare, never an `x1 < e_i` model literal (F4/LITMUS clean). -/
+def kvE2_sepConsistentTuple (t : ℕ × ℕ × ℕ) : Bool := decide (t.1 < t.2.1 ∧ t.2.1 < t.2.2)
+
 /-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`): a weak order
     is valid iff (i) every per-owner placement is admitted by the owner's arrangement-appropriate
-    zone bit (the per-order-type read, F5), AND (ii) the **cross-owner** ranks are pairwise distinct
-    (`Nodup`) — i.e. the rank tuple is a genuine total order on the merged anchor chain (Lemma
-    3.2(1), md:77: one consistent global order over the union). This is the cross-owner consistency
-    conjunct that makes validity genuinely cross-owner, not merely a per-owner filter. NOT an
-    additive filter over a flat slot union. -/
+    zone bit (the per-order-type read, F5), (ii) every owner's per-slot global-index tuple EXTENDS
+    its region order (`kvE2_sepConsistentTuple`, the task-340 linear-extension conjunct), AND (iii)
+    the cross-owner anchor-base indices `i₀` are pairwise distinct (`Nodup`) — the per-owner extension
+    plus distinct anchor bases give a genuine total order over the union (Lemma 3.2(1), md:77: one
+    consistent global order). The consistency conjunct (ii) is what makes the a<u'<b cross-region
+    interleaving admissible while keeping each owner's own slots region-ordered. Reads no zone bit in
+    (ii)/(iii). NOT an additive filter over a flat slot union. -/
 def kvE2_sepDisjValid {sig : MonadicSignature}
     (_qnf : NormalForm sig 2 3) (wo : KvE2SepWeakOrder sig) : Bool :=
-  wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2.1) && decide (wo.map (fun p => p.2.2.1)).Nodup
+  wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2.1)
+    && wo.all (fun p => kvE2_sepConsistentTuple p.2.2)
+    && decide (wo.map (fun p => p.2.2.1)).Nodup
 
 /-- **The faithful carrier** (replacing `kvE2_sepArrL/R`): the valid order-type disjuncts, the
     per-order-type filter of the disjunction index (Lemma 3.2(1), md:77). -/
@@ -1827,8 +1839,8 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
   apply List.ne_nil_of_mem (a := kvE2_sepCoincidentOrder qnf)
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true]
-  refine ⟨?_, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨?_, ?_⟩, ?_⟩
   · -- (i) per-owner closed-self-zone validity, dispatched by placement.
     rw [List.all_eq_true]
     intro p hp
@@ -1840,7 +1852,16 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
     rcases hLR σ hσmem with hzone | hzone
     · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
     · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
-  · -- (ii) cross-owner consistency: the ranks `0,1,…,n-1` are pairwise distinct.
+  · -- (ii) per-owner index-tuple consistency: each placeholder `(k, n+k, 2n+k)` extends region order.
+    rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
+    have hn : 0 < (kvE2_sepPos qnf).length := List.length_pos_of_mem hσmem
+    simp only [kvE2_sepConsistentTuple, kvE2_sepPlaceholderTuple, decide_eq_true_eq]
+    omega
+  · -- (iii) cross-owner Nodup: the anchor-base indices `i₀ = 0,1,…,n-1` are pairwise distinct.
     rw [decide_eq_true_eq, kvE2_sepCoincidentOrder, List.map_map]
     have : ((kvE2_sepPos qnf).zipIdx.map
         ((fun p => p.2.2.1) ∘ fun p =>
@@ -1868,8 +1889,8 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     kvE2_sepCoincidentOrder qnf ∈ kvE2_sepArr' qnf := by
   rw [kvE2_sepArr', List.mem_filter]
   refine ⟨kvE2_sepCoincidentOrder_mem_orderTypes qnf, ?_⟩
-  rw [kvE2_sepDisjValid, Bool.and_eq_true]
-  refine ⟨?_, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨?_, ?_⟩, ?_⟩
   · rw [List.all_eq_true]
     intro p hp
     rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
@@ -1879,6 +1900,14 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     rcases hLR σ hσmem with hzone | hzone
     · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
     · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
+  · rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepCoincidentOrder, List.mem_map] at hp
+    obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
+    have hn : 0 < (kvE2_sepPos qnf).length := List.length_pos_of_mem hσmem
+    simp only [kvE2_sepConsistentTuple, kvE2_sepPlaceholderTuple, decide_eq_true_eq]
+    omega
   · rw [decide_eq_true_eq, kvE2_sepCoincidentOrder, List.map_map]
     have : ((kvE2_sepPos qnf).zipIdx.map
         ((fun p => p.2.2.1) ∘ fun p =>
@@ -2875,8 +2904,8 @@ theorem kvE2_sepArr'_sound {sig : MonadicSignature}
     (∀ p ∈ wo, kvE2_sepDisjValidOwner p.1 p.2.1 = true) ∧
       (wo.map (fun p => p.2.2.1)).Nodup := by
   have hv : kvE2_sepDisjValid qnf wo = true := (List.mem_filter.mp hwo).2
-  rw [kvE2_sepDisjValid, Bool.and_eq_true] at hv
-  obtain ⟨hall, hnodup⟩ := hv
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true] at hv
+  obtain ⟨⟨hall, _hcons⟩, hnodup⟩ := hv
   refine ⟨fun p hp => (List.all_eq_true.mp hall) p hp, ?_⟩
   exact of_decide_eq_true hnodup
 
