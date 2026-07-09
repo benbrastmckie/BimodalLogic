@@ -3484,6 +3484,57 @@ theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 
   exact ⟨fun σ _ => kvE2_sepSlotsRFor_nodup σ,
     (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsRFor_disjoint hne)⟩
 
+/-! ### Task 337 Phase 1 — strict base realizers in the whole side interval (region `hreal`)
+
+The engine `k1v_sorted_realizationK`'s `hreal` obligation asks, for every base 1-type `χ` placed in a
+region `(lo, hi)`, for a STRICT-interior realizer. The design-committed resolution (b) supplies the
+strict realizer from the OWNER-RELATIVE honest bundle intervals (`kvE2_sepHonestAnchorBundleL/R`),
+which are strict BY CONSTRUCTION — `χ` of a LEFT owner `σ` realizes strictly inside `(x, a_σ)` (its
+`zXU` types) or `(a_σ, w)` (its `zUW` types), both `⊆ (x, w)`; mirror on the right in `(w, t)`. This
+is the whole-side (`(x,w)` / `(w,t)`) strict realizer, monotonicity-closed through the bundle anchor
+bounds. It does NOT rest on any base-value ≠ anchor-value non-collision claim (resolution (a), which
+is false in general): the strictness is entirely owner-relative. -/
+
+/-- **LEFT base realizer in `(x, w)`** (Phase 1 region `hreal` ingredient): every base 1-type of a
+    LEFT-interior owner `σ` — whether in the below-anchor `zXU` set or the above-anchor `zUW` set —
+    has a strict-interior realizer in the whole LEFT interval `(x, w)`. From honest bundle L: the
+    `zXU` witness sits in `(x, a_σ) ⊆ (x, w)` (via `a_σ < w`), the `zUW` witness in `(a_σ, w) ⊆
+    (x, w)` (via `x < a_σ`). Resolution (b) strictness — no non-collision assumption. -/
+theorem kvE2_sepHonestBaseRealizerL {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3)
+    (χ : NormalForm sig 0 1)
+    (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zXU ++ kvE2_sepS σ kvE_sub2_zUW) :
+    ∃ u : M.carrier, x < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+  have hb := kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσpos hzone
+  rcases List.mem_append.mp hχ with hc | hc
+  · obtain ⟨u, hxu, hua, hev⟩ := hb.2.2.1 χ hc
+    exact ⟨u, hxu, lt_trans hua hb.2.1, hev⟩
+  · obtain ⟨u, hau, huw, hev⟩ := hb.2.2.2 χ hc
+    exact ⟨u, lt_trans hb.1 hau, huw, hev⟩
+
+/-- **RIGHT base realizer in `(w, t)`** (mirror of `kvE2_sepHonestBaseRealizerL`): every base 1-type
+    of a RIGHT-interior owner `σ` — below-anchor `zWX1` or above-anchor `zWT` — has a strict-interior
+    realizer in the whole RIGHT interval `(w, t)`, from honest bundle R. Resolution (b) strictness. -/
+theorem kvE2_sepHonestBaseRealizerR {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    (χ : NormalForm sig 0 1)
+    (hχ : χ ∈ kvE2_sepS σ kvE2_sep_zWX1 ++ kvE2_sepS σ kvE_sub2_zWT) :
+    ∃ u : M.carrier, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+  have hb := kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσpos hzone
+  rcases List.mem_append.mp hχ with hc | hc
+  · obtain ⟨u, hwu, hua, hev⟩ := hb.2.2.1 χ hc
+    exact ⟨u, hwu, lt_trans hua hb.2.1, hev⟩
+  · obtain ⟨u, hau, hut, hev⟩ := hb.2.2.2 χ hc
+    exact ⟨u, lt_trans hb.1 hau, hut, hev⟩
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
