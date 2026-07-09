@@ -112,7 +112,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-342 [PLANNED] — Upstream carrier redesign for the kvE2_sep completeness layer in 
+342 [IMPLEMENTING] — Upstream carrier redesign for the kvE2_sep completeness layer in 
   └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
     └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
       └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
@@ -126,13 +126,14 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### 342. Rework kve2 sep arrangement carrier with interiorrestricted owner index and tieadmitting weak orders
 - **Effort**: 12-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**:
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md]
   - [342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/reports/01_rabinovich-fidelity-audit.md]
+- **Plan**: [342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/plans/01_interior-index-and-tie-admitting-orders.md]
 
 **Description**: Upstream carrier redesign for the kvE2_sep completeness layer in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (SW:), unblocking task 337 Phases 3-4. Full design and blast-radius analysis: specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md (sections 4-5) — read it before planning. STANDING USER DIRECTIVE: consult the literature (Rabinovich 2014, 'A Proof of Kamp's Theorem', LMCS 10(1:14)) closely to ensure faithfulness; do not take what appears easiest but ends up not working — slow and steady wins the race.
 

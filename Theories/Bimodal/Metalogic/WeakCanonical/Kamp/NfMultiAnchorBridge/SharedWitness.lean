@@ -200,6 +200,45 @@ noncomputable def kvE2_sepPosIn {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) : List (NormalForm sig 1 4) :=
   (kvE2_sepPos qnf).filter (fun σ => decide (nf0_zoneSpec σ.1 = zs))
 
+/-- **Interior-restricted owner index** (task 342 Part I). The positive subs whose fresh
+    point `x1` lies in one of the two INTERIOR outer zones (`x < x1 < w`, `w < x1 < t`).
+    Rabinovich §5 (p.7) ψ0/ψ1/φ split: interiority is a construction invariant of φ — the
+    interleaving index ranges over bracket witnesses only — never a hypothesis on realized
+    types. A SINGLE two-zone order-preserving filter of `kvE2_sepPos` (the `kvE2_sepPosIn`
+    pattern), so global enumeration order, `Nodup`, and the `zipIdx`/membership transfer
+    machinery are inherited; a member's interiority is recovered definitionally via
+    `List.mem_filter` (`kvE2_sepPosI_mem`), never hypothesized. -/
+noncomputable def kvE2_sepPosI {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) : List (NormalForm sig 1 4) :=
+  (kvE2_sepPos qnf).filter
+    (fun σ => decide (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3))
+
+/-- Membership in the interior index = positivity + the interiority disjunction. -/
+theorem kvE2_sepPosI_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    (σ : NormalForm sig 1 4) :
+    σ ∈ kvE2_sepPosI qnf ↔ σ ∈ kvE2_sepPos qnf ∧
+      (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) := by
+  simp [kvE2_sepPosI, List.mem_filter]
+
+/-- Interior owners are positive owners. -/
+theorem kvE2_sepPosI_subset {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf) : σ ∈ kvE2_sepPos qnf :=
+  ((kvE2_sepPosI_mem qnf σ).mp hσ).1
+
+/-- Interior owners are interior (the definitional recovery of the interiority
+    disjunction — this replaces, and never resurrects, any interiority hypothesis). -/
+theorem kvE2_sepPosI_zone {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPosI qnf) :
+    nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3 :=
+  ((kvE2_sepPosI_mem qnf σ).mp hσ).2
+
+/-- The interior index is duplicate-free: filtering preserves the `kvE2_sepPos` `Nodup`
+    fact (itself a filter of the duplicate-free `Finset.univ.toList`; the file's private
+    `kvE2_sepPos_nodup` states the intermediate step). -/
+theorem kvE2_sepPosI_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    (kvE2_sepPosI qnf).Nodup :=
+  ((Finset.nodup_toList _).filter _ : (kvE2_sepPos qnf).Nodup).filter _
+
 /-- Whether some positive sub in outer class `zs` has fresh depth-1 projection `χ`
     (the σ-level literal driver for the five non-interior endpoint literals). -/
 noncomputable def kvE2_sepHasPos {sig : MonadicSignature}
@@ -367,6 +406,117 @@ theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} (σ : NormalForm sig 1 4)
     (s : KvE2SepSlot sig) :
     s ∈ kvE2_sepSlotBlock σ ↔ s ∈ kvE2_sepSlotsLFor σ ∨ s ∈ kvE2_sepSlotsRFor σ := by
   rw [kvE2_sepSlotBlock, List.mem_append]
+
+/-! ### Interior-index transfer foundation (task 342 Phase 1)
+
+Non-interior owners contribute EMPTY slot blocks (the `else []` branches of
+`kvE2_sepSlotsLFor`/`kvE2_sepSlotsRFor`), so flatMapping any slot-family builder over the
+interior index `kvE2_sepPosI` yields the SAME VALUE as over the full `kvE2_sepPos`. The
+equality is provable, not definitional — the `kvE2_sepPosI_flatMap_*` lemmas below are the
+one-rewrite repair tool for the re-anchoring phases (task 342 Phases 2-4). -/
+
+/-- Non-interior owners have no LEFT-region slots (the `else []` branch). -/
+theorem kvE2_sepSlotsLFor_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    (h1 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3) (h2 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zWT3) :
+    kvE2_sepSlotsLFor σ = [] := by
+  rw [kvE2_sepSlotsLFor, if_neg h1, if_neg h2]
+
+/-- Non-interior owners have no RIGHT-region slots (the `else []` branch). -/
+theorem kvE2_sepSlotsRFor_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    (h1 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3) (h2 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zWT3) :
+    kvE2_sepSlotsRFor σ = [] := by
+  rw [kvE2_sepSlotsRFor, if_neg h1, if_neg h2]
+
+/-- Non-interior owners have an empty slot block. -/
+theorem kvE2_sepSlotBlock_eq_nil {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    (h1 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zXW3) (h2 : nf0_zoneSpec σ.1 ≠ kvE2_sep_zWT3) :
+    kvE2_sepSlotBlock σ = [] := by
+  rw [kvE2_sepSlotBlock, kvE2_sepSlotsLFor_eq_nil h1 h2, kvE2_sepSlotsRFor_eq_nil h1 h2]
+  rfl
+
+/-- A nonempty LEFT block forces interiority: a positive owner exhibiting a LEFT-region
+    slot is a member of the interior index (contrapositive of the `else []` branches). -/
+theorem kvE2_sepMem_posI_of_slotL {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
+    σ ∈ kvE2_sepPosI qnf := by
+  refine (kvE2_sepPosI_mem qnf σ).mpr ⟨hσ, ?_⟩
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · exact Or.inl h1
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · exact Or.inr h2
+    · rw [kvE2_sepSlotsLFor_eq_nil h1 h2] at hs
+      simp at hs
+
+/-- A nonempty RIGHT block forces interiority. -/
+theorem kvE2_sepMem_posI_of_slotR {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
+    σ ∈ kvE2_sepPosI qnf := by
+  refine (kvE2_sepPosI_mem qnf σ).mpr ⟨hσ, ?_⟩
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · exact Or.inl h1
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · exact Or.inr h2
+    · rw [kvE2_sepSlotsRFor_eq_nil h1 h2] at hs
+      simp at hs
+
+/-- A nonempty slot block forces interiority: the converse membership route by which any
+    consumer holding only `σ ∈ kvE2_sepPos` plus a slot recovers `σ ∈ kvE2_sepPosI`. -/
+theorem kvE2_sepMem_posI_of_slot {sig : MonadicSignature} {qnf : NormalForm sig 2 3}
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
+    σ ∈ kvE2_sepPosI qnf := by
+  rcases (kvE2_sepMem_slotBlock σ s).mp hs with h | h
+  · exact kvE2_sepMem_posI_of_slotL hσ h
+  · exact kvE2_sepMem_posI_of_slotR hσ h
+
+/-- Generic transfer engine: flatMapping over a filtered list equals flatMapping over the
+    whole list when the function vanishes off the predicate. -/
+private theorem kvE2_sep_flatMap_filter_of_vanish {α β : Type _} {p : α → Bool}
+    (f : α → List β) (l : List α) (h : ∀ a ∈ l, p a = false → f a = []) :
+    (l.filter p).flatMap f = l.flatMap f := by
+  induction l with
+  | nil => rfl
+  | cons a l ih =>
+    cases hp : p a with
+    | true =>
+      rw [List.filter_cons_of_pos hp, List.flatMap_cons, List.flatMap_cons,
+        ih (fun x hx hpx => h x (List.mem_cons_of_mem a hx) hpx)]
+    | false =>
+      rw [List.filter_cons_of_neg (by simp [hp]), List.flatMap_cons,
+        h a (List.mem_cons_self ..) hp, List.nil_append,
+        ih (fun x hx hpx => h x (List.mem_cons_of_mem a hx) hpx)]
+
+/-- **Key value-transfer lemma** (task 342 Phase 1): the full slot family over the interior
+    index has the SAME VALUE as over all positive owners — non-interior owners contribute
+    empty blocks. Not defeq: re-anchoring phases repair broken `rfl`/unfold proofs by this
+    one rewrite. -/
+theorem kvE2_sepPosI_flatMap_slotBlock {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    (kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock
+      = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock := by
+  rw [kvE2_sepPosI]
+  refine kvE2_sep_flatMap_filter_of_vanish _ _ (fun σ _ hp => ?_)
+  rw [decide_eq_false_iff_not, not_or] at hp
+  exact kvE2_sepSlotBlock_eq_nil hp.1 hp.2
+
+/-- LEFT-region value transfer: `kvE2_sepSlotsL`-shaped flatMaps re-anchor by one rewrite. -/
+theorem kvE2_sepPosI_flatMap_slotsLFor {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    (kvE2_sepPosI qnf).flatMap kvE2_sepSlotsLFor
+      = (kvE2_sepPos qnf).flatMap kvE2_sepSlotsLFor := by
+  rw [kvE2_sepPosI]
+  refine kvE2_sep_flatMap_filter_of_vanish _ _ (fun σ _ hp => ?_)
+  rw [decide_eq_false_iff_not, not_or] at hp
+  exact kvE2_sepSlotsLFor_eq_nil hp.1 hp.2
+
+/-- RIGHT-region value transfer. -/
+theorem kvE2_sepPosI_flatMap_slotsRFor {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    (kvE2_sepPosI qnf).flatMap kvE2_sepSlotsRFor
+      = (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor := by
+  rw [kvE2_sepPosI]
+  refine kvE2_sep_flatMap_filter_of_vanish _ _ (fun σ _ hp => ?_)
+  rw [decide_eq_false_iff_not, not_or] at hp
+  exact kvE2_sepSlotsRFor_eq_nil hp.1 hp.2
 
 /-- The interior-positive 1-type enumeration is duplicate-free (filter of the `Nodup` `Finset.toList`). -/
 theorem kvE2_sepS_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) :

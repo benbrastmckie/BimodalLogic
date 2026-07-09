@@ -1,7 +1,7 @@
 # Implementation Plan: Interior-Restricted Owner Index and Tie-Admitting Weak Orders for kvE2_sep
 
 - **Task**: 342 - rework kvE2_sep arrangement carrier with interior-restricted owner index and tie-admitting weak orders
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours (9 phases, ~1.5-2.5h each; one phase per orchestrator cycle, 11 cycles available)
 - **Dependencies**: None (parent task 337 stays [BLOCKED] until this lands)
 - **Research Inputs**:
@@ -217,13 +217,13 @@ All phases edit the same file (`SharedWitness.lean`), so execution is sequential
 territory, H7); the wave table records that Phase 8 logically depends only on Phases 5-6 (not 7),
 so Phases 7 and 8 may run in either order if a re-dispatch reorders them.
 
-### Phase 1: Add kvE2_sepPosI and its transfer-lemma foundation [NOT STARTED]
+### Phase 1: Add kvE2_sepPosI and its transfer-lemma foundation [COMPLETED]
 
 **Goal**: Land the interior-restricted owner index as a purely additive change with every
 transfer lemma later phases need, so re-anchoring phases repair proofs by rewriting.
 
 **Tasks**:
-- [ ] Define, immediately after `kvE2_sepPosIn` (SW:199), following its in-file precedent:
+- [x] Define, immediately after `kvE2_sepPosIn` (SW:199), following its in-file precedent:
   ```lean
   noncomputable def kvE2_sepPosI {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
       List (NormalForm sig 1 4) :=
@@ -232,21 +232,27 @@ transfer lemma later phases need, so re-anchoring phases repair proofs by rewrit
   ```
   Docstring cites: Rabinovich §5 (p.7) ψ0/ψ1/φ split — interiority is a construction invariant
   of φ, never a hypothesis on realized types. Do NOT use the `++` form (postmortem rule).
-- [ ] `kvE2_sepPosI_mem` : `σ ∈ kvE2_sepPosI qnf ↔ σ ∈ kvE2_sepPos qnf ∧ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3)` (via `List.mem_filter`, `decide_eq_true_eq`).
-- [ ] `kvE2_sepPosI_subset` (mem → mem of `kvE2_sepPos`) and `kvE2_sepPosI_zone` (mem → the
+- [x] `kvE2_sepPosI_mem` : `σ ∈ kvE2_sepPosI qnf ↔ σ ∈ kvE2_sepPos qnf ∧ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3)` (via `List.mem_filter`, `decide_eq_true_eq`).
+- [x] `kvE2_sepPosI_subset` (mem → mem of `kvE2_sepPos`) and `kvE2_sepPosI_zone` (mem → the
   interiority disjunction) as direct corollaries.
-- [ ] `kvE2_sepPosI_nodup` : filter preserves the existing `kvE2_sepPos` Nodup fact
-  (`lean_local_search` for the existing Nodup lemma; `List.Nodup.filter`).
-- [ ] Block-vanishing helpers: `kvE2_sepSlotsLFor_eq_nil` / `RFor_eq_nil` /
+- [x] `kvE2_sepPosI_nodup` : filter preserves the existing `kvE2_sepPos` Nodup fact
+  (`lean_local_search` for the existing Nodup lemma; `List.Nodup.filter`) *(deviation: altered —
+  a PRIVATE `kvE2_sepPos_nodup` already exists later in the file at SW:2014, unreferencable from
+  the Phase 1 block above it; `kvE2_sepPosI_nodup` proves the double-filter chain directly
+  `((Finset.nodup_toList _).filter _).filter _` with a docstring pointer)*.
+- [x] Block-vanishing helpers: `kvE2_sepSlotsLFor_eq_nil` / `RFor_eq_nil` /
   `kvE2_sepSlotBlock_eq_nil` for non-interior σ (direct from the `else []` branches,
   SW:292-311), and the converse `kvE2_sepMem_posI_of_slot` :
   `σ ∈ kvE2_sepPos qnf → s ∈ kvE2_sepSlotBlock σ → σ ∈ kvE2_sepPosI qnf`
-  (a nonempty block forces an interior zone; also state `SlotsLFor`/`SlotsRFor` variants).
-- [ ] The key value-transfer lemmas (flatMap over a filter equals flatMap over the whole list
+  (a nonempty block forces an interior zone; also state `SlotsLFor`/`SlotsRFor` variants —
+  landed as `kvE2_sepMem_posI_of_slotL`/`_slotR`).
+- [x] The key value-transfer lemmas (flatMap over a filter equals flatMap over the whole list
   when the function vanishes off the predicate — prove one generic private helper, instantiate):
   - `kvE2_sepPosI_flatMap_slotBlock` : `(kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock = (kvE2_sepPos qnf).flatMap kvE2_sepSlotBlock`
-  - same for `kvE2_sepSlotsLFor` and `kvE2_sepSlotsRFor`.
-- [ ] `lake build` (or `lean_diagnostic_messages` on the file) green.
+  - same for `kvE2_sepSlotsLFor` and `kvE2_sepSlotsRFor` (generic helper:
+    `kvE2_sep_flatMap_filter_of_vanish`, private).
+- [x] `lake build` green (full project, 1720 jobs; axioms on `kvE2_sepPosI_flatMap_slotBlock`
+  = `{propext, Classical.choice, Quot.sound}`).
 
 **Estimated output**: ~150-250 lines, additive only.
 **Done when**: build green; `grep -c "kvE2_sepPosI" SharedWitness.lean` > 0; diff contains no
