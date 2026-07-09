@@ -940,6 +940,35 @@ theorem kvE2_sepIdxTuple_mem_of_lt (n a b c : ℕ)
   rw [List.mem_map]
   exact ⟨c, List.mem_range.mpr hc, rfl⟩
 
+/-- **Variable-length `N`-bound index enumeration** (task 340 Phase 3): every list of length `L`
+    whose entries all lie in `[0, n)`. Generalizes the fixed length-3 `kvE2_sepIdxTuples` to the
+    per-owner block length `L = (kvE2_sepSlotBlock σ).length`, the arity the per-INDIVIDUAL-slot
+    refinement requires (a region provably holds ≥2 base slots, so a fixed 3-tuple is unfaithful —
+    postmortem constraint). Finite, terminating, `decide`-able; the `N`-bound replaces the WRONG
+    `3*n` bound (report 08). Reads no zone bit; abstract-ℕ only (F4/F5/LITMUS clean). -/
+def kvE2_sepIdxTuplesN (n : ℕ) : ℕ → List (List ℕ)
+  | 0 => [[]]
+  | L + 1 =>
+    (List.range n).flatMap (fun a => (kvE2_sepIdxTuplesN n L).map (fun t => a :: t))
+
+/-- **Enumeration richness at the `N` bound** (task 340 Phase 3): every list whose entries all lie in
+    `[0, n)` is enumerated by `kvE2_sepIdxTuplesN n` at its own length. The variable-length strict
+    generalization of `kvE2_sepIdxTuple_mem_of_lt` — the membership fact the per-slot honest order
+    (whose per-owner payload is `(kvE2_sepSlotBlock σ).length`-long with every entry `< N`) needs to
+    be a member of the enumeration. Same `List.mem_flatMap`/`List.mem_range`/`List.mem_map` technique,
+    now by induction on the list. Reads no zone bit; abstract-ℕ only (F4/LITMUS clean). -/
+theorem kvE2_sepIdxTupleN_mem_of_forall_lt (n : ℕ) :
+    ∀ (l : List ℕ), (∀ x ∈ l, x < n) → l ∈ kvE2_sepIdxTuplesN n l.length := by
+  intro l
+  induction l with
+  | nil => intro _; simp [kvE2_sepIdxTuplesN]
+  | cons a t ih =>
+    intro h
+    rw [List.length_cons, kvE2_sepIdxTuplesN, List.mem_flatMap]
+    refine ⟨a, List.mem_range.mpr (h a List.mem_cons_self), ?_⟩
+    rw [List.mem_map]
+    exact ⟨t, ih (fun x hx => h x (List.mem_cons_of_mem _ hx)), rfl⟩
+
 /-! ### Task 340 Phase 5 — abstract lex-rank kernel (model-agnostic sort spec)
 
 The honest-order construction (steps 2/4/5 of the Phase-5 map) reduces every one of its obligations
