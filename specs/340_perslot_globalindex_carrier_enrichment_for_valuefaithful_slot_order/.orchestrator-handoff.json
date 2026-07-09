@@ -1,64 +1,54 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "skeleton": false,
   "session_id": "sess_1783578954_3bce55_340",
-  "summary": "Banked the COMPLETE mathematical + structural foundation of the atomic 3-4-5-7 flip as 10 additive, green, axiom-clean committed milestones (SharedWitness green every step, never RED across the dispatch). Landed: region tag (kvE2_sepSlotRegionLeft) + regionLeft/Right membership; within-region rank sortedness (kvE2_sepSlotBlock_region_rank_sorted) + block-position alignment (kvE2_sepBlock_pos_lt_of_rank_lt); global slot-index monotone along block (kvE2_sepSlotIndexOf_block_mono, offset+i via Nodup infix); the REGION-SCOPED consistency predicate kvE2_sepConsistentBlock (crux-corrected, region-scoped not whole-block); BOTH consistency proofs — prefix-sum (kvE2_sepConsistentBlock_slotIndexOf, model/coincident) AND value-rank (kvE2_sepConsistentBlock_honest via the honest-consistency crux kvE2_sepSlotValue_region_rank_mono, ~150-line 8-constructor case analysis over the interval specs); BOTH global-Nodup lemmas (kvE2_sepAllSlots_map_slotIndexOf_nodup, _honestGIdx_nodup via injOn); the enumeration-parametric aux lemmas (kvE2_sepOrderTypes_mem_aux'/_owners_aux' for the sigma-dependent N-bound enumeration); and the payload-flatten reshaping lemma (kvE2_sepZipPayload_flatMap) for the (iii) global-Nodup conjunct. The atomic swap itself (rewiring ~15 def bodies + membership re-proofs to consume the banked lemmas) was ATTEMPTED and is LOGICALLY COMPLETE AND CORRECT — every banked lemma assembles as designed — but did not land green in this dispatch: it fails ONLY on (a) Lean declaration ordering (forward references: the honest engines and the flatMap/Nodup lemmas are defined AFTER the orders that now consume them; requires relocating 3 self-contained clusters) and (b) a newly-surfaced consumer layer (the mergeSort-sortedness lemmas SW:1614-1627 + kvE2_sepSlotsLFor/RFor_rankPairwise SW:1798-1860, which reason about the OLD rank-based reader and need re-proof against the new kvE2_sepBlockPos reader) plus mechanical noncomputable-marking (kvE2_sepSlotMergeLe, kvE2_sepArr'_decidable) and one tail-theorem conclusion fix (kvE2_sepArr'_sound: map(getD 0) -> flatMap). The full swap edit set is saved verbatim as swap-attempt-cycle2.patch (328 lines). Reverted cleanly to the last green commit (fc85a7de) per the all-or-nothing constraint.",
+  "summary": "Landed the FINAL atomic 3-4-5-7 structural swap green. Applied swap-attempt-cycle2.patch (def-body + membership rewrites consuming the previously-banked region-scoped consistency, both global-Nodup lemmas, parametric enumeration, and payload-flatten reshaping), then completed the five remaining mechanical steps: (1) topological reorder of 3 self-contained clusters via a verified line-range splice (kvE2_sepOrderTypes_mem_aux'/_owners_aux' moved before kvE2_sepModelOrder_mem_orderTypes; kvE2_sepAllSlots_map_slotIndexOf_nodup + kvE2_sepZip_flatMap_aux + kvE2_sepZipPayload_flatMap moved before kvE2_sepCoincidentOrder; the honest order/mem_orderTypes/mem_arr'/rank_strictMono/body_complete_holds cluster moved after the honest engines kvE2_sepSlotHonestGIdx/_injOn/kvE2_sepConsistentBlock_honest/_honestGIdx_nodup); (2) corrected the three _mem_orderTypes membership proofs to invoke List.length_map correctly (bind kvE2_sepIdxTupleN_mem_of_forall_lt then forward-rewrite List.length_map, replacing the invalid reversed 2-arg call the patch used); (3) marked kvE2_sepSlotMergeLe and instance kvE2_sepArr'_decidable noncomputable (the blockPos reader is noncomputable); (4) fixed kvE2_sepArr'_sound conclusion to (wo.flatMap (fun p => p.2.2)).Nodup. The mergeSort-sortedness consumer layer (kvE2_sepSlotMergeLe facts, kvE2_sepSlotsLFor/RFor_rankPairwise) required NO re-proof — it typechecks unchanged against the new reader. SharedWitness green (1013 jobs); full lake build green (1720 jobs, OuterGate included).",
   "phases_total": 10,
-  "phases_completed": 2,
-  "resume_phase": 6,
+  "phases_completed": 7,
+  "resume_phase": null,
   "escalation_required": false,
   "tripwire_fired": false,
   "sorry_inventory": [],
-  "blockers": [
-    "Atomic swap declaration-ordering: honest engines (kvE2_sepSlotHonestGIdx SW:3068, kvE2_sepConsistentBlock_honest SW:3122, kvE2_sepAllSlots_map_honestGIdx_nodup SW:3149) are defined AFTER kvE2_sepHonestOrder (SW:2576) which now consumes them; and kvE2_sepZipPayload_flatMap + kvE2_sepAllSlots_map_slotIndexOf_nodup (SW:3141-3195) + kvE2_sepOrderTypes_mem_aux'/_owners_aux' (SW:1517-1566) are defined after their consumers (coincident/model membership SW:1399/2411/2455). Fix: relocate 3 clusters (see continuation_context next_action).",
-    "New consumer layer: mergeSort-sortedness lemmas that reason about the OLD rank-based kvE2_sepSlotGIdx reader must be re-proved against the new kvE2_sepBlockPos reader: kvE2_sepSlotMergeLe facts (SW:1614-1627), kvE2_sepSlotsLFor/RFor_rankPairwise (SW:1798-1860). These were NOT in the prior handoff's remaining_map and are the main remaining proof work beyond mechanical wiring."
-  ],
+  "blockers": [],
+  "continuation_context": null,
+  "next_action_hint": "Task 340 terminal acceptance met and task 337 unblocked: kvE2_sepHonestOrder_mem_arr' and kvE2_sepBody_complete_holds are green and axiom-clean. Plan phases 8 (halignL/R), 9 (per-slot meet coincidence fold, gated by the Phase-1 design gate), and 10 (regionsL/R assembly + hbdry + final 337 export audit) remain [NOT STARTED] as separate downstream work but are NOT part of the terminal acceptance criteria defined for this dispatch (which were all met).",
   "verification": {
     "sorry_count": 0,
     "vacuous_count": 0,
     "axiom_count_delta": 0,
     "build_passed": true,
-    "scoped_build": "SharedWitness green (1013 jobs) at fc85a7de after clean revert of the swap attempt",
+    "scoped_build": "SharedWitness green (1013 jobs)",
+    "full_build": "green (1720 jobs, OuterGate included)",
     "axioms_verified": ["propext", "Classical.choice", "Quot.sound"],
-    "axiom_check_theorems": ["kvE2_sepConsistentBlock_honest"],
-    "note": "SharedWitness 0 real sorries (grep hits are docstring prose). EANegation.lean sorries (834/1129) are SW-external and pre-existing, untouched."
-  },
-  "banked_this_dispatch": {
-    "commits": [
-      "task 340 phase 3.2: region tag + regionLeft/Right membership",
-      "task 340 phase 3.3: within-region rank sortedness + block-position alignment",
-      "task 340 phase 3.4: global slot-index monotone along block",
-      "task 340 phase 3.5: region-scoped consistency predicate + prefix-sum consistency",
-      "task 340 phase 7.1: within-region value ordering (honest-consistency crux)",
-      "task 340 phase 7.2: honest consistency lemma (value-rank payload)",
-      "task 340 phase 5.1: global Nodup lemmas for prefix-sum + honest payloads",
-      "task 340 phase 3.6: enumeration-parametric mem/owners aux lemmas",
-      "task 340 phase 5.2: payload-flatten reshaping lemma for global Nodup"
+    "axiom_check_theorems": [
+      "kvE2_sepHonestOrder_mem_arr'",
+      "kvE2_sepBody_complete_holds",
+      "kvE2_sepCoincidentOrder_mem_arr'",
+      "kvE2_sepArr'_sound"
     ],
-    "new_declarations": [
-      "kvE2_sepSlotRegionLeft + kvE2_sepSlotsLFor_regionLeft + kvE2_sepSlotsRFor_regionRight",
-      "kvE2_sepSlotsLFor_rank_sorted + kvE2_sepSlotsRFor_rank_sorted + kvE2_sepSlotBlock_region_rank_sorted + kvE2_sepBlock_pos_lt_of_rank_lt",
-      "kvE2_sepSlotIndexOf_block_mono",
-      "kvE2_sepConsistentBlock + kvE2_sepBlockMap_getD + kvE2_sepConsistentBlock_slotIndexOf",
-      "kvE2_sepSlotValue_region_rank_mono (honest-consistency crux)",
-      "kvE2_sepConsistentBlock_honest",
-      "kvE2_sepAllSlots_map_slotIndexOf_nodup + kvE2_sepAllSlots_map_honestGIdx_nodup",
-      "kvE2_sepOrderTypes_mem_aux' + kvE2_sepOrderTypes_owners_aux'",
-      "kvE2_sepZip_flatMap_aux + kvE2_sepZipPayload_flatMap"
-    ]
+    "note": "No sorryAx on any checked theorem. SharedWitness sorry census = 0 (grep hits are docstring prose). Sole repo vacuous match is pre-existing Examples/TemporalStructures.lean:269 (int_domain_universal, unrelated). No new axiom declarations."
   },
-  "continuation_context": {
-    "is_successor": true,
-    "resume_phase": 6,
-    "import_sorry_inventory": [],
-    "swap_patch": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/swap-attempt-cycle2.patch",
-    "next_objective": "Land the atomic 3-4-5-7 flip. ALL consistency/Nodup/enumeration/reshaping lemmas are banked green (see banked_this_dispatch). Remaining is purely mechanical: (1) apply swap-attempt-cycle2.patch as the starting def-body/membership rewrites (it is logically correct); (2) FIX DECLARATION ORDER by relocating 3 self-contained clusters so consumers follow definitions: [A] move kvE2_sepOrderTypes_mem_aux'/_owners_aux' to BEFORE kvE2_sepModelOrder_mem_orderTypes (they only need early deps); [B] move kvE2_sepZip_flatMap_aux + kvE2_sepZipPayload_flatMap + kvE2_sepAllSlots_map_slotIndexOf_nodup to BEFORE kvE2_sepCoincidentOrder (early deps only); [C] move the honest cluster {kvE2_sepHonestOrder, _mem_orderTypes, _mem_arr', kvE2_sepHonest_rank_strictMono, kvE2_sepBody_complete_holds} to AFTER kvE2_sepAllSlots_map_honestGIdx_nodup (nothing in the engines region 2705-3200 consumes them, verified); (3) mark kvE2_sepSlotMergeLe and instance kvE2_sepArr'_decidable noncomputable (reader is now blockPos-based, noncomputable); (4) fix kvE2_sepArr'_sound conclusion from (wo.map (.2.2.getD 0 0)).Nodup to (wo.flatMap (.2.2)).Nodup (no external consumers); (5) RE-PROVE the mergeSort-sortedness consumer layer against the new kvE2_sepBlockPos reader: kvE2_sepSlotMergeLe facts SW:1614-1627 and kvE2_sepSlotsLFor/RFor_rankPairwise SW:1798-1860 (this is the only remaining genuine proof work; the reader now returns the block-position payload entry not the region rank). Model/coincident payload = block.map kvE2_sepSlotIndexOf; honest payload = block.map kvE2_sepSlotHonestGIdx; kvE2_sepConsistentTuple is now dead code (delete or leave). Also verify OuterGate.lean still builds (full lake build)."
+  "acceptance": {
+    "sorry_free": true,
+    "axiom_clean": true,
+    "full_build_green": true,
+    "f1_f7_preserved": true,
+    "task337_p1_kvE2_sepCoincidentOrder_mem_arr_preserved": true,
+    "no_334_336_338_339_regression": true
   },
-  "continuation_path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/03_perslot-individual-slot-refinement.md",
-  "next_action_hint": "Re-dispatch /implement 340 --hard for the FINAL atomic swap. The complete lemma foundation is banked green (10 commits this dispatch); the swap logic is captured in swap-attempt-cycle2.patch and is proven-correct. Remaining = apply patch + relocate 3 declaration clusters (topological reorder, no new math) + mark 2 defs noncomputable + fix 1 tail conclusion + re-prove the mergeSort-sortedness consumer layer (SW:1614-1627, 1798-1860) against the blockPos reader. This is the last coupled RED->GREEN step and is now materially mechanical.",
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean", "type": "source", "summary": "10 additive green commits banking the entire flip foundation: region tag, within-region rank sortedness + alignment, slot-index-along-block monotonicity, region-scoped consistency predicate + BOTH consistency proofs (prefix-sum + value-rank via the honest crux), BOTH global-Nodup lemmas, parametric enumeration aux, payload-flatten reshaping. Green at fc85a7de."},
-    {"path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/swap-attempt-cycle2.patch", "type": "patch", "summary": "The logically-correct atomic swap edit set (328 lines): def-body rewrites for kvE2_sepOrderTypes/ModelOrder/CoincidentOrder/HonestOrder/DisjValid/SlotGIdx + membership re-proofs consuming the banked lemmas. Blocked only by declaration ordering + the mergeSort-sortedness consumer layer."},
-    {"path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/03_perslot-individual-slot-refinement.md", "type": "plan", "summary": "Phase 6/3/5/7 foundation lemmas landed; atomic swap remaining."}
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "type": "source",
+      "summary": "Atomic 3-4-5-7 swap landed: blockPos per-slot reader, region-scoped consistency payloads (model/coincident = block.map kvE2_sepSlotIndexOf; honest = block.map kvE2_sepSlotHonestGIdx), global-flatMap Nodup conjunct. Green, sorry-free, axiom-clean."
+    },
+    {
+      "path": "specs/340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/03_perslot-individual-slot-refinement.md",
+      "type": "plan",
+      "summary": "Phases 3,4,5,6,7 [COMPLETED]. Phases 8,9,10 remain [NOT STARTED] (downstream, gated; outside this dispatch's terminal acceptance)."
+    }
+  ],
+  "commits": [
+    "17fa60c5f task 340 phase 6: land atomic 3-4-5-7 swap (blockPos reader, green)"
   ]
 }

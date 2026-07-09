@@ -295,7 +295,7 @@ old `(3r,3r+1,3r+2)` behavior is transcribed into per-slot form with NO value-fa
 - **Estimated output**: ~200-300 lines.
 - **Depends on**: 1 (PASS).
 
-### Phase 3: Validity conjuncts (ii)+(iii) + per-slot enumeration richness (green) [IN PROGRESS]
+### Phase 3: Validity conjuncts (ii)+(iii) + per-slot enumeration richness (green) [COMPLETED]
 
 **Landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed `phase 3.1`):** the
 variable-length `N`-bound enumeration `kvE2_sepIdxTuplesN (n : ℕ) : ℕ → List (List ℕ)` (all length-`L`
@@ -344,7 +344,7 @@ Ground: Def 3.1 per-owner interval order (R1-corrected); Lemma 3.2(1) enumeratio
 - **Estimated output**: ~180-280 lines.
 - **Depends on**: 2.
 
-### Phase 4: `kvE2_sepSlotGIdx` per-slot read + `kvE2_sepSlotMergeLe` re-sort (green) [IN PROGRESS]
+### Phase 4: `kvE2_sepSlotGIdx` per-slot read + `kvE2_sepSlotMergeLe` re-sort (green) [COMPLETED]
 
 **Landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed `phase 4.1`):** the reader
 coordinate `kvE2_sepBlockPos s := (kvE2_sepSlotBlock (kvE2_sepSlotSub s)).idxOf s` + `kvE2_sepBlockPos_lt`
@@ -367,7 +367,7 @@ Rebuild `kvE2_sepSlotGIdx` (SW:~1006) to read the per-slot index DIRECTLY (no lo
 - **Estimated output**: ~120-200 lines.
 - **Depends on**: 2.
 
-### Phase 5: Soundness-side membership re-proofs (green) [NOT STARTED]
+### Phase 5: Soundness-side membership re-proofs (green) [COMPLETED]
 
 Re-prove the SOUNDNESS-side `kvE2_sepModelOrder` (SW:~859) and `kvE2_sepCoincidentOrder` (SW:~1927)
 membership in `kvE2_sepArr'` against the new per-slot enumeration + validity conjuncts (report 08
@@ -381,7 +381,7 @@ theorems total.
 - **Estimated output**: ~200-320 lines.
 - **Depends on**: 3.
 
-### Phase 6: `value_j`→engine-point binding + honest per-slot order over `Fin N` (green) [IN PROGRESS]
+### Phase 6: `value_j`→engine-point binding + honest per-slot order over `Fin N` (green) [COMPLETED]
 
 **Value-binding foundation landed (dispatch sess_1783578954_3bce55_340, additive/green, committed
 `phase 6.1`-`6.4`):** the ENTIRE model-dependent `value_j` binding + lex value rank — the identified
@@ -432,7 +432,7 @@ NO `x1 < e_i` literal (LITMUS): order only already-extracted realizer witnesses 
 - **Estimated output**: ~200-350 lines.
 - **Depends on**: 4, 1 (value-binding gate confirmation).
 
-### Phase 7: `kvE2_sepHonestOrder_mem_arr'` re-proof (green) [NOT STARTED]
+### Phase 7: `kvE2_sepHonestOrder_mem_arr'` re-proof (green) [COMPLETED]
 
 Re-prove `kvE2_sepHonestOrder_mem_arr'` (SW:~2146) for the per-slot honest order: conjunct (i) tag
 validators reused verbatim (`kvE2_sepCoincidentOwner_valid_left/right`, tuple-agnostic); (ii)
