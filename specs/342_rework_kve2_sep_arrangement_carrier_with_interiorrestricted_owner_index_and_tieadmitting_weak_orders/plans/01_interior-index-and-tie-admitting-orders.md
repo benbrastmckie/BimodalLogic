@@ -290,27 +290,40 @@ than `kvE2_sepAllSlots`'s body changed in this phase.
 **Timing**: 1.5-2h
 **Depends on**: 1
 
-### Phase 3: Re-anchor the arrangement enumeration and membership lemmas [NOT STARTED]
+### Phase 3: Re-anchor the arrangement enumeration and membership lemmas [COMPLETED]
 
 **Goal**: `kvE2_sepOrderTypes`, `kvE2_sepModelOrder`, the owner-projection lemma, and the
 order/slot membership lemmas all range over `kvE2_sepPosI`.
 
 **Tasks**:
-- [ ] `kvE2_sepOrderTypes` (SW:1277): `foldr` over `kvE2_sepPosI qnf` (the `n` bound stays
+- [x] `kvE2_sepOrderTypes` (SW:1277): `foldr` over `kvE2_sepPosI qnf` (the `n` bound stays
   `(kvE2_sepAllSlots qnf).length`, already re-anchored). Docstring: the interleaving index
   ranges over bracket witnesses only (§5 p.7); Lemma 3.2(1) states the closure without printed
   proof.
-- [ ] `kvE2_sepModelOrder` (SW:1296): `zipIdx` over `kvE2_sepPosI qnf`.
-- [ ] `kvE2_sepOrderTypes_owners` (SW:1563): conclusion becomes
+- [x] `kvE2_sepModelOrder` (SW:1296): `zipIdx` over `kvE2_sepPosI qnf`.
+- [x] `kvE2_sepOrderTypes_owners` (SW:1563): conclusion becomes
   `wo.map Prod.fst = kvE2_sepPosI qnf` (aux lemma untouched — it is list-generic).
-- [ ] `kvE2_sepMem_orderOwners` (SW:1571): hypothesis `hσ : σ ∈ kvE2_sepPosI qnf`.
-- [ ] `kvE2_sepSlotsLOf_mem`/`ROf_mem` (SW:1585/1595): restate `hσ` over `kvE2_sepPosI`. For any
+- [x] `kvE2_sepMem_orderOwners` (SW:1571): hypothesis `hσ : σ ∈ kvE2_sepPosI qnf`.
+- [x] `kvE2_sepSlotsLOf_mem`/`ROf_mem` (SW:1585/1595): restate `hσ` over `kvE2_sepPosI`. For any
   call site that holds only `σ ∈ kvE2_sepPos`, recover via `kvE2_sepMem_posI_of_slot` (the slot
   hypothesis `hs` forces interiority) — patch call sites rather than keeping duplicate wrappers,
   unless >3 call sites need it, in which case add the derived Pos-facing corollary.
-- [ ] Repair all consumers of `kvE2_sepOrderTypes_owners` (grep; includes the SW:2239 region and
+  *(1 call site: `kvE2_sepBody_extract`, patched via `kvE2_sepMem_posI_of_slotL/R`)*
+- [x] Repair all consumers of `kvE2_sepOrderTypes_owners` (grep; includes the SW:2239 region and
   the mem_orderTypes instances) using `kvE2_sepPosI_subset` where `σ ∈ kvE2_sepPos` is needed.
-- [ ] Full `lake build`.
+  *(deviation: altered — the coincident/honest `mem_orderTypes` instances become FALSE-in-general
+  once the enumeration folds over `kvE2_sepPosI` while their `zipIdx` carriers stay over
+  `kvE2_sepPos` (the enumeration pins the owner projection). Repaired with an interim
+  `hpos : kvE2_sepPosI qnf = kvE2_sepPos qnf` hypothesis on both, discharged at every consumer
+  from `hLR` via the NEW lemma `kvE2_sepPosI_eq_pos` (SW:~242). Phase 4 deletes `hpos` when the
+  two carriers move to `kvE2_sepPosI`. Additionally: `kvE2_sepOrderOwners_mem_pos` and
+  `kvE2_sepSlotsL/ROf_mem_block` were generalized over a generic owner list `L` via
+  `howners : wo.map Prod.fst = L` (statement-level), so the hLR-free task-337 value-sorted trio
+  keeps its unchanged statements by reading the honest order's owner projection directly off its
+  `zipIdx` carrier (`List.zipIdx_map_fst`); `kvE2_sepOrderOwners_nodup` now closes with
+  `kvE2_sepPosI_nodup`.)*
+- [x] Full `lake build`. *(green, 1720 jobs; axioms on all rebuilt declarations exactly
+  `{propext, Classical.choice, Quot.sound}`; `kvE2_sepHonest_hLR_absurd` verbatim-untouched)*
 
 **Estimated output**: ~150-300 lines of diff.
 **Done when**: build green; `grep -n "map Prod.fst = kvE2_sepPos qnf" SharedWitness.lean`
