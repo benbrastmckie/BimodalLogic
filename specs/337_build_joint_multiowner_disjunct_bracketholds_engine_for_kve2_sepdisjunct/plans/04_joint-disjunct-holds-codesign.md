@@ -289,7 +289,7 @@ axiom-clean `{propext, Classical.choice, Quot.sound}`, 0 sorries.
 
 ---
 
-### Phase 3: Bracket point-type + segment match → `(kvE2_sepDisjunct … (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds` (step c) [NOT STARTED]
+### Phase 3: Bracket point-type + segment match → `(kvE2_sepDisjunct … (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds` (step c) [IN PROGRESS]
 
 **Goal** (**HIGHEST-RISK PHASE — the ONLY bracket-entangled step; sized alone per H8**): From the Phase-2 witness `ws`, prove every point-type realization and the `kvE2_sepSegs` segment families, then close `(kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds M atomMap x t` via `IntervalPattern.holds_eq_succ.mpr` (ExistsForallNF.lean:188) / `kvE_subBracket2V_sound_of_parts` (SubBracket2V.lean:1025). Deliver as a sorry-free private helper (suggested `kvE2_sepHonest_bracket_holds`).
 

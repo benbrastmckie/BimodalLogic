@@ -4502,6 +4502,103 @@ private theorem kvE2_sep_rWX1_mem_slotsRFor {sig : MonadicSignature}
 -- `kvE2_sepDisjunct_extract` as explicit hypotheses (`hmemL/hpairL/hmemR/hpairR`), discharged at
 -- each call site for the arrangement the carrier actually uses.
 
+/-! ### Task 337 Phase 3 — bracket point-type + segment match (the `.holds` construction)
+
+The mpr dual of `kvE2_sepDisjunct_extract`: assemble `(kvE2_sepBracketN lL ptW lR segs).holds`
+from a per-slot witness list. The generic construction below is the N-slot lift of the landed
+k=3 template `k1v_bracket_construct3` (SubBracket2V.lean:720): a combined strictly-sorted
+witness list `usL ++ w :: usR` (pivot `w` at position `|usL|` — the SINGLE interior
+distinguished slot of the §5 bracket, PDF p.7), per-index point-type realizations on each
+side, `ptW` at the pivot, and the per-gap segment obligations in `holds_eq_succ`'s three
+shapes. All bounds ride the fixed endpoints `x`/`t` and the witness list itself (F4/LITMUS:
+no `x1 < e_i` relative-position literal, no owner-to-owner chain). -/
+
+/-- **Generic N-slot bracket construction** (Phase 3 structural core; Rabinovich Lemma 5.3,
+    md:137-152 — per-region segment types; Def 3.1 strictly-increasing witnesses, md:61-74).
+    Point types are read at the combined witness list `usL ++ w :: usR` in block slot-index
+    order; the three `beta` families are supplied in exactly `IntervalPattern.holds_eq_succ`'s
+    gap shapes. -/
+private theorem kvE2_sepBracketN_construct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (lL : List TemporalPred) (ptW : TemporalPred) (lR : List TemporalPred)
+    (segs : Nat → TemporalPred)
+    (x w t : M.carrier) (usL usR : List M.carrier)
+    (hlenL : usL.length = lL.length) (hlenR : usR.length = lR.length)
+    (hsort : (usL ++ w :: usR).Pairwise (· < ·))
+    (hrange : ∀ u ∈ usL ++ w :: usR, x < u ∧ u < t)
+    (hptL : ∀ (i : Nat) (hi : i < lL.length),
+      (lL[i]'hi).eval_at M atomMap (usL[i]'(by omega)))
+    (hptW : ptW.eval_at M atomMap w)
+    (hptR : ∀ (j : Nat) (hj : j < lR.length),
+      (lR[j]'hj).eval_at M atomMap (usR[j]'(by omega)))
+    (hseg0 : ∀ y : M.carrier, x < y →
+      y < (usL ++ w :: usR)[0]'(by simp) → (segs 0).eval_at M atomMap y)
+    (hsegmid : ∀ (i : Nat) (hi : i + 1 < (usL ++ w :: usR).length) (y : M.carrier),
+      (usL ++ w :: usR)[i]'(by omega) < y → y < (usL ++ w :: usR)[i + 1]'hi →
+      (segs (i + 1)).eval_at M atomMap y)
+    (hseglast : ∀ y : M.carrier,
+      (usL ++ w :: usR)[(usL ++ w :: usR).length - 1]'(by simp) < y → y < t →
+      (segs (usL ++ w :: usR).length).eval_at M atomMap y) :
+    (kvE2_sepBracketN lL ptW lR segs).holds M atomMap x t := by
+  have hlen : (usL ++ w :: usR).length = lL.length + lR.length + 1 := by
+    simp only [List.length_append, List.length_cons, hlenL, hlenR]; omega
+  simp only [kvE2_sepBracketN, BracketFormula.holds, BracketFormula.toIntervalPattern]
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show lL.length + 1 + lR.length = lL.length + lR.length + 1 by omega)]
+  refine ⟨fun i => (usL ++ w :: usR)[i.val]'(by have := i.isLt; omega), ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- Strict monotonicity in block slot-index order.
+    intro i j hij
+    exact List.pairwise_iff_getElem.mp hsort i.val j.val _ _ hij
+  · -- Range: every witness strictly inside the fixed endpoints `(x, t)`.
+    intro i
+    exact hrange _ (List.getElem_mem _)
+  · -- Point types: three-way index split around the shared `ptW` pivot at `|lL|`.
+    intro i
+    rcases Nat.lt_trichotomy i.val lL.length with hi | hi | hi
+    · have ht := kvE2_sep_getElem_left lL lR ptW i.val hi
+      have hu := kvE2_sep_getElem_left usL usR w i.val (by omega)
+      simp only []
+      rw [show ((lL ++ ptW :: lR)[i.val]'(by
+            simp only [List.length_append, List.length_cons]; omega)) = lL[i.val]'hi from ht,
+        show ((usL ++ w :: usR)[i.val]'(by have := i.isLt; omega))
+            = usL[i.val]'(by omega) from hu]
+      exact hptL i.val hi
+    · have ht := kvE2_sep_getElem_mid lL lR ptW
+      have hu := kvE2_sep_getElem_mid usL usR w
+      simp only []
+      rw [show ((lL ++ ptW :: lR)[i.val]'(by
+            simp only [List.length_append, List.length_cons]; omega)) = ptW by
+          rw [getElem_congr_idx hi]; exact ht,
+        show ((usL ++ w :: usR)[i.val]'(by have := i.isLt; omega)) = w by
+          rw [getElem_congr_idx (by omega : i.val = usL.length)]; exact hu]
+      exact hptW
+    · have hj : i.val - lL.length - 1 < lR.length := by have := i.isLt; omega
+      have ht := kvE2_sep_getElem_right lL lR ptW (i.val - lL.length - 1) hj
+      have hu := kvE2_sep_getElem_right usL usR w (i.val - lL.length - 1) (by omega)
+      simp only []
+      rw [show ((lL ++ ptW :: lR)[i.val]'(by
+            simp only [List.length_append, List.length_cons]; omega))
+            = lR[i.val - lL.length - 1]'hj by
+          rw [getElem_congr_idx
+            (by omega : i.val = lL.length + 1 + (i.val - lL.length - 1))]; exact ht,
+        show ((usL ++ w :: usR)[i.val]'(by have := i.isLt; omega))
+            = usR[i.val - lL.length - 1]'(by omega) by
+          rw [getElem_congr_idx
+            (by omega : i.val = usL.length + 1 + (i.val - lL.length - 1))]; exact hu]
+      exact hptR (i.val - lL.length - 1) hj
+  · -- First gap `(x, ws 0)`.
+    intro y hxy hy0
+    exact hseg0 y hxy hy0
+  · -- Interior gaps `(ws i, ws (i+1))`.
+    intro i y hlo hhi
+    exact hsegmid i.val (by have := i.isLt; omega) y hlo hhi
+  · -- Last gap `(ws last, t)`.
+    intro y hlo hyt
+    have h1 := hseglast y
+      (lt_of_le_of_lt (le_of_eq (getElem_congr_idx (by simp only [Fin.val_mk]; omega))) hlo)
+      hyt
+    rwa [hlen] at h1
+
 /-! ### The O3 extraction theorems -/
 
 /-- **O3 — joint soundness extraction from a realized disjunct** (task 321 v7 Phase 8;
