@@ -2,18 +2,17 @@
   "task": 337,
   "status": "partial",
   "skeleton": false,
-  "summary": "PHASE 1 COMPLETE (cycle 9): kvE2_sepHonest_engineInputs LANDED green + axiom-clean — the joint LEFT/RIGHT gap region lists (boundaries = value-sorted honest anchors, strictified via the keystone kvE2_sepAnchor_injOn) with ALL FIVE k1v_sorted_realizationK preconditions (hposL/R, hlinkL/R, hndL/R, hrealL/R) plus hbdry (regionsL runs x..w, regionsR runs w..t, ne_nil both). Cross-owner value->gap partition transcribed exactly as designed cycle 8: each base slot contributes a (kvE2_sepSlotValue, type) pair; a gap carries the types with SOME pair strictly interior. Fold safety is structural: the STRICT gap filter makes anchor-colliding base values absent from both adjacent gaps, so hreal is never poisoned and needs NO non-collision claim — hreal witnesses are the pairs' own values (interiority from the filter, realization from the six kvE2_sepSlotValue_*_spec lemmas). The fold is CARRIED by kvE2_sepGapTypes_mem_of + the pair pools; anchor-point (meet-type) realization stays Phase 3 as designed. hnd = filter-of-dedup per gap TYPE list; per-slot multiplicity fully preserved in kvE2_sepHonestBasePairsL/R for Phase 2/3 halign. +448 additive lines in SharedWitness.lean, zero sorries, commit a7ea7b9dc.",
-  "phases_completed": 1,
+  "summary": "PHASE 2 COMPLETE (cycle 10): kvE2_sepHonest_witnesses LANDED green + axiom-clean — the engine k1v_sorted_realizationK invoked once per side on the Phase-1 region lists (all preconditions consumed from kvE2_sepHonest_engineInputs, never re-derived), yielding psL/psR with the FULL engine Forall₂ guarantees exposed (boundary skeleton equalities, per-region type permutation, per-region sortedness, strict-interior range + realization per point). The two stitched chains satisfy per-side strict range bounds (every point of interleaveK psL in (x,w), every point of interleaveK psR in (w,t)) and concatenate around the single shared pivot w into the globally strictly monotone bracket witness chain (interleaveK psL ++ w :: interleaveK psR).Pairwise (<). Delivered in LIST form with pivot w at position |interleaveK psL| — the per-slot Fin re-indexing over kvE2_sepSlotsLOf/ROf wo is Phase 3's halign/point-type step per the carried-forward caveats (dedup'd engine points vs per-slot multiplicity, out-of-side rXW values, folded anchor-colliding types). Supporting: kvE2_sepGapRegions_lo_le/_hi_le (region endpoint bounds under the strict anchor chain), kvE2_sepInterleaveK_lt (global upper bound, dual of the stitcher's lower bound), kvE2_sepForall₂_mem_left + kvE2_sepForall₂_chain' (skeleton transfer through Forall₂, reusable in Phase 3). +229/-0 additive in SharedWitness.lean, zero sorries, commit e1637a864.",
+  "phases_completed": 2,
   "phases_partial": 0,
   "phases_total": 5,
   "landed_this_dispatch": [
-    "kvE2_sepGapTypes + kvE2_sepGapTypes_nodup + kvE2_sepGapTypes_mem + kvE2_sepGapTypes_mem_of (gap type lists: Nodup filter-of-dedup; mem extraction = hreal source; mem introduction = fold-structure carrier)",
-    "kvE2_sepGapRegions + _ne_nil + _head?_fst + _getLast?_snd + _chain' + _pos + _types (boundary-recursive region skeleton: hlink/hpos/hbdry by structural induction)",
-    "kvE2_sepChain_lt_between (private: strictly-between points chain lo -> mid -> hi)",
-    "kvE2_sepHonestBasePairsL/R + _eval (cross-owner (value,type) pools: L = lXU/lUW/rXW, R = lWT/rWX1/rX1T; every pair's value realizes its type)",
-    "kvE2_sepHonestAnchorsL/R + _bounds + _pairwise_aux + _chain (value-mergeSorted anchors, STRICT via kvE2_sepAnchor_injOn on the Nodup positive spine; chains x<a_1<..<a_k<w and w<..<t)",
-    "kvE2_sepHonestRegionsL/R (the joint gap region lists)",
-    "kvE2_sepHonest_engineInputs (THE Phase-1 bundle: hpos/hlink/hnd/hreal x2 + ne_nil x2 + hbdry head?/getLast? = x/w/w/t)"
+    "kvE2_sepGapRegions_lo_le (every gap region's lo at least the global lo, under the strict boundary chain)",
+    "kvE2_sepGapRegions_hi_le (every gap region's hi at most the global hi, under the strict boundary chain)",
+    "kvE2_sepInterleaveK_lt (interleave global STRICT upper bound from per-region hi <= global hi; dual of k1v_stitch_regions .2)",
+    "kvE2_sepForall₂_mem_left (private: Forall₂ left-membership extraction)",
+    "kvE2_sepForall₂_chain' (private: boundary-link Chain' transfer from regions to engine point lists)",
+    "kvE2_sepHonest_witnesses (THE Phase-2 deliverable: psL/psR with full engine Forall₂ vs kvE2_sepHonestRegionsL/R + per-side bounds x < interleaveK psL < w and w < interleaveK psR < t + global (interleaveK psL ++ w :: interleaveK psR).Pairwise (<))"
   ],
   "sorry_inventory": [],
   "blockers": [],
@@ -22,42 +21,48 @@
     "build_scope": "lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness — GREEN (exit 0); module root is Bimodal, NOT Theories.Bimodal",
     "sorry_count_in_sharedwitness": 0,
     "sorry_matches_are_all_docstring_prose": true,
+    "sorry_census": "lean-sorry-census.sh Theories/ --cross-check: all remaining code sorries are Boneyard/ legacy (pre-existing, out of scope); compiler count 30 / stripper 163 mismatch is entirely pre-existing legacy files",
     "vacuous_count_new": 0,
     "new_axioms": 0,
     "lean_verify": {
-      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepHonest_engineInputs": ["propext", "Classical.choice", "Quot.sound"]
+      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepHonest_witnesses": ["propext", "Classical.choice", "Quot.sound"],
+      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepGapRegions_lo_le": ["propext", "Classical.choice", "Quot.sound"],
+      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepGapRegions_hi_le": ["propext", "Classical.choice", "Quot.sound"],
+      "Bimodal.Metalogic.WeakCanonical.Kamp.kvE2_sepInterleaveK_lt": ["propext", "Classical.choice", "Quot.sound"]
     },
-    "lean_verify_note": "the bundle theorem consumes every new supporting lemma, so this axiom check covers all landed declarations transitively; no sorryAx",
-    "diff_scope": "Theories diff is SharedWitness.lean only, +448/-0 (purely additive)",
-    "preexisting_out_of_scope": "EANegation.lean:834,1129 (task 305) untouched and not counted; TemporalStructures.lean:269 vacuous hit pre-existing"
+    "lean_verify_note": "kvE2_sepHonest_witnesses consumes both private helpers (unicode names rejected by the verify tool), so their axiom-cleanliness is covered transitively; no sorryAx anywhere",
+    "diff_scope": "Theories diff is SharedWitness.lean only, +229/-0 (purely additive)",
+    "preexisting_out_of_scope": "EANegation.lean:834,1129 (task 305) untouched and not counted; TemporalStructures.lean:269 vacuous hit pre-existing; both ^axiom grep hits are prose in Boneyard comments"
   },
   "preserved": [
+    "kvE2_sepHonest_engineInputs + all Phase-1 declarations (cycle 9) — untouched, CONSUMED by kvE2_sepHonest_witnesses",
     "kvE2_sepCoincidentOrder_mem_arr' (v3 asset) — untouched",
     "kvE2_sepHonestBaseRealizerL/R (cycle 8) — untouched, still available as Phase-3 owner-relative fallback",
-    "halign trio kvE2_sepSlotGIdx_honestOrder{,_mono,_injOn} — untouched (Phase 2/3 consumes)",
+    "halign trio kvE2_sepSlotGIdx_honestOrder{,_mono,_injOn} — untouched (Phase 3 consumes)",
     "value-sortedness + Nodup foundations (cycles 6-7) — untouched",
-    "All 334/336/338/339/340 declarations — untouched (all edits additive before the Phase-5D docstring)"
+    "All 334/336/338/339/340 declarations — untouched (all edits additive, inserted between the Phase-1 bundle and the Phase-5D docstring)"
   ],
   "continuation_context": {
     "is_successor": true,
-    "resume_phase": 2,
-    "handoff": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-1-handoff-1783610916.md",
-    "immediate_next_action": "Phase 2: destructure kvE2_sepHonest_engineInputs qnf M w x t hxw hwt h; invoke k1v_sorted_realizationK (SubBracket2V.lean:633-646) on kvE2_sepHonestRegionsL and kvE2_sepHonestRegionsR; obtain psL/psR with (interleaveK psS).Pairwise (<); stitch psL + w + psR into the global monotone bracket witness (hbdry gives L: head lo = x / last hi = w, R: head lo = w / last hi = t, so w is the single shared pivot). Helper kvE2_sepHonest_witnesses.",
-    "phase23_alignment_caveats": [
-      "Gap COVERAGE is NOT part of the Phase-1 bundle: an rXW pair value (right owner, left side) lives in (x, a_sigma) with a_sigma > w and may fall OUTSIDE (x,w), hence outside every L gap; alignment of gap content with kvE2_sepSlotsLOf/ROf is Phase 2/3 halign work on the banked trio.",
-      "Two same-type slots in one gap yield ONE engine point for that type; the bracket needs one point PER SLOT — the pair pools kvE2_sepHonestBasePairsL/R retain each slot's own value (itself a realizer) for the per-slot re-indexing.",
-      "Folded (anchor-colliding) types are absent from gap lists by strictness; realize them AT their anchor via the meet-type fold in Phase 3 (kvE2_sepGapTypes_mem_of characterizes gap membership)."
+    "resume_phase": 3,
+    "handoff": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783610916.md",
+    "immediate_next_action": "Phase 3 (kvE2_sepHonest_bracket_holds, HIGHEST-RISK, sized alone per H8): destructure kvE2_sepHonest_witnesses; do the per-slot re-indexing of the chain into kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo (halign trio + value-sortedness + pair pools kvE2_sepHonestBasePairsL/R for per-slot multiplicity), realize each slot's point type (engine Forall₂ realizers for gap types, meet-type fold AT anchors for folded types, pair-pool own-values where needed), prove the three kvE2_sepSegs segment families, close via IntervalPattern.holds_eq_succ.mpr. Structural dual: kvE2_sepDisjunct_extract.",
+    "phase3_alignment_caveats": [
+      "Engine points are dedup'd per gap TYPE; the bracket needs one point PER SLOT — use the pair pools kvE2_sepHonestBasePairsL/R (each slot's own value is a realizer) for the per-slot re-indexing.",
+      "An rXW pair value (right owner, left side) may fall OUTSIDE (x,w); its L-block point-type realization cannot come from an L gap — use the banked owner-relative fallback kvE2_sepHonestBaseRealizerL/R.",
+      "Folded (anchor-colliding) types are absent from gap lists; realize them AT their anchor via the meet-type fold (kvE2_sepGapTypes_mem_of characterizes gap membership).",
+      "Phase-2's per-side bounds + global Pairwise give mono/range for ANY sub-chain selection; the transfer helpers kvE2_sepForall₂_mem_left/kvE2_sepForall₂_chain' are reusable."
     ]
   },
-  "continuation_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-1-handoff-1783610916.md",
-  "next_action_hint": "Dispatch Phase 2 (invoke k1v_sorted_realizationK -> global monotone bracket witness ws) consuming kvE2_sepHonest_engineInputs. Do NOT re-derive the banked foundations.",
+  "continuation_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783610916.md",
+  "next_action_hint": "Dispatch Phase 3 (bracket point-type + segment match -> .holds) consuming kvE2_sepHonest_witnesses. Do NOT re-derive the engine invocation or the banked foundations.",
   "acceptance_met": true,
   "modified_files": [
     "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.return-meta.json",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/09_engine-inputs-landed-summary.md",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-1-handoff-1783610916.md"
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783610916.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/10_global-witness-landed-summary.md"
   ]
 }
