@@ -166,7 +166,15 @@ grows as phases land); (ii) ends at a green, sorry-tracked `lake build` with a `
 axiom check on each new declaration; (iii) commits at every green milestone (per-phase, and per
 green sub-step within a phase — e.g. each standalone segment-eval lemma in Phase 4).
 
-### Phase 1: Foundation — reconfirm consumed declarations + per-class witness value function [IN PROGRESS]
+### Phase 1: Foundation — reconfirm consumed declarations + per-class witness value function [COMPLETED]
+
+*(Deviation: altered — the per-class witness value function `usL/usR` is realized inline at
+Phase 6 assembly as `gL.map (class-head value)`; the load-bearing Phase-1 deliverable is instead
+the primed-order value substrate: `kvE2_sepSlotGIdx_honestOrder'` (bridge), `_mono`,
+`kvE2_sepSlotsL/ROf_honestOrder'_valueSorted`, `kvE2_sepTieRuns_key_const`, and the
+one-value-per-class facts `kvE2_sepTieGroupedL/R_value_const`. These were required because the
+target's PRIMED tie-reporting order carries the `kvE2_sepSlotHonestVIdx` payload, so the banked
+unprimed value-sortedness SW:4157 does not apply. All green + axiom-clean.)*
 
 - **Goal:** Establish the shared substrate all of O1/O2/O3 consume: reconfirm the landed
   declarations at their current lines, and define the value-direct per-class witness value lists
