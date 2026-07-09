@@ -695,6 +695,39 @@ theorem kvE2_sepSlotIndexOf_block_mono {sig : MonadicSignature} (qnf : NormalFor
       List.idxOf_append_of_mem hmem, List.get_idxOf (kvE2_sepSlotBlock_nodup σ) i]
   rw [hoff j, hoff k]; omega
 
+/-- **Region-scoped per-owner consistency** (task 340 Phase 3 flip): the owner's per-slot payload
+    `t` extends σ's region order — within each region, a strictly larger region rank gets a strictly
+    larger payload entry. Region-scoped, NOT whole-block monotone: block rank drops at the L→R
+    boundary (crux correction). Replaces the length-3 `i₀<i₁<i₂` `kvE2_sepConsistentTuple`. Reads no
+    zone bit, no model literal (abstract ℕ compare; F4/F5/LITMUS clean). -/
+noncomputable def kvE2_sepConsistentBlock {sig : MonadicSignature}
+    (σ : NormalForm sig 1 4) (t : List ℕ) : Bool :=
+  decide (∀ j k : Fin (kvE2_sepSlotBlock σ).length,
+    kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get j)
+      = kvE2_sepSlotRegionLeft ((kvE2_sepSlotBlock σ).get k) →
+    kvE2_sepSlotRank ((kvE2_sepSlotBlock σ).get j)
+      < kvE2_sepSlotRank ((kvE2_sepSlotBlock σ).get k) →
+    t.getD j.val 0 < t.getD k.val 0)
+
+/-- Reading a `block.map f` payload at a block position `m` returns `f (block.get m)`. -/
+theorem kvE2_sepBlockMap_getD {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+    (f : KvE2SepSlot sig → ℕ) (m : Fin (kvE2_sepSlotBlock σ).length) :
+    ((kvE2_sepSlotBlock σ).map f).getD m.val 0 = f ((kvE2_sepSlotBlock σ).get m) := by
+  rw [List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem m.isLt]
+  rfl
+
+/-- **Prefix-sum consistency** (task 340 Phase 3/5 flip, model/coincident payload): the payload
+    `block.map kvE2_sepSlotIndexOf` extends every region order. Within a region a larger rank gives a
+    later block position (`kvE2_sepBlock_pos_lt_of_rank_lt`), hence a larger global index
+    (`kvE2_sepSlotIndexOf_block_mono`). -/
+theorem kvE2_sepConsistentBlock_slotIndexOf {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
+    kvE2_sepConsistentBlock σ ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotIndexOf qnf)) = true := by
+  rw [kvE2_sepConsistentBlock, decide_eq_true_eq]
+  intro j k hreg hrank
+  rw [kvE2_sepBlockMap_getD, kvE2_sepBlockMap_getD]
+  exact kvE2_sepSlotIndexOf_block_mono qnf hσ (kvE2_sepBlock_pos_lt_of_rank_lt σ hreg hrank)
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
