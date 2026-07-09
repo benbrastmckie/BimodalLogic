@@ -497,6 +497,25 @@ theorem kvE2_sepSlotIndexOf_injOn {sig : MonadicSignature} (qnf : NormalForm sig
   congr 1
   exact Fin.ext h
 
+/-- **Block position of a slot** (task 340 Phase 4 reader foundation): the 0-based index of `s`
+    within its OWNER's individual-slot block. The per-INDIVIDUAL-slot coordinate the refined reader
+    `kvE2_sepSlotGIdx` will project the payload at — REPLACING the region-rank projection
+    `kvE2_sepSlotRank`, whose collapse of same-region base slots to one index is the exact 337
+    stop-guard tie. Purely structural (a syntactic `idxOf`); reads no zone bit and no model data
+    (F4/F5/LITMUS clean). -/
+noncomputable def kvE2_sepBlockPos {sig : MonadicSignature} (s : KvE2SepSlot sig) : ℕ :=
+  (kvE2_sepSlotBlock (kvE2_sepSlotSub s)).idxOf s
+
+/-- A slot of its owner's block has block position `< block length`, so the refined reader's
+    `List.getD` at `kvE2_sepBlockPos` hits a real payload entry (the per-slot payload is
+    block-length-long). -/
+theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
+    kvE2_sepBlockPos s < (kvE2_sepSlotBlock σ).length := by
+  have hsub : kvE2_sepSlotSub s = σ := kvE2_sepSlotSub_of_mem_block hs
+  rw [kvE2_sepBlockPos, hsub]
+  exact List.idxOf_lt_length_of_mem hs
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
