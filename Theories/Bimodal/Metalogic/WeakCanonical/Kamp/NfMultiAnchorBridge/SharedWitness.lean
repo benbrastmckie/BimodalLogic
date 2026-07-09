@@ -3408,6 +3408,82 @@ theorem kvE2_sepSlotValue_rX1_injOn {sig : MonadicSignature}
   rw [kvE2_sepSlotValue_rX1, kvE2_sepSlotValue_rX1] at heq
   exact kvE2_sepAnchor_injOn qnf M w x t h hσ hτ heq
 
+/-! ### Task 337 Phase 1 — merged slot-list `Nodup` (region `hnd` foundation)
+
+`k1v_sorted_realizationK`'s `hnd` obligation (each region's slot content duplicate-free) rests on the
+whole merged list being duplicate-free. Distinct individual slots stay distinct through the
+point-level `mergeSort` (a permutation): the pre-sort per-owner LEFT/RIGHT blocks are each `Nodup`
+(left/right parts of the banked `kvE2_sepSlotBlock_nodup`) and cross-owner disjoint (subsets of the
+banked disjoint full blocks). Model-independent; collision-free (structural slot identity, not model
+value). -/
+
+/-- σ's canonical LEFT-region slot block is duplicate-free (left part of the `Nodup` full block). -/
+theorem kvE2_sepSlotsLFor_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsLFor σ).Nodup := by
+  have h := kvE2_sepSlotBlock_nodup σ
+  rw [kvE2_sepSlotBlock, List.nodup_append] at h
+  exact h.1
+
+/-- σ's canonical RIGHT-region slot block is duplicate-free (right part of the `Nodup` full block). -/
+theorem kvE2_sepSlotsRFor_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotsRFor σ).Nodup := by
+  have h := kvE2_sepSlotBlock_nodup σ
+  rw [kvE2_sepSlotBlock, List.nodup_append] at h
+  exact h.2.1
+
+/-- LEFT blocks of distinct owners are disjoint (subsets of the disjoint full blocks). -/
+theorem kvE2_sepSlotsLFor_disjoint {sig : MonadicSignature} {σ τ : NormalForm sig 1 4}
+    (hne : σ ≠ τ) : (kvE2_sepSlotsLFor σ).Disjoint (kvE2_sepSlotsLFor τ) := by
+  intro a ha hb
+  exact kvE2_sep_blocks_disjoint hne
+    (by rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ ha)
+    (by rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ hb)
+
+/-- RIGHT blocks of distinct owners are disjoint (subsets of the disjoint full blocks). -/
+theorem kvE2_sepSlotsRFor_disjoint {sig : MonadicSignature} {σ τ : NormalForm sig 1 4}
+    (hne : σ ≠ τ) : (kvE2_sepSlotsRFor σ).Disjoint (kvE2_sepSlotsRFor τ) := by
+  intro a ha hb
+  exact kvE2_sep_blocks_disjoint hne
+    (by rw [kvE2_sepSlotBlock]; exact List.mem_append_right _ ha)
+    (by rw [kvE2_sepSlotBlock]; exact List.mem_append_right _ hb)
+
+/-- The wo-ordered owner list is duplicate-free (a `mergeSort` permutation of the `Nodup`
+    positive spine `kvE2_sepPos`). -/
+theorem kvE2_sepOrderOwners_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
+    (kvE2_sepOrderOwners wo).Nodup := by
+  rw [kvE2_sepOrderOwners]
+  have hperm : List.Perm
+      ((wo.mergeSort (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map Prod.fst)
+      (kvE2_sepPos qnf) := by
+    have hp := (List.mergeSort_perm wo
+      (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map Prod.fst
+    rwa [kvE2_sepOrderTypes_owners qnf hwo] at hp
+  exact hperm.nodup_iff.mpr (kvE2_sepPos_nodup qnf)
+
+/-- **The joint LEFT slot list is duplicate-free** (task 337 Phase 1 `hnd` foundation): distinct
+    slots stay distinct through the point-level merge. `mergeSort` is a permutation, and the pre-sort
+    flatMap over the (`Nodup`) positive owners of the per-owner LEFT blocks is `Nodup` by
+    `kvE2_sepSlotsLFor_nodup` + cross-owner `kvE2_sepSlotsLFor_disjoint`. -/
+theorem kvE2_sepSlotsLOf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
+    (kvE2_sepSlotsLOf wo).Nodup := by
+  rw [kvE2_sepSlotsLOf]
+  refine (List.mergeSort_perm _ _).nodup_iff.mpr ?_
+  rw [List.nodup_flatMap]
+  exact ⟨fun σ _ => kvE2_sepSlotsLFor_nodup σ,
+    (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsLFor_disjoint hne)⟩
+
+/-- **The joint RIGHT slot list is duplicate-free** (mirror of `kvE2_sepSlotsLOf_nodup`). -/
+theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
+    (kvE2_sepSlotsROf wo).Nodup := by
+  rw [kvE2_sepSlotsROf]
+  refine (List.mergeSort_perm _ _).nodup_iff.mpr ?_
+  rw [List.nodup_flatMap]
+  exact ⟨fun σ _ => kvE2_sepSlotsRFor_nodup σ,
+    (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsRFor_disjoint hne)⟩
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
