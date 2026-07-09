@@ -3233,6 +3233,30 @@ theorem kvE2_sepAllSlots_map_honestGIdx_nodup {sig : MonadicSignature} (qnf : No
   List.Nodup.map_on (fun a ha b hb hab => kvE2_sepSlotHonestGIdx_injOn qnf M w x t h ha hb hab)
     (kvE2_sepAllSlots_nodup qnf)
 
+/-- Flattening a per-owner `block.map f` payload over the whole `zipIdx`-tagged owner list yields
+    exactly `allSlots.map f` (owner blocks concatenate to the family in order; the `zipIdx` position
+    is irrelevant). -/
+private theorem kvE2_sepZip_flatMap_aux {sig : MonadicSignature}
+    (g : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (f : KvE2SepSlot sig → ℕ)
+    (L : List (NormalForm sig 1 4)) (n : ℕ) :
+    ((L.zipIdx n).map (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap
+        (fun p => p.2.2)
+      = (L.flatMap kvE2_sepSlotBlock).map f := by
+  induction L generalizing n with
+  | nil => simp
+  | cons a t ih =>
+    simp only [List.zipIdx_cons, List.map_cons, List.flatMap_cons, List.map_append, ih (n + 1)]
+
+/-- **Payload flatten** (task 340 Phase 5/7 flip conjunct (iii)): the flattened per-slot payload of a
+    `block.map f`-tagged weak order over all owners is `allSlots.map f` — feeding the global-Nodup
+    lemmas `kvE2_sepAllSlots_map_slotIndexOf_nodup` / `_honestGIdx_nodup`. -/
+theorem kvE2_sepZipPayload_flatMap {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    (g : NormalForm sig 1 4 → KvE2SepSpikeOrderType) (f : KvE2SepSlot sig → ℕ) :
+    ((kvE2_sepPos qnf).zipIdx.map
+        (fun p => (p.1, g p.1, (kvE2_sepSlotBlock p.1).map f))).flatMap (fun p => p.2.2)
+      = (kvE2_sepAllSlots qnf).map f := by
+  rw [kvE2_sepAllSlots]; exact kvE2_sepZip_flatMap_aux g f (kvE2_sepPos qnf) 0
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
