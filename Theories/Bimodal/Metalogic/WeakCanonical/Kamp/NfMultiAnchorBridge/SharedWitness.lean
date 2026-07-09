@@ -516,6 +516,56 @@ theorem kvE2_sepBlockPos_lt {sig : MonadicSignature} {σ : NormalForm sig 1 4}
   rw [kvE2_sepBlockPos, hsub]
   exact List.idxOf_lt_length_of_mem hs
 
+/-- **Region tag** (task 340 Phase 3 flip): `true` for a slot in σ's LEFT block
+    (`kvE2_sepSlotsLFor`: `lXU`/`lX1`/`lUW`/`rXW`), `false` for the RIGHT block
+    (`kvE2_sepSlotsRFor`: `lWT`/`rWX1`/`rX1`/`rX1T`). The region-scoped consistency predicate
+    compares ranks ONLY within one region: block rank is non-monotone across the L→R boundary
+    (crux correction — `lUW` rank 2 in the left region precedes `lWT` rank 0 in the right region),
+    so a whole-block monotone constraint would be WRONG. Reads no zone bit, no model data. -/
+def kvE2_sepSlotRegionLeft {sig : MonadicSignature} : KvE2SepSlot sig → Bool
+  | .lXU _ _ => true
+  | .lX1 _   => true
+  | .lUW _ _ => true
+  | .rXW _ _ => true
+  | .lWT _ _ => false
+  | .rWX1 _ _ => false
+  | .rX1 _   => false
+  | .rX1T _ _ => false
+
+/-- Every slot in σ's LEFT block is region-left. -/
+theorem kvE2_sepSlotsLFor_regionLeft {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
+    kvE2_sepSlotRegionLeft s = true := by
+  rw [kvE2_sepSlotsLFor] at hs
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · simp only [if_pos h1] at hs
+    rcases List.mem_append.mp hs with h | h
+    · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+    · rcases List.mem_cons.mp h with rfl | h
+      · rfl
+      · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · simp only [if_neg h1, if_pos h2] at hs
+      obtain ⟨χ, _, rfl⟩ := List.mem_map.mp hs; rfl
+    · simp [if_neg h1, if_neg h2] at hs
+
+/-- Every slot in σ's RIGHT block is region-right. -/
+theorem kvE2_sepSlotsRFor_regionRight {sig : MonadicSignature} (σ : NormalForm sig 1 4)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
+    kvE2_sepSlotRegionLeft s = false := by
+  rw [kvE2_sepSlotsRFor] at hs
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · simp only [if_pos h1] at hs
+    obtain ⟨χ, _, rfl⟩ := List.mem_map.mp hs; rfl
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · simp only [if_neg h1, if_pos h2] at hs
+      rcases List.mem_append.mp hs with h | h
+      · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+      · rcases List.mem_cons.mp h with rfl | h
+        · rfl
+        · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+    · simp [if_neg h1, if_neg h2] at hs
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
