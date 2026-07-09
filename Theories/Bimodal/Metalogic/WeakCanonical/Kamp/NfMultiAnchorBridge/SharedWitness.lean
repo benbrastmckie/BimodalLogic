@@ -6549,8 +6549,9 @@ routing in Lean. NO new literal machinery: every case below discharges an EXISTI
 family of the Part-I predicates (SW:886-946). The char-semantics hypotheses `hcb`/`hck`
 are the abstract form of the concrete `nf_depth0_char_formula` correctness
 (`nfPred_correct`) that the k1v template consumed (`CarrierK1V.lean:1672`). Witness bounds
-come from realized zone membership (`kvE_sub2_zoneHolds_cons_iff`) and the honest
-realization's own order channel — never a chain (LITMUS). -/
+come from realized zone membership (the arity-4 zoneHolds cons-iff helper,
+`SubBracket2.lean:538`) and the honest realization's own order channel — never a chain
+(LITMUS). -/
 
 /-- Bool bridge: an order iff against `b = true` computes the `decide`. -/
 private theorem kvE2_sep_decide_eq_of_iff {p : Prop} [Decidable p] {b : Bool}
@@ -6782,5 +6783,434 @@ private theorem kvE2_sepHasPos_witness {sig : MonadicSignature}
   refine ⟨σ, s, hzone, hs, ?_⟩
   have hpf := kvE2_sepProjFresh_eval M _ s σ hs
   rwa [of_decide_eq_true hproj] at hpf
+
+/-! ### σ-level (outer-class) literal honesty — the five `kvE2_sepHasPos` families
+
+Positive bits discharge by exhibiting the class owner's honest witness (the σ_w route of
+`kvE2_sepHonest_hLR_absurd`, now an obligation instead of a contradiction); negative bits
+discharge because a witness would force the class characteristic positive
+(`kvE2_sepHasPos_of_realized`), contradicting the bit. Prop 3.5 (pp.5,7): `Since`/`Until`
+navigation rides the fixed endpoint as evaluation point — LITMUS-clean. -/
+
+/-- `zPastX3` Since-literal honesty at `x`. -/
+private theorem kvE2_sepHasPosLit_zPastX3 {sig : MonadicSignature}
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    (χ : NormalForm sig 1 1) :
+    temporal_truth M atomMap x
+      (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zPastX3 χ)
+        (Formula.snce (charK χ) Formula.top)) := by
+  cases hb : kvE2_sepHasPos qnf kvE2_sep_zPastX3 χ with
+  | true =>
+    show temporal_truth M atomMap x (Formula.snce (charK χ) Formula.top)
+    obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hsx := kvE2_sepZoneFact_lt M s w x t σ hσ_atom ⟨1, by omega⟩
+      (by rw [congrFun hzone ⟨1, by omega⟩]; decide)
+    exact ⟨s, hsx, (hck χ s).mpr hχs, fun r _ _ hf => hf⟩
+  | false =>
+    show temporal_truth M atomMap x (Formula.snce (charK χ) Formula.top).neg
+    rintro ⟨s, hsx, hsχ, -⟩
+    have hz := kvE2_sepCharZone3 M s w x t (true, false) (true, false) (true, false)
+      (iff_of_true (hsx.trans hxw) rfl)
+      (iff_of_false (lt_asymm (hsx.trans hxw)) (by decide))
+      (iff_of_true hsx rfl) (iff_of_false (lt_asymm hsx) (by decide))
+      (iff_of_true (hsx.trans (hxw.trans hwt)) rfl)
+      (iff_of_false (lt_asymm (hsx.trans (hxw.trans hwt))) (by decide))
+    have hpos := kvE2_sepHasPos_of_realized qnf M w x t s h kvE2_sep_zPastX3 hz χ
+      ((hck χ s).mp hsχ)
+    rw [hb] at hpos
+    exact Bool.noConfusion hpos
+
+/-- `zAtX3` at-literal honesty at `x`. -/
+private theorem kvE2_sepHasPosLit_zAtX3 {sig : MonadicSignature}
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    (χ : NormalForm sig 1 1) :
+    temporal_truth M atomMap x
+      (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zAtX3 χ) (charK χ)) := by
+  cases hb : kvE2_sepHasPos qnf kvE2_sep_zAtX3 χ with
+  | true =>
+    show temporal_truth M atomMap x (charK χ)
+    obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hnsx := kvE2_sepZoneFact_not_lt M s w x t σ hσ_atom ⟨1, by omega⟩
+      (by rw [congrFun hzone ⟨1, by omega⟩]; decide)
+    have hnxs := kvE2_sepZoneFact_not_gt M s w x t σ hσ_atom ⟨1, by omega⟩
+      (by rw [congrFun hzone ⟨1, by omega⟩]; decide)
+    have hseq : s = x := le_antisymm (not_lt.mp hnxs) (not_lt.mp hnsx)
+    exact (hck χ x).mpr (hseq ▸ hχs)
+  | false =>
+    show temporal_truth M atomMap x (charK χ).neg
+    intro hch
+    have hz := kvE2_sepCharZone3 M x w x t (true, false) (false, false) (true, false)
+      (iff_of_true hxw rfl) (iff_of_false (lt_asymm hxw) (by decide))
+      (iff_of_false (lt_irrefl x) (by decide)) (iff_of_false (lt_irrefl x) (by decide))
+      (iff_of_true (hxw.trans hwt) rfl)
+      (iff_of_false (lt_asymm (hxw.trans hwt)) (by decide))
+    have hpos := kvE2_sepHasPos_of_realized qnf M w x t x h kvE2_sep_zAtX3 hz χ
+      ((hck χ x).mp hch)
+    rw [hb] at hpos
+    exact Bool.noConfusion hpos
+
+/-- `zAtW3` at-literal honesty at the shared pivot `w`. -/
+private theorem kvE2_sepHasPosLit_zAtW3 {sig : MonadicSignature}
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    (χ : NormalForm sig 1 1) :
+    temporal_truth M atomMap w
+      (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zAtW3 χ) (charK χ)) := by
+  cases hb : kvE2_sepHasPos qnf kvE2_sep_zAtW3 χ with
+  | true =>
+    show temporal_truth M atomMap w (charK χ)
+    obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hnsw := kvE2_sepZoneFact_not_lt M s w x t σ hσ_atom ⟨0, by omega⟩
+      (by rw [congrFun hzone ⟨0, by omega⟩]; decide)
+    have hnws := kvE2_sepZoneFact_not_gt M s w x t σ hσ_atom ⟨0, by omega⟩
+      (by rw [congrFun hzone ⟨0, by omega⟩]; decide)
+    have hseq : s = w := le_antisymm (not_lt.mp hnws) (not_lt.mp hnsw)
+    exact (hck χ w).mpr (hseq ▸ hχs)
+  | false =>
+    show temporal_truth M atomMap w (charK χ).neg
+    intro hch
+    have hz := kvE2_sepCharZone3 M w w x t (false, false) (false, true) (true, false)
+      (iff_of_false (lt_irrefl w) (by decide)) (iff_of_false (lt_irrefl w) (by decide))
+      (iff_of_false (lt_asymm hxw) (by decide)) (iff_of_true hxw rfl)
+      (iff_of_true hwt rfl) (iff_of_false (lt_asymm hwt) (by decide))
+    have hpos := kvE2_sepHasPos_of_realized qnf M w x t w h kvE2_sep_zAtW3 hz χ
+      ((hck χ w).mp hch)
+    rw [hb] at hpos
+    exact Bool.noConfusion hpos
+
+/-- `zAtT3` at-literal honesty at `t`. -/
+private theorem kvE2_sepHasPosLit_zAtT3 {sig : MonadicSignature}
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    (χ : NormalForm sig 1 1) :
+    temporal_truth M atomMap t
+      (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zAtT3 χ) (charK χ)) := by
+  cases hb : kvE2_sepHasPos qnf kvE2_sep_zAtT3 χ with
+  | true =>
+    show temporal_truth M atomMap t (charK χ)
+    obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hnst := kvE2_sepZoneFact_not_lt M s w x t σ hσ_atom ⟨2, by omega⟩
+      (by rw [congrFun hzone ⟨2, by omega⟩]; decide)
+    have hnts := kvE2_sepZoneFact_not_gt M s w x t σ hσ_atom ⟨2, by omega⟩
+      (by rw [congrFun hzone ⟨2, by omega⟩]; decide)
+    have hseq : s = t := le_antisymm (not_lt.mp hnts) (not_lt.mp hnst)
+    exact (hck χ t).mpr (hseq ▸ hχs)
+  | false =>
+    show temporal_truth M atomMap t (charK χ).neg
+    intro hch
+    have hz := kvE2_sepCharZone3 M t w x t (false, true) (false, true) (false, false)
+      (iff_of_false (lt_asymm hwt) (by decide)) (iff_of_true hwt rfl)
+      (iff_of_false (lt_asymm (hxw.trans hwt)) (by decide))
+      (iff_of_true (hxw.trans hwt) rfl)
+      (iff_of_false (lt_irrefl t) (by decide)) (iff_of_false (lt_irrefl t) (by decide))
+    have hpos := kvE2_sepHasPos_of_realized qnf M w x t t h kvE2_sep_zAtT3 hz χ
+      ((hck χ t).mp hch)
+    rw [hb] at hpos
+    exact Bool.noConfusion hpos
+
+/-- `zFutT3` Until-literal honesty at `t`. -/
+private theorem kvE2_sepHasPosLit_zFutT3 {sig : MonadicSignature}
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    (χ : NormalForm sig 1 1) :
+    temporal_truth M atomMap t
+      (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zFutT3 χ)
+        (Formula.untl (charK χ) Formula.top)) := by
+  cases hb : kvE2_sepHasPos qnf kvE2_sep_zFutT3 χ with
+  | true =>
+    show temporal_truth M atomMap t (Formula.untl (charK χ) Formula.top)
+    obtain ⟨σ, s, hzone, hs, hχs⟩ := kvE2_sepHasPos_witness qnf M w x t h _ χ hb
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hts := kvE2_sepZoneFact_gt M s w x t σ hσ_atom ⟨2, by omega⟩
+      (by rw [congrFun hzone ⟨2, by omega⟩]; decide)
+    exact ⟨s, hts, (hck χ s).mpr hχs, fun r _ _ hf => hf⟩
+  | false =>
+    show temporal_truth M atomMap t (Formula.untl (charK χ) Formula.top).neg
+    rintro ⟨s, hts, hsχ, -⟩
+    have hz := kvE2_sepCharZone3 M s w x t (false, true) (false, true) (false, true)
+      (iff_of_false (lt_asymm (hwt.trans hts)) (by decide))
+      (iff_of_true (hwt.trans hts) rfl)
+      (iff_of_false (lt_asymm (hxw.trans (hwt.trans hts))) (by decide))
+      (iff_of_true (hxw.trans (hwt.trans hts)) rfl)
+      (iff_of_false (lt_asymm hts) (by decide)) (iff_of_true hts rfl)
+    have hpos := kvE2_sepHasPos_of_realized qnf M w x t s h kvE2_sep_zFutT3 hz χ
+      ((hck χ s).mp hsχ)
+    rw [hb] at hpos
+    exact Bool.noConfusion hpos
+
+/-! ### Per-owner (inner-zone) literal honesty — the six `kvE2_sepBits` families
+
+Each positive bit yields a genuine zone witness through the owner's realized fold channel
+(`nf_eval_depth1_fold_iff`); each negative bit refutes the literal because a witness would
+force the bit positive through the same channel. All zones here are placement-generic
+boundary/exterior zones — the OPEN interior keys never appear (F5 stays confined to the
+strict placements of conjunct (i)). -/
+
+/-- `zPastX4` Since-literal honesty at `x` (per interior owner). -/
+private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hxa : x < a) (hxw : x < w) (hxt : x < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap x
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zPastX4 χ)
+        (Formula.snce (charBase χ) Formula.top)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zPastX4 χ with
+  | true =>
+    show temporal_truth M atomMap x (Formula.snce (charBase χ) Formula.top)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zPastX4 χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+      (true, false) (true, false) (true, false) (true, false)).mp hz
+    exact ⟨v, h2.1.mpr rfl, (hcb χ v).mpr hv, fun r _ _ hf => hf⟩
+  | false =>
+    show temporal_truth M atomMap x (Formula.snce (charBase χ) Formula.top).neg
+    rintro ⟨s, hsx, hsχ, -⟩
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zPastX4 s := by
+      refine (kvE_sub2_zoneHolds_cons_iff M a w x t s
+        (true, false) (true, false) (true, false) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_true (hsx.trans hxa) rfl,
+          iff_of_false (lt_asymm (hsx.trans hxa)) (by decide)⟩,
+        ⟨iff_of_true (hsx.trans hxw) rfl,
+          iff_of_false (lt_asymm (hsx.trans hxw)) (by decide)⟩,
+        ⟨iff_of_true hsx rfl, iff_of_false (lt_asymm hsx) (by decide)⟩,
+        ⟨iff_of_true (hsx.trans hxt) rfl,
+          iff_of_false (lt_asymm (hsx.trans hxt)) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zPastX4 χ = true :=
+      (h_zone kvE2_sep_zPastX4 χ).mp ⟨s, hz, (hcb χ s).mp hsχ⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- `zAtX4` at-literal honesty at `x` (per interior owner). -/
+private theorem kvE2_sepOwnerLit_zAtX4 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hxa : x < a) (hxw : x < w) (hxt : x < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap x
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX4 χ) (charBase χ)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zAtX4 χ with
+  | true =>
+    show temporal_truth M atomMap x (charBase χ)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtX4 χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+      (true, false) (true, false) (false, false) (true, false)).mp hz
+    have hveq : v = x := le_antisymm
+      (not_lt.mp (fun hc => Bool.noConfusion (h2.2.mp hc)))
+      (not_lt.mp (fun hc => Bool.noConfusion (h2.1.mp hc)))
+    exact (hcb χ x).mpr (hveq ▸ hv)
+  | false =>
+    show temporal_truth M atomMap x (charBase χ).neg
+    intro hch
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zAtX4 x := by
+      refine (kvE_sub2_zoneHolds_cons_iff M a w x t x
+        (true, false) (true, false) (false, false) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_true hxa rfl, iff_of_false (lt_asymm hxa) (by decide)⟩,
+        ⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by decide)⟩,
+        ⟨iff_of_false (lt_irrefl x) (by decide), iff_of_false (lt_irrefl x) (by decide)⟩,
+        ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zAtX4 χ = true :=
+      (h_zone kvE2_sep_zAtX4 χ).mp ⟨x, hz, (hcb χ x).mp hch⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- `zAtT4` at-literal honesty at `t` (per interior owner). -/
+private theorem kvE2_sepOwnerLit_zAtT4 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hat : a < t) (hwt : w < t) (hxt : x < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap t
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtT4 χ) (charBase χ)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zAtT4 χ with
+  | true =>
+    show temporal_truth M atomMap t (charBase χ)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtT4 χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+      (false, true) (false, true) (false, true) (false, false)).mp hz
+    have hveq : v = t := le_antisymm
+      (not_lt.mp (fun hc => Bool.noConfusion (h3.2.mp hc)))
+      (not_lt.mp (fun hc => Bool.noConfusion (h3.1.mp hc)))
+    exact (hcb χ t).mpr (hveq ▸ hv)
+  | false =>
+    show temporal_truth M atomMap t (charBase χ).neg
+    intro hch
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zAtT4 t := by
+      refine (kvE_sub2_zoneHolds_cons_iff M a w x t t
+        (false, true) (false, true) (false, true) (false, false)).mpr ?_
+      exact ⟨⟨iff_of_false (lt_asymm hat) (by decide), iff_of_true hat rfl⟩,
+        ⟨iff_of_false (lt_asymm hwt) (by decide), iff_of_true hwt rfl⟩,
+        ⟨iff_of_false (lt_asymm hxt) (by decide), iff_of_true hxt rfl⟩,
+        ⟨iff_of_false (lt_irrefl t) (by decide), iff_of_false (lt_irrefl t) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zAtT4 χ = true :=
+      (h_zone kvE2_sep_zAtT4 χ).mp ⟨t, hz, (hcb χ t).mp hch⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- `zFutT4` Until-literal honesty at `t` (per interior owner). -/
+private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hat : a < t) (hwt : w < t) (hxt : x < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap t
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zFutT4 χ)
+        (Formula.untl (charBase χ) Formula.top)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zFutT4 χ with
+  | true =>
+    show temporal_truth M atomMap t (Formula.untl (charBase χ) Formula.top)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zFutT4 χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+      (false, true) (false, true) (false, true) (false, true)).mp hz
+    exact ⟨v, h3.2.mpr rfl, (hcb χ v).mpr hv, fun r _ _ hf => hf⟩
+  | false =>
+    show temporal_truth M atomMap t (Formula.untl (charBase χ) Formula.top).neg
+    rintro ⟨s, hts, hsχ, -⟩
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zFutT4 s := by
+      refine (kvE_sub2_zoneHolds_cons_iff M a w x t s
+        (false, true) (false, true) (false, true) (false, true)).mpr ?_
+      exact ⟨⟨iff_of_false (lt_asymm (hat.trans hts)) (by decide),
+          iff_of_true (hat.trans hts) rfl⟩,
+        ⟨iff_of_false (lt_asymm (hwt.trans hts)) (by decide),
+          iff_of_true (hwt.trans hts) rfl⟩,
+        ⟨iff_of_false (lt_asymm (hxt.trans hts)) (by decide),
+          iff_of_true (hxt.trans hts) rfl⟩,
+        ⟨iff_of_false (lt_asymm hts) (by decide), iff_of_true hts rfl⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zFutT4 χ = true :=
+      (h_zone kvE2_sep_zFutT4 χ).mp ⟨s, hz, (hcb χ s).mp hsχ⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- `zAtWL` pivot-literal honesty at `w` (LEFT-interior owner, `a < w`). -/
+private theorem kvE2_sepOwnerLit_zAtWL {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (haw : a < w) (hxw : x < w) (hwt : w < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap w
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtWL χ) (charBase χ)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zAtWL χ with
+  | true =>
+    show temporal_truth M atomMap w (charBase χ)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtWL χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+      (false, true) (false, false) (false, true) (true, false)).mp hz
+    have hveq : v = w := le_antisymm
+      (not_lt.mp (fun hc => Bool.noConfusion (h1.2.mp hc)))
+      (not_lt.mp (fun hc => Bool.noConfusion (h1.1.mp hc)))
+    exact (hcb χ w).mpr (hveq ▸ hv)
+  | false =>
+    show temporal_truth M atomMap w (charBase χ).neg
+    intro hch
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zAtWL w := by
+      refine (kvE_sub2_zoneHolds_cons_iff M a w x t w
+        (false, true) (false, false) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_false (lt_asymm haw) (by decide), iff_of_true haw rfl⟩,
+        ⟨iff_of_false (lt_irrefl w) (by decide), iff_of_false (lt_irrefl w) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hxw) (by decide), iff_of_true hxw rfl⟩,
+        ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zAtWL χ = true :=
+      (h_zone kvE2_sep_zAtWL χ).mp ⟨w, hz, (hcb χ w).mp hch⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- `zAtWR` pivot-literal honesty at `w` (RIGHT-interior owner, `w < a`). -/
+private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hwa : w < a) (hxw : x < w) (hwt : w < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap w
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtWR χ) (charBase χ)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zAtWR χ with
+  | true =>
+    show temporal_truth M atomMap w (charBase χ)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtWR χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+      (true, false) (false, false) (false, true) (true, false)).mp hz
+    have hveq : v = w := le_antisymm
+      (not_lt.mp (fun hc => Bool.noConfusion (h1.2.mp hc)))
+      (not_lt.mp (fun hc => Bool.noConfusion (h1.1.mp hc)))
+    exact (hcb χ w).mpr (hveq ▸ hv)
+  | false =>
+    show temporal_truth M atomMap w (charBase χ).neg
+    intro hch
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zAtWR w := by
+      refine (kvE_sub2_zoneHolds_cons_iff M a w x t w
+        (true, false) (false, false) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_true hwa rfl, iff_of_false (lt_asymm hwa) (by decide)⟩,
+        ⟨iff_of_false (lt_irrefl w) (by decide), iff_of_false (lt_irrefl w) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hxw) (by decide), iff_of_true hxw rfl⟩,
+        ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zAtWR χ = true :=
+      (h_zone kvE2_sep_zAtWR χ).mp ⟨w, hz, (hcb χ w).mp hch⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
