@@ -209,7 +209,50 @@ unprimed value-sortedness SW:4157 does not apply. All green + axiom-clean.)*
 
 ---
 
-### Phase 2: O1 — class witness order and range [NOT STARTED]
+### Phase 2: O1 — class witness order and range [BLOCKED]
+
+**BLOCKER** (Phase 2) — the plan's own O1 Rollback contingency, triggered:
+- **What failed**: The grouped LEFT bracket (`kvE2_sepBracketN_construct`, SW:5357) requires
+  `(usL ++ w :: usR).Pairwise (· < ·)` — i.e. every LEFT per-class witness value strictly `< w`
+  (`usL`-last `< w`). The value-direct route pins each class's witness to `kvE2_sepSlotValue`
+  (the tie grouping itself is defined via `kvE2_sepSlotHonestVIdx = ordRank ∘ kvE2_sepSlotV`,
+  and `kvE2_sepSlotHonestVIdx_eq_iff` (SW:5857) equates equal VIdx with equal `kvE2_sepSlotValue`
+  — so a tie class's shared witness IS its shared `kvE2_sepSlotValue`). But a RIGHT-interior
+  (`zWT3`) owner contributes a `.rXW` slot to the LEFT list (`kvE2_sepSlotsLFor`, SW:337), and
+  the LANDED `kvE2_sepSlotValue` (`.rXW` branch, SW:3540-3541) is `Classical.epsilon` over the
+  WEAK predicate `x < v ∧ v < kvE2_sepAnchorVal σ ∧ realizes χ` — with `anchorVal σ ∈ (w,t)` for
+  right-interior owners and NO `v < w` conjunct. So the epsilon value can be `≥ w`, and
+  `kvE2_sepSlotValue (.rXW σ χ) < w` is NOT provable from the landed definition (a valid honest
+  model realizing χ somewhere in `(w, anchorVal σ)` lets epsilon land there).
+- **What was tried**:
+  1. Value-direct route (plan primary): blocked as above — merged-list value-sortedness
+     (`kvE2_sepSlotsLOf_honestOrder'_valueSorted`, landed Phase 1) orders the LEFT list but cannot
+     bound a `.rXW` class value below `w`; the pivot bound `usL`-last `< w` fails.
+  2. Zone semantics: `kvE_sub2_zXU` (SubBracket2.lean:123) coord-1 bit is `(true,false)` ⟹ the
+     HONEST zone witness satisfies `v < w` (SharedWitness.lean:104 documents this). But that
+     honest witness is NOT the epsilon value the landed `kvE2_sepSlotValue` picks — the landed
+     predicate omits the `v < w` conjunct, so the bound is lost at the definition.
+  3. Banked engine fallback (`kvE2_sepHonest_witnesses`, SW:4992): produces a correctly-around-`w`
+     strict chain, BUT (a) it FILTERS `≥ w` pairs out via `kvE2_sepGapRegions`/`kvE2_sepGapTypes`
+     (drops, does not prove `< w`), and (b) it requires per-slot distinct realizers (`hnd`) that
+     FAIL for genuinely-tied models — the exact case task 342's tie-reporting order exists to
+     cover. Its flat per-slot multiset also does not match the grouped per-class bracket.
+- **Why it's stuck**: The tie-class witness is structurally pinned to `kvE2_sepSlotValue`, whose
+  landed `.rXW` branch lacks the `v < w` bound that the grouped LEFT bracket's pivot requires. A
+  genuinely-tied all-`.rXW` LEFT class with shared value `≥ w` has no known `< w` realizer of its
+  meet type. This is precisely the plan's O1 Rollback scenario ("a cross-region slot value that
+  the merged-list sortedness cannot bound") and the Non-Goal "requires editing a LANDED
+  declaration" (additive-only violation).
+- **What is needed**: A carrier-side (NON-additive) strengthening of the landed
+  `kvE2_sepSlotValue` `.rXW` branch predicate from `x < v ∧ v < anchorVal σ ∧ realizes χ` to
+  `x < v ∧ v < w ∧ realizes χ` (satisfiable — the `kvE_sub2_zXU` coord-1 bit guarantees an honest
+  witness in `(x, w)`; re-extract via `kvE_sub2_zoneHolds_cons_iff`, SubBracket2.lean:538). This
+  makes every `.rXW` value `< w`, restoring `usL`-last `< w` and unblocking O1→O6. It is an edit
+  to a landed def (task 340/342 asset), so it requires a NEW upstream task (spawn), NOT an
+  additive 337 lemma. Symmetric review of `.lWT`/`.rWX1`/etc. bounds is advisable while editing.
+- **Prohibited workarounds**: NOT closed via `kvE2_sepHonest_hLR_absurd`/`False.elim`; no `sorry`,
+  no vacuous placeholder, no forced zone bound, no `x1 < e_i` literal, no landed-def edit under
+  this additive task.
 
 - **Goal:** Prove strict cross-class monotonicity of the combined list `usL ++ w :: usR` and the
   range facts: left-class values `< w <` right-class values and everything in `(x,t)`, in the exact
