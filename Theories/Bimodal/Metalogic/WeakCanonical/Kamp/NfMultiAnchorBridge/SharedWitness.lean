@@ -2003,6 +2003,81 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     rw [this, List.zipIdx_map_snd]
     exact List.nodup_range'
 
+/-! ### Task 340 Phase 5A — anchor family KEYSTONE (distinct owners ⟹ distinct anchors)
+
+The design gate (report 06) dissolves the coinciding-anchor "fork": two DISTINCT positive owners
+provably CANNOT share a fresh anchor. `kvE2_sepPos` is `Finset.univ.toList.filter` (`Nodup`,
+owners distinct normal forms) and each owner's anchor realizes it at the depth-1 environment
+`[x1, w, x, t]`; `nf_eval_unique` (NormalForm.lean:245) forces equal-anchor ⟹ equal-owner. Hence
+the anchor family is INJECTIVE and strictly orderable — the value-rank owner-block layout is
+well-defined with no ties. This is the keystone every later phase depends on. -/
+
+/-- **Owner anchor value** (task 340 Phase 5A): σ's fresh depth-1 witness `x1_σ`, extracted as the
+    `Classical.choose` of the honest realization existential `(h.2 σ).mpr`. Off the positive spine
+    (`qnf.2 σ ≠ true`) it defaults to `x`. Model-dependent (needs the realization `h`), like the
+    completeness-side witness (report 02 Q2 — the value order is inherently per-M). No `x1 < e_i`
+    literal introduced (LITMUS clean): only the already-extracted witness is named. -/
+noncomputable def kvE2_sepAnchorVal {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) : M.carrier :=
+  if hb : qnf.2 σ = true then Classical.choose ((h.2 σ).mpr hb) else x
+
+/-- The anchor value realizes its owner at the depth-1 environment `[x1_σ, w, x, t]` (the exact
+    shape `kvE2_sepCoincidentOwner_valid_left/right` extract from `(h.2 σ).mpr`). -/
+theorem kvE2_sepAnchorVal_spec {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (σ : NormalForm sig 1 4) (hb : qnf.2 σ = true) :
+    nf_eval_nf M 1 4
+      (Fin.cons (kvE2_sepAnchorVal qnf M w x t h σ) (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  rw [kvE2_sepAnchorVal, dif_pos hb]
+  exact Classical.choose_spec ((h.2 σ).mpr hb)
+
+/-- **KEYSTONE** (task 340 Phase 5A): distinct positive owners have distinct anchors. If σ, τ are
+    positive owners with equal anchors `a`, the single environment `[a, w, x, t]` realizes BOTH σ
+    and τ at depth 1, arity 4, so `nf_eval_unique` forces `σ = τ`. This kills any coinciding-anchor
+    fork at the anchor level: the anchor family is injective, so plain value rank is already a
+    strict total order (no lex tiebreak needed for realizability). -/
+theorem kvE2_sepAnchor_injOn {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
+    (heq : kvE2_sepAnchorVal qnf M w x t h σ = kvE2_sepAnchorVal qnf M w x t h τ) :
+    σ = τ := by
+  have hbσ : qnf.2 σ = true := (List.mem_filter.mp hσ).2
+  have hbτ : qnf.2 τ = true := (List.mem_filter.mp hτ).2
+  have hrσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hbσ
+  have hrτ := kvE2_sepAnchorVal_spec qnf M w x t h τ hbτ
+  rw [heq] at hrσ
+  exact nf_eval_unique M 1 4 _ σ τ hrσ hrτ
+
+/-- **Anchor family** (task 340 Phase 5A): the injective `Fin n → M.carrier` sending each owner
+    index to its anchor value. `n = |kvE2_sepPos qnf|`. Injectivity (from `List.get` on the `Nodup`
+    positive spine + the keystone `kvE2_sepAnchor_injOn`) makes `kvE2_ordRank` of this family a
+    strict, injective rank — the value-faithful owner-block order key. -/
+noncomputable def kvE2_sepAnchorFam {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Fin (kvE2_sepPos qnf).length → M.carrier :=
+  fun k => kvE2_sepAnchorVal qnf M w x t h ((kvE2_sepPos qnf).get k)
+
+/-- The anchor family is injective: `List.get` on the `Nodup` positive spine is injective, and the
+    keystone lifts anchor-equality to owner-equality. Supplies the cross-owner `Nodup` conjunct
+    (via `kvE2_ordRank_injective`) and licenses value-faithful ranking. -/
+theorem kvE2_sepAnchorFam_injective {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    Function.Injective (kvE2_sepAnchorFam qnf M w x t h) := by
+  have hnd : (kvE2_sepPos qnf).Nodup := by
+    unfold kvE2_sepPos; exact List.Nodup.filter _ (Finset.nodup_toList _)
+  intro a b hab
+  have hga : (kvE2_sepPos qnf).get a ∈ kvE2_sepPos qnf := (kvE2_sepPos qnf).get_mem a
+  have hgb : (kvE2_sepPos qnf).get b ∈ kvE2_sepPos qnf := (kvE2_sepPos qnf).get_mem b
+  have hget : (kvE2_sepPos qnf).get a = (kvE2_sepPos qnf).get b :=
+    kvE2_sepAnchor_injOn qnf M w x t h hga hgb hab
+  exact (List.Nodup.get_inj_iff hnd).mp hget
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
