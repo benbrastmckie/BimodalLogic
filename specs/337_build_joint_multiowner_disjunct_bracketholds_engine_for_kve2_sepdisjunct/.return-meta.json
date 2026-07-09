@@ -13,7 +13,7 @@
   "phases_completed": 0,
   "phases_partial": 1,
   "phases_total": 5,
-  "summary": "CYCLE 6 continued concrete Lean: landed the value-sortedness foundation the directive named, consuming the banked halign trio (do NOT re-derive). Seven additive green axiom-clean committed lemmas: kvE2_sepSlotMergeLe_trans/_total, kvE2_sepSlotsLOf/ROf_mergeSorted (merge-key Pairwise, any wo), kvE2_sepOrderOwners_mem_pos, kvE2_sepSlotsLOf/ROf_mem_block (slot in positive block), kvE2_sepSlotsLOf/ROf_honest_valueSorted (Pairwise value-nondecreasing on the honest order). SharedWitness GREEN throughout. Region assembly kvE2_sepHonest_engineInputs NOT yet built (structure resolved; value-based base-type->anchor-gap partition is a substantial standalone construction). Terminal deliverables not delivered. Status partial.",
+  "summary": "CYCLE 7 continued concrete Lean: landed the region-assembly FOUNDATIONS toward kvE2_sepHonest_engineInputs as 10 additive green axiom-clean committed lemmas (H2 decomposition). Batch A (hpos/hbdry seeds): kvE2_sepSlotValue_lX1/rX1_mem (anchor in (x,w)/(w,t)), kvE2_sepSlotValue_lX1/rX1_injOn (distinct owners -> distinct anchor values). Batch B (hnd foundation): kvE2_sepSlotsLFor/RFor_nodup, kvE2_sepSlotsLFor/RFor_disjoint, kvE2_sepOrderOwners_nodup, kvE2_sepSlotsLOf/ROf_nodup (merged slot lists Nodup). SharedWitness GREEN throughout; never RED. kvE2_sepHonest_engineInputs NOT built: cycle uncovered a genuine hreal base/anchor value-collision design question + a secondary type-list-vs-slot-list Nodup mismatch, both to resolve next cycle before the partition can be defined. Terminal deliverables not delivered. Stopped at clean green boundary. Status partial.",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
@@ -33,7 +33,7 @@
   "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
   "artifacts": [
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/06_value-sortedness-foundation-summary.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/07_region-assembly-foundations-summary.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json"
   ],
   "modified_files": [
@@ -41,10 +41,10 @@
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.return-meta.json",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/06_value-sortedness-foundation-summary.md"
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/07_region-assembly-foundations-summary.md"
   ],
   "memory_candidates": [
-    "Task 337 value-sortedness (cycle 6): kvE2_sepSlotsLOf/ROf(honestOrder) are Pairwise value-nondecreasing (kvE2_sepSlotsLOf/ROf_honest_valueSorted). Proof: List.pairwise_mergeSort gives merge-key sortedness for any wo (kvE2_sepSlotMergeLe is a total preorder = <= on the global-index N); then List.Pairwise.imp_of_mem upgrades to value-<= by contradiction via the halign _mono, using that every merged slot belongs to a positive owner's block (kvE2_sepOrderOwners_mem_pos + mergeSort_perm + mem_flatMap). The value fact is <= not < (distinct owners may share witness values; strict is FALSE).",
-    "Task 337 region-assembly structure (resolved cycle 6, NOT yet built): k1v_sorted_realizationK regions use the value-sorted interior anchors as boundaries (regionsL = [(x,a_1,S_0),...,(a_k,w,S_k)], interleaveK emits a_1..a_k, final hi=w = the bracket ptW). Base types must be partitioned into anchor gaps BY THEIR REALIZED VALUE (kvE2_sepSlotValue), not statically by owner, because a zUW type of owner i is realized in (a_i,w) spanning several gaps. hreal by partition def; hpos/hlink from strict anchor sortedness; hnd from kvE2_sepS_nodup per gap."
+    "Task 337 region-assembly foundations (cycle 7): the merged slot lists kvE2_sepSlotsLOf/ROf are Nodup (kvE2_sepSlotsLOf/ROf_nodup) via mergeSort_perm.nodup_iff + List.nodup_flatMap over Nodup orderOwners (perm of Nodup kvE2_sepPos) with per-owner blocks Nodup (kvE2_sepSlotBlock_nodup split) and cross-owner disjoint (kvE2_sep_blocks_disjoint). Anchor slot values are in (x,w)/(w,t) (kvE2_sepSlotValue_lX1/rX1_mem via honest bundles) and injective across owners (kvE2_sepSlotValue_lX1/rX1_injOn via kvE2_sepAnchor_injOn).",
+    "Task 337 hreal CRUX (cycle 7, unresolved): the anchor-gap partition's hreal needs a strict-interior realizer per base type in each OPEN gap, but a base slot's Classical.epsilon value can EQUAL an anchor value (no non-collision lemma provable). Resolution likely (b): align global gap boundaries to the strict owner-relative bundle intervals (kvE2_sepHonestAnchorBundleL/R give chi strictly inside (x,a_sigma)/(a_sigma,w)). SECONDARY: engine hnd is on a TYPE list (List NF 0 1) which is NOT Nodup when two owners share chi in one gap, though the SLOT list IS Nodup \u2014 apply the engine per-slot / via an indexed wrapper."
   ]
 }

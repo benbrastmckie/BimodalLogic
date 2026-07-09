@@ -134,6 +134,36 @@ the value-rank index is strictly monotone in value. Per the delegation decision 
 "derivable from landed 340 lemmas" case → PROCEED TO BUILD (not blocked). The old blocker text
 below is retained for history only.
 
+**PROGRESS (cycles 5-7, additive green foundations toward the region assembly, all axiom-clean
+{propext, Classical.choice, Quot.sound}, SharedWitness GREEN throughout):**
+- Cycle 5 (halign FOUNDATION): `kvE2_sepSlotGIdx_honestOrder{,_mono,_injOn}` (SW:~3162/3214/3231).
+- Cycle 6 (value-sortedness): `kvE2_sepSlotMergeLe_trans/_total`, `kvE2_sepSlotsLOf/ROf_mergeSorted`,
+  `kvE2_sepOrderOwners_mem_pos`, `kvE2_sepSlotsLOf/ROf_mem_block`,
+  `kvE2_sepSlotsLOf/ROf_honest_valueSorted` (the merged lists are Pairwise value-≤ on the honest
+  order; SW:~3317/3333).
+- Cycle 7 (region-assembly foundations): `kvE2_sepSlotValue_lX1/rX1_mem` (anchor slot in `(x,w)`/`(w,t)`),
+  `kvE2_sepSlotValue_lX1/rX1_injOn` (distinct owners → distinct anchor values; the `hpos` strictness
+  seed), and the `hnd` foundation `kvE2_sepSlotsLFor/RFor_nodup`, `kvE2_sepSlotsLFor/RFor_disjoint`,
+  `kvE2_sepOrderOwners_nodup`, `kvE2_sepSlotsLOf/ROf_nodup` (the merged slot lists are `Nodup`).
+
+**OPEN DESIGN QUESTION for the region ASSEMBLY `kvE2_sepHonest_engineInputs` (next cycle — the crux):**
+The anchor-gap partition needs `hreal`: for each base type χ placed in an open gap `(a_i, a_{i+1})`,
+`∃ u, a_i < u < a_{i+1} ∧ realizes χ`. The natural witness is χ's slot value `v` (which realizes χ
+and lies in the closed gap by `..._honest_valueSorted`), but `v` can EQUAL an anchor value `a_j`
+(base realizers and fresh anchor witnesses are chosen independently — `kvE2_sepSlotValue` base cases
+use `Classical.epsilon`, no exclusion vs `kvE2_sepAnchorVal`; no non-collision lemma is provable in
+general). At a boundary collision `v = a_i`, `v` is not strictly interior to the open gap, so `hreal`
+has no witness. RESOLUTION OPTIONS to decide before building `kvE2_sepHonest_engineInputs`:
+(a) prove base-value ≠ anchor-value (likely FALSE in general — do not assume);
+(b) half-open / boundary-assignment scheme that keeps each χ in a gap where a strict-interior
+    realizer is guaranteed (from the owner-relative bundle intervals, which ARE strict);
+(c) reshape regions so boundaries are chosen strictly between the realized values rather than AT
+    anchors — but anchors must still surface as bracket point-types at their value-rank positions.
+A SECONDARY open question: `k1v_sorted_realizationK` takes `hnd` on a `List (NormalForm sig 0 1)`
+of TYPES, but two distinct base SLOTS (different owners) can carry the SAME χ in one gap → the TYPE
+list is not `Nodup` even though the SLOT list is. So the engine is likely applied per-SLOT (or with
+a de-duplication/indexed wrapper), not directly on raw type lists. Resolve both before assembling.
+
 **BLOCKER (SUPERSEDED — stale, retained for history)** (Phase 1 — interface mismatch, stop-guard fired):
 - **What failed**: The destructure of Preconditions (2)+(3) — the assembled boundary-linked
   `regionsL/R` with `hpos/hlink/hnd/hreal`, the alignment fact `halignL/R`, and the endpoint
