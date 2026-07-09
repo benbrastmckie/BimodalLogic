@@ -371,9 +371,32 @@ theorems total.
 - **Estimated output**: ~200-320 lines.
 - **Depends on**: 3.
 
-### Phase 6: `value_j`→engine-point binding + honest per-slot order over `Fin N` (green) [NOT STARTED]
+### Phase 6: `value_j`→engine-point binding + honest per-slot order over `Fin N` (green) [IN PROGRESS]
 
-**Foundation landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed):** handoff
+**Value-binding foundation landed (dispatch sess_1783578954_3bce55_340, additive/green, committed
+`phase 6.1`-`6.4`):** the ENTIRE model-dependent `value_j` binding + lex value rank — the identified
+~350-line Phase-6 bottleneck — is now in `SharedWitness.lean` (all additive, no existing
+declaration changed, `{propext, Classical.choice, Quot.sound}`):
+- `kvE2_sepSlotValue` (report 08 element 1 data-flow inversion): anchor slots → `kvE2_sepAnchorVal`;
+  base slots → `Classical.epsilon` over the interval-constrained realization existence. Total map.
+- Eight spec lemmas: `kvE2_sepSlotValue_lX1/_rX1` (anchor, definitional) + six base-slot interval
+  specs (`_lXU/_lUW/_rWX1/_rX1T` via honest bundles L/R; `_lWT/_rXW` via
+  `kvE_subBracket2_complete_extract`): each slot's bound `value_j` lies in the slot's own region
+  interval and realizes its base type χ.
+- `kvE2_sepSlotG` (lex family `G j = (value_j, j)` over `Fin N`) + `kvE2_sepSlotG_injective` (from
+  the index second coordinate, no value-distinctness) + `kvE2_sepSlotG_lt_of_value_lt`.
+- `kvE2_sepSlotHonestGIdx` (the per-INDIVIDUAL-slot value rank `kvE2_ordRank G`, replacing the tied
+  `(3r,3r+1,3r+2)`) + `kvE2_sepSlotHonestGIdx_mono` (Phase 7 conjunct (ii) region-monotonicity
+  engine) + `kvE2_sepSlotHonestGIdx_injOn` (Phase 7 conjunct (iii) global-Nodup ingredient).
+
+**Remaining Phase-6/atomic-flip work (structural, largely model-independent):** thread
+`kvE2_sepSlotHonestGIdx` into the per-owner block-length honest payload; do the coupled 3-4-5-7
+structural flip (region-scoped `kvE2_sepConsistentTuple`, `kvE2_sepDisjValid` (iii) global Nodup,
+`kvE2_sepOrderTypes`/`_mem_aux`/`_owners_aux` N-bound enumeration, `kvE2_sepSlotGIdx` at
+`kvE2_sepBlockPos`, model/coincident prefix-sum re-proofs, honest membership). The mono/injOn
+engines above discharge the two hardest conjuncts.
+
+**Original foundation landed (dispatch sess_1783561356_89aa2d_340, additive/green, committed):** handoff
 step (1) — the model-independent per-individual-slot family — is now in `SharedWitness.lean`:
 `kvE2_sepSlotBlock` (σ's LEFT++RIGHT block), `kvE2_sepAllSlots` (the full `Fin N` family),
 `kvE2_sepSlotIndexOf` (= `idxOf`), with `kvE2_sepSlotSub_of_mem_block`, `kvE2_sepMem_allSlots`,
