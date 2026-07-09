@@ -7243,4 +7243,194 @@ private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature}
     rw [hb] at hbit
     exact Bool.noConfusion hbit
 
+/-- **Left-endpoint honesty** (task 342 Phase 8 (b)): under an honest evaluation `h`, the
+    EXISTING joint left endpoint predicate `kvE2_sepEpL` evaluates at the fixed `x`.
+    Rabinovich §5 (p.7): the ψ0/ψ1/φ split routes non-interior positive witnesses
+    (`zPastX3`/`zAtX3` classes and the per-owner `zPastX4`/`zAtX4` exterior/boundary
+    content) to atomic E[Σ] endpoint literals via Prop 3.5 (pp.5,7) — this lemma is that
+    routing's completeness half, previously hidden behind `hLR`'s vacuity. `Since`
+    navigation rides the fixed endpoint as evaluation point (LITMUS-clean); `hcb`/`hck`
+    are the abstract char-semantics correctness hypotheses (`nfPred_correct` shape). -/
+theorem kvE2_sepEpL_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ) :
+    (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x := by
+  simp only [kvE2_sepEpL, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  rcases List.mem_append.mp hf with hf | hf
+  · rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · -- Joint head: `qnf.1`'s x-coordinate 1-type at `x`.
+        have hp := kvE2_sepProj3_eval M (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 h.1
+          ⟨1, by omega⟩
+        exact (hcb _ x).mpr hp
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        exact kvE2_sepHasPosLit_zPastX3 charK qnf M atomMap w x t hxw hwt h hck χ
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      exact kvE2_sepHasPosLit_zAtX3 charK qnf M atomMap w x t hxw hwt h hck χ
+  · obtain ⟨σ, hσmem, hfσ⟩ := List.mem_flatMap.mp hf
+    have hσpos : qnf.2 σ = true := by
+      rcases List.mem_append.mp hσmem with hσm | hσm <;>
+        exact (List.mem_filter.mp (List.mem_filter.mp hσm).1).2
+    have hσzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3 := by
+      rcases List.mem_append.mp hσmem with hσm | hσm
+      · exact Or.inl (of_decide_eq_true (List.mem_filter.mp hσm).2)
+      · exact Or.inr (of_decide_eq_true (List.mem_filter.mp hσm).2)
+    obtain ⟨a, hs⟩ := (h.2 σ).mpr hσpos
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hxa : x < a := by
+      rcases hσzone with hzone | hzone
+      · have hgt := kvE2_sepZoneFact_gt M a w x t σ hσ_atom ⟨1, by omega⟩
+          (by rw [congrFun hzone ⟨1, by omega⟩]; decide)
+        exact hgt
+      · have hgt := kvE2_sepZoneFact_gt M a w x t σ hσ_atom ⟨0, by omega⟩
+          (by rw [congrFun hzone ⟨0, by omega⟩]; decide)
+        exact hxw.trans hgt
+    rcases List.mem_append.mp hfσ with hfσ | hfσ
+    · rcases List.mem_cons.mp hfσ with rfl | hfσ
+      · -- σ's own x-coordinate 1-type at `x`.
+        have hp := kvE2_sepProj4_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+          σ hσ_atom ⟨2, by omega⟩
+        exact (hcb _ x).mpr hp
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hfσ
+        exact kvE2_sepOwnerLit_zPastX4 charBase M atomMap σ a w x t hxa hxw
+          (hxw.trans hwt) hs hcb χ
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hfσ
+      exact kvE2_sepOwnerLit_zAtX4 charBase M atomMap σ a w x t hxa hxw
+        (hxw.trans hwt) hs hcb χ
+
+/-- **Shared-pivot honesty** (task 342 Phase 8 (b)): under an honest evaluation `h`, the
+    EXISTING shared interior-witness point type `kvE2_sepPtW` evaluates at the pivot `w`.
+    The `zAtW3` class and the per-owner `zAtWL`/`zAtWR` self-zone literals are the pivot's
+    boundary content (Rabinovich §5, p.7, via Prop 3.5, pp.5,7); positive bits are the σ_w
+    route of `kvE2_sepHonest_hLR_absurd`, now an obligation instead of a contradiction. -/
+theorem kvE2_sepPtW_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ) :
+    (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w := by
+  simp only [kvE2_sepPtW, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  rcases List.mem_append.mp hf with hf | hf
+  · rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · -- Joint head: `qnf.1`'s w-coordinate 1-type at `w`.
+        have hp := kvE2_sepProj3_eval M (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 h.1
+          ⟨0, by omega⟩
+        exact (hcb _ w).mpr hp
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        exact kvE2_sepHasPosLit_zAtW3 charK qnf M atomMap w x t hxw hwt h hck χ
+    · -- LEFT-interior owner blocks (`zAtWL` self-zone key at the pivot).
+      obtain ⟨σ, hσm, hfσ⟩ := List.mem_flatMap.mp hf
+      have hσpos : qnf.2 σ = true :=
+        (List.mem_filter.mp (List.mem_filter.mp hσm).1).2
+      have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 :=
+        of_decide_eq_true (List.mem_filter.mp hσm).2
+      obtain ⟨a, hs⟩ := (h.2 σ).mpr hσpos
+      obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+      have haw : a < w := by
+        have hlt := kvE2_sepZoneFact_lt M a w x t σ hσ_atom ⟨0, by omega⟩
+          (by rw [congrFun hzone ⟨0, by omega⟩]; decide)
+        exact hlt
+      rcases List.mem_cons.mp hfσ with rfl | hfσ
+      · have hp := kvE2_sepProj4_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+          σ hσ_atom ⟨1, by omega⟩
+        exact (hcb _ w).mpr hp
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hfσ
+        exact kvE2_sepOwnerLit_zAtWL charBase M atomMap σ a w x t haw hxw hwt hs hcb χ
+  · -- RIGHT-interior owner blocks (`zAtWR` self-zone key at the pivot; mirror).
+    obtain ⟨σ, hσm, hfσ⟩ := List.mem_flatMap.mp hf
+    have hσpos : qnf.2 σ = true :=
+      (List.mem_filter.mp (List.mem_filter.mp hσm).1).2
+    have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3 :=
+      of_decide_eq_true (List.mem_filter.mp hσm).2
+    obtain ⟨a, hs⟩ := (h.2 σ).mpr hσpos
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hwa : w < a := by
+      have hgt := kvE2_sepZoneFact_gt M a w x t σ hσ_atom ⟨0, by omega⟩
+        (by rw [congrFun hzone ⟨0, by omega⟩]; decide)
+      exact hgt
+    rcases List.mem_cons.mp hfσ with rfl | hfσ
+    · have hp := kvE2_sepProj4_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        σ hσ_atom ⟨1, by omega⟩
+      exact (hcb _ w).mpr hp
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hfσ
+      exact kvE2_sepOwnerLit_zAtWR charBase M atomMap σ a w x t hwa hxw hwt hs hcb χ
+
+/-- **Right-endpoint honesty** (task 342 Phase 8 (b), mirror of
+    `kvE2_sepEpL_eval_of_honest`): under an honest evaluation `h`, the EXISTING joint
+    right endpoint predicate `kvE2_sepEpR` evaluates at the fixed `t`. `zAtT3`/`zFutT3`
+    classes and per-owner `zAtT4`/`zFutT4` content ride the at-`t` and `Until` literals
+    (Rabinovich §5, p.7, via Prop 3.5, pp.5,7). -/
+theorem kvE2_sepEpR_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ) :
+    (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t := by
+  simp only [kvE2_sepEpR, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  rcases List.mem_append.mp hf with hf | hf
+  · rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · -- Joint head: `qnf.1`'s t-coordinate 1-type at `t`.
+        have hp := kvE2_sepProj3_eval M (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 h.1
+          ⟨2, by omega⟩
+        exact (hcb _ t).mpr hp
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        exact kvE2_sepHasPosLit_zAtT3 charK qnf M atomMap w x t hxw hwt h hck χ
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      exact kvE2_sepHasPosLit_zFutT3 charK qnf M atomMap w x t hxw hwt h hck χ
+  · obtain ⟨σ, hσmem, hfσ⟩ := List.mem_flatMap.mp hf
+    have hσpos : qnf.2 σ = true := by
+      rcases List.mem_append.mp hσmem with hσm | hσm <;>
+        exact (List.mem_filter.mp (List.mem_filter.mp hσm).1).2
+    have hσzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3 := by
+      rcases List.mem_append.mp hσmem with hσm | hσm
+      · exact Or.inl (of_decide_eq_true (List.mem_filter.mp hσm).2)
+      · exact Or.inr (of_decide_eq_true (List.mem_filter.mp hσm).2)
+    obtain ⟨a, hs⟩ := (h.2 σ).mpr hσpos
+    obtain ⟨hσ_atom, -, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+    have hat : a < t := by
+      rcases hσzone with hzone | hzone
+      · have hlt := kvE2_sepZoneFact_lt M a w x t σ hσ_atom ⟨0, by omega⟩
+          (by rw [congrFun hzone ⟨0, by omega⟩]; decide)
+        exact lt_trans hlt hwt
+      · have hlt := kvE2_sepZoneFact_lt M a w x t σ hσ_atom ⟨2, by omega⟩
+          (by rw [congrFun hzone ⟨2, by omega⟩]; decide)
+        exact hlt
+    rcases List.mem_append.mp hfσ with hfσ | hfσ
+    · rcases List.mem_cons.mp hfσ with rfl | hfσ
+      · -- σ's own t-coordinate 1-type at `t`.
+        have hp := kvE2_sepProj4_eval M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+          σ hσ_atom ⟨3, by omega⟩
+        exact (hcb _ t).mpr hp
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hfσ
+        exact kvE2_sepOwnerLit_zAtT4 charBase M atomMap σ a w x t hat hwt
+          (hxw.trans hwt) hs hcb χ
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hfσ
+      exact kvE2_sepOwnerLit_zFutT4 charBase M atomMap σ a w x t hat hwt
+        (hxw.trans hwt) hs hcb χ
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
