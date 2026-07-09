@@ -2078,6 +2078,121 @@ theorem kvE2_sepAnchorFam_injective {sig : MonadicSignature}
     kvE2_sepAnchor_injOn qnf M w x t h hga hgb hab
   exact (List.Nodup.get_inj_iff hnd).mp hget
 
+/-! ### Task 340 Phase 5B — the honest value-rank order (owner-block tuples, coincident tags)
+
+The single honest order (no bifurcation, report 06): every owner is tagged `.coincident` and its
+per-slot global-index tuple is the value-rank owner block `(3r, 3r+1, 3r+2)`, `r = ` the rank of
+its anchor in the injective anchor family. Membership in `kvE2_sepArr'` is TUPLE-AGNOSTIC — the
+tag validators (`kvE2_sepCoincidentOwner_valid_left/right`) read only the CLOSED self-zone bit, so
+they reuse VERBATIM; consistency `i₀<i₁<i₂` is `omega` on `3r<3r+1<3r+2`; the `i₀`-`Nodup` conjunct
+is `kvE2_ordRank_injective` on the keystone-injective family (via `3·`). -/
+
+/-- **Honest value-rank block tuple** (task 340 Phase 5B): the owner at spine position `i` receives
+    the owner-block `(3r, 3r+1, 3r+2)` where `r` is its anchor's `kvE2_ordRank` in the injective
+    anchor family. Off-spine (`i ≥ n`, never on the enumeration) it defaults to `(0,1,2)` (kept
+    order-consistent so validity is unconditional). Abstract-ℕ payload; reads no model literal past
+    the anchor rank (F4/LITMUS clean). -/
+noncomputable def kvE2_sepHonestTuple {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (i : ℕ) : ℕ × ℕ × ℕ :=
+  if hi : i < (kvE2_sepPos qnf).length then
+    (3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩,
+     3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩ + 1,
+     3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩ + 2)
+  else (0, 1, 2)
+
+/-- The honest tuple always extends the region order (`i₀ < i₁ < i₂`). -/
+theorem kvE2_sepHonestTuple_consistent {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (i : ℕ) :
+    kvE2_sepConsistentTuple (kvE2_sepHonestTuple qnf M w x t h i) = true := by
+  unfold kvE2_sepHonestTuple
+  split
+  · simp only [kvE2_sepConsistentTuple, decide_eq_true_eq]; omega
+  · decide
+
+/-- **The honest order** (task 340 Phase 5B): all owners `.coincident`-tagged with value-rank block
+    tuples. Structural mirror of `kvE2_sepCoincidentOrder` (SW:1767) with the honest tuple replacing
+    the region-primary placeholder. Model-dependent (the anchor rank is per-M). -/
+noncomputable def kvE2_sepHonestOrder {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) : KvE2SepWeakOrder sig :=
+  (kvE2_sepPos qnf).zipIdx.map
+    (fun p => (p.1, KvE2SepSpikeOrderType.coincident, kvE2_sepHonestTuple qnf M w x t h p.2))
+
+/-- The honest order is present in the enumeration index (F2). A `kvE2_sepOrderTypes_mem_aux`
+    instance (`s = 0`, all-coincident tag, honest tuple); every tuple component `< 3n` from
+    `kvE2_ordRank_lt` feeding `kvE2_sepIdxTuple_mem_of_lt`. -/
+theorem kvE2_sepHonestOrder_mem_orderTypes {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepOrderTypes qnf := by
+  rw [kvE2_sepHonestOrder, kvE2_sepOrderTypes]
+  refine kvE2_sepOrderTypes_mem_aux (kvE2_sepPos qnf).length
+    (fun _ => KvE2SepSpikeOrderType.coincident)
+    (kvE2_sepHonestTuple qnf M w x t h) (kvE2_sepPos qnf) 0 (fun i hi => ?_)
+  rw [Nat.zero_add, kvE2_sepHonestTuple, dif_pos hi]
+  have hr : kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩ < (kvE2_sepPos qnf).length :=
+    kvE2_ordRank_lt _ _
+  exact kvE2_sepIdxTuple_mem_of_lt _ _ _ _ (by omega) (by omega) (by omega)
+
+/-- **The honest order is a carrier member** (task 340 Phase 5B — the object task 337 consumes).
+    Under an honest interior realization (`hLR`) the value-rank honest order is a VALID, PRESENT
+    member of `kvE2_sepArr' qnf`. The three `kvE2_sepDisjValid` conjuncts: (i) all-`.coincident`
+    validity reuses `kvE2_sepCoincidentOwner_valid_left/right` VERBATIM (tuple-agnostic, CLOSED
+    self-zone bit only); (ii) consistency via `kvE2_sepHonestTuple_consistent`; (iii) `i₀`-`Nodup`
+    from `kvE2_ordRank_injective` on the keystone-injective anchor family (through `3·`). -/
+theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hLR : ∀ σ ∈ kvE2_sepPos qnf,
+        nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    kvE2_sepHonestOrder qnf M w x t h ∈ kvE2_sepArr' qnf := by
+  rw [kvE2_sepArr', List.mem_filter]
+  refine ⟨kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h, ?_⟩
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true]
+  refine ⟨⟨?_, ?_⟩, ?_⟩
+  · -- (i) per-owner closed-self-zone validity (all tags `.coincident`), reused verbatim.
+    rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepHonestOrder, List.mem_map] at hp
+    obtain ⟨⟨σ, i⟩, hmem, rfl⟩ := hp
+    have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
+    show kvE2_sepDisjValidOwner σ KvE2SepSpikeOrderType.coincident = true
+    rcases hLR σ hσmem with hzone | hzone
+    · exact kvE2_sepCoincidentOwner_valid_left qnf M w x t hxw hwt h σ hσmem hzone
+    · exact kvE2_sepCoincidentOwner_valid_right qnf M w x t hxw hwt h σ hσmem hzone
+  · -- (ii) per-owner index-tuple consistency: `3r < 3r+1 < 3r+2`.
+    rw [List.all_eq_true]
+    intro p hp
+    rw [kvE2_sepHonestOrder, List.mem_map] at hp
+    obtain ⟨⟨σ, k⟩, _, rfl⟩ := hp
+    exact kvE2_sepHonestTuple_consistent qnf M w x t h k
+  · -- (iii) cross-owner Nodup on `i₀ = 3·rank`, from injectivity of the anchor rank.
+    rw [decide_eq_true_eq, kvE2_sepHonestOrder, List.map_map]
+    have hcongr : (kvE2_sepPos qnf).zipIdx.map
+          ((fun p => p.2.2.1) ∘ fun p : NormalForm sig 1 4 × ℕ =>
+            (p.1, KvE2SepSpikeOrderType.coincident, kvE2_sepHonestTuple qnf M w x t h p.2))
+        = ((kvE2_sepPos qnf).zipIdx.map Prod.snd).map
+            (fun k => (kvE2_sepHonestTuple qnf M w x t h k).1) := by
+      rw [List.map_map]; apply List.map_congr_left; intro p _; rfl
+    rw [hcongr, List.zipIdx_map_snd]
+    apply List.Nodup.map_on _ List.nodup_range'
+    intro a ha b hb hab
+    rw [List.mem_range'_1] at ha hb
+    have han : a < (kvE2_sepPos qnf).length := by omega
+    have hbn : b < (kvE2_sepPos qnf).length := by omega
+    unfold kvE2_sepHonestTuple at hab
+    rw [dif_pos han, dif_pos hbn] at hab
+    dsimp only at hab
+    have hrank : kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨a, han⟩
+        = kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨b, hbn⟩ := by omega
+    have hfin := kvE2_ordRank_injective (kvE2_sepAnchorFam qnf M w x t h)
+      (kvE2_sepAnchorFam_injective qnf M w x t h) hrank
+    exact congrArg Fin.val hfin
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
