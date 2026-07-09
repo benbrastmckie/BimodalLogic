@@ -3999,6 +3999,235 @@ theorem kvE2_sepHonest_engineInputs {sig : MonadicSignature}
     kvE2_sepGapRegions_head?_fst _ _ _ _, kvE2_sepGapRegions_getLast?_snd _ _ _ _,
     kvE2_sepGapRegions_head?_fst _ _ _ _, kvE2_sepGapRegions_getLast?_snd _ _ _ _⟩
 
+/-! ### Task 337 Phase 2 — global monotone bracket witness (engine invocation + stitch)
+
+`kvE2_sepHonest_witnesses` invokes `k1v_sorted_realizationK` (SubBracket2V.lean:633) once per
+side on the Phase-1 region lists and stitches the two `interleaveK` chains around the single
+shared pivot `w` into the globally strictly monotone bracket witness chain, with per-side
+range bounds `x < · < w` (LEFT) and `w < · < t` (RIGHT). The full engine `Forall₂` data is
+exposed so Phase 3 can thread the per-region realizers into the per-slot point-type step.
+All bounds are between engine points and the bracket range `x`/`w`/`t` — no `x1 < e_i`
+relative-position literal, no owner-to-owner chain (F4/LITMUS NavigatedSpine:437). Per-slot
+re-indexing into `kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo` (the halign step over
+the banked `kvE2_sepSlotGIdx_honestOrder` trio + value-sortedness, including the duplicate
+per-gap type and folded-anchor cases) is Phase 3's alignment work, consuming this chain. -/
+
+/-- Under a strict boundary chain every gap region's `lo` is at least the global `lo`
+    (feeds the stitcher's `hlo` for the engine's point lists). -/
+theorem kvE2_sepGapRegions_lo_le {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
+    ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
+      ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, lo ≤ r.1 := by
+  induction mid with
+  | nil =>
+    intro lo hi _ r hr
+    simp only [kvE2_sepGapRegions, List.mem_singleton] at hr
+    subst hr; exact le_refl _
+  | cons a as ih =>
+    intro lo hi hch r hr
+    simp only [List.cons_append] at hch
+    have h1 := List.chain_cons.mp hch
+    simp only [kvE2_sepGapRegions, List.mem_cons] at hr
+    rcases hr with rfl | hr
+    · exact le_refl _
+    · exact le_of_lt (lt_of_lt_of_le h1.1 (ih a hi h1.2 r hr))
+
+/-- Under a strict boundary chain every gap region's `hi` is at most the global `hi`
+    (feeds the interleave upper bound for the engine's point lists). -/
+theorem kvE2_sepGapRegions_hi_le {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    (pairs : List (M.carrier × NormalForm sig 0 1)) (mid : List M.carrier) :
+    ∀ (lo hi : M.carrier), List.Chain (· < ·) lo (mid ++ [hi]) →
+      ∀ r ∈ kvE2_sepGapRegions pairs lo mid hi, r.2.1 ≤ hi := by
+  induction mid with
+  | nil =>
+    intro lo hi _ r hr
+    simp only [kvE2_sepGapRegions, List.mem_singleton] at hr
+    subst hr; exact le_refl _
+  | cons a as ih =>
+    intro lo hi hch r hr
+    simp only [List.cons_append] at hch
+    have h1 := List.chain_cons.mp hch
+    simp only [kvE2_sepGapRegions, List.mem_cons] at hr
+    rcases hr with rfl | hr
+    · have hpw := List.chain_iff_pairwise.mp h1.2
+      exact le_of_lt (List.rel_of_pairwise_cons hpw
+        (List.mem_append_right _ (List.mem_singleton_self hi)))
+    · exact ih a hi h1.2 r hr
+
+/-- **Interleave upper bound** (dual of the stitcher's global lower bound
+    `k1v_stitch_regions` `.2`): if every block point sits strictly below its region's `hi`,
+    the regions are non-degenerate and boundary-linked, and every region `hi` is at most a
+    global `hi`, then the whole interleaved chain sits strictly below the global `hi`. -/
+theorem kvE2_sepInterleaveK_lt {sig : MonadicSignature} {M : OrderedMonadicStructure sig}
+    {β : Type _} :
+    ∀ (regs : List (M.carrier × M.carrier × List (β × M.carrier))) (hi : M.carrier),
+      (∀ e ∈ regs, ∀ q ∈ e.2.2, q.2 < e.2.1) →
+      (∀ e ∈ regs, e.1 < e.2.1) →
+      List.Chain' (fun a b => a.2.1 = b.1) regs →
+      (∀ e ∈ regs, e.2.1 ≤ hi) →
+      ∀ y ∈ interleaveK regs, y < hi := by
+  intro regs
+  induction regs with
+  | nil => intro hi _ _ _ _ y hy; simp [interleaveK] at hy
+  | cons e rest ih =>
+    intro hi hblk hpos hlink hhi y hy
+    obtain ⟨el, esep, eblk⟩ := e
+    cases rest with
+    | nil =>
+      simp only [interleaveK, List.mem_map] at hy
+      obtain ⟨q, hq, rfl⟩ := hy
+      exact lt_of_lt_of_le (hblk _ List.mem_cons_self q hq) (hhi _ List.mem_cons_self)
+    | cons e' rest' =>
+      simp only [interleaveK, List.mem_append, List.mem_cons] at hy
+      rcases hy with hy | hy | hy
+      · obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hy
+        exact lt_of_lt_of_le (hblk _ List.mem_cons_self q hq) (hhi _ List.mem_cons_self)
+      · have hsep : esep = e'.1 := (List.chain'_cons.mp hlink).1
+        rw [hy, hsep]
+        exact lt_of_lt_of_le (hpos e' (List.mem_cons_of_mem _ List.mem_cons_self))
+          (hhi e' (List.mem_cons_of_mem _ List.mem_cons_self))
+      · exact ih hi (fun g hg => hblk g (List.mem_cons_of_mem _ hg))
+          (fun g hg => hpos g (List.mem_cons_of_mem _ hg))
+          (List.chain'_cons.mp hlink).2
+          (fun g hg => hhi g (List.mem_cons_of_mem _ hg)) y hy
+
+/-- `Forall₂` left-membership extraction (local helper): each left element is related to
+    some member of the right list. -/
+private theorem kvE2_sepForall₂_mem_left {α β : Type _} {R : α → β → Prop} :
+    ∀ {l₁ : List α} {l₂ : List β}, List.Forall₂ R l₁ l₂ →
+      ∀ a ∈ l₁, ∃ b ∈ l₂, R a b := by
+  intro l₁ l₂ hf
+  induction hf with
+  | nil => intro a ha; simp at ha
+  | cons hab _ ih =>
+    intro a ha
+    rcases List.mem_cons.mp ha with rfl | ha'
+    · exact ⟨_, List.mem_cons_self, hab⟩
+    · obtain ⟨b, hb, hR⟩ := ih a ha'
+      exact ⟨b, List.mem_cons_of_mem _ hb, hR⟩
+
+/-- `Forall₂` boundary-skeleton transfer (local helper): when related entries share both
+    boundaries, the boundary-link `Chain'` transfers from the region list to the engine's
+    point list. -/
+private theorem kvE2_sepForall₂_chain' {sig : MonadicSignature}
+    {M : OrderedMonadicStructure sig} {β γ : Type _}
+    {R : (M.carrier × M.carrier × β) → (M.carrier × M.carrier × γ) → Prop}
+    (hR : ∀ p r, R p r → p.1 = r.1 ∧ p.2.1 = r.2.1) :
+    ∀ {ps : List (M.carrier × M.carrier × β)} {rs : List (M.carrier × M.carrier × γ)},
+      List.Forall₂ R ps rs →
+      List.Chain' (fun a b => a.2.1 = b.1) rs →
+      List.Chain' (fun a b => a.2.1 = b.1) ps := by
+  intro ps rs hf
+  induction hf with
+  | nil => intro _; exact List.chain'_nil
+  | @cons p r ps' rs' hpr hf' ih =>
+    intro hch
+    cases hf' with
+    | nil => exact List.chain'_singleton _
+    | @cons p' r' ps'' rs'' hpr' hf'' =>
+      have hch' := List.chain'_cons.mp hch
+      refine List.chain'_cons.mpr ⟨?_, ih hch'.2⟩
+      rw [(hR p r hpr).2, hch'.1, ← (hR p' r' hpr').1]
+
+/-- **Phase 2 — the global monotone bracket witness** (task 337): invoking the engine
+    `k1v_sorted_realizationK` on the Phase-1 LEFT/RIGHT region lists yields per-side
+    point-tagged region lists `psL`/`psR` — full engine `Forall₂` guarantees exposed for
+    the Phase-3 point-type step — whose stitched chains sit strictly inside `(x, w)` resp.
+    `(w, t)` and concatenate around the single shared pivot `w` into the globally strictly
+    monotone bracket witness chain `interleaveK psL ++ w :: interleaveK psR`, every point
+    strictly inside the bracket range `(x, t)`. Consumes the Phase-1 bundle
+    `kvE2_sepHonest_engineInputs`; all bounds ride the bracket range `x`/`w`/`t`
+    (F4/LITMUS: no `x1 < e_i` literal, no owner-to-owner chain). -/
+theorem kvE2_sepHonest_witnesses {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    ∃ (psL psR : List (M.carrier × M.carrier × List (NormalForm sig 0 1 × M.carrier))),
+      List.Forall₂ (fun p r => p.1 = r.1 ∧ p.2.1 = r.2.1 ∧
+          List.Perm (p.2.2.map Prod.fst) r.2.2 ∧
+          (p.2.2.map Prod.snd).Pairwise (· < ·) ∧
+          (∀ q ∈ p.2.2, (r.1 < q.2 ∧ q.2 < r.2.1) ∧ nf_eval_nf M 0 1 (fun _ => q.2) q.1))
+        psL (kvE2_sepHonestRegionsL qnf M w x t h) ∧
+      List.Forall₂ (fun p r => p.1 = r.1 ∧ p.2.1 = r.2.1 ∧
+          List.Perm (p.2.2.map Prod.fst) r.2.2 ∧
+          (p.2.2.map Prod.snd).Pairwise (· < ·) ∧
+          (∀ q ∈ p.2.2, (r.1 < q.2 ∧ q.2 < r.2.1) ∧ nf_eval_nf M 0 1 (fun _ => q.2) q.1))
+        psR (kvE2_sepHonestRegionsR qnf M w x t h) ∧
+      (∀ y ∈ interleaveK psL, x < y ∧ y < w) ∧
+      (∀ y ∈ interleaveK psR, w < y ∧ y < t) ∧
+      (interleaveK psL ++ w :: interleaveK psR).Pairwise (· < ·) := by
+  obtain ⟨hposL, hlinkL, hndL, hrealL, hposR, hlinkR, hndR, hrealR,
+    hneL, hneR, hheadL, hlastL, hheadR, hlastR⟩ :=
+    kvE2_sepHonest_engineInputs qnf M w x t hxw hwt h
+  obtain ⟨psL, hfL, hsortL⟩ := k1v_sorted_realizationK M _ hposL hlinkL hndL hrealL
+  obtain ⟨psR, hfR, hsortR⟩ := k1v_sorted_realizationK M _ hposR hlinkR hndR hrealR
+  -- Region-level global bounds from the strict anchor boundary chains.
+  have hloL : ∀ r ∈ kvE2_sepHonestRegionsL qnf M w x t h, x ≤ r.1 :=
+    kvE2_sepGapRegions_lo_le _ _ x w (kvE2_sepHonestAnchorsL_chain qnf M w x t hxw hwt h)
+  have hhiL : ∀ r ∈ kvE2_sepHonestRegionsL qnf M w x t h, r.2.1 ≤ w :=
+    kvE2_sepGapRegions_hi_le _ _ x w (kvE2_sepHonestAnchorsL_chain qnf M w x t hxw hwt h)
+  have hloR : ∀ r ∈ kvE2_sepHonestRegionsR qnf M w x t h, w ≤ r.1 :=
+    kvE2_sepGapRegions_lo_le _ _ w t (kvE2_sepHonestAnchorsR_chain qnf M w x t hxw hwt h)
+  have hhiR : ∀ r ∈ kvE2_sepHonestRegionsR qnf M w x t h, r.2.1 ≤ t :=
+    kvE2_sepGapRegions_hi_le _ _ w t (kvE2_sepHonestAnchorsR_chain qnf M w x t hxw hwt h)
+  -- Transfer the region skeleton facts through the engine's `Forall₂` onto `psL`/`psR`.
+  have hmemL := kvE2_sepForall₂_mem_left hfL
+  have hmemR := kvE2_sepForall₂_mem_left hfR
+  have hposPsL : ∀ p ∈ psL, p.1 < p.2.1 := by
+    intro p hp; obtain ⟨r, hr, h1, h2, -, -, -⟩ := hmemL p hp
+    rw [h1, h2]; exact hposL r hr
+  have hposPsR : ∀ p ∈ psR, p.1 < p.2.1 := by
+    intro p hp; obtain ⟨r, hr, h1, h2, -, -, -⟩ := hmemR p hp
+    rw [h1, h2]; exact hposR r hr
+  have hloPsL : ∀ p ∈ psL, x ≤ p.1 := by
+    intro p hp; obtain ⟨r, hr, h1, -, -, -, -⟩ := hmemL p hp
+    rw [h1]; exact hloL r hr
+  have hloPsR : ∀ p ∈ psR, w ≤ p.1 := by
+    intro p hp; obtain ⟨r, hr, h1, -, -, -, -⟩ := hmemR p hp
+    rw [h1]; exact hloR r hr
+  have hhiPsL : ∀ p ∈ psL, p.2.1 ≤ w := by
+    intro p hp; obtain ⟨r, hr, -, h2, -, -, -⟩ := hmemL p hp
+    rw [h2]; exact hhiL r hr
+  have hhiPsR : ∀ p ∈ psR, p.2.1 ≤ t := by
+    intro p hp; obtain ⟨r, hr, -, h2, -, -, -⟩ := hmemR p hp
+    rw [h2]; exact hhiR r hr
+  have hsortPsL : ∀ p ∈ psL, (p.2.2.map Prod.snd).Pairwise (· < ·) := by
+    intro p hp; obtain ⟨r, hr, -, -, -, h4, -⟩ := hmemL p hp; exact h4
+  have hsortPsR : ∀ p ∈ psR, (p.2.2.map Prod.snd).Pairwise (· < ·) := by
+    intro p hp; obtain ⟨r, hr, -, -, -, h4, -⟩ := hmemR p hp; exact h4
+  have hrangePsL : ∀ p ∈ psL, ∀ q ∈ p.2.2, p.1 < q.2 ∧ q.2 < p.2.1 := by
+    intro p hp q hq; obtain ⟨r, hr, h1, h2, -, -, h5⟩ := hmemL p hp
+    rw [h1, h2]; exact (h5 q hq).1
+  have hrangePsR : ∀ p ∈ psR, ∀ q ∈ p.2.2, p.1 < q.2 ∧ q.2 < p.2.1 := by
+    intro p hp q hq; obtain ⟨r, hr, h1, h2, -, -, h5⟩ := hmemR p hp
+    rw [h1, h2]; exact (h5 q hq).1
+  have hlinkPsL : List.Chain' (fun a b => a.2.1 = b.1) psL :=
+    kvE2_sepForall₂_chain' (fun p r hpr => ⟨hpr.1, hpr.2.1⟩) hfL hlinkL
+  have hlinkPsR : List.Chain' (fun a b => a.2.1 = b.1) psR :=
+    kvE2_sepForall₂_chain' (fun p r hpr => ⟨hpr.1, hpr.2.1⟩) hfR hlinkR
+  -- Per-side strict range bounds on the stitched chains.
+  have hLlow : ∀ y ∈ interleaveK psL, x < y :=
+    (k1v_stitch_regions psL x hsortPsL hrangePsL hposPsL hlinkPsL hloPsL).2
+  have hRlow : ∀ y ∈ interleaveK psR, w < y :=
+    (k1v_stitch_regions psR w hsortPsR hrangePsR hposPsR hlinkPsR hloPsR).2
+  have hLhigh : ∀ y ∈ interleaveK psL, y < w :=
+    kvE2_sepInterleaveK_lt psL w (fun p hp q hq => (hrangePsL p hp q hq).2)
+      hposPsL hlinkPsL hhiPsL
+  have hRhigh : ∀ y ∈ interleaveK psR, y < t :=
+    kvE2_sepInterleaveK_lt psR t (fun p hp q hq => (hrangePsR p hp q hq).2)
+      hposPsR hlinkPsR hhiPsR
+  refine ⟨psL, psR, hfL, hfR,
+    fun y hy => ⟨hLlow y hy, hLhigh y hy⟩,
+    fun y hy => ⟨hRlow y hy, hRhigh y hy⟩, ?_⟩
+  -- Stitch around the single shared pivot `w`.
+  rw [List.pairwise_append]
+  refine ⟨hsortL, List.pairwise_cons.mpr ⟨fun y hy => hRlow y hy, hsortR⟩, ?_⟩
+  intro a ha b hb
+  have haw : a < w := hLhigh a ha
+  rcases List.mem_cons.mp hb with rfl | hb'
+  · exact haw
+  · exact haw.trans (hRlow b hb')
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).

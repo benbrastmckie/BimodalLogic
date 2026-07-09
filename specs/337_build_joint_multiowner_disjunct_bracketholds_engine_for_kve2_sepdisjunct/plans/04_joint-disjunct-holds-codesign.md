@@ -258,16 +258,21 @@ sorted honest anchors with `hpos/hlink/hnd/hreal` + `hbdry` (helper `kvE2_sepHon
 
 ---
 
-### Phase 2: Invoke `k1v_sorted_realizationK` → global monotone bracket witness `ws` (step b) [NOT STARTED]
+### Phase 2: Invoke `k1v_sorted_realizationK` → global monotone bracket witness `ws` (step b) [COMPLETED]
+
+**Landed (cycle 10)**: `kvE2_sepHonest_witnesses` (SharedWitness.lean, directly after the Phase-1
+bundle) + 5 helpers (`kvE2_sepGapRegions_lo_le`/`_hi_le`, `kvE2_sepInterleaveK_lt`,
+`kvE2_sepForall₂_mem_left`, `kvE2_sepForall₂_chain'`), +229/-0 additive, scoped build GREEN,
+axiom-clean `{propext, Classical.choice, Quot.sound}`, 0 sorries.
 
 **Goal**: Apply `k1v_sorted_realizationK` to `regionsL` and `regionsR` (Phase-1 bundle), obtain `psL/psR` + `(interleaveK psS).Pairwise (· < ·)`, define the bracket witness `ws : Fin (N+1) → M.carrier` re-indexed into the `kvE2_sepSlotsLOf wo ++ ptW :: kvE2_sepSlotsROf wo` slot order (pivot `ptW = w` at index `|kvE2_sepSlotsLOf wo|`), and prove strict monotonicity `∀ i j, i < j → ws i < ws j` + range `∀ i, x < ws i ∧ ws i < t`. Deliver as a sorry-free private helper (suggested `kvE2_sepHonest_witnesses`).
 
 **Tasks**:
-- [ ] `obtain ⟨psL, hfL, hsortedL⟩ := k1v_sorted_realizationK M regionsL hposL hlinkL hndL hrealL` (mirror for R).
-- [ ] Stitch the L chain, `ptW = w`, and the R chain into `ws` via the `halignL/R` alignment facts + `hbdry` (leftmost `x`, mid `w`, rightmost `t`); pivot at `|kvE2_sepSlotsLOf wo|`.
-- [ ] Prove strict monotonicity from `hsortedL`/`hsortedR` (`interleaveK` pairwise, SubBracket2V.lean:646) + `hbdry` (L block < `w` < R block).
-- [ ] Prove range `x < ws i < t` from region positivity/link (leftmost lo `x`, rightmost hi `t`).
-- [ ] Verify each step with `lean_goal`; keep sorry-free.
+- [x] `obtain ⟨psL, hfL, hsortedL⟩ := k1v_sorted_realizationK M regionsL hposL hlinkL hndL hrealL` (mirror for R).
+- [x] Stitch the L chain, `ptW = w`, and the R chain into `ws` via the `halignL/R` alignment facts + `hbdry` (leftmost `x`, mid `w`, rightmost `t`); pivot at `|kvE2_sepSlotsLOf wo|`. *(deviation: altered — delivered as the stitched LIST-form chain `interleaveK psL ++ w :: interleaveK psR` (pivot `w` at position `|interleaveK psL|`) with the full engine `Forall₂` data exposed; the per-slot `Fin (N+1)` re-indexing over `kvE2_sepSlotsLOf/ROf wo` is deferred to Phase 3's halign/point-type step, per the carried-forward alignment caveats: duplicate per-gap types, out-of-side `rXW` values, and folded anchor-colliding types make per-slot indexing inseparable from the Phase-3 point-type/meet-fold work)*
+- [x] Prove strict monotonicity from `hsortedL`/`hsortedR` (`interleaveK` pairwise, SubBracket2V.lean:646) + `hbdry` (L block < `w` < R block).
+- [x] Prove range `x < ws i < t` from region positivity/link (leftmost lo `x`, rightmost hi `t`). *(delivered as the stronger per-side bounds `∀ y ∈ interleaveK psL, x < y ∧ y < w` and `∀ y ∈ interleaveK psR, w < y ∧ y < t`)*
+- [x] Verify each step with `lean_goal`; keep sorry-free. *(deviation: altered — verified via scoped `lake build` + `lean_verify` axiom check; sorry-free, axiom-clean)*
 
 **Timing**: 1 hour
 
