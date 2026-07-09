@@ -1,10 +1,10 @@
 ---
-next_project_number: 341
+next_project_number: 342
 ---
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (non-fatal)
+Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 341 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-09. Generated from state.json dependency graph.*
@@ -15,7 +15,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,340 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,340 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,335 | 189,192,196,337 | automation, kamp_theorem_formalization |
-| 4 | 177,178,321 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
+| 4 | 177,178,321,341 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
 | 5 | 309,333 | 321 | kamp_theorem_formalization |
 | 6 | 307 | 309 | completeness |
 | 7 | 305 | 307 | completeness |
@@ -112,20 +112,30 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-340 [RESEARCHED] — Replace task 339's derived 2-level (region-rank primary, owner me
+340 [PLANNED] — Replace task 339's derived 2-level (region-rank primary, owner me
   └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
     └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
       └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
         └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
         └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+      └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ### Uncategorized
 
 ## Tasks
 
+### 341. Structural refactor sharedwitness carrier layer
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 340, Task 337, Task 335
+
+**Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state (SharedWitness.lean ~3540 lines; SubBracket2V.lean ~2160; CarrierK1V.lean ~2100). Goals: (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite reports 05-09). (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (e.g. any residual 339 region-primary machinery, obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. MUST run AFTER the active carrier chain (tasks 340 per-slot refinement, 337 holds builder, 335 outer gate) completes, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph and proposes the module split before moving code.
+
+---
+
 ### 340. Perslot globalindex carrier enrichment for valuefaithful slot order
 - **Effort**: complex
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 339
