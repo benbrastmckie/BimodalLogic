@@ -519,21 +519,26 @@ Kamp/ExistsForallNF.lean is empty); LITMUS grep (`grep -n "x1 <" ` on new code) 
 **Timing**: 2-2.5h
 **Depends on**: 6
 
-### Phase 8: Honest non-interior evaluation pack — foreign-base tie discharges and endpoint/pivot honesty lemmas [IN PROGRESS]
+### Phase 8: Honest non-interior evaluation pack — foreign-base tie discharges and endpoint/pivot honesty lemmas [COMPLETED]
 
 **Goal**: The two additive lemma packs that discharge honest-model obligations previously hidden
 behind vacuity: (a) F5 foreign-base CLOSED-key discharges for base-anchor tie classes;
 (b) endpoint/pivot honesty lemmas for the boundary-class literals.
 
 **Tasks**:
-- [ ] (a) Generalize the landed coincidence discharges `kvE2_sepCoincidentAnchor_discharge`
+- [x] (a) Generalize the landed coincidence discharges `kvE2_sepCoincidentAnchor_discharge`
   (SW:2188) and `_R` (SW:2361) from the owner's own fresh type to an arbitrary FOREIGN base type:
   under honest `h`, if base type `χ` is honestly realized AT owner σa's anchor point (the
   tie-class situation: equal honest values), then `kvE2_sepBits σa kvE2_sep_zAtX1L χ = true`
   (left-interior σa; `zAtX1R` mirror). Hence `kvE2_sepClosedLeafAt σa χ = true`. **F5 obligation:
   the discharge reads the anchor owner's CLOSED key at the foreign type — no OPEN key enters any
   coincident read.** Follow the existing discharges' proof route (same key family).
-- [ ] (b) Endpoint/pivot honesty lemmas: under honest `h` (and the same char-semantics
+  *(landed: `kvE2_sepClosedLeafAt_discharge` (placement-dispatched wrapper at an explicit
+  anchor), `kvE2_sepClosedLeafAt_discharge_honest` (at `kvE2_sepAnchorVal` — the shape Phase 9
+  conjunct (iv) consumes), and `kvE2_sepTieRead_of_discharge` (intro rule machine-checking
+  that base-base ties impose no read); the preserved discharges already took χ generically,
+  so the generalization is the predicted wrapper + `kvE2_sepClosedLeafAt` packaging)*
+- [x] (b) Endpoint/pivot honesty lemmas: under honest `h` (and the same char-semantics
   hypotheses the file's existing eval lemmas use — `lean_local_search` for the house `hchar`
   convention, e.g. in `kvE2_sepHonestBasePairsL_eval` / the coincidence discharges — reuse it
   verbatim, do not invent a new hypothesis shape):
@@ -546,7 +551,15 @@ behind vacuity: (a) F5 foreign-base CLOSED-key discharges for base-anchor tie cl
   characteristics land here — this is exactly the σ_w route of `kvE2_sepHonest_hLR_absurd`, now
   as an obligation instead of a contradiction); negative bits discharge by the absence of a
   positive owner with that projection. Cite: §5 + Prop 3.5 (pp.5,7) atomic-E[Σ] routing.
-- [ ] Full `lake build`.
+  *(deviation: altered — the file has no reusable `hchar` HYPOTHESIS shape (the k1v template
+  derives it from the concrete `nf_depth0_char_formula` via `nfPred_correct`,
+  CarrierK1V.lean:1672), so the three lemmas take abstract iff hypotheses `hcb`/`hck` of
+  exactly that correctness shape; supporting infra added: `kvE2_sepProjFresh_eval` (depth-1
+  fresh-projection factor), `kvE2_sepCharZone3`, proj3/proj4 coordinate evals, zone-fact
+  helpers, `kvE2_sepHasPos_of_realized`/`_witness`, five σ-level + six per-owner literal
+  helpers, and the marker-clean `kvE2_sepZone4_iff` clone keeping the `kvE_sub2_` count at
+  107)*
+- [x] Full `lake build`. *(green, 1720 jobs)*
 
 **Estimated output**: ~250-450 lines.
 **Done when**: build green; all five named lemmas exist sorry-free and axiom-clean.
