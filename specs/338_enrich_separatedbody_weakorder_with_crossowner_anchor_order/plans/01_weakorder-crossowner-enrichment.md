@@ -291,7 +291,7 @@ Each wave is a single phase = a single agent run.
   BOTH a strict disjunct and the coincident disjunct confirmed to be enumeration members;
   transient sorry count strictly less than Phase 2.
 
-### Phase 4: Central `kvE2_sepBody` rewire to consume `wo` + structural repair [IN PROGRESS]
+### Phase 4: Central `kvE2_sepBody` rewire to consume `wo` + structural repair [COMPLETED]
 - **Goal:** Rewire `kvE2_sepBody` (821-837) so each disjunct realizes its OWN cross-owner slot order
   derived from `wo`, replacing the discarded `_wo` + fixed `kvE2_sepSlotsL/R qnf`; repair the
   structural lemmas and strengthen `kvE2_sepArr'_sound`.
@@ -311,7 +311,7 @@ Each wave is a single phase = a single agent run.
   concatenation pin); structural lemmas re-proved; `kvE2_sepArr'_sound` strengthened; transient
   sorry count strictly less than Phase 3.
 
-### Phase 5: Verification — axiom gate + F1-F7 audit + full build [NOT STARTED]
+### Phase 5: Verification — axiom gate + F1-F7 audit + full build [IN PROGRESS]
 - **Goal:** Discharge any residual transient sorry, then verify sorry-free + axiom-clean + full
   green + faithfulness.
 - **Tasks:**

@@ -838,6 +838,72 @@ theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature}
   rw [kvE2_sepArr', List.mem_filter]
   exact ⟨kvE2_sepModelOrder_mem_orderTypes qnf, hvalid⟩
 
+/-! ## Phase 4 — `wo`-driven slot ordering (the rewire consuming the cross-owner rank) -/
+
+/-- **wo-driven owner ordering** (Phase 4): the owners of `wo` listed in ascending merged-chain
+    RANK order — the cross-owner order `wo` now carries. This is what the rewired `kvE2_sepBody`
+    consumes to realize each disjunct's OWN cross-owner slot order, replacing the discarded-`_wo`
+    body's fixed `kvE2_sepPos` order (the exact root bug SW:835-836 that stalled task 337's plans).
+    Because `mergeSort` is a permutation of its input, `kvE2_sepOrderOwners wo` carries the same
+    owner MULTISET as `wo` — but sequenced by the rank the disjunct realizes. -/
+def kvE2_sepOrderOwners {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : List (NormalForm sig 1 4) :=
+  (wo.mergeSort (fun a b => decide (a.2.2 ≤ b.2.2))).map Prod.fst
+
+/-- The wo-ordered joint LEFT slot list: the per-owner LEFT region blocks (`kvE2_sepSlotsLFor`),
+    sequenced by `wo`'s cross-owner RANK order — NOT the fixed `kvE2_sepPos` order the discarded-`_wo`
+    body pinned. Genuinely CONSUMES `wo`. Never asserts flat-union monotone validity (the deleted
+    FALSE `kvE2_sepSlotsL_valid` scaffold); the actual joint sorted-realization is task 337. -/
+noncomputable def kvE2_sepSlotsLOf {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
+  (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor
+
+/-- The wo-ordered joint RIGHT slot list (right mirror of `kvE2_sepSlotsLOf`). Consumes `wo`. -/
+noncomputable def kvE2_sepSlotsROf {sig : MonadicSignature}
+    (wo : KvE2SepWeakOrder sig) : List (KvE2SepSlot sig) :=
+  (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor
+
+/-- Structural helper: every disjunct in the `foldr` enumeration carries EXACTLY the positive
+    owners in `kvE2_sepPos` order (one prepended entry per owner). -/
+private theorem kvE2_sepOrderTypes_owners_aux {sig : MonadicSignature} (n : ℕ)
+    (L : List (NormalForm sig 1 4)) {wo : KvE2SepWeakOrder sig}
+    (hwo : wo ∈
+      L.foldr
+        (fun σ acc =>
+          kvE2_sepSpikeOrderTypes.flatMap (fun tag =>
+            (List.range n).flatMap (fun r => acc.map (fun wo => (σ, tag, r) :: wo))))
+        [[]]) :
+    wo.map Prod.fst = L := by
+  induction L generalizing wo with
+  | nil => simp only [List.foldr_nil, List.mem_singleton] at hwo; subst hwo; rfl
+  | cons σ L ih =>
+    simp only [List.foldr_cons] at hwo
+    rw [List.mem_flatMap] at hwo
+    obtain ⟨tag, _, hwo⟩ := hwo
+    rw [List.mem_flatMap] at hwo
+    obtain ⟨r, _, hwo⟩ := hwo
+    rw [List.mem_map] at hwo
+    obtain ⟨wo', hwo', rfl⟩ := hwo
+    simp only [List.map_cons, ih hwo']
+
+/-- Every `wo` in the enumeration index has owner-projection exactly `kvE2_sepPos qnf`. -/
+theorem kvE2_sepOrderTypes_owners {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf) :
+    wo.map Prod.fst = kvE2_sepPos qnf := by
+  rw [kvE2_sepOrderTypes] at hwo
+  exact kvE2_sepOrderTypes_owners_aux _ _ hwo
+
+/-- Every positive owner appears in the wo-ordered owner list (rank-reordering permutes, never
+    drops, the owner multiset): the membership fact the `kvE2_sepBody_extract` rewire consumes. -/
+theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
+    σ ∈ kvE2_sepOrderOwners wo := by
+  rw [kvE2_sepOrderOwners]
+  have hperm := (List.mergeSort_perm wo (fun a b => decide (a.2.2 ≤ b.2.2))).map Prod.fst
+  rw [kvE2_sepOrderTypes_owners qnf hwo] at hperm
+  exact hperm.mem_iff.mpr hσ
+
 /-! ## The joint carrier (O1) -/
 
 /-- **`kvE2_sepBody` — the joint separate-content shared-witness carrier** (task 321 v7
@@ -866,8 +932,11 @@ noncomputable def kvE2_sepBody {sig : MonadicSignature}
           -- canonical per-owner region blocks. Non-vacuity now follows from `kvE2_sepArr' ≠ []`
           -- (the coincidence disjunct is admitted by the closed channel), never from a valid slot
           -- permutation of the flat union (which can be empty — handoff 05).
-          (kvE2_sepArr' qnf).map fun _wo =>
-            kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf) })
+          -- Task 338 Phase 4: CONSUME `wo` — each disjunct realizes its OWN cross-owner slot
+          -- order `kvE2_sepSlotsLOf/ROf wo` (the per-owner blocks sequenced by wo's merged-chain
+          -- rank), NEVER the discarded-`_wo` fixed concatenation `kvE2_sepSlotsL/R qnf` (root bug).
+          (kvE2_sepArr' qnf).map fun wo =>
+            kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo) })
     (fun _ => { disjuncts := [] })
 
 /-- Gate-failure computation (mirror of the landed `_gate_fail` house pattern). -/
@@ -894,8 +963,8 @@ theorem kvE2_sepBody_holds_iff {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier) :
     (kvE2_sepBody charBase charK qnf).holds M atomMap x t ↔
-      ∃ _wo ∈ kvE2_sepArr' qnf,
-        (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds
+      ∃ wo ∈ kvE2_sepArr' qnf,
+        (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds
           M atomMap x t := by
   simp only [kvE2_sepBody]
   rw [dif_pos hg]
@@ -1443,7 +1512,7 @@ theorem kvE2_sepBody_nonvacuous {sig : MonadicSignature}
   split
   case isTrue _ =>
     apply List.ne_nil_of_mem (a := kvE2_sepDisjunct charBase charK qnf
-      (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf))
+      (kvE2_sepSlotsLOf (kvE2_sepModelOrder qnf)) (kvE2_sepSlotsROf (kvE2_sepModelOrder qnf)))
     exact List.mem_map.mpr
       ⟨kvE2_sepModelOrder qnf, kvE2_sepArr'_mem_modelOrder qnf hvalid, rfl⟩
   case isFalse hg =>
@@ -2047,8 +2116,10 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
-    (hpairL : (kvE2_sepSlotsL qnf).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
-    (hpairR : (kvE2_sepSlotsR qnf).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
+    (hpairL : ∀ wo ∈ kvE2_sepArr' qnf,
+      (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
+    (hpairR : ∀ wo ∈ kvE2_sepArr' qnf,
+      (kvE2_sepSlotsROf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
     (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
     (x t : M.carrier)
     (h : (kvE2_sepBody charBase charK qnf).holds M atomMap x t) :
@@ -2062,14 +2133,15 @@ theorem kvE2_sepBody_extract {sig : MonadicSignature}
         kvE2_sepBundleR charBase charK σ M atomMap w t) := by
   by_cases hg : kvE2_sepGate qnf
   · rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t] at h
-    obtain ⟨_wo, _hwo, hd⟩ := h
+    obtain ⟨wo, hwo, hd⟩ := h
+    have hwo' : wo ∈ kvE2_sepOrderTypes qnf := (List.mem_filter.mp hwo).1
     exact kvE2_sepDisjunct_extract charBase charK qnf
       (fun σ hσ s hs => by
-        show s ∈ (kvE2_sepPos qnf).flatMap kvE2_sepSlotsLFor
-        exact List.mem_flatMap.mpr ⟨σ, hσ, hs⟩) hpairL
+        show s ∈ (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor
+        exact List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo' hσ, hs⟩) (hpairL wo hwo)
       (fun σ hσ s hs => by
-        show s ∈ (kvE2_sepPos qnf).flatMap kvE2_sepSlotsRFor
-        exact List.mem_flatMap.mpr ⟨σ, hσ, hs⟩) hpairR
+        show s ∈ (kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsRFor
+        exact List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo' hσ, hs⟩) (hpairR wo hwo)
       M atomMap x t hd
   · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
     simp [VVecEA2.holds] at h
