@@ -2596,6 +2596,49 @@ theorem kvE2_sepHonestAnchorBundleR {sig : MonadicSignature}
         (false, true) (false, true) (false, true) (true, false)).mp hz
     exact ⟨v, hp0.2.mpr rfl, hp3.1.mpr rfl, hv⟩
 
+/-! ### Task 340 Phase 6 — the `value_j` → engine-point binding (data-flow inversion)
+
+Report 08 §Missing Design element 1: each individual slot's rank key `value_j` is bound to the
+engine-realized point for that slot, NOT a free canonical value. An anchor slot (`lX1`/`rX1`) takes
+its owner's canonical `kvE2_sepAnchorVal`; a base slot takes the witness the anchor realization
+forces for its base type `χ` in the slot's OWN region interval (Def 3.1's monotone enumeration of
+INDIVIDUAL points, PDF p.4). `Classical.epsilon` keeps the map total; the interval-and-realization
+spec is recovered per slot from the honest bundles (`kvE2_sepHonestAnchorBundleL/R`) /
+`kvE_subBracket2_complete_extract`, which prove exactly the constraining existence. Reads M only
+through already-extracted witnesses ordered by `<` (F4/LITMUS clean — no `x1 < e_i` literal); the
+honest per-slot order (Phase 6/7) is `kvE2_ordRank` of `G j = (value_j, slotIndexOf j)` over the
+full slot family `Fin N`, with the index tiebreak giving injectivity WITHOUT value-distinctness. -/
+noncomputable def kvE2_sepSlotValue {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    KvE2SepSlot sig → M.carrier
+  | .lX1 σ => kvE2_sepAnchorVal qnf M w x t h σ
+  | .rX1 σ => kvE2_sepAnchorVal qnf M w x t h σ
+  | .lXU σ χ => @Classical.epsilon _ ⟨x⟩
+      (fun v => x < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+  | .lUW σ χ => @Classical.epsilon _ ⟨x⟩
+      (fun v => kvE2_sepAnchorVal qnf M w x t h σ < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+  | .lWT σ χ => @Classical.epsilon _ ⟨x⟩
+      (fun v => w < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+  | .rXW σ χ => @Classical.epsilon _ ⟨x⟩
+      (fun v => x < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+  | .rWX1 σ χ => @Classical.epsilon _ ⟨x⟩
+      (fun v => w < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+  | .rX1T σ χ => @Classical.epsilon _ ⟨x⟩
+      (fun v => kvE2_sepAnchorVal qnf M w x t h σ < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+
+/-- The anchor slot's `value` is its owner's canonical anchor value (definitional). -/
+theorem kvE2_sepSlotValue_lX1 {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
+    kvE2_sepSlotValue qnf M w x t h (.lX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
+
+/-- The right anchor slot's `value` is its owner's canonical anchor value (definitional). -/
+theorem kvE2_sepSlotValue_rX1 {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (σ : NormalForm sig 1 4) :
+    kvE2_sepSlotValue qnf M w x t h (.rX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ := rfl
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
