@@ -3140,6 +3140,27 @@ theorem kvE2_sepSlotHonestGIdx_injOn {sig : MonadicSignature}
     (kvE2_sepSlotG_injective qnf M w x t h) heq
   exact kvE2_sepSlotIndexOf_injOn qnf ha hb (congrArg Fin.val hfin)
 
+/-- **Honest consistency** (task 340 Phase 7 conjunct (ii)): the honest payload
+    `block.map kvE2_sepSlotHonestGIdx` extends every region order. Within a region a larger rank has a
+    larger value (`kvE2_sepSlotValue_region_rank_mono`), hence a larger value rank
+    (`kvE2_sepSlotHonestGIdx_mono`). The value-faithful counterpart of
+    `kvE2_sepConsistentBlock_slotIndexOf`. -/
+theorem kvE2_sepConsistentBlock_honest {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
+    kvE2_sepConsistentBlock σ
+      ((kvE2_sepSlotBlock σ).map (kvE2_sepSlotHonestGIdx qnf M w x t h)) = true := by
+  rw [kvE2_sepConsistentBlock, decide_eq_true_eq]
+  intro j k hreg hrank
+  rw [kvE2_sepBlockMap_getD, kvE2_sepBlockMap_getD]
+  have hjmem : (kvE2_sepSlotBlock σ).get j ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
+  have hkmem : (kvE2_sepSlotBlock σ).get k ∈ kvE2_sepSlotBlock σ := List.get_mem _ _
+  refine kvE2_sepSlotHonestGIdx_mono qnf M w x t h
+    (kvE2_sepMem_allSlots qnf hσ hjmem) (kvE2_sepMem_allSlots qnf hσ hkmem) ?_
+  exact kvE2_sepSlotValue_region_rank_mono qnf M w x t hxw hwt h hσ hjmem hkmem hreg hrank
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
