@@ -970,6 +970,23 @@ theorem kvE2_sepSlotsROf_mem {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
   exact (List.mergeSort_perm _ _).mem_iff.mpr
     (List.mem_flatMap.mpr ⟨σ, kvE2_sepMem_orderOwners qnf hwo hσ, hs⟩)
 
+/-- **Point-level interleaving witness** (task 339, the defining property of this redesign). For
+    two distinct owners `σ, τ` with merged-chain ranks `0 < 1`, `τ`'s LEFT region-0 slot (`.lXU τ`)
+    is placed by the merge key STRICTLY BETWEEN `σ`'s region-0 slot (`.lXU σ`) and `σ`'s region-2
+    slot (`.lUW σ`): `σ.lXU ≤ τ.lXU ≤ σ.lUW`. So `σ`'s own slots are NOT contiguous in the merged
+    chain — a foreign owner's slot interleaves between them. A per-owner BLOCK reordering (owner
+    rank primary) could never do this (it keeps all of `σ` before all of `τ` or vice versa); this
+    is exactly the block-order failure report 04 proved rank-independent-insufficient. Region-rank
+    is the PRIMARY merge key, so the interleaving holds independently of the owner ranks for the
+    cross-region pair, and by owner rank within the region-0 tie. -/
+example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) (χ : NormalForm sig 0 1)
+    (wo : KvE2SepWeakOrder sig)
+    (hσ0 : kvE2_sepOwnerRank wo σ = 0) (hτ1 : kvE2_sepOwnerRank wo τ = 1) :
+    kvE2_sepSlotMergeLe wo (.lXU σ χ) (.lXU τ χ) = true ∧
+    kvE2_sepSlotMergeLe wo (.lXU τ χ) (.lUW σ χ) = true := by
+  refine ⟨?_, ?_⟩ <;>
+    simp [kvE2_sepSlotMergeLe, kvE2_sepSlotRank, kvE2_sepSlotSub, hσ0, hτ1]
+
 /-! ## The joint carrier (O1) -/
 
 /-- **`kvE2_sepBody` — the joint separate-content shared-witness carrier** (task 321 v7

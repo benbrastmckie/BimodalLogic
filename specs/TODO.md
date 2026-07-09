@@ -12,15 +12,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,339 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,337 | 161,187,191,194,230,291,300,339 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,335 | 189,192,196,337 | automation, kamp_theorem_formalization |
-| 4 | 177,178,321 | 131,193,335 | formula-refactor, kamp_theorem_formalization |
-| 5 | 309,333 | 321 | kamp_theorem_formalization |
-| 6 | 307 | 309 | completeness |
-| 7 | 305 | 307 | completeness |
-| 8 | 303 | 305 | completeness |
-| 9 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,337 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,300,337 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,321 | 189,192,196,335 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309,333 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -112,12 +111,11 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-339 [IMPLEMENTING] — THE PROBLEM (triply-verified across reports 02, 04, and task-338'
-  └─ 337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
-    └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-      └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-        └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
+  └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+    └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+      └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
 
 ### Uncategorized
 
@@ -125,7 +123,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### 339. Pointlevel crossowner slot merge for separatedbody holds
 - **Effort**: complex
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 338

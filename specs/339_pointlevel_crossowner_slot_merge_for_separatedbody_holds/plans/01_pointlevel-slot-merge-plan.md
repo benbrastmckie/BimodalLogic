@@ -1,7 +1,7 @@
 # Implementation Plan: Point-level cross-owner slot merge for separated-body holds
 
 - **Task**: 339 - Point-level cross-owner slot merge for separated-body holds
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 12-16 hours (5 phases; foundational faithful-transcription, quality over speed)
 - **Dependencies**: 338 (COMPLETED — enriched weak-order carrier with merged-chain rank)
 - **Research Inputs**:
@@ -221,76 +221,57 @@ applicable — single file, one owner). Each phase is one agent run ending at it
 - **Goal:** Replace the block flatMap with the point-level merge and re-establish the two shallow
   dependent lemmas, ending at a compiling file.
 - **Tasks:**
-  - [ ] Redesign `kvE2_sepSlotsLOf`/`kvE2_sepSlotsROf` (SW:869-876) as the point-level merge from
-    Phase 1: tag each positive owner's `kvE2_sepSlotsLFor`/`RFor` slots with the composite key
-    (owner merged-chain rank from `wo`, intra-owner `kvE2_sepSlotRank`), collect ALL tagged slots
-    across owners, `mergeSort` by the composite key, map back to `List (KvE2SepSlot sig)`. NO
-    `sorry` in the def body; not vacuous.
-  - [ ] Add the structural membership helper: `∀ σ ∈ kvE2_sepPos qnf, ∀ s ∈ kvE2_sepSlotsLFor σ,
-    s ∈ kvE2_sepSlotsLOf wo` (and the RFor/ROf mirror) for `wo ∈ kvE2_sepOrderTypes qnf`, via
-    `List.mergeSort_perm` + `kvE2_sepOrderTypes_owners` (SW:902) + the per-owner slot-membership
-    lemmas (SW:1960+) — the same permutation technique as `kvE2_sepMem_orderOwners` (SW:910).
-  - [ ] Re-verify `kvE2_sepBody` (SW:933) type-checks consuming the new defs (statement unchanged).
-  - [ ] Re-prove `kvE2_sepBody_holds_iff` (SW:970) — expected proof-preserved (`simp only
-    [kvE2_sepBody]; rw [dif_pos hg]; ...`); confirm green.
-  - [ ] Re-prove `kvE2_sepBody_nonvacuous` (SW:1512) — `List.mem_map.mpr` with
-    `kvE2_sepArr'_mem_modelOrder` against the renamed-but-same slot functions; confirm green.
+  - [x] Redesign `kvE2_sepSlotsLOf`/`kvE2_sepSlotsROf` as the point-level merge. *(deviation: altered — `mergeSort` the per-owner block union `(kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor` by the REGION-primary composite key `kvE2_sepSlotMergeLe wo` (region rank primary, `kvE2_sepOwnerRank wo` secondary); no explicit tag/map-back needed since the slot carries `kvE2_sepSlotSub`/`kvE2_sepSlotRank`. Non-vacuous, no sorry.)*
+  - [x] Add the structural membership helpers `kvE2_sepSlotsLOf_mem`/`ROf_mem` via `List.mergeSort_perm` + `kvE2_sepMem_orderOwners`. *(done)*
+  - [x] Re-verify `kvE2_sepBody` (SW:933) type-checks consuming the new defs. *(green, unchanged)*
+  - [x] Re-prove `kvE2_sepBody_holds_iff` (SW:970). *(proof-preserved; axiom-clean)*
+  - [x] Re-prove `kvE2_sepBody_nonvacuous` (SW:1512). *(proof-preserved; axiom-clean)*
 - **Timing:** 3-4 hours.
 - **Depends on:** 1.
 - **Done when:** `lake build` compiles; the merge defs are non-vacuous point-level merges;
   `kvE2_sepBody_holds_iff` and `kvE2_sepBody_nonvacuous` sorry-free; sorry count ≤ 1 and confined to
   the `kvE2_sepBody_extract` proof only (inventory-logged), everything else green. Commit at green.
 
-### Phase 3: Re-verify `kvE2_sepDisjunct_extract` against the merged caller [NOT STARTED]
+### Phase 3: Re-verify `kvE2_sepDisjunct_extract` against the merged caller [COMPLETED]
 - **Goal:** Confirm the parametric extraction lemma still holds and its index-reads
   (`kvE2_sep_index_lt_of_rank_lt`, SW:1944) are unaffected by the merge.
 - **Tasks:**
-  - [ ] Confirm `kvE2_sepDisjunct_extract` (SW:2015) is unchanged: it is parametric over `lL lR`
+  - [x] Confirm `kvE2_sepDisjunct_extract` (SW:2015) is unchanged: it is parametric over `lL lR`
     and consumes `hmemL`/`hpairL`/`hmemR`/`hpairR` as hypotheses; it never references
-    `kvE2_sepSlotsLOf`. Re-run its proof to green (expected no edit).
-  - [ ] If Phase 1's classification found a genuine may-extend (e.g. the merged chain requires a
-    different pairwise key than `kvE2_sepSlotLe`), realize that extension here: adjust the
-    `hpairL`/`hpairR` predicate and re-prove `kvE2_sep_index_lt_of_rank_lt`-style index reads
-    accordingly, flagging the statement extension in the summary. Otherwise this is a re-verify.
-  - [ ] `lean_verify` `kvE2_sepDisjunct_extract` sorry-free and axiom-clean.
+    `kvE2_sepSlotsLOf`. Re-run its proof to green (expected no edit). *(confirmed: no edit; statement AND proof preserved)*
+  - [x] If Phase 1's classification found a genuine may-extend... *(deviation: no may-extend — the merge reuses `kvE2_sepSlotLe`/`kvE2_sepSlotRank` unchanged; same-owner rank-order index read intact; no extension needed)*
+  - [x] `lean_verify` `kvE2_sepDisjunct_extract` sorry-free and axiom-clean. *(axioms = {propext, Classical.choice, Quot.sound})*
 - **Timing:** 2-3 hours.
 - **Depends on:** 2.
 - **Done when:** `kvE2_sepDisjunct_extract` sorry-free and green; any statement extension flagged;
   sorry count unchanged or reduced. Commit at green.
 
-### Phase 4: Re-prove `kvE2_sepBody_extract` (per-owner membership re-derivation) [NOT STARTED]
+### Phase 4: Re-prove `kvE2_sepBody_extract` (per-owner membership re-derivation) [COMPLETED]
 - **Goal:** Close the one lemma whose internal `hmemL`/`hmemR` derivation depends on the merged
-  slot-list shape, reaching sorry-count zero.
+  slot-list shape, reaching sorry-count zero. *(deviation: pulled forward into the Phase 2 build so the module never held a transient sorry — sorry count stayed 0 throughout.)*
 - **Tasks:**
-  - [ ] Re-prove `kvE2_sepBody_extract` (SW:2163): keep `hpairL`/`hpairR` as hypotheses (SETTLED
-    boundary), route through `kvE2_sepBody_holds_iff` (Phase 2) + `kvE2_sepDisjunct_extract`
-    (Phase 3), and supply the internal `hmemL`/`hmemR` (`∀ σ ∈ kvE2_sepPos, ∀ s ∈
-    kvE2_sepSlotsLFor σ, s ∈ kvE2_sepSlotsLOf wo`) from the Phase 2 membership helper.
-  - [ ] Remove the last transient `sorry` (if any remained from Phase 2); confirm inventory = 0.
-  - [ ] `lean_verify` `kvE2_sepBody_extract` sorry-free and axiom-clean.
+  - [x] Re-prove `kvE2_sepBody_extract` (SW:2163): keep `hpairL`/`hpairR` as hypotheses (SETTLED
+    boundary), route through `kvE2_sepBody_holds_iff` + `kvE2_sepDisjunct_extract`, and supply the
+    internal `hmemL`/`hmemR` from the Phase 2 membership helpers `kvE2_sepSlotsLOf_mem`/`ROf_mem`. *(done)*
+  - [x] Remove the last transient `sorry` (if any remained from Phase 2); confirm inventory = 0. *(never any sorry; inventory = 0)*
+  - [x] `lean_verify` `kvE2_sepBody_extract` sorry-free and axiom-clean. *(axioms = {propext, Classical.choice, Quot.sound})*
 - **Timing:** 3-4 hours.
 - **Depends on:** 3.
 - **Done when:** `kvE2_sepBody_extract` sorry-free and green; total transient sorry count = 0 across
   all touched declarations. Commit at green.
 
-### Phase 5: Verification gate — axiom-cleanliness + F1-F7 audit + full build [NOT STARTED]
+### Phase 5: Verification gate — axiom-cleanliness + F1-F7 audit + full build [COMPLETED]
 - **Goal:** Prove the whole redesign is faithful and debt-free.
 - **Tasks:**
-  - [ ] `lean_verify` (fully-qualified) each touched declaration — `kvE2_sepSlotsLOf`,
-    `kvE2_sepSlotsROf`, the merge/membership helpers, `kvE2_sepBody`, `kvE2_sepBody_holds_iff`,
-    `kvE2_sepBody_nonvacuous`, `kvE2_sepDisjunct_extract`, `kvE2_sepBody_extract` — confirming the
-    axiom set ⊆ `{propext, Classical.choice, Quot.sound}` with NO `sorryAx`.
-  - [ ] Zero-sorry census on `SharedWitness.lean` (sorry count 0); zero vacuous defs; zero new axioms.
-  - [ ] F1-F7 audit, with explicit attention to: F5 (no open/closed zone-key conflation — the merge
-    touches slot ORDER only, never bit selection) and the LITMUS at `NavigatedSpine.lean:437` (no
-    `x1 < e_i` relative-position literal; the merge key is abstract ℕ only).
-  - [ ] No-collapse regression check: `kvE2_sepModelOrder_mem_orderTypes` (SW:835) and
-    `kvE2_sepCoincidentOrder_mem_orderTypes` (SW:1555) still green; a self-contained `example`
-    that an interleaving 2-owner input produces a merged chain interleaving individual slots
-    (not contiguous owner blocks) — the defining property of this redesign.
-  - [ ] Preservation check: `kvE2_sepCoincidentOrder_mem_arr'` (SW:1733) unchanged and green; all
-    Preserved-Assets rows still hold.
-  - [ ] Full `lake build` green (whole project; external consumers unaffected).
+  - [x] `lean_verify` each touched declaration — `kvE2_sepSlotsLOf`, `kvE2_sepSlotsROf`,
+    `kvE2_sepSlotsLOf_mem`, `kvE2_sepSlotsROf_mem`, `kvE2_sepBody_holds_iff`,
+    `kvE2_sepBody_nonvacuous`, `kvE2_sepDisjunct_extract`, `kvE2_sepBody_extract` — all axioms =
+    `{propext, Classical.choice, Quot.sound}`, NO `sorryAx`. *(done)*
+  - [x] Zero-sorry census on `SharedWitness.lean` (`sorry_count: 0` via lean-sorry-census.sh); zero vacuous defs; zero new axioms. *(done)*
+  - [x] F1-F7 audit — F5 (merge defs read no zone bit; `kvE2_sepDisjValidOwner`/`kvE2_sepClosedLeafStub` untouched) and LITMUS (key is abstract ℕ×ℕ `kvE2_sepSlotRank`/`kvE2_sepOwnerRank`, no model relative-position literal). *(clean)*
+  - [x] No-collapse regression: `kvE2_sepModelOrder_mem_orderTypes` (SW:835) and `kvE2_sepCoincidentOrder_mem_orderTypes` still green + axiom-clean; self-contained interleaving 2-owner `example` compiles (τ.lXU placed strictly between σ.lXU and σ.lUW). *(done)*
+  - [x] Preservation: `kvE2_sepCoincidentOrder_mem_arr'` (SW:1733) unchanged, green, axiom-clean; all Preserved-Assets rows hold. *(done)*
+  - [x] Full `lake build` green (1720 jobs; external consumers unaffected). *(done)*
 - **Timing:** 2-3 hours.
 - **Depends on:** 4.
 - **Done when:** all `lean_verify` axiom-clean, sorry census 0, F1-F7 audit passes (F5 + LITMUS
@@ -299,14 +280,14 @@ applicable — single file, one owner). Each phase is one agent run ending at it
 
 ## Testing & Validation
 
-- [ ] `lake build` green after each of Phases 2-5 (scoped `lake build` on the module during phases,
+- [x] `lake build` green after each of Phases 2-5 (scoped `lake build` on the module during phases,
   full project in Phase 5).
-- [ ] `lean_verify` axiom set ⊆ `{propext, Classical.choice, Quot.sound}`, no `sorryAx`, on every
+- [x] `lean_verify` axiom set ⊆ `{propext, Classical.choice, Quot.sound}`, no `sorryAx`, on every
   touched declaration (Phase 5).
-- [ ] Sorry inventory strictly decreasing across phases, zero at Phase 5.
-- [ ] Interleaving 2-owner `example` demonstrates point-level (not block) interleaving.
-- [ ] F5 and LITMUS (NavigatedSpine.lean:437) checks explicit in the Phase 5 audit.
-- [ ] No-collapse members + `kvE2_sepCoincidentOrder_mem_arr'` (SW:1733) unchanged.
+- [x] Sorry inventory 0 throughout (never introduced), zero at Phase 5.
+- [x] Interleaving 2-owner `example` demonstrates point-level (not block) interleaving.
+- [x] F5 and LITMUS (NavigatedSpine.lean:437) checks explicit in the Phase 5 audit.
+- [x] No-collapse members + `kvE2_sepCoincidentOrder_mem_arr'` (SW:1733) unchanged.
 
 ## Artifacts & Outputs
 
