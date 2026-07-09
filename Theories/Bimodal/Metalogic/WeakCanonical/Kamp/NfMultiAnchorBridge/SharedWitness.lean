@@ -1505,6 +1505,60 @@ theorem kvE2_sepOrderTypes_owners {sig : MonadicSignature} (qnf : NormalForm sig
   rw [kvE2_sepOrderTypes] at hwo
   exact kvE2_sepOrderTypes_owners_aux _ _ hwo
 
+/-- **Enumeration-parametric membership** (task 340 Phase 3 flip): the per-OWNER payload assignment
+    `gt` (each `gt σ` drawn from σ's own tuple set `enum σ`) is reachable in the σ-dependent cartesian
+    tag×tuple enumeration. The generalization of `kvE2_sepOrderTypes_mem_aux` from a fixed tuple set +
+    position-indexed `gt` to a per-owner `enum`/`gt` — the shape the variable-length per-slot payload
+    (`block.map …`) needs. -/
+private theorem kvE2_sepOrderTypes_mem_aux' {sig : MonadicSignature}
+    (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
+    (enum : NormalForm sig 1 4 → List (List ℕ))
+    (gt : NormalForm sig 1 4 → List ℕ)
+    (L : List (NormalForm sig 1 4)) (s : ℕ)
+    (hb : ∀ σ ∈ L, gt σ ∈ enum σ) :
+    (L.zipIdx s).map (fun p => (p.1, f p.1, gt p.1)) ∈
+      L.foldr
+        (fun σ acc =>
+          kvE2_sepSpikeOrderTypes.flatMap (fun tag =>
+            (enum σ).flatMap (fun t => acc.map (fun wo => (σ, tag, t) :: wo))))
+        [[]] := by
+  induction L generalizing s with
+  | nil => simp
+  | cons σ L ih =>
+    simp only [List.zipIdx_cons, List.map_cons, List.foldr_cons]
+    rw [List.mem_flatMap]
+    refine ⟨f σ, kvE2_sepSpikeOrderTypes_complete _, ?_⟩
+    rw [List.mem_flatMap]
+    refine ⟨gt σ, hb σ List.mem_cons_self, ?_⟩
+    rw [List.mem_map]
+    exact ⟨(L.zipIdx (s + 1)).map (fun p => (p.1, f p.1, gt p.1)),
+      ih (s + 1) (fun τ hτ => hb τ (List.mem_cons_of_mem σ hτ)), rfl⟩
+
+/-- **Enumeration-parametric owner projection** (task 340 Phase 3 flip): every disjunct in the
+    σ-dependent enumeration carries exactly `L` in order. Generalizes `kvE2_sepOrderTypes_owners_aux`
+    over an arbitrary per-owner `enum`. -/
+private theorem kvE2_sepOrderTypes_owners_aux' {sig : MonadicSignature}
+    (enum : NormalForm sig 1 4 → List (List ℕ))
+    (L : List (NormalForm sig 1 4)) {wo : KvE2SepWeakOrder sig}
+    (hwo : wo ∈
+      L.foldr
+        (fun σ acc =>
+          kvE2_sepSpikeOrderTypes.flatMap (fun tag =>
+            (enum σ).flatMap (fun t => acc.map (fun wo => (σ, tag, t) :: wo))))
+        [[]]) :
+    wo.map Prod.fst = L := by
+  induction L generalizing wo with
+  | nil => simp only [List.foldr_nil, List.mem_singleton] at hwo; subst hwo; rfl
+  | cons σ L ih =>
+    simp only [List.foldr_cons] at hwo
+    rw [List.mem_flatMap] at hwo
+    obtain ⟨tag, _, hwo⟩ := hwo
+    rw [List.mem_flatMap] at hwo
+    obtain ⟨t, _, hwo⟩ := hwo
+    rw [List.mem_map] at hwo
+    obtain ⟨wo', hwo', rfl⟩ := hwo
+    simp only [List.map_cons, ih hwo']
+
 /-- Every positive owner appears in the wo-ordered owner list (rank-reordering permutes, never
     drops, the owner multiset): the membership fact the `kvE2_sepBody_extract` rewire consumes. -/
 theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
