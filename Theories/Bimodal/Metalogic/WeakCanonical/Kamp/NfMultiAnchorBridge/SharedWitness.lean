@@ -3278,6 +3278,73 @@ theorem kvE2_sepSlotsROf_mergeSorted {sig : MonadicSignature} (wo : KvE2SepWeakO
   rw [kvE2_sepSlotsROf]
   exact List.pairwise_mergeSort (kvE2_sepSlotMergeLe_trans wo) (kvE2_sepSlotMergeLe_total wo) _
 
+/-- The wo-ordered owner list of an enumeration member lists exactly the positive owners:
+    `kvE2_sepOrderOwners wo` is a `mergeSort` permutation of `wo.map Prod.fst = kvE2_sepPos qnf`. -/
+theorem kvE2_sepOrderOwners_mem_pos {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepOrderOwners wo) : σ ∈ kvE2_sepPos qnf := by
+  rw [kvE2_sepOrderOwners] at hσ
+  have hperm := (List.mergeSort_perm wo (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map
+    Prod.fst
+  rw [kvE2_sepOrderTypes_owners qnf hwo] at hperm
+  exact hperm.mem_iff.mp hσ
+
+/-- Every slot of the joint LEFT list belongs to some positive owner's slot block. -/
+theorem kvE2_sepSlotsLOf_mem_block {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLOf wo) :
+    ∃ σ ∈ kvE2_sepPos qnf, s ∈ kvE2_sepSlotBlock σ := by
+  rw [kvE2_sepSlotsLOf] at hs
+  obtain ⟨σ, hσ, hsσ⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hs)
+  exact ⟨σ, kvE2_sepOrderOwners_mem_pos qnf hwo hσ, by
+    rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ hsσ⟩
+
+/-- Every slot of the joint RIGHT list belongs to some positive owner's slot block. -/
+theorem kvE2_sepSlotsROf_mem_block {sig : MonadicSignature} (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepOrderTypes qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsROf wo) :
+    ∃ σ ∈ kvE2_sepPos qnf, s ∈ kvE2_sepSlotBlock σ := by
+  rw [kvE2_sepSlotsROf] at hs
+  obtain ⟨σ, hσ, hsσ⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hs)
+  exact ⟨σ, kvE2_sepOrderOwners_mem_pos qnf hwo hσ, by
+    rw [kvE2_sepSlotBlock]; exact List.mem_append_right _ hsσ⟩
+
+/-- **Value-sortedness of the joint LEFT list on the honest order** (task 337 Phase 1): the merged
+    LEFT slot list is `Pairwise` value-nondecreasing. Consumes the banked halign trio: the list is
+    merge-key sorted (`kvE2_sepSlotsLOf_mergeSorted`), and on the honest order a strictly smaller
+    merge key forces a strictly smaller value — contrapositively, `value b < value a` would give
+    `key b < key a` (`kvE2_sepSlotGIdx_honestOrder_mono`), contradicting `key a ≤ key b`. -/
+theorem kvE2_sepSlotsLOf_honest_valueSorted {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h)).Pairwise
+      (fun a b => kvE2_sepSlotValue qnf M w x t h a ≤ kvE2_sepSlotValue qnf M w x t h b) := by
+  have hwo := kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h
+  refine (kvE2_sepSlotsLOf_mergeSorted _).imp_of_mem ?_
+  intro a b ha hb hab
+  obtain ⟨σ, hσ, haσ⟩ := kvE2_sepSlotsLOf_mem_block qnf hwo ha
+  obtain ⟨τ, hτ, hbτ⟩ := kvE2_sepSlotsLOf_mem_block qnf hwo hb
+  rw [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab
+  by_contra hlt
+  rw [not_le] at hlt
+  exact absurd hab (not_le.mpr (kvE2_sepSlotGIdx_honestOrder_mono qnf M w x t h hτ hσ hbτ haσ hlt))
+
+/-- **Value-sortedness of the joint RIGHT list on the honest order** (mirror). -/
+theorem kvE2_sepSlotsROf_honest_valueSorted {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h)).Pairwise
+      (fun a b => kvE2_sepSlotValue qnf M w x t h a ≤ kvE2_sepSlotValue qnf M w x t h b) := by
+  have hwo := kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h
+  refine (kvE2_sepSlotsROf_mergeSorted _).imp_of_mem ?_
+  intro a b ha hb hab
+  obtain ⟨σ, hσ, haσ⟩ := kvE2_sepSlotsROf_mem_block qnf hwo ha
+  obtain ⟨τ, hτ, hbτ⟩ := kvE2_sepSlotsROf_mem_block qnf hwo hb
+  rw [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab
+  by_contra hlt
+  rw [not_le] at hlt
+  exact absurd hab (not_le.mpr (kvE2_sepSlotGIdx_honestOrder_mono qnf M w x t h hτ hσ hbτ haσ hlt))
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
