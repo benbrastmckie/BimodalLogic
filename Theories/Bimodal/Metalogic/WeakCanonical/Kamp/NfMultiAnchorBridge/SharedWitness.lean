@@ -5329,6 +5329,249 @@ private theorem kvE2_sepBracketN_construct {sig : MonadicSignature}
       hyt
     rwa [hlen] at h1
 
+/-! ### Task 342 Phase 7 — grouped/flat singleton compatibility
+
+When every tie class is a singleton (the tie-free case — any weak order whose
+`kvE2_sepSlotGIdx` payload is duplicate-free over the merged chain), the meet-folded grouped
+disjunct and the flat per-slot disjunct agree at `.holds` level: `formula_conjList [f]`
+eval-equals `f` pointwise, and the grouped cut arithmetic collapses to the flat cuts. The
+comparison is `.holds`-level, NOT syntactic (`formula_conjList [f]` is `f ∧ ⊤`). -/
+
+/-- `.holds`-level congruence for `kvE2_sepBracketN` under pointwise eval-equivalent point
+    types and equal (bracket-relevant) segment types. The two brackets carry syntactically
+    DIFFERENT length expressions; both sides are normalized to a common witness count via
+    `IntervalPattern.holds_eq_succ`. -/
+private theorem kvE2_sepBracketN_holds_congr {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (aL bL aR bR : List TemporalPred) (ptW : TemporalPred)
+    (segsA segsB : Nat → TemporalPred)
+    (hL : aL.length = bL.length) (hR : aR.length = bR.length)
+    (hptL : ∀ (i : Nat) (hia : i < aL.length) (hib : i < bL.length) (y : M.carrier),
+      (aL[i]'hia).eval_at M atomMap y ↔ (bL[i]'hib).eval_at M atomMap y)
+    (hptR : ∀ (j : Nat) (hja : j < aR.length) (hjb : j < bR.length) (y : M.carrier),
+      (aR[j]'hja).eval_at M atomMap y ↔ (bR[j]'hjb).eval_at M atomMap y)
+    (hseg : ∀ i : Nat, i ≤ aL.length + 1 + aR.length → segsA i = segsB i)
+    (x t : M.carrier) :
+    (kvE2_sepBracketN aL ptW aR segsA).holds M atomMap x t ↔
+      (kvE2_sepBracketN bL ptW bR segsB).holds M atomMap x t := by
+  -- Combined point-list reads agree at every index (three-way split at the pivot `|aL|`).
+  have hpt : ∀ (i : Nat) (hia : i < aL.length + 1 + aR.length)
+      (hib : i < bL.length + 1 + bR.length) (y : M.carrier),
+      ((aL ++ ptW :: aR)[i]'(by
+        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap y ↔
+      ((bL ++ ptW :: bR)[i]'(by
+        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap y := by
+    intro i hia hib y
+    rcases Nat.lt_trichotomy i aL.length with hi | hi | hi
+    · rw [kvE2_sep_getElem_left aL aR ptW i hi,
+        kvE2_sep_getElem_left bL bR ptW i (hL ▸ hi)]
+      exact hptL i hi (hL ▸ hi) y
+    · rw [show ((aL ++ ptW :: aR)[i]'(by
+            simp only [List.length_append, List.length_cons]; omega)) = ptW by
+          rw [getElem_congr_idx hi]; exact kvE2_sep_getElem_mid aL aR ptW,
+        show ((bL ++ ptW :: bR)[i]'(by
+            simp only [List.length_append, List.length_cons]; omega)) = ptW by
+          rw [getElem_congr_idx (hi.trans hL)]; exact kvE2_sep_getElem_mid bL bR ptW]
+    · have hja : i - aL.length - 1 < aR.length := by omega
+      have hjb : i - bL.length - 1 < bR.length := by omega
+      rw [show ((aL ++ ptW :: aR)[i]'(by
+            simp only [List.length_append, List.length_cons]; omega))
+            = aR[i - aL.length - 1]'hja by
+          rw [getElem_congr_idx (by omega : i = aL.length + 1 + (i - aL.length - 1))]
+          exact kvE2_sep_getElem_right aL aR ptW _ hja,
+        show ((bL ++ ptW :: bR)[i]'(by
+            simp only [List.length_append, List.length_cons]; omega))
+            = bR[i - bL.length - 1]'hjb by
+          rw [getElem_congr_idx (by omega : i = bL.length + 1 + (i - bL.length - 1))]
+          exact kvE2_sep_getElem_right bL bR ptW _ hjb]
+      rw [getElem_congr_idx (by omega : i - bL.length - 1 = i - aL.length - 1)]
+      exact hptR (i - aL.length - 1) hja (by omega) y
+  simp only [kvE2_sepBracketN, BracketFormula.holds, BracketFormula.toIntervalPattern]
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+      (show aL.length + 1 + aR.length = aL.length + aR.length + 1 by omega),
+    IntervalPattern.holds_eq_succ M atomMap _ _ x t
+      (show bL.length + 1 + bR.length = aL.length + aR.length + 1 by omega)]
+  constructor
+  · rintro ⟨ws, h1, h2, h3, h4, h5, h6⟩
+    refine ⟨ws, h1, h2, fun i => (hpt i.val (by omega) (by omega) (ws i)).mp (h3 i),
+      fun y hy1 hy2 => ?_, fun i y hy1 hy2 => ?_, fun y hy1 hy2 => ?_⟩
+    · show (segsB 0).eval_at M atomMap y
+      rw [← hseg 0 (by omega)]
+      exact h4 y hy1 hy2
+    · show (segsB (i.val + 1)).eval_at M atomMap y
+      rw [← hseg (i.val + 1) (by omega)]
+      exact h5 i y hy1 hy2
+    · show (segsB (aL.length + aR.length + 1)).eval_at M atomMap y
+      rw [← hseg (aL.length + aR.length + 1) (by omega)]
+      exact h6 y hy1 hy2
+  · rintro ⟨ws, h1, h2, h3, h4, h5, h6⟩
+    refine ⟨ws, h1, h2, fun i => (hpt i.val (by omega) (by omega) (ws i)).mpr (h3 i),
+      fun y hy1 hy2 => ?_, fun i y hy1 hy2 => ?_, fun y hy1 hy2 => ?_⟩
+    · show (segsA 0).eval_at M atomMap y
+      rw [hseg 0 (by omega)]
+      exact h4 y hy1 hy2
+    · show (segsA (i.val + 1)).eval_at M atomMap y
+      rw [hseg (i.val + 1) (by omega)]
+      exact h5 i y hy1 hy2
+    · show (segsA (aL.length + aR.length + 1)).eval_at M atomMap y
+      rw [hseg (aL.length + aR.length + 1) (by omega)]
+      exact h6 y hy1 hy2
+
+/-- **Singleton compatibility, core form** (task 342 Phase 7 exit obligation): on the
+    singleton partition the grouped meet-folded disjunct agrees with the flat per-slot
+    disjunct at `.holds` level. Point types: `formula_conjList [f]` eval-equals `f`
+    (`kvE2_sepClassType_singleton_eval`); segments: grouped cuts collapse to flat cuts
+    (`kvE2_sepSegsG_map_singleton`); endpoints and the shared `ptW` are shared verbatim. -/
+theorem kvE2_sepDisjunct'_map_singleton_iff {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (lL lR : List (KvE2SepSlot sig))
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (x t : M.carrier) :
+    (kvE2_sepDisjunct' charBase charK qnf
+        (lL.map (fun s => [s])) (lR.map (fun s => [s]))).2.holds M atomMap x t ↔
+      (kvE2_sepDisjunct charBase charK qnf lL lR).2.holds M atomMap x t := by
+  have hptL' : ∀ (i : Nat)
+      (hia : i < ((lL.map (fun s => [s])).map (kvE2_sepClassType charBase charK)).length)
+      (hib : i < (lL.map (kvE2_sepSlotType charBase charK)).length) (y : M.carrier),
+      ((((lL.map (fun s => [s])).map (kvE2_sepClassType charBase charK))[i]'hia).eval_at
+          M atomMap y) ↔
+        (((lL.map (kvE2_sepSlotType charBase charK))[i]'hib).eval_at M atomMap y) := by
+    intro i hia hib y
+    simp only [List.getElem_map]
+    exact kvE2_sepClassType_singleton_eval charBase charK _ M atomMap y
+  have hptR' : ∀ (j : Nat)
+      (hja : j < ((lR.map (fun s => [s])).map (kvE2_sepClassType charBase charK)).length)
+      (hjb : j < (lR.map (kvE2_sepSlotType charBase charK)).length) (y : M.carrier),
+      ((((lR.map (fun s => [s])).map (kvE2_sepClassType charBase charK))[j]'hja).eval_at
+          M atomMap y) ↔
+        (((lR.map (kvE2_sepSlotType charBase charK))[j]'hjb).eval_at M atomMap y) := by
+    intro j hja hjb y
+    simp only [List.getElem_map]
+    exact kvE2_sepClassType_singleton_eval charBase charK _ M atomMap y
+  have hseg' : ∀ i : Nat,
+      i ≤ ((lL.map (fun s => [s])).map (kvE2_sepClassType charBase charK)).length + 1
+        + ((lR.map (fun s => [s])).map (kvE2_sepClassType charBase charK)).length →
+      kvE2_sepSegsG charBase qnf (lL.map (fun s => [s])) (lR.map (fun s => [s])) i
+        = kvE2_sepSegs charBase qnf lL lR i := by
+    intro i hi
+    exact kvE2_sepSegsG_map_singleton charBase qnf lL lR i (by simpa using hi)
+  simp only [kvE2_sepDisjunct', kvE2_sepDisjunct, VecEA2.holds]
+  refine and_congr Iff.rfl (and_congr Iff.rfl ?_)
+  exact kvE2_sepBracketN_holds_congr M atomMap _ _ _ _ _ _ _
+    (by simp) (by simp) hptL' hptR' hseg' x t
+
+/-- All-singleton partitions with a given flatten are exactly the mapped singleton
+    partition. -/
+private theorem kvE2_sep_eq_map_singleton {α : Type*} :
+    ∀ (g : List (List α)) (l : List α), (∀ c ∈ g, ∃ a, c = [a]) → g.flatten = l →
+      g = l.map (fun a => [a])
+  | [], l, _, hf => by subst hf; rfl
+  | c :: g, l, hs, hf => by
+    obtain ⟨a, rfl⟩ := hs c List.mem_cons_self
+    rw [List.flatten_cons, List.singleton_append] at hf
+    subst hf
+    have ih := kvE2_sep_eq_map_singleton g g.flatten
+      (fun c hc => hs c (List.mem_cons_of_mem _ hc)) rfl
+    rw [List.map_cons, ← ih]
+
+/-- **Singleton compatibility, plan shape** (task 342 Phase 7): when every tie class of
+    `gL`/`gR` is a singleton and the classes flatten to `lL`/`lR`, the grouped meet-folded
+    disjunct agrees with the flat per-slot disjunct at `.holds` level. The hypothesis shape
+    is exactly what `kvE2_sepTieGroupedL/R_of_nodup` + `_flatten` produce on a `Nodup`
+    payload. -/
+theorem kvE2_sepDisjunct'_singleton_iff {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    {gL gR : List (List (KvE2SepSlot sig))} {lL lR : List (KvE2SepSlot sig)}
+    (hgLs : ∀ c ∈ gL, ∃ s, c = [s]) (hgLf : gL.flatten = lL)
+    (hgRs : ∀ c ∈ gR, ∃ s, c = [s]) (hgRf : gR.flatten = lR)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (x t : M.carrier) :
+    (kvE2_sepDisjunct' charBase charK qnf gL gR).2.holds M atomMap x t ↔
+      (kvE2_sepDisjunct charBase charK qnf lL lR).2.holds M atomMap x t := by
+  rw [kvE2_sep_eq_map_singleton gL lL hgLs hgLf, kvE2_sep_eq_map_singleton gR lR hgRs hgRf]
+  exact kvE2_sepDisjunct'_map_singleton_iff charBase charK qnf lL lR M atomMap x t
+
+/-- flatMap is monotone under componentwise sublists. -/
+private theorem kvE2_sep_flatMap_sublist {α β : Type*} (f g : α → List β)
+    (h : ∀ a, List.Sublist (f a) (g a)) :
+    ∀ l : List α, List.Sublist (l.flatMap f) (l.flatMap g)
+  | [] => List.Sublist.refl _
+  | a :: l => by
+    simp only [List.flatMap_cons]
+    exact (h a).append (kvE2_sep_flatMap_sublist f g h l)
+
+/-- **Honest merged-chain key family is duplicate-free** (task 342 Phase 7, generic core):
+    on the honest order the mergeSort key reader `kvE2_sepSlotGIdx` coincides with the
+    value-faithful `kvE2_sepSlotHonestGIdx` on every block slot (halign bridge), whose
+    global family is `Nodup`; any per-owner region sub-family union is a sublist of the full
+    family, and the merged chain is a permutation of the union. Hence every honest tie class
+    is a singleton (via `kvE2_sepTieGroupedL/R_of_nodup`). -/
+private theorem kvE2_sepHonestOrder_merged_gidx_nodup {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (F : NormalForm sig 1 4 → List (KvE2SepSlot sig))
+    (hFsub : ∀ σ, List.Sublist (F σ) (kvE2_sepSlotBlock σ)) :
+    ((((kvE2_sepOrderOwners (kvE2_sepHonestOrder qnf M w x t h)).flatMap F).mergeSort
+        (kvE2_sepSlotMergeLe (kvE2_sepHonestOrder qnf M w x t h))).map
+      (kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h))).Nodup := by
+  -- The wo-ordered owner list is a permutation of the interior index.
+  have hp2 : List.Perm (kvE2_sepOrderOwners (kvE2_sepHonestOrder qnf M w x t h))
+      (kvE2_sepPosI qnf) := by
+    have hperm := (List.mergeSort_perm (kvE2_sepHonestOrder qnf M w x t h)
+      (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map Prod.fst
+    rw [kvE2_sepOrderTypes_owners qnf
+      (kvE2_sepHonestOrder_mem_orderTypes qnf M w x t h)] at hperm
+    exact hperm
+  -- The merged chain is a permutation of the interior-index block union.
+  have hp1 : List.Perm
+      (((kvE2_sepOrderOwners (kvE2_sepHonestOrder qnf M w x t h)).flatMap F).mergeSort
+        (kvE2_sepSlotMergeLe (kvE2_sepHonestOrder qnf M w x t h)))
+      ((kvE2_sepPosI qnf).flatMap F) :=
+    (List.mergeSort_perm _ _).trans (hp2.flatMap_right F)
+  rw [List.Perm.nodup_iff (hp1.map (kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h)))]
+  -- On the union the merge key reads the value-faithful index (halign bridge).
+  have hcongr : ((kvE2_sepPosI qnf).flatMap F).map
+        (kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h))
+      = ((kvE2_sepPosI qnf).flatMap F).map (kvE2_sepSlotHonestGIdx qnf M w x t h) := by
+    apply List.map_congr_left
+    intro s hs
+    obtain ⟨σ, hσ, hsF⟩ := List.mem_flatMap.mp hs
+    exact kvE2_sepSlotGIdx_honestOrder qnf M w x t h (kvE2_sepPosI_subset hσ)
+      ((hFsub σ).subset hsF)
+  rw [hcongr]
+  -- The union is a sublist of the full family; transfer the global value-rank Nodup.
+  have hsub : List.Sublist ((kvE2_sepPosI qnf).flatMap F) (kvE2_sepAllSlots qnf) := by
+    show List.Sublist ((kvE2_sepPosI qnf).flatMap F)
+      ((kvE2_sepPosI qnf).flatMap kvE2_sepSlotBlock)
+    exact kvE2_sep_flatMap_sublist F kvE2_sepSlotBlock hFsub _
+  exact List.Nodup.sublist (hsub.map (kvE2_sepSlotHonestGIdx qnf M w x t h))
+    (kvE2_sepAllSlots_map_honestGIdx_nodup qnf M w x t h)
+
+/-- The honest LEFT merged-chain `kvE2_sepSlotGIdx` payload is duplicate-free — every
+    honest LEFT tie class is a singleton. -/
+theorem kvE2_sepHonestOrder_slotsLOf_gidx_nodup {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    ((kvE2_sepSlotsLOf (kvE2_sepHonestOrder qnf M w x t h)).map
+      (kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h))).Nodup := by
+  unfold kvE2_sepSlotsLOf
+  exact kvE2_sepHonestOrder_merged_gidx_nodup qnf M w x t h kvE2_sepSlotsLFor
+    (fun σ => by
+      show List.Sublist (kvE2_sepSlotsLFor σ) (kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ)
+      exact List.sublist_append_left _ _)
+
+/-- The honest RIGHT merged-chain `kvE2_sepSlotGIdx` payload is duplicate-free — every
+    honest RIGHT tie class is a singleton (right mirror). -/
+theorem kvE2_sepHonestOrder_slotsROf_gidx_nodup {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    ((kvE2_sepSlotsROf (kvE2_sepHonestOrder qnf M w x t h)).map
+      (kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h))).Nodup := by
+  unfold kvE2_sepSlotsROf
+  exact kvE2_sepHonestOrder_merged_gidx_nodup qnf M w x t h kvE2_sepSlotsRFor
+    (fun σ => by
+      show List.Sublist (kvE2_sepSlotsRFor σ) (kvE2_sepSlotsLFor σ ++ kvE2_sepSlotsRFor σ)
+      exact List.sublist_append_right _ _)
+
 /-- **Phase-3 adversarial finding (task 337, cycle 11): the interior-restriction hypothesis
     `hLR` is INCONSISTENT with the honest evaluation `h`.** The characteristic depth-1 type
     `σ_w` of the configuration `(w; w, x, t)` — the shared witness read AT ITSELF — is always
