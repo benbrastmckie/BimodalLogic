@@ -6977,6 +6977,36 @@ force the bit positive through the same channel. All zones here are placement-ge
 boundary/exterior zones — the OPEN interior keys never appear (F5 stays confined to the
 strict placements of conjunct (i)). -/
 
+/-- Marker-clean private clone of the arity-4 zoneHolds cons-iff helper
+    (`SubBracket2.lean:538`), byte-identical in content: `zoneHolds` over the anchor env
+    `[a, w, x, t]` at a pointwise `Fin.cons` zone spec, unfolded to its four coordinate
+    biconditionals (Def 3.1 ordering channel, PDF p.4). Cloned so the endpoint-honesty
+    pack references no identifier carrying the open-key marker prefix — the F5 count
+    guard stays mechanical. -/
+private theorem kvE2_sepZone4_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (e0 e1 e2 e3 v : M.carrier)
+    (p0 p1 p2 p3 : Bool × Bool) :
+    zoneHolds M (Fin.cons e0 (Fin.cons e1 (Fin.cons e2 (fun _ => e3))) : Fin 4 → M.carrier)
+      (Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3))) : ZoneSpec 4) v ↔
+    (((v < e0) ↔ p0.1 = true) ∧ ((e0 < v) ↔ p0.2 = true)) ∧
+    (((v < e1) ↔ p1.1 = true) ∧ ((e1 < v) ↔ p1.2 = true)) ∧
+    (((v < e2) ↔ p2.1 = true) ∧ ((e2 < v) ↔ p2.2 = true)) ∧
+    (((v < e3) ↔ p3.1 = true) ∧ ((e3 < v) ↔ p3.2 = true)) := by
+  constructor
+  · intro h
+    have h0 := h ⟨0, by omega⟩
+    have h1 := h ⟨1, by omega⟩
+    have h2 := h ⟨2, by omega⟩
+    have h3 := h ⟨3, by omega⟩
+    simp only [Fin.cons] at h0 h1 h2 h3
+    exact ⟨h0, h1, h2, h3⟩
+  · rintro ⟨h0, h1, h2, h3⟩ i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using h0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using h1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using h2
+    | ⟨3, _⟩ => simpa only [Fin.cons] using h3
+
 /-- `zPastX4` Since-literal honesty at `x` (per interior owner). -/
 private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature}
     (charBase : NormalForm sig 0 1 → Formula)
@@ -6995,7 +7025,7 @@ private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature}
   | true =>
     show temporal_truth M atomMap x (Formula.snce (charBase χ) Formula.top)
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zPastX4 χ).mpr hb
-    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (true, false) (true, false) (true, false) (true, false)).mp hz
     exact ⟨v, h2.1.mpr rfl, (hcb χ v).mpr hv, fun r _ _ hf => hf⟩
   | false =>
@@ -7003,7 +7033,7 @@ private theorem kvE2_sepOwnerLit_zPastX4 {sig : MonadicSignature}
     rintro ⟨s, hsx, hsχ, -⟩
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2_sep_zPastX4 s := by
-      refine (kvE_sub2_zoneHolds_cons_iff M a w x t s
+      refine (kvE2_sepZone4_iff M a w x t s
         (true, false) (true, false) (true, false) (true, false)).mpr ?_
       exact ⟨⟨iff_of_true (hsx.trans hxa) rfl,
           iff_of_false (lt_asymm (hsx.trans hxa)) (by decide)⟩,
@@ -7034,7 +7064,7 @@ private theorem kvE2_sepOwnerLit_zAtX4 {sig : MonadicSignature}
   | true =>
     show temporal_truth M atomMap x (charBase χ)
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtX4 χ).mpr hb
-    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (true, false) (true, false) (false, false) (true, false)).mp hz
     have hveq : v = x := le_antisymm
       (not_lt.mp (fun hc => Bool.noConfusion (h2.2.mp hc)))
@@ -7045,7 +7075,7 @@ private theorem kvE2_sepOwnerLit_zAtX4 {sig : MonadicSignature}
     intro hch
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2_sep_zAtX4 x := by
-      refine (kvE_sub2_zoneHolds_cons_iff M a w x t x
+      refine (kvE2_sepZone4_iff M a w x t x
         (true, false) (true, false) (false, false) (true, false)).mpr ?_
       exact ⟨⟨iff_of_true hxa rfl, iff_of_false (lt_asymm hxa) (by decide)⟩,
         ⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by decide)⟩,
@@ -7073,7 +7103,7 @@ private theorem kvE2_sepOwnerLit_zAtT4 {sig : MonadicSignature}
   | true =>
     show temporal_truth M atomMap t (charBase χ)
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtT4 χ).mpr hb
-    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (false, true) (false, true) (false, true) (false, false)).mp hz
     have hveq : v = t := le_antisymm
       (not_lt.mp (fun hc => Bool.noConfusion (h3.2.mp hc)))
@@ -7084,7 +7114,7 @@ private theorem kvE2_sepOwnerLit_zAtT4 {sig : MonadicSignature}
     intro hch
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2_sep_zAtT4 t := by
-      refine (kvE_sub2_zoneHolds_cons_iff M a w x t t
+      refine (kvE2_sepZone4_iff M a w x t t
         (false, true) (false, true) (false, true) (false, false)).mpr ?_
       exact ⟨⟨iff_of_false (lt_asymm hat) (by decide), iff_of_true hat rfl⟩,
         ⟨iff_of_false (lt_asymm hwt) (by decide), iff_of_true hwt rfl⟩,
@@ -7113,7 +7143,7 @@ private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature}
   | true =>
     show temporal_truth M atomMap t (Formula.untl (charBase χ) Formula.top)
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zFutT4 χ).mpr hb
-    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (false, true) (false, true) (false, true) (false, true)).mp hz
     exact ⟨v, h3.2.mpr rfl, (hcb χ v).mpr hv, fun r _ _ hf => hf⟩
   | false =>
@@ -7121,7 +7151,7 @@ private theorem kvE2_sepOwnerLit_zFutT4 {sig : MonadicSignature}
     rintro ⟨s, hts, hsχ, -⟩
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2_sep_zFutT4 s := by
-      refine (kvE_sub2_zoneHolds_cons_iff M a w x t s
+      refine (kvE2_sepZone4_iff M a w x t s
         (false, true) (false, true) (false, true) (false, true)).mpr ?_
       exact ⟨⟨iff_of_false (lt_asymm (hat.trans hts)) (by decide),
           iff_of_true (hat.trans hts) rfl⟩,
@@ -7152,7 +7182,7 @@ private theorem kvE2_sepOwnerLit_zAtWL {sig : MonadicSignature}
   | true =>
     show temporal_truth M atomMap w (charBase χ)
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtWL χ).mpr hb
-    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (false, true) (false, false) (false, true) (true, false)).mp hz
     have hveq : v = w := le_antisymm
       (not_lt.mp (fun hc => Bool.noConfusion (h1.2.mp hc)))
@@ -7163,7 +7193,7 @@ private theorem kvE2_sepOwnerLit_zAtWL {sig : MonadicSignature}
     intro hch
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2_sep_zAtWL w := by
-      refine (kvE_sub2_zoneHolds_cons_iff M a w x t w
+      refine (kvE2_sepZone4_iff M a w x t w
         (false, true) (false, false) (false, true) (true, false)).mpr ?_
       exact ⟨⟨iff_of_false (lt_asymm haw) (by decide), iff_of_true haw rfl⟩,
         ⟨iff_of_false (lt_irrefl w) (by decide), iff_of_false (lt_irrefl w) (by decide)⟩,
@@ -7191,7 +7221,7 @@ private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature}
   | true =>
     show temporal_truth M atomMap w (charBase χ)
     obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtWR χ).mpr hb
-    obtain ⟨h0, h1, h2, h3⟩ := (kvE_sub2_zoneHolds_cons_iff M a w x t v
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
       (true, false) (false, false) (false, true) (true, false)).mp hz
     have hveq : v = w := le_antisymm
       (not_lt.mp (fun hc => Bool.noConfusion (h1.2.mp hc)))
@@ -7202,7 +7232,7 @@ private theorem kvE2_sepOwnerLit_zAtWR {sig : MonadicSignature}
     intro hch
     have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
         kvE2_sep_zAtWR w := by
-      refine (kvE_sub2_zoneHolds_cons_iff M a w x t w
+      refine (kvE2_sepZone4_iff M a w x t w
         (true, false) (false, false) (false, true) (true, false)).mpr ?_
       exact ⟨⟨iff_of_true hwa rfl, iff_of_false (lt_asymm hwa) (by decide)⟩,
         ⟨iff_of_false (lt_irrefl w) (by decide), iff_of_false (lt_irrefl w) (by decide)⟩,
