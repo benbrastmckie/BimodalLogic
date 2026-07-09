@@ -1,7 +1,11 @@
 {
   "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
-  "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
   "task_number": 337,
   "session_id": "sess_1783578954_3bce55_337",
   "requires_user_review": false,
@@ -9,21 +13,27 @@
   "phases_completed": 0,
   "phases_partial": 1,
   "phases_total": 5,
-  "summary": "CYCLE 5 reversed the analysis-paralysis failure: landed the complete P1 halign FOUNDATION green — kvE2_sepSlotGIdx_honestOrder (the bridge), _mono, and _injOn — three additive axiom-clean committed lemmas discharging the load-bearing halign fact the superseded stop-guard claimed unprovable. SharedWitness.lean GREEN throughout (never RED). Terminal deliverables (kvE2_sepDisjunct_holds_of_honest, kvE2_sepBody_holds_of_honest) not yet built; they require the multi-hour P2-P4 engine construction, scoped turnkey in the handoff. Status partial.",
+  "summary": "CYCLE 6 continued concrete Lean: landed the value-sortedness foundation the directive named, consuming the banked halign trio (do NOT re-derive). Seven additive green axiom-clean committed lemmas: kvE2_sepSlotMergeLe_trans/_total, kvE2_sepSlotsLOf/ROf_mergeSorted (merge-key Pairwise, any wo), kvE2_sepOrderOwners_mem_pos, kvE2_sepSlotsLOf/ROf_mem_block (slot in positive block), kvE2_sepSlotsLOf/ROf_honest_valueSorted (Pairwise value-nondecreasing on the honest order). SharedWitness GREEN throughout. Region assembly kvE2_sepHonest_engineInputs NOT yet built (structure resolved; value-based base-type->anchor-gap partition is a substantial standalone construction). Terminal deliverables not delivered. Status partial.",
   "sorry_inventory": [],
   "verification": {
     "sorry_count": 0,
+    "sorry_matches_all_docstring_prose": true,
     "vacuous_count": 0,
     "axiom_count_delta": 0,
     "build_passed": true,
     "lean_file_edited": true,
-    "landed_lemmas_axioms": ["propext", "Classical.choice", "Quot.sound"]
+    "build_target": "Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness",
+    "landed_lemmas_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
   },
   "blockers": [],
   "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
   "artifacts": [
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/05_halign-foundation-summary.md",
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/06_value-sortedness-foundation-summary.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json"
   ],
   "modified_files": [
@@ -31,10 +41,10 @@
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/04_joint-disjunct-holds-codesign.md",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.orchestrator-handoff.json",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/.return-meta.json",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/05_halign-foundation-summary.md"
+    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/06_value-sortedness-foundation-summary.md"
   ],
   "memory_candidates": [
-    "Task 337 halign FOUNDATION (cycle 5): on kvE2_sepHonestOrder the mergeSort key reader kvE2_sepSlotGIdx equals the value-faithful per-slot index kvE2_sepSlotHonestGIdx (lemma kvE2_sepSlotGIdx_honestOrder), with _mono and _injOn corollaries. This proves kvE2_sepSlotsLOf/ROf are value-sorted — the fact the old tied-tuple stop-guard called unprovable, provable after task 340's per-slot value-rank refinement.",
-    "find? on a zipIdx.map order (kvE2_sepHonestOrder) resolves via: rw [def, List.find?_map]; existence witness from σ ∈ zipIdx.map Prod.fst using List.zipIdx_map_fst; cases on find?, none via List.find?_eq_none + witness, some via List.find?_some + decide_eq_true_eq. This project's Lean uses List.zipIdx_map_fst, NOT the newer List.map_fst_zipIdx."
+    "Task 337 value-sortedness (cycle 6): kvE2_sepSlotsLOf/ROf(honestOrder) are Pairwise value-nondecreasing (kvE2_sepSlotsLOf/ROf_honest_valueSorted). Proof: List.pairwise_mergeSort gives merge-key sortedness for any wo (kvE2_sepSlotMergeLe is a total preorder = <= on the global-index N); then List.Pairwise.imp_of_mem upgrades to value-<= by contradiction via the halign _mono, using that every merged slot belongs to a positive owner's block (kvE2_sepOrderOwners_mem_pos + mergeSort_perm + mem_flatMap). The value fact is <= not < (distinct owners may share witness values; strict is FALSE).",
+    "Task 337 region-assembly structure (resolved cycle 6, NOT yet built): k1v_sorted_realizationK regions use the value-sorted interior anchors as boundaries (regionsL = [(x,a_1,S_0),...,(a_k,w,S_k)], interleaveK emits a_1..a_k, final hi=w = the bracket ptW). Base types must be partitioned into anchor gaps BY THEIR REALIZED VALUE (kvE2_sepSlotValue), not statically by owner, because a zUW type of owner i is realized in (a_i,w) spanning several gaps. hreal by partition def; hpos/hlink from strict anchor sortedness; hnd from kvE2_sepS_nodup per gap."
   ]
 }
