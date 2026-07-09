@@ -368,6 +368,115 @@ theorem kvE2_sepMem_slotBlock {sig : MonadicSignature} (σ : NormalForm sig 1 4)
     s ∈ kvE2_sepSlotBlock σ ↔ s ∈ kvE2_sepSlotsLFor σ ∨ s ∈ kvE2_sepSlotsRFor σ := by
   rw [kvE2_sepSlotBlock, List.mem_append]
 
+/-- The interior-positive 1-type enumeration is duplicate-free (filter of the `Nodup` `Finset.toList`). -/
+theorem kvE2_sepS_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) (zs : ZoneSpec 4) :
+    (kvE2_sepS σ zs).Nodup :=
+  (Finset.univ.nodup_toList).filter _
+
+/-- A slot family `(kvE2_sepS σ zs).map f` with `f` injective is duplicate-free. -/
+theorem kvE2_sepS_map_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) (zs : ZoneSpec 4)
+    {f : NormalForm sig 0 1 → KvE2SepSlot sig} (hf : Function.Injective f) :
+    ((kvE2_sepS σ zs).map f).Nodup :=
+  (kvE2_sepS_nodup σ zs).map hf
+
+/-- Every slot in σ's block is owned by σ. -/
+theorem kvE2_sepSlotSub_of_mem_block {sig : MonadicSignature} {σ : NormalForm sig 1 4}
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) : kvE2_sepSlotSub s = σ := by
+  rw [kvE2_sepMem_slotBlock, kvE2_sepSlotsLFor, kvE2_sepSlotsRFor] at hs
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · simp only [if_pos h1] at hs
+    rcases hs with hL | hR
+    · rcases List.mem_append.mp hL with h | h
+      · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+      · rcases List.mem_cons.mp h with rfl | h
+        · rfl
+        · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+    · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp hR; rfl
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · simp only [if_neg h1, if_pos h2] at hs
+      rcases hs with hL | hR
+      · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp hL; rfl
+      · rcases List.mem_append.mp hR with h | h
+        · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+        · rcases List.mem_cons.mp h with rfl | h
+          · rfl
+          · obtain ⟨χ, _, rfl⟩ := List.mem_map.mp h; rfl
+    · simp [if_neg h1, if_neg h2] at hs
+
+/-- σ's canonical slot block is duplicate-free: within each region the constructor is injective in
+    `χ`, and distinct constructors separate the region groups (cross `a ≠ b` goals close by
+    `reduceCtorEq`). -/
+theorem kvE2_sepSlotBlock_nodup {sig : MonadicSignature} (σ : NormalForm sig 1 4) :
+    (kvE2_sepSlotBlock σ).Nodup := by
+  rw [kvE2_sepSlotBlock, kvE2_sepSlotsLFor, kvE2_sepSlotsRFor]
+  by_cases h1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · -- (map .lXU) ++ (.lX1 σ :: (map .lUW)) ++ (map .lWT)
+    simp only [if_pos h1]
+    rw [List.nodup_append, List.nodup_append, List.nodup_cons]
+    refine ⟨⟨kvE2_sepS_map_nodup σ _ (fun a b h => by simpa using h),
+        ⟨?_, kvE2_sepS_map_nodup σ _ (fun a b h => by simpa using h)⟩, ?_⟩,
+      kvE2_sepS_map_nodup σ _ (fun a b h => by simpa using h), ?_⟩
+    · -- .lX1 σ ∉ (map .lUW)
+      intro hmem; obtain ⟨χ, _, heq⟩ := List.mem_map.mp hmem; simp at heq
+    · -- ∀ a ∈ map .lXU, ∀ b ∈ .lX1 σ :: map .lUW, a ≠ b
+      intro a ha b hb
+      obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+      rcases List.mem_cons.mp hb with rfl | hb
+      · simp
+      · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp
+    · -- ∀ a ∈ (map .lXU ++ .lX1 σ :: map .lUW), ∀ b ∈ map .lWT, a ≠ b
+      intro a ha b hb
+      obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb
+      rcases List.mem_append.mp ha with ha | ha
+      · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha; simp
+      · rcases List.mem_cons.mp ha with rfl | ha
+        · simp
+        · obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha; simp
+  · by_cases h2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · -- (map .rXW) ++ (map .rWX1 ++ (.rX1 σ :: map .rX1T))
+      simp only [if_neg h1, if_pos h2]
+      rw [List.nodup_append, List.nodup_append, List.nodup_cons]
+      refine ⟨kvE2_sepS_map_nodup σ _ (fun a b h => by simpa using h),
+        ⟨⟨kvE2_sepS_map_nodup σ _ (fun a b h => by simpa using h),
+          ⟨⟨?_, kvE2_sepS_map_nodup σ _ (fun a b h => by simpa using h)⟩, ?_⟩⟩, ?_⟩⟩
+      · -- .rX1 σ ∉ (map .rX1T)
+        intro hmem; obtain ⟨χ, _, heq⟩ := List.mem_map.mp hmem; simp at heq
+      · -- ∀ a ∈ map .rWX1, ∀ b ∈ .rX1 σ :: map .rX1T, a ≠ b
+        intro a ha b hb
+        obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+        rcases List.mem_cons.mp hb with rfl | hb
+        · simp
+        · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp
+      · -- ∀ a ∈ map .rXW, ∀ b ∈ (map .rWX1 ++ .rX1 σ :: map .rX1T), a ≠ b
+        intro a ha b hb
+        obtain ⟨χa, _, rfl⟩ := List.mem_map.mp ha
+        rcases List.mem_append.mp hb with hb | hb
+        · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp
+        · rcases List.mem_cons.mp hb with rfl | hb
+          · simp
+          · obtain ⟨χb, _, rfl⟩ := List.mem_map.mp hb; simp
+    · simp [if_neg h1, if_neg h2]
+
+/-- Blocks of distinct owners are disjoint (each slot's owner is recovered by `kvE2_sepSlotSub`) —
+    the cross-owner distinctness feeding `kvE2_sepAllSlots_nodup`. -/
+theorem kvE2_sep_blocks_disjoint {sig : MonadicSignature} {σ τ : NormalForm sig 1 4}
+    (hne : σ ≠ τ) : (kvE2_sepSlotBlock σ).Disjoint (kvE2_sepSlotBlock τ) := by
+  intro a ha hb
+  exact hne ((kvE2_sepSlotSub_of_mem_block ha).symm.trans (kvE2_sepSlotSub_of_mem_block hb))
+
+/-- **The full slot family is duplicate-free** (task 340 Phase 6 foundation, load-bearing): distinct
+    individual slots occupy distinct positions, so `kvE2_sepSlotIndexOf` embeds the family into
+    `[0, N)` and the lex value family `G j = (value_j, j)` is injective (feeds
+    `kvE2_ordRank_injective`). Per-block distinctness plus cross-owner disjointness via
+    `kvE2_sepSlotSub`. Model-independent (gate report 09: the per-owner slot list stays fixed). -/
+theorem kvE2_sepAllSlots_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 3) :
+    (kvE2_sepAllSlots qnf).Nodup := by
+  rw [kvE2_sepAllSlots, List.nodup_flatMap]
+  refine ⟨fun σ _ => kvE2_sepSlotBlock_nodup σ, ?_⟩
+  have hnd : (kvE2_sepPos qnf).Nodup :=
+    List.Nodup.filter _ (Finset.nodup_toList _)
+  exact hnd.imp (fun hne => kvE2_sep_blocks_disjoint hne)
+
 /-! ## Cross-σ bit-compatibility predicate (task 333 Phase 1 — STAGED, not yet wired)
 
 The task 321 filter (`kvE2_sepSlotLe` below) admits ANY cross-σ interleaving
