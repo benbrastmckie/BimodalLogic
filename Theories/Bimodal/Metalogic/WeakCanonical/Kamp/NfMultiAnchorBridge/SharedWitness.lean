@@ -2773,6 +2773,59 @@ theorem kvE2_sepSlotG_lt_of_value_lt {sig : MonadicSignature}
     kvE2_sepSlotG qnf M w x t h a < kvE2_sepSlotG qnf M w x t h b := by
   exact Prod.Lex.left _ _ hlt
 
+/-- **The honest per-individual-slot global index** (Phase 6/7): slot `s`'s value rank
+    `kvE2_ordRank G` at its family position. This is the value-faithful per-slot index the refined
+    carrier reads (via `kvE2_sepBlockPos`), replacing the tied `(3r,3r+1,3r+2)` owner-region tuple
+    the 337 stop-guard refuted. Off-family (never on the enumeration) defaults to `0`. -/
+noncomputable def kvE2_sepSlotHonestGIdx {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (s : KvE2SepSlot sig) : ℕ :=
+  if hs : kvE2_sepSlotIndexOf qnf s < (kvE2_sepAllSlots qnf).length then
+    kvE2_ordRank (kvE2_sepSlotG qnf M w x t h) ⟨kvE2_sepSlotIndexOf qnf s, hs⟩
+  else 0
+
+/-- **Region monotonicity engine** (Phase 7 conjunct (ii)): a strictly smaller slot value gives a
+    strictly smaller honest global index. Within a region the bundle facts give
+    `value(before) < value(anchor) < value(after)`, so this yields the region-order extension. -/
+theorem kvE2_sepSlotHonestGIdx_mono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
+    (hlt : kvE2_sepSlotValue qnf M w x t h a < kvE2_sepSlotValue qnf M w x t h b) :
+    kvE2_sepSlotHonestGIdx qnf M w x t h a < kvE2_sepSlotHonestGIdx qnf M w x t h b := by
+  have hal : kvE2_sepSlotIndexOf qnf a < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf ha
+  have hbl : kvE2_sepSlotIndexOf qnf b < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf hb
+  have hga : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf a, hal⟩ = a := List.idxOf_get hal
+  have hgb : (kvE2_sepAllSlots qnf).get ⟨kvE2_sepSlotIndexOf qnf b, hbl⟩ = b := List.idxOf_get hbl
+  unfold kvE2_sepSlotHonestGIdx
+  rw [dif_pos hal, dif_pos hbl]
+  apply kvE2_ordRank_strictMono
+  apply kvE2_sepSlotG_lt_of_value_lt
+  rw [hga, hgb]; exact hlt
+
+/-- **Cross-owner Nodup ingredient** (Phase 7 conjunct (iii)): the honest global index is injective
+    on family members. Composes `kvE2_ordRank_injective` (on the index-injective `G`) with
+    `kvE2_sepSlotIndexOf_injOn`. Gives distinct value-ranked indices for distinct individual slots
+    — the per-slot faithfulness the refinement installs (no owner-region tie). -/
+theorem kvE2_sepSlotHonestGIdx_injOn {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepAllSlots qnf) (hb : b ∈ kvE2_sepAllSlots qnf)
+    (heq : kvE2_sepSlotHonestGIdx qnf M w x t h a = kvE2_sepSlotHonestGIdx qnf M w x t h b) :
+    a = b := by
+  have hal : kvE2_sepSlotIndexOf qnf a < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf ha
+  have hbl : kvE2_sepSlotIndexOf qnf b < (kvE2_sepAllSlots qnf).length :=
+    kvE2_sepSlotIndexOf_lt qnf hb
+  unfold kvE2_sepSlotHonestGIdx at heq
+  rw [dif_pos hal, dif_pos hbl] at heq
+  have hfin := kvE2_ordRank_injective (kvE2_sepSlotG qnf M w x t h)
+    (kvE2_sepSlotG_injective qnf M w x t h) heq
+  exact kvE2_sepSlotIndexOf_injOn qnf ha hb (congrArg Fin.val hfin)
+
 /-! ## O3 — Joint soundness extraction (task 321 v7, Phase 8)
 
 From a REALIZED joint disjunct of `kvE2_sepBody`, extract the shared witness `w` (the one
