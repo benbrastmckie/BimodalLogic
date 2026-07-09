@@ -1,9 +1,25 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
+  "phase_scope": "phase 1 only (single-phase dispatch); task-level status in .orchestrator-handoff.json is partial (1/5 phases)",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 337,
   "session_id": "sess_1783610916_b79fd5",
   "cycle": 9,
-  "goal": "Build kvE2_sepHonest_engineInputs (cross-owner value->gap partition + collision folding)"
+  "goal": "Build kvE2_sepHonest_engineInputs (cross-owner value->gap partition + collision folding)",
+  "outcome": "kvE2_sepHonest_engineInputs LANDED green + axiom-clean; Phase 1 COMPLETE",
+  "sorry_inventory": [],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "lean_verify_axioms": ["propext", "Classical.choice", "Quot.sound"]
+  },
+  "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-1-handoff-1783610916.md",
+  "summary_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/summaries/09_engine-inputs-landed-summary.md",
+  "memory_candidates": [
+    "Lean pattern: for engine region inputs, a STRICT interior filter over (value,type) pairs makes boundary-collision handling structural — colliding pairs are simply absent, so hreal needs no non-collision lemma; carry the fold via a membership-introduction lemma instead.",
+    "Lean pattern: per-region Nodup on TYPE lists via filter-of-dedup of the pooled types, while keeping per-slot multiplicity in a separate (value,type) pair pool for later alignment — avoids the flat-dedup trap when the downstream bracket needs one point per slot."
+  ]
 }
