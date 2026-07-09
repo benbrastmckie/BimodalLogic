@@ -699,7 +699,7 @@ def kvE2_sepSpikeOrderTypes : List KvE2SepSpikeOrderType :=
     placement tag stays the 3-value per-owner type (F5: strict→OPEN, coincident→CLOSED); the ℕ rank
     is the orthogonal merged-chain position. -/
 abbrev KvE2SepWeakOrder (sig : MonadicSignature) :=
-  List (NormalForm sig 1 4 × KvE2SepSpikeOrderType × (ℕ × ℕ × ℕ))
+  List (NormalForm sig 1 4 × KvE2SepSpikeOrderType × List ℕ)
 
 /-- The order-type tag list is exhaustive: every tag is a member. -/
 theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
@@ -713,11 +713,11 @@ theorem kvE2_sepSpikeOrderTypes_complete (tag : KvE2SepSpikeOrderType) :
     under-specification (report 337/02 Q2) that blocked task 337. The added ℕ rank makes them
     unequal, giving task 337's `.holds` builder the cross-owner data to consume. -/
 example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) :
-    ([(σ, KvE2SepSpikeOrderType.coincident, (0, 1, 2)),
-      (τ, KvE2SepSpikeOrderType.coincident, (3, 4, 5))]
+    ([(σ, KvE2SepSpikeOrderType.coincident, [0, 1, 2]),
+      (τ, KvE2SepSpikeOrderType.coincident, [3, 4, 5])]
         : KvE2SepWeakOrder sig)
-      ≠ [(σ, KvE2SepSpikeOrderType.coincident, (3, 4, 5)),
-         (τ, KvE2SepSpikeOrderType.coincident, (0, 1, 2))] := by
+      ≠ [(σ, KvE2SepSpikeOrderType.coincident, [3, 4, 5]),
+         (τ, KvE2SepSpikeOrderType.coincident, [0, 1, 2])] := by
   simp
 
 /-- **Per-slot global-index tuple** (task 340): for an owner at merged-chain position `k` in an
@@ -725,16 +725,16 @@ example {sig : MonadicSignature} (σ τ : NormalForm sig 1 4) :
     indices of its region-rank-0/1/2 slots. Behavior-preserving: `giOf = regionRank·n + k`
     reproduces 339's region-primary/owner-secondary order EXACTLY (Phase 2). Consistency
     `i₀<i₁<i₂` holds (`k < n+k < 2n+k`). Phase 5 replaces this with the honest model value order. -/
-def kvE2_sepPlaceholderTuple (n k : ℕ) : ℕ × ℕ × ℕ := (k, n + k, 2 * n + k)
+def kvE2_sepPlaceholderTuple (n k : ℕ) : List ℕ := [k, n + k, 2 * n + k]
 
 /-- **Finite tuple index range** (task 340): all `(ℕ × ℕ × ℕ)` global-index tuples with each
     component `< 3n`. Finite, `DecidableEq`, `decide`-able; contains every `kvE2_sepPlaceholderTuple
     n k` for `k < n` and every order-consistent interleaving over `n` owners' ≤3 region ranks. This
     is the per-slot index the enumeration ranges over, replacing the single `List.range n` rank. -/
-def kvE2_sepIdxTuples (n : ℕ) : List (ℕ × ℕ × ℕ) :=
+def kvE2_sepIdxTuples (n : ℕ) : List (List ℕ) :=
   (List.range (3 * n)).flatMap (fun a =>
     (List.range (3 * n)).flatMap (fun b =>
-      (List.range (3 * n)).map (fun c => (a, b, c))))
+      (List.range (3 * n)).map (fun c => [a, b, c])))
 
 /-- The placeholder tuple for position `k < n` is in the tuple index range. -/
 theorem kvE2_sepPlaceholderTuple_mem (n k : ℕ) (hk : k < n) :
@@ -756,7 +756,7 @@ theorem kvE2_sepPlaceholderTuple_mem (n k : ℕ) (hk : k < n) :
     steps. Reads no zone bit; abstract-ℕ only (F4/LITMUS clean). -/
 theorem kvE2_sepIdxTuple_mem_of_lt (n a b c : ℕ)
     (ha : a < 3 * n) (hb : b < 3 * n) (hc : c < 3 * n) :
-    (a, b, c) ∈ kvE2_sepIdxTuples n := by
+    [a, b, c] ∈ kvE2_sepIdxTuples n := by
   rw [kvE2_sepIdxTuples, List.mem_flatMap]
   refine ⟨a, List.mem_range.mpr ha, ?_⟩
   rw [List.mem_flatMap]
@@ -899,7 +899,8 @@ def kvE2_sepDisjValidOwner {sig : MonadicSignature}
     slot (`lXU<lX1<lUW` left, `rWX1<rX1<rX1T` right). A linear extension of each owner's region
     partial order (Lemma 3.2(1), md:77: one consistent global order over the union). Reads NO zone
     bit (F5 clean); an abstract ℕ compare, never an `x1 < e_i` model literal (F4/LITMUS clean). -/
-def kvE2_sepConsistentTuple (t : ℕ × ℕ × ℕ) : Bool := decide (t.1 < t.2.1 ∧ t.2.1 < t.2.2)
+def kvE2_sepConsistentTuple (t : List ℕ) : Bool :=
+  decide (t.getD 0 0 < t.getD 1 0 ∧ t.getD 1 0 < t.getD 2 0)
 
 /-- **Per-disjunct validity** (faithful replacement of the additive `kvE2_sepValid`): a weak order
     is valid iff (i) every per-owner placement is admitted by the owner's arrangement-appropriate
@@ -914,7 +915,7 @@ def kvE2_sepDisjValid {sig : MonadicSignature}
     (_qnf : NormalForm sig 2 3) (wo : KvE2SepWeakOrder sig) : Bool :=
   wo.all (fun p => kvE2_sepDisjValidOwner p.1 p.2.1)
     && wo.all (fun p => kvE2_sepConsistentTuple p.2.2)
-    && decide (wo.map (fun p => p.2.2.1)).Nodup
+    && decide (wo.map (fun p => p.2.2.getD 0 0)).Nodup
 
 /-- **The faithful carrier** (replacing `kvE2_sepArrL/R`): the valid order-type disjuncts, the
     per-order-type filter of the disjunction index (Lemma 3.2(1), md:77). -/
@@ -934,7 +935,7 @@ instance kvE2_sepArr'_decidable {sig : MonadicSignature} (qnf : NormalForm sig 2
     `n = |pos|`). -/
 private theorem kvE2_sepOrderTypes_mem_aux {sig : MonadicSignature} (n : ℕ)
     (f : NormalForm sig 1 4 → KvE2SepSpikeOrderType)
-    (gt : ℕ → ℕ × ℕ × ℕ)
+    (gt : ℕ → List ℕ)
     (L : List (NormalForm sig 1 4)) (s : ℕ)
     (hb : ∀ i, i < L.length → gt (s + i) ∈ kvE2_sepIdxTuples n) :
     (L.zipIdx s).map (fun p => (p.1, f p.1, gt p.2)) ∈
@@ -988,14 +989,14 @@ theorem kvE2_sepArr'_mem_modelOrder {sig : MonadicSignature}
     owner MULTISET as `wo` — but sequenced by the rank the disjunct realizes. -/
 def kvE2_sepOrderOwners {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) : List (NormalForm sig 1 4) :=
-  (wo.mergeSort (fun a b => decide (a.2.2.1 ≤ b.2.2.1))).map Prod.fst
+  (wo.mergeSort (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map Prod.fst
 
 /-- **Owner merged-chain rank read** (task 339): σ's merged-chain rank as recorded in `wo` (338's
     per-owner rank field, consumed AS-IS). Owners not present in `wo` default to `0` (never occurs
     on the enumeration index, where `wo.map Prod.fst = kvE2_sepPos qnf`). -/
 def kvE2_sepOwnerRank {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) (σ : NormalForm sig 1 4) : ℕ :=
-  ((wo.find? (fun p => decide (p.1 = σ))).map (fun p => p.2.2.1)).getD 0
+  ((wo.find? (fun p => decide (p.1 = σ))).map (fun p => p.2.2.getD 0 0)).getD 0
 
 /-- **Per-slot global index reader** (task 340): the single global index of slot `s` under `wo` —
     read from the owner's per-slot index tuple `(i₀,i₁,i₂)` at `s`'s region rank. Owners not in `wo`
@@ -1006,11 +1007,8 @@ def kvE2_sepOwnerRank {sig : MonadicSignature}
 def kvE2_sepSlotGIdx {sig : MonadicSignature}
     (wo : KvE2SepWeakOrder sig) (s : KvE2SepSlot sig) : ℕ :=
   let t := ((wo.find? (fun p => decide (p.1 = kvE2_sepSlotSub s))).map
-    (fun p => p.2.2)).getD (0, 0, 0)
-  match kvE2_sepSlotRank s with
-  | 0 => t.1
-  | 1 => t.2.1
-  | _ => t.2.2
+    (fun p => p.2.2)).getD []
+  t.getD (kvE2_sepSlotRank s) 0
 
 /-- **Single-level per-slot global-index merge key** (task 340): compares two slots by their global
     index `kvE2_sepSlotGIdx wo`. Region rank is NO LONGER primary — a region-2 slot of one owner can
@@ -1078,7 +1076,7 @@ theorem kvE2_sepMem_orderOwners {sig : MonadicSignature} (qnf : NormalForm sig 2
     {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) :
     σ ∈ kvE2_sepOrderOwners wo := by
   rw [kvE2_sepOrderOwners]
-  have hperm := (List.mergeSort_perm wo (fun a b => decide (a.2.2.1 ≤ b.2.2.1))).map Prod.fst
+  have hperm := (List.mergeSort_perm wo (fun a b => decide (a.2.2.getD 0 0 ≤ b.2.2.getD 0 0))).map Prod.fst
   rw [kvE2_sepOrderTypes_owners qnf hwo] at hperm
   exact hperm.mem_iff.mpr hσ
 
@@ -1944,12 +1942,13 @@ theorem kvE2_sepBody_complete {sig : MonadicSignature}
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
     have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
     have hn : 0 < (kvE2_sepPos qnf).length := List.length_pos_of_mem hσmem
-    simp only [kvE2_sepConsistentTuple, kvE2_sepPlaceholderTuple, decide_eq_true_eq]
+    simp only [kvE2_sepConsistentTuple, kvE2_sepPlaceholderTuple, List.getD_cons_zero,
+      List.getD_cons_succ, decide_eq_true_eq]
     omega
   · -- (iii) cross-owner Nodup: the anchor-base indices `i₀ = 0,1,…,n-1` are pairwise distinct.
     rw [decide_eq_true_eq, kvE2_sepCoincidentOrder, List.map_map]
     have : ((kvE2_sepPos qnf).zipIdx.map
-        ((fun p => p.2.2.1) ∘ fun p =>
+        ((fun p => p.2.2.getD 0 0) ∘ fun p =>
           (p.1, KvE2SepSpikeOrderType.coincident,
             kvE2_sepPlaceholderTuple (kvE2_sepPos qnf).length p.2)))
         = (kvE2_sepPos qnf).zipIdx.map Prod.snd := by
@@ -1991,11 +1990,12 @@ theorem kvE2_sepCoincidentOrder_mem_arr' {sig : MonadicSignature}
     obtain ⟨⟨σ, k⟩, hmem, rfl⟩ := hp
     have hσmem : σ ∈ kvE2_sepPos qnf := List.fst_mem_of_mem_zipIdx hmem
     have hn : 0 < (kvE2_sepPos qnf).length := List.length_pos_of_mem hσmem
-    simp only [kvE2_sepConsistentTuple, kvE2_sepPlaceholderTuple, decide_eq_true_eq]
+    simp only [kvE2_sepConsistentTuple, kvE2_sepPlaceholderTuple, List.getD_cons_zero,
+      List.getD_cons_succ, decide_eq_true_eq]
     omega
   · rw [decide_eq_true_eq, kvE2_sepCoincidentOrder, List.map_map]
     have : ((kvE2_sepPos qnf).zipIdx.map
-        ((fun p => p.2.2.1) ∘ fun p =>
+        ((fun p => p.2.2.getD 0 0) ∘ fun p =>
           (p.1, KvE2SepSpikeOrderType.coincident,
             kvE2_sepPlaceholderTuple (kvE2_sepPos qnf).length p.2)))
         = (kvE2_sepPos qnf).zipIdx.map Prod.snd := by
@@ -2095,12 +2095,12 @@ is `kvE2_ordRank_injective` on the keystone-injective family (via `3·`). -/
 noncomputable def kvE2_sepHonestTuple {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (i : ℕ) : ℕ × ℕ × ℕ :=
+    (i : ℕ) : List ℕ :=
   if hi : i < (kvE2_sepPos qnf).length then
-    (3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩,
+    [3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩,
      3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩ + 1,
-     3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩ + 2)
-  else (0, 1, 2)
+     3 * kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨i, hi⟩ + 2]
+  else [0, 1, 2]
 
 /-- The honest tuple always extends the region order (`i₀ < i₁ < i₂`). -/
 theorem kvE2_sepHonestTuple_consistent {sig : MonadicSignature}
@@ -2109,7 +2109,8 @@ theorem kvE2_sepHonestTuple_consistent {sig : MonadicSignature}
     kvE2_sepConsistentTuple (kvE2_sepHonestTuple qnf M w x t h i) = true := by
   unfold kvE2_sepHonestTuple
   split
-  · simp only [kvE2_sepConsistentTuple, decide_eq_true_eq]; omega
+  · simp only [kvE2_sepConsistentTuple, List.getD_cons_zero, List.getD_cons_succ,
+      decide_eq_true_eq]; omega
   · decide
 
 /-- **The honest order** (task 340 Phase 5B): all owners `.coincident`-tagged with value-rank block
@@ -2173,10 +2174,10 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
   · -- (iii) cross-owner Nodup on `i₀ = 3·rank`, from injectivity of the anchor rank.
     rw [decide_eq_true_eq, kvE2_sepHonestOrder, List.map_map]
     have hcongr : (kvE2_sepPos qnf).zipIdx.map
-          ((fun p => p.2.2.1) ∘ fun p : NormalForm sig 1 4 × ℕ =>
+          ((fun p => p.2.2.getD 0 0) ∘ fun p : NormalForm sig 1 4 × ℕ =>
             (p.1, KvE2SepSpikeOrderType.coincident, kvE2_sepHonestTuple qnf M w x t h p.2))
         = ((kvE2_sepPos qnf).zipIdx.map Prod.snd).map
-            (fun k => (kvE2_sepHonestTuple qnf M w x t h k).1) := by
+            (fun k => (kvE2_sepHonestTuple qnf M w x t h k).getD 0 0) := by
       rw [List.map_map]; apply List.map_congr_left; intro p _; rfl
     rw [hcongr, List.zipIdx_map_snd]
     apply List.Nodup.map_on _ List.nodup_range'
@@ -2186,7 +2187,7 @@ theorem kvE2_sepHonestOrder_mem_arr' {sig : MonadicSignature}
     have hbn : b < (kvE2_sepPos qnf).length := by omega
     unfold kvE2_sepHonestTuple at hab
     rw [dif_pos han, dif_pos hbn] at hab
-    dsimp only at hab
+    simp only [List.getD_cons_zero] at hab
     have hrank : kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨a, han⟩
         = kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) ⟨b, hbn⟩ := by omega
     have hfin := kvE2_ordRank_injective (kvE2_sepAnchorFam qnf M w x t h)
@@ -2224,14 +2225,14 @@ theorem kvE2_sepHonest_cross_region {sig : MonadicSignature}
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     {a b : Fin (kvE2_sepPos qnf).length}
     (hlt : kvE2_sepAnchorFam qnf M w x t h a < kvE2_sepAnchorFam qnf M w x t h b) :
-    (kvE2_sepHonestTuple qnf M w x t h a.val).2.2
-      < (kvE2_sepHonestTuple qnf M w x t h b.val).2.1 := by
+    (kvE2_sepHonestTuple qnf M w x t h a.val).getD 2 0
+      < (kvE2_sepHonestTuple qnf M w x t h b.val).getD 1 0 := by
   have hrank : kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) a
       < kvE2_ordRank (kvE2_sepAnchorFam qnf M w x t h) b :=
     kvE2_ordRank_strictMono (kvE2_sepAnchorFam qnf M w x t h) hlt
   unfold kvE2_sepHonestTuple
   rw [dif_pos a.isLt, dif_pos b.isLt]
-  simp only [Fin.eta]
+  simp only [Fin.eta, List.getD_cons_zero, List.getD_cons_succ]
   omega
 
 /-- **Same-owner region monotonicity** (task 340 Phase 5C): each owner's own three global indices
@@ -2240,8 +2241,9 @@ theorem kvE2_sepHonest_cross_region {sig : MonadicSignature}
 theorem kvE2_sepHonest_same_owner_mono {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) (i : ℕ) :
-    (kvE2_sepHonestTuple qnf M w x t h i).1 < (kvE2_sepHonestTuple qnf M w x t h i).2.1
-      ∧ (kvE2_sepHonestTuple qnf M w x t h i).2.1 < (kvE2_sepHonestTuple qnf M w x t h i).2.2 := by
+    (kvE2_sepHonestTuple qnf M w x t h i).getD 0 0 < (kvE2_sepHonestTuple qnf M w x t h i).getD 1 0
+      ∧ (kvE2_sepHonestTuple qnf M w x t h i).getD 1 0
+        < (kvE2_sepHonestTuple qnf M w x t h i).getD 2 0 := by
   have := kvE2_sepHonestTuple_consistent qnf M w x t h i
   simp only [kvE2_sepConsistentTuple, decide_eq_true_eq] at this
   exact this
@@ -3354,7 +3356,7 @@ theorem kvE2_sepArr'_sound {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
     (hwo : wo ∈ kvE2_sepArr' qnf) :
     (∀ p ∈ wo, kvE2_sepDisjValidOwner p.1 p.2.1 = true) ∧
-      (wo.map (fun p => p.2.2.1)).Nodup := by
+      (wo.map (fun p => p.2.2.getD 0 0)).Nodup := by
   have hv : kvE2_sepDisjValid qnf wo = true := (List.mem_filter.mp hwo).2
   rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true] at hv
   obtain ⟨⟨hall, _hcons⟩, hnodup⟩ := hv
