@@ -3207,6 +3207,23 @@ theorem kvE2_sepSlotGIdx_honestOrder {sig : MonadicSignature}
   congr 1
   exact List.idxOf_get hlt
 
+/-- **halign monotonicity** (task 337 Phase 2 ingredient): on the honest order the mergeSort key
+    `kvE2_sepSlotGIdx` is strictly monotone in the slot value across the whole family. Composes the
+    bridge `kvE2_sepSlotGIdx_honestOrder` with the value-faithful `kvE2_sepSlotHonestGIdx_mono`.
+    This is the fact that makes `kvE2_sepSlotsLOf/ROf` a genuinely value-sorted chain. -/
+theorem kvE2_sepSlotGIdx_honestOrder_mono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ τ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf) (hτ : τ ∈ kvE2_sepPos qnf)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepSlotBlock σ) (hb : b ∈ kvE2_sepSlotBlock τ)
+    (hlt : kvE2_sepSlotValue qnf M w x t h a < kvE2_sepSlotValue qnf M w x t h b) :
+    kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h) a
+      < kvE2_sepSlotGIdx (kvE2_sepHonestOrder qnf M w x t h) b := by
+  rw [kvE2_sepSlotGIdx_honestOrder qnf M w x t h hσ ha,
+      kvE2_sepSlotGIdx_honestOrder qnf M w x t h hτ hb]
+  exact kvE2_sepSlotHonestGIdx_mono qnf M w x t h
+    (kvE2_sepMem_allSlots qnf hσ ha) (kvE2_sepMem_allSlots qnf hτ hb) hlt
+
 /-! ### Task 340 Phase 5D — completeness reduction to the single 337-owned `.holds`
 
 The Phase-5 sorry-free deliverable terminates here (design gate report 06 Q4/Q5, phase sizing).
