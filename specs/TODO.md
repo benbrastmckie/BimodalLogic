@@ -111,7 +111,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### Kamp_theorem_formalization
 
-337 [BLOCKED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
+337 [PARTIAL] — Wire the general region engine k1v_sorted_realizationK (SubBracke
   └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
     └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
       └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
@@ -136,7 +136,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 
 ### 337. Build joint multiowner disjunct bracketholds engine for kve2 sepdisjunct
 - **Effort**: 4-5 hours
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 336, Task 338
@@ -144,6 +144,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 333 (
 - **Plan**:
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/01_joint-disjunct-bracket-holds.md]
   - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/02_model-order-merge-bracket-holds.md]
+  - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/03_rank-ordered-coincidence-holds-builder.md]
 
 **Description**: Wire the general region engine k1v_sorted_realizationK (SubBracket2V.lean:633) into the kvE2_sepDisjunct slot/segment/endpoint layout (SharedWitness.lean), delivering a ⇐-direction holds BUILDER for the joint multi-owner disjunct bracket: given the merged per-owner slot lists kvE2_sepSlotsL/R qnf, each positive owner's honest bundle (kvE2_sepHonestBundleL/kvE2_sepHonestBundleR), and witnesses x < w < t, produce (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds M atomMap x t. Steps: (1) map each positive owner's honest bundle into a region compatible with k1v_sorted_realizationK's input shape; (2) run the engine to obtain a globally monotone interleaved witness sequence across all owners; (3) match that sequence to kvE2_sepBracketN's IntervalPattern point types and segments; (4) discharge the endpoint conjuncts kvE2_sepEpL/kvE2_sepEpR at x/t. Deliver as a new lemma (naming pattern: kvE2_sepDisjunct_holds_of_honest or similar, mirroring the existing kvE2_sepGate_holds_of_honest convention) in SharedWitness.lean, sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), preserving all seven faithfulness invariants F1-F7 (especially F5: no open/closed zone-key conflation, and the LITMUS at NavigatedSpine:437: no x1 < e_i relative-position literal -- witness bounds must come from the bracket range, never a chain). Treat all task-334/336 carrier lemmas (kvE2_sepBody_extract, kvE2_sepBody_complete, kvE2_sepHonestBundleL/R, kvE2_sepDisjunct_extract, kvE2_sepArr'_sound) as verified INPUTS -- apply them, do not re-derive or weaken them. FILE-SAFETY NOTE: this task is very likely to edit SharedWitness.lean, the same file task 336 (COMPLETED) just edited to generalize kvE2_sepBody_complete from hL to hLR. Task 336 is already complete so there is no live blocking dependency, but verify on start that the hLR-generalized kvE2_sepBody_complete signature (see specs/336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md) is the one in scope. On completion, task 335 re-dispatches Phases 2-4 (soundness, completeness, assembled k=2 gate) to consume this builder.
 

@@ -204,7 +204,7 @@ unblocking parent task 335 Phases 2-4.
 Fully sequential: each phase consumes the sorry-free auxiliary lemma of the previous. Each phase is
 sized to one agent run.
 
-### Phase 1: Choose + construct the honest `wo` and prove `wo ∈ kvE2_sepArr' qnf` [IN PROGRESS]
+### Phase 1: Choose + construct the honest `wo` and prove `wo ∈ kvE2_sepArr' qnf` [COMPLETED]
 
 **Goal**: From the honest depth-2 evaluation `h` + `hLR`, produce the honest witness weak order
 `wo : KvE2SepWeakOrder sig` — the model-order-ranked coincidence arrangement — together with a proof
@@ -244,7 +244,52 @@ directly reuse `kvE2_sepCoincidentOrder qnf` + `kvE2_sepBody_complete`'s members
 
 ---
 
-### Phase 2: Merged-anchor engine-region assembly in `kvE2_sepOrderOwners wo` order [NOT STARTED]
+### Phase 2: Merged-anchor engine-region assembly in `kvE2_sepOrderOwners wo` order [BLOCKED]
+
+**BLOCKER** (Phase 2 — structural carrier/engine mismatch; concretely grounded):
+
+- **What failed**: The engine `k1v_sorted_realizationK` (SubBracket2V.lean:633) cannot be wired to
+  realize `(kvE2_sepDisjunct … (kvE2_sepSlotsLOf wo) (kvE2_sepSlotsROf wo)).2.holds` for the joint
+  multi-owner (≥2 interior owners) case. The two interfaces are structurally incompatible:
+  - The engine REQUIRES `hlink : List.Chain' (fun a b => a.2.1 = b.1) regions` (SubBracket2V.lean:637)
+    and PRODUCES the witness list `interleaveK ps` in that boundary-linked MERGED-anchor order
+    (SubBracket2V.lean:646, 453-457).
+  - The task-338 carrier slot list is `kvE2_sepSlotsLOf wo = (kvE2_sepOrderOwners wo).flatMap
+    kvE2_sepSlotsLFor` (SharedWitness.lean:869-871) — a per-owner BLOCK concatenation. The rank in
+    `wo` reorders whole owner blocks (mergeSort by rank, :861-863); it NEVER interleaves individual
+    slots across owners.
+  - `kvE2_sepBracketN`/`IntervalPattern.holds_eq_succ` (ExistsForallNF.lean:188) require ONE
+    `witnesses : Fin (N+1) → M.carrier` that is (1) strictly monotone in BLOCK slot-index order AND
+    (3) realizes each slot's point type at its block index.
+- **What was tried** (concrete, `lean_run_code`-grounded, not analysis-only):
+  1. Block-order 2-owner region list `[(x,a),(a,w),(x,b),(b,w)]` (owners σ then τ, x<a<b<w):
+     `¬ List.Chain' (fun p q => p.2.1 = q.1) …` proved by `decide` — the engine's `hlink` precondition
+     is UNSATISFIABLE in block order (σ's last region ends at `w`, τ's first starts at `x ≠ w`).
+  2. Merged-gap region list `[(x,a),(a,b),(b,w)]` IS `Chain'`-linked (`decide`) — engine accepts it —
+     but `interleaveK` then emits MERGED order, mixing owners' base points inside each gap, NOT the
+     per-owner block order the bracket point types are indexed by.
+  3. Block-order monotonicity is contradictory: a τ.zXU base point `p ∈ (x,b)` (possibly `p < a`) sits
+     at a block index AFTER every σ.zUW point `u ∈ (a,w)` (so `u > a`); monotone forces `u < p`, but
+     `a < u`, `p < a`, `u < p` ⊢ `False` (`omega`) — a realizable model configuration.
+- **Why stuck (root cause)**: `kvE2_sepSlotsLOf/ROf wo` orders slots by (owner-rank, within-owner
+  region). Faithful strictly-monotone realization (Rabinovich Def 3.1 single merged chain) requires
+  ordering ALL slots by actual MODEL POSITION, merging different owners' base points. A per-owner
+  block flatMap fundamentally cannot express that cross-owner point interleaving. Task 338 added the
+  cross-owner RANK but kept the slot list a per-owner block concatenation, so the ⇐-builder is not
+  realizable for ≥2 owners whose base-witness intervals interleave.
+- **What is needed**: Change `kvE2_sepSlotsLOf`/`kvE2_sepSlotsROf` (task-338 carrier defs,
+  SharedWitness.lean:869-876) from `(kvE2_sepOrderOwners wo).flatMap kvE2_sepSlotsLFor/RFor` into a
+  genuine cross-owner slot MERGE keyed by each slot's merged-chain position (so block-index order =
+  merged model order, matching `interleaveK`). Then re-prove the dependent 338 lemmas
+  (`kvE2_sepBody_holds_iff`, `_extract`, `kvE2_sepDisjunct_extract`'s `hmemL/hpairL` reads). This is a
+  CARRIER EDIT — explicitly OUT OF SCOPE for this ADDITIVE task (Non-Goals :169-173; Rollback
+  :474-476: "If any step appears to require editing a task-334/336/338 INPUT … STOP and surface it as
+  a scope question"). Recommend a new task to redesign the 338 carrier's slot list as a cross-owner
+  merge, after which this v3 builder plan (Phases 3-5) becomes realizable.
+- **Prohibited**: No `sorry`, no `def X := True`, no `.holds` modulo an assumed monotonicity/anchor
+  hypothesis, no gate-modulo-assumed-hypothesis restricted-to-≤1-owner builder (Non-Goals :179).
+
+**Original goal (superseded by blocker)**: Build the merged-anchor region list …
 
 **Goal**: Build the merged-anchor region list
 `regions : List (M.carrier × M.carrier × List (NormalForm sig 0 1))`, sequenced by
