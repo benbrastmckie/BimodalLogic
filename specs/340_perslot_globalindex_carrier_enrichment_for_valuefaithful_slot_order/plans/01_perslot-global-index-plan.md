@@ -330,7 +330,28 @@ preserved).
 - **Timing:** 2-4 hours
 - **Depends on:** 3
 
-### Phase 5: Honest-bundle cross-owner order + completeness index consistency (green) [NOT STARTED]
+### Phase 5: Honest-bundle cross-owner order + completeness index consistency (green) [BLOCKED]
+
+**HANDED OFF (2026-07-08)** — model-independence boundary with task 337. The Phases 1-4 carrier is
+complete, green, axiom-clean, and full-build-clean: the per-slot global index EXPRESSES the honest
+`a<u'<b` interleaving and the enumeration `kvE2_sepIdxTuples n` ranges over ALL order-consistent
+tuple assignments, so 337 can select the honest-value-order `wo` and prove it a valid carrier member
+(consistency from M's transitivity, Nodup from M's distinctness). What remains — making
+`kvE2_sepCoincidentOrder` ITSELF value-faithful — cannot be done model-independently: that def has
+signature `qnf → KvE2SepWeakOrder` (no `M`), yet the honest value order depends on `M`. A faithful
+Phase 5 is a model-DEPENDENT completeness lemma exhibiting `∃ wo ∈ kvE2_sepArr', wo`'s index tuples
+match `M`'s order on the extracted anchors — i.e. 337's monotone-witness construction itself. Best
+co-designed with 337. NO sorry/vacuous placeholder was inserted (prohibited); handed off cleanly.
+
+**BLOCKER** (Phase 5):
+- **What remains**: thread the honest bundle's cross-owner value order into a value-faithful
+  completeness witness (model-consistent global index).
+- **Why deferred**: `kvE2_sepCoincidentOrder` is model-independent by design; the honest value order
+  is per-`M`. The value-faithful witness is inherently a per-`M` choice = task 337's construction.
+- **What is needed**: co-design with task 337 — a model-dependent lemma
+  `∃ wo ∈ kvE2_sepArr' qnf, (kvE2_sepSlotsLOf wo) is monotone in M's value order`, built from the
+  extended honest bundles + `kvE2_sepIdxTuples` enumeration (both delivered by Phases 1-4).
+- **Prohibited**: no `sorry`, no `def X := True`, no model-independent value-faithfulness fiction.
 - **Goal:** Extend `kvE2_sepHonestBundleL/R` to yield the cross-owner value order of the extracted
   witnesses, and thread that total order into the completeness index supply so the completeness
   witness's global index is consistent with the MODEL value order (the substantive value-faithful
@@ -356,7 +377,18 @@ preserved).
 - **Timing:** 4-6 hours
 - **Depends on:** 4
 
-### Phase 6: Final re-verification, axiom-clean, faithfulness audit (green) [NOT STARTED]
+### Phase 6: Final re-verification, axiom-clean, faithfulness audit (green) [COMPLETED for Phases 1-4 scope]
+
+**VERIFIED (2026-07-08) for the delivered carrier (Phases 1-4)** — reopens after Phase 5 lands.
+Full project `lake build` GREEN (1720 jobs), no downstream regression. Sorry-free in scope.
+Axiom audit `{propext, Classical.choice, Quot.sound}` (no `sorryAx`) confirmed on: `kvE2_sepBody_extract`,
+`kvE2_sepDisjunct_extract`, `kvE2_sepBody_complete`, `kvE2_sepCoincidentOrder_mem_arr'` (337-P1),
+`kvE2_sepArr'_mem_modelOrder`, `kvE2_sepSlotsLOf_mem` (339 route). F4/F5/LITMUS audit: the new index
+defs (`kvE2_sepSlotGIdx`/`kvE2_sepConsistentTuple`/`kvE2_sepPlaceholderTuple`/`kvE2_sepIdxTuples`)
+read NO zone bit (F5) and are abstract ℕ, never an `x1 < e_i` literal (F4/LITMUS; NavigatedSpine:437
+anchor unchanged). Preserved Assets all still proven: `mergeSort_perm` membership route, same-owner
+`rank<rank⟹index<index` (giOf monotonicity example), no-collapse (`kvE2_sepModelOrder` +
+`kvE2_sepCoincidentOrder` both arr' members), 337-P1 `kvE2_sepCoincidentOrder_mem_arr'`.
 - **Goal:** Close out the remaining re-proofs, run the full build, assert axiom-cleanliness, and
   audit F1-F7 / LITMUS.
 - **Tasks:**
