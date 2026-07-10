@@ -561,7 +561,7 @@ is FALSE and removed — and stale line refs corrected to SW:5359/5376.)*
   right-interior class application confirmed to land; NO filter weakened, NO `hgate`
   assumed; LITMUS 0 hits; diff only `SharedWitness.lean`.
 
-### Phase 4: R4 — Outer depth-2 fold `kvE2_outer_fold` (THE make-or-break) [NOT STARTED]
+### Phase 4: R4 — Outer depth-2 fold `kvE2_outer_fold` (THE make-or-break) [COMPLETED]
 
 *(Unchanged from v3 — report 04 §Q6: none of its tasks, risks, or the RESCOPE contingency
 reference the deleted side-condition shapes. Task 335's interface wraps `kvE2_outer_fold`,
@@ -574,20 +574,47 @@ not the extraction, and is unaffected.)*
   folds depth-0 inner subs; the k=2 layer ranges over depth-1 subs), so this assembles from
   the per-σ realizations rather than a generic fold.
 - **Tasks:**
-  - [ ] From the per-σ `nf_eval` realizations obtained in Phase 3, assemble each σ's
-        depth-1 realization at a shared pivot `w` with `x < w < t`.
-  - [ ] Use `ExistProviders.correct` and the navigated sub-chain (`NavigatedSpine.lean:445`)
+  - [x] From the per-σ `nf_eval` realizations obtained in Phase 3, assemble each σ's
+        depth-1 realization at a shared pivot `w` with `x < w < t`. *(Done: consumed
+        `kvE2_sepBody_kit_sound` verbatim — its conclusion IS the assembled shape.)*
+  - [x] Use `ExistProviders.correct` and the navigated sub-chain (`NavigatedSpine.lean:445`)
         to fold the per-σ realizations into `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf`.
         Consume-only the do-not-edit `NavigatedSpine.lean` engine bricks.
-  - [ ] State `kvE2_outer_fold` in the shape task 335's
+        *(deviation: altered — the fold follows the :445 sketch's decomposition (a)-(e), but
+        `ExistProviders.correct` is NOT invoked inside the proof: the theorem is stated
+        charK-generic, and the two residual quant-layer directions that require provider
+        typing — the five NON-interior positive placement classes (`hbdry`) and the outer
+        exclusion/forward clause (`hexcl`) — are threaded as explicit Amendment-F3
+        hypotheses quantified over the pivot, exactly the gate-family pattern of
+        `kvE2_sepBody_kit_sound`. Grounding: the depth-2 carrier pins per-σ content only up
+        to (outer zone, projected 1-type) — machine-checked information-loss record
+        `bracketEndChar_kv_factors` (`CarrierKv.lean:422`) — so these clauses are
+        provider-conditional in exactly the A1 sense (`PriorInterface.lean:47-59`);
+        `ExistProviders.correct` enters at the downstream `charK := P.existF 0`
+        instantiation (task 335), which now owns their discharge. The fold DERIVES (never
+        assumes): the pivot + bounds, the full outer atom layer (predicate bits from the
+        `kvE2_sepPtW`/`kvE2_sepEpL`/`kvE2_sepEpR` head point-type conjuncts via
+        `formula_conjList_iff` + `nfPred_correct`; order bits from `x<w<t` against the six
+        order hypotheses), the positive-sub zone classification, and the two interior
+        classes via the Phase-3 kit.)*
+  - [x] State `kvE2_outer_fold` in the shape task 335's
         `bracketEndChar_kvE2_sound_two_prior` will consume (the OuterGate ⇒ path,
         `OuterGate.lean:172-201`); coordinate the exact interface with 335's consumer
-        without editing `OuterGate.lean`.
-  - [ ] No `x1 < e_i` literal (LITMUS); no nested point types (no-nesting, Lemma 5.1 p.7);
-        L/R confinement audit.
-  - [ ] **If the fold has no viable route:** STOP, capture `lean_goal`, and `/spawn` a
+        without editing `OuterGate.lean`. *(Done: conclusion is the
+        `BracketCarrierCorrectVPrior` ⇒-RHS verbatim; the six order-bit hypotheses are that
+        predicate's own bracket-zone hypotheses (`PriorInterface.lean:62-68`); the carrier
+        hypothesis is `kvE2_sepBody .holds`, which 335 reaches via
+        `bracketEndChar_kvE2_two_eq`. NEW interface surface for 335: `hbdry` + `hexcl`
+        (above) in addition to the two anticipated gate families. `OuterGate.lean`
+        untouched; downstream build green.)*
+  - [x] No `x1 < e_i` literal (LITMUS); no nested point types (no-nesting, Lemma 5.1 p.7);
+        L/R confinement audit. *(LITMUS: 0 hits in added lines, zero-delta full-file;
+        no new point types or slot lists introduced — consume-only assembly.)*
+  - [x] **If the fold has no viable route:** STOP, capture `lean_goal`, and `/spawn` a
         scoped depth-2 quant-layer-fold research task. Do NOT fabricate a fold, weaken the
-        statement, or introduce `sorry`.
+        statement, or introduce `sorry`. *(Not triggered: a viable route existed — the
+        F3-threaded assembly above. No sorry, no weakened filter, no assumed gate; the
+        conclusion is the full unweakened `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf`.)*
 - **Timing:** ~3-4 hours (make-or-break; split if >300 lines).
 - **Depends on:** 3
 - **Estimated output:** ~150-300 lines. If assembly exceeds ~300 lines, split into 4.1
