@@ -1,42 +1,69 @@
 {
   "$schema": "orchestrator-handoff-v1",
   "task": 337,
-  "phase": "revise",
-  "status": "planned",
-  "summary": "Revised plan 12 into plan 13 (v6), integrating report 13's faithfulness audit. Authorizes a bounded, 3-site, non-additive .rXW carrier fix (SubBracket2.lean:565 + SharedWitness.lean:3540-3541 + :3642) as a new Phase 2 that resolves plan 12's O1 blocker at the definition, restoring the below-pivot v<w bound. Phase 1 stays COMPLETED; O1-O4 renumbered as Phases 3-7 behind the carrier fix. The non-additive edit is bounded to the 3 sites; task-342 STOP-condition re-verification and 3-consumer blast-radius re-checks are required.",
-  "phases_completed": 1,
+  "phase": "implement",
+  "status": "partial",
+  "summary": "Phase 2 (the authorized 3-site .rXW carrier fix, plan 13's sole reason and the prior hard blocker) is COMPLETE, committed (0b4adc9ea), green, and axiom-clean. The below-pivot v<w bound is restored on the .rXW value chain; task-342 STOP-condition theorems verified clean via #print axioms (lean_verify MCP was unreliable). Phases 3-7 (O1-O4 + the two public target theorems) remain NOT STARTED: they require authoring the full builder chain against tie-class semantics not yet verified well enough to prove sorry-free without risking a broken tree.",
+  "phases_completed": 2,
   "phases_total": 7,
-  "artifacts": [
+  "blockers": [
     {
-      "type": "plan",
-      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md",
-      "summary": "Plan v6: carrier-fix revision. New Phase 2 authorizes the bounded 3-site .rXW v<w fix; Phases 3-7 discharge O1-O4 additively; task-342 regression is a STOP condition."
+      "description": "Tie-class semantics ambiguity blocks a correct O1 (Phase 3): kvE2_sepSlotGIdx is documented (SharedWitness.lean ~3526) as ordRank of (value, slotIndex) with an index tiebreak 'giving injectivity WITHOUT value-distinctness', which naively makes every kvE2_sepTieRuns class a singleton, contradicting task 342's tie-admitting design. The exact tying key must be resolved before proving strict cross-class monotonicity of the mapped class-value list. Soft: needs investigation, not a code change elsewhere.",
+      "phase": "phase-3",
+      "severity": "soft"
     }
   ],
-  "blockers": [],
   "next_action_hint": "implement",
+  "artifacts": [
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2.lean",
+      "type": "source",
+      "summary": "Phase 2: kvE_sub2_zoneHolds_zXU strengthened to x<v and v<w and v<x1; kvE_subBracket2_complete_extract zXU field carries v<w. Non-additive, bounded."
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean",
+      "type": "source",
+      "summary": "Phase 2: hrealXU consumer re-projected to drop the new v<w conjunct (under-counted blast-radius consumer at ~1904; public shape preserved)."
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "type": "source",
+      "summary": "Phase 2: .rXW epsilon upper bound to w; kvE2_sepSlotValue_rXW_spec conclusion x<v and v<w and realizes; two complete_extract consumers (~2770, ~3464) re-projected. Green, sorry count 7."
+    },
+    {
+      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md",
+      "type": "plan",
+      "summary": "Phase 2 marked COMPLETED with a completion note documenting the blast-radius correction and the #print-axioms STOP-condition verification."
+    },
+    {
+      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783643941.md",
+      "type": "handoff",
+      "summary": "Continuation handoff for the successor implementer: Phase 2 details, blast-radius correction, #print-axioms verification method, Phase 3 (O1) immediate next action, and the tie-semantics caution."
+    }
+  ],
   "files_modified": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
     "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md"
   ],
   "decisions_made": [
-    "Amended plan 12's strictly-additive constraint to authorize EXACTLY 3 carrier-edit sites and nothing wider (report 13 verdict (a), orchestrator-verified).",
-    "Carrier fix (Phase 2) precedes O1; O1's usL-last < w now proved per-slot from the strengthened .rXW spec, NOT from value-sortedness (plan 12 line 140 mitigation retracted as unsound).",
-    "Do NOT touch kvE2_sepSlotsLOf (verdict (b) ruled out); do NOT weaken O1's strict Pairwise (verdict (c) ruled out)."
+    "Threaded v<w through kvE_subBracket2_complete_extract's zXU field (the plan's named authorized consumer at :619-620/:631), keeping v<x1 as a superset to minimize consumer disruption.",
+    "Re-projected all three complete_extract zXU-field consumers (SW:2770, SW:3464, SubBracket2V:1904) mechanically, preserving each consumer's public signature byte-for-byte — a consumer re-check, not a scope widening.",
+    "Used deterministic #print axioms (not the unreliable lean_verify MCP) as ground truth for the axiom-clean STOP-condition check.",
+    "Stopped at Phase 2 (partial) rather than risk an incorrect/vacuous O1 given an unresolved tie-class-semantics understanding gap; commit-only-green discipline preserved."
   ],
   "dead_ends": [
-    "Value-sortedness bounding usL-last < w (plan 12 line 140) — unsound; sortedness orders values but does not bound the largest below w.",
-    "Banked engine fallback kvE2_sepHonest_witnesses — filters >=w pairs and needs distinct realizers that fail for genuinely-tied models."
+    "lean_verify MCP tool for axiom checking here: returned contradictory sorryAx results across runs after external lake build (stale LSP in-memory state). Use #print axioms instead.",
+    "Value-sortedness as the route to usL-last < w (plan 12 line-140 mitigation): retracted/unsound per plan 13; use the per-slot value specs."
   ],
   "continuation_context": {
-    "phases_completed": 1,
+    "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783643941.md",
+    "phases_completed": 2,
     "phases_total": 7,
-    "next_dispatch": "implement",
-    "stop_condition": "task-342 theorems kvE2_sepBody_complete_holds' (SW:6158) and kvE2_sepBody_complete must stay green + axiom-clean after Phase 2; any regression STOPs.",
-    "authorized_carrier_sites": [
-      "SubBracket2.lean:565 kvE_sub2_zoneHolds_zXU (+ consumer :631)",
-      "SharedWitness.lean:3642 kvE2_sepSlotValue_rXW_spec (+ consumers :4654, :5943)",
-      "SharedWitness.lean:3540-3541 kvE2_sepSlotValue .rXW branch epsilon upper bound -> w"
-    ]
+    "next_phase": 3,
+    "resume_hint": "Start Phase 3 (O1) — usL-last < w is now provable per-slot from the strengthened value specs. First resolve the tie-class semantics caution in the handoff."
   },
-  "plan_markers_verified": false
+  "sorry_count_in_sharedwitness": 7,
+  "plan_markers_verified": true
 }
