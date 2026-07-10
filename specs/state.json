@@ -3153,7 +3153,7 @@
     {
       "project_number": 333,
       "project_name": "carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Successor to task 321 (F4 correctness gate): the bit-compatibility carrier redefinition that closes what task 321's additive-only v7 plan structurally could not. Task 321 reached a scoped PARTIAL: the O4 hgate forward-zone coverage residue does not close additively at singleton size (needs six interlocking LITMUS/no-nesting-constrained lemmas), and the multi-positive-sub fragment was deferred at the Phase 10 gate. Both route to the SAME fix identified by the crux analysis: redefine kvE2_sepArrL / kvE2_sepArrR (currently arrangement-blind) with bit-compatibility FILTERING so the interleaving enumeration only admits realizations whose zone bits are compatible with each sigma's fold content. This is a Phase-7 carrier RE-DEFINITION (out of task 321's additive scope; it kills the current canonical-list non-vacuity proof, which must be re-established). Deliverables: (1) redefined kvE2_sepArrL/R + restored non-vacuity; (2) discharge task 321's two remaining strategic sorries in SharedWitness.lean (kvE2_sepSingleton_coverage_left:1796, kvE2_sepBody_singleton_complete_left:1952) for the single-positive fragment; (3) lift to the full multi-positive-sub correctness pair; (4) run Phase 12 (N2-C gate wrapper) and Phase 13 (F4 Z adversarial LHS-FALSE + GO verdict record) from task 321's v7 plan; (5) full lake build green + axiom-clean surviving public API. Faithfulness constraints from 321 remain binding: Rabinovich 2014 Lemma 5.1 quantifier-free point types, no-nesting audit, LITMUS (no x1<e_i), F4 adversarial test must discriminate. Do not run concurrently with 321/332 (file_scope overlap on SharedWitness / NfMultiAnchorBridge).",
       "dependencies": [
@@ -3177,10 +3177,15 @@
         {
           "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/04_post334-soundness-extraction.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md",
+          "type": "report",
+          "summary": "PDF-grounded re-grounding: R3 dissolved (wrong obligation); md unsafe (display equations dropped, k!=m inverted); 89 dangling in-code md:NN cites; R4 is the true make-or-break."
         }
       ],
-      "last_updated": "2026-07-10T04:54:14Z",
-      "session_id": "sess_1783657714_b9c970",
+      "last_updated": "2026-07-10T04:58:40Z",
+      "session_id": "sess_1783659497_144c59",
       "researched": "2026-07-10T04:16:08Z",
       "plan_metadata": {
         "phases": 4,

@@ -113,7 +113,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 335 [PARTIAL] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-    └─ 333 [PLANNED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+    └─ 333 [IMPLEMENTING] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
   └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ### Uncategorized
@@ -268,7 +268,7 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 ---
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: Task 321, Task 332
 - **Summary**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md]
