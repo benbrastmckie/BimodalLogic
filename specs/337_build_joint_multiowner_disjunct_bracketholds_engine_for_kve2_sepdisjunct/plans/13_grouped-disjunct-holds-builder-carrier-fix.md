@@ -384,7 +384,21 @@ definition, so that every `.rXW` slot value is provably `< w`.
 
 ---
 
-### Phase 4: O2 — class point types [NOT STARTED]
+### Phase 4: O2 — class point types [COMPLETED]
+
+**Phase 4 completion note (task 337, session sess_1783639750_29c89e_337):**
+- Landed (all additive, after SW:8320): private `kvE2_sepOwnerLit_zAtX1L` / `kvE2_sepOwnerLit_zAtX1R`
+  (CLOSED self-zone literal honesty at the anchor value, mirrors of `kvE2_sepOwnerLit_zAtWL`);
+  `kvE2_sepPtX1L_eval_of_honest` / `kvE2_sepPtX1R_eval_of_honest` (folded fresh anchor point type at
+  the honest anchor value — head via `kvE2_sepProjFresh_eval` + `hck`, base lits via the zAtX1L/R
+  reads); `kvE2_sepSlotType_eval_at_value` (per-slot point type at own honest value, dispatched
+  over the region-block constructors — base slots via `hcb` + banked value specs, anchors via the
+  PtX1 eval lemmas); and the two O2 deliverables `kvE2_sepTieGroupedL_classType_eval` /
+  `...R...` (class type at any member's value, via `kvE2_sepClassType_eval_iff` + `_value_const`).
+- Green `lake build` (module). All 5 public lemmas axiom-clean `{propext, Classical.choice,
+  Quot.sound}`. SharedWitness `sorry` count still 7 (all prose). F5 CLOSED-key reads; no `x1 < e_i`
+  literal (all bounds ride `x`/`w`/`t` + anchor bundle).
+- No deviations from plan; all checklist items discharged.
 
 - **Goal:** Prove `(kvE2_sepClassType c).eval_at` at each class value, reducing via
   `kvE2_sepClassType_eval_iff` (~:2116) to each member's point type.

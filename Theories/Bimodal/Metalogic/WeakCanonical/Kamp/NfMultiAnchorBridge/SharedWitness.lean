@@ -8319,4 +8319,272 @@ theorem kvE2_sepSlotsROf_honestOrder'_value_bound {sig : MonadicSignature}
     kvE2_sepPosI_subset (kvE2_sepOrderOwners_mem_pos hwo hσ)
   exact kvE2_sepSlotsRFor_value_bound qnf M w x t hxw hwt h hσpos hsσ
 
+/-! ### Task 337 (plan 13) Phase 4 — O2: class point-type realization at the honest class value
+
+The grouped bracket's LEFT/RIGHT point-type lists are `gL.map kvE2_sepClassType` /
+`gR.map (…)`. `kvE2_sepBracketN_construct`'s `hptL`/`hptR` obligations require each class type to
+evaluate at that class's honest witness value. Via `kvE2_sepClassType_eval_iff` this reduces to
+every class MEMBER's slot type realizing at the (shared) class value; since one value per class
+(`kvE2_sepTieGroupedL/R_value_const`), the class value is each member's OWN honest value, so the
+obligation is the per-slot point-type discharge below. Base slots ride `hcb` + the banked value
+specs; anchor slots ride the fresh-projection channel (`kvE2_sepProjFresh_eval` + `hck`) and the
+CLOSED self-zone literal reads (`kvE2_sepOwnerLit_zAtX1L/R`). F5: only CLOSED `zAtX1L`/`zAtX1R`
+keys enter; LITMUS-clean (all bounds ride `x`/`w`/`t`). -/
+
+/-- `zAtX1L` self-zone literal honesty at a LEFT-interior owner's anchor value `a` (`x < a < w`):
+    mirror of `kvE2_sepOwnerLit_zAtWL` reading the fresh-witness self-zone `v = a` instead of the
+    pivot. -/
+private theorem kvE2_sepOwnerLit_zAtX1L {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hxa : x < a) (haw : a < w) (hwt : w < t)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap a
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX1L χ) (charBase χ)) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zAtX1L χ with
+  | true =>
+    show temporal_truth M atomMap a (charBase χ)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtX1L χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
+      (false, false) (true, false) (false, true) (true, false)).mp hz
+    have hveq : v = a := le_antisymm
+      (not_lt.mp (fun hc => Bool.noConfusion (h0.2.mp hc)))
+      (not_lt.mp (fun hc => Bool.noConfusion (h0.1.mp hc)))
+    exact (hcb χ a).mpr (hveq ▸ hv)
+  | false =>
+    show temporal_truth M atomMap a (charBase χ).neg
+    intro hch
+    have hat : a < t := haw.trans hwt
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zAtX1L a := by
+      refine (kvE2_sepZone4_iff M a w x t a
+        (false, false) (true, false) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_false (lt_irrefl a) (by decide), iff_of_false (lt_irrefl a) (by decide)⟩,
+        ⟨iff_of_true haw rfl, iff_of_false (lt_asymm haw) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hxa) (by decide), iff_of_true hxa rfl⟩,
+        ⟨iff_of_true hat rfl, iff_of_false (lt_asymm hat) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zAtX1L χ = true :=
+      (h_zone kvE2_sep_zAtX1L χ).mp ⟨a, hz, (hcb χ a).mp hch⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- `zAtX1R` self-zone literal honesty at a RIGHT-interior owner's anchor value `a` (`w < a < t`):
+    mirror of `kvE2_sepOwnerLit_zAtX1L`. -/
+private theorem kvE2_sepOwnerLit_zAtX1R {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hwa : w < a) (hat : a < t) (hxw : x < w)
+    (hs : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap a
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX1R χ) (charBase χ)) := by
+  have hxa : x < a := hxw.trans hwa
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hs
+  cases hb : kvE2_sepBits σ kvE2_sep_zAtX1R χ with
+  | true =>
+    show temporal_truth M atomMap a (charBase χ)
+    obtain ⟨v, hz, hv⟩ := (h_zone kvE2_sep_zAtX1R χ).mpr hb
+    obtain ⟨h0, h1, h2, h3⟩ := (kvE2_sepZone4_iff M a w x t v
+      (false, false) (false, true) (false, true) (true, false)).mp hz
+    have hveq : v = a := le_antisymm
+      (not_lt.mp (fun hc => Bool.noConfusion (h0.2.mp hc)))
+      (not_lt.mp (fun hc => Bool.noConfusion (h0.1.mp hc)))
+    exact (hcb χ a).mpr (hveq ▸ hv)
+  | false =>
+    show temporal_truth M atomMap a (charBase χ).neg
+    intro hch
+    have hz : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t))))
+        kvE2_sep_zAtX1R a := by
+      refine (kvE2_sepZone4_iff M a w x t a
+        (false, false) (false, true) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_false (lt_irrefl a) (by decide), iff_of_false (lt_irrefl a) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hwa) (by decide), iff_of_true hwa rfl⟩,
+        ⟨iff_of_false (lt_asymm hxa) (by decide), iff_of_true hxa rfl⟩,
+        ⟨iff_of_true hat rfl, iff_of_false (lt_asymm hat) (by decide)⟩⟩
+    have hbit : kvE2_sepBits σ kvE2_sep_zAtX1R χ = true :=
+      (h_zone kvE2_sep_zAtX1R χ).mp ⟨a, hz, (hcb χ a).mp hch⟩
+    rw [hb] at hbit
+    exact Bool.noConfusion hbit
+
+/-- **LEFT anchor point-type honesty** (Phase 4): a LEFT-interior owner σ's folded fresh point
+    type `kvE2_sepPtX1L` evaluates at its own honest anchor value. Head = the `charK`-projected
+    fresh type (`kvE2_sepProjFresh_eval` + `hck`); the base literals ride the CLOSED `zAtX1L`
+    self-zone reads (`kvE2_sepOwnerLit_zAtX1L`). -/
+theorem kvE2_sepPtX1L_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    (hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
+    (kvE2_sepPtX1L charBase charK σ).eval_at M atomMap
+      (kvE2_sepAnchorVal qnf M w x t h σ) := by
+  have hbσ : qnf.2 σ = true := (List.mem_filter.mp hσ).2
+  have hspec := kvE2_sepAnchorVal_spec qnf M w x t h σ hbσ
+  have hbundle := kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσ hz
+  simp only [kvE2_sepPtX1L, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  rcases List.mem_cons.mp hf with rfl | hf
+  · exact (hck _ _).mpr (kvE2_sepProjFresh_eval M _ _ σ hspec)
+  · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+    exact kvE2_sepOwnerLit_zAtX1L charBase M atomMap σ _ w x t hbundle.1 hbundle.2.1 hwt hspec hcb χ
+
+/-- **RIGHT anchor point-type honesty** (Phase 4, mirror of `kvE2_sepPtX1L_eval_of_honest`). -/
+theorem kvE2_sepPtX1R_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    (hz : nf0_zoneSpec σ.1 = kvE2_sep_zWT3) :
+    (kvE2_sepPtX1R charBase charK σ).eval_at M atomMap
+      (kvE2_sepAnchorVal qnf M w x t h σ) := by
+  have hbσ : qnf.2 σ = true := (List.mem_filter.mp hσ).2
+  have hspec := kvE2_sepAnchorVal_spec qnf M w x t h σ hbσ
+  have hbundle := kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσ hz
+  simp only [kvE2_sepPtX1R, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  rcases List.mem_cons.mp hf with rfl | hf
+  · exact (hck _ _).mpr (kvE2_sepProjFresh_eval M _ _ σ hspec)
+  · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+    exact kvE2_sepOwnerLit_zAtX1R charBase M atomMap σ _ w x t hbundle.1 hbundle.2.1 hxw hspec hcb χ
+
+/-- **Per-slot point-type honesty** (Phase 4): every slot of a positive owner's block realizes
+    its slot point type AT its own honest slot value. Base slots ride `hcb` + the banked value
+    specs; anchor slots ride the folded fresh point types above. -/
+theorem kvE2_sepSlotType_eval_at_value {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotBlock σ) :
+    (kvE2_sepSlotType charBase charK s).eval_at M atomMap
+      (kvE2_sepSlotValue qnf M w x t h s) := by
+  rw [kvE2_sepMem_slotBlock] at hs
+  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_pos hz1, if_pos hz1] at hs
+    rcases hs with hL | hR
+    · rcases List.mem_append.mp hL with h1 | h1
+      · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp h1
+        simp only [kvE2_sepSlotType, TemporalPred.eval_at]
+        exact (hcb χ _).mpr
+          (kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h σ hσ hz1 χ hχ).2.2
+      · rcases List.mem_cons.mp h1 with rfl | h1
+        · rw [kvE2_sepSlotValue_lX1]
+          exact kvE2_sepPtX1L_eval_of_honest charBase charK qnf M atomMap w x t hxw hwt h
+            hcb hck hσ hz1
+        · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp h1
+          simp only [kvE2_sepSlotType, TemporalPred.eval_at]
+          exact (hcb χ _).mpr
+            (kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h σ hσ hz1 χ hχ).2.2
+    · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hR
+      simp only [kvE2_sepSlotType, TemporalPred.eval_at]
+      exact (hcb χ _).mpr
+        (kvE2_sepSlotValue_lWT_spec qnf M w x t h σ hσ χ hχ).2.2
+  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1,
+        if_pos hz2, if_pos hz2] at hs
+      rcases hs with hL | hR
+      · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hL
+        simp only [kvE2_sepSlotType, TemporalPred.eval_at]
+        exact (hcb χ _).mpr
+          (kvE2_sepSlotValue_rXW_spec qnf M w x t h σ hσ χ hχ).2.2
+      · rcases List.mem_append.mp hR with h1 | h1
+        · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp h1
+          simp only [kvE2_sepSlotType, TemporalPred.eval_at]
+          exact (hcb χ _).mpr
+            (kvE2_sepSlotValue_rWX1_spec qnf M w x t hxw hwt h σ hσ hz2 χ hχ).2.2
+        · rcases List.mem_cons.mp h1 with rfl | h1
+          · rw [kvE2_sepSlotValue_rX1]
+            exact kvE2_sepPtX1R_eval_of_honest charBase charK qnf M atomMap w x t hxw hwt h
+              hcb hck hσ hz2
+          · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp h1
+            simp only [kvE2_sepSlotType, TemporalPred.eval_at]
+            exact (hcb χ _).mpr
+              (kvE2_sepSlotValue_rX1T_spec qnf M w x t hxw hwt h σ hσ hz2 χ hχ).2.2
+    · rw [kvE2_sepSlotsLFor, kvE2_sepSlotsRFor, if_neg hz1, if_neg hz1,
+        if_neg hz2, if_neg hz2] at hs
+      simp only [List.not_mem_nil, or_self] at hs
+
+/-- **LEFT class point-type honesty** (Phase 4 / O2): a primed grouped LEFT tie class realizes
+    its meet-folded class type at the honest value of any of its members (all members share the
+    value, `kvE2_sepTieGroupedL_value_const`). Feeds the `hptL` obligation of
+    `kvE2_sepBracketN_construct`. -/
+theorem kvE2_sepTieGroupedL_classType_eval {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    {c : List (KvE2SepSlot sig)}
+    (hc : c ∈ kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h))
+    {s0 : KvE2SepSlot sig} (hs0 : s0 ∈ c) :
+    (kvE2_sepClassType charBase charK c).eval_at M atomMap
+      (kvE2_sepSlotValue qnf M w x t h s0) := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  have hwo : wo.map Prod.fst = kvE2_sepPosI qnf := by
+    rw [hwo_def, kvE2_sepHonestOrder', List.map_map]; exact List.zipIdx_map_fst 0 _
+  rw [kvE2_sepClassType_eval_iff]
+  intro s hs
+  rw [kvE2_sepTieGroupedL_value_const qnf M w x t h hc hs0 hs]
+  have hsf : s ∈ kvE2_sepSlotsLOf wo := by
+    rw [← kvE2_sepTieGroupedL_flatten wo]; exact List.mem_flatten.mpr ⟨c, hc, hs⟩
+  obtain ⟨σ, hσ, hsσ⟩ := kvE2_sepSlotsLOf_mem_block hwo hsf
+  exact kvE2_sepSlotType_eval_at_value charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+    (kvE2_sepPosI_subset hσ) hsσ
+
+/-- **RIGHT class point-type honesty** (Phase 4 / O2, mirror of
+    `kvE2_sepTieGroupedL_classType_eval`). -/
+theorem kvE2_sepTieGroupedR_classType_eval {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ)
+    {c : List (KvE2SepSlot sig)}
+    (hc : c ∈ kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h))
+    {s0 : KvE2SepSlot sig} (hs0 : s0 ∈ c) :
+    (kvE2_sepClassType charBase charK c).eval_at M atomMap
+      (kvE2_sepSlotValue qnf M w x t h s0) := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  have hwo : wo.map Prod.fst = kvE2_sepPosI qnf := by
+    rw [hwo_def, kvE2_sepHonestOrder', List.map_map]; exact List.zipIdx_map_fst 0 _
+  rw [kvE2_sepClassType_eval_iff]
+  intro s hs
+  rw [kvE2_sepTieGroupedR_value_const qnf M w x t h hc hs0 hs]
+  have hsf : s ∈ kvE2_sepSlotsROf wo := by
+    rw [← kvE2_sepTieGroupedR_flatten wo]; exact List.mem_flatten.mpr ⟨c, hc, hs⟩
+  obtain ⟨σ, hσ, hsσ⟩ := kvE2_sepSlotsROf_mem_block hwo hsf
+  exact kvE2_sepSlotType_eval_at_value charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+    (kvE2_sepPosI_subset hσ) hsσ
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
