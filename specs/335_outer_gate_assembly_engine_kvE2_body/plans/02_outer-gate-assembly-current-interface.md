@@ -181,7 +181,13 @@ Quot.sound}`, no `sorryAx`.
 
 ---
 
-### Phase 2: ⇐ completeness half — consume `kvE2_sepBody_holds_of_honest` [NOT STARTED]
+### Phase 2: ⇐ completeness half — consume `kvE2_sepBody_holds_of_honest` [COMPLETED]
+
+**Result**: `bracketEndChar_kvE2_complete_two_prior` landed in `OuterGate.lean` (sorry-free,
+axiom-clean `{propext, Classical.choice, Quot.sound}`), plus helper bridges
+`bracketEndChar_kvE2_hcb` / `bracketEndChar_kvE2_hck`. The gate `hg` is discharged by the landed
+`kvE2_sepGate_holds_of_honest` (SW:2666) rather than a hand-built bridge; `hxw`/`hwt` recovered from
+`qnf`'s atom layer via `h_xy`/`h_yt` (LITMUS-clean, bracket range).
 
 **Goal**: Prove the reverse (mpr) direction of the gate as a standalone lemma:
 `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf  ⟹  (bracketEndChar_kvE2 atomMap

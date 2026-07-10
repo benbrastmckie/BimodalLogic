@@ -73,21 +73,95 @@ theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature}
     bracketEndChar_kvE2 atomMap h_surj P qnf =
       kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf := rfl
 
-/-! ## Phases 2-4 — soundness/completeness/assembly: DEFERRED (see blocker in the plan)
+/-! ## Phase 2 — ⇐ completeness half: consume `kvE2_sepBody_holds_of_honest`
 
-The ⇒ soundness (Phase 2), ⇐ left-interior completeness (Phase 3), and the assembled k=2
-gate-correctness theorem (Phase 4) are NOT delivered in this file. Closing them requires building
-the JOINT multi-owner disjunct bracket realization `(kvE2_sepDisjunct … (kvE2_sepSlotsL qnf)
-(kvE2_sepSlotsR qnf)).2.holds` (⇐) and reconstructing the depth-2 evaluation's atom+quant layers
-(⇒). This joint-disjunct bracket-`holds` builder is an **un-landed** completeness-side obligation
-explicitly deferred by task 334 (`SharedWitness.lean:1954`: "the general multi-owner pairwise
-discharge is the completeness-side Phase-8 obligation"). The landed builders are per-σ / single
-owner (`kvE_subBracket2V_complete`, `SubBracket2V.lean:1730`) or the k=1 carrier
-(`bracketEndChar_k1v_complete`, `CarrierK1V.lean:1629`); the joint disjunct over the merged
-per-owner slot lists has no landed `holds` builder. The general region engine
-`k1v_sorted_realizationK` (`SubBracket2V.lean:633`) is the intended foundation, but wiring it into
-the `kvE2_sepDisjunct` slot/segment/endpoint layout is a substantial dedicated construction that
-this session does not complete. Per the zero-debt discipline (no `sorry`, no vacuous placeholder),
-Phases 2-4 are left BLOCKED for a follow-on dispatch rather than papered over. -/
+The reverse (mpr) direction of the k=2 gate: an honest depth-2 evaluation of `qnf` at the bracket
+witness `w` (with `x < w < t` recovered from the atom layer) forces the carrier body `.holds`. This
+is a **consumption** of the landed task-337 completeness engine `kvE2_sepBody_holds_of_honest`
+(`SharedWitness.lean:9262`) — no new engine, no interiority hypothesis. The gate `hg` is discharged
+by the landed `kvE2_sepGate_holds_of_honest` (`SharedWitness.lean:2666`); the two char-formula
+bridges `hcb`/`hck` are built from `nf_depth0_char_formula_correct` (KampTranslation:141) and
+`P.correct` (the `ExistProviders` correctness field) with the `Fin 0` env collapse. -/
+
+/-- **⇐ completeness bridge for the char-base layer** (task 335 Phase 2): the standard-instantiation
+    depth-0 characteristic formula is truth-equivalent to the arity-1 evaluation. Extracted from the
+    landed `nf_char2_atom_layer` proof (`Base.lean:58`), specialized to the plain arity-1 iff. -/
+theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (M : OrderedMonadicStructure sig) (χ : NormalForm sig 0 1) (u : M.carrier) :
+    temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ := by
+  rw [Separation.nf_depth0_char_formula_correct]
+  simp only [nf_eval_nf]
+  constructor
+  · intro h a
+    obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred a
+    simp only [atom_eval]
+    exact h p
+  · intro h p
+    have hp := h (.pred p ⟨0, by omega⟩)
+    simpa only [atom_eval] using hp
+
+/-- **⇐ completeness bridge for the provider layer** (task 335 Phase 2): the depth-1 existential
+    provider formula `P.existF 0 χ` is truth-equivalent to the arity-1 depth-1 evaluation, via the
+    `ExistProviders.correct` field at `n = 0` and the `Fin 0 → M.carrier` env collapse
+    (`insertEnv` on the empty env is `fun _ => u`). -/
+theorem bracketEndChar_kvE2_hck {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (P : ExistProviders sig atomMap 1)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (χ : NormalForm sig 1 1) (u : M.carrier) :
+    temporal_truth M atomMap u (P.existF 0 χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ := by
+  rw [P.correct 0 χ M h_UZ h_SZ u]
+  constructor
+  · rintro ⟨env, henv⟩
+    have heq : insertEnv env u = (fun _ => u) := by
+      funext i
+      simp only [insertEnv]
+      rw [dif_neg (by omega)]
+    rwa [heq] at henv
+  · intro h
+    exact ⟨Fin.elim0, by rw [insertEnv_zero]; exact h⟩
+
+/-- **⇐ completeness half of the k=2 gate** (task 335 Phase 2, UNCONDITIONAL — no `hL`/`hLR`).
+    An honest depth-2 evaluation at bracket witness `w` forces the carrier body `.holds`, by
+    consuming the landed completeness engine `kvE2_sepBody_holds_of_honest` (SW:9262). The order
+    hypotheses are the standard six `BracketCarrierCorrectVPrior` atom-layer conditions; `w`'s
+    interval position `x < w < t` is recovered from `qnf`'s own atom layer under those hypotheses
+    (bracket range, NOT a chain — LITMUS-clean). -/
+theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) :
+    (∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) →
+      (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t := by
+  rintro ⟨w, h⟩
+  -- Recover `x < w` and `w < t` from `qnf`'s atom layer (env `[w, x, t]`).
+  have hxw : x < w := by
+    have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
+    simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+  have hwt : w < t := by
+    have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
+    simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+  -- Gate from the landed honest-gate lemma.
+  have hg : kvE2_sepGate qnf := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
+  -- Land on the live carrier and apply the completeness engine.
+  rw [bracketEndChar_kvE2_two_eq]
+  exact kvE2_sepBody_holds_of_honest (nf_depth0_char_formula atomMap h_surj)
+    (fun χ => P.existF 0 χ) qnf hg M atomMap w x t hxw hwt h
+    (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
+    (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
