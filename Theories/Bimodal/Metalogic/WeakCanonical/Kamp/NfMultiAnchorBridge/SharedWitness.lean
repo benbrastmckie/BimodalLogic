@@ -9646,4 +9646,57 @@ theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature}
   kvE2_sepBody_complete_holds' charBase charK qnf hg M atomMap w x t hxw hwt h
     (kvE2_sepDisjunct'_holds_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck)
 
+/-! ## Phase 3 (task 333) — Per-σ kit application: bundles → sound kit → owner `nf_eval`
+
+Thread the per-σ bundles produced by the hypothesis-free `kvE2_sepBody_extract` (Phase 2)
+through the `_parts` reducers into the task-326 closer `kvE_subBracket2V_sound_of_parts`
+(`SubBracket2V.lean:1290`, consume-only) to obtain each positive owner's `nf_eval`. This is a
+kit APPLICATION, not a bit-proof: every `σ.2 (nf0_assemble … χ σ.1) = true` occurrence below
+is the *antecedent* of a per-owner `bit ⟹ witness` implication carried by that owner's OWN
+enumeration `σ.2` — self-owned, never a cross-σ goal (plan v4 Postmortem Constraints; the
+deleted plan-02 R3 stays deleted). `hgate` is the explicit outer-gate hypothesis threaded
+verbatim (the Amendment F3 pattern of `kvE_subBracket2V_sound_of_outer`,
+`SubBracket2V.lean:1481`) — never assumed, never discharged vacuously here; its carrier-side
+derivable pieces live in the Phase 9 (O4) section above and its assembly is downstream
+(Phase 4 / task 335). Rabinovich 2014: Notation 5.2 bracket bundles (pp.7-8), Cor 5.4
+bounded interior placement (p.9). -/
+
+/-- **LEFT-interior kit application** (Phase 3): a realized left-class bundle at the shared
+    witness, under `w < t`, yields the owner's depth-1 `nf_eval` at env `[x1, w, x, t]` by
+    feeding the EXACT `kvE_subBracket2V_sound_of_parts` input 5-tuple produced by
+    `kvE2_sepBundleL_parts` into the closer, `hgate` threaded verbatim (Amendment F3 — the
+    `kvE_subBracket2V_sound_of_outer` composition pattern, `SubBracket2V.lean:1514-1517`).
+    Instantiated at the standard `charBase = nf_depth0_char_formula atomMap h_surj`, under
+    which the bundle's below-anchor witnesses unify with the closer's expected shapes with no
+    coercion. Bounds ride the bracket's own ordering (FM-x1t; no `x1 < e_i` literal, LITMUS). -/
+theorem kvE2_sepBundleL_sound {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hwt : w < t)
+    (h : kvE2_sepBundleL (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap w x)
+    (hgate : ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    ∃ x1 : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  obtain ⟨x1, hxx1, hx1t, hanchor, hbelow⟩ :=
+    kvE2_sepBundleL_parts (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap hwt h
+  exact kvE_subBracket2V_sound_of_parts atomMap h_surj charK σ M w x t x1 hxx1 hx1t hanchor
+    hbelow hgate
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
