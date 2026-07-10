@@ -1,5 +1,5 @@
 ---
-next_project_number: 343
+next_project_number: 344
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,333,335 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,300,333,335 | publication-quality, sorry-elimination, automation, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,333,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,333,335,343 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
@@ -100,7 +100,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Literature
 
-300 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
+343 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
 ### Reference Book
@@ -120,34 +120,13 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ## Tasks
 
-### 342. Rework kve2 sep arrangement carrier with interiorrestricted owner index and tieadmitting weak orders
-- **Effort**: 12-20 hours
-- **Status**: [COMPLETED]
+### 343. Abort aware tableau cancellation
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
+- **Topic**: literature
 - **Dependencies**: None
-- **Research**:
-  - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md]
-  - [342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/reports/01_rabinovich-fidelity-audit.md]
-- **Plan**: [342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/plans/01_interior-index-and-tie-admitting-orders.md]
 
-**Description**: Upstream carrier redesign for the kvE2_sep completeness layer in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (SW:), unblocking task 337 Phases 3-4. Full design and blast-radius analysis: specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md (sections 4-5) — read it before planning. STANDING USER DIRECTIVE: consult the literature (Rabinovich 2014, 'A Proof of Kamp's Theorem', LMCS 10(1:14)) closely to ensure faithfulness; do not take what appears easiest but ends up not working — slow and steady wins the race.
-
-WHY: The hypothesis hLR (all positive owners strictly interior) is certified UNSATISFIABLE by kvE2_sepHonest_hLR_absurd (SW:4618, axiom-clean {propext, Classical.choice, Quot.sound}): the always-realized characteristic sigma_w := nf_characteristic M 1 4 (Fin.cons w (Fin.cons w (Fin.cons x (fun _ => t)))) forces a positive owner whose w-coordinate ordering pair is (false,false) — neither zXW3's (true,false) nor zWT3's (false,true). Root cause: hLR is a Lean-layer artifact with NO Rabinovich counterpart. Rabinovich section 5 (p.7) splits every exists-forall formula into psi_0/psi_1 (non-interior witnesses, one-free-variable formulas that become ATOMIC E[Sigma] literals at the endpoints via Prop 3.5) plus phi (the strictly-interior bracket): interiority is a construction invariant of phi, never a hypothesis on realized types. The carrier indexed the arrangement by ALL positive owners (wo.map Prod.fst = kvE2_sepPos, SW:1563) while kvE2_sepDisjValidOwner (SW:1326) has honest validators only for the two interior classes, so hLR was added to force the mismatch closed. Independently, the Nodup conjunct (iii) of kvE2_sepDisjValid (SW:1350-1354) makes the Lemma 3.2(1) equality-case order types unrepresentable, so honest tie models (base-base slot ties; base-slot value equal to a foreign anchor — cycle-8 'resolution (a) is FALSE') realize no disjunct. Both defects must be fixed together; they rewrite the same declarations.
-
-RABINOVICH GROUNDING (cite exactly this way): Def 3.1 (p.4) — single STRICT witness chain x_n > ... > x_0, free variables pinned z_k = x_{i_k}. Lemma 3.2(1) (p.4) — conjunction closure via disjunction over order types of combined witnesses INCLUDING equality cases: tied witnesses collapse to ONE strict slot whose point type is the CONJUNCTION (meet) of the tied types, as a separate disjunct (see also the k=m case split, p.7). Section 5 (p.7) — psi_0/psi_1/phi split routing non-interior content to atomic E[Sigma] endpoint literals. Def 7.13 (p.15) is NOT the license for coincidence merging: it is segment-wise conjunction of per-interval brackets between DISTINCT reference points and licenses ONLY the outer x < w < t segmentation of kvE2_sepBody. Any 'Def 7.13 union' phrasing in older artifacts is a corrected misattribution. IntervalPattern.holds strict monotonicity (ExistsForallNF.lean:106-132) is SOURCE-MANDATED — do NOT weaken it.
-
-PART I — interior-restricted owner index. Add kvE2_sepPosI qnf := (kvE2_sepPos qnf).filter (fun sigma => decide (nf0_zoneSpec sigma.1 = kvE2_sep_zXW3 or nf0_zoneSpec sigma.1 = kvE2_sep_zWT3)) (order-preserving filter so Nodup/zipIdx foundations transfer) plus transfer lemmas. Re-anchor the owner index from kvE2_sepPos to kvE2_sepPosI in: kvE2_sepAllSlots (SW:348), kvE2_sepOrderTypes (SW:1277), kvE2_sepModelOrder (SW:1296), the owner-projection lemma (SW:1563) and membership lemmas (SW:1571, 1585, 1595), kvE2_sepCoincidentOrder (SW:2292), kvE2_sepHonestOrder (SW:3063) with its task-340 5A-5C rank machinery (SW:2531ff). Drop the hLR hypothesis from the four theorems kvE2_sepBody_complete (SW:2445), kvE2_sepCoincidentOrder_mem_arr' (SW:2489), kvE2_sepHonestOrder_mem_arr' (SW:3095), kvE2_sepBody_complete_holds (SW:4249) — the interiority disjunction is recovered definitionally via List.mem_filter. kvE2_sepDisjunct_extract (SW:4667) restates hmemL/hmemR over kvE2_sepPosI membership. Boundary classes zAtX3/zAtW3/zAtT3 ride the EXISTING kvE2_sepEpL/kvE2_sepPtW/kvE2_sepEpR literals (SW:886-903, 932-946, 908-925; zPastX3/zFutT3 on the Since/Until-navigated literals SW:892-893/916-917) with honest kvE2_sepHasPos bits via the biconditional kvE2_sepLit (SW:173). Non-interior owners already contribute [] slots (SW:292-311) and top segments (SW:959-980) — no new literal machinery. New additive obligations: endpoint/pivot honesty lemmas (honest h implies EpL/PtW/EpR literal evaluation), previously hidden behind vacuity. REJECTED alternative (user decision, do not implement): keeping wo over all of kvE2_sepPos with a non-interior true branch in kvE2_sepDisjValidOwner — explicitly rejected as unfaithful to the Lemma 3.2(1) interleaving index.
-
-PART II — tie-admitting weak orders with meet-folded disjuncts. Replace kvE2_sepDisjValid conjunct (iii) Nodup (SW:1350-1354) by anchor-distinct + ordered nonempty tie classes (equal payload entries = one class). Anchor-anchor ties remain excluded by the task-340 Phase 5A keystone nf_eval_unique (SW:2522-2529); admissible tie classes are base-base and base-foreign-anchor within a region. Add tie-class grouping functions (kvE2_sepTieGroupedL/R) and fold each tie class into ONE bracket slot with point type formula_conjList (class.map (kvE2_sepSlotType charBase charK)) in the disjunct builder (kvE2_sepDisjunct, SW:1020, or a primed successor consuming groups). Per-owner slot lists (kvE2_sepSlotsLFor/RFor, SW:292-311) are UNCHANGED — merging is a property of the order type, not the slot inventory. kvE2_sepBracketN (SW:1009) and the banked kvE2_sepBracketN_construct (SW:4521) are generic over point-type lists and survive unchanged. Tie-class validity: base-anchor classes read the anchor owner's CLOSED self-zone bit generalized from its own fresh type to the FOREIGN base type (extend the kvE2_sepClosedLeafStub pattern, SW:1316-1321 — this is the flagged F5 obligation: the discharge must read the anchor owner's CLOSED key at the foreign type; no open key may enter any coincident read); base-base classes read no self-zone key. kvE2_sepHonestOrder's value-rank payload (340 Phase 5B/5C) reports EQUAL indices exactly where honest values coincide. kvE2_sepArr' (SW:1358), kvE2_sepBody/kvE2_sepBody_holds_iff (SW:1645/1682) inherit the corrected carrier. Target completeness shape: kvE2_sepBody_complete_holds' per report 07 section 4 — no hLR, owners from kvE2_sepPosI, hdisj over the tie-grouped honest order.
-
-CROSS-TASK NOTE: tasks 336, 338, 339, 340 are COMPLETED and their landed carriers are being DELIBERATELY reworked here per user decision — this task owns that rework. Doc-only edit: OuterGate.lean:28 prose referencing kvE2_sepBody_complete's hLR.
-
-MUST-PRESERVE (banked green, axiom-clean): kvE2_sepHonest_engineInputs (SW:3952), kvE2_sepHonest_witnesses (SW:4141), kvE2_sepBracketN_construct (SW:4521), kvE2_sepHonestBaseRealizerL/R (SW:3503/3522), kvE2_sepCoincidentOrder_mem_arr' (restated without hLR, proof-shape-identical). RETAIN kvE2_sepHonest_hLR_absurd (SW:4618) verbatim as a permanent design guard — it must continue to compile; it certifies why hLR-style hypotheses must never return. Preserve the F1-F7 faithfulness invariants, especially F5 (no open/closed zone-key conflation), and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal anywhere; witness bounds come from the bracket range (IntervalPattern.holds's own range), never a chain.
-
-VERIFICATION: lake build green; #print axioms on the rebuilt completeness statements shows only {propext, Classical.choice, Quot.sound}; kvE2_sepHonest_hLR_absurd still compiles unchanged; no sorry introduced in landed (non-skeleton) declarations.
-
-AFTER COMPLETION: task 337 stays [BLOCKED] until this task lands; then re-plan 337 Phases 3-4 (/revise 337 or /plan 337) against the corrected interface — the engine's single delegated .holds obligation becomes the tie-grouped hdisj, with boundary-class content discharged from h at the endpoint/pivot conjuncts.
+**Description**: Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
 
 ---
 
@@ -157,84 +136,6 @@ AFTER COMPLETION: task 337 stays [BLOCKED] until this task lands; then re-plan 3
 - **Dependencies**: Task 340, Task 337, Task 335
 
 **Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged.
-
----
-
-### 340. Perslot globalindex carrier enrichment for valuefaithful slot order
-- **Effort**: complex
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 339
-- **Research**: [340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/reports/01_perslot-global-index-research.md]
-- **Plan**: [340_perslot_globalindex_carrier_enrichment_for_valuefaithful_slot_order/plans/01_perslot-global-index-plan.md]
-
-**Description**: Replace task 339's derived 2-level (region-rank primary, owner merged-chain rank secondary) slot-merge key in SharedWitness.lean with a single per-slot GLOBAL INDEX reflecting model value order, so mergeSort reproduces the exact honest value order across ALL owners (a total order on the full slot multiset, not a region-by-owner product). Verified blocker (report 06, three lean_run_code experiments): honest models permit cross-region interleaving where an owner sigma's lUW witness (constrained only by x1_sigma < u < w, SW:1415-1419) can land below another owner tau's anchor; 339's region-primary key unconditionally places tau's anchor before sigma's lUW regardless of owner-rank choice, making the required monotone witness omega-unsatisfiable. CORE SCOPE: (1) enrich KvE2SepWeakOrder (SW:694-695) and kvE2_sepOrderTypes (SW:706-711) to carry a per-slot global index (enumeration ranges over order-consistent global interleavings of individual slots, not per-owner ranks); (2) collapse kvE2_sepSlotMergeLe (SW:880-885) to a single-level compare on that index, dropping the region-primary lex; (3) replace/supplement kvE2_sepOwnerRank (SW:868-870) with a per-slot index reader keyed on the slot; (4) re-sort kvE2_sepSlotsLOf/ROf (SW:896-904) by the global-index key, preserving mergeSort_perm membership; (5) add a consistency conjunct to kvE2_sepDisjValid[Owner] (SW:748-759): the per-slot global index must extend each owner's own region order (lXU < lX1 < lUW left, mirror right) -- a linear-extension-of-partial-order constraint; (6) update kvE2_sepCoincidentOrder (SW:1619-1621) and kvE2_sepBody_complete (SW:1590) so the honest completeness witness supplies a global index consistent with the model value order; (7) extend kvE2_sepHonestBundleL/R (SW:1408, 1460) to yield the cross-owner value order of the extracted witnesses (currently only per-owner (x, x1_sigma, w) bounds), threading the carrier's total order into the index. Re-prove kvE2_sepBody / _holds_iff / _nonvacuous / _extract and kvE2_sepDisjunct_extract. MUST PRESERVE: 339's mergeSort_perm membership route (kvE2_sepSlotsLOf_mem/ROf_mem); the same-owner rank<rank -> index<index property the existing extraction lemmas rely on; the no-collapse property (kvE2_sepModelOrder and kvE2_sepCoincidentOrder remain proven members of kvE2_sepArr'); and task 337 Phase-1's kvE2_sepCoincidentOrder_mem_arr' (SW:1733). TERMINALITY REQUIREMENT: planning for this task must OPEN with a design gate (mirroring 339's Phase 1) proving the per-slot index is fully value-faithful -- reproducing the exact honest value order for the cross-region interleaving case a < u' < b that broke 339 -- and faithful to Rabinovich Def 3.1's single global chain, establishing this as the terminal carrier layer (no fifth carrier layer needed) before implementation begins. ACCEPTANCE: sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), full lake build green, F1-F7 faithfulness invariants preserved (especially F5 zone-key non-conflation and the LITMUS at NavigatedSpine.lean:437: no x1 < e_i relative-position literal). No load-bearing task-334/336/338/339 result destroyed. This is foundational faithful-transcription work on the terminal carrier layer; strongly recommend --hard mode.
-
----
-
-### 339. Pointlevel crossowner slot merge for separatedbody holds
-- **Effort**: complex
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 338
-- **Research**: [339_pointlevel_crossowner_slot_merge_for_separatedbody_holds/reports/01_pointlevel-slot-merge-research.md]
-- **Plan**: [339_pointlevel_crossowner_slot_merge_for_separatedbody_holds/plans/01_pointlevel-slot-merge-plan.md]
-
-**Description**: THE PROBLEM (triply-verified across reports 02, 04, and task-338's own summary): task 338 enriched KvE2SepWeakOrder with a cross-owner merged-chain RANK (List (NormalForm sig 1 4 x KvE2SepSpikeOrderType x N)) and correctly rewired kvE2_sepBody to consume it -- but the slot lists it drives, kvE2_sepSlotsLOf/kvE2_sepSlotsROf (SharedWitness.lean:869-876), are a per-owner BLOCK flatMap: kvE2_sepOrderOwners wo (SW:861-863) permutes WHOLE owner blocks by rank, never interleaves individual points across owners. IntervalPattern.holds / holds_eq_succ (ExistsForallNF.lean:106-132, 188-204) demands ONE globally strictly-monotone witness function over the FULL concatenated slot list. For honest coincident models where two owners' interior witnesses genuinely interleave, no block ordering (in either direction) can supply that global witness -- proven RANK-INDEPENDENT by 5 lean_run_code adversarial experiments in report 04 (both block orders derive False via omega on the same interleaving honest model). This is the wrong granularity: Rabinovich Def 3.1 (md:65-74) builds a single global chain over the UNION of all owners' individual POINTS, not a reordering of owner blocks.
-
-CORE SCOPE: redesign kvE2_sepSlotsLOf/kvE2_sepSlotsROf (SharedWitness.lean:869-876) and their sequencing kvE2_sepOrderOwners (SharedWitness.lean:861-863) so the slots are a genuine POINT-LEVEL cross-owner merge keyed by merged-chain position -- every owner's individual slot entries (interval endpoints/anchors, e.g. lXU/lX1/lUW per SW:292-299) interleaved into ONE globally value-sorted chain -- rather than a block-level owner reordering. Then re-prove the dependent lemmas whose statements/bodies touch the slot lists: kvE2_sepBody_holds_iff (SW:970), kvE2_sepBody_nonvacuous (SW:1512), kvE2_sepBody_extract (SW:2163), and kvE2_sepDisjunct_extract (SW:2015). Preserve the enriched-weak-order type from task 338 and the no-collapse property (both kvE2_sepModelOrder and kvE2_sepCoincidentOrder must remain proven members of the enumeration). Task 337 Phase-1's kvE2_sepCoincidentOrder_mem_arr' (SW:1733) must continue to hold unchanged -- it feeds the membership half of the joint builder and is orthogonal to this slot-shape redesign.
-
-DESIGN-GROUNDING REQUIREMENT (lesson from task 338's insufficiency: a correct-but-wrong-layer fix): before implementing, first pin down the EXACT shape IntervalPattern.holds requires of the slot list (read ExistsForallNF.lean:106-204 -- the witnesses : Fin (n+1) -> M.carrier strict-monotonicity and alpha/beta segment obligations) AND confirm the point-level merge design is faithful to Rabinovich Def 3.1's single global chain (md:65-74) and to the k1v_sorted_realizationK engine's interleaveK merged-anchor output shape (SubBracket2V.lean:633, per report 04's engine-interface note) -- so the implementation actually closes the .holds gap rather than under-delivering at a different granularity again, as the block-level rank fix did.
-
-ACCEPTANCE: sorry-free; axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx); full lake build green; all seven faithfulness invariants F1-F7 preserved, especially F5 (no open/closed zone-key conflation) and the LITMUS test at NavigatedSpine.lean:437 (witness bounds must come from the bracket range, never an x1 < e_i relative-position literal on a raw chain). No load-bearing task-334/336/338 result destroyed (statements may extend/strengthen, per task 338's own precedent of extending rather than invalidating).
-
-HARD-MODE NOTE: this is a strong --hard candidate. It is foundational faithful-transcription work and the 3rd verified structural layer on this carrier (after task 334's original slots and task 338's rank enrichment), so quality/thoroughness over speed is warranted -- get the point-level merge design right against the Rabinovich source and the IntervalPattern.holds contract BEFORE writing proofs, rather than iterating through another under-delivering granularity.
-
-ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, Phases 2-6) is re-dispatched to consume the point-level-merged slot lists via kvE2_sepBody_holds_iff.mpr.
-
----
-
-### 338. Enrich separatedbody weakorder with crossowner anchor order
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-- **Research**: [338_enrich_separatedbody_weakorder_with_crossowner_anchor_order/reports/01_weakorder-enrichment-research.md]
-- **Plan**: [338_enrich_separatedbody_weakorder_with_crossowner_anchor_order/plans/01_weakorder-crossowner-enrichment.md]
-
-**Description**: Foundational carrier-enrichment task, faithful to Rabinovich (2014) per reports 01 (witness-ordering faithfulness) and 02 (coincident-order and weak-order scope) attached to task 337. THE PROBLEM: the task-334 weak-order type KvE2SepWeakOrder (SharedWitness.lean:694-695) records only a PER-OWNER tag relative to the shared point w and carries NO cross-owner interleaving of interior owners' fresh anchors. Rabinovich's merged disjuncts (Lemma 3.2(1), md:77) each pin a single GLOBAL order of the union of both owners' points, and coincidence of a witness with a reference point is a first-class disjunct (Def 3.1 / Lemma 5.3, md:145-152). SCOPE: (a) TYPE-LEVEL changes to KvE2SepSpikeOrderType (SW:679-686) and KvE2SepWeakOrder (SW:694-695) to encode cross-owner relative order on the merged anchor multiset (these are the only genuinely invalidating edits; everything else cascades from them). (b) BODY changes preserving existing signatures/return types: kvE2_sepOrderTypes (706-711, independent cartesian 3^|pos| -> enumeration of order-consistent global interleavings), kvE2_sepDisjValidOwner/kvE2_sepDisjValid (748-759, add a cross-owner consistency conjunct), kvE2_sepModelOrder (719-721, encode the strict cross-owner global order), kvE2_sepCoincidentOrder (1433-1435, the all-coincidence global order in the enriched type). (c) THE CENTRAL REWIRE: kvE2_sepBody (821-837, esp. 835-836) currently discards the weak order `_wo` and pins every disjunct to the fixed model-independent flatMap concatenation kvE2_sepSlotsL/R qnf (315-322); it must instead CONSUME `_wo` so each disjunct realizes its own cross-owner slot order. DOWNSTREAM PROOF REPAIR (statements survive/extend, re-run proofs, no load-bearing result invalidated): kvE2_sepBody_complete (1592-1611, conclusion `kvE2_sepArr' qnf != []` survives via kvE2_sepCoincidentOrder route), kvE2_sepCoincidentOwner_valid_left/_valid_right (1465, 1539, reused as per-owner component), kvE2_sepHonestBundleL/R (1211, 1257, reused/extended), membership lemmas kvE2_sepModelOrder_mem_orderTypes/kvE2_sepCoincidentOrder_mem_orderTypes and _mem_aux helpers (791-805, 1439-1459, proofs re-run against new enumeration body); kvE2_sepArr'_sound (2594-2601) conclusion STRENGTHENS with an added cross-owner consistency conjunct. CRITICAL CONSTRAINT: keep witness/anchor COINCIDENCE a first-class disjunct alongside strict cross-owner interleavings -- do not collapse the carrier to coincidence-only (breaks the soundness direction task 337 needs for models where owners' anchors strictly interleave) and do not force strict-only (breaks the honest completeness witness kvE2_sepBody_complete already relies on, since strict kvE2_sepModelOrder is a genuine Rabinovich r_0=z_0 semantic non-provability, not a bug). ACCEPTANCE: sorry-free; axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx); full `lake build` green; all seven faithfulness invariants F1-F7 preserved, especially F5 (no open/closed zone-key conflation) and the LITMUS test at NavigatedSpine.lean:437 (witness bounds must come from the bracket range, never an x1 < e_i relative-position literal on a raw chain). HARD-MODE NOTE: this is a strong --hard candidate -- foundational faithful-transcription work, and task 337 has already hit a Phase-1 structural block across two plan versions (plans/01, plans/02) without completing a phase, matching CLAUDE.md's --hard trigger conditions. On completion, task 337 (the joint multi-owner disjunct bracket.holds builder) is re-dispatched to consume the enriched weak-order via kvE2_sepBody's rewired output.
-
----
-
-### 337. Build joint multiowner disjunct bracketholds engine for kve2 sepdisjunct
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 336, Task 338, Task 339, Task 340, Task 342
-- **Research**:
-  - [335_outer_gate_assembly_engine_kvE2_body/reports/02_spawn-analysis.md]
-  - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/07_hlr-inconsistency-coincidence-merge.md]
-  - [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/08_post-342-revision-strategy.md]
-- **Plan**: [337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/12_grouped-disjunct-holds-builder.md]
-
-**Description**: Wire the general region engine k1v_sorted_realizationK (SubBracket2V.lean:633) into the kvE2_sepDisjunct slot/segment/endpoint layout (SharedWitness.lean), delivering a ⇐-direction holds BUILDER for the joint multi-owner disjunct bracket: given the merged per-owner slot lists kvE2_sepSlotsL/R qnf, each positive owner's honest bundle (kvE2_sepHonestBundleL/kvE2_sepHonestBundleR), and witnesses x < w < t, produce (kvE2_sepDisjunct charBase charK qnf (kvE2_sepSlotsL qnf) (kvE2_sepSlotsR qnf)).2.holds M atomMap x t. Steps: (1) map each positive owner's honest bundle into a region compatible with k1v_sorted_realizationK's input shape; (2) run the engine to obtain a globally monotone interleaved witness sequence across all owners; (3) match that sequence to kvE2_sepBracketN's IntervalPattern point types and segments; (4) discharge the endpoint conjuncts kvE2_sepEpL/kvE2_sepEpR at x/t. Deliver as a new lemma (naming pattern: kvE2_sepDisjunct_holds_of_honest or similar, mirroring the existing kvE2_sepGate_holds_of_honest convention) in SharedWitness.lean, sorry-free, axiom-clean (lean_verify -> {propext, Classical.choice, Quot.sound} only, no sorryAx), preserving all seven faithfulness invariants F1-F7 (especially F5: no open/closed zone-key conflation, and the LITMUS at NavigatedSpine:437: no x1 < e_i relative-position literal -- witness bounds must come from the bracket range, never a chain). Treat all task-334/336 carrier lemmas (kvE2_sepBody_extract, kvE2_sepBody_complete, kvE2_sepHonestBundleL/R, kvE2_sepDisjunct_extract, kvE2_sepArr'_sound) as verified INPUTS -- apply them, do not re-derive or weaken them. FILE-SAFETY NOTE: this task is very likely to edit SharedWitness.lean, the same file task 336 (COMPLETED) just edited to generalize kvE2_sepBody_complete from hL to hLR. Task 336 is already complete so there is no live blocking dependency, but verify on start that the hLR-generalized kvE2_sepBody_complete signature (see specs/336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md) is the one in scope. On completion, task 335 re-dispatches Phases 2-4 (soundness, completeness, assembled k=2 gate) to consume this builder.
-
----
-
-### 336. Generalize completeness right interior zAtX1R
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 334
-- **Research**: [336_generalize_completeness_right_interior_zAtX1R/reports/01_generalize-completeness-right-interior.md]
-- **Plan**: [336_generalize_completeness_right_interior_zAtX1R/plans/01_generalize-completeness-right-interior.md]
-- **Summary**: [336_generalize_completeness_right_interior_zAtX1R/summaries/01_generalize-completeness-right-interior-summary.md]
-
-**Description**: Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): generalize kvE2_sepBody_complete (the ⇐ / completeness half of Rabinovich Lemma 3.2(1)) from the left-interior positive-owner class (currently gated by an explicit hL hypothesis) to right-interior owners. The right coincidence discharge kvE2_sepCoincidentAnchor_discharge_R is ALREADY landed sorry-free and axiom-clean (SharedWitness.lean:1493); this is small predicate-wiring — route the proved zAtX1R self-zone (SharedWitness :737/:2475) into the coincident validity predicate kvE2_sepDisjValidOwner .coincident / kvE2_sepClosedLeafStub, which currently hardcodes zAtX1L. NOT new mathematics. Keep kvE2_sepBody_complete and kvE2_sepBody_nonvacuous axiom-clean ([propext, Classical.choice, Quot.sound], no sorryAx); preserve all 7 faithfulness invariants.
 
 ---
 
@@ -253,20 +154,6 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 
 ---
 
-### 334. Joint slot sorted realization nonvacuity carrier switch
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: Task 333
-- **Research**: [334_joint_slot_sorted_realization_nonvacuity_carrier_switch/reports/01_joint-slot-sorted-realization.md]
-- **Plan**:
-  - [334_joint_slot_sorted_realization_nonvacuity_carrier_switch/plans/01_joint-slot-sorted-realization.md]
-  - [334_joint_slot_sorted_realization_nonvacuity_carrier_switch/plans/02_faithful-region-partitioned-lift.md]
-  - [334_joint_slot_sorted_realization_nonvacuity_carrier_switch/plans/03_faithful-carrier-regrounding.md]
-
-**Description**: Successor to task 333 (partial at cycle budget): implement the novel joint slot-level sorted realization that closes the Phase 2 make-or-break task 333 converged on. Task 333 landed, green and axiom-clean, all four cross-sigma bit-compatibility compat leaves (kvE2_sepCompat_lX1_eq/_lX1_after_eq/_rX1_eq/_rX1_after_eq), the per-sigma honest witness bundle kvE2_sepHonestBundleL (blueprint point-map step 1), and resolved the faithfulness-audit soundness question as item-1a (fresh-less-sub exclusion owned by the refined-segment machinery kvE2_sepSegLForSub/RForSub; kvE2_sepCompat correctly silent, NO third clause). The sole remaining gap is the joint (multi-owner) model-sorted arrangement of Rabinovich 2014 Def 3.1 / Lemma 3.2(1)-<=direction: prove kvE2_sepJointSortedL/R and rewire kvE2_sepBody_nonvacuous. Spec is handoffs/03_phase2-joint-sort-frontier.md in the task 333 directory (faithfulness ledger + engineering frontier + risks). Ordered steps: (1) wire the filter switch by hand on HEAD via phase1-switch-and-repairs.patch mechanical renames (predicate defs already present, skip predicate-add hunk); (2) add the right-interior bundle kvE2_sepHonestBundleR; (3) prove kvE2_sepJointSortedL/R (~200-300 lines, slot-keyed sort tagged with real model points — CANNOT lift k1v_sorted_realization whose Nodup premise fails since joint slot chi-types recur across owners); (4) rewire kvE2_sepBody_nonvacuous off Perm.refl; then Phases 3-5 (the two strategic sorries kvE2_sepSingleton_coverage_left, kvE2_sepBody_singleton_complete_left) and Phases 12/13 (N2-C gate + F4 adversarial). Top risk: tie-freeness of the point assignment (need strict < x1_sigma) — resolve via point-injectivity (recommended, most paper-faithful to Def 3.1 strictly-increasing witness order) or a stable secondary owner/rank key. BINDING faithfulness constraints from 321/333: Rabinovich Lemma 5.1 quantifier-free point types; Lemma 3.2(1) filter grounding (never weaken to vacuity); Lemma 3.2(2) anchor cap 2; no-nesting audit; LITMUS (no x1<e_i); F4 adversarial test must DISCRIMINATE (never weaken). Do NOT run concurrently with 333 (file_scope overlap on SharedWitness). Preserve macro-side confinement invariant (L list only (x,w) slots, R only (w,t)).
-
----
-
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
 - **Status**: [PLANNED]
 - **Task Type**: lean4
@@ -278,240 +165,6 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 - **Plan**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/05_kit-application-and-outer-fold.md]
 
 **Description**: Successor to task 321 (F4 correctness gate): the bit-compatibility carrier redefinition that closes what task 321's additive-only v7 plan structurally could not. Task 321 reached a scoped PARTIAL: the O4 hgate forward-zone coverage residue does not close additively at singleton size (needs six interlocking LITMUS/no-nesting-constrained lemmas), and the multi-positive-sub fragment was deferred at the Phase 10 gate. Both route to the SAME fix identified by the crux analysis: redefine kvE2_sepArrL / kvE2_sepArrR (currently arrangement-blind) with bit-compatibility FILTERING so the interleaving enumeration only admits realizations whose zone bits are compatible with each sigma's fold content. This is a Phase-7 carrier RE-DEFINITION (out of task 321's additive scope; it kills the current canonical-list non-vacuity proof, which must be re-established). Deliverables: (1) redefined kvE2_sepArrL/R + restored non-vacuity; (2) discharge task 321's two remaining strategic sorries in SharedWitness.lean (kvE2_sepSingleton_coverage_left:1796, kvE2_sepBody_singleton_complete_left:1952) for the single-positive fragment; (3) lift to the full multi-positive-sub correctness pair; (4) run Phase 12 (N2-C gate wrapper) and Phase 13 (F4 Z adversarial LHS-FALSE + GO verdict record) from task 321's v7 plan; (5) full lake build green + axiom-clean surviving public API. Faithfulness constraints from 321 remain binding: Rabinovich 2014 Lemma 5.1 quantifier-free point types, no-nesting audit, LITMUS (no x1<e_i), F4 adversarial test must discriminate. Do not run concurrently with 321/332 (file_scope overlap on SharedWitness / NfMultiAnchorBridge).
-
----
-
-### 332. Boneyard sweep quarantined merged bracket infrastructure
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: Task 321
-
-**Description**: Post-321 Boneyard sweep of quarantined/refuted NfMultiAnchorBridge infrastructure. Task 331 extracted the refuted merged-bracket route (bracket-whose-points-are-brackets, violating the no-nesting audit rule and Rabinovich 2014 Lemma 5.1 quantifier-free point-type requirement) into Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/MergedQuarantine.lean as an in-tree byte-identical quarantine rather than archiving to Theories/Bimodal/Boneyard/. It is still live-imported by NavigatedSpine.lean and the umbrella NfMultiAnchorBridge.lean. AFTER task 321 completes (GO or fallback verdict recorded): (1) inventory which declarations in MergedQuarantine.lean (and any other v1-v5 refuted arity-1 fold-engine remnants, e.g. nfk_assemble/nfk_dropFresh/nfk_zoneSpec, efold_of_nfk, nf_quant_layer_fold_k2_gate) are still referenced by live code — if any are, either the reference is itself dead or the decl must stay; (2) move the genuinely dead quarantined material to Theories/Bimodal/Boneyard/ following the existing Boneyard module conventions (with provenance header), or delete if the byte-identical record is no longer needed; (3) remove the MergedQuarantine imports from NavigatedSpine.lean and NfMultiAnchorBridge.lean; (4) verify full lake build green and axiom-clean status of the surviving public API. Constraint: do not run concurrently with task 321 (file_scope overlap on NfMultiAnchorBridge).
-
----
-
-### 331. Refactor nfmultianchorbridge split and separate bracket api
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Dependencies**: None
-- **Research**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/reports/01_split-structure-research.md]
-- **Plan**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/plans/01_split-and-api-plan.md]
-- **Summary**: [331_refactor_nfmultianchorbridge_split_and_separate_bracket_api/summaries/01_split-summary.md]
-
-**Description**: Structural refactor to unblock task 321 Phase 7/8: split NfMultiAnchorBridge.lean and clean up the k=2 carrier API. RUNS BEFORE the next task-321 implementation attempt (task 321 now depends on this task). Purely mechanical/organizational — introduces NO new mathematical content and does NOT attempt to close the Phase-7 gate (that stays task 321).
-
-MOTIVATION. NfMultiAnchorBridge.lean has grown to ~9,249 lines — nearly double the next-largest file in the entire codebase — accreting the k=2 carrier machinery across tasks 320/325/326/330/321-v6. Task 321's blocker research (specs/321_.../.orchestrator-handoff.json, adversarially verified, Tier-1 grounded in Rabinovich 2014) established that the FAITHFUL route to close the gate is a per-sigma SEPARATE-BRACKET combination (Prop 4.2/4.3 disj/conj over standalone kvE_subBracket2V carriers), NOT the merged-bracket slotsFor construction (which is the un-faithful step: it builds bracket-whose-points-are-brackets, violating the file's own no-nesting audit rule at :8841-8846 and Lemma 5.1's quantifier-free-point-types requirement). This refactor prepares the file so the faithful rewrite is tractable and the dead merged-route machinery is clearly quarantined.
-
-SCOPE (mechanical split + API surfacing):
-1. Divide NfMultiAnchorBridge.lean into cohesive sub-modules along natural seams (confirm exact boundaries against the file): (a) baseline/quarantine defs + NormalForm/ZoneSpec/VecEA2 plumbing; (b) navigated spine kvE_fold_navigated + Prop 4.3 re-flatten machinery (VVecEA2.disjList_holds :8947, reflatten_prop43 :8991); (c) structural fold-collapse holds_flatMap_map; (d) per-arrangement non-interior dischargers (5+5 soundness/completeness); (e) task-326 standalone per-sub carrier closers (kvE_subBracket2V :6833, correctness_pair :8549, _sound_of_outer :7910, _complete :8159); (f) the merged-route kvE2_body/bracketFromLists gate assembly + slotsFor + subchain_below_pin + F1-F4 records. Preserve import-DAG acyclicity.
-
-2. Surface the FAITHFUL separate-bracket API as named, documented interface lemmas so task 321's next attempt can build the shared-interior-witness conjunction (the one genuine unbuilt object: exists w, conj over sigma of (kvE_subBracket2V sigma at that same shared w) = Lemma 5.1 point-insertion + Lemma 3.2(2) 2-var reduction). Expose the per-sub carrier + disjList_holds/VVecEA2.conj/neg_2var_vec_ea combinators as the clean public interface; keep the merged-route slotsFor/subchain_below_pin machinery in a clearly-marked QUARANTINE/DEAD-CODE module (do not delete in this task — task 321 retires it once the faithful route lands).
-
-BINDING CONSTRAINTS (non-negotiable):
-- SEMANTICS-PRESERVING ONLY. Every landed lemma/def keeps an identical statement and proof term; relocation across files is allowed, editing content is NOT. The do-not-edit (byte-identical) task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice, kvE_subChain2V, BracketCarrierCorrectVPrior/Prior, EANegation, and F1-F4 records must remain semantically byte-identical (a relocated copy with unchanged tokens is acceptable; a re-proof is not).
-- No sorry on any path; axiom-clean [propext, Classical.choice, Quot.sound]; full `lake build` exit 0 after EACH split commit (incremental, one module at a time).
-- Downstream consumers keep working via re-export shims if names move: KampPrior.lean:351 strategic-sorry hook, task 309 general-k consumers, and any importer of NfMultiAnchorBridge symbols. Verify with lake build across the whole Kamp directory.
-- Do NOT close the Phase-7 gate, do NOT build the shared-w combinator, do NOT run Phase-8. Those are task 321. Success = SAME theorems, SAME axioms, smaller files (target <= ~1500-2000 lines/module), clearer separate-bracket API, dead merged-route machinery quarantined.
-
-GOAL STATE: hand task 321's next (faithful, v7) implementation attempt a clean, split, well-documented API surface centered on separate per-sigma carriers, so the shared-interior-witness probe and rewrite (est. 400-700 additive lines per the research) can proceed without fighting a 9k-line monolith. LITERATURE GROUNDING: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md (Def 3.1, Lemma 3.2, Lemma 3.4, Prop 4.2, Prop 4.3, Lemma 5.1, Cor 5.4).
-
----
-
-### 330. K2 carrier faithfulness audit and correct fold representation
-- **Effort**: 8-16 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-- **Research**: [330_k2_carrier_faithfulness_audit_and_correct_fold_representation/reports/01_faithfulness-audit-fold-representation.md]
-
-**Description**: FOUNDATIONAL faithfulness audit + correct-fold-representation determination for the k=2 carrier route. SPAWNED because task 327 (P1 provability GATE) returned a machine-grounded WHOLE-TASK NO-GO: the depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate does NOT fold cleanly at constant arity by ANY route (naive nfk-split-kit factor, constant-arity E[Sigma] efold_of_nfk, or a new argument). This refuted the exact bet report 05 (specs/321_.../reports/05_remaining-k2-gate-architecture.md, Literature Grounding + Layer 2 sections) was built on: that route beta (E[Sigma] efold_of_nfk) would dodge the arity-4 barrier and was FAITHFUL to Rabinovich Def 4.1 constant-arity fold. Machine evidence (327 summary): the E[Sigma] channel's constant arity is arity-1 (ZoneSpec 1), precisely the arity that cannot carry the inner-witness joint coupling (crux goal needs ZoneSpec 4 over env [x1,w,x,t]; 5 failed lean_multi_attempt closers captured, decisive: `exact hmon.2.1 zs' chi'` -> ZoneSpec 4 vs ZoneSpec 1 mismatch).
-
-STOP drilling layer-by-layer. This is the third surfacing of ONE structural obstruction (arity-1 monadic channels cannot carry joint multi-anchor coupling): (i) the G6 arity-4 barrier at NfMultiAnchorBridge.lean:1622-1646 ("no VecEA2 1 monadic component can supply it; requires a NAVIGATED arity-3 characteristic, exactly what G6 bars"); (ii) F4 carrier-shape defect (tasks 309 root / 320 design spec; F4 verdict record in NfMultiAnchorBridge.lean final section after :5533); (iii) the k=2 NO-GO (327, inert record appended near :8760). The constant-arity-1 encoding (NormalForm sig k 1, ZoneSpec 1, VecEA2 1) is common to every failure.
-
-DELIVERABLE (two parts, research report — NO Lean carrier/proof code, purely additive analysis if any file is touched):
-PART 1 — Obstacle consolidation (machine-grounded): one coherent account proving G6 (:1622-1646), F4 (309/320), and the k=2 NO-GO (327) are THE SAME obstruction; for each, the exact goal state / file:line and why the arity-1 channel is structurally insufficient there.
-PART 2 — Faithfulness audit + correct-solution determination. Resolve the unresolved contradiction (report 05 ASSERTED E[Sigma] faithfulness & barrier-avoidance; task 327 PROVED clean-fold impossibility at arity-1) by deciding among: (A) the Lean encoding pinned arity to 1 where Rabinovich's actual fold uses higher/growing arity — i.e. an UN-FAITHFUL encoding and "G6" is a self-imposed artificial restriction; (B) Rabinovich genuinely requires the navigated arity-3 characteristic ("accepting the navigated-characteristic cost the current design was chosen to avoid"), so the whole constant-arity carrier design targeted the wrong object; (C) the k=2 completeness target as decomposed into per-(zone,chi) monadic obligations (chi : NormalForm sig 1 1) is not how the depth-2 normal form actually factors. Ground EVERY claim to BOTH a Rabinovich page/def AND a Lean file:line.
-
-Required literature grounding (--lit; Rabinovich 2014 primary): Def 4.1 E[Sigma]-fold and its ACTUAL arity discipline (is it constant-arity-1, or per-round/navigated?); Prop 4.3; Cor 5.4 (md:154-157) navigated-characteristic / evaluation-point positioning; §5 normal-form characterization at quantifier depth >= 2. If Rabinovich underdetermines the arity discipline, consult Kamp's theorem primary source and Gabbay-Hodkinson-Reynolds to pin it down. Key question to answer decisively: what arity discipline does the real normal-form fold use at depth >= 2, and does the correct construction that carries the joint inner-witness content require abandoning constant-arity-1 (adopting navigated/arity-growing per-round content)?
-
-OUTPUT: a concrete recommendation — GO (a faithful representation exists at the current design's arity and 327's NO-GO is a fixable encoding artifact -> specify the fix), REDESIGN (adopt navigated/arity-growing representation -> specify the new NormalForm/carrier shape and its cost), or RE-SCOPE (the k=2 completeness target as stated is not reachable via this normal-form fold -> specify the reachable target). Include the impact on task 321 (v6 re-plan or re-scope) and on tasks 328/329 (whether their premise is recoverable).
-
-PRIMARY INPUTS to read: specs/321_.../reports/05_remaining-k2-gate-architecture.md (the architecture being audited); specs/327_.../summaries/01_k2-fold-provability-gate-summary.md (the NO-GO + exact failing goal); NfMultiAnchorBridge.lean:1622-1646 (G6), final section after :5533 (F4/F3 records), near :8760 (k2 NO-GO record); NfEFold.lean (the E[Sigma] assets: 77/102/391/472/490/525, nf0_* kit 153-283); task 320 orchestrator handoff / F4 design spec.
-
-FILE DISCIPLINE: primarily a read-only audit producing a research report. If any Lean file is touched it is PURELY ADDITIVE (an analysis /-! -/ record only); DO-NOT-EDIT the byte-identical anchors (task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice, kvE_subChain2V, BracketCarrierCorrectVPrior, EANegation, F1-F4 records) and DO-NOT-RELAPSE into a partial carrier or an x1<e_i relative-position literal (LITMUS). Blocker-resolver for parent 321; gates tasks 328 and 329.
-
----
-
-### 329. Noninterior 5zone dischargers soundness completeness
-- **Effort**: 12-20 hours
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 328, Task 330
-- **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md]
-
-**Description**: P3 (5-zone dischargers — depends on P2 statement). Land the non-interior per-(zone,chi) dischargers (Layer 3) for the 5 consistent zones task 326 never covered — zPastX, zAtX, zAtW, zAtT, zFutT — in BOTH directions (soundness + completeness). Task 326's kvE_subBracket2V_sound_of_outer/_complete are INTERIOR-ONLY (name only kvE_sub2_zXU); the 2 exterior zones zPastX (x1<x) and zFutT (x1>t) lie OUTSIDE the pin's (x,w_outer) reach and provably need the epL/epR Since/Until exterior channels (NOT pins); the boundary zones (zAtX/zAtW/zAtT) use ptW point channels. Each discharger's witness positioned by since/until REACH / bracket monotonicity / zone spec (Cor 5.4 evaluation-point positioning) — LITMUS: never an x1<e_i literal (F4-flattening relapse). Consumed by 321 v6 Phase 10 (soundness) and Phases 11-14 (completeness) alongside task 326's interior closers and P2's engine. Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Lemma 5.1 point-insertion md:169-171, Lemma 5.3 INF splitting md:137-152. DO-NOT-EDIT as in P1; purely additive.
-
----
-
-### 328. Build depth1 split kit and k2 quant layer fold engine
-- **Effort**: 10-16 hours
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 327, Task 330
-- **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md]
-
-**Description**: P2 (engine — depends on P1 GO + chosen route). Build Layer 2 (the depth-1 split-kit: nfk_assemble/nfk_dropFresh/nfk_zoneSpec + round-trip lemmas + nf_eval_nf1_cons_factor, OR the E[Sigma] efold_of_nfk transport — whichever P1 certifies; NONE currently landed, only nf0_* + nfk_projFresh exist) AND land nf_quant_layer_fold_k2_gate (Layer 1, the arity-4/depth-1 outer quant-layer fold) in BOTH directions (backward bits->realization for soundness, forward realization->bits for completeness — it is SHARED across Stage C and Stage D). Recursion bottoms out at the landed generic nf_eval_unique (NormalForm:245, generic over k) + the landed depth-0 kit + nf_eval_depth1_fold_iff (inner monadic recursion). Route and PoC skeleton supplied by P1. Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Cor 5.4 md:154-157 (normal-form characterization, recursive in quantifier depth), Def 4.1 E[Sigma]. LITMUS + DO-NOT-EDIT as in P1; purely additive.
-
----
-
-### 327. K2 fold engine provability gate poc or nogo
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-- **Research**: [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/05_remaining-k2-gate-architecture.md]
-- **Plan**: [327_k2_fold_engine_provability_gate_poc_or_nogo/plans/01_k2-fold-provability-gate.md]
-- **Summary**: [327_k2_fold_engine_provability_gate_poc_or_nogo/summaries/01_k2-fold-provability-gate-summary.md]
-
-**Description**: P1 (provability GATE — MUST run first, cheap make-or-break). Determine whether the depth-2 outer quant-layer fold nf_quant_layer_fold_k2_gate (arity-4/depth-1 analog of the landed nf_quant_layer_fold_k1_gate) folds CLEANLY, and by WHICH route: (a) naive nfk-split-kit factorization via nf_eval_nf1_cons_factor, (b) the constant-arity E[Sigma] efold route (efold_of_nfk / nf_eval_nf1_iff_efold analog), or (c) a new argument. Deliverable: EITHER a proven proof-of-concept skeleton certifying the route, OR a machine-grounded NO-GO with the exact failing goal. Context: a naive 0->1 lift is BLOCKED — it re-invokes the arity-4->arity-3 / G6 barrier documented at NfMultiAnchorBridge.lean:1622-1646; the naive nf_eval_nf1_cons_factor is likely FALSE (inner quant layer couples x1 to zoneHolds(cons x env)). This gate isolates the entire route's residual F4-flattening-relapse risk (LITMUS: reconstruction must ride evaluation-point/structural position, never an x1<e_i literal). If NO-GO, the whole carrier route needs fundamental reconsideration (do NOT start P2/P3). Full scope-map: reports/05_remaining-k2-gate-architecture.md. Literature: Rabinovich 2014 Prop 4.3 E[Sigma]-fold (constant-arity, avoids the navigated arity-4 characteristic), Cor 5.4 md:154-157. DO-NOT-EDIT: task-325/326 landed lemmas, kvE2_body/bracketEndChar_kvE2 splice (byte-identical to 8448ea135), BracketCarrierCorrectVPrior, EANegation, F1-F4 records — purely additive.
-
----
-
-### 326. Bounded pointinsertion composition lemma for k2 subwitness soundness
-- **Effort**: 6-12 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-- **Research**:
-  - [326_bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness/reports/01_proof-strategy.md]
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/04_spawn-analysis.md]
-- **Plan**: [326_bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness/plans/01_bounded-pointinsertion-composition.md]
-- **Summary**: [326_bounded_pointinsertion_composition_lemma_for_k2_subwitness_soundness/summaries/01_bounded-pointinsertion-composition-summary.md]
-
-**Description**: Deliver ONE standalone, machine-verified Lean 4 lemma (name at implementer's discretion, e.g. `kvE_subBracket2V_holds_of_outer` or `kvE2_sub_bounded_recover`) that, given the outer bracket's soundness-side data over (x, t) -- the outer witness w with x < w < t, the per-slot extract `fChainPred @ u` for the sub sigma's spliced chain with u in (x, w) (from `kvE_subChain2V`), the outer segment classification on (x, w) (segL), and the outer gate -- produces the BOUNDED sub-anchor bundle: exists x1, x < x1, x1 < t, (charK (nfk_projFresh sigma)).eval_at x1, and the per-chi hbelow witnesses. This is exactly the (x1, hxx1, hx1t, hanchor, hbelow) bundle that the already-landed `kvE_subBracket2V_sound_of_parts` (NfMultiAnchorBridge.lean:7449) consumes to close task 321 Phase 10 (Stage C soundness).
-
-CRITICAL REQUIREMENT: `x1 < t` MUST be established STRUCTURALLY via a Rabinovich Lemma 5.1 shared-endpoint point-insertion split (A_i^-(x, x1) AND A_i^+(x1, t), literature: /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md md:169-171), NEVER derived from the unbounded `fChainFrom_base`/`_step` chain (EANegation.lean:585/:622), which asserts `exists s > x` with no upper bound and is documented (report 03, Determination 1) as structurally incapable of supplying this bound.
-
-Candidate landed assets to consume (investigate in priority order per divergence audit report 03 Determination 3): (1) `neg_2var_vec_ea` (EANegationClosure.lean:720) and `neg_interval_formula` (EANegationClosure.lean:398) -- the VVecEA2 point-insertion/negation machinery, model-dependent (requires `HasAttainedINF`, available at the soundness site; this is the regime EANegation.lean:1244-1247 explicitly sanctions as sorry-free). (2) A bounded-above `Until` argument from the outer witness w (with w < t) plus segL's exclusion literals on (x, w), IF segL's actual content (NfMultiAnchorBridge.lean:8212-8215) excludes charK-carrying points below w -- check this before relying on it; if segL does not exclude such points, route (1) is mandatory.
-
-BINDING GO/NO-GO LITMUS (from task 320 report 01:210-212, restated in report 03 Determination 3): the delivered lemma is GO only if it carries the boundedness via an evaluation-point/structural split (Rabinovich), NOT via a single-point relative-position formula literal (e.g. `x1 < e_i`) between independently-bound variables -- that literal form is the exact F4 flattening relapse that tasks 320/324/325/321-v4-P10 all hit. If neither candidate route passes this litmus, escalate again rather than landing a flattening relapse.
-
-BINDING CONSTRAINTS (carried forward from task 321, do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (two anchors {x, t} fixed at 2, G4; w stays a bracket WITNESS never a third anchor). Amendment F3 STILL BINDING: no provider-side pinning. DO NOT EDIT (byte-identical, additive-only): the task-325 VVecEA2 block (kvE_subBracket2V / kvE_subBracket2V_sound / kvE_subBracket2V_complete / kvE_subBracket2V_sound_of_parts / kvE_subBracket2V_reaches_zXU), all landed EANegation.lean forward-stack assets (bracket_implies_fChainPred:660, fChainFrom_base/_step:585/622), BracketCarrierCorrectVPrior, ExistProviders, and all prior F1-F4 verdict records. Do NOT consume EANegation.lean:1090 or :1249 (the documented-unprovable reverse-direction sorry). The new lemma is purely additive.
-
-COMPLETION HANDOFF: on completion, task 321 resumes via `/revise 321` to produce a v5 plan re-pointing Phase 10 at this new lemma, feeding the already-landed `kvE_subBracket2V_sound_of_parts`. Completeness (Phases 12-14 of task 321, which already close via `kvE_subBracket2V_complete`) stays closed ONLY IF this task's lemma consumes the EXISTING flat `kvE_subChain2V` splice's extract output as-is and does NOT require a new joint-channel shape -- altering the splice shape would reopen the completeness risk flagged in report 03 Determination 2 (MEDIUM confidence: the flat splice lists ALL arrangement fChainPreds, only the sorted one is honest-realizable).
-
-Source of this specification: specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/03_divergence-audit-joint-channel.md (divergence audit, verdict ESCALATE) and specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/.orchestrator-handoff.json (blockers[0], continuation_context.landed_this_dispatch). Consume, do not re-derive.
-
----
-
-### 325. Redesign k2 subbracket to vvecea2 arrangementdisjunction
-- **Effort**: 10-16 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-- **Research**:
-  - [324_redesign_k2_subbracket_arity4_correctness_pair/reports/03_spawn-analysis.md]
-  - [325_redesign_k2_subbracket_to_vvecea2_arrangementdisjunction/reports/01_adversarial-verification.md]
-- **Plan**:
-  - [325_redesign_k2_subbracket_to_vvecea2_arrangementdisjunction/plans/01_vvecea2-carrier-redesign.md]
-  - [325_redesign_k2_subbracket_to_vvecea2_arrangementdisjunction/plans/02_vvecea2-carrier-v2-nine-zone-gate.md]
-
-**Description**: Task 324's Phases 1-5 landed a k=2 arity-4 sub-bracket construction (kvE_subBracket2/kvE_subChain2, NfMultiAnchorBridge.lean:6120-6720) with a soundness direction (kvE_subBracket2_sound, :6530) and a completeness *extraction* kit (kvE_subBracket2_complete_extract, :6683). Phase 6 (the completeness converse) is machine-refuted: adversarially-verified blocker research (specs/324_redesign_k2_subbracket_arity4_correctness_pair/reports/02_phase6-blocker-research.md) proves the converse `(exists x1, nf_eval_nf M 1 4 [x1,w,x,t] sigma) -> (kvE_subBracket2 ...).2.holds M atomMap x t` is a FALSE forall-M statement over the current carrier, for two independent, machine-confirmed reasons: (1) kvE_subBracket2.segmentTypes is the CONSTANT segExcl (all-three-zone exclusion, :6159), but IntervalPattern.holds (ExistsForallNF.lean:106-132) requires each segment type to hold at EVERY point of its open segment, while the depth-1 fold (nf_eval_depth1_fold_iff :5187) only forces zone-membership <-> fold-bit for a point's OWN zone, never cross-zone positivity -- an interior point realized only in one zone survives the antecedent yet falsifies segExcl; (2) kvE_subBracket2.pointTypes is a FIXED filter-order list (Finset.univ.toList-derived leftSlots/rightSlots, :6139-6158), but IntervalPattern.holds needs strictly-monotone witnesses positionally matching that fixed order, and the model's realization order need not match it. Report 02 Q2 additionally shows no rescue is available on the current carrier: the codomain (Sigma m, BracketFormula (m+1), a single IntervalPattern) is structurally the wrong shape for completeness -- the landed k1v template's completeness (bracketEndChar_k1v_complete, :2979) is provable ONLY because that carrier is a VVecEA2 finite disjunction over arrangement permutations with PER-SIDE segment types (bracketFromLists.segmentTypes, :1902), letting completeness (a) select the model-sorted arrangement disjunct and (b) discharge each side's segment type because every point of that side is genuinely zone-positive there. A gate-hypothesis rescue is also rejected: in completeness .holds is the CONCLUSION (unlike soundness where it is the hypothesis), so any hypothesis strong enough to make it provable would itself assert the monotone-positional + per-segment conditions -- i.e. it would BE the conclusion, trivializing the deliverable.
-
-DELIVERABLE (standalone against nf_eval_nf M 1 4, NOT wired into the outer gate): a corrected carrier `kvE_subBracket2V`/`kvE_subChain2V` (exact names at implementer discretion) plus a freshly re-derived, machine-driven-through soundness AND completeness pair over it, per report 02 Q3's corrected target definition:
-(1) CODOMAIN CHANGE: replace `Sigma m, BracketFormula (m+1)` with `VVecEA2` (`Sigma n, VecEA2 n`, a finite disjunction) -- satisfies Guard G6 (codomain may be witness-growing VVecEA2) and report 321/01 Section 2 (:225, which already declared VVecEA2 as the binding amended-spec codomain that kvE_subBracket2 deviated from).
-(2) FIXED ENDPOINTS: `{x, t}` only, every disjunct's VecEA2.holds evaluated at `(x,t)` -- satisfies Guard G4 (anchor set fixed at {x,t}) and the Corrected Anchor-Cap (endpoint/anchor count <= 2).
-(3) THREE INTERIOR REGIONS (not two, since the arity-4 env `[x1,w,x,t]` has two interior fixed references `x1` and `w`): regions `(x,x1)=zXU`, `(x1,w)=zUW`, `(w,t)=zWT`; both `x1` and `w` become bracket WITNESS SLOTS (not endpoints/anchors, so G4/Cap stay respected -- anchor count stays 2). Point-type layout per disjunct: `zXU-arrangement ++ [x1-slot] ++ zUW-arrangement ++ [w-slot] ++ zWT-arrangement`.
-(4) THREE PER-REGION SEGMENT TYPES: `segXU` excludes only zXU-negatives on (x,x1); `segUW` only zUW-negatives on (x1,w); `segWT` only zWT-negatives on (w,t) -- the arity-4 lift of `bracketFromLists.segmentTypes` (:1902), extended from a 2-way to a 3-way `if`. Satisfies Guard G3 (real exclusion segments, never top/const-multi-zone). Each region-segment is satisfiable in completeness because every point of that region is genuinely zone-positive there -- the exact property the old constant segExcl violated.
-(5) DISJUNCTS: one per arrangement in `S_XU.permutations x S_UW.permutations x S_WT.permutations` (each `S_z = allTypes.filter (bits z .)`), mirroring `bracketEndChar_k1v` (:2013-2018); gate-failure branch = empty disjunction (holds = False).
-(6) NO PROVIDER PINNING (Amendment F3): witness positions are the temporal-semantics-quantified bracket witnesses; no `w = e 1` / `x1 = e 0` residual equation. `w` enters as a witness TYPE slot (charBase of w's projection), realized by some point sorted between the zUW and zWT blocks, consistent with the given `w` by 1-type uniqueness.
-(7) SUCCESSOR-PARAMETERIZED COMPATIBILITY: the redesign must read sigma.2 at the j+1 successor shift (sigma : NormalForm sig (j+1) 4, per specs/321.../reports/01_blocker-research-successor-k.md Section 2 :56/:225); at j=0 this is the landed NormalForm sig 1 4. The VVecEA2 codomain is exactly the spec's declared target, so this redesign converges the carrier onto the amended spec rather than diverging further.
-(8) FULL CORRECTNESS PAIR: a soundness lemma (holds -> exists x1, nf_eval_nf M 1 4 (Fin.cons x1 [w,x,t]) sigma) GENUINELY RE-DERIVED (the landed kvE_subBracket2_sound binds the OLD single-bracket carrier and does not transfer), and a completeness lemma (the reverse), the arity-4 analog of bracketEndChar_k1v_sound (:2338) / bracketEndChar_k1v_complete (:2979), re-using the k1v template kit (k1v_sorted_realization/_insert/_bracket_construct/_bracket_extract, :2028-2825) one arity up but with a THREE-region (vs k1v's two-region) arrangement.
-
-DRIVEN-PROOF VALIDATION DISCIPLINE (mandatory, binding): do NOT accept the redesigned construction on type-check/probe grounds. Two consecutive prior constructions have now failed EXACTLY that way -- kvE_subBracket (task 321 Phase 8: type-checked and probed clean, but its upward-only chain anchored at an interior point could not reach the zXU zone below it) and kvE_subBracket2 (task 324 Phase 6: type-checked and probed clean at soundness, but the completeness converse is a false forall-M statement). The new construction MUST be validated by actually driving BOTH the soundness direction AND the completeness direction through to a closed, sorry-free proof before the construction counts as validated -- neither direction may be deferred, assumed, or accepted on the strength of the other having closed.
-
-PRESERVED-ASSET ACCOUNTING (per report 02, which asset survives near-verbatim vs must be re-derived):
-- SURVIVE NEAR-VERBATIM (reusable raw material, adapt/consume, do not rebuild from scratch): kvE_sub2_zoneHolds_cons_iff (:6615), _zXU/_zUW/_zWT (:6642-6671) -- pure zoneHolds<->inequalities over env [x1,w,x,t], carrier-agnostic; kvE_subBracket2_complete_extract (:6683) -- reads nf_eval_nf M 1 4, independent of carrier, supplies the per-zone monotone witnesses the new disjunct closure consumes; kvE_sub2_zXU/zUW/zWT zone specs (:6200-6209) -- fold-bit zone specs, carrier-independent.
-- RE-DERIVED (proof shape survives but statement changes, restated over the VVecEA2 disjunct .holds by destructuring the disjunction first, as bracketEndChar_k1v_sound :2352 does): kvE_subBracket2_extract (:6233), _reaches_z* (:6327-6381), kvE_subBracket2_fold_z* (:6434-6491), and kvE_subBracket2_sound (:6530) itself (soundness is stated against the CURRENT single bracket; this task owns a fresh sound/complete pair over the new carrier).
-- REPLACED (new separately-named defs; originals stay byte-identical and unreferenced): kvE_subBracket2 (:6120) and kvE_subChain2 (:6166).
-
-BINDING CONSTRAINTS (carried forward verbatim from task 324's description, self-contained):
-- Guards G1-G6 + Corrected Anchor-Cap (source: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md:230-260): G1 no arity-1 collapse; G2 no projection-based third-free-anchor tower; G3 no trivial-top segment on carrier interval types; G4 witnesses stay bracket witnesses, anchor set fixed at {x,t}; G5 follow Cor 5.4/Prop 3.5 F_i chains step-by-step, cite Rabinovich at every chain step, no simp/omega/aesop shortcut (by omega permitted ONLY for Fin-index typing in signatures); G6 carrier stays the two-anchor bracket characteristic, fixed endpoints, codomain may be witness-growing VVecEA2 but anchor count never exceeds 2.
-- Amendment F3: no provider-side pinning -- the provider disappears from the joint path; no w = e 1 / x = e 2 residual equation.
-- DO-NOT-EDIT landed assets byte-identical, EXTENDED to now also include task-324's landed Phases 1-5 code (kvE_subBracket2/kvE_subChain2 + the full zone/reachability/soundness/extraction kit, NfMultiAnchorBridge.lean ~:6120-6720), in addition to all prior do-not-edit assets: task-321 Stage A/B code (kvE_subFoldBits, kvE_subInteriorZones, kvE_subBracket, kvE_subChain, kvE_subBracket_implies_subChain, kvE2_body + gate-fail, bracketEndChar_kvE2 + two_eq, the Stage-B discrimination lemmas), BracketCarrierCorrectVPrior, ExistProviders, all task-310/311 material, the task-320 probes, bracketEndChar_k1v/_sound/_complete and the full k1v proof kit (:2028-2825). SAME NEW-DEFINITIONS-ONLY EXCEPTION as task 324 (authorized only for this task, not a general license): add NEW, separately-named definitions rather than editing kvE_subBracket2/kvE_subChain2 or any earlier landed asset in place; originals stay byte-identical and unreferenced by the new work. Do NOT edit kvE2_body/bracketEndChar_kvE2 to re-point at the new construction -- that re-pointing is task 321's own resumption work via a future /revise 321, out of scope here. This task's lemmas are stated and proved standalone against nf_eval_nf M 1 4, not yet wired into the outer gate.
-- CONSUME-DO-NOT-REBUILD list (extended per report 02's preserved-asset accounting): nf_eval_depth1_fold_iff (:5187), nf0_assemble (NfEFold.lean:180), nf_quant_layer_fold_iff (NfEFold:391), zone semantics kit (zoneHolds/EAtomDom), k1v helper kit (k1v_zoneHolds_cons_iff/k1v_zone_consistent/k1v_bracket_extract/k1v_reconstruct_nf3/k1v_sorted_insert/k1v_sorted_realization/k1v_bracket_construct, :2028-2825), bracketEndChar_k1v_sound/_complete direction templates, BracketFormula.bracket_implies_fChainPred (EANegation:660), existsBounded_right (VecEAClosure:265) -- PLUS, newly available from task 324's own Phases 1-5: kvE_sub2_zoneHolds_cons_iff/_zXU/_zUW/_zWT (:6615-6671), kvE_subBracket2_complete_extract (:6683), and the kvE_sub2_zXU/zUW/zWT zone specs (:6200-6209), all of which survive near-verbatim per report 02 and should be consumed/adapted rather than rebuilt.
-- No EANegation :1090/:1249 (uniform-backward variants) may be consumed -- both are live sorrys, machine-confirmed.
-- No simp/omega/aesop on chain-construction steps; by omega only for Fin-index typing; cite Rabinovich at every chain step per G5.
-- No sorry on any live path, including intermediate WIP; keep unfinished work uncommitted until green.
-- Literature grounding: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf -- Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 3.5 (md:87-94), Def 4.1 (md p.5-6), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152, base-case negation -> V-forall-exists, the source of the per-region segment-type + disjunction-over-arrangements structure), Cor 5.4 (md:154-157, F_i chain / per-beta_i Until-chaining that requires per-region, not constant, segment types).
-
-VERIFICATION: scoped lake build green after each committed lemma; axiom-clean (propext, Classical.choice, Quot.sound) via lean_verify; no forbidden tactics; no sorry; the new VVecEA2 carrier's per-region segment types and disjunct arrangement machine-verified to admit BOTH a closed soundness proof and a closed completeness proof (not merely a type-check) -- per the driven-proof validation discipline above.
-
-SUGGESTED PHASE SKELETON (per report 02, realistically 4-5 one-dispatch phases, ~150-400 lines each): P1 VVecEA2 carrier def + three per-region segment types + gate; P2 three-region sorted_realization/bracket_construct lift (extending k1v's two-region kit); P3 soundness over the disjunction (destructure disjunct first, as bracketEndChar_k1v_sound does); P4 completeness (disjunct selection + per-region segment discharge); optionally P5 successor-parameter threading / final integration if P1-P4 do not fully absorb it.
-
-AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered VVecEA2 carrier + full soundness/completeness pair into a v4 phase decomposition that re-points Phase 8 and downstream phases at it), then /implement 321.
-
----
-
-### 324. Redesign k2 subbracket arity4 correctness pair
-- **Effort**: 10-14 hours
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 325
-- **Research**:
-  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/02_spawn-analysis.md]
-  - [324_redesign_k2_subbracket_arity4_correctness_pair/reports/01_adversarial-verification.md]
-  - [324_redesign_k2_subbracket_arity4_correctness_pair/reports/02_phase6-blocker-research.md]
-- **Plan**: [324_redesign_k2_subbracket_arity4_correctness_pair/plans/01_arity4-correctness-pair-plan.md]
-
-**Description**: Task 321's v3 plan Phase 8 (soundness scaffolding for the k=2 BracketCarrierCorrectVPrior gate over bracketEndChar_kvE2) is machine-grounded BLOCKED: the landed kvE_subBracket/kvE_subChain (task-321 Stage A, `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean`) supply only a strictly-upward Until chain from the outer witness slot `u`, which structurally cannot reach sigma's own interior zone `zXU = (x,v,u)` (below `u`); and the sole landed connector `kvE_subBracket_implies_subChain` runs bracket-holds -> chain-at-point, the wrong direction for soundness (soundness needs chain-at-point -> full `nf_eval_nf M 1 4` reconstruction). No arity-4 sub-bracket correctness pair (soundness + completeness, the analog of the landed k1v `:2338`/`:2979` templates one arity up, with a cross-body sigma.1 atom-layer recovery channel) exists among landed assets.
-
-DELIVERABLE (this task, standalone, NOT wired into the outer gate): (1) a corrected sub-bracket construction (new, separately-named definitions, e.g. `kvE_subBracket2`/`kvE_subChain2` — exact names at implementer discretion) whose chain(s) reach ALL THREE interior zones `[zXU, zUW, zWT]` (`kvE_subInteriorZones`), e.g. via a Since+Until pair, or by anchoring the chain at `x` instead of `u` — the redesign choice must be validated by actually driving the correctness proof through it, not accepted on type-check/probe grounds alone (the ORIGINAL kvE_subBracket already failed this way: it type-checked and probed clean but had an undiscovered semantic gap). (2) The soundness direction: sigma.1's full atom layer (order + predicate bits over `[u,w,x,t]` or the redesigned chain's evaluation points) recoverable from the new construction; the interior-fold `<=` direction closable for the now-reachable zXU alongside zUW/zWT; off-fiber falsity handled (may assume access to an outer gate-shaped hypothesis analogous to `kvE_gate`, stated as an explicit hypothesis of this task's standalone lemma rather than wired to the real outer gate). (3) The completeness direction: fold `nf_eval_depth1_fold_iff` (:5187) style extraction of inner witnesses, construction of `IntervalPattern.holds` data (Rabinovich Lemma 5.3, order-theoretic), and the arrangement-disjunct closure — the k1v `:2979` template pattern re-derived at arity 4.
-
-BINDING CONSTRAINTS (carry forward verbatim, self-contained):
-- Guards G1-G6 + Corrected Anchor-Cap (source: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md:230-260): G1 no arity-1 collapse; G2 no projection-based third-free-anchor tower; G3 no trivial-top segment on carrier interval types; G4 witnesses stay bracket witnesses, anchor set fixed at {x,t}; G5 follow Cor 5.4/Prop 3.5 F_i chains step-by-step, cite Rabinovich at every chain step, no simp/omega/aesop shortcut (by omega permitted ONLY for Fin-index typing in signatures); G6 carrier stays the two-anchor bracket characteristic, fixed endpoints, codomain may be witness-growing VVecEA2 but anchor count never exceeds 2.
-- Amendment F3: no provider-side pinning — the provider disappears from the joint path; no w = e 1 / x = e 2 residual equation.
-- Do-not-edit landed assets byte-identical, INCLUDING task-321 Stage A/B code (kvE_subFoldBits, kvE_subInteriorZones, kvE_subBracket, kvE_subChain, kvE_subBracket_implies_subChain, kvE2_body + gate-fail, bracketEndChar_kvE2 + two_eq, the Stage-B discrimination lemmas), BracketCarrierCorrectVPrior, ExistProviders, all task-310/311 material, the task-320 probes, bracketEndChar_k1v/_sound/_complete and the full k1v proof kit (:2028-2825). EXPLICIT EXCEPTION (authorized only for this task, not a general license): add NEW, separately-named definitions rather than editing kvE_subBracket/kvE_subChain in place; the originals stay byte-identical and unreferenced by the new work. Do NOT edit kvE2_body/bracketEndChar_kvE2 to re-point at the new construction — that re-pointing is task 321's own resumption work via a future /revise 321, out of scope here. This task's lemmas are stated and proved standalone against nf_eval_nf M 1 4, not yet wired into the outer gate.
-- Consume-do-not-rebuild list: nf_eval_depth1_fold_iff (:5187), nf0_assemble (NfEFold.lean:180), nf_quant_layer_fold_iff (NfEFold:391), zone semantics kit (zoneHolds/EAtomDom), k1v helper kit (k1v_zoneHolds_cons_iff/k1v_zone_consistent/k1v_bracket_extract/k1v_reconstruct_nf3/k1v_sorted_insert/k1v_sorted_realization/k1v_bracket_construct, :2028-2825), bracketEndChar_k1v_sound/_complete direction templates, BracketFormula.bracket_implies_fChainPred (EANegation:660), existsBounded_right (VecEAClosure:265).
-- No EANegation :1090/:1249 (uniform-backward variants) may be consumed.
-- No simp/omega/aesop on chain-construction steps; by omega only for Fin-index typing; cite Rabinovich at every chain step per G5.
-- No sorry on any live path, including intermediate WIP; keep unfinished work uncommitted until green.
-- Literature grounding: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf — Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 3.5 (md:87-94), Def 4.1 (md p.5-6), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152), Cor 5.4 (md:154-157). Report specs/321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/01_blocker-research-successor-k.md Section 2 (Q1-Q3) is the binding amended design spec for the successor-parameterized sigma.2 read the construction must stay compatible with.
-
-VERIFICATION: scoped lake build green after each committed lemma; axiom-clean (propext, Classical.choice, Quot.sound) via lean_verify; no forbidden tactics; no sorry; the new construction's chains machine-verified to reach all three interior zones (a concrete probe/lemma per zone, not merely a type-check); the soundness and completeness lemmas both close standalone.
-
-AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered construction + correctness pair into a v4 phase decomposition that re-points Phase 8 and Phases 9-15 at it), then /implement 321.
-
----
-
-### 323. Review and revise bimodalreference uniform standard
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: reference-book
-- **Dependencies**: Task 315, Task 316, Task 317
-- **Research**: [323_review_and_revise_bimodalreference_uniform_standard/reports/01_editorial-review-research.md]
-- **Plan**: [323_review_and_revise_bimodalreference_uniform_standard/plans/01_editorial-uniform-standard.md]
-- **Summary**: [323_review_and_revise_bimodalreference_uniform_standard/summaries/01_editorial-implementation-summary.md]
-
-**Description**: Full editorial review-and-revise pass over the entire BimodalReference monograph (Theories/Bimodal/typst/: all chapters/*.typ, front matter, notation) to raise it to a UNIFORM, FINISHED-BOOK standard. PRIMARY DIRECTIVE: write as a completed textbook, not a draft-in-progress. Remove the pervasive "honest account / we state honestly / an honest X" refrain and ALL meta-commentary in which the text narrates its own incompleteness or sync status -- a finished book does not explain what it has not yet done. Where prose currently hedges or editorializes about status (e.g. "an honest account of what is and is not proven", sync-class asides, apologetic framing of soundness-without-completeness, remarks about formalization frontiers), rewrite into confident, neutral expository prose. CRITICAL CONSTRAINT -- honesty-removal must NOT become overclaiming: every factual claim stays accurate. Metaphysical modality remains derived soundness-only (completeness is genuinely open); the decidability frontier still cites NO embargoed Lk results; of countermodels 1-12 only #1/#8/#9 are fully interpreted; no nonexistent local Lean theorems may be asserted. The change is TONE and COMPLETENESS-POSTURE, not truth-value. Where content genuinely remains to be written, do not confess it in prose -- instead place a clean "TO BE CONTINUED..." marker at that point in the body text and a typst comment (// TO BE CONTINUED: ...) stating concretely what remains (which theorem, which worked example, which subsection, which citation). Identify the weakest/thinnest sections by comparison against the strongest chapters (e.g. 03-proof-theory.typ ~356 lines, p5-counterfactual.typ ~505 lines) and bring them up to that bar: consistent expository depth, worked examples, cross-references, definitional completeness. PRESERVE byte-identical: the // SLOT-IN: anchors and the EMBARGO header comment in chapters/p3-decidability-frontier.typ (these belong to embargo-gated task 318 and are categorically distinct from TO-BE-CONTINUED gap markers -- do not conflate or remove them). Every backticked token must remain a resolving Lean name. ACCEPTANCE GATES: `typst compile Theories/Bimodal/typst/BimodalReference.typ` exits 0 and `scripts/typst-sync-check.sh` passes all checks. Deliver a per-chapter quality assessment in the task summary (which sections were revised, which gaps were marked TO BE CONTINUED and why).
-
----
-
-### 322. Review discrete logic completeness retrospective
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-
-**Description**: Review the discrete-logic completeness effort (Kamp theorem formalization retrospective): survey the past tasks (305-321 lineage and earlier completeness work), their reports/plans/verdict records (F1-F4), and the git history to diagnose why establishing completeness for the discrete logic has been so difficult — recurring failure modes, refuted-device churn, where literature fidelity vs formalization shortcuts diverged — and produce actionable recommendations to streamline the remaining attempt
 
 ---
 
@@ -539,56 +192,6 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ---
 
-### 320. Derisk jointpinning route for the k2 carrier gate f4 followup
-- **Effort**: 6-10 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-- **Research**:
-  - [309_offdiag_two_anchor_fi_chain/reports/06_spawn-analysis-f4.md]
-  - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
-- **Plan**: [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/plans/01_derisk-jointpinning-probe.md]
-
-**Description**: Task 309 (offdiag_two_anchor_fi_chain) is BLOCKED at Phase 13.35 with finding F4 (carrier-shape defect, the second-and-LAST gate NO-GO under v7 Amendment F3's one-round uniformization budget). F4 verdict record: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean, final section after :5533. F3 record (defect lineage) is the section immediately preceding it. Orchestrator handoff: specs/309_offdiag_two_anchor_fi_chain/.orchestrator-handoff.json. Plan v7 BLOCKER block + Amendment F3: specs/309_offdiag_two_anchor_fi_chain/plans/07_offdiag-fi-chain-plan.md lines ~277-460, 620-680, 893-996.
-
-CRUX GOAL (verbatim, provider-independent): after `P.correct 3 sigma M h_UZ h_SZ t`, hypothesis `he : nf_eval_nf M 1 (3+1) (insertEnv e t) sigma` (`insertEnv e t = [e 0, e 1, e 2, t]`, anchor t LAST, u/w/x REBOUND by the provider's own `e : Fin 3 -> M.carrier`) against goal `nf_eval_nf M 1 (3+1) (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ => t))) sigma`; funext residual `w = e 1`, `x = e 2` UNPINNABLE -- no hypothesis relates provider-chosen e to the honest anchors. Channel (i) `kvE_pinDisjunct` rfl-collapses (probe A) to a positionally-vacuous `charK (nfk_projFresh sigma)` -- the `witnessZone` placement field is discarded, so channel content is a function of the sigma.1-level fresh type alone. Channel (ii) `kvE_exclConj` is negative-subs-only and its honest-safe guard (`hasPos` fiber occupancy) collapses to `Formula.top` when the dishonest positive sub shares the fiber. PROVIDER-INDEPENDENT COUNTEREXAMPLE: M = Z (Prior UZ/SZ trivially), preds p={0}, r={13}, x=10, t=20, dishonest positive sub sigma'' = char[14,16,11,20] (fake anchors sharing only t; on-fiber, zone zXW, fresh type type(14)), honest char[14,15,10,20] marked false -- the k=2 statement is FALSE for bracketEndChar_kvE' under ANY correct depth-1 provider bundle.
-
-GOAL: determine, via machine-checked minimal probes (NOT full carrier surgery), which route can actually carry the discriminating per-sub JOINT content (the sub's inner-witness structure relative to the honest anchor pair (w,x), which rides sigma.2) so a future carrier construction can close the k=2 soundness gap. PROBE ORDER (revised per the literature-alignment audit, reports/01_literature-alignment.md in THIS task's directory: b3 is the literature-faithful mechanism -- Rabinovich carries joint two-anchor content by the NESTED Until EVALUATION POINT, never by a formula asserted at a single point; b1/b2 are formalization-engineering shortcuts with no counterpart in Rabinovich or Gabbay, and F3/F4 already burned two flattening rounds -- so LEAD with b3 and box b1/b2 as bounded falsifiers/micro-checks):
-(b3, LEAD -- primary design probe) Probe a NESTED bracket / F_i-chain recursion for positive interior subs, per Rabinovich Cor 5.4 (md:154-157: F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)) and the negation-closure machinery of Prop 4.2 (md:100-101) / Lemma 5.1 (md:134-135) / Lemma 5.3 (md:137-152, INF splitting via Dedekind completeness) -- instead of flattening an interior positive sub's joint content into a single TL provider literal (P.existF 3 sigma at t), give the sub's own witness u an EXPLICIT two-anchor sub-bracket relative to the CURRENT bracket's real interval decomposition, so the TL evaluation at the actual honest point yields the honest positions directly (the same mechanism that already lets A_past/A_future see (x,t) under G3, generalized one level). Early sub-probe (MEDIUM-confidence claim from the audit to confirm FIRST, before any full build): verify that fChainFrom/fChainPred (EANegation:552/:567) genuinely match the Cor 5.4 chain shape -- the audit relied on the codebase's own labelling for this.
-(b1, BOXED fast falsifier -- strictly timeboxed, run in parallel with or before b3 design work, expected NO-GO) Repair channel (i) to ACTUALLY consume `witnessZone` (encode which of the seven consistent zones the pin witness occupies AND the two adjacent segment types relative to (x,w,t), per Def 3.1's real pinning discipline -- point type alpha_j AND BOTH adjacent interval types beta_j, beta_{j+1}, Rabinovich PDF p.4 md:61-74), using the landed non-trivial-segment machinery (A_past/A_future NfZoneFlattenNavigable:335/:386, bracketBuildLeft/Right VecEATranslation, both valid only at fixed-endpoint literals per G3/N4). Audit finding: Def 3.1 pinning pins sigma's OWN witnesses inside sigma's OWN bracket and has NO counterpart for pinning across the provider/e boundary (the actual F4 gap) -- so this probe's value is as an F5-generator (a captured refutation strengthening the defect record), not a live design candidate. Do NOT let it consume the b3 budget.
-(b2, CONDITIONAL micro-check only -- run ONLY if the b3 design turns out to need a structural-identity hypothesis at a per-sub obligation site) Check whether `nf_eval_unique` (Theories/Bimodal/.../NormalForm.lean:245) / `nfPred_correct` (NfToVecEA.lean:69) can supply the needed hypothesis -- that sigma IS (by the outer recursion's own construction/selection) the complete type realized by the ACTUAL honest quadruple [u,w,x,t] -- at the site where b3 needs it (the zone/arrangement selection machinery). Audit finding: b2 has NO counterpart in Rabinovich or Gabbay as a standalone mechanism and inherits the same sigma.2-exposure obstruction as b1; it is NOT a route of its own, only a possible lemma-level assist inside b3.
-
-DELIVERABLE: a report (in this new task's own specs/{NNN}_{slug}/reports/ directory) with (i) machine-checked probe results for each route attempted (rfl/exact/type-mismatch states captured, in the F1-F4 house style -- no partial theorem, no sorry landed on any live path), (ii) an explicit GO/NO-GO per route, (iii) for whichever route is GO: a concrete design spec (exact new definition names, signatures, and the demonstrated-closed crux goal) that New Task 2 can implement directly without re-deriving the decision, or (iv) if ALL routes NO-GO in-budget: a new defect record (F5 candidate, F1-F4 house style) with a fresh counterexample proving the joint-pinning content is inexpressible in the current per-sub-literal ExistProviders architecture, plus an explicit recommendation for further escalation (do NOT silently absorb -- this is itself a blocker finding to surface). GO-GATE LITMUS (position-by-evaluation-point, from the literature-alignment audit): a design passes the GO gate ONLY if every inter-anchor positional fact in it is carried by the EVALUATION POINT of a nested temporal operator (Cor 5.4 / Prop 3.5 single-free-variable nesting, md:87-94) and NEVER by a formula asserted at a single evaluation point claiming a relative-position identity between two independently-bound variables -- the exact shape refuted by F3/F4.
-
-CONSTRAINTS (binding, carried from plan v7 -- do not re-litigate): Guards G1-G6 + Corrected Anchor-Cap (v7 plan lines 230-260): no arity-1 collapse (G1); no projection-based VecEA2/third-anchor tower (G2); no trivial-top segment on off-diagonal arms (G3); w stays a bracket WITNESS, anchor set {x,t} fixed at 2 (G4); Cor 5.4/Prop 3.5 F_i chains step-by-step with literature citations at every chain step, no simp/omega/aesop shortcuts (G5); carrier is the two-anchor fixed-endpoint bracket, VVecEA2 witness-growing codomain, never a third anchor (G6-as-amended). v7 Amendment F3 STILL BINDING: do NOT attempt provider-side pinning / pinned-anchor converters (the barred (a)-route -- circular with the outer recursion's single-anchor-only converters, finding F-A). Do NOT consume EANegation :1090/:1249 (uniform-backward sorries) -- needing them is itself a blocker finding to record and escalate, never silent absorption. Do NOT edit any landed asset: bracketEndChar_kv/kvE_body/bracketEndChar_kvE (13.2, F1/F2 exhibits), bracketEndChar_kvE'/kvE'_body/kvE_pinDisjunct/kvE_exclConj (13.25, the F4 exhibit), the F1/F2/F3/F4 verdict records, ExistProviders/BracketCarrierCorrectVPrior (13.1), all task-310/311 material -- any probe code is scratch-only (discarded before commit or landed as a clearly-marked non-consumed verdict addition, per house style). CONSUME-DO-NOT-REBUILD (task 309 asset list, plan v7 lines 142-197): the E[Sigma]-fold engine (nf_quant_layer_fold_iff NfEFold:391, nf_eval_depth1_fold_iff NfMultiAnchorBridge:5187, nf0_split_assemble NfEFold:235); the k1v proof kit (:2028-2825) and direction templates (:2325/:2966); nf_eval_unique (NormalForm:245) / nfPred_correct (NfToVecEA:69); A_past/A_future/_correct (NfZoneFlattenNavigable:335/:386); bracketBuildLeft/Right/_correct (VecEATranslation, fixed-endpoint literals only); VVecEA2/bracketFromLists/existsBounded_right (VecEAFormula:271, NfMultiAnchorBridge:1883, VecEAClosure:265); fChainFrom/fChainPred (EANegation:552/:567); the EANegationClosure forward stack (:401/:492/:646/:720) + neg_orderedPointsExist_is_vbracket (EANegation:347) -- PROOF-SIDE ONLY; prior_hasAttainedINF (PriorINF:224) + HasAttainedINF (PriorINF:202). LITERATURE GROUNDING (cite per G5 at every step): /home/benjamin/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 -- Def 3.1 (md:61-74), Lemma 3.2(2) (md:76-79), Prop 4.2 (md:100-101), Lemma 5.1 (md:134-135), Lemma 5.3 (md:137-152), Cor 5.4 (md:154-157).
-
----
-
-### 319. Restructure bimodalreference clean textbook
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: reference-book
-- **Dependencies**: Task 313
-- **Research**: [319_restructure_bimodalreference_clean_textbook/reports/01_restructure-clean-textbook-research.md]
-- **Plan**: [319_restructure_bimodalreference_clean_textbook/plans/01_restructure-clean-textbook-plan.md]
-- **Summary**: [319_restructure_bimodalreference_clean_textbook/summaries/01_restructure-clean-textbook-summary.md]
-
-**Description**: Turn the BimodalReference book (Theories/Bimodal/typst/) from the task-313 living-monograph-with-sync-scaffolding into a clean, direct textbook presentation at a rigorous formal level, with clear but concise explanations where essential — a natural unified whole with a clear narrative arc. Keep whatever can be kept (Part II and Part IV prose is essentially puzzle-free). Four workstreams:
-
-(1) REMOVE the status-symbol/sync-class machinery from the compiled book (maintenance burden, distracting): every top-of-chapter #sync-banner(...) call; the Reading-Guide/Sync-Class Legend box (BimodalReference.typ:145-161) and the symbol mentions in the abstract (:141) and title-page Sources list (:111-118); the dominant-class labels passed to #part-divider (template.typ:236-253); the 'How to Read This Book If You Are an AI' symbol protocol (00-introduction.typ:151-160); the Closing Status Table with Roadmap column (p2-decidability-practice.typ:67-75) and the status table in 04-metalogic.typ; the #planned-chapter-notice stub boxes (drop the stub includes or replace with a single plain sentence). Update scripts/typst-sync-check.sh accordingly: KEEP check 1 (backticked Lean names must resolve — this is valuable and cheap) and check 4 (generated-count freshness) if counts are kept; REMOVE checks 2-3 (banner presence, legend discipline). Generated counts (#axiom-count, #rule-count etc. from generated/status.typ via scripts/typst-status-counts.sh) MAY be kept since they are script-generated, but remove sorry-count reporting from reader-facing text. Retire SYNC-MAP.md's PDF-governing role to a repo-side dev doc (update its header to say so).
-
-(2) REAL CITATIONS to the three relevant papers. bibliography.bib currently has entries but ZERO @-citations in any .typ file, so the References section renders empty. Add/complete entries with links and wire @-citations into the prose where the papers are drawn on: the possible-worlds draft as forthcoming in JPL with URL https://benbrastmckie.com/wp-content/uploads/2026/07/possible_worlds.pdf; the published papers https://link.springer.com/article/10.1007/s10992-025-09793-8 (Counterfactual Worlds, JPL) and https://link.springer.com/article/10.1007/s10992-021-09612-w (Identity and Aboutness, JPL) — verify exact titles/years/DOIs against the Springer pages. Convert plain-text author-year mentions (Vlach 1973, Cresswell 1990, Kamp, Burgess, Xu, Reynolds, Doets) into real citations, adding bib entries as needed and clearing verify-before-print notes where confirmed. Embargo unchanged: no Lk entry (bibliography.bib:8-10).
-
-(3) RESTRUCTURE to the new narrative arc. Rewrite 00-introduction.typ as a brief introduction that motivates the project directly (unifying tense and modality in a verified system; no philosophical puzzles, no AI-practitioner-first framing) and outlines the structure: the book begins with the bimodal system, then applications, then adds the counterfactual logic, and concludes with the constitutive logic. Concretely: Part on the bimodal system = current Part II chapters plus the honest LTL-to-TM positioning and Vlach/BL-star material (p3-ltl-to-tm.typ, p3-vlach-blstar.typ) folded in as direct formal chapters, and p3-decidability-frontier.typ kept as a concise formal chapter PRESERVING the // SLOT-IN: anchors (needed by task 318); Part on applications = current Part IV (proof automation, dataset pipeline, dual verification) with the AI-training motivation kept brief; Part on counterfactual logic (p5-counterfactual.typ); concluding Part on constitutive logic (p5-constitutive.typ) — NOTE this inverts the current Part V chapter order, do not silently keep constitutive-then-counterfactual. DROP the philosophical-puzzle chapters from the book plan: p1-why-worlds.typ (eternalism critique, Prior chess-loop, Peircean/Ockhamist, Montague, Kaplan) and p3-open-future.typ (sea-battle, open future) — present their essential technical content (perpetuity principles, Determined/Deterministic, actuality operators) directly where formally relevant, with citations to the papers instead of puzzle-driven exposition.
-
-(4) REVISE follow-up tasks 314-318 in specs/state.json (descriptions, and dependencies to include this task) to align with the new direction, then regenerate TODO.md: 314 (Part I motivation chapter) shrinks to whatever brief motivation the introduction still needs or is abandoned/absorbed — decide and record; 315 drops p3-open-future as a puzzle chapter and drops all sync-banner/sync-class-legend constraints (backtick-resolution constraint stays); 316 (JSONL appendix) re-anchors its pointer since 'How to Read This Book If You Are an AI' is gone — decide the replacement location; 317 must match the new counterfactual-then-constitutive order and drop banner constraints; 318 unchanged except banner constraints removed (SLOT-IN anchors preserved by workstream 3).
-
-Verify: typst compile green (page count will change), revised scripts/typst-sync-check.sh green, References section renders non-empty with the three papers.
-
----
-
 ### 318. Slot lk results into bimodalreference decidability
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
@@ -597,170 +200,6 @@ Verify: typst compile green (page count will change), revised scripts/typst-sync
 - **Dependencies**: Task 313, Task 319
 
 **Description**: GATED ON EXTERNAL EVENT: execute only after the Lk paper (anonymous TACAS 2027 double-blind submission at ~/Philosophy/Papers/PossibleWorlds/Lk/) is accepted and the embargo (user decision 2 on task 313) lifts. Insert the Lk-specific content into chapters/p3-decidability-frontier.typ at the prepared // SLOT-IN: anchors, without renumbering chapters or sections: the BL-star ladder table (Lk 07-related-work.tex 32-104, tab:bl-star-ladder), the complexity map (L1 = PTL x S5 EXPSPACE-complete; L_k undecidable for k >= 2; alternation-freedom does not restore decidability, Theorem F-B; forall-AF-L_k PSPACE-complete flagship, Theorem F-A), and the hardware case study (constant-time as forall-forall, reset convergence, SVA/Logos-Hardware bridge, Lk 06-case-study.tex). Add the Lk bibliography entry with its final published citation. State openly, in plain prose, which results are established in print and which are new; note that none are Lean-formalized (Lk 08-conclusion.tex names Lean 4 formalization as future work). Include the honest trace-vs-task-semantics bridging caveats (Lk is discrete/future-only trace sets; TM is group-time/two-sided task frames). Sources: teammate A rows 15-18.
-
----
-
-### 317. Write bimodalreference part v logos chapters const
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: reference-book
-- **Dependencies**: Task 313, Task 319
-- **Research**: [317_write_bimodalreference_part_v_logos_chapters_const/reports/01_counterfactual-constitutive-chapters.md]
-- **Plan**: [317_write_bimodalreference_part_v_logos_chapters_const/plans/01_counterfactual-constitutive-chapters.md]
-- **Summary**: [317_write_bimodalreference_part_v_logos_chapters_const/summaries/01_counterfactual-constitutive-chapters-summary.md]
-
-**Description**: Write the counterfactual and constitutive chapters of BimodalReference (Parts III and IV; book order is counterfactual THEN constitutive -- p5-counterfactual.typ is Part III, p5-constitutive.typ concludes the book as Part IV), replacing the current one-sentence placeholders, as full adapted chapters -- BimodalReference OWNS this exposition, LogosManual links here (user decision 3). (1) chapters/p5-counterfactual.typ (Part III) -- adapted from counterfactual_worlds.tex sections 4-5 + Logos 03-dynamics.typ/07-proof-theory.typ: bilateral propositions, exact semantics, boxright clause in both imposition and mereological form, CL/CML/CTL axiom ladder via principle lists, HEADLINE: box A := top boxright A with S5 derived (metaphysical modality derived, soundness only -- completeness open, state honestly), perpetuity re-derivation, countermodels 1-12 as example environments with ModelChecker-reproducibility note, Vlach regimentation of tensed counterfactuals reusing Part I's store/recall operators; cite @brastmckie2025counterfactualworlds. (2) chapters/p5-constitutive.typ (Part IV) -- adapted from Logos manual 02-constitutive.typ (1623 lines) + counterfactual_worlds.tex sections 2.2-3.2: state lattice with parthood, task relation over all states, possible/world states DEFINED not primitive, imposition defined, Fine's constraints as theorems, worlds as maximal possible evolutions; closing comparison figure: the bimodal frame of Part I as the world-state shadow of this structure; cite @brastmckie2021identity for ground/essence. Follow teammate B's 9-item dependency-ordered staging list and resolve the 4 documented paper-vs-Logos divergences (duration-parameterized task relation; possible-state definition -- Lean is ground truth; stay propositional, point to LogosManual for FOL; state CTL over the book's Until/Since basis). Carry the extensional-antecedent restriction into the grammar (do not silently import ModelChecker's unrestricted extension). Plain textbook prose -- no sync-class banners or status symbols; state openly what is published, what is adapted, and what is not formalized. Add notation/constitutive-notation.typ importing the needed Logos state-space symbols; re-verify B's staging list against counterfactual_worlds.tex at drafting time. typst compile and scripts/typst-sync-check.sh must pass. Sources: teammate B findings F1/F2/F5 (specs/313_design_full_extent_bimodalreference_book/reports/01_teammate-b-findings.md).
-
----
-
-### 316. Generate machinereadable jsonl appendix for bimoda
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: reference-book
-- **Dependencies**: Task 313, Task 319
-- **Research**: [316_generate_machinereadable_jsonl_appendix_for_bimoda/reports/01_machinereadable-jsonl-appendix.md]
-- **Plan**: [316_generate_machinereadable_jsonl_appendix_for_bimoda/plans/01_machine-appendix-jsonl.md]
-- **Summary**: [316_generate_machinereadable_jsonl_appendix_for_bimoda/summaries/01_machine-appendix-jsonl-summary.md]
-
-**Description**: Implement the machine-readable appendix (teammate D recommendation R5.1, prioritized by the AI-practitioner audience decision): export the 42-constructor axiom table, 7 inference rules, and derived-operator definitions from Lean as JSONL matching the Automation/DatasetExporter.lean schema, generated by a lake exe or script and included in the BimodalReference build as an appendix (with a human-readable rendering plus a pointer to the raw JSONL artifact). Wire the dataset pipeline chapter (chapters/p4-dataset-pipeline.typ) to point at the shipped artifact (task 319 re-anchor: the former 'How to Read This Book If You Are an AI' introduction section was removed with the sync-class machinery). The appendix generation must be re-runnable and commit-stamped like scripts/typst-status-counts.sh output; never hand-copy the exported content. Verify: build produces the JSONL, typst compile green, sync-check green.
-
----
-
-### 315. Write bimodalreference part iii expressivepower ch
-- **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: reference-book
-- **Dependencies**: Task 313, Task 319
-- **Research**: [315_write_bimodalreference_part_iii_expressivepower_ch/reports/01_positioning-chapters-research.md]
-- **Plan**: [315_write_bimodalreference_part_iii_expressivepower_ch/plans/01_positioning-chapters-plan.md]
-- **Summary**: [315_write_bimodalreference_part_iii_expressivepower_ch/summaries/01_positioning-chapters-summary.md]
-
-**Description**: Write the three positioning chapters of BimodalReference Part I (The Bimodal System), replacing the current one-sentence placeholders (they sit at the end of Part I, after 05-theorems.typ): (1) chapters/p3-ltl-to-tm.typ -- honest positioning of TM among temporal-modal logics (Until/Since over linear orders fused with S5 + interaction/uniformity; trace vs task semantics; conservativity as the bridge; NEVER describe TM as vanilla LTL+S5 -- that framing is extension-roadmap only); (2) chapters/p3-vlach-blstar.typ -- Vlach store/recall operators and BL-star (possible_worlds.tex 1246-1256), hybrid-logic prior-art framing (@vlach1973nowandthen, @cresswell1990entities, @blackburn2000hybrid -- verify citations before print), Kamp theorem correctly scoped (strict Until/Since, Dedekind-complete flows, @kamp1971formalproperties) and the Metalogic/WeakCanonical/Kamp/ formalization frontier status stated honestly in plain prose; (3) chapters/p3-decidability-frontier.typ -- the decidability frontier written at a level citing NO Lk-specific results (EMBARGO, user decision 2: no BL-star-ladder table lifted from Lk, no L_k complexity theorems attributed; general ceiling-and-descent narrative from published sources and general prior art only), PRESERVING the three // SLOT-IN: anchors and the EMBARGO header comment verbatim for post-acceptance insertion (task 318). The former p3-open-future.typ puzzle chapter is dropped (task 319): its technical content (Determined/Deterministic, actuality operators) lives as cited remarks in the semantics chapter. Plain textbook prose throughout -- no sync-class banners, no status symbols. Every backticked Lean name must resolve: typst compile and scripts/typst-sync-check.sh (checks 1+4 structure: name resolution + count freshness) must pass. Sources per teammate A rows 6, 8-10, 15-18 and teammate B F3 prior art.
-
----
-
-### 314. Write bimodalreference part i motivation chapter w
-- **Effort**: 4-6 hours
-- **Status**: [ABANDONED]
-- **Task Type**: typst
-- **Topic**: reference-book
-- **Dependencies**: Task 313, Task 319
-
-**Description**: Decision (task 319): the rewritten introduction carries the book's motivation; chapter p1-why-worlds.typ deleted; task absorbed into 319. The philosophical puzzle material (eternalism critique, Prior's what/when conflation, Peircean/Ockhamist failure, Montague triviality, Kaplan/abundance dilemma) is covered by a citing pointer to possible_worlds.tex (@brastmckie2026possibleworlds) in the introduction rather than a dedicated chapter.
-
----
-
-### 313. Design full extent bimodalreference book
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: reference-book
-- **Dependencies**: None
-- **Research**: [313_design_full_extent_bimodalreference_book/reports/01_team-research.md]
-- **Plan**: [313_design_full_extent_bimodalreference_book/plans/01_full-book-design.md]
-- **Summary**: [313_design_full_extent_bimodalreference_book/summaries/01_full-book-design-summary.md]
-
-**Description**: Design the full extent of the BimodalReference book by examining what /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, the BimodalLogic Lean codebase, and /home/benjamin/Philosophy/Papers/PossibleWorlds/Lk/main.tex still offer that is relevant and worth including in Theories/Bimodal/typst/BimodalReference.typ, toward a more complete, well-motivated, and well-explained account of the bimodal system and its applications. The account should: (1) acknowledge the sizable remaining project of carving off decidable fragments for fully automated reasoning, contrasted with training AI systems to reason proof-theoretically and to solve constraint systems, both deterministically checkable and fast; (2) present the system as closest to vanilla LTL extended first with S5 modal operators and then with Vlach operators for cross-referencing traces and times; (3) frame this as an early milestone in combined expressive power from unifying logics, with the full Logos aiming to vastly expand this; (4) plan a next chapter adding constitutive structure to provide the counterfactual semantics and logic of /home/benjamin/Philosophy/Papers/Counterfactuals/JPL/counterfactual_worlds.tex and /home/benjamin/Projects/Logos/Theory/typst/manual/LogosManual.typ, carving off the next dimension of logical structure to yield a tensed counterfactual logic from which metaphysical modality can be derived. Deliverable: an initial design report mapping candidate content from each source to a proposed full book structure, to base further research on.
-
----
-
-### 312. Revise bimodalreference typst paper lean
-- **Status**: [COMPLETED]
-- **Task Type**: typst
-- **Topic**: publication-quality
-- **Dependencies**: None
-- **Research**: [312_revise_bimodalreference_typst_paper_lean/reports/01_team-research.md]
-- **Plan**: [312_revise_bimodalreference_typst_paper_lean/plans/01_revise-typst-reference.md]
-- **Summary**: [312_revise_bimodalreference_typst_paper_lean/summaries/01_revise-typst-reference-summary.md]
-
-**Description**: Systematically revise Theories/Bimodal/typst/BimodalReference.typ to align with the completed paper /home/benjamin/Philosophy/Papers/PossibleWorlds/JPL/possible_worlds.tex, prioritizing accuracy with the substantially-changed Lean 4 source code as the first priority
-
----
-
-### 311. Close k1 bracket gate efold
-- **Effort**: high
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 310
-- **Research**: [311_close_k1_bracket_gate_efold/reports/01_rabinovich-faithfulness-audit.md]
-- **Summary**:
-  - [311_close_k1_bracket_gate_efold/summaries/01_k1-gate-closure-summary.md]
-  - [311_close_k1_bracket_gate_efold/summaries/02_k1-gate-closure-v3-summary.md]
-- **Plan**: [311_close_k1_bracket_gate_efold/plans/03_k1-gate-closure-plan-v3.md]
-
-**Description**: Using the fixed-arity monadic E[Sigma]-fold encoding delivered by the prerequisite task (Define NormalForm E[Sigma]-fold encoding), redo task 309's Phase 10 (R2) k=1 decision-gate probe UNDER THE NEW ENCODING and close it GO. This is the encoding-level task's acceptance probe (task 309 plan v3 Phase 10 NO-GO handoff, commit 8fd4340b1): the exact goal that failed under the OLD nf_eval_nf-only encoding must close under the new fold.
-
-BLOCKER GOAL SHAPE THIS TASK MUST CLOSE (task 309, NfMultiAnchorBridge.lean:1546-1552, `BracketCarrierCorrect` at k=1):
-  (carrier qnf).holds M atomMap x t <-> exists w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
-for `carrier : BracketEndCharCarrier sig 1 := NormalForm sig 1 3 -> VecEA2 1` (NfMultiAnchorBridge.lean:1536), where under the OLD encoding the residual after atom-layer discharge was the irreducible arity-4 goal
-  forall sub_nf : NormalForm sig 0 4, (exists x_1, nf_eval_nf M 0 4 (Fin.cons x_1 (Fin.cons w (Fin.cons x fun _ => t))) sub_nf) <-> qnf.2 sub_nf = true
-(env [x_1,w,x,t], arity 4, coupling bracket witness w to BOTH fixed endpoints x,t). This task must rebuild the quant-layer discharge of `qnf.2` using the prerequisite task's fold encoding (folding the depth-0 quant layer into a monadic E[Sigma]-atom evaluated at [w,x,t], not at an arity-4 env) so the residual never arises. Use the prerequisite task's documented fold definition name(s) and bridge lemma signature(s) (see its completion summary) -- do not redefine the fold independently.
-
-RABINOVICH GROUNDING (report 03, reports/03_rabinovich-faithful-path-research.md): Def 4.1 (PDF p.5, E[Sigma] monadic-atom fold), Lemma 3.2(2) (PDF p.4, <=2 free variables as a standing invariant of the carrier TYPE), Prop 3.5 (PDF p.5, exists x_i -> Until/Since bracket witness at FIXED endpoints z_0,z_1, never an interior witness).
-
-FALSIFIED ROUTES (do not resurrect): endChar carrier (NfMultiAnchorBridge.lean:1029, arity-1 navigated point characteristic, provably FALSE in free-anchor form per :1058-1069); VecEA2 bracket carrier at the OLD nf_eval_nf encoding (NfMultiAnchorBridge.lean:1586-1618, this task's direct predecessor blocker) -- NOTE: G6's carrier SHAPE (BracketEndCharCarrier / VecEA2 1 / fixed endpoints {x,t} / w as bracket witness) stays CORRECT after the prerequisite task's re-encoding lands; do not change the carrier shape, only the quant-layer discharge mechanism underneath it.
-
-GUARDS (carry verbatim, from plans/03_offdiag-fi-chain-plan.md Postmortem Constraints):
-- G1 -- No arity-1 collapse of the off-diagonal. (Refuted: report 02 SS1; NfDepth0Generalized:1691-1719.)
-- G2 -- No projection-based VecEA2 / third-free-anchor tower. (Refuted: specs/305 report 40; R2.)
-- G3 -- No trivial-top segment on the off-diagonal arms. A closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment (a real interval type, not top/trivial).
-- G4 -- w stays a bracket witness. Env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap.
-- G5 -- Follow Cor 5.4 / Prop 3.5 F_i chains step-by-step; no simp/omega/aesop shortcut of a chain step (literature-fidelity policy). Cite Rabinovich PDF p.4-5 at every chain step.
-- G6 -- The recursion carrier MUST be the two-anchor bracket characteristic with FIXED endpoints z_0,z_1 (Prop 3.5, PDF p.5): NormalForm sig k 3 -> VecEA2 1 (two endpoint TemporalPreds + one interval TemporalPred), {x,t} FIXED, w a bracket WITNESS. It MUST NOT be an arity-1 navigated point characteristic nor an interior-existential-witness evaluation. CRITICAL DISTINCTION from G2: G2 bars a THIRD free anchor; G6's VecEA2 is a fixed-endpoint bracket, not a projection tower -- anchors stay {x,t} (2, fixed).
-- Corrected Anchor-Cap Statement: the hook-discharge path MUST keep the anchor set at {x,t} (<=2) by the bracket-witness-collapse mechanism, NOT by nf_char3_deeper_split (NfMultiAnchorBridge.lean:625-642, which grows arity 3->4 and anchors {x,t}->{y,x,t} -- forbidden tower).
-
-CONSUME, DO NOT REBUILD (all sorry-free, task 309 assets, PLUS the prerequisite task's new fold definition/bridge lemma(s)): nf_3var_bracket_xyt/_correct (VecEADecomp.lean:233/244); char_k1/_correct (KampPrior.lean:307/310); bracketBuildLeft/_correct (VecEATranslation.lean:273/503) and bracketBuildRight/_correct (VecEATranslation.lean:50/234); BracketEndCharCarrier / BracketCarrierCorrect / bracketEndChar_k0 / bracketEndChar_k0_correct (NfMultiAnchorBridge.lean:1536/1546/1557/1571, task 309 Phase 9); nf_zone_flatten_navigable(_brick)/_correct (NfMultiAnchorBridge.lean:689/709); A_diag/_correct (NfMultiAnchorBridge.lean:763/808); nf_zone_exists_trichotomy_k1 (NfZoneFlattenNavigable.lean:188); Phases 1-5 assets (A_past/A_future + _correct, NfZoneFlattenNavigable.lean:335/386; nf_char2_atom_offdiag_{origin,endpoint,correct}, NfMultiAnchorBridge.lean:364/375/391; nf_char3_endpoint_tl/_correct, NfMultiAnchorBridge.lean:891/907; nf_char2_past_formula/_correct, NfMultiAnchorBridge.lean:992/1015; nf_char2_future_formula/_correct, NfMultiAnchorBridge.lean:1185).
-
-GOAL STATE: the k=1 BracketCarrierCorrect instance (NfMultiAnchorBridge.lean:1546-1552 restricted to k=1) proved sorry-free using the new fold encoding, off the live path until wired; lake build GREEN; axioms exactly [propext, Classical.choice, Quot.sound]; explicit GO verdict recorded (mirroring the Phase 10 handoff format: 'R2 = GO', with evidence that the fold closed via the prerequisite task's lemma with no arity-4 residual and no navigated arity-3 characteristic) so task 309 can resume via /revise 309 (plan v4) then /implement 309 with the fold-backed carrier. Estimated ~150-300 lines (hard-mode; H8 sizing).
-
-AFTER COMPLETION: once both spawned tasks land, task 309 remains [BLOCKED] until /revise 309 folds the new encoding + GO verdict into a plan v4; live sorries stay at 2 (:354 remains task 305 scope) until 309's own future R3/R4-equivalent phases close :351.
-
----
-
-### 310. Normalform efold encoding
-- **Effort**: high
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
-
-**Description**: Define a new fixed-arity monadic E[Sigma]-fold evaluation for NormalForm depth-recursion (Rabinovich 2014 Def 4.1, PDF p.5), as a parallel/alternative encoding alongside `nf_eval_nf` (Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean:198-207), which currently grows environment arity n -> n+1 at every depth descent:
-
-  nf_eval_nf (k+1) n env <atom_assignment, quant_assignment> :=
-    (atom layer) AND
-    (forall sub_nf : NormalForm sig k (n+1), (exists x, nf_eval_nf M k (n+1) (Fin.cons x env) sub_nf) <-> quant_assignment sub_nf)
-
-BLOCKER THIS TASK RESOLVES (task 309, R2 NO-GO, commit 8fd4340b1, session sess_1783359214_93fd70): at k=1, arity 3 ([w,x,t]), the quant layer of `nf_eval_nf M 1 3 [w,x,t] qnf` unfolds to
-  forall sub_nf : NormalForm sig 0 4, (exists x_1, nf_eval_nf M 0 4 [x_1,w,x,t] sub_nf) <-> qnf.2 sub_nf = true
--- an irreducible arity-4 residual coupling the bracket witness w to BOTH fixed endpoints x,t (plus a fresh existential x_1). No monadic VecEA2 component (each reading a single point) can supply it. This is the SAME wall hit independently by two routes: task-309 plan-v2 Phase 8 (endChar arity-4->3 re-bounding) and plan-v3 R2 (VecEA2 bracket carrier, NfMultiAnchorBridge.lean:1586-1618).
-
-RABINOVICH GROUNDING (report 03, specs/309_offdiag_two_anchor_fi_chain/reports/03_rabinovich-faithful-path-research.md, full-PDF read of ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.pdf):
-- Def 3.1 (PDF p.4): alpha_j/beta_j endpoint/interval types are quantifier-free, ONE-variable.
-- Lemma 3.2(2) (PDF p.4): every existential-universal formula is equivalent to a conjunction of such formulas with AT MOST TWO free variables -- a standing invariant, not a hand-checked guard.
-- Prop 3.5 (PDF p.5): exists x_i collapses into an Until/Since BRACKET WITNESS; the two anchors z_0,z_1 are FIXED bracket endpoints, never an interior existential witness.
-- Def 4.1 (PDF p.5): the E[Sigma] expansion -- 'the set of unary predicate names Sigma union {A | A is a TL(Until,Since)-formula over Sigma}' -- folds each ALREADY-PROCESSED quantifier depth into a MONADIC (arity-1) atom before the next level is decomposed. Rabinovich never grows arity with depth; depth lives in Until/Since NESTING over quantifier-free atoms, not in sub-evaluation arity.
-
-FALSIFIED ROUTES (do not resurrect; both hit the identical residual under the OLD nf_eval_nf encoding):
-- endChar carrier (plan-v2 Phase 8): `EndCharCarrier := NormalForm sig k 3 -> TemporalPred` (NfMultiAnchorBridge.lean:1029) -- arity-1 navigated point characteristic; provably FALSE in free-anchor form (endChar0_correct deviation note, NfMultiAnchorBridge.lean:1058-1069): a closed navigated-w TemporalPred cannot read anchor positions.
-- VecEA2 bracket carrier at the OLD encoding (plan-v3 R2, this task's direct blocker): `BracketEndCharCarrier := NormalForm sig k 3 -> VecEA2 1` (NfMultiAnchorBridge.lean:1536), `BracketCarrierCorrect` (NfMultiAnchorBridge.lean:1546-1552) -- G6's carrier SHAPE (two-anchor bracket, fixed endpoints, w as bracket witness) stays CORRECT after this task's re-encoding; only the underlying nf_eval_nf recursion it must bridge to needs the E[Sigma]-fold. Do not conclude G6 itself was wrong; do not change the carrier shape.
-
-GUARDS (carry verbatim into every dispatch, from plans/03_offdiag-fi-chain-plan.md Postmortem Constraints):
-- G1 -- No arity-1 collapse of the off-diagonal. (Refuted: report 02 SS1; NfDepth0Generalized:1691-1719.)
-- G2 -- No projection-based VecEA2 / third-free-anchor tower. (Refuted: specs/305 report 40; R2.)
-- G3 -- No trivial-top segment on the off-diagonal arms. A closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment (a real interval type, not top/trivial).
-- G4 -- w stays a bracket witness. Env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap.
-- G5 -- Follow Cor 5.4 / Prop 3.5 F_i chains step-by-step; no simp/omega/aesop shortcut of a chain step (literature-fidelity policy). Cite Rabinovich PDF p.4-5 at every chain step.
-- G6 -- The recursion carrier MUST be the two-anchor bracket characteristic with FIXED endpoints z_0,z_1 (Prop 3.5, PDF p.5): NormalForm sig k 3 -> VecEA2 1 (two endpoint TemporalPreds + one interval TemporalPred), {x,t} FIXED, w a bracket WITNESS. It MUST NOT be an arity-1 navigated point characteristic nor an interior-existential-witness evaluation. CRITICAL DISTINCTION from G2: G2 bars a THIRD free anchor; G6's VecEA2 is a fixed-endpoint bracket, not a projection tower -- anchors stay {x,t} (2, fixed).
-- Corrected Anchor-Cap Statement: the hook-discharge path MUST keep the anchor set at {x,t} (<=2) by the bracket-witness-collapse mechanism, NOT by nf_char3_deeper_split (NfMultiAnchorBridge.lean:625-642, which grows arity 3->4 and anchors {x,t}->{y,x,t} -- forbidden tower).
-
-CONSUME, DO NOT REBUILD (all sorry-free, task 309 assets): nf_3var_bracket_xyt/_correct (VecEADecomp.lean:233/244, the depth-0 base collapse); char_k1/_correct (KampPrior.lean:307/310, the depth-k arity-1 E[Sigma]-atom); bracketBuildLeft/_correct (VecEATranslation.lean:273/503) and bracketBuildRight/_correct (VecEATranslation.lean:50/234); BracketEndCharCarrier / BracketCarrierCorrect / bracketEndChar_k0 / bracketEndChar_k0_correct (NfMultiAnchorBridge.lean:1536/1546/1557/1571, task 309 Phase 9 -- the carrier SHAPE to preserve, not rebuild); nf_zone_flatten_navigable(_brick)/_correct (NfMultiAnchorBridge.lean:689/709); A_diag/_correct (NfMultiAnchorBridge.lean:763/808); nf_zone_exists_trichotomy_k1 (NfZoneFlattenNavigable.lean:188); Phases 1-5 assets (A_past/A_future segment-carrying + _correct, NfZoneFlattenNavigable.lean:335/386; nf_char2_atom_offdiag_{origin,endpoint,correct}, NfMultiAnchorBridge.lean:364/375/391; nf_char3_endpoint_tl/_correct, NfMultiAnchorBridge.lean:891/907; nf_char2_past_formula/_correct, NfMultiAnchorBridge.lean:992/1015; nf_char2_future_formula/_correct, NfMultiAnchorBridge.lean:1185).
-
-SCOPE OF THIS TASK (deliberately narrow -- NOT a project-wide re-encoding of NormalForm.lean; report 03 SS3 'Adjustment to the NormalForm encoding' explicitly rejects a project-scale rewrite): define a NEW fixed-arity monadic-fold evaluation function (suggested name `nf_eval_efold` or similar -- implementer's choice, document the name in the summary) ALONGSIDE `nf_eval_nf`, whose quant-layer clause folds the processed depth into a monadic E[Sigma]-atom (a TemporalPred/char_k1-shaped object) evaluated at the SAME arity-n env, rather than recursing into an arity-(n+1) sub-evaluation. Prove the fold's depth-0 case coincides with nf_eval_nf's depth-0 atom-assignment case (the trivial base), and prove a bridge/equivalence lemma relating one step of the fold's quant-layer recursion to one step of nf_eval_nf's quant-layer recursion FOR THE ARITY-3 TWO-ANCHOR SHAPE task 309 needs (env [w,x,t] with fixed x,t) -- i.e. establish that folding nf_eval_nf's depth-(k+1) quant layer via a monadic E[Sigma]-atom (rather than growing arity to n+1) is propositionally equivalent to the existing nf_eval_nf semantics for that shape. This is the load-bearing new object; do NOT attempt to replace nf_eval_nf's global definition or migrate unrelated consumers.
-
-GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the new fold definition + bridge/equivalence lemma(s) sorry-free; axioms exactly [propext, Classical.choice, Quot.sound] on every new lemma; the new encoding sits OFF the live import path until the follow-up task consumes it to re-close the k=1 gate. Estimated ~150-280 lines (hard-mode phase sizing, H8: one agent run per phase; split into sub-phases if it overruns). Document the exact fold definition name(s) and bridge lemma signature(s) in the completion summary -- the follow-up task depends on them.
 
 ---
 
@@ -784,39 +223,6 @@ FORBIDDEN ROUTES (obstruction guards G1-G5, task 307 report 03 SS4): G1 no arity
 LITERATURE GROUNDING: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Lemma 5.1 md:134-152, Corollary 5.4 md:154-157).
 
 GOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit.
-
----
-
-### 308. Multi anchor char formula bridge
-- **Effort**: 10-15 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**: [307_kamp_cor54_bound_anchor_zone_converter/reports/02_diag-blocker-audit.md]
-
-**Description**: Build the depth-graded multi-anchor characteristic FORMULA builder (the "multi-anchor bracket bridge"), spawned from task 307's diagnostic blocker audit (specs/307_kamp_cor54_bound_anchor_zone_converter/reports/02_diag-blocker-audit.md). Task 307's Phases 3-6 are ALL blocked on this single missing object; it is also task 305's recurring Phase-11b crux. Build it once, off the live import path, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound].
-
-DELIVERABLES:
-1. `nf_char2_formula : NormalForm sig (k+1) 2 -> Formula` satisfying `temporal_truth M atomMap t (nf_char2_formula sub_nf) <-> nf_eval_nf M (k+1) 2 (fun _=>t) sub_nf` (diagonal/constant two-anchor env) -- the arity-2 analog of `nf_succ_char_formula` (arity-1, KampPrior.lean:107-118). Consumes `nf_char3_eq_succ_iff` and `nf_characteristic_quant_split3` (both sorry-free theorems in NfZoneDepthK.lean), `renameNF_eval_diag0` (NfDepth0Generalized.lean:1646, sorry-free) for the diagonal depth-0 base, and `bracketBuildLeft`/`bracketBuildRight` (+ `_correct`, VecEATranslation.lean:50/234, sorry-free) for the w-zone navigation.
-2. The general navigated bounded-existential corollary at arbitrary depth k (`nf_zone_flatten_navigable`): `exists w, nf_eval M k 3 [w,x,t] q <-> ` a `bracketBuild` disjunction over w's zones relative to (x,t), each depth-k residual discharged by the IH, endpoints NAVIGATED, w a bracket witness (env arity never grows past the {w,x,t}=3 -> {x,t}=2 reduction; anchor set stays {x,t}; respects Rabinovich's <=2 free-variable cap, Lemma 3.2.2).
-
-Deliverable 1 unblocks task 307 Phase 3; deliverable 2 unblocks task 307 Phases 4/5/6; both together directly supply task 305's Phase-11b multi-anchor bracket bridge crux. Estimated ~400-700 lines; recursion on depth k.
-
-LITERATURE GROUNDING (Tier 1): ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md, Corollary 5.4 F_i chain (md:154-157: `F_n := alpha_n`, `F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)`) and Lemma 5.1 inner w-zone case decomposition (md:159-169). Follow the F_i chain step-by-step (no simp/omega shortcut of a chain step).
-
-HARD MODE REQUIRED (R-A): this bridge is the same object task 305's Phase-11b lineage has repeatedly failed to land across three prior refutations. Dispatch this task with `--hard` (H5 churn tracking mandatory). Encode the following as a Postmortem-forbidden 'Do NOT' list and check every candidate construction against it before implementing:
-  (a) Do NOT re-attempt a projection-based VecEA2 bridge for the x=t diagonal case -- `liftIdx(totalUnskip)` is non-injective, so the coupled quant layer does not factor through per-variable projections (proven in NfZoneDepthK.lean, Phase 10 / `renameNF_eval_diag0` context).
-  (b) Do NOT re-attempt a flat single-interval atomic bracket absorption (D1 flat-bracket) -- a depth-0 atomic `BracketFormula` is confined to the closed interval [x,t] and cannot capture exterior-w realizability (proven sorry-free by `interior_bracket_cannot_realize_exterior_sub_k1`, NfZoneDepthK1Probe.lean).
-  (c) Do NOT re-attempt an arity-1-collapse repair for the diagonal arm (`char_k1 (diagCollapse sub_nf)`) -- this reduces to the depth-(k+1) lift of `diagDup_eval_zero`, which is already documented sorry-free as a non-theorem (NfDepth0Generalized.lean:1691-1719; liftIdx r is non-injective, the `<-` direction fails). This route BINDS at the actual :391 obligation because sub_nf there is universally quantified (see task 307 report 02, section 1).
-
-SELF-DECOMPOSITION GUIDANCE (R-B): ~400-700 lines may exceed one dispatch. Phase-decompose internally, diagonal-first: build deliverable 1 (`nf_char2_formula`, the diagonal/constant case) before deliverable 2 (the general navigated bridge at arbitrary depth k) -- deliverable 1 is smaller, unblocks task 307 Phase 3 alone, and de-risks the recursive bracket-assembly machinery before extending it to the general case. Note even the diagonal-only version needs the full recursive bridge one depth down (the diagonal env collapses the seven w-zones to three, but each zone still encodes a depth-(k-1) diagonal characteristic), so do not expect deliverable 1 alone to materially shrink the total work -- it is a legitimate first phase, not a shortcut.
-
-CONSUMPTION NOTES FOR TASK 305 (R-C): the bridge built here is task 305's Phase-11b crux. On completion, hand back explicit consumption notes (in a summary under specs/308_multi_anchor_char_formula_bridge/summaries/) documenting: the exact signatures of `nf_char2_formula` and the general navigated corollary, which task-305 artifacts/plans reference the Phase-11b bridge and should be rewired to reuse these definitions verbatim rather than rebuilding, and any depth/anchor-count assumptions task 305's rewire must respect. This ensures task 305 reuses the shared object instead of re-deriving it.
-
-PRESERVED REUSABLE ASSETS (must not be rebuilt; consume, do not re-derive): `nf_char3_eq_succ_iff`, `nf_characteristic_quant_split3`, `nf_characteristic_quant_succ` (NfZoneDepthK.lean, all sorry-free theorems verified by lean_local_search); `renameNF_eval_diag0` (NfDepth0Generalized.lean:1646, sorry-free); `bracketBuildLeft`/`bracketBuildRight` (+ `_correct`, VecEATranslation.lean:50/234, sorry-free); `nf_succ_char_formula`/`_correct` (KampPrior.lean:107/121, arity-1 template); reuse the landed `diagDup`/`diagDup_eval_zero` (depth-0 duplication base, NfZoneFlattenNavigable.lean:243) verbatim.
-
-GOAL STATE: both deliverables sorry-free, off the live import path, `lake build` GREEN, axiom set unchanged (propext/Classical.choice/Quot.sound only). Document consumption notes for task 305 per R-C above. Once complete, task 307 resumes Phases 3-6 using these two objects as prerequisites.
 
 ---
 
@@ -860,32 +266,6 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 
 ---
 
-### 306. Add combinatorial bracketformula conjunction to veceaclosure
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**: [305_rabinovich_ea_formula_implementation/reports/03_spawn-analysis.md]
-- **Plan**:
-  - [306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/plans/01_bracket-conj-plan.md]
-  - [306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/plans/01_bracket-conj-plan.md]
-- **Summary**: [306_add_combinatorial_bracketformula_conjunction_to_veceaclosure/summaries/01_bracket-conj-summary.md]
-
-**Description**: Add a structural, model-independent BracketFormula conjunction to VecEAClosure.lean. The existing `conj_to_bracket_exists` only proves existence (∃ n, ∃ bf, ...) which cannot be used inside the VecEA2 negation closure induction. This task adds:
-
-1. `BracketFormula.conjStruct (bf1 : BracketFormula n1) (bf2 : BracketFormula n2) : BracketFormula (n1 + n2)` -- a concrete combined bracket formula whose n1+n2 witnesses are the n1 witnesses of bf1 followed by the n2 witnesses of bf2. Point types are concatenated. Segment types interleave: for positions in bf1's range, conjoin the corresponding bf1 segment with the overall bf2 trivial segment (top), and vice versa for bf2's range.
-
-2. `BracketFormula.conjStruct_holds` -- if bf1.holds M atomMap z0 z1 and bf2.holds M atomMap z0 z1, then (conjStruct bf1 bf2).holds M atomMap z0 z1. The proof reuses the witness interleaving approach from the n1+1/n2+1 case in the existing `conj_to_bracket_exists`.
-
-3. `VBracketFormula.conj_struct` -- a fixed disjunct-list conjunction of VBracketFormulas: given v1 and v2, returns a VBracketFormula whose disjuncts are all pairwise combinations (conjStruct d1 d2) for d1 in v1.disjuncts, d2 in v2.disjuncts. Prove that if v1.holds and v2.holds then (conj_struct v1 v2).holds.
-
-4. `VVecEA2.conj_struct` -- analogous structural conjunction for VVecEA2, combining endpoint conditions (conj) and brackets (conjStruct). Prove the semantic direction.
-
-These definitions return fixed syntactic objects (not existential witnesses), enabling the VecEA2 negation closure induction in EANegation.lean (Phase 4 of task 305) to produce a concrete VVecEA2 from the three-case decomposition.
-
----
-
 ### 305. Rabinovich ea formula implementation
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
@@ -921,16 +301,6 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 
 ---
 
-### 304. Import refactor mcs mixed case
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-
-**Description**: Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. Completed as part of task 301 phase 1.
-
----
-
 ### 303. K gt 0 depth induction
 - **Status**: [PLANNED]
 - **Task Type**: lean4
@@ -959,61 +329,6 @@ These definitions return fixed syntactic objects (not existential witnesses), en
 
 ---
 
-### 302. Boneyard dead code archival
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: cleanup
-- **Dependencies**: Task 301
-- **Research**: [302_boneyard_dead_code_archival/reports/01_team-research.md]
-- **Plan**: [302_boneyard_dead_code_archival/plans/02_implementation-plan.md]
-- **Summary**: [302_boneyard_dead_code_archival/summaries/03_implementation-summary.md]
-
-**Description**: Comprehensive dead code archival to Boneyard/ with comment cleanup. Scope: (1) Research all source files to identify dead code — unused definitions, unreachable lemmas, commented-out blocks, sorry-bearing stubs with no downstream consumers, and deprecated proof paths (BXCanonical, dead chronicle functions, VecEADecomposition sorries, Stavi path, etc.). (2) Physically move each dead code item from its source file into a corresponding file under Boneyard/, preserving module structure. (3) Update all imports and aggregator files so lake build passes after removal. (4) Add clear provenance comments in each Boneyard file noting the original location and reason for archival. (5) Review and improve comments throughout the remaining codebase for clarity — remove stale TODOs, outdated references, and misleading annotations left behind by prior refactors.
-
----
-
-### 301. Completeness cleanup and roadmap
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**: [301_completeness_cleanup_and_roadmap/reports/01_completeness-status-audit.md]
-- **Plan**: [301_completeness_cleanup_and_roadmap/plans/02_cleanup-roadmap-plan.md]
-
-**Description**: Repository cleanup and roadmap update following task 273 completion and chronicle_gap dead-code audit. Scope: (1) Archive dead code to Boneyard/ (BXCanonical path, dead chronicle functions, VecEADecomposition sorries, possibly Stavi path) with clear comments. (2) Factor oversized files (KampBypass.lean at 4488 lines). (3) Move mcs_mixed_case_absurd out of ChronicleToCountermodel.lean to eliminate phantom sorry dependency. (4) Abandon obsolete tasks (155, 268, 200, 254, 176). (5) Revise task 95/299 dependencies. (6) Create new tasks: k>0 depth induction (sole completeness_discrete blocker) and import refactor. (7) Update ROADMAP.md to reflect current state: sole blocker is existPart_succ_n1_bypass k>0 in KampBypass.lean.
-
----
-
-### 300. Refactor literature index json
-abort aware tableau cancellation
-- **Status**: [COMPLETED
-NOT_STARTED]
-- **Task Type**: meta
-lean4
-- **Topic**: literature
-literature
-- **Dependencies**: 
-
-**Description**: Refactor specs/literature/ to use index.json files for --lit flag compatibility, keeping PDFs but ignoring them during literature retrieval, modeled after cslib specs/literature/ structure
-Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
-
----
-
-### 300. Refactor literature index json
-abort aware tableau cancellation
-- **Status**: [COMPLETED
-NOT_STARTED]
-- **Task Type**: meta
-lean4
-- **Topic**: literature
-literature
-- **Dependencies**: 
-
-**Description**: Refactor specs/literature/ to use index.json files for --lit flag compatibility, keeping PDFs but ignoring them during literature retrieval, modeled after cslib specs/literature/ structure
-Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
-
----
-
 ### 299. Refactor discrete game transfer
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
@@ -1027,23 +342,11 @@ Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abor
 ### 298. Fix c7 labeling bug and regenerate dataset
 - **Status**: [PLANNED]
 - **Task Type**: lean4
-- **Dependencies**: Task 297, Task 300
+- **Dependencies**: Task 297, Task 343
 - **Research**: [298_fix_c7_labeling_bug_and_regenerate_dataset/reports/01_c7-labeling-bug.md]
 - **Plan**: [298_fix_c7_labeling_bug_and_regenerate_dataset/plans/01_c7-labeling-bug.md]
 
 **Description**: Fix c7 labeling bug at formula ~13750 that causes unbounded memory growth in the decision procedure's timeout handling, then regenerate the full c7 dataset. During task 297 dataset regeneration, all 3 attempts to generate c7 stalled at exactly record 13,749 with RSS growing ~40MB/6s. The labeling function enters an apparent infinite loop or unbounded search for formula #13,750 in the sorted enumeration order. The timeout mechanism either does not fire or cannot interrupt the stuck state. Steps: (1) Identify the specific formula at position ~13,750 in the c7 enumeration. (2) Reproduce the hang in isolation with that formula. (3) Diagnose whether the decision procedure's timeout is failing to fire or the procedure is in an uninterruptible state. (4) Fix the timeout handling so it reliably terminates. (5) Regenerate the full c7 dataset (target: 77,272 records)
-
----
-
-### 297. Verify operator removal and regenerate datasets
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: dataset-enhancement
-- **Dependencies**: None
-- **Research**: [297_verify_operator_removal_and_regenerate_datasets/reports/01_verify-operator-removal.md]
-- **Plan**: [297_verify_operator_removal_and_regenerate_datasets/plans/01_verify-operator-removal.md]
-
-**Description**: Verify that the removal of 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) from the formula enumerator is correct and complete. (1) Confirm lake build passes with zero errors. (2) Run enumeration at c4-c7 and verify the 6 operators no longer appear in enumerated formulas. (3) Verify formula counts are reduced as expected (~40-60% reduction in raw enumeration). (4) Run exhaustive labeling at c4 and c5 to confirm correctness (zero label disagreements, prefilter and cache still working). (5) Regenerate datasets at c4, c5, and c6 (with appropriate timeouts). (6) Verify the regenerated JSONL files contain no formulas with the removed operators. (7) Compare new dataset sizes against pre-removal baselines from the task 295 diagnostic report.
 
 ---
 
@@ -1098,58 +401,14 @@ Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abor
 ---
 
 ### 290. Improve tableau fuel allocation
-improve tableau fuel allocation
-- **Status**: [PLANNED
-PLANNED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
-lean4
 - **Topic**: dataset-enhancement
-dataset-enhancement
 - **Dependencies**: Task 288
+- **Research**: [290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md]
+- **Plan**: [290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
 
 **Description**: Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
-Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
-
----
-
-### 290. Improve tableau fuel allocation
-improve tableau fuel allocation
-- **Status**: [PLANNED
-PLANNED]
-- **Task Type**: lean4
-lean4
-- **Topic**: dataset-enhancement
-dataset-enhancement
-- **Dependencies**: Task 288
-
-**Description**: Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
-Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
-
----
-
-### 289. Branch result memoization caching
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: dataset-enhancement
-- **Dependencies**: Task 286
-- **Research**: [289_branch_result_memoization_caching/reports/01_memoization-research.md]
-- **Plan**: [289_branch_result_memoization_caching/plans/01_memoization-plan.md]
-- **Summary**: [289_branch_result_memoization_caching/summaries/01_memoization-summary.md]
-
-**Description**: Add branch-result memoization/caching to expandBranchWithFuel. Cache decide results keyed by (Formula, FrameClass, searchDepth, tableauFuel) in an IO.Ref-based LRU cache at the decide level. Size bound to 10K entries. Benchmark hit rate and total labeling time. Best combined with parallelization (task 286).
-
----
-
-### 288. Deeper invalid pattern recognizers
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: dataset-enhancement
-- **Dependencies**: Task 287
-- **Research**: [288_deeper_invalid_pattern_recognizers/reports/01_invalid-patterns-research.md]
-- **Plan**: [288_deeper_invalid_pattern_recognizers/plans/01_invalid-patterns-plan.md]
-- **Summary**: [288_deeper_invalid_pattern_recognizers/summaries/01_invalid-patterns-summary.md]
-
-**Description**: Add deeper invalid-pattern recognizers to structuralPrefilter. Detect structurally invalid formulas (e.g., U(box(bot), X)) that timeout the tableau but have obvious countermodels. Add isTemporalContradiction, isObviousSatisfiable, hasUnfulfillableEventuality. Wire into labelFormulaImpl before valid-prefilter. Each pattern must have formal soundness proof. Target: reduce c6 timeout rate by 3-8%.
 
 ---
 
@@ -1161,63 +420,6 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 
 ---
 
-### 273. Chronicle gap contradiction proof
-- **Status**: [COMPLETED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**:
-  - [273_chronicle_gap_contradiction_proof/reports/01_gap-contradiction-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/02_deep-analysis.md]
-  - [273_chronicle_gap_contradiction_proof/reports/03_stavi-sorry-analysis.md]
-  - [273_chronicle_gap_contradiction_proof/reports/04_ghr93-literature-review.md]
-  - [273_chronicle_gap_contradiction_proof/reports/03_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/05_proposition7-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/06_decomposition-path-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/05_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/07_sorry-chain-verification.md]
-  - [273_chronicle_gap_contradiction_proof/reports/08_game-pipeline-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/08_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/09_negation-closure-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/10_literature-transcription.md]
-  - [273_chronicle_gap_contradiction_proof/reports/11_divergence-audit.md]
-  - [273_chronicle_gap_contradiction_proof/reports/12_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/13_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/23_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/24_blocker-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/26_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/28_wiring-gap-analysis.md]
-  - [273_chronicle_gap_contradiction_proof/reports/31_kamp-bypass-sorry-goals.md]
-  - [273_chronicle_gap_contradiction_proof/reports/33_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/35_team-research.md]
-  - [273_chronicle_gap_contradiction_proof/reports/36_literature-bracket-proof.md]
-  - [273_chronicle_gap_contradiction_proof/reports/38_team-research.md]
-- **Plan**: [273_chronicle_gap_contradiction_proof/plans/39_bracketformula-k-encoding.md]
-
-**Description**: Close the two remaining blockers for completeness_discrete: (1) KampPrior.lean:149 via NF-specific Prop 4.3 restricted to arity-1 formulas, using sorry-free neg_2var_vec_ea for the negation case (~150-200 lines); (2) chronicle_gap_contradiction (ChronicleToCountermodel.lean:531) via fully-proved reynolds_model_surgery_core (~100-150 lines). VecEADecomposition.lean sorries quarantined as dead code.
-
----
-
-### 268. Reynolds pipeline bridge
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
-- **Research**:
-  - [268_reynolds_pipeline_bridge/reports/01_bridge-research.md]
-  - [268_reynolds_pipeline_bridge/reports/04_team-research.md]
-  - [268_reynolds_pipeline_bridge/reports/05_completion-analysis.md]
-  - [268_reynolds_pipeline_bridge/reports/06_reynolds-literature-review.md]
-- **Plan**:
-  - [268_reynolds_pipeline_bridge/plans/01_implementation-plan.md]
-  - [268_reynolds_pipeline_bridge/plans/04_strategy-b-plan.md]
-- **Summary**: [268_reynolds_pipeline_bridge/summaries/01_implementation-summary.md]
-- **Handoff**: [268_reynolds_pipeline_bridge/handoffs/phase-2-handoff-20260603.md]
-
-**Description**: Strategy B: Refactor discrete completeness to use Reynolds k-equivalence bypass instead of IsSuccArchimedean. Build LimitDomSubtype as OrderedMonadicStructure, apply sorry-free one_class -> very_good -> good pipeline, extract k-equivalent Z-interval, transfer satisfiability, build countermodel on Z. Eliminates succ_embed_surjective sorry chain entirely.
-
----
-
 ### 257. Large data storage huggingface
 - **Status**: [IMPLEMENTING]
 - **Task Type**: general
@@ -1226,16 +428,6 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 - **Research**: [257_large_data_storage_huggingface/reports/01_large-data-storage.md]
 - **Plan**: [257_large_data_storage_huggingface/plans/01_implementation-plan.md]
 - **Summary**: [257_large_data_storage_huggingface/summaries/01_execution-summary.md]
-
----
-
-### 254. Update stale metadata post 202
-- **Status**: [ABANDONED]
-- **Task Type**: meta
-- **Topic**: completeness
-- **Dependencies**: Task 95, Task 176
-
-**Description**: Final metadata and documentation update after completeness pipeline stabilization: (1) TODO.md sorry_count_note — comprehensive audit of sorry landscape post-tasks 202/155; (2) ROADMAP.md — annotate all completeness milestones achieved; (3) Transfer.lean and Completeness.lean — update stale axiom audit comments and sorry status documentation; (4) Verify #print axioms completeness_discrete shows no sorryAx. Follows tasks 95 (verification audit) and 176 (Chronicle relocation) to capture the final state.
 
 ---
 
@@ -1267,16 +459,6 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 - **Research**: [219_llm_baseline_difficulty_calibration/reports/01_llm-baseline-research.md]
 
 **Description**: Run bmlogic-bench through multiple LLMs to establish baseline difficulty calibration. Evaluate at least 3 models (GPT-4o, Claude Sonnet, a 7B open model). Report zero-shot accuracy per difficulty tier (easy/medium/hard/very_hard), chain-of-thought vs direct label accuracy, error rate correlation with modal/temporal depth. Include random baseline (50% for balanced benchmark). Publish results in data/baselines/README.md with methodology. Both symbolic formula input and NL paraphrase input (if available from R1).
-
----
-
-### 200. Ghr93 case ii elegance rewrite
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: code-quality
-- **Dependencies**: None
-
-**Description**: Rewrite ghr93_case_II in CaseAnalysis.lean for code elegance and GHR93 fidelity. The proof is already correct, sorry-free, and axiom-clean (733 lines). The goal is to replace the tau_left/tau_right sub-game structure with a single restricted tau following GHR93 exactly. This requires resolving the fundamental gap between GHR93's continuous order-type preservation and the Lean formalization's finite-position EF games: same_order_type applies to n+3 positions, so orderings at interior points (p_n, e_n) require those points to be game endpoints — which is exactly what tau_left/tau_right achieve. A solution would require either (a) enriching the EF game framework to support continuous order-type preservation, or (b) finding a way to make the restricted tau's endpoint orderings imply interior-point orderings. Extensive research (7 agents, 3 plan revisions) confirmed the blocker is structural. GHR93 infrastructure theorems (untl_witness_bounded, ghr93_untl_transfer, ghr93_construct_en) are proved and available in CharacteristicFormula.lean and CaseAnalysis.lean. See specs/155_reynolds_pipeline_activation/reports/47_*.md and handoffs/phase-5-blocker-finite-position-games-20260528.md for full analysis.
 
 ---
 
@@ -1414,16 +596,6 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 
 ---
 
-### 176. Relocate chronicle and archive dead bxcanonical
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: formula-refactor
-- **Dependencies**: Task 155
-
-**Description**: Resolve architectural confusion where Chronicle/ lives under BXCanonical/ but is only consumed by WeakCanonical/. Move 6 Chronicle files (14331 lines) to Metalogic/Chronicle/ or WeakCanonical/Chronicle/. Archive entire non-Chronicle BXCanonical subtree (16 files, 4615 lines, 19 false sorries) to Boneyard/BXCanonical/. Verify OrderedSeedConsistency.lean dependency from WeakCanonical/ReflexiveCanonical.lean before archiving. Update aggregator imports. Subsumes part of task 130 scope.
-
----
-
 ### 175. Naming convention and bridge cleanup
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
@@ -1478,78 +650,6 @@ Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateB
 - **Dependencies**: None
 
 **Description**: Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theories/Bimodal/ directory to FormalSystem/, update all imports in Lean files, update lakefile.lean srcDir from Theories to FormalSystem and roots from Bimodal to FormalSystem, update any references in README.md, Tests/, and other files that point to the old path. Ensure lake build still passes after the rename.
-
----
-
-### 155. Reynolds pipeline activation
-- **Status**: [ABANDONED]
-- **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: Task 268
-- **Research**:
-  - [155_reynolds_pipeline_activation/reports/01_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/02_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/03_post-157-status.md]
-  - [155_reynolds_pipeline_activation/reports/03_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/04_phase4-blocker.md]
-  - [155_reynolds_pipeline_activation/reports/05_full-reynolds-impl.md]
-  - [155_reynolds_pipeline_activation/reports/06_path-b-feasibility.md]
-  - [155_reynolds_pipeline_activation/reports/07_ghr93-strategy-review.md]
-  - [155_reynolds_pipeline_activation/reports/08_ghr93-game-theory.md]
-  - [155_reynolds_pipeline_activation/reports/09_lean-infrastructure-inventory.md]
-  - [155_reynolds_pipeline_activation/reports/10_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/11_phase10-blocker-research.md]
-  - [155_reynolds_pipeline_activation/reports/15_d-consistency-blocker.md]
-  - [155_reynolds_pipeline_activation/reports/12_degenerate-interval-blocker.md]
-  - [155_reynolds_pipeline_activation/reports/21_muSig-blocker-resolution.md]
-  - [155_reynolds_pipeline_activation/reports/27_d-consistency-blocker.md]
-  - [155_reynolds_pipeline_activation/reports/35_phase1-blocker-prior-art.md]
-  - [155_reynolds_pipeline_activation/reports/18_task17-blocker-resolution.md]
-  - [155_reynolds_pipeline_activation/reports/22_claim1-case2-literature.md]
-  - [155_reynolds_pipeline_activation/reports/23_tactic-needs-beyond-195.md]
-  - [155_reynolds_pipeline_activation/reports/27_post-195-assessment.md]
-  - [155_reynolds_pipeline_activation/reports/27_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/28_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/29_phase3-blocker-research.md]
-  - [155_reynolds_pipeline_activation/reports/30_blocker-study-prior-art.md]
-  - [155_reynolds_pipeline_activation/reports/32_post-dependency-assessment.md]
-  - [155_reynolds_pipeline_activation/reports/33_lit-sel-pn-ordering.md]
-  - [155_reynolds_pipeline_activation/reports/33_infra-sel-pn-fix.md]
-  - [155_reynolds_pipeline_activation/reports/33_tactic-sel-pn-grid.md]
-  - [155_reynolds_pipeline_activation/reports/38_equality-case-research.md]
-  - [155_reynolds_pipeline_activation/reports/39_game-depth-restructuring.md]
-  - [155_reynolds_pipeline_activation/reports/40_ghr93-case-ii-step6.md]
-  - [155_reynolds_pipeline_activation/reports/41_stavi-completeness-audit.md]
-  - [155_reynolds_pipeline_activation/reports/42_plan-literature-alignment.md]
-  - [155_reynolds_pipeline_activation/reports/44_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/50_import-cycle-research.md]
-  - [155_reynolds_pipeline_activation/reports/55_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/56_phase2-blocker-research.md]
-  - [155_reynolds_pipeline_activation/reports/57_bypass-surjectivity-research.md]
-  - [155_reynolds_pipeline_activation/reports/58_proper-fix-research.md]
-  - [155_reynolds_pipeline_activation/reports/60_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/61_team-research.md]
-  - [155_reynolds_pipeline_activation/reports/62_blocker-literature-research.md]
-  - [155_reynolds_pipeline_activation/reports/65_team-research.md]
-- **Handoff**:
-  - [155_reynolds_pipeline_activation/handoffs/phase-0-handoff-20260520.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-4-handoff-20260520c.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T160731Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T164255Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T180000Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T190000Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T174500Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T193000Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260522T210000Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-3-handoff-20260525T043000Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-handoff-20260603T051841Z.md]
-  - [155_reynolds_pipeline_activation/handoffs/phase-1-blocked-handoff-20260602.md]
-- **Summary**: [155_reynolds_pipeline_activation/summaries/28_reynolds-bypass-summary.md]
-- **Plan**:
-  - [155_reynolds_pipeline_activation/plans/65_discrete-game-bypass.md]
-  - [155_reynolds_pipeline_activation/plans/67_half-rank-game-bypass.md]
-
-**Description**: Eliminate all sorries from completeness_discrete by fixing 3 root sorries in StaviCompleteness.lean (4-variable EF-game existential transfer, GHR93 Proposition 7) and rewiring limitDomSubtype_isSuccArchimedean to use the now-sorry-free Reynolds model surgery pipeline. Phase 1 (import cycle resolution) complete.
 
 ---
 
