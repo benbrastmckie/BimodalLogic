@@ -8006,6 +8006,56 @@ theorem kvE2_sepTieRuns_key_const {α : Type*} (key : α → ℕ) :
           subst hu; subst hv; rfl
         · exact ih c (by rw [heq]; exact hmem) u hu v hv
 
+/-- **Tie-class key strict monotonicity** (task 337 plan 13 Phase 3 / report 14 Q2): on a
+    key-sorted list, `kvE2_sepTieRuns` yields runs whose keys STRICTLY increase across distinct
+    classes — every member of an earlier class has a strictly smaller key than every member of a
+    later class. The maximal-adjacent-run construction plus key-sortedness force the strict jump
+    at each class boundary. Structural induction mirroring `kvE2_sepTieRuns_key_const`. -/
+theorem kvE2_sepTieRuns_key_strictMono {α : Type*} (key : α → ℕ) :
+    ∀ (l : List α), l.Pairwise (fun a b => key a ≤ key b) →
+      (kvE2_sepTieRuns key l).Pairwise
+        (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, key u < key v)
+  | [], _ => by simp [kvE2_sepTieRuns]
+  | [a], _ => by simp [kvE2_sepTieRuns]
+  | a :: b :: rest, hsort => by
+      obtain ⟨t, cs, heq⟩ := kvE2_sepTieRuns_shape key rest b
+      have hcons := List.pairwise_cons.mp hsort
+      have ha : ∀ z ∈ b :: rest, key a ≤ key z := hcons.1
+      have hbrest : (b :: rest).Pairwise (fun a b => key a ≤ key b) := hcons.2
+      have ih := kvE2_sepTieRuns_key_strictMono key (b :: rest) hbrest
+      rw [heq] at ih
+      have ihcons := List.pairwise_cons.mp ih
+      have hb_le : ∀ z ∈ b :: rest, key b ≤ key z := by
+        intro z hz
+        rcases List.mem_cons.mp hz with rfl | hz
+        · exact le_refl _
+        · exact (List.pairwise_cons.mp hbrest).1 z hz
+      have hflat : ((b :: t) :: cs).flatten = b :: rest := by
+        rw [← heq]; exact kvE2_sepTieRuns_flatten key (b :: rest)
+      have hmem_brest : ∀ d ∈ (b :: t) :: cs, ∀ v ∈ d, v ∈ b :: rest := by
+        intro d hd v hv
+        rw [← hflat]
+        exact List.mem_flatten.mpr ⟨d, hd, hv⟩
+      rw [kvE2_sepTieRuns, heq]
+      by_cases hk : key a = key b
+      · simp only [if_pos hk]
+        rw [List.pairwise_cons]
+        refine ⟨?_, ihcons.2⟩
+        intro d hd u hu v hv
+        rcases List.mem_cons.mp hu with rfl | hu
+        · have hbv : key b < key v := ihcons.1 d hd b List.mem_cons_self v hv
+          omega
+        · exact ihcons.1 d hd u hu v hv
+      · simp only [if_neg hk]
+        rw [List.pairwise_cons]
+        refine ⟨?_, ih⟩
+        intro d hd u hu v hv
+        rw [List.mem_singleton] at hu
+        have hvmem : v ∈ b :: rest := hmem_brest d hd v hv
+        have hab : key a < key b := lt_of_le_of_ne (ha b List.mem_cons_self) hk
+        rw [hu]
+        exact lt_of_lt_of_le hab (hb_le v hvmem)
+
 /-- **One value per LEFT tie class** (task 337 plan 12 Phase 1): all slots of a single
     tie class of the primed grouped LEFT list carry EQUAL honest slot value. Equal keys within
     the class (`kvE2_sepTieRuns_key_const`) become equal honest values through the primed bridge
@@ -8068,5 +8118,95 @@ theorem kvE2_sepTieGroupedR_value_const {sig : MonadicSignature}
   exact (kvE2_sepSlotHonestVIdx_eq_iff qnf M w x t h
     (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) huσ)
     (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mp hkey
+
+/-- **O1 cross-class strict value monotonicity, LEFT** (task 337 plan 13 Phase 3 / report 14 Q5):
+    the primed grouped LEFT tie classes carry STRICTLY increasing honest values across distinct
+    classes — every member of an earlier class has strictly smaller value than every member of a
+    later class. Assembles five landed Phase-1 assets: value-sortedness (`≤` between classes via
+    `List.pairwise_flatten`), key strict monotonicity across runs
+    (`kvE2_sepTieRuns_key_strictMono`), the primed bridge (`kvE2_sepSlotGIdx_honestOrder'`), and
+    the tie-reporting payload law (`kvE2_sepSlotHonestVIdx_eq_iff`, giving `≠` from key-distinct).
+    `≤` ∧ `≠` ⟹ `<`. Faithful to Rabinovich Lemma 5.3's strict inter-point chain (the merge
+    absorbs ties, the order is not weakened). -/
+theorem kvE2_sepTieGroupedL_strictMono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).Pairwise
+      (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂,
+        kvE2_sepSlotValue qnf M w x t h u < kvE2_sepSlotValue qnf M w x t h v) := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  have hwo : wo.map Prod.fst = kvE2_sepPosI qnf := by
+    rw [hwo_def, kvE2_sepHonestOrder', List.map_map]; exact List.zipIdx_map_fst 0 _
+  have hksort : (kvE2_sepSlotsLOf wo).Pairwise
+      (fun a b => kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b) := by
+    refine (kvE2_sepSlotsLOf_mergeSorted wo).imp ?_
+    intro a b hab; rw [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab; exact hab
+  have hkey := kvE2_sepTieRuns_key_strictMono (kvE2_sepSlotGIdx wo)
+    (kvE2_sepSlotsLOf wo) hksort
+  have hvsorted := kvE2_sepSlotsLOf_honestOrder'_valueSorted qnf M w x t h
+  rw [← hwo_def, ← kvE2_sepTieGroupedL_flatten wo, List.pairwise_flatten] at hvsorted
+  have hvle := hvsorted.2
+  rw [List.pairwise_iff_forall_sublist] at hkey hvle ⊢
+  intro c₁ c₂ hsub u hu v hv
+  have hle := hvle hsub u hu v hv
+  have hklt := hkey hsub u hu v hv
+  refine lt_of_le_of_ne hle ?_
+  intro hval
+  have hc1 : c₁ ∈ kvE2_sepTieGroupedL wo := hsub.subset (by simp)
+  have hc2 : c₂ ∈ kvE2_sepTieGroupedL wo := hsub.subset (by simp)
+  have hufl : u ∈ kvE2_sepSlotsLOf wo := by
+    rw [← kvE2_sepTieGroupedL_flatten wo]; exact List.mem_flatten.mpr ⟨c₁, hc1, hu⟩
+  have hvfl : v ∈ kvE2_sepSlotsLOf wo := by
+    rw [← kvE2_sepTieGroupedL_flatten wo]; exact List.mem_flatten.mpr ⟨c₂, hc2, hv⟩
+  obtain ⟨σ, hσ, huσ⟩ := kvE2_sepSlotsLOf_mem_block hwo hufl
+  obtain ⟨τ, hτ, hvτ⟩ := kvE2_sepSlotsLOf_mem_block hwo hvfl
+  have hkeq : kvE2_sepSlotGIdx wo u = kvE2_sepSlotGIdx wo v := by
+    rw [hwo_def, kvE2_sepSlotGIdx_honestOrder' qnf M w x t h (kvE2_sepPosI_subset hσ) huσ,
+        kvE2_sepSlotGIdx_honestOrder' qnf M w x t h (kvE2_sepPosI_subset hτ) hvτ]
+    exact (kvE2_sepSlotHonestVIdx_eq_iff qnf M w x t h
+      (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) huσ)
+      (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mpr hval
+  omega
+
+/-- **O1 cross-class strict value monotonicity, RIGHT** (mirror of `kvE2_sepTieGroupedL_strictMono`). -/
+theorem kvE2_sepTieGroupedR_strictMono {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).Pairwise
+      (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂,
+        kvE2_sepSlotValue qnf M w x t h u < kvE2_sepSlotValue qnf M w x t h v) := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  have hwo : wo.map Prod.fst = kvE2_sepPosI qnf := by
+    rw [hwo_def, kvE2_sepHonestOrder', List.map_map]; exact List.zipIdx_map_fst 0 _
+  have hksort : (kvE2_sepSlotsROf wo).Pairwise
+      (fun a b => kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b) := by
+    refine (kvE2_sepSlotsROf_mergeSorted wo).imp ?_
+    intro a b hab; rw [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab; exact hab
+  have hkey := kvE2_sepTieRuns_key_strictMono (kvE2_sepSlotGIdx wo)
+    (kvE2_sepSlotsROf wo) hksort
+  have hvsorted := kvE2_sepSlotsROf_honestOrder'_valueSorted qnf M w x t h
+  rw [← hwo_def, ← kvE2_sepTieGroupedR_flatten wo, List.pairwise_flatten] at hvsorted
+  have hvle := hvsorted.2
+  rw [List.pairwise_iff_forall_sublist] at hkey hvle ⊢
+  intro c₁ c₂ hsub u hu v hv
+  have hle := hvle hsub u hu v hv
+  have hklt := hkey hsub u hu v hv
+  refine lt_of_le_of_ne hle ?_
+  intro hval
+  have hc1 : c₁ ∈ kvE2_sepTieGroupedR wo := hsub.subset (by simp)
+  have hc2 : c₂ ∈ kvE2_sepTieGroupedR wo := hsub.subset (by simp)
+  have hufl : u ∈ kvE2_sepSlotsROf wo := by
+    rw [← kvE2_sepTieGroupedR_flatten wo]; exact List.mem_flatten.mpr ⟨c₁, hc1, hu⟩
+  have hvfl : v ∈ kvE2_sepSlotsROf wo := by
+    rw [← kvE2_sepTieGroupedR_flatten wo]; exact List.mem_flatten.mpr ⟨c₂, hc2, hv⟩
+  obtain ⟨σ, hσ, huσ⟩ := kvE2_sepSlotsROf_mem_block hwo hufl
+  obtain ⟨τ, hτ, hvτ⟩ := kvE2_sepSlotsROf_mem_block hwo hvfl
+  have hkeq : kvE2_sepSlotGIdx wo u = kvE2_sepSlotGIdx wo v := by
+    rw [hwo_def, kvE2_sepSlotGIdx_honestOrder' qnf M w x t h (kvE2_sepPosI_subset hσ) huσ,
+        kvE2_sepSlotGIdx_honestOrder' qnf M w x t h (kvE2_sepPosI_subset hτ) hvτ]
+    exact (kvE2_sepSlotHonestVIdx_eq_iff qnf M w x t h
+      (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hσ) huσ)
+      (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mpr hval
+  omega
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

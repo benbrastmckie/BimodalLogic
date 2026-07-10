@@ -332,7 +332,7 @@ definition, so that every `.rXW` slot value is provably `< w`.
 
 ---
 
-### Phase 3: O1 — class witness order and range (unblocked by Phase 2) [NOT STARTED]
+### Phase 3: O1 — class witness order and range (unblocked by Phase 2) [IN PROGRESS]
 
 - **Goal:** Prove strict cross-class monotonicity of the combined list `usL ++ w :: usR` and the
   pivot/range facts in the exact shape `kvE2_sepBracketN_construct` (`hsort`, SW:5363) demands. With
