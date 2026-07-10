@@ -221,7 +221,7 @@ delivered-items 4/5 docstring to record the `_frag` deliverables.)
 
 ---
 
-### Phase A: Single-positive-sub fragment predicate + `_frag` statement surgery [NOT STARTED]
+### Phase A: Single-positive-sub fragment predicate + `_frag` statement surgery [IN PROGRESS]
 
 **Goal**: Define the fragment predicate `kvE2_sepFragment qnf` and introduce the `_frag` theorem
 statements in `OuterGate.lean` ONLY. The fragment hypothesis enters as a **qnf restriction**

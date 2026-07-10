@@ -169,6 +169,30 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature}
     (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
     (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
 
+/-! ## Phase A — single-positive-sub fragment predicate + `_frag` statement surgery (task 335 v5)
+
+The plan-v4 unconditional four-family discharge is REFUTED (report 04): over an arbitrary `qnf`
+the fold's FORWARD gate conjunct `(∃ v, zoneHolds … zs v ∧ nf_eval χ) → σ.2 (nf0_assemble zs χ σ.1)
+= true` is false in a rich model (`σ.2` need not mark every realizable `(zs, χ)`). Task 321 verdict
+N2 re-scopes the 309 Phase 13.4 / `KampPrior.lean:351` deliverable to the **single-positive-sub
+fragment**, where the O4 CRUX RECORD (`SharedWitness.lean:6785-6791`) states the cross-σ residue
+VANISHES: with one interior positive there are no cross-σ slot points, so every witness is σ0's own
+bit-true 1-type or a literal/segment-covered self-zone point.
+
+`kvE2_sepFragment qnf` is a pure `qnf`-domain restriction (positivity + interior zone of the sole
+positive sub); it depends ONLY on `qnf`, never on `M`/`atomMap`/`P`/a realized type. It is the sole
+sanctioned hypothesis beyond the provider shape — NOT a provider-conditional family. -/
+
+/-- **Single-positive-sub fragment predicate** (task 335 v5 Phase A). `qnf`'s positive-sub list is
+    exactly the singleton `[σ0]` and `σ0` is interior-zoned (`x < x1 < w` or `w < x1 < t`). This is
+    the qnf-domain narrowing task 321 verdict N2 sanctions: it collapses the fold's four
+    provider-conditional families to the residue-vanish case (O4 record SW:6785-6791). Depends only
+    on `qnf` (its positivity + zone structure), never on a model or provider. -/
+def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+  ∃ σ0 : NormalForm sig 1 4,
+    kvE2_sepPos qnf = [σ0] ∧
+    (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
+
 /-! ## Phases 3-5 — ⇒ soundness + assembly: now-attemptable over task 333's LANDED fold
 
 The ⇒ (soundness) half `.holds ⟹ ∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` — and hence the assembled
