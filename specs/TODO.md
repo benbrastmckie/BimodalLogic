@@ -146,8 +146,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 - **Summary**:
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
-- **Plan**: [335_outer_gate_assembly_engine_kvE2_body/plans/03_soundness-half-consume-333-lemmas.md]
 - **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/03_plan-currency-check-post-333.md]
+- **Plan**: [335_outer_gate_assembly_engine_kvE2_body/plans/04_outer-gate-post-333-v4.md]
 
 **Description**: Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.
 
