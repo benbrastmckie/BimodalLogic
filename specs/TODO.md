@@ -12,13 +12,12 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,335 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,321,341 | 161,187,191,194,230,291,300,335 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309,333 | 189,192,196,321 | automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,333,335 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,300,333,335 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
+| 5 | 303 | 305 | completeness |
+| 6 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,13 +109,14 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-335 [PARTIAL] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-  └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-    └─ 333 [IMPLEMENTING] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+335 [PLANNED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
+
+333 [PLANNED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+  └─ 309 [BLOCKED] — (kamp_theorem_formalization: Build the off-diagonal two-anchor naviga) (see above)
 
 ## Tasks
 
@@ -156,7 +156,7 @@ AFTER COMPLETION: task 337 stays [BLOCKED] until this task lands; then re-plan 3
 - **Task Type**: lean4
 - **Dependencies**: Task 340, Task 337, Task 335
 
-**Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state (SharedWitness.lean ~3540 lines; SubBracket2V.lean ~2160; CarrierK1V.lean ~2100). Goals: (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite reports 05-09). (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (e.g. any residual 339 region-primary machinery, obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. MUST run AFTER the active carrier chain (tasks 340 per-slot refinement, 337 holds builder, 335 outer gate) completes, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph and proposes the module split before moving code.
+**Description**: Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged.
 
 ---
 
@@ -239,15 +239,15 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 ---
 
 ### 335. Outer gate assembly engine kvE2 body
-- **Status**: [PARTIAL]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 334, Task 337
 - **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/01_outer-gate-assembly-engine.md]
-- **Plan**: [335_outer_gate_assembly_engine_kvE2_body/plans/01_outer-gate-assembly.md]
 - **Summary**:
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
+- **Plan**: [335_outer_gate_assembly_engine_kvE2_body/plans/03_soundness-half-consume-333-lemmas.md]
 
 **Description**: Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.
 
@@ -268,12 +268,14 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 ---
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: Task 321, Task 332
 - **Summary**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md]
-- **Research**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/02_post334-soundness-extraction-frontier.md]
-- **Plan**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/04_post334-soundness-extraction.md]
+- **Research**:
+  - [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/02_post334-soundness-extraction-frontier.md]
+  - [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md]
+- **Plan**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/05_kit-application-and-outer-fold.md]
 
 **Description**: Successor to task 321 (F4 correctness gate): the bit-compatibility carrier redefinition that closes what task 321's additive-only v7 plan structurally could not. Task 321 reached a scoped PARTIAL: the O4 hgate forward-zone coverage residue does not close additively at singleton size (needs six interlocking LITMUS/no-nesting-constrained lemmas), and the multi-positive-sub fragment was deferred at the Phase 10 gate. Both route to the SAME fix identified by the crux analysis: redefine kvE2_sepArrL / kvE2_sepArrR (currently arrangement-blind) with bit-compatibility FILTERING so the interleaving enumeration only admits realizations whose zone bits are compatible with each sigma's fold content. This is a Phase-7 carrier RE-DEFINITION (out of task 321's additive scope; it kills the current canonical-list non-vacuity proof, which must be re-established). Deliverables: (1) redefined kvE2_sepArrL/R + restored non-vacuity; (2) discharge task 321's two remaining strategic sorries in SharedWitness.lean (kvE2_sepSingleton_coverage_left:1796, kvE2_sepBody_singleton_complete_left:1952) for the single-positive fragment; (3) lift to the full multi-positive-sub correctness pair; (4) run Phase 12 (N2-C gate wrapper) and Phase 13 (F4 Z adversarial LHS-FALSE + GO verdict record) from task 321's v7 plan; (5) full lake build green + axiom-clean surviving public API. Faithfulness constraints from 321 remain binding: Rabinovich 2014 Lemma 5.1 quantifier-free point types, no-nesting audit, LITMUS (no x1<e_i), F4 adversarial test must discriminate. Do not run concurrently with 321/332 (file_scope overlap on SharedWitness / NfMultiAnchorBridge).
 
@@ -515,7 +517,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
 
 ### 321. Implement corrected k2 carrier and close the correctness gate f4 resolution
 - **Effort**: 10-16 hours
-- **Status**: [PARTIAL]
+- **Status**: [EXPANDED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 320, Task 326, Task 330, Task 331, Task 335, Task 336
@@ -524,6 +526,7 @@ AFTER COMPLETION: resume task 321 via /revise 321 (fold this task's delivered co
   - [320_derisk_jointpinning_route_for_the_k2_carrier_gate_f4_followup/reports/01_literature-alignment.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/06_faithful-separate-bracket-architecture.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/07_v7-consolidated-faithful-route.md]
+  - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/reports/10_supersession-decision.md]
 - **Plan**:
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/02_corrected-k2-carrier-fi-chain-v2.md]
   - [321_implement_corrected_k2_carrier_and_close_the_correctness_gate_f4_resolution/plans/03_corrected-k2-carrier-gate-v3.md]
@@ -766,7 +769,7 @@ GOAL STATE: lake build GREEN (scoped: the new file/module + its dependents); the
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 310, Task 311, Task 320, Task 321
+- **Dependencies**: Task 310, Task 311, Task 320, Task 333
 - **Research**: [307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md]
 - **Plan**: [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
 

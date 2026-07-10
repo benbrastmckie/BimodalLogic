@@ -1,10 +1,22 @@
 {
   "version": 1,
-  "updated": "2026-07-06T12:36:59Z",
+  "updated": "2026-07-09T00:00:00Z",
   "entries": [
     {
       "doc_id": "rabinovich_2014",
-      "reason": "Task 305: primary source — A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)"
+      "reason": "Task 305: primary source — A Proof of Kamp Theorem (Prop 4.3, Cor 5.4, F_i chains)",
+      "citation_rule": "CITE THE PDF BY PAGE NUMBER ONLY (e.g. 'Rabinovich 2014, p.4'). NEVER cite md:NN line numbers.",
+      "hazard": "The companion .md was a hand-written PARAPHRASE until 2026-07-09T23:58:17Z (preserved as *.md.bak-20260709T235817Z, 245 lines). It was then replaced by a PDF text-extract (494 lines). BOTH are unsafe for load-bearing claims: (a) the paraphrase invented structure the paper does not have and mis-stated Def 7.5 as a 'half-open interval'; (b) the current extract DROPS EVERY DISPLAYED EQUATION — Def 3.1 reads 'is a formula of the form:' followed by a blank line, as does Lemma 5.1 (~10 such truncations) — and semantically inverts 'k != m' to 'k = m' at md:199. Consequently ALL md:NN citations across this repo now dangle, including 89 in-code citations in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, ...). Those 89 are KNOWN and deliberately left unfixed for now; do not trust them.",
+      "known_corrections": [
+        "Lemma 3.2 (p.4) is prefaced 'It is clear that' and has NO PRINTED PROOF anywhere in the 16 pages. Do not attribute any mechanism to 'the proof of Lemma 3.2(1)'.",
+        "The tie-collapse (coincident witnesses merge to one slot whose type is the CONJUNCTION of the tied types) is FORCED BY Definition 3.1 (p.4): the witness chain is strict (xn > ... > x0) and the pinning indices i0..im in {0..n} carry no distinctness requirement. Corroborated by the k=m case split (p.7) and Def 7.5 (p.13).",
+        "Mandated citation form: 'the construction forced by Def 3.1 (p.4), corroborated by the k=m split (p.7) and Def 7.5 (p.13); Lemma 3.2(1) (p.4) states the closure without printed proof.'",
+        "Def 7.5 (p.13) is NOT a half-open interval restriction; it is a 3-alternative definition including z0 > z1 and z0 = z1."
+      ],
+      "audits": [
+        "specs/342_rework_kve2_sep_arrangement_carrier_with_interiorrestricted_owner_index_and_tieadmitting_weak_orders/reports/01_rabinovich-fidelity-audit.md",
+        "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md"
+      ]
     },
     {
       "doc_id": "kamp_1968_tense-logic-linear-order",
