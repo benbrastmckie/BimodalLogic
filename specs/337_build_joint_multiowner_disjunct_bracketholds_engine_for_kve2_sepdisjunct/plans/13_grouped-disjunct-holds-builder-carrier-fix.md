@@ -332,7 +332,26 @@ definition, so that every `.rXW` slot value is provably `< w`.
 
 ---
 
-### Phase 3: O1 — class witness order and range (unblocked by Phase 2) [IN PROGRESS]
+### Phase 3: O1 — class witness order and range (unblocked by Phase 2) [COMPLETED]
+
+**Phase 3 completion note (task 337, session sess_1783639750_29c89e_337):**
+- Landed `kvE2_sepTieRuns_key_strictMono` (generic combinatorial: key-sorted list ⟹ runs strictly
+  key-increasing across classes), and the value-transfer pair `kvE2_sepTieGroupedL_strictMono` /
+  `kvE2_sepTieGroupedR_strictMono` — exactly report 14 verdict (b)'s prescribed additive fix
+  (assembles five landed Phase-1 assets; `≤` via `List.pairwise_flatten` + `≠` via key-distinct
+  through the primed bridge and `kvE2_sepSlotHonestVIdx_eq_iff`). Builder consumes the PRIMED order.
+- Landed the pivot/range per-slot bounds: `kvE2_sepSlotsLFor_value_bound` (LEFT slot value ∈ (x,w)),
+  `kvE2_sepSlotsRFor_value_bound` (RIGHT slot value ∈ (w,t)), and their merged-list corollaries
+  `kvE2_sepSlotsLOf_honestOrder'_value_bound` / `...ROf...`. `usL`-last `< w` from per-slot value
+  specs (NOT value-sortedness; plan 12 line 140 mis-mitigation stays retracted). rXW below-pivot
+  bound consumed from the landed Phase-2 `_rXW_spec`.
+- **Deviation (altered — assembly-level `hsort` deferred to Phase 7):** the final
+  `(usL ++ w :: usR).Pairwise (· < ·)` in `kvE2_sepBracketN_construct`'s `hsort` shape is assembled
+  in Phase 7 where `usL`/`usR` (the concrete class-value lists) are fixed. Phase 3 lands the strict
+  monotonicity + pivot/range as reusable standalone lemmas (report 14's "the fix"), which Phase 7
+  combines. No `x1 < e_i` literal introduced; all bounds ride the bracket range `x`/`w`/`t` and the
+  per-slot value specs. All 7 new lemmas axiom-clean `{propext, Classical.choice, Quot.sound}`
+  (the generic one only `{propext, Quot.sound}`); SharedWitness `sorry` count still 7 (all prose).
 
 - **Goal:** Prove strict cross-class monotonicity of the combined list `usL ++ w :: usR` and the
   pivot/range facts in the exact shape `kvE2_sepBracketN_construct` (`hsort`, SW:5363) demands. With
