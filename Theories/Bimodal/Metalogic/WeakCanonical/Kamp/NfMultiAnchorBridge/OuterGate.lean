@@ -207,6 +207,46 @@ verified INPUTS, applied never re-proved). Per zero-debt discipline: NO `sorry`,
 placeholder, NO assumed family, NO interiority hypothesis on any live path. Rabinovich cited by PDF
 page only: the depth-2 assembly follows Def 3.1 (p.4) point-type/ordering split and the §5 bracket
 assembly with quantifier-free point types (pp.7-9); Lemma 3.2(1) (p.4) states the closure without
-printed proof. -/
+printed proof.
+
+**BLOCKER (task 335 Phases 4a/4b/4c — recorded after a genuine attempt; escalated to user).**
+The ⇒ soundness half is NOT delivered. The Phase-4c reduction typechecks —
+`intro h_holds; rw [bracketEndChar_kvE2_two_eq] at h_holds; refine kvE2_outer_fold … h_holds
+?hgateL ?hgateR ?hbdry ?hexcl` leaves exactly the four family goals with `h_holds :
+(kvE2_sepBody …).holds` in context — but NONE of the four families is dischargeable from
+`h_holds` + `ExistProviders.correct` at `charK := fun χ => P.existF 0 χ`. The plan's premise that
+Phase 4a (`hgateL`/`hgateR`) is "bounded (the machinery exists)" is INCORRECT: the interior gate is
+NOT bounded, for the same root cause as 4b.
+
+Root cause (multiply confirmed, machine-checked):
+- Each gate family carries a FORWARD clause `(∃ v, zoneHolds [a,w,x,t] zs v ∧ nf_eval_nf M 0 1 v χ)
+  → σ.2 (nf0_assemble zs χ σ.1) = true` (fold SW:9919-9923 / 9936-9940). Its ONLY producer is
+  `nf_eval_depth1_fold_iff` (`CarrierKv.lean`, cited `SubBracket2.lean:519`) applied to σ's OWN
+  honest depth-1 realization `nf_eval_nf M 1 4 [x1,w,x,t] σ` — which is exactly what soundness must
+  PRODUCE. Circular.
+- The only extractor from `.holds`, `kvE2_sepBody_extract` (SW:8410), yields ONLY the endpoints,
+  the pivot `w`, and the interior BUNDLES `kvE2_sepBundleL/R` (anchor `x1` + `zXU`-below witnesses).
+  It does NOT yield the full per-σ `nf_eval_nf M 1 4 …` nor the gate forward/backward clauses. No
+  `.holds → per-σ full realization` lemma exists anywhere in the tree.
+- `ExistProviders.correct` at `P.existF 0` yields only `nf_eval_nf M 1 1 (fun _ => a)
+  (nfk_projFresh σ)` — the PROJECTED FRESH arity-1 type at `a`, strictly weaker than σ's arity-4
+  content. This is precisely the `(outer zone, projected 1-type)` information loss machine-certified
+  by `bracketEndChar_kv_factors` (`CarrierKv.lean:422`), whose docstring states it "refutes the
+  unconditional k≥2 soundness direction". The forward clause is refutable in a rich model (an
+  arbitrary `qnf` whose `σ.2` leaves some realizable `(zs,χ)` false).
+- 333 landed `kvE2_outer_fold` taking all four families as HYPOTHESES rather than deriving them —
+  the strongest signal that the faithful carrier does not pin them.
+
+Classification (per plan v4 escalation branch): this is BOTH (a) a `SharedWitness.lean` reshape —
+`kvE2_outer_fold`/`kvE2_sepBody` would have to be reshaped so the gate is derived from `.holds`
+internally or weakened to what the carrier pins (333 TERRITORY — 335 must NOT edit
+`SharedWitness.lean`) — AND (b) an unmet A1-conditionality: `charK := P.existF 0` (an arity-1
+provider on the projected fresh type) cannot force σ's arity-4 joint content; discharging would
+need either a stronger provider contract (a higher-arity `charK`, changing the `ExistProviders`
+interface / `KampPrior` instantiation) or a CONDITIONAL gate — and a conditional gate FAILS the
+UNCONDITIONAL `BracketCarrierCorrectVPrior` that task 309 requires. Per zero-debt discipline no
+`sorry`, no vacuous close, no assumed family, and no conditional gate was committed; the file is
+left at its Phase-3-green state (Phase 1/2 decls + this note). See
+`specs/335_.../handoffs/01_continuation.md` for the captured goal transcript and resume plan. -/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

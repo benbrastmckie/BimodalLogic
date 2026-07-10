@@ -229,7 +229,14 @@ lands no proof but removes the doubly-stale mental model. Independent of the ⇒
 
 ---
 
-### Phase 4a: Construct the interior gate families `hgateL`/`hgateR` [NOT STARTED]
+### Phase 4a: Construct the interior gate families `hgateL`/`hgateR` [BLOCKED]
+
+**BLOCKER** (Phases 4a/4b/4c — single shared root cause; see the consolidated blocker entry under
+Phase 4b below). The plan's premise that 4a is "bounded (the machinery exists)" is INCORRECT: the
+interior `hgateL`/`hgateR` gate families carry the same underdetermined FORWARD clause as `hbdry`,
+and `kvE2_sepBody_extract` yields only the interior *bundles*, never the gate. 4a does not close from
+the extract + kit; it is blocked by the identical obstruction as 4b.
+
 
 **Goal**: Build the two interior LEFT/RIGHT per-σ gate families in the exact shape
 `kvE2_outer_fold` expects (SW:9911-9945), as local `have`s over the
@@ -265,7 +272,42 @@ lemmas `bracketEndChar_kvE2_hgateL` / `_hgateR` for readability — 335's own fi
 
 ---
 
-### Phase 4b: Discharge `hbdry` and `hexcl` at `charK := P.existF 0` — THE GENUINE RISK [NOT STARTED]
+### Phase 4b: Discharge `hbdry` and `hexcl` at `charK := P.existF 0` — THE GENUINE RISK [BLOCKED]
+
+**BLOCKER** (Phases 4a + 4b + 4c — consolidated; recorded after a genuine attempt, escalated to user):
+- **What failed**: Constructing the four provider-conditional families `hgateL`/`hgateR`/`hbdry`/`hexcl`
+  that the LANDED `kvE2_outer_fold` (SW:9897) requires, at `charK := fun χ => P.existF 0 χ`. The
+  Phase-4c reduction `intro h_holds; rw [bracketEndChar_kvE2_two_eq] at h_holds; refine kvE2_outer_fold
+  … h_holds ?hgateL ?hgateR ?hbdry ?hexcl` TYPECHECKS (order bits accepted as defeq to `qnf.1`;
+  `h_holds : (kvE2_sepBody …).holds` in context for all four goals) — but none of the four goals closes.
+- **What was tried** (genuine attempt, captured with `lean_goal`): (1) inspected all four residual goals
+  in context; (2) traced the gate FORWARD clause `(∃ v, zoneHolds [a,w,x,t] zs v ∧ nf_eval_nf M 0 1 v χ)
+  → σ.2 (nf0_assemble zs χ σ.1) = true` to its only producer, `nf_eval_depth1_fold_iff` applied to σ's
+  OWN honest depth-1 realization `nf_eval_nf M 1 4 [x1,w,x,t] σ` (SubBracket2.lean:519 context) — which
+  is exactly what soundness must PRODUCE (circular); (3) confirmed `kvE2_sepBody_extract` (SW:8410) — the
+  ONLY `.holds` extractor — yields only endpoints + pivot + the interior BUNDLES `kvE2_sepBundleL/R`
+  (anchor + `zXU`-below witnesses), never the full per-σ realization nor the gate clauses; (4) confirmed
+  no `.holds → per-σ full realization` lemma exists in the tree.
+- **Why it's stuck**: `ExistProviders.correct` at `P.existF 0` yields only `nf_eval_nf M 1 1 (fun _ => a)
+  (nfk_projFresh σ)` — the PROJECTED FRESH arity-1 type at `a`, strictly weaker than σ's arity-4 joint
+  content. This is exactly the `(outer zone, projected 1-type)` information loss machine-certified by
+  `bracketEndChar_kv_factors` (`CarrierKv.lean:422`), whose docstring states it "refutes the
+  unconditional k≥2 soundness direction". The FORWARD clause is refutable in a rich model for arbitrary
+  `qnf` (`σ.2` need not mark every model-realizable `(zs,χ)`). 333 landed the fold taking all four
+  families as HYPOTHESES (never derived) — the strongest signal the faithful carrier does not pin them.
+- **What is needed / classification** (BOTH branches of the plan's escalation):
+  - **(a) `SharedWitness.lean` reshape (333 TERRITORY)**: `kvE2_outer_fold`/`kvE2_sepBody` must be
+    reshaped so the gate is derived from `.holds` internally or weakened to what the carrier pins. 335
+    must NOT edit `SharedWitness.lean` — this requires re-opening/coordinating with 333 or a 333-scoped
+    spawn. Further delays 341.
+  - **(b) Unmet A1-conditionality (309-relevant)**: making the gate dischargeable needs either a
+    STRONGER provider contract (a higher-arity `charK` pinning σ's full arity-4 content, changing the
+    `ExistProviders` interface / `KampPrior` instantiation) or accepting a CONDITIONAL gate — and a
+    conditional gate FAILS the UNCONDITIONAL `BracketCarrierCorrectVPrior` that task 309 needs.
+- **Prohibited workarounds** (none used): NO `sorry`/`admit`, NO `def X := True`/vacuous close, NO
+  assumed family, NO conditional gate committed as final, NO interiority hypothesis. `OuterGate.lean`
+  is left at its Phase-3-green state (Phase 1/2 decls + the corrected note incl. this blocker).
+
 
 **Goal**: Construct the non-interior positive realization family `hbdry` (SW:9946) and the negative-sub
 exclusion family `hexcl` (SW:9952) from `ExistProviders.correct` (`PriorInterface.lean:38`) +
@@ -319,7 +361,11 @@ mandatory escalation branch and MUST NOT be closed vacuously or by adding a hypo
 
 ---
 
-### Phase 4c: Wrap into `bracketEndChar_kvE2_sound_two_prior` via `kvE2_outer_fold` [NOT STARTED]
+### Phase 4c: Wrap into `bracketEndChar_kvE2_sound_two_prior` via `kvE2_outer_fold` [BLOCKED]
+
+**BLOCKER**: HALTED — depends on 4a AND 4b, both BLOCKED (see the consolidated blocker under Phase 4b).
+The reduction to `kvE2_outer_fold` typechecks; the four family goals it leaves are the blocker.
+
 
 **Goal**: Assemble the ⇒ (mp) direction as a standalone lemma over the `BracketCarrierCorrectVPrior`
 context, feeding `kvE2_outer_fold` the four families from 4a/4b.
