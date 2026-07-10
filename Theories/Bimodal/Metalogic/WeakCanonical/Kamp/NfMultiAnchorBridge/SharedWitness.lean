@@ -9668,7 +9668,8 @@ bounded interior placement (p.9). -/
     `kvE_subBracket2V_sound_of_outer` composition pattern, `SubBracket2V.lean:1514-1517`).
     Instantiated at the standard `charBase = nf_depth0_char_formula atomMap h_surj`, under
     which the bundle's below-anchor witnesses unify with the closer's expected shapes with no
-    coercion. Bounds ride the bracket's own ordering (FM-x1t; no `x1 < e_i` literal, LITMUS). -/
+    coercion. Bounds ride the bracket's own ordering (FM-x1t; never a fresh-witness/slot
+    relative-position formula literal — LITMUS). -/
 theorem kvE2_sepBundleL_sound {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -9698,5 +9699,152 @@ theorem kvE2_sepBundleL_sound {sig : MonadicSignature}
     kvE2_sepBundleL_parts (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap hwt h
   exact kvE_subBracket2V_sound_of_parts atomMap h_surj charK σ M w x t x1 hxx1 hx1t hanchor
     hbelow hgate
+
+/-- **RIGHT-interior kit application** (Phase 3 — the plan-v4 MEDIUM-risk residual,
+    discharged by the anticipated kit-application lemma). The landed closer
+    `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1290`) does NOT serve this class
+    directly — three signature facts, each read off HEAD source:
+    (a) its `hgate` conclusion opens with `a < w` (`SubBracket2V.lean:1305`), but
+    `kvE2_sepBundleR` supplies the anchor with `w < x1`, so a truthful gate can never be fed
+    the right bundle's anchor;
+    (b) `kvE2_sepBundleR_parts` (SW above) deliberately drops the below-clause — no `hbelow`
+    in the closer's `kvE_sub2_zXU` shape exists for this class (for a RIGHT-interior σ that
+    pattern reads `x < v < w`, the zone-constant header above);
+    (c) the bundle's witnesses live in the right-interior middle region `kvE2_sep_zWX1`
+    (`w < v < x1`), a zone the left closer's gate-backward clause does not exempt.
+    This lemma is the geometry-correct mirror, proved from scratch against the same engine
+    (`nf_eval_depth1_fold_iff`, `CarrierKv.lean:466`): the gate's backward clause exempts
+    `kvE2_sep_zWX1` (instead of `kvE_sub2_zXU`), whose witnesses the bundle supplies. The
+    left closer's `a < w ∧ w < t` head conjuncts are NOT mirrored: in the right geometry the
+    corresponding order facts (`w < a`, `a < t`) are already the gate's own antecedents, and
+    `x < w` is this lemma's hypothesis. The bit `σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1)` is
+    consumed as the antecedent of the bundle's own `bit ⟹ witness` implication — self-owned,
+    never a goal. NO filter weakened; `hgate` an explicit threaded hypothesis (Amendment F3),
+    never assumed. Bounds ride the model order (`x < w < u < x1 < t`), never a formula
+    literal (LITMUS). Rabinovich 2014: Notation 5.2 mirrored slot group (pp.7-8), Cor 5.4
+    bounded interior placement (p.9). -/
+theorem kvE2_sepBundleR_sound {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w)
+    (h : kvE2_sepBundleR (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap w t)
+    (hgate : ∀ a : M.carrier, w < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE2_sep_zWX1 →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    ∃ x1 : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  obtain ⟨x1, hwx1, hx1t, hpt, hbelow⟩ := h
+  have hanchor :=
+    kvE2_sepPtX1R_anchor (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap x1 hpt
+  obtain ⟨h_atom, h_off, h_fwd, h_bwd⟩ := hgate x1 hwx1 hx1t hanchor
+  refine ⟨x1, ?_⟩
+  rw [nf_eval_depth1_fold_iff]
+  refine ⟨h_atom, ?_, h_off⟩
+  intro zs χ
+  refine ⟨fun hex => h_fwd zs χ hex, ?_⟩
+  intro hbit
+  by_cases hzs : zs = kvE2_sep_zWX1
+  · -- Right-interior middle region `zWX1 = (w < v < x1)`: the bundle's own below-witness
+    -- clause supplies a witness strictly between `w` and the anchor `x1` (Def 3.1, PDF p.4).
+    subst hzs
+    obtain ⟨u, hwu, hux1, hu⟩ := hbelow χ hbit
+    refine ⟨u, ?_, (nfPred_correct M atomMap h_surj χ u).mp hu⟩
+    -- `u` lies in `zWX1` relative to env `[x1, w, x, t]` under `x < w < u < x1 < t`.
+    have hxu : x < u := hxw.trans hwu
+    have hut : u < t := hux1.trans hx1t
+    intro i
+    match i with
+    | ⟨0, _⟩ => exact ⟨iff_of_true hux1 rfl, iff_of_false (lt_asymm hux1) (by decide +revert)⟩
+    | ⟨1, _⟩ => exact ⟨iff_of_false (lt_asymm hwu) (by decide +revert), iff_of_true hwu rfl⟩
+    | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxu) (by decide +revert), iff_of_true hxu rfl⟩
+    | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
+  · -- Every other zone: the gate's backward direction (analog of `kvE_gate` honesty).
+    exact h_bwd zs χ hzs hbit
+
+/-- **Per-σ kit application over a realized body** (Phase 3 terminus — the Phase 4 input
+    shape): from any realized `kvE2_sepBody` (whose held disjunct rides an arbitrary
+    `wo ∈ kvE2_sepArr' qnf` inside the hypothesis-free `kvE2_sepBody_extract`) and per-class
+    gate families at the extracted shared pivot, EVERY positive interior owner's depth-1
+    `nf_eval` is realized at that pivot: left class via `kvE2_sepBundleL_parts` →
+    `kvE_subBracket2V_sound_of_parts` (`kvE2_sepBundleL_sound`), right class via the mirrored
+    `kvE2_sepBundleR_sound`. The gate families quantify over the pivot because the extraction
+    produces `w` existentially; each gate stays an explicit threaded hypothesis (Amendment F3
+    — never assumed). All bits consumed are self-owned enumeration antecedents. -/
+theorem kvE2_sepBody_kit_sound {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (x t : M.carrier)
+    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
+    (hgateL : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+      ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ))
+    (hgateR : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+      ∀ a : M.carrier, w < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE2_sep_zWX1 →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ)) :
+    (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap x ∧
+    (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap t ∧
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) := by
+  obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, hL, hR⟩ :=
+    kvE2_sepBody_extract (nf_depth0_char_formula atomMap h_surj) charK qnf M atomMap x t h
+  refine ⟨hEpL, hEpR, w, hxw, hwt, hptW, ?_, ?_⟩
+  · intro σ hσ hz
+    exact kvE2_sepBundleL_sound atomMap h_surj charK σ M w x t hwt (hL σ hσ hz)
+      (hgateL w hxw hwt hptW σ hσ hz)
+  · intro σ hσ hz
+    exact kvE2_sepBundleR_sound atomMap h_surj charK σ M w x t hxw (hR σ hσ hz)
+      (hgateR w hxw hwt hptW σ hσ hz)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
