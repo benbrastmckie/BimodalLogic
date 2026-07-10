@@ -4479,6 +4479,34 @@ theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature}
   exact kvE2_sepSlotLe_same hsub
     (kvE2_sep_rank_le_of_gidx_le qnf hwo hpe hba hbb hreg hle)
 
+/-! **R2 exact-shape discharge — NOT derivable from `kvE2_sepDisjValid` (task 333 Phase 2
+blocker record, machine-checked residues).** The full `kvE2_sepBody_extract` shapes
+(`hpairL`/`hpairR`: `Pairwise (kvE2_sepSlotLe · · = true)`; `hnd`:
+`(… .map (kvE2_sepSlotGIdx wo)).Nodup`, SW:6331-6340) are FALSE over arbitrary
+`wo ∈ kvE2_sepArr' qnf`:
+
+* **Cross-owner half of `hpair`**: for a cross-owner sorted pair the relation is
+  `kvE2_sepCompat a b`, which at a fresh-adjacent pair reads the fresh owner's OPEN
+  `zXU`/`zUW` bit at the foreign 1-type (`kvE2_sepCompat_lX1_eq`). NO
+  `kvE2_sepDisjValid` conjunct reads a cross-owner OPEN bit: (i) reads each owner's OWN
+  tag bit at its OWN fresh type, (ii) is per-owner payload consistency, (iii') is
+  anchor-payload distinctness, (iv) reads only CLOSED keys at payload ties. A valid `wo`
+  placing a foreign `.lXU τ χ` payload below `.lX1 σ` with
+  `kvE2_sepBits σ kvE_sub2_zXU χ = false` realizes the failure.
+* **`hnd`**: base-base payload ties are DELIBERATELY admitted (conjunct (iii) removal —
+  the Lemma 3.2(1) equality-case completeness repair; `kvE2_sepAnchorDistinct` docstring:
+  "base slots may tie freely"). A tied payload duplicates the mapped `kvE2_sepSlotGIdx`
+  value, so the `.map` is not `Nodup`.
+
+This matches the carrier's own annotations: `kvE2_sepBody_extract` (SW:6320-6327) calls
+`hnd` a restriction "to the TIE-FREE configuration" whose tie-admitting replacement "is
+the Phases 8-10 arbitration item", and the task-334 note (SW:6313-6318) says the `hpair`
+facts "hold whenever the canonical union is a single region-sorted block". The same-owner
+`Pairwise` core above is the part of R2 that IS a validity consequence; the cross-owner
+and no-tie halves are properties of the SPECIFIC realized weak order, to be threaded as
+per-`wo` hypotheses (or discharged by the grouped tie-admitting extraction), never as
+`∀ wo ∈ kvE2_sepArr'` lemmas. -/
+
 /-! ### Task 337 Phase 1 — strict base realizers in the whole side interval (region `hreal`)
 
 The engine `k1v_sorted_realizationK`'s `hreal` obligation asks, for every base 1-type `χ` placed in a

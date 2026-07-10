@@ -268,7 +268,71 @@ integer `1`-`4` is the canonical phase number used by the wave table, `Depends o
 - **Depends on:** none
 - **Do NOT re-plan or re-run.** Carried forward for provenance only.
 
-### Phase 2: R2 — Soundness side-conditions: `Pairwise`/`Nodup` over arbitrary `wo ∈ kvE2_sepArr'` [IN PROGRESS]
+### Phase 2: R2 — Soundness side-conditions: `Pairwise`/`Nodup` over arbitrary `wo ∈ kvE2_sepArr'` [BLOCKED]
+
+**BLOCKER** (Phase 2, dispatch sess_1783679696_817168): the three exact-shape universal
+statements are FALSE for general `qnf`, hence unprovable. The phase premise ("mechanical,
+correctly stated" — report 03 §C.3) is a plan defect.
+
+- **What failed**: the exact-shape `hpairL` and `hnd` lemmas. Machine-checked residual goals
+  (via `lean_goal` on structured proof attempts against live HEAD, both landed halves green):
+  - Cross-owner `hpair` residue (all provable structure discharged, `lean_state_search` no hit):
+    ```
+    hwo : wo ∈ kvE2_sepArr' qnf
+    hkey : kvE2_sepSlotMergeLe wo a b = true
+    hsub : ¬kvE2_sepSlotSub a = kvE2_sepSlotSub b
+    ⊢ kvE2_sepCompat a b = true
+    ```
+  - `hnd` residue:
+    ```
+    hwo : wo ∈ kvE2_sepArr' qnf
+    hx : x ∈ kvE2_sepSlotsLOf wo
+    hy : y ∈ kvE2_sepSlotsLOf wo
+    heq : kvE2_sepSlotGIdx wo x = kvE2_sepSlotGIdx wo y
+    ⊢ x = y
+    ```
+- **What was tried**: (1) full decomposition through `kvE2_sepSlotsLOf_mergeSorted` +
+  `List.Pairwise.imp_of_mem` — the SAME-OWNER half IS provable from conjunct (ii) and is
+  LANDED green + axiom-clean (`kvE2_sepSlotsL/ROf_pairwise_sameOwner`, plus
+  `kvE2_sepArr'_consistent`, `kvE2_sep_find?_owner_entry`, `kvE2_sepSlotGIdx_read`,
+  `kvE2_sep_rank_le_of_gidx_le`, commit 98c1b6afa); (2) `List.Nodup.map_on` over
+  `kvE2_sepSlotsLOf_nodup` for `hnd`, leaving GIdx-injectivity; (3) `lean_state_search` on the
+  compat residue — no relevant lemma.
+- **Why stuck (counterexample construction)**: `kvE2_sepDisjValid` (SW:1767-1772) = (i)
+  per-owner tag bits ∧ (ii) per-owner region consistency ∧ (iii') anchor distinctness ∧ (iv)
+  CLOSED-key tie reads. NO conjunct reads a cross-owner OPEN bit at a foreign 1-type, and
+  payload tuples are enumerated freely (`kvE2_sepIdxTuplesN` = all bounded lists).
+  - `hpairL` counterexample: two LEFT-interior owners σ ≠ τ, χ ∈ `kvE2_sepS τ kvE_sub2_zXU`
+    with `kvE2_sepBits σ kvE_sub2_zXU χ = false`; give τ's block payloads all below σ's
+    (strictly monotone in-region, all distinct). All four conjuncts pass, so
+    `wo ∈ kvE2_sepArr' qnf`; the sorted L-list places `.lXU τ χ` before `.lX1 σ`, and
+    `kvE2_sepSlotLe (.lXU τ χ) (.lX1 σ) = kvE2_sepCompat … = kvE2_sepBits σ kvE_sub2_zXU χ
+    = false` (`kvE2_sepCompat_lX1_eq`, SW:984). `Pairwise` fails.
+  - `hnd` counterexample: two same-rank base slots (`.lXU σ χ₁`, `.lXU σ χ₂`, χ₁ ≠ χ₂) with
+    EQUAL payload entries — admitted, since (ii) constrains only strict-rank pairs and (iv) is
+    silent on base-base ties ("base slots may tie freely", SW:1619-1620; conjunct (iii)
+    removal SW:1756-1759 is the deliberate task-342 completeness repair). The mapped GIdx list
+    duplicates.
+  - The carrier's own annotations already state this: `kvE2_sepBody_extract` (SW:6320-6327)
+    calls `hnd` a restriction "to the TIE-FREE configuration" whose tie-admitting replacement
+    "is the Phases 8-10 arbitration item, NOT a Phase-7 obligation"; the task-334 note
+    (SW:6313-6318) says the `hpair` facts "hold whenever the canonical union is a single
+    region-sorted block". Reports 02/03 mis-promoted these configuration restrictions to
+    universally dischargeable side-conditions.
+- **What is needed** (either, via plan revision — decision above Phase-2 pay grade):
+  1. **Tie-admitting extraction route** (matches landed design intent): replace/extend
+     `kvE2_sepBody_extract` per its own docstring — read per-class witnesses through
+     `kvE2_sepClassType_eval_mem` on the GROUPED disjunct (`kvE2_sepTieGroupedL/R`), taking
+     per-`wo` hypotheses only where genuinely wo-dependent. The landed same-owner core serves
+     this route unchanged.
+  2. **Filter-strengthening route** (heavier, touches the carrier): add cross-owner-compat and
+     no-tie conjuncts to `kvE2_sepDisjValid` — requires re-proving honest/coincident membership
+     (`kvE2_sepBody_complete` SW:3236, `kvE2_sepArr'_mem_coincident`,
+     `kvE2_sepHonestOrder'_mem_arr'`) and CONFLICTS with the task-342 tie-admission
+     completeness repair unless ties are re-encoded; risks re-opening the machine-certified
+     completeness hole. Not recommended without dedicated research.
+- **Prohibited**: no `sorry` skeletons were landed for the false statements; no filter was
+  weakened; `hgate` not assumed; no vacuous placeholder.
 
 - **Goal:** Prove the soundness-oriented `Pairwise`/`Nodup` lemmas over `kvE2_sepSlotsL/ROf wo` for
   **arbitrary** `wo ∈ kvE2_sepArr' qnf` (not just the honest order), discharging
@@ -277,15 +341,23 @@ integer `1`-`4` is the canonical phase number used by the wave table, `Depends o
   `kvE2_sepSlotsLOf_nodup` SW:4299 is `Nodup` of slots, not of `.map kvE2_sepSlotGIdx`). Unchanged
   from plan-02; the report calls it mechanical and correctly stated.
 - **Tasks:**
-  - [ ] Prove `∀ wo ∈ kvE2_sepArr' qnf, (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true)`
-        and the R analogue (`hpairL`/`hpairR` shape).
+  - [x] Prove `∀ wo ∈ kvE2_sepArr' qnf, (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true)`
+        and the R analogue (`hpairL`/`hpairR` shape). *(deviation: altered — SAME-OWNER half
+        landed as `kvE2_sepSlotsL/ROf_pairwise_sameOwner` (green, axiom-clean); the cross-owner
+        half is FALSE over arbitrary `wo ∈ kvE2_sepArr'` — see BLOCKER record)*
   - [ ] Prove `∀ wo ∈ kvE2_sepArr' qnf, ((kvE2_sepSlotsLOf wo).map (kvE2_sepSlotGIdx wo)).Nodup ∧ ((kvE2_sepSlotsROf wo).map (kvE2_sepSlotGIdx wo)).Nodup`
-        (`hnd` shape).
-  - [ ] Derive from `wo ∈ kvE2_sepArr'` (a valid weak order) via the in-file `List.Pairwise` /
+        (`hnd` shape). *(deviation: skipped — statement FALSE: base-base payload ties are
+        deliberately admitted by the task-342 validity; see BLOCKER record)*
+  - [x] Derive from `wo ∈ kvE2_sepArr'` (a valid weak order) via the in-file `List.Pairwise` /
         `List.Nodup` / `List.mem_filter` / `List.mem_map` families — no new Mathlib search.
+        *(done for the provable core: `kvE2_sepArr'_consistent`, payload readers, same-owner
+        Pairwise; no new Mathlib search performed)*
   - [ ] State each lemma in the exact shape `kvE2_sepBody_extract` consumes so task 335 can thread
-        them into the OuterGate ⇒ path unchanged.
-  - [ ] Macro-side confinement audit (L only `(x,w)`, R only `(w,t)`); LITMUS 0 hits; no-nesting.
+        them into the OuterGate ⇒ path unchanged. *(deviation: skipped — the exact shapes are
+        unprovable; threading requires plan revision per BLOCKER "What is needed")*
+  - [x] Macro-side confinement audit (L only `(x,w)`, R only `(w,t)`); LITMUS 0 hits; no-nesting.
+        *(landed additions are pure list/ℕ lemmas: no zone bit read, no model-order literal,
+        no point types introduced — LITMUS 0 hits by construction)*
 - **Timing:** ~2-3 hours.
 - **Depends on:** none (R1 done; R2 is independent of the R1 cleanup)
 - **Estimated output:** ~120-250 lines (two Pairwise lemmas + two Nodup lemmas + glue).
