@@ -1,7 +1,7 @@
 # Implementation Plan: Route-A Grouped Extraction, Kit Application, and the Outer Depth-2 Fold (task 333)
 
 - **Task**: 333 - carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~7-10 hours remaining (Phase 1 COMPLETED; 3 phases open, one agent run each)
 - **Dependencies**: task 334 (COMPLETED — chartered carrier redefinition: `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`); task 342 (COMPLETED — interior-restricted owner index `kvE2_sepPosI`, tie-admitting weak orders, `hLR` deleted); task 321 (PARTIAL — predecessor lineage / DISSOLVED O4 crux record)
 - **Research Inputs**: reports/04_r2-blocker-repair-route.md (authoritative for Phase 2 — Lean-ready signatures, probe-verified); reports/03_pdf-fidelity-r3-dissolved-regrounding.md (PDF re-grounding, R3 dissolution); reports/02_post334-soundness-extraction-frontier.md (partly superseded — its R2 side-condition shapes are the mis-promotion this plan corrects)
@@ -497,7 +497,7 @@ ordering is effectively sequential.
   signature exactly); the 6 preserved-asset lemmas byte-unchanged; carrier structure
   byte-identical; LITMUS 0 hits; diff only `SharedWitness.lean`.
 
-### Phase 3: Per-σ kit application: thread bundles through `kvE2_sepBundleL/R_parts` into the sound kit [NOT STARTED]
+### Phase 3: Per-σ kit application: thread bundles through `kvE2_sepBundleL/R_parts` into the sound kit [COMPLETED]
 
 *(Wording-only restatement of v3's Phase 3 — report 04 §Q6: Route A's extraction produces
 bundles of the IDENTICAL shape, so the kit-threading content, timing, and done-criteria are
@@ -514,20 +514,42 @@ is FALSE and removed — and stale line refs corrected to SW:5359/5376.)*
   the `bit ⟹ witness` implication these bundles carry (`kvE2_sepBundleL` SW:5302), with the
   bit supplied by the owner's own arrangement enumeration — never a goal to prove true.
 - **Tasks:**
-  - [ ] For an arbitrary realized `wo ∈ kvE2_sepArr' qnf`, take the per-σ bundles from the
+  - [x] For an arbitrary realized `wo ∈ kvE2_sepArr' qnf`, take the per-σ bundles from the
         revised hypothesis-free `kvE2_sepBody_extract` (no side-conditions to discharge —
-        carrier membership alone suffices).
-  - [ ] Reduce each left-class bundle via `kvE2_sepBundleL_parts` (SW:5359) — "yields
+        carrier membership alone suffices). *(Materialized as the aggregate
+        `kvE2_sepBody_kit_sound`: extraction + both per-class appliers → per-σ `nf_eval`
+        at the shared pivot — the Phase 4 input shape.)*
+  - [x] Reduce each left-class bundle via `kvE2_sepBundleL_parts` (SW:5359) — "yields
         EXACTLY the `kvE_subBracket2V_sound_of_parts` input 5-tuple" — and feed
         `kvE_subBracket2V_sound_of_parts` to obtain the owner's `nf_eval`.
-  - [ ] **Verify the right-interior class kit application lands** (the one genuine
+        *(`kvE2_sepBundleL_sound`, commit `0e156a7a8`; the 5-tuple unifies with no
+        coercion at `charBase = nf_depth0_char_formula atomMap h_surj`.)*
+  - [x] **Verify the right-interior class kit application lands** (the one genuine
         residual; MEDIUM risk): reduce each right-class bundle via `kvE2_sepBundleR_parts`
         (SW:5376) into the same closer. If it does not discharge, add a kit-application
         lemma in `SharedWitness.lean` — never weaken a filter, never assume `hgate`.
-  - [ ] Confirm the bit consumed at each owner is self-owned (from that owner's arrangement
+        *(deviation: altered as the mitigation anticipated — the direct feed into the
+        landed closer is REFUTED by three signature reads: (a) `hgate` concludes `a < w`
+        (SubBracket2V:1305) while `kvE2_sepBundleR` supplies `w < x1`, so a truthful gate
+        can never be fed the right anchor; (b) `kvE2_sepBundleR_parts` drops the
+        below-clause — no `hbelow` in `kvE_sub2_zXU` shape exists for this class;
+        (c) the bundle's witnesses live in `kvE2_sep_zWX1` (`w < v < x1`), not the left
+        closer's exempted `kvE_sub2_zXU` (which reads `x < v < w` in right geometry,
+        SW:100-105). RESOLVED by the anticipated kit-application lemma
+        `kvE2_sepBundleR_sound` in `SharedWitness.lean` (commit `163d6b700`): the
+        geometry-correct mirror against the same engine `nf_eval_depth1_fold_iff`
+        (CarrierKv:466), gate-backward clause exempting `kvE2_sep_zWX1`; NO filter
+        weakened, `hgate` an explicit threaded hypothesis (Amendment F3), never assumed.)*
+  - [x] Confirm the bit consumed at each owner is self-owned (from that owner's arrangement
         enumeration), NOT a cross-σ goal; no `x1 < e_i` literal (LITMUS).
-  - [ ] LITMUS 0 hits; no-nesting audit; macro-side confinement audit (L only `(x,w)`, R
-        only `(w,t)`).
+        *(All bit occurrences in the three new lemmas are antecedents of the SAME σ's
+        `σ.2 (…)` implications — hbelow and gate clauses; no cross-σ bit goal anywhere.)*
+  - [x] LITMUS 0 hits; no-nesting audit; macro-side confinement audit (L only `(x,w)`, R
+        only `(w,t)`). *(LITMUS: 0 live hits, zero-delta vs pre-session baseline even in
+        prose; no-nesting: no new point types constructed — bundles/closers consumed, zone
+        constants pre-existing; confinement: L applier consumes only `kvE2_sepBundleL`
+        (`(x,w)`-side, witnesses in `(x,x1)`), R applier only `kvE2_sepBundleR`
+        (`(w,t)`-side, witnesses in `(w,x1)`).)*
 - **Timing:** ~1-2 hours (small — near-mechanical kit application).
 - **Depends on:** 2
 - **Estimated output:** ~80-200 lines (left-class application + right-class verification +
