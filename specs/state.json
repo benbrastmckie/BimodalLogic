@@ -1392,14 +1392,14 @@
           "summary": "PARTIAL: Phase 1 landed live bracketEndChar_kvE2 outer-gate carrier (axiom-clean); Phases 2-4 blocked on missing joint multi-owner disjunct bracket-holds builder (task-334 deferred obligation)"
         },
         {
-          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/03_plan-currency-check-post-333.md",
-          "type": "report",
-          "summary": "Plan v3 currency check against post-task-333 codebase; recommends plan v4 revision"
-        },
-        {
           "path": "specs/335_outer_gate_assembly_engine_kvE2_body/plans/04_outer-gate-post-333-v4.md",
           "type": "plan",
           "summary": "v4 post-333: Phase 4 split into 4a interior gates / 4b hbdry-hexcl with escalation / 4c wrap; Phase 5 unconditional gate for 309"
+        },
+        {
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/04_gate-blocker-adjudication.md",
+          "type": "report",
+          "summary": "Blocker adjudication: branches (a) and (b-strengthen) refuted; fragment gate (N2-sanctioned) recommended, OuterGate.lean only"
         }
       ],
       "completion_summary": "PARTIAL (1/4 phases). Phase 1 landed the first live outer-gate carrier bracketEndChar_kvE2 in new OuterGate.lean, delegating to task-334's verified kvE2_sepBody (axiom-clean [propext, Classical.choice, Quot.sound], rfl bridge, green build); SharedWitness.lean and KampPrior.lean byte-identical. Phases 2-4 (soundness/completeness connectors + assembled k=2 gate) BLOCKED on a missing prerequisite: the joint multi-owner disjunct bracket-holds builder over kvE2_sepSlotsL/R (a task-334-deferred obligation, SharedWitness.lean:1954). Unblocking path: dedicated follow-on wiring k1v_sorted_realizationK (SubBracket2V:633) into kvE2_sepDisjunct (~370 lines, comparable to bracketEndChar_k1v_complete), then re-dispatch Phases 2-4. Zero-debt: no sorry/vacuous placeholder introduced.",
@@ -1436,7 +1436,8 @@
         ]
       },
       "previous_status": "partial",
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "blockers": "Phases 4a/4b/4c: the four families kvE2_outer_fold requires are not dischargeable at charK := P.existF 0. Branch (a): kvE2_outer_fold/kvE2_sepBody need a SharedWitness.lean reshape (333 TERRITORY — 335 cannot edit it) to internalize/weaken the gate. Branch (b): unmet A1-conditionality — a stronger provider contract (higher-arity charK) or a conditional gate would be required, and a conditional gate fails the UNCONDITIONAL BracketCarrierCorrectVPrior that task 309 needs. USER DECISION required on which branch to pursue."
     },
     {
       "project_number": 341,
