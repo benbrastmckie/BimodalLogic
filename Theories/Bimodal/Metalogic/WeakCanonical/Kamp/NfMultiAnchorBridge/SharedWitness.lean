@@ -2899,40 +2899,12 @@ theorem kvE2_sepCoincidentAnchor_discharge {sig : MonadicSignature}
   · exact iff_of_true hx1t rfl
   · exact iff_of_false (not_lt.mpr (le_of_lt hx1t)) (by decide)
 
-/-- **O1b — non-vacuity of the joint carrier** (task 334 Phase 6 REWIRE; fresh analog of
-    `kvE_subBracket2V_nonvacuous`, `SubBracket2V.lean:1425`; FM-vac): for a `qnf` arising from an
-    actual model realization under `x < w < t`, the depth-2 gate holds, so the carrier takes the
-    gate-true branch; and since the honest model arrangement's order-type disjunct is valid
-    (`hvalid`, the honest-selection guaranteed by the honest bundle — full semantic discharge is
-    Phase 8), the model-order disjunct is a member of `kvE2_sepArr'` (Lemma 3.2(1), md:77), so the
-    carrier's `disjuncts` list — one bracket per valid weak order — is NON-empty.
-
-    This is the Phase-6 removal of the `sorryAx` contamination (Risk R5): non-vacuity now routes
-    through the order-type disjunction `kvE2_sepArr'` (via the axiom-clean
-    `kvE2_sepArr'_mem_modelOrder`) rather than through the DELETED FALSE scaffolds
-    `kvE2_sepSlotsL_valid`/`_valid` (which asserted the identity interleaving of the flat union is a
-    valid arrangement — FALSE post-switch, handoff 05). Rabinovich Prop 4.2 (md:100-101). -/
-theorem kvE2_sepBody_nonvacuous {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3)
-    (M : OrderedMonadicStructure sig)
-    (w x t : M.carrier)
-    (hxw : x < w) (hwt : w < t)
-    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
-    (hvalid : kvE2_sepDisjValid qnf (kvE2_sepModelOrder qnf) = true) :
-    (kvE2_sepBody charBase charK qnf).disjuncts ≠ [] := by
-  have hgate := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
-  simp only [kvE2_sepBody]
-  split
-  case isTrue _ =>
-    apply List.ne_nil_of_mem (a := kvE2_sepDisjunct' charBase charK qnf
-      (kvE2_sepTieGroupedL (kvE2_sepModelOrder qnf))
-      (kvE2_sepTieGroupedR (kvE2_sepModelOrder qnf)))
-    exact List.mem_map.mpr
-      ⟨kvE2_sepModelOrder qnf, kvE2_sepArr'_mem_modelOrder qnf hvalid, rfl⟩
-  case isFalse hg =>
-    exact absurd hgate hg
+-- REMOVED (task 333 Phase 1 / R1): the dead conditional non-vacuity lemma
+-- `kvE2_sepBody_nonvacuous`. Its hypothesis `hvalid : kvE2_sepDisjValid qnf (kvE2_sepModelOrder
+-- qnf) = true` is NOT honestly attainable (the strict `kvE2_sepModelOrder` reads σ's OPEN
+-- `zXU`/`zUW` bits at σ's own fresh type, FALSE at self-coincidence; the honest disjunct is the
+-- coincidence order `kvE2_sepCoincidentOrder`). It had zero live consumers and is superseded by the
+-- unconditional `kvE2_sepBody_complete` (this file). See plan 04, Phase 1.
 
 /-! ## Task 334 Phase 8 — Lemma 3.2(1) ⇐ (completeness): the honest arrangement selects its
     order-type disjunct (md:77; §5 coincidence, md:168-173).

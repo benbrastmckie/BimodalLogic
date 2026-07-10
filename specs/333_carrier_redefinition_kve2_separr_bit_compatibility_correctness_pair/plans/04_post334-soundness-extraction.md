@@ -1,7 +1,7 @@
 # Implementation Plan: Post-334 Soundness-Extraction Threading for the k=2 Carrier (task 333)
 
 - **Task**: 333 - carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~10-14 hours (4 phases, one agent run each)
 - **Dependencies**: task 334 (COMPLETED — performed the chartered carrier redefinition: `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`); task 321 (PARTIAL — predecessor lineage / O4 crux record)
 - **Research Inputs**: reports/02_post334-soundness-extraction-frontier.md
@@ -209,7 +209,14 @@ wave map is therefore strictly sequential — one phase per wave. (Each phase's 
 readable label from research §E.2, retained for cross-reference; the plain integer `1`-`4` is the
 canonical phase number used by the wave table, `Depends on` fields, and `/implement` resume logic.)
 
-### Phase 1: R1 — Cleanup: delete dead `kvE2_sepBody_nonvacuous`; re-verify the ⇐ axiom triple [NOT STARTED]
+### Phase 1: R1 — Cleanup: delete dead `kvE2_sepBody_nonvacuous`; re-verify the ⇐ axiom triple [COMPLETED 2026-07-09]
+
+<!-- Phase 1 done (2026-07-09): axiom triple re-confirmed [propext, Classical.choice, Quot.sound]
+on kvE2_sepBody_complete / kvE2_sepArr'_sound / kvE2_sepBody_holds_of_honest (all axiom-clean, no
+sorryAx). Deleted dead `kvE2_sepBody_nonvacuous` (zero live consumers, superseded by
+kvE2_sepBody_complete). Build green; OuterGate green; LITMUS 0 live. Optional corollary and
+strict-order cluster sweep SKIPPED (deviation: optional, no consumer, risk-free skip). -->
+
 
 - **MANDATORY FIRST ACTION (pre-task, before any edit):** Run `lean_verify` on
   `kvE2_sepBody_complete`, `kvE2_sepArr'_sound`, and `kvE2_sepBody_holds_of_honest` to re-confirm the
