@@ -373,7 +373,7 @@ ordering is effectively sequential.
   dispatch additionally landed the 6 preserved-asset lemmas at `98c1b6afa`/`7c1b191ee`;
   they are accounted under Preserved Assets, not re-planned here.)
 
-### Phase 2: Route-A tie-admitting grouped extraction — hypothesis-free `kvE2_sepBody_extract` [NOT STARTED]
+### Phase 2: Route-A tie-admitting grouped extraction — hypothesis-free `kvE2_sepBody_extract` [IN PROGRESS]
 
 - **Goal:** Replace the v3 side-condition obligation (proven false — see Postmortem
   Constraints) with the Route-A grouped extraction: extract directly from the grouped

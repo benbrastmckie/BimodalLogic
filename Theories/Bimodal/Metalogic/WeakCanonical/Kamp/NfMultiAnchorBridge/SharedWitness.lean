@@ -4410,6 +4410,26 @@ private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature}
   rw [hra, hrb] at hle
   omega
 
+/-- **Strict same-owner key order from rank order** (task 333 Route A, (b)): the
+    contrapositive of the landed `kvE2_sep_rank_le_of_gidx_le` (ℕ: `¬ ≤` is `<`). On a
+    valid weak order, two same-region slots of one owner with strictly ordered region ranks
+    carry strictly ordered global merge keys — the fact that separates a same-owner
+    anchor/base pair into DISTINCT tie classes (conjunct (ii) via
+    `kvE2_sepArr'_consistent`; no cross-owner relation enters). -/
+private theorem kvE2_sep_gidx_lt_of_rank_lt {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
+    (hwo : wo ∈ kvE2_sepArr' qnf)
+    {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ}
+    (hp : (σ, tag, t) ∈ wo)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepSlotBlock σ) (hb : b ∈ kvE2_sepSlotBlock σ)
+    (hreg : kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b)
+    (hrk : kvE2_sepSlotRank a < kvE2_sepSlotRank b) :
+    kvE2_sepSlotGIdx wo a < kvE2_sepSlotGIdx wo b := by
+  by_contra hnlt
+  push_neg at hnlt
+  have hle := kvE2_sep_rank_le_of_gidx_le qnf hwo hp hb ha hreg.symm hnlt
+  omega
+
 /-- **Same-owner `hpairL` core** (task 333 Phase 2): on every valid weak order the joint
     LEFT slot list is `kvE2_sepSlotLe`-pairwise on SAME-OWNER pairs — merge-key sortedness
     reflected through conjunct (ii). This is the half of the `hpairL` side-condition that
@@ -8219,6 +8239,31 @@ theorem kvE2_sepTieRuns_key_strictMono {α : Type*} (key : α → ℕ) :
         have hab : key a < key b := lt_of_le_of_ne (ha b List.mem_cons_self) hk
         rw [hu]
         exact lt_of_lt_of_le hab (hb_le v hvmem)
+
+/-- **Tie-class index order from strict key order** (task 333 Route A, (a)): on a key-sorted
+    list, members of distinct tie classes with strictly ordered keys sit in strictly ordered
+    classes — the index-level read that replaces the refuted flat-list
+    `kvE2_sep_index_lt_of_rank_lt` route for grouped disjuncts. Trichotomy: equal indices are
+    refuted by within-class key constancy (`kvE2_sepTieRuns_key_const`), reversed indices by
+    cross-class strict key monotonicity (`kvE2_sepTieRuns_key_strictMono` through
+    `List.pairwise_iff_getElem`). -/
+theorem kvE2_sepTieRuns_classIdx_lt {α : Type*} (key : α → ℕ) (l : List α)
+    (hs : l.Pairwise (fun x y => key x ≤ key y))
+    {i j : ℕ} (hi : i < (kvE2_sepTieRuns key l).length)
+    (hj : j < (kvE2_sepTieRuns key l).length)
+    {a b : α} (ha : a ∈ (kvE2_sepTieRuns key l)[i]) (hb : b ∈ (kvE2_sepTieRuns key l)[j])
+    (hab : key a < key b) : i < j := by
+  rcases Nat.lt_trichotomy i j with hlt | heq | hgt
+  · exact hlt
+  · exfalso
+    subst heq
+    have hconst := kvE2_sepTieRuns_key_const key l ((kvE2_sepTieRuns key l)[i])
+      (List.getElem_mem hi) a ha b hb
+    omega
+  · exfalso
+    have hstrict := kvE2_sepTieRuns_key_strictMono key l hs
+    have hba := List.pairwise_iff_getElem.mp hstrict j i hj hi hgt b hb a ha
+    omega
 
 /-- **One value per LEFT tie class** (task 337 plan 12 Phase 1): all slots of a single
     tie class of the primed grouped LEFT list carry EQUAL honest slot value. Equal keys within
