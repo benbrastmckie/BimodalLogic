@@ -7,19 +7,18 @@ next_project_number: 343
 Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 341 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-09. Generated from state.json dependency graph.*
+*Updated 2026-07-10. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,337 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,300,337 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,321,341 | 189,192,196,335 | automation, kamp_theorem_formalization |
-| 4 | 177,178,309,333 | 131,193,321 | formula-refactor, kamp_theorem_formalization |
-| 5 | 307 | 309 | completeness |
-| 6 | 305 | 307 | completeness |
-| 7 | 303 | 305 | completeness |
-| 8 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,290,291,296,300,318,335 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,321,341 | 161,187,191,194,230,291,300,335 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309,333 | 189,192,196,321 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -111,12 +110,11 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-337 [PLANNED] — Wire the general region engine k1v_sorted_realizationK (SubBracke
-  └─ 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-    └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
-      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-      └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
-    └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+  └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+    └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+  └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ### Uncategorized
 
@@ -213,7 +211,7 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 
 ### 337. Build joint multiowner disjunct bracketholds engine for kve2 sepdisjunct
 - **Effort**: 4-5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 336, Task 338, Task 339, Task 340, Task 342

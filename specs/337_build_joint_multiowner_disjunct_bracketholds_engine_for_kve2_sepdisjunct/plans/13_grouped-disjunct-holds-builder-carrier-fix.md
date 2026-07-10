@@ -1,7 +1,7 @@
 # Implementation Plan v6: Task #337 — Grouped Multi-Owner Disjunct `.holds` Builder (carrier-fix revision)
 
 - **Task**: 337 - Build the joint multi-owner disjunct bracket-`holds` engine for `kvE2_sepDisjunct'`, delivering the ⇐-direction builder `kvE2_sepDisjunct'_holds_of_honest` and its body corollary `kvE2_sepBody_holds_of_honest`
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours (Phase 1, 1h, already COMPLETED)
 - **Dependencies**: 342 (COMPLETED, axiom-clean — grouped tie-admitting carrier, `hLR` deletion, `kvE2_sepBody_complete_holds'`, Phase-8 honesty pack); 334/336/338/339/340 (COMPLETED — landed carrier/value chain, including the `.rXW` carrier this revision amends); 324 (COMPLETED — `SubBracket2.lean` zone extraction). Task 337 is NOT blocked.
 - **Research Inputs**:
