@@ -115,7 +115,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Uncategorized
 
-333 [PLANNED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+333 [IMPLEMENTING] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
   └─ 309 [BLOCKED] — (kamp_theorem_formalization: Build the off-diagonal two-anchor naviga) (see above)
 
 ## Tasks
@@ -155,7 +155,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 ---
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: Task 321, Task 332
 - **Summary**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md]
