@@ -1,69 +1,39 @@
 {
   "$schema": "orchestrator-handoff-v1",
   "task": 337,
-  "phase": "implement",
-  "status": "partial",
-  "summary": "Phase 2 (the authorized 3-site .rXW carrier fix, plan 13's sole reason and the prior hard blocker) is COMPLETE, committed (0b4adc9ea), green, and axiom-clean. The below-pivot v<w bound is restored on the .rXW value chain; task-342 STOP-condition theorems verified clean via #print axioms (lean_verify MCP was unreliable). Phases 3-7 (O1-O4 + the two public target theorems) remain NOT STARTED: they require authoring the full builder chain against tie-class semantics not yet verified well enough to prove sorry-free without risking a broken tree.",
+  "phase": "research",
+  "status": "researched",
+  "summary": "Report 14 resolves the Phase-3 tie-class-semantics blocker. The blocker was a MISREAD: the implementer conflated the carrier merge key (A) kvE2_sepSlotGIdx with the injective model key (B) kvE2_sepSlotHonestGIdx (whose _injOn/docstring force singleton classes). The builder uses neither directly: it feeds the PRIMED order kvE2_sepHonestOrder' (SW:5974), whose payload IS the value-only key (C) kvE2_sepSlotHonestVIdx, and on that order (A)=(C) by the ALREADY-PROVED bridge kvE2_sepSlotGIdx_honestOrder' (SW:7868). O1 cross-class strict monotonicity is provable and faithful (Def 3.1/Lemma 5.3 coincidence-merge) from five landed Phase-1 lemmas; the fix is one strictly ADDITIVE lemma pair touching no 340/342 asset. Verdict (b), verging on (c). No re-authorization needed.",
   "phases_completed": 2,
   "phases_total": 7,
-  "blockers": [
-    {
-      "description": "Tie-class semantics ambiguity blocks a correct O1 (Phase 3): kvE2_sepSlotGIdx is documented (SharedWitness.lean ~3526) as ordRank of (value, slotIndex) with an index tiebreak 'giving injectivity WITHOUT value-distinctness', which naively makes every kvE2_sepTieRuns class a singleton, contradicting task 342's tie-admitting design. The exact tying key must be resolved before proving strict cross-class monotonicity of the mapped class-value list. Soft: needs investigation, not a code change elsewhere.",
-      "phase": "phase-3",
-      "severity": "soft"
-    }
-  ],
+  "blockers": [],
   "next_action_hint": "implement",
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2.lean",
-      "type": "source",
-      "summary": "Phase 2: kvE_sub2_zoneHolds_zXU strengthened to x<v and v<w and v<x1; kvE_subBracket2_complete_extract zXU field carries v<w. Non-additive, bounded."
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean",
-      "type": "source",
-      "summary": "Phase 2: hrealXU consumer re-projected to drop the new v<w conjunct (under-counted blast-radius consumer at ~1904; public shape preserved)."
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-      "type": "source",
-      "summary": "Phase 2: .rXW epsilon upper bound to w; kvE2_sepSlotValue_rXW_spec conclusion x<v and v<w and realizes; two complete_extract consumers (~2770, ~3464) re-projected. Green, sorry count 7."
-    },
-    {
-      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md",
-      "type": "plan",
-      "summary": "Phase 2 marked COMPLETED with a completion note documenting the blast-radius correction and the #print-axioms STOP-condition verification."
-    },
-    {
-      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783643941.md",
-      "type": "handoff",
-      "summary": "Continuation handoff for the successor implementer: Phase 2 details, blast-radius correction, #print-axioms verification method, Phase 3 (O1) immediate next action, and the tie-semantics caution."
+      "type": "report",
+      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/14_tie-class-semantics-audit.md",
+      "summary": "Tie-class semantics faithfulness audit. Disambiguates keys (A) kvE2_sepSlotGIdx / (B) kvE2_sepSlotHonestGIdx / (C) kvE2_sepSlotHonestVIdx; proves the honest path groups by (C) via the landed bridge kvE2_sepSlotGIdx_honestOrder' (SW:7868); confirms O1 provable+faithful additively; flags the wiring trap (must use kvE2_sepHonestOrder', NOT kvE2_sepModelOrder/kvE2_sepHonestOrder). Cites Rabinovich Def 3.1 md:109-111, Lemma 5.3 md:225, Figure 1 md:299, Def 7.13 md:451."
     }
   ],
-  "files_modified": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SubBracket2V.lean",
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md"
-  ],
+  "files_modified": [],
   "decisions_made": [
-    "Threaded v<w through kvE_subBracket2_complete_extract's zXU field (the plan's named authorized consumer at :619-620/:631), keeping v<x1 as a superset to minimize consumer disruption.",
-    "Re-projected all three complete_extract zXU-field consumers (SW:2770, SW:3464, SubBracket2V:1904) mechanically, preserving each consumer's public signature byte-for-byte — a consumer re-check, not a scope widening.",
-    "Used deterministic #print axioms (not the unreliable lean_verify MCP) as ground truth for the axiom-clean STOP-condition check.",
-    "Stopped at Phase 2 (partial) rather than risk an incorrect/vacuous O1 given an unresolved tie-class-semantics understanding gap; commit-only-green discipline preserved."
+    "Grouping key is CORRECT as-is: kvE2_sepTieGroupedL groups by (A) kvE2_sepSlotGIdx wo; do NOT change it to (C) directly (that would gratuitously edit landed task-342 asset). On kvE2_sepHonestOrder' the bridge kvE2_sepSlotGIdx_honestOrder' makes (A)=(C).",
+    "Verdict (b) verging on (c): the (A)<->(C) bridge exists, is named, is proved, and is near-definitional (the primed order's payload literally is the VIdx list).",
+    "O1 fix is strictly ADDITIVE: one cross-class strict-value-monotonicity lemma (plus RIGHT mirror) assembling kvE2_sepTieRuns_key_const, kvE2_sepSlotGIdx_honestOrder', kvE2_sepSlotHonestVIdx_eq_iff, kvE2_sepSlotsLOf_honestOrder'_valueSorted, kvE2_sepTieGroupedL_value_const. No 340/342 declaration edited; plan-13 authorization scope not exceeded.",
+    "Both dangerous Q1 disjuncts are impossible on the honest path: kvE2_sepSlotHonestVIdx_eq_iff (SW:5865) is an iff, so equal value <-> equal (C) <-> equal (A), and mergeSort+tieRuns make equal-key slots one contiguous class. No coincidence escapes; O1 is not unprovable-as-stated.",
+    "LITMUS (NavigatedSpine:437) and F1-F7 clean: the additive lemma introduces no order literal, reads only N ranks and existing kvE2_sepSlotValue comparisons over fixed endpoints x/w/t."
   ],
   "dead_ends": [
-    "lean_verify MCP tool for axiom checking here: returned contradictory sorryAx results across runs after external lake build (stale LSP in-memory state). Use #print axioms instead.",
-    "Value-sortedness as the route to usL-last < w (plan 12 line-140 mitigation): retracted/unsound per plan 13; use the per-slot value specs."
+    "Verdict (a) group-by-(C)-directly: unnecessary and would edit a landed 342 asset; the bridge already routes (A) to (C) on the honest order.",
+    "Reading (B) kvE2_sepSlotHonestGIdx / kvE2_sepSlotHonestGIdx_injOn (SW:3840) or the value-layer docstring (SW:376, ~3526-3530) as the grouping key: that is the original misread; (B) is the injective UNPRIMED-order payload and forces singletons.",
+    "Wiring the grouped builder to kvE2_sepModelOrder (SW:1476, syntactic-injective payload) or the unprimed kvE2_sepHonestOrder (SW:3891, (B) payload): both force singleton classes and make O1 FALSE under genuine ties. Must use kvE2_sepHonestOrder' (SW:5974)."
   ],
   "continuation_context": {
-    "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-2-handoff-1783643941.md",
+    "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/reports/14_tie-class-semantics-audit.md",
     "phases_completed": 2,
     "phases_total": 7,
     "next_phase": 3,
-    "resume_hint": "Start Phase 3 (O1) — usL-last < w is now provable per-slot from the strengthened value specs. First resolve the tie-class semantics caution in the handoff."
+    "resume_hint": "Resume Phase 3 (O1). Add cross-class strict-value-monotonicity lemma (LEFT+RIGHT) over kvE2_sepHonestOrder' class-head values, then feed (usL ++ w :: usR).Pairwise (< ) plus the landed report-13 pivot bounds into kvE2_sepBracketN_construct's hsort (SW:5371). GUARDRAIL: the grouped builder MUST consume kvE2_sepHonestOrder' (primed), never kvE2_sepModelOrder or the unprimed kvE2_sepHonestOrder."
   },
-  "sorry_count_in_sharedwitness": 7,
   "plan_markers_verified": true
 }
