@@ -1307,17 +1307,26 @@
         {
           "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/05_kit-application-and-outer-fold.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/04_r2-blocker-repair-route.md",
+          "type": "report",
+          "summary": "Blocker research: Route A (tie-admitting grouped extraction) CONFIRMED via lean_run_code probe; Route B (filter strengthening) REFUTED — re-adding Nodup falsifies kvE2_sepHonestOrder'_mem_arr' (SW:6284), breaking completeness hand-off. Replacement kvE2_sepBody_extract carries ZERO universal side-conditions, zero consumers repo-wide. Phases 3/4 survive (Phase 3 wording-only restatement)."
+        },
+        {
+          "type": "plan",
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/06_route-a-grouped-extraction.md"
         }
       ],
-      "last_updated": "2026-07-10T05:35:14Z",
-      "session_id": "sess_1783659497_144c59",
+      "last_updated": "2026-07-10T11:24:44Z",
+      "session_id": "sess_1783679696_817168",
       "researched": "2026-07-10T04:16:08Z",
       "plan_metadata": {
         "phases": 4,
-        "total_effort_hours": 8,
+        "total_effort_hours": 9,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 3,
+        "plan_version": 4,
         "dependency_waves": [
           [
             1,
@@ -1340,12 +1349,17 @@
             "path": "reports/03_pdf-fidelity-r3-dissolved-regrounding.md",
             "integrated_in_plan_version": 3,
             "integrated_date": "2026-07-09"
+          },
+          {
+            "path": "reports/04_r2-blocker-repair-route.md",
+            "integrated_in_plan_version": 4,
+            "integrated_date": "2026-07-10"
           }
         ],
         "skeleton": false,
         "follow_up_tasks": []
       },
-      "next_artifact_number": 3
+      "next_artifact_number": 7
     },
     {
       "project_number": 335,
