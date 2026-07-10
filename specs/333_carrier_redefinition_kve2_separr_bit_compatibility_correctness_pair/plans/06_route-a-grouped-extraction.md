@@ -1,7 +1,7 @@
 # Implementation Plan: Route-A Grouped Extraction, Kit Application, and the Outer Depth-2 Fold (task 333)
 
 - **Task**: 333 - carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: ~7-10 hours remaining (Phase 1 COMPLETED; 3 phases open, one agent run each)
 - **Dependencies**: task 334 (COMPLETED — chartered carrier redefinition: `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`); task 342 (COMPLETED — interior-restricted owner index `kvE2_sepPosI`, tie-admitting weak orders, `hLR` deleted); task 321 (PARTIAL — predecessor lineage / DISSOLVED O4 crux record)
 - **Research Inputs**: reports/04_r2-blocker-repair-route.md (authoritative for Phase 2 — Lean-ready signatures, probe-verified); reports/03_pdf-fidelity-r3-dissolved-regrounding.md (PDF re-grounding, R3 dissolution); reports/02_post334-soundness-extraction-frontier.md (partly superseded — its R2 side-condition shapes are the mis-promotion this plan corrects)

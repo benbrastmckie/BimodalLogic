@@ -4,7 +4,7 @@ next_project_number: 344
 
 # TODO
 
-Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 341 (non-fatal)
+Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-10. Generated from state.json dependency graph.*
@@ -12,12 +12,11 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,333,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,333,335,343 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,309,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,307,341 | 161,187,191,194,230,291,309,335,343 | completeness, publication-quality, sorry-elimination, ... |
+| 3 | 193,305 | 189,192,196,307 | completeness, automation |
+| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
+| 5 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -109,14 +108,11 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 335 [PLANNED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
-
-333 [IMPLEMENTING] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
-  └─ 309 [BLOCKED] — (kamp_theorem_formalization: Build the off-diagonal two-anchor naviga) (see above)
 
 ## Tasks
 
@@ -155,7 +151,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 ---
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: Task 321, Task 332
 - **Summary**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md]
