@@ -8874,4 +8874,403 @@ theorem kvE2_sepSegRAt_gap_eval {sig : MonadicSignature}
     rw [hsplit, List.mem_append] at hallmem
     rw [← hval]; exact hsuffix _ (hallmem.resolve_left hnmem)
 
+/-! ### Task 337 (plan 13) Phase 7 — O4: assembly (per-class witness list + the two public theorems)
+
+The generic list helpers below build the per-class honest value list `usL`/`usR`
+(one value per tie class, via `attach`+`head`), giving length, getElem, membership, and
+prefix/suffix value-separation from the class strict order. They isolate the `attach`/`getElem`
+mechanics from the model content so the bracket assembly reads at the class level. -/
+
+/-- Generic: `gL[k] ∈ gL.drop k`. -/
+private theorem kvE2_sep_getElem_mem_drop {α : Type*} (gL : List (List α)) (k : Nat)
+    (hk : k < gL.length) : gL[k]'hk ∈ gL.drop k := by
+  rw [List.drop_eq_getElem_cons hk]; exact List.mem_cons_self
+
+/-- Generic: length of the per-class value list built by `attach`+`head`. -/
+private theorem kvE2_sep_usOf_length {α β : Type*} (gL : List (List α)) (hne : ∀ c ∈ gL, c ≠ [])
+    (Vf : α → β) :
+    (gL.attach.map (fun p => Vf (p.1.head (hne p.1 p.2)))).length = gL.length := by
+  rw [List.length_map, List.length_attach]
+
+/-- Generic: the `k`-th per-class value is `Vf` of the `k`-th class's head. -/
+private theorem kvE2_sep_usOf_getElem {α β : Type*} (gL : List (List α)) (hne : ∀ c ∈ gL, c ≠ [])
+    (Vf : α → β) (k : Nat)
+    (hk : k < (gL.attach.map (fun p => Vf (p.1.head (hne p.1 p.2)))).length) :
+    (gL.attach.map (fun p => Vf (p.1.head (hne p.1 p.2))))[k]'hk
+      = Vf ((gL[k]'(by simpa using hk)).head (hne _ (List.getElem_mem _))) := by
+  rw [List.getElem_map, List.getElem_attach]
+
+/-- Generic: every value of the per-class list is `Vf` of a member of some class. -/
+private theorem kvE2_sep_usOf_mem {α β : Type*} (gL : List (List α)) (hne : ∀ c ∈ gL, c ≠ [])
+    (Vf : α → β) {b : β} (hb : b ∈ gL.attach.map (fun p => Vf (p.1.head (hne p.1 p.2)))) :
+    ∃ c ∈ gL, ∃ s ∈ c, b = Vf s := by
+  obtain ⟨p, _, hpb⟩ := List.mem_map.mp hb
+  exact ⟨p.1, p.2, p.1.head (hne p.1 p.2), List.head_mem _, hpb.symm⟩
+
+/-- Generic prefix value bound: on a class-strictly-`<`-ordered list, all slots of the first `n`
+    classes have `Vf` below `y`, given the `(n-1)`-th (boundary) class does. -/
+private theorem kvE2_sep_take_flatten_lt {α β : Type*} [Preorder β] (Vf : α → β) (gL : List (List α))
+    (hmono : gL.Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, Vf u < Vf v))
+    (hne : ∀ c ∈ gL, c ≠ [])
+    (n : Nat) (hn1 : 1 ≤ n) (hn : n ≤ gL.length) (y : β)
+    (hbnd : ∀ s ∈ gL[n-1]'(by omega), Vf s < y) :
+    ∀ s ∈ (gL.take n).flatten, Vf s < y := by
+  intro s hs
+  have hsplit : (gL.take n).flatten = (gL.take (n-1)).flatten ++ gL[n-1]'(by omega) := by
+    rw [show gL.take n = gL.take (n-1) ++ [gL[n-1]'(by omega)] from by
+      conv_lhs => rw [show n = (n-1)+1 by omega]
+      rw [List.take_succ]; congr 1; rw [List.getElem?_eq_getElem (by omega)]; rfl]
+    rw [List.flatten_append]; simp
+  rw [hsplit, List.mem_append] at hs
+  rcases hs with hs | hs
+  · have hbmem : gL[n-1]'(by omega) ∈ gL.drop (n-1) := kvE2_sep_getElem_mem_drop gL (n-1) (by omega)
+    have hs0 : (gL[n-1]'(by omega)).head (hne _ (List.getElem_mem _)) ∈ gL[n-1]'(by omega) :=
+      List.head_mem _
+    have hlt := kvE2_sep_flatten_sep (fun a b => Vf a < Vf b) gL hmono (n-1) s hs _
+      (List.mem_flatten.mpr ⟨_, hbmem, hs0⟩)
+    exact lt_trans hlt (hbnd _ hs0)
+  · exact hbnd s hs
+
+/-- Generic suffix value bound: on a class-strictly-`<`-ordered list, all slots of the classes from
+    `n` onward have `Vf` above `y`, given the `n`-th (boundary) class does. -/
+private theorem kvE2_sep_drop_flatten_gt {α β : Type*} [Preorder β] (Vf : α → β) (gL : List (List α))
+    (hmono : gL.Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, Vf u < Vf v))
+    (hne : ∀ c ∈ gL, c ≠ [])
+    (n : Nat) (hn : n < gL.length) (y : β)
+    (hbnd : ∀ s ∈ gL[n]'hn, y < Vf s) :
+    ∀ s ∈ (gL.drop n).flatten, y < Vf s := by
+  intro s hs
+  have hsplit : gL.drop n = gL[n]'hn :: gL.drop (n+1) := by rw [List.drop_eq_getElem_cons hn]
+  rw [hsplit, List.flatten_cons, List.mem_append] at hs
+  rcases hs with hs | hs
+  · exact hbnd s hs
+  · have hbmem : gL[n]'hn ∈ gL.take (n+1) := by
+      have h1 : (gL.take (n+1))[n]'(by rw [List.length_take]; omega) = gL[n]'hn := by
+        rw [List.getElem_take]
+      rw [← h1]; exact List.getElem_mem _
+    have hs0 : (gL[n]'hn).head (hne _ (List.getElem_mem _)) ∈ gL[n]'hn := List.head_mem _
+    have hlt := kvE2_sep_flatten_sep (fun a b => Vf a < Vf b) gL hmono (n+1) _
+      (List.mem_flatten.mpr ⟨_, hbmem, hs0⟩) s hs
+    exact lt_trans (hbnd _ hs0) hlt
+
+/-- **Grouped bracket realization under honesty** (Phase 7 / O4): the meet-folded grouped bracket
+    of the primed honest order is realized on `(x, t)`. Builds the per-class honest witness lists
+    `usL`/`usR` (one value per tie class), discharges the strict order (O1), range, point types
+    (O2), and per-gap segments (O3) into the private N-slot engine `kvE2_sepBracketN_construct`. -/
+theorem kvE2_sepBracket_holds_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ) :
+    (kvE2_sepBracketN
+        ((kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).map
+          (kvE2_sepClassType charBase charK))
+        (kvE2_sepPtW charBase charK qnf)
+        ((kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).map
+          (kvE2_sepClassType charBase charK))
+        (kvE2_sepSegsG charBase qnf
+          (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h))
+          (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)))
+      ).holds M atomMap x t := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  set gL := kvE2_sepTieGroupedL wo with hgL_def
+  set gR := kvE2_sepTieGroupedR wo with hgR_def
+  set Vf := kvE2_sepSlotValue qnf M w x t h with hVf_def
+  have hneL : ∀ c ∈ gL, c ≠ [] := kvE2_sepTieGroupedL_ne_nil wo
+  have hneR : ∀ c ∈ gR, c ≠ [] := kvE2_sepTieGroupedR_ne_nil wo
+  have hmonoL : gL.Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, Vf u < Vf v) :=
+    kvE2_sepTieGroupedL_strictMono qnf M w x t h
+  have hmonoR : gR.Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, Vf u < Vf v) :=
+    kvE2_sepTieGroupedR_strictMono qnf M w x t h
+  have hbndL : ∀ s ∈ gL.flatten, x < Vf s ∧ Vf s < w := fun s hs =>
+    kvE2_sepSlotsLOf_honestOrder'_value_bound qnf M w x t hxw hwt h
+      (by rw [← kvE2_sepTieGroupedL_flatten wo]; exact hs)
+  have hbndR : ∀ s ∈ gR.flatten, w < Vf s ∧ Vf s < t := fun s hs =>
+    kvE2_sepSlotsROf_honestOrder'_value_bound qnf M w x t hxw hwt h
+      (by rw [← kvE2_sepTieGroupedR_flatten wo]; exact hs)
+  have hUL_len : (gL.attach.map (fun p => Vf (p.1.head (hneL p.1 p.2)))).length = gL.length :=
+    kvE2_sep_usOf_length gL hneL Vf
+  have hUR_len : (gR.attach.map (fun p => Vf (p.1.head (hneR p.1 p.2)))).length = gR.length :=
+    kvE2_sep_usOf_length gR hneR Vf
+  have huslen : (gL.attach.map (fun p => Vf (p.1.head (hneL p.1 p.2))) ++ w ::
+      gR.attach.map (fun p => Vf (p.1.head (hneR p.1 p.2)))).length = gL.length + gR.length + 1 := by
+    rw [List.length_append, List.length_cons, hUL_len, hUR_len]; omega
+  -- LEFT segment discharger from boundary class values
+  have segL : ∀ (n : Nat) (hn : n ≤ gL.length) (yv : M.carrier) (hxy : x < yv) (hyw : yv < w),
+      (∀ (_ : 0 < n), ∀ s ∈ gL[n-1]'(by omega), Vf s < yv) →
+      (∀ (hlt : n < gL.length), ∀ s ∈ gL[n]'hlt, yv < Vf s) →
+      (kvE2_sepSegsG charBase qnf gL gR n).eval_at M atomMap yv := by
+    intro n hn yv hxy hyw hpre hsuf
+    rw [kvE2_sepSegsG, if_pos hn]
+    apply kvE2_sepSegLAt_gap_eval charBase charK qnf M atomMap w x t hxw hwt h hcb n yv hxy hyw
+    · rcases Nat.eq_zero_or_pos n with h0 | hpos
+      · subst h0; intro s hs; simp only [List.take_zero, List.flatten_nil, List.not_mem_nil] at hs
+      · exact kvE2_sep_take_flatten_lt Vf gL hmonoL hneL n hpos hn yv (hpre hpos)
+    · rcases Nat.lt_or_ge n gL.length with hlt | hge
+      · exact kvE2_sep_drop_flatten_gt Vf gL hmonoL hneL n hlt yv (hsuf hlt)
+      · have hEq : n = gL.length := le_antisymm hn hge
+        subst hEq; intro s hs
+        rw [List.drop_length, List.flatten_nil] at hs; exact absurd hs List.not_mem_nil
+  -- RIGHT segment discharger from boundary class values
+  have segR : ∀ (n : Nat) (hn : n ≤ gR.length) (yv : M.carrier) (hwy : w < yv) (hyt : yv < t),
+      (∀ (_ : 0 < n), ∀ s ∈ gR[n-1]'(by omega), Vf s < yv) →
+      (∀ (hlt : n < gR.length), ∀ s ∈ gR[n]'hlt, yv < Vf s) →
+      (kvE2_sepSegsG charBase qnf gL gR (gL.length + 1 + n)).eval_at M atomMap yv := by
+    intro n hn yv hwy hyt hpre hsuf
+    rw [kvE2_sepSegsG, if_neg (by omega), show gL.length + 1 + n - gL.length - 1 = n by omega]
+    apply kvE2_sepSegRAt_gap_eval charBase charK qnf M atomMap w x t hxw hwt h hcb n yv hwy hyt
+    · rcases Nat.eq_zero_or_pos n with h0 | hpos
+      · subst h0; intro s hs; simp only [List.take_zero, List.flatten_nil, List.not_mem_nil] at hs
+      · exact kvE2_sep_take_flatten_lt Vf gR hmonoR hneR n hpos hn yv (hpre hpos)
+    · rcases Nat.lt_or_ge n gR.length with hlt | hge
+      · exact kvE2_sep_drop_flatten_gt Vf gR hmonoR hneR n hlt yv (hsuf hlt)
+      · have hEq : n = gR.length := le_antisymm hn hge
+        subst hEq; intro s hs
+        rw [List.drop_length, List.flatten_nil] at hs; exact absurd hs List.not_mem_nil
+  refine kvE2_sepBracketN_construct M atomMap _ _ _ _ x w t
+    (gL.attach.map (fun p => Vf (p.1.head (hneL p.1 p.2))))
+    (gR.attach.map (fun p => Vf (p.1.head (hneR p.1 p.2))))
+    (by rw [hUL_len, List.length_map]) (by rw [hUR_len, List.length_map])
+    ?hsort ?hrange ?hptL ?hptW ?hptR ?hseg0 ?hsegmid ?hseglast
+  case hsort =>
+    refine List.pairwise_append.mpr ⟨?_, ?_, ?_⟩
+    · rw [List.pairwise_iff_getElem]
+      intro a b ha hb hab
+      have haL : a < gL.length := by rw [hUL_len] at ha; exact ha
+      have hbL : b < gL.length := by rw [hUL_len] at hb; exact hb
+      rw [kvE2_sep_usOf_getElem gL hneL Vf a ha, kvE2_sep_usOf_getElem gL hneL Vf b hb]
+      exact List.pairwise_iff_getElem.mp hmonoL a b haL hbL hab _ (List.head_mem _) _ (List.head_mem _)
+    · rw [List.pairwise_cons]
+      refine ⟨fun b hb => ?_, ?_⟩
+      · obtain ⟨c, hc, s, hs, rfl⟩ := kvE2_sep_usOf_mem gR hneR Vf hb
+        exact (hbndR s (List.mem_flatten.mpr ⟨c, hc, hs⟩)).1
+      · rw [List.pairwise_iff_getElem]
+        intro a b ha hb hab
+        have haR : a < gR.length := by rw [hUR_len] at ha; exact ha
+        have hbR : b < gR.length := by rw [hUR_len] at hb; exact hb
+        rw [kvE2_sep_usOf_getElem gR hneR Vf a ha, kvE2_sep_usOf_getElem gR hneR Vf b hb]
+        exact List.pairwise_iff_getElem.mp hmonoR a b haR hbR hab _ (List.head_mem _) _
+          (List.head_mem _)
+    · intro a ha b hb
+      obtain ⟨c, hc, s, hs, rfl⟩ := kvE2_sep_usOf_mem gL hneL Vf ha
+      have haw : Vf s < w := (hbndL s (List.mem_flatten.mpr ⟨c, hc, hs⟩)).2
+      rw [List.mem_cons] at hb
+      rcases hb with rfl | hb
+      · exact haw
+      · obtain ⟨c', hc', s', hs', rfl⟩ := kvE2_sep_usOf_mem gR hneR Vf hb
+        exact haw.trans (hbndR s' (List.mem_flatten.mpr ⟨c', hc', hs'⟩)).1
+  case hrange =>
+    intro u hu
+    rw [List.mem_append, List.mem_cons] at hu
+    rcases hu with hu | (rfl | hu)
+    · obtain ⟨c, hc, s, hs, rfl⟩ := kvE2_sep_usOf_mem gL hneL Vf hu
+      have hb := hbndL s (List.mem_flatten.mpr ⟨c, hc, hs⟩)
+      exact ⟨hb.1, hb.2.trans hwt⟩
+    · exact ⟨hxw, hwt⟩
+    · obtain ⟨c, hc, s, hs, rfl⟩ := kvE2_sep_usOf_mem gR hneR Vf hu
+      have hb := hbndR s (List.mem_flatten.mpr ⟨c, hc, hs⟩)
+      exact ⟨hxw.trans hb.1, hb.2⟩
+  case hptL =>
+    intro i hi
+    have hiL : i < gL.length := by rw [List.length_map] at hi; exact hi
+    rw [List.getElem_map, List.getElem_map, List.getElem_attach]
+    exact kvE2_sepTieGroupedL_classType_eval charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+      (List.getElem_mem hiL) (List.head_mem _)
+  case hptW =>
+    exact kvE2_sepPtW_eval_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+  case hptR =>
+    intro j hj
+    have hjR : j < gR.length := by rw [List.length_map] at hj; exact hj
+    rw [List.getElem_map, List.getElem_map, List.getElem_attach]
+    exact kvE2_sepTieGroupedR_classType_eval charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+      (List.getElem_mem hjR) (List.head_mem _)
+  case hseg0 =>
+    intro y hxy hy0
+    apply segL 0 (Nat.zero_le _) y hxy ?_ ?_ ?_
+    · rcases Nat.eq_zero_or_pos gL.length with h0 | hpos
+      · rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hy0
+        simp only [hUL_len] at hy0
+        rw [getElem_congr_idx (show (0 : Nat) - gL.length = 0 by omega),
+          List.getElem_cons_zero] at hy0
+        exact hy0
+      · rw [List.getElem_append_left (by rw [hUL_len]; exact hpos), List.getElem_map,
+          List.getElem_attach] at hy0
+        exact lt_trans hy0
+          (hbndL _ (List.mem_flatten.mpr ⟨_, List.getElem_mem hpos, List.head_mem _⟩)).2
+    · intro hcontra; exact absurd hcontra (lt_irrefl 0)
+    · intro hpos s hs
+      rw [List.getElem_append_left (by rw [hUL_len]; exact hpos), List.getElem_map,
+        List.getElem_attach] at hy0
+      simp only [hVf_def]
+      rw [kvE2_sepTieGroupedL_value_const qnf M w x t h (List.getElem_mem hpos) hs
+        (List.head_mem _)]
+      exact hy0
+  case hsegmid =>
+    intro i hi y hlo hhi
+    rw [huslen] at hi
+    rcases Nat.lt_or_ge i gL.length with hiL | hiG
+    · -- LEFT gap
+      rw [List.getElem_append_left (by rw [hUL_len]; exact hiL), List.getElem_map,
+        List.getElem_attach] at hlo
+      have hxlt : x < y := lt_trans
+        (hbndL _ (List.mem_flatten.mpr ⟨_, List.getElem_mem hiL, List.head_mem _⟩)).1 hlo
+      apply segL (i + 1) (by omega) y hxlt ?_ ?_ ?_
+      · rcases Nat.lt_or_ge (i + 1) gL.length with hi1 | hi1
+        · rw [List.getElem_append_left (by rw [hUL_len]; exact hi1), List.getElem_map,
+            List.getElem_attach] at hhi
+          exact lt_trans hhi
+            (hbndL _ (List.mem_flatten.mpr ⟨_, List.getElem_mem hi1, List.head_mem _⟩)).2
+        · rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hhi
+          simp only [hUL_len] at hhi
+          rw [getElem_congr_idx (show i + 1 - gL.length = 0 by omega),
+            List.getElem_cons_zero] at hhi
+          exact hhi
+      · intro _ s hs
+        simp only [hVf_def]
+        rw [kvE2_sepTieGroupedL_value_const qnf M w x t h
+          (List.getElem_mem (show i < gL.length by omega)) hs (List.head_mem _)]
+        exact hlo
+      · intro hi1 s hs
+        rw [List.getElem_append_left (by rw [hUL_len]; exact hi1), List.getElem_map,
+          List.getElem_attach] at hhi
+        simp only [hVf_def]
+        rw [kvE2_sepTieGroupedL_value_const qnf M w x t h (List.getElem_mem hi1) hs
+          (List.head_mem _)]
+        exact hhi
+    · -- RIGHT gap
+      rw [show i + 1 = gL.length + 1 + (i - gL.length) by omega]
+      rcases lt_or_eq_of_le hiG with hig | hie
+      · -- i > gL.length
+        apply segR (i - gL.length) (by omega) y ?_ ?_ ?_ ?_
+        · rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hlo
+          simp only [hUL_len] at hlo
+          rw [getElem_congr_idx (show i - gL.length = (i - gL.length - 1) + 1 by omega),
+            List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hlo
+          exact lt_trans
+            (hbndR _ (List.mem_flatten.mpr ⟨_, List.getElem_mem
+              (show i - gL.length - 1 < gR.length by omega), List.head_mem _⟩)).1 hlo
+        · rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hhi
+          simp only [hUL_len] at hhi
+          rw [getElem_congr_idx (show i + 1 - gL.length = (i - gL.length) + 1 by omega),
+            List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hhi
+          exact lt_trans hhi
+            (hbndR _ (List.mem_flatten.mpr ⟨_, List.getElem_mem
+              (show i - gL.length < gR.length by omega), List.head_mem _⟩)).2
+        · intro _ s hs
+          rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hlo
+          simp only [hUL_len] at hlo
+          rw [getElem_congr_idx (show i - gL.length = (i - gL.length - 1) + 1 by omega),
+            List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hlo
+          simp only [hVf_def]
+          rw [kvE2_sepTieGroupedR_value_const qnf M w x t h
+            (List.getElem_mem (show i - gL.length - 1 < gR.length by omega)) hs (List.head_mem _)]
+          exact hlo
+        · intro hlt s hs
+          rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hhi
+          simp only [hUL_len] at hhi
+          rw [getElem_congr_idx (show i + 1 - gL.length = (i - gL.length) + 1 by omega),
+            List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hhi
+          simp only [hVf_def]
+          rw [kvE2_sepTieGroupedR_value_const qnf M w x t h (List.getElem_mem hlt) hs
+            (List.head_mem _)]
+          exact hhi
+      · -- i = gL.length (pivot on the left of the gap)
+        rw [show i - gL.length = 0 by omega]
+        apply segR 0 (Nat.zero_le _) y ?_ ?_ ?_ ?_
+        · rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hlo
+          simp only [hUL_len] at hlo
+          rw [getElem_congr_idx (show i - gL.length = 0 by omega), List.getElem_cons_zero] at hlo
+          exact hlo
+        · rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hhi
+          simp only [hUL_len] at hhi
+          rw [getElem_congr_idx (show i + 1 - gL.length = 0 + 1 by omega),
+            List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hhi
+          exact lt_trans hhi
+            (hbndR _ (List.mem_flatten.mpr ⟨_, List.getElem_mem
+              (show 0 < gR.length by omega), List.head_mem _⟩)).2
+        · intro hcontra; exact absurd hcontra (lt_irrefl 0)
+        · intro hgRpos s hs
+          rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hhi
+          simp only [hUL_len] at hhi
+          rw [getElem_congr_idx (show i + 1 - gL.length = 0 + 1 by omega),
+            List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hhi
+          simp only [hVf_def]
+          rw [kvE2_sepTieGroupedR_value_const qnf M w x t h (List.getElem_mem hgRpos) hs
+            (List.head_mem _)]
+          exact hhi
+  case hseglast =>
+    intro y hlast hyt
+    rw [huslen]
+    simp only [huslen, Nat.add_sub_cancel] at hlast
+    rw [show gL.length + gR.length + 1 = gL.length + 1 + gR.length by omega]
+    rcases Nat.eq_zero_or_pos gR.length with h0 | hpos
+    · -- gR empty: the last witness is the pivot `w`
+      rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hlast
+      simp only [hUL_len] at hlast
+      rw [getElem_congr_idx (show gL.length + gR.length - gL.length = 0 by omega),
+        List.getElem_cons_zero] at hlast
+      apply segR gR.length (le_refl _) y hlast hyt ?_ ?_
+      · intro hcontra; exact absurd (h0 ▸ hcontra) (lt_irrefl 0)
+      · intro hlt; exact absurd hlt (lt_irrefl _)
+    · -- gR nonempty: last witness is the last right class value
+      rw [List.getElem_append_right (by rw [hUL_len]; omega)] at hlast
+      simp only [hUL_len] at hlast
+      rw [getElem_congr_idx (show gL.length + gR.length - gL.length = (gR.length - 1) + 1 by omega),
+        List.getElem_cons_succ, List.getElem_map, List.getElem_attach] at hlast
+      apply segR gR.length (le_refl _) y ?_ hyt ?_ ?_
+      · exact lt_trans
+          (hbndR _ (List.mem_flatten.mpr ⟨_, List.getElem_mem
+            (show gR.length - 1 < gR.length by omega), List.head_mem _⟩)).1 hlast
+      · intro _ s hs
+        simp only [hVf_def]
+        rw [kvE2_sepTieGroupedR_value_const qnf M w x t h
+          (List.getElem_mem (show gR.length - 1 < gR.length by omega)) hs (List.head_mem _)]
+        exact hlast
+      · intro hlt; exact absurd hlt (lt_irrefl _)
+
+/-- **The §2.1 target: grouped multi-owner disjunct `.holds` builder** (task 337 deliverable):
+    under an honest evaluation of `qnf` at `[w, x, t]`, the meet-folded grouped joint disjunct of
+    the tie-reporting primed order `kvE2_sepHonestOrder'` is realized on `(x, t)`. Assembles the
+    two endpoints (Phase-8 pack) and the grouped bracket (`kvE2_sepBracket_holds_of_honest`) into
+    the `VecEA2.holds` triple. Consumes the PRIMED order at the target site (tie-admitting). -/
+theorem kvE2_sepDisjunct'_holds_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ) :
+    (kvE2_sepDisjunct' charBase charK qnf
+        (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h))
+        (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h))).2.holds M atomMap x t := by
+  refine ⟨?_, ?_, ?_⟩
+  · exact kvE2_sepEpL_eval_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+  · exact kvE2_sepEpR_eval_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+  · exact kvE2_sepBracket_holds_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck
+
+/-- **Body corollary** (task 337 deliverable; consumed by task 335): the joint-disjunct body
+    formula `kvE2_sepBody` is realized on `(x, t)` under honesty, by feeding the §2.1 builder into
+    the task-342 completeness statement `kvE2_sepBody_complete_holds'` (which consumes the PRIMED
+    tie-grouped disjunct). -/
+theorem kvE2_sepBody_holds_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (hg : kvE2_sepGate qnf)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (hck : ∀ (χ : NormalForm sig 1 1) (u : M.carrier),
+      temporal_truth M atomMap u (charK χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ) :
+    (kvE2_sepBody charBase charK qnf).holds M atomMap x t :=
+  kvE2_sepBody_complete_holds' charBase charK qnf hg M atomMap w x t hxw hwt h
+    (kvE2_sepDisjunct'_holds_of_honest charBase charK qnf M atomMap w x t hxw hwt h hcb hck)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

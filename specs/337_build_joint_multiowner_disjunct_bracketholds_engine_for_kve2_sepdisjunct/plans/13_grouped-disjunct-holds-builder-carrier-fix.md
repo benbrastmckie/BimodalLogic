@@ -499,7 +499,7 @@ definition, so that every `.rXW` slot value is provably `< w`.
 
 ---
 
-### Phase 7: O4 — assembly arithmetic + endpoints + the two public theorems + gates [NOT STARTED]
+### Phase 7: O4 — assembly arithmetic + endpoints + the two public theorems + gates [COMPLETED]
 
 - **Goal:** Discharge the assembly arithmetic, feed O1/O2/O3 into `kvE2_sepBracketN_construct`,
   attach the Phase-8 endpoints, state + prove the two public theorems, and run the axiom-clean +
