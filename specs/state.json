@@ -1392,14 +1392,14 @@
           "summary": "PARTIAL: Phase 1 landed live bracketEndChar_kvE2 outer-gate carrier (axiom-clean); Phases 2-4 blocked on missing joint multi-owner disjunct bracket-holds builder (task-334 deferred obligation)"
         },
         {
-          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/plans/04_outer-gate-post-333-v4.md",
-          "type": "plan",
-          "summary": "v4 post-333: Phase 4 split into 4a interior gates / 4b hbdry-hexcl with escalation / 4c wrap; Phase 5 unconditional gate for 309"
-        },
-        {
           "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/04_gate-blocker-adjudication.md",
           "type": "report",
           "summary": "Blocker adjudication: branches (a) and (b-strengthen) refuted; fragment gate (N2-sanctioned) recommended, OuterGate.lean only"
+        },
+        {
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/plans/05_fragment-gate-v5.md",
+          "type": "plan",
+          "summary": "v5 fragment gate: Phases A-D under N2-sanctioned hfrag restriction; hexcl GO/NO-GO probe bounded to one dispatch"
         }
       ],
       "completion_summary": "PARTIAL (1/4 phases). Phase 1 landed the first live outer-gate carrier bracketEndChar_kvE2 in new OuterGate.lean, delegating to task-334's verified kvE2_sepBody (axiom-clean [propext, Classical.choice, Quot.sound], rfl bridge, green build); SharedWitness.lean and KampPrior.lean byte-identical. Phases 2-4 (soundness/completeness connectors + assembled k=2 gate) BLOCKED on a missing prerequisite: the joint multi-owner disjunct bracket-holds builder over kvE2_sepSlotsL/R (a task-334-deferred obligation, SharedWitness.lean:1954). Unblocking path: dedicated follow-on wiring k1v_sorted_realizationK (SubBracket2V:633) into kvE2_sepDisjunct (~370 lines, comparable to bracketEndChar_k1v_complete), then re-dispatch Phases 2-4. Zero-debt: no sorry/vacuous placeholder introduced.",
