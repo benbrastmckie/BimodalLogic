@@ -9847,4 +9847,191 @@ theorem kvE2_sepBody_kit_sound {sig : MonadicSignature}
     exact kvE2_sepBundleR_sound atomMap h_surj charK σ M w x t hxw (hR σ hσ hz)
       (hgateR w hxw hwt hptW σ hσ hz)
 
+/-! ## Phase 4 (task 333) — Outer depth-2 fold `kvE2_outer_fold` (R4, the make-or-break)
+
+Reassemble `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` from the per-σ realizations delivered by
+`kvE2_sepBody_kit_sound` (Phase 3). There is NO landed depth-2 quant-layer fold engine
+(`nf_quant_layer_fold_iff`, `NfEFold.lean:391`, folds depth-0 inner subs; the k=2 quant layer
+ranges over depth-1 subs), so this theorem IS the assembly: it derives the outer atom layer
+from the carrier's own endpoint/witness point types (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW`
+head conjuncts through `nfPred_correct`) plus the six outer order bits, zone-classifies the
+positive subs through the extracted membership, discharges the two INTERIOR classes via the
+Phase-3 kit, and threads the two genuinely provider-conditional residual families as explicit
+hypotheses in the Amendment-F3 style (`kvE_subBracket2V_sound_of_outer` composition pattern):
+
+- `hbdry` — realization of the five NON-interior positive placement classes
+  (`zPastX3`/`zAtX3`/`zAtW3`/`zAtT3`/`zFutT3`). Their carrier content rides the σ-level
+  `charK` E[Σ]-atom literals of `kvE2_sepEpL`/`kvE2_sepPtW`/`kvE2_sepEpR`, whose typing into
+  arity-4 depth-1 evaluations is exactly the `ExistProviders.correct` step (c) of the
+  navigated sub-chain sketch (`NavigatedSpine.lean:445`) — discharged downstream at the
+  provider instantiation `charK := P.existF 0` (task 335), never assumed here.
+- `hexcl` — the outer forward (exclusion) clause: negative subs are unrealized. The depth-2
+  carrier pins per-σ content only up to (outer zone, projected 1-type) — the machine-checked
+  information-loss record `bracketEndChar_kv_factors` (`CarrierKv.lean:422`) — so this clause
+  is provider-conditional in exactly the A1 sense (`PriorInterface.lean:47-59`) and is
+  threaded verbatim, never assumed and never discharged vacuously here.
+
+Both families quantify over the pivot `w` because the extraction produces `w` existentially
+(the same quantification pattern as `kvE2_sepBody_kit_sound`'s gate families). All bits
+consumed remain self-owned enumeration antecedents; no filter is weakened; no `hgate` is
+assumed. Rabinovich 2014: Def 3.1 (p.4) ordering/point-type split for the outer atom layer;
+Lemma 3.2(2) anchor cap — the statement rides the two fixed anchors `(x,t)` (p.4); §5
+bracket assembly with quantifier-free point types (pp.7-9). -/
+
+/-- **Outer depth-2 fold** (task 333 Phase 4 — R4): from a realized `kvE2_sepBody`, the six
+    outer order bits of `qnf.1` (the `BracketCarrierCorrectVPrior` bracket-zone hypotheses,
+    `PriorInterface.lean:62-68` — the shape task 335's `bracketEndChar_kvE2_sound_two_prior`
+    consumer supplies), the two per-class interior gate families (verbatim
+    `kvE2_sepBody_kit_sound` shapes: left 6-conjunct excluding `kvE_sub2_zXU`, right
+    4-conjunct excluding `kvE2_sep_zWX1` — the two geometries differ), the non-interior
+    realization family `hbdry`, and the exclusion family `hexcl`, the depth-2 evaluation
+    `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` is assembled at the extracted shared pivot.
+
+    The proof derives (never assumes): the pivot and its bounds from the Phase-3 kit; the
+    outer PREDICATE atom bits at each of `w`/`x`/`t` from the head conjuncts of
+    `kvE2_sepPtW`/`kvE2_sepEpL`/`kvE2_sepEpR` through `formula_conjList_iff` +
+    `nfPred_correct` (Def 3.1 point-type channel, p.4); the outer ORDER atom bits from
+    `x < w < t` against the six order hypotheses; the positive-sub zone classification from
+    `kvE2_sepPos` membership; and the interior realizations from the Phase-3 kit. Bounds ride
+    the model order — never a fresh-witness relative-position formula literal (LITMUS). -/
+theorem kvE2_outer_fold {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (x t : M.carrier)
+    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
+    (hgateL : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+      ∀ a : M.carrier, x < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      a < w ∧ w < t ∧
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ))
+    (hgateR : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+      ∀ a : M.carrier, w < a → a < t →
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      nf_eval_nf M 0 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
+      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+        (∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) →
+        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
+      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE2_sep_zWX1 →
+        σ.2 (nf0_assemble zs χ σ.1) = true →
+        ∃ v : M.carrier,
+          zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ))
+    (hbdry : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf,
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier,
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    ∃ w : M.carrier,
+      nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, hLreal, hRreal⟩ :=
+    kvE2_sepBody_kit_sound atomMap h_surj charK qnf M x t h hgateL hgateR
+  -- Coordinate 1-types at the three outer points, extracted from the carrier's own
+  -- point-type head conjuncts (Def 3.1 point-type channel, PDF p.4).
+  have hprojW : nf_eval_nf M 0 1 (fun _ => w) (kvE2_sepProj3 qnf.1 ⟨0, by omega⟩) := by
+    have h1 := hptW
+    simp only [kvE2_sepPtW, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ w).mp
+      ((formula_conjList_iff M atomMap w _).mp h1 _ List.mem_cons_self)
+  have hprojX : nf_eval_nf M 0 1 (fun _ => x) (kvE2_sepProj3 qnf.1 ⟨1, by omega⟩) := by
+    have h1 := hEpL
+    simp only [kvE2_sepEpL, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ x).mp
+      ((formula_conjList_iff M atomMap x _).mp h1 _ List.mem_cons_self)
+  have hprojT : nf_eval_nf M 0 1 (fun _ => t) (kvE2_sepProj3 qnf.1 ⟨2, by omega⟩) := by
+    have h1 := hEpR
+    simp only [kvE2_sepEpR, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ t).mp
+      ((formula_conjList_iff M atomMap t _).mp h1 _ List.mem_cons_self)
+  refine ⟨w, ?_, ?_⟩
+  · -- Outer atom layer at `[w,x,t]`: PREDICATE bits from the three coordinate 1-types,
+    -- ORDER bits from `x < w < t` against the six order hypotheses.
+    intro a
+    match a with
+    | .pred p ⟨0, _⟩ =>
+      have h1 := hprojW (.pred p ⟨0, by omega⟩)
+      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero] using h1
+    | .pred p ⟨1, _⟩ =>
+      have h1 := hprojX (.pred p ⟨0, by omega⟩)
+      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+    | .pred p ⟨2, _⟩ =>
+      have h1 := hprojT (.pred p ⟨0, by omega⟩)
+      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+    | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
+      refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
+      simp only [atom_eval]
+      exact lt_asymm hxw
+    | .order ⟨0, _⟩ ⟨2, _⟩ hne =>
+      refine iff_of_true ?_ h_yt
+      simp only [atom_eval]
+      exact hwt
+    | .order ⟨1, _⟩ ⟨0, _⟩ hne =>
+      refine iff_of_true ?_ h_xy
+      simp only [atom_eval]
+      exact hxw
+    | .order ⟨1, _⟩ ⟨2, _⟩ hne =>
+      refine iff_of_true ?_ h_xt
+      simp only [atom_eval]
+      exact hxw.trans hwt
+    | .order ⟨2, _⟩ ⟨0, _⟩ hne =>
+      refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_ty.symm.trans hc))
+      simp only [atom_eval]
+      exact lt_asymm hwt
+    | .order ⟨2, _⟩ ⟨1, _⟩ hne =>
+      refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_tx.symm.trans hc))
+      simp only [atom_eval]
+      exact lt_asymm (hxw.trans hwt)
+    | .order ⟨0, _⟩ ⟨0, _⟩ hne => exact absurd rfl hne
+    | .order ⟨1, _⟩ ⟨1, _⟩ hne => exact absurd rfl hne
+    | .order ⟨2, _⟩ ⟨2, _⟩ hne => exact absurd rfl hne
+  · -- Outer quant layer: forward via the exclusion family, backward via zone
+    -- classification (interior classes through the Phase-3 kit, the rest through the
+    -- non-interior realization family).
+    intro σ
+    constructor
+    · rintro ⟨x1, hx1⟩
+      by_contra hne
+      exact hexcl w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hx1
+    · intro hbit
+      have hmem : σ ∈ kvE2_sepPos qnf := by
+        simp only [kvE2_sepPos, List.mem_filter]
+        exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hbit⟩
+      by_cases hzL : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+      · exact hLreal σ hmem hzL
+      by_cases hzR : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+      · exact hRreal σ hmem hzR
+      exact hbdry w hxw hwt hptW σ hmem (by tauto)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
