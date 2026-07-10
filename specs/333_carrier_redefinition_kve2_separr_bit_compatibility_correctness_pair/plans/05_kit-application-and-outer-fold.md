@@ -268,7 +268,7 @@ integer `1`-`4` is the canonical phase number used by the wave table, `Depends o
 - **Depends on:** none
 - **Do NOT re-plan or re-run.** Carried forward for provenance only.
 
-### Phase 2: R2 — Soundness side-conditions: `Pairwise`/`Nodup` over arbitrary `wo ∈ kvE2_sepArr'` [NOT STARTED]
+### Phase 2: R2 — Soundness side-conditions: `Pairwise`/`Nodup` over arbitrary `wo ∈ kvE2_sepArr'` [IN PROGRESS]
 
 - **Goal:** Prove the soundness-oriented `Pairwise`/`Nodup` lemmas over `kvE2_sepSlotsL/ROf wo` for
   **arbitrary** `wo ∈ kvE2_sepArr' qnf` (not just the honest order), discharging

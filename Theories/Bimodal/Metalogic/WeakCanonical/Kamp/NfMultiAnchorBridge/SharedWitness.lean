@@ -4315,6 +4315,170 @@ theorem kvE2_sepSlotsROf_nodup {sig : MonadicSignature} (qnf : NormalForm sig 2 
   exact ⟨fun σ _ => kvE2_sepSlotsRFor_nodup σ,
     (kvE2_sepOrderOwners_nodup qnf hwo).imp (fun hne => kvE2_sepSlotsRFor_disjoint hne)⟩
 
+/-! ### Task 333 Phase 2 (R2) — soundness side-conditions over arbitrary `wo ∈ kvE2_sepArr'`
+
+The `kvE2_sepBody_extract` side-conditions (`hpairL`/`hpairR`/`hnd`, the SW:6331-6340
+shapes) quantify over EVERY valid weak order. The provable core lands here: conjunct (ii)
+of `kvE2_sepDisjValid` (region-scoped payload consistency, `kvE2_sepConsistentBlock`)
+reflects the merge-key sortedness of `kvE2_sepSlotsL/ROf wo` into SAME-OWNER rank order —
+the `if`-true branch of `kvE2_sepSlotLe` — for arbitrary `wo ∈ kvE2_sepArr' qnf`, not just
+the honest order. -/
+
+/-- Consistency accessor (conjunct (ii) of `kvE2_sepDisjValid`): membership in the faithful
+    carrier yields every owner's region-scoped payload consistency. Companion of
+    `kvE2_sepArr'_sound`, which surfaces conjuncts (i)/(iii')/(iv) and discards (ii). -/
+theorem kvE2_sepArr'_consistent {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
+    (hwo : wo ∈ kvE2_sepArr' qnf) :
+    ∀ p ∈ wo, kvE2_sepConsistentBlock p.1 p.2.2 = true := by
+  have hv : kvE2_sepDisjValid qnf wo = true := (List.mem_filter.mp hwo).2
+  rw [kvE2_sepDisjValid, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hv
+  exact fun p hp => (List.all_eq_true.mp hv.1.1.2) p hp
+
+/-- `find?` at an owner key resolves to that owner's entry on any weak order whose owner
+    projection is duplicate-free (every `kvE2_sepOrderTypes` member, via
+    `kvE2_sepOrderTypes_owners` + `kvE2_sepPosI_nodup`). -/
+private theorem kvE2_sep_find?_owner_entry {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ} :
+    ∀ {wo : KvE2SepWeakOrder sig}, (wo.map Prod.fst).Nodup → (σ, tag, t) ∈ wo →
+      wo.find? (fun q => decide (q.1 = σ)) = some (σ, tag, t) := by
+  intro wo
+  induction wo with
+  | nil => intro _ hp; simp at hp
+  | cons a l ih =>
+    intro hnd hp
+    rw [List.map_cons, List.nodup_cons] at hnd
+    rcases List.mem_cons.mp hp with heq | hpl
+    · subst heq
+      exact List.find?_cons_of_pos (by simp)
+    · have hne : ¬(a.1 = σ) := fun he => hnd.1 (by
+        rw [he]
+        exact List.mem_map_of_mem hpl)
+      rw [List.find?_cons_of_neg (by simpa using hne)]
+      exact ih hnd.2 hpl
+
+/-- Payload read of the merge key on an enumeration member: for `(σ, tag, t) ∈ wo` with
+    duplicate-free owners, the global index of an own slot `s` is `t`'s entry at `s`'s
+    block position (the arbitrary-`wo` generalization of the honest-order bridge
+    `kvE2_sepSlotGIdx_honestOrder`). -/
+private theorem kvE2_sepSlotGIdx_read {sig : MonadicSignature}
+    {wo : KvE2SepWeakOrder sig} (hnd : (wo.map Prod.fst).Nodup)
+    {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ}
+    (hp : (σ, tag, t) ∈ wo)
+    {s : KvE2SepSlot sig} (hsub : kvE2_sepSlotSub s = σ) :
+    kvE2_sepSlotGIdx wo s = t.getD (kvE2_sepBlockPos s) 0 := by
+  unfold kvE2_sepSlotGIdx
+  rw [hsub, kvE2_sep_find?_owner_entry hnd hp]
+  simp only [Option.map_some, Option.getD_some]
+
+/-- **Same-owner rank order from merge-key order** (the provable core of the R2 `hpair`
+    side-conditions): on a valid weak order, two same-region slots of one owner whose merge
+    keys are `≤`-ordered are rank-ordered — conjunct (ii) region-consistency reflected
+    through the payload read. -/
+private theorem kvE2_sep_rank_le_of_gidx_le {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) {wo : KvE2SepWeakOrder sig}
+    (hwo : wo ∈ kvE2_sepArr' qnf)
+    {σ : NormalForm sig 1 4} {tag : KvE2SepSpikeOrderType} {t : List ℕ}
+    (hp : (σ, tag, t) ∈ wo)
+    {a b : KvE2SepSlot sig} (ha : a ∈ kvE2_sepSlotBlock σ) (hb : b ∈ kvE2_sepSlotBlock σ)
+    (hreg : kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b)
+    (hle : kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b) :
+    kvE2_sepSlotRank a ≤ kvE2_sepSlotRank b := by
+  by_contra hgt
+  push_neg at hgt
+  have hnd : (wo.map Prod.fst).Nodup := by
+    rw [kvE2_sepOrderTypes_owners qnf (List.mem_filter.mp hwo).1]
+    exact kvE2_sepPosI_nodup qnf
+  have hcons := kvE2_sepArr'_consistent qnf hwo (σ, tag, t) hp
+  rw [kvE2_sepConsistentBlock, decide_eq_true_eq] at hcons
+  have hsa : kvE2_sepSlotSub a = σ := kvE2_sepSlotSub_of_mem_block ha
+  have hsb : kvE2_sepSlotSub b = σ := kvE2_sepSlotSub_of_mem_block hb
+  have hal : (kvE2_sepSlotBlock σ).idxOf a < (kvE2_sepSlotBlock σ).length :=
+    List.idxOf_lt_length_of_mem ha
+  have hbl : (kvE2_sepSlotBlock σ).idxOf b < (kvE2_sepSlotBlock σ).length :=
+    List.idxOf_lt_length_of_mem hb
+  have hga : (kvE2_sepSlotBlock σ).get ⟨_, hal⟩ = a := List.idxOf_get hal
+  have hgb : (kvE2_sepSlotBlock σ).get ⟨_, hbl⟩ = b := List.idxOf_get hbl
+  have hlt : t.getD ((kvE2_sepSlotBlock σ).idxOf b) 0
+      < t.getD ((kvE2_sepSlotBlock σ).idxOf a) 0 :=
+    hcons ⟨_, hbl⟩ ⟨_, hal⟩ (by rw [hga, hgb]; exact hreg.symm)
+      (by rw [hga, hgb]; exact hgt)
+  have hra : kvE2_sepSlotGIdx wo a = t.getD ((kvE2_sepSlotBlock σ).idxOf a) 0 := by
+    rw [kvE2_sepSlotGIdx_read hnd hp hsa, kvE2_sepBlockPos, hsa]
+  have hrb : kvE2_sepSlotGIdx wo b = t.getD ((kvE2_sepSlotBlock σ).idxOf b) 0 := by
+    rw [kvE2_sepSlotGIdx_read hnd hp hsb, kvE2_sepBlockPos, hsb]
+  rw [hra, hrb] at hle
+  omega
+
+/-- **Same-owner `hpairL` core** (task 333 Phase 2): on every valid weak order the joint
+    LEFT slot list is `kvE2_sepSlotLe`-pairwise on SAME-OWNER pairs — merge-key sortedness
+    reflected through conjunct (ii). This is the half of the `hpairL` side-condition that
+    IS a consequence of `kvE2_sepDisjValid` membership. -/
+theorem kvE2_sepSlotsLOf_pairwise_sameOwner {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) :
+    ∀ wo ∈ kvE2_sepArr' qnf,
+      (kvE2_sepSlotsLOf wo).Pairwise
+        (fun a b => kvE2_sepSlotSub a = kvE2_sepSlotSub b → kvE2_sepSlotLe a b = true) := by
+  intro wo hwo
+  have howners : wo.map Prod.fst = kvE2_sepPosI qnf :=
+    kvE2_sepOrderTypes_owners qnf (List.mem_filter.mp hwo).1
+  refine (kvE2_sepSlotsLOf_mergeSorted wo).imp_of_mem ?_
+  intro a b hma hmb hab hsub
+  rw [kvE2_sepSlotsLOf] at hma hmb
+  obtain ⟨σ, hσo, hsa⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hma)
+  obtain ⟨τ, hτo, hsb⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hmb)
+  have hsuba : kvE2_sepSlotSub a = σ := kvE2_sepSlotsLFor_sub hsa
+  have hsubb : kvE2_sepSlotSub b = τ := kvE2_sepSlotsLFor_sub hsb
+  have hστ : σ = τ := hsuba.symm.trans (hsub.trans hsubb)
+  subst hστ
+  have hσp : σ ∈ wo.map Prod.fst := by
+    rw [howners]; exact kvE2_sepOrderOwners_mem_pos howners hσo
+  obtain ⟨p, hpwo, hp1⟩ := List.mem_map.mp hσp
+  have hpe : (σ, p.2.1, p.2.2) ∈ wo := by rw [← hp1]; exact hpwo
+  have hle : kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b := by
+    simpa [kvE2_sepSlotMergeLe] using hab
+  have hreg : kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b := by
+    rw [kvE2_sepSlotsLFor_regionLeft σ hsa, kvE2_sepSlotsLFor_regionLeft σ hsb]
+  have hba : a ∈ kvE2_sepSlotBlock σ := by
+    rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ hsa
+  have hbb : b ∈ kvE2_sepSlotBlock σ := by
+    rw [kvE2_sepSlotBlock]; exact List.mem_append_left _ hsb
+  exact kvE2_sepSlotLe_same hsub
+    (kvE2_sep_rank_le_of_gidx_le qnf hwo hpe hba hbb hreg hle)
+
+/-- **Same-owner `hpairR` core** (RIGHT mirror of `kvE2_sepSlotsLOf_pairwise_sameOwner`). -/
+theorem kvE2_sepSlotsROf_pairwise_sameOwner {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) :
+    ∀ wo ∈ kvE2_sepArr' qnf,
+      (kvE2_sepSlotsROf wo).Pairwise
+        (fun a b => kvE2_sepSlotSub a = kvE2_sepSlotSub b → kvE2_sepSlotLe a b = true) := by
+  intro wo hwo
+  have howners : wo.map Prod.fst = kvE2_sepPosI qnf :=
+    kvE2_sepOrderTypes_owners qnf (List.mem_filter.mp hwo).1
+  refine (kvE2_sepSlotsROf_mergeSorted wo).imp_of_mem ?_
+  intro a b hma hmb hab hsub
+  rw [kvE2_sepSlotsROf] at hma hmb
+  obtain ⟨σ, hσo, hsa⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hma)
+  obtain ⟨τ, hτo, hsb⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hmb)
+  have hsuba : kvE2_sepSlotSub a = σ := kvE2_sepSlotsRFor_sub hsa
+  have hsubb : kvE2_sepSlotSub b = τ := kvE2_sepSlotsRFor_sub hsb
+  have hστ : σ = τ := hsuba.symm.trans (hsub.trans hsubb)
+  subst hστ
+  have hσp : σ ∈ wo.map Prod.fst := by
+    rw [howners]; exact kvE2_sepOrderOwners_mem_pos howners hσo
+  obtain ⟨p, hpwo, hp1⟩ := List.mem_map.mp hσp
+  have hpe : (σ, p.2.1, p.2.2) ∈ wo := by rw [← hp1]; exact hpwo
+  have hle : kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b := by
+    simpa [kvE2_sepSlotMergeLe] using hab
+  have hreg : kvE2_sepSlotRegionLeft a = kvE2_sepSlotRegionLeft b := by
+    rw [kvE2_sepSlotsRFor_regionRight σ hsa, kvE2_sepSlotsRFor_regionRight σ hsb]
+  have hba : a ∈ kvE2_sepSlotBlock σ := by
+    rw [kvE2_sepSlotBlock]; exact List.mem_append_right _ hsa
+  have hbb : b ∈ kvE2_sepSlotBlock σ := by
+    rw [kvE2_sepSlotBlock]; exact List.mem_append_right _ hsb
+  exact kvE2_sepSlotLe_same hsub
+    (kvE2_sep_rank_le_of_gidx_le qnf hwo hpe hba hbb hreg hle)
+
 /-! ### Task 337 Phase 1 — strict base realizers in the whole side interval (region `hreal`)
 
 The engine `k1v_sorted_realizationK`'s `hreal` obligation asks, for every base 1-type `χ` placed in a
