@@ -6517,65 +6517,13 @@ theorem kvE2_sepDisjunct_halves {sig : MonadicSignature}
       = kvE2_sepPtW charBase charK qnf := kvE2_sep_getElem_mid _ _ _
   rwa [h2] at hptw
 
-/-- **O3 at carrier level**: extraction from any realized `kvE2_sepBody` (no gate
-    hypothesis — the gate-failure branch is the empty disjunction, whose `holds` is
-    `False`). Routes through the O2 membership collapse `kvE2_sepBody_holds_iff` and
-    `kvE2_sepDisjunct_extract`.
-
-    Task 334 Phase 6: post-rewire the carrier's disjunct bracket is built over the canonical
-    per-owner region-block slot lists `kvE2_sepSlotsL/R qnf`; the two region-rank pairwise facts
-    `hpairL`/`hpairR` on those lists (the ordering the extraction reads for same-owner slot
-    location) are passed as hypotheses. They hold whenever the canonical union is a single
-    region-sorted block (e.g. the singleton configuration; the general multi-owner pairwise
-    discharge is the completeness-side Phase-8 obligation).
-
-    Task 342 Phase 7 (deviation, annotated): the carrier now emits GROUPED meet-folded
-    disjuncts, so this extraction additionally takes `hnd` — every realized weak order's
-    `kvE2_sepSlotGIdx` payload is duplicate-free — restricting it to the TIE-FREE
-    configuration, where the groups are singletons and the grouped disjunct converts to the
-    flat one (`kvE2_sepDisjunct'_map_singleton_iff`) feeding `kvE2_sepDisjunct_extract`
-    unchanged. The genuinely tie-admitting extraction (reading per-class witnesses through
-    `kvE2_sepClassType_eval_mem`) is the Phases 8-10 arbitration item, NOT a Phase-7
-    obligation. -/
-theorem kvE2_sepBody_extract {sig : MonadicSignature}
-    (charBase : NormalForm sig 0 1 → Formula)
-    (charK : NormalForm sig 1 1 → Formula)
-    (qnf : NormalForm sig 2 3)
-    (hpairL : ∀ wo ∈ kvE2_sepArr' qnf,
-      (kvE2_sepSlotsLOf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
-    (hpairR : ∀ wo ∈ kvE2_sepArr' qnf,
-      (kvE2_sepSlotsROf wo).Pairwise (fun a b => kvE2_sepSlotLe a b = true))
-    (hnd : ∀ wo ∈ kvE2_sepArr' qnf,
-      ((kvE2_sepSlotsLOf wo).map (kvE2_sepSlotGIdx wo)).Nodup ∧
-        ((kvE2_sepSlotsROf wo).map (kvE2_sepSlotGIdx wo)).Nodup)
-    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
-    (x t : M.carrier)
-    (h : (kvE2_sepBody charBase charK qnf).holds M atomMap x t) :
-    (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x ∧
-    (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t ∧
-    ∃ w : M.carrier, x < w ∧ w < t ∧
-      (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w ∧
-      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
-        kvE2_sepBundleL charBase charK σ M atomMap w x) ∧
-      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
-        kvE2_sepBundleR charBase charK σ M atomMap w t) := by
-  by_cases hg : kvE2_sepGate qnf
-  · rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t] at h
-    obtain ⟨wo, hwo, hd⟩ := h
-    have hwo' : wo ∈ kvE2_sepOrderTypes qnf := (List.mem_filter.mp hwo).1
-    -- Task 342 Phase 7: tie-free conversion — `hnd` makes the tie classes singletons, so
-    -- the grouped disjunct realization converts to the flat one.
-    rw [kvE2_sepTieGroupedL_of_nodup wo (hnd wo hwo).1,
-      kvE2_sepTieGroupedR_of_nodup wo (hnd wo hwo).2,
-      kvE2_sepDisjunct'_map_singleton_iff charBase charK qnf _ _ M atomMap x t] at hd
-    -- Task 342 Phase 5: `kvE2_sepDisjunct_extract`'s `hmemL/hmemR` now quantify over the
-    -- interior index `kvE2_sepPosI`, matching `kvE2_sepSlotsL/ROf_mem` directly.
-    exact kvE2_sepDisjunct_extract charBase charK qnf
-      (fun σ hσ s hs => kvE2_sepSlotsLOf_mem qnf hwo' hσ hs) (hpairL wo hwo)
-      (fun σ hσ s hs => kvE2_sepSlotsROf_mem qnf hwo' hσ hs) (hpairR wo hwo)
-      M atomMap x t hd
-  · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
-    simp [VVecEA2.holds] at h
+-- NOTE (task 333 Phase 2, Route A): the former side-condition-laden `kvE2_sepBody_extract`
+-- (universal `hpairL`/`hpairR`/`hnd` over all `wo ∈ kvE2_sepArr' qnf` — FALSE for general
+-- `qnf`, machine-checked blocker record above at the R2 section) and its tie-free singleton
+-- conversion were REPLACED by the hypothesis-free tie-admitting pair
+-- `kvE2_sepDisjunct'_extract` / `kvE2_sepBody_extract` below (after the tie-run index
+-- lemmas they consume). `kvE2_sepTieGroupedL/R_of_nodup` and
+-- `kvE2_sepDisjunct'_map_singleton_iff` remain — the completeness side still uses them.
 
 /-! ## Phase 9 (O4) — carrier-side per-σ `hgate` derivation: the derivable core
 
@@ -8264,6 +8212,222 @@ theorem kvE2_sepTieRuns_classIdx_lt {α : Type*} (key : α → ℕ) (l : List α
     have hstrict := kvE2_sepTieRuns_key_strictMono key l hs
     have hba := List.pairwise_iff_getElem.mp hstrict j i hj hi hgt b hb a ha
     omega
+
+/-- **Route-A tie-admitting grouped extraction** (task 333 Phase 2, (c); the grouped analog
+    of the flat template `kvE2_sepDisjunct_extract`): from a realized GROUPED disjunct of
+    any valid weak order `wo ∈ kvE2_sepArr' qnf`, extract both joint endpoint realizations,
+    the ONE shared witness `w` (the `ptW` slot at class position `|gL|`; `x < w < t` from
+    the bracket's own range — FM-x1t), and at that same `w` the per-σ witness bundle for
+    every positive interior σ of either class. Every point is read through the meet-folded
+    class type (`kvE2_sepClassType_eval_mem`: a realized class point realizes EACH member's
+    slot type — Def 3.1 conjunction semantics, Rabinovich 2014, p.4), so ties never obstruct
+    the read: cross-owner ties merely enlarge a class's meet. Same-owner anchor/base
+    separation needs NO cross-owner hypothesis — the strict same-owner key order
+    `kvE2_sep_gidx_lt_of_rank_lt` (conjunct (ii) via `kvE2_sepArr'_consistent`) forces the
+    `lXU`/`rWX1` slot into a STRICTLY earlier tie class than the `lX1`/`rX1` anchor
+    (`kvE2_sepTieRuns_classIdx_lt` at the merge-sorted key order), and bracket monotonicity
+    places its witness strictly below the fresh witness. Witness positions are read
+    structurally off class indices (Def 3.1 monotone enumeration; §5 interleaving,
+    Rabinovich 2014, p.7) — never an `x1 < e_i` literal (LITMUS). -/
+theorem kvE2_sepDisjunct'_extract {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    {wo : KvE2SepWeakOrder sig} (hwo : wo ∈ kvE2_sepArr' qnf)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (h : (kvE2_sepDisjunct' charBase charK qnf
+        (kvE2_sepTieGroupedL wo) (kvE2_sepTieGroupedR wo)).2.holds M atomMap x t) :
+    (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x ∧
+    (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t ∧
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+        kvE2_sepBundleL charBase charK σ M atomMap w x) ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+        kvE2_sepBundleR charBase charK σ M atomMap w t) := by
+  obtain ⟨hepL, hepR, hbr⟩ := h
+  refine ⟨hepL, hepR, ?_⟩
+  -- Shared wo facts: enumeration membership, owner projection, merge-key sortedness
+  -- (Bool merge key → Prop key order, the `simpa`-level bridge).
+  have hwo' : wo ∈ kvE2_sepOrderTypes qnf := (List.mem_filter.mp hwo).1
+  have howners : wo.map Prod.fst = kvE2_sepPosI qnf := kvE2_sepOrderTypes_owners qnf hwo'
+  have hksortL : (kvE2_sepSlotsLOf wo).Pairwise
+      (fun a b => kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b) := by
+    refine (kvE2_sepSlotsLOf_mergeSorted wo).imp ?_
+    intro a b hab; rw [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab; exact hab
+  have hksortR : (kvE2_sepSlotsROf wo).Pairwise
+      (fun a b => kvE2_sepSlotGIdx wo a ≤ kvE2_sepSlotGIdx wo b) := by
+    refine (kvE2_sepSlotsROf_mergeSorted wo).imp ?_
+    intro a b hab; rw [kvE2_sepSlotMergeLe, decide_eq_true_eq] at hab; exact hab
+  -- Destructure the realized grouped N-slot bracket (Def 3.1 monotone enumeration, p.4;
+  -- skeleton transposed from the flat template).
+  simp only [kvE2_sepDisjunct', kvE2_sepBracketN, BracketFormula.holds,
+    BracketFormula.toIntervalPattern] at hbr
+  rw [IntervalPattern.holds_eq_succ M atomMap _ _ x t
+    (show ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length + 1
+        + ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length
+      = ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+        + ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length + 1
+      by omega)] at hbr
+  obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩ := hbr
+  -- Canonical point-type reads (defeq re-typing; flat-template pattern).
+  have hpt' : ∀ (i : Nat)
+      (hi : i < ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+        + ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length + 1),
+      (((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)
+          ++ kvE2_sepPtW charBase charK qnf
+            :: (kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK))[i]'(by
+        simp only [List.length_append, List.length_cons]; omega)).eval_at M atomMap
+        (ws ⟨i, hi⟩) := fun i hi => hpt ⟨i, hi⟩
+  refine ⟨ws ⟨((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length,
+      by omega⟩,
+    (hrange _).1, (hrange _).2, ?_, ?_, ?_⟩
+  · -- The shared `ptW` realization at class position `|gL|` (§5 bracket, p.7).
+    have h1 := hpt'
+      ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length (by omega)
+    rwa [kvE2_sep_getElem_mid] at h1
+  · -- LEFT-interior bundles: σ's fresh slot lies in some LEFT tie class.
+    intro σ hσpos hzone
+    have hσI : σ ∈ kvE2_sepPosI qnf :=
+      (kvE2_sepPosI_mem qnf σ).mpr ⟨hσpos, Or.inl hzone⟩
+    have hσp : σ ∈ wo.map Prod.fst := by rw [howners]; exact hσI
+    obtain ⟨p, hpwo, hp1⟩ := List.mem_map.mp hσp
+    have hpe : (σ, p.2.1, p.2.2) ∈ wo := by rw [← hp1]; exact hpwo
+    have hmemX1 : (KvE2SepSlot.lX1 σ) ∈ kvE2_sepSlotsLOf wo :=
+      kvE2_sepSlotsLOf_mem qnf hwo' hσI (kvE2_sep_lX1_mem_slotsLFor hzone)
+    rw [← kvE2_sepTieGroupedL_flatten wo] at hmemX1
+    obtain ⟨c, hc, hsc⟩ := List.mem_flatten.mp hmemX1
+    obtain ⟨iσ, hiσ, hgetiσ⟩ := List.mem_iff_getElem.mp hc
+    have hiσm : iσ
+        < ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length := by
+      simp only [List.length_map]; omega
+    refine ⟨ws ⟨iσ, by omega⟩, (hrange _).1,
+      hmono _ _ (Fin.mk_lt_mk.mpr hiσm), ?_, ?_⟩
+    · -- σ's folded fresh point type through the class meet (Def 3.1 conjunction, p.4).
+      have h1 := hpt' iσ (by omega)
+      rw [kvE2_sep_getElem_left _ _ _ iσ hiσm, List.getElem_map, hgetiσ] at h1
+      exact kvE2_sepClassType_eval_mem charBase charK M atomMap _ h1 hsc
+    · -- Every `zXU`-positive 1-type strictly below the fresh witness: strict same-owner
+      -- key order → strictly earlier tie class → bracket monotonicity.
+      intro χ hbit
+      have hmemU : (KvE2SepSlot.lXU σ χ) ∈ kvE2_sepSlotsLOf wo :=
+        kvE2_sepSlotsLOf_mem qnf hwo' hσI (kvE2_sep_lXU_mem_slotsLFor hzone hbit)
+      rw [← kvE2_sepTieGroupedL_flatten wo] at hmemU
+      obtain ⟨d, hd, hsd⟩ := List.mem_flatten.mp hmemU
+      obtain ⟨jχ, hjχ, hgetjχ⟩ := List.mem_iff_getElem.mp hd
+      have hkey : kvE2_sepSlotGIdx wo (KvE2SepSlot.lXU σ χ)
+          < kvE2_sepSlotGIdx wo (KvE2SepSlot.lX1 σ) :=
+        kvE2_sep_gidx_lt_of_rank_lt qnf hwo hpe
+          (by rw [kvE2_sepSlotBlock]
+              exact List.mem_append_left _ (kvE2_sep_lXU_mem_slotsLFor hzone hbit))
+          (by rw [kvE2_sepSlotBlock]
+              exact List.mem_append_left _ (kvE2_sep_lX1_mem_slotsLFor hzone))
+          rfl Nat.zero_lt_one
+      have hain : (KvE2SepSlot.lXU σ χ) ∈ (kvE2_sepTieGroupedL wo)[jχ]'hjχ := by
+        rw [hgetjχ]; exact hsd
+      have hbin : (KvE2SepSlot.lX1 σ) ∈ (kvE2_sepTieGroupedL wo)[iσ]'hiσ := by
+        rw [hgetiσ]; exact hsc
+      have hji : jχ < iσ := kvE2_sepTieRuns_classIdx_lt (kvE2_sepSlotGIdx wo)
+        (kvE2_sepSlotsLOf wo) hksortL hjχ hiσ hain hbin hkey
+      have hjχm : jχ
+          < ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length := by
+        simp only [List.length_map]; omega
+      refine ⟨ws ⟨jχ, by omega⟩, (hrange _).1,
+        hmono _ _ (Fin.mk_lt_mk.mpr hji), ?_⟩
+      have h1 := hpt' jχ (by omega)
+      rw [kvE2_sep_getElem_left _ _ _ jχ hjχm, List.getElem_map, hgetjχ] at h1
+      exact kvE2_sepClassType_eval_mem charBase charK M atomMap _ h1 hsd
+  · -- RIGHT-interior bundles (mirrored): σ's fresh slot lies in some RIGHT tie class.
+    intro σ hσpos hzone
+    have hσI : σ ∈ kvE2_sepPosI qnf :=
+      (kvE2_sepPosI_mem qnf σ).mpr ⟨hσpos, Or.inr hzone⟩
+    have hσp : σ ∈ wo.map Prod.fst := by rw [howners]; exact hσI
+    obtain ⟨p, hpwo, hp1⟩ := List.mem_map.mp hσp
+    have hpe : (σ, p.2.1, p.2.2) ∈ wo := by rw [← hp1]; exact hpwo
+    have hmemX1 : (KvE2SepSlot.rX1 σ) ∈ kvE2_sepSlotsROf wo :=
+      kvE2_sepSlotsROf_mem qnf hwo' hσI (kvE2_sep_rX1_mem_slotsRFor hzone)
+    rw [← kvE2_sepTieGroupedR_flatten wo] at hmemX1
+    obtain ⟨c, hc, hsc⟩ := List.mem_flatten.mp hmemX1
+    obtain ⟨jσ, hjσ, hgetjσ⟩ := List.mem_iff_getElem.mp hc
+    have hjσm : jσ
+        < ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length := by
+      simp only [List.length_map]; omega
+    refine ⟨ws ⟨((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+        + 1 + jσ, by omega⟩,
+      hmono _ _ (Fin.mk_lt_mk.mpr (by omega)), (hrange _).2, ?_, ?_⟩
+    · have h1 := hpt'
+        (((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length + 1 + jσ)
+        (by omega)
+      rw [kvE2_sep_getElem_right _ _ _ jσ hjσm, List.getElem_map, hgetjσ] at h1
+      exact kvE2_sepClassType_eval_mem charBase charK M atomMap _ h1 hsc
+    · intro χ hbit
+      have hmemU : (KvE2SepSlot.rWX1 σ χ) ∈ kvE2_sepSlotsROf wo :=
+        kvE2_sepSlotsROf_mem qnf hwo' hσI (kvE2_sep_rWX1_mem_slotsRFor hzone hbit)
+      rw [← kvE2_sepTieGroupedR_flatten wo] at hmemU
+      obtain ⟨d, hd, hsd⟩ := List.mem_flatten.mp hmemU
+      obtain ⟨j', hj', hgetj'⟩ := List.mem_iff_getElem.mp hd
+      have hkey : kvE2_sepSlotGIdx wo (KvE2SepSlot.rWX1 σ χ)
+          < kvE2_sepSlotGIdx wo (KvE2SepSlot.rX1 σ) :=
+        kvE2_sep_gidx_lt_of_rank_lt qnf hwo hpe
+          (by rw [kvE2_sepSlotBlock]
+              exact List.mem_append_right _ (kvE2_sep_rWX1_mem_slotsRFor hzone hbit))
+          (by rw [kvE2_sepSlotBlock]
+              exact List.mem_append_right _ (kvE2_sep_rX1_mem_slotsRFor hzone))
+          rfl Nat.zero_lt_one
+      have hain : (KvE2SepSlot.rWX1 σ χ) ∈ (kvE2_sepTieGroupedR wo)[j']'hj' := by
+        rw [hgetj']; exact hsd
+      have hbin : (KvE2SepSlot.rX1 σ) ∈ (kvE2_sepTieGroupedR wo)[jσ]'hjσ := by
+        rw [hgetjσ]; exact hsc
+      have hji : j' < jσ := kvE2_sepTieRuns_classIdx_lt (kvE2_sepSlotGIdx wo)
+        (kvE2_sepSlotsROf wo) hksortR hj' hjσ hain hbin hkey
+      have hj'm : j'
+          < ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length := by
+        simp only [List.length_map]; omega
+      refine ⟨ws ⟨((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+          + 1 + j', by omega⟩,
+        hmono _ _ (Fin.mk_lt_mk.mpr (by omega)),
+        hmono _ _ (Fin.mk_lt_mk.mpr (by omega)), ?_⟩
+      have h1 := hpt'
+        (((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length + 1 + j')
+        (by omega)
+      rw [kvE2_sep_getElem_right _ _ _ j' hj'm, List.getElem_map, hgetj'] at h1
+      exact kvE2_sepClassType_eval_mem charBase charK M atomMap _ h1 hsd
+
+/-- **O3 at carrier level — the hypothesis-free Route-A body extraction** (task 333
+    Phase 2, (d)): extraction from any realized `kvE2_sepBody`, with NO universal
+    side-conditions — every needed fact derives from the realized disjunct's own carrier
+    membership `wo ∈ kvE2_sepArr' qnf` (no gate hypothesis — the gate-failure branch is the
+    empty disjunction, whose `holds` is `False`). Routes through the O2 membership collapse
+    `kvE2_sepBody_holds_iff` and the tie-admitting grouped extraction
+    `kvE2_sepDisjunct'_extract`, which reads per-class witnesses through
+    `kvE2_sepClassType_eval_mem` on the GROUPED disjunct — matching the tie-admitting
+    carrier design the task-342 repair installed (base-base ties deliberately representable).
+    The former tie-free singleton-conversion route and its universal `hpairL`/`hpairR`/`hnd`
+    side-conditions (FALSE for general `qnf` — task 333 Phase-2 blocker record) are
+    eliminated. Def 3.1 single strict witness chain (Rabinovich 2014, p.4); §5 interleaving
+    (p.7). -/
+theorem kvE2_sepBody_extract {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x t : M.carrier)
+    (h : (kvE2_sepBody charBase charK qnf).holds M atomMap x t) :
+    (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x ∧
+    (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t ∧
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+        kvE2_sepBundleL charBase charK σ M atomMap w x) ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+        kvE2_sepBundleR charBase charK σ M atomMap w t) := by
+  by_cases hg : kvE2_sepGate qnf
+  · rw [kvE2_sepBody_holds_iff charBase charK qnf hg M atomMap x t] at h
+    obtain ⟨wo, hwo, hd⟩ := h
+    exact kvE2_sepDisjunct'_extract charBase charK qnf hwo M atomMap x t hd
+  · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
+    simp [VVecEA2.holds] at h
 
 /-- **One value per LEFT tie class** (task 337 plan 12 Phase 1): all slots of a single
     tie class of the primed grouped LEFT list carry EQUAL honest slot value. Equal keys within

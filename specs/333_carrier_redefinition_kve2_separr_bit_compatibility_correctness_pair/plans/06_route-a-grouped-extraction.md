@@ -373,7 +373,7 @@ ordering is effectively sequential.
   dispatch additionally landed the 6 preserved-asset lemmas at `98c1b6afa`/`7c1b191ee`;
   they are accounted under Preserved Assets, not re-planned here.)
 
-### Phase 2: Route-A tie-admitting grouped extraction — hypothesis-free `kvE2_sepBody_extract` [IN PROGRESS]
+### Phase 2: Route-A tie-admitting grouped extraction — hypothesis-free `kvE2_sepBody_extract` [COMPLETED]
 
 - **Goal:** Replace the v3 side-condition obligation (proven false — see Postmortem
   Constraints) with the Route-A grouped extraction: extract directly from the grouped
@@ -449,25 +449,36 @@ ordering is effectively sequential.
   mirror identically. Coverage facts via `kvE2_sepSlotsLOf_mem`/`ROf_mem` (SW:2268/2278)
   with `hwo' : wo ∈ kvE2_sepOrderTypes` from `List.mem_filter.mp hwo`, as at SW:6545.
 - **Tasks:**
-  - [ ] Land (a): generic `kvE2_sepTieRuns_const`, `kvE2_sepTieRuns_sorted_strict`,
+  - [x] Land (a): generic `kvE2_sepTieRuns_const`, `kvE2_sepTieRuns_sorted_strict`,
         `kvE2_sepTieRuns_classIdx_lt` — transcribe the report-04 probe (compiled green,
         zero diagnostics; imports already available in-file). Commit as a green sub-step
-        (`task 333 phase 2.1: …`) before proceeding.
-  - [ ] Land (b): `kvE2_sep_gidx_lt_of_rank_lt` — contrapositive wrapper of the LANDED
+        (`task 333 phase 2.1: …`) before proceeding. *(deviation: altered — the first two
+        (a)-lemmas ALREADY EXIST in-file, landed by task 337 as `kvE2_sepTieRuns_key_const`
+        (SW:8140) / `kvE2_sepTieRuns_key_strictMono` (SW:8178) with statements identical to
+        the report-04 signatures; consumed rather than duplicated. Only
+        `kvE2_sepTieRuns_classIdx_lt` newly landed, derived from those two via trichotomy +
+        `List.pairwise_iff_getElem` (~20 lines instead of the ~100-line probe transcript).
+        Green sub-step commit `9efe8a8e0` = phase 2.1.)*
+  - [x] Land (b): `kvE2_sep_gidx_lt_of_rank_lt` — contrapositive wrapper of the LANDED
         `kvE2_sep_rank_le_of_gidx_le` (SW:4378, Preserved Assets; do NOT re-prove the
-        landed lemma).
-  - [ ] Land (c): `kvE2_sepDisjunct'_extract` per the proof architecture above — consume
+        landed lemma). *(in commit `9efe8a8e0`, phase 2.1)*
+  - [x] Land (c): `kvE2_sepDisjunct'_extract` per the proof architecture above — consume
         the landed load-bearing assets (`kvE2_sepArr'_consistent`, `kvE2_sepSlotGIdx_read`,
         `kvE2_sep_find?_owner_entry`) rather than re-deriving them.
-  - [ ] Land (d): replace `kvE2_sepBody_extract` (SW:6520) **in place** with the
+  - [x] Land (d): replace `kvE2_sepBody_extract` (SW:6520) **in place** with the
         hypothesis-free version; delete the singleton-conversion step from the live
         soundness route ONLY (keep `kvE2_sepTieGroupedL/R_of_nodup` and
         `kvE2_sepDisjunct'_map_singleton_iff` — completeness still uses them at
         SW:5882-5884). Update the replaced lemma's docstring: cite the tie-admitting
         design (task-342 record) and PDF pages per the H3 table; no `md:NN`.
-  - [ ] Verify zero consumers assumption still holds before the in-place replacement
+        *(deviation: altered — replacement is in-place interface-wise (same name, same file,
+        zero consumers) but the new (c)+(d) bodies sit AFTER `kvE2_sepTieRuns_classIdx_lt`
+        (~SW:8250+) because (c) consumes the task-337 tie-run lemmas at SW:8140/8178, which
+        Lean requires to precede it; the old SW:6520 site carries a NOTE pointer.)*
+  - [x] Verify zero consumers assumption still holds before the in-place replacement
         (grep `kvE2_sepBody_extract` over `Theories/`; expect only docstring mentions).
-  - [ ] Audits: LITMUS 0 live hits (all new lemmas are pure list/ℕ + point-type reads — no
+        *(verified: only docstring/comment mentions at SW:2249/2266/4320/4483/4501/7108)*
+  - [x] Audits: LITMUS 0 live hits (all new lemmas are pure list/ℕ + point-type reads — no
         zone bit, no order literal); no-nesting (class meets are `formula_conjList` over
         existing slot types, SW:2109); L/R macro-side confinement (L only `(x,w)`, R only
         `(w,t)`); carrier byte-identity (`kvE2_sepArr'`/`kvE2_sepDisjValid`/`kvE2_sepBody`
