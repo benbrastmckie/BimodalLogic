@@ -169,35 +169,44 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature}
     (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
     (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
 
-/-! ## Phases 3-5 — ⇒ soundness + assembly: **BLOCKED** (grounded, un-landed obligation)
+/-! ## Phases 3-5 — ⇒ soundness + assembly: now-attemptable over task 333's LANDED fold
 
 The ⇒ (soundness) half `.holds ⟹ ∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` — and hence the assembled
-`bracketEndChar_kvE2_correct_two_prior` — is **NOT delivered**. This is a genuine un-landed
-obligation, confirmed by an exhaustive audit of the non-Boneyard tree (task 335 session): there is
-**no** landed depth-2 soundness reassembly (`holds → nf_eval_nf M 2 3`), **no** depth-2 quant-layer
-fold (the only fold engine `nf_quant_layer_fold_iff`, `NfEFold.lean:391`, folds depth-0 inner subs
-only; the k=2 quant layer ranges over depth-1 subs `σ : NormalForm sig 1 4`), and the extract
-`kvE2_sepBody_extract` (`SharedWitness.lean:6356`) is un-consumed (its `hpairL/hpairR/hnd` side
-conditions are open for the soundness path — the landed `Pairwise`/`Nodup` lemmas are stated for the
-wrong relation/order or are completeness-only).
+`bracketEndChar_kvE2_correct_two_prior` — is **now-attemptable work**, NOT the blocked obligation
+the prior note recorded. The two reasons that note gave are both now false:
 
-**Root obstruction (LANDED, machine-checked).** The multi-owner soundness `hgate` forward-zone
-conjunct (`SubBracket2V.lean:1873-1877`) at a cross-σ slot point is *underdetermined by the faithful
-carrier's realized content* — see the **O4 CRUX RECORD** (`SharedWitness.lean:6566-6659`, task 321 v7
-Phase 9 verdict FAIL): with σ, τ distinct interior positives and τ's χ-slot interleaved before σ's
-fresh slot, the realized arrangement forces a witness `v` with `nf_eval_nf M 0 1 (fun _ => v) χ` yet
-the conjunct demands `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`, which no carrier channel
-delivers (the gate contributes only falsity clauses; the segment/E[Σ]/own-slot channels miss the
-cross-σ witness point). Five closers failed on the captured goal; the record proves *channel
-exhaustion*, not merely "none found".
+1. *"No landed depth-2 soundness reassembly / no depth-2 quant-layer fold."* Task 333 LANDED exactly
+   that: `kvE2_outer_fold` (`SharedWitness.lean:9897`, green, axiom-clean) IS the depth-2 assembly —
+   it reassembles `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` from the carrier's realized content (there is
+   still no generic quant-layer fold engine, but the bespoke `kvE2_outer_fold` supersedes the need
+   for one on this path).
+2. *"The O4 forward-zone conjunct is underdetermined; the faithful repair needs a carrier
+   REDEFINITION of the (now-deleted) `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR`."* The O4 crux is
+   DISSOLVED (task 333 report 03, H4-verified): the forward-zone `hgate` conjunct is **antecedent-
+   only** and the O4 crux record is inert. The named symbols no longer exist — task 334 replaced the
+   carrier with the faithful `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`, and task 342 added the
+   interior-restricted owner index `kvE2_sepPosI`. No `SharedWitness.lean` redefinition is required.
 
-**Why not patched here.** The faithful repair is BIT-COMPATIBILITY FILTERING of the interleaving
-enumeration — a REDEFINITION of `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR` in the verified INPUT
-`SharedWitness.lean`, with knock-on O1b/O2/O3 rework (O4 CRUX RECORD, "faithful repair" paragraph).
-That is outside this task's ADDITIVE mandate (goals/non-goals: carrier is a verified INPUT, only
-applied) and would edit a landed task-334/342 declaration, which requires explicit orchestrator
-re-authorization (task-337 `.rXW` precedent). No such authorization is held. Per zero-debt
-discipline, NO `sorry`, NO vacuous placeholder, NO assumed-`hgate`, and NO interiority hypothesis was
-introduced. The completeness half (Phase 2, above) is delivered, green, and axiom-clean. -/
+**What the fold requires task 335 to construct (at `charK := fun χ => P.existF 0 χ`).** The landed
+`kvE2_outer_fold` does NOT yield a thin `apply`; it takes four provider-conditional hypothesis
+families that task 333 deliberately punted to the 335 provider instantiation (fold docstring
+SW:9858-9878, "discharged downstream at the provider instantiation `charK := P.existF 0` (task 335),
+never assumed here"):
+
+- `hgateL` / `hgateR` (SW:9911 / 9929) — the interior LEFT/RIGHT per-σ gate families for the
+  `kvE2_sep_zXW3` / `kvE2_sep_zWT3` zones. Built from the hypothesis-free `kvE2_sepBody_extract`
+  (SW:8410) bundles + the per-σ kit `kvE2_sepBundleL/R_parts` (SW:5379 / 5396) →
+  `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1290`). [Phase 4a]
+- `hbdry` (SW:9946) — non-interior positive realization. `hexcl` (SW:9952) — negative-sub exclusion,
+  provider-conditional in the A1 sense (`PriorInterface.lean:47-59`). Discharged from
+  `ExistProviders.correct` + `h_UZ`/`h_SZ` at `P.existF 0`. [Phase 4b — the genuine risk]
+
+The completeness half (Phase 2, above) is delivered, green, and axiom-clean. Authorization for the ⇒
+work is held (task 333 Territory Contract; 335 owns `OuterGate.lean` only — the fold and kit are
+verified INPUTS, applied never re-proved). Per zero-debt discipline: NO `sorry`, NO vacuous
+placeholder, NO assumed family, NO interiority hypothesis on any live path. Rabinovich cited by PDF
+page only: the depth-2 assembly follows Def 3.1 (p.4) point-type/ordering split and the §5 bracket
+assembly with quantifier-free point types (pp.7-9); Lemma 3.2(1) (p.4) states the closure without
+printed proof. -/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

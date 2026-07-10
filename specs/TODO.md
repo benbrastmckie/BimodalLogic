@@ -109,7 +109,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-335 [PLANNED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+335 [IMPLEMENTING] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
@@ -139,7 +139,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ---
 
 ### 335. Outer gate assembly engine kvE2 body
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 334, Task 337

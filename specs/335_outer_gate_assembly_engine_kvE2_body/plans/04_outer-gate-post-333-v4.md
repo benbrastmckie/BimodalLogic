@@ -1,7 +1,7 @@
 # Implementation Plan: Task #335 — Outer-Gate Assembly Engine (`kvE2_body` / `bracketEndChar_kvE2`) — ⇒ Soundness Half over the LANDED `kvE2_outer_fold` (v4, post-333)
 
 - **Task**: 335 - Build the outer-gate assembly engine `kvE2_body` / `bracketEndChar_kvE2`, the two-level quant-layer connector that `KampPrior.lean:351` (the depth-k≥2 Cor 5.4 converter) consumes
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-6 hours (⇒ half + assembly; Phases 1-2 already landed; the genuine risk is Phase 4b `hbdry`/`hexcl` discharge)
 - **Dependencies**:
   - 334 (COMPLETED — faithful carrier redefinition `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`)
@@ -192,28 +192,30 @@ axiom-clean `{propext, Classical.choice, Quot.sound}`), plus helper bridges
 
 ---
 
-### Phase 3: Retire the stale in-source BLOCKED framing + citation hygiene [NOT STARTED]
+### Phase 3: Retire the stale in-source BLOCKED framing + citation hygiene [COMPLETED]
 
 **Goal**: Correct 335's own in-source prose that records the ⇒ half as BLOCKED for two now-false
 reasons, and re-ground the one dangling `md:NN` cite. Comment-only edit within 335's territory;
 lands no proof but removes the doubly-stale mental model. Independent of the ⇒ half — land immediately.
 
 **Tasks**:
-- [ ] Replace the `OuterGate.lean:172-201` "Phases 3-5 — BLOCKED" note with an accurate status: the
+- [x] Replace the `OuterGate.lean:172-201` "Phases 3-5 — BLOCKED" note with an accurate status: the
       ⇒ half is now-attemptable work consuming task 333's LANDED `kvE2_outer_fold`
       (`SharedWitness.lean:9897`, green, axiom-clean). Record that the fold takes four
       provider-conditional families (`hgateL`/`hgateR`/`hbdry`/`hexcl`) that 335 constructs at
       `charK := P.existF 0` — `hgateL`/`hgateR` from the interior kit (4a), `hbdry`/`hexcl` from
-      provider correctness (4b, the genuine risk).
-- [ ] State the evidence inline with `file:line`: `kvE2_outer_fold` SW:9897 landed; the four families
+      provider correctness (4b, the genuine risk). *(completed)*
+- [x] State the evidence inline with `file:line`: `kvE2_outer_fold` SW:9897 landed; the four families
       at SW:9911/9929/9946/9952; `kvE2_sepBody_extract` SW:8410 produces bundles; the named symbols
       `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR` no longer exist (334 → `kvE2_sepArr'` +
       `kvE2_sepDisjValidOwner`); the O4 crux is DISSOLVED (333 report 03), forward-zone conjunct is
-      antecedent-only; authorization held (333 Territory Contract).
-- [ ] Purge/re-ground the dangling `md:297` cite (and any other `md:NN`) in 335's artifacts to a PDF
-      page cite, using the mandated Lemma 3.2 form.
-- [ ] Do NOT touch the delivered decls or the docstring items 4/5 (Phase 5 finalizes those once
-      soundness lands); do NOT touch any `SharedWitness.lean` content.
+      antecedent-only; authorization held (333 Territory Contract). *(completed)*
+- [x] Purge/re-ground the dangling `md:297` cite (and any other `md:NN`) in 335's artifacts to a PDF
+      page cite, using the mandated Lemma 3.2 form. *(completed — `grep -c "md:" OuterGate.lean` = 0;
+      the new note cites Rabinovich by PDF page only: Def 3.1 p.4, §5 pp.7-9, Lemma 3.2(1) p.4.)*
+- [x] Do NOT touch the delivered decls or the docstring items 4/5 (Phase 5 finalizes those once
+      soundness lands); do NOT touch any `SharedWitness.lean` content. *(completed — only the
+      172-201 note block changed; header items 4/5 and all decls untouched; SW byte-unchanged.)*
 
 **Timing**: 0.5 hours. **Depends on**: none (1, 2 landed).
 
