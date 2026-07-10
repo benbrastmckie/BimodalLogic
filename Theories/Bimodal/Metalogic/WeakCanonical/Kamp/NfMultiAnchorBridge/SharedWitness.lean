@@ -8209,4 +8209,114 @@ theorem kvE2_sepTieGroupedR_strictMono {sig : MonadicSignature}
       (kvE2_sepMem_allSlots qnf (kvE2_sepPosI_subset hτ) hvτ)).mpr hval
   omega
 
+/-- **O1 below-pivot range, per owner (LEFT)** (task 337 plan 13 Phase 3): every LEFT-region slot
+    of a positive owner has honest value strictly inside `(x, w)` — the below-pivot bracket half
+    (Rabinovich Figure 1, PDF p.9). For a left-interior owner the `.lXU`/`.lX1`/`.lUW` slots nest
+    inside `(x, x1_σ) < x1_σ < (x1_σ, w)`; for a right-interior owner the `.rXW` slots sit in
+    `(x, w)` by the landed Phase-2 below-pivot bound. Supplies the `usL`-last `< w` pivot fact O1
+    needs (per-slot value specs, NOT value-sortedness — plan 12 line 140 mis-mitigation retracted). -/
+theorem kvE2_sepSlotsLFor_value_bound {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLFor σ) :
+    x < kvE2_sepSlotValue qnf M w x t h s
+      ∧ kvE2_sepSlotValue qnf M w x t h s < w := by
+  rw [kvE2_sepSlotsLFor] at hs
+  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · rw [if_pos hz1, List.mem_append] at hs
+    rcases hs with hs | hs
+    · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hs
+      have hspec := kvE2_sepSlotValue_lXU_spec qnf M w x t hxw hwt h σ hσ hz1 χ hχ
+      have hanch := (kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσ hz1).2.1
+      exact ⟨hspec.1, lt_trans hspec.2.1 hanch⟩
+    · rw [List.mem_cons] at hs
+      rcases hs with rfl | hs
+      · have hanch := kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσ hz1
+        rw [kvE2_sepSlotValue_lX1]
+        exact ⟨hanch.1, hanch.2.1⟩
+      · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hs
+        have hspec := kvE2_sepSlotValue_lUW_spec qnf M w x t hxw hwt h σ hσ hz1 χ hχ
+        have hanch := (kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσ hz1).1
+        exact ⟨lt_trans hanch hspec.1, hspec.2.1⟩
+  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · rw [if_neg hz1, if_pos hz2] at hs
+      obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hs
+      have hspec := kvE2_sepSlotValue_rXW_spec qnf M w x t h σ hσ χ hχ
+      exact ⟨hspec.1, hspec.2.1⟩
+    · rw [if_neg hz1, if_neg hz2] at hs
+      exact absurd hs (by simp)
+
+/-- **O1 above-pivot range, per owner (RIGHT)** (mirror of `kvE2_sepSlotsLFor_value_bound`): every
+    RIGHT-region slot of a positive owner has honest value strictly inside `(w, t)` — the
+    above-pivot bracket half. Supplies the `w < usR`-first pivot fact. -/
+theorem kvE2_sepSlotsRFor_value_bound {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {σ : NormalForm sig 1 4} (hσ : σ ∈ kvE2_sepPos qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsRFor σ) :
+    w < kvE2_sepSlotValue qnf M w x t h s
+      ∧ kvE2_sepSlotValue qnf M w x t h s < t := by
+  rw [kvE2_sepSlotsRFor] at hs
+  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · rw [if_pos hz1] at hs
+    obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hs
+    have hspec := kvE2_sepSlotValue_lWT_spec qnf M w x t h σ hσ χ hχ
+    exact ⟨hspec.1, hspec.2.1⟩
+  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · rw [if_neg hz1, if_pos hz2, List.mem_append] at hs
+      rcases hs with hs | hs
+      · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hs
+        have hspec := kvE2_sepSlotValue_rWX1_spec qnf M w x t hxw hwt h σ hσ hz2 χ hχ
+        have hanch := (kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσ hz2).2.1
+        exact ⟨hspec.1, lt_trans hspec.2.1 hanch⟩
+      · rw [List.mem_cons] at hs
+        rcases hs with rfl | hs
+        · have hanch := kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσ hz2
+          rw [kvE2_sepSlotValue_rX1]
+          exact ⟨hanch.1, hanch.2.1⟩
+        · obtain ⟨χ, hχ, rfl⟩ := List.mem_map.mp hs
+          have hspec := kvE2_sepSlotValue_rX1T_spec qnf M w x t hxw hwt h σ hσ hz2 χ hχ
+          have hanch := (kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσ hz2).1
+          exact ⟨lt_trans hanch hspec.1, hspec.2.1⟩
+    · rw [if_neg hz1, if_neg hz2] at hs
+      exact absurd hs (by simp)
+
+/-- **O1 below-pivot range, merged LEFT list** (task 337 plan 13 Phase 3): every slot of the
+    primed merged LEFT list has honest value strictly inside `(x, w)`. The list-level pivot/range
+    fact the Phase-7 assembly reads for `usL`-last `< w` and the global `x < · < t` range. -/
+theorem kvE2_sepSlotsLOf_honestOrder'_value_bound {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsLOf (kvE2_sepHonestOrder' qnf M w x t h)) :
+    x < kvE2_sepSlotValue qnf M w x t h s
+      ∧ kvE2_sepSlotValue qnf M w x t h s < w := by
+  have hwo : (kvE2_sepHonestOrder' qnf M w x t h).map Prod.fst = kvE2_sepPosI qnf := by
+    rw [kvE2_sepHonestOrder', List.map_map]; exact List.zipIdx_map_fst 0 _
+  rw [kvE2_sepSlotsLOf] at hs
+  obtain ⟨σ, hσ, hsσ⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hs)
+  have hσpos : σ ∈ kvE2_sepPos qnf :=
+    kvE2_sepPosI_subset (kvE2_sepOrderOwners_mem_pos hwo hσ)
+  exact kvE2_sepSlotsLFor_value_bound qnf M w x t hxw hwt h hσpos hsσ
+
+/-- **O1 above-pivot range, merged RIGHT list** (mirror of `kvE2_sepSlotsLOf_honestOrder'_value_bound`):
+    every slot of the primed merged RIGHT list has honest value strictly inside `(w, t)`. -/
+theorem kvE2_sepSlotsROf_honestOrder'_value_bound {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    {s : KvE2SepSlot sig} (hs : s ∈ kvE2_sepSlotsROf (kvE2_sepHonestOrder' qnf M w x t h)) :
+    w < kvE2_sepSlotValue qnf M w x t h s
+      ∧ kvE2_sepSlotValue qnf M w x t h s < t := by
+  have hwo : (kvE2_sepHonestOrder' qnf M w x t h).map Prod.fst = kvE2_sepPosI qnf := by
+    rw [kvE2_sepHonestOrder', List.map_map]; exact List.zipIdx_map_fst 0 _
+  rw [kvE2_sepSlotsROf] at hs
+  obtain ⟨σ, hσ, hsσ⟩ := List.mem_flatMap.mp ((List.mergeSort_perm _ _).mem_iff.mp hs)
+  have hσpos : σ ∈ kvE2_sepPos qnf :=
+    kvE2_sepPosI_subset (kvE2_sepOrderOwners_mem_pos hwo hσ)
+  exact kvE2_sepSlotsRFor_value_bound qnf M w x t hxw hwt h hσpos hsσ
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
