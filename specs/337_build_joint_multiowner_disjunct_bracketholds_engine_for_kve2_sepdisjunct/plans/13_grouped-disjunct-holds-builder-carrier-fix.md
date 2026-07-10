@@ -425,7 +425,28 @@ definition, so that every `.rXW` slot value is provably `< w`.
 
 ---
 
-### Phase 5: O3(a) — honest segment-evaluation lemma family (standalone) [NOT STARTED]
+### Phase 5: O3(a) — honest segment-evaluation lemma family (standalone) [COMPLETED]
+
+**Phase 5 completion note (task 337, session sess_1783639750_29c89e_337):**
+- Landed the NEW segment-eval family (additive, after the Phase-4 lemmas): the core
+  `kvE2_sepSegForm_eval_of_honest` (honest σ + `y` in σ's zone `zs` ⟹ the exclusion segment
+  `kvE2_sepSegForm σ zs` is realized at `y`; a bit-FALSE 1-type realized in-zone would force the
+  fold bit TRUE via `nf_eval_depth1_fold_iff`), and the two per-cut fold lemmas
+  `kvE2_sepSegLAt_eval_of_honest` / `kvE2_sepSegRAt_eval_of_honest`. Both fold over `kvE2_sepPos`,
+  dispatch `kvE2_sepSegLForSub` / `kvE2_sepSegRForSub` on the owner zone and the structural
+  `.lX1/.rX1 ∈ take` boolean, and build the required `zoneHolds` at each cut via `kvE2_sepZone4_iff`.
+  Right/left cross-region owners' uniform-zone exclusion is discharged internally from the anchor
+  bundles (`w < a` / `a < w`); the same-region placement uses a GENERIC `hbridge` hypothesis
+  relating the take-boolean to `y`'s position vs the honest anchor value (Phase 6 supplies it).
+- Green `lake build`; all 3 lemmas axiom-clean `{propext, Classical.choice, Quot.sound}`.
+  SharedWitness `sorry` count still 7 (all prose). LITMUS-clean: bounds ride `x`/`w`/`t` + anchor
+  value only, no owner-to-owner chain.
+- **Deviation (altered — kept binary `SegLForSub`/`SegRForSub`):** the plan text mentioned the
+  three-way primed `kvE2_sepSegLForSub'`/`_RForSub'`, but the object the bracket actually consumes
+  (`kvE2_sepSegsG` → `kvE2_sepSegLAt`/`SegRAt`) folds the BINARY `kvE2_sepSegLForSub`/`SegRForSub`.
+  The family is stated directly against those binary cuts (the load-bearing ones), which is exactly
+  what Phase 6/7 assembly needs; the primed variants are unused by the target and were left
+  untouched.
 
 - **Goal:** Land the NEW "honest segment evaluation" lemma family as STANDALONE green lemmas
   (generic in an interior point `y`), since no banked completeness-direction segment-eval lemma

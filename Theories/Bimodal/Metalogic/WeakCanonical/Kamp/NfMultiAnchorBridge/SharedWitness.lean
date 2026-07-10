@@ -8587,4 +8587,168 @@ theorem kvE2_sepTieGroupedR_classType_eval {sig : MonadicSignature}
   exact kvE2_sepSlotType_eval_at_value charBase charK qnf M atomMap w x t hxw hwt h hcb hck
     (kvE2_sepPosI_subset hσ) hsσ
 
+/-! ### Task 337 (plan 13) Phase 5 — O3(a): honest segment-evaluation family (standalone)
+
+No banked completeness-direction segment-eval lemma exists, so these are NEW. The core reads the
+owners' universal (β) layer of `h`: a per-σ exclusion segment `kvE2_sepSegForm σ zs` holds at any
+interior point `y` that sits in σ's zone `zs` (relative to σ's honest anchor value), because a
+bit-FALSE 1-type realized there would force the fold bit TRUE (contradiction). Everything is
+generic in `y` and its zone position (Cor 5.4, md:154-157: exclusion throughout every realized
+refined sub-interval). LITMUS-clean: all bounds ride `x`/`w`/`t` + the anchor value, never an
+owner-to-owner chain. -/
+
+/-- **Segment-exclusion honesty (core)** (Phase 5): under an honest owner realization at
+    `[a, w, x, t]`, if `y` lies in σ's zone `zs`, then σ's exclusion segment
+    `kvE2_sepSegForm σ zs` is realized at `y` — every bit-FALSE 1-type is excluded there. -/
+theorem kvE2_sepSegForm_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (σ : NormalForm sig 1 4) (a w x t : M.carrier)
+    (hspec : nf_eval_nf M 1 4 (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (zs : ZoneSpec 4) (y : M.carrier)
+    (hy : zoneHolds M (Fin.cons a (Fin.cons w (Fin.cons x (fun _ => t)))) zs y) :
+    temporal_truth M atomMap y (kvE2_sepSegForm charBase σ zs) := by
+  obtain ⟨-, h_zone, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hspec
+  simp only [kvE2_sepSegForm]
+  rw [formula_conjList_iff]
+  intro f hf
+  obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+  cases hbit : kvE2_sepBits σ zs χ with
+  | true =>
+    show temporal_truth M atomMap y Formula.top
+    exact temporal_truth_top M atomMap y
+  | false =>
+    show temporal_truth M atomMap y (charBase χ).neg
+    simp only [Formula.neg, temporal_truth]
+    intro hch
+    have hbt : kvE2_sepBits σ zs χ = true :=
+      (h_zone zs χ).mp ⟨y, hy, (hcb χ y).mp hch⟩
+    rw [hbit] at hbt
+    exact Bool.noConfusion hbt
+
+/-- **LEFT refined-segment honesty at a cut** (Phase 5): the LEFT-region refined-conjunction
+    segment `kvE2_sepSegLAt lL i` is realized at any interior `y ∈ (x, w)` whose position relative
+    to each left-interior owner's honest anchor matches the cut's structural read (`hbridge`).
+    Right-interior owners contribute the uniform `(x, w)` (`kvE_sub2_zXU`) exclusion, discharged
+    internally from `w < a`. Generic in `y` and `hbridge`; Phase 6 supplies the bridge from the
+    class order. -/
+theorem kvE2_sepSegLAt_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (lL : List (KvE2SepSlot sig)) (i : Nat) (y : M.carrier) (hxy : x < y) (hyw : y < w)
+    (hbridge : ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+      ((lL.take i).contains (.lX1 σ) = true → kvE2_sepAnchorVal qnf M w x t h σ < y) ∧
+      ((lL.take i).contains (.lX1 σ) = false → y < kvE2_sepAnchorVal qnf M w x t h σ)) :
+    (kvE2_sepSegLAt charBase qnf lL i).eval_at M atomMap y := by
+  have hyt : y < t := hyw.trans hwt
+  simp only [kvE2_sepSegLAt, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  obtain ⟨σ, hσ, rfl⟩ := List.mem_map.mp hf
+  have hbσ : qnf.2 σ = true := (List.mem_filter.mp hσ).2
+  have hspec := kvE2_sepAnchorVal_spec qnf M w x t h σ hbσ
+  simp only [kvE2_sepSegLForSub]
+  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · rw [if_pos hz1]
+    have hbr := hbridge σ hσ hz1
+    by_cases hcon : (lL.take i).contains (.lX1 σ) = true
+    · rw [if_pos hcon]
+      have hay := hbr.1 hcon
+      apply kvE2_sepSegForm_eval_of_honest charBase M atomMap σ _ w x t hspec hcb
+      refine (kvE2_sepZone4_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t y
+        (false, true) (true, false) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_false (lt_asymm hay) (by decide), iff_of_true hay rfl⟩,
+        ⟨iff_of_true hyw rfl, iff_of_false (lt_asymm hyw) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hxy) (by decide), iff_of_true hxy rfl⟩,
+        ⟨iff_of_true hyt rfl, iff_of_false (lt_asymm hyt) (by decide)⟩⟩
+    · rw [if_neg hcon]
+      have hya := hbr.2 (Bool.eq_false_iff.mpr hcon)
+      apply kvE2_sepSegForm_eval_of_honest charBase M atomMap σ _ w x t hspec hcb
+      refine (kvE2_sepZone4_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t y
+        (true, false) (true, false) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_true hya rfl, iff_of_false (lt_asymm hya) (by decide)⟩,
+        ⟨iff_of_true hyw rfl, iff_of_false (lt_asymm hyw) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hxy) (by decide), iff_of_true hxy rfl⟩,
+        ⟨iff_of_true hyt rfl, iff_of_false (lt_asymm hyt) (by decide)⟩⟩
+  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · rw [if_neg hz1, if_pos hz2]
+      have hbnd := kvE2_sepHonestAnchorBundleR qnf M w x t hxw hwt h σ hσ hz2
+      have hya : y < kvE2_sepAnchorVal qnf M w x t h σ := hyw.trans hbnd.1
+      apply kvE2_sepSegForm_eval_of_honest charBase M atomMap σ _ w x t hspec hcb
+      refine (kvE2_sepZone4_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t y
+        (true, false) (true, false) (false, true) (true, false)).mpr ?_
+      exact ⟨⟨iff_of_true hya rfl, iff_of_false (lt_asymm hya) (by decide)⟩,
+        ⟨iff_of_true hyw rfl, iff_of_false (lt_asymm hyw) (by decide)⟩,
+        ⟨iff_of_false (lt_asymm hxy) (by decide), iff_of_true hxy rfl⟩,
+        ⟨iff_of_true hyt rfl, iff_of_false (lt_asymm hyt) (by decide)⟩⟩
+    · rw [if_neg hz1, if_neg hz2]
+      exact temporal_truth_top M atomMap y
+
+/-- **RIGHT refined-segment honesty at a cut** (Phase 5, mirror of `kvE2_sepSegLAt_eval_of_honest`):
+    the RIGHT-region segment `kvE2_sepSegRAt lR j` is realized at any interior `y ∈ (w, t)` whose
+    position relative to each right-interior owner's honest anchor matches the cut's structural
+    read (`hbridge`). Left-interior owners contribute the uniform `(w, t)` (`kvE_sub2_zWT`)
+    exclusion, discharged internally from `a < w`. -/
+theorem kvE2_sepSegRAt_eval_of_honest {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (lR : List (KvE2SepSlot sig)) (j : Nat) (y : M.carrier) (hwy : w < y) (hyt : y < t)
+    (hbridge : ∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+      ((lR.take j).contains (.rX1 σ) = true → kvE2_sepAnchorVal qnf M w x t h σ < y) ∧
+      ((lR.take j).contains (.rX1 σ) = false → y < kvE2_sepAnchorVal qnf M w x t h σ)) :
+    (kvE2_sepSegRAt charBase qnf lR j).eval_at M atomMap y := by
+  have hxy : x < y := hxw.trans hwy
+  simp only [kvE2_sepSegRAt, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  intro f hf
+  obtain ⟨σ, hσ, rfl⟩ := List.mem_map.mp hf
+  have hbσ : qnf.2 σ = true := (List.mem_filter.mp hσ).2
+  have hspec := kvE2_sepAnchorVal_spec qnf M w x t h σ hbσ
+  simp only [kvE2_sepSegRForSub]
+  by_cases hz1 : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+  · rw [if_pos hz1]
+    have hbnd := kvE2_sepHonestAnchorBundleL qnf M w x t hxw hwt h σ hσ hz1
+    have hay : kvE2_sepAnchorVal qnf M w x t h σ < y := hbnd.2.1.trans hwy
+    apply kvE2_sepSegForm_eval_of_honest charBase M atomMap σ _ w x t hspec hcb
+    refine (kvE2_sepZone4_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t y
+      (false, true) (false, true) (false, true) (true, false)).mpr ?_
+    exact ⟨⟨iff_of_false (lt_asymm hay) (by decide), iff_of_true hay rfl⟩,
+      ⟨iff_of_false (lt_asymm hwy) (by decide), iff_of_true hwy rfl⟩,
+      ⟨iff_of_false (lt_asymm hxy) (by decide), iff_of_true hxy rfl⟩,
+      ⟨iff_of_true hyt rfl, iff_of_false (lt_asymm hyt) (by decide)⟩⟩
+  · by_cases hz2 : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+    · rw [if_neg hz1, if_pos hz2]
+      have hbr := hbridge σ hσ hz2
+      by_cases hcon : (lR.take j).contains (.rX1 σ) = true
+      · rw [if_pos hcon]
+        have hay := hbr.1 hcon
+        apply kvE2_sepSegForm_eval_of_honest charBase M atomMap σ _ w x t hspec hcb
+        refine (kvE2_sepZone4_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t y
+          (false, true) (false, true) (false, true) (true, false)).mpr ?_
+        exact ⟨⟨iff_of_false (lt_asymm hay) (by decide), iff_of_true hay rfl⟩,
+          ⟨iff_of_false (lt_asymm hwy) (by decide), iff_of_true hwy rfl⟩,
+          ⟨iff_of_false (lt_asymm hxy) (by decide), iff_of_true hxy rfl⟩,
+          ⟨iff_of_true hyt rfl, iff_of_false (lt_asymm hyt) (by decide)⟩⟩
+      · rw [if_neg hcon]
+        have hya := hbr.2 (Bool.eq_false_iff.mpr hcon)
+        apply kvE2_sepSegForm_eval_of_honest charBase M atomMap σ _ w x t hspec hcb
+        refine (kvE2_sepZone4_iff M (kvE2_sepAnchorVal qnf M w x t h σ) w x t y
+          (true, false) (false, true) (false, true) (true, false)).mpr ?_
+        exact ⟨⟨iff_of_true hya rfl, iff_of_false (lt_asymm hya) (by decide)⟩,
+          ⟨iff_of_false (lt_asymm hwy) (by decide), iff_of_true hwy rfl⟩,
+          ⟨iff_of_false (lt_asymm hxy) (by decide), iff_of_true hxy rfl⟩,
+          ⟨iff_of_true hyt rfl, iff_of_false (lt_asymm hyt) (by decide)⟩⟩
+    · rw [if_neg hz1, if_neg hz2]
+      exact temporal_truth_top M atomMap y
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
