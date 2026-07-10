@@ -17,11 +17,16 @@ INPUTS**; this file only *applies* them.
 2. **`bracketEndChar_kvE2_two_eq`** — an `rfl` bridge exposing the carrier (the delegation is
    definitional because `kvE2_sepBody … : NormalForm sig 2 3 → VVecEA2` is *definitionally*
    `BracketEndCharCarrierV sig 2`, `CarrierK1V.lean:365`).
-3. **`bracketEndChar_kvE2_sound_two_prior`** — the ⇒ (soundness) half of the k=2 gate.
-4. **`bracketEndChar_kvE2_complete_two_prior_leftInterior`** — the ⇐ (completeness) half for the
-   LEFT-INTERIOR owner class (see scope note below).
-5. **`bracketEndChar_kvE2_correct_two_prior_leftInterior`** — the assembled `k = 2`
-   `BracketCarrierCorrectVPrior`-shaped correctness theorem for the left-interior class.
+3. **`bracketEndChar_kvE2_complete_two_prior`** (task 335 Phase 2) — the ⇐ (completeness) half of
+   the k=2 gate, UNCONDITIONAL (no interiority hypothesis); consumes the landed task-337 engine
+   `kvE2_sepBody_holds_of_honest`. Plus its two char-formula bridges `bracketEndChar_kvE2_hcb`/
+   `bracketEndChar_kvE2_hck`.
+4. **⇒ soundness (`bracketEndChar_kvE2_sound_two_prior`) — NOT delivered, BLOCKED.** See the
+   "Phases 3-5 — BLOCKED" note at the end of this file: the multi-owner soundness `hgate`
+   forward-zone conjunct is underdetermined by the faithful carrier's realized content (landed
+   O4 CRUX RECORD, `SharedWitness.lean:6566-6659`); the faithful repair requires a carrier
+   REDEFINITION outside this task's additive scope.
+5. **Assembled `bracketEndChar_kvE2_correct_two_prior` — NOT delivered** (depends on 4).
 
 ## Scope decisions (recorded in the file, resolved in the plan)
 
@@ -163,5 +168,36 @@ theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature}
     (fun χ => P.existF 0 χ) qnf hg M atomMap w x t hxw hwt h
     (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
     (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
+
+/-! ## Phases 3-5 — ⇒ soundness + assembly: **BLOCKED** (grounded, un-landed obligation)
+
+The ⇒ (soundness) half `.holds ⟹ ∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` — and hence the assembled
+`bracketEndChar_kvE2_correct_two_prior` — is **NOT delivered**. This is a genuine un-landed
+obligation, confirmed by an exhaustive audit of the non-Boneyard tree (task 335 session): there is
+**no** landed depth-2 soundness reassembly (`holds → nf_eval_nf M 2 3`), **no** depth-2 quant-layer
+fold (the only fold engine `nf_quant_layer_fold_iff`, `NfEFold.lean:391`, folds depth-0 inner subs
+only; the k=2 quant layer ranges over depth-1 subs `σ : NormalForm sig 1 4`), and the extract
+`kvE2_sepBody_extract` (`SharedWitness.lean:6356`) is un-consumed (its `hpairL/hpairR/hnd` side
+conditions are open for the soundness path — the landed `Pairwise`/`Nodup` lemmas are stated for the
+wrong relation/order or are completeness-only).
+
+**Root obstruction (LANDED, machine-checked).** The multi-owner soundness `hgate` forward-zone
+conjunct (`SubBracket2V.lean:1873-1877`) at a cross-σ slot point is *underdetermined by the faithful
+carrier's realized content* — see the **O4 CRUX RECORD** (`SharedWitness.lean:6566-6659`, task 321 v7
+Phase 9 verdict FAIL): with σ, τ distinct interior positives and τ's χ-slot interleaved before σ's
+fresh slot, the realized arrangement forces a witness `v` with `nf_eval_nf M 0 1 (fun _ => v) χ` yet
+the conjunct demands `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`, which no carrier channel
+delivers (the gate contributes only falsity clauses; the segment/E[Σ]/own-slot channels miss the
+cross-σ witness point). Five closers failed on the captured goal; the record proves *channel
+exhaustion*, not merely "none found".
+
+**Why not patched here.** The faithful repair is BIT-COMPATIBILITY FILTERING of the interleaving
+enumeration — a REDEFINITION of `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR` in the verified INPUT
+`SharedWitness.lean`, with knock-on O1b/O2/O3 rework (O4 CRUX RECORD, "faithful repair" paragraph).
+That is outside this task's ADDITIVE mandate (goals/non-goals: carrier is a verified INPUT, only
+applied) and would edit a landed task-334/342 declaration, which requires explicit orchestrator
+re-authorization (task-337 `.rXW` precedent). No such authorization is held. Per zero-debt
+discipline, NO `sorry`, NO vacuous placeholder, NO assumed-`hgate`, and NO interiority hypothesis was
+introduced. The completeness half (Phase 2, above) is delivered, green, and axiom-clean. -/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

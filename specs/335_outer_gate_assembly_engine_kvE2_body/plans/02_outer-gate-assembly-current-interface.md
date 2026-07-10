@@ -226,7 +226,32 @@ h_surj P qnf).holds M atomMap x t`, over the six `BracketCarrierCorrectVPrior` o
 
 ---
 
-### Phase 3: ⇒ soundness, part A — per-σ inner realizations [NOT STARTED]
+### Phase 3: ⇒ soundness, part A — per-σ inner realizations [BLOCKED]
+
+**BLOCKER** (Phases 3-5, hard/soft per plan Risk row — realized as HARD): The ⇒ soundness
+reassembly is genuinely un-landed. An exhaustive audit of the non-Boneyard tree (task 335 session)
+found: (a) NO landed depth-2 soundness map `holds → nf_eval_nf M 2 3`; (b) NO depth-2 quant-layer
+fold — the only fold engine `nf_quant_layer_fold_iff` (NfEFold:391) folds DEPTH-0 inner subs, but
+the k=2 quant layer ranges over DEPTH-1 subs `σ : NormalForm sig 1 4`; (c) `kvE2_sepBody_extract`
+(SW:6356) is un-consumed and its `hpairL/hpairR/hnd` side conditions are OPEN for the soundness path
+(landed Pairwise/Nodup lemmas use the wrong relation `SlotMergeLe`≠`SlotLe`, the wrong list
+per-σ≠merged, or are honest/completeness-only).
+- **What is stuck / root cause**: The multi-owner soundness `hgate` forward-zone conjunct
+  (`SubBracket2V.lean:1873-1877`) at a CROSS-σ slot point is *underdetermined by the faithful
+  carrier's realized content*. This is a LANDED, machine-checked FAIL verdict — the **O4 CRUX
+  RECORD** (`SharedWitness.lean:6566-6659`, task 321 v7 Phase 9): for distinct interior positives
+  σ,τ with τ's χ-slot interleaved before σ's fresh slot, the arrangement forces a witness `v` with
+  `nf_eval_nf M 0 1 (fun _ => v) χ`, yet the conjunct demands
+  `σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true`, which no carrier channel delivers (gate → only
+  falsity clauses; segment/E[Σ]/own-slot channels miss the cross-σ witness point). Five closers
+  recorded as failing = channel exhaustion, not "none found".
+- **What is needed to unblock**: BIT-COMPATIBILITY FILTERING of the interleaving enumeration — a
+  REDEFINITION of `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR` in `SharedWitness.lean` with
+  knock-on O1b/O2/O3 rework (O4 CRUX RECORD "faithful repair" paragraph). This edits a verified
+  task-334/342 INPUT → outside this task's ADDITIVE mandate; requires explicit orchestrator
+  re-authorization (task-337 `.rXW` precedent). NOT held.
+- **Prohibited workarounds NOT used**: no `sorry`, no `def X := True`, no assumed-`hgate`, no
+  `False.elim`/`hLR_absurd`, no interiority hypothesis.
 
 **Goal**: From the carrier `.holds`, extract the bundles and reconstruct, for every positive owner
 `σ`, its depth-1 inner realization at the shared witness `w` — the inputs the depth-2 quant fold
@@ -263,7 +288,10 @@ h_surj P qnf).holds M atomMap x t`, over the six `BracketCarrierCorrectVPrior` o
 
 ---
 
-### Phase 4: ⇒ soundness, part B — depth-2 quant-layer fold [NOT STARTED]
+### Phase 4: ⇒ soundness, part B — depth-2 quant-layer fold [BLOCKED]
+
+**BLOCKED** by the same obstruction as Phase 3 (the depth-2 quant-layer fold is precisely the
+un-attempted glue; its per-σ `hgate` input hits the O4 CRUX RECORD FAIL). See Phase 3 blocker.
 
 **Goal**: Fold the per-σ inner realizations (Phase 3) plus the outer atom layer over `[w, x, t]`
 into the full `∃ w, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf`, delivering the
@@ -300,7 +328,11 @@ soundness lemma `bracketEndChar_kvE2_sound_two_prior`. This is the substantive r
 
 ---
 
-### Phase 5: Assemble unconditional `k = 2` gate-correctness + axiom/faithfulness audit [NOT STARTED]
+### Phase 5: Assemble unconditional `k = 2` gate-correctness + axiom/faithfulness audit [BLOCKED]
+
+**BLOCKED**: the assembled `bracketEndChar_kvE2_correct_two_prior` needs BOTH directions;
+the ⇒ direction (Phase 4) is blocked, so the ↔ cannot be assembled. The ⇐ half (Phase 2) is
+delivered, green, and axiom-clean.
 
 **Goal**: Combine both directions into `bracketEndChar_kvE2_correct_two_prior :
 BracketCarrierCorrectVPrior atomMap (bracketEndChar_kvE2 atomMap h_surj P)`, confirm axiom-cleanliness
