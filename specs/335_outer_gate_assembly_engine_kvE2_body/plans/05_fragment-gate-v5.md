@@ -1,7 +1,7 @@
 # Implementation Plan: Task #335 — Outer-Gate Assembly Engine (`kvE2_body` / `bracketEndChar_kvE2`) — FRAGMENT GATE (v5, post-blocker-adjudication)
 
 - **Task**: 335 - Build the outer-gate assembly engine `kvE2_body` / `bracketEndChar_kvE2`, the two-level quant-layer connector that `KampPrior.lean:351` (the depth-k≥2 Cor 5.4 converter) consumes — now delivered as the **single-positive-sub fragment gate** sanctioned by task 321 verdict N2
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED] (Phase A COMPLETED; Phase B BLOCKED — interior-gate FORWARD conjunct has no public producer under `hfrag`; C/D not reached)
 - **Effort**: 4-6 hours (Phases 1-3 landed; the genuine risk is Phase C `hexcl`-under-`hfrag` GO/NO-GO probe)
 - **Dependencies**:
   - 334 (COMPLETED — faithful carrier redefinition `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`)
@@ -221,7 +221,13 @@ delivered-items 4/5 docstring to record the `_frag` deliverables.)
 
 ---
 
-### Phase A: Single-positive-sub fragment predicate + `_frag` statement surgery [IN PROGRESS]
+### Phase A: Single-positive-sub fragment predicate + `_frag` statement surgery [COMPLETED]
+
+**Delivered** (committed, green, no sorry): `kvE2_sepFragment` (`OuterGate.lean`) —
+`∃ σ0, kvE2_sepPos qnf = [σ0] ∧ (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ = kvE2_sep_zWT3)`. Depends only
+on `qnf` (family-smuggling guard satisfied). The `_frag` sound shell was stated and its fold
+reduction verified to typecheck (six order bits unify defeq `qnf.atom_assgn = qnf.1`); it is NOT
+committed because its body cannot be discharged (see Phase B blocker).
 
 **Goal**: Define the fragment predicate `kvE2_sepFragment qnf` and introduce the `_frag` theorem
 statements in `OuterGate.lean` ONLY. The fragment hypothesis enters as a **qnf restriction**
@@ -274,7 +280,37 @@ statements in `OuterGate.lean` ONLY. The fragment hypothesis enters as a **qnf r
 
 ---
 
-### Phase B: Discharge `hgateL` / `hgateR` under `hfrag` [NOT STARTED]
+### Phase B: Discharge `hgateL` / `hgateR` under `hfrag` [BLOCKED]
+
+**BLOCKER** (Phase B — recorded after a genuine machine attempt; territory-guard STOP):
+- **What failed**: The interior-LEFT gate family `hgateL` cannot be produced under `hfrag`. After the
+  fold reduction (typechecks) and reducing to the sole `σ = σ0`, the six-conjunct split leaves three
+  underivable residuals (captured verbatim via `lean_goal`, transcripts in `handoffs/02_continuation.md`):
+  (1) `a < w` for an arbitrary fresh-atom anchor `a`; (2) `nf_eval_nf M 0 4 [a,w,x,t] σ.1` (full base
+  from only the fresh projection `hanchor`); (4) FORWARD `∀ zs χ, (∃ v, zoneHolds … ∧ nf_eval χ) →
+  σ.2 (nf0_assemble zs χ σ.1) = true`.
+- **What was tried**: Set up `refine kvE2_outer_fold … ?hgateL ?hgateR ?hbdry ?hexcl`; `hbdry`
+  DISCHARGED (vacuous — every positive equals interior `σ0`, contradicting non-interior antecedent);
+  `hgateL` reduced and split; exhaustive public-API search for a FORWARD-clause producer (none —
+  `σ.2 (nf0_assemble …) = true` appears only as a HYPOTHESIS across the fold/kit/`SubBracket2V`
+  signatures, never a conclusion); confirmed `kvE_subBracket2V_sound_of_outer`/`_of_parts`/
+  `kvE2_sepBundleL_sound` all CONSUME the full `hgate` (with FORWARD), never produce it; confirmed
+  `kvE2_sepBody_extract` discards the segment content.
+- **Why it's stuck**: The only exclusion channel `kvE2_sepSegForm_excludes` (SW:6683) fires only where
+  the segment form HOLDS at the witness `v`; that segment content lives inside the frozen
+  `kvE2_sepDisjunct'` and is not exposed by any public extractor. Reaching it to close conjuncts
+  1/2/4 requires NEW lemmas in `SharedWitness.lean` — branch (a), adjudicated REFUTED (report 04),
+  and prohibited by 341's frozen-file gate. The O4 residue-vanish (SW:6785-6791) is a Phase-10
+  ROUTING verdict certifying the CROSS-σ residue vanishes for one positive; it is NOT a landed
+  derivation, and formalizing "every witness is σ0's own bit-true slot or a segment-covered point"
+  still needs the frozen segment structure. `bracketEndChar_kv_factors` (`CarrierKv.lean:422`)
+  machine-certifies the (outer zone, projected 1-type) information ceiling.
+- **What is needed**: Either (i) a public segment-coverage / FORWARD-clause producer landed in
+  `SharedWitness.lean` under a single-positive hypothesis (a 333/SharedWitness-territory task — the
+  frozen-file gate must be renegotiated), or (ii) the SUCCESSOR carrier re-definition
+  (bit-compatibility filtering, O4 SW:6763-6770). Both are outside 335's OuterGate-only territory.
+- **Prohibited workarounds**: NOT applied — no `SharedWitness.lean` edit, no `sorry`, no vacuous
+  close, no assumed/provider-conditional family hypothesis.
 
 **Goal**: Build the two interior LEFT/RIGHT per-σ gate families in the exact shape
 `kvE2_outer_fold` expects (SW:9911-9945), **under `hfrag`**. With one interior positive the cross-σ
@@ -314,7 +350,14 @@ residue VANISHES (O4 record SW:6785-6791) — the FORWARD clause that was refuta
 
 ---
 
-### Phase C: `hbdry` / `hexcl` GO/NO-GO probe under `hfrag` — ONE DISPATCH, BOUNDED [NOT STARTED]
+### Phase C: `hbdry` / `hexcl` GO/NO-GO probe under `hfrag` — ONE DISPATCH, BOUNDED [BLOCKED]
+
+**NOT REACHED** — gated on Phase B, which is BLOCKED (the fold's four families are a single
+obligation set; `hgateL`'s FORWARD conjunct fails with no public producer). `hbdry` was in fact
+DISCHARGED during the Phase-B attempt (vacuous under `hfrag`), but `hexcl` (the designated genuine
+risk) is downstream of the SAME frozen-segment-content gap: excluding every negative sub also rides
+`kvE2_sepSegForm_excludes` + the disjunct's segment coverage, unreachable via the public API. The
+fragment route is therefore NO-GO for the interior-gate obligation, ahead of the `hexcl` probe.
 
 **Goal**: Discharge the non-interior positive realization family `hbdry` (SW:9946) and the
 negative-sub exclusion family `hexcl` (SW:9952) **under `hfrag`**. In the exactly-one-interior-positive
@@ -361,7 +404,12 @@ phase is EXPLICITLY one-dispatch bounded: on NO-GO it STOPS and reports — esca
 
 ---
 
-### Phase D: Assemble `bracketEndChar_kvE2_correct_two_prior_frag` + 309-v8 handoff note [NOT STARTED]
+### Phase D: Assemble `bracketEndChar_kvE2_correct_two_prior_frag` + 309-v8 handoff note [BLOCKED]
+
+**NOT REACHED** — gated on Phases B AND C (both BLOCKED). No `_frag` correctness theorem is
+assembled; `bracketEndChar_kvE2` remains at Phase-A-green (live def + `rfl` bridge + Phase-2 ⇐
+completeness + fragment predicate). The 309-v8 impact is: the k=2 fragment GO gate is NOT delivered
+— 309 Phases 13.4/14 and `KampPrior.lean:351` cannot yet consume a `bracketEndChar_kvE2_correct_two_prior_frag`.
 
 **Goal**: With Phases B and C green, discharge the `_frag` shells: feed `kvE2_outer_fold` the four
 families (from B and C, all under `hfrag`) to close `bracketEndChar_kvE2_sound_two_prior_frag`, then

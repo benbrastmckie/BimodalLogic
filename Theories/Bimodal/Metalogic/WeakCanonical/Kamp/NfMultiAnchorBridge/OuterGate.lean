@@ -193,6 +193,44 @@ def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop 
     kvE2_sepPos qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
 
+/-! ### Phase B FRAGMENT-GATE BLOCKER (task 335 v5 — recorded after a genuine machine attempt)
+
+The fragment-restricted ⇒ soundness `bracketEndChar_kvE2_sound_two_prior_frag` was set up over the
+landed `kvE2_outer_fold` (`SharedWitness.lean:9897`):
+`intro h_holds; rw [bracketEndChar_kvE2_two_eq] at h_holds; refine kvE2_outer_fold … h_holds
+?hgateL ?hgateR ?hbdry ?hexcl`. The reduction TYPECHECKS (six order bits unify defeq
+`qnf.atom_assgn = qnf.1`), leaving the four provider-conditional family goals. Under `hfrag`
+(`kvE2_sepPos qnf = [σ0]`, `σ0` interior):
+
+- **`hbdry` DISCHARGES** (vacuous): every positive `σ ∈ kvE2_sepPos qnf` equals `σ0` (singleton),
+  and `σ0` is interior-zoned, contradicting the non-interior antecedent. The fragment restriction
+  DOES collapse the non-interior positive class exactly as O4 SW:6785-6791 predicts.
+- **`hgateL` is BLOCKED at the FORWARD conjunct.** After reducing to the sole `σ = σ0` and splitting
+  the six-conjunct interior-LEFT gate, the residual goals are (captured verbatim, `lean_goal`):
+  1. `a < w` — for an ARBITRARY anchor `a ∈ (x,t)` whose only property is `hanchor : (charK
+     (nfk_projFresh σ)).eval_at M atomMap a` (the FRESH E[Σ]-atom). Underdetermined: nothing forces
+     an arbitrary fresh-atom-realizing `a` below `w` (O4 "second obstruction", SW:6772-6778 — the
+     right region does not exclude the depth-1 `charK` atom).
+  2. `nf_eval_nf M 0 4 [a,w,x,t] σ.1` — `a` realizes `σ.1`'s FULL arity-4 base. Underdetermined:
+     `hanchor` supplies only the fresh projection `nfk_projFresh σ`, strictly weaker than `σ.1`.
+  4. FORWARD: `∀ zs χ, (∃ v, zoneHolds [a,w,x,t] zs v ∧ nf_eval_nf M 0 1 v χ) → σ.2 (nf0_assemble zs
+     χ σ.1) = true` — the machine-certified wall. Its only exclusion channel is
+     `kvE2_sepSegForm_excludes` (`SharedWitness.lean:6683`), which fires ONLY where the segment form
+     HOLDS at `v`; but the segment content lives inside the frozen `kvE2_sepDisjunct'` and is
+     discarded by every PUBLIC extractor (`kvE2_sepBody_extract` SW:8410 yields anchor + below
+     bundles only). No public lemma produces this conjunct; `bracketEndChar_kv_factors`
+     (`CarrierKv.lean:422`) certifies the (outer zone, projected 1-type) information ceiling.
+
+Reaching the segment content to close conjuncts 1/2/4 would require NEW lemmas in
+`SharedWitness.lean` (branch (a) — REFUTED, report 04; and prohibited: 341's frozen-file gate keeps
+`SharedWitness.lean` byte-unchanged). The O4 residue-vanish (SW:6785-6791) is a Phase-10 ROUTING
+verdict, not a landed derivation: it certifies the CROSS-σ residue vanishes for one positive, but
+formalizing "every witness is σ0's own bit-true slot or a segment-covered point" still needs the
+frozen segment structure the public API does not expose. Per the plan's Phase-B territory guard, the
+attempt STOPS here — no `SharedWitness.lean` edit, no `sorry`/vacuous placeholder, no assumed family.
+See `specs/335_.../handoffs/02_continuation.md` for the full captured transcripts and the successor
+route (bit-compatibility filtering carrier re-definition, O4 SW:6763-6770). -/
+
 /-! ## Phases 3-5 — ⇒ soundness + assembly: now-attemptable over task 333's LANDED fold
 
 The ⇒ (soundness) half `.holds ⟹ ∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` — and hence the assembled
