@@ -19,7 +19,8 @@
         310,
         311,
         320,
-        333
+        333,
+        335
       ],
       "description": "Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).\n\nOff the live import path, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound]. Deliverables (see task 307 report 03 SS4): (1) segment-carrying A_past/A_future + _correct in Kamp/NfZoneFlattenNavigable.lean (drop the forced `trivial top`; via bracketBuildLeft/Right_correct directly, ~80-120 lines); (2) nf_char2_past_formula / nf_char2_future_formula : NormalForm sig (k+1) 2 -> Formula with `temporal_truth M atomMap t (nf_char2_past_formula ... sub_nf) <-> exists x, x < t AND nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf` (future dual with t < x) — the F_i chain: outer NON-trivial-segment bracket from t to x, endpoint at x = the arity-2 characteristic of sub_nf at [x,t], quant layer (per qnf : NormalForm sig k 3) flattened via nf_zone_flatten_navigable_brick, residual arity-3 zones discharged by the depth-k IH (exist_tl_fn_k / nf_nvar_exist_all_depths); ~300-500 lines, recursion on k — the load-bearing new object; (3) rewire KampPrior.lean:350 to A := nf_char2_past_formula ... OR A_diag ... OR nf_char2_future_formula ..., proven via nf_zone_exists_trichotomy_k1 disjunction-elim + the three _correct lemmas, replacing the :350 sorry (live-path sorries 2 -> 1, :353 remains downstream per task 305 scope).\n\nCONSUME, DO NOT REBUILD (all sorry-free): all of task 308 (NfMultiAnchorBridge: nf_char2_formula deliverable 1, nf_zone_flatten_navigable(_brick) deliverable 2, nf_char2_zone_split5, nf_char2_atom_part(_correct), nf_quant_clause_tl); A_diag/_correct + the trichotomy nf_zone_exists_trichotomy_k1 (task 307 Phases 2-3); depth-0 bases diagDup/diagDup_eval_zero/renameNF_eval_diag0; bracketBuildLeft/Right(_correct) (Kamp/VecEATranslation.lean); the navigated pillars as the diagonal-only degenerate case. The import-cycle relocation is ALREADY LANDED (commit 69998c02d) — NfMultiAnchorBridge no longer imports KampPrior.\n\nFORBIDDEN ROUTES (obstruction guards G1-G5, task 307 report 03 SS4): G1 no arity-1 collapse of the off-diagonal (refuted, report 02 SS1; NfDepth0Generalized:1691-1719). G2 no projection-based VecEA2 / third-free-anchor tower (refuted, specs/305 report 40; R2). G3 no trivial-top segment on the off-diagonal arms (report 03 SS1.2/SS2.3: a closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment). G4 w stays a bracket witness (env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap). G5 follow Cor 5.4 F_i chains step-by-step (F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)); no simp/omega/aesop shortcut of a chain step (literature-fidelity policy).\n\nLITERATURE GROUNDING: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Lemma 5.1 md:134-152, Corollary 5.4 md:154-157).\n\nGOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit.",
       "created": "2026-07-06T16:50:37Z",
@@ -27,12 +28,13 @@
       "session_id": "sess_1783407047_bca709",
       "artifacts": [
         {
-          "type": "report",
-          "path": "specs/307_kamp_cor54_bound_anchor_zone_converter/reports/03_endpoint-hook-blocker-audit.md"
-        },
-        {
           "path": "specs/309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/309_offdiag_two_anchor_fi_chain/reports/07_unblock-assessment-post-333.md",
+          "type": "report",
+          "summary": "Unblock assessment post-333: remains gated on task 335 Phase 4b"
         }
       ],
       "blocker": "R2 k=1 gate NO-GO (commit 8fd4340b1): arity-4 quant-layer residual is inherent in the nf_eval_nf ENCODING — each quantifier depth grows env arity instead of folding into a fixed-arity monadic E[Sigma]-atom (Rabinovich Def 4.1). Both endChar (v2 P8) and VecEA2 bracket carrier (v3 R2) hit the same wall. Resolution: /spawn 309 — NormalForm E[Sigma]-fold encoding task.",
@@ -48,7 +50,8 @@
         ]
       },
       "next_artifact_number": 6,
-      "previous_status": "implementing"
+      "previous_status": "implementing",
+      "blockers": "Pending task 335: the unconditional k=2 GO gate bracketEndChar_kvE2_correct_two_prior (BracketCarrierCorrectVPrior for the faithful carrier) is not yet landed; 335 has only delivered the completeness half. 335's Phase 4b must additionally discharge hbdry/hexcl (the F4-descendant channels) at P.existF 0 for the gate to be unconditional."
     },
     {
       "project_number": 305,
@@ -1379,11 +1382,6 @@
       "session_id": "sess_1783659497_144c59",
       "artifacts": [
         {
-          "type": "report",
-          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/01_outer-gate-assembly-engine.md",
-          "summary": "Outer-gate assembly engine research: no live def (Boneyard-only); task-334 carrier inputs verified axiom-clean; BracketCarrierCorrectVPrior k=2 interface; 4-phase assembly strategy; scope decisions R-A/R-B"
-        },
-        {
           "type": "summary",
           "path": "specs/335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md",
           "summary": "Phase 1 delivered (live bracketEndChar_kvE2 def + rfl bridge, green + axiom-clean); Phases 2-4 BLOCKED on the un-landed joint multi-owner disjunct bracket-holds builder (task-334 deferral). Carrier INPUT + KampPrior untouched."
@@ -1396,6 +1394,11 @@
         {
           "path": "specs/335_outer_gate_assembly_engine_kvE2_body/plans/03_soundness-half-consume-333-lemmas.md",
           "type": "plan"
+        },
+        {
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/03_plan-currency-check-post-333.md",
+          "type": "report",
+          "summary": "Plan v3 currency check against post-task-333 codebase; recommends plan v4 revision"
         }
       ],
       "completion_summary": "PARTIAL (1/4 phases). Phase 1 landed the first live outer-gate carrier bracketEndChar_kvE2 in new OuterGate.lean, delegating to task-334's verified kvE2_sepBody (axiom-clean [propext, Classical.choice, Quot.sound], rfl bridge, green build); SharedWitness.lean and KampPrior.lean byte-identical. Phases 2-4 (soundness/completeness connectors + assembled k=2 gate) BLOCKED on a missing prerequisite: the joint multi-owner disjunct bracket-holds builder over kvE2_sepSlotsL/R (a task-334-deferred obligation, SharedWitness.lean:1954). Unblocking path: dedicated follow-on wiring k1v_sorted_realizationK (SubBracket2V:633) into kvE2_sepDisjunct (~370 lines, comparable to bracketEndChar_k1v_complete), then re-dispatch Phases 2-4. Zero-debt: no sorry/vacuous placeholder introduced.",
@@ -1437,7 +1440,7 @@
     {
       "project_number": 341,
       "project_name": "structural_refactor_sharedwitness_carrier_layer",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged.",
       "dependencies": [
@@ -1448,7 +1451,15 @@
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
       ],
-      "last_updated": "2026-07-10T05:35:26Z"
+      "last_updated": "2026-07-10T22:48:35Z",
+      "session_id": "sess_1783723095_edd5a7_341",
+      "artifacts": [
+        {
+          "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md",
+          "type": "report",
+          "summary": "Declaration survey of SharedWitness.lean and NfMultiAnchorBridge module seams"
+        }
+      ]
     },
     {
       "project_number": 290,
