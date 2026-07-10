@@ -1901,7 +1901,9 @@ theorem kvE_subBracket2V_complete {sig : MonadicSignature}
   set S_WT : List (NormalForm sig 0 1) :=
     (Finset.univ.toList).filter (fun χ => σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1)) with hSWT
   have hrealXU : ∀ χ ∈ S_XU, ∃ u, x < u ∧ u < x1 ∧ nf_eval_nf M 0 1 (fun _ => u) χ :=
-    fun χ hχ => hbelowXU χ (List.mem_filter.mp hχ).2
+    fun χ hχ => by
+      obtain ⟨u, hxu, _huw, hux1, hrel⟩ := hbelowXU χ (List.mem_filter.mp hχ).2
+      exact ⟨u, hxu, hux1, hrel⟩
   have hrealUW : ∀ χ ∈ S_UW, ∃ u, x1 < u ∧ u < w ∧ nf_eval_nf M 0 1 (fun _ => u) χ :=
     fun χ hχ => hbelowUW χ (List.mem_filter.mp hχ).2
   have hrealWT : ∀ χ ∈ S_WT, ∃ u, w < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ :=

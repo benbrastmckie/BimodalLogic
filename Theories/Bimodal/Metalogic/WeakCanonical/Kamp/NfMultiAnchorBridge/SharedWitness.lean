@@ -2767,7 +2767,8 @@ private theorem kvE2_sepHonestBundleL {sig : MonadicSignature}
     exact h1.mpr hbit_x1w
   refine ⟨x1, hxx1, hx1w, ?_, ?_⟩
   · intro χ hχ
-    exact hbelowXU χ (List.mem_filter.mp hχ).2
+    obtain ⟨u, hxu, _huw, hux1, hrel⟩ := hbelowXU χ (List.mem_filter.mp hχ).2
+    exact ⟨u, hxu, hux1, hrel⟩
   · intro χ hχ
     exact hbelowUW χ (List.mem_filter.mp hχ).2
 
@@ -3461,7 +3462,8 @@ theorem kvE2_sepHonestAnchorBundleL {sig : MonadicSignature}
     exact h1.mpr hbit_x1w
   refine ⟨hxx1, hx1w, ?_, ?_⟩
   · intro χ hχ
-    exact hbelowXU χ (List.mem_filter.mp hχ).2
+    obtain ⟨u, hxu, _huw, hux1, hrel⟩ := hbelowXU χ (List.mem_filter.mp hχ).2
+    exact ⟨u, hxu, hux1, hrel⟩
   · intro χ hχ
     exact hbelowUW χ (List.mem_filter.mp hχ).2
 
@@ -3538,7 +3540,7 @@ noncomputable def kvE2_sepSlotValue {sig : MonadicSignature}
   | .lWT σ χ => @Classical.epsilon _ ⟨x⟩
       (fun v => w < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
   | .rXW σ χ => @Classical.epsilon _ ⟨x⟩
-      (fun v => x < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
+      (fun v => x < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
   | .rWX1 σ χ => @Classical.epsilon _ ⟨x⟩
       (fun v => w < v ∧ v < kvE2_sepAnchorVal qnf M w x t h σ ∧ nf_eval_nf M 0 1 (fun _ => v) χ)
   | .rX1T σ χ => @Classical.epsilon _ ⟨x⟩
@@ -3638,21 +3640,27 @@ theorem kvE2_sepSlotValue_lWT_spec {sig : MonadicSignature}
   exact Classical.epsilon_spec (hbelowWT χ (List.mem_filter.mp hχ).2)
 
 /-- **`rXW` slot value spec** (Phase 6): a left-region base slot of a RIGHT-interior owner lies in
-    `(x, x1_σ)` and realizes `χ`. Direct from the anchor realization's `zXU` extraction. -/
+    `(x, w)` — strictly BELOW the pivot `w` — and realizes `χ`. Direct from the anchor realization's
+    `zXU` extraction, now carrying the restored below-pivot `v < w` bound (task 337 / report 13
+    faithfulness audit; Def 3.1 ordering channel, PDF p.4; Figure 1 below-pivot bracket, PDF p.9).
+    The old `v < anchorVal` bound remains DERIVABLE as `v < w < x1_σ` for right-interior owners
+    (`w < x1_σ`), so any consumer wanting it is unaffected. -/
 theorem kvE2_sepSlotValue_rXW_spec {sig : MonadicSignature}
     (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (w x t : M.carrier)
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
     (σ : NormalForm sig 1 4) (hσpos : σ ∈ kvE2_sepPos qnf)
     (χ : NormalForm sig 0 1) (hχ : χ ∈ kvE2_sepS σ kvE_sub2_zXU) :
     x < kvE2_sepSlotValue qnf M w x t h (.rXW σ χ)
-      ∧ kvE2_sepSlotValue qnf M w x t h (.rXW σ χ) < kvE2_sepAnchorVal qnf M w x t h σ
+      ∧ kvE2_sepSlotValue qnf M w x t h (.rXW σ χ) < w
       ∧ nf_eval_nf M 0 1 (fun _ => kvE2_sepSlotValue qnf M w x t h (.rXW σ χ)) χ := by
   have hb : qnf.2 σ = true := (List.mem_filter.mp hσpos).2
   have hσ := kvE2_sepAnchorVal_spec qnf M w x t h σ hb
   obtain ⟨_, _, _, hbelowXU, _, _⟩ :=
     kvE_subBracket2_complete_extract σ M (kvE2_sepAnchorVal qnf M w x t h σ) w x t hσ
   haveI : Nonempty M.carrier := ⟨x⟩
-  exact Classical.epsilon_spec (hbelowXU χ (List.mem_filter.mp hχ).2)
+  obtain ⟨v, hxv, hvw, _hvx1, hrel⟩ := hbelowXU χ (List.mem_filter.mp hχ).2
+  exact Classical.epsilon_spec
+    (p := fun v => x < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ⟨v, hxv, hvw, hrel⟩
 
 /-- **Within-region value ordering** (task 340 Phase 7 conjunct (ii), the honest-consistency crux):
     for two slots of the same owner σ in the same region with a strictly smaller region rank, the

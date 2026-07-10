@@ -254,7 +254,29 @@ primed-order value substrate.)*
 
 ---
 
-### Phase 2: `.rXW` carrier fix — restore the below-pivot `v < w` bound (AUTHORIZED non-additive edit) [NOT STARTED]
+### Phase 2: `.rXW` carrier fix — restore the below-pivot `v < w` bound (AUTHORIZED non-additive edit) [COMPLETED]
+
+**Phase 2 completion note (task 337, session sess_1783639750_29c89e_337):**
+- All 3 authorized sites edited: Site 1 `kvE_sub2_zoneHolds_zXU` (SubBracket2:565, conclusion now
+  `x < v ∧ v < w ∧ v < x1`, keeping `hp1`); Site 2 `kvE2_sepSlotValue_rXW_spec` (SW, conclusion
+  `x < v ∧ v < w ∧ realizes`); Site 3 `.rXW` epsilon upper bound changed to `v < w` (SW).
+- **Deviation (blast-radius under-count, altered/threaded):** propagating `v < w` to `_rXW_spec`
+  required strengthening the zXU field of `kvE_subBracket2_complete_extract` (SubBracket2:619-620/631)
+  — the plan's named authorized consumer (":631, the complete_extract zXU field, :619-620"). That
+  field has **three** consumers, not the one the plan's blast-radius stated: SW:2770, SW:3464, and
+  **SubBracket2V.lean:1904** (the last NOT listed in the plan). All three re-projected mechanically
+  (drop the new `v < w` conjunct), each preserving its own public signature byte-for-byte. No fourth
+  landed declaration's *interface* changed; SubBracket2V:1904 is a consumer re-check per the plan's
+  "re-check each consumer" mandate, not a scope widening.
+- **Plan-premise confirmation (NOT a regression):** `lean_verify` MCP returned unreliable/stale
+  `sorryAx` for `kvE2_sepBody_complete_holds'` (contradicted itself across runs). Deterministic
+  `#print axioms` at build time shows `kvE2_sepBody_complete_holds'`, `kvE2_sepBody_complete`, and
+  `kvE2_sepSlotValue_rXW_spec` ALL clean `{propext, Classical.choice, Quot.sound}` — no `sorryAx`.
+  STOP-condition satisfied, task-342 assets green + axiom-clean.
+- Phase-7 gate reference (post-fix caps): SW `kvE_sub2_`=107, SW `x1 <`=73, SB2 `kvE_sub2_`=46,
+  SB2 `x1 <`=4. SharedWitness `sorry` count = 7 (all prose).
+- Two SB2 `sorry`s exist in EANegation.lean:834/1129 (unrelated file, off the axiom path — confirmed
+  by `#print axioms` showing no `sorryAx`).
 
 **This phase is the sole reason this revision exists.** It executes the bounded, 3-site,
 non-additive carrier edit authorized above and NOTHING WIDER. It resolves plan 12's O1 blocker at the

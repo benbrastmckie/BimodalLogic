@@ -560,16 +560,19 @@ theorem kvE_sub2_zoneHolds_cons_iff {sig : MonadicSignature}
     | ⟨3, _⟩ => simpa only [Fin.cons] using h3
 
 /-- Below-anchor extraction: a `zXU` witness over the anchor env `[x1, w, x, t]` lies strictly
-    inside `(x, x1)` — BELOW the anchor `x1` (Def 3.1, PDF p.4; the redesign's Correction-1
-    below-anchor datum, extractable in the completeness direction). -/
+    inside `(x, x1)` — BELOW the anchor `x1` — AND strictly below the pivot `w` (its coord-1 /
+    `w`-coordinate zone bit is `(true, false)`, decoding to `v < w`; Def 3.1 ordering channel,
+    PDF p.4; Figure 1 below-pivot bracket, PDF p.9; the Correction-1 below-anchor datum,
+    extractable in the completeness direction). Task 337 restores the `v < w` conjunct that the
+    prior version discarded (report 13 faithfulness audit). -/
 private theorem kvE_sub2_zoneHolds_zXU {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) (x1 w x t v : M.carrier)
     (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) kvE_sub2_zXU v) :
-    x < v ∧ v < x1 := by
-  obtain ⟨hp0, _, hp2, _⟩ :=
+    x < v ∧ v < w ∧ v < x1 := by
+  obtain ⟨hp0, hp1, hp2, _⟩ :=
     (kvE_sub2_zoneHolds_cons_iff M x1 w x t v (true, false) (true, false) (false, true)
       (true, false)).mp hz
-  exact ⟨hp2.2.mpr rfl, hp0.1.mpr rfl⟩
+  exact ⟨hp2.2.mpr rfl, hp1.1.mpr rfl, hp0.1.mpr rfl⟩
 
 /-- Above-anchor extraction: a `zUW` witness over the anchor env `[x1, w, x, t]` lies strictly
     inside `(x1, w)` — ABOVE the anchor `x1`, below `w` (Def 3.1, PDF p.4). -/
@@ -617,7 +620,7 @@ theorem kvE_subBracket2_complete_extract {sig : MonadicSignature}
           nf_eval_nf M 0 1 (fun _ => v) χ) →
         σ.2 (nf0_assemble zs χ σ.1) = true) ∧
     (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
-        ∃ v : M.carrier, x < v ∧ v < x1 ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
+        ∃ v : M.carrier, x < v ∧ v < w ∧ v < x1 ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
     (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true →
         ∃ v : M.carrier, x1 < v ∧ v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
     (∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true →
@@ -628,8 +631,8 @@ theorem kvE_subBracket2_complete_extract {sig : MonadicSignature}
   · -- `zXU` below-anchor inner witnesses (Def 3.1 monotone enumeration, PDF p.4).
     intro χ hbit
     obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zXU χ).mpr hbit
-    obtain ⟨hxv, hvx1⟩ := kvE_sub2_zoneHolds_zXU M x1 w x t v hz
-    exact ⟨v, hxv, hvx1, hv⟩
+    obtain ⟨hxv, hvw, hvx1⟩ := kvE_sub2_zoneHolds_zXU M x1 w x t v hz
+    exact ⟨v, hxv, hvw, hvx1, hv⟩
   · -- `zUW` above-anchor inner witnesses.
     intro χ hbit
     obtain ⟨v, hz, hv⟩ := (h_zone kvE_sub2_zUW χ).mpr hbit
