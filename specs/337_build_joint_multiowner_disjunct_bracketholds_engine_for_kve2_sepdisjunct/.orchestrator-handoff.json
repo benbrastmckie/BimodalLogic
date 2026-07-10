@@ -1,47 +1,35 @@
 {
-  "$schema": "orchestrator-handoff-v1",
   "task": 337,
-  "phase": "implement",
   "status": "partial",
-  "summary": "Phase 3 (O1) complete — the prior dispatch's tie-class blocker is RESOLVED and landed per report 14 (verdict b, additive). Added kvE2_sepTieRuns_key_strictMono + kvE2_sepTieGroupedL/R_strictMono (cross-class strict value monotonicity) and pivot/range per-slot bounds (LEFT slot value in (x,w), RIGHT in (w,t)). All axiom-clean; full lake build green (1720 jobs); SharedWitness sorry count still 7 (all prose). Phases 4-7 remain: O2 class point types, O3 segment-eval family, O4 assembly + the two public theorems kvE2_sepDisjunct'_holds_of_honest and kvE2_sepBody_holds_of_honest.",
-  "phases_completed": 3,
+  "summary": "Phases 4 (O2 class point types) and 5 (O3a honest segment-evaluation family) landed additively in SharedWitness.lean, all green and axiom-clean {propext, Classical.choice, Quot.sound}. O2 deliverables: kvE2_sepTieGroupedL_classType_eval / ...R... (plus supporting kvE2_sepPtX1L/R_eval_of_honest, kvE2_sepSlotType_eval_at_value, private kvE2_sepOwnerLit_zAtX1L/R). O3a deliverables: kvE2_sepSegForm_eval_of_honest (core) and the per-cut fold lemmas kvE2_sepSegLAt_eval_of_honest / kvE2_sepSegRAt_eval_of_honest (generic in interior y via an anchor-position bridge hypothesis). Phase 5 was the highest-risk phase (no banked segment-eval lemma existed) and is now complete. Phases 6 (gap discharge) and 7 (assembly + the two public deliverables) remain: they require the per-class value list usL/usR construction (attach), getElem reindexing, the class-order->bridge lemma, and the final kvE2_sepBracketN_construct feed. Neither public deliverable (kvE2_sepDisjunct'_holds_of_honest, kvE2_sepBody_holds_of_honest) exists yet, so status is partial. A proven generic take_flatten_prefix helper and a full obligation->lemma map are in the continuation handoff.",
+  "phases_completed": 5,
   "phases_total": 7,
   "blockers": [],
-  "next_action_hint": "implement",
-  "next_action_hint_detail": "Dispatch Phase 4 (O2 class point types), then Phases 5/6 (O3 segment-eval family + gap discharge), then Phase 7 (O4 assembly via kvE2_sepBracketN_construct + the two public theorems). Obligation-to-construct map is in the continuation handoff.",
-  "sorry_count_in_sharedwitness": 7,
+  "continuation_context": {
+    "phases_completed": 5,
+    "phases_total": 7,
+    "next_phase": 6,
+    "green_baseline_commit": "task 337 phase 5: O3(a) honest segment-evaluation family",
+    "remaining": "Phase 6 (O3b gap-discharge bridge from class order) + Phase 7 (usL/usR construction, hsort/hrange/hptL/hptR/hptW/hseg feed into kvE2_sepBracketN_construct, endpoints, and the two public deliverables kvE2_sepDisjunct'_holds_of_honest and kvE2_sepBody_holds_of_honest).",
+    "handoff_doc": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-5-handoff-20260709.md"
+  },
+  "next_action_hint": "Dispatch a continuation to implement Phases 6-7 following the obligation->lemma map in handoffs/phase-5-handoff-20260709.md: build usL/usR via gL.attach.map (class-head value), prove usL[i] = value-of-member via List.getElem_attach + _value_const, discharge hsort/hrange from the Phase-3 strictMono + value_bound lemmas, hptL/hptR from the Phase-4 classType_eval lemmas, hseg* from the Phase-5 SegLAt/SegRAt lemmas plus the class-order bridge (take_flatten_prefix helper is proven in the handoff), then feed kvE2_sepBracketN_construct and attach the honesty-pack endpoints. Keep the PRIMED kvE2_sepHonestOrder'. Additive only.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md",
-      "summary": "Plan 13; Phase 3 marked [COMPLETED] with completion note recording the 7 new O1 lemmas and the assembly-hsort deferral to Phase 7."
+      "path": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "type": "lean_source",
+      "summary": "Phases 4-5 additive lemmas appended before end-of-namespace: O2 class point-type family (kvE2_sepTieGroupedL/R_classType_eval + supports) and O3a segment-eval family (kvE2_sepSegForm_eval_of_honest, kvE2_sepSegLAt/RAt_eval_of_honest). All axiom-clean, sorry-free."
     },
     {
-      "type": "summary",
-      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-3-handoff-20260710T011226Z.md",
-      "summary": "Phase-3 continuation handoff: exact O1 lemmas landed + full Phase 4-7 obligation-to-kvE2_sepBracketN_construct-hypothesis map + guardrails."
+      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md",
+      "type": "plan",
+      "summary": "Phases 4 and 5 marked COMPLETED with completion notes; Phases 6-7 remain NOT STARTED."
+    },
+    {
+      "path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-5-handoff-20260709.md",
+      "type": "handoff",
+      "summary": "Full Phase 6-7 continuation recipe: usL/usR construction, obligation->lemma map, the class-order bridge argument, and a proven generic take_flatten_prefix helper."
     }
   ],
-  "files_modified": [
-    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-    "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/plans/13_grouped-disjunct-holds-builder-carrier-fix.md"
-  ],
-  "decisions_made": [
-    "O1 fix is report-14's additive strict-monotonicity pair; no landed 340/342 asset edited; builder consumes the PRIMED kvE2_sepHonestOrder'.",
-    "Assembly-level hsort (usL++w::usR).Pairwise deferred to Phase 7 where usL/usR are concrete; O1 lands strictMono + pivot/range as reusable standalone lemmas.",
-    "Recommended Phase-7 usL/usR representation: map over gL.attach with c.head, avoiding List.head proof threading (classes nonempty via kvE2_sepTieGroupedL/R_ne_nil)."
-  ],
-  "dead_ends": [
-    "value-sortedness alone does NOT give usL-last < w (plan 12 line 140 mis-mitigation, retracted); pivot bound comes from per-slot value specs.",
-    "lean_verify MCP returns stale sorryAx on this file; use #print axioms via lake env lean instead."
-  ],
-  "continuation_context": {
-    "handoff_path": "specs/337_build_joint_multiowner_disjunct_bracketholds_engine_for_kve2_sepdisjunct/handoffs/phase-3-handoff-20260710T011226Z.md",
-    "phases_completed": 3,
-    "phases_total": 7,
-    "next_phase": 4,
-    "orchestrator_mode": true,
-    "resume_hint": "Phase 4 (O2): prove per-class point-type discharge feeding kvE2_sepBracketN_construct's hptL/hptW/hptR via kvE2_sepClassType_eval_iff + kvE2_sepSlotValue_baseType_spec/anchorSlot + hcb/hck + F5 CLOSED-key kvE2_sepClosedLeafAt_discharge_honest. GUARDRAIL: builder MUST consume kvE2_sepHonestOrder' (primed), never kvE2_sepModelOrder or unprimed kvE2_sepHonestOrder."
-  },
-  "plan_markers_verified": false
+  "sorry_count_in_sharedwitness": 7
 }
