@@ -110,10 +110,10 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 333, 
 
 ### Kamp_theorem_formalization
 
-335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+335 [PARTIAL] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 321 [PARTIAL] — REDESIGN (v6, plan 06). Task 330's PDF-verified faithfulness audi
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-    └─ 333 [PARTIAL] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
+    └─ 333 [RESEARCHED] — Successor to task 321 (F4 correctness gate): the bit-compatibilit
   └─ 341 [NOT STARTED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ### Uncategorized
@@ -239,7 +239,7 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 ---
 
 ### 335. Outer gate assembly engine kvE2 body
-- **Status**: [BLOCKED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 334, Task 337
@@ -268,10 +268,11 @@ ON COMPLETION: task 337 (the joint multi-owner disjunct bracket.holds builder, P
 ---
 
 ### 333. Carrier redefinition kve2 separr bit compatibility correctness pair
-- **Status**: [PARTIAL]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 321, Task 332
 - **Summary**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md]
+- **Research**: [333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/02_post334-soundness-extraction-frontier.md]
 
 **Description**: Successor to task 321 (F4 correctness gate): the bit-compatibility carrier redefinition that closes what task 321's additive-only v7 plan structurally could not. Task 321 reached a scoped PARTIAL: the O4 hgate forward-zone coverage residue does not close additively at singleton size (needs six interlocking LITMUS/no-nesting-constrained lemmas), and the multi-positive-sub fragment was deferred at the Phase 10 gate. Both route to the SAME fix identified by the crux analysis: redefine kvE2_sepArrL / kvE2_sepArrR (currently arrangement-blind) with bit-compatibility FILTERING so the interleaving enumeration only admits realizations whose zone bits are compatible with each sigma's fold content. This is a Phase-7 carrier RE-DEFINITION (out of task 321's additive scope; it kills the current canonical-list non-vacuity proof, which must be re-established). Deliverables: (1) redefined kvE2_sepArrL/R + restored non-vacuity; (2) discharge task 321's two remaining strategic sorries in SharedWitness.lean (kvE2_sepSingleton_coverage_left:1796, kvE2_sepBody_singleton_complete_left:1952) for the single-positive fragment; (3) lift to the full multi-positive-sub correctness pair; (4) run Phase 12 (N2-C gate wrapper) and Phase 13 (F4 Z adversarial LHS-FALSE + GO verdict record) from task 321's v7 plan; (5) full lake build green + axiom-clean surviving public API. Faithfulness constraints from 321 remain binding: Rabinovich 2014 Lemma 5.1 quantifier-free point types, no-nesting audit, LITMUS (no x1<e_i), F4 adversarial test must discriminate. Do not run concurrently with 321/332 (file_scope overlap on SharedWitness / NfMultiAnchorBridge).
 
