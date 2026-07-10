@@ -8751,4 +8751,127 @@ theorem kvE2_sepSegRAt_eval_of_honest {sig : MonadicSignature}
     · rw [if_neg hz1, if_neg hz2]
       exact temporal_truth_top M atomMap y
 
+/-! ### Task 337 (plan 13) Phase 6 — O3(b): gap discharge (the class-order bridge)
+
+The Phase-5 segment family (`kvE2_sepSegLAt_eval_of_honest` / `…RAt…`) takes a per-owner
+position bridge as a hypothesis. Phase 6 supplies that bridge from the class value order
+(Phase 3): for a point `y` strictly between consecutive grouped-class witnesses, the anchor
+slot `.lX1 σ` of a same-region owner sits in the flat prefix of the first `n` classes iff its
+honest anchor value is below `y`. Reindexing `gL.flatten.take FC` to `(gL.take n).flatten`
+(`kvE2_sep_take_flatten_prefix`) plus prefix/suffix value separation (`kvE2_sep_flatten_sep`)
+reduce the bridge to two value-comparison hypotheses (`hprefix`/`hsuffix`) discharged in the
+Phase-7 assembly from the gap bounds. LITMUS-clean: all bounds ride the anchor value and `y`,
+never an owner-to-owner chain. -/
+
+/-- Generic: the flat prefix of the first `n` sublists equals `flatten.take` at the prefix's
+    own flattened length (whole-sublist cut alignment). -/
+private theorem kvE2_sep_take_flatten_prefix {α : Type*} (L : List (List α)) (n : Nat) :
+    (L.take n).flatten = L.flatten.take ((L.take n).flatten.length) := by
+  induction L generalizing n with
+  | nil => simp
+  | cons a rest ih =>
+    cases n with
+    | zero => simp
+    | succ m =>
+      simp only [List.take_succ_cons, List.flatten_cons, List.length_append]
+      rw [List.take_append, List.take_of_length_le (Nat.le_add_right _ _),
+        Nat.add_sub_cancel_left, ← ih m]
+
+/-- Generic: on a list of sublists whose blocks are strictly `R`-separated across the list
+    (`Pairwise` of the cross-block order), every element of the first-`n` prefix relates by `R`
+    to every element of the drop-`n` suffix. The value-separation kernel for the bridge. -/
+private theorem kvE2_sep_flatten_sep {α : Type*} (R : α → α → Prop) (L : List (List α))
+    (hmono : L.Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, R u v)) (n : Nat) :
+    ∀ s ∈ (L.take n).flatten, ∀ s' ∈ (L.drop n).flatten, R s s' := by
+  intro s hs s' hs'
+  obtain ⟨c₁, hc₁, hsc₁⟩ := List.mem_flatten.mp hs
+  obtain ⟨c₂, hc₂, hs'c₂⟩ := List.mem_flatten.mp hs'
+  have hpw : (L.take n ++ L.drop n).Pairwise (fun c₁ c₂ => ∀ u ∈ c₁, ∀ v ∈ c₂, R u v) := by
+    rw [List.take_append_drop]; exact hmono
+  exact (List.pairwise_append.mp hpw).2.2 c₁ hc₁ c₂ hc₂ s hsc₁ s' hs'c₂
+
+/-- **LEFT gap discharge** (Phase 6 / O3(b)): the LEFT grouped segment at grouped cut `n` is
+    realized at any interior `y ∈ (x, w)` whose relation to the class values is fixed by the two
+    gap hypotheses `hprefix` (first-`n` classes' slot values below `y`) and `hsuffix` (later
+    classes' slot values above `y`). Builds the Phase-5 bridge for `kvE2_sepSegLAt_eval_of_honest`
+    from those two facts. -/
+theorem kvE2_sepSegLAt_gap_eval {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (n : Nat) (y : M.carrier) (hxy : x < y) (hyw : y < w)
+    (hprefix : ∀ s ∈ ((kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).take n).flatten,
+      kvE2_sepSlotValue qnf M w x t h s < y)
+    (hsuffix : ∀ s ∈ ((kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).drop n).flatten,
+      y < kvE2_sepSlotValue qnf M w x t h s) :
+    (kvE2_sepSegLAt charBase qnf
+        (kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).flatten
+        (((kvE2_sepTieGroupedL (kvE2_sepHonestOrder' qnf M w x t h)).take n).flatten.length)
+      ).eval_at M atomMap y := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  set gL := kvE2_sepTieGroupedL wo with hgL_def
+  apply kvE2_sepSegLAt_eval_of_honest charBase qnf M atomMap w x t hxw hwt h hcb
+    gL.flatten ((gL.take n).flatten.length) y hxy hyw
+  intro σ hσ hz
+  rw [← kvE2_sep_take_flatten_prefix gL n]
+  have hval : kvE2_sepSlotValue qnf M w x t h (.lX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ :=
+    kvE2_sepSlotValue_lX1 qnf M w x t h σ
+  refine ⟨fun hc => ?_, fun hc => ?_⟩
+  · have hmem : (KvE2SepSlot.lX1 σ) ∈ (gL.take n).flatten := List.contains_iff_mem.mp hc
+    rw [← hval]; exact hprefix _ hmem
+  · have hnmem : (KvE2SepSlot.lX1 σ) ∉ (gL.take n).flatten := by
+      intro hm; rw [List.contains_iff_mem.mpr hm] at hc; exact Bool.noConfusion hc
+    have hallmem : (KvE2SepSlot.lX1 σ) ∈ gL.flatten := by
+      rw [hgL_def, kvE2_sepTieGroupedL_flatten]
+      exact kvE2_sepSlotsLOf_mem qnf (kvE2_sepHonestOrder'_mem_orderTypes qnf M w x t h)
+        ((kvE2_sepPosI_mem qnf σ).mpr ⟨hσ, Or.inl hz⟩) (kvE2_sep_lX1_mem_slotsLFor hz)
+    have hsplit : gL.flatten = (gL.take n).flatten ++ (gL.drop n).flatten := by
+      rw [← List.flatten_append, List.take_append_drop]
+    rw [hsplit, List.mem_append] at hallmem
+    rw [← hval]; exact hsuffix _ (hallmem.resolve_left hnmem)
+
+/-- **RIGHT gap discharge** (Phase 6 / O3(b), mirror of `kvE2_sepSegLAt_gap_eval`): the RIGHT
+    grouped segment at grouped cut `n` is realized at any interior `y ∈ (w, t)` fixed by the
+    two RIGHT gap hypotheses. -/
+theorem kvE2_sepSegRAt_gap_eval {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (hcb : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (charBase χ) ↔ nf_eval_nf M 0 1 (fun _ => u) χ)
+    (n : Nat) (y : M.carrier) (hwy : w < y) (hyt : y < t)
+    (hprefix : ∀ s ∈ ((kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).take n).flatten,
+      kvE2_sepSlotValue qnf M w x t h s < y)
+    (hsuffix : ∀ s ∈ ((kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).drop n).flatten,
+      y < kvE2_sepSlotValue qnf M w x t h s) :
+    (kvE2_sepSegRAt charBase qnf
+        (kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).flatten
+        (((kvE2_sepTieGroupedR (kvE2_sepHonestOrder' qnf M w x t h)).take n).flatten.length)
+      ).eval_at M atomMap y := by
+  set wo := kvE2_sepHonestOrder' qnf M w x t h with hwo_def
+  set gR := kvE2_sepTieGroupedR wo with hgR_def
+  apply kvE2_sepSegRAt_eval_of_honest charBase qnf M atomMap w x t hxw hwt h hcb
+    gR.flatten ((gR.take n).flatten.length) y hwy hyt
+  intro σ hσ hz
+  rw [← kvE2_sep_take_flatten_prefix gR n]
+  have hval : kvE2_sepSlotValue qnf M w x t h (.rX1 σ) = kvE2_sepAnchorVal qnf M w x t h σ :=
+    kvE2_sepSlotValue_rX1 qnf M w x t h σ
+  refine ⟨fun hc => ?_, fun hc => ?_⟩
+  · have hmem : (KvE2SepSlot.rX1 σ) ∈ (gR.take n).flatten := List.contains_iff_mem.mp hc
+    rw [← hval]; exact hprefix _ hmem
+  · have hnmem : (KvE2SepSlot.rX1 σ) ∉ (gR.take n).flatten := by
+      intro hm; rw [List.contains_iff_mem.mpr hm] at hc; exact Bool.noConfusion hc
+    have hallmem : (KvE2SepSlot.rX1 σ) ∈ gR.flatten := by
+      rw [hgR_def, kvE2_sepTieGroupedR_flatten]
+      exact kvE2_sepSlotsROf_mem qnf (kvE2_sepHonestOrder'_mem_orderTypes qnf M w x t h)
+        ((kvE2_sepPosI_mem qnf σ).mpr ⟨hσ, Or.inr hz⟩) (kvE2_sep_rX1_mem_slotsRFor hz)
+    have hsplit : gR.flatten = (gR.take n).flatten ++ (gR.drop n).flatten := by
+      rw [← List.flatten_append, List.take_append_drop]
+    rw [hsplit, List.mem_append] at hallmem
+    rw [← hval]; exact hsuffix _ (hallmem.resolve_left hnmem)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

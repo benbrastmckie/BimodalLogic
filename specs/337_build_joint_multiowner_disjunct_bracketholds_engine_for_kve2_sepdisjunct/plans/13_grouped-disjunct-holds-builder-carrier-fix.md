@@ -475,7 +475,7 @@ definition, so that every `.rXW` slot value is provably `< w`.
 
 ---
 
-### Phase 6: O3(b) — gap discharge over consecutive class witnesses [NOT STARTED]
+### Phase 6: O3(b) — gap discharge over consecutive class witnesses [COMPLETED]
 
 - **Goal:** Consume the Phase-5 family and the Phase-3 class order to discharge, for every `y`
   strictly between consecutive class witnesses (plus the `x`-, `w`-, `t`-boundary gaps), every
