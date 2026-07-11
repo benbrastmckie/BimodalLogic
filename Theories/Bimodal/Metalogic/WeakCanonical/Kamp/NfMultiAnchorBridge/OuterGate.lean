@@ -187,7 +187,16 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
     exactly the singleton `[σ0]` and `σ0` is interior-zoned (`x < x1 < w` or `w < x1 < t`). This is
     the qnf-domain narrowing task 321 verdict N2 sanctions: it collapses the fold's four
     provider-conditional families to the residue-vanish case (O4 record SW:6785-6791). Depends only
-    on `qnf` (its positivity + zone structure), never on a model or provider. -/
+    on `qnf` (its positivity + zone structure), never on a model or provider.
+
+    VACUITY NOTE (task 335 report 07, 2026-07-11 — UNREALIZABILITY FLAGGED, pending successor
+    verification): the GLOBAL singleton demand (`kvE2_sepPos qnf = [σ0]` filters `Finset.univ`,
+    SW:193) is flagged unrealizable — `nf_exists_unique` (NormalForm.lean:276) realizes a
+    characteristic depth-1 form at every point, and with `x < w < t` the characteristic forms at
+    `x1 := w/x/t` are pairwise distinct, so any REALIZED `qnf` carries ≥3 positive bits. The
+    intended N2 fragment is plausibly the INTERIOR-restricted singleton (`kvE2_sepPosI`, SW:211).
+    Do NOT build on this predicate before the successor carrier task re-examines it; see
+    specs/335_outer_gate_assembly_engine_kvE2_body/reports/07_hexcl-enrichment-derivability.md. -/
 def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
     kvE2_sepPos qnf = [σ0] ∧
@@ -222,7 +231,17 @@ Def 3.1 (p.4) and the §5 bracket assembly (pp.7-9). -/
     symmetric-gate fold `kvE2_outer_fold_frag` (SW:12529). `hcorrK` is discharged inline from the
     provider bridge `bracketEndChar_kvE2_hck` (`.mp`); `hfrag` is the qnf-domain restriction task
     321-N2 sanctions; `hexcl` (negative-sub exclusion) is threaded as a hypothesis, proved by the
-    Phase C probe and removed at Phase D assembly. No `SharedWitness.lean` edit. -/
+    Phase C probe and removed at Phase D assembly. No `SharedWitness.lean` edit.
+
+    VACUITY NOTE (task 335 report 07, 2026-07-11 — DO NOT CONSUME, pending successor verification):
+    the `hfrag` hypothesis (see the VACUITY NOTE on `kvE2_sepFragment` above) is flagged
+    unrealizable for any realized `qnf`, making this theorem's premise set unsatisfiable and the
+    theorem vacuous AS STATED. The derivation itself (fold application, `hcorrK` discharge) is a
+    genuine proof from its hypotheses and is expected to survive a fragment-predicate repair
+    (interior-singleton via `kvE2_sepPosI`), but task 309 / `KampPrior.lean:351` MUST NOT consume
+    this statement before the 321-N2 successor carrier task re-grounds it. Phase C additionally
+    machine-confirmed `hexcl` is NOT dischargeable under any fold-interface enrichment
+    (reports/07, two independent refutations incl. `bracketEndChar_kv_factors`). -/
 theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)

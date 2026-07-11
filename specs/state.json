@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 346,
+  "next_project_number": 347,
   "active_projects": [
     {
       "project_number": 309,
@@ -51,7 +51,7 @@
       },
       "next_artifact_number": 6,
       "previous_status": "implementing",
-      "blockers": "Pending task 335: the unconditional k=2 GO gate bracketEndChar_kvE2_correct_two_prior (BracketCarrierCorrectVPrior for the faithful carrier) is not yet landed; 335 has only delivered the completeness half. 335's Phase 4b must additionally discharge hbdry/hexcl (the F4-descendant channels) at P.existF 0 for the gate to be unconditional."
+      "blockers": "Task 335 fragment gate NOT delivered: bracketEndChar_kvE2_sound_two_prior_frag is VACUITY-FLAGGED (do not consume — see OuterGate.lean VACUITY NOTEs + 335 report 07). Unblock route: task 346 (successor carrier redefinition) then 335 Phase D. 309 v8 revision should re-point to whatever 346 lands."
     },
     {
       "project_number": 305,
@@ -1368,7 +1368,7 @@
     {
       "project_number": 335,
       "project_name": "outer_gate_assembly_engine_kvE2_body",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "description": "Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.",
       "parent_task": 334,
@@ -1376,7 +1376,8 @@
         334,
         337,
         344,
-        345
+        345,
+        346
       ],
       "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
       "created": "2026-07-08T21:34:34Z",
@@ -1399,9 +1400,9 @@
           "summary": "v5 fragment gate: Phases A-D under N2-sanctioned hfrag restriction; hexcl GO/NO-GO probe bounded to one dispatch"
         },
         {
-          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/06_literature-fidelity-gate-design.md",
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/07_hexcl-enrichment-derivability.md",
           "type": "report",
-          "summary": "Literature verdict R1-faithful: gate must be symmetric (Cor 5.4 mirror pair); hInnerR LEFT-unsat confirmed; clause (v) is the minimal faithful repair"
+          "summary": "hexcl NO-GO (two refutations) + kvE2_sepFragment unrealizability — successor task 346 certified as only route"
         }
       ],
       "completion_summary": "PARTIAL (1/4 phases). Phase 1 landed the first live outer-gate carrier bracketEndChar_kvE2 in new OuterGate.lean, delegating to task-334's verified kvE2_sepBody (axiom-clean [propext, Classical.choice, Quot.sound], rfl bridge, green build); SharedWitness.lean and KampPrior.lean byte-identical. Phases 2-4 (soundness/completeness connectors + assembled k=2 gate) BLOCKED on a missing prerequisite: the joint multi-owner disjunct bracket-holds builder over kvE2_sepSlotsL/R (a task-334-deferred obligation, SharedWitness.lean:1954). Unblocking path: dedicated follow-on wiring k1v_sorted_realizationK (SubBracket2V:633) into kvE2_sepDisjunct (~370 lines, comparable to bracketEndChar_k1v_complete), then re-dispatch Phases 2-4. Zero-debt: no sorry/vacuous placeholder introduced.",
@@ -1439,7 +1440,7 @@
       },
       "previous_status": "partial",
       "next_artifact_number": 2,
-      "blockers": "Phase C hexcl NO-GO (machine-confirmed, commit da50f596c): hexcl receives only hptW; negative-sub exclusion at arbitrary x1 underivable with current fold interface. Candidate fix: enrich kvE2_outer_fold_frag hexcl channel to thread the realized bracket segment form at x1 (info already present in h_holds) — derivability verification in progress. Alternative: successor carrier redefinition (321-N2)."
+      "blockers": "Phases C-D blocked: hexcl machine-confirmed undischargeable under any fold-interface enrichment AND the landed kvE2_sepFragment flagged unrealizable (Phase B vacuous as stated — VACUITY NOTEs stamped in OuterGate.lean). Only route: successor task 346 (321-N2 carrier redefinition). Delivered green: Phases 1-3, A, B (derivation genuine, premise repair needed)."
     },
     {
       "project_number": 341,
@@ -1595,6 +1596,27 @@
       "last_updated": "2026-07-11T06:44:32Z",
       "session_id": "sess_1783723095_edd5a7_345",
       "completion_summary": "Symmetric gate clause (v) landed per literature-fidelity verdict (Rabinovich Cor 5.4 mirror pair): gate def + holds_of_honest discharge + hInnerR removal from kvE2_sepGateAtPin_fragR/kit_sound_frag/outer_fold_frag (repairing confirmed LEFT-unsatisfiability). Byte-diff verified sanctioned-regions-only; axiom-clean; full build green. 335 discharge obligations reduced to {hcorrK, hexcl}."
+    },
+    {
+      "project_number": 346,
+      "project_name": "successor_carrier_redefinition",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "THE 321-N2 NAMED SUCCESSOR (user-deferred; NOT auto-dispatched — major scope decision). Certified by task 335 report 07 (2026-07-11) as the ONLY remaining route to the k=2 gate: bit-compatibility filtering carrier redefinition (O4 SW:6763-6770) / 330-audit Prop 4.3 navigated exterior completeness. MUST ALSO: (1) redefine the fragment predicate — the landed kvE2_sepFragment (OuterGate.lean:191, global singleton) is flagged UNREALIZABLE (any realized qnf has >=3 positive bits; report 07 Refutation 1); intended fragment is plausibly interior-singleton via kvE2_sepPosI (SW:211); (2) re-state bracketEndChar_kvE2_sound_two_prior_frag non-vacuously (its derivation survives, its premise set does not — VACUITY NOTEs stamped on both decls in OuterGate.lean); (3) resolve hexcl properly — machine-confirmed NOT dischargeable under ANY fold-interface enrichment (report 07 Refutation 2: category mismatch at inner-bits layer + bracketEndChar_kv_factors arity-1 inseparability of sibling/exterior types). ASSETS THAT SURVIVE: tasks 344/345 pin-anchored symmetric-gate machinery (fragL/fragR/kit/fold — hypothesis-carrying, proofs genuine; predicate swap expected to preserve them, verify), 335 Phase 2 completeness half (unconditional), 335 Phase B derivation modulo the predicate repair, symmetric gate clause (v) (literature-faithful, Rabinovich Cor 5.4 p.9). GROUNDING: specs/335_outer_gate_assembly_engine_kvE2_body/reports/04-07 + specs/330_.../reports/01 (faithfulness audit) + Rabinovich PDF (cite by page only). CONSUMERS: task 309 Phases 13.4/14 + KampPrior.lean:351 strategic sorry; task 335 Phase D. Recommend /research 346 --lit --hard before any planning.",
+      "dependencies": [
+        345
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/346_successor_carrier_redefinition/reports/01_hexcl-refutation-and-vacuity.md",
+          "summary": "Report 07: hexcl NO-GO (two refutations) + kvE2_sepFragment unrealizability — the certification that this successor is the only route"
+        }
+      ],
+      "spawned_from": 335
     }
   ],
   "artifacts": [
