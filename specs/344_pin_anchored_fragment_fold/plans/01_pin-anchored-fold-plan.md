@@ -169,14 +169,17 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
       `kvE2_outer_fold` (`SW:9952-9956`): `∀ w, x<w → w<t → ptW w → ∀ σ, qnf.2 σ = false → ∀ x1,
       ¬ nf_eval_nf M 1 4 [x1,w,x,t] σ`. Threaded verbatim into `kvE2_outer_fold_frag`, never
       discharged — Phase 3 copies it byte-identical.)*
-- [ ] Land the additive **segment/pin-realization extractor**: `.holds` → segment form content
-      available at the pin `q` (the gap `kvE2_sepBody_extract` `SW:8410` leaves; serving the
-      **pin-anchored** interface only — NEVER the ∀-anchor one). *(deviation: ALTERED by dispatch 2 —
-      a standalone extractor is the WRONG factoring: "segForm holds ∀ point of the open zone" is FALSE
-      at witness points (segForm at a witness is unconstrained). The gate lemma must unfold `.holds`
-      inline (via `kvE2_sepBody_holds_iff` + `IntervalPattern.holds_eq_succ`) and case-split point vs
-      witness. No separate committable extractor exists. See handoffs/02_continuation.md §2.)*
-- [ ] State and prove `kvE2_sepGateAtPin_fragL` per report §2 sketch (lines 104-120): hypotheses
+- [x] Land the pin-anchored **continuation closers** `kvE2_sepBundleL_sound_frag` /
+      `kvE2_sepBundleR_sound_frag` (dispatch 3, commits `90debe333` then refactored `7816c494a`).
+      These inline `kvE_subBracket2V_sound_of_parts`'s continuation (`SubBracket2V:1324-1345` /
+      `SW:9750-9776`) taking the four gate conjuncts (`h_atom`/`h_off`/`h_fwd`/`h_bwd`) AT the
+      specific pin `x1` as explicit args (NOT ∀-anchor) plus `hbelow`, producing
+      `∃ x1', nf_eval_nf M 1 4 [x1',w,x,t] σ`. Green, axiom-clean `{propext,Classical.choice,Quot.sound}`.
+      *(deviation: the segment re-extraction itself is NOT a separate committable lemma — dispatch 2
+      showed "segForm ∀ point of open zone" is FALSE at witness points; the segments must be unfolded
+      inline INSIDE the gate producer below. What IS landed is the continuation closer that consumes
+      the four conjuncts, so the gate producer reduces to deriving those four at the pin.)*
+- [ ] **[REMAINING — dispatch 4]** State and prove `kvE2_sepGateAtPin_fragL` per report §2 sketch (lines 104-120): hypotheses
       `hfrag`, `hcorrK` (explicit), `h : (kvE2_sepBody … charK qnf).holds M atomMap x t`, `σ`,
       `hσ : σ ∈ kvE2_sepPos qnf`, `hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3`; conclusion
       `∃ w q, x < q ∧ q < w ∧ w < t ∧ …` the six conjuncts. Close each conjunct via its cited channel:
