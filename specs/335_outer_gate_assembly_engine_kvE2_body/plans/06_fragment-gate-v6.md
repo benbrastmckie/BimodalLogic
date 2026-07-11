@@ -30,7 +30,7 @@
 > (x,t) bracket (retired phantom framing, no §5 counterpart)."*
 
 - **Task**: 335 - Build the outer-gate assembly engine `kvE2_body` / `bracketEndChar_kvE2`, the two-level quant-layer connector that `KampPrior.lean:351` (the depth-k≥2 Cor 5.4 converter) consumes — now delivered as the **single-positive-sub fragment gate** sanctioned by task 321 verdict N2, with the Phase-D provider obligation re-shaped to Cor 5.4 ⇐ (bounded interior, jointly-ordered) per the task-347 adjudication
-- **Status**: [NOT STARTED] (Phase D re-scoped, actionable post-347) — Phases 1/2/3/A/B COMPLETED; **Phase C RESHAPED → resolved** (interior exclusion slice discharged in-line by task-347 R1 `d370d438e`/`3b8aee3c4`; exterior-marked residue RE-ROUTED to successor task 348 `prop43_exterior_reflatten`, NOT an in-335 discharge); **Phase D re-scoped** to the interior+boundary gate assembly with the provider obligation re-shaped to bounded-interior + jointly-ordered (Cor 5.4 ⇐) over `kvE2_sepPosI`, threading the exterior-marked `hexclExt` outward to task 348. The v5 hard blocker (in-335 `hexcl` discharge) is dissolved by the adjudication.
+- **Status**: [COMPLETED] (Phase D landed 2026-07-11, commit `147af2fbe`; all phases done) — Phases 1/2/3/A/B COMPLETED; **Phase C RESHAPED → resolved** (interior exclusion slice discharged in-line by task-347 R1 `d370d438e`/`3b8aee3c4`; exterior-marked residue RE-ROUTED to successor task 348 `prop43_exterior_reflatten`, NOT an in-335 discharge); **Phase D re-scoped** to the interior+boundary gate assembly with the provider obligation re-shaped to bounded-interior + jointly-ordered (Cor 5.4 ⇐) over `kvE2_sepPosI`, threading the exterior-marked `hexclExt` outward to task 348. The v5 hard blocker (in-335 `hexcl` discharge) is dissolved by the adjudication.
 - **Effort**: 4-6 hours (Phases 1-3/A/B landed; the remaining genuine work is the Phase-D interior+boundary assembly against the re-shaped `kvE2_sepPosI` provider obligation)
 - **Dependencies**:
   - 334 (COMPLETED — faithful carrier redefinition `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`)
@@ -348,7 +348,7 @@ the PROVIDER; task 348 owns this residue.
 
 ---
 
-### Phase D: Assemble the interior+boundary gate over the re-shaped `kvE2_sepPosI` provider obligation + 309-v8/348 handoff [NOT STARTED]
+### Phase D: Assemble the interior+boundary gate over the re-shaped `kvE2_sepPosI` provider obligation + 309-v8/348 handoff [COMPLETED]
 
 > **RE-SHAPED from v5 by the task-347 adjudication (this is the substantive v6 change).** v5's Phase D
 > was `[BLOCKED]` because it targeted a fragment-UNCONDITIONAL gate with the exclusion family fully
@@ -367,7 +367,7 @@ provider realization obligation over the interior index `kvE2_sepPosI` (bounded,
 re-flatten — NOT closed here. Finalize the docstring and write the 309-v8 + task-348 handoff note.
 
 **Tasks**:
-- [ ] **Re-express the provider realization obligation over `kvE2_sepPosI`** (the v6 correction).
+- [x] **Re-express the provider realization obligation over `kvE2_sepPosI`** (the v6 correction). *(deviation: altered — the interior-indexed bounded `hrealI` alone cannot feed the fold's global-`kvE2_sepPos` channel (boundary positives are admissible post-346); a second named hypothesis `hrealB` carries the non-interior-marked remainder in the landed unbounded shape, and the fold channel is reassembled by `by_cases` on the decidable interiority filter via `kvE2_sepPosI_mem` — a 10-line derivation, not the anticipated pure `show`/`change` defeq bridge. The interval bound applies only to the interior index, exactly per 347 MUST-CHECK 2.)*
       Instead of the global-`kvE2_sepPos` `hreal` shape, state the realization obligation as: for the
       pivot `w` (with `x<w`, `w<t`, `(kvE2_sepPtW …).eval_at M atomMap w`), realize each **interior**
       positive σ ∈ `kvE2_sepPosI qnf` by a **bounded, jointly-ordered** witness `x1 ∈ (x,t)` —
@@ -377,13 +377,13 @@ re-flatten — NOT closed here. Finalize the docstring and write the 309-v8 + ta
       interval bound so it matches what task 348 consumes and generalizes to `On`. Confirm the shape
       against the `kvE2_outer_fold_frag` argument position with `lean_goal`; insert a `show`/`change`
       bridge if `exact` balks (defeq — no re-proof).
-- [ ] **Close `bracketEndChar_kvE2_sound_two_prior_frag`** (already landed under Phase B; re-confirm
+- [x] **Close `bracketEndChar_kvE2_sound_two_prior_frag`** (already landed under Phase B; re-confirm
       green under the post-347 narrowed `hexclExt` binder): `intro h_holds`;
       `rw [bracketEndChar_kvE2_two_eq] at h_holds`; feed `kvE2_outer_fold_frag` with the internal
       families (from the symmetric-gate fold) + the interior-indexed realization obligation + the
       narrowed `hexclExt` binder. Bridge `qnf.atom_assgn (.order …)` → `qnf.1 (.order …)` via
       `show`/`change` if needed (defeq).
-- [ ] **Assemble `bracketEndChar_kvE2_correct_two_prior_frag`** (interior+boundary-scoped): unfold the
+- [x] **Assemble `bracketEndChar_kvE2_correct_two_prior_frag`** (interior+boundary-scoped): unfold the
       (fragment-restricted) `BracketCarrierCorrectVPrior`, `intro` the six order hypotheses +
       `h_UZ`/`h_SZ` + `x t`, then `constructor` combining the ⇒ (Phase-B/D sound, under `hfrag`, with
       the exterior `hexclExt` threaded as the task-348 provider obligation) and ⇐ (Phase 2 complete,
@@ -391,14 +391,14 @@ re-flatten — NOT closed here. Finalize the docstring and write the 309-v8 + ta
       **The exterior-marked `hexclExt` binder appears as an explicit named hypothesis/obligation
       routed to task 348 — it is NOT discharged here and NOT a hidden gate assumption; it is the
       documented 335→348 provider contract.**
-- [ ] `#print axioms bracketEndChar_kvE2_correct_two_prior_frag` via `lake env lean` (NOT
+- [x] `#print axioms bracketEndChar_kvE2_correct_two_prior_frag` via `lake env lean` (NOT
       `lean_verify` — unreliable on SharedWitness.lean, stale `sorryAx`) → `{propext,
       Classical.choice, Quot.sound}`, no `sorryAx` on the interior+boundary path.
-- [ ] Finalize the `OuterGate.lean` header docstring (delivered items 4/5): record
+- [x] Finalize the `OuterGate.lean` header docstring (delivered items 4/5): record
       `bracketEndChar_kvE2_sound_two_prior_frag` and `bracketEndChar_kvE2_correct_two_prior_frag` as
       DELIVERED (interior+boundary-scoped, provider obligation over `kvE2_sepPosI`); note the
       exterior-marked residue deferred to task 348 (`prop43_exterior_reflatten`). Page-cite only.
-- [ ] **Write the 309-v8 + task-348 handoff note** (`specs/335_.../handoffs/03_frag-gate-for-309-and-348.md`)
+- [x] **Write the 309-v8 + task-348 handoff note** (`specs/335_.../handoffs/03_frag-gate-for-309-and-348.md`)
       recording precisely: (1) the interior+boundary gate `bracketEndChar_kvE2_correct_two_prior_frag`
       provides the k=2 interior+boundary GO gate for **309 Phases 13.4/14** and **`KampPrior.lean:351`**
       *under `kvE2_sepFragment qnf`*, with the realization obligation indexed by **`kvE2_sepPosI`**
@@ -409,7 +409,7 @@ re-flatten — NOT closed here. Finalize the docstring and write the 309-v8 + ta
       gate + adjacent exterior bracket, seam at `x,t` — NOT a single all-arrangement `(x,t)` gate;
       (4) the multi-positive / full `On` case stays DEFERRED (321-N2 successor); (5) flag for 309's
       reviser whether the ∀k lift composes with a fragment-scoped k=2 rung.
-- [ ] `git status` confirms only `OuterGate.lean` (+ the handoff note) changed; `SharedWitness.lean`
+- [x] `git status` confirms only `OuterGate.lean` (+ the handoff note) changed; `SharedWitness.lean`
       / `SubBracket2V.lean` byte-for-byte unmodified (post-347 state). `lake build …OuterGate`, then
       full `lake build`.
 
