@@ -12611,6 +12611,44 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
     fun σ hσ _hz => hreal w hxw hwt hptW σ hσ,
     fun σ hσ _hz => hreal w hxw hwt hptW σ hσ⟩
 
+/-- **R1 interior-slice order-atom discharge** (task 347 Phase 1; report 01 §7 R1,
+    `NormalForm.lean:201-202`; Rabinovich Notation 5.2 strictly-interior witnesses).
+    A strictly-exterior `x1` (outside the closed cone `x ≤ x1 ≤ t`) falsifies any
+    interior-marked σ (`nf0_zoneSpec σ.1 ∈ {kvE2_sep_zXW3, kvE2_sep_zWT3}`) directly
+    from the depth-0 atom clause, with NO residue. Both interior zones assert BOTH
+    `x < x1` (bit `(nf0_zoneSpec σ.1 ⟨1⟩).2`, atom `.order 2 0`) AND `x1 < t` (bit
+    `(nf0_zoneSpec σ.1 ⟨2⟩).1`, atom `.order 0 3`) over the env `[x1,w,x,t]`; a realized
+    σ would therefore force `x < x1 ∧ x1 < t`, contradicting the exterior guard. This is
+    the order-atom-only core of R1: the interior slice of the monolithic `hexclExt`
+    obligation carries no genuine content, so the deferred residue is exterior-marked σ
+    only (report 01 §7 R1 / C1: "hexclExt = phantom" for the interior slice). The `omega`/
+    `exact` closer on the falsified `.order` literal is the sanctioned move (no
+    `simp`/`decide` over the whole `nf_eval_nf`, per plan Postmortem Constraints). -/
+theorem kvE2_sepInterior_exterior_notRealizable {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (x1 w x t : M.carrier)
+    (σ : NormalForm sig 1 4)
+    (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    (hguard : ¬ (x ≤ x1 ∧ x1 ≤ t)) :
+    ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  intro hnf
+  obtain ⟨hσ_atom, _⟩ := hnf
+  -- Both interior zones assert `x < x1` (index-1 `.2` bit) and `x1 < t` (index-2 `.1` bit);
+  -- the zone-spec components ARE σ.1's fresh-coupling order bits (`nf0_zoneSpec` def).
+  have hbit_xx1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).2 = true := by
+    rcases hzone with hz | hz <;> rw [congrFun hz ⟨1, by omega⟩] <;> decide
+  have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+    rcases hzone with hz | hz <;> rw [congrFun hz ⟨2, by omega⟩] <;> decide
+  -- Transfer the bits to real order facts through the realized depth-0 atom layer.
+  have hxx1 : x < x1 := by
+    have h1 := hσ_atom (.order (Fin.succ ⟨1, by omega⟩) 0 (Fin.succ_ne_zero ⟨1, by omega⟩))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_xx1
+  have hx1t : x1 < t := by
+    have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr hbit_x1t
+  exact hguard ⟨le_of_lt hxx1, le_of_lt hx1t⟩
+
 /-- **Pin-anchored outer fold** (task 344 Phase 3 — the `_frag` variant of `kvE2_outer_fold`;
     task 346 Phase 4 REPAIR). The outer atom layer is assembled from the carrier's endpoint/
     witness point types; the depth-1 quant layer is closed by the honest realize/exclude
