@@ -1,7 +1,7 @@
 # Implementation Plan: prop43_exterior_reflatten
 
 - **Task**: 348 - prop43_exterior_reflatten
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 24 hours (8 phases, one agent run each, ~2-4 h per phase)
 - **Dependencies**: 335 (landed — fragment gate + hexclExt binder), 346 (landed — isolation), 347 (landed — R1 narrowing to exterior-marked σ)
 - **Research Inputs**: specs/348_prop43_exterior_reflatten/reports/01_prop43-exterior-reflatten.md (hard-mode, H4-verified); specs/335_outer_gate_assembly_engine_kvE2_body/handoffs/03_frag-gate-for-309-and-348.md; specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md §prop43_exterior_reflatten (authoritative spec)
