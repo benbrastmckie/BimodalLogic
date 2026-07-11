@@ -10313,6 +10313,42 @@ theorem kvE2_sepEpR_owner_lits {sig : MonadicSignature}
   · exact List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inr
       (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
 
+/-- Extract the per-owner `zAtWL` at-`w` literal for an interior owner `σ` from a realized
+    `kvE2_sepPtW` at `w` (task 344 Phase 1 witness case — the `j = |gL|` AT-`w` sub-case;
+    mirror of `kvE2_sepEpL_owner_lits`). -/
+theorem kvE2_sepPtW_owner_lit {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3)
+    (hep : (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w) (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap w
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtWL χ) (charBase χ)) := by
+  have hep' : temporal_truth M atomMap w (kvE2_sepPtW charBase charK qnf).formula := hep
+  simp only [kvE2_sepPtW] at hep'
+  have hall := (formula_conjList_iff M atomMap w _).mp hep'
+  have hχu : χ ∈ (Finset.univ.toList : List (NormalForm sig 0 1)) :=
+    Finset.mem_toList.mpr (Finset.mem_univ _)
+  exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inl
+    (List.mem_append.mpr (Or.inr (List.mem_flatMap.mpr ⟨σ, hσ,
+      List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩))⟩)))))))
+
+/-- Extract the per-owner `zAtX1L` at-`x1` literal for owner `σ` from a realized
+    `kvE2_sepPtX1L` at the pin `x1` (task 344 Phase 1 witness case — the `j = iσ` AT-`x1`
+    sub-case; mirror of `kvE2_sepEpL_owner_lits`). -/
+theorem kvE2_sepPtX1L_owner_lit {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x1 : M.carrier)
+    (hep : (kvE2_sepPtX1L charBase charK σ).eval_at M atomMap x1) (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap x1
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX1L χ) (charBase χ)) := by
+  have hep' : temporal_truth M atomMap x1 (kvE2_sepPtX1L charBase charK σ).formula := hep
+  simp only [kvE2_sepPtX1L] at hep'
+  have hall := (formula_conjList_iff M atomMap x1 _).mp hep'
+  have hχu : χ ∈ (Finset.univ.toList : List (NormalForm sig 0 1)) :=
+    Finset.mem_toList.mpr (Finset.mem_univ _)
+  exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩)))
+
 /-- **LEFT pin-anchored gate producer** (task 344 Phase 1 — the crux). From a realized
     `kvE2_sepBody` in the SINGLE-positive fragment (`hfrag`) with the sole positive sub `σ0`
     left-interior (`hz`), plus provider-correctness `hcorrK` at the pin (the `ExistProviders.correct`
