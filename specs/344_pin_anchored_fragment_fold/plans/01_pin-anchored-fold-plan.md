@@ -223,6 +223,12 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
 
 ### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [NOT STARTED]
 
+*(dispatch 9: NOT started — gated on `kvE2_sepGateAtPin_fragR`, which needs new right-geometry
+infrastructure (`kvE2_sepInnerConsistentR`, `kvE2_sepPtX1R_owner_lit`, `kvE2_sep_rX1T_mem_slotsRFor`)
+AND a design decision — `kvE2_sepGate` clause (iv) is zXW3-only, so fragR's `h_bwd` zs-exclusion has
+no gate support. `kvE2_sepBody_kit_sound_frag` itself is a 6-line rcases over fragL/fragR (ready-to-paste
+draft in `handoffs/09_continuation.md`). fragR is a fragL-scale mirror; deferred to dispatch 10.)*
+
 **Goal**: Land the RIGHT pin-anchored gate `kvE2_sepGateAtPin_fragR` (the `zWX1`-mirrored clone of
 `fragL`) and the fragment kit `kvE2_sepBody_kit_sound_frag` (kit_sound's conclusion from `hfrag` +
 `hcorrK`, no ∀-anchor hgate).
@@ -252,6 +258,10 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
 ---
 
 ### Phase 3: `kvE2_outer_fold_frag` assembly + 335 handback verification [NOT STARTED]
+
+*(dispatch 9: NOT started — depends on Phase 2. `kvE2_outer_fold_frag` is a small verbatim mirror of
+`kvE2_outer_fold` (hbdry replaced by an hfrag-vacuity `exfalso`; hexcl threaded verbatim); ready-to-paste
+draft in `handoffs/09_continuation.md`. Gated transitively on fragR.)*
 
 **Goal**: Land `kvE2_outer_fold_frag` (pin-anchored variant of `kvE2_outer_fold`: `hgateL`/`hgateR`/
 `hbdry` replaced by `hfrag` + `hcorrK`, `hexcl` threaded verbatim) and hand back verified signatures to
