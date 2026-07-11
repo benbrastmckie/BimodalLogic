@@ -206,7 +206,7 @@ are mutually independent (distinct file territory) but both require Phase 2 gree
 - **Timing:** ~2 hours. **Depends on:** 1.
 - **Estimated output:** ~60–160 lines (binder edits, `by_cases` re-thread, comment updates).
 
-### Phase 3: Retire-and-replace the `prop43_exterior_completeness` successor spec [NOT STARTED]
+### Phase 3: Retire-and-replace the `prop43_exterior_completeness` successor spec [COMPLETED]
 
 - **Goal:** Correct the mis-framed successor spec in the task-346 summary per report 01's
   retire-and-replace adjudication.

@@ -166,53 +166,116 @@ Per-consumer:
 The following is written so `/task` or `/spawn` can create it verbatim. **This dispatch does NOT
 add the entry to state.json** — creation is the orchestrator's / user's call.
 
+> **RETIRED-AND-REPLACED by task 347 (2026-07-11).** The original `prop43_exterior_completeness`
+> spec below was superseded by the task-347 Rabinovich-faithfulness adjudication
+> (`specs/347_rabinovich_bracket_faithfulness_review/reports/01_bracket-faithfulness-adjudication.md`,
+> H4-verified, verdict **(b) SUBSTANTIVE**). The "prove strictly-exterior completeness / no
+> exterior point realizes a `qnf`-false sub" obligation is a **phantom completeness theorem with
+> no Rabinovich §5 counterpart**: Rabinovich 2014 bounds the OUTER existential (Cor 5.4, p.8–9,
+> `(∃z)^{<z1}_{>z0}`) and never quantifies outside `(z0,z1)` — the Lemma 5.1 negation proof
+> (pp.9–11) has NO exterior case. Broader coverage is obtained by **re-flatten / adjacency**
+> (Prop 4.3, p.6; Lemma 7.6, p.13), NOT by exterior-exclusion on the single interior `(x,t)`
+> bracket. 346's *pointer* ("Prop-4.3 successor") was correct; its *mechanism* ("exterior
+> exclusion on this gate") was wrong. Use the **`prop43_exterior_reflatten`** spec below instead.
+> The struck-through original is retained only for provenance.
+
+### RETIRED — original framing (do NOT implement)
+
+~~**Title**: `prop43_exterior_completeness`~~ — retired. The stated obligation, "discharge
+`hexclExt` = prove no strictly-exterior point realizes a `qnf`-false sub", mis-located exterior
+structure on the interior bracket and asked for a completeness theorem the source never states
+(347 report 01 §"Update-or-Retire"; 335 report 07 Refutation 2 machine-argues it is inexpressible
+in the bracket vocabulary). Do not create or implement this framing. The correct successor is
+`prop43_exterior_reflatten` below.
+
+### ACTIVE — replacement successor spec
+
 ---
 
-**Title**: `prop43_exterior_completeness`
+**Title**: `prop43_exterior_reflatten`
 
 **Type**: lean4
 
-**Dependencies**: 346 (landed — provides the `hexclExt` isolation point), 335 (provider), 309
-(consumer assembly). Grounding literature: 330 report 01, 335 report 07.
+**Dependencies**: 346 (landed — provided the `hexclExt` isolation point), 347 (landed R1 — narrowed
+the residue to exterior-marked σ only), 335 (provider), 309 (consumer assembly). Grounding
+literature: Rabinovich 2014 §4 (Prop 4.3, p.6) + §5 (Cor 5.4, p.8–9) + §7 (Lemma 7.6, p.13);
+330 report 01; 335 report 07; 347 report 01.
 
-**Description**:
+**Landed R1 state (task 347, consume this — do NOT re-derive)**:
 
-Discharge the strictly-exterior completeness obligation isolated by task 346 as the named
-hypothesis `hexclExt` in `kvE2_outer_fold_frag` (SharedWitness:12627) and
-`bracketEndChar_kvE2_sound_two_prior_frag` (OuterGate:245). Task 346 delivered an
-interior+boundary-complete CONDITIONAL gate; the residue is the exclusion of strictly-exterior
-witnesses `x1` with `¬ (x ≤ x1 ∧ x1 ≤ t)`:
+Task 347 R1 (`Phase 1` commit `d370d438e` = the interior-slice order-atom discharge lemma;
+`Phase 2` commit `3b8aee3c4` = the narrowed binder + re-threaded fold/OuterGate) split the
+formerly-monolithic `hexclExt` by σ-zone and discharged the interior slice from the depth-0 order
+atoms. As of those commits the deferred `hexclExt` residue is **exterior-marked σ ONLY** — it no
+longer ranges over all `qnf.2 σ = false`. Post-R1 binder shape (verbatim from the landed
+`kvE2_outer_fold_frag` / `bracketEndChar_kvE2_sound_two_prior_frag`):
 
 ```
 hexclExt : ∀ w, x < w → w < t → (kvE2_sepPtW …).eval_at M atomMap w →
-           ∀ σ, qnf.2 σ = false → ∀ x1, ¬ (x ≤ x1 ∧ x1 ≤ t) → ¬ nf_eval_nf M 1 4 [x1,w,x,t] σ
+           ∀ σ, qnf.2 σ = false →
+             ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →  -- exterior-marked
+             ∀ x1, ¬ (x ≤ x1 ∧ x1 ≤ t) → ¬ nf_eval_nf M 1 4 [x1,w,x,t] σ
 ```
 
-**Obligation carried**: full-exterior completeness — proving no strictly-exterior point realizes a
-qnf-false sub. This is the outer-forward exterior direction machine-confirmed NOT dischargeable on
-any currently-unblocked in-tree route (335 report 07 **Refutation 2**: category mismatch at the
-inner-bits layer + `bracketEndChar_kv_factors` arity-1 inseparability).
+Interior-marked σ (`nf0_zoneSpec σ.1 ∈ {kvE2_sep_zXW3, kvE2_sep_zWT3}`) are already discharged
+in-line by the R1 lemma (an exterior `x1` falsifies a strict interior `.order` atom), so the
+successor task inherits ONLY the genuinely-exterior arrangements.
+
+**Description**:
+
+Restore Rabinovich's interval-bounding faithfulness for the exterior-marked residue isolated by
+task 346 and narrowed by task 347 R1. Do **NOT** attempt to prove `hexclExt` as a strictly-exterior
+completeness / non-realization lemma on the interior `(x,t)` bracket — that is the retired phantom
+framing (no §5 counterpart; 335 report 07 Refutation 2: category mismatch at the inner-bits layer +
+`bracketEndChar_kv_factors` arity-1 inseparability). Instead, **re-flatten** the exterior witness
+arrangement per Rabinovich Prop 4.3 (p.6) + Lemma 7.6 (p.13):
+
+- The root cause is that `nf_eval_nf` (`NormalForm.lean:203–207`) evaluates the outer/fresh witness
+  `∃ (x : M.carrier)` **unbounded**, whereas Rabinovich's outer existential is **bounded**
+  (Cor 5.4, p.8–9, `(∃z)^{<z1}_{>z0}`). The unbounded ∃ is correct raw FOMLO semantics and MUST NOT
+  be bounded in place.
+- The exterior arrangements `x1 < x` and `x1 > t` belong to the **adjacent** intervals `(−∞, x)` and
+  `(t, ∞)`, each characterized by its **own** bracket (`[…](−∞,x)` / `[…](t,∞)`, §7 Def 7.5 /
+  Lemma 7.10 shapes). Compose them with the landed interior `(x,t)` bracket by the adjacency
+  primitive `(∃z)^{<z2}_{>z0}(φ1 ∧ φ2)` (Lemma 7.6, p.13) — i.e. `B2(z0,z,z1) := […](z0,z) ∧
+  […](z,z1)` re-flatten (Prop 4.3 / Fig. 1, p.6, p.10). The seam is at the anchors `x, t`.
+- Landed assets to consume (per 330 report 01 §4 / 335 report 07): `neg_2var_vec_ea`
+  (`EANegationClosure.lean:722`, Prop 4.2 negation closure — the hard step, already proven), the
+  witness-growing carrier `BracketEndCharCarrierV` (`NfMultiAnchorBridge.lean:1872`), the interior
+  closers (task 326), and the R1 interior-slice discharge lemma (task 347, `SharedWitness.lean`
+  below the SW:10210 GATE banner). The MISSING ingredient is the **Prop 4.3 re-flatten / Lemma 7.6
+  adjacency wiring** (347 report 01 H3 table rows "Prop 4.3", "Lemma 7.6" = MISSING).
 
 **Entry problem**: the navigated Prop-4.3 re-flatten route
 (`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Prop43.lean`) is independently BLOCKED on the
-uniform-negation connective cases (`:120-159`). That blocker is the successor's first target: either
-complete the uniform-negation re-flatten there, or establish a new route to the exterior exclusion.
+uniform-negation connective cases (`:120–159`). That blocker is the successor's first target: complete
+the uniform-negation re-flatten there (feeding the already-proven `neg_2var_vec_ea` Prop 4.2 closure),
+then wire the adjacency composition of the exterior brackets with the interior gate.
 
 **Grounding**:
-- 330 report 01 (Prop 4.3 audit — the exterior-completeness requirement).
-- 335 report 07, Refutation 2 (why the direct route is inseparable) and point 1 (Prop 4.3
-  dependency).
-- `Prop43.lean:120-159` (the blocked navigated route, entry problem).
+- Rabinovich 2014: Prop 4.3 + Fig. 1 (p.6, p.10 — structural-induction / adjacency re-flatten);
+  Cor 5.4 (p.8–9 — the bounded outer ∃ that the encoding dropped); §7 Lemma 7.6 (p.13 —
+  adjacency-composition primitive); Def 7.5 / Lemma 7.10 (§7 — adjacent-interval bracket shapes).
+- 347 report 01 (bracket-faithfulness adjudication, verdict (b); §7 R2 = this re-flatten route).
+- 330 report 01 (Prop 4.3 audit / REDESIGN — navigated fold + re-flatten mechanism).
+- 335 report 07, Refutation 2 (why the direct exterior-exclusion route is inseparable) and point 1
+  (Prop 4.3 dependency).
+- `Prop43.lean:120–159` (the blocked navigated route, entry problem — KEEP as entry point).
 
-**Definition of done**: `hexclExt` is discharged for the intended model class, the fold and
-soundness-half theorems are called with the residue closed (interior+boundary+exterior = full
-completeness), and the `KampPrior.lean:351` strategic sorry is retired. Axiom-clean
-{propext, Classical.choice, Quot.sound}, no sorry on any live path.
+**Definition of done** (unchanged at the 309 level; achieved by re-flatten/adjacency, NOT exterior
+exclusion): the exterior-marked `hexclExt` residue is discharged by an adjacent exterior bracket
+composed with the interior `(x,t)` gate; the fold and soundness-half theorems are called with the
+residue closed (interior + boundary + adjacent-exterior = full completeness); the
+`KampPrior.lean:351` strategic sorry is retired. Axiom-clean {propext, Classical.choice, Quot.sound},
+no sorry on any live path. R1 (task 347) is a prerequisite and is already landed — the residue is
+exterior-marked-only before this task starts.
 
-**Scope note**: this is a distinct major effort (a genuine mathematical gap, not a wiring task) and
-was deliberately out of task-346 scope — task 346's RE-SCOPE verdict (settled, not to be re-opened
-without a machine counterexample) is precisely that the exterior direction is not achievable in the
-346 timeframe.
+**Scope note**: this is a distinct major effort (a genuine mathematical gap — the missing re-flatten
+infrastructure — not a wiring task) and was deliberately out of task-346/347 scope. The task-347
+adjudication (settled, not to be re-opened without a machine counterexample) is that the faithful
+exterior mechanism is **re-flatten / adjacency** (a separate exterior bracket), NOT exterior
+exclusion on the single interior bracket. Task 347 R1 landed first precisely to shrink the residue to
+exterior-only so this scope is well-defined.
 
 ---
 
