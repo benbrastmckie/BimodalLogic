@@ -431,7 +431,7 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 3–4 h.
 - **Depends on:** 3, 4, 5, 6.
 
-### Phase 8: Discharge theorem + wiring + closeout [NOT STARTED]
+### Phase 8: Discharge theorem + wiring + closeout [IN PROGRESS]
 
 - **Goal:** `bracketEndChar_kvE2Ext_correct_two_prior_frag`: assuming the enriched gate holds
   (+ `hfrag`, `hrealI`, `hrealB`, `hexcl`, order bits, `h_UZ`/`h_SZ` — the 309-owned inventory

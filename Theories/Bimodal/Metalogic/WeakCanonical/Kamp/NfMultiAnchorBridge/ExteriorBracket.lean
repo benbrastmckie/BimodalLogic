@@ -683,4 +683,364 @@ theorem bracketEndChar_kvE2Ext_holds_iff {sig : MonadicSignature}
        temporal_truth M atomMap t (kvE2_extBracketFut atomMap h_surj qnf)) :=
   VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t
 
+/-! ## Phase 8 — gate-level pin derivations + the discharge theorem (task 348)
+
+The `hexclExt` residue is discharged INTERNALLY: at the SW:12788-shaped site (inside the
+`hexclExt` lambda fed to the landed interior gate) the per-side bracket soundness lemmas
+need the pins `henv` and `hbelow`/`habove`. These are derived here from the gate-level
+inventory only —
+
+- `kvE2_extGate_henv`: pred parts from the `EpL`/`EpR`/`ptW` endpoint 1-type heads
+  (`kvE2_sepProj3` projections), order parts from `hxw`/`hwt` + the six qnf order-bit
+  hypotheses (the recorded Phase-2 derivation obligation, ExteriorNegation.lean:43-47);
+- `kvE2_extGate_anyBit_iff`: the UNRESTRICTED zone-fact biconditional (it subsumes both
+  the at-or-below-`t` `hbelow` and the at-or-above-`x` `habove` keys). Forward: a zone
+  witness in the closed cone rides `hexcl` on its own depth-1 characteristic; a witness
+  below `x` / above `t` rides the interior gate's own `zPastX3` `Since` / `zFutT3`
+  `Until` endpoint literal (`kvE2_sepHasPos` channel) bridged to the depth-0
+  `kvE2_futAnyBit` channel through a `hrealB` realizer + `nf_eval_unique`. Backward:
+  every positive σ' is realized (`hrealI` interior / `hrealB` otherwise) and the
+  realizer reads back zone and profile from σ'.1's atom layer
+  (the `kvE2_futAnyBit_correct` backward block, realizers now provider-supplied). -/
+
+/-- `zPastX3` is not an interior zone (index-1 pair `(true, false)` vs `(false, true)`). -/
+private theorem extDis_zPastX3_not_interior :
+    ¬ (kvE2_sep_zPastX3 = kvE2_sep_zXW3 ∨ kvE2_sep_zPastX3 = kvE2_sep_zWT3) := by
+  rintro (h | h) <;> exact absurd (congrFun h ⟨1, by omega⟩) (by decide)
+
+/-- `zFutT3` is not an interior zone (index-2 pair `(false, true)` vs `(true, false)`). -/
+private theorem extDis_zFutT3_not_interior :
+    ¬ (kvE2_sep_zFutT3 = kvE2_sep_zXW3 ∨ kvE2_sep_zFutT3 = kvE2_sep_zWT3) := by
+  rintro (h | h) <;> exact absurd (congrFun h ⟨2, by omega⟩) (by decide)
+
+/-- **The `henv` pin from the gate inventory** (the SW:12788-site derivation recorded at
+    ExteriorNegation.lean:43-47): predicate parts from the three `kvE2_sepProj3` head
+    conjuncts of `ptW`/`EpL`/`EpR`, order parts from `hxw`/`hwt` + the six qnf order-bit
+    hypotheses. Body copied from the `kvE2_outer_fold_frag` atom-layer block
+    (SW:12718-12775) — same inventory, exposed as a standalone pin. -/
+private theorem kvE2_extGate_henv {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (x t w : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hEpL : (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap x)
+    (hEpR : (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap t)
+    (hptW : (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap w) :
+    ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true := by
+  have hprojW : nf_eval_nf M 0 1 (fun _ => w) (kvE2_sepProj3 qnf.1 ⟨0, by omega⟩) := by
+    have h1 := hptW
+    simp only [kvE2_sepPtW, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ w).mp
+      ((formula_conjList_iff M atomMap w _).mp h1 _ List.mem_cons_self)
+  have hprojX : nf_eval_nf M 0 1 (fun _ => x) (kvE2_sepProj3 qnf.1 ⟨1, by omega⟩) := by
+    have h1 := hEpL
+    simp only [kvE2_sepEpL, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ x).mp
+      ((formula_conjList_iff M atomMap x _).mp h1 _ List.mem_cons_self)
+  have hprojT : nf_eval_nf M 0 1 (fun _ => t) (kvE2_sepProj3 qnf.1 ⟨2, by omega⟩) := by
+    have h1 := hEpR
+    simp only [kvE2_sepEpR, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ t).mp
+      ((formula_conjList_iff M atomMap t _).mp h1 _ List.mem_cons_self)
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    have h1 := hprojW (.pred p ⟨0, by omega⟩)
+    simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero] using h1
+  | .pred p ⟨1, _⟩ =>
+    have h1 := hprojX (.pred p ⟨0, by omega⟩)
+    simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+  | .pred p ⟨2, _⟩ =>
+    have h1 := hprojT (.pred p ⟨0, by omega⟩)
+    simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+  | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
+    refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
+    simp only [atom_eval]
+    exact lt_asymm hxw
+  | .order ⟨0, _⟩ ⟨2, _⟩ hne =>
+    refine iff_of_true ?_ h_yt
+    simp only [atom_eval]
+    exact hwt
+  | .order ⟨1, _⟩ ⟨0, _⟩ hne =>
+    refine iff_of_true ?_ h_xy
+    simp only [atom_eval]
+    exact hxw
+  | .order ⟨1, _⟩ ⟨2, _⟩ hne =>
+    refine iff_of_true ?_ h_xt
+    simp only [atom_eval]
+    exact hxw.trans hwt
+  | .order ⟨2, _⟩ ⟨0, _⟩ hne =>
+    refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_ty.symm.trans hc))
+    simp only [atom_eval]
+    exact lt_asymm hwt
+  | .order ⟨2, _⟩ ⟨1, _⟩ hne =>
+    refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_tx.symm.trans hc))
+    simp only [atom_eval]
+    exact lt_asymm (hxw.trans hwt)
+  | .order ⟨0, _⟩ ⟨0, _⟩ hne => exact absurd rfl hne
+  | .order ⟨1, _⟩ ⟨1, _⟩ hne => exact absurd rfl hne
+  | .order ⟨2, _⟩ ⟨2, _⟩ hne => exact absurd rfl hne
+
+/-- **The zone-fact pin from the gate inventory** (unrestricted: subsumes both the
+    `hbelow` and `habove` keys). Under the per-`w` instantiated 309-owned inventory
+    (`hrealI`/`hrealB`/`hexcl` at the extracted pivot) plus the two endpoint 1-types,
+    `kvE2_futAnyBit qnf` reads the TRUE depth-0 zone facts of `[w, x, t]` — the
+    gate-level analogue of `kvE2_futAnyBit_correct`, with realized-qnf uses replaced by
+    provider realization (backward) and by `hexcl` on characteristics / the `EpL`/`EpR`
+    `kvE2_sepHasPos` literals (forward). -/
+private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t w : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hEpL : (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap x)
+    (hEpR : (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj)
+      (fun χ => P.existF 0 χ) qnf).eval_at M atomMap t)
+    (hrealI : ∀ σ ∈ kvE2_sepPosI qnf,
+      ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
+        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hrealB : ∀ σ ∈ kvE2_sepPos qnf,
+      ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+      ∃ x1 : M.carrier,
+        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+      ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+        ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
+    (∃ v : M.carrier,
+        zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+      kvE2_futAnyBit qnf zs χ = true := by
+  constructor
+  · rintro ⟨v, hzv, hχv⟩
+    by_cases hcone : x ≤ v ∧ v ≤ t
+    · -- Cone witness: its own depth-1 characteristic is forced positive by `hexcl`.
+      set σv : NormalForm sig 1 4 :=
+        nf_characteristic M 1 4 (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t)))) with hσv
+      have hsat := nf_characteristic_satisfies M 1 4
+        (Fin.cons v (Fin.cons w (Fin.cons x (fun _ => t))))
+      have hposv : qnf.2 σv = true := by
+        by_contra hne
+        exact hexcl σv (Bool.eq_false_iff.mpr hne) v hcone.1 hcone.2 (hσv ▸ hsat)
+      have hmem : σv ∈ kvE2_sepPos qnf := by
+        simp only [kvE2_sepPos]
+        exact List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ σv), hposv⟩
+      refine List.any_eq_true.mpr ⟨σv, hmem, ?_⟩
+      rw [Bool.and_eq_true]
+      obtain ⟨hatom, -⟩ := hsat
+      refine ⟨decide_eq_true ?_, decide_eq_true ?_⟩
+      · -- ordering channel: read the couplings straight from the atom layer.
+        funext i
+        have hz := hzv i
+        have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+        have h2 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
+        show (σv.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+              σv.1 (.order i.succ 0 (Fin.succ_ne_zero i))) = zs i
+        exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hz.1))
+          (Bool.eq_iff_iff.mpr (h2.symm.trans hz.2))
+      · -- point-type channel: `v` satisfies both profiles, so they are equal.
+        refine nf_eval_unique M 0 1 (fun _ => v) _ χ ?_ hχv
+        intro a
+        match a with
+        | .pred p i =>
+          have hi : i = 0 := Subsingleton.elim i 0
+          subst hi
+          simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hatom (.pred p 0)
+        | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+    · -- Exterior witness: ride the interior gate's own `Since`/`Until` endpoint literal.
+      set χ1 : NormalForm sig 1 1 := nf_characteristic M 1 1 (fun _ => v) with hχ1
+      have hχ1sat := nf_characteristic_satisfies M 1 1 (fun _ => v)
+      rcases not_and_or.mp hcone with hvx | hvt
+      · -- `v < x`: zone forced to `zPastX3`; `EpL`'s `Since` literal forces the
+        -- `kvE2_sepHasPos` bit, whose owner is realized by `hrealB`.
+        have hvx : v < x := not_le.mp hvx
+        have hzs : zs = kvE2_sep_zPastX3 := by
+          funext i
+          have hvi : v < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i := by
+            match i with
+            | ⟨0, _⟩ => exact hvx.trans hxw
+            | ⟨1, _⟩ => exact hvx
+            | ⟨2, _⟩ => exact hvx.trans (hxw.trans hwt)
+          have e1 : (zs i).1 = true := (hzv i).1.mp hvi
+          have e2 : (zs i).2 = false := by
+            cases hc : (zs i).2 with
+            | false => rfl
+            | true => exact absurd ((hzv i).2.mpr hc) (lt_asymm hvi)
+          have hconst : kvE2_sep_zPastX3 i = (true, false) := by
+            match i with
+            | ⟨0, _⟩ => rfl
+            | ⟨1, _⟩ => rfl
+            | ⟨2, _⟩ => rfl
+          rw [hconst]
+          exact Prod.ext e1 e2
+        subst hzs
+        -- Extract the `zPastX3` Since-literal for `χ1` from `EpL`.
+        have h1 := hEpL
+        simp only [kvE2_sepEpL, TemporalPred.eval_at] at h1
+        have hlit := (formula_conjList_iff M atomMap x _).mp h1
+          (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zPastX3 χ1)
+            (Formula.snce (P.existF 0 χ1) Formula.top))
+          (List.mem_cons_of_mem _ (List.mem_append_left _ (List.mem_append_left _
+            (List.mem_map.mpr ⟨χ1, Finset.mem_toList.mpr (Finset.mem_univ χ1), rfl⟩))))
+        have hsnce : temporal_truth M atomMap x (Formula.snce (P.existF 0 χ1) Formula.top) :=
+          ⟨v, hvx, (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ1 v).mpr (hχ1 ▸ hχ1sat),
+            fun r _ _ hf => hf⟩
+        cases hb : kvE2_sepHasPos qnf kvE2_sep_zPastX3 χ1 with
+        | false =>
+          rw [hb] at hlit
+          simp only [kvE2_sepLit, Bool.false_eq_true, if_false] at hlit
+          exact absurd hsnce hlit
+        | true =>
+          -- Owner extraction + `hrealB` realizer + profile bridge through `χ1`.
+          rw [kvE2_sepHasPos, List.any_eq_true] at hb
+          obtain ⟨σ', hσ'mem, hproj'⟩ := hb
+          have hproj' : nfk_projFresh σ' = χ1 := of_decide_eq_true hproj'
+          have hzone' : nf0_zoneSpec σ'.1 = kvE2_sep_zPastX3 :=
+            of_decide_eq_true (List.mem_filter.mp hσ'mem).2
+          have hmemPos : σ' ∈ kvE2_sepPos qnf := (List.mem_filter.mp hσ'mem).1
+          obtain ⟨x1, hx1⟩ := hrealB σ' hmemPos
+            (fun hc => extDis_zPastX3_not_interior (hzone' ▸ hc))
+          have hx1χ1 : nf_eval_nf M 1 1 (fun _ => x1) χ1 := by
+            have := kvE2_sepProjFresh_eval M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ' hx1
+            rwa [hproj'] at this
+          refine List.any_eq_true.mpr ⟨σ', hmemPos, ?_⟩
+          rw [Bool.and_eq_true]
+          refine ⟨decide_eq_true hzone', decide_eq_true ?_⟩
+          refine nf_eval_unique M 0 1 (fun _ => x1) _ χ ?_ ?_
+          · intro a
+            match a with
+            | .pred p i =>
+              have hi : i = 0 := Subsingleton.elim i 0
+              subst hi
+              simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hx1.1 (.pred p 0)
+            | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+          · intro a
+            match a with
+            | .pred p i =>
+              have hi : i = 0 := Subsingleton.elim i 0
+              subst hi
+              exact (hx1χ1.1 (.pred p 0)).trans
+                (((hχ1 ▸ hχ1sat : nf_eval_nf M 1 1 (fun _ => v) χ1).1
+                  (.pred p 0)).symm.trans (hχv (.pred p 0)))
+            | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+      · -- `t < v`: mirror — zone forced to `zFutT3`; `EpR`'s `Until` literal.
+        have hvt : t < v := not_le.mp hvt
+        have hzs : zs = kvE2_sep_zFutT3 := by
+          funext i
+          have hvi : (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) i < v := by
+            match i with
+            | ⟨0, _⟩ => exact hwt.trans hvt
+            | ⟨1, _⟩ => exact (hxw.trans hwt).trans hvt
+            | ⟨2, _⟩ => exact hvt
+          have e2 : (zs i).2 = true := (hzv i).2.mp hvi
+          have e1 : (zs i).1 = false := by
+            cases hc : (zs i).1 with
+            | false => rfl
+            | true => exact absurd ((hzv i).1.mpr hc) (lt_asymm hvi)
+          have hconst : kvE2_sep_zFutT3 i = (false, true) := by
+            match i with
+            | ⟨0, _⟩ => rfl
+            | ⟨1, _⟩ => rfl
+            | ⟨2, _⟩ => rfl
+          rw [hconst]
+          exact Prod.ext e1 e2
+        subst hzs
+        have h1 := hEpR
+        simp only [kvE2_sepEpR, TemporalPred.eval_at] at h1
+        have hlit := (formula_conjList_iff M atomMap t _).mp h1
+          (kvE2_sepLit (kvE2_sepHasPos qnf kvE2_sep_zFutT3 χ1)
+            (Formula.untl (P.existF 0 χ1) Formula.top))
+          (List.mem_cons_of_mem _ (List.mem_append_left _ (List.mem_append_right _
+            (List.mem_map.mpr ⟨χ1, Finset.mem_toList.mpr (Finset.mem_univ χ1), rfl⟩))))
+        have huntl : temporal_truth M atomMap t (Formula.untl (P.existF 0 χ1) Formula.top) :=
+          ⟨v, hvt, (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ1 v).mpr (hχ1 ▸ hχ1sat),
+            fun r _ _ hf => hf⟩
+        cases hb : kvE2_sepHasPos qnf kvE2_sep_zFutT3 χ1 with
+        | false =>
+          rw [hb] at hlit
+          simp only [kvE2_sepLit, Bool.false_eq_true, if_false] at hlit
+          exact absurd huntl hlit
+        | true =>
+          rw [kvE2_sepHasPos, List.any_eq_true] at hb
+          obtain ⟨σ', hσ'mem, hproj'⟩ := hb
+          have hproj' : nfk_projFresh σ' = χ1 := of_decide_eq_true hproj'
+          have hzone' : nf0_zoneSpec σ'.1 = kvE2_sep_zFutT3 :=
+            of_decide_eq_true (List.mem_filter.mp hσ'mem).2
+          have hmemPos : σ' ∈ kvE2_sepPos qnf := (List.mem_filter.mp hσ'mem).1
+          obtain ⟨x1, hx1⟩ := hrealB σ' hmemPos
+            (fun hc => extDis_zFutT3_not_interior (hzone' ▸ hc))
+          have hx1χ1 : nf_eval_nf M 1 1 (fun _ => x1) χ1 := by
+            have := kvE2_sepProjFresh_eval M (Fin.cons w (Fin.cons x (fun _ => t))) x1 σ' hx1
+            rwa [hproj'] at this
+          refine List.any_eq_true.mpr ⟨σ', hmemPos, ?_⟩
+          rw [Bool.and_eq_true]
+          refine ⟨decide_eq_true hzone', decide_eq_true ?_⟩
+          refine nf_eval_unique M 0 1 (fun _ => x1) _ χ ?_ ?_
+          · intro a
+            match a with
+            | .pred p i =>
+              have hi : i = 0 := Subsingleton.elim i 0
+              subst hi
+              simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hx1.1 (.pred p 0)
+            | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+          · intro a
+            match a with
+            | .pred p i =>
+              have hi : i = 0 := Subsingleton.elim i 0
+              subst hi
+              exact (hx1χ1.1 (.pred p 0)).trans
+                (((hχ1 ▸ hχ1sat : nf_eval_nf M 1 1 (fun _ => v) χ1).1
+                  (.pred p 0)).symm.trans (hχv (.pred p 0)))
+            | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+  · -- Backward: the positive owner is provider-realized; the realizer reads back zone
+    -- and profile from its own atom layer (the `kvE2_futAnyBit_correct` backward block).
+    intro hbit
+    obtain ⟨σ', hmem, hread⟩ := List.any_eq_true.mp hbit
+    rw [Bool.and_eq_true] at hread
+    obtain ⟨hzsb, hχb⟩ := hread
+    have hzs : nf0_zoneSpec σ'.1 = zs := of_decide_eq_true hzsb
+    have hχ : nf0_projFresh σ'.1 = χ := of_decide_eq_true hχb
+    have hx1 : ∃ x1 : M.carrier,
+        nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ' := by
+      by_cases hint : nf0_zoneSpec σ'.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ'.1 = kvE2_sep_zWT3
+      · obtain ⟨x1, -, hx1⟩ := hrealI σ' ((kvE2_sepPosI_mem qnf σ').mpr ⟨hmem, hint⟩)
+        exact ⟨x1, hx1⟩
+      · exact hrealB σ' hmem hint
+    obtain ⟨u, hu⟩ := hx1
+    obtain ⟨hatom, -⟩ := hu
+    refine ⟨u, fun i => ?_, ?_⟩
+    · have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+      have h2 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
+      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1 h2
+      have hzi := congrFun hzs i
+      have e1 : σ'.1 (.order 0 i.succ (Fin.succ_ne_zero i).symm) = (zs i).1 :=
+        (congrArg Prod.fst hzi)
+      have e2 : σ'.1 (.order i.succ 0 (Fin.succ_ne_zero i)) = (zs i).2 :=
+        (congrArg Prod.snd hzi)
+      exact ⟨h1.trans (by rw [e1]), h2.trans (by rw [e2])⟩
+    · rw [← hχ]
+      intro a
+      match a with
+      | .pred p i =>
+        have hi : i = 0 := Subsingleton.elim i 0
+        subst hi
+        simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hatom (.pred p 0)
+      | .order i j hne => exact absurd (Subsingleton.elim i j) hne
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
