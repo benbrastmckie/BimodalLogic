@@ -215,7 +215,25 @@ one-line subset bridge — Phases 3/4 own it.
 - **Estimated output:** ~80-150 lines.
 - **Depends on:** 1 (needs the swapped predicate in place)
 
-### Phase 3: hexcl boundary-restriction (R1) + kit/pin survival verification [NOT STARTED]
+### Phase 3: hexcl boundary-restriction (R1) + kit/pin survival verification [COMPLETED]
+
+**PHASE 3 RESULT** (session sess_1783782450_230288): R1 landed via a **hypothesis SPLIT**, not a
+single-binder restriction. Empirical finding (deviation cause): `nf_eval_nf`
+(`NormalForm.lean:206`) quantifies the fresh-variable existential `∃ x1` over ALL of `M.carrier`,
+so the fold's forward branch `(∃ x1, realizes σ) → qnf.2 σ = true` genuinely requires excluding
+STRICTLY-EXTERIOR witnesses too. A single cone-restricted `hexcl` therefore CANNOT re-thread the
+forward branch (the plan's "trivial cone-membership fill" is unachievable — an arbitrary realizing
+`x1` is not derivably in `[x,t]`). The sound, sorry-free realization of R1: **split** the former
+single `hexcl` into `hexcl` (cone `x ≤ x1 ≤ t`, Phase-4-dischargeable) + `hexclExt` (exterior
+`¬ (x ≤ x1 ∧ x1 ≤ t)`, the isolated deferred obligation carried by the caller → Prop-4.3
+successor). Forward branch now `by_cases hcone : x ≤ x1 ∧ x1 ≤ t` and dispatches to `hexcl`/`hexclExt`.
+Logically the two hypotheses together equal the old full `hexcl`, so no strength was silently
+dropped; the value is that the cone half is now independently consumable and the exterior residue
+is a NAMED hypothesis (Phase 6 quarantine). Build (`SharedWitness` scoped): forward branch GREEN;
+exactly the 3 known Phase-4 RED sites remain (kit_sound fragL SW:12518, fragR SW:12520, fold
+backward `rw [hpos]` SW:12644) — no new errors. fragL/fragR producers green. **Phase 5 impact**:
+`kvE2_outer_fold_frag` arity +1 (`hexclExt`); the OuterGate caller (`:270`) and
+`bracketEndChar_kvE2_sound_two_prior_frag` (`:245`) must thread BOTH hexcl (cone) and hexclExt.
 - **Goal:** Weaken the `hexcl` binder in `kvE2_outer_fold_frag` from `∀ x1 : M.carrier` to the
   interior+boundary cone `x <= x1 <= t` (R1), and confirm the pin/kit producers remain green.
 - **File targets:**
@@ -226,10 +244,15 @@ one-line subset bridge — Phases 3/4 own it.
   - Verify `kvE2_sepBody_kit_sound_frag` (:12487) and `kvE2_sepGateAtPin_fragL/_fragR` compile
     unchanged (they do not reference the hexcl binder shape).
 - **Tasks:**
-  - [ ] Restrict the `hexcl` binder to the boundary/interior cone.
-  - [ ] Re-thread the restricted `hexcl` through the fold's forward branch (unchanged logic, tighter
-    domain — should type-check as-is or with a trivial cone-membership fill).
-  - [ ] `lake build`; confirm fragL/fragR/kit_sound are green (Preserved Assets check).
+  - [x] Restrict the `hexcl` binder to the boundary/interior cone. *(deviation: altered — restriction
+    realized as a SPLIT `hexcl` (cone) + new `hexclExt` (exterior), because a single cone-restricted
+    hexcl cannot close the all-carrier forward existential; see PHASE 3 RESULT above)*
+  - [x] Re-thread the restricted `hexcl` through the fold's forward branch *(deviation: altered — the
+    "trivial cone-membership fill" is unachievable (arbitrary realizing `x1` is not derivably in the
+    cone); re-threaded via `by_cases hcone` dispatching to `hexcl`/`hexclExt`)*.
+  - [x] `lake build`; confirm fragL/fragR/kit_sound are green (Preserved Assets check). *(fragL/fragR
+    green; kit_sound decl intact with its 2 known Phase-4 RED call sites; scoped SharedWitness build
+    shows only the 3 known RED sites, no new errors)*
 - **Verification criteria:** `hexcl` signature carries the cone restriction; the preserved-asset
   producers build green; the ONLY remaining error is the Phase-1-triaged backward branch (now with a
   tighter, discharargeable exterior domain).

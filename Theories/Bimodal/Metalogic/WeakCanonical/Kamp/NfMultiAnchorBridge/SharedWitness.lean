@@ -12547,7 +12547,19 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     (hexcl : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
-        ∀ x1 : M.carrier,
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- task 346 Phase 3 (R1): the exterior residue of the former single-`hexcl` exclusion clause.
+    -- `hexcl` above is boundary-restricted to the interior+boundary cone `x ≤ x1 ≤ t` (dischargeable
+    -- by the landed endpoint/witness literals); `hexclExt` isolates the STRICTLY-EXTERIOR case
+    -- (`¬ (x ≤ x1 ∧ x1 ≤ t)`), the outer-forward completeness obligation carried by the caller and
+    -- deferred to the named Prop-4.3 successor task (report 07 Refutation 2; `Prop43.lean` BLOCKED).
+    -- Splitting rather than dropping keeps this fold a genuine, sorry-free conditional theorem whose
+    -- cone half is independently consumable (task 309 / 335 Phase D).
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
           ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     ∃ w : M.carrier,
       nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
@@ -12612,7 +12624,12 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     constructor
     · rintro ⟨x1, hx1⟩
       by_contra hne
-      exact hexcl w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hx1
+      -- task 346 Phase 3 (R1): the realizing witness `x1` may be interior/boundary OR strictly
+      -- exterior; the boundary-restricted `hexcl` covers the cone `x ≤ x1 ≤ t`, and the isolated
+      -- exterior residue `hexclExt` (deferred to the Prop-4.3 successor) covers `¬ (x ≤ x1 ∧ x1 ≤ t)`.
+      by_cases hcone : x ≤ x1 ∧ x1 ≤ t
+      · exact hexcl w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hcone.1 hcone.2 hx1
+      · exact hexclExt w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hcone hx1
     · intro hbit
       have hmem : σ ∈ kvE2_sepPos qnf := by
         simp only [kvE2_sepPos, List.mem_filter]
