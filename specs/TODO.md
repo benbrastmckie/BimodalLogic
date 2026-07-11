@@ -109,7 +109,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
+335 [PLANNED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
   └─ 348 [NOT STARTED] — Restore Rabinovich interval-bounding faithfulness for the exterio
@@ -193,17 +193,19 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ---
 
 ### 335. Outer gate assembly engine kvE2 body
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 334, Task 337, Task 344, Task 345, Task 346
 - **Summary**:
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
-- **Plan**: [335_outer_gate_assembly_engine_kvE2_body/plans/05_fragment-gate-v5.md]
+- **Plan**:
+  - [335_outer_gate_assembly_engine_kvE2_body/plans/05_fragment-gate-v5.md]
+  - [335_outer_gate_assembly_engine_kvE2_body/plans/06_fragment-gate-v6.md]
 - **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/07_hexcl-enrichment-derivability.md]
 
-**Description**: Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.
+**Description**: Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334. UPDATE (task-347 adjudication, session sess_1783792054_45a555): the Phase-D provider obligation is re-shaped to Rabinovich Cor 5.4 ⇐ form — realize BOUNDED, jointly-ordered interior witnesses over the interior index kvE2_sepPosI (SharedWitness.lean:211-214), NOT the global kvE2_sepPos (which over-asks: unbounded, decoupled — 347 report 01 MUST-CHECK 2). The hard hexcl blocker is DISSOLVED, not discharged in-335: task-347 R1 (commits d370d438e/3b8aee3c4) discharged the interior exclusion slice in-line and narrowed the residue to exterior-marked σ only; that exterior-arrangement residue is the province of successor task 348 (prop43_exterior_reflatten — Prop 4.3 re-flatten / Lemma 7.6 adjacency), for which 335 is the PROVIDER. Phase D therefore assembles the interior+boundary-scoped gate and threads the exterior-marked hexclExt outward to 348; it does NOT attempt exterior completeness on the interior (x,t) bracket (retired phantom framing, no §5 counterpart). Plan: v6 (06_fragment-gate-v6.md); Phase D actionable, v5 blocker dissolved.
 
 ---
 
