@@ -601,4 +601,239 @@ theorem kvE2_futSpikeSigma_atom {sig : MonadicSignature}
     have := henv (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne)
     simpa only [atom_eval] using this
 
+/-- Zone-3 spec uniqueness (mirror of `kvE2_futCharZone4`): a witness's `zoneHolds` spec
+    over `[w,x,t]` is forced by its actual order relations. -/
+private theorem kvE2_futCharZone3' {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v w x t : M.carrier) (zs3 : ZoneSpec 3)
+    (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs3 v)
+    (p0 p1 p2 : Bool × Bool)
+    (h0a : v < w ↔ p0.1 = true) (h0b : w < v ↔ p0.2 = true)
+    (h1a : v < x ↔ p1.1 = true) (h1b : x < v ↔ p1.2 = true)
+    (h2a : v < t ↔ p2.1 = true) (h2b : t < v ↔ p2.2 = true) :
+    zs3 = Fin.cons p0 (Fin.cons p1 (fun _ => p2)) := by
+  funext i
+  match i with
+  | ⟨0, _⟩ =>
+    have hz0 := hz ⟨0, by omega⟩
+    exact Prod.ext (Bool.eq_iff_iff.mpr (hz0.1.symm.trans h0a))
+      (Bool.eq_iff_iff.mpr (hz0.2.symm.trans h0b))
+  | ⟨1, _⟩ =>
+    have hz1 := hz ⟨1, by omega⟩
+    exact Prod.ext (Bool.eq_iff_iff.mpr (hz1.1.symm.trans h1a))
+      (Bool.eq_iff_iff.mpr (hz1.2.symm.trans h1b))
+  | ⟨2, _⟩ =>
+    have hz2 := hz ⟨2, by omega⟩
+    exact Prod.ext (Bool.eq_iff_iff.mpr (hz2.1.symm.trans h2a))
+      (Bool.eq_iff_iff.mpr (hz2.2.symm.trans h2b))
+
+/-- **Below-`t` zone classification**: an at-or-below-`t` witness's `[w,x,t]` zone spec is
+    one of the six canonical constants. -/
+private theorem kvE2_futBelowClass {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t) (hvt : v ≤ t)
+    (zs3 : ZoneSpec 3) (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs3 v) :
+    zs3 = kvE2_sep_zPastX3 ∨ zs3 = kvE2_sep_zAtX3 ∨ zs3 = kvE2_sep_zXW3 ∨
+      zs3 = kvE2_sep_zAtW3 ∨ zs3 = kvE2_sep_zWT3 ∨ zs3 = kvE2_sep_zAtT3 := by
+  rcases lt_trichotomy v x with hx | hx | hx
+  · exact Or.inl (kvE2_futCharZone3' M v w x t zs3 hz (true, false) (true, false) (true, false)
+      (iff_of_true (hx.trans hxw) rfl) (iff_of_false (lt_asymm (hx.trans hxw)) Bool.false_ne_true)
+      (iff_of_true hx rfl) (iff_of_false (lt_asymm hx) Bool.false_ne_true)
+      (iff_of_true (hx.trans (hxw.trans hwt)) rfl)
+      (iff_of_false (lt_asymm (hx.trans (hxw.trans hwt))) Bool.false_ne_true))
+  · exact Or.inr (Or.inl (kvE2_futCharZone3' M v w x t zs3 hz (true, false) (false, false)
+      (true, false)
+      (iff_of_true (by rw [hx]; exact hxw) rfl)
+      (iff_of_false (by rw [hx]; exact lt_asymm hxw) Bool.false_ne_true)
+      (iff_of_false (by rw [hx]; exact lt_irrefl x) Bool.false_ne_true)
+      (iff_of_false (by rw [hx]; exact lt_irrefl x) Bool.false_ne_true)
+      (iff_of_true (by rw [hx]; exact hxw.trans hwt) rfl)
+      (iff_of_false (by rw [hx]; exact lt_asymm (hxw.trans hwt)) Bool.false_ne_true)))
+  · rcases lt_trichotomy v w with hw | hw | hw
+    · exact Or.inr (Or.inr (Or.inl
+        (kvE2_futCharZone3' M v w x t zs3 hz (true, false) (false, true) (true, false)
+          (iff_of_true hw rfl) (iff_of_false (lt_asymm hw) Bool.false_ne_true)
+          (iff_of_false (lt_asymm hx) Bool.false_ne_true) (iff_of_true hx rfl)
+          (iff_of_true (hw.trans hwt) rfl)
+          (iff_of_false (lt_asymm (hw.trans hwt)) Bool.false_ne_true))))
+    · exact Or.inr (Or.inr (Or.inr (Or.inl
+        (kvE2_futCharZone3' M v w x t zs3 hz (false, false) (false, true) (true, false)
+          (iff_of_false (by rw [hw]; exact lt_irrefl w) Bool.false_ne_true)
+          (iff_of_false (by rw [hw]; exact lt_irrefl w) Bool.false_ne_true)
+          (iff_of_false (lt_asymm hx) Bool.false_ne_true) (iff_of_true hx rfl)
+          (iff_of_true (by rw [hw]; exact hwt) rfl)
+          (iff_of_false (by rw [hw]; exact lt_asymm hwt) Bool.false_ne_true)))))
+    · rcases lt_trichotomy v t with ht | ht | ht
+      · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl
+          (kvE2_futCharZone3' M v w x t zs3 hz (false, true) (false, true) (true, false)
+            (iff_of_false (lt_asymm hw) Bool.false_ne_true) (iff_of_true hw rfl)
+            (iff_of_false (lt_asymm hx) Bool.false_ne_true) (iff_of_true hx rfl)
+            (iff_of_true ht rfl) (iff_of_false (lt_asymm ht) Bool.false_ne_true))))))
+      · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
+          (kvE2_futCharZone3' M v w x t zs3 hz (false, true) (false, true) (false, false)
+            (iff_of_false (lt_asymm hw) Bool.false_ne_true) (iff_of_true hw rfl)
+            (iff_of_false (lt_asymm hx) Bool.false_ne_true) (iff_of_true hx rfl)
+            (iff_of_false (by rw [ht]; exact lt_irrefl t) Bool.false_ne_true)
+            (iff_of_false (by rw [ht]; exact lt_irrefl t) Bool.false_ne_true))))))
+      · exact absurd hvt (not_le.mpr ht)
+
+/-- **Spike completeness** (Cor 5.4(2) exterior analog, ⇐ — the R2-obstructed direction),
+    conditional on the gate-level pins actually available at the sole consumption site:
+
+    * `henv` — the anchor base `[w,x,t]` is pinned to `qnf.1` (at SW:12788 from the endpoint
+      1-type conjuncts + order bits; at the Phase-8 ⇐ site from realized qnf's atom layer);
+    * `hbelow` — the at-or-below-`t` zone facts are pinned to qnf's positive layer via the
+      model-independence bridge `kvE2_futAnyBit` (at the Phase-8 ⇐ site from
+      `kvE2_futAnyBit_correct` applied to realized qnf; at SW:12788 derivable from
+      `hexcl`/`hrealI`/`EpL`).
+
+    Under these pins the specific one-sided clause EVADES the generic B.1 obstruction: from a
+    realized positive-existence form (`¬` of the clause) we reconstruct a full exterior
+    realizer, so absence of any exterior realizer forces the clause. This is the GO-conditional
+    completeness of the plan's NO-GO protocol step 2 — the binding signature for Phases 3-6. -/
+theorem kvE2_extNegFutSpike_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (henv : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+    (hbelow : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨2, by omega⟩).2 = false →
+      ((∃ v : M.carrier,
+          zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
+    (hnorel : ∀ x1 : M.carrier, t < x1 →
+      ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
+          (kvE2_futSpikeSigma qnf χmid χfr)) :
+    temporal_truth M atomMap t (kvE2_extNegFutSpike atomMap h_surj χmid χfr) := by
+  intro hPos
+  simp only [kvE2_futSpikePos] at hPos
+  obtain ⟨s, hts, hAs, hguard1⟩ := hPos
+  rw [formula_conjList_iff] at hAs
+  have hchmid_s : temporal_truth M atomMap s (nf_depth0_char_formula atomMap h_surj χmid) :=
+    hAs _ (by simp)
+  have hinner : temporal_truth M atomMap s
+      (Formula.untl (kvE2_futSpikeEnd atomMap h_surj χfr)
+        (nf_depth0_char_formula atomMap h_surj χmid)) := hAs _ (by simp)
+  obtain ⟨x1, hsx1, hend, hgap2⟩ := hinner
+  simp only [kvE2_futSpikeEnd] at hend
+  rw [formula_conjList_iff] at hend
+  have hchfr : temporal_truth M atomMap x1 (nf_depth0_char_formula atomMap h_surj χfr) :=
+    hend _ (by simp)
+  have hnoF : temporal_truth M atomMap x1 (Formula.untl Formula.top Formula.top).neg :=
+    hend _ (by simp)
+  have htx1 : t < x1 := hts.trans hsx1
+  have hx1fr : nf_eval_nf M 0 1 (fun _ => x1) χfr :=
+    (nf_depth0_char_correct' M atomMap h_surj χfr x1).mp hchfr
+  have hts0 : t < s := hts
+  have hsx1' : s < x1 := hsx1
+  -- gap (t, x1) is uniformly χmid
+  have hgapmid : ∀ r : M.carrier, t < r → r < x1 → nf_eval_nf M 0 1 (fun _ => r) χmid := by
+    intro r htr hrx1
+    rcases lt_trichotomy r s with hrs | hrs | hrs
+    · exact (nf_depth0_char_correct' M atomMap h_surj χmid r).mp (hguard1 r htr hrs)
+    · exact hrs ▸ (nf_depth0_char_correct' M atomMap h_surj χmid s).mp hchmid_s
+    · exact (nf_depth0_char_correct' M atomMap h_surj χmid r).mp (hgap2 r hrs hrx1)
+  -- x1 is a maximum
+  have hmax : ∀ s' : M.carrier, ¬ x1 < s' := fun s' hs' =>
+    hnoF ⟨s', hs', id, fun r _ _ => id⟩
+  -- x1 realizes the spike σ, contradicting hnorel
+  apply hnorel x1 htx1
+  refine (nf_eval_depth1_fold_iff M _ (kvE2_futSpikeSigma qnf χmid χfr)).mpr ⟨?_, ?_, ?_⟩
+  · exact kvE2_futSpikeSigma_atom M qnf χmid χfr x1 w x t hxw hwt htx1 henv hx1fr
+  · intro zs χ
+    rw [kvE2_futSpikeSigma_bits]
+    constructor
+    · rintro ⟨v, hzv, hvχ⟩
+      rcases lt_trichotomy v x1 with hlt | heq | hgt
+      · rcases le_or_lt v t with hvt | htv
+        · -- below t : reduce to the qnf-pinned zone fact
+          have hz3 : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) (Fin.tail zs) v :=
+            fun i => hzv i.succ
+          have h0 := hzv 0
+          have hzeq0 : zs 0 = (true, false) :=
+            Prod.ext (h0.1.mp hlt) (by
+              cases hb : (zs 0).2 with
+              | false => rfl
+              | true => exact absurd (h0.2.mpr hb) (lt_asymm hlt))
+          have hcls := kvE2_futBelowClass M v w x t hxw hwt hvt (Fin.tail zs) hz3
+          rw [← Fin.cons_self_tail zs, hzeq0]
+          rcases hcls with h | h | h | h | h | h <;> rw [h] at hz3 ⊢ <;>
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+        · -- gap (t, x1) : profile forced to χmid
+          have hzeq : zs = Fin.cons (true, false) kvE2_sep_zFutT3 :=
+            kvE2_futCharZone4 M v x1 w x t zs hzv (true, false) (false, true) (false, true)
+              (false, true)
+              (iff_of_true hlt rfl) (iff_of_false (lt_asymm hlt) Bool.false_ne_true)
+              (iff_of_false (lt_asymm (hwt.trans htv)) Bool.false_ne_true)
+              (iff_of_true (hwt.trans htv) rfl)
+              (iff_of_false (lt_asymm ((hxw.trans hwt).trans htv)) Bool.false_ne_true)
+              (iff_of_true ((hxw.trans hwt).trans htv) rfl)
+              (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
+          rw [hzeq]
+          show decide (χ = χmid) = true
+          exact decide_eq_true_eq.mpr (nf_profile_unique M v χ χmid hvχ (hgapmid v htv hlt))
+      · -- v = x1 : fresh point, profile χfr
+        have hzeq : zs = Fin.cons (false, false) kvE2_sep_zFutT3 :=
+          kvE2_futCharZone4 M v x1 w x t zs hzv (false, false) (false, true) (false, true)
+            (false, true)
+            (iff_of_false (heq ▸ lt_irrefl x1) Bool.false_ne_true)
+            (iff_of_false (heq ▸ lt_irrefl x1) Bool.false_ne_true)
+            (iff_of_false (heq ▸ lt_asymm (hwt.trans htx1)) Bool.false_ne_true)
+            (iff_of_true (heq ▸ hwt.trans htx1) rfl)
+            (iff_of_false (heq ▸ lt_asymm ((hxw.trans hwt).trans htx1)) Bool.false_ne_true)
+            (iff_of_true (heq ▸ (hxw.trans hwt).trans htx1) rfl)
+            (iff_of_false (heq ▸ lt_asymm htx1) Bool.false_ne_true)
+            (iff_of_true (heq ▸ htx1) rfl)
+        rw [hzeq]
+        show decide (χ = χfr) = true
+        exact decide_eq_true_eq.mpr (nf_profile_unique M v χ χfr hvχ (heq ▸ hx1fr))
+      · exact absurd hgt (hmax v)
+    · intro hbitv
+      by_cases hpast : zs = Fin.cons (true, false) kvE2_sep_zPastX3
+      · subst hpast
+        obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zPastX3 χ rfl).mpr hbitv
+        exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+      by_cases hatx : zs = Fin.cons (true, false) kvE2_sep_zAtX3
+      · subst hatx
+        obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zAtX3 χ rfl).mpr hbitv
+        exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+      by_cases hxw3 : zs = Fin.cons (true, false) kvE2_sep_zXW3
+      · subst hxw3
+        obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zXW3 χ rfl).mpr hbitv
+        exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+      by_cases hatw : zs = Fin.cons (true, false) kvE2_sep_zAtW3
+      · subst hatw
+        obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zAtW3 χ rfl).mpr hbitv
+        exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+      by_cases hwt3 : zs = Fin.cons (true, false) kvE2_sep_zWT3
+      · subst hwt3
+        obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zWT3 χ rfl).mpr hbitv
+        exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+      by_cases hatt : zs = Fin.cons (true, false) kvE2_sep_zAtT3
+      · subst hatt
+        obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zAtT3 χ rfl).mpr hbitv
+        exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+      by_cases hgap : zs = Fin.cons (true, false) kvE2_sep_zFutT3
+      · subst hgap
+        have hχmid : χ = χmid := of_decide_eq_true hbitv
+        subst hχmid
+        exact ⟨s, kvE2_futZone4_of_above M s x1 w x t hxw hwt hts0 (true, false)
+            (iff_of_true hsx1' rfl) (iff_of_false (lt_asymm hsx1') Bool.false_ne_true),
+          (nf_depth0_char_correct' M atomMap h_surj χ s).mp hchmid_s⟩
+      by_cases hself : zs = Fin.cons (false, false) kvE2_sep_zFutT3
+      · subst hself
+        have hχfr : χ = χfr := of_decide_eq_true hbitv
+        subst hχfr
+        exact ⟨x1, kvE2_futZone4_of_above M x1 x1 w x t hxw hwt htx1 (false, false)
+            (iff_of_false (lt_irrefl x1) Bool.false_ne_true)
+            (iff_of_false (lt_irrefl x1) Bool.false_ne_true), hx1fr⟩
+      · exfalso
+        rw [kvE2_futSpikeZoneBit, if_neg hpast, if_neg hatx, if_neg hxw3, if_neg hatw,
+          if_neg hwt3, if_neg hatt, if_neg hgap, if_neg hself] at hbitv
+        exact Bool.false_ne_true hbitv
+  · intro τ hτ
+    show (decide (nf0_dropFresh τ = (kvE2_futSpikeSigma qnf χmid χfr).1) &&
+      kvE2_futSpikeZoneBit qnf χmid χfr (nf0_zoneSpec τ) (nf0_projFresh τ)) = false
+    rw [decide_eq_false hτ, Bool.false_and]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
