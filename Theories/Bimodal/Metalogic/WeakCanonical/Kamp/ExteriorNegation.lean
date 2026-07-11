@@ -538,4 +538,67 @@ theorem kvE2_extNegFutSpike_sound {sig : MonadicSignature}
       obtain ⟨s, hs, -, -⟩ := hF
       exact hnoabove s hs
 
+/-! ## Completeness of the spike clause (under the gate-level pins) -/
+
+/-- Atom-layer match for a maximal exterior point `x1` of profile `χfr` over an anchor base
+    pinned to `qnf.1` (henv). This is the `nf_eval` atom clause of the spike σ. -/
+theorem kvE2_futSpikeSigma_atom {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
+    (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
+    (henv : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+    (hx1fr : nf_eval_nf M 0 1 (fun _ => x1) χfr) :
+    ∀ a : AtomKind sig 4,
+      atom_eval M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) a ↔
+        (kvE2_futSpikeSigma qnf χmid χfr).1 a = true := by
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    show M.interp p x1 ↔ χfr (.pred p 0) = true
+    have := hx1fr (.pred p 0)
+    simpa only [atom_eval, Fin.cons_zero] using this
+  | .pred p ⟨i + 1, hi⟩ =>
+    show M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
+      ↔ qnf.1 (.pred p ⟨i, by omega⟩) = true
+    have := henv (.pred p ⟨i, by omega⟩)
+    simpa only [atom_eval] using this
+  | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
+  | .order ⟨0, _⟩ ⟨j + 1, hj⟩ h =>
+    show (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
+      ↔ (kvE2_sep_zFutT3 ⟨j, by omega⟩).1 = true
+    refine iff_of_false ?_ (by
+      show ¬ ((kvE2_sep_zFutT3 ⟨j, by omega⟩).1 = true)
+      match j, hj with
+      | 0, _ => exact Bool.false_ne_true
+      | 1, _ => exact Bool.false_ne_true
+      | 2, _ => exact Bool.false_ne_true)
+    match j, hj with
+    | 0, _ => exact lt_asymm (hwt.trans htx1)
+    | 1, _ => exact lt_asymm ((hxw.trans hwt).trans htx1)
+    | 2, _ => exact lt_asymm htx1
+  | .order ⟨i + 1, hi⟩ ⟨0, _⟩ h =>
+    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
+      ↔ (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 = true
+    refine iff_of_true ?_ (by
+      show (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 = true
+      match i, hi with
+      | 0, _ => rfl
+      | 1, _ => rfl
+      | 2, _ => rfl)
+    match i, hi with
+    | 0, _ => exact hwt.trans htx1
+    | 1, _ => exact (hxw.trans hwt).trans htx1
+    | 2, _ => exact htx1
+  | .order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h =>
+    have hij : i ≠ j := by
+      simp only [ne_eq, Fin.mk.injEq] at h; omega
+    have hne : (⟨i, by omega⟩ : Fin 3) ≠ ⟨j, by omega⟩ := by
+      simp only [ne_eq, Fin.mk.injEq]; exact hij
+    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
+        (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
+      ↔ qnf.1 (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne) = true
+    have := henv (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne)
+    simpa only [atom_eval] using this
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
