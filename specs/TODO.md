@@ -115,12 +115,12 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 
 
 ### Uncategorized
 
-347 [NOT STARTED] — Faithfulness review + revision of the task-346 gate against Rabin
+347 [RESEARCHED] — Faithfulness review + revision of the task-346 gate against Rabin
 
 ## Tasks
 
 ### 347. Rabinovich bracket faithfulness review
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 346
 
