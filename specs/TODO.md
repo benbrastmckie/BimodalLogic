@@ -1,5 +1,5 @@
 ---
-next_project_number: 348
+next_project_number: 349
 ---
 
 # TODO
@@ -13,7 +13,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
+| 2 | 192,196,231,292,293,294,298,309,341,348 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
@@ -112,10 +112,21 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 335 [BLOCKED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+  └─ 348 [NOT STARTED] — Restore Rabinovich interval-bounding faithfulness for the exterio
 
 ### Uncategorized
 
 ## Tasks
+
+### 348. Prop43 exterior reflatten
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 335, Task 346, Task 347
+
+**Description**: Restore Rabinovich interval-bounding faithfulness for the exterior-marked hexclExt residue isolated by task 346 and narrowed by task 347 R1 (commits d370d438e, 3b8aee3c4 — residue is exterior-marked σ ONLY before this task starts). AUTHORITATIVE SPEC: specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md, section "prop43_exterior_reflatten" (line ~195) — consume it verbatim, do NOT re-derive. METHOD (settled by 347 adjudication, not to be re-opened without a machine counterexample): re-flatten per Rabinovich Prop 4.3 (p.6, Fig.1 p.10) + Lemma 7.6 adjacency (p.13) — exterior arrangements x1<x and x1>t belong to ADJACENT intervals (-inf,x)/(t,inf), each with its own bracket (Def 7.5/Lemma 7.10 shapes), composed with the landed interior (x,t) bracket via the adjacency primitive; seam at anchors x,t. Do NOT prove hexclExt as strictly-exterior completeness on the interior bracket (retired phantom framing, no §5 counterpart; 335 report 07 Refutation 2). Do NOT bound nf_eval_nf's outer existential in place (correct raw FOMLO semantics). ENTRY PROBLEM: Prop43.lean:120-159 uniform-negation connective cases (blocked navigated route — first target; feed the already-proven neg_2var_vec_ea Prop 4.2 closure, EANegationClosure.lean:722). LANDED ASSETS: BracketEndCharCarrierV (NfMultiAnchorBridge.lean:1872), task-326 interior closers, 347 R1 interior-slice discharge lemma (SharedWitness.lean below SW:10210 GATE banner). DEFINITION OF DONE: exterior-marked hexclExt residue discharged by adjacent exterior bracket composed with interior gate; fold + soundness-half theorems called with residue closed (interior + boundary + adjacent-exterior = full completeness); KampPrior.lean:351 strategic sorry retired; axiom-clean {propext, Classical.choice, Quot.sound}, no sorry on live paths. GROUNDING: Rabinovich 2014 §4/§5/§7; 347 report 01 (verdict (b), §7 R2); 330 report 01 (REDESIGN); 335 report 07. Scope: distinct major effort (missing re-flatten infrastructure, a genuine mathematical gap — not wiring).
+
+---
 
 ### 347. Rabinovich bracket faithfulness review
 - **Status**: [COMPLETED]

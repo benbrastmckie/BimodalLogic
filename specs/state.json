@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 348,
+  "next_project_number": 349,
   "active_projects": [
     {
       "project_number": 347,
@@ -1639,6 +1639,24 @@
       "last_updated": "2026-07-11T16:52:44Z",
       "session_id": "sess_1783782450_230288",
       "completion_summary": "Fragment-predicate repair landed: kvE2_sepPos→kvE2_sepPosI swap (both sites), hexcl re-scoped via cone/exterior split (hexcl/hexclExt) with per-positive realization (hreal), fold+kit 3-site repair, interior-singleton realizability witness (kvE2_sepFragment_realizable), non-vacuous restatement of bracketEndChar_kvE2_sound_two_prior_frag with both VACUITY NOTEs resolved. Full lake build green (1720 jobs), axiom-clean, zero live-path sorries. Deferred Prop-4.3 exterior-completeness successor (prop43_exterior_completeness) specified in summary for /task creation."
+    },
+    {
+      "project_number": 348,
+      "project_name": "prop43_exterior_reflatten",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "Restore Rabinovich interval-bounding faithfulness for the exterior-marked hexclExt residue isolated by task 346 and narrowed by task 347 R1 (commits d370d438e, 3b8aee3c4 — residue is exterior-marked σ ONLY before this task starts). AUTHORITATIVE SPEC: specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md, section \"prop43_exterior_reflatten\" (line ~195) — consume it verbatim, do NOT re-derive. METHOD (settled by 347 adjudication, not to be re-opened without a machine counterexample): re-flatten per Rabinovich Prop 4.3 (p.6, Fig.1 p.10) + Lemma 7.6 adjacency (p.13) — exterior arrangements x1<x and x1>t belong to ADJACENT intervals (-inf,x)/(t,inf), each with its own bracket (Def 7.5/Lemma 7.10 shapes), composed with the landed interior (x,t) bracket via the adjacency primitive; seam at anchors x,t. Do NOT prove hexclExt as strictly-exterior completeness on the interior bracket (retired phantom framing, no §5 counterpart; 335 report 07 Refutation 2). Do NOT bound nf_eval_nf's outer existential in place (correct raw FOMLO semantics). ENTRY PROBLEM: Prop43.lean:120-159 uniform-negation connective cases (blocked navigated route — first target; feed the already-proven neg_2var_vec_ea Prop 4.2 closure, EANegationClosure.lean:722). LANDED ASSETS: BracketEndCharCarrierV (NfMultiAnchorBridge.lean:1872), task-326 interior closers, 347 R1 interior-slice discharge lemma (SharedWitness.lean below SW:10210 GATE banner). DEFINITION OF DONE: exterior-marked hexclExt residue discharged by adjacent exterior bracket composed with interior gate; fold + soundness-half theorems called with residue closed (interior + boundary + adjacent-exterior = full completeness); KampPrior.lean:351 strategic sorry retired; axiom-clean {propext, Classical.choice, Quot.sound}, no sorry on live paths. GROUNDING: Rabinovich 2014 §4/§5/§7; 347 report 01 (verdict (b), §7 R2); 330 report 01 (REDESIGN); 335 report 07. Scope: distinct major effort (missing re-flatten infrastructure, a genuine mathematical gap — not wiring).",
+      "dependencies": [
+        335,
+        346,
+        347
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/"
+      ],
+      "created": "2026-07-11",
+      "last_updated": "2026-07-11T18:39:57Z",
+      "topic": "kamp_theorem_formalization"
     }
   ],
   "artifacts": [
