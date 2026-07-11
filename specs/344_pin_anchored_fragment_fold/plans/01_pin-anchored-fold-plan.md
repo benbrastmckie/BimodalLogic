@@ -138,7 +138,7 @@ below it, nothing above it is edited):
 Phases form a linear chain (each consumes the prior phase's decls). All edits are additive to
 `SharedWitness.lean`. Sized to one agent dispatch each.
 
-### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [PARTIAL]
+### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [COMPLETED]
 
 *(dispatch 8: h_fwd now fully sorry-free — WITNESS case (the flagged "last h_fwd blocker")
 landed green; added helpers `kvE2_sepPtW_owner_lit`, `kvE2_sepPtX1L_owner_lit`,

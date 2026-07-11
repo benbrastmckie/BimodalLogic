@@ -11073,7 +11073,202 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature}
           σ.2 (nf0_assemble zs χ σ.1) = true →
           ∃ v : M.carrier,
             zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-            nf_eval_nf M 0 1 (fun _ => v) χ := by sorry
+            nf_eval_nf M 0 1 (fun _ => v) χ := by
+        intro zs χ hzsne hbit
+        have hσIn : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3 :=
+          List.mem_filter.mpr ⟨hσ0pos, by simp only [decide_eq_true_eq]; exact hz⟩
+        have tonf : ∀ (v : M.carrier),
+            temporal_truth M atomMap v (charBase χ) → nf_eval_nf M 0 1 (fun _ => v) χ := by
+          intro v hv; rw [hcb] at hv; exact (nfPred_correct M atomMap h_surj χ v).mp hv
+        -- classify: a true bit forces `zs` among the nine inner-consistent zones (gate clause iv)
+        have hcons : kvE2_sepInnerConsistentL zs := by
+          by_contra hncons
+          rw [hg.2.2.2 σ hσ0true hz zs χ hncons] at hbit
+          exact absurd hbit (by decide)
+        rcases hcons with h | h | h | h | h | h | h | h | h
+        · -- zPastX4  (v < x)
+          have hzp : zs = kvE2_sep_zPastX4 := h
+          rw [hzp] at hbit ⊢
+          have hbitT : kvE2_sepBits σ kvE2_sep_zPastX4 χ = true := hbit
+          have hlit := (kvE2_sepEpL_owner_lits charBase charK qnf M atomMap x σ hσIn hepL χ).1
+          rw [hbitT] at hlit
+          simp only [kvE2_sepLit, if_true] at hlit
+          obtain ⟨s, hsx, hχs, -⟩ := hlit
+          have hsx1 : s < x1 := hsx.trans hxx1
+          have hsw : s < w := hsx.trans hxw
+          have hst : s < t := hsx.trans (hxw.trans hwt)
+          refine ⟨s, ?_, tonf _ hχs⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_true hsx1 rfl, iff_of_false (lt_asymm hsx1) (by decide +revert)⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_true hsw rfl, iff_of_false (lt_asymm hsw) (by decide +revert)⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_true hsx rfl, iff_of_false (lt_asymm hsx) (by decide +revert)⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_true hst rfl, iff_of_false (lt_asymm hst) (by decide +revert)⟩
+        · -- zAtX4  (v = x)
+          have hzx : zs = kvE2_sep_zAtX4 := h
+          rw [hzx] at hbit ⊢
+          have hbitT : kvE2_sepBits σ kvE2_sep_zAtX4 χ = true := hbit
+          have hlit := (kvE2_sepEpL_owner_lits charBase charK qnf M atomMap x σ hσIn hepL χ).2
+          rw [hbitT] at hlit
+          simp only [kvE2_sepLit, if_true] at hlit
+          refine ⟨x, ?_, tonf _ hlit⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_true hxx1 rfl, iff_of_false (lt_asymm hxx1) (by decide +revert)⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by decide +revert)⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_irrefl x) (by decide +revert),
+              iff_of_false (lt_irrefl x) (by decide +revert)⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_true (hxw.trans hwt) rfl,
+              iff_of_false (lt_asymm (hxw.trans hwt)) (by decide +revert)⟩
+        · -- zXU  (excluded by hypothesis)
+          exact absurd h hzsne
+        · -- zAtX1L  (v = x1)
+          have hzx1 : zs = kvE2_sep_zAtX1L := h
+          rw [hzx1] at hbit ⊢
+          have hbitT : kvE2_sepBits σ kvE2_sep_zAtX1L χ = true := hbit
+          have hlit := kvE2_sepPtX1L_owner_lit charBase charK σ M atomMap x1 hpt_pin χ
+          rw [hbitT] at hlit
+          simp only [kvE2_sepLit, if_true] at hlit
+          refine ⟨x1, ?_, tonf _ hlit⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_false (lt_irrefl x1) (by decide +revert),
+              iff_of_false (lt_irrefl x1) (by decide +revert)⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_true hx1w rfl, iff_of_false (lt_asymm hx1w) (by decide +revert)⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxx1) (by decide +revert), iff_of_true hxx1 rfl⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_true (hx1w.trans hwt) rfl,
+              iff_of_false (lt_asymm (hx1w.trans hwt)) (by decide +revert)⟩
+        · -- zUW  (x1 < v < w) : mirror of `hbelow`, with the `.lUW` slot above the pin
+          have hzuw : zs = kvE_sub2_zUW := h
+          rw [hzuw] at hbit ⊢
+          have hbitT : σ.2 (nf0_assemble kvE_sub2_zUW χ σ.1) = true := hbit
+          have hmemU : (KvE2SepSlot.lUW σ χ) ∈ kvE2_sepSlotsLOf wo :=
+            kvE2_sepSlotsLOf_mem qnf hwo' hσI (kvE2_sep_lUW_mem_slotsLFor hz hbitT)
+          rw [← kvE2_sepTieGroupedL_flatten wo] at hmemU
+          obtain ⟨d, hd, hsd⟩ := List.mem_flatten.mp hmemU
+          obtain ⟨jχ, hjχ, hgetjχ⟩ := List.mem_iff_getElem.mp hd
+          have hkey : kvE2_sepSlotGIdx wo (KvE2SepSlot.lX1 σ)
+              < kvE2_sepSlotGIdx wo (KvE2SepSlot.lUW σ χ) :=
+            kvE2_sep_gidx_lt_of_rank_lt qnf hwo hpe
+              (by rw [kvE2_sepSlotBlock]
+                  exact List.mem_append_left _ (kvE2_sep_lX1_mem_slotsLFor hz))
+              (by rw [kvE2_sepSlotBlock]
+                  exact List.mem_append_left _ (kvE2_sep_lUW_mem_slotsLFor hz hbitT))
+              rfl Nat.one_lt_two
+          have hain : (KvE2SepSlot.lUW σ χ) ∈ (kvE2_sepTieGroupedL wo)[jχ]'hjχ := by
+            rw [hgetjχ]; exact hsd
+          have hbin : (KvE2SepSlot.lX1 σ) ∈ (kvE2_sepTieGroupedL wo)[iσ]'hiσ := by
+            rw [hgetiσ]; exact hsc
+          have hij : iσ < jχ := kvE2_sepTieRuns_classIdx_lt (kvE2_sepSlotGIdx wo)
+            (kvE2_sepSlotsLOf wo) hksortL hiσ hjχ hbin hain hkey
+          have hjχm : jχ < ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length := by
+            simp only [List.length_map]; omega
+          have hjtot : jχ < ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+              + ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length + 1 := by omega
+          have hx1v : x1 < ws ⟨jχ, hjtot⟩ := by
+            rw [hx1def]; exact hmono _ _ (Fin.mk_lt_mk.mpr hij)
+          have hvw : ws ⟨jχ, hjtot⟩ < w := by
+            rw [hwdef]; exact hmono _ _ (Fin.mk_lt_mk.mpr hjχm)
+          have hxv : x < ws ⟨jχ, hjtot⟩ := (hrange _).1
+          have hvt : ws ⟨jχ, hjtot⟩ < t := (hrange _).2
+          have hchar := hpt' jχ hjtot
+          rw [kvE2_sep_getElem_left _ _ _ jχ hjχm, List.getElem_map, hgetjχ] at hchar
+          have hcharχ := kvE2_sepClassType_eval_mem charBase charK M atomMap _ hchar hsd
+          refine ⟨ws ⟨jχ, hjtot⟩, ?_, tonf _ hcharχ⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_false (lt_asymm hx1v) (by decide +revert), iff_of_true hx1v rfl⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_true hvw rfl, iff_of_false (lt_asymm hvw) (by decide +revert)⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxv) (by decide +revert), iff_of_true hxv rfl⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_true hvt rfl, iff_of_false (lt_asymm hvt) (by decide +revert)⟩
+        · -- zAtWL  (v = w)
+          have hzw : zs = kvE2_sep_zAtWL := h
+          rw [hzw] at hbit ⊢
+          have hbitT : kvE2_sepBits σ kvE2_sep_zAtWL χ = true := hbit
+          have hlit := kvE2_sepPtW_owner_lit charBase charK qnf M atomMap w σ hσIn hptW χ
+          rw [hbitT] at hlit
+          simp only [kvE2_sepLit, if_true] at hlit
+          refine ⟨w, ?_, tonf _ hlit⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_false (lt_asymm hx1w) (by decide +revert), iff_of_true hx1w rfl⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_false (lt_irrefl w) (by decide +revert),
+              iff_of_false (lt_irrefl w) (by decide +revert)⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxw) (by decide +revert), iff_of_true hxw rfl⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by decide +revert)⟩
+        · -- zWT  (w < v < t) : right-group slot machinery
+          have hzwt : zs = kvE_sub2_zWT := h
+          rw [hzwt] at hbit ⊢
+          have hbitT : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true := hbit
+          have hlWT : (KvE2SepSlot.lWT σ χ) ∈ kvE2_sepSlotsRFor σ := by
+            rw [kvE2_sepSlotsRFor, if_pos hz]
+            exact List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbitT⟩)
+          have hmemR : (KvE2SepSlot.lWT σ χ) ∈ kvE2_sepSlotsROf wo :=
+            kvE2_sepSlotsROf_mem qnf hwo' hσI hlWT
+          rw [← kvE2_sepTieGroupedR_flatten wo] at hmemR
+          obtain ⟨d, hd, hsd⟩ := List.mem_flatten.mp hmemR
+          obtain ⟨jr, hjr, hgetjr⟩ := List.mem_iff_getElem.mp hd
+          have hjrRmap : jr < ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length := by
+            simp only [List.length_map]; omega
+          have hK : ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length + 1 + jr
+              < ((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+                + ((kvE2_sepTieGroupedR wo).map (kvE2_sepClassType charBase charK)).length + 1 := by
+            simp only [List.length_map] at hjrRmap ⊢; omega
+          have hchar := hpt' (((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length
+            + 1 + jr) hK
+          rw [kvE2_sep_getElem_right _ _ _ jr hjrRmap, List.getElem_map] at hchar
+          have hain : (KvE2SepSlot.lWT σ χ) ∈ (kvE2_sepTieGroupedR wo)[jr]'hjr := by
+            rw [hgetjr]; exact hsd
+          have hcharχ := kvE2_sepClassType_eval_mem charBase charK M atomMap _ hchar hain
+          set v := ws ⟨((kvE2_sepTieGroupedL wo).map (kvE2_sepClassType charBase charK)).length + 1 + jr,
+            hK⟩ with hvdef
+          have hwv : w < v := by
+            rw [hwdef, hvdef]; exact hmono _ _ (Fin.mk_lt_mk.mpr (by omega))
+          have hvt : v < t := (hrange _).2
+          have hx1v : x1 < v := hx1w.trans hwv
+          have hxv : x < v := hxw.trans hwv
+          refine ⟨v, ?_, tonf _ hcharχ⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_false (lt_asymm hx1v) (by decide +revert), iff_of_true hx1v rfl⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_false (lt_asymm hwv) (by decide +revert), iff_of_true hwv rfl⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hxv) (by decide +revert), iff_of_true hxv rfl⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_true hvt rfl, iff_of_false (lt_asymm hvt) (by decide +revert)⟩
+        · -- zAtT4  (v = t)
+          have hzt : zs = kvE2_sep_zAtT4 := h
+          rw [hzt] at hbit ⊢
+          have hbitT : kvE2_sepBits σ kvE2_sep_zAtT4 χ = true := hbit
+          have hlit := (kvE2_sepEpR_owner_lits charBase charK qnf M atomMap t σ hσIn hepR χ).1
+          rw [hbitT] at hlit
+          simp only [kvE2_sepLit, if_true] at hlit
+          refine ⟨t, ?_, tonf _ hlit⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_false (lt_asymm (hx1w.trans hwt)) (by decide +revert),
+              iff_of_true (hx1w.trans hwt) rfl⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_false (lt_asymm hwt) (by decide +revert), iff_of_true hwt rfl⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm (hxw.trans hwt)) (by decide +revert),
+              iff_of_true (hxw.trans hwt) rfl⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_false (lt_irrefl t) (by decide +revert),
+              iff_of_false (lt_irrefl t) (by decide +revert)⟩
+        · -- zFutT4  (t < v)
+          have hzf : zs = kvE2_sep_zFutT4 := h
+          rw [hzf] at hbit ⊢
+          have hbitT : kvE2_sepBits σ kvE2_sep_zFutT4 χ = true := hbit
+          have hlit := (kvE2_sepEpR_owner_lits charBase charK qnf M atomMap t σ hσIn hepR χ).2
+          rw [hbitT] at hlit
+          simp only [kvE2_sepLit, if_true] at hlit
+          obtain ⟨u, htu, hχu, -⟩ := hlit
+          have hu_x1 : x1 < u := (hx1w.trans hwt).trans htu
+          have hu_w : w < u := hwt.trans htu
+          have hu_x : x < u := (hxw.trans hwt).trans htu
+          refine ⟨u, ?_, tonf _ hχu⟩
+          intro k
+          match k with
+          | ⟨0, _⟩ => exact ⟨iff_of_false (lt_asymm hu_x1) (by decide +revert), iff_of_true hu_x1 rfl⟩
+          | ⟨1, _⟩ => exact ⟨iff_of_false (lt_asymm hu_w) (by decide +revert), iff_of_true hu_w rfl⟩
+          | ⟨2, _⟩ => exact ⟨iff_of_false (lt_asymm hu_x) (by decide +revert), iff_of_true hu_x rfl⟩
+          | ⟨3, _⟩ => exact ⟨iff_of_false (lt_asymm htu) (by decide +revert), iff_of_true htu rfl⟩
       exact kvE2_sepBundleL_sound_frag atomMap h_surj σ M w x t hwt x1 hx1w hbelow
         h_atom h_off h_fwd h_bwd
     · intro σ hσ hzσ

@@ -1,11 +1,11 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 344,
   "session_id": "sess_1783723095_edd5a7_344",
-  "dispatch": 8,
-  "summary": "h_fwd WITNESS case (the flagged 'last h_fwd blocker') complete and green; h_fwd fully sorry-free. 3 reusable helpers added. 344-section sorry count 2 -> 1. Sole remaining Phase-1 blocker: h_bwd.",
+  "dispatch": 9,
+  "summary": "Dispatch 9 in progress: landing h_bwd (last Phase-1 sorry) then Phases 2-3.",
   "handoff_path": "specs/344_pin_anchored_fragment_fold/handoffs/08_continuation.md",
   "verification": {
     "sorry_count_344_section": 1,
