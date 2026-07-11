@@ -171,9 +171,11 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
       discharged — Phase 3 copies it byte-identical.)*
 - [ ] Land the additive **segment/pin-realization extractor**: `.holds` → segment form content
       available at the pin `q` (the gap `kvE2_sepBody_extract` `SW:8410` leaves; serving the
-      **pin-anchored** interface only — NEVER the ∀-anchor one). *(deviation: deferred to next dispatch —
-      this is the joint extractor PROBE 1 identified; ~150-250 lines mirroring `kvE2_sepDisjunct'_extract`
-      SW:8232-8395 but keeping the discarded segment components. See handoffs/01_continuation.md.)*
+      **pin-anchored** interface only — NEVER the ∀-anchor one). *(deviation: ALTERED by dispatch 2 —
+      a standalone extractor is the WRONG factoring: "segForm holds ∀ point of the open zone" is FALSE
+      at witness points (segForm at a witness is unconstrained). The gate lemma must unfold `.holds`
+      inline (via `kvE2_sepBody_holds_iff` + `IntervalPattern.holds_eq_succ`) and case-split point vs
+      witness. No separate committable extractor exists. See handoffs/02_continuation.md §2.)*
 - [ ] State and prove `kvE2_sepGateAtPin_fragL` per report §2 sketch (lines 104-120): hypotheses
       `hfrag`, `hcorrK` (explicit), `h : (kvE2_sepBody … charK qnf).holds M atomMap x t`, `σ`,
       `hσ : σ ∈ kvE2_sepPos qnf`, `hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3`; conclusion
@@ -183,8 +185,10 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
         `kvE2_sepPtW`/`EpL`/`EpR` head conjuncts via `nfPred_correct` (`SW:9963-9977`); order bits from
         `x<q<w<t`.
       - off-fiber: `kvE2_sepHgate_offFiber` (`SW:6660-6662`).
-      - FORWARD consistent zones: `kvE2_sepSegForm_excludes` contrapositive (`SW:6683-6696`) + self-zone
-        `zAtX1L` biconditional-literal argument.
+      - FORWARD consistent zones: `kvE2_sepSegForm_excludes` contrapositive (`SW:6683-6696`) at
+        segment-INTERIOR points + `nf_eval_unique` (`NormalForm.lean:245`) at WITNESS points (dispatch-2
+        finding — the report's channel table omitted the witness case) + self-zone `zAtX1L`
+        biconditional-literal argument.
       - FORWARD inconsistent zones: `kvE_sub2V_zone_consistent` contrapositive + `kvE2_sepHgate_innerNine`
         (`SW:6669-6675`).
       - backward: σ's own slot channel + literals.
