@@ -1043,4 +1043,131 @@ private theorem kvE2_extGate_anyBit_iff {sig : MonadicSignature}
         simpa only [atom_eval, Fin.cons_zero, nf0_projFresh] using hatom (.pred p 0)
       | .order i j hne => exact absurd (Subsingleton.elim i j) hne
 
+/-! ## The discharge theorem (task 348 Phase 8 — the amended DoD) -/
+
+/-- **Enriched k=2 gate correctness with `hexclExt` discharged internally** (task 348
+    Phase 8; Rabinovich Prop 4.3 re-flatten p.6-7 + Lemma 7.6 adjacency p.14). The
+    enriched composed gate `bracketEndChar_kvE2Ext` — the landed interior gate with the
+    two adjacent exterior brackets conjoined at the anchors — satisfies the gate
+    biconditional under the 309-owned provider inventory ONLY (`hfrag`, `hrealI`,
+    `hrealB`, `hexcl`, order bits, `h_UZ`/`h_SZ`): the exterior-marked residue
+    `hexclExt` of `bracketEndChar_kvE2_correct_two_prior_frag` (OuterGate.lean:359) is
+    NOT an input obligation. It is discharged internally: the Phase-1 triage guard split
+    sends each strictly-exterior bit-false realizer to its side, where the per-side
+    bracket soundness (`kvE2_extBracketPast_sound` / `kvE2_extBracketFut_sound`) refutes
+    it under the gate-level pins (`kvE2_extGate_henv` / `kvE2_extGate_anyBit_iff`).
+
+    ⇐ (completeness): an honest realization re-establishes all three conjuncts — the
+    interior gate via the UNCONDITIONAL `bracketEndChar_kvE2_complete_two_prior`, the
+    two brackets via `kvE2_extBracket{Past,Fut}_complete` with pins from the realized
+    qnf (`hq.1` and `kvE2_futAnyBit_correct`), positive witnesses positioned exterior by
+    the marking's own zone bits, negative exclusion from the raw `nf_eval_nf` semantics.
+
+    Consumed by task 309 Phase 14 at `KampPrior.lean:351` (which additionally discharges
+    the remaining provider obligations `hrealI`/`hrealB`/`hexcl` — the R1 scope split
+    settled in the task-348 plan). -/
+theorem bracketEndChar_kvE2Ext_correct_two_prior_frag {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier)
+    (hfrag : kvE2_sepFragment qnf)
+    (hrealI : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ ∈ kvE2_sepPosI qnf,
+        ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hrealB : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf,
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kvE2Ext atomMap h_surj P qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  constructor
+  · -- ⇒: destructure the degenerate Lemma 7.6 conjunction, then feed the landed interior
+    -- soundness half with `hexclExt` built from the per-side bracket soundness.
+    intro hExt
+    obtain ⟨hInt, hPastBr, hFutBr⟩ :=
+      (bracketEndChar_kvE2Ext_holds_iff atomMap h_surj P qnf M x t).mp hExt
+    have hbody : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj)
+        (fun χ => P.existF 0 χ) qnf).holds M atomMap x t := by
+      rw [← bracketEndChar_kvE2_two_eq]
+      exact hInt
+    obtain ⟨hEpL, hEpR, -⟩ := kvE2_sepBody_extract
+      (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf M atomMap x t hbody
+    refine bracketEndChar_kvE2_sound_two_prior_frag atomMap h_surj P qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t hfrag hrealI hrealB hexcl ?_ hInt
+    -- The former `hexclExt` obligation, now discharged internally.
+    intro w hxw hwt hptW σ hbit _hzone x1 hguard hnf
+    have henv := kvE2_extGate_henv atomMap h_surj P qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t w hxw hwt hEpL hEpR hptW
+    have hany := kvE2_extGate_anyBit_iff atomMap h_surj P qnf M h_UZ h_SZ x t w hxw hwt
+      hEpL hEpR (hrealI w hxw hwt hptW) (hrealB w hxw hwt hptW) (hexcl w hxw hwt hptW)
+    rcases not_and_or.mp hguard with hx | ht
+    · exact kvE2_extBracketPast_sound M atomMap h_surj qnf w x t hxw hwt henv
+        (fun zs χ _ => hany zs χ) hPastBr σ hbit x1 (not_le.mp hx) hnf
+    · exact kvE2_extBracketFut_sound M atomMap h_surj qnf w x t hxw hwt henv
+        (fun zs χ _ => hany zs χ) hFutBr σ hbit x1 (not_le.mp ht) hnf
+  · -- ⇐: an honest realization re-establishes all three conjuncts.
+    rintro ⟨w, h⟩
+    have hxw : x < w := by
+      have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
+      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+    have hwt : w < t := by
+      have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
+      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+    refine (bracketEndChar_kvE2Ext_holds_iff atomMap h_surj P qnf M x t).mpr
+      ⟨bracketEndChar_kvE2_complete_two_prior atomMap h_surj P qnf
+        h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t ⟨w, h⟩, ?_, ?_⟩
+    · -- Past bracket at `x`: pins from realized qnf; positives positioned by the
+      -- marking's `zPastX3` zone bit; negatives excluded by the raw semantics.
+      refine kvE2_extBracketPast_complete M atomMap h_surj qnf w x t hxw hwt h.1
+        (fun zs χ _ => kvE2_futAnyBit_correct M w x t qnf h zs χ) ?_ ?_
+      · intro σ hm hbit
+        obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
+        obtain ⟨hzone, -, -⟩ := (kvE2_pastMarked_iff qnf σ).mp hm
+        have hb1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).1 = true := by
+          rw [hzone]; rfl
+        have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩)
+          (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
+        simp only [atom_eval, Fin.cons] at h1
+        exact ⟨x1, h1.mpr hb1, hx1⟩
+      · intro σ _hm hbit x1 _hx1x hr
+        have := (h.2 σ).mp ⟨x1, hr⟩
+        exact absurd (hbit ▸ this) Bool.false_ne_true
+    · -- Future bracket at `t` (mirror, `zFutT3` zone bit).
+      refine kvE2_extBracketFut_complete M atomMap h_surj qnf w x t hxw hwt h.1
+        (fun zs χ _ => kvE2_futAnyBit_correct M w x t qnf h zs χ) ?_ ?_
+      · intro σ hm hbit
+        obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
+        obtain ⟨hzone, -, -⟩ := (kvE2_futMarked_iff qnf σ).mp hm
+        have hb2 : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).2 = true := by
+          rw [hzone]; rfl
+        have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0
+          (Fin.succ_ne_zero ⟨2, by omega⟩))
+        simp only [atom_eval, Fin.cons] at h2
+        exact ⟨x1, h2.mpr hb2, hx1⟩
+      · intro σ _hm hbit x1 _htx1 hr
+        have := (h.2 σ).mp ⟨x1, hr⟩
+        exact absurd (hbit ▸ this) Bool.false_ne_true
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
