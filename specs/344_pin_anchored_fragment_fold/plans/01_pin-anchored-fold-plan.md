@@ -179,7 +179,7 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
       showed "segForm ∀ point of open zone" is FALSE at witness points; the segments must be unfolded
       inline INSIDE the gate producer below. What IS landed is the continuation closer that consumes
       the four conjuncts, so the gate producer reduces to deriving those four at the pin.)*
-- [ ] **[REMAINING — dispatch 4]** State and prove `kvE2_sepGateAtPin_fragL` per report §2 sketch (lines 104-120): hypotheses
+- [ ] **[IN PROGRESS — dispatch 4: STAGE A validated; h_atom ~90%; h_fwd/h_bwd remain]** State and prove `kvE2_sepGateAtPin_fragL` per report §2 sketch (lines 104-120). *(dispatch 4: landed `kvE2_sep_locate_witness` — the model-general point-location core of h_fwd — green + committed `ddf5eb916`. Built the gate producer to STAGE A: inline segment-keeping preamble + pin + hanchor + hbelow + h_off + `kvE2_sepBundleL_sound_frag` call ALL typecheck. h_atom resolved in principle (gate clause 1 → `nf0_dropFresh σ0.1 = qnf.1`; needs 6 outer-order hyps added to the signature; non-fresh order cases need a `congrFun` fix — recipe in `handoffs/04_continuation.md`). WIP preserved in `handoffs/gate-producer-wip.lean` + git stash. Remaining: h_atom order-case fix, h_fwd trichotomy (via `kvE2_sep_locate_witness` + `kvE2_sepSegForm_excludes` + `nf_eval_unique`), h_bwd.)* Hypotheses
       `hfrag`, `hcorrK` (explicit), `h : (kvE2_sepBody … charK qnf).holds M atomMap x t`, `σ`,
       `hσ : σ ∈ kvE2_sepPos qnf`, `hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3`; conclusion
       `∃ w q, x < q ∧ q < w ∧ w < t ∧ …` the six conjuncts. Close each conjunct via its cited channel:
