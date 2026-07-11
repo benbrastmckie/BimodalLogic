@@ -356,7 +356,7 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 3 h.
 - **Depends on:** 3.
 
-### Phase 5: Past-side mirror — construction + soundness [NOT STARTED]
+### Phase 5: Past-side mirror — construction + soundness [COMPLETED]
 
 - **Goal:** `kvE2_extNegPast σ : Formula` (anchored at `x`, `Since`-navigated) +
   `kvE2_extNegPast_sound` for all `zPastX3`-marked σ — the temporal mirror of Phase 3 on
@@ -365,10 +365,21 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegationPast.lean` (imports
   ExteriorNegation for shared helpers; disjoint territory from Phase 4).
 - **Tasks:**
-  - [ ] Port σ-generic helpers to the past side (or generalize them side-parametrically in
+  - [x] Port σ-generic helpers to the past side (or generalize them side-parametrically in
         ExteriorNegation.lean ONLY if that file is not concurrently owned — if Wave 3 runs
-        parallel, keep past-side copies local and deduplicate in Phase 7).
-  - [ ] `kvE2_extNegPast` + `_sound`, sorry-free.
+        parallel, keep past-side copies local and deduplicate in Phase 7). *(kept past-side
+        copies local per the Phase-4 handoff: the future privates are unreachable and
+        ExteriorNegation.lean is territory-read-only this dispatch; side-neutral publics
+        `nf_depth0_char_correct'`/`kvE2_futFreshProfile` reused directly, the rest
+        time-reversed — gap `(x1,x)` coupling `(false,true)`, ray `(−∞,x1)` `(true,false)`,
+        above-`x` key `(zs ⟨1⟩).1 = false`, maximal-witness chain sort `kvE2_pastMaxPick`;
+        dedupe deferred to Phase 7 per plan)*
+  - [x] `kvE2_extNegPast` + `_sound`, sorry-free. *(landed: `kvE2_extNegPast` =
+        `(kvE2_pastPos σ).neg`, admissibility-gated permutation-disjunction of D-guarded
+        `Since` chains; `kvE2_extNegPast_sound` for ALL σ under `(hxw, hwt)` only — no
+        marking hypothesis, via Phase 1's `kvE2_exterior_zone_determination_past` (same
+        additive strengthening as Phase 3); axioms {propext, Classical.choice, Quot.sound};
+        commit 539995814, +656 lines.)*
 - **Estimated output:** ~300–500 lines.
 - **Done when:** build green; past-side `_sound` sorry-free, axiom-clean, alphabet-complete.
 - **Timing:** 3 h.
