@@ -280,7 +280,21 @@ statements in `OuterGate.lean` ONLY. The fragment hypothesis enters as a **qnf r
 
 ---
 
-### Phase B: Discharge `hgateL` / `hgateR` under `hfrag` [BLOCKED]
+### Phase B: Discharge `hgateL` / `hgateR` under `hfrag` [COMPLETED]
+
+**RESOLVED post-345** (2026-07-10, session sess_1783723095_edd5a7_335): the pre-345 blocker below is
+superseded. Task 345 landed the symmetric gate (Rabinovich Cor 5.4, clause (v)), dissolving `hInnerR`
+and delivering the pin-anchored fold `kvE2_outer_fold_frag` (`SharedWitness.lean:12529`) whose only
+obligations beyond the provider shape are `hfrag` + `hcorrK` + `hexcl`. The interior gates
+`hgateL`/`hgateR` and the non-interior `hbdry` are now internal to the fold (discharged inside
+`kvE2_sepBody_kit_sound_frag` SW:12487 under `hfrag`). 335 Phase B landed
+`bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean`, green, axiom-clean
+`{propext, Classical.choice, Quot.sound}`): it discharges `hcorrK` inline via
+`bracketEndChar_kvE2_hck.mp` and threads `hexcl` as a hypothesis (Phase C proves it, Phase D removes
+it). `SharedWitness.lean`/`SubBracket2V.lean` byte-unchanged. The FORWARD-conjunct wall that blocked
+the pre-345 attempt no longer exists on this path — the symmetric gate makes it a gate consequence.
+
+<details><summary>Pre-345 blocker (historical — superseded by the symmetric gate)</summary>
 
 **BLOCKER** (Phase B — recorded after a genuine machine attempt; territory-guard STOP):
 - **What failed**: The interior-LEFT gate family `hgateL` cannot be produced under `hfrag`. After the
@@ -312,7 +326,9 @@ statements in `OuterGate.lean` ONLY. The fragment hypothesis enters as a **qnf r
 - **Prohibited workarounds**: NOT applied — no `SharedWitness.lean` edit, no `sorry`, no vacuous
   close, no assumed/provider-conditional family hypothesis.
 
-**Goal**: Build the two interior LEFT/RIGHT per-σ gate families in the exact shape
+</details>
+
+**Goal** (historical): Build the two interior LEFT/RIGHT per-σ gate families in the exact shape
 `kvE2_outer_fold` expects (SW:9911-9945), **under `hfrag`**. With one interior positive the cross-σ
 residue VANISHES (O4 record SW:6785-6791) — the FORWARD clause that was refutable over arbitrary
 `qnf` becomes derivable because there are no cross-σ slot points.
