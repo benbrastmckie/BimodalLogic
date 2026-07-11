@@ -117,13 +117,13 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 
 
 ### Uncategorized
 
-344 [PLANNED] — SPAWNED from task 335 blocker escalation 2 (session sess_17837230
+344 [IMPLEMENTING] — SPAWNED from task 335 blocker escalation 2 (session sess_17837230
   └─ 335 [IMPLEMENTING] — (kamp_theorem_formalization: Follow-up to task 334 (faithful carrier ) (see above)
 
 ## Tasks
 
 ### 344. Pin anchored fragment fold
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Dependencies**: None
 - **Research**: [344_pin_anchored_fragment_fold/reports/01_fragment-extractor-derivability.md]
