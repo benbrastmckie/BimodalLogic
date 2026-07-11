@@ -1,7 +1,7 @@
 # Implementation Plan: prop43_exterior_reflatten
 
 - **Task**: 348 - prop43_exterior_reflatten
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 24 hours (8 phases, one agent run each, ~2-4 h per phase)
 - **Dependencies**: 335 (landed — fragment gate + hexclExt binder), 346 (landed — isolation), 347 (landed — R1 narrowing to exterior-marked σ)
 - **Research Inputs**: specs/348_prop43_exterior_reflatten/reports/01_prop43-exterior-reflatten.md (hard-mode, H4-verified); specs/335_outer_gate_assembly_engine_kvE2_body/handoffs/03_frag-gate-for-309-and-348.md; specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md §prop43_exterior_reflatten (authoritative spec)
@@ -201,7 +201,7 @@ Phases within the same wave can execute in parallel. Territory (H7): Wave 1 — 
 Phase 4 owns `ExteriorNegation.lean`, Phase 5 owns `ExteriorNegationPast.lean` (disjoint).
 Phases 3–8 are all conditional on Phase 2 returning GO.
 
-### Phase 1: Exterior zone-determination lemma (residue triage) [NOT STARTED]
+### Phase 1: Exterior zone-determination lemma (residue triage) [COMPLETED]
 
 - **Goal:** Land `kvE2_exterior_zone_determination` — the order-atom-only lemma forcing a
   realized exterior witness's zone marking:
@@ -212,15 +212,22 @@ Phases 3–8 are all conditional on Phase 2 returning GO.
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorZoneTriage.lean`
   (imports SharedWitness for zone constants; nothing frozen is edited).
 - **Tasks:**
-  - [ ] Preflight re-verification (research H4 flagged Medium-trust): `lake build` full project
+  - [x] Preflight re-verification (research H4 flagged Medium-trust): `lake build` full project
         green; `#print axioms` on `bracketEndChar_kvE2_correct_two_prior_frag`,
         `_sound_two_prior_frag`, `_complete_two_prior` = {propext, Classical.choice, Quot.sound}.
-  - [ ] Verify `LinearOrder`-style facts on `M.carrier` support the
-        `¬(x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1` split (R6).
-  - [ ] Prove the zone-determination lemma by the SW:12642–12649 transfer pattern in reverse
+  - [x] Verify `LinearOrder`-style facts on `M.carrier` support the
+        `¬(x ≤ x1 ∧ x1 ≤ t) → x1 < x ∨ t < x1` split (R6). *(verified: instance
+        `OrderedMonadicStructure.carrier_order`, MonadicFO.lean:103-109; `not_and_or`/`not_le`
+        used in `kvE2_exterior_zone_triage`)*
+  - [x] Prove the zone-determination lemma by the SW:12642–12649 transfer pattern in reverse
         (depth-0 atom clause, NormalForm.lean:201–202; `lt_trans` chains through `x < w < t`).
-  - [ ] Corollary: under `hexclExt`'s guards, every σ with
+        *(landed as `kvE2_exterior_zone_determination` + per-side `_past`/`_fut` workhorses +
+        bit-transfer helpers `kvE2_zoneBit_below`/`_above`)*
+  - [x] Corollary: under `hexclExt`'s guards, every σ with
         `nf0_zoneSpec σ.1 ∉ {zPastX3, zFutT3}` is not realizable at exterior `x1`.
+        *(landed as `kvE2_exterior_offZone_notRealizable`, via the Phase-8-facing
+        `kvE2_exterior_zone_triage` disjunction — deviation: additive extra lemma, the exact
+        split shape Phase 8 consumes at SW:12788)*
 - **Estimated output:** ~100–250 lines.
 - **Done when:** `lake build` green; new declarations sorry-free; `#print axioms` on the new
   lemma clean; preflight checks recorded in progress file.

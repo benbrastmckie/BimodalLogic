@@ -109,7 +109,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-348 [NOT STARTED] — Restore Rabinovich interval-bounding faithfulness for the exterio
+348 [IMPLEMENTING] — Restore Rabinovich interval-bounding faithfulness for the exterio
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
@@ -119,10 +119,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ## Tasks
 
 ### 348. Prop43 exterior reflatten
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 335, Task 346, Task 347
+- **Research**: [348_prop43_exterior_reflatten/reports/01_prop43-exterior-reflatten.md]
+- **Plan**: [348_prop43_exterior_reflatten/plans/01_prop43-exterior-reflatten.md]
 
 **Description**: Restore Rabinovich interval-bounding faithfulness for the exterior-marked hexclExt residue isolated by task 346 and narrowed by task 347 R1 (commits d370d438e, 3b8aee3c4 — residue is exterior-marked σ ONLY before this task starts). AUTHORITATIVE SPEC: specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md, section "prop43_exterior_reflatten" (line ~195) — consume it verbatim, do NOT re-derive. METHOD (settled by 347 adjudication, not to be re-opened without a machine counterexample): re-flatten per Rabinovich Prop 4.3 (p.6, Fig.1 p.10) + Lemma 7.6 adjacency (p.13) — exterior arrangements x1<x and x1>t belong to ADJACENT intervals (-inf,x)/(t,inf), each with its own bracket (Def 7.5/Lemma 7.10 shapes), composed with the landed interior (x,t) bracket via the adjacency primitive; seam at anchors x,t. Do NOT prove hexclExt as strictly-exterior completeness on the interior bracket (retired phantom framing, no §5 counterpart; 335 report 07 Refutation 2). Do NOT bound nf_eval_nf's outer existential in place (correct raw FOMLO semantics). ENTRY PROBLEM: Prop43.lean:120-159 uniform-negation connective cases (blocked navigated route — first target; feed the already-proven neg_2var_vec_ea Prop 4.2 closure, EANegationClosure.lean:722). LANDED ASSETS: BracketEndCharCarrierV (NfMultiAnchorBridge.lean:1872), task-326 interior closers, 347 R1 interior-slice discharge lemma (SharedWitness.lean below SW:10210 GATE banner). DEFINITION OF DONE: exterior-marked hexclExt residue discharged by adjacent exterior bracket composed with interior gate; fold + soundness-half theorems called with residue closed (interior + boundary + adjacent-exterior = full completeness); KampPrior.lean:351 strategic sorry retired; axiom-clean {propext, Classical.choice, Quot.sound}, no sorry on live paths. GROUNDING: Rabinovich 2014 §4/§5/§7; 347 report 01 (verdict (b), §7 R2); 330 report 01 (REDESIGN); 335 report 07. Scope: distinct major effort (missing re-flatten infrastructure, a genuine mathematical gap — not wiring).
 
