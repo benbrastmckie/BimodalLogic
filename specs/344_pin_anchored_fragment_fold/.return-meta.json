@@ -1,32 +1,12 @@
 {
-  "status": "blocked",
-  "requires_user_review": true,
+  "status": "in_progress",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 344,
   "session_id": "sess_1783723095_edd5a7_344",
-  "dispatch": 10,
-  "summary": "Dispatch 10 design probe = NO-GO (no code written; HEAD unchanged, green). kvE2_sepGateAtPin_fragR's h_bwd is NOT internally derivable: gate clause (iv) (fragL's inconsistent-inner-zone exclusion source) is structurally zXW3-gated and fragR's sole positive is a zWT3 owner. Exhaustive gate audit: clause (iii) is vacuous for every assemble (nf0_dropFresh_assemble unconditional, NfEFold.lean:219), clause (iv) zXW3-only, clauses (i)/(ii) outer-only. hg gives ZERO constraint on a zWT3 owner's inconsistent-inner-zone bits => h_bwd is false in a rich model there. No kvE2_sepInnerConsistentR / zWT3 inner clause exists in Theories/. Blocked pending orchestrator R1/R2 design decision (R2 recommended: thread additive hInnerR hypothesis through fragR/kit_sound_frag/outer_fold_frag, discharged by 335). Phase 1 (kvE2_sepGateAtPin_fragL) preserved sorry-free + axiom-clean.",
+  "dispatch": 11,
+  "resolution": "R2",
   "phases_completed": 1,
   "phases_total": 3,
-  "handoff_path": "specs/344_pin_anchored_fragment_fold/handoffs/10_continuation.md",
-  "verification": {
-    "sorry_count_344_section": 0,
-    "vacuous_count": 0,
-    "axiom_count_baseline_unchanged": true,
-    "build_passed": true,
-    "code_written_this_dispatch": false,
-    "head_unchanged": "8ef24bc51",
-    "kvE2_sepGateAtPin_fragL_axioms": "{propext, Classical.choice, Quot.sound}"
-  },
-  "sorry_inventory": [],
-  "blockers": [
-    "Phase 2 kvE2_sepGateAtPin_fragR h_bwd (bit true -> witness, required by kvE2_sepBundleR_sound_frag SW:10143-10147) is NOT internally derivable from hg + hfrag + hcorrK. fragL uses gate clause (iv) (hg.2.2.2, SW:11084-11087) which is nf0_zoneSpec=zXW3-gated (SW:1244-1246); fragR's sole positive is zWT3 (zWT3 != zXW3, SW:1482) so clause (iv) is vacuous. Clause (iii) is vacuous for every assemble (nf0_dropFresh_assemble unconditional, NfEFold.lean:219-221); clauses (i)/(ii) are outer-only. No kvE2_sepInnerConsistentR or zWT3 inner clause exists in Theories/. => hg gives ZERO constraint on a zWT3 owner's inconsistent-inner-zone bits; h_bwd is false in a rich model there.",
-    "DESIGN DECISION REQUIRED (orchestrator): R2 (RECOMMENDED, additive) thread hInnerR (zWT3 analog of clause iv) through fragR/kit_sound_frag/outer_fold_frag, discharged by 335 (335 already discharges the full right h_bwd in landed hgateR SW:9835-9839). R1 (NOT recommended) extend kvE2_sepGate with a zWT3 clause (v) -- modifies the LANDED gate def, violates 344 invariant, large blast radius."
-  ],
-  "continuation_path": "specs/344_pin_anchored_fragment_fold/handoffs/10_continuation.md",
-  "memory_candidates": [
-    "gate-honesty converse (bit true -> witness) for a per-owner separated-witness bracket: classify the abstract ZoneSpec via the gate's non-consistent-zone falsity clause (by_contra + clause gives InnerConsistent), rcases the finite zone disjunction into named constants (syntactically-identical Fin.cons forms let `have hz : zs = <constant> := h` typecheck by defeq), then produce endpoint/at-point witnesses from owner-literal lemmas with bit=true (rw [hbitT]; simp [kvE2_sepLit, if_true]) and interior witnesses from the tie-grouped bracket slot -> group-index -> ws machinery.",
-    "kvE2_sepBits sigma zs chi is definitionally sigma.2 (nf0_assemble zs chi sigma.1); `have hbitT : kvE2_sepBits ... = true := hbit` typechecks by defeq, enabling owner-lit rewrites."
-  ]
+  "sorry_inventory": []
 }

@@ -221,7 +221,13 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
 
 ---
 
-### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [BLOCKED]
+### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [IN PROGRESS]
+
+**RESOLUTION (dispatch 11, orchestrator-decided R2)**: fragR takes the extra explicit hypothesis
+`hInnerR : ∀ zs χ, ¬ kvE2_sepInnerConsistentR zs → σ0.2 (nf0_assemble zs χ σ0.1) = false` (the zWT3
+analog of gate clause iv), threaded through `kvE2_sepBody_kit_sound_frag` and `kvE2_outer_fold_frag`
+exactly like `hcorrK`/`hexcl` — an undischarged obligation for 335. All new decls below the 344
+banner; zero existing decls modified. The dispatch-10 BLOCKER (below) is retained for the record.
 
 **BLOCKER** (Phase 2, dispatch 10 — design probe NO-GO, no code written):
 - **What failed**: `kvE2_sepGateAtPin_fragR`'s internal `h_bwd` (the `bit true → witness` converse
