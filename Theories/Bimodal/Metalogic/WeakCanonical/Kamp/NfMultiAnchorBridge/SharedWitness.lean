@@ -10034,4 +10034,26 @@ theorem kvE2_outer_fold {sig : MonadicSignature}
       · exact hRreal σ hmem hzR
       exact hbdry w hxw hwt hptW σ hmem (by tauto)
 
+-- ============================================================================
+-- TASK 344: PIN-ANCHORED FRAGMENT FOLD  (ADDITIVE-ONLY — zero existing decls modified)
+--   Spawned from task 335 blocker escalation 2 (sess_1783723095_edd5a7).
+--   Grounding: reports/01_fragment-extractor-derivability.md (GO: pin-anchored _frag).
+--   Deliverables: kvE2_sepGateAtPin_fragL / kvE2_sepGateAtPin_fragR /
+--                 kvE2_sepBody_kit_sound_frag / kvE2_outer_fold_frag.
+--   REFUTED (never attempt): the ∀-anchor segment-coverage extractor (report §1).
+--   Consumer: task 335 Phase B (bracketEndChar_kvE2_correct_two_prior_frag).
+--   341 GATE re-diff: everything below this banner is new; nothing above is touched.
+-- ============================================================================
+
+/-- **Single-positive-sub fragment predicate** (task 344 — local restatement of
+    `OuterGate.kvE2_sepFragment`, `OuterGate.lean:191`). Restated here rather than imported
+    because `OuterGate` imports `SharedWitness` (importing back would create a cycle); the two
+    definitions are byte-identical and `OuterGate`'s definitional `rfl` bridges them at the 335
+    consumption site. `qnf`'s positive-sub list is exactly the singleton `[σ0]` with `σ0`
+    interior-zoned. Depends only on `qnf`, never on a model or provider. -/
+def kvE2_sepFragment_frag {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+  ∃ σ0 : NormalForm sig 1 4,
+    kvE2_sepPos qnf = [σ0] ∧
+    (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

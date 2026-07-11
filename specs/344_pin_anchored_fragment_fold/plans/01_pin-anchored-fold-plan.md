@@ -1,7 +1,7 @@
 # Implementation Plan: Task #344 — Pin-Anchored Fragment Fold (`kvE2_outer_fold_frag`, SharedWitness additive)
 
 - **Task**: 344 - Land the pin-anchored fragment fold in `SharedWitness.lean`, ADDITIVE-ONLY: `kvE2_sepGateAtPin_fragL/R` (six gate conjuncts at the extracted pin `q` with `x < q < w`), `kvE2_sepBody_kit_sound_frag`, and `kvE2_outer_fold_frag` (pin-anchored variant of the landed `kvE2_outer_fold`). Spawned from task 335 blocker escalation 2; consumed by 335 Phase B.
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5-7 hours (3 dispatches; the genuine risk is the first-phase pin/segment-extraction output shape)
 - **Dependencies**:
   - 335 (BLOCKED — the consumer; its Phase B stops precisely because the pin-anchored gate is unlanded)
@@ -138,7 +138,7 @@ below it, nothing above it is edited):
 Phases form a linear chain (each consumes the prior phase's decls). All edits are additive to
 `SharedWitness.lean`. Sized to one agent dispatch each.
 
-### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [NOT STARTED]
+### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [IN PROGRESS]
 
 **Goal**: Front-load the three residual risks as bounded early NO-GO probes, then land the additive
 segment/pin-realization extractor and the LEFT pin-anchored gate `kvE2_sepGateAtPin_fragL` (six
