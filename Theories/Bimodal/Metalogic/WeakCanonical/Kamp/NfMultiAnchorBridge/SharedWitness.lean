@@ -10212,6 +10212,22 @@ theorem kvE2_sep_locate_witness {sig : MonadicSignature}
             hnext (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hc⟩)
           exact (htri ⟨m.val + 1, Nat.succ_lt_succ hmlt⟩).resolve_left hnv
 
+/-- **Zone-spec determinacy** (task 344 Phase 1 — shared closer for the pin-anchored forward
+    derivation). `zoneHolds` characterizes each zone-spec coordinate as a biconditional against
+    `v`'s order relation to the fixed env points; on a `LinearOrder` carrier those relations are
+    determined, so at most one zone spec can hold at a given point. Model-general, additive; the
+    forward zone case (`h_fwd`) uses it to convert `v`'s realized zone into the specific
+    `kvE_sub2_z*`/`kvE2_sep_z*` spec whose segment/endpoint channel excludes it. -/
+theorem zoneHolds_unique {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat}
+    (env : Fin n → M.carrier) (v : M.carrier) (za zb : ZoneSpec n)
+    (ha : zoneHolds M env za v) (hb : zoneHolds M env zb v) : za = zb := by
+  funext i
+  obtain ⟨ha1, ha2⟩ := ha i
+  obtain ⟨hb1, hb2⟩ := hb i
+  exact Prod.ext (Bool.eq_iff_iff.mpr (ha1.symm.trans hb1))
+    (Bool.eq_iff_iff.mpr (ha2.symm.trans hb2))
+
 /-- **LEFT pin-anchored gate producer** (task 344 Phase 1 — the crux). From a realized
     `kvE2_sepBody` in the SINGLE-positive fragment (`hfrag`) with the sole positive sub `σ0`
     left-interior (`hz`), plus provider-correctness `hcorrK` at the pin (the `ExistProviders.correct`
