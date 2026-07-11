@@ -21,12 +21,20 @@ INPUTS**; this file only *applies* them.
    the k=2 gate, UNCONDITIONAL (no interiority hypothesis); consumes the landed task-337 engine
    `kvE2_sepBody_holds_of_honest`. Plus its two char-formula bridges `bracketEndChar_kvE2_hcb`/
    `bracketEndChar_kvE2_hck`.
-4. **⇒ soundness (`bracketEndChar_kvE2_sound_two_prior`) — NOT delivered, BLOCKED.** See the
-   "Phases 3-5 — BLOCKED" note at the end of this file: the multi-owner soundness `hgate`
-   forward-zone conjunct is underdetermined by the faithful carrier's realized content (landed
-   O4 CRUX RECORD, `SharedWitness.lean:6566-6659`); the faithful repair requires a carrier
-   REDEFINITION outside this task's additive scope.
-5. **Assembled `bracketEndChar_kvE2_correct_two_prior` — NOT delivered** (depends on 4).
+4. **⇒ soundness (`bracketEndChar_kvE2_sound_two_prior_frag`) — DELIVERED** (task 335 Phases B/D,
+   interior+boundary-scoped): the ⇒ half over the pin-anchored symmetric-gate fold
+   `kvE2_outer_fold_frag` (SW:12665), under `hfrag : kvE2_sepFragment qnf` with the provider
+   realization obligation RE-SHAPED (Phase D, 347 MUST-CHECK 2) to the interior index
+   `kvE2_sepPosI` (SW:211), interval-bounded `x < x1 < t` (Rabinovich Cor 5.4 ⇐, p.9 l.263-273),
+   plus the boundary remainder `hrealB`, the cone exclusion `hexcl`, and the exterior-marked
+   `hexclExt` threaded OUTWARD as the task-348 (`prop43_exterior_reflatten`) provider hand-off —
+   never discharged on this bracket (Prop 4.3 re-flatten / Lemma 7.6 adjacency, pp.5/16).
+5. **Assembled `bracketEndChar_kvE2_correct_two_prior_frag` — DELIVERED** (task 335 Phase D):
+   the fragment-restricted, interior+boundary-scoped `holds ↔ ∃ w` gate combining 3 (⇐,
+   unconditional) with 4 (⇒), mirroring `bracketEndChar_kv_correct_one_prior`
+   (`PriorInterface.lean:95`). The k=2 interior+boundary GO gate consumed by task 309
+   Phases 13.4/14 at `KampPrior.lean:351`; exterior arrangements ride task 348's adjacent
+   brackets composed at the anchors `x, t`.
 
 ## Scope decisions (recorded in the file, resolved in the plan)
 
@@ -219,8 +227,10 @@ What remains for 335 to discharge at `charK := fun χ => P.existF 0 χ`:
 - `hcorrK` — the provider correctness bridge `(⟨charK (nfk_projFresh σ)⟩).eval_at M atomMap a →
   nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ)`. Discharged HERE inline from the Phase-2 provider
   bridge `bracketEndChar_kvE2_hck` (`.mp`; `TemporalPred.eval_at` unfolds to `temporal_truth`).
-- `hexcl` — the negative-sub exclusion family. Threaded as a hypothesis here (the Phase C GO/NO-GO
-  probe proves it under `hfrag`; Phase D removes it from the assembled gate).
+- `hexcl` — the cone-restricted (`x ≤ x1 ≤ t`) negative-sub exclusion. Threaded as a named
+  provider hypothesis through the assembled Phase-D gate (discharged by the 309 Phase-14
+  provider); the exterior-marked residue `hexclExt` is the task-348 hand-off, per the Phase C
+  v6 disposition (interior slice landed upstream by 347 R1, SW:12627).
 
 The fragment hypothesis `hfrag : kvE2_sepFragment qnf` is definitionally the fold's
 `kvE2_sepFragment_frag qnf` (identical body, SW:10219); the six order bits unify defeq
@@ -269,10 +279,28 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
     (hfrag : kvE2_sepFragment qnf)
-    (hreal : ∀ w : M.carrier, x < w → w < t →
+    -- task 335 Phase D (v6 re-shape, 347 MUST-CHECK 2): the INTERIOR provider realization
+    -- obligation, indexed by `kvE2_sepPosI` (SW:211) and interval-BOUNDED `x < x1 < t` —
+    -- Rabinovich Cor 5.4 ⇐ (p.9 l.263-273): interior witnesses are bounded `(∃z)^{<z1}_{>z0}`,
+    -- never unbounded over the carrier. For the n=1 fragment singleton the joint-order coupling
+    -- is vacuous; the shape is recorded interval-bounded so task 348 / the `On` lift consume it
+    -- unchanged. This is what the 309 Phase-14 provider discharges.
+    (hrealI : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ ∈ kvE2_sepPosI qnf,
+        ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- task 335 Phase D: the NON-interior-marked remainder of `kvE2_sepPos` (the boundary/at-point
+    -- positives `nf_exists_unique` forces, realized AT the anchors by the consumer's endpoint/
+    -- pivot literals; plus any exterior-marked positive, whose witness belongs to task 348's
+    -- adjacent brackets). Kept in the landed unbounded fold shape — the interval bound applies
+    -- ONLY to the interior index (347 MUST-CHECK 2), never to the boundary remainder.
+    (hrealB : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
         M atomMap w →
       ∀ σ ∈ kvE2_sepPos qnf,
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
         ∃ x1 : M.carrier,
           nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
@@ -292,8 +320,89 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
       ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   intro h_holds
   rw [bracketEndChar_kvE2_two_eq] at h_holds
-  exact kvE2_outer_fold_frag atomMap h_surj (fun χ => P.existF 0 χ) qnf
-    h_xy h_yt h_xt h_yx h_ty h_tx M x t h_holds hreal hexcl hexclExt
+  refine kvE2_outer_fold_frag atomMap h_surj (fun χ => P.existF 0 χ) qnf
+    h_xy h_yt h_xt h_yx h_ty h_tx M x t h_holds ?_ hexcl hexclExt
+  -- Reassemble the fold's global realization channel from the Phase-D split: an interior-marked
+  -- positive rides `hrealI` (dropping the interval bound, which the fold does not consume); a
+  -- non-interior-marked positive rides `hrealB`. The interiority disjunction is decidable (it is
+  -- `kvE2_sepPosI`'s own filter condition), and membership transfers via `kvE2_sepPosI_mem`.
+  intro w hxw hwt hptW σ hσ
+  by_cases hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+  · obtain ⟨x1, -, hx1⟩ :=
+      hrealI w hxw hwt hptW σ ((kvE2_sepPosI_mem qnf σ).mpr ⟨hσ, hz⟩)
+    exact ⟨x1, hx1⟩
+  · exact hrealB w hxw hwt hptW σ hσ hz
 
+/-! ## Phase D — assembled interior+boundary gate over the `kvE2_sepPosI` provider obligation
+
+The fragment-restricted, interior+boundary-scoped instance of the `BracketCarrierCorrectVPrior`
+body (`PriorInterface.lean:60`), mirroring the k ≤ 1 assembly `bracketEndChar_kv_correct_one_prior`
+(`PriorInterface.lean:95`): the ⇒ direction is the Phase-B/D soundness half over the pin-anchored
+fold; the ⇐ direction is the Phase-2 completeness half, UNCONDITIONAL (the fragment/interior
+restriction gates only ⇒). Provider conditionality enters exactly as the named hypotheses
+`hrealI`/`hrealB`/`hexcl` (discharged by the 309 Phase-14 provider) and `hexclExt` (the task-348
+`prop43_exterior_reflatten` hand-off) — the A1 sense recorded at the fold (SW:10033-10037). -/
+
+/-- **Assembled k=2 interior+boundary gate** (task 335 Phase D, v6 — post-347 adjudication).
+    Fragment-restricted (`hfrag`), interior+boundary-scoped `holds ↔ ∃ w` correctness for the live
+    outer gate `bracketEndChar_kvE2`, with the provider realization obligation RE-SHAPED to the
+    interior index: `hrealI` ranges over `kvE2_sepPosI qnf` (SW:211) with the interval bound
+    `x < x1 < t` — Rabinovich Cor 5.4 ⇐ (p.9 l.263-273), bounded jointly-ordered interior
+    witnesses, NOT the retired global/unbounded `kvE2_sepPos` shape (the phantom obligation
+    globalized past the bracket; 347 MUST-CHECK 2). `hrealB` carries the non-interior-marked
+    positive remainder (boundary/at-point positives realized at the anchors); `hexcl` is the
+    interior+boundary cone exclusion; `hexclExt` is the exterior-marked residue threaded OUTWARD
+    verbatim as the task-348 provider hand-off (Prop 4.3 re-flatten / Lemma 7.6 adjacency —
+    adjacent exterior brackets composed at the anchors, NEVER discharged on this bracket).
+    Mirrors `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95). Consumed by task 309
+    Phases 13.4/14 at `KampPrior.lean:351` under `kvE2_sepFragment qnf`. -/
+theorem bracketEndChar_kvE2_correct_two_prior_frag {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier)
+    (hfrag : kvE2_sepFragment qnf)
+    (hrealI : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ ∈ kvE2_sepPosI qnf,
+        ∃ x1 : M.carrier, (x < x1 ∧ x1 < t) ∧
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hrealB : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf,
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  constructor
+  · exact bracketEndChar_kvE2_sound_two_prior_frag atomMap h_surj P qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t hfrag hrealI hrealB hexcl hexclExt
+  · exact bracketEndChar_kvE2_complete_two_prior atomMap h_surj P qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
