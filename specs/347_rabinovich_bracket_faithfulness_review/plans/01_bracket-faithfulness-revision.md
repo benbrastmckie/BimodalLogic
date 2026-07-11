@@ -1,7 +1,7 @@
 # Implementation Plan: Rabinovich Bracket Faithfulness Revision (task 347)
 
 - **Task**: 347 - rabinovich_bracket_faithfulness_review
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: ~5 hours
 - **Dependencies**: 346 (landed — provides the `hexclExt` isolation point), 335 (provider), 309 (consumer assembly)
 - **Research Inputs**: `specs/347_rabinovich_bracket_faithfulness_review/reports/01_bracket-faithfulness-adjudication.md` (H4-verified, verdict (b) SUBSTANTIVE)

@@ -4,7 +4,7 @@ next_project_number: 348
 
 # TODO
 
-Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 347 (non-fatal)
+Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-11. Generated from state.json dependency graph.*
@@ -12,7 +12,7 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343,347 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
@@ -115,12 +115,10 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 
 
 ### Uncategorized
 
-347 [IMPLEMENTING] — Faithfulness review + revision of the task-346 gate against Rabin
-
 ## Tasks
 
 ### 347. Rabinovich bracket faithfulness review
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Dependencies**: Task 346
 
