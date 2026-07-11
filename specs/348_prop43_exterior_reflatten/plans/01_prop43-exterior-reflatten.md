@@ -289,18 +289,35 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 3–4 h.
 - **Depends on:** none (parallel with Phase 1; different file territory).
 
-### Phase 3: Future-side clause family — construction + soundness [NOT STARTED]
+### Phase 3: Future-side clause family — construction + soundness [COMPLETED]
 
 - **Goal:** Generalize the spike to the full finite alphabet:
   `kvE2_extNegFut (σ : NormalForm sig 1 4) : Formula` + `kvE2_extNegFut_sound` for ALL
   `zFutT3`-marked σ, using the Phase-2 BINDING signature verbatim.
 - **File targets:** `Kamp/ExteriorNegation.lean` (extend).
 - **Tasks:**
-  - [ ] Factor the spike construction into σ-generic helpers (per-σ inner-zone case analysis
+  - [x] Factor the spike construction into σ-generic helpers (per-σ inner-zone case analysis
         must be finite and mechanical — `Fintype`/`decide`-style dispatch or per-constructor
-        case split, whichever the spike showed viable).
-  - [ ] `kvE2_extNegFut` definition for all σ.
-  - [ ] `kvE2_extNegFut_sound` for all σ, sorry-free.
+        case split, whichever the spike showed viable). *(landed as the σ-channel readers
+        `kvE2_futGapBit`/`kvE2_futRayBit`/`kvE2_futSelfBit` + `Fintype`-filter lists
+        `kvE2_futGapList`/`kvE2_futRayList`, the nine-zone classification
+        `kvE2_futPossibleZones`/`kvE2_futZoneClass`, and the syntactic order-admissibility
+        Bool `kvE2_futAdmissible` with `kvE2_futRealizer_admissible` — the mechanical
+        list/filter dispatch over the finite alphabet the spike showed viable)*
+  - [x] `kvE2_extNegFut` definition for all σ. *(= `(kvE2_futPos σ).neg`; `kvE2_futPos` =
+        admissibility-gated disjunction over permutations of the gap-profile list of
+        `D`-guarded `Until` chains (`kvE2_futChain`, the Cor 5.4 O_n device) ending in
+        `kvE2_futEnd` (fresh profile + exact ray content `kvE2_futRayForm`); inadmissible
+        σ get `⊥` — trivially-true clause, sound because a realizer forces admissibility.
+        Signature verbatim per Phase 2: clause = (Until-navigated positive local-existence
+        form).neg, no qnf parameter.)*
+  - [x] `kvE2_extNegFut_sound` for all σ, sorry-free. *(deviation: additive strengthening —
+        proved for ALL σ with NO `zFutT3`-marking hypothesis, since a σ realized at exterior
+        `t < x1` is forced `zFutT3`-marked via Phase 1's
+        `kvE2_exterior_zone_determination_fut`; hypotheses exactly `(hxw, hwt)` per the
+        binding signature. Chain construction sorts occurrences by minimal-witness
+        extraction (`kvE2_futMinPick`/`kvE2_futChainBuild`); axioms
+        {propext, Classical.choice, Quot.sound}; commit a2c4a2552, +483 lines.)*
 - **Estimated output:** ~300–500 lines.
 - **Done when:** build green; `_sound` sorry-free and axiom-clean over the whole alphabet;
   no signature drift from Phase 2 (H6).
