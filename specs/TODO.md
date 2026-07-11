@@ -1,10 +1,10 @@
 ---
-next_project_number: 347
+next_project_number: 348
 ---
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
+Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 347 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-11. Generated from state.json dependency graph.*
@@ -12,7 +12,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343,347 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
 | 3 | 193,307 | 189,192,196,309 | completeness, automation |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
@@ -115,7 +115,18 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Uncategorized
 
+347 [NOT STARTED] — Faithfulness review + revision of the task-346 gate against Rabin
+
 ## Tasks
+
+### 347. Rabinovich bracket faithfulness review
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Dependencies**: Task 346
+
+**Description**: Faithfulness review + revision of the task-346 gate against Rabinovich 2014 §5 (full text at ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md). CORE QUESTION: Rabinovich's brackets (Lemma 5.3/Cor 5.4/Lemma 5.1, Notation 5.2) bound witnesses INSIDE (z0,z1) by ordering conjuncts — the paper has NO exterior-completeness direction; yet the Lean encoding's nf_eval_nf (NormalForm.lean:206) quantifies the fresh variable over ALL of M.carrier, which is what forced 346's hexclExt residue and the conditional interior+boundary gate. Adjudicate: (a) BENIGN — the qnf/zone encoding carries ordering content from which strictly-exterior non-realization is derivable, so hexclExt is encoding-level debt (possibly cheap to discharge, superseding the heavy prop43_exterior_completeness successor spec in 346 summary); or (b) SUBSTANTIVE — the encoding dropped Rabinovich's interval-bounding (cf. 335 report 07 Refutation 2 'category mismatch at inner-bits layer'), in which case propose and land the smallest revision restoring bracket-semantics faithfulness rather than proving exterior completeness from an unfaithful encoding. MUST ALSO CHECK: (1) strictness — Rabinovich strict interior z0<x<z1 + K+/K- endpoint operators vs 346's boundary-inclusive cone x<=x1<=t with realized boundary positives (Phase 4 endpoint/witness literals) — verify the trichotomy maps to interior-brackets+K± without double-counting endpoints; (2) hreal hypothesis shape vs what Rabinovich §5 induction actually proves (task-335 provider obligation match); (3) interior-singleton kvE2_sepPosI fragment vs Lemma 5.3 induction single-P1 case structure. GROUNDING: Rabinovich full text (cite by page); specs/346_*/summaries/01 + progress records; specs/archive/330_*/reports/01 (faithfulness audit); specs/335_*/reports/07. OUTPUT: verdict (a)/(b) with paper-cited justification; if (b), revision plan + implementation; update or retire the prop43_exterior_completeness successor spec accordingly. CONSUMERS: prop43 successor decision, task 309 Phases 13.4/14, task 335 Phase D.
+
+---
 
 ### 346. Successor carrier redefinition
 - **Status**: [COMPLETED]
