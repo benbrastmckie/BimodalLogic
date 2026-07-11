@@ -1,0 +1,58 @@
+diff --git a/Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean b/Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean
+index 9932d35ba..39ccf7995 100644
+--- a/Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean
++++ b/Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean
+@@ -193,6 +193,53 @@ def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop
+     kvE2_sepPos qnf = [σ0] ∧
+     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
+ 
++/-! ## Phase B/D — ⇒ soundness over task 344's LANDED pin-anchored fold `kvE2_outer_fold_frag`
++
++Task 344 (`SharedWitness.lean:12502`) landed `kvE2_outer_fold_frag`: the pin-anchored `_frag`
++variant of the depth-2 fold. Under `hfrag` (single interior positive) it anchors the gate at the
++body's own pin `x1` rather than at an arbitrary anchor, so the plan-v4 FORWARD-clause wall (report
++04) is dissolved. The fold takes exactly three residual obligations at `charK := fun χ => P.existF
++0 χ`: `hcorrK` (provider correctness at the pin), `hInnerR` (the zWT3 analog of gate clause (iv) —
++the RIGHT inner-nine consistency the landed gate does not carry), and `hexcl` (negative-sub
++exclusion). 335 discharges all three inside `OuterGate.lean`; `SharedWitness.lean` stays frozen. -/
++
++theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
++    (atomMap : Formula → sig.preds)
++    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
++    (P : ExistProviders sig atomMap 1)
++    (qnf : NormalForm sig 2 3)
++    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
++    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
++    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
++    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
++    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
++    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
++    (M : OrderedMonadicStructure sig)
++    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
++    (x t : M.carrier)
++    (hfrag : kvE2_sepFragment qnf) :
++    (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t →
++      ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
++  intro h_holds
++  rw [bracketEndChar_kvE2_two_eq] at h_holds
++  refine kvE2_outer_fold_frag atomMap h_surj (fun χ => P.existF 0 χ) qnf
++    h_xy h_yt h_xt h_yx h_ty h_tx M x t h_holds hfrag ?hcorrK ?hInnerR ?hexcl
++  case hcorrK =>
++    exact fun σ a hev =>
++      (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ (nfk_projFresh σ) a).mp hev
++  case hInnerR =>
++    intro σ0 hpos zs χ hncons
++    by_cases hg : kvE2_sepGate qnf
++    · sorry
++    · rw [kvE2_sepBody_gate_fail _ _ qnf hg] at h_holds
++      simp [VVecEA2.holds] at h_holds
++  case hexcl =>
++    intro w hxw hwt hptW σ hσneg x1
++    by_cases hg : kvE2_sepGate qnf
++    · sorry
++    · rw [kvE2_sepBody_gate_fail _ _ qnf hg] at h_holds
++      simp [VVecEA2.holds] at h_holds
++
+ /-! ### Phase B FRAGMENT-GATE BLOCKER (task 335 v5 — recorded after a genuine machine attempt)
+ 
+ The fragment-restricted ⇒ soundness `bracketEndChar_kvE2_sound_two_prior_frag` was set up over the

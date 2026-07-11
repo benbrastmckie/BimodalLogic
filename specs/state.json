@@ -1438,7 +1438,7 @@
       },
       "previous_status": "partial",
       "next_artifact_number": 2,
-      "blockers": "Phase B: the interior-LEFT/RIGHT gate FORWARD conjunct (and the coupled anchor conjuncts a<w / full base realization) cannot be produced under hfrag from the public API. The only exclusion channel (kvE2_sepSegForm_excludes) needs the frozen kvE2_sepDisjunct' segment content, which no public extractor exposes; producing it requires SharedWitness.lean edits (branch a, REFUTED per report 04) and violates 341's frozen-file gate. The O4 residue-vanish (SW:6785-6791) is a routing verdict, not a landed derivation. This is the same REFUTED root cause as the v4 blocker; the fragment restriction collapses hbdry (verified) but not the interior-gate FORWARD obligation."
+      "blockers": "USER DECISION REQUIRED (R1): hInnerR is circular in OuterGate-only territory — gate clause (iv) is zXW3-only, so no public producer yields the RIGHT sole-positive realization; the R2 hypothesis may additionally be UNSATISFIABLE for LEFT owners (potential 344 design gap). Clean fix R1: add clause (v) (zWT3 mirror of clause iv, provable by landed kvE2_sep_zone4_consistentR) to the LANDED kvE2_sepGate def in SharedWitness.lean — requires unfreezing SharedWitness (341 gate renegotiation) + updating gate consumers + removing hInnerR threading from 344 lemmas. Alternatives: dedicated SharedWitness-territory spawn task, or the deferred successor carrier re-definition. Evidence: 335 handoffs/phase-b-wip-outergate.lean (compiling skeleton, hcorrK DISCHARGED green, gate-fail branches closed) + working-progress-1783748952.patch. hexcl unassessed (fold blocked regardless)."
     },
     {
       "project_number": 341,

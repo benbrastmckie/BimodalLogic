@@ -1,0 +1,314 @@
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness
+
+/-!
+# Outer-Gate Assembly Engine — live `bracketEndChar_kvE2` + `k = 2` gate correctness (task 335)
+
+A new **leaf sibling** of `SharedWitness.lean` inside `NfMultiAnchorBridge/`. It is **purely
+additive**: nothing here re-proves or edits the task-334 faithful carrier `kvE2_sepBody`
+(`SharedWitness.lean:806`) or any of its correctness lemmas. Those are treated as **verified
+INPUTS**; this file only *applies* them.
+
+## What this file delivers
+
+1. **`bracketEndChar_kvE2`** — the first LIVE definition of the outer gate (the only prior `def`s
+   lived in the quarantined Boneyard and encoded the superseded two-level "navigated" carrier).
+   It delegates to the faithful carrier `kvE2_sepBody` at the standard instantiation
+   (`charBase = nf_depth0_char_formula atomMap h_surj`, `charK = fun χ => P.existF 0 χ`).
+2. **`bracketEndChar_kvE2_two_eq`** — an `rfl` bridge exposing the carrier (the delegation is
+   definitional because `kvE2_sepBody … : NormalForm sig 2 3 → VVecEA2` is *definitionally*
+   `BracketEndCharCarrierV sig 2`, `CarrierK1V.lean:365`).
+3. **`bracketEndChar_kvE2_complete_two_prior`** (task 335 Phase 2) — the ⇐ (completeness) half of
+   the k=2 gate, UNCONDITIONAL (no interiority hypothesis); consumes the landed task-337 engine
+   `kvE2_sepBody_holds_of_honest`. Plus its two char-formula bridges `bracketEndChar_kvE2_hcb`/
+   `bracketEndChar_kvE2_hck`.
+4. **⇒ soundness (`bracketEndChar_kvE2_sound_two_prior`) — NOT delivered, BLOCKED.** See the
+   "Phases 3-5 — BLOCKED" note at the end of this file: the multi-owner soundness `hgate`
+   forward-zone conjunct is underdetermined by the faithful carrier's realized content (landed
+   O4 CRUX RECORD, `SharedWitness.lean:6566-6659`); the faithful repair requires a carrier
+   REDEFINITION outside this task's additive scope.
+5. **Assembled `bracketEndChar_kvE2_correct_two_prior` — NOT delivered** (depends on 4).
+
+## Scope decisions (recorded in the file, resolved in the plan)
+
+- **R-A (⇐ generality) → INTERIOR-RESTRICTED CARRIER (task 342 update).** `kvE2_sepBody_complete`
+  is now UNCONDITIONAL: the carrier's arrangements index their owners by the interior-restricted
+  list `kvE2_sepPosI` (a two-zone order-preserving filter of `kvE2_sepPos`), so each owner's
+  LEFT/RIGHT interiority is a construction invariant recovered definitionally
+  (`kvE2_sepPosI_zone`), never a hypothesis on realized types. The historical `hL`/`hLR`
+  interiority hypotheses of tasks 335/336 are GONE — `kvE2_sepHonest_hLR_absurd`
+  (`SharedWitness.lean`) machine-certifies that any such hypothesis is inconsistent with every
+  honest evaluation, which is why none may return. Non-interior positive owners ride the atomic
+  `E[Σ]` endpoint/pivot literals (Rabinovich §5, p.7, via Prop 3.5) rather than the interleaving.
+- **R-B (KampPrior wiring) → FOLLOW-ON.** The gate is NOT wired into `KampPrior.lean:351`
+  (threading `ExistProviders` through `nf_nvar_exist_all_depths`'s `Nat.rec`/`n=1` case) — that
+  integration is a distinct downstream task, out of scope here.
+-/
+
+namespace Bimodal.Metalogic.WeakCanonical.Kamp
+
+open Bimodal.Syntax
+open Bimodal.Metalogic.WeakCanonical
+open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula)
+
+/-! ## Phase 1 — live wrapper def + `rfl` bridge -/
+
+/-- **The live outer-gate carrier** (task 335 Phase 1; first live `def` — supersedes the
+    quarantined Boneyard `:918` two-level carrier). At depth-1 providers
+    `P : ExistProviders sig atomMap 1` it produces the k=2 carrier `BracketEndCharCarrierV sig 2`,
+    delegating to the task-334 **faithful** carrier `kvE2_sepBody` (`SharedWitness.lean:806`) at
+    the standard instantiation `charBase = nf_depth0_char_formula atomMap h_surj`,
+    `charK = fun χ => P.existF 0 χ`. The carrier is a verified INPUT — only applied, never
+    re-proved. -/
+noncomputable def bracketEndChar_kvE2 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1) :
+    BracketEndCharCarrierV sig 2 :=
+  fun qnf => kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf
+
+/-- **Definitional bridge** (task 335 Phase 1). The live carrier is DEFINITIONALLY the faithful
+    body at the standard instantiation — pure `rfl`, because `kvE2_sepBody … : NormalForm sig 2 3 →
+    VVecEA2` is definitionally `BracketEndCharCarrierV sig 2`. Soundness/completeness lemmas rewrite
+    with this to expose `kvE2_sepBody`. -/
+theorem bracketEndChar_kvE2_two_eq {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3) :
+    bracketEndChar_kvE2 atomMap h_surj P qnf =
+      kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf := rfl
+
+/-! ## Phase 2 — ⇐ completeness half: consume `kvE2_sepBody_holds_of_honest`
+
+The reverse (mpr) direction of the k=2 gate: an honest depth-2 evaluation of `qnf` at the bracket
+witness `w` (with `x < w < t` recovered from the atom layer) forces the carrier body `.holds`. This
+is a **consumption** of the landed task-337 completeness engine `kvE2_sepBody_holds_of_honest`
+(`SharedWitness.lean:9262`) — no new engine, no interiority hypothesis. The gate `hg` is discharged
+by the landed `kvE2_sepGate_holds_of_honest` (`SharedWitness.lean:2666`); the two char-formula
+bridges `hcb`/`hck` are built from `nf_depth0_char_formula_correct` (KampTranslation:141) and
+`P.correct` (the `ExistProviders` correctness field) with the `Fin 0` env collapse. -/
+
+/-- **⇐ completeness bridge for the char-base layer** (task 335 Phase 2): the standard-instantiation
+    depth-0 characteristic formula is truth-equivalent to the arity-1 evaluation. Extracted from the
+    landed `nf_char2_atom_layer` proof (`Base.lean:58`), specialized to the plain arity-1 iff. -/
+theorem bracketEndChar_kvE2_hcb {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (M : OrderedMonadicStructure sig) (χ : NormalForm sig 0 1) (u : M.carrier) :
+    temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ := by
+  rw [Separation.nf_depth0_char_formula_correct]
+  simp only [nf_eval_nf]
+  constructor
+  · intro h a
+    obtain ⟨p, rfl⟩ := atomKind_arity1_is_pred a
+    simp only [atom_eval]
+    exact h p
+  · intro h p
+    have hp := h (.pred p ⟨0, by omega⟩)
+    simpa only [atom_eval] using hp
+
+/-- **⇐ completeness bridge for the provider layer** (task 335 Phase 2): the depth-1 existential
+    provider formula `P.existF 0 χ` is truth-equivalent to the arity-1 depth-1 evaluation, via the
+    `ExistProviders.correct` field at `n = 0` and the `Fin 0 → M.carrier` env collapse
+    (`insertEnv` on the empty env is `fun _ => u`). -/
+theorem bracketEndChar_kvE2_hck {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (P : ExistProviders sig atomMap 1)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (χ : NormalForm sig 1 1) (u : M.carrier) :
+    temporal_truth M atomMap u (P.existF 0 χ) ↔ nf_eval_nf M 1 1 (fun _ => u) χ := by
+  rw [P.correct 0 χ M h_UZ h_SZ u]
+  constructor
+  · rintro ⟨env, henv⟩
+    have heq : insertEnv env u = (fun _ => u) := by
+      funext i
+      simp only [insertEnv]
+      rw [dif_neg (by omega)]
+    rwa [heq] at henv
+  · intro h
+    exact ⟨Fin.elim0, by rw [insertEnv_zero]; exact h⟩
+
+/-- **⇐ completeness half of the k=2 gate** (task 335 Phase 2, UNCONDITIONAL — no `hL`/`hLR`).
+    An honest depth-2 evaluation at bracket witness `w` forces the carrier body `.holds`, by
+    consuming the landed completeness engine `kvE2_sepBody_holds_of_honest` (SW:9262). The order
+    hypotheses are the standard six `BracketCarrierCorrectVPrior` atom-layer conditions; `w`'s
+    interval position `x < w < t` is recovered from `qnf`'s own atom layer under those hypotheses
+    (bracket range, NOT a chain — LITMUS-clean). -/
+theorem bracketEndChar_kvE2_complete_two_prior {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (P : ExistProviders sig atomMap 1)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.atom_assgn (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.atom_assgn (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) :
+    (∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) →
+      (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t := by
+  rintro ⟨w, h⟩
+  -- Recover `x < w` and `w < t` from `qnf`'s atom layer (env `[w, x, t]`).
+  have hxw : x < w := by
+    have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
+    simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+  have hwt : w < t := by
+    have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
+    simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+  -- Gate from the landed honest-gate lemma.
+  have hg : kvE2_sepGate qnf := kvE2_sepGate_holds_of_honest qnf M w x t hxw hwt h
+  -- Land on the live carrier and apply the completeness engine.
+  rw [bracketEndChar_kvE2_two_eq]
+  exact kvE2_sepBody_holds_of_honest (nf_depth0_char_formula atomMap h_surj)
+    (fun χ => P.existF 0 χ) qnf hg M atomMap w x t hxw hwt h
+    (fun χ u => bracketEndChar_kvE2_hcb atomMap h_surj M χ u)
+    (fun χ u => bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ χ u)
+
+/-! ## Phase A — single-positive-sub fragment predicate + `_frag` statement surgery (task 335 v5)
+
+The plan-v4 unconditional four-family discharge is REFUTED (report 04): over an arbitrary `qnf`
+the fold's FORWARD gate conjunct `(∃ v, zoneHolds … zs v ∧ nf_eval χ) → σ.2 (nf0_assemble zs χ σ.1)
+= true` is false in a rich model (`σ.2` need not mark every realizable `(zs, χ)`). Task 321 verdict
+N2 re-scopes the 309 Phase 13.4 / `KampPrior.lean:351` deliverable to the **single-positive-sub
+fragment**, where the O4 CRUX RECORD (`SharedWitness.lean:6785-6791`) states the cross-σ residue
+VANISHES: with one interior positive there are no cross-σ slot points, so every witness is σ0's own
+bit-true 1-type or a literal/segment-covered self-zone point.
+
+`kvE2_sepFragment qnf` is a pure `qnf`-domain restriction (positivity + interior zone of the sole
+positive sub); it depends ONLY on `qnf`, never on `M`/`atomMap`/`P`/a realized type. It is the sole
+sanctioned hypothesis beyond the provider shape — NOT a provider-conditional family. -/
+
+/-- **Single-positive-sub fragment predicate** (task 335 v5 Phase A). `qnf`'s positive-sub list is
+    exactly the singleton `[σ0]` and `σ0` is interior-zoned (`x < x1 < w` or `w < x1 < t`). This is
+    the qnf-domain narrowing task 321 verdict N2 sanctions: it collapses the fold's four
+    provider-conditional families to the residue-vanish case (O4 record SW:6785-6791). Depends only
+    on `qnf` (its positivity + zone structure), never on a model or provider. -/
+def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
+  ∃ σ0 : NormalForm sig 1 4,
+    kvE2_sepPos qnf = [σ0] ∧
+    (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
+
+/-! ### Phase B FRAGMENT-GATE BLOCKER (task 335 v5 — recorded after a genuine machine attempt)
+
+The fragment-restricted ⇒ soundness `bracketEndChar_kvE2_sound_two_prior_frag` was set up over the
+landed `kvE2_outer_fold` (`SharedWitness.lean:9897`):
+`intro h_holds; rw [bracketEndChar_kvE2_two_eq] at h_holds; refine kvE2_outer_fold … h_holds
+?hgateL ?hgateR ?hbdry ?hexcl`. The reduction TYPECHECKS (six order bits unify defeq
+`qnf.atom_assgn = qnf.1`), leaving the four provider-conditional family goals. Under `hfrag`
+(`kvE2_sepPos qnf = [σ0]`, `σ0` interior):
+
+- **`hbdry` DISCHARGES** (vacuous): every positive `σ ∈ kvE2_sepPos qnf` equals `σ0` (singleton),
+  and `σ0` is interior-zoned, contradicting the non-interior antecedent. The fragment restriction
+  DOES collapse the non-interior positive class exactly as O4 SW:6785-6791 predicts.
+- **`hgateL` is BLOCKED at the FORWARD conjunct.** After reducing to the sole `σ = σ0` and splitting
+  the six-conjunct interior-LEFT gate, the residual goals are (captured verbatim, `lean_goal`):
+  1. `a < w` — for an ARBITRARY anchor `a ∈ (x,t)` whose only property is `hanchor : (charK
+     (nfk_projFresh σ)).eval_at M atomMap a` (the FRESH E[Σ]-atom). Underdetermined: nothing forces
+     an arbitrary fresh-atom-realizing `a` below `w` (O4 "second obstruction", SW:6772-6778 — the
+     right region does not exclude the depth-1 `charK` atom).
+  2. `nf_eval_nf M 0 4 [a,w,x,t] σ.1` — `a` realizes `σ.1`'s FULL arity-4 base. Underdetermined:
+     `hanchor` supplies only the fresh projection `nfk_projFresh σ`, strictly weaker than `σ.1`.
+  4. FORWARD: `∀ zs χ, (∃ v, zoneHolds [a,w,x,t] zs v ∧ nf_eval_nf M 0 1 v χ) → σ.2 (nf0_assemble zs
+     χ σ.1) = true` — the machine-certified wall. Its only exclusion channel is
+     `kvE2_sepSegForm_excludes` (`SharedWitness.lean:6683`), which fires ONLY where the segment form
+     HOLDS at `v`; but the segment content lives inside the frozen `kvE2_sepDisjunct'` and is
+     discarded by every PUBLIC extractor (`kvE2_sepBody_extract` SW:8410 yields anchor + below
+     bundles only). No public lemma produces this conjunct; `bracketEndChar_kv_factors`
+     (`CarrierKv.lean:422`) certifies the (outer zone, projected 1-type) information ceiling.
+
+Reaching the segment content to close conjuncts 1/2/4 would require NEW lemmas in
+`SharedWitness.lean` (branch (a) — REFUTED, report 04; and prohibited: 341's frozen-file gate keeps
+`SharedWitness.lean` byte-unchanged). The O4 residue-vanish (SW:6785-6791) is a Phase-10 ROUTING
+verdict, not a landed derivation: it certifies the CROSS-σ residue vanishes for one positive, but
+formalizing "every witness is σ0's own bit-true slot or a segment-covered point" still needs the
+frozen segment structure the public API does not expose. Per the plan's Phase-B territory guard, the
+attempt STOPS here — no `SharedWitness.lean` edit, no `sorry`/vacuous placeholder, no assumed family.
+See `specs/335_.../handoffs/02_continuation.md` for the full captured transcripts and the successor
+route (bit-compatibility filtering carrier re-definition, O4 SW:6763-6770). -/
+
+/-! ## Phases 3-5 — ⇒ soundness + assembly: now-attemptable over task 333's LANDED fold
+
+The ⇒ (soundness) half `.holds ⟹ ∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` — and hence the assembled
+`bracketEndChar_kvE2_correct_two_prior` — is **now-attemptable work**, NOT the blocked obligation
+the prior note recorded. The two reasons that note gave are both now false:
+
+1. *"No landed depth-2 soundness reassembly / no depth-2 quant-layer fold."* Task 333 LANDED exactly
+   that: `kvE2_outer_fold` (`SharedWitness.lean:9897`, green, axiom-clean) IS the depth-2 assembly —
+   it reassembles `∃ w, nf_eval_nf M 2 3 [w,x,t] qnf` from the carrier's realized content (there is
+   still no generic quant-layer fold engine, but the bespoke `kvE2_outer_fold` supersedes the need
+   for one on this path).
+2. *"The O4 forward-zone conjunct is underdetermined; the faithful repair needs a carrier
+   REDEFINITION of the (now-deleted) `kvE2_sepValid`/`kvE2_sepArrL`/`kvE2_sepArrR`."* The O4 crux is
+   DISSOLVED (task 333 report 03, H4-verified): the forward-zone `hgate` conjunct is **antecedent-
+   only** and the O4 crux record is inert. The named symbols no longer exist — task 334 replaced the
+   carrier with the faithful `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`, and task 342 added the
+   interior-restricted owner index `kvE2_sepPosI`. No `SharedWitness.lean` redefinition is required.
+
+**What the fold requires task 335 to construct (at `charK := fun χ => P.existF 0 χ`).** The landed
+`kvE2_outer_fold` does NOT yield a thin `apply`; it takes four provider-conditional hypothesis
+families that task 333 deliberately punted to the 335 provider instantiation (fold docstring
+SW:9858-9878, "discharged downstream at the provider instantiation `charK := P.existF 0` (task 335),
+never assumed here"):
+
+- `hgateL` / `hgateR` (SW:9911 / 9929) — the interior LEFT/RIGHT per-σ gate families for the
+  `kvE2_sep_zXW3` / `kvE2_sep_zWT3` zones. Built from the hypothesis-free `kvE2_sepBody_extract`
+  (SW:8410) bundles + the per-σ kit `kvE2_sepBundleL/R_parts` (SW:5379 / 5396) →
+  `kvE_subBracket2V_sound_of_parts` (`SubBracket2V.lean:1290`). [Phase 4a]
+- `hbdry` (SW:9946) — non-interior positive realization. `hexcl` (SW:9952) — negative-sub exclusion,
+  provider-conditional in the A1 sense (`PriorInterface.lean:47-59`). Discharged from
+  `ExistProviders.correct` + `h_UZ`/`h_SZ` at `P.existF 0`. [Phase 4b — the genuine risk]
+
+The completeness half (Phase 2, above) is delivered, green, and axiom-clean. Authorization for the ⇒
+work is held (task 333 Territory Contract; 335 owns `OuterGate.lean` only — the fold and kit are
+verified INPUTS, applied never re-proved). Per zero-debt discipline: NO `sorry`, NO vacuous
+placeholder, NO assumed family, NO interiority hypothesis on any live path. Rabinovich cited by PDF
+page only: the depth-2 assembly follows Def 3.1 (p.4) point-type/ordering split and the §5 bracket
+assembly with quantifier-free point types (pp.7-9); Lemma 3.2(1) (p.4) states the closure without
+printed proof.
+
+**BLOCKER (task 335 Phases 4a/4b/4c — recorded after a genuine attempt; escalated to user).**
+The ⇒ soundness half is NOT delivered. The Phase-4c reduction typechecks —
+`intro h_holds; rw [bracketEndChar_kvE2_two_eq] at h_holds; refine kvE2_outer_fold … h_holds
+?hgateL ?hgateR ?hbdry ?hexcl` leaves exactly the four family goals with `h_holds :
+(kvE2_sepBody …).holds` in context — but NONE of the four families is dischargeable from
+`h_holds` + `ExistProviders.correct` at `charK := fun χ => P.existF 0 χ`. The plan's premise that
+Phase 4a (`hgateL`/`hgateR`) is "bounded (the machinery exists)" is INCORRECT: the interior gate is
+NOT bounded, for the same root cause as 4b.
+
+Root cause (multiply confirmed, machine-checked):
+- Each gate family carries a FORWARD clause `(∃ v, zoneHolds [a,w,x,t] zs v ∧ nf_eval_nf M 0 1 v χ)
+  → σ.2 (nf0_assemble zs χ σ.1) = true` (fold SW:9919-9923 / 9936-9940). Its ONLY producer is
+  `nf_eval_depth1_fold_iff` (`CarrierKv.lean`, cited `SubBracket2.lean:519`) applied to σ's OWN
+  honest depth-1 realization `nf_eval_nf M 1 4 [x1,w,x,t] σ` — which is exactly what soundness must
+  PRODUCE. Circular.
+- The only extractor from `.holds`, `kvE2_sepBody_extract` (SW:8410), yields ONLY the endpoints,
+  the pivot `w`, and the interior BUNDLES `kvE2_sepBundleL/R` (anchor `x1` + `zXU`-below witnesses).
+  It does NOT yield the full per-σ `nf_eval_nf M 1 4 …` nor the gate forward/backward clauses. No
+  `.holds → per-σ full realization` lemma exists anywhere in the tree.
+- `ExistProviders.correct` at `P.existF 0` yields only `nf_eval_nf M 1 1 (fun _ => a)
+  (nfk_projFresh σ)` — the PROJECTED FRESH arity-1 type at `a`, strictly weaker than σ's arity-4
+  content. This is precisely the `(outer zone, projected 1-type)` information loss machine-certified
+  by `bracketEndChar_kv_factors` (`CarrierKv.lean:422`), whose docstring states it "refutes the
+  unconditional k≥2 soundness direction". The forward clause is refutable in a rich model (an
+  arbitrary `qnf` whose `σ.2` leaves some realizable `(zs,χ)` false).
+- 333 landed `kvE2_outer_fold` taking all four families as HYPOTHESES rather than deriving them —
+  the strongest signal that the faithful carrier does not pin them.
+
+Classification (per plan v4 escalation branch): this is BOTH (a) a `SharedWitness.lean` reshape —
+`kvE2_outer_fold`/`kvE2_sepBody` would have to be reshaped so the gate is derived from `.holds`
+internally or weakened to what the carrier pins (333 TERRITORY — 335 must NOT edit
+`SharedWitness.lean`) — AND (b) an unmet A1-conditionality: `charK := P.existF 0` (an arity-1
+provider on the projected fresh type) cannot force σ's arity-4 joint content; discharging would
+need either a stronger provider contract (a higher-arity `charK`, changing the `ExistProviders`
+interface / `KampPrior` instantiation) or a CONDITIONAL gate — and a conditional gate FAILS the
+UNCONDITIONAL `BracketCarrierCorrectVPrior` that task 309 requires. Per zero-debt discipline no
+`sorry`, no vacuous close, no assumed family, and no conditional gate was committed; the file is
+left at its Phase-3-green state (Phase 1/2 decls + this note). See
+`specs/335_.../handoffs/01_continuation.md` for the captured goal transcript and resume plan. -/
+
+end Bimodal.Metalogic.WeakCanonical.Kamp
