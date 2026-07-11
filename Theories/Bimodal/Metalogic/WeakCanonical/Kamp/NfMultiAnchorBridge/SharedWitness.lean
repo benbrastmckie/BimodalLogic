@@ -12450,4 +12450,48 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
   · rw [kvE2_sepBody_gate_fail charBase charK qnf hg] at h
     simp [VVecEA2.holds] at h
 
+/-- **Pin-anchored per-σ kit application** (task 344 Phase 2 — the `_frag` variant of
+    `kvE2_sepBody_kit_sound`). In the single-positive fragment (`hfrag`) the sole owner `σ0` is
+    either LEFT- or RIGHT-interior; each branch delivers the FULL kit conclusion via the
+    corresponding pin-anchored gate producer (`kvE2_sepGateAtPin_fragL`/`_fragR`), with the
+    opposite-zone clause vacuous under `hfrag`. `hcorrK`/`hInnerR` are explicit threaded
+    obligations for task 335; `hInnerR` supplies the RIGHT-branch inner-zone exclusion. -/
+theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (x t : M.carrier)
+    (hfrag : kvE2_sepFragment_frag qnf)
+    (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
+    (hInnerR : ∀ (σ0 : NormalForm sig 1 4), kvE2_sepPos qnf = [σ0] →
+      ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
+        σ0.2 (nf0_assemble zs χ σ0.1) = false)
+    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t) :
+    (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap x ∧
+    (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap t ∧
+    ∃ w : M.carrier, x < w ∧ w < t ∧
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) ∧
+      (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) := by
+  obtain ⟨σ0, hpos, hzone⟩ := hfrag
+  rcases hzone with hzL | hzR
+  · exact kvE2_sepGateAtPin_fragL atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
+      M x t σ0 hpos hzL hcorrK h
+  · exact kvE2_sepGateAtPin_fragR atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
+      M x t σ0 hpos hzR hcorrK (hInnerR σ0 hpos) h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

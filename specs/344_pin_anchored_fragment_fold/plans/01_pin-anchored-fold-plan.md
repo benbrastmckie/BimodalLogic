@@ -221,7 +221,14 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
 
 ---
 
-### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [IN PROGRESS]
+### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [COMPLETED]
+
+**COMPLETED (dispatch 11, R2)**: `kvE2_sepInnerConsistentR` + `kvE2_sep_zone4_consistentR`, the right
+owner-lit/slot-mem helpers (`kvE2_sepEpL/EpR/PtW_owner_lits_R`, `kvE2_sepPtX1R_owner_lit`,
+`kvE2_sep_rXW_mem_slotsLFor`, `kvE2_sep_rX1T_mem_slotsRFor`), `kvE2_sepGateAtPin_fragR` (full mirror,
+sorry-free, axiom-clean — `h_bwd` uses threaded `hInnerR`), and `kvE2_sepBody_kit_sound_frag` (threads
+`hInnerR` in the `∀ σ0, kvE2_sepPos qnf = [σ0] → …` form; fragL/fragR branches deliver the full kit
+conclusion). All axiom-clean `{propext, Classical.choice, Quot.sound}`; 344-section sorry count = 0.
 
 **RESOLUTION (dispatch 11, orchestrator-decided R2)**: fragR takes the extra explicit hypothesis
 `hInnerR : ∀ zs χ, ¬ kvE2_sepInnerConsistentR zs → σ0.2 (nf0_assemble zs χ σ0.1) = false` (the zWT3
