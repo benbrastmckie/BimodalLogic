@@ -13,11 +13,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
 | 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,341,348 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 2 | 192,196,231,292,293,294,298,341,348 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,348 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,9 +111,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Kamp_theorem_formalization
 
 335 [PLANNED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
   └─ 348 [NOT STARTED] — Restore Rabinovich interval-bounding faithfulness for the exterio
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -266,8 +267,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346
-- **Plan**: [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
+- **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348
+- **Plan**:
+  - [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
+  - [309_offdiag_two_anchor_fi_chain/plans/08_offdiag-fi-chain-v8.md]
 - **Research**: [309_offdiag_two_anchor_fi_chain/reports/07_unblock-assessment-post-333.md]
 
 **Description**: Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).
@@ -280,7 +283,7 @@ FORBIDDEN ROUTES (obstruction guards G1-G5, task 307 report 03 SS4): G1 no arity
 
 LITERATURE GROUNDING: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Lemma 5.1 md:134-152, Corollary 5.4 md:154-157).
 
-GOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit.
+GOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit. v8 re-point (task-347 adjudication, verdict (b)): the KampPrior.lean:351 discharge consumes an interior+boundary gate PLUS a separate adjacent-exterior bracket with the interior/exterior seam at the anchors x,t (Rabinovich Prop 4.3 + Lemma 7.6 re-flatten) — NOT a single all-arrangement (x,t) gate (that target was an outer-existential globalization artifact with no §5 counterpart; F3/F4 refuted it). The adjacent-exterior bracket and the final KampPrior.lean:351 close are the task-348 prop43_exterior_reflatten deliverable; task 309 depends on 348. Phases 13.4/14 are GATED on task 348's definition-of-done (exterior-marked hexclExt residue discharged by the adjacent-exterior bracket; KampPrior.lean:351 strategic sorry retired). Plan: v8 (08_offdiag-fi-chain-v8.md).
 
 ---
 
