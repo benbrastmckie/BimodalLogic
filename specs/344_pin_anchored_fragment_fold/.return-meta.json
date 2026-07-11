@@ -1,9 +1,31 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "agent_type": "lean-implementation-hard-agent",
   "delegation_path": ["orchestrator", "implement", "lean-implementation-hard-agent"],
   "task_number": 344,
   "session_id": "sess_1783723095_edd5a7_344",
   "dispatch": 8,
-  "sorry_inventory": []
+  "summary": "h_fwd WITNESS case (the flagged 'last h_fwd blocker') complete and green; h_fwd fully sorry-free. 3 reusable helpers added. 344-section sorry count 2 -> 1. Sole remaining Phase-1 blocker: h_bwd.",
+  "handoff_path": "specs/344_pin_anchored_fragment_fold/handoffs/08_continuation.md",
+  "verification": {
+    "sorry_count_344_section": 1,
+    "vacuous_count": 0,
+    "axiom_count_baseline_unchanged": true,
+    "build_passed": true
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "line": 11076,
+      "statement": "have (leaf): h_bwd (inside kvE2_sepGateAtPin_fragL) — per-zone witness inversion",
+      "strategic": false,
+      "assumption": "bit true -> exists witness realizing zone zs + base type chi, extracted from realized bracket data",
+      "why_deferred": "Full per-zone inversion + invalid-zone exclusion; comparable size to the completed witness case; checkpointed at the natural crux boundary per hard-mode context discipline.",
+      "follow_up_task": "344 Phase 1 completion (dispatch 9); recipe in handoffs/08_continuation.md"
+    }
+  ],
+  "memory_candidates": [
+    "rw [<- length-lemma] / rw [List.length_map] fails 'motive is not type correct' when the rewritten length occurs in a Fin index variable's TYPE; use omega with the length equality as a hypothesis instead, and feed indexing lemmas the canonical index form directly rather than rw-ing the Fin.val into the getElem.",
+    "subst on h : a = b where BOTH sides are local variables eliminates the RHS variable, not the LHS; to keep an outer variable use targeted `rw [h] at <hyps>` instead of subst."
+  ]
 }

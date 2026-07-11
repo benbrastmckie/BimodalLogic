@@ -140,6 +140,12 @@ Phases form a linear chain (each consumes the prior phase's decls). All edits ar
 
 ### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [PARTIAL]
 
+*(dispatch 8: h_fwd now fully sorry-free — WITNESS case (the flagged "last h_fwd blocker")
+landed green; added helpers `kvE2_sepPtW_owner_lit`, `kvE2_sepPtX1L_owner_lit`,
+`kvE2_sep_lUW_mem_slotsLFor`. 344-section sorry count 2 → 1. Sole remaining Phase-1 blocker:
+`h_bwd` (`SharedWitness.lean:11076`) — per-zone witness inversion; recipe in
+`handoffs/08_continuation.md`.)*
+
 **Goal**: Front-load the three residual risks as bounded early NO-GO probes, then land the additive
 segment/pin-realization extractor and the LEFT pin-anchored gate `kvE2_sepGateAtPin_fragL` (six
 conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
