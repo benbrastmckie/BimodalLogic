@@ -117,16 +117,17 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 
 
 ### Uncategorized
 
-345 [RESEARCHED] — SPAWNED from task 335 R1 decision, literature-fidelity-verified (
+345 [PLANNED] — SPAWNED from task 335 R1 decision, literature-fidelity-verified (
   └─ 335 [IMPLEMENTING] — (kamp_theorem_formalization: Follow-up to task 334 (faithful carrier ) (see above)
 
 ## Tasks
 
 ### 345. Symmetric gate clause v
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Dependencies**: Task 344
 - **Research**: [345_symmetric_gate_clause_v/reports/01_literature-fidelity-gate-design.md]
+- **Plan**: [345_symmetric_gate_clause_v/plans/01_symmetric-gate-plan.md]
 
 **Description**: SPAWNED from task 335 R1 decision, literature-fidelity-verified (session sess_1783723095_edd5a7; USER directive: most mathematically correct and faithful approach; verdict R1-faithful, reports/01). Make kvE2_sepGate symmetric per Rabinovich Cor 5.4(1)/(2) mirror pair (p.9): (1) ADD clause (v) to the LANDED kvE2_sepGate def (SharedWitness.lean ~1244-1246) = the zWT3 mirror of clause (iv), forcing bits false on non-kvE2_sepInnerConsistentR zone specs for RIGHT owners. (2) Discharge the ONE gate constructor gaining an obligation: kvE2_sepGate_holds_of_honest (SW:2666), by byte-mirroring the clause-(iv) discharge (SW:2706-2726) via the landed kvE2_sep_zone4_consistentR (SW:11309). (3) REMOVE (not guard) the now-derivable hInnerR hypothesis from kvE2_sepGateAtPin_fragR, kvE2_sepBody_kit_sound_frag, kvE2_outer_fold_frag — recovering RIGHT inner-consistency from hg clause (v) exactly as fragL uses clause (iv); this REPAIRS the confirmed LEFT-unsatisfiability of hInnerR (344 fold currently uninvokable). (4) Verify all other kvE2_sepGate consumers inert (literature report says so — re-verify at build level). CONSTRAINTS: this is the SANCTIONED exception to the SharedWitness freeze — touch ONLY the gate def, holds_of_honest, and the three 344 _frag lemma signatures/bodies; everything else byte-identical; full lake build green; axiom-clean {propext, Classical.choice, Quot.sound}; zero sorries on live paths; incremental green commits; cite Rabinovich by PDF page only. CONSUMER: 335 Phases B-D resume with discharge obligations reduced to {hcorrK, hexcl}. Task 341 GATE-phase re-diff absorbs the delta.
 
