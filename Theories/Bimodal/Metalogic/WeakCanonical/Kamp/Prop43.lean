@@ -163,6 +163,20 @@ This file ships the genuine uniform atom/lt building blocks (`tt`, `ff`, `atomAt
 `atomAt_holds`, `ltAt`, `ltAt_holds`) sorry-free and off the live import path. It
 adds **zero** live-path sorries. See the Phase 4b handoff for the full blocker
 write-up and the recommended unblock path.
+
+### Task 348 update (2026-07-11) — the exterior INSTANCES are landed
+
+The blocker above concerns the UNIFORM Prop 4.3 connective cases; those remain blocked.
+The SPECIFIC finite exterior instances the k=2 gate needs are now landed on the live
+import path: the one-sided complement clause families `kvE2_extNegFut`/`kvE2_extNegPast`
+with `_sound` AND `_complete` (`ExteriorNegation.lean`/`ExteriorNegationPast.lean`), the
+adjacent exterior brackets + enriched composed gate `bracketEndChar_kvE2Ext` (Def 7.5 /
+degenerate Lemma 7.6), and the discharge theorem
+`bracketEndChar_kvE2Ext_correct_two_prior_frag`
+(`NfMultiAnchorBridge/ExteriorBracket.lean`), in which `hexclExt` is eliminated as an
+input obligation. This confirms the Prop 4.3 re-flatten route (exterior instances +
+Lemma 7.6 adjacency) is viable WITHOUT the blocked uniform machinery — the uniform cases
+stay documented here as future work only.
 -/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

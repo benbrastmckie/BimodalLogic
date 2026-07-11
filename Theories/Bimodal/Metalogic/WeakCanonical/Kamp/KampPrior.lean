@@ -348,6 +348,16 @@ noncomputable def nf_nvar_exist_all_depths
       -- n = 1: ∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf
       -- This is the critical case needed by the main theorem (Approach 5, report 18).
       -- See handoff for the committed construction and remaining obligation.
+      --
+      -- task 348 (2026-07-11, transfer note): the exterior-residue mechanism this case
+      -- was waiting on is LANDED — `bracketEndChar_kvE2Ext_correct_two_prior_frag`
+      -- (NfMultiAnchorBridge/ExteriorBracket.lean) states the k=2 gate biconditional
+      -- for the enriched composed gate with `hexclExt` discharged INTERNALLY; the only
+      -- hypotheses still threaded are the 309-owned provider obligations
+      -- (`hfrag`/`hrealI`/`hrealB`/`hexcl` + order bits + `h_UZ`/`h_SZ`). Retirement of
+      -- THIS strategic sorry is task 309 Phase 14's deliverable (R1 scope decision,
+      -- task-348 plan): consume 348's discharge theorem + the Phase-14 provider
+      -- instantiation. Do not attempt the retirement without both.
       sorry
     | n + 2 =>
       -- n ≥ 2: off the critical path. The main theorem only needs n = 0 and n = 1.
