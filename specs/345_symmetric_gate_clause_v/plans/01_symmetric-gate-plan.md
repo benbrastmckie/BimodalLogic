@@ -1,7 +1,7 @@
 # Implementation Plan: Symmetrize kvE2_sepGate with RIGHT inner-consistency clause (v)
 
 - **Task**: 345 - symmetric_gate_clause_v
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: 344 (landed `_frag` fold chain and `kvE2_sep_zone4_consistentR`)
 - **Research Inputs**: specs/345_symmetric_gate_clause_v/reports/01_literature-fidelity-gate-design.md
@@ -92,7 +92,7 @@ depends on a green build from the prior phase.
 
 ---
 
-### Phase 1: Add clause (v) and discharge holds_of_honest [NOT STARTED]
+### Phase 1: Add clause (v) and discharge holds_of_honest [IN PROGRESS]
 
 **Goal**: Land the symmetric gate. Add clause (v) to `kvE2_sepGate` and discharge the new
 obligation in the sole gate constructor in one dispatch, since the build breaks at every gate

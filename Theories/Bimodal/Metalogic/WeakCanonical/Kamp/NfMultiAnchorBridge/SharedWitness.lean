@@ -1228,6 +1228,22 @@ def kvE2_sepInnerConsistentL (zs : ZoneSpec 4) : Prop :=
   zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))) ∨
   zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))))
 
+/-- The nine consistent INNER zones for a RIGHT-interior σ (`x < w < x1 < t`) — the mirror of
+    `kvE2_sepInnerConsistentL` with the pin `x1` above the shared witness `w`. Patterns 1-3 and
+    7-9 (exterior/boundary and above-pin) coincide with the LEFT set; only the middle three swap
+    (`zAtWR`/`zWX1`/`zAtX1R` replace `zAtX1L`/`zUW`/`zAtWL`). Used as the `hInnerR` classification
+    target under R2. -/
+def kvE2_sepInnerConsistentR (zs : ZoneSpec 4) : Prop :=
+  zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (true, false) (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (true, false) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (false, false) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
+  zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))) ∨
+  zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))))
+
 /-- **Depth-2 joint gate** (arity-3 lift of the per-σ gate `SubBracket2V.lean:232-234`):
     (i) OUTER off-fiber falsity — a sub whose atom-layer restriction to `[w,x,t]`
     disagrees with `qnf.1` is negative; (ii) OUTER seven-zone consistency — a positive
@@ -1243,6 +1259,9 @@ def kvE2_sepGate {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
     ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
   (∀ σ : NormalForm sig 1 4, qnf.2 σ = true → nf0_zoneSpec σ.1 = kvE2_sep_zXW3 →
     ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentL zs →
+      σ.2 (nf0_assemble zs χ σ.1) = false) ∧
+  (∀ σ : NormalForm sig 1 4, qnf.2 σ = true → nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
+    ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
       σ.2 (nf0_assemble zs χ σ.1) = false)
 
 /-! ## Task 334 Phases 1-2 (RELOCATED above the carrier) — order-type-disjunction index
@@ -2656,6 +2675,118 @@ private theorem kvE2_sep_zone3_consistent {sig : MonadicSignature}
           (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
           (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
 
+/-- RIGHT-geometry mirror of `kvE2_sep_zone4_consistent`: any zone realized over `[x1,w,x,t]`
+    with `x < w < x1 < t` is one of the nine `kvE2_sepInnerConsistentR` zones. Its contrapositive
+    is the h_fwd direction; `hInnerR` supplies the bit→consistent direction (the fragR blocker). -/
+theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (x1 w x t u : M.carrier)
+    (hxw : x < w) (hwx1 : w < x1) (hx1t : x1 < t)
+    (zs : ZoneSpec 4)
+    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs u) :
+    kvE2_sepInnerConsistentR zs := by
+  unfold kvE2_sepInnerConsistentR
+  have h0 := hz ⟨0, by omega⟩
+  have h1 := hz ⟨1, by omega⟩
+  have h2 := hz ⟨2, by omega⟩
+  have h3 := hz ⟨3, by omega⟩
+  simp only [Fin.cons] at h0 h1 h2 h3
+  have hzs : ∀ (p0 p1 p2 p3 : Bool × Bool),
+      zs ⟨0, by omega⟩ = p0 → zs ⟨1, by omega⟩ = p1 → zs ⟨2, by omega⟩ = p2 →
+        zs ⟨3, by omega⟩ = p3 →
+      zs = Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3))) := by
+    intro p0 p1 p2 p3 e0 e1 e2 e3
+    funext i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+    | ⟨3, _⟩ => simpa only [Fin.cons] using e3
+  have hwt : w < t := hwx1.trans hx1t
+  have hxt : x < t := hxw.trans hwt
+  have hxx1 : x < x1 := hxw.trans hwx1
+  rcases lt_trichotomy u x with hux | hux | hux
+  · -- u < x : zPastX
+    have hux1 : u < x1 := hux.trans hxx1
+    have huw : u < w := hux.trans hxw
+    have hut : u < t := hux.trans hxt
+    exact Or.inl (hzs _ _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hux, k1v_bool_eq_false h2.2 (lt_asymm hux)⟩)
+      (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))
+  · -- u = x : zAtX
+    subst hux
+    exact Or.inr (Or.inl (hzs _ _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hxx1, k1v_bool_eq_false h0.2 (lt_asymm hxx1)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hxw, k1v_bool_eq_false h1.2 (lt_asymm hxw)⟩)
+      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl u),
+        k1v_bool_eq_false h2.2 (lt_irrefl u)⟩)
+      (Prod.ext_iff.mpr ⟨h3.1.mp hxt, k1v_bool_eq_false h3.2 (lt_asymm hxt)⟩)))
+  · -- x < u : split against w
+    rcases lt_trichotomy u w with huw | huw | huw
+    · -- x < u < w : zXW  (kvE_sub2_zXU pattern)
+      have hux1 : u < x1 := huw.trans hwx1
+      have hut : u < t := huw.trans hwt
+      exact Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+        (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
+        (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hux), h2.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))
+    · -- u = w : zAtWR
+      subst huw
+      exact Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+        (Prod.ext_iff.mpr ⟨h0.1.mp hwx1, k1v_bool_eq_false h0.2 (lt_asymm hwx1)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl u),
+          k1v_bool_eq_false h1.2 (lt_irrefl u)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxw), h2.2.mp hxw⟩)
+        (Prod.ext_iff.mpr ⟨h3.1.mp hwt, k1v_bool_eq_false h3.2 (lt_asymm hwt)⟩)))))
+    · -- w < u : split against x1
+      have hxu : x < u := hxw.trans huw
+      rcases lt_trichotomy u x1 with hux1 | hux1 | hux1
+      · -- w < u < x1 : zWX1
+        have hut : u < t := hux1.trans hx1t
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+          (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm huw), h1.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu), h2.2.mp hxu⟩)
+          (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))))
+      · -- u = x1 : zAtX1R
+        subst hux1
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl u),
+            k1v_bool_eq_false h0.2 (lt_irrefl u)⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwx1), h1.2.mp hwx1⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxx1), h2.2.mp hxx1⟩)
+          (Prod.ext_iff.mpr ⟨h3.1.mp hx1t, k1v_bool_eq_false h3.2 (lt_asymm hx1t)⟩)))))))
+      · -- x1 < u : split against t
+        have hx1u : x1 < u := hux1
+        have hwu : w < u := hwx1.trans hx1u
+        have hxu' : x < u := hxw.trans hwu
+        rcases lt_trichotomy u t with hut | hut | hut
+        · -- x1 < u < t : zX1T  (kvE_sub2_zWT pattern)
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu), h1.2.mp hwu⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu'), h2.2.mp hxu'⟩)
+            (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))))))
+        · -- u = t : zAtT
+          subst hut
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu), h1.2.mp hwu⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu'), h2.2.mp hxu'⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_irrefl u),
+              k1v_bool_eq_false h3.2 (lt_irrefl u)⟩)))))))))
+        · -- t < u : zFutT
+          have hx1u' : x1 < u := hx1t.trans hut
+          have hxu'' : x < u := hxt.trans hut
+          have hwu' : w < u := hwt.trans hut
+          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (hzs _ _ _ _
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u'), h0.2.mp hx1u'⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu'), h1.2.mp hwu'⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu''), h2.2.mp hxu''⟩)
+            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
+
 /-- **The depth-2 joint gate holds for an honest `qnf`** (the arity-3 lift of
     `kvE_subBracket2V_gate_holds_of_honest`, `SubBracket2V.lean:1392`): from an honest
     depth-2 realization at `[w,x,t]` under `x < w < t`, all four gate clauses hold —
@@ -2671,7 +2802,7 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature}
     (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
     kvE2_sepGate qnf := by
   obtain ⟨h_atom, h_quant⟩ := h
-  refine ⟨?_, ?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · -- (i) outer off-fiber falsity
     intro σ hne
     cases hb : qnf.2 σ with
@@ -2724,6 +2855,30 @@ theorem kvE2_sepGate_holds_of_honest {sig : MonadicSignature}
       exact h1.mpr hbit_x1w
     exact fun zs χ hncons =>
       (kvE_subBracket2V_gate_holds_of_honest σ M x1 w x t hxx1 hx1w hwt hσ).2 zs χ hncons
+  · -- (v) inner nine-zone consistency for RIGHT-interior positives (mirror of iv)
+    intro σ hb hzone
+    obtain ⟨x1, hσ⟩ := (h_quant σ).mpr hb
+    obtain ⟨hσ_atom, h_zone, _h_off⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hσ
+    -- Read the two right-interior order bits off the RIGHT placement guard.
+    have hbit_wx1 : (nf0_zoneSpec σ.1 ⟨0, by omega⟩).2 = true := by
+      rw [congrFun hzone ⟨0, by omega⟩]; decide
+    have hbit_x1t : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).1 = true := by
+      rw [congrFun hzone ⟨2, by omega⟩]; decide
+    have hwx1 : w < x1 := by
+      have h1 := hσ_atom (.order (Fin.succ ⟨0, by omega⟩) 0 (Fin.succ_ne_zero ⟨0, by omega⟩))
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_wx1
+    have hx1t : x1 < t := by
+      have h1 := hσ_atom (.order 0 (Fin.succ ⟨2, by omega⟩) (Fin.succ_ne_zero ⟨2, by omega⟩).symm)
+      simp only [atom_eval, Fin.cons] at h1
+      exact h1.mpr hbit_x1t
+    -- Any marked bit realizes its zone over [x1,w,x,t]; the RIGHT classifier forces consistency.
+    intro zs χ hncons
+    cases hbit : σ.2 (nf0_assemble zs χ σ.1) with
+    | false => rfl
+    | true =>
+      obtain ⟨u, hzu, _hu⟩ := (h_zone zs χ).mpr hbit
+      exact absurd (kvE2_sep_zone4_consistentR M x1 w x t u hxw hwx1 hx1t zs hzu) hncons
 
 /-- **Per-σ honest witness bundle (LEFT list, left-interior σ)** — task 333 Phase 2
     point-map step 1 (the ⇐-direction of Rabinovich Lemma 3.2(1), md:77). From the qnf
@@ -6682,7 +6837,7 @@ theorem kvE2_sepHgate_innerNine {sig : MonadicSignature}
     (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3) :
     ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentL zs →
       σ.2 (nf0_assemble zs χ σ.1) = false :=
-  hg.2.2.2 σ hσ hzone
+  hg.2.2.2.1 σ hσ hzone
 
 /-- **Refined-segment exclusion channel** (Cor 5.4, md:154-157 — the quantifier-free
     segment read; Lemma 5.1, md:72 at the segment formula's quantifier-free shape): a
@@ -11083,7 +11238,7 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature}
         -- classify: a true bit forces `zs` among the nine inner-consistent zones (gate clause iv)
         have hcons : kvE2_sepInnerConsistentL zs := by
           by_contra hncons
-          rw [hg.2.2.2 σ hσ0true hz zs χ hncons] at hbit
+          rw [hg.2.2.2.1 σ hσ0true hz zs χ hncons] at hbit
           exact absurd hbit (by decide)
         rcases hcons with h | h | h | h | h | h | h | h | h
         · -- zPastX4  (v < x)
@@ -11286,134 +11441,6 @@ theorem kvE2_sepGateAtPin_fragL {sig : MonadicSignature}
 --   kvE2_sepBody_kit_sound_frag and kvE2_outer_fold_frag — an undischarged
 --   obligation for task 335 (which lands the discharge machinery). Additive-only.
 -- ============================================================================
-
-/-- The nine consistent INNER zones for a RIGHT-interior σ (`x < w < x1 < t`) — the mirror of
-    `kvE2_sepInnerConsistentL` with the pin `x1` above the shared witness `w`. Patterns 1-3 and
-    7-9 (exterior/boundary and above-pin) coincide with the LEFT set; only the middle three swap
-    (`zAtWR`/`zWX1`/`zAtX1R` replace `zAtX1L`/`zUW`/`zAtWL`). Used as the `hInnerR` classification
-    target under R2. -/
-def kvE2_sepInnerConsistentR (zs : ZoneSpec 4) : Prop :=
-  zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (true, false) (Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (true, false) (Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (true, false) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (false, false) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))) ∨
-  zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))) ∨
-  zs = Fin.cons (false, true) (Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true))))
-
-/-- RIGHT-geometry mirror of `kvE2_sep_zone4_consistent`: any zone realized over `[x1,w,x,t]`
-    with `x < w < x1 < t` is one of the nine `kvE2_sepInnerConsistentR` zones. Its contrapositive
-    is the h_fwd direction; `hInnerR` supplies the bit→consistent direction (the fragR blocker). -/
-theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) (x1 w x t u : M.carrier)
-    (hxw : x < w) (hwx1 : w < x1) (hx1t : x1 < t)
-    (zs : ZoneSpec 4)
-    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs u) :
-    kvE2_sepInnerConsistentR zs := by
-  unfold kvE2_sepInnerConsistentR
-  have h0 := hz ⟨0, by omega⟩
-  have h1 := hz ⟨1, by omega⟩
-  have h2 := hz ⟨2, by omega⟩
-  have h3 := hz ⟨3, by omega⟩
-  simp only [Fin.cons] at h0 h1 h2 h3
-  have hzs : ∀ (p0 p1 p2 p3 : Bool × Bool),
-      zs ⟨0, by omega⟩ = p0 → zs ⟨1, by omega⟩ = p1 → zs ⟨2, by omega⟩ = p2 →
-        zs ⟨3, by omega⟩ = p3 →
-      zs = Fin.cons p0 (Fin.cons p1 (Fin.cons p2 (fun _ => p3))) := by
-    intro p0 p1 p2 p3 e0 e1 e2 e3
-    funext i
-    match i with
-    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
-    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
-    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
-    | ⟨3, _⟩ => simpa only [Fin.cons] using e3
-  have hwt : w < t := hwx1.trans hx1t
-  have hxt : x < t := hxw.trans hwt
-  have hxx1 : x < x1 := hxw.trans hwx1
-  rcases lt_trichotomy u x with hux | hux | hux
-  · -- u < x : zPastX
-    have hux1 : u < x1 := hux.trans hxx1
-    have huw : u < w := hux.trans hxw
-    have hut : u < t := hux.trans hxt
-    exact Or.inl (hzs _ _ _ _
-      (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
-      (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
-      (Prod.ext_iff.mpr ⟨h2.1.mp hux, k1v_bool_eq_false h2.2 (lt_asymm hux)⟩)
-      (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))
-  · -- u = x : zAtX
-    subst hux
-    exact Or.inr (Or.inl (hzs _ _ _ _
-      (Prod.ext_iff.mpr ⟨h0.1.mp hxx1, k1v_bool_eq_false h0.2 (lt_asymm hxx1)⟩)
-      (Prod.ext_iff.mpr ⟨h1.1.mp hxw, k1v_bool_eq_false h1.2 (lt_asymm hxw)⟩)
-      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl u),
-        k1v_bool_eq_false h2.2 (lt_irrefl u)⟩)
-      (Prod.ext_iff.mpr ⟨h3.1.mp hxt, k1v_bool_eq_false h3.2 (lt_asymm hxt)⟩)))
-  · -- x < u : split against w
-    rcases lt_trichotomy u w with huw | huw | huw
-    · -- x < u < w : zXW  (kvE_sub2_zXU pattern)
-      have hux1 : u < x1 := huw.trans hwx1
-      have hut : u < t := huw.trans hwt
-      exact Or.inr (Or.inr (Or.inl (hzs _ _ _ _
-        (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
-        (Prod.ext_iff.mpr ⟨h1.1.mp huw, k1v_bool_eq_false h1.2 (lt_asymm huw)⟩)
-        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hux), h2.2.mp hux⟩)
-        (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))
-    · -- u = w : zAtWR
-      subst huw
-      exact Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
-        (Prod.ext_iff.mpr ⟨h0.1.mp hwx1, k1v_bool_eq_false h0.2 (lt_asymm hwx1)⟩)
-        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl u),
-          k1v_bool_eq_false h1.2 (lt_irrefl u)⟩)
-        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxw), h2.2.mp hxw⟩)
-        (Prod.ext_iff.mpr ⟨h3.1.mp hwt, k1v_bool_eq_false h3.2 (lt_asymm hwt)⟩)))))
-    · -- w < u : split against x1
-      have hxu : x < u := hxw.trans huw
-      rcases lt_trichotomy u x1 with hux1 | hux1 | hux1
-      · -- w < u < x1 : zWX1
-        have hut : u < t := hux1.trans hx1t
-        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
-          (Prod.ext_iff.mpr ⟨h0.1.mp hux1, k1v_bool_eq_false h0.2 (lt_asymm hux1)⟩)
-          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm huw), h1.2.mp huw⟩)
-          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu), h2.2.mp hxu⟩)
-          (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))))
-      · -- u = x1 : zAtX1R
-        subst hux1
-        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
-          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl u),
-            k1v_bool_eq_false h0.2 (lt_irrefl u)⟩)
-          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwx1), h1.2.mp hwx1⟩)
-          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxx1), h2.2.mp hxx1⟩)
-          (Prod.ext_iff.mpr ⟨h3.1.mp hx1t, k1v_bool_eq_false h3.2 (lt_asymm hx1t)⟩)))))))
-      · -- x1 < u : split against t
-        have hx1u : x1 < u := hux1
-        have hwu : w < u := hwx1.trans hx1u
-        have hxu' : x < u := hxw.trans hwu
-        rcases lt_trichotomy u t with hut | hut | hut
-        · -- x1 < u < t : zX1T  (kvE_sub2_zWT pattern)
-          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu), h1.2.mp hwu⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu'), h2.2.mp hxu'⟩)
-            (Prod.ext_iff.mpr ⟨h3.1.mp hut, k1v_bool_eq_false h3.2 (lt_asymm hut)⟩))))))))
-        · -- u = t : zAtT
-          subst hut
-          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _ _
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u), h0.2.mp hx1u⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu), h1.2.mp hwu⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu'), h2.2.mp hxu'⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_irrefl u),
-              k1v_bool_eq_false h3.2 (lt_irrefl u)⟩)))))))))
-        · -- t < u : zFutT
-          have hx1u' : x1 < u := hx1t.trans hut
-          have hxu'' : x < u := hxt.trans hut
-          have hwu' : w < u := hwt.trans hut
-          exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (hzs _ _ _ _
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm hx1u'), h0.2.mp hx1u'⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hwu'), h1.2.mp hwu'⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu''), h2.2.mp hxu''⟩)
-            (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
 
 /-- A right-interior σ's `(x,w)`-region `.rXW` slot is in its canonical LEFT block. -/
 theorem kvE2_sep_rXW_mem_slotsLFor {sig : MonadicSignature}
