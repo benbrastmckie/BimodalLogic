@@ -8,38 +8,41 @@
   ],
   "task_number": 344,
   "session_id": "sess_1783723095_edd5a7_344",
-  "phase": "1 (partial — h_atom complete; h_fwd/h_bwd remain)",
+  "phase": "1 (partial — h_fwd crux SOLVED+validated; zoneHolds_unique landed; h_fwd/h_bwd bodies still sorry)",
   "requires_user_review": false,
-  "handoff_path": "specs/344_pin_anchored_fragment_fold/handoffs/05_continuation.md",
+  "handoff_path": "specs/344_pin_anchored_fragment_fold/handoffs/06_continuation.md",
   "verification": {
     "sorry_count": 2,
     "vacuous_count": 0,
     "axiom_count_delta": 0,
-    "build_passed": true
+    "build_passed": true,
+    "new_lemma_axiom_clean": "zoneHolds_unique: {propext, Classical.choice, Quot.sound}"
   },
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-      "line": 10500,
+      "line": 10516,
       "statement": "have (leaf): h_fwd (inside kvE2_sepGateAtPin_fragL)",
       "strategic": false,
-      "assumption": "forward-zone conjunct; derivable only under hfrag",
-      "why_deferred": "the crux — kvE2_sepSegsG->kvE2_sepSegForm split + locate_witness trichotomy",
-      "follow_up_task": "344 Phase 1 dispatch 6"
+      "assumption": "forward-zone conjunct; the 9 consistent zones (kvE2_sepInnerConsistentL) map to interior->segForm_excludes (VALIDATED), exterior->hepL/hepR, witness->nf_eval_unique",
+      "why_deferred": "crux mechanism solved+validated (zXU case green) but full body exceeds the 2-sorry cap mid-proof; paste-ready template in handoffs/06_continuation.md",
+      "follow_up_task": "344 Phase 1 dispatch 7"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-      "line": 10505,
+      "line": 10521,
       "statement": "have (leaf): h_bwd (inside kvE2_sepGateAtPin_fragL)",
       "strategic": false,
       "assumption": "backward: sigma own zUW/zWT slot channel",
-      "why_deferred": "re-derive above-witness clauses mirroring hbelow",
-      "follow_up_task": "344 Phase 1 dispatch 6"
+      "why_deferred": "re-derive above-witness clauses mirroring hbelow (SW:10333-10363); recipe in handoffs/06_continuation.md",
+      "follow_up_task": "344 Phase 1 dispatch 7"
     }
   ],
   "memory_candidates": [
-    "Gate clause kvE2_sepGate.1 gives nf0_dropFresh sigma.1 = qnf.1 for positive sigma — the bridge that makes a positive sub's non-fresh base bits ride qnf.1's outer content.",
-    "nf0_assemble does NOT simp-reduce for order atoms (nested Fin.cases with motive); derive per-atom bits via congrFun on nf0_zoneSpec/nf0_dropFresh equalities + simp [nf0_dropFresh, mergeNF, skipFin_zero_succ] instead.",
+    "zoneHolds is a coordinatewise biconditional characterization; on a LinearOrder carrier it determines the ZoneSpec uniquely — zoneHolds_unique (za=zb) closes via funext + Bool.eq_iff_iff.mpr (ha1.symm.trans hb1). Reusable to convert a realized zone into a concrete kvE_sub2_z* spec.",
+    "Single-sigma (kvE2_sepPos qnf = [sigma]) collapses kvE2_sepSegsG at cut 0 to kvE2_sepSegForm charBase sigma kvE_sub2_zXU via simp only [kvE2_sepSegsG, kvE2_sepSegLAt, hfrag, List.map_cons/nil, List.take_zero, kvE2_sepSegLForSub, hz, if_pos rfl, List.contains_nil, Nat.zero_le, Bool.false_eq_true, if_false, if_true]; extract the singleton conjunct with formula_conjList_iff.mp _ _ List.mem_cons_self.",
+    "kvE2_sepInnerConsistentL enumerates the 9 geometrically consistent zones = 5 open intervals + 4 at-points relative to x<x1<w<t; kvE2_sepHgate_innerNine forces bit=false (no realizer) for the rest — this is why the forward-zone conjunct is derivable only under the single-positive fragment.",
+    "Fin-indexed Bool goals of the form (kvE_sub2_z* i).2 = true where i is a match-bound ⟨k,_⟩: close negations with `by decide +revert` (plain `by decide` fails: 'Expected type must not contain free variables').",
     "kvE2_sep_locate_witness: model-general Finset.max' point-location among monotone witnesses — reusable for any holds_eq_succ segment-region case split."
   ]
 }

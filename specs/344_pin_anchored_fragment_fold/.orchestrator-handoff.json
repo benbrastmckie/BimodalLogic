@@ -1,36 +1,36 @@
 {
   "status": "partial",
   "skeleton": false,
-  "summary": "Dispatch 5: recovered dispatch-4 WIP and COMPLETED the h_atom conjunct of kvE2_sepGateAtPin_fragL (all 16 atom cases sorry-free, green, committed 1cd512ebc). Replaced the non-reducing nf0_assemble route with per-atom congrFun bridges (Fin.isValue/Fin.succ_mk/Nat.reduceAdd normalization + closed Fin.ne_of_val_ne proofs). h_fwd (the crux) and h_bwd remain as tracked leaf sub-sorries. Phases 2-3 not started.",
+  "summary": "Dispatch 6: SOLVED and verified the h_fwd 'crux of the crux' (single-sigma kvE2_sepSegsG->kvE2_sepSegForm reduction + zone determinacy). Landed reusable axiom-clean helper zoneHolds_unique (SW:10218, committed 29f97d115). The zXU interior segment case compiled green end-to-end; reverted the h_fwd body to a single sorry to stay within the 2-sorry cap. Confirmed via kvE2_sepInnerConsistentL (SW:1220) that the 9 consistent zones = 5 intervals + 4 at-points, and mapped each to its exclusion channel (interior->segForm_excludes VALIDATED, exterior/boundary->hepL/hepR literals, witness->nf_eval_unique). Full paste-ready h_fwd template + all four sub-case recipes + h_bwd recipe in handoffs/06_continuation.md. h_fwd/h_bwd still the two tracked leaf sorries; Phases 2-3 not started.",
   "phases_completed": 0,
   "phases_total": 3,
   "sorry_inventory": [
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-      "line": 10500,
+      "line": 10516,
       "statement": "have (leaf): h_fwd : ∀ zs χ, (∃ v, zoneHolds M [x1,w,x,t] zs v ∧ nf_eval_nf M 0 1 (fun _=>v) χ) → σ.2 (nf0_assemble zs χ σ.1) = true (inside kvE2_sepGateAtPin_fragL)",
       "strategic": false,
-      "assumption": "The forward-zone conjunct: any model point v in an interior zone forces the corresponding fold bit true. Derivable ONLY under hfrag single-positive (O4 CRUX SW:6698).",
-      "why_deferred": "The crux. Requires the kvE2_sepSegsG->per-sigma kvE2_sepSegForm before/after-pin decomposition (kvE2_sepSegLForSub SW:1127) not yet read, plus kvE2_sep_locate_witness trichotomy + kvE2_sepSegForm_excludes (SW:6683) + nf_eval_unique (NormalForm:245) orchestration across 4 point-location regions.",
-      "follow_up_task": "344 Phase 1 dispatch 6"
+      "assumption": "Every realized zone is one of the 9 consistent (kvE2_sepInnerConsistentL SW:1220): interior zXU/zUW/zWT excluded by kvE2_sepSegForm_excludes (VALIDATED green this dispatch), exterior zPastX/zFutT + boundary zAtX/zAtT by hepL/hepR snce/at-literals, witnesses zAtX1/zAtW/interior-ws by nf_eval_unique.",
+      "why_deferred": "Crux mechanism SOLVED+validated (zXU case green) but the full 4-locate-case + boundary body exceeds the 2-sorry cap when committed mid-proof; reverted to single sorry. Paste-ready validated template + all sub-case recipes in handoffs/06_continuation.md.",
+      "follow_up_task": "344 Phase 1 dispatch 7"
     },
     {
       "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
-      "line": 10505,
+      "line": 10521,
       "statement": "have (leaf): h_bwd : ∀ zs χ, zs ≠ kvE_sub2_zXU → σ.2 (nf0_assemble zs χ σ.1) = true → ∃ v, zoneHolds M [x1,w,x,t] zs v ∧ nf_eval_nf M 0 1 (fun _=>v) χ (inside kvE2_sepGateAtPin_fragL)",
       "strategic": false,
-      "assumption": "The backward direction: σ's own zUW/zWT slot channel supplies a witness in each non-zXU zone; at-zones via literals.",
-      "why_deferred": "Requires re-deriving the ABOVE-witness clauses (lUW/lWT slots) that the current preamble drops, mirroring hbelow (SW:10317-10347) + kvE2_sepBundleR_sound match-i assembly (SW:9760-9776).",
-      "follow_up_task": "344 Phase 1 dispatch 6"
+      "assumption": "Backward: σ's own zUW/zWT slot channel supplies a witness in each non-zXU zone; at-zones via biconditional literals.",
+      "why_deferred": "Unchanged from dispatch 5: re-derive the ABOVE-witness clauses (lUW/lWT slots) mirroring hbelow (SW:10333-10363) + kvE2_sepBundleR_sound match-i assembly (SW:9760-9776). Recipe in handoffs/06_continuation.md.",
+      "follow_up_task": "344 Phase 1 dispatch 7"
     }
   ],
   "blockers": [],
-  "continuation_path": "specs/344_pin_anchored_fragment_fold/handoffs/05_continuation.md",
+  "continuation_path": "specs/344_pin_anchored_fragment_fold/handoffs/06_continuation.md",
   "continuation_context": {
     "is_successor": true,
-    "handoff": "specs/344_pin_anchored_fragment_fold/handoffs/05_continuation.md",
+    "handoff": "specs/344_pin_anchored_fragment_fold/handoffs/06_continuation.md",
     "plan_path": "specs/344_pin_anchored_fragment_fold/plans/01_pin-anchored-fold-plan.md",
-    "resume_at": "Phase 1: prove h_fwd then h_bwd inside kvE2_sepGateAtPin_fragL (SharedWitness.lean ~10496-10505), then Phases 2-3",
-    "head_commit_green": "1cd512ebc"
+    "resume_at": "Phase 1: paste the validated zXU h_fwd template from handoffs/06_continuation.md into kvE2_sepGateAtPin_fragL (SharedWitness.lean ~10516), extend to the zUW/zWT/exterior/witness sub-cases, then prove h_bwd (~10521), then Phases 2-3",
+    "head_commit_green": "29f97d115"
   }
 }
