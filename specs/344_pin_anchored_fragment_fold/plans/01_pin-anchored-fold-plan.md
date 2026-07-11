@@ -221,7 +221,46 @@ conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
 
 ---
 
-### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [NOT STARTED]
+### Phase 2: `kvE2_sepGateAtPin_fragR` (mirror) + `kvE2_sepBody_kit_sound_frag` [BLOCKED]
+
+**BLOCKER** (Phase 2, dispatch 10 — design probe NO-GO, no code written):
+- **What failed**: `kvE2_sepGateAtPin_fragR`'s internal `h_bwd` (the `bit true → witness` converse
+  required by `kvE2_sepBundleR_sound_frag`, `SW:10143-10147`) cannot be derived from `hg`
+  (`kvE2_sepGate qnf`) + `hfrag` + `hcorrK`. fragL's `h_bwd` derives `hcons : kvE2_sepInnerConsistentL zs`
+  from gate clause (iv) (`SW:11084-11087`, `hg.2.2.2 σ hσ0true hz zs χ hncons`). Clause (iv)
+  (`kvE2_sepGate`, `SW:1244-1246`) is **structurally `nf0_zoneSpec σ.1 = kvE2_sep_zXW3`-gated**. For
+  fragR the sole positive `σ0` has `nf0_zoneSpec σ0.1 = kvE2_sep_zWT3` (`zWT3 ≠ zXW3`, landed
+  `SW:1482`), so clause (iv) is vacuous and yields no inner-zone exclusion for `σ0`.
+- **What was tried** (bounded goal-level probe, no edits): audited all four `kvE2_sepGate` conjuncts
+  (`SW:1238-1246`) for any zWT3 inner-zone constraint. Clause (i)/(ii) are outer-fiber/outer-zone only;
+  clause (iii) (inner off-fiber) is **vacuous for every assemble** because
+  `nf0_dropFresh_assemble : nf0_dropFresh (nf0_assemble zs χ r) = r` holds **unconditionally**
+  (`NfEFold.lean:219-221`, no consistency hypothesis on `zs`) — so `nf0_dropFresh (nf0_assemble zs χ σ0.1) = σ0.1`
+  always, and the clause-(iii) antecedent `≠ σ0.1` is never met. Confirmed no `kvE2_sepInnerConsistentR`
+  or any zWT3-gated inner-nine clause exists anywhere in `Theories/`. `kvE2_sep_zone4_consistent`
+  (`SW:6558`) only gives realized→consistent (the h_fwd direction), not bit→consistent.
+- **Why stuck**: for a zWT3 owner the gate places **zero** constraint on `σ0.2 (nf0_assemble zs χ σ0.1)`
+  for inconsistent `zs`. A gate-legal, hfrag-legal, hcorrK-legal `qnf` can mark an inconsistent-inner-zone
+  bit true; no witness exists for an inconsistent zone (`kvE2_sep_zone4_consistent` contrapositive), so
+  `h_bwd` as stated is **false** in a rich model for the RIGHT owner. This is the exact gap the 335
+  adjudication (reports/04 §"recommended path", reports/05 §2 table row "backward") glossed: it listed
+  `kvE2_sepHgate_innerNine` (the zXW3-only clause-(iv) wrapper, `SW:6679-6685`) as the derivable core for
+  **both** hgateL and hgateR, without noticing innerNine has no zWT3 instance.
+- **What is needed** (orchestrator design decision — two additive-viable resolutions):
+  - **R2 (RECOMMENDED, additive, matches original threaded `hgateR`)**: give `kvE2_sepGateAtPin_fragR` an
+    extra hypothesis `hInnerR : ∀ (zs : ZoneSpec 4) (χ), ¬ kvE2_sepInnerConsistentR zs → σ0.2 (nf0_assemble zs χ σ0.1) = false`
+    (the zWT3 analog of clause (iv)), thread it through `kvE2_sepBody_kit_sound_frag` and
+    `kvE2_outer_fold_frag`, and have 335 discharge it. Additive-only (all three are NEW decls below the
+    344 banner; zero existing decls modified). 335 already discharges the FULL right `h_bwd` in the landed
+    `kvE2_sepBundleR_sound`/`hgateR` (`SW:9835-9839`), so the discharge machinery exists. Requires
+    building `kvE2_sepInnerConsistentR` (the 9 RIGHT-geometry zones for env `[x1,w,x,t]`, `x<w<x1<t`).
+    fragR then mirrors fragL exactly, using `hInnerR` in place of `hg.2.2.2`.
+  - **R1 (NOT recommended)**: add a clause (v) to `kvE2_sepGate` for zWT3 inner-nine. Modifies the LANDED
+    gate def (violates the 344 "zero existing decls modified" invariant) and forces every `kvE2_sepGate`
+    consumer (incl. `kvE2_sepBody_holds_iff` and the fragL derivation) plus 335 to satisfy the new clause.
+    Large blast radius.
+- **Prohibited**: Do NOT use `sorry`, `def X := True`, vacuous placeholder, or a `∀ a`-anchor. Do NOT
+  modify `kvE2_sepGate` or any landed decl without the orchestrator's R1/R2 decision.
 
 *(dispatch 9: NOT started — gated on `kvE2_sepGateAtPin_fragR`, which needs new right-geometry
 infrastructure (`kvE2_sepInnerConsistentR`, `kvE2_sepPtX1R_owner_lit`, `kvE2_sep_rX1T_mem_slotsRFor`)
@@ -234,9 +273,10 @@ draft in `handoffs/09_continuation.md`). fragR is a fragL-scale mirror; deferred
 `hcorrK`, no ∀-anchor hgate).
 
 **Tasks**:
-- [ ] State and prove `kvE2_sepGateAtPin_fragR` as the `zWX1`-mirrored clone of `fragL` (report §2:
-      "RIGHT is the zWX1-mirrored clone"). The L/R geometries genuinely differ — mirror the structure,
-      confirm each `have` type with `lean_goal`; do not blind-copy.
+- [ ] **Task 2.1**: State and prove `kvE2_sepGateAtPin_fragR` as the `zWX1`-mirrored clone of `fragL`
+      (report §2: "RIGHT is the zWX1-mirrored clone"). *(deviation: BLOCKED — the "mirror fragL" premise
+      is infeasible for `h_bwd`; clause (iv) is zXW3-only. Needs orchestrator R1/R2 decision — see BLOCKER
+      above. fragR's signature must gain `hInnerR` (R2) before this is provable.)*
 - [ ] State `kvE2_sepBody_kit_sound_frag` with the **verbatim conclusion** of the landed
       `kvE2_sepBody_kit_sound` (`SW:9830-9839`), hypotheses `hfrag` + `hcorrK` + `h` (no ∀-anchor
       `hgate`). Prove it by consuming `kvE2_sepGateAtPin_fragL`/`_fragR` at the sole interior positive
