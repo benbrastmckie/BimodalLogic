@@ -12,13 +12,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,341,348 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309 | 189,192,196,348 | automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,348 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,343,348 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,307 | 189,192,196,309 | completeness, automation |
+| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
+| 5 | 303 | 305 | completeness |
+| 6 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,12 +109,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-335 [PLANNED] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-  └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-  └─ 348 [NOT STARTED] — Restore Rabinovich interval-bounding faithfulness for the exterio
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+348 [NOT STARTED] — Restore Rabinovich interval-bounding faithfulness for the exterio
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
+
+341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ## Tasks
 
@@ -194,7 +193,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ---
 
 ### 335. Outer gate assembly engine kvE2 body
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 334, Task 337, Task 344, Task 345, Task 346

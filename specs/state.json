@@ -1392,7 +1392,7 @@
     {
       "project_number": 335,
       "project_name": "outer_gate_assembly_engine_kvE2_body",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334. UPDATE (task-347 adjudication, session sess_1783792054_45a555): the Phase-D provider obligation is re-shaped to Rabinovich Cor 5.4 ⇐ form — realize BOUNDED, jointly-ordered interior witnesses over the interior index kvE2_sepPosI (SharedWitness.lean:211-214), NOT the global kvE2_sepPos (which over-asks: unbounded, decoupled — 347 report 01 MUST-CHECK 2). The hard hexcl blocker is DISSOLVED, not discharged in-335: task-347 R1 (commits d370d438e/3b8aee3c4) discharged the interior exclusion slice in-line and narrowed the residue to exterior-marked σ only; that exterior-arrangement residue is the province of successor task 348 (prop43_exterior_reflatten — Prop 4.3 re-flatten / Lemma 7.6 adjacency), for which 335 is the PROVIDER. Phase D therefore assembles the interior+boundary-scoped gate and threads the exterior-marked hexclExt outward to 348; it does NOT attempt exterior completeness on the interior (x,t) bracket (retired phantom framing, no §5 counterpart). Plan: v6 (06_fragment-gate-v6.md); Phase D actionable, v5 blocker dissolved.",
       "parent_task": 334,
@@ -1405,8 +1405,8 @@
       ],
       "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
       "created": "2026-07-08T21:34:34Z",
-      "last_updated": "2026-07-11T18:47:11Z",
-      "session_id": "sess_1783723095_edd5a7_335",
+      "last_updated": "2026-07-11T19:10:40Z",
+      "session_id": "sess_1783796165_b5b482_335",
       "artifacts": [
         {
           "type": "summary",
@@ -1434,7 +1434,7 @@
           "summary": "v6: Phase D re-shaped to bounded jointly-ordered Cor 5.4 ⇐ via kvE2_sepPosI; hexcl NO-GO dissolved by 347 R1; exterior residue routed to 348 (335 = provider)"
         }
       ],
-      "completion_summary": "PARTIAL (1/4 phases). Phase 1 landed the first live outer-gate carrier bracketEndChar_kvE2 in new OuterGate.lean, delegating to task-334's verified kvE2_sepBody (axiom-clean [propext, Classical.choice, Quot.sound], rfl bridge, green build); SharedWitness.lean and KampPrior.lean byte-identical. Phases 2-4 (soundness/completeness connectors + assembled k=2 gate) BLOCKED on a missing prerequisite: the joint multi-owner disjunct bracket-holds builder over kvE2_sepSlotsL/R (a task-334-deferred obligation, SharedWitness.lean:1954). Unblocking path: dedicated follow-on wiring k1v_sorted_realizationK (SubBracket2V:633) into kvE2_sepDisjunct (~370 lines, comparable to bracketEndChar_k1v_complete), then re-dispatch Phases 2-4. Zero-debt: no sorry/vacuous placeholder introduced.",
+      "completion_summary": "Assembled the outer gate bracketEndChar_kvE2_correct_two_prior_frag over the interior kvE2_sepPosI provider obligation (Cor 5.4 shape); hexclExt threaded outward to task 348; all 7 phases complete, sorry-free, axiom-clean.",
       "topic": "kamp_theorem_formalization",
       "plan_metadata": {
         "phases": 5,
