@@ -1,10 +1,10 @@
 ---
-next_project_number: 345
+next_project_number: 346
 ---
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
+Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 345 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-11. Generated from state.json dependency graph.*
@@ -12,12 +12,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,343,345 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,343,345 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309,341 | 189,192,196,335 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -109,13 +110,27 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 335 [IMPLEMENTING] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin (see above)
   └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ### Uncategorized
 
+345 [RESEARCHED] — SPAWNED from task 335 R1 decision, literature-fidelity-verified (
+  └─ 335 [IMPLEMENTING] — (kamp_theorem_formalization: Follow-up to task 334 (faithful carrier ) (see above)
+
 ## Tasks
+
+### 345. Symmetric gate clause v
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Dependencies**: Task 344
+- **Research**: [345_symmetric_gate_clause_v/reports/01_literature-fidelity-gate-design.md]
+
+**Description**: SPAWNED from task 335 R1 decision, literature-fidelity-verified (session sess_1783723095_edd5a7; USER directive: most mathematically correct and faithful approach; verdict R1-faithful, reports/01). Make kvE2_sepGate symmetric per Rabinovich Cor 5.4(1)/(2) mirror pair (p.9): (1) ADD clause (v) to the LANDED kvE2_sepGate def (SharedWitness.lean ~1244-1246) = the zWT3 mirror of clause (iv), forcing bits false on non-kvE2_sepInnerConsistentR zone specs for RIGHT owners. (2) Discharge the ONE gate constructor gaining an obligation: kvE2_sepGate_holds_of_honest (SW:2666), by byte-mirroring the clause-(iv) discharge (SW:2706-2726) via the landed kvE2_sep_zone4_consistentR (SW:11309). (3) REMOVE (not guard) the now-derivable hInnerR hypothesis from kvE2_sepGateAtPin_fragR, kvE2_sepBody_kit_sound_frag, kvE2_outer_fold_frag — recovering RIGHT inner-consistency from hg clause (v) exactly as fragL uses clause (iv); this REPAIRS the confirmed LEFT-unsatisfiability of hInnerR (344 fold currently uninvokable). (4) Verify all other kvE2_sepGate consumers inert (literature report says so — re-verify at build level). CONSTRAINTS: this is the SANCTIONED exception to the SharedWitness freeze — touch ONLY the gate def, holds_of_honest, and the three 344 _frag lemma signatures/bodies; everything else byte-identical; full lake build green; axiom-clean {propext, Classical.choice, Quot.sound}; zero sorries on live paths; incremental green commits; cite Rabinovich by PDF page only. CONSUMER: 335 Phases B-D resume with discharge obligations reduced to {hcorrK, hexcl}. Task 341 GATE-phase re-diff absorbs the delta.
+
+---
 
 ### 344. Pin anchored fragment fold
 - **Status**: [COMPLETED]
@@ -154,12 +169,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 - **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 334, Task 337, Task 344
+- **Dependencies**: Task 334, Task 337, Task 344, Task 345
 - **Summary**:
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
-- **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/04_gate-blocker-adjudication.md]
 - **Plan**: [335_outer_gate_assembly_engine_kvE2_body/plans/05_fragment-gate-v5.md]
+- **Research**: [335_outer_gate_assembly_engine_kvE2_body/reports/06_literature-fidelity-gate-design.md]
 
 **Description**: Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334.
 
