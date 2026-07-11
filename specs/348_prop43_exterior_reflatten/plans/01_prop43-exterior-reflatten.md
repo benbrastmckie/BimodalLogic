@@ -431,7 +431,7 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 3–4 h.
 - **Depends on:** 3, 4, 5, 6.
 
-### Phase 8: Discharge theorem + wiring + closeout [IN PROGRESS]
+### Phase 8: Discharge theorem + wiring + closeout [COMPLETED]
 
 - **Goal:** `bracketEndChar_kvE2Ext_correct_two_prior_frag`: assuming the enriched gate holds
   (+ `hfrag`, `hrealI`, `hrealB`, `hexcl`, order bits, `h_UZ`/`h_SZ` — the 309-owned inventory
@@ -444,14 +444,22 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
   `Kamp/KampPrior.lean` (doc-comment only, adjacent to :351: records that 348's theorem is
   landed and retirement awaits 309 Phase 14 — no code change).
 - **Tasks:**
-  - [ ] Prove the discharge theorem by calling `bracketEndChar_kvE2_correct_two_prior_frag`
+  - [x] Prove the discharge theorem by calling `bracketEndChar_kvE2_correct_two_prior_frag`
         (OuterGate.lean:359) with `hexclExt := ` (Phase 1 triage ∘ per-side `_sound`).
-  - [ ] Extend the ⇐ half with per-side `_complete` (enriched gate re-established from a
+        *(deviation: altered — routed through `bracketEndChar_kvE2_sound_two_prior_frag`
+        (the ⇒ half) directly; the recorded Phase-2/8 pin-derivation obligation was
+        discharged by two new private lemmas `kvE2_extGate_henv` (fold SW:12718-12775
+        block, standalone) and `kvE2_extGate_anyBit_iff` (UNRESTRICTED zone-fact
+        biconditional subsuming both `hbelow` and `habove` keys: cone zones via `hexcl`
+        on characteristics, below-`x`/above-`t` via the interior gate's own
+        `kvE2_sepHasPos` Since/Until endpoint literals + `hrealB` realizer +
+        `nf_eval_unique` profile bridge; backward via `hrealI`/`hrealB`))*
+  - [x] Extend the ⇐ half with per-side `_complete` (enriched gate re-established from a
         realized `qnf`).
-  - [ ] `#print axioms` on the new theorem = {propext, Classical.choice, Quot.sound};
+  - [x] `#print axioms` on the new theorem = {propext, Classical.choice, Quot.sound};
         `grep -rn "sorry"` over all new files = none.
-  - [ ] Doc-comment updates (Prop43.lean blocker note; KampPrior.lean:351 transfer note).
-  - [ ] Write implementation summary + final handoff JSON for 309 (what to consume, the R1
+  - [x] Doc-comment updates (Prop43.lean blocker note; KampPrior.lean:351 transfer note).
+  - [x] Write implementation summary + final handoff JSON for 309 (what to consume, the R1
         transfer, the theorem name and hypothesis inventory).
 - **Estimated output:** ~200–400 lines.
 - **Done when:** full-project `lake build` green; discharge theorem sorry-free and axiom-clean;
