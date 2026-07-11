@@ -1439,7 +1439,7 @@
       },
       "previous_status": "partial",
       "next_artifact_number": 2,
-      "blockers": "Resolved by task 345 (gate clause v landed). Resume Phases B-D: obligations {hcorrK (proven in phase-b WIP), hexcl (Phase C probe)}."
+      "blockers": "Phase C hexcl NO-GO (machine-confirmed, commit da50f596c): hexcl receives only hptW; negative-sub exclusion at arbitrary x1 underivable with current fold interface. Candidate fix: enrich kvE2_outer_fold_frag hexcl channel to thread the realized bracket segment form at x1 (info already present in h_holds) — derivability verification in progress. Alternative: successor carrier redefinition (321-N2)."
     },
     {
       "project_number": 341,
