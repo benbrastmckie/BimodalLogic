@@ -1319,4 +1319,417 @@ theorem kvE2_extNegFut_sound {sig : MonadicSignature}
   rw [kvE2_futPos, if_pos hadm, formula_disjList_iff]
   exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
 
+/-! ## Phase 4: Completeness of the clause family (task 348, Phase 4)
+
+The ⇐ half at family generality: if NO exterior `x1 > t` realizes σ, the complement
+clause holds at `t`. Contrapositive: a true positive form at `t` reconstructs a full
+exterior realizer — the spike's 9-zone reconstruction (`kvE2_extNegFutSpike_complete`)
+generalized over the finite alphabet via the Phase-3 support kit.
+
+Hypotheses are EXACTLY the recorded Phase-4 obligations (progress/phase3): the Phase-2
+gate-level pins `(hxw, hwt, henv, hbelow)` PLUS the two syntactic σ-side hypotheses
+
+* `hbase : nf0_dropFresh σ.1 = qnf.1` (base-restriction match — the spike had this by
+  construction, `kvE2_futSpikeBase` + round-trip 3);
+* `hbits` : σ's six at-or-below-`t` bits agree with `kvE2_futAnyBit qnf` (the below-bit
+  comparison; mismatched bit-false σ are handled at the consumption site by
+  fact-pinning — Phase 7/8 restricts the gate conjunction to matched σ).
+
+No `zFutT3`-marking hypothesis is needed: Phase 3's if-gate hands admissibility for
+free (a true positive form certifies `kvE2_futAdmissible σ`, since the else-branch is
+`⊥`), and admissibility CONTAINS the zone marking. Statement shape confirmed against
+the Phase-8 ⇐ consumption site (OuterGate.lean:147 `bracketEndChar_kvE2_complete_two_prior`):
+there `henv`/`hbelow` derive from realized qnf's atom layer and `kvE2_futAnyBit_correct`,
+`(hxw, hwt)` from qnf's order bits, and `hbase`/`hbits` are decidable σ-side facts. -/
+
+/-- **σ's atom layer holds at a reconstructed endpoint** (generalization of
+    `kvE2_futSpikeSigma_atom` to arbitrary σ): under the zone marking
+    `nf0_zoneSpec σ.1 = kvE2_sep_zFutT3` (from admissibility), the base-restriction
+    match `nf0_dropFresh σ.1 = qnf.1`, the anchor-base pin `henv`, and σ's fresh
+    profile at `x1`, every `AtomKind sig 4` atom of `σ.1` is honest over
+    `[x1, w, x, t]`. -/
+private theorem kvE2_futSigma_atom {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
+    (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (htx1 : t < x1)
+    (henv : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+    (hzs : nf0_zoneSpec σ.1 = kvE2_sep_zFutT3)
+    (hbase : nf0_dropFresh σ.1 = qnf.1)
+    (hx1fr : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1)) :
+    ∀ a : AtomKind sig 4,
+      atom_eval M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) a ↔
+        σ.1 a = true := by
+  intro a
+  match a with
+  | .pred p ⟨0, _⟩ =>
+    show M.interp p x1 ↔ σ.1 (.pred p 0) = true
+    have h := hx1fr (.pred p 0)
+    simpa only [atom_eval, nf0_projFresh] using h
+  | .pred p ⟨i + 1, hi⟩ =>
+    have hb : σ.1 (.pred p ⟨i + 1, hi⟩) = qnf.1 (.pred p ⟨i, by omega⟩) := by
+      rw [← hbase]
+      simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+      rfl
+    show M.interp p ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩)
+      ↔ σ.1 (.pred p ⟨i + 1, hi⟩) = true
+    rw [hb]
+    have h := henv (.pred p ⟨i, by omega⟩)
+    simpa only [atom_eval] using h
+  | .order ⟨0, _⟩ ⟨0, _⟩ h => exact absurd rfl h
+  | .order ⟨0, _⟩ ⟨j + 1, hj⟩ h =>
+    have e1 : σ.1 (.order ⟨0, by omega⟩ ⟨j + 1, hj⟩ h) =
+        (kvE2_sep_zFutT3 ⟨j, by omega⟩).1 :=
+      congrArg Prod.fst (congrFun hzs ⟨j, by omega⟩)
+    show (x1 < (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
+      ↔ σ.1 (.order ⟨0, by omega⟩ ⟨j + 1, hj⟩ h) = true
+    rw [e1]
+    refine iff_of_false ?_ (by
+      show ¬ ((kvE2_sep_zFutT3 ⟨j, by omega⟩).1 = true)
+      match j, hj with
+      | 0, _ => exact Bool.false_ne_true
+      | 1, _ => exact Bool.false_ne_true
+      | 2, _ => exact Bool.false_ne_true)
+    match j, hj with
+    | 0, _ => exact lt_asymm (hwt.trans htx1)
+    | 1, _ => exact lt_asymm ((hxw.trans hwt).trans htx1)
+    | 2, _ => exact lt_asymm htx1
+  | .order ⟨i + 1, hi⟩ ⟨0, _⟩ h =>
+    have e2 : σ.1 (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩ h) =
+        (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 :=
+      congrArg Prod.snd (congrFun hzs ⟨i, by omega⟩)
+    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ < x1)
+      ↔ σ.1 (.order ⟨i + 1, hi⟩ ⟨0, by omega⟩ h) = true
+    rw [e2]
+    refine iff_of_true ?_ (by
+      show (kvE2_sep_zFutT3 ⟨i, by omega⟩).2 = true
+      match i, hi with
+      | 0, _ => rfl
+      | 1, _ => rfl
+      | 2, _ => rfl)
+    match i, hi with
+    | 0, _ => exact hwt.trans htx1
+    | 1, _ => exact (hxw.trans hwt).trans htx1
+    | 2, _ => exact htx1
+  | .order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h =>
+    have hij : i ≠ j := by
+      simp only [ne_eq, Fin.mk.injEq] at h; omega
+    have hne : (⟨i, by omega⟩ : Fin 3) ≠ ⟨j, by omega⟩ := by
+      simp only [ne_eq, Fin.mk.injEq]; exact hij
+    have hb : σ.1 (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h) =
+        qnf.1 (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne) := by
+      rw [← hbase]
+      simp only [nf0_dropFresh, mergeNF, skipFin_zero_succ]
+      rfl
+    show ((Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨i, by omega⟩ <
+        (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) ⟨j, by omega⟩)
+      ↔ σ.1 (.order ⟨i + 1, hi⟩ ⟨j + 1, hj⟩ h) = true
+    rw [hb]
+    have hh := henv (.order ⟨i, by omega⟩ ⟨j, by omega⟩ hne)
+    simpa only [atom_eval] using hh
+
+/-- **Chain destruction** (converse of `kvE2_futChainBuild`): a true `D`-guarded chain
+    at `s` yields an endpoint `x1 > s` satisfying `endF`, a `D`-uniform gap `(s, x1)`
+    (given that each visited profile's characteristic pointwise implies `D`), and one
+    occurrence in `(s, x1)` for every profile in the chain's list. -/
+private theorem kvE2_futChainDestruct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (endF D : Formula) :
+    ∀ (l : List (NormalForm sig 0 1)) (s : M.carrier),
+      (∀ χ ∈ l, ∀ r : M.carrier,
+        temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χ) →
+        temporal_truth M atomMap r D) →
+      temporal_truth M atomMap s (kvE2_futChain atomMap h_surj endF D l) →
+      ∃ x1 : M.carrier, s < x1 ∧ temporal_truth M atomMap x1 endF ∧
+        (∀ r : M.carrier, s < r → r < x1 → temporal_truth M atomMap r D) ∧
+        (∀ χ ∈ l, ∃ r : M.carrier, s < r ∧ r < x1 ∧
+          temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χ)) := by
+  intro l
+  induction l with
+  | nil =>
+    intro s _ hch
+    simp only [kvE2_futChain] at hch
+    obtain ⟨x1, hsx1, hend, hgap⟩ := hch
+    exact ⟨x1, hsx1, hend, hgap, by simp⟩
+  | cons χ rest ih =>
+    intro s himp hch
+    simp only [kvE2_futChain] at hch
+    obtain ⟨r₀, hsr₀, hconj, hgap1⟩ := hch
+    rw [formula_conjList_iff] at hconj
+    have hχr₀ : temporal_truth M atomMap r₀ (nf_depth0_char_formula atomMap h_surj χ) :=
+      hconj _ (by simp)
+    have hrest : temporal_truth M atomMap r₀ (kvE2_futChain atomMap h_surj endF D rest) :=
+      hconj _ (by simp)
+    obtain ⟨x1, hr₀x1, hend, hgap2, hocc⟩ :=
+      ih r₀ (fun χ' hχ' => himp χ' (List.mem_cons_of_mem χ hχ')) hrest
+    refine ⟨x1, hsr₀.trans hr₀x1, hend, ?_, ?_⟩
+    · intro r hsr hrx1
+      rcases lt_trichotomy r r₀ with hlt | heq | hgt
+      · exact hgap1 r hsr hlt
+      · exact heq ▸ himp χ List.mem_cons_self r₀ hχr₀
+      · exact hgap2 r hgt hrx1
+    · intro χ' hχ'
+      rcases List.mem_cons.mp hχ' with rfl | hmem
+      · exact ⟨r₀, hsr₀, hr₀x1, hχr₀⟩
+      · obtain ⟨r, hr₀r, hrx1, hprof⟩ := hocc χ' hmem
+        exact ⟨r, hsr₀.trans hr₀r, hrx1, hprof⟩
+
+/-- **Family completeness** (Cor 5.4(2) exterior analog, ⇐ — the Phase-2 BINDING
+    signature at family generality): if no exterior `x1 > t` realizes σ, the complement
+    clause holds at `t`. Conditional on the gate-level pins `henv`/`hbelow` (available at
+    both consumption sites) plus the two syntactic σ-side hypotheses `hbase`/`hbits`
+    (the recorded Phase-4 obligations). Admissibility is NOT hypothesized — a true
+    positive form certifies it (the else-branch is `⊥`). -/
+theorem kvE2_extNegFut_complete {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (henv : ∀ a : AtomKind sig 3,
+      atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ qnf.1 a = true)
+    (hbelow : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1), (zs ⟨2, by omega⟩).2 = false →
+      ((∃ v : M.carrier,
+          zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
+          nf_eval_nf M 0 1 (fun _ => v) χ) ↔ kvE2_futAnyBit qnf zs χ = true))
+    (hbase : nf0_dropFresh σ.1 = qnf.1)
+    (hbits : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+      (zs = kvE2_sep_zPastX3 ∨ zs = kvE2_sep_zAtX3 ∨ zs = kvE2_sep_zXW3 ∨
+        zs = kvE2_sep_zAtW3 ∨ zs = kvE2_sep_zWT3 ∨ zs = kvE2_sep_zAtT3) →
+      σ.2 (nf0_assemble (Fin.cons (true, false) zs) χ σ.1) = kvE2_futAnyBit qnf zs χ)
+    (hnorel : ∀ x1 : M.carrier, t < x1 →
+      ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    temporal_truth M atomMap t (kvE2_extNegFut atomMap h_surj σ) := by
+  intro hPos
+  by_cases hadm : kvE2_futAdmissible σ = true
+  case neg =>
+    rw [kvE2_futPos, if_neg hadm] at hPos
+    exact hPos
+  case pos =>
+  -- unpack admissibility into its four syntactic components
+  have hadm' := hadm
+  rw [kvE2_futAdmissible] at hadm'
+  simp only [Bool.and_eq_true] at hadm'
+  obtain ⟨⟨⟨hadm1, hadm2⟩, hadm3⟩, hadm4⟩ := hadm'
+  have hzs : nf0_zoneSpec σ.1 = kvE2_sep_zFutT3 := of_decide_eq_true hadm1
+  have hoff : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false := by
+    intro τ hτ
+    rw [List.all_eq_true] at hadm2
+    have h2 := hadm2 τ (Finset.mem_toList.mpr (Finset.mem_univ τ))
+    rw [Bool.or_eq_true] at h2
+    rcases h2 with h2 | h2
+    · exact absurd (of_decide_eq_true h2) hτ
+    · simpa using h2
+  have himposs : ∀ zs : ZoneSpec 4, zs ∉ kvE2_futPossibleZones →
+      ∀ χ : NormalForm sig 0 1, σ.2 (nf0_assemble zs χ σ.1) = false := by
+    intro zs hzp χ
+    rw [List.all_eq_true] at hadm3
+    have h2 := hadm3 zs (Finset.mem_toList.mpr (Finset.mem_univ zs))
+    rw [Bool.or_eq_true] at h2
+    rcases h2 with h2 | h2
+    · exfalso
+      obtain ⟨z, hzmem, hdec⟩ := List.any_eq_true.mp h2
+      exact hzp ((of_decide_eq_true hdec) ▸ hzmem)
+    · rw [List.all_eq_true] at h2
+      have h3 := h2 χ (Finset.mem_toList.mpr (Finset.mem_univ χ))
+      simpa using h3
+  have hself : ∀ χ : NormalForm sig 0 1,
+      kvE2_futSelfBit σ χ = decide (χ = nf0_projFresh σ.1) := by
+    intro χ
+    rw [List.all_eq_true] at hadm4
+    exact of_decide_eq_true (hadm4 χ (Finset.mem_toList.mpr (Finset.mem_univ χ)))
+  -- destructure the true positive form: some permutation chain is true at t
+  rw [kvE2_futPos, if_pos hadm, formula_disjList_iff] at hPos
+  obtain ⟨f, hfmem, hftruth⟩ := hPos
+  obtain ⟨l, hlmem, rfl⟩ := List.mem_map.mp hfmem
+  have hlperm : l.Perm (kvE2_futGapList σ) := List.mem_permutations.mp hlmem
+  -- a visited gap profile's characteristic implies the gap guard D
+  have himpD : ∀ χ ∈ l, ∀ r : M.carrier,
+      temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χ) →
+      temporal_truth M atomMap r (kvE2_futGapD atomMap h_surj σ) := by
+    intro χ hχ r hr
+    rw [kvE2_futGapD, formula_disjList_iff]
+    exact ⟨_, List.mem_map.mpr ⟨χ, hlperm.mem_iff.mp hχ, rfl⟩, hr⟩
+  obtain ⟨x1, htx1, hend, hgapD, hoccl⟩ :=
+    kvE2_futChainDestruct M atomMap h_surj (kvE2_futEnd atomMap h_surj σ)
+      (kvE2_futGapD atomMap h_surj σ) l t himpD hftruth
+  -- endpoint description: fresh profile + exact ray content
+  rw [kvE2_futEnd, formula_conjList_iff] at hend
+  have hchfr : temporal_truth M atomMap x1
+      (nf_depth0_char_formula atomMap h_surj (nf0_projFresh σ.1)) := hend _ (by simp)
+  have hrayform : temporal_truth M atomMap x1 (kvE2_futRayForm atomMap h_surj σ) :=
+    hend _ (by simp)
+  have hx1fr : nf_eval_nf M 0 1 (fun _ => x1) (nf0_projFresh σ.1) :=
+    (nf_depth0_char_correct' M atomMap h_surj _ x1).mp hchfr
+  rw [kvE2_futRayForm, formula_conjList_iff] at hrayform
+  have hnoray : temporal_truth M atomMap x1
+      (Formula.untl (kvE2_futRayD atomMap h_surj σ).neg Formula.top).neg :=
+    hrayform _ (by simp)
+  have hray : ∀ u : M.carrier, x1 < u →
+      temporal_truth M atomMap u (kvE2_futRayD atomMap h_surj σ) := by
+    intro u hu
+    by_contra hc
+    exact hnoray ⟨u, hu, hc, fun r _ _ => id⟩
+  have hrayocc : ∀ χ ∈ kvE2_futRayList σ, ∃ u : M.carrier, x1 < u ∧
+      nf_eval_nf M 0 1 (fun _ => u) χ := by
+    intro χ hχ
+    have h := hrayform _ (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨χ, hχ, rfl⟩))
+    obtain ⟨u, hu, hchu, -⟩ := h
+    exact ⟨u, hu, (nf_depth0_char_correct' M atomMap h_surj χ u).mp hchu⟩
+  -- gap points carry gap profiles
+  have hgapprof : ∀ r : M.carrier, t < r → r < x1 →
+      ∃ χ, kvE2_futGapBit σ χ = true ∧ nf_eval_nf M 0 1 (fun _ => r) χ := by
+    intro r htr hrx1
+    have h := hgapD r htr hrx1
+    rw [kvE2_futGapD, formula_disjList_iff] at h
+    obtain ⟨g, hg, hgt2⟩ := h
+    obtain ⟨χ, hχmem, rfl⟩ := List.mem_map.mp hg
+    exact ⟨χ, (List.mem_filter.mp hχmem).2,
+      (nf_depth0_char_correct' M atomMap h_surj χ r).mp hgt2⟩
+  -- each gap profile occurs in (t, x1)
+  have hgapocc : ∀ χ : NormalForm sig 0 1, kvE2_futGapBit σ χ = true →
+      ∃ r : M.carrier, t < r ∧ r < x1 ∧ nf_eval_nf M 0 1 (fun _ => r) χ := by
+    intro χ hb
+    have hχl : χ ∈ l := hlperm.mem_iff.mpr
+      (List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ χ), hb⟩)
+    obtain ⟨r, htr, hrx1, hchr⟩ := hoccl χ hχl
+    exact ⟨r, htr, hrx1, (nf_depth0_char_correct' M atomMap h_surj χ r).mp hchr⟩
+  -- x1 realizes σ, contradicting hnorel
+  apply hnorel x1 htx1
+  refine (nf_eval_depth1_fold_iff M _ σ).mpr ⟨?_, ?_, ?_⟩
+  · exact kvE2_futSigma_atom M qnf σ x1 w x t hxw hwt htx1 henv hzs hbase hx1fr
+  · intro zs χ
+    constructor
+    · rintro ⟨v, hzv, hvχ⟩
+      rcases lt_trichotomy v x1 with hlt | heq | hgt
+      · rcases le_or_gt v t with hvt | htv
+        · -- at-or-below t : reduce to the qnf-pinned zone fact via hbits + hbelow
+          have hz3 : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) (Fin.tail zs) v :=
+            fun i => hzv i.succ
+          have h0 := hzv 0
+          have hzeq0 : zs 0 = (true, false) :=
+            Prod.ext (h0.1.mp hlt) (by
+              cases hb : (zs 0).2 with
+              | false => rfl
+              | true => exact absurd (h0.2.mpr hb) (lt_asymm hlt))
+          have hcls := kvE2_futBelowClass M v w x t hxw hwt hvt (Fin.tail zs) hz3
+          rw [← Fin.cons_self_tail zs, hzeq0]
+          rcases hcls with h | h | h | h | h | h
+          · rw [h] at hz3 ⊢
+            rw [hbits _ χ (Or.inl rfl)]
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+          · rw [h] at hz3 ⊢
+            rw [hbits _ χ (Or.inr (Or.inl rfl))]
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+          · rw [h] at hz3 ⊢
+            rw [hbits _ χ (Or.inr (Or.inr (Or.inl rfl)))]
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+          · rw [h] at hz3 ⊢
+            rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inl rfl))))]
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+          · rw [h] at hz3 ⊢
+            rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))]
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+          · rw [h] at hz3 ⊢
+            rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))]
+            exact (hbelow _ χ rfl).mp ⟨v, hz3, hvχ⟩
+        · -- gap (t, x1) : profile forced into the gap alphabet by the D-uniform gap
+          have hzeq : zs = Fin.cons (true, false) kvE2_sep_zFutT3 :=
+            kvE2_futCharZone4 M v x1 w x t zs hzv (true, false) (false, true) (false, true)
+              (false, true)
+              (iff_of_true hlt rfl) (iff_of_false (lt_asymm hlt) Bool.false_ne_true)
+              (iff_of_false (lt_asymm (hwt.trans htv)) Bool.false_ne_true)
+              (iff_of_true (hwt.trans htv) rfl)
+              (iff_of_false (lt_asymm ((hxw.trans hwt).trans htv)) Bool.false_ne_true)
+              (iff_of_true ((hxw.trans hwt).trans htv) rfl)
+              (iff_of_false (lt_asymm htv) Bool.false_ne_true) (iff_of_true htv rfl)
+          rw [hzeq]
+          obtain ⟨χ', hb', hχ'v⟩ := hgapprof v htv hlt
+          have hχeq : χ = χ' := nf_profile_unique M v χ χ' hvχ hχ'v
+          show kvE2_futGapBit σ χ = true
+          rw [hχeq]
+          exact hb'
+      · -- v = x1 : the fresh point, profile = σ's fresh profile
+        have hzeq : zs = Fin.cons (false, false) kvE2_sep_zFutT3 :=
+          kvE2_futCharZone4 M v x1 w x t zs hzv (false, false) (false, true) (false, true)
+            (false, true)
+            (iff_of_false (heq ▸ lt_irrefl x1) Bool.false_ne_true)
+            (iff_of_false (heq ▸ lt_irrefl x1) Bool.false_ne_true)
+            (iff_of_false (heq ▸ lt_asymm (hwt.trans htx1)) Bool.false_ne_true)
+            (iff_of_true (heq ▸ hwt.trans htx1) rfl)
+            (iff_of_false (heq ▸ lt_asymm ((hxw.trans hwt).trans htx1)) Bool.false_ne_true)
+            (iff_of_true (heq ▸ (hxw.trans hwt).trans htx1) rfl)
+            (iff_of_false (heq ▸ lt_asymm htx1) Bool.false_ne_true)
+            (iff_of_true (heq ▸ htx1) rfl)
+        rw [hzeq]
+        show kvE2_futSelfBit σ χ = true
+        rw [hself χ]
+        exact decide_eq_true (nf_profile_unique M v χ _ hvχ (heq ▸ hx1fr))
+      · -- ray (x1, ∞) : profile forced into the ray alphabet by the exact-ray-content
+        have hzeq : zs = Fin.cons (false, true) kvE2_sep_zFutT3 :=
+          kvE2_futCharZone4 M v x1 w x t zs hzv (false, true) (false, true) (false, true)
+            (false, true)
+            (iff_of_false (lt_asymm hgt) Bool.false_ne_true) (iff_of_true hgt rfl)
+            (iff_of_false (lt_asymm (hwt.trans (htx1.trans hgt))) Bool.false_ne_true)
+            (iff_of_true (hwt.trans (htx1.trans hgt)) rfl)
+            (iff_of_false (lt_asymm ((hxw.trans hwt).trans (htx1.trans hgt)))
+              Bool.false_ne_true)
+            (iff_of_true ((hxw.trans hwt).trans (htx1.trans hgt)) rfl)
+            (iff_of_false (lt_asymm (htx1.trans hgt)) Bool.false_ne_true)
+            (iff_of_true (htx1.trans hgt) rfl)
+        rw [hzeq]
+        show kvE2_futRayBit σ χ = true
+        have hrD := hray v hgt
+        rw [kvE2_futRayD, formula_disjList_iff] at hrD
+        obtain ⟨g, hg, hgt2⟩ := hrD
+        obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hg
+        have hχeq : χ = χ' := nf_profile_unique M v χ χ' hvχ
+          ((nf_depth0_char_correct' M atomMap h_surj χ' v).mp hgt2)
+        rw [hχeq]
+        exact (List.mem_filter.mp hχ'mem).2
+    · intro hbitv
+      by_cases hzp : zs ∈ kvE2_futPossibleZones
+      · simp only [kvE2_futPossibleZones, List.mem_cons, List.not_mem_nil, or_false] at hzp
+        rcases hzp with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+        · rw [hbits _ χ (Or.inl rfl)] at hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zPastX3 χ rfl).mpr hbitv
+          exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+        · rw [hbits _ χ (Or.inr (Or.inl rfl))] at hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zAtX3 χ rfl).mpr hbitv
+          exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+        · rw [hbits _ χ (Or.inr (Or.inr (Or.inl rfl)))] at hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zXW3 χ rfl).mpr hbitv
+          exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+        · rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inl rfl))))] at hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zAtW3 χ rfl).mpr hbitv
+          exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+        · rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))] at hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zWT3 χ rfl).mpr hbitv
+          exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+        · rw [hbits _ χ (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl)))))] at hbitv
+          obtain ⟨v, hv3, hvχ⟩ := (hbelow kvE2_sep_zAtT3 χ rfl).mpr hbitv
+          exact ⟨v, (kvE2_futZone4_below_iff M x1 w x t htx1 _ rfl v).mpr hv3, hvχ⟩
+        · -- gap
+          obtain ⟨r, htr, hrx1, hrχ⟩ := hgapocc χ hbitv
+          exact ⟨r, kvE2_futZone4_of_above M r x1 w x t hxw hwt htr (true, false)
+              (iff_of_true hrx1 rfl) (iff_of_false (lt_asymm hrx1) Bool.false_ne_true), hrχ⟩
+        · -- self
+          have hb : kvE2_futSelfBit σ χ = true := hbitv
+          rw [hself χ] at hb
+          have hχf : χ = nf0_projFresh σ.1 := of_decide_eq_true hb
+          subst hχf
+          exact ⟨x1, kvE2_futZone4_of_above M x1 x1 w x t hxw hwt htx1 (false, false)
+              (iff_of_false (lt_irrefl x1) Bool.false_ne_true)
+              (iff_of_false (lt_irrefl x1) Bool.false_ne_true), hx1fr⟩
+        · -- ray
+          have hb : kvE2_futRayBit σ χ = true := hbitv
+          obtain ⟨u, hx1u, huχ⟩ := hrayocc χ
+            (List.mem_filter.mpr ⟨Finset.mem_toList.mpr (Finset.mem_univ χ), hb⟩)
+          exact ⟨u, kvE2_futZone4_of_above M u x1 w x t hxw hwt (htx1.trans hx1u)
+              (false, true)
+              (iff_of_false (lt_asymm hx1u) Bool.false_ne_true) (iff_of_true hx1u rfl), huχ⟩
+      · rw [himposs zs hzp χ] at hbitv
+        exact absurd hbitv Bool.false_ne_true
+  · exact hoff
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

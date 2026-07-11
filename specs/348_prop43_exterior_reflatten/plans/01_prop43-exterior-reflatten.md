@@ -324,7 +324,7 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 3–4 h.
 - **Depends on:** 2 (GO).
 
-### Phase 4: Future-side completeness [NOT STARTED]
+### Phase 4: Future-side completeness [COMPLETED]
 
 - **Goal:** `kvE2_extNegFut_complete` for all `zFutT3`-marked σ:
   `(∀ x1, t < x1 → ¬ nf_eval_nf …) → temporal_truth … (kvE2_extNegFut σ)` (or the
@@ -333,10 +333,24 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
   re-establishes the clause).
 - **File targets:** `Kamp/ExteriorNegation.lean` (extend).
 - **Tasks:**
-  - [ ] Prove `_complete` per the spike's template, generalized over σ.
-  - [ ] Confirm the statement matches exactly what Phase 8's ⇐ extension will need (read
+  - [x] Prove `_complete` per the spike's template, generalized over σ. *(landed as
+        `kvE2_extNegFut_complete`, sorry-free, +412 lines: contrapositive 9-zone realizer
+        reconstruction via new `kvE2_futChainDestruct` (converse of `kvE2_futChainBuild`)
+        and `kvE2_futSigma_atom` (generalized `kvE2_futSpikeSigma_atom`). Hypotheses are
+        EXACTLY the recorded Phase-4 obligations: pins `(hxw, hwt, henv, hbelow)` + σ-side
+        `hbase : nf0_dropFresh σ.1 = qnf.1` and `hbits` (six at-or-below-`t` bits =
+        `kvE2_futAnyBit qnf`, six-constant disjunction guard). Deviation: additive
+        strengthening — holds for ALL σ, no `zFutT3`-marking hypothesis (Phase 3's if-gate
+        hands admissibility, which contains the marking); axioms
+        {propext, Classical.choice, Quot.sound}.)*
+  - [x] Confirm the statement matches exactly what Phase 8's ⇐ extension will need (read
         OuterGate.lean:147 `bracketEndChar_kvE2_complete_two_prior` consumption shape first —
-        read budget: that theorem + the fold's per-σ biconditional only).
+        read budget: that theorem + the fold's per-σ biconditional only). *(confirmed: at the
+        Phase-8 ⇐ site `henv` derives from realized qnf's atom layer (env `[w,x,t]`),
+        `hbelow` from `kvE2_futAnyBit_correct`, `(hxw, hwt)` from qnf's order bits exactly as
+        recovered in `bracketEndChar_kvE2_complete_two_prior`, and `hbase`/`hbits` are
+        decidable σ-side facts of the matched-σ gate restriction — recorded in the theorem
+        docstring.)*
 - **Estimated output:** ~200–450 lines.
 - **Done when:** build green; `_complete` sorry-free, axiom-clean, alphabet-complete.
 - **Timing:** 3 h.
