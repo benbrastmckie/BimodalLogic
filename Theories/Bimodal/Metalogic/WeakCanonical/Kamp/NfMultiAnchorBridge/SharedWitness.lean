@@ -10157,4 +10157,59 @@ theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature}
     | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
   · exact h_bwd zs χ hzs hbit
 
+/-- **Point-location among strictly-monotone bracket witnesses** (task 344 Phase 1 — the
+    combinatorial core of the pin-anchored forward-zone derivation). For a strictly monotone
+    finite witness family `ws : Fin (k+1) → M.carrier`, any point `v` is EITHER one of the
+    witnesses, OR below the first, OR strictly between two consecutive witnesses, OR above the
+    last — exactly the four segment regions of `IntervalPattern.holds_eq_succ`
+    (`ExistsForallNF.lean:197-203`). Model-general (rides `M.carrier`'s `LinearOrder`); carries
+    no fold/bracket content. This converts an arbitrary model point of an interior forward-zone
+    into the region whose landed segment/witness channel closes it. Additive. -/
+theorem kvE2_sep_locate_witness {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {k : Nat}
+    (ws : Fin (k + 1) → M.carrier)
+    (v : M.carrier) :
+    (∃ i : Fin (k + 1), v = ws i) ∨
+    (v < ws ⟨0, Nat.succ_pos k⟩) ∨
+    (∃ i : Fin k, ws ⟨i.val, Nat.lt_succ_of_lt i.isLt⟩ < v ∧
+      v < ws ⟨i.val + 1, Nat.succ_lt_succ i.isLt⟩) ∨
+    (ws ⟨k, Nat.lt_succ_self k⟩ < v) := by
+  classical
+  by_cases hex : ∃ i : Fin (k + 1), v = ws i
+  · exact Or.inl hex
+  · push_neg at hex
+    have htri : ∀ i : Fin (k + 1), ws i < v ∨ v < ws i := by
+      intro i
+      rcases lt_trichotomy (ws i) v with h | h | h
+      · exact Or.inl h
+      · exact absurd h.symm (hex i)
+      · exact Or.inr h
+    by_cases hlow : v < ws ⟨0, Nat.succ_pos k⟩
+    · exact Or.inr (Or.inl hlow)
+    · have h0 : ws ⟨0, Nat.succ_pos k⟩ < v := (htri ⟨0, Nat.succ_pos k⟩).resolve_right hlow
+      have hSne : (Finset.univ.filter (fun i : Fin (k + 1) => ws i < v)).Nonempty :=
+        ⟨⟨0, Nat.succ_pos k⟩, Finset.mem_filter.mpr ⟨Finset.mem_univ _, h0⟩⟩
+      set m := (Finset.univ.filter (fun i : Fin (k + 1) => ws i < v)).max' hSne with hmdef
+      have hmS := (Finset.univ.filter (fun i : Fin (k + 1) => ws i < v)).max'_mem hSne
+      have hmv : ws m < v := (Finset.mem_filter.mp hmS).2
+      by_cases hmk : m.val = k
+      · right; right; right
+        have hme : m = ⟨k, Nat.lt_succ_self k⟩ := Fin.ext hmk
+        rwa [hme] at hmv
+      · right; right; left
+        have hmlt : m.val < k := lt_of_le_of_ne (Nat.lt_succ_iff.mp m.isLt) hmk
+        refine ⟨⟨m.val, hmlt⟩, ?_, ?_⟩
+        · have hme : (⟨m.val, Nat.lt_succ_of_lt hmlt⟩ : Fin (k + 1)) = m := Fin.ext rfl
+          rw [hme]; exact hmv
+        · have hnext : (⟨m.val + 1, Nat.succ_lt_succ hmlt⟩ : Fin (k + 1)) ∉
+              Finset.univ.filter (fun i : Fin (k + 1) => ws i < v) := by
+            intro hc
+            have hle := Finset.le_max' _ _ hc
+            rw [← hmdef] at hle
+            have : m.val + 1 ≤ m.val := Fin.le_def.mp hle
+            omega
+          have hnv : ¬ (ws ⟨m.val + 1, Nat.succ_lt_succ hmlt⟩ < v) := fun hc =>
+            hnext (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hc⟩)
+          exact (htri ⟨m.val + 1, Nat.succ_lt_succ hmlt⟩).resolve_left hnv
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
