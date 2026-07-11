@@ -30,7 +30,7 @@
 > compaction discipline v8 applied to v6/v7 content).
 
 - **Task**: 309 - offdiag_two_anchor_fi_chain
-- **Status**: [READY — all provider dependencies landed (335 complete, commit 147af2fbe; 348 complete, 8/8 phases; 346/347 landed earlier); open Phases 15-19; Phase 15 is the dispatch entry]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~12-20 hours remaining (Phases 15-19; ~800-1600 lines of Lean total, each phase one H8-bounded agent run)
 - **Dependencies**: 310 (COMPLETE — E[Σ]-fold); 311 (COMPLETE — k=1 V-carrier GO); 320, 333 (carried, landed); 335 (**COMPLETE** — k=2 interior+boundary fragment gate + provider contract); 346 (COMPLETE — successor carrier redefinition); 347 (COMPLETE — bracket-faithfulness adjudication + R1); 348 (**COMPLETE** — adjacent-exterior bracket + enriched composed gate; `:351` retirement transferred BACK to 309 per its R1 decision)
 - **Research Inputs**:
@@ -392,10 +392,41 @@ territory: `KampPrior.lean` (+ additive 309-owned material in `NfMultiAnchorBrid
 One agent run per phase (H8). The orchestrator dispatches exactly one open phase per cycle by
 heading-scan.
 
-### Phase 15: Site/coverage probe — fragment triage + depth-ladder wiring verdict (DECISION GATE) [NOT STARTED]
+### Phase 15: Site/coverage probe — fragment triage + depth-ladder wiring verdict (DECISION GATE) [COMPLETED]
 
 *(The verdict-record house style of 13.0/13.3/13.35: machine-probe, record the verdict either
 way, land only green material, no sorry, no partial theorem.)*
+
+**VERDICT (2026-07-11, sess_1783796165_b5b482_309, commit 765054d5a): GO-k1** — with a
+machine-established CORRECTED ARM INDEXING that refines (and partially supersedes) this plan's
+informal arm labels. Full in-file record: `KampPrior.lean` §"Task 309 Phase 15" (verdict comment
++ 7 sorry-free lemmas, all axioms exactly `[propext, Classical.choice, Quot.sound]`; frozen
+provider files byte-unchanged).
+
+- **F-i: COVERED at the k=1 arm — vacuously/unconditionally.** Machine fact (Rabinovich Def 3.1
+  stratification; `NormalForm.lean:134-136/:198-207`; landed as `kampPrior_site_perQnf_seam`,
+  `Iff.rfl`): the per-`qnf` obligation at match-arm `k` is
+  `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf` over `qnf : NormalForm sig k 3` — depth `k`, one
+  less than `sub_nf`'s. At the k=1 arm (depth-2 instance, `sub_nf : NormalForm sig 2 2`) the
+  population is `NormalForm sig 1 3`; `kvE2_sepFragment` (typed at `NormalForm sig 2 3`) does
+  not apply, and the obligations are served by the UNCONDITIONAL rung
+  `bracketEndChar_kv_correct_one_prior` (`kampPrior_site_rung1_match`). No fragment condition
+  arises at the depth-2 instance. At the k=2 arm (where the fragment predicate types), both
+  dispositions are exhibited by machine: `kampPrior_site_fragment_qnf_exists` (non-empty scope)
+  and `kampPrior_site_nonfragment_qnf_exists` (non-empty complement → 321-N2 residue, option (a)).
+- **F-ii: rung-index = arm-index; depths ≥ 3 have NO landed rung.** Certificates (each `exact`-
+  verbatim against the seam): arm 0 → rung 0 (`kampPrior_site_rung0_match`, unconditional);
+  arm 1 → rung 1 (`kampPrior_site_rung1_match`, unconditional, `h0` only); arm 2 → the 348
+  enriched gate `bracketEndChar_kvE2Ext_correct_two_prior_frag`
+  (`kampPrior_site_rung2_gate_match`, fragment-scoped, `hexclExt` internal — V9-2 honored);
+  arms ≥ 3 → none (`bracketEndChar_kvE'_correct*` retired, V9-3) → symbolic-k gate family
+  required → the pre-committed GO-k1 residual routing.
+- **Binding consequences for Phases 16-19** (corrected arm indexing): (i) Phase 18's depth-2
+  instance closes via the UNCONDITIONAL rung-1 + trichotomy/arm assets — the kvE2Ext gate is
+  NOT consumed at the k=1 arm; (ii) the gate + the Phase 16-17 provider work pay at the k=2 arm
+  (depth-3 obligations), fragment-scoped per option (a); (iii) Phase 19's residual is arms
+  k ≥ 3 (per-qnf depth ≥ 3), not k ≥ 2 — the narrowed strategic sorry + successor routing
+  applies there, escalated before landing per the Phase-19 pre-commitment.
 
 - **Goal:** Machine-establish the two facts the option-(a) lift depends on, at the actual
   `| 1 =>` site (`KampPrior.lean:347-361`; goal per `sub_nf : NormalForm sig (k+1) 2`:
