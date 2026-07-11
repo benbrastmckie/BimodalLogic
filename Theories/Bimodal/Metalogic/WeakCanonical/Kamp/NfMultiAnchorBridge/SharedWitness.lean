@@ -10056,40 +10056,38 @@ def kvE2_sepFragment_frag {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : 
     kvE2_sepPos qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
 
-/-- **LEFT-interior bundle soundness at the PIN** (task 344 Phase 1 — the continuation-inlining
+/-- **LEFT-interior parts closer at the PIN** (task 344 Phase 1 — the continuation-inlining
     wrapper). Inlines `kvE_subBracket2V_sound_of_parts`'s continuation (`SubBracket2V.lean:1324-1345`)
-    but with the six gate conjuncts supplied at the bundle's OWN extracted pin `x1` (`x < x1 < w`,
-    BY CONSTRUCTION — never a ∀-anchor over `(x,t)`, whose universal form is REFUTED, report §1).
-    The pin-gate hypothesis `hpin` delivers the four nontrivial conjuncts (full base, off-fiber,
-    forward, backward) at `x1`; the two order heads (`x1 < w`, `w < t`) ride the bundle and `hwt`.
-    Additive; consumes `kvE2_sepBundleL`/`kvE2_sepPtX1L_anchor`/`nf_eval_depth1_fold_iff` unchanged. -/
+    with the four gate conjuncts supplied AT the specific pin `x1` (`x < x1 < w`), NOT as a ∀-anchor
+    over `(x,t)` (whose universal form is REFUTED, report §1). The gate producer
+    (`kvE2_sepGateAtPin_fragL`) extracts `x1` from the body and derives the four conjuncts at THAT
+    pin, then calls this closer — the pin-specific forward conjunct (`h_fwd`) is never demanded at an
+    arbitrary anchor. Additive; consumes `nf_eval_depth1_fold_iff`/`nfPred_correct` unchanged. -/
 theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hwt : w < t)
-    (h : kvE2_sepBundleL (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap w x)
-    (hpin : ∀ x1 : M.carrier, x < x1 → x1 < w →
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1 →
-      nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
-      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
-        (∃ v : M.carrier,
-          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) →
-        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
-        σ.2 (nf0_assemble zs χ σ.1) = true →
-        ∃ v : M.carrier,
-          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ)) :
-    ∃ x1 : M.carrier,
-      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  obtain ⟨x1, hxx1, hx1w, hpt, hbelow⟩ := h
-  have hanchor := kvE2_sepPtX1L_anchor (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap x1 hpt
-  obtain ⟨h_atom, h_off, h_fwd, h_bwd⟩ := hpin x1 hxx1 hx1w hanchor
+    (x1 : M.carrier) (hx1w : x1 < w)
+    (hbelow : ∀ χ : NormalForm sig 0 1,
+      σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true →
+      ∃ u : M.carrier, x < u ∧ u < x1 ∧
+        (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred).eval_at M atomMap u)
+    (h_atom : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1)
+    (h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
+    (h_fwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+      (∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) →
+      σ.2 (nf0_assemble zs χ σ.1) = true)
+    (h_bwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE_sub2_zXU →
+      σ.2 (nf0_assemble zs χ σ.1) = true →
+      ∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) :
+    ∃ x1' : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   refine ⟨x1, ?_⟩
   rw [nf_eval_depth1_fold_iff]
   refine ⟨h_atom, ?_, h_off⟩
@@ -10110,38 +10108,35 @@ theorem kvE2_sepBundleL_sound_frag {sig : MonadicSignature}
     | ⟨3, _⟩ => exact ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by decide +revert)⟩
   · exact h_bwd zs χ hzs hbit
 
-/-- **RIGHT-interior bundle soundness at the PIN** (task 344 Phase 1 — mirror of
+/-- **RIGHT-interior parts closer at the PIN** (task 344 Phase 1 — mirror of
     `kvE2_sepBundleL_sound_frag`). Inlines `kvE2_sepBundleR_sound`'s continuation (`SW:9750-9776`)
-    with the four gate conjuncts supplied at the bundle's own pin `x1` (`w < x1 < t`), backward
-    exception zone `kvE2_sep_zWX1`. The `x < w` head is this lemma's hypothesis; no `a < w` head is
-    mirrored (the right geometry's order facts are the pin's own antecedents). Additive. -/
+    with the four gate conjuncts supplied at the specific pin `x1` (`w < x1 < t`), backward exception
+    zone `kvE2_sep_zWX1`. The `x < w` head is this lemma's hypothesis. Additive. -/
 theorem kvE2_sepBundleR_sound_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (charK : NormalForm sig 1 1 → Formula)
     (σ : NormalForm sig 1 4)
     (M : OrderedMonadicStructure sig)
     (w x t : M.carrier) (hxw : x < w)
-    (h : kvE2_sepBundleR (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap w t)
-    (hpin : ∀ x1 : M.carrier, w < x1 → x1 < t →
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap x1 →
-      nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 ∧
-      (∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
-        (∃ v : M.carrier,
-          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ) →
-        σ.2 (nf0_assemble zs χ σ.1) = true) ∧
-      (∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE2_sep_zWX1 →
-        σ.2 (nf0_assemble zs χ σ.1) = true →
-        ∃ v : M.carrier,
-          zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
-          nf_eval_nf M 0 1 (fun _ => v) χ)) :
-    ∃ x1 : M.carrier,
-      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  obtain ⟨x1, hwx1, hx1t, hpt, hbelow⟩ := h
-  have hanchor := kvE2_sepPtX1R_anchor (nf_depth0_char_formula atomMap h_surj) charK σ M atomMap x1 hpt
-  obtain ⟨h_atom, h_off, h_fwd, h_bwd⟩ := hpin x1 hwx1 hx1t hanchor
+    (x1 : M.carrier) (hwx1 : w < x1) (hx1t : x1 < t)
+    (hbelow : ∀ χ : NormalForm sig 0 1,
+      σ.2 (nf0_assemble kvE2_sep_zWX1 χ σ.1) = true →
+      ∃ u : M.carrier, w < u ∧ u < x1 ∧
+        (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred).eval_at M atomMap u)
+    (h_atom : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1)
+    (h_off : ∀ τ : NormalForm sig 0 5, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
+    (h_fwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+      (∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) →
+      σ.2 (nf0_assemble zs χ σ.1) = true)
+    (h_bwd : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), zs ≠ kvE2_sep_zWX1 →
+      σ.2 (nf0_assemble zs χ σ.1) = true →
+      ∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) :
+    ∃ x1' : M.carrier,
+      nf_eval_nf M 1 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
   refine ⟨x1, ?_⟩
   rw [nf_eval_depth1_fold_iff]
   refine ⟨h_atom, ?_, h_off⟩
