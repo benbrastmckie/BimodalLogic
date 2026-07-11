@@ -310,11 +310,28 @@ draft in `handoffs/09_continuation.md`). fragR is a fragL-scale mirror; deferred
 
 ---
 
-### Phase 3: `kvE2_outer_fold_frag` assembly + 335 handback verification [NOT STARTED]
+### Phase 3: `kvE2_outer_fold_frag` assembly + 335 handback verification [COMPLETED]
 
-*(dispatch 9: NOT started — depends on Phase 2. `kvE2_outer_fold_frag` is a small verbatim mirror of
-`kvE2_outer_fold` (hbdry replaced by an hfrag-vacuity `exfalso`; hexcl threaded verbatim); ready-to-paste
-draft in `handoffs/09_continuation.md`. Gated transitively on fragR.)*
+**COMPLETED (dispatch 11, R2)**: `kvE2_outer_fold_frag` landed as the verbatim mirror of
+`kvE2_outer_fold` — `hgateL`/`hgateR`/`hbdry` replaced by `hfrag` + `hcorrK` + `hInnerR` (fed through
+`kvE2_sepBody_kit_sound_frag`); `hexcl` threaded verbatim; the non-interior backward branch closes by
+`exfalso` (unreachable under `hfrag`). Sorry-free, axiom-clean `{propext, Classical.choice, Quot.sound}`.
+
+**335 HANDBACK VERDICT (dispatch 11)**:
+- Four delivered lemmas (all `SharedWitness.lean`, additive below the 344 banner, axiom-clean):
+  `kvE2_sepGateAtPin_fragL` (LEFT, `x < x1 < w`), `kvE2_sepGateAtPin_fragR` (RIGHT, `w < x1 < t`),
+  `kvE2_sepBody_kit_sound_frag`, `kvE2_outer_fold_frag`.
+- Fragment bridge: `kvE2_sepFragment_frag` (`SW:10064`) is byte-identical to
+  `OuterGate.kvE2_sepFragment` (`OuterGate.lean:191`) — 335 converts by `rfl`.
+- **335 Phase B discharge obligation set = `{hcorrK, hInnerR, hexcl}`** (all explicit, undischarged in 344):
+  - `hcorrK`: provider correctness at the pin (`ExistProviders.correct`) — 335 owns.
+  - `hInnerR` (NEW under R2): `∀ σ0, kvE2_sepPos qnf = [σ0] → ∀ zs χ, ¬ kvE2_sepInnerConsistentR zs →
+    σ0.2 (nf0_assemble zs χ σ0.1) = false` (the zWT3 analog of gate clause iv). 335 discharges via its
+    landed RIGHT bundle honesty (`kvE2_sepBundleR_sound`/`hgateR`, `SW:9835-9839`) + the newly-landed
+    `kvE2_sep_zone4_consistentR` contrapositive (a realized zone is InnerConsistentR, so a bit-true
+    inconsistent zone has no witness).
+  - `hexcl`: the A1 provider-conditional exclusion probe — threaded verbatim from the non-frag
+    `kvE2_outer_fold`; 335 owns.
 
 **Goal**: Land `kvE2_outer_fold_frag` (pin-anchored variant of `kvE2_outer_fold`: `hgateL`/`hgateR`/
 `hbdry` replaced by `hfrag` + `hcorrK`, `hexcl` threaded verbatim) and hand back verified signatures to

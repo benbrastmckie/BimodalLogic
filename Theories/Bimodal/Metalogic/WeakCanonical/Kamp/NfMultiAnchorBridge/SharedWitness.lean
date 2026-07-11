@@ -12494,4 +12494,117 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
   · exact kvE2_sepGateAtPin_fragR atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
       M x t σ0 hpos hzR hcorrK (hInnerR σ0 hpos) h
 
+/-- **Pin-anchored outer fold** (task 344 Phase 3 — the `_frag` variant of `kvE2_outer_fold`).
+    Verbatim mirror of `kvE2_outer_fold` with `hgateL`/`hgateR`/`hbdry` replaced by
+    `hfrag` + `hcorrK` + `hInnerR` (fed through `kvE2_sepBody_kit_sound_frag`), and `hexcl`
+    threaded unchanged. The non-interior backward branch is unreachable under `hfrag` (the sole
+    positive `σ0` is interior), so it closes by `exfalso`. Delivered to task 335 Phase B. -/
+theorem kvE2_outer_fold_frag {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (x t : M.carrier)
+    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
+    (hfrag : kvE2_sepFragment_frag qnf)
+    (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
+      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
+      nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
+    (hInnerR : ∀ (σ0 : NormalForm sig 1 4), kvE2_sepPos qnf = [σ0] →
+      ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
+        σ0.2 (nf0_assemble zs χ σ0.1) = false)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier,
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    ∃ w : M.carrier,
+      nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, hLreal, hRreal⟩ :=
+    kvE2_sepBody_kit_sound_frag atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
+      M x t hfrag hcorrK hInnerR h
+  have hprojW : nf_eval_nf M 0 1 (fun _ => w) (kvE2_sepProj3 qnf.1 ⟨0, by omega⟩) := by
+    have h1 := hptW
+    simp only [kvE2_sepPtW, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ w).mp
+      ((formula_conjList_iff M atomMap w _).mp h1 _ List.mem_cons_self)
+  have hprojX : nf_eval_nf M 0 1 (fun _ => x) (kvE2_sepProj3 qnf.1 ⟨1, by omega⟩) := by
+    have h1 := hEpL
+    simp only [kvE2_sepEpL, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ x).mp
+      ((formula_conjList_iff M atomMap x _).mp h1 _ List.mem_cons_self)
+  have hprojT : nf_eval_nf M 0 1 (fun _ => t) (kvE2_sepProj3 qnf.1 ⟨2, by omega⟩) := by
+    have h1 := hEpR
+    simp only [kvE2_sepEpR, TemporalPred.eval_at] at h1
+    exact (nfPred_correct M atomMap h_surj _ t).mp
+      ((formula_conjList_iff M atomMap t _).mp h1 _ List.mem_cons_self)
+  refine ⟨w, ?_, ?_⟩
+  · intro a
+    match a with
+    | .pred p ⟨0, _⟩ =>
+      have h1 := hprojW (.pred p ⟨0, by omega⟩)
+      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero] using h1
+    | .pred p ⟨1, _⟩ =>
+      have h1 := hprojX (.pred p ⟨0, by omega⟩)
+      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+    | .pred p ⟨2, _⟩ =>
+      have h1 := hprojT (.pred p ⟨0, by omega⟩)
+      simpa only [atom_eval, kvE2_sepProj3, Fin.cons_zero, Fin.cons_succ] using h1
+    | .order ⟨0, _⟩ ⟨1, _⟩ hne =>
+      refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_yx.symm.trans hc))
+      simp only [atom_eval]
+      exact lt_asymm hxw
+    | .order ⟨0, _⟩ ⟨2, _⟩ hne =>
+      refine iff_of_true ?_ h_yt
+      simp only [atom_eval]
+      exact hwt
+    | .order ⟨1, _⟩ ⟨0, _⟩ hne =>
+      refine iff_of_true ?_ h_xy
+      simp only [atom_eval]
+      exact hxw
+    | .order ⟨1, _⟩ ⟨2, _⟩ hne =>
+      refine iff_of_true ?_ h_xt
+      simp only [atom_eval]
+      exact hxw.trans hwt
+    | .order ⟨2, _⟩ ⟨0, _⟩ hne =>
+      refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_ty.symm.trans hc))
+      simp only [atom_eval]
+      exact lt_asymm hwt
+    | .order ⟨2, _⟩ ⟨1, _⟩ hne =>
+      refine iff_of_false ?_ (fun hc => Bool.false_ne_true (h_tx.symm.trans hc))
+      simp only [atom_eval]
+      exact lt_asymm (hxw.trans hwt)
+    | .order ⟨0, _⟩ ⟨0, _⟩ hne => exact absurd rfl hne
+    | .order ⟨1, _⟩ ⟨1, _⟩ hne => exact absurd rfl hne
+    | .order ⟨2, _⟩ ⟨2, _⟩ hne => exact absurd rfl hne
+  · intro σ
+    constructor
+    · rintro ⟨x1, hx1⟩
+      by_contra hne
+      exact hexcl w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hx1
+    · intro hbit
+      have hmem : σ ∈ kvE2_sepPos qnf := by
+        simp only [kvE2_sepPos, List.mem_filter]
+        exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hbit⟩
+      by_cases hzL : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
+      · exact hLreal σ hmem hzL
+      by_cases hzR : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+      · exact hRreal σ hmem hzR
+      -- non-interior backward branch: unreachable under `hfrag`
+      exfalso
+      obtain ⟨σ0, hpos, hzone⟩ := hfrag
+      rw [hpos] at hmem
+      have hσ0 : σ = σ0 := List.mem_singleton.mp hmem
+      subst hσ0
+      rcases hzone with hh | hh
+      · exact hzL hh
+      · exact hzR hh
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
