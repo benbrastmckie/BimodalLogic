@@ -117,13 +117,13 @@ Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 
 
 ### Uncategorized
 
-346 [NOT STARTED] — THE 321-N2 NAMED SUCCESSOR (user-deferred; NOT auto-dispatched — 
+346 [RESEARCHED] — THE 321-N2 NAMED SUCCESSOR (user-deferred; NOT auto-dispatched — 
   └─ 335 [BLOCKED] — (kamp_theorem_formalization: Follow-up to task 334 (faithful carrier ) (see above)
 
 ## Tasks
 
 ### 346. Successor carrier redefinition
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 345
 - **Research**: [346_successor_carrier_redefinition/reports/01_hexcl-refutation-and-vacuity.md]
