@@ -1,23 +1,24 @@
 ---
-next_project_number: 344
+next_project_number: 345
 ---
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
+Warning: 3 task(s) have no topic and will render under Uncategorized: 298, 341, 344 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-10. Generated from state.json dependency graph.*
+*Updated 2026-07-11. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,335,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,309,341 | 161,187,191,194,230,291,335,343 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,307 | 189,192,196,309 | completeness, automation |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,343,344 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,335 | 161,187,191,194,230,291,343,344 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309,341 | 189,192,196,335 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -109,13 +110,27 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 335 [IMPLEMENTING] — Follow-up to task 334 (faithful carrier re-grounding, COMPLETED):
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin (see above)
   └─ 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ### Uncategorized
 
+344 [RESEARCHED] — SPAWNED from task 335 blocker escalation 2 (session sess_17837230
+  └─ 335 [IMPLEMENTING] — (kamp_theorem_formalization: Follow-up to task 334 (faithful carrier ) (see above)
+
 ## Tasks
+
+### 344. Pin anchored fragment fold
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Dependencies**: None
+- **Research**: [344_pin_anchored_fragment_fold/reports/01_fragment-extractor-derivability.md]
+
+**Description**: SPAWNED from task 335 blocker escalation 2 (session sess_1783723095_edd5a7). Land the pin-anchored fragment fold in SharedWitness.lean, ADDITIVE-ONLY (zero existing decls modified — task 341 GATE re-diff absorbs it): kvE2_sepGateAtPin_fragL/R (six gate conjuncts derived at the extracted pin witness q with x < q < w via kvE_sub2V_bounded_anchor_of_outer), kvE2_sepBody_kit_sound_frag, and kvE2_outer_fold_frag (pin-anchored variant of kvE2_outer_fold). Grounding: machine-verified derivability report (reports/01_fragment-extractor-derivability.md; original at specs/335_outer_gate_assembly_engine_kvE2_body/reports/05_fragment-extractor-derivability.md). REFUTED shapes to avoid: the ∀-anchor hgateL of the landed fold is FALSE in gate-legal hfrag-legal configurations (SW:9911-9928, SW:6772-6778 binder-level obstruction survives the fragment) — do NOT attempt a segment-coverage extractor for it; a NEW FILE will not work (segment/pin internals are file-private). One extra dischargeable input allowed: provider correctness at the pin (hcorrK = ExistProviders.correct step already assigned to 335). Consumer: task 335 Phases B-D (bracketEndChar_kvE2_correct_two_prior_frag). Invariants: lake build green, axiom-clean {propext, Classical.choice, Quot.sound}, no sorries on live paths, incremental green commits. Residual risks to probe early: hexcl threading, arrangement-shape reduction under hfrag, pin-extraction output shape. Sizing: 2-3 dispatches.
+
+---
 
 ### 343. Abort aware tableau cancellation
 - **Status**: [NOT STARTED]
@@ -142,7 +157,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 - **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 334, Task 337
+- **Dependencies**: Task 334, Task 337, Task 344
 - **Summary**:
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]
   - [335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md]

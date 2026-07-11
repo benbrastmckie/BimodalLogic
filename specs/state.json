@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 344,
+  "next_project_number": 345,
   "active_projects": [
     {
       "project_number": 309,
@@ -1374,7 +1374,8 @@
       "parent_task": 334,
       "dependencies": [
         334,
-        337
+        337,
+        344
       ],
       "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
       "created": "2026-07-08T21:34:34Z",
@@ -1437,7 +1438,7 @@
       },
       "previous_status": "partial",
       "next_artifact_number": 2,
-      "blockers": "Phases 4a/4b/4c: the four families kvE2_outer_fold requires are not dischargeable at charK := P.existF 0. Branch (a): kvE2_outer_fold/kvE2_sepBody need a SharedWitness.lean reshape (333 TERRITORY — 335 cannot edit it) to internalize/weaken the gate. Branch (b): unmet A1-conditionality — a stronger provider contract (higher-arity charK) or a conditional gate would be required, and a conditional gate fails the UNCONDITIONAL BracketCarrierCorrectVPrior that task 309 needs. USER DECISION required on which branch to pursue."
+      "blockers": "Phase B: the interior-LEFT/RIGHT gate FORWARD conjunct (and the coupled anchor conjuncts a<w / full base realization) cannot be produced under hfrag from the public API. The only exclusion channel (kvE2_sepSegForm_excludes) needs the frozen kvE2_sepDisjunct' segment content, which no public extractor exposes; producing it requires SharedWitness.lean edits (branch a, REFUTED per report 04) and violates 341's frozen-file gate. The O4 residue-vanish (SW:6785-6791) is a routing verdict, not a landed derivation. This is the same REFUTED root cause as the v4 blocker; the fragment restriction collapses hbdry (verified) but not the interior-gate FORWARD obligation."
     },
     {
       "project_number": 341,
@@ -1526,6 +1527,25 @@
           }
         ]
       }
+    },
+    {
+      "project_number": 344,
+      "project_name": "pin_anchored_fragment_fold",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "SPAWNED from task 335 blocker escalation 2 (session sess_1783723095_edd5a7). Land the pin-anchored fragment fold in SharedWitness.lean, ADDITIVE-ONLY (zero existing decls modified — task 341 GATE re-diff absorbs it): kvE2_sepGateAtPin_fragL/R (six gate conjuncts derived at the extracted pin witness q with x < q < w via kvE_sub2V_bounded_anchor_of_outer), kvE2_sepBody_kit_sound_frag, and kvE2_outer_fold_frag (pin-anchored variant of kvE2_outer_fold). Grounding: machine-verified derivability report (reports/01_fragment-extractor-derivability.md; original at specs/335_outer_gate_assembly_engine_kvE2_body/reports/05_fragment-extractor-derivability.md). REFUTED shapes to avoid: the ∀-anchor hgateL of the landed fold is FALSE in gate-legal hfrag-legal configurations (SW:9911-9928, SW:6772-6778 binder-level obstruction survives the fragment) — do NOT attempt a segment-coverage extractor for it; a NEW FILE will not work (segment/pin internals are file-private). One extra dischargeable input allowed: provider correctness at the pin (hcorrK = ExistProviders.correct step already assigned to 335). Consumer: task 335 Phases B-D (bracketEndChar_kvE2_correct_two_prior_frag). Invariants: lake build green, axiom-clean {propext, Classical.choice, Quot.sound}, no sorries on live paths, incremental green commits. Residual risks to probe early: hexcl threading, arrangement-shape reduction under hfrag, pin-extraction output shape. Sizing: 2-3 dispatches.",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/344_pin_anchored_fragment_fold/reports/01_fragment-extractor-derivability.md",
+          "summary": "Machine-verified GO: pin-anchored _frag fold derivable; ∀-anchor extractor refuted"
+        }
+      ],
+      "spawned_from": 335
     }
   ],
   "artifacts": [
