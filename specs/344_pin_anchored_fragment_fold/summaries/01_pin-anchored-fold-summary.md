@@ -43,3 +43,41 @@ line-precise, in `handoffs/01_continuation.md`.
   segment/pin extractor and `kvE2_sepGateAtPin_fragL` are **deferred** to the next dispatch
   (scope-boundary: the heavy construction exceeds a single dispatch; no wall hit). Annotated inline
   on the Phase 1 checklist.
+
+---
+
+## Dispatch 11 — TASK COMPLETE (R2 resolution)
+
+- **Status**: All 3 phases [COMPLETED]. 344-section sorry count = 0; all deliverables axiom-clean
+  `{propext, Classical.choice, Quot.sound}`. Full `lake build` green (1720 jobs).
+- **Resolution**: **R2** (orchestrator-decided). `kvE2_sepGateAtPin_fragR` takes an extra explicit
+  hypothesis `hInnerR` (the zWT3 analog of gate clause iv) — the dispatch-10 design gap (gate clause
+  iv is structurally zXW3-only) is resolved additively rather than by modifying the landed gate.
+
+### Deliverables (all `SharedWitness.lean`, additive below the TASK 344 banner)
+
+| Decl | Line | Role |
+|------|------|------|
+| `kvE2_sepInnerConsistentR` | 11295 | 9 RIGHT-geometry inner zones (`x<w<x1<t`) |
+| `kvE2_sep_zone4_consistentR` | 11309 | realized-zone → InnerConsistentR (mirror of `_consistent`) |
+| `kvE2_sep_rXW_mem_slotsLFor`, `kvE2_sep_rX1T_mem_slotsRFor` | — | RIGHT slot-membership helpers |
+| `kvE2_sepEpL/EpR/PtW_owner_lits_R`, `kvE2_sepPtX1R_owner_lit` | — | RIGHT owner-literal extractors |
+| `kvE2_sepGateAtPin_fragL` | 10371 | LEFT pin gate producer (dispatches 4–9) |
+| `kvE2_sepGateAtPin_fragR` | 11525 | RIGHT pin gate producer (dispatch 11; `h_bwd` via `hInnerR`) |
+| `kvE2_sepBody_kit_sound_frag` | 12459 | kit-sound conclusion, dispatches to fragL/fragR |
+| `kvE2_outer_fold_frag` | 12502 | pin-anchored outer fold; delivered to 335 Phase B |
+
+### 335 handback
+
+- Fragment bridge `kvE2_sepFragment_frag` ≡ `OuterGate.kvE2_sepFragment` (defeq, `rfl`).
+- **335 Phase B discharge obligation set = `{hcorrK, hInnerR, hexcl}`** (all explicit/undischarged in 344).
+  `hInnerR` is discharged by 335 via landed RIGHT bundle honesty + `kvE2_sep_zone4_consistentR`
+  (now landed) contrapositive.
+
+### Method
+
+fragR is the RIGHT-geometry mirror of fragL: pin in the R tie-group (`w<x1<t`), LEFT group holds the
+single `(x,w)` `rXW` slots, RIGHT group holds `rWX1`/`rX1`(pin)/`rX1T`. `h_atom` differs only in the 6
+fresh-point order coordinates (zWT3 vs zXW3); `h_bwd` uses `hInnerR` in place of gate clause iv;
+`h_fwd` mirrors the locate-witness case split with the pin-in-RIGHT-group segment machinery
+(`kvE2_sepSegRForSub` pin split; `kvE2_sepSegLForSub` single).
