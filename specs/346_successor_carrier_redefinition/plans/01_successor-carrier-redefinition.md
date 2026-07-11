@@ -1,7 +1,7 @@
 # Implementation Plan: Successor Carrier Redefinition (the 321-N2 named successor)
 
 - **Task**: 346 - successor_carrier_redefinition
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED] (all 6 phases; full-project build green, sorry-free live paths)
 - **Effort**: ~12 hours (6 phases)
 - **Dependencies**: 345 (landed; symmetric-gate clause (v))
 - **Research Inputs**: reports/01_successor-carrier-redefinition.md (H4-verified, Tier 1)
@@ -387,7 +387,24 @@ path. (Note: a transient `lean_verify` MCP call reported a stale `sorryAx`; the 
 - **Estimated output:** ~80-150 lines.
 - **Depends on:** 2, 4
 
-### Phase 6: Handoff — sorry inventory, consumer notes, deferred-successor documentation [NOT STARTED]
+### Phase 6: Handoff — sorry inventory, consumer notes, deferred-successor documentation [COMPLETED]
+
+**PHASE 6 RESULT** (session sess_1783782450_230288): FULL-PROJECT `lake build` GREEN
+(`Build completed successfully (1720 jobs)`, exit 0) — NO breakage from this task's interface
+changes. Verified via grep that `bracketEndChar_kvE2_sound_two_prior_frag` has ZERO external
+consumers and `kvE2_outer_fold_frag`/`kvE2_sepBody_kit_sound_frag` are referenced only inside
+`OuterGate.lean` (single internal caller + doc prose), so no downstream consumer went RED and no
+fix-forward was required. **Sorry inventory: EMPTY on all task-346 live paths** — authoritative
+`lake env lean` `#print axioms` on the four key theorems (`kvE2_sepFragment_realizable`,
+`kvE2_outer_fold_frag`, `kvE2_sepBody_kit_sound_frag`, `bracketEndChar_kvE2_sound_two_prior_frag`)
+all return `{propext, Classical.choice, Quot.sound}`, NO `sorryAx`; every `sorry` substring in the
+two modified files is prose. **Documented (honesty)**: a PRE-EXISTING, UNRELATED `sorryAx` on
+`BXCanonical.completeness*` (`Completeness.lean:342-372`, task-155 Stavi residue, different module
+tree, untouched by 346) surfaces in the whole-project build — not a 346 regression. Consumer impact
+notes (task 309 Phases 13.4/14, `KampPrior.lean:351`, task 335 Phase D) and the deferred
+Prop-4.3 exterior-completeness successor spec (`prop43_exterior_completeness`, carrying the
+`hexclExt` obligation) are written verbatim in the summary. NOT created in state.json (orchestrator/
+user call). Full record: `summaries/01_successor-carrier-redefinition-summary.md`.
 - **Goal:** Final verification and handoff: full-project build, sorry inventory, consumer impact
   notes, and explicit documentation of the deferred Prop-4.3 exterior-completeness successor.
 - **File targets:**
@@ -395,15 +412,16 @@ path. (Note: a transient `lean_verify` MCP call reported a stale `sorryAx`; the 
   - Documentation (in the implementation summary, and as a note at OuterGate:245 if concise):
     consumer impact + successor recommendation.
 - **Tasks:**
-  - [ ] Full `lake build` green; axiom audit {propext, Classical.choice, Quot.sound} on
-    `kvE2_sepFragment_realizable`, `kvE2_outer_fold_frag`, `bracketEndChar_kvE2_sound_two_prior_frag`.
-  - [ ] Sorry inventory: confirm ZERO sorries on live paths (the exterior gap is quarantined by
-    binder restriction, not a sorry).
-  - [ ] Consumer impact notes: **task 309** Phases 13.4/14 + `KampPrior.lean:351` strategic sorry
+  - [x] Full `lake build` green; axiom audit {propext, Classical.choice, Quot.sound} on
+    `kvE2_sepFragment_realizable`, `kvE2_outer_fold_frag`, `bracketEndChar_kvE2_sound_two_prior_frag`
+    *(full-project build GREEN 1720 jobs; all four key theorems axiom-clean via `#print axioms`)*.
+  - [x] Sorry inventory: confirm ZERO sorries on live paths (the exterior gap is quarantined by
+    binder restriction, not a sorry) *(EMPTY; all `sorry` substrings are prose)*.
+  - [x] Consumer impact notes: **task 309** Phases 13.4/14 + `KampPrior.lean:351` strategic sorry
     now consume the interior+boundary gate (they must NOT expect a full-exterior hexcl-free gate);
     **task 335** Phase D assembles the interior+boundary-scoped correct gate. Document the exact new
-    `hexcl` cone binder they must supply.
-  - [ ] **Deferred-successor documentation** (explicit follow-up, NOT attempted here): full-exterior
+    `hexcl` cone binder they must supply *(written in summary; new `hreal`/`hexcl`/`hexclExt` triple)*.
+  - [x] **Deferred-successor documentation** (explicit follow-up, NOT attempted here): full-exterior
     completeness requires the navigated Prop-4.3 re-flatten (`Prop43.lean`, currently BLOCKED on the
     uniform-negation connective cases, :120-159). Recommend the orchestrator/user `/spawn` a
     successor task "prop43_exterior_completeness" carrying: (a) the full-exterior `hexcl` obligation
@@ -416,13 +434,13 @@ path. (Note: a transient `lean_verify` MCP call reported a stale `sorryAx`; the 
 
 ## Testing & Validation
 
-- [ ] `lake build` green after each phase (targeted per phase; full project at Phase 6).
-- [ ] `lean_verify` axiom-clean {propext, Classical.choice, Quot.sound} on all three touched theorems.
-- [ ] Zero sorries on live paths (grep + `lean_verify`).
-- [ ] Preserved-asset producers (fragL/fragR/kit_sound/clause (v)/completeness half/provider bridge)
+- [x] `lake build` green after each phase (targeted per phase; full project at Phase 6) *(full-project build GREEN, 1720 jobs)*.
+- [x] `lean_verify` axiom-clean {propext, Classical.choice, Quot.sound} on all three touched theorems *(authoritative `#print axioms`; `lean_verify` MCP can report stale sorryAx)*.
+- [x] Zero sorries on live paths (grep + `lean_verify`) *(EMPTY inventory; all `sorry` substrings are prose)*.
+- [x] Preserved-asset producers (fragL/fragR/kit_sound/clause (v)/completeness half/provider bridge)
   build unchanged.
-- [ ] `kvE2_sepFragment` and `kvE2_sepFragment_frag` bodies are byte-identical (rfl defeq bridge).
-- [ ] Realizability witness demonstrates premise-set satisfiability (non-vacuity).
+- [x] `kvE2_sepFragment` and `kvE2_sepFragment_frag` bodies are byte-identical (rfl defeq bridge).
+- [x] Realizability witness demonstrates premise-set satisfiability (non-vacuity) *(`kvE2_sepFragment_realizable`)*.
 
 ## Artifacts & Outputs
 
