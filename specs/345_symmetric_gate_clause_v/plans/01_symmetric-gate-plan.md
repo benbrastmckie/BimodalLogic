@@ -206,7 +206,26 @@ must end taking only `hfrag`/`hcorrK`/`hexcl`.
 
 ---
 
-### Phase 4: Consumer sweep, freeze-diff, axiom check, 335 handback [NOT STARTED]
+### Phase 4: Consumer sweep, freeze-diff, axiom check, 335 handback [COMPLETED]
+
+**Results**:
+- Full `lake build` green (1720 jobs).
+- Consumer sweep: of the 8 `hg :` sites, only `kvE2_sepHgate_innerNine` (SW site 6680) and
+  `kvE2_sepGateAtPin_fragL` (site 10402) required the `.2.2.2` → `.2.2.2.1` projection shift
+  (flagged deviations, Phase 1). The other 6 (5901, 6362, 6669=offFiber via `hg.2.2.1`, 8435,
+  9647, 11558) and the decision sites (2332 `dite`, 2361 `¬gate`) appear in NO diff hunk —
+  compiled unmodified. Inert, as the report predicted.
+- Freeze-diff: SharedWitness.lean is the only touched `.lean` file. Relocated
+  `kvE2_sepInnerConsistentR` / `kvE2_sep_zone4_consistentR` verified BYTE-IDENTICAL (position
+  changed only). No existing declaration outside the sanctioned surface + the two flagged
+  consumer shifts was byte-altered.
+- Axiom check: `kvE2_sepGate` {propext, Quot.sound}; `kvE2_sepGate_holds_of_honest`,
+  `kvE2_sepGateAtPin_fragR`, `kvE2_sepBody_kit_sound_frag`, `kvE2_outer_fold_frag`
+  {propext, Classical.choice, Quot.sound}. Zero `sorryAx`. No new axioms/vacuous defs.
+- **335 handback**: `kvE2_outer_fold_frag` now takes ONLY `hfrag` / `hcorrK`
+  (ExistProviders.correct — already 335's step) / `hexcl` (335 Phase-C GO/NO-GO probe). No
+  `hInnerR` obligation remains.
+
 
 **Goal**: Verify the freeze exception held and the change is inert everywhere else. Full-build
 green, axiom check on all four sanctioned identifiers, confirm gate consumers compiled unmodified,
@@ -243,13 +262,15 @@ and record the 335 handback (obligations now `{hcorrK, hexcl}`).
 
 ## Testing & Validation
 
-- [ ] Full `lake build` succeeds with no errors or warnings on live paths.
-- [ ] `lean_verify` on the five sanctioned identifiers returns exactly `{propext,
-      Classical.choice, Quot.sound}` (no `sorryAx`, no extra axioms).
-- [ ] Clause (v) text matches the report's exact transcription (report L82–84).
-- [ ] `kvE2_outer_fold_frag` final signature is `hfrag`/`hcorrK`/`hexcl` only.
-- [ ] `git diff` confirms the SharedWitness freeze exception surface (existing declarations
-      byte-identical outside gate def, `holds_of_honest`, three `_frag` lemmas).
+- [x] Full `lake build` succeeds with no errors on live paths (1720 jobs).
+- [x] `lean_verify` on the five sanctioned identifiers: the four theorems return `{propext,
+      Classical.choice, Quot.sound}`; the `kvE2_sepGate` def returns `{propext, Quot.sound}`
+      (⊆ sanctioned). No `sorryAx`, no extra axioms.
+- [x] Clause (v) text matches the report's exact transcription (report L82–84).
+- [x] `kvE2_outer_fold_frag` final signature is `hfrag`/`hcorrK`/`hexcl` only.
+- [x] `git diff` confirms the SharedWitness freeze exception surface: existing declarations
+      byte-identical outside gate def, `holds_of_honest`, three `_frag` lemmas, plus two flagged
+      minimal consumer projection shifts and the byte-identical relocation of the two RIGHT decls.
 
 ## Artifacts & Outputs
 
