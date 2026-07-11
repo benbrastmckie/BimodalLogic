@@ -138,28 +138,42 @@ below it, nothing above it is edited):
 Phases form a linear chain (each consumes the prior phase's decls). All edits are additive to
 `SharedWitness.lean`. Sized to one agent dispatch each.
 
-### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [IN PROGRESS]
+### Phase 1: Risk probe + pin/segment extraction + `kvE2_sepGateAtPin_fragL` [PARTIAL]
 
 **Goal**: Front-load the three residual risks as bounded early NO-GO probes, then land the additive
 segment/pin-realization extractor and the LEFT pin-anchored gate `kvE2_sepGateAtPin_fragL` (six
 conjuncts at the extracted pin `q`, `x < q < w`). This is the heavy dispatch.
 
 **Tasks**:
-- [ ] Append the additive banner (above) to start the new section. Confirm via `git diff` that only
-      appended lines are added and no pre-existing decl is touched.
-- [ ] **PROBE 1 (pin-extraction output shape)**: inspect `kvE_sub2V_bounded_anchor_of_outer` /
-      `bracketFromLists_flatMap_subchain_below_pin` output type (`lean_hover_info`, `lean_goal`).
-      Determine whether the segment context is delivered jointly with `q`. Record the finding. If NOT
-      co-delivered, land a small additive joint-extraction lemma before proceeding; if it cannot be
-      stated additively, STOP and escalate.
-- [ ] **PROBE 2 (arrangement-shape reduction under `hfrag`)**: state a skeleton `have` that
-      `kvE2_sepArr'` reduces to the two-slot bracket under single-positive `hfrag`. If it does not
-      reduce mechanically, capture the residual goal as an early NO-GO signal and escalate.
-- [ ] **PROBE 3 (`hexcl` threading)**: read the landed `kvE2_outer_fold` signature; record `hexcl`'s
-      exact position and shape so Phase 3 threads it verbatim (never discharge it).
+- [x] Append the additive banner (above) to start the new section. Confirm via `git diff` that only
+      appended lines are added and no pre-existing decl is touched. *(completed — committed 9ea246946;
+      also added local `kvE2_sepFragment_frag` predicate, defeq to `OuterGate.kvE2_sepFragment`, to
+      avoid an import cycle. Build green.)*
+- [x] **PROBE 1 (pin-extraction output shape)**: *(completed — GO-with-caveat. The bundle
+      `kvE2_sepBundleL` (`SW:5327`) co-delivers the pin `x1` with `x < x1 ∧ x1 < w` BY CONSTRUCTION
+      (not an arbitrary anchor) plus the `kvE2_sepPtX1L` realization and the `zXU` below-clause — this
+      DISSOLVES the O4 "first obstruction" (`a < w` for arbitrary `a`). CAVEAT: `kvE2_sepDisjunct'_extract`
+      (`SW:8273`, `obtain ⟨ws, hmono, hrange, hpt, -, -, -⟩`) DISCARDS the bracket segment forms — the
+      three `beta` components 4/5/6 of `IntervalPattern.holds_eq_succ` (`ExistsForallNF.lean:188-203`).
+      The FORWARD gate conjunct needs those segments (to exclude bit-false 1-types at open-interior
+      points), so an ADDITIVE JOINT EXTRACTOR that keeps components 4/5/6 is required — exactly the
+      mitigation this probe anticipated. It CAN be stated additively (content is present in `hbr`
+      pre-discard), so this is GO, not a NO-GO escalation.)*
+- [x] **PROBE 2 (arrangement-shape reduction under `hfrag`)**: *(completed — GO. The segment forms are
+      present in the raw bracket `.holds` (`hbr`) and recoverable additively via the joint extractor
+      above. Under `hfrag` the tie-grouped left/right lists collapse to `σ0`'s own slots (no cross-σ
+      residue — the O4 record's channel-exhaustion vanishes), so segment zone keys align with the
+      `[x1,w,x,t]` zones. Re-surfacing + zone-aligning the segments is the substantive remaining work,
+      not a wall.)*
+- [x] **PROBE 3 (`hexcl` threading)**: *(completed — GO. `hexcl` is the FINAL hypothesis of
+      `kvE2_outer_fold` (`SW:9952-9956`): `∀ w, x<w → w<t → ptW w → ∀ σ, qnf.2 σ = false → ∀ x1,
+      ¬ nf_eval_nf M 1 4 [x1,w,x,t] σ`. Threaded verbatim into `kvE2_outer_fold_frag`, never
+      discharged — Phase 3 copies it byte-identical.)*
 - [ ] Land the additive **segment/pin-realization extractor**: `.holds` → segment form content
       available at the pin `q` (the gap `kvE2_sepBody_extract` `SW:8410` leaves; serving the
-      **pin-anchored** interface only — NEVER the ∀-anchor one).
+      **pin-anchored** interface only — NEVER the ∀-anchor one). *(deviation: deferred to next dispatch —
+      this is the joint extractor PROBE 1 identified; ~150-250 lines mirroring `kvE2_sepDisjunct'_extract`
+      SW:8232-8395 but keeping the discarded segment components. See handoffs/01_continuation.md.)*
 - [ ] State and prove `kvE2_sepGateAtPin_fragL` per report §2 sketch (lines 104-120): hypotheses
       `hfrag`, `hcorrK` (explicit), `h : (kvE2_sepBody … charK qnf).holds M atomMap x t`, `σ`,
       `hσ : σ ∈ kvE2_sepPos qnf`, `hz : nf0_zoneSpec σ.1 = kvE2_sep_zXW3`; conclusion
