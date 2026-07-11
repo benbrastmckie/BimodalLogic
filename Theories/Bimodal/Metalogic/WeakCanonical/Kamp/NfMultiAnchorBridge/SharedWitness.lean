@@ -10218,7 +10218,7 @@ theorem kvE2_outer_fold {sig : MonadicSignature}
     interior-zoned. Depends only on `qnf`, never on a model or provider. -/
 def kvE2_sepFragment_frag {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
-    kvE2_sepPos qnf = [σ0] ∧
+    kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
 
 /-- **LEFT-interior parts closer at the PIN** (task 344 Phase 1 — the continuation-inlining

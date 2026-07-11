@@ -199,7 +199,7 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
     specs/335_outer_gate_assembly_engine_kvE2_body/reports/07_hexcl-enrichment-derivability.md. -/
 def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
-    kvE2_sepPos qnf = [σ0] ∧
+    kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
 
 /-! ## Phase B — ⇒ soundness half over the pin-anchored fold `kvE2_outer_fold_frag` (task 335 v5)

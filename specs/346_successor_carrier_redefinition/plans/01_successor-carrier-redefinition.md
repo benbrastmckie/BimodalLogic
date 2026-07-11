@@ -1,7 +1,7 @@
 # Implementation Plan: Successor Carrier Redefinition (the 321-N2 named successor)
 
 - **Task**: 346 - successor_carrier_redefinition
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: ~12 hours (6 phases)
 - **Dependencies**: 345 (landed; symmetric-gate clause (v))
 - **Research Inputs**: reports/01_successor-carrier-redefinition.md (H4-verified, Tier 1)
@@ -159,7 +159,18 @@ Phases within the same wave can execute in parallel. Wave 2 (Phases 2 and 3) bot
 An orchestrator may serialize them to avoid overlapping edits to the same file; the logical
 dependency permits parallelism.
 
-### Phase 1: Byte-identical fragment-predicate swap + build triage [NOT STARTED]
+### Phase 1: Byte-identical fragment-predicate swap + build triage [PARTIAL]
+
+**TRIAGE RESULT** (Phase 1, session sess_1783782450_230288): swap applied byte-identically at both
+sites; break surface localized to 3 errors in the fold family (all below the GATE banner). SURVIVAL
+AUDIT REFINED: `kvE2_sepBody_kit_sound_frag` (SW:12487) ALSO errors (2 sites: fragL call SW:12517-18,
+fragR call SW:12519-20), contrary to this phase's "NO error in ... kit" criterion — kit_sound
+destructures the fragment and feeds `hpos` to the global-typed gate producers. Producers fragL
+(:10526)/fragR (:11553) themselves stay GREEN; no error above the banner; RE-SCOPE verdict intact.
+Marked [PARTIAL] (not [COMPLETED]) because the stated kit criterion failed — this EXPANDS the Phase 4
+repair surface (kit_sound fwd + fold backward, not fold backward alone). Full record:
+`progress/phase1-triage.md`. Fix is non-trivial: `kvE2_sepPosI = [σ0] ⇏ kvE2_sepPos = [σ0]`, so no
+one-line subset bridge — Phases 3/4 own it.
 - **Goal:** Swap the carrier list from global `kvE2_sepPos` to interior-restricted `kvE2_sepPosI`
   at both fragment-predicate sites, byte-identical, then localize the resulting build breakage.
   This phase front-loads the highest-uncertainty surface: it reveals exactly what Phase 4 must fix.
@@ -170,13 +181,14 @@ dependency permits parallelism.
   - `SharedWitness.lean:10219` — `kvE2_sepFragment_frag`: apply the IDENTICAL edit (byte-for-byte)
     to preserve the `rfl` defeq bridge (OuterGate:223-224). Both below the 341 GATE banner (SW:10210).
 - **Tasks:**
-  - [ ] Apply the swap at both sites, byte-identical.
-  - [ ] Run `lake build` (targeted: the NfMultiAnchorBridge modules); capture the full error set.
-  - [ ] Confirm the break surface matches the survival audit: errors localized to the
-    `kvE2_outer_fold_frag` backward branch (the non-interior `exfalso` losing its contradiction) and
-    its immediate downstream. Verify `kvE2_sepGateAtPin_fragL/_fragR` and `kvE2_sepBody_kit_sound_frag`
-    do NOT error (they pass `hfrag` through / zone-gate, no direct `kvE2_sepPos` destructure).
-  - [ ] Record the exact erroring decls + line numbers in the progress file for Phase 4 to consume.
+  - [x] Apply the swap at both sites, byte-identical.
+  - [x] Run `lake build` (targeted: the NfMultiAnchorBridge modules); capture the full error set.
+  - [x] Confirm the break surface matches the survival audit *(deviation: altered — break surface is
+    the fold backward branch AS PREDICTED (SW:12627 `rw [hpos]` failure) PLUS an unpredicted 2-error
+    break in `kvE2_sepBody_kit_sound_frag` (SW:12517-20); the gate producers fragL/fragR remain green,
+    so the audit is refined not refuted)*.
+  - [x] Record the exact erroring decls + line numbers in the progress file for Phase 4 to consume
+    *(progress/phase1-triage.md)*.
 - **Verification criteria:** `lake build` errors are localized to the fold backward branch (and any
   strictly-downstream consumers of it); NO error in the preserved-asset producers (fragL/fragR/kit).
   If breakage appears in an unexpected decl, STOP and re-audit before proceeding (survival assumption
