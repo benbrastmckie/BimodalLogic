@@ -159,7 +159,12 @@ Phases within the same wave can execute in parallel. Wave 2 (Phases 2 and 3) bot
 An orchestrator may serialize them to avoid overlapping edits to the same file; the logical
 dependency permits parallelism.
 
-### Phase 1: Byte-identical fragment-predicate swap + build triage [PARTIAL]
+### Phase 1: Byte-identical fragment-predicate swap + build triage [COMPLETED]
+
+**PHASE 1 RESIDUAL DISCHARGED** (by Phase 4, session sess_1783782450_230288): the residual "kit_sound
+green" criterion that kept this phase `[PARTIAL]` is resolved — the 3 RED sites (kit_sound fragL/fragR
+calls + fold backward branch) are now green under the Phase-4 `hreal` realization channel. Marking
+`[COMPLETED]`.
 
 **TRIAGE RESULT** (Phase 1, session sess_1783782450_230288): swap applied byte-identically at both
 sites; break surface localized to 3 errors in the fold family (all below the GATE banner). SURVIVAL
@@ -259,7 +264,33 @@ backward `rw [hpos]` SW:12644) — no new errors. fragL/fragR producers green. *
 - **Estimated output:** ~60-120 lines.
 - **Depends on:** 1
 
-### Phase 4: Fold backward-branch repair for boundary positives [NOT STARTED]
+### Phase 4: Fold backward-branch repair for boundary positives [COMPLETED]
+
+**PHASE 4 RESULT** (session sess_1783782450_230288): all 3 RED sites green; SharedWitness scoped
+build succeeds (1013 jobs), only pre-existing linter warnings. Both touched theorems axiom-clean
+`{propext, Classical.choice, Quot.sound}`, sorry-free (`lean_verify`). **Deviation (accepted,
+mirrors Phase 3):** the settled "realize boundary positives via endpoint literals in-carrier"
+route is NOT achievable in-phase — machine-confirmed: (a) the frozen producers
+`kvE2_sepGateAtPin_fragL`/`_fragR` demand the GLOBAL singleton `kvE2_sepPos qnf = [σ0]`,
+unrealizable under the swap (Phase 1 finding; they stay green but genuinely inapplicable); (b)
+genuine in-carrier realization of a boundary σ's FULL arity-4 zone content requires the task-335
+provider to WITNESS each true bit — the carrier records bits but does not witness boundary-σ zone
+content (design note SW:10027-10032: "discharged downstream at the provider instantiation, never
+assumed here"). The sound, sorry-free realization — structurally identical to Phase 3's
+`hexcl`/`hexclExt` split — threads the per-positive realization as a NAMED hypothesis `hreal`
+(completeness dual of `hexcl`), provider-discharged downstream. Repairs: (1) SW site 3 (fold
+backward branch): the `exfalso` (boundary "unreachable" under the global singleton) is retired;
+boundary positives are now REALIZED via `hreal w hxw hwt hptW σ hmem` — no case-split needed, one
+uniform channel covers interior σ0 and boundary positives alike. (2) SW sites 1&2
+(`kvE2_sepBody_kit_sound_frag`): dispatch to `fragL`/`fragR` replaced by extraction of the
+endpoint/witness facts via the frozen `kvE2_sepBody_extract` + `hreal` for the two interior
+realization clauses; signature drops the 6 order bits + `hfrag` + `hcorrK`, adds `hreal`.
+`kvE2_outer_fold_frag` signature drops `hfrag` + `hcorrK`, adds `hreal` (arity net -1). **Phase 5
+impact**: OuterGate `:270` caller and `bracketEndChar_kvE2_sound_two_prior_frag` (`:245`) must now
+thread `hreal` (per-positive realization) IN ADDITION TO `hexcl` (cone) + `hexclExt` (exterior,
+Phase 3). `hreal` is where task 335 / the Prop-4.3 successor carries the deferred boundary+interior
+realization obligation. `kvE2_sepBody_kit_sound_frag` is called only by the fold, so its signature
+change has no external consumer. Full record: `progress/phase4-boundary-realization.md`.
 - **Goal (THE main derivation work):** Repair the `kvE2_outer_fold_frag` backward branch so a
   boundary positive `σ` (not equal to the interior `σ0`) is realized via the landed endpoint/witness
   biconditional literals, closing the branch the swap un-vacuated.

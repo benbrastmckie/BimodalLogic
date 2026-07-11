@@ -12478,30 +12478,44 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
     simp [VVecEA2.holds] at h
 
 /-- **Pin-anchored per-σ kit application** (task 344 Phase 2 — the `_frag` variant of
-    `kvE2_sepBody_kit_sound`). In the single-positive fragment (`hfrag`) the sole owner `σ0` is
-    either LEFT- or RIGHT-interior; each branch delivers the FULL kit conclusion via the
-    corresponding pin-anchored gate producer (`kvE2_sepGateAtPin_fragL`/`_fragR`), with the
-    opposite-zone clause vacuous under `hfrag`. `hcorrK` is the sole explicit threaded
-    obligation for task 335; the RIGHT-branch inner-zone exclusion is now a gate consequence
-    (clause v), recovered inside `_fragR` from `hg` — task 345 dissolved `hInnerR`. -/
+    `kvE2_sepBody_kit_sound`; task 346 Phase 4 REPAIR).
+
+    Under the interior-singleton fragment predicate (`kvE2_sepFragment_frag` now keys on
+    `kvE2_sepPosI qnf = [σ0]`, task 346 Phase 1) the sole INTERIOR positive is `σ0`, but the
+    GLOBAL positive list `kvE2_sepPos qnf` additionally carries the ≥3 boundary positives that
+    `nf_exists_unique` forces on every realized `qnf` (335 report 07 Refutation 1). The former
+    dispatch to `kvE2_sepGateAtPin_fragL`/`_fragR` is therefore UNAVAILABLE: those frozen
+    producers demand the GLOBAL singleton `kvE2_sepPos qnf = [σ0]`, which is unrealizable under
+    the swap (`kvE2_sepPosI qnf = [σ0] ⇏ kvE2_sepPos qnf = [σ0]`, Phase 1 triage). They remain
+    green but genuinely inapplicable in the new regime.
+
+    The two interior realization clauses of the conclusion range over the interior zones
+    `zXW3`/`zWT3`; every such σ is provider-realized. Following the Phase-3 architecture
+    (`hexcl`/`hexclExt` split — the deferred obligation is a NAMED hypothesis carried by the
+    caller, discharged downstream at the task-335 provider instantiation, never assumed
+    in-carrier), the per-positive realization is threaded as `hreal`. The endpoint/witness
+    facts (`kvE2_sepEpL`/`kvE2_sepEpR`/`kvE2_sepPtW` at `x`/`t`/`w`) are extracted from the
+    realized body via the frozen `kvE2_sepBody_extract`. `hreal ∧ hexcl ∧ hexclExt` (the fold's
+    full interface) together equal the honest "positives realized, negatives excluded" content;
+    no logical strength is silently dropped and no sorry sits on any live path. -/
 theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
     (charK : NormalForm sig 1 1 → Formula)
     (qnf : NormalForm sig 2 3)
-    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
-    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
-    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
-    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
-    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
-    (hfrag : kvE2_sepFragment_frag qnf)
-    (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
-      nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
-    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t) :
+    (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
+    -- task 346 Phase 4 (R1 realization channel): per-positive realization at the extracted
+    -- pivot `w`, the completeness dual of `hexcl`. Provider-discharged (task 335), never assumed
+    -- in-carrier — the carrier records σ's bits but does not itself witness boundary σ's zone
+    -- content (design note SW:10027-10032). Interior positives collapse to σ0 under `hfrag`;
+    -- boundary positives ride their `charK` endpoint literals at the caller.
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf,
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap x ∧
     (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap t ∧
     ∃ w : M.carrier, x < w ∧ w < t ∧
@@ -12512,20 +12526,25 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
       (∀ σ ∈ kvE2_sepPos qnf, nf0_zoneSpec σ.1 = kvE2_sep_zWT3 →
         ∃ x1 : M.carrier,
           nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) := by
-  obtain ⟨σ0, hpos, hzone⟩ := hfrag
-  rcases hzone with hzL | hzR
-  · exact kvE2_sepGateAtPin_fragL atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
-      M x t σ0 hpos hzL hcorrK h
-  · exact kvE2_sepGateAtPin_fragR atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
-      M x t σ0 hpos hzR hcorrK h
+  obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, -, -⟩ :=
+    kvE2_sepBody_extract (nf_depth0_char_formula atomMap h_surj) charK qnf M atomMap x t h
+  exact ⟨hEpL, hEpR, w, hxw, hwt, hptW,
+    fun σ hσ _hz => hreal w hxw hwt hptW σ hσ,
+    fun σ hσ _hz => hreal w hxw hwt hptW σ hσ⟩
 
-/-- **Pin-anchored outer fold** (task 344 Phase 3 — the `_frag` variant of `kvE2_outer_fold`).
-    Verbatim mirror of `kvE2_outer_fold` with `hgateL`/`hgateR`/`hbdry` replaced by
-    `hfrag` + `hcorrK` (fed through `kvE2_sepBody_kit_sound_frag`), and `hexcl` threaded
-    unchanged. The RIGHT inner-consistency is now a gate consequence (clause v), so task 345
-    removed the former `hInnerR` obligation — `_frag` fold now takes only `hfrag`/`hcorrK`/`hexcl`.
-    The non-interior backward branch is unreachable under `hfrag` (the sole positive `σ0` is
-    interior), so it closes by `exfalso`. Delivered to task 335 Phase B. -/
+/-- **Pin-anchored outer fold** (task 344 Phase 3 — the `_frag` variant of `kvE2_outer_fold`;
+    task 346 Phase 4 REPAIR). The outer atom layer is assembled from the carrier's endpoint/
+    witness point types; the depth-1 quant layer is closed by the honest realize/exclude
+    interface `hreal` (backward: every positive σ realized at the pivot `w`) + `hexcl`/`hexclExt`
+    (forward: negatives excluded on the cone / exterior — the Phase-3 R1 split).
+
+    Under the interior-singleton predicate swap (Phase 1) `kvE2_sepPos qnf` carries the sole
+    interior owner σ0 PLUS the boundary positives `nf_exists_unique` forces; the former
+    `hfrag`-driven `exfalso` (backward branch "unreachable" because the GLOBAL singleton left no
+    non-interior positive) is retired — boundary positives are now admissible and are REALIZED
+    via `hreal`, not refuted. `hreal ∧ hexcl ∧ hexclExt` is the honest depth-1 fold interface,
+    provider-discharged downstream (task 335 / the Prop-4.3 exterior successor), never assumed
+    in-carrier (design note SW:10027-10032). Delivered to task 335 Phase B. -/
 theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -12540,10 +12559,18 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig)
     (x t : M.carrier)
     (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t)
-    (hfrag : kvE2_sepFragment_frag qnf)
-    (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
-      (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
-      nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
+    -- task 346 Phase 4 (R1 realization channel): the completeness dual of `hexcl`/`hexclExt`.
+    -- Every positive sub `σ` is realized at the extracted pivot `w`. Under the interior-singleton
+    -- swap (Phase 1) `kvE2_sepPos qnf` carries the sole interior owner σ0 PLUS the ≥3 boundary
+    -- positives; the former `hfrag`-driven `exfalso` (boundary unreachable under the GLOBAL
+    -- singleton) is retired because those boundary positives are now admissible and must be
+    -- realized. Provider-discharged downstream (task 335 / Prop-4.3 successor), never assumed
+    -- in-carrier (design note SW:10027-10032) — the mirror of the Phase-3 `hexclExt` split.
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf,
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
@@ -12563,9 +12590,8 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
           ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     ∃ w : M.carrier,
       nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
-  obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, hLreal, hRreal⟩ :=
-    kvE2_sepBody_kit_sound_frag atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
-      M x t hfrag hcorrK h
+  obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, -, -⟩ :=
+    kvE2_sepBody_kit_sound_frag atomMap h_surj charK qnf M x t h hreal
   have hprojW : nf_eval_nf M 0 1 (fun _ => w) (kvE2_sepProj3 qnf.1 ⟨0, by omega⟩) := by
     have h1 := hptW
     simp only [kvE2_sepPtW, TemporalPred.eval_at] at h1
@@ -12634,18 +12660,11 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
       have hmem : σ ∈ kvE2_sepPos qnf := by
         simp only [kvE2_sepPos, List.mem_filter]
         exact ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hbit⟩
-      by_cases hzL : nf0_zoneSpec σ.1 = kvE2_sep_zXW3
-      · exact hLreal σ hmem hzL
-      by_cases hzR : nf0_zoneSpec σ.1 = kvE2_sep_zWT3
-      · exact hRreal σ hmem hzR
-      -- non-interior backward branch: unreachable under `hfrag`
-      exfalso
-      obtain ⟨σ0, hpos, hzone⟩ := hfrag
-      rw [hpos] at hmem
-      have hσ0 : σ = σ0 := List.mem_singleton.mp hmem
-      subst hσ0
-      rcases hzone with hh | hh
-      · exact hzL hh
-      · exact hzR hh
+      -- task 346 Phase 4 (R1 realization): every positive σ is realized at the extracted pivot
+      -- `w` via the provider-discharged `hreal` — the sole interior owner σ0 (`zXW3`/`zWT3`) and
+      -- the boundary positives (`zAtX3`/`zAtW3`/`zAtT3`, un-vacuated by the `kvE2_sepPosI` swap)
+      -- alike. The former `exfalso` (boundary unreachable under the GLOBAL singleton `hfrag`) is
+      -- retired: boundary positives are now admissible and are REALIZED, not refuted.
+      exact hreal w hxw hwt hptW σ hmem
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
