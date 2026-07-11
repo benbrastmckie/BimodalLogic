@@ -1439,7 +1439,7 @@
       },
       "previous_status": "partial",
       "next_artifact_number": 2,
-      "blockers": "USER DECISION REQUIRED (R1): hInnerR is circular in OuterGate-only territory — gate clause (iv) is zXW3-only, so no public producer yields the RIGHT sole-positive realization; the R2 hypothesis may additionally be UNSATISFIABLE for LEFT owners (potential 344 design gap). Clean fix R1: add clause (v) (zWT3 mirror of clause iv, provable by landed kvE2_sep_zone4_consistentR) to the LANDED kvE2_sepGate def in SharedWitness.lean — requires unfreezing SharedWitness (341 gate renegotiation) + updating gate consumers + removing hInnerR threading from 344 lemmas. Alternatives: dedicated SharedWitness-territory spawn task, or the deferred successor carrier re-definition. Evidence: 335 handoffs/phase-b-wip-outergate.lean (compiling skeleton, hcorrK DISCHARGED green, gate-fail branches closed) + working-progress-1783748952.patch. hexcl unassessed (fold blocked regardless)."
+      "blockers": "Resolved by task 345 (gate clause v landed). Resume Phases B-D: obligations {hcorrK (proven in phase-b WIP), hexcl (Phase C probe)}."
     },
     {
       "project_number": 341,
@@ -1565,7 +1565,7 @@
     {
       "project_number": 345,
       "project_name": "symmetric_gate_clause_v",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "SPAWNED from task 335 R1 decision, literature-fidelity-verified (session sess_1783723095_edd5a7; USER directive: most mathematically correct and faithful approach; verdict R1-faithful, reports/01). Make kvE2_sepGate symmetric per Rabinovich Cor 5.4(1)/(2) mirror pair (p.9): (1) ADD clause (v) to the LANDED kvE2_sepGate def (SharedWitness.lean ~1244-1246) = the zWT3 mirror of clause (iv), forcing bits false on non-kvE2_sepInnerConsistentR zone specs for RIGHT owners. (2) Discharge the ONE gate constructor gaining an obligation: kvE2_sepGate_holds_of_honest (SW:2666), by byte-mirroring the clause-(iv) discharge (SW:2706-2726) via the landed kvE2_sep_zone4_consistentR (SW:11309). (3) REMOVE (not guard) the now-derivable hInnerR hypothesis from kvE2_sepGateAtPin_fragR, kvE2_sepBody_kit_sound_frag, kvE2_outer_fold_frag — recovering RIGHT inner-consistency from hg clause (v) exactly as fragL uses clause (iv); this REPAIRS the confirmed LEFT-unsatisfiability of hInnerR (344 fold currently uninvokable). (4) Verify all other kvE2_sepGate consumers inert (literature report says so — re-verify at build level). CONSTRAINTS: this is the SANCTIONED exception to the SharedWitness freeze — touch ONLY the gate def, holds_of_honest, and the three 344 _frag lemma signatures/bodies; everything else byte-identical; full lake build green; axiom-clean {propext, Classical.choice, Quot.sound}; zero sorries on live paths; incremental green commits; cite Rabinovich by PDF page only. CONSUMER: 335 Phases B-D resume with discharge obligations reduced to {hcorrK, hexcl}. Task 341 GATE-phase re-diff absorbs the delta.",
       "dependencies": [
@@ -1584,11 +1584,17 @@
           "path": "specs/345_symmetric_gate_clause_v/plans/01_symmetric-gate-plan.md",
           "type": "plan",
           "summary": "4-phase symmetric gate: clause (v) + honest discharge first green pair, hInnerR removal, consumer sweep + byte-diff verification"
+        },
+        {
+          "path": "specs/345_symmetric_gate_clause_v/summaries/01_symmetric-gate-summary.md",
+          "type": "summary",
+          "summary": "Gate clause (v) landed per Cor 5.4 mirror; hInnerR removed from all three _frag lemmas; 335 obligations now {hcorrK, hexcl}"
         }
       ],
       "spawned_from": 335,
-      "last_updated": "2026-07-11T06:22:41Z",
-      "session_id": "sess_1783723095_edd5a7_345"
+      "last_updated": "2026-07-11T06:44:32Z",
+      "session_id": "sess_1783723095_edd5a7_345",
+      "completion_summary": "Symmetric gate clause (v) landed per literature-fidelity verdict (Rabinovich Cor 5.4 mirror pair): gate def + holds_of_honest discharge + hInnerR removal from kvE2_sepGateAtPin_fragR/kit_sound_frag/outer_fold_frag (repairing confirmed LEFT-unsatisfiability). Byte-diff verified sanctioned-regions-only; axiom-clean; full build green. 335 discharge obligations reduced to {hcorrK, hexcl}."
     }
   ],
   "artifacts": [

@@ -1,7 +1,7 @@
 # Implementation Plan: Symmetrize kvE2_sepGate with RIGHT inner-consistency clause (v)
 
 - **Task**: 345 - symmetric_gate_clause_v
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: 344 (landed `_frag` fold chain and `kvE2_sep_zone4_consistentR`)
 - **Research Inputs**: specs/345_symmetric_gate_clause_v/reports/01_literature-fidelity-gate-design.md
