@@ -234,7 +234,7 @@ Phases 3–8 are all conditional on Phase 2 returning GO.
 - **Timing:** 2–3 h.
 - **Depends on:** none.
 
-### Phase 2: R2 GO/NO-GO spike — one concrete future-side σ-clause [NOT STARTED]
+### Phase 2: R2 GO/NO-GO spike — one concrete future-side σ-clause [IN PROGRESS]
 
 - **Goal:** For ONE concrete `zFutT3`-marked σ (implementer picks the simplest realizable
   representative of the `NormalForm sig 1 4` alphabet), construct a **model-independent**
