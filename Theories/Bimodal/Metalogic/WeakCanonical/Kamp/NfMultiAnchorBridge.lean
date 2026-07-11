@@ -38,6 +38,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.NavigatedSpine
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.SharedWitness
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorZoneTriage
+-- NOTE (task 348 Phase 7): `import ...NfMultiAnchorBridge.ExteriorBracket` lands the
+-- adjacent exterior brackets + enriched composed gate `bracketEndChar_kvE2Ext` on the live
+-- import path. Cycle-free: ExteriorBracket is a leaf importing only OuterGate (above) and
+-- Kamp.ExteriorNegationPast → Kamp.ExteriorNegation → SharedWitness/ExteriorZoneTriage
+-- (all already in this file's transitive closure); nothing in that closure imports this
+-- file. This edge also brings the Phase-3..6 clause-family files into the root build.
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracket
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge (task 308)

@@ -396,7 +396,7 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 2–3 h.
 - **Depends on:** 4, 5.
 
-### Phase 7: Adjacent exterior brackets + enriched composed gate formula [NOT STARTED]
+### Phase 7: Adjacent exterior brackets + enriched composed gate formula [COMPLETED]
 
 - **Goal:** Def 7.5 / Lemma 7.10 shapes: `kvE2_extBracketFut atomMap h_surj P qnf : Formula` —
   conjunction over `zFutT3`-marked σ: bit-true → positive `Until`-navigated existence clause
@@ -408,11 +408,24 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **File targets:** NEW file
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracket.lean`.
 - **Tasks:**
-  - [ ] Positive existence clauses per side (bit-true σ).
-  - [ ] Bracket definitions per side + enriched-gate definition.
-  - [ ] Bridge lemmas unfolding bracket-at-anchor to per-σ `_sound`/`_complete`/existence
+  - [x] Positive existence clauses per side (bit-true σ). *(deviation: altered — the
+        Lemma-7.10 positive forms landed in Phases 3/5 as `kvE2_futPos`/`kvE2_pastPos`;
+        Phase 7 binds them verbatim as the bit-true bracket conjuncts and exposes their
+        existence content via the new `kvE2_extBracketFut_exists`/`kvE2_extBracketPast_exists`
+        bridges — no duplicate clause definitions)*
+  - [x] Bracket definitions per side + enriched-gate definition. *(deviation: altered — the
+        per-side bracket formulas take `(atomMap, h_surj, qnf)` only; the unused provider `P`
+        enters at the enriched gate `bracketEndChar_kvE2Ext` where the interior carrier needs
+        it. The "marked σ" index is the full `hbase`+`hbits` compatibility record
+        (`kvE2_futMarked`/`kvE2_pastMarked`), not zone marking alone — required for the ⇐
+        half, and forced by realizers via `kvE2_futMarked_of_realizer`/`_pastMarked_of_realizer`)*
+  - [x] Bridge lemmas unfolding bracket-at-anchor to per-σ `_sound`/`_complete`/existence
         conjuncts (the exact shapes Phase 8 consumes).
   - [ ] Deduplicate any Phase-5 helper copies if trivially unifiable (skip if not — churn bar).
+        *(deviation: skipped — churn bar: the phase-6-handoff dedupe candidates are `private`
+        declarations inside H7 read-only territory (ExteriorNegation/Past); unifying them
+        requires editing frozen files. The two zone-coupling lifts this phase needs are
+        mirrored file-locally per the sanctioned Phase-5/6 porting pattern)*
 - **Estimated output:** ~300–500 lines.
 - **Done when:** build green; definitions + bridge lemmas sorry-free, axiom-clean.
 - **Timing:** 3–4 h.
