@@ -178,7 +178,7 @@ are mutually independent (distinct file territory) but both require Phase 2 gree
   do NOT proceed to Phase 2.
 - **Estimated output:** ~40–120 lines (one theorem + proof).
 
-### Phase 2: Narrow `hexclExt` to exterior-marked σ; re-thread fold + OuterGate [NOT STARTED]
+### Phase 2: Narrow `hexclExt` to exterior-marked σ; re-thread fold + OuterGate [COMPLETED]
 
 - **Goal:** Consume the Phase-1 lemma so the deferred `hexclExt` binder ranges only over
   exterior-marked σ; propagate the narrowed shape through both theorem sites; full build green.

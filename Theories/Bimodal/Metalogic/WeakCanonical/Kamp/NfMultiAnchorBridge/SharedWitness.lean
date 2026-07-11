@@ -12696,13 +12696,21 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     -- task 346 Phase 3 (R1): the exterior residue of the former single-`hexcl` exclusion clause.
     -- `hexcl` above is boundary-restricted to the interior+boundary cone `x ≤ x1 ≤ t` (dischargeable
     -- by the landed endpoint/witness literals); `hexclExt` isolates the STRICTLY-EXTERIOR case
-    -- (`¬ (x ≤ x1 ∧ x1 ≤ t)`), the outer-forward completeness obligation carried by the caller and
-    -- deferred to the named Prop-4.3 successor task (report 07 Refutation 2; `Prop43.lean` BLOCKED).
-    -- Splitting rather than dropping keeps this fold a genuine, sorry-free conditional theorem whose
-    -- cone half is independently consumable (task 309 / 335 Phase D).
+    -- (`¬ (x ≤ x1 ∧ x1 ≤ t)`), the outer-forward completeness obligation carried by the caller.
+    -- task 347 R1 (report 01 §7): `hexclExt` is now further NARROWED to EXTERIOR-MARKED σ only
+    -- (`¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ = kvE2_sep_zWT3)`). The interior-marked slice
+    -- (`zXW3`/`zWT3`) of the strictly-exterior case carries NO genuine content — it is discharged
+    -- in-line at the fold body via the Phase-1 order-atom lemma
+    -- `kvE2_sepInterior_exterior_notRealizable` (a strictly-exterior `x1` falsifies an interior σ's
+    -- `.order` atoms directly). The remaining deferred obligation is the EXTERIOR-ARRANGEMENT residue
+    -- only, whose faithful mechanism is the Prop-4.3 re-flatten / Lemma 7.6 adjacency successor
+    -- (report 01 §7 R2; NOT exterior-exclusion on this bracket — that framing is retired).
+    -- Splitting-and-narrowing rather than dropping keeps this fold a genuine, sorry-free conditional
+    -- theorem whose cone + interior-exterior halves are independently consumable (task 309 / 335 Phase D).
     (hexclExt : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
         ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
           ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     ∃ w : M.carrier,
@@ -12768,11 +12776,16 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     · rintro ⟨x1, hx1⟩
       by_contra hne
       -- task 346 Phase 3 (R1): the realizing witness `x1` may be interior/boundary OR strictly
-      -- exterior; the boundary-restricted `hexcl` covers the cone `x ≤ x1 ≤ t`, and the isolated
-      -- exterior residue `hexclExt` (deferred to the Prop-4.3 successor) covers `¬ (x ≤ x1 ∧ x1 ≤ t)`.
+      -- exterior; the boundary-restricted `hexcl` covers the cone `x ≤ x1 ≤ t`.
+      -- task 347 R1 (report 01 §7): for the strictly-exterior case `¬ (x ≤ x1 ∧ x1 ≤ t)` we split by
+      -- σ-zone. The interior-marked slice (`zXW3`/`zWT3`) is discharged directly by the Phase-1
+      -- order-atom lemma `kvE2_sepInterior_exterior_notRealizable` (NO residue); only the
+      -- exterior-marked residue is carried by the narrowed `hexclExt` (Prop-4.3 re-flatten successor).
       by_cases hcone : x ≤ x1 ∧ x1 ≤ t
       · exact hexcl w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hcone.1 hcone.2 hx1
-      · exact hexclExt w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) x1 hcone hx1
+      · by_cases hzone : nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3
+        · exact kvE2_sepInterior_exterior_notRealizable M x1 w x t σ hzone hcone hx1
+        · exact hexclExt w hxw hwt hptW σ (Bool.eq_false_iff.mpr hne) hzone x1 hcone hx1
     · intro hbit
       have hmem : σ ∈ kvE2_sepPos qnf := by
         simp only [kvE2_sepPos, List.mem_filter]

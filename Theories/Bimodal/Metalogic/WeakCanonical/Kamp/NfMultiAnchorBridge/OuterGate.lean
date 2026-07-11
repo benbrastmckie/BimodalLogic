@@ -246,11 +246,15 @@ Def 3.1 (p.4) and the §5 bracket assembly (pp.7-9). -/
     `kvE2_sepFragment_frag qnf` — byte-identical to `kvE2_sepFragment` via the `rfl` defeq bridge
     (OuterGate:223-224). The `hfrag` premise is therefore SATISFIABLE and this theorem is NON-VACUOUS.
     The exclusion obligation is honestly scoped: `hexcl` (cone) is dischargeable now, while `hexclExt`
-    (strictly-exterior) is the isolated, NAMED residue carried by the caller and deferred to the
-    Prop-4.3 exterior-completeness successor task (report 07 Refutation 2; `Prop43.lean` BLOCKED). No
-    sorry on any live path — the exterior gap is quarantined by the `hexclExt` binder, not a sorry.
-    Consumers (task 309 Phases 13.4/14, `KampPrior.lean:351`; task 335 Phase D) supply the cone
-    `hexcl` + `hreal` and carry `hexclExt` as the successor obligation. -/
+    (strictly-exterior) is the isolated, NAMED residue carried by the caller. task 347 R1 (report 01
+    §7) NARROWS `hexclExt` to EXTERIOR-MARKED σ only: the interior-marked slice (`zXW3`/`zWT3`) of the
+    strictly-exterior case is discharged in-line by the fold via the Phase-1 order-atom lemma
+    `kvE2_sepInterior_exterior_notRealizable`, so the deferred residue is the exterior-ARRANGEMENT
+    obligation only — its faithful mechanism is the Prop-4.3 re-flatten / Lemma 7.6 adjacency successor
+    (NOT exterior-exclusion on this bracket; that framing is retired). No sorry on any live path — the
+    exterior-arrangement gap is quarantined by the narrowed `hexclExt` binder, not a sorry. Consumers
+    (task 309 Phases 13.4/14, `KampPrior.lean:351`; task 335 Phase D) supply the cone `hexcl` + `hreal`
+    and carry the narrowed `hexclExt` as the successor obligation. -/
 theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -281,6 +285,7 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ¬ (nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ.1 = kvE2_sep_zWT3) →
         ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
           ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t →
