@@ -139,6 +139,28 @@ witnesses (now possibly several per qnf, per the witness-growth amendment, the v
 flattening, and the v7 pin-slot extension), recursion is on `k`; anchors strictly `{x,t}` (2,
 fixed) at every depth.
 
+> **Task 347 adjudication (2026-07-11, consumer record — Phases 13.4/14 + `KampPrior.lean:351`).**
+> Source: `specs/347_rabinovich_bracket_faithfulness_review/reports/01_bracket-faithfulness-adjudication.md`
+> (verdict (b) SUBSTANTIVE, H4-verified) + report 01 §7 Consumer guidance / §"MUST-CHECK (1)".
+> **Phases 13.4/14 and the `KampPrior.lean:351` discharge must consume an interior+boundary gate PLUS
+> a separate ADJACENT EXTERIOR bracket, with the interior/exterior seam at the anchors `x,t` — NOT a
+> single monolithic all-arrangement `(x,t)` gate.** Rabinovich 2014 §5 brackets only **strictly
+> interior** witnesses (`z0<x1<…<xn<z1`, Notation 5.2 / Lemma 5.3) under a **bounded** outer
+> existential (Cor 5.4, `(∃z)^{<z1}_{>z0}`); it has **no exterior-completeness case** (Lemma 5.1 proof
+> cases 1/2/3, pp.9–11 are interior/boundary only). Exterior arrangements `x1<x` / `x1>t` belong to the
+> **adjacent intervals** `(−∞,x)` / `(t,∞)`, characterized by their own brackets and composed with the
+> interior `(x,t)` bracket by adjacency (Prop 4.3 p.6 + Lemma 7.6 p.13 re-flatten), NOT by an
+> exterior-exclusion proof on the interior bracket. **R1 has landed** (task 347, commits
+> d370d438e/3b8aee3c4): the interior slice of the old monolithic residue is discharged from the depth-0
+> order atoms, and the deferred `hexclExt` binder is now narrowed to **exterior-marked σ only**
+> (`kvE2_outer_fold_frag`, `SharedWitness.lean:12665`; mirrored `OuterGate.lean:280` — the binder now
+> additionally requires `¬(nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ = kvE2_sep_zWT3)`). **Do not expect** the
+> 335 fragment gate to deliver a single all-arrangement `(x,t)` characterization; the exterior slice is
+> the `prop43_exterior_reflatten` successor route
+> (`specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md`).
+> The `KampPrior.lean:351` sorry stays DEFERRED to that successor (recorded here only — no Lean edit in
+> task 347).
+
 ## Preserved / Live Assets (consume — do NOT rebuild)
 
 Complete, sorry-free, MUST NOT regress. Every open phase (13.25, 13.35, 13.4, 14) consumes from

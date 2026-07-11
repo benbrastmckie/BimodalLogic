@@ -457,6 +457,27 @@ available: the ⇒ soundness half modulo `hexcl` (Phase B) + the ⇐ completenes
 unconditional). The remaining gap is exactly the negative-sub exclusion, which requires SharedWitness
 territory (segment-coverage extractor) or the successor carrier redefinition — both outside 335.
 
+> **Task 347 adjudication (2026-07-11, consumer record — provider obligation re-shape).**
+> Source: `specs/347_rabinovich_bracket_faithfulness_review/reports/01_bracket-faithfulness-adjudication.md`
+> (verdict (b) SUBSTANTIVE, H4-verified) + report 01 §"MUST-CHECK (2)" and §7 Consumer guidance.
+> **Re-shape the Phase D provider obligation from the global `kvE2_sepPos` shape to bounded interior +
+> jointly-ordered.** The landed `hreal` (`SharedWitness.lean:12648–12652`) ranges over the **global**
+> positive list `kvE2_sepPos` and asks for **independent, per-σ, unbounded** existentials. Rabinovich
+> 2014 Cor 5.4 ⇐ (p.9, l.263–273) instead constructs **one jointly-ordered interior sequence**
+> `x1<…<xn ∈ (z0,z1)` — witnesses **coupled by order** and **bounded to the open interval**. The
+> faithful provider obligation is therefore: realize over the **interior index `kvE2_sepPosI`**
+> (`SharedWitness.lean:211–214`, the strict-interior order-literal predicate `x<x1<w ∨ w<x1<t`), NOT the
+> global `kvE2_sepPos`, and produce **bounded, jointly-ordered** witnesses (Cor 5.4 ⇐), not decoupled
+> unbounded ones. For the current **n=1 interior singleton** the coupling is vacuous, so the existing
+> `hreal` is *accidentally* adequate for the landed fragment; it does **not** generalize to `On` (n≥2).
+> **R1 has landed** (task 347, commits d370d438e/3b8aee3c4): the `hexclExt` residue is now narrowed to
+> **exterior-marked σ only** (binder additionally requires
+> `¬(nf0_zoneSpec σ.1 = kvE2_sep_zXW3 ∨ = kvE2_sep_zWT3)`; interior slice discharged from the depth-0
+> order atom, no residue). Consequently Phase D's residual gap is the **exterior-arrangement** slice,
+> which is the re-flatten route (Prop 4.3 / Lemma 7.6), NOT an exterior-completeness proof — see the
+> `prop43_exterior_reflatten` successor spec
+> (`specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md`).
+
 **Goal**: With Phases B and C green, discharge the `_frag` shells: feed `kvE2_outer_fold` the four
 families (from B and C, all under `hfrag`) to close `bracketEndChar_kvE2_sound_two_prior_frag`, then
 assemble both directions into `bracketEndChar_kvE2_correct_two_prior_frag`. Finalize the docstring

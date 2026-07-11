@@ -233,7 +233,7 @@ are mutually independent (distinct file territory) but both require Phase 2 gree
 - **Timing:** ~0.75 hours. **Depends on:** 2.
 - **Estimated output:** ~40–90 lines of markdown edits.
 
-### Phase 4: Record adjudication for consumers [NOT STARTED]
+### Phase 4: Record adjudication for consumers [COMPLETED]
 
 - **Goal:** Capture the adjudication outcome so downstream consumers pick up the interior+boundary
   + adjacent-exterior model instead of a single all-arrangement gate.
