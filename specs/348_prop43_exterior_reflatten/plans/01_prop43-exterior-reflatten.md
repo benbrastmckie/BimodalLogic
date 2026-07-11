@@ -234,7 +234,20 @@ Phases 3–8 are all conditional on Phase 2 returning GO.
 - **Timing:** 2–3 h.
 - **Depends on:** none.
 
-### Phase 2: R2 GO/NO-GO spike — one concrete future-side σ-clause [IN PROGRESS]
+### Phase 2: R2 GO/NO-GO spike — one concrete future-side σ-clause [COMPLETED]
+
+**SPIKE VERDICT: GO** (conditional-complete under the pinned gate inventory — the plan's
+NO-GO-protocol step-2 sanctioned outcome, adopted as the BINDING signature for Phases 3-6).
+Both directions (`kvE2_extNegFutSpike_sound`, `kvE2_extNegFutSpike_complete`) proved sorry-free
+and axiom-clean `{propext, Classical.choice, Quot.sound}`. The R2-obstructed converse
+(report-18 B.1) is EVADED for the specific one-sided finite σ-clause: the model-independence
+crux `kvE2_futAnyBit_correct` (syntactic↔semantic zone-fact bridge) is proved outright, and
+`_complete` reconstructs a full exterior realizer from a realized positive-existence form under
+exactly two pins (`henv` anchor-base, `hbelow` qnf-zone-fact bridge) available at the sole
+consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean`
+(839 lines). **BINDING SIGNATURE for Phases 3-6** (H6): `kvE2_extNegFut{Fut/Past} σ` with
+`_sound` under `(hxw, hwt)` only and `_complete` under `(hxw, hwt, henv, hbelow)`; clause =
+`(Until/Since-navigated positive local-existence form).neg`.
 
 - **Goal:** For ONE concrete `zFutT3`-marked σ (implementer picks the simplest realizable
   representative of the `NormalForm sig 1 4` alphabet), construct a **model-independent**
@@ -248,13 +261,18 @@ Phases 3–8 are all conditional on Phase 2 returning GO.
 - **File targets:** NEW file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorNegation.lean`
   (shared one-sided helpers + future side; imports EANegation, EANegationClosure, PriorINF).
 - **Tasks:**
-  - [ ] Choose the spike σ; document why it is representative (must exercise depth-1 inner-zone
-        content, R3 — not a degenerate σ).
-  - [ ] Build the clause via the Cor 5.4 O_n / F-chain device (`fChainFrom`/`fChainPred`/
-        `bracket_implies_fChainPred`, EANegation.lean:552/:567/:660) over the one-sided interval
-        `(t, ∞)`; inner-zone handling via SW:98–128 constants + SubBracket2.lean:102 bridge.
-  - [ ] Prove `_sound` and `_complete` for the spike σ, sorry-free.
-  - [ ] Record GO/NO-GO verdict + the settled signature in the progress file and handoff JSON.
+  - [x] Choose the spike σ; document why it is representative (must exercise depth-1 inner-zone
+        content, R3 — not a degenerate σ). *(landed as `kvE2_futSpikeSigma`: a `zFutT3`-marked
+        depth-1 σ whose inner layer genuinely prescribes all nine `[x1,w,x,t]` zones —
+        below-t content tied to qnf via `kvE2_futAnyBit`, gap all-χmid, fresh χfr, ray empty;
+        the correctness proofs exercise the full `nf_eval_depth1_fold_iff` fold.)*
+  - [x] Build the clause via the Cor 5.4 O_n / F-chain device over `(t, ∞)`. *(deviation:
+        built as the length-2 `Until`-navigated positive local-existence form
+        `kvE2_futSpikePos` and its negation `kvE2_extNegFutSpike` — the Lemma 5.3 F-chain
+        shape instantiated directly; the landed `fChain*` kit is reused conceptually but the
+        finite length-2 instance is written explicitly for the spike, per H2 first-principles.)*
+  - [x] Prove `_sound` and `_complete` for the spike σ, sorry-free. *(both landed, axiom-clean.)*
+  - [x] Record GO/NO-GO verdict + the settled signature in the progress file and handoff JSON.
 - **Estimated output:** ~150–400 lines.
 - **Done when:** GO = both directions sorry-free, build green, axioms clean; verdict recorded.
 - **NO-GO protocol (explicit — do not improvise):** If either direction cannot be closed:
