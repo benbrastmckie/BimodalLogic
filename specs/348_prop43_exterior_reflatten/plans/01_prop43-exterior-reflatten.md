@@ -385,12 +385,12 @@ consumption site. File: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ExteriorN
 - **Timing:** 3 h.
 - **Depends on:** 3 (templates; runs parallel to 4 — disjoint files).
 
-### Phase 6: Past-side completeness [NOT STARTED]
+### Phase 6: Past-side completeness [COMPLETED]
 
 - **Goal:** `kvE2_extNegPast_complete` for all `zPastX3`-marked σ, mirroring Phase 4.
 - **File targets:** `Kamp/ExteriorNegationPast.lean` (extend).
 - **Tasks:**
-  - [ ] Prove `_complete` on the past side per the Phase-4 template.
+  - [x] Prove `_complete` on the past side per the Phase-4 template.
 - **Estimated output:** ~200–400 lines.
 - **Done when:** build green; sorry-free, axiom-clean, alphabet-complete.
 - **Timing:** 2–3 h.
