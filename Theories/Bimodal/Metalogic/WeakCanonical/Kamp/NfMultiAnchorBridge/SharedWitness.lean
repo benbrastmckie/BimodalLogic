@@ -11546,9 +11546,10 @@ theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature}
 /-- **RIGHT pin-anchored gate producer** (task 344 dispatch 11 — R2 mirror of
     `kvE2_sepGateAtPin_fragL`). Sole positive `σ0` is RIGHT-interior (`hz : … = kvE2_sep_zWT3`),
     pin `x1` with `w < x1 < t` extracted from the RIGHT group, backward-exception zone
-    `kvE2_sep_zWX1`, closer `kvE2_sepBundleR_sound_frag`. The extra hypothesis `hInnerR` (the
-    zWT3 analog of gate clause iv) supplies the `h_bwd` zone classification — an undischarged
-    obligation for task 335. Additive; `hcorrK`/`hInnerR` explicit, never discharged here. -/
+    `kvE2_sep_zWX1`, closer `kvE2_sepBundleR_sound_frag`. The `h_bwd` zone classification is
+    recovered from gate clause (v) (`hg.2.2.2.2`, the zWT3 mirror of clause iv) — task 345
+    dissolved the former free `hInnerR` obligation into this gate consequence. Additive;
+    `hcorrK` explicit, never discharged here. -/
 theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -11568,8 +11569,6 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
     (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
       (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
       nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
-    (hInnerR : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
-      σ0.2 (nf0_assemble zs χ σ0.1) = false)
     (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t) :
     (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap x ∧
     (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap t ∧
@@ -12287,10 +12286,11 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
         have tonf : ∀ (v : M.carrier),
             temporal_truth M atomMap v (charBase χ) → nf_eval_nf M 0 1 (fun _ => v) χ := by
           intro v hv; rw [hcb] at hv; exact (nfPred_correct M atomMap h_surj χ v).mp hv
-        -- classify: a true bit forces `zs` among the nine RIGHT inner-consistent zones (hInnerR)
+        -- classify: a true bit forces `zs` among the nine RIGHT inner-consistent zones
+        -- (gate clause v — the zWT3 mirror of clause iv, recovered from `hg`)
         have hcons : kvE2_sepInnerConsistentR zs := by
           by_contra hncons
-          rw [hInnerR zs χ hncons] at hbit
+          rw [hg.2.2.2.2 σ hσ0true hz zs χ hncons] at hbit
           exact absurd hbit (by decide)
         rcases hcons with h | h | h | h | h | h | h | h | h
         · -- zPastX4  (v < x)
@@ -12481,8 +12481,9 @@ theorem kvE2_sepGateAtPin_fragR {sig : MonadicSignature}
     `kvE2_sepBody_kit_sound`). In the single-positive fragment (`hfrag`) the sole owner `σ0` is
     either LEFT- or RIGHT-interior; each branch delivers the FULL kit conclusion via the
     corresponding pin-anchored gate producer (`kvE2_sepGateAtPin_fragL`/`_fragR`), with the
-    opposite-zone clause vacuous under `hfrag`. `hcorrK`/`hInnerR` are explicit threaded
-    obligations for task 335; `hInnerR` supplies the RIGHT-branch inner-zone exclusion. -/
+    opposite-zone clause vacuous under `hfrag`. `hcorrK` is the sole explicit threaded
+    obligation for task 335; the RIGHT-branch inner-zone exclusion is now a gate consequence
+    (clause v), recovered inside `_fragR` from `hg` — task 345 dissolved `hInnerR`. -/
 theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -12500,9 +12501,6 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
     (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
       (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
       nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
-    (hInnerR : ∀ (σ0 : NormalForm sig 1 4), kvE2_sepPos qnf = [σ0] →
-      ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
-        σ0.2 (nf0_assemble zs χ σ0.1) = false)
     (h : (kvE2_sepBody (nf_depth0_char_formula atomMap h_surj) charK qnf).holds M atomMap x t) :
     (kvE2_sepEpL (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap x ∧
     (kvE2_sepEpR (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap t ∧
@@ -12519,13 +12517,15 @@ theorem kvE2_sepBody_kit_sound_frag {sig : MonadicSignature}
   · exact kvE2_sepGateAtPin_fragL atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
       M x t σ0 hpos hzL hcorrK h
   · exact kvE2_sepGateAtPin_fragR atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
-      M x t σ0 hpos hzR hcorrK (hInnerR σ0 hpos) h
+      M x t σ0 hpos hzR hcorrK h
 
 /-- **Pin-anchored outer fold** (task 344 Phase 3 — the `_frag` variant of `kvE2_outer_fold`).
     Verbatim mirror of `kvE2_outer_fold` with `hgateL`/`hgateR`/`hbdry` replaced by
-    `hfrag` + `hcorrK` + `hInnerR` (fed through `kvE2_sepBody_kit_sound_frag`), and `hexcl`
-    threaded unchanged. The non-interior backward branch is unreachable under `hfrag` (the sole
-    positive `σ0` is interior), so it closes by `exfalso`. Delivered to task 335 Phase B. -/
+    `hfrag` + `hcorrK` (fed through `kvE2_sepBody_kit_sound_frag`), and `hexcl` threaded
+    unchanged. The RIGHT inner-consistency is now a gate consequence (clause v), so task 345
+    removed the former `hInnerR` obligation — `_frag` fold now takes only `hfrag`/`hcorrK`/`hexcl`.
+    The non-interior backward branch is unreachable under `hfrag` (the sole positive `σ0` is
+    interior), so it closes by `exfalso`. Delivered to task 335 Phase B. -/
 theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -12544,9 +12544,6 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
     (hcorrK : ∀ (σ : NormalForm sig 1 4) (a : M.carrier),
       (⟨charK (nfk_projFresh σ)⟩ : TemporalPred).eval_at M atomMap a →
       nf_eval_nf M 1 1 (fun _ => a) (nfk_projFresh σ))
-    (hInnerR : ∀ (σ0 : NormalForm sig 1 4), kvE2_sepPos qnf = [σ0] →
-      ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1), ¬ kvE2_sepInnerConsistentR zs →
-        σ0.2 (nf0_assemble zs χ σ0.1) = false)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) charK qnf).eval_at M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
@@ -12556,7 +12553,7 @@ theorem kvE2_outer_fold_frag {sig : MonadicSignature}
       nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   obtain ⟨hEpL, hEpR, w, hxw, hwt, hptW, hLreal, hRreal⟩ :=
     kvE2_sepBody_kit_sound_frag atomMap h_surj charK qnf h_xy h_yt h_xt h_yx h_ty h_tx
-      M x t hfrag hcorrK hInnerR h
+      M x t hfrag hcorrK h
   have hprojW : nf_eval_nf M 0 1 (fun _ => w) (kvE2_sepProj3 qnf.1 ⟨0, by omega⟩) := by
     have h1 := hptW
     simp only [kvE2_sepPtW, TemporalPred.eval_at] at h1

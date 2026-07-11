@@ -92,7 +92,20 @@ depends on a green build from the prior phase.
 
 ---
 
-### Phase 1: Add clause (v) and discharge holds_of_honest [IN PROGRESS]
+### Phase 1: Add clause (v) and discharge holds_of_honest [COMPLETED]
+
+**Deviations (recorded per H7 consumer-sweep contract)**:
+- *Relocation (forced by forward-reference)*: `kvE2_sepInnerConsistentR` (def) and
+  `kvE2_sep_zone4_consistentR` (theorem) were defined ~L11295/11309, BELOW the gate (L1238)
+  and `holds_of_honest` (L2666) that now reference them. Both were moved verbatim (byte-identical
+  bodies) to just above the gate doc / above `holds_of_honest`. No body change.
+- *Two consumer projection shifts (minimal)*: appending clause (v) makes clause (iv) the
+  penultimate conjunct, so its positional projection `hg.2.2.2` shifts to `hg.2.2.2.1` at
+  exactly two sites: `kvE2_sepHgate_innerNine` and `kvE2_sepGateAtPin_fragL`. One-token edits;
+  no signature change. All other consumers (which use `hg.2.2.1` clause iii or take `hg` opaquely)
+  compiled unmodified.
+- *Closer*: clause (v) discharged directly via the landed `kvE2_sep_zone4_consistentR` +
+  the depth-1 fold `h_zone` iff (no new `kvE2_sepHonestBundleR` closer needed).
 
 **Goal**: Land the symmetric gate. Add clause (v) to `kvE2_sepGate` and discharge the new
 obligation in the sole gate constructor in one dispatch, since the build breaks at every gate
@@ -130,7 +143,12 @@ constructor until the discharge lands. The first green commit is the gate+honest
 
 ---
 
-### Phase 2: Remove hInnerR from kvE2_sepGateAtPin_fragR [NOT STARTED]
+### Phase 2: Remove hInnerR from kvE2_sepGateAtPin_fragR [COMPLETED]
+
+*Note: committed jointly with Phase 3 — removing fragR's `hInnerR` param immediately breaks its
+caller `kit_sound_frag`, so the tree is only green once all three removals land together
+(sanctioned "one commit for all three if natural" path).*
+
 
 **Goal**: Drop the `hInnerR` parameter from `kvE2_sepGateAtPin_fragR` (SW:11525), deriving the
 bit→`consistentR` direction from `hg` clause (v) at the existing `by_cases hg` (SW:11558). Mirror
@@ -158,7 +176,7 @@ how fragL recovers LEFT inner-consistency from `hg` clause (iv).
 
 ---
 
-### Phase 3: Thread the removal through kit_sound_frag and outer_fold_frag [NOT STARTED]
+### Phase 3: Thread the removal through kit_sound_frag and outer_fold_frag [COMPLETED]
 
 **Goal**: Propagate the `hInnerR` removal up the fold chain. Drop the param from
 `kvE2_sepBody_kit_sound_frag` (SW:12459, param at :12476) and `kvE2_outer_fold_frag` (SW:12502,
