@@ -341,7 +341,27 @@ change has no external consumer. Full record: `progress/phase4-boundary-realizat
 - **Estimated output:** ~150-300 lines (main risk; split if >300).
 - **Depends on:** 3 (needs the boundary-restricted `hexcl` admissibility)
 
-### Phase 5: Non-vacuous restatement + VACUITY-NOTE removal [NOT STARTED]
+### Phase 5: Non-vacuous restatement + VACUITY-NOTE removal [COMPLETED]
+
+**PHASE 5 RESULT** (session sess_1783782450_230288): `bracketEndChar_kvE2_sound_two_prior_frag`
+(OuterGate:245) re-stated against the Phase-4 fold interface. **New signature** (vs pre-346): the
+single all-carrier `hexcl` is replaced by THREE hypotheses matching `kvE2_outer_fold_frag`
+(SW:12627) — `hreal` (per-positive realization over `kvE2_sepPos qnf`), `hexcl` (cone-restricted
+exclusion `x ≤ x1 ≤ t`), `hexclExt` (strictly-exterior residue `¬(x ≤ x1 ∧ x1 ≤ t)`, the deferred
+Prop-4.3 obligation). `hfrag : kvE2_sepFragment qnf` is RETAINED as the fragment-scope / non-vacuity
+anchor (now proof-unused → benign `unusedVariables` linter warning at :267). The provider-setup
+priors `h_UZ`/`h_SZ` and the `hcorrK` bridge lambda (`bracketEndChar_kvE2_hck`) are DROPPED —
+provider correctness now lives inside `hreal`. Body unchanged in shape:
+`rw [bracketEndChar_kvE2_two_eq]; exact kvE2_outer_fold_frag … h_holds hreal hexcl hexclExt`.
+Both VACUITY NOTEs replaced with NON-VACUITY notes citing `kvE2_sepFragment_realizable`
+(SW:10265): the def note (:192, on `kvE2_sepFragment`) and the theorem note (:240). Build
+(scoped `…OuterGate`, which imports SharedWitness): GREEN (1014 jobs, only pre-existing
+`unusedSimpArgs`/`unusedVariables` linter warnings). Axioms via `#print axioms` against the build
+cache: `{propext, Classical.choice, Quot.sound}` — axiom-clean, NO `sorryAx`, no sorry on any live
+path. (Note: a transient `lean_verify` MCP call reported a stale `sorryAx`; the authoritative
+`lake env lean … #print axioms` confirmed clean.) **Phase 6 handoff**: consumers (task 309 Phases
+13.4/14, `KampPrior.lean:351`; task 335 Phase D) must supply cone `hexcl` + `hreal` and carry
+`hexclExt` as the successor obligation; the exterior residue is the named Prop-4.3 successor.
 - **Goal:** Re-state `bracketEndChar_kvE2_sound_two_prior_frag` against the repaired predicate and
   the boundary-restricted `hexcl`, and replace both VACUITY NOTEs with NON-VACUITY + deferred-exterior
   notes citing the Phase-2 witness.
@@ -354,10 +374,14 @@ change has no external consumer. Full record: `progress/phase4-boundary-realizat
   - `OuterGate.lean:192-199` and `:236-244` — replace both VACUITY NOTEs with a NON-VACUITY note
     citing `kvE2_sepFragment_realizable` (Phase 2) and stating the deferred-exterior scope.
 - **Tasks:**
-  - [ ] Update the theorem signature (repaired `hfrag` predicate + cone-restricted `hexcl`).
-  - [ ] Confirm the body type-checks via the repaired fold.
-  - [ ] Remove/replace both VACUITY NOTEs with NON-VACUITY + deferred-exterior text.
-  - [ ] `lake build`; `lean_verify bracketEndChar_kvE2_sound_two_prior_frag` axiom-clean.
+  - [x] Update the theorem signature *(deviation: altered — Phase-4 fold dropped `hfrag`/`hcorrK` and
+    added `hreal`; the single `hexcl` became the SPLIT `hreal`/`hexcl`(cone)/`hexclExt`; `hfrag`
+    retained as non-vacuity anchor, `h_UZ`/`h_SZ` dropped with the `hcorrK` bridge)*.
+  - [x] Confirm the body type-checks via the repaired fold *(scoped OuterGate build GREEN, 1014 jobs)*.
+  - [x] Remove/replace both VACUITY NOTEs with NON-VACUITY + deferred-exterior text *(def :192, theorem :240)*.
+  - [x] `lake build`; axiom-clean `{propext, Classical.choice, Quot.sound}` via `#print axioms`
+    *(deviation: used authoritative `lake env lean … #print axioms` — a transient `lean_verify` MCP
+    call reported a stale `sorryAx` that the cache-backed check refuted)*.
 - **Verification criteria:** Theorem green and non-vacuous (premise set satisfiable by the Phase-2
   witness); both VACUITY NOTEs gone; axiom-clean; no sorry.
 - **Estimated output:** ~80-150 lines.

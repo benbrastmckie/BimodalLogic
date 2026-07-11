@@ -189,14 +189,16 @@ sanctioned hypothesis beyond the provider shape — NOT a provider-conditional f
     provider-conditional families to the residue-vanish case (O4 record SW:6785-6791). Depends only
     on `qnf` (its positivity + zone structure), never on a model or provider.
 
-    VACUITY NOTE (task 335 report 07, 2026-07-11 — UNREALIZABILITY FLAGGED, pending successor
-    verification): the GLOBAL singleton demand (`kvE2_sepPos qnf = [σ0]` filters `Finset.univ`,
-    SW:193) is flagged unrealizable — `nf_exists_unique` (NormalForm.lean:276) realizes a
-    characteristic depth-1 form at every point, and with `x < w < t` the characteristic forms at
-    `x1 := w/x/t` are pairwise distinct, so any REALIZED `qnf` carries ≥3 positive bits. The
-    intended N2 fragment is plausibly the INTERIOR-restricted singleton (`kvE2_sepPosI`, SW:211).
-    Do NOT build on this predicate before the successor carrier task re-examines it; see
-    specs/335_outer_gate_assembly_engine_kvE2_body/reports/07_hexcl-enrichment-derivability.md. -/
+    NON-VACUITY NOTE (task 346 Phase 1/2, 2026-07-11 — REPAIRED & REALIZABLE): the earlier VACUITY
+    NOTE flagged the GLOBAL singleton demand (`kvE2_sepPos qnf = [σ0]`) as unrealizable —
+    `nf_exists_unique` (NormalForm.lean:276) forces ≥3 positive bits on every realized `qnf` (335
+    report 07 Refutation 1). Task 346 Phase 1 SWAPPED the carrier list to the INTERIOR-restricted
+    singleton `kvE2_sepPosI` (SW:211, above; the at-point positives zAtX/zAtW/zAtT are excluded by
+    the interior filter), and Phase 2 proved the swapped predicate REALIZABLE:
+    `kvE2_sepFragment_realizable` (`SharedWitness.lean:10265`) exhibits a concrete `qnf` satisfying
+    `kvE2_sepFragment_frag qnf` (byte-identical body via the `rfl` defeq bridge below). This predicate
+    is therefore satisfiable and safe to build on; the fold `kvE2_outer_fold_frag` (SW:12627) and its
+    soundness half below are non-vacuous. -/
 def kvE2_sepFragment {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : Prop :=
   ∃ σ0 : NormalForm sig 1 4,
     kvE2_sepPosI qnf = [σ0] ∧
@@ -227,21 +229,28 @@ edit — the fold and its kit are verified INPUTS, applied not re-proved (341 fr
 Rabinovich cited by PDF page: the symmetric gate is Cor 5.4 (task 345); the depth-2 assembly follows
 Def 3.1 (p.4) and the §5 bracket assembly (pp.7-9). -/
 
-/-- **⇒ soundness half of the k=2 fragment gate** (task 335 v5 Phase B). Consumes the pin-anchored
-    symmetric-gate fold `kvE2_outer_fold_frag` (SW:12529). `hcorrK` is discharged inline from the
-    provider bridge `bracketEndChar_kvE2_hck` (`.mp`); `hfrag` is the qnf-domain restriction task
-    321-N2 sanctions; `hexcl` (negative-sub exclusion) is threaded as a hypothesis, proved by the
-    Phase C probe and removed at Phase D assembly. No `SharedWitness.lean` edit.
+/-- **⇒ soundness half of the k=2 fragment gate** (task 335 v5 Phase B; task 346 Phase 5 restatement).
+    Consumes the pin-anchored symmetric-gate fold `kvE2_outer_fold_frag` (SW:12627). Under the task
+    346 interior-singleton repair the fold no longer threads `hfrag`/`hcorrK`: provider correctness now
+    lives inside the per-positive realization channel `hreal`, and the negative-sub exclusion is SPLIT
+    into the cone-restricted `hexcl` (`x ≤ x1 ≤ t`, dischargeable) plus the strictly-exterior residue
+    `hexclExt` (the deferred Prop-4.3 obligation). `hfrag : kvE2_sepFragment qnf` is retained as the
+    fragment-scope premise (the non-vacuity anchor), no longer destructured by the body.
 
-    VACUITY NOTE (task 335 report 07, 2026-07-11 — DO NOT CONSUME, pending successor verification):
-    the `hfrag` hypothesis (see the VACUITY NOTE on `kvE2_sepFragment` above) is flagged
-    unrealizable for any realized `qnf`, making this theorem's premise set unsatisfiable and the
-    theorem vacuous AS STATED. The derivation itself (fold application, `hcorrK` discharge) is a
-    genuine proof from its hypotheses and is expected to survive a fragment-predicate repair
-    (interior-singleton via `kvE2_sepPosI`), but task 309 / `KampPrior.lean:351` MUST NOT consume
-    this statement before the 321-N2 successor carrier task re-grounds it. Phase C additionally
-    machine-confirmed `hexcl` is NOT dischargeable under any fold-interface enrichment
-    (reports/07, two independent refutations incl. `bracketEndChar_kv_factors`). -/
+    NON-VACUITY NOTE (task 346 Phase 5, 2026-07-11 — VACUITY RESOLVED): the earlier VACUITY NOTE
+    flagged the GLOBAL-singleton fragment predicate (`kvE2_sepPos qnf = [σ0]`) as unrealizable, making
+    this theorem's premise set unsatisfiable and the theorem vacuous AS STATED. Task 346 Phase 1
+    repaired `kvE2_sepFragment` to the INTERIOR-singleton predicate (`kvE2_sepPosI qnf = [σ0]`,
+    OuterGate:200) and Phase 2 proved it realizable: `kvE2_sepFragment_realizable`
+    (`SharedWitness.lean:10265`) exhibits a concrete `qnf : NormalForm sig 2 3` with
+    `kvE2_sepFragment_frag qnf` — byte-identical to `kvE2_sepFragment` via the `rfl` defeq bridge
+    (OuterGate:223-224). The `hfrag` premise is therefore SATISFIABLE and this theorem is NON-VACUOUS.
+    The exclusion obligation is honestly scoped: `hexcl` (cone) is dischargeable now, while `hexclExt`
+    (strictly-exterior) is the isolated, NAMED residue carried by the caller and deferred to the
+    Prop-4.3 exterior-completeness successor task (report 07 Refutation 2; `Prop43.lean` BLOCKED). No
+    sorry on any live path — the exterior gap is quarantined by the `hexclExt` binder, not a sorry.
+    Consumers (task 309 Phases 13.4/14, `KampPrior.lean:351`; task 335 Phase D) supply the cone
+    `hexcl` + `hreal` and carry `hexclExt` as the successor obligation. -/
 theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -254,23 +263,32 @@ theorem bracketEndChar_kvE2_sound_two_prior_frag {sig : MonadicSignature}
     (h_ty : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
     (h_tx : qnf.atom_assgn (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
     (M : OrderedMonadicStructure sig)
-    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (x t : M.carrier)
     (hfrag : kvE2_sepFragment qnf)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ ∈ kvE2_sepPos qnf,
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
       (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
-        ∀ x1 : M.carrier,
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (kvE2_sepPtW (nf_depth0_char_formula atomMap h_surj) (fun χ => P.existF 0 χ) qnf).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
           ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvE2 atomMap h_surj P qnf).holds M atomMap x t →
       ∃ w : M.carrier, nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   intro h_holds
   rw [bracketEndChar_kvE2_two_eq] at h_holds
   exact kvE2_outer_fold_frag atomMap h_surj (fun χ => P.existF 0 χ) qnf
-    h_xy h_yt h_xt h_yx h_ty h_tx M x t h_holds hfrag
-    (fun σ a hσa => (bracketEndChar_kvE2_hck atomMap P M h_UZ h_SZ (nfk_projFresh σ) a).mp hσa)
-    hexcl
+    h_xy h_yt h_xt h_yx h_ty h_tx M x t h_holds hreal hexcl hexclExt
 
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
