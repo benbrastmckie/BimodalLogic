@@ -108,7 +108,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [PLANNED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -263,13 +263,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348
 - **Plan**:
   - [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
   - [309_offdiag_two_anchor_fi_chain/plans/08_offdiag-fi-chain-v8.md]
+  - [309_offdiag_two_anchor_fi_chain/plans/09_offdiag-fi-chain-v9.md]
 - **Research**: [309_offdiag_two_anchor_fi_chain/reports/07_unblock-assessment-post-333.md]
 
 **Description**: Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).
@@ -283,6 +284,8 @@ FORBIDDEN ROUTES (obstruction guards G1-G5, task 307 report 03 SS4): G1 no arity
 LITERATURE GROUNDING: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Lemma 5.1 md:134-152, Corollary 5.4 md:154-157).
 
 GOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit. v8 re-point (task-347 adjudication, verdict (b)): the KampPrior.lean:351 discharge consumes an interior+boundary gate PLUS a separate adjacent-exterior bracket with the interior/exterior seam at the anchors x,t (Rabinovich Prop 4.3 + Lemma 7.6 re-flatten) — NOT a single all-arrangement (x,t) gate (that target was an outer-existential globalization artifact with no §5 counterpart; F3/F4 refuted it). The adjacent-exterior bracket and the final KampPrior.lean:351 close are the task-348 prop43_exterior_reflatten deliverable; task 309 depends on 348. Phases 13.4/14 are GATED on task 348's definition-of-done (exterior-marked hexclExt residue discharged by the adjacent-exterior bracket; KampPrior.lean:351 strategic sorry retired). Plan: v8 (08_offdiag-fi-chain-v8.md).
+
+v9 realignment (2026-07-11, providers landed): tasks 335 and 348 COMPLETE — the k=2 interior+boundary fragment gate (bracketEndChar_kvE2_correct_two_prior_frag, OuterGate.lean:359, commit 147af2fbe) and the enriched composed gate bracketEndChar_kvE2Ext_correct_two_prior_frag (ExteriorBracket.lean, hexclExt discharged INTERNALLY) are landed, axiom-clean. Per task 348's R1 scope decision the KampPrior.lean:351 strategic-sorry retirement (now at :361, the | 1 => arm of nf_nvar_exist_all_depths) transferred BACK to task 309 — retirement = consume 348's discharge theorem + discharge the 309-owned provider inventory (hfrag/hrealI/hrealB/hexcl + six order bits). The ∀k-lift composition flag (335 handoff §5) is RESOLVED: option (a) — fragment-scoped k=2 induction step, nf_nvar_exist_all_depths interface unchanged, non-fragment residue routed to the 321-N2 successor. v8 Phases 13.4/14 are RETIRED (superseded by the landed provider chain); open work is Phases 15-19 (site/coverage probe → provider shim → hrealI/hrealB/hexcl discharge → kvE2Ext gate consumption + hooks + depth-2 assembly → ∀k lift + :361 retirement). Plan: v9 (09_offdiag-fi-chain-v9.md).
 
 ---
 
