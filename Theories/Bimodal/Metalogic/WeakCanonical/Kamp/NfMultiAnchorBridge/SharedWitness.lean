@@ -11415,4 +11415,105 @@ theorem kvE2_sep_zone4_consistentR {sig : MonadicSignature}
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hxu''), h2.2.mp hxu''⟩)
             (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h3.1 (lt_asymm hut), h3.2.mp hut⟩)))))))))
 
+/-- A right-interior σ's `(x,w)`-region `.rXW` slot is in its canonical LEFT block. -/
+theorem kvE2_sep_rXW_mem_slotsLFor {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zXU χ σ.1) = true) :
+    (.rXW σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsLFor σ := by
+  unfold kvE2_sepSlotsLFor
+  rw [hzone, if_neg kvE2_sep_zWT3_ne_zXW3, if_pos rfl]
+  exact List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)
+
+/-- A right-interior σ's `(x1,t)`-region `.rX1T` slot is in its canonical RIGHT block. -/
+theorem kvE2_sep_rX1T_mem_slotsRFor {sig : MonadicSignature}
+    {σ : NormalForm sig 1 4} (hzone : nf0_zoneSpec σ.1 = kvE2_sep_zWT3)
+    {χ : NormalForm sig 0 1} (hbit : σ.2 (nf0_assemble kvE_sub2_zWT χ σ.1) = true) :
+    (.rX1T σ χ : KvE2SepSlot sig) ∈ kvE2_sepSlotsRFor σ := by
+  unfold kvE2_sepSlotsRFor
+  rw [hzone, if_neg kvE2_sep_zWT3_ne_zXW3, if_pos rfl]
+  exact List.mem_append.mpr (Or.inr (List.mem_cons.mpr
+    (Or.inr (List.mem_map_of_mem (List.mem_filter.mpr ⟨by simp, hbit⟩)))))
+
+/-- RIGHT-owner variant of `kvE2_sepEpL_owner_lits` (`hσ` ranges over the `zWT3` positive list;
+    the only change is the `Or.inr` at the `hσsrc` append). -/
+theorem kvE2_sepEpL_owner_lits_R {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zWT3)
+    (hep : (kvE2_sepEpL charBase charK qnf).eval_at M atomMap x) (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap x
+        (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zPastX4 χ) (Formula.snce (charBase χ) Formula.top))
+      ∧ temporal_truth M atomMap x
+        (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX4 χ) (charBase χ)) := by
+  have hep' : temporal_truth M atomMap x (kvE2_sepEpL charBase charK qnf).formula := hep
+  simp only [kvE2_sepEpL] at hep'
+  have hall := (formula_conjList_iff M atomMap x _).mp hep'
+  have hσsrc : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3 ++ kvE2_sepPosIn qnf kvE2_sep_zWT3 :=
+    List.mem_append.mpr (Or.inr hσ)
+  have hχu : χ ∈ (Finset.univ.toList : List (NormalForm sig 0 1)) :=
+    Finset.mem_toList.mpr (Finset.mem_univ _)
+  refine ⟨hall _ (List.mem_append.mpr (Or.inr (List.mem_flatMap.mpr ⟨σ, hσsrc, ?_⟩))),
+    hall _ (List.mem_append.mpr (Or.inr (List.mem_flatMap.mpr ⟨σ, hσsrc, ?_⟩)))⟩
+  · exact List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inl
+      (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
+  · exact List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inr
+      (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
+
+/-- RIGHT-owner variant of `kvE2_sepEpR_owner_lits`. -/
+theorem kvE2_sepEpR_owner_lits_R {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (t : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zWT3)
+    (hep : (kvE2_sepEpR charBase charK qnf).eval_at M atomMap t) (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap t
+        (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtT4 χ) (charBase χ))
+      ∧ temporal_truth M atomMap t
+        (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zFutT4 χ) (Formula.untl (charBase χ) Formula.top)) := by
+  have hep' : temporal_truth M atomMap t (kvE2_sepEpR charBase charK qnf).formula := hep
+  simp only [kvE2_sepEpR] at hep'
+  have hall := (formula_conjList_iff M atomMap t _).mp hep'
+  have hσsrc : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zXW3 ++ kvE2_sepPosIn qnf kvE2_sep_zWT3 :=
+    List.mem_append.mpr (Or.inr hσ)
+  have hχu : χ ∈ (Finset.univ.toList : List (NormalForm sig 0 1)) :=
+    Finset.mem_toList.mpr (Finset.mem_univ _)
+  refine ⟨hall _ (List.mem_append.mpr (Or.inr (List.mem_flatMap.mpr ⟨σ, hσsrc, ?_⟩))),
+    hall _ (List.mem_append.mpr (Or.inr (List.mem_flatMap.mpr ⟨σ, hσsrc, ?_⟩)))⟩
+  · exact List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inl
+      (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
+  · exact List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inr
+      (List.mem_map.mpr ⟨χ, hχu, rfl⟩))))
+
+/-- RIGHT-owner variant of `kvE2_sepPtW_owner_lit`. -/
+theorem kvE2_sepPtW_owner_lit_R {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (qnf : NormalForm sig 2 3) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w : M.carrier) (σ : NormalForm sig 1 4) (hσ : σ ∈ kvE2_sepPosIn qnf kvE2_sep_zWT3)
+    (hep : (kvE2_sepPtW charBase charK qnf).eval_at M atomMap w) (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap w
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtWR χ) (charBase χ)) := by
+  have hep' : temporal_truth M atomMap w (kvE2_sepPtW charBase charK qnf).formula := hep
+  simp only [kvE2_sepPtW] at hep'
+  have hall := (formula_conjList_iff M atomMap w _).mp hep'
+  have hχu : χ ∈ (Finset.univ.toList : List (NormalForm sig 0 1)) :=
+    Finset.mem_toList.mpr (Finset.mem_univ _)
+  exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_append.mpr (Or.inr
+    (List.mem_flatMap.mpr ⟨σ, hσ,
+      List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩))⟩)))))
+
+/-- Extract the per-owner `zAtX1R` at-`x1` literal for owner `σ` from a realized `kvE2_sepPtX1R`
+    at the pin `x1` (mirror of `kvE2_sepPtX1L_owner_lit`). -/
+theorem kvE2_sepPtX1R_owner_lit {sig : MonadicSignature}
+    (charBase : NormalForm sig 0 1 → Formula) (charK : NormalForm sig 1 1 → Formula)
+    (σ : NormalForm sig 1 4) (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (x1 : M.carrier)
+    (hep : (kvE2_sepPtX1R charBase charK σ).eval_at M atomMap x1) (χ : NormalForm sig 0 1) :
+    temporal_truth M atomMap x1
+      (kvE2_sepLit (kvE2_sepBits σ kvE2_sep_zAtX1R χ) (charBase χ)) := by
+  have hep' : temporal_truth M atomMap x1 (kvE2_sepPtX1R charBase charK σ).formula := hep
+  simp only [kvE2_sepPtX1R] at hep'
+  have hall := (formula_conjList_iff M atomMap x1 _).mp hep'
+  have hχu : χ ∈ (Finset.univ.toList : List (NormalForm sig 0 1)) :=
+    Finset.mem_toList.mpr (Finset.mem_univ _)
+  exact hall _ (List.mem_cons.mpr (Or.inr (List.mem_map.mpr ⟨χ, hχu, rfl⟩)))
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
