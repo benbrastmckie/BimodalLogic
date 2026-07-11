@@ -201,7 +201,29 @@ one-line subset bridge — Phases 3/4 own it.
 - **Estimated output:** ~40-80 lines (small edit + triage record).
 - **Depends on:** none
 
-### Phase 2: Interior-singleton realizability witness lemma [NOT STARTED]
+### Phase 2: Interior-singleton realizability witness lemma [COMPLETED]
+
+**PHASE 2 RESULT** (session sess_1783782450_230288): `kvE2_sepFragment_realizable`
+(`SharedWitness.lean`, appended below the SW:10210 GATE banner at ~SW:10265, NOT above it — the
+plan's "~SW:245" slot is above the frozen banner and the orchestrator constraint forbids edits
+there; the new lemma references only `kvE2_sepPosI`/zones/`nf0_assemble`, all in scope) proves
+`∃ qnf : NormalForm sig 2 3, kvE2_sepFragment_frag qnf`. Stated in terms of `kvE2_sepFragment_frag`
+(SW:10219) rather than `OuterGate.kvE2_sepFragment` because `OuterGate` imports `SharedWitness`
+(cycle); the two predicates are byte-identical so Phase 5 in OuterGate consumes the witness via the
+`rfl` defeq bridge. **Construction (faithful to report H4 #1):** the witness `qnf` carries FOUR
+positive subs — the strictly-interior `σ0` (zone `zXW3`) PLUS the three forced characteristic
+positives at the at-point zones `zAtX3`/`zAtW3`/`zAtT3`; hence `kvE2_sepPos qnf` has FOUR elements
+(the OLD global-singleton predicate `kvE2_sepPos qnf = [σ0]` FAILS for this qnf) while
+`kvE2_sepPosI` excludes exactly the three at-point positives (each fails the `zXW3 ∨ zWT3`
+interiority test, discharged by `decide`), leaving `[σ0]`. This makes the RE-SCOPE verdict concrete:
+interior-singleton is realizable where global-singleton is not. Each zone is pinned via
+`nf0_zoneSpec_assemble` (`NfEFold:197`); the singleton collapse uses a `DecidableEq`-only helper
+`kvE2_nodup_filter_unique` (the `List.filter_eq`/`count` replicate route is unavailable — the
+`→ Bool` function space in `NormalForm sig 1 4` admits no `BEq`). Purely `qnf`-domain (no model /
+provider), matching the predicate's own dependency. Build (`SharedWitness` scoped): GREEN;
+`lean_verify` axiom-clean `{propext, Classical.choice, Quot.sound}`, sorry-free. No edits above the
+banner; no existing decl modified (additive only). Full record: `progress/phase2-realizability.md`.
+
 - **Goal:** Prove the new interior-singleton predicate is satisfiable — the non-vacuity ground the
   re-stated theorem (Phase 5) cites. Directly refutes the old VACUITY NOTE.
 - **File targets:**
@@ -210,11 +232,18 @@ one-line subset bridge — Phases 3/4 own it.
     `M : OrderedMonadicStructure sig` with `x < w < t` and exactly ONE strictly-interior realized
     1-type, so `kvE2_sepPosI qnf = [σ0]` holds and the zone side-condition is satisfied.
 - **Tasks:**
-  - [ ] Construct the witness model from the report's H4 #1 shape (x<w<t; the 3 forced characteristic
+  - [x] Construct the witness from the report's H4 #1 shape (the 3 forced characteristic
     positives at at-point zones zAtX/zAtW/zAtT are excluded by the interior filter; one strictly-interior
-    1-type remains).
-  - [ ] Discharge against `nf_exists_unique` (NormalForm.lean:276) and `kvE2_sepPosI_mem`/`_zone`.
-  - [ ] `lean_verify` the lemma: sorry-free, axiom-clean.
+    1-type σ0 remains) *(deviation: altered — the qnf is built combinatorially with `qnf.2` = membership
+    in `{σ0,σX,σW,σT}` where each σ's zone is pinned via `nf0_zoneSpec_assemble`; the predicate
+    `kvE2_sepFragment_frag` is pure `qnf`-domain (never mentions a model M / `nf_exists_unique`), so no
+    `OrderedMonadicStructure` is needed — the report's x<w<t model shape is the CONCEPTUAL justification,
+    realized here as the zone-bit structure of the four subs)*.
+  - [x] Discharge the interior-filter singleton *(deviation: altered — via a `DecidableEq`-only
+    `kvE2_nodup_filter_unique` helper + `List.filter_filter`, and `decide` for the three at-point-zone
+    interiority-failure facts; `nf_exists_unique`/`kvE2_sepPosI_mem`/`_zone` were not needed because the
+    witness is combinatorial, not model-realized)*.
+  - [x] `lean_verify` the lemma: sorry-free, axiom-clean `{propext, Classical.choice, Quot.sound}`.
 - **Verification criteria:** `lake build` green for the new lemma; `lean_verify kvE2_sepFragment_realizable`
   shows only {propext, Classical.choice, Quot.sound}; no sorry.
 - **Estimated output:** ~80-150 lines.

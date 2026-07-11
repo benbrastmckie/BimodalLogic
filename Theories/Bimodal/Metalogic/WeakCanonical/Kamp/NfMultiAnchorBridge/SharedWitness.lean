@@ -10221,6 +10221,85 @@ def kvE2_sepFragment_frag {sig : MonadicSignature} (qnf : NormalForm sig 2 3) : 
     kvE2_sepPosI qnf = [σ0] ∧
     (nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 ∨ nf0_zoneSpec σ0.1 = kvE2_sep_zWT3)
 
+/-- **Nodup-list unique-filter singleton** (task 346 Phase 2 helper). A `DecidableEq`-only
+    replacement for the `List.filter_eq`/`List.count` replicate route (unavailable here: the
+    `→ Bool` function space in `NormalForm sig 1 4` admits no `BEq`, only `DecidableEq`). If a
+    duplicate-free list `l` contains `a`, and a boolean predicate `p` is true on `l` at exactly
+    the point `a`, then `l.filter p = [a]`. Structural induction; the `Nodup` head-fresh fact
+    forces the tail's filter to be `[]`. -/
+private theorem kvE2_nodup_filter_unique {α : Type*} [DecidableEq α] {p : α → Bool} {a : α}
+    (hp : ∀ x, p x = true ↔ x = a) :
+    ∀ {l : List α}, l.Nodup → a ∈ l → l.filter p = [a]
+  | [], _, ha => by simp at ha
+  | b :: t, hnd, ha => by
+    rw [List.nodup_cons] at hnd
+    by_cases hb : b = a
+    · subst hb
+      rw [List.filter_cons_of_pos ((hp b).mpr rfl)]
+      have ht : t.filter p = [] := by
+        rw [List.filter_eq_nil_iff]
+        intro x hx hpx
+        exact hnd.1 (((hp x).mp hpx) ▸ hx)
+      rw [ht]
+    · rw [List.filter_cons_of_neg (by
+        intro h; exact hb ((hp b).mp h))]
+      exact kvE2_nodup_filter_unique hp hnd.2
+        ((List.mem_cons.mp ha).resolve_left (fun h => hb h.symm))
+
+/-- **Interior-singleton realizability witness** (task 346 Phase 2). Exhibits a concrete
+    `qnf : NormalForm sig 2 3` for which the interior-restricted positive-sub list
+    `kvE2_sepPosI qnf` is exactly the singleton `[σ0]` with `σ0` LEFT-interior
+    (`nf0_zoneSpec σ0.1 = kvE2_sep_zXW3`), so `kvE2_sepFragment_frag qnf`
+    (byte-defeq `OuterGate.kvE2_sepFragment`) holds. This is the non-vacuity ground the
+    re-stated soundness half (Phase 5) cites, DIRECTLY REFUTING the old VACUITY NOTE.
+
+    The witness qnf carries FOUR positive subs: the interior `σ0` PLUS the three forced
+    characteristic positives at the at-point zones `zAtX3`/`zAtW3`/`zAtT3` (report 07 Refutation 1
+    / H4 #1 shape `x < w < t`). The global list `kvE2_sepPos qnf` therefore has FOUR elements — so
+    the OLD global-singleton predicate (`kvE2_sepPos qnf = [σ0]`) FAILS for this qnf — while the
+    interior filter (`kvE2_sepPosI`) excludes exactly the three at-point positives (each fails the
+    `zXW3 ∨ zWT3` interiority test, discharged by `decide`), leaving the single strictly-interior
+    `σ0`. This is precisely the RE-SCOPE verdict made concrete: interior-singleton is realizable
+    where global-singleton is not. Purely `qnf`-domain (no model / provider), matching the
+    predicate's own dependency; each zone is pinned via `nf0_zoneSpec_assemble` (`NfEFold:197`). -/
+theorem kvE2_sepFragment_realizable {sig : MonadicSignature} :
+    ∃ qnf : NormalForm sig 2 3, kvE2_sepFragment_frag qnf := by
+  classical
+  let σ0 : NormalForm sig 1 4 :=
+    (nf0_assemble kvE2_sep_zXW3 (fun _ => false) (fun _ => false), fun _ => false)
+  let σX : NormalForm sig 1 4 :=
+    (nf0_assemble kvE2_sep_zAtX3 (fun _ => false) (fun _ => false), fun _ => false)
+  let σW : NormalForm sig 1 4 :=
+    (nf0_assemble kvE2_sep_zAtW3 (fun _ => false) (fun _ => false), fun _ => false)
+  let σT : NormalForm sig 1 4 :=
+    (nf0_assemble kvE2_sep_zAtT3 (fun _ => false) (fun _ => false), fun _ => false)
+  have hz0 : nf0_zoneSpec σ0.1 = kvE2_sep_zXW3 :=
+    nf0_zoneSpec_assemble kvE2_sep_zXW3 (fun _ => false) (fun _ => false)
+  have hzX : nf0_zoneSpec σX.1 = kvE2_sep_zAtX3 :=
+    nf0_zoneSpec_assemble kvE2_sep_zAtX3 (fun _ => false) (fun _ => false)
+  have hzW : nf0_zoneSpec σW.1 = kvE2_sep_zAtW3 :=
+    nf0_zoneSpec_assemble kvE2_sep_zAtW3 (fun _ => false) (fun _ => false)
+  have hzT : nf0_zoneSpec σT.1 = kvE2_sep_zAtT3 :=
+    nf0_zoneSpec_assemble kvE2_sep_zAtT3 (fun _ => false) (fun _ => false)
+  refine ⟨(fun _ => false, fun σ => decide (σ = σ0 ∨ σ = σX ∨ σ = σW ∨ σ = σT)), σ0, ?_, Or.inl hz0⟩
+  rw [kvE2_sepPosI, kvE2_sepPos, List.filter_filter]
+  refine kvE2_nodup_filter_unique ?_ (Finset.nodup_toList _)
+    (Finset.mem_toList.mpr (Finset.mem_univ σ0))
+  intro x
+  dsimp only
+  rw [Bool.and_eq_true]
+  constructor
+  · rintro ⟨hint, hmem⟩
+    rw [decide_eq_true_eq] at hmem hint
+    rcases hmem with h | h | h | h
+    · exact h
+    · rw [h, hzX] at hint; exact absurd hint (by decide)
+    · rw [h, hzW] at hint; exact absurd hint (by decide)
+    · rw [h, hzT] at hint; exact absurd hint (by decide)
+  · rintro rfl
+    exact ⟨by rw [decide_eq_true_eq]; exact Or.inl hz0,
+           by rw [decide_eq_true_eq]; exact Or.inl rfl⟩
+
 /-- **LEFT-interior parts closer at the PIN** (task 344 Phase 1 — the continuation-inlining
     wrapper). Inlines `kvE_subBracket2V_sound_of_parts`'s continuation (`SubBracket2V.lean:1324-1345`)
     with the four gate conjuncts supplied AT the specific pin `x1` (`x < x1 < w`), NOT as a ∀-anchor
