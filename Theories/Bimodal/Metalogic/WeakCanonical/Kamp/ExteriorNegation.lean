@@ -413,4 +413,129 @@ private theorem kvE2_futCharZone3 {sig : MonadicSignature}
   | ⟨1, _⟩ => exact ⟨h1a, h1b⟩
   | ⟨2, _⟩ => exact ⟨h2a, h2b⟩
 
+/-! ## Zone-bit computations of the spike σ -/
+
+/-- Depth-0 characteristic-formula correctness in `nf_eval` form (a repackaging of
+    `nf_depth0_char_formula_correct` via `nf_eval_profile_iff`). -/
+theorem nf_depth0_char_correct' {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (χ : NormalForm sig 0 1) (u : M.carrier) :
+    temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ := by
+  rw [nf_depth0_char_formula_correct]
+  exact (nf_eval_profile_iff M u χ).symm
+
+/-- Gap zone `(t, x1)` (coupling `(true,false)` to x1, `zFutT3` to `[w,x,t]`): the spike
+    prescribes only `χmid` there. -/
+theorem futZoneBit_gap {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (χmid χfr χ : NormalForm sig 0 1) :
+    kvE2_futSpikeZoneBit qnf χmid χfr (Fin.cons (true, false) kvE2_sep_zFutT3) χ =
+      decide (χ = χmid) := by
+  rfl
+
+/-- Fresh-point self-zone `v = x1` (coupling `(false,false)` to x1, `zFutT3` to `[w,x,t]`):
+    the spike prescribes profile `χfr`. -/
+theorem futZoneBit_selfx1 {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (χmid χfr χ : NormalForm sig 0 1) :
+    kvE2_futSpikeZoneBit qnf χmid χfr (Fin.cons (false, false) kvE2_sep_zFutT3) χ =
+      decide (χ = χfr) := by
+  rfl
+
+/-- Ray zone `(x1, ∞)` (coupling `(false,true)` to x1): empty — the spike forces `x1`
+    to be a maximum. -/
+theorem futZoneBit_ray {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (χmid χfr χ : NormalForm sig 0 1) :
+    kvE2_futSpikeZoneBit qnf χmid χfr (Fin.cons (false, true) kvE2_sep_zFutT3) χ = false := by
+  rfl
+
+/-- An at-or-below-`t` zone (coupling `(true,false)` to x1, zone-3 spec `zs` to `[w,x,t]`
+    with `(zs 2).2 = false`): the spike reads qnf's own zone fact `kvE2_futAnyBit`. -/
+theorem futZoneBit_below {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (χmid χfr χ : NormalForm sig 0 1) (zs : ZoneSpec 3)
+    (hzs : zs = kvE2_sep_zPastX3 ∨ zs = kvE2_sep_zAtX3 ∨ zs = kvE2_sep_zXW3 ∨
+      zs = kvE2_sep_zAtW3 ∨ zs = kvE2_sep_zWT3 ∨ zs = kvE2_sep_zAtT3) :
+    kvE2_futSpikeZoneBit qnf χmid χfr (Fin.cons (true, false) zs) χ =
+      kvE2_futAnyBit qnf zs χ := by
+  rcases hzs with h | h | h | h | h | h <;> subst h <;> rfl
+
+/-! ## Soundness of the spike clause -/
+
+/-- **Spike soundness** (Cor 5.4(2) exterior analog, ⇒): if the complement clause holds at
+    the right anchor `t`, then no exterior point `x1 > t` realizes the spike σ. Uses only
+    the order bits `hxw`/`hwt` (the `hexclExt` binder inventory) — no semantic hypothesis on
+    `M`. This direction discharges `hexclExt` for the spike σ. -/
+theorem kvE2_extNegFutSpike_sound {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 2 3) (χmid χfr : NormalForm sig 0 1)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hcl : temporal_truth M atomMap t (kvE2_extNegFutSpike atomMap h_surj χmid χfr)) :
+    ∀ x1 : M.carrier, t < x1 →
+      ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
+          (kvE2_futSpikeSigma qnf χmid χfr) := by
+  intro x1 htx1 hnf
+  obtain ⟨hatomσ, hquantσ, -⟩ :=
+    (nf_eval_depth1_fold_iff M _ (kvE2_futSpikeSigma qnf χmid χfr)).mp hnf
+  have hbit : ∀ (zs : ZoneSpec 4) (χ : NormalForm sig 0 1),
+      (∃ v : M.carrier,
+        zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+      kvE2_futSpikeZoneBit qnf χmid χfr zs χ = true := by
+    intro zs χ
+    rw [hquantσ zs χ, kvE2_futSpikeSigma_bits]
+  -- every strictly-interior gap point (t, x1) carries profile χmid
+  have hmidgap : ∀ r : M.carrier, t < r → r < x1 →
+      temporal_truth M atomMap r (nf_depth0_char_formula atomMap h_surj χmid) := by
+    intro r htr hrx1
+    have hzr := kvE2_futZone4_of_above M r x1 w x t hxw hwt htr (true, false)
+      (iff_of_true hrx1 rfl) (iff_of_false (lt_asymm hrx1) Bool.false_ne_true)
+    obtain ⟨χr, hχr⟩ := nf_profile_exists M r
+    have hb := (hbit (Fin.cons (true, false) kvE2_sep_zFutT3) χr).mp ⟨r, hzr, hχr⟩
+    rw [futZoneBit_gap] at hb
+    have heq : χr = χmid := of_decide_eq_true hb
+    rw [heq] at hχr
+    exact (nf_depth0_char_correct' M atomMap h_surj χmid r).mpr hχr
+  -- the fresh point x1 carries profile χfr
+  have hx1fr : nf_eval_nf M 0 1 (fun _ => x1) χfr := by
+    rw [nf_eval_profile_iff]; intro p; exact hatomσ (.pred p 0)
+  -- x1 is a maximum: no point lies strictly above it
+  have hnoabove : ∀ s : M.carrier, ¬ x1 < s := by
+    intro s hs
+    obtain ⟨χs, hχs⟩ := nf_profile_exists M s
+    have hzs := kvE2_futZone4_of_above M s x1 w x t hxw hwt (htx1.trans hs) (false, true)
+      (iff_of_false (lt_asymm hs) Bool.false_ne_true) (iff_of_true hs rfl)
+    have hb := (hbit (Fin.cons (false, true) kvE2_sep_zFutT3) χs).mp ⟨s, hzs, hχs⟩
+    rw [futZoneBit_ray] at hb
+    exact Bool.noConfusion hb
+  -- a gap χmid witness exists
+  obtain ⟨s0, hzs0, hs0mid⟩ :=
+    (hbit (Fin.cons (true, false) kvE2_sep_zFutT3) χmid).mpr (by
+      rw [futZoneBit_gap]; exact decide_eq_true rfl)
+  have hz0 := hzs0 ⟨0, by omega⟩
+  have hz3 := hzs0 ⟨3, by omega⟩
+  have hts0 : t < s0 := hz3.2.mpr rfl
+  have hs0x1 : s0 < x1 := hz0.1.mpr rfl
+  -- assemble the positive local-existence witness, contradicting the clause
+  refine hcl ?_
+  simp only [kvE2_futSpikePos]
+  refine ⟨s0, hts0, ?_, fun r htr hrs0 => hmidgap r htr (hrs0.trans hs0x1)⟩
+  rw [formula_conjList_iff]
+  intro f hf
+  simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hf
+  rcases hf with rfl | rfl
+  · exact (nf_depth0_char_correct' M atomMap h_surj χmid s0).mpr hs0mid
+  · -- inner Until: x1 is the endpoint witness above s0
+    refine ⟨x1, hs0x1, ?_, fun r hs0r hrx1 => hmidgap r (hts0.trans hs0r) hrx1⟩
+    simp only [kvE2_futSpikeEnd]
+    rw [formula_conjList_iff]
+    intro g hg
+    simp only [List.mem_cons, List.mem_singleton, List.not_mem_nil, or_false] at hg
+    rcases hg with rfl | rfl
+    · exact (nf_depth0_char_correct' M atomMap h_surj χfr x1).mpr hx1fr
+    · -- ¬ F⊤ at x1 : no future point
+      intro hF
+      obtain ⟨s, hs, -, -⟩ := hF
+      exact hnoabove s hs
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
