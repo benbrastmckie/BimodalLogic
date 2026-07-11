@@ -1,0 +1,45 @@
+{
+  "status": "partial",
+  "agent_type": "lean-implementation-hard-agent",
+  "delegation_path": [
+    "orchestrator",
+    "implement",
+    "lean-implementation-hard-agent"
+  ],
+  "task_number": 344,
+  "session_id": "sess_1783723095_edd5a7_344",
+  "phase": "1 (partial — h_atom complete; h_fwd/h_bwd remain)",
+  "requires_user_review": false,
+  "handoff_path": "specs/344_pin_anchored_fragment_fold/handoffs/05_continuation.md",
+  "verification": {
+    "sorry_count": 2,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "build_passed": true
+  },
+  "sorry_inventory": [
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "line": 10500,
+      "statement": "have (leaf): h_fwd (inside kvE2_sepGateAtPin_fragL)",
+      "strategic": false,
+      "assumption": "forward-zone conjunct; derivable only under hfrag",
+      "why_deferred": "the crux — kvE2_sepSegsG->kvE2_sepSegForm split + locate_witness trichotomy",
+      "follow_up_task": "344 Phase 1 dispatch 6"
+    },
+    {
+      "file": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean",
+      "line": 10505,
+      "statement": "have (leaf): h_bwd (inside kvE2_sepGateAtPin_fragL)",
+      "strategic": false,
+      "assumption": "backward: sigma own zUW/zWT slot channel",
+      "why_deferred": "re-derive above-witness clauses mirroring hbelow",
+      "follow_up_task": "344 Phase 1 dispatch 6"
+    }
+  ],
+  "memory_candidates": [
+    "Gate clause kvE2_sepGate.1 gives nf0_dropFresh sigma.1 = qnf.1 for positive sigma — the bridge that makes a positive sub's non-fresh base bits ride qnf.1's outer content.",
+    "nf0_assemble does NOT simp-reduce for order atoms (nested Fin.cases with motive); derive per-atom bits via congrFun on nf0_zoneSpec/nf0_dropFresh equalities + simp [nf0_dropFresh, mergeNF, skipFin_zero_succ] instead.",
+    "kvE2_sep_locate_witness: model-general Finset.max' point-location among monotone witnesses — reusable for any holds_eq_succ segment-region case split."
+  ]
+}
