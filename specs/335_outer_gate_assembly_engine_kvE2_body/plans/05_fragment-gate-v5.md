@@ -1,7 +1,7 @@
 # Implementation Plan: Task #335 — Outer-Gate Assembly Engine (`kvE2_body` / `bracketEndChar_kvE2`) — FRAGMENT GATE (v5, post-blocker-adjudication)
 
 - **Task**: 335 - Build the outer-gate assembly engine `kvE2_body` / `bracketEndChar_kvE2`, the two-level quant-layer connector that `KampPrior.lean:351` (the depth-k≥2 Cor 5.4 converter) consumes — now delivered as the **single-positive-sub fragment gate** sanctioned by task 321 verdict N2
-- **Status**: [BLOCKED] (Phase A COMPLETED; Phase B BLOCKED — interior-gate FORWARD conjunct has no public producer under `hfrag`; C/D not reached)
+- **Status**: [BLOCKED] (post-345: Phases 1/2/3/A/B COMPLETED — B landed the ⇒ soundness half over the symmetric-gate fold `kvE2_outer_fold_frag`, discharging `hcorrK` inline and threading `hexcl`; Phase C `hexcl` GO/NO-GO = **NO-GO** (machine-confirmed 2026-07-10); Phase D BLOCKED on C)
 - **Effort**: 4-6 hours (Phases 1-3 landed; the genuine risk is Phase C `hexcl`-under-`hfrag` GO/NO-GO probe)
 - **Dependencies**:
   - 334 (COMPLETED — faithful carrier redefinition `kvE2_sepArr'` + `kvE2_sepDisjValidOwner`)
@@ -368,12 +368,35 @@ residue VANISHES (O4 record SW:6785-6791) — the FORWARD clause that was refuta
 
 ### Phase C: `hbdry` / `hexcl` GO/NO-GO probe under `hfrag` — ONE DISPATCH, BOUNDED [BLOCKED]
 
-**NOT REACHED** — gated on Phase B, which is BLOCKED (the fold's four families are a single
-obligation set; `hgateL`'s FORWARD conjunct fails with no public producer). `hbdry` was in fact
-DISCHARGED during the Phase-B attempt (vacuous under `hfrag`), but `hexcl` (the designated genuine
-risk) is downstream of the SAME frozen-segment-content gap: excluding every negative sub also rides
-`kvE2_sepSegForm_excludes` + the disjunct's segment coverage, unreachable via the public API. The
-fragment route is therefore NO-GO for the interior-gate obligation, ahead of the `hexcl` probe.
+**NO-GO — machine-confirmed 2026-07-10 (session sess_1783723095_edd5a7_335).** Post-345, `hbdry`
+(and `hgateL`/`hgateR`/`hInnerR`) are now internal to the fold; the ONLY remaining obligation is
+`hexcl`, and it does NOT close. A genuine bounded probe (`hexcl` stated exactly as the fold consumes
+it, `lean_goal`-verified) reduces — after `intro w hxw hwt hptW σ hσneg x1 hreal` — to `⊢ False`
+with hypotheses `{hptW : (kvE2_sepPtW …).eval_at M atomMap w, hσneg : qnf.2 σ = false,
+hreal : nf_eval_nf M 1 4 [x1,w,x,t] σ}` and NO `.holds` / disjunct in context. Five candidate closers
+(captured verbatim via `lean_multi_attempt`) all fail:
+- `kvE2_sepSegForm_excludes … x1 … hσneg hreal` — **type mismatch**: needs `kvE2_sepBits σ zs χ =
+  false` (a per-zone bit, not the quant-layer `qnf.2 σ = false`) AND
+  `TemporalPred.eval_at ⟨kvE2_sepSegForm … σ zs⟩ x1` (the segment form holding **at x1**), which
+  lives inside the frozen `kvE2_sepDisjunct'` and is never provided (`hexcl` receives only `hptW`
+  at `w`). This is O4 failed-closer #4 (SW:6899-6904) reproduced at the goal level.
+- `aesop` / `simp_all` / `tauto` — exhaust without closing; no hypothesis contradicts `hreal`.
+
+**Root cause (unchanged from the pre-345 adjudication, now isolated to `hexcl`)**: `hexcl` receives
+only `hptW` (constrains `w`, says nothing about an arbitrary `x1`), so excluding a negative sub's
+realization at `x1` is information-theoretically impossible from the fold's hypotheses. The model
+priors `h_UZ`/`h_SZ` are first/last-occurrence well-foundedness (`PriorDefs.lean:22/33`), NOT type-
+exclusion; the provider `P.existF 0` gives only the arity-1 projected type — the `(outer zone,
+projected 1-type)` information ceiling machine-certified by `bracketEndChar_kv_factors`
+(`CarrierKv.lean:422`). The symmetric gate (task 345) dissolved the interior-gate families but not
+`hexcl`; `hexcl` is genuinely provider-conditional (A1 sense, fold docstring SW:10033-10037) and
+undischargeable at `charK := P.existF 0`. No landed producer exists (exhaustive grep: `qnf.2 σ =
+false → ¬ nf_eval_nf`, `_hexcl`, `_excl` — only hypothesis positions + segment machinery that needs
+the frozen disjunct). Closing it requires either a `SharedWitness.lean` segment-coverage extractor
+(branch (a), REFUTED report 04; violates 341 frozen-file gate) or the successor carrier redefinition.
+
+**Historical pre-345 note follows (superseded — the four-family framing no longer applies):** `hbdry`
+was DISCHARGED (vacuous under `hfrag`); the residue is the single `hexcl` family above.
 
 **Goal**: Discharge the non-interior positive realization family `hbdry` (SW:9946) and the
 negative-sub exclusion family `hexcl` (SW:9952) **under `hfrag`**. In the exactly-one-interior-positive
@@ -422,10 +445,17 @@ phase is EXPLICITLY one-dispatch bounded: on NO-GO it STOPS and reports — esca
 
 ### Phase D: Assemble `bracketEndChar_kvE2_correct_two_prior_frag` + 309-v8 handoff note [BLOCKED]
 
-**NOT REACHED** — gated on Phases B AND C (both BLOCKED). No `_frag` correctness theorem is
-assembled; `bracketEndChar_kvE2` remains at Phase-A-green (live def + `rfl` bridge + Phase-2 ⇐
-completeness + fragment predicate). The 309-v8 impact is: the k=2 fragment GO gate is NOT delivered
-— 309 Phases 13.4/14 and `KampPrior.lean:351` cannot yet consume a `bracketEndChar_kvE2_correct_two_prior_frag`.
+**BLOCKED — gated on Phase C (NO-GO).** Phase B DID land (post-345): the ⇒ soundness half
+`bracketEndChar_kvE2_sound_two_prior_frag` is green + axiom-clean, but it carries `hexcl` as a
+hypothesis. The assembled fragment-UNCONDITIONAL gate `bracketEndChar_kvE2_correct_two_prior_frag`
+(only `hfrag` beyond the provider shape, `hexcl` DISCHARGED) cannot be produced because Phase C's
+`hexcl` is a machine-confirmed NO-GO. A conditional gate carrying `hexcl` would FAIL 309's
+provider-unconditional `BracketCarrierCorrectVPrior` requirement (plan non-goal) and is NOT
+delivered. **309-v8 impact**: the k=2 fragment GO gate is NOT delivered — 309 Phases 13.4/14 and
+`KampPrior.lean:351` cannot yet consume `bracketEndChar_kvE2_correct_two_prior_frag`. What IS
+available: the ⇒ soundness half modulo `hexcl` (Phase B) + the ⇐ completeness half (Phase 2,
+unconditional). The remaining gap is exactly the negative-sub exclusion, which requires SharedWitness
+territory (segment-coverage extractor) or the successor carrier redefinition — both outside 335.
 
 **Goal**: With Phases B and C green, discharge the `_frag` shells: feed `kvE2_outer_fold` the four
 families (from B and C, all under `hfrag`) to close `bracketEndChar_kvE2_sound_two_prior_frag`, then
