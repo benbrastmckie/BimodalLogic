@@ -1531,7 +1531,7 @@
     {
       "project_number": 344,
       "project_name": "pin_anchored_fragment_fold",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "SPAWNED from task 335 blocker escalation 2 (session sess_1783723095_edd5a7). Land the pin-anchored fragment fold in SharedWitness.lean, ADDITIVE-ONLY (zero existing decls modified — task 341 GATE re-diff absorbs it): kvE2_sepGateAtPin_fragL/R (six gate conjuncts derived at the extracted pin witness q with x < q < w via kvE_sub2V_bounded_anchor_of_outer), kvE2_sepBody_kit_sound_frag, and kvE2_outer_fold_frag (pin-anchored variant of kvE2_outer_fold). Grounding: machine-verified derivability report (reports/01_fragment-extractor-derivability.md; original at specs/335_outer_gate_assembly_engine_kvE2_body/reports/05_fragment-extractor-derivability.md). REFUTED shapes to avoid: the ∀-anchor hgateL of the landed fold is FALSE in gate-legal hfrag-legal configurations (SW:9911-9928, SW:6772-6778 binder-level obstruction survives the fragment) — do NOT attempt a segment-coverage extractor for it; a NEW FILE will not work (segment/pin internals are file-private). One extra dischargeable input allowed: provider correctness at the pin (hcorrK = ExistProviders.correct step already assigned to 335). Consumer: task 335 Phases B-D (bracketEndChar_kvE2_correct_two_prior_frag). Invariants: lake build green, axiom-clean {propext, Classical.choice, Quot.sound}, no sorries on live paths, incremental green commits. Residual risks to probe early: hexcl threading, arrangement-shape reduction under hfrag, pin-extraction output shape. Sizing: 2-3 dispatches.",
       "dependencies": [],
@@ -1543,9 +1543,16 @@
           "type": "report",
           "path": "specs/344_pin_anchored_fragment_fold/reports/01_fragment-extractor-derivability.md",
           "summary": "Machine-verified GO: pin-anchored _frag fold derivable; ∀-anchor extractor refuted"
+        },
+        {
+          "path": "specs/344_pin_anchored_fragment_fold/plans/01_pin-anchored-fold-plan.md",
+          "type": "plan",
+          "summary": "3-phase additive-only pin-anchored fold; Phase 1 front-loads residual-risk probes"
         }
       ],
-      "spawned_from": 335
+      "spawned_from": 335,
+      "last_updated": "2026-07-11T00:20:11Z",
+      "session_id": "sess_1783723095_edd5a7_344"
     }
   ],
   "artifacts": [
