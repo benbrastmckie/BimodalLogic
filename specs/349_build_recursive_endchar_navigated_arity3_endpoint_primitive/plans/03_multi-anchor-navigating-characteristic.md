@@ -254,7 +254,7 @@ resumes at the first real work item (Phase 4).
 - **Depends on:** 2
 - **Completed:** 2026-07-11
 
-### Phase 4: Interface reset — retire single-anchor machinery, freeze unconditional signatures [NOT STARTED]
+### Phase 4: Interface reset — retire single-anchor machinery, freeze unconditional signatures [COMPLETED]
 
 - **Goal:** Remove v2's single-anchor / conditional machinery and freeze the corrected UNCONDITIONAL
   interfaces, leaving the module GREEN + sorry-free with only the preserved skeleton (Phases 1-3) and
@@ -268,15 +268,21 @@ resumes at the first real work item (Phase 4).
   `navMultiAnchorForm_correct` (unconditional full-eval hooks) and unconditional `endCharRec_correct`
   (no `h_nav`).
 - **Tasks:**
-  - [ ] Delete `NavResidual` + `navResidual_base_eq_hRes` and every conditional consumer that
-        references them, in one commit, keeping the module green.
-  - [ ] Delete `navBrickForm`/`navBrickForm_correct`; remove `endCharRec`'s `navBrickForm` reference
+  - [x] Delete `NavResidual` + `navResidual_base_eq_hRes` and every conditional consumer that
+        references them, in one commit, keeping the module green. *(also removed v2 `endCharN0_correct`,
+        whose `h_nav : NavResidual` param was the remaining code consumer.)*
+  - [x] Delete `navBrickForm`/`navBrickForm_correct`; remove `endCharRec`'s `navBrickForm` reference
         (revert `endCharRec` body to a docstring-captured signature stub if needed to stay green).
-  - [ ] Record the FROZEN `navMultiAnchorForm_correct` and unconditional `endCharRec_correct`
+        *(deviation: altered — the real `endCharRec` def was removed entirely and its skeleton captured
+        in a docstring, since its `k+1` arm depended on the deleted `navBrickForm`; Phase 7 rebuilds it.)*
+  - [x] Record the FROZEN `navMultiAnchorForm_correct` and unconditional `endCharRec_correct`
         signatures verbatim (from §Q4, above) as docstrings at the intended definition sites.
-  - [ ] Route audit: assert FORBIDDEN `nf_char3_deeper_split` not referenced; `EndCharCarrier` not
-        widened; grep-confirm no `NavResidual` occurrence remains in code.
+  - [x] Route audit: assert FORBIDDEN `nf_char3_deeper_split` not referenced; `EndCharCarrier` not
+        widened; grep-confirm no `NavResidual` occurrence remains in code. *(grep: 0 code decls of
+        `NavResidual`/`navBrickForm`; all 18 `NavResidual` mentions are docstring/comment. `EndCharCarrier`
+        abbrev at Base.lean:1007 unchanged. `nf_char3_deeper_split` not referenced by new code.)*
 - **Hard bar:** sorry-free; scoped Base `lake build` GREEN with the removals applied; no new axioms.
+  *(VERIFIED: build GREEN 1005/1005 jobs; 0 real `sorry`; 0 vacuous defs; 0 new axioms; git scope = Base.lean + plan only.)*
   (No new correctness lemma is *stated* this phase, so the axiom check applies to the still-green
   preserved lemmas.)
 - **Timing:** ~1.5 hours (~80-150 lines, mostly deletions + frozen docstrings)
