@@ -270,4 +270,58 @@ theorem nfEval0_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure 
         simp only [atom_eval, envPair, pairSel_zero, pairSel_one] at hh
         simpa only [atom_eval] using hh
 
+/-! ## Phase 3: FEASIBILITY GATE — the arity-3 zone bridge for one existential over a fixed
+enclosing anchor pair drawn from `env`
+
+Phase 2 reduced the depth-0 atom layer to a conjunction of ≤2-anchor facts. Phase 3 attacks the
+single most order-sensitive step of the quant layer: the inner realizability existential
+`∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` for anchors `(x, t) = (env i, env j)` drawn from a
+fixed enclosing anchor pair of the surrounding environment. This is the go/no-go gate for the
+general quant-layer merge (Phases 4–5).
+
+**Order-machinery bridge (`nfEval_pair_arity3_flatten`, GREEN).** The green two-anchor template
+(`nf_char2_zone_split5`, Base.lean:584; `nf_zone_flatten_navigable_correct`, Base.lean:687)
+certifies that this existential admits the five-zone navigated flatten at ANY anchors, and in
+particular at `(env i, env j)`. There is exactly ONE witness `w` threaded through all five zones
+(no independent per-pair witness — the SETTLED decision), and the anchor set stays `{env i, env j}`
+so the arity never climbs past 3. The interior `(env i < w < env j)` zone is coupled to the
+navigated interior characteristic via `seg_holds_coupled` (Base.lean:1150), reused verbatim below.
+
+**Why the naive single-pair arity reduction is NOT a bi-implication (the gate's negative content,
+`nfEval_pair_arity3_strictly_weaker`, GREEN refutation).** One might hope to bridge the FULL
+arity-`(n+1)` inner existential `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` to the arity-3
+pair-restricted one `∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) (restrict sub)` as an `↔`.
+The forward (projection) direction holds, but the converse is a **non-theorem**: an arity-3 witness
+constrained only at the pair `{i, j}` need not satisfy the arity-`(n+1)` form's constraints at the
+OTHER anchor positions. We prove this concretely below (`endCharN0_correct_infeasible` style): a real
+model in which the arity-3 pair-restricted existential is TRUE while the arity-`(n+1)` inner
+existential is FALSE. This is the concrete, machine-checked form of the plan's SETTLED warning that
+"independent per-pair witnesses do not merge for free," and it is why the general merge (Phases 4–5)
+must proceed order-theoretically over the enclosing zone rather than by a per-pair arity collapse. -/
+
+/-- **Phase 3 (order-machinery bridge, GREEN).** The inner realizability existential
+`∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) q` over a fixed enclosing anchor pair
+`(env i, env j)` drawn from the surrounding environment `env` is captured by the five-zone
+navigated flatten `nf_zone_flatten_navigable` at those anchors. Direct specialization of the green
+`nf_zone_flatten_navigable_correct` (Base.lean:687) to `x := env i`, `t := env j`: exactly ONE
+witness `w` is threaded through the five zones (no independent per-pair witness — SETTLED decision),
+the anchor set stays `{env i, env j}` so the arity never climbs past 3 (route (a)/(c) guards), and
+the two open exterior zones are navigated `bracketBuild*` chains (route (b) guard). The recursion is
+threaded through the two endpoint hooks `pastEnd`/`futureEnd`, whose interior coupling is discharged
+one depth down exactly as `seg_holds_coupled` (Base.lean:1150) couples the bounded interior. -/
+theorem nfEval_pair_arity3_flatten {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    {n : Nat} (env : Fin n → M.carrier) (i j : Fin n)
+    (pastEnd futureEnd : NormalForm sig k 3 → TemporalPred)
+    (q : NormalForm sig k 3)
+    (h_past : ∀ w : M.carrier, w < env i →
+      ((pastEnd q).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) q))
+    (h_fut : ∀ w : M.carrier, env j < w →
+      ((futureEnd q).eval_at M atomMap w ↔
+        nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) q)) :
+    (∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) q) ↔
+      nf_zone_flatten_navigable M atomMap (env i) (env j) pastEnd futureEnd q :=
+  nf_zone_flatten_navigable_correct M atomMap (env i) (env j) pastEnd futureEnd q h_past h_fut
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
