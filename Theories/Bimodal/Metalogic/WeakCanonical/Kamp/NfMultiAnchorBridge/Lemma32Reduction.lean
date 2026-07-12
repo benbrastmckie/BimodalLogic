@@ -287,17 +287,23 @@ particular at `(env i, env j)`. There is exactly ONE witness `w` threaded throug
 so the arity never climbs past 3. The interior `(env i < w < env j)` zone is coupled to the
 navigated interior characteristic via `seg_holds_coupled` (Base.lean:1150), reused verbatim below.
 
-**Why the naive single-pair arity reduction is NOT a bi-implication (the gate's negative content,
-`nfEval_pair_arity3_strictly_weaker`, GREEN refutation).** One might hope to bridge the FULL
-arity-`(n+1)` inner existential `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` to the arity-3
-pair-restricted one `∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) (restrict sub)` as an `↔`.
-The forward (projection) direction holds, but the converse is a **non-theorem**: an arity-3 witness
-constrained only at the pair `{i, j}` need not satisfy the arity-`(n+1)` form's constraints at the
-OTHER anchor positions. We prove this concretely below (`endCharN0_correct_infeasible` style): a real
-model in which the arity-3 pair-restricted existential is TRUE while the arity-`(n+1)` inner
-existential is FALSE. This is the concrete, machine-checked form of the plan's SETTLED warning that
-"independent per-pair witnesses do not merge for free," and it is why the general merge (Phases 4–5)
-must proceed order-theoretically over the enclosing zone rather than by a per-pair arity collapse. -/
+**Why the naive single-pair arity reduction is NOT a bi-implication (the gate's negative content —
+the SETTLED "strictly weaker" boundary).** One might hope to bridge the FULL arity-`(n+1)` inner
+existential `∃ w, nf_eval_nf M k (n+1) (Fin.cons w env) sub` to the arity-3 pair-restricted one
+`∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) (restrict sub)` as an `↔`. The forward
+(projection) direction holds, but the converse is a **non-theorem** for a FIXED single pair: when
+`n ≥ 3` there is an anchor position outside `{i, j}`, and an arity-3 witness constrained only at the
+pair `{i, j}` (the arity-3 restriction genuinely FORGETS the other anchors) need not satisfy the
+arity-`(n+1)` form's constraints at those other positions — so the arity-3 pair-restricted existential
+can hold while the arity-`(n+1)` inner existential fails. This is the same world-locality /
+strict-weakness phenomenon already machine-checked, sorry-free, by `endCharN0_correct_infeasible`
+(Base.lean:1779) and `endCharN0_correct_world_local_obstruction` (Base.lean:1745): a projection that
+drops non-local positions is strictly weaker than the full evaluation. It is exactly the plan's
+SETTLED warning that "independent per-pair witnesses do not merge for free," and it is why the general
+merge (Phases 4–5) must proceed order-theoretically over the enclosing ZONE (a disjunction over the
+possible enclosing pairs, threading one witness through transitivity of the linear order) rather than
+by a per-pair arity collapse. The single-pair step therefore contributes only the ONE-DIRECTIONAL
+projection plus the order-theoretic zone bridge certified below — never a per-pair bi-implication. -/
 
 /-- **Phase 3 (order-machinery bridge, GREEN).** The inner realizability existential
 `∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) q` over a fixed enclosing anchor pair
@@ -323,5 +329,28 @@ theorem nfEval_pair_arity3_flatten {sig : MonadicSignature} {k : Nat}
     (∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) q) ↔
       nf_zone_flatten_navigable M atomMap (env i) (env j) pastEnd futureEnd q :=
   nf_zone_flatten_navigable_correct M atomMap (env i) (env j) pastEnd futureEnd q h_past h_fut
+
+/-- **Phase 3 (interior coupling, GREEN).** The bounded interior zone `env i < w < env j` of the
+five-zone flatten (`nf_zone_flatten_navigable`, the middle disjunct) is characterized, at the
+enclosing anchor pair `(env i, env j)`, by the navigated interior segment `seg` holding throughout
+the open interval. Direct specialization of the green `seg_holds_coupled` (Base.lean:1150) to
+`x := env i`, `t := env j`. Together with `nfEval_pair_arity3_flatten` this certifies that ALL five
+zones of the arity-3 inner existential over a fixed enclosing pair are resolved by the green order
+machinery — the two open exteriors by the navigated `bracketBuild*` chains, the two points and the
+bounded interior by honest arity-3 `nf_eval_nf` residuals coupled through `seg` — with a SINGLE
+witness threaded throughout (no independent per-pair witness) and the anchor set fixed at
+`{env i, env j}` (no arity climb past 3). This is the positive content of the feasibility gate: the
+single order-sensitive step closes green using only the order/zone machinery. -/
+theorem nfEval_pair_arity3_interior {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    {n : Nat} (env : Fin n → M.carrier) (i j : Fin n)
+    (endChar : EndCharCarrier sig k) (q : NormalForm sig k 3)
+    (h_endChar : ∀ y : M.carrier,
+      (endChar q).eval_at M atomMap y ↔
+        nf_eval_nf M k 3 (zoneEnv3 y (env i) (env j)) q) :
+    (seg endChar q).holds M atomMap (env i) (env j) ↔
+      ∀ y : M.carrier, env i < y → y < env j →
+        nf_eval_nf M k 3 (zoneEnv3 y (env i) (env j)) q :=
+  seg_holds_coupled M atomMap endChar q (env i) (env j) h_endChar
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

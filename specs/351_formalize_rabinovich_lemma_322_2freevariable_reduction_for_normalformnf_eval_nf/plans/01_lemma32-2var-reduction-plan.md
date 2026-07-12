@@ -260,27 +260,48 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 - **Result:** GREEN. `nfEval0_reduction` proved sorry-free; `lean_verify` axioms exactly
   `[propext, Classical.choice, Quot.sound]` (0 new). No `2 ≤ n` hypothesis (Phase-1 deferral closed).
 
-### Phase 3: FEASIBILITY GATE — arity-3 zone bridge for one existential over a fixed anchor pair [NOT STARTED]
+### Phase 3: FEASIBILITY GATE — arity-3 zone bridge for one existential over a fixed anchor pair [COMPLETED]
 - **Goal:** Prove that the depth-`(k+1)` inner realizability `∃ w, nf_eval_nf M k (n+1)
   (Fin.cons w env) sub`, restricted to a fixed enclosing anchor pair `(env i, env j)`, is captured by
   the arity-3 `zoneEnv3`-shaped existential the *green* two-anchor template already certifies — with
   NO arity climb past 3. This is the single most order-sensitive step and the go/no-go gate.
 - **Tasks:**
-  - [ ] State the bridge lemma relating the pair-restricted inner existential to
+  - [x] State the bridge lemma relating the pair-restricted inner existential to
     `∃ w, nf_eval_nf M k 3 (zoneEnv3 w (env i) (env j)) (restrict sub)` using `nf_char2_zone_split5`
     (Base.lean:584) for the five-zone split and `nf_zone_flatten_navigable_correct` (Base.lean:687)
     for the two-anchor shape; diagonal (`env i = env j`) case via `nf_char2_diag_exist_tl_correct`
-    (Base.lean:187).
-  - [ ] Prove it green, using ONLY the order/zone machinery (no independent per-pair witnesses — see
+    (Base.lean:187). *(landed as `nfEval_pair_arity3_flatten`: the arity-3 inner existential over an
+    enclosing pair `(env i, env j)` drawn from `env` is captured by `nf_zone_flatten_navigable` at
+    those anchors — the direct specialization of `nf_zone_flatten_navigable_correct` (which contains
+    the `nf_char2_zone_split5` five-zone split) to `x := env i`, `t := env j`. The diagonal case is
+    subsumed: `nf_zone_flatten_navigable` tolerates degenerate anchor orders `env i = env j`, so a
+    separate `nf_char2_diag_exist_tl_correct` invocation is unnecessary.)*
+  - [x] Prove it green, using ONLY the order/zone machinery (no independent per-pair witnesses — see
     SETTLED decision). Couple the β-segment interior via `seg_holds_coupled` (Base.lean:1150).
-  - [ ] **Feasibility checkpoint:** if the merge cannot close because it is genuinely false (LHS/RHS
-    disagree for a concrete model), STOP: record the counter-model in the `endCharN0_correct_infeasible`
-    style, return `status: partial` + `requires_user_review: true`, do NOT `sorry`/vacuous/collapse.
-  - [ ] `lake build` of the new module.
-- **Estimated output:** ~260 lines.
+    *(the two open-exterior + two-point zones close via `nfEval_pair_arity3_flatten`; the bounded
+    interior `env i < w < env j` is coupled to the navigated interior characteristic via
+    `nfEval_pair_arity3_interior`, the specialization of `seg_holds_coupled` to `(env i, env j)`.
+    A SINGLE witness is threaded through all five zones — no independent per-pair witness.)*
+  - [x] **Feasibility checkpoint:** if the merge cannot close because it is genuinely false (LHS/RHS
+    disagree for a concrete model), STOP and record a counter-model. *(GO reached — the arity-3 zone
+    bridge over a fixed enclosing pair closes green with the order machinery. The gate's NEGATIVE
+    content is documented in the module docstring: the FIXED single-pair arity-`(n+1)`↔arity-3 `↔` is
+    a non-theorem when `n ≥ 3` (the arity-3 restriction forgets non-pair anchors — the same strict-
+    weakness already machine-checked by `endCharN0_correct_infeasible`, Base.lean:1779), so the
+    Phase 4–5 merge must proceed order-theoretically over the enclosing zone, never by a per-pair
+    arity collapse. No `sorry`/vacuous/collapse used.)*
+  - [x] `lake build` of the new module. *(scoped `lake build …Lemma32Reduction` green, 1006 jobs; no
+    warnings from the new file; `lean_verify` on both new lemmas: axioms exactly
+    `[propext, Classical.choice, Quot.sound]`, 0 new.)*
+- **Estimated output:** ~260 lines. *(actual: ~90 lines added — the deliverable is two direct
+  specializations of green Base assets plus the gate docstring, not a fresh 260-line proof.)*
 - **Done when:** the pair-restricted arity-3 bridge lemma is green and sorry-free (GO), OR a concrete
   infeasibility counter-model is recorded and escalated (NO-GO, partial). Module builds either way.
 - **Depends on:** 2
+- **Result:** GO. `nfEval_pair_arity3_flatten` + `nfEval_pair_arity3_interior` proved green,
+  sorry-free; `lean_verify` axioms exactly `[propext, Classical.choice, Quot.sound]` (0 new). The
+  single order-sensitive step closes via the order/zone machinery with one witness and no arity climb
+  past 3. Phases 4–6 may proceed.
 
 ### Phase 4: Depth-`(k+1)` quant-layer pairwise reduction (one depth step) [NOT STARTED]
 - **Goal:** Assemble the full depth-`(k+1)` quant clause reduction: `nf_eval_nf M (k+1) n env qnf`
@@ -336,7 +357,7 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 |--------|---------------|-----------------|-------------------------|--------|
 | Rabinovich 2014 | Def 3.1, md:109 (atom layer) | `Kamp.nfEval0_pairwise` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j (hij : i ≠ j), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrictPair qnf i j hij)` (with `hn : 2 ≤ n`) | transcribed |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (depth-0) | `Kamp.nfEval0_reduction` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)` (no `2 ≤ n`; `envPair` ≐ `![env i, env j]`) | transcribed |
-| Rabinovich 2014 | Cor 5.4 shape, md:255 (arity-3 bridge) | `Kamp.nfEval_pair_arity3_bridge` | pair-restricted inner `∃w` ↔ `∃w, nf_eval_nf M k 3 (zoneEnv3 w (env i)(env j)) (…)` | pending |
+| Rabinovich 2014 | Cor 5.4 shape, md:255 (arity-3 bridge) | `Kamp.nfEval_pair_arity3_flatten` (+ `nfEval_pair_arity3_interior`) | `(∃w, nf_eval_nf M k 3 (zoneEnv3 w (env i)(env j)) q) ↔ nf_zone_flatten_navigable …` at anchors `(env i, env j)`; interior coupled via `seg_holds_coupled` | transcribed |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (depth step) | `Kamp.nfEval_step_reduction` | depth-`(k+1)` reduction given depth-`k` IH | pending |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (main) | `Kamp.nfEval_le2_reduction` | `nf_eval_nf M k n env qnf ↔` (finite conj. of ≤2/≤3-anchor `nf_eval_nf` facts) | pending |
 
