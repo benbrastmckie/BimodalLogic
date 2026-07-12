@@ -1031,4 +1031,42 @@ noncomputable def kampPrior_existProviders_zero {sig : MonadicSignature}
   correct := fun n sub M _h_UZ _h_SZ t =>
     nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub M t
 
+/-! ## Task 309 Phase 18 — trichotomy assembly skeleton for the `| 1 =>` arm
+
+The `| 1 =>` arm goal (`sub_nf : NormalForm sig (k+1) 2`) is
+`∃ A, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔ ∃ env : Fin 1, nf_eval_nf M (k+1) 2
+(insertEnv env t) sub_nf`. Phase 15's `kampPrior_site_trichotomy` splits the RHS (at fixed
+`M`/`t`) into the past / diagonal / future disjuncts. This section lands the DUAL move on the
+LHS: given three arm formulas `A_past`/`A_diag`/`A_future` whose `temporal_truth` at `t` matches
+the three disjuncts, their `Formula.or` composition matches the whole site RHS. This is the
+`or_congr` skeleton of the plan's Phase 18 (H8 split "18a"): it reduces the `:361` retirement,
+at each `(M, t)`, to supplying the three arm correctness facts — the past arm from
+`nf_char2_past_formula_correct` (Base:1230, P4), the diagonal from `A_diag_correct` (Base:758),
+the future from `nf_char2_future_formula_correct` (Base:1430, P5), each under its depth-`k`
+quant-endpoint hook. No hook is discharged here (that is the remaining frontier of Phase 18/19);
+no `:361` edit is made; the skeleton is additive and sorry-free. -/
+
+/-- **Site lemma 4 (task 309 Phase 18): the trichotomy `Formula.or` assembly skeleton.** Given
+    arm formulas whose `temporal_truth` at `t` realizes the three disjuncts of
+    `kampPrior_site_trichotomy`, their right-nested `Formula.or` composition realizes the full
+    `| 1 =>` site RHS `∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. Pure
+    `temporal_truth_or` (Translation:64) + `or_congr` against the Phase-15 trichotomy split —
+    the reusable citation point Phase 19 rewrites the arm through once the three arm formulas +
+    correctness are supplied. -/
+theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier)
+    (A_past A_diag A_future : Formula)
+    (h_past : temporal_truth M atomMap t A_past ↔
+      ∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)
+    (h_diag : temporal_truth M atomMap t A_diag ↔
+      nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf)
+    (h_future : temporal_truth M atomMap t A_future ↔
+      ∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    temporal_truth M atomMap t (Formula.or A_past (Formula.or A_diag A_future)) ↔
+      ∃ env : Fin 1 → M.carrier, nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf := by
+  rw [temporal_truth_or, temporal_truth_or, h_past, h_diag, h_future]
+  exact (kampPrior_site_trichotomy M k sub_nf t).symm
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
