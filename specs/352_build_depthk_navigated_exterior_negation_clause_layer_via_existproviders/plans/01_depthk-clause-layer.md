@@ -362,7 +362,7 @@ strictly sequential.
   check recorded; frozen diffs EMPTY; commit.
 - **Files:** `ExteriorFiberK.lean` (additive tail only).
 
-### Phase 3: Future-side clause layer (`ExteriorNegationK.lean`) [NOT STARTED]
+### Phase 3: Future-side clause layer (`ExteriorNegationK.lean`) [IN PROGRESS]
 
 - **Goal:** The depth-k Future clause layer over `P`, faithful to Cor 5.4 / Lemma 5.3 / Lemma
   7.8 per the mapping table, template = ExteriorNegation.lean's non-spike core (:875-1735).
@@ -370,17 +370,31 @@ strictly sequential.
   of `kvE2_futPos`/`kvE2_extNegFut(_sound/_complete)`; the R2 spike section (:221-873) is
   out of scope unless on that cone.
 - **Sub-phase 3.1 — definitions + navigation lemmas** (~200-350 lines):
-  - [ ] Depth-k analogs of the zone/admissibility layer on the cone: `kvE_futPossibleZones`,
+  - [x] Depth-k analogs of the zone/admissibility layer on the cone: `kvE_futPossibleZones`,
         `kvE_futZoneClass`, `kvE_futAdmissible`, `kvE_futFreshProfile`,
         `kvE_futRealizer_admissible` (templates :902/:915/:983/:996/:1010) — navigation reads
-        via Phase-2 buckets + landed core only (G6).
+        via Phase-2 buckets + landed core only (G6). *(green, commit c738b9236; deviation —
+        admissibility conjunct 4 "self-zone carves exactly the fresh profile" reformulated as
+        self-zone profile UNIQUENESS at depth k, because `σ.1` is the depth-0 atom layer so the
+        endpoint profile is fiber-borne `nfk_projFresh s : NormalForm sig k 1`, not a `σ.1`
+        marginal — see Q3 note below and phase-3-1 handoff)*
   - [ ] Clause-form defs: `kvE_futGapD`, `kvE_futRayD`, `kvE_futRayForm`, `kvE_futEnd`,
         `kvE_futChain`, `kvE_futPos`, `kvE_extNegFut := (kvE_futPos ...).neg` (templates
         :1072/:1079/:1088/:1098/:1108/:1124/:1136), all parameterized
         `(atomMap) (h_surj) (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k+1) 4)`,
         content positions rendered via `kvE_fiberPosOn` (never marginal χ — postmortem rule 3).
-  - [ ] Record the propagated hypothesis shape (Q3): whether `_sound`/`_complete` statements
-        need `h_UZ`/`h_SZ` beyond `P` (expected: yes, mirroring `P.correct`).
+  - [x] Record the propagated hypothesis shape (Q3): whether `_sound`/`_complete` statements
+        need `h_UZ`/`h_SZ` beyond `P` (expected: yes, mirroring `P.correct`). *(partial — Q3
+        finding for the zone/admissibility layer: `kvE_futRealizer_admissible` needs NO `h_UZ`/
+        `h_SZ` (order-bits only, like frozen `kvE2_futRealizer_admissible`); `kvE_futFreshProfile`
+        needs only the atom-layer realization `hatomσ`. `h_UZ`/`h_SZ` will enter at the CONTENT
+        layer (3.2/3.3) via `kvE_fiberPosOn_correct` / `P.correct`, as expected. Also: at depth k
+        `nf0_assemble` is unavailable (postmortem rule 1), so admissibility reads the fiber via
+        `kvE_subBit`; the endpoint fresh profile is fiber-borne (`nfk_projFresh s`), so the
+        self-zone conjunct became a uniqueness pin — see phase-3-1 handoff.)*
+  - [ ] Clause-form defs (`kvE_futGapD`/`RayD`/`RayForm`/`End`/`Chain`/`Pos`/`extNegFut`) —
+        deferred to a follow-up 3.1 dispatch (or folded into 3.2); NOT in the zone/admissibility
+        sub-dispatch scope.
 - **Sub-phase 3.2 — `kvE_extNegFut_sound`** (~200-300 lines):
   - [ ] Chain-destruct helper (template: ChainDestruct region :1435) by intra-rung list-length
         induction (Cor 5.4's y1/y2 case split; E's sharpening — no depth recursion).
