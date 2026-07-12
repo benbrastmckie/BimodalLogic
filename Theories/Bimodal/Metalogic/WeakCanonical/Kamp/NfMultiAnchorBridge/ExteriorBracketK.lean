@@ -290,6 +290,84 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature}
       rw [← hχ]
       exact nf_eval_projFreshD M _ u σ' hu
 
+/-! ## Sub-side fold reads (Phase-1 bridge consumption) -/
+
+/-- **Fiber-existential zone/profile read of a depth-`(k+1)` sub's quant layer** (full
+    arity, fiber-split — G1): whether σ prescribes SOME depth-`k` arity-5 sub on its own
+    atom fiber, in zone-4 spec `zs4`, with fresh depth-`k` projection `χ`. This is the
+    depth-`k` replacement for the k=2 equational read `σ.2 (nf0_assemble zs4 χ σ.1)`
+    (ExteriorBracket.lean:128-131): the depth-0 assembly is lossless ONLY at depth 0
+    (NfEFold.lean:549-561), so at depth `k` the read is existential over the full-arity
+    fiber — never through an assembled arity-1 re-encoding. -/
+noncomputable def kvE_subBit {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4)
+    (χ : NormalForm sig k 1) : Bool :=
+  (Finset.univ.toList (α := NormalForm sig k 5)).any fun s =>
+    decide (nfk_dropFresh s = σ.1) && decide (nfk_zoneSpec s = zs4) &&
+      decide (nfk_projFresh s = χ) && σ.2 s
+
+/-- **Sub-side fold-read honesty** (the Phase-1 bridge `nf_eval_nfk_iff_efold` consumed at
+    the sub level): under a realized σ, the fiber-existential read `kvE_subBit` IS the
+    depth-`k` zone fact of σ's own environment — the depth-`k` analog of the
+    `hquantσ`-mediated reads in `kvE2_futMarked_of_realizer` (ExteriorBracket.lean:294+),
+    with `nf_eval_unique M k` supplying determinacy on both channels. -/
+theorem kvE_subBit_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {k : Nat}
+    (env : Fin 4 → M.carrier) (σ : NormalForm sig (k + 1) 4)
+    (hσ : nf_eval_nf M (k + 1) 4 env σ)
+    (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
+    kvE_subBit σ zs4 χ = true ↔
+      ∃ v : M.carrier,
+        zoneHolds M env zs4 v ∧ nf_eval_nf M k 1 (fun _ => v) χ := by
+  obtain ⟨⟨hA, hfib⟩, -⟩ := (nf_eval_nfk_iff_efold M env σ).mp hσ
+  constructor
+  · intro hbit
+    obtain ⟨s, -, hread⟩ := List.any_eq_true.mp hbit
+    rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hread
+    obtain ⟨⟨⟨hd, hz⟩, hp⟩, hsbit⟩ := hread
+    obtain ⟨v, hv⟩ := (hfib s (of_decide_eq_true hd)).mpr hsbit
+    have hatom5 : ∀ a, atom_eval M (Fin.cons v env) a ↔ s.atom_assgn a = true :=
+      nf_eval_nf_atom_layer M (Fin.cons v env) s hv
+    have hz' : nf0_zoneSpec s.atom_assgn = zs4 := of_decide_eq_true hz
+    refine ⟨v, fun i => ?_, ?_⟩
+    · -- zone read-back from the realizer's atom layer.
+      have h1 := hatom5 (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+      have h2 := hatom5 (.order i.succ 0 (Fin.succ_ne_zero i))
+      simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1 h2
+      have hzi := congrFun hz' i
+      have e1 : s.atom_assgn (.order 0 i.succ (Fin.succ_ne_zero i).symm) = (zs4 i).1 :=
+        congrArg Prod.fst hzi
+      have e2 : s.atom_assgn (.order i.succ 0 (Fin.succ_ne_zero i)) = (zs4 i).2 :=
+        congrArg Prod.snd hzi
+      exact ⟨h1.trans (by rw [e1]), h2.trans (by rw [e2])⟩
+    · rw [← of_decide_eq_true hp]
+      exact nf_eval_projFresh M env v s hv
+  · rintro ⟨v, hzone, hprof⟩
+    set s : NormalForm sig k 5 := nf_characteristic M k 5 (Fin.cons v env) with hs
+    have hsat := nf_characteristic_satisfies M k 5 (Fin.cons v env)
+    have hatom5 : ∀ a, atom_eval M (Fin.cons v env) a ↔ s.atom_assgn a = true :=
+      nf_eval_nf_atom_layer M (Fin.cons v env) s (hs ▸ hsat)
+    have hd : nfk_dropFresh s = σ.1 := by
+      have hfac := (nf_eval_nf0_cons_factor M env v s.atom_assgn).mp
+        (nf_eval_nf_atom_layer M (Fin.cons v env) s (hs ▸ hsat))
+      exact nf_eval_unique M 0 4 env _ σ.1 hfac.2.2 hA
+    refine List.any_eq_true.mpr ⟨s, Finset.mem_toList.mpr (Finset.mem_univ s), ?_⟩
+    rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+    refine ⟨⟨⟨decide_eq_true hd, decide_eq_true ?_⟩, decide_eq_true ?_⟩, ?_⟩
+    · -- zone channel: read the couplings straight from the atom layer.
+      funext i
+      have hzi := hzone i
+      have h1 := hatom5 (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+      have h2 := hatom5 (.order i.succ 0 (Fin.succ_ne_zero i))
+      show (s.atom_assgn (.order 0 i.succ (Fin.succ_ne_zero i).symm),
+            s.atom_assgn (.order i.succ 0 (Fin.succ_ne_zero i))) = zs4 i
+      exact Prod.ext (Bool.eq_iff_iff.mpr (h1.symm.trans hzi.1))
+        (Bool.eq_iff_iff.mpr (h2.symm.trans hzi.2))
+    · -- point-type channel: determinacy at depth k.
+      exact nf_eval_unique M k 1 (fun _ => v) _ χ
+        (nf_eval_projFresh M env v s (hs ▸ hsat)) hprof
+    · exact (hfib s hd).mp ⟨v, hs ▸ hsat⟩
+
 /-! ## k=2-rung recovery (the `k = 0` instances agree with the frozen originals) -/
 
 /-- At the k=2 rung (`k = 0` parameter) the depth-`k` fresh shadow is definitionally the
