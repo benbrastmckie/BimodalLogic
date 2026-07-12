@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAArityFirewall
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.VecEAArityFirewall
 import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationClosure
 
 /-!

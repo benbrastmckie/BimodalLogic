@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.VecEA_m
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.VecEA_m
 
 /-!
 # Lemma 3.2(2): The Arity Firewall

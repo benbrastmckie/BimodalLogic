@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.NegationIndep
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.NegationIndep
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAClosure
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEATranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.PriorINF

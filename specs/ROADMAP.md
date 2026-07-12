@@ -1428,10 +1428,15 @@ characterization.
 
 Only ONE sorry blocks `completeness_discrete` (as of task 301 cleanup):
 
-1. **Task 303** (NOT STARTED, CRITICAL): k>0 depth induction. Close
-   `existPart_succ_n1_bypass` k>0 case (KampBypass.lean) via Rabinovich
-   Section 5 Lemma 5.1 interval-splitting induction. The k=0 infrastructure
-   is complete and sorry-free (~4400 lines, task 273). Estimated: 200-400 lines.
+1. **Sole obligation** (CRITICAL): make `nf_nvar_exist_all_depths`
+   (KampPrior.lean:212) sorry-free — discharge the n=1 arm (`:361`, the
+   depth-`k` arity-2 existential converter for Prior structures) and eliminate
+   the n+2 arm (`:364`, e.g. by restricting the domain to n ≤ 1 since only
+   n=0,1 are ever called). The named route consumes task 348's
+   `bracketEndChar_kvE2Ext_correct_two_prior_frag` (task 309 Phase 14).
+   Task 303's old terminus `existPart_succ_n1_bypass` (KampBypass.lean) is
+   historical/mis-scoped — that file was Boneyard'd (task 305 P0; see §31 and
+   REVIEW_codebase-restructure/01_discrete-completeness-finish-map.md).
 
 2. **Task 95**: `#print axioms` audit on completeness theorem. After task 303.
 

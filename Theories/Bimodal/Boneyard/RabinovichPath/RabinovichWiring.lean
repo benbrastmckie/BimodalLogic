@@ -4,7 +4,7 @@
 
 #exit
 
-import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichTranslation
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.PriorDefs

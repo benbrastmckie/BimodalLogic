@@ -5,7 +5,7 @@
 #exit
 
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
-import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichTranslation
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
 import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichNegation
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfComposition
 import Bimodal.Metalogic.WeakCanonical.Kamp.SeparationBridge

@@ -5,7 +5,7 @@
 #exit
 
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfCharFormula
-import Bimodal.Metalogic.WeakCanonical.Kamp.RabinovichTranslation
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.RabinovichTranslation
 
 /-!
 # Rabinovich Negation Closure (Proposition 4.2)

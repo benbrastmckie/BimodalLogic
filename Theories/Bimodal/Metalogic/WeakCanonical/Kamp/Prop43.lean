@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.VecEA_m
-import Bimodal.Metalogic.WeakCanonical.Kamp.EAVecNegationClosure
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.VecEA_m
+import Bimodal.Metalogic.WeakCanonical.Kamp.Boneyard.EAVecNegationClosure
 import Bimodal.Metalogic.WeakCanonical.Separation.KampTranslation
 
 /-!

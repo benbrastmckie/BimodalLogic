@@ -29,7 +29,7 @@ temporal analogs (G phi -> phi, H phi -> phi) are NOT valid under irreflexive se
 | **Soundness (discrete)** | `soundness_discrete` | SORRY-FREE |
 | **Completeness** | `completeness` | SORRY (chronicle construction) |
 | **Completeness (dense)** | `completeness_dense` | SORRY (chronicle + canonical model open question) |
-| **Completeness (discrete)** | `completeness_discrete` | SORRY (chronicle + canonical model open question) |
+| **Completeness (discrete)** | `completeness_discrete` | SORRY (`nf_nvar_exist_all_depths`, KampPrior.lean:361/364 — Kamp/Prior arity converter, not chronicle) |
 | **Decidability** | `decide` | SORRY-FREE |
 
 ## Completeness Architecture
