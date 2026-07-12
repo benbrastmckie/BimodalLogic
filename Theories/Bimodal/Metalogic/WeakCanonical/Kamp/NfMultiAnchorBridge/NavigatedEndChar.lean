@@ -101,4 +101,47 @@ theorem nfEval3_reduction_succ_shape {sig : MonadicSignature} (M : OrderedMonadi
             (∃ w : M.carrier, nfEvalRHS M k 4 (Fin.cons w env) sub) ↔ (qnf.2 sub = true))) :=
   nfEvalRHS_succ M env qnf
 
+/-! ## Phase 2 (task 349): depth-0 navigated base `endCharNav0_correct` (arity-3, conditional)
+
+The `k = 0` base of the recursion, in the **reduction-consuming, conditional/navigable** shape
+(NEVER the refuted unconditional world-local form — `endCharN0_correct_infeasible`, Base.lean:1779).
+It connects the green base `endChar0_correct` (Base.lean:1056, which carries the enclosing-anchor
+residual `h_res`) to the reduced `nfEvalRHS M 0 3` shape by composing with the arity-3 reduction
+`nfEval3_reduction` at `k = 0`. This is the exact form Phase 4's `k`-induction base consumes.
+
+Under the enclosing-anchor coupling `h_res` (the `{x, t}` predicate/order residual, pinned by the
+bracket witnesses — G4, anchors `{x, t} ⊆ {x, t}`, ≤2, `y` a bracket witness never a third free
+anchor), the navigated base's `.eval_at y` is equivalent to the `≤2`-anchor reduced RHS. Every
+emitted `nf_eval_nf` atom fact on that RHS has anchor arity exactly 2
+(`nfEval3_reduction_zero_shape`), so the base never climbs past anchor arity 3. -/
+theorem endCharNav0_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 0 3) (y x t : M.carrier)
+    (h_res : ∀ atom : AtomKind sig 3, (∀ p : sig.preds, atom ≠ AtomKind.pred p 0) →
+      (atom_eval M (zoneEnv3 y x t) atom ↔ (qnf atom = true))) :
+    (endChar0 atomMap h_surj qnf).eval_at M atomMap y ↔
+      nfEvalRHS M 0 3 (zoneEnv3 y x t) qnf :=
+  (endChar0_correct M atomMap h_surj qnf y x t h_res).trans
+    (nfEval3_reduction M 0 (zoneEnv3 y x t) qnf)
+
+/-- **Arity-2 manifest form of `endCharNav0_correct`.** Rewriting the reduced RHS through the
+depth-0 shape `nfEval3_reduction_zero_shape` exposes the base as a conjunction, over anchor pairs
+`(i, j) : Fin 3`, of honest **arity-2** `nf_eval_nf` atom facts on the anchor+witness environment
+`envPair M (zoneEnv3 y x t) i j`. Confirms every atom piece is arity ≤2 (no arity climb) while
+still carrying the enclosing-anchor coupling `h_res`. -/
+theorem endCharNav0_correct_pairwise {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 0 3) (y x t : M.carrier)
+    (h_res : ∀ atom : AtomKind sig 3, (∀ p : sig.preds, atom ≠ AtomKind.pred p 0) →
+      (atom_eval M (zoneEnv3 y x t) atom ↔ (qnf atom = true))) :
+    (endChar0 atomMap h_surj qnf).eval_at M atomMap y ↔
+      ∀ (i j : Fin 3),
+        nf_eval_nf M 0 2 (envPair M (zoneEnv3 y x t) i j) (nfRestrict0 qnf i j) := by
+  rw [endCharNav0_correct M atomMap h_surj qnf y x t h_res,
+      nfEval3_reduction_zero_shape M (zoneEnv3 y x t) qnf]
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

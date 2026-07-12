@@ -1,7 +1,7 @@
 # Implementation Plan: Task #349 (v4 — reduction-navigated arity-3 endChar)
 
 - **Task**: 349 - Build the recursive navigated arity-3 endpoint primitive `endChar` + `endChar_correct`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: Task 351 (LANDED — `nfEval_le2_reduction` family, green, sorry-free, 0-new-axiom)
 - **Research Inputs**:
@@ -206,7 +206,7 @@ MAY run in parallel; each is a single committable green unit.
 - **Depends on:** none
 - **Files to modify:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedEndChar.lean` (new)
 
-### Phase 2: Depth-0 navigated base `endCharNav0_correct` (arity-3, conditional) [NOT STARTED]
+### Phase 2: Depth-0 navigated base `endCharNav0_correct` (arity-3, conditional) [COMPLETED]
 
 - **Goal:** Establish the `k = 0` base of the recursion in the reduction-consuming, conditional/navigable
   form: `(endChar0 qnf).eval_at y ↔ nf_eval_nf M 0 3 (zoneEnv3 y x t) qnf` under the enclosing-anchor
@@ -218,12 +218,15 @@ MAY run in parallel; each is a single committable green unit.
   base against `nfEvalRHS M 0 3`. BUILD only the wrapper lemma connecting `endChar0_correct` to the
   reduced `nfEvalRHS M 0 3` shape (the form Phase 4's k-induction base consumes).
 - **Tasks:**
-  - [ ] Prove `endCharNav0_correct` (base case) in the conditional/navigable target shape pinned in
+  - [x] Prove `endCharNav0_correct` (base case) in the conditional/navigable target shape pinned in
         Phase 1, deriving it from the green `endChar0_correct` + `nfEval3_reduction` at `k = 0`.
-  - [ ] Confirm every atom piece is arity ≤2 (the anchor/witness atom facts from `nfEvalRHS M 0 3`); no
-        arity climb; no unconditional world-local claim.
-  - [ ] Route audit: G1 (honest atom layer, no arity-1 collapse), G4 (free anchors ≤2), no forbidden
-        constructs; grep clean.
+        *(term-mode `.trans` composition; carries anchor residual `h_res`; RHS = `nfEvalRHS M 0 3`.)*
+  - [x] Confirm every atom piece is arity ≤2 (the anchor/witness atom facts from `nfEvalRHS M 0 3`); no
+        arity climb; no unconditional world-local claim. *(added `endCharNav0_correct_pairwise` making
+        the arity-2 `nf_eval_nf M 0 2` pieces manifest via `nfEval3_reduction_zero_shape`.)*
+  - [x] Route audit: G1 (honest atom layer, no arity-1 collapse), G4 (free anchors ≤2), no forbidden
+        constructs; grep clean. *(grep clean: only `NavResidual` mention is Phase-1 docstring naming it
+        forbidden; no simp/omega/aesop; no `sorry`.)*
 - **Hard bar:** sorry-free; `lean_verify endCharNav0_correct` = exactly
   `[propext, Classical.choice, Quot.sound]`; new-module build GREEN; statement is conditional/navigable
   (carries the anchor coupling — NOT unconditional).
