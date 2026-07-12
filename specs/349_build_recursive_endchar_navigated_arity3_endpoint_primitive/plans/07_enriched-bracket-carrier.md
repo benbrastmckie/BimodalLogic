@@ -3,7 +3,7 @@
 - **Task**: 349 - Build the recursive navigated endpoint primitive as
   `endInterval : (k) → BracketEndCharCarrierV sig k` + `endInterval_correct` on the
   **enriched-segment bracket carrier** (`bracketEndChar_kvE2Ext` family, carrier 3)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16 hours
 - **Dependencies**: Task 351 (LANDED — `nfEval_le2_reduction` family, green, sorry-free)
 - **Research Inputs**:
@@ -351,7 +351,7 @@ orchestrator MAY dispatch it alongside Phase 2 under a territory contract
   `navPieceForm`, `h_res`, `nfk_projFresh`, `kv_body`, arity-4 collapse, per-pair `∀ij∃w`.
 - Commit per green sub-step (`task 349 phase {P}.{O}: …`).
 
-### Phase 1: General-`k` fold bridge `nf_eval_nfk_iff_efold` (construction gate) [NOT STARTED]
+### Phase 1: General-`k` fold bridge `nf_eval_nfk_iff_efold` (construction gate) [COMPLETED]
 
 - **Goal:** Build the general-`k` inside-out whole-evaluation fold bridge — the k-analog of
   the green depth-1 bridge `nf_eval_nf1_iff_efold` (NfEFold:490) — the load-bearing new
@@ -376,16 +376,27 @@ orchestrator MAY dispatch it alongside Phase 2 under a territory contract
   `nf0_*` plumbing as the transcription template. BUILD only the `nfk_*` plumbing + the
   bridge.
 - **Tasks:**
-  - [ ] Define `efold_of_nfk` / `nfk_dropFresh` / `nfk_zoneSpec` (depth-`k` index plumbing),
+  - [x] Define `efold_of_nfk` / `nfk_dropFresh` / `nfk_zoneSpec` (depth-`k` index plumbing),
         each elaborating green as it lands (commit per green sub-step).
-  - [ ] Prove `nf_eval_nfk_iff_efold`: forward by inside-out iteration of
-        `nf_quant_layer_fold_iff`; off-fiber by `nf_eval_unique M k n env`; backward by the
-        fold-engine reassembly.
-  - [ ] Sanity instance: derive (or `example`-check) the k=1 case against
-        `nf_eval_nf1_iff_efold` — the general bridge must not be weaker than the green
-        depth-1 lemma.
-  - [ ] Route audit: no `nfk_projFresh` in any statement; grep FORBIDDEN list clean; scoped
-        build GREEN; `lean_verify nf_eval_nfk_iff_efold` = `[propext, Classical.choice, Quot.sound]`.
+        *(deviation: altered — `nfk_dropFresh`/`nfk_zoneSpec` landed (read the atom layer via
+        `nf0_dropFresh`/`nf0_zoneSpec`, arity-preserving, NOT `nfk_projFresh`); `efold_of_nfk`
+        deliberately NOT built (sanctioned signature adjustment). The literal arity-1 `EAtomDom`
+        re-encoding `efold_of_nfk` is mathematically FALSE at depth k≥1 — a depth-≥1 sub couples
+        the witness jointly to env, the exact lossy collapse F2/task-327-NO-GO killed. The faithful
+        fold characterizes `qnf` in place at FULL arity via the new `nf_eval_efold_k` Prop; no
+        re-encoding transport is needed. Also added helper `nf_eval_atom_layer`.)*
+  - [x] Prove `nf_eval_nfk_iff_efold`: forward splits the full quant layer into compatible
+        atom-fiber + off-fiber; off-fiber by `nf_eval_unique M 0 n env` (on atom layers, via
+        `nf_eval_nf0_cons_factor`); backward by fiber reassembly.
+        *(deviation: altered — the off-fiber determinacy is at depth 0 on atom layers, not
+        `nf_eval_unique M k n`; `nf_quant_layer_fold_iff` is NOT iterated because the faithful
+        full-arity bridge needs no arity reduction — it is used only in the k=1 recovery below.)*
+  - [x] Sanity instance: `nf_eval_nfk_iff_efold_k1_recovers` — at k=0 the general bridge is
+        interderivable with `nf_eval_nf1_iff_efold` (both characterize `nf_eval_nf M 1 n env qnf`);
+        the general bridge is not weaker than the green depth-1 lemma. (green, axiom-clean)
+  - [x] Route audit: no `nfk_projFresh` in any statement (named only in explanatory prose);
+        grep FORBIDDEN list clean; scoped build GREEN; `lean_verify nf_eval_nfk_iff_efold` =
+        `[propext, Classical.choice, Quot.sound]` (and the k=1 recovery likewise).
 - **Bounded-unit stop condition:** the bridge is green + sorry-free, OR a specific plumbing
   decl/goal cannot close — then `[BLOCKED]` + exact `lean_goal` + `/spawn 349`. No open-ended
   re-attempts past one dispatch; no carrier reopening (SETTLED).
