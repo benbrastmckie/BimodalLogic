@@ -522,7 +522,16 @@ sorry itself. Rationale recorded in-file in the Phase-16 section comment.)*
 - **Guards enforced:** G1-G6, A1/A2, N1-N5, V9-1..V9-5.
 - **Commit:** `task 309 phase 16: ExistProviders instantiation shim at the KampPrior :361 site`
 
-### Phase 17: Provider-obligation discharge — hrealI / hrealB / hexcl [NOT STARTED]
+### Phase 17: Provider-obligation discharge — hrealI / hrealB / hexcl [PARTIAL]
+
+**BLOCKER / SCOPE NOTE (2026-07-12, sess_1783816155_02a5b9_309 — attempted directly, no code landed; tree kept clean+green).**
+- **What was attempted**: The three obligations were stated (probe skeletons at exactly the gate binder shapes — verbatim from `kampPrior_site_rung2_gate_match`, KampPrior:761-798) and their goal states probed with lean-lsp. Statements type-check cleanly; the gate-wiring consumer `kampPrior_site_rung2_gate_match` is already in place (Phase 15) to consume them.
+- **Concrete goal captured (`hexcl`, after full intro)**: hypotheses `{pivot kvE2_sepPtW at w, σ : NormalForm sig 1 4, hneg : qnf.2 σ = false, x1 in closed cone x ≤ x1 ≤ t, hnf : σ realized at (x1,w,x,t)}`, goal `⊢ False`. There is NO "qnf realized" hypothesis and NO realized-positive-at-x1; the exclusion must come from the pivot's owner-literal content + qnf structure via the forward negation stack — it is NOT a one-step consequence.
+- **Why not landed this cycle**: Each obligation is genuine multi-lemma frontier proof engineering (plan estimate: 200-450 lines for Phase 17 alone):
+  - `hexcl` (cone-restricted negative exclusion) — design-confirmed "dischargeable now" (OuterGate:246/:258) but requires assembling the forward negation stack: `nf_eval_unique` (NormalForm:245, simple/available), `neg_2var_vec_ea`/`neg_vecEA2` (EANegationClosure:646/:720, Prop 4.2), `neg_orderedPointsExist_is_vbracket` (EANegation:347), `prior_hasAttainedINF` (PriorINF:224), + pivot owner-literals `kvE2_sepPtW_owner_lit` (SW:10563).
+  - `hrealI`/`hrealB` (interior/boundary realization) — Cor 5.4 ⇐ bounded-interior-witness reconstruction from provider completeness (`P.correct` via the Phase-16 shim bridges). CRUX: the pivot is a point-TYPE at w (no existential over a separate point), so x1 must be produced from provider completeness, replaying the extraction idiom in `kvE2_sepGateAtPin_fragL/R` (SW:10605/11632) using only the pivot (those producers instead consume the full `kvE2_sepBody.holds`).
+- **Not a hard mathematical wall**: the design (335/348 handoffs, OuterGate docs) confirms all three are dischargeable in-task; this is a budget/scope matter — the phase is a large frontier effort exceeding a single continuation's context. Guards honored throughout: NO sorry/vacuous landed, frozen provider files byte-unchanged (V9-1), no `hexclExt` reference (V9-2), axioms unchanged.
+- **Routing**: needs a dedicated fresh-context dispatch per obligation (start with `hexcl` via the named negation-stack lemmas, then `hrealB`, then `hrealI`). The Phase-15 GO-k1 verdict already routes the k=2 non-fragment residue to the 321-N2 successor and k≥3 arms to a symbolic-k successor; Phase 17 feeds the k=2 fragment slice.
 
 - **Goal:** Discharge the three 309-owned provider obligations of the enriched gate (shapes
   verbatim in the 335 handoff §1; restated at the kvE2Ext signature in the 348 inventory), for
