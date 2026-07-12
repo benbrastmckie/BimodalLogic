@@ -290,4 +290,42 @@ theorem kvE_futAnyBit_correct {sig : MonadicSignature}
       rw [← hχ]
       exact nf_eval_projFreshD M _ u σ' hu
 
+/-! ## k=2-rung recovery (the `k = 0` instances agree with the frozen originals) -/
+
+/-- At the k=2 rung (`k = 0` parameter) the depth-`k` fresh shadow is definitionally the
+    frozen depth-0 fresh-profile read `nf0_projFresh ∘ (·.1)` (the channel
+    `kvE2_futAnyBit` uses, ExteriorNegation.lean:102). -/
+theorem kvE_projFreshD_zero {sig : MonadicSignature} {n : Nat}
+    (σ : NormalForm sig 1 (n + 1)) :
+    kvE_projFreshD σ = nf0_projFresh σ.1 := by
+  funext a
+  match a with
+  | .pred p i =>
+    have hi : i = 0 := Subsingleton.elim i 0
+    subst hi
+    rfl
+  | .order i j h => exact absurd (Subsingleton.elim i j) h
+
+/-- At the k=2 rung the depth-`k` zone-fact bit IS the frozen `kvE2_futAnyBit`
+    (ExteriorNegation.lean:102) — the new channel is not weaker than the green original. -/
+theorem kvE_futAnyBit_zero {sig : MonadicSignature}
+    (qnf : NormalForm sig 2 3) (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
+    kvE_futAnyBit (k := 0) qnf zs χ = kvE2_futAnyBit qnf zs χ := by
+  simp only [kvE_futAnyBit, kvE2_futAnyBit, kvE_sepPos, kvE2_sepPos, kvE_projFreshD_zero]
+
+/-- Sanity (plan Phase-2 task): at the k=2 rung the depth-`k` honesty lemma
+    `kvE_futAnyBit_correct` yields exactly the frozen `kvE2_futAnyBit_correct`
+    (ExteriorNegation.lean:148) — interderivability of the new decl with the original. -/
+example {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (qnf : NormalForm sig 2 3)
+    (hq : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (zs : ZoneSpec 3) (χ : NormalForm sig 0 1) :
+    (∃ v : M.carrier,
+        zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs v ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+      kvE2_futAnyBit qnf zs χ = true := by
+  rw [← kvE_futAnyBit_zero]
+  exact kvE_futAnyBit_correct M w x t (k := 0) qnf hq zs χ
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
