@@ -30,6 +30,7 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
+open Bimodal.Metalogic.WeakCanonical.Separation (formula_conjList formula_conjList_iff)
 
 /-! ## Zone classification at the exterior anchor (depth-independent geometry)
 
@@ -195,5 +196,137 @@ theorem kvE_futRealizer_admissible {sig : MonadicSignature} {k : Nat}
     · rw [Bool.not_eq_true] at hbχ
       rw [hbχ]
       simp
+
+/-! ## Generic model-side `D`-guarded `Until`-chain combinators (Cor 5.4 / Lemma 5.3 `O_n`)
+
+Depth-`k` faithful generalization of the frozen `kvE2_futChain`/`kvE2_futChainBuild`/
+`kvE2_futChainDestruct` (ExteriorNegation.lean:1108/1180/1435). The frozen versions HARDWIRE the
+per-visited-item content formula to `nf_depth0_char_formula` (the depth-0 profile pin, which is
+F2-DEAD at depth `k` — postmortem rule 3). Here the per-item rendering `itemF` and the
+model-side occurrence predicate `Q` are ABSTRACT parameters, with the chain's distinctness
+invariant `huniq` (frozen: `nf_profile_unique`) supplied by the caller. This keeps the Cor 5.4
+`O_n` device faithful to the paper (`hD`/`hend`/min-pick sort are the paper's steps, no
+`simp`/`omega` shortcut — guard G5) while the depth-`k` Future clause layer routes content
+through `kvE_fiberPosOn P` (`itemF := P.existF 4` over fiber elements — G6). -/
+
+/-- Abstract `D`-guarded `Until` chain over a list of items, each rendered by `itemF` and visited
+    in order, terminating in `endF`. The generalization of `kvE2_futChain`
+    (ExteriorNegation.lean:1108): `itemF` replaces the hardwired `nf_depth0_char_formula`. -/
+noncomputable def kvE_futChainG {α : Type}
+    (itemF : α → Formula) (endF D : Formula) : List α → Formula
+  | [] => Formula.untl endF D
+  | a :: rest =>
+      Formula.untl
+        (formula_conjList [itemF a, kvE_futChainG itemF endF D rest])
+        D
+
+/-- **Chain construction** (generic port of `kvE2_futChainBuild`, ExteriorNegation.lean:1180):
+    from a `D`-uniform gap `(t, x1)`, an endpoint `endF` at `x1`, one occurrence in `(s, x1)`
+    for each item in a nodup list `L` (via `Q`), the fact that occurrences force `itemF`
+    (`hQF`), and item distinctness at a shared point (`huniq`), SOME permutation of `L` carries
+    a true `D`-guarded chain at `s`. Min-witness sort via the shared `kvE_minPick`. -/
+theorem kvE_futChainBuildG {sig : MonadicSignature} {α : Type} [DecidableEq α]
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (itemF : α → Formula) (endF D : Formula) (t x1 : M.carrier)
+    (Q : α → M.carrier → Prop)
+    (hQF : ∀ a : α, ∀ r : M.carrier, Q a r → temporal_truth M atomMap r (itemF a))
+    (huniq : ∀ (a a' : α) (r : M.carrier), Q a r → Q a' r → a = a')
+    (hD : ∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r D)
+    (hend : temporal_truth M atomMap x1 endF) :
+    ∀ (n : Nat) (L : List α), L.length ≤ n → L.Nodup →
+      ∀ s : M.carrier, s < x1 → (∀ r : M.carrier, s < r → t < r) →
+      (∀ a ∈ L, ∃ r : M.carrier, s < r ∧ r < x1 ∧ Q a r) →
+      ∃ l : List α, l.Perm L ∧
+        temporal_truth M atomMap s (kvE_futChainG itemF endF D l) := by
+  intro n
+  induction n with
+  | zero =>
+    intro L hlen _ s hsx1 hbound _
+    have hL : L = [] := by
+      cases L with
+      | nil => rfl
+      | cons a l => simp at hlen
+    subst hL
+    refine ⟨[], List.Perm.refl [], ?_⟩
+    simp only [kvE_futChainG]
+    exact ⟨x1, hsx1, hend, fun r hsr hrx1 => hD r (hbound r hsr) hrx1⟩
+  | succ n ih =>
+    intro L hlen hnd s hsx1 hbound hocc
+    by_cases hL : L = []
+    · subst hL
+      refine ⟨[], List.Perm.refl [], ?_⟩
+      simp only [kvE_futChainG]
+      exact ⟨x1, hsx1, hend, fun r hsr hrx1 => hD r (hbound r hsr) hrx1⟩
+    · obtain ⟨a₀, ha₀mem, r₀, ⟨hsr₀, hr₀x1, hQ₀⟩, hmin⟩ :=
+        kvE_minPick M
+          (fun a r => s < r ∧ r < x1 ∧ Q a r) L hL hocc
+      have htr₀ : t < r₀ := hbound r₀ hsr₀
+      have hlen' : (L.erase a₀).length ≤ n := by
+        have h1 := List.length_erase_of_mem ha₀mem
+        have h2 : 0 < L.length := List.length_pos_of_mem ha₀mem
+        omega
+      obtain ⟨l', hl'perm, hl'truth⟩ := ih (L.erase a₀) hlen' (hnd.erase a₀) r₀ hr₀x1
+        (fun r hr => htr₀.trans hr)
+        (fun a ha => by
+          obtain ⟨hne, haL⟩ := (List.Nodup.mem_erase_iff hnd).mp ha
+          obtain ⟨r, ⟨_, hrx1, hQr⟩, hger⟩ := hmin a haL
+          refine ⟨r, lt_of_le_of_ne hger ?_, hrx1, hQr⟩
+          intro he
+          exact hne (huniq a a₀ r hQr (he ▸ hQ₀)))
+      refine ⟨a₀ :: l', (hl'perm.cons a₀).trans (List.perm_cons_erase ha₀mem).symm, ?_⟩
+      simp only [kvE_futChainG]
+      refine ⟨r₀, hsr₀, ?_,
+        fun r hsr hrr₀ => hD r (hbound r hsr) (hrr₀.trans hr₀x1)⟩
+      rw [formula_conjList_iff]
+      intro f hf
+      simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
+      rcases hf with rfl | rfl
+      · exact hQF a₀ r₀ hQ₀
+      · exact hl'truth
+
+/-- **Chain destruction** (generic port of `kvE2_futChainDestruct`,
+    ExteriorNegation.lean:1435): a true `D`-guarded chain at `s` yields an endpoint `x1 > s`
+    satisfying `endF`, a `D`-uniform gap `(s, x1)` (given each visited item's `itemF` pointwise
+    implies `D` via `himp`), and one `itemF`-occurrence in `(s, x1)` for every item in the
+    chain's list. -/
+theorem kvE_futChainDestructG {sig : MonadicSignature} {α : Type}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (itemF : α → Formula) (endF D : Formula) :
+    ∀ (l : List α) (s : M.carrier),
+      (∀ a ∈ l, ∀ r : M.carrier,
+        temporal_truth M atomMap r (itemF a) → temporal_truth M atomMap r D) →
+      temporal_truth M atomMap s (kvE_futChainG itemF endF D l) →
+      ∃ x1 : M.carrier, s < x1 ∧ temporal_truth M atomMap x1 endF ∧
+        (∀ r : M.carrier, s < r → r < x1 → temporal_truth M atomMap r D) ∧
+        (∀ a ∈ l, ∃ r : M.carrier, s < r ∧ r < x1 ∧
+          temporal_truth M atomMap r (itemF a)) := by
+  intro l
+  induction l with
+  | nil =>
+    intro s _ hch
+    simp only [kvE_futChainG] at hch
+    obtain ⟨x1, hsx1, hend, hgap⟩ := hch
+    exact ⟨x1, hsx1, hend, hgap, by simp⟩
+  | cons a rest ih =>
+    intro s himp hch
+    simp only [kvE_futChainG] at hch
+    obtain ⟨r₀, hsr₀, hconj, hgap1⟩ := hch
+    rw [formula_conjList_iff] at hconj
+    have hitemr₀ : temporal_truth M atomMap r₀ (itemF a) := hconj _ (by simp)
+    have hrest : temporal_truth M atomMap r₀ (kvE_futChainG itemF endF D rest) :=
+      hconj _ (by simp)
+    obtain ⟨x1, hr₀x1, hend, hgap2, hocc⟩ :=
+      ih r₀ (fun a' ha' => himp a' (List.mem_cons_of_mem a ha')) hrest
+    refine ⟨x1, hsr₀.trans hr₀x1, hend, ?_, ?_⟩
+    · intro r hsr hrx1
+      rcases lt_trichotomy r r₀ with hlt | heq | hgt
+      · exact hgap1 r hsr hlt
+      · exact heq ▸ himp a List.mem_cons_self r₀ hitemr₀
+      · exact hgap2 r hgt hrx1
+    · intro a' ha'
+      rcases List.mem_cons.mp ha' with rfl | hmem
+      · exact ⟨r₀, hsr₀, hr₀x1, hitemr₀⟩
+      · obtain ⟨r, hr₀r, hrx1, hitem⟩ := hocc a' hmem
+        exact ⟨r, hsr₀.trans hr₀r, hrx1, hitem⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
