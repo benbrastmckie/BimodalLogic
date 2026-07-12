@@ -474,7 +474,30 @@ provider files byte-unchanged).
 - **Guards enforced:** G1-G6 (as amended), A1/A2, N1-N5, V9-1..V9-5.
 - **Commit:** `task 309 phase 15: site/coverage probe — fragment triage + depth-ladder verdict`
 
-### Phase 16: Provider instantiation shim — `ExistProviders` from the recursion at the :361 site [IN PROGRESS]
+### Phase 16: Provider instantiation shim — `ExistProviders` from the recursion at the :361 site [COMPLETED]
+
+**COMPLETION RECORD (2026-07-11, sess_1783796165_b5b482_309, commit 14608ddc7).** Shim landed
+additively at the end of `KampPrior.lean` (185 lines; `:361`/`:364` citations PRESERVED — no
+edit inside the recursion body). Six declarations, each `lean_verify` = exactly
+`[propext, Classical.choice, Quot.sound]`, sorry-free; scoped + full `lake build` green (1724
+jobs); frozen provider files byte-unchanged (V9-1); `nf_nvar_exist_all_depths`'s statement
+untouched (V9-4):
+`kampPrior_existProviders_of_ih` (the generic depth-`j` bundle from the recursion's IH shape —
+the `ih_exist_1` pattern generalized across arities), `_of_ih_correct` (named `P.correct`),
+`_of_ih_existF0_char` (the `existF 0` arity-1 characteristic bridge — the `kvE2_sepPtW` feed
+shape), `_of_ih_exist1` (the `existF 1` `Fin.cons` bridge — the `ih_exist_1` seam),
+`kampPrior_existProviders_one_of_ih` (the depth-1 bundle — THE gate parameter `P`, consumed at
+the k=2 arm per the Phase-15 corrected indexing), `kampPrior_existProviders_zero` (concrete
+GREEN depth-0 instantiation from the sorry-free Phase-2 converter, `h_UZ`/`h_SZ` dropped).
+*(deviation: altered — converters threaded as the `ih` HYPOTHESIS (the pre-sanctioned 13.1
+surgery pattern named in this phase's Goal) rather than calling
+`nf_nvar_exist_all_depths` by name at top level: a by-name reference inherits `sorryAx` from
+the open `:361`/`:364` arms, violating this phase's own axiom acceptance bar, and an in-arm
+edit now would shift the `:361` citation the Phase-15 verdict + handoffs are keyed to. The
+site instantiation `kampPrior_existProviders_of_ih atomMap j (fun n sub =>
+nf_nvar_exist_all_depths atomMap h_surj j n sub)` type-checks at the `| k+1 =>` body for every
+structurally available `j` and lands WITH the Phase-18 arm rewrite — the edit that retires the
+sorry itself. Rationale recorded in-file in the Phase-16 section comment.)*
 
 - **Goal:** Build `P : ExistProviders sig atomMap 1` (and, if F-ii = GO-full, the general
   `ExistProviders sig atomMap k` family) at the KampPrior `| 1 =>` site from the recursive calls

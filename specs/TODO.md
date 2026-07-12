@@ -108,7 +108,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-309 [PLANNED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [IMPLEMENTING] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -263,13 +263,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348
 - **Plan**:
   - [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
   - [309_offdiag_two_anchor_fi_chain/plans/08_offdiag-fi-chain-v8.md]
+  - [309_offdiag_two_anchor_fi_chain/plans/09_offdiag-fi-chain-v9.md]
   - [309_offdiag_two_anchor_fi_chain/plans/09_offdiag-fi-chain-v9.md]
 - **Research**: [309_offdiag_two_anchor_fi_chain/reports/07_unblock-assessment-post-333.md]
 
