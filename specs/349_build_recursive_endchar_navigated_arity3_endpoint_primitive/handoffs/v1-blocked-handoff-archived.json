@@ -1,0 +1,28 @@
+{
+  "task": 349,
+  "stage": "implement",
+  "status": "blocked",
+  "plan_path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/01_recursive-endchar-primitive.md",
+  "phases_completed": 1,
+  "phases_total": 5,
+  "blockers": [
+    {
+      "phase": 2,
+      "id": "arity4-to-arity3-collapse-impossible",
+      "summary": "The recursion step needs innerConv : NormalForm sig k 4 -> Formula built from the frozen arity-3 carrier EndCharCarrier sig k = NormalForm sig k 3 -> TemporalPred, which requires a truth-preserving NormalForm sig k 4 -> NormalForm sig k 3 collapse. No such collapse exists in the tree and none can exist faithfully (an arity-3 characteristic cannot encode a 4-position env's predicate+order structure). nf_char3_deeper_split, the only asset touching the arity-4 layer, is FORBIDDEN and only splits (never collapses).",
+      "evidence": [
+        "grep sweep of Theories/Bimodal/Metalogic/WeakCanonical/: no NormalForm _ 4 -> _ 3 projection; every nf_eval_nf M k 4 stays arity 4",
+        "Lean probe endCharStep_probe (reverted): nf_char3_endpoint_tl forces innerConv to feed rec, requiring NormalForm sig k 4 -> NormalForm sig k 3; error 'Unknown identifier sub_arity4_to_3_PROBE' at Base.lean:1512:14",
+        "arity-3 brick nf_zone_flatten_navigable_brick (Base.lean:813) consumes only arity-3 existentials; inapplicable to the arity-4 obligation"
+      ],
+      "unblock_options": [
+        "Widen EndCharCarrier to arity-4 (FROZEN by task - needs revision)",
+        "Admit nf_char3_deeper_split (FORBIDDEN by task)",
+        "Re-scope endChar_correct to hook-parametric (carry arity-4 innerConv + correctness as residual hypotheses, like nf_char3_endpoint_tl_correct's h_inner) - green-achievable but changes deliverable contract; recommend /revise 349"
+      ]
+    }
+  ],
+  "continuation_context": "Phase 1 delivered nf_eval_nf_step_unfold (Base.lean ~line 1483, Iff.rfl, axioms exactly [propext, Classical.choice, Quot.sound], sorry-free, committed). Scoped lake build of the Base module GREEN. No frozen provider files or KampPrior.lean touched; no new axioms. Phase 2 structurally impossible under the frozen arity-3 EndCharCarrier with nf_char3_deeper_split forbidden - see plan blocker entry and handoffs/phase-2-handoff-20260712T015821Z.md. Successor must NOT retry the collapse; escalate the carrier/contract decision (recommended: /revise 349 adopting hook-parametric Option 3, or /spawn 349 for an arity-4 carrier prerequisite).",
+  "next_action": "revise_or_spawn",
+  "summary": "Task 349 partial: Phase 1 of 5 landed green (nf_eval_nf_step_unfold, sorry-free, axiom-clean, committed). Phase 2 (arity-4 -> arity-3 brick-witness-collapse) BLOCKED - structurally impossible with the frozen arity-3 EndCharCarrier and nf_char3_deeper_split forbidden. Recursive endChar/endChar_correct NOT built; no sorry or vacuous placeholder landed, per the escalation rule. Requires plan/task-contract revision."
+}

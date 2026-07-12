@@ -1496,4 +1496,140 @@ theorem nf_eval_nf_step_unfold {sig : MonadicSignature} {k : Nat}
           (qnf.2 sub = true)) :=
   Iff.rfl
 
+/-! ## Phase 2 (task 349): arity-general motive `EndCharMotive`, navigational residual
+`NavResidual`, and the frozen `endCharRec` / `endCharRec_correct` / `endChar` signatures
+
+This phase **freezes types** for the arity-general recursion (report 01 §3, §5.5). It lands two
+real, typechecking, sorry-free objects — the Π-motive `EndCharMotive` and the residual predicate
+`NavResidual` — and captures the `endCharRec` / `endCharRec_correct` / `endChar` signatures in the
+docstrings below, because their *bodies* depend on the still-unbuilt Phase 3-5 helpers
+(`endCharN0`, `nf_endpoint_tl_gen`, `navBrickForm`, `atomPartN`) and MUST NOT be stubbed with
+`sorry` or a vacuous placeholder (plan Phase-2 escape clause, mirroring plans/01 Phase 1).
+
+### Frozen signature — `endCharRec` (Phase 5 producer; body deferred)
+```
+noncomputable def endCharRec {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    (k : Nat) → {n : Nat} → NormalForm sig k n → TemporalPred
+  | 0,     _, qnf => endCharN0 atomMap h_surj qnf                       -- Phase 3
+  | k + 1, n, qnf =>
+      nf_endpoint_tl_gen (atomPartN atomMap h_surj qnf.1)              -- Phase 5
+        (fun sub => navBrickForm (endCharRec atomMap h_surj k (n := n + 1)) sub)  -- Phase 4
+        qnf
+```
+Structural recursion on `k` (strictly decreasing); the motive is `EndCharMotive sig k`, whose
+arity index `n` climbs `3 → 3+k` toward the base and bottoms at the finite depth-0 atom layer
+`NormalForm sig 0 n = AtomKind sig n → Bool`. Termination is on `k` alone (report 01
+§Adversarial-Verification). `innerConv` is discharged **internally** by the brick over the IH at
+arity `n+1` — NOT deferred to a caller (handoff Option 3 rejected).
+
+### Frozen signature — `endCharRec_correct` (Phase 5 producer; statement deferred)
+```
+theorem endCharRec_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    ∀ (k : Nat) {n : Nat} [NeZero n] (qnf : NormalForm sig k n)
+      (env : Fin n → M.carrier) (h_nav : NavResidual M qnf env),
+    (endCharRec atomMap h_surj k qnf).eval_at M atomMap (env 0) ↔
+      nf_eval_nf M k n env qnf
+```
+(report 01 §3.2). Proof by induction on `k`: base `k = 0` = `endCharN0_correct` supplying `h_nav`;
+step `k+1` = generalized `nf_char3_endpoint_tl_correct` whose `h_inner` is discharged by
+`navBrickForm_correct` (Phase 4), its `h_past`/`h_fut` hooks **instantiated to the IH
+`endCharRec_correct k (n+1)`** — the IH consumed at the arity the step produces (this closes the
+recursion). The `[NeZero n]` instance makes `env 0` (the navigated witness locus) well-typed; it
+is discharged automatically at every instantiation (arity is always `≥ 3`, and the step's `n+1`
+is a successor). NON-vacuous: the RHS is the full `nf_eval_nf` characterization, never weakened to
+`True`/`top`.
+
+### Frozen signature — `endChar` (Phase 6 producer; the arity-3 consumer instance)
+```
+noncomputable def endChar {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (k : Nat) : EndCharCarrier sig k :=
+  fun qnf => endCharRec atomMap h_surj k qnf
+```
+`EndCharCarrier sig k = NormalForm sig k 3 → TemporalPred` (Base.lean:1007) is **FROZEN and
+UNCHANGED**; `endChar` is exactly its arity-3 (`n = 3`) instance, so task-309 Phase 18/19 cite
+`endChar_correct` by name without modification. The carrier is not widened.
+
+### Route audit (Postmortem forbidden-route guards, Phase 2)
+- **G1** (atom layer honest arity-`n`, no arity-1 collapse): `EndCharMotive` and `NavResidual`
+  are stated at the *general* arity `n`; the atom layer read by `NavResidual` is
+  `qnf.atom_assgn : AtomKind sig n → Bool`, the honest arity-`n` atom assignment — never a flat
+  arity-1 term.
+- **G4** (free anchors ≤2 at the *formula* level; env arity is *witness depth*, record the
+  distinction — report 01 §2/§3.3): the motive's arity index `n` climbs `3 → 3+k` as **bracket
+  witness depth**; this is distinct from and does NOT increase the free-anchor count, which stays
+  ≤2 because every deeper `w'` is bound one-at-a-time by an enclosing `Until`/`Since`. Env arity ≠
+  free-anchor count.
+- **FORBIDDEN `nf_char3_deeper_split` is NOT referenced** by any Phase-2 object (`EndCharMotive`,
+  `NavResidual`, or the frozen docstring signatures). The recursion navigates via the brick,
+  keeping `w'` a bracket witness — it never grows the anchor set to `{y,x,t}` (report 01 §5.2).
+-/
+
+/-- **Π-motive of the arity-general navigated endpoint recursion** (report 01 §3, md:118-119).
+`endCharRec` is `Nat.rec` on modal depth `k` into this motive; the arity index `n` is a *free
+parameter of the motive* that climbs `3 → 3+k` toward the base `k = 0`, where
+`NormalForm sig 0 n = AtomKind sig n → Bool` is a finite pure atom layer (no further recursion).
+Termination is on `k` alone. There is **no fixed-arity carrier** — the arity is general, and the
+free-anchor count (not the env arity) is what stays ≤2 (G4). -/
+abbrev EndCharMotive (sig : MonadicSignature) (k : Nat) : Type :=
+  (n : Nat) → NormalForm sig k n → TemporalPred
+
+/-- **Arity-general navigational residual** (report 01 §3.3, §5.4 row 4). Generalizes
+`endChar0_correct`'s `h_res` (Base.lean:1061) from the fixed arity 3 to an arbitrary positive
+arity `n`: it pins the **anchor/order layer at the `n-1` non-witness positions** by requiring, for
+every atom that is NOT a position-0 (navigated-witness `env 0`) predicate atom, that the structural
+evaluation `atom_eval M env atom` agrees with `qnf`'s atom assignment. The excluded atoms are
+exactly the `w`-locus predicate atoms `.pred p 0` that `endCharRec` reads *locally* at the
+navigated witness; everything else — the anchor predicates at positions `1 … n-1` and the full
+order layer among all positions (including `.order 0 j`) — is coupled here, exactly as `h_res` does
+at arity 3.
+
+**Faithful across all `k`.** The atom layer is accessed uniformly via `NormalForm.atom_assgn`
+(`= qnf` at `k = 0`, `= qnf.1` at `k+1`), so `NavResidual` is the single residual shape consumed by
+both the base case (matching `endChar0_correct`'s `qnf atom = true`) and the step's atom layer
+(matching `nf_eval_nf_step_unfold`'s `qnf.1 atom = true`).
+
+**NON-vacuous** (G-diligence, plan Risks row): this is a genuine coupling between `env` and `qnf`;
+it is provably falsifiable — e.g. an `env`/`qnf` with `qnf.atom_assgn (.pred p 1) = true` but
+`M.interp p (env 1) = false` violates it (the arity-`n` analog of the `endChar0_correct`
+counterexample). It is never `True`.
+
+**Deviation from the report's schematic `NavResidual M env` (faithfulness-required).** The report
+01 §3.2 and the plan wrote `h_nav : NavResidual M env` with only `M`/`env`. A faithful
+generalization of `h_res` *must* reference `qnf`, because `h_res` couples `env` to `qnf`'s atom
+layer — dropping `qnf` would either lose the predicate coupling or be vacuous. `NavResidual` is
+therefore parameterized by `qnf` as well; the `[NeZero n]` instance makes the position-0 reference
+`(0 : Fin n)` well-typed (arity is always `≥ 3`, so `NeZero n` is discharged automatically). -/
+def NavResidual {sig : MonadicSignature} {k n : Nat} [NeZero n]
+    (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig k n)
+    (env : Fin n → M.carrier) : Prop :=
+  ∀ atom : AtomKind sig n, (∀ p : sig.preds, atom ≠ AtomKind.pred p (0 : Fin n)) →
+    (atom_eval M env atom ↔ (qnf.atom_assgn atom = true))
+
+/-- **Base-case instance of `NavResidual` coincides with `endChar0_correct`'s `h_res`.** Confirms
+(sorry-free, green) that the arity-general residual, at `k = 0` and arity `3` on `zoneEnv3 w a b`,
+is definitionally the exact hypothesis the already-landed `endChar0_correct` consumes — so the
+Phase-3 base case will supply `h_nav` with no reshaping. Also witnesses that `NavResidual` is
+inhabited-as-a-hypothesis (not the empty predicate), guarding against a vacuous freeze. -/
+theorem navResidual_base_eq_hRes {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 0 3) (w a b : M.carrier) :
+    NavResidual M qnf (zoneEnv3 w a b) ↔
+      (∀ atom : AtomKind sig 3, (∀ p : sig.preds, atom ≠ AtomKind.pred p 0) →
+        (atom_eval M (zoneEnv3 w a b) atom ↔ (qnf atom = true))) :=
+  Iff.rfl
+
+/-- **The frozen consumer carrier `EndCharCarrier sig k` is inhabited at its `n = 3` arity**
+(interface UNCHANGED). Confirms the arity-3 instance the recursion targets is a genuine, inhabited
+`TemporalPred`-valued type — the type `endChar` (Phase 6) will populate. This is an inhabitation
+witness only (NOT a definition of `endChar`, which is deferred to Phase 6). -/
+example {sig : MonadicSignature} {k : Nat} : Nonempty (EndCharCarrier sig k) :=
+  ⟨fun _ => TemporalPred.top⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

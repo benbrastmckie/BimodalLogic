@@ -164,7 +164,7 @@ carried forward from plans/01 Phase 1 and is already green in the tree — do NO
 - `lean_verify nf_eval_nf_step_unfold` = `[propext, Classical.choice, Quot.sound]`, sorry-free.
   (Confirm still green as a Phase-2 precondition; no new work.)
 
-### Phase 2: Arity-general motive + frozen `endCharRec`/`endCharRec_correct` signatures [NOT STARTED]
+### Phase 2: Arity-general motive + frozen `endCharRec`/`endCharRec_correct` signatures [COMPLETED]
 
 **Goal**: Encode the Π-motive `(n : Nat) -> NormalForm sig k n -> TemporalPred` and freeze the
 signatures of `endCharRec` and `endCharRec_correct` (including the arity-general residual hypothesis
@@ -172,23 +172,39 @@ signatures of `endCharRec` and `endCharRec_correct` (including the arity-general
 fixes types.
 
 **Tasks**:
-- [ ] Write the frozen signature of
+- [x] Write the frozen signature of
   `endCharRec (atomMap) (h_surj) : (k : Nat) -> {n : Nat} -> NormalForm sig k n -> TemporalPred`
   (structural recursion on `k`, `n` a motive parameter). Record in a docstring that the motive arity
   `n` climbs `3 -> 3+k` toward the base and termination is on `k` alone (report 01
-  §Adversarial-Verification).
-- [ ] Write the frozen signature of `endCharRec_correct`:
+  §Adversarial-Verification). *(deviation: altered — body deferred to Phase 5 per the Phase-2 escape
+  clause; the `def` body needs the unbuilt `endCharN0`/`nf_endpoint_tl_gen`/`navBrickForm`/`atomPartN`
+  and cannot typecheck without `sorry`, so the signature is captured in a docstring at Base.lean:1509
+  rather than as a stubbed `def`. The motive itself IS landed green as `abbrev EndCharMotive`,
+  Base.lean:1579.)*
+- [x] Write the frozen signature of `endCharRec_correct`:
   `∀ (k) {n} (qnf : NormalForm sig k n) (env : Fin n -> M.carrier) (h_nav : NavResidual M env), (endCharRec atomMap h_surj k qnf).eval_at M atomMap (env 0) ↔ nf_eval_nf M k n env qnf`
   (report 01 §3.2). Define the arity-general residual predicate `NavResidual M env` generalizing
   `endChar0_correct`'s `h_res` over `n` (report 01 §3.3, §5.4 row 4) — pin the anchor/order layer at
-  the `n-1` non-witness positions; do NOT make it vacuous.
-- [ ] Write the frozen consumer entry signature
+  the `n-1` non-witness positions; do NOT make it vacuous. *(deviation: altered — (a) `endCharRec_correct`
+  statement deferred to a docstring (Base.lean:1531) because it references the deferred `endCharRec`
+  term; (b) `NavResidual` is landed as a real green `def` (Base.lean:1608) but parameterized as
+  `NavResidual M qnf env` with `[NeZero n]`, NOT the schematic `NavResidual M env` — faithfulness to
+  `h_res` REQUIRES the `qnf` coupling (dropping it loses the predicate anchors / risks vacuity), and
+  `[NeZero n]` makes the position-0 witness reference `(0 : Fin n)` well-typed (arity always ≥3).
+  Non-vacuity + base-case coincidence with `h_res` are proved green by `navResidual_base_eq_hRes`,
+  Base.lean:1620.)*
+- [x] Write the frozen consumer entry signature
   `endChar (k) : EndCharCarrier sig k := fun qnf => endCharRec atomMap h_surj k qnf` and confirm
   `EndCharCarrier sig k = NormalForm sig k 3 -> TemporalPred` (Base.lean:1007) is inhabited by the
-  `n = 3` instance (interface UNCHANGED).
-- [ ] Route audit: G1 (atom layer honest arity-`n`, no arity-1 collapse); G4 (free anchors ≤2 at the
+  `n = 3` instance (interface UNCHANGED). *(deviation: altered — `endChar` def body deferred to
+  Phase 6 (docstring at Base.lean:1547, references the deferred `endCharRec`); inhabitation of the
+  UNCHANGED frozen carrier at `n = 3` confirmed green via `example : Nonempty (EndCharCarrier sig k)`,
+  Base.lean:1632.)*
+- [x] Route audit: G1 (atom layer honest arity-`n`, no arity-1 collapse); G4 (free anchors ≤2 at the
   formula level, env arity is witness depth — record the distinction from report 01 §2/§3.3);
-  explicitly assert FORBIDDEN `nf_char3_deeper_split` is not referenced.
+  explicitly assert FORBIDDEN `nf_char3_deeper_split` is not referenced. *(recorded in the Route audit
+  docstring, Base.lean:1558-1570; grep-confirmed no code reference to `nf_char3_deeper_split` in any
+  Phase-2 object.)*
 
 **Timing**: ~1.5 hours (~60-120 lines; signatures + motive + `NavResidual` def, no heavy proofs)
 
