@@ -362,9 +362,18 @@ strictly sequential.
   check recorded; frozen diffs EMPTY; commit.
 - **Files:** `ExteriorFiberK.lean` (additive tail only).
 
-### Phase 3: Future-side clause layer (`ExteriorNegationK.lean`) [BLOCKED]
+### Phase 3: Future-side clause layer (`ExteriorNegationK.lean`) [PARTIAL]
 
-**BLOCKER** (Phase 3.2/3.3 — `kvE_extNegFut_sound`/`_complete`):
+**UPDATE (2026-07-12, reclose dispatch, session sess_1783887769_cb5be4)**: The original
+Phase-3 BLOCKER (content-channel↔fold-slot anchor mismatch) is **RESOLVED** by the shared
+reindex bridge (`kvE_anchorBridge`/`kvE_fiberPosOnShift` landed in `ExteriorFiberK.lean`,
+report 02). Sub-phase **3.2 `kvE_extNegFut_sound` is now GREEN** (commit d6f7784e1, axioms
+exactly `[propext, Classical.choice, Quot.sound]`, frozen diffs EMPTY). Sub-phase **3.3
+`kvE_extNegFut_complete` remains [BLOCKED]** on a DISTINCT, newly-isolated obstruction (the
+env-existential↔env-specific realizability-transfer gap — see the refined 3.3 record below);
+the reindex bridge does NOT resolve it. `sorry_count = 0`; no vacuous/placeholder landed.
+
+**BLOCKER (original, now superseded for 3.2)** (Phase 3.2/3.3 — `kvE_extNegFut_sound`/`_complete`):
 - **What failed**: Wiring the corrected full-fiber content channel (`kvE_fiberPosOn P` →
   `P.existF 4 s`) into the depth-`k` chain's INTERIOR gap-point positions. After
   `rw [P.correct 4 s M h_UZ h_SZ r]` the obligation is
@@ -438,15 +447,56 @@ strictly sequential.
 - **Sub-phase 3.2 — `kvE_extNegFut_sound`** (~200-300 lines):
   - [x] Chain-destruct helper (template: ChainDestruct region :1435) by intra-rung list-length
         induction. *(landed as generic `kvE_futChainDestructG`, GREEN, commit d27eed7a6)*
-  - [ ] `kvE_extNegFut_sound` mirroring :1243's statement shape one fold-layer deeper
-        *(deviation: BLOCKED — see the Phase-3 BLOCKER record: content-channel↔fold variable-slot
-        reconciliation is missing shared infra; no sorry/vacuous landed)*
+  - [x] `kvE_extNegFut_sound` mirroring :1243's statement shape one fold-layer deeper
+        *(GREEN, commit d6f7784e1; content swapped to the shifted channel `kvE_fiberPosOnShift`/
+        `kvE_futItemShift` via `kvE_anchorBridge`; glue `kvE_futItemShift_correct`,
+        `kvE_futZone4_of_above`, `kvE_futZoneHolds_of_atom`, `kvE_fiberZoneList_realized`; axioms
+        exactly `[propext, Classical.choice, Quot.sound]`; frozen diffs EMPTY. The original
+        content-channel↔fold-slot blocker was RESOLVED by the reindex bridge.)*
 - **Sub-phase 3.3 — `kvE_extNegFut_complete`** (~200-300 lines):
   - [x] Chain-build helper (template: ChainBuild region :1180) + min-pick application.
         *(landed as generic `kvE_futChainBuildG`, GREEN, commit d27eed7a6)*
   - [ ] `kvE_extNegFut_complete` mirroring :1484, with the `hbelow`-analog full-fiber pin
-        *(deviation: BLOCKED — same content-channel↔fold reconciliation blocker; the full-fiber
-        pin `_complete` would consume also requires the reindex bridge; no sorry/vacuous landed)*
+        *(deviation: [BLOCKED] on a DISTINCT obstruction, empirically confirmed with a captured
+        `lean_goal` this dispatch — NOT the original bridge blocker (which is resolved). No
+        sorry/vacuous landed; file reverted to the green `_sound`-only state.)*
+
+    **BLOCKER (3.3 — refined, empirically grounded 2026-07-12)**:
+    - **What fails**: the `nf_eval_nfk_iff_efold`-based reconstruction of a realizer at `x1`. Two
+      symmetric obligations (gap zone; self/ray identical). Backward gap `lean_goal`:
+      `sub : NormalForm sig k 5`, `hsubfib : nfk_dropFresh sub = σ.1`, `hbit : σ.2 sub = true`,
+      `h : nfk_zoneSpec sub = Fin.cons (true,false) kvE2_sep_zFutT3`,
+      `env4 := Fin.cons x1 (Fin.cons w (Fin.cons x fun _ => t))`,
+      `hoccl : ∀ a ∈ l, ∃ r, t<r ∧ r<x1 ∧ temporal_truth r (kvE_futItemShift P a)`
+      `⊢ ∃ z, nf_eval_nf M k 5 (Fin.cons z env4) sub`. Forward gap is the dual (`hv : nf_eval
+      (Fin.cons v env4) sub`, gap zone ⊢ `σ.2 sub = true`).
+    - **Root cause**: the full-fiber content channel (`kvE_fiberPosOnShift_correct`) yields
+      **env-existential** realizations `∃ env', nf_eval (Fin.cons r env') s` (faithful to
+      Rabinovich Lemma 5.3 interior quantification), while `nf_eval_nfk_iff_efold`'s per-sub
+      biconditional pins the anchors to the **specific** `env4 = [x1,w,x,t]`. At depth 0 (frozen
+      k=2) these coincide (subs are atom-only `NormalForm sig 0 5`, env-independent; `nf_profile_unique`
+      closes it); at depth `k ≥ 1` subs carry env-dependent interior content, so `∃env', nf_eval
+      (Fin.cons r env') s` does NOT imply `nf_eval (Fin.cons r env4) s`. The reindex bridge is
+      necessary and sufficient for `_sound` (content-production) but does NOT close this
+      reconstruction gap. (Report 02 rated whole-theorem `_complete` closure only "Medium" and
+      noted the reconstruction lemmas were "not re-proven".)
+    - **What was tried**: (a) determinacy pin `env' = env4` via `nf_eval_unique` — FAILS (env' is a
+      genuinely free existential); (b) extend the below-t pin `hbelowFib` to gap/self/ray — FAILS
+      (an ∀x1 all-zone biconditional pin asserts σ realizable at EVERY x1>t while σ's bits are fixed
+      and gap/self/ray realizability varies with x1 ⇒ hypothesis false/undischargeable + clause
+      vacuous; below-t works precisely because x1-independent); (c) drop the forward direction —
+      FAILS (the fold biconditional independently forces the env-specific backward realizer). `h_UZ`/
+      `h_SZ` inspected (`PriorDefs.lean:22/33`): first/last-occurrence only, no realizability transfer.
+    - **What is needed**: a **realizability-transfer / canonical-model-homogeneity (saturation)
+      lemma**: for on-fiber `s` (`nfk_dropFresh s = σ.1`) with `r` in the target zone of `env4` and
+      `env4` realizing `σ.1`, `(∃env', nf_eval (Fin.cons r env') s) ↔ nf_eval (Fin.cons r env4) s`
+      (realizability at the fixed anchors determined by atom-fiber label + zone, transferring across
+      anchor tuples of equal atom-type). NOT in the tree, NOT derivable from `h_UZ`/`h_SZ`. Recommended
+      discharge site: **task 349 Phase 2** supplies this transfer as a bundle hypothesis (augmenting
+      the below-t `hbelowFib` to cover gap/self/ray); only then does the ported 9-zone reconstruction
+      close. Escalate via `/spawn 352` (or fold into 349 Phase 2's interface design).
+    - **Prohibited**: no `sorry`, no `def X := True`, no vacuous placeholder was landed.
+    - **Attempted signature (recorded for task 349 Phase 2)**: see the phase-3-reclose handoff.
 - **Estimated output:** ~600-950 lines total across 3 dispatches.
 - **Bounded-unit stop condition (each sub-phase):** its named decls green OR [BLOCKED] +
   exact `lean_goal` on the failing decl; commit each green sub-phase before proceeding. If
