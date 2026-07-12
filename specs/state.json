@@ -1729,6 +1729,16 @@
         {
           "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/02_endchar-faithful-architecture.md",
           "type": "plan"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md",
+          "summary": "Rabinovich 2014 faithfulness audit: single-anchor navBrickForm is root divergence; C+ multi-anchor navigating characteristic with unconditional hooks; endCharRec_correct becomes unconditional"
+        },
+        {
+          "type": "plan",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/03_multi-anchor-navigating-characteristic.md",
+          "summary": "Plan v3: multi-anchor navigating characteristic (supersedes v2); P1-P3 preserved green, resume Phase 4"
         }
       ],
       "session_id": "sess_1783824622_947f0b",
