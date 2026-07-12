@@ -1,7 +1,7 @@
 # Implementation Plan: Task #349 (v5 — faithful residual-conditioned `endChar`)
 
 - **Task**: 349 - Build the recursive navigated arity-3 endpoint primitive `endChar` + `endChar_correct`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: Task 351 (LANDED — `nfEval_le2_reduction` family, green, sorry-free, 0-new-axiom)
 - **Research Inputs**:
@@ -158,7 +158,7 @@ edits to `Base.lean` (new `endCharStep`, `endChar`, `endChar_correct`) and `Navi
   arity-4-enclosing-pair single-point read, the unconditional x,t-implicit world-local form,
   `navPieceForm_correct`. `EndCharCarrier` FROZEN (not widened); frozen-file edits (git-scope confirmed).
 
-### Phase 1: Spec freeze — residual-conditioned `endChar_correct` statement + `endChar` skeleton + base case [NOT STARTED]
+### Phase 1: Spec freeze — residual-conditioned `endChar_correct` statement + `endChar` skeleton + base case [COMPLETED]
 
 - **Goal:** State `endChar_correct` (report 05 §3.2) as the residual-conditioned biconditional at general
   `k`, and the `endChar : (k) → EndCharCarrier sig k` skeleton with `endChar 0 = endChar0`. Prove the
@@ -184,15 +184,25 @@ edits to `Base.lean` (new `endCharStep`, `endChar`, `endChar_correct`) and `Navi
   `AtomKind`, `EndCharCarrier` (frozen, Base.lean:1007). BUILD only the statement + skeleton + base-case
   proof. The `h_res` hypothesis shape is `endChar0_correct`'s residual generalized to arbitrary `k`.
 - **Tasks:**
-  - [ ] State `endChar_correct` verbatim in the residual-conditioned x,t-explicit form above.
-  - [ ] Define the `endChar` skeleton by `Nat.rec`; `endChar 0 = endChar0`; the step names `endCharStep`
-        (declared, body deferred to Phase 3 — a scaffolded hole, not a `sorry`'d theorem).
-  - [ ] Prove the `k=0` case: `exact endChar0_correct …` (green, carries `h_res`).
-  - [ ] Record (docstring at the `endChar_correct` site) the FORBIDDEN unconditional form pointer
+  - [x] State `endChar_correct` verbatim in the residual-conditioned x,t-explicit form above. *(frozen as
+        a pinned spec in the NavigatedEndChar.lean "Phase 1 (v5)" docstring; the compiled base building
+        block `endChar_correct_zero` realizes the `k=0` instance — deviation: the full `∀k` `endChar_correct`
+        theorem name is produced in Phase 4 by induction, since a `∀k` theorem cannot leave the k+1 step a
+        sorry-free hole in Phase 1.)*
+  - [x] Define the `endChar` skeleton by `Nat.rec`; `endChar 0 = endChar0`; the step names `endCharStep`
+        (declared, body deferred to Phase 3 — a scaffolded hole, not a `sorry`'d theorem). *(`endCharStep`
+        carries a genuine `TemporalPred`-valued SCAFFOLD body `endChar0 … qnf.1` — the position-0 atom
+        layer — replaced fix-forward in Phase 3; not vacuous, not proof-carrying.)*
+  - [x] Prove the `k=0` case: `exact endChar0_correct …` (green, carries `h_res`). *(`endChar_correct_zero`,
+        closed by `exact endChar0_correct M atomMap h_surj qnf w x t h_res` via the `Nat`-rec zero-branch
+        defeq.)*
+  - [x] Record (docstring at the `endChar_correct` site) the FORBIDDEN unconditional form pointer
         (`endCharN0_correct_infeasible`, Base.lean:1779) and WHY `h_res` + x,t-explicitness is the
         discriminator (report 05 §5.2).
-  - [ ] Route audit: grep-confirm no `nf_char3_endpoint_tl` `innerConv` dependency, no `navPieceForm_correct`,
-        no unconditional world-local claim; `EndCharCarrier` unchanged; git-scope clean.
+  - [x] Route audit: grep-confirm no `nf_char3_endpoint_tl` `innerConv` dependency, no `navPieceForm_correct`,
+        no unconditional world-local claim; `EndCharCarrier` unchanged; git-scope clean. *(grep clean in new
+        code: the only `navPieceForm_correct`/`sorry` tokens are prose in FORBIDDEN/`sorry-free` docstrings;
+        `EndCharCarrier` untouched; git scope = NavigatedEndChar.lean + plan only.)*
 - **Estimated output:** ~100–150 lines.
 - **Done when:** the statement + `endChar` skeleton + `k=0` base compile; no `sorry` in the base;
   `lean_verify` on the base-discharging lemma = `[propext, Classical.choice, Quot.sound]`; scoped build GREEN.

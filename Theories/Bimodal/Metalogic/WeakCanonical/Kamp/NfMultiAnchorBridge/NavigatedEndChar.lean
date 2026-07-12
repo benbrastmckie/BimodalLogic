@@ -243,4 +243,94 @@ single-anchor reshape, a per-pair `∀ij ∃w` distribution, or a mis-stated/vac
 landed, green, sorry-free 3a deliverables; the def structure is expected to be enriched alongside the
 new bridge. -/
 
+/-! ## Phase 1 (task 349, v5): residual-conditioned spec freeze + `endChar` skeleton + base case
+
+**Faithful v5 architecture (report 05 §3).** This section supersedes the v4 Phase-3 interface (the
+refuted inner-`Formula` `nf_char3_endpoint_tl` / `navPieceForm_correct` converter — a machine-checked
+NON-THEOREM by parameter independence, report 04 — DELETED from the critical path). The v5 recursion
+reduces the arity-4 inner existential to a ≤2-anchor conjunction FIRST (consuming the green
+`navPiece_reduce` / `nfEval_le2_reduction`), characterizes each conjunct with the Prop-valued,
+x,t-EXPLICIT `nf_zone_flatten_navigable_correct` (Base.lean:687), rides the bounded interior on the
+non-trivial `seg` (G3), and collapses to a closed `Formula` ONLY at the base `endChar0` (Step D).
+
+### FROZEN spec — `endChar_correct` (report 05 §3.2; residual-conditioned, x,t-EXPLICIT)
+
+Stated at EVERY depth `k` carrying the anchor-residual `h_res` (generalizing the green base
+`endChar0_correct`, Base.lean:1056). Pinned here; CLOSED in Phase 4 by induction on `k` (base =
+`endChar_correct_zero` below; step = the Phase-3 `endCharStep` k+1 discharge):
+
+```
+theorem endChar_correct {sig} (M) (atomMap)
+    (h_surj : ∀ p, ∃ a : Atom, atomMap (.atom a) = p) :
+    ∀ (k : Nat) (qnf : NormalForm sig k 3) (w x t : M.carrier)
+      (h_res : ∀ atom : AtomKind sig 3, (∀ p, atom ≠ AtomKind.pred p 0) →
+        (atom_eval M (zoneEnv3 w x t) atom ↔ (qnf atom = true))),
+    (endChar atomMap h_surj k qnf).eval_at M atomMap w ↔
+      nf_eval_nf M k 3 (zoneEnv3 w x t) qnf
+```
+
+**FORBIDDEN — the unconditional world-local form** (`endCharN0_correct_infeasible`, Base.lean:1779):
+`(endChar k qnf).eval_at M atomMap y ↔ nf_eval_nf M k 3 (zoneEnv3 y x t) qnf` for ARBITRARY,
+x,t-IMPLICIT anchors is a machine-checked NON-THEOREM (counterexample narrative Base.lean:1036-1047):
+a closed navigated-`w` `TemporalPred`, read only at `w`, cannot certify the predicate/order layer at
+the free anchors. The discriminator (report 05 §5.2) is the pair: (i) `h_res` — supplying the
+anchor predicate/order residual the world-local read cannot see — and (ii) `x, t` appearing
+EXPLICITLY as parameters so `h_res` pins `{x, t}` (≤2 anchors, G2/G4; `w` a bracket witness, never a
+third free anchor). Re-freezing the unconditional/x,t-implicit shape is FORBIDDEN.
+
+### Skeleton (report 05 §3.3)
+
+```
+endChar 0     qnf = endChar0 atomMap h_surj qnf                     -- closed-Formula collapse only at base
+endChar (k+1) qnf = endCharStep atomMap h_surj (endChar k) qnf      -- Phase-2/3 navigated builder (hole)
+```
+-/
+
+/-- **`endCharStep` — recursion step builder (Phase-1 SCAFFOLD; real body lands in Phase 3).** The
+depth-`(k+1)` navigated endpoint builder consuming the depth-`k` interior/exterior hook
+`rec : EndCharCarrier sig k`. Its FINAL body (Phase 3, report 05 §3.4 Steps B–D) reduces the arity-4
+inner existential to ≤2-anchor conjuncts (`navPiece_reduce`), characterizes each via the x,t-EXPLICIT
+`nf_zone_flatten_navigable_correct`, rides the interior on `seg` (G3), and collapses to a closed
+`Formula` only at the base. This Phase-1 body is a genuine `TemporalPred`-valued SCAFFOLD — the
+position-0 atom layer `endChar0 … qnf.1` — installed ONLY so the `endChar` recursion and the
+`endChar_correct` STATEMENT elaborate. It is NOT the final navigated builder and carries NO proof
+obligation (no `endChar_correct` step case is claimed here — that is the Phase-3 feasibility gate).
+Replaced fix-forward in Phase 3 (`_rec` → `rec`). -/
+noncomputable def endCharStep {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {k : Nat} (_rec : EndCharCarrier sig k) : EndCharCarrier sig (k + 1) :=
+  fun qnf => endChar0 atomMap h_surj qnf.1
+
+/-- **The recursive navigated arity-3 endpoint primitive `endChar` (skeleton, report 05 §3.3).** Base
+`endChar 0 = endChar0` (the closed-`Formula` Prop-3.5 collapse, ≤1 free); step
+`endChar (k+1) = endCharStep (endChar k)` (the Phase-2/3 navigated builder). Arity fixed at 3 (G1: no
+arity-1 collapse; closed-`Formula` read occurs only at the base). The step body is the Phase-1
+scaffold until Phase 3 installs the real navigated builder; the recursion structure is frozen here so
+Phases 2–4 dispatch against a stable definition. -/
+noncomputable def endChar {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    (k : Nat) → EndCharCarrier sig k
+  | 0 => endChar0 atomMap h_surj
+  | (k + 1) => endCharStep atomMap h_surj (endChar atomMap h_surj k)
+
+/-- **Base case (`k = 0`) of the frozen `endChar_correct` (report 05 §3.2), sorry-free.** Under the
+anchor-residual `h_res`, the navigated base `endChar … 0 qnf` (which unfolds definitionally to
+`endChar0 … qnf` by the `Nat`-recursion zero branch) read at `w` is equivalent to the FULL depth-0
+arity-3 atom layer `nf_eval_nf M 0 3 (zoneEnv3 w x t) qnf`. This is DEFINITIONALLY the green
+`endChar0_correct` (Base.lean:1056). It is the base building block Phase 4 feeds to the induction on
+`k`; `x, t` are EXPLICIT and `h_res` pins the `{x, t}` residual (≤2 anchors, G2/G4; `w` a bracket
+witness), NEVER the refuted unconditional world-local form. -/
+theorem endChar_correct_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 0 3) (w x t : M.carrier)
+    (h_res : ∀ atom : AtomKind sig 3, (∀ p : sig.preds, atom ≠ AtomKind.pred p 0) →
+      (atom_eval M (zoneEnv3 w x t) atom ↔ (qnf atom = true))) :
+    (endChar atomMap h_surj 0 qnf).eval_at M atomMap w ↔
+      nf_eval_nf M 0 3 (zoneEnv3 w x t) qnf :=
+  endChar0_correct M atomMap h_surj qnf w x t h_res
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
