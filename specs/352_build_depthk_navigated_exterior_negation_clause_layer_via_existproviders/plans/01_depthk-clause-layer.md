@@ -265,7 +265,7 @@ strictly sequential.
 "research_integrated": true, "plan_version": 1, "dependency_waves": [[1],[2],[3,4],[5],[6]],
 "skeleton": false, "follow_up_tasks": []}`
 
-### Phase 1: Full-fiber content channel core + F2 separation probe (GO/NO-GO gate) [IN PROGRESS]
+### Phase 1: Full-fiber content channel core + F2 separation probe (GO/NO-GO gate) [COMPLETED]
 
 - **Goal:** Land the F2-safe content channel — the `P.existF`-over-full-fiber disjunction
   combinator with its correctness lemma — and machine-check that it separates the F2
@@ -290,17 +290,25 @@ strictly sequential.
         *(correctness `kvE_fiberPosOn_correct` proved for ARBITRARY sub-lists — strictly more
         general than fiber-sub-lists, no deviation in consumer shape)*
 - **Sub-phase 1.2 — F2 separation probe** (`ExteriorFiberProbeK.lean`, NEW; probe-local):
-  - [ ] Reconstruct the F2-style pair probe-locally (all `private`): RefutationF2.lean's
+  - [x] Reconstruct the F2-style pair probe-locally (all `private`): RefutationF2.lean's
         machinery (`f2sig`:92, `F2M`:104, `f2env3`:328, `f2qnf`:332, `f2sub1/2`:335/339,
         `f2qnf'`:343) is entirely `private` — replicate the pair construction as a template
-        copy; do NOT edit RefutationF2.lean.
-  - [ ] Prove the separation theorem: under a concrete provider instance for the probe
+        copy; do NOT edit RefutationF2.lean. *(landed as `p2*` template copies incl. the
+        Prior facts `p2_UZ`/`p2_SZ` and the e*-entry lemmas; RefutationF2.lean untouched)*
+  - [x] Prove the separation theorem: under a concrete provider instance for the probe
         signature, the corrected full-fiber construction (`kvE_fiberPos`, or the syntactic
         fiber-set fact it induces) assigns the pair members DIFFERENT values — i.e. exactly
         the separating power `f2_carrier_eq` (RefutationF2.lean:582) proves the
-        marginal/frozen construction lacks.
-  - [ ] Record the GO/NO-GO verdict in the phase-completion commit message and the progress
+        marginal/frozen construction lacks. *(landed THREE separations: semantic
+        `kvE_fiberPos_separates_F2` under concrete depth-0 provider `p2P`
+        (`nf_nvar_exist_depth0_tl_fn`, sorry-free) — e*-bucket TRUE at t=18 for sub₁, FALSE
+        for sub₂; syntactic `kvE_fiber_separates_pair` (with marginal-channel agreement
+        `p2_zone_agree`/`p2_projFreshD_agree`); syntactic `kvE_sepPos_separates_qnf_pair`
+        at the exact f2_carrier_eq pair shape (qnf vs qnf'))*
+  - [x] Record the GO/NO-GO verdict in the phase-completion commit message and the progress
         file. NO-GO ⟹ postmortem rule 12: [BLOCKED] + escalate, no further phases.
+        *(VERDICT: GO — all three separation theorems green, axioms exactly
+        `[propext, Classical.choice, Quot.sound]`)*
 - **Estimated output:** ~450-750 lines total (1.1: ~300-450; 1.2: ~150-300).
 - **Bounded-unit stop condition:** 1.1 = `kvE_fiberPos_correct` green OR [BLOCKED] with exact
   `lean_goal`; 1.2 = separation theorem green (GO) OR a machine-checked failure/irreducible
