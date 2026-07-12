@@ -1,0 +1,104 @@
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Lemma32Reduction
+
+/-!
+# Reduction-navigated arity-3 endpoint primitive `endChar` (task 349, v4)
+
+This module builds the recursive navigated arity-3 endpoint primitive `endChar` and its
+correctness theorem `endChar_correct` by **consuming** task 351's `nfEval_le2_reduction`
+(the Rabinovich Lemma 3.2(2) ≤2/≤3-free-variable reduction) so the recursion NEVER climbs
+past anchor arity 3. It is additive: it edits NEITHER `Base.lean` NOR `Lemma32Reduction.lean`
+(nor any frozen provider file), depending on their green declarations by import only.
+
+## Phase 1 (this file, initial scaffold): reduction entry at arity 3
+
+Phase 1 establishes the arity-3 specialization of the imported reduction and pins the
+ACHIEVABLE correctness target. Later phases add the depth-0 navigated base
+(`endCharNav0_correct`, Phase 2), the load-bearing inner-realizability navigator
+(`navPieceForm`/`_correct`, Phase 3), the recursion `endChar` and `endChar_correct`
+(Phase 4), and the consumer gate (Phase 5).
+
+## The ACHIEVABLE `endChar_correct` target (conditional / navigable — pinned here)
+
+The v3 UNCONDITIONAL world-local shape
+
+```
+(endChar k qnf).eval_at M atomMap y ↔ nf_eval_nf M k 3 (zoneEnv3 y x t) qnf   -- for ARBITRARY x t
+```
+
+is **UNPROVABLE**. The refutation is machine-checked and green in `Base.lean`:
+`endChar0_correct`'s own docstring counterexample (Base.lean:1036-1047) and
+`endCharN0_correct_infeasible` (Base.lean:1779) exhibit a concrete `Bool` model in which a
+single-world `TemporalPred`, read only at the navigated witness `y`, cannot certify the
+predicate/order layer at the free anchors `x`, `t` (world-locality of `TemporalPred.eval_at`).
+Re-freezing this unconditional shape is therefore FORBIDDEN (plan v4 Postmortem Constraint 1).
+
+The ACHIEVABLE target — the one the green arity-3 machinery already realizes — is the
+**conditional / navigable** form, where the two enclosing anchors `{x, t}` are reached/pinned
+by navigation (exactly as the green `endChar0_correct` carries its anchor residual `h_res`, and
+`nf_char3_endpoint_tl_correct` carries `h_atom`):
+
+```
+-- target shape (frozen for Phases 2-4):
+(endChar k qnf).eval_at M atomMap y ↔ nf_eval_nf M k 3 (zoneEnv3 y x t) qnf
+   -- UNDER the enclosing-anchor coupling for {x, t}, discharged by navigation (arity ceiling 3)
+```
+
+The anchor coupling is discharged by the task-351 reduction + arity-3 navigation, NEVER by a
+free-standing `NavResidual`. Cross-references:
+* atom-hook coupling shape: `nf_char3_endpoint_tl_correct`'s `h_atom` (Base.lean:885).
+* base-case anchor residual: `endChar0_correct`'s `h_res` (Base.lean:1056).
+* forbidden unconditional form: `endCharN0_correct_infeasible` (Base.lean:1779),
+  counterexample narrative at Base.lean:1036-1047.
+-/
+
+namespace Bimodal.Metalogic.WeakCanonical.Kamp
+
+open Bimodal.Syntax
+open Bimodal.Metalogic.WeakCanonical
+open Bimodal.Metalogic.WeakCanonical.Separation
+
+/-- **Arity-3 specialization of the task-351 reduction** (Rabinovich Lemma 3.2(2), md:119).
+For every depth `k`, environment `env : Fin 3 → M.carrier`, and normal form
+`qnf : NormalForm sig k 3`, the arity-3 evaluation `nf_eval_nf M k 3 env qnf` is equivalent to
+the reduced conjunction `nfEvalRHS M k 3 env qnf` of ≤2-anchor `nf_eval_nf` atom facts plus the
+depth-recursive quant-layer realizability clauses.
+
+This is a plain instantiation of the imported, `∀ (k n env qnf)`-quantified
+`nfEval_le2_reduction` (Lemma32Reduction.lean:535) at `n = 3` — it re-derives NOTHING; it only
+fixes the arity ceiling at 3 for the navigated recursion. Every emitted `nf_eval_nf` conjunct on
+the RHS has anchor arity 2 (see `nfEval3_reduction_zero_shape` / `nfEval3_reduction_succ_shape`
+below), so navigation over this reduction never climbs past anchor arity 3 (the SETTLED ≤3
+ceiling; the single realizability witness `w` is threaded OUTSIDE the reduced inner form —
+order-theoretic merge, no per-pair distribution). -/
+theorem nfEval3_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    (k : Nat) (env : Fin 3 → M.carrier) (qnf : NormalForm sig k 3) :
+    nf_eval_nf M k 3 env qnf ↔ nfEvalRHS M k 3 env qnf :=
+  nfEval_le2_reduction M k 3 env qnf
+
+/-- **Arity confirmation, depth 0.** At `k = 0`, the reduced RHS of `nfEval3_reduction` is
+exactly a conjunction (over anchor pairs `i j : Fin 3`) of arity-**2** `nf_eval_nf` atom facts
+`nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)` — no arity climb past 2 among the
+emitted `nf_eval_nf` facts. Direct from the imported `nfEvalRHS_zero`. -/
+theorem nfEval3_reduction_zero_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    (env : Fin 3 → M.carrier) (qnf : NormalForm sig 0 3) :
+    nfEvalRHS M 0 3 env qnf
+      = ∀ (i j : Fin 3), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j) :=
+  nfEvalRHS_zero M env qnf
+
+/-- **Arity confirmation, depth `k+1`.** At `k+1`, the reduced RHS of `nfEval3_reduction`
+splits into (a) arity-**2** `nf_eval_nf` atom facts over anchor pairs, and (b) the
+depth-recursive realizability clauses `∃ w, nfEvalRHS M k 4 (Fin.cons w env) sub ↔ …` in which
+the witness `w` stays OUTSIDE the reduced inner form (order-theoretic `∃w ∀ij` merge — never a
+per-pair `∀ij ∃w` distribution). No emitted `nf_eval_nf` atom fact climbs past anchor arity 2.
+Direct from the imported `nfEvalRHS_succ`. -/
+theorem nfEval3_reduction_succ_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    {k : Nat} (env : Fin 3 → M.carrier) (qnf : NormalForm sig (k + 1) 3) :
+    nfEvalRHS M (k + 1) 3 env qnf
+      = ((∀ (i j : Fin 3),
+            nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf.1 i j)) ∧
+          (∀ sub : NormalForm sig k 4,
+            (∃ w : M.carrier, nfEvalRHS M k 4 (Fin.cons w env) sub) ↔ (qnf.2 sub = true))) :=
+  nfEvalRHS_succ M env qnf
+
+end Bimodal.Metalogic.WeakCanonical.Kamp

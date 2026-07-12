@@ -176,7 +176,7 @@ MAY run in parallel; each is a single committable green unit.
   interior (never `TemporalPred.top`); G5 manual bridges only; order-theoretic `∃w ∀ij` merge only (no
   per-pair `∀ij ∃w`); no arity-collapsing quant `nfRestrict`.
 
-### Phase 1: New module scaffold + arity-3 reduction consumption [NOT STARTED]
+### Phase 1: New module scaffold + arity-3 reduction consumption [COMPLETED]
 
 - **Goal:** Create the new module and establish the arity-3 specialization of the task-351 reduction,
   plus pin the achievable `endChar_correct` target shape. This is the import/wiring + reduction-entry
@@ -186,18 +186,20 @@ MAY run in parallel; each is a single committable green unit.
   (1007), `nf_char3_endpoint_tl_correct` (885), `endChar0_correct` (1056). BUILD only thin specialization
   lemmas in the new file.
 - **Tasks:**
-  - [ ] Create `NavigatedEndChar.lean` importing `...NfMultiAnchorBridge.Base` and
+  - [x] Create `NavigatedEndChar.lean` importing `...NfMultiAnchorBridge.Base` and
         `...NfMultiAnchorBridge.Lemma32Reduction`; open the shared namespace.
-  - [ ] Prove `nfEval3_reduction`: `nf_eval_nf M k 3 env qnf ↔ nfEvalRHS M k 3 env qnf` (specialize
+  - [x] Prove `nfEval3_reduction`: `nf_eval_nf M k 3 env qnf ↔ nfEvalRHS M k 3 env qnf` (specialize
         `nfEval_le2_reduction` at `n = 3`); confirm via `nfEvalRHS_succ`/`_zero` that the emitted
         conjuncts are arity-2 atom facts + realizability clauses (no arity climb past 3 among emitted
-        `nf_eval_nf` facts).
-  - [ ] Record (as a docstring at the intended `endChar_correct` site) the ACHIEVABLE conditional/
+        `nf_eval_nf` facts). *(confirmation lemmas `nfEval3_reduction_zero_shape` /
+        `nfEval3_reduction_succ_shape` added — arity-2 emitted-conjunct shape witnessed.)*
+  - [x] Record (as a docstring at the intended `endChar_correct` site) the ACHIEVABLE conditional/
         navigable target shape, cross-referencing `nf_char3_endpoint_tl_correct`'s `h_atom`, and the
         world-locality counterexample pointer (Base.lean:1036-1047 / `endCharN0_correct_infeasible`) as
-        the reason the unconditional form is FORBIDDEN.
-  - [ ] Route audit: grep-confirm the new file references no `nf_char3_deeper_split`, no `navMultiAnchorForm`,
+        the reason the unconditional form is FORBIDDEN. *(recorded as module-level docstring.)*
+  - [x] Route audit: grep-confirm the new file references no `nf_char3_deeper_split`, no `navMultiAnchorForm`,
         no `NavResidual`; `EndCharCarrier` imported unchanged; `git status` shows only the new file.
+        *(clean — only `NavResidual` mention is the docstring naming it forbidden; not a code construct.)*
 - **Hard bar:** sorry-free; new-module `lake build` GREEN; `lean_verify nfEval3_reduction` axioms exactly
   `[propext, Classical.choice, Quot.sound]`.
 - **Timing:** ~1.5 hours (~60-140 lines)
