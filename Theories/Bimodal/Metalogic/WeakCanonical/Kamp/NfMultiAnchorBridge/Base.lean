@@ -1475,4 +1475,25 @@ theorem nf_char2_future_formula_correct {sig : MonadicSignature}
     obtain ⟨⟨horig, hend⟩, hqe, hseg⟩ := (key x hx).mp hnf
     exact ⟨horig, x, hx, ⟨hend, hqe⟩, hseg⟩
 
+/-! ## Phase 1 (task 349): step-target unfolding for the recursive navigated arity-3 endpoint
+
+The `k+1` unfolding of the navigated arity-3 evaluation `nf_eval_nf M (k+1) 3 (zoneEnv3 w a b) qnf`,
+exposed as a citable equivalence for the recursion assembly (report 02 §1.4). Matches `nf_eval_nf`'s
+own `succ` clause (NormalForm.lean:203-207) at arity `3` on the navigated env `zoneEnv3 w a b`:
+the atom layer at the full env AND, per **arity-4** sub-NF `sub`, the coupled inner existential
+`∃ w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub`. The inner env
+`Fin.cons w' (zoneEnv3 w a b) = [w', w, a, b]` is arity 4 (`_ + 1 = 4`); this is the structural
+arity-4 quant layer the recursion step must characterize (the "brick-witness-collapse" seam,
+report 02 §4.1/§4.2). `w` stays the navigated witness, anchors `{a, b} ⊆ {x, t}` (G4). -/
+theorem nf_eval_nf_step_unfold {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (w a b : M.carrier)
+    (qnf : NormalForm sig (k + 1) 3) :
+    nf_eval_nf M (k + 1) 3 (zoneEnv3 w a b) qnf ↔
+      (∀ atom : AtomKind sig 3,
+        atom_eval M (zoneEnv3 w a b) atom ↔ (qnf.1 atom = true)) ∧
+      (∀ sub : NormalForm sig k 4,
+        (∃ w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub) ↔
+          (qnf.2 sub = true)) :=
+  Iff.rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
