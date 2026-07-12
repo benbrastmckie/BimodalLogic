@@ -65,6 +65,26 @@ completeness_discrete            (BXCanonical/Completeness.lean:336)
 - `Lemma32Reduction.lean` is on task-349's freeze list yet is **off-path/unreachable from KampPrior** — either a missing live import (bug) or a stale freeze entry. Investigate before relying on it.
 - `NavigatedEndChar.lean` (off-path, zero importers) — archivable, but it's the endChar staging ground; hold pending the route decision.
 
+## 4b. BREAKTHROUGH (2026-07-12, `349/reports/07_rabinovich-faithfulness-deep-check.md`)
+
+The v5 Phase-3 feasibility gate BLOCKED, and a primary-source faithfulness audit found the root
+cause: **the `endChar` carrier type is UNFAITHFUL to Rabinovich.**
+- `EndCharCarrier := NormalForm sig k 3 → TemporalPred` (single-point read at `w`) applies
+  Rabinovich Prop 3.5 (precondition: exactly ONE free var, md:137) at TWO free vars `{x,t}`.
+- Rabinovich's actual §5 carrier is the **Prop-valued two-endpoint interval formula**
+  `[…](z0,z1)` (md:219/225), both endpoints explicit, never read at one point.
+- All four strikes (navBrickForm→navMultiAnchorForm→navPieceForm→v5 navPieceForm_correct) are
+  the SAME non-theorem re-patched; `h_res` is a Lean artifact with no paper analogue.
+- **The faithful carrier already exists green at k=0**: `BracketEndCharCarrier := NormalForm sig
+  k 3 → VecEA2 1` (CarrierK1V.lean:52), `{x,t}` explicit endpoints, collapse to `TemporalPred`
+  only at the ≤1-free base.
+- **Impact**: task 349 must retire the frozen `EndCharCarrier → TemporalPred` / `navPieceForm`
+  line (a task-SCOPE change — the frozen-carrier constraint pointed at the wrong primitive) and
+  re-base onto `BracketEndCharCarrier`. Preserved: `nfEval_le2_reduction`,
+  `nf_zone_flatten_navigable(_correct)`, `seg`, `bracketBuild*`, `endChar0`. Task 350 consumes
+  VecEA2 and collapses to `TemporalPred` only at the top-level 1-free extraction; task 309
+  collapses once at Theorem 4.4, not per step. Adjudication audit (cycle 8) pending as cross-check.
+
 ## 5. Recommendation
 
 1. **Execute Wave 1 now** — it's pure upside, route-independent, and directly answers "systematically restructure/archive the appropriate elements": a ~2,350-line dead-island archival + 3 reference fixes + the n+2 retirement.

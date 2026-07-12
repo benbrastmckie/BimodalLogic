@@ -1,0 +1,37 @@
+{
+  "status": "blocked",
+  "skeleton": false,
+  "summary": "Phase 3 (feasibility gate): 3a landed GREEN — real navigated endCharStep def (bracketBuild+seg+locus via navPieceForm; replaces v4 scaffold), sorry-free, axioms [propext, Classical.choice, Quot.sound]. 3b BLOCKED at the residual-threading gate: the per-sub quant obligation reduces verbatim to navPieceForm_correct (report-04 non-theorem in closed-biconditional form); residual not threadable from h_res. No sorry/vacuous/collapse landed. Escalate /spawn 349.",
+  "phases_completed": 2,
+  "phases_total": 4,
+  "sorry_inventory": [],
+  "blockers": [
+    {
+      "kind": "feasibility_gate",
+      "phase": 3,
+      "sub_deliverable": "3b (k+1 endChar_correct step proof)",
+      "verbatim_goal": "⊢ temporal_truth M atomMap w (navPieceForm rec sub) ↔ ∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub",
+      "identity": "This side-obligation is exactly navPieceForm_correct — the report-04 machine-checked non-theorem as a closed biconditional (parameter independence: LHS closed-Formula read only at w; RHS constrains anchors {x,t} and the order layer among {v,w,x,t}).",
+      "why_h_res_wont_thread": "In-scope h_res conditions only the depth-0 atom layer of the top-level qnf at {x,t}. The gate needs a per-sub anchor/order residual for nf_eval_nf M k 4 [v,w,x,t] sub at the fresh witness v — not derivable from h_res. The atom layer (Step D) IS dischargeable (endChar0_wlocus_correct + h_res); the gate is solely the quant-layer per-sub navPieceForm obligation.",
+      "residual_threading_lemma_needed": "A lemma delivering, for each sub : NormalForm sig k 4, the anchor/order residual of nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub from the bracket-exterior structure, so navPieceForm rec sub (or a residual-conditioned variant) characterizes the arity-4 inner existential. Sole open obligation of the v5 architecture (report 05 §5.1 row 6, §5.2).",
+      "recommendation": "/spawn 349 for a dedicated residual-threading lemma",
+      "prohibited_honored": "no sorry, no vacuous def, no arity-4 enclosing-pair collapse (Lemma32Reduction.lean:290-306 non-theorem), no single-anchor reshape, no per-pair forall-ij exists-v distribution, no assertion of navPieceForm_correct/unconditional world-local form"
+    }
+  ],
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedEndChar.lean"
+  ],
+  "green_landed": {
+    "endCharStep_def": "real navigated builder (3a), green + sorry-free, axioms [propext, Classical.choice, Quot.sound]",
+    "k1_statement": "typechecks; pinned as documentation (not asserted, no sorry)"
+  },
+  "continuation_path": null,
+  "continuation_context": null,
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "new_axiom_count": 0,
+    "scoped_build_passed": true,
+    "scope": "only NavigatedEndChar.lean under Theories/; Base.lean and all frozen providers untouched"
+  }
+}

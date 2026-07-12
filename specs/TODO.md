@@ -110,7 +110,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+349 [PLANNING] — Build the recursive navigated arity-3 endpoint primitive `endChar
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
@@ -148,7 +148,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 349. Build recursive endchar navigated arity3 endpoint primitive
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [PLANNING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 351
@@ -161,6 +161,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 - **Plan**:
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/04_reduction-navigated-endchar.md]
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/05_faithful-residual-conditioned-endchar.md]
+  - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/06_faithful-two-endpoint-carrier.md]
 
 **Description**: Build the recursive navigated arity-3 endpoint primitive `endChar : (k : Nat) -> EndCharCarrier sig k` (EndCharCarrier abbrev at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1007) by recursion on k, plus `endChar_correct`. Base case = the already-landed `endChar0`/`endChar0_correct` (Base.lean:995/1056, sorry-free). Step case = navigable-brick flatten of each sub's existential witness composed with the already-landed non-trivial interior segment `seg`/`seg_holds_correct`/`seg_holds_coupled` (Base.lean:1127-1162, sorry-free) for the interior and Phase-6/8-shaped endpoint characteristics for the exteriors, arity capped at 3 (guard G4). This is the report-02-Section-1.4 primitive, explicitly documented as NOT YET BUILT at Base.lean:958-969 (~300-500 lines estimated in-file, brick-witness-collapse / anchor-management core). Consume, do NOT rebuild: endChar0/endChar0_correct, seg/seg_holds_correct/seg_holds_coupled, nf_zone_flatten_navigable(_brick)/_correct (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NfZoneFlattenNavigable.lean:689/709). Guards (binding): G1 no arity-1 collapse; G2/G4 anchors strictly {a,b} subset {x,t}, <=2, w never a third free anchor; G3 non-trivial segment only (reuse seg, never TemporalPred.top); G5 no simp/omega/aesop shortcut of a Rabinovich chain step, manual bridges only; FORBIDDEN: nf_char3_deeper_split (refuted route -- grows anchor set to 4, forbidden tower, report 02 Section 4.1); do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT touch KampPrior.lean or nf_nvar_exist_all_depths's signature -- this task's scope is Base.lean only, additive; axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule, do not land a vacuous or sorry'd endChar. Definition of done: lake build GREEN (scoped Base module at minimum, full tree recommended); endChar/endChar_correct sorry-free; lean_verify on endChar_correct = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; downstream task 309 Phase 18/19 can cite endChar_correct by name. Literature grounding: Rabinovich 2014 Cor 5.4 / report 02 Section 1.4 (the missing navigated-endpoint primitive) and Section 6 'Phase 8' decomposition (reports/02_endpoint-hook-discharge-research.md:266-270); orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt.
 
