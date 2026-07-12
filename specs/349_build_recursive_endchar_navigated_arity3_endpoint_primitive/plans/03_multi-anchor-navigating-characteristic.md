@@ -289,7 +289,44 @@ resumes at the first real work item (Phase 4).
 - **Depends on:** 3
 - **Files to modify:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean`
 
-### Phase 5: Multi-anchor navigating base `endCharN0`/`endCharN0_correct` (unconditional) [IN PROGRESS]
+### Phase 5: Multi-anchor navigating base `endCharN0`/`endCharN0_correct` (unconditional) [BLOCKED]
+
+**BLOCKER** (Phase 5) — `blk-349-p5-world-local-infeasible` (FEASIBILITY FAILURE, earliest signal for the whole multi-anchor architecture):
+- **What failed**: The frozen §Q4 base-case deliverable `endCharN0_correct` is UNPROVABLE. It demands a
+  single `TemporalPred` (one `Formula`) whose evaluation at the navigated witness `env 0` is
+  biconditional to the FULL arity-`n` atom layer `nf_eval_nf M 0 n env qnf` for an *arbitrary,
+  universally-quantified* `env : Fin n → M.carrier`.
+- **Exact stuck goal state** (after the green `endCharN0_wlocus_correct` LHS rewrite + `simp only [nf_eval_nf]`, captured via `lean_goal`):
+  ```
+  ⊢ (∀ (p : sig.preds), M.interp p (env 0) ↔ qnf (AtomKind.pred p 0) = true) ↔
+      ∀ (a : AtomKind sig n), atom_eval M env a ↔ qnf a = true
+  ```
+- **Precise obstruction**: `TemporalPred.eval_at tp t = temporal_truth M atomMap t tp.formula`
+  (ExistsForallNF.lean:53) is a function of the SINGLE world `t = env 0` (and `M`, formula) only — it is
+  invariant under changing `env` at positions `≥ 1`. But the RHS reads
+  `atom_eval M env (.pred p ⟨j⟩) = M.interp p (env j)` and `atom_eval M env (.order i j h) = env i < env j`
+  at the free positions `j ≥ 1` (NormalForm.lean:113). The forward direction therefore cannot be proved:
+  no hypothesis relates `env 1 … env (n-1)` to `env 0`. This holds for EVERY candidate base — navigating
+  or otherwise — because it is intrinsic to single-world `eval_at`.
+- **Evidence (Lean probes, all green, axioms exactly `[propext, Classical.choice, Quot.sound]`)**:
+  - `endCharN0_correct_world_local_obstruction` (Base.lean): any base satisfying the frozen biconditional
+    forces `nf_eval_nf M 0 n env qnf` to be independent of `env` at positions `≥ 1`.
+  - `endCharN0_correct_infeasible` (Base.lean): a concrete counter-model (`Mcex` over `Bool`, one
+    predicate) for which NO base exists — instantiating the obstruction at `n = 2` with `env`/`env'`
+    agreeing at position 0 but differing at position 1 yields `False`.
+- **What is needed to unblock**: the base-case `env` must NOT be an arbitrary free tuple; the `n-1`
+  non-witness positions must be reduced to (or reached as) navigation-bound witnesses. This is exactly the
+  plan's contingency — Rabinovich **Lemma 3.2(2)** ≤2-free-variable reduction (md:119): reduce to ≤2 free
+  variables BEFORE navigating so the recursion stays at arity ≤ 3 (two anchors + witness), matching the
+  GREEN arity-3 `nf_zone_flatten_navigable` line. **No in-tree Lean analogue of Lemma 3.2(2) exists** —
+  this requires a new structural lemma (spawn/`revise`).
+- **Prohibited**: Do NOT reintroduce a residual/`h_nav` to make it close (that is the refuted v2 route and
+  the exact thing this frozen statement forbids); no `sorry`; no vacuous placeholder; do NOT push the
+  obstruction downstream to Phase 7.
+- **Contingency pointer**: YES — the obstruction points squarely to the plan's Escape hatch (Rabinovich
+  Lemma 3.2(2) ≤2-free-variable reduction). Phase 6 (the multi-anchor converter with unconditional
+  full-eval hooks) inherits the SAME world-locality wall one arity up and is expected to fail identically;
+  the arity must be capped at ≤3, not climbed.
 
 - **Goal:** Build the depth-0 base of the recursion as a **multi-anchor navigating** characteristic
   and prove its **unconditional** correctness (§Q4 target 2, base case). At the navigated witness,
@@ -310,11 +347,19 @@ resumes at the first real work item (Phase 4).
 - **Tasks:**
   - [ ] Define `endCharN0 (atomMap) (h_surj) : {n} → NormalForm sig 0 n → TemporalPred` as the
         multi-anchor navigating atom characteristic (navigate to each anchor, read its atoms),
-        reusing the atom-literal core.
+        reusing the atom-literal core. *(deviation: not attempted — the correctness target below is
+        provably unrealizable by ANY base, so no rebuild of the def can succeed; the preserved
+        position-0 reader `endCharN0` is left as-is.)*
   - [ ] Prove `endCharN0_correct` UNCONDITIONALLY (the frozen §Q4 base-case shape); sorry-free.
-  - [ ] Route audit: G1 (honest arity-`n` atom layer, no arity-1 collapse), G2/G4 (anchors ≤2 free;
+        *(deviation: BLOCKED — proven UNPROVABLE. Landed instead two green sorry-free feasibility
+        refutations: `endCharN0_correct_world_local_obstruction` and `endCharN0_correct_infeasible`.
+        See the BLOCKER above.)*
+  - [x] Route audit: G1 (honest arity-`n` atom layer, no arity-1 collapse), G2/G4 (anchors ≤2 free;
         the `n-1` positions reached as bracket witnesses, not fresh free anchors), G5 (manual
-        bridges). Grep-confirm no `nf_char3_deeper_split`.
+        bridges). Grep-confirm no `nf_char3_deeper_split`. *(done: new code references no
+        `nf_char3_deeper_split`; `EndCharCarrier` unwidened; the refutations are manual `rw`/`rintro`
+        bridges. The audit CONFIRMS the arity-`n` free env at `n ≥ 2` is the exact infeasibility —
+        G4's "free anchors ≤2" is VIOLATED by the frozen statement's arbitrary `env`.)*
 - **Hard bar:** sorry-free; `lean_verify endCharN0_correct` = exactly
   `[propext, Classical.choice, Quot.sound]`; scoped Base build GREEN; statement = frozen §Q4
   base-case (no `h_nav`).

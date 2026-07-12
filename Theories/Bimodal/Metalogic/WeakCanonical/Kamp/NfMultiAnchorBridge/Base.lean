@@ -1701,7 +1701,21 @@ endCharN0_correct : ∀ {n} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n �
   (endCharN0 atomMap h_surj qnf).eval_at M atomMap (env 0) ↔ nf_eval_nf M 0 n env qnf
 ```
 (full `nf_eval_nf` RHS; no residual, no weakening — the `n-1` anchor positions are reached by
-nested `Since`/`Until` and their atoms read there, per reports/02 §Q4 target 2). -/
+nested `Since`/`Until` and their atoms read there, per reports/02 §Q4 target 2).
+
+**VERDICT (task 349 Phase 5, feasibility probe): this frozen target is UNPROVABLE — see the
+FEASIBILITY RESULT immediately below (`endCharN0_correct_world_local_obstruction` +
+`endCharN0_correct_infeasible`, both green, axioms exactly `[propext, Classical.choice, Quot.sound]`).**
+The stuck goal (after the green `endCharN0_wlocus_correct` rewrite of the LHS and unfolding
+`nf_eval_nf`) is:
+```
+⊢ (∀ p, M.interp p (env 0) ↔ qnf (AtomKind.pred p 0) = true) ↔
+    ∀ a : AtomKind sig n, atom_eval M env a ↔ qnf a = true
+```
+The forward direction is unprovable: the RHS ranges over `AtomKind.pred p ⟨j⟩` (= `M.interp p (env j)`)
+and `AtomKind.order i j h` (= `env i < env j`) for the free positions `j ≥ 1`, but the LHS — being
+`(base qnf).eval_at (env 0) = temporal_truth M atomMap (env 0) …` — depends only on `env 0`. No
+choice of base/formula (navigating or not) can bridge this. -/
 
 /-! ### Phase 5 FEASIBILITY RESULT (task 349): the frozen unconditional base is UNPROVABLE.
 
