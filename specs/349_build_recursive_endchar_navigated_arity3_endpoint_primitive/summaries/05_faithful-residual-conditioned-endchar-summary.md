@@ -48,3 +48,46 @@ matches the plan (Phase 4: "Prove `endChar_correct` by induction … base = Phas
 Build the arity-4 → `nfEvalRHS` reduction wiring inside the step (Step A) via `exists_congr` +
 `nfEval_le2_reduction` / green `navPiece_reduce` (witness `v` OUTSIDE), before any `Formula`
 conversion. Then Phase 3 replaces the `endCharStep` scaffold with the real navigated builder.
+
+---
+
+## Phase 2 (v5) — `endCharStep` Step A: arity-4 → `nfEvalRHS` reduction (REDUCE-FIRST)
+
+**Status: COMPLETED, green, sorry-free.** All additive to `NavigatedEndChar.lean`; `Base.lean` and
+every frozen provider untouched.
+
+### Landed (5 theorems)
+
+- `nfEval4_reduction` — arity-4 specialization of task-351 `nfEval_le2_reduction` (mirror of the
+  green `nfEval3_reduction`): `nf_eval_nf M k 4 env sub ↔ nfEvalRHS M k 4 env sub`.
+- `nfEval4_reduction_zero_shape` / `nfEval4_reduction_succ_shape` — arity confirmations
+  (`:= nfEvalRHS_zero` / `:= nfEvalRHS_succ`): every emitted `nf_eval_nf` conjunct of the reduced RHS
+  is `nf_eval_nf M 0 2 …` (anchor arity **2**, ≤ 3); the "4"/"5" are the recursion env domains of the
+  `∃ w` binder, never emitted anchor arities. No arity climb past 3.
+- `endCharStep_reduceA` — the per-`sub` Step-A existential reduction
+  `(∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔ (∃ v, nfEvalRHS M k 4 (Fin.cons v (zoneEnv3 w x t)) sub)`,
+  proved `:= navPiece_reduce M w x t sub` (consumes the preserved green witness-outside merge; `v`
+  stays OUTSIDE). This is the exact `[v,w,x,t]` reduction of report 05 §3.4 Step A.
+- `endCharStep_quant_reduceA` — the whole depth-`(k+1)` quant-layer reduction the Phase-3 assembly
+  threads: `forall_congr' (fun sub => iff_congr (endCharStep_reduceA …) Iff.rfl)`. Witness `v` OUTSIDE
+  each clause; quant assignment `qnf.2` preserved verbatim (no arity-collapsing `nfRestrict`); no
+  per-pair `∀ij ∃v` distribution.
+
+### Verification
+
+- Scoped `lake build …NavigatedEndChar`: **GREEN** (1009/1009).
+- `lean_verify` on all 5 = `[propext, Classical.choice, Quot.sound]`, no warnings, no sorry.
+- Route audit: **no `Formula` converter yet** (Steps B–D are Phase 3); G1 (no arity-1 collapse),
+  G2/G4 (`v` existential/OUTSIDE, anchors `{x,t}` EXPLICIT, `v` a bracket witness), G5 (manual
+  `exists_congr`/`forall_congr'`/`iff_congr`; `Iff.rfl`/`rfl` on defeq shapes only) respected;
+  no `nf_char3_deeper_split`, no arity-4 enclosing-pair collapse, no quant `nfRestrict` (`nfRestrict0`
+  only at the atom layer), no `navPieceForm_correct` in code (prose-only). Git scope = this file +
+  plan only.
+
+### Next (Phase 3, the feasibility gate)
+
+Replace the `endCharStep` scaffold body with the real navigated builder and prove the k+1 case of
+`endChar_correct`. Consume `endCharStep_quant_reduceA` for Step A, then navigate each reduced arity-3
+piece via `nf_zone_flatten_navigable_correct` (Step B), ride the interior on `seg`/`seg_holds_coupled`
+(Step C), and collapse at the base via `nf3_locus0` (Step D), threading the residual `h_res`
+(positions 1,2 pinned) to each sub-piece — the unproven residual-threading obligation.

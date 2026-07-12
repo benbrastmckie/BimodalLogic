@@ -210,7 +210,7 @@ edits to `Base.lean` (new `endCharStep`, `endChar`, `endChar_correct`) and `Navi
 - **Files to modify:** `.../NfMultiAnchorBridge/NavigatedEndChar.lean` (and/or `Base.lean` additively, per the
   §6 territory note — additive only).
 
-### Phase 2: `endCharStep` Step A — arity-4 → nfEvalRHS reduction (reduce FIRST) [NOT STARTED]
+### Phase 2: `endCharStep` Step A — arity-4 → nfEvalRHS reduction (reduce FIRST) [COMPLETED]
 
 - **Goal:** Build the arity-4 → nfEvalRHS reduction wiring inside the step: for each `sub : NormalForm sig
   k 4`, apply `navPiece_reduce` / `nfEval_le2_reduction` to expose the ≤2-free-anchor (≤ arity-3)
@@ -227,12 +227,19 @@ edits to `Base.lean` (new `endCharStep`, `endChar`, `endChar_correct`) and `Navi
   `nfEval3_reduction` (+ `_zero`/`_succ`_shape, NavigatedEndChar.lean:75). BUILD only the thin step-level
   reduction lemma that the Phase-3 assembly consumes. Do NOT rebuild any of the reduction family.
 - **Tasks:**
-  - [ ] Prove the step-level reduction lemma exposing the ≤2-free-anchor conjunction for each arity-4 `sub`,
+  - [x] Prove the step-level reduction lemma exposing the ≤2-free-anchor conjunction for each arity-4 `sub`,
         via `exists_congr` + `nfEval_le2_reduction` / `navPiece_reduce` (witness `v` OUTSIDE).
-  - [ ] Confirm via `nfEval3_reduction_succ_shape` / `nfEvalRHS_succ` that every emitted `nf_eval_nf`
+        *(`endCharStep_reduceA` (per-`sub`, consumes `navPiece_reduce`) + `endCharStep_quant_reduceA`
+        (whole quant layer via `forall_congr'`/`iff_congr`, witness `v` OUTSIDE, `qnf.2` verbatim).)*
+  - [x] Confirm via `nfEval3_reduction_succ_shape` / `nfEvalRHS_succ` that every emitted `nf_eval_nf`
         conjunct is arity ≤ 3 (no arity climb past 3 among emitted facts).
-  - [ ] Route audit: **no `Formula`-valued converter yet**; witness `v` stays existential (G2/G4);
+        *(`nfEval4_reduction` (+`_zero_shape`/`_succ_shape`): emitted atom facts are `nf_eval_nf M 0 2 …`,
+        anchor arity 2; the "4"/"5" are recursion env domains, never emitted anchor arities.)*
+  - [x] Route audit: **no `Formula`-valued converter yet**; witness `v` stays existential (G2/G4);
         no per-pair `∀ij ∃w` distribution; no arity-collapsing `nfRestrict`; grep clean.
+        *(`navPieceForm_correct`/`nf_char3_deeper_split` tokens appear only in prose docstrings;
+        `nfRestrict0` used only on the atom layer; `lean_verify` on all 5 = `[propext, Classical.choice,
+        Quot.sound]`; git scope = NavigatedEndChar.lean + plan only; Base.lean untouched.)*
 - **Estimated output:** ~150–250 lines.
 - **Done when:** the step-level reduction lemma is green and sorry-free; `lean_verify` =
   `[propext, Classical.choice, Quot.sound]`; scoped build GREEN; emitted conjuncts confirmed arity ≤ 3.

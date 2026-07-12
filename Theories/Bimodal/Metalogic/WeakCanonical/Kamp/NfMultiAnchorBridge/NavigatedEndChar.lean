@@ -333,4 +333,120 @@ theorem endChar_correct_zero {sig : MonadicSignature}
       nf_eval_nf M 0 3 (zoneEnv3 w x t) qnf :=
   endChar0_correct M atomMap h_surj qnf w x t h_res
 
+/-! ## Phase 2 (task 349, v5): `endCharStep` Step A — arity-4 → `nfEvalRHS` reduction (reduce FIRST)
+
+**Faithful v5 architecture, Step A (report 05 §3.4 Step A, §5.3).** The recursion step `endCharStep`
+at depth `k+1` must characterize, for each arity-4 sub-form `sub`, the coupled inner realizability
+existential `∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub` (the quant clause of
+`nf_eval_nf M (k+1) 3 (zoneEnv3 w x t) qnf`, exposed by `nfEval_step_unfold_gen` at arity 3). Step A
+REDUCES this arity-4 inner existential to the ≤2-anchor (≤ arity-3) conjunction `nfEvalRHS`
+**BEFORE any `Formula` conversion**, by consuming task 351's `nfEval_le2_reduction` (Rabinovich
+Lemma 3.2(2), Lemma32Reduction.lean:535) under a single shared witness `v` (via `exists_congr`, so
+`v` stays OUTSIDE the reduced inner form — the order-theoretic `∃v ∀ij` merge, NEVER a per-pair
+`∀ij ∃v` distribution). This is where v4 went wrong (it converted to `Formula` first); here the
+arity reduction is first (report 05 §1.1, §3.4).
+
+Every emitted `nf_eval_nf` conjunct of the reduced RHS has anchor arity **exactly 2**
+(`nfEval4_reduction_zero_shape` / `nfEval4_reduction_succ_shape` below), so navigation over this
+reduction (Phase 3) never climbs past anchor arity 3. The arity-4 domain of the recursive `∃ v`
+binder over `Fin.cons v (zoneEnv3 w x t)` is NOT an emitted anchor arity — it is the env domain of
+the recursion, and its only emitted `nf_eval_nf` facts are the depth-0 arity-2 atom pieces.
+
+### Route audit (Phase 2)
+- **G1** — no arity-1 collapse: the reduction targets arity-2 atom facts and the depth-recursive
+  quant clauses; no arity-1 residual is produced.
+- **G2/G4** — the witness `v` is existentially bound and stays OUTSIDE the reduced inner form (never
+  a per-pair distribution); the free anchors stay `{x, t}` (`x, t` EXPLICIT); `v` is a bracket
+  witness, never a third free anchor.
+- **G5** — assembled by manual `exists_congr` (inside `navPiece_reduce`), `forall_congr'`, and
+  `iff_congr` congruence bridges over the reduction; `Iff.rfl` / `rfl` on definitional shapes only;
+  no `simp`/`omega`/`aesop` shortcut of a Rabinovich chain step.
+- **FORBIDDEN (absent)** — no `Formula`-valued converter yet; no `navPieceForm_correct`; no
+  arity-4 enclosing-pair collapse / single-point read (the machine-checked NON-THEOREM,
+  Lemma32Reduction.lean:290-306); no arity-collapsing quant `nfRestrict` (the quant assignment
+  `qnf.2` is preserved verbatim); no per-pair `∀ij ∃v` distribution; no `nf_char3_deeper_split`. -/
+
+/-- **Arity-4 specialization of the task-351 reduction** (Rabinovich Lemma 3.2(2), md:119). The
+arity-4 companion of `nfEval3_reduction` (:75): for every depth `k`, environment `env : Fin 4 →
+M.carrier`, and sub-form `sub : NormalForm sig k 4`, the arity-4 evaluation `nf_eval_nf M k 4 env
+sub` is equivalent to the reduced conjunction `nfEvalRHS M k 4 env sub` of ≤2-anchor `nf_eval_nf`
+atom facts plus the depth-recursive quant-layer realizability clauses. A plain instantiation of the
+imported `nfEval_le2_reduction` (Lemma32Reduction.lean:535) at `n = 4` — it re-derives NOTHING; it
+only fixes the arity at 4 (the env domain of the step's inner existential). Every emitted
+`nf_eval_nf` conjunct has anchor arity 2 (`nfEval4_reduction_zero_shape` /
+`nfEval4_reduction_succ_shape`), so navigation over it (Phase 3) never climbs past anchor arity 3. -/
+theorem nfEval4_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    (k : Nat) (env : Fin 4 → M.carrier) (sub : NormalForm sig k 4) :
+    nf_eval_nf M k 4 env sub ↔ nfEvalRHS M k 4 env sub :=
+  nfEval_le2_reduction M k 4 env sub
+
+/-- **Arity confirmation, depth 0 (arity 4).** At `k = 0`, the reduced RHS of `nfEval4_reduction` is
+exactly a conjunction (over anchor pairs `i j : Fin 4`) of arity-**2** `nf_eval_nf` atom facts
+`nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 sub i j)` — no arity climb past 2 among the
+emitted `nf_eval_nf` facts. Direct from the imported `nfEvalRHS_zero`. Confirms the Step-A reduced
+conjunction is ≤ arity-3 (in fact arity 2) at the base. -/
+theorem nfEval4_reduction_zero_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    (env : Fin 4 → M.carrier) (sub : NormalForm sig 0 4) :
+    nfEvalRHS M 0 4 env sub
+      = ∀ (i j : Fin 4), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 sub i j) :=
+  nfEvalRHS_zero M env sub
+
+/-- **Arity confirmation, depth `k+1` (arity 4).** At `k+1`, the reduced RHS of `nfEval4_reduction`
+splits into (a) arity-**2** `nf_eval_nf` atom facts over anchor pairs `i j : Fin 4`, and (b) the
+depth-recursive realizability clauses `∀ s, (∃ w, nfEvalRHS M k 5 (Fin.cons w env) s) ↔ (sub.2 s =
+true)` in which the witness `w` stays OUTSIDE the reduced inner form (order-theoretic `∃w ∀ij`
+merge — never a per-pair `∀ij ∃w` distribution) and the quant assignment `sub.2` is preserved
+verbatim (no arity-collapsing `nfRestrict`). No emitted `nf_eval_nf` atom fact climbs past anchor
+arity 2. Direct from the imported `nfEvalRHS_succ`. -/
+theorem nfEval4_reduction_succ_shape {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    {k : Nat} (env : Fin 4 → M.carrier) (sub : NormalForm sig (k + 1) 4) :
+    nfEvalRHS M (k + 1) 4 env sub
+      = ((∀ (i j : Fin 4),
+            nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 sub.1 i j)) ∧
+          (∀ s : NormalForm sig k 5,
+            (∃ w : M.carrier, nfEvalRHS M k 5 (Fin.cons w env) s) ↔ (sub.2 s = true))) :=
+  nfEvalRHS_succ M env sub
+
+/-- **Step A — per-`sub` arity-4 → `nfEvalRHS` reduction (witness `v` OUTSIDE; the thin step-level
+reduction lemma Phase 3 consumes).** For each arity-4 sub-form `sub`, the coupled inner
+realizability existential `∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub` (the quant clause
+of `nf_eval_nf M (k+1) 3 (zoneEnv3 w x t) qnf` at this `sub`, per `nfEval_step_unfold_gen`) is
+reduced — **under the single shared witness `v`** — to `∃ v, nfEvalRHS M k 4 (Fin.cons v (zoneEnv3 w
+x t)) sub`, whose emitted `nf_eval_nf` conjuncts are all anchor-arity 2 (≤ arity-3;
+`nfEval4_reduction_zero_shape` / `nfEval4_reduction_succ_shape`). This is the SETTLED
+"witness-stays-OUTSIDE" merge: it CONSUMES the preserved green `navPiece_reduce`
+(NavigatedEndChar.lean:215 — `exists_congr (fun v => nfEval_le2_reduction …)`, so `v` stays OUTSIDE),
+retained verbatim, renamed to the step context (`y := w`). This is Step A of the v5 REDUCE-FIRST
+architecture: the arity reduction happens BEFORE any `Formula` conversion (Phase 3), the witness
+`v` stays existential (G2/G4), the anchors stay `{x, t}` EXPLICIT, and there is NO per-pair `∀ij ∃v`
+distribution and NO arity-collapsing `nfRestrict`. sorry-free. -/
+theorem endCharStep_reduceA {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (sub : NormalForm sig k 4) :
+    (∃ v : M.carrier, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔
+      (∃ v : M.carrier, nfEvalRHS M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) :=
+  navPiece_reduce M w x t sub
+
+/-- **Step A — whole quant-layer reduction (the form the Phase-3 `endCharStep` assembly threads).**
+The depth-`(k+1)` quant layer of `nf_eval_nf M (k+1) 3 (zoneEnv3 w x t) qnf` — the family of
+per-`sub` realizability clauses `∀ sub, (∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔
+(qnf.2 sub = true)` (exposed by `nfEval_step_unfold_gen` at arity 3) — is reduced, clause-by-clause
+under the shared witness `v` via `forall_congr'` + `iff_congr` over `endCharStep_reduceA`, to the
+`nfEvalRHS`-reduced quant layer `∀ sub, (∃ v, nfEvalRHS M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔
+(qnf.2 sub = true)`. The witness `v` stays OUTSIDE each clause (no per-pair `∀ij ∃v` distribution);
+the quant assignment `qnf.2` is preserved verbatim (no arity-collapsing `nfRestrict`); every emitted
+`nf_eval_nf` conjunct on the reduced side is anchor-arity 2 (≤ arity-3). This is the Step-A output
+Phase 3 navigates (Step B, `nf_zone_flatten_navigable_correct`); no `Formula` conversion yet.
+sorry-free. -/
+theorem endCharStep_quant_reduceA {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (qnf : NormalForm sig (k + 1) 3) :
+    (∀ sub : NormalForm sig k 4,
+        (∃ v : M.carrier, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔
+          (qnf.2 sub = true)) ↔
+      (∀ sub : NormalForm sig k 4,
+        (∃ v : M.carrier, nfEvalRHS M k 4 (Fin.cons v (zoneEnv3 w x t)) sub) ↔
+          (qnf.2 sub = true)) :=
+  forall_congr' (fun sub => iff_congr (endCharStep_reduceA M w x t sub) Iff.rfl)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
