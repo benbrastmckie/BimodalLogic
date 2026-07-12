@@ -362,7 +362,43 @@ strictly sequential.
   check recorded; frozen diffs EMPTY; commit.
 - **Files:** `ExteriorFiberK.lean` (additive tail only).
 
-### Phase 3: Future-side clause layer (`ExteriorNegationK.lean`) [IN PROGRESS]
+### Phase 3: Future-side clause layer (`ExteriorNegationK.lean`) [BLOCKED]
+
+**BLOCKER** (Phase 3.2/3.3 — `kvE_extNegFut_sound`/`_complete`):
+- **What failed**: Wiring the corrected full-fiber content channel (`kvE_fiberPosOn P` →
+  `P.existF 4 s`) into the depth-`k` chain's INTERIOR gap-point positions. After
+  `rw [P.correct 4 s M h_UZ h_SZ r]` the obligation is
+  `⊢ ∃ env, nf_eval_nf M k (4+1) (insertEnv env r) s` while a realizer supplies
+  `hs : nf_eval_nf M k 5 (Fin.cons r (Fin.cons x1 (Fin.cons w (Fin.cons x fun _ ↦ t)))) s`
+  (empirically captured via `lean_goal`, 2026-07-12).
+- **Root cause (four-element)**: (i) counterexample/mismatch — `P.existF`'s correctness
+  (`PriorInterface.lean:41-45`) evaluates a sub's *last* variable (index 4, `insertEnv env t`)
+  at the eval point, but σ's fold quant layer (`nf_eval_efold_k`, `NfEFold.lean:608-613`)
+  binds the quantified/fresh variable at *index 0* (`Fin.cons x env`). For the FUTURE clause
+  evaluated at the right anchor `t` the two coincide (index 4 = `t`), but the chain's interior
+  gap points `r` need the gap variable rendered at `r` = index 4, whereas σ realizes those subs
+  with the gap point at index 0 and `t` at index 4 — `insertEnv env r = Fin.cons r [x1,w,x,t]`
+  forces `r = t`, false for a gap point. (ii) current behavior — no `NormalForm` variable
+  reindexing/relabel operation with semantic transport
+  (`nf_eval M k 5 env (relabel s) ↔ nf_eval M k 5 (env ∘ perm) s`) exists in the active tree
+  (only Boneyard has cross-*model* `∘ skipIdx` transport, a different purpose; grep 2026-07-12).
+  (iii) required behavior — either such a reindex bridge (index-0 ↔ index-last permutation), or
+  a provider evaluating at index 0, or a re-architected clause that anchors ALL content at the
+  fixed `t` (index 4) and orders interior points by marginal navigation only. (iv) isolation —
+  the reindex/relabel bridge is SHARED (the Past side, Phase 4.2/4.3, needs the mirror), so per
+  H7 it belongs in the FROZEN `ExteriorFiberK.lean` (or `PriorInterface.lean` convention), NOT
+  a concurrently-edited side file — hence orchestrator escalation, not in-side construction.
+- **What was tried**: full-fiber content defs landed and green (`kvE_futGapD`/`RayD`/`RayForm`/
+  `End`/`Chain`/`Pos`/`extNegFut`); the model-side chain device generalized and green
+  (`kvE_futChainG`/`BuildG`/`DestructG`, with the distinctness invariant `huniq` abstracted so
+  it is NOT the obstruction). The obstruction is strictly the content-channel↔fold variable-slot
+  reconciliation above.
+- **What is needed**: orchestrator decision + a spawned dependency — add a `NormalForm`
+  index-permutation relabel + semantic-transport lemma to the shared FROZEN `ExteriorFiberK.lean`
+  (unfreeze for a controlled shared addition, or `/spawn 352`), OR re-scope the clause
+  architecture to anchor content at the fixed right anchor. Then re-dispatch 3.2/3.3.
+- **Prohibited**: no `sorry`, no `def X := True`, no vacuous placeholder was landed (verified
+  `sorry_count = 0`, `lake build` green).
 
 - **Goal:** The depth-k Future clause layer over `P`, faithful to Cor 5.4 / Lemma 5.3 / Lemma
   7.8 per the mapping table, template = ExteriorNegation.lean's non-spike core (:875-1735).
@@ -378,11 +414,15 @@ strictly sequential.
         self-zone profile UNIQUENESS at depth k, because `σ.1` is the depth-0 atom layer so the
         endpoint profile is fiber-borne `nfk_projFresh s : NormalForm sig k 1`, not a `σ.1`
         marginal — see Q3 note below and phase-3-1 handoff)*
-  - [ ] Clause-form defs: `kvE_futGapD`, `kvE_futRayD`, `kvE_futRayForm`, `kvE_futEnd`,
+  - [x] Clause-form defs: `kvE_futGapD`, `kvE_futRayD`, `kvE_futRayForm`, `kvE_futEnd`,
         `kvE_futChain`, `kvE_futPos`, `kvE_extNegFut := (kvE_futPos ...).neg` (templates
-        :1072/:1079/:1088/:1098/:1108/:1124/:1136), all parameterized
-        `(atomMap) (h_surj) (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k+1) 4)`,
+        :1072/:1079/:1088/:1098/:1108/:1124/:1136), parameterized
+        `{atomMap} (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k+1) 4)`,
         content positions rendered via `kvE_fiberPosOn` (never marginal χ — postmortem rule 3).
+        *(GREEN, commit 782d8764c; `h_surj` dropped — unused since content is `P.existF`, not
+        `nf_depth0_char_formula`; visited universe = Phase-2 `kvE_fiberZoneList σ zs4`; the
+        model-side chain device generalized to `kvE_futChainG`/`BuildG`/`DestructG` — GREEN,
+        commit d27eed7a6 — with the distinctness invariant `huniq` abstracted)*
   - [x] Record the propagated hypothesis shape (Q3): whether `_sound`/`_complete` statements
         need `h_UZ`/`h_SZ` beyond `P` (expected: yes, mirroring `P.correct`). *(partial — Q3
         finding for the zone/admissibility layer: `kvE_futRealizer_admissible` needs NO `h_UZ`/
@@ -396,16 +436,17 @@ strictly sequential.
         deferred to a follow-up 3.1 dispatch (or folded into 3.2); NOT in the zone/admissibility
         sub-dispatch scope.
 - **Sub-phase 3.2 — `kvE_extNegFut_sound`** (~200-300 lines):
-  - [ ] Chain-destruct helper (template: ChainDestruct region :1435) by intra-rung list-length
-        induction (Cor 5.4's y1/y2 case split; E's sharpening — no depth recursion).
+  - [x] Chain-destruct helper (template: ChainDestruct region :1435) by intra-rung list-length
+        induction. *(landed as generic `kvE_futChainDestructG`, GREEN, commit d27eed7a6)*
   - [ ] `kvE_extNegFut_sound` mirroring :1243's statement shape one fold-layer deeper
-        (`∀ x1, t < x1 → ¬ nf_eval_nf M (k+1) 4 ... σ` conclusion shape per research KF3,
-        adjusted for the corrected content channel).
+        *(deviation: BLOCKED — see the Phase-3 BLOCKER record: content-channel↔fold variable-slot
+        reconciliation is missing shared infra; no sorry/vacuous landed)*
 - **Sub-phase 3.3 — `kvE_extNegFut_complete`** (~200-300 lines):
-  - [ ] Chain-build helper (template: ChainBuild region :1180) + min-pick application.
-  - [ ] `kvE_extNegFut_complete` mirroring :1484, with the `hbelow`-analog hypothesis in the
-        FULL-FIBER pin shape (research ruling: `kvE_futAnyBit_correct` alone is
-        necessary-but-not-sufficient scaffolding, not the hypothesis itself).
+  - [x] Chain-build helper (template: ChainBuild region :1180) + min-pick application.
+        *(landed as generic `kvE_futChainBuildG`, GREEN, commit d27eed7a6)*
+  - [ ] `kvE_extNegFut_complete` mirroring :1484, with the `hbelow`-analog full-fiber pin
+        *(deviation: BLOCKED — same content-channel↔fold reconciliation blocker; the full-fiber
+        pin `_complete` would consume also requires the reindex bridge; no sorry/vacuous landed)*
 - **Estimated output:** ~600-950 lines total across 3 dispatches.
 - **Bounded-unit stop condition (each sub-phase):** its named decls green OR [BLOCKED] +
   exact `lean_goal` on the failing decl; commit each green sub-phase before proceeding. If
