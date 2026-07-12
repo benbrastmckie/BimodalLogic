@@ -234,7 +234,32 @@ MAY run in parallel; each is a single committable green unit.
 - **Depends on:** 1
 - **Files to modify:** `.../NavigatedEndChar.lean`
 
-### Phase 3: Arity-3 inner-realizability navigator `navPieceForm`/`_correct` (load-bearing core) [NOT STARTED]
+### Phase 3: Arity-3 inner-realizability navigator `navPieceForm`/`_correct` (load-bearing core) [PARTIAL]
+
+**PARTIAL (3a done, 3b contingency-triggered) — dispatch sess_1783841542_df767b.** Landed green,
+sorry-free, additive to `NavigatedEndChar.lean` only:
+- `navPieceForm` (the closed navigating converter def, `seg rec q3` interior + `rec q3` endpoints,
+  `q3 = nfk_take (3≤4) sub`) — the 3a def half of the pre-declared split. Green, committed
+  (`task 349 phase 3.a`).
+- `navPiece_reduce` — the SETTLED "witness-stays-OUTSIDE" reduction step
+  (`∃w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub ↔ ∃w, nfEvalRHS M k 4 … sub` via
+  `exists_congr` + `nfEval_le2_reduction`). Green, `lean_verify` = `[propext, Classical.choice,
+  Quot.sound]`, committed (`task 349 phase 3.b`).
+
+**3b deferral (`navPieceForm_correct`) — Contingency Trigger fired.** The `lean_goal`-verified
+residual after `navPiece_reduce` is
+`⊢ (∃ w, nfEvalRHS M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔ temporal_truth M atomMap y
+(navPieceForm rec sub)`. The reduced LHS atom layer ranges over ALL pairs `(i,j) : Fin 4` (the four
+anchors `{w, y, x, t}`) plus, at `k+1`, an arity-5 quant layer. Navigating this full Fin-4
+pairwise/quant structure into a single closed `Formula` read at `y` requires an
+**arity-4-enclosing-pair navigation bridge** (disjunction over enclosing pairs threading the single
+witness through the linear order) that is NOT among the green consumed assets:
+`nfEval_pair_arity3_flatten`/`_interior` navigate a FIXED arity-3 pair only, and the single-pair
+arity-4→3 bi-implication is machine-checked a NON-THEOREM (`Lemma32Reduction.lean:290-306`). Per this
+phase's Contingency Trigger, the correctness is deferred to a dedicated follow-up: **`/spawn 349` for
+the missing arity-4-enclosing-pair navigation bridge**; the `navPieceForm` def structure is expected
+to be enriched alongside it. No collapse, single-anchor reshape, per-pair `∀ij ∃w` distribution, or
+mis-stated/vacuous theorem was landed.
 
 - **Goal:** Build the closed-`Formula` converter that discharges the depth-`(k+1)` inner-realizability
   obligation `h_inner` of `nf_char3_endpoint_tl_correct` — for each arity-4 `sub`,
@@ -252,15 +277,19 @@ MAY run in parallel; each is a single committable green unit.
   k 4 → Formula` and its correctness under the parametric arity-3 hooks. This REPLACES v3's removed
   single-anchor `navBrickForm` and v3's infeasible `navMultiAnchorForm` — do NOT resurrect either.
 - **Tasks:**
-  - [ ] Define `navPieceForm` (the closed `Until`/`Since` navigating converter with `seg` interior),
+  - [x] Define `navPieceForm` (the closed `Until`/`Since` navigating converter with `seg` interior),
         parametric in the depth-`(k-1)` hooks, built on `nf_zone_flatten_navigable`'s structure.
+        *(done — `navPieceForm` green; also landed `navPiece_reduce`, the witness-outside reduction step)*
   - [ ] Prove `navPieceForm_correct` under parametric arity-3 hooks: apply `nfEval_le2_reduction` to the
         arity-4 inner term under `exists_congr` (witness stays OUTSIDE — SETTLED merge), then discharge
         the arity-3 pieces with `nfEval_pair_arity3_flatten`/`_interior` and `seg_holds_coupled`. Manual
-        bridges (G5).
-  - [ ] Route audit: G2/G4 (every `w` a bracket witness; free anchors ≤2 while arity is capped at 3),
+        bridges (G5). *(deviation: deferred — Contingency Trigger fired; needs arity-4-enclosing-pair
+        navigation bridge, /spawn 349. `exists_congr`+reduction first step landed as `navPiece_reduce`)*
+  - [x] Route audit: G2/G4 (every `w` a bracket witness; free anchors ≤2 while arity is capped at 3),
         G3 (non-trivial `seg` interior — never `⊤`), G5; no `nf_char3_deeper_split`; no per-pair `∀ij ∃w`
         distribution; no arity-collapsing quant `nfRestrict`. Grep clean.
+        *(done for landed 3a/`navPiece_reduce`: grep-clean of forbidden constructs in code; seg interior
+        non-trivial; arity capped at 3; witness stays outside)*
 - **Hard bar:** sorry-free; `lean_verify navPieceForm_correct` = exactly
   `[propext, Classical.choice, Quot.sound]`; new-module build GREEN; hooks are the arity-3 IH shape;
   interior is `seg`; navigation anchor arity ≤3.
