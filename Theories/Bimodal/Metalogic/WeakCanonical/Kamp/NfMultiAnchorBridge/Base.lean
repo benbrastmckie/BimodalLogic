@@ -1950,4 +1950,40 @@ noncomputable def endCharRec {sig : MonadicSignature}
         (fun sub => navBrickForm (endCharRec atomMap h_surj k (n := n + 1)) sub)
         qnf
 
+/-! ### Phase 5 status — `endCharRec_correct` BLOCKED (cross-phase hook/residual incompatibility)
+
+`endCharRec` (above), `nf_endpoint_tl_gen`/`_correct`, and `atomPartN` land green and sorry-free.
+The `endCharRec_correct` k-induction (frozen Phase-2 statement, Base.lean:1529) does **not** close as
+architected. Base case (`k = 0`) discharges by `endCharN0_correct` and the step's atom hook `h_atom`
+discharges by `endCharN0_correct M atomMap h_surj qnf.1 env h_nav` — both verified. The step's inner
+hook `h_inner` must be discharged by `navBrickForm_correct` (Phase 4), whose three zone hooks
+`h_past`/`h_now`/`h_fut` demand, for a **universally-quantified** `sub : NormalForm sig k (n+1)` and
+each navigated witness `w'`, the UNCONDITIONAL biconditional
+
+  `(endCharRec … k sub).eval_at w' [∧ (BracketFormula.trivial (endCharRec … k sub)).holds …] ↔`
+  `  nf_eval_nf M k (n+1) (Fin.cons w' env) sub`.
+
+The IH `endCharRec_correct k (n+1)` supplies this biconditional ONLY under a hypothesis
+`NavResidual M sub (Fin.cons w' env)` (empirically: after `refine ih sub (Fin.cons w' env) ?_`, the
+sole residual goal is exactly `⊢ NavResidual M sub (Fin.cons w' env)`). Nothing supplies that inner
+residual: the frozen `endCharRec_correct` threads a `NavResidual` for the OUTER `qnf`/`env` only, and
+`navBrickForm_correct`'s hooks carry no per-witness residual. For an arbitrary `sub` whose
+anchor-position atom (e.g. `.pred p (1 : Fin (n+1))`, read at `env 0`) disagrees with `env`,
+`NavResidual` FAILS and `nf_eval_nf … sub` is FALSE, yet `endCharRec … k sub` — which reads only the
+position-0 witness layer (`endCharN0_wlocus_correct`, Base.lean:1694) — can still be TRUE at `w'`, so
+the hooks' forward direction is a genuine non-theorem (the arity-`(n+1)` reincarnation of report 02
+§4.3's decisive fact: a navigated closed `TemporalPred` cannot certify the anchor/order layer at the
+non-witness positions). `h_past`/`h_fut` additionally require an interior conjunct
+`∀ y ∈ (w', env 0), (endCharRec … k sub).eval_at y`, itself not implied by `nf_eval_nf` at the single
+endpoint `w'`.
+
+This is a cross-phase incompatibility between the Phase-4 `navBrickForm_correct` hook shape
+(unconditional, no inner residual) and the IH shape (conditional on an inner `NavResidual`) that
+CANNOT be resolved additively in Phase 5 without revising a frozen asset — either reshape
+`navBrickForm`/`navBrickForm_correct` to carry a per-witness `NavResidual` hypothesis (and re-examine
+the exterior-zone `BracketFormula.trivial (rec sub)` interior segment), or thread an inner residual
+through `endCharRec_correct`. See the task-349 handoff / plan Phase 5 `[BLOCKED]` for the structured
+blocker and unblock options. `endCharRec_correct` is intentionally NOT stated here (a stuck-attempt
+main-target `sorry` is not a legitimate strategic sorry); the module stays green and sorry-free. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -313,7 +313,7 @@ state and the missing lemma, return `status: partial` — do NOT land a vacuous 
 - `lean_verify navBrickForm_correct` = exactly `[propext, Classical.choice, Quot.sound]`.
 - Grep confirms no `nf_char3_deeper_split` occurrence in the new code; anchors provably ≤2.
 
-### Phase 5: Assemble `endCharRec` + `endCharRec_correct` (k-induction) [IN PROGRESS]
+### Phase 5: Assemble `endCharRec` + `endCharRec_correct` (k-induction) [BLOCKED]
 
 **Goal**: Tie the base (Phase 3) and the brick step (Phase 4) into the arity-general recursion and
 prove global correctness by induction on `k`, discharging the step's `h_inner`/`h_past`/`h_fut` hooks
@@ -322,20 +322,55 @@ with the IH `endCharRec_correct k (n+1)` — the IH consumed at the arity the st
 arity-`n` as `nf_endpoint_tl_gen` (report 01 §5.5 target 2) to assemble the step.
 
 **Tasks**:
-- [ ] Define `nf_endpoint_tl_gen (atomPart) (innerConv : NormalForm sig k (n+1) -> Formula) (q : NormalForm sig (k+1) n) : TemporalPred`
-  generalizing `nf_char3_endpoint_tl` (Base.lean:869) from `zoneEnv3`/arity-3 to arity-`n`.
-- [ ] Define `endCharRec` via `Nat.rec` with the Phase-2 Π-motive:
+- [x] Define `nf_endpoint_tl_gen (atomPart) (innerConv : NormalForm sig k (n+1) -> Formula) (q : NormalForm sig (k+1) n) : TemporalPred`
+  generalizing `nf_char3_endpoint_tl` (Base.lean:869) from `zoneEnv3`/arity-3 to arity-`n`. *(landed
+  green + `nf_endpoint_tl_gen_correct`, axioms exactly `[propext, Classical.choice, Quot.sound]`.)*
+- [x] Define `endCharRec` via `Nat.rec` with the Phase-2 Π-motive:
   `k = 0 => endCharN0 …`; `k+1 => nf_endpoint_tl_gen (atomPartN … qnf.1) (fun sub => navBrickForm (endCharRec k (n+1)) sub) qnf`
   — `innerConv` is the brick over the IH at arity `n+1`, **discharged internally** (NOT deferred to a
-  caller; Option 3 rejected).
+  caller; Option 3 rejected). *(landed green; `atomPartN` = `(endCharN0 …).formula`; genuinely
+  recurses through `endCharRec … k`.)*
 - [ ] Prove `endCharRec_correct` by induction on `k`: base = `endCharN0_correct` (Phase 3, supplying
   `h_nav`); step = generalized `nf_char3_endpoint_tl_correct` (Base.lean:885) whose `h_inner` is
   discharged by `navBrickForm_correct` (Phase 4) with its `h_past`/`h_fut` hooks **instantiated to the
-  IH `endCharRec_correct k (n+1)`** — the recursion closes because the IH is available at `(k, n+1)`
-  in a `k`-induction (report 01 §Adversarial-Verification, second refutation). Interior coupling via
-  `seg_holds_coupled` (Base.lean:1150) — NOT a sorry.
+  IH `endCharRec_correct k (n+1)`**. *(deviation: BLOCKED — the IH supplies the brick hooks' biconditional
+  ONLY under an inner `NavResidual M sub (Fin.cons w' env)` hypothesis that nothing provides; see BLOCKER.)*
 - [ ] Route audit: G1-G5 satisfied by construction (inherited from Phases 3-4); G5 manual bridges for
-  the `k->k+1` chain step.
+  the `k->k+1` chain step. *(deviation: deferred — blocked before the k→k+1 chain step could be audited.)*
+
+**BLOCKER** (Phase 5):
+- **What failed**: `endCharRec_correct` (frozen Phase-2 statement, Base.lean:1529), the `k`-induction
+  step case. Base case + step atom hook `h_atom` both discharge cleanly (`endCharN0_correct`). The
+  step's `h_inner` needs `navBrickForm_correct` (Phase 4), whose zone hooks `h_past`/`h_now`/`h_fut`
+  demand, for **universally-quantified** `sub : NormalForm sig k (n+1)`, the UNCONDITIONAL biconditional
+  `(endCharRec … k sub).eval_at w' [∧ (BracketFormula.trivial (endCharRec … k sub)).holds …] ↔ nf_eval_nf M k (n+1) (Fin.cons w' env) sub`.
+- **What was tried**: (1) `simp only [endCharRec]` + `apply nf_endpoint_tl_gen_correct` + `h_atom` via
+  `endCharN0_correct M atomMap h_surj qnf.1 env h_nav` — GREEN. (2) `apply navBrickForm_correct … (env 0) env`
+  for `h_inner`, then for `h_now` `refine ih sub (Fin.cons (env 0) env) ?_`. The IH unifies the
+  biconditional (via `Fin.cons_zero` defeq on `env' 0 = env 0`), leaving the SOLE goal
+  `⊢ NavResidual M sub (Fin.cons (env 0) env)` (verified via `lean_goal`).
+- **Why stuck**: Nothing supplies `NavResidual M sub (Fin.cons w' env)` for the inner witness. The
+  frozen `endCharRec_correct` threads `NavResidual` for the OUTER `qnf`/`env` only; `navBrickForm_correct`'s
+  hooks carry no per-witness residual. For arbitrary `sub` whose anchor-position atom (`.pred p 1`, read
+  at `env 0`) disagrees with `env`, `NavResidual` FAILS and `nf_eval_nf … sub` is FALSE, yet
+  `endCharRec … k sub` reads only the position-0 witness layer (`endCharN0_wlocus_correct`, Base.lean:1694),
+  so it can be TRUE at `w'` — the hooks' forward direction is a genuine non-theorem (arity-`(n+1)`
+  reincarnation of report 02 §4.3's decisive fact: a navigated closed `TemporalPred` cannot certify the
+  anchor/order layer at the non-witness positions). `h_past`/`h_fut` additionally require an interior
+  conjunct `∀ y ∈ (w', env 0), (endCharRec … k sub).eval_at y` not implied by `nf_eval_nf` at the single
+  endpoint. This is a cross-phase incompatibility between the Phase-4 `navBrickForm_correct` hook shape
+  (unconditional, no inner residual) and the IH shape (conditional on an inner `NavResidual`).
+- **What is needed** (unblock options, require revising a FROZEN asset — cannot be additive in Phase 5):
+  (A) Reshape `navBrickForm`/`navBrickForm_correct` so its `h_past`/`h_now`/`h_fut` hooks carry a
+  per-witness `NavResidual M sub (Fin.cons w' env)` hypothesis (matching the IH), AND re-examine whether
+  the exterior-zone interior segment should be `BracketFormula.trivial (rec sub)` (non-trivial, source of
+  the unprovable interior conjunct) vs `BracketFormula.trivial TemporalPred.top` (as the original
+  arity-3 `nf_zone_flatten_navigable`, Base.lean:667, whose hooks have no interior conjunct); OR
+  (B) thread an inner-witness `NavResidual` through the `endCharRec_correct` statement/`h_inner` shape —
+  but the frozen Phase-2 statement (Base.lean:1529) forbids weakening. A revise (`/revise 349`) that
+  reopens the Phase-4/Phase-2 frozen interfaces is likely required.
+- **Prohibited**: Do NOT use `sorry`, `def X := True`, or vacuous placeholder. (`endCharRec_correct` is
+  intentionally NOT stated in `Base.lean`; the module stays green + sorry-free with the def half landed.)
 
 **Timing**: ~2 hours (~120-220 lines: `nf_endpoint_tl_gen` + the `k`-induction assembly).
 
