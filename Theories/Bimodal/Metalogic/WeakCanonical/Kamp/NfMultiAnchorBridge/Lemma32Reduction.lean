@@ -353,4 +353,100 @@ theorem nfEval_pair_arity3_interior {sig : MonadicSignature} {k : Nat}
         nf_eval_nf M k 3 (zoneEnv3 y (env i) (env j)) q :=
   seg_holds_coupled M atomMap endChar q (env i) (env j) h_endChar
 
+/-! ## Phase 4: depth-`(k+1)` one-step quant-layer pairwise reduction (one depth step)
+
+Phases 1–3 delivered (a) the depth-0 atom-layer reduction to ≤2-anchor pieces
+(`nfEval0_reduction`) and (b) the order-machinery certificate that the arity-3 inner existential
+over a fixed enclosing pair closes green (`nfEval_pair_arity3_flatten` / `nfEval_pair_arity3_interior`,
+the feasibility GATE). Phase 4 assembles the **single depth step**: `nf_eval_nf M (k+1) n env qnf`,
+GIVEN a depth-`k` reduction `IH` as an abstract predicate family `P`, reduces to
+
+* the ≤2-anchor atom conjunction (Phase 2, `nfEval0_reduction` on the atom part `qnf.1`), AND
+* the quant layer, where each sub-form's inner realizability `∃ w, nf_eval_nf M k (n+1)
+  (Fin.cons w env) sub` is rewritten by the depth-`k` `IH` to `∃ w, P (n+1) (Fin.cons w env) sub`.
+
+This is exactly the shape `induction k` (Phase 5) consumes: the depth drops by one, the atom layer
+collapses to anchor pairs, and the inner arity-`(n+1)` depth-`k` forms are handed to the IH (which,
+in Phase 5, is the full ≤3-anchor reduction at arity `n+1`, keeping the arity ceiling at 3).
+
+### Why the single existential stays OUTSIDE the pairwise reduction (SETTLED order-theoretic merge)
+
+The reduction keeps the witness quantifier in the shape `∃ w, (pairwise/IH-reduced body about
+`Fin.cons w env`)` — **one** witness `w` threaded through the whole reduced inner form — and NEVER
+rewrites it to the per-pair form `∀ (pair), ∃ w, …`. That `∀-pair ∃-witness` shape is precisely the
+plan's SETTLED non-theorem ("independent per-pair witnesses do not merge for free"): the FIXED
+single-pair arity-`(n+1)`↔arity-3 bi-implication is machine-checked strictly weaker for `n ≥ 3`
+(the arity-3 restriction forgets non-pair anchors — the same world-locality obstruction as
+`endCharN0_correct_infeasible`, Base.lean:1779). Here the inner form is reduced by the depth-`k`
+`IH` **under** the single `∃ w` (via `exists_congr`), so the witness is shared across all the
+resulting ≤3-anchor conjuncts — the order-theoretic merge, not a per-pair distribution. Consequently
+Phase 4 defines NO arity-collapsing `nfRestrict : NormalForm sig (k+1) n → … → NormalForm sig (k+1) 2`
+on the quant layer (that map would BE the non-theorem); the quant assignment `qnf.2` is preserved
+verbatim and its inner arity reduction is delegated to the IH.
+
+**Deviation from the plan's Phase-4 task list (flagged, not silently applied):** the plan sketched a
+`nfRestrict : NormalForm sig (k+1) n → (i j) → NormalForm sig (k+1) 2` mapping "the quant assignment
+through the Phase-3 arity-3 shape." A total such map that collapses the quant layer to a fixed
+arity-2 form is the SETTLED non-theorem (Phase-3 negative content). The faithful realization keeps
+`qnf.2` intact and reduces its inner evaluation through the depth-`k` IH under the shared witness —
+reusing `nfRestrict0` at the atom layer exactly as the plan directs, and reusing
+`nf_endpoint_tl_gen_correct`'s atom-∧-quant assembly pattern (Base.lean:1903) at the semantic level
+via `nfEval_step_unfold_gen`. The Phase-3 flatten (`nfEval_pair_arity3_flatten`) is the feasibility
+certificate for the arity-3 pieces; it is a *navigation* refinement (349's job on the ≤3 pieces,
+Non-Goals) and is not part of the semantic depth-step reduction. -/
+
+/-- **Arity-general depth-`(k+1)` unfolding of `nf_eval_nf`.** The direct arity-general companion of
+`nf_eval_nf_step_unfold` (Base.lean:1488, which is fixed at arity 3 on `zoneEnv3`): for any arity
+`n` and env `env`, `nf_eval_nf M (k+1) n env qnf` splits definitionally into the atom layer at `env`
+(reading `qnf.1`) and, per arity-`(n+1)` sub-form, the coupled inner existential `∃ w, nf_eval_nf M
+k (n+1) (Fin.cons w env) sub` matched against `qnf.2`. This is exactly `nf_eval_nf`'s own `succ`
+clause (NormalForm.lean:203-207) with the pair `qnf` eta-expanded, hence `Iff.rfl`. -/
+theorem nfEval_step_unfold_gen {sig : MonadicSignature} {k n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (qnf : NormalForm sig (k + 1) n) :
+    nf_eval_nf M (k + 1) n env qnf ↔
+      (∀ a : AtomKind sig n, atom_eval M env a ↔ (qnf.1 a = true)) ∧
+      (∀ sub : NormalForm sig k (n + 1),
+        (∃ w : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) ↔
+          (qnf.2 sub = true)) :=
+  Iff.rfl
+
+/-- **Phase 4 milestone (depth-`(k+1)` one-step quant-layer pairwise reduction).** Given a depth-`k`
+reduction `IH` (presented abstractly as `nf_eval_nf M k m e q ↔ P m e q` for every arity `m`, env
+`e`, sub-form `q` — precisely the induction hypothesis `induction k` supplies in Phase 5), the
+depth-`(k+1)` evaluation reduces to:
+
+* the **≤2-anchor atom conjunction** `∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf.1
+  i j)` — the Phase-2 reduction of the atom part `qnf.1`; and
+* the **quant layer** `∀ sub, (∃ w, P (n+1) (Fin.cons w env) sub) ↔ (qnf.2 sub = true)`, obtained by
+  rewriting each inner arity-`(n+1)` depth-`k` evaluation through `IH` **under the single witness**
+  `∃ w` (via `exists_congr`).
+
+The witness `w` is shared across the entire reduced inner form (order-theoretic merge); the quant
+assignment `qnf.2` is preserved verbatim (no arity-collapsing quant `nfRestrict` — that would be the
+SETTLED non-theorem). Every atom conjunct has arity 2; the inner reduction's arity is governed by
+`P`, which in the Phase-5 assembly is the ≤3-anchor reduction at arity `n+1`. Proved by the
+arity-general unfolding (`nfEval_step_unfold_gen`), `nfEval0_reduction` on the atom layer, and
+`exists_congr`/`forall_congr'` congruence on the quant layer — no `sorry`, no vacuous def, no RHS
+weakening. -/
+theorem nfEval_step_reduction {sig : MonadicSignature} {k n : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+    (qnf : NormalForm sig (k + 1) n)
+    {P : (m : Nat) → (Fin m → M.carrier) → NormalForm sig k m → Prop}
+    (IH : ∀ (m : Nat) (e : Fin m → M.carrier) (q : NormalForm sig k m),
+        nf_eval_nf M k m e q ↔ P m e q) :
+    nf_eval_nf M (k + 1) n env qnf ↔
+      (∀ (i j : Fin n),
+        nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf.1 i j)) ∧
+      (∀ sub : NormalForm sig k (n + 1),
+        (∃ w : M.carrier, P (n + 1) (Fin.cons w env) sub) ↔ (qnf.2 sub = true)) := by
+  rw [nfEval_step_unfold_gen]
+  refine and_congr ?_ ?_
+  · -- atom layer: `∀ a, atom_eval … ↔ qnf.1 a = true` is `nf_eval_nf M 0 n env qnf.1`; Phase 2 closes.
+    exact nfEval0_reduction M env qnf.1
+  · -- quant layer: rewrite each inner arity-`(n+1)` depth-`k` eval by the IH, under the shared `∃ w`.
+    refine forall_congr' (fun sub => ?_)
+    refine iff_congr ?_ Iff.rfl
+    exact exists_congr (fun w => IH (n + 1) (Fin.cons w env) sub)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

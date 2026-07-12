@@ -303,23 +303,45 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
   single order-sensitive step closes via the order/zone machinery with one witness and no arity climb
   past 3. Phases 4–6 may proceed.
 
-### Phase 4: Depth-`(k+1)` quant-layer pairwise reduction (one depth step) [NOT STARTED]
+### Phase 4: Depth-`(k+1)` quant-layer pairwise reduction (one depth step) [COMPLETED]
 - **Goal:** Assemble the full depth-`(k+1)` quant clause reduction: `nf_eval_nf M (k+1) n env qnf`
   (atom layer + quant layer) reduces to the ≤2-anchor atom conjunction (Phase 2) AND the ≤3-anchor
   existential pieces (Phase 3) across all sub-forms, GIVEN the depth-`k` reduction as IH.
 - **Tasks:**
-  - [ ] Define `nfRestrict : NormalForm sig (k+1) n → (i j : Fin n) → NormalForm sig (k+1) 2`
+  - [x] Define `nfRestrict : NormalForm sig (k+1) n → (i j : Fin n) → NormalForm sig (k+1) 2`
     inductively, reusing `nfRestrict0` at the atom layer and mapping the quant assignment through the
     Phase-3 arity-3 shape; use `nf_eval_nf_step_unfold` (Base.lean:1488), never a hand-rolled parallel
-    recursion.
-  - [ ] Prove `nfEval_step_reduction`: the single depth-`(k+1)` reduction, combining the Phase-2 atom
+    recursion. *(deviation: altered — a total `nfRestrict : (k+1) n → 2` that COLLAPSES the quant
+    layer to a fixed arity-2 form is the Phase-3 SETTLED non-theorem (arity-`(n+1)` inner existential
+    cannot collapse to a fixed pair for `n ≥ 3`). The faithful realization reuses `nfRestrict0` at the
+    atom layer EXACTLY as directed, keeps `qnf.2` verbatim, and delegates the inner arity reduction to
+    the depth-`k` IH under the shared witness — no arity-collapsing quant map is defined. The
+    arity-general unfolding is landed as `nfEval_step_unfold_gen` (`Iff.rfl`, the arity-general
+    companion of `nf_eval_nf_step_unfold`), never a hand-rolled recursion.)*
+  - [x] Prove `nfEval_step_reduction`: the single depth-`(k+1)` reduction, combining the Phase-2 atom
     reduction with the Phase-3 bridge per sub-form, structured to consume a depth-`k` IH. Reuse
     `nf_endpoint_tl_gen_correct`'s assembly pattern (Base.lean:1903) at the semantic level where
-    applicable.
-  - [ ] `lake build` of the new module.
-- **Estimated output:** ~280 lines.
+    applicable. *(landed as `nfEval_step_reduction`: takes the depth-`k` reduction as an abstract IH
+    `∀ m e q, nf_eval_nf M k m e q ↔ P m e q`; atom layer closed by `nfEval0_reduction` on `qnf.1`
+    (Phase 2), quant layer by `exists_congr`/`forall_congr'` congruence rewriting each inner
+    arity-`(n+1)` depth-`k` eval through the IH UNDER the single `∃ w` (order-theoretic merge, no
+    per-pair `∀-pair ∃-witness` distribution — SETTLED). The atom-∧-quant split reuses
+    `nf_endpoint_tl_gen_correct`'s semantic assembly pattern via `nfEval_step_unfold_gen`. The Phase-3
+    flatten is the arity-3 feasibility certificate (a navigation refinement, 349's job on the ≤3
+    pieces), not part of the semantic depth-step reduction.)*
+  - [x] `lake build` of the new module. *(scoped `lake build …Lemma32Reduction` green, 1006 jobs; no
+    warnings from the new file; `lean_verify` on `nfEval_step_reduction` and `nfEval_step_unfold_gen`:
+    axioms exactly `[propext, Classical.choice, Quot.sound]`, 0 new.)*
+- **Estimated output:** ~280 lines. *(actual: ~115 lines added — two lemmas (`nfEval_step_unfold_gen`,
+  `nfEval_step_reduction`) plus the depth-step docstring; the reduction is a congruence over the
+  definitional unfolding, not a fresh 280-line recursion.)*
 - **Done when:** `nfEval_step_reduction` green and sorry-free; module builds; no new axioms.
 - **Depends on:** 3
+- **Result:** GREEN. `nfEval_step_reduction` (+ helper `nfEval_step_unfold_gen`) proved sorry-free;
+  `lean_verify` axioms exactly `[propext, Classical.choice, Quot.sound]` (0 new). The depth step
+  reduces the atom layer to ≤2-anchor pieces (Phase 2) and rewrites each inner arity-`(n+1)` depth-`k`
+  eval through the depth-`k` IH under a SINGLE shared witness (no per-pair distribution — SETTLED
+  honored). Ready for Phase 5 `induction k` assembly (`P := RHS_k`).
 
 ### Phase 5: Main theorem assembly by induction on depth `k` [NOT STARTED]
 - **Goal:** Prove the frozen main theorem `nfEval_le2_reduction` (signature from Phase 1): for
@@ -358,7 +380,7 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 | Rabinovich 2014 | Def 3.1, md:109 (atom layer) | `Kamp.nfEval0_pairwise` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j (hij : i ≠ j), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrictPair qnf i j hij)` (with `hn : 2 ≤ n`) | transcribed |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (depth-0) | `Kamp.nfEval0_reduction` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)` (no `2 ≤ n`; `envPair` ≐ `![env i, env j]`) | transcribed |
 | Rabinovich 2014 | Cor 5.4 shape, md:255 (arity-3 bridge) | `Kamp.nfEval_pair_arity3_flatten` (+ `nfEval_pair_arity3_interior`) | `(∃w, nf_eval_nf M k 3 (zoneEnv3 w (env i)(env j)) q) ↔ nf_zone_flatten_navigable …` at anchors `(env i, env j)`; interior coupled via `seg_holds_coupled` | transcribed |
-| Rabinovich 2014 | Lemma 3.2(2), md:119 (depth step) | `Kamp.nfEval_step_reduction` | depth-`(k+1)` reduction given depth-`k` IH | pending |
+| Rabinovich 2014 | Lemma 3.2(2), md:119 (depth step) | `Kamp.nfEval_step_reduction` (+ `nfEval_step_unfold_gen`) | depth-`(k+1)` reduction given depth-`k` IH `P`: atom→≤2-anchor (Phase 2), quant inner→IH under shared `∃w` (no per-pair distribution) | transcribed |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (main) | `Kamp.nfEval_le2_reduction` | `nf_eval_nf M k n env qnf ↔` (finite conj. of ≤2/≤3-anchor `nf_eval_nf` facts) | pending |
 
 (Identifier names are provisional; the implementer may rename for cohesion but MUST keep the ≤2/≤3
