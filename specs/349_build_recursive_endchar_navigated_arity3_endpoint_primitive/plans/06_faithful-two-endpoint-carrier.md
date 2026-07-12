@@ -257,7 +257,7 @@ at first genuine code reference; leave `EAVecNegationClosure`/`VecEA_m` (arity-m
 - **Depends on:** none.
 - **Files to modify:** `.../NavigatedEndChar.lean` (archive-edit), `.../Boneyard/NavigatedEndCharSinglePoint.lean` (new).
 
-### Phase 2: Carrier retype + `endInterval_correct` statement freeze + `k=0` base [NOT STARTED]
+### Phase 2: Carrier retype + `endInterval_correct` statement freeze + `k=0` base [COMPLETED]
 
 - **Goal:** Declare `endInterval : (k) → BracketEndCharCarrierV sig k` skeleton (base =
   `bracketEndChar_k0` embedded into VVecEA2; step named `endIntervalStep`, body deferred to Phase 3),
@@ -284,17 +284,41 @@ at first genuine code reference; leave `EAVecNegationClosure`/`VecEA_m` (arity-m
   `bracketEndChar_k0`/`_correct` (:73/87), `VVecEA2`/`VecEA2` (VecEAFormula:271/252). BUILD only the
   statement + skeleton + the singleton-disjunct embedding + the `k=0` proof.
 - **Tasks:**
-  - [ ] Define the VecEA2 1 → VVecEA2 singleton-disjunct embedding; confirm it elaborates and its
-        `.holds` unfolds to `bracketEndChar_k0`'s `.holds`.
-  - [ ] Define the `endInterval` skeleton by `Nat.rec` with the embedded base and a named
-        `endIntervalStep` hole (genuine deferred def, not `sorry`/vacuous).
-  - [ ] State `endInterval_correct` verbatim in the x,t-explicit VVecEA2 form above.
-  - [ ] Prove the `k=0` case via `bracketEndChar_k0_correct` threaded through the singleton-disjunct
-        unfolding.
-  - [ ] Record (docstring) the FORBIDDEN single-point pointer (`endCharN0_correct_infeasible`,
+  - [x] Define the VecEA2 1 → VVecEA2 singleton-disjunct embedding; confirm it elaborates and its
+        `.holds` unfolds to `bracketEndChar_k0`'s `.holds`. *(done: `VVecEA2.singleton {n} (vea : VecEA2 n)`
+        general-`n` embedding + `VVecEA2.singleton_holds` lemma, CarrierK1V.lean; both green, axioms
+        `[propext, Classical.choice, Quot.sound]`.)*
+  - [x] Define the `endInterval` skeleton by `Nat.rec` with the embedded base and a named
+        `endIntervalStep` hole (genuine deferred def, not `sorry`/vacuous). *(done: `endInterval` via
+        `Nat.rec` — base = `VVecEA2.singleton (bracketEndChar_k0 …)`, step = `endIntervalStep`; the hole
+        `endIntervalStep` is a total sorry-free def returning the empty disjunction `⟨[]⟩` (the codebase's
+        honest gate-failure object, cf. `bracketEndChar_k1v` :431), NOT sorry and NOT vacuous
+        `True`/`Unit`/`trivial`; Phase 3 replaces the body.)*
+  - [x] State `endInterval_correct` verbatim in the x,t-explicit VVecEA2 form above. *(done — deviation:
+        altered. Frozen as the Prop-valued `def EndIntervalCorrect atomMap h_surj : Prop = ∀ k qnf M x t
+        (six order bits), (endInterval …).holds M atomMap x t ↔ ∃ w, nf_eval_nf M k 3 [w,x,t] qnf` rather
+        than a `theorem`-with-strategic-sorry, so the freeze compiles sorry-free per the Phase-2
+        acceptance. Six order bits use the uniform `NormalForm.atom_assgn` accessor (:151), reducing to
+        `qnf (.order …)` at k=0 and `qnf.1 (.order …)` at k+1. Phase 6 will prove
+        `theorem endInterval_correct : EndIntervalCorrect atomMap h_surj` by induction.)*
+  - [x] Prove the `k=0` case via `bracketEndChar_k0_correct` threaded through the singleton-disjunct
+        unfolding. *(done: `endInterval_zero_correct` — `show` singleton unfold + `rw
+        [VVecEA2.singleton_holds]` + `exact bracketEndChar_k0_correct …`; green, sorry-free, axioms
+        `[propext, Classical.choice, Quot.sound]`.)*
+  - [x] Record (docstring) the FORBIDDEN single-point pointer (`endCharN0_correct_infeasible`,
         Base.lean:1779) and WHY the two-endpoint x,t-explicit carrier is the discriminator (report 07 §5).
-  - [ ] Route audit: grep-confirm no `→ TemporalPred` recursion carrier, no `navPieceForm`, no `h_res`;
-        git scope = CarrierK1V.lean additive + plan.
+        *(done: Phase-2 section docstring records the pointer + the ≤2-free-variable discriminator rationale.)*
+  - [x] Route audit: grep-confirm no `→ TemporalPred` recursion carrier, no `navPieceForm`, no `h_res`;
+        git scope = CarrierK1V.lean additive + plan. *(done: grep over the additions region clean; git
+        scope = CarrierK1V.lean [M] + plan + status-sync only.)*
+
+**Phase 2 result (v6):** Scoped `lake build Bimodal.…CarrierK1V` GREEN (1006 jobs). New decls
+`VVecEA2.singleton`, `VVecEA2.singleton_holds`, `endIntervalStep` (Phase-3 hole), `endInterval`,
+`EndIntervalCorrect` (frozen statement), `endInterval_zero_correct` (k=0 base). All sorry-free;
+`lean_verify` on `endInterval_zero_correct`, `endInterval`, `VVecEA2.singleton_holds` = exactly
+`[propext, Classical.choice, Quot.sound]`. Two expected non-fatal warnings: unused `h_surj`/`rec` on the
+`endIntervalStep` Phase-3 hole (consumed in Phase 3). No frozen-provider / KampPrior / Lemma32Reduction /
+`nf_nvar_exist_all_depths`-signature edits.
 - **Estimated output:** ~100-180 lines.
 - **Done when:** statement + skeleton + `k=0` base compile sorry-free; `lean_verify` on the base
   lemma = `[propext, Classical.choice, Quot.sound]`; scoped build GREEN.
