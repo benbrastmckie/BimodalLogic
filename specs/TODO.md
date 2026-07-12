@@ -1,5 +1,5 @@
 ---
-next_project_number: 351
+next_project_number: 352
 ---
 
 # TODO
@@ -12,13 +12,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,343,349 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309 | 189,192,196,350 | automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,351 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,343,351 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,350 | 189,192,196,349 | automation, kamp_theorem_formalization |
+| 4 | 177,178,309 | 131,193,350 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,15 +111,28 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-349 [IMPLEMENTING] — Build the recursive navigated arity-3 endpoint primitive `endChar
-  └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+351 [RESEARCHED] — Build a reusable, green, sorry-free Lean structural lemma (or min
+  └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+    └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ## Tasks
+
+### 351. Formalize rabinovich lemma 322 2freevariable reduction for normalformnf eval nf
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/03_spawn-blocker-analysis.md]
+
+**Description**: Build a reusable, green, sorry-free Lean structural lemma (or minimal cohesive family of lemmas) in a new file Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Lemma32Reduction.lean that is the Lean analogue of Rabinovich (2014) Lemma 3.2(2) (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md, around md:119): 'Every →∃∀-formula is equivalent to a conjunction of →∃∀-formulas with at most two free variables.' Concretely, over this project's NormalForm/nf_eval_nf types (Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean, nf_eval_nf at line 198; AtomKind at line 113) and the ExistsForallNF/TemporalPred types (Theories/Bimodal/Metalogic/WeakCanonical/ExistsForallNF.lean, TemporalPred.eval_at at line 53), the lemma must show that for arbitrary arity n, evaluating nf_eval_nf M k n env qnf against an arbitrary env : Fin n -> M.carrier is equivalent to a finite conjunction of nf_eval_nf-style facts each restricted to at most two free anchor positions (arity <=3 once the existential witness position from nf_eval_nf's own recursive unfolding is included), matching the 'two anchors + one witness' shape the GREEN nf_zone_flatten_navigable/_correct two-anchor lemma already uses (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:667-697). The reduction must happen BEFORE any navigation step, decomposing the arity-n obligation into arity-<=3 pieces at the NormalForm/nf_eval_nf level, so task 349's recursion can later navigate each piece with Until/Since without ever climbing past arity 3. Motivation to cite verbatim in the module docstring: the two in-tree refutation theorems endCharN0_correct_world_local_obstruction and endCharN0_correct_infeasible (Base.lean) prove the climbing-arity single-world base is impossible, and specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md (§Q4 target 4, H3 lemma-mapping table) is the faithfulness ground truth establishing this reduction as the paper's own prescribed alternative. Reusable assets to build on (do not re-derive): nf_endpoint_tl_gen/_correct (Base.lean:1879/1893), atomPartN (Base.lean:1866), seg/seg_holds_coupled (Base.lean:1127/1150), and the green nf_zone_flatten_navigable/_correct full-eval hook shape (Base.lean:667-697) as the structural template. Explicitly forbidden (H4-refuted or plan-forbidden): the single-anchor navBrickForm reshape, the nf_char3_deeper_split arity collapse, and reintroducing a free-standing NavResidual/h_nav predicate-layer residual at inner witnesses. Deliverable/acceptance criterion: a green, sorry-free, 0-new-axiom (beyond [propext, Classical.choice, Quot.sound]) Lean theorem (or minimal family) stating the <=2/<=3 free-variable equivalence for nf_eval_nf, committed under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/, verified by lake build. Does NOT include re-architecting task 349's recursion itself — that is deferred to /revise 349 (v4) once this lemma lands.
+
+---
 
 ### 350. Build aggregate quantendseg construction and discharge armcorrectness hooks at k0 and k1
 - **Effort**: high
@@ -134,10 +148,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 349. Build recursive endchar navigated arity3 endpoint primitive
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: None
+- **Dependencies**: Task 351
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/01_endchar-faithful-architecture.md]
