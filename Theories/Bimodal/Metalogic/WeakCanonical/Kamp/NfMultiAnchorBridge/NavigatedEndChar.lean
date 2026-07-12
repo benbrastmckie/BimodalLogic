@@ -201,4 +201,46 @@ noncomputable def navPieceForm {sig : MonadicSignature} {k : Nat}
     (bracketBuildLeft (seg rec q3) (rec q3))
     (bracketBuildRight (seg rec q3) (rec q3))
 
+/-- **Phase 3 reduction step (SETTLED "witness-stays-OUTSIDE" merge, GREEN).** The arity-4 inner
+realizability obligation of `nf_char3_endpoint_tl_correct`'s `h_inner` — `∃ w, nf_eval_nf M k 4
+(Fin.cons w (zoneEnv3 y x t)) sub` — is reduced, **under the single shared witness `w`** (via
+`exists_congr`, so `w` stays OUTSIDE the reduced inner form — the order-theoretic `∃w ∀ij` merge,
+never a per-pair `∀ij ∃w` distribution), to `∃ w, nfEvalRHS M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`
+by consuming task 351's `nfEval_le2_reduction` (Rabinovich Lemma 3.2(2), Lemma32Reduction.lean:535)
+at arity 4. This is the FIRST, load-bearing step of `navPieceForm_correct`: the reduced RHS
+`nfEvalRHS M k 4 [w, y, x, t] sub` is a conjunction of anchor-arity-2 `nf_eval_nf` atom facts over
+pairs `(i, j) : Fin 4` plus (at `k+1`) the depth-recursive quant clauses (`nfEval3_reduction_zero_shape`
+/ `nfEval3_reduction_succ_shape` one arity up), so navigation over it never climbs past anchor
+arity 3. sorry-free. -/
+theorem navPiece_reduce {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (y x t : M.carrier) (sub : NormalForm sig k 4) :
+    (∃ w : M.carrier, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) ↔
+      (∃ w : M.carrier, nfEvalRHS M k 4 (Fin.cons w (zoneEnv3 y x t)) sub) :=
+  exists_congr (fun w => nfEval_le2_reduction M k 4 (Fin.cons w (zoneEnv3 y x t)) sub)
+
+/-! ### Phase 3b (correctness `navPieceForm_correct`) — DEFERRED, contingency-triggered
+
+The correctness biconditional `temporal_truth M atomMap y (navPieceForm rec sub) ↔
+∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub` is NOT landed in this dispatch. The
+`lean_goal`-verified reduced target (via `navPiece_reduce`) is
+
+```
+⊢ (∃ w, nfEvalRHS M k 4 (Fin.cons w (zoneEnv3 y x t)) sub)  ↔  temporal_truth M atomMap y (navPieceForm rec sub)
+```
+
+whose LHS atom layer ranges over ALL pairs `(i, j) : Fin 4` — i.e. the FOUR anchors `{w, y, x, t}`
+of the env `Fin.cons w (zoneEnv3 y x t)` — plus, at `k+1`, an arity-5 quant layer. Navigating this
+full Fin-4 pairwise/quant structure into a single closed `Formula` read at `y` requires an
+**arity-4-enclosing-pair navigation bridge** (a disjunction over the possible enclosing pairs
+threading the single witness `w` through the linear order), which is NOT among the green consumed
+assets (`nfEval_pair_arity3_flatten`/`_interior` navigate a FIXED arity-3 pair only, and the
+single-pair arity-4→3 bi-implication is machine-checked a NON-THEOREM — Lemma32Reduction.lean:290-306).
+Per the plan v4 Phase-3 Contingency Trigger, this is recorded for a dedicated follow-up (`/spawn 349`
+for the missing arity-4-enclosing-pair navigation bridge) rather than closed by a collapse, a
+single-anchor reshape, a per-pair `∀ij ∃w` distribution, or a mis-stated/vacuous theorem. The
+`navPieceForm` def (above) and `navPiece_reduce` (the SETTLED witness-outside reduction step) are the
+landed, green, sorry-free 3a deliverables; the def structure is expected to be enriched alongside the
+new bridge. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
