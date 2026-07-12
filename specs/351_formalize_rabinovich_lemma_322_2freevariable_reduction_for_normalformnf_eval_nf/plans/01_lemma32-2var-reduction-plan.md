@@ -1,7 +1,7 @@
 # Implementation Plan: Formalize Rabinovich Lemma 3.2(2) — the ≤2-free-variable reduction for `nf_eval_nf`
 
 - **Task**: 351 - Formalize the Rabinovich Lemma 3.2(2) ≤2-free-variable reduction for `NormalForm`/`nf_eval_nf`
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 14 hours (6 phases)
 - **Dependencies**: None (foundational; task 349 depends on this by spawn convention, not the reverse)
 - **Research Inputs**:
@@ -378,20 +378,40 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
   frozen hypothesis dropped (strengthening; Phase-2 deferral already closed). Ready for Phase 6
   (axiom audit + whole-project build + H3 table finalization).
 
-### Phase 6: Axiom audit, whole-project build, and H3 mapping-table finalization [NOT STARTED]
+### Phase 6: Axiom audit, whole-project build, and H3 mapping-table finalization [COMPLETED]
 - **Goal:** Certify the acceptance criterion: 0 new axioms, sorry-free, whole-project green.
 - **Tasks:**
-  - [ ] `lean_verify` on `nfEval_le2_reduction` and every exported lemma; confirm axiom set ⊆
-    `[propext, Classical.choice, Quot.sound]`. Any extra axiom fails the phase.
-  - [ ] `grep`/`lean` scan the new file for `sorry`, `admit`, and prohibited vacuous patterns
-    (`:= True`/`Unit`/`trivial`); confirm none.
-  - [ ] Full-project `lake build` (green, Base.lean unchanged).
-  - [ ] Update the H3 Lemma-Mapping Table Status column (below) to `transcribed` for each landed
-    lemma; leave any escalated row `blocked`.
+  - [x] `lean_verify` on `nfEval_le2_reduction` and every exported lemma; confirm axiom set ⊆
+    `[propext, Classical.choice, Quot.sound]`. Any extra axiom fails the phase. *(all 7 exported
+    declarations — `nfEval0_pairwise`, `nfEval0_reduction`, `nfEval_pair_arity3_flatten`,
+    `nfEval_pair_arity3_interior`, `nfEval_step_reduction`, `nfEval_step_unfold_gen`,
+    `nfEval_le2_reduction` — verify with axioms EXACTLY `[propext, Classical.choice, Quot.sound]`,
+    0 warnings, 0 new axioms.)*
+  - [x] `grep`/`lean` scan the new file for `sorry`, `admit`, and prohibited vacuous patterns
+    (`:= True`/`Unit`/`trivial`); confirm none. *(sorry_count = 0, admit = 0, vacuous_count = 0,
+    axiom-decls = 0. The 5 grep hits for the token `sorry` are all docstring prose "sorry-free"
+    on comment lines 13/59/299/430/531 — no tactic occurrence.)*
+  - [x] Full-project `lake build` (green, Base.lean unchanged). *("Build completed successfully
+    (1724 jobs)", exit 0. No errors. No output line references `Lemma32Reduction`/
+    `NfMultiAnchorBridge`. The only two build warnings are pre-existing project debt in
+    `WeakCanonical/Transfer.lean` (unused simp arg + a pre-existing `sorry`), and the `sorryAx`/
+    `ofReduceBool`/`trustCompiler` axiom-info lines are the pre-existing `#print axioms`-style
+    outputs from `BXCanonical/Completeness.lean` — task 351 touched NEITHER file, git-confirmed.)*
+  - [x] Update the H3 Lemma-Mapping Table Status column (below) to `transcribed` for each landed
+    lemma; leave any escalated row `blocked`. *(all 5 rows = `transcribed`; no row escalated /
+    `blocked`. Feasibility gate closed GO in Phase 3, so no `blocked` row exists.)*
 - **Estimated output:** ~40 lines (mostly verification; small doc/table edits).
 - **Done when:** `lean_verify` shows only the three allowed axioms, no `sorry`/vacuous patterns, full
   `lake build` green, mapping table synchronized.
 - **Depends on:** 5
+- **Result:** GREEN — ACCEPTANCE MET. Full-project `lake build` green (1724 jobs, exit 0, no new
+  errors/warnings from `Lemma32Reduction.lean`). All 7 exported declarations verify with axioms
+  exactly `[propext, Classical.choice, Quot.sound]` (0 new). sorry_count = 0, vacuous_count = 0,
+  axiom-decls = 0. Module docstring cites both refutation theorems
+  (`endCharN0_correct_world_local_obstruction` Base.lean:1745, `endCharN0_correct_infeasible`
+  Base.lean:1779), the faithfulness audit (task 349 report 02 §Q4 target 4), and Rabinovich 2014
+  Lemma 3.2(2) md:119 verbatim. H3 mapping table fully synchronized (5/5 transcribed). Task 351
+  complete.
 
 ## H3 Lemma-Mapping Table (Tier 1, Rabinovich 2014)
 
@@ -407,14 +427,20 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 anchor-arity invariant and keep the Status column synchronized with the sorry inventory.)
 
 ## Testing & Validation
-- [ ] `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Lemma32Reduction` green at
-  the end of every phase.
-- [ ] Full-project `lake build` green at Phase 6.
-- [ ] `lean_verify` on `nfEval_le2_reduction`: axioms ⊆ `[propext, Classical.choice, Quot.sound]`,
-  `sorry`-free.
-- [ ] No `sorry`/`admit`/vacuous-def patterns in the new file (grep + `lean_verify`).
-- [ ] `Base.lean` and all other files unchanged (`git status` shows only the new file).
-- [ ] Every RHS conjunct is an `nf_eval_nf` fact of anchor arity ≤ 3 (manual signature check).
+- [x] `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Lemma32Reduction` green at
+  the end of every phase. *(green at each of Phases 1–5.)*
+- [x] Full-project `lake build` green at Phase 6. *("Build completed successfully (1724 jobs)",
+  exit 0.)*
+- [x] `lean_verify` on `nfEval_le2_reduction`: axioms ⊆ `[propext, Classical.choice, Quot.sound]`,
+  `sorry`-free. *(axioms exactly the three allowed; 0 warnings.)*
+- [x] No `sorry`/`admit`/vacuous-def patterns in the new file (grep + `lean_verify`). *(0 tactic
+  `sorry`/`admit`; 0 vacuous defs; the 5 `sorry` token hits are docstring "sorry-free" prose.)*
+- [x] `Base.lean` and all other files unchanged (`git status` shows only the new file). *(git log
+  confirms task 351 added only `Lemma32Reduction.lean`; Base.lean/Transfer.lean/Completeness.lean
+  untouched by any task-351 commit.)*
+- [x] Every RHS conjunct is an `nf_eval_nf` fact of anchor arity ≤ 3 (manual signature check).
+  *(every emitted `nfEvalRHS` conjunct is `nf_eval_nf M 0 2 …` — anchor arity exactly 2; the inner
+  arity `n+1` is only the `∃ w` recursion binder's domain, never an emitted conjunct's arity.)*
 
 ## Artifacts & Outputs
 - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Lemma32Reduction.lean` (new,
