@@ -1,5 +1,5 @@
 ---
-next_project_number: 353
+next_project_number: 354
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,352 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,341,343,352 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,353 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,341,343,353 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,350 | 131,189,192,196,349 | formula-refactor, automation, kamp_theorem_formalization |
 | 4 | 177,178,309 | 131,193,350 | formula-refactor, kamp_theorem_formalization |
 | 5 | 307 | 309 | completeness |
@@ -111,7 +111,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-352 [IMPLEMENTING] — Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k nav
+353 [NOT STARTED] — Build the depth-k endpoint-pinned exterior converter extF4 : Norm
   └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
     └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
       └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
@@ -123,9 +123,32 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ## Tasks
 
+### 353. Build depthk endpoint pinned exterior converter extf4
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 352
+
+**Description**: Build the depth-k endpoint-pinned exterior converter extF4 : NormalForm sig k 5 -> Formula with extF4_correct : temporal_truth M atomMap t (extF4 s) <-> (exists y, nf_eval_nf M k 5 (Fin.cons y (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) -- the FOUR anchors [x1,w,x,t] pinned, ONLY the fresh witness y quantified. This is the depth-k arity-4/5 generalization of the landed k=2 carrier bracketEndChar_kvE2_*_two_prior (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean:147-359) and the missing infrastructure that unblocks the COMPLETE direction of task 352's clause layer.
+
+WHY THIS EXISTS (definitive, source-grounded — see specs/352_.../reports/03_realizability-transfer-blocker.md): task 352 proved (LSP-verified + Rabinovich-adjudicated) that kvE_extNegFut_complete / kvE_extNegPast_complete CANNOT be closed via the ExistProviders P channel: that channel is intrinsically env-EXISTENTIAL (exists env' free, nf_eval (Fin.cons r env') s), while the _complete (reverse) reconstruction must realize sigma at the FIXED anchor tuple [x1,w,x,t] via nf_eval_nfk_iff_efold (NfEFold.lean:627). At depth k>=1 the arity-5 subs are env-dependent and reference the existential endpoint x1, so free-env does NOT transport to fixed-env (F2 truncation-shadow impossibility one rung up; nfk_dropFresh agreement only at sigma.1, NfEFold.lean:578-580; RefutationF2.lean:471). Rabinovich AVOIDS the transfer in his completeness proof (Cor 5.4(1) direction): bracket point-types are quantifier-free (Lemma 5.1 -> env-free realizability) and the interior witness r0 = inf{z in (z0,z1) | P1(z)} is UNIQUELY determined (Lemma 5.3 Case 2/3) and BECOMES the fixed endpoint of the recursive sub-bracket On(P2..Pn, r0, z1). The endpoint-pinned converter extF4 IS that mechanism made explicit at depth k.
+
+SCOPE / CONSTRAINTS:
+- Carrier-level (task-349) deliverable. Build extF4 + extF4_correct in a NEW module (or additively in the appropriate task-349 carrier module), symmetric for Future and Past sides.
+- Must NOT edit ExistProviders.existF / ExistProviders.correct (PriorInterface.lean), P.correct, or the 7 frozen providers (SharedWitness, SubBracket2V, OuterGate, ExteriorBracket, ExteriorZoneTriage, ExteriorNegation, ExteriorNegationPast), KampPrior.lean, or ExteriorBracketK.lean. git diff on all frozen files stays EMPTY.
+- The input side must consume the semantic_prior_UZ / semantic_prior_SZ infimum-existence inputs (PriorDefs.lean:22,33) that ARE Rabinovich's infimum-existence hypothesis, and the kvE_subBit_iff / nf_eval_unique determinacy core from ExteriorFiberK.lean / NfEFold.lean.
+- Reference the k=2 carrier BracketCarrierCorrectVPrior (PriorInterface.lean:60-73) which has the correct SHAPE (pins anchors x,t, quantifies only witness w) but is arity-3 — generalize it to arity-4/5 with the [x1,w,x,t] pin.
+- sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. No vacuous/placeholder defs -- if a sub-piece cannot close green, mark BLOCKED and escalate.
+- task_type = lean4; effort = high; topic = kamp_theorem_formalization.
+
+DEFINITION OF DONE: extF4 + extF4_correct green + sorry-free + axiom-clean, exposing the endpoint-pinned realizability interface that (1) task 352's kvE_extNegFut_complete / kvE_extNegPast_complete re-close consumes to close the clause-layer completeness direction, and (2) task 349 Phase 2's bracket _complete lemmas consume. Grounding artifacts (read, do not re-derive): specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/reports/03_realizability-transfer-blocker.md (Deliverable 4 = exact extF4 signature + proof sketch), reports/02_reindex-bridge-blocker.md, the two _complete reclose handoffs (phase-3-reclose / phase-4-reclose), and Rabinovich 2014 Def 7.5 / Cor 5.4 / Lemma 5.1 / Lemma 5.3 (~/Projects/Literature/sources/rabinovich_2014/).
+
+---
+
 ### 352. Build depthk navigated exterior negation clause layer via existproviders
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
@@ -179,7 +202,7 @@ Grounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 351, Task 352
+- **Dependencies**: Task 351, Task 352, Task 353
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/01_endchar-faithful-architecture.md]
