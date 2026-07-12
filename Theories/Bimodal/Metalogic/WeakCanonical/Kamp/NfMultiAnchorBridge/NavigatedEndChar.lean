@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Lemma32Reduction
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierKv
 
 /-!
 # Reduction-navigated arity-3 endpoint primitive `endChar` (task 349, v4)
@@ -143,5 +144,61 @@ theorem endCharNav0_correct_pairwise {sig : MonadicSignature}
         nf_eval_nf M 0 2 (envPair M (zoneEnv3 y x t) i j) (nfRestrict0 qnf i j) := by
   rw [endCharNav0_correct M atomMap h_surj qnf y x t h_res,
       nfEval3_reduction_zero_shape M (zoneEnv3 y x t) qnf]
+
+/-! ## Phase 3 (task 349): arity-3 inner-realizability navigator `navPieceForm` / `_correct`
+(the load-bearing core)
+
+`navPieceForm` is the closed-`Formula` converter that discharges the depth-`(k+1)`
+inner-realizability obligation `h_inner` of `nf_char3_endpoint_tl_correct` (Base.lean:885): for
+each arity-4 `sub`, its `temporal_truth` at the navigated point `y` characterizes the coupled
+inner existential `∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`.
+
+### Design (SETTLED — plan v4 Phase 3)
+
+The arity-4 inner `nf_eval_nf` is reduced to arity-`≤3` pieces by task 351's
+`nfEval_le2_reduction` (`nfEval3_reduction`, the Rabinovich Lemma 3.2(2) reduction) **under a
+single shared witness** — the witness `w` stays OUTSIDE the reduced inner form (order-theoretic
+`∃w ∀ij` merge, never a per-pair `∀ij ∃w` distribution). Each resulting arity-3 realizability
+piece is NAVIGATED over its enclosing anchor pair by the green two-anchor navigation form
+`nf_zone_flatten_navigable` (Base.lean:667) via the arity-3 bridges `nfEval_pair_arity3_flatten`
+(Lemma32Reduction.lean:318) and `nfEval_pair_arity3_interior` (:344), with BOTH endpoint hooks
+`pastEnd`/`futureEnd` instantiated to the parametric depth-`(k-1)` arity-3 IH `rec`. Navigation
+NEVER climbs past anchor arity 3.
+
+`navPieceForm rec sub` is assembled as the disjunction of the two navigated `bracketBuild*`
+chains (`bracketBuildLeft` walking into the past exterior, `bracketBuildRight` into the future
+exterior) whose interior is the genuine non-trivial β-segment `seg rec q3` (G3 — never
+`TemporalPred.top`) and whose exterior endpoints are `rec q3`, where `q3 := nfk_take (3 ≤ 4) sub`
+is the arity-3 prefix restriction of the arity-4 `sub` (CarrierKv.lean:70). Every deeper witness
+is a bracket witness, never a free anchor; the free-anchor set stays `{x, t}` (G2/G4), arity
+capped at 3.
+
+### Route audit
+- **G1** — no arity-1 collapse: `q3` is arity 3, every navigated `nf_eval_nf` residual is arity 3.
+- **G2/G4** — `w` and every bracket witness ride `Until`/`Since` brackets, never a third free
+  anchor; anchors `{x, t} ⊆ {x, t}`, `≤ 2`.
+- **G3** — the interior slot is the non-trivial `seg rec q3`, never `TemporalPred.top`.
+- **G5** — the correctness is assembled by manual `exists_congr`/`or_congr`/`and_congr_right`
+  bridges over the reduction and the two navigated-reach pillars; no `simp`/`omega`/`aesop`
+  shortcut of a Rabinovich chain step.
+- **FORBIDDEN** — no `nf_char3_deeper_split` (would grow the anchor set to 4); no per-pair
+  `∀ij ∃w` distribution; no arity-collapsing quant `nfRestrict`; no free-standing `NavResidual`. -/
+
+/-- **Arity-3 inner-realizability navigator** (task 349 Phase 3, load-bearing core). The closed
+`Formula` whose `temporal_truth` at a navigated point captures the arity-4 inner realizability
+`∃ w, nf_eval_nf M k 4 (Fin.cons w (zoneEnv3 y x t)) sub`, by NAVIGATING the arity-3 pieces of the
+task-351 reduction over the enclosing anchor pair. Parametric in the depth-`(k-1)` arity-3 IH hook
+`rec : NormalForm sig k 3 → TemporalPred` (used for BOTH exterior endpoints). Assembled as the
+disjunction of the past-exterior `bracketBuildLeft` and future-exterior `bracketBuildRight`
+navigated chains, each carrying the non-trivial β-segment `seg rec q3` as its interior (G3) and
+`rec q3` as its exterior endpoint, where `q3 = nfk_take (3 ≤ 4) sub` is the arity-3 prefix
+restriction of `sub`. Arity capped at 3 (G1/G4); witnesses are bracket witnesses (G2). -/
+noncomputable def navPieceForm {sig : MonadicSignature} {k : Nat}
+    (rec : NormalForm sig k 3 → TemporalPred)
+    (sub : NormalForm sig k 4) : Formula :=
+  let q3 : NormalForm sig k 3 := nfk_take (by omega : 3 ≤ 4) sub
+  Formula.or
+    (bracketBuildLeft (seg rec q3) (rec q3))
+    (bracketBuildRight (seg rec q3) (rec q3))
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
