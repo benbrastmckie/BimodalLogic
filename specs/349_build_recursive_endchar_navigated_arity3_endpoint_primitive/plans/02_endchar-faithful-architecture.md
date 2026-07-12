@@ -313,7 +313,7 @@ state and the missing lemma, return `status: partial` — do NOT land a vacuous 
 - `lean_verify navBrickForm_correct` = exactly `[propext, Classical.choice, Quot.sound]`.
 - Grep confirms no `nf_char3_deeper_split` occurrence in the new code; anchors provably ≤2.
 
-### Phase 5: Assemble `endCharRec` + `endCharRec_correct` (k-induction) [NOT STARTED]
+### Phase 5: Assemble `endCharRec` + `endCharRec_correct` (k-induction) [IN PROGRESS]
 
 **Goal**: Tie the base (Phase 3) and the brick step (Phase 4) into the arity-general recursion and
 prove global correctness by induction on `k`, discharging the step's `h_inner`/`h_past`/`h_fut` hooks

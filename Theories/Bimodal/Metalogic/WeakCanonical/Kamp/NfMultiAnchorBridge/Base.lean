@@ -1850,4 +1850,104 @@ theorem navBrickForm_correct {sig : MonadicSignature} {k n : Nat}
     (or_congr h_now
       (exists_congr fun w' => and_congr_right fun hw' => h_fut w' hw'))
 
+/-! ## Phase 5 (task 349): the k-induction assembly `endCharRec` + `endCharRec_correct`
+
+Ties the Phase-3 base (`endCharN0`) and the Phase-4 brick (`navBrickForm`) into the arity-general
+navigated endpoint recursion and proves global correctness by induction on `k`. Generalizes the
+arity-3 endpoint characteristic `nf_char3_endpoint_tl` (Base.lean:869) to arity-`n` as
+`nf_endpoint_tl_gen`, assembles `endCharRec` via `Nat.rec` with the Phase-2 Π-motive `EndCharMotive`,
+and discharges the step's `h_inner` via `navBrickForm_correct` (Phase 4) with `h_past`/`h_fut`
+instantiated to the IH `endCharRec_correct k (n+1)` (report 01 §3.2, §5.5 target 4). -/
+
+/-- **Arity-general atom-layer `Formula`** (task 349 Phase 5). The depth-0 arity-`n` atom
+characteristic at the navigated witness `env 0`, reused verbatim from the Phase-3 base `endCharN0`
+(its underlying `Formula`). This is the `atomPart` fed to `nf_endpoint_tl_gen` in the `k+1` arm of
+`endCharRec`; its correctness is exactly `endCharN0_correct` (under `NavResidual`). -/
+noncomputable def atomPartN {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {n : Nat} (q0 : NormalForm sig 0 n) : Formula :=
+  (endCharN0 atomMap h_surj q0).formula
+
+/-- **Arity-general endpoint characteristic builder** (task 349 Phase 5; report 01 §5.5 target 2).
+Generalizes `nf_char3_endpoint_tl` (Base.lean:869) from the fixed arity 3 to an arbitrary arity `n`:
+the `TemporalPred` whose `.eval_at` at the navigated witness `env 0` captures
+`nf_eval_nf M (k+1) n env q`, assembled hook-parametrically from `atomPart` (the arity-`n` atom
+layer) and `innerConv` (the depth-`k`, arity-`(n+1)` coupled inner converter — the recursion hook one
+depth down). `formula_conjList (atomPart :: quant_clauses)` with one `nf_quant_clause_tl` per
+arity-`(n+1)` sub-NF, exactly as the arity-3 template. -/
+noncomputable def nf_endpoint_tl_gen {sig : MonadicSignature} {k n : Nat}
+    (atomPart : Formula)
+    (innerConv : NormalForm sig k (n + 1) → Formula)
+    (q : NormalForm sig (k + 1) n) : TemporalPred :=
+  ⟨formula_conjList (atomPart ::
+    (Finset.univ.toList : List (NormalForm sig k (n + 1))).map
+      (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub)))⟩
+
+/-- **Correctness of the arity-general endpoint characteristic** (task 349 Phase 5). The direct
+arity-`n` generalization of `nf_char3_endpoint_tl_correct` (Base.lean:885): under the atom-hook
+correctness `h_atom` and the inner-converter correctness `h_inner` (each arity-`(n+1)` sub's coupled
+`∃ w` on `Fin.cons w env` — the depth-`k` IH), the assembled endpoint's `.eval_at (env 0)` holds iff
+`q` evaluates on the full arity-`n` env `env`. Assembled by matching `nf_eval_nf M (k+1) n`'s own
+unfolding (`formula_conjList_iff` + `nf_quant_clause_tl_correct` per clause). -/
+theorem nf_endpoint_tl_gen_correct {sig : MonadicSignature} {k n : Nat} [NeZero n]
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (env : Fin n → M.carrier)
+    (atomPart : Formula)
+    (innerConv : NormalForm sig k (n + 1) → Formula)
+    (q : NormalForm sig (k + 1) n)
+    (h_atom : temporal_truth M atomMap (env 0) atomPart ↔
+      (∀ a : AtomKind sig n, atom_eval M env a ↔ (q.1 a = true)))
+    (h_inner : ∀ sub : NormalForm sig k (n + 1),
+      temporal_truth M atomMap (env 0) (innerConv sub) ↔
+        ∃ w : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons w env) sub) :
+    (nf_endpoint_tl_gen atomPart innerConv q).eval_at M atomMap (env 0) ↔
+      nf_eval_nf M (k + 1) n env q := by
+  simp only [nf_endpoint_tl_gen, TemporalPred.eval_at]
+  rw [formula_conjList_iff]
+  change _ ↔ (∀ (a : AtomKind sig n), atom_eval M env a ↔ (q.1 a = true)) ∧
+    (∀ (sub : NormalForm sig k (n + 1)),
+      (∃ (w : M.carrier), nf_eval_nf M k (n + 1) (Fin.cons w env) sub) ↔
+        (q.2 sub = true))
+  have quant_mem : ∀ sub : NormalForm sig k (n + 1),
+      nf_quant_clause_tl (innerConv sub) (q.2 sub) ∈
+        List.map (fun sub => nf_quant_clause_tl (innerConv sub) (q.2 sub))
+          Finset.univ.toList :=
+    fun sub => List.mem_map.mpr
+      ⟨sub, Finset.mem_toList.mpr (Finset.mem_univ sub), rfl⟩
+  constructor
+  · intro h_all
+    constructor
+    · have h_at := h_all _ (.head _)
+      exact h_atom.mp h_at
+    · intro sub
+      have h_clause := h_all _ (.tail _ (quant_mem sub))
+      rw [nf_quant_clause_tl_correct M atomMap (env 0) _ _ _ (h_inner sub)] at h_clause
+      exact h_clause
+  · intro ⟨h_atoms, h_quants⟩ φ h_mem
+    cases h_mem with
+    | head => exact h_atom.mpr h_atoms
+    | tail _ h_tail =>
+      obtain ⟨sub, _, rfl⟩ := List.mem_map.mp h_tail
+      rw [nf_quant_clause_tl_correct M atomMap (env 0) _ _ _ (h_inner sub)]
+      exact h_quants sub
+
+/-- **Arity-general navigated endpoint recursion** (task 349 Phase 5; the frozen Phase-2 signature,
+Base.lean:1511). `Nat.rec` on modal depth `k` into the Π-motive `EndCharMotive sig k`; the arity
+index `n` climbs `3 → 3+k` toward the base. `k = 0` is the Phase-3 atom base `endCharN0`; `k+1`
+assembles `nf_endpoint_tl_gen` over the atom layer `atomPartN … qnf.1` and the internally-discharged
+inner converter `navBrickForm (endCharRec … k (n := n+1))` — the Phase-4 brick over the IH at arity
+`n+1` (handoff Option 3 rejected: the brick is discharged internally, not deferred to a caller).
+Termination is on `k` alone (structural). NON-vacuous: the `k+1` arm genuinely recurses through
+`endCharRec … k`. -/
+noncomputable def endCharRec {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    (k : Nat) → {n : Nat} → NormalForm sig k n → TemporalPred
+  | 0,     _, qnf => endCharN0 atomMap h_surj qnf
+  | k + 1, n, qnf =>
+      nf_endpoint_tl_gen (atomPartN atomMap h_surj qnf.1)
+        (fun sub => navBrickForm (endCharRec atomMap h_surj k (n := n + 1)) sub)
+        qnf
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
