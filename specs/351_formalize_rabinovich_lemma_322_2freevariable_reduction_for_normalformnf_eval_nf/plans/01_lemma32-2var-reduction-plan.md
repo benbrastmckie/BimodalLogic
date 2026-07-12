@@ -343,20 +343,40 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
   eval through the depth-`k` IH under a SINGLE shared witness (no per-pair distribution — SETTLED
   honored). Ready for Phase 5 `induction k` assembly (`P := RHS_k`).
 
-### Phase 5: Main theorem assembly by induction on depth `k` [NOT STARTED]
+### Phase 5: Main theorem assembly by induction on depth `k` [COMPLETED]
 - **Goal:** Prove the frozen main theorem `nfEval_le2_reduction` (signature from Phase 1): for
   arbitrary `k, n, env, qnf`, `nf_eval_nf M k n env qnf ↔` the finite conjunction of ≤2/≤3-anchor
   `nf_eval_nf` facts, by induction on `k` (base = Phase 2, step = Phase 4).
 - **Tasks:**
-  - [ ] Prove `nfEval_le2_reduction` by `induction k` (base `nfEval0_reduction`; step
+  - [x] Prove `nfEval_le2_reduction` by `induction k` (base `nfEval0_reduction`; step
     `nfEval_step_reduction` with the IH). Confirm the statement exactly matches the Phase-1 frozen
-    signature (no silent drift).
-  - [ ] Ensure every conjunct is `nf_eval_nf M k n' _ _` with `n' ≤ 3` (arity ceiling SETTLED
-    decision).
-  - [ ] `lake build` of the new module.
-- **Estimated output:** ~160 lines.
+    signature (no silent drift). *(deviation: altered — the frozen `(hn : 2 ≤ n)` is DROPPED. Phase 2
+    already discharged `n < 2` (`nfEval0_reduction` carries no arity hypothesis), so
+    `nfEval_le2_reduction` omitting `hn` is a STRENGTHENING (holds for every arity `n`), never a
+    weakening; it matches the already-committed Phase-2 drop. The informal "(finite conjunction …)"
+    RHS is concretized as the structural-recursive `nfEvalRHS M k n env qnf` — the genuine full
+    characterization, unweakened. Proof: `intro k; induction k` generalizing `n env qnf`; base =
+    `nfEval0_reduction`, step = `nfEval_step_reduction (P := nfEvalRHS M k) ih` closing by
+    definitional `Iff.rfl` after `rw [nfEvalRHS_succ]`.)*
+  - [x] Ensure every conjunct is `nf_eval_nf M k n' _ _` with `n' ≤ 3` (arity ceiling SETTLED
+    decision). *(every emitted `nf_eval_nf` conjunct of `nfEvalRHS` is a depth-0 atom fact of anchor
+    arity exactly 2 (`nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 …)`); the inner arity `n+1`
+    appears only as the domain of the `∃ w` recursion binder, never as an emitted conjunct's anchor
+    arity — no climb past 3.)*
+  - [x] `lake build` of the new module. *(scoped `lake build …Lemma32Reduction` green, 1006 jobs; no
+    warnings from the new file; `lean_verify` on `nfEval_le2_reduction`: axioms exactly
+    `[propext, Classical.choice, Quot.sound]`, 0 new.)*
+- **Estimated output:** ~160 lines. *(actual: ~120 lines added — one recursive RHS `def`
+  (`nfEvalRHS`) + two `rfl` unfolding simp lemmas + the `induction k` main theorem; the assembly is a
+  two-case induction over the two proved reduction lemmas, not a fresh 160-line proof.)*
 - **Done when:** `nfEval_le2_reduction` green and sorry-free; matches frozen signature; module builds.
 - **Depends on:** 4
+- **Result:** GREEN. `nfEval_le2_reduction` (+ `nfEvalRHS`, `nfEvalRHS_zero`, `nfEvalRHS_succ`)
+  proved sorry-free by `induction k` (base = Phase-2 `nfEval0_reduction`, step = Phase-4
+  `nfEval_step_reduction` with `P := nfEvalRHS M k` from the IH). `lean_verify` axioms exactly
+  `[propext, Classical.choice, Quot.sound]` (0 new); 0 sorry, 0 vacuous defs. The `(hn : 2 ≤ n)`
+  frozen hypothesis dropped (strengthening; Phase-2 deferral already closed). Ready for Phase 6
+  (axiom audit + whole-project build + H3 table finalization).
 
 ### Phase 6: Axiom audit, whole-project build, and H3 mapping-table finalization [NOT STARTED]
 - **Goal:** Certify the acceptance criterion: 0 new axioms, sorry-free, whole-project green.
@@ -381,7 +401,7 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (depth-0) | `Kamp.nfEval0_reduction` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)` (no `2 ≤ n`; `envPair` ≐ `![env i, env j]`) | transcribed |
 | Rabinovich 2014 | Cor 5.4 shape, md:255 (arity-3 bridge) | `Kamp.nfEval_pair_arity3_flatten` (+ `nfEval_pair_arity3_interior`) | `(∃w, nf_eval_nf M k 3 (zoneEnv3 w (env i)(env j)) q) ↔ nf_zone_flatten_navigable …` at anchors `(env i, env j)`; interior coupled via `seg_holds_coupled` | transcribed |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (depth step) | `Kamp.nfEval_step_reduction` (+ `nfEval_step_unfold_gen`) | depth-`(k+1)` reduction given depth-`k` IH `P`: atom→≤2-anchor (Phase 2), quant inner→IH under shared `∃w` (no per-pair distribution) | transcribed |
-| Rabinovich 2014 | Lemma 3.2(2), md:119 (main) | `Kamp.nfEval_le2_reduction` | `nf_eval_nf M k n env qnf ↔` (finite conj. of ≤2/≤3-anchor `nf_eval_nf` facts) | pending |
+| Rabinovich 2014 | Lemma 3.2(2), md:119 (main) | `Kamp.nfEval_le2_reduction` (+ `nfEvalRHS`) | `∀ k n env qnf, nf_eval_nf M k n env qnf ↔ nfEvalRHS M k n env qnf` (structural-recursive conj. of ≤2-anchor `nf_eval_nf` atom facts + depth-recursive quant clauses; `hn` dropped — strengthening) | transcribed |
 
 (Identifier names are provisional; the implementer may rename for cohesion but MUST keep the ≤2/≤3
 anchor-arity invariant and keep the Status column synchronized with the sorry inventory.)

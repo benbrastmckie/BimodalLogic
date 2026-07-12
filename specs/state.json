@@ -1772,7 +1772,7 @@
     {
       "project_number": 351,
       "project_name": "formalize_rabinovich_lemma_322_2freevariable_reduction_for_normalformnf_eval_nf",
-      "status": "researched",
+      "status": "implementing",
       "task_type": "lean4",
       "description": "Build a reusable, green, sorry-free Lean structural lemma (or minimal cohesive family of lemmas) in a new file Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Lemma32Reduction.lean that is the Lean analogue of Rabinovich (2014) Lemma 3.2(2) (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md, around md:119): 'Every →∃∀-formula is equivalent to a conjunction of →∃∀-formulas with at most two free variables.' Concretely, over this project's NormalForm/nf_eval_nf types (Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean, nf_eval_nf at line 198; AtomKind at line 113) and the ExistsForallNF/TemporalPred types (Theories/Bimodal/Metalogic/WeakCanonical/ExistsForallNF.lean, TemporalPred.eval_at at line 53), the lemma must show that for arbitrary arity n, evaluating nf_eval_nf M k n env qnf against an arbitrary env : Fin n -> M.carrier is equivalent to a finite conjunction of nf_eval_nf-style facts each restricted to at most two free anchor positions (arity <=3 once the existential witness position from nf_eval_nf's own recursive unfolding is included), matching the 'two anchors + one witness' shape the GREEN nf_zone_flatten_navigable/_correct two-anchor lemma already uses (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:667-697). The reduction must happen BEFORE any navigation step, decomposing the arity-n obligation into arity-<=3 pieces at the NormalForm/nf_eval_nf level, so task 349's recursion can later navigate each piece with Until/Since without ever climbing past arity 3. Motivation to cite verbatim in the module docstring: the two in-tree refutation theorems endCharN0_correct_world_local_obstruction and endCharN0_correct_infeasible (Base.lean) prove the climbing-arity single-world base is impossible, and specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md (§Q4 target 4, H3 lemma-mapping table) is the faithfulness ground truth establishing this reduction as the paper's own prescribed alternative. Reusable assets to build on (do not re-derive): nf_endpoint_tl_gen/_correct (Base.lean:1879/1893), atomPartN (Base.lean:1866), seg/seg_holds_coupled (Base.lean:1127/1150), and the green nf_zone_flatten_navigable/_correct full-eval hook shape (Base.lean:667-697) as the structural template. Explicitly forbidden (H4-refuted or plan-forbidden): the single-anchor navBrickForm reshape, the nf_char3_deeper_split arity collapse, and reintroducing a free-standing NavResidual/h_nav predicate-layer residual at inner witnesses. Deliverable/acceptance criterion: a green, sorry-free, 0-new-axiom (beyond [propext, Classical.choice, Quot.sound]) Lean theorem (or minimal family) stating the <=2/<=3 free-variable equivalence for nf_eval_nf, committed under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/, verified by lake build. Does NOT include re-architecting task 349's recursion itself — that is deferred to /revise 349 (v4) once this lemma lands.",
       "effort": "high",
@@ -1783,14 +1783,62 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
       ],
       "created": "2026-07-12T04:43:11Z",
-      "last_updated": "2026-07-12T04:43:11Z",
+      "last_updated": "2026-07-12T05:22:29Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/03_spawn-blocker-analysis.md",
           "summary": "Spawn blocker analysis from parent task 349"
+        },
+        {
+          "type": "plan",
+          "path": "specs/351_formalize_rabinovich_lemma_322_2freevariable_reduction_for_normalformnf_eval_nf/plans/01_lemma32-2var-reduction-plan.md",
+          "summary": "Hard-mode 6-phase plan: Rabinovich Lemma 3.2(2) <=2/<=3-anchor nf_eval_nf reduction"
         }
-      ]
+      ],
+      "next_artifact_number": 2,
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 14,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-11"
+          },
+          {
+            "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/03_spawn-blocker-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-11"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      },
+      "session_id": "sess_1783832460_ce471b"
     }
   ],
   "artifacts": [

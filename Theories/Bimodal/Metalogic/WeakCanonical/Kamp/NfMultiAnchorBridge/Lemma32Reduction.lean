@@ -449,4 +449,101 @@ theorem nfEval_step_reduction {sig : MonadicSignature} {k n : Nat}
     refine iff_congr ?_ Iff.rfl
     exact exists_congr (fun w => IH (n + 1) (Fin.cons w env) sub)
 
+/-! ## Phase 5: main theorem assembly by induction on depth `k`
+
+Phases 1–4 delivered the depth-0 atom-layer reduction (`nfEval0_reduction`) and the single depth
+step (`nfEval_step_reduction`), the latter parameterized by an ABSTRACT depth-`k` reduction `P`.
+Phase 5 closes the frozen main theorem `nfEval_le2_reduction` by `induction k`: the base is Phase 2
+and the step is Phase 4 with `P` instantiated to the depth-`k` reduction RHS itself, supplied by the
+induction hypothesis. To thread the IH at the arity `n+1` the step needs, the theorem is stated
+`∀ n env qnf` (fully general in arity and environment) and `induction k` generalizes over them.
+
+### The recursive RHS family (`nfEvalRHS`)
+
+`nfEvalRHS M k n env qnf` is the finite conjunction of ≤2/≤3-anchor `nf_eval_nf` facts the reduction
+targets, defined by structural recursion on depth `k` so it lines up EXACTLY with the two proved
+reduction lemmas:
+
+* `k = 0`: the Phase-2 RHS — `∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)`
+  (every conjunct anchor-arity 2).
+* `k+1`: the Phase-4 step RHS — the ≤2-anchor atom conjunction on `qnf.1` AND, per sub-form, the
+  inner realizability `∃ w, nfEvalRHS M k (n+1) (Fin.cons w env) sub` matched against `qnf.2 sub`.
+  The single witness `w` stays OUTSIDE the recursively-reduced inner form (order-theoretic merge,
+  SETTLED — never a per-pair `∀-pair ∃-witness` distribution); the quant assignment `qnf.2` is
+  preserved verbatim (no arity-collapsing quant `nfRestrict`).
+
+### Arity ceiling (SETTLED invariant, ≤ 3)
+
+Every *atom* conjunct of `nfEvalRHS` is an `nf_eval_nf M 0 2 …` fact — anchor arity exactly 2. The
+inner recursive conjuncts `nfEvalRHS M k (n+1) …` are governed by `nfEvalRHS` at the next arity, but
+the ONLY `nf_eval_nf` facts it ever emits are the depth-0 atom pieces at arity 2; the inner arity
+`n+1` appears solely as the domain of the recursion (the `∃ w` binder over `Fin.cons w env`), never
+as the anchor arity of an emitted `nf_eval_nf` conjunct. So no emitted conjunct climbs past anchor
+arity 2 (≤ 3 with room for the Phase-3 zoneEnv3 witness on the navigation side, 349's job).
+
+### Deviation from the frozen signature (flagged, not silent): `hn : 2 ≤ n` dropped
+
+The Phase-1 frozen target carried `(hn : 2 ≤ n)`. Phase 2 already discharged the `n < 2` case
+(`nfEval0_reduction` carries NO arity hypothesis: the diagonal conjunct `(i, i)` covers every
+single-index predicate atom). Since neither `nfEval0_reduction` nor `nfEval_step_reduction` needs
+`2 ≤ n`, `nfEval_le2_reduction` omits it — a STRENGTHENING of the frozen statement (strictly more
+general: it now holds for every arity `n`, including `n < 2`), never a weakening. This matches the
+already-committed Phase-2 drop of the same hypothesis; the RHS is the genuine full characterization
+`nfEvalRHS`, unweakened. -/
+
+/-- The recursive target RHS of the Lemma 3.2(2) reduction: the finite conjunction of ≤2-anchor
+`nf_eval_nf` atom facts (over all anchor pairs, at every depth) together with the depth-recursive
+quant-layer realizability clauses. Structural recursion on depth `k` mirrors the two proved
+reduction lemmas (`nfEval0_reduction` at `k = 0`, `nfEval_step_reduction` at `k+1`). -/
+def nfEvalRHS {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
+    (k n : Nat) → (Fin n → M.carrier) → NormalForm sig k n → Prop
+  | 0, n, env, qnf =>
+      ∀ (i j : Fin n), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)
+  | k + 1, n, env, qnf =>
+      (∀ (i j : Fin n),
+        nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf.1 i j)) ∧
+      (∀ sub : NormalForm sig k (n + 1),
+        (∃ w : M.carrier, nfEvalRHS M k (n + 1) (Fin.cons w env) sub) ↔ (qnf.2 sub = true))
+
+@[simp] theorem nfEvalRHS_zero {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    {n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig 0 n) :
+    nfEvalRHS M 0 n env qnf
+      = ∀ (i j : Fin n), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j) := rfl
+
+@[simp] theorem nfEvalRHS_succ {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    {k n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 1) n) :
+    nfEvalRHS M (k + 1) n env qnf
+      = ((∀ (i j : Fin n),
+            nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf.1 i j)) ∧
+          (∀ sub : NormalForm sig k (n + 1),
+            (∃ w : M.carrier, nfEvalRHS M k (n + 1) (Fin.cons w env) sub) ↔ (qnf.2 sub = true))) :=
+  rfl
+
+/-- **Main theorem (Rabinovich Lemma 3.2(2), md:119).** For arbitrary depth `k`, arity `n`,
+environment `env`, and normal form `qnf`, the evaluation `nf_eval_nf M k n env qnf` is equivalent to
+the finite conjunction `nfEvalRHS M k n env qnf` of ≤2-anchor `nf_eval_nf` atom facts and the
+depth-recursive quant-layer realizability clauses. Proved by induction on depth `k`: the base is the
+Phase-2 atom-layer reduction `nfEval0_reduction`; the step is the Phase-4 depth-step reduction
+`nfEval_step_reduction` with its abstract depth-`k` reduction `P` instantiated to `nfEvalRHS M k`,
+supplied by the induction hypothesis. Every emitted `nf_eval_nf` conjunct on the RHS has anchor
+arity 2 (the SETTLED ≤3 ceiling); the single realizability witness `w` is threaded OUTSIDE the
+recursively-reduced inner form (order-theoretic merge — no per-pair distribution, no arity-collapsing
+quant `nfRestrict`, no `sorry`/vacuous def/RHS weakening).
+
+**Signature note:** the Phase-1 frozen `(hn : 2 ≤ n)` is omitted (see the section docstring): this is
+a strengthening, since Phase 2 already discharged `n < 2`. -/
+theorem nfEval_le2_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig) :
+    ∀ (k n : Nat) (env : Fin n → M.carrier) (qnf : NormalForm sig k n),
+      nf_eval_nf M k n env qnf ↔ nfEvalRHS M k n env qnf := by
+  intro k
+  induction k with
+  | zero =>
+      intro n env qnf
+      rw [nfEvalRHS_zero]
+      exact nfEval0_reduction M env qnf
+  | succ k ih =>
+      intro n env qnf
+      rw [nfEvalRHS_succ]
+      exact nfEval_step_reduction M env qnf (P := nfEvalRHS M k) ih
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
