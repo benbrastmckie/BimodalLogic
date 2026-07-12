@@ -113,28 +113,27 @@ advances the Kamp-theorem formalization line (unblocks task 309 Phase 18/19, clo
 Phases within the same wave can execute in parallel. This chain is fully sequential: each phase
 consumes the green artifact of the prior one.
 
-### Phase 1: Step-target unfolding + `endChar_correct` statement freeze [IN PROGRESS]
+### Phase 1: Step-target unfolding + `endChar_correct` statement freeze [COMPLETED]
 
 **Goal**: Establish the exact `k+1` target shape and freeze the `endChar`/`endChar_correct`
 signatures (including the residual/coupling hypotheses) so downstream phases prove a fixed,
 non-weakened statement.
 
 **Tasks**:
-- [ ] Read `nf_eval_nf`'s `k+1` unfolding (NormalForm.lean; cross-check the Base.lean:606-615
+- [x] Read `nf_eval_nf`'s `k+1` unfolding (NormalForm.lean:198-207; cross-check the Base.lean:606-615
   pattern) and record, in an in-file docstring, the precise decomposition of
   `nf_eval_nf M (k+1) 3 (zoneEnv3 w a b) qnf` into (atom layer at `zoneEnv3 w a b`) AND (per
-  arity-4 sub `sub`: `exists w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub`).
-- [ ] Prove a green helper lemma `nf_eval_nf_step_unfold` (or reuse an existing unfolding lemma if
-  one already covers the arity-3 `k+1` case) exposing that decomposition as a citable equivalence.
-- [ ] Write the frozen `endChar` recursion carrier signature `endChar : (k : Nat) -> EndCharCarrier sig k`
-  and the frozen `endChar_correct` statement, choosing the residual/order hypothesis shape by
-  direct analogy to `endChar0_correct`'s `h_res` (Base.lean:1061-1062). Record the choice and its
-  justification in a docstring; do NOT yet supply the step body (Phase 3) — this phase may state
-  the signature via the `endCharStep` decomposition placeholder only if it remains green (no sorry;
-  if a green skeleton is impossible without the step, defer the `def` to Phase 4 and land only the
-  unfolding lemma + a written signature spec here).
-- [ ] Route audit: confirm target env is `zoneEnv3 w a b` (arity 3, anchors `{a,b} subset {x,t}`),
-  `w` is the navigated witness (G4), no arity-1 collapse (G1).
+  arity-4 sub `sub`: `exists w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub`). *(completed)*
+- [x] Prove a green helper lemma `nf_eval_nf_step_unfold` exposing that decomposition as a citable
+  equivalence (`Iff.rfl`, Base.lean:~1483; axioms exactly `[propext, Classical.choice, Quot.sound]`). *(completed)*
+- [x] Write the frozen `endChar`/`endChar_correct` signature spec. *(deviation: altered — the `def`
+  is deferred to Phase 4 per the plan's own escape clause ("if a green skeleton is impossible
+  without the step, defer the def to Phase 4"). Phase 2 is BLOCKED (see below), so the step body
+  cannot be supplied; the frozen target shape is captured by `nf_eval_nf_step_unfold` and its
+  docstring.)*
+- [x] Route audit: target env is `zoneEnv3 w a b` (arity 3, anchors `{a,b} subset {x,t}`),
+  `w` is the navigated witness (G4), no arity-1 collapse (G1). *(completed — verified in the
+  unfolding lemma statement)*
 
 **Timing**: ~1.5 hours (~80-150 lines)
 
@@ -149,7 +148,60 @@ non-weakened statement.
 - The `endChar_correct` statement is written out and reviewed to be the faithful navigated
   characterization (not a weakened/vacuous form).
 
-### Phase 2: Arity-4 -> arity-3 brick-witness-collapse bridge [NOT STARTED]
+### Phase 2: Arity-4 -> arity-3 brick-witness-collapse bridge [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Constructing the arity-4 -> arity-3 brick-witness-collapse bridge — i.e. building
+  `innerConv : NormalForm sig k 4 -> Formula` (the inner converter that `nf_char3_endpoint_tl`,
+  Base.lean:869, consumes) out of the frozen recursion carrier
+  `rec : EndCharCarrier sig k = NormalForm sig k 3 -> TemporalPred`. The step obligation
+  (`nf_eval_nf_step_unfold`, Phase 1) is: for every `sub : NormalForm sig k 4`, characterize
+  `∃ w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub` — an evaluation on the arity-4 env
+  `[w', w, a, b]` (four distinct carrier positions: deeper witness `w'`, navigated point `w`,
+  anchors `a`, `b`).
+- **What was tried**:
+  1. Source-asset sweep for any arity-4 -> arity-3 collapse or projection
+     (`grep` over `Theories/Bimodal/Metalogic/WeakCanonical/`): NONE exists. Every occurrence of
+     `nf_eval_nf M k 4 ...` in the tree (NfZoneDepthK.lean:44/112/446/524/544,
+     Base.lean:615/620/902/1495) keeps arity at 4. The only asset that exposes the arity-4 quant
+     layer is `nf_char3_deeper_split` (Base.lean:603) — which is FORBIDDEN by the task, and even it
+     only *splits* the arity-4 existential into 7 zones, never *collapses* it to arity 3.
+  2. Concrete Lean probe (`endCharStep_probe`, added then reverted): defining the step via
+     `nf_char3_endpoint_tl atomPart innerConv qnf` forces `innerConv sub` to feed `rec`; feeding
+     `rec` requires a term of type `NormalForm sig k 3`, so the step needs a function
+     `NormalForm sig k 4 -> NormalForm sig k 3`. Lean error captured at Base.lean:1512:14
+     `Unknown identifier 'sub_arity4_to_3_PROBE'` — the missing collapse made explicit as a
+     type-level hole.
+  3. Feasibility check of the arity-3 brick route (`nf_zone_flatten_navigable_brick`,
+     Base.lean:813): the brick consumes `∃ w, nf_eval_nf M k 3 (zoneEnv3 w x t) q` for
+     `q : NormalForm sig k 3`. Our obligation is arity-4; to apply the brick `sub` must already be
+     arity-3 — same wall.
+- **Why it's stuck** (structural, not a tactic gap): a faithful `NormalForm sig k 4 -> NormalForm sig k 3`
+  cannot exist. `nf_eval_nf M k 4 [w', w, a, b] sub` constrains predicate literals at all four
+  positions and the order relations among all four; an arity-3 characteristic
+  (`NormalForm sig k 3` at `[p, a, b]`, one navigated point + two anchors) can only encode a
+  three-position order/predicate structure. Collapsing 4 positions to 3 necessarily drops or
+  identifies a position and is not truth-preserving for a general `sub`. The Rabinovich segment
+  mechanism pins the ANCHORS at the OUTER (atom-layer, arity-3) level — it does not reduce the
+  INNER arity-4 quant layer, whose `∃ w'` ranges over the whole carrier with no segment constraint
+  in the `nf_char3_endpoint_tl` `h_inner` hypothesis shape.
+- **What is needed** (to unblock, requires user/architecture decision — all three violate a current
+  hard constraint, so this cannot be resolved additively in Base.lean alone):
+  1. Widen the recursion carrier to an arity-4-capable interface (e.g.
+     `EndCharCarrier' sig k := NormalForm sig k 4 -> TemporalPred`, or a dependent arity carrier) —
+     but `EndCharCarrier`/`nf_nvar_exist_all_depths`'s signature is FROZEN by the task; OR
+  2. Admit `nf_char3_deeper_split` to expose+recurse the arity-4 layer with an arity-4 endpoint
+     characteristic — FORBIDDEN by the task (grows the anchor tower); OR
+  3. Re-scope the primitive: prove `endChar_correct` hook-parametrically (carry the arity-4 inner
+     converter and its correctness as residual hypotheses at every level, exactly as
+     `nf_char3_endpoint_tl_correct` carries `h_inner`), so `endChar` is NOT a closed
+     `Nat.rec endChar0 endCharStep` recursion but a hook-threaded family. This is achievable green
+     but changes the deliverable's contract (endChar would take an arity-4 `innerConv` parameter,
+     no longer inhabiting the frozen `EndCharCarrier sig k` by pure recursion) — a plan/task
+     revision decision, not an implementation choice this dispatch may make unilaterally.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def endChar := ...` vacuous placeholder,
+  `nf_char3_deeper_split`, or a non-truth-preserving arity collapse. None were used; Base.lean stays
+  green and sorry-free at the Phase-1 deliverable.
 
 **Goal**: Prove the load-bearing structural bridge that reduces each arity-4 sub-existential
 `exists w', nf_eval_nf M k 4 (Fin.cons w' (zoneEnv3 w a b)) sub` to arity-3 navigated evaluations
