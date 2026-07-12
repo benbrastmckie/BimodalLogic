@@ -193,4 +193,72 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} {k : Nat}
       rw [Bool.or_eq_true]
       exact Or.inl (List.any_eq_true.mpr ⟨nfk_zoneSpec s, hmem, decide_eq_true rfl⟩)
 
+/-! ## Depth-`k` past-side chain-assembly navigation constants and helpers (Phase 4.2/4.3 prep)
+
+The three exterior-zone-4 specs the past chain builder partitions σ's fiber by (the depth-`k`
+analogs of the frozen `kvE2_pastGapBit`/`kvE2_pastRayBit`/`kvE2_pastSelfBit` head couplings,
+`ExteriorNegationPast.lean:223/228/233`), instantiating the side-agnostic Phase-2
+`kvE_fiberZoneList σ zs4`. Head coupling encodes the relation of a fiber element's fresh point
+to the exterior anchor `x1`: `(false, true)` = strictly above `x1` (the gap `(x1, x)`),
+`(true, false)` = strictly below `x1` (the ray `(−∞, x1)`), `(false, false)` = equal to `x1`
+(the self point). All three are among the nine `kvE_pastPossibleZones` (navigation-only, G6). -/
+
+/-- Gap zone-4 spec `(x1, x)`: fresh point strictly above `x1`, below `w, x, t`. -/
+def kvE_pastGapZone : ZoneSpec 4 := Fin.cons (false, true) kvE2_sep_zPastX3
+
+/-- Ray zone-4 spec `(−∞, x1)`: fresh point strictly below `x1` (hence below all of `w, x, t`). -/
+def kvE_pastRayZone : ZoneSpec 4 := Fin.cons (true, false) kvE2_sep_zPastX3
+
+/-- Self zone-4 spec: fresh point equal to `x1` (the endpoint). -/
+def kvE_pastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zPastX3
+
+/-- The gap zone is order-possible (`kvE_pastPossibleZones` index 6). -/
+theorem kvE_pastGapZone_mem : kvE_pastGapZone ∈ kvE_pastPossibleZones := by
+  simp [kvE_pastGapZone, kvE_pastPossibleZones, kvE2_pastPossibleZones]
+
+/-- The self zone is order-possible (`kvE_pastPossibleZones` index 7). -/
+theorem kvE_pastSelfZone_mem : kvE_pastSelfZone ∈ kvE_pastPossibleZones := by
+  simp [kvE_pastSelfZone, kvE_pastPossibleZones, kvE2_pastPossibleZones]
+
+/-- The ray zone is order-possible (`kvE_pastPossibleZones` index 8). -/
+theorem kvE_pastRayZone_mem : kvE_pastRayZone ∈ kvE_pastPossibleZones := by
+  simp [kvE_pastRayZone, kvE_pastPossibleZones, kvE2_pastPossibleZones]
+
+/-- **Generic maximal-witness pick** (past-side descending analog of the shared
+    `kvE_minPick`, `ExteriorFiberK.lean:263`): from a nonempty list each of whose elements has
+    some `M`-witness under `P`, extract one element with a `≤`-maximal witness dominated by a
+    witness for every element. Byte-identical proof template of the frozen private
+    `kvE2_pastMaxPick` (`ExteriorNegationPast.lean:484`), `{α : Type}`-generic so the past chain
+    builder (which walks the gap top-down) can sort chosen occurrences by maximal extraction.
+    The shared `ExteriorFiberK.lean` only exposed the ascending `kvE_minPick` (future side); this
+    is the additive Past-territory descending counterpart. -/
+theorem kvE_pastMaxPick {sig : MonadicSignature} {α : Type}
+    (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
+    ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
+      ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r ≤ r₀ := by
+  intro l
+  induction l with
+  | nil => intro h; exact absurd rfl h
+  | cons a l ih =>
+    intro _ hocc
+    obtain ⟨r, hr⟩ := hocc a (by simp)
+    by_cases hl : l = []
+    · subst hl
+      refine ⟨a, by simp, r, hr, fun b hb => ?_⟩
+      rw [List.mem_singleton] at hb
+      subst hb
+      exact ⟨r, hr, le_refl r⟩
+    · obtain ⟨a', ha'mem, r', hr', hmax⟩ :=
+        ih hl (fun c hc => hocc c (List.mem_cons_of_mem a hc))
+      rcases le_or_gt r' r with hle | hlt
+      · refine ⟨a, by simp, r, hr, fun c hc => ?_⟩
+        rcases List.mem_cons.mp hc with rfl | hc'
+        · exact ⟨r, hr, le_refl r⟩
+        · obtain ⟨r'', hr'', hle'⟩ := hmax c hc'
+          exact ⟨r'', hr'', hle'.trans hle⟩
+      · refine ⟨a', List.mem_cons_of_mem a ha'mem, r', hr', fun c hc => ?_⟩
+        rcases List.mem_cons.mp hc with rfl | hc'
+        · exact ⟨r, hr, hlt.le⟩
+        · exact hmax c hc'
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
