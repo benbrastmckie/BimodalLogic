@@ -175,4 +175,99 @@ theorem nfEval0_pairwise {sig : MonadicSignature} (M : OrderedMonadicStructure s
       have := (atom_eval_pairEmbed M env i j h (AtomKind.order 0 1 (by decide))).symm.trans hpair
       simpa [nfRestrictPair, pairEmbed, envPair] using this
 
+/-! ## Phase 2: full depth-0 atom-layer reduction (arity-general, diagonal-total)
+
+Phase 1's `nfEval0_pairwise` carried a `2 ≤ n` hypothesis and a distinctness guard `i ≠ j`,
+deferring the degenerate diagonal (`i = j`) and the `n < 2` coverage. Phase 2 closes that gap
+with a *total* restriction `nfRestrict0 qnf i j : NormalForm sig 0 2` defined for every pair —
+including `i = j` — and proves the reduction
+
+  `nf_eval_nf M 0 n env qnf ↔ ∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)`
+
+with NO arity hypothesis. On the diagonal the two-variable order atom cannot embed (there is no
+`i ≠ i` order atom in the arity-`n` layer), so it is sent to `false`, which is exactly the truth
+value of `env i < env i` under `LinearOrder` irreflexivity. Predicate atoms are covered by the
+diagonal conjunct `(i, i)`; order atoms by the genuine `i ≠ j` pairs. This reuses the Phase-1
+machinery `pairSel`/`pairSel_zero`/`pairSel_one`/`pairSel_ne`/`envPair` (it does not re-derive them).
+
+**Deviation from the H3 target row (`![env i, env j]`):** the arity-2 environment is written as the
+Phase-1 `envPair M env i j` (`fun k => env (pairSel i j k)`) rather than the raw matrix literal
+`![env i, env j]`. The two are pointwise equal (`envPair M env i j 0 = env i`, `… 1 = env j`); using
+`envPair` keeps the file `import`-clean (no `VecNotation`) and cohesive with `nfEval0_pairwise`. -/
+
+/-- Total anchor-pair restriction of a depth-0 normal form. Predicate atoms embed on every pair
+(`pred p k ↦ qnf (pred p (pairSel i j k))`). The two-variable order atom embeds only off the
+diagonal (`i ≠ j`, using `pairSel_ne` for the distinctness proof); on the diagonal (`i = j`) it is
+sent to `false`, matching the `LinearOrder` irreflexivity `¬ (env i < env i)`. For `i ≠ j` this
+agrees with the Phase-1 `nfRestrictPair qnf i j`. -/
+def nfRestrict0 {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+    (i j : Fin n) : NormalForm sig 0 2
+  | .pred p k => qnf (.pred p (pairSel i j k))
+  | .order k l h =>
+      if hij : i = j then false
+      else qnf (.order (pairSel i j k) (pairSel i j l) (pairSel_ne hij h))
+
+@[simp] theorem nfRestrict0_pred {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+    (i j : Fin n) (p : sig.preds) (k : Fin 2) :
+    nfRestrict0 qnf i j (.pred p k) = qnf (.pred p (pairSel i j k)) := rfl
+
+theorem nfRestrict0_order_diag {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+    (i : Fin n) (k l : Fin 2) (h : k ≠ l) :
+    nfRestrict0 qnf i i (.order k l h) = false := by
+  simp [nfRestrict0]
+
+theorem nfRestrict0_order_off {sig : MonadicSignature} {n : Nat} (qnf : NormalForm sig 0 n)
+    {i j : Fin n} (hij : i ≠ j) (k l : Fin 2) (h : k ≠ l) :
+    nfRestrict0 qnf i j (.order k l h)
+      = qnf (.order (pairSel i j k) (pairSel i j l) (pairSel_ne hij h)) := by
+  simp only [nfRestrict0]
+  exact dif_neg hij
+
+/-- `pairSel i i k = i` for either pair-position (the diagonal collapses both anchors). -/
+theorem pairSel_diag {n : Nat} (i : Fin n) (k : Fin 2) : pairSel i i k = i := by
+  simp only [pairSel]; split <;> rfl
+
+/-- **Phase 2 milestone (full depth-0 atom-layer reduction).** The depth-0 atom layer
+`nf_eval_nf M 0 n env qnf` is equivalent to the finite conjunction, over ALL pairs `(i, j)` of
+anchor positions, of its arity-2 restrictions `nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)`.
+Unlike the Phase-1 `nfEval0_pairwise`, this carries no `2 ≤ n` hypothesis and no `i ≠ j` guard: the
+diagonal conjuncts `(i, i)` cover every single-index predicate atom (so `n < 2` is handled), and the
+diagonal order atom is `false`, matching `LinearOrder` irreflexivity. Every conjunct has anchor arity
+exactly 2 — the guaranteed-green atom-layer core of Rabinovich Lemma 3.2(2). -/
+theorem nfEval0_reduction {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    {n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig 0 n) :
+    nf_eval_nf M 0 n env qnf ↔
+      ∀ (i j : Fin n), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j) := by
+  simp only [nf_eval_nf]
+  constructor
+  · -- forward: read each arity-2 restricted atom off the corresponding arity-`n` atom
+    intro H i j a
+    cases a with
+    | pred p k =>
+        simp only [atom_eval, nfRestrict0_pred, envPair]
+        exact H (AtomKind.pred p (pairSel i j k))
+    | order k l h =>
+        by_cases hij : i = j
+        · -- diagonal: `env i < env i` is false, and `nfRestrict0` sends the order atom to `false`
+          subst hij
+          rw [nfRestrict0_order_diag]
+          simp only [atom_eval, envPair, pairSel_diag, lt_irrefl]
+          simp
+        · -- genuine pair: order atom embeds along `(i, j)`
+          rw [nfRestrict0_order_off qnf hij]
+          simp only [atom_eval, envPair]
+          exact H (AtomKind.order (pairSel i j k) (pairSel i j l) (pairSel_ne hij h))
+  · -- backward: recover each arity-`n` atom from the pair (diagonal for `pred`, `(i,j)` for `order`)
+    intro H a
+    cases a with
+    | pred p i =>
+        have hh := H i i (AtomKind.pred p 0)
+        simp only [atom_eval, nfRestrict0_pred, envPair, pairSel_diag] at hh
+        simpa only [atom_eval] using hh
+    | order i j h =>
+        have hh := H i j (AtomKind.order 0 1 (by decide))
+        rw [nfRestrict0_order_off qnf h] at hh
+        simp only [atom_eval, envPair, pairSel_zero, pairSel_one] at hh
+        simpa only [atom_eval] using hh
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

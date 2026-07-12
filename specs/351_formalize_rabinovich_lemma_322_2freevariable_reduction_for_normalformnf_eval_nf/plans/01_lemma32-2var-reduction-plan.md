@@ -1,7 +1,7 @@
 # Implementation Plan: Formalize Rabinovich Lemma 3.2(2) — the ≤2-free-variable reduction for `nf_eval_nf`
 
 - **Task**: 351 - Formalize the Rabinovich Lemma 3.2(2) ≤2-free-variable reduction for `NormalForm`/`nf_eval_nf`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 14 hours (6 phases)
 - **Dependencies**: None (foundational; task 349 depends on this by spawn convention, not the reverse)
 - **Research Inputs**:
@@ -230,21 +230,35 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 - **Result:** GREEN. `nfEval0_pairwise` proved sorry-free; `lean_verify` axioms exactly
   `[propext, Classical.choice, Quot.sound]` (0 new). Module builds via scoped `lake build`.
 
-### Phase 2: Depth-0 restriction machinery + full atom-layer reduction theorem [NOT STARTED]
+### Phase 2: Depth-0 restriction machinery + full atom-layer reduction theorem [COMPLETED]
+
 - **Goal:** Complete the depth-0 (arity-general) reduction: define the arity-`n` → 2-anchor
   restriction of a `NormalForm sig 0 n` and prove `nf_eval_nf M 0 n env qnf` equals the finite
   conjunction of its ≤2-anchor restrictions, as a clean reusable lemma.
 - **Tasks:**
-  - [ ] Define `nfRestrict0 : NormalForm sig 0 n → (i j : Fin n) → NormalForm sig 0 2` (atom
-    assignment restricted to positions `{i,j}`).
-  - [ ] Prove `nfEval0_reduction : nf_eval_nf M 0 n env qnf ↔ (∀ i j, nf_eval_nf M 0 2 ![env i, env j]
-    (nfRestrict0 qnf i j))` (or the equivalent explicit finite conjunction), reusing the Phase-1
-    pairwise lemma. Handle degenerate `i = j` and order-atom coverage explicitly (no `simp`-only
-    hand-waving of the atom cases — Literature Fidelity).
-  - [ ] `lake build` of the new module.
+  - [x] Define `nfRestrict0 : NormalForm sig 0 n → (i j : Fin n) → NormalForm sig 0 2` (atom
+    assignment restricted to positions `{i,j}`). *(landed as `nfRestrict0`; predicate atoms embed on
+    every pair, the two-variable order atom embeds off-diagonal via `pairSel_ne` and is sent to
+    `false` on the diagonal `i = j` — matching `LinearOrder` irreflexivity. Supporting simp lemmas:
+    `nfRestrict0_pred`, `nfRestrict0_order_diag`, `nfRestrict0_order_off`, `pairSel_diag`.)*
+  - [x] Prove `nfEval0_reduction : nf_eval_nf M 0 n env qnf ↔ (∀ i j, nf_eval_nf M 0 2 (envPair M env i j)
+    (nfRestrict0 qnf i j))`. Handles degenerate `i = j` (diagonal conjunct covers all `pred` atoms;
+    order atom → `false` by `lt_irrefl`) and order-atom coverage (genuine `i ≠ j` pairs) explicitly
+    — no `simp`-only hand-waving. *(deviation: altered — (1) the arity-2 environment is written as
+    the Phase-1 `envPair M env i j` (`fun k => env (pairSel i j k)`) rather than the raw matrix
+    literal `![env i, env j]`; the two are pointwise equal but `envPair` keeps the file
+    `import`-clean of `VecNotation` and cohesive with `nfEval0_pairwise`. (2) proved directly on the
+    diagonal-total `nfRestrict0` rather than routing the core `Iff` through `nfEval0_pairwise` — the
+    total restriction makes the direct proof cleaner and, critically, DROPS the `2 ≤ n` hypothesis,
+    covering the `n < 2` case Phase 1 deferred. Phase-1 machinery `pairSel`/`pairSel_zero`/
+    `pairSel_one`/`pairSel_ne`/`envPair` is reused, not re-derived.)*
+  - [x] `lake build` of the new module. *(scoped `lake build …Lemma32Reduction` green, 1006 jobs, no
+    warnings from the new file.)*
 - **Estimated output:** ~220 lines.
 - **Done when:** `nfEval0_reduction` green and sorry-free; module builds; no new axioms.
 - **Depends on:** 1
+- **Result:** GREEN. `nfEval0_reduction` proved sorry-free; `lean_verify` axioms exactly
+  `[propext, Classical.choice, Quot.sound]` (0 new). No `2 ≤ n` hypothesis (Phase-1 deferral closed).
 
 ### Phase 3: FEASIBILITY GATE — arity-3 zone bridge for one existential over a fixed anchor pair [NOT STARTED]
 - **Goal:** Prove that the depth-`(k+1)` inner realizability `∃ w, nf_eval_nf M k (n+1)
@@ -321,7 +335,7 @@ the feasibility gate (see Risks); Phases 4-6 proceed only if Phase 3 closes gree
 | Source | Prop/Location | Lean Identifier | Type Signature (target) | Status |
 |--------|---------------|-----------------|-------------------------|--------|
 | Rabinovich 2014 | Def 3.1, md:109 (atom layer) | `Kamp.nfEval0_pairwise` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j (hij : i ≠ j), nf_eval_nf M 0 2 (envPair M env i j) (nfRestrictPair qnf i j hij)` (with `hn : 2 ≤ n`) | transcribed |
-| Rabinovich 2014 | Lemma 3.2(2), md:119 (depth-0) | `Kamp.nfEval0_reduction` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j, nf_eval_nf M 0 2 ![env i, env j] (nfRestrict0 qnf i j)` | pending |
+| Rabinovich 2014 | Lemma 3.2(2), md:119 (depth-0) | `Kamp.nfEval0_reduction` | `nf_eval_nf M 0 n env qnf ↔ ∀ i j, nf_eval_nf M 0 2 (envPair M env i j) (nfRestrict0 qnf i j)` (no `2 ≤ n`; `envPair` ≐ `![env i, env j]`) | transcribed |
 | Rabinovich 2014 | Cor 5.4 shape, md:255 (arity-3 bridge) | `Kamp.nfEval_pair_arity3_bridge` | pair-restricted inner `∃w` ↔ `∃w, nf_eval_nf M k 3 (zoneEnv3 w (env i)(env j)) (…)` | pending |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (depth step) | `Kamp.nfEval_step_reduction` | depth-`(k+1)` reduction given depth-`k` IH | pending |
 | Rabinovich 2014 | Lemma 3.2(2), md:119 (main) | `Kamp.nfEval_le2_reduction` | `nf_eval_nf M k n env qnf ↔` (finite conj. of ≤2/≤3-anchor `nf_eval_nf` facts) | pending |
