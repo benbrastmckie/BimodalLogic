@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
+import Mathlib.Tactic.FinCases
 
 /-! # Depth-`k` full-fiber content channel (task 352, Phase 1.1)
 
@@ -288,5 +289,94 @@ theorem kvE_minPick {sig : MonadicSignature} {α : Type}
         rcases List.mem_cons.mp hc with rfl | hc'
         · exact ⟨r, hr, hlt.le⟩
         · exact hmin c hc'
+
+/-! ## Reindex/re-anchor bridge (task 352, blocker-resolution) — SHARED, SYMMETRIC
+
+Additive block landing the research-verified (report `02_reindex-bridge-blocker.md`,
+Deliverable 2; verdict GO) recursive rung re-anchoring bridge. Both the Future
+(`ExteriorNegationK`) and Past (`ExteriorNegationPastK`) `_sound`/`_complete` consume
+`kvE_fiberPosOnShift`/`kvE_fiberPosOnShift_correct` IDENTICALLY (H7 symmetric contract) — the
+fold-slot (index 0, fresh) vs endpoint (index 4=last) convention is temporal-direction-agnostic;
+direction is carried by the zone/chain layer, not the anchor index.
+
+**Rabinovich fidelity (Def 7.5 / Lemma 5.3 / Cor 5.4(2), chunk_0013/0014/0015/0021)**: the
+index-0 ↔ index-4 shift is NOT a mismatch — it is the literal encoding of the recursive rung step
+`(∃r0)[z0<r0<z1] (INF(z0,r0,z1,P1) ∧ On(P2,…,Pn, r0, z1))`, in which the freshly-∃-quantified
+interior point `r0` (fold slot-0) BECOMES the left endpoint anchor of the recursive sub-bracket
+`On(…, r0, z1)` (existF index-last). The rename IS that re-anchoring. Bijective (variable
+permutation) ⇒ lossless (Cor 5.4(2) inductive step; not an F2-style information collapse).
+
+Builds on the pre-existing, fully-proven general-`k` bijective transport
+`renameNF`/`renameNF_eval_iff` (`NfDepth0Generalized.lean:373`/`:440`), already in this file's
+import graph via `NfEFold`. No new imports beyond `Mathlib.Tactic.FinCases` (for `fin_cases`). -/
+
+/-- Cyclic shift on `Fin 5`: index 0 (fold-fresh) ↦ index 4 (existF endpoint), rest shift by one.
+    The syntactic half of Rabinovich Cor 5.4(2) rung re-anchoring. -/
+def rot5Fwd : Fin 5 → Fin 5 := fun i => i + 1
+
+/-- Inverse cyclic shift on `Fin 5`: index 4 (existF endpoint) ↦ index 0 (fold-fresh). -/
+def rot5Bwd : Fin 5 → Fin 5 := fun i => i - 1
+
+/-- `rot5Fwd` is a section of `rot5Bwd`. -/
+theorem rot5_sec : ∀ i, rot5Fwd (rot5Bwd i) = i := by decide
+
+/-- `rot5Bwd` is a section of `rot5Fwd`. -/
+theorem rot5_sec2 : ∀ i, rot5Bwd (rot5Fwd i) = i := by decide
+
+/-- Environment compatibility (`renameNF_eval_iff` hypothesis `hcomp`): the anchor environment
+    `insertEnv env p` (point `p` at LAST index 4) equals `Fin.cons p env` (point `p` at index 0)
+    precomposed with `rot5Fwd`. -/
+theorem rot5_comp {α : Type*} (env : Fin 4 → α) (p : α) :
+    ∀ i, insertEnv env p i = (Fin.cons p env : Fin 5 → α) (rot5Fwd i) := by
+  intro i; fin_cases i <;> rfl
+
+/-- Environment compatibility (`renameNF_eval_iff` hypothesis `hcomp2`): `Fin.cons p env` equals
+    the anchor environment `insertEnv env p` precomposed with `rot5Bwd`. -/
+theorem rot5_comp2 {α : Type*} (env : Fin 4 → α) (p : α) :
+    ∀ i, (Fin.cons p env : Fin 5 → α) i = insertEnv env p (rot5Bwd i) := by
+  intro i; fin_cases i <;> rfl
+
+/-- **THE BRIDGE** (Rabinovich Cor 5.4(2) re-anchoring, chunk_0014:35/chunk_0015). Content channel
+    evaluating `renameNF rot5Fwd rot5Bwd s` at `insertEnv env p` (point `p` at LAST index 4 —
+    `P.existF 4` endpoint convention) holds IFF the original `s` is realized at `Fin.cons p env`
+    (point `p` at index 0 — σ's fold-slot convention). Pure instantiation of the proven bijective
+    transport `renameNF_eval_iff` (NfDepth0Generalized.lean:440) with the `Fin 5` cyclic shift. -/
+theorem kvE_anchorBridge {sig : MonadicSignature} (M : OrderedMonadicStructure sig)
+    {k : Nat} (env : Fin 4 → M.carrier) (p : M.carrier) (s : NormalForm sig k 5) :
+    nf_eval_nf M k 5 (insertEnv env p) (renameNF rot5Fwd rot5Bwd s) ↔
+      nf_eval_nf M k 5 (Fin.cons p env) s :=
+  renameNF_eval_iff M rot5Fwd rot5Bwd (Fin.cons p env) (insertEnv env p)
+    (rot5_comp env p) (rot5_comp2 env p) rot5_sec rot5_sec2 s
+
+/-- **Shared clause-content primitive** (H7 side-symmetric): render each fiber sub under the anchor
+    shift (`renameNF rot5Fwd rot5Bwd`) before the `P.existF 4` endpoint fold. Both Future and Past
+    gap/ray content route through this. Rabinovich Def 7.5 recursive rung entry rendering. -/
+noncomputable def kvE_fiberPosOnShift {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (l : List (NormalForm sig k 5)) : Formula :=
+  kvE_fiberPosOn P (l.map (renameNF rot5Fwd rot5Bwd))
+
+/-- **Shared correctness contract** (H7 side-symmetric; the exact obligation both `_sound`/`_complete`
+    reduce their content half to): the shifted channel holds at `p` IFF some listed fiber sub is
+    realized with `p` as the FRESH (index-0) fold witness — EXACTLY σ's fold-layer shape
+    (`nf_eval_efold_k`, NfEFold.lean:608). The existential `env` is the faithful target: Rabinovich
+    Lemma 5.3 (chunk_0014) existentially quantifies the deeper rung's interior points `∃x1…∃xn`.
+    Proven by rewriting through `kvE_fiberPosOn_correct` then the bridge `kvE_anchorBridge`. -/
+theorem kvE_fiberPosOnShift_correct {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (l : List (NormalForm sig k 5))
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (p : M.carrier) :
+    temporal_truth M atomMap p (kvE_fiberPosOnShift P l) ↔
+      ∃ s ∈ l, ∃ env : Fin 4 → M.carrier, nf_eval_nf M k 5 (Fin.cons p env) s := by
+  rw [kvE_fiberPosOnShift, kvE_fiberPosOn_correct P _ M h_UZ h_SZ p]
+  constructor
+  · rintro ⟨s', hs'mem, env, hev⟩
+    obtain ⟨s, hsl, rfl⟩ := List.mem_map.mp hs'mem
+    exact ⟨s, hsl, env, (kvE_anchorBridge M env p s).mp hev⟩
+  · rintro ⟨s, hsl, env, hev⟩
+    exact ⟨renameNF rot5Fwd rot5Bwd s, List.mem_map.mpr ⟨s, hsl, rfl⟩, env,
+      (kvE_anchorBridge M env p s).mpr hev⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
