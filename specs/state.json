@@ -1955,6 +1955,11 @@
           "type": "research",
           "path": "specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/reports/01_team-research.md",
           "summary": "Team research (4 teammates a-d + fable literature teammate e), synthesized: ExistProviders channel, F2-safe full-fiber content discipline (G6), Lemma 7.8 verified non-recursive, 5-phase decomposition"
+        },
+        {
+          "path": "specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/summaries/01_phase1-fiber-gate-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 implementation summary: channel core + F2 probe, GO verdict, full verification block"
         }
       ],
       "session_id": "sess_1783886300_43b617",
