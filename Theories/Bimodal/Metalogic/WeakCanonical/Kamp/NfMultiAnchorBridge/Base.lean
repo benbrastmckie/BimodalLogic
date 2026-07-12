@@ -1703,6 +1703,41 @@ endCharN0_correct : ∀ {n} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n �
 (full `nf_eval_nf` RHS; no residual, no weakening — the `n-1` anchor positions are reached by
 nested `Since`/`Until` and their atoms read there, per reports/02 §Q4 target 2). -/
 
+/-! ### Phase 5 FEASIBILITY RESULT (task 349): the frozen unconditional base is UNPROVABLE.
+
+The frozen §Q4 target 2/3 base-case demands a single `TemporalPred` (equivalently one `Formula`)
+whose evaluation at the navigated witness `env 0` is biconditional to the FULL arity-`n` atom
+layer `nf_eval_nf M 0 n env qnf` for an ARBITRARY, universally-quantified `env : Fin n → M.carrier`.
+By definition `TemporalPred.eval_at tp t = temporal_truth M atomMap t tp.formula`
+(`ExistsForallNF.lean:53`): the value depends only on the SINGLE world `t = env 0` (and `M`, and the
+formula) — it is completely independent of `env 1 … env (n-1)`. But the RHS reads
+`atom_eval M env (.pred p ⟨j⟩) = M.interp p (env j)` at every position `j` (`NormalForm.lean:113`).
+Hence any world-local base forces `nf_eval_nf M 0 n env qnf` to be invariant under changing `env`
+away from position `0` — which is false for `n ≥ 2` in any model with a non-constant predicate.
+The obstruction is intrinsic to `eval_at` and holds for EVERY candidate base (not only the preserved
+position-0 reader), so no rebuild — navigating or otherwise — can realize the frozen statement. This
+is the earliest feasibility signal for the whole multi-anchor architecture (plan v3 Phase-5
+"Failure signal"); it points to the plan's contingency (Rabinovich Lemma 3.2(2) ≤2-free-variable
+reduction), because the base-case env must be reduced to the navigation witnesses, not left an
+arbitrary free tuple. -/
+
+/-- **World-locality obstruction to the frozen `endCharN0_correct` (Phase 5, sorry-free).**
+For ANY candidate base `base : {n} → NormalForm sig 0 n → TemporalPred`, if its correctness were
+stated as the frozen unconditional biconditional evaluated at the navigated witness `env 0`, then
+`nf_eval_nf M 0 n env qnf` would be forced to depend only on `env 0` — it would be invariant under
+any change to `env` at positions `≥ 1`. This is because `(base qnf).eval_at M atomMap (env 0)`
+reads only the single world `env 0`. The consequent is refuted concretely by
+`endCharN0_correct_infeasible` below. -/
+theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (base : {n : Nat} → NormalForm sig 0 n → TemporalPred)
+    (H : ∀ {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n → M.carrier),
+          (base qnf).eval_at M atomMap (env 0) ↔ nf_eval_nf M 0 n env qnf)
+    {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (env env' : Fin n → M.carrier)
+    (h0 : env 0 = env' 0) :
+    nf_eval_nf M 0 n env qnf ↔ nf_eval_nf M 0 n env' qnf := by
+  rw [← H qnf env, ← H qnf env', h0]
+
 /-! ## Phase 6 (task 349): the multi-anchor navigating converter `navMultiAnchorForm` + `_correct`
 (the load-bearing core — v3, replaces the removed single-anchor `navBrickForm`)
 

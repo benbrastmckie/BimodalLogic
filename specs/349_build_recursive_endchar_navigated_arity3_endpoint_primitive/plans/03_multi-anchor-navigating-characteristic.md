@@ -289,7 +289,7 @@ resumes at the first real work item (Phase 4).
 - **Depends on:** 3
 - **Files to modify:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean`
 
-### Phase 5: Multi-anchor navigating base `endCharN0`/`endCharN0_correct` (unconditional) [NOT STARTED]
+### Phase 5: Multi-anchor navigating base `endCharN0`/`endCharN0_correct` (unconditional) [IN PROGRESS]
 
 - **Goal:** Build the depth-0 base of the recursion as a **multi-anchor navigating** characteristic
   and prove its **unconditional** correctness (§Q4 target 2, base case). At the navigated witness,
