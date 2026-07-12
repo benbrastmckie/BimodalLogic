@@ -461,65 +461,61 @@ strictly sequential.
   (NEW; imports ExteriorFiberK; frozen ExteriorNegation.lean is a read-only template, NOT
   imported unless Phase 5 recovery requires it there — default is recovery in Phase 5's file).
 
-### Phase 4: Past-side clause layer (`ExteriorNegationPastK.lean`) [IN PROGRESS]
+### Phase 4: Past-side clause layer (`ExteriorNegationPastK.lean`) [PARTIAL]
 
-*(re-dispatch 2026-07-12: unblocked by the shared reindex bridge `kvE_fiberPosOnShift`/
-`kvE_anchorBridge` now landed in `ExteriorFiberK.lean`; content routed through the shift.)*
+*(re-dispatch 2026-07-12 sess_1783887769_cb5be4: unblocked by the shared reindex bridge
+`kvE_fiberPosOnShift`/`kvE_anchorBridge` in `ExteriorFiberK.lean`. Clause DEFS + generic Past
+`Since` chain infra + `kvE_extNegPast_sound` LANDED GREEN. `kvE_extNegPast_complete` remains
+BLOCKED on a NEW, narrower obstruction — see the 4.3 BLOCKER below. The bridge fully resolved
+`_sound`; `_complete` needs an additional free-env→fixed-env transport not supplied by it.)*
 
 - **Goal:** Structural Past mirror of Phase 3 (Since for Until), template =
   ExteriorNegationPast.lean:223-1109.
-- **Sub-phase 4.1 — definitions + navigation lemmas** (~200-300 lines): Past analogs
-  `kvE_pastPossibleZones`/`ZoneClass`/`Admissible`/`Realizer_admissible` (templates
-  :250/:264/:332/:348) and clause-form defs `kvE_pastGapD`/`RayD`/`RayForm`/`End`/`Chain`/
-  `kvE_pastPos`/`kvE_extNegPast` (templates :410-:473), same `P`-parameterization and
-  full-fiber content discipline as 3.1. *(deviation: zone/admissibility sub-layer COMPLETED
-  [commit phase-4.1]; clause-form defs DEFERRED to 4.2 with 3.1, then BLOCKED — see BLOCKER.)*
-- **Sub-phase 4.2 — `kvE_extNegPast_sound`** (~200-300 lines): template :581. *(BLOCKED — see
-  BLOCKER; chain-assembly navigation prep landed: `kvE_pastGapZone`/`RayZone`/`SelfZone` +
-  possible-zones membership + descending `kvE_pastMaxPick`, commit 79edf5320, green.)*
-- **Sub-phase 4.3 — `kvE_extNegPast_complete`** (~200-300 lines): template :855; full-fiber
-  pin shape for the `hbelow`-analog. *(BLOCKED — depends on the 4.2 pin resolution below.)*
+- **Sub-phase 4.1 — definitions + navigation lemmas** COMPLETED (zone/admissibility, commit
+  phase-4.1) + nav prep COMPLETED (commit 79edf5320).
+- **Sub-phase 4.2 — clause DEFS + generic chain + `kvE_extNegPast_sound`** [COMPLETED]
+  (commits 95bb47734, this dispatch): `kvE_pastChainG`/`BuildG`/`DestructG` (generic descending
+  `Since`), `kvE_pastGapD`/`RayD`/`RayForm`/`End`/`Chain`/`Pos`/`extNegPast` (content via
+  `kvE_fiberPosOnShift` / `P.existF 4 (renameNF rot5Fwd rot5Bwd ·)`), helpers
+  `kvE_pastZoneBelow`/`kvE_pastCarry`, and `kvE_extNegPast_sound` — GREEN, 0 sorries,
+  axioms `[propext, Classical.choice, Quot.sound]`. All frozen diffs EMPTY.
+- **Sub-phase 4.3 — `kvE_extNegPast_complete`** [BLOCKED] — see the 4.3 BLOCKER below.
 
-**BLOCKER** (Phase 4.2/4.3 — content-bearing clause layer; navigation prep is green):
-- **What failed:** The clause-form defs `kvE_pastGapD/RayD/RayForm/End/Chain/Pos` and their
-  `_sound`/`_complete` cannot be faithfully written to be provable, because the depth-`k`
-  full-fiber content channel and the fixed-environment realizer use INCOMPATIBLE anchor
-  conventions with no landed bridge between them.
-- **What was tried / traced (source-grounded, two landed lemma statements):**
-  1. `kvE_fiberPos_correct` / `kvE_fiberPosOn_correct` (`ExteriorFiberK.lean:91-130`): the only
-     G6-permitted content rendering `kvE_fiberPosOn P l` evaluated at a point `p` unfolds to
-     `∃ env : Fin 4 → M.carrier, nf_eval_nf M k 5 (insertEnv env p) s` — the four non-anchor
-     points are EXISTENTIALLY FREE, and `insertEnv env p` puts `p` at the LAST anchor (index 4,
-     `NfDepth0Generalized.lean:42`).
-  2. `nf_eval_nfk_iff_efold` (`NfEFold.lean:627`, `nf_eval_efold_k` :608): σ's realizer pins each
-     positive fiber element `s` over the FIXED environment `Fin.cons v (Fin.cons x1 (Fin.cons w
-     (Fin.cons x (fun _ => t))))` — the fresh witness `v` at index 0, `[x1,w,x,t]` at indices 1-4.
-  3. Reconciliation attempt: `insertEnv [v,x1,w,x] t = Fin.cons v [x1,w,x,t]` holds
-     definitionally, so content anchors at `t` with `env[0]=v` (the gap/ray/self witness). BUT
-     `env` is existentially free, so `P.existF 4 s` at `t` asserts only "s is realizable at `t`
-     with SOME 4 points", NOT "with the actual `[x1,w,x]`". The frozen k=2 layer pins this free
-     env via `qnf`/`hbase`/`hbits`/`habove` (`ExteriorNegationPast.lean:855-872`); the depth-`k`
-     analog is the deferred "full-fiber pin" whose exact shape is unresolved (research ruling —
-     plan Phase 3.3/4.3 note: `kvE_futAnyBit_correct` is "necessary-but-not-sufficient
-     scaffolding, not the hypothesis itself"; 4.1 handoff lines 108-111).
-  4. Grep for any re-anchoring / anchor-permutation NormalForm operation: none exists.
-- **Why stuck:** The frozen Since-chain evaluates each step's content AT the walked-to gap point
-  (`nf_depth0_char_formula χ` pins that point's marginal profile, `ExteriorNegationPast.lean:454`).
-  At depth `k` the F2 obstruction (postmortem rules 1-3, G6) forbids marginal content, and the
-  only full-fiber channel (`P.existF`) anchors at `t` with a free env — it cannot express "this
-  gap point realizes sub `s`". So the chain's evaluate-at-walked-point mechanism does not
-  transfer; a different clause architecture (content-at-`t` + zone-navigated env pin) is required.
-  This is a genuine SEMANTIC DESIGN question, not a tactic failure.
-- **What is needed (concrete action to unblock):** Resolve the full-fiber env-pin shape for the
-  depth-`k` clause layer — the depth-`k` analog of the frozen `habove`/`hbits` env-pinning
-  hypotheses — as a bundle/lemma that ties `P.existF`'s free anchor env to the fixed
-  `[x1,w,x,t]` via the zone navigation (`kvE_fiberBucket_nonempty_iff` supplies the
-  navigation half; the missing half is the content-env pin). This MUST be symmetrized with the
-  Future side (Phase 3.2/3.3, concurrently built, H7-locked) so both sides expose the same
-  pin contract for Phase 5 / task 349. Recommend: orchestrator coordinates the pin design across
-  both sides (or spawns a short research task on the pin shape) BEFORE re-dispatching 4.2/4.3.
-- **Prohibited:** No `sorry`, no `def X := ⊥`/vacuous clause defs, no guessed pin shape that
-  diverges from the Future side.
+**BLOCKER** (Phase 4.3 — `kvE_extNegPast_complete` reconstruction; `_sound` is GREEN):
+- **What failed:** The (⇐) reconstruction direction cannot be closed by the shared bridge. To
+  contradict `hnorel : ∀ x1<x, ¬ nf_eval M (k+1) 4 [x1,w,x,t] σ`, the proof MUST build a σ-realizer
+  at the FIXED anchor env `[x1,w,x,t]` via `nf_eval_nfk_iff_efold`, whose fiber condition's (⇐)
+  half is `σ.2 sub = true → ∃ y, nf_eval_nf M k 5 (Fin.cons y [x1,w,x,t]) sub` (witness `y` fresh
+  at index 0, env `[x1,w,x,t]` FIXED at indices 1-4).
+- **What the content channel supplies instead:** `kvE_fiberPosOnShift_correct` + chain destruct
+  give, for a positive gap sub, an occurrence `∃ r∈(x1,x), ∃ env' : Fin 4 → M.carrier,
+  nf_eval_nf M k 5 (Fin.cons r env') sub` — the interior env `env'` is EXISTENTIALLY FREE
+  (indices 1-4), not `[x1,w,x,t]`.
+- **Why this does not transport (empirically confirmed, lean type mismatch):** at depth `k` the
+  sub `s : NormalForm sig k 5` is arity-5 and env-DEPENDENT; `nf_eval (Fin.cons r env') s` does
+  NOT imply `nf_eval (Fin.cons r [x1,w,x,t]) s` (`exact` fails — the environments differ at
+  indices 1-4 and `s`'s atom layer + deeper fiber reference them). `env'` need only realize σ.1
+  (the shared depth-0 char at `[x1,w,x,t]`), and MANY distinct tuples realize the same depth-0
+  char in a general model, so `env'` is not pinned to `[x1,w,x,t]`.
+- **Why k=2 did NOT hit this:** the frozen k=2 `_complete` (⇐) (`ExteriorNegationPast.lean:1063-1104`)
+  produces gap/ray/self witnesses at `nf_eval (fun _ => r) χ` with `χ : NormalForm sig 0 1` — an
+  ARITY-1, ENV-FREE profile (only the fresh point matters; `x1,w,x,t` are not referenced). Its
+  above-`x` zones are outsourced to the gate hypotheses `habove`/`hbits`/`qnf` (which reference
+  only the FIXED `[w,x,t]`). At depth `k`, gap/ray/self subs reference the EXISTENTIAL endpoint
+  `x1`, so they can neither be handled env-free internally nor outsourced to a fixed-anchor gate.
+- **What is needed to unblock (precise):** a `free-env → fixed-env` transport / anchor-coherence
+  lemma establishing that the chain's gap occurrences (and the endpoint's self/ray content) share
+  ONE anchor tuple that IS `[x1,w,x,t]` — i.e. a shared-witness argument pinning every occurrence's
+  `env'` to the reconstructed endpoint anchors. This is a substantial NEW development (candidate
+  home: a `SharedWitness`-style anchor-coherence lemma across the `Since` chain), NOT the bridge,
+  and NOT a mechanical k=2 mirror. The research report (02) rated exactly this "Medium confidence —
+  the 9-zone reconstruction generalization is the re-dispatch's proof work"; Deliverable 3.3's
+  "existential env is faithful" argument addresses the (⇒) hypothesis's index-0-free witness, not
+  the (⇐) fixed-env obligation, which remains open.
+- **Prohibited:** no `sorry`, no bare-assumption gate hypothesis that merely posits
+  `∃ y, nf_eval (Fin.cons y [x1,w,x,t]) sub` (a disguised stub — unlike k=2's `habove`
+  biconditional, it ties to no syntactic invariant), no vacuous placeholder.
+
 - **Estimated output:** ~550-850 lines total across 3 dispatches.
 - **Bounded-unit stop condition:** as Phase 3, per sub-phase.
 - **Timing:** ~7 hours (3 dispatches).
