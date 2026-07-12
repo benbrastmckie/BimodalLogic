@@ -590,7 +590,7 @@ def nfk_zoneSpec {sig : MonadicSignature} {k n : Nat}
 /-- The atom layer of any depth-`k` evaluation holds at depth 0: if `nf_eval_nf M k n env nf`
     then the atom assignment `nf.atom_assgn` is the depth-0 characteristic at `env`. Depth 0 is
     definitional (`nf.atom_assgn = nf`); depth `k+1` is the first conjunct of `nf_eval_nf`. -/
-theorem nf_eval_atom_layer {sig : MonadicSignature}
+theorem nf_eval_nf_atom_layer {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) {k n : Nat}
     (env : Fin n → M.carrier) (nf : NormalForm sig k n)
     (h : nf_eval_nf M k n env nf) :
@@ -636,7 +636,7 @@ theorem nf_eval_nfk_iff_efold {sig : MonadicSignature}
       (∃ x, nf_eval_nf M k (n + 1) (Fin.cons x env) sub) → nfk_dropFresh sub = qnf.1 := by
     intro sub hq hex
     obtain ⟨x, hx⟩ := hex
-    have hatom := nf_eval_atom_layer M (Fin.cons x env) sub hx
+    have hatom := nf_eval_nf_atom_layer M (Fin.cons x env) sub hx
     have hfac := (nf_eval_nf0_cons_factor M env x sub.atom_assgn).mp hatom
     exact nf_eval_unique M 0 n env (nf0_dropFresh sub.atom_assgn) qnf.1 hfac.2.2 hq
   -- The whole evaluation is (defeq) its atom layer and its full quant layer.
