@@ -12,9 +12,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,343,349 | publication-quality, sorry-elimination, automation, ... |
-| 3 | 193,309 | 189,192,196,350 | automation, kamp_theorem_formalization |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,341,343,349 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,309 | 131,189,192,196,350 | formula-refactor, automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
 | 5 | 305 | 307 | completeness |
 | 6 | 303 | 305 | completeness |
@@ -39,12 +39,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Formula Refactor
 
+161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
+194 [NOT STARTED] — migrate_nonempty_to_derivable
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
+  └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
   └─ 178 [NOT STARTED] — Expand Examples/ with publication-quality demonstrations of the f
-161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
-194 [NOT STARTED] — migrate_nonempty_to_derivable
 
 ### Frame Extensions
 
@@ -116,7 +116,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Uncategorized
 
-341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+341 [RESEARCHING] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+  └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
 
@@ -155,7 +156,11 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   - [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/01_endchar-faithful-architecture.md]
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md]
-- **Plan**: [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/04_reduction-navigated-endchar.md]
+  - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/04_arity4-bridge-feasibility-audit.md]
+  - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/05_rabinovich-faithful-endchar-architecture.md]
+- **Plan**:
+  - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/04_reduction-navigated-endchar.md]
+  - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/05_faithful-residual-conditioned-endchar.md]
 
 **Description**: Build the recursive navigated arity-3 endpoint primitive `endChar : (k : Nat) -> EndCharCarrier sig k` (EndCharCarrier abbrev at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1007) by recursion on k, plus `endChar_correct`. Base case = the already-landed `endChar0`/`endChar0_correct` (Base.lean:995/1056, sorry-free). Step case = navigable-brick flatten of each sub's existential witness composed with the already-landed non-trivial interior segment `seg`/`seg_holds_correct`/`seg_holds_coupled` (Base.lean:1127-1162, sorry-free) for the interior and Phase-6/8-shaped endpoint characteristics for the exteriors, arity capped at 3 (guard G4). This is the report-02-Section-1.4 primitive, explicitly documented as NOT YET BUILT at Base.lean:958-969 (~300-500 lines estimated in-file, brick-witness-collapse / anchor-management core). Consume, do NOT rebuild: endChar0/endChar0_correct, seg/seg_holds_correct/seg_holds_coupled, nf_zone_flatten_navigable(_brick)/_correct (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NfZoneFlattenNavigable.lean:689/709). Guards (binding): G1 no arity-1 collapse; G2/G4 anchors strictly {a,b} subset {x,t}, <=2, w never a third free anchor; G3 non-trivial segment only (reuse seg, never TemporalPred.top); G5 no simp/omega/aesop shortcut of a Rabinovich chain step, manual bridges only; FORBIDDEN: nf_char3_deeper_split (refuted route -- grows anchor set to 4, forbidden tower, report 02 Section 4.1); do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT touch KampPrior.lean or nf_nvar_exist_all_depths's signature -- this task's scope is Base.lean only, additive; axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule, do not land a vacuous or sorry'd endChar. Definition of done: lake build GREEN (scoped Base module at minimum, full tree recommended); endChar/endChar_correct sorry-free; lean_verify on endChar_correct = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; downstream task 309 Phase 18/19 can cite endChar_correct by name. Literature grounding: Rabinovich 2014 Cor 5.4 / report 02 Section 1.4 (the missing navigated-endpoint primitive) and Section 6 'Phase 8' decomposition (reports/02_endpoint-hook-discharge-research.md:266-270); orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt.
 
@@ -227,7 +232,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ---
 
 ### 341. Structural refactor sharedwitness carrier layer
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Task Type**: lean4
 - **Dependencies**: Task 335, Task 337, Task 340, Task 346
 - **Research**: [341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md]
@@ -709,7 +714,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 - **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 131
 - **Research**: [175_naming_convention_and_bridge_cleanup/reports/01_team-research.md]
 
 **Description**: Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.
@@ -766,7 +771,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
-- **Dependencies**: None
+- **Dependencies**: Task 341
 
 **Description**: Restructure Theories/Bimodal/ file hierarchy for clean APIs and documentation. Currently 130 live .lean files across 7 top-level directories, with the Metalogic/ directory being a catch-all containing 7 subdirectories (Algebraic, Bundle, BXCanonical, ConservativeExtension, Core, Decidability, Relational) plus loose files (Soundness.lean, SoundnessLemmas.lean, DenseSoundness.lean, DiscreteSoundness.lean, Completeness.lean, Metalogic.lean). Goals: (1) Reorganize Metalogic/ into a clearer hierarchy — group soundness files into Metalogic/Soundness/, completeness files into Metalogic/Completeness/, clarify relationship between BXCanonical (chronicle approach) and Algebraic (parametric approach). (2) Add module-level documentation (docstrings on namespace declarations, module descriptions at file tops). (3) Establish clean APIs with explicit exports via root .lean files for each subdirectory. (4) Evaluate whether FrameConditions/ should be merged into Metalogic/ or remain separate. (5) Audit Boneyard/ organization (45 files across 10+ subdirectories). (6) Consider whether docs/ and latex/ and typst/ should remain under Theories/Bimodal/ or move to project root.
 

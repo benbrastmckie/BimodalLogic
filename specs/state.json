@@ -522,7 +522,10 @@
       "last_updated": "2026-05-13T17:05:29Z",
       "next_artifact_number": 1,
       "artifacts": [],
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "dependencies": [
+        341
+      ]
     },
     {
       "project_number": 125,
@@ -586,7 +589,9 @@
       "task_type": "lean4",
       "priority": "medium",
       "description": "Normalize naming conventions to follow Mathlib-style descriptive conventions and eliminate bridge/wrapper indirection for publication quality. Adopt Mathlib naming patterns: bot_of_and_neg instead of ecq, and_left instead of lce, and_right instead of rce, or_inl instead of ldi, or_inr instead of rdi, absurd instead of raa, False.elim instead of efq, not_not_intro instead of dni, etc. Expand opaque abbreviations (bfmcs, drm, cud, sdc, dd_, tc_, fuc_, buc_). Inline or remove Bridge.lean wrappers (993 lines, 16 forwarding definitions). Eliminate trivial primed variants. Normalize z1_valid to axiom_z1_valid for consistency. Rename temp_ prefix to temporal_ for clarity. Purge 81 removed/archived/superseded tombstone comments. Reference Mathlib naming conventions guide and task 179 research report for the full mapping.",
-      "dependencies": [],
+      "dependencies": [
+        131
+      ],
       "created": "2026-05-20T15:55:54Z",
       "last_updated": "2026-06-01T23:00:00Z",
       "topic": "formula-refactor",
@@ -1494,7 +1499,7 @@
     {
       "project_number": 341,
       "project_name": "structural_refactor_sharedwitness_carrier_layer",
-      "status": "planned",
+      "status": "researching",
       "task_type": "lean4",
       "description": "Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier layer, now that it has grown to a large, intricate state. MEASURED CURRENT SIZE (2026-07-09, wc -l): SharedWitness.lean is ~9248 lines (NOT ~3540 as previously stated — 2.6x larger); SubBracket2V.lean ~2160; CarrierK1V.lean ~2097; the enclosing directory Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ totals ~18,100 lines across 11 files (Base 1478, CarrierK1V 2097, CarrierKv 482, NavigatedSpine 451, OuterGate 203, PriorInterface 105, RefutationF2 963, SharedWitness 9248, SubBracket 266, SubBracket2 647, SubBracket2V 2160). Any module-split proposal MUST be sized against the true ~9248-line SharedWitness, not the stale 3540 figure. CURRENT CARRIER STRUCTURE (post-task-334, post-task-342 — describe the split against THIS, not the old text): task 334 [COMPLETED] switched the carrier to kvE2_sepArr' (41 occ; decls kvE2_sepArr'_mem_modelOrder at 1888, kvE2_sepArr'_sound at 6918) plus kvE2_sepDisjValidOwner (def at 1733, 12 occ), DELETING kvE2_sepArrL / kvE2_sepArrR / kvE2_sepValid and the entire kvE2_sepSingleton block — all four now have 0 declarations; their surviving mentions are prose/comment only (kvE2_sepArrL 9, kvE2_sepArrR 2, kvE2_sepValid 17, kvE2_sepSingleton 0). Task 342 [COMPLETED] added the interior-restricted owner index kvE2_sepPosI (noncomputable def at line 211; now ~229 occurrences) plus tie-admitting weak orders, and deleted the global hLR hypothesis-carrying construction: hLR now survives ONLY as a local binder inside the certificate theorem kvE2_sepHonest_hLR_absurd (SharedWitness:5710), which proves the former hLR was inconsistent with every honest evaluation — there is no global hLR declaration. Name the split against the REAL current symbols — kvE2_sepArr', kvE2_sepDisjValidOwner, kvE2_sepPosI, kvE2_sepBody (def at 2328, 52 occ), kvE2_sepBody_extract (thm at 6328), kvE2_sepHonest_hLR_absurd — and NEVER against the deleted kvE2_sepArrL/R/Valid/Singleton/hLR. LITERATURE-CITATION HAZARD (record explicitly and respect): SharedWitness.lean carries 89 dangling md:NN citations in comments (md:77 x27, md:168 x24, md:154 x9, md:72 x8, md:61 x6, md:91 x3, md:218 x3, md:170 x3, and singletons md:78/74/66/207/137/100). These point into a Rabinovich markdown that was a hand-written paraphrase, replaced 2026-07-09 by a PDF text-extract that drops every displayed equation and inverts k!=m into k=m; the md:NN line references are therefore meaningless. By a deliberate user decision these are left UNFIXED for now — but this refactor, which will move those comments between modules, MUST NOT silently propagate them as if valid. This is a natural opportunity to re-cite to Rabinovich PDF page numbers if the refactor touches those comments (the codebase already uses this style, e.g. 'Rabinovich §5, p.7' at SharedWitness:6132). RULE: cite Rabinovich by PDF page only, never md:NN. GOALS (original intent preserved): (1) SPLIT the oversized SharedWitness.lean into cohesive modules along natural seams (e.g. slot/carrier types & enumeration; per-slot global-index + kvE2_ordRank kernel and the interior owner index kvE2_sepPosI; honest-order + membership/monotonicity; coincidence-fold/discharge; body/holds_iff/extract assembly via kvE2_sepBody / kvE2_sepBody_extract), preserving the public API and all import sites. (2) IMPROVE the API: consistent naming, clearer signatures, section structure, and comprehensive docstrings/comments explaining the value-faithful per-individual-slot design and its Rabinovich Def 3.1 grounding (cite PDF pages, and reports 05-09), correcting or dropping dangling md:NN comments wherever they are encountered. (3) ARCHIVE genuinely dead/superseded code to Theories/Bimodal/Boneyard/ (residual 339 region-primary machinery; obsolete owner-block tuple remnants after the task-340 v3 per-slot refinement; comment blocks referencing the deleted kvE2_sepArrL/R/Valid/Singleton/hLR constructions), WHILE preserving anything still uncertain or potentially load-bearing in place with clear NOTE:/QUESTION: comments rather than deleting it. (4) Keep the full lake build green and axiom-clean {propext, Classical.choice, Quot.sound} throughout; no sorries introduced; preserve F1-F7 faithfulness invariants and the LITMUS (NavigatedSpine:437, UNVERIFIED exact line). This is a code-health/maintainability pass, NOT a semantic change — behavior and proved theorems must be preserved exactly. SEQUENCING (hard constraint): MUST run AFTER the active carrier chain completes — dependencies 340 (per-slot refinement), 337 (holds builder), 335 (outer gate) — AND must NOT run concurrently with the H7 territory contract that currently assigns SharedWitness.lean to task 333 and OuterGate.lean to task 335; both 333 and 335 must land before this structural refactor is safe, to avoid churning files under active edit. Strongly recommend a survey/plan phase that maps the current declaration graph against the true ~9248-line structure and proposes the module split before moving any code. This is a description correction, not a re-scoping: overall scope and goals are unchanged. SEQUENCING ADDENDUM (2026-07-11, session sess_1783723095_edd5a7): task 346 (successor carrier redefinition, spawned from 335) added as an explicit dependency — it reworks NfMultiAnchorBridge carrier internals, so the code-move GATE must verify BOTH 335 COMPLETED AND 346 COMPLETED (or 346 abandoned by user decision) before moving code. Note for the GATE re-diff: tasks 344/345 grew SharedWitness.lean from 10,037 to ~12,600 lines (TASK 344/345 banner sections — pin-anchored fragment fold + symmetric gate); the five-seam cut lines and the md:NN inventory in plan 01 are stale and must be refreshed at the GATE as the plan already provides.",
       "dependencies": [
@@ -1506,8 +1511,8 @@
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
       ],
-      "last_updated": "2026-07-10T23:12:33Z",
-      "session_id": "sess_1783723095_edd5a7_341",
+      "last_updated": "2026-07-12T08:19:29Z",
+      "session_id": "sess_1783841542_df767b",
       "artifacts": [
         {
           "path": "specs/341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md",
@@ -1716,12 +1721,16 @@
         351
       ],
       "created": "2026-07-12T01:37:12Z",
-      "last_updated": "2026-07-12T07:26:55Z",
+      "last_updated": "2026-07-12T10:00:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 309"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/04_reduction-navigated-endchar.md",
+          "type": "plan"
         },
         {
           "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/01_endchar-faithful-architecture.md",
@@ -1734,13 +1743,54 @@
           "summary": "Rabinovich 2014 faithfulness audit: single-anchor navBrickForm is root divergence; C+ multi-anchor navigating characteristic with unconditional hooks; endCharRec_correct becomes unconditional"
         },
         {
-          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/04_reduction-navigated-endchar.md",
-          "type": "plan"
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/04_arity4-bridge-feasibility-audit.md",
+          "summary": "H4/H5 audit: arity-4 enclosing-pair bridge is a machine-checked NON-THEOREM (parameter-independence); v4 Phase 3 architecture refuted"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/05_rabinovich-faithful-endchar-architecture.md",
+          "summary": "Rabinovich 2014 faithful endChar architecture (Tier-1 lit): three-level free-variable discipline; residual-conditioned x,t-explicit endChar_correct; 4-phase v5 breakdown"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/05_faithful-residual-conditioned-endchar.md",
+          "type": "plan",
+          "summary": "v5 faithful residual-conditioned endChar: reduce-first (Lem 3.2(2)) + x,t-explicit nf_zone_flatten_navigable + h_res at every k; supersedes refuted v4 Phase-3 architecture"
         }
       ],
-      "session_id": "sess_1783840535_304c28",
+      "session_id": "sess_1783841542_df767b",
       "next_artifact_number": 3,
-      "previous_status": "implementing"
+      "previous_status": "planning",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 9,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 5,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/05_rabinovich-faithful-endchar-architecture.md",
+            "integrated_in_plan_version": 5,
+            "integrated_date": "2026-07-12"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      }
     },
     {
       "project_number": 350,

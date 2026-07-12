@@ -1,0 +1,61 @@
+{
+  "task": 349,
+  "stage": "implement",
+  "status": "blocked",
+  "plan_path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/03_multi-anchor-navigating-characteristic.md",
+  "phase_number": 5,
+  "phases_completed": 4,
+  "phases_total": 8,
+  "skeleton": false,
+  "summary": "Phase 5 is the earliest feasibility gate for the whole v3 multi-anchor architecture, and it FAILS. The frozen §Q4 base-case deliverable endCharN0_correct (unconditional, arbitrary env : Fin n -> M.carrier, evaluated at env 0, biconditional to the full arity-n atom layer nf_eval_nf M 0 n env qnf) is PROVABLY UNPROVABLE. Root cause: TemporalPred.eval_at tp t = temporal_truth M atomMap t tp.formula is a function of the single world t=env 0 only, invariant under changing env at positions >=1; but the RHS reads M.interp p (env j) and env i < env j at the free positions j>=1. No base/formula (navigating or otherwise) can bridge this. Delivered TWO green, sorry-free, machine-checked refutations in Base.lean (axioms exactly [propext, Classical.choice, Quot.sound]): (1) endCharN0_correct_world_local_obstruction — any world-local base forces nf_eval_nf to be env->=1-independent; (2) endCharN0_correct_infeasible — a concrete Bool counter-model where no base exists, deriving False at n=2. Module stays GREEN (1005/1005), sorry-free, 0 new axioms, 0 vacuous defs; the preserved skeleton (nf_eval_nf_step_unfold, EndCharMotive, atomPartN, nf_endpoint_tl_gen(+_correct), nfN_locus0, endCharN0 def, endCharN0_wlocus_correct, seg/seg_holds_coupled) is untouched. NOT faked green: endCharN0_correct itself is NOT claimed — it is proven impossible. Did NOT reintroduce a residual/h_nav (the refuted v2 route). The obstruction points squarely to the plan's contingency: Rabinovich Lemma 3.2(2) <=2-free-variable reduction (cap arity at <=3, reduce env to navigation witnesses BEFORE navigating). Phase 6 inherits the identical world-locality wall one arity up and is expected to fail the same way; the arity must be capped, not climbed.",
+  "sorry_inventory": [],
+  "blockers": [
+    {
+      "id": "blk-349-p5-world-local-infeasible",
+      "phase": 5,
+      "kind": "feasibility_failure",
+      "verbatim_goal": "endCharN0_correct : ∀ {n} [NeZero n] (qnf : NormalForm sig 0 n) (env : Fin n → M.carrier), (endCharN0 atomMap h_surj qnf).eval_at M atomMap (env 0) ↔ nf_eval_nf M 0 n env qnf",
+      "lean_goal_state": "⊢ (∀ (p : sig.preds), M.interp p (env 0) ↔ qnf (AtomKind.pred p 0) = true) ↔ ∀ (a : AtomKind sig n), atom_eval M env a ↔ qnf a = true",
+      "lean_goal_state_note": "Captured via lean_goal after `rw [endCharN0_wlocus_correct ...]` (green) + `simp only [nf_eval_nf]`. LHS depends only on env 0; RHS ranges over AtomKind.pred p j (= M.interp p (env j)) and AtomKind.order i j h (= env i < env j) for free positions j>=1.",
+      "obstruction": "TemporalPred.eval_at tp t := temporal_truth M atomMap t tp.formula (ExistsForallNF.lean:53) is a function of the single world t=env 0 (and M, formula) ONLY — it cannot depend on env 1 .. env (n-1). The frozen RHS nf_eval_nf M 0 n env qnf (NormalForm.lean:198) is (∀ a : AtomKind sig n, atom_eval M env a ↔ qnf a = true), which reads M.interp p (env j) for every position j (NormalForm.lean:113). For arbitrary env with n>=2, varying env at position 1 changes the RHS but not the LHS, so the biconditional is a non-theorem for EVERY candidate base. Navigation cannot help: Until/Since reach model-order-determined points, never the externally-supplied arbitrary env j.",
+      "evidence": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean :: endCharN0_correct_world_local_obstruction (green, sorry-free, axioms [propext, Classical.choice, Quot.sound]) — any base H satisfying the frozen biconditional forces nf_eval_nf M 0 n env qnf ↔ nf_eval_nf M 0 n env' qnf whenever env 0 = env' 0.",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean :: endCharN0_correct_infeasible (green, sorry-free, axioms [propext, Classical.choice, Quot.sound]) — concrete model Mcex (carrier Bool, one predicate holding at true), no base exists; instantiates the obstruction at n=2 with env=(fun _ => false), env'=Fin.cons false (fun _ => true) to derive False from the pred-atom clause at position 1.",
+        "Existing green endCharN0_wlocus_correct proves the preserved endCharN0's eval at env 0 reads exactly the position-0 predicate layer — the LHS of the stuck goal.",
+        "lean_goal capture of the stuck goal state (recorded above and in the Base.lean docstring at the FROZEN Phase-5 target)."
+      ],
+      "points_to_contingency": true,
+      "contingency": "Rabinovich Lemma 3.2(2) <=2-free-variable reduction (reports/02 §Q4 target 4, md:119): reduce every ∃∀ to <=2 free variables BEFORE navigating, keeping the recursion at arity <=3 (two anchors + witness) as the GREEN arity-3 nf_zone_flatten_navigable line does. NO in-tree Lean analogue exists — requires a new structural lemma. This is the plan's Escape hatch; trigger via /spawn 349 or AskUserQuestion (spawn the Lemma-3.2(2) sub-task / accept BLOCKED terminus / authorize /revise onto the <=2-free-var line).",
+      "unblock_options": [
+        "SPAWN: /spawn 349 to create a task for the Lean Lemma-3.2(2) <=2-free-variable reduction analogue (the missing structural lemma), recording this blocker as its blocker.",
+        "REVISE: /revise 349 to re-architect the recursion onto the <=2-free-variable line (cap arity at <=3; reduce env to navigation witnesses; do NOT climb arity to n+1 distinct free anchors).",
+        "ACCEPT: accept a BLOCKED terminus with the def-half preserved green and the two refutation theorems documenting infeasibility in-tree.",
+        "REJECTED: reintroduce residual/h_nav (refuted v2 route), single-anchor navBrickForm, or nf_char3_deeper_split collapse — all forbidden."
+      ]
+    }
+  ],
+  "continuation_context": {
+    "is_successor": false,
+    "next_phase": null,
+    "next_phase_title": "Phase 5/6 BLOCKED on feasibility. Do NOT proceed to Phase 6 as written (same world-locality wall one arity up). Resolve the contingency (spawn/revise onto Lemma-3.2(2) <=2-free-var line) first.",
+    "immediate_next_action": "Trigger the plan's Escape hatch: /spawn 349 for the Lean Lemma-3.2(2) reduction, or /revise 349 to cap arity at <=3. The frozen unconditional multi-anchor base/converter cannot be realized within TL(Until,Since) at climbing arity."
+  },
+  "verification": {
+    "build_passed": true,
+    "build_scope": "Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.Base (1005 jobs, green)",
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count_new": 0,
+    "endCharN0_correct_realized": false,
+    "endCharN0_correct_proven_unprovable": true,
+    "new_theorems_axioms": "endCharN0_correct_world_local_obstruction, endCharN0_correct_infeasible : [propext, Classical.choice, Quot.sound]",
+    "endCharCarrier_widened": false,
+    "nf_char3_deeper_split_referenced_by_new_code": false,
+    "residual_or_h_nav_reintroduced": false,
+    "git_scope": "Base.lean + plan v3 only"
+  },
+  "artifacts": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean",
+    "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/03_multi-anchor-navigating-characteristic.md"
+  ]
+}
