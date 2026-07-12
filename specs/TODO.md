@@ -111,7 +111,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-352 [PLANNED] — Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k nav
+352 [IMPLEMENTING] — Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k nav
   └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
     └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
       └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
@@ -125,7 +125,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 352. Build depthk navigated exterior negation clause layer via existproviders
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None

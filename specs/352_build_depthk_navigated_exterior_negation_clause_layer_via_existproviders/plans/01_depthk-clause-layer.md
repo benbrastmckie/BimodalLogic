@@ -1,7 +1,7 @@
 # Implementation Plan: Depth-k Navigated Exterior Negation Clause Layer via ExistProviders
 
 - **Task**: 352 - build_depthk_navigated_exterior_negation_clause_layer_via_existproviders
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 28 hours (~10 dispatch units across 6 phases; hard mode, per-sub-phase dispatch)
 - **Dependencies**: task 349 (consumer of this task's interface; producer of the landed
   `ExteriorBracketK.lean` determinacy core, consumed unchanged); task 309 (downstream
@@ -265,7 +265,7 @@ strictly sequential.
 "research_integrated": true, "plan_version": 1, "dependency_waves": [[1],[2],[3,4],[5],[6]],
 "skeleton": false, "follow_up_tasks": []}`
 
-### Phase 1: Full-fiber content channel core + F2 separation probe (GO/NO-GO gate) [NOT STARTED]
+### Phase 1: Full-fiber content channel core + F2 separation probe (GO/NO-GO gate) [IN PROGRESS]
 
 - **Goal:** Land the F2-safe content channel — the `P.existF`-over-full-fiber disjunction
   combinator with its correctness lemma — and machine-check that it separates the F2
@@ -273,18 +273,22 @@ strictly sequential.
   mandated pre-build verification gate (Conflict 3, Lean side; the literature side is already
   DONE per teammate E).
 - **Sub-phase 1.1 — channel core** (`ExteriorFiberK.lean`, NEW):
-  - [ ] `kvE_fiber` : the positive-sub fiber of `σ : NormalForm sig (k+1) 4` as a finite
+  - [x] `kvE_fiber` : the positive-sub fiber of `σ : NormalForm sig (k+1) 4` as a finite
         enumeration of `{s : NormalForm sig k 5 // σ.2 s = true}` (Fintype-backed list, stable
         order; mirror the list conventions of `kvE2_futGapList`, ExteriorNegation.lean:890).
-  - [ ] `kvE_fiberPos` : `Formula` — finite disjunction of `P.existF 4 s` over the fiber
+        *(landed with membership unfold `kvE_fiber_mem`)*
+  - [x] `kvE_fiberPos` : `Formula` — finite disjunction of `P.existF 4 s` over the fiber
         elements (content position; G6-compliant by construction). Cite Def 7.5 entries +
         Def 7.7 canonical expansion per the mapping table.
-  - [ ] `kvE_fiberPos_correct` : UZ/SZ-conditional truth characterization via `P.correct 4` —
+  - [x] `kvE_fiberPos_correct` : UZ/SZ-conditional truth characterization via `P.correct 4` —
         `temporal_truth M atomMap t (kvE_fiberPos ...) ↔ ∃ s, σ.2 s = true ∧ ∃ env, nf_eval_nf
         M k 5 (insertEnv env t) s` (exact statement shape fixed by implementer against
-        `P.correct`'s shape, PriorInterface.lean:41-45).
-  - [ ] Bucketed variant `kvE_fiberPosOn` (disjunction restricted to a sub-list of the fiber)
+        `P.correct`'s shape, PriorInterface.lean:41-45). *(verified: axioms exactly
+        `[propext, Classical.choice, Quot.sound]`)*
+  - [x] Bucketed variant `kvE_fiberPosOn` (disjunction restricted to a sub-list of the fiber)
         + its correctness lemma — the form the per-zone clause disjuncts will consume.
+        *(correctness `kvE_fiberPosOn_correct` proved for ARBITRARY sub-lists — strictly more
+        general than fiber-sub-lists, no deviation in consumer shape)*
 - **Sub-phase 1.2 — F2 separation probe** (`ExteriorFiberProbeK.lean`, NEW; probe-local):
   - [ ] Reconstruct the F2-style pair probe-locally (all `private`): RefutationF2.lean's
         machinery (`f2sig`:92, `F2M`:104, `f2env3`:328, `f2qnf`:332, `f2sub1/2`:335/339,
