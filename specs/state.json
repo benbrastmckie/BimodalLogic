@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 352,
+  "next_project_number": 353,
   "active_projects": [
     {
       "project_number": 347,
@@ -1711,17 +1711,18 @@
     {
       "project_number": 349,
       "project_name": "build_recursive_endchar_navigated_arity3_endpoint_primitive",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Build the recursive navigated arity-3 endpoint primitive `endChar : (k : Nat) -> EndCharCarrier sig k` (EndCharCarrier abbrev at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1007) by recursion on k, plus `endChar_correct`. Base case = the already-landed `endChar0`/`endChar0_correct` (Base.lean:995/1056, sorry-free). Step case = navigable-brick flatten of each sub's existential witness composed with the already-landed non-trivial interior segment `seg`/`seg_holds_correct`/`seg_holds_coupled` (Base.lean:1127-1162, sorry-free) for the interior and Phase-6/8-shaped endpoint characteristics for the exteriors, arity capped at 3 (guard G4). This is the report-02-Section-1.4 primitive, explicitly documented as NOT YET BUILT at Base.lean:958-969 (~300-500 lines estimated in-file, brick-witness-collapse / anchor-management core). Consume, do NOT rebuild: endChar0/endChar0_correct, seg/seg_holds_correct/seg_holds_coupled, nf_zone_flatten_navigable(_brick)/_correct (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NfZoneFlattenNavigable.lean:689/709). Guards (binding): G1 no arity-1 collapse; G2/G4 anchors strictly {a,b} subset {x,t}, <=2, w never a third free anchor; G3 non-trivial segment only (reuse seg, never TemporalPred.top); G5 no simp/omega/aesop shortcut of a Rabinovich chain step, manual bridges only; FORBIDDEN: nf_char3_deeper_split (refuted route -- grows anchor set to 4, forbidden tower, report 02 Section 4.1); do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT touch KampPrior.lean or nf_nvar_exist_all_depths's signature -- this task's scope is Base.lean only, additive; axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule, do not land a vacuous or sorry'd endChar. Definition of done: lake build GREEN (scoped Base module at minimum, full tree recommended); endChar/endChar_correct sorry-free; lean_verify on endChar_correct = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; downstream task 309 Phase 18/19 can cite endChar_correct by name. Literature grounding: Rabinovich 2014 Cor 5.4 / report 02 Section 1.4 (the missing navigated-endpoint primitive) and Section 6 'Phase 8' decomposition (reports/02_endpoint-hook-discharge-research.md:266-270); orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt.",
       "effort": "high",
       "parent_task": 309,
       "dependencies": [
-        351
+        351,
+        352
       ],
       "created": "2026-07-12T01:37:12Z",
-      "last_updated": "2026-07-12T18:01:53Z",
+      "last_updated": "2026-07-12T19:11:39Z",
       "artifacts": [
         {
           "type": "research",
@@ -1778,9 +1779,9 @@
           "summary": "v7 enriched-segment bracket carrier: general-k fold bridge gate, k-generalized exterior brackets, endIntervalStep kvE_body at full arity 4, EndIntervalCorrectPrior, induction close; supersedes v6"
         }
       ],
-      "session_id": "sess_1783841542_df767b",
+      "session_id": "sess_1783880791_cb6149",
       "next_artifact_number": 3,
-      "previous_status": "planning",
+      "previous_status": "implementing",
       "plan_metadata": {
         "phases": 6,
         "total_effort_hours": 16,
@@ -1931,6 +1932,26 @@
       },
       "session_id": "sess_1783832460_ce471b",
       "completion_summary": "Proved nfEval_le2_reduction (Rabinovich 2014 Lemma 3.2(2) analogue) in new file Lemma32Reduction.lean: nf_eval_nf at arbitrary depth k/arity n reduces to a conjunction of <=2-anchor (arity-3 ceiling) nf_eval_nf facts. Green, sorry-free, 0 new axioms (exactly [propext, Classical.choice, Quot.sound]), full-project lake build passes. Feasibility gate (Phase 3) closed GO; order-theoretic exists-w/forall-ij merge honored (no naive per-pair distribution, no arity-collapsing nfRestrict). Base.lean untouched. Unblocks /revise 349 (v4)."
+    },
+    {
+      "project_number": 352,
+      "project_name": "build_depthk_navigated_exterior_negation_clause_layer_via_existproviders",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k navigated exterior negation clause layer, parameterized by P : ExistProviders sig atomMap k (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/PriorInterface.lean:38-40), so that task 349's Phase-2 depth-k exterior bracket lemmas (kvE_extBracketPast_sound, kvE_extBracketFut_sound, kvE_extBracketPast_complete, kvE_extBracketFut_complete) become provable in their prescribed byte-identical shape. This is an ExteriorNegation-scale (~2000+ line) rebuild: the frozen clause layer (kvE2_futPos/kvE2_extNegFut + _sound/_complete, ExteriorNegation.lean:1124/1136/1243/1484, and the Past mirrors in ExteriorNegationPast.lean) reads sigma.2 through nf0_assemble, which is lossless ONLY for depth-0 subs (NfEFold.lean:549-561) and hardwired to sigma : NormalForm sig 1 4 — a byte-identical leaf-module generalization is provably impossible (F2-style truncation-shadow counterexample: an f2_sub_proj_eq-pattern pair sharing a depth-1 truncation but differing on a joint-coupled depth-k sub, RefutationF2.lean:471, falsifies _complete under a full-bit clause selector and _sound under a shadow-bit selector). The faithful Def-7.5 rung-(k+1) bracket recursively consumes rung-k formulas (report 10 adversarial section 2, 'the exterior bracket's own recursive fold'); build the depth-k clause layer over the ExistProviders channel (P.existF at the relevant arities) so it supplies that rung-k formula source without depth-hardwiring.\n\nHARD CONSTRAINTS (copied from parent task 349 adjudication; carry verbatim):\n- CONSUME UNCHANGED the already-landed green Phase-2 determinacy core in ExteriorBracketK.lean (nfk_truncD/nf_eval_truncD, nf_eval_take/nf_eval_projFresh, kvE_futAnyBit(_correct), kvE_subBit(_iff)) -- do not rebuild it, do not edit that file except additively if genuinely required by the new interface (prefer a new module).\n- Binding guards carried from 349: G1 no arity-1 collapse; G2/G4 anchors subset of {x,t}, at most 2, w never a third anchor; G3 non-trivial segment (reuse seg, never TemporalPred.top); G5 manual Rabinovich bridges only (no simp/omega/aesop shortcut of a chain step).\n- FORBIDDEN: nf_char3_deeper_split.\n- Do NOT edit the 7 frozen providers (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean), KampPrior.lean, or nf_nvar_exist_all_depths's signature. Build the new depth-k clause layer in NEW module(s) (e.g. ExteriorNegationK.lean / ExteriorNegationPastK.lean under NfMultiAnchorBridge/), referencing the frozen k=2 clause layer only as a byte-identical proof template (git diff on all 7 frozen providers must stay EMPTY at every commit).\n- sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. No vacuous/placeholder definitions -- if a sub-piece cannot close green, mark BLOCKED and escalate rather than landing a sorry or vacuous def.\n- task_type = lean4; effort = high; topic = kamp_theorem_formalization.\n- Definition of done: the depth-k clause layer (parameterized by P : ExistProviders sig atomMap k) is green + sorry-free + axiom-clean, and EXPOSES the interface (bracket-buildable clause facts at depth k, not depth-0-hardwired) that task 349 Phase 2's re-dispatch consumes to construct kvE_extBracketPast/Fut and close their _sound/_complete lemmas. Do NOT close the four bracket lemmas themselves in this task -- that is task 349 Phase 2's own re-dispatch work once this clause layer exists.\n\nGrounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/.orchestrator-handoff.json (blockers field), specs/349_.../handoffs/v7-phase2-blocked-1783882788.json, specs/349_.../summaries/07_phase2-determinacy-core-summary.md, specs/349_.../plans/07_enriched-bracket-carrier.md (Phase 2 block, lines 411-499), specs/349_.../reports/10_q3-uniform-k-probe.md (adversarial section 2 on the ExistProviders channel), and Rabinovich 2014 Def 7.5 / Cor 5.4 (~/Projects/Literature/sources/rabinovich_2014/).",
+      "effort": "high",
+      "parent_task": 349,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "created": "2026-07-12T19:14:58Z",
+      "last_updated": "2026-07-12T19:14:58Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/11_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 349 Phase 2 blocker"
+        }
+      ]
     }
   ],
   "artifacts": [

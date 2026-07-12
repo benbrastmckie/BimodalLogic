@@ -1,5 +1,5 @@
 ---
-next_project_number: 352
+next_project_number: 353
 ---
 
 # TODO
@@ -12,13 +12,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,341,343,349 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,309 | 131,189,192,196,350 | formula-refactor, automation, kamp_theorem_formalization |
-| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
-| 5 | 305 | 307 | completeness |
-| 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,352 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,341,343,352 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,350 | 131,189,192,196,349 | formula-refactor, automation, kamp_theorem_formalization |
+| 4 | 177,178,309 | 131,193,350 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -110,9 +111,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-349 [IMPLEMENTING] — Build the recursive navigated arity-3 endpoint primitive `endChar
-  └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
-    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+352 [RESEARCHED] — Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k nav
+  └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+    └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -120,6 +122,29 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 352. Build depthk navigated exterior negation clause layer via existproviders
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/11_spawn-analysis.md]
+
+**Description**: Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k navigated exterior negation clause layer, parameterized by P : ExistProviders sig atomMap k (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/PriorInterface.lean:38-40), so that task 349's Phase-2 depth-k exterior bracket lemmas (kvE_extBracketPast_sound, kvE_extBracketFut_sound, kvE_extBracketPast_complete, kvE_extBracketFut_complete) become provable in their prescribed byte-identical shape. This is an ExteriorNegation-scale (~2000+ line) rebuild: the frozen clause layer (kvE2_futPos/kvE2_extNegFut + _sound/_complete, ExteriorNegation.lean:1124/1136/1243/1484, and the Past mirrors in ExteriorNegationPast.lean) reads sigma.2 through nf0_assemble, which is lossless ONLY for depth-0 subs (NfEFold.lean:549-561) and hardwired to sigma : NormalForm sig 1 4 — a byte-identical leaf-module generalization is provably impossible (F2-style truncation-shadow counterexample: an f2_sub_proj_eq-pattern pair sharing a depth-1 truncation but differing on a joint-coupled depth-k sub, RefutationF2.lean:471, falsifies _complete under a full-bit clause selector and _sound under a shadow-bit selector). The faithful Def-7.5 rung-(k+1) bracket recursively consumes rung-k formulas (report 10 adversarial section 2, 'the exterior bracket's own recursive fold'); build the depth-k clause layer over the ExistProviders channel (P.existF at the relevant arities) so it supplies that rung-k formula source without depth-hardwiring.
+
+HARD CONSTRAINTS (copied from parent task 349 adjudication; carry verbatim):
+- CONSUME UNCHANGED the already-landed green Phase-2 determinacy core in ExteriorBracketK.lean (nfk_truncD/nf_eval_truncD, nf_eval_take/nf_eval_projFresh, kvE_futAnyBit(_correct), kvE_subBit(_iff)) -- do not rebuild it, do not edit that file except additively if genuinely required by the new interface (prefer a new module).
+- Binding guards carried from 349: G1 no arity-1 collapse; G2/G4 anchors subset of {x,t}, at most 2, w never a third anchor; G3 non-trivial segment (reuse seg, never TemporalPred.top); G5 manual Rabinovich bridges only (no simp/omega/aesop shortcut of a chain step).
+- FORBIDDEN: nf_char3_deeper_split.
+- Do NOT edit the 7 frozen providers (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean), KampPrior.lean, or nf_nvar_exist_all_depths's signature. Build the new depth-k clause layer in NEW module(s) (e.g. ExteriorNegationK.lean / ExteriorNegationPastK.lean under NfMultiAnchorBridge/), referencing the frozen k=2 clause layer only as a byte-identical proof template (git diff on all 7 frozen providers must stay EMPTY at every commit).
+- sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. No vacuous/placeholder definitions -- if a sub-piece cannot close green, mark BLOCKED and escalate rather than landing a sorry or vacuous def.
+- task_type = lean4; effort = high; topic = kamp_theorem_formalization.
+- Definition of done: the depth-k clause layer (parameterized by P : ExistProviders sig atomMap k) is green + sorry-free + axiom-clean, and EXPOSES the interface (bracket-buildable clause facts at depth k, not depth-0-hardwired) that task 349 Phase 2's re-dispatch consumes to construct kvE_extBracketPast/Fut and close their _sound/_complete lemmas. Do NOT close the four bracket lemmas themselves in this task -- that is task 349 Phase 2's own re-dispatch work once this clause layer exists.
+
+Grounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/.orchestrator-handoff.json (blockers field), specs/349_.../handoffs/v7-phase2-blocked-1783882788.json, specs/349_.../summaries/07_phase2-determinacy-core-summary.md, specs/349_.../plans/07_enriched-bracket-carrier.md (Phase 2 block, lines 411-499), specs/349_.../reports/10_q3-uniform-k-probe.md (adversarial section 2 on the ExistProviders channel), and Rabinovich 2014 Def 7.5 / Cor 5.4 (~/Projects/Literature/sources/rabinovich_2014/).
+
+---
 
 ### 351. Formalize rabinovich lemma 322 2freevariable reduction for normalformnf eval nf
 - **Effort**: high
@@ -148,10 +173,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 349. Build recursive endchar navigated arity3 endpoint primitive
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 351
+- **Dependencies**: Task 351, Task 352
 - **Research**:
   - [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
   - [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/01_endchar-faithful-architecture.md]
