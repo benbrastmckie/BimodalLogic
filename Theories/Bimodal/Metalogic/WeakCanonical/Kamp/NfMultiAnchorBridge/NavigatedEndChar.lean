@@ -286,21 +286,39 @@ endChar (k+1) qnf = endCharStep atomMap h_surj (endChar k) qnf      -- Phase-2/3
 ```
 -/
 
-/-- **`endCharStep` — recursion step builder (Phase-1 SCAFFOLD; real body lands in Phase 3).** The
+/-- **`endCharStep` — recursion step builder (Phase 3, task 349 v5; report 05 §3.3/§3.4).** The
 depth-`(k+1)` navigated endpoint builder consuming the depth-`k` interior/exterior hook
-`rec : EndCharCarrier sig k`. Its FINAL body (Phase 3, report 05 §3.4 Steps B–D) reduces the arity-4
-inner existential to ≤2-anchor conjuncts (`navPiece_reduce`), characterizes each via the x,t-EXPLICIT
-`nf_zone_flatten_navigable_correct`, rides the interior on `seg` (G3), and collapses to a closed
-`Formula` only at the base. This Phase-1 body is a genuine `TemporalPred`-valued SCAFFOLD — the
-position-0 atom layer `endChar0 … qnf.1` — installed ONLY so the `endChar` recursion and the
-`endChar_correct` STATEMENT elaborate. It is NOT the final navigated builder and carries NO proof
-obligation (no `endChar_correct` step case is claimed here — that is the Phase-3 feasibility gate).
-Replaced fix-forward in Phase 3 (`_rec` → `rec`). -/
+`rec : EndCharCarrier sig k`. Read at the navigated witness `w`, the returned `TemporalPred`
+assembles — as a single closed `Formula` — the depth-`(k+1)` characterization of
+`nf_eval_nf M (k+1) 3 (zoneEnv3 w x t) qnf`, whose `nfEval_step_unfold_gen` unfolding splits into:
+
+* the **atom layer** — supplied by the position-0 locus `endChar0 atomMap h_surj qnf.1` (Step D,
+  the closed-`Formula` Prop-3.5 collapse at the base; anchor positions pinned by `h_res` in the
+  correctness proof); and
+* the **quant layer** `∀ sub : NormalForm sig k 4, (∃ v, nf_eval_nf M k 4 [v,w,x,t] sub) ↔
+  qnf.2 sub` — encoded as the finite conjunction (`formula_conjList` over the `Fintype`
+  `NormalForm sig k 4`) of per-`sub` clauses `nf_quant_clause_tl (navPieceForm rec sub) (qnf.2 sub)`.
+  Each per-`sub` inner existential is navigated by `navPieceForm rec sub` (report 05 §3.4 Steps B/C:
+  the disjunction of the past-exterior `bracketBuildLeft` and future-exterior `bracketBuildRight`
+  navigated chains, each carrying the non-trivial β-segment `seg rec q3` as interior — G3 — and
+  `rec q3` as exterior endpoint, `q3 := nfk_take (3 ≤ 4) sub`).
+
+Assembled from `bracketBuildLeft`/`bracketBuildRight` (navigation, via `navPieceForm`), `seg`
+(interior, via `navPieceForm`), and the position-0 locus (`endChar0`), arity capped at 3 (G1/G4;
+witnesses `v`/bracket witnesses never free anchors — G2). This CONSUMES the retained-green
+`navPieceForm` **def** (NavigatedEndChar.lean:196; only its `_correct` biconditional is forbidden —
+the report-04 non-theorem — and is NOT stated here). It replaces the v4 Phase-1 scaffold
+(`fun qnf => endChar0 … qnf.1`) fix-forward (`_rec` → `rec`). The `k+1` correctness discharge is the
+Phase-3 residual-threading feasibility gate. -/
 noncomputable def endCharStep {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    {k : Nat} (_rec : EndCharCarrier sig k) : EndCharCarrier sig (k + 1) :=
-  fun qnf => endChar0 atomMap h_surj qnf.1
+    {k : Nat} (rec : EndCharCarrier sig k) : EndCharCarrier sig (k + 1) :=
+  fun qnf =>
+    ⟨formula_conjList
+      ((endChar0 atomMap h_surj qnf.1).formula ::
+        (Finset.univ.toList : List (NormalForm sig k 4)).map
+          (fun sub => nf_quant_clause_tl (navPieceForm rec sub) (qnf.2 sub)))⟩
 
 /-- **The recursive navigated arity-3 endpoint primitive `endChar` (skeleton, report 05 §3.3).** Base
 `endChar 0 = endChar0` (the closed-`Formula` Prop-3.5 collapse, ≤1 free); step
