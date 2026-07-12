@@ -1738,6 +1738,56 @@ theorem endCharN0_correct_world_local_obstruction {sig : MonadicSignature}
     nf_eval_nf M 0 n env qnf ↔ nf_eval_nf M 0 n env' qnf := by
   rw [← H qnf env, ← H qnf env', h0]
 
+/-- Counterexample signature with a single monadic predicate (`Unit`). -/
+def sigCex : MonadicSignature where
+  preds := Unit
+
+/-- Counterexample model: carrier `Bool`, the one predicate holds exactly at `true`,
+with the standard linear order. Two points (`false`, `true`) are distinguished by the predicate. -/
+def Mcex : OrderedMonadicStructure sigCex where
+  carrier := Bool
+  interp := fun _ b => b = true
+  carrier_order := (inferInstance : LinearOrder Bool)
+
+/-- Any atom map into the singleton predicate type. -/
+def atomMapCex : Formula → sigCex.preds := fun _ => ()
+
+/-- **The frozen `endCharN0_correct` is UNPROVABLE (Phase 5 feasibility refutation, sorry-free).**
+There is a concrete model (`Mcex` over `Bool`, signature `sigCex` with one predicate) for which NO
+base `base : {n} → NormalForm sigCex 0 n → TemporalPred` satisfies the frozen unconditional
+multi-anchor biconditional. The proof instantiates `endCharN0_correct_world_local_obstruction` at
+arity `n = 2` with two environments agreeing at position `0` (`![false, false]` and
+`![false, true]`): world-locality would force `nf_eval_nf` to agree on them, but they disagree on the
+predicate atom at position `1` (`M.interp () false` vs `M.interp () true`), contradiction. Because
+the obstruction is intrinsic to `TemporalPred.eval_at` (single-world evaluation), it rules out every
+candidate base — navigating or otherwise — so the frozen §Q4 target-2/3 base case cannot be realized
+as stated. Fail-fast feasibility signal for the multi-anchor characteristic (plan v3 Phase 5). -/
+theorem endCharN0_correct_infeasible :
+    ¬ ∃ (base : {n : Nat} → NormalForm sigCex 0 n → TemporalPred),
+        ∀ {n : Nat} [NeZero n] (qnf : NormalForm sigCex 0 n) (env : Fin n → Mcex.carrier),
+          (base qnf).eval_at Mcex atomMapCex (env 0) ↔ nf_eval_nf Mcex 0 n env qnf := by
+  rintro ⟨base, H⟩
+  -- Two environments agreeing at position 0 but differing at position 1.
+  set env : Fin 2 → Mcex.carrier := (fun _ => false) with henv
+  set env' : Fin 2 → Mcex.carrier := Fin.cons false (fun _ => true) with henv'
+  have h0 : env 0 = env' 0 := by simp [henv, henv', Fin.cons_zero]
+  -- The obstruction forces nf_eval_nf to agree on env and env'.
+  have hiff := endCharN0_correct_world_local_obstruction Mcex atomMapCex base H
+    (nf_characteristic Mcex 0 2 env) env env' h0
+  have henv'sat : nf_eval_nf Mcex 0 2 env' (nf_characteristic Mcex 0 2 env) :=
+    hiff.mp (nf_characteristic_satisfies Mcex 0 2 env)
+  -- Read the predicate-atom clause at position 1.
+  have hclause := henv'sat (AtomKind.pred () (1 : Fin 2))
+  -- env' 1 = true, so the LHS `atom_eval` holds.
+  have hL : atom_eval Mcex env' (AtomKind.pred () (1 : Fin 2)) := by
+    show Mcex.interp () (env' 1)
+    simp [henv', Mcex, Fin.cons_succ]
+  -- Hence the characteristic assigns `true` at position 1 …
+  have hq : nf_characteristic Mcex 0 2 env (AtomKind.pred () (1 : Fin 2)) = true := hclause.mp hL
+  -- … but the characteristic of `env` at position 1 reads `M.interp () (env 1) = (false = true)`.
+  simp only [nf_characteristic, decide_eq_true_eq, atom_eval, henv, Mcex] at hq
+  exact absurd hq (by decide)
+
 /-! ## Phase 6 (task 349): the multi-anchor navigating converter `navMultiAnchorForm` + `_correct`
 (the load-bearing core — v3, replaces the removed single-anchor `navBrickForm`)
 
