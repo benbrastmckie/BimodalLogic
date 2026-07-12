@@ -420,7 +420,7 @@ strictly sequential.
   (NEW; imports ExteriorFiberK; frozen ExteriorNegation.lean is a read-only template, NOT
   imported unless Phase 5 recovery requires it there — default is recovery in Phase 5's file).
 
-### Phase 4: Past-side clause layer (`ExteriorNegationPastK.lean`) [NOT STARTED]
+### Phase 4: Past-side clause layer (`ExteriorNegationPastK.lean`) [BLOCKED]
 
 - **Goal:** Structural Past mirror of Phase 3 (Since for Until), template =
   ExteriorNegationPast.lean:223-1109.
@@ -428,10 +428,54 @@ strictly sequential.
   `kvE_pastPossibleZones`/`ZoneClass`/`Admissible`/`Realizer_admissible` (templates
   :250/:264/:332/:348) and clause-form defs `kvE_pastGapD`/`RayD`/`RayForm`/`End`/`Chain`/
   `kvE_pastPos`/`kvE_extNegPast` (templates :410-:473), same `P`-parameterization and
-  full-fiber content discipline as 3.1.
-- **Sub-phase 4.2 — `kvE_extNegPast_sound`** (~200-300 lines): template :581.
+  full-fiber content discipline as 3.1. *(deviation: zone/admissibility sub-layer COMPLETED
+  [commit phase-4.1]; clause-form defs DEFERRED to 4.2 with 3.1, then BLOCKED — see BLOCKER.)*
+- **Sub-phase 4.2 — `kvE_extNegPast_sound`** (~200-300 lines): template :581. *(BLOCKED — see
+  BLOCKER; chain-assembly navigation prep landed: `kvE_pastGapZone`/`RayZone`/`SelfZone` +
+  possible-zones membership + descending `kvE_pastMaxPick`, commit 79edf5320, green.)*
 - **Sub-phase 4.3 — `kvE_extNegPast_complete`** (~200-300 lines): template :855; full-fiber
-  pin shape for the `hbelow`-analog.
+  pin shape for the `hbelow`-analog. *(BLOCKED — depends on the 4.2 pin resolution below.)*
+
+**BLOCKER** (Phase 4.2/4.3 — content-bearing clause layer; navigation prep is green):
+- **What failed:** The clause-form defs `kvE_pastGapD/RayD/RayForm/End/Chain/Pos` and their
+  `_sound`/`_complete` cannot be faithfully written to be provable, because the depth-`k`
+  full-fiber content channel and the fixed-environment realizer use INCOMPATIBLE anchor
+  conventions with no landed bridge between them.
+- **What was tried / traced (source-grounded, two landed lemma statements):**
+  1. `kvE_fiberPos_correct` / `kvE_fiberPosOn_correct` (`ExteriorFiberK.lean:91-130`): the only
+     G6-permitted content rendering `kvE_fiberPosOn P l` evaluated at a point `p` unfolds to
+     `∃ env : Fin 4 → M.carrier, nf_eval_nf M k 5 (insertEnv env p) s` — the four non-anchor
+     points are EXISTENTIALLY FREE, and `insertEnv env p` puts `p` at the LAST anchor (index 4,
+     `NfDepth0Generalized.lean:42`).
+  2. `nf_eval_nfk_iff_efold` (`NfEFold.lean:627`, `nf_eval_efold_k` :608): σ's realizer pins each
+     positive fiber element `s` over the FIXED environment `Fin.cons v (Fin.cons x1 (Fin.cons w
+     (Fin.cons x (fun _ => t))))` — the fresh witness `v` at index 0, `[x1,w,x,t]` at indices 1-4.
+  3. Reconciliation attempt: `insertEnv [v,x1,w,x] t = Fin.cons v [x1,w,x,t]` holds
+     definitionally, so content anchors at `t` with `env[0]=v` (the gap/ray/self witness). BUT
+     `env` is existentially free, so `P.existF 4 s` at `t` asserts only "s is realizable at `t`
+     with SOME 4 points", NOT "with the actual `[x1,w,x]`". The frozen k=2 layer pins this free
+     env via `qnf`/`hbase`/`hbits`/`habove` (`ExteriorNegationPast.lean:855-872`); the depth-`k`
+     analog is the deferred "full-fiber pin" whose exact shape is unresolved (research ruling —
+     plan Phase 3.3/4.3 note: `kvE_futAnyBit_correct` is "necessary-but-not-sufficient
+     scaffolding, not the hypothesis itself"; 4.1 handoff lines 108-111).
+  4. Grep for any re-anchoring / anchor-permutation NormalForm operation: none exists.
+- **Why stuck:** The frozen Since-chain evaluates each step's content AT the walked-to gap point
+  (`nf_depth0_char_formula χ` pins that point's marginal profile, `ExteriorNegationPast.lean:454`).
+  At depth `k` the F2 obstruction (postmortem rules 1-3, G6) forbids marginal content, and the
+  only full-fiber channel (`P.existF`) anchors at `t` with a free env — it cannot express "this
+  gap point realizes sub `s`". So the chain's evaluate-at-walked-point mechanism does not
+  transfer; a different clause architecture (content-at-`t` + zone-navigated env pin) is required.
+  This is a genuine SEMANTIC DESIGN question, not a tactic failure.
+- **What is needed (concrete action to unblock):** Resolve the full-fiber env-pin shape for the
+  depth-`k` clause layer — the depth-`k` analog of the frozen `habove`/`hbits` env-pinning
+  hypotheses — as a bundle/lemma that ties `P.existF`'s free anchor env to the fixed
+  `[x1,w,x,t]` via the zone navigation (`kvE_fiberBucket_nonempty_iff` supplies the
+  navigation half; the missing half is the content-env pin). This MUST be symmetrized with the
+  Future side (Phase 3.2/3.3, concurrently built, H7-locked) so both sides expose the same
+  pin contract for Phase 5 / task 349. Recommend: orchestrator coordinates the pin design across
+  both sides (or spawns a short research task on the pin shape) BEFORE re-dispatching 4.2/4.3.
+- **Prohibited:** No `sorry`, no `def X := ⊥`/vacuous clause defs, no guessed pin shape that
+  diverges from the Future side.
 - **Estimated output:** ~550-850 lines total across 3 dispatches.
 - **Bounded-unit stop condition:** as Phase 3, per sub-phase.
 - **Timing:** ~7 hours (3 dispatches).
