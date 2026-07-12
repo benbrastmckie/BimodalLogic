@@ -30,7 +30,8 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (formula_conjList formula_conjList_iff)
+open Bimodal.Metalogic.WeakCanonical.Separation
+  (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff)
 
 /-! ## Zone classification at the exterior anchor (depth-independent geometry)
 
@@ -328,5 +329,89 @@ theorem kvE_futChainDestructG {sig : MonadicSignature} {α : Type}
       · exact ⟨r₀, hsr₀, hr₀x1, hitemr₀⟩
       · obtain ⟨r, hr₀r, hrx1, hitem⟩ := hocc a' hmem
         exact ⟨r, hsr₀.trans hr₀r, hrx1, hitem⟩
+
+/-! ## The depth-`k` Future clause family (content via `kvE_fiberPosOn P`, G6)
+
+The depth-`k` analogs of the frozen clause defs `kvE2_futGapD`/`RayD`/`RayForm`/`End`/`Chain`/
+`Pos`/`extNegFut` (ExteriorNegation.lean:1072–1140). Every content-bearing position renders
+`P.existF 4` over FULL fiber elements `s : NormalForm sig k 5` through `kvE_fiberPosOn P`
+(postmortem rule 3 / guard G6) — never a marginal characteristic formula. The visited-item
+universe is swapped from the depth-0 profile universe (`kvE2_futGapList`/`RayList`) to the
+Phase-2 fiber zone lists (`kvE_fiberZoneList σ zs4`), keyed by the Future gap head-coupling
+`(true,false)`, ray `(false,true)`, and self `(false,false)` over `kvE2_sep_zFutT3`. The chain
+device is the generic `kvE_futChainG` from the previous section (Cor 5.4 `O_n`, faithful). -/
+
+/-- The Future **gap zone** spec `(t, x1)`: head coupling `(true, false)` over the base future
+    marking (the point lies strictly below `x1`, strictly above `t`). -/
+def kvE_futGapZone : ZoneSpec 4 := Fin.cons (true, false) kvE2_sep_zFutT3
+
+/-- The Future **ray zone** spec `(x1, ∞)`: head coupling `(false, true)` over the base future
+    marking (the point lies strictly above `x1`). -/
+def kvE_futRayZone : ZoneSpec 4 := Fin.cons (false, true) kvE2_sep_zFutT3
+
+/-- **Gap guard `D`** (depth-`k`): the full-fiber content disjunction over σ's gap-zone fiber
+    elements — the `P.existF 4`-rendered analog of the frozen `kvE2_futGapD` (:1072). Empty gap
+    bucket gives `⊥` (the "no gap points" guard). Content channel = `kvE_fiberPosOn P` (G6). -/
+noncomputable def kvE_futGapD {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
+  kvE_fiberPosOn P (kvE_fiberZoneList σ kvE_futGapZone)
+
+/-- **Ray disjunction** (depth-`k`): the full-fiber content disjunction over σ's ray-zone fiber
+    elements. `P.existF 4`-rendered analog of `kvE2_futRayD` (:1079). -/
+noncomputable def kvE_futRayD {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
+  kvE_fiberPosOn P (kvE_fiberZoneList σ kvE_futRayZone)
+
+/-- **Exact-ray-content form** at the endpoint (depth-`k` analog of `kvE2_futRayForm`, :1088):
+    every future point carries a ray fiber element (`¬F(¬D_ray)`), and each ray fiber element
+    occurs (`F(P.existF 4 s)` for each `s` in the ray zone list). Content channel throughout. -/
+noncomputable def kvE_futRayForm {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
+  formula_conjList
+    ((Formula.untl (kvE_futRayD P σ).neg Formula.top).neg ::
+      (kvE_fiberZoneList σ kvE_futRayZone).map fun s =>
+        Formula.untl (P.existF 4 s) Formula.top)
+
+/-- **Endpoint description** at `x1` (depth-`k` analog of `kvE2_futEnd`, :1098): the self-zone
+    fiber content (the endpoint's own full-fiber realization, at the self zone
+    `kvE_futSelfZone`) together with the exact ray content. The self-zone list carries a single
+    fresh profile under admissibility (conjunct 4 uniqueness), so it IS the self bucket. -/
+noncomputable def kvE_futEnd {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
+  formula_conjList
+    [kvE_fiberPosOn P (kvE_fiberZoneList σ kvE_futSelfZone),
+     kvE_futRayForm P σ]
+
+/-- **`D`-guarded `Until` chain** over a list of gap fiber elements (depth-`k` analog of
+    `kvE2_futChain`, :1108): the generic `kvE_futChainG` instantiated with `itemF := P.existF 4`,
+    the endpoint description, and the gap guard `D`. -/
+noncomputable def kvE_futChain {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4)
+    (l : List (NormalForm sig k 5)) : Formula :=
+  kvE_futChainG (P.existF 4) (kvE_futEnd P σ) (kvE_futGapD P σ) l
+
+/-- **Positive local-existence form** for σ (depth-`k` analog of `kvE2_futPos`, :1124):
+    admissibility-gated disjunction over the permutations of σ's gap-zone fiber list of
+    `D`-guarded chains ending in the endpoint description. Inadmissible σ gives `⊥` (sound
+    because such σ has no exterior realizer — `kvE_futRealizer_admissible`). -/
+noncomputable def kvE_futPos {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
+  if kvE_futAdmissible σ = true then
+    formula_disjList ((kvE_fiberZoneList σ kvE_futGapZone).permutations.map
+      (kvE_futChain P σ))
+  else Formula.bot
+
+/-- **The Future-side complement clause family** (depth-`k`, the Phase-2 BINDING signature
+    analog of `kvE2_extNegFut`, :1136): the negation of the positive local-existence form. -/
+noncomputable def kvE_extNegFut {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
+  (kvE_futPos P σ).neg
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
