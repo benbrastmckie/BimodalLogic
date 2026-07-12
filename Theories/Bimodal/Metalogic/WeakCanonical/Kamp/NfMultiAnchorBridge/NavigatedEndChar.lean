@@ -467,4 +467,67 @@ theorem endCharStep_quant_reduceA {sig : MonadicSignature} {k : Nat}
           (qnf.2 sub = true)) :=
   forall_congr' (fun sub => iff_congr (endCharStep_reduceA M w x t sub) Iff.rfl)
 
+/-! ## Phase 3b (task 349, v5): `k+1` correctness discharge — FEASIBILITY GATE **[BLOCKED]**
+
+The `k+1` case of the frozen `endChar_correct` spec — the residual-threading feasibility gate
+(report 05 §5.1 claim 6, FEASIBLE-PENDING-RESIDUAL-THREADING) — is **NOT landed** in this dispatch.
+The `endCharStep` **def (3a) is green above**; the step-correctness **proof (3b) is blocked** on a
+machine-located obligation that, as a closed biconditional, is the report-04 non-theorem.
+
+### The pinned `k+1` statement (typechecks; NOT asserted here)
+
+```
+theorem endChar_correct_step {sig} {k}
+    (M) (atomMap) (h_surj : ∀ p, ∃ a : Atom, atomMap (.atom a) = p)
+    (rec : EndCharCarrier sig k)
+    (ih : ∀ (q : NormalForm sig k 3) (w' x' t' : M.carrier),
+      (∀ atom : AtomKind sig 3, (∀ p, atom ≠ AtomKind.pred p 0) →
+        (atom_eval M (zoneEnv3 w' x' t') atom ↔ (NormalForm.atom_assgn q atom = true))) →
+      ((rec q).eval_at M atomMap w' ↔ nf_eval_nf M k 3 (zoneEnv3 w' x' t') q))
+    (qnf : NormalForm sig (k + 1) 3) (w x t : M.carrier)
+    (h_res : ∀ atom : AtomKind sig 3, (∀ p, atom ≠ AtomKind.pred p 0) →
+      (atom_eval M (zoneEnv3 w x t) atom ↔ (qnf.1 atom = true))) :
+    (endCharStep atomMap h_surj rec qnf).eval_at M atomMap w ↔
+      nf_eval_nf M (k + 1) 3 (zoneEnv3 w x t) qnf
+```
+
+The `ih` hook is the depth-`k` IH (residual form, worded via the depth-uniform `NormalForm.atom_assgn`
+accessor); `h_res` pins the top-level `qnf.1` atom layer at `{x, t}` (≤2, G2/G4; `w` a bracket witness).
+
+### Where the proof reaches, and the exact stuck goal (verbatim `lean_goal`)
+
+Driving `simp only [endCharStep, TemporalPred.eval_at]; rw [formula_conjList_iff,
+nfEval_step_unfold_gen, List.forall_mem_cons]; refine and_congr ?_ ?_` splits into:
+
+* **Atom layer (Step D)** — `temporal_truth w ((endChar0 … qnf.1).formula) ↔
+  ∀ a, atom_eval M (zoneEnv3 w x t) a ↔ qnf.1 a = true` — DISCHARGEABLE (`endChar0_wlocus_correct`
+  + `h_res`, exactly as `endChar0_correct`). NOT the gate.
+* **Quant layer** — after `rw [List.forall_mem_map]; forall_congr'` per `sub : NormalForm sig k 4`
+  and `nf_quant_clause_tl_correct` (with `P := ∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub`),
+  the residual side-obligation is, **verbatim**:
+
+  ```
+  ⊢ temporal_truth M atomMap w (navPieceForm rec sub) ↔
+      ∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub
+  ```
+
+### Why this is BLOCKED (not stubbable)
+
+This side-obligation is **exactly `navPieceForm_correct`** — the machine-checked report-04
+NON-THEOREM as a closed biconditional. LHS `temporal_truth M atomMap w (navPieceForm rec sub)` is a
+CLOSED `Formula` read only at `w` (depends solely on `M`, `atomMap`, `w`); RHS `∃ v, nf_eval_nf M k 4
+[v,w,x,t] sub` constrains the anchor-`{x,t}` predicate layers and the order relations among
+`{v,w,x,t}`. It holds only UNDER a residual pinning those anchors for THIS `sub`'s arity-4 layer — and
+that per-`sub` residual is **not threadable** from the in-scope `h_res` (which conditions only the
+depth-0 atom layer of the top-level `qnf` at `{x,t}`, not the arity-4 sub-evaluation at the fresh
+witness `v`). Discharging it would require a **residual-threading lemma** delivering, for each `sub`,
+the anchor/order residual of `nf_eval_nf M k 4 [v,w,x,t] sub` from the bracket-exterior structure — the
+sole open obligation of the v5 architecture (report 05 §5.1 row 6, §5.2).
+
+Landing it via `sorry`, a vacuous def, an arity-4 enclosing-pair collapse
+(`Lemma32Reduction.lean:290-306` non-theorem), a single-anchor reshape, a per-pair `∀ij ∃v`
+distribution, or by asserting `navPieceForm_correct`/the unconditional world-local form is FORBIDDEN
+(plan Postmortem Constraints). Escalated via `/spawn 349` for a dedicated residual-threading lemma.
+The `endCharStep` def (3a) and all Phase-1/2 assets remain green and sorry-free. -/
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
