@@ -408,7 +408,54 @@ orchestrator MAY dispatch it alongside Phase 2 under a territory contract
 - **Files:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean` (additive tail
   ONLY — existing decls, including the D7 docstring block, byte-identical).
 
-### Phase 2: `k`-generalized exterior brackets (Prop-4.2 pinning channel at depth `k`) [NOT STARTED]
+### Phase 2: `k`-generalized exterior brackets (Prop-4.2 pinning channel at depth `k`) [BLOCKED]
+
+**BLOCKER** (Phase 2, v7 dispatch sess_1783880791_cb6149 — design-level, four-element record):
+
+- **What failed**: the four bracket lemmas `kvE_extBracketPast/Fut_sound`/`_complete` in the
+  prescribed shape (byte-identical k=2 statements with `χ : NormalForm sig 0 1 →
+  NormalForm sig k 1`) are not provable for ANY bracket formula constructible in the
+  prescribed leaf module (imports ExteriorBracket + NfEFold only, 300-500 line budget).
+- **What was tried**: full design derivation against the frozen k=2 machinery; the
+  design-invariant determinacy core WAS landed green + sorry-free in `ExteriorBracketK.lean`
+  (commits 34a173e88, af794abcb, c4c5c7eb1): `nfk_truncD`/`nf_eval_truncD` (one-directional
+  depth truncation), depth-general `nf_eval_take`/`nf_eval_projFresh`
+  (`nf_eval_unique M k` determinacy), `kvE_sepPos`/`kvE_projFreshD`/`kvE_futAnyBit` +
+  `kvE_futAnyBit_correct` (the depth-`k` `habove`/`hbelow` pin at `NormalForm sig k 1` /
+  `nf_eval_nf M k 1` — the plan's exact prescribed hypothesis shape, proven honest), and
+  `kvE_subBit`/`kvE_subBit_iff` (fiber-existential full-arity fold read via the Phase-1
+  bridge). All axiom-clean `[propext, Classical.choice, Quot.sound]`.
+- **Why stuck** (isolation): (i) the frozen clause layer (`kvE2_futPos`/`kvE2_extNegFut` +
+  `_sound`/`_complete`, ExteriorNegation.lean:1124/1136/1243/1484 and Past mirrors) is
+  depth-hardwired: every `σ.2` read goes through `nf0_assemble`'s coordinatization, lossless
+  ONLY at depth 0 subs (NfEFold.lean:549-561), with `σ : NormalForm sig 1 4` fixed.
+  (ii) A truncation-shadow bracket (frozen clauses over `nfk_truncD` shadows) provably
+  cannot satisfy both lemmas: for an F2-style pair σ (bit-false) / σ'' (positive) with equal
+  depth-1 truncations differing on a joint-coupled depth-`k` sub (the `f2_sub_proj_eq`
+  pattern, RefutationF2.lean:471), a full-bit clause selector falsifies `_complete` under
+  realized qnf (σ'''s realizer realizes σ's shadow, breaking σ's complement clause), while a
+  shadow-bit selector leaves such bit-false σ unrefuted, breaking `_sound`. The k=2 proofs
+  survive precisely because depth-1 subs ARE losslessly (zs, χ)-coordinatized — the exact
+  losslessness F2/task-327 kills at depth ≥ 1 (report 10 C4). (iii) The faithful Rabinovich
+  Def-7.5 bracket at rung k+1 consumes rung-`k` formulas from the recursion ("the exterior
+  bracket's own recursive fold", report 10 adversarial §2) — i.e. an `ExistProviders`-style
+  depth-`k` formula channel and/or the Phase-3 recursive carrier, not available to this leaf
+  module; re-deriving the navigated clause layer at depth `k` over `P.existF 0` point
+  descriptions is ExteriorNegation-scale (~2000+ lines), 5-10x the phase budget.
+- **What is needed**: adjudication (recommend `/spawn 349`) among: (a) re-scope Phase 2 to
+  take `P : ExistProviders sig atomMap k` (PriorInterface.lean:38) as a bracket parameter and
+  budget the depth-`k` clause-layer rebuild as its own multi-dispatch sub-plan (2a/2b per
+  side); (b) restructure Phases 2-4 so the brackets are built inside the recursion where
+  rung-`k` formulas exist (mutual with `endIntervalStep`); (c) weaken the Phase-2 statements
+  with an explicit joint-depth-content hypothesis and prove Phase 4 discharges it. All three
+  resolutions consume the landed determinacy core unchanged.
+- **Prohibited**: no `sorry`, no vacuous placeholder — none landed (verified: 0 sorries,
+  0 vacuous, 0 new axioms, FORBIDDEN grep clean, all 7 frozen providers byte-identical).
+- **Also fixed in this dispatch (fix-forward)**: latent Phase-1 regression — `nf_eval_atom_layer`
+  added to NfEFold.lean in Phase 1 collided with the pre-existing NfZoneDepthK.lean:190 export
+  of the same name, breaking every module importing both (Base.lean and the entire
+  NfMultiAnchorBridge chain). Renamed the Phase-1 addition to `nf_eval_nf_atom_layer`
+  (NfEFold.lean only, 2 sites; commit 34a173e88).
 
 - **Goal:** Generalize the k=2 per-side exterior brackets so their determinacy inputs read
   depth `k`: `kvE_extBracketPast`/`kvE_extBracketFut` + `_sound`/`_complete`, where the
@@ -421,15 +468,25 @@ orchestrator MAY dispatch it alongside Phase 2 under a territory contract
   `nf_eval_unique`. BUILD only the `k`-parametric analogs.
 - **Tasks:**
   - [ ] Define `kvE_extBracketPast`/`kvE_extBracketFut` (depth-`k` bracket builders) in the
-        NEW module, mirroring the k=2 defs.
+        NEW module, mirroring the k=2 defs. *(deviation: blocked — see BLOCKER; the
+        design-invariant determinacy core landed instead: `nfk_truncD`/`nf_eval_truncD`,
+        `nf_eval_take`/`nf_eval_projFresh`, `kvE_sepPos`/`kvE_projFreshD`/`kvE_futAnyBit` +
+        `_correct`, `kvE_subBit`/`_iff` — all green, sorry-free, axiom-clean)*
   - [ ] Prove `_sound` per side: strictly-exterior realizer split + refutation via the
         depth-`k` characterization (Phase-1 bridge + `nf_eval_unique M k`).
-  - [ ] Prove `_complete` per side, mirroring the k=2 proofs.
-  - [ ] Sanity: the k=2 instances of the new decls agree with (are interderivable with) the
-        frozen originals — `example`-check, no edit to ExteriorBracket.lean.
-  - [ ] Route audit: `git diff` on ExteriorBracket.lean (and all 7 frozen providers) EMPTY;
+        *(deviation: blocked — see BLOCKER (ii): not provable in the prescribed shape)*
+  - [ ] Prove `_complete` per side, mirroring the k=2 proofs. *(deviation: blocked — see
+        BLOCKER (ii))*
+  - [x] Sanity: the k=2 instances of the new decls agree with (are interderivable with) the
+        frozen originals — `example`-check, no edit to ExteriorBracket.lean. *(deviation:
+        altered — done for the LANDED decls: `kvE_projFreshD_zero`, `kvE_futAnyBit_zero`,
+        and the `kvE2_futAnyBit_correct` recovery `example`)*
+  - [x] Route audit: `git diff` on ExteriorBracket.lean (and all 7 frozen providers) EMPTY;
         grep FORBIDDEN list clean; anchors {x,t} only (G2/G4); segments non-trivial (G3);
-        manual bridges (G5); `lean_verify` on both `_sound` lemmas axiom-clean.
+        manual bridges (G5); `lean_verify` on both `_sound` lemmas axiom-clean. *(deviation:
+        altered — audit run on the landed scope: frozen diffs EMPTY, FORBIDDEN grep clean,
+        0 sorries/vacuous/new axioms; `lean_verify` axiom-clean on `kvE_futAnyBit_correct`,
+        `kvE_subBit_iff`, `nf_eval_truncD` — the `_sound` lemmas do not exist (blocked))*
 - **Bounded-unit stop condition:** all four lemmas (2 sides × sound/complete) green, OR
   `[BLOCKED]` + `lean_goal` on the specific side/direction. If one side closes and the other
   blocks, commit the green side first.

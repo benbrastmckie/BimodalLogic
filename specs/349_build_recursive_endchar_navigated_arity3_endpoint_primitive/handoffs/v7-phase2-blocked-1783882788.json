@@ -1,0 +1,54 @@
+{
+  "status": "blocked",
+  "skeleton": false,
+  "summary": "Task 349 v7 Phase 2 BLOCKED at the design level, with the design-invariant determinacy core landed GREEN. Landed in NEW module ExteriorBracketK.lean (commits 34a173e88, af794abcb, c4c5c7eb1, all sorry-free, axiom-clean): nfk_truncD + nf_eval_truncD (one-directional depth truncation, full-arity fiber-existential, G1), depth-general nf_eval_take / nf_eval_projFresh (symbolic-k generalization of the depth-1-only kvE2_sepProjFresh_eval; nf_eval_unique M k determinacy), kvE_sepPos / kvE_projFreshD / kvE_futAnyBit + kvE_futAnyBit_correct (the depth-k habove/hbelow zone-fact pin at NormalForm sig k 1 / nf_eval_nf M k 1 — the plan's exact prescribed hypothesis shape, proven honest under realized qnf), kvE_subBit + kvE_subBit_iff (fiber-existential full-arity fold read of a depth-(k+1) sub's quant layer, consuming Phase-1's nf_eval_nfk_iff_efold), and the k=2-rung recovery layer (kvE_projFreshD_zero, kvE_futAnyBit_zero, kvE2_futAnyBit_correct recovery example). BLOCKER: the four bracket lemmas kvE_extBracketPast/Fut_sound/_complete in the prescribed byte-identical-statement shape are not provable by any bracket formula constructible in the prescribed leaf module: (i) the frozen clause layer (ExteriorNegation/-Past) is depth-hardwired through nf0_assemble's depth-0-only lossless coordinatization with sigma : NormalForm sig 1 4 fixed; (ii) a truncation-shadow bracket provably cannot satisfy both lemmas (F2-style pair sharing a depth-1 truncation while differing on a joint-coupled depth-k sub — f2_sub_proj_eq pattern — breaks _complete under a full-bit selector and _sound under a shadow-bit selector); (iii) the faithful Rabinovich Def-7.5 rung-(k+1) bracket consumes rung-k formulas from the recursion (report 10 adversarial section 2: 'the exterior bracket's own recursive fold') — an ExistProviders-style channel and/or the Phase-3 carrier, unavailable to this leaf module; a depth-k clause-layer rebuild is ExteriorNegation-scale (~2000+ lines), 5-10x the phase budget. Full four-element record in the plan's Phase-2 BLOCKER block. ALSO fixed forward a latent Phase-1 regression: NfEFold's new nf_eval_atom_layer collided with the pre-existing NfZoneDepthK.lean:190 export of the same name, breaking Base.lean and the whole NfMultiAnchorBridge import chain (Phase 1's NfEFold-scoped build missed it); renamed to nf_eval_nf_atom_layer (NfEFold.lean only, 2 sites).",
+  "phases_completed": 1,
+  "phases_total": 6,
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketK.lean",
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfEFold.lean",
+    "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/07_enriched-bracket-carrier.md"
+  ],
+  "deliverables": [
+    "nfk_truncD (ExteriorBracketK.lean, def — one-layer depth truncation, full-arity fiber-existential)",
+    "nfk_truncD_atom (theorem)",
+    "nf_eval_truncD (theorem — one-directional truncation soundness, nf_eval_unique M k determinacy)",
+    "nf_eval_take (theorem — depth-general prefix-restriction soundness for nfk_take)",
+    "nf_eval_projFresh (theorem — depth-general fresh-projection soundness)",
+    "kvE_sepPos / kvE_sepPos_mem (def/theorem)",
+    "kvE_projFreshD / nf_eval_projFreshD (def/theorem — depth-k fresh shadow)",
+    "kvE_futAnyBit (def — depth-k zone-fact bit at NormalForm sig k 1)",
+    "kvE_futAnyBit_correct (theorem — THE depth-k habove/hbelow pin, honest under realized qnf)",
+    "kvE_subBit / kvE_subBit_iff (def/theorem — fiber-existential fold read via Phase-1 bridge nf_eval_nfk_iff_efold)",
+    "kvE_projFreshD_zero / kvE_futAnyBit_zero + recovery example (k=2-rung agreement with frozen kvE2_futAnyBit/kvE2_futAnyBit_correct)",
+    "nf_eval_nf_atom_layer (NfEFold.lean — rename of Phase-1's nf_eval_atom_layer, fixing the NfZoneDepthK collision)"
+  ],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "axiom_count_delta": 0,
+    "scoped_build_passed": true,
+    "scoped_build_target": "Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK",
+    "lean_verify_kvE_extBracketPast_sound": "N/A — lemma not landed (design-level BLOCKED; see blockers)",
+    "lean_verify_kvE_extBracketFut_sound": "N/A — lemma not landed (design-level BLOCKED; see blockers)",
+    "lean_verify_kvE_futAnyBit_correct": ["propext", "Classical.choice", "Quot.sound"],
+    "lean_verify_kvE_subBit_iff": ["propext", "Classical.choice", "Quot.sound"],
+    "lean_verify_nf_eval_truncD": ["propext", "Classical.choice", "Quot.sound"],
+    "forbidden_grep_clean": true,
+    "frozen_file_diffs": "none (all 7 frozen providers + KampPrior + Lemma32Reduction byte-identical, verified via git diff)"
+  },
+  "sorry_inventory": [],
+  "blockers": [
+    "Phase 2 four bracket lemmas (kvE_extBracketPast_sound, kvE_extBracketFut_sound, kvE_extBracketPast_complete, kvE_extBracketFut_complete) in the prescribed byte-identical-statement shape: NOT provable by any bracket formula constructible in the prescribed leaf module. (i) Frozen clause layer depth-hardwired: kvE2_futPos/kvE2_extNegFut + _sound/_complete (ExteriorNegation.lean:1124/1136/1243/1484, Past mirrors) read sigma.2 through nf0_assemble, lossless ONLY for depth-0 subs (NfEFold.lean:549-561), sigma : NormalForm sig 1 4 fixed. (ii) Truncation-shadow bracket jointly unsatisfiable: F2-style pair sigma (bit-false) / sigma'' (positive) with nfk_truncD-equal depth-1 shadows differing on a joint-coupled depth-k sub (f2_sub_proj_eq pattern, RefutationF2.lean:471) — full-bit clause selector falsifies _complete under realized qnf; shadow-bit selector falsifies _sound. (iii) Faithful Def-7.5 rung-(k+1) bracket consumes rung-k formulas from the recursion (report 10 adversarial sec. 2); requires ExistProviders channel (PriorInterface.lean:38) and/or Phase-3 carrier + an ExteriorNegation-scale depth-k clause-layer rebuild (~2000+ lines, 5-10x phase budget). RESOLUTIONS (all consume the landed determinacy core unchanged): (a) re-scope Phase 2 with P : ExistProviders parameter + multi-dispatch clause-layer sub-plan; (b) build brackets inside the recursion (mutual with endIntervalStep, Phases 2-4 restructure); (c) weaken statements with an explicit joint-depth-content hypothesis dischargeable by Phase 4. Recommend /spawn 349."
+  ],
+  "continuation_path": null,
+  "continuation_context": {
+    "is_successor": false,
+    "note": "Do not re-dispatch Phase 2 in the current plan shape. The blocker is design-level (statement shape + module scope + budget), not a tactic gap: adjudicate resolutions (a)/(b)/(c) first (plan revision or /spawn 349). The landed ExteriorBracketK.lean determinacy core is the shared foundation for all three and must be preserved verbatim."
+  },
+  "next_phase": {
+    "phase_number": 2,
+    "name": "k-generalized exterior brackets — BLOCKED, needs adjudication",
+    "note": "Phase 3 (endIntervalStep body + EndIntervalCorrectPrior statement freeze) declares 'Depends on: 2', but its statement-only sub-unit was declared parallelizable with 2 in the plan's Dependency Analysis; the orchestrator may consider dispatching Phase 3's statement-freeze sub-unit while Phase 2 is adjudicated, at its discretion."
+  }
+}
