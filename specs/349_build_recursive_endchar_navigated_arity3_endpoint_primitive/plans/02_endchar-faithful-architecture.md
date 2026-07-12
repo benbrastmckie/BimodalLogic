@@ -1,7 +1,7 @@
 # Implementation Plan: Task #349 (v2 — faithful arity-general architecture)
 
 - **Task**: 349 - Build the recursive navigated arity-3 endpoint primitive `endChar` + `endChar_correct`
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (consumes only already-landed, sorry-free assets)
 - **Research Inputs**:
@@ -223,24 +223,31 @@ fixes types.
 - The `endCharRec_correct` statement is reviewed to be the faithful navigated characterization
   (report 01 §3.2), not weakened/vacuous; `endChar` inhabits `EndCharCarrier sig k` at `n = 3`.
 
-### Phase 3: Arity-general atom base `endCharN0` + `endCharN0_correct` (k=0) [NOT STARTED]
+### Phase 3: Arity-general atom base `endCharN0` + `endCharN0_correct` (k=0) [COMPLETED]
 
 **Goal**: Build the depth-0 base of the recursion: the arity-general pure atom layer and its
 correctness, generalizing `endChar0`/`nf3_locus0`/`endChar0_correct` over `n` (report 01 §5.5 target
 1, §3.2 base case).
 
 **Tasks**:
-- [ ] Define `endCharN0 (atomMap) (h_surj) : {n : Nat} -> NormalForm sig 0 n -> TemporalPred`
+- [x] Define `endCharN0 (atomMap) (h_surj) : {n : Nat} -> NormalForm sig 0 n -> TemporalPred`
   generalizing `endChar0` (Base.lean:995) and `nf3_locus0` (Base.lean:982) from arity 3 to arbitrary
   `n`. At `k = 0`, `NormalForm sig 0 n = AtomKind sig n -> Bool` is a finite pure atom layer (no
   further recursion) — report 01 §Adversarial-Verification confirms the base is finite at arity
-  `3+k`.
-- [ ] Prove `endCharN0_correct`: the generalized `endChar0_correct` (Base.lean:1056). The `w`-locus
+  `3+k`. *(landed green: `nfN_locus0` + `endCharN0` at Base.lean:1663/1682; `n = 0` arm is a
+  total-function `TemporalPred.top` placeholder — never consumed — so the def stays `{n}`-general
+  without `[NeZero n]`, matching the frozen `EndCharMotive`/`endCharRec` shape.)*
+- [x] Prove `endCharN0_correct`: the generalized `endChar0_correct` (Base.lean:1056). The `w`-locus
   predicate layer is read locally; the anchor/order layer at the other `n-1` positions is the
   residual `h_nav` (the arity-general `h_res`). Reuse the existing `endChar0_correct` method,
-  generalized over `n` — sorry-free.
-- [ ] Route audit: G1 (honest arity-`n` atom layer, no arity-1 collapse), G4 (anchors ≤2 free;
-  the `n-1` positions are residual, not fresh free anchors), G5 (manual bridges).
+  generalized over `n` — sorry-free. *(landed green: `endCharN0_wlocus_correct` +
+  `endCharN0_correct` at Base.lean:1688/1723; axioms exactly `[propext, Classical.choice,
+  Quot.sound]`; statement = frozen `endCharRec_correct` k=0 instance, full `nf_eval_nf` RHS, no
+  weakening.)*
+- [x] Route audit: G1 (honest arity-`n` atom layer, no arity-1 collapse), G4 (anchors ≤2 free;
+  the `n-1` positions are residual, not fresh free anchors), G5 (manual bridges). *(recorded in the
+  Phase-3 Route-audit docstring, Base.lean:1644-1656; grep-confirmed `nf_char3_deeper_split` is not
+  code-referenced by any Phase-3 object.)*
 
 **Timing**: ~2 hours (~100-180 lines; generalization of two green proofs over `n`)
 

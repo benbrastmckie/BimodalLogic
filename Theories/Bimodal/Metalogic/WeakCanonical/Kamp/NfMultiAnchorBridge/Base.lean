@@ -1632,4 +1632,124 @@ witness only (NOT a definition of `endChar`, which is deferred to Phase 6). -/
 example {sig : MonadicSignature} {k : Nat} : Nonempty (EndCharCarrier sig k) :=
   ⟨fun _ => TemporalPred.top⟩
 
+/-! ## Phase 3 (task 349): arity-general depth-0 atom base `endCharN0` + `endCharN0_correct`
+
+The `k = 0` base of the arity-general navigated endpoint recursion (report 01 §5.5 target 1,
+§3.2 base case). Generalizes `nf3_locus0` / `endChar0` / `endChar0_correct` (Base.lean:982/995/1056)
+from the fixed arity 3 to an arbitrary positive arity `n`. At `k = 0`,
+`NormalForm sig 0 n = AtomKind sig n → Bool` is a **finite pure atom layer** (no further recursion),
+so the base is closed sorry-free. `endCharN0` is exactly the `| 0, _, qnf => endCharN0 …` arm of the
+frozen `endCharRec` (Base.lean:1515); `endCharN0_correct` is the `k = 0` instance of the frozen
+`endCharRec_correct` (Base.lean:1529) that supplies `h_nav = NavResidual` to close the base.
+
+### Route audit (Postmortem forbidden-route guards, Phase 3)
+- **G1** (honest arity-`n` atom layer, no arity-1 collapse): `endCharN0_correct` targets the FULL
+  arity-`n` atom layer `nf_eval_nf M 0 n env qnf` (i.e. `∀ atom : AtomKind sig n, …`), never a flat
+  arity-1 term. `nfN_locus0` only *projects* the locally-readable position-0 predicate fragment; the
+  remaining `n-1` positions are discharged by the residual, not collapsed.
+- **G4** (free anchors ≤2; the `n-1` non-witness positions are residual, not fresh free anchors):
+  `env 0` is the navigated bracket witness; the anchor/order layer at positions `1 … n-1` is pinned
+  by `h_nav : NavResidual M qnf env` (report 01 §3.3), exactly as `endChar0_correct`'s `h_res` pins
+  `a = x`, `b = t`. No third free anchor is introduced.
+- **G5** (manual bridges): every step is an explicit `rw` / `simp only` bridge (`nfN_locus0`,
+  `NormalForm.atom_assgn`, `atom_eval`, `nf_depth0_char_formula_correct`); no `nf_char3_deeper_split`
+  (FORBIDDEN) is referenced, and `EndCharCarrier` is not widened. -/
+
+/-- **Arity-general position-0 (navigated-witness `env 0`) locus projection** of an arity-`n`
+depth-0 NF. Generalizes `nf3_locus0` (Base.lean:982) from arity 3 to any positive arity `n`: fix the
+witness index `0` and read off the predicate assignment there. Order atoms are vacuous at arity 1
+(`Fin 1` is a subsingleton). The two-plus anchor loci (indices `1 … n-1`) and the order layer are
+supplied by the navigational residual in the full correctness (`endCharN0_correct`), not read here.
+`[NeZero n]` makes the witness reference `(0 : Fin n)` well-typed (arity is always `≥ 3`). -/
+def nfN_locus0 {sig : MonadicSignature} {n : Nat} [NeZero n]
+    (nf : NormalForm sig 0 n) : NormalForm sig 0 1 :=
+  fun a => match a with
+    | .pred p _ => nf (.pred p (0 : Fin n))
+    | .order j j' h => absurd (Subsingleton.elim j j') h
+
+/-- **Arity-general depth-0 navigated endpoint base** (task 349 Phase 3). The `TemporalPred` carrying
+the `env 0`-position predicate atoms of the depth-0 arity-`n` NF `qnf`, checked at the navigated
+witness. This is the `k = 0` base of the arity-general recursive primitive `endCharRec` (report 01
+§3.2): the part of the arity-`n` atom layer `nf_eval_nf M 0 n env qnf` that a navigated `TemporalPred`
+reads locally. The anchor-position predicates (positions `1 … n-1`) and the order layer are coupled by
+the navigational residual `NavResidual` in the full assembly (`endCharN0_correct`); `env 0` is a
+bracket witness, never a free anchor (G4). Generalizes `endChar0` (Base.lean:995) over `n`, reusing
+the depth-0 atom-literal conjunction `nf_depth0_char_formula` through the position-0 projection
+`nfN_locus0`. The `n = 0` arm is a total-function placeholder never consumed by the recursion (arity
+is always `≥ 3`); it carries no `[NeZero n]` obligation, matching the frozen `EndCharMotive`
+(Base.lean:1579) / `endCharRec` (Base.lean:1511) shape which is `{n : Nat}`-general without `NeZero`. -/
+noncomputable def endCharN0 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    {n : Nat} → NormalForm sig 0 n → TemporalPred
+  | 0,     _   => TemporalPred.top
+  | _ + 1, qnf => ⟨nf_depth0_char_formula atomMap h_surj (nfN_locus0 qnf)⟩
+
+/-- **`env 0`-locus correctness of `endCharN0`** (task 349 Phase 3, sorry-free leaf). Generalizes
+`endChar0_wlocus_correct` (Base.lean:1015) over `n`: the navigated base's `.eval_at w` characterizes
+exactly the position-0 predicate layer of `qnf`, `∀ p, M.interp p w ↔ qnf (.pred p 0) = true`. Direct
+from `nf_depth0_char_formula_correct` through the position-0 projection `nfN_locus0`. This is the
+locally-readable fragment of the full arity-`n` atom layer; the anchor coupling is added by the
+residual (see `endCharN0_correct`). -/
+theorem endCharN0_wlocus_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n) (w : M.carrier) :
+    (endCharN0 atomMap h_surj qnf).eval_at M atomMap w ↔
+      (∀ p : sig.preds, M.interp p w ↔ qnf (.pred p (0 : Fin n)) = true) := by
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (NeZero.ne n)
+  simp only [endCharN0, TemporalPred.eval_at]
+  rw [nf_depth0_char_formula_correct]
+  constructor
+  · intro h p
+    have := h p
+    simpa only [nfN_locus0] using this
+  · intro h p
+    have := h p
+    simpa only [nfN_locus0] using this
+
+/-- **Base-case discharge of the arity-general navigated endpoint characteristic under the
+navigational residual** (task 349 Phase 3; the `k = 0` instance of the frozen `endCharRec_correct`,
+Base.lean:1529). Generalizes `endChar0_correct` (Base.lean:1056) from the fixed arity 3 to an
+arbitrary positive arity `n`. Under `h_nav : NavResidual M qnf env` — which pins the anchor/order
+layer at the `n-1` non-witness positions, exactly as `endChar0_correct`'s `h_res` pins `a = x`,
+`b = t` (report 01 §3.3, §5.4 row 4) — `endCharN0`'s locally-readable `env 0`-position predicate
+layer (`endCharN0_wlocus_correct`) discharges the FULL depth-0 arity-`n` atom layer
+`nf_eval_nf M 0 n env qnf`, sorry-free. The RHS is the full `nf_eval_nf` characterization, never
+weakened to `True`/`top` (NON-vacuous). `env 0` stays a bracket witness (G4). The excluded atoms are
+exactly the `env 0`-locus predicate atoms `.pred p 0` that `endCharN0` reads locally; everything else
+is coupled by `h_nav`, whose atom layer is accessed via `NormalForm.atom_assgn` (`= qnf` at `k = 0`,
+matching `navResidual_base_eq_hRes`, Base.lean:1620). -/
+theorem endCharN0_correct {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    {n : Nat} [NeZero n] (qnf : NormalForm sig 0 n)
+    (env : Fin n → M.carrier) (h_nav : NavResidual M qnf env) :
+    (endCharN0 atomMap h_surj qnf).eval_at M atomMap (env 0) ↔
+      nf_eval_nf M 0 n env qnf := by
+  rw [endCharN0_wlocus_correct]
+  simp only [nf_eval_nf]
+  constructor
+  · -- env 0-locus layer + residual ⇒ full atom layer
+    intro hpred atom
+    cases atom with
+    | pred p i =>
+      by_cases hi : i = 0
+      · subst hi
+        simp only [atom_eval]
+        exact hpred p
+      · have hres := h_nav (.pred p i)
+          (fun p' heq => by injection heq with _ hi0; exact hi hi0)
+        simpa only [NormalForm.atom_assgn] using hres
+    | order i j hij =>
+      have hres := h_nav (.order i j hij) (fun _ heq => by simp at heq)
+      simpa only [NormalForm.atom_assgn] using hres
+  · -- full atom layer ⇒ env 0-locus layer
+    intro hall p
+    have hp := hall (.pred p 0)
+    simp only [atom_eval] at hp
+    exact hp
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
