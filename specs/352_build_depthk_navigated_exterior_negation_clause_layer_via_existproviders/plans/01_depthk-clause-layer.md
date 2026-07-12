@@ -461,7 +461,10 @@ strictly sequential.
   (NEW; imports ExteriorFiberK; frozen ExteriorNegation.lean is a read-only template, NOT
   imported unless Phase 5 recovery requires it there — default is recovery in Phase 5's file).
 
-### Phase 4: Past-side clause layer (`ExteriorNegationPastK.lean`) [BLOCKED]
+### Phase 4: Past-side clause layer (`ExteriorNegationPastK.lean`) [IN PROGRESS]
+
+*(re-dispatch 2026-07-12: unblocked by the shared reindex bridge `kvE_fiberPosOnShift`/
+`kvE_anchorBridge` now landed in `ExteriorFiberK.lean`; content routed through the shift.)*
 
 - **Goal:** Structural Past mirror of Phase 3 (Since for Until), template =
   ExteriorNegationPast.lean:223-1109.
