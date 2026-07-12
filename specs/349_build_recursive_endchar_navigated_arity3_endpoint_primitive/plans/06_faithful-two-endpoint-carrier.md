@@ -325,7 +325,63 @@ at first genuine code reference; leave `EAVecNegationClosure`/`VecEA_m` (arity-m
 - **Depends on:** 1.
 - **Files to modify:** `.../CarrierK1V.lean` (additive).
 
-### Phase 3: `endIntervalStep` def — the two-endpoint step construction (`k → k+1`) [NOT STARTED]
+### Phase 3: `endIntervalStep` def — the two-endpoint step construction (`k → k+1`) [BLOCKED]
+
+**BLOCKER** (Phase 3, session sess_1783841542_df767b, 2026-07-12): The frozen `endIntervalStep`
+signature cannot host a faithful general-`k` body under the current constraints. The obstruction is
+type-level + scope-level, and is machine-substantiated (not a proof the agent got stuck on).
+
+- **What failed**: No faithful, non-vacuous, `rec`-threading body for
+  `endIntervalStep (atomMap) (h_surj) (rec : BracketEndCharCarrierV sig k) : BracketEndCharCarrierV
+  sig (k+1)` (CarrierK1V.lean:2144) can be written that (a) assembles via `bracketFromLists` as the
+  plan specifies, (b) avoids the F1-refuted closed-formula collapse, and (c) uses only the frozen
+  inputs `(atomMap, h_surj, rec)`.
+- **What was tried / verified (against the actual types, no edit needed to see the mismatch)**:
+  1. `bracketFromLists` (:389) builds a `BracketFormula` whose `pointTypes : Fin n → TemporalPred`
+     (VecEAFormula:392) and `segmentTypes` are **`TemporalPred` = closed `Formula`** only. An
+     interior depth-`k` point/witness type can therefore occupy a slot ONLY via a closed-formula
+     provider `charK : NormalForm sig k 1 → Formula`.
+  2. The existing general-`k` construction `bracketEndChar_kv` (CarrierKv.lean:238) IS exactly the
+     `k1v→k` generalization the plan describes — via the shared body `kv_body` (CarrierKv.lean:152).
+     It needs `charK` and therefore takes a **`charF : (j : Nat) → NormalForm sig j 1 → Formula`
+     parameter** (CarrierKv.lean:241; same pattern in PriorInterface.lean:83). The frozen
+     `endIntervalStep` signature has **no `charF` parameter** — it threads `rec` instead.
+  3. `rec : NormalForm sig k 3 → VVecEA2` cannot supply `charK`: wrong arity (3 vs 1) and wrong
+     codomain (`VVecEA2`, a two-endpoint disjunction, vs `Formula`). There is no `VVecEA2 → Formula`
+     / `VVecEA2 → TemporalPred` bridge (a two-endpoint object cannot become a single-point interior
+     predicate without the arity-1 collapse that G1 forbids inside the recursion).
+  4. The only in-tree depth-`k` closed-formula provider, `nf_characterizable_temporal_prior`
+     (KampPrior.lean:407, the real `char_k1`), is **out of scope for CarrierK1V**: the import chain
+     `KampPrior → NfMultiAnchorBridge → CarrierK1V` (and `PriorInterface → CarrierKv → CarrierK1V`)
+     makes referencing it a cycle — which is precisely why `bracketEndChar_kv`/`PriorInterface`
+     parameterize by `charF` rather than referencing it.
+  5. Even if `charK` were in scope, the closed-formula fiber-projected route is the v5 design whose
+     **k≥2 soundness is machine-refuted by `bracketEndChar_kv_factors` (finding F1, CarrierKv.lean:422)**
+     — reinstating it would doom Phases 4/5 and contradicts this plan's own Non-Goals. The whole
+     point of v6 is to thread the two-endpoint IH `endInterval k` to avoid the F1 information loss.
+- **Why stuck (root cause)**: The frozen Phase-2 signature choice (thread `rec : →VVecEA2`) is
+  incompatible with the plan's specified `bracketFromLists` assembly (which needs `charF : →Formula`).
+  The two Phase-3 requirements — "assemble via `bracketFromLists`" and "characterize via the IH
+  carrier `endInterval k` (VVecEA2), NOT a closed formula" — are type-incompatible. A faithful,
+  F1-avoiding, `rec`-threading construction would require NEW machinery not present in-tree: either
+  (i) VVecEA2-valued bracket point slots (a witness-region-insertion combinator composing a sub-piece
+  `rec (reduceA sub)` into the `(x,t)` bracket geometry), or (ii) a self-contained depth-`k` arity-1
+  characteristic-formula provider defined below CarrierK1V (breaking no cycle) — neither of which is a
+  bounded Phase-3 def.
+- **What is needed (to unblock — `/spawn 349`)**: A design decision resolving the tension, e.g.
+  ONE of: (A) re-freeze `endInterval`/`endIntervalStep`/`EndIntervalCorrect` to carry a
+  `charF : (j:Nat)→NormalForm sig j 1→Formula` parameter and define `endIntervalStep` = the
+  `kv_body`-analog, then confront F1 head-on in Phases 4/5 (this is essentially adopting
+  `bracketEndChar_kv`, which the plan retired — likely a non-starter given F1); or (B) build the new
+  VVecEA2-composition / witness-insertion machinery (a bounded prerequisite phase) that lets the IH
+  `rec` be threaded without the closed-formula collapse, then define `endIntervalStep` on top of it;
+  or (C) relocate a self-contained depth-`k` arity-1 char provider below CarrierK1V and re-freeze
+  the signature to consume it. Each option touches the FROZEN Phase-2 decls or adds a new phase, so
+  it is a plan-revision / spawn decision, not an in-Phase-3 edit.
+- **Prohibited (honored)**: no `sorry`, no `def X := True`/vacuous stub, no reinstatement of the
+  F1-refuted closed-formula/single-point line. The Phase-2 honest empty-disjunction placeholder
+  (`fun _ => ⟨[]⟩`) is left in place unchanged; the scoped build stays GREEN (1006 jobs). This is a
+  PLACEHOLDER, not the real body — Phase 3 is NOT implemented.
 
 - **Goal:** Define `endIntervalStep : BracketEndCharCarrierV sig k → BracketEndCharCarrierV sig (k+1)`
   by generalizing the green `bracketEndChar_k1v` (CarrierK1V:433) from the concrete `k=1` to arbitrary
@@ -348,9 +404,14 @@ at first genuine code reference; leave `EAVecNegationClosure`/`VecEA_m` (arity-m
 - **Tasks:**
   - [ ] Define `endIntervalStep` generalizing `bracketEndChar_k1v` with `endInterval k` in place of the
         depth-0 `char`/fold; anchors FIXED at `{x,t}`, witnesses in disjunct slots (G2/G4).
+        *(deviation: BLOCKED — the frozen signature threads `rec : →VVecEA2` but `bracketFromLists`
+        needs a closed-formula `charF : →Formula` provider that neither `rec` nor CarrierK1V's import
+        scope can supply, and the closed-formula route is F1-refuted; see BLOCKER above. Needs `/spawn 349`.)*
   - [ ] Confirm arity never climbs past 3 among emitted `nf_eval_nf` facts (Step A caps it).
+        *(deviation: deferred — depends on the blocked def.)*
   - [ ] Route audit: no closed-`Formula` single-point read at `w`; no arity-4 collapse; no per-pair
         `∀ij∃w`; `segL`/`segR` non-trivial (G3); grep clean.
+        *(deviation: deferred — depends on the blocked def.)*
 - **Estimated output:** ~150-300 lines (def only; `bracketEndChar_k1v` is ~80 lines at k=1).
 - **Done when:** `endIntervalStep` def elaborates green + sorry-free; `endInterval (k+1)` typechecks
   against it; scoped build GREEN; `lean_verify` on the def = `[propext, Classical.choice, Quot.sound]`.
