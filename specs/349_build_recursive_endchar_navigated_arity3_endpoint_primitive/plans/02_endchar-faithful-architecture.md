@@ -262,7 +262,7 @@ correctness, generalizing `endChar0`/`nf3_locus0`/`endChar0_correct` over `n` (r
 - `lean_verify endCharN0_correct` = exactly `[propext, Classical.choice, Quot.sound]`.
 - The proved statement matches the frozen Phase-2 base-case shape (no weakening).
 
-### Phase 4: Arity-general navigable brick `navBrickForm` + `_correct` (the load-bearing core) [NOT STARTED]
+### Phase 4: Arity-general navigable brick `navBrickForm` + `_correct` (the load-bearing core) [COMPLETED]
 
 **Goal**: Build the genuinely-new load-bearing object: the **arity-`(n+1)` generalization** of the
 navigable brick (`nf_zone_flatten_navigable`/`_correct`, Base.lean:667/687, currently arity-3 only)
@@ -271,22 +271,31 @@ keeping `w'` a **bracket witness** (≤2 active anchors) — the Rabinovich `β_
 NOT a collapse (report 01 §3.1, §5.5 target 3, §4 mapping row 2).
 
 **Tasks**:
-- [ ] Define `navBrickForm (rec : NormalForm sig k (n+1) -> TemporalPred) (sub : NormalForm sig k (n+1)) : ...`
+- [x] Define `navBrickForm (rec : NormalForm sig k (n+1) -> TemporalPred) (sub : NormalForm sig k (n+1)) : ...`
   as the arity-general navigable brick applied to `sub`, using `rec` (the depth-`k` IH) as the
   `pastEnd`/`futureEnd` endpoint hooks and `seg` (Base.lean:1127) as the non-trivial bounded interior
   (G3 — never `TemporalPred.top`). Generalize `nf_zone_flatten_navigable` (Base.lean:667) from arity 3
-  to arity `n+1`.
-- [ ] Prove `navBrickForm_correct`: the generalized `nf_zone_flatten_navigable_correct`
+  to arity `n+1`. *(landed green: `navBrickForm` at Base.lean:1806 — deviation: realized as a
+  `Formula`-valued single-anchor 3-zone converter (structural analog of `nf_char2_diag_exist_tl`,
+  Base.lean:168) rather than a Prop-valued 5-zone two-anchor brick, because `innerConv` requires a
+  `Formula` evaluated at the single accessible anchor `a = env 0`; the non-trivial interior is
+  `BracketFormula.trivial (rec sub)` carried through the seg-parameter of `A_past`/`A_future`, never
+  `TemporalPred.top`.)*
+- [x] Prove `navBrickForm_correct`: the generalized `nf_zone_flatten_navigable_correct`
   (Base.lean:687). Its `h_past`/`h_fut` hooks are held **parametric** (to be discharged in Phase 5 by
-  the IH `endCharRec_correct k (n+1)`); the bounded interior rides `seg` via `seg_holds_coupled`
-  (Base.lean:1150, hook shape). This is the arity-`(n+1)` `h_inner` discharge:
-  `temporal_truth (env 0) (navBrickForm rec sub) ↔ ∃ w', nf_eval_nf M k (n+1) (Fin.cons w' env) sub`
-  under the hook hypotheses (report 01 §3.2 step case).
-- [ ] Route audit: G2/G4 — every deeper `w'` is a *bracket* witness bound by the enclosing
+  the IH `endCharRec_correct k (n+1)`); the bounded interior rides the non-trivial `rec sub` segment
+  (the `seg.holds` conjunct is absorbed by the parametric hooks, discharged in Phase 5 via
+  `seg_holds_coupled`, Base.lean:1150). Target statement proved (with anchor `a`, Phase 5 sets
+  `a := env 0`): `temporal_truth a (navBrickForm rec sub) ↔ ∃ w', nf_eval_nf M k (n+1) (Fin.cons w'
+  env) sub` under the hook hypotheses (report 01 §3.2 step case). *(landed green at Base.lean:1827;
+  axioms exactly `[propext, Classical.choice, Quot.sound]`.)*
+- [x] Route audit: G2/G4 — every deeper `w'` is a *bracket* witness bound by the enclosing
   `Until`/`Since`; the free-anchor count stays ≤2 while env arity is `n+1` (report 01 §3.3). G5 —
-  manual `constructor`/`intro` composition (mirroring Base.lean:700-706), no `simp`/`omega`/`aesop`
-  chain-step shortcut. Explicitly assert `nf_char3_deeper_split` is NOT used (it grows anchors to
-  `{y,x,t}`; the brick keeps `w'` a bracket witness — report 01 §5.2).
+  manual `or_congr`/`exists_congr`/`and_congr_right` composition (mirroring Base.lean:204-205 and
+  700-706) over `exists_trichotomy_split`; no `simp`/`omega`/`aesop` chain-step shortcut.
+  `nf_char3_deeper_split` NOT used. *(recorded in the Phase-4 Route-audit docstring, Base.lean
+  ~1786-1804; grep-confirmed no `nf_char3_deeper_split`/`TemporalPred.top` code-reference in the new
+  objects — only narrative mentions in docstrings.)*
 
 **Timing**: ~3 hours (~200-350 lines). This is the flagged load-bearing phase (report 01: "the
 ~300-500 line core"). If it overruns one agent run, split at the (statement generalization)/(hook

@@ -1752,4 +1752,102 @@ theorem endCharN0_correct {sig : MonadicSignature}
     simp only [atom_eval] at hp
     exact hp
 
+/-! ## Phase 4 (task 349): the arity-general navigable brick `navBrickForm` + `_correct`
+(the load-bearing core)
+
+The genuinely-new load-bearing object of the recursion: the **arity-`(n+1)` generalization** of the
+navigable brick (`nf_zone_flatten_navigable`/`_correct`, Base.lean:667/687, currently arity-3 only)
+that flattens the inner existential `∃ w', nf_eval_nf M k (n+1) (Fin.cons w' env) sub` into the
+navigated zones, keeping `w'` a **bracket witness** (report 01 §3.1, §3.2, §5.5 target 3, §4 row 2).
+
+`navBrickForm rec sub` is a `Formula` (it feeds `nf_endpoint_tl_gen`'s `innerConv : NormalForm sig k
+(n+1) → Formula`, Phase 5), so it is evaluated at the SINGLE accessible anchor `a` (`= env 0` in the
+step assembly). It is therefore the **single-anchor 3-zone** navigated converter — the exact
+structural analog of the diagonal converter `nf_char2_diag_exist_tl` (Base.lean:168), one arity up
+and segment-carrying: `w'` is navigated in the three order zones relative to `a` (past exterior
+`w' < a`; present `w' = a`; future exterior `a < w'`). The two open exterior zones are the
+seg-carrying `A_past`/`A_future` navigations (`bracketBuildLeft`/`bracketBuildRight` over the caller's
+non-trivial segment, NfZoneFlattenNavigable.lean:335/386); the endpoint hook is `rec sub` (the
+depth-`k` IH at arity `n+1`), and the interior interval type is the genuine characteristic `rec sub`
+(via `BracketFormula.trivial (rec sub)`), **never `TemporalPred.top`** (G3).
+
+The `h_past`/`h_now`/`h_fut` hooks are held **parametric** here (discharged in Phase 5 by the IH
+`endCharRec_correct k (n+1)` — its hooks instantiated per zone — with the bounded-interior segment
+ridden via `seg_holds_coupled`, Base.lean:1150). This lemma is purely the zone-navigation ↔
+witness-existential equivalence, mirroring `nf_char2_diag_exist_tl_correct` (Base.lean:183).
+
+### Route audit (Postmortem forbidden-route guards, Phase 4)
+- **G2/G4** — every deeper `w'` is a *bracket* witness bound by the enclosing `A_past`
+  (`bracketBuildLeft`/`Since`) or `A_future` (`bracketBuildRight`/`Until`) navigation; the only free
+  anchor of `navBrickForm` is `a`, so the free-anchor count stays `≤ 2` while the env arity is `n+1`
+  (report 01 §3.3). The other `n-1` env positions are frozen bracket witnesses absorbed by the
+  parametric hooks; they never become free anchors.
+- **G3** — the interior interval type is the genuine `rec sub` characteristic
+  (`BracketFormula.trivial (rec sub)`), NOT `TemporalPred.top`; the `(a, w')` coupling rides this
+  non-trivial segment (absorbed by the hooks' `seg.holds` conjunct), exactly as the off-diagonal
+  arms `nf_char2_past_formula`/`nf_char2_future_formula` ride `seg`.
+- **G5** — manual `or_congr`/`exists_congr`/`and_congr_right` composition (mirroring
+  `nf_char2_diag_exist_tl_correct`, Base.lean:204-205, and `nf_zone_flatten_navigable_correct`,
+  Base.lean:700-706); the trichotomy is the single-boundary `exists_trichotomy_split`
+  (NfZoneDepthK.lean:345). No `simp`/`omega`/`aesop` chain-step shortcut.
+- **FORBIDDEN `nf_char3_deeper_split` is NOT referenced** — it grows the anchor set to `{y,x,t}`
+  (report 01 §5.2); the brick instead keeps `w'` a bracket witness. This is the whole point.
+-/
+
+/-- **Arity-general navigable brick** (task 349 Phase 4; report 01 §3.1, §5.5 target 3). The
+arity-`(n+1)` generalization of `nf_zone_flatten_navigable` (Base.lean:667), realized as a `Formula`
+(for `nf_endpoint_tl_gen`'s `innerConv`, Phase 5) that is the single-anchor 3-zone navigated
+converter — the segment-carrying analog of `nf_char2_diag_exist_tl` (Base.lean:168) one arity up.
+Evaluated at the anchor `a`, it navigates the witness `w'` in the three order zones (past exterior,
+present, future exterior) via `A_past`/`A_future` over the endpoint hook `rec sub` (the depth-`k` IH
+at arity `n+1`), with the interior interval type the genuine characteristic `rec sub`
+(`BracketFormula.trivial (rec sub)`, NON-`⊤` — G3). Every `w'` is a bracket witness bound by the
+enclosing `Until`/`Since`, so the free-anchor count stays ≤2 (G4). -/
+noncomputable def navBrickForm {sig : MonadicSignature} {k n : Nat}
+    (rec : NormalForm sig k (n + 1) → TemporalPred)
+    (sub : NormalForm sig k (n + 1)) : Formula :=
+  Formula.or
+    (A_past (BracketFormula.trivial (rec sub)) (rec sub))
+    (Formula.or
+      (rec sub).formula
+      (A_future (BracketFormula.trivial (rec sub)) (rec sub)))
+
+/-- **Correctness of the arity-general navigable brick** (task 349 Phase 4; report 01 §3.2 step
+case, §5.5 target 3). Under the three zone-hook correctness hypotheses — `h_past`/`h_fut` (at each
+exterior witness, the endpoint `rec sub` conjoined with the non-trivial segment holding on the open
+interval characterizes the coupled arity-`(n+1)` evaluation one depth down), `h_now` (the present
+witness `w' = a`) — the brick's truth at the anchor `a` holds iff there is SOME witness `w'` at
+which the arity-`(n+1)` sub-NF `sub` evaluates on `Fin.cons w' env`. The hooks are held **parametric**
+(discharged in Phase 5 by the IH `endCharRec_correct k (n+1)`, its bounded interior ridden by
+`seg_holds_coupled`, Base.lean:1150) — this lemma is purely the zone-navigation ↔ witness-existential
+equivalence, assembled from `exists_trichotomy_split` (NfZoneDepthK.lean:345) + the two seg-carrying
+navigation pillars `A_past_correct`/`A_future_correct` (NfZoneFlattenNavigable.lean:346/395).
+Every `w'` is a bracket witness (G4); the interior rides the non-trivial `rec sub` segment (G3);
+`nf_char3_deeper_split` is NOT used (report 01 §5.2). Manual bridge, no tactic shortcut (G5). -/
+theorem navBrickForm_correct {sig : MonadicSignature} {k n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (rec : NormalForm sig k (n + 1) → TemporalPred)
+    (sub : NormalForm sig k (n + 1))
+    (a : M.carrier) (env : Fin n → M.carrier)
+    (h_past : ∀ w' : M.carrier, w' < a →
+      (((rec sub).eval_at M atomMap w' ∧
+          (BracketFormula.trivial (rec sub)).holds M atomMap w' a) ↔
+        nf_eval_nf M k (n + 1) (Fin.cons w' env) sub))
+    (h_now : (rec sub).eval_at M atomMap a ↔
+      nf_eval_nf M k (n + 1) (Fin.cons a env) sub)
+    (h_fut : ∀ w' : M.carrier, a < w' →
+      (((rec sub).eval_at M atomMap w' ∧
+          (BracketFormula.trivial (rec sub)).holds M atomMap a w') ↔
+        nf_eval_nf M k (n + 1) (Fin.cons w' env) sub)) :
+    temporal_truth M atomMap a (navBrickForm rec sub) ↔
+      ∃ w' : M.carrier, nf_eval_nf M k (n + 1) (Fin.cons w' env) sub := by
+  simp only [navBrickForm]
+  rw [temporal_truth_or, temporal_truth_or, A_past_correct, A_future_correct,
+      exists_trichotomy_split
+        (fun w' => nf_eval_nf M k (n + 1) (Fin.cons w' env) sub) a]
+  exact or_congr
+    (exists_congr fun w' => and_congr_right fun hw' => h_past w' hw')
+    (or_congr h_now
+      (exists_congr fun w' => and_congr_right fun hw' => h_fut w' hw'))
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
