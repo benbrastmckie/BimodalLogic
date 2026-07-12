@@ -468,4 +468,178 @@ noncomputable def kvE_extNegPast {sig : MonadicSignature}
     (P : ExistProviders sig atomMap k) (σ : NormalForm sig (k + 1) 4) : Formula :=
   (kvE_pastPos P σ).neg
 
+/-! ## Soundness of the depth-`k` Past clause family
+
+`kvE_extNegPast_sound`: if the complement clause of σ holds at the left anchor `x`, then no
+exterior `x1 < x` realizes σ over `[x1, w, x, t]`. Depth-`k` port of `kvE2_extNegPast_sound`
+(`ExteriorNegationPast.lean:581`): the fold decomposition `nf_eval_nfk_iff_efold` replaces the
+depth-1 `nf_eval_depth1_fold_iff`; the content channel `kvE_fiberPosOnShift` (rendered through
+the Rabinovich re-anchoring bridge `kvE_anchorBridge`) replaces the marginal
+`nf_depth0_char_formula`; visited points carry their canonical full-arity type
+(`nf_characteristic`) which the fold forces onto σ's positive fiber. Requires Prior (UZ/SZ)
+structure for the `P.existF` content channel. -/
+
+/-- A point strictly below `x` (with `x < w < t`) couples to `[x1, w, x, t]` as `zPastX3` below
+    `w, x, t` and to `x1` by the given head pair (reachable local copy of the frozen private
+    `kvE2_pastZone4_of_below`, `ExteriorNegationPast.lean:94`). -/
+private theorem kvE_pastZoneBelow {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t) (hvx : v < x)
+    (p0 : Bool × Bool)
+    (h0a : v < x1 ↔ p0.1 = true) (h0b : x1 < v ↔ p0.2 = true) :
+    zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
+      (Fin.cons p0 kvE2_sep_zPastX3) v := by
+  intro i
+  match i with
+  | ⟨0, _⟩ => exact ⟨h0a, h0b⟩
+  | ⟨1, _⟩ =>
+    exact ⟨iff_of_true (hvx.trans hxw) rfl,
+           iff_of_false (lt_asymm (hvx.trans hxw)) Bool.false_ne_true⟩
+  | ⟨2, _⟩ =>
+    exact ⟨iff_of_true hvx rfl, iff_of_false (lt_asymm hvx) Bool.false_ne_true⟩
+  | ⟨3, _⟩ =>
+    exact ⟨iff_of_true (hvx.trans (hxw.trans hwt)) rfl,
+           iff_of_false (lt_asymm (hvx.trans (hxw.trans hwt))) Bool.false_ne_true⟩
+
+/-- **Carry lemma** (the depth-`k` full-fiber workhorse): under a realized σ (fold-decomposed
+    into `hAtom`/`hfib`), any point `v` sitting in a zone `zs4` over σ's anchor environment
+    carries a positive fiber element of σ in that zone — namely its canonical full-arity type
+    `nf_characteristic M k 5 (Fin.cons v env)`, whose atom env-restriction the fold pins to σ.1
+    (`nf_eval_nf0_cons_factor` + `nf_eval_unique`), whose bit `hfib` forces true (v witnesses),
+    and whose zone `zoneHolds_unique` pins to `zs4`. This is the content-channel witness both the
+    gap guard and the endpoint description consume. -/
+private theorem kvE_pastCarry {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
+    (env : Fin 4 → M.carrier)
+    (hAtom : nf_eval_nf M 0 4 env σ.1)
+    (hfib : ∀ sub : NormalForm sig k 5, nfk_dropFresh sub = σ.1 →
+      ((∃ y : M.carrier, nf_eval_nf M k 5 (Fin.cons y env) sub) ↔ σ.2 sub = true))
+    (v : M.carrier) (zs4 : ZoneSpec 4) (hz : zoneHolds M env zs4 v) :
+    ∃ s : NormalForm sig k 5, s ∈ kvE_fiberZoneList σ zs4 ∧
+      nf_eval_nf M k 5 (Fin.cons v env) s := by
+  refine ⟨nf_characteristic M k 5 (Fin.cons v env), ?_,
+    nf_characteristic_satisfies M k 5 (Fin.cons v env)⟩
+  have hs : nf_eval_nf M k 5 (Fin.cons v env) (nf_characteristic M k 5 (Fin.cons v env)) :=
+    nf_characteristic_satisfies M k 5 (Fin.cons v env)
+  set s := nf_characteristic M k 5 (Fin.cons v env) with hs_def
+  have hatom_s := nf_eval_nf_atom_layer M (Fin.cons v env) s hs
+  have hfac := (nf_eval_nf0_cons_factor M env v s.atom_assgn).mp hatom_s
+  have hdrop : nfk_dropFresh s = σ.1 :=
+    nf_eval_unique M 0 4 env (nfk_dropFresh s) σ.1 hfac.2.2 hAtom
+  have hbit : σ.2 s = true := (hfib s hdrop).mp ⟨v, hs⟩
+  have hzone : nfk_zoneSpec s = zs4 :=
+    zoneHolds_unique M env v (nfk_zoneSpec s) zs4 hfac.1 hz
+  rw [kvE_fiberZoneList_mem]
+  exact ⟨hbit, hzone⟩
+
+/-- **Family soundness** (depth-`k` Past, Cor 5.4(1) exterior analog, ⇒): if the complement
+    clause of σ holds at the left anchor `x`, no exterior `x1 < x` realizes σ. Uses the order
+    bits `hxw`/`hwt` and the Prior (UZ/SZ) structure (for the `P.existF` content channel); a
+    realized exterior σ is forced `zPastX3`-marked and order-admissible. -/
+theorem kvE_extNegPast_sound {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (σ : NormalForm sig (k + 1) 4)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hcl : temporal_truth M atomMap x (kvE_extNegPast P σ)) :
+    ∀ x1 : M.carrier, x1 < x →
+      ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  intro x1 hx1x hnf
+  set env : Fin 4 → M.carrier := Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))
+    with henv_def
+  obtain ⟨⟨hAtom, hfib⟩, hoff⟩ := (nf_eval_nfk_iff_efold M env σ).mp hnf
+  have hadm : kvE_pastAdmissible σ = true :=
+    kvE_pastRealizer_admissible M σ x1 w x t hxw hwt hx1x hnf
+  -- the gap (x1, x) uniformly carries the gap guard D
+  have hD : ∀ r : M.carrier, x1 < r → r < x →
+      temporal_truth M atomMap r (kvE_pastGapD P σ) := by
+    intro r hx1r hrx
+    have hz : zoneHolds M env kvE_pastGapZone r :=
+      kvE_pastZoneBelow M r x1 w x t hxw hwt hrx (false, true)
+        (iff_of_false (lt_asymm hx1r) (by decide)) (iff_of_true hx1r rfl)
+    obtain ⟨s, hsmem, hs⟩ := kvE_pastCarry M σ env hAtom hfib r kvE_pastGapZone hz
+    rw [kvE_pastGapD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ r]
+    exact ⟨s, hsmem, env, hs⟩
+  -- endpoint description at x1
+  have hend : temporal_truth M atomMap x1 (kvE_pastEnd P σ) := by
+    rw [kvE_pastEnd, formula_conjList_iff]
+    intro f hf
+    simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
+    rcases hf with rfl | rfl
+    · -- self-zone content at x1
+      have hz : zoneHolds M env kvE_pastSelfZone x1 :=
+        kvE_pastZoneBelow M x1 x1 w x t hxw hwt hx1x (false, false)
+          (iff_of_false (lt_irrefl x1) (by decide)) (iff_of_false (lt_irrefl x1) (by decide))
+      obtain ⟨s, hsmem, hs⟩ := kvE_pastCarry M σ env hAtom hfib x1 kvE_pastSelfZone hz
+      rw [kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ x1]
+      exact ⟨s, hsmem, env, hs⟩
+    · -- exact ray content
+      rw [kvE_pastRayForm, formula_conjList_iff]
+      intro g hg
+      rcases List.mem_cons.mp hg with rfl | hg'
+      · -- every past point carries a ray element
+        intro hP
+        obtain ⟨u, hux1, hnotD, -⟩ := hP
+        apply hnotD
+        have hz : zoneHolds M env kvE_pastRayZone u :=
+          kvE_pastZoneBelow M u x1 w x t hxw hwt (hux1.trans hx1x) (true, false)
+            (iff_of_true hux1 rfl) (iff_of_false (lt_asymm hux1) (by decide))
+        obtain ⟨s, hsmem, hs⟩ := kvE_pastCarry M σ env hAtom hfib u kvE_pastRayZone hz
+        rw [kvE_pastRayD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ u]
+        exact ⟨s, hsmem, env, hs⟩
+      · -- each ray element occurs at some u < x1
+        obtain ⟨s, hsmem, rfl⟩ := List.mem_map.mp hg'
+        rw [kvE_fiberZoneList_mem] at hsmem
+        obtain ⟨hbit, hzone⟩ := hsmem
+        have hdrop : nfk_dropFresh s = σ.1 := by
+          by_contra hne
+          rw [hoff s hne] at hbit
+          exact Bool.noConfusion hbit
+        obtain ⟨v, hv⟩ := (hfib s hdrop).mpr hbit
+        have hzv : zoneHolds M env (nfk_zoneSpec s) v := kvE_zoneHolds_of_atom M env v s hv
+        rw [hzone] at hzv
+        have hvx1 : v < x1 := by
+          have h := (hzv ⟨0, by omega⟩).1.mpr rfl
+          rw [henv_def] at h; exact h
+        refine ⟨v, hvx1, ?_, fun r _ _ => id⟩
+        exact (P.correct 4 (renameNF rot5Fwd rot5Bwd s) M h_UZ h_SZ v).mpr
+          ⟨env, (kvE_anchorBridge M env v s).mpr hv⟩
+  -- each gap fiber element occurs in (x1, x) at its realized witness
+  have hocc : ∀ s ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+      r < x ∧ x1 < r ∧ nf_eval_nf M k 5 (Fin.cons r env) s := by
+    intro s hsmem
+    rw [kvE_fiberZoneList_mem] at hsmem
+    obtain ⟨hbit, hzone⟩ := hsmem
+    have hdrop : nfk_dropFresh s = σ.1 := by
+      by_contra hne
+      rw [hoff s hne] at hbit
+      exact Bool.noConfusion hbit
+    obtain ⟨v, hv⟩ := (hfib s hdrop).mpr hbit
+    have hzv : zoneHolds M env (nfk_zoneSpec s) v := kvE_zoneHolds_of_atom M env v s hv
+    rw [hzone] at hzv
+    have hx1v : x1 < v := by
+      have h := (hzv ⟨0, by omega⟩).2.mpr rfl
+      rw [henv_def] at h; exact h
+    have hvx : v < x := by
+      have h := (hzv ⟨2, by omega⟩).1.mpr rfl
+      rw [henv_def] at h; exact h
+    exact ⟨v, hvx, hx1v, hv⟩
+  have hnd : (kvE_fiberZoneList σ kvE_pastGapZone).Nodup := kvE_fiberZoneList_nodup σ _
+  obtain ⟨l, hlperm, hltruth⟩ :=
+    kvE_pastChainBuildG M atomMap
+      (fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s))
+      (kvE_pastEnd P σ) (kvE_pastGapD P σ) x x1
+      (fun s r => nf_eval_nf M k 5 (Fin.cons r env) s)
+      (fun s r hQ => (P.correct 4 (renameNF rot5Fwd rot5Bwd s) M h_UZ h_SZ r).mpr
+        ⟨env, (kvE_anchorBridge M env r s).mpr hQ⟩)
+      (fun s s' r hQ hQ' => nf_eval_unique M k 5 (Fin.cons r env) s s' hQ hQ')
+      hD hend
+      (kvE_fiberZoneList σ kvE_pastGapZone).length (kvE_fiberZoneList σ kvE_pastGapZone)
+      le_rfl hnd x hx1x (fun r hr => hr) hocc
+  refine hcl ?_
+  rw [kvE_pastPos, if_pos hadm, formula_disjList_iff]
+  exact ⟨_, List.mem_map.mpr ⟨l, List.mem_permutations.mpr hlperm, rfl⟩, hltruth⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
