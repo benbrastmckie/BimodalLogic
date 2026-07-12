@@ -324,26 +324,35 @@ strictly sequential.
   `.../NfMultiAnchorBridge/ExteriorFiberProbeK.lean` (NEW; imports ExteriorFiberK; probe-local
   reconstruction, no RefutationF2 edit).
 
-### Phase 2: Shared navigation and fiber-partition layer [NOT STARTED]
+### Phase 2: Shared navigation and fiber-partition layer [COMPLETED]
 
 - **Goal:** Land the side-shared navigation scaffolding both clause layers consume: fiber
   partition by zone/fresh-profile (marginal keys, navigation-only per G6) with honesty lemmas
   tying bucket membership to the landed determinacy core, plus the generic order/min-pick
   combinator. After this phase `ExteriorFiberK.lean` is FROZEN for waves 3-5.
 - **Tasks:**
-  - [ ] Fiber partition: bucket `kvE_fiber` elements by zone classification and fresh profile
+  - [x] Fiber partition: bucket `kvE_fiber` elements by zone classification and fresh profile
         (`nfk_projFresh`-keyed, navigation-only), producing per-bucket sub-lists consumed by
         `kvE_fiberPosOn`. Honesty lemma per bucket via `kvE_subBit_iff`
         (ExteriorBracketK.lean:314) — membership/navigation facts only, never content.
-  - [ ] Chain-assembly ordering helpers: the D-guard/order data the Until/Since chain
+        *(landed `kvE_fiberBucket` + `_mem` + `_nodup` + honesty `kvE_fiberBucket_nonempty_iff`
+        (bucket nonempty ↔ actual zone/profile fact, reduced to `kvE_subBit_iff` via
+        `kvE_fiber_dropFresh`); G6 clean — no content read)*
+  - [x] Chain-assembly ordering helpers: the D-guard/order data the Until/Since chain
         assembly needs, generalized from the frozen list-filter shape (`kvE2_futGapList`/
         `kvE2_futRayList` :890/:895 as template — element source swapped from marginal-profile
-        universe to fiber buckets).
-  - [ ] Replicate the `{α : Type}`-generic min-pick lemma (template: `kvE2_futMinPick`,
+        universe to fiber buckets). *(landed side-generic `kvE_fiberZoneList` + `_mem` +
+        `_nodup`; each side instantiates its own gap/ray/self zone specs in Phase 3/4)*
+  - [x] Replicate the `{α : Type}`-generic min-pick lemma (template: `kvE2_futMinPick`,
         ExteriorNegation.lean:1146-1149, private) as a shared decl (Lemma 5.3 case-2 discrete
-        specialization per the mapping table).
-  - [ ] Q4 check: confirm every `nf0_zoneSpec` read in the new code path is on `σ.1` (atom
-        layer) only; record the check in the progress file.
+        specialization per the mapping table). *(landed `kvE_minPick`, byte-identical replica,
+        non-private shared decl)*
+  - [x] Q4 check: confirm every `nf0_zoneSpec` read in the new code path is on `σ.1` (atom
+        layer) only; record the check in the progress file. *(CONFIRMED: every zone read in the
+        Phase-2 code is `nfk_zoneSpec s` on a fiber element `s : NormalForm sig k 5`, which is
+        defined as `nf0_zoneSpec s.atom_assgn` (NfEFold.lean:586-588) — atom-layer only. No
+        `nf0_zoneSpec` is applied to any quant layer; the only textual `nf0_zoneSpec`
+        occurrence is in the section docstring.)*
 - **Estimated output:** ~250-400 lines (additive tail of ExteriorFiberK.lean).
 - **Bounded-unit stop condition:** all listed decls green OR [BLOCKED] + `lean_goal` on the
   specific decl. One dispatch.

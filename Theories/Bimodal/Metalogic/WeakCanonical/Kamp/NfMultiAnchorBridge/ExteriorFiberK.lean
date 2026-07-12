@@ -129,4 +129,164 @@ theorem kvE_fiberPos_correct {sig : MonadicSignature}
   · rintro ⟨s, hbit, henv⟩
     exact ⟨s, (kvE_fiber_mem σ s).mpr hbit, henv⟩
 
+/-! ## Phase 2: shared navigation and fiber-partition layer
+
+Side-shared navigation scaffolding both clause layers (Future `ExteriorNegationK`, Past
+`ExteriorNegationPastK`) consume. Fiber elements `s : NormalForm sig k 5` are partitioned by
+their zone spec (`nfk_zoneSpec s`, read off the atom layer via `nf0_zoneSpec` — Q4: atom layer
+`s.atom_assgn` only, NfEFold.lean:586-588) and their fresh profile (`nfk_projFresh s`,
+CarrierKv.lean:82). Bucket honesty is tied to the landed determinacy core through
+`kvE_subBit`/`kvE_subBit_iff` (ExteriorBracketK.lean:302/314) — MEMBERSHIP/NAVIGATION facts
+only, never content (guard G6): the CONTENT rendering of any bucket is always
+`kvE_fiberPosOn P bucket` (`P.existF` on the full element), applied downstream in Phases 3-4.
+
+Chain-assembly ordering helpers (`kvE_fiberZoneList`) generalize the frozen list-filter shape
+`kvE2_futGapList`/`kvE2_futRayList` (ExteriorNegation.lean:890/895) with the element source
+swapped from the marginal-profile universe to fiber buckets; the generic min-pick combinator
+`kvE_minPick` is a byte-identical replica of the private `kvE2_futMinPick`
+(ExteriorNegation.lean:1146-1149) exposed as a shared decl (Lemma 5.3 case-2 discrete
+specialization). After this phase `ExteriorFiberK.lean` is FROZEN for waves 3-5 (H7). -/
+
+/-! ### Fiber-drop honesty (realized σ pins every positive sub to σ's atom fiber) -/
+
+/-- Under a realized `σ`, every positive fiber element sits on `σ`'s atom fiber
+    (`nfk_dropFresh s = σ.1`): the off-fiber clause of `nf_eval_nfk_iff_efold`
+    (NfEFold.lean:627) reports `σ.2 s = false` off-fiber, so a bit-true `s` cannot be off it.
+    Navigation-only (no content read). -/
+theorem kvE_fiber_dropFresh {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
+    (σ : NormalForm sig (k + 1) 4) (hσ : nf_eval_nf M (k + 1) 4 env σ)
+    (s : NormalForm sig k 5) (hs : s ∈ kvE_fiber σ) :
+    nfk_dropFresh s = σ.1 := by
+  have hbit : σ.2 s = true := (kvE_fiber_mem σ s).mp hs
+  obtain ⟨-, hoff⟩ := (nf_eval_nfk_iff_efold M env σ).mp hσ
+  by_contra hne
+  rw [hoff s hne] at hbit
+  exact Bool.noConfusion hbit
+
+/-- The fiber is nodup (Fintype-backed filter of `Finset.univ.toList`). -/
+theorem kvE_fiber_nodup {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) : (kvE_fiber σ).Nodup :=
+  (Finset.univ.nodup_toList (α := NormalForm sig k 5)).filter _
+
+/-! ### Fiber partition by zone spec and fresh profile -/
+
+/-- **Fiber bucket** of `σ` at zone spec `zs4` and fresh profile `χ`: the fiber elements whose
+    zone (`nfk_zoneSpec`, atom-layer read) is `zs4` and whose fresh profile (`nfk_projFresh`)
+    is `χ`. Navigation-only partition key (G6); the bucket's CONTENT is rendered downstream by
+    `kvE_fiberPosOn P (kvE_fiberBucket σ zs4 χ)`. -/
+noncomputable def kvE_fiberBucket {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
+    List (NormalForm sig k 5) :=
+  (kvE_fiber σ).filter fun s => decide (nfk_zoneSpec s = zs4) && decide (nfk_projFresh s = χ)
+
+/-- Membership unfold for `kvE_fiberBucket`: bit-true subs with matching zone and profile. -/
+theorem kvE_fiberBucket_mem {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1)
+    (s : NormalForm sig k 5) :
+    s ∈ kvE_fiberBucket σ zs4 χ ↔
+      σ.2 s = true ∧ nfk_zoneSpec s = zs4 ∧ nfk_projFresh s = χ := by
+  simp only [kvE_fiberBucket, List.mem_filter, kvE_fiber_mem, Bool.and_eq_true,
+    decide_eq_true_eq]
+
+/-- A fiber bucket is nodup. -/
+theorem kvE_fiberBucket_nodup {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
+    (kvE_fiberBucket σ zs4 χ).Nodup :=
+  (kvE_fiber_nodup σ).filter _
+
+/-- **Bucket honesty** (via `kvE_subBit_iff`, ExteriorBracketK.lean:314): under a realized
+    `σ`, the `(zs4, χ)` bucket is nonempty iff the model actually places a point in zone `zs4`
+    of `env` carrying fresh profile `χ`. Purely a MEMBERSHIP/navigation fact — the reduction to
+    `kvE_subBit` is exact because `kvE_fiber_dropFresh` supplies the atom-fiber label the
+    determinacy read requires (G6: no content). -/
+theorem kvE_fiberBucket_nonempty_iff {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (env : Fin 4 → M.carrier)
+    (σ : NormalForm sig (k + 1) 4) (hσ : nf_eval_nf M (k + 1) 4 env σ)
+    (zs4 : ZoneSpec 4) (χ : NormalForm sig k 1) :
+    (∃ s, s ∈ kvE_fiberBucket σ zs4 χ) ↔
+      ∃ v : M.carrier, zoneHolds M env zs4 v ∧ nf_eval_nf M k 1 (fun _ => v) χ := by
+  rw [← kvE_subBit_iff M env σ hσ zs4 χ]
+  constructor
+  · rintro ⟨s, hs⟩
+    rw [kvE_fiberBucket_mem] at hs
+    obtain ⟨hbit, hz, hp⟩ := hs
+    have hd : nfk_dropFresh s = σ.1 :=
+      kvE_fiber_dropFresh M env σ hσ s ((kvE_fiber_mem σ s).mpr hbit)
+    refine List.any_eq_true.mpr ⟨s, Finset.mem_toList.mpr (Finset.mem_univ s), ?_⟩
+    rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+    exact ⟨⟨⟨decide_eq_true hd, decide_eq_true hz⟩, decide_eq_true hp⟩, hbit⟩
+  · intro hbit
+    obtain ⟨s, -, hread⟩ := List.any_eq_true.mp hbit
+    rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hread
+    obtain ⟨⟨⟨_, hz⟩, hp⟩, hsbit⟩ := hread
+    refine ⟨s, ?_⟩
+    rw [kvE_fiberBucket_mem]
+    exact ⟨hsbit, of_decide_eq_true hz, of_decide_eq_true hp⟩
+
+/-! ### Chain-assembly ordering helper (fiber-bucket list-filter, side-generic)
+
+`kvE_fiberZoneList σ zs4` is the depth-`k` analog of the frozen `kvE2_futGapList`/
+`kvE2_futRayList` (ExteriorNegation.lean:890/895): a nodup list-filter of the fiber, but with
+the element source swapped from the marginal-profile universe to the full fiber, keyed by the
+zone spec `zs4` alone. Each side (Future/Past) instantiates it with its own gap/ray/self zone
+specs in Phase 3/4 — the helper itself is side-agnostic (G6: zone read only). -/
+
+/-- Fiber elements of `σ` sitting in zone `zs4` (any fresh profile). The chain-assembly gap/ray
+    list-filter, element source = fiber buckets. -/
+noncomputable def kvE_fiberZoneList {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) : List (NormalForm sig k 5) :=
+  (kvE_fiber σ).filter fun s => decide (nfk_zoneSpec s = zs4)
+
+/-- Membership unfold for `kvE_fiberZoneList`. -/
+theorem kvE_fiberZoneList_mem {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) (s : NormalForm sig k 5) :
+    s ∈ kvE_fiberZoneList σ zs4 ↔ σ.2 s = true ∧ nfk_zoneSpec s = zs4 := by
+  simp only [kvE_fiberZoneList, List.mem_filter, kvE_fiber_mem, decide_eq_true_eq]
+
+/-- A fiber zone list is nodup. -/
+theorem kvE_fiberZoneList_nodup {sig : MonadicSignature} {k : Nat}
+    (σ : NormalForm sig (k + 1) 4) (zs4 : ZoneSpec 4) :
+    (kvE_fiberZoneList σ zs4).Nodup :=
+  (kvE_fiber_nodup σ).filter _
+
+/-! ### Generic min-pick combinator (shared replica of the private `kvE2_futMinPick`)
+
+Byte-identical proof template of `kvE2_futMinPick` (ExteriorNegation.lean:1146-1149, `private`
+in the frozen file — replicated here, never imported, per postmortem rule / risk note). Fully
+`{α : Type}`-generic, so a single shared decl serves both the Future and Past chain builders
+(Lemma 5.3 case-2 discrete specialization per the mapping table). -/
+
+/-- **Generic minimal-witness pick**: from a nonempty list `l` each of whose elements has some
+    `M`-witness under `P`, extract one element with a `≤`-minimal witness dominating a witness
+    for every element of `l`. -/
+theorem kvE_minPick {sig : MonadicSignature} {α : Type}
+    (M : OrderedMonadicStructure sig) (P : α → M.carrier → Prop) :
+    ∀ l : List α, l ≠ [] → (∀ a ∈ l, ∃ r, P a r) →
+      ∃ a₀, a₀ ∈ l ∧ ∃ r₀, P a₀ r₀ ∧ ∀ a ∈ l, ∃ r, P a r ∧ r₀ ≤ r := by
+  intro l
+  induction l with
+  | nil => intro h; exact absurd rfl h
+  | cons a l ih =>
+    intro _ hocc
+    obtain ⟨r, hr⟩ := hocc a (by simp)
+    by_cases hl : l = []
+    · subst hl
+      refine ⟨a, by simp, r, hr, fun b hb => ?_⟩
+      rw [List.mem_singleton] at hb
+      subst hb
+      exact ⟨r, hr, le_refl r⟩
+    · obtain ⟨a', ha'mem, r', hr', hmin⟩ :=
+        ih hl (fun c hc => hocc c (List.mem_cons_of_mem a hc))
+      rcases le_or_gt r r' with hle | hlt
+      · refine ⟨a, by simp, r, hr, fun c hc => ?_⟩
+        rcases List.mem_cons.mp hc with rfl | hc'
+        · exact ⟨r, hr, le_refl r⟩
+        · obtain ⟨r'', hr'', hge⟩ := hmin c hc'
+          exact ⟨r'', hr'', hle.trans hge⟩
+      · refine ⟨a', List.mem_cons_of_mem a ha'mem, r', hr', fun c hc => ?_⟩
+        rcases List.mem_cons.mp hc with rfl | hc'
+        · exact ⟨r, hr, hlt.le⟩
+        · exact hmin c hc'
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
