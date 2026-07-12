@@ -1,0 +1,32 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "summary": "Task 349 v5 Phase 2 complete (Step A, REDUCE-FIRST): landed the arity-4 -> nfEvalRHS reduction wiring for endCharStep, all additive to NavigatedEndChar.lean, all sorry-free and green. Five new theorems: (1) nfEval4_reduction (arity-4 specialization of nfEval_le2_reduction, mirror of nfEval3_reduction); (2) nfEval4_reduction_zero_shape and (3) nfEval4_reduction_succ_shape (arity confirmations via nfEvalRHS_zero/nfEvalRHS_succ: every emitted nf_eval_nf conjunct is anchor-arity 2, the 4/5 are recursion env domains not emitted anchor arities); (4) endCharStep_reduceA (the per-sub Step-A existential reduction (exists v, nf_eval_nf M k 4 [v,w,x,t] sub) <-> (exists v, nfEvalRHS M k 4 [v,w,x,t] sub), consuming the preserved green navPiece_reduce with witness v OUTSIDE); (5) endCharStep_quant_reduceA (the whole-quant-layer reduction the Phase-3 endCharStep assembly threads, via forall_congr'/iff_congr over endCharStep_reduceA, witness v OUTSIDE each clause, qnf.2 preserved verbatim). No Formula converter (Step B-D are Phase 3). lean_verify on all 5 = [propext, Classical.choice, Quot.sound], no sorry. Scoped build of NavigatedEndChar GREEN. Route audit clean: G1/G2/G4/G5 honored; no per-pair forall-ij exists-v distribution; no arity-collapsing nfRestrict (nfRestrict0 only on atom layer); no arity-4 enclosing-pair collapse; navPieceForm_correct/nf_char3_deeper_split only in prose docstrings. Git scope = NavigatedEndChar.lean + plan only; Base.lean and all frozen providers untouched.",
+  "phases_completed": 2,
+  "phases_total": 4,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": {
+    "next_phase": 3,
+    "next_action": "Phase 3 (endCharStep Steps B-D + step correctness, the FEASIBILITY GATE): assemble endCharStep (endChar k) qnf : TemporalPred from nf_zone_flatten_navigable (x,t EXPLICIT) + seg interior + position-0 locus, and prove the k+1 case of endChar_correct, discharging endpoint/interior hooks from the IH endChar_correct k with the threaded residual. Consume the Phase-2 Step-A outputs: endCharStep_quant_reduceA reduces the depth-(k+1) quant layer to (exists v, nfEvalRHS M k 4 [v,w,x,t] sub) clauses; Step B then navigates each arity-3 piece via nf_zone_flatten_navigable_correct (Base.lean:687), Step C rides the interior on seg via seg_holds_coupled (Base.lean:1150), Step D collapses at the base via nf3_locus0. Residual threading (positions 1,2 pinned by h_res) is the unproven obligation / gate.",
+    "notes": "endCharStep still has its Phase-1 SCAFFOLD body (endChar0 atomMap h_surj qnf.1); Phase 3 replaces it fix-forward (rename _rec -> rec) with the real navigated builder. The Phase-2 Step-A lemmas do NOT depend on endCharStep's body -- they operate on nf_eval_nf / nfEvalRHS directly, so they are stable across the Phase-3 body replacement. Full endChar_correct (forall k) is Phase 4 by induction on k: base = endChar_correct_zero (Phase 1), step = Phase-3 k+1 discharge."
+  },
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedEndChar.lean",
+    "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/05_faithful-residual-conditioned-endchar.md"
+  ],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "build_passed": true,
+    "axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "new_theorems": [
+      "nfEval4_reduction",
+      "nfEval4_reduction_zero_shape",
+      "nfEval4_reduction_succ_shape",
+      "endCharStep_reduceA",
+      "endCharStep_quant_reduceA"
+    ]
+  }
+}

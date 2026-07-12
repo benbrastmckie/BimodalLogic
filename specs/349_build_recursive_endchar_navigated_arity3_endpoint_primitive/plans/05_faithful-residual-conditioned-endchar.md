@@ -246,7 +246,37 @@ edits to `Base.lean` (new `endCharStep`, `endChar`, `endChar_correct`) and `Navi
 - **Depends on:** 1.
 - **Files to modify:** `.../NavigatedEndChar.lean` (and/or `Base.lean` additively).
 
-### Phase 3: `endCharStep` Steps B–D + step correctness (FEASIBILITY GATE — the ONE known risk) [NOT STARTED]
+### Phase 3: `endCharStep` Steps B–D + step correctness (FEASIBILITY GATE — the ONE known risk) [BLOCKED]
+
+**BLOCKER** (Phase 3, `kind: feasibility_gate`) — dispatch sess_1783841542_df767b:
+- **3a LANDED GREEN**: the real navigated `endCharStep` def (replacing the v4 scaffold) is committed
+  green and sorry-free (`NavigatedEndChar.lean:299`; `lean_verify = [propext, Classical.choice,
+  Quot.sound]`). Assembled from the position-0 locus (`endChar0`, Step D) + the finite conjunction
+  (`formula_conjList` over `Fintype (NormalForm sig k 4)`) of per-`sub` clauses
+  `nf_quant_clause_tl (navPieceForm rec sub) (qnf.2 sub)` (Steps B/C, via the retained-green
+  `navPieceForm` def — `navPieceForm_correct` NOT stated).
+- **3b BLOCKED**: the `k+1` `endChar_correct` step proof. Statement typechecks (pinned as documentation
+  at `NavigatedEndChar.lean` end). Driving `simp only [endCharStep, TemporalPred.eval_at];
+  rw [formula_conjList_iff, nfEval_step_unfold_gen, List.forall_mem_cons]; refine and_congr ?_ ?_`
+  then, per `sub`, `nf_quant_clause_tl_correct` leaves the **exact stuck goal** (verbatim `lean_goal`):
+  ```
+  ⊢ temporal_truth M atomMap w (navPieceForm rec sub) ↔
+      ∃ v, nf_eval_nf M k 4 (Fin.cons v (zoneEnv3 w x t)) sub
+  ```
+- **Why stuck**: this side-obligation is exactly `navPieceForm_correct` — the report-04 machine-checked
+  NON-THEOREM as a closed biconditional (parameter independence: LHS closed-`Formula` read only at `w`;
+  RHS constrains anchors `{x,t}` + the order layer among `{v,w,x,t}`). It holds ONLY under a per-`sub`
+  residual pinning those anchors for `sub`'s arity-4 layer, and that residual is **not threadable** from
+  the in-scope `h_res` (which conditions only the depth-0 atom layer of the top-level `qnf` at `{x,t}`,
+  not the arity-4 sub-evaluation at the fresh witness `v`). The atom layer (Step D) IS dischargeable
+  (`endChar0_wlocus_correct` + `h_res`); the gate is solely the quant-layer per-`sub` residual.
+- **What is needed**: a dedicated **residual-threading lemma** delivering, for each `sub`, the
+  anchor/order residual of `nf_eval_nf M k 4 [v,w,x,t] sub` from the bracket-exterior structure — the
+  sole open obligation of the v5 architecture (report 05 §5.1 row 6, §5.2). Recommend `/spawn 349`.
+- **Prohibited (honored)**: no `sorry`, no vacuous/`True` def, no arity-4 enclosing-pair collapse
+  (`Lemma32Reduction.lean:290-306` non-theorem), no single-anchor reshape, no per-pair `∀ij ∃v`
+  distribution, no assertion of `navPieceForm_correct`/the unconditional world-local form. All
+  Phase-1/2 green assets + the 3a def preserved and green.
 
 - **Goal:** Assemble `endCharStep (endChar k) qnf : TemporalPred` from `nf_zone_flatten_navigable`
   (x,t EXPLICIT) + `seg` interior + position-0 locus, and prove the `k+1` case of `endChar_correct`,
@@ -273,12 +303,16 @@ edits to `Base.lean` (new `endCharStep`, `endChar`, `endChar_correct`) and `Navi
   the k+1 correctness proof. This REPLACES the deleted `nf_char3_endpoint_tl` inner-Formula converter — do
   NOT resurrect it or state `navPieceForm_correct`.
 - **Tasks:**
-  - [ ] **(3a)** Define `endCharStep (rec : EndCharCarrier sig k) qnf : TemporalPred` assembled from
+  - [x] **(3a)** Define `endCharStep (rec : EndCharCarrier sig k) qnf : TemporalPred` assembled from
         `bracketBuildLeft/Right` (navigation) + `seg` interior + position-0 locus, with x,t flowing as
         explicit parameters of the Prop-valued flatten. STATE the k+1 case of `endChar_correct`.
+        *(DONE — real navigated def committed green + sorry-free; k+1 statement typechecks, pinned as doc.)*
   - [ ] **(3b)** Discharge Step B (`h_past`/`h_fut` from IH), Step C (`h_endChar` from IH, `seg` interior),
         Step D (position-0 via `nf3_locus0`, anchors pinned by `h_res`), and thread the residual from
         level `k+1` to each ≤2-anchor sub-piece at level `k`. Manual bridges (G5).
+        *(BLOCKED — feasibility gate: per-`sub` obligation `temporal_truth w (navPieceForm rec sub) ↔
+        ∃v, nf_eval_nf M k 4 [v,w,x,t] sub` = navPieceForm_correct (report-04 non-theorem); residual not
+        threadable from h_res. Step D dischargeable; quant layer needs a residual-threading lemma. /spawn 349.)*
   - [ ] Route audit: G2/G4 (every `w`/`v` a bracket witness; free anchors ≤2, arity capped at 3), G3
         (`seg` interior non-trivial, never `⊤`), G5; no `nf_char3_deeper_split`; no arity-4 collapse; no
         `navPieceForm_correct`; no per-pair `∀ij ∃w` distribution; no `nfRestrict`. Grep clean.

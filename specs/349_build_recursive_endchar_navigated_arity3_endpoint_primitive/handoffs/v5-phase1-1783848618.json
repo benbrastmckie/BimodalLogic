@@ -1,0 +1,25 @@
+{
+  "status": "implemented",
+  "skeleton": false,
+  "summary": "Task 349 v5 Phase 1 complete: froze the residual-conditioned, x,t-EXPLICIT endChar_correct statement (report 05 §3.2) as a pinned spec docstring; defined the endChar Nat-recursion skeleton (base endChar0, step endCharStep) with endCharStep as a genuine non-vacuous TemporalPred SCAFFOLD (position-0 atom layer endChar0 qnf.1, replaced fix-forward in Phase 3); proved the k=0 base building block endChar_correct_zero by `exact endChar0_correct` (green, carries h_res). Scoped build of NavigatedEndChar GREEN; lean_verify on endChar_correct_zero = [propext, Classical.choice, Quot.sound], no sorry. Additive to NavigatedEndChar.lean only (Base.lean untouched this phase). Route audit clean: no nf_char3_deeper_split / nfRestrict / navPieceForm_correct code (only prose references in FORBIDDEN docstrings), no unconditional world-local claim, EndCharCarrier not widened.",
+  "phases_completed": 1,
+  "phases_total": 4,
+  "sorry_inventory": [],
+  "blockers": [],
+  "continuation_path": null,
+  "continuation_context": {
+    "next_phase": 2,
+    "next_action": "Phase 2 (endCharStep Step A): build the arity-4 -> nfEvalRHS reduction wiring inside the step via exists_congr + nfEval_le2_reduction/navPiece_reduce (witness v OUTSIDE), consuming the preserved green navPiece_reduce (NavigatedEndChar.lean:215) and nfEval3_reduction family. No Formula-valued converter yet.",
+    "notes": "endCharStep currently has a Phase-1 SCAFFOLD body (endChar0 atomMap h_surj qnf.1) that Phases 2-3 replace fix-forward (rename _rec -> rec). The full endChar_correct (forall k) theorem name is produced in Phase 4 by induction on k: base = endChar_correct_zero (this phase), step = Phase-3 endCharStep k+1 discharge."
+  },
+  "modified_files": [
+    "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NavigatedEndChar.lean",
+    "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/05_faithful-residual-conditioned-endchar.md"
+  ],
+  "verification": {
+    "sorry_count": 0,
+    "vacuous_count": 0,
+    "build_passed": true,
+    "axioms": ["propext", "Classical.choice", "Quot.sound"]
+  }
+}
