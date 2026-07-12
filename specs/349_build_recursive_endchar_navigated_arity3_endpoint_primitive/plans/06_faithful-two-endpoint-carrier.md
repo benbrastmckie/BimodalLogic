@@ -2,7 +2,7 @@
 
 - **Task**: 349 - Build the recursive navigated arity-3 endpoint primitive, RE-BASED onto the faithful
   two-endpoint carrier (`endInterval : (k) → BracketEndCharCarrierV sig k` + `endInterval_correct`)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: Task 351 (LANDED — `nfEval_le2_reduction` family, green, sorry-free, 0-new-axiom)
 - **Research Inputs**:
@@ -199,7 +199,7 @@ shape). Territory: **additive** edits to `CarrierK1V.lean` (new `endInterval`, `
   `navPieceForm_correct`, `h_res` residual-threading, arity-4 collapse / arity-4-enclosing-pair
   single-point read, per-pair `∀ij∃w` distribution.
 
-### Phase 1: Archival swap — archive refuted single-point scaffold; record demand-driven restore [NOT STARTED]
+### Phase 1: Archival swap — archive refuted single-point scaffold; record demand-driven restore [COMPLETED]
 
 - **Goal:** Retire the machine-checked non-theorem line by moving the refuted single-point scaffold
   from `NavigatedEndChar.lean` to `Kamp/Boneyard/`, preserving the green Step-A reduction family;
@@ -216,20 +216,40 @@ shape). Territory: **additive** edits to `CarrierK1V.lean` (new `endInterval`, `
 - **Reuse vs rebuild:** pure file surgery — no new proofs. If `navPiece_reduce`'s STATEMENT references
   `navPieceForm`, retain `navPieceForm` inert in NavigatedEndChar rather than archive it (assess first).
 - **Tasks:**
-  - [ ] Confirm compilation-safety: grep the non-Boneyard tree for live references to the archive
+  - [x] Confirm compilation-safety: grep the non-Boneyard tree for live references to the archive
         targets (verified this dispatch: referenced only inside NavigatedEndChar; the `seg endChar`
-        hits in Base/Lemma32Reduction are LOCAL hook parameters, not the global def).
-  - [ ] Assess the interleave: confirm the 6 preserved reduction lemmas reference the archive targets
+        hits in Base/Lemma32Reduction are LOCAL hook parameters, not the global def). *(done: also
+        confirmed nothing imports NavigatedEndChar — it is an orphan leaf; Base.lean:1558
+        `def endChar` is a fenced doc-comment signature, not real code.)*
+  - [x] Assess the interleave: confirm the 6 preserved reduction lemmas reference the archive targets
         0 times in CODE (docstring mentions are fine). Retain any refuted def a preserved STATEMENT
-        depends on (expected: none, or `navPieceForm` inert).
-  - [ ] `git mv`-equivalent: create `Boneyard/NavigatedEndCharSinglePoint.lean`, move the refuted
+        depends on (expected: none, or `navPieceForm` inert). *(done: 0 code refs; `navPiece_reduce`
+        is `exists_congr (nfEval_le2_reduction …)` — does NOT reference `navPieceForm`, so NO inert
+        retention needed. All 11 preserved decls moved 0 archive targets.)*
+  - [x] `git mv`-equivalent: create `Boneyard/NavigatedEndCharSinglePoint.lean`, move the refuted
         decls, add the boneyard import; delete them from `NavigatedEndChar.lean`. Keep the reduction
-        family in place.
-  - [ ] Record the demand-driven restore rule (from the Boneyard restore assessment above) as a
+        family in place. *(done: 4 real decls + 3 doc-sections moved; NavigatedEndChar −272/+31 lines;
+        import `…Boneyard.NavigatedEndCharSinglePoint` added; no cycle.)*
+  - [x] Record the demand-driven restore rule (from the Boneyard restore assessment above) as a
         docstring/plan note: restore `NegationIndep`/`RabinovichTranslation` ONLY at first code
-        reference in Phases 3-4; leave arity-m + probes archived. No restore forced now.
-  - [ ] Route audit: `git status --short` shows only NavigatedEndChar.lean + the new Boneyard file
-        (+ plan); no frozen-file edit.
+        reference in Phases 3-4; leave arity-m + probes archived. No restore forced now. *(done:
+        recorded in the new Boneyard file header §"Demand-driven Boneyard restore rule" and in the
+        note below; nothing restored in Phase 1.)*
+  - [x] Route audit: `git status --short` shows only NavigatedEndChar.lean + the new Boneyard file
+        (+ plan); no frozen-file edit. *(done: only NavigatedEndChar.lean [M], the new Boneyard file
+        [??], plan + TODO/state status-sync; 0 frozen-provider / KampPrior / Lemma32Reduction / Base
+        proof edits.)*
+
+**Phase 1 result (v6):** Whole-tree `lake build` GREEN (1724 jobs). Preserved reduction lemmas
+`navPiece_reduce` and `endCharStep_quant_reduceA` `lean_verify` = `[propext, Classical.choice,
+Quot.sound]`. No sorry/vacuous defs in either scoped file (the 2 `EANegation.lean` sorries are
+pre-existing, out of scope). `nf_nvar_exist_all_depths` and all 7 frozen providers untouched.
+
+**Demand-driven Boneyard restore note (recorded, not executed):** The faithful arity-2 two-endpoint
+carrier references NONE of the 4 `Kamp/Boneyard/` files today. `NegationIndep` (`neg_vecEA2_indep`)
+and `RabinovichTranslation` are zero-cost restore-on-demand candidates for Phases 3-4 — restore ONLY
+at first genuine code reference; leave `EAVecNegationClosure`/`VecEA_m` (arity-m) and the
+`NfZone*Probe` files archived. No restore forced now.
 - **Estimated output:** ~50-150 lines moved (net additive ~0); no new proof.
 - **Done when:** the refuted decls are off `NavigatedEndChar.lean`, the preserved reduction family is
   green, `lake build` (whole tree) GREEN, `lean_verify` on a preserved reduction lemma =
