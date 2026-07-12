@@ -1,5 +1,5 @@
 ---
-next_project_number: 349
+next_project_number: 351
 ---
 
 # TODO
@@ -7,16 +7,18 @@ next_project_number: 349
 Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-11. Generated from state.json dependency graph.*
+*Updated 2026-07-12. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,309,318,341,343 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 192,196,231,292,293,294,298,307 | 161,187,191,194,230,291,309,343 | completeness, publication-quality, sorry-elimination, ... |
-| 3 | 193,305 | 189,192,196,307 | completeness, automation |
-| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
-| 5 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,131,161,162,165,169,170,175,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,343,349 | publication-quality, sorry-elimination, automation, ... |
+| 3 | 193,309 | 189,192,196,350 | automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -108,13 +110,39 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-309 [IMPLEMENTING] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+349 [RESEARCHED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+  └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 
 ## Tasks
+
+### 350. Build aggregate quantendseg construction and discharge armcorrectness hooks at k0 and k1
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 349
+- **Research**: [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
+
+**Description**: Build the aggregate forall-qnf quantEnd/seg construction -- a single TemporalPred/BracketFormula 0 encoding the population match `forall qnf : NormalForm sig k 3, ((exists w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) <-> sub_nf.2 qnf)` via 5-zone order-pattern routing (the existing `seg endChar qnf` at Base.lean:1127 is per-qnf, not an all-order-patterns aggregate; same house style as the landed zone-triage lemmas, e.g. nf_zone_exists_trichotomy_k1) -- and use it plus the recursive endChar_correct (consumed by name from the prerequisite task) to discharge the three arm-correctness lemma hooks as separate green lemmas at depth k=0 and k=1: h_quant past (nf_char2_past_formula_correct, Base.lean:1230, hook at 1238-1241), h_quant future (nf_char2_future_formula_correct, Base.lean:1430, hook at 1438-1441), and h_past/h_fut/h_diag (A_diag_correct, Base.lean:758, hooks at 765-773). Consume, do NOT rebuild: endChar_correct (from the prerequisite task), seg_holds_coupled (Base.lean:1150), nf_zone_flatten_navigable_correct (NfZoneFlattenNavigable.lean:709). Guards (binding, same set as the prerequisite task): G1-G5; FORBIDDEN nf_char3_deeper_split; do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT edit KampPrior.lean:352-364 (the :361/:364 sorry region and its transfer note stay task 309's own Phase 19 edit -- this task lands consumable lemmas only, in Base.lean or an additive 309-owned wiring file, never the sorry lines themselves); axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free. Definition of done: lake build GREEN; all new lemmas sorry-free; lean_verify on each named hook-discharge lemma = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; no edit inside the KampPrior.lean recursion body; task 309's Phase 18b/19 can cite the k=0/k=1 hook-discharge lemmas by name to instantiate the landed Phase-18a skeleton kampPrior_case1_trichotomy_assemble (KampPrior.lean:1056) and narrow :361. Literature grounding: orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt (crux and resolution fields, second successor); report 02 Section 6 'Phase 9' decomposition (reports/02_endpoint-hook-discharge-research.md:272-279), adapted -- the :361 rewire itself stays task 309's own Phase 19, only the hook discharge is this task's deliverable.
+
+---
+
+### 349. Build recursive endchar navigated arity3 endpoint primitive
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
+
+**Description**: Build the recursive navigated arity-3 endpoint primitive `endChar : (k : Nat) -> EndCharCarrier sig k` (EndCharCarrier abbrev at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1007) by recursion on k, plus `endChar_correct`. Base case = the already-landed `endChar0`/`endChar0_correct` (Base.lean:995/1056, sorry-free). Step case = navigable-brick flatten of each sub's existential witness composed with the already-landed non-trivial interior segment `seg`/`seg_holds_correct`/`seg_holds_coupled` (Base.lean:1127-1162, sorry-free) for the interior and Phase-6/8-shaped endpoint characteristics for the exteriors, arity capped at 3 (guard G4). This is the report-02-Section-1.4 primitive, explicitly documented as NOT YET BUILT at Base.lean:958-969 (~300-500 lines estimated in-file, brick-witness-collapse / anchor-management core). Consume, do NOT rebuild: endChar0/endChar0_correct, seg/seg_holds_correct/seg_holds_coupled, nf_zone_flatten_navigable(_brick)/_correct (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NfZoneFlattenNavigable.lean:689/709). Guards (binding): G1 no arity-1 collapse; G2/G4 anchors strictly {a,b} subset {x,t}, <=2, w never a third free anchor; G3 non-trivial segment only (reuse seg, never TemporalPred.top); G5 no simp/omega/aesop shortcut of a Rabinovich chain step, manual bridges only; FORBIDDEN: nf_char3_deeper_split (refuted route -- grows anchor set to 4, forbidden tower, report 02 Section 4.1); do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT touch KampPrior.lean or nf_nvar_exist_all_depths's signature -- this task's scope is Base.lean only, additive; axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule, do not land a vacuous or sorry'd endChar. Definition of done: lake build GREEN (scoped Base module at minimum, full tree recommended); endChar/endChar_correct sorry-free; lean_verify on endChar_correct = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; downstream task 309 Phase 18/19 can cite endChar_correct by name. Literature grounding: Rabinovich 2014 Cor 5.4 / report 02 Section 1.4 (the missing navigated-endpoint primitive) and Section 6 'Phase 8' decomposition (reports/02_endpoint-hook-discharge-research.md:266-270); orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt.
+
+---
 
 ### 348. Prop43 exterior reflatten
 - **Status**: [COMPLETED]
@@ -263,10 +291,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348
+- **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348, Task 349, Task 350
 - **Plan**:
   - [309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md]
   - [309_offdiag_two_anchor_fi_chain/plans/08_offdiag-fi-chain-v8.md]

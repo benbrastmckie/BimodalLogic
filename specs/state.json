@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 349,
+  "next_project_number": 351,
   "active_projects": [
     {
       "project_number": 347,
@@ -26,7 +26,7 @@
     {
       "project_number": 309,
       "project_name": "offdiag_two_anchor_fi_chain",
-      "status": "implementing",
+      "status": "blocked",
       "task_type": "lean4",
       "priority": "critical",
       "effort": "high",
@@ -39,12 +39,14 @@
         333,
         335,
         346,
-        348
+        348,
+        349,
+        350
       ],
       "description": "Build the off-diagonal two-anchor navigated characteristic (Rabinovich Cor 5.4 non-trivial-segment F_i chain) for the KampPrior.lean:350 past/future arms (prerequisite spawned from task 307 Phase 7 blocker audit, reports/03_endpoint-hook-blocker-audit.md).\n\nOff the live import path, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound]. Deliverables (see task 307 report 03 SS4): (1) segment-carrying A_past/A_future + _correct in Kamp/NfZoneFlattenNavigable.lean (drop the forced `trivial top`; via bracketBuildLeft/Right_correct directly, ~80-120 lines); (2) nf_char2_past_formula / nf_char2_future_formula : NormalForm sig (k+1) 2 -> Formula with `temporal_truth M atomMap t (nf_char2_past_formula ... sub_nf) <-> exists x, x < t AND nf_eval_nf M (k+1) 2 (Fin.cons x (fun _=>t)) sub_nf` (future dual with t < x) — the F_i chain: outer NON-trivial-segment bracket from t to x, endpoint at x = the arity-2 characteristic of sub_nf at [x,t], quant layer (per qnf : NormalForm sig k 3) flattened via nf_zone_flatten_navigable_brick, residual arity-3 zones discharged by the depth-k IH (exist_tl_fn_k / nf_nvar_exist_all_depths); ~300-500 lines, recursion on k — the load-bearing new object; (3) rewire KampPrior.lean:350 to A := nf_char2_past_formula ... OR A_diag ... OR nf_char2_future_formula ..., proven via nf_zone_exists_trichotomy_k1 disjunction-elim + the three _correct lemmas, replacing the :350 sorry (live-path sorries 2 -> 1, :353 remains downstream per task 305 scope).\n\nCONSUME, DO NOT REBUILD (all sorry-free): all of task 308 (NfMultiAnchorBridge: nf_char2_formula deliverable 1, nf_zone_flatten_navigable(_brick) deliverable 2, nf_char2_zone_split5, nf_char2_atom_part(_correct), nf_quant_clause_tl); A_diag/_correct + the trichotomy nf_zone_exists_trichotomy_k1 (task 307 Phases 2-3); depth-0 bases diagDup/diagDup_eval_zero/renameNF_eval_diag0; bracketBuildLeft/Right(_correct) (Kamp/VecEATranslation.lean); the navigated pillars as the diagonal-only degenerate case. The import-cycle relocation is ALREADY LANDED (commit 69998c02d) — NfMultiAnchorBridge no longer imports KampPrior.\n\nFORBIDDEN ROUTES (obstruction guards G1-G5, task 307 report 03 SS4): G1 no arity-1 collapse of the off-diagonal (refuted, report 02 SS1; NfDepth0Generalized:1691-1719). G2 no projection-based VecEA2 / third-free-anchor tower (refuted, specs/305 report 40; R2). G3 no trivial-top segment on the off-diagonal arms (report 03 SS1.2/SS2.3: a closed pastEnd under a trivial segment is unsatisfiable; the (x,t) coupling MUST ride the non-trivial Rabinovich beta_i segment). G4 w stays a bracket witness (env arity never grows past {w,x,t}=3 -> {x,t}=2; anchor set {x,t}; Rabinovich <=2 cap). G5 follow Cor 5.4 F_i chains step-by-step (F_n := alpha_n, F_{i-1} := alpha_{i-1} AND (beta_i Until F_i)); no simp/omega/aesop shortcut of a chain step (literature-fidelity policy).\n\nLITERATURE GROUNDING: ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md Section 5 (Lemma 5.1 md:134-152, Corollary 5.4 md:154-157).\n\nGOAL STATE: lake build GREEN (full), top-level axioms unchanged (propext/Classical.choice/Quot.sound, 0 domain axioms), live-path sorries reduced 2 -> 1 (KampPrior.lean:350 closed, :353 remains), task 307 unblocked to finish Phase 7 wiring verification + Phase 8 wrap-up. Estimated ~400-700 lines total; run --hard --lit. v8 re-point (task-347 adjudication, verdict (b)): the KampPrior.lean:351 discharge consumes an interior+boundary gate PLUS a separate adjacent-exterior bracket with the interior/exterior seam at the anchors x,t (Rabinovich Prop 4.3 + Lemma 7.6 re-flatten) — NOT a single all-arrangement (x,t) gate (that target was an outer-existential globalization artifact with no §5 counterpart; F3/F4 refuted it). The adjacent-exterior bracket and the final KampPrior.lean:351 close are the task-348 prop43_exterior_reflatten deliverable; task 309 depends on 348. Phases 13.4/14 are GATED on task 348's definition-of-done (exterior-marked hexclExt residue discharged by the adjacent-exterior bracket; KampPrior.lean:351 strategic sorry retired). Plan: v8 (08_offdiag-fi-chain-v8.md).\n\nv9 realignment (2026-07-11, providers landed): tasks 335 and 348 COMPLETE — the k=2 interior+boundary fragment gate (bracketEndChar_kvE2_correct_two_prior_frag, OuterGate.lean:359, commit 147af2fbe) and the enriched composed gate bracketEndChar_kvE2Ext_correct_two_prior_frag (ExteriorBracket.lean, hexclExt discharged INTERNALLY) are landed, axiom-clean. Per task 348's R1 scope decision the KampPrior.lean:351 strategic-sorry retirement (now at :361, the | 1 => arm of nf_nvar_exist_all_depths) transferred BACK to task 309 — retirement = consume 348's discharge theorem + discharge the 309-owned provider inventory (hfrag/hrealI/hrealB/hexcl + six order bits). The ∀k-lift composition flag (335 handoff §5) is RESOLVED: option (a) — fragment-scoped k=2 induction step, nf_nvar_exist_all_depths interface unchanged, non-fragment residue routed to the 321-N2 successor. v8 Phases 13.4/14 are RETIRED (superseded by the landed provider chain); open work is Phases 15-19 (site/coverage probe → provider shim → hrealI/hrealB/hexcl discharge → kvE2Ext gate consumption + hooks + depth-2 assembly → ∀k lift + :361 retirement). Plan: v9 (09_offdiag-fi-chain-v9.md).",
       "created": "2026-07-06T16:50:37Z",
-      "last_updated": "2026-07-11T23:38:20Z",
-      "session_id": "sess_1783796165_b5b482_309",
+      "last_updated": "2026-07-12T01:33:05Z",
+      "session_id": "sess_1783819943_5de91e",
       "artifacts": [
         {
           "path": "specs/309_offdiag_two_anchor_fi_chain/plans/05_offdiag-fi-chain-plan.md",
@@ -1700,6 +1702,48 @@
         }
       ],
       "completion_summary": "Discharged the exterior-marked hexclExt residue via Rabinovich Prop 4.3 re-flatten + Lemma 7.6 adjacency: 8 phases landing zone triage, one-sided clause families (both sides, sound+complete), adjacent exterior brackets, and the enriched composed gate bracketEndChar_kvE2Ext_correct_two_prior_frag. Interior+boundary+adjacent-exterior = full k=2 completeness; axiom-clean; KampPrior.lean:351 retirement deferred to 309 per R1."
+    },
+    {
+      "project_number": 349,
+      "project_name": "build_recursive_endchar_navigated_arity3_endpoint_primitive",
+      "status": "researched",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Build the recursive navigated arity-3 endpoint primitive `endChar : (k : Nat) -> EndCharCarrier sig k` (EndCharCarrier abbrev at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1007) by recursion on k, plus `endChar_correct`. Base case = the already-landed `endChar0`/`endChar0_correct` (Base.lean:995/1056, sorry-free). Step case = navigable-brick flatten of each sub's existential witness composed with the already-landed non-trivial interior segment `seg`/`seg_holds_correct`/`seg_holds_coupled` (Base.lean:1127-1162, sorry-free) for the interior and Phase-6/8-shaped endpoint characteristics for the exteriors, arity capped at 3 (guard G4). This is the report-02-Section-1.4 primitive, explicitly documented as NOT YET BUILT at Base.lean:958-969 (~300-500 lines estimated in-file, brick-witness-collapse / anchor-management core). Consume, do NOT rebuild: endChar0/endChar0_correct, seg/seg_holds_correct/seg_holds_coupled, nf_zone_flatten_navigable(_brick)/_correct (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NfZoneFlattenNavigable.lean:689/709). Guards (binding): G1 no arity-1 collapse; G2/G4 anchors strictly {a,b} subset {x,t}, <=2, w never a third free anchor; G3 non-trivial segment only (reuse seg, never TemporalPred.top); G5 no simp/omega/aesop shortcut of a Rabinovich chain step, manual bridges only; FORBIDDEN: nf_char3_deeper_split (refuted route -- grows anchor set to 4, forbidden tower, report 02 Section 4.1); do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT touch KampPrior.lean or nf_nvar_exist_all_depths's signature -- this task's scope is Base.lean only, additive; axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule, do not land a vacuous or sorry'd endChar. Definition of done: lake build GREEN (scoped Base module at minimum, full tree recommended); endChar/endChar_correct sorry-free; lean_verify on endChar_correct = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; downstream task 309 Phase 18/19 can cite endChar_correct by name. Literature grounding: Rabinovich 2014 Cor 5.4 / report 02 Section 1.4 (the missing navigated-endpoint primitive) and Section 6 'Phase 8' decomposition (reports/02_endpoint-hook-discharge-research.md:266-270); orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt.",
+      "effort": "high",
+      "parent_task": 309,
+      "dependencies": [],
+      "created": "2026-07-12T01:37:12Z",
+      "last_updated": "2026-07-12T01:37:12Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 309"
+        }
+      ]
+    },
+    {
+      "project_number": 350,
+      "project_name": "build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1",
+      "status": "researched",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Build the aggregate forall-qnf quantEnd/seg construction -- a single TemporalPred/BracketFormula 0 encoding the population match `forall qnf : NormalForm sig k 3, ((exists w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) <-> sub_nf.2 qnf)` via 5-zone order-pattern routing (the existing `seg endChar qnf` at Base.lean:1127 is per-qnf, not an all-order-patterns aggregate; same house style as the landed zone-triage lemmas, e.g. nf_zone_exists_trichotomy_k1) -- and use it plus the recursive endChar_correct (consumed by name from the prerequisite task) to discharge the three arm-correctness lemma hooks as separate green lemmas at depth k=0 and k=1: h_quant past (nf_char2_past_formula_correct, Base.lean:1230, hook at 1238-1241), h_quant future (nf_char2_future_formula_correct, Base.lean:1430, hook at 1438-1441), and h_past/h_fut/h_diag (A_diag_correct, Base.lean:758, hooks at 765-773). Consume, do NOT rebuild: endChar_correct (from the prerequisite task), seg_holds_coupled (Base.lean:1150), nf_zone_flatten_navigable_correct (NfZoneFlattenNavigable.lean:709). Guards (binding, same set as the prerequisite task): G1-G5; FORBIDDEN nf_char3_deeper_split; do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT edit KampPrior.lean:352-364 (the :361/:364 sorry region and its transfer note stay task 309's own Phase 19 edit -- this task lands consumable lemmas only, in Base.lean or an additive 309-owned wiring file, never the sorry lines themselves); axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free. Definition of done: lake build GREEN; all new lemmas sorry-free; lean_verify on each named hook-discharge lemma = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; no edit inside the KampPrior.lean recursion body; task 309's Phase 18b/19 can cite the k=0/k=1 hook-discharge lemmas by name to instantiate the landed Phase-18a skeleton kampPrior_case1_trichotomy_assemble (KampPrior.lean:1056) and narrow :361. Literature grounding: orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt (crux and resolution fields, second successor); report 02 Section 6 'Phase 9' decomposition (reports/02_endpoint-hook-discharge-research.md:272-279), adapted -- the :361 rewire itself stays task 309's own Phase 19, only the hook discharge is this task's deliverable.",
+      "effort": "high",
+      "parent_task": 309,
+      "dependencies": [
+        349
+      ],
+      "created": "2026-07-12T01:37:12Z",
+      "last_updated": "2026-07-12T01:37:12Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 309"
+        }
+      ]
     }
   ],
   "artifacts": [
