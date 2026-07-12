@@ -474,7 +474,7 @@ provider files byte-unchanged).
 - **Guards enforced:** G1-G6 (as amended), A1/A2, N1-N5, V9-1..V9-5.
 - **Commit:** `task 309 phase 15: site/coverage probe — fragment triage + depth-ladder verdict`
 
-### Phase 16: Provider instantiation shim — `ExistProviders` from the recursion at the :361 site [NOT STARTED]
+### Phase 16: Provider instantiation shim — `ExistProviders` from the recursion at the :361 site [IN PROGRESS]
 
 - **Goal:** Build `P : ExistProviders sig atomMap 1` (and, if F-ii = GO-full, the general
   `ExistProviders sig atomMap k` family) at the KampPrior `| 1 =>` site from the recursive calls

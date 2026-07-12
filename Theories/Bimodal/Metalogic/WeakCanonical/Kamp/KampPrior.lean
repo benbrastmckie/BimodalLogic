@@ -846,4 +846,189 @@ theorem kampPrior_site_nonfragment_qnf_exists {sig : MonadicSignature} :
   rw [hsing] at h0 h1
   exact hne ((List.mem_singleton.mp h0).trans (List.mem_singleton.mp h1).symm)
 
+/-! ## Task 309 Phase 16 — provider instantiation shim: `ExistProviders` from the recursion
+
+The `ExistProviders sig atomMap j` bundle (PriorInterface:38, task 309 Phase 13.1 — consumed,
+never edited) packages exactly the data the `nf_nvar_exist_all_depths` recursion supplies at
+its `| k+1 =>` body for every structurally available depth `j ≤ k`: an all-arity existential
+converter `existF` plus its UZ/SZ-conditional correctness — the KampPrior:265 `ih_exist_1`
+pattern generalized across arities (per-round provider threading, Cor 5.4, PDF p.7/p.9).
+
+**Shim form — converters threaded as hypotheses (the sanctioned 13.1 surgery pattern; recorded
+plan deviation, Phase 16).** The shim takes the recursion's IH family as an explicit hypothesis
+`ih` (the exact `∃`-statement shape of `nf_nvar_exist_all_depths atomMap h_surj j`) instead of
+calling `nf_nvar_exist_all_depths` by name, for two machine-checked reasons:
+1. **Axiom cleanliness**: any top-level reference to `nf_nvar_exist_all_depths` inherits
+   `sorryAx` from the open `:361`/`:364` arms — the Phase-16 acceptance bar
+   (`lean_verify` = exactly `[propext, Classical.choice, Quot.sound]`) forbids that. The
+   of-`ih` form is sorry-free and axiom-clean NOW; the instantiation
+   `kampPrior_existProviders_of_ih atomMap j (fun n sub =>
+   nf_nvar_exist_all_depths atomMap h_surj j n sub)` type-checks at the `| k+1 =>` site for
+   every structurally available `j` (F-A: the ∀k quantifier lives in KampPrior's `Nat.rec`)
+   and is Phase 18's arm-rewrite move — the edit that retires the sorry itself.
+2. **Line-citation stability**: editing the `| 1 =>` arm body now would shift the `:361`/`:364`
+   citations the Phase-15 verdict record and the provider handoffs are keyed to; the site
+   instantiation therefore lands WITH the Phase-18 arm rewrite, not before.
+
+Consumption seams delivered below (the shapes Phases 17-18 rewrite through, keyed to the
+Phase-15 corrected arm indexing — the gate's `P : ExistProviders sig atomMap 1` is consumed at
+the k=2 arm):
+- `kampPrior_existProviders_of_ih_correct` — the bundle's raw `insertEnv` correctness, named.
+- `kampPrior_existProviders_of_ih_existF0_char` — the `existF 0` arity-1 characteristic bridge
+  (`Fin 0` env eliminated): the shape the gate's `kvE2_sepPtW … (fun χ => P.existF 0 χ)`
+  positions (`hrealI`/`hrealB`/`hexcl`, OuterGate:374/:380/:387) evaluate.
+- `kampPrior_existProviders_of_ih_exist1` — the `existF 1` arity-2 `Fin.cons` bridge: the
+  `ih_exist_1` seam (KampPrior:265-291) as a named lemma on the bundle.
+- `kampPrior_existProviders_one_of_ih` — the depth-1 bundle, THE gate parameter `P`
+  (`kampPrior_site_rung2_gate_match` above).
+- `kampPrior_existProviders_zero` — concrete GREEN depth-0 instantiation from the landed
+  sorry-free Phase-2 converter (`nf_nvar_exist_depth0_tl_fn`), machine-certifying that the
+  bundle instantiates from landed converters with `P.correct` available (h_UZ/h_SZ dropped —
+  the depth-0 converter is unconditional). -/
+
+/-- **Phase-16 shim (task 309): `ExistProviders` from the recursion's IH shape.** Given the
+    all-arity IH family at depth `j` — the exact statement `nf_nvar_exist_all_depths atomMap
+    h_surj j n sub` proves (KampPrior:216-223), structurally available at the `| k+1 =>` site
+    for all `j ≤ k` (F-A) — package it as the 13.1 provider bundle. `existF` is the chosen
+    formula, `correct` the chosen specification: the `ih_exist_1`/`exist_tl_fn_k` pattern
+    (KampPrior:265-304) generalized across arities. -/
+noncomputable def kampPrior_existProviders_of_ih {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (j : Nat)
+    (ih : ∀ (n : Nat) (sub : NormalForm sig j (n + 1)),
+      ∃ (A : Formula),
+        ∀ (M : OrderedMonadicStructure sig)
+          (_h_UZ : semantic_prior_UZ M atomMap)
+          (_h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔
+          ∃ env : Fin n → M.carrier, nf_eval_nf M j (n + 1) (insertEnv env t) sub) :
+    ExistProviders sig atomMap j where
+  existF := fun n sub => (ih n sub).choose
+  correct := fun n sub M h_UZ h_SZ t => (ih n sub).choose_spec M h_UZ h_SZ t
+
+/-- **Named correctness of the Phase-16 shim** — `P.correct` availability as a standalone
+    lemma (grep-anchor for Phases 17-18): the bundle built from `ih` converts the `n`-variable
+    depth-`j` existential at the raw `insertEnv` shape. -/
+theorem kampPrior_existProviders_of_ih_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (j : Nat)
+    (ih : ∀ (n : Nat) (sub : NormalForm sig j (n + 1)),
+      ∃ (A : Formula),
+        ∀ (M : OrderedMonadicStructure sig)
+          (_h_UZ : semantic_prior_UZ M atomMap)
+          (_h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔
+          ∃ env : Fin n → M.carrier, nf_eval_nf M j (n + 1) (insertEnv env t) sub)
+    (n : Nat) (sub : NormalForm sig j (n + 1))
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier) :
+    temporal_truth M atomMap t
+        ((kampPrior_existProviders_of_ih atomMap j ih).existF n sub) ↔
+      ∃ env : Fin n → M.carrier, nf_eval_nf M j (n + 1) (insertEnv env t) sub :=
+  (kampPrior_existProviders_of_ih atomMap j ih).correct n sub M h_UZ h_SZ t
+
+/-- **`existF 0` characteristic bridge (task 309 Phase 16).** At arity 1 (`n = 0`) the bundle's
+    converter is a depth-`j` characteristic formula: the `Fin 0` environment is eliminated
+    (`insertEnv_zero`), leaving `nf_eval_nf M j 1 (fun _ => t) χ` — the evaluation shape the
+    gate's `kvE2_sepPtW … (fun χ => P.existF 0 χ)` provider positions
+    (OuterGate:374/:380/:387) consume at the pivot `w`. -/
+theorem kampPrior_existProviders_of_ih_existF0_char {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (j : Nat)
+    (ih : ∀ (n : Nat) (sub : NormalForm sig j (n + 1)),
+      ∃ (A : Formula),
+        ∀ (M : OrderedMonadicStructure sig)
+          (_h_UZ : semantic_prior_UZ M atomMap)
+          (_h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔
+          ∃ env : Fin n → M.carrier, nf_eval_nf M j (n + 1) (insertEnv env t) sub)
+    (χ : NormalForm sig j 1)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier) :
+    temporal_truth M atomMap t
+        ((kampPrior_existProviders_of_ih atomMap j ih).existF 0 χ) ↔
+      nf_eval_nf M j 1 (fun _ => t) χ := by
+  rw [kampPrior_existProviders_of_ih_correct atomMap j ih 0 χ M h_UZ h_SZ t]
+  constructor
+  · rintro ⟨env, h⟩
+    have hins : insertEnv env t = fun _ => t := by
+      funext ⟨i, hi⟩; simp [insertEnv]
+    rwa [hins] at h
+  · intro h
+    exact ⟨Fin.elim0, by rwa [insertEnv_zero]⟩
+
+/-- **`existF 1` `Fin.cons` bridge (task 309 Phase 16).** At arity 2 (`n = 1`) the bundle's
+    converter is the single-anchor existential in `Fin.cons` form — the `ih_exist_1` seam
+    (KampPrior:265-291) landed as a named lemma on the bundle (the same env bridge as
+    `kampPrior_site_env_bridge`, here at arbitrary depth `j`). -/
+theorem kampPrior_existProviders_of_ih_exist1 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds) (j : Nat)
+    (ih : ∀ (n : Nat) (sub : NormalForm sig j (n + 1)),
+      ∃ (A : Formula),
+        ∀ (M : OrderedMonadicStructure sig)
+          (_h_UZ : semantic_prior_UZ M atomMap)
+          (_h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔
+          ∃ env : Fin n → M.carrier, nf_eval_nf M j (n + 1) (insertEnv env t) sub)
+    (sub : NormalForm sig j 2)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier) :
+    temporal_truth M atomMap t
+        ((kampPrior_existProviders_of_ih atomMap j ih).existF 1 sub) ↔
+      ∃ x : M.carrier, nf_eval_nf M j 2 (Fin.cons x (fun _ => t)) sub := by
+  rw [kampPrior_existProviders_of_ih_correct atomMap j ih 1 sub M h_UZ h_SZ t]
+  have h_env_eq : ∀ (env : Fin 1 → M.carrier),
+      insertEnv env t = Fin.cons (env ⟨0, by omega⟩) (fun _ => t) := by
+    intro env; funext ⟨i, hi⟩
+    simp only [insertEnv]
+    by_cases h : i < 1
+    · have h_i0 : i = 0 := by omega
+      subst h_i0; simp [h, Fin.cons]
+    · have h_i1 : i = 1 := by omega
+      subst h_i1
+      simp only [show ¬(1 < 1) from by omega, ↓reduceDIte]; rfl
+  constructor
+  · rintro ⟨env, h_env⟩
+    exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
+  · rintro ⟨x, hx⟩
+    exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
+
+/-- **The depth-1 provider bundle (task 309 Phase 16) — THE gate parameter.** The `j = 1`
+    instance of the shim: exactly the `P : ExistProviders sig atomMap 1` that
+    `bracketEndChar_kvE2Ext_correct_two_prior_frag` (348) and its site certificate
+    `kampPrior_site_rung2_gate_match` take — consumed at the k=2 arm (depth-3 obligations),
+    per the Phase-15 corrected arm indexing. At the `| k+1 =>` site the depth-1 IH family is
+    structurally available whenever `1 ≤ k` (nested-pattern access, F-A), which holds at every
+    arm the gate serves (k ≥ 2). -/
+noncomputable def kampPrior_existProviders_one_of_ih {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (ih : ∀ (n : Nat) (sub : NormalForm sig 1 (n + 1)),
+      ∃ (A : Formula),
+        ∀ (M : OrderedMonadicStructure sig)
+          (_h_UZ : semantic_prior_UZ M atomMap)
+          (_h_SZ : semantic_prior_SZ M atomMap)
+          (t : M.carrier),
+          temporal_truth M atomMap t A ↔
+          ∃ env : Fin n → M.carrier, nf_eval_nf M 1 (n + 1) (insertEnv env t) sub) :
+    ExistProviders sig atomMap 1 :=
+  kampPrior_existProviders_of_ih atomMap 1 ih
+
+/-- **Concrete GREEN depth-0 instantiation (task 309 Phase 16).** The depth-0 bundle from the
+    landed sorry-free Phase-2 all-arity converter `nf_nvar_exist_depth0_tl_fn`
+    (NfDepth0Generalized:1615) — no IH hypothesis needed, `h_UZ`/`h_SZ` dropped (the depth-0
+    converter is unconditional). Machine-certifies that the 13.1 bundle instantiates from
+    landed converters with `P.correct` available: the shim's instantiation pattern, compiled
+    green outside the recursion. -/
+noncomputable def kampPrior_existProviders_zero {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
+    ExistProviders sig atomMap 0 where
+  existF := fun n sub => nf_nvar_exist_depth0_tl_fn atomMap h_surj n sub
+  correct := fun n sub M _h_UZ _h_SZ t =>
+    nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub M t
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
