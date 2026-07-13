@@ -1667,4 +1667,119 @@ theorem agg2Diag_iff (atomMap : Formula → sig.preds)
 
 end AggDiagK0
 
+/-! ## Phase 3 — k=0 hook discharge: the three arm lemmas (match arm k=0)
+
+The three green citable lemmas in the `kampPrior_case1_trichotomy_assemble` skeleton shape
+(KampPrior.lean:1146) at match arm k=0 (`sub_nf : NormalForm sig 1 2`). Each conclusion is the
+corresponding `kampPrior_site_trichotomy` disjunct verbatim (KampPrior.lean:677-684).
+`h_UZ`/`h_SZ` are carried (unused — the k=0 aggregates need no Prior hypotheses, matching the
+k≤1 rungs `bracketEndChar_kv_correct_{zero,one}_prior`) so the statements slot directly under
+the Prior-guarded skeleton. These discharge the P4/P5 `h_quant` hooks and the `A_diag_correct`
+hooks at k=0 IN THE SENSE THAT BINDS (task-309 Phase 18b consumes the conclusion shape, not
+the binder — Phase-1 R1/R2 adjudication record). -/
+
+section ArmLemmasK0
+
+variable {sig : MonadicSignature}
+
+/-- **k=0 past arm formula**: the Since-direction translation of the past-arm aggregate. -/
+noncomputable def kampArm_past_k0 (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : Formula :=
+  (agg2Past atomMap h_surj sub_nf).translateRight
+
+/-- **k=0 past-arm hook discharge** (task 350 DoD lemma 1/6): the past-arm formula realizes
+    the past disjunct of `kampPrior_site_trichotomy` at match arm k=0. Enters the skeleton
+    via `VVecEA2.translateRight_correct` (Route V, Phase-1 R1 verdict). -/
+theorem kampArm_past_k0_correct (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) :
+    ∀ (M : OrderedMonadicStructure sig),
+      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      ∀ t : M.carrier,
+      temporal_truth M atomMap t (kampArm_past_k0 atomMap h_surj sub_nf) ↔
+        ∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  intro M _h_UZ _h_SZ t
+  unfold kampArm_past_k0
+  rw [VVecEA2.translateRight_correct]
+  exact agg2Past_holdsRight_iff atomMap h_surj sub_nf M t
+
+/-- **k=0 diagonal arm formula**: the diagonal-seam aggregate (closed at the origin). -/
+noncomputable def kampArm_diag_k0 (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : Formula :=
+  agg2Diag atomMap h_surj sub_nf
+
+/-- **k=0 diagonal-arm hook discharge** (task 350 DoD lemma 2/6): the diagonal-arm formula
+    realizes the diagonal disjunct of `kampPrior_site_trichotomy` at match arm k=0 — the
+    additive `A_diag_correct` variant of the Phase-1 R2 verdict (the per-point hooks are
+    world-locality-refuted; the conclusion shape is delivered directly). -/
+theorem kampArm_diag_k0_correct (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) :
+    ∀ (M : OrderedMonadicStructure sig),
+      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      ∀ t : M.carrier,
+      temporal_truth M atomMap t (kampArm_diag_k0 atomMap h_surj sub_nf) ↔
+        nf_eval_nf M 1 2 (Fin.cons t (fun _ => t)) sub_nf := by
+  intro M _h_UZ _h_SZ t
+  exact agg2Diag_iff atomMap h_surj sub_nf M t
+
+/-- **k=0 future arm formula**: the Until-direction translation of the future-arm aggregate. -/
+noncomputable def kampArm_future_k0 (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : Formula :=
+  (agg2Fut atomMap h_surj sub_nf).translateLeft
+
+/-- **k=0 future-arm hook discharge** (task 350 DoD lemma 3/6): the future-arm formula
+    realizes the future disjunct of `kampPrior_site_trichotomy` at match arm k=0. Enters the
+    skeleton via `VVecEA2.translateLeft_correct` (Route V, dual). -/
+theorem kampArm_future_k0_correct (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) :
+    ∀ (M : OrderedMonadicStructure sig),
+      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      ∀ t : M.carrier,
+      temporal_truth M atomMap t (kampArm_future_k0 atomMap h_surj sub_nf) ↔
+        ∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  intro M _h_UZ _h_SZ t
+  unfold kampArm_future_k0
+  rw [VVecEA2.translateLeft_correct]
+  exact agg2Fut_holdsLeft_iff atomMap h_surj sub_nf M t
+
+/-! ### Phase-3 shape certificates (drop-in citability without importing KampPrior)
+
+Each `_correct` conclusion instantiated at the generic-site index `0 + 1` — the exact match-arm
+shape of the `kampPrior_site_trichotomy` disjuncts (`sub_nf : NormalForm sig (k+1) 2` at
+`k := 0`) and of `kampPrior_case1_trichotomy_assemble`'s `h_past`/`h_diag`/`h_future` binders.
+KampPrior imports this module's aggregator (not vice versa), so the certificates copy the
+disjunct statements verbatim rather than applying the skeleton itself. -/
+
+section ShapeCertificatesK0
+variable (atomMap : Formula → sig.preds)
+  (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+  (sub_nf : NormalForm sig (0 + 1) 2)
+  (M : OrderedMonadicStructure sig)
+  (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+  (t : M.carrier)
+
+/-- Past disjunct shape at match arm k=0 (verbatim `kampPrior_site_trichotomy` disjunct 1). -/
+example : temporal_truth M atomMap t (kampArm_past_k0 atomMap h_surj sub_nf) ↔
+    ∃ x, x < t ∧ nf_eval_nf M (0 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf :=
+  kampArm_past_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t
+
+/-- Diagonal disjunct shape at match arm k=0 (verbatim disjunct 2). -/
+example : temporal_truth M atomMap t (kampArm_diag_k0 atomMap h_surj sub_nf) ↔
+    nf_eval_nf M (0 + 1) 2 (Fin.cons t (fun _ => t)) sub_nf :=
+  kampArm_diag_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t
+
+/-- Future disjunct shape at match arm k=0 (verbatim disjunct 3). -/
+example : temporal_truth M atomMap t (kampArm_future_k0 atomMap h_surj sub_nf) ↔
+    ∃ x, t < x ∧ nf_eval_nf M (0 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf :=
+  kampArm_future_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t
+
+end ShapeCertificatesK0
+
+end ArmLemmasK0
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

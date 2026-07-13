@@ -327,31 +327,38 @@ closure + aggregation, at the per-clause/aggregation boundary)
 
 ---
 
-### Phase 3: k=0 hook discharge — three arm lemmas [NOT STARTED]
+### Phase 3: k=0 hook discharge — three arm lemmas [COMPLETED]
 
 **Goal**: The three green citable k=0 lemmas in the skeleton shape, discharging the arm hooks at
 match arm k=0 (`sub_nf : NormalForm sig 1 2`).
 
 **Tasks**:
-- [ ] `kampArm_past_k0` + `kampArm_past_k0_correct`: assemble atom layer
+- [x] `kampArm_past_k0` + `kampArm_past_k0_correct`: assemble atom layer
   (`nf_char2_atom_offdiag_correct`, Base.lean:399-region) + `aggPop0` per witness x, enter via
   `VVecEA2.translateRight_correct` (NfToVecEA.lean:451) [Route V] or via
   `nf_char2_past_formula_correct` (Base.lean:1262) with the h_quant binder [Route P, only if
   Phase-1 verdict allows]. Conclusion: `temporal_truth M atomMap t … ↔ ∃ x, x < t ∧
-  nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`.
-- [ ] `kampArm_future_k0` + `_correct`: exact dual via `VVecEA2.translateLeft_correct`
+  nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. *(completed via Route V exactly as
+  primary-routed: `(agg2Past …).translateRight` + `VVecEA2.translateRight_correct` +
+  `agg2Past_holdsRight_iff`; Route P not used per the R1 verdict)*
+- [x] `kampArm_future_k0` + `_correct`: exact dual via `VVecEA2.translateLeft_correct`
   (VecEATranslation.lean:549) / `nf_char2_future_formula_correct` (Base.lean:1462) with the
-  flipped origin guard (`nf_char2_atom_offdiag_origin_future`, Base.lean:1340).
-- [ ] `kampArm_diag_k0` + `_correct`: diagonal disjunct `nf_eval_nf M 1 2 (Fin.cons t (fun _ =>
+  flipped origin guard (`nf_char2_atom_offdiag_origin_future`, Base.lean:1340). *(completed —
+  flipped origin guard consumed inside `agg2EpFutL`/`agg2Fut_holdsLeft_iff`)*
+- [x] `kampArm_diag_k0` + `_correct`: diagonal disjunct `nf_eval_nf M 1 2 (Fin.cons t (fun _ =>
   t)) sub_nf` via the diagonal converter stack (`nf_char2_diag_exist_tl_correct`, Base.lean:183;
   `A_diag_correct` applied per Phase-1 R2 verdict, else the additive diag variant) + the
-  diagonal-seam aggregate `aggPop0_diag`.
-- [ ] Sanity certificate: an `example` applying `kampPrior_case1_trichotomy_assemble`
+  diagonal-seam aggregate `aggPop0_diag`. *(completed — the additive diag variant per the R2
+  verdict: `kampArm_diag_k0 := agg2Diag`, correctness `agg2Diag_iff`; `A_diag_correct` and the
+  diag converter stack not consumed — their per-point hooks are world-locality-refuted)*
+- [x] Sanity certificate: an `example` applying `kampPrior_case1_trichotomy_assemble`
   (KampPrior.lean:1146) shape against the three conclusions is NOT possible here (KampPrior
   imports the aggregator, not vice versa) — instead land a local `example` matching each
   conclusion against the corresponding `kampPrior_site_trichotomy` disjunct SHAPE (statement
-  copied verbatim; certifies drop-in citability without importing KampPrior).
-- [ ] Scoped build green; commit.
+  copied verbatim; certifies drop-in citability without importing KampPrior). *(completed —
+  three `example`s at the generic-site index `0 + 1`, `ShapeCertificatesK0` section)*
+- [x] Scoped build green; commit. *(completed; `lean_verify` on all three `_correct` lemmas =
+  exactly `[propext, Classical.choice, Quot.sound]`)*
 
 **Timing**: 2 hours
 
