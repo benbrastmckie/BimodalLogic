@@ -1894,7 +1894,7 @@
     {
       "project_number": 350,
       "project_name": "build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Build the aggregate forall-qnf quantEnd/seg construction -- a single TemporalPred/BracketFormula 0 encoding the population match `forall qnf : NormalForm sig k 3, ((exists w, nf_eval_nf M k 3 (zoneEnv3 w x t) qnf) <-> sub_nf.2 qnf)` via 5-zone order-pattern routing (the existing `seg endChar qnf` at Base.lean:1127 is per-qnf, not an all-order-patterns aggregate; same house style as the landed zone-triage lemmas, e.g. nf_zone_exists_trichotomy_k1) -- and use it plus the recursive endChar_correct (consumed by name from the prerequisite task) to discharge the three arm-correctness lemma hooks as separate green lemmas at depth k=0 and k=1: h_quant past (nf_char2_past_formula_correct, Base.lean:1230, hook at 1238-1241), h_quant future (nf_char2_future_formula_correct, Base.lean:1430, hook at 1438-1441), and h_past/h_fut/h_diag (A_diag_correct, Base.lean:758, hooks at 765-773). Consume, do NOT rebuild: endChar_correct (from the prerequisite task), seg_holds_coupled (Base.lean:1150), nf_zone_flatten_navigable_correct (NfZoneFlattenNavigable.lean:709). Guards (binding, same set as the prerequisite task): G1-G5; FORBIDDEN nf_char3_deeper_split; do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT edit KampPrior.lean:352-364 (the :361/:364 sorry region and its transfer note stay task 309's own Phase 19 edit -- this task lands consumable lemmas only, in Base.lean or an additive 309-owned wiring file, never the sorry lines themselves); axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free. Definition of done: lake build GREEN; all new lemmas sorry-free; lean_verify on each named hook-discharge lemma = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; no edit inside the KampPrior.lean recursion body; task 309's Phase 18b/19 can cite the k=0/k=1 hook-discharge lemmas by name to instantiate the landed Phase-18a skeleton kampPrior_case1_trichotomy_assemble (KampPrior.lean:1056) and narrow :361. Literature grounding: orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt (crux and resolution fields, second successor); report 02 Section 6 'Phase 9' decomposition (reports/02_endpoint-hook-discharge-research.md:272-279), adapted -- the :361 rewire itself stays task 309's own Phase 19, only the hook discharge is this task's deliverable.",
@@ -1904,7 +1904,7 @@
         349
       ],
       "created": "2026-07-12T01:37:12Z",
-      "last_updated": "2026-07-13T22:14:20Z",
+      "last_updated": "2026-07-13T22:18:03Z",
       "artifacts": [
         {
           "type": "research",
@@ -2187,7 +2187,7 @@
     {
       "project_number": 358,
       "project_name": "realization_recursion_nf_nvar_exist_all_depths",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
@@ -2199,17 +2199,17 @@
         360
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-13T22:11:49Z",
+      "last_updated": "2026-07-13T22:22:53Z",
       "artifacts": [
-        {
-          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/02_realizer-recursion-implementation.md",
-          "type": "plan",
-          "summary": "5-phase hard-mode realizer plan; Phase 1 = constructive Until-witness gate; zero-debt [BLOCKED]+spawn"
-        },
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md",
           "type": "report",
           "summary": "Post-360 gap map: four-gap decomposition (G1-G4), binding route notes, six-phase plan v3 decomposition"
+        },
+        {
+          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md",
+          "type": "plan",
+          "summary": "Plan v3: post-360 gap closure (G1-G4), probe-first phases, slice-keyed discharge route"
         }
       ],
       "file_scope": [
