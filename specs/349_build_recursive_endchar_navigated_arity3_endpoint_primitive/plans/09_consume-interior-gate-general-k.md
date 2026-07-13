@@ -411,7 +411,7 @@ applicable) + `/spawn 349`, never fake green.
 - **Depends on:** 5. **Parallel with 7 (H7 territory: Base.lean is Phase 6's exclusive file).**
 - **Files:** `.../NfMultiAnchorBridge/Base.lean` (doc-comment edits only).
 
-### Phase 7: Obligation-disposition ledger + consumer-seam guards audit [NOT STARTED]
+### Phase 7: Obligation-disposition ledger + consumer-seam guards audit [COMPLETED]
 
 - **Goal:** Produce the binding record of which obligations remain hypothesis-side (and where
   each is discharged), and run the guards/route audit over the v9 seam. This realizes the v8
@@ -433,17 +433,59 @@ applicable) + `/spawn 349`, never fake green.
 
   Also record: the v8-era `hreal`/`hsat` EXTERIOR interface and the 356-era `hbr*` binders are
   RETIRED — replaced by rows 8-11 (360 re-key; `hbr*` grep = 0 repo-wide is an audit item).
+
+  *(Phase 7 execution note: all 11 rows verified against source binder-by-binder
+  (EndIntervalConsumerK.lean:97-170 — rows 1-6 at :114/:115/:117/:119/:125; row 7 confirmed NOT
+  a binder at the 16-argument call site :205-207; rows 8-11 at :141/:148/:155/:162 with fiber
+  guards `nfk_dropFresh σ = qnf.1` at :144/:151) and all four m=0 supply theorems confirmed at
+  their exact sites (ExteriorPinnedConverseK.lean:1301/:1242, ExteriorPinnedConversePastK.lean:
+  822/:769). The ledger is RECORDED as a doc-comment immediately after the Phase-5 alias
+  `endInterval_correct` in EndIntervalConsumerK.lean (task 349 Phase 7 section), with row-5/6
+  discharge pointers recording BOTH the in-source KampPrior:352-360 fencing (309 Phase 14
+  provider instantiation) and the 358 realization-recursion assignment as complementary inputs
+  to the same retirement. Scoped build GREEN post-edit (1031 jobs); diff comment-only.)*
 - **Guards/route audit (read-only over v9 seam + new code):**
-  - [ ] FORBIDDEN grep over all v9-touched files: `nf_char3_deeper_split` = 0; new
+  - [x] FORBIDDEN grep over all v9-touched files: `nf_char3_deeper_split` = 0; new
         `nfk_projFresh` = 0; `hbr` identifiers = 0 repo-wide; no Boneyard import.
-  - [ ] G1-G5 spot-audit of the alias + `EndIntervalCorrectPrior` statement (arity-4 interior
+        *(verified: 0 new `nf_char3_deeper_split` in v9-added lines — EndIntervalConsumerK = 0
+        total; Base.lean's 7 occurrences are pre-existing historical documentation, count went
+        8→7 across v9; `nfk_projFresh` = 0 in both v9-touched files; eliminated `hbr*` binder
+        family (`hbrFut`/`hbrPast`/`hbrFutSat`/`hbrPastSat`) = 0 live binders repo-wide, 2
+        doc-prose retirement mentions only — matches 360's audit criterion verbatim; no Boneyard
+        import in either v9-touched file — the pre-existing Boneyard importers Prop43.lean /
+        NavigatedEndChar.lean are unimported dead leaves, unchanged by v9)*
+  - [x] G1-G5 spot-audit of the alias + `EndIntervalCorrectPrior` statement (arity-4 interior
         binders; anchors {x,t}; bound witnesses; non-trivial segments; no chain-step shortcut in
-        any v9 code).
-  - [ ] `git diff` on all FROZEN/consume-only files EMPTY across the whole v9 range;
-        `nf_nvar_exist_all_depths` signature untouched.
-  - [ ] Sorry census: the only in-tree sorries on the Kamp path remain `KampPrior.lean:361/364`
+        any v9 code). *(verified: `hreal`/`hexcl`/`hexclSlice*` interior obligations at FULL
+        arity 4 — `NormalForm sig (m+1) 4` over the 4-anchor `Fin.cons x1 (Fin.cons w (Fin.cons
+        x (fun _ => t)))` vector (G1); free anchors of the m+2 conclusion exactly {x,t}, `w`
+        existentially bound, `x1`/`σ`/`σ'` bound within obligation binders (G2/G4); no
+        `TemporalPred.top` in EndIntervalConsumerK.lean (G3); v9-added code is term-mode +
+        `rfl` only — zero tactics, no `simp`/`omega`/`aesop` chain-step (G5); `lean_verify
+        endInterval_correct` re-run post-ledger: axioms exactly `[propext, Classical.choice,
+        Quot.sound]`, no warnings)*
+  - [x] `git diff` on all FROZEN/consume-only files EMPTY across the whole v9 range;
+        `nf_nvar_exist_all_depths` signature untouched. *(verified: committed v9 range
+        `fb6e5b7af^..HEAD` touches exactly the two v9-editable files — Base.lean +
+        EndIntervalConsumerK.lean; working-tree Theories/ diff = the Phase-7 ledger doc-comment
+        only, 27 inserted comment lines, zero non-comment changed lines; 0 diff hits on
+        `nf_nvar_exist_all_depths`)*
+  - [x] Sorry census: the only in-tree sorries on the Kamp path remain `KampPrior.lean:361/364`
         (+ the :639-adjacent documented strategic site), all fenced to task 358 / their
         follow-up tasks — NONE attributable to 349; zero sorries in any v9-touched file.
+        *(deviation: altered — census-precision correction. Actual census (script +
+        grep-confirmed): FOUR non-Boneyard sorry tokens on the Kamp path — `KampPrior.lean:361`
+        (in-source :352-360 fencing note binds retirement to task 309 Phase 14's provider
+        instantiation consuming the 348 gate; the realization-recursion component is task 358
+        per the 349/357/358 chain — complementary inputs to the same retirement),
+        `KampPrior.lean:364` (n≥2 arm, off the critical path; GO-k1 routing note :628-643 —
+        the ":639-adjacent site" is that prose routing note, not an additional sorry token),
+        PLUS the pre-existing pair `EANegation.lean:1090/:1249` — both present at the v9 base
+        commit, documented in-file as non-blocking inherent BracketFormula-level limitations
+        ("does NOT block completeness"; resolution via `neg_bounded_exists` in
+        EANegationClosure), on the live import path via Base.lean:4 but in no 349-touched file
+        of any plan version. The binding Phase-7 bar holds unweakened: NONE attributable to
+        349; ZERO sorries in any v9-touched file.)*
 - **Bounded-unit stop condition:** ledger verified row-by-row + audit greps clean, OR a RED
   finding → route to the owning task as a DEFECT (`/spawn 349` if it blocks 349's DoD), never
   patched ad hoc.

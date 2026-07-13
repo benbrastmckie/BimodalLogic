@@ -225,6 +225,33 @@ theorem endInterval_correct {sig : MonadicSignature}
     ∀ k : Nat, EndIntervalCorrectPrior atomMap h_surj charF Pfam k :=
   endInterval_step_correct atomMap h_surj charF Pfam
 
+/-! ## Task 349 Phase 7 — obligation-disposition ledger (binding record)
+
+The complete disposition of the 11 obligations of the `m+2` arm of `EndIntervalCorrectPrior`
+(binder lines refer to this file). Obligations threaded outward are a DOCUMENTED INTERFACE with
+named downstream discharge sites — never debt. Verified row-by-row against source (task 349
+Phase 7 audit).
+
+| # | Obligation (binder) | Disposition | Discharge site |
+|---|---------------------|-------------|----------------|
+| 1 | `P : ExistProviders sig atomMap (m+1)` (:114) | hypothesis-side | task 309 Phase 14 — provider-family instantiation against `nf_nvar_exist_all_depths` (`KampPrior.lean`; NO-EDIT for 349) |
+| 2 | `hcharK : charF (m+1) = fun χ => P.existF 0 χ` (:115) | hypothesis-side | task 309 Phase 14 (with row 1) |
+| 3 | `h_UZ : semantic_prior_UZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design — `KampPrior` supplies at every consumption site |
+| 4 | `h_SZ : semantic_prior_SZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design (with row 3) |
+| 5 | `hreal` — interior realization, FULL arity 4 (:119) | hypothesis-side | task 358 — realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds 309 Phase 14's provider instantiation; the two are complementary inputs to the same retirement) |
+| 6 | `hexcl` — within-`[x,t]` exclusion, arity 4 (:125) | hypothesis-side | task 358 (with row 5) |
+| 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by task 356 (`bracketEndChar_kvExt_correct_prior`, `ExteriorGateAssembleK.lean:180`; ⇒-side guard split → `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at the 16-argument call site, `endInterval_step_correct` m+2 arm) |
+| 8 | `hslicePast` — ⇐-side slice honesty, fiber-guarded (:141) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hslicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:822`) | general m: task 358 |
+| 9 | `hsliceFut` — ⇐-side slice honesty, fiber-guarded (:148) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) | general m: task 358 |
+| 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (:155) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSlicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:769`) | general m: task 358 |
+| 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (:162) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1242`) | general m: task 358 |
+
+RETIRED interfaces (do not resurrect): the v8-era `hreal`/`hsat` EXTERIOR realization interface
+and the 356-era `hbr*` exterior binders (machine-refuted — `kvE_futPinned_of_end_zero_refuted`)
+are RETIRED, replaced by rows 8-11 (task 360 slice-keyed re-key). Live `hbr*` binders of the
+eliminated family = 0 repo-wide (360 audit criterion; docstring mentions and unrelated
+pre-existing hypothesis names excluded). -/
+
 section RecursionReductionProbes
 /- Task 349 Phase 5 verification probes (landed as documented `example`s): the three `rfl`
    reductions of `endIntervalPrior`, confirming the recursion is genuine `Nat.rec` computation
