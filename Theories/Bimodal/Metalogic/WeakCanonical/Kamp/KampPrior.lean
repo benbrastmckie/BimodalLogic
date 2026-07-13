@@ -804,15 +804,17 @@ set_option maxHeartbeats 1600000 in
     `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:106`) at depth `(k+2)`, for
     ALL `k` (uniformly subsuming the k=2 arm as the `k = 0` member). It CARRIES the eleven
     obligations — the seven interior (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl` + the internalized
-    `hexclExt`) and the four task-356 exterior bracket obligations (`hbr*`) — exactly as the rung-2
-    certificate carries `hrealI`/`hrealB`/`hexcl`. `hexclExt` is discharged internally by the
-    consumed lemma; it is NOT an input binder. This is the general-`k` seam the reshaped consumer
+    `hexclExt`) and the four SLICE-KEYED exterior obligations (`hslice*`/`hexclSlice*`, task 360
+    Phase 3b replacements for the eliminated `hbr*`) — exactly as the rung-2 certificate carries
+    `hrealI`/`hrealB`/`hexcl`. `hexclExt` is discharged internally by the consumed lemma; it is NOT
+    an input binder. This is the general-`k` seam the reshaped consumer
     `endInterval_step_correct` (`EndIntervalConsumerK.lean`) closes task 349 Phase 5 through.
 
-    **Obligation discipline (carry, do NOT discharge).** `hreal`/`hexcl`/`hbr*` are threaded outward
-    — actually discharging them requires the un-landed realization recursion (the `:361`/`:364`
-    sorry arms), the fenced-out escalation boundary (task 357 Phase 7 / task-309 Phase-14 successor).
-    No `sorry`, no vacuous def is introduced here. -/
+    **Obligation discipline (carry, do NOT discharge).** `hreal`/`hexcl`/`hslice*`/`hexclSlice*`
+    are threaded outward — discharging `hreal`/`hexcl` requires the un-landed realization recursion
+    (the `:361`/`:364` sorry arms), the fenced-out escalation boundary (task 357 Phase 7 /
+    task-309 Phase-14 successor); the slice obligations are discharged at m = 0 by the plan-v2
+    Phase-5 supply theorems. No `sorry`, no vacuous def is introduced here. -/
 theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -842,66 +844,44 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- GUARDED restatement (task 360 Phase 1, report 03 §2.4): binder types mirrored verbatim
-    -- from `ExteriorGateAssembleK.lean` — each obligation carries the level-up ambient, the
-    -- chain-fire truth, the endpoint truth, and the destructor facts `hgap`/`hocc`.
-    (hbrPastReal : ∀ w : M.carrier, x < w → w < t →
+    -- SLICE-KEYED exterior interface (task 360 Phase 3b): binder types mirrored verbatim from
+    -- `ExteriorGateAssembleK.lean`. The four eliminated `hbr*` binders (guarded `hbr*Sat`
+    -- machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are replaced by two carried
+    -- obligations per side: `hslice*` (⇐-side slice honesty, ambient-guarded) and
+    -- `hexclSlice*` (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ,
+    -- `igPtW`-guarded). Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
+    -- `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
+    (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+        temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
+          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hsliceFut : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+        temporal_truth M atomMap t (kvE_futPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
+          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hexclSlicePast : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        kvE_pastSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, x1 < x →
-          temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
-          (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
-            x1 < r ∧ r < x ∧
-              temporal_truth M atomMap r (Pbr.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
-          ∀ s : NormalForm sig k 5, σ.2 s = true →
-          ∃ v : M.carrier, nf_eval_nf M k 5
-            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
-    (hbrPastSat : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        ∀ x1 : M.carrier, x1 < x →
-          temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
-          (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
-            x1 < r ∧ r < x ∧
-              temporal_truth M atomMap r (Pbr.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
-          ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
-            (∃ v : M.carrier, nf_eval_nf M k 5
-              (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
-            σ.2 s = true)
-    (hbrFutReal : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclSliceFut : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        kvE_futSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
-          temporal_truth M atomMap t (kvE_futPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
-          (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-            t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift Pbr a)) →
-          ∀ s : NormalForm sig k 5, σ.2 s = true →
-          ∃ v : M.carrier, nf_eval_nf M k 5
-            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
-    (hbrFutSat : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        ∀ x1 : M.carrier, t < x1 →
-          temporal_truth M atomMap t (kvE_futPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
-          (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-            t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift Pbr a)) →
-          ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
-            (∃ v : M.carrier, nf_eval_nf M k 5
-              (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
-            σ.2 s = true) :
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
   bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK Pbr qnf
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl
-    hbrPastReal hbrPastSat hbrFutReal hbrFutSat
+    hslicePast hsliceFut hexclSlicePast hexclSliceFut
 
 /-- **F-i positive exhibit (task 309 Phase 15): fragment `qnf` exist at the k=2-arm site
     type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265, task 346 Phase 2)

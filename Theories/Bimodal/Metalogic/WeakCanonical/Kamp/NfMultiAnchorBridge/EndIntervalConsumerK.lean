@@ -23,12 +23,13 @@ is defined at `CarrierK1V.lean:365`). Filling `endIntervalStep` in place would i
   (Pfam m)` (task 356), which discharges `hexclExt` internally.
 
 **Obligation discipline (carry, do NOT discharge).** All 11 obligations of the `m+2` arm (7 interior:
-`P, hcharK, h_UZ, h_SZ, hreal, hexcl` + the internalized `hexclExt`; 4 exterior task-356 `hbr*`) are
-THREADED OUTWARD as hypotheses — exactly as tasks 355 (`InteriorGateAllK`) and 356
-(`bracketEndChar_kvExt_correct_prior`) delivered. Actually discharging `hreal`/`hexcl`/`hbr*` requires
-the un-landed realization recursion (`KampPrior:361/364` sorries) and is the fenced-out escalation
-boundary (task 357 Phase 7 / a task-309 Phase-14 successor). No `sorry`, no vacuous def is introduced
-here.
+`P, hcharK, h_UZ, h_SZ, hreal, hexcl` + the internalized `hexclExt`; 4 exterior SLICE-KEYED
+obligations `hslice*`/`hexclSlice*` — task 360 Phase 3b replacements for the eliminated task-356
+`hbr*`) are THREADED OUTWARD as hypotheses — exactly as tasks 355 (`InteriorGateAllK`) and 356
+(`bracketEndChar_kvExt_correct_prior`) delivered. Actually discharging `hreal`/`hexcl` requires
+the un-landed realization recursion (`KampPrior:361/364` sorries); the slice obligations are
+discharged at m = 0 by the plan-v2 Phase-5 supply theorems. No `sorry`, no vacuous def is
+introduced here.
 
 ## References
 - Rabinovich 2014, "A Proof of Kamp's Theorem", Cor 5.4 + Lemma 7.6.
@@ -88,10 +89,11 @@ noncomputable def endIntervalPrior {sig : MonadicSignature}
       (base rung; no exterior obligation).
     - `m+2`: the full bundle — the six atom-layer order bits on `qnf.1`, the provider bundle `P` +
       agreement `hcharK`, the UZ/SZ Prior hypotheses, the interior realization/exclusion obligations
-      `hreal`/`hexcl`, and the four task-356 exterior bracket obligations `hbr*` (with `Pbr := Pfam m`
-      supplied by the family). `hexclExt` is NOT an input binder — `bracketEndChar_kvExt_correct_prior`
-      discharges it internally. Binder types copied verbatim from `ExteriorGateAssembleK.lean:106-167`
-      at depth-index `k := m`. -/
+      `hreal`/`hexcl`, and the four SLICE-KEYED exterior obligations `hslice*`/`hexclSlice*`
+      (task 360 Phase 3b, with `Pbr := Pfam m` supplied by the family). `hexclExt` is NOT an input
+      binder — `bracketEndChar_kvExt_correct_prior` discharges it internally (slice-level D1/D2 +
+      the carried `hexclSlice*` residue). Binder types copied verbatim from
+      `ExteriorGateAssembleK.lean` at depth-index `k := m`. -/
 def EndIntervalCorrectPrior {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -126,66 +128,40 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
           ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = false →
             ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        -- GUARDED restatement (task 360 Phase 1, report 03 §2.4): binder types copied verbatim
-        -- from `ExteriorGateAssembleK.lean` at depth-index `k := m`, `Pbr := Pfam m` — each
-        -- obligation carries the level-up ambient, the chain-fire truth, the endpoint truth,
-        -- and the destructor facts `hgap`/`hocc`, making it true-as-stated.
-        (_hbrPastReal : ∀ w : M.carrier, x < w → w < t →
+        -- SLICE-KEYED exterior interface (task 360 Phase 3b): binder types copied verbatim
+        -- from `ExteriorGateAssembleK.lean` at depth-index `k := m`, `Pbr := Pfam m`. The
+        -- four eliminated `hbr*` binders (guarded `hbr*Sat` machine-refuted,
+        -- `kvE_futPinned_of_end_zero_refuted`) are replaced by two carried obligations per
+        -- side: `_hslice*` (⇐-side slice honesty, ambient-guarded) and `_hexclSlice*`
+        -- (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ, `igPtW`-guarded).
+        -- Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
+        -- `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
+        (_hslicePast : ∀ w : M.carrier, x < w → w < t →
           nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+          ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true →
+            temporal_truth M atomMap x (kvE_pastPos (Pfam m) σ) →
+            ∃ σ' : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ' = true ∧
+              kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+        (_hsliceFut : ∀ w : M.carrier, x < w → w < t →
+          nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+          ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true →
+            temporal_truth M atomMap t (kvE_futPos (Pfam m) σ) →
+            ∃ σ' : NormalForm sig (m + 1) 4, kvE_futAdmissible σ' = true ∧
+              kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+        (_hexclSlicePast : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+            kvE_pastSliceMarked qnf σ = true →
             ∀ x1 : M.carrier, x1 < x →
-              temporal_truth M atomMap x (kvE_pastPos (Pfam m) σ) →
-              temporal_truth M atomMap x1 (kvE_pastEnd (Pfam m) σ) →
-              (∀ r : M.carrier, x1 < r → r < x →
-                temporal_truth M atomMap r (kvE_pastGapD (Pfam m) σ)) →
-              (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
-                x1 < r ∧ r < x ∧
-                  temporal_truth M atomMap r ((Pfam m).existF 4 (renameNF rot5Fwd rot5Bwd a))) →
-              ∀ s : NormalForm sig m 5, σ.2 s = true →
-              ∃ v : M.carrier, nf_eval_nf M m 5
-                (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
-        (_hbrPastSat : ∀ w : M.carrier, x < w → w < t →
-          nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-          ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-            ∀ x1 : M.carrier, x1 < x →
-              temporal_truth M atomMap x (kvE_pastPos (Pfam m) σ) →
-              temporal_truth M atomMap x1 (kvE_pastEnd (Pfam m) σ) →
-              (∀ r : M.carrier, x1 < r → r < x →
-                temporal_truth M atomMap r (kvE_pastGapD (Pfam m) σ)) →
-              (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
-                x1 < r ∧ r < x ∧
-                  temporal_truth M atomMap r ((Pfam m).existF 4 (renameNF rot5Fwd rot5Bwd a))) →
-              ∀ s : NormalForm sig m 5, nfk_dropFresh s = σ.1 →
-                (∃ v : M.carrier, nf_eval_nf M m 5
-                  (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
-                σ.2 s = true)
-        (_hbrFutReal : ∀ w : M.carrier, x < w → w < t →
-          nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+              ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        (_hexclSliceFut : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+            kvE_futSliceMarked qnf σ = true →
             ∀ x1 : M.carrier, t < x1 →
-              temporal_truth M atomMap t (kvE_futPos (Pfam m) σ) →
-              temporal_truth M atomMap x1 (kvE_futEnd (Pfam m) σ) →
-              (∀ r : M.carrier, t < r → r < x1 →
-                temporal_truth M atomMap r (kvE_futGapD (Pfam m) σ)) →
-              (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-                t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift (Pfam m) a)) →
-              ∀ s : NormalForm sig m 5, σ.2 s = true →
-              ∃ v : M.carrier, nf_eval_nf M m 5
-                (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
-        (_hbrFutSat : ∀ w : M.carrier, x < w → w < t →
-          nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-          ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-            ∀ x1 : M.carrier, t < x1 →
-              temporal_truth M atomMap t (kvE_futPos (Pfam m) σ) →
-              temporal_truth M atomMap x1 (kvE_futEnd (Pfam m) σ) →
-              (∀ r : M.carrier, t < r → r < x1 →
-                temporal_truth M atomMap r (kvE_futGapD (Pfam m) σ)) →
-              (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-                t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift (Pfam m) a)) →
-              ∀ s : NormalForm sig m 5, nfk_dropFresh s = σ.1 →
-                (∃ v : M.carrier, nf_eval_nf M m 5
-                  (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
-                σ.2 s = true),
+              ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ),
       (endIntervalPrior atomMap h_surj charF Pfam (m + 2) qnf).holds M atomMap x t ↔
         ∃ w : M.carrier, nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
 
@@ -199,8 +175,8 @@ set_option maxHeartbeats 1600000 in
     - `k = 1`: the interior-only depth-1 rung `bracketEndChar_kv_correct_one_prior`
       (`PriorInterface.lean:95`), carrying only `h0`.
     - `k = m+2`: consumes the exterior-composed discharge `bracketEndChar_kvExt_correct_prior`
-      (`ExteriorGateAssembleK.lean:106`), THREADING the 7 interior + 4 exterior obligations outward
-      (not discharging them). `hexclExt` is discharged internally by the consumed lemma.
+      (`ExteriorGateAssembleK.lean`), THREADING the 7 interior + 4 slice-keyed exterior obligations
+      outward (not discharging them). `hexclExt` is discharged internally by the consumed lemma.
     Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
 theorem endInterval_step_correct {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
@@ -220,10 +196,10 @@ theorem endInterval_step_correct {sig : MonadicSignature}
       exact bracketEndChar_kv_correct_one_prior atomMap h_surj charF h0
   | (m + 2) => by
       intro qnf h_xy h_yt h_xt h_yx h_ty h_tx P hcharK M h_UZ h_SZ x t
-        hreal hexcl hbrPastReal hbrPastSat hbrFutReal hbrFutSat
+        hreal hexcl hslicePast hsliceFut hexclSlicePast hexclSliceFut
       show (bracketEndChar_kvExt atomMap h_surj charF (Pfam m) qnf).holds M atomMap x t ↔ _
       exact bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK (Pfam m) qnf
         h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl
-        hbrPastReal hbrPastSat hbrFutReal hbrFutSat
+        hslicePast hsliceFut hexclSlicePast hexclSliceFut
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -431,7 +431,22 @@ probe P1); `kvE_futPinned_of_end_zero_refuted` untouched (append-only diff) and 
   uniqueness/factoring helpers to Metalogic/WeakCanonical/NormalForm.lean ONLY if missing
   there; existing declarations untouched).
 
-### Phase 3b: Re-key the brackets + re-prove consumers D1/D3/D4 without `hreal`/`hsat`/`hbr*` [NOT STARTED]
+### Phase 3b: Re-key the brackets + re-prove consumers D1/D3/D4 without `hreal`/`hsat`/`hbr*` [COMPLETED]
+
+**DEVIATION RECORD (Phase 3b, interface shape)**: the carried exterior interface is TWO
+obligations per side, not one: `hslice{Past,Fut}` (report 02 §3.4 shape verbatim, ⇐-side,
+ambient-guarded) PLUS `hexclSlice{Past,Fut}` (⇒-side per-σ exclusion residue for
+bit-false-but-slice-MARKED σ, `igPtW`-guarded, `hexcl`-shaped). Reason (goal-state evidence):
+the gate's internal `hexclExt` discharge (`bracketEndChar_kv_step_sound`'s per-σ input, fixed
+read-only task-355 shape) needs per-σ exclusion; the slice-keyed D1/D2 exclude only
+slice-UNMARKED σ; report 02 §3.4's prescribed recovery (`kvE_futSliceUnique_zero` + `hreal`)
+is m=0-only while the gate binds general `k`. The carried `hexclSlice*` statement IS the §3.4
+recovery's conclusion; at m = 0 it is discharged by exactly that recipe (uniqueness + `hreal`
++ admissibility-zone endpoint positioning). H4: the refutation witness σ′ is
+pinned-unrealizable (probe P1), so it satisfies `hexclSlice*` vacuously — unlike the refuted
+`hbr*`-Sat shapes. **Phase-5 scope consequence**: FOUR m=0 supply theorems (two `hslice*`,
+two `hexclSlice*`), not two; the `hexclSlice*` discharge additionally needs the Phase-4 Past
+uniqueness mirror.
 
 - **Goal:** Wire the slice keying through the consumption chain: re-key
   `kvE_extBracket{Fut,Past}` from `qnf.2 σ` to `kvE_*SliceMarked qnf σ`, re-prove D1 (slice
@@ -443,16 +458,20 @@ probe P1); `kvE_futPinned_of_end_zero_refuted` untouched (append-only diff) and 
   files; the new mathematics is confined to the D1/D3/D4 re-proofs whose routes report 02 §3.4
   fixes.
 - **Tasks:**
-  - [ ] Entry checks: verify import direction (ExteriorBracketAssembleK can import
+  - [x] Entry checks: verify import direction (ExteriorBracketAssembleK can import
         ExteriorPinnedConverseK without a cycle — settled decision 5; on failure hoist defs to
         `ExteriorSliceKeyK.lean` and record deviation); re-grep
         `kvE_extBracketFut\|kvE_extBracketPast\|hbrFutReal\|hbrFutSat\|hbrPastReal\|hbrPastSat`
-        repo-wide to confirm the consumer map.
-  - [ ] Past-side slice defs: create `ExteriorPinnedConversePastK.lean` with `kvE_pastSliceEq`,
+        repo-wide to confirm the consumer map. *(no cycle — ConverseK is a leaf below
+        AssembleK, no hoist needed; consumer map = gate + EndIntervalConsumerK + KampPrior
+        seam only, confirmed)*
+  - [x] Past-side slice defs: create `ExteriorPinnedConversePastK.lean` with `kvE_pastSliceEq`,
         `kvE_pastSliceMarked`, and the Past clause slice-constancy lemma (mechanical mirrors of
         Phase 3's defs/lemma; the slice-id THEOREMS are Phase 4, not here). Needed because this
-        phase re-keys BOTH brackets.
-  - [ ] `ExteriorBracketAssembleK.lean`: re-key the Future (:53) and Past (:66) bracket
+        phase re-keys BOTH brackets. *(deviation: altered — also added
+        `kvE_pastSliceMarked_iff` extraction helper; the Future twin `kvE_futSliceMarked_iff`
+        placed in AssembleK to keep the Phase-3 converse file read-only)*
+  - [x] `ExteriorBracketAssembleK.lean`: re-key the Future (:53) and Past (:66) bracket
         if-then-else to `kvE_*SliceMarked qnf σ`; re-prove D1 at slice level (positive clause
         for slice-marked σ: marked slice-mate σ' + realizability + `kvE_futPos_of_realizer` +
         slice-constancy transfer; per-σ exclusion recovered where consumed via
@@ -460,21 +479,33 @@ probe P1); `kvE_futPinned_of_end_zero_refuted` untouched (append-only diff) and 
         paragraph, the task-348 `hexclExt` shape); re-prove D3/D4 negative case: general-k via
         the CARRIED `hslice*` binder (slice-unmarked + by_contra chain fires → obligation gives
         marked slice-mate → contradiction); DROP the `hreal`/`hsat` antecedent usage.
-  - [ ] `ExteriorGateAssembleK.lean`: replace the four `hbr*` binders (:142-167) with
+        *(deviation: altered — D3/D4 also drop `hneg` (subsumed by contraposed `hslice`);
+        per-σ exclusion carried as `hexclSlice*` per the phase deviation record, since the
+        m=0-only uniqueness recovery cannot run inside the general-k gate)*
+  - [x] `ExteriorGateAssembleK.lean`: replace the four `hbr*` binders (:142-167) with
         `hsliceFut`/`hslicePast` (report 02 §3.4 shape, transcribed verbatim; ambient-guarded,
-        ∀-w form); rewire applications.
-  - [ ] `EndIntervalConsumerK.lean`: same replacement inside `EndIntervalCorrectPrior`
+        ∀-w form); rewire applications. *(deviation: altered — four binders
+        `hslicePast`/`hsliceFut`/`hexclSlicePast`/`hexclSliceFut` per the phase deviation
+        record; ⇒-direction hexclExt discharge = slice-level D1/D2 for unmarked σ +
+        `hexclSlice*` for marked bit-false σ)*
+  - [x] `EndIntervalConsumerK.lean`: same replacement inside `EndIntervalCorrectPrior`
         ("binder types copied verbatim from ExteriorGateAssembleK" discipline);
         `endInterval_step_correct` re-threads by intro/pass-through.
-  - [ ] `KampPrior.lean:838-876`: mirror the new binders; pass-through at :875. NO other
-        KampPrior lines.
-  - [ ] Converter files (only if needed): `kvE_extNeg*_complete` may remain as general-k
+  - [x] `KampPrior.lean:838-876`: mirror the new binders; pass-through at :875. NO other
+        KampPrior lines. *(actual lines :845-904 after Phase-1 drift; pass-through preserved)*
+  - [x] Converter files (only if needed): `kvE_extNeg*_complete` may remain as general-k
         tooling (report 02 §8 delta 2) — keep them green; simplify their guarded antecedents
         only if D3/D4 no longer consume them and the simplification is a pure deletion.
-  - [ ] H4 sanity check: the honest bracket is now satisfiable at the σ′ conjunct (positive
-        clause, `hPosEq`); record in phase-exit note.
-  - [ ] Scoped builds of all edited files; FULL `lake build`; `#print axioms` on the re-proved
-        D1/D3/D4, gate, `endInterval_step_correct`; commit.
+        *(deviation: skipped — converters left untouched and green as general-k tooling;
+        no deletion performed this dispatch)*
+  - [x] H4 sanity check: the honest bracket is now satisfiable at the σ′ conjunct (positive
+        clause, `hPosEq`); record in phase-exit note. *(recorded in phase-3b handoff: σ′ is
+        slice-marked via τ, receives `kvE_futPos σ′ = kvE_futPos τ` (constancy), true at t on
+        the refutation model — no `F ∧ ¬F` conjunct remains)*
+  - [x] Scoped builds of all edited files; FULL `lake build` (1736 jobs GREEN); `#print axioms`
+        on the re-proved D1/D2/D3/D4, gate, `endInterval_step_correct`,
+        `kampPrior_site_rungK_gate_match`, both `_iff` helpers, Past constancy, and the
+        preserved refutation guard — all `[propext, Classical.choice, Quot.sound]`; commit.
 - **Done when:** brackets slice-keyed; zero occurrences of `hbrFutReal|hbrFutSat|hbrPastReal|hbrPastSat`
   in the consumption chain (grep-verified); `hsliceFut`/`hslicePast` carried at every level;
   full `lake build` green; zero sorries introduced.

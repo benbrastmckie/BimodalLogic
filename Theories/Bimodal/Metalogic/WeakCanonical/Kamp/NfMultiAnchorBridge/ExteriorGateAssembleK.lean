@@ -95,14 +95,20 @@ set_option maxHeartbeats 1600000 in
     via `bracketEndChar_kv_step_complete`, the two brackets via `kvE_extBracket{Past,Fut}_complete`.
     The positive witnesses are positioned strictly exterior directly from `kvE_{fut,past}Admissible`'s
     zone marking (`kvE2_sep_z{Fut,Past}X/T3`) applied to the realized qnf's arity-4 order layer (the
-    flagged escalation site — resolved). The general-`k` bracket-`_complete` carries the arity-5
-    realization interface `hbr*Real`/`hbr*Sat` (unlike the k=2 template, whose `_complete` took the
-    derivable zone pins `henv`/`hbelow`); these are threaded outward ∀-`w` exactly as the interior
-    `hreal`/`hexcl`, discharged one level up by the task-357 provider instantiation via
-    `kvE_{fut,past}Bundle_of_realizer`. See the Phase-4 deviation note in the task-356 plan.
+    flagged escalation site — resolved).
+
+    SLICE-KEYED interface (task 360 Phase 3b): the brackets are keyed by
+    `kvE_{fut,past}SliceMarked` (report 02 §3.3 — the per-σ-bit keying made the honest bracket
+    unsatisfiable, `kvE_futPinned_of_end_zero_refuted`). The four eliminated `hbr*` binders are
+    replaced by two carried obligations per side — `hslice{Past,Fut}` (⇐-side slice honesty,
+    ambient-guarded, fed to D3/D4) and `hexclSlice{Past,Fut}` (⇒-side per-σ exclusion residue for
+    bit-false-but-slice-marked σ, `igPtW`-guarded, completing the internal `hexclExt` discharge
+    alongside the slice-level D1/D2) — threaded outward ∀-`w` exactly as the interior
+    `hreal`/`hexcl` and discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
+    `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
 
     Consumed by task 357 at `KampPrior.lean:351` (which additionally discharges the remaining
-    provider obligations `hreal`/`hexcl` and the exterior bracket interface `hbr*`). -/
+    provider obligations `hreal`/`hexcl` and the slice-keyed exterior interface). -/
 theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -132,71 +138,49 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- Exterior bracket realization interface (⇐-only), threaded outward exactly as the interior
-    -- `hreal`/`hexcl`: the carried arity-5 realization bundle (`hbr*Real`) and exterior-anchor
-    -- saturation residue (`hbr*Sat`) of the general-`k` `kvE_extBracket{Past,Fut}_complete`
-    -- (`ExteriorBracketAssembleK.lean:168/210`). These are a DISCHARGED interface, discharged one
-    -- level up (task 357 provider instantiation) via `kvE_{fut,past}Bundle_of_realizer` when the
-    -- outer recursion produces a genuine exterior realizer — NOT internal debt (no `sorry`, no
-    -- vacuous def). See the Phase-4 deviation note in the task-356 plan.
+    -- SLICE-KEYED exterior interface (task 360 Phase 3b; replaces the four eliminated `hbr*`
+    -- binders — the guarded `hbr*Sat` shapes were machine-refuted,
+    -- `kvE_futPinned_of_end_zero_refuted`). Two carried obligations per side:
     --
-    -- GUARDED restatement (task 360 Phase 1, report 03 §2.4): each obligation carries its
-    -- consumption-site truth antecedents — the level-up ambient realization of `qnf` at
-    -- `[w, x, t]`, the chain-fire truth (`kvE_*Pos` at the anchor), the destructor-endpoint
-    -- truth (`kvE_*End` at `x1`), and the destructor's pinned walk facts `hgap`/`hocc` — making
-    -- the four obligations true-as-stated (the unguarded universals were machine-refuted).
-    (hbrPastReal : ∀ w : M.carrier, x < w → w < t →
+    -- (1) `hslicePast`/`hsliceFut` (⇐-side slice honesty, report 02 §3.4 shape verbatim,
+    --     ambient-guarded): chain-fire truth at the anchor for an admissible σ yields a MARKED
+    --     slice-mate. Fed to `kvE_extBracket{Past,Fut}_complete` (D3/D4). Discharged at m = 0
+    --     by `kvE_{fut,past}SliceId_of_end_zero` + chain destruction (plan v2 Phase 5).
+    --
+    -- (2) `hexclSlicePast`/`hexclSliceFut` (⇒-side per-σ exclusion residue, `hexcl`-shaped,
+    --     `igPtW`-guarded): a bit-false-but-slice-MARKED admissible σ has no strictly-exterior
+    --     realizer. Needed because the slice-keyed D1/D2 exclude only slice-UNMARKED σ, while
+    --     the interior gate's `hexclExt` input is per-σ; report 02 §3.4's recovery
+    --     (`kvE_futSliceUnique_zero` + `hreal`) is m=0-only and the gate binds general `k`, so
+    --     the recovery's conclusion is carried and m=0-discharged by exactly that recipe
+    --     (plan v2 Phase 5). H4: the refutation witness σ′ is pinned-unrealizable, so it
+    --     satisfies this obligation vacuously — unlike the eliminated `hbr*`-Sat shapes.
+    (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+        temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
+          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hsliceFut : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+        temporal_truth M atomMap t (kvE_futPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
+          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hexclSlicePast : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        kvE_pastSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, x1 < x →
-          temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
-          (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
-            x1 < r ∧ r < x ∧
-              temporal_truth M atomMap r (Pbr.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
-          ∀ s : NormalForm sig k 5, σ.2 s = true →
-          ∃ v : M.carrier, nf_eval_nf M k 5
-            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
-    (hbrPastSat : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        ∀ x1 : M.carrier, x1 < x →
-          temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
-          (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
-            x1 < r ∧ r < x ∧
-              temporal_truth M atomMap r (Pbr.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
-          ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
-            (∃ v : M.carrier, nf_eval_nf M k 5
-              (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
-            σ.2 s = true)
-    (hbrFutReal : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclSliceFut : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        kvE_futSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
-          temporal_truth M atomMap t (kvE_futPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
-          (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-            t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift Pbr a)) →
-          ∀ s : NormalForm sig k 5, σ.2 s = true →
-          ∃ v : M.carrier, nf_eval_nf M k 5
-            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
-    (hbrFutSat : ∀ w : M.carrier, x < w → w < t →
-      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
-      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        ∀ x1 : M.carrier, t < x1 →
-          temporal_truth M atomMap t (kvE_futPos Pbr σ) →
-          temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
-          (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD Pbr σ)) →
-          (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
-            t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift Pbr a)) →
-          ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
-            (∃ v : M.carrier, nf_eval_nf M k 5
-              (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
-            σ.2 s = true) :
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
   constructor
@@ -207,13 +191,27 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mp hExt
     refine bracketEndChar_kv_step_sound atomMap h_surj charF qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl ?_ hInt
-    -- The former `hexclExt` obligation, now discharged internally.
-    intro w hxw hwt _hptW σ hbit x1 hguard hnf
+    -- The former `hexclExt` obligation: slice-UNMARKED σ discharged internally by the
+    -- slice-level D1/D2; bit-false-but-slice-MARKED σ by the carried `hexclSlice*` residue
+    -- (task 360 Phase 3b — see the binder docs).
+    intro w hxw hwt hptW σ hbit x1 hguard hnf
     rcases not_and_or.mp hguard with hx | ht
-    · exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hbit x1
-        (not_le.mp hx) hnf
-    · exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hbit x1
-        (not_le.mp ht) hnf
+    · cases hsm : kvE_pastSliceMarked qnf σ with
+      | false =>
+        exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hsm x1
+          (not_le.mp hx) hnf
+      | true =>
+        have hadm : kvE_pastAdmissible σ = true :=
+          kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
+        exact hexclSlicePast w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
+    · cases hsm : kvE_futSliceMarked qnf σ with
+      | false =>
+        exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hsm x1
+          (not_le.mp ht) hnf
+      | true =>
+        have hadm : kvE_futAdmissible σ = true :=
+          kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
+        exact hexclSliceFut w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
   · -- ⇐: an honest realization re-establishes all three conjuncts.
     rintro ⟨w, h⟩
     have hxw : x < w := by
@@ -226,7 +224,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       ⟨bracketEndChar_kv_step_complete atomMap h_surj charF P hcharK qnf h_xy h_yt M h_UZ h_SZ
         x t ⟨w, h⟩, ?_, ?_⟩
     · -- Past bracket at `x`.
-      refine kvE_extBracketPast_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_ ?_ ?_
+      refine kvE_extBracketPast_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
       · -- hpos: admissible bit-true σ realized exterior `x1 < x`.
         intro σ hadm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
@@ -239,16 +237,10 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
         simp only [atom_eval, Fin.cons] at h1
         exact ⟨x1, h1.mpr hb1, hx1⟩
-      · -- hneg: an exterior realizer of an unmarked σ contradicts the qnf fold.
-        intro σ _hadm hbit x1 _hx1x hr
-        have := (h.2 σ).mp ⟨x1, hr⟩
-        exact absurd (hbit ▸ this) Bool.false_ne_true
-      · -- hreal: threaded exterior realization bundle (discharged by task 357).
-        exact hbrPastReal w hxw hwt h
-      · -- hsat: threaded exterior saturation residue (discharged by task 357).
-        exact hbrPastSat w hxw hwt h
+      · -- hslice: the carried Past slice-honesty obligation (task 360 Phase 3b).
+        exact hslicePast w hxw hwt h
     · -- Future bracket at `t`.
-      refine kvE_extBracketFut_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_ ?_ ?_
+      refine kvE_extBracketFut_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
       · -- hpos: admissible bit-true σ realized exterior `t < x1`.
         intro σ hadm hbit
         obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
@@ -261,13 +253,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
         have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
         simp only [atom_eval, Fin.cons] at h2
         exact ⟨x1, h2.mpr hb2, hx1⟩
-      · -- hneg
-        intro σ _hadm hbit x1 _htx1 hr
-        have := (h.2 σ).mp ⟨x1, hr⟩
-        exact absurd (hbit ▸ this) Bool.false_ne_true
-      · -- hreal: threaded exterior realization bundle (discharged by task 357).
-        exact hbrFutReal w hxw hwt h
-      · -- hsat: threaded exterior saturation residue (discharged by task 357).
-        exact hbrFutSat w hxw hwt h
+      · -- hslice: the carried Future slice-honesty obligation (task 360 Phase 3b).
+        exact hsliceFut w hxw hwt h
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
