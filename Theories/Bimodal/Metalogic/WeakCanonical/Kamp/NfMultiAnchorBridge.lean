@@ -54,6 +54,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracket
 -- general-`k` discharge lemma + consumer reachable from `KampPrior` (which imports this file).
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsumerK
+-- NOTE (task 350 Phase 1): thread the aggregate quantEnd/seg construction + the six
+-- k=0/k=1 arm-correctness hook-discharge lemmas into the root build. Cycle-free:
+-- `AggregateHookDischarge` is an acyclic leaf importing `EndIntervalConsumerK` (above) and
+-- `Kamp.NfToVecEA` (whose closure — VecEATranslation, NormalForm, KampTranslation,
+-- PriorDefs — is already reachable and imports nothing under `NfMultiAnchorBridge`);
+-- only `KampPrior` imports this aggregator (task-357 precedent).
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge (task 308)

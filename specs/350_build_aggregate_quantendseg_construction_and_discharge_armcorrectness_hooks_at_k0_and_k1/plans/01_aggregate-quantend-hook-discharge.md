@@ -1,7 +1,7 @@
 # Implementation Plan: Task #350
 
 - **Task**: 350 - build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10.5 hours
 - **Dependencies**: Task 349 (COMPLETED — recursive endpoint primitive delivered as `endInterval_correct` stack)
 - **Research Inputs**: specs/309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md; specs/309_offdiag_two_anchor_fi_chain/reports/02_endpoint-hook-discharge-research.md (§6 Phase 9, lines 272-279); specs/309_offdiag_two_anchor_fi_chain/.orchestrator-handoff.json (blocker P18b-endChar-recursive-core-unbuilt)
@@ -194,40 +194,59 @@ sections of the new module).
 
 ---
 
-### Phase 1: Shape adjudication, zone classifier, and target statements [NOT STARTED]
+### Phase 1: Shape adjudication, zone classifier, and target statements [COMPLETED]
 
 **Goal**: Fix the six target statements and the per-qnf routing infrastructure before any
 aggregate construction; kill statement churn (R7) and adjudicate R1/R2 with compiling probes.
 
 **Tasks**:
-- [ ] Create leaf module
+- [x] Create leaf module
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/AggregateHookDischarge.lean`
   with `import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsumerK`;
   add `import ...NfMultiAnchorBridge.AggregateHookDischarge` to
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge.lean` (additive; cycle-free
-  — only KampPrior imports the aggregator, task-357 precedent).
-- [ ] Land the per-qnf order-bit zone classifier: a decidable function/predicate classifying
+  — only KampPrior imports the aggregator, task-357 precedent). *(completed; one extra additive
+  import `Kamp.NfToVecEA` for `VVecEA2.holdsRight`/`translateRight` — cycle-free, recorded in
+  the aggregator import note)*
+- [x] Land the per-qnf order-bit zone classifier: a decidable function/predicate classifying
   `qnf : NormalForm sig k 3` (via `qnf.atom_assgn` on the six order atoms among positions
   {0=w, 1=x, 2=t}, uniform over k — the `BracketCarrierCorrectVPrior` k0-mirror form,
   PriorInterface.lean:62-68) into: interior (x<w<t), pointX (w=x), pointT (w=t), pastExt (w<x),
-  futExt (t<w), or inconsistent-given-x<t.
-- [ ] Prove the routing lemmas: for x < t and each classification, `∃ w, nf_eval_nf M k 3
+  futExt (t<w), or inconsistent-given-x<t. *(deviation: altered — the k=0 aggregate routes
+  through the depth-1 fold engine `nf_eval_depth1_fold_iff` (CarrierKv.lean:466), so the
+  classifier is realized at the `ZoneSpec 2` fiber level: named zone-spec constants `agg2Z*` +
+  ambient-order consistency lemmas. Reason: `VVecEA2.conj_struct` is ONE-directional (its
+  `n1+1,n2+1` case discards the second bracket), so the plan's per-qnf-VVecEA2 conjunction
+  cannot yield a biconditional aggregate; the fold re-fibering is lossless
+  (`nf0_split_assemble`) and needs no conjunction combinator. Recorded in the module-header
+  "Aggregation verdict".)*
+- [x] Prove the routing lemmas: for x < t and each classification, `∃ w, nf_eval_nf M k 3
   (zoneEnv3 w x t) qnf` collapses to the single live zone disjunct of `nf_char2_zone_split5`
   (Base.lean:584), and to `False` for inconsistent patterns (the order-atom layer refutes the
-  other zones). Diagonal analog at x = t (3 zones: w<t, w=t, t<w).
-- [ ] Write the SIX target statements as named theorem stubs WITH full final statements and
+  other zones). Diagonal analog at x = t (3 zones: w<t, w=t, t<w). *(deviation: altered — the
+  routing lemmas are `agg2_zone_consistent_lt`/`_gt`/`_diag` (realized zone spec is one of the
+  5/5/3 consistent zones; contrapositive = False-for-inconsistent) at the fold fiber level,
+  replacing the `nf_char2_zone_split5` route; same Def 3.1 content, fewer moving parts.)*
+- [x] Write the SIX target statements as named theorem stubs WITH full final statements and
   docstrings, phase-gated bodies (each stub proved in Phases 3/5; until then the file contains
   only the statements as commented blocks or the statements of already-provable reductions —
   NEVER `sorry`): `kampArm_past_k0`/`kampArm_diag_k0`/`kampArm_future_k0` +
   `_correct` companions at k=0, and the three `_k1` analogs. Conclusion shape (past, k=0
   example): `∀ M h_UZ h_SZ t, temporal_truth M atomMap t (kampArm_past_k0 atomMap h_surj sub_nf)
-  ↔ ∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`.
-- [ ] R1/R2 adjudication probes: (i) attempt a typecheck-level fit of the interior-positive
+  ↔ ∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. *(completed — frozen as
+  the module-header "six target statements" block, per the plan's commented-block option)*
+- [x] R1/R2 adjudication probes: (i) attempt a typecheck-level fit of the interior-positive
   clause into the `(quantEnd, seg : BracketFormula 0)` pair; (ii) restate the `endChar0_correct`
   counterexample argument (Base.lean:1068-1079) against `A_diag_correct`'s per-point hook for a
   fixed syntactic `pastEnd`. Record verdicts as docstring adjudication notes in the module header
-  (Route V vs Route P per arm).
-- [ ] Scoped build green: `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge`.
+  (Route V vs Route P per arm). *(completed — header records: R1 = Route V for all arms (a
+  `BracketFormula 0` has no point slots — `IntervalPattern.holds` at n=0 is segment-only — so
+  Route P cannot host interior-positive fibers); R2 = additive diag variant (the
+  `endCharN0_correct_infeasible` world-locality refutation applies verbatim to a fixed
+  `pastEnd`).)*
+- [x] Scoped build green: `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge`.
+  *(completed — `lake build ...NfMultiAnchorBridge.AggregateHookDischarge` green, 1032 jobs,
+  zero warnings in the new module)*
 
 **Timing**: 1.5 hours
 
