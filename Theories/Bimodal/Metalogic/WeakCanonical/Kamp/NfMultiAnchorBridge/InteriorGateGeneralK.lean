@@ -1202,6 +1202,100 @@ theorem bracketEndChar_kv_step_correct {sig : MonadicSignature} {k : Nat}
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl hexclExt,
     bracketEndChar_kv_step_complete atomMap h_surj charF P hcharK qnf h_xy h_yt M h_UZ h_SZ x t⟩
 
+/-! ## Phase 7 — ∀-`k` obligation-carrying recursion close
+
+The maximal provable ∀-`k` interior-gate deliverable, assembled from the delivered step
+biconditional `bracketEndChar_kv_step_correct` (`:1165`, symbolic `k+1`, obligation-carrying) and the
+base rung `interiorGateTarget_zero` (`:89`), by `Nat.casesOn` on `k`. Per plan v2's concrete
+determination, this is a **case assembly, NOT an IH-threading induction**: the step does NOT consume
+the arity-3 depth-`k` inductive hypothesis (Phases 4/5 realize interior content via the provider `P`,
+not the IH), so the wrapper introduces no recursive obligation dependency.
+
+The obligation binders `hreal`/`hexcl`/`hexclExt` (and `P`/`hcharK`) reference `qnf.1` and
+`igFoldBit qnf`, which only typecheck at successor depth `k = n+1`. A single *flat* uniform ∀-`k`
+signature therefore cannot quantify them (the R1 typing tension in plan v2). The well-typed
+realization is a **`k`-cased motive** `InteriorGateAllK`: at `k = 0` it is the clean obligation-free
+`BracketCarrierCorrectVPrior` (which holds unconditionally — the `k = 0` carrier is not lossy, F1
+bites only at `k ≥ 2`), discharged verbatim by `interiorGateTarget_zero`; at `k = n+1` it is the
+obligation-carrying biconditional, discharged verbatim by `bracketEndChar_kv_step_correct` at `n`.
+The `k = 1` rung (`interiorGateTarget_one`) is subsumed by the successor branch at `n = 0` (the step
+is fully general in its `{k}`), so it need not be special-cased. There is no `True`/vacuous branch:
+the `k = 0` branch carries the genuine clean predicate.
+
+The obligations are handed-in hypotheses; **discharging** them for a real consumer is the
+out-of-scope task-349 consumer reshape (follow-up (i)) and the exterior-adjacency `hexclExt`
+discharge (follow-up (ii)) — see the plan's "Out-of-Task-355 Follow-Ups". Assembling the ∀-`k`
+obligation-carrying lemma is well-typed and provable additively inside this module. -/
+
+/-- **∀-`k` obligation-carrying interior-gate motive** (task 355 Phase 7). The `k`-cased target
+    Prop for the ∀-`k` interior-gate correctness. At `k = 0` it is the clean, obligation-free
+    `BracketCarrierCorrectVPrior` on the depth-0 carrier (the `k = 0` carrier is information-complete,
+    so no provider obligation is needed — F1 lossiness bites only at `k ≥ 2`). At `k = n+1` it is the
+    obligation-carrying biconditional exactly as `bracketEndChar_kv_step_correct` (`:1165`) delivers
+    it: the six atom-layer order bits on `qnf.1`, the provider bundle `P` + agreement `hcharK`, the
+    UZ/SZ Prior hypotheses, and the interior/exterior realization obligations
+    `hreal`/`hexcl`/`hexclExt`. The obligation binders reference `qnf.1`/`igFoldBit qnf`, which are
+    successor-depth-only; the case split is what makes the ∀-`k` statement well-typed. -/
+def InteriorGateAllK {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
+    (k : Nat) → Prop
+  | 0 => BracketCarrierCorrectVPrior atomMap (bracketEndChar_kv atomMap h_surj charF 0)
+  | (n + 1) =>
+      ∀ (qnf : NormalForm sig (n + 1) 3)
+        (_h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+        (_h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+        (_h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+        (_h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+        (_h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+        (_h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+        (P : ExistProviders sig atomMap n)
+        (_hcharK : charF n = fun χ => P.existF 0 χ)
+        (M : OrderedMonadicStructure sig)
+        (_h_UZ : semantic_prior_UZ M atomMap) (_h_SZ : semantic_prior_SZ M atomMap)
+        (x t : M.carrier)
+        (_hreal : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF n) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
+          ∀ σ : NormalForm sig n 4, qnf.2 σ = true →
+            ∃ x1 : M.carrier,
+              nf_eval_nf M n 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        (_hexcl : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF n) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
+          ∀ σ : NormalForm sig n 4, qnf.2 σ = false →
+            ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+              ¬ nf_eval_nf M n 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        (_hexclExt : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF n) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
+          ∀ σ : NormalForm sig n 4, qnf.2 σ = false →
+            ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
+              ¬ nf_eval_nf M n 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ),
+        (bracketEndChar_kv atomMap h_surj charF (n + 1) qnf).holds M atomMap x t ↔
+          ∃ w : M.carrier, nf_eval_nf M (n + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf
+
+set_option maxHeartbeats 1600000 in
+/-- **∀-`k` obligation-carrying interior-gate correctness** (task 355 Phase 7 — the re-frozen ∀-`k`
+    deliverable). Assembles `InteriorGateAllK` for every `k` by `Nat.casesOn`: `k = 0` is discharged
+    by the base rung `interiorGateTarget_zero`; `k = n+1` is discharged by the step biconditional
+    `bracketEndChar_kv_step_correct` at `n`. This is a case assembly (the step does NOT thread the
+    arity-3 IH — Phases 4/5 realize interior content via the provider `P`), so no recursive obligation
+    dependency is introduced. The obligation binders are handed-in hypotheses; discharging them for a
+    real consumer is the out-of-scope task-349 consumer reshape + exterior `hexclExt` discharge
+    (plan v2 follow-ups (i)/(ii)). Sorry-free, axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem bracketEndChar_kv_correct_prior {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
+    ∀ k : Nat, InteriorGateAllK atomMap h_surj charF k
+  | 0 => interiorGateTarget_zero atomMap h_surj charF
+  | (n + 1) => fun qnf h_xy h_yt h_xt h_yx h_ty h_tx P hcharK M h_UZ h_SZ x t
+      hreal hexcl hexclExt =>
+    bracketEndChar_kv_step_correct atomMap h_surj charF P hcharK qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl hexclExt
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
