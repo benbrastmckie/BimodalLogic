@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
 
 /-!
 # General-`k` INTERIOR gate correctness (task 355)
@@ -533,6 +534,81 @@ theorem bracketEndChar_kv_step_gate {sig : MonadicSignature} {k : Nat}
         exact h1
     rw [hzone] at hz
     exact absurd (igZone3_consistent M w x t x1 hxw hwt zs hz) hncons
+
+/-! ## Phase 4b — the fold-realization biconditional (fiber bits ↔ model witnesses)
+
+The engine that converts the successor carrier's fiber-existential fold bit into a genuine interval
+witness (and back). This is the general-`k` analog of the depth-1 `hzone'` fold biconditional inside
+`bracketEndChar_k1v_complete` (`CarrierK1V.lean:1655`), where the pointwise `efold_of_nf1` read is
+replaced by the fiber-existential `igFoldBit`:
+
+`igFoldBit qnf zs χ = true ↔ ∃ u, zoneHolds M [w,x,t] zs u ∧ nf_eval_nf M k 1 (fun _ => u) χ`.
+
+- **⇒** (bit → witness): a marked sub in the `(zs, χ)` fiber is realized at some `x1` over
+  `[x1,w,x,t]` (realizer fold conjunct); its atom-layer zone is `zs` (`nf0_zoneSpec`) and its fresh
+  projection realizes `χ` at `x1` (`nf_eval_projFresh`, `ExteriorBracketK.lean:163`, with
+  `nfk_projFresh sub = χ`).
+- **⇐** (witness → bit): the characteristic depth-`k` sub at `[u,w,x,t]`
+  (`nf_characteristic_satisfies`) is marked (realizer forward), sits in zone `zs` (its atom layer
+  reads `u`'s order against `[w,x,t]` = `zoneHolds`), and its fresh projection equals `χ`
+  (`nf_eval_unique` against the given realization). No chain step is shortcut (G5); the fold bit is
+  read FIBER-EXISTENTIALLY throughout (F1 channel preserved). -/
+
+/-- **Fold-realization biconditional at depth `k+1`** (task 355 Phase 4b — the fiber-bits engine).
+    The successor carrier's fiber-existential fold bit is TRUE exactly when the model realizes the
+    interior 1-type `χ` at some point in zone `zs` relative to `[w,x,t]`. Consumes `nf_eval_projFresh`
+    (⇒) and `nf_characteristic_satisfies` + `nf_eval_unique` (⇐). -/
+theorem igFoldBit_realize_iff {sig : MonadicSignature} {k : Nat}
+    (qnf : NormalForm sig (k + 1) 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier)
+    (h : nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (zs : ZoneSpec 3) (χ : NormalForm sig k 1) :
+    igFoldBit qnf zs χ = true ↔
+      ∃ u : M.carrier, zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u ∧
+        nf_eval_nf M k 1 (fun _ => u) χ := by
+  constructor
+  · -- ⇒ : a marked fiber sub is realized; read its zone and fresh projection.
+    intro hbit
+    obtain ⟨sub, hmark, hzone, hproj⟩ := (igFoldBit_iff qnf zs χ).mp hbit
+    obtain ⟨x1, hx1⟩ := (h.2 sub).mpr hmark
+    have hatom := nf_eval_nf_atom_layer M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub hx1
+    refine ⟨x1, ?_, ?_⟩
+    · intro i
+      refine ⟨?_, ?_⟩
+      · have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+        simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+        rw [← hzone]; exact h1
+      · have h1 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
+        simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+        rw [← hzone]; exact h1
+    · rw [← hproj]
+      exact nf_eval_projFresh M (Fin.cons w (Fin.cons x (fun _ => t))) x1 sub hx1
+  · -- ⇐ : the characteristic sub at `[u,w,x,t]` is a marked fiber witness for `(zs, χ)`.
+    rintro ⟨u, hu, hχ⟩
+    set env4 : Fin 4 → M.carrier := Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t))) with henv4
+    set csub : NormalForm sig k 4 := nf_characteristic M k 4 env4 with hcsub
+    have hcsat : nf_eval_nf M k 4 env4 csub := nf_characteristic_satisfies M k 4 env4
+    have hcatom := nf_eval_nf_atom_layer M env4 csub hcsat
+    apply (igFoldBit_iff qnf zs χ).mpr
+    refine ⟨csub, ?_, ?_, ?_⟩
+    · -- marked: the realizer's forward direction (csub is realized at `u`).
+      exact (h.2 csub).mp ⟨u, hcsat⟩
+    · -- zoneSpec = zs: the atom layer reads `u`'s order against `[w,x,t]`, which `hu` pins to `zs`.
+      funext i
+      have h0 := hcatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+      have h1 := hcatom (.order i.succ 0 (Fin.succ_ne_zero i))
+      simp only [atom_eval, henv4, Fin.cons_zero, Fin.cons_succ] at h0 h1
+      have hb0 : (NormalForm.atom_assgn csub) (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+          = (zs i).1 := by
+        rw [Bool.eq_iff_iff]; exact h0.symm.trans (hu i).1
+      have hb1 : (NormalForm.atom_assgn csub) (.order i.succ 0 (Fin.succ_ne_zero i))
+          = (zs i).2 := by
+        rw [Bool.eq_iff_iff]; exact h1.symm.trans (hu i).2
+      exact Prod.ext hb0 hb1
+    · -- projFresh = χ: both realize the same 1-type at `u`; uniqueness.
+      exact nf_eval_unique M k 1 (fun _ => u) (nfk_projFresh csub) χ
+        (nf_eval_projFresh M (Fin.cons w (Fin.cons x (fun _ => t))) u csub hcsat) hχ
 
 end
 
