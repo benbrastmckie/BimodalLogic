@@ -168,7 +168,14 @@ Deviations from the proposed helpers:
 
 ---
 
-### Phase 4: Past dual `kvE_extNegPast_complete` [NOT STARTED]
+### Phase 4: Past dual `kvE_extNegPast_complete` [COMPLETED]
+
+**Branch B mirrored** (per Phase 3 decision): `ExteriorConverterPastK.lean` (NEW) mirrors the
+Future construction through `kvE_pastChainDestructG` + `semantic_prior_SZ` (endpoint `x1 < x` at
+the left anchor `x`), carrying the same `hreal` bundle and `hsat` saturation residue. Atom layer
+via `kvE_pastAtom_of_bundle` (side-agnostic replica of `kvE_futAtom_of_bundle`, keeping the module
+self-contained on `ExteriorNegationPastK`). Off-fiber falsity via `kvE_pastAdmissible_offFiber`.
+Green, sorry-free, axioms exactly `[propext, Classical.choice, Quot.sound]`.
 
 **Goal**: Mirror Phases 2-3 through the Past chain and `semantic_prior_SZ` (last-occurrence), consuming the Past `_sound` template (`ExteriorNegationPastK.lean:539`). Land the SAME resolution branch as Phase 3.
 
