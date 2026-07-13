@@ -443,6 +443,23 @@ MAY dispatch it alongside Phase 4 under a territory contract; the wave table is 
 
 ### Phase 5: `endIntervalStep` general-`k` body + `EndIntervalCorrectPrior` statement freeze [NOT STARTED]
 
+> **RESUME POINT (session sess_1783902925_24bf86).** Phases 3-4 delivered the full exterior
+> bracket layer green (D1-D4 in `ExteriorBracketAssembleK.lean`, axiom-clean, committed). Phase 5
+> is the open frontier. **Scope note discovered during implementation:** the step body must supply
+> the INTERIOR content at general depth `k`. The k=2 template routes interior content through the
+> interior gate `bracketEndChar_kvE2` (OuterGate.lean:70) with soundness/completeness
+> `bracketEndChar_kvE2_sound_two_prior_frag` / `_complete_two_prior` + pin derivations
+> (`kvE2_extGate_henv`, `kvE2_extGate_anyBit_iff`, `kvE2_sepBody_extract`, …), all HARDWIRED to
+> depth-1 subs / `nf_depth0_char_formula`. The depth-`k` carrier `bracketEndChar_kv` exists
+> (CarrierKv.lean:238) but its correctness `bracketEndChar_kv_correct` is delivered ONLY at k=0/k=1
+> (`_correct_zero` :367 / `_correct_one` :395) — the **general-`k` interior correctness is NOT
+> delivered by 351/352/354** and is the open construction Phases 5-7 must build (generalize
+> `bracketEndChar_k1v_correct` :2041 / the interior gate to arbitrary `k`). This is NOT a mechanical
+> consumption of the clause layer; it is the recursive interior characterization itself (~700-1300
+> new proof lines across Phases 5-7). The `endIntervalStep` hole (CarrierK1V.lean:2144) is LEFT as
+> the sanctioned `⟨[]⟩` deferred placeholder (NOT faked). Resume by dispatching Phase 5 to build the
+> depth-`k` interior gate + `EndIntervalCorrectPrior`.
+
 - **Goal:** Fill the v6 Phase-3 hole (CarrierK1V.lean:2144, currently `⟨[]⟩`) with the enriched
   general-`k` step body, and bounded-revise the correctness Prop to the Prior-guarded shape.
   Providers thread via `ExistProviders`, NOT via `rec` alone and NOT via a closed-formula `charF`
