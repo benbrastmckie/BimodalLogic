@@ -1647,4 +1647,45 @@ theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature}
   · rw [kvE_pastPos, if_neg hadm] at hpos
     exact hpos.elim
 
+/-! ## Task 358 Phase 5 (reduced scope) — the ambient-k=0 arm closure
+
+The Phase-3 probe A0 verdict (plan v3, 2026-07-13): the literal `(quantEnd, seg)` hook
+decomposition is machine-refuted (task 350 R1/R2, `AggregateHookDischarge.lean:12-43`); the
+G3 fold enters the skeleton via the SKELETON-SHAPED arm conclusions instead (Route V). Task
+350's k=0 layer (`kampArm_{past,diag,future}_k0_correct`) is landed sorry-free, so the
+ambient-k=0 instance of the `| 1 =>` arm statement closes END-TO-END now — the reduced-scope
+green slice of the planned depth-2 milestone. The ambient-k=1 instance follows the IDENTICAL
+recipe once task 350's off-diagonal k=1 pair (`kampArm_{past,future}_k1`, blocked on
+`VVecEA2.conjFull` — Rabinovich Lemma 3.4 iff form) lands; k ≥ 2 arms additionally consume the
+rungK seam obligations (rows 5-6, 8-11). This lemma is ADDITIVE: no `:361` edit (that arm
+rewrite is the plan's Phase 9, gated on the k=1/general-k folds). -/
+
+/-- **Ambient-k=0 arm closure** (task 358, Phase-5 reduced scope): the `| 1 =>` arm statement
+    of `nf_nvar_exist_all_depths` at ambient `k = 0` (`sub_nf : NormalForm sig 1 2`), closed
+    end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
+    over task 350's three landed k=0 arm lemmas. The first G3 green milestone: no obligations,
+    no hooks — the arm formula is M-independent by construction. -/
+theorem kampPrior_case1_arm_k0 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (_h_UZ : semantic_prior_UZ M atomMap)
+        (_h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t A ↔
+        ∃ env : Fin 1 → M.carrier, nf_eval_nf M 1 2 (insertEnv env t) sub_nf := by
+  refine ⟨Formula.or (kampArm_past_k0 atomMap h_surj sub_nf)
+    (Formula.or (kampArm_diag_k0 atomMap h_surj sub_nf)
+      (kampArm_future_k0 atomMap h_surj sub_nf)), ?_⟩
+  intro M h_UZ h_SZ t
+  exact kampPrior_case1_trichotomy_assemble atomMap M 0 sub_nf t
+    (kampArm_past_k0 atomMap h_surj sub_nf)
+    (kampArm_diag_k0 atomMap h_surj sub_nf)
+    (kampArm_future_k0 atomMap h_surj sub_nf)
+    (kampArm_past_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_diag_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_future_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
