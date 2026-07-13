@@ -48,7 +48,8 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
-open Bimodal.Metalogic.WeakCanonical.Separation (nf_depth0_char_formula formula_conjList)
+open Bimodal.Metalogic.WeakCanonical.Separation
+  (nf_depth0_char_formula formula_conjList formula_conjList_iff)
 
 /-! ## Phase 1 — frozen general-`k` statement + base-rung reconciliation
 
@@ -663,6 +664,336 @@ theorem igk_sorted_realization {sig : MonadicSignature} {k : Nat}
       rcases List.mem_cons.mp (hqperm.mem_iff.mp hp) with rfl | hp'
       · exact ⟨⟨hau, hub⟩, huχ⟩
       · exact hprops' p hp'
+
+/-! ## Phase 4b — ⇐ completeness (realizer → successor carrier holds)
+
+The completeness half of the k→k+1 step. From a genuine depth-`(k+1)` realizer at bracket witness
+`w`, the successor carrier `.holds` at the FIXED endpoints `(x, t)`. This is the general-`k`
+transcription of `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1629`) with three substitutions:
+
+1. the pointwise depth-1 fold bit `(efold_of_nf1 qnf).2 (zs, χ)` → the fiber-existential
+   `igFoldBit qnf zs χ`, its fold biconditional supplied by `igFoldBit_realize_iff` (Phase 4b);
+2. the depth-0 interior point type `char χ` → `charF k χ`, its realization supplied by
+   `interiorGate_hck` (Phase 2) under the provider agreement `hcharK : charF k = fun χ => P.existF 0 χ`
+   (the general-`k` analog of the k=2 template's `P`-parameterization, `OuterGate.lean:147`);
+3. the fixed endpoints' base 1-types stay depth-0 (`interiorGate_hcb`), the arity-3 extractors
+   (`k1v_extract_*`) and the bracket assembler (`k1v_bracket_construct`) are reused verbatim.
+
+The gate conjunct is discharged by `bracketEndChar_kv_step_gate` (Phase 4a). This is NOT F1-obstructed:
+a genuine realizer supplies the fiber content (Rabinovich Cor 5.4 endpoint characteristic chain, §5
+bracket placement PDF p.7). No chain step is shortcut (G5); interior content rides bracket WITNESS
+slots at FULL arity (G1/N4). -/
+
+set_option maxHeartbeats 1600000 in
+/-- **Inductive step ⇐ completeness** (task 355 Phase 4). From the arity-3 realizer at bracket
+    witness `w`, the successor carrier `.holds` at `(x, t)`, via `bracketEndChar_kv_succ_holds_iff`'s
+    RHS: the honest gate (Phase 4a) plus ONE sorted `S_L`/`S_R` arrangement whose `igMkDisjunct`
+    bracket holds. Provider-guarded (`P`, `hcharK`, UZ/SZ) so the interior point types realize via
+    `interiorGate_hck`. -/
+theorem bracketEndChar_kv_step_complete {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (P : ExistProviders sig atomMap k)
+    (hcharK : charF k = fun χ => P.existF 0 χ)
+    (qnf : NormalForm sig (k + 1) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) :
+    (∃ w : M.carrier, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) →
+      (bracketEndChar_kv atomMap h_surj charF (k + 1) qnf).holds M atomMap x t := by
+  rintro ⟨w, hw⟩
+  -- Atom layer + bracket order facts.
+  have h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+    nf_eval_nf_atom_layer M _ qnf hw
+  have hxw : x < w := by
+    have h1 := h_atom (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr h_xy
+  have hwt : w < t := by
+    have h1 := h_atom (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))
+    simp only [atom_eval, Fin.cons] at h1
+    exact h1.mpr h_yt
+  have hxt : x < t := hxw.trans hwt
+  -- Point-type realization bridges: interior (depth `k`, provider) and endpoint base (depth 0).
+  have hchar : ∀ (χ : NormalForm sig k 1) (u : M.carrier),
+      temporal_truth M atomMap u (charF k χ) ↔ nf_eval_nf M k 1 (fun _ => u) χ := by
+    intro χ u; simp only [hcharK]; exact interiorGate_hck atomMap P M h_UZ h_SZ χ u
+  have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+        nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ u => interiorGate_hcb atomMap h_surj M χ u
+  -- Endpoint/witness arity-1 base evaluations (fixed points, reused arity-3 extractors).
+  have h_y_nf := k1v_extract_y_nf M qnf.1 w x t h_atom
+  have h_x_nf := k1v_extract_x_nf3 M qnf.1 w x t h_atom
+  have h_t_nf := k1v_extract_t_nf3 M qnf.1 w x t h_atom
+  -- Fold biconditional (fiber bit ↔ interval witness), specialized to this realizer.
+  have hz' : ∀ (zs : ZoneSpec 3) (χ : NormalForm sig k 1),
+      igFoldBit qnf zs χ = true ↔
+        ∃ u : M.carrier, zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u ∧
+          nf_eval_nf M k 1 (fun _ => u) χ :=
+    fun zs χ => igFoldBit_realize_iff qnf M w x t hw zs χ
+  -- Zone-membership constructors at the seven consistent zones (Def 3.1 ordering channel).
+  have hzPastX : ∀ u, u < x → zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier)
+      igZPastX u := by
+    intro u hux
+    have huw : u < w := hux.trans hxw
+    have hut : u < t := huw.trans hwt
+    rw [show igZPastX = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by simp)⟩,
+      ⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtX : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) igZAtX x := by
+    rw [show igZAtX = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hxw rfl, iff_of_false (lt_asymm hxw) (by simp)⟩,
+      ⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
+      ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
+  have hzXW : ∀ u, x < u → u < w →
+      zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) igZXW u := by
+    intro u hxu huw
+    have hut : u < t := huw.trans hwt
+    rw [show igZXW = Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true huw rfl, iff_of_false (lt_asymm huw) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtW : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) igZAtW w := by
+    rw [show igZAtW = Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_irrefl w) (by simp), iff_of_false (lt_irrefl w) (by simp)⟩,
+      ⟨iff_of_false (lt_asymm hxw) (by simp), iff_of_true hxw rfl⟩,
+      ⟨iff_of_true hwt rfl, iff_of_false (lt_asymm hwt) (by simp)⟩⟩
+  have hzWT : ∀ u, w < u → u < t →
+      zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) igZWT u := by
+    intro u hwu hut
+    have hxu : x < u := hxw.trans hwu
+    rw [show igZWT = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwu) (by simp), iff_of_true hwu rfl⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAtT : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) igZAtT t := by
+    rw [show igZAtT = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwt) (by simp), iff_of_true hwt rfl⟩,
+      ⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
+      ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+  have hzFutT : ∀ u, t < u →
+      zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)) : Fin 3 → M.carrier) igZFutT u := by
+    intro u htu
+    have hwu : w < u := hwt.trans htu
+    have hxu : x < u := hxw.trans hwu
+    rw [show igZFutT = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))
+        from rfl, k1v_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm hwu) (by simp), iff_of_true hwu rfl⟩,
+      ⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+      ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+  -- Interior-positive realization: each positive interior fold bit yields an interval witness.
+  have hLreal : ∀ χ : NormalForm sig k 1, igFoldBit qnf igZXW χ = true →
+      ∃ u, x < u ∧ u < w ∧ nf_eval_nf M k 1 (fun _ => u) χ := by
+    intro χ hbit
+    obtain ⟨u, hzu, hev⟩ := (hz' igZXW χ).mp hbit
+    rw [show igZXW = Fin.cons (true, false) (Fin.cons (false, true) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff] at hzu
+    exact ⟨u, hzu.2.1.2.mpr rfl, hzu.1.1.mpr rfl, hev⟩
+  have hRreal : ∀ χ : NormalForm sig k 1, igFoldBit qnf igZWT χ = true →
+      ∃ u, w < u ∧ u < t ∧ nf_eval_nf M k 1 (fun _ => u) χ := by
+    intro χ hbit
+    obtain ⟨u, hzu, hev⟩ := (hz' igZWT χ).mp hbit
+    rw [show igZWT = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (true, false)))
+        from rfl, k1v_zoneHolds_cons_iff] at hzu
+    exact ⟨u, hzu.1.2.mpr rfl, hzu.2.2.1.mpr rfl, hev⟩
+  -- Segment exclusions on ALL of `(x, w)` / `(w, t)`.
+  have hsegL_all : ∀ u, x < u → u < w → (igSegL (charF k) (igFoldBit qnf)).eval_at M atomMap u := by
+    intro u hxu huw
+    simp only [igSegL, TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+    cases hb : igFoldBit qnf igZXW χ with
+    | true => rw [if_pos rfl]; exact fun hfa => hfa
+    | false =>
+      rw [if_neg (by simp)]
+      intro hch
+      have hbit := (hz' igZXW χ).mpr ⟨u, hzXW u hxu huw, (hchar χ u).mp hch⟩
+      rw [hb] at hbit; exact Bool.noConfusion hbit
+  have hsegR_all : ∀ u, w < u → u < t → (igSegR (charF k) (igFoldBit qnf)).eval_at M atomMap u := by
+    intro u hwu hut
+    simp only [igSegR, TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+    cases hb : igFoldBit qnf igZWT χ with
+    | true => rw [if_pos rfl]; exact fun hfa => hfa
+    | false =>
+      rw [if_neg (by simp)]
+      intro hch
+      have hbit := (hz' igZWT χ).mpr ⟨u, hzWT u hwu hut, (hchar χ u).mp hch⟩
+      rw [hb] at hbit; exact Bool.noConfusion hbit
+  -- Endpoint predicate at the FIXED left endpoint `x` (exterior Since literals, zPastX/zAtX).
+  have hepL : (igEpL (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1
+      (igFoldBit qnf)).eval_at M atomMap x := by
+    simp only [igEpL, igLit, TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hcharB _ x).mpr h_x_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        cases hb : igFoldBit qnf igZPastX χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hz' igZPastX χ).mp hb
+          rw [show igZPastX = Fin.cons (true, false) (Fin.cons (true, false) (fun _ => (true, false)))
+              from rfl, k1v_zoneHolds_cons_iff] at hzu
+          exact ⟨u, hzu.2.1.1.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+        | false =>
+          rw [if_neg (by simp)]
+          rintro ⟨s, hsx, hsχ, -⟩
+          have hbit := (hz' igZPastX χ).mpr ⟨s, hzPastX s hsx, (hchar χ s).mp hsχ⟩
+          rw [hb] at hbit; exact Bool.noConfusion hbit
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : igFoldBit qnf igZAtX χ with
+      | true =>
+        rw [if_pos rfl]
+        obtain ⟨u, hzu, hev⟩ := (hz' igZAtX χ).mp hb
+        rw [show igZAtX = Fin.cons (true, false) (Fin.cons (false, false) (fun _ => (true, false)))
+            from rfl, k1v_zoneHolds_cons_iff] at hzu
+        have hueq : u = x := le_antisymm
+          (not_lt.mp (k1v_not_of_iff_false hzu.2.1.2))
+          (not_lt.mp (k1v_not_of_iff_false hzu.2.1.1))
+        exact (hchar χ x).mpr (hueq ▸ hev)
+      | false =>
+        rw [if_neg (by simp)]
+        intro hch
+        have hbit := (hz' igZAtX χ).mpr ⟨x, hzAtX, (hchar χ x).mp hch⟩
+        rw [hb] at hbit; exact Bool.noConfusion hbit
+  -- Endpoint predicate at the FIXED right endpoint `t` (exterior Until literals, zAtT/zFutT).
+  have hepR : (igEpR (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1
+      (igFoldBit qnf)).eval_at M atomMap t := by
+    simp only [igEpR, igLit, TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_append.mp hf with hf | hf
+    · rcases List.mem_cons.mp hf with rfl | hf
+      · exact (hcharB _ t).mpr h_t_nf
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        cases hb : igFoldBit qnf igZAtT χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hz' igZAtT χ).mp hb
+          rw [show igZAtT = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, false)))
+              from rfl, k1v_zoneHolds_cons_iff] at hzu
+          have hueq : u = t := le_antisymm
+            (not_lt.mp (k1v_not_of_iff_false hzu.2.2.2))
+            (not_lt.mp (k1v_not_of_iff_false hzu.2.2.1))
+          exact (hchar χ t).mpr (hueq ▸ hev)
+        | false =>
+          rw [if_neg (by simp)]
+          intro hch
+          have hbit := (hz' igZAtT χ).mpr ⟨t, hzAtT, (hchar χ t).mp hch⟩
+          rw [hb] at hbit; exact Bool.noConfusion hbit
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : igFoldBit qnf igZFutT χ with
+      | true =>
+        rw [if_pos rfl]
+        obtain ⟨u, hzu, hev⟩ := (hz' igZFutT χ).mp hb
+        rw [show igZFutT = Fin.cons (false, true) (Fin.cons (false, true) (fun _ => (false, true)))
+            from rfl, k1v_zoneHolds_cons_iff] at hzu
+        exact ⟨u, hzu.2.2.2.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+      | false =>
+        rw [if_neg (by simp)]
+        rintro ⟨s, hts, hsχ, -⟩
+        have hbit := (hz' igZFutT χ).mpr ⟨s, hzFutT s hts, (hchar χ s).mp hsχ⟩
+        rw [hb] at hbit; exact Bool.noConfusion hbit
+  -- Witness point type at `w` (complete type + equality-zone literals ONLY, rule N4).
+  have hptW : (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1
+      (igFoldBit qnf)).eval_at M atomMap w := by
+    simp only [igPtW, igLit, TemporalPred.eval_at]
+    rw [formula_conjList_iff]
+    intro f hf
+    rcases List.mem_cons.mp hf with rfl | hf
+    · exact (hcharB _ w).mpr h_y_nf
+    · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : igFoldBit qnf igZAtW χ with
+      | true =>
+        rw [if_pos rfl]
+        obtain ⟨u, hzu, hev⟩ := (hz' igZAtW χ).mp hb
+        rw [show igZAtW = Fin.cons (false, false) (Fin.cons (false, true) (fun _ => (true, false)))
+            from rfl, k1v_zoneHolds_cons_iff] at hzu
+        have hueq : u = w := le_antisymm
+          (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+          (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+        exact (hchar χ w).mpr (hueq ▸ hev)
+      | false =>
+        rw [if_neg (by simp)]
+        intro hch
+        have hbit := (hz' igZAtW χ).mpr ⟨w, hzAtW, (hchar χ w).mp hch⟩
+        rw [hb] at hbit; exact Bool.noConfusion hbit
+  -- Sorted arrangements of the interior-positive enumerations.
+  obtain ⟨psL, hpermL, hsortL, hpropsL⟩ :=
+    igk_sorted_realization M x w (igSL (igFoldBit qnf))
+      ((Finset.nodup_toList _).filter _)
+      (fun χ hχ => hLreal χ (by simpa only [igSL, igAllTypes, decide_eq_true_eq]
+        using (List.mem_filter.mp hχ).2))
+  obtain ⟨psR, hpermR, hsortR, hpropsR⟩ :=
+    igk_sorted_realization M w t (igSR (igFoldBit qnf))
+      ((Finset.nodup_toList _).filter _)
+      (fun χ hχ => hRreal χ (by simpa only [igSR, igAllTypes, decide_eq_true_eq]
+        using (List.mem_filter.mp hχ).2))
+  -- Combined witness list is sorted: left points < w < right points.
+  have hsortFull : (psL.map Prod.snd ++ w :: psR.map Prod.snd).Pairwise (· < ·) := by
+    rw [List.pairwise_append]
+    refine ⟨hsortL, ?_, ?_⟩
+    · rw [List.pairwise_cons]
+      refine ⟨?_, hsortR⟩
+      intro b hb
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hb
+      exact (hpropsR p hp).1.1
+    · intro a ha b hb
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp ha
+      have haw : p.2 < w := (hpropsL p hp).1.2
+      rcases List.mem_cons.mp hb with rfl | hb
+      · exact haw
+      · obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hb
+        exact haw.trans (hpropsR q hq).1.1
+  -- Enter the carrier via the Phase-3 destructuring; gate + the (psL, psR) arrangement disjunct.
+  rw [bracketEndChar_kv_succ_holds_iff atomMap h_surj charF qnf M x t]
+  refine ⟨bracketEndChar_kv_step_gate qnf M w x t hxw hwt hw,
+    psL.map Prod.fst, List.mem_permutations.mpr hpermL,
+    psR.map Prod.fst, List.mem_permutations.mpr hpermR, hepL, hepR, ?_⟩
+  -- The bracket: assembled by the reused construction lemma from the sorted realizations.
+  refine k1v_bracket_construct M atomMap _ _ _ _ _ x w t hxw hwt
+    (psL.map Prod.snd) (psR.map Prod.snd) (by simp) (by simp) hsortFull
+    ?_ ?_ hptW ?_ ?_ hsegL_all hsegR_all
+  · intro u hu
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+    exact (hpropsL p hp).1
+  · intro u hu
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+    exact (hpropsR p hp).1
+  · intro i hi
+    have hi' : i < psL.length := by simpa using hi
+    have h1 : (List.map (igCharP (charF k)) (psL.map Prod.fst))[i]'hi =
+        igCharP (charF k) ((psL[i]'hi').1) := by simp only [List.getElem_map]
+    have h2 : (psL.map Prod.snd)[i]'(by simpa using hi') = (psL[i]'hi').2 := by
+      simp only [List.getElem_map]
+    rw [h1, h2]
+    simp only [igCharP, TemporalPred.eval_at]
+    exact (hchar _ _).mpr (hpropsL _ (List.getElem_mem _)).2
+  · intro i hi
+    have hi' : i < psR.length := by simpa using hi
+    have h1 : (List.map (igCharP (charF k)) (psR.map Prod.fst))[i]'hi =
+        igCharP (charF k) ((psR[i]'hi').1) := by simp only [List.getElem_map]
+    have h2 : (psR.map Prod.snd)[i]'(by simpa using hi') = (psR[i]'hi').2 := by
+      simp only [List.getElem_map]
+    rw [h1, h2]
+    simp only [igCharP, TemporalPred.eval_at]
+    exact (hchar _ _).mpr (hpropsR _ (List.getElem_mem _)).2
 
 end
 

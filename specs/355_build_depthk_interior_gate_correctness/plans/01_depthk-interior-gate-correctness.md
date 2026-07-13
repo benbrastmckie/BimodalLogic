@@ -252,7 +252,7 @@ collapse). **BLOCKED-escalation** as global.
 
 ---
 
-### Phase 4: Inductive step — ⇐ completeness (realizer → carrier holds) [IN PROGRESS]
+### Phase 4: Inductive step — ⇐ completeness (realizer → carrier holds) [COMPLETED]
 
 **Goal**: Prove the completeness half of the k→k+1 step (`bracketEndChar_kv_step_complete`): from
 `∃ w, nf_eval_nf M (k+1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf` conclude `(bracketEndChar_kv …
@@ -261,14 +261,21 @@ sub-piece characteristics. This is the direction NOT obstructed by F1 (a genuine
 the fiber content), so it lands first as a green milestone.
 
 **Tasks**:
-- [ ] From the realizer, apply Phase 3's `holds_iff` introduction: discharge the off-fiber gate
+- [x] From the realizer, apply Phase 3's `holds_iff` introduction: discharge the off-fiber gate
       conjunct (a genuine evaluation lives on `qnf.1`'s fiber) and produce each required fiber fold
-      bit existentially from the realizer's own marked subs.
-- [ ] Thread the IH (depth-`k` `bracketEndChar_kv_correct_prior` at the sub-pieces) and Phase 2's
-      point-type bridges to realize interior content at FULL arity (G1); cite Rabinovich Cor 5.4
-      (endpoint characteristic chain) for the per-fiber reconstruction shape.
-- [ ] Pre-declared split guard: if this overruns one agent run, split 4a (off-fiber gate + fiber
-      bits) / 4b (IH threading + interior realization); commit 4a green first.
+      bit existentially from the realizer's own marked subs. *(delivered: `bracketEndChar_kv_step_gate`
+      (4a) + `igFoldBit_realize_iff` (fold biconditional, fiber bits))*
+- [x] Thread the point-type bridges to realize interior content at FULL arity (G1); cite Rabinovich
+      Cor 5.4 (endpoint characteristic chain) for the per-fiber reconstruction shape. *(deviation:
+      altered — the interior point realization is via `interiorGate_hck` under the provider agreement
+      `hcharK : charF k = fun χ => P.existF 0 χ`, NOT the arity-3 IH `bracketEndChar_kv_correct_prior`;
+      the arity-1 interior 1-types are provider-realized, mirroring the k=2 template
+      `bracketEndChar_kvE2_complete_two_prior`'s `P`-parameterization. The IH is not needed for the
+      completeness direction.)*
+- [x] Pre-declared split guard executed: 4a (gate) + 4b (fold biconditional, depth-k sort, main
+      theorem) committed as separate green sub-steps. Delivered `bracketEndChar_kv_step_complete`
+      green, axiom-clean `[propext, Classical.choice, Quot.sound]`, via faithful transcription of the
+      depth-1 `bracketEndChar_k1v_complete` engine (reused private helpers via `open private`).
 
 **Timing**: ~3.5 hours. **Estimated output**: ~200-400 lines (split 4a/4b if overrunning).
 
