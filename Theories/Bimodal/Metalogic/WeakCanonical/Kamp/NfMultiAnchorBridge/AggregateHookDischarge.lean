@@ -1782,4 +1782,209 @@ end ShapeCertificatesK0
 
 end ArmLemmasK0
 
+/-! ## Phase 4 — k=1 DIAGONAL-seam aggregate via the gated anchor-collapse reduction
+
+At the diagonal seam (`x = t`) the k=1 population clause per `qnf : NormalForm sig 1 3` is
+`∃ w, nf_eval_nf M 1 3 [w, t, t] qnf` — the env has DUPLICATED anchors (positions 1, 2 both
+`t`). The depth-lift of the diagonal rename congruence is blocked as an UNCONDITIONAL iff
+(NfDepth0Generalized.lean:1693-1719: a non-diagonal-invariant sub can have its collapse marked
+true), but the missing ingredient is exactly a per-`qnf` SYNTACTIC gate: qnf's atom row is a
+duplicate-collapse fixpoint AND every non-fixpoint arity-4 sub is unmarked. Under that gate the
+depth-1 evaluation at `[w, t, t]` collapses LOSSLESSLY to the depth-1 arity-2 evaluation of the
+collapsed `renameNF aggExpand23 aggMerge32 qnf` at `[w, t]` (`agg_diag_collapse_k1`) — and off-
+gate the evaluation is REFUTED (`agg_rename_fixpoint_of_eval`: any realizer forces the
+fixpoint). The per-`qnf` positive clause therefore reduces to the k=0 trichotomy arms applied
+to the collapsed population member: `∃ w, nf_eval_nf M 1 2 [w, t] (collapse qnf)` =
+past ∨ diag ∨ future at k=0 (`exists_trichotomy_split`) — consuming Phase 3 verbatim. -/
+
+section AggDiagK1
+
+variable {sig : MonadicSignature}
+
+/-- Prefix embedding `Fin 2 → Fin 3` (`0 ↦ 0`, `1 ↦ 1`). -/
+def aggExpand23 : Fin 2 → Fin 3 := fun i => ⟨i.val, by omega⟩
+
+/-- Tail merge `Fin 3 → Fin 2` (`0 ↦ 0`, `1 ↦ 1`, `2 ↦ 1`). -/
+def aggMerge32 : Fin 3 → Fin 2 := fun i => if i.val = 0 then ⟨0, by omega⟩ else ⟨1, by omega⟩
+
+/-- `aggMerge32 ∘ aggExpand23 = id` (the retraction). -/
+theorem aggMerge32_expand23 : ∀ j : Fin 2, aggMerge32 (aggExpand23 j) = j := by
+  decide
+
+/-- Lifted retraction on `Fin 3`. -/
+theorem agg_liftMerge_liftExpand :
+    ∀ j : Fin 3, liftIdx aggMerge32 (liftIdx aggExpand23 j) = j := by
+  intro j
+  refine Fin.cases ?_ ?_ j
+  · rw [liftIdx_zero, liftIdx_zero]
+  · intro i
+    rw [liftIdx_succ, liftIdx_succ, aggMerge32_expand23]
+
+/-- Two bits biconditional to the same proposition are equal. -/
+private theorem agg_bit_eq_of_iff {P : Prop} {b1 b2 : Bool}
+    (h1 : P ↔ b1 = true) (h2 : P ↔ b2 = true) : b1 = b2 := by
+  cases hb1 : b1 <;> cases hb2 : b2 <;> simp_all
+
+/-! Concrete-typed rename wrappers (the bare `renameNF` leaves its depth implicit `{k}` as a
+stuck metavariable in expected-type-free positions — the wrappers pin `k` and the arities). -/
+
+/-- Collapse an arity-3 depth-0 row to arity 2 (positions 1, 2 merge). -/
+def aggCollapseRow {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 2 :=
+  renameNF aggExpand23 aggMerge32
+/-- Duplicate an arity-2 depth-0 row to arity 3 (position 1 duplicated onto 2). -/
+def aggDupRow {sig : MonadicSignature} : NormalForm sig 0 2 → NormalForm sig 0 3 :=
+  renameNF aggMerge32 aggExpand23
+/-- Collapse an arity-4 depth-0 sub to arity 3 (positions 2, 3 merge; fresh slot fixed). -/
+def aggCollapseSub {sig : MonadicSignature} : NormalForm sig 0 4 → NormalForm sig 0 3 :=
+  renameNF (liftIdx aggExpand23) (liftIdx aggMerge32)
+/-- Duplicate an arity-3 depth-0 sub to arity 4 (position 2 duplicated onto 3). -/
+def aggDupSub {sig : MonadicSignature} : NormalForm sig 0 3 → NormalForm sig 0 4 :=
+  renameNF (liftIdx aggMerge32) (liftIdx aggExpand23)
+/-- Collapse a depth-1 arity-3 NF to arity 2 (the diagonal population collapse). -/
+def aggCollapseK1 {sig : MonadicSignature} : NormalForm sig 1 3 → NormalForm sig 1 2 :=
+  renameNF aggExpand23 aggMerge32
+
+/-- **Duplicate-collapse fixpoint from a depth-0 realizer** (the gate-refutation engine).
+    If a depth-0 arity-`a` NF `σ` is realized on an env that is constant on the merge fibers
+    (`E (f (r i)) = E i`), then `σ` IS a duplicate-collapse fixpoint: reassembling its collapse
+    recovers `σ` exactly. Contrapositively, a non-fixpoint `σ` has NO realizer on such an env —
+    the conditional ingredient that unblocks the depth-1 diagonal rename congruence
+    (NfDepth0Generalized.lean:1693-1719). -/
+theorem agg_rename_fixpoint_of_eval {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {a b : Nat}
+    (f : Fin b → Fin a) (r : Fin a → Fin b)
+    (hsec2 : ∀ j : Fin b, r (f j) = j)
+    (E : Fin a → M.carrier)
+    (hE : ∀ i : Fin a, E (f (r i)) = E i)
+    (σ : NormalForm sig 0 a)
+    (heval : nf_eval_nf M 0 a E σ) :
+    renameNF r f (renameNF f r σ) = σ := by
+  funext atom
+  match atom with
+  | .pred p i =>
+    simp only [renameNF]
+    have h1 := heval (.pred p (f (r i)))
+    have h2 := heval (.pred p i)
+    simp only [atom_eval] at h1 h2
+    rw [hE i] at h1
+    exact agg_bit_eq_of_iff h1 h2
+  | .order i j hij =>
+    simp only [renameNF]
+    by_cases hr : r i = r j
+    · rw [dif_pos hr]
+      have hEij : E i = E j := by rw [← hE i, ← hE j, hr]
+      have h2 := heval (.order i j hij)
+      simp only [atom_eval] at h2
+      rw [hEij] at h2
+      cases hb : σ (.order i j hij) with
+      | false => rfl
+      | true => exact absurd (h2.mpr hb) (lt_irrefl _)
+    · rw [dif_neg hr]
+      by_cases hf : f (r i) = f (r j)
+      · exact absurd ((hsec2 (r i)).symm.trans
+          ((congrArg r hf).trans (hsec2 (r j)))) hr
+      · rw [dif_neg hf]
+        have h1 := heval (.order (f (r i)) (f (r j)) hf)
+        have h2 := heval (.order i j hij)
+        simp only [atom_eval] at h1 h2
+        rw [hE i, hE j] at h1
+        exact agg_bit_eq_of_iff h1 h2
+
+/-- The atom row of the collapsed depth-1 NF is the collapse of the atom row. -/
+private theorem agg_dup32_fst (qnf : NormalForm sig 1 3) :
+    (aggCollapseK1 qnf).1 = aggCollapseRow qnf.1 := rfl
+
+/-- The quant layer of the collapsed depth-1 NF reads the original through the lifted
+    duplication. -/
+private theorem agg_dup32_snd (qnf : NormalForm sig 1 3) (τ : NormalForm sig 0 3) :
+    (aggCollapseK1 qnf).2 τ = qnf.2 (aggDupSub τ) := rfl
+
+/-- **Gated depth-1 diagonal anchor collapse** (the conditional lift of
+    `renameNF_eval_diag0` that the unconditional-blocked note excludes). Under the syntactic
+    gate — the atom row is a duplicate-collapse fixpoint and every non-fixpoint arity-4 sub is
+    unmarked — the depth-1 evaluation at the duplicated-anchor env `[w, t, t]` is equivalent to
+    the depth-1 arity-2 evaluation of the collapsed NF at `[w, t]`. -/
+theorem agg_diag_collapse_k1 {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (qnf : NormalForm sig 1 3) (w t : M.carrier)
+    (hrow : aggDupRow (aggCollapseRow qnf.1) = qnf.1)
+    (hquant : ∀ σ : NormalForm sig 0 4, aggDupSub (aggCollapseSub σ) ≠ σ →
+      qnf.2 σ = false) :
+    nf_eval_nf M 1 3 (Fin.cons w (Fin.cons t (fun _ => t))) qnf ↔
+      nf_eval_nf M 1 2 (Fin.cons w (fun _ => t)) (aggCollapseK1 qnf) := by
+  set E : Fin 3 → M.carrier := Fin.cons w (Fin.cons t (fun _ => t)) with hEdef
+  set e : Fin 2 → M.carrier := Fin.cons w (fun _ => t) with hedef
+  -- Env compatibilities for the rename bridges.
+  have hcomp : ∀ i : Fin 2, e i = E (aggExpand23 i) := by
+    intro i
+    match i with
+    | ⟨0, _⟩ => rfl
+    | ⟨1, _⟩ => rfl
+  have hcomp2 : ∀ i : Fin 3, E i = e (aggMerge32 i) := by
+    intro i
+    match i with
+    | ⟨0, _⟩ => rfl
+    | ⟨1, _⟩ => rfl
+    | ⟨2, _⟩ => rfl
+  -- Row-level rename bridge (under the fixpoint): eval₃ E qnf.1 ↔ eval₂ e (collapse row).
+  have hrowbridge : nf_eval_nf M 0 3 E (qnf.1 : NormalForm sig 0 3) ↔
+      nf_eval_nf M 0 2 e (aggCollapseRow qnf.1) := by
+    conv_lhs => rw [← hrow]
+    exact renameNF_eval_diag0 M aggExpand23 aggMerge32 E e hcomp hcomp2
+      aggMerge32_expand23 (aggCollapseRow qnf.1)
+  -- σ-level rename bridge per inner witness v.
+  have hsub : ∀ (v : M.carrier) (τ : NormalForm sig 0 3),
+      nf_eval_nf M 0 4 (Fin.cons v E) (aggDupSub τ) ↔
+        nf_eval_nf M 0 3 (Fin.cons v e) τ := by
+    intro v τ
+    exact renameNF_eval_diag0 M (liftIdx aggExpand23) (liftIdx aggMerge32)
+      (Fin.cons v E) (Fin.cons v e)
+      (cons_comp_liftIdx aggExpand23 E e v hcomp)
+      (cons_comp_liftIdx aggMerge32 e E v hcomp2)
+      agg_liftMerge_liftExpand τ
+  -- Depth-1 defeq unfolds on both sides.
+  have hwhole3 : nf_eval_nf M 1 3 E qnf ↔
+      (nf_eval_nf M 0 3 E (qnf.1 : NormalForm sig 0 3) ∧
+        (∀ σ : NormalForm sig 0 4,
+          (∃ v : M.carrier, nf_eval_nf M 0 4 (Fin.cons v E) σ) ↔ qnf.2 σ = true)) :=
+    Iff.rfl
+  have hwhole2 : nf_eval_nf M 1 2 e (aggCollapseK1 qnf) ↔
+      (nf_eval_nf M 0 2 e (aggCollapseRow qnf.1) ∧
+        (∀ τ : NormalForm sig 0 3,
+          (∃ v : M.carrier, nf_eval_nf M 0 3 (Fin.cons v e) τ) ↔
+            qnf.2 (aggDupSub τ) = true)) :=
+    Iff.rfl
+  rw [hwhole3, hwhole2]
+  constructor
+  · rintro ⟨hatom, hq⟩
+    refine ⟨hrowbridge.mp hatom, fun τ => ?_⟩
+    have := hq (aggDupSub τ)
+    exact (exists_congr (fun v => (hsub v τ).symm)).trans this
+  · rintro ⟨hatom2, hq2⟩
+    refine ⟨hrowbridge.mpr hatom2, fun σ => ?_⟩
+    by_cases hfix : aggDupSub (aggCollapseSub σ) = σ
+    · have hτ := hq2 (aggCollapseSub σ)
+      rw [hfix] at hτ
+      refine Iff.trans ?_ hτ
+      refine exists_congr (fun v => ?_)
+      conv_lhs => rw [← hfix]
+      exact hsub v (aggCollapseSub σ)
+    · constructor
+      · rintro ⟨v, hv⟩
+        refine absurd ?_ hfix
+        show aggDupSub (aggCollapseSub σ) = σ
+        refine agg_rename_fixpoint_of_eval M (liftIdx aggExpand23)
+          (liftIdx aggMerge32) agg_liftMerge_liftExpand (Fin.cons v E) ?_ σ hv
+        intro i
+        refine Fin.cases ?_ ?_ i
+        · rw [liftIdx_zero, liftIdx_zero]
+        · intro j
+          rw [liftIdx_succ, liftIdx_succ]
+          simp only [Fin.cons_succ]
+          rw [← hcomp (aggMerge32 j), hcomp2 j]
+      · intro hbit
+        rw [hquant σ hfix] at hbit
+        exact Bool.noConfusion hbit
+
+end AggDiagK1
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
