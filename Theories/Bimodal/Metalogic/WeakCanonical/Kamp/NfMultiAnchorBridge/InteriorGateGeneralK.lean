@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.PriorInterface
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.OuterGate
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
+import Batteries.Tactic.OpenPrivate
 
 /-!
 # General-`k` INTERIOR gate correctness (task 355)
@@ -609,6 +610,59 @@ theorem igFoldBit_realize_iff {sig : MonadicSignature} {k : Nat}
     · -- projFresh = χ: both realize the same 1-type at `u`; uniqueness.
       exact nf_eval_unique M k 1 (fun _ => u) (nfk_projFresh csub) χ
         (nf_eval_projFresh M (Fin.cons w (Fin.cons x (fun _ => t))) u csub hcsat) hχ
+
+/-! ## Phase 4b — reused depth-1 completeness machinery (private helpers + depth-`k` sort)
+
+The depth-1 completeness engine `bracketEndChar_k1v_complete` (`CarrierK1V.lean:1629`) is built from
+several PRIVATE helpers that are DEPTH-AGNOSTIC (the arrangement insertion sort `k1v_sorted_insert`,
+generic over the point-type `α`; the bracket assembler `k1v_bracket_construct`, over
+`List TemporalPred`; the arity-3 endpoint 1-type extractors `k1v_extract_x_nf3`/`_t_nf3`/`_y_nf`,
+over `qnf.1 : NormalForm sig 0 3`; and the zone-reader `k1v_zoneHolds_cons_iff`). They are opened here
+via `open private` — pure consumption, no re-proof, no edit to the frozen `CarrierK1V.lean`. Only the
+arrangement-selection wrapper `k1v_sorted_realization` is depth-0-hardwired (its point types are
+`NormalForm sig 0 1`), so its general-`k` analog `igk_sorted_realization` is re-derived below over
+`NormalForm sig k 1` (byte-for-byte the same insertion induction, `nf_eval_unique` at depth `k`). -/
+
+open private k1v_sorted_insert k1v_zoneHolds_cons_iff k1v_extract_x_nf3 k1v_extract_t_nf3
+  k1v_extract_y_nf k1v_bracket_construct from
+  Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
+
+/-- **Depth-`k` arrangement selection** (task 355 Phase 4b; general-`k` analog of
+    `k1v_sorted_realization`, `CarrierK1V.lean:1447`). Every list of complete depth-`k` 1-types each
+    realized somewhere strictly inside `(a, b)` admits a simultaneous arrangement — a permutation
+    tagged with realizing points in strictly increasing model order. Distinctness is automatic:
+    distinct complete `k`-types exclude each other at any single point (`nf_eval_unique M k 1`). Same
+    insertion induction as the depth-1 original, over the generic insert helper `k1v_sorted_insert`. -/
+theorem igk_sorted_realization {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (a b : M.carrier)
+    (S : List (NormalForm sig k 1)) (hnd : S.Nodup)
+    (hreal : ∀ χ ∈ S, ∃ u, a < u ∧ u < b ∧ nf_eval_nf M k 1 (fun _ => u) χ) :
+    ∃ ps : List (NormalForm sig k 1 × M.carrier),
+      List.Perm (ps.map Prod.fst) S ∧
+      (ps.map Prod.snd).Pairwise (· < ·) ∧
+      ∀ p ∈ ps, (a < p.2 ∧ p.2 < b) ∧ nf_eval_nf M k 1 (fun _ => p.2) p.1 := by
+  induction S with
+  | nil => exact ⟨[], by simp, by simp, by simp⟩
+  | cons χ S' ih =>
+    obtain ⟨u, hau, hub, huχ⟩ := hreal χ List.mem_cons_self
+    obtain ⟨ps', hperm', hsort', hprops'⟩ :=
+      ih (List.nodup_cons.mp hnd).2 (fun χ' h' => hreal χ' (List.mem_cons_of_mem _ h'))
+    have hne : ∀ p ∈ ps', p.2 ≠ u := by
+      intro p hp heq
+      have hev : nf_eval_nf M k 1 (fun _ => u) p.1 := heq ▸ (hprops' p hp).2
+      have hpq : p.1 = χ := nf_eval_unique M k 1 _ p.1 χ hev huχ
+      have : χ ∈ S' := hperm'.mem_iff.mp (hpq ▸ List.mem_map_of_mem hp)
+      exact (List.nodup_cons.mp hnd).1 this
+    obtain ⟨qs, hqperm, hqsort⟩ := k1v_sorted_insert M (χ, u) ps' hsort' hne
+    refine ⟨qs, ?_, hqsort, ?_⟩
+    · have h1 : List.Perm (qs.map Prod.fst) (((χ, u) :: ps').map Prod.fst) := hqperm.map _
+      rw [List.map_cons] at h1
+      exact h1.trans (hperm'.cons χ)
+    · intro p hp
+      rcases List.mem_cons.mp (hqperm.mem_iff.mp hp) with rfl | hp'
+      · exact ⟨⟨hau, hub⟩, huχ⟩
+      · exact hprops' p hp'
 
 end
 
