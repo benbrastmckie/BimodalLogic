@@ -262,14 +262,14 @@ aggregate construction; kill statement churn (R7) and adjudicate R1/R2 with comp
 
 ---
 
-### Phase 2: k=0 aggregate population carrier + correctness [IN PROGRESS]
+### Phase 2: k=0 aggregate population carrier + correctness [COMPLETED]
 
 **Goal**: The "aggregate quantEnd/seg construction" at depth 0: a single aggregate object
 (VVecEA2 per Route V, or TemporalPred/BracketFormula-0 pair where Route P was adjudicated
 viable) encoding `Pop(x,t)` for `sub_nf : NormalForm sig 1 2`, with its correctness lemma.
 
 **Tasks**:
-- [ ] Per-qnf clause encodings at k=0, one lemma per zone class (parametric over qnf, following
+- [x] Per-qnf clause encodings at k=0, one lemma per zone class (parametric over qnf, following
   the `nf_quant_clause_tl` clause pattern): interior via
   `bracketEndChar_kv_correct_zero_prior` (PriorInterface.lean:80; its `.holds x t` ↔
   `∃ w, nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf` under the six interior
@@ -278,19 +278,40 @@ viable) encoding `Pop(x,t)` for `sub_nf : NormalForm sig 1 2`, with its correctn
   residual discharged by the pinned anchors — handoff crux item (B)); exteriors via
   `nf_zone_flatten_navigable_correct` at k=0 (hooks bottom out in
   `nf_zone_flatten_navigable_zero`); inconsistent patterns via the Phase-1 `False` routing.
-- [ ] Bit-false clauses: negation closure of the positive encodings (Prop 4.2 stack /
+  *(deviation: altered — the depth-1 fold engine re-fibers the whole population into
+  zone-monadic `(ZoneSpec 2 × NF 0 1)` fibers, so the per-zone encodings are Since/Until/char
+  literals at the two anchors + interior arrangement slots, with no per-qnf lemmas and no
+  k=0-rung/zone-flatten consumption needed. Inconsistent patterns via the gate + Phase-1
+  consistency lemmas as planned.)*
+- [x] Bit-false clauses: negation closure of the positive encodings (Prop 4.2 stack /
   EANegationClosure assets; for the interior zone the negative is the universal-over-interval
   form, which DOES ride a `BracketFormula 0` interval type via `seg_holds_coupled`,
-  Base.lean:1182).
-- [ ] Aggregate across `(Finset.univ.toList : List (NormalForm sig 0 3))` following the
+  Base.lean:1182). *(deviation: altered — Prop 4.2's `neg_2var_vec_ea` is model-dependent
+  (existential `∃ v'`), unusable in a fixed syntactic construction; bit-false fibers are
+  encoded by the `agg2Lit` negated-literal device at the anchors and the uniform interior
+  exclusion segment (which IS the universal-over-interval form the plan named, realized as
+  `aggBracket`'s uniform `segmentTypes`).)*
+- [x] Aggregate across `(Finset.univ.toList : List (NormalForm sig 0 3))` following the
   `nf_char2_formula` house pattern (Base.lean:454-518: `formula_conjList` + `List.mem_map`
   membership + per-clause rewrite), at the VecEA2 endpoint/bracket level per Route V
   (`VVecEA2.conj_struct`, VecEAClosure.lean:195, for cross-disjunct conjunction).
-- [ ] Land `aggPop0` (def) + `aggPop0_correct`: for all Prior M (h_UZ h_SZ) and x < t, the
+  *(deviation: altered — `conj_struct` is one-directional (Phase-1 aggregation verdict);
+  aggregation is `formula_conjList` over the `(zone, χ)` fibers inside the endpoint
+  predicates/segment (house pattern as planned, at the endpoint level) + the arrangement
+  disjunction over `S.permutations` for interior positives, all within ONE VVecEA2.)*
+- [x] Land `aggPop0` (def) + `aggPop0_correct`: for all Prior M (h_UZ h_SZ) and x < t, the
   aggregate's holds/eval ↔ `∀ qnf : NormalForm sig 0 3, ((∃ w, nf_eval_nf M 0 3 (zoneEnv3 w x t)
   qnf) ↔ sub_nf.2 qnf = true)`. Plus the diagonal-seam analog `aggPop0_diag(_correct)` at x = t
-  (3-zone routing, env `Fin.cons w (fun _ => t)`).
-- [ ] Scoped build green; commit per green sub-step (commit-per-green-substep mandate).
+  (3-zone routing, env `Fin.cons w (fun _ => t)`). *(deviation: altered — delivered as
+  `agg2Past`/`agg2Fut`/`agg2Diag` with `agg2Past_holdsRight_iff`/`agg2Fut_holdsLeft_iff`/
+  `agg2Diag_iff`, which FUSE the population match with the atom layer and the laid-witness
+  existential: `holdsRight t ↔ ∃ x < t ∧ nf_eval_nf M 1 2 [x,t] sub_nf` etc. — strictly
+  stronger than the planned aggPop0 shape and exactly the Phase-3 input. The future-arm
+  carrier (planned Phase-3 dual work) landed here for symmetry. No `h_UZ`/`h_SZ` needed at
+  the carrier level (matching the k≤1 rungs); the arm lemmas carry them for skeleton shape.)*
+- [x] Scoped build green; commit per green sub-step (commit-per-green-substep mandate).
+  *(completed — commits d0f3a4484, bb854aa8d, e9e558099 + this phase-end commit; `lean_verify`
+  on all three iff theorems = exactly `[propext, Classical.choice, Quot.sound]`)*
 
 **Timing**: 2 hours (H8 seam if overrun: split 2a = positive clauses + interior, 2b = negation
 closure + aggregation, at the per-clause/aggregation boundary)

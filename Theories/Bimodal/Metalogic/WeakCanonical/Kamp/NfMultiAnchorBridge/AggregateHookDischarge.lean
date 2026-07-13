@@ -1393,4 +1393,278 @@ theorem agg2Fut_holdsLeft_iff (atomMap : Formula → sig.preds)
 
 end AggFutK0
 
+/-! ## Phase 2c — the k=0 DIAGONAL-arm aggregate formula (`x = t` ambient)
+
+The diagonal seam analog: at `x = t` the two anchors coincide, so there is NO bounded
+interior and NO laid witness — the whole aggregate is a single closed formula at the origin
+`t` (the additive `A_diag_correct` variant of the R2 verdict). Three consistent zones
+(`agg2_zone_consistent_diag`): `v<t` Since literals, `v=t` characteristic literals, `t<v`
+Until literals, conjoined with the diagonal atom characteristic `nf_char2_atom_part`, all
+gated by off-fiber honesty + order-conflict falsity. -/
+
+section AggDiagK0
+
+variable {sig : MonadicSignature}
+
+/-- Diagonal-arm gate: off-fiber honesty + order-conflict falsity over the three
+    consistent zones of the `x = t` ambient. -/
+def agg2GateDiag (sub_nf : NormalForm sig 1 2) : Prop :=
+  (∀ τ : NormalForm sig 0 3,
+      nf0_dropFresh τ ≠ (sub_nf.1 : NormalForm sig 0 2) → sub_nf.2 τ = false) ∧
+  (∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+    ¬(zs = agg2ZPastPast ∨ zs = agg2ZAtDiag ∨ zs = agg2ZFutFut) →
+    agg2Bit sub_nf zs χ = false)
+
+/-- **The k=0 diagonal-arm aggregate formula** (all content at the origin `t`; no bracket,
+    no laid witness). Collapses to `⊥` off-gate (Rabinovich's empty disjunction over
+    inconsistent order types). -/
+noncomputable def agg2Diag (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : Formula :=
+  @dite _ (agg2GateDiag sub_nf) (Classical.dec _)
+    (fun _ => formula_conjList
+      (((nf_char2_atom_part atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
+        :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+            agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
+              (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)))
+        ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+            agg2Lit (agg2Bit sub_nf agg2ZAtDiag χ)
+              (nf_depth0_char_formula atomMap h_surj χ)))
+        ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+            agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
+              (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top))))
+    (fun _ => Formula.bot)
+
+/-- Constant-tail env identity: `Fin.cons t (fun _ => t) = fun _ => t` at arity 2. -/
+private theorem agg2_cons_diag_env {α : Type _} (t : α) :
+    (Fin.cons t (fun _ => t) : Fin 2 → α) = (fun _ => t) := by
+  funext i
+  refine Fin.cases rfl (fun j => ?_) i
+  simp [Fin.cons_succ]
+
+/-- **Correctness of the k=0 diagonal-arm aggregate**: truth at the origin `t` is exactly
+    the diagonal trichotomy disjunct. Every chain step a manual bridge (G5). -/
+theorem agg2Diag_iff (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    temporal_truth M atomMap t (agg2Diag atomMap h_surj sub_nf) ↔
+      nf_eval_nf M 1 2 (Fin.cons t (fun _ => t)) sub_nf := by
+  have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+    fun χ' u => nfPred_correct M atomMap h_surj χ' u
+  -- Zone-membership constructors at the three consistent zones of the diagonal.
+  have hzPast : ∀ u, u < t →
+      zoneHolds M (Fin.cons t (fun _ => t)) agg2ZPastPast u := by
+    intro u hut
+    simp only [agg2ZPastPast, agg2Mk, agg2Ltz]
+    rw [agg2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩,
+      ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+  have hzAt : zoneHolds M (Fin.cons t (fun _ => t)) agg2ZAtDiag t := by
+    simp only [agg2ZAtDiag, agg2Mk, agg2Eqz]
+    rw [agg2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩,
+      ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+  have hzFut : ∀ u, t < u →
+      zoneHolds M (Fin.cons t (fun _ => t)) agg2ZFutFut u := by
+    intro u htu
+    simp only [agg2ZFutFut, agg2Mk, agg2Gtz]
+    rw [agg2_zoneHolds_cons_iff]
+    exact ⟨⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩,
+      ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+  unfold agg2Diag
+  by_cases hg : agg2GateDiag sub_nf
+  · rw [dif_pos hg]
+    constructor
+    · -- Soundness (truth at `t` → the diagonal disjunct).
+      intro h
+      rw [formula_conjList_iff] at h
+      have hatom : temporal_truth M atomMap t
+          (nf_char2_atom_part atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) :=
+        h _ (List.mem_append_left _ (List.mem_append_left _ List.mem_cons_self))
+      have hPastLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+          (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
+            (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+        fun χ => h _ (List.mem_append_left _ (List.mem_append_left _
+          (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp)))))
+      have hAtLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+          (agg2Lit (agg2Bit sub_nf agg2ZAtDiag χ)
+            (nf_depth0_char_formula atomMap h_surj χ)) :=
+        fun χ => h _ (List.mem_append_left _
+          (List.mem_append_right _ (List.mem_map_of_mem (by simp))))
+      have hFutLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+          (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
+            (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+        fun χ => h _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
+      rw [nf_eval_depth1_fold_iff]
+      refine ⟨?_, ?_, hg.1⟩
+      · show nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)
+        rw [agg2_cons_diag_env]
+        exact (nf_char2_atom_part_correct M atomMap h_surj
+          (sub_nf.1 : NormalForm sig 0 2) t).mp hatom
+      · intro zs χ
+        show _ ↔ agg2Bit sub_nf zs χ = true
+        by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtDiag ∨ zs = agg2ZFutFut
+        · rcases hcons with rfl | rfl | rfl
+          · -- Zone `v < t`: the Since literal at `t`.
+            constructor
+            · rintro ⟨u, hzu, hev⟩
+              simp only [agg2ZPastPast, agg2Mk, agg2Ltz] at hzu
+              rw [agg2_zoneHolds_cons_iff] at hzu
+              have hut : u < t := hzu.1.1.mpr rfl
+              cases hbb : agg2Bit sub_nf agg2ZPastPast χ with
+              | false =>
+                have hlit := hPastLit χ
+                simp only [agg2Lit] at hlit
+                rw [if_neg (by simp [hbb])] at hlit
+                exact (hlit ⟨u, hut, (hchar χ u).mpr hev, fun r _ _ hf => hf⟩).elim
+              | true => rfl
+            · intro hbit
+              have hlit := hPastLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_pos hbit] at hlit
+              obtain ⟨s, hst, hsχ, -⟩ := hlit
+              exact ⟨s, hzPast s hst, (hchar χ s).mp hsχ⟩
+          · -- Zone `v = t`: the characteristic literal at `t`.
+            constructor
+            · rintro ⟨u, hzu, hev⟩
+              simp only [agg2ZAtDiag, agg2Mk, agg2Eqz] at hzu
+              rw [agg2_zoneHolds_cons_iff] at hzu
+              have hueq : u = t := le_antisymm
+                (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+                (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+              subst hueq
+              cases hbb : agg2Bit sub_nf agg2ZAtDiag χ with
+              | false =>
+                have hlit := hAtLit χ
+                simp only [agg2Lit] at hlit
+                rw [if_neg (by simp [hbb])] at hlit
+                exact (hlit ((hchar χ u).mpr hev)).elim
+              | true => rfl
+            · intro hbit
+              have hlit := hAtLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_pos hbit] at hlit
+              exact ⟨t, hzAt, (hchar χ t).mp hlit⟩
+          · -- Zone `t < v`: the Until literal at `t`.
+            constructor
+            · rintro ⟨u, hzu, hev⟩
+              simp only [agg2ZFutFut, agg2Mk, agg2Gtz] at hzu
+              rw [agg2_zoneHolds_cons_iff] at hzu
+              have htu : t < u := hzu.1.2.mpr rfl
+              cases hbb : agg2Bit sub_nf agg2ZFutFut χ with
+              | false =>
+                have hlit := hFutLit χ
+                simp only [agg2Lit] at hlit
+                rw [if_neg (by simp [hbb])] at hlit
+                exact (hlit ⟨u, htu, (hchar χ u).mpr hev, fun r _ _ hf => hf⟩).elim
+              | true => rfl
+            · intro hbit
+              have hlit := hFutLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_pos hbit] at hlit
+              obtain ⟨s, hts, hsχ, -⟩ := hlit
+              exact ⟨s, hzFut s hts, (hchar χ s).mp hsχ⟩
+        · constructor
+          · rintro ⟨u, hzu, -⟩
+            exact absurd (agg2_zone_consistent_diag M t u zs hzu) hcons
+          · intro hbit
+            have hfalse := hg.2 zs χ hcons
+            rw [hfalse] at hbit
+            exact Bool.noConfusion hbit
+    · -- Completeness (the diagonal disjunct → truth at `t`).
+      intro heval
+      rw [nf_eval_depth1_fold_iff] at heval
+      obtain ⟨h_atom_raw, h_fiber, -⟩ := heval
+      have h_atom : nf_eval_nf M 0 2 (Fin.cons t (fun _ => t))
+          (sub_nf.1 : NormalForm sig 0 2) := h_atom_raw
+      have hzone' : ∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+          (∃ u : M.carrier,
+            zoneHolds M (Fin.cons t (fun _ => t)) zs u ∧
+            nf_eval_nf M 0 1 (fun _ => u) χ) ↔
+          agg2Bit sub_nf zs χ = true :=
+        fun zs χ => h_fiber zs χ
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_append.mp hf with hf | hf
+      · rcases List.mem_append.mp hf with hf | hf
+        · rcases List.mem_cons.mp hf with rfl | hf
+          · rw [agg2_cons_diag_env] at h_atom
+            exact (nf_char2_atom_part_correct M atomMap h_surj
+              (sub_nf.1 : NormalForm sig 0 2) t).mpr h_atom
+          · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+            simp only [agg2Lit]
+            cases hb : agg2Bit sub_nf agg2ZPastPast χ with
+            | true =>
+              rw [if_pos rfl]
+              obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+              simp only [agg2ZPastPast, agg2Mk, agg2Ltz] at hzu
+              rw [agg2_zoneHolds_cons_iff] at hzu
+              exact ⟨u, hzu.1.1.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+            | false =>
+              rw [if_neg (by simp)]
+              rintro ⟨s, hst, hsχ, -⟩
+              have hbit := (hzone' _ χ).mp ⟨s, hzPast s hst, (hchar χ s).mp hsχ⟩
+              rw [hb] at hbit
+              exact Bool.noConfusion hbit
+        · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+          simp only [agg2Lit]
+          cases hb : agg2Bit sub_nf agg2ZAtDiag χ with
+          | true =>
+            rw [if_pos rfl]
+            obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+            simp only [agg2ZAtDiag, agg2Mk, agg2Eqz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = t := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+            exact (hchar χ t).mpr (hueq ▸ hev)
+          | false =>
+            rw [if_neg (by simp)]
+            intro hch
+            have hbit := (hzone' _ χ).mp ⟨t, hzAt, (hchar χ t).mp hch⟩
+            rw [hb] at hbit
+            exact Bool.noConfusion hbit
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        simp only [agg2Lit]
+        cases hb : agg2Bit sub_nf agg2ZFutFut χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          simp only [agg2ZFutFut, agg2Mk, agg2Gtz] at hzu
+          rw [agg2_zoneHolds_cons_iff] at hzu
+          exact ⟨u, hzu.1.2.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+        | false =>
+          rw [if_neg (by simp)]
+          rintro ⟨s, hts, hsχ, -⟩
+          have hbit := (hzone' _ χ).mp ⟨s, hzFut s hts, (hchar χ s).mp hsχ⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+  · -- Off-gate: the formula is `⊥`, and the diagonal disjunct FORCES the gate.
+    rw [dif_neg hg]
+    constructor
+    · intro h
+      exact h.elim
+    · intro heval
+      exfalso
+      apply hg
+      rw [nf_eval_depth1_fold_iff] at heval
+      obtain ⟨-, h_fiber, h_off⟩ := heval
+      have hzone' : ∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+          (∃ u : M.carrier,
+            zoneHolds M (Fin.cons t (fun _ => t)) zs u ∧
+            nf_eval_nf M 0 1 (fun _ => u) χ) ↔
+          agg2Bit sub_nf zs χ = true :=
+        fun zs χ => h_fiber zs χ
+      refine ⟨h_off, fun zs χ hncons => ?_⟩
+      cases hb : agg2Bit sub_nf zs χ with
+      | false => rfl
+      | true =>
+        obtain ⟨u, hzu, -⟩ := (hzone' zs χ).mpr hb
+        exact absurd (agg2_zone_consistent_diag M t u zs hzu) hncons
+
+end AggDiagK0
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
