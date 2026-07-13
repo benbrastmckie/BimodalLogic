@@ -769,29 +769,44 @@ fired: a genuine asymmetry, not a transcription slip.
 - **Depends on:** 3b (binder shapes), 4 (Past slice-id)
 - **File scope:** ExteriorPinnedConverseK.lean, ExteriorPinnedConversePastK.lean.
 
-### Phase 6: Zero-debt gate, full build, wrap-up + downstream flags [NOT STARTED]
+### Phase 6: Zero-debt gate, full build, wrap-up + downstream flags [COMPLETED]
 
 - **Goal:** Terminal verification, handoff, and the two mandated downstream flags.
 - **Tasks:**
-  - [ ] Full `lake build` (whole project) green.
-  - [ ] `grep -rn "sorry"` over all touched files → zero NEW hits (KampPrior :361/:364
+  - [x] Full `lake build` (whole project) green. *(GREEN — "Build completed successfully
+        (1736 jobs)", exit 0)*
+  - [x] `grep -rn "sorry"` over all touched files → zero NEW hits (KampPrior :361/:364
         pre-existing, task-358 territory); `grep -rn ":= True\|:= trivial"` over new files →
         zero; `#print axioms` on the two slice-id theorems, two uniqueness theorems, two supply
         theorems, re-keyed D1/D3/D4, and `endInterval_step_correct` (⊆ [propext,
-        Classical.choice, Quot.sound]).
-  - [ ] Grep gate: zero `hbrFutReal|hbrFutSat|hbrPastReal|hbrPastSat` in the consumption chain;
+        Classical.choice, Quot.sound]). *(census script sorry_count: 0 over NfMultiAnchorBridge/;
+        vacuous grep 0 introduced; #print axioms run on 18 results incl. all FOUR supply
+        theorems, gate ×2, KampPrior gate-match, and the refuted-guard — all exactly
+        [propext, Classical.choice, Quot.sound]; actual axiom declarations repo-wide: 0)*
+  - [x] Grep gate: zero `hbrFutReal|hbrFutSat|hbrPastReal|hbrPastSat` in the consumption chain;
         `kvE_futPinned_of_end_zero_refuted` + salvage lemmas still green and unchanged
-        (`git diff --stat` scoped review of preserved assets).
-  - [ ] Record the AUDIT flag in `.orchestrator-handoff.json`: the frozen k=2
+        (`git diff --stat` scoped review of preserved assets). *(0 live binders; 1 docstring
+        mention of the eliminated name at ExteriorPinnedConverseK.lean:1241; frozen
+        ExteriorBracket.lean last touched by task 348 commit 1d4a06832 — untouched by 360)*
+  - [x] Record the AUDIT flag in `.orchestrator-handoff.json`: the frozen k=2
         `kvE2_extBracketFut` (ExteriorBracket.lean:364) and its 348-era consumers
         (KampPrior:351) use the SAME per-σ keying pattern and must be audited for the same
         unsatisfiability defect — recommend a spawned task; OUT of this task's scope/territory.
-  - [ ] Record the consumer note: task 349 v8 Phase 6 and task 358 Phase 3 must consume the
+        *(deviation: altered — the audit was PERFORMED read-only this phase and the k=2 layer
+        is NOT defective: kvE2_futMarked/:124 and kvE2_pastMarked/:137 both carry the fiber
+        conjunct `nf0_dropFresh σ.1 = qnf.1`; k=2 is the correct template. The recommended
+        spawned task is instead a task-352 depth-k rewrite audit — the confirmed root cause of
+        all three blockers; recorded in summary + handoff JSON)*
+  - [x] Record the consumer note: task 349 v8 Phase 6 and task 358 Phase 3 must consume the
         slice-keyed interface + `kvE_hslice*_supply_zero` (NOT the old `hbr*` shapes).
-  - [ ] Update `.orchestrator-handoff.json` (phases_completed, next_action_hint, sorry
+        *(recorded in summary §Downstream Consumer Contract + handoff JSON)*
+  - [x] Update `.orchestrator-handoff.json` (phases_completed, next_action_hint, sorry
         inventory unchanged: only the two pre-existing 358-territory sorries).
-  - [ ] Write `summaries/02_faithful-slice-repair-summary.md`: sorry inventory (no new),
+  - [x] Write `summaries/02_faithful-slice-repair-summary.md`: sorry inventory (no new),
         probe verdicts (Phase 0 + 0b), the refutation-to-repair narrative, deviation flags.
+        *(deviation: altered — written as `summaries/01_faithful-slice-repair-summary.md`
+        per the orchestrator's Phase-6 dispatch, which fixed that path in the required
+        handoff-JSON artifact entry; first summary artifact of the task)*
 - **Done when:** full build green, zero-debt checks pass, both flags recorded, handoff +
   summary written.
 - **Estimated output:** ~60-100 lines (summary/handoff).
@@ -801,19 +816,20 @@ fired: a genuine asymmetry, not a transcription slip.
 
 ## Testing & Validation
 
-- [ ] Phase-exit gate at EVERY open phase: scoped `lake build <touched modules>` green (module
+- [x] Phase-exit gate at EVERY open phase: scoped `lake build <touched modules>` green (module
       paths `Theories.Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.<File>`); FULL
-      `lake build` at Phases 3b and 6.
-- [ ] Phase 0b probes P1-P3 are the semantic tests for the repair's three Medium-confidence
+      `lake build` at Phases 3b and 6. *(Phase 6: 1736 jobs, exit 0)*
+- [x] Phase 0b probes P1-P3 are the semantic tests for the repair's three Medium-confidence
       steps (C4/C8/C9); persisted in ExteriorPinnedProbeK.lean.
-- [ ] H4 σ′-witness check recorded at Phases 3 and 3b exits (σ′ satisfies, never refutes, each
+- [x] H4 σ′-witness check recorded at Phases 3 and 3b exits (σ′ satisfies, never refutes, each
       new statement; the refutation theorem is the standing regression guard).
-- [ ] `#print axioms` (authoritative sorry/axiom audit) on every new/re-proved theorem at its
-      phase exit — exactly `[propext, Classical.choice, Quot.sound]`.
-- [ ] Consumer regression after 3b and thereafter: D1/D3/D4, gate,
+- [x] `#print axioms` (authoritative sorry/axiom audit) on every new/re-proved theorem at its
+      phase exit — exactly `[propext, Classical.choice, Quot.sound]`. *(Phase-6 terminal
+      re-audit: 18 key results, all exact)*
+- [x] Consumer regression after 3b and thereafter: D1/D3/D4, gate,
       `bracketEndChar_kvExt_correct_prior`, `endInterval_step_correct`, KampPrior :838-876
-      mirror all green; grep gate for eliminated binder names.
-- [ ] Commit-per-green-substep (git-workflow mandate): `task 360 phase {P}: {name}` at each
+      mirror all green; grep gate for eliminated binder names. *(Phase 6: 0 live binders)*
+- [x] Commit-per-green-substep (git-workflow mandate): `task 360 phase {P}: {name}` at each
       phase exit; `task 360 phase 3.1/3.2` / `3b.1/3b.2` if split triggers fire.
 
 ## Artifacts & Outputs
