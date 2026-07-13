@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349,360 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,350,358 | 161,187,191,194,230,291,341,343,349,360 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,350,358 | 161,187,191,194,230,291,341,343,349 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,309 | 131,189,192,196,350 | formula-refactor, automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
 | 5 | 305 | 307 | completeness |
@@ -114,8 +114,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
-360 [IMPLEMENTING] — Make the four exterior hbr* obligations true-as-stated. They are 
-  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm (see above)
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Uncategorized
@@ -127,12 +125,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 360. Restate exterior hbr pinned converse
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md]
 - **Plan**: [360_restate_exterior_hbr_pinned_converse/plans/01_restate-hbr-pinned-converse.md]
+- **Summary**: [360_restate_exterior_hbr_pinned_converse/summaries/01_faithful-slice-repair-summary.md]
 
 **Description**: Make the four exterior hbr* obligations true-as-stated. They are currently false universals (machine-refuted on P2M=(ℤ,<),P={0,10,20}): they dropped the igPtW-site and kvE_*End-endpoint truth antecedents their interior siblings (EndIntervalConsumerK.lean:117-128) kept. Carry those antecedents through the interface chain; preferably ELIMINATE hbr*Real by re-proving kvE_extNeg{Fut,Past}_complete from the destructor's currently-DISCARDED pinned walk facts hgap/hocc (ExteriorConverterK.lean:159 discards what ExteriorNegationK.lean:300-303 returns) + the level-up ambient qnf realization, via a NEW pinned fiber-realization converse kvE_{fut,past}Pinned_of_end. Faithful technique (Rabinovich 2014 Cor 5.4(1)⇐ one fiber level down + Cor 5.4(2) re-anchoring): pinned realization is NOT derivable from free-env P.existF-4 content; the converse's proof route = landed complete-type totality (nf_characteristic_satisfies/nf_eval_unique, NormalForm.lean:224/:245) + walk geometry + endpoint self-zone coincidence; the m=0 instance (all task 358's :361 needs) closes with landed machinery. Keep every current consumer green. Phase 0 mandatory machine probes: lean_run_code countermodel attempt against the guarded binder at m=1 (report 03 claim C3) and the positive m=0 route (claim C8). Grounding: specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md sections 2.3-2.4, 3.3, 6. Note: task 349 v8 Phase 6 inherits the same false-binder wall and should consume this task's restated interface. Zero-debt: no sorries, no vacuous defs; if a sub-piece cannot close green, mark [BLOCKED] and escalate.
 

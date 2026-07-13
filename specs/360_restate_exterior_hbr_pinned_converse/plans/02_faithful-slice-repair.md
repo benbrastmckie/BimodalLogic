@@ -1,7 +1,7 @@
 # Implementation Plan v2: Faithful slice repair — slice-keyed bracket + exterior-slice identification converse (m=0)
 
 - **Task**: 360 - restate_exterior_hbr_pinned_converse
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 22 hours total (9 phases; ~8h landed in Phases 0-2 + Phase-3 salvage, ~14h remaining across 6 open phases, each one agent run)
 - **Dependencies**: None (this task unblocks 358 Phase 3 `:361` and 349 v8 Phase 6)
 - **Research Inputs**:

@@ -2215,7 +2215,7 @@
     {
       "project_number": 360,
       "project_name": "restate_exterior_hbr_pinned_converse",
-      "status": "implementing",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Make the four exterior hbr* obligations true-as-stated. They are currently false universals (machine-refuted on P2M=(ℤ,<),P={0,10,20}): they dropped the igPtW-site and kvE_*End-endpoint truth antecedents their interior siblings (EndIntervalConsumerK.lean:117-128) kept. Carry those antecedents through the interface chain; preferably ELIMINATE hbr*Real by re-proving kvE_extNeg{Fut,Past}_complete from the destructor's currently-DISCARDED pinned walk facts hgap/hocc (ExteriorConverterK.lean:159 discards what ExteriorNegationK.lean:300-303 returns) + the level-up ambient qnf realization, via a NEW pinned fiber-realization converse kvE_{fut,past}Pinned_of_end. Faithful technique (Rabinovich 2014 Cor 5.4(1)⇐ one fiber level down + Cor 5.4(2) re-anchoring): pinned realization is NOT derivable from free-env P.existF-4 content; the converse's proof route = landed complete-type totality (nf_characteristic_satisfies/nf_eval_unique, NormalForm.lean:224/:245) + walk geometry + endpoint self-zone coincidence; the m=0 instance (all task 358's :361 needs) closes with landed machinery. Keep every current consumer green. Phase 0 mandatory machine probes: lean_run_code countermodel attempt against the guarded binder at m=1 (report 03 claim C3) and the positive m=0 route (claim C8). Grounding: specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md sections 2.3-2.4, 3.3, 6. Note: task 349 v8 Phase 6 inherits the same false-binder wall and should consume this task's restated interface. Zero-debt: no sorries, no vacuous defs; if a sub-piece cannot close green, mark [BLOCKED] and escalate.",
@@ -2233,7 +2233,7 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
       ],
       "created": "2026-07-13T07:30:51Z",
-      "last_updated": "2026-07-13T13:54:17Z",
+      "last_updated": "2026-07-13T19:51:55Z",
       "artifacts": [
         {
           "type": "research",
@@ -2244,9 +2244,15 @@
           "path": "specs/360_restate_exterior_hbr_pinned_converse/plans/01_restate-hbr-pinned-converse.md",
           "type": "plan",
           "summary": "Hard-mode 7-phase plan with Phase-0 probe gate"
+        },
+        {
+          "path": "specs/360_restate_exterior_hbr_pinned_converse/summaries/01_faithful-slice-repair-summary.md",
+          "type": "summary",
+          "summary": "Faithful slice-repair: four hbr* eliminated -> slice-keyed interface; 3 Rabinovich-grounded repairs"
         }
       ],
-      "session_id": "sess_1783950096_9d2925"
+      "session_id": "sess_1783950096_9d2925",
+      "completion_summary": "Eliminated the four false exterior hbr* obligations (hbr* grep=0 repo-wide), replacing them with a faithful slice-keyed interface (kvE_*SliceMarked brackets + kvE_{fut,past}SliceId_of_end_zero converses + four m=0 kvE_h{slice,exclSlice}{Fut,Past}_supply_zero theorems supplying task 358's KampPrior:361). Three machine-refuted blockers resolved via Rabinovich-grounded escalation research, all one root cause: task-352's depth-k rewrite dropped constraints the frozen k=2 template kept. Zero-debt: full build green (1736 jobs), 0 sorries, axioms [propext,Classical.choice,Quot.sound]. Recommends a dedicated task-352 depth-k regression audit."
     }
   ],
   "artifacts": [
