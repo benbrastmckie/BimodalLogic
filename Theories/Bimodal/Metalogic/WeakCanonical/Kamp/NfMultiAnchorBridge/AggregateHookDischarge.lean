@@ -919,4 +919,478 @@ theorem agg2Past_holdsRight_iff (atomMap : Formula → sig.preds)
 
 end AggPastK0
 
+/-! ## Phase 2b — the k=0 FUTURE-arm aggregate carrier (`t < x` ambient)
+
+Exact structural dual of Phase 2a: the Until-direction semantics `holdsLeft` at the origin
+`t` is the future trichotomy disjunct `∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t))
+sub_nf`. The env stays `[x, t]` (position 0 = the laid witness `x`, position 1 = the origin
+`t`) but the ambient anchor order flips (`t < x`), so the five consistent zones are those of
+`agg2_zone_consistent_gt` and the interval is `(t, x)`: `endpointLeft` (at `t`) carries the
+FLIPPED off-diagonal origin atom locus + the `v<t` Since literals + the `v=t` characteristic
+literals; `endpointRight` (at the laid `x`) carries the (direction-independent) endpoint atom
+locus + the `v=x` characteristic literals + the `x<v` Until literals. -/
+
+section AggFutK0
+
+variable {sig : MonadicSignature}
+
+/-- Interior-positive enumeration for the future arm (`t < v < x` zone). -/
+noncomputable def agg2SFut (sub_nf : NormalForm sig 1 2) : List (NormalForm sig 0 1) :=
+  (Finset.univ.toList : List (NormalForm sig 0 1)).filter
+    (fun χ => agg2Bit sub_nf agg2ZIntFut χ)
+
+/-- Future-arm left endpoint predicate (at the origin `t`): flipped origin atom locus +
+    `v<t` Since literals + `v=t` characteristic literals. -/
+noncomputable def agg2EpFutL (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : TemporalPred :=
+  ⟨formula_conjList
+    ((nf_char2_atom_offdiag_origin_future atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
+      :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
+            (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)))
+      ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZAtTFut χ)
+            (nf_depth0_char_formula atomMap h_surj χ)))⟩
+
+/-- Future-arm right endpoint predicate (at the laid witness `x`): endpoint atom locus +
+    `v=x` characteristic literals + `x<v` Until literals. -/
+noncomputable def agg2EpFutR (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : TemporalPred :=
+  ⟨formula_conjList
+    (((nf_char2_atom_offdiag_endpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)).formula
+      :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZAtXFut χ)
+            (nf_depth0_char_formula atomMap h_surj χ)))
+      ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
+            (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top)))⟩
+
+/-- Future-arm uniform interior exclusion segment (`t < v < x` negative fibers; G3). -/
+noncomputable def agg2SegFut (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : TemporalPred :=
+  ⟨formula_conjList ((Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+    if agg2Bit sub_nf agg2ZIntFut χ then Formula.top
+    else (nf_depth0_char_formula atomMap h_surj χ).neg))⟩
+
+/-- Future-arm gate: off-fiber honesty + order-conflict falsity over the five consistent
+    zones of the `t < x` ambient. -/
+def agg2GateFut (sub_nf : NormalForm sig 1 2) : Prop :=
+  (∀ τ : NormalForm sig 0 3,
+      nf0_dropFresh τ ≠ (sub_nf.1 : NormalForm sig 0 2) → sub_nf.2 τ = false) ∧
+  (∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+    ¬(zs = agg2ZPastPast ∨ zs = agg2ZAtTFut ∨ zs = agg2ZIntFut ∨
+      zs = agg2ZAtXFut ∨ zs = agg2ZFutFut) →
+    agg2Bit sub_nf zs χ = false)
+
+/-- **The k=0 future-arm aggregate carrier** (dual of `agg2Past`). -/
+noncomputable def agg2Fut (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : VVecEA2 :=
+  @dite _ (agg2GateFut sub_nf) (Classical.dec _)
+    (fun _ =>
+      { disjuncts := (agg2SFut sub_nf).permutations.map (fun l =>
+          ⟨(l.map (fun χ =>
+              (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))).length,
+            { endpointLeft := agg2EpFutL atomMap h_surj sub_nf
+              endpointRight := agg2EpFutR atomMap h_surj sub_nf
+              bracket := aggBracket
+                (l.map (fun χ =>
+                  (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred)))
+                (agg2SegFut atomMap h_surj sub_nf) }⟩) })
+    (fun _ => { disjuncts := [] })
+
+/-- **Correctness of the k=0 future-arm aggregate**: the carrier's Until-direction
+    semantics at the origin `t` is exactly the future trichotomy disjunct. Dual of
+    `agg2Past_holdsRight_iff` (every chain step a manual bridge — G5). -/
+theorem agg2Fut_holdsLeft_iff (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    (agg2Fut atomMap h_surj sub_nf).holdsLeft M atomMap t ↔
+      ∃ x : M.carrier, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+    fun χ' u => nfPred_correct M atomMap h_surj χ' u
+  constructor
+  · -- Soundness (holdsLeft → the future disjunct).
+    intro h
+    obtain ⟨vea, hmem, hveaL⟩ := h
+    unfold agg2Fut at hmem
+    split at hmem
+    case isFalse hg => simp at hmem
+    case isTrue hg =>
+    rw [List.mem_map] at hmem
+    obtain ⟨l, hlp, hEq⟩ := hmem
+    subst hEq
+    obtain ⟨hepL, x, htx, hepR, hbr⟩ := hveaL
+    simp only [agg2EpFutL, agg2EpFutR, TemporalPred.eval_at] at hepL hepR
+    rw [formula_conjList_iff] at hepL hepR
+    have horig : temporal_truth M atomMap t
+        (nf_char2_atom_offdiag_origin_future atomMap h_surj
+          (sub_nf.1 : NormalForm sig 0 2)) :=
+      hepL _ (List.mem_append_left _ List.mem_cons_self)
+    have hendp : temporal_truth M atomMap x
+        (nf_char2_atom_offdiag_endpoint atomMap h_surj
+          (sub_nf.1 : NormalForm sig 0 2)).formula :=
+      hepR _ (List.mem_append_left _ List.mem_cons_self)
+    have hPastLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+        (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
+          (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+      fun χ => hepL _ (List.mem_append_left _
+        (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
+    have hAtTLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+        (agg2Lit (agg2Bit sub_nf agg2ZAtTFut χ)
+          (nf_depth0_char_formula atomMap h_surj χ)) :=
+      fun χ => hepL _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
+    have hAtXLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap x
+        (agg2Lit (agg2Bit sub_nf agg2ZAtXFut χ)
+          (nf_depth0_char_formula atomMap h_surj χ)) :=
+      fun χ => hepR _ (List.mem_append_left _
+        (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
+    have hFutLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap x
+        (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
+          (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+      fun χ => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
+    obtain ⟨hwit, hgap⟩ := aggBracket_extract M atomMap _ _ t x hbr
+    refine ⟨x, htx, ?_⟩
+    rw [nf_eval_depth1_fold_iff]
+    refine ⟨?_, ?_, hg.1⟩
+    · exact (nf_char2_atom_offdiag_correct_future M atomMap h_surj
+        (sub_nf.1 : NormalForm sig 0 2) x t htx).mp ⟨horig, hendp⟩
+    · intro zs χ
+      show _ ↔ agg2Bit sub_nf zs χ = true
+      by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtTFut ∨ zs = agg2ZIntFut ∨
+          zs = agg2ZAtXFut ∨ zs = agg2ZFutFut
+      · rcases hcons with rfl | rfl | rfl | rfl | rfl
+        · -- Zone `v < t`: the Since literal at `t`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZPastPast, agg2Mk, agg2Ltz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hut : u < t := hzu.2.1.mpr rfl
+            cases hbb : agg2Bit sub_nf agg2ZPastPast χ with
+            | false =>
+              have hlit := hPastLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ⟨u, hut, (hchar χ u).mpr hev, fun r _ _ hf => hf⟩).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hPastLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            obtain ⟨s, hst, hsχ, -⟩ := hlit
+            have hsx : s < x := hst.trans htx
+            refine ⟨s, ?_, (hchar χ s).mp hsχ⟩
+            simp only [agg2ZPastPast, agg2Mk, agg2Ltz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_true hsx rfl, iff_of_false (lt_asymm hsx) (by simp)⟩,
+              ⟨iff_of_true hst rfl, iff_of_false (lt_asymm hst) (by simp)⟩⟩
+        · -- Zone `v = t`: the characteristic literal at `t`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZAtTFut, agg2Mk, agg2Ltz, agg2Eqz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = t := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.2.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.2.1))
+            subst hueq
+            cases hbb : agg2Bit sub_nf agg2ZAtTFut χ with
+            | false =>
+              have hlit := hAtTLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ((hchar χ u).mpr hev)).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hAtTLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            refine ⟨t, ?_, (hchar χ t).mp hlit⟩
+            simp only [agg2ZAtTFut, agg2Mk, agg2Ltz, agg2Eqz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_true htx rfl, iff_of_false (lt_asymm htx) (by simp)⟩,
+              ⟨iff_of_false (lt_irrefl t) (by simp),
+                iff_of_false (lt_irrefl t) (by simp)⟩⟩
+        · -- Bounded interior `t < v < x`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZIntFut, agg2Mk, agg2Ltz, agg2Gtz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have htu : t < u := hzu.2.2.mpr rfl
+            have hux : u < x := hzu.1.1.mpr rfl
+            cases hbb : agg2Bit sub_nf agg2ZIntFut χ with
+            | false =>
+              exfalso
+              rcases hgap u htu hux with hseg | ⟨p, hpmem, hpe⟩
+              · simp only [agg2SegFut, TemporalPred.eval_at] at hseg
+                rw [formula_conjList_iff] at hseg
+                have hexcl := hseg _ (List.mem_map_of_mem (show χ ∈ _ by simp))
+                rw [if_neg (by simp [hbb])] at hexcl
+                exact hexcl ((hchar χ u).mpr hev)
+              · obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hpmem
+                have hev' : nf_eval_nf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
+                have hbb' : agg2Bit sub_nf agg2ZIntFut χ' = true :=
+                  (List.mem_filter.mp
+                    ((List.mem_permutations.mp hlp).mem_iff.mp hχ'mem)).2
+                have hEqχ : χ = χ' := nf_eval_unique M 0 1 _ χ χ' hev hev'
+                rw [hEqχ] at hbb
+                exact absurd hbb' (by simp [hbb])
+            | true => rfl
+          · intro hbit
+            have hχS : χ ∈ l := (List.mem_permutations.mp hlp).mem_iff.mpr
+              (List.mem_filter.mpr ⟨by simp, hbit⟩)
+            obtain ⟨u, htu, hux, hpe⟩ := hwit _ (List.mem_map_of_mem hχS)
+            refine ⟨u, ?_, (hchar χ u).mp hpe⟩
+            simp only [agg2ZIntFut, agg2Mk, agg2Ltz, agg2Gtz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
+              ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+        · -- Zone `v = x`: the characteristic literal at `x`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZAtXFut, agg2Mk, agg2Eqz, agg2Gtz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = x := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+            subst hueq
+            cases hbb : agg2Bit sub_nf agg2ZAtXFut χ with
+            | false =>
+              have hlit := hAtXLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ((hchar χ u).mpr hev)).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hAtXLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            refine ⟨x, ?_, (hchar χ x).mp hlit⟩
+            simp only [agg2ZAtXFut, agg2Mk, agg2Eqz, agg2Gtz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_false (lt_irrefl x) (by simp),
+              iff_of_false (lt_irrefl x) (by simp)⟩,
+              ⟨iff_of_false (lt_asymm htx) (by simp), iff_of_true htx rfl⟩⟩
+        · -- Zone `x < v`: the Until literal at `x`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZFutFut, agg2Mk, agg2Gtz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hxu : x < u := hzu.1.2.mpr rfl
+            cases hbb : agg2Bit sub_nf agg2ZFutFut χ with
+            | false =>
+              have hlit := hFutLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ⟨u, hxu, (hchar χ u).mpr hev, fun r _ _ hf => hf⟩).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hFutLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            obtain ⟨s, hxs, hsχ, -⟩ := hlit
+            have hts : t < s := htx.trans hxs
+            refine ⟨s, ?_, (hchar χ s).mp hsχ⟩
+            simp only [agg2ZFutFut, agg2Mk, agg2Gtz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_false (lt_asymm hxs) (by simp), iff_of_true hxs rfl⟩,
+              ⟨iff_of_false (lt_asymm hts) (by simp), iff_of_true hts rfl⟩⟩
+      · constructor
+        · rintro ⟨u, hzu, -⟩
+          exact absurd (agg2_zone_consistent_gt M x t u htx zs hzu) hcons
+        · intro hbit
+          have hfalse := hg.2 zs χ hcons
+          rw [hfalse] at hbit
+          exact Bool.noConfusion hbit
+  · -- Completeness (the future disjunct → holdsLeft).
+    rintro ⟨x, htx, heval⟩
+    rw [nf_eval_depth1_fold_iff] at heval
+    obtain ⟨h_atom_raw, h_fiber, h_off⟩ := heval
+    have h_atom : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t))
+        (sub_nf.1 : NormalForm sig 0 2) := h_atom_raw
+    have hzone' : ∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+        (∃ u : M.carrier,
+          zoneHolds M (Fin.cons x (fun _ => t)) zs u ∧
+          nf_eval_nf M 0 1 (fun _ => u) χ) ↔
+        agg2Bit sub_nf zs χ = true :=
+      fun zs χ => h_fiber zs χ
+    obtain ⟨horig, hendp⟩ := (nf_char2_atom_offdiag_correct_future M atomMap h_surj
+      (sub_nf.1 : NormalForm sig 0 2) x t htx).mpr h_atom
+    have hzPast : ∀ u, u < t → zoneHolds M (Fin.cons x (fun _ => t)) agg2ZPastPast u := by
+      intro u hut
+      have hux : u < x := hut.trans htx
+      simp only [agg2ZPastPast, agg2Mk, agg2Ltz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
+        ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+    have hzAtT : zoneHolds M (Fin.cons x (fun _ => t)) agg2ZAtTFut t := by
+      simp only [agg2ZAtTFut, agg2Mk, agg2Ltz, agg2Eqz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_true htx rfl, iff_of_false (lt_asymm htx) (by simp)⟩,
+        ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+    have hzInt : ∀ u, t < u → u < x →
+        zoneHolds M (Fin.cons x (fun _ => t)) agg2ZIntFut u := by
+      intro u htu hux
+      simp only [agg2ZIntFut, agg2Mk, agg2Ltz, agg2Gtz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
+        ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+    have hzAtX : zoneHolds M (Fin.cons x (fun _ => t)) agg2ZAtXFut x := by
+      simp only [agg2ZAtXFut, agg2Mk, agg2Eqz, agg2Gtz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
+        ⟨iff_of_false (lt_asymm htx) (by simp), iff_of_true htx rfl⟩⟩
+    have hzFut : ∀ u, x < u → zoneHolds M (Fin.cons x (fun _ => t)) agg2ZFutFut u := by
+      intro u hxu
+      have htu : t < u := htx.trans hxu
+      simp only [agg2ZFutFut, agg2Mk, agg2Gtz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+        ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+    have hgate : agg2GateFut sub_nf := by
+      refine ⟨h_off, fun zs χ hncons => ?_⟩
+      cases hb : agg2Bit sub_nf zs χ with
+      | false => rfl
+      | true =>
+        obtain ⟨u, hzu, -⟩ := (hzone' zs χ).mpr hb
+        exact absurd (agg2_zone_consistent_gt M x t u htx zs hzu) hncons
+    have hSreal : ∀ χ ∈ agg2SFut sub_nf,
+        ∃ u, t < u ∧ u < x ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+      intro χ hχ
+      have hbit := (List.mem_filter.mp hχ).2
+      obtain ⟨u, hzu, hev⟩ := (hzone' agg2ZIntFut χ).mpr hbit
+      simp only [agg2ZIntFut, agg2Mk, agg2Ltz, agg2Gtz] at hzu
+      rw [agg2_zoneHolds_cons_iff] at hzu
+      exact ⟨u, hzu.2.2.mpr rfl, hzu.1.1.mpr rfl, hev⟩
+    obtain ⟨ps, hperm, hsort, hprops⟩ :=
+      k1v_sorted_realization M t x (agg2SFut sub_nf)
+        ((Finset.nodup_toList _).filter _) hSreal
+    have hseg_all : ∀ u, t < u → u < x →
+        (agg2SegFut atomMap h_surj sub_nf).eval_at M atomMap u := by
+      intro u htu hux
+      simp only [agg2SegFut, TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : agg2Bit sub_nf agg2ZIntFut χ with
+      | true =>
+        rw [if_pos rfl]
+        exact fun hfa => hfa
+      | false =>
+        rw [if_neg (by simp)]
+        intro hch
+        have hbit := (hzone' agg2ZIntFut χ).mp ⟨u, hzInt u htu hux, (hchar χ u).mp hch⟩
+        rw [hb] at hbit
+        exact Bool.noConfusion hbit
+    have hepL : (agg2EpFutL atomMap h_surj sub_nf).eval_at M atomMap t := by
+      simp only [agg2EpFutL, TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_append.mp hf with hf | hf
+      · rcases List.mem_cons.mp hf with rfl | hf
+        · exact horig
+        · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+          simp only [agg2Lit]
+          cases hb : agg2Bit sub_nf agg2ZPastPast χ with
+          | true =>
+            rw [if_pos rfl]
+            obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+            simp only [agg2ZPastPast, agg2Mk, agg2Ltz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            exact ⟨u, hzu.2.1.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+          | false =>
+            rw [if_neg (by simp)]
+            rintro ⟨s, hst, hsχ, -⟩
+            have hbit := (hzone' _ χ).mp ⟨s, hzPast s hst, (hchar χ s).mp hsχ⟩
+            rw [hb] at hbit
+            exact Bool.noConfusion hbit
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        simp only [agg2Lit]
+        cases hb : agg2Bit sub_nf agg2ZAtTFut χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          simp only [agg2ZAtTFut, agg2Mk, agg2Ltz, agg2Eqz] at hzu
+          rw [agg2_zoneHolds_cons_iff] at hzu
+          have hueq : u = t := le_antisymm
+            (not_lt.mp (k1v_not_of_iff_false hzu.2.2))
+            (not_lt.mp (k1v_not_of_iff_false hzu.2.1))
+          exact (hchar χ t).mpr (hueq ▸ hev)
+        | false =>
+          rw [if_neg (by simp)]
+          intro hch
+          have hbit := (hzone' _ χ).mp ⟨t, hzAtT, (hchar χ t).mp hch⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+    have hepR : (agg2EpFutR atomMap h_surj sub_nf).eval_at M atomMap x := by
+      simp only [agg2EpFutR, TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_append.mp hf with hf | hf
+      · rcases List.mem_cons.mp hf with rfl | hf
+        · exact hendp
+        · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+          simp only [agg2Lit]
+          cases hb : agg2Bit sub_nf agg2ZAtXFut χ with
+          | true =>
+            rw [if_pos rfl]
+            obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+            simp only [agg2ZAtXFut, agg2Mk, agg2Eqz, agg2Gtz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = x := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+            exact (hchar χ x).mpr (hueq ▸ hev)
+          | false =>
+            rw [if_neg (by simp)]
+            intro hch
+            have hbit := (hzone' _ χ).mp ⟨x, hzAtX, (hchar χ x).mp hch⟩
+            rw [hb] at hbit
+            exact Bool.noConfusion hbit
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        simp only [agg2Lit]
+        cases hb : agg2Bit sub_nf agg2ZFutFut χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          simp only [agg2ZFutFut, agg2Mk, agg2Gtz] at hzu
+          rw [agg2_zoneHolds_cons_iff] at hzu
+          exact ⟨u, hzu.1.2.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+        | false =>
+          rw [if_neg (by simp)]
+          rintro ⟨s, hxs, hsχ, -⟩
+          have hbit := (hzone' _ χ).mp ⟨s, hzFut s hxs, (hchar χ s).mp hsχ⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+    unfold agg2Fut
+    split
+    case isFalse hgf => exact absurd hgate hgf
+    case isTrue hg =>
+    refine ⟨_, List.mem_map.mpr ⟨ps.map Prod.fst,
+      List.mem_permutations.mpr hperm, rfl⟩, ?_⟩
+    refine ⟨hepL, x, htx, hepR, ?_⟩
+    refine aggBracket_construct M atomMap _ _ t x (ps.map Prod.snd) (by simp) hsort
+      ?_ ?_ hseg_all
+    · intro u hu
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+      exact (hprops p hp).1
+    · intro i hi
+      have hi' : i < ps.length := by simpa using hi
+      have h1 : (List.map (fun χ =>
+          (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+          (ps.map Prod.fst))[i]'hi =
+          ⟨nf_depth0_char_formula atomMap h_surj ((ps[i]'hi').1)⟩ := by
+        simp only [List.getElem_map]
+      have h2 : (ps.map Prod.snd)[i]'(by simpa using hi') = (ps[i]'hi').2 := by
+        simp only [List.getElem_map]
+      rw [h1, h2]
+      exact (hchar _ _).mpr (hprops _ (List.getElem_mem _)).2
+
+end AggFutK0
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
