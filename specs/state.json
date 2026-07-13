@@ -2141,7 +2141,7 @@
         {
           "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/summaries/01_endinterval-consumer-reshape-summary.md",
           "type": "summary",
-          "summary": "P1-6 green (obligation-carrying reshape); P7 fenced [BLOCKED]+spawn task 358"
+          "summary": "EndInterval reshape green P1-6; task 349 P5 unblocked; P7 blocked+spawned task 358"
         }
       ],
       "session_id": "sess_1783915595_73147e_357",
