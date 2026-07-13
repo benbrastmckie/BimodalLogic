@@ -290,7 +290,7 @@ sub-piece, escalate.
 
 ---
 
-### Phase 5: Inductive step — ⇒ soundness (carrier holds + provider obligations → realizer) [NOT STARTED]
+### Phase 5: Inductive step — ⇒ soundness (carrier holds + provider obligations → realizer) [COMPLETED]
 
 **Goal**: Prove the soundness half of the k→k+1 step (`bracketEndChar_kv_step_sound`): under
 `semantic_prior_UZ`/`SZ` and the depth-`k` provider obligations, from `(bracketEndChar_kv … (k+1)
@@ -301,15 +301,34 @@ intrinsic. Mirror `bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean:26
 deeper, threading the IH.
 
 **Tasks**:
-- [ ] Destructure the carrier via Phase 3's `holds_iff`; extract the off-fiber gate + the fiber
-      fold bits.
-- [ ] Reconstruct interior point types via the depth-`k` provider (`P.existF`) and Phase 2 bridges;
-      realize the interior segment at FULL arity 4 (G1); use the IH (depth-`k` correctness) for the
-      sub-piece realizers.
-- [ ] Assemble the arity-3 realizer `nf_eval_nf M (k+1) 3 [w,x,t] qnf` at the bracket witness `w`;
-      manual Rabinovich Cor 5.4 chain bridges (G5, no simp/omega/aesop shortcut).
-- [ ] Pre-declared split guard: if this overruns one run, split 5a (destructure + point-type
-      reconstruction) / 5b (interior realization + realizer assembly); commit 5a green first.
+- [x] Destructure the carrier via Phase 3's `holds_iff`; extract the off-fiber gate + one arrangement
+      disjunct; extract the bracket witness `w` (`x < w < t`) + its `igPtW` eval via the (open
+      private) depth-agnostic `k1v_bracket_extract`. *(deviation: altered — the fiber fold BITS are
+      NOT read; per finding F1 they are lossy, so the per-sub fold content is supplied by the named
+      provider obligations instead, mirroring the k=2 template `bracketEndChar_kvE2_sound_two_prior_frag`.)*
+- [x] Reconstruct the depth-0 atom layer at `[w,x,t]` from the endpoint/witness char heads via
+      `interiorGate_hcb` + the (open private) `k1v_reconstruct_nf3`. *(deviation: altered — interior
+      point-type reconstruction rides the named provider realization obligation `hreal` (the
+      `P.existF 3` arity-4 channel), NOT the IH; the arity-3 IH is not consumed at the step, exactly
+      as the k=2 template `P`-realizes rather than IH-realizes. G1 preserved: subs realized at FULL
+      arity 4 inside `hreal`/`hexcl`/`hexclExt`.)*
+- [x] Assemble the arity-3 realizer `nf_eval_nf M (k+1) 3 [w,x,t] qnf` = `⟨atom, per-sub⟩` via the
+      defeq `nf_eval_nfk_iff_efold`'s internal `Iff.rfl` (`NfEFold.lean:643`): per-sub forward =
+      `hreal` (marked → realizable), per-sub backward = `hexcl` (cone) + `hexclExt` (exterior)
+      covering all `x1` (unmarked → realized nowhere). Manual bridges only (G5). *(deviation: NOT
+      fragment-restricted — under the named obligations the full `S_L`/`S_R` permutation arrangement
+      is admissible, a generalization beyond the k=2 `_frag` single-positive restriction.)*
+- [x] Split guard: not needed — the obligation-guarded reconstruction closed in ONE run (~140 lines),
+      because the fold engine content lives in the handed-in obligations rather than an inline
+      depth-k `kvE2_outer_fold_frag` analog.
+
+**DELIVERED**: `bracketEndChar_kv_step_sound` green, sorry-free, axiom-clean
+`[propext, Classical.choice, Quot.sound]`, all 13 frozen files byte-identical. It carries three
+named provider obligations `hreal`/`hexcl`/`hexclExt` (mirroring the k=2 template's
+`hrealI`/`hrealB`/`hexcl`/`hexclExt`), the exterior residue `hexclExt` threaded OUTWARD verbatim as
+the task-348/351/352/354 exterior-bracket hand-off (Rabinovich Prop 4.3 re-flatten / Lemma 7.6
+adjacency — a task-355 NON-goal). See the Phase 6 note below for the resulting shape-reconciliation
+question against the clean (obligation-free) frozen `InteriorGateTarget`.
 
 **Timing**: ~4 hours. **Estimated output**: ~300-500 lines (split 5a/5b if overrunning).
 

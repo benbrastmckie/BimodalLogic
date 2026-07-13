@@ -995,6 +995,146 @@ theorem bracketEndChar_kv_step_complete {sig : MonadicSignature} {k : Nat}
     simp only [igCharP, TemporalPred.eval_at]
     exact (hchar _ _).mpr (hpropsR _ (List.getElem_mem _)).2
 
+/-! ## Phase 5 — ⇒ soundness (successor carrier holds + provider obligations → realizer)
+
+The F1-critical half of the k→k+1 step. From `(bracketEndChar_kv … (k+1) qnf).holds M atomMap x t`,
+under the depth-`k` PROVIDER OBLIGATIONS, reconstruct the arity-3 realizer
+`∃ w, nf_eval_nf M (k+1) 3 [w,x,t] qnf`. This is the general-`k` analog of the k=2 template
+`bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean:268`), one fold-layer deeper.
+
+**The F1 information channel (`bracketEndChar_kv_factors`, `CarrierKv.lean:422`).** The successor
+carrier's fold data is fiber-EXISTENTIAL (`igFoldBit`): from the carrier's `.holds` one recovers only
+*that some* marked depth-`k` arity-4 sub sits in a `(zone, χ)` fiber, never *which* sub — the arity-4
+relational content of a fiber is NOT intrinsic to the carrier (two carriers agreeing on all
+fiber-existential fold bits are EQUAL yet may disagree on per-sub marking). Reconstructing the
+per-sub fold biconditional `∀ σ, (∃ x1, nf_eval_nf M k 4 [x1,w,x,t] σ) ↔ qnf.2 σ = true`
+(`nf_eval_nfk_iff_efold`'s internal `Iff.rfl`, `NfEFold.lean:643`) therefore requires the fiber
+content the provider obligations supply — exactly the k=2 template's design:
+
+- `hreal` (marked → realizable): the depth-`k` provider realizes each marked sub `σ` (`qnf.2 σ = true`)
+  at some `x1` — the arity-`(3+1)` provider `P.existF 3` channel (`PriorInterface.lean:41`), gated on
+  the pivot `igPtW` holding at the bracket witness `w`. Mirrors the k=2 `hrealI`/`hrealB`.
+- `hexcl` (cone) + `hexclExt` (exterior): an UNMARKED sub (`qnf.2 σ = false`) is realized at NO `x1`
+  — split at the fixed cone `x ≤ x1 ≤ t` (`hexcl`, dischargeable by the Phase-14 provider) and the
+  strictly-exterior residue (`hexclExt`, the Rabinovich Prop-4.3 re-flatten / Lemma 7.6 adjacency
+  hand-off, `OuterGate.lean:312`; the exterior-bracket layer, tasks 351/352/354 — a task-355
+  NON-goal, threaded OUTWARD verbatim as the k=2 template does).
+
+Given those obligations, the reconstruction is direct and does NOT read the lossy fold bits: extract
+the bracket witness `w` + its `igPtW` eval (`k1v_bracket_extract`, depth-agnostic), reconstruct the
+depth-0 atom layer from the endpoint/witness char heads (`k1v_reconstruct_nf3` + `interiorGate_hcb`),
+then assemble the per-sub biconditional (`hreal` forward, `hexcl`+`hexclExt` backward). No chain step
+is shortcut (G5); the fold stays fiber-existential (F1 channel intact — the obligations, not a
+pointwise collapse, supply the fiber content). -/
+
+open private k1v_bracket_extract k1v_reconstruct_nf3 from
+  Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
+
+set_option maxHeartbeats 1600000 in
+/-- **Inductive step ⇒ soundness** (task 355 Phase 5 — the F1-critical direction). From the
+    successor carrier `.holds` at the FIXED endpoints `(x, t)`, under the depth-`k` provider
+    realization/exclusion obligations, the arity-3 realizer `∃ w, nf_eval_nf M (k+1) 3 [w,x,t] qnf`.
+    General-`k` analog of `bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean:268`), NOT
+    fragment-restricted: under the named obligations the arrangement structure is not read for the
+    per-sub fold biconditional, so the full `S_L`/`S_R` permutation disjunction is admissible. The
+    exterior-marked residue rides `hexclExt` outward (the task-348/351/352/354 exterior-bracket
+    hand-off, Rabinovich Lemma 7.6 adjacency composition — a task-355 NON-goal). No `sorry`/`admit`;
+    the exterior residue is a NAMED binder, not a hole. -/
+theorem bracketEndChar_kv_step_sound {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (qnf : NormalForm sig (k + 1) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kv atomMap h_surj charF (k + 1) qnf).holds M atomMap x t →
+      ∃ w : M.carrier, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  intro h_holds
+  -- Enter the carrier via the Phase-3 destructuring: gate + one arrangement disjunct.
+  rw [bracketEndChar_kv_succ_holds_iff atomMap h_surj charF qnf M x t] at h_holds
+  obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := h_holds
+  obtain ⟨hepL, hepR, hbr⟩ := hveah
+  -- Extract the bracket witness `w` (`x < w < t`) and its `igPtW` eval (the obligation gate).
+  obtain ⟨w, hxw, hwt, hptWe, -, -, -, -⟩ :=
+    k1v_bracket_extract M atomMap _ _ _ _ _ x t hbr
+  have hxt : x < t := hxw.trans hwt
+  -- Depth-0 endpoint/witness char bridge.
+  have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+        nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ u => interiorGate_hcb atomMap h_surj M χ u
+  -- Endpoint/witness complete types (heads of the conjunction lists). `hptWe` is kept RAW for the
+  -- provider obligations; the witness head is read off a copy.
+  have hxT : temporal_truth M atomMap x
+      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) := by
+    have h := hepL
+    simp only [igMkDisjunct, igEpL, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have htT : temporal_truth M atomMap t
+      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) := by
+    have h := hepR
+    simp only [igMkDisjunct, igEpR, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have hyW : temporal_truth M atomMap w
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) := by
+    have h := hptWe
+    simp only [igPtW, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ List.mem_cons_self
+  -- Reconstruct the depth-0 atom layer at `[w, x, t]` (Chain step 2, rule N1 framing).
+  have h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+    k1v_reconstruct_nf3 M qnf.1 w x t
+      ((hcharB _ w).mp hyW) ((hcharB _ x).mp hxT) ((hcharB _ t).mp htT)
+      (iff_of_false (lt_asymm hxw) (by simp only [h_yx]; decide))
+      (iff_of_true hwt h_yt)
+      (iff_of_true hxw h_xy)
+      (iff_of_true hxt h_xt)
+      (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
+      (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
+  -- Assemble the realizer: atom layer + the per-sub fold biconditional (defeq, `NfEFold.lean:643`).
+  refine ⟨w, h_atom, ?_⟩
+  intro sub
+  constructor
+  · -- realizable → marked: an unmarked sub is realized at NO point (cone `hexcl` ∪ exterior
+    -- `hexclExt` cover every `x1`), contradicting the given realizer.
+    rintro ⟨x1, hx1⟩
+    by_contra hne
+    have hf : qnf.2 sub = false := by
+      cases hb : qnf.2 sub with
+      | true => exact absurd hb hne
+      | false => rfl
+    by_cases hcone : x ≤ x1 ∧ x1 ≤ t
+    · exact hexcl w hxw hwt hptWe sub hf x1 hcone.1 hcone.2 hx1
+    · exact hexclExt w hxw hwt hptWe sub hf x1 hcone hx1
+  · -- marked → realizable: the provider realizes each marked sub (`hreal`, gated on `igPtW` at `w`).
+    intro hmark
+    exact hreal w hxw hwt hptWe sub hmark
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
