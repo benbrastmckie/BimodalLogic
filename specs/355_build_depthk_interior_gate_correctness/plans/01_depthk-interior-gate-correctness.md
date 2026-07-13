@@ -184,7 +184,7 @@ proceeding (do not build a step proof on an unvalidated statement).
 
 ---
 
-### Phase 2: Depth-k provider / char-layer truth bridges [NOT STARTED]
+### Phase 2: Depth-k provider / char-layer truth bridges [COMPLETED]
 
 **Goal**: Generalize the k=2 char-formula truth bridges `bracketEndChar_kvE2_hcb`
 (`OuterGate.lean:102`) and `_hck` (`OuterGate.lean:123`) to depth `k`: the atom-layer bridge
@@ -192,11 +192,11 @@ proceeding (do not build a step proof on an unvalidated statement).
 + `semantic_prior_UZ`/`SZ` and the `Fin 0` env collapse.
 
 **Tasks**:
-- [ ] Prove the depth-`k` provider-layer bridge from `P.correct` (`PriorInterface`) — the general-`k`
+- [x] Prove the depth-`k` provider-layer bridge from `P.correct` (`PriorInterface`) — the general-`k`
       analog of `_hck` (`OuterGate.lean:123-139`), using the `insertEnv`/`Fin.elim0` env collapse.
-- [ ] Prove/thread the depth-0 char-base bridge (`_hcb` analog) via `nf_depth0_char_formula_correct`
+- [x] Prove/thread the depth-0 char-base bridge (`_hcb` analog) via `nf_depth0_char_formula_correct`
       for the fiber's atom layer, at the `charF 0 = nf_depth0_char_formula` agreement from Phase 1.
-- [ ] Confirm these bridges compose to the per-fiber point-type truth equivalence the step proof
+- [x] Confirm these bridges compose to the per-fiber point-type truth equivalence the step proof
       (Phases 4-5) consumes.
 
 **Timing**: ~2.5 hours. **Estimated output**: ~120-250 lines.
