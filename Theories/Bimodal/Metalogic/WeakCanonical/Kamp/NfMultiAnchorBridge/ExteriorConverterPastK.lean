@@ -163,4 +163,34 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature}
   · rw [kvE_pastPos, if_neg hadm] at hpos
     exact hpos
 
+/-! ## Phase 5 — bundle-shape reconciliation (Past discharge template)
+
+Past dual of `kvE_futBundle_of_realizer`: the Option-B at-anchor determinacy reader proving the
+carried `hreal`/`hsat` obligations of `kvE_extNegPast_complete` are dischargeable from a genuine
+exterior realizer. Side-agnostic (the realizer env `[x1,w,x,t]` and the fold read are direction-
+independent). -/
+
+/-- **Discharge template** (Past): from an actual realizer of `σ` at the reconstructed anchor
+    `[x1, w, x, t]`, BOTH carried obligations of `kvE_extNegPast_complete` hold. Pure read of
+    `nf_eval_nfk_iff_efold`; the interface the task-349 outer recursion supplies at a genuine
+    exterior anchor. -/
+theorem kvE_pastBundle_of_realizer {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig (k + 1) 4) (x1 w x t : M.carrier)
+    (hσ : nf_eval_nf M (k + 1) 4
+      (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (∀ s : NormalForm sig k 5, σ.2 s = true →
+        ∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) ∧
+    (∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+        (∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+        σ.2 s = true) := by
+  obtain ⟨⟨_hA, hfib⟩, hoff⟩ :=
+    (nf_eval_nfk_iff_efold M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ).mp hσ
+  refine ⟨fun s hbit => ?_, fun s hd hex => (hfib s hd).mp hex⟩
+  by_cases hd : nfk_dropFresh s = σ.1
+  · exact (hfib s hd).mpr hbit
+  · rw [hoff s hd] at hbit; exact absurd hbit (by decide)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

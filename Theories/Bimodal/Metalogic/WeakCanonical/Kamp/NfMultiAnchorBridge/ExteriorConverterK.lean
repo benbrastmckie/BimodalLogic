@@ -189,4 +189,39 @@ theorem kvE_extNegFut_complete {sig : MonadicSignature}
   · rw [kvE_futPos, if_neg hadm] at hpos
     exact hpos
 
+/-! ## Phase 5 — bundle-shape reconciliation (the outer-recursion discharge template)
+
+The `_complete` above carries two hypotheses — the arity-5 realization bundle `hreal` and the
+saturation residue `hsat` — that the outer recursion / task-349 provider must discharge. The
+discharge template below proves both carried obligations are SOUND: whenever the outer recursion
+produces a GENUINE exterior realizer `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ` (as it does when it picks
+`x1` by the Rabinovich inf/sup), the carried `hreal`/`hsat` shapes both hold. It is the faithful
+Option-B "at-anchor determinacy reader" (report 01 Deliverable 5): a direct read through
+`nf_eval_nfk_iff_efold` (`NfEFold.lean:627`) — the below-`t`/at-anchor fiber determinacy — closing
+the loop that the carried hypotheses are not debt but a dischargeable interface. -/
+
+/-- **Discharge template** (Future): from an actual realizer of `σ` at the reconstructed anchor
+    `[x1, w, x, t]`, BOTH carried obligations of `kvE_extNegFut_complete` hold — the fiber-forward
+    bundle (`hreal` shape) and the fiber-backward saturation slice (`hsat` shape). Pure read of the
+    fold characterization `nf_eval_nfk_iff_efold`. This is what the task-349 outer recursion supplies
+    at a genuine exterior anchor, proving the carried hypotheses sound (not debt). -/
+theorem kvE_futBundle_of_realizer {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig (k + 1) 4) (x1 w x t : M.carrier)
+    (hσ : nf_eval_nf M (k + 1) 4
+      (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (∀ s : NormalForm sig k 5, σ.2 s = true →
+        ∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) ∧
+    (∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+        (∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+        σ.2 s = true) := by
+  obtain ⟨⟨_hA, hfib⟩, hoff⟩ :=
+    (nf_eval_nfk_iff_efold M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ).mp hσ
+  refine ⟨fun s hbit => ?_, fun s hd hex => (hfib s hd).mp hex⟩
+  by_cases hd : nfk_dropFresh s = σ.1
+  · exact (hfib s hd).mpr hbit
+  · rw [hoff s hd] at hbit; exact absurd hbit (by decide)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

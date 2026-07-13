@@ -199,7 +199,19 @@ Green, sorry-free, axioms exactly `[propext, Classical.choice, Quot.sound]`.
 
 ---
 
-### Phase 5: Bundle-shape reconciliation + Option B determinacy reader [NOT STARTED]
+### Phase 5: Bundle-shape reconciliation + Option B determinacy reader [COMPLETED]
+
+Added the **discharge template** `kvE_futBundle_of_realizer` (Future) / `kvE_pastBundle_of_realizer`
+(Past): from a genuine exterior realizer `nf_eval_nf M (k+1) 4 [x1,w,x,t] σ`, BOTH carried
+obligations (`hreal` fiber-forward + `hsat` fiber-backward saturation) hold, by a direct read of
+`nf_eval_nfk_iff_efold`. This is the faithful Option-B at-anchor determinacy reader (report 01
+Deliverable 5) proving the carried hypotheses are a dischargeable interface for the task-349 outer
+recursion — NOT debt. Both green, axioms exactly `[propext, Classical.choice, Quot.sound]`.
+
+*(deviation: Option B realized as the anchor-determinacy discharge template rather than a redundant
+`kvE_subBit_iff` below-`t` re-wrap — `kvE_subBit_iff` requires a realized σ and its below-`t`
+bucket read is already green infra via `kvE_fiberBucket_nonempty_iff`; the discharge template is the
+non-redundant, forward-usable slice.)*
 
 **Goal**: Align the `hreal` bundle (and any Phase-3/4 carried residue binder) with the task-349 / `KampPrior:351` provider-discharge interface and task-352 `hbelowFib`/`hexclExt` conventions, so the `_complete` theorems are consumable by the outer recursion. Optionally fold in the Option B determinacy reader.
 
