@@ -132,7 +132,7 @@ skeleton, confirming the import chain is acyclic and reachable.
 
 ---
 
-### Phase 2: `bracketEndChar_kvExt` def + `_holds_iff` bridge [IN PROGRESS]
+### Phase 2: `bracketEndChar_kvExt` def + `_holds_iff` bridge [COMPLETED]
 
 **Goal**: Define the general-`k` enriched composed gate and its anchor-semantics bridge.
 
@@ -160,7 +160,7 @@ skeleton, confirming the import chain is acyclic and reachable.
 
 ---
 
-### Phase 3: `bracketEndChar_kvExt_correct_prior` ⇒ direction (the `hexclExt` discharge) [NOT STARTED]
+### Phase 3: `bracketEndChar_kvExt_correct_prior` ⇒ direction (the `hexclExt` discharge) [IN PROGRESS]
 
 **Goal**: Land the forward (⇒) direction — the DoD-critical internal `hexclExt` discharge. This is
 the verbatim reindexed k=2 guard-split; low-risk and highest-value.

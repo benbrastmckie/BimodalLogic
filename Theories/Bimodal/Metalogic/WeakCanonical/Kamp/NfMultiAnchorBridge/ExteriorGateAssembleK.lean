@@ -40,4 +40,40 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
+/-! ## The general-`k` enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
+
+/-- **The general-`k` enriched composed gate** (task 356; Def 7.5 p.13 + degenerate Lemma 7.6 p.14):
+    the general-`k` interior carrier `bracketEndChar_kv … (k+2)` with the past-side adjacent bracket
+    `kvE_extBracketPast Pbr` conjoined at the LEFT anchor `x` and the future-side adjacent bracket
+    `kvE_extBracketFut Pbr` conjoined at the RIGHT anchor `t`, via `enrichEndpoints`. General-`k`
+    mirror of `bracketEndChar_kvE2Ext` (`ExteriorBracket.lean:661`), one fold deeper. -/
+noncomputable def bracketEndChar_kvExt {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (Pbr : ExistProviders sig atomMap k) :
+    BracketEndCharCarrierV sig (k + 2) :=
+  fun qnf =>
+    (bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
+      (kvE_extBracketPast Pbr qnf)
+      (kvE_extBracketFut Pbr qnf)
+
+/-- **Anchor-semantics bridge for the general-`k` enriched gate** (the degenerate Lemma 7.6
+    conjunction, exposed): the enriched gate holds at `(x, t)` iff the interior gate holds AND the
+    past bracket is true at `x` AND the future bracket is true at `t`. One-line reuse of
+    `VVecEA2.enrichEndpoints_holds`. Mirror of `bracketEndChar_kvE2Ext_holds_iff`
+    (`ExteriorBracket.lean:674`). -/
+theorem bracketEndChar_kvExt_holds_iff {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (Pbr : ExistProviders sig atomMap k)
+    (qnf : NormalForm sig (k + 2) 3)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier) :
+    (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
+      ((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t ∧
+       temporal_truth M atomMap x (kvE_extBracketPast Pbr qnf) ∧
+       temporal_truth M atomMap t (kvE_extBracketFut Pbr qnf)) :=
+  VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
