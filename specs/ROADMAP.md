@@ -23,6 +23,32 @@ inequality), and Until/Since require strictly future/past witnesses.
 active path. The BXCanonical path (task 109) is dead code — its ~17 sorries are
 mathematically false under irreflexive semantics and cannot be proved.
 
+**Current state** (2026-07-12, post tasks 356/357; supersedes the 2026-07-07 block below):
+- **Discrete completeness is ONE live proof-term sorry from green.** `completeness_discrete`
+  (BXCanonical/Completeness.lean:276) compiles but carries `sorryAx`; **163 of the 164 real
+  sorries in the tree are dead / bypassed / Boneyard / unrelated subsystems.** The sole live
+  blocker is `nf_nvar_exist_all_depths` (KampPrior.lean:212) → sorry at **:361** (the `n=1`
+  arm, the mathematical content: the depth-k≥2 Cor 5.4 within-bracket realizer) and **:364**
+  (`n+2` footprint arm, provable-or-restatable). This is owned by **task 358**
+  (`realization_recursion_nf_nvar_exist_all_depths`, spawned by task 357).
+- **This session (tasks 356, 357 — both COMPLETED)**: task 356 delivered the general-k `hexclExt`
+  exterior-adjacency discharge (`bracketEndChar_kvExt_correct_prior`, new leaf
+  `NfMultiAnchorBridge/ExteriorGateAssembleK.lean`); task 357 delivered the obligation-carrying
+  `EndIntervalCorrectPrior` reshape (new leaf `NfMultiAnchorBridge/EndIntervalConsumerK.lean`) +
+  `endInterval_step_correct` + general-k supply-site cert `kampPrior_site_rungK_gate_match`.
+  Both sorry-free, axioms `[propext, Classical.choice, Quot.sound]`, full-tree green. **Task 349
+  Phase 5 is unblocked** (all of 349's deps 351–357 are now complete).
+- **Reduced critical path**: **358** (direct blocker-retirement → flips terminus to clean axioms)
+  is the single highest-leverage task. The assembly chain is `349 → 350 → 309 → 307 → 305 → 303 →
+  {299, 95}`. Genuinely open mathematics = **358** (Rabinovich Cor 5.4 within-bracket realizer)
+  and **305** (~2200-line EA-formula + negation-closure induction); everything else (349 Ph2, 350,
+  307, 303, 299) is bounded assembly / threading. **Ready to dispatch now**: 358 (deps✓), 349
+  (deps✓, plan v8 present), 341 (deps✓, parallel carrier-layer refactor). **Re-scope before
+  planning**: 303 (its plan cites the Boneyard'd `KampBypass`).
+- **Full detail**: `specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/13_discrete-completeness-roadmap.md`.
+
+---
+
 **Current state** (2026-07-07, multi-agent assessment; supersedes the 2026-06-16 block):
 - **Soundness**: Sorry-free for all 3 variants (general, dense, discrete) including Prior-UZ/SZ and Z1
 - **FMP completeness** (`fmp_completeness`): Sorry-free
