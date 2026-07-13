@@ -313,7 +313,66 @@ chain realizer, i=0 instance), `kampPrior_fChain_realize_bracket` (partial-brack
   the scoped module compiling. No `Classical.choice` at the realizer step (verify with a local
   `lean_verify` on any extracted helper).
 
-### Phase 3: Discharge the eleven obligations + wire the `\| 1 =>` arm (:361) [NOT STARTED]
+### Phase 3: Discharge the eleven obligations + wire the `\| 1 =>` arm (:361) [BLOCKED]
+
+**BLOCKER** (Phase 3, 2026-07-12, machine-grounded — see handoffs/phase-3-blocker-20260712.md for
+the full record):
+- **What failed**: The plan's step-(a) obligation→converter map ("`hbrFutReal` ←
+  `kvE_futBundle_of_realizer hσ .1`", report 01 §3) is unexecutable: the four exterior `hbr*`
+  obligations bind σ with `qnf.2 σ = false` (UNMARKED σ), for which no realizer `hσ` exists to feed
+  the converter. Machine probe (compiled green via `lean_run_code` against the site binder shapes,
+  EndIntervalConsumerK.lean:142-146): with the strongest ⇐-direction ambient
+  `h : nf_eval_nf M (m+2) 3 [w0,x,t] qnf` in scope, `hno : ¬ ∃ x1', nf_eval_nf M (m+1) 4
+  [x1',w0,x,t] σ` is derivable from `(h.2 σ).mp` + `qnf.2 σ = false`, while the remaining goal
+  `∃ v, nf_eval_nf M m 5 [v,x1,w,x,t] s` (pinned fiber realization at an ARBITRARY exterior
+  `x1 > t`, no truth antecedent) has no realizer-typed fact in context. Semantically FALSE on
+  Prior models with sparse predicates (e.g. the landed probe model `P2M = (ℤ,<), P={0,10,20}`,
+  ExteriorFiberProbeK.lean: pick σ admissible with `σ.1` prescribing the predicate at the fresh
+  slot, `x1` a non-predicate point above `t` — no `v` can realize any on-fiber bit-true `s`).
+  Task 356's own summary concedes exactly this (summaries/01:52-55: "This is **not derivable from
+  `h`**: an unmarked σ … is realized at NO `x1` … so no realizer exists to feed
+  `kvE_futBundle_of_realizer`") — the interface was threaded outward on a discharge promise that
+  fails at the outermost (KampPrior recursion) site, where no further "outward" exists.
+- **What was tried**: (i) full source trace of the consumption chain — the obligations are consumed
+  only inside `kvE_extNeg{Fut,Past}_complete` (ExteriorConverterK.lean:126-137 /
+  ExteriorConverterPastK.lean) at DESTRUCTOR-SELECTED anchors under a local `hpos` (chain-firing)
+  ambient that the outward-threaded binder shape does NOT carry; (ii) discharge from the endpoint
+  truth channel — `kvE_futEnd` (ExteriorNegationK.lean:395) contains only free-env positive fiber
+  content (`P.existF 4` re-anchored), which cannot pin the outer coordinates `(w,x,t)`; (iii)
+  vacuity routes — the gate ⇐ half is vacuous for bit-false qnf but is genuinely needed for every
+  REALIZED (bit-true) qnf in the `∀qnf` agreement, where the same false instances arise; (iv) the
+  plan's step-(b) off-fiber reconciliation — inapplicable: both `hbrFutReal`'s `s` (bit-true) and
+  `hbrFutSat`'s `s` (`nfk_dropFresh s = σ.1`) are ON-fiber.
+- **Why stuck**: two independent gaps. (1) THE PINNING GAP (= the plan's own pre-named escalation
+  atom, Postmortem Constraints: "the fiber-level `HasAttainedINF` existence converse"): all landed
+  truth channels (`kvE_futEnd`/`kvE_futGapD`/chain content) deliver fiber realization with FREE
+  outer env (`∃ env : Fin 4 → M.carrier`, `P.existF 4`-shaped), but the obligations demand
+  realization PINNED to the site's `(w,x,t)`; deriving pinned from free is the un-landed arity-5
+  general-depth converse (Rabinovich Cor 5.4(2) re-anchoring in the existence direction). The
+  Phase-2 realizer engine (chain realizer over `BracketFormula`) pins witnesses between bracket
+  ENDPOINTS but has no bridge from the `kvE_*` fiber-zone truth channel to `BracketFormula` content
+  at the fiber level. (2) THE ARM-ASSEMBLY GAP: even with all eleven obligations discharged,
+  retiring :361 requires folding the per-qnf `VVecEA2` carrier biconditionals into the arm formula
+  (`∀qnf` agreement → `quantEnd`/`seg` hooks → `nf_char2_{past,future}_formula_correct`/
+  `A_diag_correct` → `kampPrior_case1_trichotomy_assemble`). No such fold is landed: the task-349
+  `endCharRec`/`endChar` pipeline exists only as docstring-frozen signatures (Base.lean:1521-1563,
+  1954-1977 — inside `/-! -/` blocks, no declarations) with its base shape machine-refuted
+  (`endCharN0_correct_infeasible`, Base.lean:1779), and the task-309 Phase-18/19 hooks are
+  explicitly undischarged (KampPrior.lean:1123: "No hook is discharged here"). The plan's "return
+  `⟨endIntervalPrior …, proof⟩`" does not typecheck (`BracketEndCharCarrierV` is not a `Formula`).
+- **What is needed**: a literature-grounded research pass (Rabinovich 2014 Cor 5.4, §5, chunks
+  0013-0016) that settles (a) the faithful statement of the fiber-level pinned-realization converse
+  (arity-5, general depth — the Cor 5.4(1) ⇐ argument applied ONE fiber level down, with the
+  outer coordinates carried as bracket endpoints), and (b) whether the `hbr*` binders in the
+  interface chain (ExteriorConverterK.lean:126-134 → ExteriorBracketAssembleK.lean:181-191 →
+  ExteriorGateAssembleK.lean:142-167 → KampPrior.lean:845-870 → EndIntervalConsumerK.lean:129-154)
+  must be restated to carry the chain-firing truth antecedent (`kvE_futPos`/`kvE_futEnd` truth)
+  under which they are actually consumed — an out-of-file-scope interface revision — and (c) the
+  carrier→formula arm assembly route (hooks or a corrected endChar-style fold). Items (a)+(b) are
+  out of KampPrior.lean file scope → orchestrator escalation per task mandate.
+- **Prohibited**: Do NOT use sorry, `def X := True`, or any vacuous placeholder; do NOT edit the
+  interface chain from this dispatch (out of file scope).
+
 - **Goal:** Feed `hσ` through the landed converters + consumer + provider shim to discharge the
   eleven carried obligations and return the `\| 1 =>` arm, retiring the :361 sorry.
 - **Tasks:**

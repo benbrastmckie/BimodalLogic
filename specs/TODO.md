@@ -113,7 +113,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 349 [PLANNED] — Build the recursive navigated arity-3 endpoint primitive `endChar
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-358 [PLANNED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+358 [IMPLEMENTING] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Uncategorized
@@ -136,7 +136,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 357
