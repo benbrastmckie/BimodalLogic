@@ -1985,6 +1985,188 @@ theorem agg_diag_collapse_k1 {sig : MonadicSignature}
         rw [hquant σ hfix] at hbit
         exact Bool.noConfusion hbit
 
+/-- **Per-`qnf` diagonal-seam gate** (k=1): qnf's atom row is a duplicate-collapse fixpoint
+    AND every non-fixpoint arity-4 sub is unmarked — the syntactic condition under which the
+    depth-1 evaluation at `[w, t, t]` collapses losslessly to arity 2, and whose failure
+    REFUTES the evaluation (`agg_rename_fixpoint_of_eval`). -/
+def aggDiagGateK1 {sig : MonadicSignature} (qnf : NormalForm sig 1 3) : Prop :=
+  aggDupRow (aggCollapseRow qnf.1) = qnf.1 ∧
+  (∀ σ : NormalForm sig 0 4, aggDupSub (aggCollapseSub σ) ≠ σ → qnf.2 σ = false)
+
+/-- **Per-`qnf` diagonal-seam positive clause** (k=1): the closed formula at the origin `t`
+    realizing `∃ w, nf_eval_nf M 1 3 [w, t, t] qnf`. Under the gate, the k=0 trichotomy arms
+    applied to the collapsed population member (Phase 3 consumed VERBATIM); off-gate `⊥`. -/
+noncomputable def aggPosDiagK1 {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 1 3) : Formula :=
+  @dite _ (aggDiagGateK1 qnf) (Classical.dec _)
+    (fun _ => Formula.or (kampArm_past_k0 atomMap h_surj (aggCollapseK1 qnf))
+      (Formula.or (kampArm_diag_k0 atomMap h_surj (aggCollapseK1 qnf))
+        (kampArm_future_k0 atomMap h_surj (aggCollapseK1 qnf))))
+    (fun _ => Formula.bot)
+
+/-- **Correctness of the per-`qnf` diagonal-seam positive clause**: truth at the origin `t`
+    is exactly the k=1 population existential at the duplicated-anchor env. On-gate via the
+    three k=0 arm lemmas + `exists_trichotomy_split` + the gated collapse; off-gate the
+    existential FORCES the gate (fixpoint engine), refuting it. -/
+theorem aggPosDiagK1_correct {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (qnf : NormalForm sig 1 3)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (aggPosDiagK1 atomMap h_surj qnf) ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons t (fun _ => t))) qnf := by
+  unfold aggPosDiagK1
+  by_cases hg : aggDiagGateK1 qnf
+  · rw [dif_pos hg]
+    have harm : temporal_truth M atomMap t
+        (Formula.or (kampArm_past_k0 atomMap h_surj (aggCollapseK1 qnf))
+          (Formula.or (kampArm_diag_k0 atomMap h_surj (aggCollapseK1 qnf))
+            (kampArm_future_k0 atomMap h_surj (aggCollapseK1 qnf)))) ↔
+        ((∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggCollapseK1 qnf)) ∨
+          nf_eval_nf M 1 2 (Fin.cons t (fun _ => t)) (aggCollapseK1 qnf) ∨
+          (∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggCollapseK1 qnf))) := by
+      rw [temporal_truth_or, temporal_truth_or,
+        kampArm_past_k0_correct atomMap h_surj (aggCollapseK1 qnf) M h_UZ h_SZ t,
+        kampArm_diag_k0_correct atomMap h_surj (aggCollapseK1 qnf) M h_UZ h_SZ t,
+        kampArm_future_k0_correct atomMap h_surj (aggCollapseK1 qnf) M h_UZ h_SZ t]
+    exact harm.trans ((exists_trichotomy_split
+      (fun x => nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) (aggCollapseK1 qnf)) t).symm.trans
+      (exists_congr fun w => (agg_diag_collapse_k1 M qnf w t hg.1 hg.2).symm))
+  · rw [dif_neg hg]
+    constructor
+    · intro h
+      exact h.elim
+    · rintro ⟨w, hw⟩
+      exfalso
+      apply hg
+      have hwhole : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons t (fun _ => t))) qnf ↔
+          (nf_eval_nf M 0 3 (Fin.cons w (Fin.cons t (fun _ => t)))
+              (qnf.1 : NormalForm sig 0 3) ∧
+            (∀ σ : NormalForm sig 0 4,
+              (∃ v : M.carrier, nf_eval_nf M 0 4
+                (Fin.cons v (Fin.cons w (Fin.cons t (fun _ => t)))) σ) ↔
+                qnf.2 σ = true)) := Iff.rfl
+      rw [hwhole] at hw
+      obtain ⟨hatom, hq⟩ := hw
+      have hE3 : ∀ i : Fin 3,
+          (Fin.cons w (Fin.cons t (fun _ => t)) : Fin 3 → M.carrier)
+            (aggExpand23 (aggMerge32 i)) =
+          (Fin.cons w (Fin.cons t (fun _ => t)) : Fin 3 → M.carrier) i := by
+        intro i
+        match i with
+        | ⟨0, _⟩ => rfl
+        | ⟨1, _⟩ => rfl
+        | ⟨2, _⟩ => rfl
+      refine ⟨?_, ?_⟩
+      · exact agg_rename_fixpoint_of_eval M aggExpand23 aggMerge32 aggMerge32_expand23
+          (Fin.cons w (Fin.cons t (fun _ => t))) hE3
+          (qnf.1 : NormalForm sig 0 3) hatom
+      · intro σ hfix
+        cases hb : qnf.2 σ with
+        | false => rfl
+        | true =>
+          obtain ⟨v, hv⟩ := (hq σ).mpr hb
+          refine absurd ?_ hfix
+          show aggDupSub (aggCollapseSub σ) = σ
+          refine agg_rename_fixpoint_of_eval M (liftIdx aggExpand23)
+            (liftIdx aggMerge32) agg_liftMerge_liftExpand
+            (Fin.cons v (Fin.cons w (Fin.cons t (fun _ => t)))) ?_ σ hv
+          intro i
+          refine Fin.cases ?_ ?_ i
+          · rw [liftIdx_zero, liftIdx_zero]
+          · intro j
+            rw [liftIdx_succ, liftIdx_succ]
+            simp only [Fin.cons_succ]
+            exact hE3 j
+
+/-- **k=1 diagonal arm formula** (task 350 DoD lemma 4/6, formula side): the diagonal atom
+    characteristic conjoined with one biconditional population literal per
+    `qnf : NormalForm sig 1 3` (the `nf_char2_formula` house pattern, one depth up). -/
+noncomputable def kampArm_diag_k1 {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 2 2) : Formula :=
+  formula_conjList
+    (nf_char2_atom_part atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
+      :: (Finset.univ.toList : List (NormalForm sig 1 3)).map (fun qnf =>
+          agg2Lit (sub_nf.2 qnf) (aggPosDiagK1 atomMap h_surj qnf)))
+
+/-- **k=1 diagonal-arm hook discharge** (task 350 DoD lemma 4/6): the diagonal-arm formula
+    realizes the diagonal disjunct of `kampPrior_site_trichotomy` at match arm k=1
+    (`sub_nf : NormalForm sig 2 2`) — the additive `A_diag_correct` variant one depth up. -/
+theorem kampArm_diag_k1_correct {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 2 2) :
+    ∀ (M : OrderedMonadicStructure sig),
+      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      ∀ t : M.carrier,
+      temporal_truth M atomMap t (kampArm_diag_k1 atomMap h_surj sub_nf) ↔
+        nf_eval_nf M 2 2 (Fin.cons t (fun _ => t)) sub_nf := by
+  intro M h_UZ h_SZ t
+  have hwhole : nf_eval_nf M 2 2 (Fin.cons t (fun _ => t)) sub_nf ↔
+      (nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) ∧
+        (∀ qnf : NormalForm sig 1 3,
+          (∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons t (fun _ => t))) qnf) ↔
+            sub_nf.2 qnf = true)) := Iff.rfl
+  rw [hwhole]
+  unfold kampArm_diag_k1
+  rw [formula_conjList_iff]
+  constructor
+  · intro h
+    constructor
+    · have hatom := h _ List.mem_cons_self
+      show nf_eval_nf M 0 2 (Fin.cons t (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2)
+      rw [agg2_cons_diag_env]
+      exact (nf_char2_atom_part_correct M atomMap h_surj
+        (sub_nf.1 : NormalForm sig 0 2) t).mp hatom
+    · intro qnf
+      have hcl := h _ (List.mem_cons_of_mem _ (List.mem_map_of_mem (show qnf ∈ _ by simp)))
+      simp only [agg2Lit] at hcl
+      cases hb : sub_nf.2 qnf with
+      | true =>
+        rw [if_pos hb] at hcl
+        exact iff_of_true
+          ((aggPosDiagK1_correct atomMap h_surj qnf M h_UZ h_SZ t).mp hcl) rfl
+      | false =>
+        rw [if_neg (by simp [hb])] at hcl
+        exact iff_of_false
+          (fun hex => hcl
+            ((aggPosDiagK1_correct atomMap h_surj qnf M h_UZ h_SZ t).mpr hex))
+          (by simp)
+  · rintro ⟨hatom, hpop⟩
+    intro f hf
+    rcases List.mem_cons.mp hf with rfl | hf
+    · rw [agg2_cons_diag_env] at hatom
+      exact (nf_char2_atom_part_correct M atomMap h_surj
+        (sub_nf.1 : NormalForm sig 0 2) t).mpr hatom
+    · obtain ⟨qnf, -, rfl⟩ := List.mem_map.mp hf
+      simp only [agg2Lit]
+      cases hb : sub_nf.2 qnf with
+      | true =>
+        rw [if_pos rfl]
+        exact (aggPosDiagK1_correct atomMap h_surj qnf M h_UZ h_SZ t).mpr
+          ((hpop qnf).mpr hb)
+      | false =>
+        rw [if_neg (by simp)]
+        intro hpos
+        have hbit := (hpop qnf).mp
+          ((aggPosDiagK1_correct atomMap h_surj qnf M h_UZ h_SZ t).mp hpos)
+        rw [hb] at hbit
+        exact Bool.noConfusion hbit
+
+/-- k=1 diagonal disjunct shape certificate (verbatim `kampPrior_site_trichotomy` disjunct 2
+    at the generic-site index `1 + 1`). -/
+example (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig (1 + 1) 2)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (t : M.carrier) :
+    temporal_truth M atomMap t (kampArm_diag_k1 atomMap h_surj sub_nf) ↔
+      nf_eval_nf M (1 + 1) 2 (Fin.cons t (fun _ => t)) sub_nf :=
+  kampArm_diag_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t
+
 end AggDiagK1
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
