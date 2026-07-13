@@ -1,7 +1,7 @@
 # Implementation Plan: Task #350
 
 - **Task**: 350 - build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL] (Phases 1-3, 6 completed; 4-5 blocked for the k=1 off-diagonal pair — see the Phase-4 BLOCKER entry)
 - **Effort**: 10.5 hours
 - **Dependencies**: Task 349 (COMPLETED — recursive endpoint primitive delivered as `endInterval_correct` stack)
 - **Research Inputs**: specs/309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md; specs/309_offdiag_two_anchor_fi_chain/reports/02_endpoint-hook-discharge-research.md (§6 Phase 9, lines 272-279); specs/309_offdiag_two_anchor_fi_chain/.orchestrator-handoff.json (blocker P18b-endChar-recursive-core-unbuilt)
@@ -373,25 +373,83 @@ match arm k=0 (`sub_nf : NormalForm sig 1 2`).
 
 ---
 
-### Phase 4: k=1 aggregate population carrier + correctness [NOT STARTED]
+### Phase 4: k=1 aggregate population carrier + correctness [BLOCKED]
 
 **Goal**: The depth-1 aggregate: `aggPop1(_correct)` and `aggPop1_diag(_correct)` for
 `sub_nf : NormalForm sig 2 2` (population `qnf : NormalForm sig 1 3`).
+
+**Delivered sub-scope (green, committed 3334dccb5 + e8e86b419)**: the DIAGONAL seam
+(`aggPop1_diag`-equivalent) is fully delivered — `agg_rename_fixpoint_of_eval` +
+`agg_diag_collapse_k1` (the gated depth-1 anchor-collapse, the conditional lift of
+`renameNF_eval_diag0` that NfDepth0Generalized.lean:1693-1719 records as blocked
+unconditionally) + `aggDiagGateK1`/`aggPosDiagK1(_correct)` (per-qnf diagonal population
+clause via the k=0 arms + `exists_trichotomy_split`). The OFF-DIAGONAL seams (`aggPop1` for
+the past/future arms) are BLOCKED (below).
+
+**BLOCKER** (Phase 4, off-diagonal k=1 aggregate — `aggPop1` for the past/future seams):
+- **What failed**: the aggregate population encoding at k=1 for `x ≠ t`:
+  `∀ qnf : NormalForm sig 1 3, ((∃ w, nf_eval_nf M 1 3 (zoneEnv3 w x t) qnf) ↔ sub_nf.2 qnf =
+  true)` with the witness `x` bound by the outer Since/Until navigation (the exact goal state
+  is the fiber clause of `nf_eval_depth1_fold_iff`'s depth-2 analog, which does not exist).
+- **What was tried**: (i) the plan's Route-V aggregation via `VVecEA2.conj_struct` — refuted:
+  `conj_struct` is ONE-directional (its `n1+1, n2+1` case replaces the second bracket's
+  content with `TemporalPred.top`, VecEAClosure.lean:121-122/163-169; `conj_struct_holds` is
+  `holds → holds → holds`, never an iff), so no biconditional aggregate can be folded from
+  per-qnf carriers; (ii) Prop 4.2 negation closure for bit-false clauses — refuted for
+  syntactic use: `neg_2var_vec_ea` (EANegationClosure.lean:722) is MODEL-dependent
+  (`∃ v' : VVecEA2, v'.holds`, not a fixed formula); (iii) the depth-2 fold re-fibering (the
+  successful k=0 device one depth up) — refuted by the F1 information-loss channel
+  (`bracketEndChar_kv_factors`, CarrierKv.lean:422): a monadic
+  `(ZoneSpec 2 × NormalForm sig 1 1)` fiber does not determine a depth-1 arity-3 population
+  member's joint content, so a fiber-existential aggregate at depth 2 is unsound;
+  (iv) the gated anchor-collapse reduction (successful for the diag seam) — inapplicable
+  off-diagonal: the env `[w, x, t]` with `x ≠ t` has no duplicated anchors.
+- **Why it's stuck**: bit-true interior-pattern `qnf` each demand a bracket witness with
+  per-qnf sub-interval content in the SHARED interval `(x, t)`; their conjunction is a
+  cross-qnf arrangement product (interleavings-with-coincidences, position-dependent segment
+  conjunction) — Rabinovich Lemma 3.4's conjunction closure in FULL IFF form — which does not
+  exist in the landed stack. Bit-false clauses additionally need a fixed-formula negation
+  closure for content riding the shared bracket (closed-formula `Formula.neg` suffices only
+  at single loci).
+- **What is needed** (missing primitives; recommend `/spawn 350`):
+  1. `VVecEA2.conjFull` — structural conjunction with
+     `(conjFull v1 v2).holds M am z0 z1 ↔ v1.holds M am z0 z1 ∧ v2.holds M am z0 z1`
+     (shuffle-with-merge disjuncts; merged point types conjoined with the OTHER bracket's
+     ambient segment type so both projections survive) — Rabinovich Lemma 3.4, iff form;
+  2. a fixed-formula (syntactic) negation closure for the single-interior-witness VVecEA2
+     fragment — the syntactic counterpart of the model-dependent Lemma 5.1/Prop 4.2 stack;
+  3. per-qnf k=1 exterior/point VVecEA2 encodings consuming 1-2 (pointX/pointT can reuse this
+     task's `agg_diag_collapse_k1` machinery with a position-0/1 merge variant; exteriors need
+     an inner-navigation VVecEA2 pass over the fold's 7-zone fibers).
+  With 1-3, `kampArm_past_k1`/`kampArm_future_k1` assemble exactly like Phase 3
+  (translateRight/Left over a conjFull-fold of per-qnf carriers; interior-pattern qnf via
+  `bracketEndChar_kv_correct_one_prior` with `charF 0 := nf_depth0_char_formula` discharging
+  `h0` by construction).
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder.
 
 **Tasks**:
 - [ ] Instantiate the k=1 interior rung: fix `charF` with `charF 0 := nf_depth0_char_formula
   atomMap h_surj` (discharging `h0` by `rfl`/definitional agreement) and consume
   `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95) — equivalently the k=1 arm of
   `endInterval_correct` (EndIntervalConsumerK.lean:220), which reduces to it by `rfl`; cite
-  `endInterval_correct` in the docstring as the task-349 DoD name.
+  `endInterval_correct` in the docstring as the task-349 DoD name. *(deviation: deferred — the
+  rung is the interior ingredient of the BLOCKED off-diagonal aggregate; consumption point
+  recorded in the blocker's item 3)*
 - [ ] Depth-1 per-qnf clause encodings for point/exterior zones: the nested depth-0 arity-4
   layer inside each `qnf : NormalForm sig 1 3` routes through the depth-0 all-arity converter
   `nf_nvar_exist_depth0_tl_fn(_correct)` (NfDepth0Generalized:1615) — never hand-rolled (R3);
   exteriors via `nf_zone_flatten_navigable_correct` at k=1 with hooks discharged by the depth-0
-  converters.
+  converters. *(deviation: altered/blocked — for the DIAG seam the point/exterior routing
+  dissolved into the gated anchor-collapse (delivered); for the off-diagonal seams the
+  `nf_zone_flatten_navigable_correct` hooks demand per-point biconditionals that the
+  world-locality refutation (Base.lean:1777/1811) excludes — see blocker item (iii)/(iv))*
 - [ ] Reuse the Phase-2 aggregation combinators verbatim (they are depth-parametric where
-  possible; otherwise mirror with the depth-1 instances).
-- [ ] Land `aggPop1(_correct)` + `aggPop1_diag(_correct)`; scoped build green; commit.
+  possible; otherwise mirror with the depth-1 instances). *(deviation: blocked off-diagonal —
+  the Phase-2 device (fold re-fibering) is depth-1-specific (F1); the diag seam reused the
+  Phase-3 ARMS instead, which is strictly stronger reuse)*
+- [x] Land `aggPop1_diag(_correct)`-equivalent (`aggPosDiagK1(_correct)` + the collapse
+  machinery); scoped build green; commit. *(diag HALF only; `aggPop1(_correct)` off-diagonal
+  is the blocker above)*
 
 **Timing**: 2 hours (H8 seam if overrun: 4a = interior rung instantiation + point zones,
 4b = exterior zones + aggregation)
@@ -408,18 +466,33 @@ sections)
 
 ---
 
-### Phase 5: k=1 hook discharge — three arm lemmas [NOT STARTED]
+### Phase 5: k=1 hook discharge — three arm lemmas [BLOCKED]
 
 **Goal**: `kampArm_past_k1`, `kampArm_diag_k1`, `kampArm_future_k1` + `_correct` companions,
 mirroring Phase 3 one depth up (`sub_nf : NormalForm sig 2 2`).
 
+**Delivered sub-scope**: `kampArm_diag_k1` + `kampArm_diag_k1_correct` (DoD lemma 4/6) are
+GREEN with the k=1 shape certificate (generic-site index `1 + 1`), landed with the Phase-4
+diag-seam machinery (commit e8e86b419); `lean_verify` = exactly
+`[propext, Classical.choice, Quot.sound]`.
+
+**BLOCKER** (Phase 5, `kampArm_past_k1`/`kampArm_future_k1`): identical to and inherited from
+the Phase-4 off-diagonal blocker (the two arm lemmas are thin translateRight/translateLeft
+wrappers over the missing off-diagonal k=1 aggregate `aggPop1`). See the Phase-4 structured
+blocker entry for what failed / what was tried / the three missing primitives; recommend
+`/spawn 350` for `VVecEA2.conjFull` (Lemma 3.4 iff form) + the syntactic negation closure +
+the per-qnf k=1 exterior/point carriers.
+
 **Tasks**:
-- [ ] Past arm at k=1 (consume `aggPop1` + translateRight / Route-P binder per Phase-1 verdict).
-- [ ] Future arm at k=1 (dual).
-- [ ] Diag arm at k=1 (diagonal-seam aggregate `aggPop1_diag`).
-- [ ] Shape certificates against the `kampPrior_site_trichotomy` disjunct statements (verbatim
-  copies, as in Phase 3).
-- [ ] Scoped build green; commit.
+- [ ] Past arm at k=1 (consume `aggPop1` + translateRight / Route-P binder per Phase-1
+  verdict). *(deviation: blocked — Phase-4 off-diagonal blocker)*
+- [ ] Future arm at k=1 (dual). *(deviation: blocked — Phase-4 off-diagonal blocker)*
+- [x] Diag arm at k=1 (diagonal-seam aggregate `aggPop1_diag`). *(completed —
+  `kampArm_diag_k1(_correct)` via `aggPosDiagK1` per-qnf clauses)*
+- [x] Shape certificates against the `kampPrior_site_trichotomy` disjunct statements (verbatim
+  copies, as in Phase 3). *(completed for the diag arm at index `1 + 1`; past/future k=1
+  certificates blocked with their lemmas)*
+- [x] Scoped build green; commit. *(for the delivered sub-scope)*
 
 **Timing**: 2 hours
 
@@ -433,26 +506,34 @@ mirroring Phase 3 one depth up (`sub_nf : NormalForm sig 2 2`).
 
 ---
 
-### Phase 6: Full-tree verification, citability doc-hooks, wrap-up [NOT STARTED]
+### Phase 6: Full-tree verification, citability doc-hooks, wrap-up [COMPLETED]
 
 **Goal**: Definition-of-done audit and downstream citability for 309 Phase 18b/19.
 
 **Tasks**:
-- [ ] Full `lake build` GREEN (whole tree; 349 baseline was 1736 jobs).
-- [ ] `lean_verify` on each of the six named hook-discharge lemmas (fully qualified names) =
+- [x] Full `lake build` GREEN (whole tree; 349 baseline was 1736 jobs). *(completed — 1737
+  jobs, green)*
+- [x] `lean_verify` on each of the six named hook-discharge lemmas (fully qualified names) =
   exactly `[propext, Classical.choice, Quot.sound]`; record outputs in the summary.
-- [ ] Guard audit: `git diff --stat` shows NO changes to the seven frozen files and NO
+  *(deviation: altered — verified on the FOUR delivered lemmas (`kampArm_{past,diag,future}_k0
+  _correct`, `kampArm_diag_k1_correct`) plus the three aggregate iffs, all exactly
+  `[propext, Classical.choice, Quot.sound]`; the two blocked lemmas do not exist to verify)*
+- [x] Guard audit: `git diff --stat` shows NO changes to the seven frozen files and NO
   KampPrior.lean changes; grep confirms zero references to `nf_char3_deeper_split` and zero
   live `sorry` in the new module; sorry count in KampPrior.lean unchanged at exactly 2
-  (:361, :364).
-- [ ] Additive doc-hook edits in `Base.lean` (the "Downstream citability" pattern task 349
+  (:361, :364). *(completed — all checks pass; the single grep hits for
+  `nf_char3_deeper_split`/`sorry` in the new module are docstring prohibition/`sorry-free`
+  mentions)*
+- [x] Additive doc-hook edits in `Base.lean` (the "Downstream citability" pattern task 349
   used, Base.lean:990-995): point the P4/P5 `h_quant` docstrings and the `A_diag_correct` hook
   docstring at the six delivered lemma names so 309 Phase 18b finds them by name. Docstring-only
-  edits; no statement or proof changes.
-- [ ] Write summary artifact `summaries/01_aggregate-quantend-hook-discharge-summary.md` with
+  edits; no statement or proof changes. *(completed — three docstring-only hooks; they name the
+  four delivered lemmas and record the k=1 past/future blocker)*
+- [x] Write summary artifact `summaries/01_aggregate-quantend-hook-discharge-summary.md` with
   the name map (deliverable ↔ consuming site), axiom-check transcript, and the 309 Phase-18b
-  consumption instructions.
-- [ ] Final commit; orchestrator handoff JSON update.
+  consumption instructions. *(completed)*
+- [x] Final commit; orchestrator handoff JSON update. *(completed — handoff status "blocked"
+  with the structured blocker + continuation context; state.json status "partial")*
 
 **Timing**: 1 hour
 

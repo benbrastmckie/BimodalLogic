@@ -754,7 +754,19 @@ formula holds at `t` iff the diagonal disjunct `nf_eval_nf M (k+1) 2 (Fin.cons t
 holds. Pure composition of `nf_char2_formula_correct` (whose `h_exist_correct` is discharged per-`qnf`
 by `nf_char2_diag_exist_tl_correct`) with the constant-env identity
 `(Fin.cons t (fun _ => t) : Fin 2 → M.carrier) = (fun _ => t)`. No arity-1 collapse (route (c) guard):
-the depth-`(k+1)` quant layer routes through the honest arity-3 navigated existential. -/
+the depth-`(k+1)` quant layer routes through the honest arity-3 navigated existential.
+
+**Downstream citability (task 350) — the diagonal hooks are DISCHARGED at k=0 AND k=1 via
+additive variants (R2 verdict).** The per-point hooks `h_past`/`h_fut` below are
+world-locality-refuted for any fixed syntactic `pastEnd`/`futureEnd` (the
+`endCharN0_correct_infeasible` obstruction applies verbatim: `(pastEnd qnf).eval_at M atomMap
+w` reads only `w`, while `nf_eval_nf M k 3 [w, t, t] qnf` constrains the anchor positions), so
+task 309 Phase 18b should consume the skeleton-shaped conclusions by name instead:
+`kampArm_diag_k0` / `kampArm_diag_k0_correct` (k=0, `sub_nf : NormalForm sig 1 2`) and
+`kampArm_diag_k1` / `kampArm_diag_k1_correct` (k=1, `sub_nf : NormalForm sig 2 2`), both in
+`NfMultiAnchorBridge/AggregateHookDischarge.lean`, each concluding
+`temporal_truth M atomMap t … ↔ nf_eval_nf M (k+1) 2 (Fin.cons t (fun _ => t)) sub_nf`
+under `h_UZ`/`h_SZ` — exactly this lemma's conclusion shape at the two match arms. -/
 theorem A_diag_correct {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1258,7 +1270,19 @@ past witness `x < t` where `sub_nf` evaluates on the two-anchor env `[x, t]`. As
 `temporal_truth_and` (origin factor split) + `A_past_correct` (Phase 1 outer bracket) +
 `nf_char2_atom_offdiag_correct` (Phase 2 atom locus) + the depth-`(k+1)` `nf_eval_nf` unfolding, with
 the quant layer routed through `h_quant`. `zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))`
-matches `nf_eval_nf`'s inner env. Rabinovich Cor 5.4 `F_i` chain (md:154-157). -/
+matches `nf_eval_nf`'s inner env. Rabinovich Cor 5.4 `F_i` chain (md:154-157).
+
+**Downstream citability (task 350) — the past-arm hook is DISCHARGED at k=0 in the sense that
+binds.** Task 309 Phase 18b should consume the skeleton-shaped conclusion by name, NOT this
+`h_quant` binder: `kampArm_past_k0` / `kampArm_past_k0_correct`
+(`NfMultiAnchorBridge/AggregateHookDischarge.lean`) deliver
+`temporal_truth M atomMap t … ↔ ∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`
+for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ`. The task-350 R1 adjudication
+(module header there) established that the literal `(quantEnd, seg : BracketFormula 0)` pair
+cannot host interior-POSITIVE population fibers (a `BracketFormula 0` has no point slots), so
+the k=0 discharge routes through `VVecEA2.translateRight_correct` instead of this binder. The
+k=1 past arm (`kampArm_past_k1`) is BLOCKED on the missing biconditional `VVecEA2` conjunction
+(Rabinovich Lemma 3.4 iff form) — see the task-350 plan Phase-4 blocker record. -/
 theorem nf_char2_past_formula_correct {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1458,7 +1482,17 @@ evaluates on the two-anchor env `[x, t]`. Assembled from `temporal_truth_and` (o
 `A_future_correct` (Phase 1 outer bracket) + `nf_char2_atom_offdiag_correct_future` (Phase 5 flipped
 atom locus) + the depth-`(k+1)` `nf_eval_nf` unfolding, with the quant layer routed through `h_quant`.
 `zoneEnv3 w x t = Fin.cons w (Fin.cons x (fun _ => t))` matches `nf_eval_nf`'s inner env. Rabinovich
-Cor 5.4 `F_i` chain future arm (md:154-157). -/
+Cor 5.4 `F_i` chain future arm (md:154-157).
+
+**Downstream citability (task 350) — the future-arm hook is DISCHARGED at k=0 in the sense
+that binds.** Task 309 Phase 18b should consume the skeleton-shaped conclusion by name, NOT
+this `h_quant` binder: `kampArm_future_k0` / `kampArm_future_k0_correct`
+(`NfMultiAnchorBridge/AggregateHookDischarge.lean`) deliver
+`temporal_truth M atomMap t … ↔ ∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`
+for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ` (Route V via
+`VVecEA2.translateLeft_correct` — see the task-350 R1 adjudication). The k=1 future arm
+(`kampArm_future_k1`) is BLOCKED with the k=1 past arm — task-350 plan Phase-4 blocker
+record. -/
 theorem nf_char2_future_formula_correct {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
