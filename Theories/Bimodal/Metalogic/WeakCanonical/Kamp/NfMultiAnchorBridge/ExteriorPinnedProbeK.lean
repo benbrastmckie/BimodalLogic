@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
 /-! # Pinned-converse machine-probe gate (task 360, Phase 0 — GO/NO-GO)
 
@@ -386,5 +387,360 @@ theorem kvE_probe_c3_pair :
     have hb : p3s.2 p3edag = p3s'.2 p3edag := by rw [heq]
     rw [p3_edag_in_s, p3_edag_not_in_s'] at hb
     exact Bool.noConfusion hb
+
+/-! ## Phase 0b: slice-repair probes P1-P3 (task 360 v2 — plan 02, report 02 §7 rows C4/C8/C9)
+
+Machine-adjudicates the three Medium-confidence claims of report
+`specs/360_restate_exterior_hbr_pinned_converse/reports/02_faithful-pinned-converse-repair.md`
+§7 BEFORE the Phase-3 slice construction (plan 02 hard gate):
+
+- **P3 (C9)** `kvE_probe_interior_transfer` — the `kvE_futSliceUnique_zero` engine: a depth-0
+  fiber element realized with an interior witness `v` (`¬ t < v`) over `[v, x1, w, x, t]`
+  transfers to `[v, x1', w, x, t]` with the SAME witness, whenever `x1'` satisfies `x1`'s
+  complete depth-0 4-type over `[w, x, t]`. Abstract over any `OrderedMonadicStructure`
+  (the `kvE_probe_selfZone_coincide` precedent). Proved FIRST because P1 consumes it.
+- **P1 (C4)** `kvE_probe_p1_erased_qnf_unmarked` — the refutation's marking variant σ′
+  (`τ` with the interior element `e := char [w, x1, w, x, t] = char [15, 25, 15, 2, 18]`
+  erased, verbatim the `kvE_futPinned_of_end_zero_refuted` construction on the P3M
+  instance) is marked by NO honest ambient: `p3qnf.2 σ′ = false`. Any putative realizer
+  `[u, 15, 2, 18]` carries `x1 = 25`'s complete atomic 4-type at `u`, so `e`'s witness
+  `w = 15` transfers (P3) and the depth-1 fold forces the erased bit — contradiction.
+  This closes report 02 §2 item 2 (the honest-bracket-unsatisfiability chain's only
+  not-machine-run link).
+- **P2 (C8)** `kvE_probe_p2_sliceId` — the slice-identification composite (report 02 §3.3
+  route steps 1-5 chained) at the concrete instance: for EVERY admissible on-fiber σ
+  satisfying the destructor facts `hend`/`hgap`/`hocc` at `[25, 15, 2, 18]`, the honest
+  endpoint characteristic `σ★ := p3tau` is qnf-marked, pinned-realized, atom-layer-equal
+  to σ, and agrees with σ's marking on every exterior-zone (gap/ray/self) fiber element.
+  Suppliers: step 1 = probe (b); step 2 = Phase-2 `kvE_futAtomPinned_zero` + depth-0
+  uniqueness; steps 3-4 = probe (c) upgrades + `hgap`/`hocc`/`hend` both inclusions;
+  step 5 = admissibility conjunct 4 + `nf0_split_assemble` + self-zone coincidence.
+
+Deviation note (recorded in the plan): consuming the Phase-2 supplier
+`kvE_futAtomPinned_zero` requires importing `ExteriorPinnedConverseK` (leaf-safe: that
+module does not import this probe file) — the ONE non-append edit of this phase. -/
+
+open Bimodal.Metalogic.WeakCanonical.Separation (formula_conjList formula_conjList_iff)
+
+/-! ### P3 (C9): depth-0 same-witness interior transfer -/
+
+/-- **P3 (C9)** — the `kvE_futSliceUnique_zero` engine: a depth-0 arity-5 fiber element `s`
+    realized at `[v, x1, w, x, t]` with an INTERIOR witness (`¬ t < v`) transfers to
+    `[v, x1', w, x, t]` with the SAME witness `v`, provided `t < x1`, `t < x1'`, and `x1'`
+    realizes `x1`'s complete depth-0 4-type over `[w, x, t]` (profile-equal endpoints).
+    Three-channel rebuild (`nf_eval_nf0_cons_factor`): the fresh profile transports verbatim
+    (same `v`); the tail 4-type is pinned to the characteristic (`nf_eval_unique`), which the
+    profile-equal endpoint realizes by hypothesis; the zone channel changes only at index 0,
+    where `v ≤ t < x1` and `v ≤ t < x1'` render the SAME coupling `(true, false)`. -/
+theorem kvE_probe_interior_transfer {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
+    (hvt : ¬ t < v) (htx1 : t < x1) (htx1' : t < x1')
+    (hchar : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf_characteristic M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))))
+    (s : NormalForm sig 0 5)
+    (hs : nf_eval_nf M 0 5
+      (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) :
+    nf_eval_nf M 0 5
+      (Fin.cons v (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  obtain ⟨hz, hfr, htl⟩ := (nf_eval_nf0_cons_factor M
+    (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mp hs
+  -- tail channel: the env restriction is x1's characteristic, realized at x1' by hypothesis
+  have htl' : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf0_dropFresh s) := by
+    have huniq : nf0_dropFresh s =
+        nf_characteristic M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) :=
+      nf_eval_unique M 0 4 _ _ _ htl (nf_characteristic_satisfies M 0 4 _)
+    rw [huniq]; exact hchar
+  refine (nf_eval_nf0_cons_factor M
+    (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mpr ⟨?_, hfr, htl'⟩
+  -- zone channel: only the index-0 coupling changes anchor; interiority renders it equal
+  have hvx1 : v < x1 := lt_of_le_of_lt (not_lt.mp hvt) htx1
+  have hvx1' : v < x1' := lt_of_le_of_lt (not_lt.mp hvt) htx1'
+  intro i
+  match i with
+  | ⟨0, _⟩ =>
+    have h0 := hz ⟨0, by omega⟩
+    constructor
+    · exact iff_of_true hvx1' (h0.1.mp hvx1)
+    · refine iff_of_false (lt_asymm hvx1') ?_
+      intro hbit
+      exact absurd (h0.2.mpr hbit) (lt_asymm hvx1)
+  | ⟨1, _⟩ => exact hz ⟨1, by omega⟩
+  | ⟨2, _⟩ => exact hz ⟨2, by omega⟩
+  | ⟨3, _⟩ => exact hz ⟨3, by omega⟩
+
+/-! ### P1 (C4): the refutation's erased variant is qnf-unmarked -/
+
+/-- The refutation's erased INTERIOR element on the probe instance: the depth-0 5-type of
+    `[w, x1, w, x, t] = [15, 25, 15, 2, 18]` (fresh witness `w` — zone `= w`, interior).
+    Verbatim the `e` of `kvE_futPinned_of_end_zero_refuted` at the P3M anchors. -/
+private noncomputable def p3eInt : NormalForm p3sig 0 5 :=
+  nf_characteristic P3M 0 5 (Fin.cons 15 p3env4)
+
+/-- The refutation's marking variant `σ′ := τ` with `p3eInt` UNMARKED — verbatim the `σ'`
+    of `kvE_futPinned_of_end_zero_refuted` at the P3M anchors. -/
+private noncomputable def p3sigmaR : NormalForm p3sig 1 4 :=
+  (p3tau.1, fun s => if s = p3eInt then false else p3tau.2 s)
+
+/-- **P1 (C4)**: the honest ambient does NOT mark the refutation's erased variant —
+    `p3qnf.2 p3sigmaR = false`, i.e. σ′ is realizable at NO `[u, w, x, t]`. Any realizer's
+    atom layer gives `u` the complete atomic 4-type of `x1 = 25` (in particular `18 < u`),
+    so `p3eInt`'s honest witness `15` transfers to `[15, u, 15, 2, 18]` by the P3 engine,
+    and the depth-1 fold biconditional forces `σ′.2 p3eInt = true` — contradicting the
+    erasure. Report 02 §2 item 2, machine-run (closing H4 row C4). -/
+theorem kvE_probe_p1_erased_qnf_unmarked : p3qnf.2 p3sigmaR = false := by
+  have h215 : (2 : ℤ) < 15 := by omega
+  have h1518 : (15 : ℤ) < 18 := by omega
+  have h1825 : (18 : ℤ) < 25 := by omega
+  have hn1815 : ¬ (18 : ℤ) < 15 := by omega
+  rw [p3qnf_snd]
+  refine @decide_eq_false _ (Classical.dec _) ?_
+  rintro ⟨u, hu⟩
+  -- the putative realizer's atom layer IS τ's atom layer, read at [u, 15, 2, 18]
+  have hA : nf_eval_nf P3M 0 4 (Fin.cons u p3env3) p3tau.1 :=
+    nf_eval_nf_atom_layer P3M (Fin.cons u p3env3) p3sigmaR hu
+  -- u sits strictly above the t-anchor 18 (admissibility conjunct-1 zone read)
+  have hτadm : kvE_futAdmissible p3tau = true :=
+    kvE_futRealizer_admissible P3M p3tau 25 15 2 18 h215 h1518 h1825
+      p3_tau_pinned
+  obtain ⟨hzA, -, -⟩ := (nf_eval_nf0_cons_factor P3M p3env3 u p3tau.1).mp hA
+  rw [kvE_futAdmissible_zoneMark p3tau hτadm] at hzA
+  have h18u : (18 : ℤ) < u := (hzA ⟨2, by omega⟩).2.mpr rfl
+  -- u realizes 25's complete depth-0 4-type over [15, 2, 18]
+  have hτ1char : p3tau.1 = nf_characteristic P3M 0 4 p3env4 :=
+    nf_eval_unique P3M 0 4 p3env4 p3tau.1 _
+      (nf_eval_nf_atom_layer P3M p3env4 p3tau p3_tau_pinned)
+      (nf_characteristic_satisfies P3M 0 4 p3env4)
+  have hchar : nf_eval_nf P3M 0 4 (Fin.cons u p3env3)
+      (nf_characteristic P3M 0 4 p3env4) := by
+    rw [← hτ1char]; exact hA
+  -- P3 engine: transfer p3eInt's honest witness 15 across the profile-equal endpoints
+  have heInt : nf_eval_nf P3M 0 5 (Fin.cons 15 p3env4) p3eInt :=
+    nf_characteristic_satisfies P3M 0 5 _
+  have h15pin : nf_eval_nf P3M 0 5 (Fin.cons 15 (Fin.cons u p3env3)) p3eInt :=
+    kvE_probe_interior_transfer P3M 15 25 u 15 2 18 hn1815 h1825 h18u
+      hchar p3eInt heInt
+  -- p3eInt is on the fiber; the fold must mark it — contradiction with the erasure
+  have hefib : nfk_dropFresh p3eInt = p3sigmaR.1 := by
+    have hefac := (nf_eval_nf0_cons_factor P3M p3env4 15 p3eInt).mp heInt
+    exact nf_eval_unique P3M 0 4 p3env4 _ _ hefac.2.2
+      (nf_eval_nf_atom_layer P3M p3env4 p3tau p3_tau_pinned)
+  obtain ⟨⟨-, hfibf⟩, -⟩ := (nf_eval_nfk_iff_efold P3M (Fin.cons u p3env3) p3sigmaR).mp hu
+  have hbit := (hfibf p3eInt hefib).mp ⟨15, h15pin⟩
+  rw [show p3sigmaR.2 p3eInt = (if p3eInt = p3eInt then false else p3tau.2 p3eInt) from rfl,
+    if_pos rfl] at hbit
+  exact Bool.noConfusion hbit
+
+/-! ### P2 (C8): the slice-identification composite on the concrete instance -/
+
+/-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
+    replicated per the `kvE_minPick` precedent, never imported): at depth 0 the prefix
+    projection coincides with the split kit's `nf0_projFresh`. -/
+private theorem p3_projFresh_zero {n : Nat} (sub : NormalForm p3sig 0 (n + 1)) :
+    nfk_projFresh sub = nf0_projFresh sub := by
+  funext a
+  match a with
+  | .pred p i =>
+    have hi : i = 0 := Subsingleton.elim i 0
+    subst hi
+    rfl
+  | .order i j h => exact absurd (Subsingleton.elim i j) h
+
+/-- **P2 (C8)**: the slice-identification composite (report 02 §3.3 steps 1-5, chained) on
+    the P3M instance: for EVERY admissible on-fiber `σ` carrying the destructor facts
+    `hend`/`hgap`/`hocc` at the anchors `[x1, w, x, t] = [25, 15, 2, 18]`, the honest
+    endpoint characteristic `σ★ := p3tau` is qnf-marked (step 1, probe (b)),
+    pinned-realized (step 1), atom-layer-equal to σ (step 2, Phase-2
+    `kvE_futAtomPinned_zero` + depth-0 uniqueness), and agrees with σ's marking on every
+    exterior-zone fiber element (steps 3-5: gap via `hocc`/`hgap` + the probe (c) upgrade
+    + uniqueness, both inclusions; ray via `hend`'s per-item and `¬F(¬D_ray)` conjuncts +
+    the probe (c) upgrade, both directions; self via `hend`'s self conjunct + coincidence
+    + admissibility conjunct 4 + the lossless split `nf0_split_assemble`). This is the
+    `kvE_futSliceId_of_end_zero` conclusion instantiated concretely with the explicit
+    witness `σ' := p3tau`. -/
+theorem kvE_probe_p2_sliceId (σ : NormalForm p3sig 1 4)
+    (hadm : kvE_futAdmissible σ = true)
+    (hfib : nfk_dropFresh σ = p3qnf.1)
+    (hend : temporal_truth P3M p3atomMap 25 (kvE_futEnd p3P σ))
+    (hgap : ∀ r : ℤ, (18 : ℤ) < r → r < 25 →
+      temporal_truth P3M p3atomMap r (kvE_futGapD p3P σ))
+    (hocc : ∀ s ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : ℤ,
+      (18 : ℤ) < r ∧ r < 25 ∧ temporal_truth P3M p3atomMap r (kvE_futItemShift p3P s)) :
+    p3qnf.2 p3tau = true ∧
+    nf_eval_nf P3M 1 4 p3env4 p3tau ∧
+    p3tau.1 = σ.1 ∧
+    ∀ s : NormalForm p3sig 0 5,
+      (nfk_zoneSpec s = kvE_futGapZone ∨ nfk_zoneSpec s = kvE_futRayZone ∨
+        nfk_zoneSpec s = kvE_futSelfZone) → p3tau.2 s = σ.2 s := by
+  have h215 : (2 : ℤ) < 15 := by omega
+  have h1518 : (15 : ℤ) < 18 := by omega
+  have h1825 : (18 : ℤ) < 25 := by omega
+  -- Step 2: atom-layer identification (Phase-2 supplier + depth-0 uniqueness)
+  have hτA := nf_eval_nf_atom_layer P3M p3env4 p3tau p3_tau_pinned
+  have hσA : nf_eval_nf P3M 0 4 p3env4 σ.1 :=
+    kvE_futAtomPinned_zero p3P P3M p3_UZ p3_SZ p3qnf σ hadm hfib
+      15 2 18 h215 h1518 p3_ambient 25 h1825 hend
+  have h31 : p3tau.1 = σ.1 := nf_eval_unique P3M 0 4 p3env4 p3tau.1 σ.1 hτA hσA
+  -- shared: σ-marked elements sit on τ's atom fiber
+  have honfib : ∀ s : NormalForm p3sig 0 5, σ.2 s = true → nf0_dropFresh s = p3tau.1 := by
+    intro s hbit
+    have hd := kvE_futAdmissible_onFiber σ hadm s hbit
+    rw [h31]; exact hd
+  -- endpoint-description components (consumed by the ray and self cases)
+  have hendC := hend
+  rw [kvE_futEnd, formula_conjList_iff] at hendC
+  have hselfC := hendC (kvE_fiberPosOnShift p3P (kvE_fiberZoneList σ kvE_futSelfZone))
+    (by simp)
+  have hrayC := hendC (kvE_futRayForm p3P σ) (by simp)
+  rw [kvE_futRayForm, formula_conjList_iff] at hrayC
+  rw [kvE_fiberPosOnShift_correct p3P _ P3M p3_UZ p3_SZ 25] at hselfC
+  obtain ⟨s0, hs0mem, env0, hev0⟩ := hselfC
+  obtain ⟨hbit0, hzs0⟩ := (kvE_fiberZoneList_mem σ kvE_futSelfZone s0).mp hs0mem
+  -- the delivered self element upgrades to PINNED realization at [25, p3env4]
+  have hz25self : zoneHolds P3M p3env4 kvE_futSelfZone 25 :=
+    kvE_futZone4_of_above P3M 25 25 15 2 18 h215 h1518 h1825
+      (false, false) (iff_of_false (lt_irrefl 25) Bool.false_ne_true)
+      (iff_of_false (lt_irrefl 25) Bool.false_ne_true)
+  obtain ⟨-, hfr0, -⟩ := (nf_eval_nf0_cons_factor P3M env0 25 s0).mp hev0
+  have hs0pin : nf_eval_nf P3M 0 5 (Fin.cons 25 p3env4) s0 := by
+    refine (nf_eval_nf0_cons_factor P3M p3env4 25 s0).mpr ⟨?_, hfr0, ?_⟩
+    · have hzs0' : nf0_zoneSpec s0 = kvE_futSelfZone := hzs0
+      rw [hzs0']; exact hz25self
+    · have htl0' : nf0_dropFresh s0 = p3tau.1 := honfib s0 hbit0
+      rw [htl0']; exact hτA
+  have hτs0 : p3tau.2 s0 = true := by
+    rw [p3tau_snd]
+    exact @decide_eq_true _ (Classical.dec _) ⟨25, hs0pin⟩
+  refine ⟨p3_tau_marked, p3_tau_pinned, h31, ?_⟩
+  intro s hzcase
+  rcases hzcase with hzs | hzs | hzs
+  · -- GAP zone (step 3, both inclusions)
+    cases hσbit : σ.2 s with
+    | true =>
+      -- σ ⊆ σ★: hocc places the listed item in (18, 25); probe (c) upgrades to pinned
+      have hmem : s ∈ kvE_fiberZoneList σ kvE_futGapZone :=
+        (kvE_fiberZoneList_mem σ kvE_futGapZone s).mpr ⟨hσbit, hzs⟩
+      obtain ⟨r, hr1, hr2, hshift⟩ := hocc s hmem
+      rw [kvE_futItemShift_correct p3P s P3M p3_UZ p3_SZ r] at hshift
+      have hpin := kvE_probe_gapItem_pinned s r hr1 hr2 (honfib s hσbit) hzs hshift
+      rw [p3tau_snd]
+      exact @decide_eq_true _ (Classical.dec _) ⟨r, hpin⟩
+    | false =>
+      -- σ★ ⊆ σ: a pinned witness z ∈ (18, 25) meets hgap's listed item; uniqueness
+      cases hτbit : p3tau.2 s with
+      | false => rfl
+      | true =>
+        exfalso
+        rw [p3tau_snd] at hτbit
+        obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) hτbit
+        have hzone := kvE_futZoneHolds_of_atom P3M p3env4 z s hz
+        rw [hzs] at hzone
+        have hz25 : z < (25 : ℤ) := (hzone 0).1.mpr rfl
+        have h18z : (18 : ℤ) < z := (hzone ⟨3, by omega⟩).2.mpr rfl
+        have hD := hgap z h18z hz25
+        rw [kvE_futGapD, kvE_fiberPosOnShift_correct p3P _ P3M p3_UZ p3_SZ z] at hD
+        obtain ⟨s', hmem', env', hev'⟩ := hD
+        obtain ⟨hbit', hzs'⟩ := (kvE_fiberZoneList_mem σ kvE_futGapZone s').mp hmem'
+        have hpin' := kvE_probe_gapItem_pinned s' z h18z hz25 (honfib s' hbit') hzs'
+          ⟨env', hev'⟩
+        have hss' : s' = s := nf_eval_unique P3M 0 5 (Fin.cons z p3env4) s' s hpin' hz
+        rw [hss', hσbit] at hbit'
+        exact Bool.noConfusion hbit'
+  · -- RAY zone (step 4, both directions)
+    cases hσbit : σ.2 s with
+    | true =>
+      -- σ ⊆ σ★: hend's per-item ray conjunct places s above 25; probe (c) upgrades
+      have hmem : s ∈ kvE_fiberZoneList σ kvE_futRayZone :=
+        (kvE_fiberZoneList_mem σ kvE_futRayZone s).mpr ⟨hσbit, hzs⟩
+      have hitem := hrayC (Formula.untl (kvE_futItemShift p3P s) Formula.top)
+        (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨s, hmem, rfl⟩))
+      obtain ⟨v, h25v, hsh, -⟩ := hitem
+      rw [kvE_futItemShift_correct p3P s P3M p3_UZ p3_SZ v] at hsh
+      have hpin := kvE_probe_rayItem_pinned s v h25v (honfib s hσbit) hzs hsh
+      rw [p3tau_snd]
+      exact @decide_eq_true _ (Classical.dec _) ⟨v, hpin⟩
+    | false =>
+      -- σ★ ⊆ σ: hend's ¬F(¬D_ray) conjunct covers the pinned witness z > 25; uniqueness
+      cases hτbit : p3tau.2 s with
+      | false => rfl
+      | true =>
+        exfalso
+        rw [p3tau_snd] at hτbit
+        obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) hτbit
+        have hzone := kvE_futZoneHolds_of_atom P3M p3env4 z s hz
+        rw [hzs] at hzone
+        have h25z : (25 : ℤ) < z := (hzone 0).2.mpr rfl
+        have hnf := hrayC (Formula.untl (kvE_futRayD p3P σ).neg Formula.top).neg (by simp)
+        rw [temporal_truth_neg] at hnf
+        have hDz : temporal_truth P3M p3atomMap z (kvE_futRayD p3P σ) := by
+          by_contra hnD
+          exact hnf ⟨z, h25z, (temporal_truth_neg P3M p3atomMap z _).mpr hnD,
+            fun r _ _ => id⟩
+        rw [kvE_futRayD, kvE_fiberPosOnShift_correct p3P _ P3M p3_UZ p3_SZ z] at hDz
+        obtain ⟨s', hmem', env', hev'⟩ := hDz
+        obtain ⟨hbit', hzs'⟩ := (kvE_fiberZoneList_mem σ kvE_futRayZone s').mp hmem'
+        have hpin' := kvE_probe_rayItem_pinned s' z h25z (honfib s' hbit') hzs'
+          ⟨env', hev'⟩
+        have hss' : s' = s := nf_eval_unique P3M 0 5 (Fin.cons z p3env4) s' s hpin' hz
+        rw [hss', hσbit] at hbit'
+        exact Bool.noConfusion hbit'
+  · -- SELF zone (step 5)
+    cases hσbit : σ.2 s with
+    | true =>
+      -- admissibility conjunct 4: one self profile ⇒ s IS the delivered s0 (lossless split)
+      have hdS := kvE_futAdmissible_onFiber σ hadm s hσbit
+      have hdS0 := kvE_futAdmissible_onFiber σ hadm s0 hbit0
+      have hadm' := hadm
+      unfold kvE_futAdmissible at hadm'
+      rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hadm'
+      have hc4 := hadm'.2
+      have hbitS : kvE_subBit σ kvE_futSelfZone (nfk_projFresh s) = true := by
+        refine List.any_eq_true.mpr ⟨s, Finset.mem_toList.mpr (Finset.mem_univ s), ?_⟩
+        rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+        exact ⟨⟨⟨decide_eq_true hdS, decide_eq_true hzs⟩, decide_eq_true rfl⟩, hσbit⟩
+      have hbitS0 : kvE_subBit σ kvE_futSelfZone (nfk_projFresh s0) = true := by
+        refine List.any_eq_true.mpr ⟨s0, Finset.mem_toList.mpr (Finset.mem_univ s0), ?_⟩
+        rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+        exact ⟨⟨⟨decide_eq_true hdS0, decide_eq_true hzs0⟩, decide_eq_true rfl⟩, hbit0⟩
+      have hχ : nfk_projFresh s = nfk_projFresh s0 := by
+        have h4 := (List.all_eq_true.mp hc4) (nfk_projFresh s)
+          (Finset.mem_toList.mpr (Finset.mem_univ _))
+        have h4' := (List.all_eq_true.mp h4) (nfk_projFresh s0)
+          (Finset.mem_toList.mpr (Finset.mem_univ _))
+        rw [Bool.or_eq_true, Bool.or_eq_true, hbitS, hbitS0] at h4'
+        rcases h4' with (h | h) | h
+        · exact absurd h (by decide)
+        · exact absurd h (by decide)
+        · exact of_decide_eq_true h
+      have hs_eq : s = s0 := by
+        have h1 : nf0_zoneSpec s = nf0_zoneSpec s0 := by
+          have ha : nf0_zoneSpec s = kvE_futSelfZone := hzs
+          have hb : nf0_zoneSpec s0 = kvE_futSelfZone := hzs0
+          rw [ha, hb]
+        have h2 : nf0_projFresh s = nf0_projFresh s0 := by
+          rw [← p3_projFresh_zero s, ← p3_projFresh_zero s0]; exact hχ
+        have h3 : nf0_dropFresh s = nf0_dropFresh s0 := by
+          rw [honfib s hσbit, honfib s0 hbit0]
+        calc s = nf0_assemble (nf0_zoneSpec s) (nf0_projFresh s) (nf0_dropFresh s) :=
+              (nf0_split_assemble s).symm
+          _ = nf0_assemble (nf0_zoneSpec s0) (nf0_projFresh s0) (nf0_dropFresh s0) := by
+              rw [h1, h2, h3]
+          _ = s0 := nf0_split_assemble s0
+      rw [hs_eq]; exact hτs0
+    | false =>
+      -- σ★ ⊆ σ: a pinned self witness coincides with 25; uniqueness against s0
+      cases hτbit : p3tau.2 s with
+      | false => rfl
+      | true =>
+        exfalso
+        rw [p3tau_snd] at hτbit
+        obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) hτbit
+        have hzone := kvE_futZoneHolds_of_atom P3M p3env4 z s hz
+        rw [hzs] at hzone
+        have hz25 : z = (25 : ℤ) := kvE_probe_selfZone_coincide P3M z 25 15 2 18 hzone
+        rw [hz25] at hz
+        have hss0 : s = s0 := nf_eval_unique P3M 0 5 (Fin.cons 25 p3env4) s s0 hz hs0pin
+        rw [hss0, hbit0] at hσbit
+        exact Bool.noConfusion hσbit
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

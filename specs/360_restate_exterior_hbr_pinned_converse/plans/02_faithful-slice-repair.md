@@ -279,7 +279,33 @@ Completed 2026-07-13 (sess_1783950096_9d2925); full record in plan v1 Phase 2.
 depth 0) and 5 (self-zone coincidence). σ′ does not touch this phase (atom layers of σ′ and τ
 are equal).
 
-### Phase 0b: Probe gate P1-P3 for the slice repair (C4/C8/C9) [NOT STARTED]
+### Phase 0b: Probe gate P1-P3 for the slice repair (C4/C8/C9) [COMPLETED]
+
+**VERDICT (2026-07-13, sess_1783950096_9d2925): GO — all three probes GREEN.**
+
+- **P1 (C4) GO**: `kvE_probe_p1_erased_qnf_unmarked` — `p3qnf.2 p3sigmaR = false` for the
+  refutation's σ′ (τ with `p3eInt := char [15,25,15,2,18]` erased) on P3M. Route: any
+  putative realizer `u` carries 25's complete 4-type (conjunct-1 zone read gives `18 < u`),
+  the P3 engine transfers `p3eInt`'s witness 15 to `[15,u,15,2,18]`, and the depth-1 fold
+  forces the erased bit. C4 → machine-run High; the §2 honest-bracket-unsatisfiability chain
+  is now fully machine-backed. Attempts: 2 of 12.
+- **P2 (C8) GO**: `kvE_probe_p2_sliceId` — the §3.3 steps 1-5 composite at `[25,15,2,18]`,
+  quantified over ALL admissible on-fiber σ with `hend`/`hgap`/`hocc` (NOT just a single σ
+  instance); conclusion with explicit witness σ′ := `p3tau`: marked + pinned-realized +
+  `p3tau.1 = σ.1` + per-element exterior-zone marking agreement. All five route steps
+  compiled with the plan's exact suppliers (probe (b)/(c) upgrades, Phase-2
+  `kvE_futAtomPinned_zero`, conjunct 4 + `nf0_split_assemble`, `nf_eval_unique`).
+  Attempts: 2 of 12.
+- **P3 (C9) GO**: `kvE_probe_interior_transfer` — abstract (any `OrderedMonadicStructure`),
+  the `kvE_futSliceUnique_zero` engine: interior witness (`¬ t < v`) + profile-equal
+  endpoints (`x1'` realizes `char [x1,w,x,t]`) ⇒ same-witness transfer. Attempts: 2 of 12.
+
+Verification: scoped + full `lake build` GREEN (1734 jobs); `#print axioms` on all three =
+exactly `[propext, Classical.choice, Quot.sound]`; zero sorries in territory.
+*(deviation: altered — probe file gained ONE import line, `ExteriorPinnedConverseK`, to
+consume the Phase-2 supplier `kvE_futAtomPinned_zero`; leaf-safe, no cycle. Also
+`nfk_projFresh_zero` (private, CarrierKv.lean:89) replicated file-locally as
+`p3_projFresh_zero` per the `kvE_minPick` precedent.)*
 
 - **Goal:** Machine-adjudicate report 02 §7's three Medium-confidence claims BEFORE any
   construction. Hard GO/NO-GO gate for Phases 3-6.
@@ -289,33 +315,35 @@ are equal).
   (failing goal state verbatim) + task status blocked; Phases 3-6 do not run. NOT construction:
   no statement may be weakened or redesigned inside this phase to make a probe pass.
 - **Tasks:**
-  - [ ] Re-read report 02 §2 (C4 argument), §3.3 route steps 1-5 (C8), §3.3 uniqueness route
+  - [x] Re-read report 02 §2 (C4 argument), §3.3 route steps 1-5 (C8), §3.3 uniqueness route
         (C9); Read ExteriorPinnedProbeK.lean for the P3M probe conventions (anchors
         2 < 15 < 18 < 25, `p3_UZ`/`p3_SZ`, depth-0 provider).
-  - [ ] **P1 (C4)**: compile `qnf.2 σ′ = false` for the honest
+  - [x] **P1 (C4)**: compile `qnf.2 σ′ = false` for the honest
         `qnf := nf_characteristic P3M 2 3 [15,2,18]` and the refutation's σ′ on the P3M model —
         i.e. σ′ is realizable at NO `[y,w,x,t]`: any y satisfying σ′.1 carries x1's complete
         atomic profile, so `e = nf_characteristic P3M 0 5 [w,x1,w,x,t]` transfers to
         `[w,y,w,x,t]` with the same witness `w` and the fold fails at the unmarked e
         (report 02 §2 item 2). Via `lean_run_code`; budget 12.
-  - [ ] **P2 (C8)**: compile the slice-id composite on the P3M instance: for the destructor
+  - [x] **P2 (C8)**: compile the slice-id composite on the P3M instance: for the destructor
         configuration used by the Phase-0 probes, σ★ := `nf_characteristic P3M 1 4 [25,15,2,18]`
         is qnf-marked + pinned-realized + atom-layer-equal + exterior-zone-list-equal to an
         admissible on-fiber σ satisfying `hend`/`hgap`/`hocc` — the report 02 §3.3 conclusion
         instantiated concretely (a concrete-instance check of steps 1-5 chained, or per-step if
         the composite exceeds one snippet). Via `lean_run_code`; budget 12.
-  - [ ] **P3 (C9)**: compile the depth-0 same-witness transfer lemma shape: for
+  - [x] **P3 (C9)**: compile the depth-0 same-witness transfer lemma shape: for
         `s : NormalForm sig 0 5` and endpoints x1, x1′ with equal complete atomic profiles
         (`nf_eval_nf M 0 4 [x1,…] π ↔ nf_eval_nf M 0 4 [x1′,…] π` for the profile π), a witness
         v realizing s over `[v,x1,w,x,t]` also realizes it over `[v,x1′,w,x,t]` (same v) —
         the `kvE_futSliceUnique_zero` engine. Prefer stating it abstractly (any linear order),
         as `kvE_probe_selfZone_coincide` precedent. Via `lean_run_code`; budget 12.
-  - [ ] Persist all green probe artifacts into ExteriorPinnedProbeK.lean (append-only; new
-        section header `-- Phase 0b: slice-repair probes P1-P3`); scoped build.
-  - [ ] Record the three verdicts in `.orchestrator-handoff.json` (`continuation_context`) and
+  - [x] Persist all green probe artifacts into ExteriorPinnedProbeK.lean (append-only; new
+        section header `-- Phase 0b: slice-repair probes P1-P3`); scoped build. *(deviation:
+        altered — plus one import line, see verdict block)*
+  - [x] Record the three verdicts in `.orchestrator-handoff.json` (`continuation_context`) and
         under this phase's heading; commit `task 360 phase 0b: slice-repair probe gate`.
   - [ ] **NO-GO branch**: on any probe failure, set plan Status [BLOCKED], write the escalation
         handoff naming the probe, the last failing goal state, and the attempted variants; STOP.
+        *(deviation: skipped — not triggered; all probes GO)*
 - **Done when:** three green persisted probe artifacts (or the NO-GO branch executed); scoped
   `lake build …ExteriorPinnedProbeK` green; verdicts recorded.
 - **Estimated output:** ~120-250 lines (probe file section + records).
