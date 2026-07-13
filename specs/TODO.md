@@ -1,5 +1,5 @@
 ---
-next_project_number: 359
+next_project_number: 360
 ---
 
 # TODO
@@ -18,7 +18,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
 | 5 | 305 | 307 | completeness |
 | 6 | 303 | 305 | completeness |
-| 7 | 95,299 | 303 | completeness |
+| 7 | 95,299,359 | 303 | completeness, kamp_theorem_formalization |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -114,13 +114,25 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 358 [NOT STARTED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+359 [NOT STARTED] — Post-green cleanup: delete the Boneyard dead-proof infrastructure
 
 ### Uncategorized
 
-341 [RESEARCHING] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
+341 [RESEARCHED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 359. Remove boneyard dead proof infrastructure
+- **Effort**: medium
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 303
+
+**Description**: Post-green cleanup: delete the Boneyard dead-proof infrastructure under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ (~71 files / ~47k lines / ~121 dead sorries — abandoned bypass/EF-game/Stavi infrastructure superseded by the live Kamp/NfMultiAnchorBridge route). PREREQUISITE (do FIRST): sever the 3 remaining LIVE imports into Boneyard before deleting anything — roadmap report 13 identifies live imports via Prop43 and NavigatedEndChar (verify the exact set at implementation time with a fresh grep for imports of ...Kamp.Boneyard.* from non-Boneyard files). Only once no live file imports Boneyard may the directory be removed. GATING: this is strictly post-green cleanup — do NOT run until completeness_discrete is sorry-free/axiom-clean (hence dependency on task 303, the tail of the assembly chain), so that no in-flight proof work still depends on parked Boneyard lemmas. Definition of done: Boneyard/ removed, full-tree lake build GREEN, no orphaned imports, axioms unchanged on completeness_discrete. Zero-debt: if a Boneyard declaration turns out to be live/needed, promote it out of Boneyard rather than force-deleting.
+
+---
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
@@ -387,7 +399,7 @@ Grounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_
 ---
 
 ### 341. Structural refactor sharedwitness carrier layer
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Dependencies**: Task 335, Task 337, Task 340, Task 346
 - **Research**: [341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md]
