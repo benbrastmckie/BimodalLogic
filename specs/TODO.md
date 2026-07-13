@@ -12,14 +12,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,355 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,341,343,355 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,350 | 131,189,192,196,349 | formula-refactor, automation, kamp_theorem_formalization |
-| 4 | 177,178,309 | 131,193,350 | formula-refactor, kamp_theorem_formalization |
-| 5 | 307 | 309 | completeness |
-| 6 | 305 | 307 | completeness |
-| 7 | 303 | 305 | completeness |
-| 8 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,341,343,349 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,309 | 131,189,192,196,350 | formula-refactor, automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -111,10 +110,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-355 [RESEARCHED] — Deliver the depth-k INTERIOR gate correctness lemma `bracketEndCh
-  └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
-    └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
-      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+  └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -125,11 +123,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 355. Build depthk interior gate correctness
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/12_spawn-analysis.md]
+- **Plan**: [355_build_depthk_interior_gate_correctness/plans/01_depthk-interior-gate-correctness.md]
 
 **Description**: Deliver the depth-k INTERIOR gate correctness lemma `bracketEndChar_kv_correct` (or the appropriately-named general-k interior gate correctness lemma) for arbitrary k, by recursion, so that task 349 Phase 5 can fill the `endIntervalStep` body (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:2144, currently the sanctioned `⟨[]⟩` empty-disjunction placeholder). The depth-k carrier `bracketEndChar_kv` already exists (CarrierKv.lean:238); its correctness is delivered ONLY at k=0 (`bracketEndChar_kv_correct_zero`, CarrierKv.lean:367) and k=1 (`bracketEndChar_kv_correct_one`, CarrierKv.lean:395, mirroring `bracketEndChar_k1v_correct` at CarrierK1V.lean:2041). CarrierKv.lean:22 documents this gap directly: correctness is explicitly 'NOT attempted here'. The general-k case is open recursive-Kamp construction (~700-1300 estimated proof lines), not consumption of any already-delivered clause layer -- it is NOT enabled by the recently-completed tasks 351/352/354 (those delivered the depth-k EXTERIOR clause/bracket layer, not the interior gate).
 
