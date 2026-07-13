@@ -1,7 +1,7 @@
 # Implementation Plan: Realization Recursion `nf_nvar_exist_all_depths` (Rabinovich Cor 5.4(1) ⇐)
 
 - **Task**: 358 - Land the `nf_nvar_exist_all_depths` n>=1 arms (KampPrior.lean:361, :364), produce the genuine realizer `hσ`, discharge the eleven task-356/357 obligations, retire the completeness sorry
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10-16 hours (hard open-mathematics transcription; 5 phases)
 - **Dependencies**: 357 (completed), 356 (completed) — both green; 341 (planned, serialized AFTER 358)
 - **Research Inputs**:
@@ -247,7 +247,7 @@ the Mathlib `LinearOrder` types themselves, as the bare-`Exists.intro` baseline 
   truth-lemma identified (GO), OR task marked [BLOCKED] with a spawned sub-task (NO-GO). No sorry
   introduced.
 
-### Phase 2: Produce the realizer `hσ` — Cor 5.4(1) ⇐ base + one Until-link (n=1, arity 4) [NOT STARTED]
+### Phase 2: Produce the realizer `hσ` — Cor 5.4(1) ⇐ base + one Until-link (n=1, arity 4) [COMPLETED]
 - **Goal:** Construct the genuine within-bracket realizer
   `hσ : nf_eval_nf M (k+1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _=>t)))) σ` at the anchor `x1`
   that `kvE_{fut,past}ChainDestructG` reconstructs, following the §2.4 recipe: k=1 is the landed
@@ -255,19 +255,57 @@ the Mathlib `LinearOrder` types themselves, as the bare-`Exists.intro` baseline 
   `min`/case-split (`if y2 ≤ x_{n+1} then y2 else x_{n+1}`, both provably in `(z0,z1)`). Build this
   arity-generically where feasible (Fin.cons identity, report 01 §1.3 route a) so Phase 4 is thin.
 - **Tasks:**
-  - [ ] Run `kvE_futChainDestructG` (and past dual) to obtain the exterior anchor `x1` (past `x1<x`;
+  - [x] Run `kvE_futChainDestructG` (and past dual) to obtain the exterior anchor `x1` (past `x1<x`;
         future `t<x1`), the D-uniform gap, and per-item occurrences (landed; do not rebuild).
-  - [ ] Apply the Phase-1 Until truth-lemma at the folded top anchor
+        *(done 2026-07-12: consumed inside the drivers `kampPrior_futRealizer_of_pos` /
+        `kampPrior_pastRealizer_of_pos` (KampPrior.lean end section) — the positive-existence
+        reading of the `kvE_extNeg{Fut,Past}_complete` bodies, emitting the SELECTED anchor,
+        the endpoint description `kvE_{fut,past}End`, and `hσ`)*
+  - [x] Apply the Phase-1 Until truth-lemma at the folded top anchor
         `(αn ∧ β_{n+1} Until α_{n+1})` to extract `y2 > y1` with `α_{n+1}(y2)` and `β_{n+1}` on
-        `(y1, y2)`.
-  - [ ] Transcribe the decidable `min`/case-split: `if y2 ≤ x_{n+1} then z := y2 else z := x_{n+1}`;
+        `(y1, y2)`. *(done: `kampPrior_fChain_realize_from` extracts the Until-witness `y` of
+        each link through the landed `fChainFrom_step` characterization — the definitional
+        `temporal_truth` `.untl` reading, consumed via the k=1 template as the plan's
+        "extension of the landed base"; deviation: altered — extraction goes through
+        `fChainFrom_step`/`fChainFrom_base` rather than a raw `simp only [temporal_truth]`
+        at the anchor, which is the SAME definitional content in the template's packaged form)*
+  - [x] Transcribe the decidable `min`/case-split: `if y2 ≤ x_{n+1} then z := y2 else z := x_{n+1}`;
         prove `z ∈ (z0, z1)` in BOTH branches (report 02 §2.2). Mirror `fChainFrom`/`fChainPred`
         explicitly — no `simp`/`omega` bypass of the case-split.
-  - [ ] Assemble the atom layer `nf_eval_nf M 0 4 [x1,w,x,t] σ.1` and fold the per-fiber
+        *(done: TWO explicit two-way case-splits landed — the per-link `le_or_gt y (x (i+1))`
+        in `kampPrior_fChain_realize_from` (branch 1: witness `y` itself; branch 2: bound point
+        `x (i+1) ∈ (v, y)` with segment restriction), invariant `w a ≤ x (i+a)` keeping both
+        branches in-bracket; and the endpoint `le_or_gt s z1` in
+        `kampPrior_fChain_realize_bracket` (z := s vs z := z1 by final-segment restriction).
+        This is the bounded resolution of the EANegation.lean:1249 Until-unboundedness
+        obstruction; both case-splits are explicit `rcases le_or_gt`)*
+  - [x] Assemble the atom layer `nf_eval_nf M 0 4 [x1,w,x,t] σ.1` and fold the per-fiber
         biconditionals via `nf_eval_nfk_iff_efold` into `hσ` (mirror the converter body shape,
         ExteriorConverterK.lean:158–188).
-  - [ ] Scoped build: `lake build Theories.Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior`.
+        *(done: `kampPrior_futRealizer_assemble` / `kampPrior_pastRealizer_assemble` — atom layer
+        via `kvE_{fut,past}Atom_of_bundle` on a designated bit-true self-zone fiber, off-fiber
+        falsity via `kvE_{fut,past}Admissible_offFiber`, fold via `nf_eval_nfk_iff_efold`;
+        exact inverses of `kvE_{fut,past}Bundle_of_realizer`. The at-anchor fiber transfer
+        enters through the `hreal`/`hsat` hypothesis shapes — the same shapes
+        `kvE_futBundle_of_realizer` proves sound — which Phase 3 discharges at the selected
+        anchor per the plan's reconciliation task)*
+  - [x] Scoped build: `lake build Theories.Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior`.
         Commit this green sub-step (`task 358 phase 2: constructive Cor 5.4(1) realizer hσ`).
+        *(done: `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior` — Build completed
+        successfully (1032 jobs); `lean_verify` on `kampPrior_fChain_realize_bracket`,
+        `kampPrior_futRealizer_of_pos`, `kampPrior_pastRealizer_of_pos`: axiom closure exactly
+        `[propext, Classical.choice, Quot.sound]` (== ambient floor, no `sorryAx`, no new
+        axiom); no new sorry — file sorries remain exactly the inherited :361/:364)*
+
+**Phase 2 Findings (2026-07-12)**: seven new sorry-free theorems at the end of KampPrior.lean:
+`kampPrior_fChain_realize_cons` (Fin.cons prepend transfer), `kampPrior_fChain_realize_from`
+(the Cor 5.4(1) ⇐ inductive engine, suffix form), `kampPrior_fChain_realize` (arity-generic
+chain realizer, i=0 instance), `kampPrior_fChain_realize_bracket` (partial-bracket form,
+`∃ z ∈ (z0,z1]` with `bf.holds z0 z`), `kampPrior_futRealizer_assemble` /
+`kampPrior_pastRealizer_assemble` (σ-level `hσ` fold at the anchor), and
+`kampPrior_futRealizer_of_pos` / `kampPrior_pastRealizer_of_pos` (destructor-selected anchor +
+`hσ` from `kvE_{fut,past}Pos`). The chain realizer is stated for every `BracketFormula (n+1)`
+(arity-generic, report 01 §1.3 route a) so Phase 4 reuses it verbatim.
 - **Timing:** 4-6 hours (the hard core; report 01 §4 estimates hundreds of lines, de-risked by the
   landed destructor + k=1 template).
 - **Depends on:** 1

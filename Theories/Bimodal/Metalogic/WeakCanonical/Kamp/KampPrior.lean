@@ -1146,4 +1146,492 @@ theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature}
   rw [temporal_truth_or, temporal_truth_or, h_past, h_diag, h_future]
   exact (kampPrior_site_trichotomy M k sub_nf t).symm
 
+/-! ## Task 358 Phase 2 — the Cor 5.4(1) ⇐ within-bracket realizer (Rabinovich 2014)
+
+The realizer direction of Rabinovich's pivotal observation (Cor 5.4(1), §5, chunk 0015
+lines 9–41): from the F-chain firing at an increasing sequence of BOUND points
+`x 0 < … < x n` (each `Fi(x i)`), an actual within-bracket witness family is produced
+by induction on the chain length, with the two-way `min`/case-split
+(`if y2 ≤ x_{i+1} then z := y2 else z := x_{i+1}`) at every Until-link — NOT an
+`inf`/`sup` global selection (report 02 §2.3). This is the bounded form that resolves the
+documented model-independent impossibility at EANegation.lean:1249 (the F-chain
+Until-unboundedness): the bound points `x i` cap every Until-witness, keeping the whole
+construction inside the bracket. The k=1 landed template is the base
+(`BracketFormula.fChainFrom_base`); each inductive step is exactly one Until-driven
+chain-link (`fChainFrom_step` + extraction + case-split), mirrored explicitly.
+
+The σ-level fold assembly (`kampPrior_futRealizer_assemble` / `kampPrior_pastRealizer_assemble`)
+then mirrors the converter body (ExteriorConverterK.lean:158–188) POSITIVELY: at the anchor
+`x1` the chain destructor reconstructs, the atom layer + per-fiber biconditional + off-fiber
+falsity fold into the genuine realizer `hσ` via `nf_eval_nfk_iff_efold`. The drivers
+(`kampPrior_futRealizer_of_pos` / `kampPrior_pastRealizer_of_pos`) run the landed destructor
+(`kvE_{fut,past}ChainDestructG`) on the positive local-existence form and emit the SELECTED
+exterior anchor together with `hσ` — the positive-existence reading of
+`kvE_extNeg{Fut,Past}_complete` (the same body, producing the realizer instead of the
+contradiction). Arity-generic: the chain realizer is stated for every `BracketFormula (n+1)`
+(Fin.cons prepend at each link), so the Phase-4 arity lift reuses it verbatim. -/
+
+/-- **Chain-link prepend** (the shared assembly step of both case-split branches). Given a
+    witness family `w'` for the chain suffix `i+1, …, n` and a head anchor `v` at index `i`
+    (below the suffix, carrying `α_i`, with `β_{i+1}` on the gap `(v, w' 0)`), the prepended
+    family `Fin.cons v w'` witnesses the suffix `i, …, n`. Pure `Fin.cons` transfer — all
+    chain content enters through the hypotheses. -/
+theorem kampPrior_fChain_realize_cons {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (x : Fin (n + 1) → M.carrier)
+    (i : Fin (n + 1)) {d' : Nat} (hd : i.val + (d' + 1) = n)
+    (v : M.carrier) (w' : Fin (d' + 1) → M.carrier)
+    (hv0 : v < w' ⟨0, by omega⟩)
+    (hw'mono : ∀ a b : Fin (d' + 1), a < b → w' a < w' b)
+    (hw'le : ∀ a : Fin (d' + 1), w' a ≤ x ⟨i.val + 1 + a.val, by omega⟩)
+    (hw'pt : ∀ a : Fin (d' + 1),
+      (bf.pointTypes ⟨i.val + 1 + a.val, by omega⟩).eval_at M atomMap (w' a))
+    (hseg0 : ∀ r : M.carrier, v < r → r < w' ⟨0, by omega⟩ →
+      (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r)
+    (hw'seg : ∀ a : Fin d', ∀ r : M.carrier,
+      w' ⟨a.val, by omega⟩ < r → r < w' ⟨a.val + 1, by omega⟩ →
+      (bf.segmentTypes ⟨i.val + 1 + a.val + 1, by omega⟩).eval_at M atomMap r)
+    (hw'fin : ∃ s : M.carrier, w' ⟨d', by omega⟩ < s ∧
+      ∀ r : M.carrier, w' ⟨d', by omega⟩ < r → r < s →
+      (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r)
+    (hvx : v ≤ x i)
+    (halpha : (bf.pointTypes i).eval_at M atomMap v) :
+    ∃ w : Fin (d' + 1 + 1) → M.carrier,
+      w ⟨0, by omega⟩ = v ∧
+      (∀ a b : Fin (d' + 1 + 1), a < b → w a < w b) ∧
+      (∀ a : Fin (d' + 1 + 1), w a ≤ x ⟨i.val + a.val, by omega⟩) ∧
+      (∀ a : Fin (d' + 1 + 1),
+        (bf.pointTypes ⟨i.val + a.val, by omega⟩).eval_at M atomMap (w a)) ∧
+      (∀ a : Fin (d' + 1), ∀ r : M.carrier,
+        w ⟨a.val, by omega⟩ < r → r < w ⟨a.val + 1, by omega⟩ →
+        (bf.segmentTypes ⟨i.val + a.val + 1, by omega⟩).eval_at M atomMap r) ∧
+      (∃ s : M.carrier, w ⟨d' + 1, by omega⟩ < s ∧
+        ∀ r : M.carrier, w ⟨d' + 1, by omega⟩ < r → r < s →
+        (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) := by
+  refine ⟨Fin.cons v w', rfl, ?_, ?_, ?_, ?_, hw'fin⟩
+  · -- strict monotonicity of the prepended family
+    intro a b hab
+    rcases Fin.eq_zero_or_eq_succ a with rfl | ⟨a', rfl⟩
+    · rcases Fin.eq_zero_or_eq_succ b with rfl | ⟨b', rfl⟩
+      · exact absurd hab (lt_irrefl _)
+      · rw [Fin.cons_zero, Fin.cons_succ]
+        rcases eq_or_lt_of_le (Fin.zero_le b') with hb0 | hb0
+        · rw [← hb0]; exact hv0
+        · exact hv0.trans (hw'mono _ b' hb0)
+    · rcases Fin.eq_zero_or_eq_succ b with rfl | ⟨b', rfl⟩
+      · simp only [Fin.lt_def, Fin.val_succ, Fin.val_zero] at hab
+        omega
+      · rw [Fin.cons_succ, Fin.cons_succ]
+        exact hw'mono a' b' (by
+          rw [Fin.lt_def] at hab ⊢
+          simpa [Fin.val_succ] using hab)
+  · -- bound-domination `w a ≤ x (i + a)`
+    intro a
+    rcases Fin.eq_zero_or_eq_succ a with rfl | ⟨a', rfl⟩
+    · rw [Fin.cons_zero]
+      have hidx : (⟨i.val + (0 : Fin (d' + 1 + 1)).val, by omega⟩ : Fin (n + 1)) = i := by
+        ext; simp
+      rw [hidx]; exact hvx
+    · rw [Fin.cons_succ]
+      have hidx : (⟨i.val + (Fin.succ a').val, by omega⟩ : Fin (n + 1))
+          = ⟨i.val + 1 + a'.val, by omega⟩ := by
+        ext; simp only [Fin.val_succ]; omega
+      rw [hidx]; exact hw'le a'
+  · -- point types
+    intro a
+    rcases Fin.eq_zero_or_eq_succ a with rfl | ⟨a', rfl⟩
+    · rw [Fin.cons_zero]
+      have hidx : (⟨i.val + (0 : Fin (d' + 1 + 1)).val, by omega⟩ : Fin (n + 1)) = i := by
+        ext; simp
+      rw [hidx]; exact halpha
+    · rw [Fin.cons_succ]
+      have hidx : (⟨i.val + (Fin.succ a').val, by omega⟩ : Fin (n + 1))
+          = ⟨i.val + 1 + a'.val, by omega⟩ := by
+        ext; simp only [Fin.val_succ]; omega
+      rw [hidx]; exact hw'pt a'
+  · -- interior segments (head gap from `hseg0`, suffix gaps shifted)
+    intro a r hr1 hr2
+    obtain ⟨av, hav⟩ := a
+    cases av with
+    | zero =>
+      exact hseg0 r hr1 hr2
+    | succ j =>
+      have hres := hw'seg ⟨j, by omega⟩ r hr1 hr2
+      have hidx : (⟨i.val + 1 + (⟨j, by omega⟩ : Fin d').val + 1, by omega⟩ : Fin (n + 1 + 1))
+          = ⟨i.val + (j + 1) + 1, by omega⟩ := by
+        ext; show i.val + 1 + j + 1 = i.val + (j + 1) + 1; omega
+      rw [hidx] at hres
+      exact hres
+
+/-- **Cor 5.4(1) ⇐, suffix form** (the inductive engine). Given the F-chain bound points
+    `x : Fin (n+1) → M.carrier` (increasing, each satisfying its `fChainFrom`), any point
+    `v ≤ x i` satisfying `fChainFrom i` extends to a full witness family `w` for the chain
+    suffix `i, i+1, …, n`: strictly increasing, dominated by the bounds (`w a ≤ x (i+a)`),
+    carrying the point types, the interior segment types on consecutive gaps, and the final
+    Until residue (`∃ s` beyond the last witness with `β_{n+1}` on the gap).
+
+    Induction on the suffix length `d`; each step extracts the Until-witness `y` of the next
+    link (`fChainFrom_step`) and performs Rabinovich's two-way case-split against the next
+    bound point `x (i+1)`: if `y ≤ x (i+1)` the witness itself is the next anchor, otherwise
+    `x (i+1) ∈ (v, y)` and the segment type transfers by restriction — both branches keep the
+    invariant `w a ≤ x (i+a)` (chunk 0015: "If y2 ≤ xn+1 then z = y2 … otherwise
+    xn+1 ∈ (y1, y2) … z = xn+1"). No `simp`/`omega` bypass of the case-split. -/
+theorem kampPrior_fChain_realize_from {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1))
+    (x : Fin (n + 1) → M.carrier)
+    (hmono : ∀ i j : Fin (n + 1), i < j → x i < x j)
+    (hF : ∀ i : Fin (n + 1), (bf.fChainFrom i).eval_at M atomMap (x i)) :
+    ∀ (d : Nat) (i : Fin (n + 1)) (_hd : i.val + d = n),
+      ∀ v : M.carrier, v ≤ x i →
+        (bf.fChainFrom i).eval_at M atomMap v →
+        ∃ w : Fin (d + 1) → M.carrier,
+          w ⟨0, by omega⟩ = v ∧
+          (∀ a b : Fin (d + 1), a < b → w a < w b) ∧
+          (∀ a : Fin (d + 1), w a ≤ x ⟨i.val + a.val, by omega⟩) ∧
+          (∀ a : Fin (d + 1),
+            (bf.pointTypes ⟨i.val + a.val, by omega⟩).eval_at M atomMap (w a)) ∧
+          (∀ a : Fin d, ∀ r : M.carrier,
+            w ⟨a.val, by omega⟩ < r → r < w ⟨a.val + 1, by omega⟩ →
+            (bf.segmentTypes ⟨i.val + a.val + 1, by omega⟩).eval_at M atomMap r) ∧
+          (∃ s : M.carrier, w ⟨d, by omega⟩ < s ∧
+            ∀ r : M.carrier, w ⟨d, by omega⟩ < r → r < s →
+            (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) := by
+  intro d
+  induction d with
+  | zero =>
+    -- Base: the last link — the landed k=1 template shape (`fChainFrom_base`).
+    intro i hd v hvx hFv
+    have hin : i.val = n := by omega
+    have hfi : bf.fChainFrom i = bf.fChainFrom ⟨n, by omega⟩ := by
+      congr 1; ext; exact hin
+    rw [hfi, BracketFormula.fChainFrom_base M atomMap bf v] at hFv
+    obtain ⟨halpha, s, hvs, hseg⟩ := hFv
+    refine ⟨fun _ => v, rfl, ?_, ?_, ?_, ?_, ⟨s, hvs, hseg⟩⟩
+    · intro a b hab
+      exact absurd (Fin.lt_def.mp hab) (by omega)
+    · intro a
+      have hidx : (⟨i.val + a.val, by omega⟩ : Fin (n + 1)) = i := by
+        ext; show i.val + a.val = i.val; omega
+      rw [hidx]; exact hvx
+    · intro a
+      have hidx : (⟨i.val + a.val, by omega⟩ : Fin (n + 1)) = ⟨n, by omega⟩ := by
+        ext; show i.val + a.val = n; omega
+      rw [hidx]; exact halpha
+    · intro a; exact a.elim0
+  | succ d' ih =>
+    -- Step: one Until-driven chain-link (`fChainFrom_step`) + the two-way case-split.
+    intro i hd v hvx hFv
+    have hin : i.val < n := by omega
+    rw [BracketFormula.fChainFrom_step M atomMap bf i hin v] at hFv
+    obtain ⟨halpha, y, hvy, hFy, hseg⟩ := hFv
+    have hii1 : i < (⟨i.val + 1, by omega⟩ : Fin (n + 1)) := by
+      rw [Fin.lt_def]; show i.val < i.val + 1; omega
+    have hxi1 : x i < x ⟨i.val + 1, by omega⟩ := hmono i ⟨i.val + 1, by omega⟩ hii1
+    have hd1 : (⟨i.val + 1, by omega⟩ : Fin (n + 1)).val + d' = n := by
+      show i.val + 1 + d' = n; omega
+    -- Rabinovich's two-way `min`/case-split against the next bound point `x (i+1)`.
+    rcases le_or_gt y (x ⟨i.val + 1, by omega⟩) with hle | hgt
+    · -- Branch 1: `y ≤ x_{i+1}` — the required next anchor is the Until-witness `y` itself.
+      obtain ⟨w', hw'0, hw'mono, hw'le, hw'pt, hw'seg, hw'fin⟩ :=
+        ih ⟨i.val + 1, by omega⟩ hd1 y hle hFy
+      have hv0 : v < w' ⟨0, by omega⟩ := by rw [hw'0]; exact hvy
+      have hseg0 : ∀ r : M.carrier, v < r → r < w' ⟨0, by omega⟩ →
+          (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r := by
+        intro r hr1 hr2
+        rw [hw'0] at hr2
+        exact hseg r hr1 hr2
+      exact kampPrior_fChain_realize_cons M atomMap bf x i hd v w'
+        hv0 hw'mono hw'le hw'pt hseg0 hw'seg hw'fin hvx halpha
+    · -- Branch 2: `x_{i+1} < y` — the bound point itself is the next anchor; the segment
+      -- type transfers to `(v, x_{i+1})` by restriction (`x_{i+1} ∈ (v, y)`).
+      obtain ⟨w', hw'0, hw'mono, hw'le, hw'pt, hw'seg, hw'fin⟩ :=
+        ih ⟨i.val + 1, by omega⟩ hd1 (x ⟨i.val + 1, by omega⟩) le_rfl
+          (hF ⟨i.val + 1, by omega⟩)
+      have hv0 : v < w' ⟨0, by omega⟩ := by
+        rw [hw'0]; exact lt_of_le_of_lt hvx hxi1
+      have hseg0 : ∀ r : M.carrier, v < r → r < w' ⟨0, by omega⟩ →
+          (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r := by
+        intro r hr1 hr2
+        rw [hw'0] at hr2
+        exact hseg r hr1 (hr2.trans hgt)
+      exact kampPrior_fChain_realize_cons M atomMap bf x i hd v w'
+        hv0 hw'mono hw'le hw'pt hseg0 hw'seg hw'fin hvx halpha
+
+/-- **Cor 5.4(1) ⇐, the within-bracket chain realizer** (Rabinovich 2014, §5, the pivotal
+    observation's hard direction). From the F-chain firing at an increasing family of bound
+    points `x 0 < … < x n` (each satisfying its `fChainFrom`), an actual witness family `w`
+    is produced with `w 0 = x 0`, every `w i` dominated by its bound (`w i ≤ x i`), the point
+    types at the witnesses, the interior segment types on consecutive gaps, and the final
+    Until residue beyond `w n`. Instantiates the suffix engine at `i = 0`, `d = n`. -/
+theorem kampPrior_fChain_realize {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1))
+    (x : Fin (n + 1) → M.carrier)
+    (hmono : ∀ i j : Fin (n + 1), i < j → x i < x j)
+    (hF : ∀ i : Fin (n + 1), (bf.fChainFrom i).eval_at M atomMap (x i)) :
+    ∃ w : Fin (n + 1) → M.carrier,
+      w ⟨0, by omega⟩ = x ⟨0, by omega⟩ ∧
+      (∀ i j : Fin (n + 1), i < j → w i < w j) ∧
+      (∀ i : Fin (n + 1), w i ≤ x i) ∧
+      (∀ i : Fin (n + 1), (bf.pointTypes i).eval_at M atomMap (w i)) ∧
+      (∀ i : Fin n, ∀ r : M.carrier,
+        w ⟨i.val, by omega⟩ < r → r < w ⟨i.val + 1, by omega⟩ →
+        (bf.segmentTypes ⟨i.val + 1, by omega⟩).eval_at M atomMap r) ∧
+      (∃ s : M.carrier, w ⟨n, by omega⟩ < s ∧
+        ∀ r : M.carrier, w ⟨n, by omega⟩ < r → r < s →
+        (bf.segmentTypes ⟨n + 1, by omega⟩).eval_at M atomMap r) := by
+  obtain ⟨w, hw0, hmonoW, hle, hpt, hseg, hfin⟩ :=
+    kampPrior_fChain_realize_from M atomMap bf x hmono hF n ⟨0, by omega⟩
+      (by show 0 + n = n; omega) (x ⟨0, by omega⟩) le_rfl (hF ⟨0, by omega⟩)
+  refine ⟨w, hw0, hmonoW, ?_, ?_, ?_, hfin⟩
+  · intro i
+    have hidx : (⟨(⟨0, by omega⟩ : Fin (n + 1)).val + i.val,
+        by show 0 + i.val < n + 1; omega⟩ : Fin (n + 1)) = i := by
+      ext; simp
+    have := hle i
+    rwa [hidx] at this
+  · intro i
+    have hidx : (⟨(⟨0, by omega⟩ : Fin (n + 1)).val + i.val,
+        by show 0 + i.val < n + 1; omega⟩ : Fin (n + 1)) = i := by
+      ext; simp
+    have := hpt i
+    rwa [hidx] at this
+  · intro i r hr1 hr2
+    have hidx : (⟨(⟨0, by omega⟩ : Fin (n + 1)).val + i.val + 1,
+        by show 0 + i.val + 1 < n + 1 + 1; omega⟩ : Fin (n + 1 + 1))
+        = ⟨i.val + 1, by omega⟩ := by
+      ext; simp
+    have := hseg i r hr1 hr2
+    rwa [hidx] at this
+
+/-- **Cor 5.4(1) ⇐, partial-bracket form**: the chain realizer plus the second two-way
+    `min`/case-split at the right end (`z := s` if the final Until-witness `s ≤ z1`, else
+    `z := z1` by segment restriction) produces an actual within-bracket witness
+    `z ∈ (z0, z1]` with `bf.holds z0 z` — the bounded resolution of the F-chain
+    Until-unboundedness obstruction recorded at EANegation.lean:1249. -/
+theorem kampPrior_fChain_realize_bracket {sig : MonadicSignature} {n : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (bf : BracketFormula (n + 1)) (z0 z1 : M.carrier)
+    (x : Fin (n + 1) → M.carrier)
+    (hmono : ∀ i j : Fin (n + 1), i < j → x i < x j)
+    (hlow : ∀ i : Fin (n + 1), z0 < x i)
+    (hhigh : ∀ i : Fin (n + 1), x i < z1)
+    (hF : ∀ i : Fin (n + 1), (bf.fChainFrom i).eval_at M atomMap (x i))
+    (hseg0 : ∀ r : M.carrier, z0 < r → r < x ⟨0, by omega⟩ →
+      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap r) :
+    ∃ z : M.carrier, z0 < z ∧ z ≤ z1 ∧ bf.holds M atomMap z0 z := by
+  obtain ⟨w, hw0, hmonoW, hle, hpt, hseg, s, hws, hsegfin⟩ :=
+    kampPrior_fChain_realize M atomMap bf x hmono hF
+  -- shared facts about the witness family
+  have hz0w : ∀ i : Fin (n + 1), z0 < w i := by
+    intro i
+    have h0 : z0 < w ⟨0, by omega⟩ := by rw [hw0]; exact hlow ⟨0, by omega⟩
+    rcases Nat.eq_zero_or_pos i.val with hi | hi
+    · have : i = ⟨0, by omega⟩ := by ext; omega
+      rw [this]; exact h0
+    · exact h0.trans (hmonoW ⟨0, by omega⟩ i (by rw [Fin.lt_def]; simpa using hi))
+  have hwn : ∀ i : Fin (n + 1), w i ≤ w ⟨n, by omega⟩ := by
+    intro i
+    rcases Nat.lt_or_ge i.val n with hi | hi
+    · exact le_of_lt (hmonoW i ⟨n, by omega⟩ (by rw [Fin.lt_def]; simpa using hi))
+    · have : i = ⟨n, by omega⟩ := by ext; simp; omega
+      rw [this]
+  have hseg0w : ∀ r : M.carrier, z0 < r → r < w ⟨0, by omega⟩ →
+      (bf.segmentTypes ⟨0, by omega⟩).eval_at M atomMap r := by
+    intro r hr1 hr2
+    rw [hw0] at hr2
+    exact hseg0 r hr1 hr2
+  -- the second two-way `min`/case-split: `z := s` vs `z := z1`
+  rcases le_or_gt s z1 with hsle | hsgt
+  · -- Branch 1: the final Until-witness `s` is inside the bracket — `z := s`.
+    refine ⟨s, (hz0w ⟨n, by omega⟩).trans hws, hsle, ?_⟩
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+    exact ⟨w, hmonoW, fun i => ⟨hz0w i, lt_of_le_of_lt (hwn i) hws⟩, hpt, hseg0w, hseg,
+      hsegfin⟩
+  · -- Branch 2: `z1 < s` — `z := z1`; the final segment restricts from `(w n, s)`.
+    refine ⟨z1, (hlow ⟨0, by omega⟩).trans (hhigh ⟨0, by omega⟩), le_rfl, ?_⟩
+    simp only [BracketFormula.holds, BracketFormula.toIntervalPattern, IntervalPattern.holds]
+    exact ⟨w, hmonoW, fun i => ⟨hz0w i, lt_of_le_of_lt (hle i) (hhigh i)⟩, hpt, hseg0w, hseg,
+      fun r hr1 hr2 => hsegfin r hr1 (hr2.trans hsgt)⟩
+
+/-! ### The σ-level fold assembly at the exterior anchor (mirror of the converter body) -/
+
+/-- **Genuine realizer assembly** (Future): at an anchor `x1` where every bit-true fiber of
+    `σ` is realized (`hfwd`) and every on-fiber realization is saturated back to a true bit
+    (`hbwd`), the arity-4 realizer `hσ` folds up via `nf_eval_nfk_iff_efold` — atom layer from
+    a designated bit-true fiber sub (`kvE_futAtom_of_bundle`), off-fiber falsity from
+    admissibility. POSITIVE mirror of the `kvE_extNegFut_complete` body
+    (ExteriorConverterK.lean:158–188); exact inverse of `kvE_futBundle_of_realizer`. -/
+theorem kampPrior_futRealizer_assemble {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig (k + 1) 4) (x1 w x t : M.carrier)
+    (hadm : kvE_futAdmissible σ = true)
+    (s0 : NormalForm sig k 5) (hbit0 : σ.2 s0 = true) (hd0 : nfk_dropFresh s0 = σ.1)
+    (hfwd : ∀ s : NormalForm sig k 5, σ.2 s = true →
+      ∃ v : M.carrier, nf_eval_nf M k 5
+        (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hbwd : ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+      (∃ v : M.carrier, nf_eval_nf M k 5
+        (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+      σ.2 s = true) :
+    nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  obtain ⟨v0, hv0⟩ := hfwd s0 hbit0
+  have hA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 :=
+    kvE_futAtom_of_bundle M σ v0 x1 w x t s0 hd0 hv0
+  have hfib : ∀ sub : NormalForm sig k 5, nfk_dropFresh sub = σ.1 →
+      ((∃ y : M.carrier, nf_eval_nf M k 5
+        (Fin.cons y (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) sub) ↔
+        σ.2 sub = true) :=
+    fun sub hd => ⟨fun hex => hbwd sub hd hex, fun hbit => hfwd sub hbit⟩
+  exact (nf_eval_nfk_iff_efold M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ).mpr
+    ⟨⟨hA, hfib⟩, fun sub hne => kvE_futAdmissible_offFiber σ hadm sub hne⟩
+
+/-- **Genuine realizer assembly** (Past): the mirror of `kampPrior_futRealizer_assemble` at a
+    left exterior anchor `x1 < x`, via `kvE_pastAtom_of_bundle`/`kvE_pastAdmissible_offFiber`.
+    Exact inverse of `kvE_pastBundle_of_realizer`. -/
+theorem kampPrior_pastRealizer_assemble {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig (k + 1) 4) (x1 w x t : M.carrier)
+    (hadm : kvE_pastAdmissible σ = true)
+    (s0 : NormalForm sig k 5) (hbit0 : σ.2 s0 = true) (hd0 : nfk_dropFresh s0 = σ.1)
+    (hfwd : ∀ s : NormalForm sig k 5, σ.2 s = true →
+      ∃ v : M.carrier, nf_eval_nf M k 5
+        (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hbwd : ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+      (∃ v : M.carrier, nf_eval_nf M k 5
+        (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+      σ.2 s = true) :
+    nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  obtain ⟨v0, hv0⟩ := hfwd s0 hbit0
+  have hA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 :=
+    kvE_pastAtom_of_bundle M σ v0 x1 w x t s0 hd0 hv0
+  have hfib : ∀ sub : NormalForm sig k 5, nfk_dropFresh sub = σ.1 →
+      ((∃ y : M.carrier, nf_eval_nf M k 5
+        (Fin.cons y (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) sub) ↔
+        σ.2 sub = true) :=
+    fun sub hd => ⟨fun hex => hbwd sub hd hex, fun hbit => hfwd sub hbit⟩
+  exact (nf_eval_nfk_iff_efold M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ).mpr
+    ⟨⟨hA, hfib⟩, fun sub hne => kvE_pastAdmissible_offFiber σ hadm sub hne⟩
+
+/-! ### The realizer drivers: destructor-selected anchor + `hσ` from the positive form -/
+
+/-- **The Future realizer driver** (task 358 Phase 2): the POSITIVE-existence reading of the
+    `kvE_extNegFut_complete` body. From the positive local-existence form `kvE_futPos P σ`
+    firing at `t`, the landed Cor 5.4 chain destructor (`kvE_futChainDestructG`) reconstructs
+    the SELECTED exterior anchor `x1 > t` with the endpoint description, and the genuine
+    realizer `hσ` folds up at that anchor via `kampPrior_futRealizer_assemble` (the at-anchor
+    transfer entering through `hreal`/`hsat`, the shapes `kvE_futBundle_of_realizer` proves
+    sound). Emits admissibility, the anchor, the endpoint description, and `hσ`. -/
+theorem kampPrior_futRealizer_of_pos {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (σ : NormalForm sig (k + 1) 4)
+    (w x t : M.carrier)
+    (hreal : ∀ x1 : M.carrier, t < x1 → ∀ s : NormalForm sig k 5, σ.2 s = true →
+      ∃ v : M.carrier, nf_eval_nf M k 5
+        (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hsat : ∀ x1 : M.carrier, t < x1 →
+      temporal_truth M atomMap x1 (kvE_futEnd P σ) →
+      ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+        (∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+        σ.2 s = true)
+    (hpos : temporal_truth M atomMap t (kvE_futPos P σ)) :
+    ∃ x1 : M.carrier, t < x1 ∧
+      temporal_truth M atomMap x1 (kvE_futEnd P σ) ∧
+      nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  by_cases hadm : kvE_futAdmissible σ = true
+  · -- admissible: extract a chain and reconstruct the realizer at the selected anchor
+    rw [kvE_futPos, if_pos hadm, formula_disjList_iff] at hpos
+    obtain ⟨φ, hφmem, hφ⟩ := hpos
+    obtain ⟨l, hlmem, rfl⟩ := List.mem_map.mp hφmem
+    have hlperm : l.Perm (kvE_fiberZoneList σ kvE_futGapZone) :=
+      List.mem_permutations.mp hlmem
+    -- item ⇒ gap guard: each chain item is a gap fiber sub, so it enters the gap disjunction
+    have himp : ∀ a ∈ l, ∀ r : M.carrier,
+        temporal_truth M atomMap r (kvE_futItemShift P a) →
+        temporal_truth M atomMap r (kvE_futGapD P σ) := by
+      intro a ha r hr
+      have hamem : a ∈ kvE_fiberZoneList σ kvE_futGapZone := hlperm.subset ha
+      rw [kvE_futGapD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ r]
+      rw [kvE_futItemShift_correct P a M h_UZ h_SZ r] at hr
+      obtain ⟨env, hev⟩ := hr
+      exact ⟨a, hamem, env, hev⟩
+    -- destruct the Cor 5.4 chain: the SELECTED exterior anchor
+    obtain ⟨x1, htx1, hend, _hgap, _hocc⟩ :=
+      kvE_futChainDestructG M atomMap (kvE_futItemShift P) (kvE_futEnd P σ)
+        (kvE_futGapD P σ) l t himp hφ
+    -- a reached endpoint forces the self-zone content nonempty ⇒ a bit-true sub exists
+    have hend0 := hend
+    rw [kvE_futEnd, formula_conjList_iff] at hend0
+    have hself := hend0 (kvE_fiberPosOnShift P (kvE_fiberZoneList σ kvE_futSelfZone)) (by simp)
+    rw [kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ x1] at hself
+    obtain ⟨s0, hs0mem, _env0, _hs0ev⟩ := hself
+    have hbit0 : σ.2 s0 = true := ((kvE_fiberZoneList_mem σ kvE_futSelfZone s0).mp hs0mem).1
+    have hd0 : nfk_dropFresh s0 = σ.1 := kvE_futAdmissible_onFiber σ hadm s0 hbit0
+    exact ⟨x1, htx1, hend,
+      kampPrior_futRealizer_assemble M σ x1 w x t hadm s0 hbit0 hd0
+        (fun s hs => hreal x1 htx1 s hs)
+        (fun s hd hex => hsat x1 htx1 hend s hd hex)⟩
+  · rw [kvE_futPos, if_neg hadm] at hpos
+    exact hpos.elim
+
+/-- **The Past realizer driver** (task 358 Phase 2): mirror of `kampPrior_futRealizer_of_pos`
+    at the left anchor — `kvE_pastPos P σ` firing at `x` yields the destructor-selected
+    exterior anchor `x1 < x`, the endpoint description, and the genuine realizer `hσ`. -/
+theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (σ : NormalForm sig (k + 1) 4)
+    (w x t : M.carrier)
+    (hreal : ∀ x1 : M.carrier, x1 < x → ∀ s : NormalForm sig k 5, σ.2 s = true →
+      ∃ v : M.carrier, nf_eval_nf M k 5
+        (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hsat : ∀ x1 : M.carrier, x1 < x →
+      temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
+      ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+        (∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+        σ.2 s = true)
+    (hpos : temporal_truth M atomMap x (kvE_pastPos P σ)) :
+    ∃ x1 : M.carrier, x1 < x ∧
+      temporal_truth M atomMap x1 (kvE_pastEnd P σ) ∧
+      nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  by_cases hadm : kvE_pastAdmissible σ = true
+  · rw [kvE_pastPos, if_pos hadm, formula_disjList_iff] at hpos
+    obtain ⟨φ, hφmem, hφ⟩ := hpos
+    obtain ⟨l, hlmem, rfl⟩ := List.mem_map.mp hφmem
+    have hlperm : l.Perm (kvE_fiberZoneList σ kvE_pastGapZone) :=
+      List.mem_permutations.mp hlmem
+    have himp : ∀ a ∈ l, ∀ r : M.carrier,
+        temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a)) →
+        temporal_truth M atomMap r (kvE_pastGapD P σ) := by
+      intro a ha r hr
+      have hamem : a ∈ kvE_fiberZoneList σ kvE_pastGapZone := hlperm.subset ha
+      rw [kvE_pastGapD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ r]
+      rw [P.correct 4 (renameNF rot5Fwd rot5Bwd a) M h_UZ h_SZ r] at hr
+      obtain ⟨env, hev⟩ := hr
+      exact ⟨a, hamem, env, (kvE_anchorBridge M env r a).mp hev⟩
+    obtain ⟨x1, hx1x, hend, _hgap, _hocc⟩ :=
+      kvE_pastChainDestructG M atomMap (fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s))
+        (kvE_pastEnd P σ) (kvE_pastGapD P σ) l x himp hφ
+    have hend0 := hend
+    rw [kvE_pastEnd, formula_conjList_iff] at hend0
+    have hself := hend0 (kvE_fiberPosOnShift P (kvE_fiberZoneList σ kvE_pastSelfZone)) (by simp)
+    rw [kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ x1] at hself
+    obtain ⟨s0, hs0mem, _env0, _hs0ev⟩ := hself
+    have hbit0 : σ.2 s0 = true := ((kvE_fiberZoneList_mem σ kvE_pastSelfZone s0).mp hs0mem).1
+    have hd0 : nfk_dropFresh s0 = σ.1 := kvE_pastAdmissible_onFiber σ hadm s0 hbit0
+    exact ⟨x1, hx1x, hend,
+      kampPrior_pastRealizer_assemble M σ x1 w x t hadm s0 hbit0 hd0
+        (fun s hs => hreal x1 hx1x s hs)
+        (fun s hd hex => hsat x1 hx1x hend s hd hex)⟩
+  · rw [kvE_pastPos, if_neg hadm] at hpos
+    exact hpos.elim
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
