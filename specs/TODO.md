@@ -110,7 +110,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-349 [PLANNED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+349 [IMPLEMENTING] — Build the recursive navigated arity-3 endpoint primitive `endChar
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
@@ -327,7 +327,7 @@ Grounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_
 
 ### 349. Build recursive endchar navigated arity3 endpoint primitive
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 351, Task 352, Task 353, Task 354, Task 355, Task 356, Task 357

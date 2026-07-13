@@ -3,7 +3,7 @@
 - **Task**: 349 - Build the recursive navigated endpoint primitive as
   `endInterval : (k) → BracketEndCharCarrierV sig k` + its Prior-guarded correctness
   (`EndIntervalCorrectPrior` biconditional) on the enriched-segment bracket carrier (carrier 3)
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: ~4 hours (remaining open work; Phases 1-4 landed green under v7/v8, and the
   former Phases 5-7 construction scope has been DELIVERED by spawned tasks 355/356/357/360 —
   the residual is adoption, integration, and audit)
@@ -369,29 +369,38 @@ applicable) + `/spawn 349`, never fake green.
 - **Depends on:** 1-4 (preserved) + delivered 355/356/357/360.
 - **Files:** `.../NfMultiAnchorBridge/EndIntervalConsumerK.lean` (additive tail only).
 
-### Phase 6: Re-point the `Base.lean` doc-hook + downstream citability [NOT STARTED]
+### Phase 6: Re-point the `Base.lean` doc-hook + downstream citability [COMPLETED]
 
 - **Goal:** Retire the stale "NOT YET BUILT" documentation that task 349's own mission statement
   points at, so downstream consumers cite the delivered names.
 - **Tasks:**
-  - [ ] Update the `Base.lean` :958-969 doc block ("The remaining Phase-8 deliverable, the
+  - [x] Update the `Base.lean` :958-969 doc block ("The remaining Phase-8 deliverable, the
         *recursive* primitive `endChar` … is NOT built here") — doc-comment-only edit: record
         that the recursive primitive is DELIVERED as `endIntervalPrior` +
         `endInterval_correct`/`endInterval_step_correct`
         (`EndIntervalConsumerK.lean`), via the consumed chain
         `bracketEndChar_kv_correct_prior` (355) → `bracketEndChar_kvExt_correct_prior` (356) →
-        consumer (357), under the slice-keyed exterior interface (360).
-  - [ ] Record the settled carrier mapping at the `EndCharCarrier` abbrev (Base.lean:1007
+        consumer (357), under the slice-keyed exterior interface (360). *(deviation: altered —
+        also re-tensed the adjacent :950 "Phase 7 … is not yet built" sentence in the same doc
+        block to past tense with a pointer to the delivery, so no stale not-built claim about
+        the 349 deliverable remains; and dropped the old text's `nf_char3_deeper_split` mention
+        so the rewritten block adds zero occurrences of the FORBIDDEN name)*
+  - [x] Record the settled carrier mapping at the `EndCharCarrier` abbrev (Base.lean:1007
         region, doc-comment): the original `NormalForm sig k 3 → TemporalPred` interface was
         superseded by `BracketEndCharCarrierV` (carrier 3, VVecEA2-valued, two fixed anchors
         {x,t}) — the report-09 adjudication — and `endChar0` remains the k=0 atom-layer
         ingredient consumed via `bracketEndChar_k0`.
-  - [ ] Name-level citability grep for task 309 Phase 18/19 / task 350: confirm
+  - [x] Name-level citability grep for task 309 Phase 18/19 / task 350: confirm
         `endInterval_correct`, `endInterval_step_correct`, `EndIntervalCorrectPrior`,
         `endIntervalPrior` resolve from the root build (aggregator already threads
-        `EndIntervalConsumerK` — NfMultiAnchorBridge.lean:56).
-  - [ ] Scoped `lake build` of Base (+ anything importing the edited region) GREEN; `git diff`
-        on Base.lean reviewed comment-only.
+        `EndIntervalConsumerK` — NfMultiAnchorBridge.lean:56). *(verified: declarations at
+        EndIntervalConsumerK.lean:220/:185/:97/:70; aggregator import at
+        NfMultiAnchorBridge.lean:56; aggregator module builds green)*
+  - [x] Scoped `lake build` of Base (+ anything importing the edited region) GREEN; `git diff`
+        on Base.lean reviewed comment-only. *(verified: `lake build
+        Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge` GREEN, 1033 jobs; diff
+        touches zero declaration/import lines; new `nf_char3_deeper_split` occurrences in
+        added lines = 0; `hbr*` grep clean)*
 - **Bounded-unit stop condition:** doc edits land + build green, OR `[BLOCKED]` (doc edits
   cannot semantically block; any build breakage means a non-comment edit slipped in — revert
   and redo).

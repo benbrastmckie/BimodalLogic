@@ -947,8 +947,9 @@ read predicates **locally at `w`** or at points **reached by temporal navigation
 reference the arbitrary carrier anchors `a, b : M.carrier` as free values. Pinning `a = x` and `b = t`
 is exactly what the Rabinovich `β_i` **non-trivial segment** does (report 02 §4.2, G3): the segment
 riding the outer `bracketBuildLeft`/`bracketBuildRight` navigation reaches the anchors and fixes the
-order zone. That segment is the deliverable of **Phase 7** and is not yet built, so the standalone
-depth-0 navigated correctness cannot be closed within this phase's H8 budget.
+order zone. That segment was the deliverable of **Phase 7** and was not yet built at that dispatch
+(since DELIVERED — see the task-349 update below), so the standalone depth-0 navigated correctness
+could not be closed within that phase's H8 budget.
 
 Phase-6 landed `endChar0` fully defined (a genuine, non-vacuous `w`-locus atom characteristic — the
 part of the arity-3 atom layer a navigated-`w` `TemporalPred` CAN read locally), the `w`-locus
@@ -960,13 +961,38 @@ Phase-6 free-anchor form was provably FALSE (a closed navigated-`w` `TemporalPre
 arbitrary carrier anchors `a, b`; concrete counterexample in `endChar0_correct`'s docstring below). The
 faithful base case adds the anchor+order **residual** hypothesis `h_res` — the very data the enclosing
 bracket exteriors / `x < w < t` witness bound pin as `a = x`, `b = t` (report 02 §4.2, G3/G4) — under
-which `endChar0` discharges the full depth-0 arity-3 atom layer **sorry-free**. The remaining Phase-8
-deliverable, the *recursive* primitive `endChar : NormalForm sig k 3 → TemporalPred` + `endChar_correct`
-(recursion on `k`), is NOT built here: the `nf_eval_nf` quant layer at depth `k+1` structurally needs
-arity-4 sub-evaluations `∃ x', nf_eval_nf M k 4 (Fin.cons x' (zoneEnv3 w a b)) sub`, which the fixed
-arity-3 `EndCharCarrier` interface cannot recursively consume without the brick-witness-collapse core
-(report 02 §4.1/§4.2, ~300-500 lines; anchor-management, NOT `nf_char3_deeper_split`). See the
-orchestrator handoff `follow_up_task` for that residual core.
+which `endChar0` discharges the full depth-0 arity-3 atom layer **sorry-free**.
+
+**Task-349 update: the recursive primitive is DELIVERED.** The *recursive* endpoint primitive this
+hook previously recorded as "NOT built here" now exists, realized as `endIntervalPrior` with the
+Prior-guarded, obligation-carrying correctness
+`endInterval_step_correct : ∀ k, EndIntervalCorrectPrior …` and the task-349 DoD-named alias
+`endInterval_correct` (all in `EndIntervalConsumerK.lean`). It is assembled by CONSUMING the
+delivered chain:
+- `bracketEndChar_kv_correct_prior` — general-`k` interior-gate correctness over the k-cased
+  motive `InteriorGateAllK` (`InteriorGateGeneralK.lean`, task 355);
+- `bracketEndChar_kvExt_correct_prior` — the exterior-composed gate, `hexclExt` discharged
+  internally via Rabinovich Lemma-7.6 adjacent-bracket composition (`enrichEndpoints`,
+  `ExteriorGateAssembleK.lean`, task 356);
+- the consumer reshape `endIntervalStepPrior` / `endIntervalPrior` / `EndIntervalCorrectPrior`
+  (`EndIntervalConsumerK.lean`, task 357);
+
+all under the faithful slice-keyed exterior interface `hslice{Past,Fut}` / `hexclSlice{Past,Fut}`
+(task 360). The depth-`k+1` arity-4 sub-evaluation obstruction this hook originally recorded
+(the `nf_eval_nf` quant layer at depth `k+1` needs `∃ x', nf_eval_nf M k 4
+(Fin.cons x' (zoneEnv3 w a b)) sub`, which a fixed arity-3 `EndCharCarrier` recursion cannot
+consume) was resolved NOT by recursing on `EndCharCarrier` but by the enriched-segment bracket
+carrier `BracketEndCharCarrierV` — see the `EndCharCarrier` doc-comment below for the settled
+carrier mapping. Remaining obligations (`P`, `hcharK`, `h_UZ`, `h_SZ`, `hreal`, `hexcl`, and the
+slice pair) are threaded outward as a documented interface, discharged downstream
+(task 358 / task 309 Phase 14) — never debt of this module.
+
+**Downstream citability (task 309 Phases 18/19, task 350)**: cite the deliverable BY NAME —
+`endInterval_correct` (DoD alias), `endInterval_step_correct`, `EndIntervalCorrectPrior`,
+`endIntervalPrior` — all reachable from the root build via the `NfMultiAnchorBridge` aggregator,
+which imports `EndIntervalConsumerK`. The `CarrierK1V.lean` pair `endIntervalStep` /
+`EndIntervalCorrect` is superseded dead code (import-cycle finding, task 357 Phase 1); do not
+cite it.
 
 ### Route audit (Postmortem forbidden-route guards)
 - **G1** — no arity-1 collapse: `endChar0` reads the honest arity-3 atom layer's `w`-locus; the full
@@ -999,11 +1025,17 @@ noncomputable def endChar0 {sig : MonadicSignature}
   ⟨nf_depth0_char_formula atomMap h_surj (nf3_locus0 qnf)⟩
 
 /-- **Interface signature for the recursive navigated endpoint primitive** (task 309 Phase 6, report
-02 §1.4). The recursion carrier Phase 8 assembles by recursion on `k`: the closed navigated arity-3
-endpoint characteristic, base `endChar0` (`k = 0`, this phase), step = navigable-brick flatten +
-Phase-7 non-trivial segment for the interior + Phase-6/8 endpoints for the exteriors, arity capped at
-3 (G4). Fixed here so Phases 7-9 dispatch against a stable type. `endChar0` inhabits `EndCharCarrier
-sig 0`. -/
+02 §1.4) — **superseded as the recursion carrier (task 349, report-09 adjudication)**. The original
+plan recursed on this fixed single-`TemporalPred` interface (`NormalForm sig k 3 → TemporalPred`):
+base `endChar0` (`k = 0`), step = navigable-brick flatten + Phase-7 non-trivial segment for the
+interior + Phase-6/8 endpoints for the exteriors, arity capped at 3 (G4).
+
+**Settled carrier mapping**: the delivered recursion carrier is `BracketEndCharCarrierV`
+(carrier 3 — enriched-segment bracket, `VVecEA2`-valued, two fixed anchors `{x, t}`;
+`CarrierK1V.lean`), on which the delivered `endIntervalPrior` stack recurses (see the task-349
+update above). `endChar0` remains the `k = 0` atom-layer ingredient, consumed via
+`bracketEndChar_k0` (`CarrierK1V.lean`). `endChar0` inhabits `EndCharCarrier sig 0`; this abbrev
+is retained for that base-layer typing role only — do NOT build new recursion on it. -/
 abbrev EndCharCarrier (sig : MonadicSignature) (k : Nat) : Type :=
   NormalForm sig k 3 → TemporalPred
 
