@@ -1,7 +1,7 @@
 # Implementation Plan: Task #356 — General-k `hexclExt` Exterior-Adjacency Discharge
 
 - **Task**: 356 - Deliver the general-k `hexclExt` exterior-adjacency discharge lemma (Rabinovich 2014 Lemma 7.6)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: Tasks 349/351/352/354 (per-side brackets, landed), Task 355 (interior gate, landed). All composition inputs sorry-free.
 - **Research Inputs**: specs/356_discharge_depthk_hexclext_exterior_adjacency/reports/01_hexclext-discharge-shape-and-path.md

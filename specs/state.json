@@ -2084,7 +2084,7 @@
     {
       "project_number": 356,
       "project_name": "discharge_depthk_hexclext_exterior_adjacency",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Deliver the general-k hexclExt exterior-adjacency discharge lemma (e.g. bracketEndChar_kv_hexclExt_discharge) via Rabinovich 2014 Lemma 7.6 (adjacency composition (∃z1)^{<z2}_{>z0}(φ1∧φ2) across a shared endpoint z1; ~/Projects/Literature/sources/rabinovich_2014/, chunk_0021 Def 7.5 + Lemma 7.6). This provides the hexclExt obligation that task 355 interior-gate correctness bracketEndChar_kv_correct_prior (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:1288) carries outward as an unmarked obligation: informally \"an unmarked depth-k arity-4 sub is realized at no strictly-exterior x1\". This is EXTERIOR-BRACKET-LAYER work, a sibling to the delivered exterior tasks 348/351/352/354 (NOT interior-gate work). Feeds the KampPrior recursion at KampPrior.lean:351 (currently an open general-k sorry over the k=2 carrier bracketEndChar_kvE2). SCOPE NOTE: unlike task 355, this task IS permitted to edit KampPrior.lean and the exterior-bracket-layer files it owns; the byte-frozen constraint that bound task 355 was a task-355-local guard. Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q1 confirms hexclExt = Lemma 7.6 adjacency, and that (z0,z1)-forward-EA formulas are not closed under negation so the exterior residue is genuinely out-of-class for one bracket), and the k=2 exterior precedent OuterGate.lean bracketEndChar_kvE2_sound_two_prior_frag (the hexclExt binder is admitted there as a task-348 hand-off). Definition of done: the general-k hexclExt discharge lemma green, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; consumable by task 357 (consumer reshape) and by KampPrior.lean:351. If a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 escalation rule rather than landing a sorry or vacuous definition.",
@@ -2092,8 +2092,25 @@
       "parent_task": 349,
       "dependencies": [],
       "created": "2026-07-13T04:04:10Z",
-      "last_updated": "2026-07-13T04:04:10Z",
-      "artifacts": []
+      "last_updated": "2026-07-13T04:43:31Z",
+      "artifacts": [
+        {
+          "path": "specs/356_discharge_depthk_hexclext_exterior_adjacency/reports/01_hexclext-discharge-shape-and-path.md",
+          "type": "report",
+          "summary": "general-k hexclExt exterior-adjacency discharge shape and transcription path"
+        },
+        {
+          "path": "specs/356_discharge_depthk_hexclext_exterior_adjacency/plans/01_hexclext-discharge-exterior-gate.md",
+          "type": "plan",
+          "summary": "5-phase hexclExt discharge exterior-gate plan"
+        },
+        {
+          "path": "specs/356_discharge_depthk_hexclext_exterior_adjacency/summaries/01_hexclext-discharge-exterior-gate-summary.md",
+          "type": "summary",
+          "summary": "general-k hexclExt discharge delivered green (with 4 threaded exterior-bracket obligations for task 357)"
+        }
+      ],
+      "session_id": "sess_1783915595_73147e_356"
     },
     {
       "project_number": 357,
