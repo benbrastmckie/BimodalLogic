@@ -1135,6 +1135,73 @@ theorem bracketEndChar_kv_step_sound {sig : MonadicSignature} {k : Nat}
     intro hmark
     exact hreal w hxw hwt hptWe sub hmark
 
+/-! ## Phase 6 — step biconditional (assembly of Phases 4 + 5)
+
+The k→k+1 step biconditional `bracketEndChar_kv_step_correct` = ⟨sound (Phase 5), complete (Phase 4)⟩
+at symbolic `k+1`. It carries the UNION of the two halves' hypotheses: the completeness half's
+provider agreement `hcharK` + `semantic_prior_UZ`/`SZ` (⇐), and the soundness half's provider
+realization/exclusion obligations `hreal`/`hexcl`/`hexclExt` (⇒). This mirrors the k=2 assembly
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:359`), which likewise carries
+`P`/`h_UZ`/`h_SZ`/`hrealI`/`hrealB`/`hexcl`/`hexclExt`.
+
+**Shape note (the Phase 6 ∀-`k` open frontier).** This step biconditional is provider-OBLIGATION
+carrying. The frozen `InteriorGateTarget` (`BracketCarrierCorrectVPrior`, `PriorInterface.lean:60`) is
+the CLEAN, obligation-FREE biconditional. Per finding F1 (`bracketEndChar_kv_factors`,
+`CarrierKv.lean:422`) the clean biconditional is REFUTED at `k ≥ 2` (the lossy fold determines
+`.holds` but not the realizer), and even at `k = 2` only the obligation-carrying fragment
+`_correct_two_prior_frag` exists — never a clean `BracketCarrierCorrectVPrior` instance. Assembling
+the ∀-`k` `InteriorGateTarget` deliverable by `Nat.rec` would require DISCHARGING `hreal`/`hexcl`/
+`hexclExt` from `.holds` + `P` alone, which the F1 loss forbids (`hexclExt` is the exterior-arrangement
+/ Lemma 7.6 adjacency residue, the exterior-bracket layer — a task-355 NON-goal). This step
+biconditional is the green terminus of the interior-gate construction; the ∀-`k` clean close is the
+documented construction gap. -/
+
+set_option maxHeartbeats 1600000 in
+/-- **k→k+1 step biconditional** (task 355 Phase 6). `⟨sound (Phase 5), complete (Phase 4)⟩` at
+    symbolic `k+1`, carrying the union of both halves' hypotheses. Mirrors the k=2 assembly
+    `bracketEndChar_kvE2_correct_two_prior_frag`. Provider-obligation carrying (`hreal`/`hexcl`/
+    `hexclExt`), NOT the clean obligation-free `InteriorGateTarget` shape (F1-refuted at `k ≥ 2`; see
+    the section note). -/
+theorem bracketEndChar_kv_step_correct {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (P : ExistProviders sig atomMap k)
+    (hcharK : charF k = fun χ => P.existF 0 χ)
+    (qnf : NormalForm sig (k + 1) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kv atomMap h_surj charF (k + 1) qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  ⟨bracketEndChar_kv_step_sound atomMap h_surj charF qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl hexclExt,
+    bracketEndChar_kv_step_complete atomMap h_surj charF P hcharK qnf h_xy h_yt M h_UZ h_SZ x t⟩
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
