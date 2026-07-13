@@ -25,6 +25,18 @@ the clause family reads `σ.2` exclusively through the three exterior zone lists
 the paper's negation device (`¬F0 ∨ On`, chunk_0015:39-41: negation applies per SEGMENT bracket,
 never per full type).
 
+**Fiber re-key (task 360 Phase 3c, report 04; Rabinovich Def 7.13 single-disjunct segment
+discipline).** The bracket range is the FIBER-compatible admissible subs:
+`kvE_{fut,past}Admissible σ && decide (nfk_dropFresh σ = qnf.1)`. The Phase-3b/task-352 depth-k
+rewrite had silently WIDENED the range to all admissible σ, dropping the frozen k=2 template's
+base/fiber conjunct (`kvE2_futMarked`'s `decide (nf0_dropFresh σ.1 = qnf.1)`,
+ExteriorBracket.lean:127/140) — the ⇐-side honesty obligation for off-fiber σ was then FALSE
+(ℤ-doppelgänger countermodel, plan v2 Phase-5 BLOCKER record). Off-fiber σ are unrealizable at
+the pinned anchors (the fiber-forcing kernel `nf_eval_nf_atom_layer` → `nf_eval_nf0_cons_factor`
+→ `nf_eval_unique`, NfEFold.lean:634-641), so narrowing is lossless for every consumer; the
+gate's ⇒-side refutes off-fiber σ internally via that kernel under a gate-derived atom-layer pin
+(`ExteriorGateAssembleK.lean`). Off-fiber exclusion is NOT D1/D2's job.
+
 This is the depth-`k` analog of the frozen k=2 brackets `kvE2_extBracketFut`/`kvE2_extBracketPast`
 (ExteriorBracket.lean:364/377), one fold-layer deeper. (Phase-6 AUDIT flag: the frozen k=2
 brackets keep the per-σ bit keying inside a `kvE2_futMarked`-filtered range; whether the k=2
@@ -80,7 +92,7 @@ noncomputable def kvE_extBracketFut {sig : MonadicSignature}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
   formula_conjList
     (((Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter
-        (fun σ => kvE_futAdmissible σ)).map
+        (fun σ => kvE_futAdmissible σ && decide (nfk_dropFresh σ = qnf.1))).map
       fun σ =>
         if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ)
 
@@ -94,7 +106,7 @@ noncomputable def kvE_extBracketPast {sig : MonadicSignature}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
   formula_conjList
     (((Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter
-        (fun σ => kvE_pastAdmissible σ)).map
+        (fun σ => kvE_pastAdmissible σ && decide (nfk_dropFresh σ = qnf.1))).map
       fun σ =>
         if kvE_pastSliceMarked qnf σ = true then kvE_pastPos P σ else kvE_extNegPast P σ)
 
@@ -106,16 +118,20 @@ theorem kvE_extBracketFut_iff {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3) (t : M.carrier) :
     temporal_truth M atomMap t (kvE_extBracketFut P qnf) ↔
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+        nfk_dropFresh σ = qnf.1 →
         temporal_truth M atomMap t
           (if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ) := by
   rw [kvE_extBracketFut, formula_conjList_iff]
   constructor
-  · intro h σ hm
+  · intro h σ hadm hfib
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
-      ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hm⟩, rfl⟩)
+      ⟨Finset.mem_toList.mpr (Finset.mem_univ σ),
+       by rw [hadm, decide_eq_true hfib]; rfl⟩, rfl⟩)
   · intro h f hf
     obtain ⟨σ, hσmem, rfl⟩ := List.mem_map.mp hf
-    exact h σ (List.mem_filter.mp hσmem).2
+    have hm := (List.mem_filter.mp hσmem).2
+    rw [Bool.and_eq_true] at hm
+    exact h σ hm.1 (of_decide_eq_true hm.2)
 
 /-- Bracket-at-anchor unfolds to the per-σ clause conjunction (past side). Depth-`k` analog of
     `kvE2_extBracketPast_iff` (ExteriorBracket.lean:408). -/
@@ -125,16 +141,20 @@ theorem kvE_extBracketPast_iff {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3) (x : M.carrier) :
     temporal_truth M atomMap x (kvE_extBracketPast P qnf) ↔
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+        nfk_dropFresh σ = qnf.1 →
         temporal_truth M atomMap x
           (if kvE_pastSliceMarked qnf σ = true then kvE_pastPos P σ else kvE_extNegPast P σ) := by
   rw [kvE_extBracketPast, formula_conjList_iff]
   constructor
-  · intro h σ hm
+  · intro h σ hadm hfib
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
-      ⟨Finset.mem_toList.mpr (Finset.mem_univ σ), hm⟩, rfl⟩)
+      ⟨Finset.mem_toList.mpr (Finset.mem_univ σ),
+       by rw [hadm, decide_eq_true hfib]; rfl⟩, rfl⟩)
   · intro h f hf
     obtain ⟨σ, hσmem, rfl⟩ := List.mem_map.mp hf
-    exact h σ (List.mem_filter.mp hσmem).2
+    have hm := (List.mem_filter.mp hσmem).2
+    rw [Bool.and_eq_true] at hm
+    exact h σ hm.1 (of_decide_eq_true hm.2)
 
 /-! ## Composed per-side soundness (D1/D2, SLICE-LEVEL — task 360 Phase 3b) -/
 
@@ -153,14 +173,15 @@ theorem kvE_extBracketFut_sound {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (hcl : temporal_truth M atomMap t (kvE_extBracketFut P qnf)) :
-    ∀ σ : NormalForm sig (k + 1) 4, kvE_futSliceMarked qnf σ = false →
+    ∀ σ : NormalForm sig (k + 1) 4, nfk_dropFresh σ = qnf.1 →
+      kvE_futSliceMarked qnf σ = false →
       ∀ x1 : M.carrier, t < x1 →
         ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  intro σ hbit x1 htx1 hnf
+  intro σ hfib hbit x1 htx1 hnf
   have hadm : kvE_futAdmissible σ = true :=
     kvE_futRealizer_admissible M σ x1 w x t hxw hwt htx1 hnf
   have hneg : temporal_truth M atomMap t (kvE_extNegFut P σ) := by
-    have h := (kvE_extBracketFut_iff M P qnf t).mp hcl σ hadm
+    have h := (kvE_extBracketFut_iff M P qnf t).mp hcl σ hadm hfib
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegFut_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 htx1 hnf
 
@@ -174,14 +195,15 @@ theorem kvE_extBracketPast_sound {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (hcl : temporal_truth M atomMap x (kvE_extBracketPast P qnf)) :
-    ∀ σ : NormalForm sig (k + 1) 4, kvE_pastSliceMarked qnf σ = false →
+    ∀ σ : NormalForm sig (k + 1) 4, nfk_dropFresh σ = qnf.1 →
+      kvE_pastSliceMarked qnf σ = false →
       ∀ x1 : M.carrier, x1 < x →
         ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
-  intro σ hbit x1 hx1x hnf
+  intro σ hfib hbit x1 hx1x hnf
   have hadm : kvE_pastAdmissible σ = true :=
     kvE_pastRealizer_admissible M σ x1 w x t hxw hwt hx1x hnf
   have hneg : temporal_truth M atomMap x (kvE_extNegPast P σ) := by
-    have h := (kvE_extBracketPast_iff M P qnf x).mp hcl σ hadm
+    have h := (kvE_extBracketPast_iff M P qnf x).mp hcl σ hadm hfib
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegPast_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 hx1x hnf
 
@@ -210,11 +232,12 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature}
       ∃ x1 : M.carrier, t < x1 ∧
         nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+      nfk_dropFresh σ = qnf.1 →
       temporal_truth M atomMap t (kvE_futPos P σ) →
       ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
         kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
     temporal_truth M atomMap t (kvE_extBracketFut P qnf) := by
-  refine (kvE_extBracketFut_iff M P qnf t).mpr fun σ hadm => ?_
+  refine (kvE_extBracketFut_iff M P qnf t).mpr fun σ hadm hfib => ?_
   cases hbit : kvE_futSliceMarked qnf σ with
   | true =>
     rw [if_pos rfl]
@@ -226,7 +249,7 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature}
     rw [if_neg (by simp)]
     rw [kvE_extNegFut, temporal_truth_neg]
     intro hposT
-    obtain ⟨σ', hadm', hsl, hmark⟩ := hslice σ hadm hposT
+    obtain ⟨σ', hadm', hsl, hmark⟩ := hslice σ hadm hfib hposT
     have hcontra : kvE_futSliceMarked qnf σ = true :=
       (kvE_futSliceMarked_iff qnf σ).mpr ⟨σ', hadm', hsl, hmark⟩
     rw [hbit] at hcontra
@@ -246,11 +269,12 @@ theorem kvE_extBracketPast_complete {sig : MonadicSignature}
       ∃ x1 : M.carrier, x1 < x ∧
         nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+      nfk_dropFresh σ = qnf.1 →
       temporal_truth M atomMap x (kvE_pastPos P σ) →
       ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
         kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
     temporal_truth M atomMap x (kvE_extBracketPast P qnf) := by
-  refine (kvE_extBracketPast_iff M P qnf x).mpr fun σ hadm => ?_
+  refine (kvE_extBracketPast_iff M P qnf x).mpr fun σ hadm hfib => ?_
   cases hbit : kvE_pastSliceMarked qnf σ with
   | true =>
     rw [if_pos rfl]
@@ -265,7 +289,7 @@ theorem kvE_extBracketPast_complete {sig : MonadicSignature}
     rw [if_neg (by simp)]
     rw [kvE_extNegPast, temporal_truth_neg]
     intro hposT
-    obtain ⟨σ', hadm', hsl, hmark⟩ := hslice σ hadm hposT
+    obtain ⟨σ', hadm', hsl, hmark⟩ := hslice σ hadm hfib hposT
     have hcontra : kvE_pastSliceMarked qnf σ = true :=
       (kvE_pastSliceMarked_iff qnf σ).mpr ⟨σ', hadm', hsl, hmark⟩
     rw [hbit] at hcontra

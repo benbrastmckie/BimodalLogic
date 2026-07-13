@@ -41,6 +41,74 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation
 
+open private k1v_reconstruct_nf3 from
+  Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.CarrierK1V
+
+/-! ## Gate-level atom-layer pin (task 360 Phase 3c, report 04 Probe P2)
+
+The fiber re-key (ExteriorBracketAssembleK, Phase 3c) narrows the bracket range to
+fiber-compatible admissible σ; the gate's ⇒-side `hexclExt` discharge must therefore refute
+off-fiber σ INTERNALLY. The kernel (`nf_eval_nf_atom_layer` → `nf_eval_nf0_cons_factor` →
+`nf_eval_unique`, the `offForce` recipe of `nf_eval_nfk_iff_efold`, NfEFold.lean) shows an
+off-fiber σ is unrealizable at the pinned anchors — GIVEN the depth-0 atom-layer pin
+`henv : nf_eval_nf M 0 3 [w,x,t] qnf.1`. This helper derives `henv` for the callback's
+ARBITRARY interior witness `w` from inventory already in scope (`hInt` + the callback's
+`hptW`), replicating `bracketEndChar_kv_step_sound`'s own atom-layer block
+(`InteriorGateGeneralK.lean:1076-1113`) with the extracted witness replaced by the callback's.
+Depth-`k` analog of the k=2 gate pin `kvE2_extGate_henv` (`ExteriorBracket.lean:721`). -/
+
+private theorem kvExt_gate_henv {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (qnf : NormalForm sig (k + 2) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (hInt : (bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t)
+    (w : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hptW : (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1
+      (igFoldBit qnf)).eval_at M atomMap w) :
+    nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 := by
+  have hxt : x < t := hxw.trans hwt
+  rw [bracketEndChar_kv_succ_holds_iff atomMap h_surj charF qnf M x t] at hInt
+  obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := hInt
+  obtain ⟨hepL, hepR, -⟩ := hveah
+  have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+        nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ u => interiorGate_hcb atomMap h_surj M χ u
+  have hxT : temporal_truth M atomMap x
+      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) := by
+    have h := hepL
+    simp only [igMkDisjunct, igEpL, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have htT : temporal_truth M atomMap t
+      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) := by
+    have h := hepR
+    simp only [igMkDisjunct, igEpR, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have hyW : temporal_truth M atomMap w
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) := by
+    have h := hptW
+    simp only [igPtW, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ List.mem_cons_self
+  exact k1v_reconstruct_nf3 M qnf.1 w x t
+    ((hcharB _ w).mp hyW) ((hcharB _ x).mp hxT) ((hcharB _ t).mp htT)
+    (iff_of_false (lt_asymm hxw) (by simp only [h_yx]; decide))
+    (iff_of_true hwt h_yt)
+    (iff_of_true hxw h_xy)
+    (iff_of_true hxt h_xt)
+    (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
+    (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
+
 /-! ## The general-`k` enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
 
 /-- **The general-`k` enriched composed gate** (task 356; Def 7.5 p.13 + degenerate Lemma 7.6 p.14):
@@ -142,10 +210,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     -- binders — the guarded `hbr*Sat` shapes were machine-refuted,
     -- `kvE_futPinned_of_end_zero_refuted`). Two carried obligations per side:
     --
-    -- (1) `hslicePast`/`hsliceFut` (⇐-side slice honesty, report 02 §3.4 shape verbatim,
-    --     ambient-guarded): chain-fire truth at the anchor for an admissible σ yields a MARKED
-    --     slice-mate. Fed to `kvE_extBracket{Past,Fut}_complete` (D3/D4). Discharged at m = 0
-    --     by `kvE_{fut,past}SliceId_of_end_zero` + chain destruction (plan v2 Phase 5).
+    -- (1) `hslicePast`/`hsliceFut` (⇐-side slice honesty, report 02 §3.4 shape +
+    --     FIBER-guarded, task 360 Phase 3c / report 04: the antecedent
+    --     `nfk_dropFresh σ = qnf.1` matches the re-keyed bracket range — off-fiber σ carry no
+    --     honesty obligation, killing the ℤ-doppelgänger countermodel; it is exactly the
+    --     `hfib` input of `kvE_{fut,past}SliceId_of_end_zero`): chain-fire truth at the anchor
+    --     for a fiber-compatible admissible σ yields a MARKED slice-mate. Fed to
+    --     `kvE_extBracket{Past,Fut}_complete` (D3/D4). Discharged at m = 0 by
+    --     `kvE_{fut,past}SliceId_of_end_zero` + chain destruction (plan v2 Phase 5).
     --
     -- (2) `hexclSlicePast`/`hexclSliceFut` (⇒-side per-σ exclusion residue, `hexcl`-shaped,
     --     `igPtW`-guarded): a bit-false-but-slice-MARKED admissible σ has no strictly-exterior
@@ -158,12 +230,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+        nfk_dropFresh σ = qnf.1 →
         temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
           kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
     (hsliceFut : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+        nfk_dropFresh σ = qnf.1 →
         temporal_truth M atomMap t (kvE_futPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
           kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
@@ -191,27 +265,40 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mp hExt
     refine bracketEndChar_kv_step_sound atomMap h_surj charF qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl ?_ hInt
-    -- The former `hexclExt` obligation: slice-UNMARKED σ discharged internally by the
-    -- slice-level D1/D2; bit-false-but-slice-MARKED σ by the carried `hexclSlice*` residue
-    -- (task 360 Phase 3b — see the binder docs).
+    -- The former `hexclExt` obligation, by fiber dichotomy (task 360 Phase 3c, report 04):
+    -- OFF-fiber σ are unrealizable at the pinned anchors (fiber-forcing kernel under the
+    -- gate-derived atom-layer pin `kvExt_gate_henv`); in-fiber slice-UNMARKED σ discharged
+    -- by the slice-level D1/D2; in-fiber bit-false-but-slice-MARKED σ by the carried
+    -- `hexclSlice*` residue (VERBATIM Phase-3b binders — see the binder docs).
     intro w hxw hwt hptW σ hbit x1 hguard hnf
-    rcases not_and_or.mp hguard with hx | ht
-    · cases hsm : kvE_pastSliceMarked qnf σ with
-      | false =>
-        exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hsm x1
-          (not_le.mp hx) hnf
-      | true =>
-        have hadm : kvE_pastAdmissible σ = true :=
-          kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
-        exact hexclSlicePast w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
-    · cases hsm : kvE_futSliceMarked qnf σ with
-      | false =>
-        exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hsm x1
-          (not_le.mp ht) hnf
-      | true =>
-        have hadm : kvE_futAdmissible σ = true :=
-          kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
-        exact hexclSliceFut w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
+    by_cases hfib : nfk_dropFresh σ = qnf.1
+    · rcases not_and_or.mp hguard with hx | ht
+      · cases hsm : kvE_pastSliceMarked qnf σ with
+        | false =>
+          exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hfib hsm
+            x1 (not_le.mp hx) hnf
+        | true =>
+          have hadm : kvE_pastAdmissible σ = true :=
+            kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
+          exact hexclSlicePast w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
+      · cases hsm : kvE_futSliceMarked qnf σ with
+        | false =>
+          exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hfib hsm
+            x1 (not_le.mp ht) hnf
+        | true =>
+          have hadm : kvE_futAdmissible σ = true :=
+            kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
+          exact hexclSliceFut w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
+    · -- Off-fiber: a realizer at the pinned anchors would force σ onto the fiber
+      -- (`offForce` recipe, NfEFold.lean) — contradiction with `hfib`.
+      have henv : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+        kvExt_gate_henv atomMap h_surj charF qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t hInt
+          w hxw hwt hptW
+      have hatom := nf_eval_nf_atom_layer M _ σ hnf
+      have hfac :=
+        (nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1
+          σ.atom_assgn).mp hatom
+      exact hfib (nf_eval_unique M 0 3 _ _ _ hfac.2.2 henv)
   · -- ⇐: an honest realization re-establishes all three conjuncts.
     rintro ⟨w, h⟩
     have hxw : x < w := by

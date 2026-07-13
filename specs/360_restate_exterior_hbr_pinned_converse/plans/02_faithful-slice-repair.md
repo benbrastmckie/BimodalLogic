@@ -520,6 +520,42 @@ uniqueness mirror.
   KampPrior.lean:838-876, ExteriorPinnedConversePastK.lean (new, defs+constancy only),
   ExteriorConverter{,Past}K (conditional, deletion-only).
 
+### Phase 3c: Fiber-range bracket re-key (report 04 repair of the Phase-5 hslice* blocker) [COMPLETED]
+
+*Added post-Phase-5 per reports/04_fiber-range-bracket-rekey.md (machine-verified faithful +
+consumer-complete, 7 zero-diagnostic probes). Resolves the Phase-5 `hslice*` BLOCKER: the
+Phase-3b depth-k re-key silently WIDENED the bracket range vs the frozen k=2 template
+(`kvE2_futMarked`'s fiber conjunct dropped). Narrowing is FORCED (report 04 §2.3).*
+
+- **Goal:** restore the fiber filter — range predicate becomes
+  `kvE_{fut,past}Admissible σ && decide (nfk_dropFresh σ = qnf.1)` — and re-thread the fiber
+  antecedent through `_iff`/D1-D4/gate/consumer/KampPrior mirror, with the gate's ⇒-side
+  off-fiber σ refuted internally by the fiber-forcing kernel under a gate-derived `henv`.
+- **Tasks:**
+  - [x] ExteriorBracketAssembleK.lean: range filter ×2 (report 04 §3.1); `_iff` ×2 gain the
+        fiber antecedent on the RHS (§3.2); D1/D2 gain the per-σ antecedent (§3.3); D3/D4
+        `hslice` input gains `nfk_dropFresh σ = qnf.1 →` (§3.4); docstrings updated.
+  - [x] ExteriorGateAssembleK.lean: `open private k1v_reconstruct_nf3` + private gate-henv
+        helper `kvExt_gate_henv` (Probe P2 recipe = step_sound's own atom-layer block);
+        `hslice*` binders gain the fiber antecedent (`hexclSlice*` binders VERBATIM
+        UNCHANGED); ⇒-callback fiber dichotomy (off-fiber: P1 kernel; in-fiber: existing
+        split) (§3.5). *(green on first scoped build — matches probes P2/P6)*
+  - [x] EndIntervalConsumerK.lean:139-150: `_hslice*` binder mirror (§3.6).
+  - [x] KampPrior.lean:854-865: `hslice*` binder mirror (§3.6).
+  - [x] Scoped builds per file + FULL `lake build` green (1736 jobs); `#print axioms` on the
+        re-keyed `_iff`×2/D1-D4/gate/`endInterval_step_correct`/KampPrior mirror + the
+        untouched `hexclSlice*` supply pair — all exactly
+        `[propext, Classical.choice, Quot.sound]`; territory sorry census 0; PinnedConverse
+        files + frozen k=2 byte-unchanged (git diff empty); commit.
+- **Done when:** all four files green under the narrowed range, full build green, landed
+  `hexclSlice*` pair byte-unchanged, zero sorries.
+- **Prohibited:** touching frozen k=2 ExteriorBracket.lean, the refutation guard, the
+  PinnedConverse files (3c-read-only), or weakening any consumer.
+- **Estimated output:** ~120-200 diff lines across 4 files.
+- **Depends on:** 3b, 4; report 04.
+- **File scope:** ExteriorBracketAssembleK, ExteriorGateAssembleK, EndIntervalConsumerK,
+  KampPrior.lean:854-865.
+
 ### Phase 4: Past mirror — `kvE_pastSliceId_of_end_zero` + `kvE_pastSliceUnique_zero` [COMPLETED]
 
 **BLOCKER RESOLVED (Phase 4a, report 03 option (a) — faithful conjunct-4 restoration)**:

@@ -132,19 +132,23 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
         -- from `ExteriorGateAssembleK.lean` at depth-index `k := m`, `Pbr := Pfam m`. The
         -- four eliminated `hbr*` binders (guarded `hbr*Sat` machine-refuted,
         -- `kvE_futPinned_of_end_zero_refuted`) are replaced by two carried obligations per
-        -- side: `_hslice*` (⇐-side slice honesty, ambient-guarded) and `_hexclSlice*`
+        -- side: `_hslice*` (⇐-side slice honesty, ambient-guarded; FIBER-guarded per task 360
+        -- Phase 3c / report 04 — the `nfk_dropFresh σ = qnf.1` antecedent mirrors the
+        -- re-keyed bracket range) and `_hexclSlice*`
         -- (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ, `igPtW`-guarded).
         -- Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
         -- `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
         (_hslicePast : ∀ w : M.carrier, x < w → w < t →
           nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true →
+            nfk_dropFresh σ = qnf.1 →
             temporal_truth M atomMap x (kvE_pastPos (Pfam m) σ) →
             ∃ σ' : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ' = true ∧
               kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
         (_hsliceFut : ∀ w : M.carrier, x < w → w < t →
           nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true →
+            nfk_dropFresh σ = qnf.1 →
             temporal_truth M atomMap t (kvE_futPos (Pfam m) σ) →
             ∃ σ' : NormalForm sig (m + 1) 4, kvE_futAdmissible σ' = true ∧
               kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
