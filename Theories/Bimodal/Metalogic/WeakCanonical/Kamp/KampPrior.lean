@@ -797,6 +797,83 @@ theorem kampPrior_site_rung2_gate_match {sig : MonadicSignature}
   bracketEndChar_kvE2Ext_correct_two_prior_frag atomMap h_surj P qnf
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hfrag hrealI hrealB hexcl
 
+set_option maxHeartbeats 1600000 in
+/-- **General-`k` supply-site certificate** `kampPrior_site_rungK_gate_match` (task 357 Phase 5).
+    The general-`k` mirror of `kampPrior_site_rung2_gate_match` (`:761`), one fold-family deeper:
+    the per-`qnf` seam restatement of the task-356 exterior-composed discharge
+    `bracketEndChar_kvExt_correct_prior` (`ExteriorGateAssembleK.lean:106`) at depth `(k+2)`, for
+    ALL `k` (uniformly subsuming the k=2 arm as the `k = 0` member). It CARRIES the eleven
+    obligations — the seven interior (`P`/`hcharK`/`h_UZ`/`h_SZ`/`hreal`/`hexcl` + the internalized
+    `hexclExt`) and the four task-356 exterior bracket obligations (`hbr*`) — exactly as the rung-2
+    certificate carries `hrealI`/`hrealB`/`hexcl`. `hexclExt` is discharged internally by the
+    consumed lemma; it is NOT an input binder. This is the general-`k` seam the reshaped consumer
+    `endInterval_step_correct` (`EndIntervalConsumerK.lean`) closes task 349 Phase 5 through.
+
+    **Obligation discipline (carry, do NOT discharge).** `hreal`/`hexcl`/`hbr*` are threaded outward
+    — actually discharging them requires the un-landed realization recursion (the `:361`/`:364`
+    sorry arms), the fenced-out escalation boundary (task 357 Phase 7 / task-309 Phase-14 successor).
+    No `sorry`, no vacuous def is introduced here. -/
+theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (P : ExistProviders sig atomMap (k + 1))
+    (hcharK : charF (k + 1) = fun χ => P.existF 0 χ)
+    (Pbr : ExistProviders sig atomMap k)
+    (qnf : NormalForm sig (k + 2) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hbrPastReal : ∀ w : M.carrier, x < w → w < t →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        ∀ x1 : M.carrier, x1 < x → ∀ s : NormalForm sig k 5, σ.2 s = true →
+          ∃ v : M.carrier, nf_eval_nf M k 5
+            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hbrPastSat : ∀ w : M.carrier, x < w → w < t →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        ∀ x1 : M.carrier, x1 < x →
+          temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
+          ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+            (∃ v : M.carrier, nf_eval_nf M k 5
+              (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+            σ.2 s = true)
+    (hbrFutReal : ∀ w : M.carrier, x < w → w < t →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        ∀ x1 : M.carrier, t < x1 → ∀ s : NormalForm sig k 5, σ.2 s = true →
+          ∃ v : M.carrier, nf_eval_nf M k 5
+            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hbrFutSat : ∀ w : M.carrier, x < w → w < t →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        ∀ x1 : M.carrier, t < x1 →
+          temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
+          ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+            (∃ v : M.carrier, nf_eval_nf M k 5
+              (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+            σ.2 s = true) :
+    (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK Pbr qnf
+    h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl
+    hbrPastReal hbrPastSat hbrFutReal hbrFutSat
+
 /-- **F-i positive exhibit (task 309 Phase 15): fragment `qnf` exist at the k=2-arm site
     type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265, task 346 Phase 2)
     through the `rfl` defeq bridge `kvE2_sepFragment_frag` = `kvE2_sepFragment`

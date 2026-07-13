@@ -172,7 +172,7 @@ escalation milestone, NOT part of the green Definition of Done.
 
 ---
 
-### Phase 5: Add general-k site certificate in KampPrior [NOT STARTED]
+### Phase 5: Add general-k site certificate in KampPrior [COMPLETED]
 
 - **Goal:** Provide the general-`k` supply site `kampPrior_site_rungK_gate_match` carrying the 11 obligations, mirroring `kampPrior_site_rung2_gate_match:761`, so the reshaped consumer has a uniform per-`qnf` seam for all `k`.
 - **Tasks:**
