@@ -352,7 +352,17 @@ consume the Phase-2 supplier `kvE_futAtomPinned_zero`; leaf-safe, no cycle. Also
 - **File scope:** ExteriorPinnedProbeK.lean (append-only); plan file + handoff JSON (records).
   No production-file edits.
 
-### Phase 3: Slice machinery + `kvE_futSliceId_of_end_zero` + `kvE_futSliceUnique_zero` [NOT STARTED]
+### Phase 3: Slice machinery + `kvE_futSliceId_of_end_zero` + `kvE_futSliceUnique_zero` [COMPLETED]
+
+**VERDICT (2026-07-13, sess_1783950096_9d2925): COMPLETED — all deliverables green.**
+6 public decls (5 planned + 1 hoist-replica, see deviation) + 5 private helpers appended to
+ExteriorPinnedConverseK.lean (+580 lines). Scoped AND full `lake build` GREEN (1734 jobs);
+`#print axioms` on all 6 public decls AND the refutation regression guard = exactly
+`[propext, Classical.choice, Quot.sound]`; territory sorry count 0; zero vacuous defs; zero
+new axioms. H4 phase-exit record: the refutation witness σ′ SATISFIES
+`kvE_futSliceId_of_end_zero`'s conclusion (σ' := τ — machine-validated as probe P2 on the
+concrete instance) and satisfies `kvE_futSliceUnique_zero` vacuously (σ′ pinned-unrealizable,
+probe P1); `kvE_futPinned_of_end_zero_refuted` untouched (append-only diff) and rebuilt green.
 
 - **Goal:** In ExteriorPinnedConverseK.lean, land the Future half of the faithful repair:
   the slice defs, the clause slice-constancy lemma, the exterior-slice identification theorem
@@ -360,17 +370,21 @@ consume the Phase-2 supplier `kvE_futAtomPinned_zero`; leaf-safe, no cycle. Also
 - **Bounded unit:** 2 defs + 1 constancy lemma + 2 theorems with FIXED signatures (report 02
   §3.3, normative — transcribe, do not redesign) and a FIXED per-zone case list.
 - **Tasks:**
-  - [ ] Transcribe `kvE_futSliceEq` and `kvE_futSliceMarked` verbatim from report 02 §3.3
+  - [x] Transcribe `kvE_futSliceEq` and `kvE_futSliceMarked` verbatim from report 02 §3.3
         (decidable Bool defs over the NF fintype; `Finset.univ.toList` idiom as in
         ExteriorBracketAssembleK). File-head docstring: quote the report 02 §3.3 signatures +
-        the Def 7.13 footprint principle (chunk_0023:25).
-  - [ ] Clause slice-constancy lemma: for admissible σ′, σ with `kvE_futSliceEq σ′ σ = true`,
+        the Def 7.13 footprint principle (chunk_0023:25). *(deviation: altered — the §3.3
+        signatures + Def 7.13 principle are quoted in the Phase-3 SECTION docstring rather
+        than the file head; the file head documents the landed Phase-2 content and was left
+        untouched per the preserved-assets constraint)*
+  - [x] Clause slice-constancy lemma: for admissible σ′, σ with `kvE_futSliceEq σ′ σ = true`,
         the clause formulas agree — `kvE_futPos P σ′ = kvE_futPos P σ`,
         `kvE_futEnd P σ′ = kvE_futEnd P σ`, `kvE_futGapD P σ′ = kvE_futGapD P σ`, and hence
         `kvE_extNegFut P σ′ = kvE_extNegFut P σ`. Engine: the landed `kvE_fiberZoneList_congr`
         pattern generalized from sub-marking to slice-equality (report 02 C10; the σ′/τ
-        instances `hPosEq`/`hEndEq`/`hGapDeq` are the template).
-  - [ ] `kvE_futSliceId_of_end_zero` with the EXACT report 02 §3.3 signature (hypotheses:
+        instances `hPosEq`/`hEndEq`/`hGapDeq` are the template). Landed as
+        `kvE_futClause_sliceConstant` (4-way conjunction).
+  - [x] `kvE_futSliceId_of_end_zero` with the EXACT report 02 §3.3 signature (hypotheses:
         `hadm`, `hfib : nfk_dropFresh σ = qnf.1`, order facts, ambient `h`, `htx1`, `hend`,
         `hgap`, `hocc`; conclusion: ∃ σ′ marked + pinned-realized at `[x1,w,x,t]` + `σ'.1 = σ.1`
         + exterior-zone marking agreement; no `hpos` antecedent). Proof route steps 1-5
@@ -381,17 +395,28 @@ consume the Phase-2 supplier `kvE_futAtomPinned_zero`; leaf-safe, no cycle. Also
         (probe `kvE_probe_gapItem_pinned` mechanism) + depth-0 uniqueness; ray agreement via
         `hend` ray conjuncts (probe `kvE_probe_rayItem_pinned`) both directions; self agreement
         via `hend` self conjunct + `kvE_futSelfZone_coincide` + admissibility conjunct 4.
-  - [ ] `kvE_futSliceUnique_zero` (report 02 §3.3 second signature): slice-equal σ′, σ both
+        *(the probe upgrade mechanisms are abstracted as private
+        `kvE_futGapItem_pinned_zero`/`kvE_futRayItem_pinned_zero`; the private
+        `nfk_projFresh_zero` replica landed as `kvE_projFresh_zero` per the probe precedent)*
+  - [x] `kvE_futSliceUnique_zero` (report 02 §3.3 second signature): slice-equal σ′, σ both
         pinned-realized (possibly different exterior endpoints x1′, x1 over the same
         `[w,x,t]`) → σ′ = σ. Route: `nf_eval_unique` pins each to its endpoint characteristic;
         slice-equal atom layers give profile-equal endpoints; interior depth-0 elements
         transfer with the SAME witness (P3 lemma); exterior zones agree by hypothesis.
-  - [ ] H4 sanity check (record in phase-exit note, no new file): σ′ from the refutation
+        *(deviation: altered — the P3 engine `kvE_probe_interior_transfer` could NOT be
+        consumed from the probe file: ExteriorPinnedProbeK IMPORTS this file (Phase-0b
+        deviation), so consumption would create an import cycle. It is replicated here as the
+        6th public decl `kvE_futInteriorTransfer_zero` (settled decision 5: this file stays a
+        leaf). Two private zone-bookkeeping helpers added for the interior classification:
+        `kvE_zoneHolds_unique`, `kvE_futZoneSpec_of_above`)*
+  - [x] H4 sanity check (record in phase-exit note, no new file): σ′ from the refutation
         satisfies `kvE_futSliceId_of_end_zero`'s conclusion via σ' := τ; `kvE_futSliceUnique_zero`
         is vacuous at σ′ (unrealizable — P1). Cross-check against
         `kvE_futPinned_of_end_zero_refuted` still green (regression guard untouched).
-  - [ ] `lake env lean` `#print axioms` on all 5 new decls (exactly
-        `[propext, Classical.choice, Quot.sound]`); scoped build; commit.
+        Recorded in the VERDICT block above.
+  - [x] `lake env lean` `#print axioms` on all 5 new decls (exactly
+        `[propext, Classical.choice, Quot.sound]`); scoped build; commit. *(run on all 6
+        public decls + the refutation guard — all exactly the three standard axioms)*
 - **Done when:** 5 new decls sorry-free + axiom-clean; scoped `lake build
   …ExteriorPinnedConverseK` green; refutation theorem + salvage lemmas untouched.
 - **Stopping condition / split trigger:** if after `kvE_futSliceId_of_end_zero` the phase

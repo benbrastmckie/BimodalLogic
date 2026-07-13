@@ -616,4 +616,584 @@ theorem kvE_futPinned_of_end_zero_refuted {sig : MonadicSignature}
     rw [hσ'e] at this
     exact Bool.false_ne_true this
 
+/-! ## Phase 3 (plan v2): slice machinery + the exterior-slice identification converse
+
+The faithful repair of the refuted §2.4 converse (report
+`specs/360_restate_exterior_hbr_pinned_converse/reports/02_faithful-pinned-converse-repair.md`
+§3.3, signatures NORMATIVE — transcribed verbatim). Ground truth: Rabinovich 2014 Def 7.13
+(chunk_0023:25) footprint discipline — a multi-anchor formula decomposes as a conjunction of
+per-adjacent-segment formulas, and negation applies per SEGMENT bracket (Lemma 5.1/7.8),
+never per full type. The clause family `kvE_futPos`/`kvE_futEnd`/`kvE_futGapD`/`kvE_extNegFut`
+reads `σ.2` exclusively through the three EXTERIOR zone lists, so the clause KEY must be a
+function of the same data:
+
+- `kvE_futSliceEq σ' σ` — same atom layer, same three exterior zone lists (the clause
+  family's expressive footprint); report 02 §3.3 first def, verbatim.
+- `kvE_futSliceMarked qnf σ` — some admissible slice-mate of σ carries `qnf`'s bit (the
+  faithful bracket key; WIRED into the bracket in Phase 3b, defined here); report 02 §3.3
+  second def, verbatim.
+- `kvE_futClause_sliceConstant` — the clause family is constant on slice classes of
+  admissible σ (the `kvE_fiberZoneList_congr`/`hPosEq` pattern of the refutation, C10).
+- `kvE_futSliceId_of_end_zero` — the REPLACEMENT converse (report 02 §3.3 restated
+  signature): under the unchanged §2.4 antecedent set at m = 0 (minus the unused `hpos`),
+  the honest endpoint characteristic σ★ is qnf-marked, pinned-realized at `[x1,w,x,t]`,
+  atom-layer-equal to σ, and agrees with σ on every exterior-zone marking.
+- `kvE_futSliceUnique_zero` — the reconstruction companion: slice-equal σ's pinned-realized
+  at (possibly different) exterior endpoints over the same `[w,x,t]` are EQUAL
+  (`nf_eval_unique` + the interior same-witness transfer engine).
+
+Machine-validation record (probe gate Phase 0b, ExteriorPinnedProbeK.lean — verdict GO):
+P1 = the refutation's σ′ is qnf-unmarked (C4); P2 = the slice-id composite below,
+instantiated at `[25,15,2,18]` (C8); P3 = the interior transfer engine (C9). H4 σ′-witness
+check: σ′ SATISFIES `kvE_futSliceId_of_end_zero`'s conclusion (via σ' := τ) and satisfies
+`kvE_futSliceUnique_zero` vacuously (σ′ is pinned-unrealizable — the refutation itself);
+the refutation theorem above is untouched and remains the standing regression guard.
+
+Deviation note: the P3 engine `kvE_probe_interior_transfer` lives in ExteriorPinnedProbeK,
+which IMPORTS this file (Phase-0b deviation record) — consuming it here would create an
+import cycle. It is therefore replicated below as the production lemma
+`kvE_futInteriorTransfer_zero` (settled decision 5: this file stays a leaf; same
+`kvE_minPick`/`p3_projFresh_zero` replication precedent). -/
+
+/-! ### The slice defs (report 02 §3.3, verbatim) -/
+
+/-- **Exterior-slice equality**: same atom layer, same three exterior zone lists.
+    The clause family `kvE_futPos`/`kvE_futEnd`/`kvE_futGapD`/`kvE_extNegFut` is constant on
+    slice classes of admissible σ (`kvE_futClause_sliceConstant` below — the
+    `kvE_fiberZoneList_congr` pattern, landed). Def 7.13 footprint discipline: the slice is
+    exactly the clause family's expressive footprint. -/
+noncomputable def kvE_futSliceEq {sig : MonadicSignature} {k : Nat}
+    (σ' σ : NormalForm sig (k + 1) 4) : Bool :=
+  decide (σ'.1 = σ.1) &&
+  decide (kvE_fiberZoneList σ' kvE_futGapZone  = kvE_fiberZoneList σ kvE_futGapZone) &&
+  decide (kvE_fiberZoneList σ' kvE_futRayZone  = kvE_fiberZoneList σ kvE_futRayZone) &&
+  decide (kvE_fiberZoneList σ' kvE_futSelfZone = kvE_fiberZoneList σ kvE_futSelfZone)
+
+/-- **σ's exterior slice is qnf-marked**: some admissible slice-mate carries the bit.
+    The faithful bracket key (re-keys `kvE_extBracketFut`'s per-σ if-then-else in Phase 3b):
+    a negative clause `¬ kvE_futPos P σ` is asserted iff NO marked type carries σ's segment
+    content — the paper's `¬∃z [segment](t, z)` (Cor 5.4's negated object), never "type σ is
+    unrealized". Pure decidable syntax over the NF fintype. -/
+noncomputable def kvE_futSliceMarked {sig : MonadicSignature} {k : Nat}
+    (qnf : NormalForm sig (k + 2) 3) (σ : NormalForm sig (k + 1) 4) : Bool :=
+  (Finset.univ.toList (α := NormalForm sig (k + 1) 4)).any
+    (fun σ' => kvE_futAdmissible σ' && kvE_futSliceEq σ' σ && qnf.2 σ')
+
+/-! ### Clause slice-constancy -/
+
+/-- **Clause slice-constancy** (report 02 C10; the refutation's `hPosEq`/`hEndEq`/`hGapDeq`
+    chain generalized from the interior-erasure instance to arbitrary slice-equal pairs):
+    for admissible σ', σ with equal exterior slices, the entire clause family agrees as
+    FORMULAS. Slice-mates therefore always receive the SAME clause under the re-keyed
+    bracket — killing the `F ∧ ¬F` pair that made the per-σ-keyed bracket unsatisfiable. -/
+theorem kvE_futClause_sliceConstant {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k)
+    (σ' σ : NormalForm sig (k + 1) 4)
+    (hadm' : kvE_futAdmissible σ' = true) (hadm : kvE_futAdmissible σ = true)
+    (hsl : kvE_futSliceEq σ' σ = true) :
+    kvE_futPos P σ' = kvE_futPos P σ ∧
+    kvE_futEnd P σ' = kvE_futEnd P σ ∧
+    kvE_futGapD P σ' = kvE_futGapD P σ ∧
+    kvE_extNegFut P σ' = kvE_extNegFut P σ := by
+  unfold kvE_futSliceEq at hsl
+  rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hsl
+  obtain ⟨⟨⟨-, hgapL⟩, hrayL⟩, hselfL⟩ := hsl
+  have hgapL := of_decide_eq_true hgapL
+  have hrayL := of_decide_eq_true hrayL
+  have hselfL := of_decide_eq_true hselfL
+  have hGapDeq : kvE_futGapD P σ' = kvE_futGapD P σ := by
+    rw [kvE_futGapD, kvE_futGapD, hgapL]
+  have hEndEq : kvE_futEnd P σ' = kvE_futEnd P σ := by
+    rw [kvE_futEnd, kvE_futEnd, kvE_futRayForm, kvE_futRayForm,
+      kvE_futRayD, kvE_futRayD, hselfL, hrayL]
+  have hPosEq : kvE_futPos P σ' = kvE_futPos P σ := by
+    rw [kvE_futPos, kvE_futPos, if_pos hadm', if_pos hadm, hgapL]
+    have hchain : kvE_futChain P σ' = kvE_futChain P σ := by
+      funext l
+      rw [kvE_futChain, kvE_futChain, hEndEq, hGapDeq]
+    rw [hchain]
+  exact ⟨hPosEq, hEndEq, hGapDeq, by rw [kvE_extNegFut, kvE_extNegFut, hPosEq]⟩
+
+/-! ### The interior same-witness transfer engine (probe P3, production replica) -/
+
+/-- **Depth-0 same-witness interior transfer** (the `kvE_futSliceUnique_zero` engine;
+    production replica of the probe-validated `kvE_probe_interior_transfer`, P3/C9 — see
+    the section-head deviation note): a depth-0 arity-5 fiber element `s` realized at
+    `[v, x1, w, x, t]` with an INTERIOR witness (`¬ t < v`) transfers to `[v, x1', w, x, t]`
+    with the SAME witness `v`, provided `t < x1`, `t < x1'`, and `x1'` realizes `x1`'s
+    complete depth-0 4-type over `[w, x, t]` (profile-equal endpoints). Three-channel
+    rebuild (`nf_eval_nf0_cons_factor`): the fresh profile transports verbatim; the tail
+    4-type is pinned to the characteristic (`nf_eval_unique`), which the profile-equal
+    endpoint realizes by hypothesis; the zone channel changes only at index 0, where
+    `v ≤ t < x1` and `v ≤ t < x1'` render the SAME coupling `(true, false)`. -/
+theorem kvE_futInteriorTransfer_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v x1 x1' w x t : M.carrier)
+    (hvt : ¬ t < v) (htx1 : t < x1) (htx1' : t < x1')
+    (hchar : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf_characteristic M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))))
+    (s : NormalForm sig 0 5)
+    (hs : nf_eval_nf M 0 5
+      (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) :
+    nf_eval_nf M 0 5
+      (Fin.cons v (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  obtain ⟨hz, hfr, htl⟩ := (nf_eval_nf0_cons_factor M
+    (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mp hs
+  -- tail channel: the env restriction is x1's characteristic, realized at x1' by hypothesis
+  have htl' : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf0_dropFresh s) := by
+    have huniq : nf0_dropFresh s =
+        nf_characteristic M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) :=
+      nf_eval_unique M 0 4 _ _ _ htl (nf_characteristic_satisfies M 0 4 _)
+    rw [huniq]; exact hchar
+  refine (nf_eval_nf0_cons_factor M
+    (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) v s).mpr ⟨?_, hfr, htl'⟩
+  -- zone channel: only the index-0 coupling changes anchor; interiority renders it equal
+  have hvx1 : v < x1 := lt_of_le_of_lt (not_lt.mp hvt) htx1
+  have hvx1' : v < x1' := lt_of_le_of_lt (not_lt.mp hvt) htx1'
+  intro i
+  match i with
+  | ⟨0, _⟩ =>
+    have h0 := hz ⟨0, by omega⟩
+    constructor
+    · exact iff_of_true hvx1' (h0.1.mp hvx1)
+    · refine iff_of_false (lt_asymm hvx1') ?_
+      intro hbit
+      exact absurd (h0.2.mpr hbit) (lt_asymm hvx1)
+  | ⟨1, _⟩ => exact hz ⟨1, by omega⟩
+  | ⟨2, _⟩ => exact hz ⟨2, by omega⟩
+  | ⟨3, _⟩ => exact hz ⟨3, by omega⟩
+
+/-! ### Private navigation helpers (replicas + zone bookkeeping) -/
+
+/-- File-local replica of the private `nfk_projFresh_zero` (CarrierKv.lean:89 — `private`,
+    replicated per the `kvE_minPick`/`p3_projFresh_zero` precedent, never imported): at
+    depth 0 the prefix projection coincides with the split kit's `nf0_projFresh`. -/
+private theorem kvE_projFresh_zero {sig : MonadicSignature} {n : Nat}
+    (sub : NormalForm sig 0 (n + 1)) :
+    nfk_projFresh sub = nf0_projFresh sub := by
+  funext a
+  match a with
+  | .pred p i =>
+    have hi : i = 0 := Subsingleton.elim i 0
+    subst hi
+    rfl
+  | .order i j h => exact absurd (Subsingleton.elim i j) h
+
+/-- Free-env → pinned upgrade, GAP case (production abstraction of the probe-validated
+    `kvE_probe_gapItem_pinned`, C8(c)): an on-fiber, gap-zoned depth-0 fiber element with a
+    free-env occurrence at a walk point `r ∈ (t, x1)` is pinned-realized at
+    `[r, x1, w, x, t]`, given the pinned atom layer `α` at `[x1, w, x, t]`. -/
+private theorem kvE_futGapItem_pinned_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (r x1 w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t) (htr : t < r) (hrx1 : r < x1)
+    (α : NormalForm sig 0 4)
+    (hA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) α)
+    (s : NormalForm sig 0 5)
+    (hfib : nf0_dropFresh s = α)
+    (hzone : nf0_zoneSpec s = kvE_futGapZone)
+    (hocc : ∃ env : Fin 4 → M.carrier, nf_eval_nf M 0 5 (Fin.cons r env) s) :
+    nf_eval_nf M 0 5
+      (Fin.cons r (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  obtain ⟨env, hev⟩ := hocc
+  have hfac := (nf_eval_nf0_cons_factor M env r s).mp hev
+  refine (nf_eval_nf0_cons_factor M
+    (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) r s).mpr ⟨?_, hfac.2.1, ?_⟩
+  · rw [hzone]
+    exact kvE_futZone4_of_above M r x1 w x t hxw hwt htr
+      (true, false) (iff_of_true hrx1 rfl)
+      (iff_of_false (lt_asymm hrx1) Bool.false_ne_true)
+  · rw [hfib]
+    exact hA
+
+/-- Free-env → pinned upgrade, RAY case (production abstraction of the probe-validated
+    `kvE_probe_rayItem_pinned`, C8(c)): the same upgrade for a ray-zoned fiber element at
+    `r > x1`. -/
+private theorem kvE_futRayItem_pinned_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (r x1 w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t) (htx1 : t < x1) (hx1r : x1 < r)
+    (α : NormalForm sig 0 4)
+    (hA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) α)
+    (s : NormalForm sig 0 5)
+    (hfib : nf0_dropFresh s = α)
+    (hzone : nf0_zoneSpec s = kvE_futRayZone)
+    (hocc : ∃ env : Fin 4 → M.carrier, nf_eval_nf M 0 5 (Fin.cons r env) s) :
+    nf_eval_nf M 0 5
+      (Fin.cons r (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s := by
+  obtain ⟨env, hev⟩ := hocc
+  have hfac := (nf_eval_nf0_cons_factor M env r s).mp hev
+  refine (nf_eval_nf0_cons_factor M
+    (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) r s).mpr ⟨?_, hfac.2.1, ?_⟩
+  · rw [hzone]
+    exact kvE_futZone4_of_above M r x1 w x t hxw hwt (htx1.trans hx1r)
+      (false, true) (iff_of_false (lt_asymm hx1r) Bool.false_ne_true)
+      (iff_of_true hx1r rfl)
+  · rw [hfib]
+    exact hA
+
+/-- Zone-spec determinacy: two zone specs holding at the same witness over the same
+    environment are equal (each coordinate's Bools are pinned by the same order facts). -/
+private theorem kvE_zoneHolds_unique {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {n : Nat} (env : Fin n → M.carrier)
+    (zs zs' : ZoneSpec n) (v : M.carrier)
+    (hz : zoneHolds M env zs v) (hz' : zoneHolds M env zs' v) :
+    zs = zs' := by
+  funext i
+  have h1 := hz i
+  have h2 := hz' i
+  refine Prod.ext ?_ ?_
+  · have hiff := h1.1.symm.trans h2.1
+    cases ha : (zs i).1 <;> cases hb : (zs' i).1 <;> simp_all
+  · have hiff := h1.2.symm.trans h2.2
+    cases ha : (zs i).2 <;> cases hb : (zs' i).2 <;> simp_all
+
+/-- Exterior-zone classification: a witness strictly above `t` (over `[x1, w, x, t]` with
+    `x < w < t < x1`) carries one of the three EXTERIOR zone specs — gap, ray, or self.
+    (Trichotomy against `x1` + `kvE_futZone4_of_above` + zone-spec determinacy.) -/
+private theorem kvE_futZoneSpec_of_above {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (v x1 w x t : M.carrier)
+    (hxw : x < w) (hwt : w < t) (htv : t < v)
+    (zs : ZoneSpec 4)
+    (hz : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) zs v) :
+    zs = kvE_futGapZone ∨ zs = kvE_futRayZone ∨ zs = kvE_futSelfZone := by
+  rcases lt_trichotomy v x1 with hlt | heq | hgt
+  · exact Or.inl (kvE_zoneHolds_unique M _ zs kvE_futGapZone v hz
+      (kvE_futZone4_of_above M v x1 w x t hxw hwt htv (true, false)
+        (iff_of_true hlt rfl) (iff_of_false (lt_asymm hlt) Bool.false_ne_true)))
+  · exact Or.inr (Or.inr (kvE_zoneHolds_unique M _ zs kvE_futSelfZone v hz
+      (kvE_futZone4_of_above M v x1 w x t hxw hwt htv (false, false)
+        (iff_of_false (by rw [heq]; exact lt_irrefl x1) Bool.false_ne_true)
+        (iff_of_false (by rw [heq]; exact lt_irrefl x1) Bool.false_ne_true))))
+  · exact Or.inr (Or.inl (kvE_zoneHolds_unique M _ zs kvE_futRayZone v hz
+      (kvE_futZone4_of_above M v x1 w x t hxw hwt htv (false, true)
+        (iff_of_false (lt_asymm hgt) Bool.false_ne_true) (iff_of_true hgt rfl))))
+
+/-! ### The exterior-slice identification converse at m = 0 -/
+
+/-- **Exterior-slice identification at m = 0** (Rabinovich Cor 5.4(1)⇐ + Cor 5.4(2)
+    re-anchoring, under the Def 7.13 segment discipline; report 02 §3.3 restated signature,
+    verbatim — REPLACES the refuted `kvE_futPinned_of_end_zero`): at a destructor-selected
+    exterior endpoint carrying the endpoint/walk truths, under the level-up ambient, the
+    endpoint's HONEST complete type σ★ is qnf-marked, pinned-realized at `[x1,w,x,t]`, and
+    agrees with σ on the atom layer and on every exterior-zone marking.
+    (σ★ := `nf_characteristic M 1 4 [x1,w,x,t]`; no `hpos` antecedent — the atom layer
+    consumes only `hadm`/`hfib`/`h`/`hend`, Phase 2.)
+
+    Proof route (report 02 §3.3 steps 1-5, machine-validated as probe P2 on the concrete
+    instance): (1) totality + ambient marking of σ★; (2) atom layer via Phase-2
+    `kvE_futAtomPinned_zero` + depth-0 `nf_eval_unique`; (3) gap agreement, both inclusions,
+    via `hocc`/`hgap` + the free-env → pinned upgrade + uniqueness; (4) ray agreement via
+    `hend`'s per-item and `¬F(¬D_ray)` conjuncts + upgrade + uniqueness; (5) self agreement
+    via `hend`'s self conjunct + coincidence + admissibility conjunct 4 +
+    `nf0_split_assemble`. -/
+theorem kvE_futSliceId_of_end_zero {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds}
+    (P : ExistProviders sig atomMap 0)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (qnf : NormalForm sig 2 3) (σ : NormalForm sig 1 4)
+    (hadm : kvE_futAdmissible σ = true)
+    (hfib : nfk_dropFresh σ = qnf.1)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf)
+    (x1 : M.carrier) (htx1 : t < x1)
+    (hend : temporal_truth M atomMap x1 (kvE_futEnd P σ))
+    (hgap : ∀ r : M.carrier, t < r → r < x1 →
+      temporal_truth M atomMap r (kvE_futGapD P σ))
+    (hocc : ∀ s ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
+      t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift P s)) :
+    ∃ σ' : NormalForm sig 1 4,
+      qnf.2 σ' = true ∧
+      nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ' ∧
+      σ'.1 = σ.1 ∧
+      ∀ s : NormalForm sig 0 5,
+        (nfk_zoneSpec s = kvE_futGapZone ∨ nfk_zoneSpec s = kvE_futRayZone ∨
+         nfk_zoneSpec s = kvE_futSelfZone) → σ'.2 s = σ.2 s := by
+  -- Step 1: σ★ := the honest endpoint characteristic — pinned (totality) + qnf-marked
+  set τ : NormalForm sig 1 4 :=
+    nf_characteristic M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) with hτdef
+  have hτpin : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ :=
+    nf_characteristic_satisfies M 1 4 _
+  have hτmark : qnf.2 τ = true := (h.2 τ).mp ⟨x1, hτpin⟩
+  have hτ2 : ∀ e : NormalForm sig 0 5,
+      τ.2 e = @decide (∃ z : M.carrier, nf_eval_nf M 0 5
+        (Fin.cons z (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) e)
+        (Classical.dec _) := fun e => by rw [hτdef]; rfl
+  -- Step 2: atom-layer identification (Phase-2 supplier + depth-0 uniqueness)
+  have hτA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ.1 :=
+    nf_eval_nf_atom_layer M _ τ hτpin
+  have hσA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 :=
+    kvE_futAtomPinned_zero P M h_UZ h_SZ qnf σ hadm hfib w x t hxw hwt h x1 htx1 hend
+  have h31 : τ.1 = σ.1 := nf_eval_unique M 0 4 _ _ _ hτA hσA
+  -- shared: σ-marked elements sit on τ's atom fiber
+  have honfib : ∀ s : NormalForm sig 0 5, σ.2 s = true → nf0_dropFresh s = τ.1 := by
+    intro s hbit
+    have hd := kvE_futAdmissible_onFiber σ hadm s hbit
+    rw [h31]; exact hd
+  -- endpoint-description components (consumed by the ray and self cases)
+  have hendC := hend
+  rw [kvE_futEnd, formula_conjList_iff] at hendC
+  have hselfC := hendC (kvE_fiberPosOnShift P (kvE_fiberZoneList σ kvE_futSelfZone))
+    (by simp)
+  have hrayC := hendC (kvE_futRayForm P σ) (by simp)
+  rw [kvE_futRayForm, formula_conjList_iff] at hrayC
+  rw [kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ x1] at hselfC
+  obtain ⟨s0, hs0mem, env0, hev0⟩ := hselfC
+  obtain ⟨hbit0, hzs0⟩ := (kvE_fiberZoneList_mem σ kvE_futSelfZone s0).mp hs0mem
+  -- the delivered self element upgrades to PINNED realization at [x1, w, x, t]
+  have hzx1self : zoneHolds M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
+      kvE_futSelfZone x1 :=
+    kvE_futZone4_of_above M x1 x1 w x t hxw hwt htx1
+      (false, false) (iff_of_false (lt_irrefl x1) Bool.false_ne_true)
+      (iff_of_false (lt_irrefl x1) Bool.false_ne_true)
+  obtain ⟨-, hfr0, -⟩ := (nf_eval_nf0_cons_factor M env0 x1 s0).mp hev0
+  have hs0pin : nf_eval_nf M 0 5
+      (Fin.cons x1 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s0 := by
+    refine (nf_eval_nf0_cons_factor M
+      (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) x1 s0).mpr ⟨?_, hfr0, ?_⟩
+    · have hzs0' : nf0_zoneSpec s0 = kvE_futSelfZone := hzs0
+      rw [hzs0']; exact hzx1self
+    · have htl0' : nf0_dropFresh s0 = τ.1 := honfib s0 hbit0
+      rw [htl0']; exact hτA
+  have hτs0 : τ.2 s0 = true := by
+    rw [hτ2]
+    exact @decide_eq_true _ (Classical.dec _) ⟨x1, hs0pin⟩
+  refine ⟨τ, hτmark, hτpin, h31, ?_⟩
+  intro s hzcase
+  rcases hzcase with hzs | hzs | hzs
+  · -- GAP zone (step 3, both inclusions)
+    cases hσbit : σ.2 s with
+    | true =>
+      -- σ ⊆ σ★: hocc places the listed item in (t, x1); the C8(c) upgrade pins it
+      have hmem : s ∈ kvE_fiberZoneList σ kvE_futGapZone :=
+        (kvE_fiberZoneList_mem σ kvE_futGapZone s).mpr ⟨hσbit, hzs⟩
+      obtain ⟨r, hr1, hr2, hshift⟩ := hocc s hmem
+      rw [kvE_futItemShift_correct P s M h_UZ h_SZ r] at hshift
+      have hpin := kvE_futGapItem_pinned_zero M r x1 w x t hxw hwt hr1 hr2
+        τ.1 hτA s (honfib s hσbit) hzs hshift
+      rw [hτ2]
+      exact @decide_eq_true _ (Classical.dec _) ⟨r, hpin⟩
+    | false =>
+      -- σ★ ⊆ σ: a pinned witness z ∈ (t, x1) meets hgap's listed item; uniqueness
+      cases hτbit : τ.2 s with
+      | false => rfl
+      | true =>
+        exfalso
+        rw [hτ2] at hτbit
+        obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) hτbit
+        have hzone := kvE_futZoneHolds_of_atom M
+          (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) z s hz
+        rw [hzs] at hzone
+        have hzx1 : z < x1 := (hzone 0).1.mpr rfl
+        have htz : t < z := (hzone ⟨3, by omega⟩).2.mpr rfl
+        have hD := hgap z htz hzx1
+        rw [kvE_futGapD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ z] at hD
+        obtain ⟨s', hmem', env', hev'⟩ := hD
+        obtain ⟨hbit', hzs'⟩ := (kvE_fiberZoneList_mem σ kvE_futGapZone s').mp hmem'
+        have hpin' := kvE_futGapItem_pinned_zero M z x1 w x t hxw hwt htz hzx1
+          τ.1 hτA s' (honfib s' hbit') hzs' ⟨env', hev'⟩
+        have hss' : s' = s := nf_eval_unique M 0 5
+          (Fin.cons z (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s' s hpin' hz
+        rw [hss', hσbit] at hbit'
+        exact Bool.noConfusion hbit'
+  · -- RAY zone (step 4, both directions)
+    cases hσbit : σ.2 s with
+    | true =>
+      -- σ ⊆ σ★: hend's per-item ray conjunct places s above x1; the C8(c) upgrade pins it
+      have hmem : s ∈ kvE_fiberZoneList σ kvE_futRayZone :=
+        (kvE_fiberZoneList_mem σ kvE_futRayZone s).mpr ⟨hσbit, hzs⟩
+      have hitem := hrayC (Formula.untl (kvE_futItemShift P s) Formula.top)
+        (List.mem_cons_of_mem _ (List.mem_map.mpr ⟨s, hmem, rfl⟩))
+      obtain ⟨v, hx1v, hsh, -⟩ := hitem
+      rw [kvE_futItemShift_correct P s M h_UZ h_SZ v] at hsh
+      have hpin := kvE_futRayItem_pinned_zero M v x1 w x t hxw hwt htx1 hx1v
+        τ.1 hτA s (honfib s hσbit) hzs hsh
+      rw [hτ2]
+      exact @decide_eq_true _ (Classical.dec _) ⟨v, hpin⟩
+    | false =>
+      -- σ★ ⊆ σ: hend's ¬F(¬D_ray) conjunct covers the pinned witness z > x1; uniqueness
+      cases hτbit : τ.2 s with
+      | false => rfl
+      | true =>
+        exfalso
+        rw [hτ2] at hτbit
+        obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) hτbit
+        have hzone := kvE_futZoneHolds_of_atom M
+          (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) z s hz
+        rw [hzs] at hzone
+        have hx1z : x1 < z := (hzone 0).2.mpr rfl
+        have hnf := hrayC (Formula.untl (kvE_futRayD P σ).neg Formula.top).neg (by simp)
+        rw [temporal_truth_neg] at hnf
+        have hDz : temporal_truth M atomMap z (kvE_futRayD P σ) := by
+          by_contra hnD
+          exact hnf ⟨z, hx1z, (temporal_truth_neg M atomMap z _).mpr hnD,
+            fun r _ _ => id⟩
+        rw [kvE_futRayD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ z] at hDz
+        obtain ⟨s', hmem', env', hev'⟩ := hDz
+        obtain ⟨hbit', hzs'⟩ := (kvE_fiberZoneList_mem σ kvE_futRayZone s').mp hmem'
+        have hpin' := kvE_futRayItem_pinned_zero M z x1 w x t hxw hwt htx1 hx1z
+          τ.1 hτA s' (honfib s' hbit') hzs' ⟨env', hev'⟩
+        have hss' : s' = s := nf_eval_unique M 0 5
+          (Fin.cons z (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s' s hpin' hz
+        rw [hss', hσbit] at hbit'
+        exact Bool.noConfusion hbit'
+  · -- SELF zone (step 5)
+    cases hσbit : σ.2 s with
+    | true =>
+      -- admissibility conjunct 4: one self profile ⇒ s IS the delivered s0 (lossless split)
+      have hdS := kvE_futAdmissible_onFiber σ hadm s hσbit
+      have hdS0 := kvE_futAdmissible_onFiber σ hadm s0 hbit0
+      have hadm' := hadm
+      unfold kvE_futAdmissible at hadm'
+      rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hadm'
+      have hc4 := hadm'.2
+      have hbitS : kvE_subBit σ kvE_futSelfZone (nfk_projFresh s) = true := by
+        refine List.any_eq_true.mpr ⟨s, Finset.mem_toList.mpr (Finset.mem_univ s), ?_⟩
+        rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+        exact ⟨⟨⟨decide_eq_true hdS, decide_eq_true hzs⟩, decide_eq_true rfl⟩, hσbit⟩
+      have hbitS0 : kvE_subBit σ kvE_futSelfZone (nfk_projFresh s0) = true := by
+        refine List.any_eq_true.mpr ⟨s0, Finset.mem_toList.mpr (Finset.mem_univ s0), ?_⟩
+        rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
+        exact ⟨⟨⟨decide_eq_true hdS0, decide_eq_true hzs0⟩, decide_eq_true rfl⟩, hbit0⟩
+      have hχ : nfk_projFresh s = nfk_projFresh s0 := by
+        have h4 := (List.all_eq_true.mp hc4) (nfk_projFresh s)
+          (Finset.mem_toList.mpr (Finset.mem_univ _))
+        have h4' := (List.all_eq_true.mp h4) (nfk_projFresh s0)
+          (Finset.mem_toList.mpr (Finset.mem_univ _))
+        rw [Bool.or_eq_true, Bool.or_eq_true, hbitS, hbitS0] at h4'
+        rcases h4' with (h | h) | h
+        · exact absurd h (by decide)
+        · exact absurd h (by decide)
+        · exact of_decide_eq_true h
+      have hs_eq : s = s0 := by
+        have h1 : nf0_zoneSpec s = nf0_zoneSpec s0 := by
+          have ha : nf0_zoneSpec s = kvE_futSelfZone := hzs
+          have hb : nf0_zoneSpec s0 = kvE_futSelfZone := hzs0
+          rw [ha, hb]
+        have h2 : nf0_projFresh s = nf0_projFresh s0 := by
+          rw [← kvE_projFresh_zero s, ← kvE_projFresh_zero s0]; exact hχ
+        have h3 : nf0_dropFresh s = nf0_dropFresh s0 := by
+          rw [honfib s hσbit, honfib s0 hbit0]
+        calc s = nf0_assemble (nf0_zoneSpec s) (nf0_projFresh s) (nf0_dropFresh s) :=
+              (nf0_split_assemble s).symm
+          _ = nf0_assemble (nf0_zoneSpec s0) (nf0_projFresh s0) (nf0_dropFresh s0) := by
+              rw [h1, h2, h3]
+          _ = s0 := nf0_split_assemble s0
+      rw [hs_eq]; exact hτs0
+    | false =>
+      -- σ★ ⊆ σ: a pinned self witness coincides with x1; uniqueness against s0
+      cases hτbit : τ.2 s with
+      | false => rfl
+      | true =>
+        exfalso
+        rw [hτ2] at hτbit
+        obtain ⟨z, hz⟩ := @of_decide_eq_true _ (Classical.dec _) hτbit
+        have hzone := kvE_futZoneHolds_of_atom M
+          (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) z s hz
+        rw [hzs] at hzone
+        have hzx1 : z = x1 := kvE_futSelfZone_coincide M hzone
+        rw [hzx1] at hz
+        have hss0 : s = s0 := nf_eval_unique M 0 5
+          (Fin.cons x1 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s s0 hz hs0pin
+        rw [hss0, hbit0] at hσbit
+        exact Bool.noConfusion hσbit
+
+/-! ### The reconstruction companion: slice uniqueness at m = 0 -/
+
+/-- **m = 0 slice uniqueness** (report 02 §3.3 second signature; the
+    internal-`hexclExt`-style discharge for the soundness direction): two σ's
+    pinned-realized at (possibly different) exterior endpoints over the same `[w, x, t]`
+    with equal exterior slices are EQUAL. Route: slice-equal atom layers give the two
+    endpoints the same complete depth-0 atomic profile (`nf_eval_unique`); exterior-zone
+    fiber bits agree by the slice hypothesis; interior fiber elements (witness `¬ t < v` by
+    exterior-zone classification) transfer between profile-equal endpoints with the SAME
+    witness (`kvE_futInteriorTransfer_zero`, probe P3), so the depth-1 fold biconditionals
+    force every remaining bit to coincide. -/
+theorem kvE_futSliceUnique_zero {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig)
+    (σ' σ : NormalForm sig 1 4)
+    (w x t x1' x1 : M.carrier) (hxw : x < w) (hwt : w < t)
+    (htx1' : t < x1') (htx1 : t < x1)
+    (hslice : kvE_futSliceEq σ' σ = true)
+    (hσ' : nf_eval_nf M 1 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ')
+    (hσ : nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    σ' = σ := by
+  unfold kvE_futSliceEq at hslice
+  rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hslice
+  obtain ⟨⟨⟨h1d, hgapL⟩, hrayL⟩, hselfL⟩ := hslice
+  have h1 : σ'.1 = σ.1 := of_decide_eq_true h1d
+  have hgapL := of_decide_eq_true hgapL
+  have hrayL := of_decide_eq_true hrayL
+  have hselfL := of_decide_eq_true hselfL
+  -- profile-equal endpoints: each side's atom layer is the other's endpoint characteristic
+  have hσA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 :=
+    nf_eval_nf_atom_layer M _ σ hσ
+  have hσ'A : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) σ'.1 :=
+    nf_eval_nf_atom_layer M _ σ' hσ'
+  have hσ1c : σ.1 =
+      nf_characteristic M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) :=
+    nf_eval_unique M 0 4 _ _ _ hσA (nf_characteristic_satisfies M 0 4 _)
+  have hσ'1c : σ'.1 =
+      nf_characteristic M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) :=
+    nf_eval_unique M 0 4 _ _ _ hσ'A (nf_characteristic_satisfies M 0 4 _)
+  have hchar : nf_eval_nf M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf_characteristic M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) := by
+    rw [← hσ1c, ← h1]; exact hσ'A
+  have hchar' : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))
+      (nf_characteristic M 0 4 (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t))))) := by
+    rw [← hσ'1c, h1]; exact hσA
+  refine Prod.ext h1 ?_
+  funext s
+  by_cases hzc : nfk_zoneSpec s = kvE_futGapZone ∨ nfk_zoneSpec s = kvE_futRayZone ∨
+      nfk_zoneSpec s = kvE_futSelfZone
+  · -- exterior zones: the slice hypothesis decides the bit through zone-list membership
+    have key : ∀ z : ZoneSpec 4,
+        kvE_fiberZoneList σ' z = kvE_fiberZoneList σ z → nfk_zoneSpec s = z →
+        σ'.2 s = σ.2 s := by
+      intro z hL hz
+      cases hb : σ.2 s with
+      | true =>
+        have hmem : s ∈ kvE_fiberZoneList σ z := (kvE_fiberZoneList_mem σ z s).mpr ⟨hb, hz⟩
+        rw [← hL] at hmem
+        exact ((kvE_fiberZoneList_mem σ' z s).mp hmem).1
+      | false =>
+        cases hb' : σ'.2 s with
+        | false => rfl
+        | true =>
+          have hmem : s ∈ kvE_fiberZoneList σ' z :=
+            (kvE_fiberZoneList_mem σ' z s).mpr ⟨hb', hz⟩
+          rw [hL] at hmem
+          have hbit := ((kvE_fiberZoneList_mem σ z s).mp hmem).1
+          rw [hb] at hbit
+          exact absurd hbit Bool.false_ne_true
+    rcases hzc with hz | hz | hz
+    · exact key kvE_futGapZone hgapL hz
+    · exact key kvE_futRayZone hrayL hz
+    · exact key kvE_futSelfZone hselfL hz
+  · -- interior: same-witness transfer between the profile-equal endpoints
+    have hfold := hσ.2 s
+    have hfold' := hσ'.2 s
+    cases hb : σ.2 s with
+    | true =>
+      obtain ⟨v, hv⟩ := hfold.mpr hb
+      have hzone := kvE_futZoneHolds_of_atom M
+        (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) v s hv
+      have hvt : ¬ t < v := fun htv =>
+        hzc (kvE_futZoneSpec_of_above M v x1 w x t hxw hwt htv _ hzone)
+      exact hfold'.mp
+        ⟨v, kvE_futInteriorTransfer_zero M v x1 x1' w x t hvt htx1 htx1' hchar s hv⟩
+    | false =>
+      cases hb' : σ'.2 s with
+      | false => rfl
+      | true =>
+        obtain ⟨v, hv'⟩ := hfold'.mpr hb'
+        have hzone := kvE_futZoneHolds_of_atom M
+          (Fin.cons x1' (Fin.cons w (Fin.cons x (fun _ => t)))) v s hv'
+        have hvt : ¬ t < v := fun htv =>
+          hzc (kvE_futZoneSpec_of_above M v x1' w x t hxw hwt htv _ hzone)
+        have hbit := hfold.mp
+          ⟨v, kvE_futInteriorTransfer_zero M v x1' x1 w x t hvt htx1' htx1 hchar' s hv'⟩
+        rw [hb] at hbit
+        exact absurd hbit Bool.false_ne_true
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
