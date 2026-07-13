@@ -114,7 +114,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 358 [NOT STARTED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
-359 [NOT STARTED] — Post-green cleanup: delete the Boneyard dead-proof infrastructure
+359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Uncategorized
 
@@ -123,14 +123,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ## Tasks
 
-### 359. Remove boneyard dead proof infrastructure
+### 359. Boneyard archive hygiene no live imports
 - **Effort**: medium
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 303
 
-**Description**: Post-green cleanup: delete the Boneyard dead-proof infrastructure under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/ (~71 files / ~47k lines / ~121 dead sorries — abandoned bypass/EF-game/Stavi infrastructure superseded by the live Kamp/NfMultiAnchorBridge route). PREREQUISITE (do FIRST): sever the 3 remaining LIVE imports into Boneyard before deleting anything — roadmap report 13 identifies live imports via Prop43 and NavigatedEndChar (verify the exact set at implementation time with a fresh grep for imports of ...Kamp.Boneyard.* from non-Boneyard files). Only once no live file imports Boneyard may the directory be removed. GATING: this is strictly post-green cleanup — do NOT run until completeness_discrete is sorry-free/axiom-clean (hence dependency on task 303, the tail of the assembly chain), so that no in-flight proof work still depends on parked Boneyard lemmas. Definition of done: Boneyard/ removed, full-tree lake build GREEN, no orphaned imports, axioms unchanged on completeness_discrete. Zero-debt: if a Boneyard declaration turns out to be live/needed, promote it out of Boneyard rather than force-deleting.
+**Description**: Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a permanent archive of retired/superseded proof infrastructure under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/Boneyard/). Three-part aim: (1) NO LIVE IMPORTS INVARIANT — nothing outside Boneyard/ may import from Boneyard/. Roadmap report 13 flags ~3 remaining live imports into Boneyard (via Prop43 and NavigatedEndChar; verify the exact set at implementation time with a fresh grep for non-Boneyard files importing any Kamp.Boneyard.* module). For each live import, PROMOTE the still-needed declaration OUT of Boneyard into a live module (do NOT delete it), until no non-Boneyard file imports Boneyard/. (2) ARCHIVE UNNEEDED CODE INTO the Boneyard — move dead/superseded declarations from live modules into Boneyard/ rather than leaving them inline (e.g. the dead endIntervalStep placeholder at CarrierK1V.lean:2144 superseded by task 357's EndIntervalConsumerK; and any other retired-but-inline code surfaced during the green cleanup pass). (3) TIDY the Boneyard itself — organize/normalize the archive (consistent module headers marking archival status, no build-participation surprises) WITHOUT deleting its contents. The Boneyard is never emptied or removed. GATING: the archive-what-is-unneeded pass (2) is clearest post-green (you only know what is unneeded once completeness_discrete is sorry-free/axiom-clean — hence dependency on task 303, tail of the assembly chain); the sever-live-imports invariant (1) may be pulled earlier if convenient. Definition of done: no non-Boneyard file imports Boneyard/; identified dead inline code archived into Boneyard/; Boneyard tidied; full-tree lake build GREEN; axioms on completeness_discrete unchanged. Zero-debt: promote-not-delete for anything still live.
 
 ---
 
