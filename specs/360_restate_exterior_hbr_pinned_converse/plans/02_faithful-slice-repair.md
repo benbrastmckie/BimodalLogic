@@ -629,7 +629,63 @@ fired: a genuine asymmetry, not a transcription slip.
 - **File scope:** ExteriorPinnedConversePastK.lean (+ hoisted helpers appended to
   ExteriorPinnedConverseK.lean); read-only elsewhere.
 
-### Phase 5: m=0 discharge of `hsliceFut`/`hslicePast` [NOT STARTED]
+### Phase 5: m=0 discharge of `hsliceFut`/`hslicePast` [BLOCKED]
+
+**BLOCKER** (Phase 5, dispatch 2026-07-14, sess_1783950096_9d2925) — `hslice*` pair only; the
+`hexclSlice*` pair LANDED GREEN (see the updated checklist below):
+
+- **What failed**: `kvE_hsliceFut_supply_zero` (and its Past mirror) in the signature-locked
+  binder shape (EndIntervalConsumerK.lean:145-150 at m := 0). The prescribed route (chain
+  destructor + `kvE_futSliceId_of_end_zero`, report 02 §3.4/§5-row-2) was machine-probed via
+  `lean_run_code` (gate-first, Phase-4a discipline): the ENTIRE route elaborates with exactly
+  ONE gap — the slice-id's fiber input `hfib : nfk_dropFresh σ = qnf.1` (its atom-layer fiber
+  condition, ExteriorPinnedConverseK.lean:896), which NO binder hypothesis supplies. Probe
+  transcript: single `sorry` warning at the `hfib` have-step; all other steps (destructor
+  unfold, `himp`, `kvE_futChainDestructG`, slice-id application, admissibility via
+  `kvE_futRealizer_admissible`, sliceEq assembly via `kvE_fiberZoneList_congr`) GREEN.
+- **What was tried**: (1) the plan-prescribed route (closes modulo `hfib`); (2) derivability
+  analysis of `hfib` from the binder's hypothesis set — impossible: every semantic hypothesis
+  (`hpos` chain fire, hence `hend`/`hgap`/`hocc`) reads σ through FREE-ENV `P.existF 4`
+  content (`kvE_futItemShift_correct`: `∃ env : Fin 4 → M.carrier, …`) and the exterior zone
+  lists only, so nothing pins σ's atom layer over the ACTUAL anchors `[w,x,t]` — the same
+  footprint property the Phase-3 refutation record documents (ExteriorPinnedConverseK.lean:
+  219-240: "σ.2 is never related to qnf.2; hfib relates atom layers").
+- **Why stuck — the statement is FALSE as shaped, not merely unprovable by this route**
+  (doppelgänger countermodel, analytic): take M = ℤ (satisfies `semantic_prior_UZ`/`SZ`: any
+  nonempty set of occurrences bounded below/above in ℤ has a least/greatest element) with one
+  monadic predicate Q true exactly at one point w′. Anchors x′ < w′ < t′ < x1′ (e.g.
+  0,1,2,100) and x < w < t inside (t′, x1′) (e.g. 3,4,5) with Q(w) = false ≠ Q(w′) = true.
+  Set qnf := `nf_characteristic M 2 3 [w,x,t]` (honest ambient — realized), σ :=
+  `nf_characteristic M 1 4 [x1′,w′,x′,t′]` (admissible via `kvE_futRealizer_admissible` at
+  its own anchors). σ's three exterior zone lists are singletons (all points of (t′,x1′) /
+  {x1′} / (x1′,∞) share one char each since Q is constant off w′), and `kvE_futPos P σ` is
+  TRUE at t: the one-item chain walks (t, x1′) ⊆ (t′, x1′) with every item/end/gap conjunct
+  realized FREE-ENV at the primed anchors. But every qnf-MARKED σ″ is pinned-realized over
+  the real `[·,w,x,t]` (ambient fold), so σ″.1 carries Q-at-w-slot = Q(w) = false, while σ.1
+  carries Q-at-w-slot = Q(w′) = true — no marked σ″ can satisfy `kvE_futSliceEq σ″ σ`
+  (its first conjunct is `decide (σ″.1 = σ.1)`). Conclusion fails; every antecedent holds
+  (including `hreal`/`hexcl`, so no ambient strengthening rescues it). Past mirror symmetric.
+- **Isolation (root cause)**: the Phase-3b depth-k bracket ranges over ALL
+  `kvE_futAdmissible` σ (ExteriorBracketAssembleK.lean:78-85) — admissibility never mentions
+  qnf — whereas the frozen k=2 template it descends from ranges over the
+  `kvE2_futMarked qnf`-FILTERED subs (ExteriorBracket.lean:364-372), whose marking includes
+  the BASE/fiber agreement with qnf (`kvE2_extBase_of_realizer` component, henv). The
+  slice re-key fixed the F ∧ ¬F keying defect but silently WIDENED the conjunction range to
+  off-fiber σ; the ⇐-side honesty obligation for an off-fiber admissible σ is exactly the
+  undischargeable (false) residue. The probe shows the FIBER-RESTRICTED variant (binder +
+  `nfk_dropFresh σ = qnf.1` antecedent) closes GREEN end-to-end with landed suppliers.
+- **What is needed** (orchestrator decision — interface repair, Phase-3b territory, out of
+  Phase-5 scope): restrict the depth-k bracket range (and hence the carried `hslice*` binder)
+  to fiber-compatible admissible σ — e.g. filter by
+  `kvE_futAdmissible σ && decide (nfk_dropFresh σ = qnf.1)` (the k=2-faithful range), with
+  D1-D4/gate/consumer/KampPrior-mirror re-threaded and the σ-quantified obligations gaining
+  the fiber antecedent. Under that range the landed probe route discharges `hslice*` at m=0
+  verbatim. The landed `hexclSlice*` supply theorems remain valid (their statements only
+  gain an unused antecedent). A same-defect check of D1/D2's slice-level exclusion range and
+  the `kvE_extNegFut`-truth obligations should ride along.
+- **Prohibited**: `sorry`, vacuous defs, resurrecting `hbr*`, or weakening the supply
+  statement below what the consumer binder needs (a fiber-restricted supply theorem CANNOT
+  discharge the CURRENT unrestricted binder — do not land one against the current interface).
 
 - **Goal:** Prove the two supply theorems (`kvE_hsliceFut_supply_zero`,
   `kvE_hslicePast_supply_zero`) showing the Phase-3b carried obligations HOLD at m = 0: their
@@ -637,17 +693,34 @@ fired: a genuine asymmetry, not a transcription slip.
   signature-locked (copy the binder text verbatim from EndIntervalConsumerK), no design freedom.
   These — NOT the four eliminated `kvE_hbr*_supply_zero` (two provably false) — are the
   interface task 358's `:361` arm and task 349 v8 Phase 6 consume.
-- **Bounded unit:** two theorems with fixed statements and a fixed route.
+- **Bounded unit:** two theorems with fixed statements and a fixed route. *(Phase-3b deviation
+  record expanded this to FOUR: + `hexclSliceFut`/`hexclSlicePast`.)*
 - **Tasks:**
-  - [ ] Transcribe the `hsliceFut`/`hslicePast` binder types at m := 0 as theorem statements.
+  - [x] Transcribe the `hsliceFut`/`hslicePast` binder types at m := 0 as theorem statements.
+        *(deviation: altered — done as machine PROBES (gate-first, Phase-4a discipline), not
+        production: the `hslice*` statements are FALSE as shaped — see BLOCKER. The
+        `hexclSlice*` binder types transcribed and LANDED as production statements, verbatim
+        at k := 0 + the ambient `hreal` binder per report 02 §3.4.)*
   - [ ] Future proof (report 02 §3.4 + §5 row 2 route): given admissible σ with
         `kvE_futPos` true at t, destruct via `kvE_futChainDestructG` → endpoint x1 +
         `hend`/`hgap`/`hocc` → `kvE_futSliceId_of_end_zero` → marked slice-mate σ' — exactly
-        the obligation's conclusion. Past mirror symmetric.
-  - [ ] Module docstring cross-referencing task 358 `:361` and task 349 v8 Phase 6 as intended
+        the obligation's conclusion. Past mirror symmetric. *(deviation: BLOCKED — the route
+        machine-elaborates except the slice-id's `hfib : nfk_dropFresh σ = qnf.1` input,
+        which no binder hypothesis supplies and which cannot be added without the Phase-3b
+        interface repair; statement refuted by the ℤ doppelgänger countermodel. See BLOCKER.)*
+  - [x] `kvE_hexclSliceFut_supply_zero` (ExteriorPinnedConverseK.lean) +
+        `kvE_hexclSlicePast_supply_zero` (ExteriorPinnedConversePastK.lean) — the ⇒-side
+        exclusion residue supply pair, route: sliceMarked unpack → `hreal` realizes the
+        marked mate → endpoint exterior via admissibility zone read-back →
+        `kvE_{fut,past}SliceUnique_zero` collapse → bit contradiction. LANDED GREEN,
+        probe-first (three `lean_run_code` probes, zero diagnostics on both `hexclSlice*`).
+  - [x] Module docstring cross-referencing task 358 `:361` and task 349 v8 Phase 6 as intended
         consumers, and noting the four `kvE_hbr*_supply_zero` are ELIMINATED (two refuted by
-        the (σ′,e) witness — cite `kvE_futPinned_of_end_zero_refuted`).
-  - [ ] `#print axioms`; scoped builds; commit.
+        the (σ′,e) witness — cite `kvE_futPinned_of_end_zero_refuted`). *(both files' Phase-5
+        section headers; plus the honest `hslice*` BLOCKED status note)*
+  - [x] `#print axioms`; scoped builds; commit. *(both supply theorems exactly
+        `[propext, Classical.choice, Quot.sound]`; scoped builds 1025/1028 jobs GREEN; FULL
+        `lake build` 1736 jobs GREEN; territory sorry census 0)*
 - **Done when:** both supply theorems sorry-free with statements verbatim-matching the carried
   interface at m=0; scoped builds green.
 - **Estimated output:** ~100-180 lines.

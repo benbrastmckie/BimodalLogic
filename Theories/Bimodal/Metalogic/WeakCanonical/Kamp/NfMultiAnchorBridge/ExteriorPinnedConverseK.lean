@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
 
 /-! # Future pinned fiber-realization converse at m = 0 — endpoint atom-layer pinning (task 360, Phase 2)
 
@@ -67,7 +68,8 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 open Bimodal.Metalogic.WeakCanonical.Separation
-  (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff)
+  (formula_conjList formula_conjList_iff formula_disjList formula_disjList_iff
+   nf_depth0_char_formula)
 
 /-! ## Helper 1: admissibility conjunct-1 reader (zone marking of the atom layer)
 
@@ -1195,5 +1197,88 @@ theorem kvE_futSliceUnique_zero {sig : MonadicSignature}
           ⟨v, kvE_futInteriorTransfer_zero M v x1' x1 w x t hvt htx1' htx1 hchar' s hv'⟩
         rw [hb] at hbit
         exact absurd hbit Bool.false_ne_true
+
+/-! ### Phase 5 — the m=0 supply theorems for the slice-keyed exterior interface (Future)
+
+The task-360 plan-v2 Phase-5 discharges of the carried exterior obligations that task 358's
+`KampPrior.lean:361` arm and task 349 v8 Phase 6 consume through
+`EndIntervalCorrectPrior`'s `m + 2` arm (EndIntervalConsumerK.lean:139-164) at `m := 0`.
+Statements are the 3b binder types at `k := 0`, signature-locked (copied verbatim from
+EndIntervalConsumerK), plus the AMBIENT interior obligation `hreal` — itself a carried binder
+of the same consumer arm, available verbatim at every consumption site — which the
+`hexclSlice*` route consumes per report 02 §3.4 (last paragraph).
+
+The four v1 `kvE_hbr*_supply_zero` targets are ELIMINATED, not superseded here: the two
+guarded Sat-halves are provably FALSE — the (σ′, e) witness satisfies every guard antecedent
+verbatim (`kvE_futPinned_of_end_zero_refuted` above) — and the Real halves left with the
+per-σ-keyed interface. Do not resurrect them.
+
+**Status note (Phase-5 dispatch, 2026-07-14)**: of the FOUR supply targets, the two
+`hexclSlice*` discharges land here and in the Past file; the two `hslice*` discharges are
+BLOCKED — the prescribed route (destructor + `kvE_futSliceId_of_end_zero`) machine-elaborates
+except for the slice-id's fiber input `nfk_dropFresh σ = qnf.1`, which no binder hypothesis
+supplies (the chain/endpoint content is free-env and cannot pin σ's atom layer to the actual
+anchors). See the plan's Phase-5 BLOCKER record for the probe transcript and the
+doppelgänger countermodel argument. -/
+
+/-- **m=0 supply for the carried `hexclSliceFut` obligation** (task 360 plan v2 Phase 5;
+    the ⇒-side per-σ exclusion residue of `bracketEndChar_kvExt_correct_prior` /
+    `EndIntervalCorrectPrior`, binder text verbatim at `k := 0`): given the interior
+    obligation `hreal` ("marked ⇒ realizable", the SAME carried binder of the consumer arm),
+    a bit-false-but-slice-MARKED admissible σ has NO strictly-exterior realizer.
+
+    Route (report 02 §3.4 + Phase-3b handoff): the slice marking delivers an admissible
+    marked mate σ″; `hreal` realizes σ″ at some endpoint; the endpoint is exterior by the
+    admissibility zone marking read back through the realization (the
+    `ExteriorGateAssembleK` D3-feed pattern); `kvE_futSliceUnique_zero` collapses σ″ = σ;
+    the bit split `qnf.2 σ = false` vs `qnf.2 σ″ = true` is absurd.
+
+    (The `kvE_futSliceMarked` unpacking inlines `kvE_futSliceMarked_iff`'s body — that
+    lemma lives in ExteriorBracketAssembleK, DOWNSTREAM of this file; replication
+    precedent.) H4: the refutation witness σ′ is pinned-unrealizable (probe P1), so it
+    satisfies this statement vacuously — unlike the eliminated `hbrFutSat` shape. -/
+theorem kvE_hexclSliceFut_supply_zero {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 2 3)
+    (x t : M.carrier)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF 1) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF 1) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        kvE_futSliceMarked qnf σ = true →
+        ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  intro w hxw hwt hptW σ hadm hbit hsm x1 htx1 hnf
+  -- unpack the slice marking (kvE_futSliceMarked_iff body inlined; see docstring)
+  rw [kvE_futSliceMarked, List.any_eq_true] at hsm
+  obtain ⟨σ'', -, htriple⟩ := hsm
+  rw [Bool.and_eq_true, Bool.and_eq_true] at htriple
+  obtain ⟨⟨hadm'', hslEq⟩, hmark⟩ := htriple
+  -- the marked mate is realizable via the interior obligation
+  obtain ⟨x1'', hσ''⟩ := hreal w hxw hwt hptW σ'' hmark
+  -- its endpoint is exterior: admissibility zone marking read back through the realization
+  have hzone : nf0_zoneSpec σ''.1 = kvE2_sep_zFutT3 := by
+    have hh := hadm''
+    rw [kvE_futAdmissible] at hh
+    simp only [Bool.and_eq_true] at hh
+    exact of_decide_eq_true hh.1.1.1
+  have hb2 : (nf0_zoneSpec σ''.1 ⟨2, by omega⟩).2 = true := by rw [hzone]; rfl
+  have h2 := hσ''.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
+  simp only [atom_eval, Fin.cons] at h2
+  have htx1'' : t < x1'' := h2.mpr hb2
+  -- uniqueness collapses the mate onto σ — contradicting the bit split
+  have heq : σ'' = σ :=
+    kvE_futSliceUnique_zero M σ'' σ w x t x1'' x1 hxw hwt htx1'' htx1 hslEq hσ'' hnf
+  rw [heq, hbit] at hmark
+  exact Bool.noConfusion hmark
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

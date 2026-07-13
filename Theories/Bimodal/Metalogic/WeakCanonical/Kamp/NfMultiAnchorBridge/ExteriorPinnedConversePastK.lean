@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationPastK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterPastK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
 
 /-! # Past-side exterior slice quotient (task 360, plan v2 Phase 3b)
 
@@ -742,5 +743,65 @@ theorem kvE_pastSliceId_of_end_zero {sig : MonadicSignature}
           (Fin.cons x1 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s s0 hz hs0pin
         rw [hss0, hbit0] at hσbit
         exact Bool.noConfusion hσbit
+
+/-! ### Phase 5 — the m=0 supply theorem for the slice-keyed exterior interface (Past)
+
+Mirror of the Future-file Phase-5 section (`ExteriorPinnedConverseK.lean`): the m=0
+discharge of the carried `hexclSlicePast` obligation consumed by task 358's
+`KampPrior.lean:361` arm and task 349 v8 Phase 6 through `EndIntervalCorrectPrior`'s
+`m + 2` arm (EndIntervalConsumerK.lean:151-157) at `m := 0`. Statement is the 3b binder
+type at `k := 0`, signature-locked, plus the ambient interior obligation `hreal` (report 02
+§3.4 last paragraph). The eliminated `kvE_hbrPast*_supply_zero` v1 targets stay eliminated
+(`kvE_futPinned_of_end_zero_refuted` is the Future-side machine refutation of the shared
+guarded-Sat shape). The Past `hslicePast` discharge is BLOCKED with the same fiber-input
+gap as the Future side — see the plan's Phase-5 BLOCKER record. -/
+
+/-- **m=0 supply for the carried `hexclSlicePast` obligation** (task 360 plan v2 Phase 5;
+    binder text verbatim at `k := 0`, mirror of `kvE_hexclSliceFut_supply_zero`): given the
+    interior obligation `hreal`, a bit-false-but-slice-MARKED admissible σ has no
+    strictly-exterior realizer below `x`. Route: slice marking → marked admissible mate σ″
+    (`kvE_pastSliceMarked_iff`) → `hreal` realizes σ″ → endpoint exterior by the Past
+    admissibility zone marking read back through the realization →
+    `kvE_pastSliceUnique_zero` collapses σ″ = σ → bit contradiction. Load-bearing consumer
+    of Phase 4's `kvE_pastSliceUnique_zero` (the Phase-3b deviation record). -/
+theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 2 3)
+    (x t : M.carrier)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF 1) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF 1) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig 1 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        kvE_pastSliceMarked qnf σ = true →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  intro w hxw hwt hptW σ hadm hbit hsm x1 hx1x hnf
+  obtain ⟨σ'', hadm'', hslEq, hmark⟩ := (kvE_pastSliceMarked_iff qnf σ).mp hsm
+  -- the marked mate is realizable via the interior obligation
+  obtain ⟨x1'', hσ''⟩ := hreal w hxw hwt hptW σ'' hmark
+  -- its endpoint is exterior: Past admissibility zone marking read back through the realization
+  have hzone : nf0_zoneSpec σ''.1 = kvE2_sep_zPastX3 := by
+    have hh := hadm''
+    rw [kvE_pastAdmissible] at hh
+    simp only [Bool.and_eq_true] at hh
+    exact of_decide_eq_true hh.1.1.1
+  have hb1 : (nf0_zoneSpec σ''.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
+  have h1 := hσ''.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
+  simp only [atom_eval, Fin.cons] at h1
+  have hx1''x : x1'' < x := h1.mpr hb1
+  -- uniqueness collapses the mate onto σ — contradicting the bit split
+  have heq : σ'' = σ :=
+    kvE_pastSliceUnique_zero M σ'' σ w x t x1'' x1 hxw hwt hx1''x hx1x hslEq hσ'' hnf
+  rw [heq, hbit] at hmark
+  exact Bool.noConfusion hmark
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
