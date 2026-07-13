@@ -190,7 +190,7 @@ escalation milestone, NOT part of the green Definition of Done.
 
 ---
 
-### Phase 6: Full-tree green verification + axiom audit [NOT STARTED]
+### Phase 6: Full-tree green verification + axiom audit [COMPLETED]
 
 - **Goal:** Confirm the green Definition of Done: full-tree build GREEN and the two target identifiers have exactly the sanctioned three axioms.
 - **Tasks:**
@@ -209,7 +209,15 @@ escalation milestone, NOT part of the green Definition of Done.
 
 ---
 
-### Phase 7: [BLOCKED] Escalation milestone — full discharge + KampPrior:361 retirement (FENCED OUT of green DoD)
+### Phase 7: Escalation milestone — full discharge + KampPrior:361 retirement [BLOCKED]
+
+**BLOCKER (Phase 7 — fenced out of the green DoD, resolved as [BLOCKED]+spawn):**
+- **What failed / not attempted:** actually DISCHARGING (rather than carrying) `hreal`/`hexcl`/`hbr*` at the provider site.
+- **Realization availability check (Phase 5 task, expected NO — CONFIRMED):** `nf_nvar_exist_all_depths` `n≥1` arms remain open sorries at `KampPrior.lean:361` (`|1=>`) and `:364` (`|n+2=>`) — the genuine interior/exterior realizer `hσ` is NOT produced anywhere in the tree.
+- **Why stuck (root cause):** `kvE_{fut,past}Bundle_of_realizer` (`ExteriorConverterK.lean:208` / `ExteriorConverterPastK.lean:177`) is a CONVERTER only — it needs a genuine realizer `hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ` to yield the `hbr*` conjuncts. Producing `hσ` is the un-landed realization mathematics (Rabinovich Cor 5.4 inf/sup within-bracket bounded witness selection), a task-309 Phase-14 successor OUTSIDE task 357's dependencies (355, 356).
+- **What is needed:** land the `nf_nvar_exist_all_depths` `n≥1` arms (retire `:361`/`:364`), then discharge the eleven carried obligations via the provider instantiation.
+- **SPAWNED:** task **358** (`realization_recursion_nf_nvar_exist_all_depths`, `parent_task 349`, `dependencies [357]`) recorded in `specs/state.json`. Consumers ready + green: `endInterval_step_correct`/`EndIntervalCorrectPrior` (`EndIntervalConsumerK.lean`) and `kampPrior_site_rungK_gate_match` (`KampPrior.lean`).
+- **Zero-debt honored:** NO `sorry`, NO vacuous def, NO new axiom was landed for the discharge. The pre-existing `KampPrior:361/364` sorries are untouched (not a regression).
 
 - **Goal:** Explicitly fence out the DoD phrase "four extra obligations discharged at the provider site." This is the escalation boundary: NOT part of the green Definition of Done, and NEVER to be forced with a `sorry` or vacuous definition.
 - **Status rationale:** `hreal`/`hexcl`/`hbr*` are un-discharged at EVERY depth (even the k=2 rung carries them un-discharged, consumed only by the open `KampPrior:361/364` sorries). Discharging them requires producing a genuine realizer `hσ` for `kvE_{fut,past}Bundle_of_realizer` to convert — the un-landed realization recursion (`nf_nvar_exist_all_depths` `n≥1` arms; Rabinovich Cor 5.4 inf/sup witness selection). This is a task 309 Phase 14 successor, outside task 357's dependencies (355, 356).

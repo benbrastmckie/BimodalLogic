@@ -1,5 +1,5 @@
 ---
-next_project_number: 358
+next_project_number: 359
 ---
 
 # TODO
@@ -12,14 +12,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,357 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,341,343,357 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,350 | 131,189,192,196,349 | formula-refactor, automation, kamp_theorem_formalization |
-| 4 | 177,178,309 | 131,193,350 | formula-refactor, kamp_theorem_formalization |
-| 5 | 307 | 309 | completeness |
-| 6 | 305 | 307 | completeness |
-| 7 | 303 | 305 | completeness |
-| 8 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349,358 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,341,343,349 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,309 | 131,189,192,196,350 | formula-refactor, automation, kamp_theorem_formalization |
+| 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
+| 5 | 305 | 307 | completeness |
+| 6 | 303 | 305 | completeness |
+| 7 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -111,10 +110,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-357 [NOT STARTED] — Reshape the task-349 interval consumer from the unconditional End
-  └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
-    └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
-      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+  └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+    └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+358 [NOT STARTED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 
 ### Uncategorized
 
@@ -123,12 +122,26 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ## Tasks
 
-### 357. Reshape endinterval consumer obligation carrying
+### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 357
+
+**Description**: Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.
+
+---
+
+### 357. Reshape endinterval consumer obligation carrying
+- **Effort**: high
+- **Status**: [COMPLETED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 355, Task 356
+- **Research**: [357_reshape_endinterval_consumer_obligation_carrying/reports/01_endinterval-consumer-reshape-shape-and-path.md]
+- **Plan**: [357_reshape_endinterval_consumer_obligation_carrying/plans/01_endinterval-consumer-reshape.md]
+- **Summary**: [357_reshape_endinterval_consumer_obligation_carrying/summaries/01_endinterval-consumer-reshape-summary.md]
 
 **Description**: Reshape the task-349 interval consumer from the unconditional EndIntervalCorrect (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:2179) to an obligation-carrying EndIntervalCorrectPrior, and fill the endIntervalStep body (CarrierK1V.lean:2144, currently the sanctioned ⟨[]⟩ empty-disjunction placeholder) so task 349 Phase 5 closes. The reshape routes the seven provider obligations (P : ExistProviders, hcharK, h_UZ, h_SZ, hreal, hexcl, hexclExt) up to the KampPrior recursion where the providers/UZ/SZ live (mirroring the k=2 supply site KampPrior.lean:351). The body consumes: (interior half) task 355 bracketEndChar_kv_correct_prior / InteriorGateAllK (InteriorGateGeneralK.lean:1288, delivered green, obligation-carrying), and (exterior half) task 356 hexclExt exterior-adjacency discharge. SCOPE NOTE: this task IS permitted to edit CarrierK1V.lean and KampPrior.lean (the byte-frozen constraint on these was a task-355-local guard; this is task-349-scoped consumer wiring). Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q3 established the consumer mismatch: EndIntervalCorrect is unconditional with no EndIntervalCorrectPrior in the tree, so this reshape is the required two-sided move) and plan v2 specs/355_build_depthk_interior_gate_correctness/plans/02_interior-gate-deliverable-reshape.md, plus the task 355 consumability doc (InteriorGateGeneralK.lean:1322, records the exact seven-obligation interface). Definition of done: EndIntervalCorrectPrior green with the endIntervalStep interior half filled from task 355 and exterior half from task 356; axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; unblocks task 349 Phase 5. If a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous definition.
 

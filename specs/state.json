@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 358,
+  "next_project_number": 359,
   "active_projects": [
     {
       "project_number": 347,
@@ -2115,7 +2115,7 @@
     {
       "project_number": 357,
       "project_name": "reshape_endinterval_consumer_obligation_carrying",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Reshape the task-349 interval consumer from the unconditional EndIntervalCorrect (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:2179) to an obligation-carrying EndIntervalCorrectPrior, and fill the endIntervalStep body (CarrierK1V.lean:2144, currently the sanctioned ⟨[]⟩ empty-disjunction placeholder) so task 349 Phase 5 closes. The reshape routes the seven provider obligations (P : ExistProviders, hcharK, h_UZ, h_SZ, hreal, hexcl, hexclExt) up to the KampPrior recursion where the providers/UZ/SZ live (mirroring the k=2 supply site KampPrior.lean:351). The body consumes: (interior half) task 355 bracketEndChar_kv_correct_prior / InteriorGateAllK (InteriorGateGeneralK.lean:1288, delivered green, obligation-carrying), and (exterior half) task 356 hexclExt exterior-adjacency discharge. SCOPE NOTE: this task IS permitted to edit CarrierK1V.lean and KampPrior.lean (the byte-frozen constraint on these was a task-355-local guard; this is task-349-scoped consumer wiring). Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q3 established the consumer mismatch: EndIntervalCorrect is unconditional with no EndIntervalCorrectPrior in the tree, so this reshape is the required two-sided move) and plan v2 specs/355_build_depthk_interior_gate_correctness/plans/02_interior-gate-deliverable-reshape.md, plus the task 355 consumability doc (InteriorGateGeneralK.lean:1322, records the exact seven-obligation interface). Definition of done: EndIntervalCorrectPrior green with the endIntervalStep interior half filled from task 355 and exterior half from task 356; axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; unblocks task 349 Phase 5. If a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous definition.",
@@ -2126,7 +2126,44 @@
         356
       ],
       "created": "2026-07-13T04:04:10Z",
-      "last_updated": "2026-07-13T04:04:10Z",
+      "last_updated": "2026-07-13T05:12:44Z",
+      "artifacts": [
+        {
+          "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/reports/01_endinterval-consumer-reshape-shape-and-path.md",
+          "type": "report",
+          "summary": "EndInterval consumer reshape shape; reshape green-viable, full discharge is escalation boundary on realization recursion"
+        },
+        {
+          "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/plans/01_endinterval-consumer-reshape.md",
+          "type": "plan",
+          "summary": "7-phase EndInterval reshape; P1-6 green, P7 [BLOCKED]+spawn realization recursion"
+        },
+        {
+          "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/summaries/01_endinterval-consumer-reshape-summary.md",
+          "type": "summary",
+          "summary": "P1-6 green (obligation-carrying reshape); P7 fenced [BLOCKED]+spawn task 358"
+        }
+      ],
+      "session_id": "sess_1783915595_73147e_357",
+      "spawned_tasks": [
+        358
+      ],
+      "completion_summary": "Reshaped the task-349 interval consumer to obligation-carrying EndIntervalCorrectPrior (new leaf EndIntervalConsumerK.lean, cycle contingency) + general-k KampPrior supply-site cert kampPrior_site_rungK_gate_match. All 11 obligations threaded outward; full-tree GREEN; axioms [propext, Classical.choice, Quot.sound]; task 349 Phase 5 unblocked. Phase 7 full-discharge fenced [BLOCKED] and spawned as task 358 (realization recursion, retires KampPrior:361/364); zero debt landed."
+    },
+    {
+      "project_number": 358,
+      "project_name": "realization_recursion_nf_nvar_exist_all_depths",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
+      "effort": "high",
+      "parent_task": 349,
+      "dependencies": [
+        357
+      ],
+      "created": "2026-07-13T05:11:11Z",
+      "last_updated": "2026-07-13T05:11:11Z",
       "artifacts": []
     }
   ],
