@@ -409,6 +409,131 @@ theorem bracketEndChar_kv_succ_holds_iff {sig : MonadicSignature} {k : Nat}
   exact igBody_holds_iff (nf_depth0_char_formula atomMap h_surj) (charF k) qnf.1
     (igOffFiber qnf) (igFoldBit qnf) M atomMap x t
 
+/-! ## Phase 4a — the honest gate (`igGate` from a genuine realizer)
+
+The completeness half's first milestone: from a genuine depth-`(k+1)` realizer at bracket witness
+`w` (`x < w < t`), the successor carrier's gate `igGate (igOffFiber qnf) (igFoldBit qnf)` holds. Both
+conjuncts are the general-`k` analogs of the k=2 gate `kvE2_sepGate_holds_of_honest`
+(`SharedWitness.lean:2797`, parts i/ii):
+
+- **Off-fiber honesty** (`igOffFiber`) is delivered VERBATIM by the generic whole-evaluation fold
+  bridge `nf_eval_nfk_iff_efold` (`NfEFold.lean`): its off-fiber conjunct
+  `∀ sub, nfk_dropFresh sub ≠ qnf.1 → qnf.2 sub = false` IS `igOffFiber qnf` (defeq, since
+  `nfk_dropFresh sub = nf0_dropFresh sub.atom_assgn`).
+- **Order-conflict falsity** (the seven-zone gate) is the depth-`k` analog of part (ii): a marked sub
+  is realized at some `x1` over `[x1,w,x,t]`, so its atom-layer zone `nf0_zoneSpec (atom_assgn sub)`
+  is one of the seven order-consistent zones (`igZone3_consistent`, the generic trichotomy below,
+  modeled on `kvE2_sep_zone3_consistent`). No chain step is shortcut (G5): pure order trichotomy and
+  the atom-layer bridge `nf_eval_nf_atom_layer`. -/
+
+/-- **Generic seven-zone order consistency** (task 355 Phase 4a; general-`k` restatement of
+    `kvE2_sep_zone3_consistent`, `SharedWitness.lean:2611`). Any zone realized at a point `u` over the
+    bracket env `[w,x,t]` with `x < w < t` is one of the seven bracket-order-consistent zones. Pure
+    order trichotomy on `u` against `x`, `w`, `t`; `k1v_bool_eq_false` converts each strict-order
+    negation to a Bool bit. -/
+theorem igZone3_consistent {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (w x t u : M.carrier)
+    (hxw : x < w) (hwt : w < t) (zs : ZoneSpec 3)
+    (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u) :
+    zs = igZPastX ∨ zs = igZAtX ∨ zs = igZXW ∨ zs = igZAtW ∨ zs = igZWT ∨ zs = igZAtT ∨
+      zs = igZFutT := by
+  have h0 := hz ⟨0, by omega⟩
+  have h1 := hz ⟨1, by omega⟩
+  have h2 := hz ⟨2, by omega⟩
+  simp only [Fin.cons] at h0 h1 h2
+  have hzs : ∀ (p0 p1 p2 : Bool × Bool),
+      zs ⟨0, by omega⟩ = p0 → zs ⟨1, by omega⟩ = p1 → zs ⟨2, by omega⟩ = p2 →
+      zs = Fin.cons p0 (Fin.cons p1 (fun _ => p2)) := by
+    intro p0 p1 p2 e0 e1 e2
+    funext i
+    match i with
+    | ⟨0, _⟩ => simpa only [Fin.cons] using e0
+    | ⟨1, _⟩ => simpa only [Fin.cons] using e1
+    | ⟨2, _⟩ => simpa only [Fin.cons] using e2
+  have hxt : x < t := hxw.trans hwt
+  rcases lt_trichotomy u x with hux | rfl | hux
+  · -- u < x : zPastX
+    have huw : u < w := hux.trans hxw
+    have hut : u < t := hux.trans hxt
+    exact Or.inl (hzs _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hux, k1v_bool_eq_false h1.2 (lt_asymm hux)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))
+  · -- u = x : zAtX
+    exact Or.inr (Or.inl (hzs _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp hxw, k1v_bool_eq_false h0.2 (lt_asymm hxw)⟩)
+      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl _),
+        k1v_bool_eq_false h1.2 (lt_irrefl _)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hxt, k1v_bool_eq_false h2.2 (lt_asymm hxt)⟩)))
+  · -- x < u : split against w
+    rcases lt_trichotomy u w with huw | rfl | huw
+    · -- x < u < w : zXW
+      have hut : u < t := huw.trans hwt
+      exact Or.inr (Or.inr (Or.inl (hzs _ _ _
+        (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))
+    · -- u = w : zAtW
+      exact Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl _),
+          k1v_bool_eq_false h0.2 (lt_irrefl _)⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hwt, k1v_bool_eq_false h2.2 (lt_asymm hwt)⟩)))))
+    · -- w < u : split against t
+      rcases lt_trichotomy u t with hut | rfl | hut
+      · -- w < u < t : zWT
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))))
+      · -- u = t : zAtT
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl _),
+            k1v_bool_eq_false h2.2 (lt_irrefl _)⟩)))))))
+      · -- t < u : zFutT
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (hzs _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
+
+/-- **Honest gate at depth `k+1`** (task 355 Phase 4a — the completeness first milestone). From a
+    genuine realizer at bracket witness `w` (`x < w < t`), the successor carrier's gate holds. The
+    off-fiber conjunct is delivered by the generic fold bridge `nf_eval_nfk_iff_efold`; the seven-zone
+    conjunct routes each marked sub through its atom-layer zone via `nf_eval_nf_atom_layer` +
+    `igZone3_consistent`. General-`k` analog of `kvE2_sepGate_holds_of_honest` (parts i/ii). No chain
+    step is shortcut (G5). -/
+theorem bracketEndChar_kv_step_gate {sig : MonadicSignature} {k : Nat}
+    (qnf : NormalForm sig (k + 1) 3)
+    (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (h : nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) :
+    igGate (igOffFiber qnf) (igFoldBit qnf) := by
+  refine ⟨((nf_eval_nfk_iff_efold M _ qnf).mp h).2, ?_⟩
+  -- Seven-zone order-conflict falsity: an off-consistent zone marks no realized sub.
+  intro zs χ hncons
+  cases hbit : igFoldBit qnf zs χ with
+  | false => rfl
+  | true =>
+    obtain ⟨sub, hmark, hzone, _hproj⟩ := (igFoldBit_iff qnf zs χ).mp hbit
+    -- The marked sub is realized at some `x1` over `[x1,w,x,t]` (fold conjunct of the realizer).
+    obtain ⟨x1, hx1⟩ := (h.2 sub).mpr hmark
+    have hatom := nf_eval_nf_atom_layer M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) sub hx1
+    -- Read the atom-layer zone of `x1` against `[w,x,t]`.
+    have hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t)))
+        (nf0_zoneSpec (NormalForm.atom_assgn sub)) x1 := by
+      intro i
+      refine ⟨?_, ?_⟩
+      · have h1 := hatom (.order 0 i.succ (Fin.succ_ne_zero i).symm)
+        simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+        exact h1
+      · have h1 := hatom (.order i.succ 0 (Fin.succ_ne_zero i))
+        simp only [atom_eval, Fin.cons_zero, Fin.cons_succ] at h1
+        exact h1
+    rw [hzone] at hz
+    exact absurd (igZone3_consistent M w x t x1 hxw hwt zs hz) hncons
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

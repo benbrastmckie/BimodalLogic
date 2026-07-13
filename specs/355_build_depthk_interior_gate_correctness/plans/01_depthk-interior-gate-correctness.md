@@ -252,7 +252,7 @@ collapse). **BLOCKED-escalation** as global.
 
 ---
 
-### Phase 4: Inductive step — ⇐ completeness (realizer → carrier holds) [NOT STARTED]
+### Phase 4: Inductive step — ⇐ completeness (realizer → carrier holds) [IN PROGRESS]
 
 **Goal**: Prove the completeness half of the k→k+1 step (`bracketEndChar_kv_step_complete`): from
 `∃ w, nf_eval_nf M (k+1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf` conclude `(bracketEndChar_kv …
