@@ -1,7 +1,7 @@
 # Implementation Plan: Task #355 — depth-k interior gate correctness
 
 - **Task**: 355 - Build the depth-k INTERIOR gate correctness lemma `bracketEndChar_kv_correct` (general k, by recursion)
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED] (Phases 1-5 + 6.1 GREEN; Phase 6 ∀-k clean close BLOCKED on the frozen-target shape / F1 — see Phase 6 BLOCKER)
 - **Effort**: ~20 hours (7 phases; deflection-prone formal task, hard-mode phase sizing)
 - **Dependencies**: None (self-contained; all cited templates/clause-layer assets already committed and frozen)
 - **Research Inputs**: specs/349_.../reports/11_recent-completion-consumption.md; specs/349_.../reports/12_spawn-analysis.md; specs/349_.../.orchestrator-handoff.json; specs/349_.../plans/08_consume-depthk-clause-layer.md (Phase 5-7 RESUME POINT)
@@ -344,7 +344,7 @@ for the specific missing sub-lemma; commit any green sub-piece.
 
 ---
 
-### Phase 6: Step assembly + general-k recursion close [NOT STARTED]
+### Phase 6: Step assembly + general-k recursion close [BLOCKED]
 
 **Goal**: Assemble the step biconditional `bracketEndChar_kv_step_correct` = ⟨sound (Phase 5),
 complete (Phase 4)⟩ at symbolic `k+1`, then prove the general-`k` deliverable
@@ -353,12 +353,69 @@ reconciliation of `bracketEndChar_kv_correct_zero`/`_one`, step via the Phase 4+
 supplying the depth-`k` characterization.
 
 **Tasks**:
-- [ ] Assemble `bracketEndChar_kv_step_correct` (the k+1 biconditional) from Phases 4-5.
-- [ ] Prove the general-`k` `∀ k` statement by `Nat.rec`/induction: wire the base rung(s) from Phase
-      1 and the step from the assembled gate; confirm the IH is the depth-`k` instance the step
-      consumes.
-- [ ] Confirm the delivered lemma's conclusion is byte-quotable as the interior obligation the task
-      349 Phase 5 `endIntervalStep` body / `EndIntervalCorrectPrior` consumes (shape match).
+- [x] Assemble `bracketEndChar_kv_step_correct` (the k+1 biconditional) from Phases 4-5. *(DELIVERED
+      GREEN, axiom-clean; obligation-carrying, mirroring the k=2 `bracketEndChar_kvE2_correct_two_prior_frag`.)*
+- [ ] Prove the general-`k` `∀ k` statement by `Nat.rec`/induction. *(BLOCKED — see BLOCKER below:
+      the frozen `InteriorGateTarget` is the CLEAN obligation-free `BracketCarrierCorrectVPrior`, which
+      is F1-refuted at k ≥ 2; the ⇒ direction cannot discharge the provider fiber obligations from
+      `.holds` + UZ/SZ alone.)*
+- [ ] Confirm shape match vs consumer `EndIntervalCorrectPrior`. *(BLOCKED — the shape-reconciliation
+      question is the crux of the block: the deliverable must be re-decided as obligation-carrying,
+      not the clean frozen `InteriorGateTarget`.)*
+
+**BLOCKER** (Phase 6):
+- **What failed**: the ∀-`k` clean `InteriorGateTarget atomMap h_surj charF (k+1)` (=
+  `BracketCarrierCorrectVPrior`, `PriorInterface.lean:60`) — the obligation-FREE biconditional
+  `(bracketEndChar_kv … (k+1) qnf).holds ↔ ∃ w, nf_eval_nf M (k+1) 3 [w,x,t] qnf`. The ⇒ (soundness)
+  direction cannot close.
+- **Exact `lean_goal`** (verbatim, at the ⇒ step, probe removed after capture):
+  ```
+  case mp
+  sig : MonadicSignature
+  k : ℕ
+  atomMap : Formula → sig.preds
+  h_surj : ∀ (p : sig.preds), ∃ a, atomMap (Formula.atom a) = p
+  charF : (j : ℕ) → NormalForm sig j 1 → Formula
+  qnf : NormalForm sig (k + 1) 3
+  h_xy … h_tx : qnf.atom_assgn (AtomKind.order …) = true/false   -- the six k0-mirror order bits
+  M : OrderedMonadicStructure sig
+  h_UZ : semantic_prior_UZ M atomMap
+  h_SZ : semantic_prior_SZ M atomMap
+  x t : M.carrier
+  h_holds : VVecEA2.holds M atomMap (bracketEndChar_kv atomMap h_surj charF (k + 1) qnf) x t
+  ⊢ ∃ w, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x fun x ↦ t)) qnf
+  ```
+  Note the context has NO `P : ExistProviders`, NO `hcharK`, and NO `hreal`/`hexcl`/`hexclExt` —
+  `BracketCarrierCorrectVPrior` admits none of them. From `h_holds` alone the F1-lossy fold
+  (`bracketEndChar_kv_factors`, `CarrierKv.lean:422`) gives no per-sub marking and no arity-4 fiber
+  content, so the realizer `w` is not reconstructible.
+- **What was tried**: (1) `bracketEndChar_kv_step_sound` (Phase 5, GREEN) closes this goal EXACTLY
+  when the three provider obligations `hreal`/`hexcl`/`hexclExt` are in context — but
+  `InteriorGateTarget`/`BracketCarrierCorrectVPrior` does not supply them. (2) Deriving the
+  obligations from `h_holds` + `P.correct`: impossible — the carrier builds only `P.existF 0`
+  (1-type) literals, never invokes `P.existF 3` (arity-4), so `.holds` has no channel to the
+  arity-4 fiber content `hreal` needs. (3) Surveying the k=2 precedent: even at k=2 only the
+  obligation-carrying fragment `bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:359`,
+  carrying `hfrag`/`hrealI`/`hrealB`/`hexcl`/`hexclExt`) exists — a clean `BracketCarrierCorrectVPrior`
+  instance has NEVER been delivered at k ≥ 2. The base rungs k=0/k=1 discharge the clean target
+  (`interiorGateTarget_zero`/`_one`) only because their fibers are trivial (k=0) / pointwise-lossless
+  (k=1); F1 breaks exactly at k ≥ 2.
+- **Why stuck** (root cause): the frozen `InteriorGateTarget` (Phase 1) is STRONGER than what is
+  achievable or than what the k=2 precedent delivers. The provable general-`k` deliverable is the
+  obligation-carrying biconditional `bracketEndChar_kv_step_correct` (DELIVERED GREEN), whose
+  `hexclExt` binder is the exterior-arrangement / Rabinovich Lemma 7.6 adjacency residue — the
+  exterior-bracket layer (tasks 348/351/352/354), an explicit task-355 NON-goal. The clean
+  obligation-free ∀-`k` close is F1-refuted and cannot be reached inside the interior-gate module.
+- **What is needed**: a plan/target-shape DECISION (revision), not more interior-gate proof code —
+  either (a) re-freeze the deliverable as the obligation-carrying `bracketEndChar_kv_step_correct`
+  shape (the general-`k` analog of `_correct_two_prior_frag`) and re-verify the task-349 consumer
+  `EndIntervalCorrectPrior` accepts it (it very likely does — the k=2 consumer KampPrior:351 supplies
+  exactly these obligations); OR (b) `/spawn 355` a dedicated exterior-adjacency task to discharge
+  the `hexclExt` residue via Rabinovich Lemma 7.6 (adjacent-bracket composition across the shared
+  endpoint), enabling an obligation-free ∀-`k` close — but that is the exterior-bracket layer, out of
+  the interior-gate scope.
+- **Prohibited**: no `sorry`, `admit`, `def X := True`, or empty-disjunction placeholder was landed;
+  the block is a NAMED-binder construction gap (`hexclExt`), not a hole. Phases 5 and 6.1 are GREEN.
 
 **Timing**: ~3 hours. **Estimated output**: ~150-300 lines.
 
