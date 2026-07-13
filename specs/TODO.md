@@ -1,5 +1,5 @@
 ---
-next_project_number: 361
+next_project_number: 363
 ---
 
 # TODO
@@ -12,9 +12,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,350,358 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,341,343,350 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,307 | 131,189,192,196,309 | completeness, formula-refactor, automation |
+| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,350,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,341,343,350,361 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,307,362 | 131,169,170,189,192,196,309,358 | completeness, formula-refactor, automation, ... |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
 | 6 | 95,299,359 | 303 | completeness, kamp_theorem_formalization |
@@ -24,8 +24,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Completeness
 
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-169 [NOT STARTED] — complete_frame_extension_setup_and_soundness
-170 [NOT STARTED] — complete_dense_extension_completeness
 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
@@ -111,8 +109,18 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+358 [NOT STARTED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
+
+### Strong_completeness_weak_terminus
+
+169 [NOT STARTED] — Base (FrameClass.Base / general) WEAK completeness green: make th
+170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
+
+### Strong_completeness
+
+361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
+362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet
 
 ### Uncategorized
 
@@ -120,6 +128,28 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 362. Main strong completeness finite context all frame classes
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: Task 361, Task 358, Task 169, Task 170
+
+**Description**: Implement main_strong_completeness: finite-context strong completeness (Γ : Context = List Formula) for all three frame classes, with weak completeness re-exposed as the Γ=[] corollary. For each X ∈ {Base, Dense, Discrete}: prove strong_completeness_X : semantic_consequence_X Γ φ → Nonempty (DerivationTree FrameClass.X Γ φ), by (a) the semantic deduction lemma reducing Γ ⊨_X φ to ⊨_X (Γ.foldr Formula.imp φ), (b) the existing empty-context weak completeness theorem for X (completeness / completeness_dense / completeness_discrete, BXCanonical/Completeness.lean:135/234/276), and (c) iterated application of the syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to move the finite premises into the context. Then derive weak_completeness_X as strong_completeness_X at Γ=[]. New file Theories/Bimodal/Metalogic/StrongCompleteness.lean (additive); update the Metalogic.lean tracking table. Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; sorry-free once the three weak termini (358/169/170) are green. This is the capstone the LaTeX names main_strong_completeness (04-Metalogic.tex:266). Depends on research 361 (architecture + per-class semantic_consequence definitions) and the three weak termini: 358 (discrete), 169 (base), 170 (dense).
+
+---
+
+### 361. Strong completeness architecture and weak terminus gap analysis
+- **Effort**: high
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: strong_completeness
+- **Dependencies**: None
+
+**Description**: Research + scoping for finite-context strong completeness (Context = List Formula) across all three frame classes (Base, Dense, Discrete). Deliverables: (1) Confirm the strong-completeness corollary architecture — per-class semantic_consequence_X (paralleling valid/valid_discrete in Semantics/Validity.lean; the current `⊨`/semantic_consequence quantifies over ALL ordered abelian groups D, so a Discrete/Dense restriction must be defined), the semantic deduction lemma (Γ ⊨ φ ↔ ⊨ Γ.foldr imp φ), and iterated use of the existing syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to derive Γ ⊢ φ from []⊢(Γ→φ). (2) Authoritative gap analysis of what still gates each WEAK terminus: Discrete = task 358 (KampPrior.lean:361/364) + supply (task 350/309); Base = the open sorries in `completeness` (BXCanonical/Completeness.lean:135 — dense arm countermodel_dense, deprecated countermodel_discrete Transfer.lean:1270 "unfixable Z+Z", dd_countermodel_chronicle_mixed_sorry); Dense = the chronicle dense-path sorries inherited by `completeness_dense` (:234) (ChronicleToCountermodel.lean, MCSMixedCase). For each, determine whether the current live architecture reaches green or needs rerouting, and produce a concrete sub-task decomposition + dependency graph for tasks 169 (base weak) and 170 (dense weak), spawning refinements as needed. (3) Confirm the LaTeX-documented main_strong_completeness (04-Metalogic.tex:266) finite-context shape and that weak completeness is exactly the Γ=[] instance. Reference: 04-Metalogic.tex §Completeness-as-Corollary; report 13 (discrete-completeness roadmap). Analysis/read task — no proof obligations to close here.
+
+---
 
 ### 360. Restate exterior hbr pinned converse
 - **Effort**: high
@@ -148,7 +178,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [NOT STARTED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349, Task 357, Task 360
@@ -906,18 +936,24 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 170. Complete dense extension completeness
+- **Effort**: high
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
+- **Topic**: strong_completeness_weak_terminus
+- **Dependencies**: Task 361
+
+**Description**: Dense (FrameClass.Dense) WEAK completeness green: make `completeness_dense` (BXCanonical/Completeness.lean:234) genuinely sorry-free by retiring the inherited chronicle dense-path sorries (BXCanonical/Chronicle/ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_dense_extension_completeness".)
 
 ---
 
 ### 169. Complete frame extension setup and soundness
+- **Effort**: high
 - **Status**: [NOT STARTED]
 - **Task Type**: lean4
-- **Topic**: completeness
-- **Dependencies**: None
+- **Topic**: strong_completeness_weak_terminus
+- **Dependencies**: Task 361
+
+**Description**: Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:135, `valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)`) genuinely sorry-free by retiring or rerouting its open sorries — the dense-arm `countermodel_dense` (:159), the deprecated `countermodel_discrete` path (:166 → Transfer.lean:1270, the "unfixable Z+Z" succ_cofinal route; reroute through the clean countermodel_discrete_reynolds_v2 where the base case overlaps), and `dd_countermodel_chronicle_mixed_sorry` (:170). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub "complete_frame_extension_setup_and_soundness".)
 
 ---
 

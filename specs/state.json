@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 361,
+  "next_project_number": 363,
   "active_projects": [
     {
       "project_number": 347,
@@ -470,8 +470,17 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
-      "last_updated": "2026-05-19T16:14:16Z",
-      "topic": "completeness"
+      "last_updated": "2026-07-13T21:48:29Z",
+      "topic": "strong_completeness_weak_terminus",
+      "description": "Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:135, `valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)`) genuinely sorry-free by retiring or rerouting its open sorries — the dense-arm `countermodel_dense` (:159), the deprecated `countermodel_discrete` path (:166 → Transfer.lean:1270, the \"unfixable Z+Z\" succ_cofinal route; reroute through the clean countermodel_discrete_reynolds_v2 where the base case overlaps), and `dd_countermodel_chronicle_mixed_sorry` (:170). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub \"complete_frame_extension_setup_and_soundness\".)",
+      "dependencies": [
+        361
+      ],
+      "effort": "high",
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
+        "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/"
+      ]
     },
     {
       "project_number": 170,
@@ -479,8 +488,17 @@
       "status": "not_started",
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
-      "last_updated": "2026-05-19T16:14:16Z",
-      "topic": "completeness"
+      "last_updated": "2026-07-13T21:48:29Z",
+      "topic": "strong_completeness_weak_terminus",
+      "description": "Dense (FrameClass.Dense) WEAK completeness green: make `completeness_dense` (BXCanonical/Completeness.lean:234) genuinely sorry-free by retiring the inherited chronicle dense-path sorries (BXCanonical/Chronicle/ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub \"complete_dense_extension_completeness\".)",
+      "dependencies": [
+        361
+      ],
+      "effort": "high",
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
+        "Theories/Bimodal/Metalogic/BXCanonical/Chronicle/"
+      ]
     },
     {
       "project_number": 165,
@@ -2163,7 +2181,7 @@
     {
       "project_number": 358,
       "project_name": "realization_recursion_nf_nvar_exist_all_depths",
-      "status": "blocked",
+      "status": "not_started",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
@@ -2175,7 +2193,7 @@
         360
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-13T07:28:34Z",
+      "last_updated": "2026-07-13T21:48:29Z",
       "artifacts": [
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/02_realizer-recursion-implementation.md",
@@ -2259,6 +2277,42 @@
       ],
       "session_id": "sess_1783950096_9d2925",
       "completion_summary": "Eliminated the four false exterior hbr* obligations (hbr* grep=0 repo-wide), replacing them with a faithful slice-keyed interface (kvE_*SliceMarked brackets + kvE_{fut,past}SliceId_of_end_zero converses + four m=0 kvE_h{slice,exclSlice}{Fut,Past}_supply_zero theorems supplying task 358's KampPrior:361). Three machine-refuted blockers resolved via Rabinovich-grounded escalation research, all one root cause: task-352's depth-k rewrite dropped constraints the frozen k=2 template kept. Zero-debt: full build green (1736 jobs), 0 sorries, axioms [propext,Classical.choice,Quot.sound]. Recommends a dedicated task-352 depth-k regression audit."
+    },
+    {
+      "project_number": 361,
+      "project_name": "strong_completeness_architecture_and_weak_terminus_gap_analysis",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "strong_completeness",
+      "description": "Research + scoping for finite-context strong completeness (Context = List Formula) across all three frame classes (Base, Dense, Discrete). Deliverables: (1) Confirm the strong-completeness corollary architecture — per-class semantic_consequence_X (paralleling valid/valid_discrete in Semantics/Validity.lean; the current `⊨`/semantic_consequence quantifies over ALL ordered abelian groups D, so a Discrete/Dense restriction must be defined), the semantic deduction lemma (Γ ⊨ φ ↔ ⊨ Γ.foldr imp φ), and iterated use of the existing syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to derive Γ ⊢ φ from []⊢(Γ→φ). (2) Authoritative gap analysis of what still gates each WEAK terminus: Discrete = task 358 (KampPrior.lean:361/364) + supply (task 350/309); Base = the open sorries in `completeness` (BXCanonical/Completeness.lean:135 — dense arm countermodel_dense, deprecated countermodel_discrete Transfer.lean:1270 \"unfixable Z+Z\", dd_countermodel_chronicle_mixed_sorry); Dense = the chronicle dense-path sorries inherited by `completeness_dense` (:234) (ChronicleToCountermodel.lean, MCSMixedCase). For each, determine whether the current live architecture reaches green or needs rerouting, and produce a concrete sub-task decomposition + dependency graph for tasks 169 (base weak) and 170 (dense weak), spawning refinements as needed. (3) Confirm the LaTeX-documented main_strong_completeness (04-Metalogic.tex:266) finite-context shape and that weak completeness is exactly the Γ=[] instance. Reference: 04-Metalogic.tex §Completeness-as-Corollary; report 13 (discrete-completeness roadmap). Analysis/read task — no proof obligations to close here.",
+      "effort": "high",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/"
+      ],
+      "created": "2026-07-13T21:48:29Z",
+      "last_updated": "2026-07-13T21:48:29Z"
+    },
+    {
+      "project_number": 362,
+      "project_name": "main_strong_completeness_finite_context_all_frame_classes",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "strong_completeness",
+      "description": "Implement main_strong_completeness: finite-context strong completeness (Γ : Context = List Formula) for all three frame classes, with weak completeness re-exposed as the Γ=[] corollary. For each X ∈ {Base, Dense, Discrete}: prove strong_completeness_X : semantic_consequence_X Γ φ → Nonempty (DerivationTree FrameClass.X Γ φ), by (a) the semantic deduction lemma reducing Γ ⊨_X φ to ⊨_X (Γ.foldr Formula.imp φ), (b) the existing empty-context weak completeness theorem for X (completeness / completeness_dense / completeness_discrete, BXCanonical/Completeness.lean:135/234/276), and (c) iterated application of the syntactic deduction_theorem (Metalogic/Core/DeductionTheorem.lean) to move the finite premises into the context. Then derive weak_completeness_X as strong_completeness_X at Γ=[]. New file Theories/Bimodal/Metalogic/StrongCompleteness.lean (additive); update the Metalogic.lean tracking table. Axioms exactly [propext, Classical.choice, Quot.sound] modulo whatever the underlying weak terminus already carries; sorry-free once the three weak termini (358/169/170) are green. This is the capstone the LaTeX names main_strong_completeness (04-Metalogic.tex:266). Depends on research 361 (architecture + per-class semantic_consequence definitions) and the three weak termini: 358 (discrete), 169 (base), 170 (dense).",
+      "effort": "high",
+      "dependencies": [
+        361,
+        358,
+        169,
+        170
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/StrongCompleteness.lean",
+        "Theories/Bimodal/Metalogic/Metalogic.lean"
+      ],
+      "created": "2026-07-13T21:48:29Z",
+      "last_updated": "2026-07-13T21:48:29Z"
     }
   ],
   "artifacts": [
