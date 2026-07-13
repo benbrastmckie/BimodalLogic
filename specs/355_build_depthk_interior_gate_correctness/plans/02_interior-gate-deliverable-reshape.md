@@ -1,7 +1,7 @@
 # Implementation Plan (v2): Task #355 — depth-k interior gate correctness (deliverable-shape reshape)
 
 - **Task**: 355 - Build the depth-k INTERIOR gate correctness lemma for general k, by recursion
-- **Status**: [IN PROGRESS] (Phases 1-6 GREEN and COMMITTED; Phase 6 ∀-k CLEAN close REMOVED from scope as channel-unprovable; one in-scope proof phase (7) + one audit phase (8) remain)
+- **Status**: [COMPLETED] (all 8 phases GREEN and COMMITTED; re-frozen obligation-carrying DoD fully delivered: ∀-k `bracketEndChar_kv_correct_prior` assembled, axiom-clean, full-tree green, 13 frozen files byte-identical. The obligation-FREE ∀-k CLEAN close remains out of scope as channel-unprovable.)
 - **Effort**: ~22 hours total (~19h already delivered across Phases 1-6; ~3h remaining across Phases 7-8)
 - **Dependencies**: None (self-contained; all cited templates/clause-layer assets already committed and frozen)
 - **Research Inputs**: specs/355_.../reports/01_rabinovich-faithfulness-and-deliverable-shape.md (NEW, adversarial H3+H4 — LOAD-BEARING); specs/349_.../reports/11_recent-completion-consumption.md; specs/349_.../reports/12_spawn-analysis.md; specs/349_.../.orchestrator-handoff.json; specs/349_.../plans/08_consume-depthk-clause-layer.md (Phase 5-7 RESUME POINT)
@@ -416,26 +416,26 @@ re-scope contingency above.
 
 ---
 
-### Phase 8: Axiom audit + full-tree build + consumability check [NOT STARTED]
+### Phase 8: Axiom audit + full-tree build + consumability check [COMPLETED]
 
 **Goal**: Final gate. Confirm the re-frozen DoD deliverables meet acceptance and document the
 obligation-carrying consumability shape for the task-349 junction.
 
 **Tasks**:
-- [ ] `lean_verify` the deliverables (`bracketEndChar_kv_step_correct`, the ∀-`k`
-      `bracketEndChar_kv_correct_prior`, base rungs): axioms EXACTLY `[propext, Classical.choice,
-      Quot.sound]`; grep the whole new module for `sorry`/`admit` (must be 0) and vacuous
-      `True`/`Unit`/`trivial` defs (must be 0).
-- [ ] `git diff` on all frozen paths (seven providers + `KampPrior.lean` + `ExteriorBracketK.lean` +
-      `PriorInterface.lean` + `CarrierKv.lean`/`CarrierK1V.lean`/`ExteriorBracketAssembleK.lean`) —
-      all EMPTY.
-- [ ] FORBIDDEN `nf_char3_deeper_split` grep clean; G1-G5 route audit recorded.
-- [ ] `lake build` (full-tree) GREEN (module already wired; re-confirm).
-- [ ] **Consumability shape doc (NOT wiring)**: write a documented shape-match / `example` recording
-      the *obligation-carrying* interface the task-349 junction must accept — i.e. that consuming
-      `bracketEndChar_kv_step_correct` requires the task-349-side `EndIntervalCorrectPrior` reshape
-      (follow-up (i)) and the `hexclExt` discharge (follow-up (ii)). Do NOT attempt the consumer wiring
-      (out of scope; touches frozen files).
+- [x] `lean_verify` the deliverables (`bracketEndChar_kv_step_correct`, the ∀-`k`
+      `bracketEndChar_kv_correct_prior`, base rungs `interiorGateTarget_zero`/`_one`): all report
+      axioms EXACTLY `[propext, Classical.choice, Quot.sound]`; module `sorry`/`admit` = 0, vacuous
+      defs = 0.
+- [x] `git diff` on all 13 frozen paths — all EMPTY (byte-identical).
+- [x] FORBIDDEN `nf_char3_deeper_split` grep clean; G1-G5 route audit recorded (interior content
+      provider-realized, fold bit fiber-existential, anchors ⊆ {x,t}, no simp/omega/aesop chain
+      shortcut in the additive wrapper — pure term-mode `Nat.casesOn`).
+- [x] `lake build` (full-tree) GREEN — 1724 jobs.
+- [x] **Consumability shape doc (NOT wiring)**: added the documented `example` +
+      `## Phase 8 — consumability shape` doc-comment recording the seven-obligation interface
+      (`P`, `hcharK`, `h_UZ`, `h_SZ`, `hreal`, `hexcl`, `hexclExt`) the task-349 junction must supply,
+      and pointing at follow-ups (i) (`EndIntervalCorrectPrior` reshape) / (ii) (`hexclExt` discharge).
+      No consumer wiring attempted (out of scope; touches frozen files).
 
 **Timing**: ~1.5 hours. **Estimated output**: ~50-150 lines (audit + documented shape-match).
 

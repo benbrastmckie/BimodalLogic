@@ -1296,6 +1296,36 @@ theorem bracketEndChar_kv_correct_prior {sig : MonadicSignature}
     bracketEndChar_kv_step_correct atomMap h_surj charF P hcharK qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl hexclExt
 
+/-! ## Phase 8 — consumability shape (task 355 Phase 8)
+
+The obligation-carrying interface a downstream consumer (task 349) must supply to consume the
+general-`k` interior gate at successor depth `k = n+1`. The `example` below is a **documented
+shape-match, NOT the consumer wiring** (wiring `bracketEndChar_kv_correct_prior` into task 349's
+frozen unconditional `EndIntervalCorrect` at `CarrierK1V.lean:2179` requires an obligation-carrying
+`EndIntervalCorrectPrior` reshape that edits task-349 byte-frozen files — plan v2 follow-up (i), out
+of task-355 scope). It records that, once a consumer provides the seven obligations
+
+  1. `P : ExistProviders sig atomMap n`             — the depth-`n` existential provider bundle
+  2. `hcharK : charF n = fun χ => P.existF 0 χ`     — char-layer / provider agreement
+  3. `h_UZ  : semantic_prior_UZ M atomMap`          — Prior UZ (universal-zone) hypothesis
+  4. `h_SZ  : semantic_prior_SZ M atomMap`          — Prior SZ (self-zone) hypothesis
+  5. `hreal`    — interior realization (`P.existF 3` channel; Rabinovich Cor 5.4, within-bracket
+                  bounded interior witness `(∃z)^{<z1}_{>z0}`)
+  6. `hexcl`    — within-`[x,t]` exclusion (Rabinovich Cor 5.4)
+  7. `hexclExt` — strictly-exterior exclusion (Rabinovich Lemma 7.6 adjacency composition; the
+                  exterior-bracket-layer hand-off, plan v2 follow-up (ii) — a task-355 NON-goal)
+
+together with the six atom-layer order bits and `M`/`x`/`t`, the depth-`(n+1)` interior-gate
+biconditional `holds ↔ ∃ w, nf_eval_nf M (n+1) 3 [w,x,t] qnf` is delivered by
+`bracketEndChar_kv_correct_prior (n+1)`. Discharging obligations 1-2 / 5-7 for a real consumer is the
+out-of-scope task-349 consumer reshape + exterior `hexclExt` discharge (follow-ups (i)/(ii)). -/
+example {sig : MonadicSignature} {n : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula) :
+    InteriorGateAllK atomMap h_surj charF (n + 1) :=
+  bracketEndChar_kv_correct_prior atomMap h_surj charF (n + 1)
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
