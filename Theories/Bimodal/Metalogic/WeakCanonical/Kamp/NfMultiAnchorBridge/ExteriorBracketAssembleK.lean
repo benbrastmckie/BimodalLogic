@@ -151,4 +151,99 @@ theorem kvE_extBracketPast_sound {sig : MonadicSignature}
     rwa [if_neg (by simp [hbit])] at h
   exact kvE_extNegPast_sound P M h_UZ h_SZ σ w x t hxw hwt hneg x1 hx1x hnf
 
+/-! ## Phase 4 — composed per-side completeness (D3/D4, threads the DISCHARGED `hreal`/`hsat`)
+
+The `_complete` lemmas re-establish the bracket at its anchor from per-σ exterior facts:
+realizers for admissible bit-true σ (`hpos`), no-realizer for admissible bit-false σ (`hneg`),
+routed through `kvE_extNegFut_sound` (bit-true contrapositive) and `kvE_extNegFut_complete`
+(bit-false). The two extra hypotheses `hreal`/`hsat` are threaded VERBATIM from the 354 converter
+signature (`kvE_extNegFut_complete`, ExteriorConverterK.lean:126-134) and fed straight to it — a
+DISCHARGED interface, discharged one level up in Phase 6 via `kvE_futBundle_of_realizer`
+(ExteriorConverterK.lean:208) / `kvE_pastBundle_of_realizer` (ExteriorConverterPastK.lean:177), NOT
+debt and NOT discharged here. -/
+
+/-- **D3 — Future-side bracket completeness** (depth-`k`, mirror of `kvE2_extBracketFut_complete`,
+    ExteriorBracket.lean:547): per-σ exterior facts re-establish the bracket at `t`. Threads the
+    carried `hreal`/`hsat` interface verbatim from `kvE_extNegFut_complete` (354). -/
+theorem kvE_extBracketFut_complete {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (qnf : NormalForm sig (k + 2) 3)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hpos : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = true →
+      ∃ x1 : M.carrier, t < x1 ∧
+        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hneg : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+      ∀ x1 : M.carrier, t < x1 →
+        ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hreal : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+      ∀ x1 : M.carrier, t < x1 → ∀ s : NormalForm sig k 5, σ.2 s = true →
+        ∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hsat : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+      ∀ x1 : M.carrier, t < x1 →
+        temporal_truth M atomMap x1 (kvE_futEnd P σ) →
+        ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+          (∃ v : M.carrier, nf_eval_nf M k 5
+            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+          σ.2 s = true) :
+    temporal_truth M atomMap t (kvE_extBracketFut P qnf) := by
+  refine (kvE_extBracketFut_iff M P qnf t).mpr fun σ hadm => ?_
+  cases hbit : qnf.2 σ with
+  | true =>
+    rw [if_pos rfl]
+    obtain ⟨x1, htx1, hr⟩ := hpos σ hadm hbit
+    by_contra hno
+    have hnegcl : temporal_truth M atomMap t (kvE_extNegFut P σ) := by
+      rw [kvE_extNegFut, temporal_truth_neg]; exact hno
+    exact kvE_extNegFut_sound P M h_UZ h_SZ σ w x t hxw hwt hnegcl x1 htx1 hr
+  | false =>
+    rw [if_neg (by simp)]
+    exact kvE_extNegFut_complete P M h_UZ h_SZ σ w x t hxw hwt
+      (hreal σ hadm hbit) (hsat σ hadm hbit) (hneg σ hadm hbit)
+
+/-- **D4 — Past-side bracket completeness** (depth-`k`, mirror of `kvE2_extBracketPast_complete`,
+    ExteriorBracket.lean:583): per-σ exterior facts re-establish the bracket at `x`. Threads the
+    carried `hreal`/`hsat` interface verbatim from `kvE_extNegPast_complete` (354). -/
+theorem kvE_extBracketPast_complete {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds} {k : Nat}
+    (P : ExistProviders sig atomMap k)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (qnf : NormalForm sig (k + 2) 3)
+    (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
+    (hpos : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = true →
+      ∃ x1 : M.carrier, x1 < x ∧
+        nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hneg : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+      ∀ x1 : M.carrier, x1 < x →
+        ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hreal : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+      ∀ x1 : M.carrier, x1 < x → ∀ s : NormalForm sig k 5, σ.2 s = true →
+        ∃ v : M.carrier, nf_eval_nf M k 5
+          (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
+    (hsat : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+      ∀ x1 : M.carrier, x1 < x →
+        temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
+        ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
+          (∃ v : M.carrier, nf_eval_nf M k 5
+            (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
+          σ.2 s = true) :
+    temporal_truth M atomMap x (kvE_extBracketPast P qnf) := by
+  refine (kvE_extBracketPast_iff M P qnf x).mpr fun σ hadm => ?_
+  cases hbit : qnf.2 σ with
+  | true =>
+    rw [if_pos rfl]
+    obtain ⟨x1, hx1x, hr⟩ := hpos σ hadm hbit
+    by_contra hno
+    have hnegcl : temporal_truth M atomMap x (kvE_extNegPast P σ) := by
+      rw [kvE_extNegPast, temporal_truth_neg]; exact hno
+    exact kvE_extNegPast_sound P M h_UZ h_SZ σ w x t hxw hwt hnegcl x1 hx1x hr
+  | false =>
+    rw [if_neg (by simp)]
+    exact kvE_extNegPast_complete P M h_UZ h_SZ σ w x t hxw hwt
+      (hreal σ hadm hbit) (hsat σ hadm hbit) (hneg σ hadm hbit)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

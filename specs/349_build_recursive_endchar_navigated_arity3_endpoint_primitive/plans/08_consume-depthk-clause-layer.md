@@ -397,7 +397,7 @@ MAY dispatch it alongside Phase 4 under a territory contract; the wave table is 
 - **Files:** `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketAssembleK.lean`
   (NEW; imports `ExteriorConverterK` + `ExteriorConverterPastK` + `ExteriorBracketK`).
 
-### Phase 4: Bracket `_complete` layer — D3 `kvE_extBracketFut_complete` + D4 `kvE_extBracketPast_complete` (threads the DISCHARGED `hreal`/`hsat` interface) [NOT STARTED]
+### Phase 4: Bracket `_complete` layer — D3 `kvE_extBracketFut_complete` + D4 `kvE_extBracketPast_complete` (threads the DISCHARGED `hreal`/`hsat` interface) [COMPLETED]
 
 - **Goal:** Build the two depth-`k` exterior-bracket **completeness** lemmas over the delivered
   354 `_complete` converters (bit-false arm) + the 352 `_sound` halves (bit-true arm). These
@@ -422,16 +422,16 @@ MAY dispatch it alongside Phase 4 under a territory contract; the wave table is 
   converters + the 352 `_sound` halves + the Phase-3 bracket defs. BUILD only the two `_complete`
   lemmas.
 - **Tasks:**
-  - [ ] Fix the `_complete` signatures: thread `P`, the order bits, and `hreal`/`hsat` verbatim
+  - [x] Fix the `_complete` signatures: thread `P`, the order bits, and `hreal`/`hsat` verbatim
         from `kvE_extNegFut/Past_complete` (ExteriorConverterK.lean:119 / PastK:94); document the
-        DISCHARGED interface in the docstring.
-  - [ ] Prove D3 `kvE_extBracketFut_complete` (mirror :547-579; bit-false arm via
-        `kvE_extNegFut_complete`, bit-true via `kvE_extNegFut_sound` contrapositive).
-  - [ ] Prove D4 `kvE_extBracketPast_complete` (mirror :583-615).
+        DISCHARGED interface in the docstring. *(completed — hpos/hneg/hreal/hsat gated on admissible σ + bit)*
+  - [x] Prove D3 `kvE_extBracketFut_complete` (mirror :547-579; bit-false arm via
+        `kvE_extNegFut_complete`, bit-true via `kvE_extNegFut_sound` contrapositive). *(completed, axiom-clean)*
+  - [x] Prove D4 `kvE_extBracketPast_complete` (mirror :583-615). *(completed, axiom-clean)*
   - [ ] Sanity: the k=2 instance (with `hreal`/`hsat` trivially satisfied) interderives with the
-        frozen `kvE2_extBracketFut/Past_complete` (`example`-check).
-  - [ ] Route audit: 8 frozen diffs EMPTY; FORBIDDEN grep clean; G1 (full arity 4, no
-        `nfk_projFresh` in new code); G2-G5; `lean_verify` on both `_complete` lemmas axiom-clean.
+        frozen `kvE2_extBracketFut/Past_complete` (`example`-check). *(deviation: skipped — same arity-index reason as Phase 3; interderivation with the frozen k=2 shape deferred to the Phase-6 gate.)*
+  - [x] Route audit: 8 frozen diffs EMPTY; FORBIDDEN grep clean; G1 (full arity 4, no
+        `nfk_projFresh` in new code); G2-G5; `lean_verify` on both `_complete` lemmas axiom-clean. *(completed)*
 - **Bounded-unit stop condition:** both `_complete` lemmas green (carrying, not discharging,
   `hreal`/`hsat`), OR `[BLOCKED]` + `lean_goal` on the specific side/arm. Commit the green side first.
 - **Estimated output:** ~150-300 lines.
