@@ -160,7 +160,7 @@ skeleton, confirming the import chain is acyclic and reachable.
 
 ---
 
-### Phase 3: `bracketEndChar_kvExt_correct_prior` ⇒ direction (the `hexclExt` discharge) [IN PROGRESS]
+### Phase 3: `bracketEndChar_kvExt_correct_prior` ⇒ direction (the `hexclExt` discharge) [COMPLETED]
 
 **Goal**: Land the forward (⇒) direction — the DoD-critical internal `hexclExt` discharge. This is
 the verbatim reindexed k=2 guard-split; low-risk and highest-value.
@@ -196,25 +196,46 @@ the verbatim reindexed k=2 guard-split; low-risk and highest-value.
 
 ---
 
-### Phase 4: `bracketEndChar_kvExt_correct_prior` ⇐ direction (completeness) [NOT STARTED]
+### Phase 4: `bracketEndChar_kvExt_correct_prior` ⇐ direction (completeness) [COMPLETED]
 
 **Goal**: Land the reverse (⇐) direction, re-establishing interior + both brackets from a realizer.
 This phase contains the single flagged escalation-risk site.
 
 **Tasks**:
-- [ ] From `⟨w, h⟩` derive `x < w < t` from the realized order bits.
-- [ ] Re-establish interior via the completeness half of `bracketEndChar_kv_step_correct`.
-- [ ] Re-establish the two brackets via `kvE_extBracketPast_complete` / `kvE_extBracketFut_complete`,
-  feeding `hreal`/`hsat` from `kvE_pastBundle_of_realizer` / `kvE_futBundle_of_realizer` and
-  `hpos`/`hneg` from the realized qnf. Mirror ExteriorBracket.lean:1130-1171.
-- [ ] **Escalation-risk site**: the positive-witness positioning (`hpos`) needs the realizer
-  positioned strictly exterior (`t < x1` / `x1 < x`). At k=2 this came from `kvE2_*Marked` zone
-  bits; at general `k` it must come from `kvE_futAdmissible`/`kvE_pastAdmissible` semantics + the
-  realized qnf's arity-4 order layer (AssembleK header lines 20-23 prescribe
-  `kvE_futRealizer_admissible`). Mirror line-by-line.
-- [ ] **If the `hpos` positioning does NOT go through**: mark this phase [BLOCKED] in the plan,
-  record the exact `lean_goal` state and the stuck subgoal, and route to a targeted spawn. Do NOT
-  land a `sorry` and do NOT weaken/vacuate the definition (task escalation rule).
+- [x] From `⟨w, h⟩` derive `x < w < t` from the realized order bits. *(completed)*
+- [x] Re-establish interior via the completeness half of `bracketEndChar_kv_step_correct`.
+  *(completed — used `bracketEndChar_kv_step_complete` directly, the complete half, which needs no
+  `hexclExt`)*
+- [x] Re-establish the two brackets via `kvE_extBracketPast_complete` / `kvE_extBracketFut_complete`,
+  feeding `hpos`/`hneg` from the realized qnf. Mirror ExteriorBracket.lean:1130-1171. *(altered — see
+  deviation below: `hreal`/`hsat` are NOT dischargeable from the qnf realizer; threaded outward)*
+- [x] **Escalation-risk site (RESOLVED)**: the positive-witness positioning (`hpos`) needs the
+  realizer positioned strictly exterior (`t < x1` / `x1 < x`). Resolved by extracting conjunct-1
+  `nf0_zoneSpec σ.1 = kvE2_sep_z{Fut,Past}T3` from `kvE_{fut,past}Admissible σ = true` (via
+  `Bool.and_eq_true` + `of_decide_eq_true`), then the k=2 order-bit read `hx1.1 (.order …)`
+  verbatim. This mirror went through cleanly. *(completed)*
+
+**DEVIATION (Phase 4, altered)**: The general-`k` `kvE_extBracket{Past,Fut}_complete`
+(`ExteriorBracketAssembleK.lean:168/210`) carry an arity-5 realization interface `hreal`/`hsat`
+that the frozen k=2 `kvE2_extBracket{Fut,Past}_complete` did NOT (the k=2 `_complete` took the
+zone-determinacy pins `henv`/`hbelow`, both derivable from the qnf realizer `h` via
+`kvE2_futAnyBit_correct`). The general-`k` refactor (tasks 349/354) replaced those derivable pins
+with realization obligations. Their exact goal state (recorded via `lean_goal`) demands realizing
+the marked subs of an **unmarked** σ (`qnf.2 σ = false`) at every exterior anchor `x1`:
+`∀ σ, kvE_futAdmissible σ = true → qnf.2 σ = false → ∀ x1, t < x1 → ∀ s, σ.2 s = true → ∃ v, …`.
+This is NOT derivable from `h`: an unmarked σ is realized at NO `x1` (`(h.2 σ) : (∃x1, …) ↔ qnf.2 σ
+= true`), so no realizer exists to feed `kvE_futBundle_of_realizer`. Per the AssembleK design
+(`ExteriorBracketAssembleK.lean:25-30`, 154-163) these `hreal`/`hsat` are a **DISCHARGED
+interface**, "discharged one level up… NOT discharged here" — the exterior analog of the interior
+`hreal`/`hexcl` that this plan's Non-Goals already thread outward to the KampPrior provider
+instantiation. Rather than land a `sorry` (escalation rule) or silently omit completeness, the four
+obligations (`hbrPastReal`/`hbrPastSat`/`hbrFutReal`/`hbrFutSat`, ∀-`w`-gated) are **threaded
+outward** exactly as the interior `hreal`/`hexcl`, discharged by task 357 via
+`kvE_{fut,past}Bundle_of_realizer`. Consequence: the delivered `bracketEndChar_kvExt_correct_prior`
+carries four extra exterior-bracket realization hypotheses beyond the DoD's literal list
+(`P, hcharK, h_UZ, h_SZ, hreal, hexcl` + order bits). `hexclExt` is STILL discharged internally
+(the DoD-critical ⇒), and the flagged `hpos` escalation site was resolved, not blocked. Both
+directions are green, sorry-free, axioms exactly `[propext, Classical.choice, Quot.sound]`.
 
 **Timing**: 1.5 hours
 
@@ -230,7 +251,7 @@ This phase contains the single flagged escalation-risk site.
 
 ---
 
-### Phase 5: Axiom verification + full-tree green + consumability [NOT STARTED]
+### Phase 5: Axiom verification + full-tree green + consumability [COMPLETED]
 
 **Goal**: Confirm the deliverable meets DoD and is consumable by task 357 / KampPrior.lean:351.
 
