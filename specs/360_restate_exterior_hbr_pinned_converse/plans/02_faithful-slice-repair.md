@@ -665,7 +665,7 @@ fired: a genuine asymmetry, not a transcription slip.
 - **File scope:** ExteriorPinnedConversePastK.lean (+ hoisted helpers appended to
   ExteriorPinnedConverseK.lean); read-only elsewhere.
 
-### Phase 5: m=0 discharge of `hsliceFut`/`hslicePast` [BLOCKED]
+### Phase 5: m=0 discharge of `hsliceFut`/`hslicePast` [COMPLETED]
 
 **BLOCKER** (Phase 5, dispatch 2026-07-14, sess_1783950096_9d2925) — `hslice*` pair only; the
 `hexclSlice*` pair LANDED GREEN (see the updated checklist below):
@@ -737,13 +737,18 @@ fired: a genuine asymmetry, not a transcription slip.
         production: the `hslice*` statements are FALSE as shaped — see BLOCKER. The
         `hexclSlice*` binder types transcribed and LANDED as production statements, verbatim
         at k := 0 + the ambient `hreal` binder per report 02 §3.4.)*
-  - [ ] Future proof (report 02 §3.4 + §5 row 2 route): given admissible σ with
+  - [x] Future proof (report 02 §3.4 + §5 row 2 route): given admissible σ with
         `kvE_futPos` true at t, destruct via `kvE_futChainDestructG` → endpoint x1 +
         `hend`/`hgap`/`hocc` → `kvE_futSliceId_of_end_zero` → marked slice-mate σ' — exactly
-        the obligation's conclusion. Past mirror symmetric. *(deviation: BLOCKED — the route
-        machine-elaborates except the slice-id's `hfib : nfk_dropFresh σ = qnf.1` input,
-        which no binder hypothesis supplies and which cannot be added without the Phase-3b
-        interface repair; statement refuted by the ℤ doppelgänger countermodel. See BLOCKER.)*
+        the obligation's conclusion. Past mirror symmetric. *(RESOLVED after Phase 3c: the
+        blocker was the Phase-3b interface defect — report 04's fiber-range re-key
+        FIBER-guarded the `hslice*` binders, so `hfib` is now binder-supplied and the
+        original route closes verbatim. `kvE_hsliceFut_supply_zero` +
+        `kvE_hslicePast_supply_zero` LANDED GREEN, both
+        `[propext, Classical.choice, Quot.sound]`; the Past file gained
+        `import ...ExteriorPinnedConverseK` for the zone-generic
+        `kvE_fiberZoneList_congr` — acyclic, deviation recorded. The earlier BLOCKER record
+        above is retained as history.)*
   - [x] `kvE_hexclSliceFut_supply_zero` (ExteriorPinnedConverseK.lean) +
         `kvE_hexclSlicePast_supply_zero` (ExteriorPinnedConversePastK.lean) — the ⇒-side
         exclusion residue supply pair, route: sliceMarked unpack → `hreal` realizes the

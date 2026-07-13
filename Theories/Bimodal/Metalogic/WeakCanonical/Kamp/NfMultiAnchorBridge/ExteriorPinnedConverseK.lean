@@ -1213,13 +1213,15 @@ guarded Sat-halves are provably FALSE — the (σ′, e) witness satisfies every
 verbatim (`kvE_futPinned_of_end_zero_refuted` above) — and the Real halves left with the
 per-σ-keyed interface. Do not resurrect them.
 
-**Status note (Phase-5 dispatch, 2026-07-14)**: of the FOUR supply targets, the two
-`hexclSlice*` discharges land here and in the Past file; the two `hslice*` discharges are
-BLOCKED — the prescribed route (destructor + `kvE_futSliceId_of_end_zero`) machine-elaborates
-except for the slice-id's fiber input `nfk_dropFresh σ = qnf.1`, which no binder hypothesis
-supplies (the chain/endpoint content is free-env and cannot pin σ's atom layer to the actual
-anchors). See the plan's Phase-5 BLOCKER record for the probe transcript and the
-doppelgänger countermodel argument. -/
+**Status note (Phase-5 dispatch, 2026-07-14; RESOLVED by Phase 3c, report 04)**: the two
+`hexclSlice*` discharges landed first (binder text UNCHANGED by the Phase-3c fiber re-key —
+report 04 §5). The two `hslice*` discharges were initially BLOCKED: the slice-id's fiber
+input `nfk_dropFresh σ = qnf.1` was underivable because the Phase-3b bracket range had been
+silently WIDENED past the frozen k=2 template's fiber conjunct (ℤ-doppelgänger countermodel,
+plan v2 Phase-5 BLOCKER record). The Phase-3c fiber-range re-key
+(ExteriorBracketAssembleK/ExteriorGateAssembleK) restored the filter and FIBER-guarded the
+`hslice*` binders; `kvE_hsliceFut_supply_zero` below now closes by the originally prescribed
+route with `hfib` binder-supplied (the Phase-5 dispatch's Probe A, green end-to-end). -/
 
 /-- **m=0 supply for the carried `hexclSliceFut` obligation** (task 360 plan v2 Phase 5;
     the ⇒-side per-σ exclusion residue of `bracketEndChar_kvExt_correct_prior` /
@@ -1280,5 +1282,76 @@ theorem kvE_hexclSliceFut_supply_zero {sig : MonadicSignature}
     kvE_futSliceUnique_zero M σ'' σ w x t x1'' x1 hxw hwt htx1'' htx1 hslEq hσ'' hnf
   rw [heq, hbit] at hmark
   exact Bool.noConfusion hmark
+
+/-- **m=0 supply for the carried `hsliceFut` obligation** (task 360 plan v2 Phase 5, under
+    the Phase-3c fiber-guarded interface; the ⇐-side slice-honesty input of
+    `bracketEndChar_kvExt_correct_prior` / `EndIntervalCorrectPrior`, binder text verbatim at
+    `k := 0`): chain-fire truth `kvE_futPos P σ` at `t` for a fiber-compatible admissible σ
+    under the honest ambient yields an admissible, slice-equal, qnf-MARKED mate.
+
+    Route (report 02 §3.4 + §5 row 2; the Phase-5 dispatch's Probe A, with `hfib` now
+    binder-supplied by the Phase-3c re-key): destruct the Cor 5.4 chain
+    (`kvE_futChainDestructG`, the `kvE_extNegFut_complete` destructor pattern at `k := 0`) to
+    an exterior endpoint `x1 > t` with `hend`/`hgap`/`hocc`; apply the slice identification
+    `kvE_futSliceId_of_end_zero`; the identified σ' is admissible via
+    `kvE_futRealizer_admissible` on its pinned realizer and slice-equal via
+    `kvE_fiberZoneList_congr` on the three exterior zones. H4: the refutation witness σ′ is
+    handled as always (σ' := τ satisfies the conclusion); the ℤ-doppelgänger σ is OFF-fiber,
+    hence outside the binder's antecedents. -/
+theorem kvE_hsliceFut_supply_zero {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds}
+    (P : ExistProviders sig atomMap 0)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (qnf : NormalForm sig 2 3)
+    (x t : M.carrier) :
+    ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig 1 4, kvE_futAdmissible σ = true →
+        nfk_dropFresh σ = qnf.1 →
+        temporal_truth M atomMap t (kvE_futPos P σ) →
+        ∃ σ' : NormalForm sig 1 4, kvE_futAdmissible σ' = true ∧
+          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true := by
+  intro w hxw hwt h σ hadm hfib hposT
+  -- destruct the Cor 5.4 chain (the `kvE_extNegFut_complete` destructor pattern at k = 0)
+  rw [kvE_futPos, if_pos hadm, formula_disjList_iff] at hposT
+  obtain ⟨φ, hφmem, hφ⟩ := hposT
+  obtain ⟨l, hlmem, rfl⟩ := List.mem_map.mp hφmem
+  have hlperm : l.Perm (kvE_fiberZoneList σ kvE_futGapZone) :=
+    List.mem_permutations.mp hlmem
+  -- item ⇒ gap guard: each chain item is a gap fiber sub, so it enters the gap disjunction
+  have himp : ∀ a ∈ l, ∀ r : M.carrier,
+      temporal_truth M atomMap r (kvE_futItemShift P a) →
+      temporal_truth M atomMap r (kvE_futGapD P σ) := by
+    intro a ha r hr
+    have hamem : a ∈ kvE_fiberZoneList σ kvE_futGapZone := hlperm.subset ha
+    rw [kvE_futGapD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ r]
+    rw [kvE_futItemShift_correct P a M h_UZ h_SZ r] at hr
+    obtain ⟨env, hev⟩ := hr
+    exact ⟨a, hamem, env, hev⟩
+  obtain ⟨x1, htx1, hend, hgap, hocc⟩ :=
+    kvE_futChainDestructG M atomMap (kvE_futItemShift P) (kvE_futEnd P σ)
+      (kvE_futGapD P σ) l t himp hφ
+  have hoccZ : ∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
+      t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift P a) :=
+    fun a ha => hocc a (hlperm.mem_iff.mpr ha)
+  -- slice identification at the destructor endpoint (hfib is binder-supplied — Phase 3c)
+  obtain ⟨σ', hmark, hpin, h1, h2⟩ :=
+    kvE_futSliceId_of_end_zero P M h_UZ h_SZ qnf σ hadm hfib w x t hxw hwt h x1 htx1
+      hend hgap hoccZ
+  -- admissibility from the pinned realizer; slice equality from atom + zone-list congruence
+  have hadm' : kvE_futAdmissible σ' = true :=
+    kvE_futRealizer_admissible M σ' x1 w x t hxw hwt htx1 hpin
+  have hgapL := kvE_fiberZoneList_congr σ σ' kvE_futGapZone
+    (fun s hz => h2 s (Or.inl hz))
+  have hrayL := kvE_fiberZoneList_congr σ σ' kvE_futRayZone
+    (fun s hz => h2 s (Or.inr (Or.inl hz)))
+  have hselfL := kvE_fiberZoneList_congr σ σ' kvE_futSelfZone
+    (fun s hz => h2 s (Or.inr (Or.inr hz)))
+  have hslEq : kvE_futSliceEq σ' σ = true := by
+    rw [kvE_futSliceEq, decide_eq_true h1, decide_eq_true hgapL, decide_eq_true hrayL,
+      decide_eq_true hselfL]
+    rfl
+  exact ⟨σ', hadm', hslEq, hmark⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

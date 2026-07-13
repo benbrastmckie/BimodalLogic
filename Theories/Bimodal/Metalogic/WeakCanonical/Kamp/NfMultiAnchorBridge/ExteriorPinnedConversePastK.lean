@@ -2,6 +2,7 @@ import Bimodal.Metalogic.WeakCanonical.NormalForm
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationPastK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterPastK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 
 /-! # Past-side exterior slice quotient (task 360, plan v2 Phase 3b)
 
@@ -753,8 +754,9 @@ discharge of the carried `hexclSlicePast` obligation consumed by task 358's
 type at `k := 0`, signature-locked, plus the ambient interior obligation `hreal` (report 02
 §3.4 last paragraph). The eliminated `kvE_hbrPast*_supply_zero` v1 targets stay eliminated
 (`kvE_futPinned_of_end_zero_refuted` is the Future-side machine refutation of the shared
-guarded-Sat shape). The Past `hslicePast` discharge is BLOCKED with the same fiber-input
-gap as the Future side — see the plan's Phase-5 BLOCKER record. -/
+guarded-Sat shape). The Past `hslicePast` discharge, initially BLOCKED on the fiber-input
+gap, closes below under the Phase-3c fiber-guarded interface (report 04) — mirror of
+`kvE_hsliceFut_supply_zero`. -/
 
 /-- **m=0 supply for the carried `hexclSlicePast` obligation** (task 360 plan v2 Phase 5;
     binder text verbatim at `k := 0`, mirror of `kvE_hexclSliceFut_supply_zero`): given the
@@ -803,5 +805,74 @@ theorem kvE_hexclSlicePast_supply_zero {sig : MonadicSignature}
     kvE_pastSliceUnique_zero M σ'' σ w x t x1'' x1 hxw hwt hx1''x hx1x hslEq hσ'' hnf
   rw [heq, hbit] at hmark
   exact Bool.noConfusion hmark
+
+/-- **m=0 supply for the carried `hslicePast` obligation** (task 360 plan v2 Phase 5, under
+    the Phase-3c fiber-guarded interface; binder text verbatim at `k := 0`, mirror of
+    `kvE_hsliceFut_supply_zero`): chain-fire truth `kvE_pastPos P σ` at `x` for a
+    fiber-compatible admissible σ under the honest ambient yields an admissible, slice-equal,
+    qnf-MARKED mate.
+
+    Route (the Future route mirrored through the landed Past suppliers): destruct the Cor 5.4
+    `Since` chain (`kvE_pastChainDestructG`, the `kvE_extNegPast_complete` destructor pattern
+    at `k := 0` — items in the raw shift-bridged form `P.existF 4 (renameNF rot5Fwd rot5Bwd
+    s)`) to an exterior endpoint `x1 < x` with `hend`/`hgap`/`hocc`; apply
+    `kvE_pastSliceId_of_end_zero` (Phase 4); admissibility via `kvE_pastRealizer_admissible`
+    on the pinned realizer; slice equality via `kvE_fiberZoneList_congr` (zone-generic,
+    Future file) on the three Past exterior zones. -/
+theorem kvE_hslicePast_supply_zero {sig : MonadicSignature}
+    {atomMap : Formula → sig.preds}
+    (P : ExistProviders sig atomMap 0)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (qnf : NormalForm sig 2 3)
+    (x t : M.carrier) :
+    ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M 2 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig 1 4, kvE_pastAdmissible σ = true →
+        nfk_dropFresh σ = qnf.1 →
+        temporal_truth M atomMap x (kvE_pastPos P σ) →
+        ∃ σ' : NormalForm sig 1 4, kvE_pastAdmissible σ' = true ∧
+          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true := by
+  intro w hxw hwt h σ hadm hfib hposT
+  -- destruct the Cor 5.4 Since chain (the `kvE_extNegPast_complete` destructor pattern, k = 0)
+  rw [kvE_pastPos, if_pos hadm, formula_disjList_iff] at hposT
+  obtain ⟨φ, hφmem, hφ⟩ := hposT
+  obtain ⟨l, hlmem, rfl⟩ := List.mem_map.mp hφmem
+  have hlperm : l.Perm (kvE_fiberZoneList σ kvE_pastGapZone) :=
+    List.mem_permutations.mp hlmem
+  -- item ⇒ gap guard: each chain item is a gap fiber sub, so it enters the gap disjunction
+  have himp : ∀ a ∈ l, ∀ r : M.carrier,
+      temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a)) →
+      temporal_truth M atomMap r (kvE_pastGapD P σ) := by
+    intro a ha r hr
+    have hamem : a ∈ kvE_fiberZoneList σ kvE_pastGapZone := hlperm.subset ha
+    rw [kvE_pastGapD, kvE_fiberPosOnShift_correct P _ M h_UZ h_SZ r]
+    rw [P.correct 4 (renameNF rot5Fwd rot5Bwd a) M h_UZ h_SZ r] at hr
+    obtain ⟨env, hev⟩ := hr
+    exact ⟨a, hamem, env, (kvE_anchorBridge M env r a).mp hev⟩
+  obtain ⟨x1, hx1x, hend, hgap, hocc⟩ :=
+    kvE_pastChainDestructG M atomMap (fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s))
+      (kvE_pastEnd P σ) (kvE_pastGapD P σ) l x himp hφ
+  have hoccZ : ∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+      x1 < r ∧ r < x ∧ temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a)) :=
+    fun a ha => hocc a (hlperm.mem_iff.mpr ha)
+  -- slice identification at the destructor endpoint (hfib is binder-supplied — Phase 3c)
+  obtain ⟨σ', hmark, hpin, h1, h2⟩ :=
+    kvE_pastSliceId_of_end_zero P M h_UZ h_SZ qnf σ hadm hfib w x t hxw hwt h x1 hx1x
+      hend hgap hoccZ
+  -- admissibility from the pinned realizer; slice equality from atom + zone-list congruence
+  have hadm' : kvE_pastAdmissible σ' = true :=
+    kvE_pastRealizer_admissible M σ' x1 w x t hxw hwt hx1x hpin
+  have hgapL := kvE_fiberZoneList_congr σ σ' kvE_pastGapZone
+    (fun s hz => h2 s (Or.inl hz))
+  have hrayL := kvE_fiberZoneList_congr σ σ' kvE_pastRayZone
+    (fun s hz => h2 s (Or.inr (Or.inl hz)))
+  have hselfL := kvE_fiberZoneList_congr σ σ' kvE_pastSelfZone
+    (fun s hz => h2 s (Or.inr (Or.inr hz)))
+  have hslEq : kvE_pastSliceEq σ' σ = true := by
+    rw [kvE_pastSliceEq, decide_eq_true h1, decide_eq_true hgapL, decide_eq_true hrayL,
+      decide_eq_true hselfL]
+    rfl
+  exact ⟨σ', hadm', hslEq, hmark⟩
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
