@@ -1,5 +1,5 @@
 ---
-next_project_number: 360
+next_project_number: 361
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349,358 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,350 | 161,187,191,194,230,291,341,343,349 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,349,360 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,350,358 | 161,187,191,194,230,291,341,343,349,360 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,309 | 131,189,192,196,350 | formula-refactor, automation, kamp_theorem_formalization |
 | 4 | 177,178,307 | 131,193,309 | completeness, formula-refactor |
 | 5 | 305 | 307 | completeness |
@@ -113,7 +113,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 349 [PLANNED] — Build the recursive navigated arity-3 endpoint primitive `endChar
   └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
     └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-358 [IMPLEMENTING] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+360 [RESEARCHED] — Make the four exterior hbr* obligations true-as-stated. They are 
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm (see above)
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Uncategorized
@@ -122,6 +124,18 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 360. Restate exterior hbr pinned converse
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md]
+
+**Description**: Make the four exterior hbr* obligations true-as-stated. They are currently false universals (machine-refuted on P2M=(ℤ,<),P={0,10,20}): they dropped the igPtW-site and kvE_*End-endpoint truth antecedents their interior siblings (EndIntervalConsumerK.lean:117-128) kept. Carry those antecedents through the interface chain; preferably ELIMINATE hbr*Real by re-proving kvE_extNeg{Fut,Past}_complete from the destructor's currently-DISCARDED pinned walk facts hgap/hocc (ExteriorConverterK.lean:159 discards what ExteriorNegationK.lean:300-303 returns) + the level-up ambient qnf realization, via a NEW pinned fiber-realization converse kvE_{fut,past}Pinned_of_end. Faithful technique (Rabinovich 2014 Cor 5.4(1)⇐ one fiber level down + Cor 5.4(2) re-anchoring): pinned realization is NOT derivable from free-env P.existF-4 content; the converse's proof route = landed complete-type totality (nf_characteristic_satisfies/nf_eval_unique, NormalForm.lean:224/:245) + walk geometry + endpoint self-zone coincidence; the m=0 instance (all task 358's :361 needs) closes with landed machinery. Keep every current consumer green. Phase 0 mandatory machine probes: lean_run_code countermodel attempt against the guarded binder at m=1 (report 03 claim C3) and the positive m=0 route (claim C8). Grounding: specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md sections 2.3-2.4, 3.3, 6. Note: task 349 v8 Phase 6 inherits the same false-binder wall and should consume this task's restated interface. Zero-debt: no sorries, no vacuous defs; if a sub-piece cannot close green, mark [BLOCKED] and escalate.
+
+---
 
 ### 359. Boneyard archive hygiene no live imports
 - **Effort**: medium
@@ -136,12 +150,14 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 357
-- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/02_literature-proof-method-survey.md]
+- **Dependencies**: Task 349, Task 357, Task 360
 - **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/02_realizer-recursion-implementation.md]
+- **Research**:
+  - [358_realization_recursion_nf_nvar_exist_all_depths/reports/02_literature-proof-method-survey.md]
+  - [358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md]
 
 **Description**: Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.
 
