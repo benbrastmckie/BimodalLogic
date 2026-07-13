@@ -352,7 +352,24 @@ sorries pre-existing, task-358 territory, untouched).
 - **File scope:** ExteriorConverterK, ExteriorConverterPastK, ExteriorBracketAssembleK,
   ExteriorGateAssembleK, EndIntervalConsumerK, KampPrior.lean:838-876.
 
-### Phase 2: Future pinned converse at m=0 — endpoint atom-layer pinning [NOT STARTED]
+### Phase 2: Future pinned converse at m=0 — endpoint atom-layer pinning [COMPLETED]
+
+**Phase-2 record (authoritative)**: NEW file
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedConverseK.lean`
+(~215 lines) with `kvE_futAtomPinned_zero` + 3 named helpers (`kvE_futAdmissible_zoneMark`
+conjunct-1 reader, `kvE_futSelfZone_coincide` free-env coincidence, `kvE_futFreshPinned_of_end`
+x1-slot pinning). Assembly = `nf_eval_nf0_cons_factor.mpr` three channels (fresh := x1,
+env := [w,x,t]): zone from conjunct-1 + order facts; fresh profile from hend self-zone;
+env restriction from ambient atom layer through hfib. Signature notes: (a) report-03's
+`nf1_dropFresh` has no in-tree decl — faithful spelling is `nfk_dropFresh σ = qnf.1`;
+(b) the atom layer consumes only `hadm`/`hfib`/`h`/`hend` of the §2.4 set (`hpos`/`hgap`/`hocc`
+are Phase-3 inputs); (c) admissibility conjunct-4 was NOT needed — coincidence applied to the
+self-zone realizer's OWN free env (`env0 0 = x1`) + conjunct-2 on-fiber identification reads
+σ.1's x1-slot atoms off the realizer's dropFresh channel (the plan's conjunct-4 stopping
+condition never arose). Verification: scoped
+`lake build …ExteriorPinnedConverseK` green (1024 jobs, first attempt); full `lake build`
+green (1734 jobs); `lake env lean` `#print axioms` on all 4 decls: exactly
+`[propext, Classical.choice, Quot.sound]`. Zero sorries/vacuous defs introduced.
 
 - **Goal:** In NEW file `ExteriorPinnedConverseK.lean`, prove the atom-layer half of
   `kvE_futPinned_of_end_zero`: under the §2.4 hypotheses at m := 0, the endpoint's complete
@@ -361,20 +378,29 @@ sorries pre-existing, task-358 territory, untouched).
 - **Bounded unit:** one lemma (`kvE_futAtomPinned_zero`) plus at most 3 named helpers; each
   helper is a single verifiable fact.
 - **Tasks:**
-  - [ ] Create `ExteriorPinnedConverseK.lean` with imports (ExteriorNegationK, ExteriorConverterK,
+  - [x] Create `ExteriorPinnedConverseK.lean` with imports (ExteriorNegationK, ExteriorConverterK,
         WeakCanonical/NormalForm) and the report-03 §2.4 signature transcribed at m := 0 as the
-        file-head docstring (source: report 03 §2.4, quote verbatim).
-  - [ ] Helper: self-zone coincidence — a fresh witness `v` of the self-zone content at `x1`
+        file-head docstring (source: report 03 §2.4, quote verbatim). *(deviation: altered —
+        `nf1_dropFresh` quoted verbatim in the docstring but noted as having no in-tree decl;
+        the lemma uses the faithful spelling `nfk_dropFresh σ = qnf.1`)*
+  - [x] Helper: self-zone coincidence — a fresh witness `v` of the self-zone content at `x1`
         satisfies `v = x1` (from coupling `(false,false)` via `kvE_futZone4_of_above` semantics +
-        linear order trichotomy).
-  - [ ] Helper: outer-slot pinning from the ambient — σ on qnf's fiber (`nf1_dropFresh σ = qnf.1`)
+        linear order trichotomy). *(deviation: altered — stated more generally as
+        `kvE_futSelfZone_coincide : zoneHolds M env kvE_futSelfZone v → v = env 0` over a FREE
+        env, the shape `kvE_fiberPosOnShift_correct` actually delivers; consumed with v := x1)*
+  - [x] Helper: outer-slot pinning from the ambient — σ on qnf's fiber (`nfk_dropFresh σ = qnf.1`)
         + ambient `h` pins σ.1's non-`x1`-slot atoms to the actual `[w,x,t]` profile.
-  - [ ] Helper: `x1`-slot pinning from `hend` — the self-zone element's fresh-slot atoms are
-        pinned to `x1`'s actual profile (coincidence), and admissibility's self-zone fresh/`x1`
-        slot agreement (`kvE_futAdmissible` conjunct-4 uniqueness discipline, ExteriorNegationK.lean:391-400
-        doc) transfers it to σ.1's `x1`-slot atoms. Reuse the factoring pattern of
-        `kvE_futAtom_of_bundle` (ExteriorConverterK.lean:100-105, `nf_eval_nf0_cons_factor`).
-  - [ ] Assemble `kvE_futAtomPinned_zero`; `lean_verify` sorry/axiom check; scoped build.
+        *(deviation: altered — inlined as the 2-line env-restriction channel of the main
+        assembly (`rw hfib` + `nf_eval_nf_atom_layer`); the named-helper slot went to the
+        conjunct-1 reader `kvE_futAdmissible_zoneMark`, which the zone channel requires and
+        no existing reader exposed)*
+  - [x] Helper: `x1`-slot pinning from `hend` — `kvE_futFreshPinned_of_end`. *(deviation:
+        altered — conjunct-4 uniqueness NOT needed: coincidence applied to the self-zone
+        realizer's own free env pins `env0 0 = x1`, and conjunct-2 on-fiber identification
+        (`kvE_futAdmissible_onFiber`) makes the realizer's dropFresh channel read σ.1's
+        `x1`-slot atoms directly; factoring pattern `nf_eval_nf0_cons_factor` as planned)*
+  - [x] Assemble `kvE_futAtomPinned_zero`; sorry/axiom check via `lake env lean` `#print axioms`
+        (authoritative route per Phase-1 decision 4); scoped build green.
 - **Done when:** `kvE_futAtomPinned_zero` compiles sorry-free; scoped `lake build` of the new
   file green; nothing else touched.
 - **Stopping condition (bounded-unit):** if the admissibility conjunct does NOT provide the
