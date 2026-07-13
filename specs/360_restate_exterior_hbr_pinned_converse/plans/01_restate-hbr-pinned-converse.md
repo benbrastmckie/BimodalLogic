@@ -411,7 +411,56 @@ green (1734 jobs); `lake env lean` `#print axioms` on all 4 decls: exactly
 - **Depends on:** 0 (parallel with Phase 1; disjoint files)
 - **File scope:** ExteriorPinnedConverseK.lean (new) only.
 
-### Phase 3: Future pinned converse at m=0 — fiber-fold identification and `kvE_futPinned_of_end_zero` [NOT STARTED]
+### Phase 3: Future pinned converse at m=0 — fiber-fold identification and `kvE_futPinned_of_end_zero` [BLOCKED]
+
+**BLOCKER (Phase 3, 2026-07-13, sess_1783950096_9d2925) — the target theorem is FALSE as
+stated; MACHINE-REFUTED (C8-adjudication defect, exactly the phase's declared stopping
+condition).**
+
+- **What failed**: the fiber-fold identification's "interior/below-`t` zones" cases (both
+  directions). The per-zone case list has suppliers for gap (`hgap`/`hocc`), ray (`hend`),
+  and self (`hend` + coincidence) — but the SIX interior zones (fresh witness in
+  below-`x`, `= x`, `(x,w)`, `= w`, `(w,t)`, `= t`; all order-possible) are read by NO
+  hypothesis: every semantic hypothesis of the §2.4 set reads `σ.2` exclusively through
+  `kvE_fiberZoneList σ` at the three EXTERIOR zone specs (the only `σ.2`-dependent
+  ingredients of `kvE_futPos`/`kvE_futEnd`/`kvE_futGapD`), and admissibility conjuncts 2-4
+  never force interior marking. The plan's cited interior supplier ("ambient `h` +
+  σ-on-fiber — qnf's own fold renders these zones' population") supplies the REALIZATION
+  side only; no hypothesis links `σ.2`'s interior bits to `qnf.2` (`hfib` relates atom
+  layers only).
+- **What was tried / evidence (machine-checked, GREEN)**:
+  `kvE_futPinned_of_end_zero_refuted` (ExteriorPinnedConverseK.lean, Phase-3 section): on
+  EVERY Prior UZ/SZ structure with `x < w < t < x1` there are an ambient-realized `qnf` and
+  an admissible on-fiber `σ′` satisfying the COMPLETE §2.4 hypothesis set (`hadm`, `hfib`,
+  ambient, `hpos`, `hend`, `hgap`, `hocc`) with `¬ nf_eval_nf M 1 4 [x1,w,x,t] σ′`.
+  Construction: `σ′ := τ` (honest endpoint characteristic) with the mark of the interior
+  fiber element `e := nf_characteristic M 0 5 [w,x1,w,x,t]` (zone `= w`) erased — every
+  hypothesis is invariant under the erasure (zone-list congruence + admissibility
+  monotonicity, both proved), while a pinned realizer would force `σ′.2 e = true` through
+  the fold biconditional. Axioms: exactly `[propext, Classical.choice, Quot.sound]`.
+  Non-vacuous: the probe's `P3M`/`p3_UZ`/`p3_SZ`/depth-0 provider instantiate the parameter
+  set concretely (anchors 2 < 15 < 18 < 25).
+- **Why stuck (root cause)**: report 03 §2.3 item 3 ("at m=0 the walk geometry +
+  fresh-slot coincidence pin the complete fiber datum, so identification closes with landed
+  machinery" — confidence Medium, NOT machine-run) overlooked interior-zone fiber elements;
+  the Phase-0 probe validated the honest configuration (b) and gap-marking separation (c′)
+  but never probed interior marking separation. This is the same failure mode
+  ExteriorConverterK.lean's header already recorded for the BARE converse
+  ("an unrecorded-but-realizable on-fiber sub..."); the §2.4 antecedents repair it only on
+  the exterior zones.
+- **What is needed (repair candidates, for adjudication — NOT decided here per postmortem
+  rule "do not invent new interface hypotheses")**: either (a) weaken the conclusion to
+  what the clause family actually encodes (atom-layer pinning [Phase 2, GREEN] + fold
+  agreement on the three exterior zones [suppliers exist — the four `*_of_realizer` supply
+  lemmas landed this phase are their converses]) and re-derive Phase 5's needs from that,
+  or (b) strengthen the hypothesis set with an interior-marking supplier threaded from the
+  true consumption site (e.g. a `qnf.2`-mediated link). NOTE: the refutation also refutes
+  the weakened conclusion `qnf.2 σ = true` (σ′ is realizable at NO `[y,w,x,t]`), so the
+  Phase-5 supply theorems and the restated `hbrFutSat` binder shape must be re-adjudicated
+  against σ′ before further implementation. Downstream phases 4-6 are blocked pending this
+  adjudication.
+- **Prohibited**: no sorry, no vacuous placeholder used — the phase lands only GREEN
+  artifacts (refutation + 4 reusable supply lemmas + 3 invariance lemmas).
 
 - **Goal:** Complete the Future converse at m=0: prove σ's fiber fold matches the endpoint
   characteristic (`∀ sub : NormalForm sig 0 5` on σ's fiber,
@@ -426,22 +475,39 @@ green (1734 jobs); `lake env lean` `#print axioms` on all 4 decls: exactly
     - [ ] gap zone `(t,x1)`: `hgap` gives the gap disjunction at `v`; membership of the realized
           `sub` in `kvE_fiberZoneList σ kvE_futGapZone` via depth-0 atom uniqueness
           (`nf_eval_unique` at k=0) against the listed element realized at `v` → marked.
+          *(deviation: not attempted — superseded by the refutation; supplier exists, case
+          believed provable, but the theorem it serves is false)*
     - [ ] ray zone `(x1,∞)`: `hend`'s `kvE_futRayForm` exact-ray-content conjunct (every future
           point carries a ray element; each ray element occurs) — same uniqueness argument.
+          *(deviation: not attempted — same as gap case)*
     - [ ] self zone `v = x1`: Phase-2 coincidence + `hend` self-zone content.
+          *(deviation: not attempted — same as gap case)*
     - [ ] interior/below-`t` zones: the ambient `h` + σ-on-fiber (`nf1_dropFresh σ = qnf.1`) —
           qnf's own fold at `[w,x,t]` renders these zones' population.
+          *(deviation: REFUTED — the cited suppliers render the realization side only; no
+          hypothesis pins σ.2's interior marking. See BLOCKER block and
+          `kvE_futPinned_of_end_zero_refuted`)*
   - [ ] Backward direction (marked → realized at pinned coords), by the marked element's zone:
         `hocc` for gap items (pinned occurrence in `(t,x1)` — the walked milestones,
         Cor 5.4(1)⇐'s core step), `hend` ray conjuncts for ray items, self via coincidence,
         interior via ambient. Depth-0 elements are pure atom assignments, so a free-env
         occurrence + Phase-2 pinned atom layer upgrades to pinned realization
         (`nf_eval_nf0_cons_factor` pattern).
+        *(deviation: interior case REFUTED (a marked-but-unrealizable interior element also
+        passes all hypotheses); exterior cases not attempted, superseded)*
   - [ ] Off-fiber falsity via `kvE_futAdmissible_offFiber` (as in ExteriorConverterK.lean:187).
+        *(deviation: not needed — theorem refuted before assembly)*
   - [ ] Assemble `kvE_futPinned_of_end_zero` with the report-03 §2.4 signature at m := 0
         (hypotheses: `hadm`, `hfib`, order facts, ambient `h`, `htx1`, `hpos`, `hend`, `hgap`,
         `hocc`; conclusion `nf_eval_nf M 1 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ`).
-  - [ ] `lean_verify` (sorry/axiom check) + scoped build.
+        *(deviation: altered — landed `kvE_futPinned_of_end_zero_refuted` instead: the EXACT
+        §2.4 hypothesis set witnessed with a non-realized σ′, on every Prior structure with
+        4 ordered points; plus 4 reusable realizer→antecedent supply lemmas
+        (`kvE_futPos/GapD/End/Occ_of_realizer`) and 3 invariance lemmas (`kvE_subBit_mono`,
+        `kvE_futAdmissible_of_subMarking`, `kvE_fiberZoneList_congr`))*
+  - [x] `lean_verify` (sorry/axiom check) + scoped build. *(deviation: altered — performed on
+        the refutation artifact: scoped + full `lake build` GREEN; `#print axioms` on all 8
+        new decls = exactly `[propext, Classical.choice, Quot.sound]`; zero sorries)*
 - **Done when:** `kvE_futPinned_of_end_zero` compiles sorry-free; scoped build green.
 - **Stopping condition / split trigger:** if after the forward direction the phase already
   exceeds ~350 lines or the dispatch is at 70% budget, commit the forward half green as
