@@ -35,8 +35,8 @@ theorem kvE_pastAdmissible_fiber_dichotomy {sig : MonadicSignature} {k : Nat}
     ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 ∨ σ.2 s = false := by
   have hadm' := hadm
   unfold kvE_pastAdmissible at hadm'
-  rw [Bool.and_eq_true, Bool.and_eq_true] at hadm'
-  obtain ⟨⟨_, hB⟩, _⟩ := hadm'
+  rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hadm'
+  obtain ⟨⟨⟨_, hB⟩, _⟩, _⟩ := hadm'
   intro s
   have hs := (List.all_eq_true.mp hB) s (Finset.mem_toList.mpr (Finset.mem_univ s))
   rw [Bool.or_eq_true, decide_eq_true_eq] at hs

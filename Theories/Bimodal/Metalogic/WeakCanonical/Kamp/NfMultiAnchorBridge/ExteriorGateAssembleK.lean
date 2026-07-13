@@ -232,7 +232,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
           have hh := hadm
           rw [kvE_pastAdmissible] at hh
           simp only [Bool.and_eq_true] at hh
-          exact of_decide_eq_true hh.1.1
+          exact of_decide_eq_true hh.1.1.1
         have hb1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
         have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
         simp only [atom_eval, Fin.cons] at h1

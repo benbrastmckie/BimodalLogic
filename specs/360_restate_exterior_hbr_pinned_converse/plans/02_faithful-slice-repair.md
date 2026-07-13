@@ -520,11 +520,29 @@ uniqueness mirror.
   KampPrior.lean:838-876, ExteriorPinnedConversePastK.lean (new, defs+constancy only),
   ExteriorConverter{,Past}K (conditional, deletion-only).
 
-### Phase 4: Past mirror — `kvE_pastSliceId_of_end_zero` + `kvE_pastSliceUnique_zero` [BLOCKED]
+### Phase 4: Past mirror — `kvE_pastSliceId_of_end_zero` + `kvE_pastSliceUnique_zero` [COMPLETED]
 
-**BLOCKER** (Phase 4) — `kvE_pastSliceId_of_end_zero` is FALSE as the naive mirror; all other
-Phase-4 targets LANDED GREEN (see checklist). The stopping condition fired: a genuine
-asymmetry, not a transcription slip.
+**BLOCKER RESOLVED (Phase 4a, report 03 option (a) — faithful conjunct-4 restoration)**:
+escalation research (reports/03_past-admissibility-conjunct4-repair.md) adjudicated the
+asymmetry as an in-tree omission by task 352 (Rabinovich Cor 5.4(2) is the exact mirror of
+(1); the frozen k=2 `kvE2_pastAdmissible` carried condition 4 symmetrically) and
+machine-verified the producer branch. This dispatch: (i) GATE — the V11 Medium-confidence
+composite (full Past slice-id with conjunct 4 as hypothesis) machine-run via `lean_run_code`,
+GREEN with zero diagnostics → GO; (ii) conjunct 4 restored to `kvE_pastAdmissible`
+(`kvE_pastSelfZone` hoisted above the def, mirroring the Future layout) + producer 4th branch
+discharged (no order hypotheses consumed, exactly as probed); (iii) the 3 mechanical readers
+re-threaded (ConverterPastK dichotomy +1 projection, GateAssembleK:235 one token,
+PastConverseK zoneMark +1 rewrite); (iv) both refuted docstrings corrected; (v)
+`kvE_pastSliceId_of_end_zero` landed with private helpers `kvE_pastProjFresh_zero`/
+`kvE_pastGapItem_pinned_zero`/`kvE_pastRayItem_pinned_zero`. Scoped build GREEN (1030 jobs),
+full build GREEN (1736 jobs), all four new/re-keyed decls axiom-clean
+(`[propext, Classical.choice, Quot.sound]`), territory sorry census 0, no consumer statement
+edits (EndIntervalConsumerK/KampPrior/BracketAssembleK recompile as-is — Phase-3b seam
+survives). The original defect record is preserved below for the audit trail.
+
+**BLOCKER (RESOLVED — historical record)** — `kvE_pastSliceId_of_end_zero` is FALSE as the
+naive mirror; all other Phase-4 targets LANDED GREEN (see checklist). The stopping condition
+fired: a genuine asymmetry, not a transcription slip.
 
 - **What failed**: the SELF-zone/bit-true case of the slice-id mirror. The Future proof
   (ExteriorPinnedConverseK.lean:1041-1082) closes it via `hc4 := hadm'.2` — the FOURTH
@@ -589,13 +607,16 @@ asymmetry, not a transcription slip.
   - [x] Port the atom-layer lemma (Phase-2 template) with Past zone semantics. *(landed:
         `kvE_pastAdmissible_zoneMark`, `kvE_pastSelfZone_coincide`,
         `kvE_pastFreshPinned_of_end`, `kvE_pastAtomPinned_zero` — all GREEN, axiom-clean)*
-  - [ ] Port `kvE_futSliceId_of_end_zero` and `kvE_futSliceUnique_zero` (hoist any
+  - [x] Port `kvE_futSliceId_of_end_zero` and `kvE_futSliceUnique_zero` (hoist any
         side-agnostic helpers to the Future file and import — prefer hoisting over duplication).
         *(deviation: altered — `kvE_pastSliceUnique_zero` LANDED GREEN (+ its engine
         `kvE_pastInteriorTransfer_zero` and private zone helpers `kvE_pastZone4_of_below`/
         `kvE_pastZoneSpec_of_below`; no hoisting needed — the only shared candidates are
         `private` in their home files, replication precedent applied);
-        `kvE_pastSliceId_of_end_zero` NOT landed — statement FALSE as mirrored, see BLOCKER)*
+        `kvE_pastSliceId_of_end_zero` landed in the Phase-4a re-dispatch AFTER the conjunct-4
+        restoration (statement was FALSE under the 3-conjunct predicate — see resolved
+        BLOCKER record; item form is the raw `P.existF 4 (renameNF rot5Fwd rot5Bwd s)` per
+        the Past clause-family convention, gate-probed GREEN before production))*
   - [x] `#print axioms` on all new decls; scoped build; commit. *(all six new decls exactly
         `[propext, Classical.choice, Quot.sound]`; scoped build 1024 jobs GREEN; full build
         1736 jobs GREEN)*

@@ -30,7 +30,7 @@ sub, `σ.2 s = true`) is read through its navigation coordinates `nfk_dropFresh 
 This is navigation-only (G6): NO content-bearing formula is rendered here — content is the
 separate `kvE_fiberPosOn P (bucket)` channel used downstream in Phase 4.2/4.3.
 
-**The three order-admissibility conditions** a realizer at exterior `x1 < x` FORCES on σ,
+**The four order-admissibility conditions** a realizer at exterior `x1 < x` FORCES on σ,
 proved model-independently in `kvE_pastRealizer_admissible`:
 
 1. **Zone marking** `nf0_zoneSpec σ.1 = kvE2_sep_zPastX3` — pure atom-layer fact
@@ -41,12 +41,20 @@ proved model-independently in `kvE_pastRealizer_admissible`:
    (`nfk_zoneSpec s`) is one of the nine `kvE_pastPossibleZones` (via `kvE_pastZoneClass`
    applied to the realizer of `s`, whose zone is read back off its atom layer by
    `kvE_zoneHolds_of_atom`).
+4. **Self-zone fresh-profile uniqueness** — all self-zone-prescribed depth-`k` fresh
+   profiles coincide (`kvE_subBit` at-most-one form), the exact mirror of
+   `kvE_futAdmissible` conjunct 4 (`ExteriorNegationK.lean:95-98`).
 
 The frozen k=2 condition (4) (self-zone bit pattern `kvE2_pastSelfBit σ χ ↔ χ = fresh
-profile`) is a CONTENT-pinning condition with no σ-syntactic depth-`k` target (the self
-point's depth-`k` profile is model-determined, not encoded in σ); at depth `k` the self zone
-is simply one of the nine possible zones and its content is carried by the full-fiber channel
-`kvE_fiberBucket σ (self zone) χ` + `kvE_fiberPosOn` in Phase 4.2/4.3. `kvE_pastFreshProfile`
+profile`, which the frozen `kvE2_pastAdmissible` carried symmetrically with the Future side)
+survives at depth `k` in the weakened at-most-one form of condition 4 above: at depth `k` the
+endpoint profile is fiber-borne (`nfk_projFresh s`), so uniqueness — not exact content — is
+the σ-syntactic residue, while the content itself is carried by the full-fiber channel
+`kvE_fiberBucket σ (self zone) χ` + `kvE_fiberPosOn` in Phase 4.2/4.3. NOTE (task 360 Phase
+4a): task 352 initially DROPPED condition 4 here claiming it "subsumed by the full-fiber
+content channel downstream" — machine-refuted (task-360 Phase-4 counterexample: honest τ ⊕
+one extra self-zone mark passes every downstream existential read while breaking per-σ
+uniqueness); the conjunct is restored per report 03. `kvE_pastFreshProfile`
 (the realizer's fresh-point atom-profile lemma, mirror of the reachable public
 `kvE2_futFreshProfile`) is exposed here for that downstream self-point identification.
 
@@ -122,22 +130,36 @@ theorem kvE_pastFreshProfile {sig : MonadicSignature} {k : Nat}
 
 /-! ## Depth-`k` past-side order-admissibility -/
 
+/-- Self zone-4 spec: fresh point equal to `x1` (the endpoint). Hoisted above
+    `kvE_pastAdmissible` (task 360 Phase 4a) because the restored conjunct 4 reads it;
+    layout now mirrors the Future file (`kvE_futSelfZone` before `kvE_futAdmissible`,
+    `ExteriorNegationK.lean:70`). -/
+def kvE_pastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zPastX3
+
 /-- **Order-admissibility of σ** (past side, depth-`k`, syntactic, model-independent): the
-    three order conditions a realizer at exterior `x1 < x` FORCES on σ — zone marking,
-    off-fiber falsity, and order-possible zones — all read over the FULL fiber
-    `NormalForm sig k 5` (navigation-only, G6; content is the separate `kvE_fiberPosOn`
-    channel). The depth-`k` reformulation of `kvE2_pastAdmissible`
+    four order conditions a realizer at exterior `x1 < x` FORCES on σ — zone marking,
+    off-fiber falsity, order-possible zones, and self-zone fresh-profile uniqueness — all
+    read over the FULL fiber `NormalForm sig k 5` (navigation-only, G6; content is the
+    separate `kvE_fiberPosOn` channel). The depth-`k` reformulation of `kvE2_pastAdmissible`
     (`ExteriorNegationPast.lean:332`): its marginal `σ.2 (nf0_assemble zs χ σ.1)` reads are
     replaced by direct full-fiber reads (the depth-0 assembly is F2-lossy at depth `k ≥ 1`),
-    and its content-pinning self-zone condition (4) is subsumed by the full-fiber content
-    channel downstream. -/
+    and its exactly-the-fresh-profile self-zone condition (4) by the weakened at-most-one
+    form through the `kvE_subBit` determinacy channel — the depth-`k` faithful replacement,
+    byte-mirroring `kvE_futAdmissible` conjunct 4 (`ExteriorNegationK.lean:95-98`). Restored
+    by task 360 Phase 4a (report 03): the earlier "subsumed downstream" drop was
+    machine-refuted — downstream reads self marks only through the `kvE_fiberPosOnShift`
+    EXISTENTIAL, which cannot enforce per-σ uniqueness. -/
 noncomputable def kvE_pastAdmissible {sig : MonadicSignature} {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
     decide (nfk_dropFresh s = σ.1) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
-    (kvE_pastPossibleZones.any fun z => decide (nfk_zoneSpec s = z)) || !(σ.2 s))
+    (kvE_pastPossibleZones.any fun z => decide (nfk_zoneSpec s = z)) || !(σ.2 s)) &&
+  ((Finset.univ.toList (α := NormalForm sig k 1)).all fun χ =>
+    (Finset.univ.toList (α := NormalForm sig k 1)).all fun χ' =>
+      !(kvE_subBit σ kvE_pastSelfZone χ) || !(kvE_subBit σ kvE_pastSelfZone χ') ||
+        decide (χ = χ'))
 
 /-- **A realizer forces order-admissibility** (past side, depth-`k`): if some exterior
     `x1 < x` realizes σ over `[x1, w, x, t]` (with `x < w < t`), then σ is order-admissible.
@@ -145,7 +167,12 @@ noncomputable def kvE_pastAdmissible {sig : MonadicSignature} {k : Nat}
     `kvE2_pastRealizer_admissible` (`ExteriorNegationPast.lean:348`): the fold bridge
     `nf_eval_nfk_iff_efold` supplies the atom layer (condition 1 via `kvE2_zoneBit_below`),
     the off-fiber clause (condition 2), and the on-fiber existential biconditional (condition
-    3, via `kvE_zoneHolds_of_atom` + `kvE_pastZoneClass`). -/
+    3, via `kvE_zoneHolds_of_atom` + `kvE_pastZoneClass`). Condition 4 (task 360 Phase 4a)
+    is the byte-level mirror of the Future branch (`kvE_futRealizer_admissible`,
+    ExteriorNegationK.lean:170-199): `kvE_subBit_iff` (side-neutral) delivers realizing
+    witnesses, the `(false, false)` self-zone head coupling forces both to the endpoint
+    `x1`, and `nf_eval_unique` identifies the profiles — no order-direction hypothesis is
+    consumed. -/
 theorem kvE_pastRealizer_admissible {sig : MonadicSignature} {k : Nat}
     (M : OrderedMonadicStructure sig) (σ : NormalForm sig (k + 1) 4)
     (x1 w x t : M.carrier) (hxw : x < w) (hwt : w < t) (hx1x : x1 < x)
@@ -156,7 +183,7 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} {k : Nat}
     (nf_eval_nfk_iff_efold M (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ).mp hnf
   rw [kvE_pastAdmissible]
   simp only [Bool.and_eq_true]
-  refine ⟨⟨?_, ?_⟩, ?_⟩
+  refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- (1) zone marking: pure atom-layer bit transfer
     refine decide_eq_true ?_
     funext i
@@ -192,6 +219,39 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} {k : Nat}
       have hmem := kvE_pastZoneClass M v x1 w x t hxw hwt hx1x (nfk_zoneSpec s) hzone
       rw [Bool.or_eq_true]
       exact Or.inl (List.any_eq_true.mpr ⟨nfk_zoneSpec s, hmem, decide_eq_true rfl⟩)
+  · -- (4) self-zone fresh-profile uniqueness (task 360 Phase 4a; byte-level mirror of the
+    -- Future conjunct-4 branch — machine-verified as report 03 §3.1; uses NO order
+    -- hypotheses, only the side-neutral `kvE_subBit_iff`, the `(false, false)` self-zone
+    -- head coupling, and `nf_eval_unique`)
+    rw [List.all_eq_true]
+    intro χ _
+    rw [List.all_eq_true]
+    intro χ' _
+    by_cases hbχ : kvE_subBit σ kvE_pastSelfZone χ = true
+    · by_cases hbχ' : kvE_subBit σ kvE_pastSelfZone χ' = true
+      · obtain ⟨v, hzv, hvχ⟩ := (kvE_subBit_iff M _ σ hnf kvE_pastSelfZone χ).mp hbχ
+        obtain ⟨v', hzv', hv'χ'⟩ := (kvE_subBit_iff M _ σ hnf kvE_pastSelfZone χ').mp hbχ'
+        have hvx1 : v = x1 := by
+          have h0 := hzv 0
+          have hn1 : ¬ v < x1 := fun hlt => absurd (h0.1.mp hlt) Bool.false_ne_true
+          have hn2 : ¬ x1 < v := fun hlt => absurd (h0.2.mp hlt) Bool.false_ne_true
+          exact le_antisymm (not_lt.mp hn2) (not_lt.mp hn1)
+        have hv'x1 : v' = x1 := by
+          have h0 := hzv' 0
+          have hn1 : ¬ v' < x1 := fun hlt => absurd (h0.1.mp hlt) Bool.false_ne_true
+          have hn2 : ¬ x1 < v' := fun hlt => absurd (h0.2.mp hlt) Bool.false_ne_true
+          exact le_antisymm (not_lt.mp hn2) (not_lt.mp hn1)
+        rw [hvx1] at hvχ
+        rw [hv'x1] at hv'χ'
+        have hχχ' : χ = χ' := nf_eval_unique M k 1 (fun _ => x1) χ χ' hvχ hv'χ'
+        rw [hbχ, hbχ', hχχ']
+        simp
+      · rw [Bool.not_eq_true] at hbχ'
+        rw [hbχ']
+        simp
+    · rw [Bool.not_eq_true] at hbχ
+      rw [hbχ]
+      simp
 
 /-! ## Depth-`k` past-side chain-assembly navigation constants and helpers (Phase 4.2/4.3 prep)
 
@@ -209,8 +269,8 @@ def kvE_pastGapZone : ZoneSpec 4 := Fin.cons (false, true) kvE2_sep_zPastX3
 /-- Ray zone-4 spec `(−∞, x1)`: fresh point strictly below `x1` (hence below all of `w, x, t`). -/
 def kvE_pastRayZone : ZoneSpec 4 := Fin.cons (true, false) kvE2_sep_zPastX3
 
-/-- Self zone-4 spec: fresh point equal to `x1` (the endpoint). -/
-def kvE_pastSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zPastX3
+-- `kvE_pastSelfZone` (fresh point equal to `x1`) is hoisted above `kvE_pastAdmissible`,
+-- whose restored conjunct 4 reads it (task 360 Phase 4a).
 
 /-- The gap zone is order-possible (`kvE_pastPossibleZones` index 6). -/
 theorem kvE_pastGapZone_mem : kvE_pastGapZone ∈ kvE_pastPossibleZones := by
