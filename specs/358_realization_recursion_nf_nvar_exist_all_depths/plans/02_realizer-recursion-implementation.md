@@ -177,25 +177,69 @@ Plan is fully sequential: all phases edit the single-file `KampPrior.lean` (shar
 constant + file-scope constraint), so no two phases can run in parallel. Phase 1 is the escalation
 gate — do not begin Phase 2 until it is green.
 
-### Phase 1: Interface pin + constructive Until-witness verification (escalation gate) [NOT STARTED]
+### Phase 1: Interface pin + constructive Until-witness verification (escalation gate) [COMPLETED]
 - **Goal:** Confirm the caveats are satisfied BEFORE any construction: (a) all nine Preserved-Asset
   interfaces resolve by name at their current locations; (b) the project's `Until` truth-lemma
   exposes the Until-witness CONSTRUCTIVELY on the target discrete/integer (Reynolds) model. This is
   the single real dependency and the escalation boundary (report 02 caveat 1).
 - **Tasks:**
-  - [ ] `lean_local_search` / `lean_hover_info` each of the nine interfaces in the Preserved Assets
+  - [x] `lean_local_search` / `lean_hover_info` each of the nine interfaces in the Preserved Assets
         table; record the current file:line and full type signature of each. If 341 has moved any,
         re-locate by name and note the new location (do not edit them).
-  - [ ] Locate the project's `Until` truth-lemma (the semantics lemma unfolding `Until`/`Since`
+        *(done 2026-07-12: all nine resolve; see Phase 1 Findings below. One relocation:
+        `kampPrior_existProviders_of_ih` is a 3-lemma family now at KampPrior.lean:989/:1013/:1043,
+        plan said :972 — located by name, not edited)*
+  - [x] Locate the project's `Until` truth-lemma (the semantics lemma unfolding `Until`/`Since`
         satisfaction on `OrderedMonadicStructure`). Record its exact name and signature.
-  - [ ] Determine whether it yields, from `y1 ⊨ (β Until α)`, a CONSTRUCTIVE witness
+        *(done: it is DEFINITIONAL — `Bimodal.Metalogic.WeakCanonical.temporal_truth`,
+        Table.lean:182; `.untl` case at :190-191 unfolds to
+        `∃ s, t < s ∧ temporal_truth M atomMap s φ ∧ ∀ r, t < r → r < s → temporal_truth M atomMap r ψ`
+        — exactly the Rabinovich witness shape; `.snce` dual at :192-193. No separate named lemma
+        exists or is needed: the landed k=1 template consumes it via
+        `simp only [temporal_truth]` + `obtain ⟨s, hs_lt, hs_F, hs_seg⟩` at EANegation.lean:594-611,
+        :637-647)*
+  - [x] Determine whether it yields, from `y1 ⊨ (β Until α)`, a CONSTRUCTIVE witness
         `y2 > y1` with `α(y2)` and `β` on `(y1, y2)` (decidable, no `Classical.choice`) on the
         discrete/integer model. Use `lean_hover_info` on the lemma; if it produces an existential
         that is eliminable without `Classical.choice`, it is constructive-viable.
-  - [ ] GO/NO-GO: if constructive-viable AND all nine interfaces resolve → proceed to Phase 2. If the
+        *(done: CONSTRUCTIVE-VIABLE, verified by machine probe `until_witness_probe` (lean_run_code)
+        transcribing the exact Cor 5.4(1) ⇐ inductive step — extraction + two-way case-split —
+        compiling green with axiom closure `[propext, Classical.choice, Quot.sound]`, IDENTICAL to
+        the ambient baseline: a bare `Exists.intro` lemma over these types shows the SAME closure
+        (Mathlib `LinearOrder` floor), as do all nine preserved assets. The realizer step adds NO
+        new axiom and no choice-based selection: extraction is Prop-level `Exists.elim`; the
+        case-split uses `le_total`/`le_or_gt` from the bundled `LinearOrder`
+        (`OrderedMonadicStructure.carrier_order`, MonadicFO.lean:103-109). Grounded against
+        Rabinovich chunk 0015 lines 25-35: "If y2 ≤ xn+1 then z = y2 … otherwise xn+1 ∈ (y1,y2) …
+        z = xn+1")*
+  - [x] GO/NO-GO: if constructive-viable AND all nine interfaces resolve → proceed to Phase 2. If the
         Until-witness is only classical, OR requires a NEW lemma in another file (out of file scope)
         → STOP: mark task [BLOCKED], spawn an isolated constructive-Until-witness sub-task, do NOT
         proceed.
+        *(verdict: **GO** — all nine interfaces resolve by name; Until-witness constructive-viable;
+        no new lemma needed outside KampPrior.lean; no sorry introduced)*
+
+**Phase 1 Findings (pinned interfaces, 2026-07-12)**:
+
+| # | Interface | Pinned location | Signature (essence) |
+|---|-----------|-----------------|---------------------|
+| 1 | `kvE_futChainDestructG` | ExteriorNegationK.lean:293 | from item-uniformity + `kvE_futChainG` at `s`: `∃ x1, s < x1 ∧ endF(x1) ∧ (∀ r ∈ (s,x1), D r) ∧ ∀ a ∈ l, ∃ r ∈ (s,x1), itemF a r` |
+| 1b | `kvE_pastChainDestructG` (dual) | ExteriorNegationPastK.lean:353 | mirror: `∃ x1 < s, endF(x1) ∧ D on (x1,s) ∧ per-item occurrence` |
+| 2 | `kvE_futBundle_of_realizer` | ExteriorConverterK.lean:208 | `hσ : nf_eval_nf M (k+1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x fun _=>t))) σ → (∀ s, σ.2 s = true → ∃ v, nf_eval_nf M k 5 … s) ∧ (∀ s, nfk_dropFresh s = σ.1 → (∃ v, …) → σ.2 s = true)` |
+| 3 | `kvE_pastBundle_of_realizer` | ExteriorConverterPastK.lean:177 | same shape as #2 (past) |
+| 4 | `bracketEndChar_kvExt_correct_prior` | ExteriorGateAssembleK.lean:106 | 6 order-bit hyps + 6 gate hyps → `VVecEA2.holds M atomMap (bracketEndChar_kvExt …) x t ↔ ∃ w, nf_eval_nf M (k+2) 3 … qnf` |
+| 5 | `endInterval_step_correct` / `EndIntervalCorrectPrior` | EndIntervalConsumerK.lean:171 / :95 | `∀ …, EndIntervalCorrectPrior atomMap h_surj charF Pfam k` (consumer green) |
+| 6 | `kampPrior_site_rungK_gate_match` | KampPrior.lean:816 | same 6+6 hypothesis seam as #4, gate-match at supply site |
+| 7 | `kampPrior_existProviders_of_ih_{correct,exist1,existF0_char}` | KampPrior.lean:989/:1043/:1013 | provider shim fed by IH family `ih : ∀ n sub, ∃ A, ∀ M …, truth A ↔ ∃ env, nf_eval_nf M j (n+1) (insertEnv env t) sub` *(moved from :972; family of 3)* |
+| 8 | `BracketFormula.fChainFrom`/`fChainPred`/`fChainFrom_base` | EANegation.lean:552/:567/:580 | k=1 realizer template; `fChainFrom_base`: eval ↔ pointType ∧ ∃ s > x, segment on (x,s) |
+| 9 | `nf_nvar_exist_all_depths` `\| 0 =>` / `\| k+1,0 =>` arms | KampPrior.lean:212 (def), n=0 arm :335-346 sorry-free, k=0 base :224 | sorries ONLY at :361 (`\| 1 =>`) and :364 (`\| n+2 =>`) — exactly the two targets |
+
+**Phase 2 implementation notes from probe**: (a) `le_or_lt` is deprecated in this toolchain —
+use `le_or_gt`; (b) do not project `M.carrier_order.decidableLE` directly (no such projection in
+current Mathlib) — use `le_total`/`le_or_gt`/`inferInstance`; (c) axiom-floor for ALL green
+assets is `[propext, Classical.choice, Quot.sound]` — the Phase-2 `lean_verify` bar is "no axiom
+beyond this floor, no `sorryAx`", not literal absence of `Classical.choice` (which is baked into
+the Mathlib `LinearOrder` types themselves, as the bare-`Exists.intro` baseline probe proved).
 - **Timing:** 1-2 hours (verification only; no proof edits unless an inline adapter is trivially
   in-scope in KampPrior.lean).
 - **Depends on:** none
