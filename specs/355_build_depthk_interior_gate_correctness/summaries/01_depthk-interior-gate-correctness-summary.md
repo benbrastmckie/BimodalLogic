@@ -1,7 +1,79 @@
 # Implementation Summary: Task #355 — depth-k interior gate correctness
 
-- **Status**: PARTIAL — Phases 1-4 green; Phases 5-7 remain (Phase 5 = F1-critical soundness)
-- **Latest dispatch**: Phase 4 (⇐ completeness) — see the "Phase 4 dispatch" section at the bottom.
+- **Status**: BLOCKED — Phases 1-5 + 6.1 GREEN; Phase 6 ∀-`k` clean close BLOCKED (frozen target
+  shape / F1); Phase 7 not reached.
+- **Latest dispatch**: Phase 5 (⇒ soundness) + Phase 6.1 (step biconditional) — see the "Phase 5-6
+  dispatch" section immediately below.
+
+---
+
+## Phase 5-6 dispatch (this dispatch — F1-critical soundness + block)
+
+- **Module**: `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean` (additive, +~200 lines)
+- **Build**: scoped GREEN (1020 jobs) AND full-tree `lake build` GREEN (1724 jobs).
+- **Axioms**: both new theorems at EXACTLY `[propext, Classical.choice, Quot.sound]` (verified).
+- **Frozen files**: all 13 byte-identical (only `open private` + import-only adds; no edits).
+- **Debt**: 0 `sorry`/`admit`/vacuous defs; forbidden `nf_char3_deeper_split` grep clean.
+
+### Delivered GREEN
+
+**`bracketEndChar_kv_step_sound`** (Phase 5 — the F1-critical ⇒ soundness half). From
+`(bracketEndChar_kv … (k+1) qnf).holds M atomMap x t`, under three NAMED depth-`k` provider
+obligations, reconstructs `∃ w, nf_eval_nf M (k+1) 3 [w,x,t] qnf`. Route: `bracketEndChar_kv_succ_holds_iff.mp`
+(Phase 3) → destructure gate + arrangement disjunct → (open private) `k1v_bracket_extract` yields the
+bracket witness `w` (`x<w<t`) + its raw `igPtW` eval → endpoint/witness char heads via
+`interiorGate_hcb` → (open private) `k1v_reconstruct_nf3` rebuilds the depth-0 atom layer → the per-sub
+fold biconditional (defeq via `nf_eval_nfk_iff_efold`'s internal `Iff.rfl`, `NfEFold.lean:643`) is
+`hreal` forward (marked→realizable) and `hexcl`+`hexclExt` backward (unmarked→realized-nowhere, cone ∪
+exterior covering all `x1`). The lossy fold BITS are never read (F1 channel intact — the obligations,
+not a pointwise collapse, supply the fiber content). Mirrors the k=2 template
+`bracketEndChar_kvE2_sound_two_prior_frag` (`OuterGate.lean:268`) but is NOT fragment-restricted (the
+full `S_L`/`S_R` permutation arrangement is admissible under the named obligations).
+
+**`bracketEndChar_kv_step_correct`** (Phase 6.1 — step biconditional). `⟨sound (Phase 5),
+complete (Phase 4)⟩` at symbolic `k+1`, carrying the union of both halves' hypotheses
+(`P`/`hcharK`/UZ/SZ + `hreal`/`hexcl`/`hexclExt`). Mirrors the k=2 assembly
+`bracketEndChar_kvE2_correct_two_prior_frag` (`OuterGate.lean:359`).
+
+### Why BLOCKED at the Phase 6 ∀-`k` close
+
+The frozen `InteriorGateTarget` (Phase 1) = `BracketCarrierCorrectVPrior` (`PriorInterface.lean:60`)
+is the CLEAN, obligation-FREE biconditional. It is F1-refuted at `k ≥ 2`: `bracketEndChar_kv_factors`
+(`CarrierKv.lean:422`) shows the fiber-existential fold determines `.holds` but NOT the realizer, and
+the carrier only builds `P.existF 0` (1-type) literals — it never invokes `P.existF 3` (arity-4), so
+`.holds` + `P` alone has no channel to the arity-4 fiber content the ⇒ direction needs. The captured
+stuck `lean_goal` (context has NO `P`, NO `hcharK`, NO `hreal`/`hexcl`/`hexclExt`;
+goal `⊢ ∃ w, nf_eval_nf M (k+1) 3 [w,x,t] qnf` from `h_holds` alone) is recorded verbatim in the plan
+Phase 6 BLOCKER. Even at k=2 only the obligation-carrying `_correct_two_prior_frag` exists — a clean
+`BracketCarrierCorrectVPrior` was NEVER delivered at k ≥ 2. The base rungs k=0/k=1 discharge the clean
+target only because their fibers are trivial / pointwise-lossless.
+
+**Rabinovich-faithfulness (2014, Lemma 7.6 + Cor 5.4)**: the block is FAITHFUL to the paper, NOT a
+divergence. The interior gate is the single-bracket `[x,t]` characterization (Cor 5.4 / Lemma 5.1
+`¬[α0,…,αn](z0,z1)` chain; §5 bracket). Recovering the F1-lossy fiber content from provider
+obligations IS the paper's move WITHIN one bracket — `P.existF n` is exactly Rabinovich's ∨→∃∀
+existential converter (Cor 5.4), and `hreal`/`hexcl` are the within-`[x,t]` ∃-placement + segment
+exclusions. But `hexclExt` (an unmarked sub realized OUTSIDE `[x,t]`) is NOT a within-bracket move: it
+is precisely Lemma 7.6's ADJACENCY COMPOSITION — `(∃z1)^{<z2}_{>z0}(φ1∧φ2)` composing a `(z0,z1)`
+bracket with an adjacent `(z1,z2)` bracket across the shared endpoint. The paper handles exterior
+witnesses via this SEPARATE lemma (adjacent brackets), never within a single bracket. The formalization
+faithfully mirrors that division: interior gate = task 355; exterior adjacency = tasks 348/351/352/354
+(the exterior-bracket layer, an explicit task-355 NON-goal). Consequently the clean
+`InteriorGateTarget` is STRONGER than the paper's single-bracket result; the provable, faithful
+deliverable is the obligation-carrying `bracketEndChar_kv_step_correct` (delivered).
+
+### What is needed to unblock (plan decision, not more interior-gate code)
+
+(a) **Revise the deliverable shape**: re-freeze task 355's DoD as the obligation-carrying general-`k`
+biconditional (the `_correct_two_prior_frag` analog, already delivered as `bracketEndChar_kv_step_correct`
+at symbolic `k+1`; a ∀-`k` wrapper carries the obligations uniformly), and verify the task-349 consumer
+`EndIntervalCorrectPrior` accepts it (the k=2 consumer KampPrior:351 supplies exactly these
+obligations, so it very likely does). — OR —
+(b) **`/spawn 355`** a dedicated exterior-adjacency sub-task to discharge the `hexclExt` residue via
+Rabinovich Lemma 7.6 (adjacent-bracket composition), enabling a clean obligation-free ∀-`k` close.
+This is the exterior-bracket layer, out of interior-gate scope. Recommended atomic sub-lemma:
+`bracketEndChar_kv_hexclExt_discharge` — "an unmarked depth-`k` arity-4 sub is realized at no
+strictly-exterior `x1`", via the exterior adjacency composition.
 
 ---
 
