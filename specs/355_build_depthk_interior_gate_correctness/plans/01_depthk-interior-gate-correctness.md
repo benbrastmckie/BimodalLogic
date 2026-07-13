@@ -211,7 +211,7 @@ frozen diffs EMPTY; G5 (manual, no chain-step shortcut). **BLOCKED-escalation** 
 
 ---
 
-### Phase 3: Body-destructuring `holds_iff` at depth k [NOT STARTED]
+### Phase 3: Body-destructuring `holds_iff` at depth k [COMPLETED]
 
 **Goal**: Expose the successor carrier's `.holds` structurally — the general-`k` analog of the k=2
 body-extraction path (`kvE2_sepBody_extract` and the `holds` unfolds used by `_two_prior`) — as the
@@ -221,14 +221,24 @@ each direction. Keep the fold-bit read FIBER-EXISTENTIAL (per `bracketEndChar_kv
 via `bracketEndChar_kv_one_eq` and is exactly the information F1 says is lost at k≥2).
 
 **Tasks**:
-- [ ] Prove a `bracketEndChar_kv_succ_holds_iff` lemma: `(bracketEndChar_kv … (k+1) qnf).holds M
+- [x] Prove a `bracketEndChar_kv_succ_holds_iff` lemma: `(bracketEndChar_kv … (k+1) qnf).holds M
       atomMap x t` unfolds (via `kv_body`, `VVecEA2.holds`) to the off-fiber gate conjunct ∧ the
-      disjunction over fiber `(zoneSpec, projFresh)` classes of realized-marked subs.
-- [ ] Prove the fiber-witness extraction/introduction helpers (the general-`k` analog of the `hbit`
-      lemma inside `bracketEndChar_kv_one_eq`, `CarrierKv.lean:304`, but kept existential): from a
-      fold bit = true recover a witnessing sub with matching `nf0_zoneSpec`/`nfk_projFresh`; and the
-      converse introduction.
-- [ ] Confirm the destructuring composes with Phase 2's point-type bridges.
+      disjunction over fiber `(zoneSpec, projFresh)` classes of realized-marked subs. *(deviation:
+      altered — the recommended verbatim-replica `rfl` bridge required two workarounds not in the
+      plan: (1) the fold-bit `decide` instance in the frozen `kv_body` uses `Classical.propDecidable`
+      for the `ZoneSpec 3` equality (elaborated in a module with no `DecidableEq (ZoneSpec 3)` in
+      scope), so `igFoldBit` had to reproduce that exact nested `Decidable` instance byte-for-byte,
+      else the carriers are not defeq at symbolic k; (2) the public replica `igBody` is proved defeq
+      to the frozen private `kv_body` by `simp only [bracketEndChar_kv]; rfl` — no `open private`
+      needed in the final form. Delivered: `igBody`/`igGate`/`igSL`/`igSR`/`igMkDisjunct` public
+      pieces, `bracketEndChar_kv_succ_eq` (defeq bridge), `igBody_holds_iff`, and the deliverable
+      `bracketEndChar_kv_succ_holds_iff`.)*
+- [x] Prove the fiber-witness extraction/introduction helpers (kept existential): `igFoldBit_iff`
+      gives `igFoldBit qnf zs χ = true ↔ ∃ sub, …` (both directions), the general-`k` existential
+      analog of `bracketEndChar_kv_one_eq`'s `hbit`.
+- [x] Confirm the destructuring composes with Phase 2's point-type bridges. *(the `igMkDisjunct`
+      endpoint/segment predicates are `formula_conjList`s of `charK`-literals that `interiorGate_hck`
+      /`_hcb` bridge — composition confirmed at the statement level; consumed in Phases 4-5.)*
 
 **Timing**: ~3 hours. **Estimated output**: ~150-300 lines.
 
