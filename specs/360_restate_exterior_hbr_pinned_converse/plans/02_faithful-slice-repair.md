@@ -520,7 +520,63 @@ uniqueness mirror.
   KampPrior.lean:838-876, ExteriorPinnedConversePastK.lean (new, defs+constancy only),
   ExteriorConverter{,Past}K (conditional, deletion-only).
 
-### Phase 4: Past mirror — `kvE_pastSliceId_of_end_zero` + `kvE_pastSliceUnique_zero` [NOT STARTED]
+### Phase 4: Past mirror — `kvE_pastSliceId_of_end_zero` + `kvE_pastSliceUnique_zero` [BLOCKED]
+
+**BLOCKER** (Phase 4) — `kvE_pastSliceId_of_end_zero` is FALSE as the naive mirror; all other
+Phase-4 targets LANDED GREEN (see checklist). The stopping condition fired: a genuine
+asymmetry, not a transcription slip.
+
+- **What failed**: the SELF-zone/bit-true case of the slice-id mirror. The Future proof
+  (ExteriorPinnedConverseK.lean:1041-1082) closes it via `hc4 := hadm'.2` — the FOURTH
+  conjunct of `kvE_futAdmissible` (ExteriorNegationK.lean:95-98: all self-zone-prescribed
+  fresh profiles coincide) — identifying the σ-marked self element `s` with the single
+  element `s0` that `hend`'s self conjunct delivers realized. `kvE_pastAdmissible`
+  (ExteriorNegationPastK.lean:134-140) has only THREE conjuncts; its docstring delegates the
+  frozen condition (4) to "the full-fiber content channel downstream", but no hypothesis of
+  the slice-id signature reads self-zone marks per-item.
+- **What was tried (machine evidence, `lean_run_code` this dispatch)**: the mirrored Future
+  tactic block `unfold kvE_pastAdmissible at hadm'; rw [Bool.and_eq_true, Bool.and_eq_true,
+  Bool.and_eq_true] at hadm'` FAILS at the third rewrite — "Did not find an occurrence of the
+  pattern `(?a && ?b) = true`"; the full decomposition visible in the error is exactly
+  `(zone-marking ∧ on-fiber) ∧ order-possible-zones` — no fourth conjunct. The two-rewrite
+  decomposition compiles and `hadm'.2` is the order-possible-zones conjunct (`nfk_zoneSpec`
+  membership), carrying no self-profile-uniqueness content.
+- **Why stuck (the statement is false, not merely unproved)**: counterexample σ := honest
+  endpoint characteristic τ (at `x1 < x`) with ONE extra self-zone mark
+  `s' := nf0_assemble kvE_pastSelfZone χ' τ.1` for any fresh profile `χ'` other than the
+  realized one. Every hypothesis holds verbatim: `hadm` (conjunct 1 unchanged; conjunct 2:
+  `s'` on-fiber by construction; conjunct 3: `kvE_pastSelfZone_mem`); `hfib`/ambient
+  unchanged; `hend` — its self conjunct is `kvE_fiberPosOnShift` over the self list, an
+  EXISTENTIAL (`kvE_fiberPosOnShift_correct`, ExteriorFiberK.lean:365-372), satisfied by the
+  realized element regardless of `s'`; `hgap`/`hocc`/rayForm read only the gap/ray lists,
+  which are unchanged. But the conclusion requires a pinned-realized σ' agreeing with σ on
+  the self zone: a σ' realized at any past-exterior endpoint marks at most ONE self-zone
+  element (self-witness coincidence forces the witness to the endpoint; `nf_eval_unique`
+  makes the realized depth-0 5-type there unique), so no σ' marks both `s0` and `s'`.
+  The SAME counterexample refutes the Future statement when conjunct 4 is deleted — the
+  Future proof goes through precisely because `kvE_futAdmissible` excludes such σ.
+- **Blast radius (feeds the re-adjudication)**: the Phase-3b carried binder `hslicePast`
+  (EndIntervalConsumerK.lean:139-144) guards on `kvE_pastAdmissible σ = true` +
+  `kvE_pastPos` truth only, so the SAME σ satisfies its guards (slice-constancy on gap/ray +
+  the self existential keep `kvE_pastPos σ` true on the honest model) while no admissible
+  marked slice-mate exists (`kvE_pastSliceEq` demands self-LIST equality) — the Phase-5
+  `kvE_hslicePast_supply_zero` discharge is therefore UNDISCHARGEABLE as the interface
+  stands. The `hexclSlicePast` route is NOT affected (it consumes
+  `kvE_pastSliceUnique_zero` + `hreal`, both admissibility-conjunct-4-free;
+  `kvE_pastSliceUnique_zero` LANDED GREEN this dispatch).
+- **What is needed (repair options, out of Phase-4 territory — settled files)**:
+  (a) add the missing conjunct 4 (self-zone fresh-profile uniqueness, the exact
+  `kvE_futAdmissible` shape with `kvE_pastSelfZone`) to `kvE_pastAdmissible`
+  (ExteriorNegationPastK.lean:134) and re-thread its consumers (realizer_admissible D-side
+  proofs, ConverterPastK, 3b bracket/gate binders) — restores the symmetric design and both
+  Phase-5 Past discharges; or (b) strengthen the `hslicePast` binder guard in the 3b chain
+  with an explicit self-uniqueness antecedent (binder-text edits in GateAssembleK /
+  EndIntervalConsumerK / KampPrior seam). Option (a) is design-faithful (task-352's Past
+  reformulation dropped the conjunct claiming downstream subsumption — refuted here).
+  A Past-side machine refutation probe (P1-style) belongs to the probe file (read-only this
+  dispatch) and should accompany the repair task.
+- **Prohibited**: no sorry, no vacuous placeholder — none introduced; the file carries only
+  the GREEN mirrors.
 
 - **Goal:** Port Phase 3's two theorems to the Past side in ExteriorPinnedConversePastK.lean
   (defs + constancy already landed there in 3b): `kvE_pastAtomPinned_zero` (Past mirror of the
@@ -530,13 +586,22 @@ uniqueness mirror.
 - **Bounded unit:** a mechanical mirror of a landed technique; the Future file is the template
   (same lemma names with `past`, same fixed case list).
 - **Tasks:**
-  - [ ] Port the atom-layer lemma (Phase-2 template) with Past zone semantics.
+  - [x] Port the atom-layer lemma (Phase-2 template) with Past zone semantics. *(landed:
+        `kvE_pastAdmissible_zoneMark`, `kvE_pastSelfZone_coincide`,
+        `kvE_pastFreshPinned_of_end`, `kvE_pastAtomPinned_zero` — all GREEN, axiom-clean)*
   - [ ] Port `kvE_futSliceId_of_end_zero` and `kvE_futSliceUnique_zero` (hoist any
         side-agnostic helpers to the Future file and import — prefer hoisting over duplication).
-  - [ ] `#print axioms` on all new decls; scoped build; commit.
+        *(deviation: altered — `kvE_pastSliceUnique_zero` LANDED GREEN (+ its engine
+        `kvE_pastInteriorTransfer_zero` and private zone helpers `kvE_pastZone4_of_below`/
+        `kvE_pastZoneSpec_of_below`; no hoisting needed — the only shared candidates are
+        `private` in their home files, replication precedent applied);
+        `kvE_pastSliceId_of_end_zero` NOT landed — statement FALSE as mirrored, see BLOCKER)*
+  - [x] `#print axioms` on all new decls; scoped build; commit. *(all six new decls exactly
+        `[propext, Classical.choice, Quot.sound]`; scoped build 1024 jobs GREEN; full build
+        1736 jobs GREEN)*
 - **Done when:** Past theorems sorry-free + axiom-clean; scoped build green.
 - **Stopping condition:** if a Past-side zone case fails to mirror (goal-state evidence of a
-  genuine asymmetry, not a transcription slip), [BLOCKED] + escalate.
+  genuine asymmetry, not a transcription slip), [BLOCKED] + escalate. *(FIRED — see BLOCKER)*
 - **Estimated output:** ~250-400 lines.
 - **Timing:** 2-3 hours.
 - **Depends on:** 3 (template), 3b (Past defs/constancy in the file)
