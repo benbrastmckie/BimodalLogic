@@ -1,7 +1,7 @@
 # Implementation Plan: Realization Recursion `nf_nvar_exist_all_depths` — Post-360 Gap Closure (v3)
 
 - **Task**: 358 - Retire the `nf_nvar_exist_all_depths` open arms (KampPrior.lean:361, :364) via the post-360 gap decomposition G1-G4, consuming the landed Phases 1-2 realizer engine
-- **Status**: [IN PROGRESS]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 21-33 hours remaining (8 phases: 2 probes + 6 build; ~5-8 hours already landed in Phases 1-2)
 - **Dependencies**: 356 (completed), 357 (completed), 360 (completed — slice re-key + m=0 supply), 349 (completed — consumer stack + obligation ledger); 341 (planned, serialized AFTER 358)
 - **Research Inputs**:
@@ -319,32 +319,91 @@ one dispatch (~100-500 lines); Phases 3 and 6 are cheap probe dispatches.
 - **Depends on:** 1
 - **Completed:** 2026-07-12
 
-### Phase 3: Probe A0 — Q-fold hook-shape decomposition at k=0 (GO/NO-GO gate) [NOT STARTED]
+### Phase 3: Probe A0 — Q-fold hook-shape decomposition at k=0 (GO/NO-GO gate) [COMPLETED]
 - **Goal:** Settle the load-bearing G3 design question BEFORE building the fold: can the rung's
   TWO-anchor `VVecEA2` carrier content (`carrier.holds M atomMap x t`) be decomposed into the
   `h_quant` hook shape (point-eval `quantEnd.eval_at x` ∧ segment `seg.holds x t`,
   Base.lean:1270-1273)?
+
+**VERDICT (2026-07-13, sess_1783979891_6ad95e_358): NO-GO for the literal `(quantEnd, seg)`
+hook shape — machine-refuted; the question was ANSWERED BY LANDED MACHINE EVIDENCE (task 350,
+`NfMultiAnchorBridge/AggregateHookDischarge.lean`), no new probe file needed.**
+
+1. **Literal hook shape REFUTED** (350 R1 verdict, AggregateHookDischarge.lean:12-28): a
+   `BracketFormula 0` has NO point slots (`IntervalPattern.holds` at `n = 0` is purely the
+   universal segment form), so interior-POSITIVE population fibers (`∃ v, x < v ∧ v < t ∧ …`)
+   escape the `(quantEnd, seg)` pair for ANY choice. The diag per-point hooks (`A_diag_correct`,
+   Base.lean:765-773) are separately world-locality-refuted by the sorry-free pair
+   `endCharN0_correct_world_local_obstruction` / `endCharN0_correct_infeasible`
+   (Base.lean:1777/1811) — 350 R2 verdict.
+2. **The asset that carries the decomposition is Route V** (`VVecEA2.translateRight_correct` /
+   `translateLeft_correct`), delivering the SKELETON-SHAPED conclusions (the exact
+   `kampPrior_case1_trichotomy_assemble` binder shapes) directly, bypassing the hook binders:
+   `kampArm_{past,diag,future}_k0(_correct)` (k=0, all three) and `kampArm_diag_k1(_correct)`
+   are LANDED; `lean_verify` re-run this session: all four = exactly
+   `[propext, Classical.choice, Quot.sound]`, no sorryAx. Shape certificates at generic-site
+   indices `0+1`/`1+1` compile verbatim (AggregateHookDischarge.lean:1758-1781).
+   `KampPrior.lean` already imports the aggregator, so these are consumable in-territory.
+3. **The general-k fold residual is BLOCKED on missing primitives** (350 Phase-4 structured
+   blocker, plans/01 §Phase 4): the k=1 OFF-DIAGONAL aggregate (and a fortiori every k ≥ 1
+   off-diagonal fold, including the k'+2 arms) requires (i) `VVecEA2.conjFull` — structural
+   conjunction in FULL IFF form (Rabinovich Lemma 3.4), (ii) a fixed-formula (syntactic)
+   negation closure for the single-interior-witness VVecEA2 fragment, (iii) per-qnf k=1
+   exterior/point VVecEA2 encodings. All three are absent from the landed stack (adversarially
+   established: `conj_struct` one-directional, `neg_2var_vec_ea` model-dependent, depth-2
+   re-fibering unsound via the F1 information-loss channel `bracketEndChar_kv_factors`).
+4. **NO-GO consequence, adapted (no duplicate spawn):** the plan's prescribed escalation — "spawn
+   a hook-restatement task" — is ALREADY INSTANTIATED as task 350 itself (the restatement =
+   consume skeleton-shaped conclusions instead of the binder; partially delivered, remainder
+   blocked on (i)-(iii) with `/spawn 350` recommended in its own blocker record; task 350 under
+   active hard-mode research this session). Spawning a second task would duplicate it. The
+   A-branch BUILD phases (4-5) are therefore [BLOCKED] on 350's missing primitives, NOT
+   re-attempted here; the C-branch (Phases 6-7) and the supply mathematics (Phase 8, whose
+   shapes are fixed by the ledger, not by the fold) proceed independently.
+
 - **Tasks:**
-  - [ ] Render ONE concrete per-qnf carrier biconditional in (quantEnd, seg) hook shape at k=0
-        (rung0 is unconditional — no obligations needed). Probe via `lean_run_code` or a probe
-        file under Kamp/ (ExteriorPinnedProbeK pattern); `lean_multi_attempt` for leaf goals.
-  - [ ] Exercise the candidate landed decomposition assets: the sorry-free VecEA2 temporal
-        translation (VecEADecomp:877-895), `bracketBuildLeft/Right_correct` (VecEATranslation),
-        NavigatedEndChar. Record which asset (if any) carries the decomposition.
-  - [ ] Record the GO/NO-GO verdict IN THE PLAN (edit this phase's heading/notes) with the
-        probe evidence (compiling snippet or the precise failing shape).
-  - [ ] On NO-GO: STOP the A-branch — mark task [BLOCKED], spawn a Base.lean `h_quant`
-        hook-restatement task (local interface change, one consumer — 360 precedent); do NOT
-        force the fold, do NOT sorry. (The C-branch, Phases 6-7, may proceed independently.)
+  - [x] Render ONE concrete per-qnf carrier biconditional in (quantEnd, seg) hook shape at k=0
+        *(deviation: altered — rendered by consuming task 350's landed adjudication + lemmas
+        instead of a new probe file; the literal shape is machine-refuted (R1/R2), the Route-V
+        skeleton-shaped k=0 conclusions are landed and verified this session)*
+  - [x] Exercise the candidate landed decomposition assets. *(Route V:
+        `VVecEA2.translateRight/Left_correct` carries the decomposition — verified via
+        `lean_verify` on the four landed `kampArm_*` lemmas; the VecEADecomp/NavigatedEndChar
+        candidates are subsumed by 350's aggregation verdict)*
+  - [x] Record the GO/NO-GO verdict IN THE PLAN with the probe evidence.
+  - [x] On NO-GO: STOP the A-branch. *(deviation: altered — no new spawn: the restatement task
+        exists as task 350 (active, [PARTIAL] with structured blocker + its own /spawn 350
+        recommendation); A-branch build phases marked [BLOCKED] referencing 350; task 358 itself
+        NOT marked [BLOCKED] because the C-branch + Phase 8 proceed per this phase's own
+        protocol)*
 - **Timing:** 1-2 hours (cheap probe dispatch)
 - **Depends on:** 2
 - **Done when:** GO/NO-GO recorded with machine evidence; no sorry introduced; probe artifact
   committed (`task 358 phase 3: Q-fold probe GO/NO-GO`).
+- **Completed:** 2026-07-13
 
-### Phase 4: Fold/hook assembly at arms 0-1 (G3a+b) [NOT STARTED]
+### Phase 4: Fold/hook assembly at arms 0-1 (G3a+b) [BLOCKED]
 - **Goal:** Build `quantEnd`/`seg` + the `A_diag` hooks from the rung0/rung1 per-qnf
   biconditionals, discharging `h_quant` (Base.lean:1270-1273 + future mirror) and the diag
   hooks (Base.lean:765-773) for arms k=0 and k=1.
+
+**BLOCKER** (Phase 4; Phase-3 NO-GO consequence — see the Phase-3 verdict for full evidence):
+- **What failed**: the phase's stated construction (`quantEnd : TemporalPred` +
+  `seg : BracketFormula 0` folding the per-qnf rung biconditionals; per-point diag hooks) is
+  machine-refuted — 350 R1 (interior-positive fibers escape the pair shape) and R2
+  (world-locality refutation, Base.lean:1777/1811). This phase's goal shape cannot exist.
+- **What was tried**: nothing new landed here — the refutations and the working alternative
+  (Route V) are already machine-established in task 350's AggregateHookDischarge.lean; its k=0
+  layer + k=1 diag are landed and verified this session (floor axioms, no sorryAx).
+- **Why it's stuck**: the surviving deliverable of this phase (arm facts at k=1 off-diagonal,
+  and the general-k fold) requires `VVecEA2.conjFull` (Lemma 3.4 iff form) + a syntactic
+  negation closure + per-qnf k=1 exterior/point carriers — task 350's Phase-4 blocker, missing
+  from the landed stack.
+- **What is needed**: task 350's spawn chain to deliver the three primitives (its own blocker
+  record recommends `/spawn 350`); then arms k=0/1 assemble per 350's recipe and this phase
+  reduces to consumption (k=0 is ALREADY consumable now via `kampArm_*_k0_correct`).
+- **Prohibited workarounds**: no `sorry`, no vacuous def, no re-derivation of 350's territory
+  (AggregateHookDischarge.lean is a frozen consumer seam for this task).
 - **Tasks:**
   - [ ] G3(a): construct `quantEnd : TemporalPred` and `seg : BracketFormula 0` from the
         per-qnf rung biconditionals — positives from the rung `.mpr`, negatives from `.mp`
@@ -363,7 +422,16 @@ one dispatch (~100-500 lines); Phases 3 and 6 are cheap probe dispatches.
 - **Done when:** `h_quant` (both mirrors) and the diag hooks discharged at arms 0-1 as named
   green lemmas; no sorry.
 
-### Phase 5: Arm skeleton — `kampPrior_case1_arm_of_obligations` (depth-2 milestone) [NOT STARTED]
+### Phase 5: Arm skeleton — `kampPrior_case1_arm_of_obligations` (depth-2 milestone) [BLOCKED]
+
+**BLOCKER** (Phase 5; inherited from Phase 4 / the Phase-3 NO-GO): the skeleton's k=1 arm
+needs `kampArm_{past,future}_k1` (350-blocked on `VVecEA2.conjFull` et al.), and its k'+2 arm
+needs the general-k fold (same missing primitives). The k=0 slice IS closable now — landed as
+the reduced-scope green sub-step `kampPrior_case1_arm_k0` (KampPrior.lean, this session):
+the ambient-k=0 instance of the `| 1 =>` arm statement, closed end-to-end via
+`kampPrior_case1_trichotomy_assemble` + `kampArm_{past,diag,future}_k0_correct`. The DEPTH-2
+milestone (ambient k=1) unblocks when 350 lands its off-diagonal k=1 pair; the consumption
+recipe is identical (assemble + the three k=1 arm facts).
 - **Goal:** Land the k-case-split skeleton as an ADDITIVE NAMED LEMMA (not an arm edit): arms
   k=0/1 closed unconditionally via Phase 4's folds + rung0/rung1 +
   `kampPrior_case1_trichotomy_assemble` (:1146); k ≥ 2 routed through the rungK seam with the
