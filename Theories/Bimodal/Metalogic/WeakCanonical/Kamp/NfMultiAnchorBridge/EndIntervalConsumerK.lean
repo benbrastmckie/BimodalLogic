@@ -206,4 +206,47 @@ theorem endInterval_step_correct {sig : MonadicSignature}
         h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl
         hslicePast hsliceFut hexclSlicePast hexclSliceFut
 
+/-! ## Task 349 Phase 5 — DoD-name alias + recursion-reduction probes (v9 adoption) -/
+
+/-- **`endInterval_correct` — the task-349 definition-of-done name.** One-line alias binding the
+    task-description DoD name to the delivered obligation-carrying consumer
+    `endInterval_step_correct` (task 357): for every `k`, the recursion carrier
+    `endIntervalPrior atomMap h_surj charF Pfam` satisfies the depth-cased obligation-carrying
+    correctness motive `EndIntervalCorrectPrior`. The prose heading `endInterval_correct` at
+    `CarrierK1V.lean:2097` refers to this declaration's role; this is its realization on the
+    LIVE (relocated-leaf) path. Cross-reference: `endInterval_step_correct` (the proof),
+    `endIntervalPrior` (the carrier), `EndIntervalCorrectPrior` (the motive).
+    Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem endInterval_correct {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    (Pfam : (j : Nat) → ExistProviders sig atomMap j) :
+    ∀ k : Nat, EndIntervalCorrectPrior atomMap h_surj charF Pfam k :=
+  endInterval_step_correct atomMap h_surj charF Pfam
+
+section RecursionReductionProbes
+/- Task 349 Phase 5 verification probes (landed as documented `example`s): the three `rfl`
+   reductions of `endIntervalPrior`, confirming the recursion is genuine `Nat.rec` computation
+   and the dead `CarrierK1V` placeholder (`endIntervalStep`, `CarrierK1V.lean:2144`) is NOT on
+   the live path. -/
+variable {sig : MonadicSignature} (atomMap : Formula → sig.preds)
+  (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+  (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+  (Pfam : (j : Nat) → ExistProviders sig atomMap j)
+
+/-- k = 0: singleton depth-0 bracket base. -/
+example : endIntervalPrior atomMap h_surj charF Pfam 0 =
+    fun qnf => VVecEA2.singleton (bracketEndChar_k0 atomMap h_surj qnf) := rfl
+
+/-- k = 1: interior-only rung. -/
+example : endIntervalPrior atomMap h_surj charF Pfam 1 =
+    bracketEndChar_kv atomMap h_surj charF 1 := rfl
+
+/-- k = m+2: exterior-composed gate with provider `Pfam m`. -/
+example (m : Nat) : endIntervalPrior atomMap h_surj charF Pfam (m + 2) =
+    bracketEndChar_kvExt atomMap h_surj charF (Pfam m) := rfl
+
+end RecursionReductionProbes
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

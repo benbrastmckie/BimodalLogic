@@ -1727,7 +1727,7 @@
         357
       ],
       "created": "2026-07-12T01:37:12Z",
-      "last_updated": "2026-07-13T04:04:10Z",
+      "last_updated": "2026-07-13T13:45:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -1792,6 +1792,11 @@
           "type": "research",
           "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/12_spawn-analysis.md",
           "summary": "Spawn analysis: depth-k interior gate correctness blocker -> spawned task 355"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/09_consume-interior-gate-general-k.md",
+          "type": "plan",
+          "summary": "v9: re-point Phases 5-7 from BUILD to CONSUME/INTEGRATE/AUDIT — 355/356/357/360 already delivered the interior gate + consumer reshape + hexclExt discharge; residual = DoD alias, doc-hook re-point, obligation ledger, audit"
         }
       ],
       "session_id": "sess_1783904970_cb135a",
@@ -1802,7 +1807,7 @@
         "total_effort_hours": 13,
         "complexity": "complex",
         "research_integrated": true,
-        "plan_version": 8,
+        "plan_version": 9,
         "dependency_waves": [
           [
             1,
