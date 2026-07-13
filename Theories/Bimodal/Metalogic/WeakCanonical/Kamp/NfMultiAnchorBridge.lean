@@ -45,6 +45,15 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorZoneTria
 -- (all already in this file's transitive closure); nothing in that closure imports this
 -- file. This edge also brings the Phase-3..6 clause-family files into the root build.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracket
+-- NOTE (task 357 Phase 1): thread the general-`k` gate + the obligation-carrying EndInterval
+-- consumer reshape into the root build. `ExteriorGateAssembleK` (task 356) transitively pulls the
+-- general-`k` interior/exterior modules (`InteriorGateGeneralK`, `ExteriorBracketAssembleK`,
+-- `ExteriorConverter{,Past}K`); `EndIntervalConsumerK` (task 357) hosts the reshaped
+-- `endIntervalPrior`/`EndIntervalCorrectPrior`/`endInterval_step_correct`. Both are acyclic leaves
+-- below `ExteriorGateAssembleK`; nothing in that closure imports this aggregator. This makes the
+-- general-`k` discharge lemma + consumer reachable from `KampPrior` (which imports this file).
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorGateAssembleK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsumerK
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge (task 308)
