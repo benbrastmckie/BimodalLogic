@@ -7,20 +7,19 @@ next_project_number: 355
 Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-12. Generated from state.json dependency graph.*
+*Updated 2026-07-13. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,354 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,192,196,231,292,293,294,298,353 | 161,187,191,194,230,291,341,343,354 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,349 | 131,189,192,196,353 | formula-refactor, automation, kamp_theorem_formalization |
-| 4 | 177,178,350 | 131,193,349 | formula-refactor, kamp_theorem_formalization |
-| 5 | 309 | 350 | kamp_theorem_formalization |
-| 6 | 307 | 309 | completeness |
-| 7 | 305 | 307 | completeness |
-| 8 | 303 | 305 | completeness |
-| 9 | 95,299 | 303 | completeness |
+| 1 | 125,127,128,161,162,165,169,170,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,353 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,192,196,231,292,293,294,298,349 | 161,187,191,194,230,291,341,343,353 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 3 | 175,193,350 | 131,189,192,196,349 | formula-refactor, automation, kamp_theorem_formalization |
+| 4 | 177,178,309 | 131,193,350 | formula-refactor, kamp_theorem_formalization |
+| 5 | 307 | 309 | completeness |
+| 6 | 305 | 307 | completeness |
+| 7 | 303 | 305 | completeness |
+| 8 | 95,299 | 303 | completeness |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -112,11 +111,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-354 [NOT STARTED] — Build the FAITHFUL nested re-anchoring converter that Rabinovich 
-  └─ 353 [BLOCKED] — Build the depth-k endpoint-pinned exterior converter extF4 : Norm
-    └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
-      └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
-        └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+353 [BLOCKED] — Build the depth-k endpoint-pinned exterior converter extF4 : Norm
+  └─ 349 [BLOCKED] — Build the recursive navigated arity-3 endpoint primitive `endChar
+    └─ 350 [RESEARCHED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+      └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 
 ### Uncategorized
 
@@ -127,10 +125,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 354. Build nested 2endpoint bracket reanchoring converter
 - **Effort**: high
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
+- **Research**: [354_build_nested_2endpoint_bracket_reanchoring_converter/reports/01_nested-reanchoring-converter.md]
+- **Plan**: [354_build_nested_2endpoint_bracket_reanchoring_converter/plans/01_nested-reanchoring-converter.md]
+- **Summary**: [354_build_nested_2endpoint_bracket_reanchoring_converter/summaries/01_nested-reanchoring-converter-summary.md]
 
 **Description**: Build the FAITHFUL nested re-anchoring converter that Rabinovich (2014) actually uses in the Cor 5.4(1) completeness direction, replacing the refuted flat/endpoint-pinned extF4 : NormalForm sig k 5 -> Formula spec (task 353, NO-GO -- see grounding below). This is Option A from task 353's blocker-analysis report (specs/353_build_depthk_endpoint_pinned_exterior_converter_extf4/reports/01_extf4-endpoint-pinned-converter.md, Deliverable 5), the machine-verified sole survivable unblocker for task 353's DoD and for task 352's blocked _complete direction (kvE_extNegFut_complete / kvE_extNegPast_complete).
 
