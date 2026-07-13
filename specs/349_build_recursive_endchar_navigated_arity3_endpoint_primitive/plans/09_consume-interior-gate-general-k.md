@@ -173,7 +173,7 @@ Source: `~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_
 | Cor 5.4 — single-bracket `[x,t]` interior characterization (∨→∃∀ converter; within-bracket witness + exclusions) | md:255 (§5) | `InteriorGateAllK` / `bracketEndChar_kv_correct_prior` (355) | **transcribed (355) — CONSUMED, not rebuilt** |
 | Lemma 7.6 — adjacency composition (exterior witnesses via adjacent brackets, never within one bracket) | md:413 (§7) | `bracketEndChar_kvExt` + `_correct_prior` (356, via `enrichEndpoints`) | **transcribed (356) — CONSUMED** |
 | Def 7.13 — multi-anchor bracket family | md:451 (§7) | `BracketEndCharCarrierV` / VVecEA2 | transcribed |
-| Cor 5.4 — endpoint characteristic chain (THE recursion this task delivers) | md:255 (§5) | `endIntervalPrior` / `endInterval_step_correct` (357) + Phase-5 alias `endInterval_correct` | **transcribed (357) — v9 adopts + audits (Phases 5-8)** |
+| Cor 5.4 — endpoint characteristic chain (THE recursion this task delivers) | md:255 (§5) | `endIntervalPrior` / `endInterval_step_correct` (357) + Phase-5 alias `endInterval_correct` | **transcribed (357) — CONSUMED + adopted; audited GREEN (v9 Phases 5-8 complete; Phase-8 whole-tree gate 1736 jobs, all 12 verify targets axiom-clean)** |
 
 ## Goals & Non-Goals
 
@@ -498,30 +498,45 @@ applicable) + `/spawn 349`, never fake green.
 - **Files:** `.../NfMultiAnchorBridge/EndIntervalConsumerK.lean` (doc-comment ledger, additive)
   + this plan + audit log.
 
-### Phase 8: Final whole-tree gate + summary [NOT STARTED]
+### Phase 8: Final whole-tree gate + summary [COMPLETED]
 
 - **Goal:** Confirm every definition-of-done gate on the assembled result; wrap up. No new
   source code.
 - **Tasks:**
-  - [ ] Whole-project `lake build` GREEN.
-  - [ ] `lean_verify` (warm) final list — 349 deliverables: `endInterval_correct` (alias),
+  - [x] Whole-project `lake build` GREEN. *(verified: `Build completed successfully
+        (1736 jobs)`, exit 0; pre-existing `sorryAx` dependence in
+        `Bimodal.Metalogic.BXCanonical.completeness` is off the Kamp path, in no 349-touched
+        file — not a 349 gate)*
+  - [x] `lean_verify` (warm) final list — 349 deliverables: `endInterval_correct` (alias),
         `endInterval_step_correct`, `endIntervalPrior`, `endIntervalStepPrior`,
         `EndIntervalCorrectPrior`; CONSUMED (not rebuilt) dependencies:
         **`bracketEndChar_kv_correct_prior`** (355), `bracketEndChar_kv_step_correct` (355),
         `bracketEndChar_kvExt_correct_prior` (356), D1-D4
         (`kvE_extBracket{Fut,Past}_{sound,complete}`, 360-re-keyed) — all exactly
-        `[propext, Classical.choice, Quot.sound]`, no sorry, no new axiom.
-  - [ ] Record the `hreal`/`hexcl`/`hexclExt`/slice disposition (the Phase-7 ledger) in the
+        `[propext, Classical.choice, Quot.sound]`, no sorry, no new axiom. *(verified: all 12
+        targets returned exactly `["propext","Classical.choice","Quot.sound"]` with zero
+        warnings; new-axiom count 0 — the two `^axiom` grep hits are prose lines in Boneyard
+        files, unchanged since the v9 base)*
+  - [x] Record the `hreal`/`hexcl`/`hexclExt`/slice disposition (the Phase-7 ledger) in the
         summary — obligations are a documented THREADED interface with named discharge sites
         (356 internal / 360 m=0 / 358 / 309 Phase 14), never debt. Explicitly note the v8-era
-        `hsat` and `hbr*` names are retired (360).
-  - [ ] FORBIDDEN grep + frozen-file `git diff` EMPTY re-check across the whole v9 range.
-  - [ ] Finalize the H3 mapping STATUS column (all rows transcribed/consumed); confirm
+        `hsat` and `hbr*` names are retired (360). *(recorded in the summary §Obligation
+        disposition, mirroring EndIntervalConsumerK.lean:228-253)*
+  - [x] FORBIDDEN grep + frozen-file `git diff` EMPTY re-check across the whole v9 range.
+        *(verified: `nf_char3_deeper_split` = 0 in EndIntervalConsumerK (Base.lean's 7 are
+        pre-existing historical prose); `nfk_projFresh` = 0 in both v9 files; eliminated
+        `hbr{Fut,Past}(Sat)` family = 0 live binders repo-wide (1 doc-prose retirement
+        mention); no Boneyard import; `git diff fb6e5b7af^..HEAD` over all 16+ frozen/
+        consume-only files EMPTY; `nf_nvar_exist_all_depths` (KampPrior.lean:212) untouched —
+        all 13 range-diff mentions are plan/doc prose; working tree clean)*
+  - [x] Finalize the H3 mapping STATUS column (all rows transcribed/consumed); confirm
         `endInterval_correct` reachable/citable for 309 Phase 18/19 / 350 (name-level grep from
-        the root build).
-  - [ ] Write `summaries/09_consume-interior-gate-general-k-summary.md`; hand off the
+        the root build). *(verified: H3 final row updated above; reachability chain
+        `EndIntervalConsumerK` → `NfMultiAnchorBridge.lean:56` → `KampPrior.lean` → root
+        build (whole-tree job set); `Base.lean:991` doc-hook cites the alias by name)*
+  - [x] Write `summaries/09_consume-interior-gate-general-k-summary.md`; hand off the
         completion pointer set for 309/350 (which names to cite, which obligations they must
-        supply, and that 358 is the discharge task).
+        supply, and that 358 is the discharge task). *(written)*
 - **Bounded-unit stop condition:** verification-only; any RED finding routes back to the owning
   phase (or task) as a defect — never patched ad hoc here.
 - **Estimated output:** ~0-40 lines (docstring/plan edits) + summary artifact.
@@ -532,26 +547,34 @@ applicable) + `/spawn 349`, never fake green.
 
 ## Testing & Validation
 
-- [ ] Scoped `lake build` GREEN after every open phase; whole-tree GREEN at Phase 8.
-- [ ] `lean_verify` on every 349 headline decl AND the consumed 355/356 gates = exactly
+- [x] Scoped `lake build` GREEN after every open phase; whole-tree GREEN at Phase 8.
+      *(Phase 8: whole-tree `Build completed successfully (1736 jobs)`)*
+- [x] `lean_verify` on every 349 headline decl AND the consumed 355/356 gates = exactly
       `[propext, Classical.choice, Quot.sound]`; zero sorries in v9-touched files; no new axiom.
-- [ ] The three `endIntervalPrior` `rfl` reductions confirmed (`example`-checked) — the
+      *(all 12 targets clean, zero warnings; Kamp-path census unchanged from Phase 7: 4 tokens,
+      all fenced to 358 / 309 P14 / EANegation pre-existing — none attributable to 349)*
+- [x] The three `endIntervalPrior` `rfl` reductions confirmed (`example`-checked) — the
       recursion is genuine; the dead `CarrierK1V` `⟨[]⟩` placeholder is off the live path.
-- [ ] `EndIntervalCorrectPrior` m+2 arm shape-matched to the v8 prescription: Prior-guarded, six
+      *(landed as documented `example`s, EndIntervalConsumerK.lean:255-277; compile in the
+      green whole-tree build)*
+- [x] `EndIntervalCorrectPrior` m+2 arm shape-matched to the v8 prescription: Prior-guarded, six
       order bits, provider-threaded, interior obligations at FULL arity 4 (G1), anchors strictly
       {x,t} with all witnesses bound (G2/G4), non-trivial segments (G3); `hexclExt` internalized
-      (356); exterior residue slice-keyed (360).
-- [ ] Obligation ledger verified row-by-row with named discharge sites; recorded in doc-comment
-      + summary; never presented as debt.
-- [ ] FORBIDDEN greps clean: `nf_char3_deeper_split` = 0 in new code; new `nfk_projFresh` = 0;
-      `hbr` identifiers = 0 repo-wide; no Boneyard import.
-- [ ] `git diff` EMPTY on all FROZEN/consume-only files across the whole v9 range;
+      (356); exterior residue slice-keyed (360). *(Phase 5 verified; Phase 7 audited G1-G5)*
+- [x] Obligation ledger verified row-by-row with named discharge sites; recorded in doc-comment
+      + summary; never presented as debt. *(EndIntervalConsumerK.lean:228-253 + summary §3)*
+- [x] FORBIDDEN greps clean: `nf_char3_deeper_split` = 0 in new code; new `nfk_projFresh` = 0;
+      `hbr` identifiers = 0 repo-wide; no Boneyard import. *(Phase 8 re-check: eliminated
+      `hbr{Fut,Past}(Sat)` family 0 live binders repo-wide, 1 doc-prose mention)*
+- [x] `git diff` EMPTY on all FROZEN/consume-only files across the whole v9 range;
       `nf_nvar_exist_all_depths` signature unchanged; KampPrior untouched by 349.
-- [ ] `endInterval_correct` (+ `endInterval_step_correct`) top-level citable from the root build
+      *(range `fb6e5b7af^..HEAD` touches exactly Base.lean + EndIntervalConsumerK.lean)*
+- [x] `endInterval_correct` (+ `endInterval_step_correct`) top-level citable from the root build
       for task 309 Phase 18/19 / task 350; `Base.lean` doc-hook carries no stale "NOT built"
-      claim about the deliverable.
-- [ ] No single-point `↔` goal shape, no `h_res`, no arity collapse anywhere in v9 code (the
-      standing STOP signals).
+      claim about the deliverable. *(import chain to root confirmed; Base.lean:991 doc-hook
+      re-pointed by Phase 6)*
+- [x] No single-point `↔` goal shape, no `h_res`, no arity collapse anywhere in v9 code (the
+      standing STOP signals). *(Phase 7 seam audit; no v9 code added since)*
 
 ## Artifacts & Outputs
 
