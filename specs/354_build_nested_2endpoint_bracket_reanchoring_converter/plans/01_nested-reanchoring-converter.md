@@ -1,7 +1,7 @@
 # Implementation Plan: Task #354 — Nested 2-Endpoint Bracket Re-Anchoring Converter
 
 - **Task**: 354 - Build the FAITHFUL nested 2-endpoint bracket re-anchoring converter (Rabinovich 2014 Lemma 5.3 recursion)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None (parent task 353; closes task 352's blocked `_complete` halves)
 - **Research Inputs**: reports/01_nested-reanchoring-converter.md (GO — conditional-provable)
@@ -234,7 +234,13 @@ non-redundant, forward-usable slice.)*
 
 ---
 
-### Phase 6: Axiom / sorry audit + full build + frozen git-clean [NOT STARTED]
+### Phase 6: Axiom / sorry audit + full build + frozen git-clean [COMPLETED]
+
+Final audit PASSED: both `kvE_extNegFut_complete` and `kvE_extNegPast_complete` verify with axioms
+EXACTLY `[propext, Classical.choice, Quot.sound]`; zero `sorry`/`admit`/vacuous defs in the two
+new modules; zero new `axiom` declarations; full-project `lake build` green (1724 jobs); all 10
+frozen files byte-identical; `git diff --stat HEAD~3 -- Theories/` shows ONLY the two new modules
+(423 insertions).
 
 **Goal**: Final verification that the deliverable is green, sorry-free, axiom-clean, and frozen-files-clean.
 
