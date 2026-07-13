@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 356,
+  "next_project_number": 358,
   "active_projects": [
     {
       "project_number": 347,
@@ -1722,10 +1722,12 @@
         352,
         353,
         354,
-        355
+        355,
+        356,
+        357
       ],
       "created": "2026-07-12T01:37:12Z",
-      "last_updated": "2026-07-13T01:09:30Z",
+      "last_updated": "2026-07-13T04:04:10Z",
       "artifacts": [
         {
           "type": "research",
@@ -2078,6 +2080,37 @@
       ],
       "session_id": "sess_1783905345_4b66bc",
       "completion_summary": "Delivered the general-k obligation-carrying interior-gate correctness bracketEndChar_kv_correct_prior (InteriorGateGeneralK.lean:1288) via k-cased motive InteriorGateAllK, assembled by Nat.casesOn from interiorGateTarget_zero (k=0) and bracketEndChar_kv_step_correct (k=n+1). Axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN (1724 jobs); 13 task-349 frozen files byte-identical; sorry-free. The obligation-free forall-k close remains out of scope (channel-unprovable at k>=2). Two follow-ups flagged for parent task 349: consumer reshape (EndIntervalCorrectPrior) and hexclExt exterior-adjacency discharge."
+    },
+    {
+      "project_number": 356,
+      "project_name": "discharge_depthk_hexclext_exterior_adjacency",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Deliver the general-k hexclExt exterior-adjacency discharge lemma (e.g. bracketEndChar_kv_hexclExt_discharge) via Rabinovich 2014 Lemma 7.6 (adjacency composition (∃z1)^{<z2}_{>z0}(φ1∧φ2) across a shared endpoint z1; ~/Projects/Literature/sources/rabinovich_2014/, chunk_0021 Def 7.5 + Lemma 7.6). This provides the hexclExt obligation that task 355 interior-gate correctness bracketEndChar_kv_correct_prior (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:1288) carries outward as an unmarked obligation: informally \"an unmarked depth-k arity-4 sub is realized at no strictly-exterior x1\". This is EXTERIOR-BRACKET-LAYER work, a sibling to the delivered exterior tasks 348/351/352/354 (NOT interior-gate work). Feeds the KampPrior recursion at KampPrior.lean:351 (currently an open general-k sorry over the k=2 carrier bracketEndChar_kvE2). SCOPE NOTE: unlike task 355, this task IS permitted to edit KampPrior.lean and the exterior-bracket-layer files it owns; the byte-frozen constraint that bound task 355 was a task-355-local guard. Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q1 confirms hexclExt = Lemma 7.6 adjacency, and that (z0,z1)-forward-EA formulas are not closed under negation so the exterior residue is genuinely out-of-class for one bracket), and the k=2 exterior precedent OuterGate.lean bracketEndChar_kvE2_sound_two_prior_frag (the hexclExt binder is admitted there as a task-348 hand-off). Definition of done: the general-k hexclExt discharge lemma green, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; consumable by task 357 (consumer reshape) and by KampPrior.lean:351. If a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 escalation rule rather than landing a sorry or vacuous definition.",
+      "effort": "high",
+      "parent_task": 349,
+      "dependencies": [],
+      "created": "2026-07-13T04:04:10Z",
+      "last_updated": "2026-07-13T04:04:10Z",
+      "artifacts": []
+    },
+    {
+      "project_number": 357,
+      "project_name": "reshape_endinterval_consumer_obligation_carrying",
+      "status": "not_started",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Reshape the task-349 interval consumer from the unconditional EndIntervalCorrect (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:2179) to an obligation-carrying EndIntervalCorrectPrior, and fill the endIntervalStep body (CarrierK1V.lean:2144, currently the sanctioned ⟨[]⟩ empty-disjunction placeholder) so task 349 Phase 5 closes. The reshape routes the seven provider obligations (P : ExistProviders, hcharK, h_UZ, h_SZ, hreal, hexcl, hexclExt) up to the KampPrior recursion where the providers/UZ/SZ live (mirroring the k=2 supply site KampPrior.lean:351). The body consumes: (interior half) task 355 bracketEndChar_kv_correct_prior / InteriorGateAllK (InteriorGateGeneralK.lean:1288, delivered green, obligation-carrying), and (exterior half) task 356 hexclExt exterior-adjacency discharge. SCOPE NOTE: this task IS permitted to edit CarrierK1V.lean and KampPrior.lean (the byte-frozen constraint on these was a task-355-local guard; this is task-349-scoped consumer wiring). Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q3 established the consumer mismatch: EndIntervalCorrect is unconditional with no EndIntervalCorrectPrior in the tree, so this reshape is the required two-sided move) and plan v2 specs/355_build_depthk_interior_gate_correctness/plans/02_interior-gate-deliverable-reshape.md, plus the task 355 consumability doc (InteriorGateGeneralK.lean:1322, records the exact seven-obligation interface). Definition of done: EndIntervalCorrectPrior green with the endIntervalStep interior half filled from task 355 and exterior half from task 356; axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; unblocks task 349 Phase 5. If a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous definition.",
+      "effort": "high",
+      "parent_task": 349,
+      "dependencies": [
+        355,
+        356
+      ],
+      "created": "2026-07-13T04:04:10Z",
+      "last_updated": "2026-07-13T04:04:10Z",
+      "artifacts": []
     }
   ],
   "artifacts": [
