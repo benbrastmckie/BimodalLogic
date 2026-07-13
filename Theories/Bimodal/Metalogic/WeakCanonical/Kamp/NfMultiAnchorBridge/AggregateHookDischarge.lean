@@ -401,4 +401,522 @@ theorem aggBracket_construct {sig : MonadicSignature}
     · intro y hlo hy1
       exact hseg y ((hrange _ (List.getElem_mem _)).1.trans hlo) hy1
 
+/-! ## Phase 2a — the k=0 PAST-arm aggregate carrier (`x < t` ambient)
+
+The "aggregate quantEnd/seg construction" at depth 0, past arm: a single `VVecEA2` whose
+Since-direction semantics `holdsRight` at the origin `t` is EXACTLY the past trichotomy
+disjunct `∃ x, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`. Built by the
+`kv_body` device one arity down (`bracketEndChar_k1v`, CarrierK1V.lean:433, is the template):
+
+- fold bits `agg2Bit` read `sub_nf.2` POINTWISE through the depth-0 split kit (`nf0_assemble`
+  — lossless at depth 1, `nf0_split_assemble`); every read of `sub_nf.2` goes through them;
+- `endpointLeft` (at the laid witness `x`): the off-diagonal endpoint atom locus
+  (`nf_char2_atom_offdiag_endpoint`) + the `v<x` Since literals + the `v=x` characteristic
+  literals (Prop 3.5 folding mechanism — the anchor IS the laid endpoint);
+- `endpointRight` (at the origin `t`): the off-diagonal origin atom locus (with its
+  off-diagonal order guard) + the `v=t` characteristic literals + the `t<v` Until literals;
+- ONE interior zone `x<v<t`: positive fibers occupy bracket WITNESS slots over all
+  arrangements (`aggBracket` over `S.permutations` — §5 bracket, Lemma 3.4); negative fibers
+  ride the uniform exclusion segment (G3);
+- gate: off-fiber honesty + order-conflict falsity (5 consistent zones,
+  `agg2_zone_consistent_lt`); off-gate the carrier is the empty disjunction. -/
+
+section AggPastK0
+
+variable {sig : MonadicSignature}
+
+/-- Pointwise fold-bit read of the depth-1 population (lossless at depth 1 — the depth-0
+    split-kit bijection `nf0_split_assemble`; Def 4.1 monadic-atom fold, PDF p.5). -/
+noncomputable def agg2Bit (sub_nf : NormalForm sig 1 2) :
+    ZoneSpec 2 → NormalForm sig 0 1 → Bool :=
+  fun zs χ => sub_nf.2 (nf0_assemble zs χ (sub_nf.1 : NormalForm sig 0 2))
+
+/-- Biconditional literal at an anchor (Prop 3.5 folding mechanism, PDF p.5). -/
+def agg2Lit (bit : Bool) (f : Formula) : Formula := if bit then f else f.neg
+
+/-- Interior-positive enumeration for the past arm (duplicate-free). -/
+noncomputable def agg2SPast (sub_nf : NormalForm sig 1 2) : List (NormalForm sig 0 1) :=
+  (Finset.univ.toList : List (NormalForm sig 0 1)).filter
+    (fun χ => agg2Bit sub_nf agg2ZIntPast χ)
+
+/-- Past-arm left endpoint predicate (at the laid witness `x`): endpoint atom locus +
+    `v<x` Since literals + `v=x` characteristic literals. -/
+noncomputable def agg2EpPastL (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : TemporalPred :=
+  ⟨formula_conjList
+    (((nf_char2_atom_offdiag_endpoint atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)).formula
+      :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
+            (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)))
+      ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZAtXPast χ)
+            (nf_depth0_char_formula atomMap h_surj χ)))⟩
+
+/-- Past-arm right endpoint predicate (at the origin `t`): origin atom locus (off-diagonal
+    order guard) + `v=t` characteristic literals + `t<v` Until literals. -/
+noncomputable def agg2EpPastR (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : TemporalPred :=
+  ⟨formula_conjList
+    ((nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)
+      :: (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZAtTPast χ)
+            (nf_depth0_char_formula atomMap h_surj χ)))
+      ++ (Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+          agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
+            (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top)))⟩
+
+/-- Past-arm uniform interior exclusion segment (negative fibers; G3 — genuine content,
+    never top). -/
+noncomputable def agg2SegPast (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : TemporalPred :=
+  ⟨formula_conjList ((Finset.univ.toList : List (NormalForm sig 0 1)).map (fun χ =>
+    if agg2Bit sub_nf agg2ZIntPast χ then Formula.top
+    else (nf_depth0_char_formula atomMap h_surj χ).neg))⟩
+
+/-- Past-arm gate: off-fiber honesty + order-conflict falsity over the five consistent
+    zones of the `x < t` ambient (Def 3.1: disjunctions range only over consistent order
+    types). -/
+def agg2GatePast (sub_nf : NormalForm sig 1 2) : Prop :=
+  (∀ τ : NormalForm sig 0 3,
+      nf0_dropFresh τ ≠ (sub_nf.1 : NormalForm sig 0 2) → sub_nf.2 τ = false) ∧
+  (∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+    ¬(zs = agg2ZPastPast ∨ zs = agg2ZAtXPast ∨ zs = agg2ZIntPast ∨
+      zs = agg2ZAtTPast ∨ zs = agg2ZFutFut) →
+    agg2Bit sub_nf zs χ = false)
+
+/-- **The k=0 past-arm aggregate carrier** (the "aggregate quantEnd/seg construction",
+    past arm at depth 0). See the section header for the construction record. -/
+noncomputable def agg2Past (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) : VVecEA2 :=
+  @dite _ (agg2GatePast sub_nf) (Classical.dec _)
+    (fun _ =>
+      { disjuncts := (agg2SPast sub_nf).permutations.map (fun l =>
+          ⟨(l.map (fun χ =>
+              (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))).length,
+            { endpointLeft := agg2EpPastL atomMap h_surj sub_nf
+              endpointRight := agg2EpPastR atomMap h_surj sub_nf
+              bracket := aggBracket
+                (l.map (fun χ =>
+                  (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred)))
+                (agg2SegPast atomMap h_surj sub_nf) }⟩) })
+    (fun _ => { disjuncts := [] })
+
+/-- **Correctness of the k=0 past-arm aggregate** (`aggPop0` + arm assembly in one): the
+    carrier's Since-direction semantics at the origin `t` is exactly the past trichotomy
+    disjunct. This is the population-match encoding (Rabinovich Cor 5.4's "for every order
+    pattern" clause) fused with the off-diagonal atom layer, quantified through the laid
+    witness `x < t`. Every Cor 5.4 chain step is a manual bridge (G5). -/
+theorem agg2Past_holdsRight_iff (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2)
+    (M : OrderedMonadicStructure sig) (t : M.carrier) :
+    (agg2Past atomMap h_surj sub_nf).holdsRight M atomMap t ↔
+      ∃ x : M.carrier, x < t ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  -- Complete-type correctness bridge (char χ at u ↔ arity-1 depth-0 evaluation).
+  have hchar : ∀ (χ' : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ') ↔
+      nf_eval_nf M 0 1 (fun _ => u) χ' :=
+    fun χ' u => nfPred_correct M atomMap h_surj χ' u
+  constructor
+  · -- Soundness (holdsRight → the past disjunct).
+    intro h
+    obtain ⟨vea, hmem, hveaR⟩ := h
+    unfold agg2Past at hmem
+    split at hmem
+    case isFalse hg => simp at hmem
+    case isTrue hg =>
+    rw [List.mem_map] at hmem
+    obtain ⟨l, hlp, hEq⟩ := hmem
+    subst hEq
+    obtain ⟨hepR, x, hxt, hepL, hbr⟩ := hveaR
+    -- Unfold the two endpoint conjunction lists.
+    simp only [agg2EpPastL, agg2EpPastR, TemporalPred.eval_at] at hepL hepR
+    rw [formula_conjList_iff] at hepL hepR
+    -- Heads: the off-diagonal atom loci.
+    have hendp : temporal_truth M atomMap x
+        (nf_char2_atom_offdiag_endpoint atomMap h_surj
+          (sub_nf.1 : NormalForm sig 0 2)).formula :=
+      hepL _ (List.mem_append_left _ List.mem_cons_self)
+    have horig : temporal_truth M atomMap t
+        (nf_char2_atom_offdiag_origin atomMap h_surj (sub_nf.1 : NormalForm sig 0 2)) :=
+      hepR _ (List.mem_append_left _ List.mem_cons_self)
+    -- Fold-bit literal facts at the two anchors.
+    have hPastLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap x
+        (agg2Lit (agg2Bit sub_nf agg2ZPastPast χ)
+          (Formula.snce (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+      fun χ => hepL _ (List.mem_append_left _
+        (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
+    have hAtXLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap x
+        (agg2Lit (agg2Bit sub_nf agg2ZAtXPast χ)
+          (nf_depth0_char_formula atomMap h_surj χ)) :=
+      fun χ => hepL _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
+    have hAtTLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+        (agg2Lit (agg2Bit sub_nf agg2ZAtTPast χ)
+          (nf_depth0_char_formula atomMap h_surj χ)) :=
+      fun χ => hepR _ (List.mem_append_left _
+        (List.mem_cons_of_mem _ (List.mem_map_of_mem (by simp))))
+    have hFutLit : ∀ χ : NormalForm sig 0 1, temporal_truth M atomMap t
+        (agg2Lit (agg2Bit sub_nf agg2ZFutFut χ)
+          (Formula.untl (nf_depth0_char_formula atomMap h_surj χ) Formula.top)) :=
+      fun χ => hepR _ (List.mem_append_right _ (List.mem_map_of_mem (by simp)))
+    -- Bracket structure: witnesses + gap classification.
+    obtain ⟨hwit, hgap⟩ := aggBracket_extract M atomMap _ _ x t hbr
+    refine ⟨x, hxt, ?_⟩
+    rw [nf_eval_depth1_fold_iff]
+    refine ⟨?_, ?_, hg.1⟩
+    · -- Atom layer at `[x, t]` from the two atom-locus heads (given `x < t`).
+      exact (nf_char2_atom_offdiag_correct M atomMap h_surj
+        (sub_nf.1 : NormalForm sig 0 2) x t hxt).mp ⟨horig, hendp⟩
+    · -- Per-(zone, χ) fiber matching over the five consistent zones + the gate.
+      intro zs χ
+      show _ ↔ agg2Bit sub_nf zs χ = true
+      by_cases hcons : zs = agg2ZPastPast ∨ zs = agg2ZAtXPast ∨ zs = agg2ZIntPast ∨
+          zs = agg2ZAtTPast ∨ zs = agg2ZFutFut
+      · rcases hcons with rfl | rfl | rfl | rfl | rfl
+        · -- Zone `v < x`: the Since literal at `x`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZPastPast, agg2Mk, agg2Ltz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hux : u < x := hzu.1.1.mpr rfl
+            cases hbb : agg2Bit sub_nf agg2ZPastPast χ with
+            | false =>
+              have hlit := hPastLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ⟨u, hux, (hchar χ u).mpr hev, fun r _ _ hf => hf⟩).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hPastLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            obtain ⟨s, hsx, hsχ, -⟩ := hlit
+            have hst : s < t := hsx.trans hxt
+            refine ⟨s, ?_, (hchar χ s).mp hsχ⟩
+            simp only [agg2ZPastPast, agg2Mk, agg2Ltz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_true hsx rfl, iff_of_false (lt_asymm hsx) (by simp)⟩,
+              ⟨iff_of_true hst rfl, iff_of_false (lt_asymm hst) (by simp)⟩⟩
+        · -- Zone `v = x`: the characteristic literal at `x`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZAtXPast, agg2Mk, agg2Eqz, agg2Ltz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = x := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+            subst hueq
+            cases hbb : agg2Bit sub_nf agg2ZAtXPast χ with
+            | false =>
+              have hlit := hAtXLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ((hchar χ u).mpr hev)).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hAtXLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            refine ⟨x, ?_, (hchar χ x).mp hlit⟩
+            simp only [agg2ZAtXPast, agg2Mk, agg2Eqz, agg2Ltz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_false (lt_irrefl x) (by simp),
+              iff_of_false (lt_irrefl x) (by simp)⟩,
+              ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
+        · -- Bounded interior `x < v < t`: positive fibers ride the witness slots,
+          -- negative fibers the uniform exclusion segment.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZIntPast, agg2Mk, agg2Gtz, agg2Ltz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hxu : x < u := hzu.1.2.mpr rfl
+            have hut : u < t := hzu.2.1.mpr rfl
+            cases hbb : agg2Bit sub_nf agg2ZIntPast χ with
+            | false =>
+              exfalso
+              rcases hgap u hxu hut with hseg | ⟨p, hpmem, hpe⟩
+              · -- Gap point: the exclusion conjunct for χ refutes the evaluation.
+                simp only [agg2SegPast, TemporalPred.eval_at] at hseg
+                rw [formula_conjList_iff] at hseg
+                have hexcl := hseg _ (List.mem_map_of_mem (show χ ∈ _ by simp))
+                rw [if_neg (by simp [hbb])] at hexcl
+                exact hexcl ((hchar χ u).mpr hev)
+              · -- Witness slot: distinct complete 1-types exclude each other.
+                obtain ⟨χ', hχ'mem, rfl⟩ := List.mem_map.mp hpmem
+                have hev' : nf_eval_nf M 0 1 (fun _ => u) χ' := (hchar χ' u).mp hpe
+                have hbb' : agg2Bit sub_nf agg2ZIntPast χ' = true :=
+                  (List.mem_filter.mp
+                    ((List.mem_permutations.mp hlp).mem_iff.mp hχ'mem)).2
+                have hEqχ : χ = χ' := nf_eval_unique M 0 1 _ χ χ' hev hev'
+                rw [hEqχ] at hbb
+                exact absurd hbb' (by simp [hbb])
+            | true => rfl
+          · intro hbit
+            have hχS : χ ∈ l := (List.mem_permutations.mp hlp).mem_iff.mpr
+              (List.mem_filter.mpr ⟨by simp, hbit⟩)
+            obtain ⟨u, hxu, hut, hpe⟩ := hwit _ (List.mem_map_of_mem hχS)
+            refine ⟨u, ?_, (hchar χ u).mp hpe⟩
+            simp only [agg2ZIntPast, agg2Mk, agg2Gtz, agg2Ltz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+              ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+        · -- Zone `v = t`: the characteristic literal at `t`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZAtTPast, agg2Mk, agg2Gtz, agg2Eqz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = t := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.2.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.2.1))
+            subst hueq
+            cases hbb : agg2Bit sub_nf agg2ZAtTPast χ with
+            | false =>
+              have hlit := hAtTLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ((hchar χ u).mpr hev)).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hAtTLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            refine ⟨t, ?_, (hchar χ t).mp hlit⟩
+            simp only [agg2ZAtTPast, agg2Mk, agg2Gtz, agg2Eqz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
+              ⟨iff_of_false (lt_irrefl t) (by simp),
+                iff_of_false (lt_irrefl t) (by simp)⟩⟩
+        · -- Zone `t < v`: the Until literal at `t`.
+          constructor
+          · rintro ⟨u, hzu, hev⟩
+            simp only [agg2ZFutFut, agg2Mk, agg2Gtz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have htu : t < u := hzu.2.2.mpr rfl
+            cases hbb : agg2Bit sub_nf agg2ZFutFut χ with
+            | false =>
+              have hlit := hFutLit χ
+              simp only [agg2Lit] at hlit
+              rw [if_neg (by simp [hbb])] at hlit
+              exact (hlit ⟨u, htu, (hchar χ u).mpr hev, fun r _ _ hf => hf⟩).elim
+            | true => rfl
+          · intro hbit
+            have hlit := hFutLit χ
+            simp only [agg2Lit] at hlit
+            rw [if_pos hbit] at hlit
+            obtain ⟨s, hts, hsχ, -⟩ := hlit
+            have hxs : x < s := hxt.trans hts
+            refine ⟨s, ?_, (hchar χ s).mp hsχ⟩
+            simp only [agg2ZFutFut, agg2Mk, agg2Gtz]
+            rw [agg2_zoneHolds_cons_iff]
+            exact ⟨⟨iff_of_false (lt_asymm hxs) (by simp), iff_of_true hxs rfl⟩,
+              ⟨iff_of_false (lt_asymm hts) (by simp), iff_of_true hts rfl⟩⟩
+      · -- Inconsistent zone spec: gate conjunct (ii) + the routing lemma.
+        constructor
+        · rintro ⟨u, hzu, -⟩
+          exact absurd (agg2_zone_consistent_lt M x t u hxt zs hzu) hcons
+        · intro hbit
+          have hfalse := hg.2 zs χ hcons
+          rw [hfalse] at hbit
+          exact Bool.noConfusion hbit
+  · -- Completeness (the past disjunct → holdsRight).
+    rintro ⟨x, hxt, heval⟩
+    rw [nf_eval_depth1_fold_iff] at heval
+    obtain ⟨h_atom_raw, h_fiber, h_off⟩ := heval
+    have h_atom : nf_eval_nf M 0 2 (Fin.cons x (fun _ => t))
+        (sub_nf.1 : NormalForm sig 0 2) := h_atom_raw
+    -- Fiber clauses in fold-bit form.
+    have hzone' : ∀ (zs : ZoneSpec 2) (χ : NormalForm sig 0 1),
+        (∃ u : M.carrier,
+          zoneHolds M (Fin.cons x (fun _ => t)) zs u ∧
+          nf_eval_nf M 0 1 (fun _ => u) χ) ↔
+        agg2Bit sub_nf zs χ = true :=
+      fun zs χ => h_fiber zs χ
+    -- The two atom loci from the atom layer (given `x < t`).
+    obtain ⟨horig, hendp⟩ := (nf_char2_atom_offdiag_correct M atomMap h_surj
+      (sub_nf.1 : NormalForm sig 0 2) x t hxt).mpr h_atom
+    -- Zone-membership constructors at the five consistent zones.
+    have hzPast : ∀ u, u < x → zoneHolds M (Fin.cons x (fun _ => t)) agg2ZPastPast u := by
+      intro u hux
+      have hut : u < t := hux.trans hxt
+      simp only [agg2ZPastPast, agg2Mk, agg2Ltz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_true hux rfl, iff_of_false (lt_asymm hux) (by simp)⟩,
+        ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+    have hzAtX : zoneHolds M (Fin.cons x (fun _ => t)) agg2ZAtXPast x := by
+      simp only [agg2ZAtXPast, agg2Mk, agg2Eqz, agg2Ltz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_irrefl x) (by simp), iff_of_false (lt_irrefl x) (by simp)⟩,
+        ⟨iff_of_true hxt rfl, iff_of_false (lt_asymm hxt) (by simp)⟩⟩
+    have hzInt : ∀ u, x < u → u < t →
+        zoneHolds M (Fin.cons x (fun _ => t)) agg2ZIntPast u := by
+      intro u hxu hut
+      simp only [agg2ZIntPast, agg2Mk, agg2Gtz, agg2Ltz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+        ⟨iff_of_true hut rfl, iff_of_false (lt_asymm hut) (by simp)⟩⟩
+    have hzAtT : zoneHolds M (Fin.cons x (fun _ => t)) agg2ZAtTPast t := by
+      simp only [agg2ZAtTPast, agg2Mk, agg2Gtz, agg2Eqz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_asymm hxt) (by simp), iff_of_true hxt rfl⟩,
+        ⟨iff_of_false (lt_irrefl t) (by simp), iff_of_false (lt_irrefl t) (by simp)⟩⟩
+    have hzFut : ∀ u, t < u → zoneHolds M (Fin.cons x (fun _ => t)) agg2ZFutFut u := by
+      intro u htu
+      have hxu : x < u := hxt.trans htu
+      simp only [agg2ZFutFut, agg2Mk, agg2Gtz]
+      rw [agg2_zoneHolds_cons_iff]
+      exact ⟨⟨iff_of_false (lt_asymm hxu) (by simp), iff_of_true hxu rfl⟩,
+        ⟨iff_of_false (lt_asymm htu) (by simp), iff_of_true htu rfl⟩⟩
+    -- The gate: off-fiber honesty + order-conflict falsity.
+    have hgate : agg2GatePast sub_nf := by
+      refine ⟨h_off, fun zs χ hncons => ?_⟩
+      cases hb : agg2Bit sub_nf zs χ with
+      | false => rfl
+      | true =>
+        obtain ⟨u, hzu, -⟩ := (hzone' zs χ).mpr hb
+        exact absurd (agg2_zone_consistent_lt M x t u hxt zs hzu) hncons
+    -- Interior-positive realization: each positive fiber yields an interior point.
+    have hSreal : ∀ χ ∈ agg2SPast sub_nf,
+        ∃ u, x < u ∧ u < t ∧ nf_eval_nf M 0 1 (fun _ => u) χ := by
+      intro χ hχ
+      have hbit := (List.mem_filter.mp hχ).2
+      obtain ⟨u, hzu, hev⟩ := (hzone' agg2ZIntPast χ).mpr hbit
+      simp only [agg2ZIntPast, agg2Mk, agg2Gtz, agg2Ltz] at hzu
+      rw [agg2_zoneHolds_cons_iff] at hzu
+      exact ⟨u, hzu.1.2.mpr rfl, hzu.2.1.mpr rfl, hev⟩
+    -- Sorted arrangement of the interior-positive enumeration (insertion induction).
+    obtain ⟨ps, hperm, hsort, hprops⟩ :=
+      k1v_sorted_realization M x t (agg2SPast sub_nf)
+        ((Finset.nodup_toList _).filter _) hSreal
+    -- The uniform exclusion segment holds on ALL of `(x, t)`.
+    have hseg_all : ∀ u, x < u → u < t →
+        (agg2SegPast atomMap h_surj sub_nf).eval_at M atomMap u := by
+      intro u hxu hut
+      simp only [agg2SegPast, TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+      cases hb : agg2Bit sub_nf agg2ZIntPast χ with
+      | true =>
+        rw [if_pos rfl]
+        exact fun hfa => hfa
+      | false =>
+        rw [if_neg (by simp)]
+        intro hch
+        have hbit := (hzone' agg2ZIntPast χ).mp ⟨u, hzInt u hxu hut, (hchar χ u).mp hch⟩
+        rw [hb] at hbit
+        exact Bool.noConfusion hbit
+    -- Left endpoint predicate at the laid witness `x`.
+    have hepL : (agg2EpPastL atomMap h_surj sub_nf).eval_at M atomMap x := by
+      simp only [agg2EpPastL, TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_append.mp hf with hf | hf
+      · rcases List.mem_cons.mp hf with rfl | hf
+        · exact hendp
+        · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+          simp only [agg2Lit]
+          cases hb : agg2Bit sub_nf agg2ZPastPast χ with
+          | true =>
+            rw [if_pos rfl]
+            obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+            simp only [agg2ZPastPast, agg2Mk, agg2Ltz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            exact ⟨u, hzu.1.1.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+          | false =>
+            rw [if_neg (by simp)]
+            rintro ⟨s, hsx, hsχ, -⟩
+            have hbit := (hzone' _ χ).mp ⟨s, hzPast s hsx, (hchar χ s).mp hsχ⟩
+            rw [hb] at hbit
+            exact Bool.noConfusion hbit
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        simp only [agg2Lit]
+        cases hb : agg2Bit sub_nf agg2ZAtXPast χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          simp only [agg2ZAtXPast, agg2Mk, agg2Eqz, agg2Ltz] at hzu
+          rw [agg2_zoneHolds_cons_iff] at hzu
+          have hueq : u = x := le_antisymm
+            (not_lt.mp (k1v_not_of_iff_false hzu.1.2))
+            (not_lt.mp (k1v_not_of_iff_false hzu.1.1))
+          exact (hchar χ x).mpr (hueq ▸ hev)
+        | false =>
+          rw [if_neg (by simp)]
+          intro hch
+          have hbit := (hzone' _ χ).mp ⟨x, hzAtX, (hchar χ x).mp hch⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+    -- Right endpoint predicate at the origin `t`.
+    have hepR : (agg2EpPastR atomMap h_surj sub_nf).eval_at M atomMap t := by
+      simp only [agg2EpPastR, TemporalPred.eval_at]
+      rw [formula_conjList_iff]
+      intro f hf
+      rcases List.mem_append.mp hf with hf | hf
+      · rcases List.mem_cons.mp hf with rfl | hf
+        · exact horig
+        · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+          simp only [agg2Lit]
+          cases hb : agg2Bit sub_nf agg2ZAtTPast χ with
+          | true =>
+            rw [if_pos rfl]
+            obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+            simp only [agg2ZAtTPast, agg2Mk, agg2Gtz, agg2Eqz] at hzu
+            rw [agg2_zoneHolds_cons_iff] at hzu
+            have hueq : u = t := le_antisymm
+              (not_lt.mp (k1v_not_of_iff_false hzu.2.2))
+              (not_lt.mp (k1v_not_of_iff_false hzu.2.1))
+            exact (hchar χ t).mpr (hueq ▸ hev)
+          | false =>
+            rw [if_neg (by simp)]
+            intro hch
+            have hbit := (hzone' _ χ).mp ⟨t, hzAtT, (hchar χ t).mp hch⟩
+            rw [hb] at hbit
+            exact Bool.noConfusion hbit
+      · obtain ⟨χ, -, rfl⟩ := List.mem_map.mp hf
+        simp only [agg2Lit]
+        cases hb : agg2Bit sub_nf agg2ZFutFut χ with
+        | true =>
+          rw [if_pos rfl]
+          obtain ⟨u, hzu, hev⟩ := (hzone' _ χ).mpr hb
+          simp only [agg2ZFutFut, agg2Mk, agg2Gtz] at hzu
+          rw [agg2_zoneHolds_cons_iff] at hzu
+          exact ⟨u, hzu.2.2.mpr rfl, (hchar χ u).mpr hev, fun r _ _ hfa => hfa⟩
+        | false =>
+          rw [if_neg (by simp)]
+          rintro ⟨s, hts, hsχ, -⟩
+          have hbit := (hzone' _ χ).mp ⟨s, hzFut s hts, (hchar χ s).mp hsχ⟩
+          rw [hb] at hbit
+          exact Bool.noConfusion hbit
+    -- Enter the carrier: gate branch, then the sorted arrangement disjunct.
+    unfold agg2Past
+    split
+    case isFalse hgf => exact absurd hgate hgf
+    case isTrue hg =>
+    refine ⟨_, List.mem_map.mpr ⟨ps.map Prod.fst,
+      List.mem_permutations.mpr hperm, rfl⟩, ?_⟩
+    refine ⟨hepR, x, hxt, hepL, ?_⟩
+    -- The bracket: assembled by the construction lemma from the sorted realization.
+    refine aggBracket_construct M atomMap _ _ x t (ps.map Prod.snd) (by simp) hsort
+      ?_ ?_ hseg_all
+    · intro u hu
+      obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hu
+      exact (hprops p hp).1
+    · intro i hi
+      have hi' : i < ps.length := by simpa using hi
+      have h1 : (List.map (fun χ =>
+          (⟨nf_depth0_char_formula atomMap h_surj χ⟩ : TemporalPred))
+          (ps.map Prod.fst))[i]'hi =
+          ⟨nf_depth0_char_formula atomMap h_surj ((ps[i]'hi').1)⟩ := by
+        simp only [List.getElem_map]
+      have h2 : (ps.map Prod.snd)[i]'(by simpa using hi') = (ps[i]'hi').2 := by
+        simp only [List.getElem_map]
+      rw [h1, h2]
+      exact (hchar _ _).mpr (hprops _ (List.getElem_mem _)).2
+
+end AggPastK0
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

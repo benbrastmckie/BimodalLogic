@@ -262,7 +262,7 @@ aggregate construction; kill statement churn (R7) and adjudicate R1/R2 with comp
 
 ---
 
-### Phase 2: k=0 aggregate population carrier + correctness [NOT STARTED]
+### Phase 2: k=0 aggregate population carrier + correctness [IN PROGRESS]
 
 **Goal**: The "aggregate quantEnd/seg construction" at depth 0: a single aggregate object
 (VVecEA2 per Route V, or TemporalPred/BracketFormula-0 pair where Route P was adjudicated
