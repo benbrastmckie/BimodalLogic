@@ -10850,6 +10850,803 @@
       "detected_artifacts": [
         "reports/"
       ]
+    },
+    {
+      "project_number": 347,
+      "project_name": "rabinovich_bracket_faithfulness_review",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Faithfulness review + revision of the task-346 gate against Rabinovich 2014 §5 (full text at ~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md). CORE QUESTION: Rabinovich's brackets (Lemma 5.3/Cor 5.4/Lemma 5.1, Notation 5.2) bound witnesses INSIDE (z0,z1) by ordering conjuncts — the paper has NO exterior-completeness direction; yet the Lean encoding's nf_eval_nf (NormalForm.lean:206) quantifies the fresh variable over ALL of M.carrier, which is what forced 346's hexclExt residue and the conditional interior+boundary gate. Adjudicate: (a) BENIGN — the qnf/zone encoding carries ordering content from which strictly-exterior non-realization is derivable, so hexclExt is encoding-level debt (possibly cheap to discharge, superseding the heavy prop43_exterior_completeness successor spec in 346 summary); or (b) SUBSTANTIVE — the encoding dropped Rabinovich's interval-bounding (cf. 335 report 07 Refutation 2 'category mismatch at inner-bits layer'), in which case propose and land the smallest revision restoring bracket-semantics faithfulness rather than proving exterior completeness from an unfaithful encoding. MUST ALSO CHECK: (1) strictness — Rabinovich strict interior z0<x<z1 + K+/K- endpoint operators vs 346's boundary-inclusive cone x<=x1<=t with realized boundary positives (Phase 4 endpoint/witness literals) — verify the trichotomy maps to interior-brackets+K± without double-counting endpoints; (2) hreal hypothesis shape vs what Rabinovich §5 induction actually proves (task-335 provider obligation match); (3) interior-singleton kvE2_sepPosI fragment vs Lemma 5.3 induction single-P1 case structure. GROUNDING: Rabinovich full text (cite by page); specs/346_*/summaries/01 + progress records; specs/archive/330_*/reports/01 (faithfulness audit); specs/335_*/reports/07. OUTPUT: verdict (a)/(b) with paper-cited justification; if (b), revision plan + implementation; update or retire the prop43_exterior_completeness successor spec accordingly. CONSUMERS: prop43 successor decision, task 309 Phases 13.4/14, task 335 Phase D.",
+      "dependencies": [
+        346
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ],
+      "created": "2026-07-11",
+      "last_updated": "2026-07-11T18:31:15Z",
+      "session_id": "sess_1783792054_45a555",
+      "completion_summary": "Verdict (b) SUBSTANTIVE: hexclExt was an outer-existential globalization artifact with no Rabinovich §5 counterpart (Cor 5.4 bounds the outer ∃; nf_eval_nf quantified over all of M.carrier). Landed R1: interior-slice discharge lemma kvE2_sepInterior_exterior_notRealizable (d370d438e) + narrowed hexclExt to exterior-marked σ, re-threaded fold + OuterGate (3b8aee3c4), full build green, axioms clean, sorry delta 0. Retired prop43_exterior_completeness successor spec, replaced with prop43_exterior_reflatten (Prop 4.3 + Lemma 7.6 adjacency, 3d024cf16). Recorded adjudication for consumers 309/335/prop43 (5430b3dbe). Follow-ups enumerated in summary: /task for prop43_exterior_reflatten, /revise 309, /revise 335.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 333,
+      "project_name": "carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Successor to task 321 (F4 correctness gate): the bit-compatibility carrier redefinition that closes what task 321's additive-only v7 plan structurally could not. Task 321 reached a scoped PARTIAL: the O4 hgate forward-zone coverage residue does not close additively at singleton size (needs six interlocking LITMUS/no-nesting-constrained lemmas), and the multi-positive-sub fragment was deferred at the Phase 10 gate. Both route to the SAME fix identified by the crux analysis: redefine kvE2_sepArrL / kvE2_sepArrR (currently arrangement-blind) with bit-compatibility FILTERING so the interleaving enumeration only admits realizations whose zone bits are compatible with each sigma's fold content. This is a Phase-7 carrier RE-DEFINITION (out of task 321's additive scope; it kills the current canonical-list non-vacuity proof, which must be re-established). Deliverables: (1) redefined kvE2_sepArrL/R + restored non-vacuity; (2) discharge task 321's two remaining strategic sorries in SharedWitness.lean (kvE2_sepSingleton_coverage_left:1796, kvE2_sepBody_singleton_complete_left:1952) for the single-positive fragment; (3) lift to the full multi-positive-sub correctness pair; (4) run Phase 12 (N2-C gate wrapper) and Phase 13 (F4 Z adversarial LHS-FALSE + GO verdict record) from task 321's v7 plan; (5) full lake build green + axiom-clean surviving public API. Faithfulness constraints from 321 remain binding: Rabinovich 2014 Lemma 5.1 quantifier-free point types, no-nesting audit, LITMUS (no x1<e_i), F4 adversarial test must discriminate. Do not run concurrently with 321/332 (file_scope overlap on SharedWitness / NfMultiAnchorBridge).",
+      "dependencies": [
+        321,
+        332
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
+      "created": "2026-07-08T07:40:00Z",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/summaries/01_bit-compat-carrier-redefinition-summary.md"
+        },
+        {
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/02_post334-soundness-extraction-frontier.md",
+          "type": "report",
+          "summary": "Post-334 ground-truth inventory (A), hvalid-residue resolution (B), multi-positive correctness-pair frontier with the three open soundness sub-obligations (C), Phase-12 N2-C gate + F4 status and task-335 ownership overlap (D), and a 6-phase revised plan (E) flagging R3 (kvE2_sepDisjValidOwner -> forward-zone hgate conjunct) as the single HIGH-risk make-or-break step."
+        },
+        {
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md",
+          "type": "report",
+          "summary": "PDF-grounded re-grounding: R3 dissolved (wrong obligation); md unsafe (display equations dropped, k!=m inverted); 89 dangling in-code md:NN cites; R4 is the true make-or-break."
+        },
+        {
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/05_kit-application-and-outer-fold.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/04_r2-blocker-repair-route.md",
+          "type": "report",
+          "summary": "Blocker research: Route A (tie-admitting grouped extraction) CONFIRMED via lean_run_code probe; Route B (filter strengthening) REFUTED — re-adding Nodup falsifies kvE2_sepHonestOrder'_mem_arr' (SW:6284), breaking completeness hand-off. Replacement kvE2_sepBody_extract carries ZERO universal side-conditions, zero consumers repo-wide. Phases 3/4 survive (Phase 3 wording-only restatement)."
+        },
+        {
+          "type": "plan",
+          "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/plans/06_route-a-grouped-extraction.md"
+        }
+      ],
+      "last_updated": "2026-07-10T12:29:14Z",
+      "session_id": "sess_1783679696_817168",
+      "researched": "2026-07-10T04:16:08Z",
+      "plan_metadata": {
+        "phases": 4,
+        "total_effort_hours": 9,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 4,
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/02_post334-soundness-extraction-frontier.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-07-09"
+          },
+          {
+            "path": "reports/03_pdf-fidelity-r3-dissolved-regrounding.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-07-09"
+          },
+          {
+            "path": "reports/04_r2-blocker-repair-route.md",
+            "integrated_in_plan_version": 4,
+            "integrated_date": "2026-07-10"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      },
+      "next_artifact_number": 7,
+      "completion_summary": "Route-A grouped extraction complete, 4/4 phases, zero sorries, axiom-clean. Phase 2's original targets (universal hpairL/hpairR/hnd over all wo in kvE2_sepArr') were proven FALSE and the plan was revised (v4) around the confirmed tie-admitting grouped-extraction route; Route B (filter strengthening) refuted (falsifies kvE2_sepHonestOrder'_mem_arr' SW:6284, breaking the completeness hand-off). Delivered: hypothesis-free kvE2_sepBody_extract (zero universal side-conditions); kvE2_sepBundleL_sound + geometry-correct mirror kvE2_sepBundleR_sound; aggregate kvE2_sepBody_kit_sound; and the make-or-break kvE2_outer_fold. Full lake build green (1720 jobs), OuterGate green, lean_verify [propext, Classical.choice, Quot.sound] on all new public symbols, LITMUS 0 hits, diff confined to SharedWitness.lean.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 335,
+      "project_name": "outer_gate_assembly_engine_kvE2_body",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Follow-up to task 334 (faithful carrier re-grounding, COMPLETED): build the outer-gate assembly engine kvE2_body / bracketEndChar_kvE2 (task 321 v4 / NavigatedSpine Phase-7 two-level quant-layer connector), which currently has no live def. Task 334 proved the faithful carrier's nonvacuity (kvE2_sepBody_nonvacuous, ⇒) and completeness (kvE2_sepBody_complete, ⇐) as self-contained axiom-clean theorems in NfMultiAnchorBridge/SharedWitness.lean; this task assembles them into the outer gate that KampPrior.lean:351 (depth-k≥2 Cor 5.4 converter) consumes. The carrier is a verified INPUT — do not re-prove it. See task 334 plan 03 Risk R3/R4 and Scope note (lines 417-419), and the captured failed-closer history at NavigatedSpine:423-435. Preserve all 7 faithfulness invariants (F1-F7) from task 334. UPDATE (task-347 adjudication, session sess_1783792054_45a555): the Phase-D provider obligation is re-shaped to Rabinovich Cor 5.4 ⇐ form — realize BOUNDED, jointly-ordered interior witnesses over the interior index kvE2_sepPosI (SharedWitness.lean:211-214), NOT the global kvE2_sepPos (which over-asks: unbounded, decoupled — 347 report 01 MUST-CHECK 2). The hard hexcl blocker is DISSOLVED, not discharged in-335: task-347 R1 (commits d370d438e/3b8aee3c4) discharged the interior exclusion slice in-line and narrowed the residue to exterior-marked σ only; that exterior-arrangement residue is the province of successor task 348 (prop43_exterior_reflatten — Prop 4.3 re-flatten / Lemma 7.6 adjacency), for which 335 is the PROVIDER. Phase D therefore assembles the interior+boundary-scoped gate and threads the exterior-marked hexclExt outward to 348; it does NOT attempt exterior completeness on the interior (x,t) bracket (retired phantom framing, no §5 counterpart). Plan: v6 (06_fragment-gate-v6.md); Phase D actionable, v5 blocker dissolved.",
+      "parent_task": 334,
+      "dependencies": [
+        334,
+        337,
+        344,
+        345,
+        346
+      ],
+      "file_scope": "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/",
+      "created": "2026-07-08T21:34:34Z",
+      "last_updated": "2026-07-11T19:10:40Z",
+      "session_id": "sess_1783796165_b5b482_335",
+      "artifacts": [
+        {
+          "type": "summary",
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md",
+          "summary": "Phase 1 delivered (live bracketEndChar_kvE2 def + rfl bridge, green + axiom-clean); Phases 2-4 BLOCKED on the un-landed joint multi-owner disjunct bracket-holds builder (task-334 deferral). Carrier INPUT + KampPrior untouched."
+        },
+        {
+          "type": "summary",
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/summaries/01_outer-gate-assembly-summary.md",
+          "summary": "PARTIAL: Phase 1 landed live bracketEndChar_kvE2 outer-gate carrier (axiom-clean); Phases 2-4 blocked on missing joint multi-owner disjunct bracket-holds builder (task-334 deferred obligation)"
+        },
+        {
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/plans/05_fragment-gate-v5.md",
+          "type": "plan",
+          "summary": "v5 fragment gate: Phases A-D under N2-sanctioned hfrag restriction; hexcl GO/NO-GO probe bounded to one dispatch"
+        },
+        {
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/reports/07_hexcl-enrichment-derivability.md",
+          "type": "report",
+          "summary": "hexcl NO-GO (two refutations) + kvE2_sepFragment unrealizability — successor task 346 certified as only route"
+        },
+        {
+          "path": "specs/335_outer_gate_assembly_engine_kvE2_body/plans/06_fragment-gate-v6.md",
+          "type": "plan",
+          "summary": "v6: Phase D re-shaped to bounded jointly-ordered Cor 5.4 ⇐ via kvE2_sepPosI; hexcl NO-GO dissolved by 347 R1; exterior residue routed to 348 (335 = provider)"
+        }
+      ],
+      "completion_summary": "Assembled the outer gate bracketEndChar_kvE2_correct_two_prior_frag over the interior kvE2_sepPosI provider obligation (Cor 5.4 shape); hexclExt threaded outward to task 348; all 7 phases complete, sorry-free, axiom-clean.",
+      "topic": "kamp_theorem_formalization",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 3,
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "skeleton": false,
+        "follow_up_tasks": [],
+        "reports_integrated": [
+          {
+            "path": "specs/333_carrier_redefinition_kve2_separr_bit_compatibility_correctness_pair/reports/03_pdf-fidelity-r3-dissolved-regrounding.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-07-09"
+          }
+        ]
+      },
+      "previous_status": "partial",
+      "next_artifact_number": 2,
+      "blockers": "Phases C-D blocked: hexcl machine-confirmed undischargeable under any fold-interface enrichment AND the landed kvE2_sepFragment flagged unrealizable (Phase B vacuous as stated — VACUITY NOTEs stamped in OuterGate.lean). Only route: successor task 346 (321-N2 carrier redefinition). Delivered green: Phases 1-3, A, B (derivation genuine, premise repair needed).",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 344,
+      "project_name": "pin_anchored_fragment_fold",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "SPAWNED from task 335 blocker escalation 2 (session sess_1783723095_edd5a7). Land the pin-anchored fragment fold in SharedWitness.lean, ADDITIVE-ONLY (zero existing decls modified — task 341 GATE re-diff absorbs it): kvE2_sepGateAtPin_fragL/R (six gate conjuncts derived at the extracted pin witness q with x < q < w via kvE_sub2V_bounded_anchor_of_outer), kvE2_sepBody_kit_sound_frag, and kvE2_outer_fold_frag (pin-anchored variant of kvE2_outer_fold). Grounding: machine-verified derivability report (reports/01_fragment-extractor-derivability.md; original at specs/335_outer_gate_assembly_engine_kvE2_body/reports/05_fragment-extractor-derivability.md). REFUTED shapes to avoid: the ∀-anchor hgateL of the landed fold is FALSE in gate-legal hfrag-legal configurations (SW:9911-9928, SW:6772-6778 binder-level obstruction survives the fragment) — do NOT attempt a segment-coverage extractor for it; a NEW FILE will not work (segment/pin internals are file-private). One extra dischargeable input allowed: provider correctness at the pin (hcorrK = ExistProviders.correct step already assigned to 335). Consumer: task 335 Phases B-D (bracketEndChar_kvE2_correct_two_prior_frag). Invariants: lake build green, axiom-clean {propext, Classical.choice, Quot.sound}, no sorries on live paths, incremental green commits. Residual risks to probe early: hexcl threading, arrangement-shape reduction under hfrag, pin-extraction output shape. Sizing: 2-3 dispatches.",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/344_pin_anchored_fragment_fold/reports/01_fragment-extractor-derivability.md",
+          "summary": "Machine-verified GO: pin-anchored _frag fold derivable; ∀-anchor extractor refuted"
+        },
+        {
+          "path": "specs/344_pin_anchored_fragment_fold/plans/01_pin-anchored-fold-plan.md",
+          "type": "plan",
+          "summary": "3-phase additive-only pin-anchored fold; Phase 1 front-loads residual-risk probes"
+        },
+        {
+          "path": "specs/344_pin_anchored_fragment_fold/summaries/01_pin-anchored-fold-summary.md",
+          "type": "summary",
+          "summary": "All four pin-anchored frag lemmas landed axiom-clean; 335 obligation set {hcorrK, hInnerR, hexcl}"
+        }
+      ],
+      "spawned_from": 335,
+      "last_updated": "2026-07-11T05:20:16Z",
+      "session_id": "sess_1783723095_edd5a7_344",
+      "completion_summary": "Landed kvE2_sepGateAtPin_fragL/R, kvE2_sepBody_kit_sound_frag, kvE2_outer_fold_frag in SharedWitness.lean (additive-only below TASK 344 banner, zero existing decls modified, 12 dispatches incl. R2 design resolution). All axiom-clean {propext, Classical.choice, Quot.sound}, zero sorries. 335 Phase B discharge obligations: {hcorrK, hInnerR, hexcl}.",
+      "blockers": "",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 345,
+      "project_name": "symmetric_gate_clause_v",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "SPAWNED from task 335 R1 decision, literature-fidelity-verified (session sess_1783723095_edd5a7; USER directive: most mathematically correct and faithful approach; verdict R1-faithful, reports/01). Make kvE2_sepGate symmetric per Rabinovich Cor 5.4(1)/(2) mirror pair (p.9): (1) ADD clause (v) to the LANDED kvE2_sepGate def (SharedWitness.lean ~1244-1246) = the zWT3 mirror of clause (iv), forcing bits false on non-kvE2_sepInnerConsistentR zone specs for RIGHT owners. (2) Discharge the ONE gate constructor gaining an obligation: kvE2_sepGate_holds_of_honest (SW:2666), by byte-mirroring the clause-(iv) discharge (SW:2706-2726) via the landed kvE2_sep_zone4_consistentR (SW:11309). (3) REMOVE (not guard) the now-derivable hInnerR hypothesis from kvE2_sepGateAtPin_fragR, kvE2_sepBody_kit_sound_frag, kvE2_outer_fold_frag — recovering RIGHT inner-consistency from hg clause (v) exactly as fragL uses clause (iv); this REPAIRS the confirmed LEFT-unsatisfiability of hInnerR (344 fold currently uninvokable). (4) Verify all other kvE2_sepGate consumers inert (literature report says so — re-verify at build level). CONSTRAINTS: this is the SANCTIONED exception to the SharedWitness freeze — touch ONLY the gate def, holds_of_honest, and the three 344 _frag lemma signatures/bodies; everything else byte-identical; full lake build green; axiom-clean {propext, Classical.choice, Quot.sound}; zero sorries on live paths; incremental green commits; cite Rabinovich by PDF page only. CONSUMER: 335 Phases B-D resume with discharge obligations reduced to {hcorrK, hexcl}. Task 341 GATE-phase re-diff absorbs the delta.",
+      "dependencies": [
+        344
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/SharedWitness.lean"
+      ],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/345_symmetric_gate_clause_v/reports/01_literature-fidelity-gate-design.md",
+          "summary": "Literature-fidelity verdict: R1-faithful, LEFT-unsat confirmed, execution shape included"
+        },
+        {
+          "path": "specs/345_symmetric_gate_clause_v/plans/01_symmetric-gate-plan.md",
+          "type": "plan",
+          "summary": "4-phase symmetric gate: clause (v) + honest discharge first green pair, hInnerR removal, consumer sweep + byte-diff verification"
+        },
+        {
+          "path": "specs/345_symmetric_gate_clause_v/summaries/01_symmetric-gate-summary.md",
+          "type": "summary",
+          "summary": "Gate clause (v) landed per Cor 5.4 mirror; hInnerR removed from all three _frag lemmas; 335 obligations now {hcorrK, hexcl}"
+        }
+      ],
+      "spawned_from": 335,
+      "last_updated": "2026-07-11T06:44:32Z",
+      "session_id": "sess_1783723095_edd5a7_345",
+      "completion_summary": "Symmetric gate clause (v) landed per literature-fidelity verdict (Rabinovich Cor 5.4 mirror pair): gate def + holds_of_honest discharge + hInnerR removal from kvE2_sepGateAtPin_fragR/kit_sound_frag/outer_fold_frag (repairing confirmed LEFT-unsatisfiability). Byte-diff verified sanctioned-regions-only; axiom-clean; full build green. 335 discharge obligations reduced to {hcorrK, hexcl}.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 346,
+      "project_name": "successor_carrier_redefinition",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "THE 321-N2 NAMED SUCCESSOR (user-deferred; NOT auto-dispatched — major scope decision). Certified by task 335 report 07 (2026-07-11) as the ONLY remaining route to the k=2 gate: bit-compatibility filtering carrier redefinition (O4 SW:6763-6770) / 330-audit Prop 4.3 navigated exterior completeness. MUST ALSO: (1) redefine the fragment predicate — the landed kvE2_sepFragment (OuterGate.lean:191, global singleton) is flagged UNREALIZABLE (any realized qnf has >=3 positive bits; report 07 Refutation 1); intended fragment is plausibly interior-singleton via kvE2_sepPosI (SW:211); (2) re-state bracketEndChar_kvE2_sound_two_prior_frag non-vacuously (its derivation survives, its premise set does not — VACUITY NOTEs stamped on both decls in OuterGate.lean); (3) resolve hexcl properly — machine-confirmed NOT dischargeable under ANY fold-interface enrichment (report 07 Refutation 2: category mismatch at inner-bits layer + bracketEndChar_kv_factors arity-1 inseparability of sibling/exterior types). ASSETS THAT SURVIVE: tasks 344/345 pin-anchored symmetric-gate machinery (fragL/fragR/kit/fold — hypothesis-carrying, proofs genuine; predicate swap expected to preserve them, verify), 335 Phase 2 completeness half (unconditional), 335 Phase B derivation modulo the predicate repair, symmetric gate clause (v) (literature-faithful, Rabinovich Cor 5.4 p.9). GROUNDING: specs/335_outer_gate_assembly_engine_kvE2_body/reports/04-07 + specs/330_.../reports/01 (faithfulness audit) + Rabinovich PDF (cite by page only). CONSUMERS: task 309 Phases 13.4/14 + KampPrior.lean:351 strategic sorry; task 335 Phase D. Recommend /research 346 --lit --hard before any planning.",
+      "dependencies": [
+        345
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ],
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/346_successor_carrier_redefinition/reports/01_hexcl-refutation-and-vacuity.md",
+          "summary": "Report 07: hexcl NO-GO (two refutations) + kvE2_sepFragment unrealizability — the certification that this successor is the only route"
+        }
+      ],
+      "spawned_from": 335,
+      "last_updated": "2026-07-11T16:52:44Z",
+      "session_id": "sess_1783782450_230288",
+      "completion_summary": "Fragment-predicate repair landed: kvE2_sepPos→kvE2_sepPosI swap (both sites), hexcl re-scoped via cone/exterior split (hexcl/hexclExt) with per-positive realization (hreal), fold+kit 3-site repair, interior-singleton realizability witness (kvE2_sepFragment_realizable), non-vacuous restatement of bracketEndChar_kvE2_sound_two_prior_frag with both VACUITY NOTEs resolved. Full lake build green (1720 jobs), axiom-clean, zero live-path sorries. Deferred Prop-4.3 exterior-completeness successor (prop43_exterior_completeness) specified in summary for /task creation.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 348,
+      "project_name": "prop43_exterior_reflatten",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Restore Rabinovich interval-bounding faithfulness for the exterior-marked hexclExt residue isolated by task 346 and narrowed by task 347 R1 (commits d370d438e, 3b8aee3c4 — residue is exterior-marked σ ONLY before this task starts). AUTHORITATIVE SPEC: specs/346_successor_carrier_redefinition/summaries/01_successor-carrier-redefinition-summary.md, section \"prop43_exterior_reflatten\" (line ~195) — consume it verbatim, do NOT re-derive. METHOD (settled by 347 adjudication, not to be re-opened without a machine counterexample): re-flatten per Rabinovich Prop 4.3 (p.6, Fig.1 p.10) + Lemma 7.6 adjacency (p.13) — exterior arrangements x1<x and x1>t belong to ADJACENT intervals (-inf,x)/(t,inf), each with its own bracket (Def 7.5/Lemma 7.10 shapes), composed with the landed interior (x,t) bracket via the adjacency primitive; seam at anchors x,t. Do NOT prove hexclExt as strictly-exterior completeness on the interior bracket (retired phantom framing, no §5 counterpart; 335 report 07 Refutation 2). Do NOT bound nf_eval_nf's outer existential in place (correct raw FOMLO semantics). ENTRY PROBLEM: Prop43.lean:120-159 uniform-negation connective cases (blocked navigated route — first target; feed the already-proven neg_2var_vec_ea Prop 4.2 closure, EANegationClosure.lean:722). LANDED ASSETS: BracketEndCharCarrierV (NfMultiAnchorBridge.lean:1872), task-326 interior closers, 347 R1 interior-slice discharge lemma (SharedWitness.lean below SW:10210 GATE banner). DEFINITION OF DONE: exterior-marked hexclExt residue discharged by adjacent exterior bracket composed with interior gate; fold + soundness-half theorems called with residue closed (interior + boundary + adjacent-exterior = full completeness); KampPrior.lean:351 strategic sorry retired; axiom-clean {propext, Classical.choice, Quot.sound}, no sorry on live paths. GROUNDING: Rabinovich 2014 §4/§5/§7; 347 report 01 (verdict (b), §7 R2); 330 report 01 (REDESIGN); 335 report 07. Scope: distinct major effort (missing re-flatten infrastructure, a genuine mathematical gap — not wiring).",
+      "dependencies": [
+        335,
+        346,
+        347
+      ],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/"
+      ],
+      "created": "2026-07-11",
+      "last_updated": "2026-07-11T23:24:40Z",
+      "topic": "kamp_theorem_formalization",
+      "session_id": "sess_1783796165_b5b482_348",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/348_prop43_exterior_reflatten/reports/01_prop43-exterior-reflatten.md",
+          "summary": "Hard-mode research: hexclExt residue zone triage, 4-stage adjacency architecture, H3 lemma table, H4 verified"
+        },
+        {
+          "type": "plan",
+          "path": "specs/348_prop43_exterior_reflatten/plans/01_prop43-exterior-reflatten.md",
+          "summary": "8-phase hard-mode plan: zone triage, R2 GO/NO-GO spike, one-sided clause families, adjacent exterior brackets, enriched gate discharge"
+        }
+      ],
+      "completion_summary": "Discharged the exterior-marked hexclExt residue via Rabinovich Prop 4.3 re-flatten + Lemma 7.6 adjacency: 8 phases landing zone triage, one-sided clause families (both sides, sound+complete), adjacent exterior brackets, and the enriched composed gate bracketEndChar_kvE2Ext_correct_two_prior_frag. Interior+boundary+adjacent-exterior = full k=2 completeness; axiom-clean; KampPrior.lean:351 retirement deferred to 309 per R1.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 349,
+      "project_name": "build_recursive_endchar_navigated_arity3_endpoint_primitive",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Build the recursive navigated arity-3 endpoint primitive `endChar : (k : Nat) -> EndCharCarrier sig k` (EndCharCarrier abbrev at Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:1007) by recursion on k, plus `endChar_correct`. Base case = the already-landed `endChar0`/`endChar0_correct` (Base.lean:995/1056, sorry-free). Step case = navigable-brick flatten of each sub's existential witness composed with the already-landed non-trivial interior segment `seg`/`seg_holds_correct`/`seg_holds_coupled` (Base.lean:1127-1162, sorry-free) for the interior and Phase-6/8-shaped endpoint characteristics for the exteriors, arity capped at 3 (guard G4). This is the report-02-Section-1.4 primitive, explicitly documented as NOT YET BUILT at Base.lean:958-969 (~300-500 lines estimated in-file, brick-witness-collapse / anchor-management core). Consume, do NOT rebuild: endChar0/endChar0_correct, seg/seg_holds_correct/seg_holds_coupled, nf_zone_flatten_navigable(_brick)/_correct (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/NfZoneFlattenNavigable.lean:689/709). Guards (binding): G1 no arity-1 collapse; G2/G4 anchors strictly {a,b} subset {x,t}, <=2, w never a third free anchor; G3 non-trivial segment only (reuse seg, never TemporalPred.top); G5 no simp/omega/aesop shortcut of a Rabinovich chain step, manual bridges only; FORBIDDEN: nf_char3_deeper_split (refuted route -- grows anchor set to 4, forbidden tower, report 02 Section 4.1); do NOT edit the seven frozen provider files (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean); do NOT touch KampPrior.lean or nf_nvar_exist_all_depths's signature -- this task's scope is Base.lean only, additive; axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule, do not land a vacuous or sorry'd endChar. Definition of done: lake build GREEN (scoped Base module at minimum, full tree recommended); endChar/endChar_correct sorry-free; lean_verify on endChar_correct = exactly [propext, Classical.choice, Quot.sound]; no frozen-file edits; downstream task 309 Phase 18/19 can cite endChar_correct by name. Literature grounding: Rabinovich 2014 Cor 5.4 / report 02 Section 1.4 (the missing navigated-endpoint primitive) and Section 6 'Phase 8' decomposition (reports/02_endpoint-hook-discharge-research.md:266-270); orchestrator handoff blocker P18b-endChar-recursive-core-unbuilt.",
+      "effort": "high",
+      "parent_task": 309,
+      "dependencies": [
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357
+      ],
+      "created": "2026-07-12T01:37:12Z",
+      "last_updated": "2026-07-13T21:09:20Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 309"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/04_reduction-navigated-endchar.md",
+          "type": "plan"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/01_endchar-faithful-architecture.md",
+          "type": "report",
+          "summary": "H5 divergence audit: Rabinovich navigates (never collapses arity); faithful arity-general endCharRec architecture, hook discharged internally via navigable brick"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md",
+          "summary": "Rabinovich 2014 faithfulness audit: single-anchor navBrickForm is root divergence; C+ multi-anchor navigating characteristic with unconditional hooks; endCharRec_correct becomes unconditional"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/04_arity4-bridge-feasibility-audit.md",
+          "summary": "H4/H5 audit: arity-4 enclosing-pair bridge is a machine-checked NON-THEOREM (parameter-independence); v4 Phase 3 architecture refuted"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/05_rabinovich-faithful-endchar-architecture.md",
+          "summary": "Rabinovich 2014 faithful endChar architecture (Tier-1 lit): three-level free-variable discipline; residual-conditioned x,t-explicit endChar_correct; 4-phase v5 breakdown"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/05_faithful-residual-conditioned-endchar.md",
+          "type": "plan",
+          "summary": "v5 faithful residual-conditioned endChar: reduce-first (Lem 3.2(2)) + x,t-explicit nf_zone_flatten_navigable + h_res at every k; supersedes refuted v4 Phase-3 architecture"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/06_faithful-two-endpoint-carrier.md",
+          "type": "plan",
+          "summary": "v6 faithful two-endpoint carrier: re-type recursion onto BracketEndCharCarrierV (VVecEA2, x,t explicit); archival swap; supersedes refuted v5 single-point carrier"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/09_carrier-synthesis.md",
+          "summary": "Decisive 5-report team synthesis: adopt carrier 3 (enriched-segment bracket kvE2Ext family); full v7 architecture, green assets, 5 new lemmas, 6-phase breakdown"
+        },
+        {
+          "type": "report",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/10_q3-uniform-k-probe.md",
+          "summary": "Q3 GO probe: uniform-k fold-determinacy holds via depth-general nf_eval_unique (machine-confirmed); F2 structurally inapplicable at full arity 4; Phase-1 target nf_eval_nfk_iff_efold"
+        },
+        {
+          "type": "plan",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/07_enriched-bracket-carrier.md",
+          "summary": "v7 enriched-segment bracket carrier: general-k fold bridge gate, k-generalized exterior brackets, endIntervalStep kvE_body at full arity 4, EndIntervalCorrectPrior, induction close; supersedes v6"
+        },
+        {
+          "type": "plan",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/08_consume-depthk-clause-layer.md",
+          "summary": "v8 consume depth-k clause layer: re-point Phase-2 bracket lemmas D1-D4 at delivered 351/352/354 assets (352 _sound + 354 _complete/bundle templates), thread discharged hreal/hsat interface; preserves Phase-1 fold bridge + Phase-2 determinacy core as COMPLETE; supersedes v7"
+        },
+        {
+          "type": "research",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/12_spawn-analysis.md",
+          "summary": "Spawn analysis: depth-k interior gate correctness blocker -> spawned task 355"
+        },
+        {
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/09_consume-interior-gate-general-k.md",
+          "type": "plan",
+          "summary": "v9: re-point Phases 5-7 from BUILD to CONSUME/INTEGRATE/AUDIT — 355/356/357/360 already delivered the interior gate + consumer reshape + hexclExt discharge; residual = DoD alias, doc-hook re-point, obligation ledger, audit"
+        }
+      ],
+      "session_id": "sess_1783904970_cb135a",
+      "next_artifact_number": 3,
+      "previous_status": "implementing",
+      "plan_metadata": {
+        "phases": 8,
+        "total_effort_hours": 13,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 9,
+        "dependency_waves": [
+          [
+            1,
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            8
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/05_rabinovich-faithful-endchar-architecture.md",
+            "integrated_in_plan_version": 5,
+            "integrated_date": "2026-07-12"
+          },
+          {
+            "path": "reports/06_phase3-gate-adjudication.md",
+            "integrated_in_plan_version": 6,
+            "integrated_date": "2026-07-12"
+          },
+          {
+            "path": "reports/07_rabinovich-faithfulness-deep-check.md",
+            "integrated_in_plan_version": 6,
+            "integrated_date": "2026-07-12"
+          },
+          {
+            "path": "reports/09_carrier-synthesis.md",
+            "integrated_in_plan_version": 7,
+            "integrated_date": "2026-07-12"
+          },
+          {
+            "path": "reports/10_q3-uniform-k-probe.md",
+            "integrated_in_plan_version": 7,
+            "integrated_date": "2026-07-12"
+          },
+          {
+            "path": "reports/11_recent-completion-consumption.md",
+            "integrated_in_plan_version": 8,
+            "integrated_date": "2026-07-12"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      },
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ],
+      "dependency_reconciliation_note": "2026-07-12: deps 351-357 all completed; unblocked blocked->planned. Plan v8 present; consider /revise before implement per roadmap report 13.",
+      "completion_summary": "endChar recursive arity-3 endpoint primitive DELIVERED by consuming (not rebuilding) the 355/356/357/360 stack: endInterval_correct (DoD alias) + endInterval_step_correct + endIntervalPrior + EndIntervalCorrectPrior in EndIntervalConsumerK.lean, sorry-free, axioms exactly [propext,Classical.choice,Quot.sound]; whole-tree lake build GREEN (1736 jobs); 16 frozen files byte-identical; 11-obligation ledger records dispositions (hexclExt internalized by 356; slice m=0 by 360; hreal/hexcl+general-m -> task 358; P/hcharK -> 309 P14); endInterval_correct citable by 309 P18/19 & 350. Plan revised v8->v9 to correct a stale rebuild-the-interior-gate divergence after deps landed.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 351,
+      "project_name": "formalize_rabinovich_lemma_322_2freevariable_reduction_for_normalformnf_eval_nf",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Build a reusable, green, sorry-free Lean structural lemma (or minimal cohesive family of lemmas) in a new file Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Lemma32Reduction.lean that is the Lean analogue of Rabinovich (2014) Lemma 3.2(2) (~/Projects/Literature/sources/rabinovich_2014/Rabinovich_2014_Proof_of_Kamps_Theorem.md, around md:119): 'Every →∃∀-formula is equivalent to a conjunction of →∃∀-formulas with at most two free variables.' Concretely, over this project's NormalForm/nf_eval_nf types (Theories/Bimodal/Metalogic/WeakCanonical/NormalForm.lean, nf_eval_nf at line 198; AtomKind at line 113) and the ExistsForallNF/TemporalPred types (Theories/Bimodal/Metalogic/WeakCanonical/ExistsForallNF.lean, TemporalPred.eval_at at line 53), the lemma must show that for arbitrary arity n, evaluating nf_eval_nf M k n env qnf against an arbitrary env : Fin n -> M.carrier is equivalent to a finite conjunction of nf_eval_nf-style facts each restricted to at most two free anchor positions (arity <=3 once the existential witness position from nf_eval_nf's own recursive unfolding is included), matching the 'two anchors + one witness' shape the GREEN nf_zone_flatten_navigable/_correct two-anchor lemma already uses (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/Base.lean:667-697). The reduction must happen BEFORE any navigation step, decomposing the arity-n obligation into arity-<=3 pieces at the NormalForm/nf_eval_nf level, so task 349's recursion can later navigate each piece with Until/Since without ever climbing past arity 3. Motivation to cite verbatim in the module docstring: the two in-tree refutation theorems endCharN0_correct_world_local_obstruction and endCharN0_correct_infeasible (Base.lean) prove the climbing-arity single-world base is impossible, and specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md (§Q4 target 4, H3 lemma-mapping table) is the faithfulness ground truth establishing this reduction as the paper's own prescribed alternative. Reusable assets to build on (do not re-derive): nf_endpoint_tl_gen/_correct (Base.lean:1879/1893), atomPartN (Base.lean:1866), seg/seg_holds_coupled (Base.lean:1127/1150), and the green nf_zone_flatten_navigable/_correct full-eval hook shape (Base.lean:667-697) as the structural template. Explicitly forbidden (H4-refuted or plan-forbidden): the single-anchor navBrickForm reshape, the nf_char3_deeper_split arity collapse, and reintroducing a free-standing NavResidual/h_nav predicate-layer residual at inner witnesses. Deliverable/acceptance criterion: a green, sorry-free, 0-new-axiom (beyond [propext, Classical.choice, Quot.sound]) Lean theorem (or minimal family) stating the <=2/<=3 free-variable equivalence for nf_eval_nf, committed under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/, verified by lake build. Does NOT include re-architecting task 349's recursion itself — that is deferred to /revise 349 (v4) once this lemma lands.",
+      "effort": "high",
+      "parent_task": 349,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/"
+      ],
+      "created": "2026-07-12T04:43:11Z",
+      "last_updated": "2026-07-12T06:06:28Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/03_spawn-blocker-analysis.md",
+          "summary": "Spawn blocker analysis from parent task 349"
+        },
+        {
+          "type": "plan",
+          "path": "specs/351_formalize_rabinovich_lemma_322_2freevariable_reduction_for_normalformnf_eval_nf/plans/01_lemma32-2var-reduction-plan.md",
+          "summary": "Hard-mode 6-phase plan: Rabinovich Lemma 3.2(2) <=2/<=3-anchor nf_eval_nf reduction"
+        }
+      ],
+      "next_artifact_number": 2,
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 14,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ],
+          [
+            6
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/02_rabinovich-faithfulness-audit.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-11"
+          },
+          {
+            "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/03_spawn-blocker-analysis.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-11"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      },
+      "session_id": "sess_1783832460_ce471b",
+      "completion_summary": "Proved nfEval_le2_reduction (Rabinovich 2014 Lemma 3.2(2) analogue) in new file Lemma32Reduction.lean: nf_eval_nf at arbitrary depth k/arity n reduces to a conjunction of <=2-anchor (arity-3 ceiling) nf_eval_nf facts. Green, sorry-free, 0 new axioms (exactly [propext, Classical.choice, Quot.sound]), full-project lake build passes. Feasibility gate (Phase 3) closed GO; order-theoretic exists-w/forall-ij merge honored (no naive per-pair distribution, no arity-collapsing nfRestrict). Base.lean untouched. Unblocks /revise 349 (v4).",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 352,
+      "project_name": "build_depthk_navigated_exterior_negation_clause_layer_via_existproviders",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Build a faithful Rabinovich (2014) Def-7.5 rung-(k+1) depth-k navigated exterior negation clause layer, parameterized by P : ExistProviders sig atomMap k (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/PriorInterface.lean:38-40), so that task 349's Phase-2 depth-k exterior bracket lemmas (kvE_extBracketPast_sound, kvE_extBracketFut_sound, kvE_extBracketPast_complete, kvE_extBracketFut_complete) become provable in their prescribed byte-identical shape. This is an ExteriorNegation-scale (~2000+ line) rebuild: the frozen clause layer (kvE2_futPos/kvE2_extNegFut + _sound/_complete, ExteriorNegation.lean:1124/1136/1243/1484, and the Past mirrors in ExteriorNegationPast.lean) reads sigma.2 through nf0_assemble, which is lossless ONLY for depth-0 subs (NfEFold.lean:549-561) and hardwired to sigma : NormalForm sig 1 4 — a byte-identical leaf-module generalization is provably impossible (F2-style truncation-shadow counterexample: an f2_sub_proj_eq-pattern pair sharing a depth-1 truncation but differing on a joint-coupled depth-k sub, RefutationF2.lean:471, falsifies _complete under a full-bit clause selector and _sound under a shadow-bit selector). The faithful Def-7.5 rung-(k+1) bracket recursively consumes rung-k formulas (report 10 adversarial section 2, 'the exterior bracket's own recursive fold'); build the depth-k clause layer over the ExistProviders channel (P.existF at the relevant arities) so it supplies that rung-k formula source without depth-hardwiring.\n\nHARD CONSTRAINTS (copied from parent task 349 adjudication; carry verbatim):\n- CONSUME UNCHANGED the already-landed green Phase-2 determinacy core in ExteriorBracketK.lean (nfk_truncD/nf_eval_truncD, nf_eval_take/nf_eval_projFresh, kvE_futAnyBit(_correct), kvE_subBit(_iff)) -- do not rebuild it, do not edit that file except additively if genuinely required by the new interface (prefer a new module).\n- Binding guards carried from 349: G1 no arity-1 collapse; G2/G4 anchors subset of {x,t}, at most 2, w never a third anchor; G3 non-trivial segment (reuse seg, never TemporalPred.top); G5 manual Rabinovich bridges only (no simp/omega/aesop shortcut of a chain step).\n- FORBIDDEN: nf_char3_deeper_split.\n- Do NOT edit the 7 frozen providers (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean), KampPrior.lean, or nf_nvar_exist_all_depths's signature. Build the new depth-k clause layer in NEW module(s) (e.g. ExteriorNegationK.lean / ExteriorNegationPastK.lean under NfMultiAnchorBridge/), referencing the frozen k=2 clause layer only as a byte-identical proof template (git diff on all 7 frozen providers must stay EMPTY at every commit).\n- sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. No vacuous/placeholder definitions -- if a sub-piece cannot close green, mark BLOCKED and escalate rather than landing a sorry or vacuous def.\n- task_type = lean4; effort = high; topic = kamp_theorem_formalization.\n- Definition of done: the depth-k clause layer (parameterized by P : ExistProviders sig atomMap k) is green + sorry-free + axiom-clean, and EXPOSES the interface (bracket-buildable clause facts at depth k, not depth-0-hardwired) that task 349 Phase 2's re-dispatch consumes to construct kvE_extBracketPast/Fut and close their _sound/_complete lemmas. Do NOT close the four bracket lemmas themselves in this task -- that is task 349 Phase 2's own re-dispatch work once this clause layer exists.\n\nGrounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/.orchestrator-handoff.json (blockers field), specs/349_.../handoffs/v7-phase2-blocked-1783882788.json, specs/349_.../summaries/07_phase2-determinacy-core-summary.md, specs/349_.../plans/07_enriched-bracket-carrier.md (Phase 2 block, lines 411-499), specs/349_.../reports/10_q3-uniform-k-probe.md (adversarial section 2 on the ExistProviders channel), and Rabinovich 2014 Def 7.5 / Cor 5.4 (~/Projects/Literature/sources/rabinovich_2014/).",
+      "effort": "high",
+      "parent_task": 349,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "created": "2026-07-12T19:14:58Z",
+      "last_updated": "2026-07-12T23:06:06Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/11_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 349 Phase 2 blocker"
+        },
+        {
+          "type": "research",
+          "path": "specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/reports/01_team-research.md",
+          "summary": "Team research (4 teammates a-d + fable literature teammate e), synthesized: ExistProviders channel, F2-safe full-fiber content discipline (G6), Lemma 7.8 verified non-recursive, 5-phase decomposition"
+        },
+        {
+          "path": "specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/summaries/01_phase1-fiber-gate-summary.md",
+          "type": "summary",
+          "summary": "Phase 1 implementation summary: channel core + F2 probe, GO verdict, full verification block"
+        }
+      ],
+      "session_id": "sess_1783886300_43b617",
+      "researched": "2026-07-12T19:40:31Z",
+      "next_artifact_number": 2,
+      "completion_summary": "Depth-k navigated exterior negation clause layer built green over the ExistProviders P channel: F2-safe full-fiber content channel + separation probe (Phase 1 GO), shared navigation/fiber-partition layer (ExteriorFiberK.lean), Future+Past zone/admissibility layers, generic chain combinators, all clause defs (kvE_extNegFut/extNegPast + Pos), the shared Rabinovich-Cor-5.4(2) reindex bridge (kvE_anchorBridge/kvE_fiberPosOnShift), and BOTH kvE_extNegFut_sound + kvE_extNegPast_sound. All sorry-free, axioms exactly [propext,Classical.choice,Quot.sound], frozen-provider diffs empty. The _complete direction was proven (LSP-verified + Rabinovich-adjudicated, report 03) to be a genuine F2 impossibility within the ExistProviders channel — it requires the endpoint-pinned converter extF4, a task-349 carrier-level deliverable spawned as task 353. Clause layer + both _sound + extF4 spec are consumer-ready for task 349 Phase 2.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 353,
+      "project_name": "build_depthk_endpoint_pinned_exterior_converter_extf4",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Build the depth-k endpoint-pinned exterior converter extF4 : NormalForm sig k 5 -> Formula with extF4_correct : temporal_truth M atomMap t (extF4 s) <-> (exists y, nf_eval_nf M k 5 (Fin.cons y (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) -- the FOUR anchors [x1,w,x,t] pinned, ONLY the fresh witness y quantified. This is the depth-k arity-4/5 generalization of the landed k=2 carrier bracketEndChar_kvE2_*_two_prior (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/OuterGate.lean:147-359) and the missing infrastructure that unblocks the COMPLETE direction of task 352's clause layer.\n\nWHY THIS EXISTS (definitive, source-grounded — see specs/352_.../reports/03_realizability-transfer-blocker.md): task 352 proved (LSP-verified + Rabinovich-adjudicated) that kvE_extNegFut_complete / kvE_extNegPast_complete CANNOT be closed via the ExistProviders P channel: that channel is intrinsically env-EXISTENTIAL (exists env' free, nf_eval (Fin.cons r env') s), while the _complete (reverse) reconstruction must realize sigma at the FIXED anchor tuple [x1,w,x,t] via nf_eval_nfk_iff_efold (NfEFold.lean:627). At depth k>=1 the arity-5 subs are env-dependent and reference the existential endpoint x1, so free-env does NOT transport to fixed-env (F2 truncation-shadow impossibility one rung up; nfk_dropFresh agreement only at sigma.1, NfEFold.lean:578-580; RefutationF2.lean:471). Rabinovich AVOIDS the transfer in his completeness proof (Cor 5.4(1) direction): bracket point-types are quantifier-free (Lemma 5.1 -> env-free realizability) and the interior witness r0 = inf{z in (z0,z1) | P1(z)} is UNIQUELY determined (Lemma 5.3 Case 2/3) and BECOMES the fixed endpoint of the recursive sub-bracket On(P2..Pn, r0, z1). The endpoint-pinned converter extF4 IS that mechanism made explicit at depth k.\n\nSCOPE / CONSTRAINTS:\n- Carrier-level (task-349) deliverable. Build extF4 + extF4_correct in a NEW module (or additively in the appropriate task-349 carrier module), symmetric for Future and Past sides.\n- Must NOT edit ExistProviders.existF / ExistProviders.correct (PriorInterface.lean), P.correct, or the 7 frozen providers (SharedWitness, SubBracket2V, OuterGate, ExteriorBracket, ExteriorZoneTriage, ExteriorNegation, ExteriorNegationPast), KampPrior.lean, or ExteriorBracketK.lean. git diff on all frozen files stays EMPTY.\n- The input side must consume the semantic_prior_UZ / semantic_prior_SZ infimum-existence inputs (PriorDefs.lean:22,33) that ARE Rabinovich's infimum-existence hypothesis, and the kvE_subBit_iff / nf_eval_unique determinacy core from ExteriorFiberK.lean / NfEFold.lean.\n- Reference the k=2 carrier BracketCarrierCorrectVPrior (PriorInterface.lean:60-73) which has the correct SHAPE (pins anchors x,t, quantifies only witness w) but is arity-3 — generalize it to arity-4/5 with the [x1,w,x,t] pin.\n- sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. No vacuous/placeholder defs -- if a sub-piece cannot close green, mark BLOCKED and escalate.\n- task_type = lean4; effort = high; topic = kamp_theorem_formalization.\n\nDEFINITION OF DONE: extF4 + extF4_correct green + sorry-free + axiom-clean, exposing the endpoint-pinned realizability interface that (1) task 352's kvE_extNegFut_complete / kvE_extNegPast_complete re-close consumes to close the clause-layer completeness direction, and (2) task 349 Phase 2's bracket _complete lemmas consume. Grounding artifacts (read, do not re-derive): specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/reports/03_realizability-transfer-blocker.md (Deliverable 4 = exact extF4 signature + proof sketch), reports/02_reindex-bridge-blocker.md, the two _complete reclose handoffs (phase-3-reclose / phase-4-reclose), and Rabinovich 2014 Def 7.5 / Cor 5.4 / Lemma 5.1 / Lemma 5.3 (~/Projects/Literature/sources/rabinovich_2014/).",
+      "effort": "high",
+      "parent_task": 349,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        352,
+        354
+      ],
+      "created": "2026-07-12T23:06:06Z",
+      "last_updated": "2026-07-13T00:27:24Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/353_build_depthk_endpoint_pinned_exterior_converter_extf4/reports/01_extf4-endpoint-pinned-converter.md",
+          "type": "report",
+          "summary": "NO-GO verdict: flat extF4 ill-posed (F2 impossibility); two survivable re-scopes (Option A nested re-anchoring, Option B partial determinacy interface)"
+        }
+      ],
+      "session_id": "sess_1783898031_169df3",
+      "completion_summary": "SUPERSEDED BY TASK 354. The literal deliverable (flat/endpoint-pinned extF4 : NormalForm sig k 5 -> Formula with extF4_correct under temporal_truth) is a machine-verified impossibility (F2: temporal_truth is single-anchor at t while the RHS depends on free x1,w,x; the well-posed 4-anchor carrier needs a 4-endpoint bracket primitive that contradicts the frozen 2-endpoint architecture). Its actual objective — expose the endpoint-pinned realizability interface that closes the exterior _complete direction — was delivered by task 354's faithful nested 2-endpoint re-anchoring converter: kvE_extNegFut_complete + kvE_extNegPast_complete (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterK.lean / ExteriorConverterPastK.lean), sorry-free, axioms exactly [propext,Classical.choice,Quot.sound]. See specs/353_.../reports/01 (NO-GO analysis) and specs/354_.../ (delivery).",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 354,
+      "project_name": "build_nested_2endpoint_bracket_reanchoring_converter",
+      "status": "completed",
+      "task_type": "lean4",
+      "description": "Build the FAITHFUL nested re-anchoring converter that Rabinovich (2014) actually uses in the Cor 5.4(1) completeness direction, replacing the refuted flat/endpoint-pinned extF4 : NormalForm sig k 5 -> Formula spec (task 353, NO-GO -- see grounding below). This is Option A from task 353's blocker-analysis report (specs/353_build_depthk_endpoint_pinned_exterior_converter_extf4/reports/01_extf4-endpoint-pinned-converter.md, Deliverable 5), the machine-verified sole survivable unblocker for task 353's DoD and for task 352's blocked _complete direction (kvE_extNegFut_complete / kvE_extNegPast_complete).\n\nWHY A FLAT ARITY-5 CONVERTER IS IMPOSSIBLE (already machine-proved, DO NOT RE-DERIVE -- read specs/353_build_depthk_endpoint_pinned_exterior_converter_extf4/reports/01_extf4-endpoint-pinned-converter.md and specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/reports/03_realizability-transfer-blocker.md first): the literal extF4_correct signature `temporal_truth M atomMap t (extF4 s) <-> exists y, nf_eval_nf M k 5 (Fin.cons y (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s` is ill-posed (temporal_truth is single-carrier-point-t only, Table.lean:182-193, but the RHS depends on free x1,w,x -- this is the F2 impossibility task 352 proved via transfer_probe, residual env4 = env'). The well-posed 4-anchor carrier reformulation `.holds M atomMap x1 w x t <-> ...` requires a 4-endpoint bracket primitive that does NOT exist and CANNOT exist under the frozen 2-endpoint architecture: VecEA2/VVecEA2 (VecEAFormula.lean:252-279) have exactly 2 free vars z0,z1; even the arity-4 kvE_subBracket2 (SubBracket2.lean:139,336) exposes only 2 explicit endpoints (z0,z), with interior anchors x1,w temporally quantified per Amendment F3. This is Rabinovich's own design invariant (Lemma 5.1: point-types quantifier-free; Def 3.1: interior points temporally quantified between exactly 2 fixed endpoints).\n\nTHE FAITHFUL MECHANISM (build this): Rabinovich pins the interior witness r0 = inf{z in (z0,z1) | P1(z)} (Lemma 5.3 Case 2/3, supplied by semantic_prior_UZ / semantic_prior_SZ, PriorDefs.lean:22,33) and RE-ANCHORS r0 as the endpoint of the recursive sub-bracket On(P2,...,Pn, r0, z1). Depth is carried by NESTING 2-endpoint brackets (each rung a VVecEA2.holds z0 z1 bracket, mirroring the landed k=2 carrier bracketEndChar_kvE2_*_two_prior / BracketCarrierCorrectVPrior at OuterGate.lean:147-359 and PriorInterface.lean:60-73), not by widening a flat anchor tuple. Build this as a depth-k lift of the entire k=2 bracketEndChar_kvE2 assembly: each recursion step (a) fixes the current 2-endpoint bracket, (b) obtains the unique interior witness r0 via semantic_prior_UZ/SZ, (c) re-anchors r0 as the next rung's endpoint, (d) recurses. Symmetric construction for Future and Past.\n\nCONSTRAINTS (binding, carried from task 353 and its ancestor 349/352 -- do not violate):\n- Must NOT edit these FROZEN files (git diff must stay EMPTY on all of them at every commit): PriorInterface.lean (ExistProviders.existF/.correct, P.correct), SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPastK.lean, KampPrior.lean, ExteriorBracketK.lean (all under Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/, KampPrior.lean one level up).\n- Build in NEW sibling module(s) (e.g. NfMultiAnchorBridge/ExteriorConverterK.lean, ExteriorConverterPastK.lean), referencing the k=2 machinery only as a proof template.\n- sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. No vacuous/placeholder defs -- if a sub-piece cannot close green, mark BLOCKED and escalate (do not land a sorry).\n- Consume unchanged: nf_eval_nfk_iff_efold (NfEFold.lean:627), kvE_subBit_iff (ExteriorBracketK.lean:314 -- NOTE: NOT ExteriorFiberK.lean, that file holds only the reindex bridge rot5*/kvE_anchorBridge/kvE_fiberPosOnShift), nf_eval_unique (NormalForm.lean:245), semantic_prior_UZ/SZ (PriorDefs.lean:22,33).\n- task_type=lean4, effort=high, topic=kamp_theorem_formalization.\n\nDEFINITION OF DONE: the nested re-anchoring converter is green, sorry-free, axiom-clean, frozen-files-clean, and exposes a well-posed carrier + correctness biconditional (replacing the refuted flat extF4 spec) that (1) discharges task 353's DoD, and (2) is consumable by a future re-dispatch of kvE_extNegFut_complete/kvE_extNegPast_complete (ExteriorNegationK.lean/ExteriorNegationPastK.lean) and task 349 Phase 2's bracket _complete lemmas. This is a large, multi-phase deliverable (a depth-k lift of the ~200-line k=2 bracketEndChar_kvE2 assembly plus new recursive re-anchoring scaffolding) -- scope it as a multi-phase plan via /plan, not a single dispatch. When planning, evaluate whether to fold in Option B (report 01 Deliverable 5: package nf_eval_nfk_iff_efold + kvE_subBit_iff into an hbelowFib-shaped biconditional for the below-t/at-anchor zones, provable now, sorry-free, frozen-clean) as an early phase -- it is optional scaffolding, not required for this task's own completion.\n\nGROUNDING (read, do not re-derive): specs/353_build_depthk_endpoint_pinned_exterior_converter_extf4/reports/01_extf4-endpoint-pinned-converter.md (PRIMARY -- full NO-GO analysis, exact signature reconciliation, Deliverable 5 Option A spec), specs/353_build_depthk_endpoint_pinned_exterior_converter_extf4/.orchestrator-handoff.json, specs/352_build_depthk_navigated_exterior_negation_clause_layer_via_existproviders/reports/03_realizability-transfer-blocker.md, Rabinovich 2014 Lemma 5.1 / Lemma 5.3 / Cor 5.4 (~/Projects/Literature/sources/rabinovich_2014/, chunk_0013/0014/0015).",
+      "effort": "high",
+      "parent_task": 353,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterPastK.lean"
+      ],
+      "created": "2026-07-12T23:29:30Z",
+      "last_updated": "2026-07-13T00:14:04Z",
+      "next_artifact_number": 1,
+      "artifacts": [
+        {
+          "path": "specs/354_build_nested_2endpoint_bracket_reanchoring_converter/reports/01_nested-reanchoring-converter.md",
+          "type": "report",
+          "summary": "GO (conditional-provable): nested re-anchoring converter buildable via green kvE_futChainDestructG chain infra; 6 phases, Phase 3 sole conditional (lands sorry-free either way)"
+        },
+        {
+          "path": "specs/354_build_nested_2endpoint_bracket_reanchoring_converter/plans/01_nested-reanchoring-converter.md",
+          "type": "plan",
+          "summary": "6-phase sequential plan for nested re-anchoring converter; Phase 3 dual-branch (internal x1-saturation / carried residue), all frozen-file + axiom gates encoded"
+        },
+        {
+          "path": "specs/354_build_nested_2endpoint_bracket_reanchoring_converter/summaries/01_nested-reanchoring-converter-summary.md",
+          "type": "summary",
+          "summary": "All 6 phases green: kvE_extNegFut_complete + kvE_extNegPast_complete land sorry-free, axiom-clean [propext,Classical.choice,Quot.sound], 10 frozen files byte-identical, full lake build green (1724 jobs); Phase 3 resolved via Branch B (carried saturation hsat)"
+        }
+      ],
+      "session_id": "sess_1783899110_4a7c80",
+      "completion_summary": "Built the faithful nested 2-endpoint bracket re-anchoring converter (Rabinovich Lemma 5.3). Delivered kvE_extNegFut_complete + kvE_extNegPast_complete in two new modules (ExteriorConverterK/PastK.lean), closing task 352's blocked _complete direction. Sorry-free, axioms exactly [propext,Classical.choice,Quot.sound], all 10 frozen files byte-identical, full lake build green. Phase 3 resolved via Branch B (carried saturation hypothesis hsat, the depth-k hexclExt analog), with Phase 5 supplying the realizer-discharge interface.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 355,
+      "project_name": "build_depthk_interior_gate_correctness",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Deliver the depth-k INTERIOR gate correctness lemma `bracketEndChar_kv_correct` (or the appropriately-named general-k interior gate correctness lemma) for arbitrary k, by recursion, so that task 349 Phase 5 can fill the `endIntervalStep` body (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:2144, currently the sanctioned `⟨[]⟩` empty-disjunction placeholder). The depth-k carrier `bracketEndChar_kv` already exists (CarrierKv.lean:238); its correctness is delivered ONLY at k=0 (`bracketEndChar_kv_correct_zero`, CarrierKv.lean:367) and k=1 (`bracketEndChar_kv_correct_one`, CarrierKv.lean:395, mirroring `bracketEndChar_k1v_correct` at CarrierK1V.lean:2041). CarrierKv.lean:22 documents this gap directly: correctness is explicitly 'NOT attempted here'. The general-k case is open recursive-Kamp construction (~700-1300 estimated proof lines), not consumption of any already-delivered clause layer -- it is NOT enabled by the recently-completed tasks 351/352/354 (those delivered the depth-k EXTERIOR clause/bracket layer, not the interior gate).\n\nUse as templates only (do not edit): the k=2 interior gate `bracketEndChar_kvE2` (OuterGate.lean:70) with its correctness halves `bracketEndChar_kvE2_sound_two_prior_frag` (OuterGate.lean:268) and `bracketEndChar_kvE2_complete_two_prior` (OuterGate.lean:147), both hardwired to depth-1 subs via `nf_depth0_char_formula`; and the k=1 carrier correctness `bracketEndChar_k1v_correct` (CarrierK1V.lean:2041). Build the general-k proof additively in CarrierKv.lean or in a new sibling module under NfMultiAnchorBridge/ (e.g. InteriorGateGeneralK.lean), referencing the frozen assets only as proof-shape templates.\n\nHARD CONSTRAINTS (carried verbatim from parent task 349's binding guards):\n- Additive only: MUST NOT edit task 349's frozen files -- the seven providers (SharedWitness.lean, SubBracket2V.lean, OuterGate.lean, ExteriorBracket.lean, ExteriorZoneTriage.lean, ExteriorNegation.lean, ExteriorNegationPast.lean), KampPrior.lean, ExteriorBracketK.lean, or PriorInterface.lean's ExistProviders.existF/.correct + P.correct interface. `git diff` on all of these must stay EMPTY at every commit.\n- G1: no arity-1 collapse.\n- G2/G4: anchors strictly a subset of {x,t}, at most 2; w never a third free anchor.\n- G3: non-trivial segment only (reuse `seg`, never `TemporalPred.top`).\n- G5: no simp/omega/aesop shortcut of a Rabinovich chain step -- manual bridges only.\n- FORBIDDEN: `nf_char3_deeper_split` (refuted route, report 02 Section 4.1).\n- axioms exactly [propext, Classical.choice, Quot.sound]; sorry-free -- if a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 vacuous-definitions/escalation rule rather than landing a sorry or vacuous definition.\n\nLiterature grounding (read, do not re-derive): Rabinovich 2014 Lemma 7.6 (adjacency composition) and Corollary 5.4 (endpoint characteristic chain), ~/Projects/Literature/sources/rabinovich_2014/.\n\nDefinition of done: `bracketEndChar_kv_correct` (general k) green, sorry-free, axiom-clean ([propext, Classical.choice, Quot.sound]); scoped build GREEN (full-tree recommended); no frozen-file edits; consumable by task 349 Phase 5 to fill the `endIntervalStep` body and by Phases 6-7 to induct on for step correctness and recursion close.\n\nGrounding artifacts (read, do not re-derive): specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/plans/08_consume-depthk-clause-layer.md (Phase 5 RESUME POINT, ~line 444 onward), specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/11_recent-completion-consumption.md, specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/12_spawn-analysis.md, specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/.orchestrator-handoff.json.",
+      "effort": "high",
+      "parent_task": 349,
+      "dependencies": [],
+      "created": "2026-07-13T01:09:30Z",
+      "last_updated": "2026-07-13T03:37:10Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/349_build_recursive_endchar_navigated_arity3_endpoint_primitive/reports/12_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 349 Phase 5 interior-gate blocker"
+        },
+        {
+          "path": "specs/355_build_depthk_interior_gate_correctness/plans/01_depthk-interior-gate-correctness.md",
+          "type": "plan",
+          "summary": "7-phase additive provider-guarded recursion plan for the general-k interior gate correctness lemma"
+        }
+      ],
+      "session_id": "sess_1783905345_4b66bc",
+      "completion_summary": "Delivered the general-k obligation-carrying interior-gate correctness bracketEndChar_kv_correct_prior (InteriorGateGeneralK.lean:1288) via k-cased motive InteriorGateAllK, assembled by Nat.casesOn from interiorGateTarget_zero (k=0) and bracketEndChar_kv_step_correct (k=n+1). Axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN (1724 jobs); 13 task-349 frozen files byte-identical; sorry-free. The obligation-free forall-k close remains out of scope (channel-unprovable at k>=2). Two follow-ups flagged for parent task 349: consumer reshape (EndIntervalCorrectPrior) and hexclExt exterior-adjacency discharge.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 356,
+      "project_name": "discharge_depthk_hexclext_exterior_adjacency",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Deliver the general-k hexclExt exterior-adjacency discharge lemma (e.g. bracketEndChar_kv_hexclExt_discharge) via Rabinovich 2014 Lemma 7.6 (adjacency composition (∃z1)^{<z2}_{>z0}(φ1∧φ2) across a shared endpoint z1; ~/Projects/Literature/sources/rabinovich_2014/, chunk_0021 Def 7.5 + Lemma 7.6). This provides the hexclExt obligation that task 355 interior-gate correctness bracketEndChar_kv_correct_prior (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean:1288) carries outward as an unmarked obligation: informally \"an unmarked depth-k arity-4 sub is realized at no strictly-exterior x1\". This is EXTERIOR-BRACKET-LAYER work, a sibling to the delivered exterior tasks 348/351/352/354 (NOT interior-gate work). Feeds the KampPrior recursion at KampPrior.lean:351 (currently an open general-k sorry over the k=2 carrier bracketEndChar_kvE2). SCOPE NOTE: unlike task 355, this task IS permitted to edit KampPrior.lean and the exterior-bracket-layer files it owns; the byte-frozen constraint that bound task 355 was a task-355-local guard. Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q1 confirms hexclExt = Lemma 7.6 adjacency, and that (z0,z1)-forward-EA formulas are not closed under negation so the exterior residue is genuinely out-of-class for one bracket), and the k=2 exterior precedent OuterGate.lean bracketEndChar_kvE2_sound_two_prior_frag (the hexclExt binder is admitted there as a task-348 hand-off). Definition of done: the general-k hexclExt discharge lemma green, sorry-free, axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; consumable by task 357 (consumer reshape) and by KampPrior.lean:351. If a sub-piece cannot close green, mark [BLOCKED] and escalate per the lean4 escalation rule rather than landing a sorry or vacuous definition.",
+      "effort": "high",
+      "parent_task": 349,
+      "dependencies": [],
+      "created": "2026-07-13T04:04:10Z",
+      "last_updated": "2026-07-13T04:43:31Z",
+      "artifacts": [
+        {
+          "path": "specs/356_discharge_depthk_hexclext_exterior_adjacency/reports/01_hexclext-discharge-shape-and-path.md",
+          "type": "report",
+          "summary": "general-k hexclExt exterior-adjacency discharge shape and transcription path"
+        },
+        {
+          "path": "specs/356_discharge_depthk_hexclext_exterior_adjacency/plans/01_hexclext-discharge-exterior-gate.md",
+          "type": "plan",
+          "summary": "5-phase hexclExt discharge exterior-gate plan"
+        },
+        {
+          "path": "specs/356_discharge_depthk_hexclext_exterior_adjacency/summaries/01_hexclext-discharge-exterior-gate-summary.md",
+          "type": "summary",
+          "summary": "general-k hexclExt discharge delivered green (with 4 threaded exterior-bracket obligations for task 357)"
+        }
+      ],
+      "session_id": "sess_1783915595_73147e_356",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 357,
+      "project_name": "reshape_endinterval_consumer_obligation_carrying",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Reshape the task-349 interval consumer from the unconditional EndIntervalCorrect (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierK1V.lean:2179) to an obligation-carrying EndIntervalCorrectPrior, and fill the endIntervalStep body (CarrierK1V.lean:2144, currently the sanctioned ⟨[]⟩ empty-disjunction placeholder) so task 349 Phase 5 closes. The reshape routes the seven provider obligations (P : ExistProviders, hcharK, h_UZ, h_SZ, hreal, hexcl, hexclExt) up to the KampPrior recursion where the providers/UZ/SZ live (mirroring the k=2 supply site KampPrior.lean:351). The body consumes: (interior half) task 355 bracketEndChar_kv_correct_prior / InteriorGateAllK (InteriorGateGeneralK.lean:1288, delivered green, obligation-carrying), and (exterior half) task 356 hexclExt exterior-adjacency discharge. SCOPE NOTE: this task IS permitted to edit CarrierK1V.lean and KampPrior.lean (the byte-frozen constraint on these was a task-355-local guard; this is task-349-scoped consumer wiring). Grounding (read, do NOT re-derive): task 355 research report specs/355_build_depthk_interior_gate_correctness/reports/01_rabinovich-faithfulness-and-deliverable-shape.md (Q3 established the consumer mismatch: EndIntervalCorrect is unconditional with no EndIntervalCorrectPrior in the tree, so this reshape is the required two-sided move) and plan v2 specs/355_build_depthk_interior_gate_correctness/plans/02_interior-gate-deliverable-reshape.md, plus the task 355 consumability doc (InteriorGateGeneralK.lean:1322, records the exact seven-obligation interface). Definition of done: EndIntervalCorrectPrior green with the endIntervalStep interior half filled from task 355 and exterior half from task 356; axioms exactly [propext, Classical.choice, Quot.sound]; full-tree lake build GREEN; unblocks task 349 Phase 5. If a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous definition.",
+      "effort": "high",
+      "parent_task": 349,
+      "dependencies": [
+        355,
+        356
+      ],
+      "created": "2026-07-13T04:04:10Z",
+      "last_updated": "2026-07-13T05:12:44Z",
+      "artifacts": [
+        {
+          "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/reports/01_endinterval-consumer-reshape-shape-and-path.md",
+          "type": "report",
+          "summary": "EndInterval consumer reshape shape; reshape green-viable, full discharge is escalation boundary on realization recursion"
+        },
+        {
+          "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/plans/01_endinterval-consumer-reshape.md",
+          "type": "plan",
+          "summary": "7-phase EndInterval reshape; P1-6 green, P7 [BLOCKED]+spawn realization recursion"
+        },
+        {
+          "path": "specs/357_reshape_endinterval_consumer_obligation_carrying/summaries/01_endinterval-consumer-reshape-summary.md",
+          "type": "summary",
+          "summary": "EndInterval reshape green P1-6; task 349 P5 unblocked; P7 blocked+spawned task 358"
+        }
+      ],
+      "session_id": "sess_1783915595_73147e_357",
+      "spawned_tasks": [
+        358
+      ],
+      "completion_summary": "Reshaped the task-349 interval consumer to obligation-carrying EndIntervalCorrectPrior (new leaf EndIntervalConsumerK.lean, cycle contingency) + general-k KampPrior supply-site cert kampPrior_site_rungK_gate_match. All 11 obligations threaded outward; full-tree GREEN; axioms [propext, Classical.choice, Quot.sound]; task 349 Phase 5 unblocked. Phase 7 full-discharge fenced [BLOCKED] and spawned as task 358 (realization recursion, retires KampPrior:361/364); zero debt landed.",
+      "archived": "2026-07-13T22:35:10Z"
+    },
+    {
+      "project_number": 360,
+      "project_name": "restate_exterior_hbr_pinned_converse",
+      "status": "completed",
+      "task_type": "lean4",
+      "topic": "kamp_theorem_formalization",
+      "description": "Make the four exterior hbr* obligations true-as-stated. They are currently false universals (machine-refuted on P2M=(ℤ,<),P={0,10,20}): they dropped the igPtW-site and kvE_*End-endpoint truth antecedents their interior siblings (EndIntervalConsumerK.lean:117-128) kept. Carry those antecedents through the interface chain; preferably ELIMINATE hbr*Real by re-proving kvE_extNeg{Fut,Past}_complete from the destructor's currently-DISCARDED pinned walk facts hgap/hocc (ExteriorConverterK.lean:159 discards what ExteriorNegationK.lean:300-303 returns) + the level-up ambient qnf realization, via a NEW pinned fiber-realization converse kvE_{fut,past}Pinned_of_end. Faithful technique (Rabinovich 2014 Cor 5.4(1)⇐ one fiber level down + Cor 5.4(2) re-anchoring): pinned realization is NOT derivable from free-env P.existF-4 content; the converse's proof route = landed complete-type totality (nf_characteristic_satisfies/nf_eval_unique, NormalForm.lean:224/:245) + walk geometry + endpoint self-zone coincidence; the m=0 instance (all task 358's :361 needs) closes with landed machinery. Keep every current consumer green. Phase 0 mandatory machine probes: lean_run_code countermodel attempt against the guarded binder at m=1 (report 03 claim C3) and the positive m=0 route (claim C8). Grounding: specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md sections 2.3-2.4, 3.3, 6. Note: task 349 v8 Phase 6 inherits the same false-binder wall and should consume this task's restated interface. Zero-debt: no sorries, no vacuous defs; if a sub-piece cannot close green, mark [BLOCKED] and escalate.",
+      "effort": "high",
+      "parent_task": 358,
+      "dependencies": [],
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorNegationPastK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorConverterPastK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorBracketAssembleK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorGateAssembleK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
+      ],
+      "created": "2026-07-13T07:30:51Z",
+      "last_updated": "2026-07-13T19:51:55Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/03_pinned-converse-adjudication.md",
+          "summary": "Spawn analysis (Rabinovich Cor 5.4 pinned-converse adjudication) from parent task 358"
+        },
+        {
+          "path": "specs/360_restate_exterior_hbr_pinned_converse/plans/01_restate-hbr-pinned-converse.md",
+          "type": "plan",
+          "summary": "Hard-mode 7-phase plan with Phase-0 probe gate"
+        },
+        {
+          "path": "specs/360_restate_exterior_hbr_pinned_converse/summaries/01_faithful-slice-repair-summary.md",
+          "type": "summary",
+          "summary": "Faithful slice-repair: four hbr* eliminated -> slice-keyed interface; 3 Rabinovich-grounded repairs"
+        }
+      ],
+      "session_id": "sess_1783950096_9d2925",
+      "completion_summary": "Eliminated the four false exterior hbr* obligations (hbr* grep=0 repo-wide), replacing them with a faithful slice-keyed interface (kvE_*SliceMarked brackets + kvE_{fut,past}SliceId_of_end_zero converses + four m=0 kvE_h{slice,exclSlice}{Fut,Past}_supply_zero theorems supplying task 358's KampPrior:361). Three machine-refuted blockers resolved via Rabinovich-grounded escalation research, all one root cause: task-352's depth-k rewrite dropped constraints the frozen k=2 template kept. Zero-debt: full build green (1736 jobs), 0 sorries, axioms [propext,Classical.choice,Quot.sound]. Recommends a dedicated task-352 depth-k regression audit.",
+      "archived": "2026-07-13T22:35:10Z"
     }
   ]
 }
