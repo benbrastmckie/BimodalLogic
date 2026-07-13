@@ -294,7 +294,23 @@ Phase 2 creates a new file — disjoint territory per H7).
 - **File scope:** ExteriorPinnedProbeK.lean (new); plan file + handoff JSON (records). No
   production-file edits.
 
-### Phase 1: Restate the four exterior obligations through the 5-level interface chain [NOT STARTED]
+### Phase 1: Restate the four exterior obligations through the 5-level interface chain [COMPLETED]
+
+**PHASE-1 RECORD (2026-07-13, sess_1783950096_9d2925)**: All four obligations restated in the
+report-03 §2.4 guarded form at every level. Antecedent order (uniform, all levels):
+`∀ x1, {t < x1 | x1 < x} → hpos (chain-fire at anchor) → hend (kvE_*End at x1) → hgap → hocc
+(l-free, over kvE_fiberZoneList σ kvE_*GapZone) → ∀ s, …`; the level-up ambient
+`nf_eval_nf M (k+2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →` inserted after `w < t →` at
+the three ∀-w levels (ExteriorGateAssembleK, EndIntervalConsumerK, KampPrior mirror); converter
+binders carry hpos/hend/hgap/hocc only (w is a theorem parameter there — the ambient is consumed
+at gate instantiation `hbr* w hxw hwt h`). Destructor facts bound (`hgap`/`hocc`, no `_`), with
+`hoccZ` l-free conversion via `hlperm.mem_iff`; converters save `hpos0` before the `rw` consumes
+`hpos`. Past-side item formula stated raw as `P.existF 4 (renameNF rot5Fwd rot5Bwd a)` (no
+`kvE_pastItemShift` def exists; clause family is read-only). D3/D4 and `endInterval_step_correct`
+proof bodies unchanged (verbatim shape pass-through). Full `lake build` green (1734 jobs); axiom
+audit via `lake env lean` `#print axioms` on all 7 restated theorems: exactly
+`[propext, Classical.choice, Quot.sound]`. Zero sorries introduced (KampPrior `:361`/`:364` arm
+sorries pre-existing, task-358 territory, untouched).
 
 - **Goal:** Make `hbrPastReal`/`hbrPastSat`/`hbrFutReal`/`hbrFutSat` true-as-stated by carrying
   the settled antecedent set (endpoint `kvE_*End` truth for the Real halves — the Sat halves
@@ -306,27 +322,27 @@ Phase 2 creates a new file — disjoint territory per H7).
   (report 03 C6: `hpos` intro'd at ExteriorConverterK.lean:140, `hend` at :159-163, `hreal` used
   at :171/:182 with both available).
 - **Tasks:**
-  - [ ] `ExteriorConverterK.lean` — restate `kvE_extNegFut_complete` (:119): add the antecedents
+  - [x] `ExteriorConverterK.lean` — restate `kvE_extNegFut_complete` (:119): add the antecedents
         to `hreal` (endpoint-truth guard `temporal_truth M atomMap x1 (kvE_futEnd P σ) →` at
         minimum; ambient + `qnf`/`hfib`/unmarked parameters if the Phase-0 record settled the
         ambient at converter level); change `obtain ⟨x1, htx1, hend, _hgap, _hocc⟩` (:159) to
         bind `hgap`/`hocc` and thread them to the (restated) hypothesis applications. Proof body
         adjustments are argument-passing only.
-  - [ ] `ExteriorConverterPastK.lean` — mirror restatement of `kvE_extNegPast_complete` (:94).
-  - [ ] `ExteriorBracketAssembleK.lean` — re-thread D3/D4 (`hreal`/`hsat` at :181-185/:223-227
+  - [x] `ExteriorConverterPastK.lean` — mirror restatement of `kvE_extNegPast_complete` (:94).
+  - [x] `ExteriorBracketAssembleK.lean` — re-thread D3/D4 (`hreal`/`hsat` at :181-185/:223-227
         gain the same antecedents; applications at :205/:247 pass them through; `qnf` already in
         scope).
-  - [ ] `ExteriorGateAssembleK.lean` — restate the four `hbr*` binders (:142-167) to the guarded
+  - [x] `ExteriorGateAssembleK.lean` — restate the four `hbr*` binders (:142-167) to the guarded
         form; applications at :215-239 pass the new antecedent arguments.
-  - [ ] `EndIntervalConsumerK.lean` — restate the four `_hbr*` binders inside
+  - [x] `EndIntervalConsumerK.lean` — restate the four `_hbr*` binders inside
         `EndIntervalCorrectPrior` (:129-154) identically ("binder types copied verbatim from
         ExteriorGateAssembleK" discipline, per the file's own doc comment); `endInterval_step_correct`
         (:187-193) re-threads by intro/pass-through.
-  - [ ] `KampPrior.lean:838-876` — mirror the restated binders (:845-870) and pass-through
+  - [x] `KampPrior.lean:838-876` — mirror the restated binders (:845-870) and pass-through
         (:875). NO other KampPrior lines.
-  - [ ] `grep -rn "hbrFutReal\|hbrFutSat\|hbrPastReal\|hbrPastSat"` across the repo to confirm no
+  - [x] `grep -rn "hbrFutReal\|hbrFutSat\|hbrPastReal\|hbrPastSat"` across the repo to confirm no
         unlisted consumer; fix any found by the same pass-through pattern.
-  - [ ] Scoped builds of all six edited files, then full `lake build`.
+  - [x] Scoped builds of all six edited files, then full `lake build`.
 - **Done when:** all six files + every downstream consumer build green; the four obligations at
   every level carry the settled antecedents; `hgap`/`hocc` bound (not `_`-discarded); zero
   sorries introduced.

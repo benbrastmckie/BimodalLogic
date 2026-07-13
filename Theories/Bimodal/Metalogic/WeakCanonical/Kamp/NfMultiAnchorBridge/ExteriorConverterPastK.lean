@@ -90,7 +90,14 @@ theorem kvE_pastAtom_of_bundle {sig : MonadicSignature} {k : Nat}
     carried arity-5 realization bundle `hreal` (fiber-forward) and the carried exterior-anchor
     saturation residue `hsat` (fiber-backward, the depth-`k` `hexclExt` analog, discharged by the
     outer recursion / task-349 provider — F2), if no exterior `x1 < x` realizes `σ` over
-    `[x1, w, x, t]` then the complement clause holds at the left anchor `x`. -/
+    `[x1, w, x, t]` then the complement clause holds at the left anchor `x`.
+
+    **Guarded restatement (task 360 Phase 1, report 03 §2.4)**: `hreal`/`hsat` carry their
+    consumption-site truth antecedents — the chain-fire truth `kvE_pastPos P σ` at `x`, the
+    destructor-endpoint truth `kvE_pastEnd P σ` at `x1`, and the destructor's pinned walk facts
+    `hgap` (uniform gap disjunction on `(x1, x)`) and `hocc` (per-item pinned occurrence in
+    `(x1, x)`) — making the obligations true-as-stated. The chain destructor's facts are bound
+    and threaded, no longer `_`-discarded. -/
 theorem kvE_extNegPast_complete {sig : MonadicSignature}
     {atomMap : Formula → sig.preds} {k : Nat}
     (P : ExistProviders sig atomMap k)
@@ -98,11 +105,21 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature}
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (σ : NormalForm sig (k + 1) 4)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
-    (hreal : ∀ x1 : M.carrier, x1 < x → ∀ s : NormalForm sig k 5, σ.2 s = true →
+    (hreal : ∀ x1 : M.carrier, x1 < x →
+      temporal_truth M atomMap x (kvE_pastPos P σ) →
+      temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
+      (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD P σ)) →
+      (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+        x1 < r ∧ r < x ∧ temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
+      ∀ s : NormalForm sig k 5, σ.2 s = true →
       ∃ v : M.carrier, nf_eval_nf M k 5
         (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
     (hsat : ∀ x1 : M.carrier, x1 < x →
+      temporal_truth M atomMap x (kvE_pastPos P σ) →
       temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
+      (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD P σ)) →
+      (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+        x1 < r ∧ r < x ∧ temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
       ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
         (∃ v : M.carrier, nf_eval_nf M k 5
           (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
@@ -113,6 +130,7 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature}
     temporal_truth M atomMap x (kvE_extNegPast P σ) := by
   rw [kvE_extNegPast, temporal_truth_neg]
   intro hpos
+  have hpos0 := hpos
   by_cases hadm : kvE_pastAdmissible σ = true
   · rw [kvE_pastPos, if_pos hadm, formula_disjList_iff] at hpos
     obtain ⟨φ, hφmem, hφ⟩ := hpos
@@ -129,10 +147,14 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature}
       rw [P.correct 4 (renameNF rot5Fwd rot5Bwd a) M h_UZ h_SZ r] at hr
       obtain ⟨env, hev⟩ := hr
       exact ⟨a, hamem, env, (kvE_anchorBridge M env r a).mp hev⟩
-    -- destruct the Cor 5.4 Since chain (endpoint x1 < x)
-    obtain ⟨x1, hx1x, hend, _hgap, _hocc⟩ :=
+    -- destruct the Cor 5.4 Since chain (endpoint x1 < x; binding `hgap`/`hocc` — task 360)
+    obtain ⟨x1, hx1x, hend, hgap, hocc⟩ :=
       kvE_pastChainDestructG M atomMap (fun s => P.existF 4 (renameNF rot5Fwd rot5Bwd s))
         (kvE_pastEnd P σ) (kvE_pastGapD P σ) l x himp hφ
+    -- the `l`-free form of the per-item pinned occurrences (via the permutation)
+    have hoccZ : ∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+        x1 < r ∧ r < x ∧ temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a)) :=
+      fun a ha => hocc a (hlperm.mem_iff.mpr ha)
     -- a reached endpoint forces the self-zone content nonempty ⇒ a bit-true sub exists
     have hend0 := hend
     rw [kvE_pastEnd, formula_conjList_iff] at hend0
@@ -142,7 +164,7 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature}
     have hbit0 : σ.2 s0 = true := ((kvE_fiberZoneList_mem σ kvE_pastSelfZone s0).mp hs0mem).1
     have hd0 : nfk_dropFresh s0 = σ.1 := kvE_pastAdmissible_onFiber σ hadm s0 hbit0
     -- atom layer at `[x1,w,x,t]` via the carried bundle on that bit-true sub
-    obtain ⟨v0, hv0⟩ := hreal x1 hx1x s0 hbit0
+    obtain ⟨v0, hv0⟩ := hreal x1 hx1x hpos0 hend hgap hoccZ s0 hbit0
     have hA : nf_eval_nf M 0 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ.1 :=
       kvE_pastAtom_of_bundle M σ v0 x1 w x t s0 hd0 hv0
     -- fold biconditional: forward via `hreal`, backward via the carried saturation residue
@@ -152,8 +174,8 @@ theorem kvE_extNegPast_complete {sig : MonadicSignature}
           σ.2 sub = true) := by
       intro sub hd
       constructor
-      · intro hex; exact hsat x1 hx1x hend sub hd hex
-      · intro hbit; exact hreal x1 hx1x sub hbit
+      · intro hex; exact hsat x1 hx1x hpos0 hend hgap hoccZ sub hd hex
+      · intro hbit; exact hreal x1 hx1x hpos0 hend hgap hoccZ sub hbit
     -- reassemble the realizer of `σ` at the reconstructed exterior anchor
     have hσ : nf_eval_nf M (k + 1) 4
         (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ :=

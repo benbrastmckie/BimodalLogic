@@ -179,12 +179,22 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature}
       ∀ x1 : M.carrier, t < x1 →
         ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hreal : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-      ∀ x1 : M.carrier, t < x1 → ∀ s : NormalForm sig k 5, σ.2 s = true →
+      ∀ x1 : M.carrier, t < x1 →
+        temporal_truth M atomMap t (kvE_futPos P σ) →
+        temporal_truth M atomMap x1 (kvE_futEnd P σ) →
+        (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD P σ)) →
+        (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
+          t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift P a)) →
+        ∀ s : NormalForm sig k 5, σ.2 s = true →
         ∃ v : M.carrier, nf_eval_nf M k 5
           (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
     (hsat : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
       ∀ x1 : M.carrier, t < x1 →
+        temporal_truth M atomMap t (kvE_futPos P σ) →
         temporal_truth M atomMap x1 (kvE_futEnd P σ) →
+        (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD P σ)) →
+        (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
+          t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift P a)) →
         ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
           (∃ v : M.carrier, nf_eval_nf M k 5
             (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
@@ -221,12 +231,22 @@ theorem kvE_extBracketPast_complete {sig : MonadicSignature}
       ∀ x1 : M.carrier, x1 < x →
         ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hreal : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-      ∀ x1 : M.carrier, x1 < x → ∀ s : NormalForm sig k 5, σ.2 s = true →
+      ∀ x1 : M.carrier, x1 < x →
+        temporal_truth M atomMap x (kvE_pastPos P σ) →
+        temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
+        (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD P σ)) →
+        (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+          x1 < r ∧ r < x ∧ temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
+        ∀ s : NormalForm sig k 5, σ.2 s = true →
         ∃ v : M.carrier, nf_eval_nf M k 5
           (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
     (hsat : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
       ∀ x1 : M.carrier, x1 < x →
+        temporal_truth M atomMap x (kvE_pastPos P σ) →
         temporal_truth M atomMap x1 (kvE_pastEnd P σ) →
+        (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD P σ)) →
+        (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+          x1 < r ∧ r < x ∧ temporal_truth M atomMap r (P.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
         ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
           (∃ v : M.carrier, nf_eval_nf M k 5
             (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →

@@ -139,28 +139,60 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     -- level up (task 357 provider instantiation) via `kvE_{fut,past}Bundle_of_realizer` when the
     -- outer recursion produces a genuine exterior realizer — NOT internal debt (no `sorry`, no
     -- vacuous def). See the Phase-4 deviation note in the task-356 plan.
+    --
+    -- GUARDED restatement (task 360 Phase 1, report 03 §2.4): each obligation carries its
+    -- consumption-site truth antecedents — the level-up ambient realization of `qnf` at
+    -- `[w, x, t]`, the chain-fire truth (`kvE_*Pos` at the anchor), the destructor-endpoint
+    -- truth (`kvE_*End` at `x1`), and the destructor's pinned walk facts `hgap`/`hocc` — making
+    -- the four obligations true-as-stated (the unguarded universals were machine-refuted).
     (hbrPastReal : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
-        ∀ x1 : M.carrier, x1 < x → ∀ s : NormalForm sig k 5, σ.2 s = true →
+        ∀ x1 : M.carrier, x1 < x →
+          temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
+          temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
+          (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD Pbr σ)) →
+          (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+            x1 < r ∧ r < x ∧
+              temporal_truth M atomMap r (Pbr.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
+          ∀ s : NormalForm sig k 5, σ.2 s = true →
           ∃ v : M.carrier, nf_eval_nf M k 5
             (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
     (hbrPastSat : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
         ∀ x1 : M.carrier, x1 < x →
+          temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
           temporal_truth M atomMap x1 (kvE_pastEnd Pbr σ) →
+          (∀ r : M.carrier, x1 < r → r < x → temporal_truth M atomMap r (kvE_pastGapD Pbr σ)) →
+          (∀ a ∈ kvE_fiberZoneList σ kvE_pastGapZone, ∃ r : M.carrier,
+            x1 < r ∧ r < x ∧
+              temporal_truth M atomMap r (Pbr.existF 4 (renameNF rot5Fwd rot5Bwd a))) →
           ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
             (∃ v : M.carrier, nf_eval_nf M k 5
               (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
             σ.2 s = true)
     (hbrFutReal : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
-        ∀ x1 : M.carrier, t < x1 → ∀ s : NormalForm sig k 5, σ.2 s = true →
+        ∀ x1 : M.carrier, t < x1 →
+          temporal_truth M atomMap t (kvE_futPos Pbr σ) →
+          temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
+          (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD Pbr σ)) →
+          (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
+            t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift Pbr a)) →
+          ∀ s : NormalForm sig k 5, σ.2 s = true →
           ∃ v : M.carrier, nf_eval_nf M k 5
             (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s)
     (hbrFutSat : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
         ∀ x1 : M.carrier, t < x1 →
+          temporal_truth M atomMap t (kvE_futPos Pbr σ) →
           temporal_truth M atomMap x1 (kvE_futEnd Pbr σ) →
+          (∀ r : M.carrier, t < r → r < x1 → temporal_truth M atomMap r (kvE_futGapD Pbr σ)) →
+          (∀ a ∈ kvE_fiberZoneList σ kvE_futGapZone, ∃ r : M.carrier,
+            t < r ∧ r < x1 ∧ temporal_truth M atomMap r (kvE_futItemShift Pbr a)) →
           ∀ s : NormalForm sig k 5, nfk_dropFresh s = σ.1 →
             (∃ v : M.carrier, nf_eval_nf M k 5
               (Fin.cons v (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t))))) s) →
@@ -212,9 +244,9 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
         have := (h.2 σ).mp ⟨x1, hr⟩
         exact absurd (hbit ▸ this) Bool.false_ne_true
       · -- hreal: threaded exterior realization bundle (discharged by task 357).
-        exact hbrPastReal w hxw hwt
+        exact hbrPastReal w hxw hwt h
       · -- hsat: threaded exterior saturation residue (discharged by task 357).
-        exact hbrPastSat w hxw hwt
+        exact hbrPastSat w hxw hwt h
     · -- Future bracket at `t`.
       refine kvE_extBracketFut_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_ ?_ ?_
       · -- hpos: admissible bit-true σ realized exterior `t < x1`.
@@ -234,8 +266,8 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
         have := (h.2 σ).mp ⟨x1, hr⟩
         exact absurd (hbit ▸ this) Bool.false_ne_true
       · -- hreal: threaded exterior realization bundle (discharged by task 357).
-        exact hbrFutReal w hxw hwt
+        exact hbrFutReal w hxw hwt h
       · -- hsat: threaded exterior saturation residue (discharged by task 357).
-        exact hbrFutSat w hxw hwt
+        exact hbrFutSat w hxw hwt h
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
