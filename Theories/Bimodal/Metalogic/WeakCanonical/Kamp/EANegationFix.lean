@@ -2234,4 +2234,128 @@ theorem caseB4_holds : caseB4_Z.holds MZ atomMapZ 0 10 := by
 
 end NegFixGateProbe
 
+/-! # Lemma 5.1 general recursion: `BracketFormula.negFix` (task 350 Phase 10b-ii)
+
+The general fixed-formula negation of a bracket `[β0, α0, β1, …, α_{n-1}, βn]`
+on `(z0, z1)`, per Rabinovich Lemma 5.1 / chunk_0017, with the case gates
+riding IN the disjuncts:
+
+- **Case 2** (no `¬β0`-point in `(z0, z1)`): the `β0`-prefix of any witness is
+  automatic, so the negation is the ANCHORED Cor 5.4 mirror
+  `negBoundedLeftFixAnchored α0 tail`, gated by `β0`-`conjEverywhere`.
+- **Case 3** (attained first-`¬β0` pin `r0`): witnesses are confined to
+  `(z0, r0]`. Splitting the tail bracket at `r0` (the A_i/B_i split,
+  chunk_0017) yields a finite positive disjunct list over placements of `r0`;
+  the negation is the conjunction of per-item 3-way failure disjunctions
+  (A-fail = anchored left mirror on `(z0, r0)`; pin-type fail; B-fail =
+  recursive `negFix` of the strictly smaller right part on `(r0, z1)`),
+  DNF-expanded via pinned `conjFull` products and glued into brackets on
+  `(z0, z1)` by `concatPin` with the `β0`-prefix + `¬β0`-pin gates. The
+  boundary simplifications (d)/(e) are absorbed: the seg-0 placement of the
+  pin is vacuous since `¬β0(r0)`.
+
+Recursion is on the fold-pair LIST (`negFixList`), terminating by list
+length: the A-parts need no recursion (consumed by the already-proven
+anchored fixes), and every recursive call is on a strictly shorter list. -/
+
+/-! ## V-level helpers -/
+
+/-- The always-true V-bracket: single trivial `⊤` disjunct. Neutral slot in
+    pinned-conjunction items. -/
+def VBracketFormula.trivialTrue : VBracketFormula :=
+  ⟨[⟨0, BracketFormula.trivial TemporalPred.top⟩]⟩
+
+/-- `trivialTrue` holds on every interval. -/
+theorem VBracketFormula.trivialTrue_holds {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 z1 : M.carrier) :
+    VBracketFormula.trivialTrue.holds M atomMap z0 z1 :=
+  ⟨⟨0, BracketFormula.trivial TemporalPred.top⟩, List.mem_singleton.mpr rfl,
+    (BracketFormula.trivial_holds M atomMap _ z0 z1).mpr
+      fun y _ _ => TemporalPred.eval_at_top M atomMap y⟩
+
+/-- Conjoin a segment type into every disjunct of a V-bracket via
+    `BracketFormula.conjEverywhere`. -/
+def VBracketFormula.conjEverywhere (v : VBracketFormula) (s : TemporalPred) :
+    VBracketFormula :=
+  ⟨v.disjuncts.map fun d => ⟨d.1, d.2.conjEverywhere s⟩⟩
+
+/-- Semantics of the V-level `conjEverywhere`: the V-bracket holds and `s`
+    holds at every interior point. -/
+theorem VBracketFormula.conjEverywhere_holds_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (v : VBracketFormula) (s : TemporalPred) (z0 z1 : M.carrier) :
+    (v.conjEverywhere s).holds M atomMap z0 z1 ↔
+    v.holds M atomMap z0 z1 ∧
+      ∀ y : M.carrier, z0 < y → y < z1 → s.eval_at M atomMap y := by
+  constructor
+  · rintro ⟨d, hmem, hh⟩
+    simp only [conjEverywhere, List.mem_map] at hmem
+    obtain ⟨d', hd', rfl⟩ := hmem
+    rw [BracketFormula.conjEverywhere_holds_iff] at hh
+    exact ⟨⟨d', hd', hh.1⟩, hh.2⟩
+  · rintro ⟨⟨d, hd, hh⟩, hs⟩
+    refine ⟨⟨d.1, d.2.conjEverywhere s⟩, ?_, ?_⟩
+    · simp only [conjEverywhere, List.mem_map]
+      exact ⟨d, hd, rfl⟩
+    · rw [BracketFormula.conjEverywhere_holds_iff]
+      exact ⟨hh, hs⟩
+
+/-- V-level full conjunction: pairwise `BracketFormula.conjFull` products,
+    flattened. -/
+def VBracketFormula.conjFull (v1 v2 : VBracketFormula) : VBracketFormula :=
+  ⟨v1.disjuncts.flatMap fun d1 => v2.disjuncts.flatMap fun d2 =>
+    (d1.2.conjFull d2.2).disjuncts⟩
+
+/-- Semantics of the V-level full conjunction (iff form, order-generic). -/
+theorem VBracketFormula.conjFull_holds_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (v1 v2 : VBracketFormula) (z0 z1 : M.carrier) :
+    (v1.conjFull v2).holds M atomMap z0 z1 ↔
+    v1.holds M atomMap z0 z1 ∧ v2.holds M atomMap z0 z1 := by
+  constructor
+  · rintro ⟨d, hmem, hh⟩
+    simp only [conjFull, List.mem_flatMap] at hmem
+    obtain ⟨d1, hd1, d2, hd2, hmem⟩ := hmem
+    have hcf : (d1.2.conjFull d2.2).holds M atomMap z0 z1 := ⟨d, hmem, hh⟩
+    rw [BracketFormula.conjFull_iff] at hcf
+    exact ⟨⟨d1, hd1, hcf.1⟩, ⟨d2, hd2, hcf.2⟩⟩
+  · rintro ⟨⟨d1, hd1, h1⟩, ⟨d2, hd2, h2⟩⟩
+    have hcf : (d1.2.conjFull d2.2).holds M atomMap z0 z1 := by
+      rw [BracketFormula.conjFull_iff]
+      exact ⟨h1, h2⟩
+    obtain ⟨d, hmem, hh⟩ := hcf
+    refine ⟨d, ?_, hh⟩
+    simp only [conjFull, List.mem_flatMap]
+    exact ⟨d1, hd1, d2, hd2, hmem⟩
+
+/-! ## The first-failure pin dichotomy (Lemma 5.1 case split) -/
+
+/-- **Pin dichotomy**: on attained-INF structures, either `s` holds at every
+    interior point of `(z0, z1)` (Case 2), or there is an attained
+    first-`¬s` pin `r0 ∈ (z0, z1)`: `s` everywhere on `(z0, r0)` and
+    `¬s(r0)` (Case 3). -/
+theorem firstNegPin_or_all {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_INF : HasAttainedINF M atomMap) (s : TemporalPred)
+    (z0 z1 : M.carrier) (h_lt : z0 < z1) :
+    (∀ y : M.carrier, z0 < y → y < z1 → s.eval_at M atomMap y) ∨
+    ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
+      (∀ y : M.carrier, z0 < y → y < r0 → s.eval_at M atomMap y) ∧
+      ¬ s.eval_at M atomMap r0 := by
+  by_cases h : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧ ¬ s.eval_at M atomMap y
+  · right
+    obtain ⟨y, hy0, hy1, hys⟩ := h
+    obtain ⟨r0, hr00, hr01, hr0P, hbefore⟩ := h_INF.first_occ_tp s.neg z0 z1 h_lt
+      ⟨y, hy0, hy1, (TemporalPred.eval_at_neg' M atomMap s y).mpr hys⟩
+    refine ⟨r0, hr00, hr01, ?_,
+      (TemporalPred.eval_at_neg' M atomMap s r0).mp hr0P⟩
+    intro w hw0 hw1
+    have hnn := hbefore w hw0 hw1
+    rw [TemporalPred.eval_at_neg'] at hnn
+    exact not_not.mp hnn
+  · left
+    push_neg at h
+    exact h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
