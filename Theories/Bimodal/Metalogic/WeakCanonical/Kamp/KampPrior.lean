@@ -955,16 +955,24 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (x t : M.carrier)
+    -- Task-363 interior rows-5-6 antecedent (D7 repair), mirroring
+    -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
+    -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
+    -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
+    (hfiberCons : ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+      kvE_fiberConsistent σ = true)
     (hreal : ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        kvE_fiberConsistent σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hexcl : ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
+        kvE_fiberConsistent σ = true →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     -- SLICE-KEYED exterior interface (task 360 Phase 3b): binder types mirrored verbatim from
@@ -1006,8 +1014,16 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  -- Task 363: reconstruct the unrestricted interior obligations for the (unchanged)
+  -- downstream discharge lemma — `hreal` by modus ponens with `hfiberCons`; `hexcl` by
+  -- case split (an inconsistent σ has no realization at all).
   bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK Pbr qnf
-    h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl
+    h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
+    (fun w hxw hwt hg σ hσ => hreal w hxw hwt hg σ hσ (hfiberCons σ hσ))
+    (fun w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
+      by_cases hcons : kvE_fiberConsistent σ = true
+      · exact hexcl w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
+      · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
     hslicePast hsliceFut hexclSlicePast hexclSliceFut
 
 /-- **F-i positive exhibit (task 309 Phase 15): fragment `qnf` exist at the k=2-arm site

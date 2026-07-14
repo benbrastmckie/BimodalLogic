@@ -303,25 +303,36 @@ certificates verified byte-unchanged.
 
 ---
 
-### Phase 4: Land the interior antecedent on rows 5-6 [NOT STARTED]
+### Phase 4: Land the interior antecedent on rows 5-6 [COMPLETED]
+
+Restated shape: NEW binder `_hfiberCons : ∀ σ, qnf.2 σ = true → kvE_fiberConsistent σ = true`
+(population antecedent) PLUS per-σ antecedent `kvE_fiberConsistent σ = true →` threaded into
+`_hreal` and `_hexcl`, in both `EndIntervalCorrectPrior` (m+2 arm) and
+`kampPrior_site_rungK_gate_match`. `endInterval_step_correct` / the gate-match proof
+reconstruct the unrestricted obligations for the UNCHANGED downstream
+`bracketEndChar_kvExt_correct_prior` (hreal: modus ponens with hfiberCons; hexcl: case split —
+an inconsistent σ has no realization by `kvE_fiberConsistent_of_realized`). *(deviation:
+altered — the plan's single "antecedent on rows 5-6" is realized as the antecedent PAIR
+(qnf-level binder + per-σ antecedent); the qnf-level binder is what lets the consumer
+reconstruct the frozen downstream interface without touching it.)*
 
 **Goal**: The consistency predicate added as an ANTECEDENT on the interior rows 5-6
 `_hreal`/`_hexcl` obligations — restricting the marked-fiber population the (future, task-358)
 supply must cover — with `igFoldBit` and the entire `InteriorGateGeneralK.lean` file untouched.
 
 **Tasks**:
-- [ ] Add the consistency antecedent to the rows 5-6 obligations
+- [x] Add the consistency antecedent to the rows 5-6 obligations
       (`EndIntervalConsumerK.lean:119-130` `_hreal`/`_hexcl`), shaped as: "for every marked
       `σ` of the ambient qnf, `kvE_futFiberConsistent qnf σ`" (exact Phase-1/2 signature).
-- [ ] Mirror the antecedent into the corresponding KampPrior supply shape (the rows 5-6 binder
+- [x] Mirror the antecedent into the corresponding KampPrior supply shape (the rows 5-6 binder
       shape referenced at `KampPrior.lean:835-846` — read/reference the binder; edit only the
       obligation statements this task owns, NOT the frozen k<=1 rungs at :830-874).
-- [ ] Repair downstream consumers of the restated obligations so `KampPrior.lean` +
+- [x] Repair downstream consumers of the restated obligations so `KampPrior.lean` +
       `EndIntervalConsumerK.lean` build green.
-- [ ] Diff-check: `InteriorGateGeneralK.lean` is byte-unmodified; the
+- [x] Diff-check: `InteriorGateGeneralK.lean` is byte-unmodified; the
       `bracketEndChar_kv_succ_eq` rfl bridge still elaborates (build of the file's consumers
       passes with no edit to the file itself).
-- [ ] Commit at green (`task 363 phase 4: ...`).
+- [x] Commit at green (`task 363 phase 4: ...`).
 
 **Timing**: 1.5 hours
 

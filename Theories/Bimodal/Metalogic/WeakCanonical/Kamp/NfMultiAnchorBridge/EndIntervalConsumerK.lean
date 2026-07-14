@@ -88,7 +88,9 @@ noncomputable def endIntervalPrior {sig : MonadicSignature}
     - `1`: the interior-only depth-1 biconditional, carrying only the depth-0 char agreement `h0`
       (base rung; no exterior obligation).
     - `m+2`: the full bundle — the six atom-layer order bits on `qnf.1`, the provider bundle `P` +
-      agreement `hcharK`, the UZ/SZ Prior hypotheses, the interior realization/exclusion obligations
+      agreement `hcharK`, the UZ/SZ Prior hypotheses, the task-363 fiber-consistency population
+      antecedent `hfiberCons` (rows 5-6 D7 repair) with the matching per-σ consistency antecedent
+      threaded into the interior realization/exclusion obligations
       `hreal`/`hexcl`, and the four SLICE-KEYED exterior obligations `hslice*`/`hexclSlice*`
       (task 360 Phase 3b, with `Pbr := Pfam m` supplied by the family). `hexclExt` is NOT an input
       binder — `bracketEndChar_kvExt_correct_prior` discharges it internally (slice-level D1/D2 +
@@ -116,16 +118,27 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
         (M : OrderedMonadicStructure sig)
         (_h_UZ : semantic_prior_UZ M atomMap) (_h_SZ : semantic_prior_SZ M atomMap)
         (x t : M.carrier)
+        -- Task-363 interior rows-5-6 antecedent (D7 repair): the qnf population the interior
+        -- supply must cover is restricted to fiber-CONSISTENT marked slices. The
+        -- doppelgänger-fake ambient (`qnfG1 = m1qnf ⊕ (τ ⊕ s*)`,
+        -- `kvE_probeM1_interiorHreal_NOGO`) marks an inconsistent slice, so it fails this
+        -- antecedent and is OUTSIDE the obligation population — the countermodel dissolves.
+        -- Honest (realized) ambients satisfy it via `kvE_fiberConsistent_of_realized`.
+        -- The m = 0 layer is untouched: it discharges through the k ≤ 1 rungs, not this arm.
+        (_hfiberCons : ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = true →
+          kvE_fiberConsistent σ = true)
         (_hreal : ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = true →
+            kvE_fiberConsistent σ = true →
             ∃ x1 : M.carrier,
               nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
         (_hexcl : ∀ w : M.carrier, x < w → w < t →
           (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, qnf.2 σ = false →
+            kvE_fiberConsistent σ = true →
             ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
         -- SLICE-KEYED exterior interface (task 360 Phase 3b): binder types copied verbatim
@@ -200,10 +213,21 @@ theorem endInterval_step_correct {sig : MonadicSignature}
       exact bracketEndChar_kv_correct_one_prior atomMap h_surj charF h0
   | (m + 2) => by
       intro qnf h_xy h_yt h_xt h_yx h_ty h_tx P hcharK M h_UZ h_SZ x t
-        hreal hexcl hslicePast hsliceFut hexclSlicePast hexclSliceFut
+        hfiberCons hreal hexcl hslicePast hsliceFut hexclSlicePast hexclSliceFut
       show (bracketEndChar_kvExt atomMap h_surj charF (Pfam m) qnf).holds M atomMap x t ↔ _
+      -- Task 363: reconstruct the unrestricted interior obligations for the (unchanged)
+      -- downstream discharge lemma. `hreal`: the population antecedent `hfiberCons`
+      -- discharges the per-σ consistency antecedent by modus ponens. `hexcl`: for a
+      -- fiber-consistent σ the restated obligation applies; an INconsistent σ can have no
+      -- realization at all (`kvE_fiberConsistent_of_realized`), so the exclusion holds
+      -- outright.
       exact bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK (Pfam m) qnf
-        h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hreal hexcl
+        h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
+        (fun w hxw hwt hg σ hσ => hreal w hxw hwt hg σ hσ (hfiberCons σ hσ))
+        (fun w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
+          by_cases hcons : kvE_fiberConsistent σ = true
+          · exact hexcl w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
+          · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
         hslicePast hsliceFut hexclSlicePast hexclSliceFut
 
 /-! ## Task 349 Phase 5 — DoD-name alias + recursion-reduction probes (v9 adoption) -/
@@ -238,8 +262,9 @@ Phase 7 audit).
 | 2 | `hcharK : charF (m+1) = fun χ => P.existF 0 χ` (:115) | hypothesis-side | task 309 Phase 14 (with row 1) |
 | 3 | `h_UZ : semantic_prior_UZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design — `KampPrior` supplies at every consumption site |
 | 4 | `h_SZ : semantic_prior_SZ M atomMap` (:117) | hypothesis-side | Prior-guarded by design (with row 3) |
-| 5 | `hreal` — interior realization, FULL arity 4 (:119) | hypothesis-side | task 358 — realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds 309 Phase 14's provider instantiation; the two are complementary inputs to the same retirement) |
-| 6 | `hexcl` — within-`[x,t]` exclusion, arity 4 (:125) | hypothesis-side | task 358 (with row 5) |
+| 5 | `hreal` — interior realization, FULL arity 4, restricted to fiber-CONSISTENT marked σ (task 363) | hypothesis-side | task 358 — realization recursion at the `KampPrior.lean:361/364` seam (the in-source `:352-360` fencing note also binds 309 Phase 14's provider instantiation; the two are complementary inputs to the same retirement) |
+| 6 | `hexcl` — within-`[x,t]` exclusion, arity 4, restricted to fiber-CONSISTENT σ (task 363; inconsistent σ are excluded outright via `kvE_fiberConsistent_of_realized`) | hypothesis-side | task 358 (with row 5) |
+| 5a | `hfiberCons` — task-363 rows-5-6 population antecedent: every qnf-marked σ is fiber-consistent (`kvE_fiberConsistent`) | hypothesis-side | task 358 Phase 8 (honest/realized ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
 | 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by task 356 (`bracketEndChar_kvExt_correct_prior`, `ExteriorGateAssembleK.lean:180`; ⇒-side guard split → `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at the 16-argument call site, `endInterval_step_correct` m+2 arm) |
 | 8 | `hslicePast` — ⇐-side slice honesty, fiber-guarded (:141) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hslicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:822`) | general m: task 358 |
 | 9 | `hsliceFut` — ⇐-side slice honesty, fiber-guarded (:148) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) | general m: task 358 |
