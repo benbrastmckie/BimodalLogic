@@ -1,5 +1,5 @@
 ---
-next_project_number: 368
+next_project_number: 369
 ---
 
 # TODO
@@ -11,8 +11,8 @@ next_project_number: 368
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,368 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,368 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -84,7 +84,8 @@ next_project_number: 368
 ### Kamp_theorem_formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+368 [RESEARCHED] — Land a 367-style, probe-first, ambient-side deep-saturation/EF-cl
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness
@@ -96,6 +97,36 @@ next_project_number: 368
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
 ## Tasks
+
+### 368. Ambient deepsaturation efclosure guard against cma cmb
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/10_spawn-analysis.md]
+
+**Description**: Land a 367-style, probe-first, ambient-side deep-saturation/EF-closure guard that closes task 358's Phase-4 blocker (nf_nvar_exist_all_depths, KampPrior.lean:519/:522), one layer over task 367's fiber-side guard. Follow the PROVEN template used by tasks 363, 364, and 367 (all completed against this same consumer interface) with zero deviation from house style.
+
+1. PROBE-FIRST (before any kernel/guard change): machine-probe CM-A and CM-B -- the two countermodels recorded in task 358's Phase-4 BLOCKER record (specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/06_deep-anchor-rekey-v06.md, Phase 4 section) -- over the ExteriorPinnedProbe358TailK.lean Z infra (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/). Cast BOTH as additive, sorry-free probe certificates BEFORE writing any guard definition.
+   - CM-A (kills row 13): homogeneous Z model, fake ambient qnf marks every honest 4-type over [v,w,x,t] except sigma := char[t+2,w,x,t] (deep-incomplete marking omitting one bucket-mate). All profile-level checks pass (rows 5/5a/6/10/11 hold) yet sigma is admissible, on-row, bit-false, and guard-false -- row 13 violated.
+   - CM-B (kills row 5): Probe358TailK tail-doppelganger re-aimed at the AMBIENT -- same-bucket (AtW, chi_w), depth-0-indistinguishable, spacing-discrepant fake tail; on-row, fiber-consistent, igPtW-invisible, but [w,x,t]-unrealizable -- row 5's conclusion fails.
+2. Land a NEW guard in a NEW leaf file (recommended: Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorAmbientDeepAnchorK.lean, mirroring ExteriorFiberDeepAnchorK.lean's module shape) implementing the EF-closure predicate on the ambient qnf: (i) inner-fiber-content re-appearance under fresh-rotation (kills CM-A) and (ii) deep-content-to-row anchoring (kills CM-B). The guard MUST carry an m=0-inertness lemma (_zero, ideally rfl, mirroring kvE_deepOnFiber_zero), a readback lemma (_iff, the ONLY sanctioned mate/witness-extraction direction, mirroring kvE_deepOnFiber_iff), and an honest-preservation crux (_of_realized) proven at a GENERAL model (anti-vacuity guarantee, mirroring kvE_deepOnFiber_of_realized).
+3. Restate the guarded antecedents in the consumer binders the blocker names: rows 5, 6, 10-13 of EndIntervalConsumerK.lean, their mirrors in ExteriorGateAssembleK.lean and kampPrior_site_rungK_gate_match (KampPrior.lean:964-1030), and the matching gate-formula strengthening so the =>-reconstruction can consume the new guard. Add new m=0-vacuous ledger rows for guard-false residue if the restatement requires it (367 precedent: rows 12-13 were added this way) -- adjudicate during restatement, do not presuppose the row count.
+4. Land NEW probe certificates in a NEW probe leaf (recommended: ExteriorAmbientDeepAnchorProbe358K.lean, mirroring ExteriorFiberDeepAnchorProbe367K.lean) certifying CM-A and CM-B are EXCLUDED by the new guard, an honest-preservation certificate (general-model realized ambient passes), and any hereditary re-plant variants an adversarial pass surfaces (mirror 367's depth-2 hereditary doppelganger and copy-plant checks, re-aimed at the ambient side).
+5. RE-PROBE AS THE DEFINITION OF DONE: after landing, re-run CM-A/CM-B probes plus the FULL existing certificate inventory (kvE_probe367_* x4, kvE_probe364_* x4, kvE_probe363_* x3, kvE_probe358_* x3) at floor axioms [propext, Classical.choice, Quot.sound], no sorryAx.
+
+ZERO-DEBT TERMINUS (binding, no exceptions): no sorry, no vacuous definition (def X := True family), no proof forced against a live countermodel. If the guard cannot land green against both CM-A and CM-B, return the task as [BLOCKED] with a structured escalation record (failing countermodel named, exact goal state, analytical gap) -- never a landed sorry or a weakened probe.
+
+NEVER UNFOLD THE GUARD DIRECTLY (binding, matches task-358's GLOBAL ROUTING CONSTRAINT): all consumption of the new guard, and of every prior guard it composes with (kvE_deepOnFiber, kvE_fiberElemConsistent/kvE_fiberConsistent, kvE_futAdmissible/kvE_pastAdmissible), MUST route through byte-stable lemmas only (_of_realized, _zero, _iff, _row/analogues). A source scan for rw/unfold/simp only on any of these guard names outside their home modules must show zero occurrences.
+
+PRESERVE BYTE-FOR-BYTE (frozen, do not edit, do not re-derive): ExteriorFiberConsistencyK.lean, ExteriorFiberConsistencyProbeK.lean, ExteriorFiberConsistencyProbe364K.lean (363/364); ExteriorFiberDeepAnchorK.lean, ExteriorFiberDeepAnchorProbe367K.lean (367); the m=0 _zero kernel family (ExteriorPinnedConverseK.lean/PastK.lean); the k<=1 rungs (kampPrior_case1_arm_k0, kampPrior_case1_arm_k1); task 360's m=0 supply; task 358 Phase 3's landing NfMultiAnchorBridge/ExteriorDeepSliceSupplyK.lean (kvE_hsliceFut_supply/kvE_hslicePast_supply, kvE_deepMate_collapse, kvE_{fut,past}SliceEq_refl -- ambient-realization-guarded, survives ambient-side strengthening, must NOT be re-derived/weakened/discarded); ExteriorNegationK.lean/PastK.lean, ExteriorConverterK.lean/PastK.lean (363/364 guard + converter families); ExteriorPinnedProbe358K.lean, ExteriorPinnedProbeM1K.lean (historical regression records).
+
+SCOPE BOUNDARY (explicit, binding -- this task refines the INTERFACE ONLY, exactly as 367 did): MUST NOT build the G2-B1 (rows 12-13 supply), G2-B2 (uniqueness kernel), or G2-B3 (rows 10-11 supply) theorems themselves -- only the guard/antecedent restatement they will consume. MUST NOT touch kampPrior_hreal_supply/kampPrior_hexcl_supply (Phase 5/6, hsigma production) or the converter-seam discharge. MUST NOT retire the KampPrior.lean:519 or :522 sorries (Phase 7/8 arm rewrites) -- those remain task 358's own responsibility after this task unblocks the interface. Deliverable: a new guard + its API + the restated binders/gate-formula + probe certificates that machine-exclude CM-A/CM-B -- nothing beyond the interface.
+
+After completion: resume task 358 with /revise 358 (re-key Phases 4-8 against the new ambient guard) then /implement 358.
+
+---
 
 ### 367. Deepanchor exterior fiber population against taildoppelganger
 - **Effort**: high
@@ -220,7 +251,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364, Task 367
+- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364, Task 367, Task 368
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md]
 - **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/05_realizer-recursion-v05.md]
 
