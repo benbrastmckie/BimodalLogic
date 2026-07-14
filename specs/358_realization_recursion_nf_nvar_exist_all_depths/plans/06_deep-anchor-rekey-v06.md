@@ -266,7 +266,14 @@ and Phase 5 (KampPrior/interior leaf) do not overlap. Phase 4 shares Phase 3's t
 - **Depends on:** none.
 - **Completed:** 2026-07-14 (sess_1784045100_2e3ffe).
 
-### Phase 2: 367 interface pin + re-probe gate [NOT STARTED]
+### Phase 2: 367 interface pin + re-probe gate [COMPLETED]
+
+> **P2 outcome (2026-07-14, sess_1784059448_2c72f2_358)**: all five checklist items executed —
+> binders/mirrors/API/converters/SliceEq pinned by name; 14-certificate re-probe gate GREEN at
+> floor axioms; Kamp sorries exactly :519/:522; zero source edits. Adjudication PRE-RESULT for
+> Phase 3 recorded in handoffs/phase-2-v06-handoff-20260714.md: the deep-mate COLLAPSES to σ
+> itself (Prod ext via common marked fiber; the `kvE_probe367_copyPlant_collapses` mechanism),
+> so SliceEq needs nothing beyond row + deep content — the supply route is confirmed viable.
 
 > **BLOCKER RESOLUTION RECORD (v05 Phase 2 [BLOCKED] -> v06 restated, 2026-07-14)**: v05's
 > Phase 2 (G2-1/G2-2 slice-id + uniqueness kernels at general m) was blocked by the all-honest
