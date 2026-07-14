@@ -1438,11 +1438,6 @@
           "summary": "Spawn analysis from parent task 309"
         },
         {
-          "type": "plan",
-          "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/plans/01_aggregate-quantend-hook-discharge.md",
-          "summary": "6-phase plan: aggregate forall-qnf population encoding + six k=0/k=1 hook-discharge lemmas consuming the task-349 endInterval stack"
-        },
-        {
           "type": "summary",
           "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/summaries/01_aggregate-quantend-hook-discharge-summary.md"
         },
@@ -1450,6 +1445,11 @@
           "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/reports/02_offdiag-k1-primitives.md",
           "type": "report",
           "summary": "Hard-mode blocker research: P1 conjFull transcribable, P2 gated negation closure (restated), P3 zone carriers; 6-phase A-F revision shape"
+        },
+        {
+          "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/plans/02_offdiag-k1-aggregate-discharge.md",
+          "type": "plan",
+          "summary": "Plan v2: 17 phases — delivered scope [COMPLETED], off-diag k=1 primitives (conjFull, gated negation closure, zone carriers) per report 02"
         }
       ],
       "session_id": "sess_1783979891_6ad95e_350",
