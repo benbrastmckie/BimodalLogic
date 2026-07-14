@@ -975,26 +975,28 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
         kvE_fiberConsistent σ = true →
         ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    -- SLICE-KEYED exterior interface (task 360 Phase 3b): binder types mirrored verbatim from
-    -- `ExteriorGateAssembleK.lean`. The four eliminated `hbr*` binders (guarded `hbr*Sat`
-    -- machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are replaced by two carried
-    -- obligations per side: `hslice*` (⇐-side slice honesty, ambient-guarded; FIBER-guarded
-    -- per task 360 Phase 3c / report 04 — `nfk_dropFresh σ = qnf.1` mirrors the re-keyed
-    -- bracket range) and
-    -- `hexclSlice*` (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ,
-    -- `igPtW`-guarded). Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
-    -- `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
+    -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 DEEP-ANCHORED): binder
+    -- types mirrored verbatim from `ExteriorGateAssembleK.lean`. The four eliminated `hbr*`
+    -- binders (guarded `hbr*Sat` machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are
+    -- replaced by carried obligations: `hslice*` (⇐-side slice honesty, ambient-guarded;
+    -- DEEP-anchored per task 367 — `kvE_deepOnFiber qnf σ = true` REPLACES the depth-0 row
+    -- `nfk_dropFresh σ = qnf.1` and mirrors the re-keyed bracket range; at m = 0 the guard
+    -- IS the row check, `kvE_deepOnFiber_zero`), `hexclSlice*` (⇒-side per-σ exclusion
+    -- residue for bit-false-but-slice-marked σ, `igPtW`-guarded, BYTE-STABLE), and the NEW
+    -- task-367 rows 12-13 `hexclDeep*` (⇒-side residue for on-row guard-false σ,
+    -- m = 0-vacuous). Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
+    -- `kvE_{fut,past}SliceUnique_zero` + `hreal` through the `_zero` adapter.
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-        nfk_dropFresh σ = qnf.1 →
+        kvE_deepOnFiber qnf σ = true →
         temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
           kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
     (hsliceFut : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-        nfk_dropFresh σ = qnf.1 →
+        kvE_deepOnFiber qnf σ = true →
         temporal_truth M atomMap t (kvE_futPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
           kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
@@ -1011,6 +1013,20 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
         kvE_futSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepPast : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepFut : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, t < x1 →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
@@ -1024,7 +1040,7 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
       by_cases hcons : kvE_fiberConsistent σ = true
       · exact hexcl w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
       · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
-    hslicePast hsliceFut hexclSlicePast hexclSliceFut
+    hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
 /-- **F-i positive exhibit (task 309 Phase 15): fragment `qnf` exist at the k=2-arm site
     type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265, task 346 Phase 2)

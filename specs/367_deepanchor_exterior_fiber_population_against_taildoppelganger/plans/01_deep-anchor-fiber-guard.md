@@ -310,7 +310,7 @@ next-layer-down attack provably fails.
 
 ---
 
-### Phase 4: Production landing — new guard module + rows-8-9 restatement (snapshot first) [NOT STARTED]
+### Phase 4: Production landing — new guard module + rows-8-9 restatement (snapshot first) [COMPLETED]
 
 **Goal**: The single production-touching phase. Promote the adjudicated guard into a NEW
 additive production module and restate the rows-8-9 binders in place, keeping every frozen
@@ -318,21 +318,21 @@ name/signature byte-stable and repairing the mapped threading sites at proof-scr
 only.
 
 **Tasks**:
-- [ ] Snapshot first: `bash .claude/scripts/git-snapshot.sh` before any production edit.
-- [ ] Create NEW production module
+- [x] Snapshot first: `bash .claude/scripts/git-snapshot.sh` before any production edit.
+- [x] Create NEW production module
       `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberDeepAnchorK.lean`:
       promote the adjudicated guard verbatim from the probe leaf (`kvE_deepOnFiber` +
       `_zero` inertness/adapter + `_of_realized`), with a module docstring recording the
       consumption map, the tail-doppelganger it defeats, and the never-unfold routing rule
       (discharge ONLY via the byte-stable `_of_realized` / `_zero` adapter lemmas — never by
       unfolding `kvE_deepOnFiber`, `kvE_fiberElemConsistent`, or the admissibility predicates).
-- [ ] Restate the rows-8-9 binders (`_hsliceFut`/`_hslicePast`,
+- [x] *(deviation: altered — restatement additionally adds NEW rows 12-13 binders `_hexclDeep{Past,Fut}` (⇒-side residue for on-row guard-false σ, m=0-vacuous), forced by the deep-anchored bracket range; rows 10-11 stay byte-stable)* Restate the rows-8-9 binders (`_hsliceFut`/`_hslicePast`,
       `EndIntervalConsumerK.lean:154-167`) per the adjudicated form: the depth-0 antecedent
       `nfk_dropFresh sigma = qnf.1` is replaced by (or strengthened with) the named
       `kvE_deepOnFiber qnf sigma = true` condition. Update the `endInterval_step_correct`
       threading in the same file. This binder restatement is the ONLY statement change of the
       task.
-- [ ] Repair the mapped threading sites from Phase 1's consumption map ONLY:
+- [x] *(deviation: altered — per the Phase-1 map, `ExteriorBracketAssembleK.lean` is a mapped statement-touching site (bracket range re-key + D1-D4); it is NOT frozen and the frozen set is byte-stable)* Repair the mapped threading sites from Phase 1's consumption map ONLY:
       `ExteriorGateAssembleK.lean` (verbatim binder copies / discharge consumption — mechanical
       binder-type propagation) and `KampPrior.lean` (threading + the m=0 discharge site,
       repaired proof-script-level through the `_zero` inertness adapter so the frozen
@@ -342,10 +342,10 @@ only.
       task 360 m=0 supply, k<=1 rungs) or in any file outside the Phase-1 map — STOP, restore
       the snapshot, escalate; that indicates the candidate is not signature-stable and needs
       redesign, not forcing.
-- [ ] Rewire `ExteriorFiberDeepAnchorProbe367K.lean` to certify against the PRODUCTION
+- [x] Rewire `ExteriorFiberDeepAnchorProbe367K.lean` to certify against the PRODUCTION
       definition (drop or alias the V0 duplicate so exactly one live definition exists; retain
       the leaf as the permanent regression record, per the 363/364 probe-module precedent).
-- [ ] Scoped `lake build` across the full consumer chain: `ExteriorFiberDeepAnchorK`,
+- [x] Scoped `lake build` across the full consumer chain: `ExteriorFiberDeepAnchorK`,
       `EndIntervalConsumerK`, `ExteriorGateAssembleK`, `ExteriorNegationK`,
       `ExteriorNegationPastK`, `ExteriorPinnedConverseK`, `ExteriorPinnedConversePastK`,
       `ExteriorFiberConsistencyProbeK`, `ExteriorFiberConsistencyProbe364K`,

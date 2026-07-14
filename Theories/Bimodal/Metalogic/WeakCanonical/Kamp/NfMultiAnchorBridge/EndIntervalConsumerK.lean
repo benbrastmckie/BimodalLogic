@@ -141,27 +141,31 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
             kvE_fiberConsistent σ = true →
             ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-        -- SLICE-KEYED exterior interface (task 360 Phase 3b): binder types copied verbatim
-        -- from `ExteriorGateAssembleK.lean` at depth-index `k := m`, `Pbr := Pfam m`. The
-        -- four eliminated `hbr*` binders (guarded `hbr*Sat` machine-refuted,
-        -- `kvE_futPinned_of_end_zero_refuted`) are replaced by two carried obligations per
-        -- side: `_hslice*` (⇐-side slice honesty, ambient-guarded; FIBER-guarded per task 360
-        -- Phase 3c / report 04 — the `nfk_dropFresh σ = qnf.1` antecedent mirrors the
-        -- re-keyed bracket range) and `_hexclSlice*`
-        -- (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ, `igPtW`-guarded).
-        -- Discharged at m = 0 via `kvE_{fut,past}SliceId_of_end_zero` /
-        -- `kvE_{fut,past}SliceUnique_zero` + `hreal` (plan v2 Phase 5).
+        -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 DEEP-ANCHORED):
+        -- binder types copied verbatim from `ExteriorGateAssembleK.lean` at depth-index
+        -- `k := m`, `Pbr := Pfam m`. The four eliminated `hbr*` binders (guarded `hbr*Sat`
+        -- machine-refuted, `kvE_futPinned_of_end_zero_refuted`) are replaced by carried
+        -- obligations: `_hslice*` (⇐-side slice honesty, ambient-guarded; DEEP-anchored per
+        -- task 367 — the antecedent `kvE_deepOnFiber qnf σ = true` REPLACES the depth-0 row
+        -- `nfk_dropFresh σ = qnf.1` and mirrors the re-keyed bracket range; the 358
+        -- tail-doppelgänger fails it, `kvE_probe367_tailDG_deep_rejected`; honest realized
+        -- σ over the ambient's own tail pass via `kvE_deepOnFiber_of_realized`; at m = 0
+        -- the guard IS the row check, `kvE_deepOnFiber_zero`) and `_hexclSlice*`
+        -- (⇒-side per-σ exclusion residue for bit-false-but-slice-marked σ, `igPtW`-guarded,
+        -- BYTE-STABLE from task 360). Discharged at m = 0 via
+        -- `kvE_{fut,past}SliceId_of_end_zero` / `kvE_{fut,past}SliceUnique_zero` + `hreal`
+        -- through the `kvE_deepOnFiber_zero` adapter (plan v2 Phase 5 / task 367).
         (_hslicePast : ∀ w : M.carrier, x < w → w < t →
           nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true →
-            nfk_dropFresh σ = qnf.1 →
+            kvE_deepOnFiber qnf σ = true →
             temporal_truth M atomMap x (kvE_pastPos (Pfam m) σ) →
             ∃ σ' : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ' = true ∧
               kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
         (_hsliceFut : ∀ w : M.carrier, x < w → w < t →
           nf_eval_nf M (m + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true →
-            nfk_dropFresh σ = qnf.1 →
+            kvE_deepOnFiber qnf σ = true →
             temporal_truth M atomMap t (kvE_futPos (Pfam m) σ) →
             ∃ σ' : NormalForm sig (m + 1) 4, kvE_futAdmissible σ' = true ∧
               kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
@@ -177,6 +181,25 @@ def EndIntervalCorrectPrior {sig : MonadicSignature}
             M atomMap w →
           ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
             kvE_futSliceMarked qnf σ = true →
+            ∀ x1 : M.carrier, t < x1 →
+              ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        -- DEEP-ANCHOR residue (task 367, rows 12-13): ⇒-side exclusion for ON-ROW
+        -- guard-FALSE bit-false σ — with the deep-anchored bracket range such σ carry no
+        -- clause, so D1/D2 cannot refute them. m = 0-VACUOUS (guard ≡ row check at fiber
+        -- depth 1, `kvE_deepOnFiber_zero`: on-row + guard-false is contradictory);
+        -- general-m discharge: task 358.
+        (_hexclDeepPast : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
+          ∀ σ : NormalForm sig (m + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+            nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+            ∀ x1 : M.carrier, x1 < x →
+              ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+        (_hexclDeepFut : ∀ w : M.carrier, x < w → w < t →
+          (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (m + 1)) qnf.1 (igFoldBit qnf)).eval_at
+            M atomMap w →
+          ∀ σ : NormalForm sig (m + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+            nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
             ∀ x1 : M.carrier, t < x1 →
               ¬ nf_eval_nf M (m + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ),
       (endIntervalPrior atomMap h_surj charF Pfam (m + 2) qnf).holds M atomMap x t ↔
@@ -214,6 +237,7 @@ theorem endInterval_step_correct {sig : MonadicSignature}
   | (m + 2) => by
       intro qnf h_xy h_yt h_xt h_yx h_ty h_tx P hcharK M h_UZ h_SZ x t
         hfiberCons hreal hexcl hslicePast hsliceFut hexclSlicePast hexclSliceFut
+        hexclDeepPast hexclDeepFut
       show (bracketEndChar_kvExt atomMap h_surj charF (Pfam m) qnf).holds M atomMap x t ↔ _
       -- Task 363: reconstruct the unrestricted interior obligations for the (unchanged)
       -- downstream discharge lemma. `hreal`: the population antecedent `hfiberCons`
@@ -228,7 +252,7 @@ theorem endInterval_step_correct {sig : MonadicSignature}
           by_cases hcons : kvE_fiberConsistent σ = true
           · exact hexcl w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
           · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
-        hslicePast hsliceFut hexclSlicePast hexclSliceFut
+        hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
 /-! ## Task 349 Phase 5 — DoD-name alias + recursion-reduction probes (v9 adoption) -/
 
@@ -266,10 +290,12 @@ Phase 7 audit).
 | 6 | `hexcl` — within-`[x,t]` exclusion, arity 4, restricted to fiber-CONSISTENT σ (task 363; inconsistent σ are excluded outright via `kvE_fiberConsistent_of_realized`) | hypothesis-side | task 358 (with row 5) |
 | 5a | `hfiberCons` — task-363 rows-5-6 population antecedent: every qnf-marked σ is fiber-consistent (`kvE_fiberConsistent`) | hypothesis-side | task 358 Phase 8 (honest/realized ambients discharge it via `kvE_fiberConsistent_of_realized`; the doppelgänger fake `qnfG1` FAILS it — the `kvE_probeM1_interiorHreal_NOGO` countermodel is outside the population) |
 | 7 | `hexclExt` — exterior adjacency exclusion | **DISCHARGED INTERNALLY** by task 356 (`bracketEndChar_kvExt_correct_prior`, `ExteriorGateAssembleK.lean:180`; ⇒-side guard split → `kvE_extBracket{Past,Fut}_sound`) | n/a — NOT a binder of `EndIntervalCorrectPrior` (verified at the 16-argument call site, `endInterval_step_correct` m+2 arm) |
-| 8 | `hslicePast` — ⇐-side slice honesty, fiber-guarded (:141) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hslicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:822`) | general m: task 358 |
-| 9 | `hsliceFut` — ⇐-side slice honesty, fiber-guarded (:148) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) | general m: task 358 |
-| 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (:155) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSlicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:769`) | general m: task 358 |
-| 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (:162) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1242`) | general m: task 358 |
+| 8 | `hslicePast` — ⇐-side slice honesty, DEEP-anchored (task 367: `kvE_deepOnFiber qnf σ = true` replaces the depth-0 row antecedent) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hslicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:822`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
+| 9 | `hsliceFut` — ⇐-side slice honesty, DEEP-anchored (task 367) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hsliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1301`) through the `kvE_deepOnFiber_zero` adapter | general m: task 358 (re-keyed) |
+| 10 | `hexclSlicePast` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSlicePast_supply_zero`, `ExteriorPinnedConversePastK.lean:769`) | general m: task 358 |
+| 11 | `hexclSliceFut` — ⇒-side per-σ exclusion residue (BYTE-STABLE from task 360) | hypothesis-side; **m = 0 DISCHARGED** by task 360 (`kvE_hexclSliceFut_supply_zero`, `ExteriorPinnedConverseK.lean:1242`) | general m: task 358 |
+| 12 | `hexclDeepPast` — ⇒-side residue for on-row guard-FALSE bit-false σ (task 367) | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`: on-row + guard-false contradictory) | general m: task 358 |
+| 13 | `hexclDeepFut` — ⇒-side residue for on-row guard-FALSE bit-false σ (task 367) | hypothesis-side; **m = 0 VACUOUS** (`kvE_deepOnFiber_zero`) | general m: task 358 |
 
 RETIRED interfaces (do not resurrect): the v8-era `hreal`/`hsat` EXTERIOR realization interface
 and the 356-era `hbr*` exterior binders (machine-refuted — `kvE_futPinned_of_end_zero_refuted`)

@@ -230,14 +230,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     (hslicePast : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-        nfk_dropFresh σ = qnf.1 →
+        kvE_deepOnFiber qnf σ = true →
         temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
           kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
     (hsliceFut : ∀ w : M.carrier, x < w → w < t →
       nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-        nfk_dropFresh σ = qnf.1 →
+        kvE_deepOnFiber qnf σ = true →
         temporal_truth M atomMap t (kvE_futPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
           kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
@@ -254,6 +254,28 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
         kvE_futSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- DEEP-ANCHOR residue (task 367, rows 12-13): the ⇒-side exclusion for ON-ROW but
+    -- guard-FALSE bit-false σ. With the deep-anchored bracket range
+    -- (`kvE_extBracket{Fut,Past}`, task 367), such σ carry NO clause, so the slice-level
+    -- D1/D2 cannot refute them; the obligation is carried outward like rows 10-11.
+    -- m = 0-VACUOUS: at fiber depth 1 the guard IS the row check (`kvE_deepOnFiber_zero`),
+    -- so on-row + guard-false is contradictory. General-m discharge: task 358 (under an
+    -- honest ambient, a pinned realizer forces the guard via `kvE_deepOnFiber_of_realized`,
+    -- contradicting guard-false).
+    (hexclDeepPast : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepFut : ∀ w : M.carrier, x < w → w < t →
+      (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, t < x1 →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
@@ -265,30 +287,42 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mp hExt
     refine bracketEndChar_kv_step_sound atomMap h_surj charF qnf
       h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl ?_ hInt
-    -- The former `hexclExt` obligation, by fiber dichotomy (task 360 Phase 3c, report 04):
-    -- OFF-fiber σ are unrealizable at the pinned anchors (fiber-forcing kernel under the
-    -- gate-derived atom-layer pin `kvExt_gate_henv`); in-fiber slice-UNMARKED σ discharged
-    -- by the slice-level D1/D2; in-fiber bit-false-but-slice-MARKED σ by the carried
-    -- `hexclSlice*` residue (VERBATIM Phase-3b binders — see the binder docs).
+    -- The former `hexclExt` obligation, by fiber trichotomy (task 360 Phase 3c report 04 +
+    -- task 367 deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
+    -- (fiber-forcing kernel under the gate-derived atom-layer pin `kvExt_gate_henv`);
+    -- on-fiber GUARD-TRUE slice-UNMARKED σ discharged by the deep-anchored slice-level
+    -- D1/D2; on-fiber guard-true bit-false-but-slice-MARKED σ by the carried `hexclSlice*`
+    -- residue (VERBATIM Phase-3b binders); on-fiber GUARD-FALSE σ by the carried
+    -- `hexclDeep*` residue (task 367 rows 12-13 — such σ carry no bracket clause).
     intro w hxw hwt hptW σ hbit x1 hguard hnf
     by_cases hfib : nfk_dropFresh σ = qnf.1
     · rcases not_and_or.mp hguard with hx | ht
-      · cases hsm : kvE_pastSliceMarked qnf σ with
-        | false =>
-          exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hfib hsm
-            x1 (not_le.mp hx) hnf
-        | true =>
+      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
+        · cases hsm : kvE_pastSliceMarked qnf σ with
+          | false =>
+            exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hdeep
+              hsm x1 (not_le.mp hx) hnf
+          | true =>
+            have hadm : kvE_pastAdmissible σ = true :=
+              kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
+            exact hexclSlicePast w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
+        · rw [Bool.not_eq_true] at hdeep
           have hadm : kvE_pastAdmissible σ = true :=
             kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
-          exact hexclSlicePast w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
-      · cases hsm : kvE_futSliceMarked qnf σ with
-        | false =>
-          exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hfib hsm
-            x1 (not_le.mp ht) hnf
-        | true =>
+          exact hexclDeepPast w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp hx) hnf
+      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
+        · cases hsm : kvE_futSliceMarked qnf σ with
+          | false =>
+            exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hdeep
+              hsm x1 (not_le.mp ht) hnf
+          | true =>
+            have hadm : kvE_futAdmissible σ = true :=
+              kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
+            exact hexclSliceFut w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
+        · rw [Bool.not_eq_true] at hdeep
           have hadm : kvE_futAdmissible σ = true :=
             kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
-          exact hexclSliceFut w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
+          exact hexclDeepFut w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp ht) hnf
     · -- Off-fiber: a realizer at the pinned anchors would force σ onto the fiber
       -- (`offForce` recipe, NfEFold.lean) — contradiction with `hfib`.
       have henv : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=

@@ -1,9 +1,10 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
 
 /-! # Task 367 probe leaf: the hereditary deep-anchor guard vs the tail-doppelgänger
 
-Machine-adjudicates the task-367 candidate deep-anchor guard `kvE_deepOnFiberV0` BEFORE any
+Machine-adjudicates the task-367 candidate deep-anchor guard `kvE_deepOnFiber` BEFORE any
 production edit (the 363/364 probe-first methodology). The guard anchors the rows-8-9
 obligation population (`_hsliceFut`/`_hslicePast`, `EndIntervalConsumerK.lean:154-167`) to the
 ambient `qnf` one layer beyond the depth-0 row check `nfk_dropFresh σ = qnf.1` — the ONLY
@@ -11,10 +12,10 @@ antecedent the 358 tail-doppelgänger (`ExteriorPinnedProbe358TailK.lean`) neede
 
 ## Adjudicated candidate (synthesis of handoff candidates (a) and (b))
 
-`kvE_deepOnFiberV0 qnf σ` (fiber depth graded on σ's depth `k`):
+`kvE_deepOnFiber qnf σ` (fiber depth graded on σ's depth `k`):
 - `k = 0` and `k = 1`: `decide (nfk_dropFresh σ = qnf.1)` — the depth-0 row check ONLY.
   The `k = 1` arm is the m = 0 instance of the rows-8-9 binders: the guard is
-  DEFINITIONALLY the old antecedent there (`kvE_deepOnFiberV0_zero`, `rfl`), so the frozen
+  DEFINITIONALLY the old antecedent there (`kvE_deepOnFiber_zero`, `rfl`), so the frozen
   m = 0 supply layer (task 360) discharges the restated binders through a proof-script
   adapter and the m = 0 bracket range is byte-value-identical.
 - `k = j + 2`: row check `&&` a **qnf-marked deep-content mate**: some `σ'` with
@@ -81,7 +82,7 @@ demanding an R-point in a zone that is R-empty relative to the REAL tail. Any `�
 pin-realize the fiber and its inner witness — contradiction at the discrepancy layer
 (exactly the `m3_noPinned` chase below, which is model-generic in shape: it consumes only
 the marked witness's atom rows, never density or homogeneity). Hence NO qnf-marked σ'
-carries σ's deep marking, `kvE_deepOnFiberV0 qnf σ = false`, and σ is OUTSIDE the restated
+carries σ's deep marking, `kvE_deepOnFiber qnf σ = false`, and σ is OUTSIDE the restated
 rows-8-9 population. Every fake characteristic of the family marks such a fiber (the
 discrepancy is what makes it fake), so the whole family is excluded; the mechanized ℤ casts
 (gates 1a and 3a) are finite proxies of exactly this argument.
@@ -107,66 +108,10 @@ namespace Bimodal.Metalogic.WeakCanonical.Kamp
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-! ## The candidate guard (Phase 1) -/
-
-/-- **Candidate hereditary deep-anchor guard** (task 367, adjudicated candidate — see module
-    docstring). Fiber-depth graded: at σ-depth ≤ 1 it IS the depth-0 row check
-    (`nfk_dropFresh σ = qnf.1` — m = 0 inertness, gate 1b); at σ-depth ≥ 2 it additionally
-    requires a **qnf-marked deep-content mate**: some `σ'` with `qnf.2 σ' = true` and
-    `σ'.2 = σ.2`. Full `.2` equality is hereditary to depth 0 by construction. Pure
-    decidable syntax over the NF fintype (no model parameter). -/
-noncomputable def kvE_deepOnFiberV0 {sig : MonadicSignature} :
-    {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
-  | 0, _, qnf, σ => decide (nfk_dropFresh σ = qnf.1)
-  | 1, _, qnf, σ => decide (nfk_dropFresh σ = qnf.1)
-  | (j + 2), n, qnf, σ =>
-    decide (nfk_dropFresh σ = qnf.1) &&
-    ((Finset.univ.toList (α := NormalForm sig (j + 2) (n + 1))).any fun σ' =>
-      qnf.2 σ' && decide (σ'.2 = σ.2))
-
-/-- **Gate 1b (m = 0 inertness)**: at fiber depth 1 — the m = 0 instance of the rows-8-9
-    binders — the guard is DEFINITIONALLY the depth-0 row check. The frozen m = 0 supply
-    (task 360) discharges the restated binders through this adapter, and the m = 0 bracket
-    range filter value is unchanged. -/
-theorem kvE_deepOnFiberV0_zero {sig : MonadicSignature} {n : Nat}
-    (qnf : NormalForm sig 2 n) (σ : NormalForm sig 1 (n + 1)) :
-    kvE_deepOnFiberV0 qnf σ = decide (nfk_dropFresh σ = qnf.1) := rfl
-
-/-- Depth-0 arm inertness (recursion base; not a binder instance — rows 8-9 bind σ at depth
-    `m + 1 ≥ 1`). -/
-theorem kvE_deepOnFiberV0_base {sig : MonadicSignature} {n : Nat}
-    (qnf : NormalForm sig 1 n) (σ : NormalForm sig 0 (n + 1)) :
-    kvE_deepOnFiberV0 qnf σ = decide (nfk_dropFresh σ = qnf.1) := rfl
-
-/-- Unpack/repack the deep arm (σ-depth ≥ 2). The extraction interface every certificate
-    routes through — the guard is never unfolded outside this module. -/
-theorem kvE_deepOnFiberV0_iff {sig : MonadicSignature} {j n : Nat}
-    (qnf : NormalForm sig (j + 3) n) (σ : NormalForm sig (j + 2) (n + 1)) :
-    kvE_deepOnFiberV0 qnf σ = true ↔
-      nfk_dropFresh σ = qnf.1 ∧
-        ∃ σ' : NormalForm sig (j + 2) (n + 1), qnf.2 σ' = true ∧ σ'.2 = σ.2 := by
-  show (decide (nfk_dropFresh σ = qnf.1) &&
-      ((Finset.univ.toList (α := NormalForm sig (j + 2) (n + 1))).any fun σ' =>
-        qnf.2 σ' && decide (σ'.2 = σ.2))) = true ↔ _
-  rw [Bool.and_eq_true, List.any_eq_true, decide_eq_true_eq]
-  constructor
-  · rintro ⟨hrow, σ', -, hσ'⟩
-    rw [Bool.and_eq_true, decide_eq_true_eq] at hσ'
-    exact ⟨hrow, σ', hσ'.1, hσ'.2⟩
-  · rintro ⟨hrow, σ', hmk, heq⟩
-    refine ⟨hrow, σ', kvE_nf_mem_univ_toList σ', ?_⟩
-    rw [hmk, decide_eq_true heq]
-    rfl
-
-/-- **Row extraction** (all depths): the guard implies the old depth-0 row antecedent — the
-    adapter direction the restated rows 8-9 use to consume the frozen m = 0 supply and the
-    old off-fiber forcing kernels. -/
-theorem kvE_deepOnFiberV0_row {sig : MonadicSignature} :
-    ∀ {k n : Nat} (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
-      kvE_deepOnFiberV0 qnf σ = true → nfk_dropFresh σ = qnf.1
-  | 0, _, _, _, h => of_decide_eq_true h
-  | 1, _, _, _, h => of_decide_eq_true h
-  | (_ + 2), _, qnf, σ, h => ((kvE_deepOnFiberV0_iff qnf σ).mp h).1
+/-! ## The guard (Phase 4 rewire: certificates below certify the PRODUCTION definition
+`kvE_deepOnFiber` from `ExteriorFiberDeepAnchorK.lean`, to which the Phase-1 candidate
+`kvE_deepOnFiber` was promoted verbatim — exactly one live definition exists; this leaf
+is the permanent regression record, per the 363/364 probe-module precedent). -/
 
 /-! ## Probe cast (template copy of `ExteriorPinnedProbe358TailK.lean`; replication
 precedent for `private` originals) -/
@@ -235,12 +180,12 @@ private theorem m3s_marks_eR : m3s.2 m3eR = true :=
     i.e. no such `σ'` is `qnf367`-marked. Sorry-free; axioms
     `[propext, Classical.choice, Quot.sound]`. -/
 theorem kvE_probe367_tailDG_deep_rejected :
-    kvE_deepOnFiberV0 qnf367 m3sigma = false := by
-  cases hg : kvE_deepOnFiberV0 qnf367 m3sigma with
+    kvE_deepOnFiber qnf367 m3sigma = false := by
+  cases hg : kvE_deepOnFiber qnf367 m3sigma with
   | false => rfl
   | true =>
     exfalso
-    obtain ⟨-, σ', hmk, heq⟩ := (kvE_deepOnFiberV0_iff qnf367 m3sigma).mp hg
+    obtain ⟨-, σ', hmk, heq⟩ := (kvE_deepOnFiber_iff qnf367 m3sigma).mp hg
     -- qnf367-marked ⟹ σ' realized over the real tail at some x1
     obtain ⟨x1, hσ'⟩ : ∃ x1 : M3M.carrier,
         nf_eval_nf M3M 2 4 (Fin.cons x1 m3realEnv3) σ' :=
@@ -261,45 +206,12 @@ theorem kvE_probe367_tailDG_deep_rejected :
     rw [hu10] at hlt
     exact h105 hlt
 
-/-! ## Phase 2: honest-preservation crux (general model, general signature) -/
+/-! ## Phase 2: honest-preservation crux — Phase 4 rewire note
 
-/-- **Realized slices over the ambient's own tail pass the deep anchor** (the load-bearing
-    honest-preservation crux; the `kvE_fiberElemConsistent_of_realized:149` /
-    `kvE_fiberConsistent_of_realized:238` template one layer down). If `qnf` is realized at
-    `env` and `σ` at `Fin.cons x1 env` (a pinned tuple sharing the ambient's tail), then:
-    the row conjunct holds by the depth-0 factorization (`nf_eval_nf0_cons_factor`) plus
-    depth-0 uniqueness against `qnf`'s own atom layer, and the deep-mate conjunct is
-    witnessed by `σ` ITSELF — `qnf.2 σ = true` by `qnf`'s realization quant layer at witness
-    `x1`, and `σ.2 = σ.2` by `rfl`. This is the discharge route the re-keyed task-358 supply
-    uses (gate 2b): `_of_realized` alone, no guard unfolding. -/
-theorem kvE_deepOnFiberV0_of_realized {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) :
-    ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
-      (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
-      nf_eval_nf M (k + 1) n env qnf →
-      nf_eval_nf M k (n + 1) (Fin.cons x1 env) σ →
-      kvE_deepOnFiberV0 qnf σ = true := by
-  have hrow : ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
-      (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
-      nf_eval_nf M (k + 1) n env qnf →
-      nf_eval_nf M k (n + 1) (Fin.cons x1 env) σ →
-      nfk_dropFresh σ = qnf.1 := by
-    intro k n env x1 qnf σ hqnf hσ
-    have hatom := nf_eval_nf_atom_layer M _ σ hσ
-    have hfac := (nf_eval_nf0_cons_factor M env x1 σ.atom_assgn).mp hatom
-    exact nf_eval_unique M 0 n env _ _ hfac.2.2 (nf_eval_nf_atom_layer M env qnf hqnf)
-  intro k
-  match k with
-  | 0 =>
-    intro n env x1 qnf σ hqnf hσ
-    exact decide_eq_true (hrow env x1 qnf σ hqnf hσ)
-  | 1 =>
-    intro n env x1 qnf σ hqnf hσ
-    exact decide_eq_true (hrow env x1 qnf σ hqnf hσ)
-  | (j + 2) =>
-    intro n env x1 qnf σ hqnf hσ
-    rw [kvE_deepOnFiberV0_iff]
-    exact ⟨hrow env x1 qnf σ hqnf hσ, σ, (hqnf.2 σ).mp ⟨x1, hσ⟩, rfl⟩
+The honest-preservation crux `kvE_deepOnFiber_of_realized` (general model, general
+signature) was proven HERE at probe level in Phase 2 and promoted verbatim to the
+production module (`ExteriorFiberDeepAnchorK.lean`); gate 2a below now derives from the
+production lemma directly (exactly one live proof). -/
 
 /-- The honest REAL slice (the depth-2 4-type of the real pinned tuple `[35, 5, 2, 30]`). -/
 private noncomputable def m3sigmaReal : NormalForm m3sig 2 4 := nf_characteristic M3M 2 4 m3realEnv
@@ -308,12 +220,12 @@ private noncomputable def m3sigmaReal : NormalForm m3sig 2 4 := nf_characteristi
     computation): the real slice passes the deep anchor w.r.t. the real ambient. Together
     with gate 1a this machine-separates fake from honest at the restated rows-8-9 interface.
     Gate 2b (supply-feasibility shape) is witnessed by the derivation itself: the guard for
-    a realizer-derived σ is discharged through `kvE_deepOnFiberV0_of_realized` alone — no
+    a realizer-derived σ is discharged through `kvE_deepOnFiber_of_realized` alone — no
     guard unfolding anywhere outside the guard's home extraction lemmas. Sorry-free; axioms
     `[propext, Classical.choice, Quot.sound]`. -/
 theorem kvE_probe367_real_slice_deep_anchored :
-    kvE_deepOnFiberV0 qnf367 m3sigmaReal = true :=
-  kvE_deepOnFiberV0_of_realized M3M m3realEnv3 35 qnf367 m3sigmaReal
+    kvE_deepOnFiber qnf367 m3sigmaReal = true :=
+  kvE_deepOnFiber_of_realized M3M m3realEnv3 35 qnf367 m3sigmaReal
     (nf_characteristic_satisfies M3M 3 3 m3realEnv3)
     (nf_characteristic_satisfies M3M 2 4 m3realEnv)
 
@@ -363,12 +275,12 @@ private theorem sigma2_marks_s10 : sigma2.2 s10 = true :=
     the old row check and any single-extra-level anchor — full-`.2` heredity is what fires.
     Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
 theorem kvE_probe367_depth2DG_deep_rejected :
-    kvE_deepOnFiberV0 q2nf sigma2 = false := by
-  cases hg : kvE_deepOnFiberV0 q2nf sigma2 with
+    kvE_deepOnFiber q2nf sigma2 = false := by
+  cases hg : kvE_deepOnFiber q2nf sigma2 with
   | false => rfl
   | true =>
     exfalso
-    obtain ⟨-, σ', hmk, heq⟩ := (kvE_deepOnFiberV0_iff q2nf sigma2).mp hg
+    obtain ⟨-, σ', hmk, heq⟩ := (kvE_deepOnFiber_iff q2nf sigma2).mp hg
     obtain ⟨x1, hσ'⟩ : ∃ x1 : M3M.carrier,
         nf_eval_nf M3M 3 4 (Fin.cons x1 m3realEnv3) σ' :=
       @of_decide_eq_true _ (Classical.dec _) hmk

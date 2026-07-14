@@ -3,6 +3,7 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverte
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConverseK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedConversePastK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
 
 /-! # Depth-`k` exterior-bracket assembly (task 349, v8 Phases 3-4; SLICE-KEYED, task 360 Phase 3b)
 
@@ -92,7 +93,7 @@ noncomputable def kvE_extBracketFut {sig : MonadicSignature}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
   formula_conjList
     (((Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter
-        (fun σ => kvE_futAdmissible σ && decide (nfk_dropFresh σ = qnf.1))).map
+        (fun σ => kvE_futAdmissible σ && kvE_deepOnFiber qnf σ)).map
       fun σ =>
         if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ)
 
@@ -106,7 +107,7 @@ noncomputable def kvE_extBracketPast {sig : MonadicSignature}
     (P : ExistProviders sig atomMap k) (qnf : NormalForm sig (k + 2) 3) : Formula :=
   formula_conjList
     (((Finset.univ.toList (α := NormalForm sig (k + 1) 4)).filter
-        (fun σ => kvE_pastAdmissible σ && decide (nfk_dropFresh σ = qnf.1))).map
+        (fun σ => kvE_pastAdmissible σ && kvE_deepOnFiber qnf σ)).map
       fun σ =>
         if kvE_pastSliceMarked qnf σ = true then kvE_pastPos P σ else kvE_extNegPast P σ)
 
@@ -118,7 +119,7 @@ theorem kvE_extBracketFut_iff {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3) (t : M.carrier) :
     temporal_truth M atomMap t (kvE_extBracketFut P qnf) ↔
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-        nfk_dropFresh σ = qnf.1 →
+        kvE_deepOnFiber qnf σ = true →
         temporal_truth M atomMap t
           (if kvE_futSliceMarked qnf σ = true then kvE_futPos P σ else kvE_extNegFut P σ) := by
   rw [kvE_extBracketFut, formula_conjList_iff]
@@ -126,12 +127,12 @@ theorem kvE_extBracketFut_iff {sig : MonadicSignature}
   · intro h σ hadm hfib
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
       ⟨Finset.mem_toList.mpr (Finset.mem_univ σ),
-       by rw [hadm, decide_eq_true hfib]; rfl⟩, rfl⟩)
+       by rw [hadm, hfib]; rfl⟩, rfl⟩)
   · intro h f hf
     obtain ⟨σ, hσmem, rfl⟩ := List.mem_map.mp hf
     have hm := (List.mem_filter.mp hσmem).2
     rw [Bool.and_eq_true] at hm
-    exact h σ hm.1 (of_decide_eq_true hm.2)
+    exact h σ hm.1 hm.2
 
 /-- Bracket-at-anchor unfolds to the per-σ clause conjunction (past side). Depth-`k` analog of
     `kvE2_extBracketPast_iff` (ExteriorBracket.lean:408). -/
@@ -141,7 +142,7 @@ theorem kvE_extBracketPast_iff {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3) (x : M.carrier) :
     temporal_truth M atomMap x (kvE_extBracketPast P qnf) ↔
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-        nfk_dropFresh σ = qnf.1 →
+        kvE_deepOnFiber qnf σ = true →
         temporal_truth M atomMap x
           (if kvE_pastSliceMarked qnf σ = true then kvE_pastPos P σ else kvE_extNegPast P σ) := by
   rw [kvE_extBracketPast, formula_conjList_iff]
@@ -149,12 +150,12 @@ theorem kvE_extBracketPast_iff {sig : MonadicSignature}
   · intro h σ hadm hfib
     exact h _ (List.mem_map.mpr ⟨σ, List.mem_filter.mpr
       ⟨Finset.mem_toList.mpr (Finset.mem_univ σ),
-       by rw [hadm, decide_eq_true hfib]; rfl⟩, rfl⟩)
+       by rw [hadm, hfib]; rfl⟩, rfl⟩)
   · intro h f hf
     obtain ⟨σ, hσmem, rfl⟩ := List.mem_map.mp hf
     have hm := (List.mem_filter.mp hσmem).2
     rw [Bool.and_eq_true] at hm
-    exact h σ hm.1 (of_decide_eq_true hm.2)
+    exact h σ hm.1 hm.2
 
 /-! ## Composed per-side soundness (D1/D2, SLICE-LEVEL — task 360 Phase 3b) -/
 
@@ -173,7 +174,7 @@ theorem kvE_extBracketFut_sound {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (hcl : temporal_truth M atomMap t (kvE_extBracketFut P qnf)) :
-    ∀ σ : NormalForm sig (k + 1) 4, nfk_dropFresh σ = qnf.1 →
+    ∀ σ : NormalForm sig (k + 1) 4, kvE_deepOnFiber qnf σ = true →
       kvE_futSliceMarked qnf σ = false →
       ∀ x1 : M.carrier, t < x1 →
         ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
@@ -195,7 +196,7 @@ theorem kvE_extBracketPast_sound {sig : MonadicSignature}
     (qnf : NormalForm sig (k + 2) 3)
     (w x t : M.carrier) (hxw : x < w) (hwt : w < t)
     (hcl : temporal_truth M atomMap x (kvE_extBracketPast P qnf)) :
-    ∀ σ : NormalForm sig (k + 1) 4, nfk_dropFresh σ = qnf.1 →
+    ∀ σ : NormalForm sig (k + 1) 4, kvE_deepOnFiber qnf σ = true →
       kvE_pastSliceMarked qnf σ = false →
       ∀ x1 : M.carrier, x1 < x →
         ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
@@ -232,7 +233,7 @@ theorem kvE_extBracketFut_complete {sig : MonadicSignature}
       ∃ x1 : M.carrier, t < x1 ∧
         nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
-      nfk_dropFresh σ = qnf.1 →
+      kvE_deepOnFiber qnf σ = true →
       temporal_truth M atomMap t (kvE_futPos P σ) →
       ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
         kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
@@ -269,7 +270,7 @@ theorem kvE_extBracketPast_complete {sig : MonadicSignature}
       ∃ x1 : M.carrier, x1 < x ∧
         nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
     (hslice : ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
-      nfk_dropFresh σ = qnf.1 →
+      kvE_deepOnFiber qnf σ = true →
       temporal_truth M atomMap x (kvE_pastPos P σ) →
       ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
         kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true) :
