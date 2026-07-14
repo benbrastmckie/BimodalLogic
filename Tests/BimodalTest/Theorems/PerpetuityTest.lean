@@ -37,15 +37,15 @@ example (φ : Formula) : ⊢ (φ.imp φ).box := by
   have h : ⊢ φ.imp φ := by
     -- Use S axiom: φ → (φ → φ)
     have s : ⊢ φ.imp ((φ.imp φ).imp φ) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s φ (φ.imp φ))
+      DerivationTree.axiom [] _ (Axiom.prop_s φ (φ.imp φ)) trivial
     -- Use K axiom to complete
     have k : ⊢ (φ.imp ((φ.imp φ).imp φ)).imp ((φ.imp (φ.imp φ)).imp (φ.imp φ)) :=
-      DerivationTree.axiom [] _ (Axiom.prop_k φ (φ.imp φ) φ)
+      DerivationTree.axiom [] _ (Axiom.prop_k φ (φ.imp φ) φ) trivial
     have h1 : ⊢ (φ.imp (φ.imp φ)).imp (φ.imp φ) :=
       DerivationTree.modus_ponens [] _ _ k s
     -- φ → φ → φ is from S axiom
     have s2 : ⊢ φ.imp (φ.imp φ) :=
-      DerivationTree.axiom [] _ (Axiom.prop_s φ φ)
+      DerivationTree.axiom [] _ (Axiom.prop_s φ φ) trivial
     exact DerivationTree.modus_ponens [] _ _ h1 s2
   -- Apply necessitation (necessitation for empty context)
   exact DerivationTree.necessitation _ h
@@ -53,7 +53,7 @@ example (φ : Formula) : ⊢ (φ.imp φ).box := by
 /-- Test necessitation rule with axiom -/
 example (φ : Formula) : ⊢ (φ.box.imp φ).box := by
   -- Modal T is a theorem
-  have d : ⊢ φ.box.imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ)
+  have d : ⊢ φ.box.imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
   exact DerivationTree.necessitation _ d
 
 /-- Test box_conj_intro: combining boxed formulas -/
@@ -146,22 +146,22 @@ example (φ ψ : Formula) : ⊢ φ.imp (ψ.imp (φ.and ψ)) := pairing φ ψ
 example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
   -- □p → □□p by Modal 4
   have h1 : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box :=
-    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "p")) trivial
   -- □□p → □p trivially (by Modal T applied to □p)
   have h2 : ⊢ (Formula.atom_s "p").box.box.imp (Formula.atom_s "p").box :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p").box)
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p").box) trivial
   -- □p → □p by transitivity (degenerate case, but tests the mechanism)
   -- Actually, let's use a proper chain: □p → □□p → □p
   -- Then compose with MT: □p → p
   have h3 : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p")) trivial
   exact h3
 
 /-- Test mp (modus ponens restatement) with axioms -/
 example (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
   -- Testing imp_trans in a proof similar to perpetuity components
-  have h1 : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ)
-  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future)
+  have h1 : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
+  have h2 : ⊢ (φ.all_future.box).imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future) trivial
   exact imp_trans h1 h2
 
 /-- Test that imp_trans composes three implications -/
@@ -234,7 +234,7 @@ example (A B : Formula) (h : ⊢ A.imp B) : ⊢ B.neg.imp A.neg := contrapositio
 example : ⊢ (Formula.atom_s "p").neg.imp (Formula.atom_s "p").box.neg := by
   -- From □p → p (Modal T), derive ¬p → ¬□p
   have h : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
-    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p")) trivial
   exact contraposition h
 
 /-- Test contraposition is complete (no sorry) -/
@@ -334,8 +334,7 @@ example (p : Formula) : ⊢ (▽p).diamond.imp (△(p.diamond)) := perpetuity_5 
 /-- Test: P1 combined with modal T gives reflexivity path -/
 example (φ : Formula) : ⊢ φ.box.imp φ := by
   -- □φ → φ is Modal T axiom, but we can also derive via P1 + other axioms
-  apply DerivationTree.axiom
-  exact Axiom.modal_t φ
+  exact DerivationTree.axiom _ _ (Axiom.modal_t φ) trivial
 
 /-- Test: P3 is derivable from MF axiom (□φ → □Fφ, and always = future) -/
 example (φ : Formula) : ⊢ φ.box.imp φ.always.box := perpetuity_3 φ
