@@ -179,20 +179,21 @@ fast paths and map abort to `.timeout`.
 
 ---
 
-### Phase 3: Wire cancellable decision into labelFormulaImpl [NOT STARTED]
+### Phase 3: Wire cancellable decision into labelFormulaImpl [COMPLETED]
 
 **Goal**: Replace the non-observing pure task body with the cancellable variant and signal the
 abort ref on the timeout branch.
 
 **Tasks**:
-- [ ] At DatasetGenerator.lean:~1346, add `let abortRef ← IO.mkRef false` before spawning the task.
-- [ ] Change the task body (line ~1358) from `return decideAutoAdaptive φ fc adaptiveFuel` to
+- [x] At DatasetGenerator.lean:~1346, add `let abortRef ← IO.mkRef false` before spawning the task.
+- [x] Change the task body (line ~1358) from `return decideAutoAdaptive φ fc adaptiveFuel` to
   `decideAutoAdaptiveCancellable abortRef φ fc adaptiveFuel`.
-- [ ] On the timeout branch (line ~1377), add `abortRef.set true` immediately before the existing
+- [x] On the timeout branch (line ~1377), add `abortRef.set true` immediately before the existing
   `IO.cancel task` (keep `IO.cancel` as belt-and-braces).
-- [ ] Add the `CancellableExpansion` import to DatasetGenerator.lean.
-- [ ] Confirm the chunked parallel path (line ~1678) needs no change (it calls
+- [x] Add the `CancellableExpansion` import to DatasetGenerator.lean.
+- [x] Confirm the chunked parallel path (line ~1678) needs no change (it calls
   `labelFormulaWithCache -> labelFormulaImpl`, which now owns the ref internally).
+  *(confirmed: chunk tasks call labelFormulaWithCache → labelFormulaImpl unchanged)*
 
 **Timing**: ~0.5 hour
 

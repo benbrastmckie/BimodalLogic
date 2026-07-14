@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Decidability.DecisionProcedure
+import Bimodal.Metalogic.Decidability.CancellableExpansion
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Automation.FormulaEnumerator
 import Bimodal.Automation.DataExport
@@ -1354,8 +1355,13 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     -- IO.asTask (unlike Task.spawn) supports IO.cancel on the timeout path,
     -- ensuring the spawned task is signaled for cancellation when the
     -- wall-clock deadline fires instead of running forever in the background.
+    -- Task 343: run the *cancellable* decision mirror so the timed task
+    -- re-enters IO at every tableau step and observes the abort ref set below,
+    -- instead of running a single non-observing pure computation to
+    -- fuel/branch exhaustion as a zombie thread.
+    let abortRef ← IO.mkRef false
     let task ← IO.asTask (prio := .dedicated) do
-      return decideAutoAdaptive φ fc adaptiveFuel
+      decideAutoAdaptiveCancellable abortRef φ fc adaptiveFuel
     let deadline := startTime + wallclockTimeoutMs
     let mut timedOut := false
     -- Poll loop with 1ms sleep
@@ -1372,8 +1378,11 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
     let metrics := computeMetrics φ elapsed
     let patternKey := PatternKey.fromFormula φ
     if timedOut then
-      -- Task 298: cancel the spawned IO task to prevent memory leaks
-      -- from abandoned exponential tableau branching.
+      -- Task 298/343: signal the abort ref first (observed cooperatively by
+      -- decideAutoAdaptiveCancellable at every tableau step), then cancel the
+      -- spawned IO task as belt-and-braces. This stops abandoned exponential
+      -- tableau branching promptly instead of letting it run to exhaustion.
+      abortRef.set true
       IO.cancel task
       let intResult := computeInterestingness φ none none
       return {
