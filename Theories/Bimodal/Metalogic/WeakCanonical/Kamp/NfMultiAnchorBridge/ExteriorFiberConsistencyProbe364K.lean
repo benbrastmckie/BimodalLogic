@@ -429,4 +429,169 @@ theorem kvE_probe364_adapted_plant_rejected :
     kvE_fiberElemConsistentV2 m2sigma3 m2sstar = false :=
   kvE_probe364_replant_selfdefeating m2sigma3 m2_sigma3_marks_sstar m2_sigma3_marks_h30
 
+/-! ## Phase 2 — honest preservation for the candidate (the crux)
+
+The strengthened guard must accept every honestly realized fiber, in full generality (any
+model, any environment). The extra proof obligation over the task-363 argument is exactly one
+witness: the characteristic mate `nf_characteristic M (j+1) (n+1) (Fin.cons u env)` is
+co-realized with `σ` BY CONSTRUCTION — `⟨M, env, u, hσ, nf_characteristic_satisfies⟩`. This is
+the adjudication checkpoint's dischargeability test for the chosen candidate, and it passes
+without any new bookkeeping lemma beyond the task-363 `cons_cons_skipOne` (replicated here;
+the original is `private` in the production home). -/
+
+/-- Environment bookkeeping for the mate check: dropping slot 1 from the doubly-extended
+    tuple `[u, xs, env]` leaves `[u, env]` (template copy of the `private` production
+    original, `ExteriorFiberConsistencyK.lean:90`). -/
+private theorem cons_cons_skipOne364 {α : Type _} {n : Nat} (u xs : α) (env : Fin n → α)
+    (i : Fin (n + 1)) :
+    (Fin.cons u (Fin.cons xs env) : Fin (n + 2) → α) (skipFin ⟨1, by omega⟩ i) =
+      (Fin.cons u env : Fin (n + 1) → α) i := by
+  rcases i with ⟨iv, hi⟩
+  cases iv with
+  | zero =>
+    have hs : skipFin (⟨1, by omega⟩ : Fin (n + 2)) ⟨0, hi⟩ = ⟨0, by omega⟩ := by
+      simp only [skipFin]
+      rw [dif_pos (by omega)]
+    rw [hs]
+    rfl
+  | succ m =>
+    have hs : skipFin (⟨1, by omega⟩ : Fin (n + 2)) ⟨m + 1, hi⟩ =
+        Fin.succ (Fin.succ (⟨m, by omega⟩ : Fin n)) := by
+      simp only [skipFin]
+      rw [dif_neg (by omega)]
+      rfl
+    have hr : (⟨m + 1, hi⟩ : Fin (n + 1)) = Fin.succ (⟨m, by omega⟩ : Fin n) := rfl
+    rw [hs, hr, Fin.cons_succ, Fin.cons_succ, Fin.cons_succ]
+
+/-- **Gate 2a crux — realized fibers pass the strengthened guard** (honest preservation,
+    per-fiber, full generality): if `σ` is realized at `env` and its fiber `s` at
+    `Fin.cons xs env`, then `s` passes the V2 guard. The mate witness for a marked inner `e`
+    (realized at `Fin.cons u (Fin.cons xs env)`) is the characteristic of the dropped tuple
+    `Fin.cons u env` — `σ`-marked by realization, atom-matching by construction, and
+    CO-REALIZED with `σ` by the very hypotheses in scope. Induction on the fiber depth. -/
+theorem kvE_fiberElemConsistentV2_of_realized {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) :
+    ∀ {k n : Nat} (env : Fin n → M.carrier) (xs : M.carrier)
+      (σ : NormalForm sig (k + 1) n) (s : NormalForm sig k (n + 1)),
+      nf_eval_nf M (k + 1) n env σ →
+      nf_eval_nf M k (n + 1) (Fin.cons xs env) s →
+      kvE_fiberElemConsistentV2 σ s = true := by
+  intro k
+  induction k with
+  | zero => intro n env xs σ s _ _; rfl
+  | succ j ih =>
+    intro n env xs σ s hσ hs
+    rw [kvE_fiberElemConsistentV2, Bool.and_eq_true]
+    constructor
+    · -- mate check (row match AND joint co-realization)
+      rw [List.all_eq_true]
+      intro e _
+      rw [Bool.or_eq_true]
+      by_cases hbe : s.2 e = true
+      · refine Or.inr ?_
+        obtain ⟨u, hu⟩ := (hs.2 e).mpr hbe
+        rw [List.any_eq_true]
+        refine ⟨nf_characteristic M (j + 1) (n + 1) (Fin.cons u env),
+          Finset.mem_toList.mpr (Finset.mem_univ _), ?_⟩
+        rw [Bool.and_eq_true, Bool.and_eq_true]
+        refine ⟨⟨(hσ.2 _).mp ⟨u, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩, ?_⟩, ?_⟩
+        · -- row match: LHS the dropped atom row of `e`; RHS the characteristic's atom row
+          refine decide_eq_true ?_
+          funext a
+          have hatoms : ∀ a' : AtomKind sig (n + 2),
+              atom_eval M (Fin.cons u (Fin.cons xs env)) a' ↔ e.atom_assgn a' = true :=
+            nf_eval_nf_atom_layer M _ e hu
+          have hchar : (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)).atom_assgn a =
+              @decide (atom_eval M (Fin.cons u env) a) (Classical.dec _) := rfl
+          rw [hchar]
+          cases a with
+          | pred p i =>
+            have hL := hatoms (.pred p (skipFin ⟨1, by omega⟩ i))
+            simp only [atom_eval, cons_cons_skipOne364] at hL
+            show e.atom_assgn (.pred p (skipFin ⟨1, by omega⟩ i)) = _
+            cases hb : e.atom_assgn (.pred p (skipFin ⟨1, by omega⟩ i)) with
+            | true =>
+              exact (@decide_eq_true (atom_eval M (Fin.cons u env) (.pred p i))
+                (Classical.dec _) (hL.mpr hb)).symm
+            | false =>
+              refine (@decide_eq_false (atom_eval M (Fin.cons u env) (.pred p i))
+                (Classical.dec _) ?_).symm
+              intro hev
+              exact absurd (hL.mp hev) (by rw [hb]; exact Bool.false_ne_true)
+          | order i j' hne =>
+            have hL := hatoms (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
+              ((skipFin_injective _).ne hne))
+            simp only [atom_eval, cons_cons_skipOne364] at hL
+            show e.atom_assgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
+              ((skipFin_injective _).ne hne)) = _
+            cases hb : e.atom_assgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
+                ((skipFin_injective _).ne hne)) with
+            | true =>
+              exact (@decide_eq_true (atom_eval M (Fin.cons u env) (.order i j' hne))
+                (Classical.dec _) (hL.mpr hb)).symm
+            | false =>
+              refine (@decide_eq_false (atom_eval M (Fin.cons u env) (.order i j' hne))
+                (Classical.dec _) ?_).symm
+              intro hev
+              exact absurd (hL.mp hev) (by rw [hb]; exact Bool.false_ne_true)
+        · -- joint co-realization: the hypotheses in scope ARE the witness
+          exact @decide_eq_true
+            (∃ (M0 : OrderedMonadicStructure sig) (env0 : Fin n → M0.carrier)
+              (u0 : M0.carrier),
+              nf_eval_nf M0 (j + 2) n env0 σ ∧
+              nf_eval_nf M0 (j + 1) (n + 1) (Fin.cons u0 env0)
+                (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)))
+            (Classical.dec _)
+            ⟨M, env, u, hσ, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩
+      · exact Or.inl (by rw [Bool.not_eq_true] at hbe; rw [hbe]; rfl)
+    · -- depth recursion
+      rw [List.all_eq_true]
+      intro e _
+      rw [Bool.or_eq_true]
+      by_cases hbe : s.2 e = true
+      · obtain ⟨u, hu⟩ := (hs.2 e).mpr hbe
+        exact Or.inr (ih (Fin.cons xs env) u s e hs hu)
+      · exact Or.inl (by rw [Bool.not_eq_true] at hbe; rw [hbe]; rfl)
+
+/-- **Realized slices pass the strengthened σ-level guard** (honest preservation, σ-level). -/
+theorem kvE_fiberConsistentV2_of_realized {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {k n : Nat} (env : Fin n → M.carrier)
+    (σ : NormalForm sig (k + 1) n)
+    (hσ : nf_eval_nf M (k + 1) n env σ) :
+    kvE_fiberConsistentV2 σ = true := by
+  rw [kvE_fiberConsistentV2, List.all_eq_true]
+  intro s _
+  rw [Bool.or_eq_true]
+  by_cases hb : σ.2 s = true
+  · obtain ⟨xs, hxs⟩ := (hσ.2 s).mpr hb
+    exact Or.inr (kvE_fiberElemConsistentV2_of_realized M env xs σ s hσ hxs)
+  · exact Or.inl (by rw [Bool.not_eq_true] at hb; rw [hb]; rfl)
+
+/-- Depth-0 inertness, per-fiber: unchanged `rfl` (the depth-0 arm is verbatim `true`). -/
+theorem kvE_fiberElemConsistentV2_zero {sig : MonadicSignature} {n : Nat}
+    (σ : NormalForm sig 1 n) (s : NormalForm sig 0 (n + 1)) :
+    kvE_fiberElemConsistentV2 σ s = true := rfl
+
+/-- Depth-0 inertness, σ-level: the m = 0 layers see a vacuous conjunct, exactly as at 363. -/
+theorem kvE_fiberConsistentV2_zero {sig : MonadicSignature} {n : Nat}
+    (σ : NormalForm sig 1 n) : kvE_fiberConsistentV2 σ = true := by
+  rw [kvE_fiberConsistentV2, List.all_eq_true]
+  intro s _
+  rw [kvE_fiberElemConsistentV2_zero σ s, Bool.or_true]
+
+/-! ## Gate 2a — honest cast certificates (derived from `_of_realized`, not by computation) -/
+
+/-- **Gate 2a (σ-level)**: the honest endpoint characteristic `τ` passes the V2 guard. -/
+theorem kvE_probe364_honest_tau_consistent : kvE_fiberConsistentV2 m2tau = true :=
+  kvE_fiberConsistentV2_of_realized M2M m2env4 m2tau
+    (nf_characteristic_satisfies M2M 2 4 m2env4)
+
+/-- **Gate 2a (per-fiber, uniform in `r`)**: EVERY honest pinned fiber — gap (`r ∈ (18,25)`),
+    self (`r = 25`), ray (`r > 25`) — is V2-elem-consistent within `τ`. -/
+theorem kvE_probe364_honest_fiber_consistent (r : ℤ) :
+    kvE_fiberElemConsistentV2 m2tau (nf_characteristic M2M 1 5 (Fin.cons r m2env4)) = true :=
+  kvE_fiberElemConsistentV2_of_realized M2M m2env4 r m2tau _
+    (nf_characteristic_satisfies M2M 2 4 m2env4)
+    (nf_characteristic_satisfies M2M 1 5 (Fin.cons r m2env4))
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

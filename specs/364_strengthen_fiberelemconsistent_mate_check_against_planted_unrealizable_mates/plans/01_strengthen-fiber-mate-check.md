@@ -196,7 +196,7 @@ plant and the m=1 fake.
 
 ---
 
-### Phase 2: Honest-preservation proof for the candidate (probe-side crux) [NOT STARTED]
+### Phase 2: Honest-preservation proof for the candidate (probe-side crux) [COMPLETED]
 
 **Goal**: Prove, at probe level and in full generality (any model, any env), that honestly
 realized fibers satisfy the strengthened guard. This is the load-bearing mathematics: the
@@ -204,24 +204,30 @@ characteristic mate `nf_characteristic M (j+1) (n+1) (Fin.cons u env)` must be s
 strengthened content, not just the dropped atom row.
 
 **Tasks**:
-- [ ] Prove `kvE_fiberElemConsistentV2_of_realized` (V2 analog of
+- [x] Prove `kvE_fiberElemConsistentV2_of_realized` (V2 analog of
       `ExteriorFiberConsistencyK.lean:117-191`): same statement shape, extended to discharge the
       new content conjunct for the characteristic mate. Expect new supporting lemmas relating
       `nfk_projFresh` / the chosen content comparison to realization at
       `Fin.cons u (Fin.cons xs env)` vs `Fin.cons u env` (the `cons_cons_skipOne` bookkeeping
-      pattern generalizes).
-- [ ] Prove `kvE_fiberConsistentV2_of_realized` (σ-level corollary) and the inertness pair
-      `kvE_fiberElemConsistentV2_zero` (`rfl`) / `kvE_fiberConsistentV2_zero`.
-- [ ] **Gate 2a (honest cast preservation)**: V2 analogs of GO certificates 3-4 —
+      pattern generalizes). *(completed — no NEW bookkeeping lemma needed beyond the replicated
+      `cons_cons_skipOne364`: the co-realization conjunct is discharged by the in-scope witness
+      `⟨M, env, u, hσ, nf_characteristic_satisfies⟩`)*
+- [x] Prove `kvE_fiberConsistentV2_of_realized` (σ-level corollary) and the inertness pair
+      `kvE_fiberElemConsistentV2_zero` (`rfl`) / `kvE_fiberConsistentV2_zero`. *(completed)*
+- [x] **Gate 2a (honest cast preservation)**: V2 analogs of GO certificates 3-4 —
       `kvE_fiberConsistentV2 m1tau = true` and, uniformly in `r`,
       `kvE_fiberElemConsistentV2 m1tau (nf_characteristic M1M 1 5 (Fin.cons r m1env4)) = true` —
-      derived from the `_of_realized` lemma, not by concrete computation.
-- [ ] **Adjudication checkpoint**: if the content conjunct is NOT dischargeable for the
+      derived from the `_of_realized` lemma, not by concrete computation. *(completed — as
+      `kvE_probe364_honest_tau_consistent` / `kvE_probe364_honest_fiber_consistent` on the leaf's
+      cast objects `m2tau`/`m2env4` (identical values to `m1tau`/`m1env4`); floor axioms)*
+- [x] **Adjudication checkpoint**: if the content conjunct is NOT dischargeable for the
       characteristic mate under approach (a), switch the candidate to approach (b)/synthesis and
       loop Phase 1's gates once. If neither candidate closes both Phase-1 gates AND this phase's
       preservation proof, STOP: mark task `[BLOCKED]`, write structured escalation (what was
       tried, the exact failing goal states, the countermodel or unprovable obligation), no sorry,
       no vacuous def, delete or clearly quarantine the probe leaf as a NO-GO record.
+      *(completed — checkpoint PASSED on the (b)-joint candidate: co-realization dischargeable
+      trivially for the characteristic mate; no redesign loop consumed)*
 
 **Timing**: 2 hours
 
