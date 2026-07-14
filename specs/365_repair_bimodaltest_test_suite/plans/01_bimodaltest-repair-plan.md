@@ -119,7 +119,18 @@ modules become reachable by Lake.
 
 ---
 
-### Phase 2: Risk spike — temp_a/temp_l resolution + Generators.lean [NOT STARTED]
+### Phase 2: Risk spike — temp_a/temp_l resolution + Generators.lean [COMPLETED]
+
+**Decision recorded (temp_a/temp_l)**:
+- `temp_a`: replace `Axiom.temp_a φ` → `Axiom.connect_future φ`. The formula types are
+  definitionally identical (`φ.imp (φ.some_past.all_future)` ≡ `φ.imp (Formula.all_future φ.some_past)`).
+  Semantic uses of `temp_a_valid` remain valid and unchanged.
+- `temp_l`: NO axiom or single derived-theorem replacement exists (`temp_l` was fully removed; it
+  now requires a multi-step derivation). The project's own `AxiomsTest.lean` already established the
+  convention of quarantining the derivation-level `temp_l` construct with an inline `NOTE` while
+  keeping the semantic `temp_l_valid` test. Phase 4 applies this: derivation-level
+  `DerivationTree.axiom [] φ (Axiom.temp_l p)` constructs are quarantined with a `NOTE` (never
+  `sorry`), and semantic `temp_l_valid` references are kept.
 
 **Goal**: De-risk the two possible-BLOCKED items early: (a) determine the replacement (or fallback)
 for the removed `temp_a`/`temp_l` axioms, and (b) bring `Property/Generators.lean` green (or
@@ -127,17 +138,12 @@ quarantine its broken constructs). This unblocks the axiom-migration and TaskFra
 known-good recipe.
 
 **Tasks**:
-- [ ] Library archaeology for `temp_a`/`temp_l`: search `Theories/Bimodal/` via `lean_local_search`,
-      `loogle`, and git history for a rename or derived-theorem replacement.
-- [ ] Record the decision: either the concrete replacement identifiers, or a documented quarantine
-      plan (comment out only the specific dependent constructs with an inline `NOTE:` explaining the
-      removal; never insert `sorry`). This decision is consumed by Phase 4.
-- [ ] `Property/Generators.lean`: apply Cat C (`TaskFrame` `T`→`D`, field renames
-      `nullity`→`nullity_identity`, `compositionality`→`forward_comp`, add `converse`), then resolve
-      the parse-level errors (`unexpected token '/-!'`, invalid pattern, `do`-notation) and the 24
-      instance-synthesis failures (likely `Plausible`/generator-API drift).
-- [ ] If Generators.lean proves intractable within budget, quarantine the broken generator block to a
-      buildable subset with a documented `NOTE:`, keeping the module importable.
+- [x] Library archaeology for `temp_a`/`temp_l`: search `Theories/Bimodal/` via `lean_local_search`,
+      `loogle`, and git history for a rename or derived-theorem replacement. *(completed — temp_a ≡ connect_future axiom; temp_l fully removed, no single replacement)*
+- [x] Record the decision: either the concrete replacement identifiers, or a documented quarantine
+      plan. *(completed — see "Decision recorded" block above)*
+- [x] `Property/Generators.lean`: apply Cat C and resolve parse-level + instance-synthesis failures. *(deviation: altered — root cause was Plausible generator-API drift (`Gen.oneOf` Array+pos, `Gen.resize` Nat→Nat fn, `Gen.choose` type+proof+subtype), `Formula.atom` needing `Atom` (used `atom_s`), non-constructor `all_past`/`all_future` Shrinkable patterns (rewrote to real constructors untl/snce), and instance self-reference (extracted standalone `genFormula`/`shrinkFormula`). Added `import Mathlib.Algebra.Order.Group.Int` for `TaskFrame Int`.)*
+- [x] If Generators.lean proves intractable, quarantine the broken generator block. *(deviation: skipped for the Formula/TaskFrame generators (fully repaired); the `TaskModel` generator block + `TaskModelProxy` were quarantined with an inline NOTE — proxy lacks required `Repr`/`Shrinkable` and no `Testable` consumer quantifies over `TaskModel`.)*
 
 **Timing**: 1.5-2 hours
 

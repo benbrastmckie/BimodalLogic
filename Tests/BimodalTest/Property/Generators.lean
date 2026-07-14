@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Order.Group.Int
 import Bimodal.Syntax.Formula
 import Bimodal.Syntax.Context
 import Bimodal.Semantics.TaskFrame
@@ -14,14 +15,26 @@ This module provides generators for property-based testing of Logos types.
 - `Arbitrary Formula`: Size-controlled recursive generator for formulas
 - `Shrinkable Formula`: Shrinking strategy for minimal counterexamples
 - `Arbitrary Context`: Generator for contexts (automatic via List)
-- `SampleableExt TaskFrame`: Generator for task frames with finite worlds
+- `SampleableExt (TaskFrame Int)`: Generator for task frames with finite worlds
 
 ## Implementation Notes
 
 - Formula generation uses size control to prevent infinite recursion
 - Shrinking reduces formulas to simpler subformulas for better counterexamples
-- TaskFrame generation creates finite frames with 1-5 world states
+- TaskFrame generation reuses the library's `nat_frame` (satisfies all frame
+  constraints by construction: `nullity_identity`, `forward_comp`, `converse`)
 - All generators follow Plausible framework conventions
+
+## API Drift Notes (Task 365)
+
+The Plausible API changed since this file was written:
+- `Gen.oneOf` now takes an `Array` (with a `0 < size` proof) rather than a `List`.
+- `Gen.resize` now takes a `Nat → Nat` function rather than a `Nat`.
+- `Gen.choose` now takes an explicit type + `lo ≤ hi` proof and returns a subtype.
+- `Formula.atom` takes an `Atom` (not a `String`); use `Formula.atom_s` for a
+  `String`-seeded atom.
+- `SampleableExt` is derived from `Arbitrary` + `Shrinkable` + `Repr` via the
+  `selfContained` default instance.
 
 ## References
 
@@ -38,7 +51,7 @@ open Plausible
 /-! ## Formula Generators -/
 
 /--
-Arbitrary instance for Formula with size-controlled generation.
+Recursive, size-controlled generator for `Formula`.
 
 Generates formulas recursively with size control to ensure termination.
 At size 0, generates only atoms and bot. At larger sizes, generates
@@ -47,26 +60,28 @@ compound formulas with reduced size for subformulas.
 This prevents infinite recursion and ensures a good distribution of
 formula sizes in property tests.
 -/
-instance : Arbitrary Formula where
-  arbitrary := Gen.sized fun size =>
-    if size ≤ 0 then
-      -- Base case: only atoms and bot
-      Gen.oneOf [
-        pure Formula.bot,
-        Formula.atom <$> Arbitrary.arbitrary
-      ]
-    else
-      -- Recursive case: all constructors with reduced size
-      let subsize := size / 2
-      Gen.oneOf [
-        pure Formula.bot,
-        Formula.atom <$> Arbitrary.arbitrary,
-        Formula.imp <$> Gen.resize subsize Arbitrary.arbitrary
-                    <*> Gen.resize subsize Arbitrary.arbitrary,
-        Formula.box <$> Gen.resize (size - 1) Arbitrary.arbitrary,
-        Formula.all_past <$> Gen.resize (size - 1) Arbitrary.arbitrary,
-        Formula.all_future <$> Gen.resize (size - 1) Arbitrary.arbitrary
-      ]
+partial def genFormula : Gen Formula := Gen.sized fun size =>
+  if size ≤ 0 then
+    -- Base case: only atoms and bot
+    Gen.oneOfWithDefault (pure Formula.bot) [
+      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String)
+    ]
+  else
+    -- Recursive case: all constructors with reduced size
+    let subsize := size / 2
+    Gen.oneOfWithDefault (pure Formula.bot) [
+      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String),
+      Formula.imp <$> Gen.resize (fun _ => subsize) genFormula
+                  <*> Gen.resize (fun _ => subsize) genFormula,
+      Formula.box <$> Gen.resize (fun _ => size - 1) genFormula,
+      Formula.all_past <$> Gen.resize (fun _ => size - 1) genFormula,
+      Formula.all_future <$> Gen.resize (fun _ => size - 1) genFormula
+    ]
+
+/--
+Arbitrary instance for Formula with size-controlled generation.
+-/
+instance : Arbitrary Formula := ⟨genFormula⟩
 
 /--
 Shrinkable instance for Formula.
@@ -77,32 +92,33 @@ Shrinks formulas to simpler subformulas for better counterexample reporting.
 - Subformulas are also recursively shrunk
 
 This helps Plausible find minimal counterexamples when properties fail.
+
+Note: matches only on the real `Formula` constructors (`atom`, `bot`, `imp`,
+`box`, `untl`, `snce`). `all_past`/`all_future` are derived operators, not
+constructors, so they cannot appear as match patterns.
 -/
-instance : Shrinkable Formula where
-  shrink
-    | Formula.atom _ => []
-    | Formula.bot => []
-    | Formula.imp p q =>
-        [p, q] ++
-        (Shrinkable.shrink p).map (Formula.imp · q) ++
-        (Shrinkable.shrink q).map (Formula.imp p ·)
-    | Formula.box p =>
-        [p] ++ (Shrinkable.shrink p).map Formula.box
-    | Formula.all_past p =>
-        [p] ++ (Shrinkable.shrink p).map Formula.all_past
-    | Formula.all_future p =>
-        [p] ++ (Shrinkable.shrink p).map Formula.all_future
+partial def shrinkFormula : Formula → List Formula
+  | Formula.atom _ => []
+  | Formula.bot => []
+  | Formula.imp p q =>
+      [p, q] ++
+      (shrinkFormula p).map (Formula.imp · q) ++
+      (shrinkFormula q).map (Formula.imp p ·)
+  | Formula.box p =>
+      [p] ++ (shrinkFormula p).map Formula.box
+  | Formula.untl p q =>
+      [p, q] ++
+      (shrinkFormula p).map (Formula.untl · q) ++
+      (shrinkFormula q).map (Formula.untl p ·)
+  | Formula.snce p q =>
+      [p, q] ++
+      (shrinkFormula p).map (Formula.snce · q) ++
+      (shrinkFormula q).map (Formula.snce p ·)
+
+instance : Shrinkable Formula := ⟨shrinkFormula⟩
 
 /-! ## Context Generators -/
 
-/--
-Context generator (automatic via List).
-
-Contexts are just lists of formulas, so we get the Arbitrary instance
-for free from List's Arbitrary instance combined with Formula's Arbitrary.
-
-This generates contexts of varying lengths with random formulas.
--/
 -- Note: Arbitrary instance for Context (List Formula) is automatic
 
 /-! ## TaskFrame Generators -/
@@ -113,96 +129,54 @@ Generate a small natural number (0-4) for world count.
 Used to create finite task frames with a reasonable number of worlds.
 -/
 def genSmallNat : Gen Nat := do
-  let n ← Gen.choose 0 4
-  return n
+  let n ← Gen.choose Nat 0 4 (by omega)
+  return n.val
 
 /--
 SampleableExt instance for TaskFrame with integer time.
 
-Generates finite task frames with:
-- 1-5 world states (represented as Nat)
-- Integer time type
-- Permissive task relation (all transitions allowed)
-- Nullity and compositionality satisfied by construction
-
-This is a simple generator suitable for basic property testing.
-For more complex frame properties, use specialized generators.
+Reuses the library's `nat_frame`, which satisfies all frame constraints
+(`nullity_identity`, `forward_comp`, `converse`) by construction. This is a
+simple generator suitable for basic property testing.
 -/
 instance : SampleableExt (TaskFrame Int) where
   proxy := Unit
-  interp _ :=
-    { WorldState := Nat
-      task_rel := fun _ _ _ => True  -- Permissive relation
-      nullity := fun _ => trivial
-      compositionality := fun _ _ _ _ _ _ _ => trivial
-    }
-  sample := pure ()
+  interp _ := TaskFrame.nat_frame (D := Int)
 
-/-! ## TaskModel Generators -/
+/-! ## TaskModel Generators (QUARANTINED — Task 365)
 
-/--
-Proxy type for TaskModel generation.
+NOTE (Task 365): The `SampleableExt (TaskModel …)` instance and the
+`TaskModel`-valued generators below were quarantined. They relied on a
+`TaskModelProxy` proxy type that lacks the `Repr`/`Shrinkable` instances the
+current `SampleableExt` class requires, and on the removed `T`-parameter form of
+`TaskFrame.nat_frame` and a `String`-typed valuation. No `Testable` consumer in
+the imported test suite quantifies over `TaskModel`, so these are not needed for
+the green build. They are commented out (never `sorry`-ed) to keep the module
+importable. Restoring them is tracked as a follow-up (see task summary).
 
-Since TaskModel has dependent types (valuation depends on F.WorldState),
-we use the SampleableExt pattern with a proxy type that generates
-the frame first, then constructs a deterministic valuation.
--/
 structure TaskModelProxy where
-  /-- Proxy for the underlying frame (Unit since we use the default generator) -/
   frameProxy : Unit
-  /-- Seed for deterministic valuation generation -/
   valuationSeed : Nat
 
-/--
-SampleableExt instance for TaskModel with integer time.
-
-Generates task models with:
-- Finite task frames (1-5 world states)
-- Deterministic hash-based valuation function
-- Valuation: (hash (seed, w, s)) % 2 = 0 determines if atom s is true at world w
-
-This approach handles the dependent type challenge by:
-1. First generating a frame (via the Unit proxy)
-2. Then constructing a valuation that depends on that frame's WorldState
-3. Using a hash-based deterministic function for reproducibility
--/
-instance : SampleableExt (TaskModel (TaskFrame.nat_frame (T := Int))) where
+instance : SampleableExt (TaskModel (TaskFrame.nat_frame (D := Int))) where
   proxy := TaskModelProxy
   interp p :=
     { valuation := fun w s =>
-        -- Deterministic valuation based on hash of seed, world, and atom
-        -- This ensures reproducibility while providing varied truth values
-        (Nat.mix (Nat.mix p.valuationSeed w.toNat) s.length) % 2 = 0
-    }
-  sample := do
-    let seed ← Gen.choose 0 1000
-    return ⟨(), seed⟩
+        (Nat.mix (Nat.mix p.valuationSeed w) s.base.length) % 2 = 0 }
+  sample := ⟨do
+    let seed ← Gen.choose Nat 0 1000 (by omega)
+    return ⟨(), seed.val⟩⟩
 
-/--
-Generate a TaskModel where all atoms are false.
-
-Useful for testing properties that require specific valuation patterns.
--/
-def genAllFalseModel : Gen (TaskModel (TaskFrame.nat_frame (T := Int))) :=
+def genAllFalseModel : Gen (TaskModel (TaskFrame.nat_frame (D := Int))) :=
   pure { valuation := fun _ _ => False }
 
-/--
-Generate a TaskModel where all atoms are true.
-
-Useful for testing properties that require specific valuation patterns.
--/
-def genAllTrueModel : Gen (TaskModel (TaskFrame.nat_frame (T := Int))) :=
+def genAllTrueModel : Gen (TaskModel (TaskFrame.nat_frame (D := Int))) :=
   pure { valuation := fun _ _ => True }
 
-/--
-Generate a TaskModel with a specific valuation pattern.
-
-Takes a predicate on (world, atom) pairs and creates a model
-where the valuation matches that predicate.
--/
-def genModelWithPattern (pattern : Nat → String → Bool) :
-    Gen (TaskModel (TaskFrame.nat_frame (T := Int))) :=
+def genModelWithPattern (pattern : Nat → Atom → Bool) :
+    Gen (TaskModel (TaskFrame.nat_frame (D := Int))) :=
   pure { valuation := fun w s => pattern w s }
+-/
 
 /-! ## Helper Functions -/
 
@@ -212,7 +186,7 @@ Generate a formula of specific complexity.
 Useful for testing properties that depend on formula size.
 -/
 def genFormulaOfSize (n : Nat) : Gen Formula :=
-  Gen.resize n Arbitrary.arbitrary
+  Gen.resize (fun _ => n) genFormula
 
 /--
 Generate a non-empty context.
@@ -220,8 +194,8 @@ Generate a non-empty context.
 Useful for testing properties that require at least one assumption.
 -/
 def genNonEmptyContext : Gen Context := do
-  let φ ← Arbitrary.arbitrary
-  let Γ ← Arbitrary.arbitrary
+  let φ ← genFormula
+  let Γ ← (Arbitrary.arbitrary : Gen Context)
   return φ :: Γ
 
 /--
@@ -230,8 +204,8 @@ Generate a simple atomic formula.
 Useful for testing base cases.
 -/
 def genAtom : Gen Formula := do
-  let s ← Arbitrary.arbitrary
-  return Formula.atom s
+  let s ← (Arbitrary.arbitrary : Gen String)
+  return Formula.atom_s s
 
 /--
 Generate a propositional formula (no modal/temporal operators).
@@ -240,17 +214,15 @@ Useful for testing propositional logic properties.
 -/
 partial def genPropFormula : Gen Formula := Gen.sized fun size =>
   if size ≤ 0 then
-    Gen.oneOf [
-      pure Formula.bot,
-      Formula.atom <$> Arbitrary.arbitrary
+    Gen.oneOfWithDefault (pure Formula.bot) [
+      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String)
     ]
   else
     let subsize := size / 2
-    Gen.oneOf [
-      pure Formula.bot,
-      Formula.atom <$> Arbitrary.arbitrary,
-      Formula.imp <$> Gen.resize subsize genPropFormula
-                  <*> Gen.resize subsize genPropFormula
+    Gen.oneOfWithDefault (pure Formula.bot) [
+      Formula.atom_s <$> (Arbitrary.arbitrary : Gen String),
+      Formula.imp <$> Gen.resize (fun _ => subsize) genPropFormula
+                  <*> Gen.resize (fun _ => subsize) genPropFormula
     ]
 
 end BimodalTest.Property.Generators
