@@ -1274,6 +1274,101 @@ theorem aggPop1_correct (M : OrderedMonadicStructure sig)
   · intro h qnf _
     exact (CAggOd_clause_iff atomMap h_surj M qnf h_UZ h_SZ x t h_lt).trans (h qnf)
 
+/-! ## 10. Phase 16b — the future-arm population fold `aggPop1F` (mirror decision)
+
+**16b mirror-carrier decision (RECORDED, per the Phase-16a handoff)**: route
+(a)-variant — NO mirror dispatcher `CAggOdF` is built, and the 16a mirror
+classification (`aggOdRow*F`/`aggOdClassifyF`) stays unconsumed. The future arm
+reuses the SAME `x < t`-keyed dispatcher `CAggOd` through the BIJECTIVE index swap
+`aggOdSwap12` (the involution of `Fin 3` fixing the witness slot 0 and swapping the
+pin slots 1 ↔ 2), transported by `renameNF_eval_iff` (NfDepth0Generalized.lean:440
+— the full bidirectional rename congruence, applicable exactly because the swap is
+a bijection, unlike the Phase-12 merge maps): at pins `(z0, z1) = (t, x)` with the
+flipped ambient `t < x`, `CAggOd_clause_iff` yields the population existential at
+env `[w, t, x]`, and the swap carries it to the required trichotomy env
+`[w, x, t]`. A DISTINCT future fold carrier `aggPop1F` is still defined — its
+per-qnf carrier is `CAggOd (swap qnf)` with the bit read at the ORIGINAL qnf — but
+no mirror channel machinery is needed. -/
+
+/-- The pin swap: the involution of `Fin 3` fixing the population-witness slot `0`
+    and swapping the pin slots `1 ↔ 2`. -/
+def aggOdSwap12 : Fin 3 → Fin 3 :=
+  Fin.cons 0 (Fin.cons 2 (fun _ => 1))
+
+/-- `aggOdSwap12` is an involution. -/
+theorem aggOdSwap12_involutive : ∀ i, aggOdSwap12 (aggOdSwap12 i) = i := by
+  decide
+
+/-- **The swap transport**: evaluating the swapped qnf on the swapped env
+    `[w, t, x]` is evaluating the original qnf on the trichotomy env `[w, x, t]`.
+    Instance of the bijective rename congruence `renameNF_eval_iff`. -/
+theorem aggOdSwap12_eval_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (w x t : M.carrier) :
+    nf_eval_nf M 1 3 (Fin.cons w (Fin.cons t (fun _ => x)))
+        (renameNF aggOdSwap12 aggOdSwap12 qnf) ↔
+      nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  refine renameNF_eval_iff M aggOdSwap12 aggOdSwap12
+    (Fin.cons w (Fin.cons x (fun _ => t))) (Fin.cons w (Fin.cons t (fun _ => x)))
+    ?_ ?_ aggOdSwap12_involutive aggOdSwap12_involutive qnf
+  · intro i
+    fin_cases i <;> rfl
+  · intro i
+    fin_cases i <;> rfl
+
+/-- **The swapped clause iff**: under the FLIPPED ambient `t < x`, the dispatcher at
+    the swapped qnf read at pins `(t, x)` is exactly the future-arm population
+    existential at the trichotomy env `[w, x, t]`. `CAggOd_clause_iff` at pins
+    `(t, x)` + the swap transport. -/
+theorem CAggOdSwap_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) (htx : t < x) :
+    (CAggOd atomMap h_surj (renameNF aggOdSwap12 aggOdSwap12 qnf)).holds
+        M atomMap t x ↔
+      ∃ w : M.carrier,
+        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  (CAggOd_clause_iff atomMap h_surj M (renameNF aggOdSwap12 aggOdSwap12 qnf)
+      h_UZ h_SZ t x htx).trans
+    (exists_congr fun w => aggOdSwap12_eval_iff M qnf w x t)
+
+/-- **The future-arm k=1 aggregate population carrier `aggPop1F`**: the
+    `conjFull`-fold over ALL `qnf : NormalForm sig 1 3` of the SWAPPED dispatcher
+    `CAggOd (swap qnf)` (bit-true) / its De Morgan negation (bit-false), the bit
+    read at the ORIGINAL qnf. Distinct from `aggPop1` only in the swap — see the
+    section-header decision record. -/
+noncomputable def aggPop1F (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
+  ((Finset.univ : Finset (NormalForm sig 1 3)).toList.map fun qnf =>
+      if sub_nf.2 qnf then
+        CAggOd atomMap h_surj (renameNF aggOdSwap12 aggOdSwap12 qnf)
+      else (CAggOd atomMap h_surj (renameNF aggOdSwap12 aggOdSwap12 qnf)).negFix).foldr
+    VVecEA2.conjFull VVecEA2.trivialTrue
+
+/-- **Correctness of `aggPop1F`** (future arm): under the FLIPPED ambient `t < x`
+    and the Prior hypotheses, the fold's 2-pin semantics at `(t, x)` is exactly the
+    k=1 population MATCH at the trichotomy env `[w, x, t]`. Mirror of
+    `aggPop1_correct` through `CAggOdSwap_clause_iff`. -/
+theorem aggPop1F_correct (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 2 2)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) (h_lt : t < x) :
+    (aggPop1F atomMap h_surj sub_nf).holds M atomMap t x ↔
+      ∀ qnf : NormalForm sig 1 3,
+        ((∃ w : M.carrier,
+            nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) ↔
+          sub_nf.2 qnf = true) := by
+  unfold aggPop1F
+  rw [aggOdPopFold_iff atomMap M
+      (prior_hasAttainedINF M atomMap h_UZ) (prior_hasAttainedSUP M atomMap h_SZ)
+      (fun qnf => CAggOd atomMap h_surj (renameNF aggOdSwap12 aggOdSwap12 qnf))
+      sub_nf.2 t x h_lt]
+  constructor
+  · intro h qnf
+    exact (CAggOdSwap_clause_iff atomMap h_surj M qnf h_UZ h_SZ x t h_lt).symm.trans
+      (h qnf (Finset.mem_toList.mpr (Finset.mem_univ qnf)))
+  · intro h qnf _
+    exact (CAggOdSwap_clause_iff atomMap h_surj M qnf h_UZ h_SZ x t h_lt).trans
+      (h qnf)
+
 end AggregateOffDiag
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
