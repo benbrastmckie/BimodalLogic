@@ -339,7 +339,7 @@ Strictly sequential (21 cites 20's lemma by name). Edit territory: `KampPrior.le
 One agent run per phase (H8). The orchestrator dispatches exactly one open phase per cycle by
 heading-scan.
 
-### Phase 20: Ambient-k=1 arm closure `kampPrior_case1_arm_k1` (additive; no `:361` edit) [NOT STARTED]
+### Phase 20: Ambient-k=1 arm closure `kampPrior_case1_arm_k1` (additive; no `:361` edit) [COMPLETED]
 
 - **Goal:** Land the ambient-k=1 analog of `kampPrior_case1_arm_k0` — the `| 1 =>` arm
   statement of `nf_nvar_exist_all_depths` at ambient `k = 1`

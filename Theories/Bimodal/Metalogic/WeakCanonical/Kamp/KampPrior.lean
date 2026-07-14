@@ -1688,4 +1688,46 @@ theorem kampPrior_case1_arm_k0 {sig : MonadicSignature}
     (kampArm_diag_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
     (kampArm_future_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
 
+/-! ## Task 309 Phase 20 — the ambient-k=1 arm closure
+
+The IDENTICAL recipe as `kampPrior_case1_arm_k0` above, one depth up, over task 350's
+landed k=1 arm triple: `kampArm_past_k1`/`kampArm_future_k1` (the off-diagonal pair,
+`NfMultiAnchorBridge/AggregateOffDiagK1.lean` — DoD lemmas 5/6 and 6/6, unblocked by
+`VVecEA2.conjFull_iff`) and `kampArm_diag_k1` (`NfMultiAnchorBridge/AggregateHookDischarge.lean`).
+The `_correct` conclusions match the `kampPrior_site_trichotomy` disjunct shapes verbatim at
+the generic-site index (certified by the `ShapeCertificatesK1` examples in the provider
+modules, at `sub_nf : NormalForm sig (1 + 1) 2`). Route V (skeleton-shaped arm conclusions,
+consumed by name) — no `h_quant` hook threading (machine-refuted, task 350 R1/R2). This lemma
+is ADDITIVE: no `:361` edit here (that narrowing is Phase 21). -/
+
+/-- **Ambient-k=1 arm closure** (task 309 Phase 20, v10 plan): the `| 1 =>` arm statement
+    of `nf_nvar_exist_all_depths` at ambient `k = 1` (`sub_nf : NormalForm sig 2 2`), closed
+    end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
+    over task 350's three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0` (task 358)
+    at k=1: no gate, no provider obligations (Phase-15 corrected arm indexing — the k=1 arm's
+    per-`qnf` population is depth 1, served unconditionally); the arm formula is M-independent
+    by construction. -/
+theorem kampPrior_case1_arm_k1 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 2 2) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (_h_UZ : semantic_prior_UZ M atomMap)
+        (_h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t A ↔
+        ∃ env : Fin 1 → M.carrier, nf_eval_nf M 2 2 (insertEnv env t) sub_nf := by
+  refine ⟨Formula.or (kampArm_past_k1 atomMap h_surj sub_nf)
+    (Formula.or (kampArm_diag_k1 atomMap h_surj sub_nf)
+      (kampArm_future_k1 atomMap h_surj sub_nf)), ?_⟩
+  intro M h_UZ h_SZ t
+  exact kampPrior_case1_trichotomy_assemble atomMap M 1 sub_nf t
+    (kampArm_past_k1 atomMap h_surj sub_nf)
+    (kampArm_diag_k1 atomMap h_surj sub_nf)
+    (kampArm_future_k1 atomMap h_surj sub_nf)
+    (kampArm_past_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_diag_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_future_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
