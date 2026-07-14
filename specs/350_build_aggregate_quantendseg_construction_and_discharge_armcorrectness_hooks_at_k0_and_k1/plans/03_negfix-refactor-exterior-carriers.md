@@ -854,25 +854,48 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 16b: (F) aggPop1 + kampArm_past_k1 / kampArm_future_k1 + shape certs [IN PROGRESS]
+### Phase 16b: (F) aggPop1 + kampArm_past_k1 / kampArm_future_k1 + shape certs [COMPLETED]
 
 - **Goal:** The final two DoD lemmas, assembled exactly like delivered Phase 3.
 - **Rabinovich anchor:** Lemma 3.4 closure under ∧/∃ (chunk_0010).
 - **Tasks:**
-  - [ ] `aggPop1` (conjFull-fold over `(Finset.univ : Finset (NormalForm sig 1 3)).toList` with `negFix`
+  - [x] `aggPop1` (conjFull-fold over `(Finset.univ : Finset (NormalForm sig 1 3)).toList` with `negFix`
     on bit-false qnf; `Fintype` at NormalForm.lean:167) + `aggPop1_correct` (statement verbatim from the
     Design section; `h_INF := prior_hasAttainedINF … h_UZ`, `h_SUP := prior_hasAttainedSUP … h_SZ`; fold
     induction over `conjFull_iff` + per-qnf `C`-iff / `VVecEA2.negFix_iff`; local `maxHeartbeats` raise
     if needed, R4). Mirror `aggPop1F` for the future arm if the classifier mirror requires a distinct
     carrier (record decision).
-  - [ ] `kampArm_past_k1(_correct)`: atom-layer endpoints ∧ aggPop1, enter via
+    *(Landed: generic biconditional fold lemma `aggOdPopFold_iff` (list induction; cons =
+    `conjFull_iff` + gated `negFix_iff`) + `aggPop1` + `aggPop1_correct` (statement verbatim; per-qnf
+    clause = `CAggOd_clause_iff`). No `maxHeartbeats` raise needed — the fold induction is generic in
+    the list and never normalizes the `univ` enumeration. **Mirror decision RECORDED (§10 of the
+    module)**: route (a)-variant — NO mirror dispatcher `CAggOdF`; the future arm reuses the SAME
+    `CAggOd` through the bijective pin swap `aggOdSwap12` (involution of `Fin 3` fixing slot 0)
+    transported by `renameNF_eval_iff` (NfDepth0Generalized:440); a distinct fold carrier `aggPop1F`
+    (per-qnf carrier `CAggOd (swap qnf)`, bit at the original qnf) + `aggPop1F_correct` at flipped
+    pins `(t, x)`; the 16a mirror classification rows stay unconsumed.)*
+  - [x] `kampArm_past_k1(_correct)`: atom-layer endpoints ∧ aggPop1, enter via
     `VVecEA2.translateRight_correct` (NfToVecEA.lean:451). `kampArm_future_k1(_correct)`: exact dual via
     `translateLeft_correct` (VecEATranslation.lean:549), flipped origin guard as in `agg2Fut`.
-  - [ ] Shape certificates: `example`s matching each conclusion against the corresponding
+    *(Landed: pin bridges `aggOd_holdsRight_iff_holds`/`aggOd_holdsLeft_iff_holds`; atom carriers
+    `aggAtomK1Past`/`aggAtomK1Fut` (single disjunct, delivered off-diagonal loci
+    `nf_char2_atom_offdiag_{endpoint,origin,origin_future}`, trivial bracket) + `_holds_iff` via
+    `nf_char2_atom_offdiag_correct(_future)`; definitional depth-(1+1) seam `aggOd_eval2_iff`
+    (`Iff.rfl`, the local restatement of the `kampPrior_site_perQnf_seam` shape — no KampPrior
+    import); both arms = `translate{Right,Left}_correct` + pin bridge + `exists_congr`/`conjFull_iff`
+    chain. Prior hypotheses genuinely USED at k=1 (they gate the De Morgan fold).)*
+  - [x] Shape certificates: `example`s matching each conclusion against the corresponding
     `kampPrior_site_trichotomy` disjunct SHAPE at generic-site index `1 + 1` (verbatim; no KampPrior
     import — delivered Phase-3/5 technique).
-  - [ ] Scoped build green; `lean_verify` on both `_correct` lemmas = exactly
+    *(Landed: `ShapeCertificatesK1` section, past + future disjunct shapes at
+    `sub_nf : NormalForm sig (1 + 1) 2`.)*
+  - [x] Scoped build green; `lean_verify` on both `_correct` lemmas = exactly
     `[propext, Classical.choice, Quot.sound]`; commit per green sub-step.
+    *(Scoped module 1046 jobs + full `lake build` 1751 jobs green; `lean_verify` on
+    `kampArm_past_k1_correct`, `kampArm_future_k1_correct`, `aggPop1_correct` = exactly
+    `[propext, Classical.choice, Quot.sound]`, no warnings; sorry census over NfMultiAnchorBridge/: 0;
+    no vacuous defs / new axioms / term-level `nf_char3_deeper_split`; no frozen-file / KampPrior /
+    task-358 edits; commits 16b.1 (aggPop1), 16b.2 (swap + aggPop1F), 16b.3 (arm lemmas + certs).)*
 - **DoD shape:** `kampArm_past_k1_correct` and `kampArm_future_k1_correct` green (DoD lemmas 5/6, 6/6);
   shape certificates compile.
 - **Timing:** ~2 hours (~250-400 lines) — **Depends on:** 16a
