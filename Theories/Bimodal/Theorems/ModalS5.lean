@@ -3,6 +3,7 @@ import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.Propositional.Connectives
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Modal S5 Theorems
@@ -102,6 +103,7 @@ Proof:
 2. From A, construct ¬□¬A using RAA pattern
 3. □A → (□¬A → ⊥) via modal_t composition
 -/
+@[tm_lemma]
 def t_box_to_diamond (A : Formula) : ⊢ A.box.imp A.diamond := by
   -- Goal: ⊢ □A → ◇A where ◇A = ¬□¬A
   unfold Formula.diamond Formula.neg
@@ -183,6 +185,7 @@ Proof:
 2. From prop_s: B → (¬A → B), apply box_mono to get □B → □(¬A → B)
 3. Combine using disjunction structure (¬□A → □B) → □(¬A → B)
 -/
+@[tm_lemma]
 noncomputable def box_disj_intro (A B : Formula) : ⊢ (A.box.or B.box).imp ((A.or B).box) := by
   unfold Formula.or
 
@@ -296,6 +299,7 @@ This is the valid form of diamond monotonicity, derived from K axiom via duality
 
 **Dependencies**: K axiom (modal_k_dist), box_contrapose, contrapose_imp
 -/
+@[tm_lemma]
 def k_dist_diamond (A B : Formula) : ⊢ (A.imp B).box.imp (A.diamond.imp B.diamond) := by
   -- Goal: □(A → B) → (◇A → ◇B)
   -- where ◇X = ¬□¬X
@@ -394,6 +398,7 @@ Contradiction cannot be necessary.
 Modal_t: □(A ∧ ¬A) → (A ∧ ¬A)
 Then from contradiction derive ⊥
 -/
+@[tm_lemma]
 def t_box_consistency (A : Formula) : ⊢ ((A.and (A.imp Formula.bot)).box).imp Formula.bot := by
   -- Goal: □(A ∧ ¬A) → ⊥
   -- modal_t gives: □(A ∧ ¬A) → (A ∧ ¬A)

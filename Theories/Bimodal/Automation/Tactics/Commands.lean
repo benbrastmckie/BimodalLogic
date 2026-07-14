@@ -67,7 +67,9 @@ modal_search (depth := 20) (visitLimit := 2000)  -- Multiple named parameters
 
 **Named Parameters**:
 - `depth`: Maximum search depth (default: 10)
-- `visitLimit`: Maximum nodes to visit (default: 1000)
+- `visitLimit`: Maximum nodes to visit before aborting (default: 1000). Enforced
+  via an `IO.Ref` counter threaded through `searchProof`; bounds total search
+  cost independently of `depth` so pathological goals terminate promptly.
 - `axiomWeight`: Priority for axiom matching (default: 100)
 - `assumptionWeight`: Priority for assumption matching (default: 90)
 - `mpWeight`: Priority for modus ponens (default: 50)
@@ -139,11 +141,12 @@ def runModalSearch (cfg : SearchConfig) : TacticM Unit := do
   let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "modal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
-  -- Attempt recursive proof search
-  -- Note: visitLimit and weights not yet used by searchProof (future enhancement)
-  let found ← searchProof goal cfg.depth cfg.depth
+  -- Attempt recursive proof search. `visitLimit` bounds total node visits via
+  -- an `IO.Ref` counter threaded through `searchProof` (weights remain unused).
+  let counter ← IO.mkRef cfg.visitLimit
+  let found ← searchProof counter goal cfg.depth
   if !found then
-    throwError "modal_search: no proof found within depth {cfg.depth} for goal {goalType}"
+    throwError "modal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| modal_search $[$d]?) => do
@@ -187,10 +190,11 @@ def runTemporalSearch (cfg : SearchConfig) : TacticM Unit := do
   let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "temporal_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
-  -- Attempt recursive proof search
-  let found ← searchProof goal cfg.depth cfg.depth
+  -- Attempt recursive proof search (visitLimit-bounded)
+  let counter ← IO.mkRef cfg.visitLimit
+  let found ← searchProof counter goal cfg.depth
   if !found then
-    throwError "temporal_search: no proof found within depth {cfg.depth} for goal {goalType}"
+    throwError "temporal_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| temporal_search $[$d]?) => do
@@ -243,10 +247,11 @@ def runPropositionalSearch (cfg : SearchConfig) : TacticM Unit := do
   let some (_fc, _ctx, _formula) ← extractDerivationGoal goalType
     | throwError "propositional_search: goal must be a derivability relation `Γ ⊢ φ`, got {goalType}"
 
-  -- Attempt recursive proof search
-  let found ← searchProof goal cfg.depth cfg.depth
+  -- Attempt recursive proof search (visitLimit-bounded)
+  let counter ← IO.mkRef cfg.visitLimit
+  let found ← searchProof counter goal cfg.depth
   if !found then
-    throwError "propositional_search: no proof found within depth {cfg.depth} for goal {goalType}"
+    throwError "propositional_search: no proof found within depth {cfg.depth} (visitLimit {cfg.visitLimit}) for goal {goalType}"
 
 elab_rules : tactic
   | `(tactic| propositional_search $[$d]?) => do

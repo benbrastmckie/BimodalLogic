@@ -2,6 +2,7 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
 import Bimodal.Metalogic.Core.DeductionTheorem
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Core Propositional Proof Combinators: LEM, efq, ecq, raa, Disjunction Intro, Conjunction Elim
@@ -42,6 +43,7 @@ So: `A ∨ ¬A = ¬A → ¬A = identity ¬A`
 
 Therefore: `⊢ A ∨ ¬A` is immediate from identity.
 -/
+@[tm_lemma]
 def lem (A : Formula) : ⊢ A.or A.neg := by
   -- A ∨ ¬A = ¬A → ¬A (by definition of disjunction)
   unfold Formula.or
@@ -56,6 +58,7 @@ This section defines axiom wrappers (efq_axiom, peirce_axiom) and derives
 the double negation elimination theorem from these axioms.
 -/
 
+@[tm_lemma]
 def efq_axiom {fc : FrameClass} (φ : Formula) : ⊢[fc] Formula.bot.imp φ :=
   DerivationTree.axiom [] _ (Axiom.ex_falso φ) (FrameClass.base_le fc)
 
@@ -66,6 +69,7 @@ Classical reasoning in pure implicational form. This is now an axiom.
 
 This theorem provides a convenient wrapper around Peirce's Law axiom for use in proofs.
 -/
+@[tm_lemma]
 def peirce_axiom {fc : FrameClass} (φ ψ : Formula) : ⊢[fc] ((φ.imp ψ).imp φ).imp φ :=
   DerivationTree.axiom [] _ (Axiom.peirce φ ψ) (FrameClass.base_le fc)
 
@@ -112,6 +116,7 @@ No circular dependencies - b_combinator is derived from K and S without using DN
 **Historical Note**: Previously an axiom, now a derived theorem. This change
 improves the foundational structure without affecting derivational power.
 -/
+@[tm_lemma]
 def double_negation {fc : FrameClass} (φ : Formula) : ⊢[fc] φ.neg.neg.imp φ := by
   -- ¬¬φ = (φ → ⊥) → ⊥ (definition)
   unfold Formula.neg
@@ -249,6 +254,7 @@ Proof:
 2. Use deduction theorem pattern to lift to `⊢ A → (¬A → B)`
 -/
 
+@[tm_lemma]
 def raa (A B : Formula) : ⊢ A.imp (A.neg.imp B) := by
   -- We need to show: ⊢ A → (¬A → B)
   -- Strategy: From A and ¬A, we get ⊥, then from ⊥ we derive B
@@ -323,6 +329,7 @@ example (P Q : Formula) : ⊢ P.neg.imp (P.imp Q) := efq_neg P Q
 This is the primary `efq` definition. The old `efq` name is deprecated and aliased
 to this function for backward compatibility.
 -/
+@[tm_lemma]
 def efq_neg (A B : Formula) : ⊢ A.neg.imp (A.imp B) := by
   -- Goal: ¬A → (A → B)
   -- We have RAA: A → (¬A → B)
@@ -701,6 +708,7 @@ The context-based version `lce` is proven. This implication form would enable:
 
 **Workaround**: Use `lce` with weakening when contexts are available.
 -/
+@[tm_lemma]
 def lce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp A := by
   -- Use deduction theorem: from [A ∧ B] ⊢ A, derive ⊢ (A ∧ B) → A
   have h : [A.and B] ⊢ A := lce A B
@@ -719,6 +727,7 @@ The context-based version `rce` is proven. This implication form would enable:
 
 **Workaround**: Use `rce` with weakening when contexts are available.
 -/
+@[tm_lemma]
 def rce_imp {fc : FrameClass} (A B : Formula) : ⊢[fc] (A.and B).imp B := by
   -- Use deduction theorem: from [A ∧ B] ⊢ B, derive ⊢ (A ∧ B) → B
   have h : [A.and B] ⊢ B := rce A B

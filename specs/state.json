@@ -727,10 +727,10 @@
     {
       "project_number": 187,
       "project_name": "backward_chaining_lemma_db",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:37:24Z",
+      "last_updated": "2026-07-14T17:23:49Z",
       "artifacts": [
         {
           "path": "specs/187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md",
@@ -746,6 +746,11 @@
           "path": "specs/187_backward_chaining_lemma_db/plans/02_backward-chaining-plan.md",
           "type": "plan",
           "summary": "4-phase plan: LemmaDB attribute + tag 26; tryLemmaMatch recursion replacing tryDerivedMatch with migration invariant (all 26 goals still close); pre-filter + weakening fallback + chaining tests; expanded tagging + visitLimit + doc fixes. Per-phase lake build gates, zero-sorry expectation, rollback via per-phase green commits."
+        },
+        {
+          "path": "specs/187_backward_chaining_lemma_db/summaries/02_backward-chaining-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary: LemmaDB attribute, tryLemmaMatch backward chaining, pre-filter + weakening fallback, visitLimit wiring, expanded tagging (35), doc fixes, migration invariant, deviations (imp_trans untagged, tests in new LemmaDBTest.lean), and the task-188 hook (tryLemmaMatchCore)."
         }
       ],
       "topic": "automation",

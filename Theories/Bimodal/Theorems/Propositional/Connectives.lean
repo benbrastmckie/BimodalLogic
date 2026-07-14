@@ -1,4 +1,5 @@
 import Bimodal.Theorems.Propositional.Core
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Derived Connective Reasoning: Classical Merge, Iff, Contraposition, and De Morgan Laws
@@ -40,6 +41,7 @@ Proof:
 3. Build (¬Q → ¬P) → ((¬Q → ¬¬P) → ¬¬Q) using RAA pattern
 4. Compose with DNE to get Q
 -/
+@[tm_lemma]
 def classical_merge (P Q : Formula) : ⊢ (P.imp Q).imp ((P.neg.imp Q).imp Q) := by
   -- Goal: (P → Q) → ((¬P → Q) → Q)
   -- This is case analysis on P using LEM.
@@ -309,6 +311,7 @@ From implication, derive its contrapositive.
 
 **Proof Strategy**: Use b_combinator and theorem_flip to build contraposition.
 -/
+@[tm_lemma]
 def contrapose_imp (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) := by
   -- b_combinator: (B → ⊥) → (A → B) → (A → ⊥)
   have bc : ⊢ (B.imp Formula.bot).imp ((A.imp B).imp (A.imp Formula.bot)) :=

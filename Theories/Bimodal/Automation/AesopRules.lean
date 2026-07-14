@@ -22,7 +22,6 @@ automation for all proven TM axioms and key inference rules.
 
 ## Main Components
 
-- `TMLogic` rule set declaration
 - Forward chaining lemmas for 5 proven axioms (MT, M4, MB, T4, TA)
 - Apply rules for core inference (modus_ponens, modal_k, temporal_k)
 - Normalization rules for derived operators (diamond, always, sometimes)
@@ -42,9 +41,12 @@ The following axioms are excluded pending soundness proofs:
 example : ⊢ (□p → p) := by
   modal_search
 
--- Direct Aesop usage (not via tm_auto)
+-- Direct Aesop usage (not via tm_auto). NOTE: the rules below are registered
+-- in Aesop's DEFAULT rule set via `@[aesop safe apply]`; there is no separate
+-- `TMLogic` rule set declared (`declare_aesop_rule_sets [TMLogic]` is absent),
+-- so plain `aesop` picks them up. Do not write `aesop (rule_sets [TMLogic])`.
 example : ⊢ (□p → p) := by
-  aesop (rule_sets [TMLogic])
+  aesop
 ```
 
 ## References

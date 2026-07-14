@@ -1,0 +1,217 @@
+import Bimodal.Automation.Tactics.Commands
+
+/-!
+# LemmaDB Tests (Task 187)
+
+Tests for the `@[tm_lemma]` attribute database and the `tryLemmaMatch`
+backward-chaining strategy in `modal_search`.
+
+Organized in three groups:
+1. **Label-count smoke check**: the attribute enumerates the expected declarations.
+2. **Migration regression**: every goal formerly closed by the static
+   `tryDerivedMatch` list (26 theorems) still closes via `modal_search`.
+3. **Chaining tests** (Phase 3): goals only provable by recursing through
+   lemma premises, plus the weakening fallback and a negative test.
+
+NOTE: These tests live in a dedicated file (not `TacticsTest.lean`, which has
+pre-existing errors from the frame-class generalization). Build gate:
+`lake build BimodalTest.Automation.LemmaDBTest`.
+-/
+
+namespace BimodalTest.Automation.LemmaDBTest
+
+open Lean
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Automation
+
+/-!
+## Group 1: Label-count smoke check
+
+Phase 1 tags exactly the 26 theorems from the former static list in
+`tryDerivedMatch`. This check fails the build if the count drifts
+unexpectedly (update deliberately when expanding the database).
+-/
+
+-- The database starts from the 26 former static-list theorems (Phase 1) and
+-- grows with Phase 4's expanded tagging (currently 35). We assert a lower
+-- bound so migration coverage is guaranteed without pinning the exact total
+-- (tagging more theorems must never silently drop below the migration set).
+#eval show CoreM Unit from do
+  let names ← Lean.labelled `tm_lemma
+  unless names.size ≥ 26 do
+    throwError "expected ≥ 26 @[tm_lemma] declarations, found {names.size}:\n{names}"
+
+/-!
+## Group 2: Migration regression
+
+Every goal formerly closed by the static `tryDerivedMatch` list must still
+close after the switch to the `@[tm_lemma]` attribute database. One test per
+former list entry, exercising each theorem's empty-context statement via
+`modal_search`. If any of these fails, the migration invariant is broken.
+-/
+
+-- Tier 1: Propositional combinators
+
+-- identity: A → A
+example (p : Formula) : ⊢ p.imp p := by modal_search
+
+-- double_negation: ¬¬φ → φ
+example (p : Formula) : ⊢ p.neg.neg.imp p := by modal_search
+
+-- raa: A → (¬A → B)
+example (p q : Formula) : ⊢ p.imp (p.neg.imp q) := by modal_search
+
+-- efq / efq_neg: ¬A → (A → B)
+example (p q : Formula) : ⊢ p.neg.imp (p.imp q) := by modal_search
+
+-- lce_imp: (A ∧ B) → A
+noncomputable example (p q : Formula) : ⊢ (p.and q).imp p := by modal_search
+
+-- rce_imp: (A ∧ B) → B
+noncomputable example (p q : Formula) : ⊢ (p.and q).imp q := by modal_search
+
+-- contrapose_imp: (A → B) → (¬B → ¬A)
+example (p q : Formula) : ⊢ (p.imp q).imp (q.neg.imp p.neg) := by modal_search
+
+-- pairing: A → (B → (A ∧ B))
+example (p q : Formula) : ⊢ p.imp (q.imp (p.and q)) := by modal_search
+
+-- dni: A → ¬¬A
+example (p : Formula) : ⊢ p.imp p.neg.neg := by modal_search
+
+-- b_combinator: (B→C) → ((A→B) → (A→C))
+example (p q r : Formula) : ⊢ (q.imp r).imp ((p.imp q).imp (p.imp r)) := by modal_search
+
+-- theorem_flip: (A→(B→C)) → (B→(A→C))
+example (p q r : Formula) : ⊢ (p.imp (q.imp r)).imp (q.imp (p.imp r)) := by modal_search
+
+-- theorem_app1: A → ((A→B) → B)
+example (p q : Formula) : ⊢ p.imp ((p.imp q).imp q) := by modal_search
+
+-- Tier 2: Modal and temporal derived theorems
+
+-- temp_k_dist_derived: G(φ→ψ) → (Gφ→Gψ)
+noncomputable example (p q : Formula) :
+    ⊢ (p.imp q).all_future.imp (p.all_future.imp q.all_future) := by modal_search
+
+-- temp_4_derived: Gφ → GGφ
+noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by modal_search
+
+-- H_distribution: H(φ→ψ) → (Hφ→Hψ)
+noncomputable example (p q : Formula) :
+    ⊢ (p.imp q).all_past.imp (p.all_past.imp q.all_past) := by modal_search
+
+-- H_transitivity: Hφ → HHφ
+noncomputable example (p : Formula) : ⊢ p.all_past.imp p.all_past.all_past := by modal_search
+
+-- t_box_to_diamond: □A → ◇A
+example (p : Formula) : ⊢ p.box.imp p.diamond := by modal_search
+
+-- k_dist_diamond: □(A→B) → (◇A → ◇B)
+example (p q : Formula) : ⊢ (p.imp q).box.imp (p.diamond.imp q.diamond) := by modal_search
+
+-- diamond_4: ◇◇φ → ◇φ
+example (p : Formula) : ⊢ p.diamond.diamond.imp p.diamond := by modal_search
+
+-- modal_5: ◇φ → □◇φ
+example (p : Formula) : ⊢ p.diamond.imp p.diamond.box := by modal_search
+
+-- box_to_future: □φ → Gφ
+example (p : Formula) : ⊢ p.box.imp p.all_future := by modal_search
+
+-- box_to_past: □φ → Hφ
+example (p : Formula) : ⊢ p.box.imp p.all_past := by modal_search
+
+-- formula_or_comm: (A ∨ B) → (B ∨ A)
+noncomputable example (p q : Formula) : ⊢ (p.or q).imp (q.or p) := by modal_search
+
+-- bi_imp: (A→B) → ((B→A) → ((A→B) ∧ (B→A)))
+example (p q : Formula) :
+    ⊢ (p.imp q).imp ((q.imp p).imp ((p.imp q).and (q.imp p))) := by modal_search
+
+-- classical_merge: (P→Q) → ((¬P→Q) → Q)
+noncomputable example (p q : Formula) : ⊢ (p.imp q).imp ((p.neg.imp q).imp q) := by modal_search
+
+-- temp_future_derived: □φ → G□φ
+example (p : Formula) : ⊢ p.box.imp p.box.all_future := by modal_search
+
+/-!
+## Group 3: New backward-chaining capability (Phase 3)
+
+These goals were NOT closable by the old static `tryDerivedMatch` (which
+required `apply` to leave zero subgoals and never recursed or weakened).
+
+- **(c) Weakening fallback**: a closed lemma `⊢[fc] φ` applies under a
+  non-empty context via `DerivationTree.weakening`, recursing into the
+  empty-context premise. This exercises the new recursion machinery.
+- **(d) Depth-exhaustion / non-derivability**: unprovable goals fail (and
+  terminate — the weakening recursion cannot loop) rather than hang. Tested
+  with `fail_if_success` so a correct failure keeps the build green.
+
+**Not tested**: chaining through a free-middle inference rule like
+`imp_trans` — see the note at `Combinators.imp_trans`. The greedy,
+backtrack-free search cannot select the undetermined middle term, so such
+rules are intentionally left untagged. Determined-premise recursion (the
+weakening fallback below) is the demonstrated new capability.
+-/
+
+-- (c) identity under a non-empty context — only closes via weakening fallback
+example (X Y : Formula) : [Y] ⊢ X.imp X := by modal_search 6
+
+-- (c) box_to_future under a non-empty context — weakening + direct lemma
+example (X Y : Formula) : [Y] ⊢ X.box.imp X.all_future := by modal_search 6
+
+-- (c) weakening fallback recursing through modus-ponens under context
+example (X Y : Formula) : [Y] ⊢ X.diamond.imp X.diamond.box := by modal_search 6
+
+-- (d) an underivable bare atom fails (and terminates) at empty context
+example : True := by
+  fail_if_success (have : ⊢ (Formula.atom_s "p") := by modal_search 3)
+  trivial
+
+-- (d) an underivable goal under a non-empty context fails AND terminates —
+-- confirms the weakening fallback does not loop on unprovable goals
+example : True := by
+  fail_if_success
+    (have : [Formula.atom_s "q"] ⊢ (Formula.atom_s "p") := by modal_search 4)
+  trivial
+
+/-!
+## Group 4: visitLimit abort (Phase 4)
+
+`SearchConfig.visitLimit` bounds total node visits via an `IO.Ref` counter.
+With a zero budget the search aborts immediately even on a provable goal;
+with an adequate budget the same goal closes. This proves the counter is a
+real abort, not a no-op.
+-/
+
+-- visitLimit := 0 aborts before visiting any node — even a trivial axiom goal
+example : True := by
+  fail_if_success
+    (have : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
+      modal_search (depth := 10) (visitLimit := 0))
+  trivial
+
+-- the same goal closes with an adequate budget
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
+  modal_search (depth := 10) (visitLimit := 1000)
+
+/-!
+## Group 5: expanded tagging spot-check (Phase 4)
+
+A few of the newly tagged premise-free theorems, closing directly via the
+`@[tm_lemma]` database.
+-/
+
+-- lem: A ∨ ¬A
+noncomputable example (p : Formula) : ⊢ p.or p.neg := by modal_search
+
+-- peirce_axiom: ((φ→ψ)→φ)→φ
+example (p q : Formula) : ⊢ ((p.imp q).imp p).imp p := by modal_search
+
+-- box_to_present: □φ → φ
+example (p : Formula) : ⊢ p.box.imp p := by modal_search
+
+-- mb_diamond: φ → ◇φ.box  (i.e. modal B via diamond)
+example (p : Formula) : ⊢ p.imp p.diamond.box := by modal_search
+
+end BimodalTest.Automation.LemmaDBTest

@@ -1,6 +1,7 @@
 import Bimodal.Theorems.Perpetuity.Helpers
 import Bimodal.Theorems.Propositional.Connectives
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Perpetuity Principles (P1-P5)
@@ -233,6 +234,7 @@ Note: Since `diamond φ = φ.neg.box.neg`, we have:
 The proof requires showing that the complex nested negation structure reduces
 correctly via double negation elimination within the modal operators.
 -/
+@[tm_lemma]
 def diamond_4 (φ : Formula) : ⊢ φ.diamond.diamond.imp φ.diamond := by
   -- Goal (by definition): φ.neg.box.neg.neg.box.neg.imp φ.neg.box.neg
   --
@@ -328,6 +330,7 @@ Derived from MB + diamond_4 + MK distribution:
 4. MK distribution: `⊢ □◇◇φ → □◇φ`
 5. Compose steps 1 and 4: `⊢ ◇φ → □◇φ`
 -/
+@[tm_lemma]
 def modal_5 (φ : Formula) : ⊢ φ.diamond.imp φ.diamond.box := by
   -- Step 1: MB on ◇φ
   have mb_dia : ⊢ φ.diamond.imp φ.diamond.diamond.box :=
@@ -387,6 +390,7 @@ Box implies boxed past: `⊢ □φ → □Hφ`.
 
 Derived via temporal duality on MF, analogous to `box_to_past`.
 -/
+@[tm_lemma]
 def box_to_box_past (φ : Formula) : ⊢ φ.box.imp (φ.all_past.box) := by
   have mf : ⊢ φ.swap_temporal.box.imp (φ.swap_temporal.all_future.box) :=
     DerivationTree.axiom [] _ (Axiom.modal_future φ.swap_temporal) trivial
@@ -630,6 +634,7 @@ Helper lemma: Modal B for diamond forms.
 From MB axiom `φ → □◇φ`, we can derive that truths are necessarily possible.
 This is used as a foundation for the persistence lemma.
 -/
+@[tm_lemma]
 def mb_diamond (φ : Formula) : ⊢ φ.imp (φ.diamond.box) :=
   DerivationTree.axiom [] _ (Axiom.modal_b φ) trivial
 

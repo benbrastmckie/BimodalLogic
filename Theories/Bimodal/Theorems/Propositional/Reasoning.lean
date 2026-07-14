@@ -1,4 +1,5 @@
 import Bimodal.Theorems.Propositional.Connectives
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Natural Deduction Rules: Negation Intro/Elim, Biconditional, Disjunction Elimination
@@ -93,6 +94,7 @@ The context-based `iff_intro` already exists; this provides the pure implication
 
 **Dependencies**: `deduction_theorem`, `pairing`, `DerivationTree.assumption`, `DerivationTree.weakening`
 -/
+@[tm_lemma]
 def bi_imp (A B : Formula) :
     ⊢ (A.imp B).imp ((B.imp A).imp ((A.imp B).and (B.imp A))) := by
   -- First, derive [(A → B), (B → A)] ⊢ (A → B) ∧ (B → A)

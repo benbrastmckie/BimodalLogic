@@ -1,5 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Combinators - Propositional Reasoning Combinators
@@ -80,6 +81,15 @@ Proof:
 2. Use K axiom: `(A → (B → C)) → ((A → B) → (A → C))`
 3. Apply modus ponens twice to get `⊢ A → C`
 -/
+-- NOTE (task 187): intentionally NOT `@[tm_lemma]`. `imp_trans` is an
+-- inference rule with a FREE middle term `B` that the conclusion `A.imp C`
+-- does not determine. The greedy, backtrack-free `modal_search` cannot pick
+-- the correct `B` (e.g. `identity : A → A` greedily unifies the premise
+-- `A.imp ?B` with `?B := A`), so tagging it adds search cost with no reliable
+-- benefit. Backward chaining through such rules would require search
+-- backtracking over metavariable instantiations (out of scope). Determined
+-- premises (e.g. the weakening fallback, or rules whose conclusion fixes all
+-- variables) DO chain via `tryLemmaMatchCore`.
 def imp_trans {fc : FrameClass} {A B C : Formula}
     (h1 : DerivationTree fc [] (A.imp B))
     (h2 : DerivationTree fc [] (B.imp C)) : DerivationTree fc [] (A.imp C) := by
@@ -104,6 +114,7 @@ The identity function can be built from K and S combinators:
 - K : A → B → A
 - SKK = λx. K x (K x) = λx. x
 -/
+@[tm_lemma]
 def identity {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A := by
   have k1 : ⊢[fc] A.imp ((A.imp A).imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A (A.imp A)) (FrameClass.base_le fc)
   have k2 : ⊢[fc] A.imp (A.imp A) := DerivationTree.axiom [] _ (Axiom.prop_s A A) (FrameClass.base_le fc)
@@ -123,6 +134,7 @@ Proof strategy:
 2. By K axiom: `(A → (B → C)) → ((A → B) → (A → C))` (distribution)
 3. Compose: `(B → C) → ((A → B) → (A → C))` (by transitivity)
 -/
+@[tm_lemma]
 def b_combinator {fc : FrameClass} {A B C : Formula} : ⊢[fc] (B.imp C).imp ((A.imp B).imp (A.imp C)) := by
   -- Step 1: S axiom gives us (B → C) → (A → (B → C))
   have s_axiom : ⊢[fc] (B.imp C).imp (A.imp (B.imp C)) :=
@@ -144,6 +156,7 @@ This is essential for deriving the pairing combinator and dni.
 **Derivation Strategy**: Use S axiom to weaken, then K axiom to redistribute
 arguments at nested levels, composing with b_combinator.
 -/
+@[tm_lemma]
 def theorem_flip {fc : FrameClass} {A B C : Formula} : ⊢[fc] (A.imp (B.imp C)).imp (B.imp (A.imp C)) := by
   -- Goal: (A → B → C) → (B → A → C)
   -- Strategy: Build B → ((A → B → C) → (A → C)) using K and S axioms,
@@ -276,6 +289,7 @@ to the application pattern derived from flip applied to identity.
 
 **Derivation**: Apply theorem_flip to identity with appropriate substitutions.
 -/
+@[tm_lemma]
 def theorem_app1 {fc : FrameClass} {A B : Formula} : ⊢[fc] A.imp ((A.imp B).imp B) := by
   -- Goal: A → (A → B) → B
   -- Strategy: Use flip to swap arguments of a suitable function
@@ -564,6 +578,7 @@ is the Vireo (V) combinator: V = λa.λb.λf. f a b. This derivation shows V can
 built from S (prop_s), K (prop_k), and I (identity = SKK) combinators via the
 flip (C) and application (app1, app2) intermediate combinators.
 -/
+@[tm_lemma]
 def pairing {fc : FrameClass} (A B : Formula) : ⊢[fc] A.imp (B.imp (A.and B)) := by
   -- Goal: A → B → A ∧ B
   -- Recall: A ∧ B = ¬(A → ¬B) = (A → B → ⊥) → ⊥
@@ -597,6 +612,7 @@ we simply apply modus ponens to get `⊥`.
 
 **Usage**: Required for P4 perpetuity proof (◇▽φ → ◇φ) via contraposition of P3.
 -/
+@[tm_lemma]
 def dni {fc : FrameClass} (A : Formula) : ⊢[fc] A.imp A.neg.neg :=
   @theorem_app1 fc A Formula.bot
 
@@ -658,6 +674,7 @@ Necessary truths will always be necessary. Derived from MF + T + Modal 4:
 - Modal 4 gives `□φ → □(□φ)` (positive introspection)
 - Composing: `□φ → □(□φ) → □(G(□φ)) → G(□φ)`
 -/
+@[tm_lemma]
 def temp_future_derived {fc : FrameClass} (φ : Formula) :
     ⊢[fc] (Formula.box φ).imp (Formula.all_future (Formula.box φ)) :=
   let mf_box := DerivationTree.axiom [] _ (Axiom.modal_future (Formula.box φ)) (FrameClass.base_le fc)

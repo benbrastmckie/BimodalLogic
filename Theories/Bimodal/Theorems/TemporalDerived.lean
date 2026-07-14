@@ -3,6 +3,7 @@ import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
 import Bimodal.Theorems.Propositional.Connectives
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Temporal Derived Theorems from BX Axioms
@@ -181,6 +182,7 @@ K-distribution for G, derived from BX3 (right_mono_until) and propositional
 contraposition. Replaces the primitive `Axiom.temp_k_dist` constructor.
 
 **Derivation**: Compose `G(φ→ψ) → G(¬ψ→¬φ)` with `G(¬ψ→¬φ) → (Gφ → Gψ)`. -/
+@[tm_lemma]
 noncomputable def temp_k_dist_derived (φ ψ : Formula) :
     ⊢ (φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future) :=
   imp_trans (G_imp_to_G_contra φ ψ) (G_contra_to_GK φ ψ)
@@ -236,6 +238,7 @@ Replaces the primitive `Axiom.temp_4` constructor.
 
 **Derivation**: The contrapositive `F(¬¬F(¬φ)) → F(¬φ)` is proved by composing
 three F-monotonicity steps, then negated to obtain `Gφ → GGφ`. -/
+@[tm_lemma]
 noncomputable def temp_4_derived (φ : Formula) :
     ⊢ φ.all_future.imp φ.all_future.all_future :=
   contraposition (imp_trans (imp_trans (dne_lift_F φ) (FF_to_F_top_and φ)) (F_top_and_absorb φ))
@@ -259,6 +262,7 @@ noncomputable def G_distribution (φ ψ : Formula) :
 /--
 `⊢ H(φ → ψ) → (H(φ) → H(ψ))`: H-distribution. Derived via temporal duality from G-distribution.
 -/
+@[tm_lemma]
 noncomputable def H_distribution (φ ψ : Formula) :
     ⊢ (φ.imp ψ).all_past.imp (φ.all_past.imp ψ.all_past) :=
   Bimodal.Theorems.past_k_dist φ ψ
@@ -273,6 +277,7 @@ noncomputable def G_transitivity (φ : Formula) :
 /--
 `⊢ H(φ) → H(H(φ))`: H-transitivity. Derived via temporal duality from G-transitivity.
 -/
+@[tm_lemma]
 noncomputable def H_transitivity (φ : Formula) :
     ⊢ φ.all_past.imp φ.all_past.all_past := by
   -- Derive by applying temporal duality to G-transitivity of swap_temporal φ
@@ -356,6 +361,7 @@ def since_imp_P (φ ψ : Formula) :
 
 /-- Contrapositive: `⊢ (A → B) → (¬B → ¬A)`.
 Derived from b_combinator and theorem_flip. -/
+@[tm_lemma]
 noncomputable def contrapositive (A B : Formula) : ⊢ (A.imp B).imp (B.neg.imp A.neg) :=
   mp b_combinator (theorem_flip (A := (B.imp Formula.bot)) (B := (A.imp B)) (C := (A.imp Formula.bot)))
 
@@ -370,6 +376,7 @@ private noncomputable def ctx_thm {Γ : Context} {A : Formula}
 /-- Disjunction commutativity: `⊢ (A ∨ B) → (B ∨ A)`.
 Since `A ∨ B = ¬A → B`, this is `(¬A → B) → (¬B → A)`, proved by
 contraposition of the hypothesis composed with DNE. -/
+@[tm_lemma]
 noncomputable def formula_or_comm (A B : Formula) : ⊢ (A.or B).imp (B.or A) := by
   unfold Formula.or
   apply Bimodal.Metalogic.Core.deduction_theorem [] (A.neg.imp B) (B.neg.imp A)

@@ -1,7 +1,7 @@
 # Implementation Plan: Backward-Chaining Lemma Database
 
 - **Task**: 187 - Backward-chaining lemma database (solve_by_elim analogue)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: Task 185 (complete axiom coverage) - satisfied/archived. Tasks 186, 188, 189, 192 are NOT prerequisites; boundary contracts noted in Non-Goals.
 - **Research Inputs**: specs/187_backward_chaining_lemma_db/reports/02_backward-chaining-research.md (authoritative; supersedes reports/01_lemma-database-seed.md)
@@ -74,15 +74,15 @@ No roadmap context provided for this task.
 
 Fully sequential: each phase builds on the verified state of the previous one.
 
-### Phase 1: LemmaDB attribute module + tag the 26 static-list theorems [NOT STARTED]
+### Phase 1: LemmaDB attribute module + tag the 26 static-list theorems [COMPLETED]
 
 **Goal**: `@[tm_lemma]` exists and enumerates exactly the 26 theorems currently hardcoded in `tryDerivedMatch`, with zero behavior change (`tryDerivedMatch` untouched this phase).
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/LemmaDB.lean`: `import Lean` + module docstring + `register_label_attr tm_lemma` (~20 lines). Doc comment states the tagging policy: fc-polymorphic or Base-stated, empty-context theorems and inference rules only; never `ContextualProofs.lean` (task 188).
-- [ ] Read the static list at `Helpers.lean:650-694`; record the 26 names verbatim (they drive tagging and the Phase 2 regression test).
-- [ ] For each of the 26: add `import Bimodal.Automation.LemmaDB` (exact module prefix per project convention — check an existing import line) to its defining file and tag the declaration `@[tm_lemma]`. Expected files: `Theorems/Combinators.lean`, `Theorems/Propositional/{Core,Connectives,Reasoning}.lean`, `Theorems/{ModalS5,ModalS4,TemporalDerived}.lean`, `Theorems/Perpetuity/{Principles,Bridge}.lean`.
-- [ ] Add a smoke check (test file or `#eval`-style assertion in `Tests/BimodalTest/Automation/`): `Lean.labelled `tm_lemma` returns exactly 26 names.
+- [x] Create `Theories/Bimodal/Automation/LemmaDB.lean`: `import Lean` + module docstring + `register_label_attr tm_lemma` (~20 lines). Doc comment states the tagging policy: fc-polymorphic or Base-stated, empty-context theorems and inference rules only; never `ContextualProofs.lean` (task 188). *(completed — declared inside namespace `Bimodal.Automation.LemmaDB` because the macro emits an `ext` declaration; attribute name is still bare `tm_lemma`)*
+- [x] Read the static list at `Helpers.lean:650-694`; record the 26 names verbatim (they drive tagging and the Phase 2 regression test). *(completed)*
+- [x] For each of the 26: add `import Bimodal.Automation.LemmaDB` (exact module prefix per project convention — check an existing import line) to its defining file and tag the declaration `@[tm_lemma]`. Expected files: `Theorems/Combinators.lean`, `Theorems/Propositional/{Core,Connectives,Reasoning}.lean`, `Theorems/{ModalS5,ModalS4,TemporalDerived}.lean`, `Theorems/Perpetuity/{Principles,Bridge}.lean`. *(deviation: altered — actual files are Combinators, Propositional/{Core,Connectives,Reasoning}, TemporalDerived, ModalS5, Perpetuity/{Principles,Helpers}; box_to_future/box_to_past live in Perpetuity/Helpers.lean not Bridge.lean. Also `efq` is a `@[deprecated]` alias — tagged the primary `efq_neg` (identical statement) instead, since stacked attribute blocks do not parse and automation should not apply deprecated constants)*
+- [x] Add a smoke check (test file or `#eval`-style assertion in `Tests/BimodalTest/Automation/`): `Lean.labelled `tm_lemma` returns exactly 26 names. *(completed — NEW file Tests/BimodalTest/Automation/LemmaDBTest.lean, registered in Tests/BimodalTest.lean; TacticsTest.lean is broken at baseline so tests go in the dedicated file per task-189 precedent)*
 
 **Timing**: 1 hour
 
@@ -101,16 +101,16 @@ Fully sequential: each phase builds on the verified state of the previous one.
 
 ---
 
-### Phase 2: tryLemmaMatch with recursion; delete tryDerivedMatch; migration regression [NOT STARTED]
+### Phase 2: tryLemmaMatch with recursion; delete tryDerivedMatch; migration regression [COMPLETED]
 
 **Goal**: Attribute-driven, recursive lemma matching replaces the static strategy with the migration invariant machine-checked.
 
 **Tasks**:
-- [ ] In `Helpers.lean`, add `tryLemmaMatch (goal : MVarId) (_ctx _formula : Expr) (searchFn : MVarId -> Nat -> TacticM Bool) (depth : Nat) : TacticM Bool` per report SS3.2 sketch: enumerate `<- Lean.labelled `tm_lemma``; per lemma, inside `observing?`: `goal.apply (mkConst lemmaName)`; for each subgoal, `instantiateMVars` its type, then if `extractDerivationGoal` matches recurse `searchFn sub (depth - 1)`, else discharge via `first | trivial | decide | simp`; fail the attempt if anything remains. (~50 lines)
-- [ ] Gate recursion behind `depth > 1`; at `depth = 1` allow only the direct-apply path (empty `newGoals` — subsumes old `isEmpty` fast path for free).
-- [ ] Replace the strategy 1b call in `searchProof` (`Helpers.lean:1007`) with `tryLemmaMatch`, keeping pipeline order: 1 `tryAxiomMatch`, 1b `tryLemmaMatch`, 2 `tryAssumptionMatch`, 3 `tryModusPonens`, 4/5 `tryModalK`/`tryTemporalK`.
-- [ ] Delete `tryDerivedMatch` and its 26-name static list (`Helpers.lean:650-694`); update the module docstring (`Helpers.lean:37-46`). Do not keep two databases.
-- [ ] Add migration regression test in `Tests/BimodalTest/Automation/TacticsTest.lean`: for each of the 26 recorded names, a `modal_search` goal restating its (empty-context) statement — all must close.
+- [x] In `Helpers.lean`, add `tryLemmaMatch ...` per report SS3.2 sketch. *(completed — factored into `tryLemmaMatchCore (lemmas : Array Name) ...` + a thin `tryLemmaMatch` that passes `← Lean.labelled `tm_lemma`. This gives task 188 a parameterized entry point (`tryLemmaMatchCore`) to hook weakening-aware / context-specific matching without going through the attribute. Used `mkConstWithFreshMVarLevels` instead of `mkConst` so universe-polymorphic lemmas apply cleanly.)*
+- [x] Gate recursion behind `depth > 1`; direct-apply path works at any depth. *(completed — `if depth ≤ 1 then throwError` after the empty-`newGoals` fast path)*
+- [x] Replace the strategy 1b call in `searchProof` with `tryLemmaMatch`, keeping pipeline order. *(completed)*
+- [x] Delete `tryDerivedMatch` and its 26-name static list; update the module docstring. *(completed — `def tryDerivedMatch` and its list removed; module docstring section 2 and the `searchProof` algorithm comment updated. Residual `tryDerivedMatch` mentions remain only in unrelated test/doc comments in Commands.lean/EdgeCaseTest.lean.)*
+- [x] Add migration regression test. *(deviation: altered — placed in the NEW Tests/BimodalTest/Automation/LemmaDBTest.lean, not the baseline-broken TacticsTest.lean, per task-189 precedent. 26 empty-context `modal_search` goals, all closing.)*
 
 **Timing**: 1.5 hours
 
@@ -128,15 +128,15 @@ Fully sequential: each phase builds on the verified state of the previous one.
 
 ---
 
-### Phase 3: Head-symbol pre-filter + weakening fallback + chaining tests [NOT STARTED]
+### Phase 3: Head-symbol pre-filter + weakening fallback + chaining tests [COMPLETED]
 
 **Goal**: Bound the branching factor and unlock closed-lemma application under non-empty contexts; prove the new chaining capability with tests.
 
 **Tasks**:
-- [ ] Pre-filter (report SS3.3): for each labelled lemma, extract under `forallTelescope` on `ConstantInfo.type` the conclusion's `Formula` head constant (same `.app` pattern as `extractDerivationGoal`); build `HashMap Name (Option Name)` per `modal_search` invocation (recompute in `tryLemmaMatch` is acceptable for v1 — ~100 signature reads; no `IO.Ref` caching unless benchmarks demand). Only `apply` lemmas whose conclusion head matches the goal formula's head or is a variable.
-- [ ] Weakening fallback (report SS3.5): if direct `apply` fails and the goal context is non-empty, second attempt wrapped as `DerivationTree.weakening [] Γ _ · (List.nil_subset Γ)` (recipe from `AesopRules.axiom_temp_4`), recursing into the resulting empty-context premise.
-- [ ] Chaining tests in `Tests/BimodalTest/Automation/TacticsTest.lean` (and `EdgeCaseTest.lean` where it fits): (a) a goal closable only via `imp_trans` composing two registered lemmas; (b) a necessitation-variant chain (`(⊢ φ) -> ⊢ □φ` premise recursion); (c) a closed lemma under non-empty context via the weakening fallback; (d) a depth-exhaustion case failing with the existing "no proof found" error (negative test).
-- [ ] Tag `imp_trans` and any inference-rule lemmas needed by the chaining tests if not already among the 26 (Combinators.lean:83).
+- [x] Pre-filter (report SS3.3): head-symbol filter via `formulaHead` + `lemmaConclusionHead` (`forallTelescope` on `ConstantInfo.type`, read the `DerivationTree` conclusion's head const). *(completed — recomputed per lemma per invocation as planned; `some g, some l => if g != l then continue`, variable/none heads treated as wildcard)*
+- [x] Weakening fallback (report SS3.5): reduce non-empty-context `Γ ⊢[fc] φ` to `[] ⊢[fc] φ` via `DerivationTree.weakening [] Γ φ ?d (List.nil_subset Γ)` and recurse. *(completed — guarded by `isNilContext` to guarantee termination; empty list built with `mkAppOptM ``List.nil #[some Formula]` — plain `mkAppM` throws since `List.nil` has no explicit args)*
+- [x] Chaining tests. *(deviation: altered — tests placed in the NEW LemmaDBTest.lean (TacticsTest broken at baseline). Implemented: (c) weakening fallback (3 goals) and (d) depth-exhaustion/non-derivability via `fail_if_success` (robust vs. brittle message-text matching, and also asserts the weakening recursion TERMINATES on unprovable goals). (a)/(b) NOT implemented as passing tests — see below.)*
+- [x] Tag `imp_trans`. *(deviation: skipped — `imp_trans` intentionally left UNtagged. Empirically verified: its conclusion `A.imp C` leaves the middle `B` free, and the greedy backtrack-free search greedily mis-unifies it (`identity : A→A` grabs `?B`), so tagging adds cost with no reliable benefit. Documented at `Combinators.imp_trans`. Test (a) imp_trans-chaining and (b) necessitation-chaining are therefore not included: (a) is unsupported by this architecture (needs metavariable backtracking, out of scope), and (b) `⊢ □φ` recursion is already handled by `tryModalK`, not `tryLemmaMatch`. The genuinely-new recursion capability is demonstrated via the determined-premise weakening fallback (tests c/d).)*
 
 **Timing**: 1.5 hours
 
@@ -155,16 +155,16 @@ Fully sequential: each phase builds on the verified state of the previous one.
 
 ---
 
-### Phase 4: Expand tagging, wire visitLimit, doc fixes, benchmark [NOT STARTED]
+### Phase 4: Expand tagging, wire visitLimit, doc fixes, benchmark [COMPLETED]
 
 **Goal**: Grow the database to its intended coverage, cap search cost, and clean up documentation.
 
 **Tasks**:
-- [ ] Expand `@[tm_lemma]` tagging across remaining fc-polymorphic empty-context theorems (~30-60 more) per report SS1.7 inventory: `Theorems/Propositional/{Core,Connectives,Reasoning}.lean`, `TemporalDerived.lean`, `ModalS5.lean`, `ModalS4.lean`, `Perpetuity/{Principles,Bridge}.lean` (`diamond_4`, `modal_5`, `box_to_future`, `box_to_past`, + candidates). Skip `GeneralizedNecessitation.lean` rules already special-cased by `tryModalK`/`tryTemporalK` (duplicative). Never tag `ContextualProofs.lean` or fc-pinned theorems.
-- [ ] Wire `SearchConfig.visitLimit` (report SS3.6): `IO.Ref Nat` counter created in `runModalSearch` (`Commands.lean`), decremented in `searchProof`'s preamble, abort at 0 (~15 lines; thread via parameter or a small `SearchState` structure — pick the minimal-churn option).
-- [ ] Update the label-count smoke check from Phase 1 to the new total (or relax to `>= 26`).
-- [ ] Doc fixes: `Commands.lean` docstring (visitLimit now live); fix the `aesop (rule_sets [TMLogic])` docstring bug in `AesopRules.lean` (no such rule set is declared — report SS1.6, one line).
-- [ ] Benchmark check: time `lake build` of `Tests/BimodalTest/Automation/` before/after this phase's tagging; if materially slower, tighten the pre-filter or lower default visitLimit and note in summary.
+- [x] Expand `@[tm_lemma]` tagging. *(deviation: altered — added 9 premise-free empty-context theorems for a total of 35 (not ~30-60): `lem`, `efq_axiom`, `peirce_axiom` (Core); `t_box_consistency`, `box_disj_intro` (ModalS5); `contrapositive` (TemporalDerived); `box_to_box_past`, `mb_diamond` (Perpetuity/Principles); `box_to_present` (Perpetuity/Helpers). Deliberately conservative: only premise-free theorems tagged, so no new inference-rule branching that could blow up search — free-middle inference rules (imp_trans) stay untagged per Phase 3. GeneralizedNecessitation and ContextualProofs untouched as instructed.)*
+- [x] Wire `SearchConfig.visitLimit`. *(completed — `IO.mkRef cfg.visitLimit` in `runModalSearch`/`runTemporalSearch`/`runPropositionalSearch`; `searchProof` takes the `IO.Ref Nat` as its curried first param (so `searchProof counter` keeps the `searchFn` shape for the `try*` helpers — minimal churn, no new struct), decrements in its preamble, aborts at 0. Dropped the unused `_maxDepth` param.)*
+- [x] Update the label-count smoke check. *(completed — relaxed to `≥ 26`; current total 35, comment updated)*
+- [x] Doc fixes: `Commands.lean` visitLimit docstring + `AesopRules.lean` TMLogic bug. *(completed — AesopRules docstring corrected to `aesop` (default rule set); confirmed `declare_aesop_rule_sets [TMLogic]` is absent so `rule_sets [TMLogic]` was invalid)*
+- [x] Benchmark check. *(completed — full `lake build` (1755 jobs) green; `BimodalTest.Automation.LemmaDBTest` builds in ~1.7s with all 5 test groups. No material regression observed; the head-symbol pre-filter bounds per-node branching and visitLimit caps total cost.)*
 
 **Timing**: 1 hour
 
@@ -185,11 +185,11 @@ Fully sequential: each phase builds on the verified state of the previous one.
 
 ## Testing & Validation
 
-- [ ] Per-phase gate: full `lake build` (project + Tests) green, zero sorries in all touched files — no phase is committed red.
-- [ ] Migration invariant (Phase 2, re-checked Phases 3-4): all 26 former static-list goals close via `modal_search`.
-- [ ] New-capability tests (Phase 3): `imp_trans` chaining, necessitation premise recursion, weakening fallback, depth-exhaustion negative test.
-- [ ] Label-count smoke check tracks the tagged total.
-- [ ] Performance proxy: Tests build time not materially regressed after Phase 4 expansion.
+- [x] Per-phase gate: full `lake build` (project + Tests) green, zero sorries in all touched files — no phase committed red.
+- [x] Migration invariant (Phase 2, re-checked Phases 3-4): all 26 former static-list goals close via `modal_search` (Group 2 of LemmaDBTest).
+- [x] New-capability tests (Phase 3): weakening fallback (Group 3 c) and depth-exhaustion/non-derivability (Group 3 d). *(deviation: `imp_trans` chaining and necessitation recursion not tested — imp_trans free-middle chaining is unsupported by the greedy search and necessitation is handled by `tryModalK`; new capability shown via the determined-premise weakening fallback instead.)*
+- [x] Label-count smoke check tracks the tagged total (≥ 26 lower bound; current 35).
+- [x] Performance proxy: Tests build time not materially regressed (LemmaDBTest ~1.7s; full build green).
 
 ## Artifacts & Outputs
 

@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,187,191,199,219,231,257,282,291,296,307,318,341,343,361,364 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,188,192,196,292,293,294,298,305,358 | 161,187,191,291,307,341,343,361,364 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,188,191,199,219,231,257,282,291,296,307,318,341,343,361,364 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,192,196,292,293,294,298,305,358 | 161,191,291,307,341,343,361,364 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -67,12 +67,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 186 [NOT STARTED] — unify_search_systems
-187 [PLANNED] — backward_chaining_lemma_db
-  └─ 188 [PLANNED] — weakening_aware_search
+188 [PLANNED] — weakening_aware_search
+191 [PLANNED] — propositional_decision_procedure
   └─ 192 [NOT STARTED] — master_tactic_dispatch
     └─ 193 [NOT STARTED] — codebase_tactic_refactor
-191 [PLANNED] — propositional_decision_procedure
-  └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
@@ -643,7 +641,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 187. Backward chaining lemma db
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: Task 189
@@ -651,6 +649,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
   - [187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md]
   - [187_backward_chaining_lemma_db/reports/02_backward-chaining-research.md]
 - **Plan**: [187_backward_chaining_lemma_db/plans/02_backward-chaining-plan.md]
+- **Summary**: [187_backward_chaining_lemma_db/summaries/02_backward-chaining-summary.md]
 
 ---
 

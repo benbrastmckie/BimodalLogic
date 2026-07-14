@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Combinators
+import Bimodal.Automation.LemmaDB
 
 /-!
 # Perpetuity Helper Lemmas
@@ -51,6 +52,7 @@ Proof:
 2. MT axiom: `□Gφ → Gφ`
 3. Transitivity: `□φ → Gφ`
 -/
+@[tm_lemma]
 def box_to_future (φ : Formula) : ⊢ φ.box.imp φ.all_future := by
   have mf : ⊢ φ.box.imp (φ.all_future.box) := DerivationTree.axiom [] _ (Axiom.modal_future φ) trivial
   have mt : ⊢ φ.all_future.box.imp φ.all_future := DerivationTree.axiom [] _ (Axiom.modal_t φ.all_future) trivial
@@ -67,6 +69,7 @@ Proof via temporal duality:
 
 This clever use of temporal duality avoids needing a separate "modal-past" axiom.
 -/
+@[tm_lemma]
 def box_to_past (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
   have h1 : ⊢ φ.swap_temporal.box.imp φ.swap_temporal.all_future := box_to_future φ.swap_temporal
   have h2 : ⊢ (φ.swap_temporal.box.imp φ.swap_temporal.all_future).swap_temporal :=
@@ -78,6 +81,7 @@ def box_to_past (φ : Formula) : ⊢ φ.box.imp φ.all_past := by
 /--
 Box implies present: `⊢ □φ → φ` (MT axiom).
 -/
+@[tm_lemma]
 def box_to_present (φ : Formula) : ⊢ φ.box.imp φ := DerivationTree.axiom [] _ (Axiom.modal_t φ) trivial
 
 /-!

@@ -34,12 +34,13 @@ The `searchProof` function uses five strategies in order:
    - Discrete (3): prior_UZ, prior_SZ, z1
    - Dense (2): density, dense_indicator
 
-2. **Derived theorem matching** (`tryDerivedMatch`): 26 empty-context derived theorems:
-   - Propositional combinators (12): identity, double_negation, raa, efq, lce_imp, rce_imp,
-     contrapose_imp, pairing, dni, b_combinator, theorem_flip, theorem_app1
-   - Modal/temporal derived (14): temp_k_dist_derived, temp_4_derived, H_distribution,
-     H_transitivity, t_box_to_diamond, k_dist_diamond, diamond_4, modal_5, box_to_future,
-     box_to_past, formula_or_comm, bi_imp, classical_merge, temp_future_derived
+2. **Lemma database matching** (`tryLemmaMatch`): empty-context derived theorems
+   registered via the `@[tm_lemma]` label attribute (declared in
+   `Bimodal.Automation.LemmaDB`), applied with backward chaining: remaining
+   `DerivationTree` premises are proven recursively via `searchProof`, and side
+   goals (frame-class `≤`, context membership) are discharged by
+   `trivial | decide | simp`. Tag a theorem `@[tm_lemma]` at its definition
+   site to add it to the search (see the tagging policy in `LemmaDB.lean`).
 
 3. **Assumption matching** (`tryAssumptionMatch`)
 4. **Modus ponens decomposition** (`tryModusPonens`)
@@ -634,64 +635,162 @@ def tryAxiomMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
   return result.isSome
 
 /--
-Try to prove the goal by matching against derived theorems (empty-context).
+Head constant of a `Formula` expression (e.g. `Formula.imp` for `A → B`).
+Returns `none` when the head is not a constant (a bound/free variable
+conclusion), which the pre-filter treats as a wildcard.
+-/
+def formulaHead (formula : Expr) : Option Name :=
+  match formula.getAppFn with
+  | .const n _ => some n
+  | _ => none
 
-Derived theorems are proven results of the form `⊢ φ` or `⊢[fc] φ` that are
-not axiom constructors but follow from the axiom system. These include
-propositional combinators, modal S5 consequences, and temporal derived rules.
+/--
+Head constant of a labelled lemma's conclusion `Formula`, obtained by
+telescoping the lemma type's binders and reading the `DerivationTree` goal.
+Returns `none` for non-derivability conclusions or variable heads (wildcard).
+-/
+def lemmaConclusionHead (lemmaName : Name) : MetaM (Option Name) := do
+  let info ← getConstInfo lemmaName
+  forallTelescope info.type fun _ concl => do
+    match ← extractDerivationGoal concl with
+    | some (_, _, formula) => return formulaHead formula
+    | none => return none
 
-Unlike `tryAxiomMatch` which applies axiom constructors via `DerivationTree.axiom`,
-this function applies derived theorem constants directly via `apply`.
+/--
+Is `ctx` the literal empty context `([] : Context)`? Used to avoid a
+non-terminating weakening fallback (weakening `[] ⊆ []` would recurse on the
+same goal). A `cons` or variable context is treated as potentially non-empty.
+-/
+def isNilContext (ctx : Expr) : Bool :=
+  match ctx with
+  | .app (.const ``List.nil _) _ => true
+  | .const ``List.nil _ => true
+  | _ => false
+
+/--
+Try to prove the goal by applying derived-theorem lemmas from an explicit
+name list, recursing into derivability premises via `searchFn` (backward
+chaining).
+
+This is the parameterized core behind `tryLemmaMatch`. Callers supply the
+lemma name array explicitly, which lets alternative databases or wrappers
+(e.g. weakening-aware / context-specific matching, task 188) reuse the
+application and recursion machinery without going through the `@[tm_lemma]`
+attribute.
+
+For each candidate lemma passing the head-symbol pre-filter, inside
+`observing?` (so a failed attempt leaves the metavariable state untouched):
+1. `apply` the lemma constant to the goal.
+2. If no subgoals remain, the lemma closed the goal directly (works at any
+   depth — subsumes the old static-list fast path).
+3. Otherwise, only when `depth > 1`: for each subgoal, instantiate
+   metavariables in its type; if it is itself a `DerivationTree` goal,
+   recurse via `searchFn` at `depth - 1`; otherwise discharge it as a side
+   goal (frame-class `≤` or `Formula ∈ Γ` membership) via
+   `first | trivial | decide | simp`.
+4. The attempt fails (and is rolled back) unless every subgoal is closed.
+
+If no lemma matches and the context is non-empty, a weakening fallback
+reduces `Γ ⊢[fc] φ` to `[] ⊢[fc] φ` and recurses.
+-/
+def tryLemmaMatchCore (lemmas : Array Name) (goal : MVarId) (fc _ctx formula : Expr)
+    (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+  -- Head-symbol pre-filter: only try lemmas whose conclusion head matches the
+  -- goal formula's head (or is a variable/wildcard). Recomputed per call.
+  let goalHead := formulaHead formula
+  for lemmaName in lemmas do
+    -- Skip lemmas whose conclusion head cannot unify with the goal head
+    match goalHead, ← lemmaConclusionHead lemmaName with
+    | some g, some l => if g != l then continue
+    | _, _ => pure ()
+    let success ← observing? do
+      setGoals [goal]
+      let lemmaExpr ← mkConstWithFreshMVarLevels lemmaName
+      let newGoals ← goal.apply lemmaExpr
+      if newGoals.isEmpty then
+        setGoals []
+        return ()
+      -- Premises remain: recursing into them needs at least 2 depth levels
+      if depth ≤ 1 then
+        throwError "lemma has premises but depth is exhausted"
+      -- Split subgoals: derivability premises (recurse) vs. everything else
+      -- (frame-class `≤`, context membership, or undetermined value mvars like
+      -- an inference rule's middle `Formula`). Recurse the derivability
+      -- premises FIRST so unification determines any value metavariables; then
+      -- discharge Prop side goals and require value mvars to be assigned.
+      let mut derivGoals : List MVarId := []
+      let mut otherGoals : List MVarId := []
+      for sub in newGoals do
+        let subType ← instantiateMVars (← sub.getType)
+        if (← extractDerivationGoal subType).isSome then
+          derivGoals := derivGoals ++ [sub]
+        else
+          otherGoals := otherGoals ++ [sub]
+      for sub in derivGoals do
+        if ← sub.isAssigned then
+          continue
+        let ok ← searchFn sub (depth - 1)
+        if !ok then
+          throwError "could not prove lemma premise"
+      for sub in otherGoals do
+        if ← sub.isAssigned then
+          continue
+        let subType ← instantiateMVars (← sub.getType)
+        if ← Meta.isProp subType then
+          -- Side goal from `apply`: frame-class `≤` or context membership
+          setGoals [sub]
+          evalTactic (← `(tactic| first | trivial | decide | simp))
+          let remaining ← getGoals
+          if !remaining.isEmpty then
+            throwError "could not discharge side goal"
+        else
+          -- A value metavariable (e.g. inference-rule middle) left undetermined
+          throwError "undetermined metavariable premise"
+      setGoals []
+      return ()
+    if success.isSome then
+      return true
+  -- Weakening fallback: a closed lemma `⊢[fc] φ` still applies under a
+  -- non-empty context `Γ ⊢[fc] φ` via `DerivationTree.weakening`. Reduce to
+  -- the empty-context goal and recurse. Recipe from `AesopRules.axiom_temp_4`.
+  -- Skipped for a literal empty context to guarantee termination.
+  unless isNilContext _ctx do
+    let wkSuccess ← observing? do
+      setGoals [goal]
+      let emptyCtx ← mkAppOptM ``List.nil #[some (mkConst ``Formula)]
+      let subType ← mkAppM ``DerivationTree #[fc, emptyCtx, formula]
+      let subMVar ← mkFreshExprMVar subType
+      let hsub ← mkAppM ``List.nil_subset #[_ctx]
+      let proof ← mkAppM ``DerivationTree.weakening #[emptyCtx, _ctx, formula, subMVar, hsub]
+      goal.assign proof
+      let ok ← searchFn subMVar.mvarId! depth
+      if !ok then
+        throwError "weakening fallback: could not prove empty-context premise"
+      setGoals []
+      return ()
+    if wkSuccess.isSome then
+      return true
+  return false
+
+/--
+Try to prove the goal by matching against the `@[tm_lemma]` attribute
+database (see `Bimodal.Automation.LemmaDB`), with backward chaining through
+lemma premises.
+
+Replaces the former `tryDerivedMatch` static 26-name list: the database is
+now populated by tagging theorems `@[tm_lemma]` at their definition sites.
+Unlike `tryAxiomMatch`, which applies axiom constructors via
+`DerivationTree.axiom`, this applies derived theorem constants directly via
+`apply` and recurses into any remaining `DerivationTree` premises — so
+inference-rule lemmas (e.g. `imp_trans`-style composition) participate in
+the search, not just directly-matching statements.
 
 **Note**: Uses `observing?` to avoid corrupting metavariable state on failure.
-Only empty-context theorems are registered here (no context-dependent theorems
-like `ecq : [A, ¬A] ⊢ B` which would require weakening infrastructure).
 -/
-def tryDerivedMatch (goal : MVarId) (_ctx _formula : Expr) : TacticM Bool := do
-  let result ← observing? do
-    setGoals [goal]
-    let derivedExprs : List Name := [
-      -- Tier 1: Propositional combinators (12)
-      ``Bimodal.Theorems.Combinators.identity,        -- A → A
-      ``Bimodal.Theorems.Propositional.double_negation, -- ¬¬φ → φ
-      ``Bimodal.Theorems.Propositional.raa,            -- A → (¬A → B)
-      ``Bimodal.Theorems.Propositional.efq,            -- ¬A → (A → B)
-      ``Bimodal.Theorems.Propositional.lce_imp,        -- (A ∧ B) → A
-      ``Bimodal.Theorems.Propositional.rce_imp,        -- (A ∧ B) → B
-      ``Bimodal.Theorems.Propositional.contrapose_imp, -- (A → B) → (¬B → ¬A)
-      ``Bimodal.Theorems.Combinators.pairing,          -- A → (B → (A ∧ B))
-      ``Bimodal.Theorems.Combinators.dni,              -- A → ¬¬A
-      ``Bimodal.Theorems.Combinators.b_combinator,     -- (B→C) → ((A→B) → (A→C))
-      ``Bimodal.Theorems.Combinators.theorem_flip,     -- (A→(B→C)) → (B→(A→C))
-      ``Bimodal.Theorems.Combinators.theorem_app1,     -- A → ((A→B) → B)
-      -- Tier 2: Modal and temporal derived theorems (13)
-      ``Bimodal.Theorems.TemporalDerived.temp_k_dist_derived, -- G(φ→ψ) → (Gφ→Gψ)
-      ``Bimodal.Theorems.TemporalDerived.temp_4_derived,      -- Gφ → GGφ
-      ``Bimodal.Theorems.TemporalDerived.H_distribution,      -- H(φ→ψ) → (Hφ→Hψ)
-      ``Bimodal.Theorems.TemporalDerived.H_transitivity,      -- Hφ → HHφ
-      ``Bimodal.Theorems.ModalS5.t_box_to_diamond,            -- □A → ◇A
-      ``Bimodal.Theorems.ModalS5.k_dist_diamond,              -- □(A→B) → (◇A → ◇B)
-      ``Bimodal.Theorems.Perpetuity.diamond_4,                 -- ◇◇φ → ◇φ
-      ``Bimodal.Theorems.Perpetuity.modal_5,                   -- ◇φ → □◇φ
-      ``Bimodal.Theorems.Perpetuity.box_to_future,             -- □φ → Gφ
-      ``Bimodal.Theorems.Perpetuity.box_to_past,               -- □φ → Hφ
-      ``Bimodal.Theorems.TemporalDerived.formula_or_comm,      -- (A ∨ B) → (B ∨ A)
-      ``Bimodal.Theorems.Propositional.bi_imp,                 -- (A→B) → ((B→A) → (A↔B))
-      ``Bimodal.Theorems.Propositional.classical_merge,        -- (P→Q) → ((¬P→Q) → Q)
-      -- Tier 1 extra: temp_future_derived (moved from tryAxiomMatch)
-      ``Bimodal.Theorems.Combinators.temp_future_derived       -- □φ → G□φ
-    ]
-    for derivedName in derivedExprs do
-      try
-        let derivedExpr := mkConst derivedName
-        let remainingGoals ← goal.apply derivedExpr
-        if remainingGoals.isEmpty then
-          setGoals []
-          return ()
-      catch _ =>
-        continue
-    throwError "no derived theorem matched"
-  return result.isSome
+def tryLemmaMatch (goal : MVarId) (fc ctx formula : Expr)
+    (searchFn : MVarId → Nat → TacticM Bool) (depth : Nat) : TacticM Bool := do
+  let lemmas ← Lean.labelled `tm_lemma
+  tryLemmaMatchCore lemmas goal fc ctx formula searchFn depth
 
 /--
 Try to prove the goal by finding a matching assumption in the context.
@@ -978,22 +1077,35 @@ Recursive proof search implementation.
 
 **Algorithm**:
 1. Check if goal matches any axiom schema (42 constructors)
-1b. Check if goal matches any derived theorem (~25 empty-context theorems)
+1b. Check if goal matches any `@[tm_lemma]` database lemma (with backward
+    chaining through derivability premises)
 2. Check if goal is in assumptions
 3. Try modus ponens decomposition (backward chaining)
 4. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
 5. Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
 
 **Parameters**:
+- `counter`: `IO.Ref Nat` node-visit budget (`SearchConfig.visitLimit`), created
+  per `modal_search` invocation. Decremented on entry; search aborts (returns
+  `false`) once it reaches 0, bounding total search cost independently of `depth`.
 - `goal`: Current proof goal
 - `depth`: Remaining search depth
-- `maxDepth`: Original maximum depth (for logging)
 
 **Returns**: True if proof found, false otherwise.
+
+**Note**: `counter` is the first (curried) parameter so that `searchProof counter`
+has the `MVarId → Nat → TacticM Bool` shape expected by the `try*` helpers'
+`searchFn`, with no change to their signatures.
 -/
-partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth) : TacticM Bool := do
+partial def searchProof (counter : IO.Ref Nat) (goal : MVarId) (depth : Nat) : TacticM Bool := do
   if depth = 0 then
     return false
+
+  -- visitLimit abort: consume one node from the budget; stop if exhausted.
+  let remaining ← counter.get
+  if remaining == 0 then
+    return false
+  counter.set (remaining - 1)
 
   let goalType ← goal.getType
   let some (fc, ctx, formula) ← extractDerivationGoal goalType
@@ -1003,8 +1115,8 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
   if ← tryAxiomMatch goal ctx formula then
     return true
 
-  -- Strategy 1b: Try derived theorem matching
-  if ← tryDerivedMatch goal ctx formula then
+  -- Strategy 1b: Try lemma database matching (backward chaining through premises)
+  if ← tryLemmaMatch goal fc ctx formula (searchProof counter) depth then
     return true
 
   -- Strategy 2: Try assumption matching
@@ -1013,17 +1125,17 @@ partial def searchProof (goal : MVarId) (depth : Nat) (_maxDepth : Nat := depth)
 
   -- Strategy 3: Try modus ponens decomposition (expensive)
   if depth > 1 then  -- Need at least 2 levels for modus ponens
-    if ← tryModusPonens goal fc ctx formula searchProof depth then
+    if ← tryModusPonens goal fc ctx formula (searchProof counter) depth then
       return true
 
   -- Strategy 4: Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)
   if depth > 1 then
-    if ← tryModalK goal fc ctx formula searchProof depth then
+    if ← tryModalK goal fc ctx formula (searchProof counter) depth then
       return true
 
   -- Strategy 5: Try temporal K rule (reduce FΓ ⊢ Fφ to Γ ⊢ φ)
   if depth > 1 then
-    if ← tryTemporalK goal fc ctx formula searchProof depth then
+    if ← tryTemporalK goal fc ctx formula (searchProof counter) depth then
       return true
 
   return false
