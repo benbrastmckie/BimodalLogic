@@ -46,7 +46,7 @@ open Bimodal.Metalogic
 -- ============================================================
 
 /-- Build simple atomic formula -/
-def mk_atom (name : String) : Formula := Formula.atom name
+def mk_atom (name : String) : Formula := Formula.atom_s name
 
 /-- Build implication -/
 def mk_imp (φ ψ : Formula) : Formula := φ.imp ψ
@@ -83,33 +83,33 @@ def mk_bimodal (φ : Formula) : Formula := φ.box.all_future
 -- ============================================================
 
 /-- Build axiom derivation -/
-def mk_axiom_deriv (φ : Formula) (h : Axiom φ) : DerivationTree [] φ :=
-  DerivationTree.axiom [] φ h
+def mk_axiom_deriv (φ : Formula) (h : Axiom φ) : DerivationTree h.minFrameClass [] φ :=
+  DerivationTree.axiom [] φ h (le_refl _)
 
 /-- Build assumption derivation -/
 def mk_assumption_deriv (Γ : Context) (φ : Formula) (h : φ ∈ Γ) :
-    DerivationTree Γ φ :=
+    DerivationTree FrameClass.Base Γ φ :=
   DerivationTree.assumption Γ φ h
 
 /-- Build modus ponens derivation -/
 def mk_mp_deriv (Γ : Context) (φ ψ : Formula)
-    (d1 : DerivationTree Γ (φ.imp ψ))
-    (d2 : DerivationTree Γ φ) : DerivationTree Γ ψ :=
+    (d1 : DerivationTree FrameClass.Base Γ (φ.imp ψ))
+    (d2 : DerivationTree FrameClass.Base Γ φ) : DerivationTree FrameClass.Base Γ ψ :=
   DerivationTree.modus_ponens Γ φ ψ d1 d2
 
 /-- Build modal necessitation derivation -/
 def mk_necessitation_deriv (φ : Formula)
-    (d : DerivationTree [] φ) : DerivationTree [] (φ.box) :=
+    (d : DerivationTree FrameClass.Base [] φ) : DerivationTree FrameClass.Base [] (φ.box) :=
   DerivationTree.necessitation φ d
 
 /-- Build temporal necessitation derivation -/
 def mk_temporal_necessitation_deriv (φ : Formula)
-    (d : DerivationTree [] φ) : DerivationTree [] (φ.all_future) :=
+    (d : DerivationTree FrameClass.Base [] φ) : DerivationTree FrameClass.Base [] (φ.all_future) :=
   DerivationTree.temporal_necessitation φ d
 
 /-- Build weakening derivation -/
 def mk_weakening_deriv (Γ Δ : Context) (φ : Formula)
-    (d : DerivationTree Γ φ) (h : Γ ⊆ Δ) : DerivationTree Δ φ :=
+    (d : DerivationTree FrameClass.Base Γ φ) (h : Γ ⊆ Δ) : DerivationTree FrameClass.Base Δ φ :=
   DerivationTree.weakening Γ Δ φ d h
 
 -- ============================================================
@@ -117,16 +117,16 @@ def mk_weakening_deriv (Γ Δ : Context) (φ : Formula)
 -- ============================================================
 
 /-- Verify soundness of derivation -/
-def verify_soundness (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) :
+def verify_soundness (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) :
     Γ ⊨ φ :=
   soundness Γ φ d
 
 /-- Verify validity of theorem -/
-def verify_validity (φ : Formula) (d : DerivationTree [] φ) : ⊨ φ :=
+def verify_validity (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : ⊨ φ :=
   Validity.valid_iff_empty_consequence φ |>.mpr (soundness [] φ d)
 
 /-- Verify workflow: derivation → soundness → validity -/
-def verify_workflow (φ : Formula) (d : DerivationTree [] φ) : True := by
+def verify_workflow (φ : Formula) (d : DerivationTree FrameClass.Base [] φ) : True := by
   have _valid : ⊨ φ := verify_validity φ d
   trivial
 
@@ -136,14 +136,14 @@ def verify_workflow (φ : Formula) (d : DerivationTree [] φ) : True := by
 
 /-- Assert derivation exists -/
 def assert_derivable (Γ : Context) (φ : Formula) : Prop :=
-  Nonempty (DerivationTree Γ φ)
+  Nonempty (DerivationTree FrameClass.Base Γ φ)
 
 /-- Assert formula is valid -/
 def assert_valid (φ : Formula) : Prop :=
   valid φ
 
 /-- Assert soundness holds -/
-def assert_sound (Γ : Context) (φ : Formula) (d : DerivationTree Γ φ) : Prop :=
+def assert_sound (Γ : Context) (φ : Formula) (d : DerivationTree FrameClass.Base Γ φ) : Prop :=
   Γ ⊨ φ
 
 end BimodalTest.Integration.Helpers
