@@ -12,26 +12,21 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,309,318,341,343,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,192,196,231,292,293,294,298,307,358 | 161,187,191,194,230,291,309,341,343,361,363 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,193,305,362 | 131,169,170,189,192,196,307,358 | completeness, formula-refactor, automation, ... |
-| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
-| 5 | 95,299,359 | 303 | completeness, kamp_theorem_formalization |
+| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,307,318,341,343,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,192,196,231,292,293,294,298,305,358 | 161,187,191,194,230,291,307,341,343,361,363 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,303,362 | 131,169,170,189,192,196,305,358 | completeness, formula-refactor, automation, ... |
+| 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
 **Grouped by Topic** (indented = depends on parent):
 
 ### Completeness
 
 165 [NOT STARTED] — Establish the semantic finite model property for TM bimodal logic
-95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
-299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
-303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
-  └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b (see above)
-  └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte (see above)
-305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
-  └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi (see above)
 307 [BLOCKED] — Kamp Cor 5.4 depth-k zone converter: resolve the multi-anchor sin
-  └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep (see above)
+  └─ 305 [BLOCKED] — Implement Rabinovich's proof of Kamp's theorem (Option A from rep
+    └─ 303 [PLANNED] — Close existPart_succ_n1_bypass k>0 (KampBypass.lean) via Rabinovi
+      └─ 95 [NOT STARTED] — Verification pass on sorry status for completeness_discrete and b
+      └─ 299 [NOT STARTED] — Refactor DiscreteGameTransfer.lean to eliminate the wrapper patte
 
 ### Formula Refactor
 
@@ -106,7 +101,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-309 [PLANNED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 363 [RESEARCHED] — The general-depth (m>=1) fiber-marking interface underlying task 
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
@@ -264,7 +258,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348, Task 349, Task 350

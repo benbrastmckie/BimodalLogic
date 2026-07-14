@@ -34,7 +34,7 @@
 > NOT full retirement.
 
 - **Task**: 309 - offdiag_two_anchor_fi_chain
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Effort**: ~2-5 hours remaining (Phases 20-21; ~80-200 lines of Lean total, each phase one H8-bounded agent run)
 - **Dependencies**: 310, 311, 320, 333, 335, 346, 348 (all COMPLETE, carried from v9); **349 (COMPLETE — recursive endChar core, landed as the `endInterval` stack)**; **350 (COMPLETE — aggregate quantEnd/seg + six `kampArm_*` arm-hook lemmas)**. All nine dependencies resolved. Task 358 is NOT a dependency of the k≤1 scope — it is the named successor for the k≥2 residue.
 - **Research Inputs**:
