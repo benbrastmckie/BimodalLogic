@@ -608,7 +608,7 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 13: (E1) exterior fiber kit + single-fiber R3 probe [NOT STARTED]
+### Phase 13: (E1) exterior fiber kit + single-fiber R3 probe [IN PROGRESS]
 
 - **Goal:** The 7-zone fiber partition kit for the exterior channels + the R3 adjudication probe, in new
   module `Kamp/NfMultiAnchorBridge/ExteriorFiberKitK1.lean`.
