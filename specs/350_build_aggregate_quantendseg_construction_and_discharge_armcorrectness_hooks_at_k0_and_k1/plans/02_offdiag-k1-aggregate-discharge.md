@@ -354,36 +354,44 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 
 ---
 
-### Phase 7: (A / P1) conjFull kit — snoc, BracketFormula.conjFull, VVecEA2 lift [NOT STARTED]
+### Phase 7: (A / P1) conjFull kit — snoc, BracketFormula.conjFull, VVecEA2 lift [COMPLETED]
 
 - **Goal:** Rabinovich Lemma 3.2(1)/3.4 conjunction closure in full iff form, order-generic (no
   model hypotheses), in new file `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/VecEAConjFull.lean`.
 - **Tasks:**
-  - [ ] Create `Kamp/VecEAConjFull.lean` importing the VecEA stack (VecEAClosure/VecEAFormula);
+  - [x] Create `Kamp/VecEAConjFull.lean` importing the VecEA stack (VecEAClosure/VecEAFormula);
     register additively wherever the existing VecEA modules are aggregated (import-line only).
-  - [ ] Probe 1 (report-recommended first move): `BracketFormula.snoc {n} (bf : BracketFormula n)
+    *(registered in NfMultiAnchorBridge.lean with cycle-free NOTE, task-357/350-Phase-1 precedent)*
+  - [x] Probe 1 (report-recommended first move): `BracketFormula.snoc {n} (bf : BracketFormula n)
     (p s : TemporalPred) : BracketFormula (n+1)` + `snoc_holds_iff` — decomposition at the last
     witness: `(bf.snoc p s).holds M atomMap z0 z1 ↔ ∃ x, z0 < x ∧ x < z1 ∧ bf.holds M atomMap z0 x
     ∧ p.eval_at M atomMap x ∧ ∀ y, x < y → y < z1 → s.eval_at M atomMap y` (~60 lines;
     one-directional cousin `existsBounded_right` at VecEAClosure.lean:265 for reference).
-  - [ ] Segment gluing lemma: `s on (a,x) → s(x) → s on (x,z1) → s on (a,z1)` (trichotomy on `y`
-    vs `x`).
-  - [ ] `BracketFormula.conjFull {n1 n2} : BracketFormula n1 → BracketFormula n2 →
+    *(deviation: altered — proved via a reusable `BracketFormula.front` + `holds_succ_iff`
+    last-witness decomposition built on the delivered `leftPart_holds`/`splitAt_combine` kit
+    (VecEAFormula.lean:375/478) instead of a from-scratch witness-vector construction;
+    `snoc_holds_iff` then follows by rewriting `snoc_front`/`snoc_*_last`)*
+  - [x] Segment gluing lemma: `s on (a,x) → s(x) → s on (x,z1) → s on (a,z1)` (trichotomy on `y`
+    vs `x`). *(delivered as `TemporalPred.eval_at_glue`)*
+  - [x] `BracketFormula.conjFull {n1 n2} : BracketFormula n1 → BracketFormula n2 →
     VBracketFormula` — recursion on `n1 + n2` (`termination_by`), 3-way last-witness trichotomy:
     (coincide) merged point `(p1.conj p2)`, final segment `(s1.conj s2)`, recurse on both drops;
     (bf1-last greater) merged point `(p1.conj s2last)` — the other bracket's ambient segment type
     on the merged point, THE paper ingredient — final segment `(s1last.conj s2last)`, recurse
     `conjFull bf1' bf2` on `(z0, x)`; (bf2-last greater) mirror. Base cases `(0,n)`/`(n,0)`:
     conjoin the 0-bracket's segment type into ALL point types and all segment types; iff via the
-    interval trichotomy.
-  - [ ] `BracketFormula.conjFull_iff : (conjFull bf1 bf2).holds M atomMap z0 z1 ↔
+    interval trichotomy. *(base cases unified in one `conjEverywhere` def + iff lemma; interval
+    trichotomy delivered as `witness_position_trichotomy`)*
+  - [x] `BracketFormula.conjFull_iff : (conjFull bf1 bf2).holds M atomMap z0 z1 ↔
     bf1.holds M atomMap z0 z1 ∧ bf2.holds M atomMap z0 z1` (G5: manual bridges at every step).
-  - [ ] Lift: `VVecEA2.conjFull (v1 v2 : VVecEA2) : VVecEA2` (Cartesian product of disjunct lists,
+  - [x] Lift: `VVecEA2.conjFull (v1 v2 : VVecEA2) : VVecEA2` (Cartesian product of disjunct lists,
     endpoint conjunction via `TemporalPred.eval_at_conj` — VecEAClosure.lean:22, already iff —
     per-pair `conjFull` bracket lists flattened) + `VVecEA2.conjFull_iff` from `disj_holds` +
     per-pair `conjFull_iff`. Also a `trivialTrue` neutral element lemma for the Phase-16 fold.
-  - [ ] Scoped build green; `lean_verify` on `conjFull_iff` (both levels) = exactly
+    *(both left and right neutrality lemmas provided)*
+  - [x] Scoped build green; `lean_verify` on `conjFull_iff` (both levels) = exactly
     `[propext, Classical.choice, Quot.sound]`; commit per green sub-step.
+    *(commits 5c04425b5 + c7082617b; full `lake build` also green, 1738 jobs)*
 - **Timing:** 2 hours. H8 seam if overrun: 7a = snoc kit + gluing + `BracketFormula.conjFull`
   def + iff (~300-500 lines); 7b = VVecEA2 lift (~100-200 lines).
 - **Depends on:** none (wave 1; parallel with Phase 12 — disjoint files)
