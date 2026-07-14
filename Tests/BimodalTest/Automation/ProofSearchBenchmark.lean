@@ -31,9 +31,9 @@ namespace BimodalTest.Automation.Benchmark
 open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
 -- Convenience abbreviations
-abbrev p : Formula := .atom "p"
-abbrev q : Formula := .atom "q"
-abbrev r : Formula := .atom "r"
+abbrev p : Formula := .atom_s "p"
+abbrev q : Formula := .atom_s "q"
+abbrev r : Formula := .atom_s "r"
 
 /-- Benchmark result for a single proof attempt. -/
 structure BenchmarkResult where
