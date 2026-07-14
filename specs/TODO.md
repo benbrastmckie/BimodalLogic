@@ -31,7 +31,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Formula Refactor
 
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-366 [NOT STARTED] — Resolve pre-broken/orphaned Metalogic files excluded from the tas
+366 [PLANNED] — Resolve pre-broken/orphaned Metalogic files excluded from the tas
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -79,7 +79,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 257 [IMPLEMENTING] — large_data_storage_huggingface
-282 [PLANNED] — exhaustive_enumeration_by_default
+282 [PARTIAL] — exhaustive_enumeration_by_default
 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Reference Book
@@ -104,7 +104,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Testing
 
-365 [NOT STARTED] — Repair the BimodalTest test-suite root, which fails at baseline. 
+365 [PLANNED] — Repair the BimodalTest test-suite root, which fails at baseline. 
 
 ### Uncategorized
 
@@ -115,7 +115,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ## Tasks
 
 ### 366. Repair or boneyard orphaned metalogic files
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: None
@@ -125,7 +125,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ---
 
 ### 365. Repair BimodalTest test suite
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: testing
 - **Dependencies**: None
@@ -517,12 +517,13 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 282. Exhaustive enumeration by default
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
-- **Research**: [282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md]
 - **Plan**: [282_exhaustive_enumeration_by_default/plans/01_exhaustive-enumeration-plan.md]
+- **Research**: [282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md]
+- **Summary**: [282_exhaustive_enumeration_by_default/summaries/01_exhaustive-enumeration-summary.md]
 
 ---
 
