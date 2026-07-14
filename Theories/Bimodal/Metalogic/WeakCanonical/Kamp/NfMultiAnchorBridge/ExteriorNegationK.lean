@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 
 /-! # Depth-`k` Future-side exterior-negation clause layer — zone/admissibility (task 352, Phase 3.1)
 
@@ -73,7 +74,10 @@ def kvE_futSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zFutT3
     the conditions a realizer at exterior `x1` FORCES on `σ : NormalForm sig (k+1) 4` —
 
     1. `zFutT3` zone marking of the atom base layer (`σ.1 : NormalForm sig 0 4`);
-    2. off-fiber quant bits false (every bit-true full-arity sub sits on `σ`'s atom fiber);
+    2. every bit-true full-arity sub sits on `σ`'s atom fiber AND is depth-graded
+       fiber-consistent (`kvE_fiberElemConsistent`, task 363: the D7 repair — the guard reads
+       the sub's depth-≥1 inner `.2` marking, which no other channel reads; trivially true at
+       `k = 0`, so the frozen m = 0 layer is untouched);
     3. quant bits false on every order-impossible zone-4 spec (via the `kvE_subBit`
        determinacy channel — no `nf0_assemble`, postmortem rule 1);
     4. the self-zone fresh profile is well-defined (all self-zone-prescribed depth-`k` profiles
@@ -82,12 +86,15 @@ def kvE_futSelfZone : ZoneSpec 4 := Fin.cons (false, false) kvE2_sep_zFutT3
        NormalForm sig k 1`), not a `σ.1` marginal (`σ.1` is the depth-0 atom layer).
 
     Conjuncts 2-4 read `σ.2`/`kvE_subBit` for admissibility bucketing only (G6); clause content
-    is rendered downstream (Phase 3.2/3.3) via `kvE_fiberPosOn P` on the full fiber elements. -/
+    is rendered downstream (Phase 3.2/3.3) via `kvE_fiberPosOn P` on the full fiber elements.
+    The task-363 consistency guard lives INSIDE conjunct 2's body (not as a fifth top-level
+    conjunct) so every existing 4-conjunct destructuring — including the frozen m = 0 supply
+    proofs — keeps its access paths. -/
 noncomputable def kvE_futAdmissible {sig : MonadicSignature} {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zFutT3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
-    decide (nfk_dropFresh s = σ.1) || !(σ.2 s)) &&
+    (decide (nfk_dropFresh s = σ.1) && kvE_fiberElemConsistent σ s) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := ZoneSpec 4)).all fun zs4 =>
     (kvE_futPossibleZones.any fun z => decide (zs4 = z)) ||
     ((Finset.univ.toList (α := NormalForm sig k 1)).all fun χ =>
@@ -145,12 +152,19 @@ theorem kvE_futRealizer_admissible {sig : MonadicSignature} {k : Nat}
     | ⟨0, _⟩ => rfl
     | ⟨1, _⟩ => rfl
     | ⟨2, _⟩ => rfl
-  · -- (2) off-fiber bits false
+  · -- (2) marked subs are on-fiber AND fiber-consistent (task 363 conjunct)
     rw [List.all_eq_true]
     intro s _
-    by_cases hs : nfk_dropFresh s = σ.1
-    · rw [decide_eq_true hs, Bool.true_or]
-    · rw [hoff s hs, Bool.not_false, Bool.or_true]
+    rw [Bool.or_eq_true]
+    by_cases hb : σ.2 s = true
+    · refine Or.inl ?_
+      rw [Bool.and_eq_true]
+      by_cases hs : nfk_dropFresh s = σ.1
+      · refine ⟨decide_eq_true hs, ?_⟩
+        obtain ⟨v, hv⟩ := (hnf.2 s).mpr hb
+        exact kvE_fiberElemConsistent_of_realized M _ v σ s hnf hv
+      · exact absurd hb (by rw [hoff s hs]; exact Bool.false_ne_true)
+    · exact Or.inr (by rw [Bool.not_eq_true] at hb; rw [hb]; rfl)
   · -- (3) order-impossible zone bits false
     rw [List.all_eq_true]
     intro zs4 _

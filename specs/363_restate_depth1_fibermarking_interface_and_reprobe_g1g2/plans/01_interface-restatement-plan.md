@@ -211,23 +211,32 @@ module, separating fake from honest on both legs. No production file is touched 
 
 ---
 
-### Phase 2: Land the exterior conjunct (future leg) and re-prove realizer admissibility [NOT STARTED]
+### Phase 2: Land the exterior conjunct (future leg) and re-prove realizer admissibility [COMPLETED]
+
+Production home: `ExteriorFiberConsistencyK.lean` (predicate pair + inertness lemmas +
+realized lemmas + symbolic membership helper). Conjunct placed INSIDE `kvE_futAdmissible`
+conjunct 2's body — `(decide (nfk_dropFresh s = σ.1) && kvE_fiberElemConsistent σ s) || !(σ.2 s)`
+— NOT as a fifth top-level `&&`. *(deviation: altered — plan said "add the conjunct ...
+preserving the existing four conjuncts' shape"; in-body placement is the only shape that keeps
+the FROZEN m=0 supply proofs (which destructure the 4-conjunct chain via `hh.1.1.1`/`hadm'.2`
+and 3x `Bool.and_eq_true`) byte-identical.)* `kvE_futRealizer_admissible` re-proved green
+(axioms clean); probe module rewired to consume production defs.
 
 **Goal**: `kvE_futAdmissible` strengthened with the Phase-1 predicate as a new conjunct; the
 load-bearing correctness obligation `kvE_futRealizer_admissible` re-proved green (honest
 realizers remain admissible); the predicate promoted from probe module to a production home.
 
 **Tasks**:
-- [ ] Promote `kvE_futFiberConsistent` (exact Phase-1 signature) into a production module (new
+- [x] Promote `kvE_futFiberConsistent` (exact Phase-1 signature) into a production module (new
       leaf or sibling within the ExteriorFiberK/ExteriorNegationK neighborhood — do NOT
       re-signature any frozen shared-infra declaration; add alongside).
-- [ ] Add the conjunct to `kvE_futAdmissible` (`ExteriorNegationK.lean:86-98`), preserving the
+- [x] Add the conjunct to `kvE_futAdmissible` (`ExteriorNegationK.lean:86-98`), preserving the
       existing four conjuncts' shape so downstream destructuring proofs repair minimally.
-- [ ] Re-prove `kvE_futRealizer_admissible` (`ExteriorNegationK.lean:124-...`): every honest
+- [x] Re-prove `kvE_futRealizer_admissible` (`ExteriorNegationK.lean:124-...`): every honest
       realizer satisfies the new conjunct (uses the Phase-1 honest-preservation certificates'
       proof pattern, generalized off the m=1 cast).
-- [ ] Repair any other in-module consumers of `kvE_futAdmissible` within `ExteriorNegationK.lean`.
-- [ ] Commit at green (`task 363 phase 2: ...`).
+- [x] Repair any other in-module consumers of `kvE_futAdmissible` within `ExteriorNegationK.lean`. *(none needed — remaining in-module uses are opaque)*
+- [x] Commit at green (`task 363 phase 2: ...`).
 
 **Timing**: 2 hours
 
