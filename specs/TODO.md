@@ -107,7 +107,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-350 [PARTIAL] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+350 [PLANNED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 358 [IMPLEMENTING] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
@@ -177,7 +177,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 350. Build aggregate quantendseg construction and discharge armcorrectness hooks at k0 and k1
 - **Effort**: high
-- **Status**: [PARTIAL]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349
