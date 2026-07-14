@@ -37,7 +37,25 @@ step of `kvE_probe363_fake_elem_inconsistent`. Consequently the atom-only mate c
 excludes the `s*` fiber at the `e_P` witness, and 363's guard fails to reject `sigma2` at the
 point its exclusion proof depended on.
 
+## SUPERSESSION RECORD (task 364)
+
+The residual hole certified below was CLOSED by task 364: `kvE_fiberElemConsistent`'s mate
+check (`ExteriorFiberConsistencyK.lean`) now additionally requires the mate to be CO-REALIZED
+with the ambient sigma (`∃ M env u, sigma realized at env ∧ s' realized at Fin.cons u env`).
+The decisive certificate `kvE_probe358_eP_atomMate_present` REMAINS TRUE and green — it is a
+raw atom-row fact (the row is present in sigma2); it merely NO LONGER SUFFICES, because the
+planted mate is grounded in no joint realization of sigma2. The guard-level successor
+certificates live in `ExteriorFiberConsistencyProbe364K.lean`:
+`kvE_probe364_sigma2_sstar_inconsistent` (`kvE_fiberElemConsistent m2sigma m2sstar = false`),
+`kvE_probe364_sigma2_slice_inconsistent` (`kvE_fiberConsistent m2sigma = false`), and
+`kvE_probe364_sigma2_inadmissible` (`kvE_futAdmissible m2sigma = false`) — the sigma2
+doppelganger no longer defeats G2's exclusion mechanism, and the adversarial game is closed
+UNIVERSALLY (`kvE_probe364_sstar_honest_unrealizable`: any slice marking `s*` plus one honest
+fiber is realized in no model). This module is retained verbatim below as the permanent
+NO-GO record against the PRE-364 interface.
+
 ## VERDICT: **NO-GO** -- G2 rows 8-11 not servable against the 363 interface as landed
+(SUPERSEDED by task 364 — see the supersession record above)
 
 The task-363 mate check is defeatable by planting an unrealizable interior-zoned mate. Full
 mechanization of `kvE_futAdmissible sigma2 = true` (the sigma2-level universal: every
@@ -130,7 +148,14 @@ private theorem m2_sigma_marks_mate : m2sigma.2 m2mate = true := by
     (`kvE_fiberElemConsistent`, `ExteriorFiberConsistencyK.lean:52-55`) no longer excludes the
     `s*` fiber at the `e_P` witness -- the residual hole in the task-363 interface that blocks
     the G2 rows-8-11 general-m supply. Sorry-free; axioms `[propext, Classical.choice,
-    Quot.sound]`. -/
+    Quot.sound]`.
+
+    **Task-364 supersession**: this statement remains TRUE against the strengthened interface
+    (it is a raw atom-row fact), but the row alone no longer discharges the mate obligation —
+    the strengthened `kvE_fiberElemConsistent` additionally demands joint co-realization with
+    `sigma2`, which fails (`kvE_probe364_sigma2_sstar_inconsistent`,
+    `ExteriorFiberConsistencyProbe364K.lean`). Kept green as the permanent atom-row
+    regression record. -/
 theorem kvE_probe358_eP_atomMate_present :
     ∃ s' : NormalForm m2sig 1 5, m2sigma.2 s' = true ∧
       mergeNF (m2eP.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn :=

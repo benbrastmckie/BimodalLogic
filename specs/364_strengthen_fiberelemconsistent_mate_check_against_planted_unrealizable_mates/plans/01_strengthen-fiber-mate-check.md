@@ -351,14 +351,14 @@ repair everything downstream that inspects the definition body.
 
 ---
 
-### Phase 5: Full re-probe gate — the definition of done [NOT STARTED]
+### Phase 5: Full re-probe gate — the definition of done [COMPLETED]
 
 **Goal**: Machine-adjudicate the task's four-part definition of done against the landed
 production interface: plant rejected, no regression on all 363 certificates, frozen layers
 untouched, zero debt.
 
 **Tasks**:
-- [ ] **Successor 358 probe**: in `ExteriorPinnedProbe358K.lean` (or the 364 leaf), KEEP
+- [x] **Successor 358 probe**: in `ExteriorPinnedProbe358K.lean` (or the 364 leaf), KEEP
       `kvE_probe358_eP_atomMate_present` compiling as the permanent atom-row regression record
       (it remains true — the atom row is present; it merely no longer suffices), update its
       docstring/verdict block to record the task-364 supersession, and add the guard-level
@@ -367,22 +367,32 @@ untouched, zero debt.
       `kvE_probe364_sigma2_slice_inconsistent : kvE_fiberConsistent m2sigma = false`, and
       `kvE_probe364_sigma2_inadmissible : kvE_futAdmissible m2sigma = false` — the plant is now
       correctly rejected and the σ₂ doppelganger no longer defeats G2's exclusion mechanism.
-- [ ] **363 regression gate**: all 8 GO certificates in `ExteriorFiberConsistencyProbeK.lean`
+      *(completed — 358K module + theorem docstrings record the supersession; the atom-row cert
+      compiles unchanged and remains at floor axioms; successor certs live in the 364 leaf
+      (private-cast replication precedent) and are kernel-checked at floor axioms)*
+- [x] **363 regression gate**: all 8 GO certificates in `ExteriorFiberConsistencyProbeK.lean`
       compile green (fake excluded: 1, 2, 6, 7; honest preserved: 3, 4, 5a/5b, 8 — in particular
       `kvE_probe363_tau_admissible : kvE_futAdmissible m1tau = true` re-fires through the
-      re-proved realizer path).
-- [ ] **M1 residual gate**: `kvE_probeM1_interiorHreal_NOGO` and
+      re-proved realizer path). *(completed — all 9 printed axiom sets (certs 1-8 incl. 5a/5b and
+      tau_admissible) are exactly `[propext, Classical.choice, Quot.sound]`, kernel-checked)*
+- [x] **M1 residual gate**: `kvE_probeM1_interiorHreal_NOGO` and
       `kvE_probeM1_interiorGuard_identical` compile green; record in the summary that
       `kvE_probeM1_sliceId_NOGO` remains retired-to-git-history by task 363 (its absence is the
-      documented expected state, not a regression).
-- [ ] **Frozen-layer audit**: `git diff --name-only` over the change set confirms rung0/rung1
+      documented expected state, not a regression). *(completed — both verified at floor axioms;
+      sliceId_NOGO absence confirmed expected)*
+- [x] **Frozen-layer audit**: `git diff --name-only` over the change set confirms rung0/rung1
       modules, task 360's m=0 supply theorems, and `kampPrior_case1_arm_k0` are byte-unchanged;
       `kvE_fiberElemConsistent_zero`/`kvE_fiberConsistent_zero` still hold (m=0 view constantly
-      true).
-- [ ] **Zero-debt audit**: full `lake build` green; `lean_verify` on every new/changed certificate
+      true). *(completed — change set over Theories/ is exactly ExteriorFiberConsistencyK,
+      ExteriorFiberConsistencyProbeK, ExteriorFiberConsistencyProbe364K (+ the 358K docstring);
+      KampPrior byte-unchanged; `_zero` lemmas kernel-checked green)*
+- [x] **Zero-debt audit**: full `lake build` green; `lean_verify` on every new/changed certificate
       (floor axioms `[propext, Classical.choice, Quot.sound]`, clean source scan, no `sorryAx`);
       repo-wide sorry count unchanged (exactly KampPrior :519/:522); no vacuous defs
-      (`def _ := True`-class patterns) introduced.
+      (`def _ := True`-class patterns) introduced. *(completed — full build 1759 jobs green;
+      kernel `#print axioms` sweep over all 14 new/changed certs + 10 regression certs: floor
+      axioms only; KampPrior sorries exactly :519/:522; vacuous-pattern scan: 0 introduced (the
+      single repo hit is pre-existing in Examples/TemporalStructures.lean:269, outside scope))*
 
 **Timing**: 1.5 hours
 
