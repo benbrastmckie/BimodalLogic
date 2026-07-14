@@ -12,12 +12,11 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,350,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,192,196,231,292,293,294,298,309,358 | 161,187,191,194,230,291,341,343,350,361,363 | formula-refactor, publication-quality, sorry-elimination, ... |
-| 3 | 175,193,307,362 | 131,169,170,189,192,196,309,358 | completeness, formula-refactor, automation, ... |
-| 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
-| 5 | 303 | 305 | completeness |
-| 6 | 95,299,359 | 303 | completeness, kamp_theorem_formalization |
+| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,309,318,341,343,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,192,196,231,292,293,294,298,307,358 | 161,187,191,194,230,291,309,341,343,361,363 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,305,362 | 131,169,170,189,192,196,307,358 | completeness, formula-refactor, automation, ... |
+| 4 | 177,178,303 | 131,193,305 | completeness, formula-refactor |
+| 5 | 95,299,359 | 303 | completeness, kamp_theorem_formalization |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -107,8 +106,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-350 [IMPLEMENTING] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
-  └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 363 [RESEARCHED] — The general-depth (m>=1) fiber-marking interface underlying task 
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
@@ -192,7 +190,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 350. Build aggregate quantendseg construction and discharge armcorrectness hooks at k0 and k1
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349
