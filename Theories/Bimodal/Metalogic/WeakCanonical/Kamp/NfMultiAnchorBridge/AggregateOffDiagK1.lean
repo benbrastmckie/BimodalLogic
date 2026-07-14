@@ -942,6 +942,228 @@ theorem agg2Past_holds_pin_iff (sub_nf : NormalForm sig 1 2)
       rw [h1, h2]
       exact (hchar _ _).mpr (hprops _ (List.getElem_mem _)).2
 
+/-! ## 5. Point-channel carriers `CAggPtX` / `CAggPtT`
+
+The Phase-12a/12b gated collapses realized as `VVecEA2`: on the (0,1)/(0,2)
+rename-fixpoint gate, the carrier is `agg2Past` on the collapsed arity-2 NF (read at
+the fixed pins by `agg2Past_holds_pin_iff`); off-gate the empty disjunction — the
+evaluation FORCES the gate (`aggPm01_gate_of_eval`/`aggPm02_gate_of_eval`), so the
+off-gate falsity is honest, exactly the `aggPosDiagK1` pattern. -/
+
+/-- **The `w = x` point-channel carrier** (Phase-12a collapse as a `VVecEA2`). -/
+noncomputable def CAggPtX (qnf : NormalForm sig 1 3) : VVecEA2 :=
+  @dite _ (aggPm01GateK1 qnf) (Classical.dec _)
+    (fun _ => agg2Past atomMap h_surj (aggPm01CollapseK1 qnf))
+    (fun _ => { disjuncts := [] })
+
+/-- **Correctness of `CAggPtX`**: under the ambient `x < t`, the carrier's 2-pin
+    semantics at `(x, t)` is exactly the duplicated-head evaluation at `[x, x, t]`
+    (the Phase-12a clause `aggPm01ClauseK1_iff`, carrier-side). -/
+theorem CAggPtX_correct (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
+    (CAggPtX atomMap h_surj qnf).holds M atomMap x t ↔
+      nf_eval_nf M 1 3 (Fin.cons x (Fin.cons x (fun _ => t))) qnf := by
+  unfold CAggPtX
+  by_cases hg : aggPm01GateK1 qnf
+  · rw [dif_pos hg,
+      agg2Past_holds_pin_iff atomMap h_surj (aggPm01CollapseK1 qnf) M x t hxt]
+    exact (agg_pm01_collapse_k1 M qnf x t hg.1 hg.2).symm
+  · rw [dif_neg hg]
+    constructor
+    · rintro ⟨vea, hmem, -⟩
+      exact (List.not_mem_nil hmem).elim
+    · intro hw
+      exact absurd (aggPm01_gate_of_eval M qnf x t hw) hg
+
+/-- **The `w = x` clause iff**: on the `aggOdRowPtX` row, the carrier realizes the FULL
+    population existential — the row's (0,1)/(1,0) bits force any witness onto the left
+    pin (Lemma 3.2(2) coincident-witness channel). -/
+theorem CAggPtX_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (hrow : aggOdRowPtX qnf)
+    (x t : M.carrier) (hxt : x < t) :
+    (CAggPtX atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  rw [CAggPtX_correct atomMap h_surj M qnf x t hxt]
+  constructor
+  · intro h
+    exact ⟨x, h⟩
+  · rintro ⟨w, hw⟩
+    have hlayer := ((nf_eval_depth1_fold_iff M _ qnf).mp hw).1
+    have h01 : ¬ (w < x) := by
+      intro hlt
+      have hb : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = true :=
+        (hlayer _).mp hlt
+      exact aggOd_row_clash hb hrow.1
+    have h10 : ¬ (x < w) := by
+      intro hlt
+      have hb : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true :=
+        (hlayer _).mp hlt
+      exact aggOd_row_clash hb hrow.2.1
+    have hwx : w = x := le_antisymm (not_lt.mp h10) (not_lt.mp h01)
+    exact hwx ▸ hw
+
+/-- **The `w = t` point-channel carrier** (Phase-12b collapse as a `VVecEA2`). -/
+noncomputable def CAggPtT (qnf : NormalForm sig 1 3) : VVecEA2 :=
+  @dite _ (aggPm02GateK1 qnf) (Classical.dec _)
+    (fun _ => agg2Past atomMap h_surj (aggPm02CollapseK1 qnf))
+    (fun _ => { disjuncts := [] })
+
+/-- **Correctness of `CAggPtT`**: under the ambient `x < t`, the carrier's 2-pin
+    semantics at `(x, t)` is exactly the duplicated evaluation at `[t, x, t]`
+    (the Phase-12b clause `aggPm02ClauseK1_iff`, carrier-side). -/
+theorem CAggPtT_correct (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
+    (CAggPtT atomMap h_surj qnf).holds M atomMap x t ↔
+      nf_eval_nf M 1 3 (Fin.cons t (Fin.cons x (fun _ => t))) qnf := by
+  unfold CAggPtT
+  by_cases hg : aggPm02GateK1 qnf
+  · rw [dif_pos hg,
+      agg2Past_holds_pin_iff atomMap h_surj (aggPm02CollapseK1 qnf) M x t hxt]
+    exact (agg_pm02_collapse_k1 M qnf x t hg.1 hg.2).symm
+  · rw [dif_neg hg]
+    constructor
+    · rintro ⟨vea, hmem, -⟩
+      exact (List.not_mem_nil hmem).elim
+    · intro hw
+      exact absurd (aggPm02_gate_of_eval M qnf x t hw) hg
+
+/-- **The `w = t` clause iff**: on the `aggOdRowPtT` row, the carrier realizes the FULL
+    population existential — the row's (0,2)/(2,0) bits force any witness onto the right
+    pin. -/
+theorem CAggPtT_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (hrow : aggOdRowPtT qnf)
+    (x t : M.carrier) (hxt : x < t) :
+    (CAggPtT atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  rw [CAggPtT_correct atomMap h_surj M qnf x t hxt]
+  constructor
+  · intro h
+    exact ⟨t, h⟩
+  · rintro ⟨w, hw⟩
+    have hlayer := ((nf_eval_depth1_fold_iff M _ qnf).mp hw).1
+    have h02 : ¬ (w < t) := by
+      intro hlt
+      have hb : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true :=
+        (hlayer _).mp hlt
+      exact aggOd_row_clash hb hrow.1
+    have h20 : ¬ (t < w) := by
+      intro hlt
+      have hb : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true :=
+        (hlayer _).mp hlt
+      exact aggOd_row_clash hb hrow.2.1
+    have hwt : w = t := le_antisymm (not_lt.mp h20) (not_lt.mp h02)
+    exact hwt ▸ hw
+
+/-! ## 6. Interior channel `CAggInt`
+
+The delivered depth-1 fixed-endpoint bracket carrier `bracketEndChar_kv` with the
+depth-0 provider `nf_depth0_char_formula` (`h0 := rfl`), consumed through the
+UZ/SZ-relativized rung `bracketEndChar_kv_correct_one_prior` (PriorInterface.lean:95;
+the recursion-consumer packaging of the same rung is `endIntervalPrior_correct_le_one`
+/ `endInterval_correct` in EndIntervalConsumerK.lean). `aggOdRowInt`'s six conjuncts
+are the rung's six order hypotheses VERBATIM. -/
+
+/-- Depth-indexed provider for the interior carrier: `nf_depth0_char_formula` at depth
+    0 (the only depth the k=1 correctness constrains — `h0 := rfl`), `⊤` above. -/
+noncomputable def aggOdCharF : (j : Nat) → NormalForm sig j 1 → Formula
+  | 0 => nf_depth0_char_formula atomMap h_surj
+  | _ + 1 => fun _ => Formula.top
+
+/-- **The interior-channel carrier**: `bracketEndChar_kv` at depth 1. -/
+noncomputable def CAggInt (qnf : NormalForm sig 1 3) : VVecEA2 :=
+  bracketEndChar_kv atomMap h_surj (aggOdCharF atomMap h_surj) 1 qnf
+
+/-- **The interior clause iff**: on the `aggOdRowInt` row, for every Prior (UZ/SZ)
+    structure, the carrier's 2-pin semantics at `(x, t)` is the full population
+    existential — the delivered `bracketEndChar_kv_correct_one_prior` applied at the
+    row's six order bits. -/
+theorem CAggInt_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (hrow : aggOdRowInt qnf)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) :
+    (CAggInt atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  bracketEndChar_kv_correct_one_prior atomMap h_surj (aggOdCharF atomMap h_surj) rfl
+    qnf hrow.1 hrow.2.1 hrow.2.2.1 hrow.2.2.2.1 hrow.2.2.2.2.1 hrow.2.2.2.2.2
+    M h_UZ h_SZ x t
+
+/-! ## 7. Exterior clause iffs
+
+The delivered carriers `CExtPast`/`CExtFut` read `∃ w < x`/`∃ w > t`; on their rows the
+bound is REDUNDANT — the row bit forces any witness into the exterior zone — so the
+carriers realize the full unbounded population existential. -/
+
+/-- **The `w < x` clause iff**: on the `navDOrderRow` row, `CExtPast` realizes the full
+    population existential (the (0,1) bit forces `w < x` on any realizer). -/
+theorem CExtPast_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (hrow : navDOrderRow qnf)
+    (x t : M.carrier) (hxt : x < t) :
+    (CExtPast atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  rw [CExtPast_correct atomMap h_surj M qnf x t hxt]
+  constructor
+  · rintro ⟨w, -, hw⟩
+    exact ⟨w, hw⟩
+  · rintro ⟨w, hw⟩
+    have hlayer := ((nf_eval_depth1_fold_iff M _ qnf).mp hw).1
+    exact ⟨w, (hlayer _).mpr hrow.1, hw⟩
+
+/-- **The `t < w` clause iff**: on the `navROrderRow` row, `CExtFut` realizes the full
+    population existential (the (2,0) bit forces `t < w` on any realizer). -/
+theorem CExtFut_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3) (hrow : navROrderRow qnf)
+    (x t : M.carrier) (hxt : x < t) :
+    (CExtFut atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  rw [CExtFut_correct atomMap h_surj M qnf x t hxt]
+  constructor
+  · rintro ⟨w, -, hw⟩
+    exact ⟨w, hw⟩
+  · rintro ⟨w, hw⟩
+    have hlayer := ((nf_eval_depth1_fold_iff M _ qnf).mp hw).1
+    exact ⟨w, (hlayer _).mpr hrow.2.2.1, hw⟩
+
+/-! ## 8. The dispatcher `C(qnf)` and the master clause iff -/
+
+open Classical in
+/-- **The per-qnf dispatcher `C(qnf)`** (Cor 5.4 "all order patterns"): case on the
+    zone-classifier rows and delegate to the channel carrier — `CExtPast` (w<x),
+    `CAggPtX` (w=x), `CAggInt` (x<w<t), `CAggPtT` (w=t), `CExtFut` (t<w), and the empty
+    disjunction on the 3-bot channel. The if-chain mirrors `aggOdClassify` branch for
+    branch (the rows are pairwise disjoint, so the order is semantically irrelevant). -/
+noncomputable def CAggOd (qnf : NormalForm sig 1 3) : VVecEA2 :=
+  if navDOrderRow qnf then CExtPast atomMap h_surj qnf
+  else if aggOdRowPtX qnf then CAggPtX atomMap h_surj qnf
+  else if aggOdRowInt qnf then CAggInt atomMap h_surj qnf
+  else if aggOdRowPtT qnf then CAggPtT atomMap h_surj qnf
+  else if navROrderRow qnf then CExtFut atomMap h_surj qnf
+  else { disjuncts := [] }
+
+/-- **The master clause iff** (Phase-16a DoD; the per-qnf clause the Phase-16b
+    `aggPop1` fold consumes): under the ambient `x < t`, for every Prior (UZ/SZ)
+    structure, the dispatcher's 2-pin semantics at `(x, t)` is exactly the k=1
+    population existential `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` — every channel
+    discharged by its carrier iff, the 3-bot channel by the routing totality. -/
+theorem CAggOd_clause_iff (M : OrderedMonadicStructure sig)
+    (qnf : NormalForm sig 1 3)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) (hxt : x < t) :
+    (CAggOd atomMap h_surj qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  unfold CAggOd
+  split_ifs with h1 h2 h3 h4 h5
+  · exact CExtPast_clause_iff atomMap h_surj M qnf h1 x t hxt
+  · exact CAggPtX_clause_iff atomMap h_surj M qnf h2 x t hxt
+  · exact CAggInt_clause_iff atomMap h_surj M qnf h3 h_UZ h_SZ x t
+  · exact CAggPtT_clause_iff atomMap h_surj M qnf h4 x t hxt
+  · exact CExtFut_clause_iff atomMap h_surj M qnf h5 x t hxt
+  · -- 3-bot channel: both sides are `False`.
+    constructor
+    · rintro ⟨vea, hmem, -⟩
+      exact (List.not_mem_nil hmem).elim
+    · rintro ⟨w, hw⟩
+      exact (aggOdZone3_bot_eval_false M qnf h1 h2 h3 h4 h5 x t hxt w hw).elim
+
 end AggregateOffDiag
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

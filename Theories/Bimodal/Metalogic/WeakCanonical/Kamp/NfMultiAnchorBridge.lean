@@ -91,6 +91,17 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK
 -- dispatcher's t<w channel. Cycle-free: `ExteriorNavFutK1` is an acyclic leaf importing
 -- only `ExteriorNavPastK1` (above); nothing in that closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavFutK1
+-- NOTE (task 350 Phase 16a): thread the off-diagonal k=1 zone classifier + per-qnf
+-- dispatcher (the 6-way row classification `aggOdClassify` + mirror `aggOdClassifyF`,
+-- the routing totality `aggOdZone3_route_of_eval`, the two-pin reading
+-- `agg2Past_holds_pin_iff`, the point/interior channel carriers `CAggPtX`/`CAggPtT`/
+-- `CAggInt`, and the dispatcher `CAggOd` + master clause iff `CAggOd_clause_iff`) into
+-- the root build for the Phase-16b `aggPop1` fold. Cycle-free: `AggregateOffDiagK1` is
+-- an acyclic leaf importing only `VecEAConjFull`, `EANegationFix`,
+-- `AggregatePointMergeK1`, `ExteriorNavPastK1`, `ExteriorNavFutK1`, and
+-- `AggregateHookDischarge` (all above or outside this aggregator's closure); nothing
+-- in that closure imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateOffDiagK1
 -- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
 -- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
 -- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation

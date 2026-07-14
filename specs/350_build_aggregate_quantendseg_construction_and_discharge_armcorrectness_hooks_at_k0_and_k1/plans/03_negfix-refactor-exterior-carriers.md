@@ -806,23 +806,48 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 16a: (F) zone classifier + per-qnf dispatcher `C(qnf)` + clause iff [NOT STARTED]
+### Phase 16a: (F) zone classifier + per-qnf dispatcher `C(qnf)` + clause iff [COMPLETED]
 
 - **Goal:** The arity-3 zone classifier and the per-qnf dispatcher over all channels, in new module
   `Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean`.
 - **Rabinovich anchor:** Cor 5.4 "all order patterns" (chunks 0014-0015).
 - **Tasks:**
-  - [ ] Create `Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean` (imports `VecEAConjFull`,
+  - [x] Create `Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean` (imports `VecEAConjFull`,
     `EANegationFix` (shim), `AggregatePointMergeK1`, `ExteriorNavPastK1`, `ExteriorNavFutK1`,
     `AggregateHookDischarge`); aggregator import line.
-  - [ ] Zone-classifier totality for arity 3 (order bits at pairs (0,1),(0,2) of `qnf.1`): every qnf
+    *(Landed: new leaf module (~1120 lines), exactly the six planned imports; aggregator NOTE +
+    import after ExteriorNavFutK1.)*
+  - [x] Zone-classifier totality for arity 3 (order bits at pairs (0,1),(0,2) of `qnf.1`): every qnf
     routes to exactly one of 3-int / 3-pt(w=x) / 3-pt(w=t) / 3-ext(w<x) / 3-ext(t<w) / 3-bot given
     ambient x < t; mirror classification for the future arm.
-  - [ ] Per-qnf dispatcher `C (qnf) : VVecEA2` + clause iff, casing on the classifier: interior via
+    *(Landed as six-bit row props: `navDOrderRow` (delivered, w<x)/`aggOdRowPtX`/`aggOdRowInt`/
+    `aggOdRowPtT`/`navROrderRow` (delivered, t<w) + eval-forcing lemmas `aggOd_*_of_eval`; totality =
+    classifier function `aggOdClassify : NormalForm sig 1 3 → AggOdZone3` (6 constructors, total by
+    construction) + routing `aggOdZone3_route_of_eval` + exactly-one via one-bit-clash lemmas
+    `aggOdClassify_{extPast,ptX,int,ptT,extFut}` + 3-bot falsity `aggOdZone3_bot_eval_false`. Mirror
+    (ambient t<x): `aggOdRow*F` rows + `aggOdClassifyF` + `aggOdZone3F_route_of_eval` +
+    `aggOdZone3F_bot_eval_false`; the mirror CARRIER is 16b's record-decision, per plan.)*
+  - [x] Per-qnf dispatcher `C (qnf) : VVecEA2` + clause iff, casing on the classifier: interior via
     `bracketEndChar_kv_correct_one_prior` (`charF 0 := nf_depth0_char_formula atomMap h_surj`,
     `h0 := rfl`; cite `endInterval_correct` in the docstring); points via Phase-12a/12b carriers;
     exteriors via Phase-14c/15 carriers; 3-bot via falsity lemmas.
-  - [ ] Scoped build green; axiom checks; commit.
+    *(Landed: dispatcher `CAggOd` (if-chain on the rows, mirroring `aggOdClassify` branch for
+    branch) + master `CAggOd_clause_iff` under (h_UZ, h_SZ, x<t). Channels: interior `CAggInt` =
+    `bracketEndChar_kv … (aggOdCharF) 1` via `bracketEndChar_kv_correct_one_prior` with `h0 := rfl`
+    (`aggOdRowInt` conjuncts = the rung's six order hypotheses verbatim; `endInterval_correct`
+    packaging cited in docstring); points `CAggPtX`/`CAggPtT` = Phase-12a/12b gated collapses
+    realized as VVecEA2 through the NEW two-pin reading `agg2Past_holds_pin_iff` (the fixed-endpoint
+    companion of `agg2Past_holdsRight_iff` — the delivered agg2 kit consumed pointwise) +
+    coincidence-forcing clause iffs; exteriors consumed as-is via `CExtPast_clause_iff`/
+    `CExtFut_clause_iff` (row bit makes the ∃-bound redundant); 3-bot = empty disjunction + routing
+    totality.)*
+  - [x] Scoped build green; axiom checks; commit.
+    *(Scoped module 1046 jobs + full `lake build` 1751 jobs green; `lean_verify` on
+    `CAggOd_clause_iff`, `agg2Past_holds_pin_iff`, `aggOdZone3_route_of_eval` = exactly
+    `[propext, Classical.choice, Quot.sound]`, no warnings; sorry census over NfMultiAnchorBridge/:
+    0; no new vacuous defs or axioms; `nf_char3_deeper_split` not referenced (docstring guard note
+    only); no frozen-file / KampPrior / task-358 edits; incremental commits 16a.1 (classifier),
+    16a.2 (pin lemma), 16a final (dispatcher + aggregator + wrap-up).)*
 - **DoD shape:** classifier totality + `C(qnf)` clause iff green for every channel.
 - **Timing:** ~2 hours (~300-400 lines) — **Depends on:** 11, 12b, 15
 - **Files:** `Kamp/NfMultiAnchorBridge/AggregateOffDiagK1.lean` (new); one import line
