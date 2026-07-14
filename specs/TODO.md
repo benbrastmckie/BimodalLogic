@@ -84,7 +84,7 @@ next_project_number: 369
 ### Kamp_theorem_formalization
 
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-368 [RESEARCHED] — Land a 367-style, probe-first, ambient-side deep-saturation/EF-cl
+368 [PLANNED] — Land a 367-style, probe-first, ambient-side deep-saturation/EF-cl
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
@@ -100,11 +100,12 @@ next_project_number: 369
 
 ### 368. Ambient deepsaturation efclosure guard against cma cmb
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/10_spawn-analysis.md]
+- **Plan**: [368_ambient_deepsaturation_efclosure_guard_against_cma_cmb/plans/01_ambient-deep-anchor-guard.md]
 
 **Description**: Land a 367-style, probe-first, ambient-side deep-saturation/EF-closure guard that closes task 358's Phase-4 blocker (nf_nvar_exist_all_depths, KampPrior.lean:519/:522), one layer over task 367's fiber-side guard. Follow the PROVEN template used by tasks 363, 364, and 367 (all completed against this same consumer interface) with zero deviation from house style.
 
