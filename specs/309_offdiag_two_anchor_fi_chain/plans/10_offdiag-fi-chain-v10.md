@@ -370,7 +370,15 @@ heading-scan.
 - **Guards enforced:** G1-G6, N1-N5, V9-1..V9-5 (as extended), V10-1..V10-5.
 - **Commit:** `task 309 phase 20: ambient-k=1 arm closure kampPrior_case1_arm_k1`
 
-### Phase 21: `:361` k≤1 narrowing (`match k with | 0 | 1 | k+2 => sorry`) + verification [NOT STARTED]
+### Phase 21: `:361` k≤1 narrowing (`match k with | 0 | 1 | k+2 => sorry`) + verification [COMPLETED]
+
+> **Completion record (2026-07-14, sess_1784036998_a5fcb0).** All acceptance criteria met;
+> see summaries/10_k1-narrowing-summary.md. *(deviation: altered — the pre-authorized
+> forward-reference hoist WAS taken: `kampPrior_site_env_bridge`, `kampPrior_site_trichotomy`,
+> `kampPrior_case1_trichotomy_assemble`, `kampPrior_case1_arm_k0`, and `kampPrior_case1_arm_k1`
+> moved VERBATIM above `nf_nvar_exist_all_depths` (statements/proofs byte-identical; hoist
+> notes left at each original site), exactly the plan's preferred contingency. No other
+> deviation.)*
 
 - **Goal:** Execute the pre-committed narrowing of the `| 1 =>` (n=1) blanket sorry
   (KampPrior:361 — re-locate by grepping the `task 348 … transfer note` comment block, V10-3):

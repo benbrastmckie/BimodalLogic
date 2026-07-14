@@ -187,6 +187,140 @@ theorem nf_depth0_char_formula_correct_arity1
     simp only [atom_eval] at h
     exact h
 
+/-! ## Hoisted `| 1 =>` arm-closure chain (task 309 Phase 21 hoist, 2026-07-14)
+
+The five lemmas below were MOVED VERBATIM from their original positions later in this file
+(statements and proofs unchanged) so that the `| 1 =>` arm of `nf_nvar_exist_all_depths`
+can cite the two ambient arm closures without forward references — the plan-v10 Phase-21
+sanctioned hoist. Original narratives: the Phase-15 verdict record (site lemmas 1-2), the
+Phase-18a skeleton section (site lemma 4 / the assemble engine), the task-358 Phase-5
+section (the k=0 closure), and the task-309 Phase-20 section (the k=1 closure); hoist notes
+mark each original site. Chain: env bridge → trichotomy → `Formula.or` assembly →
+`kampPrior_case1_arm_k0` (task 358) / `kampPrior_case1_arm_k1` (task 309 Phase 20). -/
+
+/-- **Site lemma 1 (task 309 Phase 15): the `Fin 1` env bridge.** The `| 1 =>` site RHS
+    existential over `env : Fin 1` equals the single-anchor existential on
+    `Fin.cons x (fun _ => t)` — the `h_env_eq` bridge (KampPrior:277-291) extracted as the
+    named, reusable site lemma (the shape Phases 18-19 rewrite through). -/
+theorem kampPrior_site_env_bridge {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
+    (∃ env : Fin 1 → M.carrier,
+        nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf) ↔
+      ∃ x : M.carrier, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  have h_env_eq : ∀ (env : Fin 1 → M.carrier),
+      insertEnv env t = Fin.cons (env ⟨0, by omega⟩) (fun _ => t) := by
+    intro env; funext ⟨i, hi⟩
+    simp only [insertEnv]
+    by_cases h : i < 1
+    · have h_i0 : i = 0 := by omega
+      subst h_i0; simp [h, Fin.cons]
+    · have h_i1 : i = 1 := by omega
+      subst h_i1
+      simp only [show ¬(1 < 1) from by omega, ↓reduceDIte]; rfl
+  constructor
+  · rintro ⟨env, h_env⟩
+    exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
+  · rintro ⟨x, hx⟩
+    exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
+
+/-- **Site lemma 2 (task 309 Phase 15): the trichotomy decomposition of the `| 1 =>` RHS.**
+    The site existential splits into the past / diagonal / future arms — the env bridge
+    composed with `nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable:188, consumed, not
+    rebuilt). The three disjuncts are exactly the shapes `nf_char2_past_formula_correct` (P4),
+    `A_diag_correct`, and `nf_char2_future_formula_correct` (P5) characterize. -/
+theorem kampPrior_site_trichotomy {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
+    (∃ env : Fin 1 → M.carrier,
+        nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf) ↔
+      (∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ∨
+      (nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf) ∨
+      (∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
+  (kampPrior_site_env_bridge M k sub_nf t).trans
+    (nf_zone_exists_trichotomy_k1 M k sub_nf t)
+
+/-- **Site lemma 4 (task 309 Phase 18): the trichotomy `Formula.or` assembly skeleton.** Given
+    arm formulas whose `temporal_truth` at `t` realizes the three disjuncts of
+    `kampPrior_site_trichotomy`, their right-nested `Formula.or` composition realizes the full
+    `| 1 =>` site RHS `∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. Pure
+    `temporal_truth_or` (Translation:64) + `or_congr` against the Phase-15 trichotomy split —
+    the reusable citation point Phase 19 rewrites the arm through once the three arm formulas +
+    correctness are supplied. -/
+theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (M : OrderedMonadicStructure sig) (k : Nat)
+    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier)
+    (A_past A_diag A_future : Formula)
+    (h_past : temporal_truth M atomMap t A_past ↔
+      ∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)
+    (h_diag : temporal_truth M atomMap t A_diag ↔
+      nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf)
+    (h_future : temporal_truth M atomMap t A_future ↔
+      ∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :
+    temporal_truth M atomMap t (Formula.or A_past (Formula.or A_diag A_future)) ↔
+      ∃ env : Fin 1 → M.carrier, nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf := by
+  rw [temporal_truth_or, temporal_truth_or, h_past, h_diag, h_future]
+  exact (kampPrior_site_trichotomy M k sub_nf t).symm
+
+/-- **Ambient-k=0 arm closure** (task 358, Phase-5 reduced scope): the `| 1 =>` arm statement
+    of `nf_nvar_exist_all_depths` at ambient `k = 0` (`sub_nf : NormalForm sig 1 2`), closed
+    end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
+    over task 350's three landed k=0 arm lemmas. The first G3 green milestone: no obligations,
+    no hooks — the arm formula is M-independent by construction. -/
+theorem kampPrior_case1_arm_k0 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 1 2) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (_h_UZ : semantic_prior_UZ M atomMap)
+        (_h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t A ↔
+        ∃ env : Fin 1 → M.carrier, nf_eval_nf M 1 2 (insertEnv env t) sub_nf := by
+  refine ⟨Formula.or (kampArm_past_k0 atomMap h_surj sub_nf)
+    (Formula.or (kampArm_diag_k0 atomMap h_surj sub_nf)
+      (kampArm_future_k0 atomMap h_surj sub_nf)), ?_⟩
+  intro M h_UZ h_SZ t
+  exact kampPrior_case1_trichotomy_assemble atomMap M 0 sub_nf t
+    (kampArm_past_k0 atomMap h_surj sub_nf)
+    (kampArm_diag_k0 atomMap h_surj sub_nf)
+    (kampArm_future_k0 atomMap h_surj sub_nf)
+    (kampArm_past_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_diag_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_future_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+
+/-- **Ambient-k=1 arm closure** (task 309 Phase 20, v10 plan): the `| 1 =>` arm statement
+    of `nf_nvar_exist_all_depths` at ambient `k = 1` (`sub_nf : NormalForm sig 2 2`), closed
+    end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
+    over task 350's three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0` (task 358)
+    at k=1: no gate, no provider obligations (Phase-15 corrected arm indexing — the k=1 arm's
+    per-`qnf` population is depth 1, served unconditionally); the arm formula is M-independent
+    by construction. -/
+theorem kampPrior_case1_arm_k1 {sig : MonadicSignature}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (sub_nf : NormalForm sig 2 2) :
+    ∃ (A : Formula),
+      ∀ (M : OrderedMonadicStructure sig)
+        (_h_UZ : semantic_prior_UZ M atomMap)
+        (_h_SZ : semantic_prior_SZ M atomMap)
+        (t : M.carrier),
+        temporal_truth M atomMap t A ↔
+        ∃ env : Fin 1 → M.carrier, nf_eval_nf M 2 2 (insertEnv env t) sub_nf := by
+  refine ⟨Formula.or (kampArm_past_k1 atomMap h_surj sub_nf)
+    (Formula.or (kampArm_diag_k1 atomMap h_surj sub_nf)
+      (kampArm_future_k1 atomMap h_surj sub_nf)), ?_⟩
+  intro M h_UZ h_SZ t
+  exact kampPrior_case1_trichotomy_assemble atomMap M 1 sub_nf t
+    (kampArm_past_k1 atomMap h_surj sub_nf)
+    (kampArm_diag_k1 atomMap h_surj sub_nf)
+    (kampArm_future_k1 atomMap h_surj sub_nf)
+    (kampArm_past_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_diag_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+    (kampArm_future_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+
 /-! ## All-Depth All-Arity NF Existential Conversion
 
 Convert a depth-k n-variable existential over a depth-k arity-(n+1) NF
@@ -358,7 +492,31 @@ noncomputable def nf_nvar_exist_all_depths
       -- THIS strategic sorry is task 309 Phase 14's deliverable (R1 scope decision,
       -- task-348 plan): consume 348's discharge theorem + the Phase-14 provider
       -- instantiation. Do not attempt the retirement without both.
-      sorry
+      --
+      -- task 309 v10 (2026-07-14, dated record): the k≤1 arms of this case are DISCHARGED
+      -- by task 309 v10 Phases 20-21 via the task 349/350/358 deliverables — the k=0 arm
+      -- by `kampPrior_case1_arm_k0` (task 358, over task 350's k=0 arm triple) and the
+      -- k=1 arm by `kampPrior_case1_arm_k1` (task 309 Phase 20, over task 350's k=1 arm
+      -- triple), both assembled through `kampPrior_case1_trichotomy_assemble` (Phase 18a).
+      -- The blanket sorry is NARROWED to the `| _k + 2 =>` residual below; k+2 residual →
+      -- task 358.
+      match k, sub_nf with
+      | 0, sub_nf => kampPrior_case1_arm_k0 atomMap h_surj sub_nf
+      | 1, sub_nf => kampPrior_case1_arm_k1 atomMap h_surj sub_nf
+      | _k + 2, _sub_nf =>
+        -- NARROWED RESIDUAL (task 309 v10 Phase 21, 2026-07-14): the k≥2 arms
+        -- (`sub_nf : NormalForm sig (k+3) 2`, per-`qnf` population depth ≥ 2) are gated on
+        -- the Track-A blocker `P17-frozen-interface-gap` (the `hrealI`/`hrealB`
+        -- anchor-content interface gap, OuterGate:374/:380 — the frozen producer chain's
+        -- `kvE2_sepPtW` is a point-type at `w` and drops the x/t anchor content; convergent
+        -- three-agent finding, 309 plan v9 Phase 17). Successor: **task 358** (realization
+        -- recursion at this seam; task-349 obligation-ledger rows 1-6/8-11), consuming the
+        -- landed general-k machinery by name: `endInterval_correct` (the task-349 recursive
+        -- endpoint core, NfMultiAnchorBridge/EndIntervalConsumerK.lean) + the kvE2Ext/kvExt
+        -- gate stack (`kampPrior_site_rung2_gate_match` / `kampPrior_site_rungK_gate_match`
+        -- + the Phase-16 ExistProviders shim). Do NOT discharge here (309 v10 guard V10-3/
+        -- V10-5: the k≤1 narrowing is 309's scope; this residual is 358 territory).
+        sorry
     | n + 2 =>
       -- n ≥ 2: off the critical path. The main theorem only needs n = 0 and n = 1.
       sorry
@@ -643,47 +801,12 @@ NormalForm sig 3 2`), not the k=1 arm. Consequences (binding on Phases 16-19):
 proceed; Phase 19 executes the option-(a) case split with the k≥3 arms as the escalated residual.
 NOT NO-GO: F-i is covered at the k=1 arm (vacuously — no fragment condition arises there). -/
 
-/-- **Site lemma 1 (task 309 Phase 15): the `Fin 1` env bridge.** The `| 1 =>` site RHS
-    existential over `env : Fin 1` equals the single-anchor existential on
-    `Fin.cons x (fun _ => t)` — the `h_env_eq` bridge (KampPrior:277-291) extracted as the
-    named, reusable site lemma (the shape Phases 18-19 rewrite through). -/
-theorem kampPrior_site_env_bridge {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) (k : Nat)
-    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
-    (∃ env : Fin 1 → M.carrier,
-        nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf) ↔
-      ∃ x : M.carrier, nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf := by
-  have h_env_eq : ∀ (env : Fin 1 → M.carrier),
-      insertEnv env t = Fin.cons (env ⟨0, by omega⟩) (fun _ => t) := by
-    intro env; funext ⟨i, hi⟩
-    simp only [insertEnv]
-    by_cases h : i < 1
-    · have h_i0 : i = 0 := by omega
-      subst h_i0; simp [h, Fin.cons]
-    · have h_i1 : i = 1 := by omega
-      subst h_i1
-      simp only [show ¬(1 < 1) from by omega, ↓reduceDIte]; rfl
-  constructor
-  · rintro ⟨env, h_env⟩
-    exact ⟨env ⟨0, by omega⟩, by rw [← h_env_eq]; exact h_env⟩
-  · rintro ⟨x, hx⟩
-    exact ⟨fun _ => x, by rw [h_env_eq]; exact hx⟩
-
-/-- **Site lemma 2 (task 309 Phase 15): the trichotomy decomposition of the `| 1 =>` RHS.**
-    The site existential splits into the past / diagonal / future arms — the env bridge
-    composed with `nf_zone_exists_trichotomy_k1` (NfZoneFlattenNavigable:188, consumed, not
-    rebuilt). The three disjuncts are exactly the shapes `nf_char2_past_formula_correct` (P4),
-    `A_diag_correct`, and `nf_char2_future_formula_correct` (P5) characterize. -/
-theorem kampPrior_site_trichotomy {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) (k : Nat)
-    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier) :
-    (∃ env : Fin 1 → M.carrier,
-        nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf) ↔
-      (∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) ∨
-      (nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf) ∨
-      (∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :=
-  (kampPrior_site_env_bridge M k sub_nf t).trans
-    (nf_zone_exists_trichotomy_k1 M k sub_nf t)
+/-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: Site lemmas 1 and 2
+(`kampPrior_site_env_bridge`, `kampPrior_site_trichotomy`) were MOVED VERBATIM above
+`nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) so the `:361`
+k≤1 match narrowing can cite the arm closures without forward references — the sanctioned
+Phase-21 hoist (plan v10, forward-reference safety clause). Statements and proofs unchanged;
+the Phase-15 verdict record above remains the authoritative narrative for them. -/
 
 /-- **Site lemma 3 (task 309 Phase 15): the per-`qnf` seam.** The depth-(k+1) evaluation at the
     site env unfolds to the atom layer plus, per `qnf : NormalForm sig k 3` (DEPTH `k` — one
@@ -1121,43 +1244,11 @@ noncomputable def kampPrior_existProviders_zero {sig : MonadicSignature}
   correct := fun n sub M _h_UZ _h_SZ t =>
     nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub M t
 
-/-! ## Task 309 Phase 18 — trichotomy assembly skeleton for the `| 1 =>` arm
-
-The `| 1 =>` arm goal (`sub_nf : NormalForm sig (k+1) 2`) is
-`∃ A, ∀ M h_UZ h_SZ t, temporal_truth M atomMap t A ↔ ∃ env : Fin 1, nf_eval_nf M (k+1) 2
-(insertEnv env t) sub_nf`. Phase 15's `kampPrior_site_trichotomy` splits the RHS (at fixed
-`M`/`t`) into the past / diagonal / future disjuncts. This section lands the DUAL move on the
-LHS: given three arm formulas `A_past`/`A_diag`/`A_future` whose `temporal_truth` at `t` matches
-the three disjuncts, their `Formula.or` composition matches the whole site RHS. This is the
-`or_congr` skeleton of the plan's Phase 18 (H8 split "18a"): it reduces the `:361` retirement,
-at each `(M, t)`, to supplying the three arm correctness facts — the past arm from
-`nf_char2_past_formula_correct` (Base:1230, P4), the diagonal from `A_diag_correct` (Base:758),
-the future from `nf_char2_future_formula_correct` (Base:1430, P5), each under its depth-`k`
-quant-endpoint hook. No hook is discharged here (that is the remaining frontier of Phase 18/19);
-no `:361` edit is made; the skeleton is additive and sorry-free. -/
-
-/-- **Site lemma 4 (task 309 Phase 18): the trichotomy `Formula.or` assembly skeleton.** Given
-    arm formulas whose `temporal_truth` at `t` realizes the three disjuncts of
-    `kampPrior_site_trichotomy`, their right-nested `Formula.or` composition realizes the full
-    `| 1 =>` site RHS `∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf`. Pure
-    `temporal_truth_or` (Translation:64) + `or_congr` against the Phase-15 trichotomy split —
-    the reusable citation point Phase 19 rewrites the arm through once the three arm formulas +
-    correctness are supplied. -/
-theorem kampPrior_case1_trichotomy_assemble {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (M : OrderedMonadicStructure sig) (k : Nat)
-    (sub_nf : NormalForm sig (k + 1) 2) (t : M.carrier)
-    (A_past A_diag A_future : Formula)
-    (h_past : temporal_truth M atomMap t A_past ↔
-      ∃ x, x < t ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf)
-    (h_diag : temporal_truth M atomMap t A_diag ↔
-      nf_eval_nf M (k + 1) 2 (Fin.cons t (fun _ => t)) sub_nf)
-    (h_future : temporal_truth M atomMap t A_future ↔
-      ∃ x, t < x ∧ nf_eval_nf M (k + 1) 2 (Fin.cons x (fun _ => t)) sub_nf) :
-    temporal_truth M atomMap t (Formula.or A_past (Formula.or A_diag A_future)) ↔
-      ∃ env : Fin 1 → M.carrier, nf_eval_nf M (k + 1) 2 (insertEnv env t) sub_nf := by
-  rw [temporal_truth_or, temporal_truth_or, h_past, h_diag, h_future]
-  exact (kampPrior_site_trichotomy M k sub_nf t).symm
+/-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: the Phase-18a trichotomy `Formula.or`
+assembly skeleton (`kampPrior_case1_trichotomy_assemble`, site lemma 4) was MOVED VERBATIM
+above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>` arm-closure chain" section) together
+with its section narrative — the sanctioned Phase-21 hoist enabling the `:361` k≤1 match
+narrowing. Statement and proof unchanged. -/
 
 /-! ## Task 358 Phase 2 — the Cor 5.4(1) ⇐ within-bracket realizer (Rabinovich 2014)
 
@@ -1647,87 +1738,12 @@ theorem kampPrior_pastRealizer_of_pos {sig : MonadicSignature}
   · rw [kvE_pastPos, if_neg hadm] at hpos
     exact hpos.elim
 
-/-! ## Task 358 Phase 5 (reduced scope) — the ambient-k=0 arm closure
-
-The Phase-3 probe A0 verdict (plan v3, 2026-07-13): the literal `(quantEnd, seg)` hook
-decomposition is machine-refuted (task 350 R1/R2, `AggregateHookDischarge.lean:12-43`); the
-G3 fold enters the skeleton via the SKELETON-SHAPED arm conclusions instead (Route V). Task
-350's k=0 layer (`kampArm_{past,diag,future}_k0_correct`) is landed sorry-free, so the
-ambient-k=0 instance of the `| 1 =>` arm statement closes END-TO-END now — the reduced-scope
-green slice of the planned depth-2 milestone. The ambient-k=1 instance follows the IDENTICAL
-recipe once task 350's off-diagonal k=1 pair (`kampArm_{past,future}_k1`, blocked on
-`VVecEA2.conjFull` — Rabinovich Lemma 3.4 iff form) lands; k ≥ 2 arms additionally consume the
-rungK seam obligations (rows 5-6, 8-11). This lemma is ADDITIVE: no `:361` edit (that arm
-rewrite is the plan's Phase 9, gated on the k=1/general-k folds). -/
-
-/-- **Ambient-k=0 arm closure** (task 358, Phase-5 reduced scope): the `| 1 =>` arm statement
-    of `nf_nvar_exist_all_depths` at ambient `k = 0` (`sub_nf : NormalForm sig 1 2`), closed
-    end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
-    over task 350's three landed k=0 arm lemmas. The first G3 green milestone: no obligations,
-    no hooks — the arm formula is M-independent by construction. -/
-theorem kampPrior_case1_arm_k0 {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (sub_nf : NormalForm sig 1 2) :
-    ∃ (A : Formula),
-      ∀ (M : OrderedMonadicStructure sig)
-        (_h_UZ : semantic_prior_UZ M atomMap)
-        (_h_SZ : semantic_prior_SZ M atomMap)
-        (t : M.carrier),
-        temporal_truth M atomMap t A ↔
-        ∃ env : Fin 1 → M.carrier, nf_eval_nf M 1 2 (insertEnv env t) sub_nf := by
-  refine ⟨Formula.or (kampArm_past_k0 atomMap h_surj sub_nf)
-    (Formula.or (kampArm_diag_k0 atomMap h_surj sub_nf)
-      (kampArm_future_k0 atomMap h_surj sub_nf)), ?_⟩
-  intro M h_UZ h_SZ t
-  exact kampPrior_case1_trichotomy_assemble atomMap M 0 sub_nf t
-    (kampArm_past_k0 atomMap h_surj sub_nf)
-    (kampArm_diag_k0 atomMap h_surj sub_nf)
-    (kampArm_future_k0 atomMap h_surj sub_nf)
-    (kampArm_past_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
-    (kampArm_diag_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
-    (kampArm_future_k0_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
-
-/-! ## Task 309 Phase 20 — the ambient-k=1 arm closure
-
-The IDENTICAL recipe as `kampPrior_case1_arm_k0` above, one depth up, over task 350's
-landed k=1 arm triple: `kampArm_past_k1`/`kampArm_future_k1` (the off-diagonal pair,
-`NfMultiAnchorBridge/AggregateOffDiagK1.lean` — DoD lemmas 5/6 and 6/6, unblocked by
-`VVecEA2.conjFull_iff`) and `kampArm_diag_k1` (`NfMultiAnchorBridge/AggregateHookDischarge.lean`).
-The `_correct` conclusions match the `kampPrior_site_trichotomy` disjunct shapes verbatim at
-the generic-site index (certified by the `ShapeCertificatesK1` examples in the provider
-modules, at `sub_nf : NormalForm sig (1 + 1) 2`). Route V (skeleton-shaped arm conclusions,
-consumed by name) — no `h_quant` hook threading (machine-refuted, task 350 R1/R2). This lemma
-is ADDITIVE: no `:361` edit here (that narrowing is Phase 21). -/
-
-/-- **Ambient-k=1 arm closure** (task 309 Phase 20, v10 plan): the `| 1 =>` arm statement
-    of `nf_nvar_exist_all_depths` at ambient `k = 1` (`sub_nf : NormalForm sig 2 2`), closed
-    end-to-end via the trichotomy `Formula.or` assembly (`kampPrior_case1_trichotomy_assemble`)
-    over task 350's three landed k=1 arm lemmas. Mirror of `kampPrior_case1_arm_k0` (task 358)
-    at k=1: no gate, no provider obligations (Phase-15 corrected arm indexing — the k=1 arm's
-    per-`qnf` population is depth 1, served unconditionally); the arm formula is M-independent
-    by construction. -/
-theorem kampPrior_case1_arm_k1 {sig : MonadicSignature}
-    (atomMap : Formula → sig.preds)
-    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (sub_nf : NormalForm sig 2 2) :
-    ∃ (A : Formula),
-      ∀ (M : OrderedMonadicStructure sig)
-        (_h_UZ : semantic_prior_UZ M atomMap)
-        (_h_SZ : semantic_prior_SZ M atomMap)
-        (t : M.carrier),
-        temporal_truth M atomMap t A ↔
-        ∃ env : Fin 1 → M.carrier, nf_eval_nf M 2 2 (insertEnv env t) sub_nf := by
-  refine ⟨Formula.or (kampArm_past_k1 atomMap h_surj sub_nf)
-    (Formula.or (kampArm_diag_k1 atomMap h_surj sub_nf)
-      (kampArm_future_k1 atomMap h_surj sub_nf)), ?_⟩
-  intro M h_UZ h_SZ t
-  exact kampPrior_case1_trichotomy_assemble atomMap M 1 sub_nf t
-    (kampArm_past_k1 atomMap h_surj sub_nf)
-    (kampArm_diag_k1 atomMap h_surj sub_nf)
-    (kampArm_future_k1 atomMap h_surj sub_nf)
-    (kampArm_past_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
-    (kampArm_diag_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
-    (kampArm_future_k1_correct atomMap h_surj sub_nf M h_UZ h_SZ t)
+/-! **HOIST NOTE (task 309 Phase 21, 2026-07-14)**: the two ambient arm closures
+(`kampPrior_case1_arm_k0`, task 358 Phase-5 reduced scope, landed commit 8a7d504ec; and
+`kampPrior_case1_arm_k1`, task 309 Phase 20) were MOVED VERBATIM — statements, proofs, and
+section narratives unchanged — above `nf_nvar_exist_all_depths` (the "Hoisted `| 1 =>`
+arm-closure chain" section), so the `:361` k≤1 match narrowing can cite them without forward
+references. This is the plan-v10 sanctioned hoist (Phase 21 forward-reference safety clause);
+the 358 lemma moved verbatim, no proof edit. -/
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
