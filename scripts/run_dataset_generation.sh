@@ -480,7 +480,11 @@ run_c9() {
     PARTIAL_FILES+=("$output_file")
 
     # Stratified: exhaustive up to c7, sampled at c8/c9.
-    # Exhaustive c9 is infeasible (~11M formulas at level 9 alone, >12h).
+    # NOTE: The old "exhaustive c9 is infeasible (~11M formulas, >12h)" estimate
+    # predates the task 274 labeling speedup (~663 formulas/sec) and the task 283
+    # enumeration rewrite. Exhaustive c9 is now believed feasible but has not been
+    # measured or run; the exhaustive flip is deferred pending a feasibility probe
+    # (task 282 continuation). Stratified is retained until then.
     # shellcheck disable=SC2086
     run_cmd time lake exe dataset_generator -- \
         --max-complexity 9 \
