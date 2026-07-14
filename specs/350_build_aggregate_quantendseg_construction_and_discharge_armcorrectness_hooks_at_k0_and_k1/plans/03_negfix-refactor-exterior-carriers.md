@@ -720,18 +720,36 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 14c: (E4) past carrier `CExtPast(_correct)` + ∃w pin glue + 3-bot falsity [NOT STARTED]
+### Phase 14c: (E4) past carrier `CExtPast(_correct)` + ∃w pin glue + 3-bot falsity [COMPLETED]
 
 - **Goal:** Assemble E1-E3 into the per-qnf past-exterior carrier with its full iff.
 - **Rabinovich anchor:** **Lemma 7.6** `(∃z1)_{z0}^{z2}(ϕ1∧ϕ2)` closure (chunk_0021) for the ∃w glue at
   the pin x; **Lemma 7.8(1)** TL(Since,K⁺) (chunk_0022).
 - **Tasks:**
-  - [ ] `CExtPast (qnf) : VVecEA2` (endpointLeft = `navPackLeft` ∧ v=x char; bracket = (x,t) slots;
+  - [x] `CExtPast (qnf) : VVecEA2` (endpointLeft = `navPackLeft` ∧ v=x char; bracket = (x,t) slots;
     endpointRight = t-side fibers) + correctness:
     `(CExtPast qnf).holds M atomMap x t ↔ ∃ w, w < x ∧ nf_eval_nf M 1 3
     (Fin.cons w (Fin.cons x (fun _ => t))) qnf` under ambient x < t — the **∃w glue across the pin at x**.
-  - [ ] 3-bot falsity lemmas for order-channel-inconsistent qnf (arity-3 `agg2_zone_consistent_*`).
-  - [ ] Scoped build green; axiom checks; commit.
+    *(Landed in ExteriorNavPastK1.lean: `navDGate` — the three pure σ-side conjuncts of
+    `navDistribLeft` (order row, inconsistent-zone falsity, off-fiber honesty) as the carrier gate;
+    `CExtPast` — `@dite _ (navDGate σ) (Classical.dec _)` (agg2Past pattern), on-gate one VecEA2
+    disjunct per `L ∈ (navDXTBitTrueList σ).permutations` with shared endpoints
+    `endpointLeft = ⟨(navPackLeft σ).formula.and (navDAtXPack σ)⟩`, `endpointRight = ⟨navDAtTPack σ⟩`,
+    `bracket = navDXTBracket σ L`; off-gate the empty disjunction; `CExtPast_correct` — pure plumbing:
+    `rw [navDistribLeft]` + dite split; on-gate the shared endpoints distribute over the arrangement
+    ∃L via `temporal_truth_and`; off-gate both sides False.)*
+  - [x] 3-bot falsity lemmas for order-channel-inconsistent qnf (arity-3 `agg2_zone_consistent_*`).
+    *(`navD_inconsistent_eval_false` — eval-side: ¬navDOrderRow σ → no w<x<t triple realizes σ, via the
+    extZoneFiber_k1 atom layer + navD_atomLayer_iff; `CExtPast_offGate_false` — carrier-side: off-gate
+    holds is False at EVERY pin pair, no ambient; `CExtPast_inconsistent_false` — the order-row
+    specialization, agreeing with CExtPast_correct as False ↔ False.)*
+  - [x] Scoped build green; axiom checks; commit.
+    *(Scoped module 1035 jobs green + full `lake build` 1749 green; `lean_verify` on `CExtPast_correct`,
+    `navD_inconsistent_eval_false`, `CExtPast_inconsistent_false` = exactly
+    `[propext, Classical.choice, Quot.sound]`, no warnings; sorry census over NfMultiAnchorBridge/: 0
+    (compiler cross-check: all 30 project-wide sorry warnings pre-existing, outside territory); no new
+    vacuous defs or axioms; diff = ExteriorNavPastK1.lean only (+118 lines); no frozen-file /
+    KampPrior / task-358 edits; `nf_char3_deeper_split` not referenced.)*
 - **DoD shape:** `CExtPast_correct` green (the w<x channel per-qnf carrier iff).
 - **Timing:** ~1.5-2 hours (~300-400 lines) — **Depends on:** 14b
 - **Files:** `Kamp/NfMultiAnchorBridge/ExteriorNavPastK1.lean`

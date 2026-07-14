@@ -960,6 +960,124 @@ theorem navDistribLeft (M : OrderedMonadicStructure sig)
       ⟨(navD_atomLayer_iff M w x t hwx hxt σ).mpr ⟨ha0, ha1, ha2, hrow⟩,
        ⟨hbelW, hatW, hintWX, hatX, hintXT, hatT, haboveT⟩, hbad, hoff⟩⟩
 
+/-! ## Phase 14c (E4): the past-exterior carrier `CExtPast` + the ∃w pin glue
+
+Assembles E1-E3 into the per-qnf past-exterior carrier (Rabinovich Lemma 7.6
+`(∃z1)_{z0}^{z2}(ϕ1∧ϕ2)` closure for the ∃w glue at the pin `x`; Lemma 7.8(1)
+TL(Since,K⁺)): one `VecEA2` disjunct per arrangement of the bit-TRUE `(x, t)` profiles,
+with the shared endpoints
+
+- `endpointLeft` = `navPackLeft ∧ navDAtXPack` at the pin `x` — the Since-navigated
+  ∃w fold glued to the x-endpoint conjunct;
+- `bracket` = the `(x, t)` arrangement slots + exclusion segment (`navDXTBracket`);
+- `endpointRight` = `navDAtTPack` at the pin `t`;
+
+gated on the three pure σ-side conditions of `navDistribLeft` (order-channel row,
+inconsistent-zone falsity, off-fiber honesty) — the carrier is the EMPTY disjunction
+off-gate, so its `holds` is `False` exactly when the σ-side data is order-channel
+inconsistent (the arity-3 `agg2_zone_consistent_*` falsity form, 3-anchor instance). -/
+
+/-- **The past-exterior gate**: the three pure σ-side conjuncts of `navDistribLeft` —
+    the order-channel row `navDOrderRow`, inconsistent-zone falsity, and off-fiber
+    honesty. A Prop on `σ` alone (no model data); the carrier `CExtPast` is the empty
+    disjunction off-gate. -/
+def navDGate (σ : NormalForm sig 1 3) : Prop :=
+  navDOrderRow σ ∧
+  (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+      ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
+        zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT) →
+      σ.2 (nf0_assemble zs χ σ.1) = false) ∧
+  (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
+
+/-- **The E4 past-exterior carrier `CExtPast`** (the `w < x` channel): one `VecEA2`
+    disjunct per arrangement of the bit-TRUE `(x, t)` profiles — `endpointLeft` is the
+    Since-navigated w-package `navPackLeft` (the ∃w fold across the pin `x`) conjoined
+    with the x-endpoint conjunct `navDAtXPack`; the bracket carries the `(x, t)`
+    arrangement slots + exclusion segment; `endpointRight` is the t-endpoint pack
+    `navDAtTPack` (every t-read at its own pin — world-locality). Gated on `navDGate`
+    (empty disjunction off-gate). -/
+noncomputable def CExtPast (σ : NormalForm sig 1 3) : VVecEA2 :=
+  @dite _ (navDGate σ) (Classical.dec _)
+    (fun _ =>
+      { disjuncts := (navDXTBitTrueList σ).permutations.map (fun L =>
+          ⟨L.length,
+           { endpointLeft := ⟨Formula.and (navPackLeft atomMap h_surj σ).formula
+               (navDAtXPack atomMap h_surj σ)⟩
+             endpointRight := ⟨navDAtTPack atomMap h_surj σ⟩
+             bracket := navDXTBracket atomMap h_surj σ L }⟩) })
+    (fun _ => { disjuncts := [] })
+
+/-- **The E4 correctness iff `CExtPast_correct`** (the ∃w glue across the pin at `x`,
+    Rabinovich Lemma 7.6): under the ambient `x < t`, the carrier's 2-pin semantics at
+    `(x, t)` is exactly the `∃ w < x` past-exterior evaluation of `σ` at `[w, x, t]`.
+    Pure plumbing against `navDistribLeft`: the shared endpoints distribute over the
+    arrangement disjunction, and the three gate conjuncts are exactly the pure
+    σ-conditions of the distribution RHS. -/
+theorem CExtPast_correct (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
+    (CExtPast atomMap h_surj σ).holds M atomMap x t ↔
+      ∃ w : M.carrier, w < x ∧
+        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+  rw [navDistribLeft atomMap h_surj M σ x t hxt]
+  unfold CExtPast
+  split
+  case isTrue hg =>
+    obtain ⟨hrow, hbad, hoff⟩ := hg
+    constructor
+    · rintro ⟨vea, hmem, hv⟩
+      rw [List.mem_map] at hmem
+      obtain ⟨L, hLperm, rfl⟩ := hmem
+      obtain ⟨hepL, hepR, hbr⟩ := hv
+      simp only [TemporalPred.eval_at] at hepL hepR
+      rw [temporal_truth_and] at hepL
+      exact ⟨hepL.1, hepL.2, ⟨L, hLperm, hbr⟩, hepR, hrow, hbad, hoff⟩
+    · rintro ⟨hpack, hX, ⟨L, hLperm, hbr⟩, hT, -, -, -⟩
+      have hepL : temporal_truth M atomMap x
+          (Formula.and (navPackLeft atomMap h_surj σ).formula
+            (navDAtXPack atomMap h_surj σ)) :=
+        (temporal_truth_and M atomMap x _ _).mpr ⟨hpack, hX⟩
+      exact ⟨_, List.mem_map.mpr ⟨L, hLperm, rfl⟩, hepL, hT, hbr⟩
+  case isFalse hg =>
+    constructor
+    · rintro ⟨vea, hmem, -⟩
+      exact (List.not_mem_nil hmem).elim
+    · rintro ⟨-, -, -, -, hrow, hbad, hoff⟩
+      exact absurd ⟨hrow, hbad, hoff⟩ hg
+
+/-! ### 3-bot falsity for order-channel-inconsistent `σ` (arity-3
+`agg2_zone_consistent_*` falsity form) -/
+
+/-- **Eval-side 3-bot falsity**: if the order-channel row of `σ` does not match the
+    channel pattern `w < x < t`, then NO exterior triple realizes `σ` — the atom layer
+    of `extZoneFiber_k1` forces the row (arity-3 `agg2_zone_consistent_*` technique). -/
+theorem navD_inconsistent_eval_false (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (hrow : ¬ navDOrderRow σ)
+    (w x t : M.carrier) (hwx : w < x) (hxt : x < t) :
+    ¬ nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+  intro hnf
+  obtain ⟨hatom, -, -, -⟩ := (extZoneFiber_k1 M w x t hwx hxt σ).mp hnf
+  exact hrow ((navD_atomLayer_iff M w x t hwx hxt σ).mp hatom).2.2.2
+
+/-- **Carrier-side 3-bot falsity (off-gate)**: off the gate the carrier is the empty
+    disjunction, so its 2-pin semantics is `False` at EVERY pin pair — no ambient
+    hypothesis needed. -/
+theorem CExtPast_offGate_false (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (hg : ¬ navDGate σ) (x t : M.carrier) :
+    ¬ (CExtPast atomMap h_surj σ).holds M atomMap x t := by
+  unfold CExtPast
+  rw [dif_neg hg]
+  rintro ⟨vea, hmem, -⟩
+  exact List.not_mem_nil hmem
+
+/-- **Carrier-side 3-bot falsity (order-channel-inconsistent `σ`)**: a `σ` whose
+    order-channel row does not match `w < x < t` fails the gate, so the carrier's
+    semantics is `False` everywhere — the two falsity readings agree with
+    `CExtPast_correct` (both sides `False`). -/
+theorem CExtPast_inconsistent_false (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (hrow : ¬ navDOrderRow σ) (x t : M.carrier) :
+    ¬ (CExtPast atomMap h_surj σ).holds M atomMap x t :=
+  CExtPast_offGate_false atomMap h_surj M σ (fun hg => hrow hg.1) x t
+
 end ExteriorNavPast
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
