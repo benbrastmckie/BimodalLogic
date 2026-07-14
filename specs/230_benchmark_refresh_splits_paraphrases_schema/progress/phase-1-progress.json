@@ -1,0 +1,16 @@
+{
+  "phase": 1,
+  "phase_name": "pattern_key fill + metrics repair (sub-item 5)",
+  "started_at": "2026-07-14T00:00:00Z",
+  "last_updated": "2026-07-14T00:40:00Z",
+  "objectives": [
+    {"id": 1, "description": "Create data/scripts/enrich_benchmark.py with --fill-pattern-key mode (AST derivation, calibration gate, tripwire, atomic rewrite)", "status": "done", "files_touched": ["data/scripts/enrich_benchmark.py"]},
+    {"id": 2, "description": "Run fill: backup .bak, fill 15 nulls + repair metrics, post-write assertions (777, ids, 553/224, 0 nulls)", "status": "done", "files_touched": ["data/bmlogic-bench.jsonl"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [
+    {"approach": "Lean-faithful complexity port including task 274/285 derived-operator special cases", "result": "failed", "reason": "Calibration mismatch 216/762 — benchmark's stored complexity predates those Lean changes; plain AST node count is the benchmark's convention (762/762 + 777/777 exact)"}
+  ],
+  "deviations": [],
+  "handoff_count": 0
+}
