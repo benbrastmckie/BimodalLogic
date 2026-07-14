@@ -254,26 +254,36 @@ realizers remain admissible); the predicate promoted from probe module to a prod
 
 ---
 
-### Phase 3: Past mirror + exterior chain rebuild + m=0 inertness check [NOT STARTED]
+### Phase 3: Past mirror + exterior chain rebuild + m=0 inertness check [COMPLETED]
+
+Past mirror landed (same direction-agnostic guard inside `kvE_pastAdmissible` conjunct 2;
+`kvE_pastRealizer_admissible` re-proved). Chain repairs: `kvE_futAdmissible_fiber_dichotomy` /
+past mirror (conjunct-2 read), `kvE_futAdmissible_of_subMarking` (+ `hcons` hypothesis —
+consistency is not monotone under mark-erasure; k=0 consumer supplies
+`kvE_fiberElemConsistent_zero`). ExteriorPinnedConverseK/PastK frozen m=0 kernels
+diff-verified byte-unchanged; full `lake build` green; leaf probes: ExteriorPinnedProbeK and
+ExteriorFiberProbeK green; ExteriorPinnedProbeM1K red AS EXPECTED (its `m1_sigma_adm`
+hypothesis-side assembly is now unprovable — the countermodel dissolved; rewritten in
+Phase 5).
 
 **Goal**: The past leg in lockstep (`kvE_pastAdmissible` + past realizer re-proof), the full
 exterior consumer chain rebuilt green through `EndIntervalConsumerK`, and the frozen m=0 supply
 certificates verified byte-unchanged.
 
 **Tasks**:
-- [ ] Add the mirror conjunct to `kvE_pastAdmissible` (`ExteriorNegationPastK.lean:152`) and
+- [x] Add the mirror conjunct to `kvE_pastAdmissible` (`ExteriorNegationPastK.lean:152`) and
       re-prove the past realizer-admissibility lemma (mirror of Phase 2).
-- [ ] Rebuild and repair the exterior chain in import order: ExteriorFiberK ->
+- [x] Rebuild and repair the exterior chain in import order: ExteriorFiberK ->
       ExteriorPinnedConverseK / ExteriorPinnedConversePastK -> ExteriorBracketAssembleK ->
       ExteriorGateAssembleK -> EndIntervalConsumerK (rows 8-11 binders
       `_hsliceFut`/`_hexclSliceFut`, `EndIntervalConsumerK.lean:141-168`: re-state ONLY if needed
       to thread the strengthened admissibility; keep the restatement minimal and record it).
-- [ ] Verify m=0 inertness: `kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1301`),
+- [x] Verify m=0 inertness: `kvE_hsliceFut_supply_zero` (`ExteriorPinnedConverseK.lean:1301`),
       `kvE_hexclSliceFut_supply_zero` (`:1242`), `kvE_futSliceId_of_end_zero` (+ past mirror),
       `kvE_futSliceUnique_zero` all still build with UNCHANGED statements and proofs (git diff
       confirms no edit to these declarations).
-- [ ] Diff-check: no frozen declaration from the Frozen-Boundary table was modified.
-- [ ] Commit at green (`task 363 phase 3: ...`).
+- [x] Diff-check: no frozen declaration from the Frozen-Boundary table was modified.
+- [x] Commit at green (`task 363 phase 3: ...`).
 
 **Timing**: 2 hours
 

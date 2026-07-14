@@ -393,13 +393,18 @@ theorem kvE_subBit_mono {sig : MonadicSignature} {k : Nat}
   rw [Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true]
   exact ⟨⟨⟨decide_eq_true (h1 ▸ of_decide_eq_true hd), hz⟩, hp⟩, h2 s hsbit⟩
 
-/-- **Admissibility survives mark-erasure**: `kvE_futAdmissible` is monotone under erasing
-    quant-layer marks (same atom layer). Conjunct 1 is atom-only; conjuncts 2-4 constrain
-    only MARKED subs, so losing marks preserves them. -/
+/-- **Admissibility survives mark-erasure** — given fiber-consistency of the erased marking:
+    `kvE_futAdmissible` transports under erasing quant-layer marks (same atom layer).
+    Conjunct 1 is atom-only; conjuncts 3-4 constrain only MARKED subs, so losing marks
+    preserves them. The task-363 consistency guard inside conjunct 2 is NOT monotone under
+    mark-erasure (an erased mark may have been another sub's mate witness), so the surviving
+    marks' consistency is supplied by the caller (`hcons`) — trivially dischargeable at
+    `k = 0` via `kvE_fiberElemConsistent_zero` (the only current consumer). -/
 theorem kvE_futAdmissible_of_subMarking {sig : MonadicSignature} {k : Nat}
     (σ σ' : NormalForm sig (k + 1) 4)
     (h1 : σ'.1 = σ.1)
     (h2 : ∀ s : NormalForm sig k 5, σ'.2 s = true → σ.2 s = true)
+    (hcons : ∀ s : NormalForm sig k 5, σ'.2 s = true → kvE_fiberElemConsistent σ' s = true)
     (hadm : kvE_futAdmissible σ = true) :
     kvE_futAdmissible σ' = true := by
   have hadm' := hadm
@@ -410,15 +415,17 @@ theorem kvE_futAdmissible_of_subMarking {sig : MonadicSignature} {k : Nat}
   refine ⟨⟨⟨?_, ?_⟩, ?_⟩, ?_⟩
   · -- conjunct 1: atom-only, transported along `h1`
     rw [h1]; exact hc1
-  · -- conjunct 2: marked ⇒ on-fiber
+  · -- conjunct 2: marked ⇒ on-fiber ∧ consistent (consistency from `hcons`)
     rw [List.all_eq_true] at hc2 ⊢
     intro s hs
     rw [Bool.or_eq_true]
     by_cases hb : σ'.2 s = true
     · have hσ2 := hc2 s hs
-      rw [Bool.or_eq_true, decide_eq_true_eq] at hσ2
-      rcases hσ2 with hfibs | hfalse
-      · exact Or.inl (decide_eq_true (h1.symm ▸ hfibs))
+      rw [Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq] at hσ2
+      rcases hσ2 with ⟨hfibs, -⟩ | hfalse
+      · refine Or.inl ?_
+        rw [Bool.and_eq_true]
+        exact ⟨decide_eq_true (h1.symm ▸ hfibs), hcons s hb⟩
       · rw [Bool.not_eq_true'] at hfalse
         exact absurd (h2 s hb) (by rw [hfalse]; exact Bool.false_ne_true)
     · rw [Bool.not_eq_true] at hb
@@ -583,7 +590,8 @@ theorem kvE_futPinned_of_end_zero_refuted {sig : MonadicSignature}
     rw [kvE_futEnd, kvE_futEnd, kvE_futRayForm, kvE_futRayForm,
       kvE_futRayD, kvE_futRayD, hselfL, hrayL]
   have hadm' : kvE_futAdmissible σ' = true :=
-    kvE_futAdmissible_of_subMarking τ σ' rfl hσ'sub hτadm
+    kvE_futAdmissible_of_subMarking τ σ' rfl hσ'sub
+      (fun s _ => kvE_fiberElemConsistent_zero σ' s) hτadm
   have hPosEq : kvE_futPos P σ' = kvE_futPos P τ := by
     rw [kvE_futPos, kvE_futPos, if_pos hadm', if_pos hτadm, hgapL]
     have : kvE_futChain P σ' = kvE_futChain P τ := by

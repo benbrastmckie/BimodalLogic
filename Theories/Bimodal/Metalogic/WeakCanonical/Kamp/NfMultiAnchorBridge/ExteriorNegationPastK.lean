@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 
 /-! # Depth-`k` past-side zone/admissibility navigation layer (task 352, Phase 4.1)
 
@@ -153,7 +154,7 @@ noncomputable def kvE_pastAdmissible {sig : MonadicSignature} {k : Nat}
     (σ : NormalForm sig (k + 1) 4) : Bool :=
   decide (nf0_zoneSpec σ.1 = kvE2_sep_zPastX3) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
-    decide (nfk_dropFresh s = σ.1) || !(σ.2 s)) &&
+    (decide (nfk_dropFresh s = σ.1) && kvE_fiberElemConsistent σ s) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := NormalForm sig k 5)).all fun s =>
     (kvE_pastPossibleZones.any fun z => decide (nfk_zoneSpec s = z)) || !(σ.2 s)) &&
   ((Finset.univ.toList (α := NormalForm sig k 1)).all fun χ =>
@@ -197,12 +198,20 @@ theorem kvE_pastRealizer_admissible {sig : MonadicSignature} {k : Nat}
     | ⟨0, _⟩ => rfl
     | ⟨1, _⟩ => rfl
     | ⟨2, _⟩ => rfl
-  · -- (2) off-fiber bits false
+  · -- (2) marked subs are on-fiber AND fiber-consistent (task 363 conjunct; mirror of the
+    -- Future branch — the guard is direction-agnostic, no order hypothesis consumed)
     rw [List.all_eq_true]
     intro s _
-    by_cases hd : nfk_dropFresh s = σ.1
-    · rw [decide_eq_true hd, Bool.true_or]
-    · rw [hoff s hd, Bool.not_false, Bool.or_true]
+    rw [Bool.or_eq_true]
+    by_cases hb : σ.2 s = true
+    · refine Or.inl ?_
+      rw [Bool.and_eq_true]
+      by_cases hd : nfk_dropFresh s = σ.1
+      · refine ⟨decide_eq_true hd, ?_⟩
+        obtain ⟨v, hv⟩ := (hnf.2 s).mpr hb
+        exact kvE_fiberElemConsistent_of_realized M _ v σ s hnf hv
+      · exact absurd hb (by rw [hoff s hd]; exact Bool.false_ne_true)
+    · exact Or.inr (by rw [Bool.not_eq_true] at hb; rw [hb]; rfl)
   · -- (3) every positive fiber element sits in an order-possible zone
     rw [List.all_eq_true]
     intro s _

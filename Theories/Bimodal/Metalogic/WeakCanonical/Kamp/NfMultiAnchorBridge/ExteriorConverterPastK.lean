@@ -39,8 +39,8 @@ theorem kvE_pastAdmissible_fiber_dichotomy {sig : MonadicSignature} {k : Nat}
   obtain ⟨⟨⟨_, hB⟩, _⟩, _⟩ := hadm'
   intro s
   have hs := (List.all_eq_true.mp hB) s (Finset.mem_toList.mpr (Finset.mem_univ s))
-  rw [Bool.or_eq_true, decide_eq_true_eq] at hs
-  rcases hs with h | h
+  rw [Bool.or_eq_true, Bool.and_eq_true, decide_eq_true_eq] at hs
+  rcases hs with ⟨h, -⟩ | h
   · exact Or.inl h
   · exact Or.inr (Bool.not_eq_true' _ |>.mp h)
 
