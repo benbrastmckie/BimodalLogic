@@ -287,16 +287,22 @@
     {
       "project_number": 296,
       "project_name": "re_add_derived_binary_operators_with_dedup_fix",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
       "created": "2026-06-09T02:40:00Z",
-      "last_updated": "2026-06-09T02:40:00Z",
+      "last_updated": "2026-07-14T00:00:00Z",
       "topic": "dataset-enhancement",
       "dependencies": [
         295
       ],
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/reports/01_derived-binary-operators.md",
+          "type": "report",
+          "summary": "Refutes 295 collapse premise: 6 ops contribute 690 new canonical classes at c4, 7722 at c5; zero-presence was fold-tag measurement artifact; recommends re-add + EnrichedFormula/fold completion"
+        }
+      ]
     },
     {
       "project_number": 291,
@@ -860,10 +866,10 @@
     {
       "project_number": 194,
       "project_name": "migrate_nonempty_to_derivable",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T17:15:00Z",
-      "last_updated": "2026-07-14T15:37:41Z",
+      "last_updated": "2026-07-14T16:04:22Z",
       "artifacts": [
         {
           "path": "specs/194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md",
@@ -879,6 +885,11 @@
           "path": "specs/194_migrate_nonempty_to_derivable/plans/02_migrate-nonempty-derivable.md",
           "type": "plan",
           "summary": "8-phase mechanical migration plan (waves [[1],[2],[3,4,5,6,7],[8]]), defeq-verified substitutions, per-phase build gates, explicit scoped builds for out-of-target modules (DenseFMP, DiscreteFMP, Lifting), exclusion whitelist for Phase 8 sweep"
+        },
+        {
+          "path": "specs/194_migrate_nonempty_to_derivable/summaries/02_migrate-nonempty-derivable-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 8/8 phases, verification table, plan deviations, exclusion/follow-up notes (Deferral.lean + AlgebraicCompleteness.lean recommend repair-or-boneyard follow-up; three orphaned aggregators noted; Dense/DiscreteFMP regression fixed)"
         }
       ],
       "topic": "formula-refactor",

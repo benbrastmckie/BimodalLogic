@@ -112,7 +112,7 @@ By double negation elimination: ⊢ phi.
 Contradiction with hypothesis.
 -/
 theorem not_provable_implies_neg_set_consistent (φ : Formula)
-    (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ)) :
+    (h_not_prov : ¬Derivable FrameClass.Base [] φ) :
     SetConsistent (fc := FrameClass.Base) {φ.neg} := by
   intro L hL ⟨d⟩
   by_cases h_mem : φ.neg ∈ L
@@ -186,7 +186,7 @@ theorem parametric_canonical_completeness_relative
     (B : BFMCS D) (h_tc : B.temporally_coherent)
     (h_buc : B.backward_until_since_coherent)
     (h_fuc : B.forward_until_since_coherent)
-    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ))
+    (φ : Formula) (h_not_prov : ¬Derivable FrameClass.Base [] φ)
     (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (h_neg_in : φ.neg ∈ fam.mcs t) :
     ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
@@ -222,7 +222,7 @@ This is the bridge between non-provability and the existence of a countermodel.
 The instantiation modules use this to construct the specific BFMCS.
 -/
 theorem not_provable_implies_neg_extends_to_mcs
-    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ)) :
+    (φ : Formula) (h_not_prov : ¬Derivable FrameClass.Base [] φ) :
     ∃ M : Set Formula, SetMaximalConsistent (fc := FrameClass.Base) M ∧ φ.neg ∈ M := by
   have h_cons := not_provable_implies_neg_set_consistent φ h_not_prov
   obtain ⟨M, h_sub, h_mcs⟩ := set_lindenbaum {φ.neg} h_cons
@@ -253,7 +253,7 @@ This conditional formulation avoids sorries by shifting the BFMCS construction
 to the caller. The instantiation modules provide the concrete construction.
 -/
 theorem parametric_canonical_completeness_conditional
-    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ))
+    (φ : Formula) (h_not_prov : ¬Derivable FrameClass.Base [] φ)
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent (fc := FrameClass.Base) M →
       Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
          (h_buc : B.backward_until_since_coherent)
@@ -292,7 +292,7 @@ theorem countermodel_implies_not_provable
     (fam : FMCS D) (hfam : fam ∈ B.families) (t : D)
     (h_false : ¬truth_at (ParametricCanonicalTaskModel D) (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ) :
-    ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ) := by
+    ¬Derivable FrameClass.Base [] φ := by
   intro ⟨d⟩
   have h_in : φ ∈ fam.mcs t := theorem_in_mcs (fam.is_mcs t) d
   have h_true := (parametric_shifted_truth_lemma B h_tc h_buc h_fuc φ fam hfam t).mp h_in

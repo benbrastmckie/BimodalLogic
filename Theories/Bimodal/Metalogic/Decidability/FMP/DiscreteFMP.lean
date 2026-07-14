@@ -60,7 +60,7 @@ The semantic validity over discrete frames only matters when connecting
 MCS membership to semantic truth, which is handled by completeness.
 -/
 theorem discrete_mcs_finite_model_property (phi : Formula)
-    (h_not_provable : ¬Nonempty (DerivationTree [] phi)) :
+    (h_not_provable : ¬Derivable FrameClass.Base [] phi) :
     ∃ (S : ClosureMCSBundle phi), phi ∉ S.carrier ∧
     Finite (FilteredWorld phi) :=
   mcs_finite_model_property phi h_not_provable
@@ -72,7 +72,7 @@ This is frame-independent - the MCS construction doesn't depend on discreteness.
 -/
 theorem discrete_fmp_contrapositive (phi : Formula)
     (h_all_mcs : ∀ (S : ClosureMCSBundle phi), phi ∈ S.carrier) :
-    Nonempty (DerivationTree [] phi) :=
+    Derivable FrameClass.Base [] phi :=
   fmp_contrapositive phi h_all_mcs
 
 /-!

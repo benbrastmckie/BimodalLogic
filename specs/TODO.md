@@ -12,9 +12,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,189,191,194,199,219,230,257,282,291,296,307,318,341,343,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,189,191,199,219,230,257,282,291,296,307,318,341,343,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,187,196,231,292,293,294,298,305 | 161,189,230,291,307,341,343,361 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,188,192,303,362 | 131,169,170,187,191,194,305,358 | completeness, formula-refactor, automation, ... |
+| 3 | 175,188,192,303,362 | 131,169,170,187,191,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,193,299,359 | 192,196,303 | completeness, automation, kamp_theorem_formalization |
 | 5 | 177,178 | 131,193 | formula-refactor |
 
@@ -32,7 +32,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Formula Refactor
 
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-194 [PLANNED] — migrate_nonempty_to_derivable
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -87,7 +86,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [RESEARCHED] — exhaustive_enumeration_by_default
-296 [NOT STARTED] — Re-add the 6 derived binary temporal operators (release, weak_unt
+296 [RESEARCHED] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Literature
 
@@ -409,10 +408,11 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 296. Re add derived binary operators with dedup fix
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 295
+- **Research**: [296_re_add_derived_binary_operators_with_dedup_fix/reports/01_derived-binary-operators.md]
 
 **Description**: Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.
 
@@ -547,7 +547,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 194. Migrate nonempty to derivable
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: None
@@ -555,6 +555,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
   - [194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md]
   - [194_migrate_nonempty_to_derivable/reports/02_nonempty-derivable-migration.md]
 - **Plan**: [194_migrate_nonempty_to_derivable/plans/02_migrate-nonempty-derivable.md]
+- **Summary**: [194_migrate_nonempty_to_derivable/summaries/02_migrate-nonempty-derivable-summary.md]
 
 ---
 

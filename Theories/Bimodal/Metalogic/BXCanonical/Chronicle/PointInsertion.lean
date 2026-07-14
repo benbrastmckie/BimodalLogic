@@ -565,7 +565,7 @@ theorem dc_delta_B_controlled (fc : FrameClass) {B : Set Formula} (h_dcs : Close
     {delta phi : Formula} {L : List Formula}
     (hL_sub : ∀ psi ∈ L, psi ∈ ({delta} : Set Formula) ∪ B)
     (hL_deriv : DerivationTree fc L phi) :
-    (phi ∈ B) ∨ (∃ beta ∈ B, Nonempty (DerivationTree fc [] ((Formula.and beta delta).imp phi))) := by
+    (phi ∈ B) ∨ (∃ beta ∈ B, Derivable fc [] ((Formula.and beta delta).imp phi)) := by
   haveI : ∀ x : Formula, Decidable (x ∈ B) := fun x => Classical.propDecidable _
   by_cases h_delta_L : delta ∈ L
   · let L_B := L.filter (· ∈ B)
@@ -873,8 +873,8 @@ private theorem neg_mem_of_inconsistent_union (fc : FrameClass) {B : Set Formula
     (h_cud : ClosedUnderDerivation fc B)
     {φ : Formula} (h_not_cons : ¬SetConsistent (fc := fc) ({φ} ∪ B)) :
     φ.neg ∈ B := by
-  -- ¬SetConsistent means ∃ L ⊆ {φ} ∪ B with Nonempty (DerivationTree fc L ⊥)
-  -- SetConsistent S = ∀ L, (∀ ψ ∈ L, ψ ∈ S) → ¬Nonempty (DerivationTree fc L ⊥)
+  -- ¬SetConsistent means ∃ L ⊆ {φ} ∪ B with Derivable fc L ⊥
+  -- SetConsistent S = ∀ L, (∀ ψ ∈ L, ψ ∈ S) → ¬Derivable fc L ⊥
   -- Use classical logic to extract witness
   by_contra h_neg_not_B
   apply h_not_cons
@@ -1230,7 +1230,7 @@ hence the set of formulas implied by S is consistent. -/
 private theorem inconsistent_from_implied (fc : FrameClass) {S : Set Formula}
     (h_cons : SetConsistent (fc := fc) S)
     (L : List Formula) (hL : ∀ φ ∈ L, φ ∈ S)
-    (d : Nonempty (DerivationTree fc L Formula.bot)) : False :=
+    (d : Derivable fc L Formula.bot) : False :=
   h_cons L hL d
 
 /-! ### List Conjunction and Helpers for Burgess Compression
@@ -3288,7 +3288,7 @@ theorem until_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
     set ψ_star := Formula.and β (Formula.snce α_star γ)
     have h_cons := forward_temporal_witness_seed_consistent A h_mcs ψ_star h_F
     suffices h_derives : ∀ φ ∈ L, φ ∈ g_content A ∨
-        (Nonempty (DerivationTree fc [] (ψ_star.imp φ))) by
+        (Derivable fc [] (ψ_star.imp φ)) by
       haveI : DecidablePred (· ∈ g_content A) := fun φ => Classical.dec _
       let Γ := L.map (fun φ => if φ ∈ g_content A then φ else ψ_star)
       have hΓ_sub : ∀ ψ ∈ Γ, ψ ∈ {ψ_star} ∪ g_content A := by
@@ -3304,11 +3304,11 @@ theorem until_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
         by_cases h_gc : φ ∈ g_content A
         · exact DerivationTree.assumption Γ φ
             (List.mem_map.mpr ⟨φ, hφ, by simp [h_gc]⟩)
-        · have h_ne : Nonempty (DerivationTree fc [] (ψ_star.imp φ)) := by
+        · have h_ne : Derivable fc [] (ψ_star.imp φ) := by
             rcases h_d with h | h
             · exact absurd h h_gc
             · exact h
-          let h_impl := h_ne.some
+          let h_impl := Nonempty.some h_ne
           have hψ_in_Γ : ψ_star ∈ Γ := by
             simp only [Γ, List.mem_map]
             exact ⟨φ, hφ, by simp [h_gc]⟩
@@ -3447,7 +3447,7 @@ theorem since_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
     set ψ_star := Formula.and β (Formula.untl α_star γ)
     have h_cons := past_temporal_witness_seed_consistent A h_mcs ψ_star h_P
     suffices h_derives : ∀ φ ∈ L, φ ∈ h_content A ∨
-        (Nonempty (DerivationTree fc [] (ψ_star.imp φ))) by
+        (Derivable fc [] (ψ_star.imp φ)) by
       haveI : DecidablePred (· ∈ h_content A) := fun φ => Classical.dec _
       let Γ := L.map (fun φ => if φ ∈ h_content A then φ else ψ_star)
       have hΓ_sub : ∀ ψ ∈ Γ, ψ ∈ {ψ_star} ∪ h_content A := by
@@ -3463,11 +3463,11 @@ theorem since_witness_enriched_seed_consistent (fc : FrameClass) {A : Set Formul
         by_cases h_hc : φ ∈ h_content A
         · exact DerivationTree.assumption Γ φ
             (List.mem_map.mpr ⟨φ, hφ, by simp [h_hc]⟩)
-        · have h_ne : Nonempty (DerivationTree fc [] (ψ_star.imp φ)) := by
+        · have h_ne : Derivable fc [] (ψ_star.imp φ) := by
             rcases h_d with h | h
             · exact absurd h h_hc
             · exact h
-          let h_impl := h_ne.some
+          let h_impl := Nonempty.some h_ne
           have hψ_in_Γ : ψ_star ∈ Γ := by
             simp only [Γ, List.mem_map]
             exact ⟨φ, hφ, by simp [h_hc]⟩

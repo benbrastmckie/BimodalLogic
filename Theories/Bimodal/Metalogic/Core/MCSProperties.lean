@@ -90,7 +90,7 @@ lemma SetMaximalConsistent.closed_under_derivation {fc : FrameClass} {S : Set Fo
   by_cases h_phi_in_L' : φ ∈ L'
   · -- φ ∈ L'. Use exchange to put φ first, then deduction theorem.
     -- We have L' ⊢ ⊥ (since L' is inconsistent)
-    have ⟨d_bot⟩ : Nonempty (DerivationTree fc L' Formula.bot) := by
+    have ⟨d_bot⟩ : Derivable fc L' Formula.bot := by
       unfold Consistent at h_L'_incons
       push_neg at h_L'_incons
       exact h_L'_incons
@@ -189,7 +189,7 @@ theorem SetMaximalConsistent.negation_complete {fc : FrameClass} {S : Set Formul
     -- L' \ {φ} ⊢ φ → ⊥, i.e., L' \ {φ} ⊢ ¬φ
     by_cases h_phi_in_L' : φ ∈ L'
     · -- φ ∈ L'. Use exchange and deduction theorem.
-      have ⟨d_bot⟩ : Nonempty (DerivationTree fc L' Formula.bot) := by
+      have ⟨d_bot⟩ : Derivable fc L' Formula.bot := by
         unfold Consistent at h_L'_incons
         push_neg at h_L'_incons
         exact h_L'_incons

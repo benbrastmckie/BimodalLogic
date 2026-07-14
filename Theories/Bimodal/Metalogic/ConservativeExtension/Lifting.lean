@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.ConservativeExtension.Substitution
+import Bimodal.ProofSystem.Derivable
 
 /-!
 # Lifting Infrastructure for Conservative Extension
@@ -682,7 +683,7 @@ This is the key result enabling the irreflexivity proof. The proof works by:
 4. Using liftFormula_embed to simplify the context and conclusion -/
 theorem lift_derivation_qfree {fc : FrameClass} (L : List Formula) (phi : Formula)
     (d : ExtDerivationTree fc (L.map embedFormula) (embedFormula phi)) :
-    Nonempty (DerivationTree fc L phi) := by
+    Derivable fc L phi := by
   obtain ⟨a, ha⟩ := exists_fresh_atom (collectDerivInl d)
   have lifted := liftDerivationWith a d ha
   -- The context and conclusion simplify via liftFormula_embed

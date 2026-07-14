@@ -10,7 +10,6 @@ import Bimodal.Theorems.Propositional.Core
 # BFMCS Construction Primitives
 
 This module provides primitive building blocks for BFMCS construction:
-- `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet` / `list_consistent_to_set_consistent`: Bridge from list to set consistency
 - `constantBFMCS`: A family assigning the same MCS at every time (T-axiom coherence)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
@@ -101,17 +100,11 @@ These definitions are used by the active completeness chain.
 -/
 
 /--
-A context is consistent if no derivation of bot exists.
--/
-def ContextConsistent (Gamma : List Formula) : Prop :=
-  ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base Gamma Formula.bot)
-
-/--
 Helper: Extract MCS from Lindenbaum result for a list context.
 
 Given a consistent context Gamma, returns the MCS that extends it.
 -/
-noncomputable def lindenbaumMCS (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+noncomputable def lindenbaumMCS (Gamma : List Formula) (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     Set Formula :=
   let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
   Classical.choose (set_lindenbaum (contextAsSet Gamma) h_set_cons)
@@ -119,7 +112,7 @@ noncomputable def lindenbaumMCS (Gamma : List Formula) (h_cons : ContextConsiste
 /--
 The Lindenbaum MCS contains the original context.
 -/
-lemma lindenbaumMCS_extends (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+lemma lindenbaumMCS_extends (Gamma : List Formula) (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     contextAsSet Gamma ⊆ lindenbaumMCS Gamma h_cons :=
   let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
   (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).1
@@ -127,7 +120,7 @@ lemma lindenbaumMCS_extends (Gamma : List Formula) (h_cons : ContextConsistent G
 /--
 The Lindenbaum MCS is maximal consistent.
 -/
-lemma lindenbaumMCS_is_mcs (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+lemma lindenbaumMCS_is_mcs (Gamma : List Formula) (h_cons : Consistent (fc := FrameClass.Base) Gamma) :
     SetMaximalConsistent (fc := FrameClass.Base) (lindenbaumMCS Gamma h_cons) :=
   let h_set_cons : SetConsistent (fc := FrameClass.Base) (contextAsSet Gamma) := list_consistent_to_set_consistent h_cons
   (Classical.choose_spec (set_lindenbaum (contextAsSet Gamma) h_set_cons)).2
@@ -162,12 +155,6 @@ to avoid importing the archived `Completeness.lean`.
 -/
 
 /--
-Context derivability: there exists a derivation of φ from Γ.
--/
-def ContextDerivable (Γ : List Formula) (φ : Formula) : Prop :=
-  Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base Γ φ)
-
-/--
 Helper: If `⊬ φ` (not derivable from empty context), then `[φ.neg]` is consistent.
 
 **Proof Strategy**:
@@ -177,8 +164,8 @@ By double negation elimination (classically derivable), `⊢ φ`.
 Contradiction with `⊬ φ`.
 -/
 lemma not_derivable_implies_neg_consistent (φ : Formula)
-    (h_not_deriv : ¬Nonempty (Bimodal.ProofSystem.DerivationTree FrameClass.Base [] φ)) :
-    ContextConsistent [φ.neg] := by
+    (h_not_deriv : ¬Derivable FrameClass.Base [] φ) :
+    Consistent (fc := FrameClass.Base) [φ.neg] := by
   -- Suppose [φ.neg] is inconsistent
   intro ⟨d_bot⟩
   -- By deduction theorem: ⊢ φ.neg → ⊥ = ⊢ ¬¬φ
@@ -206,8 +193,8 @@ By DNE, Γ ⊢ φ.
 Contradiction.
 -/
 lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ : Formula)
-    (h_not_deriv : ¬ContextDerivable Γ φ) :
-    ContextConsistent (Γ ++ [φ.neg]) := by
+    (h_not_deriv : ¬Derivable FrameClass.Base Γ φ) :
+    Consistent (fc := FrameClass.Base) (Γ ++ [φ.neg]) := by
   -- Suppose Γ ++ [φ.neg] ⊢ ⊥
   intro ⟨d_bot⟩
 
@@ -245,8 +232,6 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
 ## Summary
 
 This module provides:
-- `ContextConsistent`: Consistency predicate for list contexts
-- `ContextDerivable`: Context derivability predicate
 - `not_derivable_implies_neg_consistent`: Non-derivability implies neg consistency
 - `context_not_derivable_implies_extended_consistent`: Context extension consistency
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge

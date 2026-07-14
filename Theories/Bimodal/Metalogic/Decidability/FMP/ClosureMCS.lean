@@ -224,7 +224,7 @@ If phi is satisfiable (not a theorem that neg phi), then there exists a
 closure MCS containing phi.
 -/
 theorem closure_mcs_exists_from_consistent_formula (phi : Formula)
-    (h_cons : ¬Nonempty (DerivationTree FrameClass.Base [] phi.neg)) :
+    (h_cons : ¬Derivable FrameClass.Base [] phi.neg) :
     ∃ S : Set Formula, phi ∈ S ∧ ClosureMCS phi S :=
   restricted_mcs_from_formula phi h_cons
 

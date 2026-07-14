@@ -17,12 +17,12 @@ if a formula is valid (true in all models), then it is derivable.
 
 ```
 theorem completeness (φ : Formula) :
-    valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)
+    valid φ → Derivable FrameClass.Base [] φ
 ```
 
 ## Proof Sketch (Contrapositive)
 
-1. Assume φ is not derivable: ¬Nonempty (DerivationTree FrameClass.Base [] φ)
+1. Assume φ is not derivable: ¬Derivable FrameClass.Base [] φ
 2. Then {¬φ} is consistent (otherwise we could derive φ)
 3. By Lindenbaum: extend {¬φ} to MCS w₀ containing ¬φ
 4. Build canonical TaskModel with BXPoints as world states
@@ -61,7 +61,7 @@ Either L = [] (then [] ⊢ ⊥, contradicting consistency of TM) or L = [¬φ]
 (then [¬φ] ⊢ ⊥, so [] ⊢ ¬¬φ by deduction, so [] ⊢ φ by double negation elimination).
 -/
 theorem neg_consistent_of_not_derivable {fc : FrameClass} (φ : Formula)
-    (h_not_deriv : ¬Nonempty (DerivationTree fc [] φ)) :
+    (h_not_deriv : ¬Derivable fc [] φ) :
     SetConsistent (fc := fc) ({Formula.neg φ} : Set Formula) := by
   intro L hL ⟨d⟩
   -- Every element of L is ¬φ
@@ -133,13 +133,12 @@ construction). The RootScopedChain.lean sorry sites are no longer on the critica
 path -- the chronicle bypasses them entirely.
 -/
 theorem completeness (φ : Formula) :
-    valid φ → Nonempty (DerivationTree FrameClass.Base [] φ) := by
+    valid φ → Derivable FrameClass.Base [] φ := by
   -- Contrapositive: assume not derivable, show not valid
   by_contra h
   push_neg at h
   obtain ⟨h_valid, h_not_deriv⟩ := h
-  -- Convert IsEmpty to ¬Nonempty
-  have h_not_deriv' : ¬Nonempty (DerivationTree FrameClass.Base [] φ) := not_nonempty_iff.mpr h_not_deriv
+  have h_not_deriv' : ¬Derivable FrameClass.Base [] φ := h_not_deriv
   -- {¬φ} is consistent
   have h_cons := neg_consistent_of_not_derivable φ h_not_deriv'
   -- Extend to MCS
@@ -175,7 +174,7 @@ theorem completeness (φ : Formula) :
 Completeness (alternate form): valid → derivable.
 -/
 theorem completeness' (φ : Formula) (h : valid φ) :
-    Nonempty (DerivationTree FrameClass.Base [] φ) :=
+    Derivable FrameClass.Base [] φ :=
   completeness φ h
 
 /-! ## Frame-Class-Specific Completeness Theorems -/
@@ -232,7 +231,7 @@ The non-dense branch is now resolved (task 198): the `dense_indicator` axiom
 contradicting `¬□(F'T) ∈ M`.
 -/
 theorem completeness_dense (φ : Formula) :
-    valid_dense φ → Nonempty (DerivationTree FrameClass.Dense [] φ) := by
+    valid_dense φ → Derivable FrameClass.Dense [] φ := by
   intro h_valid_dense
   by_contra h_not_deriv
   have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Dense) φ h_not_deriv
@@ -274,7 +273,7 @@ we get `¬U(⊤,⊥) ∈ M`, contradicting `U(⊤,⊥) ∈ M`.
 The mixed-case sorry is eliminated via `dd_countermodel_chronicle_mixed_sorry`.
 -/
 theorem completeness_discrete (φ : Formula) :
-    valid_discrete φ → Nonempty (DerivationTree FrameClass.Discrete [] φ) := by
+    valid_discrete φ → Derivable FrameClass.Discrete [] φ := by
   intro h_valid_discrete
   by_contra h_not_deriv
   have h_cons := neg_consistent_of_not_derivable (fc := FrameClass.Discrete) φ h_not_deriv

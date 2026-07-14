@@ -37,7 +37,7 @@ Derives relation: `Derives φ ψ` means `⊢ φ → ψ` (derivable from empty co
 
 This is the primitive ordering used to define provable equivalence.
 -/
-def Derives (φ ψ : Formula) : Prop := Nonempty (⊢ (φ.imp ψ))
+def Derives (φ ψ : Formula) : Prop := Derivable FrameClass.Base [] (φ.imp ψ)
 
 /--
 Provable equivalence: `ProvEquiv φ ψ` means `⊢ φ ↔ ψ`.

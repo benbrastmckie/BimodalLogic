@@ -129,7 +129,7 @@ theorem rRelation_guard_continues' {A B : Set Formula}
 Deductive closure of a set: the set of all formulas derivable from finite subsets of S.
 -/
 noncomputable def deductiveClosure (fc : FrameClass) (S : Set Formula) : Set Formula :=
-  {φ | ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ S) ∧ Nonempty (DerivationTree fc L φ)}
+  {φ | ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ S) ∧ Derivable fc L φ}
 
 /-- The deductive closure contains the original set. -/
 theorem subset_deductiveClosure (fc : FrameClass) (S : Set Formula) : S ⊆ deductiveClosure fc S := by
@@ -702,9 +702,9 @@ Then for any φ, DerivationTree [⊥] φ (ex falso), so φ ∈ D.
 private theorem closed_under_derivation_inconsistent_eq_univ (fc : FrameClass)
     {D : Set Formula} (h_cud : ClosedUnderDerivation fc D) (h_not_cons : ¬SetConsistent (fc := fc) D) :
     D = Set.univ := by
-  -- ¬SetConsistent (fc := fc) D means ∃ L ⊆ D with Nonempty (DerivationTree fc L ⊥).
+  -- ¬SetConsistent (fc := fc) D means ∃ L ⊆ D with Derivable fc L ⊥.
   -- Extract the witness by classical contradiction.
-  have h_exists : ∃ L : List Formula, (∀ φ ∈ L, φ ∈ D) ∧ Nonempty (DerivationTree fc L Formula.bot) := by
+  have h_exists : ∃ L : List Formula, (∀ φ ∈ L, φ ∈ D) ∧ Derivable fc L Formula.bot := by
     by_contra h_all
     apply h_not_cons
     intro L hL hd
@@ -1119,7 +1119,7 @@ by weakening, hence ⊢ η → φ by the deduction theorem.
 -/
 theorem deductiveClosure_singleton_imp (fc : FrameClass) {η φ : Formula}
     (hφ : φ ∈ deductiveClosure fc ({η} : Set Formula)) :
-    Nonempty (DerivationTree fc [] (η.imp φ)) := by
+    Derivable fc [] (η.imp φ) := by
   obtain ⟨L, hL_sub, ⟨d⟩⟩ := hφ
   have hL_eq : ∀ ψ ∈ L, ψ = η := fun ψ hψ => Set.mem_singleton_iff.mp (hL_sub ψ hψ)
   exact ⟨deduction_theorem [] η φ (derivation_from_singleton_list fc hL_eq d)⟩

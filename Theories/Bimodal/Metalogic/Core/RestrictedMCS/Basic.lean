@@ -154,7 +154,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
     obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
 
     -- L is inconsistent, so L ⊢ ⊥
-    have h_bot : Nonempty (DerivationTree FrameClass.Base L Formula.bot) := inconsistent_derives_bot h_L_incons
+    have h_bot : Derivable FrameClass.Base L Formula.bot := inconsistent_derives_bot h_L_incons
     obtain ⟨d_bot⟩ := h_bot
 
     -- Define Γ = L.filter (· ≠ psi)
@@ -198,7 +198,7 @@ theorem restricted_mcs_negation_complete {S : Set Formula}
     obtain ⟨L', h_L'_sub, h_L'_incons⟩ := h_incons_neg
 
     -- L' is inconsistent, so L' ⊢ ⊥
-    have h_bot'' : Nonempty (DerivationTree FrameClass.Base L' Formula.bot) := inconsistent_derives_bot h_L'_incons
+    have h_bot'' : Derivable FrameClass.Base L' Formula.bot := inconsistent_derives_bot h_L'_incons
     obtain ⟨d_bot''⟩ := h_bot''
 
     -- Define Δ = L'.filter (· ≠ psi.neg)
@@ -398,7 +398,7 @@ a RestrictedMCS containing phi.
 This is the key entry point for BFMCS construction.
 -/
 theorem restricted_mcs_from_formula (phi : Formula)
-    (h_cons : ¬Nonempty (DerivationTree FrameClass.Base [] phi.neg)) :
+    (h_cons : ¬Derivable FrameClass.Base [] phi.neg) :
     ∃ M : Set Formula, phi ∈ M ∧ RestrictedMCS phi M := by
   -- phi is in closureWithNeg phi
   have h_phi_clos : phi ∈ closureWithNeg phi := self_mem_closureWithNeg phi

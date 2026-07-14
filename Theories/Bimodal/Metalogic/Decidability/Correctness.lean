@@ -122,7 +122,7 @@ This is the key completeness theorem connecting semantic validity
 -/
 theorem fmp_completeness (φ : Formula) :
     (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) →
-    Nonempty (DerivationTree FrameClass.Base [] φ) :=
+    Derivable FrameClass.Base [] φ :=
   FMP.fmp_contrapositive φ
 
 /--
@@ -132,7 +132,7 @@ then there exists a finite model (closure MCS) where φ fails.
 This is the contrapositive of completeness.
 -/
 theorem fmp_incompleteness_witness (φ : Formula) :
-    ¬Nonempty (DerivationTree FrameClass.Base [] φ) →
+    ¬Derivable FrameClass.Base [] φ →
     ∃ (S : FMP.ClosureMCSBundle φ), φ ∉ S.carrier ∧
     Finite (FMP.FilteredWorld φ) :=
   FMP.mcs_finite_model_property φ

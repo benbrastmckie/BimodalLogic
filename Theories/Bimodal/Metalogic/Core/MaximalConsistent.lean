@@ -56,7 +56,7 @@ Formally: `Consistent Γ ↔ ¬(Γ ⊢ ⊥)`
 - `[p]` is consistent for atomic `p`
 - `[p, ¬p]` is inconsistent (derives ⊥ via propositional reasoning)
 -/
-def Consistent {fc : FrameClass} (Γ : Context) : Prop := ¬Nonempty (DerivationTree fc Γ Formula.bot)
+def Consistent {fc : FrameClass} (Γ : Context) : Prop := ¬Derivable fc Γ Formula.bot
 
 /--
 A context `Γ` is **maximal consistent** if it's consistent and adding any
@@ -353,7 +353,7 @@ This is essentially the definition of inconsistency unwrapped into a derivation.
 -/
 lemma inconsistent_derives_bot {fc : FrameClass} {Γ : Context}
     (h : ¬Consistent (fc := fc) Γ) :
-    Nonempty (DerivationTree fc Γ Formula.bot) := by
+    Derivable fc Γ Formula.bot := by
   unfold Consistent at h
   push_neg at h
   exact h
@@ -366,7 +366,7 @@ This is a key lemma for proving MCS closure properties. It uses the deduction th
 -/
 lemma derives_neg_from_inconsistent_extension {fc : FrameClass} {Γ : Context} {φ : Formula}
     (h_incons : ¬Consistent (fc := fc) (φ :: Γ)) :
-    Nonempty (DerivationTree fc Γ (Formula.neg φ)) := by
+    Derivable fc Γ (Formula.neg φ) := by
   -- Get the derivation of ⊥ from φ :: Γ
   have ⟨d_bot⟩ := inconsistent_derives_bot h_incons
   -- Apply deduction theorem: (φ :: Γ) ⊢ ⊥ implies Γ ⊢ φ → ⊥
@@ -489,7 +489,7 @@ theorem theorem_in_mcs {fc : FrameClass} {S : Set Formula} {φ : Formula}
   push_neg at h_incons
   obtain ⟨L, h_L_sub, h_L_incons⟩ := h_incons
   -- L is inconsistent, so L ⊢ ⊥
-  have h_bot : Nonempty (DerivationTree fc L Formula.bot) := inconsistent_derives_bot h_L_incons
+  have h_bot : Derivable fc L Formula.bot := inconsistent_derives_bot h_L_incons
   obtain ⟨d_bot⟩ := h_bot
   -- Define Γ = L.filter (· ≠ φ)
   let Γ := L.filter (· ≠ φ)
