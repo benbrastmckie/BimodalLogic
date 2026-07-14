@@ -1364,6 +1364,121 @@ theorem navDistribRight (M : OrderedMonadicStructure sig)
       ⟨(navR_atomLayer_iff M w x t hxt htw σ).mpr ⟨ha0, ha1, ha2, hrow⟩,
        ⟨hbelX, hatX, hintXT, hatT, hintTW, hatW, haboveW⟩, hbad, hoff⟩⟩
 
+/-! ## E4 mirror: the future-exterior carrier `CExtFut` + the ∃w pin glue
+
+Assembles the E5 mirror stack into the per-qnf future-exterior carrier (Rabinovich
+Lemma 7.6 closure for the ∃w glue at the pin `t`; Lemma 7.8(2) TL(Until,K⁻)): one
+`VecEA2` disjunct per arrangement of the bit-TRUE `(x, t)` future-channel profiles,
+with the shared endpoints
+
+- `endpointLeft` = `navRAtXPack` at the pin `x` (atoms at `x`; zones `v = x`, `v < x`);
+- `bracket` = the `(x, t)` arrangement slots + exclusion segment (`navRXTBracket`);
+- `endpointRight` = `navPackRight ∧ navRAtTPack` at the pin `t` — the Until-navigated
+  ∃w fold glued to the t-endpoint conjunct;
+
+gated on the three pure σ-side conditions of `navDistribRight` (empty disjunction
+off-gate — the `CExtPast`/`agg2Past` dite pattern). -/
+
+/-- **The future-exterior gate**: the three pure σ-side conjuncts of `navDistribRight` —
+    the order-channel row `navROrderRow`, inconsistent-zone falsity (future zones), and
+    off-fiber honesty. A Prop on `σ` alone (no model data). -/
+def navRGate (σ : NormalForm sig 1 3) : Prop :=
+  navROrderRow σ ∧
+  (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+      ¬(zs = extFZBelowX ∨ zs = extFZAtX ∨ zs = extFZIntXT ∨ zs = extFZAtT ∨
+        zs = extFZIntTW ∨ zs = extFZAtW ∨ zs = extFZAboveW) →
+      σ.2 (nf0_assemble zs χ σ.1) = false) ∧
+  (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)
+
+/-- **The E5 future-exterior carrier `CExtFut`** (the `t < w` channel): one `VecEA2`
+    disjunct per arrangement of the bit-TRUE `(x, t)` future-channel profiles —
+    `endpointLeft` is the x-endpoint pack `navRAtXPack` (every x-read at its own pin);
+    the bracket carries the `(x, t)` arrangement slots + exclusion segment;
+    `endpointRight` is the Until-navigated w-package `navPackRight` (the ∃w fold across
+    the pin `t`) conjoined with the t-endpoint conjunct `navRAtTPack`. Gated on
+    `navRGate` (empty disjunction off-gate). -/
+noncomputable def CExtFut (σ : NormalForm sig 1 3) : VVecEA2 :=
+  @dite _ (navRGate σ) (Classical.dec _)
+    (fun _ =>
+      { disjuncts := (navRXTBitTrueList σ).permutations.map (fun L =>
+          ⟨L.length,
+           { endpointLeft := ⟨navRAtXPack atomMap h_surj σ⟩
+             endpointRight := ⟨Formula.and (navPackRight atomMap h_surj σ).formula
+               (navRAtTPack atomMap h_surj σ)⟩
+             bracket := navRXTBracket atomMap h_surj σ L }⟩) })
+    (fun _ => { disjuncts := [] })
+
+/-- **The E5 correctness iff `CExtFut_correct`** (the ∃w glue across the pin at `t`,
+    Rabinovich Lemma 7.6, time-reversed; Lemma 7.8(2) TL(Until,K⁻) by duplication):
+    under the ambient `x < t`, the carrier's 2-pin semantics at `(x, t)` is exactly the
+    `∃ w > t` future-exterior evaluation of `σ` at `[w, x, t]`. Pure plumbing against
+    `navDistribRight`: the shared endpoints distribute over the arrangement disjunction,
+    and the three gate conjuncts are exactly the pure σ-conditions of the distribution
+    RHS. -/
+theorem CExtFut_correct (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
+    (CExtFut atomMap h_surj σ).holds M atomMap x t ↔
+      ∃ w : M.carrier, t < w ∧
+        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+  rw [navDistribRight atomMap h_surj M σ x t hxt]
+  unfold CExtFut
+  split
+  case isTrue hg =>
+    obtain ⟨hrow, hbad, hoff⟩ := hg
+    constructor
+    · rintro ⟨vea, hmem, hv⟩
+      rw [List.mem_map] at hmem
+      obtain ⟨L, hLperm, rfl⟩ := hmem
+      obtain ⟨hepL, hepR, hbr⟩ := hv
+      simp only [TemporalPred.eval_at] at hepL hepR
+      rw [temporal_truth_and] at hepR
+      exact ⟨hepR.1, hepR.2, ⟨L, hLperm, hbr⟩, hepL, hrow, hbad, hoff⟩
+    · rintro ⟨hpack, hT, ⟨L, hLperm, hbr⟩, hX, -, -, -⟩
+      have hepR : temporal_truth M atomMap t
+          (Formula.and (navPackRight atomMap h_surj σ).formula
+            (navRAtTPack atomMap h_surj σ)) :=
+        (temporal_truth_and M atomMap t _ _).mpr ⟨hpack, hT⟩
+      exact ⟨_, List.mem_map.mpr ⟨L, hLperm, rfl⟩, hX, hepR, hbr⟩
+  case isFalse hg =>
+    constructor
+    · rintro ⟨vea, hmem, -⟩
+      exact (List.not_mem_nil hmem).elim
+    · rintro ⟨-, -, -, -, hrow, hbad, hoff⟩
+      exact absurd ⟨hrow, hbad, hoff⟩ hg
+
+/-! ### 3-bot falsity for order-channel-inconsistent `σ` (future channel) -/
+
+/-- **Eval-side 3-bot falsity (future channel)**: if the order-channel row of `σ` does
+    not match the channel pattern `x < t < w`, then NO exterior triple realizes `σ` —
+    the atom layer of `extZoneFiberFut_k1` forces the row. -/
+theorem navR_inconsistent_eval_false (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (hrow : ¬ navROrderRow σ)
+    (w x t : M.carrier) (hxt : x < t) (htw : t < w) :
+    ¬ nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ := by
+  intro hnf
+  obtain ⟨hatom, -, -, -⟩ := (extZoneFiberFut_k1 M w x t hxt htw σ).mp hnf
+  exact hrow ((navR_atomLayer_iff M w x t hxt htw σ).mp hatom).2.2.2
+
+/-- **Carrier-side 3-bot falsity (off-gate)**: off the gate the carrier is the empty
+    disjunction, so its 2-pin semantics is `False` at EVERY pin pair — no ambient
+    hypothesis needed. -/
+theorem CExtFut_offGate_false (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (hg : ¬ navRGate σ) (x t : M.carrier) :
+    ¬ (CExtFut atomMap h_surj σ).holds M atomMap x t := by
+  unfold CExtFut
+  rw [dif_neg hg]
+  rintro ⟨vea, hmem, -⟩
+  exact List.not_mem_nil hmem
+
+/-- **Carrier-side 3-bot falsity (order-channel-inconsistent `σ`)**: a `σ` whose
+    order-channel row does not match `x < t < w` fails the gate, so the carrier's
+    semantics is `False` everywhere — the two falsity readings agree with
+    `CExtFut_correct` (both sides `False`). -/
+theorem CExtFut_inconsistent_false (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (hrow : ¬ navROrderRow σ) (x t : M.carrier) :
+    ¬ (CExtFut atomMap h_surj σ).holds M atomMap x t :=
+  CExtFut_offGate_false atomMap h_surj M σ (fun hg => hrow hg.1) x t
+
 end ExteriorNavFut
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
