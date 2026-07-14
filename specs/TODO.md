@@ -100,7 +100,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+358 [PLANNED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness_weak_terminus
@@ -169,7 +169,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349, Task 357, Task 360, Task 363
