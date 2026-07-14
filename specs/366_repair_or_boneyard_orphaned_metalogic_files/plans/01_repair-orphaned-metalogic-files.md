@@ -166,7 +166,7 @@ the missing namespace open, with zero sorries in-file.
 
 ---
 
-### Phase 3: Repair AlgebraicCompleteness.lean in place [NOT STARTED]
+### Phase 3: Repair AlgebraicCompleteness.lean in place [COMPLETED]
 
 **Goal**: Make `Bimodal.Metalogic.Algebraic.AlgebraicCompleteness` green under a scoped build by
 fixing the line-156 paren placement, with zero NEW sorries in-file.

@@ -153,7 +153,7 @@ theorem satisfiable_implies_consistent {φ : Formula} (h : AlgSatisfiable φ) :
       -- Since ⊢ ¬φ, this follows by weakening
       show Derives (Formula.bot.imp Formula.bot) φ.neg
       have d_s : DerivationTree FrameClass.Base [] (φ.neg.imp ((Formula.bot.imp Formula.bot).imp φ.neg)) :=
-        DerivationTree.axiom [] _ (Axiom.prop_s φ.neg (Formula.bot.imp Formula.bot) trivial)
+        DerivationTree.axiom [] _ (Axiom.prop_s φ.neg (Formula.bot.imp Formula.bot)) trivial
       exact ⟨DerivationTree.modus_ponens [] _ _ d_s d_neg⟩
   have h_phi_bot : toQuot φ = ⊥ := by
     -- [φ]ᶜ = [¬φ] = ⊤, so [φ] = ⊤ᶜ = ⊥
