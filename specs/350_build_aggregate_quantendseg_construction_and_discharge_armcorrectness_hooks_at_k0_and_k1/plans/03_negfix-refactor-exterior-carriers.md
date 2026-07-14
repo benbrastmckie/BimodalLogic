@@ -553,20 +553,33 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 12a: (D / P3-pt) point-channel merge variant (0,1) + genericity probe [IN PROGRESS]
+### Phase 12a: (D / P3-pt) point-channel merge variant (0,1) + genericity probe [COMPLETED]
 
 - **Goal:** Per-qnf k=1 carrier for the w=x channel via a new rename-merge variant of the delivered
   gated collapse. File-disjoint from the negation stack (parallelizable, wave-2).
 - **Tasks:**
-  - [ ] Create `Kamp/NfMultiAnchorBridge/AggregatePointMergeK1.lean` importing `AggregateHookDischarge`;
-    aggregator import line.
-  - [ ] **R9 GENERICITY PROBE (first task):** encode the (0,1) merge end-to-end for ONE concrete qnf and
+  - [x] Create `Kamp/NfMultiAnchorBridge/AggregatePointMergeK1.lean` importing `AggregateHookDischarge`;
+    aggregator import line. *(388-line leaf module; aggregator NOTE + import after
+    `AggregateHookDischarge`, commit 7167eb83e)*
+  - [x] **R9 GENERICITY PROBE (first task):** encode the (0,1) merge end-to-end for ONE concrete qnf and
     prove its clause iff, confirming `renameNF` + `agg_rename_fixpoint_of_eval` are rename-generic at
     position (0,1). On failure: [BLOCKED] + the exact failing rename — do NOT generalize to (0,2).
-  - [ ] (0,1) merge variant (Lemma 3.2(2) coincident-witness collapse, chunk_0009): result is
+    *(PASSED: `aggPm01Probe_clause_iff` for the all-false probe qnf, end-to-end through
+    `renameNF_eval_diag0` (row + lifted-sub level) and `agg_rename_fixpoint_of_eval` at the new
+    rename pair `aggPmExpand01` (0↦0, 1↦2) / `aggPmMerge01` (0,1↦0, 2↦1) with duplicated-head env
+    `[x,x,t]`. All three engines rename-generic at (0,1); R9 retired. Landed in the same green
+    commit as its supporting general collapse lemma — the probe was the first PROVED item; nothing
+    generalized beyond (0,1).)*
+  - [x] (0,1) merge variant (Lemma 3.2(2) coincident-witness collapse, chunk_0009): result is
     fixed-anchor `nf_eval_nf M 1 2 [x,t] (collapsed qnf)`; characterize via `nf_eval_depth1_fold_iff` at
-    n=2; non-fixpoint qnf gate to `bot` exactly as `aggPosDiagK1`.
-  - [ ] Scoped build green; axiom checks; commit.
+    n=2; non-fixpoint qnf gate to `bot` exactly as `aggPosDiagK1`. *(`agg_pm01_collapse_k1` gated
+    collapse; `aggPm01GateK1` + gate forcing `aggPm01_gate_of_eval`; clause iff `aggPm01_clause_iff`;
+    dite carrier `aggPm01ClauseK1(_iff)` with off-gate `⊥` mirroring `aggPosDiagK1`; n=2 fold
+    characterization `aggPm01_fold_iff` + end-to-end `aggPm01_clause_fold_iff`)*
+  - [x] Scoped build green; axiom checks; commit. *(scoped 1033 jobs + aggregator 1044 jobs + full
+    `lake build` 1747 jobs green; `lean_verify` on `aggPm01Probe_clause_iff`, `aggPm01ClauseK1_iff`,
+    `aggPm01_clause_fold_iff` = exactly `[propext, Classical.choice, Quot.sound]`; sorry count in
+    module: 0; commits 0ae5ff87c + 7167eb83e)*
 - **DoD shape:** (0,1) carrier + clause iff green; the genericity probe passed.
 - **Timing:** ~1.5 hours (~200-350 lines) — **Depends on:** delivered Phases 4-5 machinery (wave-2 parallel)
 - **Files:** `Kamp/NfMultiAnchorBridge/AggregatePointMergeK1.lean` (new); one import line
