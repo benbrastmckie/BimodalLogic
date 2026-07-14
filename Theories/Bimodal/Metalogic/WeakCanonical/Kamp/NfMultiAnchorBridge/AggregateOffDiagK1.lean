@@ -1369,6 +1369,172 @@ theorem aggPop1F_correct (M : OrderedMonadicStructure sig)
     exact (CAggOdSwap_clause_iff atomMap h_surj M qnf h_UZ h_SZ x t h_lt).trans
       (h qnf)
 
+/-! ## 11. Phase 16b — atom-layer carriers + the final two DoD arm lemmas
+
+Assembly exactly like delivered Phase 3 (`kampArm_past_k0`, AggregateHookDischarge.lean):
+`(atom-layer ∧ population).translateRight` for the past arm,
+`(atom-layer ∧ population).translateLeft` for the future arm (flipped origin guard as
+in `agg2Fut`). The atom layer rides a single-disjunct `VVecEA2` with the delivered
+off-diagonal loci at the endpoints and the trivially-true bracket; the ∧ is the
+Lemma 3.4 `conjFull`. The depth-(1+1) `nf_eval_nf` unfolding is definitional
+(structure eta — the same seam `kampPrior_site_perQnf_seam` names, restated locally
+because KampPrior imports this module's aggregator, not vice versa). -/
+
+/-- The depth-(1+1) evaluation seam (definitional): atom layer + population MATCH. -/
+theorem aggOd_eval2_iff (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 2 2) (env : Fin 2 → M.carrier) :
+    nf_eval_nf M 2 2 env sub_nf ↔
+      nf_eval_nf M 0 2 env (sub_nf.1 : NormalForm sig 0 2) ∧
+      ∀ qnf : NormalForm sig 1 3,
+        ((∃ w : M.carrier, nf_eval_nf M 1 3 (Fin.cons w env) qnf) ↔
+          sub_nf.2 qnf = true) :=
+  Iff.rfl
+
+/-- **Past-arm k=1 atom-layer carrier**: single disjunct, the delivered off-diagonal
+    endpoint locus at the laid witness `x` (`z0`), the delivered off-diagonal origin
+    locus (with its `x < t` order guard) at the origin `t` (`z1`), trivial bracket. -/
+noncomputable def aggAtomK1Past (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
+  ⟨[⟨0, { endpointLeft := nf_char2_atom_offdiag_endpoint atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)
+          endpointRight := ⟨nf_char2_atom_offdiag_origin atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)⟩
+          bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩
+
+/-- The past-arm atom carrier reads the atom layer (Phase-2 locus decomposition
+    `nf_char2_atom_offdiag_correct`, under the ambient `x < t`). -/
+theorem aggAtomK1Past_holds_iff (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 2 2) (x t : M.carrier) (hxt : x < t) :
+    (aggAtomK1Past atomMap h_surj sub_nf).holds M atomMap x t ↔
+      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) := by
+  constructor
+  · rintro ⟨vea, hmem, hepL, hepR, -⟩
+    simp only [aggAtomK1Past, List.mem_singleton] at hmem
+    subst hmem
+    exact (nf_char2_atom_offdiag_correct M atomMap h_surj
+      (sub_nf.1 : NormalForm sig 0 2) x t hxt).mp ⟨hepR, hepL⟩
+  · intro h
+    have hloc := (nf_char2_atom_offdiag_correct M atomMap h_surj
+      (sub_nf.1 : NormalForm sig 0 2) x t hxt).mpr h
+    refine ⟨_, List.mem_singleton.mpr rfl, hloc.2, hloc.1, ?_⟩
+    rw [BracketFormula.trivial_holds]
+    intro y _ _
+    exact TemporalPred.eval_at_top M atomMap y
+
+/-- **Future-arm k=1 atom-layer carrier** (flipped origin guard as in `agg2Fut`):
+    the FLIPPED off-diagonal origin locus at the origin `t` (`z0`), the
+    (direction-independent) endpoint locus at the laid witness `x` (`z1`). -/
+noncomputable def aggAtomK1Fut (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
+  ⟨[⟨0, { endpointLeft := ⟨nf_char2_atom_offdiag_origin_future atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)⟩
+          endpointRight := nf_char2_atom_offdiag_endpoint atomMap h_surj
+            (sub_nf.1 : NormalForm sig 0 2)
+          bracket := BracketFormula.trivial TemporalPred.top }⟩]⟩
+
+/-- The future-arm atom carrier reads the atom layer (the dual locus decomposition
+    `nf_char2_atom_offdiag_correct_future`, under the FLIPPED ambient `t < x`; the
+    trichotomy env stays `[x, t]`). -/
+theorem aggAtomK1Fut_holds_iff (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 2 2) (x t : M.carrier) (htx : t < x) :
+    (aggAtomK1Fut atomMap h_surj sub_nf).holds M atomMap t x ↔
+      nf_eval_nf M 0 2 (Fin.cons x (fun _ => t)) (sub_nf.1 : NormalForm sig 0 2) := by
+  constructor
+  · rintro ⟨vea, hmem, hepL, hepR, -⟩
+    simp only [aggAtomK1Fut, List.mem_singleton] at hmem
+    subst hmem
+    exact (nf_char2_atom_offdiag_correct_future M atomMap h_surj
+      (sub_nf.1 : NormalForm sig 0 2) x t htx).mp ⟨hepL, hepR⟩
+  · intro h
+    have hloc := (nf_char2_atom_offdiag_correct_future M atomMap h_surj
+      (sub_nf.1 : NormalForm sig 0 2) x t htx).mpr h
+    refine ⟨_, List.mem_singleton.mpr rfl, hloc.1, hloc.2, ?_⟩
+    rw [BracketFormula.trivial_holds]
+    intro y _ _
+    exact TemporalPred.eval_at_top M atomMap y
+
+/-- **k=1 past arm formula** (task 350 DoD lemma 5/6, carrier): the Since-direction
+    translation of `atom-layer ∧ aggPop1` (Lemma 3.4 conjunction). -/
+noncomputable def kampArm_past_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
+  ((aggAtomK1Past atomMap h_surj sub_nf).conjFull
+    (aggPop1 atomMap h_surj sub_nf)).translateRight
+
+/-- **k=1 past-arm hook discharge** (task 350 DoD lemma 5/6): the past-arm formula
+    realizes the past disjunct of `kampPrior_site_trichotomy` at match arm k=1.
+    Enters the skeleton via `VVecEA2.translateRight_correct` (NfToVecEA.lean:451,
+    Route V — Phase-1 R1 verdict); pins bridged by `aggOd_holdsRight_iff_holds`;
+    per-pin content = `conjFull_iff` + atom locus + `aggPop1_correct` + the
+    definitional depth-(1+1) seam. Unlike k=0, the Prior hypotheses are USED
+    (they gate the De Morgan fold inside `aggPop1`). -/
+theorem kampArm_past_k1_correct (sub_nf : NormalForm sig 2 2) :
+    ∀ (M : OrderedMonadicStructure sig),
+      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      ∀ t : M.carrier,
+      temporal_truth M atomMap t (kampArm_past_k1 atomMap h_surj sub_nf) ↔
+        ∃ x, x < t ∧ nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  intro M h_UZ h_SZ t
+  unfold kampArm_past_k1
+  rw [VVecEA2.translateRight_correct, aggOd_holdsRight_iff_holds]
+  refine exists_congr fun x => and_congr_right fun hxt => ?_
+  rw [VVecEA2.conjFull_iff,
+      aggAtomK1Past_holds_iff atomMap h_surj M sub_nf x t hxt,
+      aggPop1_correct atomMap h_surj M sub_nf h_UZ h_SZ x t hxt]
+  exact (aggOd_eval2_iff M sub_nf (Fin.cons x (fun _ => t))).symm
+
+/-- **k=1 future arm formula** (task 350 DoD lemma 6/6, carrier): the Until-direction
+    translation of `atom-layer ∧ aggPop1F` (exact dual; flipped origin guard as in
+    `agg2Fut`). -/
+noncomputable def kampArm_future_k1 (sub_nf : NormalForm sig 2 2) : Formula :=
+  ((aggAtomK1Fut atomMap h_surj sub_nf).conjFull
+    (aggPop1F atomMap h_surj sub_nf)).translateLeft
+
+/-- **k=1 future-arm hook discharge** (task 350 DoD lemma 6/6): the future-arm
+    formula realizes the future disjunct of `kampPrior_site_trichotomy` at match arm
+    k=1. Enters the skeleton via `VVecEA2.translateLeft_correct`
+    (VecEATranslation.lean:549, Route V — dual); pins bridged by
+    `aggOd_holdsLeft_iff_holds`; the population rides `aggPop1F_correct` (the
+    `aggOdSwap12` transport of the SAME dispatcher — see the §10 decision record). -/
+theorem kampArm_future_k1_correct (sub_nf : NormalForm sig 2 2) :
+    ∀ (M : OrderedMonadicStructure sig),
+      semantic_prior_UZ M atomMap → semantic_prior_SZ M atomMap →
+      ∀ t : M.carrier,
+      temporal_truth M atomMap t (kampArm_future_k1 atomMap h_surj sub_nf) ↔
+        ∃ x, t < x ∧ nf_eval_nf M 2 2 (Fin.cons x (fun _ => t)) sub_nf := by
+  intro M h_UZ h_SZ t
+  unfold kampArm_future_k1
+  rw [VVecEA2.translateLeft_correct, aggOd_holdsLeft_iff_holds]
+  refine exists_congr fun x => and_congr_right fun htx => ?_
+  rw [VVecEA2.conjFull_iff,
+      aggAtomK1Fut_holds_iff atomMap h_surj M sub_nf x t htx,
+      aggPop1F_correct atomMap h_surj M sub_nf h_UZ h_SZ x t htx]
+  exact (aggOd_eval2_iff M sub_nf (Fin.cons x (fun _ => t))).symm
+
+/-! ### Phase-16b shape certificates (drop-in citability without importing KampPrior)
+
+Each `_correct` conclusion instantiated at the generic-site index `1 + 1` — the exact
+match-arm shape of the `kampPrior_site_trichotomy` disjuncts
+(`sub_nf : NormalForm sig (k+1) 2` at `k := 1`). KampPrior imports this module's
+aggregator (not vice versa), so the certificates copy the disjunct statements
+verbatim rather than applying the skeleton itself (delivered Phase-3/5 technique). -/
+
+section ShapeCertificatesK1
+
+variable (sub_nf1 : NormalForm sig (1 + 1) 2)
+  (M : OrderedMonadicStructure sig)
+  (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+  (t : M.carrier)
+
+/-- Past disjunct shape at match arm k=1 (verbatim `kampPrior_site_trichotomy`
+    disjunct 1). -/
+example : temporal_truth M atomMap t (kampArm_past_k1 atomMap h_surj sub_nf1) ↔
+    ∃ x, x < t ∧ nf_eval_nf M (1 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf1 :=
+  kampArm_past_k1_correct atomMap h_surj sub_nf1 M h_UZ h_SZ t
+
+/-- Future disjunct shape at match arm k=1 (verbatim disjunct 3). -/
+example : temporal_truth M atomMap t (kampArm_future_k1 atomMap h_surj sub_nf1) ↔
+    ∃ x, t < x ∧ nf_eval_nf M (1 + 1) 2 (Fin.cons x (fun _ => t)) sub_nf1 :=
+  kampArm_future_k1_correct atomMap h_surj sub_nf1 M h_UZ h_SZ t
+
+end ShapeCertificatesK1
+
 end AggregateOffDiag
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
