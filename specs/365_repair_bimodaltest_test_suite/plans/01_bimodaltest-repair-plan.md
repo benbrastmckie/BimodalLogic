@@ -1,7 +1,7 @@
 # Implementation Plan: Repair BimodalTest Test Suite (Task 365)
 
 - **Task**: 365 - Repair the BimodalTest test-suite root so `lake build BimodalTest` is fully green with zero sorries
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 9-10 hours
 - **Dependencies**: None (research complete)
 - **Research Inputs**: specs/365_repair_bimodaltest_test_suite/reports/01_bimodaltest-repair-research.md
@@ -161,7 +161,7 @@ known-good recipe.
 
 ---
 
-### Phase 3: DerivationTree mechanical sweep (Cat A + B) [NOT STARTED]
+### Phase 3: DerivationTree mechanical sweep (Cat A + B) [COMPLETED]
 
 **Goal**: Apply the two mechanical `DerivationTree` transforms across all remaining DT-affected
 modules, plus Cat F (`noncomputable`) and Cat H (fc type-annotation) fixes as they surface.
@@ -193,7 +193,7 @@ modules, plus Cat F (`noncomputable`) and Cat H (fc type-annotation) fixes as th
 
 ---
 
-### Phase 4: Axiom migration (Cat D + F) [NOT STARTED]
+### Phase 4: Axiom migration (Cat D + F) [COMPLETED]
 
 **Goal**: Replace removed/migrated axioms with their derived-theorem equivalents and apply the
 Phase 2 `temp_a`/`temp_l` decision, propagating `noncomputable` as required.
@@ -223,7 +223,7 @@ Phase 2 `temp_a`/`temp_l` decision, propagating `noncomputable` as required.
 
 ---
 
-### Phase 5: deduction_theorem relocation (Cat G) [NOT STARTED]
+### Phase 5: deduction_theorem relocation (Cat G) [COMPLETED]
 
 **Goal**: Update the relocated `deduction_theorem` references to
 `Bimodal.Metalogic.Core.deduction_theorem`, accounting for its new implicit `fc`.
@@ -250,7 +250,7 @@ Phase 2 `temp_a`/`temp_l` decision, propagating `noncomputable` as required.
 
 ---
 
-### Phase 6: TaskFrame API remainder (Cat C) [NOT STARTED]
+### Phase 6: TaskFrame API remainder (Cat C) [COMPLETED]
 
 **Goal**: Apply the `TaskFrame` API-drift fixes to the remaining semantics test modules using the
 recipe established in Phase 2.
@@ -278,7 +278,7 @@ recipe established in Phase 2.
 
 ---
 
-### Phase 7: Automation API + sorry-cascade fix (Cat E) [NOT STARTED]
+### Phase 7: Automation API + sorry-cascade fix (Cat E) [COMPLETED]
 
 **Goal**: Update the `search` function call sites to the new API and fix the atom/String
 elaboration error that inserts `sorryAx`, eliminating the `#eval … depends on sorry` cascade.
@@ -306,7 +306,7 @@ elaboration error that inserts `sorryAx`, eliminating the `#eval … depends on 
 
 ---
 
-### Phase 8: Final gate — full green + zero-sorry audit [NOT STARTED]
+### Phase 8: Final gate — full green + zero-sorry audit [COMPLETED]
 
 **Goal**: Confirm the aggregate target is fully green with zero sorries and no whole-project
 regression.
