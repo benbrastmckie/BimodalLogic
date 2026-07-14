@@ -586,12 +586,22 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 12b: (D / P3-pt) point-channel merge variant (0,2) [NOT STARTED]
+### Phase 12b: (D / P3-pt) point-channel merge variant (0,2) [COMPLETED]
 
 - **Goal:** The w=t channel carrier, the (0,2) mirror of 12a.
 - **Tasks:**
-  - [ ] (0,2) merge variant + per-channel carrier + clause iff (same technique as 12a, position (0,2)).
-  - [ ] Scoped build green; axiom checks; commit.
+  - [x] (0,2) merge variant + per-channel carrier + clause iff (same technique as 12a, position (0,2)).
+    *(rename pair `aggPmExpand02` (0↦1, 1↦2) / `aggPmMerge02` (0↦1, 1↦0, 2↦1) per the 12a-handoff
+    orientation — env `[t,x,t]`, collapsed env `[x,t]` with anchor order kept; retraction by
+    `decide`; wrappers `aggPm02{CollapseRow,DupRow,CollapseSub,DupSub,CollapseK1}`; gated collapse
+    `agg_pm02_collapse_k1`; gate `aggPm02GateK1` + forcing `aggPm02_gate_of_eval`; clause iff
+    `aggPm02_clause_iff`; dite carrier `aggPm02ClauseK1(_iff)` off-gate `⊥`; n=2 fold
+    `aggPm02_fold_iff` + end-to-end `aggPm02_clause_fold_iff`. No new probe — R9 retired in 12a;
+    all `hcomp`/`hcomp2`/`hE3` compatibilities closed by `rfl` at literal indices as predicted.)*
+  - [x] Scoped build green; axiom checks; commit. *(scoped 1033 jobs + full `lake build` 1747 jobs
+    green on FIRST build; `lean_verify` on `aggPm02ClauseK1_iff` and `aggPm02_clause_fold_iff` =
+    exactly `[propext, Classical.choice, Quot.sound]`, no warnings; sorry count in module: 0;
+    vacuous/axiom counts unchanged from HEAD baseline)*
 - **DoD shape:** (0,2) carrier + clause iff green.
 - **Timing:** ~1.5 hours (~200-350 lines) — **Depends on:** 12a
 - **Files:** `Kamp/NfMultiAnchorBridge/AggregatePointMergeK1.lean`
