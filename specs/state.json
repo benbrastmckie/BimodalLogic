@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 364,
+  "next_project_number": 365,
   "active_projects": [
     {
       "project_number": 309,
@@ -1089,7 +1089,7 @@
     {
       "project_number": 230,
       "project_name": "benchmark_refresh_splits_paraphrases_schema",
-      "status": "planned",
+      "status": "completed",
       "task_type": "general",
       "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
       "priority": "medium",
@@ -1140,7 +1140,8 @@
             "integrated_date": "2026-07-14"
           }
         ]
-      }
+      },
+      "completion_summary": "Refreshed bmlogic-bench after task 229 contamination resolution via in-place enrichment (finalize_benchmark.py never rerun): filled 15 null pattern_key + repaired stale metrics, added formula_sexpr/formula_tokens/pattern_features (6,029/6,029 fidelity gate), restored nl_paraphrase fields (validator green), regenerated splits (73/149/378/177), documented the max_* KEEP decision, and synced metadata (croissant v1.3, dataset card, HF README, validate.py) with the local HF validator exiting 0. HF Hub push deferred awaiting user approval."
     },
     {
       "project_number": 231,
@@ -1683,7 +1684,7 @@
     {
       "project_number": 358,
       "project_name": "realization_recursion_nf_nvar_exist_all_depths",
-      "status": "planned",
+      "status": "blocked",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
@@ -1693,10 +1694,11 @@
         349,
         357,
         360,
-        363
+        363,
+        364
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-14T15:48:03Z",
+      "last_updated": "2026-07-14T17:05:33Z",
       "artifacts": [
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md",
@@ -1712,9 +1714,9 @@
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
       ],
-      "session_id": "sess_1784039419_e5b7e9",
-      "previous_status": "implementing",
-      "blockers": "none"
+      "session_id": "sess_1784045100_2e3ffe",
+      "previous_status": "planned",
+      "blockers": "Phase 2 G2 exterior slice supply (rows 8-11) machine-refuted against task 363's fiber-consistency interface: kvE_fiberElemConsistent mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only, defeated by planted unrealizable interior mate. Sorry-free certificate kvE_probe358_eP_atomMate_present. Needs strengthened 363-style interface (realizability-anchored or fresh-projection-aware mate content comparison). Do NOT re-dispatch /implement 358 against current interface."
     },
     {
       "project_number": 359,
@@ -1792,6 +1794,28 @@
       ],
       "session_id": "sess_1784039419_e5b7e9",
       "completion_summary": "Depth>=1 fiber-marking interface restated via approach (b): decidable, m=0-inert, depth-recursive fiber-consistency guard (kvE_futFiberConsistent + past mirror) in ExteriorFiberConsistencyK.lean. Landed as a conjunct on kvE_futAdmissible/kvE_pastAdmissible (exterior/G2) and an antecedent on rows 5-6 interior obligations (G1). Phase 1 GO gate machine-validated (rejects fake s*/m1sigma, accepts all realized honest fibers). Doppelganger countermodel dissolved on both legs (4 sorry-free GO certificates); igFoldBit + k=0/k=1 layers byte-frozen. Full lake build green, axioms clean, zero new sorry. FINAL PREDICATE SIGNATURE recorded in summaries/01 as the task-358 re-keying contract. Unblocks task 358 Phase 7/8 (G1/G2 supply)."
+    },
+    {
+      "project_number": 364,
+      "project_name": "strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11) is machine-refuted against task 363's landed fiber-consistency interface. The sorry-free certificate kvE_probe358_eP_atomMate_present (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358K.lean) shows kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only -- it compares only `mergeNF e.atom_assgn (1,_) = s'.atom_assgn` with no realizability or fresh-projection constraint on the mate s'. This lets a planted mate (mate := (mergeNF e_P.atom_assgn (1,_), fun _ => false)) -- unrealizable, vacuously elem-consistent (.2 constantly false), interior-zoned (fresh coordinate inside the doppelganger-sensitive bracket) -- supply exactly the atom row task 363 proved absent for the s* witness e_P (kvE_probe363_fake_elem_inconsistent), restoring the m=1 doppelganger countermodel one layer deeper and defeating the G2 hsliceFut conclusion.\n\nStrengthen kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) so it rejects this planted mate while continuing to accept every honestly realized fiber and continuing to reject task 363's original m=1 fake. Two candidate approaches to adjudicate in-task against the existing and new probes (either or a synthesis is acceptable):\n(a) Fresh-projection-aware mate content: require the mate s''s fresh projection (nfk_projFresh) -- or its full .2 depth->=1 marking -- to match the inner witness e's corresponding content, not only the depth-0 atom row (.atom_assgn). The plant is projection-VISIBLE (its fresh coordinate sits inside the projection-read bracket), mirroring task 363's own G1 separation (kvE_probe363_qnfG1_antecedent_fails). This is the most promising direction per the phase-2 handoff.\n(b) Realizability-anchored mate: require the mate s' to be a genuinely realizable fiber (derivable from some model/environment), directly excluding the plant's .2 = fun _ => false construction as unrealizable-by-fiat.\n\nFollow task 363's re-probe-is-the-definition-of-done methodology (machine probe before/after, frozen reference layer). Definition of done:\n1. Restate kvE_fiberElemConsistent's mate check per the chosen approach.\n2. Re-run kvE_probe358_eP_atomMate_present (or a re-derived successor) against the new interface and confirm the plant no longer supplies an atom-mate for e_P -- the plant must now be correctly rejected.\n3. Re-run all four of task 363's existing GO certificates (ExteriorPinnedProbeM1K.lean: kvE_probeM1_sliceId_NOGO, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical, and the ExteriorFiberConsistencyProbeK.lean Phase-1 GO certificate) to confirm the strengthened guard still accepts every honestly realized fiber and still rejects the original m=1 doppelganger -- no regression.\n4. MUST NOT touch or re-open k=0 layers (rung0/rung1, task 360's m=0 supply theorems, kampPrior_case1_arm_k0) -- unrefuted, must stay frozen.\n5. MUST NOT attempt the general-m/general-depth G1/G2 supply build-out itself (kvE_futAdmissible sigma2 = true in full) -- that remains task 358 Phase 2/3, resumed after this task completes. Scope is the interface strengthening plus re-probe only.\n6. Zero-debt terminus: no sorry, no vacuous def, no forcing a proof against a live countermodel. If neither candidate approach closes green, return [BLOCKED] with its own structured escalation rather than landing debt.\n\nReference: full analysis and u-class enumeration argument in specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-2-handoff-20260714.md and reports/07_spawn-analysis.md.",
+      "effort": "6-10 hours",
+      "parent_task": 358,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [
+        363
+      ],
+      "created": "2026-07-14T17:08:37Z",
+      "last_updated": "2026-07-14T17:08:37Z",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/07_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 358"
+        }
+      ]
     }
   ],
   "artifacts": [

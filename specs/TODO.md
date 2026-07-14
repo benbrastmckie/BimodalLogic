@@ -1,5 +1,5 @@
 ---
-next_project_number: 364
+next_project_number: 365
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,187,191,199,219,230,257,282,291,296,307,318,341,343,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,188,192,196,231,292,293,294,298,305 | 161,187,191,230,291,307,341,343,361 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,187,191,199,219,231,257,282,291,296,307,318,341,343,361,364 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,188,192,196,292,293,294,298,305,358 | 161,187,191,291,307,341,343,361,364 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -80,8 +80,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-230 [PLANNED] — After contamination resolution (task 229), regenerate all benchma
-  └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
+231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [PLANNED] — exhaustive_enumeration_by_default
 296 [PLANNED] — Re-add the 6 derived binary temporal operators (release, weak_unt
@@ -97,7 +96,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-358 [PLANNED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+364 [RESEARCHED] — Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11)
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness_weak_terminus
@@ -116,6 +116,32 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 364. Strengthen fiberelemconsistent mate check against planted unrealizable mates
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: Task 363
+- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/07_spawn-analysis.md]
+
+**Description**: Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11) is machine-refuted against task 363's landed fiber-consistency interface. The sorry-free certificate kvE_probe358_eP_atomMate_present (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358K.lean) shows kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only -- it compares only `mergeNF e.atom_assgn (1,_) = s'.atom_assgn` with no realizability or fresh-projection constraint on the mate s'. This lets a planted mate (mate := (mergeNF e_P.atom_assgn (1,_), fun _ => false)) -- unrealizable, vacuously elem-consistent (.2 constantly false), interior-zoned (fresh coordinate inside the doppelganger-sensitive bracket) -- supply exactly the atom row task 363 proved absent for the s* witness e_P (kvE_probe363_fake_elem_inconsistent), restoring the m=1 doppelganger countermodel one layer deeper and defeating the G2 hsliceFut conclusion.
+
+Strengthen kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) so it rejects this planted mate while continuing to accept every honestly realized fiber and continuing to reject task 363's original m=1 fake. Two candidate approaches to adjudicate in-task against the existing and new probes (either or a synthesis is acceptable):
+(a) Fresh-projection-aware mate content: require the mate s''s fresh projection (nfk_projFresh) -- or its full .2 depth->=1 marking -- to match the inner witness e's corresponding content, not only the depth-0 atom row (.atom_assgn). The plant is projection-VISIBLE (its fresh coordinate sits inside the projection-read bracket), mirroring task 363's own G1 separation (kvE_probe363_qnfG1_antecedent_fails). This is the most promising direction per the phase-2 handoff.
+(b) Realizability-anchored mate: require the mate s' to be a genuinely realizable fiber (derivable from some model/environment), directly excluding the plant's .2 = fun _ => false construction as unrealizable-by-fiat.
+
+Follow task 363's re-probe-is-the-definition-of-done methodology (machine probe before/after, frozen reference layer). Definition of done:
+1. Restate kvE_fiberElemConsistent's mate check per the chosen approach.
+2. Re-run kvE_probe358_eP_atomMate_present (or a re-derived successor) against the new interface and confirm the plant no longer supplies an atom-mate for e_P -- the plant must now be correctly rejected.
+3. Re-run all four of task 363's existing GO certificates (ExteriorPinnedProbeM1K.lean: kvE_probeM1_sliceId_NOGO, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical, and the ExteriorFiberConsistencyProbeK.lean Phase-1 GO certificate) to confirm the strengthened guard still accepts every honestly realized fiber and still rejects the original m=1 doppelganger -- no regression.
+4. MUST NOT touch or re-open k=0 layers (rung0/rung1, task 360's m=0 supply theorems, kampPrior_case1_arm_k0) -- unrefuted, must stay frozen.
+5. MUST NOT attempt the general-m/general-depth G1/G2 supply build-out itself (kvE_futAdmissible sigma2 = true in full) -- that remains task 358 Phase 2/3, resumed after this task completes. Scope is the interface strengthening plus re-probe only.
+6. Zero-debt terminus: no sorry, no vacuous def, no forcing a proof against a live countermodel. If neither candidate approach closes green, return [BLOCKED] with its own structured escalation rather than landing debt.
+
+Reference: full analysis and u-class enumeration argument in specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-2-handoff-20260714.md and reports/07_spawn-analysis.md.
+
+---
 
 ### 363. Restate depth1 fibermarking interface and reprobe g1g2
 - **Effort**: 6-10 hours
@@ -166,10 +192,10 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 349, Task 357, Task 360, Task 363
+- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md]
 - **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md]
 
@@ -503,7 +529,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 230. Benchmark refresh splits paraphrases schema
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: general
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 229
