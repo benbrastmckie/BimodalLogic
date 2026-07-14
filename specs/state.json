@@ -1495,7 +1495,8 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
       ],
       "session_id": "sess_1783992818_a712e6",
-      "previous_status": "implementing"
+      "previous_status": "implementing",
+      "blockers": "Blocked on task 363 (restate_depth1_fibermarking_interface_and_reprobe_g1g2): 358 Phase 7/8 depth->=1 fiber-marking supply theorems (G1 interior rows 5-6, G2 exterior rows 8-11) are re-keyed to 363 landed interface. Obligation shapes machine-refuted FALSE at m=1 (kvE_probeM1_sliceId_NOGO / interiorHreal_NOGO / interiorGuard_identical). Root cause D7 = P17-frozen-interface-gap. Unblocks once 363 lands the pinned/depth-graded interface."
     },
     {
       "project_number": 359,
