@@ -553,7 +553,7 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 12a: (D / P3-pt) point-channel merge variant (0,1) + genericity probe [NOT STARTED]
+### Phase 12a: (D / P3-pt) point-channel merge variant (0,1) + genericity probe [IN PROGRESS]
 
 - **Goal:** Per-qnf k=1 carrier for the w=x channel via a new rename-merge variant of the delivered
   gated collapse. File-disjoint from the negation stack (parallelizable, wave-2).
