@@ -69,6 +69,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDis
 -- already in this file's transitive closure via `EANegationClosure`; nothing in that
 -- closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAConjFull
+-- NOTE (task 350 Phase 8): thread the fixed-formula Lemma 5.3 On-builder
+-- (`negChainOn`, `negChainOn_iff`, `orderedPointsExist_combine`, `chainAllTrue`) and the
+-- PriorINF `HasAttainedSUP`/`prior_hasAttainedSUP` mirror into the root build for the
+-- Phase 9-11 negation stack. Cycle-free: `EANegationFix` imports only `Kamp.VecEAConjFull`
+-- and `Kamp.EANegation`, both already in this file's transitive closure; nothing in that
+-- closure imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.EANegationFix
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge (task 308)
