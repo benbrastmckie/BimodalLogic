@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,364,365,366 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,364 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361,365,366 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -88,8 +88,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-364 [PLANNED] — Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11)
-  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness_weak_terminus
@@ -136,12 +135,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 364. Strengthen fiberelemconsistent mate check against planted unrealizable mates
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 363
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/07_spawn-analysis.md]
 - **Plan**: [364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/plans/01_strengthen-fiber-mate-check.md]
+- **Summary**: [364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/summaries/01_strengthen-fiber-mate-check-summary.md]
 
 **Description**: Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11) is machine-refuted against task 363's landed fiber-consistency interface. The sorry-free certificate kvE_probe358_eP_atomMate_present (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358K.lean) shows kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only -- it compares only `mergeNF e.atom_assgn (1,_) = s'.atom_assgn` with no realizability or fresh-projection constraint on the mate s'. This lets a planted mate (mate := (mergeNF e_P.atom_assgn (1,_), fun _ => false)) -- unrealizable, vacuously elem-consistent (.2 constantly false), interior-zoned (fresh coordinate inside the doppelganger-sensitive bracket) -- supply exactly the atom row task 363 proved absent for the s* witness e_P (kvE_probe363_fake_elem_inconsistent), restoring the m=1 doppelganger countermodel one layer deeper and defeating the G2 hsliceFut conclusion.
 
@@ -242,7 +242,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 ### 343. Abort aware tableau cancellation
 - **Status**: [COMPLETED]
 - **Task Type**: lean4
-- **Topic**: literature
+- **Topic**: dataset-enhancement
 - **Dependencies**: None
 - **Research**: [343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md]
 - **Plan**: [343_abort_aware_tableau_cancellation/plans/01_abort-aware-tableau-plan.md]
