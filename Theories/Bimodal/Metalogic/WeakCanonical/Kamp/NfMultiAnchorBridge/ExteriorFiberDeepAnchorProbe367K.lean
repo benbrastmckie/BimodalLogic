@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorConverterK
 
 /-! # Task 367 probe leaf: the hereditary deep-anchor guard vs the tail-doppelgänger
 
@@ -315,5 +316,130 @@ theorem kvE_probe367_real_slice_deep_anchored :
   kvE_deepOnFiberV0_of_realized M3M m3realEnv3 35 qnf367 m3sigmaReal
     (nf_characteristic_satisfies M3M 3 3 m3realEnv3)
     (nf_characteristic_satisfies M3M 2 4 m3realEnv)
+
+/-! ## Phase 3: adversarial re-plant (churn record: ZERO redesign loops consumed)
+
+Two adapted attacks, machine-adjudicated against the candidate BEFORE promotion. The
+prior-family cross-check and the (ℚ, <) analytical-family closure are recorded in the
+module docstring (the guard strictly shrinks the population; admissibility — the 363/364
+exclusion engine — is untouched). -/
+
+/-- **Depth-2 doppelgänger cast** (the mandatory hereditary test, plan Risk 1): fake tail
+    `[x̃1, w̃, x̃, t̃] = [40, 9, 8, 11]` — same depth-0 row pattern as the real anchors
+    (chain, all R-free) and the SAME depth-1 zone-presence pattern (the R-point `10` sits in
+    the `(w̃, t̃) = (9, 11)` interior zone exactly as `10 ∈ (w, t) = (5, 30)` real-side; all
+    other zones R-empty on both sides). The discrepancy is visible only TWO fiber layers
+    down: over ℤ there is NO point strictly between `w̃ = 9` and the R-point `10` (nor
+    between `10` and `t̃ = 11`), while real-side `(5, 10)` and `(10, 30)` are inhabited. -/
+private def fake2Env : Fin 4 → M3M.carrier :=
+  Fin.cons 40 (Fin.cons 9 (Fin.cons 8 (fun _ => 11)))
+
+/-- The m = 2 ambient: the depth-4 3-type of the real anchors `[5, 2, 30]`. -/
+private noncomputable def q2nf : NormalForm m3sig 4 3 := nf_characteristic M3M 4 3 m3realEnv3
+
+/-- The depth-2 fake slice: the honest complete depth-3 4-type of the depth-2 fake tuple. -/
+private noncomputable def sigma2 : NormalForm m3sig 3 4 := nf_characteristic M3M 3 4 fake2Env
+
+/-- The carrier of the depth-2 discrepancy: the depth-2 5-type of the R-point `10` itself
+    over the fake tail. Its OWN marked depth-1 fiber layer records "no point strictly
+    between the w-slot and the fresh R-point" — false over the real tail. -/
+private noncomputable def s10 : NormalForm m3sig 2 5 :=
+  nf_characteristic M3M 2 5 (Fin.cons 10 fake2Env)
+
+/-- `sigma2` marks the discrepancy carrier (cast fact; witness: the R-point `10`). -/
+private theorem sigma2_marks_s10 : sigma2.2 s10 = true :=
+  @decide_eq_true _ (Classical.dec _)
+    ⟨10, nf_characteristic_satisfies M3M 2 5 (Fin.cons 10 fake2Env)⟩
+
+/-- **Gate 3a — the depth-2 doppelgänger is deep-rejected (candidate survives; the
+    hereditary recursion fires two levels down).** Any `σ'` with `σ'.2 = sigma2.2` marks
+    `s10`; a realization of `σ'` over the real tail pins `s10` at `(10, x1, 5, 2, 30)`
+    (the fresh slot carries `R`, forcing the value `10`), and then `s10`'s realized fiber
+    layer must mark the depth-1 6-type of the point `7 ∈ (w, 10) = (5, 10)` — but `s10`'s
+    SYNTACTIC fiber layer (decided over the fake tail) rejects every 6-type whose fresh
+    point lies strictly between the w-slot and the R-point, since `(w̃, 10) = (9, 10)` is
+    empty over ℤ. So no `σ'` carrying the fake deep content is `q2nf`-marked: the depth-2
+    fake fails the guard. Depth-0 AND depth-1 row/zone parity make this invisible to both
+    the old row check and any single-extra-level anchor — full-`.2` heredity is what fires.
+    Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe367_depth2DG_deep_rejected :
+    kvE_deepOnFiberV0 q2nf sigma2 = false := by
+  cases hg : kvE_deepOnFiberV0 q2nf sigma2 with
+  | false => rfl
+  | true =>
+    exfalso
+    obtain ⟨-, σ', hmk, heq⟩ := (kvE_deepOnFiberV0_iff q2nf sigma2).mp hg
+    obtain ⟨x1, hσ'⟩ : ∃ x1 : M3M.carrier,
+        nf_eval_nf M3M 3 4 (Fin.cons x1 m3realEnv3) σ' :=
+      @of_decide_eq_true _ (Classical.dec _) hmk
+    -- σ' carries the fake deep marking, hence marks the discrepancy carrier s10
+    have hs : σ'.2 s10 = true := by rw [heq]; exact sigma2_marks_s10
+    obtain ⟨r, hr⟩ := (hσ'.2 s10).mpr hs
+    -- the fresh slot of s10 carries R: the pinned witness is the R-point 10
+    have hr10 : r = 10 :=
+      (hr.1 (.pred () 0)).mpr (@decide_eq_true _ (Classical.dec _) (rfl : (10:ℤ) = 10))
+    subst hr10
+    -- the depth-1 6-type of the interpolant 7 ∈ (5, 10) over the PINNED tuple
+    -- is realized there, so s10's fiber layer must mark it …
+    have h7 : s10.2 (nf_characteristic M3M 1 6
+        (Fin.cons 7 (Fin.cons 10 (Fin.cons x1 m3realEnv3)))) = true :=
+      (hr.2 _).mp ⟨7, nf_characteristic_satisfies M3M 1 6 _⟩
+    -- … but syntactically s10's fiber layer rejects it: over the fake tail the zone
+    -- `(w̃, r) = (9, 10)` is empty in ℤ.
+    have h7f : s10.2 (nf_characteristic M3M 1 6
+        (Fin.cons 7 (Fin.cons 10 (Fin.cons x1 m3realEnv3)))) = false := by
+      refine @decide_eq_false _ (Classical.dec _) ?_
+      rintro ⟨z', hz'⟩
+      -- pinned row (fresh, R-slot): 7 < 10 — fake-side it reads z' < 10
+      have hord1 := hz'.1 (.order 0 ⟨1, by omega⟩ (by decide))
+      have h1 : z' < (10:ℤ) := hord1.mpr
+        (@decide_eq_true _ (Classical.dec _) (show (7:ℤ) < 10 by omega))
+      -- pinned row (w-slot, fresh): 5 < 7 — fake-side it reads 9 < z'
+      have hord2 := hz'.1 (.order ⟨3, by omega⟩ 0 (by decide))
+      have h2 : (9:ℤ) < z' := hord2.mpr
+        (@decide_eq_true _ (Classical.dec _) (show (5:ℤ) < 7 by omega))
+      -- the discrete gap: no integer lies strictly between 9 and 10
+      have hgap : ∀ y : ℤ, 9 < y → y < 10 → False := by omega
+      exact hgap z' h2 h1
+    rw [h7] at h7f
+    exact Bool.noConfusion h7f
+
+/-! ### The content-copying plant (the strongest adapted attack) -/
+
+/-- A σ-marked honest fiber of the real slice (the walk point `32` over the REAL pinned
+    tuple) — the nonempty-marking witness the plant collapse pivots on. -/
+private noncomputable def s32 : NormalForm m3sig 1 5 :=
+  nf_characteristic M3M 1 5 (Fin.cons 32 m3realEnv)
+
+/-- The real slice marks its own walk fiber (cast fact). -/
+private theorem m3sigmaReal_marks_s32 : m3sigmaReal.2 s32 = true :=
+  @decide_eq_true _ (Classical.dec _)
+    ⟨32, nf_characteristic_satisfies M3M 1 5 (Fin.cons 32 m3realEnv)⟩
+
+/-- **Gate 3 (content-copying plant) — the copy construction is IMPOSSIBLE**: any σ★ that
+    copies the real slice's whole deep marking (`σ★.2 = m3sigmaReal.2`, manufacturing
+    guard-trueness with mate `m3sigmaReal`) and passes admissibility IS the real slice.
+    Self-defeat channel: the copied marking is nonempty (it marks the real walk fiber
+    `s32`), and admissibility's on-fiber conjunct (task 363/364, read through the
+    byte-stable extraction `kvE_futAdmissible_onFiber` — no unfolding) forces
+    `σ★.1 = nfk_dropFresh s32 = m3sigmaReal.1`. A fake-tail realizer therefore cannot host
+    the copy: there is no adapted σ★ distinct from the honest slice. Sorry-free; axioms
+    `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe367_copyPlant_collapses (σs : NormalForm m3sig 2 4)
+    (hcopy : σs.2 = m3sigmaReal.2) (hadm : kvE_futAdmissible σs = true) :
+    σs = m3sigmaReal := by
+  -- the copied marking marks the real walk fiber
+  have hmark : σs.2 s32 = true := by rw [hcopy]; exact m3sigmaReal_marks_s32
+  -- admissibility's on-fiber conjunct pins σs's atom layer to the fiber's dropped row
+  have hfib : nfk_dropFresh s32 = σs.1 := kvE_futAdmissible_onFiber σs hadm s32 hmark
+  -- and that dropped row is the real slice's own atom layer
+  have hrow : nfk_dropFresh s32 = m3sigmaReal.1 := by
+    have hatom := nf_eval_nf_atom_layer M3M _ s32
+      (nf_characteristic_satisfies M3M 1 5 (Fin.cons 32 m3realEnv))
+    have hfac := (nf_eval_nf0_cons_factor M3M m3realEnv 32 s32.atom_assgn).mp hatom
+    exact nf_eval_unique M3M 0 4 m3realEnv _ _ hfac.2.2
+      (nf_eval_nf_atom_layer M3M m3realEnv m3sigmaReal
+        (nf_characteristic_satisfies M3M 2 4 m3realEnv))
+  exact Prod.ext (hfib.symm.trans hrow) hcopy
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -260,14 +260,14 @@ restated rows 8-9 would be vacuously unservable.
 
 ---
 
-### Phase 3: Adversarial re-plant probe (churn cap: ONE redesign loop) [NOT STARTED]
+### Phase 3: Adversarial re-plant probe (churn cap: ONE redesign loop) [COMPLETED]
 
 **Goal**: Attempt to defeat the CANDIDATE the same way the 358 tail probe defeated the 364
 interface — before promotion, not after. The refinement is only credible if the
 next-layer-down attack provably fails.
 
 **Tasks**:
-- [ ] **Depth-2 tail-doppelganger** (the mandatory hereditary test, Risk 1): construct a fake
+- [x] **Depth-2 tail-doppelganger** (the mandatory hereditary test, Risk 1) *(completed — Gate 3a `kvE_probe367_depth2DG_deep_rejected`: fake tail [40,9,8,11], discrepancy = discrete gap (9,10) empty, visible only two fiber layers down; candidate SURVIVES, zero redesign loops)*: construct a fake
       tail whose coupling discrepancy with the real one is visible only at fiber depth 2
       (depth-0 AND depth-1 indistinguishable rows/couplings; e.g. a second marker point or a
       two-layer nesting of the R-point placement). Machine-adjudicate:
@@ -278,20 +278,20 @@ next-layer-down attack provably fails.
         `kvE_probe358_tailDG_*` style. Then loop back to Phase 1 design ONCE (churn guard);
         a SECOND defeat exits `[BLOCKED]` with the refutation certificate as the escalation
         payload.
-- [ ] **Content-copying plant**: the strongest adapted attack — a sigma realized over a fake
+- [x] **Content-copying plant**: the strongest adapted attack *(completed — `kvE_probe367_copyPlant_collapses`: any admissible sigma* copying the real deep marking IS the real slice, via the byte-stable `kvE_futAdmissible_onFiber` extraction)* — a sigma realized over a fake
       tail whose marked fibers' deep forms are manufactured to BE qnf-marked forms (copying
       the ambient's deep marking payload). Machine-adjudicate self-defeat: the copy must
       survive sigma's own admissibility (the 364 co-realization conjunct: copied content must
       be jointly realizable with sigma) AND the hereditary arm (consistent all the way down).
       Certificate either excludes the adapted sigma or shows its construction impossible.
-- [ ] **Prior-family cross-check**: confirm at probe level that the candidate does not reopen
+- [x] **Prior-family cross-check** *(completed — docstring argument: guard strictly shrinks population; admissibility untouched; 363/364/358 records byte-stable, re-verified Phase 5)*: confirm at probe level that the candidate does not reopen
       any previously-closed hole — the 363 m=1 fake (`s*` within `m1sigma`), the 364 plant
       (`m2sigma`/`m2sstar`), and the historical atom-row record
       (`kvE_probe358_eP_atomMate_present`) — via certificates or a docstring argument keyed to
       the unchanged frozen exclusion mechanisms (the guard is a NEW conjunct at the binder; it
       strictly shrinks the obligation population, so prior exclusions cannot be weakened —
       record the argument explicitly).
-- [ ] **Analytical-family closure record**: write the (Q, <) homogeneity dissolution argument
+- [x] **Analytical-family closure record** *(completed — module docstring; the m3_noPinned chase is model-generic in shape; the Z casts are finite proxies)*: write the (Q, <) homogeneity dissolution argument
       into the leaf's module docstring (why every fake-characteristic's marked deep fiber
       carries the fake coupling vector at the discrepancy layer, hence is never qnf-marked),
       plus a mechanized finite proxy cast where feasible.
