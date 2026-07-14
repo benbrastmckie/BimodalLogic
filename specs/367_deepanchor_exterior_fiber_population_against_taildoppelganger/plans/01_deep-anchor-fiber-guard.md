@@ -159,48 +159,48 @@ adjudicated candidate and touch disjoint probe content).
 
 ---
 
-### Phase 1: Baseline freeze, consumption-site map, candidate deep-anchor design (probe-only) [NOT STARTED]
+### Phase 1: Baseline freeze, consumption-site map, candidate deep-anchor design (probe-only) [COMPLETED]
 
 **Goal**: Choose and machine-validate the hereditary deep-anchor CANDIDATE in a NEW additive
 probe leaf, without touching any production file. The candidate must exclude the
 tail-doppelganger slice from the anchored population while remaining m=0-inert.
 
 **Tasks**:
-- [ ] Baseline: scoped `lake build` of
+- [x] Baseline: scoped `lake build` of
       `Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedProbe358TailK`
       and `...EndIntervalConsumerK` confirming green start; `lean_verify` spot-checks on
       `kvE_probe358_tailDG_gapItem_pinned_fails`, `kvE_probe358_tailDG_sigma_in_population`,
       `kvE_probe364_sigma2_inadmissible`, and `kvE_probe363_tau_admissible` (all floor axioms
-      `[propext, Classical.choice, Quot.sound]`, no sorryAx).
-- [ ] Consumption-site map (bounded read budget; record in the new leaf's module docstring):
+      `[propext, Classical.choice, Quot.sound]`, no sorryAx). *(completed — all four at floor axioms)*
+- [x] Consumption-site map (bounded read budget; record in the new leaf's module docstring) *(completed — recorded in leaf docstring; deviation: altered — the map adds `ExteriorBracketAssembleK.lean` as a statement-touching site beyond the plan's Phase-4 list: the rows-8-9 binder types are passed whole to D3/D4 (`ExteriorGateAssembleK:328/:344`) whose slice-unmarked branch applies `hslice` to arbitrary bracket-range σ, and the un-re-keyed bracket FORMULA is honestly unsatisfiable at m ≥ 1 (the fake σ's negative clause conjoins against its own firing chain), so the range filter, `_iff`, and D1-D4 must carry the guard)*:
       classify every `hsliceFut`/`hslicePast` site — `EndIntervalConsumerK.lean` (binder
       definitions :154-167 + `endInterval_step_correct` threading), `ExteriorGateAssembleK.lean`
       (verbatim binder copies / discharge consumption), `KampPrior.lean` (threading + the m=0
       discharge through `kvE_{fut,past}SliceId_of_end_zero`), `ExteriorPinnedConverse{,Past}K.lean`
       (kernel/docstring references) — as statement-touching vs proof-script-only. This map is
       Phase 4's authoritative edit boundary.
-- [ ] Create NEW additive probe leaf
+- [x] Create NEW additive probe leaf
       `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorFiberDeepAnchorProbe367K.lean`:
       replicate the private m3 cast from `ExteriorPinnedProbe358TailK.lean` (model `(Z, <)`,
       `R = {10}`, real `[35,5,2,30]`, fake `[40,12,8,25]`, walk `32`; established replication
       precedent for `private` originals) plus the real ambient
       `qnf367 := nf_characteristic M3M 3 3 m3realEnv3` (the `NormalForm sig (m+2) 3` shape at
       m = 1).
-- [ ] Define candidate `kvE_deepOnFiberV0 (qnf) (sigma) : Bool` implementing candidate (a)
+- [x] *(deviation: altered — landed as a synthesis: row check `&&` a qnf-marked deep-content mate `∃ σ', qnf.2 σ' ∧ σ'.2 = σ.2`; full `.2` equality is hereditary to depth 0 by construction and resolves Risk-2 bookkeeping without a deep slot-drop; fiber-depth-1 arm is the pure row check, giving `rfl` m=0 inertness)* Define candidate `kvE_deepOnFiberV0 (qnf) (sigma) : Bool` implementing candidate (a)
       hereditary fiber anchoring — sigma's marked fibers' one-slot-dropped DEEP forms must be
       matched in qnf's deep marking one level down, recursing to depth 0 (NOT a single extra
       level; see Risk 1). Resolve the depth/arity bookkeeping explicitly (Risk 2). Keep the
       depth-0/base arm literally trivial so inertness stays `rfl`-cheap. Document candidate (b)
       (direct binder-level deep on-fiber condition) as the in-file fallback with its trade-offs.
-- [ ] **Gate 1a (tail-doppelganger excluded)**: sorry-free certificate
+- [x] **Gate 1a (tail-doppelganger excluded)**: sorry-free certificate
       `kvE_probe367_tailDG_deep_rejected : kvE_deepOnFiberV0 qnf367 m3sigma367 = false` — the
       fake slice, though admissible (`kvE_futAdmissible = true` via the sanctioned realizer
       route) and depth-0 on-fiber, fails the deep anchor w.r.t. the real ambient.
-- [ ] **Gate 1b (m=0 inertness)**: `kvE_deepOnFiberV0_zero`-style lemma — at fiber depth 0 the
+- [x] **Gate 1b (m=0 inertness)**: `kvE_deepOnFiberV0_zero`-style lemma — at fiber depth 0 the
       hereditary arm is vacuous and the guard reduces to (or is directly implied by) the
       depth-0 row check, `rfl` or cheap — the guard rail that keeps the frozen m=0 discharge
       layer untouched in Phase 4.
-- [ ] Scoped `lake build` of the new leaf; `lean_verify` both gates (floor axioms); `git status`
+- [x] Scoped `lake build` of the new leaf; `lean_verify` both gates (floor axioms); `git status`
       audit: the only tree change is the new leaf.
 
 **Timing**: 2 hours
