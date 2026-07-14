@@ -1164,6 +1164,116 @@ theorem CAggOd_clause_iff (M : OrderedMonadicStructure sig)
     · rintro ⟨w, hw⟩
       exact (aggOdZone3_bot_eval_false M qnf h1 h2 h3 h4 h5 x t hxt w hw).elim
 
+/-! ## 9. Phase 16b — the k=1 aggregate population fold `aggPop1` (Lemma 3.4 closure)
+
+The Rabinovich Lemma 3.4 closure under ∧ (chunk_0010): the population MATCH
+`∀ qnf, ((∃ w, nf_eval_nf M 1 3 [w, x, t] qnf) ↔ sub_nf.2 qnf)` is the `conjFull`-fold
+over ALL `qnf : NormalForm sig 1 3` (Fintype at NormalForm.lean:167) of the per-qnf
+dispatcher `CAggOd qnf` on bit-true qnf and its Prop 4.2/4.3 De Morgan negation
+`(CAggOd qnf).negFix` on bit-false qnf, with `VVecEA2.trivialTrue` as the neutral
+element. `negFix_iff` is gated on attained INF/SUP; on Prior structures these are
+`prior_hasAttainedINF h_UZ` / `prior_hasAttainedSUP h_SZ` (PriorINF.lean:224/:269). -/
+
+/-- Pin bridge (Since direction): `holdsRight` at the origin `t` is the pointwise
+    2-pin semantics quantified through the laid witness `z0 < t`. Pure conjunct
+    reassociation (G5 — manual). -/
+theorem aggOd_holdsRight_iff_holds (M : OrderedMonadicStructure sig)
+    (v : VVecEA2) (t : M.carrier) :
+    v.holdsRight M atomMap t ↔ ∃ x : M.carrier, x < t ∧ v.holds M atomMap x t := by
+  constructor
+  · rintro ⟨vea, hmem, hepR, z0, hz0, hepL, hbr⟩
+    exact ⟨z0, hz0, vea, hmem, hepL, hepR, hbr⟩
+  · rintro ⟨x, hx, vea, hmem, hepL, hepR, hbr⟩
+    exact ⟨vea, hmem, hepR, x, hx, hepL, hbr⟩
+
+/-- Pin bridge (Until direction): `holdsLeft` at the origin `t` is the pointwise
+    2-pin semantics quantified through the laid witness `t < z1` (dual). -/
+theorem aggOd_holdsLeft_iff_holds (M : OrderedMonadicStructure sig)
+    (v : VVecEA2) (t : M.carrier) :
+    v.holdsLeft M atomMap t ↔ ∃ x : M.carrier, t < x ∧ v.holds M atomMap t x := by
+  constructor
+  · rintro ⟨vea, hmem, hepL, z1, hz1, hepR, hbr⟩
+    exact ⟨z1, hz1, vea, hmem, hepL, hepR, hbr⟩
+  · rintro ⟨x, hx, vea, hmem, hepL, hepR, hbr⟩
+    exact ⟨vea, hmem, hepL, x, hx, hepR, hbr⟩
+
+/-- **The biconditional population fold** (Lemma 3.4 closure under ∧, list form):
+    folding `if bit qnf then D qnf else (D qnf).negFix` over a list with `conjFull`
+    holds iff EVERY listed qnf's carrier matches its bit — the biconditional
+    per-clause reading (`⟺`, not `→`) that the k=1 population match requires.
+    Induction over the list; the cons step is `VVecEA2.conjFull_iff` + (on the
+    bit-false branch) the gated `VVecEA2.negFix_iff`. -/
+theorem aggOdPopFold_iff (M : OrderedMonadicStructure sig)
+    (h_INF : HasAttainedINF M atomMap) (h_SUP : HasAttainedSUP M atomMap)
+    (D : NormalForm sig 1 3 → VVecEA2) (bit : NormalForm sig 1 3 → Bool)
+    (z0 z1 : M.carrier) (h_lt : z0 < z1) (l : List (NormalForm sig 1 3)) :
+    ((l.map fun qnf => if bit qnf then D qnf else (D qnf).negFix).foldr
+        VVecEA2.conjFull VVecEA2.trivialTrue).holds M atomMap z0 z1 ↔
+      ∀ qnf ∈ l, ((D qnf).holds M atomMap z0 z1 ↔ bit qnf = true) := by
+  induction l with
+  | nil =>
+    simp only [List.map_nil, List.foldr_nil]
+    constructor
+    · intro _ qnf hq
+      exact absurd hq (List.not_mem_nil)
+    · intro _
+      exact VVecEA2.trivialTrue_holds M atomMap z0 z1
+  | cons q qs ih =>
+    rw [List.map_cons, List.foldr_cons, VVecEA2.conjFull_iff, ih,
+        List.forall_mem_cons]
+    refine and_congr ?_ Iff.rfl
+    by_cases hb : bit q = true
+    · rw [if_pos hb, hb]
+      constructor
+      · intro hp
+        exact ⟨fun _ => rfl, fun _ => hp⟩
+      · intro hiff
+        exact hiff.mpr rfl
+    · rw [if_neg hb,
+          VVecEA2.negFix_iff M atomMap h_INF h_SUP (D q) z0 z1 h_lt]
+      constructor
+      · intro hneg
+        exact ⟨fun hh => absurd hh hneg, fun hbit => absurd hbit hb⟩
+      · intro hiff hh
+        exact hb (hiff.mp hh)
+
+/-- **The k=1 aggregate population carrier `aggPop1`** (task 350 Phase 16b; plan Design
+    section verbatim): the `conjFull`-fold over ALL `qnf : NormalForm sig 1 3` of the
+    per-qnf dispatcher `CAggOd qnf` (bit-true) / its De Morgan negation
+    `(CAggOd qnf).negFix` (bit-false), read off `sub_nf.2`. -/
+noncomputable def aggPop1 (sub_nf : NormalForm sig 2 2) : VVecEA2 :=
+  ((Finset.univ : Finset (NormalForm sig 1 3)).toList.map fun qnf =>
+      if sub_nf.2 qnf then CAggOd atomMap h_surj qnf
+      else (CAggOd atomMap h_surj qnf).negFix).foldr
+    VVecEA2.conjFull VVecEA2.trivialTrue
+
+/-- **Correctness of `aggPop1`** (plan Design section verbatim): under the ambient
+    `x < t` and the Prior hypotheses, the fold's 2-pin semantics at `(x, t)` is
+    exactly the k=1 population MATCH — for EVERY `qnf : NormalForm sig 1 3`, the
+    population existential `∃ w, nf_eval_nf M 1 3 [w, x, t] qnf` holds iff
+    `sub_nf.2 qnf = true`. Fold induction (`aggOdPopFold_iff`) with
+    `h_INF := prior_hasAttainedINF … h_UZ`, `h_SUP := prior_hasAttainedSUP … h_SZ`;
+    per-qnf clause discharged by the Phase-16a master `CAggOd_clause_iff`. -/
+theorem aggPop1_correct (M : OrderedMonadicStructure sig)
+    (sub_nf : NormalForm sig 2 2)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier) (h_lt : x < t) :
+    (aggPop1 atomMap h_surj sub_nf).holds M atomMap x t ↔
+      ∀ qnf : NormalForm sig 1 3,
+        ((∃ w : M.carrier,
+            nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf) ↔
+          sub_nf.2 qnf = true) := by
+  unfold aggPop1
+  rw [aggOdPopFold_iff atomMap M
+      (prior_hasAttainedINF M atomMap h_UZ) (prior_hasAttainedSUP M atomMap h_SZ)
+      (CAggOd atomMap h_surj) sub_nf.2 x t h_lt]
+  constructor
+  · intro h qnf
+    exact (CAggOd_clause_iff atomMap h_surj M qnf h_UZ h_SZ x t h_lt).symm.trans
+      (h qnf (Finset.mem_toList.mpr (Finset.mem_univ qnf)))
+  · intro h qnf _
+    exact (CAggOd_clause_iff atomMap h_surj M qnf h_UZ h_SZ x t h_lt).trans (h qnf)
+
 end AggregateOffDiag
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

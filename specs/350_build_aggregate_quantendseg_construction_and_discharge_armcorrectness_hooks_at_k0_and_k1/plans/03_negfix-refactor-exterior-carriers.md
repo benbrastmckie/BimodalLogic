@@ -854,7 +854,7 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 16b: (F) aggPop1 + kampArm_past_k1 / kampArm_future_k1 + shape certs [NOT STARTED]
+### Phase 16b: (F) aggPop1 + kampArm_past_k1 / kampArm_future_k1 + shape certs [IN PROGRESS]
 
 - **Goal:** The final two DoD lemmas, assembled exactly like delivered Phase 3.
 - **Rabinovich anchor:** Lemma 3.4 closure under ∧/∃ (chunk_0010).
