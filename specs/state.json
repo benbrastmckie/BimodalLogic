@@ -1450,6 +1450,11 @@
           "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/plans/02_offdiag-k1-aggregate-discharge.md",
           "type": "plan",
           "summary": "Plan v2: 17 phases — delivered scope [COMPLETED], off-diag k=1 primitives (conjFull, gated negation closure, zone carriers) per report 02"
+        },
+        {
+          "type": "plan",
+          "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/plans/03_negfix-refactor-exterior-carriers.md",
+          "summary": "Plan v3: negFix file-refactor (EANegationFix/ DAG) + Rabinovich §7-anchored exterior carriers E1-E6, H8 re-division"
         }
       ],
       "session_id": "sess_1783979891_6ad95e_350",
