@@ -24,33 +24,31 @@ def testFrame : TaskFrame Int := TaskFrame.trivial_frame
 
 -- Helper: simple model where "p" is true, "q" is false
 def testModel : TaskModel testFrame where
-  valuation := fun _ p => p = "p"
+  valuation := fun _ p => p.base = "p"
 
 -- Helper: trivial world history (universal domain)
 def testHistory : WorldHistory testFrame := WorldHistory.trivial
 
 -- Test: Bot is false (using trivial history's domain proof)
-example : ¬(truth_at testModel testHistory (0 : Int) trivial Formula.bot) := by
-  exact Truth.bot_false
+example : ¬(truth_at testModel Set.univ testHistory (0 : Int) Formula.bot) := by
+  exact Truth.bot_false Set.univ
 
 -- Test: Atom truth depends on valuation (p is true)
-example : (truth_at testModel testHistory (0 : Int) trivial (Formula.atom_s "p")) := by
-  unfold truth_at testModel testHistory WorldHistory.trivial
-  simp
+example : (truth_at testModel Set.univ testHistory (0 : Int) (Formula.atom_s "p")) := by
+  simp [truth_at, testModel, testHistory, WorldHistory.trivial, Formula.atom_s, Atom.mk_base]
 
 -- Test: Atom truth depends on valuation (q is false)
-example : ¬(truth_at testModel testHistory (0 : Int) trivial (Formula.atom_s "q")) := by
-  unfold truth_at testModel testHistory WorldHistory.trivial
-  simp
+example : ¬(truth_at testModel Set.univ testHistory (0 : Int) (Formula.atom_s "q")) := by
+  simp [truth_at, testModel, testHistory, WorldHistory.trivial, Formula.atom_s, Atom.mk_base]
 
 -- Test: Implication basic behavior
 -- p → p is true
-example : (truth_at testModel testHistory (0 : Int) trivial ((Formula.atom_s "p").imp (Formula.atom_s "p"))) := by
+example : (truth_at testModel Set.univ testHistory (0 : Int) ((Formula.atom_s "p").imp (Formula.atom_s "p"))) := by
   intro h
   exact h
 
 -- Test: Truth of negation (¬⊥ = ⊤)
-example : (truth_at testModel testHistory (0 : Int) trivial Formula.bot.neg) := by
+example : (truth_at testModel Set.univ testHistory (0 : Int) Formula.bot.neg) := by
   unfold Formula.neg truth_at
   intro h
   exact h
@@ -59,8 +57,7 @@ example : (truth_at testModel testHistory (0 : Int) trivial Formula.bot.neg) := 
 
 -- Test: truth_at works with explicit Int type
 theorem truth_at_int_example :
-    truth_at testModel testHistory (0 : Int) trivial (Formula.atom_s "p") := by
-  unfold truth_at testModel testHistory WorldHistory.trivial
-  simp
+    truth_at testModel Set.univ testHistory (0 : Int) (Formula.atom_s "p") := by
+  simp [truth_at, testModel, testHistory, WorldHistory.trivial, Formula.atom_s, Atom.mk_base]
 
 end BimodalTest.Semantics

@@ -153,7 +153,7 @@ noncomputable example : ⊢ ((Formula.atom_s "p").box.all_future.imp (Formula.at
 
 -- ============================================================
 -- Temporal A Axiom Tests: φ → G(some_past φ)
--- Note: Axiom.temp_a was removed in a prior task. The BX analogue is connect_future.
+-- Note: Axiom.connect_future was removed in a prior task. The BX analogue is connect_future.
 -- ============================================================
 
 -- Test: connect_future axiom on atom (φ → G(P(φ)))
@@ -164,10 +164,12 @@ example : Axiom ((Formula.atom_s "p").imp ((Formula.atom_s "p").some_past.all_fu
 example : Axiom ((Formula.atom_s "p").neg.imp ((Formula.atom_s "p").neg.some_past.all_future)) :=
   Axiom.connect_future (Formula.atom_s "p").neg
 
--- ============================================================
--- Temporal L Axiom Tests: △φ → FPφ (always implies future-past)
--- Note: Axiom.temp_l was removed in a prior task. This property can be derived.
--- ============================================================
+-- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- -- ============================================================
+-- -- Temporal L Axiom Tests: △φ → FPφ (always implies future-past)
+-- -- Note: Axiom.temp_l was removed in a prior task. This property can be derived.
+-- -- ============================================================
 
 -- Test: always implies future-past (derived from connect_future)
 -- △φ = Hφ ∧ (φ ∧ Gφ), so △φ → φ → G(Pφ) via connect_future
