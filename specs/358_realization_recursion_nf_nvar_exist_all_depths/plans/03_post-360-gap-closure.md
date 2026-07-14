@@ -536,12 +536,66 @@ recipe is identical (assemble + the three k=1 arm facts).
 - **Done when:** four general-m supply theorems green, matching the Phase-5 obligation
   hypothesis shapes for rows 8-11; m=0 layer unregressed; no sorry.
 
-### Phase 8: G1 — interior `hreal`/`hexcl` supply at general depth (rows 5-6) [NOT STARTED]
+### Phase 8: G1 — interior `hreal`/`hexcl` supply at general depth (rows 5-6) [BLOCKED]
+
+**VERDICT (2026-07-13, sess_1783988294_843145): NO-GO — G1 SHARES the Phase-6 root cause.**
+Machine-checked by the cheap independence probe mandated at dispatch (two public theorems
+appended to `ExteriorPinnedProbeM1K.lean`, purely additive, full-tree green, axioms exactly
+`[propext, Classical.choice, Quot.sound]`, no sorryAx):
+
+- **`kvE_probeM1_interiorHreal_NOGO`**: at ambient depth 3 (`k = 1` in the rungK binders)
+  the fake ambient `qnfG1 := m1qnf ⊕ (τ ⊕ s*)` (the Phase-6 doppelgänger cast, one level up)
+  has (1) the SAME atom row as the honest ambient characteristic, (2) **IDENTICAL
+  `igFoldBit` fold bits** (`igFoldBit qnfG1 = igFoldBit m1qnf`), (3) marks the fiber
+  `σ = τ ⊕ s*` which the honest ambient does NOT mark, and (4) `σ` has NO pinned realization
+  `nf_eval_nf M1M 2 4 [x1, 15, 2, 18] σ` at ANY `x1` (it marks `s*`, killed by
+  `m1_sstar_not_pinned` at every fresh witness).
+- **`kvE_probeM1_interiorGuard_identical`**: for EVERY rendering pair (`charBase`, `charK`)
+  — i.e. every provider-generated `charF (k+1) = P.existF 0` the recursion site could ever
+  instantiate — the rows-5-6 `igPtW` guard of the fake ambient is the SAME temporal
+  predicate as the honest ambient's.
+
+**Mechanism**: the rows-5-6 binders (KampPrior:835-846) read the qnf ONLY through `qnf.1`
+and `igFoldBit qnf`, and `igFoldBit` (InteriorGateGeneralK:318) sees each marked depth-(k+1)
+arity-4 fiber only through its `(zone, nfk_projFresh)` arity-1 projection — the documented
+F1 information-loss channel. The fake fiber is projection-invisible:
+`nfk_projFresh (τ ⊕ s*) = nfk_projFresh τ` because `s*`'s arity-2 prefix take equals the
+honest inner element's (`m1_take2_eq` — the doppelgänger difference lives entirely in the
+discarded tail slots; deviation D7 again). Hence any `kampPrior_hreal_supply` covering the
+qnf population would have to hold at `qnfG1`, whose hypothesis side is indistinguishable
+from the honest `m1qnf` (satisfiable whenever the honest guard is — which any non-vacuous
+use of the gate route requires), while the row-5 conclusion fails at `σ = τ ⊕ s*`. At `k = 0`
+(fibers depth 0) the C8(c) atom-type upgrade still pins — the m=0/rung0/rung1 layers are
+untouched and unrefuted.
+
+**BLOCKER** (Phase 8):
+- **What failed**: the rows 5-6 supply shapes (`hreal`/`hexcl`, KampPrior:835-846) are FALSE
+  at fiber depth ≥ 1 on the current interface — machine countermodel
+  `kvE_probeM1_interiorHreal_NOGO` + `kvE_probeM1_interiorGuard_identical`
+  (ExteriorPinnedProbeM1K.lean, this session).
+- **What was tried**: the mandated cheap independence probe (dispatch protocol) BEFORE any
+  build-out; the countermodel reuses the Phase-6 cast one level up — no G1 build-out was
+  attempted (correctly, per anti-churn instruction).
+- **Why stuck**: the SAME root cause as Phase 6/7 — depth-≥1 fiber marking is not pinned by
+  free-env/projected rendering (D7). For G1 the information loss is in the `igFoldBit`
+  arity-1 projection channel (F1) rather than the slice-equality keying, but the repair
+  class is identical: the interface must carry MORE than projection/free-env-rendered
+  content (anchored/pinned item rendering or a depth-graded fiber guard).
+- **What is needed**: the slice-kernel/interface restatement spawn recommended by Phase 6
+  MUST COVER the interior rows 5-6 as well as the exterior rows 8-11 — restate the rungK
+  obligation binders (and `igFoldBit`'s consumer seam) so fiber marking at depth ≥ 1 is
+  rendered pinned, then re-probe both legs.
+- **Prohibited**: no sorry (none introduced — the file sorries remain exactly the inherited
+  :361/:364), no vacuous def, no forcing the supply against the countermodel.
 - **Goal:** The dominant new mathematics — depth-graded supply theorems
   `kampPrior_hreal_supply` / `kampPrior_hexcl_supply` for the rungK interior obligations
   (binders KampPrior:835-846), consuming the recursion's IH providers. This also supplies the
   Phase-2 drivers' remaining `hreal`/`hsat` transfer inputs (:1546-1554/:1605-1613).
 - **Tasks:**
+  - [x] Independence probe (dispatch-mandated, precedes all build tasks): does the Phase-6
+        root cause defeat G1? *(deviation: added — YES, shared root cause; see VERDICT; the
+        four build tasks below are BLOCKED on the interface restatement and were correctly
+        NOT attempted)*
   - [ ] Split the `w` population (report 04 G1): ⇒-direction ws (ambient
         `nf_eval_nf M (k+2) 3 [w,x,t] qnf` in scope) — the ∀σ agreement is DEFINITIONAL;
         discharge outright.

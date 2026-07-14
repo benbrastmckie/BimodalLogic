@@ -695,4 +695,213 @@ theorem kvE_probeM1_sliceId_NOGO :
   ⟨m1_sigma_adm, m1_sigma_dropFresh, m1_ambient, m1_hendSelfS,
    m1_hendRayCover, m1_hendRayOcc, m1_hgapS, m1_hoccS, m1_no_marked_mate⟩
 
+/-! ## Task 358 Phase 8 probe — G1 shared-root-cause check (interior `hreal`, rows 5-6)
+
+Machine-adjudicates whether the Phase-6 NO-GO root cause (depth-1 fiber marking not pinned by
+free-env rendering) ALSO defeats the G1 interior supply (`kampPrior_hreal_supply`, ledger rows
+5-6) at general depth, or whether G1 is independent.
+
+**Mechanism probed**: the rows 5-6 binders (KampPrior.lean:835-846) guard by
+`igPtW … qnf.1 (igFoldBit qnf)` — and `igFoldBit` (InteriorGateGeneralK.lean:318) reads each
+marked depth-`(k+1)` arity-4 fiber ONLY through the pair
+`(nf0_zoneSpec ∘ atom_assgn, nfk_projFresh)` — the arity-1 projection (the documented F1
+information-loss channel). So a fake fiber that is **projection-invisible** (same zone, same
+arity-1 projection as an honestly marked fiber) produces a qnf whose ENTIRE rows-5-6
+hypothesis side is literally identical to the honest one, for EVERY rendering
+`charBase`/`charK` — while the `hreal` conclusion (pinned realization `∃ x1,
+nf_eval … [x1,w,x,t] σ`) fails.
+
+**The countermodel is the SAME Phase-6 cast**: `σ := τ ⊕ s*` (the doppelgänger-tail fake) is
+projection-invisible one level up — `nfk_projFresh m1sigma = nfk_projFresh m1tau` because
+`s*`'s arity-2 prefix take equals that of the HONEST inner element
+`s° := nf_characteristic M1M 1 5 [22, 25, 15, 2, 18]` (both are the depth-1 2-type of the
+prefix `[22, 25]`; the tails differ only at slots the take discards), and `τ` marks `s°`.
+Hence `qnfG1 := m1qnf ⊕ m1sigma` has `igFoldBit qnfG1 = igFoldBit m1qnf` — guard-identical to
+the honest ambient — yet `qnfG1.2 m1sigma = true` and `m1sigma` has NO pinned realization
+over `[·, 15, 2, 18]` (it marks `s*`, which `m1_sstar_not_pinned` kills at every anchor).
+
+## VERDICT: **NO-GO — G1 SHARES the Phase-6 root cause**
+
+Rows 5-6 as shaped cannot be supplied at fiber depth ≥ 1: any `kampPrior_hreal_supply`
+covering the qnf population would have to hold at `qnfG1`, whose hypothesis side is
+indistinguishable from the honest `m1qnf` (satisfiable whenever the honest guard is — and the
+honest guard MUST be satisfiable for the gate route to be non-vacuous), while the conclusion
+fails at `σ = m1sigma`. The interface-restatement spawn recommended by Phase 6 (anchored/pinned
+item rendering or a depth-graded fiber guard) must therefore cover the interior rows 5-6 as
+well, not only rows 8-11. -/
+
+/-- The honest inner 5-tuple over the PINNED tail: `[22, 25, 15, 2, 18]` (walk point `22`
+    over the honest 4-anchors — contrast `m1tupF`, which carries the doppelgänger tail). -/
+private def m1tupH : Fin 5 → M1M.carrier := Fin.cons 22 m1env4
+
+/-- The HONEST inner element `s°`: the depth-1 5-type of `22` over the pinned tail. -/
+private noncomputable def m1shonest : NormalForm m1sig 1 5 :=
+  nf_characteristic M1M 1 5 m1tupH
+
+/-- `τ` marks the honest inner element (realized at fresh witness `22`). -/
+private theorem m1_shonest_marked : m1tau.2 m1shonest = true :=
+  @decide_eq_true (∃ x : ℤ, nf_eval_nf M1M 1 5 (Fin.cons x m1env4) m1shonest)
+    (Classical.dec _) ⟨22, nf_characteristic_satisfies M1M 1 5 m1tupH⟩
+
+/-- **Projection-invisibility, inner layer**: the arity-2 prefix takes of the fake `s*` and
+    the honest `s°` COINCIDE — both are realized at the same prefix `[22, 25]` (of the
+    doppelgänger and honest 5-tuples respectively), so `nf_eval_unique` identifies the takes.
+    The doppelgänger difference (t-slot `21` vs `18`) lives entirely in the discarded
+    suffix. -/
+private theorem m1_take2_eq :
+    nfk_take (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3))) m1sstar =
+      nfk_take (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3))) m1shonest := by
+  have h1 := nf_eval_take M1M (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3)))
+    m1tupF m1sstar m1_sstar_freeEnv
+  have h2 := nf_eval_take M1M (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3)))
+    m1tupH m1shonest (nf_characteristic_satisfies M1M 1 5 m1tupH)
+  have henv : (fun i : Fin 2 =>
+        m1tupF (Fin.castLE (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3))) i)) =
+      (fun i : Fin 2 =>
+        m1tupH (Fin.castLE (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3))) i)) := by
+    funext i
+    fin_cases i <;>
+      simp [m1tupF, m1tupH, m1envF, m1env4, m1env3, Fin.castLE]
+  rw [henv] at h1
+  exact nf_eval_unique M1M 1 2 _ _ _ h1 h2
+
+/-- The take-existential of the fake slice agrees with the honest one at every projected
+    type: `s*`'s contribution is covered by the honest marked element `s°`
+    (`m1_take2_eq`). -/
+private theorem m1_take_exists_iff (χ' : NormalForm m1sig 1 2) :
+    (∃ sub' : NormalForm m1sig 1 5, m1sigma.2 sub' = true ∧
+      nfk_take (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3))) sub' = χ') ↔
+    (∃ sub' : NormalForm m1sig 1 5, m1tau.2 sub' = true ∧
+      nfk_take (Nat.succ_le_succ (Nat.succ_le_succ (Nat.zero_le 3))) sub' = χ') := by
+  constructor
+  · rintro ⟨sub', hbit, htake⟩
+    by_cases hss : sub' = m1sstar
+    · subst hss
+      refine ⟨m1shonest, m1_shonest_marked, ?_⟩
+      rw [← m1_take2_eq]
+      exact htake
+    · refine ⟨sub', ?_, htake⟩
+      have hb : m1sigma.2 sub' = m1tau.2 sub' := by
+        show (if sub' = m1sstar then true else m1tau.2 sub') = m1tau.2 sub'
+        rw [if_neg hss]
+      rwa [hb] at hbit
+  · rintro ⟨sub', hbit, htake⟩
+    refine ⟨sub', ?_, htake⟩
+    show (if sub' = m1sstar then true else m1tau.2 sub') = true
+    by_cases hss : sub' = m1sstar
+    · rw [if_pos hss]
+    · rw [if_neg hss]; exact hbit
+
+set_option maxRecDepth 8000 in
+/-- **Projection-invisibility, fiber layer**: the fake slice `σ = τ ⊕ s*` and the honest
+    endpoint characteristic `τ` have the SAME arity-1 fresh projection — `s*`'s contribution
+    to the take-existential is covered by the honest marked element `s°`. -/
+private theorem m1_projFresh_eq : nfk_projFresh m1sigma = nfk_projFresh m1tau := by
+  unfold nfk_projFresh nfk_take
+  refine Prod.ext rfl (funext fun χ' => ?_)
+  rw [decide_eq_decide]
+  exact m1_take_exists_iff χ'
+
+/-- The honest ambient marks `τ` (realized at the fresh anchor `25`). -/
+private theorem m1_tau_marked : m1qnf.2 m1tau = true :=
+  @decide_eq_true (∃ x : ℤ, nf_eval_nf M1M 2 4 (Fin.cons x m1env3) m1tau)
+    (Classical.dec _) ⟨25, nf_characteristic_satisfies M1M 2 4 m1env4⟩
+
+/-- **The fake ambient** `qnfG1 := m1qnf ⊕ m1sigma`: the honest depth-3 3-type with the fake
+    slice `σ = τ ⊕ s*` additionally marked — the rows-5-6 analogue of the Phase-6 `σ = τ ⊕
+    s*` move, one level up. -/
+private noncomputable def m1qnfG1 : NormalForm m1sig 3 3 :=
+  (m1qnf.1, fun s => if s = m1sigma then true else m1qnf.2 s)
+
+/-- **Fold-bit invisibility**: the fake ambient's fold bits are IDENTICAL to the honest
+    ambient's — `m1sigma`'s `(zone, projection)` pair is already contributed by the honestly
+    marked `τ` (same atom row, same fresh projection by `m1_projFresh_eq`). Every quantity the
+    rows-5-6 interface reads off the qnf (`qnf.1` and `igFoldBit qnf`) therefore agrees
+    between fake and honest. -/
+private theorem m1_qnfG1_foldBit_eq : igFoldBit m1qnfG1 = igFoldBit m1qnf := by
+  funext zs χ
+  unfold igFoldBit
+  refine decide_eq_decide.mpr ?_
+  constructor
+  · rintro ⟨sub, hbit, hzone, hproj⟩
+    by_cases hs : sub = m1sigma
+    · subst hs
+      refine ⟨m1tau, m1_tau_marked, hzone, ?_⟩
+      rw [← m1_projFresh_eq]
+      exact hproj
+    · refine ⟨sub, ?_, hzone, hproj⟩
+      have hb : m1qnfG1.2 sub = m1qnf.2 sub := by
+        show (if sub = m1sigma then true else m1qnf.2 sub) = m1qnf.2 sub
+        rw [if_neg hs]
+      rwa [hb] at hbit
+  · rintro ⟨sub, hbit, hzone, hproj⟩
+    refine ⟨sub, ?_, hzone, hproj⟩
+    show (if sub = m1sigma then true else m1qnf.2 sub) = true
+    by_cases hs : sub = m1sigma
+    · rw [if_pos hs]
+    · rw [if_neg hs]; exact hbit
+
+/-- **The `hreal` conclusion fails**: the fake slice `σ = τ ⊕ s*` has NO pinned realization
+    over the ambient tail `[·, 15, 2, 18]` at ANY anchor `x1` — it marks `s*`, which
+    `m1_sstar_not_pinned` refutes at every fresh witness. This is exactly the conclusion
+    shape of ledger row 5 (`hreal`, KampPrior.lean:835-840) at `k = 1`. -/
+private theorem m1_sigma_not_pinned4 (x1 : ℤ) :
+    ¬ nf_eval_nf M1M 2 4 (Fin.cons x1 m1env3) m1sigma := by
+  intro h
+  obtain ⟨v, hv⟩ := (h.2 m1sstar).mpr m1_sigma_marks_sstar
+  exact m1_sstar_not_pinned v x1 hv
+
+/-- The honest ambient does NOT mark the fake slice (otherwise `m1_ambient` would give it a
+    pinned realization, contradicting `m1_sigma_not_pinned4`) — so `qnfG1 ≠ m1qnf`: the fake
+    is a genuinely different qnf that the interface cannot separate from the honest one. -/
+private theorem m1_qnf_sigma_false : m1qnf.2 m1sigma = false := by
+  cases hb : m1qnf.2 m1sigma with
+  | false => rfl
+  | true =>
+    obtain ⟨x1, hx1⟩ := (m1_ambient.2 m1sigma).mpr hb
+    exact absurd hx1 (m1_sigma_not_pinned4 x1)
+
+/-! ## The assembled G1 NO-GO verdict -/
+
+/-- **G1 probe verdict — NO-GO, shared root cause** (task 358 Phase 8): at ambient depth 3
+    (`k = 1` in the rungK binders) there is a qnf — `qnfG1 = m1qnf ⊕ (τ ⊕ s*)` — that
+
+    1. has the SAME atom row as the honest ambient characteristic (`rfl`),
+    2. has IDENTICAL `igFoldBit` fold bits (so `igPtW`, `igGate`, `igSL`/`igSR`, and every
+       other quantity the rows-5-6 hypothesis side reads off the qnf agree with the honest
+       ambient's, for EVERY rendering `charBase`/`charK` — see
+       `kvE_probeM1_interiorGuard_identical`),
+    3. marks the fiber `σ = τ ⊕ s*` which the honest ambient does NOT mark, and
+    4. `σ` has NO pinned realization `nf_eval_nf M1M 2 4 [x1, 15, 2, 18] σ` at ANY `x1`.
+
+    Consequence: the row-5 `hreal` supply shape (KampPrior.lean:835-840) is FALSE at `qnfG1`
+    whenever its `igPtW` guard is satisfiable — and the guard is satisfiable iff the honest
+    ambient's guard is (they are equal), which any non-vacuous use of the gate route
+    requires. The depth-1 fiber marking layer defeats the interior rows 5-6 exactly as it
+    defeats the exterior rows 8-11 (`kvE_probeM1_sliceId_NOGO`): free-env/projected rendering
+    cannot pin it (deviation D7). The slice-kernel/interface restatement spawn must cover G1
+    too. -/
+theorem kvE_probeM1_interiorHreal_NOGO :
+    m1qnfG1.1 = m1qnf.1 ∧
+    igFoldBit m1qnfG1 = igFoldBit m1qnf ∧
+    m1qnfG1.2 m1sigma = true ∧
+    m1qnf.2 m1sigma = false ∧
+    ∀ x1 : M1M.carrier, ¬ nf_eval_nf M1M 2 4 (Fin.cons x1 m1env3) m1sigma :=
+  ⟨rfl, m1_qnfG1_foldBit_eq,
+   by show (if m1sigma = m1sigma then true else m1qnf.2 m1sigma) = true; rw [if_pos rfl],
+   m1_qnf_sigma_false, m1_sigma_not_pinned4⟩
+
+/-- **Guard identity**: for EVERY rendering pair (`charBase`, `charK`) — in particular for
+    every provider-generated `charF (k+1) = P.existF 0` the recursion site could ever
+    instantiate — the rows-5-6 `igPtW` guard of the fake ambient is the SAME temporal
+    predicate as the honest ambient's. No rendering can separate them; the interface itself
+    is information-losing (the F1 arity-1 projection channel). -/
+theorem kvE_probeM1_interiorGuard_identical
+    (charBase : NormalForm m1sig 0 1 → Formula)
+    (charK : NormalForm m1sig 2 1 → Formula) :
+    igPtW charBase charK m1qnfG1.1 (igFoldBit m1qnfG1) =
+      igPtW charBase charK m1qnf.1 (igFoldBit m1qnf) := by
+  rw [m1_qnfG1_foldBit_eq]
+  rfl
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
