@@ -654,4 +654,161 @@ theorem kvE_probe368_cmB_ambient_rejected : kvE_ambientDeepAnchorV0 qnfB = false
       simp only [Fin.cons_succ, Fin.cons_zero, mBsubgTup] at h1
       exact absurd h1 (by omega)
 
+/-! ## Phase 3: honest-preservation crux + readback (probe-only, general model)
+
+The anti-vacuity guarantee. `kvE_ambientDeepAnchorV0_of_realized` proves — at a GENERAL
+`OrderedMonadicStructure` and general env, one layer up from `kvE_deepOnFiber_of_realized` —
+that an honestly REALIZED ambient passes the guard. Without it, task 358's re-keyed supply has
+no discharge route and the restated rows-5/6/10-13 would be vacuously unservable.
+
+### `_of_realized` witness pattern (both plan clauses, one closure)
+
+`qnf` realized at `env`. For a marked sub `τ` (`qnf.2 τ = true`), realization supplies a fresh
+point `x1` with `τ` realized at `env₁ := cons x1 env`; for a marked deep element `ρ` of `τ`
+(`τ.2 ρ = true`), a fresh `x2` with `ρ` realized at `env₂ := cons x2 env₁`. By
+`nf_eval_unique`, `ρ = char env₂`, so under the top-two-slot swap
+`swapNF01 ρ = char (env₂ ∘ swap01) = char (cons x1 (cons x2 env))` (`swapNF01_char` +
+`cons2_comp_swap01`). The **fresh-rotation mate supplied by realization** is
+`σ' := char (cons x2 env)`: it is `qnf`-marked (realized at the fresh point `x2` over `env` —
+clause (i), the characteristic of the witness point) and its deep marking covers `swapNF01 ρ`
+(realized at `cons x1 (cons x2 env)`, a fresh extension of `σ'`'s env at `x1` — clause (ii),
+anchoring from the depth-0 factorization implicit in `char`/`nf_eval_unique`). Fully general:
+no countermodel obstructs, so the candidate is HONEST-PRESERVING.
+
+### Readback discipline
+
+`kvE_ambientDeepAnchorV0_iff` is the ONLY sanctioned mate/witness-extraction direction
+(mirroring `kvE_deepOnFiber_iff`). Every downstream consumer — and gate 3b's supply-route
+certificate — routes trueness through `_of_realized` and extraction through `_iff`, never
+through unfolding the guard. -/
+
+/-- The top-two-slot swap of a doubly-`cons`'d environment swaps the two fresh points. The
+    general (arity-`n + 2`) env identity `swapNF01_char` composes with in `_of_realized` — no
+    concrete `fin_cases` (the Phase-2 gates could `fin_cases` at `Fin 5`; here `n` is
+    arbitrary). -/
+private theorem cons2_comp_swap01 {α : Type*} {n : Nat} (a b : α) (g : Fin n → α) :
+    (Fin.cons a (Fin.cons b g)) ∘ ⇑(Equiv.swap (0 : Fin (n + 2)) 1)
+      = Fin.cons b (Fin.cons a g) := by
+  funext i
+  simp only [Function.comp_apply]
+  refine Fin.cases ?_ (fun j => ?_) i
+  · rw [Equiv.swap_apply_left, Fin.cons_one, Fin.cons_zero, Fin.cons_zero]
+  · refine Fin.cases ?_ (fun j' => ?_) j
+    · rw [Fin.succ_zero_eq_one', Equiv.swap_apply_right, Fin.cons_zero, Fin.cons_one,
+        Fin.cons_zero]
+    · have hne0 : Fin.succ (Fin.succ j') ≠ (0 : Fin (n + 2)) := Fin.succ_ne_zero _
+      have hne1 : Fin.succ (Fin.succ j') ≠ (1 : Fin (n + 2)) := by
+        rw [← Fin.succ_zero_eq_one']
+        exact fun h => Fin.succ_ne_zero j' (Fin.succ_injective _ h)
+      rw [Equiv.swap_apply_of_ne_of_ne hne0 hne1, Fin.cons_succ, Fin.cons_succ,
+        Fin.cons_succ, Fin.cons_succ]
+
+/-- **Readback for the deep arm** (`k ≥ 1`, ambient depth `k + 3`). Unpack/repack the
+    fresh-rotation EF-closure into the ∀-marked-sub / ∀-marked-deep / ∃-marked-mate proposition
+    every consumer routes through. The ambient-guard analog of `kvE_deepOnFiber_iff` — the guard
+    is never unfolded outside this readback. -/
+theorem kvE_ambientDeepAnchorV0_iff {sig : MonadicSignature} {k n : Nat}
+    (qnf : NormalForm sig (k + 3) n) :
+    kvE_ambientDeepAnchorV0 qnf = true ↔
+      ∀ τ : NormalForm sig (k + 2) (n + 1), qnf.2 τ = true →
+        ∀ ρ : NormalForm sig (k + 1) (n + 2), τ.2 ρ = true →
+          ∃ σ' : NormalForm sig (k + 2) (n + 1),
+            qnf.2 σ' = true ∧ σ'.2 (swapNF01 ρ) = true := by
+  show ((Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).all (fun τ =>
+      !qnf.2 τ ||
+      (Finset.univ.toList (α := NormalForm sig (k + 1) (n + 2))).all (fun ρ =>
+        !τ.2 ρ ||
+        (Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).any (fun σ' =>
+          qnf.2 σ' && σ'.2 (swapNF01 ρ))))) = true ↔ _
+  rw [List.all_eq_true]
+  constructor
+  · intro h τ hτ ρ hρ
+    have hτ' := h τ (kvE_nf_mem_univ_toList _)
+    rw [hτ, Bool.not_true, Bool.false_or, List.all_eq_true] at hτ'
+    have hρ' := hτ' ρ (kvE_nf_mem_univ_toList _)
+    rw [hρ, Bool.not_true, Bool.false_or, List.any_eq_true] at hρ'
+    obtain ⟨σ', -, hσ'⟩ := hρ'
+    rw [Bool.and_eq_true] at hσ'
+    exact ⟨σ', hσ'.1, hσ'.2⟩
+  · intro h τ _
+    cases hτ : qnf.2 τ with
+    | false => rfl
+    | true =>
+      rw [Bool.not_true, Bool.false_or, List.all_eq_true]
+      intro ρ _
+      cases hρ : τ.2 ρ with
+      | false => rfl
+      | true =>
+        rw [Bool.not_true, Bool.false_or, List.any_eq_true]
+        obtain ⟨σ', hmk, hcov⟩ := h τ hτ ρ hρ
+        exact ⟨σ', kvE_nf_mem_univ_toList _, by rw [Bool.and_eq_true]; exact ⟨hmk, hcov⟩⟩
+
+/-- **Honest preservation — the load-bearing crux** (the `kvE_deepOnFiber_of_realized` template
+    one layer up). If `qnf` is realized at `env` (a GENERAL `OrderedMonadicStructure`), then it
+    passes the guard. `k = 0` (m = 0 binder): inert (`rfl`). `k + 1` (m ≥ 1): the ∀τ∀ρ∃σ'
+    closure is satisfied — realization supplies the fresh-rotation mate `σ' := char (cons x2 env)`
+    (marked at the witness point `x2`; its deep content covers `swapNF01 ρ = char (cons x1 (cons
+    x2 env))` at the fresh point `x1`). Fully general — no countermodel obstructs. This is the
+    discharge route the re-keyed task-358 supply uses: `_of_realized` alone, `_iff` for
+    extraction, ZERO guard unfoldings. -/
+theorem kvE_ambientDeepAnchorV0_of_realized {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) :
+    ∀ {k n : Nat} (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 2) n),
+      nf_eval_nf M (k + 2) n env qnf →
+      kvE_ambientDeepAnchorV0 qnf = true := by
+  intro k
+  match k with
+  | 0 =>
+    intro n env qnf _
+    rfl
+  | k + 1 =>
+    intro n env qnf hqnf
+    rw [kvE_ambientDeepAnchorV0_iff]
+    intro τ hτmark ρ hρmark
+    obtain ⟨x1, hx1⟩ := (hqnf.2 τ).mpr hτmark
+    obtain ⟨x2, hx2⟩ := (hx1.2 ρ).mpr hρmark
+    refine ⟨nf_characteristic M (k + 2) (n + 1) (Fin.cons x2 env), ?_, ?_⟩
+    · exact (hqnf.2 _).mp
+        ⟨x2, nf_characteristic_satisfies M (k + 2) (n + 1) (Fin.cons x2 env)⟩
+    · have hσ'real : nf_eval_nf M (k + 2) (n + 1) (Fin.cons x2 env)
+          (nf_characteristic M (k + 2) (n + 1) (Fin.cons x2 env)) :=
+        nf_characteristic_satisfies M (k + 2) (n + 1) (Fin.cons x2 env)
+      refine (hσ'real.2 (swapNF01 ρ)).mp ⟨x1, ?_⟩
+      have hρeq : ρ = nf_characteristic M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) :=
+        nf_eval_unique M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)) _ _ hx2
+          (nf_characteristic_satisfies M (k + 1) (n + 2) (Fin.cons x2 (Fin.cons x1 env)))
+      rw [hρeq, swapNF01_char M, cons2_comp_swap01]
+      exact nf_characteristic_satisfies M (k + 1) (n + 2) (Fin.cons x1 (Fin.cons x2 env))
+
+/-! ### Gate 3a — honest cast preservation (REAL ambient passes, derived FROM `_of_realized`) -/
+
+/-- **Gate 3a — the REAL ambient is anchored**: `kvE_ambientDeepAnchorV0` is `true` at the
+    honest ambient `char[w, x, t] = char[5, 2, 30]` (the `qnf367`-style `nf_characteristic` over
+    the real anchors). Derived FROM `kvE_ambientDeepAnchorV0_of_realized` — NOT by concrete
+    computation — via `nf_characteristic_satisfies`. Certifies the candidate is NOT vacuously
+    false (it accepts honest ambients), the anti-vacuity guarantee the restated rows need.
+    Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_real_ambient_anchored :
+    kvE_ambientDeepAnchorV0 (nf_characteristic MB 3 3 mBreal3) = true :=
+  kvE_ambientDeepAnchorV0_of_realized MB mBreal3 (nf_characteristic MB 3 3 mBreal3)
+    (nf_characteristic_satisfies MB 3 3 mBreal3)
+
+/-! ### Gate 3b — supply-feasibility shape (the discharge route task 358 will use) -/
+
+/-- **Gate 3b — supply route certificate**: guard-trueness for a realized ambient is
+    dischargeable through `_of_realized` ALONE, and the mate/witness is extractable through
+    `_iff` ALONE — zero guard unfoldings. This is the exact shape task 358's re-keyed supply
+    consumes: a realized ambient marks a fresh-rotation mate for every deep element of every
+    marked sub. Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_ambient_supply_route {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) {k n : Nat}
+    (env : Fin n → M.carrier) (qnf : NormalForm sig (k + 3) n)
+    (hqnf : nf_eval_nf M (k + 3) n env qnf) :
+    ∀ τ : NormalForm sig (k + 2) (n + 1), qnf.2 τ = true →
+      ∀ ρ : NormalForm sig (k + 1) (n + 2), τ.2 ρ = true →
+        ∃ σ' : NormalForm sig (k + 2) (n + 1),
+          qnf.2 σ' = true ∧ σ'.2 (swapNF01 ρ) = true :=
+  (kvE_ambientDeepAnchorV0_iff qnf).mp
+    (kvE_ambientDeepAnchorV0_of_realized M env qnf hqnf)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

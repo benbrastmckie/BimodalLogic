@@ -337,7 +337,7 @@ while remaining m=0-inert.
 
 ---
 
-### Phase 3: Honest-preservation crux + readback at probe level [NOT STARTED]
+### Phase 3: Honest-preservation crux + readback at probe level [COMPLETED]
 
 **Goal**: Prove, at probe level and in full generality (any model, any env), that honestly
 REALIZED ambients pass the guard (`_of_realized`, the anti-vacuity guarantee) and that the
@@ -346,32 +346,49 @@ at a general model, task 358's re-keyed supply has no discharge route and the re
 would be vacuously unservable.
 
 **Tasks**:
-- [ ] Prove `kvE_ambientDeepAnchorV0_of_realized` (the `kvE_deepOnFiber_of_realized:141`
+- [x] Prove `kvE_ambientDeepAnchorV0_of_realized` (the `kvE_deepOnFiber_of_realized:141`
       template one layer up): if `qnf` is realized at `env` (a GENERAL
       `OrderedMonadicStructure`), then `kvE_ambientDeepAnchorV0 qnf = true`. Expected
       witness pattern: for clause (i), the realized ambient's quant layer marks the
       characteristic of every witness point (the fresh-rotation mate is supplied by
       realization); for clause (ii), anchoring follows from the depth-0 factorization
       (`nf_eval_nf0_cons_factor`) + uniqueness (`nf_eval_unique`) exactly as the row conjunct
-      of `kvE_deepOnFiber_of_realized`.
-- [ ] Prove `kvE_ambientDeepAnchorV0_iff` — the unpack/repack readback, the ONLY sanctioned
+      of `kvE_deepOnFiber_of_realized`. *(done: `match` on the grading index — `k = 0` arm
+      `rfl`; `k + 1` arm routes through `_iff`. Realization supplies `x1` (τ realized at
+      `cons x1 env`) and `x2` (ρ realized at `cons x2 (cons x1 env)`); by `nf_eval_unique`
+      ρ = `char (cons x2 (cons x1 env))`, so `swapNF01 ρ = char (cons x1 (cons x2 env))`
+      (`swapNF01_char` + the general env-swap identity `cons2_comp_swap01`); mate
+      `σ' := char (cons x2 env)` is qnf-marked at fresh `x2` (clause i) and covers
+      `swapNF01 ρ` at fresh `x1` (clause ii). Fully general — no `nf_eval_nf0_cons_factor`
+      needed since the `char`/uniqueness route subsumes the depth-0 factorization one layer
+      up. Floor axioms.)*
+- [x] Prove `kvE_ambientDeepAnchorV0_iff` — the unpack/repack readback, the ONLY sanctioned
       mate/witness-extraction direction (mirroring `kvE_deepOnFiber_iff`); every downstream
-      consumer and certificate routes through it, never through unfolding.
-- [ ] **Gate 3a (honest cast preservation)**: sorry-free concrete certificate
+      consumer and certificate routes through it, never through unfolding. *(done: deep-arm
+      `k ≥ 1` readback `all/all/any = true ↔ ∀τ∀ρ∃σ'` closure; sanctioned home-module `show`
+      + `List.all_eq_true`/`List.any_eq_true`. Floor axioms.)*
+- [x] **Gate 3a (honest cast preservation)**: sorry-free concrete certificate
       `kvE_probe368_real_ambient_anchored` — the REAL ambient (`qnf367`-style
       `nf_characteristic` over the real anchors) passes the guard, derived FROM
-      `_of_realized` (not by concrete computation).
-- [ ] **Gate 3b (supply-feasibility shape)**: certify the discharge route task 358's re-keyed
+      `_of_realized` (not by concrete computation). *(done: `kvE_ambientDeepAnchorV0
+      (nf_characteristic MB 3 3 mBreal3) = true` via `_of_realized` +
+      `nf_characteristic_satisfies` — one line, no computation. Floor axioms.)*
+- [x] **Gate 3b (supply-feasibility shape)**: certify the discharge route task 358's re-keyed
       supply will use: guard-trueness for realized ambients dischargeable through
       `_of_realized` alone; witness extraction through `_iff` alone (zero guard unfoldings
-      anywhere in the leaf — source-scan discipline).
-- [ ] **Adjudication checkpoint**: if `_of_realized` is NOT dischargeable for the candidate
-      shape, redesign ONCE (loop Phase 2's gates on the revised candidate). If the revised
-      candidate cannot close gates 2a/2b/2c AND this phase's crux, STOP: mark task
-      `[BLOCKED]`, write the structured escalation (what was tried, exact failing goal
-      states, the defeating countermodel or unprovable obligation), quarantine the leaf as a
-      NO-GO record — no sorry, no vacuous def.
-- [ ] Scoped `lake build`; `lean_verify` gates (floor axioms). Green commit.
+      anywhere in the leaf — source-scan discipline). *(done:
+      `kvE_probe368_ambient_supply_route` = `(_iff qnf).mp (_of_realized M env qnf hqnf)` —
+      trueness from `_of_realized`, extraction from `_iff`, zero unfoldings. Source scan:
+      only the Phase-2 gates 2a/2b use the sanctioned home-module `show … from rfl`; Phase-3
+      additions unfold nothing. Floor axioms.)*
+- [x] **Adjudication checkpoint**: if `_of_realized` is NOT dischargeable for the candidate
+      shape, redesign ONCE (loop Phase 2's gates on the revised candidate). *(NOT triggered:
+      `_of_realized` discharged for the Phase-2 candidate as-is at a general model; zero
+      redesign loops consumed.)*
+- [x] Scoped `lake build`; `lean_verify` gates (floor axioms). Green commit. *(done: scoped
+      build green (1025 jobs); `_of_realized`, `_iff`, gate 3a, gate 3b all verify at
+      `[propext, Classical.choice, Quot.sound]` no sorryAx; sorry/vacuous/guard-unfold scans
+      clean; `git diff --stat -- Theories/` = probe leaf only.)*
 
 **Timing**: 2 hours
 
