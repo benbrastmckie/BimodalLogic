@@ -200,22 +200,29 @@ before the benchmark is touched.
 
 ---
 
-### Phase 3: paraphrase restoration (sub-item 2) [NOT STARTED]
+### Phase 3: paraphrase restoration (sub-item 2) [COMPLETED]
 
 **Goal**: All 777 records have non-null `nl_paraphrase` and `nl_paraphrase_method`, passing the
 validator and unit tests.
 
 **Tasks**:
-- [ ] Back up `data/bmlogic-bench.jsonl` to `.bak`
-- [ ] Run `python data/scripts/generate_paraphrases.py` (in-place default; rule-based AST
-      walker, no LLM/API dependency)
-- [ ] Run `python data/scripts/validate_paraphrases.py` — must exit 0 (8 checks: non-null, no
+- [x] Back up `data/bmlogic-bench.jsonl` to `.bak` *(completed: bmlogic-bench.jsonl.phase3.bak)*
+- [x] Run `python data/scripts/generate_paraphrases.py` (in-place default; rule-based AST
+      walker, no LLM/API dependency) *(completed: 702 rule_based / 75 rule_based_complex)*
+- [x] Run `python data/scripts/validate_paraphrases.py` — must exit 0 (8 checks: non-null, no
       formal symbols, capitalization, punctuation, length, placeholders, grammar, spot-check)
-- [ ] Run `python data/scripts/test_paraphrases.py` unit tests — must pass
+      *(completed: exit 0, 777/777 passed, grammar 100%)*
+- [x] Run `python data/scripts/test_paraphrases.py` unit tests — must pass *(completed: 46/46
+      OK after updating two stale integration expectations — record count 727 -> 777 and method
+      distribution 635/92 -> 702/75, both artifacts of the pre-finalize benchmark; generator
+      untouched)*
 - [ ] If validation fails on anchor_invalid shapes (e.g. `S(p, (⊥ → ⊥))`, `U(p, (⊥ → ⊥))`):
       fix the generator's operator branches, never whitelist records or hand-edit output
-- [ ] Post-write assertions: 777/777 non-null `nl_paraphrase` + `nl_paraphrase_method`
+      *(deviation: skipped — validation did not fail; anchor_invalid shapes produced clean
+      rule_based paraphrases, no generator fix needed)*
+- [x] Post-write assertions: 777/777 non-null `nl_paraphrase` + `nl_paraphrase_method`
       (values `rule_based` or `rule_based_complex`); count/ids/contamination counts unchanged
+      *(completed: 777/777, 553/224)*
 
 **Timing**: 1 hour
 
