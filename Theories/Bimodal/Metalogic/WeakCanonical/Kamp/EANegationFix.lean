@@ -2358,4 +2358,272 @@ theorem firstNegPin_or_all {sig : MonadicSignature}
     push_neg at h
     exact h
 
+/-! ## The A_i/B_i split of a bracket at an interior point (chunk_0017) -/
+
+/-- One placement of a distinguished interior point `r` relative to the
+    witnesses of a list-form bracket: left sub-bracket on `(z0, r)`, point
+    type at `r`, right sub-bracket on `(r, z1)`. -/
+structure SplitEntry where
+  /-- Base segment type of the left sub-bracket. -/
+  leftSeg : TemporalPred
+  /-- Fold pairs of the left sub-bracket. -/
+  leftPairs : List (TemporalPred × TemporalPred)
+  /-- Point type carried by the distinguished point. -/
+  pin : TemporalPred
+  /-- Base segment type of the right sub-bracket. -/
+  rightSeg : TemporalPred
+  /-- Fold pairs of the right sub-bracket. -/
+  rightPairs : List (TemporalPred × TemporalPred)
+
+/-- All placements of an interior point relative to the witnesses of
+    `bracketOf s ps`: in segment 0, at the first witness, or (recursively)
+    within the tail. -/
+def splitsAt : TemporalPred → List (TemporalPred × TemporalPred) →
+    List SplitEntry
+  | s, [] => [⟨s, [], s, s, []⟩]
+  | s, (a, b) :: qs =>
+      ⟨s, [], s, s, (a, b) :: qs⟩ ::
+      ⟨s, [], a, b, qs⟩ ::
+      (splitsAt b qs).map fun e =>
+        ⟨s, (a, e.leftSeg) :: e.leftPairs, e.pin, e.rightSeg, e.rightPairs⟩
+
+/-- The right part of any split entry is no longer than the split list —
+    the termination measure for `negFixList`. -/
+theorem splitsAt_rightPairs_length_le (s : TemporalPred)
+    (ps : List (TemporalPred × TemporalPred)) :
+    ∀ e ∈ splitsAt s ps, e.rightPairs.length ≤ ps.length := by
+  induction ps generalizing s with
+  | nil =>
+    intro e he
+    simp only [splitsAt, List.mem_singleton] at he
+    subst he
+    exact Nat.le_refl _
+  | cons ab qs ih =>
+    obtain ⟨a, b⟩ := ab
+    intro e he
+    simp only [splitsAt, List.mem_cons, List.mem_map] at he
+    rcases he with rfl | rfl | ⟨e', he', rfl⟩
+    · exact Nat.le_refl _
+    · simp only [List.length_cons]
+      omega
+    · have := ih b e' he'
+      simp only [List.length_cons]
+      omega
+
+/-- **Splitting lemma** (the A_i/B_i split, chunk_0017): for any interior
+    point `r ∈ (z0, z1)`, a list-form bracket holds on `(z0, z1)` iff some
+    placement entry realizes: the left sub-bracket on `(z0, r)`, the entry's
+    point type at `r`, and the right sub-bracket on `(r, z1)`. -/
+theorem bracketOf_splitsAt_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
+    ∀ (ps : List (TemporalPred × TemporalPred)) (s : TemporalPred)
+      (z0 r z1 : M.carrier), z0 < r → r < z1 →
+    ((bracketOf s ps).holds M atomMap z0 z1 ↔
+      ∃ e ∈ splitsAt s ps,
+        (bracketOf e.leftSeg e.leftPairs).holds M atomMap z0 r ∧
+        e.pin.eval_at M atomMap r ∧
+        (bracketOf e.rightSeg e.rightPairs).holds M atomMap r z1) := by
+  intro ps
+  induction ps with
+  | nil =>
+    intro s z0 r z1 hr0 hr1
+    rw [bracketOf_nil_holds_iff]
+    constructor
+    · intro h
+      refine ⟨⟨s, [], s, s, []⟩, List.mem_singleton.mpr rfl, ?_, ?_, ?_⟩
+      · exact (bracketOf_nil_holds_iff M atomMap s z0 r).mpr
+          fun y hy0 hy1 => h y hy0 (lt_trans hy1 hr1)
+      · exact h r hr0 hr1
+      · exact (bracketOf_nil_holds_iff M atomMap s r z1).mpr
+          fun y hy0 hy1 => h y (lt_trans hr0 hy0) hy1
+    · rintro ⟨e, he, hL, hp, hR⟩
+      simp only [splitsAt, List.mem_singleton] at he
+      subst he
+      exact TemporalPred.eval_at_glue M atomMap s z0 r z1
+        ((bracketOf_nil_holds_iff M atomMap s z0 r).mp hL) hp
+        ((bracketOf_nil_holds_iff M atomMap s r z1).mp hR)
+  | cons ab qs ih =>
+    obtain ⟨a, b⟩ := ab
+    intro s z0 r z1 hr0 hr1
+    rw [bracketOf_cons_holds_iff]
+    constructor
+    · rintro ⟨x, hx0, hx1, hpre, hax, htail⟩
+      rcases lt_trichotomy x r with hlt | heq | hgt
+      · -- x < r: split the tail at r and lift the entry
+        obtain ⟨e, he, hL, hp, hR⟩ := (ih b x r z1 hlt hr1).mp htail
+        refine ⟨⟨s, (a, e.leftSeg) :: e.leftPairs, e.pin, e.rightSeg,
+          e.rightPairs⟩, ?_, ?_, hp, hR⟩
+        · simp only [splitsAt, List.mem_cons, List.mem_map]
+          exact Or.inr (Or.inr ⟨e, he, rfl⟩)
+        · exact (bracketOf_cons_holds_iff M atomMap s a e.leftSeg e.leftPairs
+            z0 r).mpr ⟨x, hx0, hlt, hpre, hax, hL⟩
+      · -- x = r: the witness placement
+        subst heq
+        refine ⟨⟨s, [], a, b, qs⟩, ?_, ?_, hax, htail⟩
+        · simp only [splitsAt, List.mem_cons]
+          exact Or.inr (Or.inl trivial)
+        · exact (bracketOf_nil_holds_iff M atomMap s z0 x).mpr hpre
+      · -- x > r: r sits in segment 0
+        refine ⟨⟨s, [], s, s, (a, b) :: qs⟩, ?_, ?_, hpre r hr0 hgt, ?_⟩
+        · simp only [splitsAt, List.mem_cons]
+          exact Or.inl trivial
+        · exact (bracketOf_nil_holds_iff M atomMap s z0 r).mpr
+            fun y hy0 hy1 => hpre y hy0 (lt_trans hy1 hgt)
+        · exact (bracketOf_cons_holds_iff M atomMap s a b qs r z1).mpr
+            ⟨x, hgt, hx1, fun y hy0 hy1 => hpre y (lt_trans hr0 hy0) hy1,
+              hax, htail⟩
+    · rintro ⟨e, he, hL, hp, hR⟩
+      simp only [splitsAt, List.mem_cons, List.mem_map] at he
+      rcases he with rfl | rfl | ⟨e', he', rfl⟩
+      · -- seg-0 entry: glue the prefix across r
+        obtain ⟨x, hrx, hx1, hpre, hax, htail⟩ :=
+          (bracketOf_cons_holds_iff M atomMap s a b qs r z1).mp hR
+        refine ⟨x, lt_trans hr0 hrx, hx1, ?_, hax, htail⟩
+        exact TemporalPred.eval_at_glue M atomMap s z0 r x
+          ((bracketOf_nil_holds_iff M atomMap s z0 r).mp hL) hp hpre
+      · -- witness entry: r itself is the first witness
+        exact ⟨r, hr0, hr1,
+          (bracketOf_nil_holds_iff M atomMap s z0 r).mp hL, hp, hR⟩
+      · -- mapped entry: first witness inside (z0, r), tail resplit
+        obtain ⟨x, hx0, hxr, hpre, hax, hLtail⟩ :=
+          (bracketOf_cons_holds_iff M atomMap s a e'.leftSeg e'.leftPairs
+            z0 r).mp hL
+        refine ⟨x, hx0, lt_trans hxr hr1, hpre, hax, ?_⟩
+        exact (ih b x r z1 hxr hr1).mpr ⟨e', he', hLtail, hp, hR⟩
+
+/-! ## Pinned V-form machinery (the `Cond_i ∧ Form_i` products at a shared
+pin) -/
+
+/-- A pinned item: left V-bracket on `(z0, r)`, point predicate at `r`,
+    right V-bracket on `(r, z1)`, for a shared distinguished point `r`. -/
+structure PinnedItem where
+  /-- Left V-bracket, evaluated on `(z0, r)`. -/
+  left : VBracketFormula
+  /-- Point predicate at the pin `r`. -/
+  atPin : TemporalPred
+  /-- Right V-bracket, evaluated on `(r, z1)`. -/
+  right : VBracketFormula
+
+/-- Semantics of one pinned item at a fixed pin `r`. -/
+def PinnedItem.holdsAt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (it : PinnedItem) (z0 r z1 : M.carrier) : Prop :=
+  it.left.holds M atomMap z0 r ∧ it.atPin.eval_at M atomMap r ∧
+    it.right.holds M atomMap r z1
+
+/-- Conjunction of two pinned items: componentwise products. -/
+def PinnedItem.conj (p q : PinnedItem) : PinnedItem :=
+  ⟨p.left.conjFull q.left, p.atPin.conj q.atPin, p.right.conjFull q.right⟩
+
+/-- Semantics of the pinned-item conjunction. -/
+theorem PinnedItem.conj_holdsAt_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (p q : PinnedItem) (z0 r z1 : M.carrier) :
+    (p.conj q).holdsAt M atomMap z0 r z1 ↔
+    p.holdsAt M atomMap z0 r z1 ∧ q.holdsAt M atomMap z0 r z1 := by
+  simp only [holdsAt, conj, VBracketFormula.conjFull_holds_iff,
+    TemporalPred.eval_at_conj]
+  tauto
+
+/-- DNF product of two pinned disjunction lists. -/
+def pinnedConj (l1 l2 : List PinnedItem) : List PinnedItem :=
+  l1.flatMap fun p => l2.map fun q => p.conj q
+
+/-- Semantics of the DNF product. -/
+theorem pinnedConj_holdsAt_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (l1 l2 : List PinnedItem) (z0 r z1 : M.carrier) :
+    (∃ it ∈ pinnedConj l1 l2, it.holdsAt M atomMap z0 r z1) ↔
+    (∃ it ∈ l1, it.holdsAt M atomMap z0 r z1) ∧
+    (∃ it ∈ l2, it.holdsAt M atomMap z0 r z1) := by
+  simp only [pinnedConj, List.mem_flatMap, List.mem_map]
+  constructor
+  · rintro ⟨it, ⟨p, hp, q, hq, rfl⟩, hh⟩
+    rw [PinnedItem.conj_holdsAt_iff] at hh
+    exact ⟨⟨p, hp, hh.1⟩, ⟨q, hq, hh.2⟩⟩
+  · rintro ⟨⟨p, hp, hph⟩, ⟨q, hq, hqh⟩⟩
+    exact ⟨p.conj q, ⟨p, hp, q, hq, rfl⟩,
+      (PinnedItem.conj_holdsAt_iff M atomMap p q z0 r z1).mpr ⟨hph, hqh⟩⟩
+
+/-- The always-true pinned item (unit of the pinned conjunction). -/
+def PinnedItem.unit : PinnedItem :=
+  ⟨VBracketFormula.trivialTrue, TemporalPred.top, VBracketFormula.trivialTrue⟩
+
+/-- The unit pinned item always holds. -/
+theorem PinnedItem.unit_holdsAt {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (z0 r z1 : M.carrier) :
+    PinnedItem.unit.holdsAt M atomMap z0 r z1 :=
+  ⟨VBracketFormula.trivialTrue_holds M atomMap z0 r,
+    TemporalPred.eval_at_top M atomMap r,
+    VBracketFormula.trivialTrue_holds M atomMap r z1⟩
+
+/-- Conjunction of a list of pinned disjunction lists (iterated DNF
+    product). -/
+def pinnedConjAll : List (List PinnedItem) → List PinnedItem
+  | [] => [PinnedItem.unit]
+  | l :: ls => pinnedConj l (pinnedConjAll ls)
+
+/-- Semantics of the iterated DNF product: all conjunct lists hold at the
+    pin. -/
+theorem pinnedConjAll_holdsAt_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (ls : List (List PinnedItem)) (z0 r z1 : M.carrier) :
+    (∃ it ∈ pinnedConjAll ls, it.holdsAt M atomMap z0 r z1) ↔
+    ∀ l ∈ ls, ∃ it ∈ l, it.holdsAt M atomMap z0 r z1 := by
+  induction ls with
+  | nil =>
+    simp only [pinnedConjAll, List.mem_singleton, List.not_mem_nil,
+      false_implies, implies_true, iff_true]
+    exact ⟨PinnedItem.unit, rfl, PinnedItem.unit_holdsAt M atomMap z0 r z1⟩
+  | cons l ls ih =>
+    rw [show pinnedConjAll (l :: ls) = pinnedConj l (pinnedConjAll ls) from
+      rfl, pinnedConj_holdsAt_iff, ih, List.forall_mem_cons]
+
+/-- Glue a pinned item into a V-bracket on `(z0, z1)`: the pin is
+    existentially bound, gated by `gateSeg` everywhere left of the pin and
+    `gatePin` at the pin. -/
+def PinnedItem.toV (it : PinnedItem) (gateSeg gatePin : TemporalPred) :
+    VBracketFormula :=
+  (it.left.conjEverywhere gateSeg).concatPin (it.atPin.conj gatePin) it.right
+
+/-- Glue a pinned disjunction list into a single V-bracket. -/
+def pinnedListToV (l : List PinnedItem) (gateSeg gatePin : TemporalPred) :
+    VBracketFormula :=
+  ⟨l.flatMap fun it => (it.toV gateSeg gatePin).disjuncts⟩
+
+/-- Semantics of the glued pinned list: some interior pin `r` carries the
+    gates and realizes some pinned item. -/
+theorem pinnedListToV_holds_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (l : List PinnedItem) (gateSeg gatePin : TemporalPred)
+    (z0 z1 : M.carrier) :
+    (pinnedListToV l gateSeg gatePin).holds M atomMap z0 z1 ↔
+    ∃ r : M.carrier, z0 < r ∧ r < z1 ∧
+      (∀ y : M.carrier, z0 < y → y < r → gateSeg.eval_at M atomMap y) ∧
+      gatePin.eval_at M atomMap r ∧
+      ∃ it ∈ l, it.holdsAt M atomMap z0 r z1 := by
+  constructor
+  · rintro ⟨d, hmem, hh⟩
+    simp only [pinnedListToV, List.mem_flatMap] at hmem
+    obtain ⟨it, hit, hd⟩ := hmem
+    have hv : (it.toV gateSeg gatePin).holds M atomMap z0 z1 := ⟨d, hd, hh⟩
+    rw [PinnedItem.toV, VBracketFormula.concatPin_holds_iff] at hv
+    obtain ⟨r, h1, h2, hL, hp, hR⟩ := hv
+    rw [VBracketFormula.conjEverywhere_holds_iff] at hL
+    rw [TemporalPred.eval_at_conj] at hp
+    exact ⟨r, h1, h2, hL.2, hp.2, it, hit, hL.1, hp.1, hR⟩
+  · rintro ⟨r, h1, h2, hseg, hgp, it, hit, hL, hp, hR⟩
+    have hv : (it.toV gateSeg gatePin).holds M atomMap z0 z1 := by
+      rw [PinnedItem.toV, VBracketFormula.concatPin_holds_iff]
+      exact ⟨r, h1, h2,
+        (VBracketFormula.conjEverywhere_holds_iff M atomMap it.left gateSeg
+          z0 r).mpr ⟨hL, hseg⟩,
+        (TemporalPred.eval_at_conj M atomMap it.atPin gatePin r).mpr
+          ⟨hp, hgp⟩, hR⟩
+    obtain ⟨d, hd, hh⟩ := hv
+    refine ⟨d, ?_, hh⟩
+    simp only [pinnedListToV, List.mem_flatMap]
+    exact ⟨it, hit, hd⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
