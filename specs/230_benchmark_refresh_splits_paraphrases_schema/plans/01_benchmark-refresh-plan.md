@@ -1,7 +1,7 @@
 # Implementation Plan: Task #230
 
 - **Task**: 230 - benchmark_refresh_splits_paraphrases_schema
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 7 hours
 - **Dependencies**: 229 (completed 2026-06-02)
 - **Research Inputs**: specs/230_benchmark_refresh_splits_paraphrases_schema/reports/01_benchmark-refresh.md
@@ -272,31 +272,38 @@ formerly-null records and a verified exact partition of all 777 IDs.
 
 ---
 
-### Phase 5: max_* decision + metadata sync (sub-item 4 + downstream) [NOT STARTED]
+### Phase 5: max_* decision + metadata sync (sub-item 4 + downstream) [COMPLETED]
 
 **Goal**: The KEEP decision for `max_modal_depth`/`max_temporal_depth` is documented, and every
 downstream metadata artifact reflects the final 20-field benchmark schema, with the HF
 validator as the final green gate.
 
 **Tasks**:
-- [ ] Record decision (adopted from research + orchestrator directive): KEEP
+- [x] Record decision (adopted from research + orchestrator directive): KEEP
       `max_modal_depth`/`max_temporal_depth` in training data; add one documenting sentence to
       `data/dataset-card.md` and `data/README.md` describing them as intentional
       denormalization for flat filtering (e.g. `df[df.max_modal_depth > 0]`); no training-file
-      rewrites, no validator changes for training configs
-- [ ] Update `data/bmlogic-bench_metadata.json` `fields` list with the 5 new fields
+      rewrites, no validator changes for training configs *(completed)*
+- [x] Update `data/bmlogic-bench_metadata.json` `fields` list with the 5 new fields
       (`nl_paraphrase`, `nl_paraphrase_method`, `formula_sexpr`, `formula_tokens`,
-      `pattern_features`)
-- [ ] Update `data/croissant.json`: Benchmark Record Schema v1.2 -> v1.3, adding the same 5
-      fields (task 229's summary explicitly assigned this re-add to task 230)
-- [ ] Update `data/dataset-card.md` benchmark schema table (15 -> 20 fields)
-- [ ] Update `data/hf-dataset/README.md` benchmark field table
-- [ ] Update `data/hf-dataset/validate.py` REQUIRED_FIELDS/OPTIONAL_FIELDS for bmlogic-bench
+      `pattern_features`) *(deviation: altered — already present on disk from prior interrupted
+      agent's uncommitted work; verified 20-field list, not re-done)*
+- [x] Update `data/croissant.json`: Benchmark Record Schema v1.2 -> v1.3, adding the same 5
+      fields (task 229's summary explicitly assigned this re-add to task 230) *(deviation:
+      altered — already present on disk; verified v1.3 heading + 20 cr:Field entries)*
+- [x] Update `data/dataset-card.md` benchmark schema table (15 -> 20 fields) *(deviation:
+      altered — already present on disk; verified all 5 v1.3 rows)*
+- [x] Update `data/hf-dataset/README.md` benchmark field table *(completed: heading 15/v1.2 ->
+      20/v1.3, +5 rows, example record replaced with real record 00001 incl. new fields; also
+      fixed stale training pattern_features description and lead sentence)*
+- [x] Update `data/hf-dataset/validate.py` REQUIRED_FIELDS/OPTIONAL_FIELDS for bmlogic-bench
       (re-adding `nl_paraphrase`/`nl_paraphrase_method` per the "task 230 will add them" note
-      and adding the 3 schema fields); do NOT touch c5/c6/c7 EXPECTED_COUNTS
-- [ ] Final gate: `python data/hf-dataset/validate.py --config bmlogic-bench` exits 0 (HF data
-      dir is symlinked — no copy step)
-- [ ] Clean up `.bak` files from Phases 1-3 after the final gate passes
+      and adding the 3 schema fields); do NOT touch c5/c6/c7 EXPECTED_COUNTS *(completed: 5
+      fields added to REQUIRED_FIELDS["bmlogic-bench"]; EXPECTED_COUNTS untouched)*
+- [x] Final gate: `python data/hf-dataset/validate.py --config bmlogic-bench` exits 0 (HF data
+      dir is symlinked — no copy step) *(completed: exit 0 — 777 records, 16 required fields
+      non-null, labels valid; HF Hub upload intentionally deferred awaiting user approval)*
+- [x] Clean up `.bak` files from Phases 1-3 after the final gate passes *(completed)*
 
 **Timing**: 1.5 hours
 
@@ -318,14 +325,15 @@ validator as the final green gate.
 
 ## Testing & Validation
 
-- [ ] Phase 1 calibration: derivation matches all 762 non-null `pattern_key` records exactly
-- [ ] Phase 2 fidelity gate: 6,029/6,029 byte-equal round-trips on training data
-- [ ] Phase 3: `validate_paraphrases.py` exit 0; `test_paraphrases.py` pass
-- [ ] Phase 4: exact-partition assertion + formerly-null slice placement checks
-- [ ] Phase 5: `python data/hf-dataset/validate.py --config bmlogic-bench` exit 0
-- [ ] Invariant after every benchmark rewrite: 777 records, unchanged ids, unchanged
-      `contamination_flag` distribution (553 true / 224 false)
-- [ ] `scripts/finalize_benchmark.py` never executed (check shell history / summary honesty)
+- [x] Phase 1 calibration: derivation matches all 762 non-null `pattern_key` records exactly
+- [x] Phase 2 fidelity gate: 6,029/6,029 byte-equal round-trips on training data
+- [x] Phase 3: `validate_paraphrases.py` exit 0; `test_paraphrases.py` pass
+- [x] Phase 4: exact-partition assertion + formerly-null slice placement checks
+- [x] Phase 5: `python data/hf-dataset/validate.py --config bmlogic-bench` exit 0
+- [x] Invariant after every benchmark rewrite: 777 records, unchanged ids, unchanged
+      `contamination_flag` distribution (553 true / 224 false) *(re-verified at phase 5 resume:
+      777 records, ids identical to phase1.bak, 553/224, 0 null pattern_key, 20 fields)*
+- [x] `scripts/finalize_benchmark.py` never executed (check shell history / summary honesty)
 
 ## Artifacts & Outputs
 
