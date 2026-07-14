@@ -490,7 +490,18 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 - **Goal:** Lemma 5.1 fixed-formula negation with the load-bearing `Cond_i` gates
   (`∨_i (Cond_i ∧ Form_i)`, chunk_0016 md:5).
 - **Seam status (H8):** 10a (probes + n=1 instance) COMPLETE and green (commits a928ccf3f,
-  53d7f123e); 10b (general recursion + iff) NOT STARTED — see the 10b design notes below.
+  53d7f123e); 10b-i (anchored Cor 5.4 mirrors) COMPLETE and green (commit 054818233:
+  `untilFoldAnchored`/`sinceFoldAnchored`, `untilChainPredsAnchored`/`sinceChainPredsAnchored`,
+  `exists_bracketOf_right_anchored_iff`/`exists_bracketSnocOf_left_anchored_iff`,
+  `negBoundedRightFixAnchored(_iff)`/`negBoundedLeftFixAnchored(_iff)` — the Case 2 consumer
+  shape `¬∃ z ∈ (z0,z1), α(z) ∧ bf.holds`, +475 lines); 10b-ii unit 1 (pinned-concatenation
+  builder) COMPLETE and green (commit 37e24dce2: `bracketOf_append_pin_holds_iff`,
+  `BracketFormula.concatPin(_holds_iff)`, `VBracketFormula.concatPin(_holds_iff)` — the Case 3
+  gluing device, +112 lines). REMAINING = 10b-ii units 2+: the A_i/B_i split at the attained
+  first-`¬β0` pin (chunk_0017), the `negFix` recursion (Cases 1-3 with gates, Case 2 via the
+  ANCHORED fixes, Case 3 glued via `concatPin` + `conjFull`), boundary simplifications (d)/(e),
+  and `negFix_iff`. All axioms exactly [propext, Classical.choice, Quot.sound]; EANegationFix.lean
+  sorry-free.
 - **Tasks:**
   - [x] FIRST PROBE (R2 gate): land the ℤ counterexample as a Lean `example` — carrier ℤ,
     `(z0,z1) = (0,10)`, `p` true exactly at {2,8}, `¬s1` exactly at {3}, `¬s0` exactly at {7}:
@@ -515,6 +526,11 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
     first-occurrence pin `[¬P-segment, P-point]`); Case 2 consumes `negBoundedRightFix`; salvage
     the Boneyard forward plumbing (disjunct skeleton + forward correctness; only disjunct
     CONTENTS change by adding gates).
+    *(deviation: altered per design note 1 — Case 2 consumes the ANCHORED
+    `negBoundedRightFixAnchored`/`negBoundedLeftFixAnchored` (10b-i, commit 054818233), not
+    the plain `negBoundedRightFix`. Sub-progress: 10b-i anchored mirrors DONE; 10b-ii unit 1
+    pinned-concatenation builder `VBracketFormula.concatPin(_holds_iff)` DONE (commit
+    37e24dce2). Remaining: A_i/B_i split + recursion + iff.)*
   - [ ] (10b) `theorem BracketFormula.negFix_iff (h_INF) (h_SUP) (bf) (z0 z1) (h_lt : z0 < z1) :
     (negFix bf).holds M atomMap z0 z1 ↔ ¬bf.holds M atomMap z0 z1`.
   - [x] Scoped build green; axiom checks; commit per green sub-step. If the cover proof fails at
