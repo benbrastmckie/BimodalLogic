@@ -31,7 +31,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Formula Refactor
 
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-194 [RESEARCHED] — migrate_nonempty_to_derivable
+194 [PLANNED] — migrate_nonempty_to_derivable
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -71,10 +71,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 187 [PLANNED] — backward_chaining_lemma_db
   └─ 192 [NOT STARTED] — master_tactic_dispatch
     └─ 193 [NOT STARTED] — codebase_tactic_refactor
-188 [RESEARCHED] — weakening_aware_search
-189 [RESEARCHED] — deduction_theorem_tactic
+188 [PLANNED] — weakening_aware_search
+189 [PLANNED] — deduction_theorem_tactic
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-191 [RESEARCHED] — propositional_decision_procedure
+191 [PLANNED] — propositional_decision_procedure
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
@@ -547,13 +547,14 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 194. Migrate nonempty to derivable
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: None
 - **Research**:
   - [194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md]
   - [194_migrate_nonempty_to_derivable/reports/02_nonempty-derivable-migration.md]
+- **Plan**: [194_migrate_nonempty_to_derivable/plans/02_migrate-nonempty-derivable.md]
 
 ---
 
@@ -576,35 +577,38 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 191. Propositional decision procedure
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
 - **Research**:
   - [191_propositional_decision_procedure/reports/01_decision-procedure-seed.md]
   - [191_propositional_decision_procedure/reports/02_decision-procedure-research.md]
+- **Plan**: [191_propositional_decision_procedure/plans/02_reflection-kalmar-plan.md]
 
 ---
 
 ### 189. Deduction theorem tactic
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
 - **Research**:
   - [189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md]
   - [189_deduction_theorem_tactic/reports/02_deduction-tactic-research.md]
+- **Plan**: [189_deduction_theorem_tactic/plans/02_deduction-tactic-plan.md]
 
 ---
 
 ### 188. Weakening aware search
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
 - **Research**:
   - [188_weakening_aware_search/reports/01_weakening-aware-seed.md]
   - [188_weakening_aware_search/reports/02_weakening-aware-search.md]
+- **Plan**: [188_weakening_aware_search/plans/02_weakening-aware-search-plan.md]
 
 ---
 

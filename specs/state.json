@@ -700,10 +700,10 @@
     {
       "project_number": 188,
       "project_name": "weakening_aware_search",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:32:17Z",
+      "last_updated": "2026-07-14T15:37:37Z",
       "artifacts": [
         {
           "path": "specs/188_weakening_aware_search/reports/01_weakening-aware-seed.md",
@@ -714,6 +714,11 @@
           "path": "specs/188_weakening_aware_search/reports/02_weakening-aware-search.md",
           "type": "research",
           "summary": "Full research report: verified current state of all three search layers, precise gap location, closure-step weakening design with 4 phases, concrete file targets with line estimates, answers to all 5 seed questions, risks, and out-of-scope deferrals to tasks 187/192."
+        },
+        {
+          "path": "specs/188_weakening_aware_search/plans/02_weakening-aware-search-plan.md",
+          "type": "plan",
+          "summary": "4 phases: (1) tryWeakenedDerivedMatch + shared derivedTheoremTable in Helpers.lean, 2h; (2) subset side-goal first-combinator for task-187 forward compat, 0.5h; (3) extend matchDerived + matchAxiom fall-through fix in Core.lean, 1.5h; (4) tests + negative/perf guard, 1h. Waves: [[1,3],[2],[4]]."
         }
       ],
       "topic": "automation",
@@ -736,6 +741,11 @@
           "path": "specs/189_deduction_theorem_tactic/reports/02_deduction-tactic-research.md",
           "type": "research",
           "summary": "Implementation-focused research report: verified signatures and line numbers, corrections to seed report, existing tactic infrastructure survey (mkOperatorKTactic template, modal_search syntax patterns), 5-phase recommended implementation with code sketches, noncomputability resolution, file targets, and risks."
+        },
+        {
+          "path": "specs/189_deduction_theorem_tactic/plans/02_deduction-tactic-plan.md",
+          "type": "plan",
+          "summary": "Phased plan for deduction tactic family: MVarId.apply-based deduction/deduction n/undischarge, deduction_converse + Derivable.deduction lemmas, example-based tests; 3 sequential phases, ~150-250 lines, zero sorries, lake build gates."
         }
       ],
       "dependencies": [],
@@ -745,10 +755,10 @@
     {
       "project_number": 191,
       "project_name": "propositional_decision_procedure",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:32:13Z",
+      "last_updated": "2026-07-14T15:37:33Z",
       "artifacts": [
         {
           "path": "specs/191_propositional_decision_procedure/reports/01_decision-procedure-seed.md",
@@ -759,6 +769,11 @@
           "path": "specs/191_propositional_decision_procedure/reports/02_decision-procedure-research.md",
           "type": "research",
           "summary": "Full research report: verified current state (prerequisite inventory with file:line references), recommended reflection+Kalmar architecture with 4 components, rejected alternatives, 6 concrete file targets with size estimates, 5-phase plan (~30-40h), risks and verification notes."
+        },
+        {
+          "path": "specs/191_propositional_decision_procedure/plans/02_reflection-kalmar-plan.md",
+          "type": "plan",
+          "summary": "6-phase, 32-hour reflection+Kalmar plan with dependency waves [[1],[2],[3],[4],[5,6]], per-phase checklists, lake build gates, lean_verify axiom checks, risk table (litCtx bookkeeping, if-then-else normal forms, classical_merge frame-class generality), and new-file-only rollback strategy."
         }
       ],
       "dependencies": [],
@@ -812,10 +827,10 @@
     {
       "project_number": 194,
       "project_name": "migrate_nonempty_to_derivable",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T17:15:00Z",
-      "last_updated": "2026-07-14T15:32:21Z",
+      "last_updated": "2026-07-14T15:37:41Z",
       "artifacts": [
         {
           "path": "specs/194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md",
@@ -826,6 +841,11 @@
           "path": "specs/194_migrate_nonempty_to_derivable/reports/02_nonempty-derivable-migration.md",
           "type": "research",
           "summary": "Complete site inventory (per-file, per-line, per-kind classification: def bodies / statements / proof-internal / comments / dead files), machine-verified compatibility matrix, risk analysis (unfold sites, notation, aesop tags), 8-phase migration order with build gates, and explicit exclusion list for pre-broken orphaned files."
+        },
+        {
+          "path": "specs/194_migrate_nonempty_to_derivable/plans/02_migrate-nonempty-derivable.md",
+          "type": "plan",
+          "summary": "8-phase mechanical migration plan (waves [[1],[2],[3,4,5,6,7],[8]]), defeq-verified substitutions, per-phase build gates, explicit scoped builds for out-of-target modules (DenseFMP, DiscreteFMP, Lifting), exclusion whitelist for Phase 8 sweep"
         }
       ],
       "topic": "formula-refactor",
