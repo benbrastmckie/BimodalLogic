@@ -242,17 +242,22 @@ strengthened content, not just the dropped atom row.
 
 ---
 
-### Phase 3: Adversarial re-plant probe [NOT STARTED]
+### Phase 3: Adversarial re-plant probe [COMPLETED]
 
 **Goal**: Attempt to defeat the CANDIDATE the same way task 358's probe defeated task 363 —
 before promotion, not after. The strengthening is only credible if the next-level plant provably
 fails.
 
 **Tasks**:
-- [ ] Construct the strongest adapted plant against V2: a mate whose atom row equals
+- [x] Construct the strongest adapted plant against V2: a mate whose atom row equals
       `mergeNF e_P.atom_assgn ⟨1,_⟩` AND whose depth-≥1 content is manufactured to satisfy the
       new conjunct (e.g., copying the required fresh-projection/content payload syntactically).
-- [ ] Machine-adjudicate one of the two outcomes:
+      *(completed — strongest form is the honest-in-M2M realizable fiber
+      `m2mate3 := nf_characteristic M2M 1 5 [20,25,15,2,21]`: genuinely realizable standalone,
+      exact required dropped row, fully honest depth-≥1 content; it strictly dominates every
+      syntactically manufactured payload and is precisely the plant that DEFEATS both rejected
+      candidate families)*
+- [x] Machine-adjudicate one of the two outcomes:
       - **Gate 3a (candidate survives)**: sorry-free certificate(s) showing the adapted plant is
         self-defeating — it fails an existing check the original plant passed (on-fiber
         `nfk_dropFresh`, zone/slice visibility so `σ₃` is no longer slice-equal to `σ`, or the
@@ -261,9 +266,22 @@ fails.
       - **Gate 3b (candidate defeated)**: a `kvE_probe364_replant_present`-style refutation
         certificate. Then loop back to Phase 1 design ONCE (churn guard). A second defeat exits
         `[BLOCKED]` with the refutation certificate as the escalation payload.
-- [ ] Cross-check the written u-class enumeration argument from the phase-2 handoff (u=20
+      *(completed — Gate 3a fired, UNIVERSALLY: `kvE_probe364_sstar_honest_unrealizable` (any
+      slice marking s* plus one honest fiber is realized in NO model) +
+      `kvE_probe364_replant_selfdefeating` (guard-level: `kvE_fiberElemConsistentV2 X m2sstar =
+      false` for EVERY such X — quantifying over all manufactured mate contents at once) +
+      concrete instance `kvE_probe364_adapted_plant_rejected` on `σ₃ = τ ⊕ s* ⊕ mate₃`. The
+      self-defeat channel is the co-realization conjunct itself: s* forces an interior P-point
+      through e_P while every honest fiber's M2M-decided quant layer forbids one. No redesign
+      loop consumed. Certificates landed in the phase-1 commit (front-loaded engine); all floor
+      axioms)*
+- [x] Cross-check the written u-class enumeration argument from the phase-2 handoff (u=20
       P-collision class vs honest order-classes under the 18↔21 remap) against the candidate: the
       docstring of the probe leaf must record WHY each class can no longer be serviced by a plant.
+      *(completed — leaf module docstring section "u-class enumeration cross-check": under joint
+      co-realization the per-class bookkeeping never starts, because the ambient σ₂ admits no
+      joint realization at all — no per-class mate supply can service ANY class inside an
+      unrealizable ambient)*
 
 **Timing**: 1.5 hours
 
