@@ -247,6 +247,251 @@ theorem extZ_aboveT_holds_iff (M : OrderedMonadicStructure sig)
       ⟨iff_of_false (lt_asymm hxu) (fun hf => Bool.noConfusion hf), iff_of_true hxu rfl⟩,
       ⟨iff_of_false (lt_asymm h) (fun hf => Bool.noConfusion hf), iff_of_true h rfl⟩⟩
 
+/-! ## Routing: zone consistency + inconsistent-fiber falsity (`agg2_zone_consistent_*`
+technique, arity-3 instance)
+
+Any zone spec realized over `[w, x, t]` under the ambient `w < x < t` is one of the 7
+order-consistent zones; contrapositively, the fold bit of every inconsistent spec is
+forced `false` under any realizer of the depth-1 evaluation (Def 3.1, PDF pp.4-5:
+disjunctions range only over consistent order types). -/
+
+/-- **Past-exterior routing lemma** (`w < x < t`): a realized arity-3 zone spec is one of
+    the seven consistent zones `v<w` / `v=w` / `w<v<x` / `v=x` / `x<v<t` / `v=t` / `t<v`. -/
+theorem extZone_consistent_lt (M : OrderedMonadicStructure sig)
+    (w x t u : M.carrier) (hwx : w < x) (hxt : x < t)
+    (zs : ZoneSpec 3)
+    (hz : zoneHolds M (Fin.cons w (Fin.cons x (fun _ => t))) zs u) :
+    zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
+    zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT := by
+  have h0 := hz ⟨0, by omega⟩
+  have h1 := hz ⟨1, by omega⟩
+  have h2 := hz ⟨2, by omega⟩
+  simp only [Fin.cons] at h0 h1 h2
+  rcases lt_trichotomy u w with huw | huw | huw
+  · -- u < w < x < t : zone `v < w`.
+    have hux : u < x := huw.trans hwx
+    have hut : u < t := hux.trans hxt
+    exact Or.inl (ext3_zs_ext _ _ _
+      (Prod.ext_iff.mpr ⟨h0.1.mp huw, k1v_bool_eq_false h0.2 (lt_asymm huw)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hux, k1v_bool_eq_false h1.2 (lt_asymm hux)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))
+  · -- u = w : zone `v = w`.
+    subst huw
+    have hut : u < t := hwx.trans hxt
+    exact Or.inr (Or.inl (ext3_zs_ext _ _ _
+      (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_irrefl u),
+        k1v_bool_eq_false h0.2 (lt_irrefl u)⟩)
+      (Prod.ext_iff.mpr ⟨h1.1.mp hwx, k1v_bool_eq_false h1.2 (lt_asymm hwx)⟩)
+      (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩)))
+  · -- w < u : split against x.
+    rcases lt_trichotomy u x with hux | hux | hux
+    · -- w < u < x : bounded interior `(w, x)`.
+      have hut : u < t := hux.trans hxt
+      exact Or.inr (Or.inr (Or.inl (ext3_zs_ext _ _ _
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+        (Prod.ext_iff.mpr ⟨h1.1.mp hux, k1v_bool_eq_false h1.2 (lt_asymm hux)⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))
+    · -- u = x : zone `v = x`.
+      subst hux
+      exact Or.inr (Or.inr (Or.inr (Or.inl (ext3_zs_ext _ _ _
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+        (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_irrefl u),
+          k1v_bool_eq_false h1.2 (lt_irrefl u)⟩)
+        (Prod.ext_iff.mpr ⟨h2.1.mp hxt, k1v_bool_eq_false h2.2 (lt_asymm hxt)⟩)))))
+    · -- x < u : split against t.
+      rcases lt_trichotomy u t with hut | hut | hut
+      · -- x < u < t : bounded interior `(x, t)`.
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (ext3_zs_ext _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨h2.1.mp hut, k1v_bool_eq_false h2.2 (lt_asymm hut)⟩))))))
+      · -- u = t : zone `v = t`.
+        subst hut
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (ext3_zs_ext _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_irrefl u),
+            k1v_bool_eq_false h2.2 (lt_irrefl u)⟩)))))))
+      · -- t < u : future exterior.
+        exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (ext3_zs_ext _ _ _
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h0.1 (lt_asymm huw), h0.2.mp huw⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h1.1 (lt_asymm hux), h1.2.mp hux⟩)
+          (Prod.ext_iff.mpr ⟨k1v_bool_eq_false h2.1 (lt_asymm hut), h2.2.mp hut⟩)))))))
+
+/-- **Inconsistent-fiber falsity** (the arity-3 `agg2_zone_consistent_*` falsity form):
+    under any realizer of a depth-1 arity-3 evaluation at `[w, x, t]` with `w < x < t`,
+    the fold bit of every order-channel-inconsistent fiber is `false`. -/
+theorem extZone_inconsistent_false (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hwx : w < x) (hxt : x < t)
+    (σ : NormalForm sig 1 3)
+    (hnf : nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ)
+    (zs : ZoneSpec 3)
+    (hcons : ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
+      zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT))
+    (χ : NormalForm sig 0 1) :
+    σ.2 (nf0_assemble zs χ σ.1) = false := by
+  obtain ⟨-, hfold, -⟩ := (nf_eval_depth1_fold_iff M _ σ).mp hnf
+  cases hb : σ.2 (nf0_assemble zs χ σ.1) with
+  | false => rfl
+  | true =>
+    obtain ⟨v, hzv, -⟩ := (hfold zs χ).mpr hb
+    exact absurd (extZone_consistent_lt M w x t v hwx hxt zs hzv) hcons
+
+/-! ## The 7-zone fiber partition (`extZoneFiber_k1`)
+
+The depth-1 fold at n=3, env `[w, x, t]`, re-partitioned into MONADIC clauses over the 7
+order-consistent zones of `w < x < t`: the generic per-`(zs, χ)` fold clause of
+`nf_eval_depth1_fold_iff` splits into seven per-zone biconditionals whose zone readings
+are plain order conditions (Lemma 3.2(2) — each clause couples the witness to at most the
+zone's defining anchors), an inconsistent-zone falsity conjunct, and the off-fiber honesty
+clause. This is the E1 kit shape that Phases 14a-14c consume per fiber. -/
+
+theorem extZoneFiber_k1 (M : OrderedMonadicStructure sig) (w x t : M.carrier)
+    (hwx : w < x) (hxt : x < t) (σ : NormalForm sig 1 3) :
+    nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ ↔
+      ((∀ a : AtomKind sig 3,
+          atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ σ.1 a = true) ∧
+       ((∀ χ : NormalForm sig 0 1,
+           (∃ v : M.carrier, v < w ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0_assemble extZBelowW χ σ.1) = true) ∧
+        (∀ χ : NormalForm sig 0 1,
+           nf_eval_nf M 0 1 (fun _ => w) χ ↔
+             σ.2 (nf0_assemble extZAtW χ σ.1) = true) ∧
+        (∀ χ : NormalForm sig 0 1,
+           (∃ v : M.carrier, w < v ∧ v < x ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0_assemble extZIntWX χ σ.1) = true) ∧
+        (∀ χ : NormalForm sig 0 1,
+           nf_eval_nf M 0 1 (fun _ => x) χ ↔
+             σ.2 (nf0_assemble extZAtX χ σ.1) = true) ∧
+        (∀ χ : NormalForm sig 0 1,
+           (∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0_assemble extZIntXT χ σ.1) = true) ∧
+        (∀ χ : NormalForm sig 0 1,
+           nf_eval_nf M 0 1 (fun _ => t) χ ↔
+             σ.2 (nf0_assemble extZAtT χ σ.1) = true) ∧
+        (∀ χ : NormalForm sig 0 1,
+           (∃ v : M.carrier, t < v ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+             σ.2 (nf0_assemble extZAboveT χ σ.1) = true)) ∧
+       (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+          ¬(zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
+            zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT) →
+          σ.2 (nf0_assemble zs χ σ.1) = false) ∧
+       (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)) := by
+  rw [nf_eval_depth1_fold_iff]
+  constructor
+  · rintro ⟨hatom, hfold, hoff⟩
+    refine ⟨hatom, ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩, ?_, hoff⟩
+    · -- Zone `v < w`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZBelowW χ)
+      refine exists_congr fun v => ?_
+      rw [extZ_belowW_holds_iff M w x t v hwx hxt]
+    · -- Zone `v = w`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZAtW χ)
+      constructor
+      · intro h
+        exact ⟨w, (extZ_atW_holds_iff M w x t w hwx hxt).mpr rfl, h⟩
+      · rintro ⟨v, hzv, h⟩
+        rw [(extZ_atW_holds_iff M w x t v hwx hxt).mp hzv] at h
+        exact h
+    · -- Zone `w < v < x`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZIntWX χ)
+      refine exists_congr fun v => ?_
+      rw [extZ_intWX_holds_iff M w x t v hxt]
+      exact and_assoc.symm
+    · -- Zone `v = x`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZAtX χ)
+      constructor
+      · intro h
+        exact ⟨x, (extZ_atX_holds_iff M w x t x hwx hxt).mpr rfl, h⟩
+      · rintro ⟨v, hzv, h⟩
+        rw [(extZ_atX_holds_iff M w x t v hwx hxt).mp hzv] at h
+        exact h
+    · -- Zone `x < v < t`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZIntXT χ)
+      refine exists_congr fun v => ?_
+      rw [extZ_intXT_holds_iff M w x t v hwx]
+      exact and_assoc.symm
+    · -- Zone `v = t`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZAtT χ)
+      constructor
+      · intro h
+        exact ⟨t, (extZ_atT_holds_iff M w x t t hwx hxt).mpr rfl, h⟩
+      · rintro ⟨v, hzv, h⟩
+        rw [(extZ_atT_holds_iff M w x t v hwx hxt).mp hzv] at h
+        exact h
+    · -- Zone `t < v`.
+      intro χ
+      refine Iff.trans ?_ (hfold extZAboveT χ)
+      refine exists_congr fun v => ?_
+      rw [extZ_aboveT_holds_iff M w x t v hwx hxt]
+    · -- Inconsistent-zone falsity.
+      intro zs χ hcons
+      cases hb : σ.2 (nf0_assemble zs χ σ.1) with
+      | false => rfl
+      | true =>
+        obtain ⟨v, hzv, -⟩ := (hfold zs χ).mpr hb
+        exact absurd (extZone_consistent_lt M w x t v hwx hxt zs hzv) hcons
+  · rintro ⟨hatom, ⟨h1, h2, h3, h4, h5, h6, h7⟩, hbad, hoff⟩
+    refine ⟨hatom, ?_, hoff⟩
+    intro zs χ
+    by_cases hcons : zs = extZBelowW ∨ zs = extZAtW ∨ zs = extZIntWX ∨ zs = extZAtX ∨
+        zs = extZIntXT ∨ zs = extZAtT ∨ zs = extZAboveT
+    · rcases hcons with rfl | rfl | rfl | rfl | rfl | rfl | rfl
+      · -- Zone `v < w`.
+        refine Iff.trans ?_ (h1 χ)
+        refine exists_congr fun v => ?_
+        rw [extZ_belowW_holds_iff M w x t v hwx hxt]
+      · -- Zone `v = w`.
+        refine Iff.trans ?_ (h2 χ)
+        constructor
+        · rintro ⟨v, hzv, h⟩
+          rw [(extZ_atW_holds_iff M w x t v hwx hxt).mp hzv] at h
+          exact h
+        · intro h
+          exact ⟨w, (extZ_atW_holds_iff M w x t w hwx hxt).mpr rfl, h⟩
+      · -- Zone `w < v < x`.
+        refine Iff.trans ?_ (h3 χ)
+        refine exists_congr fun v => ?_
+        rw [extZ_intWX_holds_iff M w x t v hxt]
+        exact and_assoc
+      · -- Zone `v = x`.
+        refine Iff.trans ?_ (h4 χ)
+        constructor
+        · rintro ⟨v, hzv, h⟩
+          rw [(extZ_atX_holds_iff M w x t v hwx hxt).mp hzv] at h
+          exact h
+        · intro h
+          exact ⟨x, (extZ_atX_holds_iff M w x t x hwx hxt).mpr rfl, h⟩
+      · -- Zone `x < v < t`.
+        refine Iff.trans ?_ (h5 χ)
+        refine exists_congr fun v => ?_
+        rw [extZ_intXT_holds_iff M w x t v hwx]
+        exact and_assoc
+      · -- Zone `v = t`.
+        refine Iff.trans ?_ (h6 χ)
+        constructor
+        · rintro ⟨v, hzv, h⟩
+          rw [(extZ_atT_holds_iff M w x t v hwx hxt).mp hzv] at h
+          exact h
+        · intro h
+          exact ⟨t, (extZ_atT_holds_iff M w x t t hwx hxt).mpr rfl, h⟩
+      · -- Zone `t < v`.
+        refine Iff.trans ?_ (h7 χ)
+        refine exists_congr fun v => ?_
+        rw [extZ_aboveT_holds_iff M w x t v hwx hxt]
+    · -- Inconsistent zone: bit is false, existential refuted by routing.
+      refine iff_of_false ?_ ?_
+      · rintro ⟨v, hzv, -⟩
+        exact absurd (extZone_consistent_lt M w x t v hwx hxt zs hzv) hcons
+      · rw [hbad zs χ hcons]
+        exact fun hf => Bool.noConfusion hf
+
 /-! ## R3 ADJUDICATION PROBE (plan v3 Phase 13 FIRST task)
 
 ONE concrete qnf with the `w < x` channel: order row = the positional order bits of

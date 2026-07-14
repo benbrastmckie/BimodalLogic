@@ -608,22 +608,43 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 13: (E1) exterior fiber kit + single-fiber R3 probe [IN PROGRESS]
+### Phase 13: (E1) exterior fiber kit + single-fiber R3 probe [COMPLETED]
 
 - **Goal:** The 7-zone fiber partition kit for the exterior channels + the R3 adjudication probe, in new
   module `Kamp/NfMultiAnchorBridge/ExteriorFiberKitK1.lean`.
 - **Rabinovich anchor:** Lemma 3.2(2) split (chunk_0009); Def 7.13 multi-anchor
   `(z0,…,zk,∞)-∨→∃∀` conjunction form (chunk_0023).
 - **Tasks:**
-  - [ ] **R3 ADJUDICATION PROBE (first task):** for ONE concrete qnf with the w<x channel, encode one
+  - [x] **R3 ADJUDICATION PROBE (first task):** for ONE concrete qnf with the w<x channel, encode one
     bit-true and one bit-false inner fiber end-to-end through the intended device and prove its clause
     iff. On failure: [BLOCKED] + the exact fiber + qnf pattern — do NOT generalize (E2 does not dispatch).
-  - [ ] `extZoneFiber_k1`: apply `nf_eval_depth1_fold_iff` at n=3, env `[w,x,t]`, partitioning the
+    *(PASSED: `extProbe_clause_iff` — probe qnf = w<x-channel order row `extProbeRow` + Classical
+    single-true-bit quant layer `extProbeQuant` targeted at `nf0_assemble extZBelowW extProbeChi
+    extProbeRow`. Bit-TRUE fiber (zone v<w, `extProbeChi`) realized (`extProbe_bitTrue_realized`);
+    bit-FALSE interior fiber (zone x<v<t, same χ) excluded (`extProbe_bitFalse_excluded`). End-to-end
+    through `nf_eval_depth1_fold_iff` at n=3 + the `nf0_{zoneSpec,projFresh,dropFresh}_assemble`
+    round-trips + the per-zone readings. First PROVED item, committed green before the general kit
+    landed (commit 8b4cafcc0). R3 retired for the E1 device.)*
+  - [x] `extZoneFiber_k1`: apply `nf_eval_depth1_fold_iff` at n=3, env `[w,x,t]`, partitioning the
     depth-1 layer into monadic clauses over the 7 order-consistent zones of w<x<t
     (`v<w, v=w, w<v<x, v=x, x<v<t, v=t, t<v`).
-  - [ ] `extZone_consistent_*` falsity lemmas for order-channel-inconsistent qnf (delivered
+    *(Landed: 7 zone constants `extZBelowW/extZAtW/extZIntWX/extZAtX/extZIntXT/extZAtT/extZAboveT`
+    via `ext3Mk` over the delivered `agg2Ltz/Eqz/Gtz` pairs; arity-3 cons reading
+    `ext3_zoneHolds_cons_iff` + builder `ext3_zs_ext`; 7 per-zone `extZ_*_holds_iff` monadic readings;
+    `extZoneFiber_k1` = atom layer + 7 per-zone biconditional fiber clauses + inconsistent-zone
+    falsity conjunct + off-fiber honesty clause, manual G5 bridges both directions.)*
+  - [x] `extZone_consistent_*` falsity lemmas for order-channel-inconsistent qnf (delivered
     `agg2_zone_consistent_*` technique, arity-3 instance).
-  - [ ] Scoped build green; axiom checks; commit.
+    *(`extZone_consistent_lt` routing lemma — realized zone spec is one of the 7 consistent zones,
+    nested `lt_trichotomy` + `k1v_bool_eq_false`/`ext3_zs_ext`, exact agg2 technique at arity 3 —
+    plus `extZone_inconsistent_false` — fold bit of every inconsistent fiber forced false under any
+    realizer, via the fold engine.)*
+  - [x] Scoped build green; axiom checks; commit.
+    *(Scoped 1033 jobs + aggregator 1045 jobs + full `lake build` 1748 jobs green; `lean_verify` on
+    `extProbe_clause_iff`, `extZoneFiber_k1`, `extZone_consistent_lt`, `extZone_inconsistent_false` =
+    exactly `[propext, Classical.choice, Quot.sound]`, no warnings; sorry census over
+    NfMultiAnchorBridge/: 0; module 631 lines; aggregator import + NOTE added after
+    AggregatePointMergeK1; no frozen-file / KampPrior / task-358 edits.)*
 - **DoD shape:** the single-fiber probe iff green; `extZoneFiber_k1` + consistency falsity landed.
 - **Timing:** ~1.5 hours (~250-350 lines) — **Depends on:** 11
 - **Files:** `Kamp/NfMultiAnchorBridge/ExteriorFiberKitK1.lean` (new); one import line

@@ -68,6 +68,14 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDis
 -- is an acyclic leaf importing only `AggregateHookDischarge` (above); nothing in that
 -- closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregatePointMergeK1
+-- NOTE (task 350 Phase 13): thread the E1 exterior fiber kit (the 7-zone fiber partition
+-- of the depth-1 fold at n=3, env [w,x,t]: `extZoneFiber_k1`, the routing lemma
+-- `extZone_consistent_lt` + inconsistent-fiber falsity `extZone_inconsistent_false`, and
+-- the R3 single-fiber adjudication probe `extProbe_clause_iff`) into the root build for
+-- the Phase 14a-14c exterior navigated carriers. Cycle-free: `ExteriorFiberKitK1` is an
+-- acyclic leaf importing only `AggregateHookDischarge` (above); nothing in that closure
+-- imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberKitK1
 -- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
 -- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
 -- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation
