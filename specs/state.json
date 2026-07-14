@@ -1861,7 +1861,7 @@
       "project_name": "repair_bimodaltest_test_suite",
       "title": "Repair BimodalTest test suite",
       "description": "Repair the BimodalTest test-suite root, which fails at baseline. Tests/BimodalTest/Automation/TacticsTest.lean has ~94 pre-existing errors from stale `DerivationTree [] φ` applications predating the frame-class generalization, and ~17 other files under the BimodalTest root (e.g. DerivationTest.lean) are broken for related reasons. Tasks 187/188/189 routed their new tests into fresh files to avoid this. Goal: bring `lake build BimodalTest` fully green (update stale DerivationTree applications to the frame-class-parameterized form), so the aggregate test target builds again. Zero sorries.",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "testing",
       "dependencies": [],
@@ -1873,15 +1873,16 @@
       "created": "2026-07-14T00:00:00Z",
       "next_artifact_number": 1,
       "parent_task": "orchestrate batch 187-194",
-      "last_updated": "2026-07-14T18:38:49Z",
-      "session_id": "sess_1784053407_4f1694_365"
+      "last_updated": "2026-07-14T19:55:08Z",
+      "session_id": "sess_1784053407_4f1694_365",
+      "completion_summary": "Brought `lake build BimodalTest` fully green (1795 jobs, exit 0) with zero sorries. Fixed 8 API-drift categories across ~21 imported test modules: DerivationTree fc-parameterization sweep, removed temp_a/temp_l axiom migration, deduction_theorem relocation, TaskFrame API, automation/sorry-cascade. Whole-project build also green (no regression)."
     },
     {
       "project_number": 366,
       "project_name": "repair_or_boneyard_orphaned_metalogic_files",
       "title": "Repair or boneyard orphaned metalogic files",
       "description": "Resolve pre-broken/orphaned Metalogic files excluded from the task-194 Nonempty->Derivable migration. (1) Metalogic/Core/RestrictedMCS/Deferral.lean and Metalogic/Algebraic/AlgebraicCompleteness.lean are broken for reasons unrelated to the migration and are orphaned from the default build target — either repair them or move them to a boneyard. (2) Clean up 3 orphaned aggregator modules noted during the migration. (3) Fix stale `ContextDerivable`/`ContextConsistent` prose in Theories/Bimodal/latex/subfiles/04-Metalogic.tex (those defs were deleted in task 194). Any repaired file must reach green under a scoped `lake build`; zero sorries.",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "formula-refactor",
       "dependencies": [],
@@ -1893,8 +1894,9 @@
       "created": "2026-07-14T00:00:00Z",
       "next_artifact_number": 1,
       "parent_task": "orchestrate batch 187-194",
-      "last_updated": "2026-07-14T18:38:52Z",
-      "session_id": "sess_1784053407_4f1694_366"
+      "last_updated": "2026-07-14T19:55:11Z",
+      "session_id": "sess_1784053407_4f1694_366",
+      "completion_summary": "Resolved orphaned Metalogic files via repair-then-boneyard: repaired Deferral.lean (added Bundle open) and AlgebraicCompleteness.lean (fixed misplaced trivial arg), relocated both to Boneyard/, deleted 3 orphaned aggregators (Core.lean, Algebraic.lean, FMP.lean), fixed stale ContextDerivable prose in 04-Metalogic.tex. Default lake build green (1759 jobs); zero new sorries."
     },
     {
       "project_number": 367,

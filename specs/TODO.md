@@ -12,7 +12,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,365,366,367 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,367 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,367 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -31,7 +31,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Formula Refactor
 
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-366 [PLANNED] — Resolve pre-broken/orphaned Metalogic files excluded from the tas
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -102,10 +101,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet
 
-### Testing
-
-365 [PLANNED] — Repair the BimodalTest test-suite root, which fails at baseline. 
-
 ### Uncategorized
 
 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
@@ -137,7 +132,7 @@ REFERENCES: specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/ph
 ---
 
 ### 366. Repair or boneyard orphaned metalogic files
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: None
@@ -147,7 +142,7 @@ REFERENCES: specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/ph
 ---
 
 ### 365. Repair BimodalTest test suite
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: testing
 - **Dependencies**: None
