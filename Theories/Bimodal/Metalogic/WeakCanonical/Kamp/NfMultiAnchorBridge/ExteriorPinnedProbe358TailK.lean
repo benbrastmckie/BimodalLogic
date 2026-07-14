@@ -89,7 +89,21 @@ over the SAME real tail — no free env), and the m = 0 layer, the k ≤ 1 rungs
 
 Probe conventions: template copies of `ExteriorPinnedProbe358K.lean` (model shape, private
 cast, public certificates). Purely additive NEW leaf probe module; no production file is
-touched. -/
+touched.
+
+## SUPERSESSION NOTE (task 367 — docstring-only; every statement below is byte-stable)
+
+The escalation prescribed by this probe's verdict has LANDED: task 367's hereditary
+deep-anchor guard `kvE_deepOnFiber` (`ExteriorFiberDeepAnchorK.lean`) now replaces the
+depth-0 row antecedent `nfk_dropFresh σ = qnf.1` in the rows-8-9 binders and keys the
+bracket range. Successor certificates (`ExteriorFiberDeepAnchorProbe367K.lean`):
+`kvE_probe367_tailDG_deep_rejected` (THIS module's `m3sigma` fails the deep anchor w.r.t.
+the real ambient — the population statement below is about the OLD depth-0 anchor and is
+superseded, not falsified), `kvE_probe367_real_slice_deep_anchored` (honest anchoring
+preserved), `kvE_probe367_depth2DG_deep_rejected` (depth-2 hereditary re-plant rejected),
+`kvE_probe367_copyPlant_collapses` (content-copying plant collapses to the honest slice).
+Both certificates below remain TRUE and compiling as the permanent regression record; the
+general-m G1/G2 supply against the refined interface is task-358 scope (`/revise 358`). -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 

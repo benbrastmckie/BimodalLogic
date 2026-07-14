@@ -370,39 +370,39 @@ only.
 
 ---
 
-### Phase 5: Full re-probe gate — the definition of done [NOT STARTED]
+### Phase 5: Full re-probe gate — the definition of done [COMPLETED]
 
 **Goal**: Machine-adjudicate the task's definition of done against the landed production
 interface: tail-doppelganger excluded, all prior GO certificates green, frozen layers
 byte-unchanged, zero debt.
 
 **Tasks**:
-- [ ] **Successor guard-level certificates** (production definitions): the Phase-1/2/3
+- [x] **Successor guard-level certificates** (production definitions): the Phase-1/2/3
       certificates restated against `kvE_deepOnFiber` —
       `kvE_probe367_tailDG_deep_rejected` (the fake slice is outside the restated rows-8-9
       obligation population), `kvE_probe367_real_slice_deep_anchored` (honest anchoring
       preserved), and the surviving adversarial gate 3 certificates — all sorry-free at floor
       axioms, zero guard-unfoldings.
-- [ ] **358 tail-record supersession**: keep `kvE_probe358_tailDG_gapItem_pinned_fails` and
+- [x] **358 tail-record supersession**: keep `kvE_probe358_tailDG_gapItem_pinned_fails` and
       `kvE_probe358_tailDG_sigma_in_population` compiling BYTE-STABLE as the permanent
       regression record (both remain true — the depth-0 facts hold; the population statement
       is about the OLD depth-0 anchor); add a docstring-only supersession note in
       `ExteriorPinnedProbe358TailK.lean` pointing at the task-367 successor certificates
       (statement bytes unchanged; the 364 precedent for the 358K docstring).
-- [ ] **Prior GO re-verification**: `lean_verify` sweep at floor axioms, no sorryAx, over: all
+- [x] **Prior GO re-verification** *(completed — 363: 9 certs, 364: 11 certs, kvE_probe358_eP_atomMate_present, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical — all [propext, Classical.choice, Quot.sound], no sorryAx)*: `lean_verify` sweep at floor axioms, no sorryAx, over: all
       8 task-363 GO certificates (`ExteriorFiberConsistencyProbeK.lean`), the task-364 set
       (`kvE_probe364_sigma2_inadmissible`, `kvE_probe364_sstar_honest_unrealizable`, plant/
       honest/replant certs in `ExteriorFiberConsistencyProbe364K.lean`), the historical
       `kvE_probe358_eP_atomMate_present`, and the M1 residual records
       (`kvE_probeM1_interiorHreal_NOGO`, `kvE_probeM1_interiorGuard_identical`).
-- [ ] **Frozen-layer diff audit**: `git diff --name-only` over the task's full change set
+- [x] **Frozen-layer diff audit** *(completed — all nine frozen files byte-identical to baseline 1fa31549f; change set = Phase-4 list + probe leaf + 358TailK docstring)*: `git diff --name-only` over the task's full change set
       confirms byte-unchanged: `ExteriorFiberConsistencyK.lean`,
       `ExteriorFiberConsistencyProbeK.lean`, `ExteriorFiberConsistencyProbe364K.lean`,
       `ExteriorNegationK.lean`, `ExteriorNegationPastK.lean`, the m=0 kernels in
       `ExteriorPinnedConverse{,Past}K.lean`, task 360's m=0 supply, and
       `kampPrior_case1_arm_k0` / k<=1 rungs. Change set is exactly Phase 4's file list plus
       the probe leaf and the 358TailK docstring.
-- [ ] **Zero-debt audit**: full `lake build` green; repo-wide sorry count unchanged (exactly
+- [x] **Zero-debt audit** *(completed — full lake build green; lean-only sorry tokens 835=835 vs baseline, Kamp-path proof sorries exactly KampPrior :519/:522; axioms 2=2; vacuous scan: one pre-existing legitimate Examples hit only; zero kvE_deepOnFiber unfoldings outside home module)*: full `lake build` green; repo-wide sorry count unchanged (exactly
       `KampPrior.lean:519`/`:522` — line numbers may shift; count and identity must not);
       no vacuous defs (`def _ := True`-class scan); `lean_verify` on every new/changed
       certificate; source scan confirms zero unfoldings of `kvE_deepOnFiber`,
