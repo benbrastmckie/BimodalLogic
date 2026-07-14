@@ -687,16 +687,33 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 14b: (E3) w-independent distribution `navDistribLeft` [NOT STARTED]
+### Phase 14b: (E3) w-independent distribution `navDistribLeft` [COMPLETED]
 
 - **Goal:** Distribute the w-independent parts out of the `∃w`.
 - **Rabinovich anchor:** **Lemma 7.6** gluing decomposition (chunk_0021).
 - **Tasks:**
-  - [ ] `navDistribLeft`: v=x char → `endpointLeft` conjunct; x<v<t fibers → (x,t) bracket arrangement
+  - [x] `navDistribLeft`: v=x char → `endpointLeft` conjunct; x<v<t fibers → (x,t) bracket arrangement
     slots + exclusion segment; v=t, t<v, atoms at t → `endpointRight`. (This peeling is what avoids both
     refutations: no monadic re-fibering of joint depth-1 content (F1); no single predicate carrying
     t-reads (world-locality).)
-  - [ ] Scoped build green; axiom checks; commit.
+    *(Landed in ExteriorNavPastK1.lean: `navDistribLeft` — under ambient x<t,
+    `∃ w < x, nf_eval [w,x,t] σ` ↔ `navPackLeft`@x ∧ `navDAtXPack`@x ∧ (x,t)-arrangement disjunct ∧
+    `navDAtTPack`@t ∧ `navDOrderRow` ∧ inconsistent-zone falsity ∧ off-fiber honesty. Slot components:
+    `navDAtXPack` = position-1 projection char + extZAtX char bitGroup (endpointLeft conjunct);
+    `navDXTBracket` = BracketFormula.snoc-recursive arrangement (one witness slot per bit-true
+    extZIntXT profile, head = slot nearest t) with `navDXTSegGuard` exclusion segment on EVERY gap,
+    fiber iff `navDXTBracket_arrangements_iff` via sound/complete list inductions crossing the
+    Fin bridge through `BracketFormula.snoc_holds_iff`/`trivial_holds` (VecEAConjFull import added);
+    `navDAtTPack` = position-2 projection char + extZAtT char bitGroup + extZAboveT future
+    Until-lit bitGroup (`navDFutLit` = `U(charF χ, ⊤)`, dual of `navLPastLit`) — every t-read at its
+    own pin (world-locality); `navD_atomLayer_iff` splits the arity-3 atom layer into the three
+    per-position predicate layers + the w-independent order row `navDOrderRow`.)*
+  - [x] Scoped build green; axiom checks; commit.
+    *(Scoped module 1035 jobs + aggregator 1046 + full `lake build` 1749 green; `lean_verify` on
+    `navDistribLeft` and `navDXTBracket_arrangements_iff` = exactly
+    `[propext, Classical.choice, Quot.sound]`, no warnings; sorry census over NfMultiAnchorBridge/: 0
+    (compiler cross-check: all 30 project-wide sorry warnings pre-existing, outside territory);
+    vacuous/axiom counts unchanged from HEAD baseline; no frozen-file / KampPrior / task-358 edits.)*
 - **DoD shape:** `navDistribLeft` distribution lemmas green.
 - **Timing:** ~1.5 hours (~200-300 lines) — **Depends on:** 14a
 - **Files:** `Kamp/NfMultiAnchorBridge/ExteriorNavPastK1.lean`
