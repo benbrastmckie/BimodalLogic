@@ -238,21 +238,23 @@ validator and unit tests.
 
 ---
 
-### Phase 4: splits regeneration (sub-item 1) [NOT STARTED]
+### Phase 4: splits regeneration (sub-item 1) [COMPLETED]
 
 **Goal**: `data/bmlogic-bench-splits.json` regenerated with correct classification for the 15
 formerly-null records and a verified exact partition of all 777 IDs.
 
 **Tasks**:
-- [ ] Fix hardcoded `"generation_date": "2026-05-29"` at `data/scripts/generate_splits.py:137`
-      to use `date.today().isoformat()`
-- [ ] Run `python data/scripts/generate_splits.py` (defaults: `--bench data/bmlogic-bench.jsonl
+- [x] Fix hardcoded `"generation_date": "2026-05-29"` at `data/scripts/generate_splits.py:137`
+      to use `date.today().isoformat()` *(completed)*
+- [x] Run `python data/scripts/generate_splits.py` (defaults: `--bench data/bmlogic-bench.jsonl
       --out data/bmlogic-bench-splits.json`); script self-asserts exact partition at :112
-- [ ] Explicit slice checks for formerly-null records: 00134/00593/00774 (`□p`, `□⊥`, `□q`) in
+      *(completed: 73/149/378/177 = 777)*
+- [x] Explicit slice checks for formerly-null records: 00134/00593/00774 (`□p`, `□⊥`, `□q`) in
       modal-only; 00286/00737 (`S(p,⊤)`, `U(p,⊤)`-shaped) in temporal-only; 00196/00339 (mixed
       `□`+`→`) NOT in propositional-only; 00168/00179/00049/00423/00268/00368/00660/00688
-      remain propositional-only
-- [ ] Verify slice sizes sum to 777 and every ID appears in exactly one slice
+      remain propositional-only *(completed: all placements verified)*
+- [x] Verify slice sizes sum to 777 and every ID appears in exactly one slice *(completed:
+      0 missing / 0 extra / 0 multi-assigned)*
 
 **Timing**: 0.5 hours
 

@@ -1,0 +1,14 @@
+{
+  "phase": 4,
+  "phase_name": "splits regeneration (sub-item 1)",
+  "started_at": "2026-07-14T01:10:00Z",
+  "last_updated": "2026-07-14T01:15:00Z",
+  "objectives": [
+    {"id": 1, "description": "Fix hardcoded generation_date in generate_splits.py", "status": "done", "files_touched": ["data/scripts/generate_splits.py"]},
+    {"id": 2, "description": "Regenerate splits + verify exact partition and formerly-null slice placement", "status": "done", "files_touched": ["data/bmlogic-bench-splits.json"]}
+  ],
+  "current_objective": 2,
+  "approaches_tried": [],
+  "deviations": [],
+  "handoff_count": 0
+}
