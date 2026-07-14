@@ -75,7 +75,7 @@ next_project_number: 368
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [PARTIAL] — exhaustive_enumeration_by_default
 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
-298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+298 [IMPLEMENTING] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
 ### Reference Book
 
@@ -449,12 +449,13 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 298. Fix c7 labeling bug and regenerate dataset
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 297, Task 343
 - **Research**: [298_fix_c7_labeling_bug_and_regenerate_dataset/reports/01_c7-labeling-bug.md]
 - **Plan**: [298_fix_c7_labeling_bug_and_regenerate_dataset/plans/01_c7-labeling-bug.md]
+- **Summary**: [298_fix_c7_labeling_bug_and_regenerate_dataset/summaries/01_c7-labeling-bug-summary.md]
 
 **Description**: Fix c7 labeling bug at formula ~13750 that causes unbounded memory growth in the decision procedure's timeout handling, then regenerate the full c7 dataset. During task 297 dataset regeneration, all 3 attempts to generate c7 stalled at exactly record 13,749 with RSS growing ~40MB/6s. The labeling function enters an apparent infinite loop or unbounded search for formula #13,750 in the sorted enumeration order. The timeout mechanism either does not fire or cannot interrupt the stuck state. Steps: (1) Identify the specific formula at position ~13,750 in the c7 enumeration. (2) Reproduce the hang in isolation with that formula. (3) Diagnose whether the decision procedure's timeout is failing to fire or the procedure is in an uninterruptible state. (4) Fix the timeout handling so it reliably terminates. (5) Regenerate the full c7 dataset (target: 77,272 records)
 

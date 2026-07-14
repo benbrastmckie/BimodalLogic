@@ -1,7 +1,7 @@
 # Implementation Plan: Task #298
 
 - **Task**: 298 - Fix c7 labeling bug and regenerate dataset
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/298_fix_c7_labeling_bug_and_regenerate_dataset/reports/01_c7-labeling-bug.md
