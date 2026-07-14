@@ -224,4 +224,228 @@ private theorem m1_sstar_not_pinned (z x1'' : ℤ) :
     have hPu : u = 0 ∨ u = 10 ∨ u = 20 := (hu (.pred () (0 : Fin 6))).mpr hec2
     omega
 
+/-! ## Zone-spec computations -/
+
+/-- Generic zone computation for a depth-1 arity-5 characteristic: the zone spec of
+    `nf_characteristic M1M 1 5 (Fin.cons c env)` is the pointwise coupling record of `c`
+    against `env`. -/
+private theorem m1_zone_char (c : ℤ) (env : Fin 4 → M1M.carrier) (p : ZoneSpec 4)
+    (hc : ∀ i : Fin 4, ((c < env i) ↔ (p i).1 = true) ∧ ((env i < c) ↔ (p i).2 = true)) :
+    nfk_zoneSpec (nf_characteristic M1M 1 5 (Fin.cons c env)) = p := by
+  funext i
+  refine Prod.ext ?_ ?_
+  · cases hp : (p i).1 with
+    | true =>
+      exact @decide_eq_true
+        (atom_eval M1M (Fin.cons c env) (.order 0 i.succ (Fin.succ_ne_zero i).symm))
+        (Classical.dec _) ((hc i).1.mpr hp)
+    | false =>
+      exact @decide_eq_false
+        (atom_eval M1M (Fin.cons c env) (.order 0 i.succ (Fin.succ_ne_zero i).symm))
+        (Classical.dec _)
+        (fun hcc => Bool.noConfusion (hp.symm.trans ((hc i).1.mp hcc)))
+  · cases hp : (p i).2 with
+    | true =>
+      exact @decide_eq_true
+        (atom_eval M1M (Fin.cons c env) (.order i.succ 0 (Fin.succ_ne_zero i)))
+        (Classical.dec _) ((hc i).2.mpr hp)
+    | false =>
+      exact @decide_eq_false
+        (atom_eval M1M (Fin.cons c env) (.order i.succ 0 (Fin.succ_ne_zero i)))
+        (Classical.dec _)
+        (fun hcc => Bool.noConfusion (hp.symm.trans ((hc i).2.mp hcc)))
+
+/-- `s*` sits in the GAP zone (`22 ∈ (21, 25)` relative to its own tail — the same zone
+    spec as `22 ∈ (18, 25)` relative to the pinned tail). -/
+private theorem m1_sstar_zone : nfk_zoneSpec m1sstar = kvE_futGapZone := by
+  refine m1_zone_char 22 m1envF kvE_futGapZone ?_
+  intro i
+  match i with
+  | ⟨0, _⟩ =>
+    exact ⟨iff_of_true (show (22 : ℤ) < 25 by omega) rfl,
+           iff_of_false (show ¬((25 : ℤ) < 22) by omega) Bool.false_ne_true⟩
+  | ⟨1, _⟩ =>
+    exact ⟨iff_of_false (show ¬((22 : ℤ) < 15) by omega) Bool.false_ne_true,
+           iff_of_true (show (15 : ℤ) < 22 by omega) rfl⟩
+  | ⟨2, _⟩ =>
+    exact ⟨iff_of_false (show ¬((22 : ℤ) < 2) by omega) Bool.false_ne_true,
+           iff_of_true (show (2 : ℤ) < 22 by omega) rfl⟩
+  | ⟨3, _⟩ =>
+    exact ⟨iff_of_false (show ¬((22 : ℤ) < 21) by omega) Bool.false_ne_true,
+           iff_of_true (show (21 : ℤ) < 22 by omega) rfl⟩
+
+/-- Honest gap elements: the depth-1 5-type of any `r ∈ (18, 25)` over the PINNED tail sits
+    in the gap zone. -/
+private theorem m1_honest_gap_zone (r : ℤ) (h1 : (18 : ℤ) < r) (h2 : r < 25) :
+    nfk_zoneSpec (nf_characteristic M1M 1 5 (Fin.cons r m1env4)) = kvE_futGapZone := by
+  refine m1_zone_char r m1env4 kvE_futGapZone ?_
+  intro i
+  match i with
+  | ⟨0, _⟩ =>
+    exact ⟨iff_of_true h2 rfl,
+           iff_of_false (show ¬((25 : ℤ) < r) by omega) Bool.false_ne_true⟩
+  | ⟨1, _⟩ =>
+    exact ⟨iff_of_false (show ¬(r < (15 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true (show (15 : ℤ) < r by omega) rfl⟩
+  | ⟨2, _⟩ =>
+    exact ⟨iff_of_false (show ¬(r < (2 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true (show (2 : ℤ) < r by omega) rfl⟩
+  | ⟨3, _⟩ =>
+    exact ⟨iff_of_false (show ¬(r < (18 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true h1 rfl⟩
+
+/-- Honest ray elements: the depth-1 5-type of any `v > 25` over the PINNED tail sits in
+    the ray zone. -/
+private theorem m1_honest_ray_zone (v : ℤ) (hv : (25 : ℤ) < v) :
+    nfk_zoneSpec (nf_characteristic M1M 1 5 (Fin.cons v m1env4)) = kvE_futRayZone := by
+  refine m1_zone_char v m1env4 kvE_futRayZone ?_
+  intro i
+  match i with
+  | ⟨0, _⟩ =>
+    exact ⟨iff_of_false (show ¬(v < (25 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true hv rfl⟩
+  | ⟨1, _⟩ =>
+    exact ⟨iff_of_false (show ¬(v < (15 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true (show (15 : ℤ) < v by omega) rfl⟩
+  | ⟨2, _⟩ =>
+    exact ⟨iff_of_false (show ¬(v < (2 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true (show (2 : ℤ) < v by omega) rfl⟩
+  | ⟨3, _⟩ =>
+    exact ⟨iff_of_false (show ¬(v < (18 : ℤ)) by omega) Bool.false_ne_true,
+           iff_of_true (show (18 : ℤ) < v by omega) rfl⟩
+
+/-- The honest self element: the depth-1 5-type of `25` itself over the PINNED tail sits in
+    the self zone. -/
+private theorem m1_honest_self_zone :
+    nfk_zoneSpec (nf_characteristic M1M 1 5 (Fin.cons 25 m1env4)) = kvE_futSelfZone := by
+  refine m1_zone_char 25 m1env4 kvE_futSelfZone ?_
+  intro i
+  match i with
+  | ⟨0, _⟩ =>
+    exact ⟨iff_of_false (show ¬((25 : ℤ) < 25) by omega) Bool.false_ne_true,
+           iff_of_false (show ¬((25 : ℤ) < 25) by omega) Bool.false_ne_true⟩
+  | ⟨1, _⟩ =>
+    exact ⟨iff_of_false (show ¬((25 : ℤ) < 15) by omega) Bool.false_ne_true,
+           iff_of_true (show (15 : ℤ) < 25 by omega) rfl⟩
+  | ⟨2, _⟩ =>
+    exact ⟨iff_of_false (show ¬((25 : ℤ) < 2) by omega) Bool.false_ne_true,
+           iff_of_true (show (2 : ℤ) < 25 by omega) rfl⟩
+  | ⟨3, _⟩ =>
+    exact ⟨iff_of_false (show ¬((25 : ℤ) < 18) by omega) Bool.false_ne_true,
+           iff_of_true (show (18 : ℤ) < 25 by omega) rfl⟩
+
+/-- Zone separation: the gap zone is not the self zone (head couplings `(true, false)` vs
+    `(false, false)`). -/
+private theorem m1_gap_ne_self : kvE_futGapZone ≠ kvE_futSelfZone := fun h =>
+  Bool.noConfusion (congrArg (fun zs : ZoneSpec 4 => (zs 0).1) h)
+
+/-- Zone separation: the gap zone is not the ray zone (head couplings `(true, false)` vs
+    `(false, true)`). -/
+private theorem m1_gap_ne_ray : kvE_futGapZone ≠ kvE_futRayZone := fun h =>
+  Bool.noConfusion (congrArg (fun zs : ZoneSpec 4 => (zs 0).1) h)
+
+/-! ## Atom-fiber facts -/
+
+/-- **The doppelgänger evasion**: `s*` sits on the PINNED atom fiber — dropping the fresh
+    variable from `s*`'s atom layer recovers `τ`'s atom layer exactly, because the depth-0
+    atom 4-type cannot separate the tail `[25, 15, 2, 21]` from `[25, 15, 2, 18]`. -/
+private theorem m1_sstar_dropFresh : nfk_dropFresh m1sstar = m1tau.1 := by
+  have h1521 : (15 : ℤ) < 21 := by omega
+  have h1518 : (15 : ℤ) < 18 := by omega
+  have h221 : (2 : ℤ) < 21 := by omega
+  have h218 : (2 : ℤ) < 18 := by omega
+  have h2125 : (21 : ℤ) < 25 := by omega
+  have h1825 : (18 : ℤ) < 25 := by omega
+  have hn2521 : ¬((25 : ℤ) < 21) := by omega
+  have hn2518 : ¬((25 : ℤ) < 18) := by omega
+  have hn2115 : ¬((21 : ℤ) < 15) := by omega
+  have hn1815 : ¬((18 : ℤ) < 15) := by omega
+  have hn212 : ¬((21 : ℤ) < 2) := by omega
+  have hn182 : ¬((18 : ℤ) < 2) := by omega
+  have hn2121 : ¬((21 : ℤ) < 21) := by omega
+  have hn1818 : ¬((18 : ℤ) < 18) := by omega
+  have hP21 : ¬((21 : ℤ) = 0 ∨ (21 : ℤ) = 10 ∨ (21 : ℤ) = 20) := by omega
+  have hP18 : ¬((18 : ℤ) = 0 ∨ (18 : ℤ) = 10 ∨ (18 : ℤ) = 20) := by omega
+  funext a
+  cases a with
+  | pred p i =>
+    simp only [nfk_dropFresh, nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    match i with
+    | ⟨0, _⟩ => rfl
+    | ⟨1, _⟩ => rfl
+    | ⟨2, _⟩ => rfl
+    | ⟨3, _⟩ => exact decide_eq_decide.mpr (iff_of_false hP21 hP18)
+  | order i j h =>
+    simp only [nfk_dropFresh, nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    match i, j with
+    | ⟨0, _⟩, ⟨0, _⟩ => rfl
+    | ⟨0, _⟩, ⟨1, _⟩ => rfl
+    | ⟨0, _⟩, ⟨2, _⟩ => rfl
+    | ⟨0, _⟩, ⟨3, _⟩ => exact decide_eq_decide.mpr (iff_of_false hn2521 hn2518)
+    | ⟨1, _⟩, ⟨0, _⟩ => rfl
+    | ⟨1, _⟩, ⟨1, _⟩ => rfl
+    | ⟨1, _⟩, ⟨2, _⟩ => rfl
+    | ⟨1, _⟩, ⟨3, _⟩ => exact decide_eq_decide.mpr (iff_of_true h1521 h1518)
+    | ⟨2, _⟩, ⟨0, _⟩ => rfl
+    | ⟨2, _⟩, ⟨1, _⟩ => rfl
+    | ⟨2, _⟩, ⟨2, _⟩ => rfl
+    | ⟨2, _⟩, ⟨3, _⟩ => exact decide_eq_decide.mpr (iff_of_true h221 h218)
+    | ⟨3, _⟩, ⟨0, _⟩ => exact decide_eq_decide.mpr (iff_of_true h2125 h1825)
+    | ⟨3, _⟩, ⟨1, _⟩ => exact decide_eq_decide.mpr (iff_of_false hn2115 hn1815)
+    | ⟨3, _⟩, ⟨2, _⟩ => exact decide_eq_decide.mpr (iff_of_false hn212 hn182)
+    | ⟨3, _⟩, ⟨3, _⟩ => exact decide_eq_decide.mpr (iff_of_false hn2121 hn1818)
+
+/-- The fiber guard: dropping the fresh (x1) variable from `σ`'s atom layer recovers the
+    ambient's atom layer (`f2_drop_char` pattern — the tails coincide literally). -/
+private theorem m1_sigma_dropFresh : nfk_dropFresh m1sigma = m1qnf.1 := by
+  funext a
+  cases a with
+  | pred p i =>
+    simp only [nfk_dropFresh, nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    rfl
+  | order i j h =>
+    simp only [nfk_dropFresh, nf0_dropFresh, mergeNF, skipFin_zero_succ]
+    rfl
+
+/-! ## `s*` sits in `σ`'s gap list -/
+
+/-- `σ` marks `s*` (by construction). -/
+private theorem m1_sigma_marks_sstar : m1sigma.2 m1sstar = true := by
+  show (if m1sstar = m1sstar then true else m1tau.2 m1sstar) = true
+  rw [if_pos rfl]
+
+/-- `s* ∈ kvE_fiberZoneList m1sigma kvE_futGapZone`. -/
+private theorem m1_sstar_mem_gapList :
+    m1sstar ∈ kvE_fiberZoneList m1sigma kvE_futGapZone :=
+  (kvE_fiberZoneList_mem m1sigma kvE_futGapZone m1sstar).mpr
+    ⟨m1_sigma_marks_sstar, m1_sstar_zone⟩
+
+/-! ## The conclusion failure: no admissible slice-equal qnf-marked mate -/
+
+/-- **The `hsliceFut`/identification CONCLUSION fails for `σ`**: there is NO
+    `σ' : NormalForm m1sig 2 4` that is admissible, slice-equal to `σ`, and marked by the
+    honest ambient. Any qnf-marked σ' is realized at some `[x1'', 15, 2, 18]`; slice
+    equality forces `s*` into σ''s gap list, so σ''s realization demands a pinned witness
+    for `s*` over `[x1'', 15, 2, 18]` — refuted by `m1_sstar_not_pinned`. -/
+private theorem m1_no_marked_mate :
+    ¬ ∃ σ' : NormalForm m1sig 2 4, kvE_futAdmissible σ' = true ∧
+        kvE_futSliceEq σ' m1sigma = true ∧ m1qnf.2 σ' = true := by
+  rintro ⟨σ', -, hslEq, hmark⟩
+  -- the marked mate is realized at some ambient-tail anchor
+  obtain ⟨x1'', hx⟩ := @of_decide_eq_true
+    (∃ u : ℤ, nf_eval_nf M1M 2 4 (Fin.cons u m1env3) σ') (Classical.dec _) hmark
+  -- slice equality delivers gap-LIST equality
+  rw [kvE_futSliceEq, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hslEq
+  obtain ⟨⟨⟨-, hgapL⟩, -⟩, -⟩ := hslEq
+  have hgapL := of_decide_eq_true hgapL
+  -- s* transfers into σ''s gap list
+  have hmem : m1sstar ∈ kvE_fiberZoneList σ' kvE_futGapZone := by
+    rw [hgapL]
+    exact m1_sstar_mem_gapList
+  have hbit : σ'.2 m1sstar = true :=
+    ((kvE_fiberZoneList_mem σ' kvE_futGapZone m1sstar).mp hmem).1
+  -- σ''s realization forces a pinned witness for s* — contradiction
+  obtain ⟨zz, hzz⟩ := (hx.2 m1sstar).mpr hbit
+  exact m1_sstar_not_pinned zz x1'' hzz
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
