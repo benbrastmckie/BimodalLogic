@@ -20,6 +20,7 @@ import BimodalTest.Automation.LemmaDBTest
 import BimodalTest.Automation.DeductionTest
 import BimodalTest.Automation.C5SmokeTest
 import BimodalTest.Automation.NormalizationTest
+import BimodalTest.Automation.WeakeningSearchTest
 import BimodalTest.Integration.Helpers
 import BimodalTest.Integration.EndToEndTest
 import BimodalTest.Integration.ProofSystemSemanticsTest

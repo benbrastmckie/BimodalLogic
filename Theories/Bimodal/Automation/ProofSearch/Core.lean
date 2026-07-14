@@ -4,6 +4,7 @@ import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Automation.SuccessPatterns
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Perpetuity.Helpers
 
 /-!
 # Automated Proof Search
@@ -1018,15 +1019,58 @@ decreasing_by
 /--
 Match a formula against derived theorem patterns, returning a DerivationTree if matched.
 
-Currently handles:
+Only *computable* derived theorems participate: the returned proof term is data
+that `bounded_search_with_proof` constructs at runtime, so noncomputable
+candidates (`temp_4_derived`, `H_transitivity`, `lce_imp`, `rce_imp` — all
+defined via the noncomputable deduction theorem or in noncomputable sections)
+are excluded. Extending to those requires making them computable first.
+
+Currently handles (unambiguous head shapes, checked in order):
 - TF (temp_future_derived): `□φ → G(□φ)` -- derived from MF + T + Modal 4
+- box_to_future: `□φ → Gφ` -- MF + T composition
+- box_to_past: `□φ → Hφ` -- box_to_future + temporal duality
+- identity: `φ → φ` -- SKK construction
+- dni: `φ → ¬¬φ` -- double negation introduction
 -/
 def matchDerived (φ : Formula) : Option (⊢ φ) :=
   match φ with
-  | .imp (.box phi) (.all_future (.box phi')) =>
-      if h : phi = phi' then
-        some (h ▸ Bimodal.Theorems.Combinators.temp_future_derived phi)
-      else none
+  | .imp lhs rhs =>
+      -- TF (temp_future_derived): □φ → G(□φ) -- before box_to_future (more specific)
+      (match lhs, rhs with
+       | .box phi, .all_future (.box phi') =>
+           if h : phi = phi' then
+             some (h ▸ Bimodal.Theorems.Combinators.temp_future_derived phi)
+           else none
+       | _, _ => none)
+
+      -- box_to_future: □φ → Gφ
+      <|> (match lhs, rhs with
+           | .box phi, .all_future phi' =>
+               if h : phi = phi' then
+                 some (h ▸ Bimodal.Theorems.Perpetuity.box_to_future phi)
+               else none
+           | _, _ => none)
+
+      -- box_to_past: □φ → Hφ
+      <|> (match lhs, rhs with
+           | .box phi, .all_past phi' =>
+               if h : phi = phi' then
+                 some (h ▸ Bimodal.Theorems.Perpetuity.box_to_past phi)
+               else none
+           | _, _ => none)
+
+      -- identity: φ → φ
+      <|> (if h : lhs = rhs then
+             some (h ▸ Bimodal.Theorems.Combinators.identity lhs)
+           else none)
+
+      -- dni: φ → ¬¬φ (¬ψ unfolds to ψ → ⊥)
+      <|> (match lhs, rhs with
+           | phi, .imp (.imp phi' .bot) .bot =>
+               if h : phi = phi' then
+                 some (h ▸ Bimodal.Theorems.Combinators.dni phi)
+               else none
+           | _, _ => none)
   | _ => none
 
 /--
@@ -1078,21 +1122,30 @@ def bounded_search_with_proof (Γ : Context) (φ : Formula) (depth : Nat)
     else
       let visited := visited.insert key
 
-      -- Try axiom match first (via matchAxiom for proof construction)
-      match _hax : matchAxiom φ with
-      | some ⟨ψ, witness⟩ =>
-          -- We need to verify φ = ψ and frame class compatibility
-          if heq : φ = ψ then
-            if hfc : witness.minFrameClass ≤ FrameClass.Base then
-              (some (heq ▸ DerivationTree.axiom Γ ψ witness hfc), visited, visits)
+      -- Try axiom match first (via matchAxiom for proof construction).
+      -- Computed as an Option so that a frame-class mismatch (e.g. a
+      -- Dense/Discrete-only axiom under the Base frame class) or a formula
+      -- mismatch FALLS THROUGH to the derived/assumption/MP strategies
+      -- instead of short-circuiting the whole search (task 188 completeness fix).
+      let axiomAttempt : Option (Γ ⊢ φ) :=
+        match matchAxiom φ with
+        | some ⟨ψ, witness⟩ =>
+            -- We need to verify φ = ψ and frame class compatibility
+            if heq : φ = ψ then
+              if hfc : witness.minFrameClass ≤ FrameClass.Base then
+                some (heq ▸ DerivationTree.axiom Γ ψ witness hfc)
+              else
+                -- Axiom not compatible with Base frame class (e.g., discrete-only axioms)
+                none
             else
-              -- Axiom not compatible with Base frame class (e.g., discrete-only axioms)
-              (none, visited, visits)
-          else
-            -- Formula mismatch - this shouldn't happen with correct matchAxiom
-            (none, visited, visits)
+              -- Formula mismatch - this shouldn't happen with correct matchAxiom
+              none
+        | none => none
+      match axiomAttempt with
+      | some proof => (some proof, visited, visits)
       | none =>
-        -- Try derived theorems (e.g., temp_future_derived: □φ → G□φ)
+        -- Try derived theorems (e.g., temp_future_derived: □φ → G□φ),
+        -- lifted into the goal context via weakening from the empty context
         match matchDerived φ with
         | some d =>
             (some (DerivationTree.weakening [] Γ φ d (List.nil_subset Γ)), visited, visits)

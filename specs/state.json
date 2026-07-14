@@ -771,10 +771,10 @@
     {
       "project_number": 188,
       "project_name": "weakening_aware_search",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:37:37Z",
+      "last_updated": "2026-07-14T17:43:49Z",
       "artifacts": [
         {
           "path": "specs/188_weakening_aware_search/reports/01_weakening-aware-seed.md",
@@ -790,6 +790,11 @@
           "path": "specs/188_weakening_aware_search/plans/02_weakening-aware-search-plan.md",
           "type": "plan",
           "summary": "4 phases: (1) tryWeakenedDerivedMatch + shared derivedTheoremTable in Helpers.lean, 2h; (2) subset side-goal first-combinator for task-187 forward compat, 0.5h; (3) extend matchDerived + matchAxiom fall-through fix in Core.lean, 1.5h; (4) tests + negative/perf guard, 1h. Waves: [[1,3],[2],[4]]."
+        },
+        {
+          "path": "specs/188_weakening_aware_search/summaries/02_weakening-aware-search-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: reconciliation vs task 187, matchDerived extension, matchAxiom fall-through fix, new WeakeningSearchTest.lean, verification results, and plan deviations."
         }
       ],
       "topic": "automation",
