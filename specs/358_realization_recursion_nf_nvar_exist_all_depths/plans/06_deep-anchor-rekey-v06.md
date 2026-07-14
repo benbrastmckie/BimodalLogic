@@ -315,7 +315,22 @@ and Phase 5 (KampPrior/interior leaf) do not overlap. Phase 4 shares Phase 3's t
 - **Depends on:** none (Phase 1 complete).
 - **Territory:** read-only.
 
-### Phase 3: Exterior rows 8-9 supply at general m (deep-mate route) [NOT STARTED]
+### Phase 3: Exterior rows 8-9 supply at general m (deep-mate route) [COMPLETED]
+
+> **P3 outcome (2026-07-14, sess_1784059448_2c72f2_358)**: NEW leaf
+> `NfMultiAnchorBridge/ExteriorDeepSliceSupplyK.lean` — `kvE_hsliceFut_supply` /
+> `kvE_hslicePast_supply` at GENERAL k (binder-shape-exact), via the side-shared
+> mate-collapse kernel `kvE_deepMate_collapse` (+ `kvE_{fut,past}SliceEq_refl`). Adjudication
+> gate result: SliceEq needs NOTHING beyond row + deep content — the guard's mate collapses
+> to σ itself (Prod ext over a common marked fiber element; the
+> `kvE_probe367_copyPlant_collapses` mechanism), so the k>=1 arm concludes with σ' := σ.
+> k=0 discharges through `kvE_deepOnFiber_zero` + the FROZEN 360 `_zero` supplies (verbatim
+> consumption, zero edits). Machine gate: scoped build green (1031 jobs); all three new
+> theorems at floor axioms, no sorryAx; guard-unfold scan zero; frozen files byte-identical;
+> `kvE_probe367_tailDG_deep_rejected` + `_depth2DG_deep_rejected` re-verified green.
+> *(deviation: altered — G2-A1/A2 admissibility+slice-equality sub-derivations were subsumed
+> by the mate-collapse; `kvE_futRealizer_admissible` not needed since the conclusion's
+> witness is σ itself, already admissible by antecedent.)*
 - **Goal:** Prove `kvE_hsliceFut_supply` / `kvE_hslicePast_supply` at general m matching the
   restated rows-8-9 binder shapes: given σ admissible, `kvE_deepOnFiber qnf σ = true`, chain
   firing, and the ambient realized — exhibit a qnf-marked σ' with `kvE_{fut,past}SliceEq σ' σ =
