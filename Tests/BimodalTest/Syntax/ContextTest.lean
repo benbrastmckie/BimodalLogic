@@ -36,7 +36,7 @@ example : Formula.atom_s "p" ∈ [Formula.atom_s "p", Formula.atom_s "q"] := by
 
 -- Test: Membership - element not present
 example : Formula.atom_s "r" ∉ [Formula.atom_s "p", Formula.atom_s "q"] := by
-  simp
+  decide
 
 -- Test: Subset - empty is subset of any
 example (Γ : Context) : [] ⊆ Γ := by
