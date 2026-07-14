@@ -61,6 +61,14 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsu
 -- PriorDefs — is already reachable and imports nothing under `NfMultiAnchorBridge`);
 -- only `KampPrior` imports this aggregator (task-357 precedent).
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
+-- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
+-- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
+-- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation
+-- stack and the Phase-16 `aggPop1` conjunction fold. Cycle-free: `VecEAConjFull` is an
+-- acyclic leaf importing only `Kamp.VecEAClosure` (→ VecEAFormula → ExistsForallNF), all
+-- already in this file's transitive closure via `EANegationClosure`; nothing in that
+-- closure imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.VecEAConjFull
 
 /-!
 # Multi-Anchor Characteristic Formula Bridge (task 308)
