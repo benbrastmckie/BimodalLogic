@@ -1100,4 +1100,195 @@ theorem negBoundedLeftFix_iff {sig : MonadicSignature}
         (negChainOn_iff M atomMap h_INF _ z0 z1 h_lt).mpr hchain
       exact ⟨d, List.mem_cons_of_mem _ hmem, hh⟩
 
+/-! # Lemma 5.1 fixed-formula negation: the gate probes (task 350 Phase 10)
+
+## R2 gate: the ℤ counterexample
+
+Rabinovich's Lemma 5.1 output is `∨_i (Cond_i ∧ Form_i)` — the case gates RIDE
+IN the disjuncts (chunk_0016 md:5). The report's Medium-High-confidence claim
+(plan R2) is that the gates are load-bearing: a gate-free disjunct list cannot
+be a biconditional cover. The following ℤ instance machine-checks this.
+
+Take carrier ℤ, interval `(0, 10)`, and `bf = [s0, p, s1]` (one witness point
+of type `p`, segment `s0` before it, `s1` after it) with
+- `p` true exactly at `{2, 8}`,
+- `¬s0` true exactly at `{7}` (i.e. `s0 = (· ≠ 7)`),
+- `¬s1` true exactly at `{3}` (i.e. `s1 = (· ≠ 3)`).
+
+Then `¬bf.holds 0 10` (witness 2 fails at `s1 3`; witness 8 fails at `s0 7`),
+yet the four single-pin negation disjuncts all FAIL:
+- `A = [¬p]` — refuted by `p 2`;
+- `B1 = [¬p, (¬s0 ∧ ¬p), ⊤]` — the only `¬s0` point is 7, but `p 2` breaks
+  the `¬p` prefix;
+- `B2 = [⊤, (¬s1 ∧ ¬p), ¬p]` — the only `¬s1` point is 3, but `p 8` breaks
+  the `¬p` suffix;
+- `B3 = [⊤, ¬s0, ⊤, ¬s1, ⊤]` — needs a `¬s0` point BEFORE a `¬s1` point,
+  i.e. `7 < 3`.
+
+Only the two-point gated disjunct
+`B4 = [⊤, (¬s1 ∧ ¬p), ¬p, (¬s0 ∧ ¬p), ⊤]` holds (witnesses 3 < 7): the
+last-`¬s1` point, then a `¬p` corridor, then the first-`¬s0` point. Hence any
+biconditional negation cover MUST contain the B4/B4′ gated shapes; the
+Boneyard's 3-disjunct list (A/B1-prepend/B2-INF) is forward-only. -/
+
+namespace NegFixGateProbe
+
+/-- Three predicate symbols: `p`, `s0`, `s1`. -/
+abbrev sigZ : MonadicSignature := { preds := Fin 3 }
+
+/-- The ℤ structure of the counterexample: `p` exactly at `{2, 8}`, `¬s0`
+    exactly at `{7}`, `¬s1` exactly at `{3}`. -/
+abbrev MZ : OrderedMonadicStructure sigZ where
+  carrier := ℤ
+  interp k t :=
+    match k with
+    | ⟨0, _⟩ => t = 2 ∨ t = 8
+    | ⟨1, _⟩ => t ≠ 7
+    | ⟨2, _⟩ => t ≠ 3
+  carrier_order := inferInstance
+
+/-- Atom map: fresh atoms with indices 0, 1, 2 name the three predicates. -/
+def atomMapZ : Formula → sigZ.preds
+  | .atom ⟨_, some 1⟩ => 1
+  | .atom ⟨_, some 2⟩ => 2
+  | _ => 0
+
+/-- The point predicate `p` (true exactly at `{2, 8}`). -/
+def pZ : TemporalPred := ⟨.atom ⟨"", some 0⟩⟩
+
+/-- The left segment predicate `s0` (false exactly at `7`). -/
+def s0Z : TemporalPred := ⟨.atom ⟨"", some 1⟩⟩
+
+/-- The right segment predicate `s1` (false exactly at `3`). -/
+def s1Z : TemporalPred := ⟨.atom ⟨"", some 2⟩⟩
+
+theorem pZ_eval (t : ℤ) : pZ.eval_at MZ atomMapZ t ↔ t = 2 ∨ t = 8 := Iff.rfl
+
+theorem s0Z_eval (t : ℤ) : s0Z.eval_at MZ atomMapZ t ↔ t ≠ 7 := Iff.rfl
+
+theorem s1Z_eval (t : ℤ) : s1Z.eval_at MZ atomMapZ t ↔ t ≠ 3 := Iff.rfl
+
+/-- The bracket `[s0, p, s1]`: one interior `p`-point, `s0` before, `s1`
+    after. -/
+def bfZ : BracketFormula 1 :=
+  BracketFormula.prepend s0Z pZ (BracketFormula.trivial s1Z)
+
+/-- Gate-free disjunct `A = [¬p]`. -/
+def caseA_Z : BracketFormula 0 := BracketFormula.trivial pZ.neg
+
+/-- Gated disjunct `B1 = [¬p, (¬s0 ∧ ¬p), ⊤]`. -/
+def caseB1_Z : BracketFormula 1 :=
+  BracketFormula.prepend pZ.neg ((s0Z.neg).conj pZ.neg)
+    (BracketFormula.trivial TemporalPred.top)
+
+/-- Gated disjunct `B2 = [⊤, (¬s1 ∧ ¬p), ¬p]`. -/
+def caseB2_Z : BracketFormula 1 :=
+  (BracketFormula.trivial TemporalPred.top).snoc ((s1Z.neg).conj pZ.neg) pZ.neg
+
+/-- Gate-free disjunct `B3 = [⊤, ¬s0, ⊤, ¬s1, ⊤]`. -/
+def caseB3_Z : BracketFormula 2 :=
+  BracketFormula.prepend TemporalPred.top s0Z.neg
+    (BracketFormula.prepend TemporalPred.top s1Z.neg
+      (BracketFormula.trivial TemporalPred.top))
+
+/-- The gated two-point disjunct
+    `B4 = [⊤, (¬s1 ∧ ¬p), ¬p, (¬s0 ∧ ¬p), ⊤]`. -/
+def caseB4_Z : BracketFormula 2 :=
+  BracketFormula.prepend TemporalPred.top ((s1Z.neg).conj pZ.neg)
+    (BracketFormula.prepend pZ.neg ((s0Z.neg).conj pZ.neg)
+      (BracketFormula.trivial TemporalPred.top))
+
+/-- The bracket `[s0, p, s1]` FAILS on `(0, 10)`: witness 2 is broken by
+    `¬s1 3`, witness 8 by `¬s0 7`. -/
+theorem bfZ_not_holds : ¬ bfZ.holds MZ atomMapZ 0 10 := by
+  intro h
+  obtain ⟨r, hr0, hr1, hp, hseg, htail⟩ :=
+    BracketFormula.prepend_holds_inv MZ atomMapZ _ _ _ _ _ h
+  rw [BracketFormula.trivial_holds] at htail
+  rcases (pZ_eval r).mp hp with h2 | h8
+  · have h3 := htail (3 : ℤ) (show (r : ℤ) < 3 by rw [h2]; decide) (by decide)
+    rw [s1Z_eval] at h3
+    exact h3 rfl
+  · have h7 := hseg (7 : ℤ) (by decide) (show (7 : ℤ) < r by rw [h8]; decide)
+    rw [s0Z_eval] at h7
+    exact h7 rfl
+
+/-- Disjunct `A` fails: `p 2`. -/
+theorem caseA_not_holds : ¬ caseA_Z.holds MZ atomMapZ 0 10 := by
+  rw [caseA_Z, BracketFormula.trivial_holds]
+  intro h
+  have h2 := h (2 : ℤ) (by decide) (by decide)
+  rw [TemporalPred.eval_at_neg', pZ_eval] at h2
+  exact h2 (Or.inl rfl)
+
+/-- Disjunct `B1` fails: the only `¬s0` point is 7, but `p 2` breaks the
+    `¬p` prefix on `(0, 7)`. -/
+theorem caseB1_not_holds : ¬ caseB1_Z.holds MZ atomMapZ 0 10 := by
+  intro h
+  obtain ⟨r, hr0, hr1, hpt, hseg, -⟩ :=
+    BracketFormula.prepend_holds_inv MZ atomMapZ _ _ _ _ _ h
+  rw [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg',
+    TemporalPred.eval_at_neg', s0Z_eval, pZ_eval] at hpt
+  have hr7 : (r : ℤ) = 7 := not_not.mp hpt.1
+  have h2 := hseg (2 : ℤ) (by decide) (show (2 : ℤ) < r by rw [hr7]; decide)
+  rw [TemporalPred.eval_at_neg', pZ_eval] at h2
+  exact h2 (Or.inl rfl)
+
+/-- Disjunct `B2` fails: the only `¬s1` point is 3, but `p 8` breaks the
+    `¬p` suffix on `(3, 10)`. -/
+theorem caseB2_not_holds : ¬ caseB2_Z.holds MZ atomMapZ 0 10 := by
+  intro h
+  rw [caseB2_Z, BracketFormula.snoc_holds_iff] at h
+  obtain ⟨x, hx0, hx1, -, hpt, hseg⟩ := h
+  rw [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg',
+    TemporalPred.eval_at_neg', s1Z_eval, pZ_eval] at hpt
+  have hx3 : (x : ℤ) = 3 := not_not.mp hpt.1
+  have h8 := hseg (8 : ℤ) (show (x : ℤ) < 8 by rw [hx3]; decide) (by decide)
+  rw [TemporalPred.eval_at_neg', pZ_eval] at h8
+  exact h8 (Or.inr rfl)
+
+/-- Disjunct `B3` fails: it needs a `¬s0` point strictly before a `¬s1`
+    point, i.e. `7 < 3`. -/
+theorem caseB3_not_holds : ¬ caseB3_Z.holds MZ atomMapZ 0 10 := by
+  intro h
+  obtain ⟨r1, hr10, hr11, hpt1, -, htail⟩ :=
+    BracketFormula.prepend_holds_inv MZ atomMapZ _ _ _ _ _ h
+  obtain ⟨r2, hr21, hr22, hpt2, -, -⟩ :=
+    BracketFormula.prepend_holds_inv MZ atomMapZ _ _ _ _ _ htail
+  rw [TemporalPred.eval_at_neg', s0Z_eval] at hpt1
+  rw [TemporalPred.eval_at_neg', s1Z_eval] at hpt2
+  have h12 : (r1 : ℤ) < r2 := hr21
+  rw [not_not.mp hpt1, not_not.mp hpt2] at h12
+  exact absurd h12 (by decide)
+
+/-- The gated two-point disjunct `B4` HOLDS with witnesses `3 < 7`: the
+    last-`¬s1` point, a `¬p` corridor, the first-`¬s0` point. -/
+theorem caseB4_holds : caseB4_Z.holds MZ atomMapZ 0 10 := by
+  refine BracketFormula.prepend_holds MZ atomMapZ _ _ _ 0 10 (3 : ℤ)
+    (by decide) (by decide) ?_ ?_ ?_
+  · rw [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg',
+      TemporalPred.eval_at_neg', s1Z_eval, pZ_eval]
+    exact ⟨fun hne => hne rfl, by omega⟩
+  · intro y _ _
+    exact TemporalPred.eval_at_top MZ atomMapZ y
+  · refine BracketFormula.prepend_holds MZ atomMapZ _ _ _ (3 : ℤ) 10 (7 : ℤ)
+      (by decide) (by decide) ?_ ?_ ?_
+    · rw [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg',
+        TemporalPred.eval_at_neg', s0Z_eval, pZ_eval]
+      exact ⟨fun hne => hne rfl, by omega⟩
+    · intro y hy0 hy1
+      rw [TemporalPred.eval_at_neg', pZ_eval]
+      have h0 : (3 : ℤ) < y := hy0
+      have h1 : (y : ℤ) < 7 := hy1
+      rintro (h | h)
+      · rw [h] at h0
+        exact absurd h0 (by decide)
+      · rw [h] at h1
+        exact absurd h1 (by decide)
+    · rw [BracketFormula.trivial_holds]
+      intro y _ _
+      exact TemporalPred.eval_at_top MZ atomMapZ y
+
+end NegFixGateProbe
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
