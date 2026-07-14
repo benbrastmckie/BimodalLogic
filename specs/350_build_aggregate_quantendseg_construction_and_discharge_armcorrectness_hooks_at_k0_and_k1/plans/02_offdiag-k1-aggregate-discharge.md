@@ -401,12 +401,12 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 
 ---
 
-### Phase 8: (B / P2a) HasAttainedSUP mirror + negChainOn [NOT STARTED]
+### Phase 8: (B / P2a) HasAttainedSUP mirror + negChainOn [COMPLETED]
 
 - **Goal:** The attained-SUP surrogate and the Lemma 5.3 fixed-formula On-builder, in new file
   `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix.lean` (+ PriorINF.lean append).
 - **Tasks:**
-  - [ ] Append to `PriorINF.lean` (NOT frozen; additive):
+  - [x] Append to `PriorINF.lean` (NOT frozen; additive):
     `structure HasAttainedSUP … : Prop where last_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
     z0 < z1 → (∃ x, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) → ∃ r0, z0 < r0 ∧ r0 < z1 ∧
     (∀ y, r0 < y → y < z1 → ¬temporal_truth M atomMap y P) ∧ temporal_truth M atomMap r0 P` +
@@ -414,19 +414,35 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
     atomMap` — mechanical mirror of `prior_hasAttainedINF` (PriorINF.lean:226-240), consuming
     `semantic_prior_SZ` (:168-176) in place of the un-attained `HasDefinableSUP.last_occ` (:125).
     ~50 lines. Land and commit FIRST (independent probe, R8).
-  - [ ] Create `Kamp/EANegationFix.lean` (imports VecEAConjFull + PriorINF + Boneyard-salvage
+    *(landed 59d05c427; mirror was fully mechanical as predicted — R8 risk retired)*
+  - [x] Create `Kamp/EANegationFix.lean` (imports VecEAConjFull + PriorINF + Boneyard-salvage
     targets as needed); module header records the Def 4.1 architectural note (`TemporalPred` =
     arbitrary `Formula`; `temporal_truth` interprets `.untl`/`.snce` natively — no expansion
-    machinery).
-  - [ ] `def negChainOn : List TemporalPred → VBracketFormula` — list recursion per Lemma 5.3
+    machinery). *(imports VecEAConjFull + EANegation — EANegation transitively supplies
+    PriorINF; the mainline `BracketFormula.prepend`/`VBracketFormula.prependAll` kit in
+    EANegation.lean made the Boneyard salvage unnecessary)*
+  - [x] `def negChainOn : List TemporalPred → VBracketFormula` — list recursion per Lemma 5.3
     with the attained simplification (K+ disjunct vacuous, PriorINF.lean:195-199): nil ↦
     trivialTrue; P :: rest ↦ disj of [never-P 0-bracket ¬P] and prependAll-with-gate (¬P-segment,
     P-point) applied to `negChainOn rest`. Reuse `exists_permutation_cons_head`
     (EANegationClosure.lean:757) and `VBracketFormula.prependAll` (Boneyard) where sound.
-  - [ ] `theorem negChainOn_iff (h_INF) (Ps) (z0 z1) (h_lt) : (negChainOn Ps).holds M atomMap
+    *(deviation: altered — nil ↦ `⟨[]⟩` (empty disjunction = False), NOT trivialTrue: the empty
+    chain always exists (`orderedPointsExist_zero`), so its negation is False; trivialTrue is
+    machine-refuted by the stated iff and by the n=0 base of `neg_orderedPointsExist_is_vbracket`
+    (EANegation.lean:356-361). Reused mainline `VBracketFormula.prependAll` (EANegation.lean:333),
+    not the Boneyard copy; `exists_permutation_cons_head` not needed for this construction)*
+  - [x] `theorem negChainOn_iff (h_INF) (Ps) (z0 z1) (h_lt) : (negChainOn Ps).holds M atomMap
     z0 z1 ↔ ¬∃ (increasing witnesses in (z0,z1) satisfying Ps pointwise)` — phrased against
     `BracketFormula.holds` of the all-top-segment bracket built from `Ps`.
-  - [ ] Scoped build green; axiom checks; commit per green sub-step.
+    *(phrased as `¬ (chainAllTrue Ps).holds` with `chainAllTrue Ps = BracketFormula.allTrue
+    Ps.length Ps.get` + definitional bridge `chainAllTrue_holds_iff` to `orderedPointsExist`;
+    proof = list-induction refactor of `neg_orderedPointsExist_is_vbracket` reusing
+    `prepend_holds`, `prepend_holds_inv`, `orderedPointsExist_decompose`, plus newly extracted
+    standalone `orderedPointsExist_combine`)*
+  - [x] Scoped build green; axiom checks; commit per green sub-step.
+    *(commits 59d05c427 + 68abf5178 + c3d360d08; full `lake build` green, 1739 jobs;
+    `lean_verify` on `prior_hasAttainedSUP`, `negChainOn_iff`, `orderedPointsExist_combine` =
+    exactly [propext, Classical.choice, Quot.sound]; zero sorries in touched files)*
 - **Timing:** 1.5-2 hours (~300-400 lines)
 - **Depends on:** 7
 - **Files to modify:**
