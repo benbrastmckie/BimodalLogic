@@ -448,4 +448,251 @@ private theorem m1_no_marked_mate :
   obtain ⟨zz, hzz⟩ := (hx.2 m1sstar).mpr hbit
   exact m1_sstar_not_pinned zz x1'' hzz
 
+/-! ## Hypothesis side (i): `σ` is admissible
+
+`kvE_futAdmissible` is model-independent decidable syntax; its four conjuncts read only the
+atom layer and the fiber-existential navigation channels. `τ` is admissible because it is
+realized (`kvE_futRealizer_admissible`); the `s*` augmentation survives every conjunct:
+conjunct 1 reads `σ.1 = τ.1`; conjunct 2 needs only the ATOM-fiber fact
+`m1_sstar_dropFresh` (the doppelgänger evasion); conjuncts 3-4 see `s*` only through its
+zone spec, which is the (possible, non-self) GAP zone. -/
+
+/-- The gap zone is order-possible (the 7th entry of `kvE_futPossibleZones`). -/
+private theorem m1_gap_possible :
+    (kvE_futPossibleZones.any fun z => decide (kvE_futGapZone = z)) = true := by
+  rw [List.any_eq_true]
+  refine ⟨kvE_futGapZone, ?_, decide_eq_true rfl⟩
+  exact .tail _ (.tail _ (.tail _ (.tail _ (.tail _ (.tail _ (.head _))))))
+
+/-- The `s*` augmentation is invisible to `kvE_subBit` at every NON-gap zone spec. -/
+private theorem m1_subBit_eq_of_ne_gap (zs4 : ZoneSpec 4) (χ : NormalForm m1sig 1 1)
+    (hz : zs4 ≠ kvE_futGapZone) :
+    kvE_subBit m1sigma zs4 χ = kvE_subBit m1tau zs4 χ := by
+  unfold kvE_subBit
+  congr 1
+  funext s
+  by_cases hss : s = m1sstar
+  · subst hss
+    have hzf : decide (nfk_zoneSpec m1sstar = zs4) = false :=
+      decide_eq_false (fun he => hz (he.symm.trans m1_sstar_zone))
+    rw [hzf]
+    simp only [Bool.and_false, Bool.false_and]
+  · have hb : m1sigma.2 s = m1tau.2 s := by
+      show (if s = m1sstar then true else m1tau.2 s) = m1tau.2 s
+      rw [if_neg hss]
+    rw [hb]
+    rfl
+
+/-- **`σ := τ ⊕ s*` is order-admissible.** -/
+private theorem m1_sigma_adm : kvE_futAdmissible m1sigma = true := by
+  have h215 : (2 : ℤ) < 15 := by omega
+  have h1518 : (15 : ℤ) < 18 := by omega
+  have h1825 : (18 : ℤ) < 25 := by omega
+  have htau : kvE_futAdmissible m1tau = true :=
+    kvE_futRealizer_admissible M1M m1tau 25 15 2 18 h215 h1518 h1825
+      (nf_characteristic_satisfies M1M 2 4 m1env4)
+  rw [kvE_futAdmissible, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at htau ⊢
+  obtain ⟨⟨⟨ht1, ht2⟩, ht3⟩, ht4⟩ := htau
+  refine ⟨⟨⟨ht1, ?_⟩, ?_⟩, ?_⟩
+  · -- conjunct 2: every marked fiber element sits on σ's atom fiber
+    rw [List.all_eq_true] at ht2 ⊢
+    intro s hs
+    show (decide (nfk_dropFresh s = m1sigma.1) || !(m1sigma.2 s)) = true
+    rw [Bool.or_eq_true]
+    by_cases hss : s = m1sstar
+    · subst hss
+      exact Or.inl (decide_eq_true m1_sstar_dropFresh)
+    · have h2s : (decide (nfk_dropFresh s = m1tau.1) || !(m1tau.2 s)) = true := ht2 s hs
+      rw [Bool.or_eq_true] at h2s
+      rcases h2s with hl | hr
+      · exact Or.inl hl
+      · right
+        have hb : m1sigma.2 s = m1tau.2 s := by
+          show (if s = m1sstar then true else m1tau.2 s) = m1tau.2 s
+          rw [if_neg hss]
+        rw [hb]
+        exact hr
+  · -- conjunct 3: quant bits false on every order-impossible zone spec
+    rw [List.all_eq_true] at ht3 ⊢
+    intro zs4 hzs
+    show ((kvE_futPossibleZones.any fun z => decide (zs4 = z)) ||
+        ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ =>
+          !(kvE_subBit m1sigma zs4 χ))) = true
+    rw [Bool.or_eq_true]
+    by_cases hz4 : zs4 = kvE_futGapZone
+    · subst hz4
+      exact Or.inl m1_gap_possible
+    · have h3z : ((kvE_futPossibleZones.any fun z => decide (zs4 = z)) ||
+          ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ =>
+            !(kvE_subBit m1tau zs4 χ))) = true := ht3 zs4 hzs
+      rw [Bool.or_eq_true] at h3z
+      rcases h3z with hl | hr
+      · exact Or.inl hl
+      · right
+        rw [List.all_eq_true] at hr ⊢
+        intro χ hχ
+        show (!kvE_subBit m1sigma zs4 χ) = true
+        rw [m1_subBit_eq_of_ne_gap zs4 χ hz4]
+        exact hr χ hχ
+  · -- conjunct 4: self-zone fresh-profile uniqueness (self bucket untouched by s*)
+    rw [List.all_eq_true] at ht4 ⊢
+    intro χ hχ
+    show ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ' =>
+        !(kvE_subBit m1sigma kvE_futSelfZone χ) || !(kvE_subBit m1sigma kvE_futSelfZone χ') ||
+          decide (χ = χ')) = true
+    have h4χ : ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ' =>
+        !(kvE_subBit m1tau kvE_futSelfZone χ) || !(kvE_subBit m1tau kvE_futSelfZone χ') ||
+          decide (χ = χ')) = true := ht4 χ hχ
+    rw [List.all_eq_true] at h4χ ⊢
+    intro χ' hχ'
+    show (!(kvE_subBit m1sigma kvE_futSelfZone χ) || !(kvE_subBit m1sigma kvE_futSelfZone χ') ||
+        decide (χ = χ')) = true
+    rw [m1_subBit_eq_of_ne_gap kvE_futSelfZone χ (Ne.symm m1_gap_ne_self),
+        m1_subBit_eq_of_ne_gap kvE_futSelfZone χ' (Ne.symm m1_gap_ne_self)]
+    exact h4χ χ' hχ'
+
+/-! ## Hypothesis side (ii): the honest ambient and the semantic destructor facts
+
+The `hend`/`hgap`/`hocc` facts are stated in the P-ELIMINATED semantic form — exactly what
+the depth-1 rendering channels deliver through their correctness lemmas
+(`kvE_futItemShift_correct` / `kvE_fiberPosOnShift_correct`: formula truth at a point `r` ↔
+`∃ env, nf_eval_nf M 1 5 (Fin.cons r env) s`, env FREE). No in-tree depth-1
+`ExistProviders` instance exists (that recursion is this task's own open target), so the
+formula-level binders cannot be instantiated — but any future instance yields exactly these
+semantic facts, so the countermodel applies to every provider-rendered form. -/
+
+/-- The honest level-up ambient is realized at the actual anchors. -/
+private theorem m1_ambient : nf_eval_nf M1M 3 3 m1env3 m1qnf :=
+  nf_characteristic_satisfies M1M 3 3 m1env3
+
+/-- `σ` marks every honest pinned fiber element (its marking extends `τ`'s). -/
+private theorem m1_sigma_marks_honest (s : NormalForm m1sig 1 5) (z : ℤ)
+    (hz : nf_eval_nf M1M 1 5 (Fin.cons z m1env4) s) : m1sigma.2 s = true := by
+  show (if s = m1sstar then true else m1tau.2 s) = true
+  by_cases hss : s = m1sstar
+  · rw [if_pos hss]
+  · rw [if_neg hss]
+    exact @decide_eq_true (∃ u : ℤ, nf_eval_nf M1M 1 5 (Fin.cons u m1env4) s)
+      (Classical.dec _) ⟨z, hz⟩
+
+/-- **`hend` (self conjunct), semantic**: some self-listed element of `σ` is realized at
+    the endpoint `25` (the honest self type, free env). -/
+private theorem m1_hendSelfS :
+    ∃ s ∈ kvE_fiberZoneList m1sigma kvE_futSelfZone,
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons 25 env) s := by
+  refine ⟨nf_characteristic M1M 1 5 (Fin.cons 25 m1env4), ?_, m1env4,
+    nf_characteristic_satisfies M1M 1 5 (Fin.cons 25 m1env4)⟩
+  exact (kvE_fiberZoneList_mem _ _ _).mpr
+    ⟨m1_sigma_marks_honest _ 25 (nf_characteristic_satisfies M1M 1 5 (Fin.cons 25 m1env4)),
+     m1_honest_self_zone⟩
+
+/-- **`hend` (ray `¬F(¬D_ray)` conjunct), semantic**: every point above the endpoint
+    realizes some ray-listed element of `σ` (its own honest type, free env). -/
+private theorem m1_hendRayCover (v : ℤ) (hv : (25 : ℤ) < v) :
+    ∃ s ∈ kvE_fiberZoneList m1sigma kvE_futRayZone,
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons v env) s := by
+  refine ⟨nf_characteristic M1M 1 5 (Fin.cons v m1env4), ?_, m1env4,
+    nf_characteristic_satisfies M1M 1 5 (Fin.cons v m1env4)⟩
+  exact (kvE_fiberZoneList_mem _ _ _).mpr
+    ⟨m1_sigma_marks_honest _ v (nf_characteristic_satisfies M1M 1 5 (Fin.cons v m1env4)),
+     m1_honest_ray_zone v hv⟩
+
+/-- **`hend` (ray per-item conjuncts), semantic**: every ray-listed element of `σ` occurs
+    at some point above the endpoint (free env). -/
+private theorem m1_hendRayOcc (s : NormalForm m1sig 1 5)
+    (hmem : s ∈ kvE_fiberZoneList m1sigma kvE_futRayZone) :
+    ∃ v : ℤ, (25 : ℤ) < v ∧
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons v env) s := by
+  obtain ⟨hbit, hzone⟩ := (kvE_fiberZoneList_mem m1sigma kvE_futRayZone s).mp hmem
+  by_cases hss : s = m1sstar
+  · exact absurd (m1_sstar_zone.symm.trans (hss ▸ hzone)) m1_gap_ne_ray
+  · have hbitτ : m1tau.2 s = true := by
+      have hb : m1sigma.2 s = m1tau.2 s := by
+        show (if s = m1sstar then true else m1tau.2 s) = m1tau.2 s
+        rw [if_neg hss]
+      rw [← hb]
+      exact hbit
+    obtain ⟨zz, hzz⟩ := @of_decide_eq_true
+      (∃ u : ℤ, nf_eval_nf M1M 1 5 (Fin.cons u m1env4) s) (Classical.dec _) hbitτ
+    have hz : s.1 (.order (1 : Fin 5) (0 : Fin 5) (by decide)) = true :=
+      congrArg (fun zs : ZoneSpec 4 => (zs 0).2) hzone
+    have h25zz : (25 : ℤ) < zz :=
+      (hzz.1 (.order (1 : Fin 5) (0 : Fin 5) (by decide))).mpr hz
+    exact ⟨zz, h25zz, m1env4, hzz⟩
+
+/-- **`hgap`, semantic**: every walk point `r ∈ (18, 25)` realizes some gap-listed element
+    of `σ` (its own honest type, free env). -/
+private theorem m1_hgapS (r : ℤ) (h1 : (18 : ℤ) < r) (h2 : r < 25) :
+    ∃ s ∈ kvE_fiberZoneList m1sigma kvE_futGapZone,
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons r env) s := by
+  refine ⟨nf_characteristic M1M 1 5 (Fin.cons r m1env4), ?_, m1env4,
+    nf_characteristic_satisfies M1M 1 5 (Fin.cons r m1env4)⟩
+  exact (kvE_fiberZoneList_mem _ _ _).mpr
+    ⟨m1_sigma_marks_honest _ r (nf_characteristic_satisfies M1M 1 5 (Fin.cons r m1env4)),
+     m1_honest_gap_zone r h1 h2⟩
+
+/-- **`hocc`, semantic**: every gap-listed element of `σ` — INCLUDING the fake `s*` — is
+    realized at some walk point `r ∈ (18, 25)` (free env; `s*` at `22` over the
+    doppelgänger tail). -/
+private theorem m1_hoccS (s : NormalForm m1sig 1 5)
+    (hmem : s ∈ kvE_fiberZoneList m1sigma kvE_futGapZone) :
+    ∃ r : ℤ, (18 : ℤ) < r ∧ r < 25 ∧
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons r env) s := by
+  obtain ⟨hbit, hzone⟩ := (kvE_fiberZoneList_mem m1sigma kvE_futGapZone s).mp hmem
+  by_cases hss : s = m1sstar
+  · subst hss
+    exact ⟨22, by omega, by omega, m1envF, m1_sstar_freeEnv⟩
+  · have hbitτ : m1tau.2 s = true := by
+      have hb : m1sigma.2 s = m1tau.2 s := by
+        show (if s = m1sstar then true else m1tau.2 s) = m1tau.2 s
+        rw [if_neg hss]
+      rw [← hb]
+      exact hbit
+    obtain ⟨zz, hzz⟩ := @of_decide_eq_true
+      (∃ u : ℤ, nf_eval_nf M1M 1 5 (Fin.cons u m1env4) s) (Classical.dec _) hbitτ
+    have hz1 : s.1 (.order (0 : Fin 5) (1 : Fin 5) (by decide)) = true :=
+      congrArg (fun zs : ZoneSpec 4 => (zs 0).1) hzone
+    have hz2 : s.1 (.order (4 : Fin 5) (0 : Fin 5) (by decide)) = true :=
+      congrArg (fun zs : ZoneSpec 4 => (zs 3).2) hzone
+    have hzz25 : zz < (25 : ℤ) :=
+      (hzz.1 (.order (0 : Fin 5) (1 : Fin 5) (by decide))).mpr hz1
+    have h18zz : (18 : ℤ) < zz :=
+      (hzz.1 (.order (4 : Fin 5) (0 : Fin 5) (by decide))).mpr hz2
+    exact ⟨zz, h18zz, hzz25, m1env4, hzz⟩
+
+/-! ## The assembled NO-GO verdict -/
+
+/-- **C0 probe verdict — NO-GO** (task 358 Phase 6; report 03 §6-C3 confirmed at binder
+    strength): at m = 1 the slice `σ := τ ⊕ s*` satisfies the FULL hypothesis side of the
+    slice-identification/`hsliceFut` interface over the anchors `[25, 15, 2, 18]` —
+    order-admissibility, the atom-fiber guard, the honest level-up ambient, and the complete
+    semantic destructor fact set (`hend` self + ray both directions, `hgap`, `hocc`) — yet
+    the conclusion FAILS: no admissible, slice-equal, qnf-marked mate exists.
+
+    Contrast with m = 0: the same statement shape is TRUE at m = 0
+    (`kvE_futSliceId_of_end_zero` / `kvE_hsliceFut_supply_zero`, both landed and untouched);
+    the m = 1 failure is carried entirely by the depth-1 fiber marking layer, which the
+    free-env rendering cannot pin (deviation D7: no depth-k cons-factorization for k ≥ 1).
+    Consequence for plan v3: Phase 7 (G2 general-m lift of rows 8-11) CANNOT proceed on the
+    current interface — the escalation is a slice-kernel/interface restatement spawn per the
+    plan's NO-GO branch, never a sorry. -/
+theorem kvE_probeM1_sliceId_NOGO :
+    kvE_futAdmissible m1sigma = true ∧
+    nfk_dropFresh m1sigma = m1qnf.1 ∧
+    nf_eval_nf M1M 3 3 m1env3 m1qnf ∧
+    (∃ s ∈ kvE_fiberZoneList m1sigma kvE_futSelfZone,
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons 25 env) s) ∧
+    (∀ v : ℤ, (25 : ℤ) < v → ∃ s ∈ kvE_fiberZoneList m1sigma kvE_futRayZone,
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons v env) s) ∧
+    (∀ s ∈ kvE_fiberZoneList m1sigma kvE_futRayZone, ∃ v : ℤ, (25 : ℤ) < v ∧
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons v env) s) ∧
+    (∀ r : ℤ, (18 : ℤ) < r → r < 25 → ∃ s ∈ kvE_fiberZoneList m1sigma kvE_futGapZone,
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons r env) s) ∧
+    (∀ s ∈ kvE_fiberZoneList m1sigma kvE_futGapZone, ∃ r : ℤ, (18 : ℤ) < r ∧ r < 25 ∧
+      ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons r env) s) ∧
+    ¬ ∃ σ' : NormalForm m1sig 2 4, kvE_futAdmissible σ' = true ∧
+        kvE_futSliceEq σ' m1sigma = true ∧ m1qnf.2 σ' = true :=
+  ⟨m1_sigma_adm, m1_sigma_dropFresh, m1_ambient, m1_hendSelfS,
+   m1_hendRayCover, m1_hendRayOcc, m1_hgapS, m1_hoccS, m1_no_marked_mate⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
