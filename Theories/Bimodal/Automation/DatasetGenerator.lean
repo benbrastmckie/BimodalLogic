@@ -393,10 +393,16 @@ Runs `buildTableau` to obtain the raw open branch, then extracts:
 
 If the tableau build fails (rare, since `decideAuto` already confirmed invalidity),
 returns `(none, none)`.
+
+Task 343: `fuel` is now an explicit parameter (default `soundFuel φ` for
+backward compatibility). Callers on the timed dataset path pass the *deciding*
+fuel (`adaptiveFuel ≤ 500`) so this re-run reproduces the same open branch
+without the previously unbounded `soundFuel` (up to 100000) main-thread
+computation. For an abort-aware variant, see
+`extractCountermodelDataCancellable`.
 -/
-def extractCountermodelData (φ : Formula) :
+def extractCountermodelData (φ : Formula) (fuel : Nat := soundFuel φ) :
     Option EnrichedCountermodel × Option SemanticCountermodelSummary :=
-  let fuel := soundFuel φ
   match buildTableau φ fuel with
   | none => (none, none)
   | some (.allClosed _) => (none, none)  -- Shouldn't happen for invalid formula
@@ -407,13 +413,38 @@ def extractCountermodelData (φ : Formula) :
       (some ecm, some summary)
 
 /--
+Abort-aware, fuel-bounded `IO` mirror of `extractCountermodelData` (task 343).
+
+Runs the cancellable tableau (`buildTableauCancellable`) so an in-flight
+extraction stops promptly when `abortRef` is set (or the task is cancelled);
+an aborted or fuel-exhausted build yields `(none, none)`.
+-/
+def extractCountermodelDataCancellable (abortRef : IO.Ref Bool) (φ : Formula)
+    (fuel : Nat) :
+    IO (Option EnrichedCountermodel × Option SemanticCountermodelSummary) := do
+  match ← buildTableauCancellable abortRef φ fuel with
+  | none => return (none, none)
+  | some (.allClosed _) => return (none, none)  -- Shouldn't happen for invalid formula
+  | some (.hasOpen openBranch ord _applied _hSat) =>
+      let ecm := extractEnrichedCountermodel φ openBranch
+      let scm := extractSemanticCountermodel φ openBranch ord
+      let summary := SemanticCountermodelSummary.fromSemanticCountermodel scm
+      return (some ecm, some summary)
+
+/--
 Build a `LabeledFormula` for an invalid result, including enriched countermodel data.
+
+Task 343: the enriched/semantic countermodel `(ecm, scmSummary)` is now passed
+in rather than computed here via an unbounded `extractCountermodelData φ`. This
+keeps `mkInvalidLabel` pure while letting the (already-`IO`) caller compute the
+extraction abort-aware and fuel-bounded (see `extractCountermodelDataCancellable`).
 -/
 private def mkInvalidLabel (φ : Formula) (cm : SimpleCountermodel)
     (metrics : DifficultyMetrics) (patternKey : PatternKey)
+    (ecm : Option EnrichedCountermodel)
+    (scmSummary : Option SemanticCountermodelSummary)
     (method : String := "tableau_open") : LabeledFormula :=
   let consistent := cm.isConsistent
-  let (ecm, scmSummary) := extractCountermodelData φ
   { formula := φ
     label := .invalid
     proofTrace := none
@@ -1433,7 +1464,12 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
       }
     | .invalid cm =>
       let intResult := computeInterestingness φ none none
-      let base := mkInvalidLabel φ cm metrics patternKey fuelTier
+      -- Task 343: extract abort-aware at the *deciding* fuel (adaptiveFuel),
+      -- not the unbounded soundFuel. The task finished normally here so the
+      -- abort ref is unset; the bound is the win. `min pair.2 fuel`-style
+      -- reproduction of the open branch is deterministic at the same fuel.
+      let (ecm, scmSummary) ← extractCountermodelDataCancellable abortRef φ adaptiveFuel
+      let base := mkInvalidLabel φ cm metrics patternKey ecm scmSummary fuelTier
       return { base with
         interestingnessScore := some intResult.compositeScore
         interestingnessTier := some intResult.tier.toString
@@ -1494,7 +1530,11 @@ def labelFormulaImpl (φ : Formula) (fc : FrameClass := .Base)
   | .invalid cm =>
     -- Compute interestingness without proof data (syntactic metrics only)
     let intResult := computeInterestingness φ none none
-    let base := mkInvalidLabel φ cm metrics patternKey fuelTier
+    -- Task 343: this synchronous fallback runs `decideAutoAdaptive φ fc` at the
+    -- default fuel 500; re-run the countermodel extraction fuel-bounded at 500
+    -- (pure; no timeout/abort ref exists on this path) instead of soundFuel.
+    let (ecm, scmSummary) := extractCountermodelData φ 500
+    let base := mkInvalidLabel φ cm metrics patternKey ecm scmSummary fuelTier
     return { base with
       interestingnessScore := some intResult.compositeScore
       interestingnessTier := some intResult.tier.toString

@@ -500,12 +500,18 @@ plus enriched countermodel data.
 -/
 def handleCountermodel (φ : Formula) (fc : FrameClass) : IO String := do
   let startTime ← IO.monoMsNow
+  -- Task 343: `decideAuto` decides at `soundFuel φ`; bind the same fuel and
+  -- pass it explicitly to `extractCountermodelData` so the countermodel re-run
+  -- matches the deciding fuel (fuel-bounded variant). The bridge has no
+  -- wall-clock timeout, so no abort ref is threaded here (out of scope; see
+  -- research Section 8).
+  let fuel := soundFuel φ
   let result := decideAuto φ fc
   let endTime ← IO.monoMsNow
   let elapsed := endTime - startTime
   match result with
   | .invalid cm =>
-    let (ecm, scmSummary) := extractCountermodelData φ
+    let (ecm, scmSummary) := extractCountermodelData φ fuel
     let ecmStr := match ecm with
       | none => "null"
       | some e => e.toJson

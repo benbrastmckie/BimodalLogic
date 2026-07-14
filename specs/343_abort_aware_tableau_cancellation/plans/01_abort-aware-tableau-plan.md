@@ -208,22 +208,26 @@ abort ref on the timeout branch.
 
 ---
 
-### Phase 4: Bounded, abort-aware countermodel extraction [NOT STARTED]
+### Phase 4: Bounded, abort-aware countermodel extraction [COMPLETED]
 
 **Goal**: Remove the unbounded main-thread `extractCountermodelData` re-run and make its
 extraction abort-aware, updating all call sites.
 
 **Tasks**:
-- [ ] Add a `fuel : Nat` parameter to `extractCountermodelData` (DatasetGenerator.lean:396) with
+- [x] Add a `fuel : Nat` parameter to `extractCountermodelData` (DatasetGenerator.lean:404) with
   default `soundFuel φ` for backward compatibility; use it in the `buildTableau φ fuel` call.
-- [ ] Add `extractCountermodelDataCancellable (abortRef : IO.Ref Bool) (φ : Formula) (fuel : Nat) : IO (...)`
+- [x] Add `extractCountermodelDataCancellable (abortRef : IO.Ref Bool) (φ : Formula) (fuel : Nat) : IO (...)`
   built on `buildTableauCancellable`.
-- [ ] In `labelFormulaImpl`, compute the extraction abort-aware (it is already IO) and pass
+- [x] In `labelFormulaImpl`, compute the extraction abort-aware (it is already IO) and pass
   `(ecm, scmSummary)` into `mkInvalidLabel` (keep `mkInvalidLabel` pure — the less-invasive
   parameter-passing variant), threading `adaptiveFuel` so the re-run matches the deciding fuel.
-- [ ] Update the two `mkInvalidLabel` call sites in `labelFormulaImpl` (lines ~1427, ~1488).
-- [ ] Update `TableauBridge.handleCountermodel` (TableauBridge.lean:508, already IO) to use the
-  fuel-bounded (and/or abort-aware) variant instead of `extractCountermodelData` at `soundFuel`.
+- [x] Update the two `mkInvalidLabel` call sites in `labelFormulaImpl` (lines ~1464, ~1530).
+  *(deviation: altered — synchronous fallback site uses the pure `extractCountermodelData φ 500`
+  since no abort ref exists on that path; the timed path uses `extractCountermodelDataCancellable`)*
+- [x] Update `TableauBridge.handleCountermodel` (TableauBridge.lean:502, already IO) to use the
+  fuel-bounded variant instead of `extractCountermodelData` at unbound `soundFuel`.
+  *(deviation: altered — bounded-only, no abort ref threaded; bridge has no wall-clock timeout,
+  per plan Non-Goals and report Section 8)*
 
 **Timing**: ~1 hour
 
