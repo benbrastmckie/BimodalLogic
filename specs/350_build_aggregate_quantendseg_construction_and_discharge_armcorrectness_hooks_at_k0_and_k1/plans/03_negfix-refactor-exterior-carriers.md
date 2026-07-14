@@ -756,7 +756,7 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 15: (E5 + optional E6) future-exterior mirror `CExtFut(_correct)` [NOT STARTED]
+### Phase 15: (E5 + optional E6) future-exterior mirror `CExtFut(_correct)` [IN PROGRESS]
 
 - **Goal:** The t<w channel: Until-navigated mirror of E2-E4, in new module
   `Kamp/NfMultiAnchorBridge/ExteriorNavFutK1.lean`; plus the optional shared `extDuality` (E6).
