@@ -651,18 +651,36 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 14a: (E2) Since-navigated w-package `navPackLeft` [NOT STARTED]
+### Phase 14a: (E2) Since-navigated w-package `navPackLeft` [COMPLETED]
 
 - **Goal:** Fold the w-dependent fibers (atoms at w; zones v<w, v=w, w<v<x) into a single
   `endpointLeft : TemporalPred` at x, in new module `Kamp/NfMultiAnchorBridge/ExteriorNavPastK1.lean`.
 - **Rabinovich anchor:** **Lemma 7.10 / Prop 3.5** one-free-variable fold to TL(Since,K⁺)
   (chunks 0023, 0010). This is the exact device replacing v2's bare "Prop 3.5 device".
 - **Tasks:**
-  - [ ] `navPackLeft`: bit-true inner fibers = arrangement slots inside the fold; bit-false = exclusion
+  - [x] `navPackLeft`: bit-true inner fibers = arrangement slots inside the fold; bit-false = exclusion
     segments / negated Since-lits (native `.snce`). May consume Phase-11 `negFix` for bit-false inner
     fibers if the exclusion-segment device is insufficient at any fiber (record which device each fiber
     uses).
-  - [ ] Scoped build green; axiom checks; commit.
+    *(Landed: `navPackLeft σ : TemporalPred` = disjunction over `(navLBitTrueList σ).permutations` of
+    the nested-Since chain `navLChain` (the `buildLeft` technique of Translation.lean, anchored at the
+    w-point package `navLAtWPack` instead of `H`), guarded by the exclusion segment `navLSegGuard`.
+    Fold iff `navPackLeft_correct`: predicate at x ↔ ∃ w < x with the four w-dependent clause groups
+    of `extZoneFiber_k1` verbatim (atoms-at-w position-0 layer; v=w, v<w, w<v<x fiber biconditionals) —
+    NO ambient hypothesis needed (the fold itself introduces w). DEVICE RECORD per fiber class:
+    atoms-at-w = `nf_depth0_char_formula` on position-0 projection `navLProjW`; v=w bit-true/false =
+    characteristic literal / negated characteristic; v<w bit-true/false = native Since-lit
+    `S(charF χ, ⊤)` / negated Since-lit; w<v<x bit-true = arrangement slots (permutation-disjunct
+    nested-Since chain, witnesses threaded by maximum extraction `navL_listMax` + profile uniqueness),
+    w<v<x bit-false = exclusion segment (guard = disjunction of bit-TRUE characteristics; profiles
+    exhaustive+exclusive force every interior point bit-true). Phase-11 `negFix` NOT needed at any
+    fiber — exclusion-segment device sufficient everywhere.)*
+  - [x] Scoped build green; axiom checks; commit.
+    *(Scoped module 1034 jobs + aggregator 1046 jobs + full `lake build` 1749 jobs green;
+    `lean_verify` on `navPackLeft_correct` = exactly `[propext, Classical.choice, Quot.sound]`, no
+    warnings; sorry census over NfMultiAnchorBridge/: 0; module 488 lines; aggregator import + NOTE
+    added after ExteriorFiberKitK1; no frozen-file / KampPrior / task-358 edits; vacuous/axiom counts
+    unchanged from HEAD baseline.)*
 - **DoD shape:** `navPackLeft` + its fold iff green for the probed fiber shapes generalized.
 - **Timing:** ~1.5-2 hours (~300-400 lines) — **Depends on:** 13
 - **Files:** `Kamp/NfMultiAnchorBridge/ExteriorNavPastK1.lean` (new); one import line

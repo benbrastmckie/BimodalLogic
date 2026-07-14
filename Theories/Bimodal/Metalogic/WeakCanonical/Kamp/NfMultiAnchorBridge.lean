@@ -76,6 +76,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregatePointMe
 -- acyclic leaf importing only `AggregateHookDischarge` (above); nothing in that closure
 -- imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberKitK1
+-- NOTE (task 350 Phase 14a): thread the E2 Since-navigated w-package (`navPackLeft` +
+-- the fold iff `navPackLeft_correct`, the Lemma 7.10 / Prop 3.5 one-free-variable fold of
+-- the w-dependent fibers into a single TemporalPred at the pin x) into the root build for
+-- the Phase 14b/14c distribution and `∃w` pin glue. Cycle-free: `ExteriorNavPastK1` is an
+-- acyclic leaf importing only `ExteriorFiberKitK1` (above) and the upstream
+-- `Kamp.Translation`; nothing in that closure imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK1
 -- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
 -- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
 -- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation
