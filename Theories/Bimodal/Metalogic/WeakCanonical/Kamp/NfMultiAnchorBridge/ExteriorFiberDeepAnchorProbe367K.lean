@@ -260,4 +260,60 @@ theorem kvE_probe367_tailDG_deep_rejected :
     rw [hu10] at hlt
     exact h105 hlt
 
+/-! ## Phase 2: honest-preservation crux (general model, general signature) -/
+
+/-- **Realized slices over the ambient's own tail pass the deep anchor** (the load-bearing
+    honest-preservation crux; the `kvE_fiberElemConsistent_of_realized:149` /
+    `kvE_fiberConsistent_of_realized:238` template one layer down). If `qnf` is realized at
+    `env` and `σ` at `Fin.cons x1 env` (a pinned tuple sharing the ambient's tail), then:
+    the row conjunct holds by the depth-0 factorization (`nf_eval_nf0_cons_factor`) plus
+    depth-0 uniqueness against `qnf`'s own atom layer, and the deep-mate conjunct is
+    witnessed by `σ` ITSELF — `qnf.2 σ = true` by `qnf`'s realization quant layer at witness
+    `x1`, and `σ.2 = σ.2` by `rfl`. This is the discharge route the re-keyed task-358 supply
+    uses (gate 2b): `_of_realized` alone, no guard unfolding. -/
+theorem kvE_deepOnFiberV0_of_realized {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) :
+    ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
+      (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
+      nf_eval_nf M (k + 1) n env qnf →
+      nf_eval_nf M k (n + 1) (Fin.cons x1 env) σ →
+      kvE_deepOnFiberV0 qnf σ = true := by
+  have hrow : ∀ {k n : Nat} (env : Fin n → M.carrier) (x1 : M.carrier)
+      (qnf : NormalForm sig (k + 1) n) (σ : NormalForm sig k (n + 1)),
+      nf_eval_nf M (k + 1) n env qnf →
+      nf_eval_nf M k (n + 1) (Fin.cons x1 env) σ →
+      nfk_dropFresh σ = qnf.1 := by
+    intro k n env x1 qnf σ hqnf hσ
+    have hatom := nf_eval_nf_atom_layer M _ σ hσ
+    have hfac := (nf_eval_nf0_cons_factor M env x1 σ.atom_assgn).mp hatom
+    exact nf_eval_unique M 0 n env _ _ hfac.2.2 (nf_eval_nf_atom_layer M env qnf hqnf)
+  intro k
+  match k with
+  | 0 =>
+    intro n env x1 qnf σ hqnf hσ
+    exact decide_eq_true (hrow env x1 qnf σ hqnf hσ)
+  | 1 =>
+    intro n env x1 qnf σ hqnf hσ
+    exact decide_eq_true (hrow env x1 qnf σ hqnf hσ)
+  | (j + 2) =>
+    intro n env x1 qnf σ hqnf hσ
+    rw [kvE_deepOnFiberV0_iff]
+    exact ⟨hrow env x1 qnf σ hqnf hσ, σ, (hqnf.2 σ).mp ⟨x1, hσ⟩, rfl⟩
+
+/-- The honest REAL slice (the depth-2 4-type of the real pinned tuple `[35, 5, 2, 30]`). -/
+private noncomputable def m3sigmaReal : NormalForm m3sig 2 4 := nf_characteristic M3M 2 4 m3realEnv
+
+/-- **Gate 2a — honest cast preservation, derived FROM `_of_realized`** (not by concrete
+    computation): the real slice passes the deep anchor w.r.t. the real ambient. Together
+    with gate 1a this machine-separates fake from honest at the restated rows-8-9 interface.
+    Gate 2b (supply-feasibility shape) is witnessed by the derivation itself: the guard for
+    a realizer-derived σ is discharged through `kvE_deepOnFiberV0_of_realized` alone — no
+    guard unfolding anywhere outside the guard's home extraction lemmas. Sorry-free; axioms
+    `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe367_real_slice_deep_anchored :
+    kvE_deepOnFiberV0 qnf367 m3sigmaReal = true :=
+  kvE_deepOnFiberV0_of_realized M3M m3realEnv3 35 qnf367 m3sigmaReal
+    (nf_characteristic_satisfies M3M 3 3 m3realEnv3)
+    (nf_characteristic_satisfies M3M 2 4 m3realEnv)
+
 end Bimodal.Metalogic.WeakCanonical.Kamp

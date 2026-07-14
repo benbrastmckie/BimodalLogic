@@ -216,7 +216,7 @@ tail-doppelganger slice from the anchored population while remaining m=0-inert.
 
 ---
 
-### Phase 2: Honest-preservation crux at probe level [NOT STARTED]
+### Phase 2: Honest-preservation crux at probe level [COMPLETED]
 
 **Goal**: Prove, at probe level and in full generality (any model, any env), that honestly
 realized slices over the ambient's own tail pass the deep anchor. This is the load-bearing
@@ -224,7 +224,7 @@ mathematics: without it, task 358's re-keyed G2 supply has no discharge route an
 restated rows 8-9 would be vacuously unservable.
 
 **Tasks**:
-- [ ] Prove `kvE_deepOnFiberV0_of_realized` (the `kvE_fiberElemConsistent_of_realized:149` /
+- [x] Prove `kvE_deepOnFiberV0_of_realized` (the `kvE_fiberElemConsistent_of_realized:149` /
       `kvE_fiberConsistent_of_realized:238` template one layer down): if `qnf` is realized at
       `env3 = [w, x, t]` and `sigma` is realized at `Fin.cons x1 env3` (a pinned tuple sharing
       the ambient's tail), then `kvE_deepOnFiberV0 qnf sigma = true`. Expected witness pattern:
@@ -232,15 +232,15 @@ restated rows 8-9 would be vacuously unservable.
       dropped tuple is qnf-marked by qnf's realization and content-matching by construction
       (the `cons_cons_skipOne` bookkeeping pattern generalizes across the x1 slot). Induction
       on fiber depth carries the hereditary arm.
-- [ ] **Gate 2a (honest cast preservation)**: sorry-free concrete certificate
+- [x] **Gate 2a (honest cast preservation)**: sorry-free concrete certificate
       `kvE_probe367_real_slice_deep_anchored` — the REAL slice
       (`nf_characteristic M3M 2 4 m3realEnv`) passes the guard w.r.t. `qnf367`, derived FROM
       the `_of_realized` lemma (not by concrete computation), uniformly where applicable.
-- [ ] **Gate 2b (supply-feasibility shape)**: certify the discharge route the re-keyed task-358
+- [x] **Gate 2b (supply-feasibility shape)**: certify the discharge route the re-keyed task-358
       supply will use: the guard for realizer-derived sigma is dischargeable through
       `_of_realized` alone (no guard unfolding anywhere in the leaf — source-scan discipline as
       in the 358Tail probe).
-- [ ] **Adjudication checkpoint**: if the hereditary marked-set membership is NOT dischargeable
+- [x] **Adjudication checkpoint** *(completed — hereditary marked-mate membership dischargeable: mate is sigma itself under realization; zero redesign loops consumed)*: if the hereditary marked-set membership is NOT dischargeable
       for the characteristic witnesses under candidate (a), switch to candidate (b)/synthesis
       and loop Phase 1's gates ONCE. If neither candidate closes gates 1a/1b AND this phase's
       preservation proof, STOP: mark task `[BLOCKED]`, write the structured escalation (what
