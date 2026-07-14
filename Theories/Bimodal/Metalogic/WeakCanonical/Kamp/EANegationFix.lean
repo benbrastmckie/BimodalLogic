@@ -2667,7 +2667,7 @@ def negFixList : TemporalPred → List (TemporalPred × TemporalPred) →
               ⟨VBracketFormula.trivialTrue, TemporalPred.top,
                negFixList e.rightSeg e.rightPairs⟩]))
         s s.neg)
-  termination_by s ps => ps.length
+  termination_by _ ps => ps.length
   decreasing_by
   · simp only [List.length_cons]
     omega
@@ -2680,5 +2680,228 @@ def negFixList : TemporalPred → List (TemporalPred × TemporalPred) →
 def BracketFormula.negFix {n : Nat} (bf : BracketFormula n) :
     VBracketFormula :=
   negFixList (bf.segmentTypes ⟨0, Nat.succ_pos n⟩) bf.foldPairs
+
+/-! ## `negFix_iff`: the Lemma 5.1 biconditional -/
+
+/-- Base case of the list recursion: `negFixList s []` is `[⊤, ¬s, ⊤]`,
+    the negation of "`s` everywhere". No attainment needed. -/
+theorem negFixList_nil_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (s : TemporalPred) (z0 z1 : M.carrier) :
+    (negFixList s []).holds M atomMap z0 z1 ↔
+    ¬ (bracketOf s []).holds M atomMap z0 z1 := by
+  rw [bracketOf_nil_holds_iff]
+  constructor
+  · rintro ⟨d, hmem, hh⟩ hall
+    simp only [negFixList, List.mem_singleton] at hmem
+    subst hmem
+    obtain ⟨r, h1, h2, hpt, _hseg, _htail⟩ :=
+      BracketFormula.prepend_holds_inv M atomMap _ _ _ z0 z1 hh
+    rw [TemporalPred.eval_at_neg'] at hpt
+    exact hpt (hall r h1 h2)
+  · intro h
+    have hex : ∃ y : M.carrier, z0 < y ∧ y < z1 ∧
+        ¬ s.eval_at M atomMap y := by
+      by_contra hno
+      push_neg at hno
+      exact h hno
+    obtain ⟨y, hy0, hy1, hys⟩ := hex
+    refine ⟨⟨1, BracketFormula.prepend TemporalPred.top s.neg
+      (BracketFormula.trivial TemporalPred.top)⟩, by simp [negFixList], ?_⟩
+    exact BracketFormula.prepend_holds M atomMap _ _ _ z0 z1 y hy0 hy1
+      ((TemporalPred.eval_at_neg' M atomMap s y).mpr hys)
+      (fun w _ _ => TemporalPred.eval_at_top M atomMap w)
+      ((BracketFormula.trivial_holds M atomMap _ y z1).mpr
+        fun w _ _ => TemporalPred.eval_at_top M atomMap w)
+
+/-- **Lemma 5.1 iff, list form** (Rabinovich 2014, gated): on attained
+    structures, `negFixList s ps` holds on `(z0, z1)` iff the list-form
+    bracket `bracketOf s ps` fails on `(z0, z1)`. Strong induction on the
+    pair-list length. -/
+theorem negFixList_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_INF : HasAttainedINF M atomMap) (h_SUP : HasAttainedSUP M atomMap) :
+    ∀ (N : Nat) (ps : List (TemporalPred × TemporalPred))
+      (s : TemporalPred) (z0 z1 : M.carrier), ps.length ≤ N → z0 < z1 →
+    ((negFixList s ps).holds M atomMap z0 z1 ↔
+      ¬ (bracketOf s ps).holds M atomMap z0 z1) := by
+  intro N
+  induction N with
+  | zero =>
+    intro ps s z0 z1 hlen _h_lt
+    have hps : ps = [] := List.length_eq_zero_iff.mp (Nat.le_zero.mp hlen)
+    subst hps
+    exact negFixList_nil_iff M atomMap s z0 z1
+  | succ N ihN =>
+    intro ps s z0 z1 hlen h_lt
+    rcases ps with _ | ⟨⟨a, b⟩, qs⟩
+    · exact negFixList_nil_iff M atomMap s z0 z1
+    have hqs : qs.length ≤ N := by
+      simp only [List.length_cons] at hlen
+      omega
+    simp only [negFixList]
+    rw [VBracketFormula.disj_holds]
+    constructor
+    · -- some gated disjunct holds → the bracket fails
+      rintro (h2 | h3)
+      · -- Case 2: s everywhere, no anchored tail instance
+        obtain ⟨h2n, hsev⟩ :=
+          (VBracketFormula.conjEverywhere_holds_iff M atomMap _ s z0 z1).mp h2
+        have hnex := (negBoundedLeftFixAnchored_iff M atomMap h_INF h_SUP a
+          (bracketOf b qs) z0 z1 h_lt).mp h2n
+        intro hb
+        obtain ⟨x, hx0, hx1, _hpre, hax, htail⟩ :=
+          (bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mp hb
+        exact hnex ⟨x, hx0, hx1, hax, htail⟩
+      · -- Case 3: pinned failure conjunction at the first-¬s pin
+        obtain ⟨r, hr0, hr1, hsev, hnsr, hitems⟩ :=
+          (pinnedListToV_holds_iff M atomMap _ s s.neg z0 z1).mp h3
+        rw [TemporalPred.eval_at_neg'] at hnsr
+        have hall := (pinnedConjAll_holdsAt_iff M atomMap _ z0 r z1).mp hitems
+        intro hb
+        obtain ⟨x, hx0, hx1, hpre, hax, htail⟩ :=
+          (bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mp hb
+        -- the pin confines the witness: x ≤ r
+        have hxle : x ≤ r := le_of_not_gt fun hgt => hnsr (hpre r hr0 hgt)
+        rcases eq_or_lt_of_le hxle with heq | hxlt
+        · -- x = r: the head item refutes it
+          subst heq
+          obtain ⟨it, hit, hh⟩ := hall _ (List.mem_cons_self ..)
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hit
+          rcases hit with rfl | rfl
+          · have := hh.2.1
+            rw [TemporalPred.eval_at_neg'] at this
+            exact this hax
+          · exact (ihN qs b x z1 hqs hx1).mp hh.2.2 htail
+        · -- x < r: split the tail at the pin and use the entry's item
+          obtain ⟨e, he, heL, hep, heR⟩ :=
+            (bracketOf_splitsAt_iff M atomMap qs b x r z1 hxlt hr1).mp htail
+          have hmem : [⟨negBoundedLeftFixAnchored a
+              (bracketOf e.leftSeg e.leftPairs),
+              TemporalPred.top, VBracketFormula.trivialTrue⟩,
+            (⟨VBracketFormula.trivialTrue, e.pin.neg,
+              VBracketFormula.trivialTrue⟩ : PinnedItem),
+            ⟨VBracketFormula.trivialTrue, TemporalPred.top,
+              negFixList e.rightSeg e.rightPairs⟩] ∈
+              ([⟨VBracketFormula.trivialTrue, a.neg,
+                  VBracketFormula.trivialTrue⟩,
+                ⟨VBracketFormula.trivialTrue, TemporalPred.top,
+                  negFixList b qs⟩] ::
+               (splitsAt b qs).attach.map fun ⟨e, he⟩ =>
+                 [⟨negBoundedLeftFixAnchored a
+                     (bracketOf e.leftSeg e.leftPairs),
+                   TemporalPred.top, VBracketFormula.trivialTrue⟩,
+                  ⟨VBracketFormula.trivialTrue, e.pin.neg,
+                   VBracketFormula.trivialTrue⟩,
+                  ⟨VBracketFormula.trivialTrue, TemporalPred.top,
+                   negFixList e.rightSeg e.rightPairs⟩]) := by
+            refine List.mem_cons_of_mem _ ?_
+            rw [List.mem_map]
+            exact ⟨⟨e, he⟩, List.mem_attach _ _, rfl⟩
+          obtain ⟨it, hit, hh⟩ := hall _ hmem
+          simp only [List.mem_cons, List.not_mem_nil, or_false] at hit
+          rcases hit with rfl | rfl | rfl
+          · -- A-failure: contradicts the witness x
+            have hnA := (negBoundedLeftFixAnchored_iff M atomMap h_INF h_SUP a
+              (bracketOf e.leftSeg e.leftPairs) z0 r hr0).mp hh.1
+            exact hnA ⟨x, hx0, hxlt, hax, heL⟩
+          · -- pin-type failure: contradicts the entry's pin type
+            have := hh.2.1
+            rw [TemporalPred.eval_at_neg'] at this
+            exact this hep
+          · -- B-failure: contradicts the right part, by IH
+            exact (ihN e.rightPairs e.rightSeg r z1
+              (le_trans (splitsAt_rightPairs_length_le b qs e he) hqs)
+              hr1).mp hh.2.2 heR
+    · -- the bracket fails → some gated disjunct holds
+      intro hnb
+      rcases firstNegPin_or_all M atomMap h_INF s z0 z1 h_lt with
+        hsev | ⟨r0, hr00, hr01, hsev, hnsr0⟩
+      · -- Case 2: s everywhere
+        refine Or.inl ((VBracketFormula.conjEverywhere_holds_iff M atomMap _ s
+          z0 z1).mpr ⟨(negBoundedLeftFixAnchored_iff M atomMap h_INF h_SUP a
+            (bracketOf b qs) z0 z1 h_lt).mpr ?_, hsev⟩)
+        rintro ⟨x, hx0, hx1, hax, htail⟩
+        exact hnb ((bracketOf_cons_holds_iff M atomMap s a b qs z0 z1).mpr
+          ⟨x, hx0, hx1, fun y hy0 hy1 => hsev y hy0 (lt_trans hy1 hx1),
+            hax, htail⟩)
+      · -- Case 3: the attained pin realizes every failure item
+        refine Or.inr ((pinnedListToV_holds_iff M atomMap _ s s.neg
+          z0 z1).mpr ⟨r0, hr00, hr01, hsev,
+            (TemporalPred.eval_at_neg' M atomMap s r0).mpr hnsr0, ?_⟩)
+        rw [pinnedConjAll_holdsAt_iff]
+        intro l hl
+        rw [List.mem_cons] at hl
+        rcases hl with rfl | hl'
+        · -- head item: ¬a(r0) or the recursive tail failure
+          by_cases hB : (negFixList b qs).holds M atomMap r0 z1
+          · exact ⟨⟨VBracketFormula.trivialTrue, TemporalPred.top,
+              negFixList b qs⟩, by simp,
+              VBracketFormula.trivialTrue_holds M atomMap z0 r0,
+              TemporalPred.eval_at_top M atomMap r0, hB⟩
+          · refine ⟨⟨VBracketFormula.trivialTrue, a.neg,
+              VBracketFormula.trivialTrue⟩, by simp,
+              VBracketFormula.trivialTrue_holds M atomMap z0 r0, ?_,
+              VBracketFormula.trivialTrue_holds M atomMap r0 z1⟩
+            rw [TemporalPred.eval_at_neg']
+            intro hax
+            have htail : (bracketOf b qs).holds M atomMap r0 z1 := by
+              by_contra hc
+              exact hB ((ihN qs b r0 z1 hqs hr01).mpr hc)
+            exact hnb ((bracketOf_cons_holds_iff M atomMap s a b qs
+              z0 z1).mpr ⟨r0, hr00, hr01, hsev, hax, htail⟩)
+        · -- split-entry item: A-failure, pin-type failure, or B-failure
+          rw [List.mem_map] at hl'
+          obtain ⟨⟨e, he⟩, -, rfl⟩ := hl'
+          by_cases hB : (negFixList e.rightSeg e.rightPairs).holds M atomMap
+            r0 z1
+          · exact ⟨⟨VBracketFormula.trivialTrue, TemporalPred.top,
+              negFixList e.rightSeg e.rightPairs⟩, by simp,
+              VBracketFormula.trivialTrue_holds M atomMap z0 r0,
+              TemporalPred.eval_at_top M atomMap r0, hB⟩
+          by_cases hp : e.pin.eval_at M atomMap r0
+          · -- pin type holds: the A-part must fail, else the bracket holds
+            refine ⟨⟨negBoundedLeftFixAnchored a
+                (bracketOf e.leftSeg e.leftPairs),
+                TemporalPred.top, VBracketFormula.trivialTrue⟩, by simp,
+              ?_, TemporalPred.eval_at_top M atomMap r0,
+              VBracketFormula.trivialTrue_holds M atomMap r0 z1⟩
+            rw [negBoundedLeftFixAnchored_iff M atomMap h_INF h_SUP a
+              (bracketOf e.leftSeg e.leftPairs) z0 r0 hr00]
+            rintro ⟨x, hx0, hxr, hax, hxL⟩
+            have heR : (bracketOf e.rightSeg e.rightPairs).holds M atomMap
+                r0 z1 := by
+              by_contra hc
+              exact hB ((ihN e.rightPairs e.rightSeg r0 z1
+                (le_trans (splitsAt_rightPairs_length_le b qs e he) hqs)
+                hr01).mpr hc)
+            have htail : (bracketOf b qs).holds M atomMap x z1 :=
+              (bracketOf_splitsAt_iff M atomMap qs b x r0 z1 hxr hr01).mpr
+                ⟨e, he, hxL, hp, heR⟩
+            exact hnb ((bracketOf_cons_holds_iff M atomMap s a b qs
+              z0 z1).mpr ⟨x, hx0, lt_trans hxr hr01,
+                fun y hy0 hy1 => hsev y hy0 (lt_trans hy1 hxr), hax, htail⟩)
+          · -- pin type fails
+            refine ⟨⟨VBracketFormula.trivialTrue, e.pin.neg,
+              VBracketFormula.trivialTrue⟩, by simp,
+              VBracketFormula.trivialTrue_holds M atomMap z0 r0, ?_,
+              VBracketFormula.trivialTrue_holds M atomMap r0 z1⟩
+            rw [TemporalPred.eval_at_neg']
+            exact hp
+
+/-- **Lemma 5.1, general fixed formula** (Rabinovich 2014, gated): on
+    attained structures, `bf.negFix` holds on `(z0, z1)` iff the bracket
+    `bf` fails on `(z0, z1)`. -/
+theorem BracketFormula.negFix_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_INF : HasAttainedINF M atomMap) (h_SUP : HasAttainedSUP M atomMap)
+    {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
+    bf.negFix.holds M atomMap z0 z1 ↔ ¬ bf.holds M atomMap z0 z1 := by
+  unfold BracketFormula.negFix
+  exact (negFixList_iff M atomMap h_INF h_SUP bf.foldPairs.length
+    bf.foldPairs (bf.segmentTypes ⟨0, Nat.succ_pos n⟩) z0 z1
+    (Nat.le_refl _) h_lt).trans
+    (not_congr (BracketFormula.holds_iff_bracketOf M atomMap n bf
+      z0 z1).symm)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
