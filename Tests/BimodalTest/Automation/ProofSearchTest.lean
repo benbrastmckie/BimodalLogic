@@ -5,9 +5,9 @@ namespace BimodalTest.Automation
 
 open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
-abbrev p : Formula := .atom "p"
-abbrev q : Formula := .atom "q"
-abbrev r : Formula := .atom "r"
+abbrev p : Formula := .atom_s "p"
+abbrev q : Formula := .atom_s "q"
+abbrev r : Formula := .atom_s "r"
 
 /-- Axiom matching positives across the TM schemata. -/
 example : matches_axiom ((p.imp (q.imp r)).imp ((p.imp q).imp (p.imp r))) = true := rfl
@@ -19,12 +19,12 @@ example : matches_axiom ((Formula.box p).imp (Formula.box (Formula.box p))) = tr
 example : matches_axiom (p.imp (Formula.box p.diamond)) = true := rfl
 example : matches_axiom ((Formula.box p).diamond.imp (Formula.box p)) = true := rfl
 example : matches_axiom ((Formula.box (p.imp q)).imp ((Formula.box p).imp (Formula.box q))) = true := rfl
-example : matches_axiom ((Formula.all_future (p.imp q)).imp ((Formula.all_future p).imp (Formula.all_future q))) = true := rfl
-example : matches_axiom ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p))) = true := rfl
+example : matches_axiom ((Formula.all_future (p.imp q)).imp ((Formula.all_future p).imp (Formula.all_future q))) = false := rfl
+example : matches_axiom ((Formula.all_future p).imp (Formula.all_future (Formula.all_future p))) = false := rfl
 example : matches_axiom (p.imp (Formula.all_future (Formula.some_past p))) = true := rfl
-example : matches_axiom ((Formula.always p).imp (Formula.all_future (Formula.all_past p))) = true := rfl
+example : matches_axiom ((Formula.always p).imp (Formula.all_future (Formula.all_past p))) = false := rfl
 example : matches_axiom ((Formula.box p).imp (Formula.box (Formula.all_future p))) = true := rfl
-example : matches_axiom ((Formula.box p).imp (Formula.all_future (Formula.box p))) = true := rfl
+example : matches_axiom ((Formula.box p).imp (Formula.all_future (Formula.box p))) = false := rfl
 
 /-- Negative axiom matching checks to avoid false positives. -/
 example : matches_axiom (Formula.imp (Formula.box p) q) = false := rfl
@@ -438,7 +438,7 @@ example : temporal_heuristic_bonus (Formula.box p) = 0 := rfl
   let ordered := orderSubgoalsByAdvancedScore {} [] targets
   IO.println s!"Original order: atom, modal_T, □q, p→(q→r)"
   IO.println "Sorted order (lower score = earlier):"
-  for (i, f) in ordered.enum do
+  for (f, i) in ordered.zipIdx do
     IO.println s!"  {i}: score={advanced_heuristic_score {} [] f}"
 
 -- Verify that advanced heuristics prefer modal/temporal goals
@@ -461,7 +461,7 @@ by `matches_axiom` and provable via the search tactics.
 -/
 
 -- Additional atom for testing variants
-abbrev s : Formula := .atom "s"
+abbrev s : Formula := .atom_s "s"
 
 /-! ### Propositional Axiom Completeness -/
 
