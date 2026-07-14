@@ -68,7 +68,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 186 [NOT STARTED] — unify_search_systems
-187 [RESEARCHED] — backward_chaining_lemma_db
+187 [PLANNED] — backward_chaining_lemma_db
   └─ 192 [NOT STARTED] — master_tactic_dispatch
     └─ 193 [NOT STARTED] — codebase_tactic_refactor
 188 [RESEARCHED] — weakening_aware_search
@@ -609,13 +609,14 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 187. Backward chaining lemma db
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
 - **Research**:
   - [187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md]
   - [187_backward_chaining_lemma_db/reports/02_backward-chaining-research.md]
+- **Plan**: [187_backward_chaining_lemma_db/plans/02_backward-chaining-plan.md]
 
 ---
 

@@ -673,10 +673,10 @@
     {
       "project_number": 187,
       "project_name": "backward_chaining_lemma_db",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:32:04Z",
+      "last_updated": "2026-07-14T15:37:24Z",
       "artifacts": [
         {
           "path": "specs/187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md",
@@ -687,6 +687,11 @@
           "path": "specs/187_backward_chaining_lemma_db/reports/02_backward-chaining-research.md",
           "type": "research",
           "summary": "Full research report: verified current-state map of searchProof pipeline (post Tactics.lean split), FrameClass parameterization implications, toolchain mechanism verification (LabelAttribute/SolveByElim/DiscrTree in Lean core), recommended tryLemmaMatch design with code sketch, concrete file targets, risks, and suggested 3-phase plan structure."
+        },
+        {
+          "path": "specs/187_backward_chaining_lemma_db/plans/02_backward-chaining-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan: LemmaDB attribute + tag 26; tryLemmaMatch recursion replacing tryDerivedMatch with migration invariant (all 26 goals still close); pre-filter + weakening fallback + chaining tests; expanded tagging + visitLimit + doc fixes. Per-phase lake build gates, zero-sorry expectation, rollback via per-phase green commits."
         }
       ],
       "topic": "automation",
@@ -717,10 +722,10 @@
     {
       "project_number": 189,
       "project_name": "deduction_theorem_tactic",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:32:09Z",
+      "last_updated": "2026-07-14T15:37:28Z",
       "artifacts": [
         {
           "path": "specs/189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md",
@@ -1553,7 +1558,7 @@
       ],
       "session_id": "sess_1783992818_a712e6",
       "previous_status": "implementing",
-      "blockers": "Blocked on task 363 (restate_depth1_fibermarking_interface_and_reprobe_g1g2): 358 Phase 7/8 depth->=1 fiber-marking supply theorems (G1 interior rows 5-6, G2 exterior rows 8-11) are re-keyed to 363 landed interface. Obligation shapes machine-refuted FALSE at m=1 (kvE_probeM1_sliceId_NOGO / interiorHreal_NOGO / interiorGuard_identical). Root cause D7 = P17-frozen-interface-gap. Unblocks once 363 lands the pinned/depth-graded interface."
+      "blockers": "UNBLOCKED (2026-07-14): task 363 landed the depth-graded fiber-consistency guard (ExteriorFiberConsistencyK.lean). The FINAL PREDICATE SIGNATURE in specs/363_.../summaries/01 is the re-keying contract for 358 Phase 7/8. Next: /revise 358 -> plan v04 keyed to that signature, then /implement (resume G2 -> G1 -> arm rewrites at KampPrior :519/:522). Plan v3 is stale (k=0/k=1 arms already discharged)."
     },
     {
       "project_number": 359,
