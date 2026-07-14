@@ -159,15 +159,15 @@ the 762 trustworthy records first.
 
 ---
 
-### Phase 2: schema enrichment — sexpr/tokens/features (sub-item 3) [NOT STARTED]
+### Phase 2: schema enrichment — sexpr/tokens/features (sub-item 3) [COMPLETED]
 
 **Goal**: All 777 records gain `formula_sexpr`, `formula_tokens`, `pattern_features`, with the
 Python derivation proven byte-identical to the Lean exporter on all 6,029 training records
 before the benchmark is touched.
 
 **Tasks**:
-- [ ] Add `--add-schema-fields` mode to `data/scripts/enrich_benchmark.py` deriving all three
-      fields from `formula_ast` + `pattern_key`:
+- [x] Add `--add-schema-fields` mode to `data/scripts/enrich_benchmark.py` deriving all three
+      fields from `formula_ast` + `pattern_key`: *(completed)*
       - `formula_sexpr`: prefix s-expression over primitive tags, atoms quoted —
         e.g. `(box (untl (atom "p") (imp bot bot)))`
       - `formula_tokens`: pre-order token list, vocabulary `ATOM, BOT, BOX, IMP, SNCE, UNTL`
@@ -175,13 +175,14 @@ before the benchmark is touched.
       - `pattern_features`: `[modalDepth, temporalDepth, impCount, complexity,
         topOperator.toNat]` with the 8-value toNat mapping (Atom=0 ... Since=7) from
         `DataExport.lean:229-246`
-- [ ] **Fidelity gate (blocking)**: run the derivation over all 6,029 `data/bmlogic.jsonl`
+- [x] **Fidelity gate (blocking)**: run the derivation over all 6,029 `data/bmlogic.jsonl`
       records' `formula_ast` and assert byte-equality with their stored
       `formula_sexpr`/`formula_tokens`/`pattern_features`; do NOT write to the benchmark until
-      this passes with 0 mismatches
-- [ ] Back up to `.bak`, apply to all 777 benchmark records via atomic rewrite
-- [ ] Post-write assertions: all 777 records have the 3 new non-null fields; count/ids/
-      contamination counts unchanged
+      this passes with 0 mismatches *(completed: 6,029/6,029 byte-equal)*
+- [x] Back up to `.bak`, apply to all 777 benchmark records via atomic rewrite *(completed:
+      bmlogic-bench.jsonl.phase2.bak)*
+- [x] Post-write assertions: all 777 records have the 3 new non-null fields; count/ids/
+      contamination counts unchanged *(completed: 777/777, 553/224)*
 
 **Timing**: 1.5 hours
 
