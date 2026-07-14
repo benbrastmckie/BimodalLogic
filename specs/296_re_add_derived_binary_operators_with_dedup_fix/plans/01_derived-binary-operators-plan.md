@@ -140,7 +140,7 @@ by `#eval` membership assertions, with a fresh stage-by-stage count baseline rec
 
 ---
 
-### Phase 2: Representation-layer completion (Normalization.lean) [NOT STARTED]
+### Phase 2: Representation-layer completion (Normalization.lean) [COMPLETED]
 
 **Goal**: The fold/enrichment layer recognizes, tags, serializes, and round-trips all 6 derived
 binary operators, so folded-tag presence becomes real and measurable.
@@ -158,8 +158,14 @@ binary operators, so folded-tag presence becomes real and measurable.
     snce-dual for `strong_trigger`.
   - `recognizeComposites` or_ node: `.or_ (.untl φ ψ) (.all_future ψ')` with `ψ == ψ'` →
     `weak_until φ ψ`, plus the snce/all_past-dual for `weak_since`.
-- [ ] Add 4 `@[simp]` `rfl` unfold lemmas (`release_unfold`, `weak_until_unfold`, `trigger_unfold`,
+- [x] Add 4 `@[simp]` `rfl` unfold lemmas (`release_unfold`, `weak_until_unfold`, `trigger_unfold`,
   `weak_since_unfold`); extend the `modal_norm`/`modal_fold` macro lists (:157-162, :192, :202).
+  *(deviation: altered — the 4 unfold lemmas were added and the three unfold-direction macros
+  (`modal_norm`, `modal_norm_at`, `modal_norm_all`) were extended, but the reverse-direction
+  `modal_fold` macro was intentionally NOT extended: these operators' unfold RHS contains further
+  derived operators (`.or`/`.all_future`/`.all_past`), so a `← _unfold` rewrite would break simp
+  confluence in the existing RoundTripTests. Value-level `foldFormula`/`recognizeComposites`
+  recognition — the actual fold path used by the census/serialization — fully handles them.)*
 - [ ] Extend the existing round-trip `#eval` suite (currently 21 formulas) with representative
   instances of all 6 operators, asserting `toPrimitive ∘ foldFormulaFull = id` and the
   `release(p,⊥) → all_future` regression.

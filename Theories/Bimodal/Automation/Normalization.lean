@@ -138,6 +138,24 @@ section UnfoldLemmas
 @[simp] theorem strong_trigger_unfold (φ ψ : Formula) :
     Formula.strong_trigger φ ψ = Formula.snce (Formula.and ψ φ) ψ := rfl
 
+/-! ### Level 8: Release, Weak Until, Trigger, Weak Since (depend on Level 2/3 operators) -/
+
+/-- Unfold release: `release φ ψ = neg (untl (neg φ) (neg ψ))` -/
+@[simp] theorem release_unfold (φ ψ : Formula) :
+    Formula.release φ ψ = ((φ.neg.untl ψ.neg).neg) := rfl
+
+/-- Unfold weak_until: `weak_until φ ψ = or (untl φ ψ) (all_future ψ)` -/
+@[simp] theorem weak_until_unfold (φ ψ : Formula) :
+    Formula.weak_until φ ψ = ((φ.untl ψ).or ψ.all_future) := rfl
+
+/-- Unfold trigger: `trigger φ ψ = neg (snce (neg φ) (neg ψ))` -/
+@[simp] theorem trigger_unfold (φ ψ : Formula) :
+    Formula.trigger φ ψ = ((φ.neg.snce ψ.neg).neg) := rfl
+
+/-- Unfold weak_since: `weak_since φ ψ = or (snce φ ψ) (all_past ψ)` -/
+@[simp] theorem weak_since_unfold (φ ψ : Formula) :
+    Formula.weak_since φ ψ = ((φ.snce ψ).or ψ.all_past) := rfl
+
 end UnfoldLemmas
 
 /-!
@@ -159,7 +177,8 @@ macro "modal_norm" : tactic =>
     all_future_unfold, all_past_unfold,
     weak_future_unfold, weak_past_unfold,
     always_unfold, sometimes_unfold,
-    strong_release_unfold, strong_trigger_unfold])
+    strong_release_unfold, strong_trigger_unfold,
+    release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold])
 
 /-- Propositional normalization only: unfolds neg, top, and, or. -/
 macro "prop_norm" : tactic =>
@@ -189,7 +208,8 @@ macro_rules
       all_future_unfold, all_past_unfold,
       weak_future_unfold, weak_past_unfold,
       always_unfold, sometimes_unfold,
-      strong_release_unfold, strong_trigger_unfold] at $h:ident))
+      strong_release_unfold, strong_trigger_unfold,
+      release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold] at $h:ident))
 
 /-- Normalize all hypotheses and the goal. -/
 macro "modal_norm_all" : tactic =>
@@ -199,7 +219,8 @@ macro "modal_norm_all" : tactic =>
     all_future_unfold, all_past_unfold,
     weak_future_unfold, weak_past_unfold,
     always_unfold, sometimes_unfold,
-    strong_release_unfold, strong_trigger_unfold] at *)
+    strong_release_unfold, strong_trigger_unfold,
+    release_unfold, weak_until_unfold, trigger_unfold, weak_since_unfold] at *)
 
 end NormTactics
 
@@ -338,6 +359,14 @@ inductive EnrichedFormula : Type where
   | strong_release : EnrichedFormula → EnrichedFormula → EnrichedFormula
   /-- Strong Trigger / ST (derived: ψ S (ψ ∧ φ)) -/
   | strong_trigger : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Release / R (derived: ¬(¬φ U ¬ψ)) -/
+  | release : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Weak Until / WU (derived: (φ U ψ) ∨ Gψ) -/
+  | weak_until : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Trigger / T (derived: ¬(¬φ S ¬ψ)) -/
+  | trigger : EnrichedFormula → EnrichedFormula → EnrichedFormula
+  /-- Weak Since / WS (derived: (φ S ψ) ∨ Hψ) -/
+  | weak_since : EnrichedFormula → EnrichedFormula → EnrichedFormula
   deriving Repr, BEq, Inhabited
 
 namespace EnrichedFormula
@@ -370,6 +399,10 @@ def toPrimitive : EnrichedFormula → Formula
   | .sometimes φ  => Formula.sometimes φ.toPrimitive
   | .strong_release φ ψ => Formula.strong_release φ.toPrimitive ψ.toPrimitive
   | .strong_trigger φ ψ => Formula.strong_trigger φ.toPrimitive ψ.toPrimitive
+  | .release φ ψ  => Formula.release φ.toPrimitive ψ.toPrimitive
+  | .weak_until φ ψ => Formula.weak_until φ.toPrimitive ψ.toPrimitive
+  | .trigger φ ψ  => Formula.trigger φ.toPrimitive ψ.toPrimitive
+  | .weak_since φ ψ => Formula.weak_since φ.toPrimitive ψ.toPrimitive
 
 end EnrichedFormula
 
@@ -410,14 +443,22 @@ def _root_.Bimodal.Syntax.Formula.foldFormula : Formula → EnrichedFormula
     match ψ' with
     | .top => .some_future φ'
     | .bot => .next φ'
-    | _ => .untl φ' ψ'
+    | _ =>
+      -- strong_release φ ψ = untl (and ψ φ) ψ (task 296): left is `and_ g b` with g == ψ'
+      match φ' with
+      | .and_ a b => if a == ψ' then .strong_release b ψ' else .untl φ' ψ'
+      | _ => .untl φ' ψ'
   | Formula.snce φ ψ =>
     let φ' := φ.foldFormula
     let ψ' := ψ.foldFormula
     match ψ' with
     | .top => .some_past φ'
     | .bot => .prev φ'
-    | _ => .snce φ' ψ'
+    | _ =>
+      -- strong_trigger φ ψ = snce (and ψ φ) ψ (task 296): left is `and_ g b` with g == ψ'
+      match φ' with
+      | .and_ a b => if a == ψ' then .strong_trigger b ψ' else .snce φ' ψ'
+      | _ => .snce φ' ψ'
   | Formula.imp φ ψ =>
     let φ' := φ.foldFormula
     let ψ' := ψ.foldFormula
@@ -443,6 +484,12 @@ where
     | .some_future (.neg φ), .bot => .all_future φ
     -- imp(some_past(neg φ)) bot → all_past φ
     | .some_past (.neg φ), .bot => .all_past φ
+    -- release φ ψ = ¬(¬φ U ¬ψ) = imp (untl (neg φ) (neg ψ)) bot (task 296)
+    -- Placed after the some_future/some_past ⊥-guards so `release(φ,⊥)` (which folds
+    -- to `some_future (neg φ)` via the ⊤-collapse of `neg ⊥`) still routes to all_future.
+    | .untl (.neg φ) (.neg ψ), .bot => .release φ ψ
+    -- trigger φ ψ = ¬(¬φ S ¬ψ) = imp (snce (neg φ) (neg ψ)) bot (task 296)
+    | .snce (.neg φ) (.neg ψ), .bot => .trigger φ ψ
     -- imp (and_ (all_past φ) (and_ ψ (all_future χ))) bot where φ = neg α, ψ = neg α, χ = neg α
     -- This is neg(always(neg α)) = sometimes α
     -- After folding always: neg(always(neg α))
@@ -493,7 +540,13 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
     let ψ' := ψ.recognizeComposites
     -- Recognize or_: imp (neg φ) ψ → or_ φ ψ
     match φ' with
-    | .neg inner => .or_ inner ψ'
+    | .neg inner =>
+      -- weak_until φ ψ = (φ U ψ) ∨ Gψ = or_ (untl φ ψ) (all_future ψ) (task 296)
+      -- weak_since φ ψ = (φ S ψ) ∨ Hψ = or_ (snce φ ψ) (all_past ψ) (task 296)
+      match inner, ψ' with
+      | .untl a b, .all_future b' => if b == b' then .weak_until a b else .or_ inner ψ'
+      | .snce a b, .all_past b'   => if b == b' then .weak_since a b else .or_ inner ψ'
+      | _, _ => .or_ inner ψ'
     | _ => .imp φ' ψ'
   | .box φ => .box φ.recognizeComposites
   | .untl φ ψ => .untl φ.recognizeComposites ψ.recognizeComposites
@@ -531,6 +584,10 @@ def EnrichedFormula.recognizeComposites : EnrichedFormula → EnrichedFormula
   | .sometimes φ => .sometimes φ.recognizeComposites
   | .strong_release φ ψ => .strong_release φ.recognizeComposites ψ.recognizeComposites
   | .strong_trigger φ ψ => .strong_trigger φ.recognizeComposites ψ.recognizeComposites
+  | .release φ ψ  => .release φ.recognizeComposites ψ.recognizeComposites
+  | .weak_until φ ψ => .weak_until φ.recognizeComposites ψ.recognizeComposites
+  | .trigger φ ψ  => .trigger φ.recognizeComposites ψ.recognizeComposites
+  | .weak_since φ ψ => .weak_since φ.recognizeComposites ψ.recognizeComposites
 
 /-- Full fold: fold primitives then recognize composite operators. -/
 def _root_.Bimodal.Syntax.Formula.foldFormulaFull (f : Formula) : EnrichedFormula :=
@@ -678,6 +735,36 @@ private def q_atom : Atom := Atom.mk_base "q"
     let roundTrip := EnrichedFormula.toPrimitive folded
     (f == roundTrip, repr folded)
   return results
+
+-- Task 296: derived binary operators fold to their own tags (not neg(untl ...) etc.).
+-- Each assertion checks (a) the correct enriched tag and (b) round-trip identity.
+#guard Formula.foldFormulaFull (Formula.release (Formula.atom p_atom) (Formula.atom q_atom))
+  == EnrichedFormula.release (.atom p_atom) (.atom q_atom)
+#guard Formula.foldFormulaFull (Formula.weak_until (Formula.atom p_atom) (Formula.atom q_atom))
+  == EnrichedFormula.weak_until (.atom p_atom) (.atom q_atom)
+#guard Formula.foldFormulaFull (Formula.trigger (Formula.atom p_atom) (Formula.atom q_atom))
+  == EnrichedFormula.trigger (.atom p_atom) (.atom q_atom)
+#guard Formula.foldFormulaFull (Formula.weak_since (Formula.atom p_atom) (Formula.atom q_atom))
+  == EnrichedFormula.weak_since (.atom p_atom) (.atom q_atom)
+#guard Formula.foldFormulaFull (Formula.strong_release (Formula.atom p_atom) (Formula.atom q_atom))
+  == EnrichedFormula.strong_release (.atom p_atom) (.atom q_atom)
+#guard Formula.foldFormulaFull (Formula.strong_trigger (Formula.atom p_atom) (Formula.atom q_atom))
+  == EnrichedFormula.strong_trigger (.atom p_atom) (.atom q_atom)
+
+-- Round-trip: toPrimitive ∘ foldFormulaFull = id for all 6 binary operators.
+#guard [
+    Formula.release (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.weak_until (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.trigger (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.weak_since (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.strong_release (Formula.atom p_atom) (Formula.atom q_atom),
+    Formula.strong_trigger (Formula.atom p_atom) (Formula.atom q_atom)
+  ].all (fun f => f == EnrichedFormula.toPrimitive (Formula.foldFormulaFull f))
+
+-- Regression (report §8 / plan risk): release(p, ⊥) still folds to all_future p,
+-- because `neg ⊥` collapses to ⊤ and the some_future ⊥-guard fires first.
+#guard Formula.foldFormulaFull (Formula.release (Formula.atom p_atom) Formula.bot)
+  == EnrichedFormula.all_future (.atom p_atom)
 
 end FoldTests
 
@@ -924,6 +1011,14 @@ def toJson : EnrichedFormula → String
     "{\"tag\": \"strong_release\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
   | .strong_trigger φ ψ =>
     "{\"tag\": \"strong_trigger\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .release φ ψ =>
+    "{\"tag\": \"release\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .weak_until φ ψ =>
+    "{\"tag\": \"weak_until\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .trigger φ ψ =>
+    "{\"tag\": \"trigger\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
+  | .weak_since φ ψ =>
+    "{\"tag\": \"weak_since\", \"left\": " ++ φ.toJson ++ ", \"right\": " ++ ψ.toJson ++ "}"
 
 /--
 Pretty-print an `EnrichedFormula` in human-readable notation.
@@ -961,6 +1056,10 @@ def prettyPrint : EnrichedFormula → String
   | .sometimes φ  => "▽" ++ φ.prettyPrint
   | .strong_release φ ψ => "M(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
   | .strong_trigger φ ψ => "ST(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .release φ ψ  => "R(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .weak_until φ ψ => "WU(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .trigger φ ψ  => "T(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
+  | .weak_since φ ψ => "WS(" ++ φ.prettyPrint ++ ", " ++ ψ.prettyPrint ++ ")"
 
 /--
 Serialize an `EnrichedFormula` to an S-expression string with enriched tags.
@@ -996,6 +1095,10 @@ def toSExpr : EnrichedFormula → String
   | .sometimes φ  => "(sometimes " ++ φ.toSExpr ++ ")"
   | .strong_release φ ψ => "(strong_release " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
   | .strong_trigger φ ψ => "(strong_trigger " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .release φ ψ  => "(release " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .weak_until φ ψ => "(weak_until " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .trigger φ ψ  => "(trigger " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
+  | .weak_since φ ψ => "(weak_since " ++ φ.toSExpr ++ " " ++ ψ.toSExpr ++ ")"
 
 end EnrichedFormula
 
