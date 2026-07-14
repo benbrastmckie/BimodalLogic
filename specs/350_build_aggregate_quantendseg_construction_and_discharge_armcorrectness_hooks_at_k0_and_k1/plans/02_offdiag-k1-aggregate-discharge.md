@@ -452,7 +452,7 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 
 ---
 
-### Phase 9: (B / P2b) negBoundedRightFix + negBoundedLeftFix [NOT STARTED]
+### Phase 9: (B / P2b) negBoundedRightFix + negBoundedLeftFix [IN PROGRESS]
 
 - **Goal:** Cor 5.4(1)/(2) in fixed-formula iff form, both mirrors.
 - **Tasks:**
