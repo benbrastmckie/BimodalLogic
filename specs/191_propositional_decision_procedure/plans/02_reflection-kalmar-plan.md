@@ -1,7 +1,7 @@
 # Implementation Plan: Task #191 — Propositional Decision Procedure
 
 - **Task**: 191 - Propositional decision procedure
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 32 hours
 - **Dependencies**: None (all in-tree prerequisites verified DONE and sorry-free: task 181 `Derivable`, `deduction_theorem`, `classical_merge`, `trivial_frame`/`universal_trivialFrame`, `Soundness.lean`)
 - **Research Inputs**: reports/02_decision-procedure-research.md (authoritative; supersedes reports/01_decision-procedure-seed.md)
@@ -71,21 +71,21 @@ No roadmap context provided for this planning run.
 
 Phases within the same wave can execute in parallel. Phase 5 (concrete decidability) and Phase 6 (tactic + tests) are mutually independent; if scope must shrink, Phase 5 is the cut candidate (the tactic is the high-value deliverable).
 
-### Phase 1: PropForm deep embedding + computable checker [NOT STARTED]
+### Phase 1: PropForm deep embedding + computable checker [COMPLETED]
 
 **Goal**: Sorry-free `PropForm.lean` with the deep embedding, evaluator, tautology checker, denotation, and the characterization lemma; kernel `decide` reducibility demonstrated.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean` with module docstring (state the reflection architecture and the noncomputability note)
-- [ ] `inductive PropForm : Type | var : Nat → PropForm | fls | imp : PropForm → PropForm → PropForm` deriving `DecidableEq, Repr`
-- [ ] `PropForm.eval (v : Nat → Bool) : PropForm → Bool` (imp case: `!f.eval v || g.eval v`)
-- [ ] `PropForm.vars : PropForm → List Nat` (deduplicated; plain structural recursion — NO `Finset.pi`)
-- [ ] `tautoAux : List Nat → (Nat → Bool) → Bool` (structural recursion on var list, branching `v[n] := true/false`) and `PropForm.isTaut (f) : Bool := tautoAux f.vars v₀`
-- [ ] `PropForm.denote (env : Nat → Formula) : PropForm → Formula` (`.var n => env n`, `.fls => Formula.bot`, `.imp f g => (f.denote env).imp (g.denote env)`)
-- [ ] Characterization lemma `isTaut_iff_forall_eval : f.isTaut = true ↔ ∀ v, f.eval v = true` (the auxiliary invariant: `tautoAux vars v = true ↔ ∀ v' agreeing with v off vars, eval v' = true`)
-- [ ] Supporting lemmas: `eval` depends only on `vars` (agreement lemma), `mem_vars` membership characterization
-- [ ] `decide` smoke tests in the file: Peirce, K, and a 5-var tautology close via `by decide` on `isTaut _ = true`
-- [ ] Gate: `lake build Theories.Bimodal.Metalogic.Decidability.Propositional.PropForm` green, zero `sorry`
+- [x] Create `Theories/Bimodal/Metalogic/Decidability/Propositional/PropForm.lean` with module docstring (state the reflection architecture and the noncomputability note)
+- [x] `inductive PropForm : Type | var : Nat → PropForm | fls | imp : PropForm → PropForm → PropForm` deriving `DecidableEq, Repr`
+- [x] `PropForm.eval (v : Nat → Bool) : PropForm → Bool` (imp case: `!f.eval v || g.eval v`)
+- [x] `PropForm.vars : PropForm → List Nat` (deduplicated; plain structural recursion — NO `Finset.pi`)
+- [x] `tautoAux : List Nat → (Nat → Bool) → Bool` (structural recursion on var list, branching `v[n] := true/false`) and `PropForm.isTaut (f) : Bool := tautoAux f.vars v₀`
+- [x] `PropForm.denote (env : Nat → Formula) : PropForm → Formula` (`.var n => env n`, `.fls => Formula.bot`, `.imp f g => (f.denote env).imp (g.denote env)`)
+- [x] Characterization lemma `isTaut_iff_forall_eval : f.isTaut = true ↔ ∀ v, f.eval v = true` (the auxiliary invariant: `tautoAux vars v = true ↔ ∀ v' agreeing with v off vars, eval v' = true`)
+- [x] Supporting lemmas: `eval` depends only on `vars` (agreement lemma), `mem_vars` membership characterization
+- [x] `decide` smoke tests in the file: Peirce, K, and a 5-var tautology close via `by decide` on `isTaut _ = true`
+- [x] Gate: `lake build Theories.Bimodal.Metalogic.Decidability.Propositional.PropForm` green, zero `sorry`
 
 **Timing**: 4 hours
 
@@ -100,20 +100,20 @@ Phases within the same wave can execute in parallel. Phase 5 (concrete decidabil
 
 ---
 
-### Phase 2: Kalmar prerequisites — negated-implication helper + literal machinery [NOT STARTED]
+### Phase 2: Kalmar prerequisites — negated-implication helper + literal machinery [COMPLETED]
 
 **Goal**: The single new object-level lemma plus the `litCtx`/`litDenote` definitions and their simp/membership/weakening toolkit, so the Phase 3 induction is mechanical.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/Decidability/Propositional/Kalmar.lean` (imports PropForm, Derivable, DeductionTheorem, Theorems/Propositional)
-- [ ] FIRST tool calls: verify usable general weakening for `DerivationTree` contexts (`ProofSystem/Derivation.lean`, cf. `weakening_height_succ` :237) and confirm `Derivable.weaken` (`Derivable.lean:140`) covers the Prop side; record findings in a file comment
-- [ ] Prove the ONE new object-level lemma `neg_imp_intro : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg)` via `ni` (from `(φ.imp ψ) :: Γ' ⊢ ψ` with `⊢ ψ.neg` weakened) + `deduction_theorem` (~10-20 lines; noncomputable def is acceptable)
-- [ ] Define `litDenote (env) (v) (f : PropForm) : Formula := if f.eval v then f.denote env else (f.denote env).neg`
-- [ ] Define `litCtx (env) (v) (vars : List Nat) : List Formula := vars.map (fun n => if v n then env n else (env n).neg)`
-- [ ] `simp` lemmas for `litDenote` true/false branches and `litCtx` cons/membership (avoid raw if-then-else leaking into the induction)
-- [ ] Literal-membership lemma: `n ∈ vars → litDenote env v (.var n) ∈ litCtx env v vars`
-- [ ] Context-agreement lemma: `litCtx` unchanged under valuation update at a var not in the list (needed for head-variable elimination in Phase 4)
-- [ ] Gate: `lake build` green, zero `sorry`
+- [x] Create `Theories/Bimodal/Metalogic/Decidability/Propositional/Kalmar.lean` (imports PropForm, Derivable, DeductionTheorem, Theorems/Propositional)
+- [x] FIRST tool calls: verify usable general weakening for `DerivationTree` contexts (`ProofSystem/Derivation.lean`, cf. `weakening_height_succ` :237) and confirm `Derivable.weaken` (`Derivable.lean:140`) covers the Prop side; record findings in a file comment
+- [x] Prove the ONE new object-level lemma `neg_imp_intro : ⊢ φ.imp (ψ.neg.imp (φ.imp ψ).neg)` via `ni` (from `(φ.imp ψ) :: Γ' ⊢ ψ` with `⊢ ψ.neg` weakened) + `deduction_theorem` (~10-20 lines; noncomputable def is acceptable)
+- [x] Define `litDenote (env) (v) (f : PropForm) : Formula := if f.eval v then f.denote env else (f.denote env).neg`
+- [x] Define `litCtx (env) (v) (vars : List Nat) : List Formula := vars.map (fun n => if v n then env n else (env n).neg)`
+- [x] `simp` lemmas for `litDenote` true/false branches and `litCtx` cons/membership (avoid raw if-then-else leaking into the induction)
+- [x] Literal-membership lemma: `n ∈ vars → litDenote env v (.var n) ∈ litCtx env v vars`
+- [x] Context-agreement lemma: `litCtx` unchanged under valuation update at a var not in the list (needed for head-variable elimination in Phase 4)
+- [x] Gate: `lake build` green, zero `sorry`
 
 **Timing**: 4 hours
 
@@ -128,19 +128,19 @@ Phases within the same wave can execute in parallel. Phase 5 (concrete decidabil
 
 ---
 
-### Phase 3: Kalmar step lemma (main induction) [NOT STARTED]
+### Phase 3: Kalmar step lemma (main induction) [COMPLETED]
 
 **Goal**: `kalmar_step` proved sorry-free by induction on `PropForm` — the hard core of the task.
 
 **Tasks**:
-- [ ] State `kalmar_step (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars : List Nat) (hsub : f.vars ⊆ vars) : (litCtx env v vars) ⊢ (litDenote env v f)` (noncomputable def, tree-valued; Prop corollary via `Nonempty.intro`)
-- [ ] Case `var n`: `DerivationTree.assumption` using the Phase 2 literal-membership lemma
-- [ ] Case `fls`: `eval = false` always; goal is `Γ ⊢ ⊥.imp ⊥` — weakened `identity` (Theorems/Combinators)
-- [ ] Case `imp f g`, subcase `g.eval v = true`: from IH `Γ ⊢ ψ` get `Γ ⊢ φ.imp ψ` via `prop_s` axiom + mp
-- [ ] Case `imp f g`, subcase `f.eval v = false`: from IH `Γ ⊢ ¬φ` get `Γ ⊢ φ.imp ψ` via flipped `raa` (`theorem_flip` from Combinators on `raa : ⊢ A.imp (A.neg.imp B)`) / `ecq`
-- [ ] Case `imp f g`, subcase `f.eval v = true, g.eval v = false`: from IHs `Γ ⊢ φ` and `Γ ⊢ ¬ψ` get `Γ ⊢ ¬(φ.imp ψ)` via Phase 2's `neg_imp_intro` + two mps
-- [ ] Keep every case pinned to `litDenote` simp normal forms; no `sorry` placeholders survive the phase
-- [ ] Gate: `lake build` green, `lean_verify` on `kalmar_step` (no new axioms)
+- [x] State `kalmar_step (f : PropForm) (env : Nat → Formula) (v : Nat → Bool) (vars : List Nat) (hsub : f.vars ⊆ vars) : (litCtx env v vars) ⊢ (litDenote env v f)` (noncomputable def, tree-valued; Prop corollary via `Nonempty.intro`)
+- [x] Case `var n`: `DerivationTree.assumption` using the Phase 2 literal-membership lemma
+- [x] Case `fls`: `eval = false` always; goal is `Γ ⊢ ⊥.imp ⊥` — weakened `identity` (Theorems/Combinators)
+- [x] Case `imp f g`, subcase `g.eval v = true`: from IH `Γ ⊢ ψ` get `Γ ⊢ φ.imp ψ` via `prop_s` axiom + mp
+- [x] Case `imp f g`, subcase `f.eval v = false`: from IH `Γ ⊢ ¬φ` get `Γ ⊢ φ.imp ψ` via flipped `raa` (`theorem_flip` from Combinators on `raa : ⊢ A.imp (A.neg.imp B)`) / `ecq`
+- [x] Case `imp f g`, subcase `f.eval v = true, g.eval v = false`: from IHs `Γ ⊢ φ` and `Γ ⊢ ¬ψ` get `Γ ⊢ ¬(φ.imp ψ)` via Phase 2's `neg_imp_intro` + two mps
+- [x] Keep every case pinned to `litDenote` simp normal forms; no `sorry` placeholders survive the phase
+- [x] Gate: `lake build` green, `lean_verify` on `kalmar_step` (no new axioms)
 
 **Timing**: 6 hours
 
@@ -155,18 +155,18 @@ Phases within the same wave can execute in parallel. Phase 5 (concrete decidabil
 
 ---
 
-### Phase 4: Variable elimination + tautology_derivable [NOT STARTED]
+### Phase 4: Variable elimination + tautology_derivable [COMPLETED]
 
 **Goal**: Complete the Kalmar argument: eliminate variables one at a time with `deduction_theorem` + `classical_merge`, yielding the schematic main theorem.
 
 **Tasks**:
-- [ ] Variable-elimination lemma by induction on `vars`: for head var `n`, instantiate `kalmar_step` at `v[n] := true` and `v[n] := false`, apply `deduction_theorem` to each (moving the head literal into an implication — head-elimination avoids permutation lemmas), then `classical_merge (env n) (f.denote env)` + two `mp`s
-- [ ] Check whether `classical_merge` (`Connectives.lean:43`) is stated at general `{fc}` or fixed at Base; if Base-only, lift via `DerivationTree.lift` or state the elimination at Base and generalize the final result
-- [ ] Main theorem (tree-valued): `noncomputable def tautology_derivable' (f) (h : f.isTaut = true) (env) : ⊢ f.denote env` (using `isTaut_iff_forall_eval` from Phase 1 to feed the elimination)
-- [ ] Prop interface: `theorem tautology_derivable (f) (h : f.isTaut = true) (env) : |-! f.denote env`
-- [ ] Generalize to `⊢[fc]` where the lift permits (propositional axioms have `minFrameClass = Base ≤ fc`); document any Base-only residue
-- [ ] Sanity examples in-file: derive `⊢ A.imp (B.imp A)` and `⊢ ((□A).imp (□A))` for free variables `A B : Formula` by manual reification (no tactic yet)
-- [ ] Gate: `lake build` green, zero `sorry`, `lean_verify` on `tautology_derivable`
+- [x] Variable-elimination lemma by induction on `vars`: for head var `n`, instantiate `kalmar_step` at `v[n] := true` and `v[n] := false`, apply `deduction_theorem` to each (moving the head literal into an implication — head-elimination avoids permutation lemmas), then `classical_merge (env n) (f.denote env)` + two `mp`s
+- [x] Check whether `classical_merge` (`Connectives.lean:43`) is stated at general `{fc}` or fixed at Base; if Base-only, lift via `DerivationTree.lift` or state the elimination at Base and generalize the final result
+- [x] Main theorem (tree-valued): `noncomputable def tautology_derivable' (f) (h : f.isTaut = true) (env) : ⊢ f.denote env` (using `isTaut_iff_forall_eval` from Phase 1 to feed the elimination)
+- [x] Prop interface: `theorem tautology_derivable (f) (h : f.isTaut = true) (env) : |-! f.denote env`
+- [x] Generalize to `⊢[fc]` where the lift permits (propositional axioms have `minFrameClass = Base ≤ fc`); document any Base-only residue
+- [x] Sanity examples in-file: derive `⊢ A.imp (B.imp A)` and `⊢ ((□A).imp (□A))` for free variables `A B : Formula` by manual reification (no tactic yet)
+- [x] Gate: `lake build` green, zero `sorry`, `lean_verify` on `tautology_derivable`
 
 **Timing**: 4 hours
 
@@ -181,18 +181,18 @@ Phases within the same wave can execute in parallel. Phase 5 (concrete decidabil
 
 ---
 
-### Phase 5: Concrete decidability — reify, truth lemma, Decidable instance [NOT STARTED]
+### Phase 5: Concrete decidability — reify, truth lemma, Decidable instance [COMPLETED]
 
 **Goal**: The publishable completeness claim: `Decidable (|-! p)` for concrete propositional formulas, with the falsity direction via trivial-frame countermodel through the EXISTING soundness theorem (no tableau verification).
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean`
-- [ ] `Formula.isPropositional : Formula → Bool` (atom/bot/imp only)
-- [ ] Computable `Formula.reify (p : Formula) : PropForm × (Nat → Formula)` via `p.atoms` (`Formula.lean:700`) with a round-trip lemma `(p.reify).1.denote (p.reify).2 = p` under `isPropositional p = true`
-- [ ] Trivial-model truth lemma by 3-case induction (atom/bot/imp; box/untl/snce dismissed by `isPropositional`): at `D := ℤ`, `F := TaskFrame.trivial_frame`, `M.valuation := fun _ a => v a = true`, `τ := WorldHistory.universal_trivialFrame ()`, `Omega := Set.univ`, prove `truth_at M univ τ t q ↔ eval v (reify q) = true`; atom case reduces to `∃ ht : True, v a = true` via the total domain
-- [ ] Completeness direction `derivable_tautology (p) (hp : isPropositional p = true) (h : |-! p) : (p.reify).1.isTaut = true`: from a falsifying assignment `v`, instantiate `Soundness.lean:1023` at `Γ = []` with the model above and derive the contradiction
-- [ ] `def instDecidableDerivable (p) (hp : p.isPropositional = true) : Decidable (|-! p)` — hypothesis-carrying `def`, NOT a typeclass instance (side-conditioned instances don't fire reliably); dispatch on `(p.reify).1.isTaut` using `tautology_derivable` + round-trip for the true branch and `derivable_tautology` (contrapositive) for the false branch
-- [ ] Gate: `lake build` green, zero `sorry`, `lean_verify` (no new axioms; `Classical.choice` from existing soundness machinery is acceptable — no `ofReduceBool`)
+- [x] Create `Theories/Bimodal/Metalogic/Decidability/Propositional/Decidable.lean`
+- [x] `Formula.isPropositional : Formula → Bool` (atom/bot/imp only) *(deviation: altered — named `isPropositional` (plain function, not `Formula.`-namespaced) since `Decidable.lean` lives outside `Formula`'s home namespace `Bimodal.Syntax`; dot notation would not resolve. Same for `reify`. See Phase 5's `reify` deviation note above for the `Finset.toList`→`formulaAtomsList` computability fix, which also applies here.)*
+- [x] Computable `Formula.reify (p : Formula) : PropForm × (Nat → Formula)` via `p.atoms` (`Formula.lean:700`) with a round-trip lemma `(p.reify).1.denote (p.reify).2 = p` under `isPropositional p = true` *(deviation: altered — `p.atoms.toList` (`Finset.toList`) is `noncomputable` in this Mathlib build, which blocked kernel `decide` on concrete `reify`-based `isTaut` checks entirely; replaced with a custom computable, deduplicated `formulaAtomsList : Formula → List Atom` built by direct structural recursion (mirrors `PropForm.vars`'s `dedup` pattern), making `reify` itself computable while preserving the round-trip lemma's content and proof shape unchanged. `isPropositional`/`reify` are also plain functions, not `Formula.`-namespaced dot-notation members, since this file lives outside `Formula`'s home namespace `Bimodal.Syntax`.)*
+- [x] Trivial-model truth lemma by 3-case induction (atom/bot/imp; box/untl/snce dismissed by `isPropositional`): at `D := ℤ`, `F := TaskFrame.trivial_frame`, `M.valuation := fun _ a => v a = true`, `τ := WorldHistory.universal_trivialFrame ()`, `Omega := Set.univ`, prove `truth_at M univ τ t q ↔ eval v (reify q) = true`; atom case reduces to `∃ ht : True, v a = true` via the total domain *(deviation: altered — used `D := Int` (identical type to `ℤ`; `Int` needed for local Mathlib instance imports `Mathlib.Algebra.Order.Group.Int`/`Mathlib.Data.Int.Basic` to resolve `IsOrderedAddMonoid`/`Nontrivial`) and `WorldHistory.trivial` in place of `WorldHistory.universal_trivialFrame ()` — both denote the same history on `trivial_frame` since `WorldState = Unit` there, so `universal_trivialFrame ()` and `trivial` are definitionally the same construction; `trivial` was already in scope and used directly. Truth lemma is stated in terms of `PropForm.eval` of the fixed-atom-list `reifyWith`, not literally `eval v (reify q)`, to avoid re-deriving `reify`'s atom list inside the induction — `derivable_tautology` composes them.)*
+- [x] Completeness direction `derivable_tautology (p) (hp : isPropositional p = true) (h : |-! p) : (p.reify).1.isTaut = true`: from a falsifying assignment `v`, instantiate `Soundness.lean:1023` at `Γ = []` with the model above and derive the contradiction
+- [x] `def instDecidableDerivable (p) (hp : p.isPropositional = true) : Decidable (|-! p)` — hypothesis-carrying `def`, NOT a typeclass instance (side-conditioned instances don't fire reliably); dispatch on `(p.reify).1.isTaut` using `tautology_derivable` + round-trip for the true branch and `derivable_tautology` (contrapositive) for the false branch
+- [x] Gate: `lake build` green, zero `sorry`, `lean_verify` (no new axioms; `Classical.choice` from existing soundness machinery is acceptable — no `ofReduceBool`)
 
 **Timing**: 6 hours
 
@@ -206,20 +206,20 @@ Phases within the same wave can execute in parallel. Phase 5 (concrete decidabil
 
 ---
 
-### Phase 6: prop_decide tactic, tests, wiring [NOT STARTED]
+### Phase 6: prop_decide tactic, tests, wiring [COMPLETED]
 
 **Goal**: User-facing `prop_decide` tactic (reify → `decide` → apply), test suite, and umbrella import wiring; task 192 pointer documented.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/Tactics/PropDecide.lean`, mirroring the elab pattern of `Automation/Tactics/Commands.lean:104-160`
-- [ ] Goal-shape handling: accept `⊢ φ` (`DerivationTree .Base [] φ`), `⊢[fc] φ`, and `|-! φ` (route to tree-valued def or Prop theorem respectively)
-- [ ] Reification metaprogram: recurse through `Formula.imp`/`Formula.bot` syntactically; assign each maximal non-imp/bot subterm (atom, box, untl, snce, opaque variable) a fresh var index; dedup by structural `Expr` equality after `whnf` (NOT `isDefEq`); build `env` as closed function `fun n => match n with | 0 => e₀ | ... | _ => Formula.bot`
-- [ ] Assert `f.isTaut = true` and close with kernel `decide` (f is closed — always reduces); NEVER emit `native_decide`
-- [ ] Apply `tautology_derivable'`/`tautology_derivable` with `f`, the `decide` proof, and `env`
-- [ ] Create `Tests/BimodalTest/Metalogic/PropDecideTest.lean` (~120 lines): `prop_decide` closes lem, Peirce, raa, De Morgan-style, and schematic-modal goals (`⊢ (□A).imp (□A)`, goals mixing `untl`/`snce` opaquely, `⊢[fc]` shape, `|-!` shape); plus `instDecidableDerivable` checks on concrete formulas
-- [ ] Wire umbrella imports: `Theories/Bimodal/Metalogic/Decidability.lean` gains the three `Propositional/*` imports; `Automation/Tactics` umbrella gains `PropDecide`; register the test file per `Tests/BimodalTest` convention
-- [ ] Docstring/README note in `PropDecide.lean` header pointing task 192 (`tm_prove` dispatch): route propositional-skeleton goals to `prop_decide` first, then fall back to `modal_search`/tableau
-- [ ] Gate: full `lake build` green (whole project, not just new targets), zero `sorry`, `lean_verify` on tactic-produced terms in tests
+- [x] Create `Theories/Bimodal/Automation/Tactics/PropDecide.lean`, mirroring the elab pattern of `Automation/Tactics/Commands.lean:104-160`
+- [x] Goal-shape handling: accept `⊢ φ` (`DerivationTree .Base [] φ`), `⊢[fc] φ`, and `|-! φ` (route to tree-valued def or Prop theorem respectively)
+- [x] Reification metaprogram: recurse through `Formula.imp`/`Formula.bot` syntactically; assign each maximal non-imp/bot subterm (atom, box, untl, snce, opaque variable) a fresh var index; dedup by structural `Expr` equality after `whnf` (NOT `isDefEq`); build `env` as closed function `fun n => match n with | 0 => e₀ | ... | _ => Formula.bot`
+- [x] Assert `f.isTaut = true` and close with kernel `decide` (f is closed — always reduces); NEVER emit `native_decide`
+- [x] Apply `tautology_derivable'`/`tautology_derivable` with `f`, the `decide` proof, and `env`
+- [x] Create `Tests/BimodalTest/Metalogic/PropDecideTest.lean` (~120 lines): `prop_decide` closes lem, Peirce, raa, De Morgan-style, and schematic-modal goals (`⊢ (□A).imp (□A)`, goals mixing `untl`/`snce` opaquely, `⊢[fc]` shape, `|-!` shape); plus `instDecidableDerivable` checks on concrete formulas
+- [x] Wire umbrella imports: `Theories/Bimodal/Metalogic/Decidability.lean` gains the three `Propositional/*` imports; `Automation/Tactics` umbrella gains `PropDecide`; register the test file per `Tests/BimodalTest` convention
+- [x] Docstring/README note in `PropDecide.lean` header pointing task 192 (`tm_prove` dispatch): route propositional-skeleton goals to `prop_decide` first, then fall back to `modal_search`/tableau
+- [x] Gate: full `lake build` green (whole project, not just new targets), zero `sorry`, `lean_verify` on tactic-produced terms in tests
 
 **Timing**: 5 hours
 
@@ -237,12 +237,12 @@ Phases within the same wave can execute in parallel. Phase 5 (concrete decidabil
 
 ## Testing & Validation
 
-- [ ] Full `lake build` green after every phase (per-phase gate) and for the whole project at Phase 6
-- [ ] `grep -rn "sorry" Theories/Bimodal/Metalogic/Decidability/Propositional/ Theories/Bimodal/Automation/Tactics/PropDecide.lean` returns nothing at each phase end
-- [ ] `lean_verify` on `neg_imp_intro`, `kalmar_step`, `tautology_derivable`, `instDecidableDerivable`, and one tactic-produced test theorem: no new axioms, no `ofReduceBool`
-- [ ] Schematic coverage: `prop_decide` closes `∀ A B : Formula, ⊢ A.imp (B.imp A)` and `⊢ (□A).imp (□A)` with free formula variables
-- [ ] Concrete coverage: `instDecidableDerivable` returns `isTrue` on a concrete tautology and `isFalse` on a concrete non-tautology
-- [ ] Kernel-`decide` performance sanity: a 5-var tautology (32 assignments) checks instantly
+- [x] Full `lake build` green after every phase (per-phase gate) and for the whole project at Phase 6
+- [x] `grep -rn "sorry" Theories/Bimodal/Metalogic/Decidability/Propositional/ Theories/Bimodal/Automation/Tactics/PropDecide.lean` returns nothing at each phase end
+- [x] `lean_verify` on `neg_imp_intro`, `kalmar_step`, `tautology_derivable`, `instDecidableDerivable`, and one tactic-produced test theorem: no new axioms, no `ofReduceBool`
+- [x] Schematic coverage: `prop_decide` closes `∀ A B : Formula, ⊢ A.imp (B.imp A)` and `⊢ (□A).imp (□A)` with free formula variables
+- [x] Concrete coverage: `instDecidableDerivable` returns `isTrue` on a concrete tautology and `isFalse` on a concrete non-tautology
+- [x] Kernel-`decide` performance sanity: a 5-var tautology (32 assignments) checks instantly
 
 ## Artifacts & Outputs
 

@@ -1,4 +1,5 @@
 import Bimodal.Automation.Tactics.Commands
+import Bimodal.Automation.Tactics.PropDecide
 import Bimodal.Automation.ProofSearch.Core
 import Bimodal.Automation.ProofSearch.Strategies
 import Bimodal.Automation.SuccessPatterns

@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,191,199,219,231,257,282,291,296,307,318,341,343,361,364 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,192,196,292,293,294,298,305,358 | 161,191,291,307,341,343,361,364 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,364 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,364 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -67,9 +67,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 186 [NOT STARTED] — unify_search_systems
-191 [PLANNED] — propositional_decision_procedure
-  └─ 192 [NOT STARTED] — master_tactic_dispatch
-    └─ 193 [NOT STARTED] — codebase_tactic_refactor
+192 [NOT STARTED] — master_tactic_dispatch
+  └─ 193 [NOT STARTED] — codebase_tactic_refactor
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
@@ -80,12 +79,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [PLANNED] — exhaustive_enumeration_by_default
-296 [PLANNED] — Re-add the 6 derived binary temporal operators (release, weak_unt
-
-### Literature
-
-343 [PLANNED] — Make the tableau decision procedure abort-aware by threading an I
-  └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
+296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Reference Book
 
@@ -93,7 +87,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-364 [RESEARCHED] — Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11)
+364 [PLANNED] — Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11)
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
@@ -109,6 +103,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Uncategorized
 
+298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
@@ -116,11 +111,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 364. Strengthen fiberelemconsistent mate check against planted unrealizable mates
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 363
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/07_spawn-analysis.md]
+- **Plan**: [364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/plans/01_strengthen-fiber-mate-check.md]
 
 **Description**: Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11) is machine-refuted against task 363's landed fiber-consistency interface. The sorry-free certificate kvE_probe358_eP_atomMate_present (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358K.lean) shows kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only -- it compares only `mergeNF e.atom_assgn (1,_) = s'.atom_assgn` with no realizability or fresh-projection constraint on the mate s'. This lets a planted mate (mate := (mergeNF e_P.atom_assgn (1,_), fun _ => false)) -- unrealizable, vacuously elem-consistent (.2 constantly false), interior-zoned (fresh coordinate inside the doppelganger-sensitive bracket) -- supply exactly the atom row task 363 proved absent for the s* witness e_P (kvE_probe363_fake_elem_inconsistent), restoring the m=1 doppelganger countermodel one layer deeper and defeating the G2 hsliceFut conclusion.
 
@@ -219,12 +215,13 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 ---
 
 ### 343. Abort aware tableau cancellation
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: literature
 - **Dependencies**: None
 - **Research**: [343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md]
 - **Plan**: [343_abort_aware_tableau_cancellation/plans/01_abort-aware-tableau-plan.md]
+- **Summary**: [343_abort_aware_tableau_cancellation/summaries/01_abort-aware-tableau-summary.md]
 
 **Description**: Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
 
@@ -430,7 +427,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 296. Re add derived binary operators with dedup fix
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 295
@@ -603,7 +600,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 191. Propositional decision procedure
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
@@ -611,6 +608,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
   - [191_propositional_decision_procedure/reports/01_decision-procedure-seed.md]
   - [191_propositional_decision_procedure/reports/02_decision-procedure-research.md]
 - **Plan**: [191_propositional_decision_procedure/plans/02_reflection-kalmar-plan.md]
+- **Summary**: [191_propositional_decision_procedure/summaries/02_reflection-kalmar-summary.md]
 
 ---
 

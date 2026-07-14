@@ -242,12 +242,12 @@
     {
       "project_number": 343,
       "project_name": "abort_aware_tableau_cancellation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.",
       "dependencies": [],
       "created": "2026-06-09T18:00:00Z",
-      "last_updated": "2026-07-14T15:35:00Z",
+      "last_updated": "2026-07-14T18:05:00Z",
       "topic": "literature",
       "artifacts": [
         {
@@ -259,6 +259,11 @@
           "path": "specs/343_abort_aware_tableau_cancellation/plans/01_abort-aware-tableau-plan.md",
           "type": "plan",
           "summary": "5-phase plan: cancellable IO mirrors (task-277 _tracedImpl precedent) of expandBranchWithFuel/saturateBlocked/buildTableau/decide, IO.Ref Bool + IO.checkCanceled wiring in labelFormulaImpl, fuel-bounded abort-aware extractCountermodelData; each phase ends at green lake build"
+        },
+        {
+          "path": "specs/343_abort_aware_tableau_cancellation/summaries/01_abort-aware-tableau-summary.md",
+          "type": "summary",
+          "summary": "5 phases complete: cancellable IO tableau mirrors + wiring + bounded countermodel extraction; full build green sorry-free, mirror spot-check 13/13, abort short-circuits in 67us"
         }
       ],
       "plan_metadata": {
@@ -293,7 +298,8 @@
         ],
         "skeleton": false,
         "follow_up_tasks": []
-      }
+      },
+      "completion_summary": "Abort-aware tableau cancellation via IO.Ref Bool mirrors of the pure tableau core (task-277 _tracedImpl precedent): expandBranchWithFuel/saturateBlocked/buildTableau/decide/decideAutoAdaptive Cancellable variants map an observed abort to none -> .timeout, leaving all pure functions and four proof-bearing theorems untouched. Wired into labelFormulaImpl (abortRef set before IO.cancel) and removed the second unbounded computation (extractCountermodelData fuel-bounded, abort-aware variant). Verified: full lake build green + sorry-free (1755 jobs); mirror spot-check 13/13; abort-mechanism check short-circuits in 67us at fuel=1e6."
     },
     {
       "project_number": 298,
@@ -325,7 +331,7 @@
     {
       "project_number": 296,
       "project_name": "re_add_derived_binary_operators_with_dedup_fix",
-      "status": "planned",
+      "status": "partial",
       "task_type": "lean4",
       "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
       "created": "2026-06-09T02:40:00Z",
@@ -345,7 +351,8 @@
           "type": "plan",
           "summary": "5-phase plan (4 required + 1 optional): re-add 6 enumerator branches, complete Normalization.lean representation layer, value-level census, fresh c4 acceptance test confirming all 13 derived operators present"
         }
-      ]
+      ],
+      "completion_summary": "P1-P3 implemented and build-green: re-added 6 derived binary temporal operators to all enumeration paths, completed Normalization.lean representation layer (constructors, fold recognition, serialization, unfold lemmas, #guard round-trip suite), added value-level operator census cross-checked against folded tags. Zero sorries/axioms/vacuous defs. P4 (fresh c4 generator acceptance test) and P5 deferred: P4 triggers a slow ~264MB executable C rebuild requiring user approval."
     },
     {
       "project_number": 291,
@@ -851,10 +858,10 @@
     {
       "project_number": 191,
       "project_name": "propositional_decision_procedure",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:37:33Z",
+      "last_updated": "2026-07-14T18:19:23Z",
       "artifacts": [
         {
           "path": "specs/191_propositional_decision_procedure/reports/01_decision-procedure-seed.md",
@@ -870,6 +877,11 @@
           "path": "specs/191_propositional_decision_procedure/plans/02_reflection-kalmar-plan.md",
           "type": "plan",
           "summary": "6-phase, 32-hour reflection+Kalmar plan with dependency waves [[1],[2],[3],[4],[5,6]], per-phase checklists, lake build gates, lean_verify axiom checks, risk table (litCtx bookkeeping, if-then-else normal forms, classical_merge frame-class generality), and new-file-only rollback strategy."
+        },
+        {
+          "path": "specs/191_propositional_decision_procedure/summaries/02_reflection-kalmar-summary.md",
+          "type": "summary",
+          "summary": "Full implementation summary covering all 6 phases, verification results, plan deviations, and artifact list."
         }
       ],
       "dependencies": [],
@@ -1808,7 +1820,7 @@
     {
       "project_number": 364,
       "project_name": "strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Task 358's Phase 2 G2 exterior slice supply (plan v04, rows 8-11) is machine-refuted against task 363's landed fiber-consistency interface. The sorry-free certificate kvE_probe358_eP_atomMate_present (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358K.lean) shows kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only -- it compares only `mergeNF e.atom_assgn (1,_) = s'.atom_assgn` with no realizability or fresh-projection constraint on the mate s'. This lets a planted mate (mate := (mergeNF e_P.atom_assgn (1,_), fun _ => false)) -- unrealizable, vacuously elem-consistent (.2 constantly false), interior-zoned (fresh coordinate inside the doppelganger-sensitive bracket) -- supply exactly the atom row task 363 proved absent for the s* witness e_P (kvE_probe363_fake_elem_inconsistent), restoring the m=1 doppelganger countermodel one layer deeper and defeating the G2 hsliceFut conclusion.\n\nStrengthen kvE_fiberElemConsistent's mate check (ExteriorFiberConsistencyK.lean:52-55) so it rejects this planted mate while continuing to accept every honestly realized fiber and continuing to reject task 363's original m=1 fake. Two candidate approaches to adjudicate in-task against the existing and new probes (either or a synthesis is acceptable):\n(a) Fresh-projection-aware mate content: require the mate s''s fresh projection (nfk_projFresh) -- or its full .2 depth->=1 marking -- to match the inner witness e's corresponding content, not only the depth-0 atom row (.atom_assgn). The plant is projection-VISIBLE (its fresh coordinate sits inside the projection-read bracket), mirroring task 363's own G1 separation (kvE_probe363_qnfG1_antecedent_fails). This is the most promising direction per the phase-2 handoff.\n(b) Realizability-anchored mate: require the mate s' to be a genuinely realizable fiber (derivable from some model/environment), directly excluding the plant's .2 = fun _ => false construction as unrealizable-by-fiat.\n\nFollow task 363's re-probe-is-the-definition-of-done methodology (machine probe before/after, frozen reference layer). Definition of done:\n1. Restate kvE_fiberElemConsistent's mate check per the chosen approach.\n2. Re-run kvE_probe358_eP_atomMate_present (or a re-derived successor) against the new interface and confirm the plant no longer supplies an atom-mate for e_P -- the plant must now be correctly rejected.\n3. Re-run all four of task 363's existing GO certificates (ExteriorPinnedProbeM1K.lean: kvE_probeM1_sliceId_NOGO, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical, and the ExteriorFiberConsistencyProbeK.lean Phase-1 GO certificate) to confirm the strengthened guard still accepts every honestly realized fiber and still rejects the original m=1 doppelganger -- no regression.\n4. MUST NOT touch or re-open k=0 layers (rung0/rung1, task 360's m=0 supply theorems, kampPrior_case1_arm_k0) -- unrefuted, must stay frozen.\n5. MUST NOT attempt the general-m/general-depth G1/G2 supply build-out itself (kvE_futAdmissible sigma2 = true in full) -- that remains task 358 Phase 2/3, resumed after this task completes. Scope is the interface strengthening plus re-probe only.\n6. Zero-debt terminus: no sorry, no vacuous def, no forcing a proof against a live countermodel. If neither candidate approach closes green, return [BLOCKED] with its own structured escalation rather than landing debt.\n\nReference: full analysis and u-class enumeration argument in specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-2-handoff-20260714.md and reports/07_spawn-analysis.md.",
       "effort": "6-10 hours",
@@ -1818,14 +1830,20 @@
         363
       ],
       "created": "2026-07-14T17:08:37Z",
-      "last_updated": "2026-07-14T17:08:37Z",
+      "last_updated": "2026-07-14T17:49:19Z",
       "artifacts": [
         {
           "type": "report",
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/07_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 358"
+        },
+        {
+          "path": "specs/364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/plans/01_strengthen-fiber-mate-check.md",
+          "type": "plan",
+          "summary": "6-phase probe-first plan to strengthen kvE_fiberElemConsistent's mate check in place with machine green/refute gates per phase and zero-debt terminus"
         }
-      ]
+      ],
+      "session_id": "sess_1784050830_a53a7b"
     }
   ],
   "artifacts": [

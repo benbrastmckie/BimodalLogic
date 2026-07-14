@@ -6,6 +6,9 @@ import Bimodal.Metalogic.Decidability.ProofExtraction
 import Bimodal.Metalogic.Decidability.CountermodelExtraction
 import Bimodal.Metalogic.Decidability.DecisionProcedure
 import Bimodal.Metalogic.Decidability.Correctness
+import Bimodal.Metalogic.Decidability.Propositional.PropForm
+import Bimodal.Metalogic.Decidability.Propositional.Kalmar
+import Bimodal.Metalogic.Decidability.Propositional.Decidable
 
 /-!
 # Bimodal.Metalogic.Decidability - Decision Procedure for TM Logic
