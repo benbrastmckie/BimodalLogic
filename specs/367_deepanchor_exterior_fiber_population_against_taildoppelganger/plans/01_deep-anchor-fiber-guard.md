@@ -1,7 +1,7 @@
 # Implementation Plan: Task #367
 
 - **Task**: 367 - Deep-anchor exterior fiber population against tail-doppelganger (interface refinement)
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: None (parent task 358 is [BLOCKED] on this; it resumes via `/revise 358` after this lands)
 - **Research Inputs**:
@@ -423,25 +423,25 @@ byte-unchanged, zero debt.
 
 ---
 
-### Phase 6: Wrap-up — summary, handoff, re-key notes for task 358 [NOT STARTED]
+### Phase 6: Wrap-up — summary, handoff, re-key notes for task 358 [COMPLETED]
 
 **Goal**: Land the documentation and orchestrator handoff so task 358 can be re-keyed
 (`/revise 358`) against the refined interface.
 
 **Tasks**:
-- [ ] Write implementation summary
+- [x] Write implementation summary
       `specs/367_deepanchor_exterior_fiber_population_against_taildoppelganger/summaries/01_deep-anchor-fiber-guard-summary.md`:
       which candidate landed ((a)/(b)/synthesis) and the exact final guard form; the full
       certificate inventory (gates 1a-5) with `lean_verify` axiom results; the adversarial
       re-plant outcome (including the depth-2 hereditary test); the consumption-site repair
       record; any plan deviations.
-- [ ] Update `specs/367_deepanchor_exterior_fiber_population_against_taildoppelganger/.orchestrator-handoff.json`:
+- [x] Update `specs/367_deepanchor_exterior_fiber_population_against_taildoppelganger/.orchestrator-handoff.json`:
       final guard signature and chosen candidate (this dictates the witness term task 358's
       re-keyed G2 supply must construct — hereditary marked-characteristic membership vs
       direct deep condition), certificate list, files touched, frozen-audit result, and the
       explicit next action `/revise 358` (re-key Phase 2 against the refined rows-8-9
       interface) then `/implement 358`.
-- [ ] Update plan phase statuses and `.return-meta.json`; per-green-milestone commits
+- [x] Update plan phase statuses and `.return-meta.json`; per-green-milestone commits
       (`task 367 phase {P}: {name}`) should have landed at each phase; final
       `task 367: complete implementation`.
 
@@ -460,23 +460,23 @@ byte-unchanged, zero debt.
 
 ## Testing & Validation
 
-- [ ] Gate 1a: `kvE_probe367_tailDG_deep_rejected` — tail-doppelganger slice fails the
+- [x] Gate 1a: `kvE_probe367_tailDG_deep_rejected` — tail-doppelganger slice fails the
       candidate deep anchor w.r.t. the real ambient (sorry-free, floor axioms)
-- [ ] Gate 1b: m=0 inertness lemma (`rfl`-cheap) — frozen m=0 discharge layer guard rail
-- [ ] Gate 2a/2b: `kvE_deepOnFiberV0_of_realized` in full generality + honest cast
+- [x] Gate 1b: m=0 inertness lemma (`rfl`-cheap) — frozen m=0 discharge layer guard rail
+- [x] Gate 2a/2b: `kvE_deepOnFiberV0_of_realized` in full generality + honest cast
       certificate derived from it; discharge route uses `_of_realized` only (zero
       guard-unfoldings)
-- [ ] Gate 3: depth-2 hereditary doppelganger rejected; content-copying plant self-defeating;
+- [x] Gate 3: depth-2 hereditary doppelganger rejected; content-copying plant self-defeating;
       prior 363/364/358 families not reopened; analytical (Q, <) closure recorded; at most ONE
       redesign loop consumed
-- [ ] Phase 4: scoped `lake build` green across the full consumer chain; statement changes
+- [x] Phase 4: scoped `lake build` green across the full consumer chain; statement changes
       confined to the rows-8-9 binders + mapped mechanical propagation; snapshot taken before
       edits
-- [ ] Phase 5: successor certificates green against production definitions; ALL prior GO
+- [x] Phase 5: successor certificates green against production definitions; ALL prior GO
       certificates re-verified at floor axioms (363's 8, 364's set, 358 records incl. both
       `kvE_probe358_tailDG_*` byte-stable, M1 residuals); frozen-layer diff empty; full
       `lake build`; sorry count = 2 (KampPrior :519/:522 only); vacuous-def scan clean
-- [ ] Blocked-exit contract honored if any gate cannot close after the one redesign loop:
+- [x] Blocked-exit contract honored (not needed — all gates closed green) if any gate cannot close after the one redesign loop:
       `[BLOCKED]` + structured escalation record (handoff format), never
       sorry/vacuous-def/forced proof
 
