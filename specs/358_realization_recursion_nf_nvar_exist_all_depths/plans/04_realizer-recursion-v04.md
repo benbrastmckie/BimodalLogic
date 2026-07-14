@@ -155,7 +155,16 @@ kernel: P3 finishes the exterior supply family, P4 the interior supply; both con
 kernel and the 363 predicate but write disjoint territory — ExteriorPinnedConverse{K,PastK} vs.
 KampPrior/interior leaf.)
 
-### Phase 1: Consume and pin the task-363 interface [NOT STARTED]
+### Phase 1: Consume and pin the task-363 interface [COMPLETED]
+
+> **P1 outcome (2026-07-14, sess_1784045100_2e3ffe)**: all six checklist items executed —
+> signatures/conjunct-2/antecedent-pair pinned by name; three re-probe certificates
+> lean_verify GREEN at floor axioms; target signatures recorded in
+> handoffs/phase-1-handoff-20260714.md. **Anchor-content gate: PASSED-WITH-ADVERSE-FINDING** —
+> the interface is exactly as contracted, but an analytical residual countermodel against the
+> G2 rows-8-11 binder at m=1 was identified (const-false interior-zone planted mate `s'#`
+> restores restated admissibility of the s*-augmented slice). Machine adjudication routed to
+> P2's probe gate per route R2; see the handoff §5 for the full construction.
 - **Goal:** Bind 363's landed fiber-consistency interface by name and confirm it is the anchor-content
   resolution the G1/G2 supply theorems require — no Lean code written, an interface-pin gate.
 - **Tasks:**
