@@ -452,17 +452,32 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 
 ---
 
-### Phase 9: (B / P2b) negBoundedRightFix + negBoundedLeftFix [IN PROGRESS]
+### Phase 9: (B / P2b) negBoundedRightFix + negBoundedLeftFix [COMPLETED]
 
 - **Goal:** Cor 5.4(1)/(2) in fixed-formula iff form, both mirrors.
 - **Tasks:**
-  - [ ] `def negBoundedRightFix {n} (bf : BracketFormula n) : VBracketFormula` +
+  - [x] `def negBoundedRightFix {n} (bf : BracketFormula n) : VBracketFormula` +
     `negBoundedRightFix_iff (h_INF) (h_SUP) … : … ↔ ¬∃ z, z0 < z ∧ z < z1 ∧ bf.holds M atomMap
     z0 z` — F_i predicates as `TemporalPred` via native `.untl`/`.snce` (Table.lean:191-194);
     ⇐ direction by induction with the Until-witness y2 ≤/> x_{n+1} case split (chunk_0015).
-  - [ ] `negBoundedLeftFix(_iff)` — the mirror (consumes `HasAttainedSUP` via the last-occurrence
-    walk).
-  - [ ] Scoped build green; axiom checks; commit per green sub-step.
+    *(deviation: altered — `negBoundedRightFix_iff` takes only `h_INF`; `h_SUP` is not needed
+    for the right mirror (first-occurrence pin + INF-based `negChainOn`). Also, the ⇐ induction
+    peels the FIRST witness (list-cons recursion via `bracketOf`/`prepend`) rather than the
+    paper's last-witness peel; the chunk_0015 `y2 ≤/> x_{n+1}` relink case split appears per
+    step as the Until-witness-vs-first-chain-point comparison (`le_or_gt y c`). Same argument,
+    recursion direction flipped to match list structure.)*
+  - [x] `negBoundedLeftFix(_iff)` — the mirror (consumes `HasAttainedSUP` via the last-occurrence
+    walk). *(signature `(h_INF) (h_SUP)`: the pin walk consumes `h_SUP.last_occ`; the Lemma 5.3
+    chain negation still consumes `h_INF` as delivered by Phase 8.)*
+  - [x] Scoped build green; axiom checks; commit per green sub-step.
+    *(commits: b0e106288 = 9.1 right mirror green; final phase commit = left mirror +
+    verification. `lean_verify` on both `_iff` theorems: exactly
+    [propext, Classical.choice, Quot.sound]; EANegationFix.lean sorry-free.)*
+- **Encoding note (endpoint types):** this codebase's brackets carry no endpoint point types
+  (those live in `VecEA2`), so Rabinovich's `¬F_0(z_0)` endpoint disjunct is delivered as the
+  attained first-`¬β_0` pin bracket `[β_0 ∧ ¬F_1, (¬β_0 ∧ ¬F_1), ⊤]` (mirror: last-`¬β_n` pin
+  `[⊤, (¬β_n ∧ ¬G), β_n ∧ ¬G]`) — machine-checked equivalent on attained structures; Phase 10's
+  Case-2 consumer should hand the peeled bracket over in this endpoint-free form.
 - **Timing:** 2 hours (~300-500 lines). H8 seam if overrun: 9a = Right, 9b = Left mirror.
 - **Depends on:** 8
 - **Files to modify:**

@@ -613,7 +613,7 @@ theorem exists_bracketOf_right_iff {sig : MonadicSignature}
             a.conj (TemporalPred.untl (untilFold rest) b) from rfl,
         TemporalPred.eval_at_conj] at hyF hcF
       -- pick the first bracket witness r: y if y ≤ c, else c
-      rcases le_or_lt y c with hyc | hcy
+      rcases le_or_gt y c with hyc | hcy
       · -- r := y (the Until witness is in bounds)
         have h_yz1 : y < z1 := lt_of_le_of_lt hyc hc1
         have hchain_y : (chainAllTrue (untilChainPreds rest)).holds M atomMap y z1 :=
@@ -774,6 +774,327 @@ theorem negBoundedRightFix_iff {sig : MonadicSignature}
         exact h_no y hy0 hF1y (fun w h1 h2 => hs_before w h1 (lt_trans h2 hy1))
       · exact (TemporalPred.eval_at_neg' M atomMap _ r0).mp hr0neg
       · exact fun hF1r0 => h_no r0 hr00 hF1r0 hs_before
+    · -- chain fails: the Lemma 5.3 disjuncts cover it
+      obtain ⟨d, hmem, hh⟩ :=
+        (negChainOn_iff M atomMap h_INF _ z0 z1 h_lt).mpr hchain
+      exact ⟨d, List.mem_cons_of_mem _ hmem, hh⟩
+
+/-! ## The Since fold (Cor 5.4(2), the mirror) -/
+
+/-- The Since mirror of `untilFold`: `sinceFold [(α_{n-1}, β_{n-1}), …,
+    (α_0, β_0)]` is `α_{n-1} ∧ (β_{n-1} Since (α_{n-2} ∧ (… ∧ (β_0 Since
+    ⊤))))`. Each pair is a bracket point type together with the segment type
+    that precedes it, consumed right-to-left. -/
+def sinceFold : List (TemporalPred × TemporalPred) → TemporalPred
+  | [] => TemporalPred.top
+  | (a, b) :: rest => a.conj (TemporalPred.snce (sinceFold rest) b)
+
+/-- The chain predicates `[G_1, …, G_{n+1}]` of Cor 5.4(2): the Since folds
+    of all suffixes of the reversed pair list, in increasing chain order
+    (first entry `⊤`). -/
+def sinceChainPreds (mps : List (TemporalPred × TemporalPred)) : List TemporalPred :=
+  (mps.tails.map sinceFold).reverse
+
+theorem sinceChainPreds_nil : sinceChainPreds [] = [TemporalPred.top] := rfl
+
+theorem sinceChainPreds_cons (a b : TemporalPred)
+    (mps : List (TemporalPred × TemporalPred)) :
+    sinceChainPreds ((a, b) :: mps) =
+      sinceChainPreds mps ++ [sinceFold ((a, b) :: mps)] := by
+  simp [sinceChainPreds]
+
+/-- Last-element decomposition of the mirror chain-predicate list. -/
+theorem sinceChainPreds_last_snoc (mps : List (TemporalPred × TemporalPred)) :
+    ∃ L, sinceChainPreds mps = L ++ [sinceFold mps] := by
+  cases mps with
+  | nil => exact ⟨[], rfl⟩
+  | cons ab rest =>
+    obtain ⟨a, b⟩ := ab
+    exact ⟨sinceChainPreds rest, sinceChainPreds_cons a b rest⟩
+
+/-! ## List-form brackets (snoc recursion) -/
+
+/-- The bracket `[β_0, α_0, β_1, …, α_{n-1}, s]` built by repeated snoc from
+    a trailing segment type `s` and the reversed pair list
+    `[(α_{n-1}, β_{n-1}), …, (α_0, β_0)]` (each point type paired with the
+    segment type before it). -/
+def bracketSnocOf (s : TemporalPred) :
+    (mps : List (TemporalPred × TemporalPred)) → BracketFormula mps.length
+  | [] => BracketFormula.trivial s
+  | (a, b) :: rest => (bracketSnocOf b rest).snoc a s
+
+theorem bracketSnocOf_nil_holds_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (s : TemporalPred) (z0 z1 : M.carrier) :
+    (bracketSnocOf s []).holds M atomMap z0 z1 ↔
+    ∀ y : M.carrier, z0 < y → y < z1 → s.eval_at M atomMap y :=
+  BracketFormula.trivial_holds M atomMap s z0 z1
+
+theorem bracketSnocOf_cons_holds_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (s a b : TemporalPred) (mps : List (TemporalPred × TemporalPred))
+    (z0 z1 : M.carrier) :
+    (bracketSnocOf s ((a, b) :: mps)).holds M atomMap z0 z1 ↔
+    ∃ x : M.carrier, z0 < x ∧ x < z1 ∧
+      (bracketSnocOf b mps).holds M atomMap z0 x ∧
+      a.eval_at M atomMap x ∧
+      ∀ y : M.carrier, x < y → y < z1 → s.eval_at M atomMap y :=
+  BracketFormula.snoc_holds_iff M atomMap (bracketSnocOf b mps) a s z0 z1
+
+/-! ## Bridging arbitrary brackets to snoc-list form -/
+
+/-- The reversed fold pairs of a bracket: each point type with the segment
+    type before it, from the last point down to the first. Defined by
+    recursion through `front` so its cons unfolding is definitional. -/
+def BracketFormula.foldPairsRev :
+    {n : Nat} → BracketFormula n → List (TemporalPred × TemporalPred)
+  | 0, _ => []
+  | n + 1, bf =>
+    (bf.pointTypes ⟨n, Nat.lt_succ_self n⟩, bf.segmentTypes ⟨n, by omega⟩) ::
+      bf.front.foldPairsRev
+
+/-- **Mirror bridge**: an arbitrary bracket holds iff its snoc-list form
+    does. -/
+theorem BracketFormula.holds_iff_bracketSnocOf {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
+    ∀ (n : Nat) (bf : BracketFormula n) (z0 z1 : M.carrier),
+    bf.holds M atomMap z0 z1 ↔
+    (bracketSnocOf (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)
+      bf.foldPairsRev).holds M atomMap z0 z1 := by
+  intro n
+  induction n with
+  | zero =>
+    intro bf z0 z1
+    rw [show bf.foldPairsRev = [] from rfl, bracketSnocOf_nil_holds_iff]
+    exact Iff.rfl
+  | succ m ih =>
+    intro bf z0 z1
+    rw [show bf.foldPairsRev =
+          (bf.pointTypes ⟨m, Nat.lt_succ_self m⟩,
+           bf.segmentTypes ⟨m, by omega⟩) :: bf.front.foldPairsRev from rfl,
+      bracketSnocOf_cons_holds_iff,
+      BracketFormula.holds_succ_iff]
+    constructor
+    · rintro ⟨x, h1, h2, h3, h4, h5⟩
+      exact ⟨x, h1, h2, (ih bf.front z0 x).mp h3, h4, h5⟩
+    · rintro ⟨x, h1, h2, h3, h4, h5⟩
+      exact ⟨x, h1, h2, (ih bf.front z0 x).mpr h3, h4, h5⟩
+
+/-! ## Cor 5.4(2): the mirror chain observation -/
+
+/-- **Cor 5.4(2) chain observation** (mirror of
+    `exists_bracketOf_right_iff`): a bracket instance starting at some
+    `z ∈ (z0, z1)` exists iff the trailing Since-fold `Ĝ = s Since G` holds
+    at `z1` and a pointwise increasing chain of the mirror folds exists in
+    `(z0, z1)`. The ⇐ direction is the mirrored relink induction with the
+    Since-witness `c ≤ y / y < c` case split. -/
+theorem exists_bracketSnocOf_left_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) :
+    ∀ (mps : List (TemporalPred × TemporalPred)) (s : TemporalPred)
+      (z0 z1 : M.carrier), z0 < z1 →
+    ((∃ z : M.carrier, z0 < z ∧ z < z1 ∧
+        (bracketSnocOf s mps).holds M atomMap z z1) ↔
+      ((TemporalPred.snce (sinceFold mps) s).eval_at M atomMap z1 ∧
+       (chainAllTrue (sinceChainPreds mps)).holds M atomMap z0 z1)) := by
+  intro mps
+  induction mps with
+  | nil =>
+    intro s z0 z1 _h_lt
+    rw [sinceChainPreds_nil, TemporalPred.eval_at_snce,
+      chainAllTrue_cons_holds_iff]
+    constructor
+    · rintro ⟨z, hz0, hz1, hz⟩
+      rw [bracketSnocOf_nil_holds_iff] at hz
+      exact ⟨⟨z, hz1, TemporalPred.eval_at_top M atomMap z, fun w h1 h2 => hz w h1 h2⟩,
+        ⟨z, hz0, hz1, TemporalPred.eval_at_top M atomMap z,
+          chainAllTrue_nil_holds M atomMap z z1⟩⟩
+    · rintro ⟨⟨y, hy1, _, hyseg⟩, ⟨c, hc0, hc1, _, _⟩⟩
+      rcases le_or_gt c y with h | h
+      · exact ⟨y, lt_of_lt_of_le hc0 h, hy1,
+          (bracketSnocOf_nil_holds_iff M atomMap s y z1).mpr hyseg⟩
+      · exact ⟨c, hc0, hc1,
+          (bracketSnocOf_nil_holds_iff M atomMap s c z1).mpr
+            (fun w h1 h2 => hyseg w (lt_trans h h1) h2)⟩
+  | cons ab rest ih =>
+    obtain ⟨a, b⟩ := ab
+    intro s z0 z1 h_lt
+    rw [TemporalPred.eval_at_snce, sinceChainPreds_cons]
+    constructor
+    · -- bracket instance → Ĝ(z1) ∧ chain
+      rintro ⟨z, hz0, hz1, hz⟩
+      rw [bracketSnocOf_cons_holds_iff] at hz
+      obtain ⟨x, hzx, hxz1, hxfront, hxa, hxseg⟩ := hz
+      have h_z0x : z0 < x := lt_trans hz0 hzx
+      obtain ⟨hGhat_x, hchain_rest⟩ :=
+        (ih b z0 x h_z0x).mp ⟨z, hz0, hzx, hxfront⟩
+      have hGx : (sinceFold ((a, b) :: rest)).eval_at M atomMap x := by
+        rw [show sinceFold ((a, b) :: rest) =
+              a.conj (TemporalPred.snce (sinceFold rest) b) from rfl,
+          TemporalPred.eval_at_conj]
+        exact ⟨hxa, hGhat_x⟩
+      exact ⟨⟨x, hxz1, hGx, hxseg⟩,
+        (chainAllTrue_snoc_holds_iff M atomMap _ _ z0 z1).mpr
+          ⟨x, h_z0x, hxz1, hchain_rest, hGx⟩⟩
+    · -- Ĝ(z1) ∧ chain → bracket instance (the mirrored relink step)
+      rintro ⟨⟨y, hy1, hyG, hyseg⟩, hchain⟩
+      obtain ⟨c, hc0, hc1, hcchain, hcG⟩ :=
+        (chainAllTrue_snoc_holds_iff M atomMap _ _ z0 z1).mp hchain
+      rw [show sinceFold ((a, b) :: rest) =
+            a.conj (TemporalPred.snce (sinceFold rest) b) from rfl,
+        TemporalPred.eval_at_conj] at hyG hcG
+      rcases le_or_gt c y with hcy | hyc
+      · -- x := y (the Since witness is in bounds)
+        have h_z0y : z0 < y := lt_of_lt_of_le hc0 hcy
+        have hchain_y : (chainAllTrue (sinceChainPreds rest)).holds M atomMap z0 y :=
+          chainAllTrue_holds_mono_right M atomMap _ hcy hcchain
+        obtain ⟨z, hz1, hz2, hz3⟩ :=
+          (ih b z0 y h_z0y).mpr ⟨hyG.2, hchain_y⟩
+        exact ⟨z, hz1, lt_trans hz2 hy1,
+          (bracketSnocOf_cons_holds_iff M atomMap s a b rest z z1).mpr
+            ⟨y, hz2, hy1, hz3, hyG.1, hyseg⟩⟩
+      · -- x := c (the chain point relinks)
+        have hcseg : ∀ w : M.carrier, c < w → w < z1 → s.eval_at M atomMap w :=
+          fun w h1 h2 => hyseg w (lt_trans hyc h1) h2
+        obtain ⟨z, hz1, hz2, hz3⟩ :=
+          (ih b z0 c hc0).mpr ⟨hcG.2, hcchain⟩
+        exact ⟨z, hz1, lt_trans hz2 hc1,
+          (bracketSnocOf_cons_holds_iff M atomMap s a b rest z z1).mpr
+            ⟨c, hz2, hc1, hz3, hcG.1, hcseg⟩⟩
+
+/-! ## Cor 5.4(2): assembly -/
+
+/-- The attained last-`¬s` pin disjunct of `negBoundedLeftFix`: the bracket
+    `[⊤, (¬s ∧ ¬G), s ∧ ¬G]`. Mirror of `rightPinBracket`, witnessed by the
+    attained last `¬s`-point (`HasAttainedSUP`), above and at which `G`
+    fails. -/
+def leftPinBracket (s G : TemporalPred) : BracketFormula 1 :=
+  (BracketFormula.trivial TemporalPred.top).snoc
+    ((s.neg).conj G.neg) (s.conj G.neg)
+
+/-- Semantic characterization of the mirror pin disjunct. -/
+theorem leftPinBracket_holds_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (s G : TemporalPred) (z0 z1 : M.carrier) :
+    (leftPinBracket s G).holds M atomMap z0 z1 ↔
+    ∃ r : M.carrier, z0 < r ∧ r < z1 ∧
+      ¬s.eval_at M atomMap r ∧ ¬G.eval_at M atomMap r ∧
+      (∀ y : M.carrier, r < y → y < z1 →
+        s.eval_at M atomMap y ∧ ¬G.eval_at M atomMap y) := by
+  unfold leftPinBracket
+  rw [BracketFormula.snoc_holds_iff]
+  constructor
+  · rintro ⟨r, h1, h2, _, h4, h5⟩
+    simp only [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg'] at h4 h5
+    exact ⟨r, h1, h2, h4.1, h4.2, fun y hy0 hy1 => h5 y hy0 hy1⟩
+  · rintro ⟨r, h1, h2, h3, h4, h5⟩
+    refine ⟨r, h1, h2, ?_, ?_, ?_⟩
+    · rw [BracketFormula.trivial_holds]
+      intro y _ _
+      exact TemporalPred.eval_at_top M atomMap y
+    · simp only [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg']
+      exact ⟨h3, h4⟩
+    · intro y hy0 hy1
+      simp only [TemporalPred.eval_at_conj, TemporalPred.eval_at_neg']
+      exact h5 y hy0 hy1
+
+/-- **Cor 5.4(2), fixed formula** (Rabinovich 2014, chunk_0015 md:43): the
+    V-bracket formula equivalent to `¬∃ z ∈ (z0, z1), bf.holds z z1`.
+    Mirror of `negBoundedRightFix`: last-`¬β_n` pin plus the Lemma 5.3
+    chain negation over the Since folds. -/
+def negBoundedLeftFix {n : Nat} (bf : BracketFormula n) : VBracketFormula :=
+  ⟨⟨1, leftPinBracket (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)
+        (sinceFold bf.foldPairsRev)⟩ ::
+    (negChainOn (sinceChainPreds bf.foldPairsRev)).disjuncts⟩
+
+/-- **Cor 5.4(2) iff**: on structures with attained infima AND suprema,
+    `negBoundedLeftFix bf` holds on `(z0, z1)` iff no `z ∈ (z0, z1)`
+    satisfies the bracket `bf` on `(z, z1)`. The last-occurrence walk of the
+    pin disjunct consumes `HasAttainedSUP` (task 350 Phase 8); the Lemma 5.3
+    chain negation still consumes `HasAttainedINF`. -/
+theorem negBoundedLeftFix_iff {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_INF : HasAttainedINF M atomMap) (h_SUP : HasAttainedSUP M atomMap)
+    {n : Nat} (bf : BracketFormula n) (z0 z1 : M.carrier) (h_lt : z0 < z1) :
+    (negBoundedLeftFix bf).holds M atomMap z0 z1 ↔
+    ¬ ∃ z : M.carrier, z0 < z ∧ z < z1 ∧ bf.holds M atomMap z z1 := by
+  -- Normalize the right side through the mirror bridge and chain observation.
+  have h_rhs : (∃ z : M.carrier, z0 < z ∧ z < z1 ∧ bf.holds M atomMap z z1) ↔
+      ((TemporalPred.snce (sinceFold bf.foldPairsRev)
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)).eval_at M atomMap z1 ∧
+       (chainAllTrue (sinceChainPreds bf.foldPairsRev)).holds M atomMap z0 z1) := by
+    constructor
+    · rintro ⟨z, h1, h2, h3⟩
+      exact (exists_bracketSnocOf_left_iff M atomMap bf.foldPairsRev
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩) z0 z1 h_lt).mp
+        ⟨z, h1, h2, (BracketFormula.holds_iff_bracketSnocOf M atomMap n bf z z1).mp h3⟩
+    · intro h
+      obtain ⟨z, h1, h2, h3⟩ := (exists_bracketSnocOf_left_iff M atomMap bf.foldPairsRev
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩) z0 z1 h_lt).mpr h
+      exact ⟨z, h1, h2,
+        (BracketFormula.holds_iff_bracketSnocOf M atomMap n bf z z1).mpr h3⟩
+  constructor
+  · -- some disjunct holds → no bracket instance
+    rintro ⟨d, hmem, hh⟩ hex
+    obtain ⟨hGhat, hchain⟩ := h_rhs.mp hex
+    rcases List.mem_cons.mp hmem with heq | hmem'
+    · -- pin disjunct
+      subst heq
+      obtain ⟨r, _h1, _h2, h3, h4, h5⟩ :=
+        (leftPinBracket_holds_iff M atomMap _ _ z0 z1).mp hh
+      rw [TemporalPred.eval_at_snce] at hGhat
+      obtain ⟨y, hy1, hyG, hyseg⟩ := hGhat
+      rcases lt_trichotomy r y with hlt | heqq | hgt
+      · exact (h5 y hlt hy1).2 hyG
+      · exact h4 (heqq ▸ hyG)
+      · exact h3 (hyseg r hgt _h2)
+    · -- chain-negation disjunct
+      exact (negChainOn_iff M atomMap h_INF _ z0 z1 h_lt).mp ⟨d, hmem', hh⟩ hchain
+  · -- no bracket instance → some disjunct holds
+    intro hnex
+    by_cases hchain :
+      (chainAllTrue (sinceChainPreds bf.foldPairsRev)).holds M atomMap z0 z1
+    · -- chain exists, so Ĝ must fail at z1: build the mirror pin
+      refine ⟨_, List.mem_cons_self .., ?_⟩
+      show (leftPinBracket (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)
+          (sinceFold bf.foldPairsRev)).holds M atomMap z0 z1
+      rw [leftPinBracket_holds_iff]
+      have hnGhat : ¬ (TemporalPred.snce (sinceFold bf.foldPairsRev)
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩)).eval_at M atomMap z1 :=
+        fun hGhat => hnex (h_rhs.mpr ⟨hGhat, hchain⟩)
+      have h_no : ∀ y : M.carrier, y < z1 →
+          (sinceFold bf.foldPairsRev).eval_at M atomMap y →
+          ¬(∀ w : M.carrier, y < w → w < z1 →
+            (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap w) :=
+        fun y hy1 hyG hseg => hnGhat
+          ((TemporalPred.eval_at_snce M atomMap _ _ z1).mpr ⟨y, hy1, hyG, hseg⟩)
+      -- last chain point c carries G
+      obtain ⟨L, hL⟩ := sinceChainPreds_last_snoc bf.foldPairsRev
+      rw [hL] at hchain
+      obtain ⟨c, hc0, hc1, -, hcG⟩ :=
+        (chainAllTrue_snoc_holds_iff M atomMap L _ z0 z1).mp hchain
+      -- ¬β_n occurs above c (else y := c would witness Ĝ)
+      have h_fail : ∃ w : M.carrier, c < w ∧ w < z1 ∧
+          ¬(bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap w := by
+        by_contra hcon
+        push_neg at hcon
+        exact h_no c hc1 hcG hcon
+      obtain ⟨w0, hw1, hw2, hw3⟩ := h_fail
+      obtain ⟨r0, hr00, hr01, hr0neg, hr0last⟩ :=
+        h_SUP.last_occ_tp (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).neg z0 z1 h_lt
+          ⟨w0, lt_trans hc0 hw1, hw2,
+            (TemporalPred.eval_at_neg' M atomMap _ w0).mpr hw3⟩
+      have hs_after : ∀ y : M.carrier, r0 < y → y < z1 →
+          (bf.segmentTypes ⟨n, Nat.lt_succ_self n⟩).eval_at M atomMap y := by
+        intro y hy0 hy1
+        have := hr0last y hy0 hy1
+        rw [TemporalPred.eval_at_neg'] at this
+        exact not_not.mp this
+      refine ⟨r0, hr00, hr01, ?_, ?_, ?_⟩
+      · exact (TemporalPred.eval_at_neg' M atomMap _ r0).mp hr0neg
+      · exact fun hGr0 => h_no r0 hr01 hGr0 hs_after
+      · intro y hy0 hy1
+        refine ⟨hs_after y hy0 hy1, fun hGy => ?_⟩
+        exact h_no y hy1 hGy (fun w h1 h2 => hs_after w (lt_trans hy0 h1) h2)
     · -- chain fails: the Lemma 5.3 disjuncts cover it
       obtain ⟨d, hmem, hh⟩ :=
         (negChainOn_iff M atomMap h_INF _ z0 z1 h_lt).mpr hchain
