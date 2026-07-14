@@ -903,52 +903,71 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 17: (G) full-DoD verification, citability doc-hooks, wrap-up [NOT STARTED]
+### Phase 17: (G) full-DoD verification, citability doc-hooks, wrap-up [COMPLETED]
 
 - **Goal:** Definition-of-done audit for ALL SIX lemmas + downstream citability for 309 Phase 18b/19;
   close blk-350-p4-offdiag-k1-aggregate.
 - **Tasks:**
-  - [ ] Full `lake build` GREEN (whole tree; v2 baseline 1739 jobs).
-  - [ ] `lean_verify` on all six `kampArm_{past,diag,future}_{k0,k1}_correct` (fully qualified) = exactly
+  - [x] Full `lake build` GREEN (whole tree; v2 baseline 1739 jobs).
+    *(1751 jobs, exit 0 — before AND after the Base.lean docstring edit; only pre-existing
+    unused-variable warning in `Automation/DatasetGenerator.lean:2125`, outside task territory.)*
+  - [x] `lean_verify` on all six `kampArm_{past,diag,future}_{k0,k1}_correct` (fully qualified) = exactly
     `[propext, Classical.choice, Quot.sound]`; record transcript in the summary.
-  - [ ] Guard audit: `git diff --stat` over the task's commits shows NO changes to the seven frozen
+    *(All six + 16 extended-list targets = exactly the three standard axioms, no warnings, no
+    sorryAx — 22-row transcript in summary §2.)*
+  - [x] Guard audit: `git diff --stat` over the task's commits shows NO changes to the seven frozen
     files, NO `KampPrior.lean` changes, and (G6) NO `ExteriorPinnedConverseK.lean` /
     `ExteriorPinnedConversePastK.lean` changes; KampPrior sorry count still exactly 2 (:361, :364); grep:
     zero term-level `nf_char3_deeper_split`, zero live `sorry` in all new modules. **R1 audit:** `git
     diff` on the EANegationFix move shows only relocations + import lines, no proof-body edits.
-  - [ ] Update the Base.lean citability doc-hooks (docstring-only): replace the k=1 past/future blocker
+    *(All pass over the 73 subject-anchored task-350 commits; R1 line-level audit: zero monolith
+    lines dropped, additions = namespace/open/end scaffolding + docstrings + shim. Summary §3.)*
+  - [x] Update the Base.lean citability doc-hooks (docstring-only): replace the k=1 past/future blocker
     note with the two new lemma names + the EANegationFix/ module DAG map, so all six lemmas and the
     P1/P2/P3 primitives are findable by name from 309 Phase 18b.
-  - [ ] Write summary `summaries/03_negfix-refactor-exterior-carriers-summary.md`: name map
+    *(Both stale blocker notes replaced — past docstring carries the full name map + DAG; future
+    docstring cross-references it. Diff verified free of code-shaped lines; rebuild green.)*
+  - [x] Write summary `summaries/03_negfix-refactor-exterior-carriers-summary.md`: name map
     (deliverable ↔ consuming site, incl. the post-R1 module DAG), axiom-check transcript, 309 Phase-18b
     consumption instructions, blocker-resolution record.
-  - [ ] Final commit; orchestrator handoff JSON → status reflecting full DoD (blockers []); task status update.
+    *(Written — incl. blk-350-p4-offdiag-k1-aggregate CLOSED record.)*
+  - [x] Final commit; orchestrator handoff JSON → status reflecting full DoD (blockers []); task status update.
 - **Timing:** ~1 hour — **Depends on:** 16b
 - **Files:** `Kamp/NfMultiAnchorBridge/Base.lean` (docstring-only);
   `specs/350_.../summaries/03_negfix-refactor-exterior-carriers-summary.md` (new)
 
 ## Testing & Validation
 
-- [ ] `lake build` (full tree) exits 0 after each phase (scoped) and at Phase 17 (full); green before
-  AND after the R1 move.
-- [ ] `lean_verify` on all six `kampArm_*_correct` + `conjFull_iff` (both levels) + `negFix_iff` (both
+- [x] `lake build` (full tree) exits 0 after each phase (scoped) and at Phase 17 (full); green before
+  AND after the R1 move. *(Phase 17: 1751 jobs, exit 0, before and after the docstring edit.)*
+- [x] `lean_verify` on all six `kampArm_*_correct` + `conjFull_iff` (both levels) + `negFix_iff` (both
   levels) + `negChainOn_iff` + `negBounded{Right,Left}Fix(Anchored)_iff` + `concatPin_holds_iff` +
   `VVecEA2.negFix_iff` + `aggPop1_correct` + `CExtPast_correct`/`CExtFut_correct` = exactly
-  `[propext, Classical.choice, Quot.sound]`, no sorryAx.
-- [ ] The ℤ B4 counterexample (`NegFixGateProbe.caseB4_holds`) still compiles (gate necessity).
-- [ ] Two-sided `B_i`: the Case-3 negation exercises both `¬Bi⁻` and `¬Bi⁺` legs (the n=1 `negFix1B*`
-  backward lemmas specialize the general two-sided disjuncts).
-- [ ] R1 acyclicity: no `EANegationFix/*` leaf imports the shim or any `NfMultiAnchorBridge/*`;
-  `NfMultiAnchorBridge.lean:78` import line unchanged.
-- [ ] Probes passed: Phase 10 ℤ example + n=1 cover (R1-risk); Phase 12a (0,1) genericity probe (R9);
-  Phase 13 single-fiber adjudication probe (R3).
-- [ ] Shape certificates: each k=1 `_correct` conclusion matches the `kampPrior_site_trichotomy` disjunct
-  verbatim (local `example`s compile, no KampPrior import).
-- [ ] `git diff` across all task commits: no hunk in the seven frozen files, `KampPrior.lean`, or (G6)
-  `ExteriorPinnedConverse{K,PastK}.lean`; KampPrior sorry count exactly 2.
-- [ ] `grep -n "nf_char3_deeper_split"` over new modules: only docstring prohibition notes.
-- [ ] `grep -c "sorry"` over new modules = 0 (code); no `def X := True`-style vacuities.
-- [ ] Delivered v1/v2 assets unmodified except by the R1 relocation (which changes location, not proof body).
+  `[propext, Classical.choice, Quot.sound]`, no sorryAx. *(22 targets verified — summary §2.)*
+- [x] The ℤ B4 counterexample (`NegFixGateProbe.caseB4_holds`) still compiles (gate necessity).
+  *(Compiles AND lean_verify-clean.)*
+- [x] Two-sided `B_i`: the Case-3 negation exercises both `¬Bi⁻` and `¬Bi⁺` legs (the n=1 `negFix1B*`
+  backward lemmas specialize the general two-sided disjuncts). *(Landed Phases 10-11; re-verified via
+  `BracketFormula.negFix_iff` / `negFixOne` axiom checks.)*
+- [x] R1 acyclicity: no `EANegationFix/*` leaf imports the shim or any `NfMultiAnchorBridge/*`;
+  `NfMultiAnchorBridge.lean:78` import line unchanged. *(Leaf imports = sibling leaves +
+  VecEAConjFull + pre-existing EANegation/EANegationClosure only; the `:78` shim import at the R1
+  completion commit is intact, now at `:119` after sanctioned Phase 14a/15/16 import insertions.)*
+- [x] Probes passed: Phase 10 ℤ example + n=1 cover (R1-risk); Phase 12a (0,1) genericity probe (R9);
+  Phase 13 single-fiber adjudication probe (R3). *(Landed in respective phases; all compile in the
+  Phase-17 full build.)*
+- [x] Shape certificates: each k=1 `_correct` conclusion matches the `kampPrior_site_trichotomy` disjunct
+  verbatim (local `example`s compile, no KampPrior import). *(`ShapeCertificatesK0`/`K1` sections
+  compile in full build.)*
+- [x] `git diff` across all task commits: no hunk in the seven frozen files, `KampPrior.lean`, or (G6)
+  `ExteriorPinnedConverse{K,PastK}.lean`; KampPrior sorry count exactly 2. *(73 subject-anchored
+  commits audited; KampPrior sorries exactly :361/:364.)*
+- [x] `grep -n "nf_char3_deeper_split"` over new modules: only docstring prohibition notes. *(Zero
+  term-level uses.)*
+- [x] `grep -c "sorry"` over new modules = 0 (code); no `def X := True`-style vacuities. *(Census: 0
+  in task modules; vacuous-def scan: 0.)*
+- [x] Delivered v1/v2 assets unmodified except by the R1 relocation (which changes location, not proof body).
+  *(R1 line-level audit: zero non-blank lines removed without verbatim re-addition.)*
 
 ## Artifacts & Outputs
 

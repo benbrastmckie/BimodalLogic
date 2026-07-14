@@ -1281,8 +1281,33 @@ for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ`. The task-350 R1 adj
 (module header there) established that the literal `(quantEnd, seg : BracketFormula 0)` pair
 cannot host interior-POSITIVE population fibers (a `BracketFormula 0` has no point slots), so
 the k=0 discharge routes through `VVecEA2.translateRight_correct` instead of this binder. The
-k=1 past arm (`kampArm_past_k1`) is BLOCKED on the missing biconditional `VVecEA2` conjunction
-(Rabinovich Lemma 3.4 iff form) — see the task-350 plan Phase-4 blocker record. -/
+k=1 past arm is DELIVERED (task 350; blocker `blk-350-p4-offdiag-k1-aggregate` CLOSED — the
+`VVecEA2` biconditional conjunction, Rabinovich Lemma 3.4 iff form, landed as
+`VVecEA2.conjFull_iff`): `kampArm_past_k1` / `kampArm_past_k1_correct`
+(`NfMultiAnchorBridge/AggregateOffDiagK1.lean`) deliver the same skeleton shape at
+`sub_nf : NormalForm sig 2 2` (generic-site index `1 + 1`).
+
+**Task-350 name map (all six arm lemmas + P1/P2/P3 primitives), for task-309 Phase 18b:**
+- k=0 arms: `kampArm_{past,diag,future}_k0(_correct)` —
+  `NfMultiAnchorBridge/AggregateHookDischarge.lean`
+- k=1 diagonal: `kampArm_diag_k1(_correct)` — `NfMultiAnchorBridge/AggregateHookDischarge.lean`
+- k=1 off-diagonal: `kampArm_{past,future}_k1(_correct)` —
+  `NfMultiAnchorBridge/AggregateOffDiagK1.lean`
+- P1 conjFull kit: `BracketFormula.conjFull(_iff)`, `VVecEA2.conjFull(_iff)` + `trivialTrue`
+  neutrals — `Kamp/VecEAConjFull.lean`
+- P2 negation stack, post-R1 leaf DAG (linear, cycle-free:
+  `OnBuilder → BoundedFix → {BoundedFixAnchored, ConcatPin} → NegFixOne → NegFix → VecEANegFix`
+  under `Kamp/EANegationFix/`; re-export shim `Kamp/EANegationFix.lean`; leaves never import
+  the shim or any `NfMultiAnchorBridge/*`): `negChainOn(_iff)` (`OnBuilder`),
+  `negBounded{Right,Left}Fix(_iff)` (`BoundedFix`), `negBounded{Right,Left}FixAnchored(_iff)`
+  (`BoundedFixAnchored`), `BracketFormula/VBracketFormula.concatPin(_holds_iff)` (`ConcatPin`),
+  `negFixOne_cover/_iff` + `NegFixGateProbe.caseB4_holds` ℤ gate-necessity probe (`NegFixOne`),
+  `BracketFormula.negFix(_iff)` (`NegFix`), `VecEA2.negFix_iff` / `VVecEA2.negFix_iff`
+  (`VecEANegFix`)
+- P3 point merge: `NfMultiAnchorBridge/AggregatePointMergeK1.lean`; exterior fiber kit/nav:
+  `ExteriorFiberKitK1.lean`, `ExteriorNavPastK1.lean` (`CExtPast_correct`),
+  `ExteriorNavFutK1.lean` (`CExtFut_correct`); off-diagonal population: `aggPop1_correct`
+  (`AggregateOffDiagK1.lean`). -/
 theorem nf_char2_past_formula_correct {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -1490,9 +1515,12 @@ this `h_quant` binder: `kampArm_future_k0` / `kampArm_future_k0_correct`
 (`NfMultiAnchorBridge/AggregateHookDischarge.lean`) deliver
 `temporal_truth M atomMap t … ↔ ∃ x, t < x ∧ nf_eval_nf M 1 2 (Fin.cons x (fun _ => t)) sub_nf`
 for every `sub_nf : NormalForm sig 1 2` under `h_UZ`/`h_SZ` (Route V via
-`VVecEA2.translateLeft_correct` — see the task-350 R1 adjudication). The k=1 future arm
-(`kampArm_future_k1`) is BLOCKED with the k=1 past arm — task-350 plan Phase-4 blocker
-record. -/
+`VVecEA2.translateLeft_correct` — see the task-350 R1 adjudication). The k=1 future arm is
+DELIVERED (task 350; blocker `blk-350-p4-offdiag-k1-aggregate` CLOSED): `kampArm_future_k1` /
+`kampArm_future_k1_correct` (`NfMultiAnchorBridge/AggregateOffDiagK1.lean`) at
+`sub_nf : NormalForm sig 2 2` — see the task-350 name map (all six arm lemmas + P1/P2/P3
+primitives + the post-R1 `EANegationFix/` module DAG) in the
+`nf_char2_past_formula_correct` docstring above. -/
 theorem nf_char2_future_formula_correct {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
