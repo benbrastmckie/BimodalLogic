@@ -453,27 +453,69 @@ recipe is identical (assemble + the three k=1 arm facts).
   obligation-carrying; the depth-2 instance is derivable end-to-end; no sorry; :361 itself
   UNCHANGED (the arm edit is Phase 9).
 
-### Phase 6: Probe C0 — general-m slice identification at m=1 (GO/NO-GO gate) [NOT STARTED]
-- **Goal:** Settle G2's honest risk BEFORE building: does the endpoint slice identification
-  (`kvE_{fut,past}SliceId_of_end_zero` pattern, ExteriorPinnedConverseK.lean:891 / PastK:530)
-  extend to m = 1, where walked-point/endpoint types must be rendered through
-  `charF`/providers (level descent)? Report 03's mandated C3 probe; its sibling C8 is already
-  VALIDATED by 360's green m=0 landings.
+### Phase 6: Probe C0 — general-m slice identification at m=1 (GO/NO-GO gate) [COMPLETED]
+
+**VERDICT: NO-GO** (machine countermodel, `ExteriorPinnedProbeM1K.lean`, theorem
+`kvE_probeM1_sliceId_NOGO`, axioms `[propext, Classical.choice, Quot.sound]`, full-tree green):
+
+- **The countermodel** (model `(ℤ, <)`, `P = {0,10,20}`, anchors `[x1,w,x,t] = [25,15,2,18]`):
+  the fake gap fiber element `s* := nf_characteristic 1 5 [22, 25, 15, 2, 21]` — the honest
+  depth-1 type of walk point `22` over the DOPPELGÄNGER tail `[25,15,2,21]` (same depth-0
+  atom 4-type as the pinned tail; `t`-slot adjacent to the fresh point). `s*` is on the atom
+  fiber (`nfk_dropFresh s* = τ.1` — conjunct-2 admissibility reads only depth-0 atoms),
+  gap-zoned, free-env realized at `22 ∈ (18,25)`, but NOT pinned-realizable over ANY
+  `[x1'', 15, 2, 18]` (`m1_sstar_not_pinned`: the `e_b` inner type of `19` forces the fresh
+  candidate to `19`; the `e_c` inner type of the `P`-point `20` then demands a `P`-point in
+  `(22, 25)` of the fake world — empty).
+- **Consequence**: `σ := τ ⊕ s*` passes the ENTIRE m=1 `hsliceFut`/identification hypothesis
+  side — `kvE_futAdmissible`, `nfk_dropFresh σ = qnf.1`, the honest depth-3 ambient, and the
+  full semantic destructor fact set (`hend` self+ray both directions, `hgap`, `hocc`, stated
+  in the P-eliminated semantic form that `kvE_futItemShift_correct`/`P.correct` deliver — env
+  FREE) — while NO admissible slice-equal qnf-marked mate exists (`kvE_futSliceEq` forces
+  gap-LIST equality; realized σ' carry only pinned-realizable gap elements).
+- **Scope note**: the binder-level `kvE_futPos` form could not be instantiated (no in-tree
+  depth-1 `ExistProviders` — this task's own open recursion), but any provider instance
+  yields exactly the refuted semantic facts via its correctness law, so the countermodel
+  applies to every provider-rendered discharge of rows 8-11 at m ≥ 1 on the CURRENT
+  interface. m=0 remains intact (the depth-0 shadow of `s*` upgrades via C8(c); the landed
+  `kvE_futSliceId_of_end_zero`/supply theorems are untouched and unrefuted).
+- **Escalation (per the NO-GO branch below)**: the C-branch STOPS; the required repair is a
+  slice-kernel/interface restatement (rows 8-11 binder shapes at general m must carry
+  MORE than free-env-rendered content — e.g. anchored/pinned item rendering or a
+  depth-graded fiber guard), spawned as its own task per the 360 precedent — never a sorry.
+
 - **Tasks:**
-  - [ ] Attempt the m=1 identification statement AND a countermodel attempt against it
+  - [x] Attempt the m=1 identification statement AND a countermodel attempt against it
         (adversarial both ways — the 360 methodology, ExteriorPinnedProbeK pattern). Territory:
-        ExteriorPinnedConverse{K,PastK} probe files only.
-  - [ ] Record the GO/NO-GO verdict in the plan with machine evidence (compiling identification
-        instance at m=1, or the concrete ambiguity/countermodel).
-  - [ ] On NO-GO: STOP the C-branch — mark task [BLOCKED], spawn a slice-kernel restatement
+        ExteriorPinnedConverse{K,PastK} probe files only. *(deviation: altered — landed as a
+        NEW leaf probe file `ExteriorPinnedProbeM1K.lean` rather than editing the 360 probe
+        file; purely additive, zero production edits)*
+  - [x] Record the GO/NO-GO verdict in the plan with machine evidence (compiling identification
+        instance at m=1, or the concrete ambiguity/countermodel). *(NO-GO; countermodel above)*
+  - [x] On NO-GO: STOP the C-branch — mark task [BLOCKED], spawn a slice-kernel restatement
         task (the 360 precedent, which handled exactly this shape of failure); never a sorry.
-        (The A-branch, Phases 3-5, may proceed independently.)
+        (The A-branch, Phases 3-5, may proceed independently.) *(deviation: deferred — the
+        spawn/task-status action belongs to the orchestrator; recorded in
+        `.orchestrator-handoff.json` blockers)*
 - **Timing:** 1-2 hours (cheap probe dispatch; parallel to Phase 3 — disjoint territory)
 - **Depends on:** 2
 - **Done when:** GO/NO-GO recorded with machine evidence; no sorry; probe committed
   (`task 358 phase 6: general-m slice identification probe`).
 
-### Phase 7: G2 — general-m slice supply (rows 8-11) [NOT STARTED]
+### Phase 7: G2 — general-m slice supply (rows 8-11) [BLOCKED]
+
+**BLOCKER** (Phase 7): gated on Phase 6 GO; Phase 6 returned **NO-GO**.
+- **What failed**: the m=1 slice identification is FALSE on the current interface —
+  machine countermodel `kvE_probeM1_sliceId_NOGO` (`ExteriorPinnedProbeM1K.lean`).
+- **Why stuck**: the rows 8-11 obligation shapes (EndIntervalConsumerK.lean:141-162) key the
+  ⇐-side honesty to `kvE_futSliceEq` + free-env-rendered chain content; at m ≥ 1 the depth-1
+  fiber marking layer is not pinned by free-env rendering (deviation D7: no depth-k
+  cons-factorization for k ≥ 1), and admissibility's atom-level fiber guard admits
+  doppelgänger-tail fakes.
+- **What is needed**: a slice-kernel/interface restatement task (the 360 precedent) —
+  restate the general-m binder shapes with anchored/pinned item rendering or a depth-graded
+  fiber guard, then re-probe.
+- **Prohibited**: no sorry, no vacuous placeholder; the m=0 layer stays frozen.
 - **Goal:** Extend 360's four m=0 supply theorems to general m, lifting the two m-sensitive
   kernels. The proof SHAPES generalize verbatim (the `hexclSlice*` proofs consume only carried
   `hreal` + slice uniqueness + admissibility zone readback; the `hslice*` proofs consume the
