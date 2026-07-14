@@ -1,4 +1,5 @@
 import Bimodal.Automation.ProofSearch.Core
+import Bimodal.Automation.ProofSearch.Strategies
 import Bimodal.Automation.Tactics.Commands
 import Bimodal.ProofSystem
 
@@ -21,10 +22,10 @@ namespace BimodalTest.Automation.EdgeCase
 open Bimodal.Syntax Bimodal.Automation Bimodal.ProofSystem
 
 -- Convenience abbreviations
-abbrev p : Formula := .atom "p"
-abbrev q : Formula := .atom "q"
-abbrev r : Formula := .atom "r"
-abbrev s : Formula := .atom "s"
+abbrev p : Formula := .atom_s "p"
+abbrev q : Formula := .atom_s "q"
+abbrev r : Formula := .atom_s "r"
+abbrev s : Formula := .atom_s "s"
 
 /-!
 ## Section 1: Empty Context Tests
