@@ -1613,7 +1613,7 @@
     {
       "project_number": 363,
       "project_name": "restate_depth1_fibermarking_interface_and_reprobe_g1g2",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "description": "The general-depth (m>=1) fiber-marking interface underlying task 358's G1 interior supply (rows 5-6, KampPrior.lean:835-846) and G2 exterior supply (rows 8-11, EndIntervalConsumerK.lean:141-162) is machine-refuted as FALSE by two sorry-free probe theorems in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbeM1K.lean: kvE_probeM1_sliceId_NOGO (exterior, rows 8-11) and kvE_probeM1_interiorHreal_NOGO + kvE_probeM1_interiorGuard_identical (interior, rows 5-6, same root cause one level up). The shared defect (D7): depth->=1 fiber marking is not pinned by free-env/projected rendering. The countermodel constructs a doppelganger-tail fake fiber s* = nf_characteristic 1 5 [22,25,15,2,21], sharing the honest pinned fiber [25,15,2,18]'s depth-0 atom 4-type but diverging in its tail. This fake passes the atom-level admissibility fiber guard, is free-env-realized but has NO pinned realization at any witness, and is projection-invisible through the igFoldBit (zone, nfk_projFresh) arity-1 F1 information-loss channel (InteriorGateGeneralK.lean:318) -- the doppelganger difference lives entirely in slots that projection discards. Both the exterior slice-equality keying (kvE_futSliceEq) and the interior igFoldBit fold-bit guard key their obligation hypothesis side to this same free-env/projected rendering, so the fake is indistinguishable from the honest fiber under BOTH legs' current binder shapes.\n\nTask: restate the fiber-marking interface at the rungK binder / igFoldBit consumer seam (KampPrior.lean:835-846 binder shape as reference; InteriorGateGeneralK.lean:318 igFoldBit projection; ExteriorPinnedConverseK.lean / ExteriorPinnedConversePastK.lean slice kernels) so that depth->=1 fiber marking is pinned rather than free-env/projected. Two candidate approaches to adjudicate in-task against the existing countermodels (either or a synthesis): (a) anchored/pinned item rendering -- carry the depth->=1 fiber's full pinned coordinates through the binder instead of a free-env/projected summary; (b) a depth-graded fiber guard -- strengthen the admissibility/fold-bit guard so it distinguishes fibers by depth-graded content the current projection discards, defeating both m1_sstar fake constructions. Follow the task-360 slice re-key precedent for methodology (machine probe before landing, frozen reference layer). After restatement, re-run the EXISTING probes (kvE_probeM1_sliceId_NOGO, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical in ExteriorPinnedProbeM1K.lean) against the new interface to confirm the doppelganger countermodel no longer applies to either leg -- this re-probe is the definition of done, not merely a restated signature. MUST NOT touch or re-open the k=0 layers (rung0/rung1, m=0 supply theorems from task 360, kampPrior_case1_arm_k0) -- these are unrefuted and must stay frozen. Zero-debt terminus: no sorry, no vacuous def, no forcing a proof against a live countermodel; if neither candidate approach closes green, the task returns [BLOCKED] with its own structured escalation rather than landing debt. Do NOT attempt the general-m/general-depth supply build-out itself (task 358 Phases 7-8) in this task -- scope is the interface restatement plus re-probe only; the supply theorems remain task 358's responsibility once this interface is fixed.",
       "effort": "6-10 hours",
@@ -1621,7 +1621,7 @@
       "topic": "kamp_theorem_formalization",
       "dependencies": [],
       "created": "2026-07-14T01:36:04Z",
-      "last_updated": "2026-07-14T14:36:44Z",
+      "last_updated": "2026-07-14T15:36:30Z",
       "artifacts": [
         {
           "type": "research",
@@ -1629,7 +1629,8 @@
           "summary": "Spawn analysis from parent task 358"
         }
       ],
-      "session_id": "sess_1784039419_e5b7e9"
+      "session_id": "sess_1784039419_e5b7e9",
+      "completion_summary": "Depth>=1 fiber-marking interface restated via approach (b): decidable, m=0-inert, depth-recursive fiber-consistency guard (kvE_futFiberConsistent + past mirror) in ExteriorFiberConsistencyK.lean. Landed as a conjunct on kvE_futAdmissible/kvE_pastAdmissible (exterior/G2) and an antecedent on rows 5-6 interior obligations (G1). Phase 1 GO gate machine-validated (rejects fake s*/m1sigma, accepts all realized honest fibers). Doppelganger countermodel dissolved on both legs (4 sorry-free GO certificates); igFoldBit + k=0/k=1 layers byte-frozen. Full lake build green, axioms clean, zero new sorry. FINAL PREDICATE SIGNATURE recorded in summaries/01 as the task-358 re-keying contract. Unblocks task 358 Phase 7/8 (G1/G2 supply)."
     }
   ],
   "artifacts": [
