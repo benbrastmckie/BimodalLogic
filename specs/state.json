@@ -533,7 +533,7 @@
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
       "last_updated": "2026-07-13T21:48:29Z",
-      "topic": "strong_completeness_weak_terminus",
+      "topic": "strong_completeness",
       "description": "Base (FrameClass.Base / general) WEAK completeness green: make the empty-context theorem `completeness` (BXCanonical/Completeness.lean:135, `valid φ → Nonempty (DerivationTree FrameClass.Base [] φ)`) genuinely sorry-free by retiring or rerouting its open sorries — the dense-arm `countermodel_dense` (:159), the deprecated `countermodel_discrete` path (:166 → Transfer.lean:1270, the \"unfixable Z+Z\" succ_cofinal route; reroute through the clean countermodel_discrete_reynolds_v2 where the base case overlaps), and `dd_countermodel_chronicle_mixed_sorry` (:170). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub \"complete_frame_extension_setup_and_soundness\".)",
       "dependencies": [
         361
@@ -551,7 +551,7 @@
       "task_type": "lean4",
       "created": "2026-05-19T16:14:16Z",
       "last_updated": "2026-07-13T21:48:29Z",
-      "topic": "strong_completeness_weak_terminus",
+      "topic": "strong_completeness",
       "description": "Dense (FrameClass.Dense) WEAK completeness green: make `completeness_dense` (BXCanonical/Completeness.lean:234) genuinely sorry-free by retiring the inherited chronicle dense-path sorries (BXCanonical/Chronicle/ChronicleToCountermodel.lean succ_reaches_dom_N / chronicle_gap_contradiction; MCSMixedCase.lean). Weak terminus feeding the finite-context strong-completeness capstone (task 362). Exact decomposition scoped by research task 361. (Repurposed from the former empty stub \"complete_dense_extension_completeness\".)",
       "dependencies": [
         361
