@@ -180,4 +180,68 @@ def buildTableauCancellable (abortRef : IO.Ref Bool) (φ : Formula)
               | some _ => return none  -- still not saturated after post-blocking pass
           | none => return none  -- aborted (or the pure "should not happen")
 
+/-!
+## Cancellable Decision Wrappers (Task 343, Phase 2)
+
+These wrap the cancellable tableau core into decision-level entry points that
+reuse the pure fast paths (`tryAxiomProof`, `buildCompositionalProof`,
+`bounded_search_with_proof` — cheap and bounded) and map an observed abort
+(surfacing as a `none` tableau) to `.timeout`, never `.valid`/`.invalid`.
+-/
+
+/--
+Cancellable `IO` mirror of `decide` (DecisionProcedure.lean:122).
+
+Reuses the pure fast paths unchanged and calls `buildTableauCancellable` for
+the expensive tableau leg. An aborted tableau (`none`) maps to `.timeout`.
+
+**Mirror of** `decide`; keep the two in sync (task 343).
+-/
+def decideCancellable (abortRef : IO.Ref Bool) (φ : Formula)
+    (searchDepth : Nat := 10) (tableauFuel : Nat := 1000)
+    (fc : FrameClass := .Base) : IO (DecisionResult φ) := do
+  -- Normalization is definitionally the identity (mirrors `decide`).
+  have h_norm : Automation.Normalization.normalizeFormula φ = φ :=
+    Automation.Normalization.normalizeFormula_id φ
+  let φ_n := Automation.Normalization.normalizeFormula φ
+  -- Fast path: direct axiom proof.
+  match tryAxiomProof φ_n with
+  | some proof => return .valid (h_norm ▸ proof)
+  | none =>
+    -- Fast path: compositional proof (box-valid patterns, task 261).
+    match buildCompositionalProof φ_n 10 with
+    | some proof => return .valid (h_norm ▸ proof)
+    | none =>
+    -- Fast path: bounded proof search.
+    match bounded_search_with_proof [] φ_n searchDepth with
+    | (some proof, _, _) => return .valid (h_norm ▸ proof)
+    | (none, _, _) =>
+      -- Expensive leg: cancellable tableau. Abort/fuel exhaustion → none.
+      match ← buildTableauCancellable abortRef φ_n tableauFuel fc with
+      | none => return .timeout
+      | some tableau =>
+          match tableau with
+          | .allClosed _ =>
+              match extractProof φ_n tableau fc with
+              | .success proof => return .valid (h_norm ▸ proof)
+              | .incomplete _ => return .timeout
+          | .hasOpen openBranch _ord _applied hSat =>
+              return .invalid (extractCountermodelSimple φ_n openBranch hSat)
+
+/--
+Cancellable `IO` mirror of `decideAutoAdaptive` (DecisionProcedure.lean:198).
+
+Runs `decideCancellable` at the single fuel tier and tags the result. An
+aborted run returns `(.timeout, "adaptive_timeout")`.
+
+**Mirror of** `decideAutoAdaptive`; keep the two in sync (task 343).
+-/
+def decideAutoAdaptiveCancellable (abortRef : IO.Ref Bool) (φ : Formula)
+    (fc : FrameClass := .Base) (fuel : Nat := 500)
+    : IO (DecisionResult φ × String) := do
+  let depth := 5 + φ.complexity / 2
+  match ← decideCancellable abortRef φ depth fuel fc with
+  | .timeout => return (.timeout, "adaptive_timeout")
+  | result => return (result, s!"adaptive_{fuel}")
+
 end Bimodal.Metalogic.Decidability

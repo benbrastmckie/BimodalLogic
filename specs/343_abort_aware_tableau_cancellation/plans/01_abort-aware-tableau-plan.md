@@ -147,22 +147,23 @@ functions, mapping abort to `none`, with termination discharged exactly as `_tra
 
 ---
 
-### Phase 2: Cancellable decision wrappers [NOT STARTED]
+### Phase 2: Cancellable decision wrappers [COMPLETED]
 
 **Goal**: Wrap the cancellable tableau core into decision-level entry points that reuse the pure
 fast paths and map abort to `.timeout`.
 
 **Tasks**:
-- [ ] Implement `decideCancellable (abortRef : IO.Ref Bool) (φ : Formula) (searchDepth tableauFuel : Nat) (fc : FrameClass) : IO (DecisionResult φ)`
+- [x] Implement `decideCancellable (abortRef : IO.Ref Bool) (φ : Formula) (searchDepth tableauFuel : Nat) (fc : FrameClass) : IO (DecisionResult φ)`
   reusing the pure fast paths (`tryAxiomProof`, `buildCompositionalProof`,
   `bounded_search_with_proof` — cheap and bounded, unchanged) and calling
   `buildTableauCancellable` for the expensive leg (mirrors `decide`, DecisionProcedure.lean:122).
-- [ ] Implement `decideAutoAdaptiveCancellable (abortRef : IO.Ref Bool) (φ : Formula) (fc : FrameClass) (fuel : Nat) : IO (DecisionResult φ × String)`
+- [x] Implement `decideAutoAdaptiveCancellable (abortRef : IO.Ref Bool) (φ : Formula) (fc : FrameClass) (fuel : Nat) : IO (DecisionResult φ × String)`
   mirroring `decideAutoAdaptive` (DecisionProcedure.lean:198).
-- [ ] Ensure an aborted (`none`) tableau result maps to a `.timeout`/unknown `DecisionResult`,
+- [x] Ensure an aborted (`none`) tableau result maps to a `.timeout`/unknown `DecisionResult`,
   never `.valid`/`.invalid`.
-- [ ] Place in `CancellableExpansion.lean` (add `import ... DecisionProcedure`) or append to
+- [x] Place in `CancellableExpansion.lean` (add `import ... DecisionProcedure`) or append to
   `DecisionProcedure.lean`; prefer the new file to keep the proof-bearing file untouched.
+  *(DecisionProcedure import already added in Phase 1)*
 
 **Timing**: ~1 hour
 
