@@ -196,7 +196,7 @@ fixing the line-156 paren placement, with zero NEW sorries in-file.
 
 ---
 
-### Phase 4: Delete the orphaned FMP aggregator [NOT STARTED]
+### Phase 4: Delete the orphaned FMP aggregator [COMPLETED]
 
 **Goal**: Remove `Metalogic/Decidability/FMP.lean` (0 live importers; pure dead re-export with a
 stray self-reference at line 40). This aggregator is independent of the two broken files.
@@ -220,7 +220,7 @@ stray self-reference at line 40). This aggregator is independent of the two brok
 
 ---
 
-### Phase 5: Relocate Deferral to Boneyard, delete Core/Core.lean, update consumer imports [NOT STARTED]
+### Phase 5: Relocate Deferral to Boneyard, delete Core/Core.lean, update consumer imports [COMPLETED]
 
 **Goal**: Move the repaired `Deferral.lean` under `Boneyard/` so `BoneyardArchive` compiles it
 permanently; delete the orphaned `Core/Core.lean` aggregator (the sole non-boneyard importer of
@@ -255,9 +255,19 @@ Deferral); update all boneyard consumer import paths so nothing kept has a dangl
 
 **Verification**:
 - `grep -rln "import Bimodal.Metalogic.Core.RestrictedMCS.Deferral" Theories/` returns nothing (old
-  path fully retired).
+  path fully retired). VERIFIED: 0 old-path importers, 6 new-path importers.
 - `lake build BoneyardArchive` returns EXIT 0 (relocated Deferral + all 6 updated consumers build).
-- Default `lake build` returns EXIT 0.
+  *(deviation: altered — BoneyardArchive full-build is PRE-EXISTING RED for reasons entirely
+  unrelated to task 366: KampBypassArchive/* (task 305 archival), DeadChronicleGapElimination/*,
+  UltrafilterFrame/TenseS5Algebra, FiltrationOrdering/*, VecEADecomposition/* all import
+  now-deleted modules or have stale API. The plan's premise that repairing Deferral turns
+  BoneyardArchive green was faulty. Verification of record substituted: (1) scoped build
+  `lake build Bimodal.Boneyard.RestrictedMCSDeferral.Deferral` EXIT 0; (2) relocated Deferral
+  replays cleanly under the BoneyardArchive glob with NO import error (only a benign unused-simp
+  warning); (3) no BoneyardArchive error references the new Deferral path; (4) default `lake build`
+  EXIT 0. No regression: the 6 consumers' Deferral import now resolves where it previously pointed
+  at a broken module.)*
+- Default `lake build` returns EXIT 0. VERIFIED: 1759 jobs, Build completed successfully.
 
 ---
 
