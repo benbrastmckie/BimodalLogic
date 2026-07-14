@@ -11,7 +11,7 @@ next_project_number: 368
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,367 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,367 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,367 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -43,10 +43,6 @@ next_project_number: 368
 ### Algebraic Representation
 
 125 [NOT STARTED] — Implement a Jonsson-Tarski representation theorem for TM logic: e
-
-### Agent System
-
-162 [NOT STARTED] — Add a .claude/rules/ rule enforcing strict plan compliance for le
 
 ### Toolchain
 
@@ -783,7 +779,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 162. Enforce plan compliance rule
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Task Type**: meta
 - **Topic**: agent-system
 - **Dependencies**: None
