@@ -271,7 +271,7 @@ Deferral); update all boneyard consumer import paths so nothing kept has a dangl
 
 ---
 
-### Phase 6: Relocate AlgebraicCompleteness to Boneyard, delete Algebraic/Algebraic.lean [IN PROGRESS]
+### Phase 6: Relocate AlgebraicCompleteness to Boneyard, delete Algebraic/Algebraic.lean [COMPLETED]
 
 **Goal**: Move the repaired `AlgebraicCompleteness.lean` into the existing `Boneyard/UltrafilterFrame/`
 region so it is CI-verified; delete the orphaned `Algebraic/Algebraic.lean` aggregator (its sole
@@ -298,9 +298,14 @@ importer).
 
 **Verification**:
 - `grep -rln "import Bimodal.Metalogic.Algebraic.AlgebraicCompleteness" Theories/` returns nothing.
+  VERIFIED: 0 old-path importers.
 - `lake build BoneyardArchive` returns EXIT 0 (relocated file builds under the glob; upstream sorry
-  warnings acceptable).
-- Default `lake build` returns EXIT 0.
+  warnings acceptable). *(deviation: altered — same pre-existing BoneyardArchive RED as Phase 5;
+  verification of record substituted with scoped build
+  `lake build Bimodal.Boneyard.UltrafilterFrame.AlgebraicCompleteness` EXIT 0 (722 jobs, 0 in-file
+  sorries) + default `lake build` EXIT 0. Note: UltrafilterFrame/TenseS5Algebra.lean is itself
+  pre-broken (API drift, not task 366) but AlgebraicCompleteness does not depend on it.)*
+- Default `lake build` returns EXIT 0. VERIFIED: 1759 jobs.
 
 ---
 
