@@ -201,7 +201,7 @@ adjudicated candidate and touch disjoint probe-leaf sections).
 
 ---
 
-### Phase 1: Baseline freeze, consumption-site map, CM-A/CM-B live-countermodel probe casts [IN PROGRESS]
+### Phase 1: Baseline freeze, consumption-site map, CM-A/CM-B live-countermodel probe casts [COMPLETED]
 
 **Goal**: PROBE-FIRST, per the binding task order: before any kernel/guard change, cast CM-A
 and CM-B as additive, sorry-free machine certificates over the `ExteriorPinnedProbe358TailK.lean`
@@ -209,14 +209,16 @@ Z infra, certifying both are LIVE countermodels against the CURRENT interface. N
 definition in this phase.
 
 **Tasks**:
-- [ ] Baseline: scoped `lake build` of
+- [x] Baseline: scoped `lake build` of
       `Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorPinnedProbe358TailK`,
       `...ExteriorFiberDeepAnchorProbe367K`, and `...EndIntervalConsumerK` confirming green
       start; `lean_verify` spot-checks on `kvE_probe367_tailDG_deep_rejected`,
       `kvE_probe367_real_slice_deep_anchored`, `kvE_probe358_tailDG_gapItem_pinned_fails`,
       and `kvE_probe363_tau_admissible` (floor axioms, no sorryAx). Record the baseline
-      commit SHA.
-- [ ] Consumption-site map (bounded read budget; record in the new leaf's module docstring):
+      commit SHA. *(done: baseline SHA 9f4f6302b78ae3b62d8c1a322df8d3d192496fb7; scoped
+      build green, 1035 jobs; all 4 spot-checks at `[propext, Classical.choice,
+      Quot.sound]`, no sorryAx)*
+- [x] Consumption-site map (bounded read budget; record in the new leaf's module docstring):
       classify every rows-5/6/10-13 binder site — `EndIntervalConsumerK.lean` (binder
       definitions `_hreal`/`_hexcl`/`_hexclSlice*`/`_hexclDeep*` + `hfiberCons` +
       `endInterval_step_correct` threading), `ExteriorGateAssembleK.lean` (verbatim binder
@@ -226,11 +228,13 @@ definition in this phase.
       statement-touching vs proof-script-only. This map is Phase 5's authoritative edit
       boundary. Explicitly locate where the "matching gate-formula strengthening" must live
       so the =>-reconstruction can consume the new guard.
-- [ ] Create NEW additive probe leaf
+- [x] Create NEW additive probe leaf
       `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorAmbientDeepAnchorProbe358K.lean`
       (imports mirror `ExteriorFiberDeepAnchorProbe367K.lean`; private-cast replication
-      precedent applies).
-- [ ] **CM-A cast** (kills row 13): homogeneous Z model (R = empty), anchors x, w = x+1,
+      precedent applies). *(done; added `ExteriorFiberConsistencyK` import for
+      `kvE_fiberConsistent_of_realized` — deviation: altered, import list extends the 367
+      mirror by one frozen module, read-only consumption)*
+- [x] **CM-A cast** (kills row 13): homogeneous Z model (R = empty), anchors x, w = x+1,
       t = x+2 per the blocker record; build the fake ambient `qnfA` (`qnfA.1` := honest
       depth-0 row of `[w,x,t]`; `qnfA.2` marking exactly the five honest chars
       {char[x-1], char[x], char[w], char[t], char[t+1]}, omitting
@@ -242,7 +246,7 @@ definition in this phase.
       at `qnfA` is REFUTED by explicit witnesses. Record the sibling-rows-hold
       (profile-bucket collapse) argument as the docstring analytical closure, with finite
       mechanized proxies where feasible.
-- [ ] **CM-B cast** (kills row 5): replicate the 358TailK tail-doppelganger configuration
+- [x] **CM-B cast** (kills row 5): replicate the 358TailK tail-doppelganger configuration
       re-aimed at the ambient: fake ambient `qnfB` marking `sub_g` (the AtW-zoned honest
       char over the depth-0-indistinguishable, spacing-discrepant fake tail, same (AtW,
       chi_w) bucket as honest `sub_w`).
@@ -252,9 +256,12 @@ definition in this phase.
       the deep content differs from char[w,w,x,t].2) — i.e. the row-5 conclusion fails for
       `qnfB` while its antecedent population contains `sub_g`. Record the
       `igPtW`-invisibility (same-bucket) argument in the docstring.
-- [ ] Scoped `lake build` of the new leaf; `lean_verify` gates 1a/1b (floor axioms);
+- [x] Scoped `lake build` of the new leaf; `lean_verify` gates 1a/1b (floor axioms);
       `git status` audit: the only tree change is the new leaf. Green commit
-      (`task 368 phase 1: ...`).
+      (`task 368 phase 1: ...`). *(done: `kvE_probe368_cmA_row13_refuted` and
+      `kvE_probe368_cmB_row5_refuted` both at `[propext, Classical.choice, Quot.sound]`,
+      no sorryAx; `git diff --stat -- Theories/` empty — purely additive; sorry/vacuous/
+      axiom/guard-unfold scans on the leaf all zero)*
 
 **Timing**: 2.5 hours
 
