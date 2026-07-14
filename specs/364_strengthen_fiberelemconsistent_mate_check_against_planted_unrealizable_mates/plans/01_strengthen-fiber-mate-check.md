@@ -1,7 +1,7 @@
 # Implementation Plan: Task #364
 
 - **Task**: 364 - Strengthen kvE_fiberElemConsistent mate check against planted unrealizable mates
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 10 hours
 - **Dependencies**: Task 363 (landed interface, starting point); blocks task 358 Phase 2/3 resume
 - **Research Inputs**:
@@ -407,26 +407,28 @@ untouched, zero debt.
 
 ---
 
-### Phase 6: Wrap-up — summary, handoff, re-key notes for task 358 [NOT STARTED]
+### Phase 6: Wrap-up — summary, handoff, re-key notes for task 358 [COMPLETED]
 
 **Goal**: Land the documentation and orchestrator handoff so task 358 can resume Phase 2/3 against
 the strengthened interface.
 
 **Tasks**:
-- [ ] Write implementation summary
+- [x] Write implementation summary
       `specs/364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/summaries/01_strengthen-fiber-mate-check-summary.md`
       recording: which approach landed ((a)/(b)/synthesis) and the exact final mate-check form;
       the full certificate inventory (gates 1a-5); the adversarial re-plant outcome; the
-      retired/superseded record decisions.
-- [ ] Write `specs/364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/.orchestrator-handoff.json`
+      retired/superseded record decisions. *(completed)*
+- [x] Write `specs/364_strengthen_fiberelemconsistent_mate_check_against_planted_unrealizable_mates/.orchestrator-handoff.json`
       with: final predicate signature and chosen approach (this shapes the witness term task 358's
       G2 supply proof must construct — fresh-projection content vs realizability obligation),
       certificate list with `lean_verify` axiom results, files touched, and the explicit next
       action `resume /implement 358 (Phase 2, plan v04) re-keyed against the strengthened
-      interface`.
-- [ ] Update plan phase statuses and `.return-meta.json`; commit per green-milestone convention
+      interface`. *(completed — status: implemented; witness shape: joint co-realization
+      obligation)*
+- [x] Update plan phase statuses and `.return-meta.json`; commit per green-milestone convention
       (`task 364 phase {P}: {name}` commits should have landed at each phase; final
-      `task 364: complete implementation`).
+      `task 364: complete implementation`). *(completed — per-phase commits landed at phases
+      1-5; final commit closes phase 6)*
 
 **Timing**: 0.5 hours
 
@@ -442,22 +444,22 @@ the strengthened interface.
 
 ## Testing & Validation
 
-- [ ] Gate 1a: `kvE_probe364_plant_rejected` — candidate rejects `s*` within σ₂ (plant no longer
+- [x] Gate 1a: `kvE_probe364_plant_rejected` — candidate rejects `s*` within σ₂ (plant no longer
       a qualifying mate for `e_P`)
-- [ ] Gate 1b: `kvE_probe364_m1fake_rejected` — original m=1 fake still rejected
-- [ ] Gate 2a: V2 `_of_realized` in full generality + honest cast certificates (τ and all pinned
+- [x] Gate 1b: `kvE_probe364_m1fake_rejected` — original m=1 fake still rejected
+- [x] Gate 2a: V2 `_of_realized` in full generality + honest cast certificates (τ and all pinned
       fibers uniform in r)
-- [ ] Gate 3a: adapted (content-matching) plant machine-shown self-defeating; single redesign
-      loop maximum
-- [ ] Phase 4: scoped `lake build` green across `ExteriorFiberConsistencyK`,
+- [x] Gate 3a: adapted (content-matching) plant machine-shown self-defeating; single redesign
+      loop maximum *(closed universally over all adapted plants; zero redesign loops)*
+- [x] Phase 4: scoped `lake build` green across `ExteriorFiberConsistencyK`,
       `ExteriorFiberConsistencyProbeK`, `ExteriorNegationK`, `ExteriorNegationPastK`,
       `ExteriorPinnedConverseK`, `EndIntervalConsumerK`, `ExteriorPinnedProbeM1K`, `KampPrior`
-- [ ] Phase 5: successor certificates (`kvE_probe364_sigma2_sstar_inconsistent`,
+- [x] Phase 5: successor certificates (`kvE_probe364_sigma2_sstar_inconsistent`,
       `_slice_inconsistent`, `_sigma2_inadmissible`); all 8 363 GO certs; both surviving M1
       records; frozen-layer diff empty; full `lake build`; `lean_verify` floor axioms on all new
       certs; sorry count = 2 (KampPrior :519/:522 only)
-- [ ] Blocked-exit contract honored if any gate cannot close: `[BLOCKED]` + structured escalation,
-      never sorry/vacuous-def/forced proof
+- [x] Blocked-exit contract honored if any gate cannot close: `[BLOCKED]` + structured escalation,
+      never sorry/vacuous-def/forced proof *(not needed — all gates closed green)*
 
 ## Artifacts & Outputs
 
