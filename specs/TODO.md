@@ -1,5 +1,5 @@
 ---
-next_project_number: 365
+next_project_number: 367
 ---
 
 # TODO
@@ -12,7 +12,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,364 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,364,365,366 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,364 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -31,6 +31,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Formula Refactor
 
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
+366 [NOT STARTED] — Resolve pre-broken/orphaned Metalogic files excluded from the tas
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -101,6 +102,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 361 [NOT STARTED] — Research + scoping for finite-context strong completeness (Contex
 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet
 
+### Testing
+
+365 [NOT STARTED] — Repair the BimodalTest test-suite root, which fails at baseline. 
+
 ### Uncategorized
 
 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
@@ -108,6 +113,26 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 366. Repair or boneyard orphaned metalogic files
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: formula-refactor
+- **Dependencies**: None
+
+**Description**: Resolve pre-broken/orphaned Metalogic files excluded from the task-194 Nonempty->Derivable migration. (1) Metalogic/Core/RestrictedMCS/Deferral.lean and Metalogic/Algebraic/AlgebraicCompleteness.lean are broken for reasons unrelated to the migration and are orphaned from the default build target — either repair them or move them to a boneyard. (2) Clean up 3 orphaned aggregator modules noted during the migration. (3) Fix stale `ContextDerivable`/`ContextConsistent` prose in Theories/Bimodal/latex/subfiles/04-Metalogic.tex (those defs were deleted in task 194). Any repaired file must reach green under a scoped `lake build`; zero sorries.
+
+---
+
+### 365. Repair BimodalTest test suite
+- **Status**: [NOT STARTED]
+- **Task Type**: lean4
+- **Topic**: testing
+- **Dependencies**: None
+
+**Description**: Repair the BimodalTest test-suite root, which fails at baseline. Tests/BimodalTest/Automation/TacticsTest.lean has ~94 pre-existing errors from stale `DerivationTree [] φ` applications predating the frame-class generalization, and ~17 other files under the BimodalTest root (e.g. DerivationTest.lean) are broken for related reasons. Tasks 187/188/189 routed their new tests into fresh files to avoid this. Goal: bring `lake build BimodalTest` fully green (update stale DerivationTree applications to the frame-class-parameterized form), so the aggregate test target builds again. Zero sorries.
+
+---
 
 ### 364. Strengthen fiberelemconsistent mate check against planted unrealizable mates
 - **Effort**: 6-10 hours
