@@ -1445,6 +1445,11 @@
         {
           "type": "summary",
           "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/summaries/01_aggregate-quantend-hook-discharge-summary.md"
+        },
+        {
+          "path": "specs/350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/reports/02_offdiag-k1-primitives.md",
+          "type": "report",
+          "summary": "Hard-mode blocker research: P1 conjFull transcribable, P2 gated negation closure (restated), P3 zone carriers; 6-phase A-F revision shape"
         }
       ],
       "session_id": "sess_1783979891_6ad95e_350",
@@ -1453,7 +1458,7 @@
     {
       "project_number": 358,
       "project_name": "realization_recursion_nf_nvar_exist_all_depths",
-      "status": "planned",
+      "status": "implementing",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
@@ -1465,7 +1470,7 @@
         360
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-13T22:22:53Z",
+      "last_updated": "2026-07-13T23:41:03Z",
       "artifacts": [
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md",

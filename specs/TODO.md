@@ -7,7 +7,7 @@ next_project_number: 363
 Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
 ## Task Order
 
-*Updated 2026-07-13. Generated from state.json dependency graph.*
+*Updated 2026-07-14. Generated from state.json dependency graph.*
 
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
@@ -109,7 +109,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 350 [PARTIAL] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-358 [PLANNED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+358 [IMPLEMENTING] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness_weak_terminus
@@ -164,7 +164,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349, Task 357, Task 360
@@ -181,7 +181,9 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349
-- **Research**: [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
+- **Research**:
+  - [309_offdiag_two_anchor_fi_chain/reports/08_spawn-analysis.md]
+  - [350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/reports/02_offdiag-k1-primitives.md]
 - **Plan**: [350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/plans/01_aggregate-quantend-hook-discharge.md]
 - **Summary**: [350_build_aggregate_quantendseg_construction_and_discharge_armcorrectness_hooks_at_k0_and_k1/summaries/01_aggregate-quantend-hook-discharge-summary.md]
 
