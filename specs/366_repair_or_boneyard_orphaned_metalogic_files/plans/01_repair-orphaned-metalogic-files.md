@@ -138,7 +138,7 @@ names introduced by task 194.
 
 ---
 
-### Phase 2: Repair Deferral.lean in place [NOT STARTED]
+### Phase 2: Repair Deferral.lean in place [COMPLETED]
 
 **Goal**: Make `Bimodal.Metalogic.Core.RestrictedMCS.Deferral` green under a scoped build by adding
 the missing namespace open, with zero sorries in-file.

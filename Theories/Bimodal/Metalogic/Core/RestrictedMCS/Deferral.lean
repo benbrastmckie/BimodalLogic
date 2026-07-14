@@ -5,6 +5,7 @@ namespace Bimodal.Metalogic.Core
 
 open Bimodal.Syntax
 open Bimodal.ProofSystem
+open Bimodal.Metalogic.Bundle
 
 /-!
 ## Deferral-Restricted MCS
