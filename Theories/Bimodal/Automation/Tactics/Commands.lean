@@ -1,4 +1,5 @@
 import Bimodal.Automation.Tactics.Helpers
+import Bimodal.Automation.Tactics.Deduction
 
 namespace Bimodal.Automation
 

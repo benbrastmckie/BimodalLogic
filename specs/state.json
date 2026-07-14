@@ -242,20 +242,58 @@
     {
       "project_number": 343,
       "project_name": "abort_aware_tableau_cancellation",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.",
       "dependencies": [],
       "created": "2026-06-09T18:00:00Z",
-      "last_updated": "2026-07-14T15:26:49Z",
+      "last_updated": "2026-07-14T15:35:00Z",
       "topic": "literature",
       "artifacts": [
         {
           "path": "specs/343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md",
           "type": "report",
           "summary": "Research: cancellable IO mirror of expandBranchWithFuel (task-277 _tracedImpl precedent), IO.Ref Bool + IO.checkCanceled wiring in labelFormulaImpl, fuel-bounded abort-aware extractCountermodelData"
+        },
+        {
+          "path": "specs/343_abort_aware_tableau_cancellation/plans/01_abort-aware-tableau-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan: cancellable IO mirrors (task-277 _tracedImpl precedent) of expandBranchWithFuel/saturateBlocked/buildTableau/decide, IO.Ref Bool + IO.checkCanceled wiring in labelFormulaImpl, fuel-bounded abort-aware extractCountermodelData; each phase ends at green lake build"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "specs/343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-14"
+          }
+        ],
+        "skeleton": false,
+        "follow_up_tasks": []
+      }
     },
     {
       "project_number": 298,
@@ -287,7 +325,7 @@
     {
       "project_number": 296,
       "project_name": "re_add_derived_binary_operators_with_dedup_fix",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.",
       "created": "2026-06-09T02:40:00Z",
@@ -301,6 +339,11 @@
           "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/reports/01_derived-binary-operators.md",
           "type": "report",
           "summary": "Refutes 295 collapse premise: 6 ops contribute 690 new canonical classes at c4, 7722 at c5; zero-presence was fold-tag measurement artifact; recommends re-add + EnrichedFormula/fold completion"
+        },
+        {
+          "path": "specs/296_re_add_derived_binary_operators_with_dedup_fix/plans/01_derived-binary-operators-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan (4 required + 1 optional): re-add 6 enumerator branches, complete Normalization.lean representation layer, value-level census, fresh c4 acceptance test confirming all 13 derived operators present"
         }
       ]
     },
@@ -361,19 +404,24 @@
     {
       "project_number": 282,
       "project_name": "exhaustive_enumeration_by_default",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-04T07:30:00Z",
-      "last_updated": "2026-07-14T00:00:00Z",
+      "last_updated": "2026-07-14T09:11:24Z",
       "topic": "dataset-enhancement",
       "artifacts": [
         {
           "path": "specs/282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md",
           "type": "report",
           "summary": "Scope reconstructed from git (commit 78166ff86): items 1-4 (0-sentinel unlimited default, .take guards, script tiers, help text) already implemented and verified intact; remaining scope = c8 exhaustive regeneration (HF has only partial), c9 feasibility probe + flip to exhaustive (stale infeasibility comment predates 274/283), doc realignment"
+        },
+        {
+          "path": "specs/282_exhaustive_enumeration_by_default/plans/01_exhaustive-enumeration-plan.md",
+          "type": "plan",
+          "summary": "7-phase plan: verify items 1-4 intact, c9 feasibility probe, c8 exhaustive regen, c9 flip-or-retain, conditional c9 regen, doc realignment, optional HF republication"
         }
       ]
     },
@@ -754,10 +802,10 @@
     {
       "project_number": 189,
       "project_name": "deduction_theorem_tactic",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-07-14T15:37:28Z",
+      "last_updated": "2026-07-14T16:27:46Z",
       "artifacts": [
         {
           "path": "specs/189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md",
@@ -773,6 +821,11 @@
           "path": "specs/189_deduction_theorem_tactic/plans/02_deduction-tactic-plan.md",
           "type": "plan",
           "summary": "Phased plan for deduction tactic family: MVarId.apply-based deduction/deduction n/undischarge, deduction_converse + Derivable.deduction lemmas, example-based tests; 3 sequential phases, ~150-250 lines, zero sorries, lake build gates."
+        },
+        {
+          "path": "specs/189_deduction_theorem_tactic/summaries/02_deduction-tactic-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: deliverables per phase, verification table, plan deviations (Derivable.deduction _root_ naming + import, getType vs getType', new test file due to pre-broken TacticsTest.lean), discovered issue (TacticsTest.lean baseline breakage)."
         }
       ],
       "dependencies": [],
@@ -1036,7 +1089,7 @@
     {
       "project_number": 230,
       "project_name": "benchmark_refresh_splits_paraphrases_schema",
-      "status": "researched",
+      "status": "planned",
       "task_type": "general",
       "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
       "priority": "medium",
@@ -1050,9 +1103,44 @@
         {
           "type": "report",
           "path": "specs/230_benchmark_refresh_splits_paraphrases_schema/reports/01_benchmark-refresh.md"
+        },
+        {
+          "type": "plan",
+          "path": "specs/230_benchmark_refresh_splits_paraphrases_schema/plans/01_benchmark-refresh-plan.md"
         }
       ],
-      "next_artifact_number": 2
+      "next_artifact_number": 2,
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 7,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "dependency_waves": [
+          [
+            1
+          ],
+          [
+            2
+          ],
+          [
+            3
+          ],
+          [
+            4
+          ],
+          [
+            5
+          ]
+        ],
+        "reports_integrated": [
+          {
+            "path": "reports/01_benchmark-refresh.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-07-14"
+          }
+        ]
+      }
     },
     {
       "project_number": 231,

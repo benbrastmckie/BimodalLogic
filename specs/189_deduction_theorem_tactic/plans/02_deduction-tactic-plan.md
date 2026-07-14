@@ -1,7 +1,7 @@
 # Implementation Plan: Deduction Theorem Tactic
 
 - **Task**: 189 - Deduction theorem tactic
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (tasks 185/192/193 are related but non-blocking)
 - **Research Inputs**: specs/189_deduction_theorem_tactic/reports/02_deduction-tactic-research.md (authoritative; supersedes reports/01_deduction-theorem-seed.md)
@@ -91,17 +91,17 @@ No roadmap context provided for this run.
 Fully sequential; each phase is sized to a single lean-implementation-agent run with a
 `lake build` gate.
 
-### Phase 1: Core lemmas in DeductionTheorem.lean [NOT STARTED]
+### Phase 1: Core lemmas in DeductionTheorem.lean [COMPLETED]
 
 **Goal**: Add the computable converse lemma and the Prop-level corollary next to
 `deduction_theorem` in `Theories/Bimodal/Metalogic/Core/DeductionTheorem.lean`.
 
 **Tasks**:
-- [ ] Add computable `def deduction_converse {fc : FrameClass} (Γ : Context) (A B : Formula) (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B` per report 02 sketch: `DerivationTree.modus_ponens (A :: Γ) A B (DerivationTree.weakening Γ (A :: Γ) (A.imp B) h (List.subset_cons_of_subset A (List.Subset.refl Γ))) (DerivationTree.assumption (A :: Γ) A (List.Mem.head _))` — constructor arg order `modus_ponens Γ φ ψ h_imp h_arg` verified against `deduction_mp` (DeductionTheorem.lean:188-202)
-- [ ] Verify `deduction_converse` is NOT marked `noncomputable` (it must stay computable)
-- [ ] Add `theorem Derivable.deduction {fc : FrameClass} {Γ : Context} {A B : Formula} (h : Derivable fc (A :: Γ) B) : Derivable fc Γ (A.imp B) := h.elim fun d => ⟨deduction_theorem Γ A B d⟩` (must live in this file, not ProofSystem/Derivable.lean — wrong import direction)
-- [ ] Docstrings on both declarations (converse states it is computable; corollary states it is the Prop-level entry point avoiding `noncomputable`)
-- [ ] Gate: `lake build` green, zero sorries, no new warnings in the file
+- [x] Add computable `def deduction_converse {fc : FrameClass} (Γ : Context) (A B : Formula) (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B` per report 02 sketch: `DerivationTree.modus_ponens (A :: Γ) A B (DerivationTree.weakening Γ (A :: Γ) (A.imp B) h (List.subset_cons_of_subset A (List.Subset.refl Γ))) (DerivationTree.assumption (A :: Γ) A (List.Mem.head _))` — constructor arg order `modus_ponens Γ φ ψ h_imp h_arg` verified against `deduction_mp` (DeductionTheorem.lean:188-202)
+- [x] Verify `deduction_converse` is NOT marked `noncomputable` (it must stay computable)
+- [x] Add `theorem Derivable.deduction {fc : FrameClass} {Γ : Context} {A B : Formula} (h : Derivable fc (A :: Γ) B) : Derivable fc Γ (A.imp B) := h.elim fun d => ⟨deduction_theorem Γ A B d⟩` (must live in this file, not ProofSystem/Derivable.lean — wrong import direction) *(deviation: altered — declared as `theorem _root_.Bimodal.ProofSystem.Derivable.deduction` so dot-notation `h.deduction` resolves against the `Derivable` type's namespace; also added `import Bimodal.ProofSystem.Derivable` to DeductionTheorem.lean since `Derivable` was not transitively imported)*
+- [x] Docstrings on both declarations (converse states it is computable; corollary states it is the Prop-level entry point avoiding `noncomputable`)
+- [x] Gate: `lake build` green, zero sorries, no new warnings in the file *(verified: `lake build Bimodal.Metalogic.Core.DeductionTheorem` green; `lean_verify` on `Derivable.deduction` shows only propext/Classical.choice/Quot.sound)*
 
 **Timing**: 45 minutes
 
@@ -117,20 +117,20 @@ Fully sequential; each phase is sized to a single lean-implementation-agent run 
 
 ---
 
-### Phase 2: Deduction.lean tactic file + import wiring [NOT STARTED]
+### Phase 2: Deduction.lean tactic file + import wiring [COMPLETED]
 
 **Goal**: Create `Theories/Bimodal/Automation/Tactics/Deduction.lean` providing `deduction`,
 `deduction n`, and `undischarge`, wired into the tactic layer's import chain.
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Automation/Tactics/Deduction.lean` (new file preferred over growing 1032-line Helpers.lean); module docstring documents noncomputability implications for tactic users
-- [ ] Implement core `deduction` elab following `mkOperatorKTactic` (Helpers.lean:311-329) verbatim with `deduction_theorem` as the rule constant: match `withReducible <| goal.getType'` against the 3-app pattern `.app (.app (.app (.const ``DerivationTree _) _fc) _ctx) _fml` (guard for a good error message ONLY — no syntactic `Formula.imp` requirement), then `goal.apply (mkConst ``Bimodal.Metalogic.Core.deduction_theorem)` and `replaceMainGoal newGoals`
-- [ ] Wrap `goal.apply` in `try/catch`; rethrow as "deduction: goal formula is not an implication" on unification failure; non-DerivationTree goals get "deduction: goal must be a derivability goal `Γ ⊢[fc] A → B`, got {goalType}"
-- [ ] Implement `deduction n` via `macro "deduction" n:num : tactic => `(tactic| iterate $n deduction)` (or the `syntax (num)? : tactic` + `elab_rules` pattern from Commands.lean:105-150 if macro/elab overload interaction requires it); docstring documents ordering: `Γ ⊢ A → B → C` after `deduction 2` becomes `B :: A :: Γ ⊢ C` (innermost hypothesis at head)
-- [ ] Implement `undischarge` as a ~5-line macro expanding to `exact Bimodal.Metalogic.Core.deduction_theorem _ _ _ h` (hypothesis-direction symmetry)
-- [ ] Add `import` of the new module to `Theories/Bimodal/Automation/Tactics/Commands.lean` (line 1 import block); confirm the new file is reachable from the library root import file the same way `Automation.Tactics.Commands` is rooted (add an explicit root entry only if Commands does not already pull it in)
-- [ ] Sanity-check in-file: one `noncomputable example` at the bottom of Deduction.lean or via `lean_multi_attempt` exercising `deduction` on `⊢ p.imp (q.imp p)` (kept minimal; real tests are Phase 3)
-- [ ] Gate: `lake build` green, zero sorries
+- [x] Create `Theories/Bimodal/Automation/Tactics/Deduction.lean` (new file preferred over growing 1032-line Helpers.lean); module docstring documents noncomputability implications for tactic users
+- [x] Implement core `deduction` elab following `mkOperatorKTactic` (Helpers.lean:311-329) verbatim with `deduction_theorem` as the rule constant: match `withReducible <| goal.getType'` against the 3-app pattern `.app (.app (.app (.const ``DerivationTree _) _fc) _ctx) _fml` (guard for a good error message ONLY — no syntactic `Formula.imp` requirement), then `goal.apply (mkConst ``Bimodal.Metalogic.Core.deduction_theorem)` and `replaceMainGoal newGoals` *(deviation: altered — used `goal.getType` exactly as the `mkOperatorKTactic` template does, rather than `withReducible <| goal.getType'`; the 3-app guard behaves identically on notation-expanded goals)*
+- [x] Wrap `goal.apply` in `try/catch`; rethrow as "deduction: goal formula is not an implication" on unification failure; non-DerivationTree goals get "deduction: goal must be a derivability goal `Γ ⊢[fc] A → B`, got {goalType}" *(both error paths confirmed via lean_run_code)*
+- [x] Implement `deduction n` via `macro "deduction" n:num : tactic => `(tactic| iterate $n deduction)` (or the `syntax (num)? : tactic` + `elab_rules` pattern from Commands.lean:105-150 if macro/elab overload interaction requires it); docstring documents ordering: `Γ ⊢ A → B → C` after `deduction 2` becomes `B :: A :: Γ ⊢ C` (innermost hypothesis at head) *(deviation: altered — used the plan's sanctioned alternative `syntax "deduction" (num)? : tactic` + single `elab_rules` looping `runDeductionTactic`, avoiding macro/elab overload interaction entirely)*
+- [x] Implement `undischarge` as a ~5-line macro expanding to `exact Bimodal.Metalogic.Core.deduction_theorem _ _ _ h` (hypothesis-direction symmetry)
+- [x] Add `import` of the new module to `Theories/Bimodal/Automation/Tactics/Commands.lean` (line 1 import block); confirm the new file is reachable from the library root import file the same way `Automation.Tactics.Commands` is rooted (add an explicit root entry only if Commands does not already pull it in) *(Commands.lean imports Deduction; Automation.lean already imports Commands — no root change needed)*
+- [x] Sanity-check in-file: one `noncomputable example` at the bottom of Deduction.lean or via `lean_multi_attempt` exercising `deduction` on `⊢ p.imp (q.imp p)` (kept minimal; real tests are Phase 3) *(two smoke examples: basic + negation-defeq, both green)*
+- [x] Gate: `lake build` green, zero sorries *(full `lake build` green, 1753 jobs)*
 
 **Timing**: 75 minutes
 
@@ -148,21 +148,34 @@ Fully sequential; each phase is sized to a single lean-implementation-agent run 
 
 ---
 
-### Phase 3: Tests in TacticsTest.lean [NOT STARTED]
+### Phase 3: Tests in TacticsTest.lean [COMPLETED]
+
+**DEVIATION NOTE (Phase 3)**: The test section was placed in a NEW file
+`Tests/BimodalTest/Automation/DeductionTest.lean` (imported from the
+`Tests/BimodalTest.lean` root) instead of `TacticsTest.lean`. Rationale:
+`TacticsTest.lean` does not compile at baseline — it has ~94 pre-existing error
+positions (stale `DerivationTree [] φ` applications predating the frame-class
+generalization, plus noncomputability errors), verified via
+`lake build BimodalTest.Automation.TacticsTest` on the unmodified tree. Adding
+tests there would make the phase's "lake build green including test target"
+gate unattainable for reasons unrelated to this task. The new file achieves a
+green gate (`lake build BimodalTest.Automation.DeductionTest`, 677 jobs).
+Repairing TacticsTest.lean is out of scope (candidate follow-up task alongside
+task 193).
 
 **Goal**: Add an example-based test section exercising all tactic forms, with the
 negation-defeq case as the load-bearing test.
 
 **Tasks**:
-- [ ] Add a "Deduction tactic" section to `Tests/BimodalTest/Automation/TacticsTest.lean` following the `noncomputable example` precedent (~line 365)
-- [ ] Basic: `noncomputable example (p q : Formula) : ⊢ p.imp (q.imp p) := by deduction; deduction; ...` (finish with assumption-style closing)
-- [ ] Iterated: same theorem via `deduction 2`, verifying context ordering `q :: p :: []`
-- [ ] **Negation defeq (load-bearing)**: `noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by deduction; exact h` — verifies `apply` unifies through `Formula.neg`; if this fails, apply the Phase-2 fallback (`unfold Formula.neg` preprocessing) and re-gate
-- [ ] Non-Base frame class: a goal at `⊢[fc]` for an explicit non-`Base` `fc` — verifies fc-polymorphism
-- [ ] `undischarge` example (hypothesis direction)
-- [ ] `deduction_converse` round-trip example — plain computable `example`, no `noncomputable`
-- [ ] Failure-mode documentation: commented example (or `#guard_msgs` if the harness supports it cleanly) showing the error message on a non-implication goal
-- [ ] Gate: `lake build` green (including test target), zero sorries
+- [x] Add a "Deduction tactic" section to `Tests/BimodalTest/Automation/TacticsTest.lean` following the `noncomputable example` precedent (~line 365) *(deviation: altered — tests live in new file `Tests/BimodalTest/Automation/DeductionTest.lean` because TacticsTest.lean is broken at baseline; see DEVIATION NOTE above)*
+- [x] Basic: `noncomputable example (p q : Formula) : ⊢ p.imp (q.imp p) := by deduction; deduction; ...` (finish with assumption-style closing) *(Tests 1-2)*
+- [x] Iterated: same theorem via `deduction 2`, verifying context ordering `q :: p :: []` *(Tests 3-4; Test 3 closes with the second context element, proving head ordering)*
+- [x] **Negation defeq (load-bearing)**: `noncomputable example (p : Formula) (h : [p] ⊢ Formula.bot) : ⊢ p.neg := by deduction; exact h` — verifies `apply` unifies through `Formula.neg`; if this fails, apply the Phase-2 fallback (`unfold Formula.neg` preprocessing) and re-gate *(Tests 5-6; no fallback needed — defeq unification worked directly)*
+- [x] Non-Base frame class: a goal at `⊢[fc]` for an explicit non-`Base` `fc` — verifies fc-polymorphism *(Tests 7-8: Dense and Discrete)*
+- [x] `undischarge` example (hypothesis direction) *(Tests 9-10)*
+- [x] `deduction_converse` round-trip example — plain computable `example`, no `noncomputable` *(Tests 11-13: computable one-direction at Base and Dense, plus noncomputable round-trip)*
+- [x] Failure-mode documentation: commented example (or `#guard_msgs` if the harness supports it cleanly) showing the error message on a non-implication goal *(Tests 16-17 via `#guard_msgs`, both error messages exact-matched)*
+- [x] Gate: `lake build` green (including test target), zero sorries *(`lake build BimodalTest.Automation.DeductionTest` green; also added Prop-level `Derivable.deduction` dot-notation tests 14-15)*
 
 **Timing**: 60 minutes
 

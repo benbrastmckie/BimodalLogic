@@ -12,11 +12,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,189,191,199,219,230,257,282,291,296,307,318,341,343,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,187,196,231,292,293,294,298,305 | 161,189,230,291,307,341,343,361 | completeness, formula-refactor, publication-quality, ... |
-| 3 | 175,188,192,303,362 | 131,169,170,187,191,305,358 | completeness, formula-refactor, automation, ... |
-| 4 | 95,193,299,359 | 192,196,303 | completeness, automation, kamp_theorem_formalization |
-| 5 | 177,178 | 131,193 | formula-refactor |
+| 1 | 125,127,128,161,162,165,179,180,186,187,191,199,219,230,257,282,291,296,307,318,341,343,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,188,192,196,231,292,293,294,298,305 | 161,187,191,230,291,307,341,343,361 | completeness, formula-refactor, publication-quality, ... |
+| 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
+| 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
 **Grouped by Topic** (indented = depends on parent):
 
@@ -68,11 +67,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 186 [NOT STARTED] — unify_search_systems
-189 [PLANNED] — deduction_theorem_tactic
-  └─ 187 [PLANNED] — backward_chaining_lemma_db
-    └─ 188 [PLANNED] — weakening_aware_search
-    └─ 192 [NOT STARTED] — master_tactic_dispatch
-      └─ 193 [NOT STARTED] — codebase_tactic_refactor
+187 [PLANNED] — backward_chaining_lemma_db
+  └─ 188 [PLANNED] — weakening_aware_search
+  └─ 192 [NOT STARTED] — master_tactic_dispatch
+    └─ 193 [NOT STARTED] — codebase_tactic_refactor
 191 [PLANNED] — propositional_decision_procedure
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
@@ -82,15 +80,15 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-230 [RESEARCHED] — After contamination resolution (task 229), regenerate all benchma
+230 [PLANNED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 257 [IMPLEMENTING] — large_data_storage_huggingface
-282 [RESEARCHED] — exhaustive_enumeration_by_default
-296 [RESEARCHED] — Re-add the 6 derived binary temporal operators (release, weak_unt
+282 [PLANNED] — exhaustive_enumeration_by_default
+296 [PLANNED] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Literature
 
-343 [RESEARCHED] — Make the tableau decision procedure abort-aware by threading an I
+343 [PLANNED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
 ### Reference Book
@@ -198,11 +196,12 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 ---
 
 ### 343. Abort aware tableau cancellation
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: literature
 - **Dependencies**: None
 - **Research**: [343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md]
+- **Plan**: [343_abort_aware_tableau_cancellation/plans/01_abort-aware-tableau-plan.md]
 
 **Description**: Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
 
@@ -408,11 +407,12 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 296. Re add derived binary operators with dedup fix
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 295
 - **Research**: [296_re_add_derived_binary_operators_with_dedup_fix/reports/01_derived-binary-operators.md]
+- **Plan**: [296_re_add_derived_binary_operators_with_dedup_fix/plans/01_derived-binary-operators-plan.md]
 
 **Description**: Re-add the 6 derived binary temporal operators (release, weak_until, trigger, weak_since, strong_release, strong_trigger) to the formula enumerator, adjusting canonicalization and/or the passesFilter gate so they survive deduplication and appear in the unique pipeline output. These operators were removed in task 295 because they inflated the enumeration space by ~40-60% without contributing unique formulas — their canonical representations collapsed with primitives. Potential approaches: (1) skip canonicalization for formulas containing derived binary operators, (2) canonicalize to the derived form instead of the primitive form, (3) lower or remove the passesFilter complexity gate for these operators, (4) add a fold-aware dedup stage that treats release(p,q) as distinct from neg(untl(neg p, neg q)). The goal is to have all 13 derived operators represented in the final dataset.
 
@@ -472,11 +472,12 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 282. Exhaustive enumeration by default
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
 - **Research**: [282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md]
+- **Plan**: [282_exhaustive_enumeration_by_default/plans/01_exhaustive-enumeration-plan.md]
 
 ---
 
@@ -502,11 +503,12 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 230. Benchmark refresh splits paraphrases schema
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: general
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 229
 - **Research**: [230_benchmark_refresh_splits_paraphrases_schema/reports/01_benchmark-refresh.md]
+- **Plan**: [230_benchmark_refresh_splits_paraphrases_schema/plans/01_benchmark-refresh-plan.md]
 
 **Description**: After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.
 
@@ -590,7 +592,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 189. Deduction theorem tactic
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
@@ -598,6 +600,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
   - [189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md]
   - [189_deduction_theorem_tactic/reports/02_deduction-tactic-research.md]
 - **Plan**: [189_deduction_theorem_tactic/plans/02_deduction-tactic-plan.md]
+- **Summary**: [189_deduction_theorem_tactic/summaries/02_deduction-tactic-summary.md]
 
 ---
 

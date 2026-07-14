@@ -1,4 +1,5 @@
 import Bimodal.ProofSystem.Derivation
+import Bimodal.ProofSystem.Derivable
 import Bimodal.Theorems.Combinators
 
 /-!
@@ -13,6 +14,8 @@ This module proves the deduction theorem for the TM logic Hilbert system.
 - `deduction_assumption_other`: If `B ∈ Γ`, then `Γ ⊢ A → B`
 - `deduction_mp`: Modus ponens under implication
 - `deduction_theorem`: If `A :: Γ ⊢ B` then `Γ ⊢ A → B`
+- `deduction_converse`: If `Γ ⊢ A → B` then `A :: Γ ⊢ B` (computable)
+- `Derivable.deduction`: Prop-level deduction theorem for `Derivable`
 
 ## Overview
 
@@ -437,5 +440,40 @@ decreasing_by
       subst h_eq
       rfl
     simp [this, DerivationTree.height]
+
+/-! ## Converse and Prop-Level Corollaries -/
+
+/--
+Converse of the deduction theorem: if `Γ ⊢ A → B` then `(A :: Γ) ⊢ B`.
+
+Unlike `deduction_theorem`, this direction is **computable**: it is a direct
+composition of weakening (to bring `h` into the extended context), the
+assumption rule (to obtain `A` at the head), and modus ponens. No recursion
+on the derivation tree is needed, so no `noncomputable` marker is required.
+-/
+def deduction_converse {fc : FrameClass} (Γ : Context) (A B : Formula)
+    (h : Γ ⊢[fc] A.imp B) : (A :: Γ) ⊢[fc] B :=
+  DerivationTree.modus_ponens (A :: Γ) A B
+    (DerivationTree.weakening Γ (A :: Γ) (A.imp B) h
+      (List.subset_cons_of_subset A (List.Subset.refl Γ)))
+    (DerivationTree.assumption (A :: Γ) A (List.Mem.head _))
+
+/--
+Prop-level deduction theorem: if `Derivable fc (A :: Γ) B` then
+`Derivable fc Γ (A.imp B)`.
+
+This is the Prop-level entry point to the deduction theorem. Because
+`Derivable` is a `Prop` (a `Nonempty` wrapper around `DerivationTree`),
+consumers of this corollary do **not** inherit the `noncomputable` marker
+that `deduction_theorem` itself carries — use this form to avoid
+`noncomputable` annotations when only derivability (not the tree) is needed.
+
+Lives in this file (not `ProofSystem/Derivable.lean`) because the proof
+depends on `deduction_theorem`, and `ProofSystem` must not import `Metalogic`.
+-/
+theorem _root_.Bimodal.ProofSystem.Derivable.deduction {fc : FrameClass}
+    {Γ : Context} {A B : Formula} (h : Derivable fc (A :: Γ) B) :
+    Derivable fc Γ (A.imp B) :=
+  h.elim fun d => ⟨deduction_theorem Γ A B d⟩
 
 end Bimodal.Metalogic.Core
