@@ -97,7 +97,10 @@ For each `T(U(event, guard))` or `T(S(event, guard))` on the branch, we register
 an eventuality for the `event` component. The event must eventually be witnessed
 at some reachable time for the branch to be satisfiable.
 -/
-private def registerEventualities (b : Branch) (tracker : EventualityTracker)
+-- Task 343: visibility widened from `private` so the runtime-only cancellable
+-- mirror (`CancellableExpansion.lean`) can thread the same tracker update.
+-- Definition and semantics are unchanged.
+def registerEventualities (b : Branch) (tracker : EventualityTracker)
     : EventualityTracker :=
   b.foldl (fun acc sf =>
     match sf.sign, sf.formula with
@@ -121,7 +124,8 @@ An Until eventuality for formula `event` introduced at label `l` is fulfilled wh
 `T(event)` appears at some future time reachable from `l.time`.
 A Since eventuality is fulfilled when `T(event)` appears at some past time.
 -/
-private def fulfillEventualities (b : Branch) (tracker : EventualityTracker)
+-- Task 343: visibility widened from `private` (see `registerEventualities`).
+def fulfillEventualities (b : Branch) (tracker : EventualityTracker)
     : EventualityTracker :=
   tracker.pending.foldl (fun acc e =>
     -- Check if the event formula appears positively at any time on the branch
@@ -224,6 +228,10 @@ Returns:
 - `some (inl closedBranch)`: Branch closed
 - `some (inr openBranch)`: Branch saturated (open)
 - `none`: Ran out of fuel
+
+Task 343: a runtime-only cancellable `IO` mirror
+(`expandBranchWithFuelCancellable`, CancellableExpansion.lean) transcribes this
+body line-for-line; keep the two in sync (drift risk).
 -/
 def expandBranchWithFuel (b : Branch) (fuel : Nat)
     (timeOrd : TimeOrdering := TimeOrdering.empty)
@@ -491,6 +499,9 @@ Each step either:
 
 Since no new time points are created, the expansion terminates
 when all propositional/modal formulas are processed.
+
+Task 343: mirrored by `saturateBlockedCancellable` (CancellableExpansion.lean);
+keep the two in sync.
 -/
 def saturateBlocked (b : Branch) (fuel : Nat)
     (timeOrd : TimeOrdering) (fc : FrameClass := .Base)
@@ -551,6 +562,9 @@ the formula's complexity.
 When `expandBranchWithFuel` returns a blocked open branch that is not
 yet saturated, `saturateBlocked` continues expansion of non-time-generating
 rules to reach full saturation.
+
+Task 343: mirrored by `buildTableauCancellable` (CancellableExpansion.lean);
+keep the two in sync.
 -/
 def buildTableau (φ : Formula) (fuel : Nat := 1000)
     (fc : FrameClass := .Base) : Option ExpandedTableau :=
