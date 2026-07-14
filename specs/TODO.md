@@ -4,7 +4,6 @@ next_project_number: 368
 
 # TODO
 
-Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (non-fatal)
 ## Task Order
 
 *Updated 2026-07-14. Generated from state.json dependency graph.*
@@ -80,6 +79,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 257 [IMPLEMENTING] — large_data_storage_huggingface
 282 [PARTIAL] — exhaustive_enumeration_by_default
 296 [PARTIAL] — Re-add the 6 derived binary temporal operators (release, weak_unt
+298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
 ### Reference Book
 
@@ -87,6 +87,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
+341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
 367 [PLANNED] — Design and land a depth-recursive (hereditary) on-fiber/content g
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
@@ -98,12 +99,6 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
-
-### Uncategorized
-
-298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
-341 [PLANNED] — Structural refactor of the NfMultiAnchorBridge kvE2_sep carrier l
-  └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
 
@@ -272,6 +267,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 ### 341. Structural refactor sharedwitness carrier layer
 - **Status**: [PLANNED]
 - **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 335, Task 337, Task 340, Task 346
 - **Research**: [341_structural_refactor_sharedwitness_carrier_layer/reports/01_sharedwitness-declaration-survey.md]
 - **Plan**: [341_structural_refactor_sharedwitness_carrier_layer/plans/02_module-split-refresh.md]
@@ -460,6 +456,7 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ### 298. Fix c7 labeling bug and regenerate dataset
 - **Status**: [PLANNED]
 - **Task Type**: lean4
+- **Topic**: dataset-enhancement
 - **Dependencies**: Task 297, Task 343
 - **Research**: [298_fix_c7_labeling_bug_and_regenerate_dataset/reports/01_c7-labeling-bug.md]
 - **Plan**: [298_fix_c7_labeling_bug_and_regenerate_dataset/plans/01_c7-labeling-bug.md]

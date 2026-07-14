@@ -326,7 +326,8 @@
           "type": "plan",
           "summary": "4-phase plan: add branch counter to Saturation.lean, fix timeout mechanism with IO.cancel, build verification, regenerate c7 dataset"
         }
-      ]
+      ],
+      "topic": "dataset-enhancement"
     },
     {
       "project_number": 296,
@@ -1595,7 +1596,8 @@
           "type": "plan",
           "summary": "20-phase behavior-preserving module split; preserves KampPrior carrier symbols for task 358"
         }
-      ]
+      ],
+      "topic": "kamp_theorem_formalization"
     },
     {
       "project_number": 290,
