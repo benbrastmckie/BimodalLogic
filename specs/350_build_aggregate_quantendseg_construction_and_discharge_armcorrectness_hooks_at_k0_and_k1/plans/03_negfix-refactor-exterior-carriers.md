@@ -525,21 +525,28 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 11: (C / P2d) VecEA2/VVecEA2.negFix — De Morgan fold [NOT STARTED]
+### Phase 11: (C / P2d) VecEA2/VVecEA2.negFix — De Morgan fold [COMPLETED]
 
 - **Goal:** Prop 4.2 / 4.3 (chunk_0012) at the disjunction-of-→∃∀ level: negation of a whole VVecEA2 via
   the De Morgan fold `¬(∨ ϕ_i) ≡ ∧ ¬ϕ_i` closed under conjunction (Lemma 3.4).
 - **Tasks:**
-  - [ ] Create `EANegationFix/VecEANegFix.lean` (imports `NegFix`, `VecEAConjFull`); add its import line
-    to the R1 shim.
-  - [ ] `def VecEA2.negFix` — per-disjunct 3-way split `¬el ∨ ¬er ∨ ¬bracket` (Lemma 3.2(2) two-free-var
+  - [x] Create `EANegationFix/VecEANegFix.lean` (imports `NegFix`, `VecEAConjFull`); add its import line
+    to the R1 shim. *(done; shim docstring updated to list the seventh leaf)*
+  - [x] `def VecEA2.negFix` — per-disjunct 3-way split `¬el ∨ ¬er ∨ ¬bracket` (Lemma 3.2(2) two-free-var
     split composed with Prop 4.2): endpoint legs `¬el`/`¬er` are one-free-variable negations (atomic in
     the canonical TL expansion, chunk_0011); the bracket leg is `BracketFormula.negFix`. **Carry the
-    two-sided `B_i` nuance** where the bracket leg surfaces `¬B_i = ¬Bi⁻ ∨ ¬Bi⁺`.
-  - [ ] `def VVecEA2.negFix (v : VVecEA2) : VVecEA2 := foldr VVecEA2.conjFull` over the per-disjunct
+    two-sided `B_i` nuance** where the bracket leg surfaces `¬B_i = ¬Bi⁻ ∨ ¬Bi⁺`. *(endpoint legs =
+    `neg`-endpoint disjuncts with trivial `top` brackets; bracket leg maps `negFix.disjuncts` under
+    `top` endpoints, consuming the two-sided Case-2/Case-3 gate structure opaquely via `negFix_iff`;
+    plus `VecEA2.negFix_iff`)*
+  - [x] `def VVecEA2.negFix (v : VVecEA2) : VVecEA2 := foldr VVecEA2.conjFull` over the per-disjunct
     `VecEA2.negFix` + `theorem VVecEA2.negFix_iff (h_INF) (h_SUP) (v) (z0 z1) (h_lt : z0 < z1) :
-    (v.negFix).holds M atomMap z0 z1 ↔ ¬v.holds M atomMap z0 z1`.
-  - [ ] Scoped build green; axiom checks exactly `[propext, Classical.choice, Quot.sound]`; commit.
+    (v.negFix).holds M atomMap z0 z1 ↔ ¬v.holds M atomMap z0 z1`. *(fold with `trivialTrue` neutral
+    element; list-form helper `vecEANegFixFold_iff` by induction, cons step = `conjFull_iff` +
+    `VecEA2.negFix_iff`)*
+  - [x] Scoped build green; axiom checks exactly `[propext, Classical.choice, Quot.sound]`; commit.
+    *(full `lake build` green, 1746 jobs; `lean_verify` on both `VecEA2.negFix_iff` and
+    `VVecEA2.negFix_iff` = exactly `[propext, Classical.choice, Quot.sound]`; sorry census in scope: 0)*
 - **DoD shape:** `VVecEA2.negFix_iff` green; the fold reduces per-disjunct to `BracketFormula.negFix_iff`.
 - **Timing:** ~1.5 hours (~200-300 lines) — **Depends on:** R1
 - **Files:** `EANegationFix/VecEANegFix.lean` (new) + R1 shim import line
