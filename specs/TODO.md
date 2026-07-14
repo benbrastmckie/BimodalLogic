@@ -106,7 +106,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
+309 [PLANNED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
 363 [RESEARCHED] — The general-depth (m>=1) fiber-marking interface underlying task 
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
@@ -264,7 +264,7 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 
 ### 309. Offdiag two anchor fi chain
 - **Effort**: high
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 310, Task 311, Task 320, Task 333, Task 335, Task 346, Task 348, Task 349, Task 350
