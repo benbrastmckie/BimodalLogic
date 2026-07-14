@@ -1,5 +1,5 @@
 ---
-next_project_number: 367
+next_project_number: 368
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361,365,366 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,365,366,367 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,367 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -88,7 +88,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+367 [RESEARCHED] — Design and land a depth-recursive (hereditary) on-fiber/content g
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness_weak_terminus
@@ -112,6 +113,28 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 367. Deepanchor exterior fiber population against taildoppelganger
+- **Effort**: high
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/09_spawn-analysis.md]
+
+**Description**: Design and land a depth-recursive (hereditary) on-fiber/content guard that anchors the exterior fiber population to the ambient one layer deeper than the current depth-0 row check (nfk_dropFresh sigma = qnf.1), replacing that antecedent in the rows-8-9 binders (hsliceFut/hslicePast, Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean:154-167). Candidate shapes (from the task-358 implementer handoff, not prescriptive -- select and justify one): (a) a recursive on-fiber guard requiring sigma's marked fibers' one-slot-dropped DEEP forms to be qnf-marked one level down (hereditary fiber anchoring); (b) restate the rows-8-9 antecedents with a deep on-fiber condition replacing nfk_dropFresh sigma = qnf.1 directly, following the ExteriorFiberConsistencyK.lean guard-and-_of_realized-lemma template task 364 landed, one layer down.
+
+METHODOLOGY -- re-probe is the definition of done (per tasks 363/364): before any kernel/guard change, and again after landing it, machine-probe the candidate guard against (1) the NEW countermodel family this task exists to defeat -- kvE_probe358_tailDG_gapItem_pinned_fails and kvE_probe358_tailDG_sigma_in_population in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358TailK.lean -- the tail-doppelganger must be provably EXCLUDED from the refined population (or provably pinned) after the change; and (2) ALL prior 358/363/364 fakes/probes (frozen reference layer: ExteriorFiberConsistencyProbeK.lean, ExteriorFiberConsistencyProbe364K.lean, and the historical kvE_probe358_eP_atomMate_present record) to confirm the refined guard does not reopen any previously-closed hole. The task is done only when the tail-doppelganger probe is machine-certified excluded (sorry-free, floor axioms [propext, Classical.choice, Quot.sound], zero guard-unfoldings) AND the 363/364 probes remain green.
+
+PRESERVE byte-for-byte: m=0 kernels (_zero suffix family, e.g. kvE_futSliceId_of_end_zero), the k<=1 rungs (kampPrior_case1_arm_k0), task 360's m=0 supply, and ALL of task 363/364's guard/lemmas/probes (ExteriorFiberConsistencyK.lean, ExteriorFiberConsistencyProbeK.lean, ExteriorFiberConsistencyProbe364K.lean) -- zero edits to any of these files. Preserve the never-unfold-the-guard routing rule: discharge only via the byte-stable _of_realized / _admissible lemmas, never by unfolding kvE_fiberElemConsistent directly.
+
+ZERO-DEBT TERMINUS: no sorry, no vacuous definition, no forcing a proof against a live countermodel. If the refined guard cannot be landed sorry-free and green against both probe families, return the task as [BLOCKED] with a structured escalation record rather than papering over the gap.
+
+SCOPE BOUNDARY -- MUST NOT: attempt the general-m G1/G2 supply build-out itself (the four G2 supply theorems, G1 interior supply, or the :519/:522 sorry retirements in KampPrior.lean). That work remains task 358 Phase 2/3 and resumes via /revise 358 once this interface-refinement task lands and the rows-8-9 interface is re-keyed.
+
+REFERENCES: specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-2-v05-handoff-20260714.md (full root-cause analysis and binder-level closure argument); specs/358_realization_recursion_nf_nvar_exist_all_depths/summaries/05_realizer-recursion-v05-summary.md (verification transcript, plan deviations); Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358TailK.lean (the two machine certificates this task must defeat); task 364's landed pattern in ExteriorFiberConsistencyK.lean (guard definition + _of_realized lemmas) as the structural template to follow one layer down; Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean:154-167 (the rows-8-9 binders _hsliceFut/_hslicePast to be restated).
+
+---
 
 ### 366. Repair or boneyard orphaned metalogic files
 - **Status**: [PLANNED]
@@ -213,9 +236,9 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 - **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364
+- **Dependencies**: Task 349, Task 357, Task 360, Task 363, Task 364, Task 367
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md]
-- **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md]
+- **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/05_realizer-recursion-v05.md]
 
 **Description**: Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.
 

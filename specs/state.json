@@ -4,7 +4,7 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 367,
+  "next_project_number": 368,
   "active_projects": [
     {
       "project_number": 309,
@@ -1721,10 +1721,11 @@
         357,
         360,
         363,
-        364
+        364,
+        367
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-14T17:05:33Z",
+      "last_updated": "2026-07-14T19:42:04Z",
       "artifacts": [
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md",
@@ -1732,17 +1733,17 @@
           "summary": "Post-360 gap map: four-gap decomposition (G1-G4), binding route notes, six-phase plan v3 decomposition"
         },
         {
-          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md",
+          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/plans/05_realizer-recursion-v05.md",
           "type": "plan",
-          "summary": "Plan v3: post-360 gap closure (G1-G4), probe-first phases, slice-keyed discharge route"
+          "summary": "v05: Phase 2 unblocked by task 364; G2 supply re-keyed to carry a realizer and discharge via byte-stable _of_realized/_admissible lemmas without unfolding the strengthened guard; never-unfold constraint propagated to Phases 2-6"
         }
       ],
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
       ],
-      "session_id": "sess_1784045100_2e3ffe",
+      "session_id": "sess_1784054976_3cdaea",
       "previous_status": "planned",
-      "blockers": "Phase 2 G2 exterior slice supply (rows 8-11) machine-refuted against task 363's fiber-consistency interface: kvE_fiberElemConsistent mate check (ExteriorFiberConsistencyK.lean:52-55) is atom-row-only, defeated by planted unrealizable interior mate. Sorry-free certificate kvE_probe358_eP_atomMate_present. Needs strengthened 363-style interface (realizability-anchored or fresh-projection-aware mate content comparison). Do NOT re-dispatch /implement 358 against current interface."
+      "blockers": "Phase 2 G2-1 (kvE_{fut,past}SliceId_of_end at general m) and rows-8-9 binders (hsliceFut/hslicePast, EndIntervalConsumerK.lean:154-167) at m>=1 are machine-refuted against the current exterior-fiber interface by an all-honest TAIL-doppelganger at fiber depth 1 (sorry-free certs kvE_probe358_tailDG_gapItem_pinned_fails, kvE_probe358_tailDG_sigma_in_population in ExteriorPinnedProbe358TailK.lean, floor axioms). The 364 re-key held (P2-0 gate GREEN) but a deeper depth-0-losslessness assumption in the general-m kernel is defeated. Needs a 363/364-style DEEP interface refinement: depth-recursive on-fiber/content guard tying sigma's marked fibers' tail content to qnf's deep marking, replacing the depth-0-only nfk_dropFresh sigma = qnf.1. Do NOT re-dispatch /implement against the current interface. G2-2/G1/rows 10-11 not refuted but must be rebuilt against the refined interface."
     },
     {
       "project_number": 359,
@@ -1894,6 +1895,26 @@
       "parent_task": "orchestrate batch 187-194",
       "last_updated": "2026-07-14T18:38:52Z",
       "session_id": "sess_1784053407_4f1694_366"
+    },
+    {
+      "project_number": 367,
+      "project_name": "deepanchor_exterior_fiber_population_against_taildoppelganger",
+      "status": "researched",
+      "task_type": "lean4",
+      "description": "Design and land a depth-recursive (hereditary) on-fiber/content guard that anchors the exterior fiber population to the ambient one layer deeper than the current depth-0 row check (nfk_dropFresh sigma = qnf.1), replacing that antecedent in the rows-8-9 binders (hsliceFut/hslicePast, Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean:154-167). Candidate shapes (from the task-358 implementer handoff, not prescriptive -- select and justify one): (a) a recursive on-fiber guard requiring sigma's marked fibers' one-slot-dropped DEEP forms to be qnf-marked one level down (hereditary fiber anchoring); (b) restate the rows-8-9 antecedents with a deep on-fiber condition replacing nfk_dropFresh sigma = qnf.1 directly, following the ExteriorFiberConsistencyK.lean guard-and-_of_realized-lemma template task 364 landed, one layer down.\n\nMETHODOLOGY -- re-probe is the definition of done (per tasks 363/364): before any kernel/guard change, and again after landing it, machine-probe the candidate guard against (1) the NEW countermodel family this task exists to defeat -- kvE_probe358_tailDG_gapItem_pinned_fails and kvE_probe358_tailDG_sigma_in_population in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358TailK.lean -- the tail-doppelganger must be provably EXCLUDED from the refined population (or provably pinned) after the change; and (2) ALL prior 358/363/364 fakes/probes (frozen reference layer: ExteriorFiberConsistencyProbeK.lean, ExteriorFiberConsistencyProbe364K.lean, and the historical kvE_probe358_eP_atomMate_present record) to confirm the refined guard does not reopen any previously-closed hole. The task is done only when the tail-doppelganger probe is machine-certified excluded (sorry-free, floor axioms [propext, Classical.choice, Quot.sound], zero guard-unfoldings) AND the 363/364 probes remain green.\n\nPRESERVE byte-for-byte: m=0 kernels (_zero suffix family, e.g. kvE_futSliceId_of_end_zero), the k<=1 rungs (kampPrior_case1_arm_k0), task 360's m=0 supply, and ALL of task 363/364's guard/lemmas/probes (ExteriorFiberConsistencyK.lean, ExteriorFiberConsistencyProbeK.lean, ExteriorFiberConsistencyProbe364K.lean) -- zero edits to any of these files. Preserve the never-unfold-the-guard routing rule: discharge only via the byte-stable _of_realized / _admissible lemmas, never by unfolding kvE_fiberElemConsistent directly.\n\nZERO-DEBT TERMINUS: no sorry, no vacuous definition, no forcing a proof against a live countermodel. If the refined guard cannot be landed sorry-free and green against both probe families, return the task as [BLOCKED] with a structured escalation record rather than papering over the gap.\n\nSCOPE BOUNDARY -- MUST NOT: attempt the general-m G1/G2 supply build-out itself (the four G2 supply theorems, G1 interior supply, or the :519/:522 sorry retirements in KampPrior.lean). That work remains task 358 Phase 2/3 and resumes via /revise 358 once this interface-refinement task lands and the rows-8-9 interface is re-keyed.\n\nREFERENCES: specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-2-v05-handoff-20260714.md (full root-cause analysis and binder-level closure argument); specs/358_realization_recursion_nf_nvar_exist_all_depths/summaries/05_realizer-recursion-v05-summary.md (verification transcript, plan deviations); Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358TailK.lean (the two machine certificates this task must defeat); task 364's landed pattern in ExteriorFiberConsistencyK.lean (guard definition + _of_realized lemmas) as the structural template to follow one layer down; Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean:154-167 (the rows-8-9 binders _hsliceFut/_hslicePast to be restated).",
+      "effort": "high",
+      "parent_task": 358,
+      "topic": "kamp_theorem_formalization",
+      "dependencies": [],
+      "created": "2026-07-14T19:48:45Z",
+      "last_updated": "2026-07-14T19:48:45Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/09_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 358"
+        }
+      ]
     }
   ],
   "artifacts": [
