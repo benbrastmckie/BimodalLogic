@@ -59,13 +59,13 @@ example : True := by
   let φ := p.box.imp (p.all_future.box)
   
   -- Derive using Modal-Future axiom
-  let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.modal_future p)
+  let d : ⊢ φ := DerivationTree.axiom [] φ (Axiom.modal_future p) trivial
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
   
   -- Verify semantic validity directly
-  have v_direct : [] ⊨ φ := modal_future_valid p
+  have v_direct : ⊨ φ := modal_future_valid p
   
   trivial
 
@@ -80,7 +80,7 @@ example : True := by
   
   -- □p → □Fp
   let ax : Γ ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p) trivial
   
   -- □p (assumption)
   let ass : Γ ⊢ p.box :=
@@ -107,7 +107,7 @@ example : True := by
   
   -- Step 1: □p → □Fp, □p ⊢ □Fp
   let ax1 : Γ ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p) trivial
   let ass : Γ ⊢ p.box :=
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ (p.all_future.box) :=
@@ -115,7 +115,7 @@ example : True := by
   
   -- Step 2: □Fp → □FFp, □Fp ⊢ □FFp
   let ax2 : Γ ⊢ ((p.all_future.box).imp ((p.all_future.all_future).box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p.all_future)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p.all_future) trivial
   let d2 : Γ ⊢ ((p.all_future.all_future).box) :=
     DerivationTree.modus_ponens Γ (p.all_future.box)
       ((p.all_future.all_future).box) ax2 d1
@@ -139,7 +139,7 @@ example : True := by
   
   -- Step 1: □□p → □p using Modal T
   let ax1 : Γ ⊢ (p.box.box.imp p.box) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_t p.box)
+    DerivationTree.axiom Γ _ (Axiom.modal_t p.box) trivial
   let ass : Γ ⊢ p.box.box :=
     DerivationTree.assumption Γ p.box.box (List.Mem.head _)
   let d1 : Γ ⊢ p.box :=
@@ -147,13 +147,13 @@ example : True := by
   
   -- Step 2: □p → □Fp using Modal-Future
   let ax2 : Γ ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p) trivial
   let d2 : Γ ⊢ (p.all_future.box) :=
     DerivationTree.modus_ponens Γ p.box (p.all_future.box) ax2 d1
   
   -- Step 3: □Fp → □□Fp using Modal 4
   let ax3 : Γ ⊢ ((p.all_future.box).imp ((p.all_future.box).box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_4 p.all_future)
+    DerivationTree.axiom Γ _ (Axiom.modal_4 p.all_future) trivial
   let d3 : Γ ⊢ ((p.all_future.box).box) :=
     DerivationTree.modus_ponens Γ (p.all_future.box)
       ((p.all_future.box).box) ax3 d2
@@ -238,7 +238,7 @@ example : True := by
 
   -- Step 2: F□p → FF□p using Temporal 4
   let ax2 : Γ ⊢ ((p.box.all_future).imp ((p.box.all_future).all_future)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_4 p.box)
+    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived p.box) (List.nil_subset _)
   let d2 : Γ ⊢ ((p.box.all_future).all_future) :=
     DerivationTree.modus_ponens Γ (p.box.all_future)
       ((p.box.all_future).all_future) ax2 d1
@@ -270,7 +270,7 @@ example : True := by
   
   -- Path 1: □p → □Fp (Modal-Future)
   let ax1 : Γ ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p) trivial
   let ass : Γ ⊢ p.box :=
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ (p.all_future.box) :=
@@ -301,7 +301,7 @@ example : True := by
   
   -- Step 1: □p → □Fp (Modal-Future)
   let ax1 : Γ ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p) trivial
   let ass : Γ ⊢ p.box :=
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ (p.all_future.box) :=
@@ -317,7 +317,7 @@ example : True := by
   -- Step 3: F□Fp → FF□Fp (Temporal 4)
   let ax3 : Γ ⊢ (((p.all_future.box).all_future).imp
                   (((p.all_future.box).all_future).all_future)) :=
-    DerivationTree.axiom Γ _ (Axiom.temp_4 (p.all_future.box))
+    DerivationTree.weakening [] Γ _ (Bimodal.Theorems.TemporalDerived.temp_4_derived (p.all_future.box)) (List.nil_subset _)
   let d3 : Γ ⊢ (((p.all_future.box).all_future).all_future) :=
     DerivationTree.modus_ponens Γ ((p.all_future.box).all_future)
       (((p.all_future.box).all_future).all_future) ax3 d2
@@ -342,7 +342,7 @@ example : True := by
   
   -- Start with Modal T axiom
   let d1 : ⊢ (p.box.imp p) :=
-    DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p)
+    DerivationTree.axiom [] (p.box.imp p) (Axiom.modal_t p) trivial
   
   -- Apply modal necessitation
   let d2 : ⊢ ((p.box.imp p).box) :=
@@ -381,7 +381,7 @@ example : True := by
   let φ := (p.all_future.imp q.all_future).box.imp
            (p.all_future.box.imp q.all_future.box)
   let d : ⊢ φ :=
-    DerivationTree.axiom [] φ (Axiom.modal_k_dist p.all_future q.all_future)
+    DerivationTree.axiom [] φ (Axiom.modal_k_dist p.all_future q.all_future) trivial
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
@@ -401,7 +401,7 @@ example : True := by
   let φ := (p.box.imp q.box).all_future.imp
            (p.box.all_future.imp q.box.all_future)
   let d : ⊢ φ :=
-    DerivationTree.axiom [] φ (Axiom.temp_k_dist p.box q.box)
+    Bimodal.Theorems.TemporalDerived.temp_k_dist_derived p.box q.box
   
   -- Verify soundness
   have v : [] ⊨ φ := soundness [] φ d
@@ -420,7 +420,7 @@ example : True := by
   -- Build □F□Fp from □p
   -- Step 1: □p → □Fp
   let ax1 : Γ ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future p)
+    DerivationTree.axiom Γ _ (Axiom.modal_future p) trivial
   let ass : Γ ⊢ p.box :=
     DerivationTree.assumption Γ p.box (List.Mem.head _)
   let d1 : Γ ⊢ (p.all_future.box) :=
@@ -428,7 +428,7 @@ example : True := by
   
   -- Step 2: □Fp → □□Fp
   let ax2 : Γ ⊢ ((p.all_future.box).imp ((p.all_future.box).box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_4 p.all_future)
+    DerivationTree.axiom Γ _ (Axiom.modal_4 p.all_future) trivial
   let d2 : Γ ⊢ ((p.all_future.box).box) :=
     DerivationTree.modus_ponens Γ (p.all_future.box)
       ((p.all_future.box).box) ax2 d1
@@ -436,7 +436,7 @@ example : True := by
   -- Step 3: □□Fp → □F□Fp
   let ax3 : Γ ⊢ (((p.all_future.box).box).imp
                   (((p.all_future.box).all_future).box)) :=
-    DerivationTree.axiom Γ _ (Axiom.modal_future (p.all_future.box))
+    DerivationTree.axiom Γ _ (Axiom.modal_future (p.all_future.box)) trivial
   let d3 : Γ ⊢ (((p.all_future.box).all_future).box) :=
     DerivationTree.modus_ponens Γ ((p.all_future.box).box)
       (((p.all_future.box).all_future).box) ax3 d2
@@ -465,13 +465,13 @@ example : True := by
   
   -- Modal-Future axiom is valid (time-shift invariant)
   let d : ⊢ (p.box.imp (p.all_future.box)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_future p)
+    DerivationTree.axiom (fc := FrameClass.Base) [] _ (Axiom.modal_future p) trivial
   
   have v : [] ⊨ (p.box.imp (p.all_future.box)) :=
     soundness [] _ d
   
   -- Validity implies truth at all time-shifted models
-  have : ∀ F M τ t ht, truth_at M τ t ht (p.box.imp (p.all_future.box)) := v
+  have _time_shift : [] ⊨ (p.box.imp (p.all_future.box)) := v
   
   trivial
 
@@ -491,7 +491,7 @@ example : True := by
     soundness [] _ d
   
   -- Validity implies truth at all time-shifted models
-  have : ∀ F M τ t ht, truth_at M τ t ht (p.box.imp (p.box.all_future)) := v
+  have _time_shift : [] ⊨ (p.box.imp (p.box.all_future)) := v
   
   trivial
 
