@@ -470,7 +470,7 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase R1: (refactor) split EANegationFix.lean → Kamp/EANegationFix/ DAG + re-export shim [NOT STARTED]
+### Phase R1: (refactor) split EANegationFix.lean → Kamp/EANegationFix/ DAG + re-export shim [COMPLETED]
 
 - **Goal:** MECHANICAL relocation of the already-green, sorry-free negation kit out of the monolithic
   `EANegationFix.lean` (~2,900 ln after the negFix core lands) into a subdirectory module DAG, leaving
@@ -481,10 +481,12 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
   negFix-core dispatch has released `EANegationFix.lean` (R5 — no overlapping edit). `lake build` green
   before the move.
 - **Tasks:**
-  - [ ] Create `Kamp/EANegationFix/` subdirectory. Relocate declarations into seven leaves in the exact
+  - [x] Create `Kamp/EANegationFix/` subdirectory. Relocate declarations into seven leaves in the exact
     linear, cycle-free import order below (line ranges are the report's estimates against the 2,237-ln
     snapshot — RECOMPUTE against the live file via `/-! -/` section headers at move time; the DAG
-    structure, not the numeric ranges, is binding):
+    structure, not the numeric ranges, is binding): *(recomputed against the live 2,907-ln file:
+    OnBuilder 1-253, BoundedFix 254-1102, BoundedFixAnchored 1103-1577, ConcatPin 1578-1689,
+    NegFixOne 1690-2236 incl. NegFixGateProbe, NegFix 2237-2906)*
 
     | New file | Exports | Rabinovich layer | Imports |
     |----------|---------|------------------|---------|
@@ -496,17 +498,22 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
     | `EANegationFix/NegFix.lean` | `BracketFormula.negFix(_iff)` (Cases 1-3, A_i/B_i split, (d)/(e)) — the Phase-10-tail deliverable | Lemma 5.1 full (chunks 0016-0017) | `NegFixOne`, `ConcatPin`, `BoundedFixAnchored`, `VecEAConjFull` |
     | `EANegationFix.lean` (**shim**) | `import`s all six leaves above; keeps the namespace | — | all leaves |
 
-  - [ ] **Import DAG (acyclic, linear):**
+  - [x] **Import DAG (acyclic, linear):**
     `OnBuilder → BoundedFix → {BoundedFixAnchored, ConcatPin} → NegFixOne → NegFix → (shim)
     EANegationFix → NfMultiAnchorBridge`.
-  - [ ] **Acyclicity invariants (must hold after every leaf move):** (a) the shim is import-only —
+  - [x] **Acyclicity invariants (must hold after every leaf move):** (a) the shim is import-only —
     leaves NEVER import the shim; (b) no `EANegationFix/*` leaf imports any `NfMultiAnchorBridge/*`
     aggregate module (the negation kit is order-generic and stays upstream of the aggregate carriers).
-  - [ ] Move one leaf at a time, `lake build` after each; verify `NfMultiAnchorBridge.lean:78` import
-    line is unchanged (shim keeps the aggregator line stable).
-  - [ ] Post-move: full `lake build` green; `lean_verify` on a representative export from each leaf =
+    *(verified: zero `import ...EANegationFix$` and zero `NfMultiAnchorBridge` imports in leaves)*
+  - [x] Move one leaf at a time, `lake build` after each; verify `NfMultiAnchorBridge.lean:78` import
+    line is unchanged (shim keeps the aggregator line stable). *(6 leaf moves, each committed on a
+    green full build: f4ab474b6 OnBuilder, R1.2 BoundedFix, R1.3 BoundedFixAnchored, R1.4 ConcatPin,
+    R1.5 NegFixOne, R1.6 NegFix+shim; NfMultiAnchorBridge.lean:78 byte-identical)*
+  - [x] Post-move: full `lake build` green; `lean_verify` on a representative export from each leaf =
     exactly `[propext, Classical.choice, Quot.sound]` (identical to pre-move); `git diff` shows only
-    file moves + import lines, NO proof-body changes; commit.
+    file moves + import lines, NO proof-body changes; commit. *(1745 jobs green; all 6 representative
+    exports verified at exactly [propext, Classical.choice, Quot.sound]; reconstructed concatenation of
+    the six leaves diffs byte-for-byte clean against the pre-split 2,907-ln file)*
 - **Note (VecEANegFix leaf):** the seventh leaf `EANegationFix/VecEANegFix.lean` (Prop 4.2 De Morgan
   fold) is created and populated by **Phase 11**, NOT R1 — its content does not exist yet, so R1 only
   wires it into the shim if Phase 11 is folded in later; default is R1 creates the six above and Phase 11
