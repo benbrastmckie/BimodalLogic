@@ -187,7 +187,7 @@ binary operators, so folded-tag presence becomes real and measurable.
 
 ---
 
-### Phase 3: Measurement-protocol fix (value-level census) [NOT STARTED]
+### Phase 3: Measurement-protocol fix (value-level census) [COMPLETED]
 
 **Goal**: A value-level operator census exists and cross-checks the now-correct fold tags, so
 presence is measured on the formula value, not fold tags alone.

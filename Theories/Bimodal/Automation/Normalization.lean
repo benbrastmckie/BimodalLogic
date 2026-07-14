@@ -1220,4 +1220,111 @@ the inductive hypothesis at each node.
 
 end ProgrammaticNormalization
 
+/-!
+## Value-Level Operator Census (Task 296, Phase 3)
+
+Prior presence measurement was folded-tag based and structurally blind (report §10.3): a
+census over folded tags returned zero for the binary derived operators purely because the
+representation layer lacked their constructors — regardless of dataset content. Phase 2 fixed
+the fold layer, so `foldFormulaFull`-based tags are now real. This section adds an *independent*
+value-level census that matches the derived operators directly against their primitive
+`Formula` encodings (precedent: `FormulaMutator.lean` primitive-pattern matchers), and
+cross-checks it against the now-correct folded tags.
+
+The value-level matcher inspects the *top node* of a formula and returns the derived-operator
+tag if its primitive encoding is present. `⊥`-guards mirror the fold's collapse priorities so
+that, e.g., `release(φ, ⊥)` (which collapses to `all_future φ`) is NOT counted as a `release`.
+-/
+
+section OperatorCensus
+
+/-- Value-level matcher: return the binary derived-operator tag whose primitive encoding is at
+    the top node of `f`, or `none`. The `⊥`/`⊤`-guards mirror `foldFormula`'s collapse order so
+    this agrees with the folded-tag census (e.g. `release(φ,⊥) = all_future φ` is not a release).
+
+    Primitive encodings (from `Formula` defs):
+    - `release φ ψ  = ¬((¬φ) U (¬ψ))`         = `imp (untl (imp φ ⊥) (imp ψ ⊥)) ⊥`
+    - `trigger φ ψ  = ¬((¬φ) S (¬ψ))`         = `imp (snce (imp φ ⊥) (imp ψ ⊥)) ⊥`
+    - `weak_until φ ψ = (φ U ψ) ∨ Gψ`         = `imp (imp (untl φ ψ) ⊥) (Gψ)`
+    - `weak_since φ ψ = (φ S ψ) ∨ Hψ`         = `imp (imp (snce φ ψ) ⊥) (Hψ)`
+    - `strong_release φ ψ = (ψ ∧ φ) U ψ`      = `untl (and ψ φ) ψ`
+    - `strong_trigger φ ψ = (ψ ∧ φ) S ψ`      = `snce (and ψ φ) ψ` -/
+def _root_.Bimodal.Syntax.Formula.matchBinaryDerived : Formula → Option String
+  -- weak_until: imp (imp (untl φ ψ) ⊥) (imp (untl (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
+  | .imp (.imp (.untl _ ψ) .bot) (.imp (.untl (.imp ψ' .bot) (.imp .bot .bot)) .bot) =>
+    if ψ == ψ' then some "weak_until" else none
+  -- weak_since: imp (imp (snce φ ψ) ⊥) (imp (snce (imp ψ' ⊥) (imp ⊥ ⊥)) ⊥), ψ == ψ'
+  | .imp (.imp (.snce _ ψ) .bot) (.imp (.snce (.imp ψ' .bot) (.imp .bot .bot)) .bot) =>
+    if ψ == ψ' then some "weak_since" else none
+  -- release: imp (untl (imp φ ⊥) (imp ψ ⊥)) ⊥, with φ ≠ ⊥ and ψ ≠ ⊥ (else collapses to G/¬)
+  | .imp (.untl (.imp φ .bot) (.imp ψ .bot)) .bot =>
+    if φ == .bot || ψ == .bot then none else some "release"
+  -- trigger: imp (snce (imp φ ⊥) (imp ψ ⊥)) ⊥, with φ ≠ ⊥ and ψ ≠ ⊥ (else collapses to H/¬)
+  | .imp (.snce (.imp φ .bot) (.imp ψ .bot)) .bot =>
+    if φ == .bot || ψ == .bot then none else some "trigger"
+  -- strong_release: untl (and ψ φ) ψ = untl (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
+  | .untl (.imp (.imp ψ (.imp _ .bot)) .bot) ψ' =>
+    if ψ == ψ' then some "strong_release" else none
+  -- strong_trigger: snce (and ψ φ) ψ = snce (imp (imp ψ (imp φ ⊥)) ⊥) ψ'
+  | .snce (.imp (.imp ψ (.imp _ .bot)) .bot) ψ' =>
+    if ψ == ψ' then some "strong_trigger" else none
+  | _ => none
+
+/-- Folded-tag matcher: the binary derived-operator tag at the top node of an already-folded
+    `EnrichedFormula`, or `none`. This reads the tags produced by `foldFormulaFull`. -/
+def EnrichedFormula.topBinaryTag : EnrichedFormula → Option String
+  | .release _ _       => some "release"
+  | .weak_until _ _    => some "weak_until"
+  | .trigger _ _       => some "trigger"
+  | .weak_since _ _    => some "weak_since"
+  | .strong_release _ _ => some "strong_release"
+  | .strong_trigger _ _ => some "strong_trigger"
+  | _ => none
+
+/-- Folded-tag census over a formula's top node: fold then read the binary tag. -/
+def _root_.Bimodal.Syntax.Formula.foldedBinaryTag (f : Formula) : Option String :=
+  f.foldFormulaFull.topBinaryTag
+
+/-- Census over a list of formulas: the multiset (as a sorted `List String`) of binary
+    derived-operator tags detected by the value-level matcher. -/
+def valueCensus (fs : List Formula) : List String :=
+  (fs.filterMap Formula.matchBinaryDerived).mergeSort (· ≤ ·)
+
+/-- Census over a list of formulas: the multiset (sorted) of binary derived-operator tags
+    read from the folded (`foldFormulaFull`) representation. -/
+def foldedCensus (fs : List Formula) : List String :=
+  (fs.filterMap Formula.foldedBinaryTag).mergeSort (· ≤ ·)
+
+section CensusTests
+
+private def cp : Atom := Atom.mk_base "p"
+private def cq : Atom := Atom.mk_base "q"
+
+/-- Sample covering all 6 binary derived operators (atom operands) plus the `release(p,⊥)`
+    collapse regression. -/
+private def censusSample : List Formula := [
+  Formula.release (.atom cp) (.atom cq),
+  Formula.weak_until (.atom cp) (.atom cq),
+  Formula.trigger (.atom cp) (.atom cq),
+  Formula.weak_since (.atom cp) (.atom cq),
+  Formula.strong_release (.atom cp) (.atom cq),
+  Formula.strong_trigger (.atom cp) (.atom cq),
+  Formula.release (.atom cp) Formula.bot  -- collapses to all_future p: counted by neither
+]
+
+-- The value-level census and the folded-tag census agree on the sample.
+#guard valueCensus censusSample == foldedCensus censusSample
+
+-- All 6 binary operators have nonzero presence (each tag appears exactly once).
+#guard valueCensus censusSample ==
+  ["release", "strong_release", "strong_trigger", "trigger", "weak_since", "weak_until"]
+
+-- The collapse case contributes no binary tag to either census.
+#guard Formula.matchBinaryDerived (Formula.release (.atom cp) Formula.bot) == none
+#guard Formula.foldedBinaryTag (Formula.release (.atom cp) Formula.bot) == none
+
+end CensusTests
+
+end OperatorCensus
+
 end Bimodal.Automation.Normalization
