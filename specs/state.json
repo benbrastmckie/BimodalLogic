@@ -242,14 +242,20 @@
     {
       "project_number": 343,
       "project_name": "abort_aware_tableau_cancellation",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "description": "Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.",
       "dependencies": [],
       "created": "2026-06-09T18:00:00Z",
-      "last_updated": "2026-06-09T18:00:00Z",
+      "last_updated": "2026-07-14T15:26:49Z",
       "topic": "literature",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md",
+          "type": "report",
+          "summary": "Research: cancellable IO mirror of expandBranchWithFuel (task-277 _tracedImpl precedent), IO.Ref Bool + IO.checkCanceled wiring in labelFormulaImpl, fuel-bounded abort-aware extractCountermodelData"
+        }
+      ]
     },
     {
       "project_number": 298,
@@ -349,14 +355,21 @@
     {
       "project_number": 282,
       "project_name": "exhaustive_enumeration_by_default",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "dependencies": [
         274
       ],
       "created": "2026-06-04T07:30:00Z",
-      "last_updated": "2026-06-04T07:30:00Z",
-      "topic": "dataset-enhancement"
+      "last_updated": "2026-07-14T00:00:00Z",
+      "topic": "dataset-enhancement",
+      "artifacts": [
+        {
+          "path": "specs/282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md",
+          "type": "report",
+          "summary": "Scope reconstructed from git (commit 78166ff86): items 1-4 (0-sentinel unlimited default, .take guards, script tiers, help text) already implemented and verified intact; remaining scope = c8 exhaustive regeneration (HF has only partial), c9 feasibility probe + flip to exhaustive (stale infeasibility comment predates 274/283), doc realignment"
+        }
+      ]
     },
     {
       "project_number": 257,
@@ -660,68 +673,92 @@
     {
       "project_number": 187,
       "project_name": "backward_chaining_lemma_db",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-07-14T15:32:04Z",
       "artifacts": [
         {
           "path": "specs/187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md",
           "type": "report",
           "summary": "Seed research: theorem inventory and @[tm_lemma] attribute design"
+        },
+        {
+          "path": "specs/187_backward_chaining_lemma_db/reports/02_backward-chaining-research.md",
+          "type": "research",
+          "summary": "Full research report: verified current-state map of searchProof pipeline (post Tactics.lean split), FrameClass parameterization implications, toolchain mechanism verification (LabelAttribute/SolveByElim/DiscrTree in Lean core), recommended tryLemmaMatch design with code sketch, concrete file targets, risks, and suggested 3-phase plan structure."
         }
       ],
-      "topic": "automation"
+      "topic": "automation",
+      "session_id": "sess_1784042334_6ccc8d_187"
     },
     {
       "project_number": 188,
       "project_name": "weakening_aware_search",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-07-14T15:32:17Z",
       "artifacts": [
         {
           "path": "specs/188_weakening_aware_search/reports/01_weakening-aware-seed.md",
           "type": "report",
           "summary": "Seed research: weakening usage patterns and context subsumption design"
+        },
+        {
+          "path": "specs/188_weakening_aware_search/reports/02_weakening-aware-search.md",
+          "type": "research",
+          "summary": "Full research report: verified current state of all three search layers, precise gap location, closure-step weakening design with 4 phases, concrete file targets with line estimates, answers to all 5 seed questions, risks, and out-of-scope deferrals to tasks 187/192."
         }
       ],
-      "topic": "automation"
+      "topic": "automation",
+      "session_id": "sess_1784042334_6ccc8d_188"
     },
     {
       "project_number": 189,
       "project_name": "deduction_theorem_tactic",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-05-22T16:30:00Z",
+      "last_updated": "2026-07-14T15:32:09Z",
       "artifacts": [
         {
           "path": "specs/189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md",
           "type": "report",
           "summary": "Seed research: deduction/undischarge tactic design for natural-deduction style"
+        },
+        {
+          "path": "specs/189_deduction_theorem_tactic/reports/02_deduction-tactic-research.md",
+          "type": "research",
+          "summary": "Implementation-focused research report: verified signatures and line numbers, corrections to seed report, existing tactic infrastructure survey (mkOperatorKTactic template, modal_search syntax patterns), 5-phase recommended implementation with code sketches, noncomputability resolution, file targets, and risks."
         }
       ],
       "dependencies": [],
-      "topic": "automation"
+      "topic": "automation",
+      "session_id": "sess_1784042334_6ccc8d_189"
     },
     {
       "project_number": 191,
       "project_name": "propositional_decision_procedure",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T16:30:00Z",
-      "last_updated": "2026-06-01T23:00:00Z",
+      "last_updated": "2026-07-14T15:32:13Z",
       "artifacts": [
         {
           "path": "specs/191_propositional_decision_procedure/reports/01_decision-procedure-seed.md",
           "type": "report",
           "summary": "Seed research: truth-table vs tableaux approaches for verified decision procedure"
+        },
+        {
+          "path": "specs/191_propositional_decision_procedure/reports/02_decision-procedure-research.md",
+          "type": "research",
+          "summary": "Full research report: verified current state (prerequisite inventory with file:line references), recommended reflection+Kalmar architecture with 4 components, rejected alternatives, 6 concrete file targets with size estimates, 5-phase plan (~30-40h), risks and verification notes."
         }
       ],
       "dependencies": [],
-      "topic": "automation"
+      "topic": "automation",
+      "session_id": "sess_1784042334_6ccc8d_191"
     },
     {
       "project_number": 192,
@@ -770,18 +807,24 @@
     {
       "project_number": 194,
       "project_name": "migrate_nonempty_to_derivable",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "lean4",
       "created": "2026-05-22T17:15:00Z",
-      "last_updated": "2026-05-22T17:15:00Z",
+      "last_updated": "2026-07-14T15:32:21Z",
       "artifacts": [
         {
           "path": "specs/194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md",
           "type": "report",
           "summary": "Seed research: 56 migration sites across 16 files in Metalogic/"
+        },
+        {
+          "path": "specs/194_migrate_nonempty_to_derivable/reports/02_nonempty-derivable-migration.md",
+          "type": "research",
+          "summary": "Complete site inventory (per-file, per-line, per-kind classification: def bodies / statements / proof-internal / comments / dead files), machine-verified compatibility matrix, risk analysis (unfold sites, notation, aesop tags), 8-phase migration order with build gates, and explicit exclusion list for pre-broken orphaned files."
         }
       ],
-      "topic": "formula-refactor"
+      "topic": "formula-refactor",
+      "session_id": "sess_1784042334_6ccc8d_194"
     },
     {
       "project_number": 196,
@@ -920,7 +963,7 @@
     {
       "project_number": 230,
       "project_name": "benchmark_refresh_splits_paraphrases_schema",
-      "status": "not_started",
+      "status": "researched",
       "task_type": "general",
       "description": "After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.",
       "priority": "medium",
@@ -929,7 +972,14 @@
         229
       ],
       "created": "2026-06-01T20:00:00Z",
-      "last_updated": "2026-06-01T20:00:00Z"
+      "last_updated": "2026-07-14T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "report",
+          "path": "specs/230_benchmark_refresh_splits_paraphrases_schema/reports/01_benchmark-refresh.md"
+        }
+      ],
+      "next_artifact_number": 2
     },
     {
       "project_number": 231,
@@ -1362,7 +1412,7 @@
     {
       "project_number": 290,
       "project_name": "improve_tableau_fuel_allocation",
-      "status": "planned",
+      "status": "completed",
       "task_type": "lean4",
       "priority": "medium",
       "topic": "dataset-enhancement",
@@ -1370,7 +1420,7 @@
         288
       ],
       "created": "2026-06-08T03:09:30Z",
-      "last_updated": "2026-06-08T23:30:00Z",
+      "last_updated": "2026-07-14T15:23:52Z",
       "description": "Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.",
       "session_id": "sess_1780943005_25629c_290",
       "researched": "2026-06-08T23:00:00Z",
@@ -1386,6 +1436,11 @@
           "path": "specs/290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md",
           "type": "plan",
           "summary": "5-phase plan: define difficulty heuristic, integrate proportional allocation, mirror in traced variant, update soundness proof, benchmark on c6"
+        },
+        {
+          "path": "specs/290_improve_tableau_fuel_allocation/summaries/01_fuel-allocation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for proportional fuel allocation"
         }
       ],
       "plan_metadata": {
@@ -1416,7 +1471,9 @@
             "integrated_date": "2026-06-08"
           }
         ]
-      }
+      },
+      "implemented": "2026-07-14T15:23:52Z",
+      "completion_summary": "Replaced uniform fuel/2 split allocation with difficulty-weighted proportional allocation. Added estimateBranchDifficulty (temporal weight 3, modal weight 2, size weight length/4) and allocateFuelProportionally with termination-safe cap (allocateFuelProportionally_le). Updated expandBranchWithFuel, expandBranchWithFuel_tracedImpl, and soundness proofs (foldl_preserves_findClosure, expandBranchWithFuel_sound). Full lake build passes (1752 jobs), zero sorries, zero new axioms; all FA1-FA5 inline tests pass. c6 dataset regeneration benchmark deferred (exceeds session budget); inline satisfiability tests show no regression."
     },
     {
       "project_number": 350,
@@ -1556,7 +1613,7 @@
     {
       "project_number": 363,
       "project_name": "restate_depth1_fibermarking_interface_and_reprobe_g1g2",
-      "status": "researched",
+      "status": "planned",
       "task_type": "lean4",
       "description": "The general-depth (m>=1) fiber-marking interface underlying task 358's G1 interior supply (rows 5-6, KampPrior.lean:835-846) and G2 exterior supply (rows 8-11, EndIntervalConsumerK.lean:141-162) is machine-refuted as FALSE by two sorry-free probe theorems in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbeM1K.lean: kvE_probeM1_sliceId_NOGO (exterior, rows 8-11) and kvE_probeM1_interiorHreal_NOGO + kvE_probeM1_interiorGuard_identical (interior, rows 5-6, same root cause one level up). The shared defect (D7): depth->=1 fiber marking is not pinned by free-env/projected rendering. The countermodel constructs a doppelganger-tail fake fiber s* = nf_characteristic 1 5 [22,25,15,2,21], sharing the honest pinned fiber [25,15,2,18]'s depth-0 atom 4-type but diverging in its tail. This fake passes the atom-level admissibility fiber guard, is free-env-realized but has NO pinned realization at any witness, and is projection-invisible through the igFoldBit (zone, nfk_projFresh) arity-1 F1 information-loss channel (InteriorGateGeneralK.lean:318) -- the doppelganger difference lives entirely in slots that projection discards. Both the exterior slice-equality keying (kvE_futSliceEq) and the interior igFoldBit fold-bit guard key their obligation hypothesis side to this same free-env/projected rendering, so the fake is indistinguishable from the honest fiber under BOTH legs' current binder shapes.\n\nTask: restate the fiber-marking interface at the rungK binder / igFoldBit consumer seam (KampPrior.lean:835-846 binder shape as reference; InteriorGateGeneralK.lean:318 igFoldBit projection; ExteriorPinnedConverseK.lean / ExteriorPinnedConversePastK.lean slice kernels) so that depth->=1 fiber marking is pinned rather than free-env/projected. Two candidate approaches to adjudicate in-task against the existing countermodels (either or a synthesis): (a) anchored/pinned item rendering -- carry the depth->=1 fiber's full pinned coordinates through the binder instead of a free-env/projected summary; (b) a depth-graded fiber guard -- strengthen the admissibility/fold-bit guard so it distinguishes fibers by depth-graded content the current projection discards, defeating both m1_sstar fake constructions. Follow the task-360 slice re-key precedent for methodology (machine probe before landing, frozen reference layer). After restatement, re-run the EXISTING probes (kvE_probeM1_sliceId_NOGO, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical in ExteriorPinnedProbeM1K.lean) against the new interface to confirm the doppelganger countermodel no longer applies to either leg -- this re-probe is the definition of done, not merely a restated signature. MUST NOT touch or re-open the k=0 layers (rung0/rung1, m=0 supply theorems from task 360, kampPrior_case1_arm_k0) -- these are unrefuted and must stay frozen. Zero-debt terminus: no sorry, no vacuous def, no forcing a proof against a live countermodel; if neither candidate approach closes green, the task returns [BLOCKED] with its own structured escalation rather than landing debt. Do NOT attempt the general-m/general-depth supply build-out itself (task 358 Phases 7-8) in this task -- scope is the interface restatement plus re-probe only; the supply theorems remain task 358's responsibility once this interface is fixed.",
       "effort": "6-10 hours",
@@ -1564,14 +1621,15 @@
       "topic": "kamp_theorem_formalization",
       "dependencies": [],
       "created": "2026-07-14T01:36:04Z",
-      "last_updated": "2026-07-14T01:36:04Z",
+      "last_updated": "2026-07-14T14:36:44Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/05_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 358"
         }
-      ]
+      ],
+      "session_id": "sess_1784039419_e5b7e9"
     }
   ],
   "artifacts": [

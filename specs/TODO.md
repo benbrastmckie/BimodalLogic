@@ -12,7 +12,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,307,318,341,343,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,291,296,307,318,341,343,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
 | 2 | 131,169,170,192,196,231,292,293,294,298,305,358 | 161,187,191,194,230,291,307,341,343,361,363 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,189,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
@@ -31,7 +31,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Formula Refactor
 
 161 [NOT STARTED] — Rename Theories/Bimodal/ to FormalSystem/. Move the entire Theori
-194 [NOT STARTED] — migrate_nonempty_to_derivable
+194 [RESEARCHED] — migrate_nonempty_to_derivable
 131 [NOT STARTED] — Restructure Theories/Bimodal/ file hierarchy for clean APIs and d
   └─ 175 [RESEARCHED] — Normalize naming conventions to follow Mathlib-style descriptive 
   └─ 177 [NOT STARTED] — Update all documentation to match final codebase state after refa
@@ -68,13 +68,13 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 179 [RESEARCHED] — research_lean4_tactics_infrastructure
 186 [NOT STARTED] — unify_search_systems
-187 [NOT STARTED] — backward_chaining_lemma_db
+187 [RESEARCHED] — backward_chaining_lemma_db
   └─ 192 [NOT STARTED] — master_tactic_dispatch
     └─ 193 [NOT STARTED] — codebase_tactic_refactor
-188 [NOT STARTED] — weakening_aware_search
-189 [NOT STARTED] — deduction_theorem_tactic
+188 [RESEARCHED] — weakening_aware_search
+189 [RESEARCHED] — deduction_theorem_tactic
   └─ 193 [NOT STARTED] — codebase_tactic_refactor (see above)
-191 [NOT STARTED] — propositional_decision_procedure
+191 [RESEARCHED] — propositional_decision_procedure
   └─ 192 [NOT STARTED] — master_tactic_dispatch (see above)
 199 [PARTIAL] — Create a bespoke grid_order_tac tactic (in Theories/Bimodal/Autom
 196 [RESEARCHED] — Systematic survey of the entire Theories/Bimodal/ codebase to ide
@@ -83,16 +83,15 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 ### Dataset Enhancement
 
 219 [RESEARCHED] — Run bmlogic-bench through multiple LLMs to establish baseline dif
-230 [NOT STARTED] — After contamination resolution (task 229), regenerate all benchma
+230 [RESEARCHED] — After contamination resolution (task 229), regenerate all benchma
   └─ 231 [NOT STARTED] — Build comprehensive automation so that every dataset regeneration
 257 [IMPLEMENTING] — large_data_storage_huggingface
-282 [NOT STARTED] — exhaustive_enumeration_by_default
-290 [PLANNED] — Improve tableau fuel allocation heuristic for imbalanced branches
+282 [RESEARCHED] — exhaustive_enumeration_by_default
 296 [NOT STARTED] — Re-add the 6 derived binary temporal operators (release, weak_unt
 
 ### Literature
 
-343 [NOT STARTED] — Make the tableau decision procedure abort-aware by threading an I
+343 [RESEARCHED] — Make the tableau decision procedure abort-aware by threading an I
   └─ 298 [PLANNED] — Fix c7 labeling bug at formula ~13750 that causes unbounded memor
 
 ### Reference Book
@@ -101,7 +100,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-363 [RESEARCHED] — The general-depth (m>=1) fiber-marking interface underlying task 
+363 [PLANNED] — The general-depth (m>=1) fiber-marking interface underlying task 
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
@@ -124,7 +123,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 363. Restate depth1 fibermarking interface and reprobe g1g2
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
@@ -201,10 +200,11 @@ Task: restate the fiber-marking interface at the rungK binder / igFoldBit consum
 ---
 
 ### 343. Abort aware tableau cancellation
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: literature
 - **Dependencies**: None
+- **Research**: [343_abort_aware_tableau_cancellation/reports/01_abort-aware-tableau.md]
 
 **Description**: Make the tableau decision procedure abort-aware by threading an IO.Ref Bool abort signal through expandBranchWithFuel and related functions. Currently, IO.cancel in labelFormulaImpl is cooperative but the pure tableau computation never calls IO.checkCanceled, so cancelled tasks continue as zombie threads accumulating memory. The fix: (1) Add an IO.Ref Bool parameter to expandBranchWithFuel that is checked at each recursive step. (2) Wire the abort ref from the IO.cancel handler in labelFormulaImpl. (3) Ensure extractCountermodelData in mkInvalidLabel also respects the abort signal. This eliminates the root cause of the c7 OOM — zombie tableau computations that survive cancellation.
 
@@ -460,22 +460,24 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 290. Improve tableau fuel allocation
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 288
 - **Research**: [290_improve_tableau_fuel_allocation/reports/01_fuel-allocation-research.md]
 - **Plan**: [290_improve_tableau_fuel_allocation/plans/01_fuel-allocation-plan.md]
+- **Summary**: [290_improve_tableau_fuel_allocation/summaries/01_fuel-allocation-summary.md]
 
 **Description**: Improve tableau fuel allocation heuristic for imbalanced branches. Add estimateBranchDifficulty heuristic (temporal count, modal count, branch depth). Allocate fuel proportionally to difficulty across sub-branches. Prove termination still holds. Benchmark on c6. Expected 2-5% timeout reduction.
 
 ---
 
 ### 282. Exhaustive enumeration by default
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 274
+- **Research**: [282_exhaustive_enumeration_by_default/reports/01_exhaustive-enumeration-default.md]
 
 ---
 
@@ -501,10 +503,11 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 230. Benchmark refresh splits paraphrases schema
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: general
 - **Topic**: dataset-enhancement
 - **Dependencies**: Task 229
+- **Research**: [230_benchmark_refresh_splits_paraphrases_schema/reports/01_benchmark-refresh.md]
 
 **Description**: After contamination resolution (task 229), regenerate all benchmark-derived artifacts. (1) Regenerate bmlogic-bench-splits.json for current record count — splits reference 727 records but benchmark now has 777. Run generate_splits.py and validate all IDs assigned to exactly one slice. (2) Restore NL paraphrase fields: benchmark was regenerated after paraphrases were added, losing nl_paraphrase and nl_paraphrase_method. Run generate_paraphrases.py and validate with validate_paraphrases.py. (3) Schema alignment: add formula_sexpr, formula_tokens, and pattern_features to benchmark records so evaluation uses the same representations as training. Extend finalize_benchmark.py or create enrichment script. (4) Decide whether to remove or keep the redundant max_modal_depth/max_temporal_depth fields in training data (they duplicate metrics.modalDepth/temporalDepth and pattern_key.modalDepth/temporalDepth — three copies of the same data). (5) Fill pattern_key for the 15 benchmark records where it is currently null.
 
@@ -545,11 +548,13 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 194. Migrate nonempty to derivable
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: formula-refactor
 - **Dependencies**: None
-- **Research**: [194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md]
+- **Research**:
+  - [194_migrate_nonempty_to_derivable/reports/01_derivable-migration-seed.md]
+  - [194_migrate_nonempty_to_derivable/reports/02_nonempty-derivable-migration.md]
 
 ---
 
@@ -572,38 +577,46 @@ GOAL STATE: Either (a) close KampPrior.lean:391 sorry-free using the constructed
 ---
 
 ### 191. Propositional decision procedure
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
-- **Research**: [191_propositional_decision_procedure/reports/01_decision-procedure-seed.md]
+- **Research**:
+  - [191_propositional_decision_procedure/reports/01_decision-procedure-seed.md]
+  - [191_propositional_decision_procedure/reports/02_decision-procedure-research.md]
 
 ---
 
 ### 189. Deduction theorem tactic
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
-- **Research**: [189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md]
+- **Research**:
+  - [189_deduction_theorem_tactic/reports/01_deduction-theorem-seed.md]
+  - [189_deduction_theorem_tactic/reports/02_deduction-tactic-research.md]
 
 ---
 
 ### 188. Weakening aware search
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
-- **Research**: [188_weakening_aware_search/reports/01_weakening-aware-seed.md]
+- **Research**:
+  - [188_weakening_aware_search/reports/01_weakening-aware-seed.md]
+  - [188_weakening_aware_search/reports/02_weakening-aware-search.md]
 
 ---
 
 ### 187. Backward chaining lemma db
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Task Type**: lean4
 - **Topic**: automation
 - **Dependencies**: None
-- **Research**: [187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md]
+- **Research**:
+  - [187_backward_chaining_lemma_db/reports/01_lemma-database-seed.md]
+  - [187_backward_chaining_lemma_db/reports/02_backward-chaining-research.md]
 
 ---
 
