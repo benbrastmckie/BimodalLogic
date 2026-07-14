@@ -756,19 +756,48 @@ pin bracket). Axioms exactly `[propext, Classical.choice, Quot.sound]`; EANegati
 
 ---
 
-### Phase 15: (E5 + optional E6) future-exterior mirror `CExtFut(_correct)` [IN PROGRESS]
+### Phase 15: (E5 + optional E6) future-exterior mirror `CExtFut(_correct)` [COMPLETED]
 
 - **Goal:** The t<w channel: Until-navigated mirror of E2-E4, in new module
   `Kamp/NfMultiAnchorBridge/ExteriorNavFutK1.lean`; plus the optional shared `extDuality` (E6).
 - **Rabinovich anchor:** **Lemma 7.8(2)** TL(Until,K⁻) duality (chunk_0022).
 - **Tasks:**
-  - [ ] (E5) Mirror `navPackRight`/`navDistribRight` (Until-navigated, `endpointRight` side) +
+  - [x] (E5) Mirror `navPackRight`/`navDistribRight` (Until-navigated, `endpointRight` side) +
     `CExtFut (qnf)` + correctness iff (mirror statement) + 3-bot falsity lemmas.
-  - [ ] (E6, OPTIONAL / probe-gated) `extDuality`: a genuine order-reversal lemma so E5 consumes E1-E4
+    *(Landed in new ExteriorNavFutK1.lean (1484 lines, imports only ExteriorNavPastK1). The mirror
+    also required the FUTURE-ambient zone kit (E1 mirror) which Phase 13 did NOT deliver: 7 fresh
+    zone constants `extFZBelowX/AtX/IntXT/AtT/IntTW/AtW/AboveW` (the specs encode v's relation to
+    the witness w, so the (x,t)-interior/at-pin fibers differ from the past channel's), readings,
+    routing `extFZone_consistent_lt`, `extFZone_inconsistent_false`, partition `extZoneFiberFut_k1`.
+    Then: `navRAtWPack` (atoms-at-w + v=w chars + w<v Until-lits `navDFutLit`), `(t,w)` exclusion
+    segment `navRSegGuard`, nested-Until chain `navRChain` (witnesses threaded ASCENDING by
+    minimum extraction `navR_listMin`), `navPackRight(_correct)` fold iff at pin t;
+    `navRAtXPack` (endpointLeft: atoms-at-x + v=x chars + v<x Since-lits `navLPastLit`),
+    `navRAtTPack` (endpointRight conjunct: atoms-at-t + v=t chars), `navRXTBracket` +
+    `navRXTBracket_arrangements_iff` over `extFZIntXT`, `navROrderRow` + `navR_atomLayer_iff`,
+    `navDistribRight`; gate `navRGate`, dite carrier `CExtFut` (endpointLeft = ⟨navRAtXPack⟩,
+    endpointRight = ⟨(navPackRight).formula.and navRAtTPack⟩, bracket per L ∈
+    (navRXTBitTrueList σ).permutations; empty disjunction off-gate), `CExtFut_correct` = pure
+    plumbing `rw [navDistribRight]` + dite split; 3-bot trio `navR_inconsistent_eval_false` /
+    `CExtFut_offGate_false` / `CExtFut_inconsistent_false`. Private past-module helpers re-derived
+    locally per the established idiom (`navR_*`, `extF_zs_ext`, lit readings).)*
+  - [x] (E6, OPTIONAL / probe-gated) `extDuality`: a genuine order-reversal lemma so E5 consumes E1-E4
     by duality rather than duplicating. **Land ONLY if a clean `M`-reversal is available** (H4 flag: not
     confirmed to exist; chunk_0022 says only "proved similarly"). If no clean reversal: E5 duplicates the
     E1-E4 shapes (the fallback) — record the decision.
-  - [ ] Scoped build green; axiom checks; commit.
+    *(DECISION: duplication fallback. Probe found NO M-reversal/OrderDual machinery anywhere in
+    WeakCanonical; a genuine `extDuality` would need an OrderDual OrderedMonadicStructure instance
+    + Since/Until formula-duality truth transport + σ order-atom/position reindexing — strictly
+    more machinery than the mirror itself. Codebase precedent (ExteriorNegationPast.lean) mirrors
+    by explicit duplication. Decision recorded in the module docstring and the handoff.)*
+  - [x] Scoped build green; axiom checks; commit.
+    *(Scoped module 1036 jobs + full `lake build` 1750 jobs green; `lean_verify` on
+    `CExtFut_correct`, `navPackRight_correct`, `navDistribRight`, `navR_inconsistent_eval_false`,
+    `CExtFut_offGate_false`, `CExtFut_inconsistent_false` = exactly
+    `[propext, Classical.choice, Quot.sound]`, no warnings; sorry census over
+    NfMultiAnchorBridge/: 0; no new vacuous defs or axioms; aggregator import + NOTE added after
+    ExteriorNavPastK1; no frozen-file / KampPrior / task-358 edits; `nf_char3_deeper_split` not
+    referenced (docstring guard note only); incremental commits 15.1-15.4.)*
 - **DoD shape:** `CExtFut_correct` green (t<w channel carrier iff); E6 landed or explicitly deferred to
   duplication with a recorded decision.
 - **Timing:** ~2 hours (~350-450 lines). Seam: 15a = package (navPack/navDistribRight), 15b = carrier.

@@ -83,6 +83,14 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberKit
 -- acyclic leaf importing only `ExteriorFiberKitK1` (above) and the upstream
 -- `Kamp.Translation`; nothing in that closure imports this aggregator.
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavPastK1
+-- NOTE (task 350 Phase 15): thread the E5 future-exterior mirror (the t<w channel: the
+-- future zone kit `extZoneFiberFut_k1`, the Until-navigated w-package `navPackRight` +
+-- fold iff, the distribution `navDistribRight`, and the carrier `CExtFut` +
+-- `CExtFut_correct` + 3-bot falsity trio; E6 `extDuality` NOT landed — duplication
+-- fallback recorded in the module docstring) into the root build for the Phase-16a
+-- dispatcher's t<w channel. Cycle-free: `ExteriorNavFutK1` is an acyclic leaf importing
+-- only `ExteriorNavPastK1` (above); nothing in that closure imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNavFutK1
 -- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
 -- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
 -- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation
