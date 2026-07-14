@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
 /-! # Depth-graded fiber-consistency guard — Phase-1 probe (task 363, GO/NO-GO gate)
 
@@ -47,7 +47,14 @@ Certificates below, all sorry-free:
 5. `kvE_probe363_interior_population_clean` + `_nonempty` — 358-dischargeability feasibility:
    every `m1qnf`-marked slice satisfies the antecedent, and the population is non-trivial;
 6. `kvE_probe363_qnfG1_antecedent_fails` — the restated interior antecedent is violated by
-   the fake ambient `qnfG1` (it marks the inconsistent `m1sigma`).
+   the fake ambient `qnfG1` (it marks the inconsistent `m1sigma`);
+7. `kvE_probe363_sigma_inadmissible` (Phase 5 DoD cert 1) — against the RESTATED production
+   `kvE_futAdmissible`, the fake slice is INADMISSIBLE: `kvE_futAdmissible m1sigma = false`.
+   The old `m1_sigma_adm` hypothesis-side assembly of `kvE_probeM1_sliceId_NOGO` is
+   unprovable — the exterior countermodel no longer applies;
+8. `kvE_probe363_tau_admissible` (Phase 5 DoD cert 2) — the honest endpoint characteristic
+   REMAINS admissible under the strengthened predicate (`kvE_futRealizer_admissible` fires
+   on the cast), so the honest population is preserved.
 
 General honest-preservation (`kvE_fiberConsistent_of_realized`: ANY realized σ passes, over
 ANY model/env — the exact obligation `kvE_futRealizer_admissible`'s new conjunct needs) is
@@ -302,5 +309,41 @@ theorem kvE_probe363_qnfG1_antecedent_fails :
   have := hcons m1sigma hmark
   rw [kvE_probe363_fake_slice_inconsistent] at this
   exact absurd this (by decide)
+
+/-! ## Certificates 7-8 — the Phase-5 re-probe against the RESTATED production admissibility -/
+
+set_option maxRecDepth 8000 in
+/-- **GO certificate 7 (DoD 1 — exterior fake excluded)**: against the task-363 restated
+    `kvE_futAdmissible`, the countermodel slice `σ = τ ⊕ s*` is INADMISSIBLE — conjunct 2's
+    fiber-consistency guard fires at the marked `s*`. The old `m1_sigma_adm` hypothesis-side
+    assembly of `kvE_probeM1_sliceId_NOGO` (`ExteriorPinnedProbeM1K.lean`, pre-363 revision,
+    preserved in git history) is therefore unprovable: the doppelgänger countermodel no
+    longer applies to the exterior (G2, rows 8-11) leg. -/
+theorem kvE_probe363_sigma_inadmissible : kvE_futAdmissible m1sigma = false := by
+  cases hc : kvE_futAdmissible m1sigma with
+  | false => rfl
+  | true =>
+    exfalso
+    rw [kvE_futAdmissible, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hc
+    have h2 := hc.1.1.2
+    rw [List.all_eq_true] at h2
+    have h := h2 m1sstar (kvE_nf_mem_univ_toList _)
+    rw [Bool.or_eq_true] at h
+    rcases h with h | h
+    · rw [Bool.and_eq_true] at h
+      have hcons := h.2
+      rw [kvE_probe363_fake_elem_inconsistent] at hcons
+      exact absurd hcons (by decide)
+    · rw [m1_sigma_marks_sstar] at h
+      exact absurd h (by decide)
+
+/-- **GO certificate 8 (DoD 2 — honest population preserved)**: the honest endpoint
+    characteristic `τ` REMAINS admissible under the strengthened predicate — the re-proved
+    `kvE_futRealizer_admissible` fires on the cast's pinned realizer. Together with
+    certificate 7: honest σ still admissible, fake σ not. -/
+theorem kvE_probe363_tau_admissible : kvE_futAdmissible m1tau = true :=
+  kvE_futRealizer_admissible M1M m1tau 25 15 2 18
+    (show (2 : ℤ) < 15 by omega) (show (15 : ℤ) < 18 by omega) (show (18 : ℤ) < 25 by omega)
+    (nf_characteristic_satisfies M1M 2 4 m1env4)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

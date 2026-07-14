@@ -13,7 +13,35 @@ established `P3M` probe model, ExteriorPinnedProbeK.lean:81 — `private` there,
 the `kvE_minPick` precedent). Anchor instance `[x1, w, x, t] = [25, 15, 2, 18]`
 (`x < w < t < x1`, walk gap `(18, 25)` containing the `P`-point `20`).
 
-## VERDICT: **NO-GO** (machine countermodel at the semantic destructor interface)
+## VERDICT HISTORY
+
+**Original verdict (task 358 Phase 6): NO-GO** — machine countermodel at the semantic
+destructor interface, assembled as `kvE_probeM1_sliceId_NOGO` /
+`kvE_probeM1_interiorHreal_NOGO` / `kvE_probeM1_interiorGuard_identical`.
+
+**Task-363 restatement (current): the countermodel NO LONGER APPLIES to either leg.**
+The depth-graded fiber-consistency guard (`kvE_fiberElemConsistent` inside
+`kvE_futAdmissible`/`kvE_pastAdmissible` conjunct 2; `kvE_fiberConsistent` as the interior
+rows-5-6 antecedent `hfiberCons`) reads exactly the depth-1 inner `.2` marking this
+countermodel exploits:
+
+- **Exterior (G2)**: `kvE_futAdmissible m1sigma = false` now
+  (`kvE_probe363_sigma_inadmissible`, `ExteriorFiberConsistencyProbeK.lean`), while the
+  honest `τ` remains admissible (`kvE_probe363_tau_admissible`). The original
+  `m1_sigma_adm` hypothesis-side assembly is unprovable; the NO-GO theorem
+  `kvE_probeM1_sliceId_NOGO` was RETIRED with it (preserved in git history, pre-363
+  revision — the permanent regression test for any future interface change). The surviving
+  semantic core is `kvE_probeM1_sliceId_superseded` below.
+- **Interior (G1)**: the restated rows-5-6 obligations carry the `hfiberCons` antecedent,
+  which the fake ambient `qnfG1` VIOLATES (`kvE_probe363_qnfG1_antecedent_fails`) — the
+  facts recorded by `kvE_probeM1_interiorHreal_NOGO` below remain TRUE but no longer
+  refute the (restated) live obligation: `qnfG1` is outside its population.
+- **Expected residual**: `kvE_probeM1_interiorGuard_identical`
+  (`igFoldBit qnfG1 = igFoldBit m1qnf`) REMAINS TRUE — `igFoldBit` is frozen and unchanged.
+  This is NOT a regression: the separation happens at the NEW consistency antecedent one
+  layer out, not at the frozen gate.
+
+## The original countermodel anatomy (still-true semantic facts retained below)
 
 The countermodel core is the FAKE gap fiber element
 `s* := nf_characteristic M1M 1 5 [22, 25, 15, 2, 21]` — the honest depth-1 5-type of the walk
@@ -448,108 +476,15 @@ private theorem m1_no_marked_mate :
   obtain ⟨zz, hzz⟩ := (hx.2 m1sstar).mpr hbit
   exact m1_sstar_not_pinned zz x1'' hzz
 
-/-! ## Hypothesis side (i): `σ` is admissible
+/-! ## Hypothesis side (i) — RETIRED by task 363
 
-`kvE_futAdmissible` is model-independent decidable syntax; its four conjuncts read only the
-atom layer and the fiber-existential navigation channels. `τ` is admissible because it is
-realized (`kvE_futRealizer_admissible`); the `s*` augmentation survives every conjunct:
-conjunct 1 reads `σ.1 = τ.1`; conjunct 2 needs only the ATOM-fiber fact
-`m1_sstar_dropFresh` (the doppelgänger evasion); conjuncts 3-4 see `s*` only through its
-zone spec, which is the (possible, non-self) GAP zone. -/
-
-/-- The gap zone is order-possible (the 7th entry of `kvE_futPossibleZones`). -/
-private theorem m1_gap_possible :
-    (kvE_futPossibleZones.any fun z => decide (kvE_futGapZone = z)) = true := by
-  rw [List.any_eq_true]
-  refine ⟨kvE_futGapZone, ?_, decide_eq_true rfl⟩
-  exact .tail _ (.tail _ (.tail _ (.tail _ (.tail _ (.tail _ (.head _))))))
-
-/-- The `s*` augmentation is invisible to `kvE_subBit` at every NON-gap zone spec. -/
-private theorem m1_subBit_eq_of_ne_gap (zs4 : ZoneSpec 4) (χ : NormalForm m1sig 1 1)
-    (hz : zs4 ≠ kvE_futGapZone) :
-    kvE_subBit m1sigma zs4 χ = kvE_subBit m1tau zs4 χ := by
-  unfold kvE_subBit
-  congr 1
-  funext s
-  by_cases hss : s = m1sstar
-  · subst hss
-    have hzf : decide (nfk_zoneSpec m1sstar = zs4) = false :=
-      decide_eq_false (fun he => hz (he.symm.trans m1_sstar_zone))
-    rw [hzf]
-    simp only [Bool.and_false, Bool.false_and]
-  · have hb : m1sigma.2 s = m1tau.2 s := by
-      show (if s = m1sstar then true else m1tau.2 s) = m1tau.2 s
-      rw [if_neg hss]
-    rw [hb]
-    rfl
-
-/-- **`σ := τ ⊕ s*` is order-admissible.** -/
-private theorem m1_sigma_adm : kvE_futAdmissible m1sigma = true := by
-  have h215 : (2 : ℤ) < 15 := by omega
-  have h1518 : (15 : ℤ) < 18 := by omega
-  have h1825 : (18 : ℤ) < 25 := by omega
-  have htau : kvE_futAdmissible m1tau = true :=
-    kvE_futRealizer_admissible M1M m1tau 25 15 2 18 h215 h1518 h1825
-      (nf_characteristic_satisfies M1M 2 4 m1env4)
-  rw [kvE_futAdmissible, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at htau ⊢
-  obtain ⟨⟨⟨ht1, ht2⟩, ht3⟩, ht4⟩ := htau
-  refine ⟨⟨⟨ht1, ?_⟩, ?_⟩, ?_⟩
-  · -- conjunct 2: every marked fiber element sits on σ's atom fiber
-    rw [List.all_eq_true] at ht2 ⊢
-    intro s hs
-    show (decide (nfk_dropFresh s = m1sigma.1) || !(m1sigma.2 s)) = true
-    rw [Bool.or_eq_true]
-    by_cases hss : s = m1sstar
-    · subst hss
-      exact Or.inl (decide_eq_true m1_sstar_dropFresh)
-    · have h2s : (decide (nfk_dropFresh s = m1tau.1) || !(m1tau.2 s)) = true := ht2 s hs
-      rw [Bool.or_eq_true] at h2s
-      rcases h2s with hl | hr
-      · exact Or.inl hl
-      · right
-        have hb : m1sigma.2 s = m1tau.2 s := by
-          show (if s = m1sstar then true else m1tau.2 s) = m1tau.2 s
-          rw [if_neg hss]
-        rw [hb]
-        exact hr
-  · -- conjunct 3: quant bits false on every order-impossible zone spec
-    rw [List.all_eq_true] at ht3 ⊢
-    intro zs4 hzs
-    show ((kvE_futPossibleZones.any fun z => decide (zs4 = z)) ||
-        ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ =>
-          !(kvE_subBit m1sigma zs4 χ))) = true
-    rw [Bool.or_eq_true]
-    by_cases hz4 : zs4 = kvE_futGapZone
-    · subst hz4
-      exact Or.inl m1_gap_possible
-    · have h3z : ((kvE_futPossibleZones.any fun z => decide (zs4 = z)) ||
-          ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ =>
-            !(kvE_subBit m1tau zs4 χ))) = true := ht3 zs4 hzs
-      rw [Bool.or_eq_true] at h3z
-      rcases h3z with hl | hr
-      · exact Or.inl hl
-      · right
-        rw [List.all_eq_true] at hr ⊢
-        intro χ hχ
-        show (!kvE_subBit m1sigma zs4 χ) = true
-        rw [m1_subBit_eq_of_ne_gap zs4 χ hz4]
-        exact hr χ hχ
-  · -- conjunct 4: self-zone fresh-profile uniqueness (self bucket untouched by s*)
-    rw [List.all_eq_true] at ht4 ⊢
-    intro χ hχ
-    show ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ' =>
-        !(kvE_subBit m1sigma kvE_futSelfZone χ) || !(kvE_subBit m1sigma kvE_futSelfZone χ') ||
-          decide (χ = χ')) = true
-    have h4χ : ((Finset.univ.toList (α := NormalForm m1sig 1 1)).all fun χ' =>
-        !(kvE_subBit m1tau kvE_futSelfZone χ) || !(kvE_subBit m1tau kvE_futSelfZone χ') ||
-          decide (χ = χ')) = true := ht4 χ hχ
-    rw [List.all_eq_true] at h4χ ⊢
-    intro χ' hχ'
-    show (!(kvE_subBit m1sigma kvE_futSelfZone χ) || !(kvE_subBit m1sigma kvE_futSelfZone χ') ||
-        decide (χ = χ')) = true
-    rw [m1_subBit_eq_of_ne_gap kvE_futSelfZone χ (Ne.symm m1_gap_ne_self),
-        m1_subBit_eq_of_ne_gap kvE_futSelfZone χ' (Ne.symm m1_gap_ne_self)]
-    exact h4χ χ' hχ'
+The original probe proved `m1_sigma_adm : kvE_futAdmissible m1sigma = true` here (with
+helpers `m1_gap_possible`, `m1_subBit_eq_of_ne_gap`): the `s*` augmentation survived every
+pre-363 conjunct because they read only atom/zone/arity-1 data. Under the task-363 restated
+admissibility this statement is FALSE — conjunct 2's fiber-consistency guard rejects the
+marked `s*` — machine-certified as `kvE_probe363_sigma_inadmissible`
+(`ExteriorFiberConsistencyProbeK.lean`). The retired proofs are preserved in git history
+(pre-363 revision of this file). -/
 
 /-! ## Hypothesis side (ii): the honest ambient and the semantic destructor facts
 
@@ -660,24 +595,19 @@ private theorem m1_hoccS (s : NormalForm m1sig 1 5)
       (hzz.1 (.order (4 : Fin 5) (0 : Fin 5) (by decide))).mpr hz2
     exact ⟨zz, h18zz, hzz25, m1env4, hzz⟩
 
-/-! ## The assembled NO-GO verdict -/
+/-! ## The surviving semantic core (the retired NO-GO's non-admissibility components) -/
 
-/-- **C0 probe verdict — NO-GO** (task 358 Phase 6; report 03 §6-C3 confirmed at binder
-    strength): at m = 1 the slice `σ := τ ⊕ s*` satisfies the FULL hypothesis side of the
-    slice-identification/`hsliceFut` interface over the anchors `[25, 15, 2, 18]` —
-    order-admissibility, the atom-fiber guard, the honest level-up ambient, and the complete
-    semantic destructor fact set (`hend` self + ray both directions, `hgap`, `hocc`) — yet
-    the conclusion FAILS: no admissible, slice-equal, qnf-marked mate exists.
-
-    Contrast with m = 0: the same statement shape is TRUE at m = 0
-    (`kvE_futSliceId_of_end_zero` / `kvE_hsliceFut_supply_zero`, both landed and untouched);
-    the m = 1 failure is carried entirely by the depth-1 fiber marking layer, which the
-    free-env rendering cannot pin (deviation D7: no depth-k cons-factorization for k ≥ 1).
-    Consequence for plan v3: Phase 7 (G2 general-m lift of rows 8-11) CANNOT proceed on the
-    current interface — the escalation is a slice-kernel/interface restatement spawn per the
-    plan's NO-GO branch, never a sorry. -/
-theorem kvE_probeM1_sliceId_NOGO :
-    kvE_futAdmissible m1sigma = true ∧
+/-- **Superseded slice-identification countermodel core** (task 363): every SEMANTIC
+    component of the retired `kvE_probeM1_sliceId_NOGO` (git history) remains true — the
+    atom-fiber guard, the honest level-up ambient, the full P-eliminated destructor fact set
+    (`hend` self + ray both directions, `hgap`, `hocc`), and the conclusion failure (no
+    admissible slice-equal qnf-marked mate). What DISSOLVED is the hypothesis side's
+    admissibility conjunct: `kvE_futAdmissible m1sigma = false` under the restated interface
+    (`kvE_probe363_sigma_inadmissible`), so the slice-identification obligation
+    (`hsliceFut`, rows 8-11) is no longer required to cover `σ = τ ⊕ s*` and the
+    countermodel no longer applies. Retained sorry-free as the permanent record that the
+    task-363 guard — and ONLY the guard — separates this cast. -/
+theorem kvE_probeM1_sliceId_superseded :
     nfk_dropFresh m1sigma = m1qnf.1 ∧
     nf_eval_nf M1M 3 3 m1env3 m1qnf ∧
     (∃ s ∈ kvE_fiberZoneList m1sigma kvE_futSelfZone,
@@ -692,7 +622,7 @@ theorem kvE_probeM1_sliceId_NOGO :
       ∃ env : Fin 4 → M1M.carrier, nf_eval_nf M1M 1 5 (Fin.cons r env) s) ∧
     ¬ ∃ σ' : NormalForm m1sig 2 4, kvE_futAdmissible σ' = true ∧
         kvE_futSliceEq σ' m1sigma = true ∧ m1qnf.2 σ' = true :=
-  ⟨m1_sigma_adm, m1_sigma_dropFresh, m1_ambient, m1_hendSelfS,
+  ⟨m1_sigma_dropFresh, m1_ambient, m1_hendSelfS,
    m1_hendRayCover, m1_hendRayOcc, m1_hgapS, m1_hoccS, m1_no_marked_mate⟩
 
 /-! ## Task 358 Phase 8 probe — G1 shared-root-cause check (interior `hreal`, rows 5-6)
@@ -720,15 +650,23 @@ Hence `qnfG1 := m1qnf ⊕ m1sigma` has `igFoldBit qnfG1 = igFoldBit m1qnf` — g
 the honest ambient — yet `qnfG1.2 m1sigma = true` and `m1sigma` has NO pinned realization
 over `[·, 15, 2, 18]` (it marks `s*`, which `m1_sstar_not_pinned` kills at every anchor).
 
-## VERDICT: **NO-GO — G1 SHARES the Phase-6 root cause**
+## VERDICT HISTORY: **NO-GO — G1 SHARES the Phase-6 root cause** (original);
+**DISSOLVED by task 363** (current)
 
-Rows 5-6 as shaped cannot be supplied at fiber depth ≥ 1: any `kampPrior_hreal_supply`
-covering the qnf population would have to hold at `qnfG1`, whose hypothesis side is
-indistinguishable from the honest `m1qnf` (satisfiable whenever the honest guard is — and the
-honest guard MUST be satisfiable for the gate route to be non-vacuous), while the conclusion
-fails at `σ = m1sigma`. The interface-restatement spawn recommended by Phase 6 (anchored/pinned
-item rendering or a depth-graded fiber guard) must therefore cover the interior rows 5-6 as
-well, not only rows 8-11. -/
+Original verdict: rows 5-6 as PRE-363 shaped could not be supplied at fiber depth ≥ 1 — any
+`kampPrior_hreal_supply` covering the qnf population would have to hold at `qnfG1`, whose
+hypothesis side was indistinguishable from the honest `m1qnf`, while the conclusion fails at
+`σ = m1sigma`. That verdict drove the task-363 interface restatement.
+
+Task-363 status: the RESTATED rows 5-6 (`EndIntervalCorrectPrior` m+2 arm /
+`kampPrior_site_rungK_gate_match`) carry the population antecedent
+`hfiberCons : ∀ σ, qnf.2 σ = true → kvE_fiberConsistent σ = true`, which `qnfG1` VIOLATES
+(`kvE_probe363_qnfG1_antecedent_fails`, `ExteriorFiberConsistencyProbeK.lean`): the fake
+ambient is OUTSIDE the restated obligation population. The facts certified below remain
+TRUE (they are model facts about the cast, not about the interface) and are retained as the
+permanent record; they no longer refute any live production obligation. The guard identity
+(`kvE_probeM1_interiorGuard_identical`) remains true — the EXPECTED residual, since
+`igFoldBit` is frozen; the separation happens at the new antecedent one layer out. -/
 
 /-- The honest inner 5-tuple over the PINNED tail: `[22, 25, 15, 2, 18]` (walk point `22`
     over the honest 4-anchors — contrast `m1tupF`, which carries the doppelgänger tail). -/
@@ -861,10 +799,11 @@ private theorem m1_qnf_sigma_false : m1qnf.2 m1sigma = false := by
     obtain ⟨x1, hx1⟩ := (m1_ambient.2 m1sigma).mpr hb
     exact absurd hx1 (m1_sigma_not_pinned4 x1)
 
-/-! ## The assembled G1 NO-GO verdict -/
+/-! ## The G1 verdict record (SUPERSEDED by task 363 — see Verdict History above) -/
 
-/-- **G1 probe verdict — NO-GO, shared root cause** (task 358 Phase 8): at ambient depth 3
-    (`k = 1` in the rungK binders) there is a qnf — `qnfG1 = m1qnf ⊕ (τ ⊕ s*)` — that
+/-- **G1 probe record — certificate against the SUPERSEDED (pre-363) rows-5-6 shape**
+    (originally task 358 Phase 8's NO-GO): at ambient depth 3 there is a qnf —
+    `qnfG1 = m1qnf ⊕ (τ ⊕ s*)` — that
 
     1. has the SAME atom row as the honest ambient characteristic (`rfl`),
     2. has IDENTICAL `igFoldBit` fold bits (so `igPtW`, `igGate`, `igSL`/`igSR`, and every
@@ -874,13 +813,13 @@ private theorem m1_qnf_sigma_false : m1qnf.2 m1sigma = false := by
     3. marks the fiber `σ = τ ⊕ s*` which the honest ambient does NOT mark, and
     4. `σ` has NO pinned realization `nf_eval_nf M1M 2 4 [x1, 15, 2, 18] σ` at ANY `x1`.
 
-    Consequence: the row-5 `hreal` supply shape (KampPrior.lean:835-840) is FALSE at `qnfG1`
-    whenever its `igPtW` guard is satisfiable — and the guard is satisfiable iff the honest
-    ambient's guard is (they are equal), which any non-vacuous use of the gate route
-    requires. The depth-1 fiber marking layer defeats the interior rows 5-6 exactly as it
-    defeats the exterior rows 8-11 (`kvE_probeM1_sliceId_NOGO`): free-env/projected rendering
-    cannot pin it (deviation D7). The slice-kernel/interface restatement spawn must cover G1
-    too. -/
+    Against the PRE-363 rows-5-6 shape this refuted `kampPrior_hreal_supply` at fiber
+    depth ≥ 1 (the original NO-GO). Under the task-363 RESTATED obligations these five facts
+    remain true — they are model facts about the cast — but refute nothing live: the
+    restated hypothesis side carries the `hfiberCons` antecedent, which `qnfG1` fails
+    (`kvE_probe363_qnfG1_antecedent_fails` certifies `kvE_fiberConsistent m1sigma = false`
+    while fact 3 here shows `qnfG1` marks `m1sigma`), so `qnfG1` is OUTSIDE the restated
+    obligation population. Retained sorry-free as the permanent regression record. -/
 theorem kvE_probeM1_interiorHreal_NOGO :
     m1qnfG1.1 = m1qnf.1 ∧
     igFoldBit m1qnfG1 = igFoldBit m1qnf ∧
@@ -891,11 +830,15 @@ theorem kvE_probeM1_interiorHreal_NOGO :
    by show (if m1sigma = m1sigma then true else m1qnf.2 m1sigma) = true; rw [if_pos rfl],
    m1_qnf_sigma_false, m1_sigma_not_pinned4⟩
 
-/-- **Guard identity**: for EVERY rendering pair (`charBase`, `charK`) — in particular for
-    every provider-generated `charF (k+1) = P.existF 0` the recursion site could ever
-    instantiate — the rows-5-6 `igPtW` guard of the fake ambient is the SAME temporal
-    predicate as the honest ambient's. No rendering can separate them; the interface itself
-    is information-losing (the F1 arity-1 projection channel). -/
+/-- **Guard identity — the EXPECTED task-363 residual**: for EVERY rendering pair
+    (`charBase`, `charK`) — in particular for every provider-generated
+    `charF (k+1) = P.existF 0` the recursion site could ever instantiate — the rows-5-6
+    `igPtW` guard of the fake ambient is the SAME temporal predicate as the honest
+    ambient's. This REMAINS TRUE after the task-363 restatement, by design: `igFoldBit` is
+    frozen (byte-pinned to the carrier via the `bracketEndChar_kv_succ_eq` rfl bridge) and
+    was not touched. It is explicitly NOT a regression — the fake/honest separation happens
+    at the NEW `hfiberCons` consistency antecedent one layer outside the frozen gate
+    (`kvE_probe363_qnfG1_antecedent_fails`), not at `igFoldBit`. -/
 theorem kvE_probeM1_interiorGuard_identical
     (charBase : NormalForm m1sig 0 1 → Formula)
     (charK : NormalForm m1sig 2 1 → Formula) :

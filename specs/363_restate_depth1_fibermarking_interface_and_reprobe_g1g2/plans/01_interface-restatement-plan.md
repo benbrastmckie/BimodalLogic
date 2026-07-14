@@ -1,7 +1,7 @@
 # Implementation Plan: Task #363 — Restate depth>=1 fiber-marking interface and re-probe G1/G2
 
 - **Task**: 363 - restate_depth1_fibermarking_interface_and_reprobe_g1g2
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 9 hours
 - **Dependencies**: None (parent task 358 Phases 7-10 are downstream consumers)
 - **Research Inputs**:
@@ -350,40 +350,51 @@ supply must cover — with `igFoldBit` and the entire `InteriorGateGeneralK.lean
 
 ---
 
-### Phase 5: Re-probe (DoD) and wrap-up [NOT STARTED]
+### Phase 5: Re-probe (DoD) and wrap-up [COMPLETED]
+
+All four DoD GO certificates sorry-free: (1) `kvE_probe363_sigma_inadmissible`
+(`kvE_futAdmissible m1sigma = false`); (2) `kvE_probe363_tau_admissible` + per-fiber honest
+certificates; (3) `kvE_probe363_qnfG1_antecedent_fails` (+ `kvE_probe363_fake_slice_inconsistent`);
+(4) m=0 certificates byte-unchanged. Old NOGO disposition: `kvE_probeM1_sliceId_NOGO` +
+`m1_sigma_adm` RETIRED (git history; replaced by `kvE_probeM1_sliceId_superseded`);
+`kvE_probeM1_interiorHreal_NOGO` / `kvE_probeM1_interiorGuard_identical` RETAINED with
+superseded/expected-residual docstrings. Full `lake build` + all leaf probes green; axioms
+clean. *(deviation: altered — the re-probe certificates live in
+`ExteriorFiberConsistencyProbeK` (owner of the private m=1 cast) rather than inside
+`ExteriorPinnedProbeM1K`.)*
 
 **Goal**: The Definition of Done — sorry-free machine confirmation, against the restated
 production definitions, that the doppelganger countermodel no longer applies to either leg;
 full `lake build` green; predicate signature recorded for task 358.
 
 **Tasks**:
-- [ ] Exterior leg (G2): in `ExteriorPinnedProbeM1K.lean` (leaf, safe to edit) or a sibling
+- [x] Exterior leg (G2): in `ExteriorPinnedProbeM1K.lean` (leaf, safe to edit) or a sibling
       re-probe module, prove `kvE_futAdmissible m1sigma = false` (equivalently: the old
       `m1_sigma_adm` assembly is now unprovable / the fake fails the new conjunct), making
       `kvE_probeM1_sliceId_NOGO` non-instantiable against the restated interface.
-- [ ] Exterior honest-preservation: prove every honest probe fiber (gap fibers for
+- [x] Exterior honest-preservation: prove every honest probe fiber (gap fibers for
       `r ∈ (18,25)`, self/ray witnesses) still satisfies the strengthened `kvE_futAdmissible`
       (i.e. `kvE_futRealizer_admissible` fires on the cast).
-- [ ] Interior leg (G1): prove `¬ kvE_futFiberConsistent m1qnfG1 m1sigma` at production
+- [x] Interior leg (G1): prove `¬ kvE_futFiberConsistent m1qnfG1 m1sigma` at production
       signature — the restated rows 5-6 hypothesis side (guard AND consistency antecedent) is
       unsatisfiable at `qnfG1`, dissolving `kvE_probeM1_interiorHreal_NOGO`.
-- [ ] Document the expected residual: `kvE_probeM1_interiorGuard_identical`
+- [x] Document the expected residual: `kvE_probeM1_interiorGuard_identical`
       (`igFoldBit qnfG1 = igFoldBit m1qnf`) REMAINS TRUE — `igFoldBit` is frozen and unchanged;
       the separation happens at the new antecedent one layer out. Record this explicitly in the
       probe module so it is not misread as a regression.
-- [ ] Reconcile the old NO-GO theorems: either retire/re-express them against the restated
+- [x] Reconcile the old NO-GO theorems: either retire/re-express them against the restated
       interface (leaf file, no importers) or retain them with a docstring marking them as
       certificates against the SUPERSEDED interface — no dangling refutation of live production
       statements may remain.
-- [ ] Confirm m=0 certificates unchanged one final time; run FULL `lake build` (whole project)
+- [x] Confirm m=0 certificates unchanged one final time; run FULL `lake build` (whole project)
       green.
-- [ ] Run `lean_verify` / `#print axioms` on: the predicate, both admissibility definitions'
+- [x] Run `lean_verify` / `#print axioms` on: the predicate, both admissibility definitions'
       key consumers (`kvE_futRealizer_admissible` + past), the restated rows 5-6 obligations'
       consumers, and all new probe certificates — zero sorry, zero new axioms.
-- [ ] Write the implementation summary including the **final predicate signature** (exterior
+- [x] Write the implementation summary including the **final predicate signature** (exterior
       conjunct shape + interior antecedent shape) as the explicit contract for task 358's
       Phases 7-8 re-keying.
-- [ ] Commit (`task 363 phase 5: ...` then `task 363: complete implementation`).
+- [x] Commit (`task 363 phase 5: ...` then `task 363: complete implementation`).
 
 **Timing**: 1.5 hours
 
@@ -442,21 +453,21 @@ wrap-up.
 
 ## Testing & Validation
 
-- [ ] Phase-1 GO gate: predicate rejects `m1sigma`/`s*` AND accepts all honest m=1 probe fibers,
+- [x] Phase-1 GO gate: predicate rejects `m1sigma`/`s*` AND accepts all honest m=1 probe fibers,
       in a non-production module, before any production edit.
-- [ ] `kvE_futRealizer_admissible` (+ past mirror) re-proved sorry-free against the strengthened
+- [x] `kvE_futRealizer_admissible` (+ past mirror) re-proved sorry-free against the strengthened
       admissibility — the load-bearing honest-preservation obligation.
-- [ ] m=0 inertness: `kvE_hsliceFut_supply_zero`, `kvE_hexclSliceFut_supply_zero`,
+- [x] m=0 inertness: `kvE_hsliceFut_supply_zero`, `kvE_hexclSliceFut_supply_zero`,
       `kvE_futSliceId_of_end_zero` (+ past), `kvE_futSliceUnique_zero` build with unchanged
       statements/proofs (git diff-verified) after Phases 3-5.
-- [ ] Frozen-boundary audit: `git diff` shows no modification to `InteriorGateGeneralK.lean`,
+- [x] Frozen-boundary audit: `git diff` shows no modification to `InteriorGateGeneralK.lean`,
       `CarrierKv.lean` frozen carrier, `KampPrior.lean:830-874` rungs, or `kampPrior_case1_arm_k0`.
-- [ ] Re-probe DoD (the four GO certificates of Phase 5), all sorry-free.
-- [ ] Expected residual documented: `igFoldBit qnfG1 = igFoldBit m1qnf` remains true (frozen
+- [x] Re-probe DoD (the four GO certificates of Phase 5), all sorry-free.
+- [x] Expected residual documented: `igFoldBit qnfG1 = igFoldBit m1qnf` remains true (frozen
       gate) — separation happens at the new antecedent; explicitly NOT a regression.
-- [ ] Full `lake build` green at land time; `lean_verify` / `#print axioms` clean (zero sorry,
+- [x] Full `lake build` green at land time; `lean_verify` / `#print axioms` clean (zero sorry,
       zero new axioms) on every touched/new declaration.
-- [ ] Implementation summary records the final predicate signature (task-358 contract).
+- [x] Implementation summary records the final predicate signature (task-358 contract).
 
 ## Task-358 Dovetail (what lands downstream)
 
