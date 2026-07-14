@@ -61,6 +61,13 @@ import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.EndIntervalConsu
 -- PriorDefs — is already reachable and imports nothing under `NfMultiAnchorBridge`);
 -- only `KampPrior` imports this aggregator (task-357 precedent).
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregateHookDischarge
+-- NOTE (task 350 Phase 12a): thread the (0,1) point-channel merge variant of the gated
+-- anchor-collapse (Lemma 3.2(2) coincident-witness collapse at `w = x`: gate + clause iff
+-- + dite carrier + n=2 fold characterization, plus the R9 genericity probe) into the root
+-- build for the Phase-16 `w = x` dispatcher channel. Cycle-free: `AggregatePointMergeK1`
+-- is an acyclic leaf importing only `AggregateHookDischarge` (above); nothing in that
+-- closure imports this aggregator.
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.AggregatePointMergeK1
 -- NOTE (task 350 Phase 7): thread the full-iff conjunction closure kit
 -- (`BracketFormula.snoc_holds_iff`, `BracketFormula.conjFull_iff`, `VVecEA2.conjFull_iff`,
 -- `VVecEA2.trivialTrue`) into the root build for the Phase 8-11 fixed-formula negation
