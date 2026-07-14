@@ -271,7 +271,7 @@ Deferral); update all boneyard consumer import paths so nothing kept has a dangl
 
 ---
 
-### Phase 6: Relocate AlgebraicCompleteness to Boneyard, delete Algebraic/Algebraic.lean [NOT STARTED]
+### Phase 6: Relocate AlgebraicCompleteness to Boneyard, delete Algebraic/Algebraic.lean [IN PROGRESS]
 
 **Goal**: Move the repaired `AlgebraicCompleteness.lean` into the existing `Boneyard/UltrafilterFrame/`
 region so it is CI-verified; delete the orphaned `Algebraic/Algebraic.lean` aggregator (its sole
