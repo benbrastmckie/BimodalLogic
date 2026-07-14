@@ -908,6 +908,462 @@ theorem navPackRight_correct (M : OrderedMonadicStructure sig)
       (navR_bitTrueList_nodup σ) t htw hwit hguard
     exact ⟨navRChain atomMap h_surj σ L, List.mem_map.mpr ⟨L, hLmem, rfl⟩, hLchain⟩
 
+/-! ## E3 mirror: w-independent distribution `navDistribRight`
+
+Distributes the w-INDEPENDENT parts of the future-exterior channel `x < t < w` out of
+the `∃w` (Rabinovich Lemma 7.6 gluing decomposition, time-reversed):
+
+- zones `v = x`, `v < x` (+ atoms at `x`, position-1 layer) → the `endpointLeft` content
+  `navRAtXPack`, read AT the pin `x` (past fibers as native Since-lits `S(charF χ, ⊤)`);
+- zone `x < v < t` fibers (`extFZIntXT`) → the `(x, t)` bracket arrangement slots
+  `navRXTBracket` + the exclusion segment `navRXTSegGuard` on every gap;
+- zone `v = t` and the atoms at `t` (position-2 layer) → the t-endpoint conjunct
+  `navRAtTPack`, read AT the pin `t` (glued to `navPackRight` inside `endpointRight`);
+- the order-channel row bits → the pure σ-condition `navROrderRow`;
+- inconsistent-zone falsity and off-fiber honesty → pure σ-conditions, verbatim. -/
+
+/-- **The x-endpoint pack** (`endpointLeft` content, future channel): atoms at `x`
+    (position-1 projection characteristic), the `v = x` fiber group (characteristic
+    literals over `extFZAtX`), and the `v < x` fiber group (native past Since-lits
+    `navLPastLit` over `extFZBelowX`, negated on bit-false fibers). Every x-read lives
+    HERE, at its own pin (world-locality) — the time-reversed mirror of `navDAtTPack`. -/
+noncomputable def navRAtXPack (σ : NormalForm sig 1 3) : Formula :=
+  formula_conjList
+    [nf_depth0_char_formula atomMap h_surj (navDProjX σ.1),
+     formula_conjList
+       (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
+         if σ.2 (nf0_assemble extFZAtX χ σ.1) = true
+         then nf_depth0_char_formula atomMap h_surj χ
+         else (nf_depth0_char_formula atomMap h_surj χ).neg),
+     formula_conjList
+       (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
+         if σ.2 (nf0_assemble extFZBelowX χ σ.1) = true
+         then navLPastLit atomMap h_surj χ
+         else (navLPastLit atomMap h_surj χ).neg)]
+
+/-- Reading of the x-endpoint pack: exactly the three x-anchored clause groups of
+    `extZoneFiberFut_k1` (atom layer restricted to position 1; `v = x`; `v < x`). -/
+theorem navR_atXPack_iff (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (x : M.carrier) :
+    temporal_truth M atomMap x (navRAtXPack atomMap h_surj σ) ↔
+      ((∀ p : sig.preds, M.interp p x ↔ σ.1 (.pred p ⟨1, by omega⟩) = true) ∧
+       (∀ χ : NormalForm sig 0 1,
+         nf_eval_nf M 0 1 (fun _ => x) χ ↔ σ.2 (nf0_assemble extFZAtX χ σ.1) = true) ∧
+       (∀ χ : NormalForm sig 0 1,
+         (∃ v : M.carrier, v < x ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+           σ.2 (nf0_assemble extFZBelowX χ σ.1) = true)) := by
+  simp only [navRAtXPack, formula_conjList]
+  rw [temporal_truth_and, temporal_truth_and, temporal_truth_and]
+  have htop : temporal_truth M atomMap x Formula.top := temporal_truth_top M atomMap x
+  constructor
+  · rintro ⟨h1, h2, h3, -⟩
+    refine ⟨?_, ?_, ?_⟩
+    · intro p
+      exact (nf_depth0_char_formula_correct M atomMap h_surj (navDProjX σ.1) x).mp h1 p
+    · exact (navR_bitGroup_iff atomMap M x _ _ _
+        (fun χ => navR_char_correct atomMap h_surj M χ x)).mp h2
+    · exact (navR_bitGroup_iff atomMap M x _ _ _
+        (fun χ => navR_pastLit_iff atomMap h_surj M χ x)).mp h3
+  · rintro ⟨h1, h2, h3⟩
+    refine ⟨?_, ?_, ?_, htop⟩
+    · exact (nf_depth0_char_formula_correct M atomMap h_surj (navDProjX σ.1) x).mpr h1
+    · exact (navR_bitGroup_iff atomMap M x _ _ _
+        (fun χ => navR_char_correct atomMap h_surj M χ x)).mpr h2
+    · exact (navR_bitGroup_iff atomMap M x _ _ _
+        (fun χ => navR_pastLit_iff atomMap h_surj M χ x)).mpr h3
+
+/-- **The t-endpoint conjunct** (future channel): atoms at `t` (position-2 projection
+    characteristic) and the `v = t` fiber group (characteristic literals over
+    `extFZAtT`). The w-independent conjunct glued to `navPackRight` inside
+    `endpointRight` — the time-reversed mirror of `navDAtXPack`. -/
+noncomputable def navRAtTPack (σ : NormalForm sig 1 3) : Formula :=
+  formula_conjList
+    [nf_depth0_char_formula atomMap h_surj (navDProjT σ.1),
+     formula_conjList
+       (((Finset.univ : Finset (NormalForm sig 0 1)).toList).map fun χ =>
+         if σ.2 (nf0_assemble extFZAtT χ σ.1) = true
+         then nf_depth0_char_formula atomMap h_surj χ
+         else (nf_depth0_char_formula atomMap h_surj χ).neg)]
+
+/-- Reading of the t-endpoint conjunct: exactly the two t-anchored w-independent clause
+    groups of `extZoneFiberFut_k1` (atom layer restricted to position 2; zone `v = t`). -/
+theorem navR_atTPack_iff (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (t : M.carrier) :
+    temporal_truth M atomMap t (navRAtTPack atomMap h_surj σ) ↔
+      ((∀ p : sig.preds, M.interp p t ↔ σ.1 (.pred p ⟨2, by omega⟩) = true) ∧
+       (∀ χ : NormalForm sig 0 1,
+         nf_eval_nf M 0 1 (fun _ => t) χ ↔ σ.2 (nf0_assemble extFZAtT χ σ.1) = true)) := by
+  simp only [navRAtTPack, formula_conjList]
+  rw [temporal_truth_and, temporal_truth_and]
+  have htop : temporal_truth M atomMap t Formula.top := temporal_truth_top M atomMap t
+  constructor
+  · rintro ⟨h1, h2, -⟩
+    refine ⟨?_, ?_⟩
+    · intro p
+      exact (nf_depth0_char_formula_correct M atomMap h_surj (navDProjT σ.1) t).mp h1 p
+    · exact (navR_bitGroup_iff atomMap M t _ _ _
+        (fun χ => navR_char_correct atomMap h_surj M χ t)).mp h2
+  · rintro ⟨h1, h2⟩
+    refine ⟨?_, ?_, htop⟩
+    · exact (nf_depth0_char_formula_correct M atomMap h_surj (navDProjT σ.1) t).mpr h1
+    · exact (navR_bitGroup_iff atomMap M t _ _ _
+        (fun χ => navR_char_correct atomMap h_surj M χ t)).mpr h2
+
+/-! ### The `(x, t)` bracket arrangement slots + exclusion segment (future channel) -/
+
+/-- The bit-TRUE `x < v < t` fiber profiles of `σ` in the FUTURE channel (zone spec
+    `extFZIntXT` — distinct from the past channel's `extZIntXT` because the spec also
+    encodes the witness relation `v < w`). -/
+noncomputable def navRXTBitTrueList (σ : NormalForm sig 1 3) :
+    List (NormalForm sig 0 1) :=
+  ((Finset.univ : Finset (NormalForm sig 0 1)).filter
+    fun χ => σ.2 (nf0_assemble extFZIntXT χ σ.1) = true).toList
+
+private theorem navR_xtBitTrueList_mem (σ : NormalForm sig 1 3)
+    (χ : NormalForm sig 0 1) :
+    χ ∈ navRXTBitTrueList σ ↔ σ.2 (nf0_assemble extFZIntXT χ σ.1) = true := by
+  simp [navRXTBitTrueList, Finset.mem_toList, Finset.mem_filter]
+
+private theorem navR_xtBitTrueList_nodup (σ : NormalForm sig 1 3) :
+    (navRXTBitTrueList σ).Nodup :=
+  Finset.nodup_toList _
+
+/-- **The `(x, t)` exclusion segment (future channel)**: the disjunction of the bit-TRUE
+    characteristics. -/
+noncomputable def navRXTSegGuard (σ : NormalForm sig 1 3) : TemporalPred :=
+  ⟨formula_disjList
+    ((navRXTBitTrueList σ).map (nf_depth0_char_formula atomMap h_surj))⟩
+
+/-- Reading of the `(x, t)` exclusion segment. -/
+private theorem navR_xtSegGuard_iff (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (v : M.carrier) :
+    (navRXTSegGuard atomMap h_surj σ).eval_at M atomMap v ↔
+      ∃ χ : NormalForm sig 0 1, σ.2 (nf0_assemble extFZIntXT χ σ.1) = true ∧
+        nf_eval_nf M 0 1 (fun _ => v) χ := by
+  simp only [navRXTSegGuard, TemporalPred.eval_at]
+  rw [formula_disjList_iff]
+  constructor
+  · rintro ⟨φ, hmem, hφ⟩
+    obtain ⟨χ, hχmem, rfl⟩ := List.mem_map.mp hmem
+    exact ⟨χ, (navR_xtBitTrueList_mem σ χ).mp hχmem,
+      (navR_char_correct atomMap h_surj M χ v).mp hφ⟩
+  · rintro ⟨χ, hbit, hχ⟩
+    exact ⟨_, List.mem_map.mpr ⟨χ, (navR_xtBitTrueList_mem σ χ).mpr hbit, rfl⟩,
+      (navR_char_correct atomMap h_surj M χ v).mpr hχ⟩
+
+/-- **The `(x, t)` bracket arrangement (future channel)**: one witness slot per listed
+    profile — listed from the TOP slot nearest `t` downward — with the exclusion segment
+    on EVERY gap. `BracketFormula.snoc` recursion, the `navDXTBracket` shape with the
+    future-channel fibers. -/
+noncomputable def navRXTBracket (σ : NormalForm sig 1 3) :
+    (L : List (NormalForm sig 0 1)) → BracketFormula L.length
+  | [] => BracketFormula.trivial (navRXTSegGuard atomMap h_surj σ)
+  | χ :: rest => (navRXTBracket σ rest).snoc
+      ⟨nf_depth0_char_formula atomMap h_surj χ⟩
+      (navRXTSegGuard atomMap h_surj σ)
+
+/-- Maximum extraction over a nonempty list (local copy of the Phase-14a private
+    `navL_listMax` — the bracket threads its top slot nearest `t` first). -/
+private theorem navR_listMax {α : Type} (M : OrderedMonadicStructure sig)
+    (f : α → M.carrier) :
+    ∀ l : List α, l ≠ [] → ∃ a ∈ l, ∀ b ∈ l, f b ≤ f a := by
+  intro l
+  induction l with
+  | nil => intro h; exact absurd rfl h
+  | cons x tl ih =>
+    intro _
+    by_cases htl : tl = []
+    · subst htl
+      exact ⟨x, List.mem_cons_self .., fun b hb => by
+        rcases List.mem_cons.mp hb with rfl | h
+        · exact le_refl _
+        · exact absurd h List.not_mem_nil⟩
+    · obtain ⟨m, hm, hmax⟩ := ih htl
+      rcases le_total (f x) (f m) with hle | hle
+      · refine ⟨m, List.mem_cons_of_mem _ hm, fun b hb => ?_⟩
+        rcases List.mem_cons.mp hb with rfl | h
+        · exact hle
+        · exact hmax b h
+      · refine ⟨x, List.mem_cons_self .., fun b hb => ?_⟩
+        rcases List.mem_cons.mp hb with rfl | h
+        · exact le_refl _
+        · exact (hmax b h).trans hle
+
+/-- **Arrangement soundness (future channel)**: a held arrangement on `(x, u)` yields one
+    witness per listed profile strictly inside `(x, u)`, and the exclusion segment (or a
+    listed witness profile) at every interior point. -/
+private theorem navR_bracket_sound (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) :
+    ∀ (L : List (NormalForm sig 0 1)) (x u : M.carrier),
+      (navRXTBracket atomMap h_surj σ L).holds M atomMap x u →
+      (∀ χ ∈ L, ∃ v : M.carrier, x < v ∧ v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ∧
+      (∀ v : M.carrier, x < v → v < u →
+        (navRXTSegGuard atomMap h_surj σ).eval_at M atomMap v ∨
+          ∃ χ ∈ L, nf_eval_nf M 0 1 (fun _ => v) χ) := by
+  intro L
+  induction L with
+  | nil =>
+    intro x u h
+    simp only [navRXTBracket] at h
+    rw [BracketFormula.trivial_holds] at h
+    exact ⟨fun χ hχ => absurd hχ List.not_mem_nil,
+      fun v hxv hvu => Or.inl (h v hxv hvu)⟩
+  | cons χ1 rest ih =>
+    intro x u h
+    simp only [navRXTBracket] at h
+    rw [BracketFormula.snoc_holds_iff] at h
+    obtain ⟨s, hxs, hsu, hfront, hpt, hseg⟩ := h
+    obtain ⟨hwit, hcov⟩ := ih x s hfront
+    refine ⟨?_, ?_⟩
+    · intro χ hχmem
+      rcases List.mem_cons.mp hχmem with rfl | hmem
+      · exact ⟨s, hxs, hsu, (navR_char_correct atomMap h_surj M χ s).mp hpt⟩
+      · obtain ⟨v, hxv, hvs, hv⟩ := hwit χ hmem
+        exact ⟨v, hxv, hvs.trans hsu, hv⟩
+    · intro v hxv hvu
+      rcases lt_trichotomy v s with hvs | rfl | hsv
+      · rcases hcov v hxv hvs with hg | ⟨χ, hm, hv⟩
+        · exact Or.inl hg
+        · exact Or.inr ⟨χ, List.mem_cons_of_mem _ hm, hv⟩
+      · exact Or.inr ⟨χ1, List.mem_cons_self ..,
+          (navR_char_correct atomMap h_surj M χ1 v).mp hpt⟩
+      · exact Or.inl (hseg v hsv hvu)
+
+/-- **Arrangement completeness (future channel)**: given one witness per listed profile
+    strictly inside `(x, u)` (the list duplicate-free) and the exclusion segment at every
+    interior point, SOME arrangement of the list holds on `(x, u)`. -/
+private theorem navR_bracket_complete (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (x : M.carrier) :
+    ∀ (n : Nat) (T : List (NormalForm sig 0 1)), T.length = n → T.Nodup →
+      ∀ u : M.carrier,
+      (∀ χ ∈ T, ∃ v : M.carrier, x < v ∧ v < u ∧ nf_eval_nf M 0 1 (fun _ => v) χ) →
+      (∀ v : M.carrier, x < v → v < u →
+        (navRXTSegGuard atomMap h_surj σ).eval_at M atomMap v) →
+      ∃ L ∈ T.permutations,
+        (navRXTBracket atomMap h_surj σ L).holds M atomMap x u := by
+  intro n
+  induction n with
+  | zero =>
+    intro T hlen hnd u hwit hguard
+    have hT : T = [] := List.eq_nil_of_length_eq_zero hlen
+    subst hT
+    refine ⟨[], List.mem_permutations.mpr (List.Perm.refl []), ?_⟩
+    simp only [navRXTBracket]
+    rw [BracketFormula.trivial_holds]
+    exact fun r hxr hru => hguard r hxr hru
+  | succ n ih =>
+    intro T hlen hnd u hwit hguard
+    have hTne : T ≠ [] := by
+      intro h; subst h; simp at hlen
+    -- Choose one witness per profile, then extract the profile with the MAXIMAL witness.
+    have hattne : T.attach ≠ [] := by
+      intro h
+      have := congrArg List.length h
+      rw [List.length_attach] at this
+      exact hTne (List.eq_nil_of_length_eq_zero this)
+    obtain ⟨⟨χ1, hχ1T⟩, -, hmax⟩ :=
+      navR_listMax M (fun s : {χ // χ ∈ T} => (hwit s.1 s.2).choose) T.attach hattne
+    obtain ⟨hxv1, hv1u, hχ1v1⟩ := (hwit χ1 hχ1T).choose_spec
+    set v1 := (hwit χ1 hχ1T).choose with hv1def
+    -- Recurse on the erased list below the maximal witness.
+    have hrestlen : (T.erase χ1).length = n := by
+      rw [List.length_erase_of_mem hχ1T, hlen]
+      omega
+    have hrestnd : (T.erase χ1).Nodup := hnd.erase χ1
+    have hrestwit : ∀ χ ∈ T.erase χ1,
+        ∃ v : M.carrier, x < v ∧ v < v1 ∧ nf_eval_nf M 0 1 (fun _ => v) χ := by
+      intro χ hχrest
+      obtain ⟨hne, hχT⟩ := (List.Nodup.mem_erase_iff hnd).mp hχrest
+      obtain ⟨hxv, hvu, hχv⟩ := (hwit χ hχT).choose_spec
+      have hle : (hwit χ hχT).choose ≤ v1 :=
+        hmax ⟨χ, hχT⟩ (List.mem_attach T ⟨χ, hχT⟩)
+      have hvne : (hwit χ hχT).choose ≠ v1 := by
+        intro he
+        rw [he] at hχv
+        exact hne (navR_profile_unique M v1 χ χ1 hχv hχ1v1)
+      exact ⟨(hwit χ hχT).choose, hxv, lt_of_le_of_ne hle hvne, hχv⟩
+    have hrestguard : ∀ v : M.carrier, x < v → v < v1 →
+        (navRXTSegGuard atomMap h_surj σ).eval_at M atomMap v :=
+      fun v hxv hv => hguard v hxv (hv.trans hv1u)
+    obtain ⟨L', hL'mem, hL'holds⟩ :=
+      ih (T.erase χ1) hrestlen hrestnd v1 hrestwit hrestguard
+    refine ⟨χ1 :: L', ?_, ?_⟩
+    · -- (χ1 :: L') is a permutation of T.
+      have h1 : L'.Perm (T.erase χ1) := List.mem_permutations.mp hL'mem
+      have h2 : T.Perm (χ1 :: T.erase χ1) := List.perm_cons_erase hχ1T
+      exact List.mem_permutations.mpr ((List.Perm.cons χ1 h1).trans h2.symm)
+    · -- The arrangement holds on (x, u) with top witness v1.
+      simp only [navRXTBracket]
+      rw [BracketFormula.snoc_holds_iff]
+      exact ⟨v1, hxv1, hv1u, hL'holds,
+        (navR_char_correct atomMap h_surj M χ1 v1).mpr hχ1v1,
+        fun r hv1r hru => hguard r (hxv1.trans hv1r) hru⟩
+
+/-- **The `(x, t)` interior fiber reading (future channel)**: some arrangement of the
+    bit-TRUE `x < v < t` profiles holds on `(x, t)` iff every fiber biconditional of the
+    `extFZIntXT` zone reads correctly — stated verbatim in the `extZoneFiberFut_k1`
+    clause shape. No ambient hypothesis is needed. -/
+theorem navRXTBracket_arrangements_iff (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (x t : M.carrier) :
+    (∃ L ∈ (navRXTBitTrueList σ).permutations,
+        (navRXTBracket atomMap h_surj σ L).holds M atomMap x t) ↔
+      ∀ χ : NormalForm sig 0 1,
+        (∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ) ↔
+          σ.2 (nf0_assemble extFZIntXT χ σ.1) = true := by
+  constructor
+  · rintro ⟨L, hLperm, hL⟩
+    have hperm : L.Perm (navRXTBitTrueList σ) := List.mem_permutations.mp hLperm
+    obtain ⟨hwit, hcov⟩ := navR_bracket_sound atomMap h_surj M σ L x t hL
+    intro χ
+    constructor
+    · rintro ⟨v, hxv, hvt, hχv⟩
+      rcases hcov v hxv hvt with hg | ⟨χ', hχ'L, hχ'v⟩
+      · obtain ⟨χ'', hbit'', hχ''v⟩ := (navR_xtSegGuard_iff atomMap h_surj M σ v).mp hg
+        rwa [navR_profile_unique M v χ χ'' hχv hχ''v]
+      · rw [navR_profile_unique M v χ χ' hχv hχ'v]
+        exact (navR_xtBitTrueList_mem σ χ').mp (hperm.mem_iff.mp hχ'L)
+    · intro hbit
+      exact hwit χ (hperm.mem_iff.mpr ((navR_xtBitTrueList_mem σ χ).mpr hbit))
+  · intro hd
+    have hwit : ∀ χ ∈ navRXTBitTrueList σ,
+        ∃ v : M.carrier, x < v ∧ v < t ∧ nf_eval_nf M 0 1 (fun _ => v) χ :=
+      fun χ hχ => (hd χ).mpr ((navR_xtBitTrueList_mem σ χ).mp hχ)
+    have hguard : ∀ v : M.carrier, x < v → v < t →
+        (navRXTSegGuard atomMap h_surj σ).eval_at M atomMap v := by
+      intro v hxv hvt
+      obtain ⟨χv, hχv⟩ := navR_profile_exists M v
+      exact (navR_xtSegGuard_iff atomMap h_surj M σ v).mpr
+        ⟨χv, (hd χv).mp ⟨v, hxv, hvt, hχv⟩, hχv⟩
+    exact navR_bracket_complete atomMap h_surj M σ x
+      (navRXTBitTrueList σ).length (navRXTBitTrueList σ) rfl
+      (navR_xtBitTrueList_nodup σ) t hwit hguard
+
+/-! ### The order-channel row and the atom-layer split (future ambient) -/
+
+/-- **The w-independent order-channel row (future channel)**: the six order bits of
+    `σ.1` forced by the channel pattern `x < t < w`. Constant across ALL exterior
+    witnesses `t < w` (given the ambient `x < t`), hence w-independent. -/
+def navROrderRow (σ : NormalForm sig 1 3) : Prop :=
+  σ.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true ∧
+  σ.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true ∧
+  σ.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = true ∧
+  σ.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false ∧
+  σ.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = false ∧
+  σ.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false
+
+/-- A biconditional against a refuted proposition forces the bit false. -/
+private theorem navR_atomBit_false {P : Prop} {b : Bool}
+    (h : P ↔ b = true) (hnp : ¬P) : b = false := by
+  cases b with
+  | false => rfl
+  | true => exact absurd (h.mpr rfl) hnp
+
+/-- A refuted proposition is equivalent to a false bit's truth. -/
+private theorem navR_atomBit_iff_false {P : Prop} {b : Bool}
+    (hnp : ¬P) (hb : b = false) : P ↔ b = true := by
+  subst hb
+  exact iff_of_false hnp Bool.false_ne_true
+
+/-- **The atom-layer split (future ambient)**: under `x < t < w`, the arity-3 atom layer
+    of `extZoneFiberFut_k1` splits into the three per-position predicate layers (at `w`,
+    `x`, `t`) and the order-channel row. The position-0 layer is the ONLY w-dependent
+    part; the row is constant across all `t < w`. -/
+private theorem navR_atomLayer_iff (M : OrderedMonadicStructure sig)
+    (w x t : M.carrier) (hxt : x < t) (htw : t < w) (σ : NormalForm sig 1 3) :
+    (∀ a : AtomKind sig 3,
+        atom_eval M (Fin.cons w (Fin.cons x (fun _ => t))) a ↔ σ.1 a = true) ↔
+      ((∀ p : sig.preds, M.interp p w ↔ σ.1 (.pred p ⟨0, by omega⟩) = true) ∧
+       (∀ p : sig.preds, M.interp p x ↔ σ.1 (.pred p ⟨1, by omega⟩) = true) ∧
+       (∀ p : sig.preds, M.interp p t ↔ σ.1 (.pred p ⟨2, by omega⟩) = true) ∧
+       navROrderRow σ) := by
+  have hxw : x < w := hxt.trans htw
+  constructor
+  · intro h
+    exact ⟨fun p => h (.pred p (0 : Fin 3)), fun p => h (.pred p (1 : Fin 3)),
+      fun p => h (.pred p (2 : Fin 3)),
+      (h _).mp hxt, (h _).mp hxw, (h _).mp htw,
+      navR_atomBit_false (h _) (lt_asymm hxw),
+      navR_atomBit_false (h _) (lt_asymm htw),
+      navR_atomBit_false (h _) (lt_asymm hxt)⟩
+  · rintro ⟨h0, h1, h2, h12, h10, h20, h01, h02, h21⟩
+    intro a
+    match a with
+    | .pred p i =>
+      match i with
+      | ⟨0, _⟩ => exact h0 p
+      | ⟨1, _⟩ => exact h1 p
+      | ⟨2, _⟩ => exact h2 p
+    | .order i j hij =>
+      match i, j with
+      | ⟨0, _⟩, ⟨0, _⟩ => exact absurd rfl hij
+      | ⟨0, _⟩, ⟨1, _⟩ => exact navR_atomBit_iff_false (lt_asymm hxw) h01
+      | ⟨0, _⟩, ⟨2, _⟩ => exact navR_atomBit_iff_false (lt_asymm htw) h02
+      | ⟨1, _⟩, ⟨0, _⟩ => exact iff_of_true hxw h10
+      | ⟨1, _⟩, ⟨1, _⟩ => exact absurd rfl hij
+      | ⟨1, _⟩, ⟨2, _⟩ => exact iff_of_true hxt h12
+      | ⟨2, _⟩, ⟨0, _⟩ => exact iff_of_true htw h20
+      | ⟨2, _⟩, ⟨1, _⟩ => exact navR_atomBit_iff_false (lt_asymm hxt) h21
+      | ⟨2, _⟩, ⟨2, _⟩ => exact absurd rfl hij
+      | ⟨_ + 3, hn⟩, _ => exact absurd hn (by omega)
+      | _, ⟨_ + 3, hn⟩ => exact absurd hn (by omega)
+
+/-! ### The E5 distribution deliverable: `navDistribRight` -/
+
+/-- **The E5 distribution lemma `navDistribRight`** (Rabinovich Lemma 7.6 gluing
+    decomposition, time-reversed): under the ambient `x < t`, the `∃ w > t`
+    future-exterior evaluation splits into the w-DEPENDENT package (exactly
+    `navPackRight`, by its fold iff) and the w-INDEPENDENT remainder, each part read at
+    its own slot:
+
+    - `navPackRight` at the pin `t` (the ∃w fold);
+    - `navRAtTPack` at the pin `t` (atoms at `t`; zone `v = t`) — the `endpointRight`
+      conjunct;
+    - the `(x, t)` bracket arrangement disjunction (zone `x < v < t`, future-channel
+      fibers `extFZIntXT`);
+    - `navRAtXPack` at the pin `x` (atoms at `x`; zones `v = x`, `v < x`) — the
+      `endpointLeft` content;
+    - the order-channel row, inconsistent-zone falsity, and off-fiber honesty — pure
+      σ-conditions.
+
+    Phase-15 carrier assembly consumes this iff directly for the ∃w glue of
+    `CExtFut_correct`. -/
+theorem navDistribRight (M : OrderedMonadicStructure sig)
+    (σ : NormalForm sig 1 3) (x t : M.carrier) (hxt : x < t) :
+    (∃ w : M.carrier, t < w ∧
+        nf_eval_nf M 1 3 (Fin.cons w (Fin.cons x (fun _ => t))) σ) ↔
+      ((navPackRight atomMap h_surj σ).eval_at M atomMap t ∧
+       temporal_truth M atomMap t (navRAtTPack atomMap h_surj σ) ∧
+       (∃ L ∈ (navRXTBitTrueList σ).permutations,
+         (navRXTBracket atomMap h_surj σ L).holds M atomMap x t) ∧
+       temporal_truth M atomMap x (navRAtXPack atomMap h_surj σ) ∧
+       navROrderRow σ ∧
+       (∀ (zs : ZoneSpec 3) (χ : NormalForm sig 0 1),
+          ¬(zs = extFZBelowX ∨ zs = extFZAtX ∨ zs = extFZIntXT ∨ zs = extFZAtT ∨
+            zs = extFZIntTW ∨ zs = extFZAtW ∨ zs = extFZAboveW) →
+          σ.2 (nf0_assemble zs χ σ.1) = false) ∧
+       (∀ τ : NormalForm sig 0 4, nf0_dropFresh τ ≠ σ.1 → σ.2 τ = false)) := by
+  constructor
+  · -- Distribution: peel the w-independent clause groups out of the ∃w.
+    rintro ⟨w, htw, hnf⟩
+    obtain ⟨hatom, ⟨h1, h2, h3, h4, h5, h6, h7⟩, hbad, hoff⟩ :=
+      (extZoneFiberFut_k1 M w x t hxt htw σ).mp hnf
+    obtain ⟨ha0, ha1, ha2, hrow⟩ := (navR_atomLayer_iff M w x t hxt htw σ).mp hatom
+    refine ⟨?_, ?_, ?_, ?_, hrow, hbad, hoff⟩
+    · exact (navPackRight_correct atomMap h_surj M σ t).mpr ⟨w, htw, ha0, h6, h7, h5⟩
+    · exact (navR_atTPack_iff atomMap h_surj M σ t).mpr ⟨ha2, h4⟩
+    · exact (navRXTBracket_arrangements_iff atomMap h_surj M σ x t).mpr h3
+    · exact (navR_atXPack_iff atomMap h_surj M σ x).mpr ⟨ha1, h2, h1⟩
+  · -- Gluing: the ∃w of the navPackRight fold carries the w-independent parts back in.
+    rintro ⟨hpack, hT, hbr, hX, hrow, hbad, hoff⟩
+    obtain ⟨w, htw, ha0, hatW, haboveW, hintTW⟩ :=
+      (navPackRight_correct atomMap h_surj M σ t).mp hpack
+    obtain ⟨ha2, hatT⟩ := (navR_atTPack_iff atomMap h_surj M σ t).mp hT
+    obtain ⟨ha1, hatX, hbelX⟩ := (navR_atXPack_iff atomMap h_surj M σ x).mp hX
+    have hintXT := (navRXTBracket_arrangements_iff atomMap h_surj M σ x t).mp hbr
+    exact ⟨w, htw, (extZoneFiberFut_k1 M w x t hxt htw σ).mpr
+      ⟨(navR_atomLayer_iff M w x t hxt htw σ).mpr ⟨ha0, ha1, ha2, hrow⟩,
+       ⟨hbelX, hatX, hintXT, hatT, hintTW, hatW, haboveW⟩, hbad, hoff⟩⟩
+
 end ExteriorNavFut
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
