@@ -485,32 +485,67 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 
 ---
 
-### Phase 10: (C / P2c) BracketFormula.negFix — gated Cases 1-3 + ℤ counterexample [NOT STARTED]
+### Phase 10: (C / P2c) BracketFormula.negFix — gated Cases 1-3 + ℤ counterexample [PARTIAL]
 
 - **Goal:** Lemma 5.1 fixed-formula negation with the load-bearing `Cond_i` gates
   (`∨_i (Cond_i ∧ Form_i)`, chunk_0016 md:5).
+- **Seam status (H8):** 10a (probes + n=1 instance) COMPLETE and green (commits a928ccf3f,
+  53d7f123e); 10b (general recursion + iff) NOT STARTED — see the 10b design notes below.
 - **Tasks:**
-  - [ ] FIRST PROBE (R2 gate): land the ℤ counterexample as a Lean `example` — carrier ℤ,
+  - [x] FIRST PROBE (R2 gate): land the ℤ counterexample as a Lean `example` — carrier ℤ,
     `(z0,z1) = (0,10)`, `p` true exactly at {2,8}, `¬s1` exactly at {3}, `¬s0` exactly at {7}:
     `¬bf.holds` for `bf = [s0, p, s1]` yet gate-free disjuncts A,B1,B2,B3 all false; B4 holds
     with (3,7). This machine-checks that the gates are required.
-  - [ ] SECOND PROBE: one gated-disjunct backward lemma for the n=1 instance (each of
+    *(deviation: altered — landed as named theorems in namespace `NegFixGateProbe`
+    (EANegationFix.lean) rather than anonymous `example`s, so the R2 verdict is citable:
+    `bfZ_not_holds`, `caseA_not_holds`, `caseB1_not_holds`, `caseB2_not_holds`,
+    `caseB3_not_holds`, `caseB4_holds`. GATE VERDICT: GO.)*
+  - [x] SECOND PROBE: one gated-disjunct backward lemma for the n=1 instance (each of
     A `[¬p]`, B1 `[¬p, (¬s0 ∧ ¬p), ⊤]`, B2 `[⊤, (¬s1 ∧ ¬p), ¬p]`, B3 `[⊤, ¬s0, ⊤, ¬s1, ⊤]`,
     B4 `[⊤, (¬s1 ∧ ¬p), ¬p, (¬s0 ∧ ¬p), ⊤]`, B4′ `[⊤, (¬s0 ∧ ¬s1 ∧ ¬p), ⊤]` individually
     implies `¬bf.holds`); then the n=1 cover (⇒: with `y1*` = last ¬s1-point and `y0*` = first
     ¬s0-point, show `y1* ≤ y0*` and `¬p` on `[y1*, y0*]`, yielding B4/B4′ — consumes attained
     INF/SUP).
-  - [ ] `def BracketFormula.negFix {n} (bf : BracketFormula n) : VBracketFormula` — the general
-    recursion per the paper's Cases 1-3 with attained gates (the INF gate is the plain
+    *(delivered: `bracketOne(_holds_iff)`, `negFix1A/B1/B2/B3/B4/B4c` + six private
+    `_backward` lemmas (no attainment needed), `negFixOne_cover` (h_INF + h_SUP),
+    `negFixOne_iff` — the full n=1 biconditional. Axioms exactly
+    [propext, Classical.choice, Quot.sound].)*
+  - [ ] (10b) `def BracketFormula.negFix {n} (bf : BracketFormula n) : VBracketFormula` — the
+    general recursion per the paper's Cases 1-3 with attained gates (the INF gate is the plain
     first-occurrence pin `[¬P-segment, P-point]`); Case 2 consumes `negBoundedRightFix`; salvage
     the Boneyard forward plumbing (disjunct skeleton + forward correctness; only disjunct
     CONTENTS change by adding gates).
-  - [ ] `theorem BracketFormula.negFix_iff (h_INF) (h_SUP) (bf) (z0 z1) (h_lt : z0 < z1) :
+  - [ ] (10b) `theorem BracketFormula.negFix_iff (h_INF) (h_SUP) (bf) (z0 z1) (h_lt : z0 < z1) :
     (negFix bf).holds M atomMap z0 z1 ↔ ¬bf.holds M atomMap z0 z1`.
-  - [ ] Scoped build green; axiom checks; commit per green sub-step. If the cover proof fails at
+  - [x] Scoped build green; axiom checks; commit per green sub-step. If the cover proof fails at
     any disjunct: [BLOCKED] + exact failing case (do NOT proceed to Phase 11).
+    *(for 10a: full `lake build` green, 0 sorries in Kamp/, axiom checks pass on
+    `negFixOne_iff` and `NegFixGateProbe.caseB4_holds`.)*
+- **10b design notes (discovered during 10a, binding for the continuation):**
+  1. **Case 2 cannot consume `negBoundedRightFix`/`negBoundedLeftFix` as black boxes.** In the
+     endpoint-free encoding, peeling the outermost point type α leaves
+     `¬∃z ∈ (z0,z1), α(z) ∧ peeled.holds` — the α sits AT the moving endpoint, and no plain
+     bracket expresses a point type at its own endpoint (`front.snoc α ⊤` on `(z0,z)` needs a
+     point strictly between the witness and `z`; refuted on discrete carriers). The fix is an
+     ANCHORED generalization of the Cor 5.4 machinery: parametrize `untilFold`/`sinceFold`'s
+     innermost goal by the peeled point type α instead of `⊤` (delivered = α := ⊤ instance),
+     with the suffix-fold chain preds carrying α; the paper's relink case split
+     (`y ≤ c / y > c`) goes through unchanged with the anchor — checked by hand at the base
+     case: `∃z ∈ (z0,z1), α(z) ∧ (β on (z0,z))` ⟺ `(β Until α)(z0) ∧ ∃c ∈ (z0,z1), α(c)`.
+     Estimated ~200-350 lines, mostly copy-adaptation of EANegationFix.lean:430-780/782-1002.
+  2. **Case 3 needs the paper's A_i/B_i split (chunk_0017)** at the attained first-`¬β0` pin
+     r0: `bf.holds ⟺ ∨_i A_i(r0) ∨ ∨_i B_i(r0)` (r0 = i-th witness / r0 interior to segment
+     i), negation = conjunction of `¬A_i`/`¬B_i^±` by IH on strictly smaller brackets, glued by
+     a pinned-concatenation builder (VBracket on `(z0,r0)` ⌢ pin ⌢ VBracket on `(r0,z1)`,
+     prepend-composable) + `conjFull` (Phase 7) for the `Cond_i ∧ Form_i` products, plus the
+     paper's (d)/(e) boundary simplifications. This machinery does not exist yet; it is the
+     bulk of 10b.
+  3. The n=1 deliverables (`negFixOne` list shape, backward-lemma pattern, cover pattern) are
+     the templates: 10b's general disjuncts must specialize to the six n=1 shapes at n=1.
 - **Timing:** 2 hours (~400-600 lines). H8 seam if overrun: 10a = probes + n=1 instance,
-  10b = general recursion + iff.
+  10b = general recursion + iff. *(seam taken: 10a delivered ~547 lines in one dispatch;
+  10b re-estimated at ~800-1,300 lines given design notes 1-2 — recommend dispatching 10b as
+  its own phase, possibly split 10b-i = anchored Cor 5.4, 10b-ii = A_i/B_i split + negFix.)*
 - **Depends on:** 7, 9
 - **Files to modify:**
   - `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/EANegationFix.lean`
