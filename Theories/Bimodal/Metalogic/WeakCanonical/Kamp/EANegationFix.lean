@@ -2626,4 +2626,59 @@ theorem pinnedListToV_holds_iff {sig : MonadicSignature}
     simp only [pinnedListToV, List.mem_flatMap]
     exact ⟨it, hit, hd⟩
 
+/-! ## The `negFix` recursion (Lemma 5.1, general fixed formula) -/
+
+/-- **Lemma 5.1 fixed-formula negation, list form** (Rabinovich chunk_0016,
+    chunk_0017). `negFixList s ps` is a V-bracket whose semantics on attained
+    structures is `¬ (bracketOf s ps).holds`:
+
+    - `ps = []`: the negation of "`s` everywhere" is `[⊤, ¬s, ⊤]`.
+    - `ps = (a, b) :: qs`, **Case 2 disjunct** (gate: no `¬s`-point): the
+      anchored mirror `negBoundedLeftFixAnchored a (bracketOf b qs)` gated by
+      `s`-`conjEverywhere`.
+    - `ps = (a, b) :: qs`, **Case 3 disjunct** (gate: attained first-`¬s`
+      pin, carried by `pinnedListToV _ s s.neg`): the pinned DNF of per-item
+      failure disjunctions — for the `x = r0` placement, `¬a(r0)` or the
+      recursive tail failure; for each `x < r0` placement (split entry `e`),
+      the anchored A-failure on `(z0, r0)`, the pin-type failure `¬e.pin(r0)`,
+      or the recursive B-failure `negFixList e.rightSeg e.rightPairs` on
+      `(r0, z1)`. The seg-0 placement (boundary (d)/(e)) is absorbed: it is
+      vacuous under `¬s(r0)`.
+
+    Termination: every recursive call is on a strictly shorter pair list
+    (`splitsAt_rightPairs_length_le`); the A-parts need no recursion. -/
+def negFixList : TemporalPred → List (TemporalPred × TemporalPred) →
+    VBracketFormula
+  | s, [] =>
+      ⟨[⟨1, BracketFormula.prepend TemporalPred.top s.neg
+        (BracketFormula.trivial TemporalPred.top)⟩]⟩
+  | s, (a, b) :: qs =>
+      ((negBoundedLeftFixAnchored a (bracketOf b qs)).conjEverywhere s).disj
+      (pinnedListToV
+        (pinnedConjAll
+          ([⟨VBracketFormula.trivialTrue, a.neg, VBracketFormula.trivialTrue⟩,
+            ⟨VBracketFormula.trivialTrue, TemporalPred.top,
+              negFixList b qs⟩] ::
+           (splitsAt b qs).attach.map fun ⟨e, he⟩ =>
+             [⟨negBoundedLeftFixAnchored a (bracketOf e.leftSeg e.leftPairs),
+               TemporalPred.top, VBracketFormula.trivialTrue⟩,
+              ⟨VBracketFormula.trivialTrue, e.pin.neg,
+               VBracketFormula.trivialTrue⟩,
+              ⟨VBracketFormula.trivialTrue, TemporalPred.top,
+               negFixList e.rightSeg e.rightPairs⟩]))
+        s s.neg)
+  termination_by s ps => ps.length
+  decreasing_by
+  · simp only [List.length_cons]
+    omega
+  · have hle := splitsAt_rightPairs_length_le b qs e he
+    simp only [List.length_cons]
+    omega
+
+/-- **Lemma 5.1 fixed-formula negation** (Rabinovich 2014): the general
+    gated negation of a bracket formula, via the list recursion. -/
+def BracketFormula.negFix {n : Nat} (bf : BracketFormula n) :
+    VBracketFormula :=
+  negFixList (bf.segmentTypes ⟨0, Nat.succ_pos n⟩) bf.foldPairs
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
