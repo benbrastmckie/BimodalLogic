@@ -1,5 +1,5 @@
 ---
-next_project_number: 363
+next_project_number: 364
 ---
 
 # TODO
@@ -12,8 +12,8 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,350,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,192,196,231,292,293,294,298,309 | 161,187,191,194,230,291,341,343,350,361 | formula-refactor, publication-quality, sorry-elimination, ... |
+| 1 | 125,127,128,161,162,165,179,180,186,187,188,189,191,194,199,219,230,257,282,290,291,296,318,341,343,350,361,363 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,192,196,231,292,293,294,298,309,358 | 161,187,191,194,230,291,341,343,350,361,363 | formula-refactor, publication-quality, sorry-elimination, ... |
 | 3 | 175,193,307,362 | 131,169,170,189,192,196,309,358 | completeness, formula-refactor, automation, ... |
 | 4 | 177,178,305 | 131,193,307 | completeness, formula-refactor |
 | 5 | 303 | 305 | completeness |
@@ -107,9 +107,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-350 [PLANNED] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
+350 [IMPLEMENTING] — Build the aggregate forall-qnf quantEnd/seg construction -- a sin
   └─ 309 [BLOCKED] — Build the off-diagonal two-anchor navigated characteristic (Rabin
-358 [IMPLEMENTING] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
+363 [RESEARCHED] — The general-depth (m>=1) fiber-marking interface underlying task 
+  └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
 ### Strong_completeness_weak_terminus
@@ -128,6 +129,20 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
   └─ 131 [NOT STARTED] — (formula-refactor: Restructure Theories/Bimodal/ file hiera) (see above)
 
 ## Tasks
+
+### 363. Restate depth1 fibermarking interface and reprobe g1g2
+- **Effort**: 6-10 hours
+- **Status**: [RESEARCHED]
+- **Task Type**: lean4
+- **Topic**: kamp_theorem_formalization
+- **Dependencies**: None
+- **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/05_spawn-analysis.md]
+
+**Description**: The general-depth (m>=1) fiber-marking interface underlying task 358's G1 interior supply (rows 5-6, KampPrior.lean:835-846) and G2 exterior supply (rows 8-11, EndIntervalConsumerK.lean:141-162) is machine-refuted as FALSE by two sorry-free probe theorems in Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbeM1K.lean: kvE_probeM1_sliceId_NOGO (exterior, rows 8-11) and kvE_probeM1_interiorHreal_NOGO + kvE_probeM1_interiorGuard_identical (interior, rows 5-6, same root cause one level up). The shared defect (D7): depth->=1 fiber marking is not pinned by free-env/projected rendering. The countermodel constructs a doppelganger-tail fake fiber s* = nf_characteristic 1 5 [22,25,15,2,21], sharing the honest pinned fiber [25,15,2,18]'s depth-0 atom 4-type but diverging in its tail. This fake passes the atom-level admissibility fiber guard, is free-env-realized but has NO pinned realization at any witness, and is projection-invisible through the igFoldBit (zone, nfk_projFresh) arity-1 F1 information-loss channel (InteriorGateGeneralK.lean:318) -- the doppelganger difference lives entirely in slots that projection discards. Both the exterior slice-equality keying (kvE_futSliceEq) and the interior igFoldBit fold-bit guard key their obligation hypothesis side to this same free-env/projected rendering, so the fake is indistinguishable from the honest fiber under BOTH legs' current binder shapes.
+
+Task: restate the fiber-marking interface at the rungK binder / igFoldBit consumer seam (KampPrior.lean:835-846 binder shape as reference; InteriorGateGeneralK.lean:318 igFoldBit projection; ExteriorPinnedConverseK.lean / ExteriorPinnedConversePastK.lean slice kernels) so that depth->=1 fiber marking is pinned rather than free-env/projected. Two candidate approaches to adjudicate in-task against the existing countermodels (either or a synthesis): (a) anchored/pinned item rendering -- carry the depth->=1 fiber's full pinned coordinates through the binder instead of a free-env/projected summary; (b) a depth-graded fiber guard -- strengthen the admissibility/fold-bit guard so it distinguishes fibers by depth-graded content the current projection discards, defeating both m1_sstar fake constructions. Follow the task-360 slice re-key precedent for methodology (machine probe before landing, frozen reference layer). After restatement, re-run the EXISTING probes (kvE_probeM1_sliceId_NOGO, kvE_probeM1_interiorHreal_NOGO, kvE_probeM1_interiorGuard_identical in ExteriorPinnedProbeM1K.lean) against the new interface to confirm the doppelganger countermodel no longer applies to either leg -- this re-probe is the definition of done, not merely a restated signature. MUST NOT touch or re-open the k=0 layers (rung0/rung1, m=0 supply theorems from task 360, kampPrior_case1_arm_k0) -- these are unrefuted and must stay frozen. Zero-debt terminus: no sorry, no vacuous def, no forcing a proof against a live countermodel; if neither candidate approach closes green, the task returns [BLOCKED] with its own structured escalation rather than landing debt. Do NOT attempt the general-m/general-depth supply build-out itself (task 358 Phases 7-8) in this task -- scope is the interface restatement plus re-probe only; the supply theorems remain task 358's responsibility once this interface is fixed.
+
+---
 
 ### 362. Main strong completeness finite context all frame classes
 - **Effort**: high
@@ -164,10 +179,10 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 358. Realization recursion nf nvar exist all depths
 - **Effort**: high
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
-- **Dependencies**: Task 349, Task 357, Task 360
+- **Dependencies**: Task 349, Task 357, Task 360, Task 363
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md]
 - **Plan**: [358_realization_recursion_nf_nvar_exist_all_depths/plans/03_post-360-gap-closure.md]
 
@@ -177,7 +192,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 350. Build aggregate quantendseg construction and discharge armcorrectness hooks at k0 and k1
 - **Effort**: high
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: Task 349
