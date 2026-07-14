@@ -242,4 +242,49 @@ theorem prior_hasAttainedINF {sig : MonadicSignature}
              exact this,
            h_Pr0⟩
 
+/-! ## Attained SUP (Specialized for Prior Structures)
+
+Mirror of `HasAttainedINF` for the Since direction (task 350 Phase 8, R8 probe).
+For Prior structures, the last occurrence is always attained (P(r0) holds directly).
+The K- disjunct is vacuous. This is the surrogate for the Dedekind-completeness
+sup in Rabinovich's Corollary 5.4(2) / Lemma 5.1 Case 3 mirror. -/
+
+/-- A structure has attained suprema: like `HasDefinableSUP`, but the last occurrence
+    is always attained (P(r0) holds). No K- case. Strictly stronger than `HasDefinableSUP`. -/
+structure HasAttainedSUP {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) : Prop where
+  /-- For any TL-definable predicate P and interval (z0, z1), if P occurs
+      somewhere in (z0, z1), then there is an attained last-occurrence point r0
+      with P(r0) and ¬P on (r0, z1). -/
+  last_occ : ∀ (P : Formula) (z0 z1 : M.carrier),
+    z0 < z1 →
+    (∃ x : M.carrier, z0 < x ∧ x < z1 ∧ temporal_truth M atomMap x P) →
+    ∃ r0 : M.carrier, z0 < r0 ∧ r0 < z1 ∧
+      (∀ y : M.carrier, r0 < y → y < z1 → ¬temporal_truth M atomMap y P) ∧
+      temporal_truth M atomMap r0 P
+
+/-- Prior structures have attained suprema.
+    Mechanical mirror of `prior_hasAttainedINF`, consuming `semantic_prior_SZ`
+    in place of `semantic_prior_UZ`. The K- case never arises. -/
+theorem prior_hasAttainedSUP {sig : MonadicSignature}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (h_SZ : semantic_prior_SZ M atomMap) :
+    HasAttainedSUP M atomMap where
+  last_occ := by
+    intro P z0 z1 _h_lt ⟨x, h_z0_x, h_x_z1, h_Px⟩
+    have h_exists : ∃ s, s < z1 ∧ temporal_truth M atomMap s P := ⟨x, h_x_z1, h_Px⟩
+    obtain ⟨r0, h_r0_z1, h_Pr0, h_neg⟩ := h_SZ z1 P h_exists
+    have h_x_le_r0 : x ≤ r0 := by
+      by_contra h_gt
+      push_neg at h_gt
+      have := h_neg x h_gt h_x_z1
+      simp only [Formula.neg, temporal_truth] at this
+      exact this h_Px
+    exact ⟨r0, lt_of_lt_of_le h_z0_x h_x_le_r0, h_r0_z1,
+           fun y hy1 hy2 => by
+             have := h_neg y hy1 hy2
+             simp only [Formula.neg, temporal_truth] at this
+             exact this,
+           h_Pr0⟩
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
