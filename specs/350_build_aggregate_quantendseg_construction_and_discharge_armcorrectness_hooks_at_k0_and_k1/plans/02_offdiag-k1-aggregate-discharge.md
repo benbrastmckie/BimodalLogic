@@ -485,7 +485,7 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
 
 ---
 
-### Phase 10: (C / P2c) BracketFormula.negFix — gated Cases 1-3 + ℤ counterexample [PARTIAL]
+### Phase 10: (C / P2c) BracketFormula.negFix — gated Cases 1-3 + ℤ counterexample [COMPLETED]
 
 - **Goal:** Lemma 5.1 fixed-formula negation with the load-bearing `Cond_i` gates
   (`∨_i (Cond_i ∧ Form_i)`, chunk_0016 md:5).
@@ -497,11 +497,15 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
   shape `¬∃ z ∈ (z0,z1), α(z) ∧ bf.holds`, +475 lines); 10b-ii unit 1 (pinned-concatenation
   builder) COMPLETE and green (commit 37e24dce2: `bracketOf_append_pin_holds_iff`,
   `BracketFormula.concatPin(_holds_iff)`, `VBracketFormula.concatPin(_holds_iff)` — the Case 3
-  gluing device, +112 lines). REMAINING = 10b-ii units 2+: the A_i/B_i split at the attained
-  first-`¬β0` pin (chunk_0017), the `negFix` recursion (Cases 1-3 with gates, Case 2 via the
-  ANCHORED fixes, Case 3 glued via `concatPin` + `conjFull`), boundary simplifications (d)/(e),
-  and `negFix_iff`. All axioms exactly [propext, Classical.choice, Quot.sound]; EANegationFix.lean
-  sorry-free.
+  gluing device, +112 lines). 10b-ii units 2+ COMPLETE and green (4 seams: f38a5563c V-level
+  helpers `VBracketFormula.trivialTrue/conjEverywhere/conjFull(_holds_iff)` +
+  `firstNegPin_or_all` pin dichotomy; 39b6cac58 `SplitEntry`/`splitsAt` +
+  `bracketOf_splitsAt_iff` (the chunk_0017 A_i/B_i split lemma, both directions) +
+  `PinnedItem` DNF machinery `pinnedConj(All)_holdsAt_iff`, `pinnedListToV(_holds_iff)`;
+  c10db282f `negFixList` recursion (wf on pair-list length) + `BracketFormula.negFix`;
+  41c182a1f `negFixList_nil_iff`, `negFixList_iff`, `BracketFormula.negFix_iff`).
+  All axioms exactly [propext, Classical.choice, Quot.sound] (lean_verify on `negFix_iff`);
+  EANegationFix.lean sorry-free; full lake build green. PHASE COMPLETE.
 - **Tasks:**
   - [x] FIRST PROBE (R2 gate): land the ℤ counterexample as a Lean `example` — carrier ℤ,
     `(z0,z1) = (0,10)`, `p` true exactly at {2,8}, `¬s1` exactly at {3}, `¬s0` exactly at {7}:
@@ -521,18 +525,26 @@ structured blocker. NOTE: this audited the v1 4/6 sub-scope; the full-DoD audit 
     `_backward` lemmas (no attainment needed), `negFixOne_cover` (h_INF + h_SUP),
     `negFixOne_iff` — the full n=1 biconditional. Axioms exactly
     [propext, Classical.choice, Quot.sound].)*
-  - [ ] (10b) `def BracketFormula.negFix {n} (bf : BracketFormula n) : VBracketFormula` — the
+  - [x] (10b) `def BracketFormula.negFix {n} (bf : BracketFormula n) : VBracketFormula` — the
     general recursion per the paper's Cases 1-3 with attained gates (the INF gate is the plain
     first-occurrence pin `[¬P-segment, P-point]`); Case 2 consumes `negBoundedRightFix`; salvage
     the Boneyard forward plumbing (disjunct skeleton + forward correctness; only disjunct
     CONTENTS change by adding gates).
     *(deviation: altered per design note 1 — Case 2 consumes the ANCHORED
-    `negBoundedRightFixAnchored`/`negBoundedLeftFixAnchored` (10b-i, commit 054818233), not
-    the plain `negBoundedRightFix`. Sub-progress: 10b-i anchored mirrors DONE; 10b-ii unit 1
-    pinned-concatenation builder `VBracketFormula.concatPin(_holds_iff)` DONE (commit
-    37e24dce2). Remaining: A_i/B_i split + recursion + iff.)*
-  - [ ] (10b) `theorem BracketFormula.negFix_iff (h_INF) (h_SUP) (bf) (z0 z1) (h_lt : z0 < z1) :
+    `negBoundedLeftFixAnchored` (10b-i, commit 054818233), not the plain
+    `negBoundedRightFix`. Further altered at delivery: the recursion is the LIST-form
+    `negFixList` (base n=0 `[⊤,¬s,⊤]` rather than a special n=1 case — `negFixOne(_iff)`
+    retained as independent validation, not consumed as a recursion case); Case 3 is the
+    pinned DNF `pinnedListToV (pinnedConjAll …) s s.neg` over per-split-entry failure items,
+    where A-failures are consumed by `negBoundedLeftFixAnchored` on `(z0, r0)` (no recursion)
+    and B-failures recurse on strictly shorter right parts — this is what makes termination
+    by pair-list length go through. Boundary (d)/(e) absorbed: the seg-0 placement is vacuous
+    under `¬s(r0)`. Delivered commits f38a5563c, 39b6cac58, c10db282f.)*
+  - [x] (10b) `theorem BracketFormula.negFix_iff (h_INF) (h_SUP) (bf) (z0 z1) (h_lt : z0 < z1) :
     (negFix bf).holds M atomMap z0 z1 ↔ ¬bf.holds M atomMap z0 z1`.
+    *(delivered: `negFixList_nil_iff`, `negFixList_iff` (strong induction on pair-list
+    length), `BracketFormula.negFix_iff` via the `holds_iff_bracketOf` bridge — commit
+    41c182a1f. Axioms exactly [propext, Classical.choice, Quot.sound].)*
   - [x] Scoped build green; axiom checks; commit per green sub-step. If the cover proof fails at
     any disjunct: [BLOCKED] + exact failing case (do NOT proceed to Phase 11).
     *(for 10a: full `lake build` green, 0 sorries in Kamp/, axiom checks pass on
