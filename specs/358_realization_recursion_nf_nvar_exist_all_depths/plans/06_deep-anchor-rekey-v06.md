@@ -362,7 +362,62 @@ and Phase 5 (KampPrior/interior leaf) do not overlap. Phase 4 shares Phase 3's t
   `ExteriorDeepSliceSupplyK.lean`) or append-only in `ExteriorPinnedConverse{K,PastK}.lean`
   (m=0 regions frozen). Read-only: all guard/probe modules.
 
-### Phase 4: Exterior rows 12-13 supply + G2-2 uniqueness kernel + rows 10-11 supply at general m [NOT STARTED]
+### Phase 4: Exterior rows 12-13 supply + G2-2 uniqueness kernel + rows 10-11 supply at general m [BLOCKED]
+
+**BLOCKER** (Phase 4; adjudicated 2026-07-14, sess_1784059448_2c72f2_358 — discovered at the
+prescribed Phase-4 bridge-adjudication gate, BEFORE any build; also gates Phases 5-7):
+
+- **What failed**: the rows-12-13 binders (`hexclDeep*`) and — discovered in the same
+  adjudication — the rows-5/6 binders (`hreal`/`hexcl`, Phase-5's targets) are **FALSE as
+  stated at m >= 1**: paper countermodels exist INSIDE the antecedent population that satisfy
+  every carried sibling row simultaneously. The igPtW → ambient bridge the plan's mitigation
+  relied on is CIRCULAR: ambient realization at `[w,x,t]` is (atom row) + rows 5+6+10+11+12+13
+  themselves — the fold biconditional's ⇐ is row 5 and its ⇒ splits into row 6 (interior) and
+  rows 10-13 (exterior). No bridge can presuppose it.
+- **Why it's stuck (root cause)**: `igPtW` and the endpoint clauses read `qnf.2` ONLY at
+  PROFILE level (`igFoldBit` buckets: `ZoneSpec 3 × NormalForm sig (m+1) 1`). At m >= 1 the
+  deep content BELOW a bucket is unconstrained. This is the **P17 anchor-content gap**
+  (309 v9 Phase 17 convergent finding: a point-type at `w` drops the x/t anchor content)
+  resurfacing inside the 349/363/367 consumer interface itself.
+- **Countermodel CM-A (kills row 13 as stated)**: M = ℤ (R = ∅, fully homogeneous; the
+  Probe358TailK model infra), x, w = x+1, t = x+2, all points share the one 1-type χ_z.
+  Fake ambient `qnf`: `qnf.1` := the honest depth-0 row of `[w,x,t]`; `qnf.2` marks EXACTLY
+  {char[x-1], char[x], char[w], char[t], char[t+1]} (each the honest (m+1)-depth 4-type of
+  `[v,w,x,t]`), OMITTING σ := char[t+2,w,x,t]. Since profile buckets collapse (χ_z), igPtW,
+  epL, epR, segL/segR (vacuous — discrete gaps empty), igOffFiber, and the deep-anchored
+  Past/Fut brackets are ALL satisfied; rows 5, 5a, 6, 10, 11 all HOLD. But σ is admissible
+  (realized at x1 = t+2), on-row, bit-false, and GUARD-FALSE (its only .2-candidate mate
+  char[t+1] differs: the gap-point element `[t+1; t+2,w,x,t]` is marked in σ.2, absent from
+  char[t+1].2 — an order-only depth-1 discrepancy), realized at exterior x1 = t+2 —
+  **row 13 violated**. Consequence: the fake qnf's full gate LHS is satisfiable while the
+  ambient is never realized, so no discharge of the 13 rows can exist (they would prove the
+  gate biconditional, which is false in CM-A).
+- **Countermodel CM-B (kills row 5 as stated)**: the Probe358TailK tail-doppelgänger
+  configuration re-aimed at the AMBIENT: mark `sub_g` := the AtW-zoned honest char over a
+  depth-0-indistinguishable, spacing-discrepant fake tail with the SAME (AtW, χ_w) bucket as
+  the honest sub_w. sub_g is on-row, fiber-CONSISTENT (`_of_realized` over the fake tuple),
+  igPtW-invisible (same bucket) — but `[w,x,t]`-UNREALIZABLE (AtW pins fresh = w; deep
+  content ≠ char[w,w,x,t].2) — **row 5's conclusion fails**.
+- **What was tried**: Phase 3 landed GREEN first (rows 8-9 are ambient-realization-guarded —
+  immune, and their mate-collapse supply is committed); the Phase-4 bridge adjudication was
+  executed FIRST per the plan checklist and failed analytically as above; the alternative
+  (discharging rows 12-13 with extra carried inputs hreal/hexcl/hfiberCons/rows-10-11) was
+  checked — CM-A satisfies ALL of them.
+- **What is needed (prescription for the spawned interface task)**: a 367-style AMBIENT-side
+  deep-saturation/coherence guard, m = 0-inert, added to the igPtW-guarded binder antecedents
+  (rows 5, 6, 10-13) of `EndIntervalConsumerK`/`ExteriorGateAssembleK`/
+  `kampPrior_site_rungK_gate_match` (+ the matching strengthening inside the gate formula so
+  the ⇒-reconstruction can consume it): syntactically, EF-closure of `qnf.2` — (i) every
+  marked sub's inner fiber content re-appears under fresh-rotation as a marked sub (kills
+  CM-A: char[t+1]'s inner `[t+2]`-element forces marking σ); (ii) every marked sub's deep
+  content is anchored to the row (kills CM-B: sub_g's misplaced inner couplings violate
+  anchoring). HOUSE STYLE: land BOTH casts as machine probes over the Probe358TailK ℤ infra
+  FIRST (additive leaf, sorry-free, floor axioms), then re-key, then re-dispatch 358.
+- **Prohibited workarounds**: do NOT use `sorry`, `def X := True`, or any vacuous
+  placeholder; do NOT force the gate-match against CM-A/CM-B; do NOT weaken or delete any
+  probe certificate; Phase-3 landings (`ExteriorDeepSliceSupplyK.lean`) stay intact — they
+  are correct against the CURRENT rows-8-9 interface and survive any ambient-side
+  strengthening (their ambient-realization antecedent only gains strength).
 - **Goal:** Complete the exterior ledger: rows 12-13 (`hexclDeep*`) via the `_of_realized`
   contradiction; the G2-2 uniqueness kernel restated over the deep-anchored population; rows
   10-11 (`hexclSlice*`, byte-stable statements) consuming carried `hreal` + uniqueness.
