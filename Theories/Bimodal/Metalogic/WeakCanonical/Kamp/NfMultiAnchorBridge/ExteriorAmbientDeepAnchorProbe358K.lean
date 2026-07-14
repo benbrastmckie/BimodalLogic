@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberConsistencyK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorFiberDeepAnchorK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfDepth0Generalized
 
 /-! # Task 368 probe leaf: CM-A / CM-B live-countermodel casts (Phase 1)
 
@@ -407,5 +408,250 @@ theorem kvE_probe368_cmB_row5_refuted :
     nfk_dropFresh subG = qnfB.1 ∧
     ¬ ∃ x1 : MB.carrier, nf_eval_nf MB 2 4 (Fin.cons x1 mBreal3) subG :=
   ⟨qnfB_marks_subG, subG_fiberConsistent, subG_on_row, subG_unrealizable⟩
+
+/-! ## Phase 2: candidate ambient EF-closure guard + exclusion gates (probe-only)
+
+The candidate guard `kvE_ambientDeepAnchorV0 (qnf : NormalForm sig (k+2) n) : Bool` is a
+σ-INDEPENDENT decidable predicate over the NF fintype (no model parameter), graded on `k`
+exactly as `kvE_deepOnFiber` is graded on σ-depth:
+
+* **`k = 0` arm** (the m = 0 binder instance, `qnf : NormalForm sig 2 n`): literally `true`
+  — the guard is DEFINITIONALLY inert (`kvE_ambientDeepAnchorV0_zero`, `rfl`), keeping the
+  frozen task-360 m = 0 supply, the k ≤ 1 rungs, and any m = 0 residue rows untouched/vacuous
+  in Phase 5.
+* **`k + 1` arm** (m ≥ 1, exercised by the m = 1 gates at ambient depth 3): the
+  **fresh-rotation EF-closure** of `qnf.2`. For every marked sub `τ` (`qnf.2 τ = true`) and
+  every deep element `ρ` of `τ` (`τ.2 ρ = true`), there must be a marked sub `σ'`
+  (`qnf.2 σ' = true`) that COVERS the top-two-slot swap of `ρ` (`σ'.2 (swapNF01 ρ) = true`).
+
+  Both plan clauses are facets of this one closure: clause (i) **fresh-rotation re-appearance**
+  (CM-A's deep-incomplete marking violates it — `char[t+1]`'s inner `[t+2]`-fiber swaps to
+  `gapA`, which no marked `cA v` (`v ≤ 3`) covers, so `σ_A = cA 4` is never forced back in) and
+  clause (ii) **deep-content-to-row anchoring** (CM-B's `sub_g` violates it — its planted
+  R-point fiber `sG10` swaps to a 5-type forcing `R` at the w-mate slot BELOW the w-slot, which
+  no marked sub over the real tail — nor `sub_g` itself — can realize).
+
+### Depth/arity bookkeeping (Risk 2; 367 lesson)
+
+The "re-appearance under fresh-rotation" is expressed as a **membership/mate condition at the
+type `qnf.2` already marks** (`∃ marked σ', σ'.2 (swapNF01 ρ) = true`), NOT as a slot-drop:
+`swapNF01 := renameNF (Equiv.swap 0 1) (Equiv.swap 0 1)` is the sanctioned, DEPTH-preserving,
+ARITY-preserving reindex from `NfDepth0Generalized` (`renameNF`/`renameNF_eval_iff`). The
+depth-raising slot-drop `nfk_projFresh` stays F2-DEAD and is never built. `swapNF01` on a
+characteristic is again a characteristic of the swapped environment (`swapNF01_char`, via
+`renameNF_eval_iff` + `nf_eval_unique`) — the only fact the gates need.
+
+### Rejected candidate forms (367 house style)
+
+* **Atom-row-only re-appearance** (compare dropped atom rows of `τ.2` fibers against marked
+  subs' atom rows): REJECTED — CM-B's doppelgänger is depth-0 indistinguishable by
+  construction (`subG_on_row`), so an atom-row check cannot separate it. Deep-content rotation
+  is mandatory.
+* **`.2`-mate without swap** (`∃ marked σ', σ'.2 ρ = true`): REJECTED — the base of `ρ`
+  identifies its parent `τ` uniquely, so the only witness is `σ' = τ`; the condition is
+  vacuously satisfied and forces nothing (would not reject CM-A).
+* **Model-side realizability** (require each marked sub realized at some tail point):
+  REJECTED — circular (that IS the gate conclusion, per the blocker record), and not a
+  decidable syntactic `Bool` of `qnf` alone.
+* **Depth-raising rotation `rotate(ρ)` as a function then `qnf.2 (rotate ρ)`**: REJECTED —
+  promotion of the fresh variable to a quantifier layer is NOT determined by `ρ` alone (it
+  needs the ambient's realization data), so `rotate` is not a total syntactic function; the
+  swap-then-membership formulation sidesteps this. -/
+
+/-- **Top-two-slot swap** on a depth-`K`, arity-`(N+2)` normal form: the sanctioned
+    depth/arity-preserving reindex by the involution `Equiv.swap 0 1` (from
+    `NfDepth0Generalized.renameNF`). NOT a slot-drop — it permutes the two most-recently-bound
+    variables and is its own inverse. -/
+def swapNF01 {sig : MonadicSignature} {K N : Nat}
+    (ρ : NormalForm sig K (N + 2)) : NormalForm sig K (N + 2) :=
+  renameNF (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) ρ
+
+/-- `swapNF01` of a characteristic is the characteristic of the swapped environment. The only
+    property the exclusion gates consume — via `renameNF_eval_iff` (satisfaction transports
+    across the reindex) + `nf_eval_unique` (the swapped char is the unique NF satisfied there).
+    No guard unfolding, no slot-drop. -/
+theorem swapNF01_char {sig : MonadicSignature} (M : OrderedMonadicStructure sig) {K N : Nat}
+    (E : Fin (N + 2) → M.carrier) :
+    swapNF01 (nf_characteristic M K (N + 2) E)
+      = nf_characteristic M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1)) := by
+  apply nf_eval_unique M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
+  · exact (renameNF_eval_iff M (⇑(Equiv.swap (0 : Fin (N + 2)) 1))
+      (⇑(Equiv.swap (0 : Fin (N + 2)) 1)) E (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
+      (fun _ => rfl)
+      (fun i => by simp only [Function.comp_apply, Equiv.swap_apply_self])
+      (fun i => Equiv.swap_apply_self _ _ i)
+      (fun i => Equiv.swap_apply_self _ _ i)
+      (nf_characteristic M K (N + 2) E)).mpr (nf_characteristic_satisfies M K (N + 2) E)
+  · exact nf_characteristic_satisfies M K (N + 2) (E ∘ ⇑(Equiv.swap (0 : Fin (N + 2)) 1))
+
+/-- **Candidate ambient EF-closure guard** (task 368, Phase 2). σ-independent decidable syntax
+    over the NF fintype. `k = 0` (m = 0 binder): `true` (inert, `rfl`). `k + 1` (m ≥ 1): every
+    marked sub's every deep element re-appears, under the top-two-slot swap, as a deep element
+    of a marked sub — the fresh-rotation EF-closure both CM-A and CM-B violate. -/
+noncomputable def kvE_ambientDeepAnchorV0 {sig : MonadicSignature} :
+    {k n : Nat} → NormalForm sig (k + 2) n → Bool
+  | 0, _, _ => true
+  | k + 1, n, qnf =>
+    (Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).all fun τ =>
+      !qnf.2 τ ||
+      (Finset.univ.toList (α := NormalForm sig (k + 1) (n + 2))).all fun ρ =>
+        !τ.2 ρ ||
+        (Finset.univ.toList (α := NormalForm sig (k + 2) (n + 1))).any fun σ' =>
+          qnf.2 σ' && σ'.2 (swapNF01 ρ)
+
+/-- **Gate 2c — m = 0 inertness**: at the m = 0 binder instance (`qnf : NormalForm sig 2 n`)
+    the guard is DEFINITIONALLY `true` (`rfl`). The guard rail that keeps the frozen m = 0
+    supply layer, the k ≤ 1 rungs, and any m = 0 residue rows untouched/vacuous in Phase 5 —
+    the ambient-guard analog of `kvE_deepOnFiber_zero`. -/
+theorem kvE_ambientDeepAnchorV0_zero {sig : MonadicSignature} {n : Nat}
+    (qnf : NormalForm sig 2 n) : kvE_ambientDeepAnchorV0 qnf = true := rfl
+
+/-! ### Gate 2a — CM-A excluded (deep-incomplete marking fails EF-closure) -/
+
+/-- `cA 3 = char[t+1, w, x, t]` is `qnfA`-marked (it is the fifth listed char). -/
+private theorem qnfA_marks_cA3 : qnfA.2 (cA 3) = true :=
+  @decide_eq_true _ (Classical.dec _) (Or.inr (Or.inr (Or.inr (Or.inr rfl))))
+
+/-- The inner `[t+2]`-fiber of `cA 3`: `char[t+2; t+1, w, x, t] = char[4; 3, 1, 0, 2]`. Its
+    top-two-slot swap is `gapA = char[t+1; t+2, w, x, t]`. -/
+private noncomputable def fibA34 : NormalForm mAsig 1 5 :=
+  nf_characteristic MA 1 5 (Fin.cons 4 (Fin.cons 3 mAenv3))
+
+/-- `cA 3` marks its own inner `[t+2]`-fiber (honest witness: the point `4 = t+2` above
+    `3 = t+1`). -/
+private theorem cA3_marks_fibA34 : (cA 3).2 fibA34 = true :=
+  @decide_eq_true _ (Classical.dec _)
+    ⟨4, nf_characteristic_satisfies MA 1 5 (Fin.cons 4 (Fin.cons 3 mAenv3))⟩
+
+/-- The swap of `cA 3`'s inner `[t+2]`-fiber IS `gapA` — the separating deep element no marked
+    `cA v` (`v ≤ 3`) covers. Via `swapNF01_char` + the concrete environment swap. -/
+private theorem swapNF01_fibA34 : swapNF01 fibA34 = gapA := by
+  have hE : (Fin.cons (4 : ℤ) (Fin.cons 3 mAenv3)) ∘ ⇑(Equiv.swap (0 : Fin 5) 1)
+      = Fin.cons 3 (Fin.cons 4 mAenv3) := by
+    funext i
+    fin_cases i <;> rfl
+  show swapNF01 (nf_characteristic MA 1 5 (Fin.cons 4 (Fin.cons 3 mAenv3))) = gapA
+  rw [swapNF01_char MA, hE]
+  rfl
+
+/-- **Gate 2a — CM-A is EXCLUDED by the candidate guard**: `kvE_ambientDeepAnchorV0 qnfA =
+    false`. The deep-incomplete marking fails clause (i): the marked `cA 3` carries the inner
+    `[t+2]`-fiber `fibA34`, whose swap `gapA` is covered by NO marked sub (the honest completer
+    `σ_A = cA 4` was dropped, and no `cA v` with `v ≤ 3` marks `gapA` — Phase-1 `cA_gap_false`).
+    Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_cmA_ambient_rejected : kvE_ambientDeepAnchorV0 qnfA = false := by
+  cases hg : kvE_ambientDeepAnchorV0 qnfA with
+  | false => rfl
+  | true =>
+    exfalso
+    -- unfold the k = 0 (ambient-depth-3) arm to the outer `.all`
+    rw [show kvE_ambientDeepAnchorV0 qnfA
+          = (Finset.univ.toList (α := NormalForm mAsig 2 4)).all (fun τ =>
+              !qnfA.2 τ ||
+              (Finset.univ.toList (α := NormalForm mAsig 1 5)).all (fun ρ =>
+                !τ.2 ρ ||
+                (Finset.univ.toList (α := NormalForm mAsig 2 4)).any (fun σ' =>
+                  qnfA.2 σ' && σ'.2 (swapNF01 ρ)))) from rfl,
+        List.all_eq_true] at hg
+    have hτ := hg (cA 3) (kvE_nf_mem_univ_toList _)
+    rw [qnfA_marks_cA3, Bool.not_true, Bool.false_or, List.all_eq_true] at hτ
+    have hρ := hτ fibA34 (kvE_nf_mem_univ_toList _)
+    rw [cA3_marks_fibA34, Bool.not_true, Bool.false_or, List.any_eq_true] at hρ
+    obtain ⟨σ', -, hσ'⟩ := hρ
+    rw [Bool.and_eq_true, swapNF01_fibA34] at hσ'
+    obtain ⟨hmk, hcov⟩ := hσ'
+    have hd : σ' = cA (-1) ∨ σ' = cA 0 ∨ σ' = cA 1 ∨ σ' = cA 2 ∨ σ' = cA 3 :=
+      @of_decide_eq_true _ (Classical.dec _) hmk
+    have hfalse : ∀ v : ℤ, v ≤ 3 → σ' = cA v → False := by
+      intro v hv h
+      rw [h, cA_gap_false v hv] at hcov
+      exact Bool.noConfusion hcov
+    rcases hd with h | h | h | h | h
+    · exact hfalse (-1) (by omega) h
+    · exact hfalse 0 (by omega) h
+    · exact hfalse 1 (by omega) h
+    · exact hfalse 2 (by omega) h
+    · exact hfalse 3 (by omega) h
+
+/-! ### Gate 2b — CM-B excluded (doppelgänger marking fails EF-closure) -/
+
+/-- The swap of `sub_g`'s planted R-point fiber `sG10 = char[R-pt; w̃, w̃, x̃, t̃]`: the 5-type
+    `char[w̃; R-pt, w̃, x̃, t̃] = char[12; 10, 12, 8, 25]`. Its atom row forces `R` at the
+    w-mate slot 1 AND `slot 1 < slot 2` — jointly unrealizable over any honest `[·, w, x, t]`
+    tail (there `slot 1 = w = 5 ≠ R` and, when forced `= R = 10`, `10 < x = 2` fails) and over
+    `sub_g`'s own fake tail (there `slot 1 = w̃ = 12 ≠ R`). -/
+private noncomputable def swG : NormalForm mBsig 1 5 :=
+  nf_characteristic MB 1 5 (Fin.cons 12 (Fin.cons 10 mBfake3))
+
+/-- The swap of `sub_g`'s planted R-point fiber IS `swG`. Via `swapNF01_char`. -/
+private theorem swapNF01_sG10 : swapNF01 sG10 = swG := by
+  have hE : (Fin.cons (10 : ℤ) mBsubgTup) ∘ ⇑(Equiv.swap (0 : Fin 5) 1)
+      = Fin.cons 12 (Fin.cons 10 mBfake3) := by
+    funext i
+    fin_cases i <;> rfl
+  show swapNF01 (nf_characteristic MB 1 5 (Fin.cons 10 mBsubgTup)) = swG
+  rw [swapNF01_char MB, hE]
+  rfl
+
+/-- If `swG` is realized over a 5-tuple `T`, then `T 1 = 10` (R at slot 1) and `T 1 < T 2`
+    (order slot 1 < slot 2) — the joint atom-row obstruction of the swapped R-point fiber. The
+    atom rows are read off `swG`'s own characteristic env `[12, 10, 12, 8, 25]` (slot 1 = R-pt
+    `10`, and `10 < 12` = slot 2), via the Phase-1 `decide_eq_true` idiom. -/
+private theorem swG_forces {T : Fin 5 → MB.carrier} (hT : nf_eval_nf MB 1 5 T swG) :
+    T 1 = 10 ∧ T 1 < T 2 :=
+  ⟨(hT.1 (.pred () 1)).mpr (@decide_eq_true _ (Classical.dec _) (rfl : (10 : ℤ) = 10)),
+   (hT.1 (.order 1 2 (by decide))).mpr
+     (@decide_eq_true _ (Classical.dec _) (show (10 : ℤ) < 12 by omega))⟩
+
+/-- **Gate 2b — CM-B is EXCLUDED by the candidate guard**: `kvE_ambientDeepAnchorV0 qnfB =
+    false`. The doppelgänger marking fails clause (ii): the marked `sub_g` carries the planted
+    R-point fiber `sG10`, whose swap `swG` is covered by NO marked sub — not by any honest sub
+    over the real tail `[·, 5, 2, 30]` (forced `R` at slot 1 gives `T 1 = 10`, but the order
+    row then needs `10 < 2`), nor by `sub_g` over its fake tail (slot 1 is `w̃ = 12 ≠ R`).
+    Sorry-free; axioms `[propext, Classical.choice, Quot.sound]`. -/
+theorem kvE_probe368_cmB_ambient_rejected : kvE_ambientDeepAnchorV0 qnfB = false := by
+  cases hg : kvE_ambientDeepAnchorV0 qnfB with
+  | false => rfl
+  | true =>
+    exfalso
+    rw [show kvE_ambientDeepAnchorV0 qnfB
+          = (Finset.univ.toList (α := NormalForm mBsig 2 4)).all (fun τ =>
+              !qnfB.2 τ ||
+              (Finset.univ.toList (α := NormalForm mBsig 1 5)).all (fun ρ =>
+                !τ.2 ρ ||
+                (Finset.univ.toList (α := NormalForm mBsig 2 4)).any (fun σ' =>
+                  qnfB.2 σ' && σ'.2 (swapNF01 ρ)))) from rfl,
+        List.all_eq_true] at hg
+    have hτ := hg subG (kvE_nf_mem_univ_toList _)
+    rw [qnfB_marks_subG, Bool.not_true, Bool.false_or, List.all_eq_true] at hτ
+    have hρ := hτ sG10 (kvE_nf_mem_univ_toList _)
+    rw [subG_marks_sG10, Bool.not_true, Bool.false_or, List.any_eq_true] at hρ
+    obtain ⟨σ', -, hσ'⟩ := hρ
+    rw [Bool.and_eq_true, swapNF01_sG10] at hσ'
+    obtain ⟨hmk, hcov⟩ := hσ'
+    -- `qnfB.2 σ' = true` splits: honest sub over the real tail, or `σ' = subG`
+    have hsplit : (nf_characteristic MB 3 3 mBreal3).2 σ' = true ∨ σ' = subG := by
+      have : ((nf_characteristic MB 3 3 mBreal3).2 σ' ||
+          @decide (σ' = subG) (Classical.dec _)) = true := hmk
+      rcases Bool.or_eq_true _ _ |>.mp this with h | h
+      · exact Or.inl h
+      · exact Or.inr (@of_decide_eq_true _ (Classical.dec _) h)
+    rcases hsplit with hhon | hsub
+    · -- honest σ' realized at `[x1, 5, 2, 30]`; `swG` realized over it ⇒ `T 1 = 10 ∧ T 1 < T 2`
+      obtain ⟨x1, hx1⟩ := @of_decide_eq_true _ (Classical.dec _) hhon
+      obtain ⟨x, hx⟩ := (hx1.2 swG).mpr hcov
+      obtain ⟨h1, h2⟩ := swG_forces hx
+      -- over `[x, x1, 5, 2, 30]`: slot 1 = x1, slot 2 = 5; forced `x1 = 10` yet `x1 < 5`
+      rw [show (1 : Fin 5) = Fin.succ 0 from by decide] at h1 h2
+      rw [show (2 : Fin 5) = Fin.succ (Fin.succ 0) from by decide] at h2
+      simp only [Fin.cons_succ, Fin.cons_zero, mBreal3] at h1 h2
+      omega
+    · -- σ' = subG realized at the fake tail `[12, 8, 25]`; slot 1 = w̃ = 12 ≠ R = 10
+      subst hsub
+      obtain ⟨x, hx⟩ := ((nf_characteristic_satisfies MB 2 4 mBsubgTup).2 swG).mpr hcov
+      obtain ⟨h1, -⟩ := swG_forces hx
+      rw [show (1 : Fin 5) = Fin.succ 0 from by decide] at h1
+      simp only [Fin.cons_succ, Fin.cons_zero, mBsubgTup] at h1
+      exact absurd h1 (by omega)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

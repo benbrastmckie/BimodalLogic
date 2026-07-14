@@ -276,14 +276,14 @@ definition in this phase.
 
 ---
 
-### Phase 2: Candidate ambient EF-closure guard design + exclusion gates (probe-only) [NOT STARTED]
+### Phase 2: Candidate ambient EF-closure guard design + exclusion gates (probe-only) [COMPLETED]
 
 **Goal**: Design and machine-validate the ambient guard CANDIDATE in the probe leaf, without
 touching any production file. The candidate must exclude BOTH CM-A's and CM-B's fake ambients
 while remaining m=0-inert.
 
 **Tasks**:
-- [ ] Define candidate `kvE_ambientDeepAnchorV0 (qnf : NormalForm sig (k+2) n) : Bool`
+- [x] Define candidate `kvE_ambientDeepAnchorV0 (qnf : NormalForm sig (k+2) n) : Bool`
       (working name; pure decidable syntax over the NF fintype, no model parameter, mirroring
       `kvE_deepOnFiber`'s shape) implementing EF-closure of `qnf.2`:
       (i) **fresh-rotation re-appearance** — every marked sub's inner fiber content
@@ -295,18 +295,34 @@ while remaining m=0-inert.
       lesson: prefer mate/membership conditions at types `qnf.2` already marks over
       slot-drop operations). Keep the fiber-depth <= 1 arm literally the trivial/old check so
       inertness stays `rfl`-cheap. Document rejected candidate forms and trade-offs in the
-      leaf docstring (367 house style).
-- [ ] **Gate 2a (CM-A excluded)**: sorry-free certificate
+      leaf docstring (367 house style). *(done: both plan clauses unified as one
+      fresh-rotation EF-closure clause on the `k+1` arm; the `k=0` arm is literally `true`
+      (rfl-inert). Bookkeeping resolved via `swapNF01 := renameNF (Equiv.swap 0 1) (Equiv.swap
+      0 1)` — a DEPTH/ARITY-preserving reindex (sanctioned `NfDepth0Generalized.renameNF`),
+      expressed as a membership/mate condition `∃ marked σ', σ'.2 (swapNF01 ρ) = true` at the
+      type `qnf.2` marks; the F2-DEAD depth-raising `nfk_projFresh` is never built. Four
+      rejected forms documented in the leaf docstring.)*
+- [x] **Gate 2a (CM-A excluded)**: sorry-free certificate
       `kvE_probe368_cmA_ambient_rejected : kvE_ambientDeepAnchorV0 qnfA = false` — the
-      deep-incomplete marking fails clause (i).
-- [ ] **Gate 2b (CM-B excluded)**: sorry-free certificate
+      deep-incomplete marking fails clause (i). *(done: `cA 3` marks `fibA34 = char[4;3,1,0,2]`,
+      whose swap is Phase-1 `gapA`; no marked `cA v (v≤3)` covers it — reuses `cA_gap_false`.
+      Axioms `[propext, Classical.choice, Quot.sound]`, no sorryAx.)*
+- [x] **Gate 2b (CM-B excluded)**: sorry-free certificate
       `kvE_probe368_cmB_ambient_rejected : kvE_ambientDeepAnchorV0 qnfB = false` — the
-      doppelganger marking fails clause (ii).
-- [ ] **Gate 2c (m=0 inertness)**: `_zero` lemma at the m=0 binder instance, ideally `rfl`
+      doppelganger marking fails clause (ii). *(done: `subG` marks `sG10`, whose swap `swG =
+      char[12;10,12,8,25]` forces `R` at slot 1 with slot1<slot2 — unrealizable over the real
+      tail `[·,5,2,30]` (forces `10<5`) and over `subG`'s fake tail (slot 1 = 12 ≠ R). Axioms
+      `[propext, Classical.choice, Quot.sound]`, no sorryAx.)*
+- [x] **Gate 2c (m=0 inertness)**: `_zero` lemma at the m=0 binder instance, ideally `rfl`
       (mirroring `kvE_deepOnFiber_zero`) — the guard rail that keeps the frozen m=0 supply
       layer, the k<=1 rungs, and any m=0 residue rows untouched/vacuous in Phase 5.
-- [ ] Scoped `lake build` of the leaf; `lean_verify` gates 2a/2b/2c (floor axioms);
-      `git status` audit (probe leaf only). Green commit.
+      *(done: `kvE_ambientDeepAnchorV0_zero : kvE_ambientDeepAnchorV0 (qnf : NormalForm sig 2
+      n) = true := rfl`. Floor axioms, no sorryAx.)*
+- [x] Scoped `lake build` of the leaf; `lean_verify` gates 2a/2b/2c (floor axioms);
+      `git status` audit (probe leaf only). Green commit. *(done: scoped build green (1025
+      jobs); all three gates verified at `[propext, Classical.choice, Quot.sound]` no sorryAx;
+      sorry/vacuous/axiom scans all 0; guard-unfold scan clean; `git diff --stat -- Theories/`
+      = only the probe leaf, production untouched.)*
 
 **Timing**: 2 hours
 
