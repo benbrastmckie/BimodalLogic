@@ -188,20 +188,53 @@ KampPrior/interior leaf.)
 - **Timing:** 1-2 hours.
 - **Depends on:** none.
 
-### Phase 2: G2 slice-identification + uniqueness kernel at general m [NOT STARTED]
+### Phase 2: G2 slice-identification + uniqueness kernel at general m [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: The G2 general-m exterior slice supply (rows 8-11) cannot be built green
+  against task 363's landed fiber-consistency interface. The m=1 doppelgänger countermodel that
+  363 was spawned to dissolve ADAPTS to the restated interface via a planted interior mate.
+- **What was tried**: Machine probe (route R2, plan-mandated) in
+  `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorPinnedProbe358K.lean`.
+  The decisive certificate `kvE_probe358_eP_atomMate_present` is sorry-free, `lake build` green,
+  `lean_verify` = `[propext, Classical.choice, Quot.sound]`, clean source scan.
+- **Why it's stuck (minimal failing obligation shape)**: `kvE_fiberElemConsistent`'s mate check
+  (`ExteriorFiberConsistencyK.lean:52-55`) is `mergeNF e.atom_assgn ⟨1,_⟩ = s'.atom_assgn` over a
+  σ-marked `s'` — an **atom-row-only** comparison with NO realizability / consistency-nontriviality
+  / fresh-projection constraint on the mate. Task 363 rejected `σ = τ ⊕ s*` because `s*`'s inner
+  witness `e_P` had no atom-mate (`kvE_probe363_fake_elem_inconsistent`). Planting
+  `mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)` — an unrealizable, interior-zoned,
+  vacuously-consistent, on-fiber fiber — supplies exactly that missing atom row. The certificate
+  exhibits it in `σ₂ := τ ⊕ s* ⊕ mate`, negating the load-bearing step of 363's rejection. The
+  full σ₂-level admissibility (every `s*`-marked inner has a mate: u=20 via the plant, all other
+  order-classes via honest τ-fibers under the doppelgänger order-remap) is argued by u-class
+  enumeration in the probe docstring; its full mechanization is itself research-scale and is the
+  escalation task's deliverable, not this gate's.
+- **What is needed**: A strengthened fiber-consistency mate check — realizability-anchored (the
+  mate must be a genuinely realizable fiber, not an atom-row plant) or depth-recursive mate
+  CONTENT comparison (compare the mate's `.2` marking / fresh projection, not only its atom row).
+  This is a 363-style interface restatement task; `/spawn 358` to allocate it.
+- **Prohibited workarounds**: Do NOT use `sorry`, `def X := True`, or any vacuous placeholder;
+  do NOT weaken the rows-8-11 binder to make the FALSE obligation provable.
+- **Scope note**: G1 (rows 5-6, interior) is NOT re-broken by this cast — the planted mate is
+  projection-visible, so `igFoldBit (qnf ⊕ σ₂) ≠ igFoldBit (honest qnf)` and 363's interior-leg
+  separation stands. The blocker is exterior-leg (G2) only. Phases 3-6 are downstream of P2 and
+  remain [NOT STARTED].
 - **Goal:** Generalize the m=0 slice-id and uniqueness kernels off m=0, re-keyed to 363's
   fiber-consistent admissible population — the shared readback kernel (route R3) that both G2's supply
   and G1's `hexcl` consume.
 - **Tasks:**
-  - [ ] **G2-1**: prove `kvE_{fut,past}SliceId_of_end` at general m — endpoint slice identification with
-        walked-point/endpoint types rendered through `charF`/providers (level descent). Generalizes
-        `kvE_{fut,past}SliceId_of_end_zero`; keyed to 363's rendering (every admissible sigma is
-        fiber-consistent, so `s*`-class fakes are outside the population).
-  - [ ] **G2-2**: prove `kvE_{fut,past}SliceUnique` at general m (build the uniqueness/readback kernel
-        ONCE, route R3). Generalizes `kvE_{fut,past}SliceUnique_zero`.
-  - [ ] Verify the FROZEN m=0 kernels (`_zero`) remain byte-unchanged; scoped build of
-        `ExteriorPinnedConverse{K,PastK}`.
-  - [ ] `lean_verify` each new kernel at floor axioms; no new axiom, no `sorryAx`.
+  - [ ] **G2-1**: prove `kvE_{fut,past}SliceId_of_end` at general m *(deviation: blocked — the
+        premise "every admissible sigma is fiber-consistent, so `s*`-class fakes are outside the
+        population" is FALSE against 363's interface; the R2 probe `kvE_probe358_eP_atomMate_present`
+        (ExteriorPinnedProbe358K.lean) shows the atom-row-only mate check admits a planted interior
+        mate that restores admissibility of the `s*`-carrying slice)*.
+  - [ ] **G2-2**: prove `kvE_{fut,past}SliceUnique` at general m *(deviation: blocked — downstream of
+        G2-1; not attempted)*.
+  - [x] Verify the FROZEN m=0 kernels (`_zero`) remain byte-unchanged *(completed: no production file
+        touched; only the additive leaf probe `ExteriorPinnedProbe358K.lean` was added)*.
+  - [x] R2 probe gate executed *(completed: NO-GO; `kvE_probe358_eP_atomMate_present` sorry-free,
+        lean_verify floor axioms, clean source scan)*.
 - **Timing:** 4-6 hours.
 - **Depends on:** 1.
 
