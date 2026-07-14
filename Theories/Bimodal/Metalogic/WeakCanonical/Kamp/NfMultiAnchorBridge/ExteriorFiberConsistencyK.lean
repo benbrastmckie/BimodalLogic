@@ -1,15 +1,38 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfEFold
 
-/-! # Depth-graded fiber-consistency guard (task 363 — production home)
+/-! # Depth-graded fiber-consistency guard (task 363 — production home; task 364 — mate
+check strengthened in place)
 
-The D7 interface repair (research approach (b)): a decidable, model-independent,
-depth-recursive fiber-consistency guard that reads the depth-≥1 inner `.2` marking — the layer
-NO existing fiber-marking channel reads (`nfk_dropFresh`/`nfk_zoneSpec` are depth-0,
-`nfk_projFresh` is an arity-1 prefix collapse), which is exactly what the doppelgänger-tail
-fake fiber `s*` of `ExteriorPinnedProbeM1K.lean` exploits.
+The D7 interface repair (research approach (b)): a model-independent, depth-recursive
+fiber-consistency guard that reads the depth-≥1 inner `.2` marking — the layer NO existing
+fiber-marking channel reads (`nfk_dropFresh`/`nfk_zoneSpec` are depth-0, `nfk_projFresh` is an
+arity-1 prefix collapse), which is exactly what the doppelgänger-tail fake fiber `s*` of
+`ExteriorPinnedProbeM1K.lean` exploits.
 
 Promoted verbatim from the Phase-1 probe module (`ExteriorFiberConsistencyProbeK.lean`, GO
 verdict: rejects `s*`/`m1sigma`, accepts every honest probe fiber, 358-feasible).
+
+## Task-364 strengthening (mate check restated IN PLACE)
+
+The task-363 mate check was atom-row-only and was machine-refuted by task 358's route-R2 probe
+(`kvE_probe358_eP_atomMate_present`, `ExteriorPinnedProbe358K.lean`): the adversary PLANTS the
+missing row as an unrealizable fiber `mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)`
+— vacuously elem-consistent, interior-zoned, hence invisible — restoring the m = 1
+doppelgänger countermodel one layer deeper. Task 364 strengthens the mate check with ONE new
+conjunct: the mate `s'` must be CO-REALIZED with the ambient `σ` in some model
+(`∃ M env u, σ` realized at `env ∧ s'` realized at `Fin.cons u env`). This is the
+literature-faithful reading of the content channel (Rabinovich Def 4.1, PDF p.5: every
+E[Σ]-atom of the canonical expansion is interpreted as `{a ∈ M | M, a ⊨ A}` — point content IS
+realization content). Name, signature, the depth-0 arm, `_zero` inertness, and the
+`_of_realized` lemma statements are all byte-stable; honest preservation gains exactly one
+witness (`⟨M, env, u, hσ, nf_characteristic_satisfies⟩`). Why this rejects the plant — and
+EVERY adapted re-plant that keeps `s*` plus one honest fiber marked: `s*` forces an interior
+`P`-point through its marked witness `e_P`, while every honest fiber's quant layer is decided
+in the probe model (where `P ∩ (15,18) = ∅`), so the ambient admits NO joint realization at
+all (`kvE_probe364_sstar_honest_unrealizable`, `ExteriorFiberConsistencyProbe364K.lean` — the
+Gate-3a universal certificate). Candidate adjudication record (why syntactic content
+comparison and standalone realizability were both rejected) lives in the probe leaf's module
+docstring.
 
 ## Consumption map (task 363)
 
@@ -41,10 +64,13 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
 /-- **Per-fiber depth-graded consistency** of a fiber `s` within an ambient `σ` marking it:
-    every inner form marked by `s` (i) has an atom-layer mate among `σ`'s marked fibers after
-    dropping `s`'s fresh slot (position 1 of the inner arity), and (ii) is recursively
-    fiber-consistent within `s`. Trivially `true` at fiber depth 0 (no inner marking) — the
-    m = 0 inertness guard rail. Decidable, model-independent syntax. -/
+    every inner form marked by `s` (i) has a mate among `σ`'s marked fibers that matches its
+    dropped atom layer (`s`'s fresh slot, position 1 of the inner arity, removed) AND is
+    co-realized with `σ` in some model (the task-364 strengthening — an atom-row plant with
+    no grounding in any joint realization of the ambient no longer qualifies), and (ii) is
+    recursively fiber-consistent within `s`. Trivially `true` at fiber depth 0 (no inner
+    marking) — the m = 0 inertness guard rail. Model-independent (the realization existential
+    is internal; there is no model parameter). -/
 noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} :
     {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
   | 0, _, _, _ => true
@@ -52,7 +78,12 @@ noncomputable def kvE_fiberElemConsistent {sig : MonadicSignature} :
     ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
       !(s.2 e) ||
         ((Finset.univ.toList (α := NormalForm sig (j + 1) (n + 1))).any fun s' =>
-          σ.2 s' && decide (mergeNF (e.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn))) &&
+          σ.2 s' && decide (mergeNF (e.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn) &&
+            @decide (∃ (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
+                (u : M.carrier),
+                nf_eval_nf M (j + 2) n env σ ∧
+                nf_eval_nf M (j + 1) (n + 1) (Fin.cons u env) s')
+              (Classical.dec _))) &&
     ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
       !(s.2 e) || kvE_fiberElemConsistent s e)
 
@@ -111,9 +142,10 @@ private theorem cons_cons_skipOne {α : Type _} {n : Nat} (u xs : α) (env : Fin
 /-- **Realized fibers are elem-consistent** (honest preservation, per-fiber): if `σ` is
     realized at `env` and its fiber `s` at `Fin.cons xs env`, then `s` passes the guard.
     The mate witness for a marked inner `e` (realized at `Fin.cons u (Fin.cons xs env)`) is
-    the characteristic of the dropped tuple `Fin.cons u env` — `σ`-marked by realization and
-    atom-matching by construction. Induction on the fiber depth (the recursion arm is the
-    inductive hypothesis one level down). -/
+    the characteristic of the dropped tuple `Fin.cons u env` — `σ`-marked by realization,
+    atom-matching by construction, and (task 364) co-realized with `σ` by the very hypotheses
+    in scope. Induction on the fiber depth (the recursion arm is the inductive hypothesis one
+    level down). -/
 theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature}
     (M : OrderedMonadicStructure sig) :
     ∀ {k n : Nat} (env : Fin n → M.carrier) (xs : M.carrier)
@@ -138,8 +170,17 @@ theorem kvE_fiberElemConsistent_of_realized {sig : MonadicSignature}
         rw [List.any_eq_true]
         refine ⟨nf_characteristic M (j + 1) (n + 1) (Fin.cons u env),
           Finset.mem_toList.mpr (Finset.mem_univ _), ?_⟩
-        rw [Bool.and_eq_true]
-        refine ⟨(hσ.2 _).mp ⟨u, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩, ?_⟩
+        rw [Bool.and_eq_true, Bool.and_eq_true]
+        refine ⟨⟨(hσ.2 _).mp ⟨u, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩, ?_⟩,
+          -- (task 364) joint co-realization: the hypotheses in scope ARE the witness
+          @decide_eq_true
+            (∃ (M0 : OrderedMonadicStructure sig) (env0 : Fin n → M0.carrier)
+              (u0 : M0.carrier),
+              nf_eval_nf M0 (j + 2) n env0 σ ∧
+              nf_eval_nf M0 (j + 1) (n + 1) (Fin.cons u0 env0)
+                (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)))
+            (Classical.dec _)
+            ⟨M, env, u, hσ, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩⟩
         refine decide_eq_true ?_
         funext a
         -- LHS: the dropped atom row of `e`; RHS: the characteristic's atom row

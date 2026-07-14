@@ -204,8 +204,10 @@ theorem kvE_probe363_fake_elem_inconsistent :
       exact absurd h1 (by decide)
     · rw [List.any_eq_true] at h1
       obtain ⟨s', -, hs'⟩ := h1
-      rw [Bool.and_eq_true] at hs'
-      obtain ⟨hbit, hdec⟩ := hs'
+      -- task 364: the mate check gained a co-realization conjunct; the original
+      -- atom-row contradiction still closes this certificate, so it is discarded here
+      rw [Bool.and_eq_true, Bool.and_eq_true] at hs'
+      obtain ⟨⟨hbit, hdec⟩, -⟩ := hs'
       have heq : mergeNF (m1eP.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn :=
         of_decide_eq_true hdec
       -- read the three separating atoms through the claimed mate

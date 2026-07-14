@@ -296,35 +296,45 @@ fails.
 
 ---
 
-### Phase 4: In-place production restatement + consumer repair [NOT STARTED]
+### Phase 4: In-place production restatement + consumer repair [COMPLETED]
 
 **Goal**: Promote the adjudicated candidate into the production home by restating
 `kvE_fiberElemConsistent` IN PLACE (stable name, stable signature, stable lemma statements), and
 repair everything downstream that inspects the definition body.
 
 **Tasks**:
-- [ ] Restate `kvE_fiberElemConsistent` in `ExteriorFiberConsistencyK.lean:48-57` per the
+- [x] Restate `kvE_fiberElemConsistent` in `ExteriorFiberConsistencyK.lean:48-57` per the
       adjudicated candidate; keep the `| 0, _, _, _ => true` arm verbatim; update the module and
       definition docstrings (consumption map, why-this-separates section) to record the task-364
-      strengthening and the plant it rejects.
-- [ ] Re-prove in the production home: `kvE_fiberElemConsistent_zero` (must remain `rfl`),
+      strengthening and the plant it rejects. *(completed — co-realization conjunct added inside
+      the mate `any`; depth-0 arm verbatim; module + def docstrings updated)*
+- [x] Re-prove in the production home: `kvE_fiberElemConsistent_zero` (must remain `rfl`),
       `kvE_fiberConsistent_zero`, `kvE_fiberElemConsistent_of_realized`,
       `kvE_fiberConsistent_of_realized` — transcribing the Phase-2 probe proofs; signatures
-      byte-identical to current.
-- [ ] Repair the four fake-exclusion certificate proofs in `ExteriorFiberConsistencyProbeK.lean`
+      byte-identical to current. *(completed — `_zero` pair byte-unchanged and still `rfl`-based;
+      `_of_realized` gained only the in-scope co-realization witness; all signatures
+      byte-identical)*
+- [x] Repair the four fake-exclusion certificate proofs in `ExteriorFiberConsistencyProbeK.lean`
       (`kvE_probe363_fake_elem_inconsistent`, `kvE_probe363_fake_slice_inconsistent`,
       `kvE_probe363_qnfG1_antecedent_fails`, `kvE_probe363_sigma_inadmissible`) — statements
       unchanged, proof scripts adapted to the new conjunct structure (the original atom-row
-      contradiction still closes them; the added conjunct only widens the falsity).
-- [ ] Rewire `ExteriorFiberConsistencyProbe364K.lean` to certify against the PRODUCTION
+      contradiction still closes them; the added conjunct only widens the falsity). *(completed —
+      only cert 1 needed repair (one extra `Bool.and_eq_true` destructure discarding the new
+      conjunct); certs 2, 6, 7 consume cert 1 / the unchanged `kvE_futAdmissible` skeleton and
+      compiled untouched, as did honest certs 3, 4, 5a, 5b, 8)*
+- [x] Rewire `ExteriorFiberConsistencyProbe364K.lean` to certify against the PRODUCTION
       definition (drop or alias the V2 duplicate so exactly one live definition exists; retain the
       leaf as the permanent regression record, mirroring the 363 probe-module precedent).
-- [ ] Build the full consumer chain scoped:
+      *(completed — V2 defs and V2 lemma duplicates dropped; all certs restated against
+      `kvE_fiberElemConsistent`/`kvE_fiberConsistent`/`kvE_futAdmissible`; Phase-5 successor
+      certs added in the same rewire)*
+- [x] Build the full consumer chain scoped:
       `ExteriorNegationK`, `ExteriorNegationPastK`, `ExteriorPinnedConverseK`,
       `EndIntervalConsumerK`, `ExteriorPinnedProbeM1K`, `KampPrior`. Consumers use the guard
       opaquely or via the stable lemmas, so NO statement changes are expected there; any needed
       edit beyond proof-script repair in the two probe modules is a scope alarm — stop and
-      reassess before widening.
+      reassess before widening. *(completed — whole chain green including `ExteriorPinnedProbe358K`;
+      zero consumer edits; `git diff --stat` over Theories/ shows exactly the three planned files)*
 
 **Timing**: 2 hours
 

@@ -1,14 +1,17 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorNegationK
 
-/-! # Strengthened fiber-consistency mate check — probe leaf (task 364, GO/NO-GO gates)
+/-! # Strengthened fiber-consistency mate check — probe + regression record (task 364)
 
-NON-PRODUCTION probe module for the task-364 interface strengthening. Task 358's route-R2
-probe (`ExteriorPinnedProbe358K.lean`, `kvE_probe358_eP_atomMate_present`) machine-refuted the
-task-363 mate check: it is atom-row-only (`mergeNF e.atom_assgn ⟨1,_⟩ = s'.atom_assgn`) and is
-defeated by PLANTING the missing row as an unrealizable fiber
-`mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)` inside `σ₂ := τ ⊕ s* ⊕ mate`. This
-module defines the strengthened CANDIDATE (`kvE_fiberElemConsistentV2`) and machine-validates
-it on the m = 1 and m = 2 casts before any production file is touched.
+Probe module for the task-364 interface strengthening, retained as the PERMANENT regression
+record (mirroring the task-363 probe-module precedent). Task 358's route-R2 probe
+(`ExteriorPinnedProbe358K.lean`, `kvE_probe358_eP_atomMate_present`) machine-refuted the
+task-363 mate check: it was atom-row-only (`mergeNF e.atom_assgn ⟨1,_⟩ = s'.atom_assgn`) and
+was defeated by PLANTING the missing row as an unrealizable fiber
+`mate := (mergeNF e_P.atom_assgn ⟨1,_⟩, fun _ => false)` inside `σ₂ := τ ⊕ s* ⊕ mate`. The
+candidate validated here (Phases 1-3) was PROMOTED to the production home
+`ExteriorFiberConsistencyK.lean` (Phase 4): the mate check now additionally requires the mate
+to be CO-REALIZED with the ambient (`∃ M env u, σ` realized at `env ∧ s'` realized at
+`Fin.cons u env`). All certificates below are stated against the PRODUCTION definitions.
 
 ## Candidate adjudication record (Phase 1, design-level)
 
@@ -31,36 +34,41 @@ shape of the witness term task 358's G2 supply proof must construct.
   honest-in-M2M adapted mate `mate₃ := nf_characteristic M2M 1 5 [20,25,15,2,21]`, which is
   genuinely realizable, carries exactly the required dropped row, and is interior-zoned
   (invisible to the three exterior slice lists), restoring the mate for `e_P`.
-* **(b)-joint synthesis (CHOSEN)**: the mate must be co-realized WITH the ambient `σ`:
-  `∃ M env u, σ realized at env ∧ s' realized at Fin.cons u env`. This is the
-  literature-faithful reading of the fresh-projection channel: Rabinovich's Def 4.1 (PDF p.5)
-  interprets every E[Σ]-atom of the canonical expansion as `{a ∈ M | M, a ⊨ A}` — point
-  content is REALIZATION content, never free-floating syntax — so a mate whose depth-≥1
-  channel cannot be grounded in any joint realization is not a Def-4.1 mate at all. Honest
-  preservation is by the witness `⟨M, env, u, hσ, nf_characteristic_satisfies⟩` (Gate 2a), and
-  the adversarial game closes UNIVERSALLY (Gate 3a): any `σ'` marking both `s*` and a single
-  honest fiber is jointly unrealizable — `s*` forces an interior `P`-point through its marked
-  witness `e_P` (`P v ∧ env'₁ < v < env'₃`), while EVERY honest fiber's quant layer is decided
-  in `M2M` (where `P ∩ (15, 18) = ∅`) and therefore marks no 6-type carrying an interior-`P`
-  row (`kvE_probe364_sstar_honest_unrealizable`). Slice-equality forces honest (exterior)
-  fibers to stay marked, so every re-plant in the countermodel's constraint set is
-  self-defeating — not just the two casts below.
+* **(b)-joint synthesis (CHOSEN, promoted)**: the mate must be co-realized WITH the ambient
+  `σ`. This is the literature-faithful reading of the fresh-projection channel: Rabinovich's
+  Def 4.1 (PDF p.5) interprets every E[Σ]-atom of the canonical expansion as
+  `{a ∈ M | M, a ⊨ A}` — point content is REALIZATION content, never free-floating syntax —
+  so a mate whose depth-≥1 channel cannot be grounded in any joint realization of the ambient
+  is not a Def-4.1 mate at all. Honest preservation is by the witness
+  `⟨M, env, u, hσ, nf_characteristic_satisfies⟩` (proved in the production home,
+  `kvE_fiberElemConsistent_of_realized`), and the adversarial game closes UNIVERSALLY
+  (Gate 3a): any `σ'` marking both `s*` and a single honest fiber is jointly unrealizable —
+  `s*` forces an interior `P`-point through its marked witness `e_P`
+  (`P v ∧ env'₁ < v < env'₃`), while EVERY honest fiber's quant layer is decided in `M2M`
+  (where `P ∩ (15, 18) = ∅`) and therefore marks no 6-type carrying an interior-`P` row
+  (`kvE_probe364_sstar_honest_unrealizable`). Slice-equality forces honest (exterior) fibers
+  to stay marked, so every re-plant in the countermodel's constraint set is self-defeating —
+  not just the two casts below.
 
-## Gates (all sorry-free)
+## Certificates (all sorry-free, floor axioms)
 
-1. `kvE_probe364_plant_rejected`  (Gate 1a) — `kvE_fiberElemConsistentV2 m2sigma m2sstar =
-   false`: under the candidate the planted mate no longer discharges the `e_P` obligation, so
-   `s*` fails the guard within `σ₂`.
-2. `kvE_probe364_m1fake_rejected` (Gate 1b) — `kvE_fiberElemConsistentV2 m1sigma m1sstar =
-   false`: task 363's original m = 1 fake remains rejected.
-3. `kvE_fiberElemConsistentV2_of_realized` / `kvE_fiberConsistentV2_of_realized` (Gate 2a
-   crux) — honest preservation in full generality (any model, any env), plus the depth-0
-   inertness pair and the honest cast certificates (`τ` and all pinned fibers, uniform in `r`).
-4. `kvE_probe364_sstar_honest_unrealizable` + `kvE_probe364_replant_selfdefeating` (Gate 3a) —
-   the UNIVERSAL adversarial certificate quantifying over every adapted plant `X` that keeps
-   `s*` and one honest fiber marked, instantiated at the strongest concrete re-plant
+1. `kvE_probe364_plant_rejected` (Gate 1a) = `kvE_probe364_sigma2_sstar_inconsistent`
+   (Phase-5 successor cert 1) — `kvE_fiberElemConsistent m2sigma m2sstar = false`: the
+   planted mate no longer discharges the `e_P` obligation, so `s*` fails the strengthened
+   guard within `σ₂`. (The raw atom-row fact `kvE_probe358_eP_atomMate_present` remains TRUE
+   — the row is present; it merely no longer suffices.)
+2. `kvE_probe364_m1fake_rejected` (Gate 1b) — the task-363 m = 1 fake remains rejected.
+3. `kvE_probe364_honest_tau_consistent` / `kvE_probe364_honest_fiber_consistent` (Gate 2a) —
+   honest preservation on the cast, uniform in `r`, derived from the production
+   `_of_realized` lemma (whose statement is byte-identical to task 363's).
+4. `kvE_probe364_sstar_honest_unrealizable` + `kvE_probe364_replant_selfdefeating` (Gate 3a)
+   — the UNIVERSAL adversarial certificate over every adapted plant `X` keeping `s*` and one
+   honest fiber marked, instantiated at the strongest concrete re-plant
    `σ₃ := τ ⊕ s* ⊕ mate₃` (`kvE_probe364_adapted_plant_rejected`), where `mate₃` is the
    honest-in-M2M realizable fiber that DEFEATS both rejected candidate families.
+5. `kvE_probe364_sigma2_slice_inconsistent` / `kvE_probe364_sigma2_inadmissible` (Phase-5
+   successor certs 2-3) — the σ-level guard and the full production `kvE_futAdmissible`
+   reject `σ₂`: the σ₂ doppelgänger no longer defeats G2's exclusion mechanism.
 
 ## u-class enumeration cross-check (phase-2 handoff)
 
@@ -73,45 +81,21 @@ supply can service ANY class inside an unrealizable ambient.
 
 Probe conventions: model `(ℤ, <)`, `P = {0,10,20}`, anchors `[25,15,2,18]`, doppelgänger tail
 `[25,15,2,21]` (template copies of `ExteriorFiberConsistencyProbeK.lean:82-119` /
-`ExteriorPinnedProbe358K.lean:72-120`; the originals are `private`, replication precedent).
-Purely additive NEW leaf probe module; no production file is touched by Phases 1-3. -/
+`ExteriorPinnedProbe358K.lean:72-120`; the originals are `private`, replication precedent). -/
 
 namespace Bimodal.Metalogic.WeakCanonical.Kamp
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.WeakCanonical
 
-/-! ## The strengthened candidate -/
+/-! ## Predicate location
 
-/-- **Task-364 candidate guard** (approach (b)-joint synthesis): per-fiber depth-graded
-    consistency of a fiber `s` within an ambient `σ` marking it. Relative to the task-363
-    production `kvE_fiberElemConsistent`, the mate check gains ONE conjunct: the mate `s'`
-    must be co-realized with `σ` in some model — `∃ M env u, σ` realized at `env` and `s'`
-    realized at `Fin.cons u env`. The depth-0 arm is literally `true` (m = 0 inertness,
-    `rfl`-stable), and the depth recursion arm is untouched. Model-independent (no model
-    parameter; the existential is internal) and `Bool`-valued via classical decidability —
-    the def was already `noncomputable` at task 363. -/
-noncomputable def kvE_fiberElemConsistentV2 {sig : MonadicSignature} :
-    {k n : Nat} → NormalForm sig (k + 1) n → NormalForm sig k (n + 1) → Bool
-  | 0, _, _, _ => true
-  | (j + 1), n, σ, s =>
-    ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
-      !(s.2 e) ||
-        ((Finset.univ.toList (α := NormalForm sig (j + 1) (n + 1))).any fun s' =>
-          σ.2 s' && decide (mergeNF (e.atom_assgn) ⟨1, by omega⟩ = s'.atom_assgn) &&
-            @decide (∃ (M : OrderedMonadicStructure sig) (env : Fin n → M.carrier)
-                (u : M.carrier),
-                nf_eval_nf M (j + 2) n env σ ∧
-                nf_eval_nf M (j + 1) (n + 1) (Fin.cons u env) s')
-              (Classical.dec _))) &&
-    ((Finset.univ.toList (α := NormalForm sig j (n + 2))).all fun e =>
-      !(s.2 e) || kvE_fiberElemConsistentV2 s e)
-
-/-- σ-level candidate guard: every `σ`-marked fiber is V2-elem-consistent. -/
-noncomputable def kvE_fiberConsistentV2 {sig : MonadicSignature} {k n : Nat}
-    (σ : NormalForm sig (k + 1) n) : Bool :=
-  (Finset.univ.toList (α := NormalForm sig k (n + 1))).all fun s =>
-    !(σ.2 s) || kvE_fiberElemConsistentV2 σ s
+The strengthened mate check lives IN PLACE in the production home
+(`kvE_fiberElemConsistent` / `kvE_fiberConsistent`, `ExteriorFiberConsistencyK.lean`),
+together with the byte-stable `_zero` inertness and `_of_realized` honest-preservation
+lemmas. The Phase 1-3 candidate `kvE_fiberElemConsistentV2` was promoted verbatim and the
+duplicate dropped (task-363 promotion precedent); this module retains the casts and the
+certificates against the production definitions. -/
 
 /-! ## Probe cast (template copies) -/
 
@@ -329,21 +313,21 @@ theorem kvE_probe364_sstar_honest_unrealizable (hf : ℤ)
 /-! ## Gate 3a — universal guard-level self-defeat of every adapted plant -/
 
 set_option maxRecDepth 8000 in
-/-- **Gate 3a (candidate survives, universally)**: for EVERY adapted countermodel slice `X`
-    that marks `s*` and the honest ray fiber (the fiber population slice-equality forces),
-    the strengthened guard rejects `s*` within `X`: the mate obligation at `e_P` demands a
-    joint realization of `X`, which `kvE_probe364_sstar_honest_unrealizable` refutes. This
-    quantifies over ALL manufactured mate contents at once — the swap-row 2-cycle plant, the
-    diagonal 1-cycle plant, the all-false 358 plant, and the honest-in-M2M realizable mate
-    alike. -/
+/-- **Gate 3a (candidate survives, universally — against the PRODUCTION guard)**: for EVERY
+    adapted countermodel slice `X` that marks `s*` and the honest ray fiber (the fiber
+    population slice-equality forces), the strengthened `kvE_fiberElemConsistent` rejects
+    `s*` within `X`: the mate obligation at `e_P` demands a joint realization of `X`, which
+    `kvE_probe364_sstar_honest_unrealizable` refutes. This quantifies over ALL manufactured
+    mate contents at once — the swap-row 2-cycle plant, the diagonal 1-cycle plant, the
+    all-false 358 plant, and the honest-in-M2M realizable mate alike. -/
 theorem kvE_probe364_replant_selfdefeating (X : NormalForm m2sig 2 4)
     (hXs : X.2 m2sstar = true) (hXh : X.2 m2h30 = true) :
-    kvE_fiberElemConsistentV2 X m2sstar = false := by
-  cases hc : kvE_fiberElemConsistentV2 X m2sstar with
+    kvE_fiberElemConsistent X m2sstar = false := by
+  cases hc : kvE_fiberElemConsistent X m2sstar with
   | false => rfl
   | true =>
     exfalso
-    rw [kvE_fiberElemConsistentV2, Bool.and_eq_true] at hc
+    rw [kvE_fiberElemConsistent, Bool.and_eq_true] at hc
     have hA := hc.1
     rw [List.all_eq_true] at hA
     have h1 := hA m2eP (kvE_nf_mem_univ_toList _)
@@ -361,20 +345,27 @@ theorem kvE_probe364_replant_selfdefeating (X : NormalForm m2sig 2 4)
         (Classical.dec _) hreal
       exact kvE_probe364_sstar_honest_unrealizable 30 X hXs hXh M' env' hσ
 
-/-! ## Gates 1a / 1b — the two mandated casts -/
+/-! ## Gates 1a / 1b — the two mandated casts (production guard) -/
 
-/-- **Gate 1a (plant rejection)**: under the strengthened candidate, the planted mate no
-    longer discharges the mate obligation for `e_P`, so `s*` fails the guard within
-    `σ₂ = τ ⊕ s* ⊕ mate`. (The raw atom-row fact `kvE_probe358_eP_atomMate_present` remains
-    TRUE — the row is present; it merely no longer suffices.) -/
+/-- **Gate 1a (plant rejection) = Phase-5 successor certificate 1**: under the strengthened
+    production guard, the planted mate no longer discharges the mate obligation for `e_P`,
+    so `s*` fails the guard within `σ₂ = τ ⊕ s* ⊕ mate`. (The raw atom-row fact
+    `kvE_probe358_eP_atomMate_present` remains TRUE — the row is present; it merely no
+    longer suffices.) -/
 theorem kvE_probe364_plant_rejected :
-    kvE_fiberElemConsistentV2 m2sigma m2sstar = false :=
+    kvE_fiberElemConsistent m2sigma m2sstar = false :=
   kvE_probe364_replant_selfdefeating m2sigma m2_sigma_marks_sstar m2_sigma_marks_h30
+
+/-- **Phase-5 successor certificate 1 (canonical DoD name)**: the strengthened production
+    guard rejects `s*` within `σ₂`. -/
+theorem kvE_probe364_sigma2_sstar_inconsistent :
+    kvE_fiberElemConsistent m2sigma m2sstar = false :=
+  kvE_probe364_plant_rejected
 
 /-- **Gate 1b (m = 1 fake still rejected)**: task 363's original doppelgänger fiber remains
     rejected within `σ = τ ⊕ s*` — no regression on the 363 exclusion. -/
 theorem kvE_probe364_m1fake_rejected :
-    kvE_fiberElemConsistentV2 m1sigma m1sstar = false :=
+    kvE_fiberElemConsistent m1sigma m1sstar = false :=
   kvE_probe364_replant_selfdefeating m1sigma m1_sigma_marks_sstar m1_sigma_marks_h30
 
 /-! ## Gate 3a instance — the strongest concrete re-plant
@@ -426,172 +417,67 @@ private theorem m2_sigma3_marks_h30 : m2sigma3.2 m2h30 = true := by
 /-- **Gate 3a (concrete instance)**: the strongest adapted plant is self-defeating — `s*`
     still fails the strengthened guard within `σ₃ = τ ⊕ s* ⊕ mate₃`. -/
 theorem kvE_probe364_adapted_plant_rejected :
-    kvE_fiberElemConsistentV2 m2sigma3 m2sstar = false :=
+    kvE_fiberElemConsistent m2sigma3 m2sstar = false :=
   kvE_probe364_replant_selfdefeating m2sigma3 m2_sigma3_marks_sstar m2_sigma3_marks_h30
 
-/-! ## Phase 2 — honest preservation for the candidate (the crux)
+/-! ## Gate 2a — honest cast certificates (derived from the production `_of_realized`) -/
 
-The strengthened guard must accept every honestly realized fiber, in full generality (any
-model, any environment). The extra proof obligation over the task-363 argument is exactly one
-witness: the characteristic mate `nf_characteristic M (j+1) (n+1) (Fin.cons u env)` is
-co-realized with `σ` BY CONSTRUCTION — `⟨M, env, u, hσ, nf_characteristic_satisfies⟩`. This is
-the adjudication checkpoint's dischargeability test for the chosen candidate, and it passes
-without any new bookkeeping lemma beyond the task-363 `cons_cons_skipOne` (replicated here;
-the original is `private` in the production home). -/
-
-/-- Environment bookkeeping for the mate check: dropping slot 1 from the doubly-extended
-    tuple `[u, xs, env]` leaves `[u, env]` (template copy of the `private` production
-    original, `ExteriorFiberConsistencyK.lean:90`). -/
-private theorem cons_cons_skipOne364 {α : Type _} {n : Nat} (u xs : α) (env : Fin n → α)
-    (i : Fin (n + 1)) :
-    (Fin.cons u (Fin.cons xs env) : Fin (n + 2) → α) (skipFin ⟨1, by omega⟩ i) =
-      (Fin.cons u env : Fin (n + 1) → α) i := by
-  rcases i with ⟨iv, hi⟩
-  cases iv with
-  | zero =>
-    have hs : skipFin (⟨1, by omega⟩ : Fin (n + 2)) ⟨0, hi⟩ = ⟨0, by omega⟩ := by
-      simp only [skipFin]
-      rw [dif_pos (by omega)]
-    rw [hs]
-    rfl
-  | succ m =>
-    have hs : skipFin (⟨1, by omega⟩ : Fin (n + 2)) ⟨m + 1, hi⟩ =
-        Fin.succ (Fin.succ (⟨m, by omega⟩ : Fin n)) := by
-      simp only [skipFin]
-      rw [dif_neg (by omega)]
-      rfl
-    have hr : (⟨m + 1, hi⟩ : Fin (n + 1)) = Fin.succ (⟨m, by omega⟩ : Fin n) := rfl
-    rw [hs, hr, Fin.cons_succ, Fin.cons_succ, Fin.cons_succ]
-
-/-- **Gate 2a crux — realized fibers pass the strengthened guard** (honest preservation,
-    per-fiber, full generality): if `σ` is realized at `env` and its fiber `s` at
-    `Fin.cons xs env`, then `s` passes the V2 guard. The mate witness for a marked inner `e`
-    (realized at `Fin.cons u (Fin.cons xs env)`) is the characteristic of the dropped tuple
-    `Fin.cons u env` — `σ`-marked by realization, atom-matching by construction, and
-    CO-REALIZED with `σ` by the very hypotheses in scope. Induction on the fiber depth. -/
-theorem kvE_fiberElemConsistentV2_of_realized {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) :
-    ∀ {k n : Nat} (env : Fin n → M.carrier) (xs : M.carrier)
-      (σ : NormalForm sig (k + 1) n) (s : NormalForm sig k (n + 1)),
-      nf_eval_nf M (k + 1) n env σ →
-      nf_eval_nf M k (n + 1) (Fin.cons xs env) s →
-      kvE_fiberElemConsistentV2 σ s = true := by
-  intro k
-  induction k with
-  | zero => intro n env xs σ s _ _; rfl
-  | succ j ih =>
-    intro n env xs σ s hσ hs
-    rw [kvE_fiberElemConsistentV2, Bool.and_eq_true]
-    constructor
-    · -- mate check (row match AND joint co-realization)
-      rw [List.all_eq_true]
-      intro e _
-      rw [Bool.or_eq_true]
-      by_cases hbe : s.2 e = true
-      · refine Or.inr ?_
-        obtain ⟨u, hu⟩ := (hs.2 e).mpr hbe
-        rw [List.any_eq_true]
-        refine ⟨nf_characteristic M (j + 1) (n + 1) (Fin.cons u env),
-          Finset.mem_toList.mpr (Finset.mem_univ _), ?_⟩
-        rw [Bool.and_eq_true, Bool.and_eq_true]
-        refine ⟨⟨(hσ.2 _).mp ⟨u, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩, ?_⟩, ?_⟩
-        · -- row match: LHS the dropped atom row of `e`; RHS the characteristic's atom row
-          refine decide_eq_true ?_
-          funext a
-          have hatoms : ∀ a' : AtomKind sig (n + 2),
-              atom_eval M (Fin.cons u (Fin.cons xs env)) a' ↔ e.atom_assgn a' = true :=
-            nf_eval_nf_atom_layer M _ e hu
-          have hchar : (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)).atom_assgn a =
-              @decide (atom_eval M (Fin.cons u env) a) (Classical.dec _) := rfl
-          rw [hchar]
-          cases a with
-          | pred p i =>
-            have hL := hatoms (.pred p (skipFin ⟨1, by omega⟩ i))
-            simp only [atom_eval, cons_cons_skipOne364] at hL
-            show e.atom_assgn (.pred p (skipFin ⟨1, by omega⟩ i)) = _
-            cases hb : e.atom_assgn (.pred p (skipFin ⟨1, by omega⟩ i)) with
-            | true =>
-              exact (@decide_eq_true (atom_eval M (Fin.cons u env) (.pred p i))
-                (Classical.dec _) (hL.mpr hb)).symm
-            | false =>
-              refine (@decide_eq_false (atom_eval M (Fin.cons u env) (.pred p i))
-                (Classical.dec _) ?_).symm
-              intro hev
-              exact absurd (hL.mp hev) (by rw [hb]; exact Bool.false_ne_true)
-          | order i j' hne =>
-            have hL := hatoms (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
-              ((skipFin_injective _).ne hne))
-            simp only [atom_eval, cons_cons_skipOne364] at hL
-            show e.atom_assgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
-              ((skipFin_injective _).ne hne)) = _
-            cases hb : e.atom_assgn (.order (skipFin ⟨1, by omega⟩ i) (skipFin ⟨1, by omega⟩ j')
-                ((skipFin_injective _).ne hne)) with
-            | true =>
-              exact (@decide_eq_true (atom_eval M (Fin.cons u env) (.order i j' hne))
-                (Classical.dec _) (hL.mpr hb)).symm
-            | false =>
-              refine (@decide_eq_false (atom_eval M (Fin.cons u env) (.order i j' hne))
-                (Classical.dec _) ?_).symm
-              intro hev
-              exact absurd (hL.mp hev) (by rw [hb]; exact Bool.false_ne_true)
-        · -- joint co-realization: the hypotheses in scope ARE the witness
-          exact @decide_eq_true
-            (∃ (M0 : OrderedMonadicStructure sig) (env0 : Fin n → M0.carrier)
-              (u0 : M0.carrier),
-              nf_eval_nf M0 (j + 2) n env0 σ ∧
-              nf_eval_nf M0 (j + 1) (n + 1) (Fin.cons u0 env0)
-                (nf_characteristic M (j + 1) (n + 1) (Fin.cons u env)))
-            (Classical.dec _)
-            ⟨M, env, u, hσ, nf_characteristic_satisfies M (j + 1) (n + 1) _⟩
-      · exact Or.inl (by rw [Bool.not_eq_true] at hbe; rw [hbe]; rfl)
-    · -- depth recursion
-      rw [List.all_eq_true]
-      intro e _
-      rw [Bool.or_eq_true]
-      by_cases hbe : s.2 e = true
-      · obtain ⟨u, hu⟩ := (hs.2 e).mpr hbe
-        exact Or.inr (ih (Fin.cons xs env) u s e hs hu)
-      · exact Or.inl (by rw [Bool.not_eq_true] at hbe; rw [hbe]; rfl)
-
-/-- **Realized slices pass the strengthened σ-level guard** (honest preservation, σ-level). -/
-theorem kvE_fiberConsistentV2_of_realized {sig : MonadicSignature}
-    (M : OrderedMonadicStructure sig) {k n : Nat} (env : Fin n → M.carrier)
-    (σ : NormalForm sig (k + 1) n)
-    (hσ : nf_eval_nf M (k + 1) n env σ) :
-    kvE_fiberConsistentV2 σ = true := by
-  rw [kvE_fiberConsistentV2, List.all_eq_true]
-  intro s _
-  rw [Bool.or_eq_true]
-  by_cases hb : σ.2 s = true
-  · obtain ⟨xs, hxs⟩ := (hσ.2 s).mpr hb
-    exact Or.inr (kvE_fiberElemConsistentV2_of_realized M env xs σ s hσ hxs)
-  · exact Or.inl (by rw [Bool.not_eq_true] at hb; rw [hb]; rfl)
-
-/-- Depth-0 inertness, per-fiber: unchanged `rfl` (the depth-0 arm is verbatim `true`). -/
-theorem kvE_fiberElemConsistentV2_zero {sig : MonadicSignature} {n : Nat}
-    (σ : NormalForm sig 1 n) (s : NormalForm sig 0 (n + 1)) :
-    kvE_fiberElemConsistentV2 σ s = true := rfl
-
-/-- Depth-0 inertness, σ-level: the m = 0 layers see a vacuous conjunct, exactly as at 363. -/
-theorem kvE_fiberConsistentV2_zero {sig : MonadicSignature} {n : Nat}
-    (σ : NormalForm sig 1 n) : kvE_fiberConsistentV2 σ = true := by
-  rw [kvE_fiberConsistentV2, List.all_eq_true]
-  intro s _
-  rw [kvE_fiberElemConsistentV2_zero σ s, Bool.or_true]
-
-/-! ## Gate 2a — honest cast certificates (derived from `_of_realized`, not by computation) -/
-
-/-- **Gate 2a (σ-level)**: the honest endpoint characteristic `τ` passes the V2 guard. -/
-theorem kvE_probe364_honest_tau_consistent : kvE_fiberConsistentV2 m2tau = true :=
-  kvE_fiberConsistentV2_of_realized M2M m2env4 m2tau
+/-- **Gate 2a (σ-level)**: the honest endpoint characteristic `τ` passes the strengthened
+    production guard. -/
+theorem kvE_probe364_honest_tau_consistent : kvE_fiberConsistent m2tau = true :=
+  kvE_fiberConsistent_of_realized M2M m2env4 m2tau
     (nf_characteristic_satisfies M2M 2 4 m2env4)
 
 /-- **Gate 2a (per-fiber, uniform in `r`)**: EVERY honest pinned fiber — gap (`r ∈ (18,25)`),
-    self (`r = 25`), ray (`r > 25`) — is V2-elem-consistent within `τ`. -/
+    self (`r = 25`), ray (`r > 25`) — is elem-consistent within `τ` under the strengthened
+    production guard. -/
 theorem kvE_probe364_honest_fiber_consistent (r : ℤ) :
-    kvE_fiberElemConsistentV2 m2tau (nf_characteristic M2M 1 5 (Fin.cons r m2env4)) = true :=
-  kvE_fiberElemConsistentV2_of_realized M2M m2env4 r m2tau _
+    kvE_fiberElemConsistent m2tau (nf_characteristic M2M 1 5 (Fin.cons r m2env4)) = true :=
+  kvE_fiberElemConsistent_of_realized M2M m2env4 r m2tau _
     (nf_characteristic_satisfies M2M 2 4 m2env4)
     (nf_characteristic_satisfies M2M 1 5 (Fin.cons r m2env4))
+
+/-! ## Phase-5 successor certificates 2-3 — σ-level and full-admissibility rejection of σ₂ -/
+
+set_option maxRecDepth 8000 in
+/-- **Phase-5 successor certificate 2**: `σ₂ = τ ⊕ s* ⊕ mate` fails the σ-level guard — it
+    marks the (now correctly rejected) elem-inconsistent `s*`. -/
+theorem kvE_probe364_sigma2_slice_inconsistent : kvE_fiberConsistent m2sigma = false := by
+  cases hc : kvE_fiberConsistent m2sigma with
+  | false => rfl
+  | true =>
+    exfalso
+    rw [kvE_fiberConsistent, List.all_eq_true] at hc
+    have h := hc m2sstar (kvE_nf_mem_univ_toList _)
+    rw [Bool.or_eq_true] at h
+    rcases h with h | h
+    · rw [m2_sigma_marks_sstar] at h
+      exact absurd h (by decide)
+    · rw [kvE_probe364_sigma2_sstar_inconsistent] at h
+      exact absurd h (by decide)
+
+set_option maxRecDepth 8000 in
+/-- **Phase-5 successor certificate 3 (DoD)**: against the strengthened production
+    `kvE_futAdmissible`, the 358 countermodel slice `σ₂ = τ ⊕ s* ⊕ mate` is INADMISSIBLE —
+    conjunct 2's fiber-consistency guard fires at the marked `s*`. The σ₂ doppelgänger no
+    longer defeats G2's exclusion mechanism: `kvE_futAdmissible σ₂ = true` (the universal the
+    not-yet-mechanized u-class enumeration was meant to establish) is now FALSE. -/
+theorem kvE_probe364_sigma2_inadmissible : kvE_futAdmissible m2sigma = false := by
+  cases hc : kvE_futAdmissible m2sigma with
+  | false => rfl
+  | true =>
+    exfalso
+    rw [kvE_futAdmissible, Bool.and_eq_true, Bool.and_eq_true, Bool.and_eq_true] at hc
+    have h2 := hc.1.1.2
+    rw [List.all_eq_true] at h2
+    have h := h2 m2sstar (kvE_nf_mem_univ_toList _)
+    rw [Bool.or_eq_true] at h
+    rcases h with h | h
+    · rw [Bool.and_eq_true] at h
+      have hcons := h.2
+      rw [kvE_probe364_sigma2_sstar_inconsistent] at hcons
+      exact absurd hcons (by decide)
+    · rw [m2_sigma_marks_sstar] at h
+      exact absurd h (by decide)
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
