@@ -87,7 +87,7 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### Kamp_theorem_formalization
 
-367 [RESEARCHED] — Design and land a depth-recursive (hereditary) on-fiber/content g
+367 [PLANNED] — Design and land a depth-recursive (hereditary) on-fiber/content g
   └─ 358 [BLOCKED] — Realization recursion: land the nf_nvar_exist_all_depths n>=1 arm
 359 [NOT STARTED] — Boneyard ARCHIVE hygiene (NOT deletion — the Boneyard is a perman
 
@@ -111,11 +111,12 @@ Warning: 2 task(s) have no topic and will render under Uncategorized: 298, 341 (
 
 ### 367. Deepanchor exterior fiber population against taildoppelganger
 - **Effort**: high
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Task Type**: lean4
 - **Topic**: kamp_theorem_formalization
 - **Dependencies**: None
 - **Research**: [358_realization_recursion_nf_nvar_exist_all_depths/reports/09_spawn-analysis.md]
+- **Plan**: [367_deepanchor_exterior_fiber_population_against_taildoppelganger/plans/01_deep-anchor-fiber-guard.md]
 
 **Description**: Design and land a depth-recursive (hereditary) on-fiber/content guard that anchors the exterior fiber population to the ambient one layer deeper than the current depth-0 row check (nfk_dropFresh sigma = qnf.1), replacing that antecedent in the rows-8-9 binders (hsliceFut/hslicePast, Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/EndIntervalConsumerK.lean:154-167). Candidate shapes (from the task-358 implementer handoff, not prescriptive -- select and justify one): (a) a recursive on-fiber guard requiring sigma's marked fibers' one-slot-dropped DEEP forms to be qnf-marked one level down (hereditary fiber anchoring); (b) restate the rows-8-9 antecedents with a deep on-fiber condition replacing nfk_dropFresh sigma = qnf.1 directly, following the ExteriorFiberConsistencyK.lean guard-and-_of_realized-lemma template task 364 landed, one layer down.
 
