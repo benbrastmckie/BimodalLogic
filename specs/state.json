@@ -1718,7 +1718,7 @@
     {
       "project_number": 358,
       "project_name": "realization_recursion_nf_nvar_exist_all_depths",
-      "status": "blocked",
+      "status": "planned",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Realization recursion: land the nf_nvar_exist_all_depths n>=1 arms (Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean:361 for the |1=> arm and :364 for the |n+2=> arm, currently strategic sorries) to produce the genuine interior/exterior realizer hσ (Rabinovich 2014 Cor 5.4 inf/sup within-bracket bounded witness selection). This is the task-309 Phase-14 successor. Retiring these two sorries is what enables ACTUALLY DISCHARGING (rather than carrying) the eleven obligations threaded outward by task 357: the interior hreal/hexcl and the four task-356 exterior hbr* obligations. The discharge site for the exterior hbr* is kvE_{fut,past}Bundle_of_realizer (ExteriorConverterK.lean:208 / ExteriorConverterPastK.lean:177), which is a CONVERTER only: given a genuine realizer hσ : nf_eval_nf M (m+1) 4 [x1,w,x,t] σ it yields the hbr* conjuncts. The missing piece is PRODUCING hσ — the un-landed realization mathematics. Consumers ready and waiting (all green, obligation-carrying): task 357 endInterval_step_correct / EndIntervalCorrectPrior (EndIntervalConsumerK.lean) and kampPrior_site_rungK_gate_match (KampPrior.lean, general-k supply-site seam). Definition of done: nf_nvar_exist_all_depths sorry-free at all depths (:361/:364 retired); provider instantiation discharges hreal/hexcl/hbr* at the KampPrior recursion site; task 349 Phase 5 closes with FULL discharge (not merely carrying). Zero-debt: if a sub-piece cannot close green, mark [BLOCKED] and escalate rather than landing a sorry or vacuous def.",
@@ -1733,7 +1733,7 @@
         367
       ],
       "created": "2026-07-13T05:11:11Z",
-      "last_updated": "2026-07-14T19:42:04Z",
+      "last_updated": "2026-07-14T21:16:19Z",
       "artifacts": [
         {
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/04_post-360-gap-map-and-route.md",
@@ -1749,9 +1749,9 @@
       "file_scope": [
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean"
       ],
-      "session_id": "sess_1784054976_3cdaea",
+      "session_id": "sess_1784059448_2c72f2_358",
       "previous_status": "planned",
-      "blockers": "Phase 2 G2-1 (kvE_{fut,past}SliceId_of_end at general m) and rows-8-9 binders (hsliceFut/hslicePast, EndIntervalConsumerK.lean:154-167) at m>=1 are machine-refuted against the current exterior-fiber interface by an all-honest TAIL-doppelganger at fiber depth 1 (sorry-free certs kvE_probe358_tailDG_gapItem_pinned_fails, kvE_probe358_tailDG_sigma_in_population in ExteriorPinnedProbe358TailK.lean, floor axioms). The 364 re-key held (P2-0 gate GREEN) but a deeper depth-0-losslessness assumption in the general-m kernel is defeated. Needs a 363/364-style DEEP interface refinement: depth-recursive on-fiber/content guard tying sigma's marked fibers' tail content to qnf's deep marking, replacing the depth-0-only nfk_dropFresh sigma = qnf.1. Do NOT re-dispatch /implement against the current interface. G2-2/G1/rows 10-11 not refuted but must be rebuilt against the refined interface."
+      "blockers": null
     },
     {
       "project_number": 359,
