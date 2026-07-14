@@ -59,56 +59,56 @@ Tests for basic axiom application tactics.
 -/
 
 /-- Test 1: prop_s axiom via DerivationTree.axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "p"))) :=
-  DerivationTree.axiom [] _ (Axiom.prop_s _ _)
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "p"))) :=
+  DerivationTree.axiom [] _ (Axiom.prop_s _ _) trivial
 
 /-- Test 2: prop_k axiom for distribution -/
-example : DerivationTree [] (Formula.imp
+example : DerivationTree FrameClass.Base [] (Formula.imp
   (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
   (Formula.imp (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) (Formula.imp (Formula.atom_s "p") (Formula.atom_s "r")))) :=
-  DerivationTree.axiom [] _ (Axiom.prop_k _ _ _)
+  DerivationTree.axiom [] _ (Axiom.prop_k _ _ _) trivial
 
 /-- Test 3: modal_t axiom (□p → p) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p")) :=
-  DerivationTree.axiom [] _ (Axiom.modal_t _)
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p")) :=
+  DerivationTree.axiom [] _ (Axiom.modal_t _) trivial
 
 /-- Test 4: modal_4 axiom (□p → □□p) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.modal_4 _)
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) :=
+  DerivationTree.axiom [] _ (Axiom.modal_4 _) trivial
 
 /-- Test 5: modal_b axiom (p → □◇p) -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.modal_b _)
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) :=
+  DerivationTree.axiom [] _ (Axiom.modal_b _) trivial
 
 /-- Test 6: temp_4 axiom (Gp → GGp) -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_4 _)
+noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) :=
+  Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 7: temp_a axiom (p → GPp) -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_a _)
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) :=
+  DerivationTree.axiom [] _ (Axiom.connect_future _) trivial
 
-/-- Test 8: temp_l axiom (△p → F(Hp)) -/
-example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.temp_l _)
+-- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- /-- Test 8: temp_l axiom (△p → F(Hp)) -/
+-- example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) :=
+--   DerivationTree.axiom [] _ (Axiom.temp_l _)
 
 /-- Test 9: modal_future axiom (□p → □Fp) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.all_future (Formula.atom_s "p")))) :=
-  DerivationTree.axiom [] _ (Axiom.modal_future _)
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.all_future (Formula.atom_s "p")))) :=
+  DerivationTree.axiom [] _ (Axiom.modal_future _) trivial
 
 /-- Test 10: temp_future derived (□p → G□p, from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-- Test 11: apply_axiom tactic unifies with modal_t -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "q")) (Formula.atom_s "q")) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "q")) (Formula.atom_s "q")) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 12: modal_t tactic (convenience wrapper) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "r")) (Formula.atom_s "r")) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "r")) (Formula.atom_s "r")) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-!
 ## Phase 5: tm_auto Tests
@@ -117,32 +117,27 @@ Tests for native TM automation (no Aesop dependency).
 -/
 
 /-- Test 13: tm_auto finds modal_t axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p")) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p")) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 14: tm_auto finds modal_4 axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 15: tm_auto finds temp_4 axiom -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 16: tm_auto finds temp_a axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-- Test 17: tm_auto finds modal_future axiom -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.all_future (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_future _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.all_future (Formula.atom_s "p")))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_future _) trivial
 
 /-- Test 18: tm_auto finds temp_future (now derived from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-!
@@ -152,26 +147,25 @@ Tests for remaining axioms not covered in Phase 5.
 -/
 
 /-- Test 32: tm_auto finds prop_k axiom -/
-example : DerivationTree [] (Formula.imp
+example : DerivationTree FrameClass.Base [] (Formula.imp
   (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
-  (Formula.imp (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) (Formula.imp (Formula.atom_s "p") (Formula.atom_s "r")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_k _ _ _
+  (Formula.imp (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")) (Formula.imp (Formula.atom_s "p") (Formula.atom_s "r")))) :=
+  DerivationTree.axiom _ _ (Axiom.prop_k _ _ _) trivial
 
 /-- Test 33: tm_auto finds prop_s axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "p"))) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_s _ _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.atom_s "q") (Formula.atom_s "p"))) :=
+  DerivationTree.axiom _ _ (Axiom.prop_s _ _) trivial
 
 /-- Test 34: tm_auto finds modal_b axiom -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
-/-- Test 35: tm_auto finds temp_l axiom -/
-example : DerivationTree [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_l _
+-- NOTE (Task 365): quarantined — `Axiom.temp_l` was removed (no axiom/derived replacement;
+-- requires a multi-step derivation). Semantic `temp_l_valid` is retained elsewhere. See task summary.
+-- /-- Test 35: tm_auto finds temp_l axiom -/
+-- example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.always (Formula.atom_s "p")) (Formula.all_future (Formula.all_past (Formula.atom_s "p")))) := by
+--   apply DerivationTree.axiom
+--   exact Axiom.temp_l _
 
 /-!
 ## Phase 6: assumption_search Tests
@@ -279,7 +273,7 @@ example (h1 : Nat) (h2 : Nat) : Nat := by
   assumption_search
 
 /-- Test 45: assumption_search with DerivationTree type -/
-example (h : DerivationTree [] (Formula.atom_s "p")) : DerivationTree [] (Formula.atom_s "p") := by
+example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) : DerivationTree FrameClass.Base [] (Formula.atom_s "p") := by
   assumption_search
 
 /-- Test 46: assumption_search with nested parameterized type -/
@@ -300,7 +294,7 @@ Tests for deep nesting and complex formulas.
 example : is_box_formula (Formula.box (Formula.box (Formula.box (Formula.atom_s "p")))) = true := rfl
 
 /-- Test 49: Complex bimodal formula (TF derived from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.all_future (Formula.box (Formula.atom_s "p")))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-- Test 50: assumption_search with long context -/
@@ -318,48 +312,48 @@ The generalized rules are now in Bimodal.Theorems.GeneralizedNecessitation.
 
 open Bimodal.Theorems in
 /-- Test 51: generalized_modal_k rule derives □φ from φ (empty context) -/
-noncomputable example (h : DerivationTree [] (Formula.atom_s "p")) :
-    DerivationTree (Context.map Formula.box []) (Formula.box (Formula.atom_s "p")) :=
+noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) :
+    DerivationTree FrameClass.Base (Context.map Formula.box []) (Formula.box (Formula.atom_s "p")) :=
   generalized_modal_k [] _ h
 
 open Bimodal.Theorems in
 /-- Test 52: generalized_temporal_k rule derives Fφ from φ (empty context) -/
-noncomputable example (h : DerivationTree [] (Formula.atom_s "p")) :
-    DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.atom_s "p")) :=
+noncomputable example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) :
+    DerivationTree FrameClass.Base (Context.map Formula.all_future []) (Formula.all_future (Formula.atom_s "p")) :=
   generalized_temporal_k [] _ h
 
 /-- Test 53: temporal_duality swaps past and future -/
-example (h : DerivationTree [] (Formula.all_past (Formula.atom_s "p"))) :
-    DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.atom_s "p"))) :=
+example (h : DerivationTree FrameClass.Base [] (Formula.all_past (Formula.atom_s "p"))) :
+    DerivationTree FrameClass.Base [] (Formula.swap_temporal (Formula.all_past (Formula.atom_s "p"))) :=
   DerivationTree.temporal_duality _ h
 
 open Bimodal.Theorems in
 /-- Test 54: generalized_modal_k with axiom derivation -/
 noncomputable example :
-    DerivationTree (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p"))) :=
-  generalized_modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _))
+    DerivationTree FrameClass.Base (Context.map Formula.box []) (Formula.box (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "p"))) :=
+  generalized_modal_k [] _ (DerivationTree.axiom [] _ (Axiom.modal_t _) trivial)
 
 open Bimodal.Theorems in
 /-- Test 55: generalized_temporal_k with axiom derivation -/
 noncomputable example :
-    DerivationTree (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p"))))) :=
-  generalized_temporal_k [] _ (DerivationTree.axiom [] _ (Axiom.temp_4 _))
+    DerivationTree FrameClass.Base (Context.map Formula.all_future []) (Formula.all_future (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p"))))) :=
+  generalized_temporal_k [] _ (Bimodal.Theorems.TemporalDerived.temp_4_derived _)
 
 open Bimodal.Theorems in
 /-- Test 56: generalized_modal_k with non-empty context -/
-noncomputable example (h : DerivationTree [Formula.atom_s "p"] (Formula.atom_s "p")) :
-    DerivationTree (Context.map Formula.box [Formula.atom_s "p"]) (Formula.box (Formula.atom_s "p")) :=
+noncomputable example (h : DerivationTree FrameClass.Base [Formula.atom_s "p"] (Formula.atom_s "p")) :
+    DerivationTree FrameClass.Base (Context.map Formula.box [Formula.atom_s "p"]) (Formula.box (Formula.atom_s "p")) :=
   generalized_modal_k _ _ h
 
 open Bimodal.Theorems in
 /-- Test 57: generalized_temporal_k with non-empty context -/
-noncomputable example (h : DerivationTree [Formula.atom_s "p"] (Formula.atom_s "p")) :
-    DerivationTree (Context.map Formula.all_future [Formula.atom_s "p"]) (Formula.all_future (Formula.atom_s "p")) :=
+noncomputable example (h : DerivationTree FrameClass.Base [Formula.atom_s "p"] (Formula.atom_s "p")) :
+    DerivationTree FrameClass.Base (Context.map Formula.all_future [Formula.atom_s "p"]) (Formula.all_future (Formula.atom_s "p")) :=
   generalized_temporal_k _ _ h
 
 /-- Test 58: temporal_duality with implication -/
-example (h : DerivationTree [] (Formula.all_past (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")))) :
-    DerivationTree [] (Formula.swap_temporal (Formula.all_past (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")))) :=
+example (h : DerivationTree FrameClass.Base [] (Formula.all_past (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")))) :
+    DerivationTree FrameClass.Base [] (Formula.swap_temporal (Formula.all_past (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q")))) :=
   DerivationTree.temporal_duality _ h
 
 /-!
@@ -369,51 +363,44 @@ Tests for various derivation combinations and edge cases.
 -/
 
 /-- Test 59: Weakening with empty addition -/
-example (h : DerivationTree [] (Formula.atom_s "p")) : DerivationTree [] (Formula.atom_s "p") :=
+example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) : DerivationTree FrameClass.Base [] (Formula.atom_s "p") :=
   DerivationTree.weakening [] [] _ h (List.nil_subset _)
 
 /-- Test 60: Weakening adds unused assumption -/
-example (h : DerivationTree [] (Formula.atom_s "p")) :
-    DerivationTree [Formula.atom_s "q"] (Formula.atom_s "p") :=
+example (h : DerivationTree FrameClass.Base [] (Formula.atom_s "p")) :
+    DerivationTree FrameClass.Base [Formula.atom_s "q"] (Formula.atom_s "p") :=
   DerivationTree.weakening [] [Formula.atom_s "q"] _ h (List.nil_subset _)
 
 /-- Test 61: Modal T with different variable -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "x")) (Formula.atom_s "x")) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "x")) (Formula.atom_s "x")) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 62: Temporal A with different variable -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "y") (Formula.all_future (Formula.some_past (Formula.atom_s "y")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "y") (Formula.all_future (Formula.some_past (Formula.atom_s "y")))) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-- Test 63: Modal 4 applied to compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.box (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.box (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 64: Temporal 4 applied to compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 65: Modal B with atomic formula -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.diamond (Formula.atom_s "q")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.diamond (Formula.atom_s "q")))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 /-- Test 66: Temp A with different variable -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "r") (Formula.all_future (Formula.some_past (Formula.atom_s "r")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "r") (Formula.all_future (Formula.some_past (Formula.atom_s "r")))) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-- Test 67: Modal future with compound formula -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.box (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_future _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.box (Formula.all_future (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_future _) trivial
 
 /-- Test 68: Temp future with compound formula (derived from MF + T + Modal 4) -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) :=
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))) (Formula.all_future (Formula.box (Formula.imp (Formula.atom_s "p") (Formula.atom_s "q"))))) :=
   Bimodal.Theorems.Combinators.temp_future_derived _
 
 /-!
@@ -423,28 +410,24 @@ Tests for prop_k and prop_s axiom chaining.
 -/
 
 /-- Test 69: Nested prop_s application (p → (q → (r → p))) -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")) (Formula.atom_s "p"))) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_s _ _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.imp (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")) (Formula.atom_s "p"))) :=
+  DerivationTree.axiom _ _ (Axiom.prop_s _ _) trivial
 
 /-- Test 70: prop_k with complex antecedents -/
-example : DerivationTree [] (Formula.imp
+example : DerivationTree FrameClass.Base [] (Formula.imp
   (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
-  (Formula.imp (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "q")) (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "r")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_k _ _ _
+  (Formula.imp (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "q")) (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.atom_s "r")))) :=
+  DerivationTree.axiom _ _ (Axiom.prop_k _ _ _) trivial
 
 /-- Test 71: prop_s with modal formulas -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_s _ _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.box (Formula.atom_s "p")))) :=
+  DerivationTree.axiom _ _ (Axiom.prop_s _ _) trivial
 
 /-- Test 72: prop_k with temporal formulas -/
-example : DerivationTree [] (Formula.imp
+example : DerivationTree FrameClass.Base [] (Formula.imp
   (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.imp (Formula.atom_s "q") (Formula.atom_s "r")))
-  (Formula.imp (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.atom_s "q")) (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.atom_s "r")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_k _ _ _
+  (Formula.imp (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.atom_s "q")) (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.atom_s "r")))) :=
+  DerivationTree.axiom _ _ (Axiom.prop_k _ _ _) trivial
 
 /-!
 ## Phase 5 Group 4: Aesop Integration Tests
@@ -453,29 +436,24 @@ Tests for Aesop-based tm_auto on complex TM proofs.
 -/
 
 /-- Test 73: apply_axiom finds modal_t -/
-example : DerivationTree [] ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p")) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example : DerivationTree FrameClass.Base [] ((Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p")) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 74: apply_axiom finds modal_4 -/
-example : DerivationTree [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.box (Formula.atom_s "p")) (Formula.box (Formula.box (Formula.atom_s "p")))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 75: apply_axiom finds modal_b -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.box (Formula.diamond (Formula.atom_s "p")))) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 /-- Test 76: apply_axiom finds temp_4 -/
-example : DerivationTree [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.all_future (Formula.atom_s "p")) (Formula.all_future (Formula.all_future (Formula.atom_s "p")))) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 77: apply_axiom finds temp_a -/
-example : DerivationTree [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example : DerivationTree FrameClass.Base [] (Formula.imp (Formula.atom_s "p") (Formula.all_future (Formula.some_past (Formula.atom_s "p")))) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-!
 ## Phase 6: Tests for modal_k_tactic and temporal_k_tactic
@@ -484,32 +462,30 @@ Tests for inference rule tactics with positive and negative cases.
 -/
 
 /-- Test 78: Basic modal K rule -/
-example (p : Formula) : DerivationTree [p.box] p.box := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.box] p.box := by
   apply DerivationTree.assumption
   simp
 
 /-- Test 79: Modal K with modus ponens -/
-example (p : Formula) : DerivationTree [] (p.box.imp p.box.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p.box.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 80: Modal K weakening -/
-example (p : Formula) : DerivationTree [p.box.box] p.box.box := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.box.box] p.box.box := by
   apply DerivationTree.assumption
   simp
 
 /-- Test 81: Basic temporal K rule -/
-example (p : Formula) : DerivationTree [p.all_future] p.all_future := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.all_future] p.all_future := by
   apply DerivationTree.assumption
   simp
 
 /-- Test 82: Temporal K with modus ponens -/
-example (p : Formula) : DerivationTree [] (p.all_future.imp p.all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 83: Temporal K weakening -/
-example (p : Formula) : DerivationTree [p.all_future.all_future] p.all_future.all_future := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.all_future.all_future] p.all_future.all_future := by
   apply DerivationTree.assumption
   simp
 
@@ -520,64 +496,52 @@ Tests for modal_4_tactic, modal_b_tactic, temp_4_tactic, temp_a_tactic.
 -/
 
 /-- Test 84: modal_4_tactic basic application -/
-example (p : Formula) : DerivationTree [] (p.box.imp p.box.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p.box.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 85: modal_4_tactic with compound formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).box.imp (p.imp q).box.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).box.imp (p.imp q).box.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 86: modal_4_tactic with atom -/
-example : DerivationTree [] ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example : DerivationTree FrameClass.Base [] ((Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 87: modal_b_tactic basic application -/
-example (p : Formula) : DerivationTree [] (p.imp p.diamond.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.diamond.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 /-- Test 88: modal_b_tactic with compound formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).imp (p.imp q).diamond.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).imp (p.imp q).diamond.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 /-- Test 89: modal_b_tactic with atom -/
-example : DerivationTree [] ((Formula.atom_s "p").imp (Formula.atom_s "p").diamond.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example : DerivationTree FrameClass.Base [] ((Formula.atom_s "p").imp (Formula.atom_s "p").diamond.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 /-- Test 90: temp_4_tactic basic application -/
-example (p : Formula) : DerivationTree [] (p.all_future.imp p.all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 91: temp_4_tactic with compound formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).all_future.imp (p.imp q).all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).all_future.imp (p.imp q).all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 92: temp_4_tactic with atom -/
-example : DerivationTree [] ((Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example : DerivationTree FrameClass.Base [] ((Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 93: temp_a_tactic basic application -/
-example (p : Formula) : DerivationTree [] (p.imp p.some_past.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.some_past.all_future) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-- Test 94: temp_a_tactic with compound formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).imp (p.imp q).some_past.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).imp (p.imp q).some_past.all_future) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-- Test 95: temp_a_tactic with atom -/
-example : DerivationTree [] ((Formula.atom_s "p").imp (Formula.atom_s "p").some_past.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example : DerivationTree FrameClass.Base [] ((Formula.atom_s "p").imp (Formula.atom_s "p").some_past.all_future) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-!
 ## Phase 8: Tests for Proof Search Tactics
@@ -589,54 +553,44 @@ may not handle all cases. Full recursive search implementation is planned.
 -/
 
 /-- Test 96: modal_search depth 1 on modal_t -/
-example (p : Formula) : DerivationTree [] (p.box.imp p) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 97: modal_search depth 2 on modal_4 -/
-example (p : Formula) : DerivationTree [] (p.box.imp p.box.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p.box.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 98: modal_search depth 3 on modal_b -/
-example (p : Formula) : DerivationTree [] (p.imp p.diamond.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_b _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.diamond.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_b _) trivial
 
 /-- Test 99: temporal_search depth 1 on temp_4 -/
-example (p : Formula) : DerivationTree [] (p.all_future.imp p.all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 100: temporal_search depth 2 on temp_a -/
-example (p : Formula) : DerivationTree [] (p.imp p.some_past.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_a _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.imp p.some_past.all_future) := by
+  exact DerivationTree.axiom _ _ (Axiom.connect_future _) trivial
 
 /-- Test 101: modal_search with complex nested formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).box.imp (p.imp q).box.box) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_4 _
+example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).box.imp (p.imp q).box.box) :=
+  DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
 
 /-- Test 102: temporal_search with complex nested formula -/
-example (p q : Formula) : DerivationTree [] ((p.imp q).all_future.imp (p.imp q).all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example (p q : Formula) : DerivationTree FrameClass.Base [] ((p.imp q).all_future.imp (p.imp q).all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-- Test 103: modal_search on prop_s -/
-example (p q : Formula) : DerivationTree [] (p.imp (q.imp p)) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_s _ _
+example (p q : Formula) : DerivationTree FrameClass.Base [] (p.imp (q.imp p)) :=
+  DerivationTree.axiom _ _ (Axiom.prop_s _ _) trivial
 
 /-- Test 104: temporal_search combined with modal -/
-example (p : Formula) : DerivationTree [] (p.box.imp p) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 105: modal_search combined with temporal -/
-example (p : Formula) : DerivationTree [] (p.all_future.imp p.all_future.all_future) := by
-  apply DerivationTree.axiom
-  exact Axiom.temp_4 _
+noncomputable example (p : Formula) : DerivationTree FrameClass.Base [] (p.all_future.imp p.all_future.all_future) := by
+  exact Bimodal.Theorems.TemporalDerived.temp_4_derived _
 
 /-!
 ## Phase 9: Integration Tests and Complex Bimodal Tests
@@ -648,34 +602,31 @@ These tests demonstrate their usage with matching contexts.
 -/
 
 /-- Test 106: Direct modal_k rule application -/
-example (p : Formula) : DerivationTree [p.box] p.box := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.box] p.box := by
   apply DerivationTree.assumption
   simp
 
 /-- Test 107: Direct temporal_k rule application -/
-example (p : Formula) : DerivationTree [p.all_future] p.all_future := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.all_future] p.all_future := by
   apply DerivationTree.assumption
   simp
 
 /-- Test 108: Combination of axioms with weakening -/
-example (p : Formula) : DerivationTree [p.box] p.box.box := by
+example (p : Formula) : DerivationTree FrameClass.Base [p.box] p.box.box := by
   apply DerivationTree.modus_ponens (φ := p.box)
   · apply DerivationTree.weakening (Γ := [])
-    · apply DerivationTree.axiom
-      exact Axiom.modal_4 _
-    · intro _ h; exact False.elim (List.not_mem_nil _ h)
+    · exact DerivationTree.axiom _ _ (Axiom.modal_4 _) trivial
+    · intro _ h; simp at h
   · apply DerivationTree.assumption
     simp
 
 /-- Test 109: Bimodal proof using modal_t axiom -/
-example (p : Formula) : DerivationTree [] (p.box.imp p) := by
-  apply DerivationTree.axiom
-  exact Axiom.modal_t _
+example (p : Formula) : DerivationTree FrameClass.Base [] (p.box.imp p) :=
+  DerivationTree.axiom _ _ (Axiom.modal_t _) trivial
 
 /-- Test 110: Propositional axiom application -/
-example (p q : Formula) : DerivationTree [] (p.imp (q.imp p)) := by
-  apply DerivationTree.axiom
-  exact Axiom.prop_s _ _
+example (p q : Formula) : DerivationTree FrameClass.Base [] (p.imp (q.imp p)) :=
+  DerivationTree.axiom _ _ (Axiom.prop_s _ _) trivial
 
 /-!
 ## Phase 10: Task 315 Tactic Tests
@@ -727,7 +678,7 @@ example (p q : Formula) : [p.box, q.box] ⊢ p.box := by
 -/
 
 /-- Test 119: temporal_search on temp_4 axiom -/
-example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
   temporal_search
 
 /-- Test 120: temporal_search on simple assumption -/
@@ -735,7 +686,7 @@ example (p : Formula) : [p] ⊢ p := by
   temporal_search
 
 /-- Test 121: temporal_search with depth parameter -/
-example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
   temporal_search (depth := 5)
 
 /-- Test 122: temporal_search on temporal K reduction -/
@@ -779,7 +730,7 @@ example (p : Formula) : ⊢ p.box.imp p := by
   modal_search (depth := 5) (visitLimit := 500)
 
 /-- Test 130: temporal_search with visitLimit -/
-example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
+noncomputable example (p : Formula) : ⊢ p.all_future.imp p.all_future.all_future := by
   temporal_search (depth := 5) (visitLimit := 500)
 
 /-- Test 131: propositional_search with visitLimit -/
@@ -818,7 +769,7 @@ Tests that use multiple tactics in sequence.
 -/
 
 /-- Test 135: multiple tactics in same proof via exact -/
-example (p : Formula) : ([] ⊢ p.box.imp p) × ([] ⊢ p.all_future.imp p.all_future.all_future) :=
+noncomputable example (p : Formula) : ([] ⊢ p.box.imp p) × ([] ⊢ p.all_future.imp p.all_future.all_future) :=
   (by modal_search, by temporal_search)
 
 /-- Test 136: tactics with non-derivation goals -/
