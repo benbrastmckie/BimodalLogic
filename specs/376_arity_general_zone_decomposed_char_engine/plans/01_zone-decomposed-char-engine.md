@@ -241,20 +241,32 @@ four sibling files; Phase 3 owns the new engine leaf; Phase 7 owns the two
 ExteriorPinnedConverse* files). The orchestrator dispatches one phase per cycle; the wave map
 declares which orderings are legal, not a demand for simultaneous dispatch.
 
-### Phase 1: Cross-anchor-context refutation-or-clearance probe (HARD GATE) [NOT STARTED]
+### Phase 1: Cross-anchor-context refutation-or-clearance probe (HARD GATE) [COMPLETED]
+
+**VERDICT: CLEARED** (2026-07-15). Probe file `ZoneSeamCrossContextProbe.lean` compiles
+sorry-free (commit 895fa4bf4). Attack 1 blocked by the transplanted
+`zoneGuard_blocks_seamPair_counterexample`. Attack 2 (§Q2.3): surface (i) — the marked-fiber
+guard IS satisfiable (`cpQnf_marks_cpTau`) and the zone guard holds in BOTH contexts
+(`cpTau_zoneHolds_A`/`_B`), so route (ii) applied — non-certifiability of context B proven by
+`crossContext_wGate_blocks_attack`: the `igPtWFib` gate at `w' = 3` is unsatisfiable for EVERY
+`charFib`/`atomMap` and every qnf rendered at the certified context (the charFib-independent
+`charBase` head literal demands qnf's w-slot 1-type — which declares `P` forced by `P(1)` —
+at `3 ∉ P`). `crossContext_attack_payload` locates the death point exactly: all other attack
+premises are derivable in the instance. `lean_verify` on all three public theorems: standard
+axioms only, no sorryAx. Proceed to wave 2.
 - **Goal:** Compile the report §Q2.3 cross-anchor-context attack against the FULL guarded pair
   {Block A, Block B} jointly, in the exact `SeamPairRefutationProbe.lean` methodology, and
   return an explicit CLEARED or REFUTED verdict. No volume work in this dispatch.
 - **Tasks:**
-  - [ ] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ZoneSeamCrossContextProbe.lean`
+  - [x] Create `Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ZoneSeamCrossContextProbe.lean`
         (same import/namespace/`maxHeartbeats` header as `SeamPairRefutationProbe.lean`; needs
         `open Bimodal.Metalogic.WeakCanonical.Separation`).
-  - [ ] Attack 1 (regression, expected BLOCKED — already compiled in the specs probe): replay
+  - [x] Attack 1 (regression, expected BLOCKED — already compiled in the specs probe): replay
         the old counterexample (σ* := characteristic of `(w0,w0,x,t)`, step-(3) transport
         `w := w' ≠ w0`, `x1 := w0`) against the guarded pair; transplant
         `zoneGuard_blocks_seamPair_counterexample` from
         `specs/376_.../reports/01_zone-seam-probe.lean:29-53` into the build tree sorry-free.
-  - [ ] Attack 2 (the NEW §Q2.3 attack, the gate proper): formalize the two-context
+  - [x] Attack 2 (the NEW §Q2.3 attack, the gate proper): formalize the two-context
         construction — model `(ℤ, P={1})`-style, τ := characteristic of `(5,1,0,10)` (declares
         `P` at the w-slot), contexts `w = 1` vs `w' = 3`, shared `x1` in the same zone — and
         attempt to derive `False` from a pair of Block-B instances. Attempt surface (fixed,
@@ -264,10 +276,10 @@ declares which orderings are legal, not a demand for simultaneous dispatch.
         Attack 1); (ii) if the guard IS satisfiable in both contexts, check the carrier-eval
         gates (`igPtWFib` at `w' = 3` contains charBase/charFib literals for qnf's w-slot
         1-type + fold bits) — prove non-certifiability of context B, or complete the refutation.
-  - [ ] Write the verdict as a module docstring: `VERDICT: CLEARED` (both attacks blocked by
+  - [x] Write the verdict as a module docstring: `VERDICT: CLEARED` (both attacks blocked by
         sorry-free theorems) or `VERDICT: REFUTED` (a sorry-free `False`-deriving or
-        joint-inconsistency theorem compiles).
-  - [ ] Verify with `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ZoneSeamCrossContextProbe`
+        joint-inconsistency theorem compiles). *(verdict: CLEARED)*
+  - [x] Verify with `lake build Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ZoneSeamCrossContextProbe`
         (exit 0) and `lean_verify` on each probe theorem (no sorry, standard axioms).
 - **Exit CLEARED** -> proceed to wave 2.
 - **Exit REFUTED** -> STOP. Deliverable = the compiled counterexample file + a blocker entry in
