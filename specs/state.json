@@ -2293,14 +2293,14 @@
       "status": "not_started",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
-      "description": "Final assembly and axiom audit for the Kamp expressive-completeness chain, after the KampPrior sorry-retirement task (374) lands. Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).",
+      "description": "Final assembly and axiom audit for the Kamp expressive-completeness chain, after the KampPrior sorry-retirement task (376) lands. Confirm completeness_discrete (Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean:276) is fully sorry-free; run lean_verify across the full dependency chain nf_nvar_exist_all_depths -> nf_characterizable_temporal_prior -> kamp_prior_expressive_completeness -> US_expressively_complete_over_prior, confirming the axiom set is exactly {propext, Classical.choice, Quot.sound}; run a fresh sorry/admit scan across Theories/Bimodal/Metalogic/WeakCanonical/Kamp/ excluding Boneyard/; refresh specs/ROADMAP.md's Current state section (dated 2026-07-12, pre-M2) to reflect the landed state. Verification and documentation only — no new proof content. Standard dispatch (no --hard / --lit needed).",
       "effort": "small",
       "parent_task": 373,
       "dependencies": [
-        374
+        376
       ],
       "created": "2026-07-15T15:51:06Z",
-      "last_updated": "2026-07-15T15:51:06Z",
+      "last_updated": "2026-07-15T17:57:12Z",
       "artifacts": [],
       "file_scope": [
         "Theories/Bimodal/Metalogic/BXCanonical/Completeness.lean",
