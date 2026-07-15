@@ -19,29 +19,25 @@ guard). The binder simultaneously asserts `nfk_dropFresh σ = qnf.1` (on-row) an
 CONTRADICTORY (`decide (nfk_dropFresh σ = qnf.1) = true` vs `= false`), so the arm is VACUOUS.
 Captured as the standalone sorry-free lemma `kvE_deepExcl_zero_vacuous`.
 
-## General-`m` arm (STRATEGIC SORRY — Phase-4/Phase-5 bridge dependency)
+## General-`m` arm (DISCHARGED — task 370 Phase 8, against the de-folded render)
 
-The intended route (plan v07 Phase 4 G2-B1; handoff phase-2-v06 §"Phase-4 notes"): from a
-hypothetical σ-realizer at the pinned exterior tuple `[x1,w,x,t]` WITH the ambient realized at
-`[w,x,t]`, `kvE_deepOnFiber_of_realized` forces `kvE_deepOnFiber qnf σ = true`, contradicting
-the binder's guard-false. Equivalently, the ambient's quant layer `hqnf.2 σ` forces
-`qnf.2 σ = true` from the exterior realizer, contradicting `qnf.2 σ = false`.
+The contradiction: from the σ-realizer at the pinned exterior tuple `[x1,w,x,t]` WITH the ambient
+realized at `[w,x,t]`, the ambient's quant layer `hqnf.2 σ` forces `qnf.2 σ = true` from the
+exterior realizer, contradicting the binder's `qnf.2 σ = false`. (Equivalently
+`kvE_deepOnFiber_of_realized` forces `kvE_deepOnFiber qnf σ = true` against guard-false.)
 
-**Bridge-adjudication finding (task 358 Phase 4, this dispatch).** The contradiction requires the
-FULL deep ambient realization `nf_eval_nf M (k+2) 3 [w,x,t] qnf` at the binder site. But the only
-ambient information available from the binder hypotheses (`hAmb : kvE_ambientDeepAnchor qnf = true`
-+ the `igPtW … .eval_at M atomMap w` guard) is the ATOM LAYER `nf_eval_nf M 0 3 [w,x,t] qnf.1`
-(`kvExt_gate_henv`, `ExteriorGateAssembleK.lean:61`). The DEEP quant layer `qnf.2` — the
-`∀ sub, (∃ x1, nf_eval_nf … sub) ↔ qnf.2 sub = true` semantic content — is precisely what the
-INTERIOR realizer `hreal`/`hexcl` (task 358 Phase 5/6, `kampPrior_hreal_supply` /
-`kampPrior_hexcl_supply`) reconstructs from `P.correct` + the fold bit + `hAmb`'s EF-closure.
-`kvE_ambientDeepAnchor` is a purely SYNTACTIC `Bool` of `qnf` (no model `M`); it cannot supply the
-model-`M` deep realization on its own. Hence the general-`m` arm is BLOCKED on the Phase-5 ambient
-render and is landed here as a tracked strategic sorry rather than forcing a false discharge.
-
-This inverts the plan's wave DAG (which sequenced Phase 5 AFTER Phase 4): the exterior deep/slice
-supplies depend on the interior ambient render. Recommended re-sequencing recorded in the Phase-4
-handoff (`follow_up_task`: task 358 Phase 5 interior render, then this general-`m` arm).
+**Resolution (task 370, the M2 de-folded carrier redesign).** The blocking dependency was the FULL
+deep ambient realization `nf_eval_nf M (k+2) 3 [w,x,t] qnf` at the binder site — task 358 could not
+supply it because the folded `igPtW … .eval_at M atomMap w` guard renders only the ATOM LAYER
+`nf_eval_nf M 0 3 [w,x,t] qnf.1` (`kvExt_gate_henv`), and `kvE_ambientDeepAnchor` is purely
+syntactic. Task 370 completed the de-folded chain: the deep ambient render is now PRODUCED
+downstream (Phase 6 render production via `bracketEndChar_kvExtFib_correct_prior`; Phase 7 validated
+its supply, `kampPrior_hreal_supply` discharged render-free). These rows-12-13 exclusion arms are
+DOWNSTREAM of that render, so they take it as an explicit hypothesis — exactly the sanctioned
+interface of the LANDED slice supplies `kvE_hsliceFut_supply` / `kvE_hslicePast_supply`
+(`ExteriorDeepSliceSupplyK.lean:131/161`, which also take `nf_eval_nf M (k+2) 3 [w,x,t] qnf`). The
+general-`m` arm is then one line: `(hqnf.2 σ).mp ⟨x1, hσ⟩` contradicts `qnf.2 σ = false`. No render
+is fabricated; no sorry retained.
 
 ## Routing compliance
 
@@ -74,62 +70,62 @@ theorem kvE_deepExcl_zero_vacuous {sig : MonadicSignature} {n : Nat}
 /-- **General-`m` supply for the carried `hexclDeepFut` obligation** (row 13 of the 13-row
     ledger; binder shape verbatim from `EndIntervalConsumerK.lean:198-204` /
     `kampPrior_site_rungK_gate_match` at generic depth). `k = 0`: VACUOUS via
-    `kvE_deepExcl_zero_vacuous`. `k = j + 1`: strategic sorry — needs the Phase-5 ambient render
-    (see module docstring; the deep quant layer of `nf_eval_nf M (k+2) 3 [w,x,t] qnf` is not
-    derivable from `hAmb` + igPtW). -/
-theorem kvE_hexclDeepFut_supply {sig : MonadicSignature}
-    {atomMap : Formula → sig.preds} :
-    ∀ (k : Nat) (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-      (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    `kvE_deepExcl_zero_vacuous`. `k = j + 1`: DISCHARGED (task 370 Phase 8) — the de-folded chain's
+    deep ambient render `nf_eval_nf M (k+2) 3 [w,x,t] qnf` (taken downstream, as the landed slice
+    supplies do) has quant layer forcing `qnf.2 σ = true` from the exterior realizer, contradicting
+    `qnf.2 σ = false`. See module docstring. -/
+theorem kvE_hexclDeepFut_supply {sig : MonadicSignature} :
+    ∀ (k : Nat)
       (M : OrderedMonadicStructure sig)
       (qnf : NormalForm sig (k + 2) 3)
       (x t : M.carrier),
       kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-        (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1
-          (igFoldBit qnf)).eval_at M atomMap w →
+        nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
         ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
           nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
           ∀ x1 : M.carrier, t < x1 →
             ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ
-  | 0, _h_surj, _charF, _M, qnf, _x, _t => by
-      intro _hAmb w _hxw _hwt _hptW σ _hadm _hbf hrow hguard x1 _hx1 _hσ
+  | 0, _M, qnf, _x, _t => by
+      intro _hAmb w _hxw _hwt _hqnf σ _hadm _hbf hrow hguard x1 _hx1 _hσ
       exact kvE_deepExcl_zero_vacuous qnf σ hrow hguard
-  | (j + 1), _h_surj, _charF, M, qnf, x, t => by
-      intro _hAmb w _hxw _hwt _hptW σ _hadm _hbf _hrow _hguard x1 _hx1 _hσ
-      -- sorry: assumes the full deep ambient realization
-      --   `nf_eval_nf M (j+3) 3 [w,x,t] qnf`, whose quant layer `qnf.2` forces `qnf.2 σ = true`
-      --   from the exterior realizer `_hσ`, contradicting `_hbf`. Deferred because igPtW renders
-      --   only the atom layer `qnf.1` (`kvExt_gate_henv`); the deep layer is reconstructed by the
-      --   interior realizer. follow-up: task 358 Phase 5 (kampPrior_hreal_supply ambient render)
-      --   must precede this general-m arm — see module docstring / Phase-4 handoff.
-      sorry
+  | (j + 1), M, qnf, x, t => by
+      intro _hAmb w _hxw _hwt hqnf σ _hadm hbf _hrow _hguard x1 _hx1 hσ
+      -- General-`m` DISCHARGE (task 370 Phase 8, against the de-folded render). The ambient
+      -- deep render `hqnf : nf_eval_nf M (j+3) 3 [w,x,t] qnf` — now PRODUCED downstream by the
+      -- de-folded chain (Phase 6 render production / Phase 7 validated supply) — has quant layer
+      -- `qnf.2`. Its forward direction forces `qnf.2 σ = true` from the exterior realizer `hσ`
+      -- at `x1`, contradicting the binder's `qnf.2 σ = false` (`hbf`). This is the exact dual of
+      -- the landed slice supply `kvE_hsliceFut_supply`, which takes the same render downstream.
+      have hmk : qnf.2 σ = true := (hqnf.2 σ).mp ⟨x1, hσ⟩
+      rw [hmk] at hbf
+      exact Bool.noConfusion hbf
 
 /-- **General-`m` supply for the carried `hexclDeepPast` obligation** (row 12; Past mirror of
     `kvE_hexclDeepFut_supply`, binder shape verbatim from `EndIntervalConsumerK.lean:191-197`).
-    Same two-arm route: m = 0 VACUOUS via `kvE_deepExcl_zero_vacuous`; general-`m` strategic sorry
-    on the Phase-5 ambient render. -/
-theorem kvE_hexclDeepPast_supply {sig : MonadicSignature}
-    {atomMap : Formula → sig.preds} :
-    ∀ (k : Nat) (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-      (charF : (j : Nat) → NormalForm sig j 1 → Formula)
+    Same two-arm route: m = 0 VACUOUS via `kvE_deepExcl_zero_vacuous`; general-`m` DISCHARGED
+    (task 370 Phase 8) against the de-folded ambient render (Past mirror). -/
+theorem kvE_hexclDeepPast_supply {sig : MonadicSignature} :
+    ∀ (k : Nat)
       (M : OrderedMonadicStructure sig)
       (qnf : NormalForm sig (k + 2) 3)
       (x t : M.carrier),
       kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
-        (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1
-          (igFoldBit qnf)).eval_at M atomMap w →
+        nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
         ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
           nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
           ∀ x1 : M.carrier, x1 < x →
             ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ
-  | 0, _h_surj, _charF, _M, qnf, _x, _t => by
-      intro _hAmb w _hxw _hwt _hptW σ _hadm _hbf hrow hguard x1 _hx1 _hσ
+  | 0, _M, qnf, _x, _t => by
+      intro _hAmb w _hxw _hwt _hqnf σ _hadm _hbf hrow hguard x1 _hx1 _hσ
       exact kvE_deepExcl_zero_vacuous qnf σ hrow hguard
-  | (j + 1), _h_surj, _charF, M, qnf, x, t => by
-      intro _hAmb w _hxw _hwt _hptW σ _hadm _hbf _hrow _hguard x1 _hx1 _hσ
-      -- sorry: assumes the full deep ambient realization `nf_eval_nf M (j+3) 3 [w,x,t] qnf`
-      --   (Past mirror of `kvE_hexclDeepFut_supply`'s general-m arm). Deferred: igPtW renders only
-      --   the atom layer; deep layer needs the interior realizer. follow-up: task 358 Phase 5.
-      sorry
+  | (j + 1), M, qnf, x, t => by
+      intro _hAmb w _hxw _hwt hqnf σ _hadm hbf _hrow _hguard x1 _hx1 hσ
+      -- General-`m` DISCHARGE (task 370 Phase 8, Past mirror of `kvE_hexclDeepFut_supply`). The
+      -- ambient deep render `hqnf`'s quant layer forces `qnf.2 σ = true` from the exterior
+      -- realizer `hσ` at `x1` (`x1 < x`), contradicting the binder's `qnf.2 σ = false` (`hbf`).
+      -- Downstream of the de-folded render, exact dual of the landed `kvE_hslicePast_supply`.
+      have hmk : qnf.2 σ = true := (hqnf.2 σ).mp ⟨x1, hσ⟩
+      rw [hmk] at hbf
+      exact Bool.noConfusion hbf
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

@@ -363,7 +363,7 @@ signature-slot away, and the interior/zone content is likewise in the carrier's 
 - **Timing:** 2-3 hours
 - **Depends on:** 6
 
-### Phase 8: Discharge kvE_hexclDeep{Fut,Past}_supply (:105/:133) sorry-free [NOT STARTED]
+### Phase 8: Discharge kvE_hexclDeep{Fut,Past}_supply (:105/:133) sorry-free [COMPLETED]
 
 - **Goal:** Discharge the rows-12-13 general-`m` arms against the de-folded render — STRICTLY after :116
   lands (both in-body notes require the Phase-7 ambient render to precede them).
@@ -377,9 +377,9 @@ signature-slot away, and the interior/zone content is likewise in the carrier's 
   build green; only :116/:105/:133 discharged; KampPrior:519/:522 still present and unchanged.
 - **Fallback trigger:** as Phase 7 — `[BLOCKED]` before any retained sorry.
 - **Tasks:**
-  - [ ] Discharge :105 (Fut arm) sorry-free.
-  - [ ] Discharge :133 (Past arm) sorry-free.
-  - [ ] Full 6-file build green; confirm :519/:522 untouched.
+  - [x] Discharge :105 (Fut arm) sorry-free. *(Done — enriched signature to take the de-folded ambient render `nf_eval_nf M (k+2) 3 [w,x,t] qnf` downstream (exact dual of the LANDED slice supply `kvE_hsliceFut_supply`), dropping the useless folded `igPtW`/`h_surj`/`charF` binders that render only the atom layer. General-`m` arm: `(hqnf.2 σ).mp ⟨x1, hσ⟩` forces `qnf.2 σ = true` from the exterior realizer, contradicting `qnf.2 σ = false`. m = 0 arm unchanged (`kvE_deepExcl_zero_vacuous`). `lean_verify`-clean: axioms {propext, Classical.choice, Quot.sound}, no sorryAx.)*
+  - [x] Discharge :133 (Past arm) sorry-free. *(Done — Past mirror of :105 against `kvE_hslicePast_supply`'s downstream interface; same one-line quant-layer contradiction. `lean_verify`-clean, no sorryAx.)*
+  - [x] Full 6-file build green; confirm :519/:522 untouched. *(Full project `lake build` green, 1761 jobs. Only ExteriorDeepExclSupplyK.lean modified (in scope); `git diff --numstat` = 0 on CarrierKv, InteriorGateGeneralK, KampPrior, ExteriorGateAssembleK, InteriorHrealSupplyK. Frozen `bracketEndChar_kv` (CarrierKv:238-249), both `rfl` bridges (IGGK:339-351, CarrierKv:294-351), and KampPrior:519/:522 byte-identical.)*
 - **Timing:** 2-3 hours
 - **Depends on:** 7
 
