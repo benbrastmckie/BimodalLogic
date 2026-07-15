@@ -1042,6 +1042,117 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
       · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
     hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
+set_option maxHeartbeats 1600000 in
+/-- **De-folded general-`k` supply-site certificate** `kampPrior_site_rungKFib_gate_match`
+    (task 370 Phase 6 — additive sibling of `kampPrior_site_rungK_gate_match`, `:941`). The
+    per-`qnf` seam restatement of the DE-FOLDED exterior-composed discharge
+    `bracketEndChar_kvExtFib_correct_prior` (Option B; routed through the SIBLING de-folded interior
+    carrier `bracketEndChar_kvFib`). The row-5/6 `hreal`/`hexcl` and the slice/deep exclusion
+    binders are re-keyed onto the non-projecting fiber gate
+    `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)`; the folded arity-1 provider bundle
+    `P`/`hcharK` is replaced by the render-gated arity-4 char seam `hcharFib` (threaded outward like
+    `hreal`/`hexcl`). Obligation discipline (carry, do NOT discharge) is preserved verbatim: `hreal`
+    fires by modus ponens with `hfiberCons`; `hexcl` by the inconsistent-σ case split. The frozen
+    `kampPrior_site_rungK_gate_match` above is left byte-identical (its out-of-scope consumer
+    `EndIntervalConsumerK.lean:248` is unaffected). -/
+theorem kampPrior_site_rungKFib_gate_match {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (Pbr : ExistProviders sig atomMap k)
+    (qnf : NormalForm sig (k + 2) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier)
+    (hcharFib : ∀ (w : M.carrier),
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ (σ : NormalForm sig (k + 1) 4) (u : M.carrier),
+        temporal_truth M atomMap u (charFib (k + 1) σ) ↔
+          nf_eval_nf M (k + 1) 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- Task-363 interior rows-5-6 antecedent (D7 repair), mirroring
+    -- `EndIntervalCorrectPrior`: the supply population is restricted to fiber-CONSISTENT
+    -- marked slices (`kvE_fiberConsistent`); the doppelgänger fake ambient fails it, honest
+    -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
+    (hfiberCons : ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+      kvE_fiberConsistent σ = true)
+    (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        kvE_fiberConsistent σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
+        kvE_fiberConsistent σ = true →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 DEEP-ANCHORED): binder
+    -- types mirrored verbatim from `ExteriorGateAssembleK.lean`, `igPtW`→`igPtWFib`.
+    (hslicePast : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+        kvE_deepOnFiber qnf σ = true →
+        temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
+          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hsliceFut : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+        kvE_deepOnFiber qnf σ = true →
+        temporal_truth M atomMap t (kvE_futPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
+          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        kvE_pastSliceMarked qnf σ = true →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        kvE_futSliceMarked qnf σ = true →
+        ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  -- Task 363: reconstruct the unrestricted interior obligations for the de-folded discharge
+  -- lemma — `hreal` by modus ponens with `hfiberCons`; `hexcl` by
+  -- case split (an inconsistent σ has no realization at all).
+  bracketEndChar_kvExtFib_correct_prior atomMap h_surj charFib Pbr qnf
+    h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t hcharFib
+    (fun hAmb w hxw hwt hg σ hσ => hreal hAmb w hxw hwt hg σ hσ (hfiberCons σ hσ))
+    (fun hAmb w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
+      by_cases hcons : kvE_fiberConsistent σ = true
+      · exact hexcl hAmb w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
+      · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
+    hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
+
 /-- **F-i positive exhibit (task 309 Phase 15): fragment `qnf` exist at the k=2-arm site
     type.** Direct re-export of `kvE2_sepFragment_realizable` (SW:10265, task 346 Phase 2)
     through the `rfl` defeq bridge `kvE2_sepFragment_frag` = `kvE2_sepFragment`
