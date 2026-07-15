@@ -1,6 +1,6 @@
 # Implementation Plan: Arity-General Zone-Decomposed Char Engine
 - **Task**: 376 - arity_general_zone_decomposed_char_engine
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 24 hours (9 phases, one orchestrator dispatch each; ~11-cycle budget remaining, 2 slack cycles reserved for retry/split)
 - **Dependencies**: None upstream (task 375 depends on THIS task and will audit its definition of done)
 - **Research Inputs**:
@@ -297,7 +297,44 @@ axioms only, no sorryAx. Proceed to wave 2.
 - **Timing:** 2 hours
 - **Depends on:** none
 
-### Phase 2: Re-sign the additive *Fib sibling chain with Blocks A/B [NOT STARTED]
+### Phase 2: Re-sign the additive *Fib sibling chain with Blocks A/B [BLOCKED]
+
+**BLOCKER** (Phase 2):
+- **What failed**: Re-signing `bracketEndChar_kvFib_step_complete` (IGGK:1733) `hcharFib` binder
+  to **Block A** (the guarded ↔ with the `qnf.2 σ = true` marked-fiber premise) cannot re-prove
+  the theorem body. The completeness proof discharges the FROZEN carrier `bracketEndChar_kvFib`'s
+  segment/endpoint EXCLUSION obligations (`igSegLFib`/`igSegRFib`/`igEpLFib`/`igEpRFib`/`igPtWFib`)
+  at **7 sites** — IGGK:1932, 1946, 1968, 1984, 2009, 2022, 2046 — each of the form
+  `(hchar σ u).mp hch` inside a `cases hb : igFoldBitFib qnf <zone> σ | false =>` branch, i.e.
+  applied to a σ that is NOT known marked (`qnf.2 σ = true` is unavailable; `hb` only gives the
+  conjunction `qnf.2 σ ∧ zone = <zone>` is FALSE). Block A's mark guard removes access to this
+  `⟹` direction (`temporal_truth u (charFib σ) → nf_eval u σ`).
+- **What was tried**: (1) supply mark from the fold-bit decode — fails: the branch has the bit
+  FALSE, so no decode. (2) `by_cases qnf.2 σ` split — the unmarked arm has no route
+  (`hw.2 σ` gives "no realizer" but linking `charFib σ → realizer` IS the seam, circular); the
+  marked-wrong-zone arm needs `zoneHolds (nf0_zoneSpec σ) u` but `u`'s zone ≠ σ's declared zone,
+  so Block A's zone guard is unsatisfiable. (3) local reconstruction of the unguarded ↔ from the
+  guarded one + render — the `⟹` half is exactly what's missing.
+- **Why stuck (root cause)**: the exclusion sites need the UNGUARDED soundness direction
+  `charFib σ at u → σ realized at u` for arbitrary/unmarked σ — which is *precisely the
+  cross-context transport the report's §Q2.3 / `seamPair_joint_refutation` refuted*. So the
+  guarded re-sign correctly BREAKS an exclusion proof that itself relied on the refuted claim.
+  The frozen carrier's segment predicate demands `¬charFib σ` for every bit-false σ, so the
+  obligation cannot be dropped, and the carrier/`igSeg*` definitions are out of Phase-2 scope.
+- **What is needed (recommended plan revision)**: guard ONLY **Block B** (the soundness →,
+  `hcharFibSoundP` — the actual refutation lever) and KEEP **Block A** (the completeness ↔,
+  `hcharFib`) UNGUARDED. Phase 1's landed probe `zoneGuard_blocks_seamPair_counterexample`
+  (`ZoneSeamCrossContextProbe.lean`) already proved the **soundness** `zoneHolds` guard ALONE
+  blocks the counterexample — Block A never needed guarding for refutation-safety. Under this
+  split-seam design: `step_sound` (all seam uses on marked σ) re-signs cleanly to Block B; the
+  landed `realize_{futT,pastX}` + `kampPrior_hreal_supply` (already zone-guarded this dispatch)
+  are consistent; and `step_complete`'s exclusions keep the unguarded ↔. A bounded Phase-1-style
+  probe SHOULD confirm no completeness-side (Block A) refutation exists before adopting this.
+- **Prohibited**: no `sorry`, no guard-weakening, no frozen-carrier edit was used.
+
+**Partial progress landed (commit 3b75fc880, green, sorry-free)**: `realize_futT`/`realize_pastX`
++ `kampPrior_hreal_supply` re-signed to the zone-guarded render-free soundness seam (Block B/C).
+
 - **Goal:** Substitute the refuted `hcharFib`/`hcharFibSoundP` binders with `hcharFibZone`
   (Block A) / `hcharFibZoneSound` (Block B) across the four EDITABLE siblings, re-thread the
   endpoint extractions, and return the tree to full green with the two KampPrior sorries
@@ -306,18 +343,23 @@ axioms only, no sorryAx. Proceed to wave 2.
   - [ ] `ExteriorGateAssembleK.lean`: in `bracketEndChar_kvExtFib_correct_prior` (:559-660),
         replace the `hcharFib` binder (:574-578) with Block A and `hcharFibSoundP` (:579-581)
         with Block B (byte-verbatim from the probe file, ll.70-92); repair the proof body's
-        uses (every use site must now supply the marked-fiber guard from the fold-bit decode
-        and the zone witness — Block C shows the pattern).
+        uses. *(deviation: BLOCKED — depends on the Block-A re-sign of `step_complete`; see
+        Phase-2 BLOCKER; body only forwards to step_sound/step_complete so it re-signs
+        binder-only once those land.)*
   - [ ] `InteriorGateGeneralK.lean`: re-sign the byte-mirror binders in `step_complete`
-        (:1733/:1742-1746) — its `hz'` fold biconditional (:1773-1801) already manufactures
-        the zoneHolds guard — and `step_sound` (:2101/:2115) — carrier evals from the
-        destructured `hveah` (:2137), anchor order from the carrier's order literals.
-  - [ ] `InteriorGateGeneralK.lean`: re-thread `bracketEndChar_kvFib_realize_futT` (:1565) per
+        (:1733/:1742-1746) — and `step_sound` (:2101/:2115). *(deviation: BLOCKED — the Block-A
+        (guarded ↔) re-sign of `step_complete` is infeasible against the frozen carrier's 7
+        exclusion obligations; see Phase-2 BLOCKER. `step_sound` (Block B) is repairable — all
+        its seam uses are on marked σ — but is coupled through `step_correct`/`correct_prior`
+        which cannot fully build while `step_complete` is blocked.)*
+  - [x] `InteriorGateGeneralK.lean`: re-thread `bracketEndChar_kvFib_realize_futT` (:1565) per
         Block C (transplant the compiled proof from the specs probe, ll.102-152, adapting
         binder names) and the `_pastX` mirror (:1597; `snce` firing, `igZPastX`, `x1 < x`;
-        symmetric zone discharge).
+        symmetric zone discharge). *(LANDED — commit 3b75fc880; also re-signed the consumer
+        `kampPrior_hreal_supply` boundary/extraction sites; full build green, sorry-free.)*
   - [ ] `KampPrior.lean`: re-sign the threaded parameter list of
-        `kampPrior_site_rungKFib_gate_match` (:1058-1181) to match.
+        `kampPrior_site_rungKFib_gate_match` (:1058-1181) to match. *(deviation: BLOCKED —
+        binder-only forward; depends on the Block-A/B seam types being settled; see BLOCKER.)*
   - [ ] Known pitfalls (report Tactic Survey): bare `Fin.cons … j` outside application context
         needs type ascription `(… : Fin 3 → M.carrier)`; `decide` closes Bool-bit absurdities;
         `open …Separation` already present in these files.
