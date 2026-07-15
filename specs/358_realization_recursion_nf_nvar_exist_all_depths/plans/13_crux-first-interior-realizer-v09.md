@@ -418,7 +418,25 @@ source scan + frozen-boundary git-diff audit.
 - **Depends on:** none (Phases 1-3 complete).
 - **Completed:** 2026-07-14 (sess_1784078566_52d1da, commit d62d69b20 — pin + gate + m=0 legs).
 
-### Phase 5: Crux A — interior `hreal` supply: PRODUCE `hsigma` (Rabinovich Cor 5.4(1)⇐ witness selection, the deep ⇐ direction) [NOT STARTED]
+### Phase 5: Crux A — interior `hreal` supply: PRODUCE `hsigma` (Rabinovich Cor 5.4(1)⇐ witness selection, the deep ⇐ direction) [PARTIAL]
+
+**PARTIAL (session sess_1784078566_52d1da, 2026-07-14).** The correctly-typed
+`kampPrior_hreal_supply` (row-5 binder conclusion verbatim) landed green in the NEW leaf
+`Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorHrealSupplyK.lean`;
+body is ONE tracked strategic sorry. **Machine-confirmed root obstruction (fix-forward blocker,
+not forcing):** the plan's firing route ("fold bit fires `kvE_{fut,past}Pos`") is CIRCULAR — the
+only fold-bit → model-realizer bridge `igFoldBit_realize_iff` (`InteriorGateGeneralK.lean:563`)
+requires the deep ambient render `nf_eval_nf M (k+2) 3 [w,x,t] qnf` as a hypothesis, and that
+render is DOWNSTREAM of `hreal` (produced by `bracketEndChar_kv_step_sound (hreal)(hexcl)` at
+`ExteriorGateAssembleK.lean:337-338`). The row-5 binder exposes only `igPtW`-at-`w` (igZAtW
+zone); the endpoint firings the exterior drivers consume are absent, and
+`kvE_ambientDeepAnchor_iff` gives only a syntactic EF-closure (no carrier). Neither 5.1 nor 5.2
+green-commit boundary reached (both need the non-circular firing transducer).
+**Unblock:** build an `igFoldBit → kvE_{fut,past}Pos` firing transducer that routes through the
+depth-`k` recursion IH bundled in `P` WITHOUT `igFoldBit_realize_iff`'s render hypothesis — OR
+re-sequence so Crux A and the render are produced jointly (as the prior render-adjudication
+recommended). `lean_verify` = `[propext, sorryAx, Classical.choice, Quot.sound]`; frozen boundary
+clean (only the new leaf added).
 - **Goal:** Prove `kampPrior_hreal_supply` matching the gate-match row-5 binder
   (`hreal`, KampPrior.lean:964-970): under `kvE_ambientDeepAnchor qnf = true`, for every igPtW-selected
   w and every qnf-marked fiber-consistent σ, produce `x1` with
