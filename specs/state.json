@@ -4,12 +4,12 @@
     "total_tasks": 29,
     "last_sync": "2026-06-08T03:09:30Z"
   },
-  "next_project_number": 370,
+  "next_project_number": 371,
   "active_projects": [
     {
       "project_number": 369,
       "project_name": "m1_endpoint_kvE_futPos_supply_break_render_cycle",
-      "status": "not_started",
+      "status": "completed",
       "task_type": "lean4",
       "topic": "kamp_theorem_formalization",
       "description": "Break task 358's Plan v09 Phase 5 render/realizer/firing cycle (H5 divergence audit verdict C -- missing infrastructure; source of truth: specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/11_render-cluster-divergence-audit.md, and the circularity witness at specs/358_realization_recursion_nf_nvar_exist_all_depths/handoffs/phase-5-crux-a-handoff-20260714.md). MANDATORY PHASE 1 (must run first): bounded feasibility adjudication of M1's core obligation -- upgrading the 1-type Until witness igEpR@t provides (Until(charK chi, top), InteriorGateGeneralK.lean:219) to a full arity-4 sigma-witness using only hAmb (kvE_ambientDeepAnchor, a syntactic EF-closure guard with no M/carrier, ExteriorAmbientDeepAnchorK.lean:131) plus hcons (kvE_fiberConsistent) and the depth-(k+1) saturation of M. This upgrade is UNPROVEN as of the audit (H4 adversarial pass flagged it an unresolved risk) -- adjudicate with a bounded lean_multi_attempt-style check before committing to enrichment wiring. IF PROVABLE: build lemma M1 = kvE_futPos_supply_of_endpoint (+ past mirror kvE_pastPos_supply_of_endpoint using hepL/igEpL/Since) in a new leaf downstream of KampPrior (e.g. Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorEndpointFiringSupplyK.lean, following the InteriorHrealSupplyK.lean precedent of a leaf not added to the NfMultiAnchorBridge aggregator to avoid an import cycle but still built by default lake build). Target signature: theorem kvE_futPos_supply_of_endpoint (P : ExistProviders sig atomMap k) (M : ...) (hepR : (igEpR ... (igFoldBit qnf)).eval_at M atomMap t) (hAmb : kvE_ambientDeepAnchor qnf = true) (sigma : NormalForm sig (k+1) 4) (hmark : qnf.2 sigma = true) (hcons : kvE_fiberConsistent sigma = true) (hfut : kvE_futAdmissible sigma = true) : temporal_truth M atomMap t (kvE_futPos P sigma). This sources the firing from igEpR@t (NOT the render), so kampPrior_futRealizer_of_pos + P.correct then build the sigma-realizer with no cycle. Requires enriching bracketEndChar_kv_step_sound/step_correct binders (ExteriorGateAssembleK.lean:337-338, step_sound delegation InteriorGateGeneralK.lean:1150-1165) with the hepL/hepR endpoint evals they already destruct and currently discard. IF NOT PROVABLE: fall back to M2 -- a de-folded interior carrier (non-igFoldBit variant of igEpR/igPtW) keeping full arity-4 fiber content at the endpoints, a larger InteriorGateGeneralK.lean carrier-redesign refactor; scope and document it explicitly rather than attempting it speculatively. File sites: InteriorGateGeneralK.lean:563 (igFoldBit_realize_iff, render-gated bridge to route around), InteriorGateGeneralK.lean:209/219 (igEpL/igEpR endpoint firing defs), InteriorGateGeneralK.lean:243 (igPtW, lossy AtW-zone-only carrier, root cause F1), InteriorGateGeneralK.lean:1150-1165 (step_sound fiber-layer delegation), ExteriorPinnedConverseK.lean:252 (kvE_futPos_of_realizer, realizer-gated, other cycle edge to avoid), ExteriorGateAssembleK.lean:337-338 (render production site, binder to enrich), KampPrior.lean:964-970 (rows 5-6 hreal/hexcl obligations M1 discharges), PriorInterface.lean:38-46 (ExistProviders.correct, depth-k IH M1 threads). Definition of done: M1 (or a scoped-and-documented M2 plan if the Phase 1 gate refutes M1) lands sorry-free; bracketEndChar_kv_step_sound/step_correct binders enriched with hepL/hepR; lake build green; zero new vacuous defs/axioms beyond the existing floor (propext, sorryAx, Classical.choice, Quot.sound). Task 358 depends on this task: its Plan v09 Phase 5 (kampPrior_hreal_supply) must NOT be re-dispatched against the current interface (provably under-provisioned per the audit) and instead calls this task's M1 lemma by name once landed.",
@@ -26,15 +26,26 @@
         "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorEndpointFiringSupplyK.lean"
       ],
       "created": "2026-07-15T02:49:55Z",
-      "last_updated": "2026-07-15T02:49:55Z",
+      "last_updated": "2026-07-15T05:31:23Z",
       "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/369_m1_endpoint_kvE_futPos_supply_break_render_cycle/plans/01_m2-scope-and-document.md",
+          "summary": "M2 scope-and-document plan (M1 refuted): Phase 0 certainty probe, Phase 1 M2 scope doc, Phase 2 spawn recommendation"
+        },
+        {
+          "type": "report",
+          "path": "specs/369_m1_endpoint_kvE_futPos_supply_break_render_cycle/reports/01_m1-endpoint-firing-adjudication.md",
+          "summary": "M1 feasibility adjudication — VERDICT: NOT PROVABLE, fall back to M2 (de-folded interior carrier)"
+        },
         {
           "type": "research",
           "path": "specs/358_realization_recursion_nf_nvar_exist_all_depths/reports/12_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 358 (H5 divergence audit verdict C)"
         }
       ],
-      "session_id": "sess_1784078566_52d1da"
+      "session_id": "sess_1784091172_81406c",
+      "completion_summary": "M1 (kvE_futPos_supply_of_endpoint) adjudicated NOT PROVABLE (HIGH confidence, adversarially verified): arity-1 igEpR@t/igFoldBit endpoint firing cannot rebuild the arity-4 sigma-realizer; bridging depth-(k+1) M-saturation is absent and circular. Delivered M2 scope-and-document plan: Phase 0 bounded fold-collision certainty probe landed sorry-free (obstruction to full machine-certainty documented, axiom floor held); Phase 1 authoritative M2 carrier-redesign scope doc (reports/02); Phase 2 spawn+dependency recommendation (reports/03). Spawned task 370 (M2 de-folded carrier redesign, deps=[369], blocks 358). Task 358 Phase 5 (kampPrior_hreal_supply) frozen: its M1-lemma-call assumption is dead; now depends on task 370. Zero new axioms; lake build green."
     },
     {
       "project_number": 309,
@@ -1762,7 +1773,8 @@
         364,
         367,
         368,
-        369
+        369,
+        370
       ],
       "created": "2026-07-13T05:11:11Z",
       "last_updated": "2026-07-15T02:49:55Z",
@@ -2000,6 +2012,34 @@
       ],
       "session_id": "sess_1784066335_7eec2d",
       "completion_summary": "Landed a 367-style ambient-side deep-saturation/EF-closure guard (kvE_ambientDeepAnchor) in new production module ExteriorAmbientDeepAnchorK.lean, closing task 358 Phase-4 blocker. Guard is sigma-independent, m=0-inert (_zero rfl), with _of_realized honest-preservation crux at a general model and _iff readback. Excludes both countermodels CM-A (row 13) and CM-B (row 5); survives depth-2 hereditary doppelganger + copy-plant adversarial probes with zero redesign loops. Rows 5/6/10-13 restated across EndIntervalConsumerK/ExteriorGateAssembleK/KampPrior with gate-formula strengthening; no residue rows needed. 34 certificates verified at floor axioms [propext,Classical.choice,Quot.sound]; guard-unfold scan=0; frozen-layer diff exactly 5 files; zero new sorries (KampPrior:519/:522 untouched, task-358 territory). Next: /revise 358 then /implement 358."
+    },
+    {
+      "project_number": 370,
+      "project_name": "m2_defolded_interior_carrier_redesign",
+      "status": "not_started",
+      "task_type": "lean4",
+      "description": "M2: de-folded interior carrier redesign — carry full arity-4 fiber (execute reports/02 scope). MANDATORY PHASE 0 GATE: Frozen-boundary A-vs-B architectural decision (reports/02 §2.3), MUST run before any carrier code lands: Option A = modify the frozen private carrier bracketEndChar_kv (CarrierKv.lean:246-249), which breaks the byte-for-byte defeq bracketEndChar_kv_succ_eq rfl (InteriorGateGeneralK.lean:339-351) the whole Phase 1-4 tree is locked to (unbounded blast radius); Option B = build a parallel non-folded carrier + re-prove the full correctness chain (igBody_holds_iff :359, step_sound :1043 + fiber delegation :1150-1165, igFoldBit_realize_iff :563 analog) with no defeq break but higher proof volume. SCOPE/DETAIL: Build the de-folded interior carrier (M2) per the authoritative scope in task 369's reports/02_m2-carrier-redesign-scope.md. M1 (kvE_futPos_supply_of_endpoint) is REFUTED (task 369 reports/01, HIGH confidence): the igFoldBit fold (InteriorGateGeneralK.lean:318-332) lossily projects the arity-4 fiber sub : NF sig k 4 down to the arity-1 pair (zone, nfk_projFresh sub), so the endpoint eval cannot rebuild the full arity-4 sigma-realizer the driver kampPrior_futRealizer_of_pos (KampPrior.lean:1662) demands. The paper-faithful fix (Rabinovich Cor 5.4(1), reports/01 finding #13) is to carry the whole ordered fiber and never fold. Re-key igEpL/igEpR/igPtW (InteriorGateGeneralK.lean:209/219/243) and replace/parallel igFoldBit (:318) with a non-projecting fiber-carrying selector, feed the de-folded carrier through igBody (:290) and igMkDisjunct (:276), replace the render-gated bridge igFoldBit_realize_iff (:563) with a de-folded endpoint->arity-4 realizer extraction, re-type the render production (ExteriorGateAssembleK.lean:337-338) and the row-5/6 hreal/hexcl binders (KampPrior.lean:955-1000), re-wire the realizer drivers kampPrior_{fut,past}Realizer_of_pos (KampPrior.lean:1662/1721), then discharge the downstream leaves (kampPrior_hreal_supply InteriorHrealSupplyK.lean:116 strategic sorry; the rows-12-13 general-m arms ExteriorDeepExclSupplyK.lean:105/133) sorry-free. Source of truth: specs/369_m1_endpoint_kvE_futPos_supply_break_render_cycle/reports/02_m2-carrier-redesign-scope.md (M1 refuted per 369 reports/01).",
+      "dependencies": [
+        369
+      ],
+      "blocks": [
+        358
+      ],
+      "parent_task": 358,
+      "file_scope": [
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorGateGeneralK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/CarrierKv.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorGateAssembleK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/KampPrior.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/InteriorHrealSupplyK.lean",
+        "Theories/Bimodal/Metalogic/WeakCanonical/Kamp/NfMultiAnchorBridge/ExteriorDeepExclSupplyK.lean"
+      ],
+      "topic": "task-358 Kamp NfMultiAnchorBridge render-cycle / M2 carrier redesign",
+      "effort": null,
+      "artifacts": [],
+      "session_id": "sess_1784091172_81406c",
+      "created": "2026-07-15T05:31:06Z",
+      "last_updated": "2026-07-15T05:31:06Z"
     }
   ],
   "artifacts": [
