@@ -961,14 +961,14 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
     -- realized ambients discharge it via `kvE_fiberConsistent_of_realized`.
     (hfiberCons : ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
       kvE_fiberConsistent σ = true)
-    (hreal : ∀ w : M.carrier, x < w → w < t →
+    (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         kvE_fiberConsistent σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexcl : ∀ w : M.carrier, x < w → w < t →
+    (hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
@@ -1000,28 +1000,28 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
         temporal_truth M atomMap t (kvE_futPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
           kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
-    (hexclSlicePast : ∀ w : M.carrier, x < w → w < t →
+    (hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
         kvE_pastSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, x1 < x →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclSliceFut : ∀ w : M.carrier, x < w → w < t →
+    (hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
         kvE_futSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, t < x1 →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclDeepPast : ∀ w : M.carrier, x < w → w < t →
+    (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
         nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
         ∀ x1 : M.carrier, x1 < x →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclDeepFut : ∀ w : M.carrier, x < w → w < t →
+    (hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
@@ -1035,10 +1035,10 @@ theorem kampPrior_site_rungK_gate_match {sig : MonadicSignature} {k : Nat}
   -- case split (an inconsistent σ has no realization at all).
   bracketEndChar_kvExt_correct_prior atomMap h_surj charF P hcharK Pbr qnf
     h_xy h_yt h_xt h_yx h_ty h_tx M h_UZ h_SZ x t
-    (fun w hxw hwt hg σ hσ => hreal w hxw hwt hg σ hσ (hfiberCons σ hσ))
-    (fun w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
+    (fun hAmb w hxw hwt hg σ hσ => hreal hAmb w hxw hwt hg σ hσ (hfiberCons σ hσ))
+    (fun hAmb w hxw hwt hg σ hσf x1 hle1 hle2 hnf => by
       by_cases hcons : kvE_fiberConsistent σ = true
-      · exact hexcl w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
+      · exact hexcl hAmb w hxw hwt hg σ hσf hcons x1 hle1 hle2 hnf
       · exact hcons (kvE_fiberConsistent_of_realized M _ σ hnf))
     hslicePast hsliceFut hexclSlicePast hexclSliceFut hexclDeepPast hexclDeepFut
 
