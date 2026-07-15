@@ -130,15 +130,15 @@ the front matter genuinely describes a two-part bimodal manual. Removing the two
 
 ---
 
-### Phase 2: Delete the removed chapters and constitutive notation [NOT STARTED]
+### Phase 2: Delete the removed chapters and constitutive notation [COMPLETED]
 
 **Goal**: Physically remove the two chapter files and the notation file they exclusively import,
 now that Phase 1 has removed every `#include` reference to them.
 
 **Tasks**:
-- [ ] Delete `Theories/Bimodal/typst/chapters/p5-counterfactual.typ` (504 lines).
-- [ ] Delete `Theories/Bimodal/typst/chapters/p5-constitutive.typ` (382 lines).
-- [ ] Delete `Theories/Bimodal/typst/notation/constitutive-notation.typ` (67 lines) — imported ONLY by the two chapters just deleted (report §2.3, grep-confirmed), so no live import remains.
+- [x] Delete `Theories/Bimodal/typst/chapters/p5-counterfactual.typ` (504 lines).
+- [x] Delete `Theories/Bimodal/typst/chapters/p5-constitutive.typ` (382 lines).
+- [x] Delete `Theories/Bimodal/typst/notation/constitutive-notation.typ` (67 lines) — imported ONLY by the two chapters just deleted (report §2.3, grep-confirmed), so no live import remains.
 
 **Timing**: 0.25 hours
 
