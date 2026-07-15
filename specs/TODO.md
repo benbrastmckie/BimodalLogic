@@ -97,12 +97,12 @@ next_project_number: 371
 
 ### Task 358 Kamp Nfmultianchorbridge Render Cycle / M2 Carrier Redesign
 
-370 [PLANNED] — M2: de-folded interior carrier redesign — carry full arity-4 fibe
+370 [IMPLEMENTING] — M2: de-folded interior carrier redesign — carry full arity-4 fibe
 
 ## Tasks
 
 ### 370. M2 defolded interior carrier redesign
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Task Type**: lean4
 - **Topic**: task-358 Kamp NfMultiAnchorBridge render-cycle / M2 carrier redesign
 - **Dependencies**: Task 369
