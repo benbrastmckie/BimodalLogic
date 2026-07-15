@@ -544,4 +544,192 @@ private theorem kvExtFib_gate_henv {sig : MonadicSignature} {k : Nat}
     (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
     (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
 
+set_option maxHeartbeats 1600000 in
+/-- **De-folded enriched gate correctness** (task 370 Phase 6 — additive sibling of
+    `bracketEndChar_kvExt_correct_prior`, `:229`). Byte-parallel clone routed through the SIBLING
+    de-folded interior carrier `bracketEndChar_kvFib` (via `bracketEndChar_kvFib_step_sound`
+    (Phase 5) / `bracketEndChar_kvFib_step_complete` (Phase 4) / `kvExtFib_gate_henv`), with the
+    `hreal`/`hexcl`/`hexclSlice*`/`hexclDeep*` provider binders re-keyed onto the non-projecting
+    fiber gate `igPtWFib … (charFib (k+1)) qnf.1 (igFoldBitFib qnf)`. The folded arity-1 provider
+    bundle `P`/`hcharK` (+ `h_UZ`/`h_SZ`) that the folded `step_complete` consumed is replaced by
+    the render-gated arity-4 char seam `hcharFib` threaded outward (there is no arity-4
+    `interiorGate_hck`); `h_UZ`/`h_SZ` are retained for the carrier-independent exterior brackets.
+    The `hexclExt` residue is discharged internally exactly as the folded original (fiber
+    trichotomy + `kvE_extBracket{Past,Fut}_sound`). -/
+theorem bracketEndChar_kvExtFib_correct_prior {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (Pbr : ExistProviders sig atomMap k)
+    (qnf : NormalForm sig (k + 2) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig)
+    (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
+    (x t : M.carrier)
+    (hcharFib : ∀ (w : M.carrier),
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ (σ : NormalForm sig (k + 1) 4) (u : M.carrier),
+        temporal_truth M atomMap u (charFib (k + 1) σ) ↔
+          nf_eval_nf M (k + 1) 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    -- SLICE-KEYED exterior interface (task 360 Phase 3b; task 367 deep-anchored): binder types
+    -- mirrored verbatim from the folded `bracketEndChar_kvExt_correct_prior`, `igPtW`→`igPtWFib`.
+    (hslicePast : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true →
+        kvE_deepOnFiber qnf σ = true →
+        temporal_truth M atomMap x (kvE_pastPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ' = true ∧
+          kvE_pastSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hsliceFut : ∀ w : M.carrier, x < w → w < t →
+      nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true →
+        kvE_deepOnFiber qnf σ = true →
+        temporal_truth M atomMap t (kvE_futPos Pbr σ) →
+        ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
+          kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
+    (hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        kvE_pastSliceMarked qnf σ = true →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        kvE_futSliceMarked qnf σ = true →
+        ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, x1 < x →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib (k + 1)) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
+        nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
+        ∀ x1 : M.carrier, t < x1 →
+          ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kvExtFib atomMap h_surj charFib Pbr qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M (k + 2) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  constructor
+  · -- ⇒: destructure the degenerate Lemma 7.6 conjunction, then feed the de-folded soundness half
+    -- with `hexclExt` built from the per-side bracket soundness.
+    intro hExt
+    obtain ⟨hInt, hPastBr, hFutBr, hGuard⟩ :=
+      (bracketEndChar_kvExtFib_holds_iff atomMap h_surj charFib Pbr qnf M x t).mp hExt
+    refine bracketEndChar_kvFib_step_sound atomMap h_surj charFib qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t (hreal hGuard) (hexcl hGuard) ?_ hInt
+    -- The former `hexclExt` obligation, by fiber trichotomy (task 360 Phase 3c report 04 +
+    -- task 367 deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
+    -- (fiber-forcing kernel under the gate-derived atom-layer pin `kvExtFib_gate_henv`);
+    -- on-fiber GUARD-TRUE slice-UNMARKED σ discharged by the deep-anchored slice-level
+    -- D1/D2; on-fiber guard-true bit-false-but-slice-MARKED σ by the carried `hexclSlice*`
+    -- residue (VERBATIM Phase-3b binders); on-fiber GUARD-FALSE σ by the carried
+    -- `hexclDeep*` residue (task 367 rows 12-13 — such σ carry no bracket clause).
+    intro w hxw hwt hptW σ hbit x1 hguard hnf
+    by_cases hfib : nfk_dropFresh σ = qnf.1
+    · rcases not_and_or.mp hguard with hx | ht
+      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
+        · cases hsm : kvE_pastSliceMarked qnf σ with
+          | false =>
+            exact kvE_extBracketPast_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hPastBr σ hdeep
+              hsm x1 (not_le.mp hx) hnf
+          | true =>
+            have hadm : kvE_pastAdmissible σ = true :=
+              kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
+            exact hexclSlicePast hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
+        · rw [Bool.not_eq_true] at hdeep
+          have hadm : kvE_pastAdmissible σ = true :=
+            kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
+          exact hexclDeepPast hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp hx) hnf
+      · by_cases hdeep : kvE_deepOnFiber qnf σ = true
+        · cases hsm : kvE_futSliceMarked qnf σ with
+          | false =>
+            exact kvE_extBracketFut_sound Pbr M h_UZ h_SZ qnf w x t hxw hwt hFutBr σ hdeep
+              hsm x1 (not_le.mp ht) hnf
+          | true =>
+            have hadm : kvE_futAdmissible σ = true :=
+              kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
+            exact hexclSliceFut hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
+        · rw [Bool.not_eq_true] at hdeep
+          have hadm : kvE_futAdmissible σ = true :=
+            kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
+          exact hexclDeepFut hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp ht) hnf
+    · -- Off-fiber: a realizer at the pinned anchors would force σ onto the fiber
+      -- (`offForce` recipe, NfEFold.lean) — contradiction with `hfib`.
+      have henv : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+        kvExtFib_gate_henv atomMap h_surj charFib qnf h_xy h_yt h_xt h_yx h_ty h_tx M x t hInt
+          w hxw hwt hptW
+      have hatom := nf_eval_nf_atom_layer M _ σ hnf
+      have hfac :=
+        (nf_eval_nf0_cons_factor M (Fin.cons w (Fin.cons x (fun _ => t))) x1
+          σ.atom_assgn).mp hatom
+      exact hfib (nf_eval_unique M 0 3 _ _ _ hfac.2.2 henv)
+  · -- ⇐: an honest realization re-establishes all three conjuncts.
+    rintro ⟨w, h⟩
+    have hxw : x < w := by
+      have := (h.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide))).mpr h_xy
+      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+    have hwt : w < t := by
+      have := (h.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide))).mpr h_yt
+      simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
+    refine (bracketEndChar_kvExtFib_holds_iff atomMap h_surj charFib Pbr qnf M x t).mpr
+      ⟨bracketEndChar_kvFib_step_complete atomMap h_surj charFib qnf h_xy h_yt M x t hcharFib
+        ⟨w, h⟩, ?_, ?_, kvE_ambientDeepAnchor_of_realized M _ qnf h⟩
+    · -- Past bracket at `x`.
+      refine kvE_extBracketPast_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
+      · -- hpos: admissible bit-true σ realized exterior `x1 < x`.
+        intro σ hadm hbit
+        obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
+        have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zPastX3 := by
+          have hh := hadm
+          rw [kvE_pastAdmissible] at hh
+          simp only [Bool.and_eq_true] at hh
+          exact of_decide_eq_true hh.1.1.1
+        have hb1 : (nf0_zoneSpec σ.1 ⟨1, by omega⟩).1 = true := by rw [hzone]; rfl
+        have h1 := hx1.1 (.order 0 (Fin.succ ⟨1, by omega⟩) (Fin.succ_ne_zero ⟨1, by omega⟩).symm)
+        simp only [atom_eval, Fin.cons] at h1
+        exact ⟨x1, h1.mpr hb1, hx1⟩
+      · -- hslice: the carried Past slice-honesty obligation (task 360 Phase 3b).
+        exact hslicePast w hxw hwt h
+    · -- Future bracket at `t`.
+      refine kvE_extBracketFut_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
+      · -- hpos: admissible bit-true σ realized exterior `t < x1`.
+        intro σ hadm hbit
+        obtain ⟨x1, hx1⟩ := (h.2 σ).mpr hbit
+        have hzone : nf0_zoneSpec σ.1 = kvE2_sep_zFutT3 := by
+          have hh := hadm
+          rw [kvE_futAdmissible] at hh
+          simp only [Bool.and_eq_true] at hh
+          exact of_decide_eq_true hh.1.1.1
+        have hb2 : (nf0_zoneSpec σ.1 ⟨2, by omega⟩).2 = true := by rw [hzone]; rfl
+        have h2 := hx1.1 (.order (Fin.succ ⟨2, by omega⟩) 0 (Fin.succ_ne_zero ⟨2, by omega⟩))
+        simp only [atom_eval, Fin.cons] at h2
+        exact ⟨x1, h2.mpr hb2, hx1⟩
+      · -- hslice: the carried Future slice-honesty obligation (task 360 Phase 3b).
+        exact hsliceFut w hxw hwt h
+
 end Bimodal.Metalogic.WeakCanonical.Kamp
