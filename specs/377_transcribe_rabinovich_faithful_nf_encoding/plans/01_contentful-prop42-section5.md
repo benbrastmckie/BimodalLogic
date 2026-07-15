@@ -241,7 +241,7 @@ Phases within the same wave can execute in parallel. Phases 1 and 2 are independ
 touches `KampPrior.lean` only; Phase 2 touches `EANegationClosure.lean` / `NavigatedSpine.lean`
 docstrings and adds one new file) — territory is disjoint.
 
-### Phase 1: Retire KampPrior.lean:522 by declaration restructuring [NOT STARTED]
+### Phase 1: Retire KampPrior.lean:522 by declaration restructuring [COMPLETED]
 
 - **Goal:** Remove the `n >= 2` sorry at `KampPrior.lean:522` without proving the general
   `n >= 2` case, by restructuring so the unreachable arm is not inside
@@ -254,21 +254,37 @@ docstrings and adds one new file) — territory is disjoint.
   single `noncomputable def nf_nvar_exist_all_depths`, so `sorryAx` enters that declaration's
   proof term regardless of reachability.
 - **Tasks:**
-  - [ ] Read `KampPrior.lean:346-362` and `:503-523` and confirm the `| n + 2 =>` arm is
-        unreachable from every live call site (re-verify; do not inherit).
-  - [ ] Restructure so the unreachable arm leaves the declaration. Preferred: restrict the
+  - [x] Read `KampPrior.lean:346-362` and `:503-523` and confirm the `| n + 2 =>` arm is
+        unreachable from every live call site (re-verify; do not inherit). *(Re-verified at
+        implementation time by tree-wide grep: the only live code call sites are the
+        `ih_exist_1` self-call :407 (`k 1`), and :597/:606 via `_fn`/`_fn_correct` (both `k 1`).
+        Every other tree-wide mention is docstring prose. The recursion resets arity to 1 rather
+        than growing it, so no call chain reaches `n >= 2`.)*
+  - [x] Restructure so the unreachable arm leaves the declaration. Preferred: restrict the
         definition's domain to the reachable arities. Acceptable alternative: split the
         declaration so the `n >= 2` case is a separate, unused declaration. Choose the option
         that does **not** disturb `:519`'s arm — `:519` is Phase 8's target, not this phase's.
-  - [ ] Update all call sites (`nf_nvar_exist_all_depths_fn` :525, `_fn_correct` :533, and the
-        `ih_exist_1` self-call at :407) to the restructured signature.
-  - [ ] Confirm `:519` still stands as the **only** remaining sorry in the declaration.
-- **Verification:**
-  - `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior` -> EXIT 0
+        *(Took the preferred option: added an `(hn : n <= 1)` domain parameter. Note: the
+        `| _n + 2 =>` arm remains syntactically present but is discharged by `absurd hn (by
+        omega)` — the domain restriction — not by a proof of the `n >= 2` case. `:519`'s arm,
+        which sits in the inner `match k, sub_nf with` split under `n = 1`, was not touched.)*
+  - [x] Update all call sites (`nf_nvar_exist_all_depths_fn` :525, `_fn_correct` :533, and the
+        `ih_exist_1` self-call at :407) to the restructured signature. *(All updated, plus the
+        two `_fn`/`_fn_correct` uses at :597/:606, each passing `(by omega)` at `n = 1`.)*
+  - [x] Confirm `:519` still stands as the **only** remaining sorry in the declaration.
+        *(Confirmed: exactly one tactic-position sorry file-wide, now at `:520`, inside the
+        declaration spanning `:346-531`. Counted by tactic-position regex, not naive
+        `grep -c sorry`.)*
+- **Verification:** all four PASSED (2026-07-15):
+  - `lake build Bimodal.Metalogic.WeakCanonical.Kamp.KampPrior` -> EXIT 0. PASS (1052 jobs).
   - `#print axioms` on `nf_nvar_exist_all_depths` -> still carries `sorryAx` (from `:519` alone);
-    record the axiom set verbatim as the Phase 8 baseline.
-  - Full `lake build` -> EXIT 0 (no regression at any consumer).
-  - Grep confirms exactly one `sorry` remains in the declaration.
+    record the axiom set verbatim as the Phase 8 baseline. PASS. **Phase 8 baseline, verbatim**:
+    `{propext, sorryAx, Classical.choice, Quot.sound}`. Phase 8's success criterion is the
+    disappearance of `sorryAx` from exactly this set, leaving
+    `{propext, Classical.choice, Quot.sound}`.
+  - Full `lake build` -> EXIT 0 (no regression at any consumer). PASS (1761 jobs).
+  - Grep confirms exactly one `sorry` remains in the declaration. PASS (one tactic-position
+    sorry file-wide, at `:520`).
 - **Green commit:** `task 377 phase 1: retire KampPrior n>=2 arm by restructuring`
 - **Estimated output:** ~100-200 lines changed.
 - **Done when:** `:522`'s sorry no longer exists, full build is green, and the only sorry left in

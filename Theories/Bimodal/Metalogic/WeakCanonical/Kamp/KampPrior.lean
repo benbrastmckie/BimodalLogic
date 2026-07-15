@@ -347,7 +347,7 @@ noncomputable def nf_nvar_exist_all_depths
     {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p) :
-    (k : Nat) → (n : Nat) → (sub_nf : NormalForm sig k (n + 1)) →
+    (k : Nat) → (n : Nat) → (hn : n ≤ 1) → (sub_nf : NormalForm sig k (n + 1)) →
       ∃ (A : Formula),
         ∀ (M : OrderedMonadicStructure sig)
           (h_UZ : semantic_prior_UZ M atomMap)
@@ -355,11 +355,11 @@ noncomputable def nf_nvar_exist_all_depths
           (t : M.carrier),
           temporal_truth M atomMap t A ↔
           ∃ env : Fin n → M.carrier, nf_eval_nf M k (n + 1) (insertEnv env t) sub_nf
-  | 0, n, sub_nf =>
+  | 0, n, _hn, sub_nf =>
     -- Depth 0: use nf_nvar_exist_depth0_tl (Phase 2, handles all arities)
     ⟨nf_nvar_exist_depth0_tl_fn atomMap h_surj n sub_nf,
       fun M _ _ t => nf_nvar_exist_depth0_tl_fn_correct atomMap h_surj n sub_nf M t⟩
-  | k + 1, n, sub_nf =>
+  | k + 1, n, hn, sub_nf =>
     -- Depth k+1: the n-variable existential at arity (n+1) decomposes.
     -- nf_eval_nf M (k+1) (n+1) (insertEnv env t) sub_nf =
     --   (∀ a, atom_eval M (insertEnv env t) a ↔ sub_nf.1 a) ∧
@@ -404,7 +404,7 @@ noncomputable def nf_nvar_exist_all_depths
           temporal_truth M atomMap t A ↔
           ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf' :=
       fun sub_nf' => by
-        have h := nf_nvar_exist_all_depths atomMap h_surj k 1 sub_nf'
+        have h := nf_nvar_exist_all_depths atomMap h_surj k 1 (by omega) sub_nf'
         obtain ⟨A, hA⟩ := h
         refine ⟨A, fun M h_UZ h_SZ t => ?_⟩
         rw [hA M h_UZ h_SZ t]
@@ -464,9 +464,10 @@ noncomputable def nf_nvar_exist_all_depths
     -- For each good NF, the characteristic formula is built iteratively
     -- from char_k1 upward.
 
-    -- Case split on n
-    match n with
-    | 0 =>
+    -- Case split on n. The domain hypothesis `hn : n ≤ 1` is matched alongside `n` so the
+    -- arity-(≥2) arm is discharged by the domain restriction rather than left open.
+    match n, hn, sub_nf with
+    | 0, _, sub_nf =>
       -- n = 0: ∃ env : Fin 0, nf_eval_nf M (k+1) 1 (insertEnv env t) sub_nf
       -- Trivially equivalent to nf_eval_nf M (k+1) 1 (fun _ => t) sub_nf.
       -- Use char_k1 directly.
@@ -478,7 +479,7 @@ noncomputable def nf_nvar_exist_all_depths
           have : insertEnv env t = fun _ => t := by
             funext ⟨i, hi⟩; simp [insertEnv]
           rwa [this] at h_env⟩
-    | 1 =>
+    | 1, _, sub_nf =>
       -- n = 1: ∃ env : Fin 1, nf_eval_nf M (k+1) 2 (insertEnv env t) sub_nf
       -- This is the critical case needed by the main theorem (Approach 5, report 18).
       -- See handoff for the committed construction and remaining obligation.
@@ -517,31 +518,37 @@ noncomputable def nf_nvar_exist_all_depths
         -- + the Phase-16 ExistProviders shim). Do NOT discharge here (309 v10 guard V10-3/
         -- V10-5: the k≤1 narrowing is 309's scope; this residual is 358 territory).
         sorry
-    | n + 2 =>
-      -- n ≥ 2: off the critical path. The main theorem only needs n = 0 and n = 1.
-      sorry
+    | _n + 2, hn2, _sub_nf =>
+      -- Arity ≥ 2 is outside this definition's domain: the `hn : n ≤ 1` parameter excludes it.
+      -- This arm is discharged by the domain restriction, NOT by a proof of the n ≥ 2 case,
+      -- which remains unproved (and unneeded: every call site is n = 0 or n = 1 — the
+      -- recursion resets arity to 1 at the `ih_exist_1` self-call, and the live entry from
+      -- `nf_characterizable_temporal_prior` is n = 1). The restriction exists for axiom
+      -- tracking: `sorryAx` is tracked per-declaration, not per-path, so an unreachable
+      -- `sorry` here would still enter this declaration's proof term.
+      absurd hn2 (by omega)
 
 /-- Convenience wrapper: extract the formula from `nf_nvar_exist_all_depths`. -/
 noncomputable def nf_nvar_exist_all_depths_fn
     {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (k n : Nat) (sub_nf : NormalForm sig k (n + 1)) : Formula :=
-  (nf_nvar_exist_all_depths atomMap h_surj k n sub_nf).choose
+    (k n : Nat) (hn : n ≤ 1) (sub_nf : NormalForm sig k (n + 1)) : Formula :=
+  (nf_nvar_exist_all_depths atomMap h_surj k n hn sub_nf).choose
 
 /-- Correctness of the convenience wrapper. -/
 theorem nf_nvar_exist_all_depths_fn_correct
     {sig : MonadicSignature}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
-    (k n : Nat) (sub_nf : NormalForm sig k (n + 1))
+    (k n : Nat) (hn : n ≤ 1) (sub_nf : NormalForm sig k (n + 1))
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap)
     (h_SZ : semantic_prior_SZ M atomMap)
     (t : M.carrier) :
-    temporal_truth M atomMap t (nf_nvar_exist_all_depths_fn atomMap h_surj k n sub_nf) ↔
+    temporal_truth M atomMap t (nf_nvar_exist_all_depths_fn atomMap h_surj k n hn sub_nf) ↔
     ∃ env : Fin n → M.carrier, nf_eval_nf M k (n + 1) (insertEnv env t) sub_nf :=
-  (nf_nvar_exist_all_depths atomMap h_surj k n sub_nf).choose_spec M h_UZ h_SZ t
+  (nf_nvar_exist_all_depths atomMap h_surj k n hn sub_nf).choose_spec M h_UZ h_SZ t
 
 /-! ## NF-to-Temporal Translation for Prior Structures
 
@@ -594,7 +601,7 @@ noncomputable def nf_characterizable_temporal_prior
     --
     -- This is exactly nf_nvar_exist_all_depths_fn atomMap h_surj k 1.
     -- Correctness needs: insertEnv (fun _ => x) t = Fin.cons x (fun _ => t).
-    let exist_tl_fn := nf_nvar_exist_all_depths_fn atomMap h_surj k 1
+    let exist_tl_fn := nf_nvar_exist_all_depths_fn atomMap h_surj k 1 (by omega)
     have exist_tl_fn_correct : ∀ (sub_nf : NormalForm sig k 2)
         (M : OrderedMonadicStructure sig)
         (h_UZ : semantic_prior_UZ M atomMap)
@@ -603,7 +610,7 @@ noncomputable def nf_characterizable_temporal_prior
         temporal_truth M atomMap t (exist_tl_fn sub_nf) ↔
         ∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf := by
       intro sub_nf M h_UZ h_SZ t
-      rw [nf_nvar_exist_all_depths_fn_correct atomMap h_surj k 1 sub_nf M h_UZ h_SZ t]
+      rw [nf_nvar_exist_all_depths_fn_correct atomMap h_surj k 1 (by omega) sub_nf M h_UZ h_SZ t]
       -- Need: (∃ env : Fin 1 → M.carrier, nf_eval_nf M k 2 (insertEnv env t) sub_nf)
       --     ↔ (∃ x : M.carrier, nf_eval_nf M k 2 (Fin.cons x (fun _ => t)) sub_nf)
       -- Key: insertEnv env t = Fin.cons (env 0) (fun _ => t) for env : Fin 1 → M.carrier
