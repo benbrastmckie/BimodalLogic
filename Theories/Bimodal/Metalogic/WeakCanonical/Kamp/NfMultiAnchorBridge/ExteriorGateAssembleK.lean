@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.InteriorGateGeneralK
 import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorBracketAssembleK
+import Bimodal.Metalogic.WeakCanonical.Kamp.NfMultiAnchorBridge.ExteriorAmbientDeepAnchorK
 
 /-! # General-`k` `hexclExt` exterior-adjacency discharge (task 356)
 
@@ -109,13 +110,47 @@ private theorem kvExt_gate_henv {sig : MonadicSignature} {k : Nat}
     (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
     (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
 
+/-! ## Gate-formula guard strengthening (task 368)
+
+The σ-INDEPENDENT ambient EF-closure guard `kvE_ambientDeepAnchor qnf`
+(`ExteriorAmbientDeepAnchorK.lean`) is conjoined into the enriched gate as a model-independent
+endpoint formula, so the gate's `.holds` CARRIES the guard: the ⇒-reconstruction reads
+`kvE_ambientDeepAnchor qnf = true` off `holds` (discharging the guard antecedents of the
+restated ⇒-side rows 5/6/10-13), and the ⇐ re-establishes the guard conjunct from realization
+via `kvE_ambientDeepAnchor_of_realized`. This is the "matching gate-formula strengthening" the
+Phase-1 consumption-site map located here. -/
+
+/-- The σ-independent ambient guard as a model-independent endpoint formula: `Formula.top`
+    (valid everywhere) when `kvE_ambientDeepAnchor qnf = true`, `Formula.bot` (unsatisfiable)
+    otherwise. Conjoined at the LEFT anchor of the enriched gate. Never unfolds the guard —
+    routes through the byte-stable `kvE_ambientDeepAnchor` bit. -/
+noncomputable def kvE_ambientGuardForm {sig : MonadicSignature} {k : Nat}
+    (qnf : NormalForm sig (k + 2) 3) : Formula :=
+  bif kvE_ambientDeepAnchor qnf then Formula.top else Formula.bot
+
+/-- `kvE_ambientGuardForm qnf` is true at any point iff the ambient guard holds — a
+    model-independent `⊤`/`⊥` by the decidable guard bit. The bridge the gate strengthening and
+    its ⇒/⇐ reconstruction route through. -/
+theorem kvE_ambientGuardForm_truth {sig : MonadicSignature} {k : Nat}
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds) (z : M.carrier)
+    (qnf : NormalForm sig (k + 2) 3) :
+    temporal_truth M atomMap z (kvE_ambientGuardForm qnf) ↔
+      kvE_ambientDeepAnchor qnf = true := by
+  unfold kvE_ambientGuardForm
+  cases h : kvE_ambientDeepAnchor qnf with
+  | true => simp only [cond_true]; exact iff_of_true (temporal_truth_top M atomMap z) trivial
+  | false => simp [temporal_truth]
+
 /-! ## The general-`k` enriched composed gate (degenerate Lemma 7.6 p.14 at the anchors `x, t`) -/
 
-/-- **The general-`k` enriched composed gate** (task 356; Def 7.5 p.13 + degenerate Lemma 7.6 p.14):
-    the general-`k` interior carrier `bracketEndChar_kv … (k+2)` with the past-side adjacent bracket
-    `kvE_extBracketPast Pbr` conjoined at the LEFT anchor `x` and the future-side adjacent bracket
-    `kvE_extBracketFut Pbr` conjoined at the RIGHT anchor `t`, via `enrichEndpoints`. General-`k`
-    mirror of `bracketEndChar_kvE2Ext` (`ExteriorBracket.lean:661`), one fold deeper. -/
+/-- **The general-`k` enriched composed gate** (task 356; Def 7.5 p.13 + degenerate Lemma 7.6 p.14;
+    task 368 guard-strengthened): the general-`k` interior carrier `bracketEndChar_kv … (k+2)` with
+    the past-side adjacent bracket `kvE_extBracketPast Pbr` conjoined at the LEFT anchor `x` and the
+    future-side adjacent bracket `kvE_extBracketFut Pbr` conjoined at the RIGHT anchor `t`, via
+    `enrichEndpoints`; then the σ-independent ambient guard `kvE_ambientGuardForm qnf` conjoined at
+    the LEFT anchor (with `Formula.top` at the right, an inert enrichment) so `.holds` carries
+    `kvE_ambientDeepAnchor qnf = true`. General-`k` mirror of `bracketEndChar_kvE2Ext`
+    (`ExteriorBracket.lean:661`), one fold deeper. -/
 noncomputable def bracketEndChar_kvExt {sig : MonadicSignature} {k : Nat}
     (atomMap : Formula → sig.preds)
     (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
@@ -123,9 +158,10 @@ noncomputable def bracketEndChar_kvExt {sig : MonadicSignature} {k : Nat}
     (Pbr : ExistProviders sig atomMap k) :
     BracketEndCharCarrierV sig (k + 2) :=
   fun qnf =>
-    (bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
+    ((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
       (kvE_extBracketPast Pbr qnf)
-      (kvE_extBracketFut Pbr qnf)
+      (kvE_extBracketFut Pbr qnf)).enrichEndpoints
+      (kvE_ambientGuardForm qnf) Formula.top
 
 /-- **Anchor-semantics bridge for the general-`k` enriched gate** (the degenerate Lemma 7.6
     conjunction, exposed): the enriched gate holds at `(x, t)` iff the interior gate holds AND the
@@ -142,8 +178,21 @@ theorem bracketEndChar_kvExt_holds_iff {sig : MonadicSignature} {k : Nat}
     (bracketEndChar_kvExt atomMap h_surj charF Pbr qnf).holds M atomMap x t ↔
       ((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).holds M atomMap x t ∧
        temporal_truth M atomMap x (kvE_extBracketPast Pbr qnf) ∧
-       temporal_truth M atomMap t (kvE_extBracketFut Pbr qnf)) :=
-  VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t
+       temporal_truth M atomMap t (kvE_extBracketFut Pbr qnf) ∧
+       kvE_ambientDeepAnchor qnf = true) := by
+  show (((bracketEndChar_kv atomMap h_surj charF (k + 2) qnf).enrichEndpoints
+        (kvE_extBracketPast Pbr qnf) (kvE_extBracketFut Pbr qnf)).enrichEndpoints
+        (kvE_ambientGuardForm qnf) Formula.top).holds M atomMap x t ↔ _
+  constructor
+  · intro h
+    obtain ⟨hInner, hg, -⟩ := (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mp h
+    obtain ⟨hbase, hpast, hfut⟩ := (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mp hInner
+    exact ⟨hbase, hpast, hfut, (kvE_ambientGuardForm_truth M atomMap x qnf).mp hg⟩
+  · rintro ⟨hbase, hpast, hfut, hguard⟩
+    refine (VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mpr
+      ⟨(VVecEA2.enrichEndpoints_holds M atomMap _ _ _ x t).mpr ⟨hbase, hpast, hfut⟩,
+       (kvE_ambientGuardForm_truth M atomMap x qnf).mpr hguard,
+       temporal_truth_top M atomMap t⟩
 
 /-! ## The discharge theorem (task 356 — the DoD `hexclExt` discharge) -/
 
@@ -194,13 +243,13 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     (M : OrderedMonadicStructure sig)
     (h_UZ : semantic_prior_UZ M atomMap) (h_SZ : semantic_prior_SZ M atomMap)
     (x t : M.carrier)
-    (hreal : ∀ w : M.carrier, x < w → w < t →
+    (hreal : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = true →
         ∃ x1 : M.carrier,
           nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexcl : ∀ w : M.carrier, x < w → w < t →
+    (hexcl : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, qnf.2 σ = false →
@@ -241,14 +290,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
         temporal_truth M atomMap t (kvE_futPos Pbr σ) →
         ∃ σ' : NormalForm sig (k + 1) 4, kvE_futAdmissible σ' = true ∧
           kvE_futSliceEq σ' σ = true ∧ qnf.2 σ' = true)
-    (hexclSlicePast : ∀ w : M.carrier, x < w → w < t →
+    (hexclSlicePast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
         kvE_pastSliceMarked qnf σ = true →
         ∀ x1 : M.carrier, x1 < x →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclSliceFut : ∀ w : M.carrier, x < w → w < t →
+    (hexclSliceFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
@@ -263,14 +312,14 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
     -- so on-row + guard-false is contradictory. General-m discharge: task 358 (under an
     -- honest ambient, a pinned realizer forces the guard via `kvE_deepOnFiber_of_realized`,
     -- contradicting guard-false).
-    (hexclDeepPast : ∀ w : M.carrier, x < w → w < t →
+    (hexclDeepPast : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_pastAdmissible σ = true → qnf.2 σ = false →
         nfk_dropFresh σ = qnf.1 → kvE_deepOnFiber qnf σ = false →
         ∀ x1 : M.carrier, x1 < x →
           ¬ nf_eval_nf M (k + 1) 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
-    (hexclDeepFut : ∀ w : M.carrier, x < w → w < t →
+    (hexclDeepFut : kvE_ambientDeepAnchor qnf = true → ∀ w : M.carrier, x < w → w < t →
       (igPtW (nf_depth0_char_formula atomMap h_surj) (charF (k + 1)) qnf.1 (igFoldBit qnf)).eval_at
         M atomMap w →
       ∀ σ : NormalForm sig (k + 1) 4, kvE_futAdmissible σ = true → qnf.2 σ = false →
@@ -283,10 +332,10 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
   · -- ⇒: destructure the degenerate Lemma 7.6 conjunction, then feed the interior soundness half
     -- with `hexclExt` built from the per-side bracket soundness.
     intro hExt
-    obtain ⟨hInt, hPastBr, hFutBr⟩ :=
+    obtain ⟨hInt, hPastBr, hFutBr, hGuard⟩ :=
       (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mp hExt
     refine bracketEndChar_kv_step_sound atomMap h_surj charF qnf
-      h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl ?_ hInt
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t (hreal hGuard) (hexcl hGuard) ?_ hInt
     -- The former `hexclExt` obligation, by fiber trichotomy (task 360 Phase 3c report 04 +
     -- task 367 deep anchor): OFF-fiber σ are unrealizable at the pinned anchors
     -- (fiber-forcing kernel under the gate-derived atom-layer pin `kvExt_gate_henv`);
@@ -305,11 +354,11 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
           | true =>
             have hadm : kvE_pastAdmissible σ = true :=
               kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
-            exact hexclSlicePast w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
+            exact hexclSlicePast hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp hx) hnf
         · rw [Bool.not_eq_true] at hdeep
           have hadm : kvE_pastAdmissible σ = true :=
             kvE_pastRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp hx) hnf
-          exact hexclDeepPast w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp hx) hnf
+          exact hexclDeepPast hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp hx) hnf
       · by_cases hdeep : kvE_deepOnFiber qnf σ = true
         · cases hsm : kvE_futSliceMarked qnf σ with
           | false =>
@@ -318,11 +367,11 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
           | true =>
             have hadm : kvE_futAdmissible σ = true :=
               kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
-            exact hexclSliceFut w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
+            exact hexclSliceFut hGuard w hxw hwt hptW σ hadm hbit hsm x1 (not_le.mp ht) hnf
         · rw [Bool.not_eq_true] at hdeep
           have hadm : kvE_futAdmissible σ = true :=
             kvE_futRealizer_admissible M σ x1 w x t hxw hwt (not_le.mp ht) hnf
-          exact hexclDeepFut w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp ht) hnf
+          exact hexclDeepFut hGuard w hxw hwt hptW σ hadm hbit hfib hdeep x1 (not_le.mp ht) hnf
     · -- Off-fiber: a realizer at the pinned anchors would force σ onto the fiber
       -- (`offForce` recipe, NfEFold.lean) — contradiction with `hfib`.
       have henv : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
@@ -343,7 +392,7 @@ theorem bracketEndChar_kvExt_correct_prior {sig : MonadicSignature} {k : Nat}
       simpa only [atom_eval, Fin.cons_zero, Fin.cons_succ] using this
     refine (bracketEndChar_kvExt_holds_iff atomMap h_surj charF Pbr qnf M x t).mpr
       ⟨bracketEndChar_kv_step_complete atomMap h_surj charF P hcharK qnf h_xy h_yt M h_UZ h_SZ
-        x t ⟨w, h⟩, ?_, ?_⟩
+        x t ⟨w, h⟩, ?_, ?_, kvE_ambientDeepAnchor_of_realized M _ qnf h⟩
     · -- Past bracket at `x`.
       refine kvE_extBracketPast_complete Pbr M h_UZ h_SZ qnf w x t hxw hwt ?_ ?_
       · -- hpos: admissible bit-true σ realized exterior `x1 < x`.
