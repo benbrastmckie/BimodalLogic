@@ -144,7 +144,13 @@ territory), so the plan is fully sequential.
 Phases within the same wave can execute in parallel. (Here every wave is a single phase: file-territory
 on `InteriorGateGeneralK.lean` and the forced dependency ordering make the plan strictly sequential.)
 
-### Phase 1: Sibling de-folded carrier + non-projecting fiber selector + confirm :563 signature [NOT STARTED]
+### Phase 1: Sibling de-folded carrier + non-projecting fiber selector + confirm :563 signature [COMPLETED]
+
+**:563 signature CONFIRMED** (`igFoldBit_realize_iff`, InteriorGateGeneralK.lean:563-571): it DOES
+take the deep render as an explicit hypothesis — `h : nf_eval_nf M (k+1) 3 (Fin.cons w (Fin.cons x
+(fun _ => t))) qnf` (arity-3, depth-`k+1`, env `[w,x,t]`). At the Phase-7 instance `qnf : NF (k+2) 3`
+this is exactly the deep ambient render produced downstream at ExteriorGateAssembleK:337-338 — the
+render-gating circularity Phase 3 must replace with a render-free extraction.
 
 - **Goal:** Introduce the parallel arity-4 carrier and its non-projecting selector, leaving the frozen
   carrier byte-identical; confirm the exact render-hypothesis form at IGGK:563.
@@ -164,11 +170,11 @@ on `InteriorGateGeneralK.lean` and the forced dependency ordering make the plan 
   IGGK:339-351 (frozen `rfl` #1) or CarrierKv:294-351 (frozen `rfl` #2). Record the confirmed :563
   signature in the phase commit message / summary.
 - **Tasks:**
-  - [ ] Read + record exact `igFoldBit_realize_iff` :563 signature (render-hyp form).
-  - [ ] Add `bracketEndChar_kvFib` sibling def (new, parallel).
-  - [ ] Add `igFoldBitFib` non-projecting selector.
-  - [ ] Add sibling `igEpL/igEpR/igPtW` + `igBody/igMkDisjunct` arity-4 analogs.
-  - [ ] Build green; confirm frozen regions untouched by `git diff`.
+  - [x] Read + record exact `igFoldBit_realize_iff` :563 signature (render-hyp form). *(Confirmed: takes `nf_eval_nf M (k+1) 3 [w,x,t] qnf` as explicit render hyp — see heading note.)*
+  - [x] Add `bracketEndChar_kvFib` sibling def (new, parallel). *(CarrierKv.lean, via new private `kvFib_body`; frozen `bracketEndChar_kv` byte-identical. Deviation: dropped the unused arity-1 `charF` provider — the de-folded carrier keys endpoints on arity-4 `charFib` only.)*
+  - [x] Add `igFoldBitFib` non-projecting selector. *(InteriorGateGeneralK.lean; keyed on full `NF k 4` fiber, no `nfk_projFresh` collapse.)*
+  - [x] Add sibling `igEpL/igEpR/igPtW` + `igBody/igMkDisjunct` arity-4 analogs. *(Full set: `igAllSubs`, `igFoldBitFib`, `igEpLFib`, `igEpRFib`, `igSegLFib`, `igSegRFib`, `igPtWFib`, `igGateFib`, `igSLFib`, `igSRFib`, `igCharPFib`, `igMkDisjunctFib`, `igBodyFib`.)*
+  - [x] Build green; confirm frozen regions untouched by `git diff`. *(Both files `lake build`-green; `git diff --numstat` = pure additions 116/0 + 107/0, zero deletions; frozen regions byte-identical.)*
 - **Timing:** 3-4 hours
 - **Depends on:** none
 

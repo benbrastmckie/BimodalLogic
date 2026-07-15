@@ -1326,6 +1326,122 @@ example {sig : MonadicSignature} {n : Nat}
     InteriorGateAllK atomMap h_surj charF (n + 1) :=
   bracketEndChar_kv_correct_prior atomMap h_surj charF (n + 1)
 
+/-! ## Task 370 M2 (Option B) — DE-FOLDED public replicas (sibling of `igBody`)
+
+Byte-parallel siblings of the public replicas above (`igEpL`..`igBody`, `:209-299`, and the fold bit
+`igFoldBit`, `:318-332`), re-keyed from the arity-1 1-type `χ : NormalForm sig k 1` onto the FULL
+arity-4 fiber `σ : NormalForm sig k 4`. These are the public destructuring surface for the de-folded
+carrier `bracketEndChar_kvFib` (CarrierKv). The non-projecting fold bit `igFoldBitFib` keeps the whole
+fiber live (NO `nfk_projFresh` collapse — the F1 channel the frozen `igFoldBit` loses). The
+`igBodyFib`↔carrier defeq bridge is Phase 2 (and, per the plan, need NOT be `rfl`); Phase 1 only lands
+these type-correct, sorry-free parallel defs. The frozen replicas and both `rfl` bridges are untouched. -/
+
+/-- De-folded enumeration of complete depth-`k` arity-4 fibers (arity-4 analog of `igAllTypes`,
+    `:203`). -/
+def igAllSubs (sig : MonadicSignature) (k : Nat) : List (NormalForm sig k 4) := Finset.univ.toList
+
+/-- **The NON-PROJECTING fiber fold-bit read** (task 370 Phase 1; de-folded analog of `igFoldBit`,
+    `:318-332`). Keyed on the FULL arity-4 fiber `sub : NormalForm sig k 4`: TRUE iff `sub` is marked
+    and its atom-layer zone is `zs`. Unlike `igFoldBit`, there is NO `nfk_projFresh sub = χ` collapse
+    — the whole fiber `sub` is retained (the F1 channel M2 preserves). The `Decidable` instance is
+    `Classical.propDecidable`, matching the sibling carrier `bracketEndChar_kvFib`'s `open Classical`
+    fold bit. -/
+def igFoldBitFib {sig : MonadicSignature} {k : Nat} (qnf : NormalForm sig (k + 1) 3) :
+    ZoneSpec 3 → NormalForm sig k 4 → Bool :=
+  fun zs sub =>
+    @decide (qnf.2 sub = true ∧ nf0_zoneSpec (NormalForm.atom_assgn sub) = zs)
+      (Classical.propDecidable _)
+
+/-- Left endpoint predicate, de-folded (arity-4 analog of `igEpL`, `:209-215`). -/
+def igEpLFib {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : TemporalPred :=
+  ⟨formula_conjList
+    (charBase (nf_x_proj3 r)
+      :: (igAllSubs sig k).map (fun σ => igLit (b igZPastX σ) (Formula.snce (charFib σ) Formula.top))
+      ++ (igAllSubs sig k).map (fun σ => igLit (b igZAtX σ) (charFib σ)))⟩
+
+/-- Right endpoint predicate, de-folded (arity-4 analog of `igEpR`, `:219-225`). -/
+def igEpRFib {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : TemporalPred :=
+  ⟨formula_conjList
+    (charBase (nf_t_proj3 r)
+      :: (igAllSubs sig k).map (fun σ => igLit (b igZAtT σ) (charFib σ))
+      ++ (igAllSubs sig k).map (fun σ => igLit (b igZFutT σ) (Formula.untl (charFib σ) Formula.top)))⟩
+
+/-- Left segment exclusion, de-folded (arity-4 analog of `igSegL`, `:228-232`). -/
+def igSegLFib {sig : MonadicSignature} {k : Nat}
+    (charFib : NormalForm sig k 4 → Formula) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) :
+    TemporalPred :=
+  ⟨formula_conjList ((igAllSubs sig k).map (fun σ =>
+    if b igZXW σ then Formula.top else (charFib σ).neg))⟩
+
+/-- Right segment exclusion, de-folded (arity-4 analog of `igSegR`, `:235-239`). -/
+def igSegRFib {sig : MonadicSignature} {k : Nat}
+    (charFib : NormalForm sig k 4 → Formula) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) :
+    TemporalPred :=
+  ⟨formula_conjList ((igAllSubs sig k).map (fun σ =>
+    if b igZWT σ then Formula.top else (charFib σ).neg))⟩
+
+/-- Witness point type at `w`, de-folded (arity-4 analog of `igPtW`, `:243-248`). -/
+def igPtWFib {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : TemporalPred :=
+  ⟨formula_conjList
+    (charBase (nf_y_proj r)
+      :: (igAllSubs sig k).map (fun σ => igLit (b igZAtW σ) (charFib σ)))⟩
+
+/-- The gate Prop, de-folded (arity-4 analog of `igGate`, `:252-258`). -/
+def igGateFib {sig : MonadicSignature} {k : Nat}
+    (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : Prop :=
+  offFiber ∧
+  (∀ (zs : ZoneSpec 3) (σ : NormalForm sig k 4),
+    ¬ (zs = igZPastX ∨ zs = igZAtX ∨ zs = igZXW ∨ zs = igZAtW ∨ zs = igZWT ∨ zs = igZAtT ∨
+        zs = igZFutT) →
+      b zs σ = false)
+
+/-- Interior-positive left enumeration `S_L`, de-folded (arity-4 analog of `igSL`, `:261-263`). -/
+def igSLFib {sig : MonadicSignature} {k : Nat}
+    (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : List (NormalForm sig k 4) :=
+  (igAllSubs sig k).filter (fun σ => b igZXW σ)
+
+/-- Interior-positive right enumeration `S_R`, de-folded (arity-4 analog of `igSR`, `:266-268`). -/
+def igSRFib {sig : MonadicSignature} {k : Nat}
+    (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) : List (NormalForm sig k 4) :=
+  (igAllSubs sig k).filter (fun σ => b igZWT σ)
+
+/-- Per-fiber witness predicate `charP`, de-folded (arity-4 analog of `igCharP`, `:271-273`). -/
+def igCharPFib {sig : MonadicSignature} {k : Nat}
+    (charFib : NormalForm sig k 4 → Formula) : NormalForm sig k 4 → TemporalPred :=
+  fun σ => ⟨charFib σ⟩
+
+/-- One arrangement disjunct, de-folded (arity-4 analog of `igMkDisjunct`, `:276-284`). -/
+def igMkDisjunctFib {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
+    (lL lR : List (NormalForm sig k 4)) : Σ n, VecEA2 n :=
+  ⟨(lL.map (igCharPFib charFib)).length + 1 + (lR.map (igCharPFib charFib)).length,
+    { endpointLeft := igEpLFib charBase charFib r b
+      endpointRight := igEpRFib charBase charFib r b
+      bracket := bracketFromLists (lL.map (igCharPFib charFib)) (igPtWFib charBase charFib r b)
+        (lR.map (igCharPFib charFib)) (igSegLFib charFib b) (igSegRFib charFib b) }⟩
+
+/-- **De-folded public body replica** (task 370 Phase 1; arity-4 analog of `igBody`, `:290-299`).
+    The gate-guarded `S_L`/`S_R` permutation-arrangement disjunction, built from the de-folded
+    arity-4 pieces above. This is the public structural surface Phase 2 destructures (`igBodyFib`
+    `.holds ↔ …`) and the sibling carrier `bracketEndChar_kvFib` mirrors. -/
+def igBodyFib {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (offFiber : Prop) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool) :
+    VVecEA2 :=
+  @dite _ (igGateFib offFiber b) (Classical.dec (igGateFib offFiber b))
+    (fun _ =>
+      { disjuncts :=
+          (igSLFib b).permutations.flatMap (fun lL =>
+            (igSRFib b).permutations.map (fun lR => igMkDisjunctFib charBase charFib r b lL lR)) })
+    (fun _ => { disjuncts := [] })
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
