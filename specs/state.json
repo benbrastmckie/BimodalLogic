@@ -1967,7 +1967,7 @@
         }
       ],
       "session_id": "sess_1784066335_7eec2d",
-      "completion_summary": "Ambient EF-closure deep-anchor guard (kvE_ambientDeepAnchor) landed in production against CM-A/CM-B; interface trio (_zero/_iff/_of_realized) + gate-formula carrier; rows 5/6/10-13 carry the sigma-independent antecedent across the consumer chain. All 6 definition-of-done gates PASS: 34 certificates at floor axioms [propext,Classical.choice,Quot.sound] no sorryAx; guard-unfold scan=0; frozen diff=exactly 5 files; full lake build green (1761 jobs); completeness-chain sorry residual = exactly KampPrior:519/:522 (task-358 territory). Next: /revise 358 then /implement 358."
+      "completion_summary": "Landed a 367-style ambient-side deep-saturation/EF-closure guard (kvE_ambientDeepAnchor) in new production module ExteriorAmbientDeepAnchorK.lean, closing task 358 Phase-4 blocker. Guard is sigma-independent, m=0-inert (_zero rfl), with _of_realized honest-preservation crux at a general model and _iff readback. Excludes both countermodels CM-A (row 13) and CM-B (row 5); survives depth-2 hereditary doppelganger + copy-plant adversarial probes with zero redesign loops. Rows 5/6/10-13 restated across EndIntervalConsumerK/ExteriorGateAssembleK/KampPrior with gate-formula strengthening; no residue rows needed. 34 certificates verified at floor axioms [propext,Classical.choice,Quot.sound]; guard-unfold scan=0; frozen-layer diff exactly 5 files; zero new sorries (KampPrior:519/:522 untouched, task-358 territory). Next: /revise 358 then /implement 358."
     }
   ],
   "artifacts": [
