@@ -101,16 +101,18 @@ next_project_number: 372
 
 ### Bimodal Reference Typst — Revise To Present All And Only The Bimodal Logic (Retain Parts I+Ii, Cut Iii+Iv)
 
-371 [RESEARCHED] — Completely revise the Bimodal Reference typst document (Theories/
+371 [PLANNED] — Completely revise the Bimodal Reference typst document (Theories/
 
 ## Tasks
 
 ### 371. Revise bimodal reference bimodal only
-- **Status**: [RESEARCHED]
+- **Effort**: 4
+- **Status**: [PLANNED]
 - **Task Type**: typst
 - **Topic**: bimodal reference typst — revise to present all and only the bimodal logic (retain Parts I+II, cut III+IV)
 - **Dependencies**: None
 - **Research**: [371_revise_bimodal_reference_bimodal_only/reports/01_cut-parts-iii-iv-bimodal-only.md]
+- **Plan**: [371_revise_bimodal_reference_bimodal_only/plans/01_two-part-bimodal-reference.md]
 
 **Description**: Completely revise the Bimodal Reference typst document (Theories/Bimodal/typst/BimodalReference.typ) to cleanly and clearly present ALL AND ONLY the bimodal logic. SCOPE DECISION (user-confirmed): RETAIN Part I (The Bimodal System, in full — syntax, semantics, proof theory, frame classes, metalogic, decidability, derived theorems, AND the neighboring temporal-modal logics: Vlach store/recall, the BL-star tower, LTL-to-TM, decidability frontier) AND Part II (Applications — proof automation tactics, dual-signal dataset pipeline, dual-verification worked examples). REMOVE Part III (Counterfactual Logic, chapters/p5-counterfactual.typ) and Part IV (Constitutive Logic, chapters/p5-constitutive.typ) entirely, since these are separate logics built over/beneath the bimodal system rather than the bimodal logic itself. CLEANUP OBLIGATIONS: (1) BimodalReference.typ — drop the Part III/IV part-dividers and their #include lines; rewrite the abstract (currently describes all four parts) and the title-page Sources block to reflect a two-part bimodal-focused document; verify the outline/Contents still renders. (2) chapters/00-introduction.typ — remove counterfactual/constitutive framing and any four-part roadmap. (3) notation/constitutive-notation.typ — remove if only used by the cut chapters; prune any constitutive-only symbols from notation/bimodal-notation.typ. (4) bibliography.bib — drop references cited only by the removed parts (keep shared refs). (5) chapters/p3-vlach-blstar.typ — strip any forward-references to the counterfactual/constitutive parts. (6) Update typst/README.md, SYNC-MAP.md, and sync-check-whitelist.txt to match the new structure. GOAL beyond deletion: improve the overall clarity and cleanliness of the retained presentation so the manual reads as a focused, self-contained bimodal-logic reference (consistent part/chapter framing, coherent cross-references, no dangling links to removed content). VERIFICATION: `typst compile Theories/Bimodal/typst/BimodalReference.typ` must succeed with no unresolved references or broken @-links; the compiled PDF must contain only Parts I and II. Ground all formal claims against the Lean source under Theories/Bimodal/ (the document already treats it as ground truth).
 
