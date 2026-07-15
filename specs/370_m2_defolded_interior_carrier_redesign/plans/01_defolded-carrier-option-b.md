@@ -197,7 +197,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 2-4 hours
 - **Depends on:** 1
 
-### Phase 3: Render-free endpoint→arity-4 extraction (replaces igFoldBit_realize_iff) [NOT STARTED]
+### Phase 3: Render-free endpoint→arity-4 extraction (replaces igFoldBit_realize_iff) [COMPLETED]
 
 - **Goal:** THE load-bearing decircularizing move — replace the render-gated bridge with a render-free
   de-folded endpoint→arity-4 realizer extraction.
@@ -214,9 +214,9 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
   Fallback Ladder. This is the primary residual-risk phase (obligation #4). Terminate `[BLOCKED]` before
   retaining any sorry or touching the frozen carrier.
 - **Tasks:**
-  - [ ] State the render-free extraction lemma (verify NO render hyp in signature).
-  - [ ] Prove sorry-free off the sibling endpoint eval.
-  - [ ] Build green.
+  - [x] State the render-free extraction lemma (verify NO render hyp in signature). *(Landed `bracketEndChar_kvFib_realize_futT` (future@t) + `bracketEndChar_kvFib_realize_pastX` (past@x) in InteriorGateGeneralK.lean:~1556/:~1591. Signatures take the de-folded endpoint eval (`igEpRFib`@t / `igEpLFib`@x) + a render-FREE characteristic-soundness seam `hcharFib`; NO `nf_eval_nf M _ 3 [...] qnf` render hypothesis. Deviation: split into fut/past mirror lemmas (Phase 7 needs both arms) rather than one; both keyed on the NON-PROJECTING full arity-4 `σ:NF k 4`.)*
+  - [x] Prove sorry-free off the sibling endpoint eval. *(Both proved by pulling the `untl`/`snce (charFib σ) ⊤` literal from the endpoint conjList (`formula_conjList_iff` + `List.mem_append_*`), firing the native temporal `until`/`since` semantics (`temporal_truth` unfold) to a future/past `x1`, then closing via `hcharFib`. `lean_verify`-clean: axioms {propext, Classical.choice, Quot.sound}, NO sorryAx on either.)*
+  - [x] Build green. *(`lake build` of InteriorGateGeneralK.lean green (3.6s). `git diff --numstat` = pure additions 87/0; frozen `bracketEndChar_kv` (CarrierKv:238-249), both `rfl` bridges (IGGK:339-351, CarrierKv:294-351), and KampPrior:519/:522 byte-identical.)*
 - **Timing:** 3-5 hours
 - **Depends on:** 1, 2
 

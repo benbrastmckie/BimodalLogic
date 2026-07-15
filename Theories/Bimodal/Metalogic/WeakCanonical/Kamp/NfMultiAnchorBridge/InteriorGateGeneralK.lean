@@ -1532,6 +1532,93 @@ theorem bracketEndChar_kvFib_succ_holds_iff {sig : MonadicSignature} {k : Nat}
       nf0_dropFresh (NormalForm.atom_assgn sub) ≠ qnf.1 → qnf.2 sub = false)
     (igFoldBitFib qnf) M atomMap x t
 
+/-! ## Phase 3 — render-free endpoint→arity-4 realizer extraction (replaces `igFoldBit_realize_iff`)
+
+THE load-bearing decircularizing move of the M2 redesign (task 370 Phase 3). The frozen bridge
+`igFoldBit_realize_iff` (`:563`) turns fold content into a model realizer but REQUIRES the deep
+render `nf_eval_nf M (k+1) 3 [w,x,t] qnf` as an explicit hypothesis — the very render this content is
+upstream of (produced at `ExteriorGateAssembleK.lean:337-338`), making the firing route for
+`kampPrior_hreal_supply` (`InteriorHrealSupplyK.lean:53-116`) machine-confirmed CIRCULAR.
+
+The de-folded carrier fixes this at the source: unlike the frozen `igFoldBit` (which lossily
+`∃`-projects the arity-4 fiber to `(zone, χ:NF k 1)`), the sibling `igFoldBitFib` keeps the WHOLE
+`σ:NF k 4` live, and the de-folded endpoint predicates (`igEpRFib`/`igEpLFib`, `:1365`/`:1356`) carry
+the FULL arity-4 characteristic formula `charFib σ` in their per-σ literals. So the σ-realizer is
+readable DIRECTLY off the endpoint eval — no render.
+
+The two extraction lemmas below (future@t via `igEpRFib`'s `untl` literal, past@x via `igEpLFib`'s
+`snce` literal) take the de-folded endpoint eval and a render-FREE characteristic-soundness seam
+`hcharFib` (the arity-4 analog of `interiorGate_hck`/`P.correct`; supplied by the provider `P` at the
+Phase-7 discharge site — it mentions NO `nf_eval_nf M _ 3 [...] qnf` render), and produce the genuine
+arity-4 realizer. NO chain step is shortcut (G5): the `untl`/`snce` firing is native temporal
+semantics, the fiber content rides the full-arity `charFib σ` literal (G1/N4). -/
+
+set_option maxHeartbeats 1600000 in
+/-- **Render-free FUTURE endpoint→arity-4 realizer extraction** (task 370 Phase 3 — the deliverable;
+    de-folded, render-free analog of `igFoldBit_realize_iff`, `:563`). From the de-folded RIGHT
+    endpoint eval at `t` (`igEpRFib`) and a marked σ in the future-of-`t` zone (`b igZFutT σ = true`),
+    reads the realizer `∃ x1 > t, nf_eval_nf M k 4 [x1,w,x,t] σ` DIRECTLY: the endpoint literal
+    `Formula.untl (charFib σ) ⊤` fires a future point where the arity-4 characteristic formula holds,
+    and the render-FREE soundness seam `hcharFib` turns that into the genuine realizer. The signature
+    contains NO deep render `nf_eval_nf M _ 3 [...] qnf` hypothesis — this is the decircularizing edit
+    (cf. the circular route diagnosed at `InteriorHrealSupplyK.lean:88-107`). -/
+theorem bracketEndChar_kvFib_realize_futT {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier)
+    (hcharFib : ∀ (τ : NormalForm sig k 4) (x1 : M.carrier),
+      temporal_truth M atomMap x1 (charFib τ) →
+      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
+    (σ : NormalForm sig k 4) (hz : b igZFutT σ = true)
+    (hepR : (igEpRFib charBase charFib r b).eval_at M atomMap t) :
+    ∃ x1 : M.carrier, t < x1 ∧
+      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  -- Enter the right-endpoint conjunction: every literal holds at `t`.
+  simp only [igEpRFib, TemporalPred.eval_at] at hepR
+  rw [formula_conjList_iff] at hepR
+  -- The futT literal for our marked σ is `untl (charFib σ) ⊤` (in the RIGHT `++` block).
+  have hlit : temporal_truth M atomMap t (Formula.untl (charFib σ) Formula.top) := by
+    apply hepR
+    apply List.mem_append_right
+    refine List.mem_map.mpr ⟨σ, by simp [igAllSubs], ?_⟩
+    simp only [igLit, hz, if_true]
+  -- Fire the `until`: a future `x1 > t` where the arity-4 characteristic formula holds.
+  simp only [temporal_truth] at hlit
+  obtain ⟨x1, htx1, hgoal, -⟩ := hlit
+  exact ⟨x1, htx1, hcharFib σ x1 hgoal⟩
+
+set_option maxHeartbeats 1600000 in
+/-- **Render-free PAST endpoint→arity-4 realizer extraction** (task 370 Phase 3 — the past mirror).
+    From the de-folded LEFT endpoint eval at `x` (`igEpLFib`) and a marked σ in the past-of-`x` zone
+    (`b igZPastX σ = true`), reads the realizer `∃ x1 < x, nf_eval_nf M k 4 [x1,w,x,t] σ` off the
+    endpoint literal `Formula.snce (charFib σ) ⊤`. Render-free (same `hcharFib` seam). Symmetric to
+    `bracketEndChar_kvFib_realize_futT`; supplies the past arm of the Phase-7 discharge. -/
+theorem bracketEndChar_kvFib_realize_pastX {sig : MonadicSignature} {k : Nat}
+    (charBase : NormalForm sig 0 1 → Formula) (charFib : NormalForm sig k 4 → Formula)
+    (r : NormalForm sig 0 3) (b : ZoneSpec 3 → NormalForm sig k 4 → Bool)
+    (M : OrderedMonadicStructure sig) (atomMap : Formula → sig.preds)
+    (w x t : M.carrier)
+    (hcharFib : ∀ (τ : NormalForm sig k 4) (x1 : M.carrier),
+      temporal_truth M atomMap x1 (charFib τ) →
+      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) τ)
+    (σ : NormalForm sig k 4) (hz : b igZPastX σ = true)
+    (hepL : (igEpLFib charBase charFib r b).eval_at M atomMap x) :
+    ∃ x1 : M.carrier, x1 < x ∧
+      nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ := by
+  simp only [igEpLFib, TemporalPred.eval_at] at hepL
+  rw [formula_conjList_iff] at hepL
+  -- The pastX literal for our marked σ is `snce (charFib σ) ⊤` (in the LEFT `++` block, first map).
+  have hlit : temporal_truth M atomMap x (Formula.snce (charFib σ) Formula.top) := by
+    apply hepL
+    apply List.mem_append_left
+    apply List.mem_cons_of_mem
+    refine List.mem_map.mpr ⟨σ, by simp [igAllSubs], ?_⟩
+    simp only [igLit, hz, if_true]
+  simp only [temporal_truth] at hlit
+  obtain ⟨x1, hx1x, hgoal, -⟩ := hlit
+  exact ⟨x1, hx1x, hcharFib σ x1 hgoal⟩
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp
