@@ -153,18 +153,18 @@ now that Phase 1 has removed every `#include` reference to them.
 
 ---
 
-### Phase 3: Rewrite `00-introduction.typ` roadmap and reading guide to two parts [NOT STARTED]
+### Phase 3: Rewrite `00-introduction.typ` roadmap and reading guide to two parts [COMPLETED]
 
 **Goal**: The substantial rewrite. Restructure the introduction from four-part to two-part
 framing so the roadmap and reading guide read coherently, and remove the last two citation sites
 for the orphaned bib keys. This is a genuine restructure per report §4.1, not sentence deletion.
 
 **Tasks**:
-- [ ] Opening paragraph (line 15): remove the "Two further extensions … tensed counterfactual logic @brastmckie2025counterfactualworlds … constitutive structure @brastmckie2021identity" sentence; replace with a bimodal-only closing sentence (or drop cleanly) so the paragraph still flows.
-- [ ] Figure caption (line 91): remove/reword the dangling clause "…cross-history counterfactual structure is the subject of Part III"; per report §4.4, state it is out of scope for this book or drop the clause entirely.
-- [ ] `== Outline` (lines 113-120): rewrite "The book proceeds in four parts" + 4 numbered items down to "two parts" + 2 items (Part I: The Bimodal System; Part II: Applications). Restructure the prose, do not just delete items 3-4.
-- [ ] `== How to Read This Book` (lines 124-130): delete the "*The philosophical extensions.* Parts III and IV develop…" bullet (line 130); keep the other 4 bullets verbatim (spine, metatheory, comparative positioning, applications — all Part I/II, report §4.1).
-- [ ] Confirm no other `brastmckie2025counterfactualworlds` / `brastmckie2021identity` citation survives in this file (these were the last two retained-document sites — report §2.2).
+- [x] Opening paragraph (line 15): remove the "Two further extensions … tensed counterfactual logic @brastmckie2025counterfactualworlds … constitutive structure @brastmckie2021identity" sentence; replace with a bimodal-only closing sentence (or drop cleanly) so the paragraph still flows.
+- [x] Figure caption (line 91): remove/reword the dangling clause "…cross-history counterfactual structure is the subject of Part III"; per report §4.4, state it is out of scope for this book or drop the clause entirely. Deviation: first tried the "reword to out-of-scope" option, but that retained the word "counterfactual" which conflicts with this phase's own verification grep and the task's strict global green bar (only the dated SYNC-MAP note is sanctioned as intentionally-retained) — switched to the "drop the clause entirely" option instead, per the report's other suggested wording.
+- [x] `== Outline` (lines 113-120): rewrite "The book proceeds in four parts" + 4 numbered items down to "two parts" + 2 items (Part I: The Bimodal System; Part II: Applications). Restructure the prose, do not just delete items 3-4.
+- [x] `== How to Read This Book` (lines 124-130): delete the "*The philosophical extensions.* Parts III and IV develop…" bullet (line 130); keep the other 4 bullets verbatim (spine, metatheory, comparative positioning, applications — all Part I/II, report §4.1).
+- [x] Confirm no other `brastmckie2025counterfactualworlds` / `brastmckie2021identity` citation survives in this file (these were the last two retained-document sites — report §2.2). Confirmed via grep, both keys now uncited in this file.
 
 **Timing**: 1 hour
 
