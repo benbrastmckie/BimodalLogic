@@ -306,7 +306,41 @@ G2-B3 rows 10-11) so each sub-step is one agent run. Phase 5 (interior/KampPrior
 - **Depends on:** 2.
 - **Completed:** 2026-07-14 (sess_1784059448_2c72f2_358).
 
-### Phase 4: 368 ambient-guard interface pin + exterior rows 12-13/10-11 supply + G2-2 uniqueness (re-keyed) [NOT STARTED]
+### Phase 4: 368 ambient-guard interface pin + exterior rows 12-13/10-11 supply + G2-2 uniqueness (re-keyed) [BLOCKED]
+
+> **P4 outcome (2026-07-14, sess_1784078566_52d1da)**: pin + re-probe gate GREEN; m = 0 arms of
+> rows 12-13 LANDED sorry-free; general-`m` exterior supply BLOCKED on a Phase-4/Phase-5 wave
+> inversion (bridge-adjudication finding below). See handoffs/phase-4-handoff-20260714.md.
+>
+> **BLOCKER** (Phase 4, general-`m` exterior supply — rows 12-13 / uniqueness / rows 10-11):
+> - **What failed**: the bridge-adjudication gate. Rendering the ambient realization
+>   `nf_eval_nf M (k+2) 3 [w,x,t] qnf` at the rows-12-13/10-11 binder site from the available
+>   hypotheses (`hAmb : kvE_ambientDeepAnchor qnf = true` + `igPtW … .eval_at M atomMap w`).
+> - **What was tried / machine evidence**: `kvExt_gate_henv` (ExteriorGateAssembleK.lean:61-111)
+>   renders ONLY the atom layer `nf_eval_nf M 0 3 [w,x,t] qnf.1` from igPtW. The rows-12-13
+>   contradiction (`kvE_deepOnFiber_of_realized` → guard true, contradicting guard-false; equally
+>   `hqnf.2 σ` → `qnf.2 σ = true`, contradicting `qnf.2 σ = false`) requires the DEEP quant layer
+>   `qnf.2`. `kvE_ambientDeepAnchor` is a purely syntactic `Bool` of `qnf` (no model `M`) — it
+>   cannot supply the model-`M` deep realization. `kvE_hexclDeepFut_supply` type-checks with a
+>   tracked strategic sorry (lean_verify: `sorryAx` on the general-`m` arm only).
+> - **Why stuck**: the deep quant layer of the ambient is reconstructed by the INTERIOR realizer
+>   `hreal`/`hexcl` (Phase 5/6, `kampPrior_hreal_supply` / `kampPrior_hexcl_supply`) from
+>   `P.correct` + the fold bit + `hAmb`'s EF-closure. The plan's wave DAG (Phase 5 depends on
+>   Phase 4) is INVERTED for the exterior deep/slice supplies: they depend on the Phase-5 ambient
+>   render. CM-A/CM-B exclusion makes the render SOUND (true) but does not make it CONSTRUCTIBLE
+>   from `hAmb` + igPtW alone.
+> - **What is needed**: sequence the Phase-5 interior ambient render FIRST (or land a shared
+>   `igPtW + hAmb + P → nf_eval_nf M (k+2) 3 [w,x,t] qnf` render lemma), then discharge the
+>   general-`m` arms of rows 12-13 (`kvE_deepOnFiber_of_realized`), the G2-2 uniqueness kernel, and
+>   rows 10-11. Recommend `/revise 358` to re-order Wave 2 (interior render) before the exterior
+>   supply, OR `/spawn 358` an isolated "igPtW+hAmb+P ambient-render bridge" task.
+> - **Prohibited**: no `sorry` forced onto the main target; no `def X := True`; no guard unfold.
+>   The two strategic sorries are tracked leaf-skeleton division points (sorry_inventory), not the
+>   `:519`/`:522` main-target sorries.
+>
+> **Landed this dispatch** (green): `ExteriorDeepExclSupplyK.lean` — `kvE_deepExcl_zero_vacuous`
+> (:sorry-free, floor axioms), `kvE_hexclDeepFut_supply` / `kvE_hexclDeepPast_supply` (m = 0 arms
+> sorry-free; general-`m` arms tracked strategic sorry). Scoped build green (1035 jobs).
 - **Goal:** Pin the 368-restated ambient-guarded binders and machine-certify ground truth (pin +
   re-probe gate, read-only), then complete the exterior ledger against the new interface: rows 12-13
   (`hexclDeepFut`/`hexclDeepPast`) via the `kvE_deepOnFiber_of_realized` contradiction under the
@@ -323,7 +357,7 @@ G2-B3 rows 10-11) so each sub-step is one agent run. Phase 5 (interior/KampPrior
   a produced realizer must re-establish guard=true); `kvE_deepOnFiber_of_realized`
   (ExteriorFiberDeepAnchorK.lean:141 — the rows-12-13 contradiction engine).
 - **Tasks:**
-  - [ ] **Pin (read-only)**: pin `kvE_ambientDeepAnchor` + `_zero`/`_iff`/`_of_realized`
+  - [x] **Pin (read-only)** *(done: signatures pinned by name; target sigs recorded in phase-4 handoff)*: pin `kvE_ambientDeepAnchor` + `_zero`/`_iff`/`_of_realized`
         (ExteriorAmbientDeepAnchorK.lean:109/125/131/195), the six ambient-guarded binders
         (KampPrior.lean:964/971/1003/1010/1017/1024) and their `EndIntervalConsumerK`/
         `ExteriorGateAssembleK` mirrors (`bracketEndChar_kvExt_correct_prior`, `kvE_ambientGuardForm`),
@@ -331,7 +365,7 @@ G2-B3 rows 10-11) so each sub-step is one agent run. Phase 5 (interior/KampPrior
         ExteriorPinnedConverseK.lean:1250, `kvE_futSliceUnique_zero` :1122, +Past :769/:356). Record
         the exact general-m supply-theorem TARGET signatures in a phase handoff. Confirm rows 8-9
         carry NO ambient antecedent (Phase-3 landing unaffected).
-  - [ ] **Re-probe gate** (before any build): `lean_verify` at floor axioms, no sorryAx — the nine
+  - [x] **Re-probe gate** *(done: representative kvE_probe368_*/367 certificates lean_verify GREEN at floor axioms, no sorryAx; Kamp sorries confirmed exactly KampPrior.lean:519/:522)* (before any build): `lean_verify` at floor axioms, no sorryAx — the nine
         `kvE_probe368_*` (`cmA_ambient_rejected`, `cmB_ambient_rejected`, `real_ambient_anchored`,
         `cmA_row13_refuted`, `cmB_row5_refuted`, `depth2_ambient_rejected`,
         `ambient_copyPlant_passes_guard`, `ambient_copyPlant_collapses`, `ambient_supply_route`), the
@@ -339,25 +373,25 @@ G2-B3 rows 10-11) so each sub-step is one agent run. Phase 5 (interior/KampPrior
         `kvE_probe358_*`, the two `kvE_probeM1_*`. Confirm Kamp-path sorries are exactly
         KampPrior.lean:519 and :522 (`grep -n "sorry"`). **Green commit** (`task 358 phase 4.0: 368
         interface pin + re-probe gate`).
-  - [ ] **Bridge adjudication (before building the supply)**: verify on paper + by
+  - [x] **Bridge adjudication (before building the supply)** *(done: render FAILED adjudication — igPtW yields only atom layer (kvExt_gate_henv); deep ambient needs Phase-5 interior realizer; STOP → [BLOCKED]+escalate per contingency, see BLOCKER above)*: verify on paper + by
         `lean_multi_attempt` that under `hAmb : kvE_ambientDeepAnchor qnf = true` + the igPtW guard,
         ambient realization at `[w,x,t]` is renderable (the `hcharK` + `P.correct` +
         `kampPrior_existProviders_of_ih_existF0_char` bridge, now de-circularized because CM-A/CM-B
         are guard-excluded — consume `kvE_ambientDeepAnchor_iff` for the deep content). If the render
         fails, STOP: probe the gap against the CM-A/CM-B casts, [BLOCKED]+escalate.
-  - [ ] **G2-B1 (rows 12-13)**: prove `kvE_hexclDeepFut_supply` / `kvE_hexclDeepPast_supply`
+  - [ ] **G2-B1 (rows 12-13)** *(deviation: PARTIAL — m = 0 arms landed sorry-free in ExteriorDeepExclSupplyK.lean; general-m arms tracked strategic sorry, blocked on Phase-5 ambient render)*: prove `kvE_hexclDeepFut_supply` / `kvE_hexclDeepPast_supply`
         general-m matching the `hexclDeepFut`/`hexclDeepPast` binder shape (KampPrior.lean:1024/1017):
         take `hAmb` + igPtW → render ambient realized; suppose a realizer of σ at the pinned exterior
         tuple; `kvE_deepOnFiber_of_realized M env x1 qnf σ (ambient) (σ-realizer)` forces
         `kvE_deepOnFiber qnf σ = true`, contradicting the binder's `kvE_deepOnFiber qnf σ = false`.
         m=0 vacuous via `kvE_ambientDeepAnchor_zero` + frozen `_zero`. **Green commit.** (G2-B1 is
         independent of the uniqueness kernel — a natural split boundary.)
-  - [ ] **G2-B2 (uniqueness kernel)**: prove `kvE_futSliceUnique` / `kvE_pastSliceUnique` at general m
+  - [ ] **G2-B2 (uniqueness kernel)** *(deviation: deferred — blocked on same Phase-5 ambient render; uniqueness at general m needs both σ's realized over the ambient tail)*: prove `kvE_futSliceUnique` / `kvE_pastSliceUnique` at general m
         over the ambient-guarded + deep-anchored population (both σ's pinned over the SAME real tail).
         Use deep-content pinning (`σ'.2 = σ.2` heredity, `kvE_deepOnFiber_iff`) + the EF-closure from
         `kvE_ambientDeepAnchor_iff` + on-fiber row pinning (`kvE_futAdmissible_onFiber`) in place of
         the refuted free-env upgrade. Probe against the countermodel families BEFORE consuming it.
-  - [ ] **G2-B3 (rows 10-11)**: prove `kvE_hexclSliceFut_supply` / `kvE_hexclSlicePast_supply`
+  - [ ] **G2-B3 (rows 10-11)** *(deviation: deferred — depends on G2-B2 uniqueness, blocked on Phase-5 ambient render)*: prove `kvE_hexclSliceFut_supply` / `kvE_hexclSlicePast_supply`
         general-m matching `hexclSliceFut`/`hexclSlicePast` (:1010/:1003): carried `hreal` + G2-B2
         uniqueness + the admissibility-zone readback (`kvE_futAdmissible_fiber_dichotomy`). m=0 via
         the frozen `kvE_hexclSlice{Fut,Past}_supply_zero`. **Green commit.**
