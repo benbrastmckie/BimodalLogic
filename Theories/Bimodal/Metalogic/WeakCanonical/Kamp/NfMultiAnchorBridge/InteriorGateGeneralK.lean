@@ -2070,6 +2070,179 @@ theorem bracketEndChar_kvFib_step_complete {sig : MonadicSignature} {k : Nat}
     simp only [igCharPFib, TemporalPred.eval_at]
     exact (hchar _ _).mpr (hpropsR _ (List.getElem_mem _)).2
 
+/-! ## Phase 5 — de-folded step_sound analog + re-keyed binders
+
+Task 370 Phase 5. The de-folded analog of `bracketEndChar_kv_step_sound` (`:1043`), re-keyed from the
+arity-1 1-type `χ : NormalForm sig k 1` onto the FULL arity-4 fiber `σ : NormalForm sig k 4`. From the
+SIBLING de-folded carrier `bracketEndChar_kvFib`'s `.holds` at the fixed endpoints `(x, t)`, a genuine
+depth-`(k+1)` realizer at bracket witness `w`.
+
+The soundness body is byte-parallel to the folded original — the fiber-realization biconditional it
+produces is about the TARGET `qnf` (arity-3), so the `refine ⟨w, h_atom, ?_⟩ / intro sub / constructor`
+core is IDENTICAL. Two things change, both purely the sibling re-key:
+
+1. **Carrier entry.** Destructuring goes through `bracketEndChar_kvFib_succ_holds_iff` (`:1515`) and the
+   `igMkDisjunctFib`/`igEpLFib`/`igEpRFib`/`igPtWFib` de-folded pieces; the generic bracket extractor
+   `k1v_bracket_extract` is reused verbatim (it is abstract in `lL lR ptW segL segR`).
+2. **Re-keyed provider binders.** The `hreal`/`hexcl`/`hexclExt` obligation binders are gated on
+   `igPtWFib (…) (charFib k) qnf.1 (igFoldBitFib qnf)` at `w` (the extracted `hptWe`), the arity-4
+   analog of the folded `igPtW (…) (charF k) qnf.1 (igFoldBit qnf)` gate. The realizer/exclusion
+   payloads (`∃ x1, nf_eval_nf M k 4 [x1,w,x,t] σ` and its negation) are the SAME arity-4 statements the
+   folded binders already carried — the fold was never the loss point for the binders; only the gate
+   they hang off is re-keyed to the non-projecting fiber. No chain step is shortcut (G5). -/
+
+set_option maxHeartbeats 1600000 in
+/-- **De-folded inductive step ⇒ soundness** (task 370 Phase 5 — the deliverable; arity-4 analog of
+    `bracketEndChar_kv_step_sound`, `:1043`). From the SIBLING de-folded carrier
+    `bracketEndChar_kvFib`'s `.holds` at `(x, t)`, a genuine depth-`(k+1)` realizer at a bracket
+    witness `w`. The `hreal`/`hexcl`/`hexclExt` provider binders are re-keyed onto the non-projecting
+    fiber gate `igPtWFib (…) (charFib k) qnf.1 (igFoldBitFib qnf)`; the fiber-realization biconditional
+    on the target `qnf` is proved identically to the folded original. -/
+theorem bracketEndChar_kvFib_step_sound {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (qnf : NormalForm sig (k + 1) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kvFib atomMap h_surj charFib (k + 1) qnf).holds M atomMap x t →
+      ∃ w : M.carrier, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf := by
+  intro h_holds
+  -- Enter the sibling carrier via the Phase-2 destructuring: gate + one arrangement disjunct.
+  rw [bracketEndChar_kvFib_succ_holds_iff atomMap h_surj charFib qnf M x t] at h_holds
+  obtain ⟨_hgate, lL, _hlL, lR, _hlR, hveah⟩ := h_holds
+  obtain ⟨hepL, hepR, hbr⟩ := hveah
+  -- Extract the bracket witness `w` (`x < w < t`) and its `igPtWFib` eval (the re-keyed obligation gate).
+  obtain ⟨w, hxw, hwt, hptWe, -, -, -, -⟩ :=
+    k1v_bracket_extract M atomMap _ _ _ _ _ x t hbr
+  have hxt : x < t := hxw.trans hwt
+  -- Depth-0 endpoint/witness char bridge (arity-1, reused verbatim from the folded original).
+  have hcharB : ∀ (χ : NormalForm sig 0 1) (u : M.carrier),
+      temporal_truth M atomMap u (nf_depth0_char_formula atomMap h_surj χ) ↔
+        nf_eval_nf M 0 1 (fun _ => u) χ :=
+    fun χ u => interiorGate_hcb atomMap h_surj M χ u
+  -- Endpoint/witness complete types (heads of the de-folded conjunction lists). `hptWe` is kept RAW
+  -- for the provider obligations; the witness head is read off a copy.
+  have hxT : temporal_truth M atomMap x
+      (nf_depth0_char_formula atomMap h_surj (nf_x_proj3 qnf.1)) := by
+    have h := hepL
+    simp only [igMkDisjunctFib, igEpLFib, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have htT : temporal_truth M atomMap t
+      (nf_depth0_char_formula atomMap h_surj (nf_t_proj3 qnf.1)) := by
+    have h := hepR
+    simp only [igMkDisjunctFib, igEpRFib, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ (List.mem_append_left _ List.mem_cons_self)
+  have hyW : temporal_truth M atomMap w
+      (nf_depth0_char_formula atomMap h_surj (nf_y_proj qnf.1)) := by
+    have h := hptWe
+    simp only [igPtWFib, TemporalPred.eval_at] at h
+    rw [formula_conjList_iff] at h
+    exact h _ List.mem_cons_self
+  -- Reconstruct the depth-0 atom layer at `[w, x, t]` (Chain step 2, rule N1 framing).
+  have h_atom : nf_eval_nf M 0 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf.1 :=
+    k1v_reconstruct_nf3 M qnf.1 w x t
+      ((hcharB _ w).mp hyW) ((hcharB _ x).mp hxT) ((hcharB _ t).mp htT)
+      (iff_of_false (lt_asymm hxw) (by simp only [h_yx]; decide))
+      (iff_of_true hwt h_yt)
+      (iff_of_true hxw h_xy)
+      (iff_of_true hxt h_xt)
+      (iff_of_false (lt_asymm hwt) (by simp only [h_ty]; decide))
+      (iff_of_false (lt_asymm hxt) (by simp only [h_tx]; decide))
+  -- Assemble the realizer: atom layer + the per-sub fiber biconditional (about the target `qnf`).
+  refine ⟨w, h_atom, ?_⟩
+  intro sub
+  constructor
+  · -- realizable → marked: an unmarked sub is realized at NO point (cone `hexcl` ∪ exterior
+    -- `hexclExt` cover every `x1`), contradicting the given realizer.
+    rintro ⟨x1, hx1⟩
+    by_contra hne
+    have hf : qnf.2 sub = false := by
+      cases hb : qnf.2 sub with
+      | true => exact absurd hb hne
+      | false => rfl
+    by_cases hcone : x ≤ x1 ∧ x1 ≤ t
+    · exact hexcl w hxw hwt hptWe sub hf x1 hcone.1 hcone.2 hx1
+    · exact hexclExt w hxw hwt hptWe sub hf x1 hcone hx1
+  · -- marked → realizable: the provider realizes each marked sub (`hreal`, gated on `igPtWFib` at `w`).
+    intro hmark
+    exact hreal w hxw hwt hptWe sub hmark
+
+set_option maxHeartbeats 1600000 in
+/-- **De-folded k→k+1 step biconditional** (task 370 Phase 5 — the pairing; arity-4 analog of
+    `bracketEndChar_kv_step_correct`, `:1165`). `⟨sound (Phase 5), complete (Phase 4)⟩` at symbolic
+    `k+1` for the SIBLING de-folded carrier, carrying the union of both halves' seams: the completeness
+    half's render-gated arity-4 char seam `hcharFib`, and the soundness half's re-keyed provider
+    obligations `hreal`/`hexcl`/`hexclExt` (gated on `igPtWFib`). Unlike the folded
+    `bracketEndChar_kv_step_correct`, the completeness half consumes the render-gated `hcharFib` seam in
+    place of the arity-1 provider bundle `P`/`hcharK` + `h_UZ`/`h_SZ` — there is no arity-4
+    `interiorGate_hck`. -/
+theorem bracketEndChar_kvFib_step_correct {sig : MonadicSignature} {k : Nat}
+    (atomMap : Formula → sig.preds)
+    (h_surj : ∀ p : sig.preds, ∃ a : Atom, atomMap (.atom a) = p)
+    (charFib : (j : Nat) → NormalForm sig j 4 → Formula)
+    (qnf : NormalForm sig (k + 1) 3)
+    (h_xy : qnf.1 (.order ⟨1, by omega⟩ ⟨0, by omega⟩ (by decide)) = true)
+    (h_yt : qnf.1 (.order ⟨0, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_xt : qnf.1 (.order ⟨1, by omega⟩ ⟨2, by omega⟩ (by decide)) = true)
+    (h_yx : qnf.1 (.order ⟨0, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (h_ty : qnf.1 (.order ⟨2, by omega⟩ ⟨0, by omega⟩ (by decide)) = false)
+    (h_tx : qnf.1 (.order ⟨2, by omega⟩ ⟨1, by omega⟩ (by decide)) = false)
+    (M : OrderedMonadicStructure sig) (x t : M.carrier)
+    (hcharFib : ∀ (w : M.carrier),
+      nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf →
+      ∀ (σ : NormalForm sig k 4) (u : M.carrier),
+        temporal_truth M atomMap u (charFib k σ) ↔
+          nf_eval_nf M k 4 (Fin.cons u (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hreal : ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = true →
+        ∃ x1 : M.carrier,
+          nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexcl : ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, x ≤ x1 → x1 ≤ t →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ)
+    (hexclExt : ∀ w : M.carrier, x < w → w < t →
+      (igPtWFib (nf_depth0_char_formula atomMap h_surj) (charFib k) qnf.1 (igFoldBitFib qnf)).eval_at
+        M atomMap w →
+      ∀ σ : NormalForm sig k 4, qnf.2 σ = false →
+        ∀ x1 : M.carrier, ¬ (x ≤ x1 ∧ x1 ≤ t) →
+          ¬ nf_eval_nf M k 4 (Fin.cons x1 (Fin.cons w (Fin.cons x (fun _ => t)))) σ) :
+    (bracketEndChar_kvFib atomMap h_surj charFib (k + 1) qnf).holds M atomMap x t ↔
+      ∃ w : M.carrier, nf_eval_nf M (k + 1) 3 (Fin.cons w (Fin.cons x (fun _ => t))) qnf :=
+  ⟨bracketEndChar_kvFib_step_sound atomMap h_surj charFib qnf
+      h_xy h_yt h_xt h_yx h_ty h_tx M x t hreal hexcl hexclExt,
+    bracketEndChar_kvFib_step_complete atomMap h_surj charFib qnf h_xy h_yt M x t hcharFib⟩
+
 end
 
 end Bimodal.Metalogic.WeakCanonical.Kamp

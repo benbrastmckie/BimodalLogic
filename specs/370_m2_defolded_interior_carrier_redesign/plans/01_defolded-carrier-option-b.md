@@ -233,7 +233,7 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Timing:** 2-3 hours
 - **Depends on:** 3
 
-### Phase 5: De-folded step_sound analog + re-keyed binders [NOT STARTED]
+### Phase 5: De-folded step_sound analog + re-keyed binders [COMPLETED]
 
 - **Goal:** Prove the soundness step for the sibling carrier and re-key its fiber binders.
 - **Objective / exact symbols:**
@@ -246,9 +246,9 @@ render-gating circularity Phase 3 must replace with a render-free extraction.
 - **Splitting rule:** if the combined step_sound body + binder re-key exceeds one agent run, split into
   5.1 (binder re-key :1055-1072) and 5.2 (soundness body + pairing) rather than inflating the phase.
 - **Tasks:**
-  - [ ] Re-key `hreal`/`hexcl`/`hexclExt` binders to arity-4 fiber.
-  - [ ] Prove `bracketEndChar_kv_step_sound` analog + pairing sorry-free.
-  - [ ] Build green.
+  - [x] Re-key `hreal`/`hexcl`/`hexclExt` binders to arity-4 fiber. *(Re-keyed onto the non-projecting gate `igPtWFib (nf_depth0_char_formula …) (charFib k) qnf.1 (igFoldBitFib qnf)` in `bracketEndChar_kvFib_step_sound` (IGGK:~2092). The arity-4 realizer/exclusion payloads (`∃ x1, nf_eval_nf M k 4 [x1,w,x,t] σ` and its negation) were already what the folded binders carried; only the gate they hang off is re-keyed to the sibling fiber. No split needed — body + binder re-key fit one run.)*
+  - [x] Prove `bracketEndChar_kv_step_sound` analog + pairing sorry-free. *(Landed `bracketEndChar_kvFib_step_sound` (byte-parallel clone of the folded `bracketEndChar_kv_step_sound` :1043; carrier entry via `bracketEndChar_kvFib_succ_holds_iff` + `igMkDisjunctFib`/`igEpLFib`/`igEpRFib`/`igPtWFib`, generic `k1v_bracket_extract` reused verbatim, fiber-realization biconditional on target `qnf` proved identically) + pairing `bracketEndChar_kvFib_step_correct` = `⟨sound, complete⟩` carrying the render-gated `hcharFib` seam + the re-keyed `hreal`/`hexcl`/`hexclExt` obligations. Both `lean_verify`-clean: axioms {propext, Classical.choice, Quot.sound}, NO sorryAx.)*
+  - [x] Build green. *(`lake build` of InteriorGateGeneralK.lean green (1020 jobs, 8.8s). `git diff --numstat` = pure additions 173/0; frozen `bracketEndChar_kv` (CarrierKv:238-249), both `rfl` bridges (IGGK:339-351, CarrierKv:294-351), and KampPrior:519/:522 byte-identical (CarrierKv + KampPrior 0 diff).)*
 - **Timing:** 4-6 hours
 - **Depends on:** 4
 
