@@ -1,7 +1,7 @@
 # Implementation Plan: M2 De-folded Interior Carrier (Option B)
 
 - **Task**: 370 - M2: de-folded interior carrier redesign — carry full arity-4 fiber
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: ~18-26 hours (8 phases; per-phase one agent run)
 - **Dependencies**: 369 (research + M2 scope)
 - **Research Inputs**:

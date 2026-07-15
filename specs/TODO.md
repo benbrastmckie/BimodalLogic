@@ -11,8 +11,8 @@ next_project_number: 372
 **Dependency Waves**:
 | Wave | Tasks | Blocked by | Topics |
 |------|-------|------------|--------|
-| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,361,370 | -- | completeness, formula-refactor, frame-extensions, ... |
-| 2 | 131,169,170,196,292,293,294,305,358 | 161,291,307,341,361,370 | completeness, formula-refactor, publication-quality, ... |
+| 1 | 125,127,128,161,165,179,180,186,192,199,219,231,257,282,291,296,298,307,318,341,358,361 | -- | completeness, formula-refactor, frame-extensions, ... |
+| 2 | 131,169,170,196,292,293,294,305 | 161,291,307,341,361 | completeness, formula-refactor, publication-quality, ... |
 | 3 | 175,193,303,362 | 131,169,170,192,196,305,358 | completeness, formula-refactor, automation, ... |
 | 4 | 95,177,178,299,359 | 131,193,303 | completeness, formula-refactor, kamp_theorem_formalization |
 
@@ -95,10 +95,6 @@ next_project_number: 372
   └─ 170 [NOT STARTED] — Dense (FrameClass.Dense) WEAK completeness green: make `completen
     └─ 362 [NOT STARTED] — Implement main_strong_completeness: finite-context strong complet (see above)
 
-### Task 358 Kamp Nfmultianchorbridge Render Cycle / M2 Carrier Redesign
-
-370 [IMPLEMENTING] — M2: de-folded interior carrier redesign — carry full arity-4 fibe
-
 ## Tasks
 
 ### 371. Revise bimodal reference bimodal only
@@ -116,7 +112,7 @@ next_project_number: 372
 ---
 
 ### 370. M2 defolded interior carrier redesign
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Task Type**: lean4
 - **Topic**: task-358 Kamp NfMultiAnchorBridge render-cycle / M2 carrier redesign
 - **Dependencies**: Task 369
